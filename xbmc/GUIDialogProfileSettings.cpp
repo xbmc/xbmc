@@ -39,6 +39,7 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
+#include "TextureCache.h"
 
 using namespace XFILE;
 
@@ -203,6 +204,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(SettingInfo &setting)
       m_strThumb = item.GetCachedProfileThumb();
       if (CFile::Exists(m_strThumb))
         CFile::Delete(m_strThumb);
+      CTextureCache::Get().ClearCachedImage(m_strThumb);
 
       if (!strThumb.Equals("thumb://None"))
         CPicture::CreateThumbnail(strThumb, m_strThumb);
@@ -269,7 +271,7 @@ void CGUIDialogProfileSettings::OnCancel()
   m_bNeedSave = false;
 }
 
-bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDetails)
+bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool firstLogin)
 {
   CGUIDialogProfileSettings *dialog = (CGUIDialogProfileSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_PROFILE_SETTINGS);
   if (!dialog) return false;
@@ -277,10 +279,11 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
     dialog->m_bIsDefault = true;
   else
     dialog->m_bIsDefault = false;
-  if (!bDetails && iProfile > g_settings.GetNumProfiles())
+  if (firstLogin && iProfile > g_settings.GetNumProfiles())
     return false;
 
-  dialog->m_bShowDetails = bDetails;
+  dialog->m_bShowDetails = !firstLogin;
+  dialog->SetProperty("heading", g_localizeStrings.Get(firstLogin ? 20255 : 20067));
 
   const CProfile *profile = g_settings.GetProfile(iProfile);
 

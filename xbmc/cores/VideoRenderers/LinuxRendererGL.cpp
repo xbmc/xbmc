@@ -921,13 +921,13 @@ void CLinuxRendererGL::UpdateVideoFilter()
       if (!nonLinStretchIsOn)
         return; //non-linear stretch needs to be off but is already off
     }
+    m_reloadShaders    = 1;
   }
   else if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod)
     return;
 
   m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
   m_scalingMethod    = m_scalingMethodGui;
-  m_reloadShaders    = 1;
 
   if(!Supports(m_scalingMethod))
   {
@@ -948,8 +948,9 @@ void CLinuxRendererGL::UpdateVideoFilter()
   if (m_scalingMethod == VS_SCALINGMETHOD_AUTO)
   {
     bool scaleSD = m_sourceHeight < 720 && m_sourceWidth < 1280;
+    bool scaleUp = (int)m_sourceHeight < g_graphicsContext.GetHeight() && (int)m_sourceWidth < g_graphicsContext.GetWidth();
 
-    if (Supports(VS_SCALINGMETHOD_LANCZOS3_FAST) && scaleSD)
+    if (Supports(VS_SCALINGMETHOD_LANCZOS3_FAST) && scaleSD && scaleUp)
       m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
     else
       m_scalingMethod = VS_SCALINGMETHOD_LINEAR;

@@ -145,7 +145,10 @@ bool CDDSImage::Compress(unsigned int width, unsigned int height, unsigned int p
     double colorMSE, alphaMSE;
     squish::ComputeMSE(brga, width, height, pitch, m_data, squish::kDxt1 | squish::kSourceBGRA, colorMSE, alphaMSE);
     if (colorMSE < maxMSE && alphaMSE < maxMSE)
+    {
+      CLog::Log(LOGDEBUG, "%s - DXT1 error is: %2.2f:%2.2f", __FUNCTION__, colorMSE, alphaMSE);
       return true;
+    }
 
     Allocate(width, height, XB_FMT_DXT3);
     
@@ -169,9 +172,10 @@ bool CDDSImage::Compress(unsigned int width, unsigned int height, unsigned int p
         double dxt5MSE;
         unsigned char *data2 = new unsigned char[GetStorageRequirements(width, height, XB_FMT_DXT5)];
         squish::CompressImage(brga, width, height, pitch, data2, squish::kDxt5 | squish::kSourceBGRA);
-        squish::ComputeMSE(brga, width, height, pitch, data2, squish::kDxt5 | squish::kSourceBGRA, colorMSE, alphaMSE);
+        squish::ComputeMSE(brga, width, height, pitch, data2, squish::kDxt5 | squish::kSourceBGRA, colorMSE, dxt5MSE);
         if (alphaMSE < maxMSE && alphaMSE < dxt5MSE)
         { // DXT3 passes and is best
+          CLog::Log(LOGDEBUG, "%s - DXT3 error is: %2.2f:%2.2f", __FUNCTION__, colorMSE, alphaMSE);          
           return true;
         }
         else if (dxt5MSE < maxMSE)
@@ -179,18 +183,20 @@ bool CDDSImage::Compress(unsigned int width, unsigned int height, unsigned int p
           memcpy(&m_desc.pixelFormat.fourcc, "DXT5", 4);
           delete[] m_data;
           m_data = data2;
+          CLog::Log(LOGDEBUG, "%s - DXT5 error is: %2.2f:%2.2f", __FUNCTION__, colorMSE, dxt5MSE);
           return true;
         }
         delete[] data2;
       }
     }
+    CLog::Log(LOGDEBUG, "%s - Failed to compress to DXT - error is: %2.2f:%2.2f", __FUNCTION__, colorMSE, alphaMSE);
     return false;
   }
   else
   {
     double colorMSE, alphaMSE;
     squish::ComputeMSE(brga, width, height, pitch, m_data, squish::kDxt1 | squish::kSourceBGRA, colorMSE, alphaMSE);
-    CLog::Log(LOGDEBUG, "%s - DDS error is: %2.2f:%2.2f", __FUNCTION__, colorMSE, alphaMSE);
+    CLog::Log(LOGDEBUG, "%s - DXT1 error is: %2.2f:%2.2f", __FUNCTION__, colorMSE, alphaMSE);
   } 
   return true;
 }

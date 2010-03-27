@@ -6,22 +6,8 @@ AC_INIT("xbmc", 9.11, http://trac.xbmc.org)
 AC_CONFIG_HEADERS([config.h])
 AH_TOP([#pragma once])
 
-# Ensure config.guess and config.sub exist and is executable
-# Also install latest version of these files if available
-AC_MSG_NOTICE([Ensuring config.guess and config.sub exist and is executable])
-test -f config.guess && chmod a+x config.guess
-if [[ -x /usr/share/misc/config.guess ]] && \
-    [[ $($PWD/config.guess -t | sed 's/-//g') -lt \
-    $(/usr/share/misc/config.guess -t | sed 's/-//g') ]]; then
-    cp -f /usr/share/misc/config.guess config.guess
-fi
-test -f config.sub && chmod a+x config.sub
-if [[ -x /usr/share/misc/config.sub ]] && \
-    [[ $($PWD/config.sub -t | sed 's/-//g') -lt \
-    $(/usr/share/misc/config.sub -t | sed 's/-//g') ]]; then
-    cp -f /usr/share/misc/config.sub config.sub
-fi
-
+AC_CONFIG_AUX_DIR([build-aux])
+AM_INIT_AUTOMAKE([foreign])
 AC_CANONICAL_HOST
 
 # General message strings
@@ -1080,7 +1066,13 @@ if test "$host_vendor" = "apple"; then
                 xbmc/cores/paplayer/FLACCodec/Makefile"
 fi
 
+# Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
+# .dummy.am does nothing.
+AC_CONFIG_FILES([.dummy])
+
 AC_CONFIG_FILES([${OUTPUT_FILES}])
+OUTPUT_FILES+=" \
+             .dummy"
 AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
 AC_SUBST(INCLUDES)
@@ -1500,6 +1492,14 @@ XB_CONFIG_MODULE([lib/libmicrohttpd], [
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --disable-shared --enable-static
   else
     true
+  fi
+], [0])
+
+XB_CONFIG_MODULE([lib/cpluff], [
+  if test "$host_vendor" = "apple" ; then
+    ./configure --disable-nls --with-libiconv-prefix=/opt/local --with-libintl-prefix=/opt/local --without-readline
+  else
+    ./configure --disable-nls
   fi
 ], [0])
 

@@ -157,6 +157,7 @@ namespace PYXBMC
     initControlButton_Type();
     initControlCheckMark_Type();
     initControlProgress_Type();
+    initControlSlider_Type();
     initControlList_Type();
     initControlImage_Type();
     initControlGroup_Type();
@@ -183,6 +184,7 @@ namespace PYXBMC
         PyType_Ready(&ControlGroup_Type) < 0 ||
         PyType_Ready(&Dialog_Type) < 0 ||
         PyType_Ready(&DialogProgress_Type) < 0 ||
+        PyType_Ready(&ControlSlider_Type) < 0 ||
         PyType_Ready(&ControlRadioButton_Type) < 0 ||
         PyType_Ready(&Action_Type) < 0)
       return;
@@ -217,6 +219,7 @@ namespace PYXBMC
     Py_INCREF(&ControlList_Type);
     Py_INCREF(&ControlImage_Type);
     Py_INCREF(&ControlProgress_Type);
+    Py_INCREF(&ControlSlider_Type);  
     Py_INCREF(&ControlGroup_Type);
     Py_INCREF(&Dialog_Type);
     Py_INCREF(&DialogProgress_Type);
@@ -242,6 +245,7 @@ namespace PYXBMC
     PyModule_AddObject(pXbmcGuiModule, (char*)"ControlList", (PyObject*)&ControlList_Type);
     PyModule_AddObject(pXbmcGuiModule, (char*)"ControlImage", (PyObject*)&  ControlImage_Type);
     PyModule_AddObject(pXbmcGuiModule, (char*)"ControlProgress", (PyObject*)& ControlProgress_Type);
+    PyModule_AddObject(pXbmcGuiModule, (char*)"ControlSlider", (PyObject*)& ControlSlider_Type);  
     PyModule_AddObject(pXbmcGuiModule, (char*)"ControlGroup", (PyObject*)& ControlGroup_Type);
     PyModule_AddObject(pXbmcGuiModule, (char*)"Dialog", (PyObject *)&Dialog_Type);
     PyModule_AddObject(pXbmcGuiModule, (char*)"DialogProgress", (PyObject *)&DialogProgress_Type);

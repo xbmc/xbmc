@@ -212,7 +212,9 @@ bool CGUIPassword::IsProfileLockUnlocked(int iProfile, bool& bCanceled)
        (g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
         profile->getLockMode() == LOCK_MODE_EVERYONE))
     {
-      if (CGUIDialogProfileSettings::ShowForProfile(iProfileToCheck,false))
+      // user hasn't set a password and this is the first time they've used this account
+      // so prompt for password/settings
+      if (CGUIDialogProfileSettings::ShowForProfile(iProfileToCheck, true))
         return true;
     }
     else

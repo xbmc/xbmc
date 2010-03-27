@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<plugin id="loop1">
+	<requires>
+		<import plugin="loop2"/>
+	</requires>
+</plugin>

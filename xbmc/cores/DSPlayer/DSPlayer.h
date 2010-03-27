@@ -93,7 +93,7 @@ public:
   virtual bool GetSubtitleVisible() { return CStreamsManager::getSingleton()->GetSubtitleVisible(); }
   virtual void SetSubtitleVisible( bool bVisible ) { CStreamsManager::getSingleton()->SetSubtitleVisible(bVisible); }
 
-  virtual bool AddSubtitle(const CStdString& strSubPath) { return CStreamsManager::getSingleton()->AddSubtitle(strSubPath); };
+  virtual int AddSubtitle(const CStdString& strSubPath) { return CStreamsManager::getSingleton()->AddSubtitle(strSubPath); };
   virtual void SetSubTitleDelay(float fValue = 0.0f) { CStreamsManager::getSingleton()->SetSubtitleDelay(fValue); };
   virtual float GetSubTileDelay(void) { return CStreamsManager::getSingleton()->GetSubtitleDelay(); }
   // Chapters

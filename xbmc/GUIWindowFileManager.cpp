@@ -468,6 +468,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   m_vecItems[iList]->m_strPath = items.m_strPath;
 
   CStdString strParentPath;
+  CUtil::GetParentPath(strDirectory, strParentPath);
   if (strDirectory.IsEmpty() && (m_vecItems[iList]->Size() == 0 || g_guiSettings.GetBool("filelists.showaddsourcebuttons")))
   { // add 'add source button'
     CStdString strLabel = g_localizeStrings.Get(1026);
@@ -480,7 +481,6 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   }
   else if (g_guiSettings.GetBool("filelists.showparentdiritems"))
   {
-    CUtil::GetParentPath(strDirectory, strParentPath);
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->m_strPath = strParentPath;
     pItem->m_bIsFolder = true;

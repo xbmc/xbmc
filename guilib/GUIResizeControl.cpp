@@ -123,7 +123,7 @@ void CGUIResizeControl::OnRight()
   Resize(m_fSpeed, 0);
 }
 
-bool CGUIResizeControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIResizeControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_DRAG)
   {
@@ -138,9 +138,9 @@ bool CGUIResizeControl::OnMouseEvent(const CPoint &point, const CMouseEvent &eve
       SendWindowMessage(msg);
     }
     Resize(event.m_offsetX, event.m_offsetY);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 void CGUIResizeControl::UpdateSpeed(int nDirection)
@@ -173,11 +173,11 @@ void CGUIResizeControl::AllocResources()
   m_height = m_imgFocus.GetHeight();
 }
 
-void CGUIResizeControl::FreeResources()
+void CGUIResizeControl::FreeResources(bool immediately)
 {
-  CGUIControl::FreeResources();
-  m_imgFocus.FreeResources();
-  m_imgNoFocus.FreeResources();
+  CGUIControl::FreeResources(immediately);
+  m_imgFocus.FreeResources(immediately);
+  m_imgNoFocus.FreeResources(immediately);
 }
 
 void CGUIResizeControl::DynamicResourceAlloc(bool bOnOff)

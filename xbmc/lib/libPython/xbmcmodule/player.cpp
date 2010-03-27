@@ -472,12 +472,12 @@ namespace PYXBMC
 
     if (g_application.m_pPlayer)
     {
-      int nStream = g_application.m_pPlayer->GetSubtitleCount();
-
-      g_settings.m_currentVideoSettings.m_SubtitleOn = true;
-      g_application.m_pPlayer->SetSubtitleVisible(true);
-      g_application.m_pPlayer->AddSubtitle(cLine);
-      g_application.m_pPlayer->SetSubtitle(nStream);
+      int nStream = g_application.m_pPlayer->AddSubtitle(cLine);
+      if(nStream >= 0)
+      {
+        g_application.m_pPlayer->SetSubtitle(nStream);
+        g_application.m_pPlayer->SetSubtitleVisible(true);
+      }
     }
 
     Py_INCREF(Py_None);

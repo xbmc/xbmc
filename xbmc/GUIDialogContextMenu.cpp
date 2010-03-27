@@ -293,10 +293,11 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
     {
       // Note. from now on, remove source & disable plugin should mean the same thing
       //TODO might be smart to also combine editing source & plugin settings into one concept/dialog
+      // Note. Temporarily disabled ability to remove plugin sources until installer is operational
 
       CURL url(share->strPath);
-      bool isUUID = StringUtils::ValidateUUID(url.GetHostName());
-      if (!share->m_ignore && !isUUID)
+      bool isAddon = ADDON::TranslateContent(url.GetProtocol()) != CONTENT_NONE;
+      if (!share->m_ignore && !isAddon)
         buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027); // Edit Source
       else
       {
@@ -306,8 +307,8 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
           buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045); // Plugin Settings
       }
       buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // Set as Default
-      if (!share->m_ignore)
-        buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source / disable plugin
+      if (!share->m_ignore && !isAddon)
+        buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source
 
       buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);
     }
@@ -410,14 +411,8 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       if (g_settings.GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
         return false;
     }
-    // prompt user if they want to really delete the source/disable the plugin
-    bool yes(false);
-    bool plugin = item->IsPlugin();
-    if (plugin)
-      yes = CGUIDialogYesNo::ShowAndGetInput(24009, 24010, 24011, 0);
-    else
-      yes = CGUIDialogYesNo::ShowAndGetInput(751, 0, 750, 0);
-    if (yes)
+    // prompt user if they want to really delete the source
+    if (CGUIDialogYesNo::ShowAndGetInput(751, 0, 750, 0))
     { // check default before we delete, as deletion will kill the share object
       CStdString defaultSource(GetDefaultShareNameByType(type));
       if (!defaultSource.IsEmpty())
@@ -425,13 +420,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
         if (share->strName.Equals(defaultSource))
           ClearDefault(type);
       }
-      if (plugin)
-      {
-        CURL path(share->strPath);
-        ADDON::CAddonMgr::Get()->DisableAddon(path.GetHostName());
-      }
-      else
-        g_settings.DeleteSource(type, share->strName, share->strPath);
+      g_settings.DeleteSource(type, share->strName, share->strPath);
     }
     return true;
   }

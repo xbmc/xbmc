@@ -279,6 +279,13 @@
 #define ACTION_INCREASE_PAR           219
 #define ACTION_DECREASE_PAR           220
 
+#define ACTION_GESTURE_NOTIFY         221
+#define ACTION_GESTURE_BEGIN          222
+#define ACTION_GESTURE_ZOOM           223
+#define ACTION_GESTURE_ROTATE         224
+#define ACTION_GESTURE_PAN            225
+#define ACTION_GESTURE_END            226
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000
@@ -420,6 +427,8 @@ public:
    \return true if this is a mouse action, false otherwise
    */
   bool IsMouse() const { return (m_id >= ACTION_MOUSE_START && m_id <= ACTION_MOUSE_END); };
+
+  bool IsGesture() const { return (m_id >= ACTION_GESTURE_NOTIFY && m_id <= ACTION_GESTURE_END); };
 
   /*! \brief Human-readable name of the action
    \return name of the action

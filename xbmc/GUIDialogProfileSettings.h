@@ -32,7 +32,7 @@ public:
   virtual ~CGUIDialogProfileSettings(void);
   virtual bool OnMessage(CGUIMessage &message);
 
-  static bool ShowForProfile(unsigned int iProfile, bool bDetails=true);
+  static bool ShowForProfile(unsigned int iProfile, bool firstLogin = false);
 protected:
   virtual void OnCancel();
   virtual void OnWindowLoaded();

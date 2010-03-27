@@ -40,7 +40,7 @@ public:
   virtual void FrameMove();
 protected:
   bool UpdateTrack();
-  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   unsigned int m_initTimer;
   unsigned int m_lockedTimer;
   bool m_bShowPreset;

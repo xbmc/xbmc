@@ -1,0 +1,66 @@
+/*-------------------------------------------------------------------------
+ * C-Pluff, a plug-in framework for C
+ * Copyright 2007 Johannes Lehtinen
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *-----------------------------------------------------------------------*/
+
+/**
+ * @page architecture Plug-in architecture
+ *
+ * @section architectureOverview Overview
+ *
+ * The plug-in architecture supported by C-Pluff is presented in the
+ * following figure. There is a thin main program controlling the plug-in
+ * framework. The main program is responsible for initializing and setting
+ * up the plug-in environment. Most of the application logic is contained in
+ * plug-ins which are independent components and can be developed and
+ * distributed separately. Plug-ins integrate with each other by providing
+ * extension points and extensions. An extension point is a point into which
+ * other plug-ins can attach extensions. An extension can be just
+ * information, expressed in XML format, or the plug-in may also provide
+ * program logic as part of the plug-in runtime library. The framework
+ * provides services for accessing extensions and for managing plug-in
+ * dependencies.
+ *
+ * @image html architecture.png "C-Pluff plug-in architecture"
+ *
+ * @section architectureExtensions Extensions
+ *
+ * The idea behind extension points and extensions is that the extensibility
+ * is not limited only to few fixed plug-in types supported by the
+ * core application. Although the core plug-ins typically define the extension
+ * points for the core application logic, it is possible for any plug-in
+ * to specify additional extension points.
+ *
+ * For example, let us assume that we are developing an extensible text
+ * editor. One extension point defined by core editor plug-in could be
+ * auto-completion extension point. A plug-in providing basic Java source code
+ * support could provide an extension for auto-completing Java code.
+ * Now, while this extension could do basic auto-completion of plain Java code,
+ * it is customary that Java source code also includes embedded documentation,
+ * such as JavaDoc comments and tags, or annotations, such as XDoclet tags, as
+ * part of doc comments. Instead of trying to support all known tags and their
+ * semantics, the plug-in providing basic Java support could define another
+ * extension point for additional plug-ins that know how to perform
+ * auto-completion of different kind of tags in doc comments.
+ * This way the extensibility of the application is not limited to the
+ * extension points defined by the core application but the plug-ins can
+ * incrementally increase the extensibility of the application.
+ */

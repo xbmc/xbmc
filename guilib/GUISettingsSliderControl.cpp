@@ -57,10 +57,10 @@ bool CGUISettingsSliderControl::OnAction(const CAction &action)
   return CGUISliderControl::OnAction(action);
 }
 
-void CGUISettingsSliderControl::FreeResources()
+void CGUISettingsSliderControl::FreeResources(bool immediately)
 {
-  CGUISliderControl::FreeResources();
-  m_buttonControl.FreeResources();
+  CGUISliderControl::FreeResources(immediately);
+  m_buttonControl.FreeResources(immediately);
 }
 
 void CGUISettingsSliderControl::DynamicResourceAlloc(bool bOnOff)

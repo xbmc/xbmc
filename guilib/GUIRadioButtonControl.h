@@ -49,7 +49,7 @@ public:
   virtual bool OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
   virtual void AllocResources();
-  virtual void FreeResources();
+  virtual void FreeResources(bool immediately = false);
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetInvalid();
   virtual void SetPosition(float posX, float posY);

@@ -44,6 +44,7 @@
 #include "LocalizeStrings.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "TextureCache.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -122,14 +123,14 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_genrelinkmovie_2 ON genrelinkmovie ( idMovie, idGenre)\n");
 
     CLog::Log(LOGINFO, "create movie table");
-    CStdString columns = "CREATE TABLE movie ( idMovie integer primary key";
+    CStdString columns = "CREATE TABLE movie ( idMovie integer primary key, idFile integer";
     for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
     {
       CStdString column;
       column.Format(",c%02d text", i);
       columns += column;
     }
-    columns += ",idFile integer)";
+    columns += ")";
     m_pDS->exec(columns.c_str());
     m_pDS->exec("CREATE UNIQUE INDEX ix_movie_file_1 ON movie (idFile, idMovie)");
     m_pDS->exec("CREATE UNIQUE INDEX ix_movie_file_2 ON movie (idMovie, idFile)");
@@ -153,7 +154,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text, strThumb text )\n");
 
     CLog::Log(LOGINFO, "create path table");
-    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath varchar(512), strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool, strSettings text, noUpdate bool)\n");
+    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath varchar(512), strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool, strSettings text, noUpdate bool, exclude bool)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_path ON path ( strPath )\n");
 
     CLog::Log(LOGINFO, "create files table");
@@ -187,7 +188,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_studiolinktvshow_2 ON studiolinktvshow ( idShow, idStudio)\n");
 
     CLog::Log(LOGINFO, "create episode table");
-    columns = "CREATE TABLE episode ( idEpisode integer primary key";
+    columns = "CREATE TABLE episode ( idEpisode integer primary key, idFile integer";
     for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
     {
       CStdString column;
@@ -198,7 +199,7 @@ bool CVideoDatabase::CreateTables()
 
       columns += column;
     }
-    columns += ",idFile integer)";
+    columns += ")";
     m_pDS->exec(columns.c_str());
     m_pDS->exec("CREATE UNIQUE INDEX ix_episode_file_1 on episode (idEpisode, idFile)");
     m_pDS->exec("CREATE UNIQUE INDEX id_episode_file_2 on episode (idFile, idEpisode)");
@@ -252,14 +253,14 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_studiolinkmovie_2 ON studiolinkmovie ( idMovie, idStudio)\n");
 
     CLog::Log(LOGINFO, "create musicvideo table");
-    columns = "CREATE TABLE musicvideo ( idMVideo integer primary key";
+    columns = "CREATE TABLE musicvideo ( idMVideo integer primary key, idFile integer";
     for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
     {
       CStdString column;
       column.Format(",c%02d text", i);
       columns += column;
     }
-    columns += ",idFile integer)";
+    columns += ")";
     m_pDS->exec(columns.c_str());
     m_pDS->exec("CREATE UNIQUE INDEX ix_musicvideo_file_1 on musicvideo (idMVideo, idFile)");
     m_pDS->exec("CREATE UNIQUE INDEX ix_musicvideo_file_2 on musicvideo (idFile, idMVideo)");
@@ -357,7 +358,7 @@ int CVideoDatabase::GetPathId(const CStdString& strPath)
   return -1;
 }
 
-bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
+bool CVideoDatabase::GetPaths(set<CStdString> &paths)
 {
   try
   {
@@ -366,11 +367,8 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
 
     paths.clear();
 
-    SScanSettings settings;
-    memset(&settings, 0, sizeof(settings));
-
     // grab all paths with movie content set
-    if (!m_pDS->query("select strPath,scanRecursive,useFolderNames,noUpdate from path"
+    if (!m_pDS->query("select strPath,noUpdate from path"
                       " where (strContent = 'movies' or strContent = 'musicvideos')"
                       " and strPath NOT like 'multipath://%%'"
                       " order by strPath"))
@@ -379,21 +377,13 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
     while (!m_pDS->eof())
     {
       if (!m_pDS->fv("noUpdate").get_asBool())
-      {
-        CStdString strPath = m_pDS->fv("strPath").get_asString();
-
-        settings.parent_name = m_pDS->fv("useFolderNames").get_asBool();
-        settings.recurse     = m_pDS->fv("scanRecursive").get_asInt();
-        settings.parent_name_root = settings.parent_name && !settings.recurse;
-
-        paths.insert(pair<CStdString,SScanSettings>(strPath,settings));
-      }
+        paths.insert(m_pDS->fv("strPath").get_asString());
       m_pDS->next();
     }
     m_pDS->close();
 
     // then grab all tvshow paths
-    if (!m_pDS->query("select strPath,scanRecursive,useFolderNames,strContent,noUpdate from path"
+    if (!m_pDS->query("select strPath,noUpdate from path"
                       " where ( strContent = 'tvshows'"
                       "       or idPath in (select idPath from tvshowlinkpath))"
                       " and strPath NOT like 'multipath://%%'"
@@ -403,24 +393,7 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
     while (!m_pDS->eof())
     {
       if (!m_pDS->fv("noUpdate").get_asBool())
-      {
-        CStdString strPath = m_pDS->fv("strPath").get_asString();
-        CStdString strContent = m_pDS->fv("strContent").get_asString();
-        if(strContent.Equals("tvshows"))
-        {
-          settings.parent_name = m_pDS->fv("useFolderNames").get_asBool();
-          settings.recurse     = m_pDS->fv("scanRecursive").get_asInt();
-          settings.parent_name_root = settings.parent_name && !settings.recurse;
-        }
-        else
-        {
-          settings.parent_name = true;
-          settings.recurse = 0;
-          settings.parent_name_root = true;
-        }
-
-        paths.insert(pair<CStdString,SScanSettings>(strPath,settings));
-      }
+        paths.insert(m_pDS->fv("strPath").get_asString());
       m_pDS->next();
     }
     m_pDS->close();
@@ -441,15 +414,7 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
     while (!m_pDS->eof())
     {
       if (!m_pDS->fv("noUpdate").get_asBool())
-      {
-        CStdString strPath = m_pDS->fv("strPath").get_asString();
-
-        settings.parent_name = false;
-        settings.recurse = 0;
-        settings.parent_name_root = settings.parent_name && !settings.recurse;
-
-        paths.insert(pair<CStdString,SScanSettings>(strPath,settings));
-      }
+        paths.insert(m_pDS->fv("strPath").get_asString());
       m_pDS->next();
     }
     m_pDS->close();
@@ -1427,8 +1392,10 @@ void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath)
     strPath2.Format("videodb://2/2/%i/",idTvShow);
     GetSeasonsNav(strPath2,items,-1,-1,-1,-1,idTvShow);
     for( int i=0;i<items.Size();++i )
+    {
       XFILE::CFile::Delete(items[i]->GetCachedSeasonThumb());
-
+      CTextureCache::Get().ClearCachedImage(items[i]->GetCachedSeasonThumb());
+    }
     DeleteThumbForItem(strPath,true);
 
     CStdString strSQL;
@@ -2630,24 +2597,24 @@ void CVideoDatabase::DeleteSet(int idSet)
   }
 }
 
-void CVideoDatabase::GetDetailsFromDB(auto_ptr<Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details)
+void CVideoDatabase::GetDetailsFromDB(auto_ptr<Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset)
 {
   for (int i = min + 1; i < max; i++)
   {
     switch (offsets[i].type)
     {
     case VIDEODB_TYPE_STRING:
-      *(CStdString*)(((char*)&details)+offsets[i].offset) = pDS->fv(i+1).get_asString();
+      *(CStdString*)(((char*)&details)+offsets[i].offset) = pDS->fv(i+idxOffset).get_asString();
       break;
     case VIDEODB_TYPE_INT:
     case VIDEODB_TYPE_COUNT:
-      *(int*)(((char*)&details)+offsets[i].offset) = pDS->fv(i+1).get_asInt();
+      *(int*)(((char*)&details)+offsets[i].offset) = pDS->fv(i+idxOffset).get_asInt();
       break;
     case VIDEODB_TYPE_BOOL:
-      *(bool*)(((char*)&details)+offsets[i].offset) = pDS->fv(i+1).get_asBool();
+      *(bool*)(((char*)&details)+offsets[i].offset) = pDS->fv(i+idxOffset).get_asBool();
       break;
     case VIDEODB_TYPE_FLOAT:
-      *(float*)(((char*)&details)+offsets[i].offset) = pDS->fv(i+1).get_asFloat();
+      *(float*)(((char*)&details)+offsets[i].offset) = pDS->fv(i+idxOffset).get_asFloat();
       break;
     }
   }
@@ -2814,7 +2781,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
   DWORD time = CTimeUtils::GetTimeMS();
   int idTvShow = pDS->fv(0).get_asInt();
 
-  GetDetailsFromDB(pDS, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets, details);
+  GetDetailsFromDB(pDS, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets, details, 1);
   details.m_iDbId = idTvShow;
   details.m_strPath = pDS->fv(VIDEODB_DETAILS_TVSHOW_PATH).get_asString();
   details.m_iEpisode = m_pDS->fv(VIDEODB_DETAILS_TVSHOW_NUM_EPISODES).get_asInt();
@@ -3232,17 +3199,17 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const Scraper
     CStdString strSQL;
     if (settings.exclude)
     { //NB See note in ::GetScraperForPath about strContent=='none'
-      strSQL=FormatSQL("update path set strContent='none', strScraper='', scanRecursive=0, useFolderNames=0, strSettings='', noUpdate=0 where idPath=%i", idPath);
+      strSQL=FormatSQL("update path set strContent='', strScraper='', scanRecursive=0, useFolderNames=0, strSettings='', noUpdate=0 , exclude=1 where idPath=%i", idPath);
     }
     else if(!scraper)
     { // catch clearing content, but not excluding
-      strSQL=FormatSQL("update path set strContent='', strScraper='', scanRecursive=0, useFolderNames=0, strSettings='', noUpdate=0 where idPath=%i", idPath);
+      strSQL=FormatSQL("update path set strContent='', strScraper='', scanRecursive=0, useFolderNames=0, strSettings='', noUpdate=0, exclude=0 where idPath=%i", idPath);
     }
     else
     {
       assert(scraper->Parent());
       CStdString content = TranslateContent(scraper->Content());
-      strSQL=FormatSQL("update path set strContent='%s', strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s', noUpdate=%i where idPath=%i", content.c_str(), scraper->Parent()->ID().c_str(),settings.recurse,settings.parent_name,scraper->GetSettings().c_str(),settings.noupdate, idPath);
+      strSQL=FormatSQL("update path set strContent='%s', strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s', noUpdate=%i, exclude=0 where idPath=%i", content.c_str(), scraper->Parent()->ID().c_str(),settings.recurse,settings.parent_name,scraper->GetSettings().c_str(),settings.noupdate, idPath);
     }
     m_pDS->exec(strSQL.c_str());
   }
@@ -3730,6 +3697,51 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     if (iVersion < 35)
     {
       m_pDS->exec("alter table settings add NonLinStretch bool");
+    }
+    if (iVersion < 36)
+    {
+      m_pDS->exec("alter table path add exclude bool");
+    }
+    if (iVersion < 37)
+    {
+      //recreate tables
+      CStdString columnsSelect, columns;
+      for (int i = 0; i < 21; i++)
+      {
+        CStdString column;
+        column.Format(",c%02d", i);
+        columnsSelect += column;
+        columns += column + " text";
+      }
+
+      //movie
+      m_pDS->exec(FormatSQL("CREATE TABLE movienew ( idMovie integer primary key, idFile integer%s)", columns.c_str()));
+      m_pDS->exec(FormatSQL("INSERT INTO movienew select idMovie,idFile%s from movie", columnsSelect.c_str()));
+      m_pDS->exec("DROP TABLE movie");
+      m_pDS->exec("ALTER TABLE movienew RENAME TO movie");
+
+      m_pDS->exec("CREATE UNIQUE INDEX ix_movie_file_1 ON movie (idFile, idMovie)");
+      m_pDS->exec("CREATE UNIQUE INDEX ix_movie_file_2 ON movie (idMovie, idFile)");
+
+      //episode
+      m_pDS->exec(FormatSQL("CREATE TABLE episodenew ( idEpisode integer primary key, idFile integer%s)", columns.c_str()));
+      m_pDS->exec(FormatSQL("INSERT INTO episodenew select idEpisode,idFile%s from episode", columnsSelect.c_str()));
+      m_pDS->exec("DROP TABLE episode");
+      m_pDS->exec("ALTER TABLE episodenew RENAME TO episode");
+
+      m_pDS->exec("CREATE UNIQUE INDEX ix_episode_file_1 on episode (idEpisode, idFile)");
+      m_pDS->exec("CREATE UNIQUE INDEX id_episode_file_2 on episode (idFile, idEpisode)");
+      m_pDS->exec(FormatSQL("CREATE INDEX ix_episode_season_episode on episode (c%02d, c%02d)", VIDEODB_ID_EPISODE_SEASON, VIDEODB_ID_EPISODE_EPISODE));
+      m_pDS->exec(FormatSQL("CREATE INDEX ix_episode_bookmark on episode (c%02d)", VIDEODB_ID_EPISODE_BOOKMARK));
+
+      //musicvideo
+      m_pDS->exec(FormatSQL("CREATE TABLE musicvideonew ( idMVideo integer primary key, idFile integer%s)", columns.c_str()));
+      m_pDS->exec(FormatSQL("INSERT INTO musicvideonew select idMVideo,idFile%s from musicvideo", columnsSelect.c_str()));
+      m_pDS->exec("DROP TABLE musicvideo");
+      m_pDS->exec("ALTER TABLE musicvideonew RENAME TO musicvideo");
+
+      m_pDS->exec("CREATE UNIQUE INDEX ix_musicvideo_file_1 on musicvideo (idMVideo, idFile)");
+      m_pDS->exec("CREATE UNIQUE INDEX ix_musicvideo_file_2 on musicvideo (idFile, idMVideo)");
     }
   }
   catch (...)
@@ -5553,7 +5565,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScanSet
 
     if (idPath > -1)
     {
-      CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings,path.noUpdate from path where path.idPath=%i",idPath);
+      CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings,path.noUpdate,path.exclude from path where path.idPath=%i",idPath);
       m_pDS->query( strSQL.c_str() );
     }
 
@@ -5562,22 +5574,17 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScanSet
     if (!m_pDS->eof())
     { // path is stored in db
 
-      //!!!
-      //FIXME confusion arises here as VIDEODB_CONTENT_NONE has no relation to strContent == 'none'.
-      // Here, we are referring to paths which are explicitly excluded from scraping, by
-      // having settings.exclude == true
-      //!!
-      CStdString strcontent = m_pDS->fv("path.strContent").get_asString();
-      strcontent.ToLower();
-      if (strcontent.Equals("none"))
+      if (m_pDS->fv("path.exclude").get_asBool())
       {
         settings.exclude = true;
         m_pDS->close();
         return ScraperPtr();
       }
+      settings.exclude = false;
 
-      // path is not excluded
       // try and ascertain scraper for this path
+      CStdString strcontent = m_pDS->fv("path.strContent").get_asString();
+      strcontent.ToLower();
       content = TranslateContent(strcontent);
 
       //FIXME paths stored should not have empty strContent
@@ -7427,24 +7434,24 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
     if (!singleFiles)
     {
       // now dump path info
-      map<CStdString,SScanSettings> paths;
+      set<CStdString> paths;
       GetPaths(paths);
       TiXmlElement xmlPathElement("paths");
       TiXmlNode *pPaths = pMain->InsertEndChild(xmlPathElement);
-      for( map<CStdString,SScanSettings>::iterator iter=paths.begin();iter != paths.end();++iter)
+      for( set<CStdString>::iterator iter = paths.begin(); iter != paths.end(); ++iter)
       {
         bool foundDirectly = false;
         SScanSettings settings;
-        ScraperPtr info = GetScraperForPath(iter->first, settings, foundDirectly);
+        ScraperPtr info = GetScraperForPath(*iter, settings, foundDirectly);
         if (info && foundDirectly)
         {
           TiXmlElement xmlPathElement2("path");
           TiXmlNode *pPath = pPaths->InsertEndChild(xmlPathElement2);
-          XMLUtils::SetString(pPath,"url",iter->first);
-          XMLUtils::SetInt(pPath,"scanrecursive",iter->second.recurse);
-          XMLUtils::SetBoolean(pPath,"usefoldernames",iter->second.parent_name);
+          XMLUtils::SetString(pPath,"url", *iter);
+          XMLUtils::SetInt(pPath,"scanrecursive", settings.recurse);
+          XMLUtils::SetBoolean(pPath,"usefoldernames", settings.parent_name);
           XMLUtils::SetString(pPath,"content", TranslateContent(info->Content()));
-          XMLUtils::SetString(pPath,"scraperpath",info->ID());
+          XMLUtils::SetString(pPath,"scraperpath", info->ID());
         }
       }
       xmlDoc.SaveFile(xmlFile);
@@ -7813,14 +7820,22 @@ void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder,
   {
     item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
     if (CFile::Exists(item.GetCachedEpisodeThumb()))
+    {
       XFILE::CFile::Delete(item.GetCachedEpisodeThumb());
+      CTextureCache::Get().ClearCachedImage(item.GetCachedEpisodeThumb());
+    }
     else
+    {
       XFILE::CFile::Delete(item.GetCachedVideoThumb());
+      CTextureCache::Get().ClearCachedImage(item.GetCachedVideoThumb());
+    }
   }
   else
   {
     XFILE::CFile::Delete(item.GetCachedVideoThumb());
+    CTextureCache::Get().ClearCachedImage(item.GetCachedVideoThumb());
     XFILE::CFile::Delete(item.GetCachedFanart());
+    CTextureCache::Get().ClearCachedImage(item.GetCachedFanart());
   }
 
   // tell our GUI to completely reload all controls (as some of them

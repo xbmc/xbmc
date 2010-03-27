@@ -258,10 +258,10 @@ public:
   float GetSubtitleDelay(void);
   /** Add a subtitle to the manager
    * @param[in] subFilePath Path of the subtitle
-   * @return True if the subtitle has been added, false otherwise
+   * @return -1 if the function fails. Otherwise, returns the index of the added subtitle
    * @remarks The subtitle will be automatically flagged as external
   */
-  bool AddSubtitle(const CStdString& subFilePath);
+  int AddSubtitle(const CStdString& subFilePath);
   
   /// Load streams from the current media file
   void LoadStreams();

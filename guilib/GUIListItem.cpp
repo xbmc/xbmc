@@ -259,15 +259,17 @@ void CGUIListItem::FreeIcons()
   SetInvalid();
 }
 
-void CGUIListItem::FreeMemory()
+void CGUIListItem::FreeMemory(bool immediately)
 {
   if (m_layout)
   {
+    m_layout->FreeResources(immediately);
     delete m_layout;
     m_layout = NULL;
   }
   if (m_focusedLayout)
   {
+    m_focusedLayout->FreeResources(immediately);
     delete m_focusedLayout;
     m_focusedLayout = NULL;
   }

@@ -28,6 +28,7 @@
 #include "DSPlayer.h"
 #include "FGFilter.h"
 #include "DShowUtil/smartptr.h"
+#include "boost/ptr_container/ptr_vector.hpp"
 
 CStreamsManager *CStreamsManager::m_pSingleton = NULL;
 
@@ -294,13 +295,14 @@ void CStreamsManager::LoadStreams()
   CLog::Log(LOGDEBUG, "%s Looking for audio streams in %s splitter", __FUNCTION__, splitterName.c_str());
 
   /* Regex to rename audio stream */
-  std::vector<CRegExp *> regex;
+  boost::ptr_vector<CRegExp> regex;
+  IXMLDOMNodePtr
 
-  CRegExp *reg = new CRegExp(true);
+  std::auto_ptr<CRegExp> reg(new CRegExp(true));
   reg->RegComp("(.*?)(\\(audio.*?\\)|\\(subtitle.*?\\))"); // mkv source audio / subtitle
   regex.push_back(reg);
 
-  reg = new CRegExp(true);
+  reg.reset(new CRegExp(true));
   reg->RegComp(".* - (.*),.*\\(.*\\)"); // mpeg source audio / subtitle
   regex.push_back(reg);
 
@@ -314,7 +316,7 @@ void CStreamsManager::LoadStreams()
 
     DWORD nStreams = 0, flags = 0, group = 0;
     WCHAR* wname = NULL;
-    SStreamInfos *infos = NULL;
+    SStreamInfos* infos = NULL;
     LCID lcid;
     IUnknown *pObj = NULL, *pUnk = NULL;
     int j = 0;
@@ -343,11 +345,11 @@ void CStreamsManager::LoadStreams()
       infos->flags = flags; infos->lcid = lcid; infos->group = group; infos->pObj = (IPin *)pObj; infos->pUnk = (IPin *)pUnk;
 
       /* Apply regex */
-      for (std::vector<CRegExp *>::const_iterator it = regex.begin(); it != regex.end(); ++it)
+      for (boost::ptr_vector<CRegExp>::iterator it = regex.begin(); it != regex.end(); ++it)
       {
-        if ( (*it)->RegFind(infos->name) > -1 )
+        if ( it->RegFind(infos->name) > -1 )
         {
-          infos->name = (*it)->GetMatch(1);
+          infos->name = it->GetMatch(1);
           break;
         }
       }
@@ -419,11 +421,11 @@ void CStreamsManager::LoadStreams()
           }
 
           /* Apply regex */
-          for (std::vector<CRegExp *>::const_iterator it = regex.begin(); it != regex.end(); ++it)
+          for (boost::ptr_vector<CRegExp>::iterator it = regex.begin(); it != regex.end(); ++it)
           {
-            if ( (*it)->RegFind(infos->name) > -1 )
+            if ( it->RegFind(infos->name) > -1 )
             {
-              infos->name = (*it)->GetMatch(1);
+              infos->name = it->GetMatch(1);
               break;
             }
           }
@@ -468,12 +470,13 @@ void CStreamsManager::LoadStreams()
     EndEnumPins
   }
 
-  /* Delete regex */
-  while (! regex.empty())
-  {
-    delete regex.back();
-    regex.pop_back();
-  }
+  ///* Delete regex */
+  //while (! regex.empty())
+  //{
+  //  delete regex.back();
+  //  regex.pop_back();
+  //}
+  regex.clear();
 
   /* We're done, internal audio & subtitles stream are loaded.
      We load external subtitle file */
@@ -890,17 +893,19 @@ void CStreamsManager::SetSubtitleVisible( bool bVisible )
     SetSubtitle(i);
 }
 
-bool CStreamsManager::AddSubtitle(const CStdString& subFilePath)
+int CStreamsManager::AddSubtitle(const CStdString& subFilePath)
 {
   if (g_dsconfig.pIffdshowDecoder) // We're currently using ffdshow for subtitles
   {    
-    SExternalSubtitleInfos *s = new SExternalSubtitleInfos();
+    std::auto_ptr<SExternalSubtitleInfos> s(new SExternalSubtitleInfos());
 
     if (m_subtitleStreams.empty())
       s->flags = AMSTREAMSELECTINFO_ENABLED;
 
     s->external = true; 
     s->path = CSpecialProtocol::TranslatePath(subFilePath);
+    if (! XFILE::CFile::Exists(s->path))
+      return -1;
 
     // Try to detect isolang of subtitle
     CRegExp regex(true);
@@ -919,12 +924,12 @@ bool CStreamsManager::AddSubtitle(const CStdString& subFilePath)
     else
       s->name = CUtil::GetFileName(s->path);
 
-    m_subtitleStreams.push_back(s);
+    m_subtitleStreams.push_back(s.release());
 
-    return true;
+    return m_subtitleStreams.size() - 1;
   }
 
-  return false;
+  return -1;
 }
 
 void CStreamsManager::DisconnectCurrentSubtitlePins( void )

@@ -3683,6 +3683,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\TextureDatabase.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\TextureDatabase.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\Thread.cpp"
 					>
 				</File>
@@ -5819,6 +5827,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\addons\AddonStatusHandler.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonStatusHandler.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\addons\DllAddon.h"
 					>
 				</File>
@@ -6519,6 +6535,10 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlradiobutton.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlslider.cpp"
 						>
 					</File>
 					<File

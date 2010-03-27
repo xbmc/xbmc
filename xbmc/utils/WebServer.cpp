@@ -24,6 +24,7 @@
 #include "../lib/libjsonrpc/JSONRPC.h"
 #include "../lib/libhttpapi/HttpApi.h"
 #include "../FileSystem/File.h"
+#include "../FileSystem/Directory.h"
 #include "../Util.h"
 #include "log.h"
 #include "SingleLock.h"
@@ -139,6 +140,8 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     else
     {
       strURL.Format("special://xbmc/web%s", strURL.c_str());
+      if (CDirectory::Exists(strURL))
+        strURL += "/index.html";
       return CreateDownloadResponse(connection, strURL);
     }
 #endif
@@ -223,10 +226,20 @@ int CWebServer::CreateDownloadResponse(struct MHD_Connection *connection, const 
   CFile *file = new CFile();
   if (file->Open(strURL))
   {
-    struct MHD_Response *response = MHD_create_response_from_callback ( file->GetLength(),
-                                                                        2048,
-                                                                        &CWebServer::ContentReaderCallback, file,
-                                                                        &CWebServer::ContentReaderFreeCallback);
+    struct MHD_Response *response;
+    if (file->GetLength() > 0)
+    {
+      response = MHD_create_response_from_callback ( file->GetLength(),
+                                                     2048,
+                                                     &CWebServer::ContentReaderCallback, file,
+                                                     &CWebServer::ContentReaderFreeCallback);
+    }
+    else
+    {
+      //libmicrohttpd calls abort() when CWebServer::ContentReaderCallback return 0
+      delete file;
+      response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
+    }
 
     CStdString ext = CUtil::GetExtension(strURL);
     ext = ext.ToLower();

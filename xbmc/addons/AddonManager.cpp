@@ -20,20 +20,14 @@
  */
 #include "AddonManager.h"
 #include "Addon.h"
-#include "Application.h"
-#include "utils/log.h"
 #include "StringUtils.h"
 #include "RegExp.h"
 #include "XMLUtils.h"
-#include "GUIDialogYesNo.h"
-#include "GUIDialogOK.h"
-#include "GUIDialogAddonSettings.h"
-#include "GUIWindowManager.h"
 #include "FileItem.h"
 #include "Settings.h"
 #include "GUISettings.h"
-#include "SingleLock.h"
 #include "DownloadQueueManager.h"
+#include "log.h"
 
 #ifdef HAS_VISUALISATION
 #include "DllVisualisation.h"
@@ -50,142 +44,6 @@
 
 namespace ADDON
 {
-
-/**********************************************************
- * CAddonStatusHandler - AddOn Status Report Class
- *
- * Used to informate the user about occurred errors and
- * changes inside Add-on's, and ask him what to do.
- *
- */
-
-CCriticalSection CAddonStatusHandler::m_critSection;
-
-CAddonStatusHandler::CAddonStatusHandler(IAddon* addon, ADDON_STATUS status, CStdString message, bool sameThread)
-  : m_addon(addon)
-{
-  if (m_addon == NULL)
-    return;
-
-  CLog::Log(LOGINFO, "Called Add-on status handler for '%u' of clientName:%s, clientID:%s (same Thread=%s)", status, m_addon->Name().c_str(), m_addon->ID().c_str(), sameThread ? "yes" : "no");
-
-  m_status  = status;
-  m_message = message;
-
-  if (sameThread)
-  {
-    Process();
-  }
-  else
-  {
-    CStdString ThreadName;
-    ThreadName.Format("Addon Status: %s", m_addon->Name().c_str());
-
-    Create(true, THREAD_MINSTACKSIZE);
-    SetName(ThreadName.c_str());
-    SetPriority(-15);
-  }
-}
-
-CAddonStatusHandler::~CAddonStatusHandler()
-{
-  StopThread();
-}
-
-void CAddonStatusHandler::OnStartup()
-{
-}
-
-void CAddonStatusHandler::OnExit()
-{
-}
-
-void CAddonStatusHandler::Process()
-{
-  CSingleLock lock(m_critSection);
-
-  CStdString heading;
-  heading.Format("%s: %s", TranslateType(m_addon->Type(), true).c_str(), m_addon->Name().c_str());
-
-  /* AddOn lost connection to his backend (for ones that use Network) */
-  if (m_status == STATUS_LOST_CONNECTION)
-  {
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    if (!pDialog) return;
-
-    pDialog->SetHeading(heading);
-    pDialog->SetLine(1, 24070);
-    pDialog->SetLine(2, 24073);
-
-    //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
-
-    if (pDialog->IsConfirmed())
-      CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, false);
-  }
-  /* Request to restart the AddOn and data structures need updated */
-  else if (m_status == STATUS_NEED_RESTART)
-  {
-    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (!pDialog) return;
-
-    pDialog->SetHeading(heading);
-    pDialog->SetLine(1, 24074);
-
-    //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
-
-    CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
-  }
-  /* Some required settings are missing/invalid */
-  else if (m_status == STATUS_NEED_SETTINGS)
-  {
-    CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    if (!pDialogYesNo) return;
-
-    pDialogYesNo->SetHeading(heading);
-    pDialogYesNo->SetLine(1, 24070);
-    pDialogYesNo->SetLine(2, 24072);
-    pDialogYesNo->SetLine(3, m_message);
-
-    //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
-
-    if (!pDialogYesNo->IsConfirmed()) return;
-
-    if (!m_addon->HasSettings())
-      return;
-
-    const AddonPtr addon(m_addon);
-    if (CGUIDialogAddonSettings::ShowAndGetInput(addon))
-    {
-      //todo doesn't dialogaddonsettings save these automatically? should do
-      m_addon->SaveSettings();
-      CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
-    }
-    else
-      m_addon->LoadSettings();
-  }
-  /* A unknown event has occurred */
-  else if (m_status == STATUS_UNKNOWN)
-  {
-    CAddonMgr::Get()->DisableAddon(m_addon->ID());
-    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (!pDialog) return;
-
-    pDialog->SetHeading(heading);
-    pDialog->SetLine(1, 24070);
-    pDialog->SetLine(2, 24071);
-    pDialog->SetLine(3, m_message);
-
-    //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
-    g_application.getApplicationMessenger().SendMessage(tMsg, true);
-  }
-}
 
 
 /**********************************************************
@@ -414,64 +272,11 @@ CStdString CAddonMgr::GetString(const CStdString &id, const int number)
   return "";
 }
 
-bool CAddonMgr::EnableAddon(const CStdString &id)
-{
-  AddonPtr addon = m_idMap[id];
-  if (!addon)
-  {
-    CLog::Log(LOGINFO,"ADDON: Couldn't find Add-on to Enable: %s", id.c_str());
-    return false;
-  }
-
-  return EnableAddon(addon);
-}
-
-bool CAddonMgr::EnableAddon(AddonPtr &addon)
-{
-  CUtil::CreateDirectoryEx(addon->Profile());
-  addon->Enable();
-  CLog::Log(LOGINFO,"ADDON: Enabled %s: %s : %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str(), addon->Version().Print().c_str());
-  SaveAddonsXML();
-  return true;
-}
-
-bool CAddonMgr::DisableAddon(const CStdString &id)
-{
-  AddonPtr addon = m_idMap[id];
-  if (!addon)
-    return false;
-  return DisableAddon(addon);
-}
-
-bool CAddonMgr::DisableAddon(AddonPtr &addon)
-{
-  const TYPE type = addon->Type();
-
-  if (m_addons.find(type) == m_addons.end())
-    return false;
-
-  for (IVECADDONS itr = m_addons[type].begin(); itr != m_addons[type].end(); itr++)
-  {
-    if (addon == (*itr))
-    {
-      addon->Disable();
-
-      if (addon->Parent())
-      { // we can delete this cloned addon
-        m_addons[type].erase(itr);
-      }
-
-      CLog::Log(LOGINFO,"ADDON: Disabled %s: %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str());
-      SaveAddonsXML();
-      return true;
-    }
-  }
-  CLog::Log(LOGINFO,"ADDON: Couldn't find Add-on to Disable: %s", addon->Name().c_str());
-  return false;
-}
-
 bool CAddonMgr::LoadAddonsXML()
 {
+  // NB. as addons are enabled by default, all this now checks for is
+  // cloned non-scraper addons
+  // i.e pvr clients only
   VECADDONPROPS props;
   if (!LoadAddonsXML(props))
     return false;
@@ -483,23 +288,22 @@ bool CAddonMgr::LoadAddonsXML()
   VECADDONPROPS::const_iterator itr = props.begin();
   while (itr != props.end())
   {
-    AddonPtr addon;
-    if (itr->parent.empty() && GetAddon(itr->id, addon, itr->type, false))
+    if (itr->parent.size())
     {
-      EnableAddon(addon);
-    }
-    else if (GetAddon(itr->parent, addon, itr->type, false))
-    { // multiple addon configurations
-      AddonPtr clone = addon->Clone(addon);
-      if (clone)
-      {
-        m_addons[addon->Type()].push_back(clone);
+      AddonPtr addon;
+      if (GetAddon(itr->parent, addon, itr->type, false))
+      { // multiple addon configurations
+        AddonPtr clone = addon->Clone(addon);
+        if (clone)
+        {
+          m_addons[addon->Type()].push_back(clone);
+        }
       }
-    }
-    else
-    { // addon not found
-      CLog::Log(LOGERROR, "ADDON: Couldn't find addon requested with ID: %s", itr->id.c_str());
-      //TODO we should really add but mark unavailable, to prompt user
+      else
+      { // addon not found
+        CLog::Log(LOGERROR, "ADDON: Couldn't find addon to clone with requested with ID: %s", itr->parent.c_str());
+        //TODO we should really add but mark unavailable, to prompt user
+      }
     }
     ++itr;
   }
@@ -983,6 +787,7 @@ CStdString CAddonMgr::GetAddonsXMLFile() const
 
 bool CAddonMgr::SaveAddonsXML()
 {
+  // NB only saves cloned non-scraper addons
   //TODO lock
   if (m_idMap.empty())
     return true;
@@ -996,7 +801,7 @@ bool CAddonMgr::SaveAddonsXML()
   while (itr != m_idMap.end())
   {
     AddonPtr addon = (*itr).second;
-    if (addon && !addon->Disabled())
+    if (addon && addon->Parent())
     {
       TYPE type = addon->Type();
       CStdString strType = TranslateType(type);
@@ -1007,9 +812,7 @@ bool CAddonMgr::SaveAddonsXML()
 
       TiXmlElement element("addon");
       XMLUtils::SetString(&element, "id", addon->ID());
-      if (addon->Parent())
-        XMLUtils::SetString(&element, "parentid", addon->Parent()->ID());
-      //XMLUtils::SetString(&element, "repo", addon->Repo()->ID());
+      XMLUtils::SetString(&element, "parentid", addon->Parent()->ID());
       node->InsertEndChild(element);
     }
     itr++;
@@ -1091,15 +894,15 @@ bool CAddonMgr::GetAddon(const TYPE &type, const TiXmlNode *node, VECADDONPROPS 
   CStdString version;
   AddonProps props(id, type, version);
 
-  // parent id if present
+  // parent id
   const TiXmlNode *pNodeParent = node->FirstChild("parentid");
   if (pNodeParent && pNodeParent->FirstChild())
   {
     props.parent = pNodeParent->FirstChild()->Value();
+    addons.insert(addons.end(), props);
+    return true;
   }
-
-  addons.insert(addons.end(), props);
-  return true;
+  return false;
 }
 
 } /* namespace ADDON */

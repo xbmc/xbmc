@@ -1,0 +1,5 @@
+base referer
+rect $structcp__plugin__info__t.html 92,99 223,123
+rect $structcp__extension__t.html 160,191 283,215
+rect $structcp__cfg__element__t.html 256,99 395,123
+rect $structcp__plugin__import__t.html 156,7 306,31

@@ -104,6 +104,14 @@ public:
   void AddJob(CJob *job);
 
   /*!
+   \brief Cancel all jobs in the queue
+   Removes all jobs from the queue. Any job currently being processed may complete after this
+   call has completed, but OnJobComplete will not be performed.
+   \sa CJob
+   */
+  void CancelJobs();
+
+  /*!
    \brief The callback used when a job completes.
 
    OnJobComplete is called at the completion of the CJob::DoWork function, and is used

@@ -39,7 +39,7 @@ cp $WORKPATH/nvidia-vdpau.gpg $WORKPATH/buildLive/Files/chroot_sources/nvidia-vd
 
 # Add packages
 
-echo "nvidia-glx-190" > $WORKPATH/buildLive/Files/chroot_local-packageslists/nvidia-vdpau.list
+echo "nvidia-glx-190 libvdpau1" > $WORKPATH/buildLive/Files/chroot_local-packageslists/nvidia-vdpau.list
 echo "linux-headers-generic dkms" >> $WORKPATH/buildLive/Files/chroot_local-packageslists/nvidia-vdpau.list
 echo "fakeroot" >> $WORKPATH/buildLive/Files/chroot_local-packageslists/nvidia-vdpau.list
 
