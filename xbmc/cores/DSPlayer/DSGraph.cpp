@@ -61,16 +61,11 @@ enum
 
 using namespace std;
 
-CDSGraph::CDSGraph(CDSClock* pClock)
-    : m_pGraphBuilder(NULL),
-      m_currentRate(1),
-      m_lAvgTimeToSeek(0),
-      m_iCurrentFrameRefreshCycle(0),
-      m_userId(0xACDCACDC),
-      m_bReachedEnd(false)
-{
-  m_pDsClock = pClock;
-  
+CDSGraph::CDSGraph(CDSClock* pClock, IPlayerCallback& callback)
+    : m_pGraphBuilder(NULL), m_currentRate(1), m_lAvgTimeToSeek(0),
+      m_iCurrentFrameRefreshCycle(0), m_userId(0xACDCACDC),
+      m_bReachedEnd(false), m_callback(callback), m_pDsClock(pClock)
+{ 
 }
 
 CDSGraph::~CDSGraph()
@@ -786,12 +781,16 @@ void CDSGraph::Seek(bool bPlus, bool bLargeStep)
   // Chapter support
   if (bLargeStep && CChaptersManager::getSingleton()->GetChapterCount() > 1)
   {
+    int chapter = 0;
     if (bPlus)
-      CChaptersManager::getSingleton()->SeekChapter(
+      chapter = CChaptersManager::getSingleton()->SeekChapter(
         CChaptersManager::getSingleton()->GetChapter() + 1);
     else
-      CChaptersManager::getSingleton()->SeekChapter(
+      chapter = CChaptersManager::getSingleton()->SeekChapter(
         CChaptersManager::getSingleton()->GetChapter() - 1);
+
+    if (chapter >= 0)
+      m_callback.OnPlayBackSeekChapter(chapter);
 
     return;
   }

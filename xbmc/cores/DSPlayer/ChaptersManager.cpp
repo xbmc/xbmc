@@ -133,14 +133,14 @@ bool CChaptersManager::LoadChapters()
 int CChaptersManager::SeekChapter(int iChapter)
 {
   if (! m_init)
-    return 0;
+    return -1;
 
   if (GetChapterCount() > 0)
   {
     if (iChapter < 1)
       iChapter = 1;
     if (iChapter > GetChapterCount())
-      return 0;
+      return -1;
 
     // Seek to the chapter.
     CLog::Log(LOGDEBUG, "%s Seeking to chapter %d", __FUNCTION__, iChapter);
@@ -154,7 +154,7 @@ int CChaptersManager::SeekChapter(int iChapter)
     else
       m_pGraph->Seek(false, true);
   }
-  return 0;
+  return iChapter;
 }
 
 void CChaptersManager::InitManager(CDSGraph *Graph)

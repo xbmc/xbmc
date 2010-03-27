@@ -38,6 +38,7 @@
 
 #include "GUIDialogBusy.h"
 #include "GUIWindowManager.h"
+#include "DShowUtil/smartptr.h"
 
 using namespace std;
 
@@ -45,7 +46,7 @@ DSPLAYER_STATE CDSPlayer::PlayerState = DSPLAYER_CLOSED;
 CFileItem CDSPlayer::currentFileItem;
 
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
-    : IPlayer(callback), CThread(), m_pDsGraph(&m_pDsClock),
+    : IPlayer(callback), CThread(), m_pDsGraph(&m_pDsClock, callback),
       m_hReadyEvent(true),
       m_bSpeedChanged(false)
 {
@@ -87,6 +88,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
     dialog->Close();
   }
 
+  m_callback.OnPlayBackStarted();
   return true;
 }
 bool CDSPlayer::CloseFile()
@@ -204,7 +206,6 @@ void CDSPlayer::Process()
     return;
   }
 
-  m_callback.OnPlayBackStarted();
   bool pStartPosDone = false;
   int sleepTime;
   m_hReadyEvent.Set(); // We're ready to go!
@@ -299,16 +300,16 @@ void CDSPlayer::Seek(bool bPlus, bool bLargeStep)
   if (bPlus)
   {
     if (!bLargeStep)
-      SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_FORWARDSMALL,0);
+      SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_FORWARDSMALL, 0);
     else
-      SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_FORWARDLARGE,0);
+      SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_FORWARDLARGE, 0);
   }
   else
   {
     if (!bLargeStep)
-      SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_BACKWARDSMALL,0);
+      SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_BACKWARDSMALL, 0);
     else
-      SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_BACKWARDLARGE,0);
+      SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_BACKWARDLARGE, 0);
   }
 }
 
