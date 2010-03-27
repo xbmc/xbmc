@@ -348,7 +348,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       CLog::Log(LOGDEBUG, __FUNCTION__"Window %s focus", g_application.m_AppFocused ? "gained" : "lost");
       if (!g_application.m_AppFocused)
         g_Keyboard.ResetState();//lost focus, unstick any keys
-      g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
+      if ( g_application.GetCurrentPlayer() != PCID_DSPLAYER )
+        g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
       break;
     case WM_SYSKEYDOWN:
       switch (wParam)
