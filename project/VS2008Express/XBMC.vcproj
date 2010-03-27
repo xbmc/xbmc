@@ -2506,10 +2506,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\IGraphBuilder2.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IMpaDecFilter.h"
 						>
 					</File>

@@ -27,7 +27,6 @@
 #define _DSPLAYER_DEBUG
 
 #include "FGFilter.h"
-#include "IGraphBuilder2.h"
 #include "DSConfig.h"
 #include "Filters/IMPCVideoDecFilter.h"
 #include "Filters/IffdshowDecVideo.h"
