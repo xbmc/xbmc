@@ -27,10 +27,6 @@
 #include <dshow.h> //needed for CLSID_VideoRenderer
 #include <initguid.h>
 #include <dvdmedia.h>
-#include <strmif.h>
-#include <mtype.h>
-#include <wxdebug.h>
-#include <combase.h>
 #include "util.h"
 #include "DSClock.h"
 #include "dsconfig.h"
@@ -44,8 +40,6 @@
 
 #include "cores/IPlayer.h"
 #include "File.h"
-
-
 
 using namespace XFILE;
 
@@ -67,7 +61,7 @@ class CFGManager;
 class CDSGraph
 {
 public:
-  CDSGraph(CDSClock* pClock);
+  CDSGraph(CDSClock* pClock, IPlayerCallback& callback);
   virtual ~CDSGraph();
 
   /** Determine if the graph can seek
@@ -184,6 +178,8 @@ private:
   CCriticalSection m_ObjectLock;
   CStdString m_pStrCurrentFrameRate;
   int m_iCurrentFrameRefreshCycle;
+
+  IPlayerCallback& m_callback;
 
   friend class CTextPassThruInputPin;
   friend class CTextPassThruFilter;
