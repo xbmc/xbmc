@@ -296,7 +296,6 @@ void CStreamsManager::LoadStreams()
 
   /* Regex to rename audio stream */
   boost::ptr_vector<CRegExp> regex;
-  IXMLDOMNodePtr
 
   std::auto_ptr<CRegExp> reg(new CRegExp(true));
   reg->RegComp("(.*?)(\\(audio.*?\\)|\\(subtitle.*?\\))"); // mkv source audio / subtitle
