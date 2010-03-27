@@ -3141,7 +3141,7 @@ bool CApplication::Cleanup()
 #ifdef _WIN32
 
     int i=0;
-    while((WSACleanup() == 0) && (i >= 20))
+    while((WSACleanup() == 0) && (i <= 20))
       i++;
 
     //Uninitialize COM
