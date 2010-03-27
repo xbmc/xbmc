@@ -148,7 +148,7 @@ void CStreamsManager::SetAudioStream(int iStream)
 
     Com::SmartPtr<IPin> connectedToPin = NULL;
     HRESULT hr = S_OK;
-
+#if 0
     CStdString filter = "";
     SVideoStreamIndexes indexes(0, iStream, GetSubtitle());
 
@@ -224,6 +224,7 @@ void CStreamsManager::SetAudioStream(int iStream)
       }
 
     }
+#endif
 
     /* Disable filter */
 standardway:
