@@ -33,7 +33,7 @@ typedef struct {CStdStringW face, size, color[4], weight, italic, underline, alp
 typedef struct {CStdStringW name; fontstyle_t fontstyle; posattriblist_t pal;} style_t;
 // effect
 typedef struct {CStdStringW position; fontstyle_t fontstyle; posattriblist_t pal;} keyframe_t;
-typedef struct {CStdStringW name; boost::ptr_list<keyframe_t> keyframes;} effect_t;
+typedef struct {CStdStringW name; std::list<boost::shared_ptr<keyframe_t>> keyframes;} effect_t;
 // subtitle/text
 typedef struct {int start, stop; CStdStringW effect, style, str; posattriblist_t pal;} text_t;
 
@@ -62,9 +62,9 @@ public:
 //	bool Write(LPCTSTR fn); // TODO
 
 	metadata_t metadata;
-  boost::ptr_list<style_t> styles;
-	boost::ptr_list<effect_t> effects;
-	boost::ptr_list<text_t> texts;
+  std::list<boost::shared_ptr<style_t>> styles;
+	std::list<boost::shared_ptr<effect_t>> effects;
+	std::list<boost::shared_ptr<text_t>> texts;
 
 	bool ConvertToSTS(CSimpleTextSubtitle& sts);
 //	bool ConvertFromSTS(CSimpleTextSubtitle& sts); // TODO

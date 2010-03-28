@@ -78,11 +78,11 @@ namespace ssf
 		DeleteDC(m_hDC);
 	}
 
-  void Renderer::NextSegment(boost::ptr_list<Subtitle>& subs)
+  void Renderer::NextSegment(std::list<boost::shared_ptr<Subtitle>>& subs)
 	{
 		StringMapW<bool> names;
-    boost::ptr_list<Subtitle>::iterator it = subs.begin();
-    for(; it != subs.end(); ++it) names[(*it).m_name] = true;
+    std::list<boost::shared_ptr<Subtitle>>::iterator it = subs.begin();
+    for(; it != subs.end(); ++it) names[(*it).get()->m_name] = true;
 
     StringMapW<SubRect>::iterator it2 = m_sra.begin();
 		for(; it2 != m_sra.end(); ++it2)
@@ -153,7 +153,7 @@ namespace ssf
 
 		WCHAR c_prev = 0, c_next;
 
-    boost::ptr_list<Glyph> glyphs;
+    std::list<boost::shared_ptr<Glyph>> glyphs;
 
     std::list<Text>::const_iterator it = s->m_text.begin();
     for(; it != s->m_text.end(); ++it)
@@ -193,7 +193,7 @@ namespace ssf
 
 			for(LPCWSTR c = t.str; *c; c++)
 			{
-        std::auto_ptr<Glyph> g(DNew Glyph());
+        boost::shared_ptr<Glyph> g(DNew Glyph());
 
 				g->c = *c;
 				g->style = t.style;
@@ -252,15 +252,15 @@ namespace ssf
 
 		// break glyphs into rows
 
-    boost::ptr_list<Row> rows;
-    std::auto_ptr<Row> row;
+    std::list<boost::shared_ptr<Row>> rows;
+    boost::shared_ptr<Row> row;
 
-    boost::ptr_list<Glyph>::iterator pos = glyphs.begin();
-    for(; pos != glyphs.end(); ++it)
+    std::list<boost::shared_ptr<Glyph>>::iterator pos = glyphs.begin();
+    for(; pos != glyphs.end(); ++pos)
 		{
       if(! row.get()) row.reset(DNew Row());
-			WCHAR c = pos->c;
-			row->push_back(&(*pos));
+			WCHAR c = pos->get()->c;
+			row->push_back(*pos);
 			if(c == Text::LSEP || (pos == glyphs.end())) rows.push_back(row);
 		}
 
@@ -268,18 +268,18 @@ namespace ssf
 
 		if(s->m_direction.primary == _T("right")) // || s->m_direction.primary == _T("left")
 		{
-      for(boost::ptr_list<Row>::iterator rpos = rows.begin(); rpos != rows.end(); ++rpos)
+      for(std::list<boost::shared_ptr<Row>>::iterator rpos = rows.begin(); rpos != rows.end(); ++rpos)
 			{
-        Row r = (*rpos);
+        Row r = (*rpos->get());
 
-				boost::ptr_list<Glyph>::iterator gpos = r.begin();
+				std::list<boost::shared_ptr<Glyph>>::iterator gpos = r.begin();
 				for(; gpos != r.end(); ++gpos)
 				{
-          Glyph g1 = (*gpos);
+          Glyph g1 = (*gpos->get());
           if(gpos == r.end()) break;
 
           gpos++;
-          Glyph g2 = (*gpos);
+          Glyph g2 = (*gpos->get());
           gpos--;
 					if(g1.font != g2.font || !g1.style.font.kerning || !g2.style.font.kerning)
 						continue;
@@ -300,19 +300,19 @@ namespace ssf
 			int maxwidth = abs((int)(vertical ? frame.Height() : frame.Width()));
 			int minwidth = 0;
 
-      for(boost::ptr_list<Row>::iterator rpos = rows.begin(); rpos != rows.end(); ++rpos)
+      for(std::list<boost::shared_ptr<Row>>::iterator rpos = rows.begin(); rpos != rows.end(); ++rpos)
 			{
-				Row r = (*rpos);
+				Row r = (*rpos->get());
 				
-        boost::ptr_list<Glyph>::iterator brpos = r.end();
+        std::list<boost::shared_ptr<Glyph>>::iterator brpos = r.end();
 
 				if(s->m_wrap == _T("even"))
 				{
 					int fullwidth = 0;
 
-					for(boost::ptr_list<Glyph>::iterator gpos = r.begin(); gpos != r.end(); ++gpos)
+					for(std::list<boost::shared_ptr<Glyph>>::iterator gpos = r.begin(); gpos != r.end(); ++gpos)
 					{
-						Glyph g = (*gpos);
+						Glyph g = (*gpos->get());
 						fullwidth += g.width + g.spacing;
 					}
 
@@ -327,22 +327,22 @@ namespace ssf
 
 				int width = 0;
 
-        for(boost::ptr_list<Glyph>::iterator gpos = r.begin(); gpos != r.end(); ++gpos)
+        for(std::list<boost::shared_ptr<Glyph>>::iterator gpos = r.begin(); gpos != r.end(); ++gpos)
 				{
-					Glyph g = (*gpos);
+					Glyph g = (*gpos->get());
 
 					width += g.width + g.spacing;
 
           if((brpos != r.end()) && abs(width) > maxwidth && g.c != Text::SP)
 					{
 						row.reset(DNew Row());
-            boost::ptr_list<Glyph>::iterator next = brpos;
+            std::list<boost::shared_ptr<Glyph>>::iterator next = brpos;
 						next++;
-            do {row->push_front(&(*(brpos--)));} while(brpos != r.end());
+            do {row->push_front(*(brpos--));} while(brpos != r.begin());
 						rows.insert(rpos, row); // TODO: Insert before
 						while(!r.empty() && r.begin() != next) r.pop_front();
             gpos = next;
-						g = (*gpos);
+						g = (*gpos->get());
 						width = g.width + g.spacing;
 					}
 
@@ -360,14 +360,14 @@ namespace ssf
 
 		// trim rows
 
-    for(boost::ptr_list<Row>::iterator pos = rows.begin(); pos != rows.end(); ++pos)
+    for(std::list<boost::shared_ptr<Row>>::iterator pos = rows.begin(); pos != rows.end(); ++pos)
 		{
-			Row r = (*pos);
+			Row r = (*pos->get());
 
-			while(!r.empty() && r.front().c == Text::SP)
+			while(!r.empty() && r.front()->c == Text::SP)
 				r.pop_front();
 
-			while(!r.empty() && r.back().c == Text::SP)
+			while(!r.empty() && r.back()->c == Text::SP)
 				r.pop_back();
 		}
 
@@ -377,14 +377,14 @@ namespace ssf
 		int fill_id = 0;
 		int fill_width = 0;
 
-		for(boost::ptr_list<Row>::iterator pos = rows.begin(); pos != rows.end(); ++pos)
+		for(std::list<boost::shared_ptr<Row>>::iterator pos = rows.begin(); pos != rows.end(); ++pos)
 		{
-			Row r = (*pos);
+			Row r = (*pos->get());
 
-			boost::ptr_list<Glyph>::iterator gpos = r.begin();
+			std::list<boost::shared_ptr<Glyph>>::iterator gpos = r.begin();
 			while(gpos != r.end())
 			{
-				Glyph g = (*gpos); gpos++;
+				Glyph g = (*gpos->get()); gpos++;
 
         if(!glypsh2fill.empty() && fill_id && (g.style.fill.id != fill_id || (pos == rows.end()) && (gpos == r.end())))
 				{
@@ -421,9 +421,9 @@ namespace ssf
 		if(s->m_direction.secondary == _T("left") || s->m_direction.secondary == _T("up"))
       rows.reverse();
 
-		for(boost::ptr_list<Row>::iterator pos = rows.begin(); pos != rows.end(); ++pos)
+		for(std::list<boost::shared_ptr<Row>>::iterator pos = rows.begin(); pos != rows.end(); ++pos)
 		{
-			Row r = (*pos);
+			Row r = (*pos->get());
 
 			if(s->m_direction.primary == _T("left") || s->m_direction.primary == _T("up"))
         r.reverse();
@@ -432,9 +432,9 @@ namespace ssf
 
 			r.width = 0;
 
-			for(boost::ptr_list<Glyph>::iterator gpos = r.begin(); gpos != r.end(); ++gpos)
+			for(std::list<boost::shared_ptr<Glyph>>::iterator gpos = r.begin(); gpos != r.end(); ++gpos)
 			{
-        Glyph g = (*gpos);
+        Glyph g = (*gpos->get());
 
 				w += g.width;
 				if(gpos != r.end()) w += g.spacing;
@@ -447,9 +447,9 @@ namespace ssf
 				r.border = max(r.border, g.GetBackgroundSize());
 			}
 
-			for(boost::ptr_list<Glyph>::iterator gpos = r.begin(); gpos != r.end(); ++gpos)
+			for(std::list<boost::shared_ptr<Glyph>>::iterator gpos = r.begin(); gpos != r.end(); ++gpos)
 			{
-				Glyph g = (*gpos);
+				Glyph g = (*gpos->get());
 				g.row_ascent = r.ascent;
 				g.row_descent = r.descent;
 			}
@@ -477,8 +477,8 @@ namespace ssf
 
 		if(!s->m_animated)
 		{
-			int tlb = !rows.empty() ? rows.front().border : 0;
-			int brb = !rows.empty() ? rows.back().border : 0;
+			int tlb = !rows.empty() ? rows.front()->border : 0;
+			int brb = !rows.empty() ? rows.back()->border : 0;
 
 			Com::SmartRect r(p, size);
 			m_sra.GetRect(r, s, style.placement.align, tlb, brb);
@@ -490,9 +490,9 @@ namespace ssf
 
 		// continue positioning
 
-		for(boost::ptr_list<Row>::iterator pos = rows.begin(); pos != rows.end(); ++pos)
+		for(std::list<boost::shared_ptr<Row>>::iterator pos = rows.begin(); pos != rows.end(); ++pos)
 		{
-			Row* r = &(*pos);
+			Row* r = (pos->get());
 
 			Com::SmartSize rsize;
 			rsize.cx = rsize.cy = r->width;
@@ -501,13 +501,13 @@ namespace ssf
 			{
 				p.y = GetAlignPoint(style.placement, scale, frame, rsize).y;
 
-				for(boost::ptr_list<Glyph>::iterator gpos = r->begin(); gpos != r->end(); ++gpos)
+				for(std::list<boost::shared_ptr<Glyph>>::iterator gpos = r->begin(); gpos != r->end(); ++gpos)
 				{
-          Glyph g = (*gpos);
-					g.tl.x = p.x + (int)(g.style.placement.offset.x * scale.cx + 0.5) + r->ascent - g.ascent;
-					g.tl.y = p.y + (int)(g.style.placement.offset.y * scale.cy + 0.5);
-					p.y += g.width + g.spacing;
-					rs->m_glyphs.push_back(&g);
+          boost::shared_ptr<Glyph> g = *gpos;
+					g->tl.x = p.x + (int)(g->style.placement.offset.x * scale.cx + 0.5) + r->ascent - g->ascent;
+					g->tl.y = p.y + (int)(g->style.placement.offset.y * scale.cy + 0.5);
+					p.y += g->width + g->spacing;
+					rs->m_glyphs.push_back(g);
 				}
 
 				p.x += r->ascent + r->descent;
@@ -516,9 +516,9 @@ namespace ssf
 			{
 				p.x = GetAlignPoint(style.placement, scale, frame, rsize).x;
 
-				for(boost::ptr_list<Glyph>::iterator gpos = r->begin(); gpos != r->end(); ++gpos)
+				for(std::list<boost::shared_ptr<Glyph>>::iterator gpos = r->begin(); gpos != r->end(); ++gpos)
 				{
-          Glyph *g = &(*gpos);
+          boost::shared_ptr<Glyph> g = *gpos;
 					g->tl.x = p.x + (int)(g->style.placement.offset.x * scale.cx + 0.5);
 					g->tl.y = p.y + (int)(g->style.placement.offset.y * scale.cy + 0.5) + r->ascent - g->ascent;
 					p.x += g->width + g->spacing;
@@ -534,7 +534,7 @@ namespace ssf
 		pos = rs->m_glyphs.begin();
     while(pos != rs->m_glyphs.end())
 		{
-      Glyph* g = &(*pos); pos++;
+      Glyph* g = pos->get(); pos++;
 			g->CreateBkg();
 			g->CreateSplineCoeffs(spdrc);
 			g->Transform(org, subrect);
@@ -547,9 +547,9 @@ namespace ssf
 		pos = rs->m_glyphs.begin();
     while(pos != rs->m_glyphs.end())
 		{
-			boost::ptr_list<Glyph>::iterator cur = pos;
+			std::list<boost::shared_ptr<Glyph>>::iterator cur = pos;
 
-			Glyph* g = &(*pos); pos++;
+			Glyph* g = pos->get(); pos++;
 
 			Com::SmartRect r = g->bbox + g->tl;
 
@@ -595,7 +595,7 @@ namespace ssf
 		// rasterize
 
 		pos = rs->m_glyphs.begin();
-    while(pos != rs->m_glyphs.end()) { pos->Rasterize(); pos++; }
+    while(pos != rs->m_glyphs.end()) { pos->get()->Rasterize(); pos++; }
 
 		// cache
 
@@ -615,10 +615,10 @@ namespace ssf
 
 		// shadow
 
-    boost::ptr_list<Glyph>::const_iterator pos = m_glyphs.begin();
+    std::list<boost::shared_ptr<Glyph>>::const_iterator pos = m_glyphs.begin();
     while(pos != m_glyphs.end())
 		{
-			Glyph g = (*pos); ++pos;
+			Glyph g = (*pos->get()); ++pos;
 
 			if(g.style.shadow.depth <= 0) continue;
 
@@ -635,7 +635,7 @@ namespace ssf
 		pos = m_glyphs.begin();
     while(pos != m_glyphs.end())
 		{
-			Glyph g = (*pos); ++pos;
+			Glyph g = (*pos->get()); ++pos;
 
 			DWORD c = g.style.background.color;
 			DWORD sw[6] = {c, -1};
@@ -656,7 +656,7 @@ namespace ssf
 		pos = m_glyphs.begin();
     while(pos != m_glyphs.end())
 		{
-			Glyph g = (*pos);
+			Glyph g = (*pos->get());
 
 			DWORD c = g.style.font.color;
 			DWORD sw[6] = {c, -1}; // TODO: fill

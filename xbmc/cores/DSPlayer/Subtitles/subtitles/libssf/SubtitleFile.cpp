@@ -109,7 +109,7 @@ namespace ssf
 		Commit();
 	}
 
-  bool SubtitleFile::Lookup(float at, boost::ptr_list<Subtitle>& subs)
+  bool SubtitleFile::Lookup(float at, std::list<boost::shared_ptr<Subtitle>>& subs)
 	{
 		if(!subs.empty()) {ASSERT(0); return false;}
 
@@ -121,14 +121,14 @@ namespace ssf
 		{
 			SegmentItem si = *it;
 
-			Subtitle* s(DNew Subtitle(this));
+      boost::shared_ptr<Subtitle> s(DNew Subtitle(this));
 
 			if(s->Parse(si.pDef, si.start, si.stop, at))
 			{
-        for(boost::ptr_list<Subtitle>::iterator it = subs.begin();
+        for(std::list<boost::shared_ptr<Subtitle>>::iterator it = subs.begin();
           it != subs.end(); ++it)
 				{
-					if(s->m_layer < it->m_layer)
+					if(s->m_layer < it->get()->m_layer)
 					{
             subs.insert(it, s); // TODO: Item must be inserted before it
 						break;

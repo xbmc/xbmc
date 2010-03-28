@@ -68,6 +68,6 @@ namespace ssf
 
 		void Parse(InputStream& s);
 		void Append(InputStream& s, float start, float stop, bool fSetTime = false);
-    bool Lookup(float at, boost::ptr_list<Subtitle>& subs);
+    bool Lookup(float at, std::list<boost::shared_ptr<Subtitle>>& subs);
 	};
 }

@@ -2246,14 +2246,14 @@ void CVobSubStream::Add(REFERENCE_TIME tStart, REFERENCE_TIME tStop, BYTE* pData
 	CVobSubImage vsi;
 	vsi.GetPacketInfo(pData, (pData[0]<<8)|pData[1], (pData[2]<<8)|pData[3]);
 
-	std::auto_ptr<SubPic> p(DNew SubPic());
+	boost::shared_ptr<SubPic> p(DNew SubPic());
 	p->tStart = tStart;
 	p->tStop = vsi.delay > 0 ? (tStart + 10000i64*vsi.delay) : tStop;
 	p->pData.resize(len);
 	memcpy(&p->pData[0], pData, p->pData.size());
 
 	CAutoLock cAutoLock(&m_csSubPics);
-	while(m_subpics.size() && m_subpics.back().tStart >= tStart)
+	while(m_subpics.size() && m_subpics.back().get()->tStart >= tStart)
 	{
 		m_subpics.pop_back();
 		m_img.iIdx = -1;
@@ -2285,10 +2285,10 @@ STDMETHODIMP CVobSubStream::NonDelegatingQueryInterface(REFIID riid, void** ppv)
 STDMETHODIMP_(__w64 int) CVobSubStream::GetStartPosition(REFERENCE_TIME rt, double fps)
 {
 	CAutoLock cAutoLock(&m_csSubPics);
-  boost::ptr_vector<SubPic>::iterator it = m_subpics.end();
+  std::vector<boost::shared_ptr<SubPic>>::iterator it = m_subpics.end();
   for(; it != m_subpics.begin(); --it)
 	{
-		SubPic* sp = &(*it);
+		SubPic* sp = it->get();
 		if(sp->tStart <= rt)
 		{
 			if(sp->tStop <= rt) ++it;
@@ -2302,13 +2302,13 @@ STDMETHODIMP_(__w64 int) CVobSubStream::GetStartPosition(REFERENCE_TIME rt, doub
 STDMETHODIMP_(REFERENCE_TIME) CVobSubStream::GetStart(int pos, double fps)
 {
 	CAutoLock cAutoLock(&m_csSubPics);
-  return m_subpics[pos].tStart;
+  return m_subpics[pos]->tStart;
 }
 
 STDMETHODIMP_(REFERENCE_TIME) CVobSubStream::GetStop(int pos, double fps)
 {
 	CAutoLock cAutoLock(&m_csSubPics);
-  return m_subpics[pos].tStop;
+  return m_subpics[pos]->tStop;
 }
 
 STDMETHODIMP_(bool) CVobSubStream::IsAnimated(int pos)
@@ -2320,10 +2320,10 @@ STDMETHODIMP CVobSubStream::Render(SubPicDesc& spd, REFERENCE_TIME rt, double fp
 {
 	if(spd.bpp != 32) return E_INVALIDARG;
 
-  boost::ptr_vector<SubPic>::reverse_iterator it = m_subpics.rbegin();
+  std::vector<boost::shared_ptr<SubPic>>::reverse_iterator it = m_subpics.rbegin();
   for(; it != m_subpics.rend(); ++it)
 	{
-		SubPic* sp = &(*it);
+		SubPic* sp = it->get();
 		if(sp->tStart <= rt && rt < sp->tStop)
 		{
       if(m_img.iIdx != (it - m_subpics.rbegin()))

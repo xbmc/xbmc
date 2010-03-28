@@ -99,7 +99,7 @@ namespace ssf
 		GlyphPath* Create(HDC hDC, const FontWrapper* f, WCHAR c);
 	};
 
-  class Row : public boost::ptr_list<Glyph>
+  class Row : public std::list<boost::shared_ptr<Glyph>>
 	{
 	public:
 		int ascent, descent, border, width;
@@ -111,7 +111,7 @@ namespace ssf
 	public:
 		Com::SmartRect m_spdrc;
 		Com::SmartRect m_clip;
-    boost::ptr_list<Glyph> m_glyphs;
+    std::list<boost::shared_ptr<Glyph>> m_glyphs;
 
 		RenderedSubtitle(const Com::SmartRect& spdrc, const Com::SmartRect& clip) : m_spdrc(spdrc), m_clip(clip) {}
 		virtual ~RenderedSubtitle() {}
@@ -156,7 +156,7 @@ namespace ssf
 		Renderer();
 		virtual ~Renderer();
 
-    void NextSegment(boost::ptr_list<Subtitle>& subs);
+    void NextSegment(std::list<boost::shared_ptr<Subtitle>>& subs);
 		RenderedSubtitle* Lookup(const Subtitle* s, const Com::SmartSize& vs, const Com::SmartRect& vr);
 	};
 }

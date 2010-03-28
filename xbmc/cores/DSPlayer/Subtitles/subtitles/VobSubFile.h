@@ -150,7 +150,7 @@ class CVobSubStream : public CVobSubSettings, public ISubStream, public ISubPicP
 
 	CCritSec m_csSubPics;
   struct SubPic {REFERENCE_TIME tStart, tStop; std::vector<BYTE> pData;};
-  boost::ptr_vector<SubPic> m_subpics;
+  std::vector<boost::shared_ptr<SubPic>> m_subpics;
 
 public:
 	CVobSubStream(CCritSec* pLock);

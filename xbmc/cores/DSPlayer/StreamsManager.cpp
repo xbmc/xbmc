@@ -28,7 +28,6 @@
 #include "DSPlayer.h"
 #include "FGFilter.h"
 #include "DShowUtil/smartptr.h"
-#include "boost/ptr_container/ptr_vector.hpp"
 
 CStreamsManager *CStreamsManager::m_pSingleton = NULL;
 
@@ -298,9 +297,9 @@ void CStreamsManager::LoadStreams()
   CLog::Log(LOGDEBUG, "%s Looking for audio streams in %s splitter", __FUNCTION__, splitterName.c_str());
 
   /* Regex to rename audio stream */
-  boost::ptr_vector<CRegExp> regex;
+  std::vector<boost::shared_ptr<CRegExp>> regex;
 
-  std::auto_ptr<CRegExp> reg(new CRegExp(true));
+  boost::shared_ptr<CRegExp> reg(new CRegExp(true));
   reg->RegComp("(.*?)(\\(audio.*?\\)|\\(subtitle.*?\\))"); // mkv source audio / subtitle
   regex.push_back(reg);
 
@@ -347,11 +346,11 @@ void CStreamsManager::LoadStreams()
       infos->flags = flags; infos->lcid = lcid; infos->group = group; infos->pObj = (IPin *)pObj; infos->pUnk = (IPin *)pUnk;
 
       /* Apply regex */
-      for (boost::ptr_vector<CRegExp>::iterator it = regex.begin(); it != regex.end(); ++it)
+      for (std::vector<boost::shared_ptr<CRegExp>>::iterator it = regex.begin(); it != regex.end(); ++it)
       {
-        if ( it->RegFind(infos->name) > -1 )
+        if ( (*it)->RegFind(infos->name) > -1 )
         {
-          infos->name = it->GetMatch(1);
+          infos->name = (*it)->GetMatch(1);
           break;
         }
       }
@@ -423,11 +422,11 @@ void CStreamsManager::LoadStreams()
           }
 
           /* Apply regex */
-          for (boost::ptr_vector<CRegExp>::iterator it = regex.begin(); it != regex.end(); ++it)
+          for (std::vector<boost::shared_ptr<CRegExp>>::iterator it = regex.begin(); it != regex.end(); ++it)
           {
-            if ( it->RegFind(infos->name) > -1 )
+            if ( (*it)->RegFind(infos->name) > -1 )
             {
-              infos->name = it->GetMatch(1);
+              infos->name = (*it)->GetMatch(1);
               break;
             }
           }

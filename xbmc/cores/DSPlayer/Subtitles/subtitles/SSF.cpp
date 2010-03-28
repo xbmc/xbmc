@@ -165,15 +165,15 @@ namespace ssf
 		Com::SmartRect bbox2;
 		bbox2.SetRectEmpty();
 
-    boost::ptr_list<Subtitle> subs;
+    std::list<boost::shared_ptr<Subtitle>> subs;
 		m_file->Lookup((float)rt/10000000, subs);
 
 		m_renderer->NextSegment(subs);
 
-    boost::ptr_list<Subtitle>::const_iterator pos = subs.begin();
+    std::list<boost::shared_ptr<Subtitle>>::const_iterator pos = subs.begin();
 		while(pos != subs.end())
 		{
-			const Subtitle s = (*pos); pos++;
+			const Subtitle s = (*pos->get()); pos++;
 			const RenderedSubtitle* rs = m_renderer->Lookup(&s, Com::SmartSize(spd.w, spd.h), spd.vidrect);
 			if(rs) bbox2 |= rs->Draw(spd);
 		}

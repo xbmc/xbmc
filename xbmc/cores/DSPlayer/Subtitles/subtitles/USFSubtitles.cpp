@@ -208,18 +208,18 @@ bool CUSFSubtitles::Read(LPCTSTR fn)
 	if(!ParseUSFSubtitles(ppNode))
 		return(false);
 
-  boost::ptr_list<style_t>::iterator pos = styles.begin();
+  std::list<boost::shared_ptr<style_t>>::iterator pos = styles.begin();
 	while(pos != styles.end())
 	{
-		style_t* def = &(*pos); pos++;
+		style_t* def = pos->get(); pos++;
 
 		if(def->name.CompareNoCase(L"Default"))
 			continue;
 
-		boost::ptr_list<style_t>::iterator pos2 = styles.begin();
+		std::list<boost::shared_ptr<style_t>>::iterator pos2 = styles.begin();
 		while(pos2 != styles.end())
 		{
-			style_t* s = &(*pos2); pos2++;
+			style_t* s = pos2->get(); pos2++;
 
 			if(!s->name.CompareNoCase(L"Default"))
 				continue;
@@ -249,10 +249,10 @@ bool CUSFSubtitles::Read(LPCTSTR fn)
 		break;
 	}
 
-	boost::ptr_list<text_t>::iterator pos3 = texts.begin();
+	std::list<boost::shared_ptr<text_t>>::iterator pos3 = texts.begin();
 	while(pos3 != texts.end())
 	{
-		text_t* t = &(*pos3); pos3++;
+		text_t* t = pos3->get(); pos3++;
 		if(t->style.IsEmpty()) t->style = L"Default";
 	}
 
@@ -270,10 +270,10 @@ bool CUSFSubtitles::ConvertToSTS(CSimpleTextSubtitle& sts)
 	// TODO: map metadata.language.code to charset num (windows doesn't have such a function...)
 	int charSet = DEFAULT_CHARSET; 
 
-	boost::ptr_list<style_t>::iterator pos = styles.begin();
+	std::list<boost::shared_ptr<style_t>>::iterator pos = styles.begin();
 	while(pos != styles.end())
 	{
-		style_t* s = &(*pos); pos++;
+		style_t* s = pos->get(); pos++;
 
 		if(!s->name.CompareNoCase(L"Default") && !s->fontstyle.wrap.IsEmpty())
 		{
@@ -333,10 +333,10 @@ bool CUSFSubtitles::ConvertToSTS(CSimpleTextSubtitle& sts)
 		sts.AddStyle(WToT(s->name), stss);
 	}
 
-	boost::ptr_list<text_t>::iterator pos2 = texts.begin();
+	std::list<boost::shared_ptr<text_t>>::iterator pos2 = texts.begin();
 	while(pos2 != texts.end())
 	{
-		text_t* t = &(*pos2); pos2++;
+		text_t* t = pos2->get(); pos2++;
 
 		if(!t->pal.alignment.IsEmpty())
 		{
@@ -366,10 +366,10 @@ bool CUSFSubtitles::ConvertToSTS(CSimpleTextSubtitle& sts)
 
 		if(t->style.CompareNoCase(L"Default") != 0)
 		{
-			boost::ptr_list<style_t>::iterator pos = styles.begin();
+			std::list<boost::shared_ptr<style_t>>::iterator pos = styles.begin();
 			while(pos != styles.end())
 			{
-				style_t* s = &(*pos); pos++;
+				style_t* s = pos->get(); pos++;
 				if(s->name == t->style && !s->fontstyle.wrap.IsEmpty())
 				{
 					int WrapStyle = 
@@ -430,7 +430,7 @@ bool CUSFSubtitles::ParseUSFSubtitles(IXMLDOMNodePtr pNode)
 
 					if(name == L"style")
 					{
-						std::auto_ptr<style_t> s(DNew style_t);
+						boost::shared_ptr<style_t> s(DNew style_t);
 						if(s.get())
 						{
 							ParseStyle(pGrandChild, s.get());
@@ -457,7 +457,7 @@ bool CUSFSubtitles::ParseUSFSubtitles(IXMLDOMNodePtr pNode)
 
 					if(name == L"effect")
 					{
-						std::auto_ptr<effect_t> e(DNew effect_t);
+            boost::shared_ptr<effect_t> e(DNew effect_t);
 						if(e.get())
 						{
 							ParseEffect(pGrandChild, e.get());
@@ -637,7 +637,7 @@ void CUSFSubtitles::ParseEffect(IXMLDOMNodePtr pNode, effect_t* e)
 
 			if(name == L"keyframe")
 			{
-				std::auto_ptr<keyframe_t> k(DNew keyframe_t);
+				boost::shared_ptr<keyframe_t> k(DNew keyframe_t);
 				if(k.get())
 				{
 					ParseKeyframe(pChild, k.get());
@@ -683,7 +683,7 @@ void CUSFSubtitles::ParseSubtitle(IXMLDOMNodePtr pNode, int start, int stop)
 
 	if(name == L"text" || name == L"karaoke")
 	{
-		std::auto_ptr<text_t> t(DNew text_t);
+		boost::shared_ptr<text_t> t(DNew text_t);
 		if(t.get())
 		{
 			t->start = start;
