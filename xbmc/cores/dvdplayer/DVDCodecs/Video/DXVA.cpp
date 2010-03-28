@@ -31,8 +31,10 @@
 #include "DXVA.h"
 #include "WindowingFactory.h"
 #include "Settings.h"
+#include "boost/shared_ptr.hpp"
 
 using namespace DXVA;
+using namespace boost;
 
 typedef HRESULT (__stdcall *DXVA2CreateVideoServicePtr)(IDirect3DDevice9* pDD, REFIID riid, void** ppService);
 static DXVA2CreateVideoServicePtr g_DXVA2CreateVideoService;
@@ -113,6 +115,9 @@ static const dxva2_mode_t *dxva2_find(const GUID *guid)
     }
     return NULL;
 }
+
+
+#define SCOPE(type, var) shared_ptr<type> var##_holder(var, CoTaskMemFree);
 
 CDecoder::SVideoBuffer::SVideoBuffer()
 {
@@ -210,6 +215,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   GUID *input_list;
 
   CHECK(m_service->GetDecoderDeviceGuids(&input_count, &input_list))
+  SCOPE(GUID, input_list);
 
   for(unsigned i = 0; i < input_count; i++)
   {
@@ -240,7 +246,6 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
         break;
     }
   }
-  CoTaskMemFree(input_list);
 
   if(m_format.Format == D3DFMT_UNKNOWN)
   {
@@ -385,6 +390,7 @@ bool CDecoder::OpenTarget(const GUID &guid)
   UINT       output_count = 0;
   D3DFORMAT *output_list  = NULL;
   CHECK(m_service->GetDecoderRenderTargets(guid, &output_count, &output_list))
+  SCOPE(D3DFORMAT, output_list);
 
   for(unsigned k = 0; k < output_count; k++)
   {
@@ -393,11 +399,9 @@ bool CDecoder::OpenTarget(const GUID &guid)
     {
       m_input         = guid;
       m_format.Format = output_list[k];
-      CoTaskMemFree(output_list);
       return true;
     }
   }
-  CoTaskMemFree(output_list);
   return false;
 }
 
@@ -524,6 +528,7 @@ bool CDecoder::OpenDecoder(AVCodecContext *avctx)
                                           , NULL
                                           , &cfg_count
                                           , &cfg_list))
+  SCOPE(DXVA2_ConfigPictureDecode, cfg_list);
 
   DXVA2_ConfigPictureDecode config = {};
   for(unsigned i = 0; i< cfg_count; i++)
@@ -535,7 +540,6 @@ bool CDecoder::OpenDecoder(AVCodecContext *avctx)
     //if(config.ConfigBitstreamRaw == 1 && cfg_list[i].ConfigBitstreamRaw == 2)
     //  config = cfg_list[i];
   }
-  CoTaskMemFree(cfg_list);
 
   if(!config.ConfigBitstreamRaw)
   {
@@ -683,11 +687,11 @@ bool CProcessor::Open(const DXVA2_VideoDesc& dsc, unsigned size)
   GUID*    guid_list;
   unsigned guid_count;
   CHECK(m_service->GetVideoProcessorDeviceGuids(&m_desc, &guid_count, &guid_list));
+  SCOPE(GUID, guid_list);
 
   if(guid_count == 0)
   {
     CLog::Log(LOGDEBUG, "DXVA - unable to find any processors");
-    CoTaskMemFree(guid_list);
     return false;
   }
 
@@ -703,7 +707,6 @@ bool CProcessor::Open(const DXVA2_VideoDesc& dsc, unsigned size)
     if(IsEqualGUID(*g, DXVA2_VideoProcProgressiveDevice))
       m_device = *g;
   }
-  CoTaskMemFree(guid_list);
 
   CLog::Log(LOGDEBUG, "DXVA - processor selected %08X-%04x-%04x-XXXX\n"
                     , m_device.Data1
