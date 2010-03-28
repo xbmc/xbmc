@@ -164,9 +164,10 @@ HRESULT CEvrScheduler::StopScheduler()
   CLog::Log(LOGDEBUG, "%s Waiting for EVR Scheduler thread to exit", __FUNCTION__);
 
   // Ask the scheduler thread to exit.
-  PostThreadMessage(m_dwThreadID, eTerminate, 0, 0);
-  // Wait for the thread to exit.
-  WaitForSingleObject(m_hSchedulerThread, INFINITE);
+  bool ok = PostThreadMessage(m_dwThreadID, eTerminate, 0, 0);
+
+  if (ok) 
+    WaitForSingleObject(m_hSchedulerThread, INFINITE); // Wait for the thread to exit.
 
   // Close handles.
   CloseHandle(m_hSchedulerThread);
