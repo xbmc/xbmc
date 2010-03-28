@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
+ 
 #ifndef _DXALLOCATORPRESENTER_H
 #define _DXALLOCATORPRESNETER_H
 #pragma once
@@ -31,14 +31,12 @@
 
 #pragma warning(disable : 4995)
 
-#include <vector>
+
 #pragma warning(pop)
 
-
-#include <d3d9.h>
-
 #include "DsRenderer.h"
-#include "geometry.h"
+
+#include "DShowUtil/SmartList.h"
 
 class CMacrovisionKicker;
 class COuterVMR9;
@@ -51,11 +49,11 @@ class CVMR9AllocatorPresenter  : public CDsRenderer,
 {
 public:
   CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error);
-  ~CVMR9AllocatorPresenter();
-
+  virtual ~CVMR9AllocatorPresenter();
+  
   DECLARE_IUNKNOWN
   STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
-
+  
   // IVMRSurfaceAllocator9
   virtual STDMETHODIMP InitializeDevice(DWORD_PTR dwUserID, VMR9AllocationInfo *lpAllocInfo, DWORD *lpNumBuffers);
   virtual STDMETHODIMP TerminateDevice(DWORD_PTR dwID);  
@@ -70,12 +68,18 @@ public:
   // IDSRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
 
+  STDMETHODIMP_(void) SetPosition(RECT w, RECT v) {} ;
+  STDMETHODIMP_(bool) Paint(bool fAll) { return true; } ;
+  STDMETHODIMP_(void) SetTime(REFERENCE_TIME rtNow) {};
+  
+  
   virtual void OnLostDevice();
   virtual void OnDestroyDevice();
   virtual void OnCreateDevice();
   virtual void OnResetDevice();
+
 protected:
-  void DeleteSurfaces();
+  void DeleteVmrSurfaces();
   void GetCurrentVideoSize();
   HRESULT ChangeD3dDev();
 
@@ -83,23 +87,18 @@ protected:
   
   bool m_fUseInternalTimer;
   //Clock stuff
-  double         m_rtTimePerFrame;
+  REFERENCE_TIME m_rtTimePerFrame;
   float          m_fps;
   int            m_fFrameRate;
-  double         m_FlipTimeStamp; // time stamp of last flippage. used to play at a forced framerate
-  double         m_iCurrentPts; // last pts displayed
-
   bool           m_bRenderCreated;
   bool           m_bNeedNewDevice;
-  volatile bool m_bVmrStop;
 private:
-  //long        m_refCount;
+  long        m_refCount;
   IVMRSurfaceAllocatorNotify9*        m_pIVMRSurfAllocNotify;
-  std::vector<IDirect3DSurface9*>     m_pSurfaces;
+  std::vector<Com::SmartPtr<IDirect3DSurface9>>     m_pSurfaces;
+  
   int                                 m_pNbrSurface;
   int                                 m_pCurSurface;
-  bool          m_bNeedCheckSample;
-  
 };
 
 #endif // _DXALLOCATORPRESENTER_H

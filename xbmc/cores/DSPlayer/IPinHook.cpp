@@ -30,8 +30,7 @@
 #include "IPinHook.h"
 #include "dshowutil/dshowutil.h"
 #include "DShowUtil/smartptr.h"
-//#include "DX9AllocatorPresenter.h"
-
+#include "dsconfig.h"
 #define LOG_FILE        _T("dxva.log")
 
 //#define LOG_BITSTREAM
@@ -40,8 +39,8 @@
 REFERENCE_TIME    g_tSegmentStart      = 0;
 REFERENCE_TIME    g_tSampleStart      = 0;
 REFERENCE_TIME    g_rtTimePerFrame    = 0;
-GUID        g_guidDXVADecoder    = GUID_NULL;
-int          g_nDXVAVersion      = 0;
+GUID        g_guidDXVADecoder = GUID_NULL;
+int          g_nDXVAVersion = 0;
 
 IPinCVtbl*      g_pPinCVtbl        = NULL;
 IMemInputPinCVtbl*  g_pMemInputPinCVtbl    = NULL;
@@ -690,7 +689,7 @@ static HRESULT STDMETHODCALLTYPE GetCompBufferInfoMine(IAMVideoAcceleratorC * Th
       LOG(_T("[in] *pdwNumTypesCompBuffers = %d"), *pdwNumTypesCompBuffers);
     }
   }
-
+  g_dsconfig.SetDXVAGuid(&g_guidDXVADecoder);
   HRESULT hr = GetCompBufferInfoOrg(This, pGuid, pamvaUncompDataInfo, pdwNumTypesCompBuffers, pamvaCompBufferInfo);
 
   LOG(_T("hr = %08x"), hr);
@@ -1342,6 +1341,7 @@ static HRESULT STDMETHODCALLTYPE CreateVideoDecoderMine(
 {
 //  DebugBreak();
 //  ((DXVA2_VideoDesc*)pVideoDesc)->Format = (D3DFORMAT)0x3231564E;
+  g_dsconfig.SetDXVAGuid(&Guid);
   g_guidDXVADecoder  = Guid;
   g_nDXVAVersion    = 2;
 

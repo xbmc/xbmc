@@ -39,7 +39,6 @@ using namespace std;
 #include "event.h"
 #include "D3DResource.h"
 #include "utils/CriticalSection.h"
-#include "DShowUtil/smartptr.h"
 
 
 #define DS_NBR_3D_SURFACE 3
@@ -48,7 +47,7 @@ using namespace std;
 class CDsRenderer  : public IDsRenderer,
                      public CUnknown,
                      public ID3DResource,
-                     public CCriticalSection
+                     public CCritSec
                     
 {
 public:
@@ -57,28 +56,24 @@ public:
   DECLARE_IUNKNOWN;
   // IDSRenderer
   STDMETHODIMP CreateRenderer(IUnknown** ppRenderer) { return E_NOTIMPL; };
+  STDMETHODIMP RenderPresent(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface);  
 protected:
   HRESULT CreateSurfaces(D3DFORMAT Format = D3DFMT_X8R8G8B8);
-  void    DeleteSurfaces();
-  void    UnloadCurrentRenderer();
+  void DeleteSurfaces();
   UINT    GetAdapter(IDirect3D9 *pD3D);
-  CCriticalSection                              m_RenderLock;
-
+  CCritSec m_RenderLock;
   //d3d stuff
-  Com::SmartPtr<IDirect3DTexture9>              m_pVideoTexture[DS_MAX_3D_SURFACE];
-  Com::SmartPtr<IDirect3DSurface9>              m_pVideoSurface[DS_MAX_3D_SURFACE];
+  Com::SmartPtr<IDirect3DTexture9>                      m_pVideoTexture[DS_MAX_3D_SURFACE];
+  Com::SmartPtr<IDirect3DSurface9>                      m_pVideoSurface[DS_MAX_3D_SURFACE];
   
-  int                                      m_nNbDXSurface;          // Total number of DX Surfaces
-  int                                      m_nVMR9Surfaces;          // Total number of DX Surfaces
-  int                                      m_iVMR9Surface;
-  int                                      m_nCurSurface;          // Surface currently displayed
+  int                                     m_nCurSurface;// Surface currently displayed
 
   D3DFORMAT                               m_SurfaceType;// Surface type
   D3DFORMAT                               m_BackbufferType;// backbuffer type
   
   //Current video information
-  DWORD                                   m_iVideoWidth;
-  DWORD                                   m_iVideoHeight;
+  int                                     m_iVideoWidth;
+  int                                     m_iVideoHeight;
 };
 
 #endif // _DSRENDERER_H

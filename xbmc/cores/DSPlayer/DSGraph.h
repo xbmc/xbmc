@@ -32,12 +32,6 @@
 #include "dsconfig.h"
 #include "fgmanager.h"
 #include "DShowUtil/DShowUtil.h"
-
-
-#ifdef HAS_VIDEO_PLAYBACK
-  #include "cores/VideoRenderers/RenderManager.h"
-#endif
-
 #include "cores/IPlayer.h"
 #include "File.h"
 
@@ -70,8 +64,6 @@ public:
    */
   virtual bool CanSeek();
   //void SetDynamicRangeCompression(long drc);
-  
-  bool InitializedOutputDevice();
 
   virtual void ProcessDsWmCommand(WPARAM wParam, LPARAM lParam);
   virtual HRESULT HandleGraphEvent();
@@ -193,16 +185,13 @@ private:
 
     void Clear()
     {
-      timestamp = 0;
       time = 0;
       time_total = 0;
       player_state = "";
       current_filter_state = State_Stopped;
     }
-    double timestamp;         // last time of update
-
     double time;              // current playback time in millisec
-    double time_total;        // total playback time in millisec
+    __int64 time_total;        // total playback time in millisec
     FILTER_STATE current_filter_state;
 
     std::string player_state;  // full player state

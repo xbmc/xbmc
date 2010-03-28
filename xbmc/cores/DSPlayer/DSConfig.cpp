@@ -33,7 +33,7 @@
 #include "Filters/VMR9AllocatorPresenter.h"
 
 #include "DShowUtil/smartptr.h"
-#include "IPinHook.h"
+//#include "IPinHook.h"
 
 using namespace std;
 
@@ -43,17 +43,19 @@ CDSConfig::CDSConfig(void)
 {
   m_pIMpaDecFilter = NULL;
   pIffdshowDecoder = NULL;
+  m_pStrDxva = "";
 }
 
 CDSConfig::~CDSConfig(void)
 {
   m_pPropertiesFilters.clear();
+  m_pStrDxva = "";
 }
 void CDSConfig::ClearConfig()
 {
   if (CFile::Exists("special://temp//dslang.xml"))
     CFile::Delete("special://temp//dslang.xml");
-
+  m_pStrDxva = "";
   m_pIMpaDecFilter = NULL;
   pIffdshowDecoder = NULL;
   m_pPropertiesFilters.clear();
@@ -160,29 +162,14 @@ void CDSConfig::ShowPropertyPage(IBaseFilter *pBF)
   }*/
 }
 
-CStdString CDSConfig::GetDXVAMode()
+void CDSConfig::SetDXVAGuid(const GUID* dxvaguid)
 {
-  //Get the subtype of the pin this is actually the guid used for dxva description
+  // IPinHook is calling the SetDxvaGuid once
 
-  /* If we are using the EVR, all the work is already done by IPinHook! */
-  CStdString res = "";
-
-  res = GetDXVADecoderDescription();
-  if (! res.Equals("Not using DXVA"))
-    return res;
-
-  GUID dxvaGuid = GUID_NULL;
-  Com::SmartPtr<IPin> pPin = NULL;
-  pPin = DShowUtil::GetFirstPin(CFGLoader::Filters.VideoRenderer.pBF);
-  if (pPin)
-  {
-    AM_MEDIA_TYPE pMT;
-    HRESULT hr = pPin->ConnectionMediaType(&pMT);
-    dxvaGuid = pMT.subtype;
-    FreeMediaType(pMT);
-  }
-
-  return DShowUtil::GetDXVAMode(&dxvaGuid);  
+  if (dxvaguid == &GUID_NULL)
+    m_pStrDxva = "";
+  else
+    m_pStrDxva.Format(" | %s",DShowUtil::GetDXVAMode(dxvaguid));
 }
 
 bool CDSConfig::GetffdshowFilters(IBaseFilter* pBF)

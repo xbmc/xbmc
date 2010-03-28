@@ -23,7 +23,7 @@
 #include "usfsubtitles.h"
 #include <msxml.h>
 
-typedef _com_ptr_t<_com_IIID<IXMLDOMNode, &__uuidof(IXMLDOMNode)>> IXMLDOMNodePtr;
+
 
 #define DeclareNameAndValue(pNode, name, val) \
     _bstr_t foo; \

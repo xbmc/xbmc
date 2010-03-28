@@ -31,13 +31,8 @@
 #include "URL.h"
 
 #include "dshowutil/dshowutil.h" // unload loaded filters
-
-#ifdef HAS_VIDEO_PLAYBACK
-#include "cores/VideoRenderers/RenderManager.h"
-#endif
-
-#include "GUIDialogBusy.h"
 #include "GUIWindowManager.h"
+#include "GUIDialogBusy.h"
 #include "DShowUtil/smartptr.h"
 
 using namespace std;
@@ -73,23 +68,19 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   currentFileItem = file;
   m_Filename = file.GetAsUrl();
   m_PlayerOptions = options;
-  m_currentSpeed = 10000;
   m_currentRate = 1;
   
   m_hReadyEvent.Reset();
   Create();
-  
-  if(!m_hReadyEvent.WaitMSec(100))
-  {
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    dialog->Show();
-    while(!m_hReadyEvent.WaitMSec(1))
-      g_windowManager.Process(true);
-    dialog->Close();
-  }
+  START_PERFORMANCE_COUNTER
+  if (SUCCEEDED(m_pDsGraph.SetFile(file, m_PlayerOptions)))
+    PlayerState = DSPLAYER_PLAYING;
+  else
+    PlayerState = DSPLAYER_ERROR;
+  END_PERFORMANCE_COUNTER
+  m_hReadyEvent.Set();
 
-  m_callback.OnPlayBackStarted();
-  return true;
+  return (PlayerState == DSPLAYER_PLAYING);
 }
 bool CDSPlayer::CloseFile()
 {
@@ -194,23 +185,24 @@ void CDSPlayer::Process()
 #define CHECK_PLAYER_STATE if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED) break;
 
   /* INIT: Load file */
-  HRESULT hr = S_OK;
-  START_PERFORMANCE_COUNTER
-  hr = m_pDsGraph.SetFile(currentFileItem, m_PlayerOptions);
-  END_PERFORMANCE_COUNTER
-
-  if ( FAILED(hr) )
+  if(!m_hReadyEvent.WaitMSec(100))
   {
-    CLog::Log(LOGERROR,"%s failed to start this file with dsplayer %s", __FUNCTION__, currentFileItem.GetAsUrl().GetFileName().c_str());
-    CloseFile();
-    return;
+    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+    dialog->Show();
+    while(!m_hReadyEvent.WaitMSec(1))
+      g_windowManager.Process(true);
+    dialog->Close();
   }
-
+  HRESULT hr = S_OK;
   bool pStartPosDone = false;
   int sleepTime;
-  m_hReadyEvent.Set(); // We're ready to go!
-  m_pDsClock.SetSpeed(1000);
-
+  //m_pDsClock.SetSpeed(1000);
+  m_callback.OnPlayBackStarted();
+  if (PlayerState == DSPLAYER_ERROR)
+  {
+    m_callback.OnPlayBackEnded();
+    return;
+  }
   while (PlayerState != DSPLAYER_CLOSING && PlayerState != DSPLAYER_CLOSED)
   {
     CHECK_PLAYER_STATE

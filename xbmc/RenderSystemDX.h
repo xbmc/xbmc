@@ -66,6 +66,7 @@ public:
   HRESULT           GetDeviceStatus() { return m_nDeviceStatus; }
   LPDIRECT3DDEVICE9 Get3DDevice() { return m_pD3DDevice; }
   LPDIRECT3D9       Get3DObject() { return m_pD3D; }
+  UINT              GetCurrentAdapter() { return m_adapter; }
   int GetBackbufferCount() const { return m_D3DPP.BackBufferCount; }
 
   /*!

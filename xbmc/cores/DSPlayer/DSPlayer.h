@@ -35,6 +35,9 @@
 
 #include "TimeUtils.h"
 #include "Event.h"
+#ifdef HAS_VIDEO_PLAYBACK
+#include "cores/VideoRenderers/RenderManager.h"
+#endif
 
 #define START_PERFORMANCE_COUNTER { int64_t start = CurrentHostCounter();
 #define END_PERFORMANCE_COUNTER int64_t end = CurrentHostCounter(); \
@@ -48,7 +51,8 @@ enum DSPLAYER_STATE
   DSPLAYER_PAUSED,
   DSPLAYER_STOPPED,
   DSPLAYER_CLOSING,
-  DSPLAYER_CLOSED
+  DSPLAYER_CLOSED,
+  DSPLAYER_ERROR
 };
 
 class CDSPlayer : public IPlayer, public CThread
@@ -133,7 +137,6 @@ protected:
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
-  int  m_currentSpeed;
   int  m_currentRate;
   bool m_bSpeedChanged;
   CDSGraph m_pDsGraph;

@@ -319,9 +319,9 @@ bool CRenderSystemDX::CreateDevice()
     }
   }
   
-    //To be able to show a com dialog over a fullscreen video playing we need this
+  HRESULT hrrr;  //To be able to show a com dialog over a fullscreen video playing we need this
   if (m_bFullScreenDevice)
-    m_pD3DDevice->SetDialogBoxMode(true);
+    hrrr=m_pD3DDevice->SetDialogBoxMode(TRUE);
 
   D3DDISPLAYMODE mode;
   if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))

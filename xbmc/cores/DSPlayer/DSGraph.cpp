@@ -39,11 +39,10 @@
 #include "qnetwork.h"
 
 #include "DShowUtil/smartptr.h"
-
-//used to get the same cachces subtitles on start of file
 #include "DVDSubtitles/DVDFactorySubtitle.h"
 
 #include "GUIWindowManager.h"
+
 #include "GUIUserMessages.h"
 
 #include "DshowUtil/MediaTypeEx.h"
@@ -142,11 +141,12 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   SetVolume(g_settings.m_nVolumeLevel);
   
   CDSPlayer::PlayerState = DSPLAYER_LOADED;
-  
+
   Play();
   
   CStreamsManager::getSingleton()->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
-
+  
+  
   m_currentRate = 1;
 
   return hr;
@@ -190,15 +190,6 @@ void CDSGraph::CloseFile()
   }
 }
 
-bool CDSGraph::InitializedOutputDevice()
-{
-#ifdef HAS_VIDEO_PLAYBACK
-  return g_renderManager.IsStarted();
-#else
-  return false;
-#endif
-}
-
 void CDSGraph::UpdateTime()
 {
   if (!m_pMediaSeeking)
@@ -206,7 +197,6 @@ void CDSGraph::UpdateTime()
   LONGLONG Position;
   if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
   {
-    m_State.timestamp = Position;
     m_State.time = DS_TIME_TO_MSEC(Position);//double(Position) / TIME_FORMAT_TO_MS;
   }
   if (m_State.time_total == 0)
@@ -215,18 +205,18 @@ void CDSGraph::UpdateTime()
     UpdateTotalTime();
   }
 
-  /*if ((CFGLoader::Filters.VideoRenderer.pQualProp) && m_iCurrentFrameRefreshCycle <= 0)
+  if ((CFGLoader::Filters.VideoRenderer.pQualProp) && m_iCurrentFrameRefreshCycle <= 0)
   {
     //this is too slow if we are doing it on every UpdateTime
     int avgRate;
     CFGLoader::Filters.VideoRenderer.pQualProp->get_AvgFrameRate(&avgRate);
     if (CFGLoader::GetCurrentRenderer() == DIRECTSHOW_RENDERER_EVR)
-      m_pStrCurrentFrameRate = "Real FPS: Not implemented"; //people complain on forum while IQualProp not implemented in the custom EVR renderer
+      m_pStrCurrentFrameRate = "";//Dont need to waste the space on the osd
     else
-      m_pStrCurrentFrameRate.Format("Real FPS: %4.2f", (float) avgRate / 100);
+      m_pStrCurrentFrameRate.Format(" | Real FPS: %4.2f", (float) avgRate / 100);
     m_iCurrentFrameRefreshCycle = 5;
   }
-  m_iCurrentFrameRefreshCycle--;*/
+  m_iCurrentFrameRefreshCycle--;
 
   //On dvd playback the current time is received in the handlegraphevent
   if ( m_VideoInfo.isDVD )
@@ -494,11 +484,6 @@ void CDSGraph::SetVolume(long nVolume)
   if (m_pBasicAudio)
     m_pBasicAudio->put_Volume(nVolume);
 }
-/*void CDSGraph::SetDynamicRangeCompression(long drc)
-{
-  if (m_pBasicAudio)
-    m_pBasicAudio->put_Volume(drc);
-}*/
 
 void CDSGraph::Stop(bool rewind)
 {
@@ -892,14 +877,14 @@ CStdString CDSGraph::GetVideoInfo()
 {
   CStdString videoInfo = "";
   CStreamsManager *c = CStreamsManager::getSingleton();
-  videoInfo.Format("Video Decoder: %s (%s, %dx%d) %s",
+  videoInfo.Format("Video Decoder: %s (%s, %dx%d)",
     CFGLoader::Filters.Video.osdname,
     c->GetVideoCodecName(),
     c->GetPictureWidth(),
-    c->GetPictureHeight(),
-    m_pStrCurrentFrameRate.c_str());
-
-  videoInfo += " | " + g_dsconfig.GetDXVAMode();
+    c->GetPictureHeight());
+  if (!m_pStrCurrentFrameRate.IsEmpty())
+    videoInfo += m_pStrCurrentFrameRate.c_str();
+  videoInfo += g_dsconfig.GetDXVAMode();
 
   return videoInfo;
 }

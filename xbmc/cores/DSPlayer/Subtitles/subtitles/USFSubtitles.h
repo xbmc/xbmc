@@ -37,6 +37,8 @@ typedef struct {CStdStringW name; boost::ptr_list<keyframe_t> keyframes;} effect
 // subtitle/text
 typedef struct {int start, stop; CStdStringW effect, style, str; posattriblist_t pal;} text_t;
 
+_COM_SMARTPTR_TYPEDEF(IXMLDOMNode,IID_IXMLDOMNode);
+_COM_SMARTPTR_TYPEDEF(IXMLDOMDocument,IID_IXMLDOMDocument);
 class CUSFSubtitles
 {
 	bool ParseUSFSubtitles(IXMLDOMNodePtr pNode);

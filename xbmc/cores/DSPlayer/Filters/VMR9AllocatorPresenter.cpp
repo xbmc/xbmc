@@ -1,32 +1,28 @@
 /*
- *
- * (C) 2003-2006 Gabest
- * (C) 2006-2007 see AUTHORS
- *
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
- * This file is part of mplayerc.
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
  *
- * Mplayerc is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
  *
- * Mplayerc is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
  *
  */
 
 #include "DShowUtil/dshowutil.h"
 #include "DShowUtil/DSGeometry.h"
 #include "cores/VideoRenderers/RenderManager.h"
-#include "DSClock.h"
+
 #include "WindowingFactory.h" //d3d device and d3d interface
 #include "VMR9AllocatorPresenter.h"
 #include "application.h"
@@ -34,9 +30,7 @@
 #include "MacrovisionKicker.h"
 #include "IPinHook.h"
 #include "GuiSettings.h"
-//#include "SystemInfo.h"
-#include "SingleLock.h"
-
+#include "dsconfig.h"
 
 class COuterVMR9
   : public CUnknown
@@ -287,162 +281,131 @@ CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HRESULT& hr, CStdString &_Error
 {
   hr = S_OK;
   m_bNeedNewDevice = false;
-  m_bVmrStop = false;
-  m_FlipTimeStamp = 0;
 }
 
 CVMR9AllocatorPresenter::~CVMR9AllocatorPresenter()
 {
-  m_bVmrStop = true;
+  DeleteVmrSurfaces();
   DeleteSurfaces();
 }
 
-void CVMR9AllocatorPresenter::DeleteSurfaces()
+void CVMR9AllocatorPresenter::DeleteVmrSurfaces()
 {
-  CSingleLock lock(*this);
-  CSingleLock cRenderLock(m_RenderLock);
-  int k = 0;
+  CAutoLock cAutoLock(this);
+	CAutoLock cRenderLock(&m_RenderLock);
   for( size_t i = 0; i < m_pSurfaces.size(); ++i ) 
   {
-    SAFE_RELEASE(m_pSurfaces[i]);
+    //SAFE_RELEASE(m_pSurfaces[i]);
   }
-
-  __super::DeleteSurfaces();
 }
 
 //IVMRSurfaceAllocator9
 STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID ,VMR9AllocationInfo *lpAllocInfo, DWORD *lpNumBuffers)
 {
-  CSingleLock lock(*this);
-  CSingleLock cRenderLock(m_RenderLock);
-
+  CAutoLock cAutoLock(this);
+  CAutoLock cRenderLock(&m_RenderLock);
   CLog::Log(LOGDEBUG,"%s %dx%d AR %d:%d flags:%d buffers:%d  fmt:(%x) %c%c%c%c", __FUNCTION__,
     lpAllocInfo->dwWidth ,lpAllocInfo->dwHeight ,lpAllocInfo->szAspectRatio.cx,lpAllocInfo->szAspectRatio.cy,
     lpAllocInfo->dwFlags ,*lpNumBuffers, lpAllocInfo->Format, ((char)lpAllocInfo->Format&0xff),
-    ((char)(lpAllocInfo->Format>>8)&0xff) ,((char)(lpAllocInfo->Format>>16)&0xff) ,((char)(lpAllocInfo->Format>>24)&0xff));
+	  ((char)(lpAllocInfo->Format>>8)&0xff) ,((char)(lpAllocInfo->Format>>16)&0xff) ,((char)(lpAllocInfo->Format>>24)&0xff));
+
+  if( !lpAllocInfo || !lpNumBuffers )
+    return E_POINTER;
+  if( !m_pIVMRSurfAllocNotify)
+    return E_FAIL;
+  
+  HRESULT hr = S_OK;
 
   if(lpAllocInfo->Format == '21VY' || lpAllocInfo->Format == '024I')
     return E_FAIL;
-
-  DeleteSurfaces();
-
-  // Be sure the format is compatible
-  D3DDISPLAYMODE dm; 
-  ZeroMemory(&dm, sizeof(D3DDISPLAYMODE)); 
-  HRESULT hr;
-  if (FAILED(g_Windowing.Get3DObject()->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &dm)))
-  {
-    return D3DERR_INVALIDCALL;
-  }
-
-  D3DDEVICE_CREATION_PARAMETERS dd;
-  if FAILED(g_Windowing.Get3DDevice()->GetCreationParameters(&dd))
-    return D3DERR_INVALIDCALL;
-
-  hr = g_Windowing.Get3DObject()->CheckDeviceFormatConversion(D3DADAPTER_DEFAULT, dd.DeviceType, lpAllocInfo->Format, dm.Format); 
-  if (lpAllocInfo->Format != D3DFMT_UNKNOWN && FAILED(hr))
-  {
-    return D3DERR_INVALIDCALL;
-  }
-
-  /* If the GC only supports power of two textures, make sure
-  our video with & height are powers of two */
-  D3DCAPS9 d3dcaps;
-  g_Windowing.Get3DDevice()->GetDeviceCaps( &d3dcaps );
-  if( d3dcaps.TextureCaps & D3DPTEXTURECAPS_POW2 )
-  {
-    while( m_iVideoWidth < lpAllocInfo->dwWidth )
-      m_iVideoWidth = m_iVideoWidth << 1;
-    while( m_iVideoHeight < lpAllocInfo->dwHeight )
-      m_iVideoHeight = m_iVideoHeight << 1;
-    lpAllocInfo->dwWidth = m_iVideoWidth;
-    lpAllocInfo->dwHeight = m_iVideoHeight;
-  }
-
+  
   int nOriginal = *lpNumBuffers;
 
+  //To do implement the texture surface on the present image
+  if(lpAllocInfo->dwFlags & VMR9AllocFlag_3DRenderTarget)
+    lpAllocInfo->dwFlags |= VMR9AllocFlag_TextureSurface;
+
+  if (lpAllocInfo->dwFlags & VMR9AllocFlag_3DRenderTarget)
+    CLog::Log(LOGDEBUG,"VMR9AllocFlag_3DRenderTarget");
+  if (lpAllocInfo->dwFlags & VMR9AllocFlag_DXVATarget)
+    CLog::Log(LOGDEBUG,"VMR9AllocFlag_DXVATarget");
+  if (lpAllocInfo->dwFlags & VMR9AllocFlag_OffscreenSurface) 
+    CLog::Log(LOGDEBUG,"VMR9AllocFlag_OffscreenSurface");
+  if (lpAllocInfo->dwFlags & VMR9AllocFlag_RGBDynamicSwitch) 
+    CLog::Log(LOGDEBUG,"VMR9AllocFlag_RGBDynamicSwitch");
+  if (lpAllocInfo->dwFlags & VMR9AllocFlag_TextureSurface )
+    CLog::Log(LOGDEBUG,"VMR9AllocFlag_TextureSurface");
+  
   if (*lpNumBuffers == 1)
-  {
-    *lpNumBuffers = 4;
-    m_nVMR9Surfaces = 4;
-  }
-  else
-    m_nVMR9Surfaces = 0;
+	{
+		*lpNumBuffers = 4;
+		m_pNbrSurface = 4;
+	}
+	else
+		m_pNbrSurface = 0;
 
   m_pSurfaces.resize(*lpNumBuffers);
+
+  hr = m_pIVMRSurfAllocNotify->AllocateSurfaceHelper(lpAllocInfo, lpNumBuffers, &m_pSurfaces.at(0) );
+
+  
+  if(FAILED(hr))
+  {
+    CLog::Log(LOGERROR,"%s AllocateSurfaceHelper returned:0x%x",__FUNCTION__,hr);
+    return hr;
+  }
+
+  
 
   m_iVideoWidth = lpAllocInfo->dwWidth;
-  m_iVideoHeight = abs((int)lpAllocInfo->dwHeight);
+  m_iVideoHeight = lpAllocInfo->dwHeight;
 
-  // Is format requires an offscreen surface to convert pixel format in PresentImage from YUV to RGB
-  /*if (lpAllocInfo->Format > 0x30303030)
-    lpAllocInfo->dwFlags |= VMR9AllocFlag_OffscreenSurface;
-  else
-    lpAllocInfo->dwFlags |= VMR9AllocFlag_TextureSurface;*/
+  //Creating video surface
+  hr = CreateSurfaces();
 
-  /*
-   * If VMR9AllocFlag_TextureSurface isn't set, AllocateSurfaceHelper succeeded with YUV2 texture format.
-   * However, with VMR9AllocFlag_TextureSurface, we need to set texture format to D3DFMT_X8R8G8B8 in order to
-   * AllocateSurfaceHelper to succeed. The (commented) above solution works with YUV & RGB texture format
-   * but still no image ... */
-
-  lpAllocInfo->dwFlags = VMR9AllocFlag_3DRenderTarget | VMR9AllocFlag_TextureSurface;
-  lpAllocInfo->Format = D3DFMT_X8R8G8B8;
-
-  hr = m_pIVMRSurfAllocNotify->AllocateSurfaceHelper(lpAllocInfo, lpNumBuffers, &m_pSurfaces[0]);
-  if(FAILED(hr)) return hr;
-
-  m_pSurfaces.resize(*lpNumBuffers);
-
-  m_bNeedCheckSample = true;
-
-  if(FAILED(hr = CreateSurfaces(dm.Format)))
+  if ( FAILED( hr ) )
     return hr;
 
-  if(!(lpAllocInfo->dwFlags & VMR9AllocFlag_TextureSurface))
+  for( int i = 0; i < DS_NBR_3D_SURFACE-1; ++i ) 
   {
-    // test if the colorspace is acceptable
-    if(FAILED(hr = g_Windowing.Get3DDevice()->StretchRect(m_pSurfaces[0], NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE)))
-    {
-      DeleteSurfaces();
-      return E_FAIL;
-    }
+    hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[i], NULL, 0);
+    if (SUCCEEDED(hr))
+      break;
   }
 
-  hr = g_Windowing.Get3DDevice()->ColorFill(m_pVideoSurface[m_nCurSurface], NULL, 0);
-
-  if (m_nVMR9Surfaces && m_nVMR9Surfaces != *lpNumBuffers)
-    m_nVMR9Surfaces = *lpNumBuffers;
-  *lpNumBuffers = std::min((int) nOriginal, (int)(*lpNumBuffers));
-  m_iVMR9Surface = 0;
-
+  if ( FAILED( hr ) )
+  {
+    CLog::Log(LOGERROR,"%s ColorFill returned:0x%x",__FUNCTION__,hr);
+    DeleteSurfaces();
+    return hr;
+  }
+  if (m_pNbrSurface && m_pNbrSurface != *lpNumBuffers)
+		m_pNbrSurface = *lpNumBuffers;
+  
+	*lpNumBuffers = dsmin(nOriginal, (int)*lpNumBuffers);
+	m_pCurSurface = 0;
   return hr;
 }
 
 void CVMR9AllocatorPresenter::GetCurrentVideoSize()
 {
-  m_bNeedCheckSample = false;
-  Com::SmartPtr<IBaseFilter>  pVMR9;
-  Com::SmartPtr<IPin>      pPin;
-  CMediaType        mt;
-  REFERENCE_TIME timeperframe = 0;
-  if (SUCCEEDED (m_pIVMRSurfAllocNotify->QueryInterface (__uuidof(IBaseFilter), (void**)&pVMR9)) &&
-    SUCCEEDED (pVMR9->FindPin(L"VMR Input0", &pPin)) &&
-    SUCCEEDED (pPin->ConnectionMediaType(&mt)) )
+  IBaseFilter* pVMR9;
+  IPin* pPin;
+  CMediaType mt;
+  if (SUCCEEDED (m_pIVMRSurfAllocNotify->QueryInterface(__uuidof(IBaseFilter), (void**)&pVMR9)) &&
+      SUCCEEDED (pVMR9->FindPin(L"VMR Input0", &pPin)) &&
+      SUCCEEDED (pPin->ConnectionMediaType(&mt)) )
   {
-    DShowUtil::ExtractAvgTimePerFrame(&mt, timeperframe);
-
+    DShowUtil::ExtractAvgTimePerFrame(&mt,m_rtTimePerFrame);
     if (mt.formattype == FORMAT_VideoInfo || mt.formattype == FORMAT_MPEGVideo) {
 
       VIDEOINFOHEADER *vh = (VIDEOINFOHEADER*)mt.pbFormat;
       m_iVideoWidth = vh->bmiHeader.biWidth;
       m_iVideoHeight = abs(vh->bmiHeader.biHeight);
-
       if (vh->rcTarget.right - vh->rcTarget.left > 0)
         m_iVideoWidth = vh->rcTarget.right - vh->rcTarget.left;
       else if (vh->rcSource.right - vh->rcSource.left > 0)
         m_iVideoWidth = vh->rcSource.right - vh->rcSource.left;
-
       if (vh->rcTarget.bottom - vh->rcTarget.top > 0)
         m_iVideoHeight = vh->rcTarget.bottom - vh->rcTarget.top;
       else if (vh->rcSource.bottom - vh->rcSource.top > 0)
@@ -453,7 +416,6 @@ void CVMR9AllocatorPresenter::GetCurrentVideoSize()
       VIDEOINFOHEADER2 *vh = (VIDEOINFOHEADER2*)mt.pbFormat;
       m_iVideoWidth = vh->bmiHeader.biWidth;
       m_iVideoHeight = abs(vh->bmiHeader.biHeight);
-
       if (vh->rcTarget.right - vh->rcTarget.left > 0)
         m_iVideoWidth = vh->rcTarget.right - vh->rcTarget.left;
       else if (vh->rcSource.right - vh->rcSource.left > 0)
@@ -467,19 +429,20 @@ void CVMR9AllocatorPresenter::GetCurrentVideoSize()
     }
 
     // If 0 defaulting framerate to 23.97...
-    if (timeperframe == 0) 
-      timeperframe = 417166;
+		if (m_rtTimePerFrame == 0) 
+      m_rtTimePerFrame = 417166;
 
-    m_rtTimePerFrame = (double) (timeperframe / 10);
-    m_fps = (float) ( 10000000.0 / timeperframe );    
-    g_renderManager.Configure(m_iVideoWidth, m_iVideoHeight, m_iVideoWidth,
-      m_iVideoHeight, m_fps, CONF_FLAGS_FULLSCREEN);
+		m_fps = (float) ( 10000000.0 / m_rtTimePerFrame );
+    
+    g_renderManager.Configure(m_iVideoWidth, m_iVideoHeight, m_iVideoWidth, m_iVideoHeight, m_fps, CONF_FLAGS_FULLSCREEN);
+
   }
+  SAFE_RELEASE(pVMR9);
 }
 
 STDMETHODIMP CVMR9AllocatorPresenter::TerminateDevice(DWORD_PTR dwID)
 {
-    DeleteSurfaces();
+    DeleteVmrSurfaces();
     return S_OK;
 }
     
@@ -489,20 +452,20 @@ STDMETHODIMP CVMR9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID ,DWORD Surfa
     return E_POINTER;
 
   //return if the surface index is higher than the size of the surfaces we have
-  if (SurfaceIndex >= m_pSurfaces.size()) 
+  if (SurfaceIndex >= m_pSurfaces.size() ) 
     return E_FAIL;
-  if (m_bNeedNewDevice)
-    return E_FAIL;
-  CSingleLock cRenderLock(m_RenderLock);
-  if (m_nVMR9Surfaces)
+  
+  CAutoLock cRenderLock(&m_RenderLock);
+  if (m_pNbrSurface)
   {
-    ++m_iVMR9Surface;
-    m_iVMR9Surface = m_iVMR9Surface % m_nVMR9Surfaces;
-    (*lplpSurface = m_pSurfaces[m_iVMR9Surface + SurfaceIndex])->AddRef();
+    ++m_pCurSurface;
+    m_pCurSurface = m_pCurSurface % m_pNbrSurface;
+    if (m_pSurfaces[m_pCurSurface + SurfaceIndex])
+      (*lplpSurface = m_pSurfaces[m_pCurSurface + SurfaceIndex])->AddRef();
   }
   else
   {
-    m_iVMR9Surface = SurfaceIndex;
+    m_pNbrSurface = SurfaceIndex;
     (*lplpSurface = m_pSurfaces[SurfaceIndex])->AddRef();
   }
 
@@ -511,8 +474,8 @@ STDMETHODIMP CVMR9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID ,DWORD Surfa
     
 STDMETHODIMP CVMR9AllocatorPresenter::AdviseNotify(IVMRSurfaceAllocatorNotify9 *lpIVMRSurfAllocNotify)
 {
-  CSingleLock lock(*this);
-  CSingleLock cRenderLock(m_RenderLock);
+  CAutoLock cAutoLock(this);
+  CAutoLock cRenderLock(&m_RenderLock);
   HRESULT hr;
   m_pIVMRSurfAllocNotify = lpIVMRSurfAllocNotify;
   HMONITOR hMonitor = g_Windowing.Get3DObject()->GetAdapterMonitor(GetAdapter(g_Windowing.Get3DObject()));
@@ -522,14 +485,11 @@ STDMETHODIMP CVMR9AllocatorPresenter::AdviseNotify(IVMRSurfaceAllocatorNotify9 *
 
 STDMETHODIMP CVMR9AllocatorPresenter::StartPresenting(DWORD_PTR dwUserID)
 {
-  CSingleLock lock(*this);
-  CSingleLock cRenderLock(m_RenderLock);
+  CAutoLock cAutoLock(this);
+  CAutoLock cRenderLock(&m_RenderLock);
   HRESULT hr = S_OK;
-  int i = 5;
   
-  while (! g_Windowing.Get3DDevice() || !i--)
-    Sleep(100);
-
+  ASSERT( g_Windowing.Get3DDevice() );
   if( !g_Windowing.Get3DDevice() )
     hr =  E_FAIL;
   
@@ -570,7 +530,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
     if(!pConfig)
       break;
 
-    if(FAILED(hr = pConfig->SetNumberOfStreams(1)))
+    if(FAILED(pConfig->SetNumberOfStreams(1)))
       break;
 
     if(Com::SmartQIPtr<IVMRMixerControl9> pMC = pBF)
@@ -582,8 +542,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
       dwPrefs |= MixerPref9_NonSquareMixing;
       dwPrefs |= MixerPref9_NoDecimation;
       dwPrefs &= ~MixerPref9_RenderTargetMask; 
-      dwPrefs |= MixerPref9_RenderTargetYUV; // Need this or xbmc freeze. But in YUV, AllocateSurfaceHelper failed (in win7)
-
+      dwPrefs |= MixerPref9_RenderTargetYUV;
       pMC->SetMixingPrefs(dwPrefs);
     }
 
@@ -610,71 +569,46 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
 
 STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9PresentationInfo *lpPresInfo)
 {
-  if (!g_renderManager.IsConfigured() || m_rtTimePerFrame == 0 || m_bNeedCheckSample)
+  HRESULT hr;
+  CheckPointer(m_pIVMRSurfAllocNotify, E_UNEXPECTED);
+
+  if (!g_renderManager.IsConfigured())
   {
     GetCurrentVideoSize();
   }
 
   if (!g_renderManager.IsStarted() || m_bNeedNewDevice)
     return S_OK;
-
+  
   if(!lpPresInfo || !lpPresInfo->lpSurf)
     return E_POINTER;
+  
+  CAutoLock Lock(&m_RenderLock);
 
-  if ( m_FlipTimeStamp == 0 )
-    m_FlipTimeStamp = g_DsClock.GetAbsoluteClock();
-
-  CSingleLock Lock(m_RenderLock);
-
-  Com::SmartPtr<IDirect3DTexture9> pTexture;
-  lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
-
+  IDirect3DTexture9* pTexture = NULL;
+  hr = lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
   if(pTexture)
   {
+    // When using VMR9AllocFlag_TextureSurface
+    // Didnt got it working yet
+    m_pVideoTexture[m_nCurSurface] = pTexture;
     m_pVideoSurface[m_nCurSurface] = lpPresInfo->lpSurf;
-    if(m_pVideoTexture[m_nCurSurface])
-      m_pVideoTexture[m_nCurSurface] = pTexture;
   }
   else
   {
-    g_Windowing.Get3DDevice()->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE);
+    hr = g_Windowing.Get3DDevice()->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE);
   }
-
-  g_renderManager.PaintVideoTexture(m_pVideoTexture[m_nCurSurface], m_pVideoSurface[m_nCurSurface]);
-  g_application.NewFrame();
-  g_application.WaitFrame(100);
-  return S_OK;
-  //TODO find where i did the miscalculation when converting directshow 100 nanosec units to the one used by xbmc 1000 nanosecunits 
-  double iSleepTime, iClockSleep, iFrameSleep, iCurrentClock, iFrameDuration,pts;
+  if (SUCCEEDED(hr))
+    RenderPresent(m_pVideoTexture[m_nCurSurface], m_pVideoSurface[m_nCurSurface]);
   
-  pts = (double)(lpPresInfo->rtStart); //converting reference tiem to the current base we use for calculating the flip
-  iCurrentClock = CDSClock::GetAbsoluteClock(); // snapshot current clock
-  iClockSleep = pts - g_DsClock.GetClock();  //sleep calculated by pts to clock comparison
-  iFrameSleep = m_FlipTimeStamp - iCurrentClock; // sleep calculated by duration of frame
-  iFrameDuration = m_rtTimePerFrame*10;//pPicture->iDuration;  
-
-  // dropping to a very low framerate is not correct (it should not happen at all)
-  iClockSleep = min(iClockSleep, (double) MSEC_TO_DS_TIME(500));
-  iFrameSleep = min(iFrameSleep, (double) MSEC_TO_DS_TIME(500));
-  
-  iSleepTime = iFrameSleep + (iClockSleep - iFrameSleep);
-
-  m_iCurrentPts = pts - max(0.0, iSleepTime);
-
-// timestamp when we think next picture should be displayed based on current duration
-  m_FlipTimeStamp  = iCurrentClock;
-  m_FlipTimeStamp += max(0.0, iSleepTime);
-  m_FlipTimeStamp += iFrameDuration;
-  
-  g_renderManager.FlipPage(m_bVmrStop, (iCurrentClock + iSleepTime) / DS_TIME_BASE);
-
-  return S_OK;
+  return hr;
 }
 
 HRESULT CVMR9AllocatorPresenter::ChangeD3dDev()
 {
   HRESULT hr;
-  //DeleteSurfaces();
+  DeleteVmrSurfaces();
+  DeleteSurfaces();
   hr = m_pIVMRSurfAllocNotify->ChangeD3DDevice(g_Windowing.Get3DDevice(),g_Windowing.Get3DObject()->GetAdapterMonitor(GetAdapter(g_Windowing.Get3DObject())));
   if (SUCCEEDED(hr))
   {
@@ -718,3 +652,4 @@ STDMETHODIMP CVMR9AllocatorPresenter::NonDelegatingQueryInterface( REFIID riid, 
     QI(IVMRImagePresenter9)
     __super::NonDelegatingQueryInterface(riid, ppv);
 }
+

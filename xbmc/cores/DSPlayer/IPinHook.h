@@ -184,5 +184,7 @@ extern void HookAMVideoAccelerator(IAMVideoAcceleratorC* pAMVideoAcceleratorC);
 
 // DXVA2 hooks
 extern void HookDirectXVideoDecoderService(void* pIDirectXVideoDecoderService);
+extern GUID g_guidDXVADecoder;
+
 LPCTSTR GetDXVADecoderDescription();
 LPCTSTR GetDXVAVersion();
