@@ -71,16 +71,17 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   m_currentRate = 1;
   
   m_hReadyEvent.Reset();
+
   Create();
+
   START_PERFORMANCE_COUNTER
-  if (SUCCEEDED(m_pDsGraph.SetFile(file, m_PlayerOptions)))
-    PlayerState = DSPLAYER_PLAYING;
-  else
+  if (FAILED(m_pDsGraph.SetFile(file, m_PlayerOptions)))
     PlayerState = DSPLAYER_ERROR;
   END_PERFORMANCE_COUNTER
-  m_hReadyEvent.Set();
 
-  return (PlayerState == DSPLAYER_PLAYING);
+  m_hReadyEvent.Set(); // The process function starts
+
+  return (PlayerState != DSPLAYER_ERROR);
 }
 bool CDSPlayer::CloseFile()
 {
@@ -117,15 +118,11 @@ void CDSPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   CSingleLock lock(m_StateSection);
   strAudioInfo = m_pDsGraph.GetAudioInfo();
-  //"CDSPlayer:GetAudioInfo";
-  //this is the function from dvdplayeraudio
-  //s << "aq:"     << setw(2) << min(99,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
-  //s << ", kB/s:" << fixed << setprecision(2) << (double)GetAudioBitrate() / 1024.0;
-  //return s.str();
 }
 
 void CDSPlayer::GetVideoInfo(CStdString& strVideoInfo)
 {
+  CSingleLock lock(m_StateSection);
   strVideoInfo = m_pDsGraph.GetVideoInfo();
 }
 
@@ -143,16 +140,6 @@ void CDSPlayer::OnStartup()
 
 void CDSPlayer::OnExit()
 {
-  /*try
-  {
-    m_pDsGraph.CloseFile();
-   
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s - Exception thrown when trying to close the graph", __FUNCTION__);
-  }*/
-
   if (PlayerState == DSPLAYER_CLOSING)
     m_callback.OnPlayBackStopped();
   else
@@ -165,18 +152,6 @@ void CDSPlayer::HandleStart()
 {
   if (m_PlayerOptions.starttime>0)
     SendMessage(g_hWnd,WM_COMMAND, ID_SEEK_TO ,((LPARAM)m_PlayerOptions.starttime * 1000 ));
-  //SendMessage(g_hWnd,WM_COMMAND, ID_DS_HIDE_SUB ,0);
-  //In case ffdshow has the subtitles filter enabled
-  
-  // That's done by XBMC when starting playing
-  /*if ( CStreamsManager::getSingleton()->GetSubtitleCount() == 0 )
-    CStreamsManager::getSingleton()->SetSubtitleVisible(false);
-  else
-  {
-    //If there more than one we will load the first one in the list
-    // CStreamsManager::getSingleton()->SetSubtitle(0); // No Need, already connected on graph setup
-    CStreamsManager::getSingleton()->SetSubtitleVisible(true);
-  }*/
 }
 
 void CDSPlayer::Process()
@@ -184,7 +159,7 @@ void CDSPlayer::Process()
 
 #define CHECK_PLAYER_STATE if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED) break;
 
-  /* INIT: Load file */
+  /* Show busy dialog while SetFile() not returned */
   if(!m_hReadyEvent.WaitMSec(100))
   {
     CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
@@ -193,16 +168,18 @@ void CDSPlayer::Process()
       g_windowManager.Process(true);
     dialog->Close();
   }
+
   HRESULT hr = S_OK;
   bool pStartPosDone = false;
   int sleepTime;
-  //m_pDsClock.SetSpeed(1000);
+
   m_callback.OnPlayBackStarted();
   if (PlayerState == DSPLAYER_ERROR)
   {
     m_callback.OnPlayBackEnded();
     return;
   }
+
   while (PlayerState != DSPLAYER_CLOSING && PlayerState != DSPLAYER_CLOSED)
   {
     CHECK_PLAYER_STATE
@@ -227,6 +204,8 @@ void CDSPlayer::Process()
     }
     m_pDsGraph.UpdateTime();
 
+    CHECK_PLAYER_STATE
+
     sleepTime = m_pDsGraph.DoFFRW(m_currentRate);
     if ((m_currentRate == 0 ) || ( m_currentRate == 1 ))
       sleepTime = 250;
@@ -236,8 +215,7 @@ void CDSPlayer::Process()
       sleepTime = 250 - sleepTime;
     }
 
-    
-    
+    CHECK_PLAYER_STATE
 
     if (m_currentRate == 1)
       CChaptersManager::getSingleton()->UpdateChapters();

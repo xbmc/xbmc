@@ -57,8 +57,8 @@ public:
    * Retrieve a string containing the current DXVA mode
    * @return A CStdString containing the current DXVA mode
    */
-  virtual CStdString GetDXVAMode() { return m_pStrDxva; };
-  void SetDXVAGuid(const GUID* dxvaguid);
+  virtual CStdString GetDXVAMode() { return m_pStrDXVA; };
+  void SetDXVAGuid(const GUID& dxvaguid);
 
   /**
    * Get a list of filters with a property page
@@ -96,7 +96,7 @@ protected:
 private:
   void CreatePropertiesXml();
   CCriticalSection m_pLock;
-  CStdString                     m_pStrDxva;
+  CStdString                     m_pStrDXVA;
   //Direct Show Filters
   IMpaDecFilter*                 m_pIMpaDecFilter; // References will be released elsewhere
   std::vector<IBaseFilter *>     m_pPropertiesFilters;

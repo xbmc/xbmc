@@ -164,8 +164,6 @@ void CDSGraph::CloseFile()
 
     Stop(true);
 
-    // No more need to release interface with CComPtr
-
     hr = m_pGraphBuilder->RemoveFromROT();
 
     CStreamsManager::Destroy();
@@ -884,7 +882,8 @@ CStdString CDSGraph::GetVideoInfo()
     c->GetPictureHeight());
   if (!m_pStrCurrentFrameRate.IsEmpty())
     videoInfo += m_pStrCurrentFrameRate.c_str();
-  videoInfo += g_dsconfig.GetDXVAMode();
+
+  videoInfo += " | " + g_dsconfig.GetDXVAMode();
 
   return videoInfo;
 }

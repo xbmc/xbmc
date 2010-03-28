@@ -689,7 +689,7 @@ static HRESULT STDMETHODCALLTYPE GetCompBufferInfoMine(IAMVideoAcceleratorC * Th
       LOG(_T("[in] *pdwNumTypesCompBuffers = %d"), *pdwNumTypesCompBuffers);
     }
   }
-  g_dsconfig.SetDXVAGuid(&g_guidDXVADecoder);
+  g_dsconfig.SetDXVAGuid(g_guidDXVADecoder);
   HRESULT hr = GetCompBufferInfoOrg(This, pGuid, pamvaUncompDataInfo, pdwNumTypesCompBuffers, pamvaCompBufferInfo);
 
   LOG(_T("hr = %08x"), hr);
@@ -1341,7 +1341,7 @@ static HRESULT STDMETHODCALLTYPE CreateVideoDecoderMine(
 {
 //  DebugBreak();
 //  ((DXVA2_VideoDesc*)pVideoDesc)->Format = (D3DFORMAT)0x3231564E;
-  g_dsconfig.SetDXVAGuid(&Guid);
+  g_dsconfig.SetDXVAGuid(Guid);
   g_guidDXVADecoder  = Guid;
   g_nDXVAVersion    = 2;
 

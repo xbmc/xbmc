@@ -33,7 +33,6 @@
 #include "Filters/VMR9AllocatorPresenter.h"
 
 #include "DShowUtil/smartptr.h"
-//#include "IPinHook.h"
 
 using namespace std;
 
@@ -43,19 +42,19 @@ CDSConfig::CDSConfig(void)
 {
   m_pIMpaDecFilter = NULL;
   pIffdshowDecoder = NULL;
-  m_pStrDxva = "";
+  m_pStrDXVA = "";
 }
 
 CDSConfig::~CDSConfig(void)
 {
-  m_pPropertiesFilters.clear();
-  m_pStrDxva = "";
+  ClearConfig();
 }
 void CDSConfig::ClearConfig()
 {
   if (CFile::Exists("special://temp//dslang.xml"))
     CFile::Delete("special://temp//dslang.xml");
-  m_pStrDxva = "";
+
+  m_pStrDXVA = "";
   m_pIMpaDecFilter = NULL;
   pIffdshowDecoder = NULL;
   m_pPropertiesFilters.clear();
@@ -146,30 +145,16 @@ void CDSConfig::ShowPropertyPage(IBaseFilter *pBF)
 {
   m_pCurrentProperty = new CDSPropertyPage(pBF);
   m_pCurrentProperty->Initialize();
-
-  //Seb: Not need when using DX SetDialogBox?
-  //this is not working yet, calling the switch to fake fullscreen is reseting the video renderer
-  //A better handling of the video resolution change by the video renderers is needed
-  /*if (g_graphicsContext.IsFullScreenRoot() && !g_guiSettings.GetBool("videoscreen.fakefullscreen"))
-  {
-    //True fullscreen cant handle those proprety page
-    m_pCurrentProperty->Initialize(false);
-    //g_graphicsContext.SetFullScreenVideo();
-  }
-  else
-  {
-    m_pCurrentProperty->Initialize(true);
-  }*/
 }
 
-void CDSConfig::SetDXVAGuid(const GUID* dxvaguid)
+void CDSConfig::SetDXVAGuid( const GUID& dxvaguid )
 {
   // IPinHook is calling the SetDxvaGuid once
 
-  if (dxvaguid == &GUID_NULL)
-    m_pStrDxva = "";
+  if (dxvaguid == GUID_NULL)
+    m_pStrDXVA = "";
   else
-    m_pStrDxva.Format(" | %s",DShowUtil::GetDXVAMode(dxvaguid));
+    m_pStrDXVA = DShowUtil::GetDXVAMode(&dxvaguid);
 }
 
 bool CDSConfig::GetffdshowFilters(IBaseFilter* pBF)
