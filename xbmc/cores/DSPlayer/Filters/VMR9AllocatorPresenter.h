@@ -26,17 +26,11 @@
 #include <vmr9.h>
 #include <wxdebug.h>
 #include <Wxutil.h>
-
-#pragma warning(push, 2)
-
-#pragma warning(disable : 4995)
-
-
-#pragma warning(pop)
-
 #include "DsRenderer.h"
 
-#include "DShowUtil/SmartList.h"
+#pragma warning(push, 2)
+#pragma warning(disable : 4995)
+#pragma warning(pop)
 
 class CMacrovisionKicker;
 class COuterVMR9;
