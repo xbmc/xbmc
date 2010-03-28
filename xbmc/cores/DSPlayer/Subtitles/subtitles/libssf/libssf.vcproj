@@ -23,7 +23,7 @@
 			Name="Debug Unicode|Win32"
 			ConfigurationType="4"
 			InheritedPropertySheets="..\..\common.vsprops;..\..\debug.vsprops"
-			UseOfMFC="1"
+			UseOfMFC="0"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
 			>
