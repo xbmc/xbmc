@@ -57,7 +57,7 @@
 #define CP_CFG_ELEMENT_VALUE_INITSIZE 64
 
 /// Plugin descriptor name 
-#define CP_PLUGIN_DESCRIPTOR "addon.xml"
+#define CP_PLUGIN_DESCRIPTOR "plugin.xml"
 
 
 /* ------------------------------------------------------------------------
@@ -514,13 +514,13 @@ static void CP_XMLCALL character_data_handler(
  */
 static void CP_XMLCALL start_element_handler(
 	void *userData, const XML_Char *name, const XML_Char **atts) {
-	static const XML_Char * const req_plugin_atts[] = { "id", "summary", "version", NULL };
-	static const XML_Char * const opt_plugin_atts[] = { "name", "provider-name", NULL };
+	static const XML_Char * const req_plugin_atts[] = { "id", NULL };
+	static const XML_Char * const opt_plugin_atts[] = { "name", "version", "provider-name", NULL };
 	static const XML_Char * const req_bwcompatibility_atts[] = { NULL };
 	static const XML_Char * const opt_bwcompatibility_atts[] = { "abi", "api", NULL };
 	static const XML_Char * const req_cpluff_atts[] = { "version", NULL };
 	static const XML_Char * const opt_cpluff_atts[] = { NULL };
-	static const XML_Char * const req_import_atts[] = { "addon", NULL };
+	static const XML_Char * const req_import_atts[] = { "plugin", NULL };
 	static const XML_Char * const opt_import_atts[] = { "version", "optional", NULL };
 	static const XML_Char * const req_runtime_atts[] = { "library", NULL };
 	static const XML_Char * const opt_runtime_atts[] = { "funcs", NULL };
@@ -535,7 +535,7 @@ static void CP_XMLCALL start_element_handler(
 	switch (plcontext->state) {
 
 		case PARSER_BEGIN:
-			if (!strcmp(name, "addon")) {
+			if (!strcmp(name, "plugin")) {
 				plcontext->state = PARSER_PLUGIN;
 				if (!check_attributes(plcontext, name, atts,
 						req_plugin_atts, opt_plugin_atts)) {
@@ -547,9 +547,6 @@ static void CP_XMLCALL start_element_handler(
 							= parser_strdup(plcontext, atts[i+1]);
 					} else if (!strcmp(atts[i], "id")) {
 						plcontext->plugin->identifier
-							= parser_strdup(plcontext, atts[i+1]);
-					} else if (!strcmp(atts[i], "summary")) {
-						plcontext->plugin->summary
 							= parser_strdup(plcontext, atts[i+1]);
 					} else if (!strcmp(atts[i], "version")) {
 						plcontext->plugin->version
@@ -748,7 +745,7 @@ static void CP_XMLCALL start_element_handler(
 					import->plugin_id = NULL;
 					import->version = NULL;
 					for (i = 0; atts[i] != NULL; i += 2) {
-						if (!strcmp(atts[i], "addon")) {
+						if (!strcmp(atts[i], "plugin")) {
 							import->plugin_id
 								= parser_strdup(plcontext, atts[i+1]);
 						} else if (!strcmp(atts[i], "version")) {
@@ -831,7 +828,7 @@ static void CP_XMLCALL end_element_handler(
 	switch (plcontext->state) {
 
 		case PARSER_PLUGIN:
-			if (!strcmp(name, "addon")) {
+			if (!strcmp(name, "plugin")) {
 				
 				// Readjust memory allocated for extension points, if necessary 
 				if (plcontext->ext_points_size != plcontext->plugin->num_ext_points) {
@@ -1046,7 +1043,6 @@ CP_C_API cp_plugin_info_t * cp_load_plugin_descriptor(cp_context_t *context, con
 		plcontext->state = PARSER_BEGIN;
 		memset(plcontext->plugin, 0, sizeof(cp_plugin_info_t));
 		plcontext->plugin->name = NULL;
-		plcontext->plugin->summary = NULL;
 		plcontext->plugin->identifier = NULL;
 		plcontext->plugin->version = NULL;
 		plcontext->plugin->provider_name = NULL;
