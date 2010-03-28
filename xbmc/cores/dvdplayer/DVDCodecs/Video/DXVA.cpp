@@ -531,10 +531,11 @@ bool CDecoder::OpenDecoder(AVCodecContext *avctx)
   for(unsigned i = 0; i< cfg_count; i++)
   {
     CLog::Log(LOGDEBUG, "DXVA - bitstream type %d", cfg_list[i].ConfigBitstreamRaw);
-    if(config.ConfigBitstreamRaw == 0 && cfg_list[i].ConfigBitstreamRaw)
+    if(config.ConfigBitstreamRaw == 0 && cfg_list[i].ConfigBitstreamRaw == 1)
       config = cfg_list[i];
-    if(config.ConfigBitstreamRaw == 1 && cfg_list[i].ConfigBitstreamRaw == 2)
-      config = cfg_list[i];
+    //ConfigBitstreamRaw = 2 seems to be broken in current ffmpeg, so prefer mode 1 for now
+    //if(config.ConfigBitstreamRaw == 1 && cfg_list[i].ConfigBitstreamRaw == 2)
+    //  config = cfg_list[i];
   }
   CoTaskMemFree(cfg_list);
 
