@@ -225,7 +225,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   }
 
   m_format.Format = D3DFMT_UNKNOWN;
-  for(const dxva2_mode_t* mode = dxva2_modes; mode->name; mode++)
+  for(const dxva2_mode_t* mode = dxva2_modes; mode->name && m_format.Format == D3DFMT_UNKNOWN; mode++)
   {
     if(mode->codec != avctx->codec_id)
       continue;
@@ -237,10 +237,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 
       CLog::Log(LOGDEBUG, "DXVA - trying '%s'", mode->name);
       if(OpenTarget(input_list[j]))
-      {
-        m_input = input_list[j];
         break;
-      }
     }
   }
   CoTaskMemFree(input_list);
@@ -394,6 +391,7 @@ bool CDecoder::OpenTarget(const GUID &guid)
     if(output_list[k] == MAKEFOURCC('Y','V','1','2')
     || output_list[k] == MAKEFOURCC('N','V','1','2'))
     {
+      m_input         = guid;
       m_format.Format = output_list[k];
       CoTaskMemFree(output_list);
       return true;
