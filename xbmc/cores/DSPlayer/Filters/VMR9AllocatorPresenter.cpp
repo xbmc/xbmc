@@ -492,13 +492,13 @@ STDMETHODIMP CVMR9AllocatorPresenter::StartPresenting(DWORD_PTR dwUserID)
   ASSERT( g_Windowing.Get3DDevice() );
   if( !g_Windowing.Get3DDevice() )
     hr =  E_FAIL;
-  
+
   return hr;
 }
 
 STDMETHODIMP CVMR9AllocatorPresenter::StopPresenting(DWORD_PTR dwUserID)
 {
-    return S_OK;
+  return S_OK;
 }
 
 STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)

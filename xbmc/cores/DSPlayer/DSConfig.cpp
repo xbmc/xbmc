@@ -47,11 +47,11 @@ CDSConfig::CDSConfig(void)
 
 CDSConfig::~CDSConfig(void)
 {
-  ClearConfig();
 }
+
 void CDSConfig::ClearConfig()
 {
-  if (CFile::Exists("special://temp//dslang.xml"))
+  if (CFile::Exists("special://temp//dslang.xml", false))
     CFile::Delete("special://temp//dslang.xml");
 
   m_pStrDXVA = "";

@@ -77,7 +77,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   if (CDSPlayer::PlayerState != DSPLAYER_LOADING)
     return E_FAIL;
 
-  HRESULT hr;
+  HRESULT hr = S_OK;
 
   m_VideoInfo.Clear();
   m_DvdState.Clear();
@@ -125,6 +125,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   //TODO Ti-Ben
   //with the vmr9 we need to add AM_DVD_SWDEC_PREFER  AM_DVD_VMR9_ONLY on the ivmr9config prefs
   
+  
   // Audio & subtitle streams
   START_PERFORMANCE_COUNTER
   CStreamsManager::getSingleton()->InitManager(this);
@@ -141,14 +142,10 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   SetVolume(g_settings.m_nVolumeLevel);
   
   CDSPlayer::PlayerState = DSPLAYER_LOADED;
-
-  Play();
   
-  CStreamsManager::getSingleton()->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
-  
+  //CStreamsManager::getSingleton()->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);  
   
   m_currentRate = 1;
-
   return hr;
 }
 
@@ -309,11 +306,6 @@ void CDSGraph::UpdateState()
     m_currentRate = 0;
     return;
   }
-
-  
-  //What is this crap?
-  //if (m_State.current_filter_state != State_Running)
-  //  m_currentRate = 0;
 
   if (CDSPlayer::PlayerState == DSPLAYER_CLOSING ||
     CDSPlayer::PlayerState == DSPLAYER_CLOSED)
@@ -542,7 +534,7 @@ bool CDSGraph::OnMouseMove(tagPOINT pt)
 
 void CDSGraph::Play()
 {
-  if (m_State.current_filter_state != State_Running)
+  if (m_pMediaControl && m_State.current_filter_state != State_Running)
     m_pMediaControl->Run();
 
   UpdateState();
@@ -880,10 +872,12 @@ CStdString CDSGraph::GetVideoInfo()
     c->GetVideoCodecName(),
     c->GetPictureWidth(),
     c->GetPictureHeight());
-  if (!m_pStrCurrentFrameRate.IsEmpty())
+
+  if (!m_pStrCurrentFrameRate.empty())
     videoInfo += m_pStrCurrentFrameRate.c_str();
 
-  videoInfo += " | " + g_dsconfig.GetDXVAMode();
+  if (!g_dsconfig.GetDXVAMode().empty())
+    videoInfo += " | " + g_dsconfig.GetDXVAMode();
 
   return videoInfo;
 }

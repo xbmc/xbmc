@@ -144,5 +144,6 @@ protected:
   CPlayerOptions m_PlayerOptions;
   CURL m_Filename;
   CEvent m_hReadyEvent;
-  
+private:
+  bool m_callSetFileFromThread;
 };

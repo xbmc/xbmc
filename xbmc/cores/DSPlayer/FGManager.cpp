@@ -333,7 +333,7 @@ STDMETHODIMP CFGManager::Render(IPin* pPinOut)
 
 HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
 {
-  CSingleLock CSingleLock(*this);
+  CSingleLock lock(*this);
   HRESULT hr = S_OK;
 
   //update ffdshow registry to avoid stupid connection problem

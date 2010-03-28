@@ -34,6 +34,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogBusy.h"
 #include "DShowUtil/smartptr.h"
+#include "WindowingFactory.h"
 
 using namespace std;
 
@@ -42,8 +43,7 @@ CFileItem CDSPlayer::currentFileItem;
 
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
     : IPlayer(callback), CThread(), m_pDsGraph(&m_pDsClock, callback),
-      m_hReadyEvent(true),
-      m_bSpeedChanged(false)
+      m_hReadyEvent(true), m_bSpeedChanged(false), m_callSetFileFromThread(true)
 {
 }
 
@@ -72,14 +72,32 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   
   m_hReadyEvent.Reset();
 
+  if ( g_Windowing.IsFullScreen() && !g_guiSettings.GetBool("videoscreen.fakefullscreen") &&  (
+    (g_sysinfo.IsVistaOrHigher() && g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer")) ||
+    (!g_sysinfo.IsVistaOrHigher() && !g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer")) ) )
+  {
+    // Using VMR in true fullscreen. Calling SetFile() in Process makes XBMC freeze
+    m_callSetFileFromThread = false;
+    START_PERFORMANCE_COUNTER
+      if (FAILED(m_pDsGraph.SetFile(currentFileItem, m_PlayerOptions)))
+        PlayerState = DSPLAYER_ERROR;
+    END_PERFORMANCE_COUNTER
+  }
   Create();
 
-  START_PERFORMANCE_COUNTER
-  if (FAILED(m_pDsGraph.SetFile(file, m_PlayerOptions)))
-    PlayerState = DSPLAYER_ERROR;
-  END_PERFORMANCE_COUNTER
+  /* Show busy dialog while SetFile() not returned */
+  if(!m_hReadyEvent.WaitMSec(100))
+  {
+    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+    dialog->Show();
+    while(!m_hReadyEvent.WaitMSec(1))
+      g_windowManager.Process(true);
+    dialog->Close();
+  }
 
-  m_hReadyEvent.Set(); // The process function starts
+  // Starts playback
+  if (PlayerState != DSPLAYER_ERROR)
+    m_pDsGraph.Play();
 
   return (PlayerState != DSPLAYER_ERROR);
 }
@@ -159,26 +177,22 @@ void CDSPlayer::Process()
 
 #define CHECK_PLAYER_STATE if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED) break;
 
-  /* Show busy dialog while SetFile() not returned */
-  if(!m_hReadyEvent.WaitMSec(100))
+  if (m_callSetFileFromThread)
   {
-    CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    dialog->Show();
-    while(!m_hReadyEvent.WaitMSec(1))
-      g_windowManager.Process(true);
-    dialog->Close();
+    START_PERFORMANCE_COUNTER
+    if (FAILED(m_pDsGraph.SetFile(currentFileItem, m_PlayerOptions)))
+      PlayerState = DSPLAYER_ERROR;
+    END_PERFORMANCE_COUNTER
   }
+
+  m_hReadyEvent.Set(); // Start playback
+
+  if (PlayerState == DSPLAYER_ERROR)
+    return;
 
   HRESULT hr = S_OK;
   bool pStartPosDone = false;
   int sleepTime;
-
-  m_callback.OnPlayBackStarted();
-  if (PlayerState == DSPLAYER_ERROR)
-  {
-    m_callback.OnPlayBackEnded();
-    return;
-  }
 
   while (PlayerState != DSPLAYER_CLOSING && PlayerState != DSPLAYER_CLOSED)
   {
