@@ -944,6 +944,7 @@
 
 		  <control type="image">
 			  <posy>55</posy>
+			  <posx>-2</posx>
 			  <align>center</align>
 			  <aspectratio>keep</aspectratio>
 			  <info>ListItem.StarRating</info>
@@ -954,13 +955,13 @@
             <description>Plot/Details</description>
             <posy>90</posy>
             <width>PanelStreamDetailTextWidth</width>
-            <height>319</height>
+            <height>261</height>
             <info>ListItem.Plot</info>
           </control>
 
 			<control type="group">
 				<description>Media Flags</description>
-				<posy>425</posy>
+				<posy>365</posy>
 				<include>PanelStreamFlags</include>
 			</control>
 
