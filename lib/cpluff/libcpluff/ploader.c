@@ -57,7 +57,7 @@
 #define CP_CFG_ELEMENT_VALUE_INITSIZE 64
 
 /// Plugin descriptor name 
-#define CP_PLUGIN_DESCRIPTOR "plugin.xml"
+#define CP_PLUGIN_DESCRIPTOR "addon.xml"
 
 
 /* ------------------------------------------------------------------------
@@ -520,7 +520,7 @@ static void CP_XMLCALL start_element_handler(
 	static const XML_Char * const opt_bwcompatibility_atts[] = { "abi", "api", NULL };
 	static const XML_Char * const req_cpluff_atts[] = { "version", NULL };
 	static const XML_Char * const opt_cpluff_atts[] = { NULL };
-	static const XML_Char * const req_import_atts[] = { "plugin", NULL };
+	static const XML_Char * const req_import_atts[] = { "addon", NULL };
 	static const XML_Char * const opt_import_atts[] = { "version", "optional", NULL };
 	static const XML_Char * const req_runtime_atts[] = { "library", NULL };
 	static const XML_Char * const opt_runtime_atts[] = { "funcs", NULL };
@@ -535,7 +535,7 @@ static void CP_XMLCALL start_element_handler(
 	switch (plcontext->state) {
 
 		case PARSER_BEGIN:
-			if (!strcmp(name, "plugin")) {
+			if (!strcmp(name, "addon")) {
 				plcontext->state = PARSER_PLUGIN;
 				if (!check_attributes(plcontext, name, atts,
 						req_plugin_atts, opt_plugin_atts)) {
