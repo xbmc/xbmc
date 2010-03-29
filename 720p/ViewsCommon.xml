@@ -506,7 +506,7 @@
 						<width>100</width>
 						<height>18</height>
 						<posy>57</posy>
-						<posx>-15</posx>
+						<posx>-12</posx>
 						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
 	        </control>
 
@@ -515,9 +515,9 @@
 	            <control type="textbox">
 	              <description>Plot</description>
 	              <width>InfoListTitleWidth</width>
-	              <height>317</height>
+	              <height>260</height>
 	              <info>ListItem.Plot</info>
-	              <visible>![Container.Content(seasons) | Container.Content(albums)]</visible>
+	              <visible>![Container.Content(seasons) | Container.Content(albums) | Container.Content(artists)]</visible>
 	            </control>
 	            <control type="textbox">
 	              <description>Plot</description>
@@ -535,7 +535,7 @@
 	            </control>
 	          </control>
 			<control type="group">
-				<posy>420</posy>
+				<posy>360</posy>
 				<include>InfoListFlags</include>
 		 	</control>
         </control>
