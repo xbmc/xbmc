@@ -22,7 +22,8 @@
 #include "Settings.h"
 #include "WindowingFactory.h"
 
-using namespace ADDON;
+namespace ADDON
+{
 
 bool CScreenSaver::CreateScreenSaver()
 {
@@ -67,3 +68,6 @@ void CScreenSaver::GetInfo(SCR_INFO *info)
   // get info from screensaver
   if (Initialized()) m_pStruct->GetInfo(info);
 }
+
+} /*namespace ADDON*/
+
