@@ -94,8 +94,8 @@ void CGUIAudioManager::DeInitialize(int iDevice)
   Mix_CloseAudio();
 #endif
   m_bInitialized = false;
-
 }
+
 void CGUIAudioManager::Stop()
 {
   CSingleLock lock(m_cs);
