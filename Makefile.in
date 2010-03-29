@@ -280,6 +280,8 @@ ifeq ($(findstring osx,$(ARCH)), osx)
   else
 	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -o $@ $<
   endif
+else
+	cp lib/cpluff/libcpluff/.libs/libcpluff.so $@
 endif
 lib/libmodplug/src/.libs/libmodplug.a: force
 	$(MAKE) -C lib/libmodplug
@@ -361,7 +363,7 @@ imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
-libs: libhdhomerun libid3tag imagelib libexif python
+libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-$(ARCH).so
 externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
@@ -370,7 +372,6 @@ xcode_depends: \
 	skins \
 	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \
 	xbmc/lib/libapetag/.libs/libapetag.a \
-	system/libcpluff-$(ARCH).so \
 	system/players/paplayer/libmodplug-$(ARCH).so \
 	xbmc/lib/cmyth/libcmyth/libcmyth.a \
 	xbmc/lib/cmyth/librefmem/librefmem.a \
