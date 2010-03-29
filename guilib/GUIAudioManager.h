@@ -74,7 +74,7 @@ private:
   pythonSoundsMap     m_pythonSounds;
 
   CStdString          m_strMediaDir;
-  bool                m_bEnabled;
+  bool                m_bInitialized;
 
   CCriticalSection    m_cs;
 };
