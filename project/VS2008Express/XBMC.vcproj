@@ -2374,23 +2374,11 @@
 					Name="Helpers"
 					>
 					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DSGeometry.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DSGeometry.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\RegKey.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\regkey.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\smartptr.h"
 						>
 					</File>
 					<File
@@ -2413,6 +2401,34 @@
 				<Filter
 					Name="Filters"
 					>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DllLibmpcSubs.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DsSubtitleManager.cpp"
+						>
+						<FileConfiguration
+							Name="Debug (DirectX)|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DsSubtitleManager.h"
+						>
+						<FileConfiguration
+							Name="Debug (DirectX)|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
 					<Filter
 						Name="Source"
 						>
@@ -2581,6 +2597,14 @@
 				<Filter
 					Name="DShowUtil"
 					>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DSGeometry.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DSGeometry.h"
+						>
+					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DshowCommon.h"
 						>

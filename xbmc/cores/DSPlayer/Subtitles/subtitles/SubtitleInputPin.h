@@ -32,7 +32,7 @@ class CSubtitleInputPin : public CBaseInputPin
 	CCritSec m_csReceive;
 
 	CCritSec* m_pSubLock;
-	ISubStream* m_pSubStream;
+	Com::SmartPtr<ISubStream> m_pSubStream;
 
 protected:
 	virtual void AddSubStream(ISubStream* pSubStream) = 0;

@@ -47,4 +47,5 @@
 #include "..\DSUtil\DSUtil.h"
 
 #include "smartptr.h"
+
 #include "DSGeometry.h"

@@ -693,7 +693,7 @@ DWORD CSubPicQueue::ThreadProc()
 
 		int nMaxSubPic = m_nMaxSubPic;
 
-		ISubPicProvider* pSubPicProvider;
+    Com::SmartPtr<ISubPicProvider> pSubPicProvider;
 		if(SUCCEEDED(GetSubPicProvider(&pSubPicProvider)) && pSubPicProvider
 		&& SUCCEEDED(pSubPicProvider->Lock()))
 		{

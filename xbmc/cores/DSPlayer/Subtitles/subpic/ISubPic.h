@@ -22,7 +22,7 @@
 #pragma once
 
 #include "CoordGeom.h"
-
+#include "SmartPtr.h"
 #pragma pack(push, 1)
 struct SubPicDesc
 {
@@ -275,7 +275,7 @@ interface ISubPicQueue : public IUnknown
 class ISubPicQueueImpl : public CUnknown, public ISubPicQueue
 {
 	CCritSec m_csSubPicProvider;
-	ISubPicProvider* m_pSubPicProvider;
+  Com::SmartPtr<ISubPicProvider> m_pSubPicProvider;
 
 protected:
 	double m_fps;

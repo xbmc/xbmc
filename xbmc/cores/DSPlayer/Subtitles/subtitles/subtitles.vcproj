@@ -60,7 +60,67 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\lib\subtitlesDU.lib"
+				OutputFile="..\..\libs\subtitlesDU.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release Unicode|Win32"
+			ConfigurationType="4"
+			InheritedPropertySheets="..\common.vsprops;..\release.vsprops"
+			UseOfMFC="0"
+			CharacterSet="1"
+			WholeProgramOptimization="0"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="..\..\..\..\;..\..\..\..\..\guilib;..\..\..\..\win32;..\..\include;..\..\baseclasses;..\..\..\..\lib\boost;..\..\DshowUtil/;..\..\"
+				PreprocessorDefinitions="WIN32;NDEBUG;"
+				RuntimeLibrary="0"
+				UsePrecompiledHeader="2"
+				DisableSpecificWarnings="4244"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="..\..\libs\subtitlesRU.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -122,66 +182,6 @@
 			<Tool
 				Name="VCLibrarianTool"
 				OutputFile="..\..\lib64\subtitlesDU.lib"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release Unicode|Win32"
-			ConfigurationType="4"
-			InheritedPropertySheets="..\common.vsprops;..\release.vsprops"
-			UseOfMFC="0"
-			CharacterSet="1"
-			WholeProgramOptimization="0"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\;..\..\..\..\..\guilib;..\..\..\..\win32;..\..\include;..\..\baseclasses;..\..\..\..\lib\boost;..\..\DshowUtil/;..\..\"
-				PreprocessorDefinitions="WIN32;NDEBUG;"
-				RuntimeLibrary="0"
-				UsePrecompiledHeader="2"
-				DisableSpecificWarnings="4244"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\..\lib\subtitlesRU.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -295,7 +295,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug Unicode|x64"
+					Name="Release Unicode|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -303,7 +303,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release Unicode|Win32"
+					Name="Debug Unicode|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -339,7 +339,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug Unicode|x64"
+					Name="Release Unicode|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -347,7 +347,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release Unicode|Win32"
+					Name="Debug Unicode|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -395,7 +395,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug Unicode|x64"
+					Name="Release Unicode|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -403,7 +403,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release Unicode|Win32"
+					Name="Debug Unicode|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -447,7 +447,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug Unicode|x64"
+					Name="Release Unicode|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -455,7 +455,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release Unicode|Win32"
+					Name="Debug Unicode|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

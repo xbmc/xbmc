@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\lib\$(ProjectName)DU.lib"
+				OutputFile="..\..\libs\$(ProjectName)DU.lib"
 				AdditionalLibraryDirectories=""
 			/>
 			<Tool
@@ -184,7 +184,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\lib\$(ProjectName)RU.lib"
+				OutputFile="..\..\libs\$(ProjectName)RU.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -398,6 +398,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\DSGeometry.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DSMPropertyBag.cpp"
 				>
 			</File>
@@ -502,6 +506,10 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc"
 			>
+			<File
+				RelativePath=".\DSGeometry.h"
+				>
+			</File>
 			<File
 				RelativePath=".\DSMPropertyBag.h"
 				>

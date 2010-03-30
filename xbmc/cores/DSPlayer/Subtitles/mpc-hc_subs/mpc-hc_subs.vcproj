@@ -20,7 +20,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)"
-			ConfigurationType="4"
+			ConfigurationType="2"
 			UseOfMFC="0"
 			CharacterSet="1"
 			WholeProgramOptimization="0"
@@ -62,10 +62,21 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
+				Name="VCLinkerTool"
+				AdditionalDependencies="strmbasdU.lib Winmm.lib vfw32.lib version.lib dsutilDU.lib subtitlesDU.lib"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\libs"
+				IgnoreDefaultLibraryNames="LIBCMTD;LIBCMT"
+				GenerateDebugInformation="true"
+				AssemblyDebug="0"
+				MapExports="false"
+				SubSystem="2"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -77,16 +88,20 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy $(OutDir)\mpcSubs.dll $(SolutionDir)..\..\system\players\dsplayer\"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(OutDir)"
-			ConfigurationType="4"
+			ConfigurationType="2"
 			InheritedPropertySheets="..\common.vsprops;..\release.vsprops"
-			UseOfMFC="1"
+			UseOfMFC="0"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -127,10 +142,17 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
+				Name="VCLinkerTool"
+				AdditionalDependencies="strmbaseU.lib Winmm.lib vfw32.lib version.lib dsutilRU.lib subtitlesRU.lib"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\libs"
+				IgnoreDefaultLibraryNames="LIBCMT"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -142,8 +164,11 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				CommandLine="copy $(OutDir)\mpcSubs.dll $(SolutionDir)..\..\system\players\dsplayer\"
 			/>
 		</Configuration>
 	</Configurations>
@@ -155,6 +180,10 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath=".\IPinHook.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\mpcSubs.cpp"
 				>
@@ -181,6 +210,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\IPinHook.h"
+				>
+			</File>
 			<File
 				RelativePath=".\mpcSubs.h"
 				>

@@ -7,7 +7,7 @@
 // DELME_API functions as being imported from a DLL, whereas this DLL sees symbols
 // defined with this macro as being exported.
 #ifdef MPCSUBS_EXPORTS
-#define MPCSUBS_API extern
+#define MPCSUBS_API __declspec(dllexport)
 #else
 #define MPCSUBS_API extern
 #endif
