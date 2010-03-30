@@ -33,7 +33,7 @@
 #include "StringUtils.h"
 #include "utils/log.h"
 
-#define ENV_PATH "special://xbmc/system/;special://xbmc/system/players/mplayer/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
+#define ENV_PATH "special://xbmc/system/;special://xbmc/system/players/mplayer/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/dsplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
 //Define this to get loggin on all calls to load/unload of dlls
 //#define LOGALL
