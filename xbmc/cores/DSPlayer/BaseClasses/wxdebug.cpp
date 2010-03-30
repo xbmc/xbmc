@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <dvdmedia.h>
 
-#ifdef DEBUG
+#ifdef _DEBUG
 #ifdef UNICODE
 #ifndef _UNICODE
 #define _UNICODE
@@ -26,7 +26,7 @@
 #include <tchar.h>
 #include <strsafe.h>
 
-#ifdef DEBUG
+#ifdef _DEBUG
 static void DisplayBITMAPINFO(const BITMAPINFOHEADER* pbmi);
 static void DisplayRECT(LPCTSTR szLabel, const RECT& rc);
 
@@ -69,7 +69,7 @@ DWORD m_dwObjectCount;                      // Active object count
 BOOL m_bInit = FALSE;                       // Have we been initialised
 HANDLE m_hOutput = INVALID_HANDLE_VALUE;    // Optional output written here
 DWORD dwWaitTimeout = INFINITE;             // Default timeout value
-DWORD dwTimeOffset;          // Time of first DbgLog call
+DWORD dwTimeOffset;			    // Time of first DbgLog call
 bool g_fUseKASSERT = false;                 // don't create messagebox
 bool g_fDbgInDllEntryPoint = false;
 bool g_fAutoRefreshLevels = false;
@@ -248,7 +248,7 @@ HRESULT  DbgUniqueProcessName(LPCTSTR inName, LPTSTR outName)
     }
     else
     {
-        TCHAR pathAndBasename[MAX_PATH] = {0};
+        TCHAR pathAndBasename[_MAX_PATH] = {0};
         
         //there's an extension  - zero-terminate the path and basename first by copying
         hr = StringCchCopyN(pathAndBasename, MAX_PATH, inName, (size_t)dotPos);
@@ -271,7 +271,7 @@ void WINAPI DbgInitLogTo (
     LONG  lReturn;
     DWORD dwKeyType;
     DWORD dwKeySize;
-    TCHAR szFile[MAX_PATH] = {0};
+    TCHAR szFile[_MAX_PATH] = {0};
     static const TCHAR cszKey[] = TEXT("LogToFile");
 
     dwKeySize = MAX_PATH;
@@ -326,7 +326,7 @@ void WINAPI DbgInitLogTo (
             if (INVALID_HANDLE_VALUE == m_hOutput &&
                 GetLastError() == ERROR_SHARING_VIOLATION)
             {
-               TCHAR uniqueName[MAX_PATH] = {0};
+               TCHAR uniqueName[_MAX_PATH] = {0};
                if (SUCCEEDED(DbgUniqueProcessName(szFile, uniqueName)))
                {
                     m_hOutput = CreateFile(uniqueName, GENERIC_WRITE,
@@ -665,10 +665,10 @@ BOOL WINAPI DbgCheckModuleLevel(DWORD Type,DWORD Level)
     // If no valid bits are set return FALSE
     if ((Type & ((1<<iMAXLEVELS)-1))) {
 
-  // speed up unconditional output.
-  if (0==Level)
-      return(TRUE);
-  
+	// speed up unconditional output.
+	if (0==Level)
+	    return(TRUE);
+	
         for (LONG lKeyPos = 0;lKeyPos < iMAXLEVELS;lKeyPos++) {
             if (Type & Mask) {
                 if (Level <= (m_Levels[lKeyPos] & ~LOG_FORCIBLY_SET)) {
@@ -1087,9 +1087,9 @@ void WINAPI DbgSetWaitTimeout(DWORD dwTimeout)
             return "GUID_NULL";
         }
 
-  // !!! add something to print FOURCC guids?
-  
-  // shouldn't this print the hex CLSID?
+	// !!! add something to print FOURCC guids?
+	
+	// shouldn't this print the hex CLSID?
         return "Unknown GUID Name";
     }
 
@@ -1105,25 +1105,25 @@ CDisp::CDisp(LONGLONG ll, int Format)
     LARGE_INTEGER li;
     li.QuadPart = ll;
     switch (Format) {
-  case CDISP_DEC:
-  {
-      TCHAR  temp[20];
-      int pos=20;
-      temp[--pos] = 0;
-      int digit;
-      // always output at least one digit
-      do {
-    // Get the rightmost digit - we only need the low word
-          digit = li.LowPart % 10;
-    li.QuadPart /= 10;
-    temp[--pos] = (TCHAR) digit+L'0';
-      } while (li.QuadPart);
-      (void)StringCchCopy(m_String, NUMELMS(m_String), temp+pos);
-      break;
-  }
-  case CDISP_HEX:
-  default:
-      (void)StringCchPrintf(m_String, NUMELMS(m_String), TEXT("0x%X%8.8X"), li.HighPart, li.LowPart);
+	case CDISP_DEC:
+	{
+	    TCHAR  temp[20];
+	    int pos=20;
+	    temp[--pos] = 0;
+	    int digit;
+	    // always output at least one digit
+	    do {
+		// Get the rightmost digit - we only need the low word
+	        digit = li.LowPart % 10;
+		li.QuadPart /= 10;
+		temp[--pos] = (TCHAR) digit+L'0';
+	    } while (li.QuadPart);
+	    (void)StringCchCopy(m_String, NUMELMS(m_String), temp+pos);
+	    break;
+	}
+	case CDISP_HEX:
+	default:
+	    (void)StringCchPrintf(m_String, NUMELMS(m_String), TEXT("0x%X%8.8X"), li.HighPart, li.LowPart);
     }
 };
 
@@ -1193,7 +1193,7 @@ CDisp::CDisp(IPin *pPin)
 
     m_pString = (PTCHAR) new TCHAR[lstrlen(str)+64];
     if (!m_pString) {
-  return;
+	return;
     }
 
     (void)StringCchPrintf(m_pString, lstrlen(str) + 64, TEXT("%hs(%s)"), GuidNames[clsid], str);
@@ -1248,7 +1248,7 @@ CDisp::~CDisp()
 CDispBasic::~CDispBasic()
 {
     if (m_pString != m_String) {
-  delete [] m_pString;
+	delete [] m_pString;
     }
 }
 
@@ -1264,7 +1264,7 @@ CDisp::CDisp(double d)
    We also display the fields in the BITMAPINFOHEADER structure, this should
    succeed as we do not accept input types unless the format is big enough */
 
-#ifdef DEBUG
+#ifdef _DEBUG
 void WINAPI DisplayType(LPCTSTR label, const AM_MEDIA_TYPE *pmtIn)
 {
 
@@ -1272,8 +1272,8 @@ void WINAPI DisplayType(LPCTSTR label, const AM_MEDIA_TYPE *pmtIn)
 
     DbgLog((LOG_TRACE,5,TEXT("")));
     DbgLog((LOG_TRACE,2,TEXT("%s  M type %hs  S type %hs"), label,
-      GuidNames[pmtIn->majortype],
-      GuidNames[pmtIn->subtype]));
+	    GuidNames[pmtIn->majortype],
+	    GuidNames[pmtIn->subtype]));
     DbgLog((LOG_TRACE,5,TEXT("Subtype description %s"),GetSubtypeName(&pmtIn->subtype)));
 
     /* Dump the generic media types */
@@ -1387,83 +1387,83 @@ void WINAPI DumpGraph(IFilterGraph *pGraph, DWORD dwLevel)
     DbgLog((LOG_TRACE,dwLevel,TEXT("DumpGraph [%x]"), pGraph));
 
     if (FAILED(pGraph->EnumFilters(&pFilters))) {
-  DbgLog((LOG_TRACE,dwLevel,TEXT("EnumFilters failed!")));
+	DbgLog((LOG_TRACE,dwLevel,TEXT("EnumFilters failed!")));
     }
 
     IBaseFilter *pFilter;
-    ULONG  n;
+    ULONG	n;
     while (pFilters->Next(1, &pFilter, &n) == S_OK) {
-  FILTER_INFO  info;
+	FILTER_INFO	info;
 
-  if (FAILED(pFilter->QueryFilterInfo(&info))) {
-      DbgLog((LOG_TRACE,dwLevel,TEXT("    Filter [%p]  -- failed QueryFilterInfo"), pFilter));
-  } else {
-      QueryFilterInfoReleaseGraph(info);
+	if (FAILED(pFilter->QueryFilterInfo(&info))) {
+	    DbgLog((LOG_TRACE,dwLevel,TEXT("    Filter [%p]  -- failed QueryFilterInfo"), pFilter));
+	} else {
+	    QueryFilterInfoReleaseGraph(info);
 
-      // !!! should QueryVendorInfo here!
-  
-      DbgLog((LOG_TRACE,dwLevel,TEXT("    Filter [%p]  '%ls'"), pFilter, info.achName));
+	    // !!! should QueryVendorInfo here!
+	
+	    DbgLog((LOG_TRACE,dwLevel,TEXT("    Filter [%p]  '%ls'"), pFilter, info.achName));
 
-      IEnumPins *pins;
+	    IEnumPins *pins;
 
-      if (FAILED(pFilter->EnumPins(&pins))) {
-    DbgLog((LOG_TRACE,dwLevel,TEXT("EnumPins failed!")));
-      } else {
+	    if (FAILED(pFilter->EnumPins(&pins))) {
+		DbgLog((LOG_TRACE,dwLevel,TEXT("EnumPins failed!")));
+	    } else {
 
-    IPin *pPin;
-    while (pins->Next(1, &pPin, &n) == S_OK) {
-        PIN_INFO  pinInfo;
+		IPin *pPin;
+		while (pins->Next(1, &pPin, &n) == S_OK) {
+		    PIN_INFO	pinInfo;
 
-        if (FAILED(pPin->QueryPinInfo(&pinInfo))) {
-      DbgLog((LOG_TRACE,dwLevel,TEXT("          Pin [%x]  -- failed QueryPinInfo"), pPin));
-        } else {
-      QueryPinInfoReleaseFilter(pinInfo);
+		    if (FAILED(pPin->QueryPinInfo(&pinInfo))) {
+			DbgLog((LOG_TRACE,dwLevel,TEXT("          Pin [%x]  -- failed QueryPinInfo"), pPin));
+		    } else {
+			QueryPinInfoReleaseFilter(pinInfo);
 
-      IPin *pPinConnected = NULL;
+			IPin *pPinConnected = NULL;
 
-      HRESULT hr = pPin->ConnectedTo(&pPinConnected);
+			HRESULT hr = pPin->ConnectedTo(&pPinConnected);
 
-      if (pPinConnected) {
-          DbgLog((LOG_TRACE,dwLevel,TEXT("          Pin [%p]  '%ls' [%sput]")
-                 TEXT("  Connected to pin [%p]"),
-            pPin, pinInfo.achName,
-            pinInfo.dir == PINDIR_INPUT ? TEXT("In") : TEXT("Out"),
-            pPinConnected));
+			if (pPinConnected) {
+			    DbgLog((LOG_TRACE,dwLevel,TEXT("          Pin [%p]  '%ls' [%sput]")
+							   TEXT("  Connected to pin [%p]"),
+				    pPin, pinInfo.achName,
+				    pinInfo.dir == PINDIR_INPUT ? TEXT("In") : TEXT("Out"),
+				    pPinConnected));
 
-          pPinConnected->Release();
+			    pPinConnected->Release();
 
-          // perhaps we should really dump the type both ways as a sanity
-          // check?
-          if (pinInfo.dir == PINDIR_OUTPUT) {
-        AM_MEDIA_TYPE mt;
+			    // perhaps we should really dump the type both ways as a sanity
+			    // check?
+			    if (pinInfo.dir == PINDIR_OUTPUT) {
+				AM_MEDIA_TYPE mt;
 
-        hr = pPin->ConnectionMediaType(&mt);
+				hr = pPin->ConnectionMediaType(&mt);
 
-        if (SUCCEEDED(hr)) {
-            DisplayType(TEXT("Connection type"), &mt);
+				if (SUCCEEDED(hr)) {
+				    DisplayType(TEXT("Connection type"), &mt);
 
-            FreeMediaType(mt);
-        }
-          }
-      } else {
-          DbgLog((LOG_TRACE,dwLevel,
-            TEXT("          Pin [%x]  '%ls' [%sput]"),
-            pPin, pinInfo.achName,
-            pinInfo.dir == PINDIR_INPUT ? TEXT("In") : TEXT("Out")));
+				    FreeMediaType(mt);
+				}
+			    }
+			} else {
+			    DbgLog((LOG_TRACE,dwLevel,
+				    TEXT("          Pin [%x]  '%ls' [%sput]"),
+				    pPin, pinInfo.achName,
+				    pinInfo.dir == PINDIR_INPUT ? TEXT("In") : TEXT("Out")));
 
-      }
-        }
+			}
+		    }
 
-        pPin->Release();
+		    pPin->Release();
 
-    }
+		}
 
-    pins->Release();
-      }
+		pins->Release();
+	    }
 
-  }
-  
-  pFilter->Release();
+	}
+	
+	pFilter->Release();
     }
 
     pFilters->Release();

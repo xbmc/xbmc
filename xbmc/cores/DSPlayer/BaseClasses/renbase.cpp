@@ -25,9 +25,9 @@ int inline TimeDiff(REFERENCE_TIME rt)
     } else return (int)rt;
 }
 
-// Implements the CBaseRenderer class
+// Implements the CDSBaseRenderer class
 
-CBaseRenderer::CBaseRenderer(REFCLSID RenderClass, // CLSID for this renderer
+CDSBaseRenderer::CDSBaseRenderer(REFCLSID RenderClass, // CLSID for this renderer
                              __in_opt LPCTSTR pName,         // Debug ONLY description
                              __inout_opt LPUNKNOWN pUnk,       // Aggregated owner object
                              __inout HRESULT *phr) :       // General OLE return code
@@ -67,7 +67,7 @@ CBaseRenderer::CBaseRenderer(REFCLSID RenderClass, // CLSID for this renderer
 // We will probably also have made an input pin based on CRendererInputPin
 // that has to be deleted, it's created when an enumerator calls our GetPin
 
-CBaseRenderer::~CBaseRenderer()
+CDSBaseRenderer::~CDSBaseRenderer()
 {
     ASSERT(m_bStreaming == FALSE);
     ASSERT(m_EndOfStreamTimer == 0);
@@ -96,7 +96,7 @@ CBaseRenderer::~CBaseRenderer()
 
 // This returns the IMediaPosition and IMediaSeeking interfaces
 
-HRESULT CBaseRenderer::GetMediaPositionInterface(REFIID riid, __deref_out void **ppv)
+HRESULT CDSBaseRenderer::GetMediaPositionInterface(REFIID riid, __deref_out void **ppv)
 {
     CAutoLock cObjectCreationLock(&m_ObjectCreationLock);
     if (m_pPosition) {
@@ -134,7 +134,7 @@ HRESULT CBaseRenderer::GetMediaPositionInterface(REFIID riid, __deref_out void *
 
 // Overriden to say what interfaces we support and where
 
-STDMETHODIMP CBaseRenderer::NonDelegatingQueryInterface(REFIID riid, __deref_out void **ppv)
+STDMETHODIMP CDSBaseRenderer::NonDelegatingQueryInterface(REFIID riid, __deref_out void **ppv)
 {
     // Do we have this interface
 
@@ -152,7 +152,7 @@ STDMETHODIMP CBaseRenderer::NonDelegatingQueryInterface(REFIID riid, __deref_out
 // wait (during paused and running) this function sets or resets the thread
 // event. The event is used to stop source filter threads waiting in Receive
 
-HRESULT CBaseRenderer::SourceThreadCanWait(BOOL bCanWait)
+HRESULT CDSBaseRenderer::SourceThreadCanWait(BOOL bCanWait)
 {
     if (bCanWait == TRUE) {
         m_ThreadSignal.Reset();
@@ -170,7 +170,7 @@ HRESULT CBaseRenderer::SourceThreadCanWait(BOOL bCanWait)
 // by stopping the filter. If we get things wrong we can leave the thread in
 // WaitForRenderTime with no way for it to ever get out and we will deadlock
 
-void CBaseRenderer::DisplayRendererState()
+void CDSBaseRenderer::DisplayRendererState()
 {
     DbgLog((LOG_TIMING, 1, TEXT("\nTimed out in WaitForRenderTime")));
 
@@ -251,7 +251,7 @@ void CBaseRenderer::DisplayRendererState()
 
 #define RENDER_TIMEOUT 10000
 
-HRESULT CBaseRenderer::WaitForRenderTime()
+HRESULT CDSBaseRenderer::WaitForRenderTime()
 {
     HANDLE WaitObjects[] = { m_ThreadSignal, m_RenderEvent };
     DWORD Result = WAIT_TIMEOUT;
@@ -287,7 +287,7 @@ HRESULT CBaseRenderer::WaitForRenderTime()
 // is calling the renderer's Receive() method because the transform's
 // Stop method doesn't know to process window messages to unblock
 // the renderer's Receive processing
-void CBaseRenderer::WaitForReceiveToComplete()
+void CDSBaseRenderer::WaitForReceiveToComplete()
 {
     for (;;) {
         if (!m_bInReceive) {
@@ -328,7 +328,7 @@ void CBaseRenderer::WaitForReceiveToComplete()
 
 // Simple internal way of getting the real state
 
-FILTER_STATE CBaseRenderer::GetRealState() {
+FILTER_STATE CDSBaseRenderer::GetRealState() {
     return m_State;
 }
 
@@ -337,7 +337,7 @@ FILTER_STATE CBaseRenderer::GetRealState() {
 // it has got one media sample to render. If you ask it for its state while
 // it's waiting it will return the state along with VFW_S_STATE_INTERMEDIATE
 
-STDMETHODIMP CBaseRenderer::GetState(DWORD dwMSecs,FILTER_STATE *State)
+STDMETHODIMP CDSBaseRenderer::GetState(DWORD dwMSecs,FILTER_STATE *State)
 {
     CheckPointer(State,E_POINTER);
 
@@ -357,7 +357,7 @@ STDMETHODIMP CBaseRenderer::GetState(DWORD dwMSecs,FILTER_STATE *State)
 // VFW_S_STATE_INTERMEDIATE from GetState after being paused with no sample
 // (calling GetState after either being stopped or Run will NOT return this)
 
-HRESULT CBaseRenderer::CompleteStateChange(FILTER_STATE OldState)
+HRESULT CDSBaseRenderer::CompleteStateChange(FILTER_STATE OldState)
 {
     // Allow us to be paused when disconnected
 
@@ -394,7 +394,7 @@ HRESULT CBaseRenderer::CompleteStateChange(FILTER_STATE OldState)
 //      Any end of stream signalled is now obsolete so reset
 //      Allow us to be stopped when we are not connected
 
-STDMETHODIMP CBaseRenderer::Stop()
+STDMETHODIMP CDSBaseRenderer::Stop()
 {
     CAutoLock cRendererLock(&m_InterfaceLock);
 
@@ -451,7 +451,7 @@ STDMETHODIMP CBaseRenderer::Stop()
 //      Possibly complete the state change if we have data
 //      Allow us to be paused when we are not connected
 
-STDMETHODIMP CBaseRenderer::Pause()
+STDMETHODIMP CDSBaseRenderer::Pause()
 {
     CAutoLock cRendererLock(&m_InterfaceLock);
     FILTER_STATE OldState = m_State;
@@ -524,7 +524,7 @@ STDMETHODIMP CBaseRenderer::Pause()
 //      Allow us to be run when we are not connected
 //      Signal EC_COMPLETE if we are not connected
 
-STDMETHODIMP CBaseRenderer::Run(REFERENCE_TIME StartTime)
+STDMETHODIMP CDSBaseRenderer::Run(REFERENCE_TIME StartTime)
 {
     CAutoLock cRendererLock(&m_InterfaceLock);
     FILTER_STATE OldState = m_State;
@@ -588,7 +588,7 @@ STDMETHODIMP CBaseRenderer::Run(REFERENCE_TIME StartTime)
 
 // Return the number of input pins we support
 
-int CBaseRenderer::GetPinCount()
+int CDSBaseRenderer::GetPinCount()
 {
     if (m_pInputPin == NULL) {
         //  Try to create it
@@ -600,7 +600,7 @@ int CBaseRenderer::GetPinCount()
 
 // We only support one input pin and it is numbered zero
 
-CBasePin *CBaseRenderer::GetPin(int n)
+CBasePin *CDSBaseRenderer::GetPin(int n)
 {
     CAutoLock cObjectCreationLock(&m_ObjectCreationLock);
 
@@ -637,7 +637,7 @@ CBasePin *CBaseRenderer::GetPin(int n)
 
 // If "In" then return the IPin for our input pin, otherwise NULL and error
 
-STDMETHODIMP CBaseRenderer::FindPin(LPCWSTR Id, __deref_out IPin **ppPin)
+STDMETHODIMP CDSBaseRenderer::FindPin(LPCWSTR Id, __deref_out IPin **ppPin)
 {
     CheckPointer(ppPin,E_POINTER);
 
@@ -661,7 +661,7 @@ STDMETHODIMP CBaseRenderer::FindPin(LPCWSTR Id, __deref_out IPin **ppPin)
 // m_bEOS and check for this on completing samples. If we're waiting to pause
 // then complete the transition to paused state by setting the state event
 
-HRESULT CBaseRenderer::EndOfStream()
+HRESULT CDSBaseRenderer::EndOfStream()
 {
     // Ignore these calls if we are stopped
 
@@ -695,7 +695,7 @@ HRESULT CBaseRenderer::EndOfStream()
 
 // When we are told to flush we should release the source thread
 
-HRESULT CBaseRenderer::BeginFlush()
+HRESULT CDSBaseRenderer::BeginFlush()
 {
     // If paused then report state intermediate until we get some data
 
@@ -715,7 +715,7 @@ HRESULT CBaseRenderer::BeginFlush()
 
 // After flushing the source thread can wait in Receive again
 
-HRESULT CBaseRenderer::EndFlush()
+HRESULT CDSBaseRenderer::EndFlush()
 {
     // Reset the current sample media time
     if (m_pPosition) m_pPosition->ResetMediaTime();
@@ -730,7 +730,7 @@ HRESULT CBaseRenderer::EndFlush()
 
 // We can now send EC_REPAINTs if so required
 
-HRESULT CBaseRenderer::CompleteConnect(IPin *pReceivePin)
+HRESULT CDSBaseRenderer::CompleteConnect(IPin *pReceivePin)
 {
     // The caller should always hold the interface lock because
     // the function uses CBaseFilter::m_State.
@@ -755,7 +755,7 @@ HRESULT CBaseRenderer::CompleteConnect(IPin *pReceivePin)
 
 // Called when we go paused or running
 
-HRESULT CBaseRenderer::Active()
+HRESULT CDSBaseRenderer::Active()
 {
     return NOERROR;
 }
@@ -763,7 +763,7 @@ HRESULT CBaseRenderer::Active()
 
 // Called when we go into a stopped state
 
-HRESULT CBaseRenderer::Inactive()
+HRESULT CDSBaseRenderer::Inactive()
 {
     if (m_pPosition) {
         m_pPosition->ResetMediaTime();
@@ -778,7 +778,7 @@ HRESULT CBaseRenderer::Inactive()
 
 // Tell derived classes about the media type agreed
 
-HRESULT CBaseRenderer::SetMediaType(const CMediaType *pmt)
+HRESULT CDSBaseRenderer::SetMediaType(const CMediaType *pmt)
 {
     return NOERROR;
 }
@@ -790,7 +790,7 @@ HRESULT CBaseRenderer::SetMediaType(const CMediaType *pmt)
 // samples we store (by calling CPosPassThru::RegisterMediaTime) their media
 // times so we can then return a real current position of data being rendered
 
-HRESULT CBaseRenderer::BreakConnect()
+HRESULT CDSBaseRenderer::BreakConnect()
 {
     // Do we have a quality management sink
 
@@ -828,7 +828,7 @@ HRESULT CBaseRenderer::BreakConnect()
 // sample according to the times on the sample. We also return S_OK in
 // which case the object should simply render the sample data immediately
 
-HRESULT CBaseRenderer::GetSampleTimes(IMediaSample *pMediaSample,
+HRESULT CDSBaseRenderer::GetSampleTimes(IMediaSample *pMediaSample,
                                       __out REFERENCE_TIME *pStartTime,
                                       __out REFERENCE_TIME *pEndTime)
 {
@@ -863,7 +863,7 @@ HRESULT CBaseRenderer::GetSampleTimes(IMediaSample *pMediaSample,
 // return S_FALSE. Returning S_OK means draw immediately, this is used
 // by the derived video renderer class in its quality management.
 
-HRESULT CBaseRenderer::ShouldDrawSampleNow(IMediaSample *pMediaSample,
+HRESULT CDSBaseRenderer::ShouldDrawSampleNow(IMediaSample *pMediaSample,
                                            __out REFERENCE_TIME *ptrStart,
                                            __out REFERENCE_TIME *ptrEnd)
 {
@@ -875,7 +875,7 @@ HRESULT CBaseRenderer::ShouldDrawSampleNow(IMediaSample *pMediaSample,
 // because there are several possible ways which lead us not to do any more
 // scheduling such as the pending image being cleared after state changes
 
-void CBaseRenderer::SignalTimerFired()
+void CDSBaseRenderer::SignalTimerFired()
 {
     m_dwAdvise = 0;
 }
@@ -889,7 +889,7 @@ void CBaseRenderer::SignalTimerFired()
 // link. If we're subsequently stopped and run the first attempt to setup an
 // advise link with the reference clock will find the event still signalled
 
-HRESULT CBaseRenderer::CancelNotification()
+HRESULT CDSBaseRenderer::CancelNotification()
 {
     ASSERT(m_dwAdvise == 0 || m_pClock);
     DWORD_PTR dwAdvise = m_dwAdvise;
@@ -914,7 +914,7 @@ HRESULT CBaseRenderer::CancelNotification()
 // Return TRUE if the sample is to be drawn and in this case also
 // arrange for m_RenderEvent to be set at the appropriate time
 
-BOOL CBaseRenderer::ScheduleSample(IMediaSample *pMediaSample)
+BOOL CDSBaseRenderer::ScheduleSample(IMediaSample *pMediaSample)
 {
     REFERENCE_TIME StartSample, EndSample;
 
@@ -976,7 +976,7 @@ BOOL CBaseRenderer::ScheduleSample(IMediaSample *pMediaSample)
 // the next sample, NOTE signal that the last one fired first, if we don't
 // do this it thinks there is still one outstanding that hasn't completed
 
-HRESULT CBaseRenderer::Render(IMediaSample *pMediaSample)
+HRESULT CDSBaseRenderer::Render(IMediaSample *pMediaSample)
 {
     // If the media sample is NULL then we will have been notified by the
     // clock that another sample is ready but in the mean time someone has
@@ -1006,7 +1006,7 @@ HRESULT CBaseRenderer::Render(IMediaSample *pMediaSample)
 
 // Checks if there is a sample waiting at the renderer
 
-BOOL CBaseRenderer::HaveCurrentSample()
+BOOL CDSBaseRenderer::HaveCurrentSample()
 {
     CAutoLock cRendererLock(&m_RendererLock);
     return (m_pMediaSample == NULL ? FALSE : TRUE);
@@ -1018,7 +1018,7 @@ BOOL CBaseRenderer::HaveCurrentSample()
 // person who called this method will hold the remaining reference count
 // that will stop the sample being added back onto the allocator free list
 
-IMediaSample *CBaseRenderer::GetCurrentSample()
+IMediaSample *CDSBaseRenderer::GetCurrentSample()
 {
     CAutoLock cRendererLock(&m_RendererLock);
     if (m_pMediaSample) {
@@ -1036,7 +1036,7 @@ IMediaSample *CBaseRenderer::GetCurrentSample()
 // thread may get in and change our state to stopped (for example) in which
 // case it will also signal the thread event so that our wait call is stopped
 
-HRESULT CBaseRenderer::PrepareReceive(IMediaSample *pMediaSample)
+HRESULT CDSBaseRenderer::PrepareReceive(IMediaSample *pMediaSample)
 {
     CAutoLock cInterfaceLock(&m_InterfaceLock);
     m_bInReceive = TRUE;
@@ -1123,7 +1123,7 @@ HRESULT CBaseRenderer::PrepareReceive(IMediaSample *pMediaSample)
 // the derived class will have overriden. After rendering the sample we may
 // also signal EOS if it was the last one sent before EndOfStream was called
 
-HRESULT CBaseRenderer::Receive(IMediaSample *pSample)
+HRESULT CDSBaseRenderer::Receive(IMediaSample *pSample)
 {
     ASSERT(pSample);
 
@@ -1200,7 +1200,7 @@ HRESULT CBaseRenderer::Receive(IMediaSample *pSample)
 // which case GetBuffer will return an error. We must also reset the current
 // media sample to NULL so that we know we do not currently have an image
 
-HRESULT CBaseRenderer::ClearPendingSample()
+HRESULT CDSBaseRenderer::ClearPendingSample()
 {
     CAutoLock cRendererLock(&m_RendererLock);
     if (m_pMediaSample) {
@@ -1219,13 +1219,13 @@ void CALLBACK EndOfStreamTimer(UINT uID,        // Timer identifier
                                DWORD_PTR dw1,   // Windows reserved
                                DWORD_PTR dw2)   // is also reserved
 {
-    CBaseRenderer *pRenderer = (CBaseRenderer *) dwUser;
+    CDSBaseRenderer *pRenderer = (CDSBaseRenderer *) dwUser;
     NOTE1("EndOfStreamTimer called (%d)",uID);
     pRenderer->TimerCallback();
 }
 
 //  Do the timer callback work
-void CBaseRenderer::TimerCallback()
+void CDSBaseRenderer::TimerCallback()
 {
     //  Lock for synchronization (but don't hold this lock when calling
     //  timeKillEvent)
@@ -1249,7 +1249,7 @@ void CBaseRenderer::TimerCallback()
 #define TIMEOUT_DELIVERYWAIT 50
 #define TIMEOUT_RESOLUTION 10
 
-HRESULT CBaseRenderer::SendEndOfStream()
+HRESULT CDSBaseRenderer::SendEndOfStream()
 {
     ASSERT(CritCheckIn(&m_RendererLock));
     if (m_bEOS == FALSE || m_bEOSDelivered || m_EndOfStreamTimer) {
@@ -1296,7 +1296,7 @@ HRESULT CBaseRenderer::SendEndOfStream()
 
 // Signals EC_COMPLETE to the filtergraph manager
 
-HRESULT CBaseRenderer::NotifyEndOfStream()
+HRESULT CDSBaseRenderer::NotifyEndOfStream()
 {
     CAutoLock cRendererLock(&m_RendererLock);
     ASSERT(m_bEOSDelivered == FALSE);
@@ -1332,7 +1332,7 @@ HRESULT CBaseRenderer::NotifyEndOfStream()
 // to the filter graph. We need the latter otherwise we can end up sending an
 // EC_COMPLETE every time the source changes state and calls our EndOfStream
 
-HRESULT CBaseRenderer::ResetEndOfStream()
+HRESULT CDSBaseRenderer::ResetEndOfStream()
 {
     ResetEndOfStreamTimer();
     CAutoLock cRendererLock(&m_RendererLock);
@@ -1347,7 +1347,7 @@ HRESULT CBaseRenderer::ResetEndOfStream()
 
 // Kills any outstanding end of stream timer
 
-void CBaseRenderer::ResetEndOfStreamTimer()
+void CDSBaseRenderer::ResetEndOfStreamTimer()
 {
     ASSERT(CritCheckOut(&m_RendererLock));
     if (m_EndOfStreamTimer) {
@@ -1363,7 +1363,7 @@ void CBaseRenderer::ResetEndOfStreamTimer()
 // we do have a sample then we wait until that has been rendered before we
 // signal the filter graph otherwise we may change state before it's done
 
-HRESULT CBaseRenderer::StartStreaming()
+HRESULT CDSBaseRenderer::StartStreaming()
 {
     CAutoLock cRendererLock(&m_RendererLock);
     if (m_bStreaming == TRUE) {
@@ -1402,7 +1402,7 @@ HRESULT CBaseRenderer::StartStreaming()
 // change methods in the filter implementation take care of cancelling any
 // clock advise link we have set up and clearing any pending sample we have
 
-HRESULT CBaseRenderer::StopStreaming()
+HRESULT CDSBaseRenderer::StopStreaming()
 {
     CAutoLock cRendererLock(&m_RendererLock);
     m_bEOSDelivered = FALSE;
@@ -1424,7 +1424,7 @@ HRESULT CBaseRenderer::StopStreaming()
 // sending further EC_REPAINTs. In particular the AutoShowWindow method and
 // the DirectDraw object use this method to control the window repainting
 
-void CBaseRenderer::SetRepaintStatus(BOOL bRepaint)
+void CDSBaseRenderer::SetRepaintStatus(BOOL bRepaint)
 {
     CAutoLock cSampleLock(&m_RendererLock);
     m_bRepaintStatus = bRepaint;
@@ -1433,7 +1433,7 @@ void CBaseRenderer::SetRepaintStatus(BOOL bRepaint)
 
 // Pass the window handle to the upstream filter
 
-void CBaseRenderer::SendNotifyWindow(IPin *pPin,HWND hwnd)
+void CDSBaseRenderer::SendNotifyWindow(IPin *pPin,HWND hwnd)
 {
     IMediaEventSink *pSink;
 
@@ -1456,7 +1456,7 @@ void CBaseRenderer::SendNotifyWindow(IPin *pPin,HWND hwnd)
 
 #define RLOG(_x_) DbgLog((LOG_TRACE,1,TEXT(_x_)));
 
-void CBaseRenderer::SendRepaint()
+void CDSBaseRenderer::SendRepaint()
 {
     CAutoLock cSampleLock(&m_RendererLock);
     ASSERT(m_pInputPin);
@@ -1491,7 +1491,7 @@ void CBaseRenderer::SendRepaint()
 // reconnected we can accept the media type that matches the new display mode
 // since we may no longer be able to draw the current image type efficiently
 
-BOOL CBaseRenderer::OnDisplayChange()
+BOOL CDSBaseRenderer::OnDisplayChange()
 {
     // Ignore if we are not connected yet
 
@@ -1519,7 +1519,7 @@ BOOL CBaseRenderer::OnDisplayChange()
 // Store the current time in m_trRenderStart to allow the rendering time to be
 // logged.  Log the time stamp of the sample and how late it is (neg is early)
 
-void CBaseRenderer::OnRenderStart(IMediaSample *pMediaSample)
+void CDSBaseRenderer::OnRenderStart(IMediaSample *pMediaSample)
 {
 #ifdef PERF
     REFERENCE_TIME trStart, trEnd;
@@ -1543,7 +1543,7 @@ void CBaseRenderer::OnRenderStart(IMediaSample *pMediaSample)
 // Called directly after drawing an image.
 // calculate the time spent drawing and log it.
 
-void CBaseRenderer::OnRenderEnd(IMediaSample *pMediaSample)
+void CDSBaseRenderer::OnRenderEnd(IMediaSample *pMediaSample)
 {
 #ifdef PERF
     REFERENCE_TIME trNow;
@@ -1559,7 +1559,7 @@ void CBaseRenderer::OnRenderEnd(IMediaSample *pMediaSample)
 
 // Constructor must be passed the base renderer object
 
-CRendererInputPin::CRendererInputPin(__inout CBaseRenderer *pRenderer,
+CRendererInputPin::CRendererInputPin(__inout CDSBaseRenderer *pRenderer,
                                      __inout HRESULT *phr,
                                      __in_opt LPCWSTR pPinName) :
     CBaseInputPin(NAME("Renderer pin"),
@@ -1773,7 +1773,7 @@ CBaseVideoRenderer::CBaseVideoRenderer(
       __inout_opt LPUNKNOWN pUnk,       // Aggregated owner object
       __inout HRESULT *phr) :       // General OLE return code
 
-    CBaseRenderer(RenderClass,pName,pUnk,phr),
+    CDSBaseRenderer(RenderClass,pName,pUnk,phr),
     m_cFramesDropped(0),
     m_cFramesDrawn(0),
     m_bSupplierHandlingQuality(FALSE)
@@ -2613,7 +2613,7 @@ BOOL CBaseVideoRenderer::ScheduleSample(IMediaSample *pMediaSample)
 {
     // We override ShouldDrawSampleNow to add quality management
 
-    BOOL bDrawImage = CBaseRenderer::ScheduleSample(pMediaSample);
+    BOOL bDrawImage = CDSBaseRenderer::ScheduleSample(pMediaSample);
     if (bDrawImage == FALSE) {
   ++m_cFramesDropped;
   return FALSE;
@@ -2828,7 +2828,7 @@ CBaseVideoRenderer::NonDelegatingQueryInterface(REFIID riid,__deref_out VOID **p
     } else if (riid == IID_IQualityControl) {
         return GetInterface( (IQualityControl *)this, ppv);
     }
-    return CBaseRenderer::NonDelegatingQueryInterface(riid,ppv);
+    return CDSBaseRenderer::NonDelegatingQueryInterface(riid,ppv);
 }
 
 

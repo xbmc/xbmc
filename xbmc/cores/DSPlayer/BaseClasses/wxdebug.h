@@ -73,7 +73,7 @@ typedef struct tag_ObjectDesc {
 #define DLLIMPORT __declspec(dllimport)
 #define DLLEXPORT __declspec(dllexport)
 
-#ifdef DEBUG
+#ifdef _DEBUG
 
     #define NAME(x) TEXT(x)
 
