@@ -10,6 +10,10 @@ AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([foreign])
 AC_CANONICAL_HOST
 
+tolower(){
+    echo "$@" | tr ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz
+}
+
 # General message strings
 configure_debug="ERROR: this is a configure debug statement"
 missing_library="Could not find a required library. Please see the README for your platform."
@@ -87,6 +91,18 @@ AC_ARG_ENABLE([debug],
                [enable debugging information (default is yes)])],
             [use_debug=$enableval],
             [use_debug=yes])
+
+AC_ARG_WITH([arch],
+            [AS_HELP_STRING([--with-arch],
+               [build with given arch passing to internal ffmpeg (default is no, needed for crosscompiling)])],
+            [use_arch=$withval],
+            [use_arch=no])
+
+AC_ARG_WITH([cpu],
+            [AS_HELP_STRING([--with-cpu],
+               [build with given cpu passing to ffmpeg (default is no)])],
+            [use_cpu=$withval],
+            [use_cpu=no])
 
 AC_ARG_ENABLE([optimizations],
             [AS_HELP_STRING([--enable-optimizations],
@@ -791,6 +807,15 @@ else
   fi
 fi
 
+if test "$cross_compiling" = "yes"; then
+  final_message="$final_message\n  Crosscomp.:\tYes"
+else
+  final_message="$final_message\n  Crosscomp.:\tNo"
+fi
+
+final_message="$final_message\n  target ARCH:\t$use_arch"
+final_message="$final_message\n  target CPU:\t$use_cpu"
+
 if test "$use_optimizations" = "yes"; then
   final_message="$final_message\n  Optimization:\tYes"
   CXXFLAGS="$CXXFLAGS -O2"
@@ -1146,7 +1171,9 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
     cp pyconfig.h Include	
   else
     ./configure \
-      --enable-ipv6 \
+      --host=$host_alias \
+      --build=$build_alias \
+      --disable-ipv6 \
       --enable-unicode=ucs4 \
       --without-cxx \
       --enable-shared \
@@ -1209,6 +1236,10 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
     ./configure \
       --disable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
+      `if test "$cross_compiling" = "yes"; then echo --enable-cross-compile; fi` \
+      `if test "$use_arch" != "no"; then echo --arch=$use_arch; fi`\
+      `if test "$use_cpu" != "no"; then echo --cpu=$use_cpu; fi`\
+      --target-os=$(tolower $(uname -s)) \
       --disable-muxers \
       --enable-muxer=spdif \
       --enable-muxer=adts \
@@ -1244,6 +1275,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
       --disable-win
   else
     ./configure \
+      --host=$host_alias \
+      --build=$build_alias \
       --disable-oss \
       --disable-solaris-audio \
       --disable-al-audio \
@@ -1261,6 +1294,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss], [
       --with-pic
   else
     ./configure \
+      --host=$host_alias \
+      --build=$build_alias \
       --disable-doc \
       --enable-static \
       --with-pic
@@ -1281,6 +1316,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
     ./configure2 \
       --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src" \
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+      --host=$host_alias \
+      --build=$build_alias \
       --enable-static \
       --disable-shared \
       --disable-strip \
@@ -1307,6 +1344,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav], [
       --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../includes" \
       --extra-ldflags="-L`pwd`/../libdvdread/obj" \
       --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
+      --host=$host_alias \
+      --build=$build_alias \
       --enable-static \
       --disable-shared \
       --cc="$CC"
@@ -1336,6 +1375,8 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
       --disable-al-audio
   else
     ./configure \
+      --host=$host_alias \
+      --build=$build_alias \
       --with-pic \
       --disable-static \
       --enable-shared \
@@ -1371,7 +1412,9 @@ XB_CONFIG_MODULE([xbmc/lib/libass], [
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4
   else
     CFLAGS="$CFLAGS -fPIC" \
-    ./configure
+    ./configure \
+      --host=$host_alias \
+      --build=$build_alias
   fi
 ], [$USE_EXTERNAL_LIBASS])
 
@@ -1389,6 +1432,8 @@ XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[
       CFLAGS="$CFLAGS -fPIC" \ 
       CXXFLAGS="$CXXFLAGS -fPIC" \
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+      --host=$host_alias \
+      --build=$build_alias \
       --disable-static \
       --with-pic
   fi
@@ -1415,6 +1460,8 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
         CFLAGS="$CFLAGS -fPIC" \ 
         CXXFLAGS="$CXXFLAGS -fPIC" \
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+      --host=$host_alias \
+      --build=$build_alias \
       --disable-shared \
       --enable-static \
       --with-pic
@@ -1445,6 +1492,8 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
       CFLAGS="$CFLAGS -fPIC" \ 
       CXXFLAGS="$CXXFLAGS -fPIC" \
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+      --host=$host_alias \
+      --build=$build_alias \
       --without-xscreensaver \
       --disable-sound \
       --disable-cyclone \
@@ -1460,9 +1509,11 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [
   if test "$host_vendor" = "apple" ; then
-	./configure --with-ssl-dir=/opt/local/include
+    ./configure --with-ssl-dir=/opt/local/include
   else
-	./configure --without-openssl
+    ./configure --without-openssl \
+      --host=$host_alias \
+      --build=$build_alias
   fi
 ], [0])
 
@@ -1471,7 +1522,9 @@ XB_CONFIG_MODULE([xbmc/lib/libapetag], [
     CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --disable-shared
   else
-    ./configure
+    ./configure \
+      --host=$host_alias \
+      --build=$build_alias
   fi
 ], [0])
 
@@ -1499,7 +1552,9 @@ XB_CONFIG_MODULE([lib/cpluff], [
   if test "$host_vendor" = "apple" ; then
     ./configure --disable-nls --with-libiconv-prefix=/opt/local --with-libintl-prefix=/opt/local --without-readline
   else
-    ./configure --disable-nls
+    ./configure --disable-nls \
+      --host=$host_alias \
+      --build=$build_alias
   fi
 ], [0])
 
