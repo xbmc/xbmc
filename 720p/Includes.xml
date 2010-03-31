@@ -5095,7 +5095,7 @@
     <width>98</width>
     <height>98</height>
     <info>ListItem.Icon</info>
-    <aspectratio align="center" aligny="center">keep</aspectratio>
+    <aspectratio align="center" aligny="center">scale</aspectratio>
   </include>
 
   <constant name="PicturesInfoTextWidth">640</constant>
