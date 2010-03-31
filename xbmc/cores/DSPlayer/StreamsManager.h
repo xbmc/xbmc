@@ -27,17 +27,18 @@
 #include "moreuuids.h"
 #include <dmodshow.h>
 #include <D3d9.h>
+
 #include "DShowUtil/MediaTypeEx.h"
 #include "Filters/ffdshow_constants.h"
-
 #include "DSGraph.h"
 #include "log.h"
 #include "CharsetConverter.h"
 #include "RegExp.h"
+#include "Subtitles/mpc-hc_subs/ISubManager.h"
 
 enum SStreamType
 {
-  AUDIO, VIDEO, SUBTITLE, EXTERNAL_SUBTITLE
+  AUDIO, VIDEO, SUBTITLE
 };
 
 struct SVideoStreamIndexes
@@ -64,12 +65,12 @@ struct SVideoStreamIndexes
 struct SStreamInfos
 {
   unsigned int IAMStreamSelect_Index; ///< IAMStreamSelect index of the stream
-  CStdString name; ///< Stream name
-  CStdString codecname; ///< Stream codec name
+  CStdString displayname; ///< Stream displayname
+  CStdString codecname; ///< Stream codec displayname
   DWORD flags; ///< Stream flags. Set to AMSTREAMSELECTINFO_ENABLED if the stream if selected in the GUI, 0 otherwise
   Com::SmartPtr<IPin> pObj; ///< Output pin of the splitter
   Com::SmartPtr<IPin> pUnk; ///< Not used
-  LCID  lcid; ///< Currently not used
+  LCID  lcid; ///< LCID of stream language
   DWORD group; ///< Currently not used
   SStreamType type; ///< Stream type
   bool connected; ///< Is the stream connected
@@ -83,7 +84,7 @@ struct SStreamInfos
     pUnk = 0;
     lcid = 0;
     group = 0;
-    name = "";
+    displayname = "";
     codecname = "";
     connected = false;
   }
@@ -142,8 +143,8 @@ struct SSubtitleStreamInfos: SStreamInfos
   bool external; ///< If True, you can safely cast the structure to a SExternalSubtitleInfos
 
   unsigned long offset; ///< Not used
-  CStdString isolang; ///< ISO Code of the subtitle language. Use CLang to get full language name
-
+  CStdString isolang; ///< ISO Code of the subtitle language.
+  CStdString trackname; ///< 
   GUID subtype; ///< Subtype GUID of the subtitle
 
   virtual void Clear()
@@ -154,6 +155,7 @@ struct SSubtitleStreamInfos: SStreamInfos
     external = false;
     offset = 0;
     isolang = "";
+    trackname = "";
     subtype = GUID_NULL;
   }
 
@@ -174,12 +176,13 @@ struct SExternalSubtitleInfos: SSubtitleStreamInfos
     SSubtitleStreamInfos::Clear();
 
     path = "";
+    external = true;
   }
 
   SExternalSubtitleInfos()
   {
     Clear();
-    type = EXTERNAL_SUBTITLE;
+    type = SUBTITLE;
   }
 };
 
@@ -202,8 +205,8 @@ public:
   int  GetAudioStreamCount();
   /// @return The index to the current audio stream
   int  GetAudioStream();
-  /** Get the name of an audio stream
-   * @param[in] iStream Index of the audio stream to get name of
+  /** Get the displayname of an audio stream
+   * @param[in] iStream Index of the audio stream to get displayname of
    * @param[out] strStreamName Name of the iStream audio stream
    */
   void GetAudioStreamName(int iStream, CStdString &strStreamName);
@@ -223,7 +226,7 @@ public:
   int GetBitsPerSample();
   /// @return The sample rate of the current audio stream
   int GetSampleRate();
-  /// @return The name of the audio codec used in the media file (ie FLAC, MP3, DTS ...)
+  /// @return The displayname of the audio codec used in the media file (ie FLAC, MP3, DTS ...)
   CStdString GetAudioCodecName();
   /// @return An instance to the IAMStreamSelect interface if the splitter expose it, NULL otherwise
   IAMStreamSelect *GetStreamSelector() { return m_pIAMStreamSelect; }
@@ -234,8 +237,8 @@ public:
   int  GetSubtitleCount();
   /// @return The index of the current subtitle
   int  GetSubtitle();
-  /** Get the name of a subtitle
-   * @param[in] iStream Index of the subtitle to get name of
+  /** Get the displayname of a subtitle
+   * @param[in] iStream Index of the subtitle to get displayname of
    * @param[out] strStreamName Name of the iStream subtitle
    */
   void GetSubtitleName(int iStream, CStdString &strStreamName);
@@ -270,7 +273,7 @@ public:
   int GetPictureWidth();
   /// @return Current video height
   int GetPictureHeight();
-  /// @return The name of the video codec used in the media file (XviD, DivX, h264, ...)
+  /// @return The displayname of the video codec used in the media file (XviD, DivX, h264, ...)
   CStdString GetVideoCodecName();
   
   /** Initialize the manager
@@ -289,13 +292,15 @@ public:
   SSubtitleStreamInfos* GetSubtitleStreamInfos(unsigned int iIndex = 0);
   SExternalSubtitleInfos* GetExternalSubtitleStreamInfos(unsigned int iIndex = 0);
 
+  ISubManager * SubtitleManager;
+
 private:
   CStreamsManager(void);
   ~CStreamsManager(void);
   static CStreamsManager *m_pSingleton;
 
+  void FormatStreamName(SStreamInfos& s);
   CStdString ISOToLanguage(CStdString code);
-
   void DisconnectCurrentSubtitlePins(void);
   IPin *GetFirstSubtitlePin(void);
 

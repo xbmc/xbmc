@@ -29,6 +29,9 @@
 #include "FGFilter.h"
 #include "DShowUtil/smartptr.h"
 
+#include "Subtitles/DsSubtitleManager.h"
+#include "WindowingFactory.h"
+
 CStreamsManager *CStreamsManager::m_pSingleton = NULL;
 
 CStreamsManager *CStreamsManager::getSingleton()
@@ -41,7 +44,8 @@ CStreamsManager::CStreamsManager(void):
   m_init(false),
   m_bChangingStream(false),
   m_bSubtitlesUnconnected(false),
-  m_SubtitleInputPin(NULL)
+  m_SubtitleInputPin(NULL),
+  SubtitleManager(NULL)
 {
   memset(&m_subtitleMediaType, 0, sizeof(AM_MEDIA_TYPE));
   m_subtitleMediaType.majortype = MEDIATYPE_Subtitle;
@@ -112,7 +116,7 @@ void CStreamsManager::GetAudioStreamName(int iStream, CStdString &strStreamName)
   {
     if (i == iStream)
     {
-      strStreamName = (*it)->name;
+      strStreamName = (*it)->displayname;
     }
   }
 }
@@ -340,7 +344,7 @@ void CStreamsManager::LoadStreams()
 
       infos->IAMStreamSelect_Index = i;
 
-      g_charsetConverter.wToUTF8(wname, infos->name);
+      g_charsetConverter.wToUTF8(wname, infos->displayname);
       CoTaskMemFree(wname);
 
       infos->flags = flags; infos->lcid = lcid; infos->group = group; infos->pObj = (IPin *)pObj; infos->pUnk = (IPin *)pUnk;
@@ -348,9 +352,9 @@ void CStreamsManager::LoadStreams()
       /* Apply regex */
       for (std::vector<boost::shared_ptr<CRegExp>>::iterator it = regex.begin(); it != regex.end(); ++it)
       {
-        if ( (*it)->RegFind(infos->name) > -1 )
+        if ( (*it)->RegFind(infos->displayname) > -1 )
         {
-          infos->name = (*it)->GetMatch(1);
+          infos->displayname = (*it)->GetMatch(1);
           break;
         }
       }
@@ -360,15 +364,15 @@ void CStreamsManager::LoadStreams()
       if (mediaType->majortype == MEDIATYPE_Audio)
       {
         /* Audio stream */
-        if (infos->name.find("Undetermined") != std::string::npos )
-          infos->name.Format("A: Audio %02d", i + 1);
+        if (infos->displayname.find("Undetermined") != std::string::npos )
+          infos->displayname.Format("A: Audio %02d", i + 1);
 
         m_audioStreams.push_back(reinterpret_cast<SAudioStreamInfos *>(infos));
-        CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->name.c_str());
+        CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->displayname.c_str());
       } else if (mediaType->majortype == MEDIATYPE_Subtitle)
       {
         m_subtitleStreams.push_back(reinterpret_cast<SSubtitleStreamInfos *>(infos));
-        CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, infos->name.c_str());
+        CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, infos->displayname.c_str());
       }
 
       DeleteMediaType(mediaType);
@@ -416,17 +420,17 @@ void CStreamsManager::LoadStreams()
             continue;
 
           GetStreamInfos(pMediaType, infos);
-          if (infos->name.empty())
+          if (infos->displayname.empty())
           {
-            infos->name = pinName;
+            infos->displayname = pinName;
           }
 
           /* Apply regex */
           for (std::vector<boost::shared_ptr<CRegExp>>::iterator it = regex.begin(); it != regex.end(); ++it)
           {
-            if ( (*it)->RegFind(infos->name) > -1 )
+            if ( (*it)->RegFind(infos->displayname) > -1 )
             {
-              infos->name = (*it)->GetMatch(1);
+              infos->displayname = (*it)->GetMatch(1);
               break;
             }
           }
@@ -436,8 +440,8 @@ void CStreamsManager::LoadStreams()
 
           if (pMediaType->majortype == MEDIATYPE_Audio)
           {
-            if (infos->name.find("Undetermined") != std::string::npos )
-              infos->name.Format("Audio %02d", i + 1);
+            if (infos->displayname.find("Undetermined") != std::string::npos )
+              infos->displayname.Format("Audio %02d", i + 1);
 
             if (i == 0)
               infos->flags = AMSTREAMSELECTINFO_ENABLED;
@@ -445,13 +449,13 @@ void CStreamsManager::LoadStreams()
               infos->connected = true;
 
             m_audioStreams.push_back(reinterpret_cast<SAudioStreamInfos *>(infos));
-            CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->name.c_str());
+            CLog::Log(LOGNOTICE, "%s Audio stream found : %s", __FUNCTION__, infos->displayname.c_str());
             i++;
             
           } else if (pMediaType->majortype == MEDIATYPE_Subtitle)
           {
-            if (infos->name.find("Undetermined") != std::string::npos )
-              infos->name.Format("Subtitle %02d", j + 1);
+            if (infos->displayname.find("Undetermined") != std::string::npos )
+              infos->displayname.Format("Subtitle %02d", j + 1);
 
             if (j == 0)
               infos->flags = AMSTREAMSELECTINFO_ENABLED;
@@ -459,7 +463,7 @@ void CStreamsManager::LoadStreams()
               infos->connected = true;
 
             m_subtitleStreams.push_back(reinterpret_cast<SSubtitleStreamInfos *>(infos));
-            CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, infos->name.c_str());
+            CLog::Log(LOGNOTICE, "%s Subtitle stream found : %s", __FUNCTION__, infos->displayname.c_str());
             j++;
           }
 
@@ -492,6 +496,18 @@ void CStreamsManager::LoadStreams()
     AddSubtitle(*it);
   }
   g_settings.m_currentVideoSettings.m_SubtitleCached = true;
+
+
+  ////////////////////////////////
+  /// SUBTITLE TESTING  //////////
+  ////////////////////////////////
+#if 0
+  g_dllMpcSubs.Load();
+
+  g_dllMpcSubs.LoadSubtitles("", m_pGraphBuilder, "", &SubtitleManager);
+  g_dllMpcSubs.EnableSubtitle(true);
+  g_dllMpcSubs.SetCurrent(2);
+#endif
 }
 
 bool CStreamsManager::InitManager(CDSGraph *DSGraph)
@@ -638,14 +654,14 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
       SUBTITLEINFO *i = reinterpret_cast<SUBTITLEINFO *>(pMediaType->pbFormat);
       infos->isolang = i->IsoLang;
       infos->offset = i->dwOffset;
-      infos->name = i->TrackName;
-      if (infos->name.empty())
-        infos->name = ISOToLanguage(infos->isolang);
-      else 
-        infos->name.Format("%s [%s]", infos->name, ISOToLanguage(infos->isolang));
+      infos->trackname = i->TrackName;
+      if (! infos->lcid)
+        infos->lcid = DShowUtil::ISO6392ToLcid(i->IsoLang);
     }
     infos->subtype = pMediaType->subtype;
   }
+
+  FormatStreamName(*s);
 }
 
 int CStreamsManager::GetPictureWidth()
@@ -701,7 +717,7 @@ void CStreamsManager::GetSubtitleName( int iStream, CStdString &strStreamName )
   {
     if (i == iStream)
     {
-      strStreamName = (*it)->name;
+      strStreamName = (*it)->displayname;
     }
   }
 }
@@ -916,14 +932,17 @@ int CStreamsManager::AddSubtitle(const CStdString& subFilePath)
 
     if (! s->isolang.empty())
     {
-      s->name = ISOToLanguage(s->isolang);
-      if (s->name.empty())
-        s->name = CUtil::GetFileName(s->path);
-      else
-        s->name += " [External]";
+      s->lcid = DShowUtil::ISO6392ToLcid(s->isolang);
+      if (! s->lcid)
+        DShowUtil::ISO6391ToLcid(s->isolang);
+
+      FormatStreamName(*s.get());
     } 
+
+    if (s->displayname.empty())
+      s->displayname = CUtil::GetFileName(s->path);
     else
-      s->name = CUtil::GetFileName(s->path);
+      s->displayname += " [External]";
 
     m_subtitleStreams.push_back(s.release());
 
@@ -1059,4 +1078,30 @@ SExternalSubtitleInfos* CStreamsManager::GetExternalSubtitleStreamInfos( unsigne
     return NULL;
 
   return reinterpret_cast<SExternalSubtitleInfos *>(m_subtitleStreams[iIndex]);
+}
+
+void CStreamsManager::FormatStreamName( SStreamInfos& s )
+{
+  // First, if lcid isn't 0, try GetLocalInfo
+  if (s.lcid)
+  {
+    CStdString name;
+    if (GetLocaleInfo(s.lcid, LOCALE_SLANGUAGE, name.GetBuffer(64), 64))
+    {
+      if (s.type == SUBTITLE && !((SSubtitleStreamInfos&)s).trackname.empty())
+        s.displayname.Format("%s (%s)", name, ((SSubtitleStreamInfos&)s).trackname);
+      else
+        s.displayname = name;
+    }
+  }
+
+  if (s.type == SUBTITLE && s.displayname.empty())
+  {
+    SSubtitleStreamInfos& c = ((SSubtitleStreamInfos&)s);
+    CStdString name = ISOToLanguage(c.isolang);
+    if (! c.trackname.empty())
+      c.displayname.Format("%s (%s)", name, ((SSubtitleStreamInfos&)s).trackname);
+    else
+      c.displayname = name;
+  }
 }
