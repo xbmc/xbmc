@@ -188,7 +188,6 @@ bool CGUIWrappingListContainer::SelectItemFromPoint(const CPoint &point)
       return false;
     float amount = min((start - pos) / sizeOfItem, mouse_max_amount);
     m_analogScrollCount += amount * amount * mouse_scroll_speed;
-    CLog::Log(LOGERROR, "%s: Speed %f", __FUNCTION__, amount);
     if (m_analogScrollCount > 1)
     {
       Scroll(-1);

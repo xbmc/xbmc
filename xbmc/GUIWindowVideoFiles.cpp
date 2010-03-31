@@ -399,7 +399,7 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
   bool bScan=false;
   if (iFound == 0)
   {
-    m_database.GetScraperForPath(item->m_strPath,info, settings,iFound);
+    m_database.GetScraperForPath(item->m_strPath,info,settings);
   }
   SScraperInfo info2 = info;
   SScanSettings settings2 = settings;
@@ -557,6 +557,11 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
                  info.strContent.Equals("musicvideos"))
             {
               buttons.Add(CONTEXT_BUTTON_INFO, infoString);
+
+              if (item->GetOverlayImage().Equals("OverlayWatched.png"))
+                buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
+              else
+                buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
             }
             m_database.Open();
             if (!item->IsParentFolder())
@@ -582,11 +587,6 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       }
       if (m_vecItems->IsPlugin() && item->HasVideoInfoTag() && !item->GetPropertyBOOL("pluginreplacecontextitems"))
         buttons.Add(CONTEXT_BUTTON_INFO,13346); // only movie information for now
-
-      if (item->GetOverlayImage().Equals("OverlayWatched.png"))
-        buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
-      else
-        buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
     }
   }
   else

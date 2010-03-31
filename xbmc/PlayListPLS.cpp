@@ -107,6 +107,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
       return false;
   }
 
+  bool bFailed = false;
   while (file.ReadString(szLine, sizeof(szLine) ) )
   {
     strLine = szLine;
@@ -128,14 +129,11 @@ bool CPlayListPLS::Load(const CStdString &strFile)
       else if (strLeft.Left(4) == "file")
       {
         vector <int>::size_type idx = atoi(strLeft.c_str() + 4);
-        Resize(idx);
-
-        if (idx == 0)
+        if (!Resize(idx))
         {
-          CLog::Log(LOGWARNING, "%s - Not a valid PLS playlist, location of first file is not permitted (File0 should be File1)",__FUNCTION__);
-          return false;
+          bFailed = true;
+          break;
         }
-
         if (m_vecItems[idx - 1]->GetLabel().empty())
           m_vecItems[idx - 1]->SetLabel(CUtil::GetFileName(strValue));
         CFileItem item(strValue, false);
@@ -151,14 +149,22 @@ bool CPlayListPLS::Load(const CStdString &strFile)
       else if (strLeft.Left(5) == "title")
       {
         vector <int>::size_type idx = atoi(strLeft.c_str() + 5);
-        Resize(idx);
+        if (!Resize(idx))
+        {
+          bFailed = true;
+          break;
+        }
         g_charsetConverter.unknownToUTF8(strValue);
         m_vecItems[idx - 1]->SetLabel(strValue);
       }
       else if (strLeft.Left(6) == "length")
       {
         vector <int>::size_type idx = atoi(strLeft.c_str() + 6);
-        Resize(idx);
+        if (!Resize(idx))
+        {
+          bFailed = true;
+          break;
+        }
         m_vecItems[idx - 1]->GetMusicInfoTag()->SetDuration(atol(strValue.c_str()));
       }
       else if (strLeft == "playlistname")
@@ -169,6 +175,12 @@ bool CPlayListPLS::Load(const CStdString &strFile)
     }
   }
   file.Close();
+
+  if (bFailed)
+  {
+    CLog::Log(LOGERROR, "File %s is not a valid PLS playlist. Location of first file,title or length is not permitted (eg. File0 should be File1)", CUtil::GetFileName(strFileName).c_str());
+    return false;
+  }
 
   // check for missing entries
   ivecItems p = m_vecItems.begin();
@@ -390,11 +402,15 @@ bool CPlayListRAM::LoadData(istream& stream)
   return true;
 }
 
-void CPlayListPLS::Resize(vector <int>::size_type newSize)
+bool CPlayListPLS::Resize(vector <int>::size_type newSize)
 {
+  if (newSize == 0)
+    return false;
+
   while (m_vecItems.size() < newSize)
   {
     CFileItemPtr fileItem(new CFileItem());
     m_vecItems.push_back(fileItem);
   }
+  return true;
 }

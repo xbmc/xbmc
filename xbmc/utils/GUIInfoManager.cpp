@@ -3121,23 +3121,21 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_PLOT_OUTLINE:
       return m_currentFile->GetVideoInfoTag()->m_strPlotOutline;
     case VIDEOPLAYER_EPISODE:
-      if (m_currentFile->GetVideoInfoTag()->m_iEpisode > 0)
       {
         CStdString strYear;
         if (m_currentFile->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
           strYear.Format("S%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
-        else
+        else if(m_currentFile->GetVideoInfoTag()->m_iEpisode > 0) 
           strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
         return strYear;
       }
       break;
     case VIDEOPLAYER_SEASON:
-      if (m_currentFile->GetVideoInfoTag()->m_iSeason > -1)
       {
         CStdString strYear;
         if (m_currentFile->GetVideoInfoTag()->m_iSpecialSortSeason > 0)
           strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iSpecialSortSeason);
-        else
+        else if(m_currentFile->GetVideoInfoTag()->m_iSeason > 0)
           strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iSeason);
         return strYear;
       }
@@ -3778,7 +3776,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       CStdString strResult;
       if (item->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
         strResult.Format("S%d",item->GetVideoInfoTag()->m_iEpisode);
-      else if (item->GetVideoInfoTag()->m_iEpisode >= 0) // if m_iEpisode = -1 there's no episode detail
+      else if (item->GetVideoInfoTag()->m_iEpisode > 0) // if m_iEpisode = -1 there's no episode detail
         strResult.Format("%d",item->GetVideoInfoTag()->m_iEpisode);
       return strResult;
     }
@@ -3789,7 +3787,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       CStdString strResult;
       if (item->GetVideoInfoTag()->m_iSpecialSortSeason > 0)
         strResult.Format("%d",item->GetVideoInfoTag()->m_iSpecialSortSeason);
-      else if (item->GetVideoInfoTag()->m_iSeason >= 0) // if m_iSeason = -1 there's no season detail
+      else if (item->GetVideoInfoTag()->m_iSeason > 0) // if m_iSeason = -1 there's no season detail
         strResult.Format("%d",item->GetVideoInfoTag()->m_iSeason);
       return strResult;
     }

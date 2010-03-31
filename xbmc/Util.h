@@ -265,6 +265,12 @@ public:
   
   static void InitRandomSeed();
 
+  // Get decimal integer representation of roman digit, ivxlcdm are valid
+  // return 0 for other chars;
+  static int LookupRomanDigit(char roman_digit);
+  // Translate a string of roman numerals to decimal a decimal integer
+  // return -1 on error, valid range is 1-3999
+  static int TranslateRomanNumeral(const char* roman_numeral);
 };
 
 

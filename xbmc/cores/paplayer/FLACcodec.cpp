@@ -132,8 +132,16 @@ __int64 FLACCodec::Seek(__int64 iSeekTime)
   // may be called when the buffer is almost full (resulting in a buffer
   // overrun unless we reset m_BufferSize first).
   m_BufferSize=0;
-  m_dll.FLAC__stream_decoder_seek_absolute(m_pFlacDecoder,
-                                           (__int64)(iSeekTime*m_SampleRate)/1000);
+  if(!m_dll.FLAC__stream_decoder_seek_absolute(m_pFlacDecoder, (__int64)(iSeekTime*m_SampleRate)/1000))
+    CLog::Log(LOGERROR, "FLACCodec::Seek - failed to seek");
+
+  if(m_dll.FLAC__stream_decoder_get_state(m_pFlacDecoder)==FLAC__STREAM_DECODER_SEEK_ERROR)
+  {
+    CLog::Log(LOGINFO, "FLACCodec::Seek - must reset decoder after seek");
+    if(!m_dll.FLAC__stream_decoder_flush(m_pFlacDecoder))
+      CLog::Log(LOGERROR, "FLACCodec::Seek - flush failed");
+  }
+
   return iSeekTime;
 }
 

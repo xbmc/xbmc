@@ -198,12 +198,12 @@ void CGUIListContainer::Scroll(int amount)
 void CGUIListContainer::ValidateOffset()
 { // first thing is we check the range of m_offset
   if (!m_layout) return;
-  if (m_offset > (int)m_items.size() - m_itemsPerPage)
+  if (m_offset > (int)m_items.size() - m_itemsPerPage || m_scrollOffset > ((int)m_items.size() - m_itemsPerPage) * m_layout->Size(m_orientation))
   {
     m_offset = m_items.size() - m_itemsPerPage;
     m_scrollOffset = m_offset * m_layout->Size(m_orientation);
   }
-  if (m_offset < 0)
+  if (m_offset < 0 || m_scrollOffset < 0)
   {
     m_offset = 0;
     m_scrollOffset = 0;

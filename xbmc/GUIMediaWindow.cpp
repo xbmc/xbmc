@@ -574,6 +574,9 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   {
     DWORD time = timeGetTime();
 
+    if (strDirectory.IsEmpty())
+      SetupShares();
+
     if (!m_rootDir.GetDirectory(strDirectory, items))
       return false;
 

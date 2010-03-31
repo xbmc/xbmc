@@ -265,6 +265,11 @@ void CGUIWindowSlideShow::Render()
   int iSlides = m_slides->Size();
   if (!iSlides) return ;
 
+  if (m_iNextSlide < 0 || m_iNextSlide >= m_slides->Size())
+    m_iNextSlide = 0;
+  if (m_iCurrentSlide < 0 || m_iCurrentSlide >= m_slides->Size())
+    m_iCurrentSlide = 0;
+
   // Create our background loader if necessary
   if (!m_pBackgroundLoader)
   {

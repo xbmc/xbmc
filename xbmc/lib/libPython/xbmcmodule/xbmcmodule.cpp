@@ -698,6 +698,46 @@ namespace PYXBMC
     return Py_BuildValue((char*)"s", strPath.c_str());
   }
 
+  // getcleanmovietitle function
+  PyDoc_STRVAR(getCleanMovieTitle__doc__,
+    "getCleanMovieTitle(path[, usefoldername]) -- Returns a clean movie title and year string if available.\n"
+    "\n"
+    "path           : string or unicode - String to clean\n"
+    "bool           : [opt] bool - use folder names (defaults to false)\n"
+    "\n"
+    "example:\n"
+    "  - title, year = xbmc.getCleanMovieTitle('/path/to/moviefolder/test.avi', True)\n");
+
+  PyObject* XBMC_GetCleanMovieTitle(PyObject *self, PyObject *args, PyObject *kwds)
+  {
+    static const char *keywords[] = { "path", "usefoldername", NULL };
+    PyObject *pObjectText;
+    char bUseFolderName = false;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"O|b",
+      (char**)keywords,
+      &pObjectText,
+      &bUseFolderName
+      ))
+    {
+      return NULL;
+    };
+
+    CStdString strPath;
+    if (!PyXBMCGetUnicodeString(strPath, pObjectText, 1)) return NULL;
+
+    CFileItem item(strPath, false);
+    CStdString strName = item.GetMovieName(bUseFolderName);
+
+    CStdString strTitle, strTitleAndYear, strYear;
+    CUtil::CleanString(strName, strTitle, strTitleAndYear, strYear, bUseFolderName);
+
+    return Py_BuildValue((char*)"s,s", strTitle.c_str(), strYear.c_str());
+  }
+
   // validatePath function
   PyDoc_STRVAR(validatePath__doc__,
     "validatePath(path) -- Returns the validated path.\n"
@@ -886,6 +926,8 @@ namespace PYXBMC
 
     {(char*)"getRegion", (PyCFunction)XBMC_GetRegion, METH_VARARGS|METH_KEYWORDS, getRegion__doc__},
     {(char*)"getSupportedMedia", (PyCFunction)XBMC_GetSupportedMedia, METH_VARARGS|METH_KEYWORDS, getSupportedMedia__doc__},
+
+    {(char*)"getCleanMovieTitle", (PyCFunction)XBMC_GetCleanMovieTitle, METH_VARARGS|METH_KEYWORDS, getCleanMovieTitle__doc__},
 
     {(char*)"skinHasImage", (PyCFunction)XBMC_SkinHasImage, METH_VARARGS|METH_KEYWORDS, skinHasImage__doc__},
     {NULL, NULL, 0, NULL}
