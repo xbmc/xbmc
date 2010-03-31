@@ -8,7 +8,6 @@
 #include "..\DSUtil\NullRenderers.h"
 #include "SubManager.h"
 #include "TextPassThruFilter.h"
-#include "IPinHook.h"
 
 STSStyle g_style;
 BOOL g_overrideUserStyles;
@@ -25,6 +24,10 @@ CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr)
 	m_delay(0),
 	m_lastSize(size)
 {
+  g__rtTimePerFrame = 0; // Variable set on IPinHook on XBMC side
+  g__tSampleStart = 0;
+  g__tSegmentStart = 0;
+
 	//ATLTRACE("CSubManager constructor: texture size %dx%d, buffer ahead: %d, pow2tex: %d", g_textureSize.cx, g_textureSize.cy, g_subPicsBufferAhead, g_pow2tex);
 	m_pAllocator = new CDX9SubPicAllocator(d3DDev, g_textureSize, g_pow2tex/*AfxGetAppSettings().fSPCPow2Tex*/);
 	hr = S_OK;
@@ -232,7 +235,7 @@ BOOL CSubManager::GetEnable()
 
 void CSubManager::SetTime(REFERENCE_TIME nsSampleTime)
 {
-	m_rtNow = g_tSegmentStart + nsSampleTime - m_delay;
+	m_rtNow = g__tSegmentStart + nsSampleTime - m_delay;
 	m_pSubPicQueue->SetTime(m_rtNow);
 	m_isSetTime = true;
 }
@@ -243,11 +246,9 @@ void CSubManager::Render(int x, int y, int width, int height)
 		return;
 
 	if (!m_isSetTime)
-	{
-		m_rtNow = g_tSegmentStart + g_tSampleStart - m_delay;
-		m_pSubPicQueue->SetTime(m_rtNow);
-	}
-	m_fps = 10000000.0 / g_rtTimePerFrame;
+    SetTime(g__tSampleStart);
+
+	m_fps = 10000000.0 / g__rtTimePerFrame;
 	m_pSubPicQueue->SetFPS(m_fps);
 
 	Com::SmartSize size(width, height);
@@ -262,7 +263,7 @@ void CSubManager::Render(int x, int y, int width, int height)
 	}
 
 	Com::SmartPtr<ISubPic> pSubPic;
-	if(m_pSubPicQueue->LookupSubPic(m_rtNow, &pSubPic)) 
+	if(m_pSubPicQueue->LookupSubPic(m_rtNow, pSubPic)) 
 	{
  		Com::SmartRect rcSource, rcDest;
 		if (SUCCEEDED (pSubPic->GetSourceAndDest(&size, rcSource, rcDest))) {
@@ -541,24 +542,25 @@ void CSubManager::SaveToDisk()
 
 void CSubManager::LoadSubtitlesForFile(const wchar_t* fn, IGraphBuilder* pGB, const wchar_t* paths)
 {
-	{//hook vmr
-		Com::SmartPtr<IBaseFilter> vmr;
-		pGB->FindFilterByName(L"Enhanced Video Renderer", &vmr);
-		if (!vmr)
-		{
-			pGB->FindFilterByName(L"Video Mixing Renderer 9", &vmr);
-		}
-		if (vmr)
-		{
-			Com::SmartPtr<IPin> pPin = GetFirstPin(vmr);
-			Com::SmartQIPtr<IMemInputPin> pMemInputPin = pPin;
-			HookNewSegmentAndReceive((IPinC*)(IPin*)pPin, (IMemInputPinC*)(IMemInputPin*)pMemInputPin);
-		}
-	}
 	LoadInternalSubtitles(pGB);	
 	LoadExternalSubtitles(fn, paths);
 	if(GetCount() > 0)
 	{
 		m_iSubtitleSel = 0x80000000; //stream 0, disabled
 	} 
+}
+
+void CSubManager::SetTimePerFrame( REFERENCE_TIME timePerFrame )
+{
+  g__rtTimePerFrame = timePerFrame;
+}
+
+void CSubManager::SetSegmentStart( REFERENCE_TIME segmentStart )
+{
+  g__tSegmentStart = segmentStart;
+}
+
+void CSubManager::SetSampleStart( REFERENCE_TIME sampleStart )
+{
+  g__tSampleStart = sampleStart;
 }

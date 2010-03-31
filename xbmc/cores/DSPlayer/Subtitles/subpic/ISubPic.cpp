@@ -475,7 +475,7 @@ STDMETHODIMP CSubPicQueue::Invalidate(REFERENCE_TIME rtInvalidate)
 	return S_OK;
 }
 
-STDMETHODIMP_(bool) CSubPicQueue::LookupSubPic(REFERENCE_TIME rtNow, ISubPic** ppSubPic)
+STDMETHODIMP_(bool) CSubPicQueue::LookupSubPic(REFERENCE_TIME rtNow, Com::SmartPtr<ISubPic>& ppSubPic)
 {
 
 	CAutoLock cQueueLock(&m_csQueueLock);
@@ -498,7 +498,7 @@ STDMETHODIMP_(bool) CSubPicQueue::LookupSubPic(REFERENCE_TIME rtNow, ISubPic** p
 			{
 				rtBestStop = Diff;
 //				TRACE("   %f->%f", double(Diff) / 10000000.0, double(rtStop) / 10000000.0);
-				ppSubPic = &pSubPic;
+				ppSubPic = pSubPic;
 			}
 #if DSubPicTraceLevel > 2
 			else
@@ -514,7 +514,7 @@ STDMETHODIMP_(bool) CSubPicQueue::LookupSubPic(REFERENCE_TIME rtNow, ISubPic** p
 #if DSubPicTraceLevel > 2
 	TRACE("\n");
 #endif
-	if (!(*ppSubPic))
+	if (!ppSubPic)
 	{
 #if DSubPicTraceLevel > 1
 		TRACE("NO Display: %f\n", double(rtNow) / 10000000.0);
@@ -531,7 +531,7 @@ STDMETHODIMP_(bool) CSubPicQueue::LookupSubPic(REFERENCE_TIME rtNow, ISubPic** p
 #endif
 	}
 
-	return(!!(*ppSubPic));
+	return(!!ppSubPic);
 }
 
 STDMETHODIMP CSubPicQueue::GetStats(int& nSubPics, REFERENCE_TIME& rtNow, REFERENCE_TIME& rtStart, REFERENCE_TIME& rtStop)
@@ -585,7 +585,11 @@ REFERENCE_TIME CSubPicQueue::UpdateQueue()
 
 	if (rtNow < m_rtNowLast)
 	{
-		m_Queue.clear();
+    for (std::list<ISubPic *>::iterator it = m_Queue.begin(); it != m_Queue.end(); ++it)
+    {
+      m_Queue.front()->Release();
+      m_Queue.pop_front();
+    }
 		m_rtNowLast = rtNow;
 	}
 	else
@@ -642,6 +646,7 @@ REFERENCE_TIME CSubPicQueue::UpdateQueue()
 	#if DSubPicTraceLevel > 0
 					TRACE("Remove: %f->%f\n", double(rtStart) / 10000000.0, double(rtStop) / 10000000.0);
 	#endif
+          (*ThisPos)->Release();
 					m_Queue.erase(ThisPos);
 					continue;
 				}
@@ -667,6 +672,7 @@ void CSubPicQueue::AppendQueue(ISubPic* pSubPic)
 {
 	CAutoLock cQueueLock(&m_csQueueLock);
 
+  pSubPic->AddRef();
 	m_Queue.push_back(pSubPic);
 }
 
@@ -726,7 +732,7 @@ DWORD CSubPicQueue::ThreadProc()
 						if (SUCCEEDED (hr2 = pSubPicProvider->GetTextureSize(pos, MaxTextureSize, VirtualSize, VirtualTopLeft)))
 							m_pAllocator->SetMaxTextureSize(MaxTextureSize);
 
-						ISubPic* pStatic;
+            Com::SmartPtr<ISubPic> pStatic;
 						if(FAILED(m_pAllocator->GetStatic(&pStatic)))
 							break;
 
@@ -767,7 +773,7 @@ DWORD CSubPicQueue::ThreadProc()
 						if(S_OK != hr) // subpic was probably empty
 							continue;
 
-						ISubPic* pDynamic;
+            Com::SmartPtr<ISubPic> pDynamic;
 						if(FAILED(m_pAllocator->AllocDynamic(&pDynamic))
 						|| FAILED(pStatic->CopyTo(pDynamic)))
 							break;
@@ -808,6 +814,7 @@ DWORD CSubPicQueue::ThreadProc()
 #if DSubPicTraceLevel >= 0
 					//TRACE(_T("Removed subtitle because of invalidation: %f->%f\n"), double(rtStart) / 10000000.0, double(rtStop) / 10000000.0);
 #endif
+          (*ThisPos)->Release();
 					m_Queue.erase(ThisPos);
 					continue;
 				}
@@ -855,7 +862,7 @@ STDMETHODIMP CSubPicQueueNoThread::Invalidate(REFERENCE_TIME rtInvalidate)
 	return S_OK;
 }
 
-STDMETHODIMP_(bool) CSubPicQueueNoThread::LookupSubPic(REFERENCE_TIME rtNow, ISubPic** ppSubPic)
+STDMETHODIMP_(bool) CSubPicQueueNoThread::LookupSubPic(REFERENCE_TIME rtNow, Com::SmartPtr<ISubPic>& ppSubPic)
 {
 
 	ISubPic* pSubPic;
@@ -874,11 +881,11 @@ STDMETHODIMP_(bool) CSubPicQueueNoThread::LookupSubPic(REFERENCE_TIME rtNow, ISu
 
 	if(pSubPic->GetStart() <= rtNow && rtNow < pSubPic->GetStop())
 	{
-		ppSubPic = &pSubPic;
+		ppSubPic = pSubPic;
 	}
 	else
 	{
-		ISubPicProvider* pSubPicProvider;
+		Com::SmartPtr<ISubPicProvider> pSubPicProvider;
 		if(SUCCEEDED(GetSubPicProvider(&pSubPicProvider)) && pSubPicProvider
 		&& SUCCEEDED(pSubPicProvider->Lock()))
 		{
@@ -905,16 +912,16 @@ STDMETHODIMP_(bool) CSubPicQueueNoThread::LookupSubPic(REFERENCE_TIME rtNow, ISu
 					
 					if(m_pAllocator->IsDynamicWriteOnly())
 					{
-						ISubPic* pStatic;
+						Com::SmartPtr<ISubPic> pStatic;
 						if(SUCCEEDED(m_pAllocator->GetStatic(&pStatic))
 						&& SUCCEEDED(RenderTo(pStatic, rtStart, rtStop, fps, false))
 						&& SUCCEEDED(pStatic->CopyTo(pSubPic)))
-							ppSubPic = &pSubPic;
+							ppSubPic = pSubPic;
 					}
 					else
 					{
 						if(SUCCEEDED(RenderTo(m_pSubPic, rtStart, rtStop, fps, false)))
-							ppSubPic = &pSubPic;
+							ppSubPic = pSubPic;
 					}
 					if (SUCCEEDED(hr2))
 						pSubPic->SetVirtualTextureSize (VirtualSize, VirtualTopLeft);
@@ -923,16 +930,16 @@ STDMETHODIMP_(bool) CSubPicQueueNoThread::LookupSubPic(REFERENCE_TIME rtNow, ISu
 
 			pSubPicProvider->Unlock();
 
-			if(*ppSubPic)
+			if(ppSubPic)
 			{
 				CAutoLock cAutoLock(&m_csLock);
 
-				m_pSubPic = *ppSubPic;
+				m_pSubPic = ppSubPic;
 			}
 		}
 	}
 
-	return(!!(*ppSubPic));
+	return(!!ppSubPic);
 }
 
 STDMETHODIMP CSubPicQueueNoThread::GetStats(int& nSubPics, REFERENCE_TIME& rtNow, REFERENCE_TIME& rtStart, REFERENCE_TIME& rtStop)
@@ -1005,8 +1012,8 @@ STDMETHODIMP ISubPicAllocatorPresenterImpl::NonDelegatingQueryInterface(REFIID r
 
 void ISubPicAllocatorPresenterImpl::AlphaBltSubPic(Com::SmartSize size, SubPicDesc* pTarget)
 {
-	ISubPic* pSubPic;
-	if(m_pSubPicQueue->LookupSubPic(m_rtNow, &pSubPic))
+	Com::SmartPtr<ISubPic> pSubPic;
+	if(m_pSubPicQueue->LookupSubPic(m_rtNow, pSubPic))
 	{
 		Com::SmartRect rcSource, rcDest;
 		if (SUCCEEDED (pSubPic->GetSourceAndDest(&size, rcSource, rcDest)))

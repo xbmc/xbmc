@@ -32,6 +32,7 @@
 #include "DShowUtil/smartptr.h"
 #include "dsconfig.h"
 #define LOG_FILE        _T("dxva.log")
+#include "StreamsManager.h"
 
 //#define LOG_BITSTREAM
 //#define LOG_MATRIX
@@ -140,6 +141,9 @@ static HRESULT (STDMETHODCALLTYPE * NewSegmentOrg)(IPinC * This, /* [in] */ REFE
 static HRESULT STDMETHODCALLTYPE NewSegmentMine(IPinC * This, /* [in] */ REFERENCE_TIME tStart, /* [in] */ REFERENCE_TIME tStop, /* [in] */ double dRate)
 {
   g_tSegmentStart = tStart;
+  if (CStreamsManager::getSingleton()->SubtitleManager)
+    CStreamsManager::getSingleton()->SubtitleManager->SetSegmentStart(g_tSegmentStart);
+
   return NewSegmentOrg(This, tStart, tStop, dRate);
 }
 
@@ -149,7 +153,14 @@ static HRESULT STDMETHODCALLTYPE ReceiveMineI(IMemInputPinC * This, IMediaSample
 {
   REFERENCE_TIME rtStart, rtStop;
   if(pSample && SUCCEEDED(pSample->GetTime(&rtStart, &rtStop)))
+  {
     g_tSampleStart = rtStart;
+    if (CStreamsManager::getSingleton()->SubtitleManager)
+    {
+      CStreamsManager::getSingleton()->SubtitleManager->SetSampleStart(g_tSampleStart);
+      CStreamsManager::getSingleton()->SubtitleManager->SetTimePerFrame(rtStop - rtStart);
+    }
+  }
   return ReceiveOrg(This, pSample);
 }
 

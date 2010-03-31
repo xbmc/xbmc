@@ -32,6 +32,7 @@
 #include "FileSystem/File.h"
 #include "MathUtils.h"
 #include "DShowUtil/DShowUtil.h"
+#include "Subtitles/DsSubtitleManager.h"
 
 CWinDsRenderer::CWinDsRenderer():
   m_bConfigured(false),
@@ -198,6 +199,13 @@ void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
 
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetPixelShader( NULL );
+
+  ////////////////////////////////
+  /// SUBTITLE TESTING  //////////
+  ////////////////////////////////
+#if 0
+  g_dllMpcSubs.Render(0, 0, 800, 600);
+#endif
 }
 
 bool CWinDsRenderer::Supports(EINTERLACEMETHOD method)

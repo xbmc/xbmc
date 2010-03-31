@@ -278,22 +278,22 @@ DEFINE_GUID(CLSID_ReClock,
 
 IPin* GetFirstPin(IBaseFilter* pBF, PIN_DIRECTION dir)
 {
-	if(!pBF) return(NULL);
+  if(!pBF) return(NULL);
 
-	BeginEnumPins(pBF, pEP, pPin)
-	{
-		PIN_DIRECTION dir2;
-		pPin->QueryDirection(&dir2);
-		if(dir == dir2)
-		{
-			IPin* pRet = pPin;
-			pRet->Release();
-			return(pRet);
-		}
-	}
-	EndEnumPins
+  BeginEnumPins(pBF, pEP, pPin)
+  {
+    PIN_DIRECTION dir2;
+    pPin->QueryDirection(&dir2);
+    if(dir == dir2)
+    {
+      IPin* pRet = pPin.Detach();
+      pRet->Release();
+      return(pRet);
+    }
+  }
+  EndEnumPins
 
-	return(NULL);
+  return(NULL);
 }
 
 /*IPin* GetFirstDisconnectedPin(IBaseFilter* pBF, PIN_DIRECTION dir)

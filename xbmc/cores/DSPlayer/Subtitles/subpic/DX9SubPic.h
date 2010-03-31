@@ -68,7 +68,7 @@ public:
 class CDX9SubPicAllocator;
 class CDX9SubPic : public ISubPicImpl
 {
-	IDirect3DSurface9* m_pSurface;
+  Com::SmartPtr<IDirect3DSurface9> m_pSurface;
 
 protected:
 	STDMETHODIMP_(void*) GetObject(); // returns IDirect3DTexture9*
@@ -91,7 +91,7 @@ public:
 
 class CDX9SubPicAllocator : public ISubPicAllocatorImpl, public CCritSec
 {
-	IDirect3DDevice9* m_pD3DDev;
+  Com::SmartPtr<IDirect3DDevice9> m_pD3DDev;
 	Com::SmartSize m_maxsize;
 
 
@@ -99,7 +99,7 @@ class CDX9SubPicAllocator : public ISubPicAllocatorImpl, public CCritSec
 
 public:
 	static CCritSec ms_SurfaceQueueLock;
-  std::list< IDirect3DSurface9* > m_FreeSurfaces;
+  std::list<IDirect3DSurface9 *> m_FreeSurfaces;
   std::list<CDX9SubPic *> m_AllocatedSurfaces;
 
 	void GetStats(int &_nFree, int &_nAlloc);

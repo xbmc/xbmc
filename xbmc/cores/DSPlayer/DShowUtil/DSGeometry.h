@@ -34,7 +34,7 @@ namespace Com
 class SmartSize;
 class SmartPoint;
 class SmartRect;
-
+#include <windef.h>
 class SmartSize : public tagSIZE
 {
 public:

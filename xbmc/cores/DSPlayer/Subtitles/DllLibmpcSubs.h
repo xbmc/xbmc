@@ -29,7 +29,9 @@ extern "C" {
 }
 #include "DynamicDll.h"
 #include "utils/log.h"
+#include "mpc-hc_subs/ISubManager.h"
 
+class CSubManager;
 
 class DllLibMpcSubsInterface
 {
@@ -38,7 +40,7 @@ public:
   virtual void SetDefaultStyle (SubtitleStyle_t * style, BOOL overrideUserStyles)=0;
   virtual void SetAdvancedOptions(int subPicsBufferAhead, SIZE textureSize, BOOL pow2tex, BOOL disableAnim)=0;
 //load subtitles for video file fn, with given (rendered) graph 
-  virtual BOOL LoadSubtitles(IDirect3DDevice9* d3DDev, SIZE size, const wchar_t* fn, IGraphBuilder* pGB, const wchar_t* paths)=0;
+  virtual BOOL LoadSubtitles(IDirect3DDevice9* d3DDev, SIZE size, const wchar_t* fn, IGraphBuilder* pGB, const wchar_t* paths, ISubManager **manager) = 0;
 //set sample time (set from EVR presenter, not used in case of vmr9)
   virtual void SetTime(REFERENCE_TIME nsSampleTime)=0;
 //render subtitles
@@ -71,7 +73,7 @@ class DllLibMpcSubs : public DllDynamic, DllLibMpcSubsInterface
   DEFINE_METHOD0(BOOL,GetEnable)
   DEFINE_METHOD1(BSTR,GetLanguage,(int p1))
   DEFINE_METHOD0(BOOL,IsModified)
-  DEFINE_METHOD5(BOOL,LoadSubtitles,(IDirect3DDevice9 * p1, SIZE p2, const wchar_t * p3, IGraphBuilder * p4, const wchar_t * p5))
+  DEFINE_METHOD6(BOOL,LoadSubtitles,(IDirect3DDevice9 * p1, SIZE p2, const wchar_t * p3, IGraphBuilder * p4, const wchar_t * p5, ISubManager **p6))
   DEFINE_METHOD4(void,Render,(int p1, int p2, int p3, int p4))
   DEFINE_METHOD0(void,SaveToDisk)
   DEFINE_METHOD4(void,SetAdvancedOptions,(int p1, SIZE p2, BOOL p3, BOOL p4))

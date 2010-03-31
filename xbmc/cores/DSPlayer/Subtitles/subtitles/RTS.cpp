@@ -848,7 +848,7 @@ int CSubtitle::GetFullWidth()
 	return(width);
 }
 
-int CSubtitle::GetFullLineWidth(std::list<CWord *>::const_iterator it)
+int CSubtitle::GetFullLineWidth(std::list<CWord *>::iterator it)
 {
 	int width = 0;
 
@@ -862,7 +862,7 @@ int CSubtitle::GetFullLineWidth(std::list<CWord *>::const_iterator it)
 	return(width);
 }
 
-int CSubtitle::GetWrapWidth(std::list<CWord *>::const_iterator it, int maxwidth)
+int CSubtitle::GetWrapWidth(std::list<CWord *>::iterator it, int maxwidth)
 {
 	if(m_wrapStyle == 0 || m_wrapStyle == 3)
 	{
@@ -899,7 +899,7 @@ int CSubtitle::GetWrapWidth(std::list<CWord *>::const_iterator it, int maxwidth)
 	return(maxwidth);
 }
 
-CLine* CSubtitle::GetNextLine(std::list<CWord *>::const_iterator& it, int maxwidth)
+CLine* CSubtitle::GetNextLine(std::list<CWord *>::iterator& it, int maxwidth)
 {
 	CLine* ret = DNew CLine();
 	if(!ret) return(NULL);
@@ -910,9 +910,9 @@ CLine* CSubtitle::GetNextLine(std::list<CWord *>::const_iterator& it, int maxwid
 
 	bool fEmptyLine = true;
 
-	for(; it != m_words.end(); ++it)
+	while(it != m_words.end())
 	{
-		CWord* w = *it;
+		CWord* w = *it; it++;
 
 		if(ret->m_ascent < w->m_ascent) ret->m_ascent = w->m_ascent;
 		if(ret->m_descent < w->m_descent) ret->m_descent = w->m_descent;
@@ -933,13 +933,13 @@ CLine* CSubtitle::GetNextLine(std::list<CWord *>::const_iterator& it, int maxwid
 		bool fWSC = w->m_fWhiteSpaceChar;
 
 		int width = w->m_width;
-		std::list<CWord *>::const_iterator it2 = it;
-		for(; it2 != m_words.end(); ++it)
+		std::list<CWord *>::iterator it2 = it;
+		while(it2 != m_words.end())
 		{
 			if((*it2)->m_fWhiteSpaceChar != fWSC
 			|| (*it2)->m_fLineBreak) break;
 
-			CWord* w2 = *it2;
+			CWord* w2 = *it2; it2++;
 			width += w2->m_width;
 		}
 
@@ -949,14 +949,14 @@ CLine* CSubtitle::GetNextLine(std::list<CWord *>::const_iterator& it, int maxwid
 			
 			while(it != it2)
 			{
-				ret->push_back((*it)->Copy());
+				ret->push_back((*it)->Copy()); it++;
 			}
 
 			it = it2;
 		}
 		else
 		{
-      if(it != m_words.end()) --(--it);
+      if(it != m_words.end()) it--;
       else it = m_words.end();
 
 			ret->m_width -= width;
@@ -1076,8 +1076,8 @@ void CSubtitle::MakeLines(Com::SmartSize size, Com::SmartRect marginRect)
 
 	CLine* l = NULL;
 	
-  std::list<CWord *>::const_iterator it = m_words.begin();
-	for(; it != m_words.end(); ++it)
+  std::list<CWord *>::iterator it = m_words.begin();
+	while(it != m_words.end())
 	{
 		l = GetNextLine(it, size.cx - marginRect.left - marginRect.right);
 		if(!l) break;
@@ -1112,11 +1112,11 @@ void CScreenLayoutAllocator::Empty()
 void CScreenLayoutAllocator::AdvanceToSegment(int segment, const std::vector<int>& sa)
 {
   std::list<SubRect>::iterator it = m_subrects.begin();
-	for(; it != m_subrects.end(); ++it)
+	while (it != m_subrects.end())
 	{
 		std::list<SubRect>::iterator prev = it;
 
-		SubRect& sr = *it;
+		SubRect& sr = *it; it++;
 
 		bool fFound = false;
 
@@ -1141,9 +1141,9 @@ Com::SmartRect CScreenLayoutAllocator::AllocRect(CSubtitle* s, int segment, int 
 	// TODO: handle collisions == 1 (reversed collisions)
 
   std::list<SubRect>::iterator it = m_subrects.begin();
-	for(; it != m_subrects.end(); ++it);
+	while (it != m_subrects.end())
 	{
-		SubRect& sr = *it;
+		SubRect& sr = *it; it++;
 		if(sr.segment == segment && sr.entry == entry) 
 		{
 			return(sr.r + Com::SmartRect(0, -s->m_topborder, 0, -s->m_bottomborder));
@@ -1161,9 +1161,9 @@ Com::SmartRect CScreenLayoutAllocator::AllocRect(CSubtitle* s, int segment, int 
 		fOK = true;
 
 		it = m_subrects.begin();
-		for(; it != m_subrects.end(); ++it);
+		while (it != m_subrects.end())
 		{
-			SubRect& sr = *it;
+			SubRect& sr = *it; it++;
 
 			if(layer == sr.layer && !(r & sr.r).IsRectEmpty())
 			{
@@ -2320,10 +2320,10 @@ STDMETHODIMP CRenderedTextSubtitle::Render(SubPicDesc& spd, REFERENCE_TIME rt, d
 	// clear any cached subs not in the range of +/-30secs measured from the segment's bounds
 	{
     std::map<int, CSubtitle*>::iterator it = m_subtitleCache.begin();
-    for(; it != m_subtitleCache.end(); ++it)
-		{
+    while (it != m_subtitleCache.end())
+    {
       int key = it->first;
-      CSubtitle* value = it->second;
+      CSubtitle* value = it->second; it++;
 
 			STSEntry& stse = at(key);
 			if(stse.end <= (t-30000) || stse.start > (t+30000)) 

@@ -192,7 +192,7 @@ public:
   static LPCTSTR GetDXVAMode(const GUID* guidDecoder);
   static void DumpBuffer(BYTE* pBuffer, int nSize);
   static CStdString ReftimeToString(const REFERENCE_TIME& rtVal);
-REFERENCE_TIME StringToReftime(LPCTSTR strVal);
+  static REFERENCE_TIME StringToReftime(LPCTSTR strVal);
   static COLORREF YCrCbToRGB_Rec601(BYTE Y, BYTE Cr, BYTE Cb);
   static COLORREF YCrCbToRGB_Rec709(BYTE Y, BYTE Cr, BYTE Cb);
   static DWORD  YCrCbToRGB_Rec601(BYTE A, BYTE Y, BYTE Cr, BYTE Cb);

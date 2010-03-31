@@ -156,9 +156,9 @@ public:
 class CSubtitle : public std::list<CLine*>
 {
 	int GetFullWidth();
-  int GetFullLineWidth(std::list<CWord *>::const_iterator it);
-	int GetWrapWidth(std::list<CWord *>::const_iterator it, int maxwidth);
-	CLine* GetNextLine(std::list<CWord *>::const_iterator& it, int maxwidth);
+  int GetFullLineWidth(std::list<CWord *>::iterator it);
+	int GetWrapWidth(std::list<CWord *>::iterator it, int maxwidth);
+	CLine* GetNextLine(std::list<CWord *>::iterator& it, int maxwidth);
 
 public:
 	int m_scrAlignment;

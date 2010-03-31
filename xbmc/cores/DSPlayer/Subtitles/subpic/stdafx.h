@@ -48,4 +48,4 @@
 #include <dvdmedia.h>
 #include "..\DSUtil\DSUtil.h"
 
-#include "DSGeometry.h"
+#include "DShowutil/DSGeometry.h"

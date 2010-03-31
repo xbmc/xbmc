@@ -19,7 +19,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(OutDir)"
+			IntermediateDirectory="$(SolutionDir)\dsplayer_subs\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			CharacterSet="1"
@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="strmbasdU.lib Winmm.lib vfw32.lib version.lib dsutilDU.lib subtitlesDU.lib"
+				AdditionalDependencies="strmbasdU.lib Winmm.lib vfw32.lib version.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\libs"
 				IgnoreDefaultLibraryNames="LIBCMTD;LIBCMT"
@@ -98,7 +98,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(OutDir)"
+			IntermediateDirectory="$(SolutionDir)\dsplayer_subs\$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="..\common.vsprops;..\release.vsprops"
 			UseOfMFC="0"
@@ -181,10 +181,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\IPinHook.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\mpcSubs.cpp"
 				>
 			</File>
@@ -211,7 +207,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\IPinHook.h"
+				RelativePath=".\ISubManager.h"
 				>
 			</File>
 			<File

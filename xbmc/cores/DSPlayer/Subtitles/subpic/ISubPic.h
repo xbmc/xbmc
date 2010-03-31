@@ -22,7 +22,7 @@
 #pragma once
 
 #include "CoordGeom.h"
-#include "SmartPtr.h"
+#include "DShowUtil/SmartPtr.h"
 #pragma pack(push, 1)
 struct SubPicDesc
 {
@@ -176,7 +176,7 @@ interface ISubPicAllocator : public IUnknown
 
 class ISubPicAllocatorImpl : public CUnknown, public ISubPicAllocator
 {
-	ISubPic* m_pStatic;
+  Com::SmartPtr<ISubPic> m_pStatic;
 
 private:
 	Com::SmartSize m_cursize;
@@ -266,7 +266,7 @@ interface ISubPicQueue : public IUnknown
 	STDMETHOD (SetTime) (REFERENCE_TIME rtNow /*[in]*/) PURE;
 
 	STDMETHOD (Invalidate) (REFERENCE_TIME rtInvalidate = -1) PURE;
-	STDMETHOD_(bool, LookupSubPic) (REFERENCE_TIME rtNow /*[in]*/, ISubPic** pSubPic /*[out]*/) PURE;
+  STDMETHOD_(bool, LookupSubPic) (REFERENCE_TIME rtNow /*[in]*/, Com::SmartPtr<ISubPic>& pSubPic /*[out]*/) PURE;
 
 	STDMETHOD (GetStats) (int& nSubPics, REFERENCE_TIME& rtNow, REFERENCE_TIME& rtStart, REFERENCE_TIME& rtStop /*[out]*/) PURE;
 	STDMETHOD (GetStats) (int nSubPic /*[in]*/, REFERENCE_TIME& rtStart, REFERENCE_TIME& rtStop /*[out]*/) PURE;
@@ -282,7 +282,7 @@ protected:
 	REFERENCE_TIME m_rtNow;
 	REFERENCE_TIME m_rtNowLast;
 
-	ISubPicAllocator* m_pAllocator;
+	Com::SmartPtr<ISubPicAllocator> m_pAllocator;
 
 	HRESULT RenderTo(ISubPic* pSubPic, REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, double fps, BOOL bIsAnimated);
 
@@ -330,7 +330,7 @@ class CSubPicQueue : public ISubPicQueueImpl, private CAMThread
 	bool m_fBreakBuffering;
 	enum {EVENT_EXIT, EVENT_TIME, EVENT_COUNT}; // IMPORTANT: _EXIT must come before _TIME if we want to exit fast from the destructor
 	HANDLE m_ThreadEvents[EVENT_COUNT];
-    DWORD ThreadProc();
+  DWORD ThreadProc();
 
 public:
 	CSubPicQueue(int nMaxSubPic, BOOL bDisableAnim, ISubPicAllocator* pAllocator, HRESULT* phr);
@@ -342,7 +342,7 @@ public:
 	STDMETHODIMP SetTime(REFERENCE_TIME rtNow);
 
 	STDMETHODIMP Invalidate(REFERENCE_TIME rtInvalidate = -1);
-	STDMETHODIMP_(bool) LookupSubPic(REFERENCE_TIME rtNow, ISubPic** pSubPic);
+	STDMETHODIMP_(bool) LookupSubPic(REFERENCE_TIME rtNow, Com::SmartPtr<ISubPic>& pSubPic);
 
 	STDMETHODIMP GetStats(int& nSubPics, REFERENCE_TIME& rtNow, REFERENCE_TIME& rtStart, REFERENCE_TIME& rtStop);
 	STDMETHODIMP GetStats(int nSubPic, REFERENCE_TIME& rtStart, REFERENCE_TIME& rtStop);
@@ -351,7 +351,7 @@ public:
 class CSubPicQueueNoThread : public ISubPicQueueImpl
 {
 	CCritSec m_csLock;
-	ISubPic* m_pSubPic;
+	Com::SmartPtr<ISubPic> m_pSubPic;
 
 public:
 	CSubPicQueueNoThread(ISubPicAllocator* pAllocator, HRESULT* phr);
@@ -360,7 +360,7 @@ public:
 	// ISubPicQueue
 
 	STDMETHODIMP Invalidate(REFERENCE_TIME rtInvalidate = -1);
-	STDMETHODIMP_(bool) LookupSubPic(REFERENCE_TIME rtNow, ISubPic** pSubPic);
+	STDMETHODIMP_(bool) LookupSubPic(REFERENCE_TIME rtNow, Com::SmartPtr<ISubPic>& pSubPic);
 
 	STDMETHODIMP GetStats(int& nSubPics, REFERENCE_TIME& rtNow, REFERENCE_TIME& rtStart, REFERENCE_TIME& rtStop);
 	STDMETHODIMP GetStats(int nSubPic, REFERENCE_TIME& rtStart, REFERENCE_TIME& rtStop);
@@ -416,9 +416,9 @@ protected:
 	REFERENCE_TIME m_rtNow;
 	double m_fps;
 
-	ISubPicProvider* m_SubPicProvider;
-	ISubPicAllocator* m_pAllocator;
-	ISubPicQueue* m_pSubPicQueue;
+	Com::SmartPtr<ISubPicProvider> m_SubPicProvider;
+	Com::SmartPtr<ISubPicAllocator> m_pAllocator;
+	Com::SmartPtr<ISubPicQueue> m_pSubPicQueue;
 
 	void AlphaBltSubPic(Com::SmartSize size, SubPicDesc* pTarget = NULL);
 

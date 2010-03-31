@@ -1998,7 +1998,7 @@ CStdString DShowUtil::ISO6392ToLanguage(LPCSTR code)
   return _T("");
 }
 
-/*LCID ISO6391ToLcid(LPCSTR code)
+LCID DShowUtil::ISO6391ToLcid(LPCSTR code)
 {
   CHAR tmp[3+1];
   strncpy_s(tmp, code, 3);
@@ -2014,7 +2014,7 @@ CStdString DShowUtil::ISO6392ToLanguage(LPCSTR code)
   return 0;
 }
 
-LCID ISO6392ToLcid(LPCSTR code)
+LCID DShowUtil::ISO6392ToLcid(LPCSTR code)
 {
   CHAR tmp[3+1];
   strncpy_s(tmp, code, 3);
@@ -2028,7 +2028,7 @@ LCID ISO6392ToLcid(LPCSTR code)
     }
   }
   return 0;
-}*/
+}
 
 CStdString ISO6391To6392(LPCSTR code)
 {

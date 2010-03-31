@@ -27,9 +27,10 @@ void SetAdvancedOptions(int subPicsBufferAhead, SIZE textureSize, BOOL pow2tex, 
 	g_disableAnim = disableAnim;
 }
 
-BOOL LoadSubtitles(IDirect3DDevice9* d3DDev, SIZE size, const wchar_t* fn, IGraphBuilder* pGB, const wchar_t* paths)
+BOOL LoadSubtitles(IDirect3DDevice9* d3DDev, SIZE size, const wchar_t* fn, IGraphBuilder* pGB, const wchar_t* paths, ISubManager** manager)
 {
-	g_subManager.reset();
+	*manager = NULL;
+  g_subManager.reset();
 	HRESULT hr = S_OK;
 	CSubManager *subManager(new CSubManager(d3DDev, size, hr));
 	if (FAILED(hr))
@@ -39,6 +40,7 @@ BOOL LoadSubtitles(IDirect3DDevice9* d3DDev, SIZE size, const wchar_t* fn, IGrap
 	}
 	subManager->LoadSubtitlesForFile(fn, pGB, paths);
 	g_subManager.reset(subManager);
+  *manager = g_subManager.get();
 	return TRUE;
 }
 

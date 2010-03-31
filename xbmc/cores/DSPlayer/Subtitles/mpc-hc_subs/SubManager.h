@@ -1,5 +1,6 @@
 #pragma once
 #include "Subresync.h"
+#include "ISubManager.h"
 
 class CRenderedTextSubtitle;
 
@@ -10,7 +11,7 @@ extern Com::SmartSize g_textureSize;
 extern bool g_pow2tex;
 extern BOOL g_disableAnim;
 
-class CSubManager
+class CSubManager: public ISubManager
 {
 public:
 	CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr);
@@ -30,16 +31,20 @@ public:
 	void SetDelay(int delay);
 	bool IsModified() { return m_subresync.IsModified(); };
 	void SaveToDisk();
+  void SetTimePerFrame(REFERENCE_TIME timePerFrame);
+  void SetSegmentStart(REFERENCE_TIME segmentStart);
+  void SetSampleStart(REFERENCE_TIME sampleStart);
+
+  //load internal subtitles through TextPassThruFilter
+  void LoadInternalSubtitles(IGraphBuilder* pGB);
+  void LoadExternalSubtitles(const wchar_t* fn, const wchar_t* paths);
+
 private:
 	friend class CTextPassThruInputPin;
 	friend class CTextPassThruFilter;
 	//ReplaceSubtitle, InvalidateSubtitle are called from CTextPassThruInputPin
 	void ReplaceSubtitle(ISubStream* pSubStreamOld, ISubStream* pSubStreamNew);
 	void InvalidateSubtitle(DWORD_PTR nSubtitleId, REFERENCE_TIME rtInvalidate);
-
-	//load internal subtitles through TextPassThruFilter
-	void LoadInternalSubtitles(IGraphBuilder* pGB);
-	void LoadExternalSubtitles(const wchar_t* fn, const wchar_t* paths);
 
 	void UpdateSubtitle();
 	void ApplyStyle(CRenderedTextSubtitle* pRTS);
@@ -68,6 +73,8 @@ private:
 	std::vector<int> m_intSubs; //internal sub indexes on IAMStreamSelect
 	std::vector<CStdString> m_intNames; //internal sub names
 	Com::SmartQIPtr<ISubStream> m_intSubStream; //current internal sub stream
+
+  REFERENCE_TIME g__tSampleStart, g__tSegmentStart, g__rtTimePerFrame;
 
 	CSubresync m_subresync;
 };
