@@ -329,6 +329,8 @@ void CStreamsManager::LoadStreams()
       CoTaskMemFree(wname);
 
       infos->flags = flags; infos->lcid = lcid; infos->group = group; infos->pObj = (IPin *)pObj; infos->pUnk = (IPin *)pUnk;
+      if (flags == AMSTREAMSELECTINFO_ENABLED)
+        infos->connected = true;
 
       /* Apply regex */
       for (std::vector<boost::shared_ptr<CRegExp>>::iterator it = regex.begin(); it != regex.end(); ++it)
@@ -473,6 +475,7 @@ void CStreamsManager::LoadStreams()
   {
     SubtitleManager->AddSubtitle(*it);
   }
+  g_settings.m_currentVideoSettings.m_SubtitleCached = true;
 
   // TODO: Select subtitle based on user pref
   SubtitleManager->SetSubtitle(0);
@@ -496,9 +499,6 @@ bool CStreamsManager::InitManager(CDSGraph *DSGraph)
   SubtitleManager.reset(new CSubtitleManager(this));
 
   m_init = true;
-
-  // TODO: What is that ?
-  //g_settings.m_currentVideoSettings.m_SubtitleCached = true;
 
   return true;
 }
@@ -886,7 +886,7 @@ void CSubtitleManager::SetSubtitle( int iStream )
       }
     }*/
 
-    if (m_subtitleStreams[disableIndex]->connected)
+    if (disableIndex >= 0 && m_subtitleStreams[disableIndex]->connected)
       DisconnectCurrentSubtitlePins();
 
     if (! m_bSubtitlesVisible)
