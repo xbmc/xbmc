@@ -39,6 +39,8 @@ public:
   void LoadInternalSubtitles(IGraphBuilder* pGB);
   void LoadExternalSubtitles(const wchar_t* fn, const wchar_t* paths);
 
+  HRESULT GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest);
+
 private:
 	friend class CTextPassThruInputPin;
 	friend class CTextPassThruFilter;

@@ -49,10 +49,10 @@ CMyFont::CMyFont(STSStyle& style)
 	lf.lfQuality = ANTIALIASED_QUALITY;
 	lf.lfPitchAndFamily = DEFAULT_PITCH|FF_DONTCARE;
 
-	if(!CreateFontIndirect(&lf))
+	if(! (hFont = CreateFontIndirect(&lf)))
 	{
 		_tcscpy(lf.lfFaceName, _T("Arial"));
-		CreateFontIndirect(&lf);
+		hFont = CreateFontIndirect(&lf);
 	}
 
 	HFONT hOldFont = SelectFont(g_hDC, this->hFont);
@@ -285,9 +285,10 @@ bool CText::CreatePath()
 		Com::SmartSize extent;
 		if(!GetTextExtentPoint32W(g_hDC, m_str, m_str.GetLength(), &extent)) {SelectFont(g_hDC, hOldFont); ASSERT(0); return(false);}
 
-		BeginPath(g_hDC);
-		TextOutW(g_hDC, 0, 0, m_str, m_str.GetLength());
-		EndPath(g_hDC);
+    BOOL ret = FALSE;
+		ret = BeginPath(g_hDC);
+		ret = TextOutW(g_hDC, 0, 0, m_str, m_str.GetLength());
+		ret = EndPath(g_hDC);
 	}
 
 	SelectFont(g_hDC, hOldFont);
@@ -1360,7 +1361,8 @@ void CRenderedTextSubtitle::ParseString(CSubtitle* sub, CStdStringW str, STSStyl
 		}
 		else if(c == ' ' || c == '\x00A0')
 		{
-      if(CWord* w = DNew CText(style, CStdStringW(&c), m_ktype, m_kstart, m_kend))
+      wchar_t pszCh[2] = { c , 0 };
+      if(CWord* w = DNew CText(style, CStdStringW((wchar_t*) &pszCh), m_ktype, m_kstart, m_kend))
 			{
 				sub->m_words.push_back(w); 
 				m_kstart = m_kend;
@@ -2323,13 +2325,13 @@ STDMETHODIMP CRenderedTextSubtitle::Render(SubPicDesc& spd, REFERENCE_TIME rt, d
     while (it != m_subtitleCache.end())
     {
       int key = it->first;
-      CSubtitle* value = it->second; it++;
+      CSubtitle* val = (*it).second; it++;
 
 			STSEntry& stse = at(key);
 			if(stse.end <= (t-30000) || stse.start > (t+30000)) 
 			{
-				delete value;
-        m_subtitleCache.erase(it);
+				delete val;
+        m_subtitleCache.erase( --it );
         it = m_subtitleCache.begin();
 			}
 		}

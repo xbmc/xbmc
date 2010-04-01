@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "MemSubPic.h"
+#include <D3D9.h>
 
 // color conv
 
@@ -571,6 +572,14 @@ STDMETHODIMP CMemSubPic::AlphaBlt(RECT* pSrc, RECT* pDst, SubPicDesc* pTarget)
     return S_OK;
 }
 
+STDMETHODIMP CMemSubPic::GetTexture( Com::SmartPtr<IDirect3DTexture9>& pTexture )
+{
+  pTexture = (IDirect3DTexture9*)GetObject();
+  if(! pTexture)
+    return E_NOINTERFACE;
+
+  return S_OK;
+}
 //
 // CMemSubPicAllocator
 //

@@ -24,6 +24,7 @@
 #include "CoordGeom.h"
 #include "DShowUtil/SmartPtr.h"
 #pragma pack(push, 1)
+#include <D3D9.h>
 struct SubPicDesc
 {
 	int type;
@@ -64,6 +65,7 @@ interface ISubPic : public IUnknown
 	STDMETHOD (Lock) (SubPicDesc& spd /*[out]*/) PURE;
 	STDMETHOD (Unlock) (RECT* pDirtyRect /*[in]*/) PURE;
 
+  STDMETHOD (GetTexture) (Com::SmartPtr<IDirect3DTexture9>&  pTexture) PURE;
 	STDMETHOD (AlphaBlt) (RECT* pSrc, RECT* pDst, SubPicDesc* pTarget = NULL /*[in]*/) PURE;
 	STDMETHOD (GetSourceAndDest) (SIZE* pSize /*[in]*/, RECT* pRcSource /*[out]*/, RECT* pRcDest /*[out]*/) PURE;
 	STDMETHOD (SetVirtualTextureSize) (const SIZE pSize, const POINT pTopLeft) PURE;
@@ -143,6 +145,7 @@ public:
 	STDMETHODIMP Unlock(RECT* pDirtyRect) = 0;
 
 	STDMETHODIMP AlphaBlt(RECT* pSrc, RECT* pDst, SubPicDesc* pTarget) = 0;
+  STDMETHODIMP GetTexture(Com::SmartPtr<IDirect3DTexture9>&  pTexture) = 0;
 
 	STDMETHODIMP SetVirtualTextureSize (const SIZE pSize, const POINT pTopLeft);
 	STDMETHODIMP GetSourceAndDest(SIZE* pSize, RECT* pRcSource, RECT* pRcDest);

@@ -1,4 +1,6 @@
 #pragma once
+#include "DShowUtil/smartptr.h"
+#include "DShowUtil/DSGeometry.h"
 
 class ISubManager
 {
@@ -20,4 +22,5 @@ public:
   virtual void SetTimePerFrame(REFERENCE_TIME timePerFrame) = 0;
   virtual void SetSegmentStart(REFERENCE_TIME segmentStart) = 0;
   virtual void SetSampleStart(REFERENCE_TIME sampleStart) = 0;
+  virtual HRESULT GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest) = 0;
 };

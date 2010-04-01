@@ -305,6 +305,14 @@ STDMETHODIMP CDX9SubPic::AlphaBlt(RECT* pSrc, RECT* pDst, SubPicDesc* pTarget)
     return E_FAIL;
 }
 
+STDMETHODIMP CDX9SubPic::GetTexture( Com::SmartPtr<IDirect3DTexture9>& pTexture )
+{
+  pTexture = (IDirect3DTexture9*)GetObject();
+  if(! pTexture)
+    return E_NOINTERFACE;
+  
+  return S_OK;
+}
 //
 // CDX9SubPicAllocator
 //

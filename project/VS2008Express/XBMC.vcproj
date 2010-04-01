@@ -2405,14 +2405,6 @@
 						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DllLibmpcSubs.h"
 						>
 					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DSSubtitleManager.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DsSubtitleManager.h"
-						>
-					</File>
 					<Filter
 						Name="Source"
 						>

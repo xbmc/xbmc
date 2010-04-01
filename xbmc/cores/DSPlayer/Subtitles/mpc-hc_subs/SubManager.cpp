@@ -47,7 +47,7 @@ CSubManager::~CSubManager(void)
 }
 
 void CSubManager::ApplyStyle(CRenderedTextSubtitle* pRTS) {
-	if (g_overrideUserStyles)
+	/*if (g_overrideUserStyles)
 	{
 		if (pRTS->m_styles.size() > 1)
 		{ //remove all styles besides Default
@@ -70,7 +70,7 @@ void CSubManager::ApplyStyle(CRenderedTextSubtitle* pRTS) {
 	{
 		pRTS->SetDefaultStyle(g_style);
 	}
-	pRTS->Deinit();
+	pRTS->Deinit();*/
 }
 
 void CSubManager::ApplyStyleSubStream(ISubStream* pSubStream)
@@ -240,13 +240,43 @@ void CSubManager::SetTime(REFERENCE_TIME nsSampleTime)
 	m_isSetTime = true;
 }
 
+HRESULT CSubManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest)
+{
+  if (m_iSubtitleSel < 0)
+    return E_INVALIDARG;
+
+  if (!m_isSetTime)
+  {
+    m_rtNow = g__tSegmentStart + g__tSampleStart - m_delay;
+    m_pSubPicQueue->SetTime(m_rtNow);
+  }
+
+  m_fps = 10000000.0 / g__rtTimePerFrame;
+  m_pSubPicQueue->SetFPS(m_fps);
+
+  Com::SmartPtr<ISubPic> pSubPic;
+  if(m_pSubPicQueue->LookupSubPic(m_rtNow, pSubPic)) 
+  {
+    Com::SmartSize size(1440, 900);
+    if (SUCCEEDED (pSubPic->GetSourceAndDest(&size, pSrc, pDest)))
+    {
+      return pSubPic->GetTexture(pTexture);      
+    }
+  }
+
+  return E_FAIL;
+}
+
 void CSubManager::Render(int x, int y, int width, int height)
 {
 	if (m_iSubtitleSel < 0)
 		return;
 
 	if (!m_isSetTime)
-    SetTime(g__tSampleStart);
+  {
+    m_rtNow = g__tSegmentStart + g__tSampleStart - m_delay;
+    m_pSubPicQueue->SetTime(m_rtNow);
+  }
 
 	m_fps = 10000000.0 / g__rtTimePerFrame;
 	m_pSubPicQueue->SetFPS(m_fps);

@@ -22,6 +22,7 @@
 #pragma once
 
 #include "ISubPic.h"
+#include <D3D9.h>
 
 enum {MSP_RGB32,MSP_RGB24,MSP_RGB16,MSP_RGB15,MSP_YUY2,MSP_YV12,MSP_IYUV,MSP_AYUV,MSP_RGBA};
 
@@ -45,6 +46,7 @@ public:
 	STDMETHODIMP Lock(SubPicDesc& spd);
 	STDMETHODIMP Unlock(RECT* pDirtyRect);
 	STDMETHODIMP AlphaBlt(RECT* pSrc, RECT* pDst, SubPicDesc* pTarget);
+  STDMETHODIMP GetTexture(Com::SmartPtr<IDirect3DTexture9>&  pTexture);
 };
 
 // CMemSubPicAllocator

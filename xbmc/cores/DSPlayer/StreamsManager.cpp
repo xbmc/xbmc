@@ -44,8 +44,7 @@ CStreamsManager::CStreamsManager(void):
   m_init(false),
   m_bChangingStream(false),
   m_bSubtitlesUnconnected(false),
-  m_SubtitleInputPin(NULL),
-  SubtitleManager(NULL)
+  m_SubtitleInputPin(NULL)
 {
   memset(&m_subtitleMediaType, 0, sizeof(AM_MEDIA_TYPE));
   m_subtitleMediaType.majortype = MEDIATYPE_Subtitle;
@@ -501,12 +500,9 @@ void CStreamsManager::LoadStreams()
   ////////////////////////////////
   /// SUBTITLE TESTING  //////////
   ////////////////////////////////
-#if 0
-  g_dllMpcSubs.Load();
-
-  g_dllMpcSubs.LoadSubtitles("", m_pGraphBuilder, "", &SubtitleManager);
-  g_dllMpcSubs.EnableSubtitle(true);
-  g_dllMpcSubs.SetCurrent(2);
+#if 1
+  SubtitleManager.reset(new CSubtitleManager());
+  SubtitleManager->Load();
 #endif
 }
 
@@ -1104,4 +1100,63 @@ void CStreamsManager::FormatStreamName( SStreamInfos& s )
     else
       c.displayname = name;
   }
+}
+
+CStreamsManager::CSubtitleManager::CSubtitleManager():
+  m_dll(), m_pManager(NULL)
+{
+  m_dll.Load();
+}
+
+void CStreamsManager::CSubtitleManager::Load()
+{
+  // Load subtitles
+  // 1. Create Subtitle Manager
+
+  SIZE s; s.cx = 500; s.cy = 500;
+  m_dll.CreateSubtitleManager(g_Windowing.Get3DDevice(), s, &m_pManager);
+
+  if (!m_pManager)
+    return;
+
+  m_pManager->LoadInternalSubtitles(CDSGraph::m_pFilterGraph);
+  m_pManager->SetCurrent(2);
+  m_pManager->SetEnable(TRUE);
+}
+
+void CStreamsManager::CSubtitleManager::Unload()
+{
+  m_dll.DeleteSubtitleManager();
+  m_pManager = NULL;
+}
+
+void CStreamsManager::CSubtitleManager::SetSegmentStart( REFERENCE_TIME iSegmentStart )
+{
+  if (m_pManager)
+    m_pManager->SetSegmentStart(iSegmentStart);
+}
+
+void CStreamsManager::CSubtitleManager::SetSampleStart( REFERENCE_TIME iSampleStart )
+{
+  if (m_pManager)
+    m_pManager->SetSampleStart(iSampleStart);
+}
+
+void CStreamsManager::CSubtitleManager::SetTimePerFrame( REFERENCE_TIME iTimePerFrame )
+{
+  if (m_pManager)
+    m_pManager->SetTimePerFrame(iTimePerFrame);
+}
+
+void CStreamsManager::CSubtitleManager::Render()
+{
+  if (m_pManager)
+    m_pManager->Render(0, 0, 1440, 900);
+}
+
+HRESULT CStreamsManager::CSubtitleManager::GetTexture( Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest )
+{
+  if (m_pManager)
+    return m_pManager->GetTexture(pTexture, pSrc, pDest);
+  return E_FAIL;
 }

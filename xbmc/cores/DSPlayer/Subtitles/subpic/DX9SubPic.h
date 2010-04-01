@@ -85,6 +85,7 @@ public:
 	STDMETHODIMP Lock(SubPicDesc& spd);
 	STDMETHODIMP Unlock(RECT* pDirtyRect);
 	STDMETHODIMP AlphaBlt(RECT* pSrc, RECT* pDst, SubPicDesc* pTarget);
+  STDMETHODIMP GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture);
 };
 
 // CDX9SubPicAllocator

@@ -33,6 +33,7 @@
 #include "MathUtils.h"
 #include "DShowUtil/DShowUtil.h"
 #include "Subtitles/DsSubtitleManager.h"
+#include "StreamsManager.h"
 
 CWinDsRenderer::CWinDsRenderer():
   m_bConfigured(false),
@@ -135,14 +136,36 @@ void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture, IDirect3
 
 void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
 {
-  LPDIRECT3DDEVICE9 m_pD3DDevice = g_Windowing.Get3DDevice();
+  
+  RenderTexture(m_D3DVideoTexture, m_destRect);
 
+  ////////////////////////////////
+  /// SUBTITLE TESTING  //////////
+  ////////////////////////////////
+  if (CStreamsManager::getSingleton()->SubtitleManager)
+  {
+    Com::SmartPtr<IDirect3DTexture9> pTexture;
+    Com::SmartRect pSrc, pDst;
+    if (SUCCEEDED(CStreamsManager::getSingleton()->SubtitleManager->GetTexture(pTexture, pSrc, pDst)))
+    {
+      CRect pDest(pDst.left, pDst.top, pDst.right, pDst.bottom);
+      RenderTexture(pTexture, pDest);
+    }
+  }
+}
+
+void CWinDsRenderer::RenderTexture( Com::SmartPtr<IDirect3DTexture9>& pTexture, CRect pDest )
+{
   CSingleLock lock(g_graphicsContext);
 
   HRESULT hr;
   D3DSURFACE_DESC desc;
 
-  if (!m_D3DVideoTexture || FAILED(m_D3DVideoTexture->GetLevelDesc(0, &desc)))
+  LPDIRECT3DDEVICE9 m_pD3DDevice = g_Windowing.Get3DDevice();
+  if (! m_pD3DDevice)
+    return;
+
+  if (!pTexture || FAILED(pTexture->GetLevelDesc(0, &desc)))
     return;
 
   float w = (float)desc.Width;
@@ -157,16 +180,16 @@ void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
   CUSTOMVERTEX verts[4] =
   {
     {
-      m_destRect.x1, m_destRect.y1, 0.0f, 1.0f, 0, 0
+      pDest.x1, pDest.y1, 0.0f, 1.0f, 0, 0
     },
     {
-      m_destRect.x2, m_destRect.y1, 0.0f, 1.0f, 1, 0
+      pDest.x2, pDest.y1, 0.0f, 1.0f, 1, 0
     },
     {
-      m_destRect.x2 ,m_destRect.y2, 0.0f, 1.0f, 1, 1
+      pDest.x2 ,pDest.y2, 0.0f, 1.0f, 1, 1
     },
     {
-      m_destRect.x1 ,m_destRect.y2, 0.0f, 1.0f, 0, 1
+      pDest.x1 ,pDest.y2, 0.0f, 1.0f, 0, 1
     },
   };
 
@@ -176,7 +199,7 @@ void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
     verts[i].y -= 0.5;
   }
 
-  hr = m_pD3DDevice->SetTexture(0, m_D3DVideoTexture);
+  hr = m_pD3DDevice->SetTexture(0, pTexture);
 
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
   hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
@@ -199,13 +222,6 @@ void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
 
   m_pD3DDevice->SetTexture(0, NULL);
   m_pD3DDevice->SetPixelShader( NULL );
-
-  ////////////////////////////////
-  /// SUBTITLE TESTING  //////////
-  ////////////////////////////////
-#if 0
-  g_dllMpcSubs.Render(0, 0, 800, 600);
-#endif
 }
 
 bool CWinDsRenderer::Supports(EINTERLACEMETHOD method)

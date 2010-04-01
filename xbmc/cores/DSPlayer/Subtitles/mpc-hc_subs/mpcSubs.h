@@ -13,50 +13,7 @@
 #define MPCSUBS_API extern
 #endif
 
-struct SubtitleStyle
-{
-	wchar_t* fontName; 
-	int fontColor;
-	int fontIsBold;
-	int fontSize;
-	int fontCharset;
-	int shadow;
-	int borderWidth;
-	int isBorderOutline; //outline or opaque box
-};
-
 extern "C" {
-
-//set default subtitle's style (call before LoadSubtitles to take effect)
-MPCSUBS_API void SetDefaultStyle(const SubtitleStyle* style, BOOL overrideUserStyles);
-MPCSUBS_API void SetAdvancedOptions(int subPicsBufferAhead, SIZE textureSize, BOOL pow2tex, BOOL disableAnim);
-
-//load subtitles for video file fn, with given (rendered) graph 
-MPCSUBS_API BOOL LoadSubtitles(IDirect3DDevice9* d3DDev, SIZE size, const wchar_t* fn, IGraphBuilder* pGB, const wchar_t* paths, ISubManager** manager);
-
-//set sample time (set from EVR presenter, not used in case of vmr9)
-MPCSUBS_API void SetTime(REFERENCE_TIME nsSampleTime);
-
-//render subtitles
-MPCSUBS_API void Render(int x, int y, int width, int height);
-
-//save subtitles
-MPCSUBS_API BOOL IsModified(); //timings were modified
-MPCSUBS_API void SaveToDisk();
-
-////
-//subs management functions
-///
-MPCSUBS_API int GetCount(); //total subtitles
-MPCSUBS_API BSTR GetLanguage(int i); //i  range from 0 to GetCount()-1
-MPCSUBS_API int GetCurrent(); 
-MPCSUBS_API void SetCurrent(int i);
-MPCSUBS_API BOOL GetEnable();
-MPCSUBS_API void SetEnable(BOOL enable);
-MPCSUBS_API int GetDelay(); //in milliseconds
-MPCSUBS_API void SetDelay(int delay_ms); //in milliseconds
-
-
-MPCSUBS_API void FreeSubtitles();
-
+  MPCSUBS_API bool CreateSubtitleManager(IDirect3DDevice9* d3DDev, SIZE size, ISubManager ** pManager);
+  MPCSUBS_API bool DeleteSubtitleManager();
 }

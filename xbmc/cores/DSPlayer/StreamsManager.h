@@ -35,6 +35,7 @@
 #include "CharsetConverter.h"
 #include "RegExp.h"
 #include "Subtitles/mpc-hc_subs/ISubManager.h"
+#include "Subtitles/DllLibmpcSubs.h"
 
 enum SStreamType
 {
@@ -292,7 +293,26 @@ public:
   SSubtitleStreamInfos* GetSubtitleStreamInfos(unsigned int iIndex = 0);
   SExternalSubtitleInfos* GetExternalSubtitleStreamInfos(unsigned int iIndex = 0);
 
-  ISubManager * SubtitleManager;
+  class CSubtitleManager
+  {
+  public:
+    CSubtitleManager();
+    
+    void Load();
+    void Unload();
+
+    void Render();
+
+    HRESULT GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest);
+
+    void SetSegmentStart(REFERENCE_TIME iSegmentStart);
+    void SetSampleStart(REFERENCE_TIME iSampleStart);
+    void SetTimePerFrame(REFERENCE_TIME iTimePerFrame);
+  private:
+    DllLibMpcSubs m_dll;
+    ISubManager* m_pManager;
+  };
+  boost::shared_ptr<CSubtitleManager> SubtitleManager;
 
 private:
   CStreamsManager(void);

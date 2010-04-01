@@ -4,8 +4,7 @@
 #include "..\subtitles\RTS.h"
 #include "SubManager.h"
 
-static boost::shared_ptr<CSubManager> g_subManager;
-
+/*
 void SetDefaultStyle(const SubtitleStyle* s, BOOL overrideUserStyles)
 {
 	g_style.fontName = s->fontName;
@@ -25,8 +24,9 @@ void SetAdvancedOptions(int subPicsBufferAhead, SIZE textureSize, BOOL pow2tex, 
 	g_textureSize = textureSize;
 	g_pow2tex = pow2tex != 0;
 	g_disableAnim = disableAnim;
-}
+}*/
 
+/*
 BOOL LoadSubtitles(IDirect3DDevice9* d3DDev, SIZE size, const wchar_t* fn, IGraphBuilder* pGB, const wchar_t* paths, ISubManager** manager)
 {
 	*manager = NULL;
@@ -42,79 +42,38 @@ BOOL LoadSubtitles(IDirect3DDevice9* d3DDev, SIZE size, const wchar_t* fn, IGrap
 	g_subManager.reset(subManager);
   *manager = g_subManager.get();
 	return TRUE;
+}*/
+
+extern ISubManager* m_pManager = NULL;
+
+bool CreateSubtitleManager(IDirect3DDevice9* d3DDev, SIZE size, ISubManager ** pManager)
+{
+  if (! pManager || !d3DDev)
+    return false;
+
+  *pManager = NULL;
+  DeleteSubtitleManager();
+
+  HRESULT hr = S_OK;
+  m_pManager = new CSubManager(d3DDev, size, hr);
+  if (FAILED(hr))
+  {
+    delete m_pManager;
+    m_pManager = NULL;
+    return false;
+  }
+  *pManager = m_pManager;
+  return true;
 }
 
-void SetTime(REFERENCE_TIME nsSampleTime)
+bool DeleteSubtitleManager()
 {
-	if (g_subManager)
-	{
-		g_subManager->SetTime(nsSampleTime);
-	}
-}
+  if (m_pManager)
+  {
+    delete m_pManager;
+    m_pManager = NULL;
+    return true;
+  }
 
-void Render(int x, int y, int width, int height)
-{
-	if (g_subManager)
-	{
-		g_subManager->Render(x, y, width, height);
-	}
-}
-
-int GetCount()
-{
-	return (g_subManager ? g_subManager->GetCount() : 0);
-}
-
-BSTR GetLanguage(int i)
-{
-	return (g_subManager ? g_subManager->GetLanguage(i) : NULL);
-}
-
-int GetCurrent()
-{
-	return (g_subManager ? g_subManager->GetCurrent() : -1);
-}
-
-void SetCurrent(int current)
-{
-	if (g_subManager)
-		g_subManager->SetCurrent(current);
-}
-
-BOOL GetEnable()
-{
-	return (g_subManager ? g_subManager->GetEnable() : FALSE);
-}
-
-void SetEnable(BOOL enable)
-{
-	if (g_subManager)
-		g_subManager->SetEnable(enable);
-}
-
-int GetDelay()
-{
-	return (g_subManager ? g_subManager->GetDelay() : 0);
-}
-
-void SetDelay(int delay)
-{
-	if (g_subManager)
-		g_subManager->SetDelay(delay);
-}
-
-void SaveToDisk()
-{
-	if (g_subManager)
-		g_subManager->SaveToDisk();
-}
-
-BOOL IsModified()
-{
-	return (g_subManager ? (g_subManager->IsModified() ? TRUE : FALSE) : FALSE);
-}
-
-void FreeSubtitles()
-{
-	g_subManager.reset();
+  return false;
 }
