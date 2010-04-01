@@ -65,7 +65,7 @@
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/DllLibCurl.h"
-#include "FileSystem/CMythSession.h"
+#include "FileSystem/MythSession.h"
 #include "FileSystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_SAP
 #include "FileSystem/SAPDirectory.h"
@@ -5117,7 +5117,7 @@ void CApplication::ProcessSlow()
   g_curlInterface.CheckIdle();
 
   // check for any idle myth sessions
-  CCMythSession::CheckIdle();
+  CMythSession::CheckIdle();
 
   // check for any idle htsp sessions
   HTSP::CHTSPDirectorySession::CheckIdle();

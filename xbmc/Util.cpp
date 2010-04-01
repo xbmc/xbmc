@@ -40,7 +40,7 @@
 #include "ThumbnailCache.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/RarManager.h"
-#include "FileSystem/CMythDirectory.h"
+#include "FileSystem/MythDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
 #ifdef HAS_UPNP
 #include "FileSystem/UPnPDirectory.h"
@@ -1758,7 +1758,7 @@ bool CUtil::IsLiveTV(const CStdString& strFile)
   if (IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile) || IsHTSP(strFile))
     return true;
 
-  if (IsMythTV(strFile) && CCMythDirectory::IsLiveTV(strFile))
+  if (IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
     return true;
 
   return false;

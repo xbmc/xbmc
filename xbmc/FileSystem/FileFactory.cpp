@@ -46,7 +46,7 @@
 #include "xbox/network.h"
 #include "FileTuxBox.h"
 #include "HDHomeRun.h"
-#include "CMythFile.h"
+#include "MythFile.h"
 #include "URL.h"
 #include "utils/log.h"
 
@@ -100,8 +100,8 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "lastfm") return new CFileLastFM();
     else if (strProtocol == "tuxbox") return new CFileTuxBox();
     else if (strProtocol == "hdhomerun") return new CFileHomeRun();
-    else if (strProtocol == "myth") return new CCMythFile();
-    else if (strProtocol == "cmyth") return new CCMythFile();
+    else if (strProtocol == "myth") return new CMythFile();
+    else if (strProtocol == "cmyth") return new CMythFile();
 #ifdef HAS_FILESYSTEM
     else if (strProtocol == "smb") return new CFileSMB();
     else if (strProtocol == "xbms") return new CFileXBMSP();
