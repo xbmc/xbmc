@@ -353,9 +353,6 @@ void CDX9SubPicAllocator::ClearCache()
 			pSubPic->m_pAllocator = NULL;
 		}
 		m_AllocatedSurfaces.clear();
-    for (std::list<IDirect3DSurface9*>::iterator it = m_FreeSurfaces.begin(); it != m_FreeSurfaces.end(); it++)
-      m_FreeSurfaces.front()->Release();
-
 		m_FreeSurfaces.clear();
 	}
 }
@@ -407,7 +404,7 @@ bool CDX9SubPicAllocator::Alloc(bool fStatic, ISubPic** ppSubPic)
 	if (!fStatic)
 	{
 		CAutoLock cAutoLock(&ms_SurfaceQueueLock);
-    std::list<IDirect3DSurface9*>::iterator FreeSurf = m_FreeSurfaces.begin();
+    std::list<Com::SmartPtrForList<IDirect3DSurface9>>::iterator FreeSurf = m_FreeSurfaces.begin();
 		if (FreeSurf != m_FreeSurfaces.end())
 		{
 			pSurface = m_FreeSurfaces.front();

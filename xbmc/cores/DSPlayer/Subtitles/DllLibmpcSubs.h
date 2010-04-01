@@ -47,7 +47,19 @@ class DllLibMpcSubs : public DllDynamic, DllLibMpcSubsInterface
 {
   DECLARE_DLL_WRAPPER(DllLibMpcSubs, "mpcSubs.dll")
   
+  /** @brief Create the Subtitle Manager from mpcSubs.dll
+   * @param[in] p1 Pointer to the Direct3D9 Device
+   * @param[in] p2 ?
+   * @param[out] p3 Receive a pointer to ISubManager
+   * @return A HRESULT code
+   * @remark The ISubManager interface _MUST_ be released by calling DeleteSubtitleManager. Don't use delete on it
+   */
   DEFINE_METHOD3(bool, CreateSubtitleManager, (IDirect3DDevice9 * p1, SIZE p2, ISubManager ** p3)) ///< Caller take ownership of ISubManager
+  /** @brief Delete the subtitle manager
+   * @param[in] p1 Pointer to ISubManager allocated by CreateSubtitleManager
+   * @return A HRESULT code
+   * @remark The ISubManager interface _MUST_ be allocated by CreateSubtitleManager
+   */
   DEFINE_METHOD1(bool, DeleteSubtitleManager, (ISubManager* p1))
   
   BEGIN_METHOD_RESOLVE()

@@ -33,9 +33,11 @@ public:
 
   //load internal subtitles through TextPassThruFilter
   void InsertPassThruFilter(IGraphBuilder* pGB);
-  void LoadExternalSubtitles(const wchar_t* fn, const wchar_t* paths);
+  HRESULT LoadExternalSubtitle(const wchar_t* subPath, ISubStream** pSubPic);
 
   HRESULT GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest);
+
+  void Free();
 
 private:
 	friend class CTextPassThruInputPin;
@@ -48,27 +50,19 @@ private:
 	void ApplyStyle(CRenderedTextSubtitle* pRTS);
 	void ApplyStyleSubStream(ISubStream* pSubStream);
 
-	void SelectStream(int i);
-	int GetExtCount();
-
-	Com::SmartPtr<IDirect3DDevice9> m_d3DDev;
-	Com::SmartQIPtr<ISubPicQueue> m_pSubPicQueue;
-	bool m_isSetTime;
 	CCritSec m_csSubLock; 
-  std::list<ISubStream *> m_pSubStreams; //external subs
 	int m_iSubtitleSel; // if(m_iSubtitleSel&(1<<31)): disabled
 	REFERENCE_TIME m_rtNow; //current time
 	double m_fps;
 	REFERENCE_TIME m_delay; 
-	Com::SmartPtr<ISubStream> m_pSubStream; //current sub stream
-	CStdString m_movieFile;
+
 	Com::SmartSize m_lastSize;
-	Com::SmartQIPtr<ISubPicAllocator> m_pAllocator;
+
+  boost::shared_ptr<ISubPicQueue> m_pSubPicQueue;
+  Com::SmartPtr<ISubPicAllocator> m_pAllocator;
 
 	Com::SmartQIPtr<IAMStreamSelect> m_pSS; //graph filter with subtitles
-	std::vector<int> m_intSubs; //internal sub indexes on IAMStreamSelect
-	std::vector<CStdString> m_intNames; //internal sub names
-	Com::SmartQIPtr<ISubStream> m_intSubStream; //current internal sub stream
+  Com::SmartPtr<IDirect3DDevice9> m_d3DDev;
 
   REFERENCE_TIME g__tSampleStart, g__tSegmentStart, g__rtTimePerFrame;
 

@@ -378,7 +378,52 @@ namespace Com
     }
   };
 
-  
+  template <class T>
+  class SmartPtrForList : public SmartPtr<T>
+  {
+  public:
+    SmartPtrForList() throw()
+    {
+    }
+    SmartPtrForList(T* lp) throw() :
+    SmartPtr<T>(lp)
+
+    {
+    }
+    SmartPtrForList(const SmartPtr<T>& lp) throw() :
+    SmartPtr<T>(lp)
+    {
+    }
+    T* operator=(T* lp) throw()
+    {
+      if(*this!=lp)
+      {
+        return static_cast<T*>(SmartPtrAssign((IUnknown**)&m_ptr, lp));
+      }
+      return *this;
+    }
+    template <typename Q>
+    T* operator=(const SmartPtr<Q>& lp) throw()
+    {
+      if( !AreComObjectsEqual(*this, lp) )
+      {
+        return static_cast<T*>(SmartQIPtrAssign((IUnknown**)&m_ptr, lp.m_ptr, __uuidof(T)));
+      }
+      return *this;
+    }
+    T* operator=(const SmartPtr<T>& lp) throw()
+    {
+      if( !AreComObjectsEqual(m_ptr, lp.m_ptr) )
+      {
+        return static_cast<T*>(SmartPtrAssign((IUnknown**)&m_ptr, lp.m_ptr));
+      }
+      return *this;
+    }
+    SmartPtrForList* operator&()
+    {
+      return this;
+    }
+  };
 
   template <class T, const IID* piid = &__uuidof(T)>
   class SmartQIPtr : public SmartPtr<T>

@@ -135,15 +135,15 @@ public:
       return h;
    }
    
-   BOOL Read(LPVOID lpBuf, DWORD nCount)
+   DWORD Read(LPVOID lpBuf, DWORD nCount)
    {
       _ASSERTE(m_hFile!=INVALID_HANDLE_VALUE);
       _ASSERTE(lpBuf!=NULL);
       _ASSERTE(!::IsBadWritePtr(lpBuf, nCount));
       if( nCount == 0 ) return TRUE;   // avoid Win32 "null-read"
       DWORD dwBytesRead = 0;
-      if( !::ReadFile(m_hFile, lpBuf, nCount, &dwBytesRead, NULL) ) return FALSE;
-      return TRUE;
+      if( !::ReadFile(m_hFile, lpBuf, nCount, &dwBytesRead, NULL) ) return 0;
+      return dwBytesRead;
    }
    
    BOOL Read(LPVOID lpBuf, DWORD nCount, LPDWORD pdwRead)
@@ -158,15 +158,15 @@ public:
       return TRUE;
    }
    
-   BOOL Write(LPCVOID lpBuf, DWORD nCount)
+   DWORD Write(LPCVOID lpBuf, DWORD nCount)
    {
       _ASSERTE(m_hFile!=INVALID_HANDLE_VALUE);
       _ASSERTE(lpBuf!=NULL);
       _ASSERTE(!::IsBadReadPtr(lpBuf, nCount));   
       if( nCount == 0 ) return TRUE; // avoid Win32 "null-write" option
       DWORD dwBytesWritten = 0;
-      if( !::WriteFile(m_hFile, lpBuf, nCount, &dwBytesWritten, NULL) ) return FALSE;
-      return TRUE;
+      if( !::WriteFile(m_hFile, lpBuf, nCount, &dwBytesWritten, NULL) ) return 0;
+      return dwBytesWritten;
    }
    
    BOOL Write(LPCVOID lpBuf, DWORD nCount, LPDWORD pdwWritten)

@@ -459,6 +459,8 @@ void CStreamsManager::LoadStreams()
   ///* Delete regex */
   regex.clear();
 
+  SubtitleManager->Initialize();
+  
   /* We're done, internal audio & subtitles stream are loaded.
      We load external subtitle file */
 
@@ -472,18 +474,13 @@ void CStreamsManager::LoadStreams()
     SubtitleManager->AddSubtitle(*it);
   }
 
+  // TODO: Select subtitle based on user pref
+  SubtitleManager->SetSubtitle(0);
+
+  SubtitleManager->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
+
   // What is that ?!
   //g_settings.m_currentVideoSettings.m_SubtitleCached = true;
-
-
-  ////////////////////////////////
-  /// SUBTITLE TESTING  //////////
-  ////////////////////////////////
-#if 1
-  // Insert pass thru
-  SubtitleManager->Initialize();
-  SubtitleManager->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
-#endif
 }
 
 bool CStreamsManager::InitManager(CDSGraph *DSGraph)
@@ -723,12 +720,6 @@ CSubtitleManager::~CSubtitleManager()
 {
   Unload();
   m_dll.Unload();
-
-  while (! m_subtitleStreams.empty())
-  {
-    delete m_subtitleStreams.back();
-    m_subtitleStreams.pop_back();
-  }
 }
 
 void CSubtitleManager::Initialize()
@@ -748,12 +739,19 @@ void CSubtitleManager::Initialize()
 
   m_pManager->InsertPassThruFilter(CDSGraph::m_pFilterGraph);
   m_pManager->SetEnable(true);
-
-  SetSubtitle(0);
 }
 
 void CSubtitleManager::Unload()
 {
+  m_pManager->SetSubPicProvider(NULL);
+  m_pManager->Free();
+  while (! m_subtitleStreams.empty())
+  {
+    if (m_subtitleStreams.back()->external)
+      ((SExternalSubtitleInfos *) m_subtitleStreams.back())->substream.FullRelease();
+    delete m_subtitleStreams.back();
+    m_subtitleStreams.pop_back();
+  }
   m_pManager.reset();
 }
 
@@ -861,8 +859,7 @@ void CSubtitleManager::SetSubtitle( int iStream )
 
     SExternalSubtitleInfos *s = reinterpret_cast<SExternalSubtitleInfos *>(m_subtitleStreams[enableIndex]);
 
-    if (g_dsconfig.LoadffdshowSubtitles(s->path))
-      CLog::Log(LOGNOTICE, "%s Using \"%s\" for external subtitle", __FUNCTION__, s->path.c_str());
+    m_pManager->SetSubPicProvider(s->substream);
     
     s->flags = AMSTREAMSELECTINFO_ENABLED; // for gui
     s->connected = true;
@@ -1012,38 +1009,44 @@ void CSubtitleManager::SetSubtitleVisible( bool bVisible )
 
 int CSubtitleManager::AddSubtitle(const CStdString& subFilePath)
 {
-  if (g_dsconfig.pIffdshowDecoder) // We're currently using ffdshow for subtitles
-  {    
-    std::auto_ptr<SExternalSubtitleInfos> s(new SExternalSubtitleInfos());
+  std::auto_ptr<SExternalSubtitleInfos> s(new SExternalSubtitleInfos());
 
-    if (m_subtitleStreams.empty())
-      s->flags = AMSTREAMSELECTINFO_ENABLED;
+  if (m_subtitleStreams.empty())
+    s->flags = AMSTREAMSELECTINFO_ENABLED;
 
-    s->external = true; 
-    s->path = CSpecialProtocol::TranslatePath(subFilePath);
-    if (! XFILE::CFile::Exists(s->path))
-      return -1;
+  s->external = true;
+  s->path = CSpecialProtocol::TranslatePath(subFilePath);
+  if (! XFILE::CFile::Exists(s->path))
+    return -1;
 
-    // Try to detect isolang of subtitle
-    CRegExp regex(true);
-    regex.RegComp("^.*\\.(.*)\\.[^\\.]*.*$");
-    if (regex.RegFind(s->path) > -1)
-      s->isolang = regex.GetMatch(1);
+  // Try to detect isolang of subtitle
+  CRegExp regex(true);
+  regex.RegComp("^.*\\.(.*)\\.[^\\.]*.*$");
+  if (regex.RegFind(s->path) > -1)
+    s->isolang = regex.GetMatch(1);
 
-    if (! s->isolang.empty())
-    {
-      s->lcid = DShowUtil::ISO6392ToLcid(s->isolang);
-      if (! s->lcid)
-        DShowUtil::ISO6391ToLcid(s->isolang);
+  if (! s->isolang.empty())
+  {
+    s->lcid = DShowUtil::ISO6392ToLcid(s->isolang);
+    if (! s->lcid)
+      DShowUtil::ISO6391ToLcid(s->isolang);
 
-      m_pStreamManager->FormatStreamName(*s.get());
-    } 
+    m_pStreamManager->FormatStreamName(*s.get());
+  } 
 
-    if (s->displayname.empty())
-      s->displayname = CUtil::GetFileName(s->path);
-    else
-      s->displayname += " [External]";
+  if (s->displayname.empty())
+    s->displayname = CUtil::GetFileName(s->path);
+  else
+    s->displayname += " [External]";
 
+  // Load subtitle file
+  Com::SmartPtr<ISubStream> pSubStream;
+  
+  CStdStringW unicodePath; g_charsetConverter.utf8ToW(s->path, unicodePath);
+
+  if (SUCCEEDED(m_pManager->LoadExternalSubtitle(unicodePath.c_str(), &pSubStream)))
+  {
+    s->substream = pSubStream;
     m_subtitleStreams.push_back(s.release());
 
     return m_subtitleStreams.size() - 1;

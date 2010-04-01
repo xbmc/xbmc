@@ -171,12 +171,14 @@ struct SSubtitleStreamInfos: SStreamInfos
 struct SExternalSubtitleInfos: SSubtitleStreamInfos
 {
   CStdString path; ///< Subtitle file path
+  Com::SmartPtr<ISubStream> substream;
 
   virtual void Clear()
   {
     SSubtitleStreamInfos::Clear();
 
     path = "";
+    substream = NULL;
     external = true;
   }
 

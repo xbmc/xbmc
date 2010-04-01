@@ -18,7 +18,6 @@ BOOL g_disableAnim(TRUE);
 
 CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr)
 	: m_d3DDev(d3DDev),
-	m_isSetTime(false),
 	m_iSubtitleSel(-1),
 	m_rtNow(-1),
 	m_delay(0),
@@ -29,12 +28,12 @@ CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr)
   g__tSegmentStart = 0;
 
 	//ATLTRACE("CSubManager constructor: texture size %dx%d, buffer ahead: %d, pow2tex: %d", g_textureSize.cx, g_textureSize.cy, g_subPicsBufferAhead, g_pow2tex);
-	m_pAllocator = new CDX9SubPicAllocator(d3DDev, g_textureSize, g_pow2tex/*AfxGetAppSettings().fSPCPow2Tex*/);
+	m_pAllocator = (new CDX9SubPicAllocator(d3DDev, g_textureSize, g_pow2tex));
 	hr = S_OK;
 	if (g_subPicsBufferAhead > 0)
-		m_pSubPicQueue = new CSubPicQueue(g_subPicsBufferAhead, g_disableAnim, m_pAllocator, &hr);
+		m_pSubPicQueue.reset(new CSubPicQueue(g_subPicsBufferAhead, g_disableAnim, m_pAllocator, &hr));
 	else
-		m_pSubPicQueue = new CSubPicQueueNoThread(m_pAllocator, &hr);
+		m_pSubPicQueue.reset(new CSubPicQueueNoThread(m_pAllocator, &hr));
 	if (FAILED(hr))
 	{
     //ATLTRACE("CSubPicQueue creation error: %x", hr);
@@ -43,7 +42,6 @@ CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr)
 
 CSubManager::~CSubManager(void)
 {
-	//ATLTRACE("CSubManager destructor");
 }
 
 void CSubManager::ApplyStyle(CRenderedTextSubtitle* pRTS) {
@@ -87,7 +85,6 @@ void CSubManager::ApplyStyleSubStream(ISubStream* pSubStream)
 
 void CSubManager::SetSubPicProvider(ISubStream* pSubStream)
 {
-	m_pSubStream = pSubStream;
 	m_pSubPicQueue->SetSubPicProvider(Com::SmartQIPtr<ISubPicProvider>(pSubStream));
 	m_delay = 0;
 	m_subresync.RemoveAll();
@@ -95,47 +92,17 @@ void CSubManager::SetSubPicProvider(ISubStream* pSubStream)
 
 void CSubManager::ReplaceSubtitle(ISubStream* pSubStreamOld, ISubStream* pSubStreamNew)
 {
+	/*
 	ApplyStyleSubStream(pSubStreamNew);
-	m_intSubStream = pSubStreamNew;
-	if (m_iSubtitleSel >= GetExtCount())
-	{
-		//ATLTRACE("ReplaceSubtitle: SetSubPicProvider");
-		SetSubPicProvider(pSubStreamNew);
-	}
+		if (m_iSubtitleSel >= GetExtCount())
+		{
+			SetSubPicProvider(pSubStreamNew);
+		}*/	
 }
 
 void CSubManager::InvalidateSubtitle(DWORD_PTR nSubtitleId, REFERENCE_TIME rtInvalidate)
 {
-	if(m_iSubtitleSel >= GetExtCount())
-	{
-		//ATLTRACE("InvalidateSubtitle");
-		m_pSubPicQueue->Invalidate(rtInvalidate);
-	}
-}
-
-void  CSubManager::SelectStream(int i)
-{
-	if (i < (int) m_intSubs.size())
-	{
-		//ATLTRACE("SelectStream %d", i);
-		int index = m_intSubs[i];
-		DWORD dwFlags = 0;
-		if (SUCCEEDED(m_pSS->Info(index, NULL, &dwFlags, NULL, NULL, NULL, NULL, NULL)))
-		{
-			if(dwFlags&(AMSTREAMSELECTINFO_ENABLED|AMSTREAMSELECTINFO_EXCLUSIVE)) 
-			{
-				SetSubPicProvider(m_intSubStream);
-			}
-			else
-			{
-				m_pSS->Enable(index, AMSTREAMSELECTENABLE_ENABLE);
-			}
-		}
-	}
-	else
-	{
-		m_pSubPicQueue->SetSubPicProvider(NULL);
-	}
+  m_pSubPicQueue->Invalidate(rtInvalidate);
 }
 
 void CSubManager::UpdateSubtitle()
@@ -143,40 +110,7 @@ void CSubManager::UpdateSubtitle()
 	//ATLTRACE("UpdateSubtitle");
 	int i = m_iSubtitleSel;
 
-  std::list<ISubStream *>::iterator it = m_pSubStreams.begin();
-  while(it != m_pSubStreams.end() && i >= 0)
-	{
-		ISubStream* pSubStream = *it; it++;
-		if(i < pSubStream->GetStreamCount()) 
-		{
-			CAutoLock cAutoLock(&m_csSubLock);
-			pSubStream->SetStream(i);
-			//m_nSubtitleId = (DWORD_PTR)pSubStream.p;
-			SetSubPicProvider(pSubStream);
-			return;
-		}
-		i -= pSubStream->GetStreamCount();
-	}
-
-	if (i >= 0)
-	{
-		SelectStream(i);
-	}
-	else
-	{
-		m_pSubPicQueue->SetSubPicProvider(NULL);
-	}
-}
-
-int CSubManager::GetExtCount() 
-{
-	int cnt = 0;
-	std::list<ISubStream *>::iterator pos = m_pSubStreams.begin();
-	while(pos != m_pSubStreams.end())
-  {
-    cnt += (*pos)->GetStreamCount(); pos++;
-  }
-	return cnt;
+  m_pSubPicQueue->SetSubPicProvider(NULL);
 }
 
 void CSubManager::SetEnable(bool enable)
@@ -193,11 +127,8 @@ HRESULT CSubManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com:
   if (m_iSubtitleSel < 0)
     return E_INVALIDARG;
 
-  if (!m_isSetTime)
-  {
-    m_rtNow = g__tSegmentStart + g__tSampleStart - m_delay;
-    m_pSubPicQueue->SetTime(m_rtNow);
-  }
+  m_rtNow = g__tSegmentStart + g__tSampleStart - m_delay;
+  m_pSubPicQueue->SetTime(m_rtNow);
 
   m_fps = 10000000.0 / g__rtTimePerFrame;
   m_pSubPicQueue->SetFPS(m_fps);
@@ -220,11 +151,8 @@ void CSubManager::Render(int x, int y, int width, int height)
 	if (m_iSubtitleSel < 0)
 		return;
 
-	if (!m_isSetTime)
-  {
-    m_rtNow = g__tSegmentStart + g__tSampleStart - m_delay;
-    m_pSubPicQueue->SetTime(m_rtNow);
-  }
+  m_rtNow = g__tSegmentStart + g__tSampleStart - m_delay;
+  m_pSubPicQueue->SetTime(m_rtNow);
 
 	m_fps = 10000000.0 / g__rtTimePerFrame;
 	m_pSubPicQueue->SetFPS(m_fps);
@@ -338,7 +266,6 @@ void CSubManager::InsertPassThruFilter(IGraphBuilder* pGB)
 			if (pSubStream)
 			{
 				ApplyStyleSubStream(pSubStream);
-				m_intSubStream = pSubStream;
 				return;
 			}
 			else
@@ -357,7 +284,7 @@ CStdString GetExtension(CStdString&  filename)
   return filename.substr(i+1, filename.size());
 }
 
-void CSubManager::LoadExternalSubtitles(const wchar_t* filename, const wchar_t* subpaths)
+/*void CSubManager::LoadExternalSubtitles(const wchar_t* filename, const wchar_t* subpaths)
 {
 	m_movieFile = filename;
 	std::vector<CStdString> paths;
@@ -443,11 +370,51 @@ void CSubManager::LoadExternalSubtitles(const wchar_t* filename, const wchar_t* 
 				m_pSubStreams.insert(m_pSubStreams.end(), pSubStream);
 			}
 		}
-		catch(... /*CException* e*/)
+		catch(... /*CException* e)
 		{
       //e->Delete();
 		}
 	}
+}*/
+
+HRESULT CSubManager::LoadExternalSubtitle( const wchar_t* subPath, ISubStream** pSubPic )
+{
+  if (!pSubPic)
+    return E_POINTER;
+
+  CStdStringW path(subPath);
+  *pSubPic = NULL;
+  try
+  {
+    Com::SmartPtr<ISubStream> pSubStream;
+
+    if(!pSubStream)
+    {
+      std::auto_ptr<CVobSubFile> pVSF(new CVobSubFile(&m_csSubLock));
+      if(CStdString(GetExtension(path).MakeLower()) == _T(".idx") && pVSF.get() && pVSF->Open(path) && pVSF->GetStreamCount() > 0)
+        pSubStream = pVSF.release();
+    }
+
+    if(!pSubStream)
+    {
+      std::auto_ptr<CRenderedTextSubtitle> pRTS(new CRenderedTextSubtitle(&m_csSubLock));
+      if(pRTS.get() && pRTS->Open(path, DEFAULT_CHARSET) && pRTS->GetStreamCount() > 0) {
+        ApplyStyle(pRTS.get());
+        pSubStream = pRTS.release();
+      }
+    }
+    if (pSubStream)
+    {
+      *pSubPic = pSubStream.Detach();
+      return S_OK;
+    }
+  }
+  catch(... /*CException* e*/)
+  {
+    //e->Delete();
+  }
+
+  return E_FAIL;
 }
 
 int CSubManager::GetDelay()
@@ -484,4 +451,10 @@ void CSubManager::SetSegmentStart( REFERENCE_TIME segmentStart )
 void CSubManager::SetSampleStart( REFERENCE_TIME sampleStart )
 {
   g__tSampleStart = sampleStart;
+}
+
+void CSubManager::Free()
+{
+  m_pSubPicQueue.reset();
+  m_pAllocator = NULL;
 }

@@ -2465,17 +2465,25 @@ void CSimpleTextSubtitle::SetStr(int i, CStdStringW str, bool fUnicode)
 	else stse.str = str;
 }
 
-static int comp1(STSEntry a, STSEntry b)
+static bool comp1(const STSEntry& a, const STSEntry& b)
 {
-	int ret = (a).start - (b).start;
-	if(ret == 0) ret = (a).layer - (b).layer;
-	if(ret == 0) ret = (a).readorder - (b).readorder;
-	return(ret);
+  bool eq = a.start == b.start;
+  if (eq)
+    eq = a.layer == b.layer;
+  else
+    return a.start < b.start;
+
+  if (eq)
+    eq = a.readorder < b.readorder;
+  else
+    return a.layer < b.layer;
+
+  return eq;
 }
 
-static int comp2(STSEntry a, STSEntry b)
+static bool comp2(const STSEntry& a, const STSEntry& b)
 {
-	return((a).readorder - (b).readorder);
+	return(a.readorder < b.readorder);
 }
 
 void CSimpleTextSubtitle::Sort(bool fRestoreReadorder)
@@ -2485,9 +2493,9 @@ void CSimpleTextSubtitle::Sort(bool fRestoreReadorder)
 	CreateSegments();
 }
 
-static int intcomp(int i1, int i2)
+static bool intcomp(const int i1, const int i2)
 {
-	return i1 - i2;
+	return i1 < i2;
 }
 
 void CSimpleTextSubtitle::CreateSegments()
