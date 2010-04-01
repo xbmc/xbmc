@@ -22,7 +22,6 @@
 #include "DShowUtil/dshowutil.h"
 #include "DShowUtil/DSGeometry.h"
 #include "cores/VideoRenderers/RenderManager.h"
-
 #include "WindowingFactory.h" //d3d device and d3d interface
 #include "VMR9AllocatorPresenter.h"
 #include "application.h"

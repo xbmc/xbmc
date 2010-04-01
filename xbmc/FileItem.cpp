@@ -2738,7 +2738,7 @@ CStdString CFileItem::GetLocalFanart() const
     return "";
 
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_settings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
+  CDirectory::GetDirectory(strDir, items, g_settings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false, true);
 
   CStdStringArray fanarts;
   StringUtils::SplitString(g_advancedSettings.m_fanartImages, "|", fanarts);
@@ -3101,7 +3101,7 @@ CStdString CFileItem::FindTrailer() const
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_settings.m_videoExtensions, true, false, DIR_CACHE_ALWAYS, false);
+  CDirectory::GetDirectory(strDir, items, g_settings.m_videoExtensions, true, false, DIR_CACHE_ALWAYS, false, true);
   CUtil::RemoveExtension(strFile);
   strFile += "-trailer";
   CStdString strFile3 = CUtil::AddFileToFolder(strDir, "movie-trailer");

@@ -40,6 +40,7 @@
 
 #include "DllLibCurl.h"
 #include "FileShoutcast.h"
+#include "SpecialProtocol.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 
@@ -328,6 +329,7 @@ void CFileCurl::Close()
 
   m_url.Empty();
   m_referer.Empty();
+  m_cookie.Empty();
 
   /* cleanup */
   if( m_curlAliasList )
@@ -375,7 +377,18 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_MAXREDIRS, 5);
 
   // Enable cookie engine for current handle to re-use them in future requests
-  g_curlInterface.easy_setopt(h, CURLOPT_COOKIEFILE, "");
+  CStdString strCookieFile;
+  CStdString strTempPath = CSpecialProtocol::TranslatePath(g_advancedSettings.m_cachePath);
+  CUtil::AddFileToFolder(strTempPath, "cookies.dat", strCookieFile);
+
+  g_curlInterface.easy_setopt(h, CURLOPT_COOKIEFILE, strCookieFile.c_str());
+  g_curlInterface.easy_setopt(h, CURLOPT_COOKIEJAR, strCookieFile.c_str());
+
+  // Set custom cookie if requested
+  if (!m_cookie.IsEmpty())
+    g_curlInterface.easy_setopt(h, CURLOPT_COOKIE, m_cookie.c_str());
+
+  g_curlInterface.easy_setopt(h, CURLOPT_COOKIELIST, "FLUSH");
 
   // When using multiple threads you should set the CURLOPT_NOSIGNAL option to
   // TRUE for all handles. Everything will work fine except that timeouts are not
@@ -679,6 +692,8 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
         }
         else if (name.Equals("User-Agent"))
           SetUserAgent(value);
+        else if (name.Equals("Cookie"))
+          SetCookie(value);
         else
           SetRequestHeader(name, value);
       }

@@ -69,6 +69,7 @@ namespace XFILE
       void SetLowSpeedTime(int lowspeedtime)                     { m_lowspeedtime = lowspeedtime; }
       void SetPostData(CStdString postdata)                      { m_postdata = postdata; }
       void SetReferer(CStdString referer)                        { m_referer = referer; }
+      void SetCookie(CStdString cookie)                          { m_cookie = cookie; }
       void SetContentType(CStdString contenttype)                { SetRequestHeader("Content-Type", m_contenttype); }
       void SetRequestHeader(CStdString header, CStdString value);
       void SetRequestHeader(CStdString header, long value);
@@ -138,6 +139,7 @@ namespace XFILE
       CStdString      m_binary;
       CStdString      m_postdata;
       CStdString      m_referer;
+      CStdString      m_cookie;
       CStdString      m_contenttype;
       CStdString      m_username;
       CStdString      m_password;

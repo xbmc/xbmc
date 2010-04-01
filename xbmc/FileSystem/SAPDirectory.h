@@ -54,7 +54,7 @@ namespace SDP
     std::string     version;
     std::string     origin;
     std::string     name;
-    std::string     title;
+    std::string     info;
     std::string     bandwidth;
 
     std::vector<std::string>    attributes;

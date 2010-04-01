@@ -79,7 +79,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   VECSOURCES shares;
   GetSources(shares);
   if (!strPath.IsEmpty() && strPath != "files://")
-    return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories, m_allowPrompting, m_cacheDirectory, m_extFileInfo);
+    return CDirectory::GetDirectory(strPath, items, m_strFileMask, bUseFileDirectories, m_allowPrompting, m_cacheDirectory, m_extFileInfo, true);
 
   // if strPath is blank, clear the list (to avoid parent items showing up)
   if (strPath.IsEmpty())

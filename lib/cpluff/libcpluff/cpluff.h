@@ -405,13 +405,6 @@ struct cp_plugin_info_t {
 	char *identifier;
 	
 	/**
-	 * A mandatory summary of the addon's features.
-	 * This corresponds to the @a summary attribute of the @a plugin element in
-	 * a plug-in descriptor.
-	 */
-	char *summary;
-
-	/**
 	 * An optional plug-in name. NULL if not available. The plug-in name is
 	 * intended only for display purposes and the value can be localized.
 	 * This corresponds to the @a name attribute of the @a plugin element in

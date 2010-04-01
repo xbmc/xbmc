@@ -24,6 +24,8 @@ config.log
 *.dylib
 *.lineno
 *.py[co]
+*.ver
+*.rej
 
 .libs/
 .deps/
@@ -102,6 +104,13 @@ config.log
 
 # /system/
 /system/profiles.xml
+/system/players/paplayer/wavpack.dll
+/system/players/paplayer/libmodplug.dll
+/system/players/paplayer/StSoundLibrary.dll
+
+# /addons/
+/addons/vis.dxspectrum/*.vis
+/addons/vis.waveform/*.vis
 
 # /tools/Changelog/
 /tools/Changelog/Changelog.txt
