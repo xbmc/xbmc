@@ -36,7 +36,7 @@
 /* Set this to a youtube vid until keyboard input is working */
 #define DEFAULT_HOMEURL "http://www.youtube.com/watch?v=Ohjkj6zOucs&hd=1&fs=0"
 
-GUIEmbeddedBrowserWindowObserver::GUIEmbeddedBrowserWindowObserver() :
+CGUIEmbeddedBrowserWindowObserver::CGUIEmbeddedBrowserWindowObserver() :
   m_xPos(0),
   m_yPos(0),
   m_appWindowWidth(800),
@@ -59,7 +59,7 @@ GUIEmbeddedBrowserWindowObserver::GUIEmbeddedBrowserWindowObserver() :
   }
 }
 
-GUIEmbeddedBrowserWindowObserver::GUIEmbeddedBrowserWindowObserver(float xPos,
+CGUIEmbeddedBrowserWindowObserver::CGUIEmbeddedBrowserWindowObserver(float xPos,
   float yPos, float width, float height) :
   m_xPos(xPos),
   m_yPos(yPos),
@@ -83,7 +83,7 @@ GUIEmbeddedBrowserWindowObserver::GUIEmbeddedBrowserWindowObserver(float xPos,
   }
 }
 
-void GUIEmbeddedBrowserWindowObserver::init()
+void CGUIEmbeddedBrowserWindowObserver::init()
 {
   g_graphicsContext.CaptureStateBlock();
 
@@ -162,7 +162,7 @@ void GUIEmbeddedBrowserWindowObserver::init()
   g_graphicsContext.ApplyStateBlock();
 }
 
-void GUIEmbeddedBrowserWindowObserver::reset(void)
+void CGUIEmbeddedBrowserWindowObserver::reset(void)
 {
   // unhook observer
   LLQtWebKit::getInstance()->remObserver(m_browserWindowId, this);
@@ -171,7 +171,7 @@ void GUIEmbeddedBrowserWindowObserver::reset(void)
   LLQtWebKit::getInstance()->reset();
 }
 
-void GUIEmbeddedBrowserWindowObserver::reshape(float widthIn, float heightIn)
+void CGUIEmbeddedBrowserWindowObserver::reshape(float widthIn, float heightIn)
 {
   if ( heightIn == 0 )
     heightIn = 1;
@@ -203,7 +203,7 @@ void GUIEmbeddedBrowserWindowObserver::reshape(float widthIn, float heightIn)
 //   glutPostRedisplay();
 }
 
-void GUIEmbeddedBrowserWindowObserver::idle()
+void CGUIEmbeddedBrowserWindowObserver::idle()
 {
   LLQtWebKit::getInstance()->pump(100);
 
@@ -218,7 +218,7 @@ void GUIEmbeddedBrowserWindowObserver::idle()
 //   glutPostRedisplay();
 }
 
-void GUIEmbeddedBrowserWindowObserver::Render(float xPos, float yPos,
+void CGUIEmbeddedBrowserWindowObserver::Render(float xPos, float yPos,
   float width, float height)
 {
   m_xPos = xPos;
@@ -306,7 +306,7 @@ void GUIEmbeddedBrowserWindowObserver::Render(float xPos, float yPos,
 
 // TODO: Should probably define this to set XBMC keys
 // LLQtWebKit::EKeyboardModifier
-//   GUIEmbeddedBrowserWindowObserver::getLLQtWebKitKeyboardModifierCode()
+//   CGUIEmbeddedBrowserWindowObserver::getLLQtWebKitKeyboardModifierCode()
 // {
 //   int result = LLQtWebKit::KM_MODIFIER_NONE;
 // 
@@ -324,7 +324,7 @@ void GUIEmbeddedBrowserWindowObserver::Render(float xPos, float yPos,
 //   return (LLQtWebKit::EKeyboardModifier)result;
 // }
 
-void GUIEmbeddedBrowserWindowObserver::mouseButton(int button, int state,
+void CGUIEmbeddedBrowserWindowObserver::mouseButton(int button, int state,
   int xIn, int yIn)
 {
 // TODO: Implement this with XBMC classes
@@ -358,7 +358,7 @@ void GUIEmbeddedBrowserWindowObserver::mouseButton(int button, int state,
 //   glutPostRedisplay();
 }
 
-void GUIEmbeddedBrowserWindowObserver::mouseMove(int xIn , int yIn)
+void CGUIEmbeddedBrowserWindowObserver::mouseMove(int xIn , int yIn)
 {
   // texture is scaled to fit the screen so we scale mouse coords in the same way
   xIn = (xIn * m_browserWindowWidth) / m_appWindowWidth;
@@ -374,7 +374,7 @@ void GUIEmbeddedBrowserWindowObserver::mouseMove(int xIn , int yIn)
 //   glutPostRedisplay();
 }
 
-void GUIEmbeddedBrowserWindowObserver::keyboard(unsigned char keyIn,
+void CGUIEmbeddedBrowserWindowObserver::keyboard(unsigned char keyIn,
   bool isDown)
 {
   // ESC key exits
@@ -426,7 +426,7 @@ void GUIEmbeddedBrowserWindowObserver::keyboard(unsigned char keyIn,
 }
 
 /* TODO: Implement this so we can send input to browser */
-// void GUIEmbeddedBrowserWindowObserver::keyboardSpecial(int specialIn,
+// void CGUIEmbeddedBrowserWindowObserver::keyboardSpecial(int specialIn,
 //   bool isDown)
 // {
 //   uint32_t key = LLQtWebKit::KEY_NONE;
@@ -468,18 +468,18 @@ void GUIEmbeddedBrowserWindowObserver::keyboard(unsigned char keyIn,
 /* Function to flag that an update is required - page grab happens in idle() so
  * we don't stall
  */
-void GUIEmbeddedBrowserWindowObserver::onPageChanged(const EventType &eventIn)
+void CGUIEmbeddedBrowserWindowObserver::onPageChanged(const EventType &eventIn)
 {
   m_needsUpdate = true;
 }
 
-void GUIEmbeddedBrowserWindowObserver::onNavigateBegin(const EventType &eventIn)
+void CGUIEmbeddedBrowserWindowObserver::onNavigateBegin(const EventType &eventIn)
 {
   std::cout << "Event: begin navigation to " << eventIn.getEventUri() <<
     std::endl;
 }
 
-void GUIEmbeddedBrowserWindowObserver::onNavigateComplete(
+void CGUIEmbeddedBrowserWindowObserver::onNavigateComplete(
   const EventType &eventIn)
 {
   std::cout << "Event: end navigation to " << eventIn.getEventUri() <<
@@ -487,34 +487,34 @@ void GUIEmbeddedBrowserWindowObserver::onNavigateComplete(
   Render(m_xPos, m_yPos, m_appWindowWidth, m_appWindowHeight);
 }
 
-void GUIEmbeddedBrowserWindowObserver::onUpdateProgress(
+void CGUIEmbeddedBrowserWindowObserver::onUpdateProgress(
   const EventType &eventIn)
 {
   std::cout << "Event: progress value updated to " << eventIn.getIntValue() <<
     std::endl;
 }
 
-void GUIEmbeddedBrowserWindowObserver::onStatusTextChange(
+void CGUIEmbeddedBrowserWindowObserver::onStatusTextChange(
   const EventType &eventIn)
 {
   std::cout << "Event: status updated to " << eventIn.getStringValue() <<
     std::endl;
 }
 
-void GUIEmbeddedBrowserWindowObserver::onTitleChange(const EventType &eventIn)
+void CGUIEmbeddedBrowserWindowObserver::onTitleChange(const EventType &eventIn)
 {
   std::cout << "Event: title changed to  " << eventIn.getStringValue() <<
     std::endl;
 }
 
-void GUIEmbeddedBrowserWindowObserver::onLocationChange(
+void CGUIEmbeddedBrowserWindowObserver::onLocationChange(
   const EventType &eventIn)
 {
   std::cout << "Event: location changed to " << eventIn.getStringValue() <<
     std::endl;
 }
 
-void GUIEmbeddedBrowserWindowObserver::onClickLinkHref(const EventType &eventIn)
+void CGUIEmbeddedBrowserWindowObserver::onClickLinkHref(const EventType &eventIn)
 {
   std::cout << "Event: clicked on link:" << std::endl;
   std::cout << "  URL:" << eventIn.getStringValue() << std::endl;
@@ -538,57 +538,57 @@ void GUIEmbeddedBrowserWindowObserver::onClickLinkHref(const EventType &eventIn)
   std::cout << std::endl;
 }
 
-void GUIEmbeddedBrowserWindowObserver::SetTexture(unsigned int *appTexture)
+void CGUIEmbeddedBrowserWindowObserver::SetTexture(unsigned int *appTexture)
 {
   m_appTexture = *appTexture;
 }
 
-void GUIEmbeddedBrowserWindowObserver::SetXPosition(float xPos)
+void CGUIEmbeddedBrowserWindowObserver::SetXPosition(float xPos)
 {
   m_xPos = xPos;
 }
 
-void GUIEmbeddedBrowserWindowObserver::SetYPosition(float yPos)
+void CGUIEmbeddedBrowserWindowObserver::SetYPosition(float yPos)
 {
   m_yPos = yPos;
 }
 
-void GUIEmbeddedBrowserWindowObserver::SetWidth(float width)
+void CGUIEmbeddedBrowserWindowObserver::SetWidth(float width)
 {
   m_appWindowWidth = m_browserWindowWidth = width;
 }
 
-void GUIEmbeddedBrowserWindowObserver::SetHeight(float height)
+void CGUIEmbeddedBrowserWindowObserver::SetHeight(float height)
 {
   m_appWindowHeight = m_browserWindowHeight = height;
 }
 
-float GUIEmbeddedBrowserWindowObserver::getXPos()
+float CGUIEmbeddedBrowserWindowObserver::getXPos()
 {
   return m_xPos;
 }
 
-float GUIEmbeddedBrowserWindowObserver::getYPos()
+float CGUIEmbeddedBrowserWindowObserver::getYPos()
 {
   return m_yPos;
 }
 
-float GUIEmbeddedBrowserWindowObserver::getAppWindowWidth()
+float CGUIEmbeddedBrowserWindowObserver::getAppWindowWidth()
 {
   return m_appWindowWidth;
 }
 
-float GUIEmbeddedBrowserWindowObserver::getAppWindowHeight()
+float CGUIEmbeddedBrowserWindowObserver::getAppWindowHeight()
 {
   return m_appWindowHeight;
 }
 
-CStdString GUIEmbeddedBrowserWindowObserver::getAppWindowName()
+CStdString CGUIEmbeddedBrowserWindowObserver::getAppWindowName()
 {
   return m_appWindowName;
 }
 
-void* GUIEmbeddedBrowserWindowObserver::getNativeWindowHandle()
+void* CGUIEmbeddedBrowserWindowObserver::getNativeWindowHandle()
 {
   /* HACK: This implementation of the embedded browser needs a native window
    * handle.

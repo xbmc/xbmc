@@ -1,4 +1,13 @@
+/*!
+\file GUIEmbeddedBrowserWindowObserver.h
+\brief
+*/
+
+#ifndef GUILIB_GUIEMBEDDEDBROWSERWINDOWOBSERVER_H
+#define GUILIB_GUIEMBEDDEDBROWSERWINDOWOBSERVER_H
+
 #pragma once
+
 /*
  *      Copyright (C) 2010 Team XBMC
  *      http://www.xbmc.org
@@ -24,11 +33,11 @@
 
 #include "llqtwebkit.h"
 
-class GUIEmbeddedBrowserWindowObserver : public LLEmbeddedBrowserWindowObserver
+class CGUIEmbeddedBrowserWindowObserver : public LLEmbeddedBrowserWindowObserver
 {
 public:
-  GUIEmbeddedBrowserWindowObserver();
-  GUIEmbeddedBrowserWindowObserver(float xPos, float yPos, float width,
+  CGUIEmbeddedBrowserWindowObserver();
+  CGUIEmbeddedBrowserWindowObserver(float xPos, float yPos, float width,
     float height);
   void init();
   void reset(void);
@@ -76,3 +85,5 @@ private:
   CStdString m_homeUrl;
   bool m_needsUpdate;
 };
+
+#endif
