@@ -102,7 +102,8 @@ static XBMC_KeyMapping g_mapping_evdev[] =
 , { 135, 0x5d } // Right click
 , { 136, 0xb2 } // Stop
 , { 138, 0x49 } // Info
-, { 166, 0xa6 } // Browser back
+, { 147, 0x4d } // Menu
+, { 166, 0x08 } // Back
 , { 167, 0xa7 } // Browser forward
 , { 171, 0xb0 } // Next track
 , { 172, 0xb3 } // Play_Pause
