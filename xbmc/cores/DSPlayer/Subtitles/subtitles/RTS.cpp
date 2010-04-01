@@ -598,21 +598,19 @@ CLine::~CLine()
 
 void CLine::Compact()
 {
-  std::list<CWord *>::iterator it = begin();
-	for(; it != end(); ++it)
-	{
-		CWord* w = *it;
+  while (! empty())
+  {
+		CWord* w = front();
 		if(!w->m_fWhiteSpaceChar) break;
 
 		m_width -= w->m_width;
 		delete w;
-		pop_front();
+    pop_front();
 	}
 
-  std::list<CWord*>::reverse_iterator rit = rbegin();
-  for (; rit != rend(); ++it)
-	{
-		CWord* w = *rit;
+  while (! empty())
+  {
+		CWord* w = back();
 		if(!w->m_fWhiteSpaceChar) break;
 
 		m_width -= w->m_width;
@@ -623,15 +621,15 @@ void CLine::Compact()
 	if(empty()) return;
 
 	CLine l;
-  l.insert(l.end(), begin(), end());
+  l.insert(l.begin(), begin(), end());
 	clear();
 
 	CWord* last = NULL;
 
-	it = l.begin();
-	for(; it != l.end(); ++it)
+  std::list<CWord *>::iterator it = l.begin();
+	while (it != l.end())
 	{
-		CWord* w = *it;
+		CWord* w = *it; it++;
 
 		if(!last || !last->Append(w))
 			push_back(last = w->Copy());
@@ -640,9 +638,9 @@ void CLine::Compact()
 	m_ascent = m_descent = m_borderX = m_borderY = 0;
 
   it = l.begin();
-  for(; it != l.end(); ++it)
+  while (it != l.end())
 	{
-		CWord* w = *it;
+		CWord* w = *it; it++;
 
 		if(m_ascent < w->m_ascent) m_ascent = w->m_ascent;
 		if(m_descent < w->m_descent) m_descent = w->m_descent;
