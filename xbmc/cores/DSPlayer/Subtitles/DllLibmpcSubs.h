@@ -38,7 +38,7 @@ class DllLibMpcSubsInterface
 public:
   virtual ~DllLibMpcSubsInterface() {}
   virtual bool CreateSubtitleManager(IDirect3DDevice9* d3DDev, SIZE size, ISubManager ** pManager) = 0;
-  virtual bool DeleteSubtitleManager() = 0;
+  virtual bool DeleteSubtitleManager(ISubManager * pManager) = 0;
 };
 
 
@@ -47,8 +47,8 @@ class DllLibMpcSubs : public DllDynamic, DllLibMpcSubsInterface
 {
   DECLARE_DLL_WRAPPER(DllLibMpcSubs, "mpcSubs.dll")
   
-  DEFINE_METHOD3(bool, CreateSubtitleManager, (IDirect3DDevice9 * p1, SIZE p2, ISubManager ** p3))
-  DEFINE_METHOD0(bool, DeleteSubtitleManager)
+  DEFINE_METHOD3(bool, CreateSubtitleManager, (IDirect3DDevice9 * p1, SIZE p2, ISubManager ** p3)) ///< Caller take ownership of ISubManager
+  DEFINE_METHOD1(bool, DeleteSubtitleManager, (ISubManager* p1))
   
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(CreateSubtitleManager)

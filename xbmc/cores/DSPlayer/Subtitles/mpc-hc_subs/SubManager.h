@@ -17,26 +17,22 @@ public:
 	CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr);
 	~CSubManager(void);
 
-	void LoadSubtitlesForFile(const wchar_t* fn, IGraphBuilder* pGB, const wchar_t* paths);
+	//void LoadSubtitlesForFile(const wchar_t* fn, IGraphBuilder* pGB, const wchar_t* paths);
 
-	int GetCount();
-	BSTR GetLanguage(int i);
-	int GetCurrent();
-	void SetCurrent(int current);
-	BOOL GetEnable();
-	void SetEnable(BOOL enable);
-	void SetTime(REFERENCE_TIME nsSampleTime);
+	void SetEnable(bool enable);
 	void Render(int x, int y, int width, int height);
 	int GetDelay(); 
 	void SetDelay(int delay);
 	bool IsModified() { return m_subresync.IsModified(); };
-	void SaveToDisk();
+
   void SetTimePerFrame(REFERENCE_TIME timePerFrame);
   void SetSegmentStart(REFERENCE_TIME segmentStart);
   void SetSampleStart(REFERENCE_TIME sampleStart);
 
+  void SetSubPicProvider(ISubStream* pSubStream);
+
   //load internal subtitles through TextPassThruFilter
-  void LoadInternalSubtitles(IGraphBuilder* pGB);
+  void InsertPassThruFilter(IGraphBuilder* pGB);
   void LoadExternalSubtitles(const wchar_t* fn, const wchar_t* paths);
 
   HRESULT GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest);
@@ -51,9 +47,7 @@ private:
 	void UpdateSubtitle();
 	void ApplyStyle(CRenderedTextSubtitle* pRTS);
 	void ApplyStyleSubStream(ISubStream* pSubStream);
-	void SetSubPicProvider(ISubStream* pSubStream);
 
-	void InitInternalSubs(IBaseFilter* pBF);
 	void SelectStream(int i);
 	int GetExtCount();
 

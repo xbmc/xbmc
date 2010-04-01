@@ -90,16 +90,16 @@ public:
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName) { CStreamsManager::getSingleton()->GetAudioStreamName(iStream,strStreamName); };
   virtual void SetAudioStream(int iStream) { CStreamsManager::getSingleton()->SetAudioStream(iStream); };
 
-  virtual int  GetSubtitleCount()     { return CStreamsManager::getSingleton()->GetSubtitleCount(); }
-  virtual int  GetSubtitle()          { return CStreamsManager::getSingleton()->GetSubtitle(); }
-  virtual void GetSubtitleName(int iStream, CStdString &strStreamName) { CStreamsManager::getSingleton()->GetSubtitleName(iStream, strStreamName); }
-  virtual void SetSubtitle(int iStream) { CStreamsManager::getSingleton()->SetSubtitle(iStream); }
-  virtual bool GetSubtitleVisible() { return CStreamsManager::getSingleton()->GetSubtitleVisible(); }
-  virtual void SetSubtitleVisible( bool bVisible ) { CStreamsManager::getSingleton()->SetSubtitleVisible(bVisible); }
+  virtual int  GetSubtitleCount()     { return CStreamsManager::getSingleton()->SubtitleManager->GetSubtitleCount(); }
+  virtual int  GetSubtitle()          { return CStreamsManager::getSingleton()->SubtitleManager->GetSubtitle(); }
+  virtual void GetSubtitleName(int iStream, CStdString &strStreamName) { CStreamsManager::getSingleton()->SubtitleManager->GetSubtitleName(iStream, strStreamName); }
+  virtual void SetSubtitle(int iStream) { CStreamsManager::getSingleton()->SubtitleManager->SetSubtitle(iStream); }
+  virtual bool GetSubtitleVisible() { return CStreamsManager::getSingleton()->SubtitleManager->GetSubtitleVisible(); }
+  virtual void SetSubtitleVisible( bool bVisible ) { CStreamsManager::getSingleton()->SubtitleManager->SetSubtitleVisible(bVisible); }
 
-  virtual int AddSubtitle(const CStdString& strSubPath) { return CStreamsManager::getSingleton()->AddSubtitle(strSubPath); };
-  virtual void SetSubTitleDelay(float fValue = 0.0f) { CStreamsManager::getSingleton()->SetSubtitleDelay(fValue); };
-  virtual float GetSubTileDelay(void) { return CStreamsManager::getSingleton()->GetSubtitleDelay(); }
+  virtual int AddSubtitle(const CStdString& strSubPath) { return CStreamsManager::getSingleton()->SubtitleManager->AddSubtitle(strSubPath); };
+  virtual void SetSubTitleDelay(float fValue = 0.0f) { CStreamsManager::getSingleton()->SubtitleManager->SetSubtitleDelay(fValue); };
+  virtual float GetSubTileDelay(void) { return CStreamsManager::getSingleton()->SubtitleManager->GetSubtitleDelay(); }
   // Chapters
 
   virtual int  GetChapterCount()                                { CSingleLock lock(m_StateSection); return CChaptersManager::getSingleton()->GetChapterCount(); }

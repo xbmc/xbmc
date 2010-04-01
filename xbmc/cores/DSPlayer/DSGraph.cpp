@@ -142,9 +142,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   SetVolume(g_settings.m_nVolumeLevel);
   
   CDSPlayer::PlayerState = DSPLAYER_LOADED;
-  
-  //CStreamsManager::getSingleton()->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);  
-  
+
   m_currentRate = 1;
   return hr;
 }

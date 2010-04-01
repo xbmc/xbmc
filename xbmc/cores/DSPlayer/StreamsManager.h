@@ -194,13 +194,14 @@ struct SExternalSubtitleInfos: SSubtitleStreamInfos
 class CStreamsManager
 {
 public:
+  friend class CSubtitleManager;
   /// Retrieve singleton instance
   static CStreamsManager *getSingleton();
   /// Destroy singleton instance
   static void Destroy();
 
   /// @return A std::vector of all audio streams found in the media file
-  std::vector<SAudioStreamInfos *> GetAudios();
+  std::vector<SAudioStreamInfos *>& GetAudios();
 
   /// @return Audio streams count
   int  GetAudioStreamCount();
@@ -231,9 +232,70 @@ public:
   CStdString GetAudioCodecName();
   /// @return An instance to the IAMStreamSelect interface if the splitter expose it, NULL otherwise
   IAMStreamSelect *GetStreamSelector() { return m_pIAMStreamSelect; }
+  
+  /// Initialize streams from the current media file
+  void LoadStreams();
+
+  /// @return Current video width
+  int GetPictureWidth();
+  /// @return Current video height
+  int GetPictureHeight();
+  /// @return The displayname of the video codec used in the media file (XviD, DivX, h264, ...)
+  CStdString GetVideoCodecName();
+  
+  /** Initialize the manager
+   * @param[in] DSGraph Pointer to CDSGraph
+   * @return True if the manager is initialized, false otherwise
+   */
+  bool InitManager(CDSGraph *DSGraph);
+  /** Extract stream information from AM_MEDIA_TYPE
+   * @param[in] mt Media type informations
+   * @param[out] s A filled SStreamInfos structure
+   */
+  void GetStreamInfos(AM_MEDIA_TYPE *mt, SStreamInfos *s);
+
+  SVideoStreamInfos* GetVideoStreamInfos(unsigned int iIndex = 0);
+  SAudioStreamInfos* GetAudioStreamInfos(unsigned int iIndex = 0);
+
+  boost::shared_ptr<CSubtitleManager> SubtitleManager;
+
+private:
+  CStreamsManager(void);
+  ~CStreamsManager(void);
+  static CStreamsManager *m_pSingleton;
+
+  void FormatStreamName(SStreamInfos& s);
+  CStdString ISOToLanguage(CStdString code);
+
+  std::vector<SAudioStreamInfos *> m_audioStreams;
+
+  Com::SmartPtr<IAMStreamSelect> m_pIAMStreamSelect;
+  Com::SmartPtr<IFilterGraph2> m_pGraphBuilder;
+  Com::SmartPtr<IBaseFilter> m_pSplitter;
+
+  CDSGraph* m_pGraph;
+
+  bool m_init;
+  bool m_bChangingStream;
+
+  SVideoStreamInfos m_videoStream;
+};
+
+class CSubtitleManager
+{
+public:
+  CSubtitleManager(CStreamsManager* pStreamManager);
+  ~CSubtitleManager();
+  
+  void Initialize();
+  void Unload();
+
+  void Render();
+
+  HRESULT GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest);
 
   /// @return A std::vector of all subtitle streams (internal or external) found in the media file
-  std::vector<SSubtitleStreamInfos *> GetSubtitles();
+  std::vector<SSubtitleStreamInfos *>& GetSubtitles();
   /// @return Subtitles count
   int  GetSubtitleCount();
   /// @return The index of the current subtitle
@@ -266,81 +328,23 @@ public:
    * @remarks The subtitle will be automatically flagged as external
   */
   int AddSubtitle(const CStdString& subFilePath);
-  
-  /// Load streams from the current media file
-  void LoadStreams();
 
-  /// @return Current video width
-  int GetPictureWidth();
-  /// @return Current video height
-  int GetPictureHeight();
-  /// @return The displayname of the video codec used in the media file (XviD, DivX, h264, ...)
-  CStdString GetVideoCodecName();
-  
-  /** Initialize the manager
-   * @param[in] DSGraph Pointer to CDSGraph
-   * @return True if the manager is initialized, false otherwise
-   */
-  bool InitManager(CDSGraph *DSGraph);
-  /** Extract stream information from AM_MEDIA_TYPE
-   * @param[in] mt Media type informations
-   * @param[out] s A filled SStreamInfos structure
-   */
-  void GetStreamInfos(AM_MEDIA_TYPE *mt, SStreamInfos *s);
-
-  SVideoStreamInfos* GetVideoStreamInfos(unsigned int iIndex = 0);
-  SAudioStreamInfos* GetAudioStreamInfos(unsigned int iIndex = 0);
   SSubtitleStreamInfos* GetSubtitleStreamInfos(unsigned int iIndex = 0);
   SExternalSubtitleInfos* GetExternalSubtitleStreamInfos(unsigned int iIndex = 0);
 
-  class CSubtitleManager
-  {
-  public:
-    CSubtitleManager();
-    
-    void Load();
-    void Unload();
-
-    void Render();
-
-    HRESULT GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest);
-
-    void SetSegmentStart(REFERENCE_TIME iSegmentStart);
-    void SetSampleStart(REFERENCE_TIME iSampleStart);
-    void SetTimePerFrame(REFERENCE_TIME iTimePerFrame);
-  private:
-    DllLibMpcSubs m_dll;
-    ISubManager* m_pManager;
-  };
-  boost::shared_ptr<CSubtitleManager> SubtitleManager;
-
+  void SetSegmentStart(REFERENCE_TIME iSegmentStart);
+  void SetSampleStart(REFERENCE_TIME iSampleStart);
+  void SetTimePerFrame(REFERENCE_TIME iTimePerFrame);
 private:
-  CStreamsManager(void);
-  ~CStreamsManager(void);
-  static CStreamsManager *m_pSingleton;
-
-  void FormatStreamName(SStreamInfos& s);
-  CStdString ISOToLanguage(CStdString code);
   void DisconnectCurrentSubtitlePins(void);
   IPin *GetFirstSubtitlePin(void);
+  static void DeleteSubtitleManager(ISubManager * pManager, DllLibMpcSubs dll);
 
-  std::vector<SAudioStreamInfos *> m_audioStreams;
   std::vector<SSubtitleStreamInfos *> m_subtitleStreams;
-
-  Com::SmartPtr<IAMStreamSelect> m_pIAMStreamSelect;
-  Com::SmartPtr<IFilterGraph2> m_pGraphBuilder;
-  Com::SmartPtr<IBaseFilter> m_pSplitter;
-
-  CDSGraph* m_pGraph;
-
-  bool m_init;
-  bool m_bChangingStream;
-  bool m_bSubtitlesVisible;
-
-  SVideoStreamInfos m_videoStream;
+  DllLibMpcSubs m_dll;
+  boost::shared_ptr<ISubManager> m_pManager;
+  CStreamsManager* m_pStreamManager;
   bool m_bSubtitlesUnconnected;
-
-  Com::SmartPtr<IPin> m_SubtitleInputPin;
-
+  bool m_bSubtitlesVisible;
   AM_MEDIA_TYPE m_subtitleMediaType;
 };

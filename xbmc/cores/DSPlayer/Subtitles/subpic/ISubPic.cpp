@@ -585,11 +585,13 @@ REFERENCE_TIME CSubPicQueue::UpdateQueue()
 
 	if (rtNow < m_rtNowLast)
 	{
-    for (std::list<ISubPic *>::iterator it = m_Queue.begin(); it != m_Queue.end(); ++it)
+    std::list<ISubPic *>::iterator it = m_Queue.begin();
+    while (it != m_Queue.end())
     {
-      m_Queue.front()->Release();
-      m_Queue.pop_front();
+      (*it)->Release();
+      it++;
     }
+    m_Queue.clear();
 		m_rtNowLast = rtNow;
 	}
 	else

@@ -71,7 +71,8 @@ protected:
 
   //dsplayer
   void RenderDShowBuffer(DWORD flags);
-  void RenderTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, CRect pDest);
+  void RenderVideoTexture();
+  void RenderSubtitleTexture();
 
   Com::SmartPtr<IDirect3DTexture9> m_D3DVideoTexture;
   Com::SmartPtr<IDirect3DSurface9> m_D3DMemorySurface;

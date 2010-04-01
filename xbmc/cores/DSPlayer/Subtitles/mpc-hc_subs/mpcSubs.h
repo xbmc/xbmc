@@ -15,5 +15,5 @@
 
 extern "C" {
   MPCSUBS_API bool CreateSubtitleManager(IDirect3DDevice9* d3DDev, SIZE size, ISubManager ** pManager);
-  MPCSUBS_API bool DeleteSubtitleManager();
+  MPCSUBS_API bool DeleteSubtitleManager(ISubManager * pManager);
 }

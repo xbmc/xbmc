@@ -179,65 +179,13 @@ int CSubManager::GetExtCount()
 	return cnt;
 }
 
-int CSubManager::GetCount() 
+void CSubManager::SetEnable(bool enable)
 {
-	return GetExtCount() + m_intSubs.size();
-}
-
-BSTR CSubManager::GetLanguage(int i)
-{
-	std::list<ISubStream *>::iterator pos = m_pSubStreams.begin();
-	while(pos != m_pSubStreams.end() && i >= 0)
-	{
-		ISubStream* pSubStream = *pos; pos++;
-
-		if(i < pSubStream->GetStreamCount()) 
-		{
-			WCHAR* pName = NULL;
-			if(SUCCEEDED(pSubStream->GetStreamInfo(i, &pName, NULL)))
-			{
-				_bstr_t res(pName);
-				CoTaskMemFree(pName);
-				return res.Detach();
-			}
-			return 0;
-		}
-		i -= pSubStream->GetStreamCount();
-	}
-
-	return (i >= 0 && i < (int)m_intNames.size()) ? m_intNames[i].AllocSysString() : NULL;
-}
-
-int CSubManager::GetCurrent()
-{
-	return m_iSubtitleSel&0x7fffffff;
-}
-
-void CSubManager::SetCurrent(int current)
-{
-	m_iSubtitleSel = current | (m_iSubtitleSel&0x80000000); 
-	UpdateSubtitle();
-}
-
-void CSubManager::SetEnable(BOOL enable)
-{
-	if ((enable && m_iSubtitleSel < 0) || (!enable && m_iSubtitleSel>= 0))
+	if ((enable && m_iSubtitleSel < 0) || (!enable && m_iSubtitleSel >= 0))
 	{
 		m_iSubtitleSel ^= 0x80000000;
 		UpdateSubtitle();
 	}
-}
-
-BOOL CSubManager::GetEnable()
-{
-	return m_iSubtitleSel >= 0;
-}
-
-void CSubManager::SetTime(REFERENCE_TIME nsSampleTime)
-{
-	m_rtNow = g__tSegmentStart + nsSampleTime - m_delay;
-	m_pSubPicQueue->SetTime(m_rtNow);
-	m_isSetTime = true;
 }
 
 HRESULT CSubManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest)
@@ -255,7 +203,7 @@ HRESULT CSubManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com:
   m_pSubPicQueue->SetFPS(m_fps);
 
   Com::SmartPtr<ISubPic> pSubPic;
-  if(m_pSubPicQueue->LookupSubPic(m_rtNow, pSubPic)) 
+  if(m_pSubPicQueue->LookupSubPic(m_rtNow, pSubPic))
   {
     Com::SmartSize size(1440, 900);
     if (SUCCEEDED (pSubPic->GetSourceAndDest(&size, pSrc, pDest)))
@@ -340,14 +288,13 @@ static bool isTextConnection(IPin* pPin)
 }
 
 //load internal subtitles through TextPassThruFilter
-void CSubManager::LoadInternalSubtitles(IGraphBuilder* pGB)
+void CSubManager::InsertPassThruFilter(IGraphBuilder* pGB)
 {
 	BeginEnumFilters(pGB, pEF, pBF)
 	{
-		//ATLTRACE(L"Processing filter: %s", GetFilterName(pBF).GetString());
 		if(!IsSplitter(pBF)) continue;
-		//ATLTRACE("Is splitter!");
-		BeginEnumPins(pBF, pEP, pPin)
+
+    BeginEnumPins(pBF, pEP, pPin)
 		{
 			PIN_DIRECTION pindir;
 			pPin->QueryDirection(&pindir);
@@ -367,7 +314,7 @@ void CSubManager::LoadInternalSubtitles(IGraphBuilder* pGB)
 			
 			Com::SmartQIPtr<IBaseFilter> pTPTF = new CTextPassThruFilter(this);
 			CStdStringW name;
-			name.Format(L"TextPassThru%08x", pTPTF);
+			name.Format(L"XBMC TextPassThru%08x", pTPTF);
 			if(FAILED(pGB->AddFilter(pTPTF, name)))
 				continue;
 
@@ -377,7 +324,6 @@ void CSubManager::LoadInternalSubtitles(IGraphBuilder* pGB)
 			{
 				if (FAILED(hr = pGB->ConnectDirect(pPin, GetFirstPin(pTPTF, PINDIR_INPUT), NULL)))
 				{
-					//ATLTRACE("connection to TextPassThruFilter failed: %x", hr);
 					break;
 				}
 				Com::SmartQIPtr<IBaseFilter> pNTR = new CNullTextRenderer(NULL, &hr);
@@ -393,63 +339,16 @@ void CSubManager::LoadInternalSubtitles(IGraphBuilder* pGB)
 			{
 				ApplyStyleSubStream(pSubStream);
 				m_intSubStream = pSubStream;
-				//m_pSubStreams.AddTail(pSubStream);
-				InitInternalSubs(pBF);
 				return;
 			}
 			else
 			{
-				//ATLTRACE("TextPassThruFilter removed");
 				pGB->RemoveFilter(pTPTF);
 			}
 		}
 		EndEnumPins
 	}
 	EndEnumFilters
-}
-
-void CSubManager::InitInternalSubs(IBaseFilter* pBF)
-{
-	m_pSS = pBF;
-	if(!m_pSS) return;
-	DWORD cStreams = 0;
-	if(SUCCEEDED(m_pSS->Count(&cStreams)))
-	{
-		for(int i = 0; i < (int)cStreams; i++)
-		{
-			DWORD dwFlags = 0;
-			LCID lcid = 0;
-			DWORD dwGroup = 0;
-			WCHAR* pszName = NULL;
-			if(FAILED(m_pSS->Info(i, NULL, &dwFlags, &lcid, &dwGroup, &pszName, NULL, NULL)))
-				continue;
-
-			if(dwGroup == 2)
-			{
-				CStdString lang;
-				if (lcid == 0)
-				{
-					lang = pszName;
-					if (lang.Find(L"No ") >= 0)
-						lang.Empty();
-				}
-				else
-				{
-					int len = GetLocaleInfo(lcid, LOCALE_SENGLANGUAGE, lang.GetBuffer(64), 64);
-					//lang.ReleaseBufferSetLength(max(len-1, 0));
-				}
-				if (!lang.IsEmpty())
-				{
-					m_intSubs.push_back(i);
-					m_intNames.push_back(lang);
-				}
-			}
-
-			if(pszName) CoTaskMemFree(pszName);
-		}
-	}
-
-
 }
 
 CStdString GetExtension(CStdString&  filename)
@@ -562,23 +461,15 @@ void CSubManager::SetDelay(int delay_ms)
 	m_delay = delay_ms*10000;
 }
 
-void CSubManager::SaveToDisk()
+/*void CSubManager::LoadSubtitlesForFile(const wchar_t* fn, IGraphBuilder* pGB, const wchar_t* paths)
 {
-	if (m_iSubtitleSel >= 0)
-	{
-		m_subresync.SaveToDisk(m_pSubStream, m_fps, m_movieFile);
-	}
-}
-
-void CSubManager::LoadSubtitlesForFile(const wchar_t* fn, IGraphBuilder* pGB, const wchar_t* paths)
-{
-	LoadInternalSubtitles(pGB);	
+	InsertPassThruFilter(pGB);	
 	LoadExternalSubtitles(fn, paths);
 	if(GetCount() > 0)
 	{
 		m_iSubtitleSel = 0x80000000; //stream 0, disabled
 	} 
-}
+}*/
 
 void CSubManager::SetTimePerFrame( REFERENCE_TIME timePerFrame )
 {
