@@ -167,6 +167,10 @@
 #include "GUIWindowPictures.h"
 #include "GUIWindowScripts.h"
 #include "GUIWindowWeather.h"
+#ifdef HAVE_XBMC_WEB_BROWSER
+#include "GUIWindowWebBrowser.h"
+#include "GUIDialogWebBrowserOSD.h"
+#endif
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowAddonBrowser.h"
 #include "GUIWindowVisualisation.h"
@@ -1108,6 +1112,10 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowVideoOverlay);       // window id = 2904
   g_windowManager.Add(new CGUIWindowScreensaver);        // window id = 2900 Screensaver
   g_windowManager.Add(new CGUIWindowWeather);            // window id = 2600 WEATHER
+#ifdef HAVE_XBMC_WEB_BROWSER
+  g_windowManager.Add(new CGUIWindowWebBrowser);         // window id = 2500
+  g_windowManager.Add(new CGUIDialogWebBrowserOSD);      // window id = 2501
+#endif
   g_windowManager.Add(new CGUIWindowStartup);            // startup window (id 2999)
 
   /* window id's 3000 - 3100 are reserved for python */

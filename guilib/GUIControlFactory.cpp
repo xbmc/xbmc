@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "GUIControlFactory.h"
 #include "LocalizeStrings.h"
 #include "GUIButtonControl.h"
@@ -42,6 +45,9 @@
 #include "GUIButtonScroller.h"
 #include "GUISpinControlEx.h"
 #include "GUIVisualisationControl.h"
+#ifdef HAVE_XBMC_WEB_BROWSER
+#include "GUIWebBrowserControl.h"
+#endif
 #include "GUISettingsSliderControl.h"
 #include "GUIMultiImage.h"
 #include "GUIControlGroup.h"
@@ -1352,6 +1358,12 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   {
     control = new CGUIVisualisationControl(parentID, id, posX, posY, width, height);
   }
+#ifdef HAVE_XBMC_WEB_BROWSER
+  else if (strType == "webbrowser")
+  {
+    control = new CGUIWebBrowserControl(parentID, id, posX, posY, width, height);
+  }
+#endif
 
   // things that apply to all controls
   if (control)

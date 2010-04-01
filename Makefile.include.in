@@ -31,6 +31,10 @@ ifeq ($(ARCH), powerpc-osx)
 	BUNDLE1_O=-lbundle1.o
 endif
 
+ifeq (@HAVE_XBMC_WEB_BROWSER@,1)
+INCLUDES += -I@LLQTWEBKIT_INCLUDE_PATH@
+endif
+
 .cpp.o:
 	@rm -f ${<:.cpp=.o}
 	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cpp=.o}

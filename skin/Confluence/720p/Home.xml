@@ -852,9 +852,18 @@
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Music_Folder)]</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoMusicButton)</visible>
 					</item>
+<!-- Hijack Programs link for now
 					<item id="1">
 						<label>0</label>
 						<onclick>ActivateWindow(Programs)</onclick>
+						<icon>special://skin/backgrounds/programs.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
+						<visible>!Skin.HasSetting(HomeMenuNoProgramsButton)</visible>
+					</item>
+-->
+					<item id="1">
+						<label>0</label>
+						<onclick>ActivateWindow(WebBrowser)</onclick>
 						<icon>special://skin/backgrounds/programs.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoProgramsButton)</visible>

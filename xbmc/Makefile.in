@@ -217,6 +217,11 @@ SRCS=Application.cpp \
      TextureCache.cpp \
      TextureDatabase.cpp \
 
+ifeq (@HAVE_XBMC_WEB_BROWSER@,1)
+  SRCS += GUIWindowWebBrowser.cpp \
+          GUIDialogWebBrowserOSD.cpp
+endif
+
 LIB=xbmc.a
 
 DISTCLEAN_FILES=DllPaths_generated.h

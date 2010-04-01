@@ -447,6 +447,10 @@ DYNOBJSXBMC= \
 	xbmc/cores/DllLoader/exports/util/exports_utils.a \
 	xbmc/cores/DllLoader/exports/exports.a
 
+ifeq (@HAVE_XBMC_WEB_BROWSER@,1)
+OBJSXBMC += @LLQTWEBKIT_LIB_PATH@
+endif
+
 # platform dependend objects
 ifeq ($(findstring osx,$(ARCH)), osx)
 OBJSXBMC += \

@@ -86,6 +86,11 @@ SRCS=AnimatedGif.cpp \
      XBTF.cpp \
      XBTFReader.cpp \
 
+ifeq (@HAVE_XBMC_WEB_BROWSER@,1)
+  SRCS += GUIWebBrowserControl.cpp \
+          GUIEmbeddedBrowserWindowObserver.cpp
+endif
+
 LIB=guilib.a
 
 include ../Makefile.include

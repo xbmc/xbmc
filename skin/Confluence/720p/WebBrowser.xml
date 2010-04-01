@@ -1,0 +1,11 @@
+<window id="2500">
+    <defaultcontrol always="true">8999</defaultcontrol>
+    <controls>
+        <control type="webbrowser" id="10">
+                <posx>0</posx>
+                <posy>0</posy>
+                <width>1280</width>
+                <height>720</height>
+        </control>
+    </controls>
+</window>

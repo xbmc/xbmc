@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# A simple script to aid building XBMC. So far this script only makes use of
+# one argument and determines an absolute path with that argument
+
+D=`dirname "$1"`
+B=`basename "$1"`
+abspath="`cd \"$D\" 2>/dev/null && pwd || echo \"$D\"`/$B"
+echo "$abspath"

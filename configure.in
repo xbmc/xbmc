@@ -35,6 +35,9 @@ vdpau_not_found="== Could not find libvdpau. VDPAU support disabled. =="
 vdpau_disabled="== VDPAU support manually disabled. =="
 crystalhd_not_found="== Could not find libldil. CrystalHD support disabled. =="
 crystalhd_disabled="== CrystalHD support manually disabled. =="
+qtwebkit_not_found="== Could not find QtWebKit >= 4.6. Web browser component disabled. =="
+llqtwebkit_not_found="== Could not find llqtwebkit. Web browser component disabled. =="
+web_browser_disabled="== Web browser component manually disabled. =="
 ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
 
 # External library message strings
@@ -212,6 +215,21 @@ AC_ARG_ENABLE([liba52],
                 [enable deprecated liba52 support])],
               [use_liba52=$enableval],
               [use_liba52=no])
+AC_ARG_ENABLE([web-browser],
+              [AS_HELP_STRING([--disable-web-browser],
+                [disable web browser component])],
+              [use_web_browser=$enableval],
+              [use_web_browser=yes])
+AC_ARG_WITH([llqtwebkit-lib-path],
+              [AS_HELP_STRING([--with-llqtwebkit-lib-path],
+                [path to llqtwebkit static lib])],
+              [llqtwebkit_lib_path=$withval],
+              [llqtwebkit_lib_path="../llqtwebkit/libllqtwebkit.a"])
+AC_ARG_WITH([llqtwebkit-include-path],
+              [AS_HELP_STRING([--with-llqtwebkit-include-path],
+                [path to llqtwebkit include directory])],
+              [llqtwebkit_include_path=$withval],
+              [llqtwebkit_include_path="../llqtwebkit"])
 
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
@@ -684,6 +702,35 @@ else
   AC_MSG_NOTICE($crystalhd_disabled)
 fi
 
+# Web Browser
+if test "$use_web_browser" = "yes"; then
+  PKG_CHECK_MODULES([QTWEBKIT],     [QtWebKit >= 4.6 QtOpenGL >= 4.6],
+    [INCLUDES+=" $QTWEBKIT_CFLAGS"; LIBS+=" $QTWEBKIT_LIBS"],
+    use_web_browser=no;AC_MSG_WARN($qtwebkit_not_found);HAVE_XBMC_WEB_BROWSER=0)
+  # Next lib check is disabled since no official release is available right now
+  # PKG_CHECK_MODULES([LLQTWEBKIT],     [llqtwebkit],
+  #   [INCLUDES+=" $LLQTWEBKIT_CFLAGS"; LIBS+=" $LLQTWEBKIT_LIBS"],
+  #   use_web_browser=no;AC_MSG_WARN($llqtwebkit_not_found);HAVE_XBMC_WEB_BROWSER=0)
+  if test "$use_web_browser" = "yes"; then
+    LLQTWEBKIT_INCLUDE_PATH="$(tools/build-helper $llqtwebkit_include_path)"
+    LLQTWEBKIT_LIB_PATH="$(tools/build-helper $llqtwebkit_lib_path)"
+    if ! test -d "$LLQTWEBKIT_INCLUDE_PATH" || \
+      ! test -r "$LLQTWEBKIT_LIB_PATH"; then
+      use_web_browser=0
+      HAVE_XBMC_WEB_BROWSER=0
+      AC_MSG_WARN([llqtwebkit static lib path or include path were invalid. Disabling web browser component.])
+    else
+      AC_MSG_NOTICE([-I$LLQTWEBKIT_INCLUDE_PATH will be added to INCLUDES])
+      AC_MSG_NOTICE([$LLQTWEBKIT_LIB_PATH is set for path to static llqtwebkit lib])
+      AC_DEFINE([HAVE_XBMC_WEB_BROWSER], [1], [Define to 1 to enable web browser component.])
+      HAVE_XBMC_WEB_BROWSER=1
+    fi
+  fi
+else
+  AC_MSG_NOTICE($web_browser_disabled)
+  HAVE_XBMC_WEB_BROWSER=0
+fi
+
 # platform specific bin utilities
 if test "$host_vendor" != "apple" ; then
   AC_CHECK_PROG(HAVE_GAWK,gawk,"yes","no",)
@@ -978,6 +1025,12 @@ else
   final_message="$final_message\n  Webserver:\tNo"
 fi
 
+if test "$use_web_browser" = "yes"; then
+  final_message="$final_message\n  Web Browser:\tYes"
+else
+  final_message="$final_message\n  Web Browser:\tNo"
+fi
+
 if test "$use_libdts" = "yes"; then
   USE_LIBDTS_DECODER=1
   AC_DEFINE([USE_LIBDTS_DECODER], [1], [Define to 1 to enable deprecated libdts support])
@@ -1120,6 +1173,9 @@ AC_SUBST(USE_PYTHON2_4)
 AC_SUBST(OUTPUT_FILES)
 AC_SUBST(HAVE_XBMC_NONFREE)
 AC_SUBST(USE_ASAP_CODEC)
+AC_SUBST(HAVE_XBMC_WEB_BROWSER)
+AC_SUBST(LLQTWEBKIT_INCLUDE_PATH)
+AC_SUBST(LLQTWEBKIT_LIB_PATH)
 # Function to run the configure scripts in our submodules
 # Consists of three paramaters, the path to the submodule, the configure command
 # with appropriate arguments, and a third parameter set to 1 if we are to skip
