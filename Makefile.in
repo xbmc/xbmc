@@ -138,7 +138,10 @@ DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh \
         autom4te.cache config.h.in~ \
         xbmc/lib/libPython/Python/Include/pyconfig.h \
         xbmc/lib/libPython/Python/configure.lineno \
-        xbmc/lib/libPython/Python/libpython2.4.so.1.0
+        xbmc/lib/libPython/Python/libpython2.4.so.1.0 \
+        lib/llqtwebkit/.moc \
+        lib/llqtwebkit/.obj \
+        lib/llqtwebkit/.ui
 
 all : Makefile externals xbmc.bin xbmc-xrandr skins
 
