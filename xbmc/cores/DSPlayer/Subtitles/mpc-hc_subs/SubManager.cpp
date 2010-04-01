@@ -107,10 +107,6 @@ void CSubManager::InvalidateSubtitle(DWORD_PTR nSubtitleId, REFERENCE_TIME rtInv
 
 void CSubManager::UpdateSubtitle()
 {
-	//ATLTRACE("UpdateSubtitle");
-	int i = m_iSubtitleSel;
-
-  m_pSubPicQueue->SetSubPicProvider(NULL);
 }
 
 void CSubManager::SetEnable(bool enable)

@@ -248,7 +248,7 @@ public:
 	void Deinit();
 
 	DECLARE_IUNKNOWN
-    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
 	// ISubPicProvider
 	STDMETHODIMP_(__w64 int) GetStartPosition(REFERENCE_TIME rt, double fps);
