@@ -44,13 +44,11 @@ public:
   void reshape(float widthIn, float heightIn);
   void idle();
   void Render(float xPos, float yPos, float width, float height);
-  // TODO: Should probably define this to set XBMC keys
-  // LLQtWebKit::EKeyboardModifier getLLQtWebKitKeyboardModifierCode();
+  LLQtWebKit::EKeyboardModifier getLLQtWebKitKeyboardModifierCode();
   void mouseButton(int button, int state, int xIn, int yIn);
   void mouseMove(int xIn , int yIn);
   void keyboard(unsigned char keyIn, bool isDown);
-  /* TODO: Implement this so we can send input to the browser */
-  // void keyboardSpecial(int specialIn, bool isDown);
+  void keyboardSpecial(int specialIn, bool isDown);
   void onPageChanged( const EventType &eventIn);
   void onNavigateBegin(const EventType &eventIn);
   void onNavigateComplete(const EventType &eventIn);

@@ -29,10 +29,6 @@
 #include <cstdlib> // TODO: Use CLog::Log instead of std::cout.
 #include <GL/gl.h>
 
-#ifndef PATH_MAX
-#define PATH_MAX 4096
-#endif
-
 /* Set this to a youtube vid until keyboard input is working */
 #define DEFAULT_HOMEURL "http://www.youtube.com/watch?v=Ohjkj6zOucs&hd=1&fs=0"
 
@@ -199,8 +195,6 @@ void CGUIEmbeddedBrowserWindowObserver::reshape(float widthIn, float heightIn)
 
   m_needsUpdate = true;
   idle();
-
-//   glutPostRedisplay();
 }
 
 void CGUIEmbeddedBrowserWindowObserver::idle()
@@ -213,9 +207,6 @@ void CGUIEmbeddedBrowserWindowObserver::idle()
      * the texture in display()
      */
     LLQtWebKit::getInstance()->grabBrowserWindow(m_browserWindowId);
-
-  // lots of updates for smooth motion
-//   glutPostRedisplay();
 }
 
 void CGUIEmbeddedBrowserWindowObserver::Render(float xPos, float yPos,
@@ -300,16 +291,14 @@ void CGUIEmbeddedBrowserWindowObserver::Render(float xPos, float yPos,
   glMatrixMode(GL_TEXTURE);
   glPopMatrix();
   g_graphicsContext.ApplyStateBlock();
-
-//   glutSwapBuffers();
 }
 
-// TODO: Should probably define this to set XBMC keys
-// LLQtWebKit::EKeyboardModifier
-//   CGUIEmbeddedBrowserWindowObserver::getLLQtWebKitKeyboardModifierCode()
-// {
-//   int result = LLQtWebKit::KM_MODIFIER_NONE;
-// 
+//TODO: Should probably define this to set XBMC keys
+LLQtWebKit::EKeyboardModifier
+  CGUIEmbeddedBrowserWindowObserver::getLLQtWebKitKeyboardModifierCode()
+{
+  int result = LLQtWebKit::KM_MODIFIER_NONE;
+
 //   int modifiers = glutGetModifiers();
 // 
 //   if ( GLUT_ACTIVE_SHIFT & modifiers )
@@ -320,9 +309,9 @@ void CGUIEmbeddedBrowserWindowObserver::Render(float xPos, float yPos,
 // 
 //   if ( GLUT_ACTIVE_ALT & modifiers )
 //     result |= LLQtWebKit::KM_MODIFIER_ALT;
-// 
-//   return (LLQtWebKit::EKeyboardModifier)result;
-// }
+
+  return (LLQtWebKit::EKeyboardModifier)result;
+}
 
 void CGUIEmbeddedBrowserWindowObserver::mouseButton(int button, int state,
   int xIn, int yIn)
@@ -353,9 +342,6 @@ void CGUIEmbeddedBrowserWindowObserver::mouseButton(int button, int state,
 //       LLQtWebKit::getInstance()->focusBrowser(m_browserWindowId, true);
 //     }
 //   }
-
-  // force a GLUT  update
-//   glutPostRedisplay();
 }
 
 void CGUIEmbeddedBrowserWindowObserver::mouseMove(int xIn , int yIn)
@@ -368,10 +354,6 @@ void CGUIEmbeddedBrowserWindowObserver::mouseMove(int xIn , int yIn)
   LLQtWebKit::getInstance()->mouseEvent(m_browserWindowId,
     LLQtWebKit::ME_MOUSE_MOVE, LLQtWebKit::MB_MOUSE_BUTTON_LEFT, xIn, yIn,
     LLQtWebKit::KM_MODIFIER_NONE);
-
-
-  // force a GLUT  update
-//   glutPostRedisplay();
 }
 
 void CGUIEmbeddedBrowserWindowObserver::keyboard(unsigned char keyIn,
@@ -415,22 +397,22 @@ void CGUIEmbeddedBrowserWindowObserver::keyboard(unsigned char keyIn,
 
     text[1] = 0;
 
-//     std::cerr << "key " << (isDown?"down ":"up ") << (int)keyIn <<
-//       ", modifiers = " << (int)getLLQtWebKitKeyboardModifierCode() << std::endl;
+    std::cerr << "key " << (isDown?"down ":"up ") << (int)keyIn <<
+      ", modifiers = " << (int)getLLQtWebKitKeyboardModifierCode() << std::endl;
 
     // send event to LLQtWebKit
-/*    LLQtWebKit::getInstance()->keyboardEvent(m_browserWindowId,
+    LLQtWebKit::getInstance()->keyboardEvent(m_browserWindowId,
       isDown?LLQtWebKit::KE_KEY_DOWN:LLQtWebKit::KE_KEY_UP, keyIn, text,
-      getLLQtWebKitKeyboardModifierCode());*/
+      getLLQtWebKitKeyboardModifierCode());
   }
 }
 
 /* TODO: Implement this so we can send input to browser */
-// void CGUIEmbeddedBrowserWindowObserver::keyboardSpecial(int specialIn,
-//   bool isDown)
-// {
-//   uint32_t key = LLQtWebKit::KEY_NONE;
-// 
+void CGUIEmbeddedBrowserWindowObserver::keyboardSpecial(int specialIn,
+  bool isDown)
+{
+  uint32_t key = LLQtWebKit::KEY_NONE;
+
 //   switch(specialIn)
 //   {
 //     case GLUT_KEY_F1:     key = LLQtWebKit::KEY_F1;   break;
@@ -458,12 +440,12 @@ void CGUIEmbeddedBrowserWindowObserver::keyboard(unsigned char keyIn,
 //     default:
 //     break;
 //   }
-// 
-//   if(key != LLQtWebKit::KEY_NONE)
-//   {
-//     keyboard(key, isDown);
-//   }
-// }
+
+  if(key != LLQtWebKit::KEY_NONE)
+  {
+    keyboard(key, isDown);
+  }
+}
 
 /* Function to flag that an update is required - page grab happens in idle() so
  * we don't stall
