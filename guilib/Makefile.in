@@ -87,6 +87,7 @@ SRCS=AnimatedGif.cpp \
      XBTFReader.cpp \
 
 ifeq (@HAVE_XBMC_WEB_BROWSER@,1)
+  INCLUDES += -I../lib/llqtwebkit
   SRCS += GUIWebBrowserControl.cpp \
           GUIEmbeddedBrowserWindowObserver.cpp
 endif

@@ -218,6 +218,7 @@ SRCS=Application.cpp \
      TextureDatabase.cpp \
 
 ifeq (@HAVE_XBMC_WEB_BROWSER@,1)
+  INCLUDES += -I../lib/llqtwebkit
   SRCS += GUIWindowWebBrowser.cpp \
           GUIDialogWebBrowserOSD.cpp
 endif

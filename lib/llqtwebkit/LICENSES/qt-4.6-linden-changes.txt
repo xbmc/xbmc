@@ -1,0 +1,5 @@
+The pristine version of Qt corresponding to this build is available at:
+http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.6.0.zip
+
+The modifications we applied to the above package to get this build are available at:
+http://gitorious.org/+lindenqt/qt/lindenqt

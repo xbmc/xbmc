@@ -1,0 +1,36 @@
+Source code
+========
+The license for the source code in this distribution should be clearly
+marked on each source file.  Unless otherwise specified, the source
+code in this distribution ("Source Code") is provided by Linden Lab to
+you under the terms of the GNU General Public License, version 2.0
+("GPL"), unless you have obtained a separate licensing agreement
+("Other License"), formally executed by you and Linden Lab.  Terms of
+the GPL can be found in GPL-license.txt in this distribution, or
+online at http://secondlifegrid.net/technology-programs/license-virtual-world/viewerlicensing/gplv2
+
+There are special exceptions to the terms and conditions of the GPL as
+it is applied to this Source Code. View the full text of the exception
+in the file FLOSS-exception.txt in this software distribution, or
+online at http://secondlifegrid.net/technology-programs/license-virtual-world/viewerlicensing/flossexception
+
+By copying, modifying or distributing this software, you acknowledge
+that you have read and understood your obligations described above,
+and agree to abide by those obligations.
+
+ALL LINDEN LAB SOURCE CODE IS PROVIDED "AS IS." LINDEN LAB MAKES NO
+WARRANTIES, EXPRESS, IMPLIED OR OTHERWISE, REGARDING ITS ACCURACY,
+COMPLETENESS OR PERFORMANCE.
+
+Logos and trademarks
+==============
+
+"Second Life" and "Linden Lab" are registered trademarks of Linden
+Research, Inc.  Other trademarks include (but are not limited to): the
+names Linden and Linden Research, as well as the Linden Lab Hexagon
+Design and the Second Life Hand Design logos.
+
+Use of logos and trademarks are subject to the Linden Lab trademark
+policy, available at:
+
+http://secondlife.com/corporate/trademark/

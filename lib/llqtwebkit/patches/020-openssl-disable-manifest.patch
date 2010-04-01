@@ -1,0 +1,21 @@
+diff -u -w a/ms/ntdll.mak b/ms/ntdll.mak
+--- a/ms/ntdll.mak
++++ b/ms/ntdll.mak
+@@ -30,7 +30,7 @@
+ SRC_D=.
+ 
+ LINK=link
+-LFLAGS=/nologo /subsystem:console /opt:ref
++LFLAGS=/nologo /subsystem:console /opt:ref /MANIFEST:NO
+ RSC=rc
+ FIPSLINK=$(PERL) util\fipslink.pl
+ 
+@@ -73,7 +73,7 @@
+ RANLIB=
+ MKDIR=$(PERL) util/mkdir-p.pl
+ MKLIB=lib /nologo
+-MLFLAGS= /nologo /subsystem:console /opt:ref /dll
++MLFLAGS= /nologo /subsystem:console /opt:ref /dll /MANIFEST:NO
+ ASM=ml /nologo /Cp /coff /c /Cx
+ 
+ # FIPS validated module and support file locations

@@ -1,0 +1,5 @@
+mkdir ubrowser
+strip ubrowser.app/Contents/MacOS/ubrowser
+mv ubrowser.app ubrowser
+hdiutil create -ov -srcfolder ubrowser -format UDBZ -volname "ubrowser 0.1" "ubrowser.dmg"
+

@@ -220,16 +220,11 @@ AC_ARG_ENABLE([web-browser],
                 [disable web browser component])],
               [use_web_browser=$enableval],
               [use_web_browser=yes])
-AC_ARG_WITH([llqtwebkit-lib-path],
-              [AS_HELP_STRING([--with-llqtwebkit-lib-path],
-                [path to llqtwebkit static lib])],
-              [llqtwebkit_lib_path=$withval],
-              [llqtwebkit_lib_path="../llqtwebkit/libllqtwebkit.a"])
-AC_ARG_WITH([llqtwebkit-include-path],
-              [AS_HELP_STRING([--with-llqtwebkit-include-path],
-                [path to llqtwebkit include directory])],
-              [llqtwebkit_include_path=$withval],
-              [llqtwebkit_include_path="../llqtwebkit"])
+AC_ARG_ENABLE([vanilla-qt],
+              [AS_HELP_STRING([--disable-vanilla-qt],
+                [don't pass -DVANILLA_QT to CXXFLAGS for building llqtwebkit])],
+              [use_vanilla_qt=$enableval],
+              [use_vanilla_qt=yes])
 
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
@@ -704,31 +699,30 @@ fi
 
 # Web Browser
 if test "$use_web_browser" = "yes"; then
-  PKG_CHECK_MODULES([QTWEBKIT],     [QtWebKit >= 4.6 QtOpenGL >= 4.6],
-    [INCLUDES+=" $QTWEBKIT_CFLAGS"; LIBS+=" $QTWEBKIT_LIBS"],
-    use_web_browser=no;AC_MSG_WARN($qtwebkit_not_found);HAVE_XBMC_WEB_BROWSER=0)
   # Next lib check is disabled since no official release is available right now
   # PKG_CHECK_MODULES([LLQTWEBKIT],     [llqtwebkit],
   #   [INCLUDES+=" $LLQTWEBKIT_CFLAGS"; LIBS+=" $LLQTWEBKIT_LIBS"],
-  #   use_web_browser=no;AC_MSG_WARN($llqtwebkit_not_found);HAVE_XBMC_WEB_BROWSER=0)
+  #   use_web_browser=no;AC_MSG_WARN($llqtwebkit_not_found))
+  PKG_CHECK_MODULES([QTWEBKIT],     [QtWebKit >= 4.6 QtOpenGL >= 4.6],
+    [INCLUDES+=" $QTWEBKIT_CFLAGS"; LIBS+=" $QTWEBKIT_LIBS"],
+    use_web_browser=no;AC_MSG_WARN($qtwebkit_not_found))
+  AC_CHECK_PROG(HAVE_QMAKE,qmake,"yes","no",)
+  if test "$HAVE_QMAKE" = "no" ; then
+    use_web_browser="no"
+    AC_MSG_WARN([qmake not found! Disabling web browser component.])
+  fi
   if test "$use_web_browser" = "yes"; then
-    LLQTWEBKIT_INCLUDE_PATH="$(tools/build-helper $llqtwebkit_include_path)"
-    LLQTWEBKIT_LIB_PATH="$(tools/build-helper $llqtwebkit_lib_path)"
-    if ! test -d "$LLQTWEBKIT_INCLUDE_PATH" || \
-      ! test -r "$LLQTWEBKIT_LIB_PATH"; then
-      use_web_browser=0
-      HAVE_XBMC_WEB_BROWSER=0
-      AC_MSG_WARN([llqtwebkit static lib path or include path were invalid. Disabling web browser component.])
-    else
-      AC_MSG_NOTICE([-I$LLQTWEBKIT_INCLUDE_PATH will be added to INCLUDES])
-      AC_MSG_NOTICE([$LLQTWEBKIT_LIB_PATH is set for path to static llqtwebkit lib])
-      AC_DEFINE([HAVE_XBMC_WEB_BROWSER], [1], [Define to 1 to enable web browser component.])
-      HAVE_XBMC_WEB_BROWSER=1
-    fi
+    AC_DEFINE([HAVE_XBMC_WEB_BROWSER], [1], [Define to 1 to enable web browser component.])
+    HAVE_XBMC_WEB_BROWSER=1
+    DISABLE_LLQTWEBKIT_BUILD=0
+  else
+    HAVE_XBMC_WEB_BROWSER=0
+    DISABLE_LLQTWEBKIT_BUILD=1
   fi
 else
   AC_MSG_NOTICE($web_browser_disabled)
   HAVE_XBMC_WEB_BROWSER=0
+  DISABLE_LLQTWEBKIT_BUILD=1
 fi
 
 # platform specific bin utilities
@@ -1174,8 +1168,6 @@ AC_SUBST(OUTPUT_FILES)
 AC_SUBST(HAVE_XBMC_NONFREE)
 AC_SUBST(USE_ASAP_CODEC)
 AC_SUBST(HAVE_XBMC_WEB_BROWSER)
-AC_SUBST(LLQTWEBKIT_INCLUDE_PATH)
-AC_SUBST(LLQTWEBKIT_LIB_PATH)
 # Function to run the configure scripts in our submodules
 # Consists of three paramaters, the path to the submodule, the configure command
 # with appropriate arguments, and a third parameter set to 1 if we are to skip
@@ -1613,6 +1605,14 @@ XB_CONFIG_MODULE([lib/cpluff], [
       --build=$build_alias
   fi
 ], [0])
+
+XB_CONFIG_MODULE([lib/llqtwebkit], [
+  if test "$use_vanilla_qt" = "no"; then
+    qmake
+  else
+    qmake DEFINES+=VANILLA_QT
+  fi
+], [$DISABLE_LLQTWEBKIT_BUILD])
 
 AC_OUTPUT
 
