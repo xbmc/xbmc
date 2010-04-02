@@ -573,13 +573,13 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
   CheckPointer(ppBF, E_POINTER);
 
   HRESULT hr = S_OK;
-  IDsRenderer *pCAP;
+  Com::SmartPtr<ISubPicAllocatorPresenter> pCAP;
 
   CStdString __err;
-  if (m_clsid == __uuidof(CVMR9AllocatorPresenter))
-    pCAP = new CVMR9AllocatorPresenter(hr,__err);
-  else if (m_clsid == __uuidof(CEVRAllocatorPresenter))
-    pCAP = new CEVRAllocatorPresenter(hr,__err);
+  if (m_clsid == CLSID_VMR9AllocatorPresenter)
+    CreateAP9(m_clsid, g_hWnd, &pCAP);
+  else if (m_clsid == CLSID_EVRAllocatorPresenter)
+    CreateEVR(m_clsid, g_hWnd, &pCAP);
 
   if(pCAP == NULL)
   {
@@ -595,7 +595,6 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
 
   return hr;
 }
-
 //
 // CFGFilterList
 //
@@ -663,14 +662,14 @@ std::list<CFGFilter*> CFGFilterList::GetSortedList()
 {
   if(m_sortedfilters.empty())
   {
-    vector<filter_t> sort;
+    std::vector<filter_t> sort;
     
-    for (list<filter_t>::iterator it = m_filters.begin() ; it != m_filters.end() ; it++)
+    for (std::list<filter_t>::iterator it = m_filters.begin() ; it != m_filters.end() ; it++)
       sort.push_back(*it);
     
     qsort(&sort.at(0), sort.size(), sizeof(sort.at(0)), filter_cmp);
     
-    for (vector<filter_t>::iterator it = sort.begin() ; it != sort.end() ; it++)
+    for (std::vector<filter_t>::iterator it = sort.begin() ; it != sort.end() ; it++)
     {
       filter_t ft = *it;
       

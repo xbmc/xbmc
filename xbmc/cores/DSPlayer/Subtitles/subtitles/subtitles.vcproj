@@ -48,6 +48,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="2"
+				DisableSpecificWarnings="4996"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

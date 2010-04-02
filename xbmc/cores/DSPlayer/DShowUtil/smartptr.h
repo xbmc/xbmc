@@ -29,6 +29,9 @@
 //
 // Defines a smart pointer class that does not depend on any ATL headers
 // From a Microsoft Sample
+#ifndef _GEOMETRYHELPER_H
+#include "DSGeometry.h"
+#endif
 namespace Com
 {
 
@@ -469,5 +472,116 @@ namespace Com
       }
       return *this;
     }
+  };
+
+  template< typename T >
+  class SmartAutoVectorPtr
+  {
+  public:
+	  SmartAutoVectorPtr() throw() :
+		  m_p( NULL )
+	  {
+	  }
+	  SmartAutoVectorPtr( SmartAutoVectorPtr< T >& p ) throw()
+	  {
+		  m_p = p.Detach();  // Transfer ownership
+	  }
+	  explicit SmartAutoVectorPtr( T* p ) throw() :
+		  m_p( p )
+	  {
+	  }
+	  ~SmartAutoVectorPtr() throw()
+	  {
+		  Free();
+	  }
+
+	  operator T*() const throw()
+	  {
+		  return( m_p );
+	  }
+
+	  SmartAutoVectorPtr< T >& operator=( SmartAutoVectorPtr< T >& p ) throw()
+	  {
+		  if(*this==p)
+		  {
+			  if(m_p == NULL)
+			  {
+				  // This branch means both two pointers are NULL, do nothing.
+			  }
+			  else if(this!=&p)
+			  {
+				  // If this assert fires, it means you attempted to assign one SmartAutoVectorPtr to another when they both contained 
+				  // a pointer to the same underlying vector. This means a bug in your code, since your vector will get 
+				  // double-deleted. 
+				  ATLASSERT(FALSE);
+
+				  // For safety, we are going to detach the other SmartAutoVectorPtr to avoid a double-free. Your code still
+				  // has a bug, though.
+				  p.Detach();
+			  }
+			  else
+			  {
+				  // Alternatively, this branch means that you are assigning a SmartAutoVectorPtr to itself, which is
+				  // pointless but permissible
+
+				  // nothing to do
+			  }
+		  }
+		  else
+		  {
+			  Free();
+			  Attach( p.Detach() );  // Transfer ownership
+		  }
+		  return( *this );
+	  }
+
+	  // basic comparison operators
+	  bool operator!=(SmartAutoVectorPtr<T>& p) const
+	  {
+		  return !operator==(p);
+	  }
+
+	  bool operator==(SmartAutoVectorPtr<T>& p) const
+	  {
+		  return m_p==p.m_p;
+	  }
+
+	  // Allocate the vector
+	  bool Allocate( size_t nElements ) throw()
+	  {
+		  ASSERT( m_p == NULL );
+		  m_p = new T[nElements];
+		  if( m_p == NULL )
+		  {
+			  return( false );
+		  }
+
+		  return( true );
+	  }
+	  // Attach to an existing pointer (takes ownership)
+	  void Attach( T* p ) throw()
+	  {
+		  SMARTASSUME( m_p == NULL );
+		  m_p = p;
+	  }
+	  // Detach the pointer (releases ownership)
+	  T* Detach() throw()
+	  {
+		  T* p;
+
+		  p = m_p;
+		  m_p = NULL;
+
+		  return( p );
+	  }
+	  // Delete the vector pointed to, and set the pointer to NULL
+	  void Free() throw()
+	  {
+		  delete[] m_p;
+		  m_p = NULL;
+	  }
+
+  public:
+	  T* m_p;
   };
 }

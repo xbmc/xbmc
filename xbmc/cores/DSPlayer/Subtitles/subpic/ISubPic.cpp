@@ -1005,7 +1005,7 @@ STDMETHODIMP CSubPicQueueNoThread::GetStats(int nSubPic, REFERENCE_TIME& rtStart
 // ISubPicAllocatorPresenterImpl
 //
 
-ISubPicAllocatorPresenterImpl::ISubPicAllocatorPresenterImpl(HWND hWnd, HRESULT& hr, CStdString *_pError)
+ISubPicAllocatorPresenterImpl::ISubPicAllocatorPresenterImpl(HWND hWnd, HRESULT& hr)
 	: CUnknown(NAME("ISubPicAllocatorPresenterImpl"), NULL)
 	, m_hWnd(hWnd)
 	, m_NativeVideoSize(0, 0), m_AspectRatio(0, 0)
@@ -1013,11 +1013,13 @@ ISubPicAllocatorPresenterImpl::ISubPicAllocatorPresenterImpl(HWND hWnd, HRESULT&
 	, m_fps(25.0)
 	, m_rtSubtitleDelay(0)
 {
-    if(!IsWindow(m_hWnd)) 
+  CStdString _pError;
+  _pError = "";
+  if(!IsWindow(m_hWnd)) 
 	{
 		hr = E_INVALIDARG; 
 		if (_pError)
-			*_pError += "Invalid window handle in ISubPicAllocatorPresenterImpl\n";
+			_pError += "Invalid window handle in ISubPicAllocatorPresenterImpl\n";
 		return;
 	}
 	GetWindowRect(m_hWnd, &m_WindowRect);

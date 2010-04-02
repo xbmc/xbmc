@@ -69,6 +69,56 @@
 #define dsmin(a,b)            (((a) < (b)) ? (a) : (b))
 #endif
 
+#if _WIN32_WINNT < 0x0600
+
+#define MAXUINT8    ((UINT8)~((UINT8)0))
+#define MAXINT8     ((INT8)(MAXUINT8 >> 1))
+#define MININT8     ((INT8)~MAXINT8)
+
+#define MAXUINT16   ((UINT16)~((UINT16)0))
+#define MAXINT16    ((INT16)(MAXUINT16 >> 1))
+#define MININT16    ((INT16)~MAXINT16)
+
+#define MAXUINT32   ((UINT32)~((UINT32)0))
+#define MAXINT32    ((INT32)(MAXUINT32 >> 1))
+#define MININT32    ((INT32)~MAXINT32)
+
+#define MAXUINT64   ((UINT64)~((UINT64)0))
+#define MAXINT64    ((INT64)(MAXUINT64 >> 1))
+#define MININT64    ((INT64)~MAXINT64)
+
+#define MAXULONG32  ((ULONG32)~((ULONG32)0))
+#define MAXLONG32   ((LONG32)(MAXULONG32 >> 1))
+#define MINLONG32   ((LONG32)~MAXLONG32)
+
+#define MAXULONG64  ((ULONG64)~((ULONG64)0))
+#define MAXLONG64   ((LONG64)(MAXULONG64 >> 1))
+#define MINLONG64   ((LONG64)~MAXLONG64)
+
+#define MAXULONGLONG ((ULONGLONG)~((ULONGLONG)0))
+#define MINLONGLONG ((LONGLONG)~MAXLONGLONG)
+
+#define MAXSIZE_T   ((SIZE_T)~((SIZE_T)0))
+#define MAXSSIZE_T  ((SSIZE_T)(MAXSIZE_T >> 1))
+#define MINSSIZE_T  ((SSIZE_T)~MAXSSIZE_T)
+
+#define MAXUINT     ((UINT)~((UINT)0))
+#define MAXINT      ((INT)(MAXUINT >> 1))
+#define MININT      ((INT)~MAXINT)
+
+#define MAXDWORD32  ((DWORD32)~((DWORD32)0))
+#define MAXDWORD64  ((DWORD64)~((DWORD64)0))
+
+#endif // _WIN32_WINNT < 0x0600
+#ifdef _DEBUG
+  #define DNew new
+#else
+  #define DNew new
+#endif
+
+#define QI(i) (riid == __uuidof(i)) ? GetInterface((i*)this, ppv) :
+#define QI2(i) (riid == IID_##i) ? GetInterface((i*)this, ppv) :
+
 #ifdef _DEBUG
   #define DNew new
 #else

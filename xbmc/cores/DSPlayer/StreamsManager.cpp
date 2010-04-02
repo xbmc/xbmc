@@ -834,6 +834,10 @@ void CSubtitleManager::GetSubtitleName( int iStream, CStdString &strStreamName )
 
 void CSubtitleManager::SetSubtitle( int iStream )
 {
+  //If no subtitles just return
+  if (GetSubtitleCount() <= 0)
+    return;
+
   if (iStream > GetSubtitleCount())
     return;
 

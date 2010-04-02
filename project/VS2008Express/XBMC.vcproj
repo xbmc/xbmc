@@ -171,7 +171,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
-				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib strmiids.lib strmbasd.lib dxguid.lib mfuuid.lib comctl32.lib"
+				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib strmiids.lib dxguid.lib mfuuid.lib comctl32.lib subpicDU.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;;..\..\xbmc\cores\DSPlayer\Libs"
@@ -271,7 +271,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="false"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
-				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib strmiids.lib strmbase.lib mfuuid.lib comctl32.lib"
+				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib strmiids.lib mfuuid.lib comctl32.lib subpicRU.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;;..\..\xbmc\cores\DSPlayer\Libs"
@@ -2382,6 +2382,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\smartlist.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.cpp"
 						>
 					</File>
@@ -2437,11 +2441,19 @@
 						Name="Video Renderers"
 						>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsRenderer.cpp"
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\AllocatorCommon.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsRenderer.h"
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\AllocatorCommon.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DX9AllocatorPresenter.h"
 							>
 						</File>
 						<File
@@ -2453,27 +2465,11 @@
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EvrHelper.cpp"
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\RendererSettings.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EvrHelper.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRPresentEngine.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRPresentEngine.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRScheduler.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\EVRScheduler.h"
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\RendererSettings.h"
 							>
 						</File>
 						<File
@@ -2489,14 +2485,6 @@
 				<Filter
 					Name="Interfaces"
 					>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\IDsRenderer.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IEvrPresenter.h"
-						>
-					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IMpaDecFilter.h"
 						>

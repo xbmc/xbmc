@@ -289,12 +289,12 @@ HRESULT CFGLoader::InsertVideoRenderer()
   // Renderers
   if (m_CurrentRenderer == DIRECTSHOW_RENDERER_EVR)
   {
-    m_pFGF = new CFGFilterVideoRenderer(__uuidof(CEVRAllocatorPresenter), L"Xbmc EVR");
+    m_pFGF = new CFGFilterVideoRenderer(CLSID_EVRAllocatorPresenter, L"Xbmc EVR");
     Filters.VideoRenderer.osdname = _T("Enhanced Video Renderer");
   }
   else
   {
-    m_pFGF = new CFGFilterVideoRenderer(__uuidof(CVMR9AllocatorPresenter), L"Xbmc VMR9");
+    m_pFGF = new CFGFilterVideoRenderer(CLSID_VMR9AllocatorPresenter, L"Xbmc VMR9");
     Filters.VideoRenderer.osdname = _T("VMR9 (Renderless)");
   }
 

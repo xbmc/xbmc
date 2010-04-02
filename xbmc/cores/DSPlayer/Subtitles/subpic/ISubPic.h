@@ -23,6 +23,7 @@
 
 #include "CoordGeom.h"
 #include "DShowUtil/SmartPtr.h"
+#include <list>
 #pragma pack(push, 1)
 #include <D3D9.h>
 struct SubPicDesc
@@ -425,11 +426,11 @@ protected:
 
 	void AlphaBltSubPic(Com::SmartSize size, SubPicDesc* pTarget = NULL);
 
-    XForm m_xform;
+  XForm m_xform;
 	void Transform(Com::SmartRect r, Vector v[4]);
 
 public:
-	ISubPicAllocatorPresenterImpl(HWND hWnd, HRESULT& hr, CStdString *_pError);
+	ISubPicAllocatorPresenterImpl(HWND hWnd, HRESULT& hr);
 	virtual ~ISubPicAllocatorPresenterImpl();
 
 	DECLARE_IUNKNOWN;
