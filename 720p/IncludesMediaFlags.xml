@@ -56,8 +56,7 @@
 			<posy>-15</posy>
 			<height>70</height>
 			<width>130</width>
-			<info>Listitem.Property(mediaTag::movieStudio)</info>
-			<info>Listitem.Property(mediaTag::tvStudio)</info>
+			<info>Listitem.Property(mediaTag::studio)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 	</include> 
@@ -107,7 +106,7 @@
 			<posy>-3</posy>
 			<height>100</height>
 			<width>100</width>
-			<info>Listitem.Property(mediaTag::movieStudio)</info>
+			<info>Listitem.Property(mediaTag::studio)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 	</include>
