@@ -195,7 +195,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   , m_TextScale(1.0)
 
 {
-
+  g_Windowing.Register(this);
   m_MainThreadId = 0;
   m_bNeedCheckSample = true;
   m_pDirectDraw = NULL;
@@ -284,6 +284,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
 
 CDX9AllocatorPresenter::~CDX9AllocatorPresenter() 
 {
+  g_Windowing.Unregister(this);
   if (m_bDesktopCompositionDisabled)
   {
     m_bDesktopCompositionDisabled = false;
@@ -974,7 +975,7 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
   }
 
   //
-
+  m_bNeedNewDevice = false;
   m_filter = D3DTEXF_NONE;
   //testing here
   StartWorkerThreads();
@@ -1975,7 +1976,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
 //  if (!fAll)
 //    return false;
   
-  if (!g_renderManager.IsStarted())
+  if (!g_renderManager.IsStarted() || m_bNeedNewDevice)
     return false;
   LONGLONG StartPaint = CTimeUtils::GetPerfCounter();
   CAutoLock cRenderLock(&m_RenderLock);
@@ -2439,7 +2440,7 @@ bool CDX9AllocatorPresenter::ResetDevice()
   {
     return false;
   }
-  OnResetDevice();
+  OnDxResetDevice();
 
   return true;
 }
@@ -2853,3 +2854,26 @@ STDMETHODIMP CDX9AllocatorPresenter::GetDIB(BYTE* lpDib, DWORD* size)
   return S_OK;
 }
 
+void CDX9AllocatorPresenter::OnLostDevice()
+{
+  //CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+}
+
+void CDX9AllocatorPresenter::OnDestroyDevice()
+{
+  //Only this one is required for changing the device
+  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+  m_bNeedNewDevice = true;
+  DeleteSurfaces();
+}
+
+void CDX9AllocatorPresenter::OnCreateDevice()
+{
+  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+}
+
+void CDX9AllocatorPresenter::OnResetDevice()
+{
+  m_bPendingResetDevice = true;
+  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+}

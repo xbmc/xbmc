@@ -29,6 +29,7 @@
 #include "DShowUtil/DShowUtil.h"
 #include "SystemInfo.h"
 #include "MpConfig.h"
+#include "WindowingFactory.h"
 // ISubPicAllocatorPresenter
 
 
@@ -656,7 +657,15 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   }
 
     HRESULT hr;
-
+    if (m_bNeedNewDevice)
+    {
+      if (m_bPendingResetDevice)
+      {
+        return ChangeD3dDev();
+      }
+      else
+        return S_OK;
+    }
   if(!lpPresInfo || !lpPresInfo->lpSurf)
     return E_POINTER;
 
@@ -762,4 +771,29 @@ STDMETHODIMP CVMR9AllocatorPresenter::GetBorderColor(COLORREF* lpClr)
 {
   if(lpClr) *lpClr = 0;
   return S_OK;
+}
+
+void CVMR9AllocatorPresenter::OnDestroyDevice()
+{
+  //Only this one is required for changing the device
+  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+  m_bNeedNewDevice = true;
+}
+
+void CVMR9AllocatorPresenter::OnResetDevice()
+{
+  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+}
+
+HRESULT CVMR9AllocatorPresenter::ChangeD3dDev()
+{
+  HRESULT hr;
+  hr = m_pIVMRSurfAllocNotify->ChangeD3DDevice(g_Windowing.Get3DDevice(),g_Windowing.Get3DObject()->GetAdapterMonitor(GetAdapter(g_Windowing.Get3DObject())));
+  if (SUCCEEDED(hr))
+  {
+    CLog::Log(LOGDEBUG,"%s Changed d3d device",__FUNCTION__);
+    m_bNeedNewDevice = false;
+    m_bPendingResetDevice = false;
+  }
+  return hr;
 }

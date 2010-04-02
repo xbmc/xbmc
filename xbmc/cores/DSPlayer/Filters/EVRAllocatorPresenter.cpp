@@ -2326,13 +2326,13 @@ void CEVRAllocatorPresenter::RenderThread()
   if (pfAvRevertMmThreadCharacteristics) pfAvRevertMmThreadCharacteristics (hAvrt);
 }
 
-void CEVRAllocatorPresenter::OnResetDevice()
+void CEVRAllocatorPresenter::OnDxResetDevice()
 {
   HRESULT    hr;
 
   // Reset DXVA Manager, and get new buffers
   hr = m_pD3DManager->ResetDevice(m_pD3DDev, m_nResetToken);
-
+  m_bNeedNewDevice = false;
   // Not necessary, but Microsoft documentation say Presenter should send this message...
   if (m_pSink)
     m_pSink->Notify (EC_DISPLAY_CHANGED, 0, 0);

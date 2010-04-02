@@ -78,5 +78,8 @@
     STDMETHODIMP GetCurrentImage(BYTE** lpDib);
     STDMETHODIMP SetBorderColor(COLORREF Clr);
     STDMETHODIMP GetBorderColor(COLORREF* lpClr);
+    virtual void OnDestroyDevice();
+    virtual void OnResetDevice();
+    HRESULT ChangeD3dDev();
   };
 

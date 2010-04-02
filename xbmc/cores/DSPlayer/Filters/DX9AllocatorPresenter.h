@@ -27,6 +27,7 @@
 #include "AllocatorCommon.h"
 #include "RendererSettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
+#include "D3DResource.h"
 // Support ffdshow queueing.
 // This interface is used to check version of Media Player Classic.
 // {A273C7F6-25D4-46b0-B2C8-4F7FADC44E37}
@@ -45,12 +46,10 @@ public:
 
 #define NB_JITTER          126
 
-//extern bool g_bNoDuration;
-//extern bool g_bExternalSubtitleTime;
-
-
   class CDX9AllocatorPresenter
-    : public ISubPicAllocatorPresenterImpl
+    : public ISubPicAllocatorPresenterImpl ,
+      public ID3DResource
+
   {
   public:
     CCritSec        m_VMR9AlphaBitmapLock;
@@ -200,7 +199,7 @@ public:
     void        DrawText(const RECT &rc, const CStdString &strText, int _Priority);
     void        DrawStats();
     HRESULT        AlphaBlt(RECT* pSrc, RECT* pDst, Com::SmartPtr<IDirect3DTexture9> pTexture);
-    virtual void    OnResetDevice() {};
+    virtual void    OnDxResetDevice() {};
     virtual bool    ResetDevice();
 
     double GetFrameTime();
@@ -227,6 +226,7 @@ public:
     long          m_nUsedBuffer;
     bool          m_bNeedPendingResetDevice;
     bool          m_bPendingResetDevice;
+    bool          m_bNeedNewDevice;
 
     double          m_fAvrFps;            // Estimate the real FPS
     double          m_fJitterStdDev;        // Estimate the Jitter std dev
@@ -336,4 +336,10 @@ public:
     STDMETHODIMP CreateRenderer(IUnknown** ppRenderer);
     STDMETHODIMP_(bool) Paint(bool fAll);
     STDMETHODIMP GetDIB(BYTE* lpDib, DWORD* size);
+    
+    // ID3DResource
+    virtual void OnLostDevice();
+    virtual void OnDestroyDevice();
+    virtual void OnCreateDevice();
+    virtual void OnResetDevice();
   };
