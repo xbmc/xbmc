@@ -739,9 +739,8 @@ void CSubtitleManager::Initialize()
 
   if (FAILED(m_pManager->InsertPassThruFilter(CDSGraph::m_pFilterGraph)))
   {
-    assert(0);
-    m_pManager.reset();
-  }
+    // No internal subs
+  } 
   m_pManager->SetEnable(true);
 }
 
