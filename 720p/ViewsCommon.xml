@@ -230,7 +230,7 @@
 		    <control type="label">
 		    	<visible>!IsEmpty(ListItem.Overlay)</visible>
 		    	<posx>456</posx>
-		    	<posy>0</posy>
+		    	<posy>2</posy>
 		    	<width>104</width>
 		    	<height>42</height>
 		    	<align>left</align>
@@ -242,6 +242,7 @@
 		    <control type="label">
 		      <visible>IsEmpty(ListItem.Overlay)</visible>
 		      <posx>492</posx>
+		      <posy>2</posy>
 		      <width>95</width>
 		      <height>42</height>
 		      <align>left</align>
@@ -294,7 +295,7 @@
 		    <control type="label">
 		      <visible>!IsEmpty(ListItem.Overlay)</visible>
 		      <posx>456</posx>
-		      <posy>0</posy>
+		      <posy>2</posy>
 		      <width>104</width>
 		      <height>42</height>
 		      <align>left</align>
@@ -307,6 +308,7 @@
 		    <control type="label">
 		      <visible>IsEmpty(ListItem.Overlay)</visible>
 		      <posx>492</posx>
+		      <posy>2</posy>
 		      <width>95</width>
 		      <height>42</height>
 		      <align>left</align>
@@ -366,7 +368,7 @@
 		    <control type="label">
 		      <visible>!IsEmpty(ListItem.Overlay)</visible>
 		      <posx>492</posx>
-		      <posy>0</posy>
+		      <posy>2</posy>
 		      <width>95</width>
 		      <height>42</height>
 		      <align>left</align>
@@ -378,6 +380,7 @@
 		    <control type="label">
 		      <visible>IsEmpty(ListItem.Overlay)</visible>
 		      <posx>492</posx>
+		      <posy>2</posy>
 		      <width>95</width>
 		      <height>42</height>
 		      <align>left</align>
@@ -436,15 +439,29 @@
 
           <control type="image">
             <description>Thumb image</description>
-            <posx>-8</posx>
-            <posy>0</posy>
-            <width>276</width>
-            <height>396</height>
+			<visible>!Container.Content(Episodes)</visible>
+            <posx>0</posx>
+            <width>270</width>
+            <height>366</height>
+            <texture>amt-blank-poster.png</texture>
+            <info>ListItem.Icon</info>
+            <aspectratio align="left" aligny="top">keep</aspectratio>
+		    <bordertexture border="7">ThumbBorder.png</bordertexture>
+       		<bordersize>4</bordersize>
+         </control>
+
+          <control type="image">
+            <description>Thumb image</description>
+			<visible>Container.Content(Episodes)</visible>
+            <posx>-392</posx>
+            <width>365</width>
+            <height>205</height>
             <texture>amt-blank-poster.png</texture>
             <info>ListItem.Icon</info>
             <aspectratio align="right" aligny="top">keep</aspectratio>
-            <bordersize>8</bordersize>
-          </control>
+		    <bordertexture border="7">ThumbBorder.png</bordertexture>
+       		<bordersize>4</bordersize>
+         </control>
 
     <!--
           <control type="label">
@@ -462,10 +479,13 @@
           </control>
         </control>
 
+<!-- Layout for any except Episodes -->
+
         <control type="group">
           <posx>10</posx>
           <posy>-4</posy>
-
+		  <visible>!Container.Content(Episodes)</visible>
+		  
           <control type="label">
             <description>Title</description>
             <width>InfoListTitleWidth</width>
@@ -490,28 +510,29 @@
 
           <control type="label">
             <description>Year</description>
+			<visible>Container.Content(movies)</visible>
             <posy>28</posy>
             <width>InfoListTitleWidth</width>
-            <font>MediumTitleCapsFont</font>
+            <font>SmallTitleCapsFont</font>
             <label>$INFO[ListItem.Year]</label>
-            <textcolor>Unfocused</textcolor>
+            <textcolor>Focused</textcolor>
           </control>
 
 
 	        <control type="image">
-						<description>Star Rating</description>
-						<align>left</align>
-						<info>ListItem.StarRating</info>
-						<aspectratio>keep</aspectratio>
-						<width>100</width>
-						<height>18</height>
-						<posy>57</posy>
-						<posx>-12</posx>
-						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+				<description>Star Rating</description>
+				<align>left</align>
+				<info>ListItem.StarRating</info>
+				<aspectratio>keep</aspectratio>
+				<width>120</width>
+				<height>47</height>
+				<posy>50</posy>
+				<posx>-2</posx>
+				<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
 	        </control>
 
 	          <control type="group">
-	            <posy>80</posy>
+	            <posy>95</posy>
 	            <control type="textbox">
 	              <description>Plot</description>
 	              <width>InfoListTitleWidth</width>
@@ -534,10 +555,139 @@
 	              <visible>Container.Content(albums) | Container.Content(artists)</visible>
 	            </control>
 	          </control>
-			<control type="group">
-				<posy>360</posy>
+			</control>
+
+	        <control type="group">
+				<posy>400</posy>
 				<include>InfoListFlags</include>
 		 	</control>
+
+<!-- Layout for Episodes -->
+
+        <control type="group">
+          <posx>400</posx>
+          <posy>-4</posy>
+		  <visible>Container.Content(Episodes)</visible>
+		  
+          <control type="textbox">
+            <description>Title</description>
+            <width>260</width>
+            <height>60</height>
+            <font>MediumLargeTitleCapsFont</font>
+            <label>$INFO[ListItem.Title]</label>
+		  <visible>Container.Content(Episodes)</visible>
+          </control>
+
+          <control type="label">
+            <description>Star Rating Label</description>
+			<posy>70</posy>
+			<posx>60</posx>
+            <width>80</width>
+            <font>MediumTitleFont</font>
+            <label>$LOCALIZE[563]:</label>
+			<align>right</align>
+            <textcolor>FFFF9900</textcolor>
+		  <visible>Container.Content(Episodes)</visible>
+          </control>
+          <control type="image">
+			<description>Star Rating</description>
+			<align>left</align>
+			<info>ListItem.StarRating</info>
+			<aspectratio>keep</aspectratio>
+			<width>120</width>
+			<height>47</height>
+			<posy>59</posy>
+			<posx>67</posx>
+			<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+          </control>
+          <control type="label">
+            <description>Duration Label</description>
+			<posy>100</posy>
+			<posx>60</posx>
+            <width>80</width>
+            <font>MediumTitleFont</font>
+            <label>$LOCALIZE[2050]:</label>
+			<align>right</align>
+            <textcolor>FFFF9900</textcolor>
+		  <visible>Container.Content(Episodes)</visible>
+          </control>
+          <control type="label">
+            <description>Duration</description>
+			<posx>70</posx>
+			<posy>103</posy>
+            <width>180</width>
+            <label>$INFO[ListItem.Duration]</label>
+			<align>left</align>
+		  <visible>Container.Content(Episodes)</visible>
+          </control>
+          <control type="label">
+            <description>Director Label</description>
+			<posy>130</posy>
+			<posx>60</posx>
+            <width>80</width>
+            <font>MediumTitleFont</font>
+            <label>$LOCALIZE[20339]:</label>
+			<align>right</align>
+            <textcolor>FFFF9900</textcolor>
+		  <visible>Container.Content(Episodes)</visible>
+          </control>
+          <control type="label">
+            <description>Director</description>
+			<posx>70</posx>
+			<posy>133</posy>
+            <width>180</width>
+			<label fallback="31047">$INFO[ListItem.Director]</label>
+			<align>left</align>
+		  <visible>Container.Content(Episodes)</visible>
+          </control>
+          <control type="label">
+            <description>Writer Label</description>
+			<posx>60</posx>
+			<posy>160</posy>
+            <width>80</width>
+            <font>MediumTitleFont</font>
+            <textcolor>FFFF9900</textcolor>
+            <label>$LOCALIZE[31029]:</label>
+			<align>right</align>
+		  <visible>Container.Content(Episodes)</visible>
+          </control>
+          <control type="label">
+            <description>Writer</description>
+			<posx>70</posx>
+			<posy>163</posy>
+            <width>180</width>
+			<label fallback="31047">$INFO[ListItem.Writer]</label>
+			<align>left</align>
+		  <visible>Container.Content(Episodes)</visible>
+          </control>
+
+	          <control type="group">
+	            <posy>200</posy>
+				<posx>-390</posx>
+	            <control type="textbox">
+	              <description>Plot</description>
+	              <width>650</width>
+	              <height>175</height>
+	              <info>ListItem.Plot</info>
+	              <visible>Container.Content(Episodes)</visible>
+	            </control>
+<!--
+	            <control type="textbox">
+	              <description>Plot</description>
+	              <width>InfoListTitleWidth</width>
+	              <height>317</height>
+	              <info>Container.ShowPlot</info>
+	              <visible>Container.Content(seasons)</visible>
+	            </control>
+	            <control type="textbox">
+	              <description>Album review</description>
+	              <width>InfoListTitleWidth</width>
+	              <height>317</height>
+	              <info>ListItem.Property(description)</info>
+	              <visible>Container.Content(albums) | Container.Content(artists)</visible>
+	            </control>
+-->
+	          </control>
         </control>
       </control>
     </control>
