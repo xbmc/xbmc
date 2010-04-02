@@ -521,6 +521,12 @@
 					<thumb>$INFO[Skin.String(Home_Custom_Back_Scripts_Folder)]</thumb>
 				</item>
 				<item id="7">
+					<label>10021</label>
+					<onclick>ActivateWindow(WebBrowser)</onclick>
+					<icon>special://skin/backgrounds/web_browser.jpg</icon>
+					<thumb>$INFO[Skin.String(Home_Custom_Back_Web_Browser_Folder)]</thumb>
+				</item>
+				<item id="8">
 					<label>5</label>
 					<onclick>ActivateWindow(Settings)</onclick>
 					<icon>special://skin/backgrounds/settings.jpg</icon>

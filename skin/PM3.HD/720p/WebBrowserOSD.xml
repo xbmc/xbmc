@@ -1,0 +1,110 @@
+<window type="dialog" id="1">
+        <defaultcontrol always="true">14</defaultcontrol>
+        <controls>
+                <control type="image">
+                        <description>background image</description>
+                        <posx>0</posx>
+                        <posy>0</posy>
+                        <width>1280</width>
+                        <height>65</height>
+                        <texture>Header.png</texture>
+                </control>
+                <control type="button" id="1">
+                        <posx>0</posx>
+                        <posy>0</posy>
+                        <width>50</width>
+                        <height>50</height>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <label>-</label>
+                        <font>-</font>
+                        <texturefocus>PlayerControls-PrevFO.png</texturefocus>
+                        <texturenofocus>PlayerControls-PrevNF.png</texturenofocus>
+                        <onright>604</onright>
+                </control>
+                <control type="button" id="2">
+                        <posx>50</posx>
+                        <posy>0</posy>
+                        <width>50</width>
+                        <height>50</height>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <label>-</label>
+                        <font>-</font>
+                        <texturefocus>PlayerControls-NextFO.png</texturefocus>
+                        <texturenofocus>PlayerControls-NextNF.png</texturenofocus>
+                        <onleft>1</onleft>
+                        <onright>3</onright>
+                </control>
+               <control type="button" id="3">
+                        <posx>100</posx>
+                        <posy>0</posy>
+                        <width>50</width>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <height>50</height>
+                        <label>-</label>
+                        <font>-</font>
+                        <texturefocus>PlayerControls-RepeatFO.png</texturefocus>
+                        <texturenofocus>PlayerControls-RepeatNF.png</texturenofocus>
+                        <onleft>2</onleft>
+                        <onright>4</onright>
+                </control>
+               <control type="button" id="4">
+                        <posx>150</posx>
+                        <posy>0</posy>
+                        <width>50</width>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <height>50</height>
+                        <label>-</label>
+                        <font>-</font>
+                        <texturefocus>PlayerControls-StopFO.png</texturefocus>
+                        <texturenofocus>PlayerControls-StopNF.png</texturenofocus>
+                        <onleft>3</onleft>
+                        <onright>5</onright>
+                </control>
+               <control type="button" id="5">
+                        <posx>200</posx>
+                        <posy>0</posy>
+                        <width>50</width>
+                        <height>50</height>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <label>-</label>
+                        <font>-</font>
+                        <texturefocus>home-button-focus.gif</texturefocus>
+                        <texturenofocus>home-button.png</texturenofocus>
+                        <onleft>4</onleft>
+                        <onright>6</onright>
+                </control>
+                <control type="button" id="6">
+                        <posx>250</posx>
+                        <posy>0</posy>
+                        <width>980</width>
+                        <height>50</height>
+                        <textoffsetx>12</textoffsetx>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <texturefocus border="3">button-focus-keyboard.png</texturefocus>
+                        <texturenofocus border="3">button-nofocus.png</texturenofocus>
+                        <font>-</font>
+                        <label>-</label>
+                        <onleft>5</onleft>
+                        <onright>7</onright>
+                </control>
+                <control type="button" id="7">
+                        <posx>1230</posx>
+                        <posy>0</posy>
+                        <width>50</width>
+                        <height>50</height>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <texturefocus border="5">PlayerControls-PlayFO.png</texturefocus>
+                        <texturenofocus border="5">PlayerControls-PlayNF.png</texturenofocus>
+                        <font>-</font>
+                        <label>-</label>
+                        <onleft>6</onleft>
+                </control>
+        </controls>
+</window>

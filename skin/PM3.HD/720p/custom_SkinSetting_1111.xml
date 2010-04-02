@@ -417,6 +417,12 @@
 							<thumb>$INFO[Skin.String(Home_Custom_Back_Scripts_Folder)]</thumb>
 						</item>
 						<item id="7">
+							<label>10021</label>
+							<onclick>-</onclick>
+							<icon>special://skin/backgrounds/web_browser.jpg</icon>
+							<thumb>$INFO[Skin.String(Home_Custom_Back_Web_Browser_Folder)]</thumb>
+						</item>
+						<item id="8">
 							<label>5</label>
 							<onclick>-</onclick>
 							<icon>special://skin/backgrounds/settings.jpg</icon>
@@ -878,6 +884,68 @@
 						<texturenofocus border="3">button-nofocus.png</texturenofocus>
 						<texturefocus border="3">button-focus2.png</texturefocus>
 						<onclick>Skin.Reset(Home_Custom_Back_Settings_Folder)</onclick>
+						<onleft>301</onleft>
+						<onright>9000</onright>
+						<onup>302</onup>
+						<ondown>302</ondown>
+					</control>
+				</control>
+				<control type="group">
+					<posx>680</posx>
+					<posy>215</posy>
+					<visible>Container(9003).HasFocus(4)</visible>
+					<control type="button" id="300">
+						<description>Single Image button</description>
+						<posx>5</posx>
+						<posy>0</posy>
+						<width>180</width>
+						<height>35</height>
+						<label>31113</label>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<align>center</align>
+						<texturenofocus border="3">button-nofocus.png</texturenofocus>
+						<texturefocus border="3">button-focus2.png</texturefocus>
+						<onclick>Skin.SetImage(Home_Custom_Back_Web_Browser_Folder)</onclick>
+						<onleft>9003</onleft>
+						<onright>301</onright>
+						<onup>300</onup>
+						<ondown>300</ondown>
+					</control>
+					<control type="button" id="301">
+						<description>Multi Image button</description>
+						<posx>190</posx>
+						<posy>0</posy>
+						<width>180</width>
+						<height>35</height>
+						<label>31114</label>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<align>center</align>
+						<texturenofocus border="3">button-nofocus.png</texturenofocus>
+						<texturefocus border="3">button-focus2.png</texturefocus>
+						<onclick>Skin.SetPath(Home_Custom_Back_Web_Browser_Folder)</onclick>
+						<onleft>300</onleft>
+						<onright>302</onright>
+						<onup>301</onup>
+						<ondown>301</ondown>
+					</control>
+					<control type="button" id="302">
+						<description>Default Image button</description>
+						<posx>375</posx>
+						<posy>0</posy>
+						<width>180</width>
+						<height>35</height>
+						<label>571</label>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<align>center</align>
+						<texturenofocus border="3">button-nofocus.png</texturenofocus>
+						<texturefocus border="3">button-focus2.png</texturefocus>
+						<onclick>Skin.Reset(Home_Custom_Back_Web_Browser_Folder)</onclick>
 						<onleft>301</onleft>
 						<onright>9000</onright>
 						<onup>302</onup>
