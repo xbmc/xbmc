@@ -863,8 +863,8 @@
 						<label>10021</label>
 						<onclick>ActivateWindow(WebBrowser)</onclick>
 						<icon>special://skin/backgrounds/web_browser.jpg</icon>
-						<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
-						<visible>!Skin.HasSetting(HomeMenuNoProgramsButton)</visible>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Web_Browser_Folder)]</thumb>
+						<visible>!Skin.HasSetting(HomeMenuNoWebBrowserButton)</visible>
 					</item>
 					<item id="5">
 						<label>13000</label>
