@@ -31,6 +31,8 @@ CRemoteControl::CRemoteControl()
   m_bLogConnectFailure = true;
   m_lastInitAttempt = -5000;
   m_initRetryPeriod = 5000;
+  m_inReply = false;
+  m_nrSending = 0;
   Reset();
 }
 
@@ -78,6 +80,10 @@ void CRemoteControl::Disconnect()
     }
     if (m_inotify_fd >= 0)
       close(m_inotify_fd);
+
+    m_inReply = false;
+    m_nrSending = 0;
+    m_sendData.clear();
   }
 }
 
@@ -115,7 +121,7 @@ void CRemoteControl::Initialize()
         opts = (opts | O_NONBLOCK);
         if (fcntl(m_fd,F_SETFL,opts) != -1)
         {
-          if ((m_file = fdopen(m_fd, "r")) != NULL)
+          if ((m_file = fdopen(m_fd, "r+")) != NULL)
           {
             // Setup inotify so we can disconnect if lircd is restarted
             if ((m_inotify_fd = inotify_init()) >= 0)
@@ -216,6 +222,24 @@ void CRemoteControl::Update()
     char deviceName[128];
     sscanf(m_buf, "%s %s %s %s", &scanCode[0], &repeatStr[0], &buttonName[0], &deviceName[0]);
 
+    //beginning of lirc reply packet
+    //we get one when lirc is done sending something
+    if (!m_inReply && strcmp("BEGIN", scanCode) == 0)
+    {
+      m_inReply = true;
+      continue;
+    }
+    else if (m_inReply && strcmp("END", scanCode) == 0) //end of lirc reply packet
+    {
+      m_inReply = false;
+      if (m_nrSending > 0)
+        m_nrSending--;
+      continue;
+    }
+
+    if (m_inReply)
+      continue;
+
     // Some template LIRC configuration have button names in apostrophes or quotes.
     // If we got a quoted button name, strip 'em
     unsigned int buttonNameLen = strlen(buttonName);
@@ -247,8 +271,29 @@ void CRemoteControl::Update()
       m_button = 0;
     }
   }
+
+  //drop commands when already sending
+  //because keypresses come in faster than lirc can send we risk hammering the daemon with commands
+  if (m_nrSending > 0)
+  {
+    m_sendData.clear();
+  }
+  else if (!m_sendData.empty())
+  {
+    fputs(m_sendData.c_str(), m_file);
+    fflush(m_file);
+
+    //nr of newlines equals nr of commands
+    for (int i = 0; i < (int)m_sendData.size(); i++)
+      if (m_sendData[i] == '\n')
+        m_nrSending++;
+
+    m_sendData.clear();
+  }
+
   if (feof(m_file) != 0)
     Disconnect();
+
   m_skipHold = false;
 }
 
@@ -261,3 +306,13 @@ bool CRemoteControl::IsHolding()
 {
   return m_isHolding;
 }
+
+void CRemoteControl::AddSendCommand(const CStdString& command)
+{
+  if (!m_bInitialized || !m_used)
+    return;
+
+  m_sendData += command;
+  m_sendData += '\n';
+}
+
