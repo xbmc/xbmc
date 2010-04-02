@@ -42,7 +42,7 @@
                         <texturefocus border="5">MenuItemFO.png</texturefocus>
                         <texturenofocus border="5">MenuItemNF.png</texturenofocus>
                         <font>font13</font>
-                        <label>1014</label>
+                        <label>-</label>
                         <onleft>604</onleft>
                 </control>
 
