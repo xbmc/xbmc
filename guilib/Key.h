@@ -360,6 +360,7 @@
 #define WINDOW_DIALOG_KARAOKE_SONGSELECT  10143
 #define WINDOW_DIALOG_KARAOKE_SELECTOR    10144
 #define WINDOW_DIALOG_SLIDER              10145
+#define WINDOW_DIALOG_WEB_BROWSER_OSD     10146
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501
@@ -380,7 +381,6 @@
 #define WINDOW_DIALOG_FILESTACKING        12008
 #define WINDOW_KARAOKELYRICS              12009
 #define WINDOW_WEB_BROWSER                12500
-#define WINDOW_DIALOG_WEB_BROWSER_OSD     12501
 #define WINDOW_WEATHER                    12600
 #define WINDOW_SCREENSAVER                12900
 #define WINDOW_OSD                        12901
