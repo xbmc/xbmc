@@ -102,7 +102,8 @@ static XBMC_KeyMapping g_mapping_evdev[] =
 , { 135, 0x5d } // Right click
 , { 136, 0xb2 } // Stop
 , { 138, 0x49 } // Info
-, { 166, 0xa6 } // Browser back
+, { 147, 0x4d } // Menu
+, { 166, 0x08 } // Back
 , { 167, 0xa7 } // Browser forward
 , { 171, 0xb0 } // Next track
 , { 172, 0xb3 } // Play_Pause
@@ -481,7 +482,7 @@ CKeyboardStat::CKeyboardStat()
   keynames[XBMCK_RMETA] = "right meta";
   keynames[XBMCK_LMETA] = "left meta";
   keynames[XBMCK_LSUPER] = "left super";	/* "Windows" keys */
-  keynames[XBMCK_RSUPER] = "right super";	
+  keynames[XBMCK_RSUPER] = "right super";
   keynames[XBMCK_MODE] = "alt gr";
   keynames[XBMCK_COMPOSE] = "compose";
 
@@ -583,10 +584,10 @@ int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
   else
     return 0;
 
-  if ( state == XBMC_PRESSED ) 
+  if ( state == XBMC_PRESSED )
   {
     keysym->mod = (XBMCMod)modstate;
-    switch (keysym->sym) 
+    switch (keysym->sym)
     {
       case XBMCK_UNKNOWN:
         break;
@@ -637,10 +638,10 @@ int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
         repeatable = 1;
         break;
     }
-  } 
-  else 
+  }
+  else
   {
-    switch (keysym->sym) 
+    switch (keysym->sym)
     {
       case XBMCK_UNKNOWN:
         break;
@@ -689,21 +690,21 @@ int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
 
   if(state == XBMC_RELEASED)
     if ( XBMC_KeyRepeat.timestamp &&
-      XBMC_KeyRepeat.evt.key.keysym.sym == keysym->sym ) 
+      XBMC_KeyRepeat.evt.key.keysym.sym == keysym->sym )
     {
       XBMC_KeyRepeat.timestamp = 0;
     }
-  
-  if ( keysym->sym != XBMCK_UNKNOWN ) 
+
+  if ( keysym->sym != XBMCK_UNKNOWN )
   {
     /* Update internal keyboard state */
     XBMC_ModState = (XBMCMod)modstate;
     XBMC_KeyState[keysym->sym] = state;
   }
-  
+
   newEvent.key.state = state;
   Update(newEvent);
-  
+
   return 0;
 }
 

@@ -210,7 +210,10 @@ IF %target%==dx SET buildconfig=Release (DirectX)
     FOR /F "tokens=2* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
     IF NOT EXIST "%NSISExePath%" (
       rem on win 7 x86, the previous fails
-      FOR /F "tokens=3* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
+      FOR /F "tokens=3* delims=	" %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
+      IF NOT EXIST "%NSISExePath%" (
+        FOR /F "tokens=3* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
+      )
     )
   )
   rem proper x64 registry checks
@@ -221,6 +224,14 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   IF NOT EXIST "%NSISExePath%" (
     rem try with space delim instead of tab
     FOR /F "tokens=2* delims= " %%A IN ('REG QUERY "HKLM\Software\Wow6432Node\NSIS" /ve') DO SET NSISExePath=%%B
+  )
+  IF NOT EXIST "%NSISExePath%" (
+    rem on win 7 x64, the previous fails
+    FOR /F "tokens=3* delims=	" %%A IN ('REG QUERY "HKLM\Software\Wow6432Node\NSIS" /ve') DO SET NSISExePath=%%B
+  )
+  IF NOT EXIST "%NSISExePath%" (
+    rem try with space delim instead of tab
+    FOR /F "tokens=3* delims= " %%A IN ('REG QUERY "HKLM\Software\Wow6432Node\NSIS" /ve') DO SET NSISExePath=%%B
   )
 
   SET NSISExe=%NSISExePath%\makensis.exe
