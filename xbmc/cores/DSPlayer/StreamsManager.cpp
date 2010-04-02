@@ -727,7 +727,7 @@ void CSubtitleManager::Initialize()
   // Initialize subtitles
   // 1. Create Subtitle Manager
 
-  SIZE s; s.cx = 500; s.cy = 500;
+  SIZE s; s.cx = 0; s.cy = 0;
   ISubManager *pManager = NULL;
 
   m_dll.CreateSubtitleManager(g_Windowing.Get3DDevice(), s, &pManager);
@@ -737,7 +737,11 @@ void CSubtitleManager::Initialize()
 
   m_pManager.reset(pManager, std::bind2nd(std::ptr_fun(DeleteSubtitleManager), m_dll));
 
-  m_pManager->InsertPassThruFilter(CDSGraph::m_pFilterGraph);
+  if (FAILED(m_pManager->InsertPassThruFilter(CDSGraph::m_pFilterGraph)))
+  {
+    assert(0);
+    m_pManager.reset();
+  }
   m_pManager->SetEnable(true);
 }
 
@@ -779,10 +783,10 @@ void CSubtitleManager::Render()
     m_pManager->Render(0, 0, 1440, 900);
 }
 
-HRESULT CSubtitleManager::GetTexture( Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest )
+HRESULT CSubtitleManager::GetTexture( Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest, Com::SmartRect& renderRect )
 {
   if (m_pManager)
-    return m_pManager->GetTexture(pTexture, pSrc, pDest);
+    return m_pManager->GetTexture(pTexture, pSrc, pDest, renderRect);
   return E_FAIL;
 }
 
@@ -889,19 +893,20 @@ void CSubtitleManager::SetSubtitle( int iStream )
     if (disableIndex >= 0 && m_subtitleStreams[disableIndex]->connected)
       DisconnectCurrentSubtitlePins();
 
-    if (! m_bSubtitlesVisible)
+    /*if (! m_bSubtitlesVisible)
     {
       // If subtitles aren't visible, only disconnect the subtitle track,
       // and don't connect the new one. We change the flag for the xbmc gui
       m_subtitleStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
       m_pStreamManager->m_bChangingStream = false;
       return;
-    }
+    }*/
 
     if (SUCCEEDED(m_pStreamManager->m_pIAMStreamSelect->Enable(m_subtitleStreams[enableIndex]->IAMStreamSelect_Index, AMSTREAMSELECTENABLE_ENABLE)))
     {
       m_subtitleStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
       m_subtitleStreams[enableIndex]->connected = true;
+      m_pManager->SetSubPicProviderToInternal();
       CLog::Log(LOGDEBUG, "%s Successfully selected subtitle stream", __FUNCTION__);
     }
   } 
@@ -926,9 +931,6 @@ void CSubtitleManager::SetSubtitle( int iStream )
         hr = m_pStreamManager->m_pGraphBuilder->Disconnect(connectedToPin);
       
       m_pStreamManager->m_pGraphBuilder->Disconnect(oldAudioStreamPin);
-    } else {
-      // Store subtitle path for error fallback
-      subtitlePath = ((SExternalSubtitleInfos *)(m_subtitleStreams[disableIndex]))->path;
     }
 
     m_subtitleStreams[disableIndex]->flags = 0;
@@ -967,8 +969,6 @@ void CSubtitleManager::SetSubtitle( int iStream )
       /* Reconnect previous working pins */
       if (! m_subtitleStreams[disableIndex]->external)
         m_pStreamManager->m_pGraphBuilder->ConnectDirect(oldAudioStreamPin, connectedToPin, NULL);
-      else
-        g_dsconfig.LoadffdshowSubtitles(subtitlePath.c_str());
 
       m_subtitleStreams[disableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
       m_subtitleStreams[disableIndex]->connected = true;
@@ -983,6 +983,7 @@ done:
     if (stopped)
       m_pStreamManager->m_pGraph->Play();
 
+    m_pManager->SetSubPicProviderToInternal();
     if (m_bSubtitlesVisible)
     {
       if (SUCCEEDED(hr))

@@ -43,7 +43,7 @@ protected:
 	{
 		if(m_pSubStreamOld)
 		{
-			if(pSubStream) m_pTPTFilter->m_pMainFrame->ReplaceSubtitle(m_pSubStreamOld, pSubStream);
+			if(pSubStream) m_pTPTFilter->m_pMainFrame->SetTextPassThruSubStream(m_pSubStreamOld, pSubStream);
 			m_pSubStreamOld = NULL;
 		}
 	}

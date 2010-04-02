@@ -149,8 +149,8 @@ void CWinDsRenderer::RenderSubtitleTexture()
       return;
 
     Com::SmartPtr<IDirect3DTexture9> pTexture;
-    Com::SmartRect pSrc, pDst;
-    if (SUCCEEDED(CStreamsManager::getSingleton()->SubtitleManager->GetTexture(pTexture, pSrc, pDst)))
+    Com::SmartRect pSrc, pDst, pSize(m_destRect.x1, m_destRect.y1, m_destRect.x2, m_destRect.y2);
+    if (SUCCEEDED(CStreamsManager::getSingleton()->SubtitleManager->GetTexture(pTexture, pSrc, pDst, pSize)))
     {
       do
       {

@@ -22,10 +22,36 @@
 #include "stdafx.h"
 #include "ISubPic.h"
 #include "..\DSUtil\DSUtil.h"
+#include "StdString.h"
 
 //
 // ISubPicImpl
 //
+
+// Debug output
+#define DSubPicTraceLevel 3
+#define TRACE odprintf
+void __cdecl odprintf(const wchar_t *format, ...)
+{
+  wchar_t  buf[4096], *p = buf;
+  va_list args;
+  int     n;
+
+  va_start(args, format);
+  n = _vsnwprintf(p, sizeof buf - 3, format, args); // buf-3 is room for CR/LF/NUL
+  va_end(args);
+
+  p += (n < 0) ? sizeof buf - 3 : n;
+
+  while ( p > buf  &&  isspace(p[-1]) )
+    *--p = L'\0';
+
+  *p++ = L'\r';
+  *p++ = L'\n';
+  *p   = L'\0';
+
+  OutputDebugString(buf);
+}
 
 ISubPicImpl::ISubPicImpl() 
 	: CUnknown(NAME("ISubPicImpl"), NULL)
@@ -483,7 +509,7 @@ STDMETHODIMP_(bool) CSubPicQueue::LookupSubPic(REFERENCE_TIME rtNow, Com::SmartP
 	REFERENCE_TIME rtBestStop = 0x7fffffffffffffffi64;
   std::list<ISubPic *>::iterator pos = m_Queue.begin();
 #if DSubPicTraceLevel > 2
-	TRACE("Find: ");
+	TRACE(L"Find: ");
 #endif
 	while(pos != m_Queue.end())
 	{
@@ -497,27 +523,27 @@ STDMETHODIMP_(bool) CSubPicQueue::LookupSubPic(REFERENCE_TIME rtNow, Com::SmartP
 			if (Diff < rtBestStop)
 			{
 				rtBestStop = Diff;
-//				TRACE("   %f->%f", double(Diff) / 10000000.0, double(rtStop) / 10000000.0);
+				TRACE(L"   %f->%f", double(Diff) / 10000000.0, double(rtStop) / 10000000.0);
 				ppSubPic = pSubPic;
 			}
 #if DSubPicTraceLevel > 2
 			else
-				TRACE("   !%f->%f", double(Diff) / 10000000.0, double(rtStop) / 10000000.0);
+				TRACE(L"   !%f->%f", double(Diff) / 10000000.0, double(rtStop) / 10000000.0);
 #endif
 		}
 #if DSubPicTraceLevel > 2
 		else
-			TRACE("   !!%f->%f", double(rtStart) / 10000000.0, double(rtSegmentStop) / 10000000.0);
+			TRACE(L"   !!%f->%f", double(rtStart) / 10000000.0, double(rtSegmentStop) / 10000000.0);
 #endif
 
 	}
 #if DSubPicTraceLevel > 2
-	TRACE("\n");
+	TRACE(L"\n");
 #endif
 	if (!ppSubPic)
 	{
 #if DSubPicTraceLevel > 1
-		TRACE("NO Display: %f\n", double(rtNow) / 10000000.0);
+		TRACE(L"NO Display: %f\n", double(rtNow) / 10000000.0);
 #endif
 	}
 	else
@@ -527,7 +553,7 @@ STDMETHODIMP_(bool) CSubPicQueue::LookupSubPic(REFERENCE_TIME rtNow, Com::SmartP
 		REFERENCE_TIME rtSegmentStop = (ppSubPic)->GetSegmentStop();
 		Com::SmartRect r;
 		(ppSubPic)->GetDirtyRect(&r);
-		TRACE("Display: %f->%f   %f    %dx%d\n", double(rtStart) / 10000000.0, double(rtSegmentStop) / 10000000.0, double(rtNow) / 10000000.0, r.Width(), r.Height());
+		TRACE(L"Display: %f->%f   %f    %dx%d\n", double(rtStart) / 10000000.0, double(rtSegmentStop) / 10000000.0, double(rtNow) / 10000000.0, r.Width(), r.Height());
 #endif
 	}
 
@@ -630,7 +656,7 @@ REFERENCE_TIME CSubPicQueue::UpdateQueue()
 			ISubPic *pSubPic = GetAt(SavePos);
 			REFERENCE_TIME rtStart = pSubPic->GetStart();
 			REFERENCE_TIME rtStop = pSubPic->GetStop();
-			TRACE("Save: %f->%f\n", double(rtStart) / 10000000.0, double(rtStop) / 10000000.0);
+			TRACE(L"Save: %f->%f\n", double(rtStart) / 10000000.0, double(rtStop) / 10000000.0);
 		}
 	#endif
 		{
@@ -646,7 +672,7 @@ REFERENCE_TIME CSubPicQueue::UpdateQueue()
 				if (rtStop <= rtNowCompare && ThisPos != SavePos)
 				{
 	#if DSubPicTraceLevel > 0
-					TRACE("Remove: %f->%f\n", double(rtStart) / 10000000.0, double(rtStop) / 10000000.0);
+					TRACE(L"Remove: %f->%f\n", double(rtStart) / 10000000.0, double(rtStop) / 10000000.0);
 	#endif
           (*ThisPos)->Release();
 					m_Queue.erase(ThisPos);
@@ -751,7 +777,7 @@ DWORD CSubPicQueue::ThreadProc()
 #if DSubPicTraceLevel > 0
 							Com::SmartRect r;
 							pStatic->GetDirtyRect(&r);
-							TRACE("Render: %f->%f    %f->%f      %dx%d\n", double(rtCurrent) / 10000000.0, double(rtEndThis) / 10000000.0, double(rtStart) / 10000000.0, double(rtStop) / 10000000.0, r.Width(), r.Height());
+							TRACE(L"Render: %f->%f    %f->%f      %dx%d\n", double(rtCurrent) / 10000000.0, double(rtEndThis) / 10000000.0, double(rtStart) / 10000000.0, double(rtStop) / 10000000.0, r.Width(), r.Height());
 #endif
 							rtCurrent = rtEndThis;
 
@@ -765,7 +791,7 @@ DWORD CSubPicQueue::ThreadProc()
 #if DSubPicTraceLevel > 0
 						if (m_rtNow > rtCurrent)
 						{
-							TRACE("BEHIND\n");
+							TRACE(L"BEHIND\n");
 						}
 #endif
 
@@ -814,7 +840,7 @@ DWORD CSubPicQueue::ThreadProc()
 				if (rtStop > rtInvalidate)
 				{
 #if DSubPicTraceLevel >= 0
-					//TRACE(_T("Removed subtitle because of invalidation: %f->%f\n"), double(rtStart) / 10000000.0, double(rtStop) / 10000000.0);
+					TRACE(_T("Removed subtitle because of invalidation: %f->%f\n"), double(rtStart) / 10000000.0, double(rtStop) / 10000000.0);
 #endif
           (*ThisPos)->Release();
 					m_Queue.erase(ThisPos);

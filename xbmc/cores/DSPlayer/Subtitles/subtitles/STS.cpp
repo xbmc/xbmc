@@ -2953,9 +2953,9 @@ void STSStyle::SetDefault()
 	alpha[1] = 0x00;
 	alpha[2] = 0x00;
 	alpha[3] = 0x80;
-    charSet = DEFAULT_CHARSET;
+  charSet = DEFAULT_CHARSET;
 	fontName = _T("Arial");
-	fontSize = 18;
+	fontSize = 12;
 	fontScaleX = fontScaleY = 100;
 	fontSpacing = 0;
 	fontWeight = FW_BOLD;

@@ -294,7 +294,8 @@ public:
 
   void Render();
 
-  HRESULT GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest);
+  /** @remark renderRect represent the rendering surface size */
+  HRESULT GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest, Com::SmartRect& renderRect);
 
   /// @return A std::vector of all subtitle streams (internal or external) found in the media file
   std::vector<SSubtitleStreamInfos *>& GetSubtitles();

@@ -12,23 +12,19 @@
 STSStyle g_style;
 BOOL g_overrideUserStyles;
 int g_subPicsBufferAhead(3);
-Com::SmartSize g_textureSize(800, 600);
 bool g_pow2tex(true);
 BOOL g_disableAnim(TRUE);
 
 CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr)
-	: m_d3DDev(d3DDev),
-	m_iSubtitleSel(-1),
-	m_rtNow(-1),
-	m_delay(0),
-	m_lastSize(size)
+	: m_d3DDev(d3DDev), m_iSubtitleSel(-1), m_rtNow(-1), m_delay(0),
+	m_lastSize(size), m_textureSize(1024, 768)
 {
   g__rtTimePerFrame = 0; // Variable set on IPinHook on XBMC side
   g__tSampleStart = 0;
   g__tSegmentStart = 0;
 
 	//ATLTRACE("CSubManager constructor: texture size %dx%d, buffer ahead: %d, pow2tex: %d", g_textureSize.cx, g_textureSize.cy, g_subPicsBufferAhead, g_pow2tex);
-	m_pAllocator = (new CDX9SubPicAllocator(d3DDev, g_textureSize, g_pow2tex));
+	m_pAllocator = (new CDX9SubPicAllocator(d3DDev, m_textureSize, g_pow2tex));
 	hr = S_OK;
 	if (g_subPicsBufferAhead > 0)
 		m_pSubPicQueue.reset(new CSubPicQueue(g_subPicsBufferAhead, g_disableAnim, m_pAllocator, &hr));
@@ -90,14 +86,11 @@ void CSubManager::SetSubPicProvider(ISubStream* pSubStream)
 	m_subresync.RemoveAll();
 }
 
-void CSubManager::ReplaceSubtitle(ISubStream* pSubStreamOld, ISubStream* pSubStreamNew)
+void CSubManager::SetTextPassThruSubStream(ISubStream* pSubStreamOld, ISubStream* pSubStreamNew)
 {
-	/*
 	ApplyStyleSubStream(pSubStreamNew);
-		if (m_iSubtitleSel >= GetExtCount())
-		{
-			SetSubPicProvider(pSubStreamNew);
-		}*/	
+	m_pInternalSubStream = pSubStreamNew;
+  SetSubPicProvider(m_pInternalSubStream);
 }
 
 void CSubManager::InvalidateSubtitle(DWORD_PTR nSubtitleId, REFERENCE_TIME rtInvalidate)
@@ -118,7 +111,7 @@ void CSubManager::SetEnable(bool enable)
 	}
 }
 
-HRESULT CSubManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest)
+HRESULT CSubManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest, Com::SmartRect& renderRect)
 {
   if (m_iSubtitleSel < 0)
     return E_INVALIDARG;
@@ -129,11 +122,21 @@ HRESULT CSubManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com:
   m_fps = 10000000.0 / g__rtTimePerFrame;
   m_pSubPicQueue->SetFPS(m_fps);
 
+  Com::SmartSize renderSize(renderRect.right, renderRect.bottom);
+  if (m_lastSize != renderSize && renderRect.right > 0 && renderRect.bottom > 0)
+  { //adjust texture size
+    //ATLTRACE("Size change from %dx%d to %dx%d", m_lastSize.cx, m_lastSize.cy, size.cx, size.cy);
+    m_pAllocator->ChangeDevice(m_d3DDev);
+    //m_pAllocator->SetMaxTextureSize(g_textureSize);
+    m_pAllocator->SetCurVidRect(Com::SmartRect(Com::SmartPoint(0,0), renderSize));
+    m_pSubPicQueue->Invalidate(m_rtNow+1000000);
+    m_lastSize = renderSize;
+  }
+
   Com::SmartPtr<ISubPic> pSubPic;
   if(m_pSubPicQueue->LookupSubPic(m_rtNow, pSubPic))
   {
-    Com::SmartSize size(1440, 900);
-    if (SUCCEEDED (pSubPic->GetSourceAndDest(&size, pSrc, pDest)))
+    if (SUCCEEDED (pSubPic->GetSourceAndDest(&renderSize, pSrc, pDest)))
     {
       return pSubPic->GetTexture(pTexture);      
     }
@@ -212,7 +215,7 @@ static bool isTextConnection(IPin* pPin)
 }
 
 //load internal subtitles through TextPassThruFilter
-void CSubManager::InsertPassThruFilter(IGraphBuilder* pGB)
+HRESULT CSubManager::InsertPassThruFilter(IGraphBuilder* pGB)
 {
 	BeginEnumFilters(pGB, pEF, pBF)
 	{
@@ -262,7 +265,7 @@ void CSubManager::InsertPassThruFilter(IGraphBuilder* pGB)
 			if (pSubStream)
 			{
 				ApplyStyleSubStream(pSubStream);
-				return;
+				return S_OK;
 			}
 			else
 			{
@@ -272,6 +275,8 @@ void CSubManager::InsertPassThruFilter(IGraphBuilder* pGB)
 		EndEnumPins
 	}
 	EndEnumFilters
+  
+  return E_FAIL;
 }
 
 CStdString GetExtension(CStdString&  filename)
@@ -279,99 +284,6 @@ CStdString GetExtension(CStdString&  filename)
   const size_t i = filename.rfind('.');
   return filename.substr(i+1, filename.size());
 }
-
-/*void CSubManager::LoadExternalSubtitles(const wchar_t* filename, const wchar_t* subpaths)
-{
-	m_movieFile = filename;
-	std::vector<CStdString> paths;
-		
-	CStdString allpaths=subpaths;
-	CStdString path;
-	int start = 0;
-	int prev = 0;
-		
-	while (start != -1)
-  {
-		start = allpaths.Find(',', start);
-		if(start > 0)
-		{
-		  path=allpaths.Mid(prev,start);
-			paths.push_back(path);				
-			int end = allpaths.Find(',', start+1);
-			if(end > start)
-			{  
-				path=allpaths.Mid(start+1,end-start-1);
-			  paths.push_back(path);
-				prev = allpaths.Find(',', end+1);
-				if(prev > 0)
-				{
-					start++;
-				  prev = start;
-				}
-				else
-				{
-          path=allpaths.Right(allpaths.GetLength()-end-1);
-          paths.push_back(path);
-					start=-1;
-				}
-			}
-			else
-			{
-				path=allpaths.Right(allpaths.GetLength()-start-1);
-				paths.push_back(path);
-				start=-1;
-			}			
-		}
-		else if(allpaths.GetLength() > 0)
-		{
-      paths.push_back(allpaths);		
-			start=-1;		
-		}	
-	}
-	
-	if(paths.size() <= 0)
-	{
-		paths.push_back(_T("."));
-	  paths.push_back(_T(".\\subtitles"));
-	  paths.push_back(_T("c:\\subtitles"));
-	}
-
-	std::vector<SubFile> ret;	
-	GetSubFileNames(m_movieFile, paths, ret);	
-
-	for(size_t i = 0; i < ret.size(); i++)
-	{
-		// TMP: maybe this will catch something for those who get a runtime error dialog when opening subtitles from cds
-		try
-		{
-			ISubStream* pSubStream;
-
-			if(!pSubStream)
-			{
-        std::auto_ptr<CVobSubFile> pVSF(new CVobSubFile(&m_csSubLock));
-				if(CStdString(GetExtension(ret[i].fn).MakeLower()) == _T(".idx") && pVSF.get() && pVSF->Open(ret[i].fn) && pVSF->GetStreamCount() > 0)
-					pSubStream = pVSF.release();
-			}
-
-			if(!pSubStream)
-			{
-				std::auto_ptr<CRenderedTextSubtitle> pRTS(new CRenderedTextSubtitle(&m_csSubLock));
-				if(pRTS.get() && pRTS->Open(ret[i].fn, DEFAULT_CHARSET) && pRTS->GetStreamCount() > 0) {
-					ApplyStyle(pRTS.get());
-					pSubStream = pRTS.release();
-				}
-			}
-			if (pSubStream)
-			{
-				m_pSubStreams.insert(m_pSubStreams.end(), pSubStream);
-			}
-		}
-		catch(... /*CException* e)
-		{
-      //e->Delete();
-		}
-	}
-}*/
 
 HRESULT CSubManager::LoadExternalSubtitle( const wchar_t* subPath, ISubStream** pSubPic )
 {
@@ -424,16 +336,6 @@ void CSubManager::SetDelay(int delay_ms)
 	m_delay = delay_ms*10000;
 }
 
-/*void CSubManager::LoadSubtitlesForFile(const wchar_t* fn, IGraphBuilder* pGB, const wchar_t* paths)
-{
-	InsertPassThruFilter(pGB);	
-	LoadExternalSubtitles(fn, paths);
-	if(GetCount() > 0)
-	{
-		m_iSubtitleSel = 0x80000000; //stream 0, disabled
-	} 
-}*/
-
 void CSubManager::SetTimePerFrame( REFERENCE_TIME timePerFrame )
 {
   g__rtTimePerFrame = timePerFrame;
@@ -453,4 +355,23 @@ void CSubManager::Free()
 {
   m_pSubPicQueue.reset();
   m_pAllocator = NULL;
+}
+
+HRESULT CSubManager::SetSubPicProviderToInternal()
+{
+  if (! m_pInternalSubStream)
+    return E_FAIL;
+  
+  SetSubPicProvider(m_pInternalSubStream);
+  return S_OK;
+}
+
+void CSubManager::SetTextureSize( Com::SmartSize& pSize )
+{
+  m_textureSize = pSize;
+  if (m_pAllocator)
+  {
+    m_pAllocator->SetMaxTextureSize(m_textureSize);
+    m_pSubPicQueue->Invalidate(m_rtNow + 1000000);
+  }
 }
