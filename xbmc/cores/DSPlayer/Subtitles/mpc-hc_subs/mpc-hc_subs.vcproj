@@ -144,7 +144,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="strmbaseU.lib Winmm.lib vfw32.lib version.lib dsutilRU.lib subtitlesRU.lib"
+				AdditionalDependencies="strmbaseU.lib Winmm.lib vfw32.lib version.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\libs"
 				IgnoreDefaultLibraryNames="LIBCMT"

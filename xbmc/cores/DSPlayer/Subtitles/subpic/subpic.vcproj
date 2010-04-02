@@ -185,7 +185,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="strmbasdU.lib"
+				AdditionalDependencies="strmbaseU.lib"
 				OutputFile="..\..\libs\$(ProjectName)RU.lib"
 				AdditionalLibraryDirectories="..\..\libs"
 			/>
