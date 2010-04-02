@@ -57,13 +57,13 @@ HRESULT CreateAP9(const CLSID& clsid, HWND hWnd, ISubPicAllocatorPresenter** ppA
     Error += L"\n";
     Error += GetWindowsErrorMessage(hr, NULL);
 
-    MessageBox(hWnd, Error, "Error creating DX9 allocation presenter", MB_OK|MB_ICONERROR);
+    CLog::Log(LOGERROR, "%s %s", __FUNCTION__, Error.c_str());
     (*ppAP)->Release();
     *ppAP = NULL;
   }
   else if (!Error.IsEmpty())
   {
-    MessageBox(hWnd, Error, "Warning creating DX9 allocation presenter", MB_OK|MB_ICONWARNING);
+    CLog::Log(LOGWARNING, "%s %s", __FUNCTION__, Error.c_str());
   }
 
   return hr;
@@ -82,13 +82,13 @@ HRESULT CreateEVR(const CLSID& clsid, HWND hWnd, ISubPicAllocatorPresenter** ppA
     {
       Error += "\n";
       Error += GetWindowsErrorMessage(hr, NULL);
-      MessageBox(hWnd, Error, "Error creating EVR Custom renderer", MB_OK | MB_ICONERROR);
+      CLog::Log(LOGERROR, "%s %s", __FUNCTION__, Error.c_str());
       (*ppAP)->Release();
       *ppAP = NULL;
     }
     else if (!Error.IsEmpty())
     {
-      MessageBox(hWnd, Error, "Warning creating EVR Custom renderer", MB_OK|MB_ICONWARNING);
+      CLog::Log(LOGWARNING, "%s %s", __FUNCTION__, Error.c_str());
     }
   }
 
