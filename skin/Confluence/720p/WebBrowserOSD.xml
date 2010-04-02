@@ -1,4 +1,4 @@
-<window type="dialog" id="146">
+<window type="dialog" id="1">
         <defaultcontrol always="true">14</defaultcontrol>
         <controls>
                 <control type="image">
@@ -9,42 +9,101 @@
                         <height>60</height>
                         <texture>MediaInfoBackUpper.png</texture>
                 </control>
-                <control type="button" id="601">
+                <control type="button" id="1">
                         <posx>0</posx>
                         <posy>0</posy>
                         <width>50</width>
                         <height>50</height>
-                        <label>31354</label>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <label>-</label>
                         <font>-</font>
-                        <texturefocus>OSDRewindFO.png</texturefocus>
-                        <texturenofocus>OSDRewindNF.png</texturenofocus>
+                        <texturefocus>OSDPrevTrackFO.png</texturefocus>
+                        <texturenofocus>OSDPrevTrackNF.png</texturenofocus>
                         <onright>604</onright>
                 </control>
-                <control type="button" id="604">
+                <control type="button" id="2">
                         <posx>50</posx>
                         <posy>0</posy>
                         <width>50</width>
                         <height>50</height>
-                        <label>31353</label>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <label>-</label>
                         <font>-</font>
-                        <texturefocus>OSDForwardFO.png</texturefocus>
-                        <texturenofocus>OSDForwardNF.png</texturenofocus>
-                        <onleft>601</onleft>
-                        <onright>14</onright>
+                        <texturefocus>OSDNextTrackFO.png</texturefocus>
+                        <texturenofocus>OSDNextTrackNF.png</texturenofocus>
+                        <onleft>1</onleft>
+                        <onright>3</onright>
                 </control>
-                <control type="button" id="14">
+               <control type="button" id="3">
+                        <posx>100</posx>
+                        <posy>0</posy>
+                        <width>50</width>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <height>50</height>
+                        <label>-</label>
+                        <font>-</font>
+                        <texturefocus>OSDRepeatFO.png</texturefocus>
+                        <texturenofocus>OSDRepeatNF.png</texturenofocus>
+                        <onleft>2</onleft>
+                        <onright>4</onright>
+                </control>
+               <control type="button" id="4">
                         <posx>150</posx>
                         <posy>0</posy>
-                        <width>760</width>
-                        <height>41</height>
-                        <textoffsetx>12</textoffsetx>
+                        <width>50</width>
+                        <align>center</align>
                         <aligny>center</aligny>
-                        <texturefocus border="5">MenuItemFO.png</texturefocus>
-                        <texturenofocus border="5">MenuItemNF.png</texturenofocus>
-                        <font>font13</font>
+                        <height>50</height>
                         <label>-</label>
-                        <onleft>604</onleft>
+                        <font>-</font>
+                        <texturefocus>OSDStopFO.png</texturefocus>
+                        <texturenofocus>OSDStopNF.png</texturenofocus>
+                        <onleft>3</onleft>
+                        <onright>5</onright>
                 </control>
-
+               <control type="button" id="5">
+                        <posx>200</posx>
+                        <posy>0</posy>
+                        <width>50</width>
+                        <height>50</height>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <label>-</label>
+                        <font>-</font>
+                        <texturefocus>HomeIcon-Focus.png</texturefocus>
+                        <texturenofocus>HomeIcon.png</texturenofocus>
+                        <onleft>4</onleft>
+                        <onright>6</onright>
+                </control>
+                <control type="button" id="6">
+                        <posx>250</posx>
+                        <posy>0</posy>
+                        <width>980</width>
+                        <height>50</height>
+                        <textoffsetx>12</textoffsetx>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <texture border="20">KeyboardEditArea.png</texture>
+                        <font>-</font>
+                        <label>-</label>
+                        <onleft>5</onleft>
+                        <onright>7</onright>
+                </control>
+                <control type="button" id="7">
+                        <posx>1230</posx>
+                        <posy>0</posy>
+                        <width>50</width>
+                        <height>50</height>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <texturefocus border="5">OSDPlayFO.png</texturefocus>
+                        <texturenofocus border="5">OSDPlayNF.png</texturenofocus>
+                        <font>-</font>
+                        <label>-</label>
+                        <onleft>6</onleft>
+                </control>
         </controls>
 </window>
