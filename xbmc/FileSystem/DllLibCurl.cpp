@@ -73,9 +73,13 @@ void DllLibCurlGlobal::Unload()
 void DllLibCurlGlobal::CheckIdle()
 {
   CSingleLock lock(m_critSection);
+#ifdef _XBOX  
+  /* 5 seconds idle time before closing handle. Set this low on Xbox to save memory */
+  const DWORD idletime = 5000;
+#else
   /* 20 seconds idle time before closing handle */
-  const DWORD idletime = 30000;
-
+  const DWORD idletime = 20000;
+#endif
   VEC_CURLSESSIONS::iterator it = m_sessions.begin();
   while(it != m_sessions.end())
   {
