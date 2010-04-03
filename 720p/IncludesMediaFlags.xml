@@ -5,6 +5,7 @@
 		Listitem.Property(videoCodec)
 		Listitem.Property(aspectRatio)
 		Listitem.Property(videoFrameRate)
+		Listitem.Property(audioChannels)
 		Listitem.Property(contentRating)
 		Listitem.Property(movieStudio)
 	-->
