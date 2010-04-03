@@ -1,5 +1,5 @@
 ARCH=@ARCH@
-
+CC=@CC@
 SHELL=/bin/bash
 SYSDIR=../../../../system/python
 ifeq (@USE_PYTHON2_6@,1)
