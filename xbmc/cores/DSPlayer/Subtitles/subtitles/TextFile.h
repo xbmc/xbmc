@@ -22,8 +22,10 @@
 #pragma once
 
 #include "atlwfile.h"
+/*#include "utils\DownloadQueue.h"
+#include "utils\Event.h"*/
 
-class CTextFile : protected ATL::CFile
+class CTextFile : protected ATL::CStdioFile
 {
 public:
 	typedef enum {ASCII, UTF8, LE16, BE16, ANSI} enc;
@@ -60,14 +62,18 @@ public:
 
 };
 
-class CWebTextFile : public CTextFile
+class CWebTextFile : public CTextFile/*, IDownloadQueueObserver*/
 {
 	LONGLONG m_llMaxSize;
 	CStdString m_tempfn;
+  /*CEvent m_downloadEvent;
+  TICKET m_dlTicket;
+  bool m_dlSucceeded;*/
 
 public:
 	CWebTextFile(LONGLONG llMaxSize = 1024*1024);
 
+  //void OnFileComplete(TICKET aTicket, CStdStringA& aFilePath, INT aByteRxCount, Result aResult);
 	bool Open(LPCTSTR lpszFileName);
 	bool Save(LPCTSTR lpszFileName, enc e /*= ASCII*/);
 	void Close();

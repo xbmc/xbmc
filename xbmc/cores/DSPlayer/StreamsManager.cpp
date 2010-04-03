@@ -683,9 +683,10 @@ void CStreamsManager::FormatStreamName( SStreamInfos& s )
   // First, if lcid isn't 0, try GetLocalInfo
   if (s.lcid)
   {
-    CStdString name;
-    if (GetLocaleInfo(s.lcid, LOCALE_SLANGUAGE, name.GetBuffer(64), 64))
+    CStdString name; int len = 0;
+    if (len = GetLocaleInfo(s.lcid, LOCALE_SLANGUAGE, name.GetBuffer(64), 64))
     {
+      name.resize(len - 1); //get rid of last \0
       if (s.type == SUBTITLE && !((SSubtitleStreamInfos&)s).trackname.empty())
         s.displayname.Format("%s (%s)", name, ((SSubtitleStreamInfos&)s).trackname);
       else
@@ -1033,7 +1034,7 @@ int CSubtitleManager::AddSubtitle(const CStdString& subFilePath)
   {
     s->lcid = DShowUtil::ISO6392ToLcid(s->isolang);
     if (! s->lcid)
-      DShowUtil::ISO6391ToLcid(s->isolang);
+      s->lcid = DShowUtil::ISO6391ToLcid(s->isolang);
 
     m_pStreamManager->FormatStreamName(*s.get());
   } 

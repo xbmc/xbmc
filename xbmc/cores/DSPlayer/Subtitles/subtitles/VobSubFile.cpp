@@ -1003,8 +1003,8 @@ bool CVobSubFile::WriteIdx(CStdString fn)
 
 bool CVobSubFile::WriteSub(CStdString fn)
 {
-  ATL::CFileT<true> f;
-	if(!f.Open(fn))
+  ATL::CFile f;
+  if(!f.Open(fn, ATL::CFile::modeCreate | ATL::CFile::modeWrite | ATL::CFile::typeBinary | ATL::CFile::shareDenyWrite))
 		return(false);
 
   m_sub.seekg(0, std::ios_base::end);
@@ -1555,7 +1555,7 @@ bool CVobSubFile::SaveWinSubMux(CStdString fn)
 	TrimExtension(fn);
 
   ATL::CFile f;
-	if(!f.Open(fn + _T(".sub")))
+  if(!f.Open(fn + _T(".sub"), ATL::CFile::modeCreate|ATL::CFile::modeWrite|ATL::CFile::typeText|ATL::CFile::shareDenyWrite))
 		return(false);
 
 	m_img.Invalidate();
@@ -1667,7 +1667,7 @@ bool CVobSubFile::SaveWinSubMux(CStdString fn)
 		};
 
     ATL::CFile bmp;
-		if(bmp.Open(bmpfn))
+		if(bmp.Open(bmpfn, ATL::CFile::modeCreate|ATL::CFile::modeWrite|ATL::CFile::typeBinary|ATL::CFile::shareDenyWrite))
 		{
 			bmp.Write(&fhdr, sizeof(fhdr));
 			bmp.Write(&ihdr, sizeof(ihdr));
@@ -1687,7 +1687,7 @@ bool CVobSubFile::SaveScenarist(CStdString fn)
 	TrimExtension(fn);
 
   ATL::CFile f;
-	if(!f.Open(fn + _T(".sst")))
+	if(!f.Open(fn + _T(".sst"), ATL::CFile::modeCreate|ATL::CFile::modeWrite|ATL::CFile::typeText|ATL::CFile::shareDenyWrite))
 		return(false);
 
 	m_img.Invalidate();
@@ -1897,7 +1897,7 @@ bool CVobSubFile::SaveScenarist(CStdString fn)
 		f.Write(str.c_str(), sizeof(str) * str.length());
 
     ATL::CFile bmp;
-		if(bmp.Open(bmpfn))
+		if(bmp.Open(bmpfn, ATL::CFile::modeCreate|ATL::CFile::modeWrite|ATL::CFile::modeRead|ATL::CFile::typeBinary))
 		{
 			bmp.Write(&fhdr, sizeof(fhdr));
 			bmp.Write(&ihdr, sizeof(ihdr));
@@ -1920,7 +1920,7 @@ bool CVobSubFile::SaveMaestro(CStdString fn)
 	TrimExtension(fn);
 
   ATL::CFile f;
-	if(!f.Open(fn + _T(".son"))) 
+	if(!f.Open(fn + _T(".son"), ATL::CFile::modeCreate|ATL::CFile::modeWrite|ATL::CFile::typeText|ATL::CFile::shareDenyWrite)) 
 		return(false);
 
 	m_img.Invalidate();
@@ -2011,7 +2011,7 @@ bool CVobSubFile::SaveMaestro(CStdString fn)
 		colormap[i] = i;
 
   ATL::CFile spf;
-	if(spf.Open(fn + _T(".spf")))
+	if(spf.Open(fn + _T(".spf"), ATL::CFile::modeCreate|ATL::CFile::modeWrite|ATL::CFile::typeBinary))
 	{
 		for(int i = 0; i < 16; i++) 
 		{
@@ -2120,7 +2120,7 @@ bool CVobSubFile::SaveMaestro(CStdString fn)
 		f.Write(str.c_str(), sizeof(str) * str.length());
 
     ATL::CFile bmp;
-		if(bmp.Open(bmpfn))
+		if(bmp.Open(bmpfn, ATL::CFile::modeCreate|ATL::CFile::modeWrite|ATL::CFile::typeBinary))
 		{
 			bmp.Write(&fhdr, sizeof(fhdr));
 			bmp.Write(&ihdr, sizeof(ihdr));

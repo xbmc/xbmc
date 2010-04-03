@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "TextFile.h"
+//#include "utils\DownloadQueueManager.h"
 
 CTextFile::CTextFile(enc e)
 {
@@ -30,78 +31,76 @@ CTextFile::CTextFile(enc e)
 
 bool CTextFile::Open(LPCTSTR lpszFileName)
 {
-	if(! __super::Open(lpszFileName))
-		return(false);
+  if(!__super::Open(lpszFileName, modeRead|typeBinary|shareDenyNone))
+    return(false);
 
-  m_strFileName = lpszFileName;
+  m_encoding = m_defaultencoding;
+  m_offset = 0;
 
-	m_encoding = m_defaultencoding;
-	m_offset = 0;
+  if(__super::GetLength() >= 2)
+  {
+    WORD w;
+    if(sizeof(w) != Read(&w, sizeof(w)))
+      return Close(), false;
 
-  if(__super::GetSize() >= 2)
-	{
-		WORD w;
-		if(sizeof(w) != Read((char *)&w, sizeof(w)))
-			return Close(), false;
+    if(w == 0xfeff)
+    {
+      m_encoding = LE16;
+      m_offset = 2;
+    }
+    else if(w == 0xfffe)
+    {
+      m_encoding = BE16;
+      m_offset = 2;
+    }
+    else if(w == 0xbbef && __super::GetLength() >= 3)
+    {
+      BYTE b;
+      if(sizeof(b) != Read(&b, sizeof(b)))
+        return Close(), false;
 
-		if(w == 0xfeff)
-		{
-			m_encoding = LE16;
-			m_offset = 2;
-		}
-		else if(w == 0xfffe)
-		{
-			m_encoding = BE16;
-			m_offset = 2;
-		}
-    else if(w == 0xbbef && __super::GetSize() >= 3)
-		{
-			BYTE b;
-			if(sizeof(b) != Read((char *)&b, sizeof(b)))
-				return Close(), false;
+      if(b == 0xbf)
+      {
+        m_encoding = UTF8;
+        m_offset = 3;
+      }
+    }
+  }
 
-			if(b == 0xbf)
-			{
-				m_encoding = UTF8;
-				m_offset = 3;
-			}
-		}
-	}
-
-	if(m_encoding == m_defaultencoding)
-	{
+  if(m_encoding == m_defaultencoding)
+  {
     __super::Close(); // CWebTextFile::Close() would delete the temp file if we called it...
-		if(!__super::Open(lpszFileName))
-			return(false);
-	}
+    if(!__super::Open(lpszFileName, modeRead|typeText|shareDenyNone))
+      return(false);
+  }
 
 	return(true);
 }
 
 bool CTextFile::Save(LPCTSTR lpszFileName, enc e)
 {
-	if(!__super::Open(lpszFileName))
-		return(false);
+  if(!__super::Open(lpszFileName, modeCreate|modeWrite|shareDenyWrite|(e==ASCII?typeText:typeBinary)))
+    return(false);
 
-	if(e == UTF8)
-	{
-		BYTE b[3] = {0xef,0xbb,0xbf};
-		Write((const char*)b, sizeof(b));
-	}
-	else if(e == LE16)
-	{
-		BYTE b[2] = {0xff,0xfe};
-		Write((const char*)b, sizeof(b));
-	}
-	else if(e == BE16)
-	{
-		BYTE b[2] = {0xfe,0xff};
-		Write((const char*)b, sizeof(b));
-	}
+  if(e == UTF8)
+  {
+    BYTE b[3] = {0xef,0xbb,0xbf};
+    Write(b, sizeof(b));
+  }
+  else if(e == LE16)
+  {
+    BYTE b[2] = {0xff,0xfe};
+    Write(b, sizeof(b));
+  }
+  else if(e == BE16)
+  {
+    BYTE b[2] = {0xfe,0xff};
+    Write(b, sizeof(b));
+  }
 
-	m_encoding = e;
+  m_encoding = e;
 
-	return true;
+  return true;
 }
 
 void CTextFile::SetEncoding(enc e)
@@ -131,12 +130,12 @@ CStdString CTextFile::GetFilePath() const
 
 ULONGLONG CTextFile::GetPosition()
 {
-  return(ATL::CFileT<true>::GetPosition() - m_offset);
+  return(__super::GetPosition() - m_offset);
 }
 
 ULONGLONG CTextFile::GetLength()
 {
-	return(ATL::CFileT<true>::GetSize() - m_offset);
+	return(__super::GetLength() - m_offset);
 }
 
 ULONGLONG CTextFile::Seek(LONGLONG lOff, UINT nFrom)
@@ -147,14 +146,14 @@ ULONGLONG CTextFile::Seek(LONGLONG lOff, UINT nFrom)
 	switch(nFrom)
 	{
 	default:
-  case std::ios_base::beg: lOff = lOff; break;
-	case std::ios_base::cur: lOff = pos + lOff; break;
-	case std::ios_base::end: lOff = len - lOff; break;
+  case FILE_BEGIN: lOff = lOff; break; // begin
+	case FILE_CURRENT: lOff = pos + lOff; break; //curent
+	case FILE_END: lOff = len - lOff; break; //end
 	}
 
 	lOff = max(min(lOff, len), 0) + m_offset;
 
-	pos = ATL::CFileT<true>::Seek(lOff, SEEK_SET) - m_offset;
+	pos = __super::Seek(lOff, FILE_BEGIN) - m_offset;
 
 	return(pos);
 }
@@ -167,19 +166,25 @@ void CTextFile::WriteString(LPCSTR lpsz/*CStdStringA str*/)
 
 	if(m_encoding == ASCII)
 	{
-    foo = AToT(str);
-    ATL::CFileT<true>::Write(foo.c_str(), sizeof(foo) * foo.length());
+    __super::WriteString(AToT(str));
 	}
 	else if(m_encoding == ANSI)
 	{
 		str.Replace("\n", "\r\n");
 		Write((LPCSTR)str, str.GetLength());
 	}
-	else if(m_encoding == UTF8 || m_encoding == LE16 || m_encoding == BE16)
-	{
-    fooW = AToW(str);
-		Write(fooW, sizeof(fooW) * fooW.length());
-	}
+  else if(m_encoding == UTF8)
+  {
+    WriteString(AToW(str));
+  }
+  else if(m_encoding == LE16)
+  {
+    WriteString(AToW(str));
+  }
+  else if(m_encoding == BE16)
+  {
+    WriteString(AToW(str));
+  }
 }
 
 void CTextFile::WriteString(LPCWSTR lpsz/*CStdStringW str*/)
@@ -188,7 +193,7 @@ void CTextFile::WriteString(LPCWSTR lpsz/*CStdStringW str*/)
 
 	if(m_encoding == ASCII)
 	{
-		WriteString(WToT(str));
+		__super::WriteString(WToT(str));
 	}
 	else if(m_encoding == ANSI)
 	{
@@ -198,207 +203,207 @@ void CTextFile::WriteString(LPCWSTR lpsz/*CStdStringW str*/)
 	}
 	else if(m_encoding == UTF8)
 	{
-		str.Replace(L"\n", L"\r\n");
-		for(int i = 0; i < str.GetLength(); i++)
-		{
-			DWORD c = (WORD)str[i];
+    str.Replace(L"\n", L"\r\n");
+    for(size_t i = 0; i < str.GetLength(); i++)
+    {
+      DWORD c = (WORD)str[i];
 
-			if(0 <= c && c < 0x80) // 0xxxxxxx
-			{
-				Write(&c, 1);
-			}
-			else if(0x80 <= c && c < 0x800) // 110xxxxx 10xxxxxx
-			{
-				c = 0xc080|((c<<2)&0x1f00)|(c&0x003f);
-				Write((BYTE*)&c+1, 1);
-				Write(&c, 1);
-			}
-			else if(0x800 <= c && c < 0xFFFF) // 1110xxxx 10xxxxxx 10xxxxxx
-			{
-				c = 0xe08080|((c<<4)&0x0f0000)|((c<<2)&0x3f00)|(c&0x003f);
-				Write((BYTE*)&c+2, 1);
-				Write((BYTE*)&c+1, 1);
-				Write(&c, 1);
-			}
-			else
-			{
-				c = '?';
-				Write(&c, 1);
-			}
-		}
+      if(0 <= c && c < 0x80) // 0xxxxxxx
+      {
+        Write(&c, 1);
+      }
+      else if(0x80 <= c && c < 0x800) // 110xxxxx 10xxxxxx
+      {
+        c = 0xc080|((c<<2)&0x1f00)|(c&0x003f);
+        Write((BYTE*)&c+1, 1);
+        Write(&c, 1);
+      }
+      else if(0x800 <= c && c < 0xFFFF) // 1110xxxx 10xxxxxx 10xxxxxx
+      {
+        c = 0xe08080|((c<<4)&0x0f0000)|((c<<2)&0x3f00)|(c&0x003f);
+        Write((BYTE*)&c+2, 1);
+        Write((BYTE*)&c+1, 1);
+        Write(&c, 1);
+      }
+      else
+      {
+        c = '?';
+        Write(&c, 1);
+      }
+    }
 	}
 	else if(m_encoding == LE16)
 	{
-		str.Replace(L"\n", L"\r\n");
-		Write((LPCWSTR)str, str.GetLength()*2);
+    str.Replace(L"\n", L"\r\n");
+    Write((LPCWSTR)str, str.GetLength()*2);
 	}
 	else if(m_encoding == BE16)
 	{
-		str.Replace(L"\n", L"\r\n");
-		for(int i = 0; i < str.GetLength(); i++)
-			str.SetAt(i, ((str[i]>>8)&0x00ff)|((str[i]<<8)&0xff00));
-		Write((LPCWSTR)str, str.GetLength()*2);
+    str.Replace(L"\n", L"\r\n");
+    for(size_t i = 0; i < str.GetLength(); i++)
+      str.SetAt(i, ((str[i]>>8)&0x00ff)|((str[i]<<8)&0xff00));
+    Write((LPCWSTR)str, str.GetLength()*2);
 	}
 }
 
 BOOL CTextFile::ReadString(CStdStringA& str)
 {
-	bool fEOF = true;
+  bool fEOF = true;
 
-	str.Empty();
+  str.Empty();
 
-	/*if(m_encoding == ASCII)
-	{
-		CStdString s;
-		fEOF = !__super::ReadString(s);
-		str = TToA(s);
-	}*/
-	if(m_encoding == ANSI || m_encoding == ASCII)
-	{
-		char c;
-		while(Read(&c, sizeof(c)) == sizeof(c))
-		{
-			fEOF = false;
-			if(c == '\r') continue;
-			if(c == '\n') break;
-			str += c;
-		}
-	}
-	else if(m_encoding == UTF8)
-	{
-		BYTE b;
-		while(Read(&b, sizeof(b)) == sizeof(b))
-		{
-			fEOF = false;
-			char c = '?';
-			if(!(b&0x80)) // 0xxxxxxx
-			{
-				c = b&0x7f;
-			}
-			else if((b&0xe0) == 0xc0) // 110xxxxx 10xxxxxx
-			{
-				if(Read(&b, sizeof(b)) != sizeof(b)) break;
-			}
-			else if((b&0xf0) == 0xe0) // 1110xxxx 10xxxxxx 10xxxxxx
-			{
-				if(Read(&b, sizeof(b)) != sizeof(b)) break;
-				if(Read(&b, sizeof(b)) != sizeof(b)) break;
-			}
-			if(c == '\r') continue;
-			if(c == '\n') break;
-			str += c;
-		}
-	}
-	else if(m_encoding == LE16)
-	{
-		WORD w;
-		while(Read(&w, sizeof(w)) == sizeof(w))
-		{
-			fEOF = false;
-			char c = '?';
-			if(!(w&0xff00)) c = w&0xff;
-			if(c == '\r') continue;
-			if(c == '\n') break;
-			str += c;
-		}
-	}
-	else if(m_encoding == BE16)
-	{
-		WORD w;
-		while(Read(&w, sizeof(w)) == sizeof(w))
-		{
-			fEOF = false;
-			char c = '?';
-			if(!(w&0xff)) c = w>>8;
-			if(c == '\r') continue;
-			if(c == '\n') break;
-			str += c;
-		}
-	}
+  if(m_encoding == ASCII)
+  {
+    CStdString s;
+    fEOF = !__super::ReadString(s);
+    str = TToA(s);
+  }
+  else if(m_encoding == ANSI)
+  {
+    char c;
+    while(Read(&c, sizeof(c)) == sizeof(c))
+    {
+      fEOF = false;
+      if(c == '\r') continue;
+      if(c == '\n') break;
+      str += c;
+    }
+  }
+  else if(m_encoding == UTF8)
+  {
+    BYTE b;
+    while(Read(&b, sizeof(b)) == sizeof(b))
+    {
+      fEOF = false;
+      char c = '?';
+      if(!(b&0x80)) // 0xxxxxxx
+      {
+        c = b&0x7f;
+      }
+      else if((b&0xe0) == 0xc0) // 110xxxxx 10xxxxxx
+      {
+        if(Read(&b, sizeof(b)) != sizeof(b)) break;
+      }
+      else if((b&0xf0) == 0xe0) // 1110xxxx 10xxxxxx 10xxxxxx
+      {
+        if(Read(&b, sizeof(b)) != sizeof(b)) break;
+        if(Read(&b, sizeof(b)) != sizeof(b)) break;
+      }
+      if(c == '\r') continue;
+      if(c == '\n') break;
+      str += c;
+    }
+  }
+  else if(m_encoding == LE16)
+  {
+    WORD w;
+    while(Read(&w, sizeof(w)) == sizeof(w))
+    {
+      fEOF = false;
+      char c = '?';
+      if(!(w&0xff00)) c = w&0xff;
+      if(c == '\r') continue;
+      if(c == '\n') break;
+      str += c;
+    }
+  }
+  else if(m_encoding == BE16)
+  {
+    WORD w;
+    while(Read(&w, sizeof(w)) == sizeof(w))
+    {
+      fEOF = false;
+      char c = '?';
+      if(!(w&0xff)) c = w>>8;
+      if(c == '\r') continue;
+      if(c == '\n') break;
+      str += c;
+    }
+  }
 
-	return(!fEOF);
+  return(!fEOF);
 }
 
 BOOL CTextFile::ReadString(CStdStringW& str)
 {
-	bool fEOF = true;
+  bool fEOF = true;
 
-	str.Empty();
+  str.Empty();
 
-	/*if(m_encoding == ASCII)
-	{
-		CStdString s;
-		fEOF = !__super::ReadString(s);
-		str = TToW(s);
-	}
-	else */if(m_encoding == ANSI || m_encoding == ASCII)
-	{
-		CStdStringA stra;
-		char c;
-		while(Read(&c, sizeof(c)) == sizeof(c))
-		{
-			fEOF = false;
-			if(c == '\r') continue;
-			if(c == '\n') break;
-			stra += c;
-		}
-		str = CStdStringW(CStdString(stra)); // TODO: codepage
-	}
-	else if(m_encoding == UTF8)
-	{
-		BYTE b;
-		while(Read(&b, sizeof(b)) == sizeof(b))
-		{
-			fEOF = false;
-			WCHAR c = '?';
-			if(!(b&0x80)) // 0xxxxxxx
-			{
-				c = b&0x7f;
-			}
-			else if((b&0xe0) == 0xc0) // 110xxxxx 10xxxxxx
-			{
-				c = (b&0x1f)<<6;
-				if(Read(&b, sizeof(b)) != sizeof(b)) break;
-				c |= (b&0x3f);
-			}
-			else if((b&0xf0) == 0xe0) // 1110xxxx 10xxxxxx 10xxxxxx
-			{
-				c = (b&0x0f)<<12;
-				if(Read(&b, sizeof(b)) != sizeof(b)) break;
-				c |= (b&0x3f)<<6;
-				if(Read(&b, sizeof(b)) != sizeof(b)) break;
-				c |= (b&0x3f);
-			}
-			if(c == '\r') continue;
-			if(c == '\n') break;
-			str += c;
-		}
-	}
-	else if(m_encoding == LE16)
-	{
-		WCHAR wc;
-		while(Read(&wc, sizeof(wc)) == sizeof(wc))
-		{
-			fEOF = false;
-			if(wc == '\r') continue;
-			if(wc == '\n') break;
-			str += wc;
-		}
-	}
-	else if(m_encoding == BE16)
-	{
-		WCHAR wc;
-		while(Read(&wc, sizeof(wc)) == sizeof(wc))
-		{
-			fEOF = false;
-			wc = ((wc>>8)&0x00ff)|((wc<<8)&0xff00);
-			if(wc == '\r') continue;
-			if(wc == '\n') break;
-			str += wc;
-		}
-	}
+  if(m_encoding == ASCII)
+  {
+    CStdString s;
+    fEOF = !__super::ReadString(s);
+    str = TToW(s);
+  }
+  else if(m_encoding == ANSI)
+  {
+    CStdStringA stra;
+    char c;
+    while(Read(&c, sizeof(c)) == sizeof(c))
+    {
+      fEOF = false;
+      if(c == '\r') continue;
+      if(c == '\n') break;
+      stra += c;
+    }
+    str = CStdStringW(CStdString(stra)); // TODO: codepage
+  }
+  else if(m_encoding == UTF8)
+  {
+    BYTE b;
+    while(Read(&b, sizeof(b)) == sizeof(b))
+    {
+      fEOF = false;
+      WCHAR c = '?';
+      if(!(b&0x80)) // 0xxxxxxx
+      {
+        c = b&0x7f;
+      }
+      else if((b&0xe0) == 0xc0) // 110xxxxx 10xxxxxx
+      {
+        c = (b&0x1f)<<6;
+        if(Read(&b, sizeof(b)) != sizeof(b)) break;
+        c |= (b&0x3f);
+      }
+      else if((b&0xf0) == 0xe0) // 1110xxxx 10xxxxxx 10xxxxxx
+      {
+        c = (b&0x0f)<<12;
+        if(Read(&b, sizeof(b)) != sizeof(b)) break;
+        c |= (b&0x3f)<<6;
+        if(Read(&b, sizeof(b)) != sizeof(b)) break;
+        c |= (b&0x3f);
+      }
+      if(c == '\r') continue;
+      if(c == '\n') break;
+      str += c;
+    }
+  }
+  else if(m_encoding == LE16)
+  {
+    WCHAR wc;
+    while(Read(&wc, sizeof(wc)) == sizeof(wc))
+    {
+      fEOF = false;
+      if(wc == '\r') continue;
+      if(wc == '\n') break;
+      str += wc;
+    }
+  }
+  else if(m_encoding == BE16)
+  {
+    WCHAR wc;
+    while(Read(&wc, sizeof(wc)) == sizeof(wc))
+    {
+      fEOF = false;
+      wc = ((wc>>8)&0x00ff)|((wc<<8)&0xff00);
+      if(wc == '\r') continue;
+      if(wc == '\n') break;
+      str += wc;
+    }
+  }
 
-	return(!fEOF);
+  return(!fEOF);
 }
 
 //
@@ -406,45 +411,32 @@ BOOL CTextFile::ReadString(CStdStringW& str)
 //
 
 CWebTextFile::CWebTextFile(LONGLONG llMaxSize)
-	: m_llMaxSize(llMaxSize)
+	: m_llMaxSize(llMaxSize)/*, m_dlSucceeded(false), m_dlTicket(0, 0)*/
 {
 }
 
 bool CWebTextFile::Open(LPCTSTR lpszFileName)
 {
-	CStdString fn(lpszFileName);
+  CStdString fn(lpszFileName);
 
 	if(fn.Find(_T("http://")) != 0)
 		return __super::Open(lpszFileName);
 
-  ATL::CFileT<true> f;    
+  /* Too bad we can't link on wbmc ... */
+  return false;
+  /*
+  /* URL; Download the File
+  m_downloadEvent.Reset();
 
-	if(!f.Open(fn)) return(false);
+  CStdStringA url(lpszFileName);
+  CStdString dlTo = "special://temps/" + url.Mid(url.ReverseFind('/') + 1);
+  m_dlTicket = g_DownloadManager.RequestFile(url, dlTo, this);
 
-	TCHAR path[MAX_PATH];
-	GetTempPath(MAX_PATH, path);
+  // Wait for the download to be complete
+  m_downloadEvent.WaitMSec(20000); // Timeout : 20s
 
-	fn = path + fn.Mid(fn.ReverseFind('/')+1);
-	int i = fn.Find(_T("?"));
-	if(i > 0) fn = fn.Left(i);
-  ATL::CFileT<true> temp;
-	if(!temp.Open(fn))
-	{
-		f.Close();
-		return(false);
-	}
-
-	BYTE buff[1024];
-	int len, total = 0;
-	while((len = f.Read(buff, 1024)) == 1024 && (m_llMaxSize < 0 || (total+=1024) < m_llMaxSize))
-		temp.Write(buff, len);
-	if(len > 0) temp.Write(buff, len);
-
-	m_tempfn = fn;
-
-	f.Close(); // must close it because the desctructor doesn't seem to do it and we will get an exception when "is" is destroying
-
-	return __super::Open(m_tempfn);
+  m_tempfn = dlTo;
+  return (m_dlSucceeded) ? __super::Open(m_tempfn) : false;*/
 }
 
 bool CWebTextFile::Save(LPCTSTR lpszFileName, enc e)
@@ -465,6 +457,16 @@ void CWebTextFile::Close()
 	}
 }
 
+/*
+void CWebTextFile::OnFileComplete( TICKET aTicket, CStdStringA& aFilePath, INT aByteRxCount, Result aResult )
+{
+  if (aTicket.dwItemId == m_dlTicket.dwItemId && aTicket.wQueueId == m_dlTicket.wQueueId)
+  {
+    m_dlSucceeded = (aResult == Succeeded) ? true : false;
+    m_downloadEvent.Set(); // Download complete
+  }
+}
+*/
 ///////////////////////////////////////////////////////////////
 
 CStdStringW AToW(CStdStringA str)

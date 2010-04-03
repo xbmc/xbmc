@@ -159,7 +159,9 @@ public:
 	~CFilterInfo() {if(pGraph) pGraph->Release();}
 };
 
+#ifndef SAFE_RELEASE
 #define SAFE_RELEASE(p) if(p) { p->Release(); p = NULL; }
+#endif
 
 /* BeginEnumFilters */
 #define BeginEnumFilters(pFilterGraph, pEnumFilters, pBaseFilter) \

@@ -2297,11 +2297,12 @@ STDMETHODIMP_(bool) CRenderedTextSubtitle::IsAnimated(int pos)
 
 struct LSub {int idx, layer, readorder;};
 
-static int lscomp(LSub ls1, LSub ls2)
+static bool lscomp(const LSub& ls1, const LSub& ls2)
 {
-	int ret = (ls1).layer - (ls2).layer;
-	if(!ret) ret = (ls1).readorder - (ls2).readorder;
-	return(ret);
+  bool ret = ls1.layer == ls2.layer; // true if !=
+	if (ret)
+    return ls1.readorder < ls2.readorder;
+	return ls1.layer == ls2.layer;
 }
 
 STDMETHODIMP CRenderedTextSubtitle::Render(SubPicDesc& spd, REFERENCE_TIME rt, double fps, RECT& bbox)

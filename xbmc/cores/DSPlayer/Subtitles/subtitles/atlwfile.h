@@ -2,6 +2,8 @@
 #define __ATLWFILE_H__
 
 #pragma once
+#include <io.h>
+#include <fcntl.h>
 
 /////////////////////////////////////////////////////////////////////////////
 // Windows File API wrappers
@@ -47,8 +49,30 @@ namespace ATL
 template< bool t_bManaged >
 class CFileT
 {
+protected:
+  BOOL m_bCloseOnDelete;
+  CStdString m_strFileName;
 public:
    HANDLE m_hFile;
+   enum OpenFlags {
+     modeRead =         (int) 0x00000,
+     modeWrite =        (int) 0x00001,
+     modeReadWrite =    (int) 0x00002,
+     shareCompat =      (int) 0x00000,
+     shareExclusive =   (int) 0x00010,
+     shareDenyWrite =   (int) 0x00020,
+     shareDenyRead =    (int) 0x00030,
+     shareDenyNone =    (int) 0x00040,
+     modeNoInherit =    (int) 0x00080,
+     modeCreate =       (int) 0x01000,
+     modeNoTruncate =   (int) 0x02000,
+     typeText =         (int) 0x04000, // typeText and typeBinary are
+     typeBinary =       (int) 0x08000, // used in derived classes only
+     osNoBuffer =       (int) 0x10000,
+     osWriteThrough =   (int) 0x20000,
+     osRandomAccess =   (int) 0x40000,
+     osSequentialScan = (int) 0x80000,
+   };
 
    CFileT(HANDLE hFile = INVALID_HANDLE_VALUE) : m_hFile(hFile)
    {
@@ -80,25 +104,123 @@ public:
       return *this;
    }
 
-   BOOL Open(LPCTSTR pstrFileName, 
-             DWORD dwAccess = GENERIC_READ, 
-             DWORD dwShareMode = FILE_SHARE_READ, 
-             DWORD dwFlags = OPEN_EXISTING,
-             DWORD dwAttributes = FILE_ATTRIBUTE_NORMAL)
+   void Abort()
    {
-      _ASSERTE(!::IsBadStringPtr(pstrFileName,-1));
-      Close();
-      // Attempt file creation
-      HANDLE hFile = ::CreateFile(pstrFileName, 
-         dwAccess, 
-         dwShareMode, 
-         NULL,
-         dwFlags, 
-         dwAttributes, 
-         NULL);
-      if( hFile == INVALID_HANDLE_VALUE ) return FALSE;
-      m_hFile = hFile;
-      return TRUE;
+     if (m_hFile != INVALID_HANDLE_VALUE)
+     {
+       // close but ignore errors
+       ::CloseHandle(m_hFile);
+       m_hFile = INVALID_HANDLE_VALUE;
+     }
+     m_strFileName.Empty();
+   }
+
+   BOOL Open(LPCTSTR pstrFileName, UINT nOpenFlags)
+   {
+     ASSERT(!::IsBadStringPtr(pstrFileName,-1));
+
+     ASSERT((nOpenFlags & typeText) == 0);   // text mode not supported
+
+     // shouldn't open an already open file (it will leak)
+     ASSERT(m_hFile == INVALID_HANDLE_VALUE);
+
+     // CFile objects are always binary and CreateFile does not need flag
+     nOpenFlags &= ~(UINT)typeBinary;
+
+     m_bCloseOnDelete = FALSE;
+
+     m_hFile = INVALID_HANDLE_VALUE;
+     m_strFileName.Empty();
+
+     m_strFileName = pstrFileName;
+     ASSERT(shareCompat == 0);
+
+     // map read/write mode
+     ASSERT((modeRead|modeWrite|modeReadWrite) == 3);
+     DWORD dwAccess = 0;
+     switch (nOpenFlags & 3)
+     {
+     case modeRead:
+       dwAccess = GENERIC_READ;
+       break;
+     case modeWrite:
+       dwAccess = GENERIC_WRITE;
+       break;
+     case modeReadWrite:
+       dwAccess = GENERIC_READ | GENERIC_WRITE;
+       break;
+     default:
+       ASSERT(FALSE);  // invalid share mode
+     }
+
+     // map share mode
+     DWORD dwShareMode = 0;
+     switch (nOpenFlags & 0x70)    // map compatibility mode to exclusive
+     {
+     default:
+       ASSERT(FALSE);  // invalid share mode?
+     case shareCompat:
+     case shareExclusive:
+       dwShareMode = 0;
+       break;
+     case shareDenyWrite:
+       dwShareMode = FILE_SHARE_READ;
+       break;
+     case shareDenyRead:
+       dwShareMode = FILE_SHARE_WRITE;
+       break;
+     case shareDenyNone:
+       dwShareMode = FILE_SHARE_WRITE | FILE_SHARE_READ;
+       break;
+     }
+
+     // Note: typeText and typeBinary are used in derived classes only.
+
+     // map modeNoInherit flag
+     SECURITY_ATTRIBUTES sa;
+     sa.nLength = sizeof(sa);
+     sa.lpSecurityDescriptor = NULL;
+     sa.bInheritHandle = (nOpenFlags & modeNoInherit) == 0;
+
+     // map creation flags
+     DWORD dwCreateFlag;
+     if (nOpenFlags & modeCreate)
+     {
+       if (nOpenFlags & modeNoTruncate)
+         dwCreateFlag = OPEN_ALWAYS;
+       else
+         dwCreateFlag = CREATE_ALWAYS;
+     }
+     else
+       dwCreateFlag = OPEN_EXISTING;
+
+     // special system-level access flags
+
+     // Random access and sequential scan should be mutually exclusive
+     ASSERT((nOpenFlags&(osRandomAccess|osSequentialScan)) != (osRandomAccess|
+       osSequentialScan) );
+
+     DWORD dwFlags = FILE_ATTRIBUTE_NORMAL;
+     if (nOpenFlags & osNoBuffer)
+       dwFlags |= FILE_FLAG_NO_BUFFERING;
+     if (nOpenFlags & osWriteThrough)
+       dwFlags |= FILE_FLAG_WRITE_THROUGH;
+     if (nOpenFlags & osRandomAccess)
+       dwFlags |= FILE_FLAG_RANDOM_ACCESS;
+     if (nOpenFlags & osSequentialScan)
+       dwFlags |= FILE_FLAG_SEQUENTIAL_SCAN;
+
+     // attempt file creation
+     HANDLE hFile = ::CreateFile(pstrFileName, dwAccess, dwShareMode, &sa,
+       dwCreateFlag, dwFlags, NULL);
+     if (hFile == INVALID_HANDLE_VALUE)
+     {
+       return FALSE;
+     }
+     m_hFile = hFile;
+     m_bCloseOnDelete = TRUE;
+
+     return TRUE;
    }
    
    BOOL Create(LPCTSTR pstrFileName,
@@ -279,40 +401,306 @@ public:
 typedef CFileT<true> CFile;
 typedef CFileT<false> CFileHandle;
 
-
-/////////////////////////////////////////////////////////////////
-// Temporary file (temp filename and auto delete)
-
-class CTemporaryFile : public CFileT<true>
+class CStdioFile: public CFile
 {
 public:
-   TCHAR m_szFileName[MAX_PATH];
+  // Constructors
+  CStdioFile()
+    : m_pStream(NULL)
+  {
 
-   ~CTemporaryFile()
-   { 
-      Close();
-      Delete(m_szFileName);
-   }
+  }
+  CStdioFile(FILE* pOpenStream)
+  {
+    ASSERT(pOpenStream != NULL);
 
-   BOOL Create(LPTSTR pstrFileName, 
-               UINT cchFilename,
-               DWORD dwAccess = GENERIC_WRITE, 
-               DWORD dwShareMode = 0 /*DENY ALL*/, 
-               DWORD dwFlags = CREATE_ALWAYS,
-               DWORD dwAttributes = FILE_ATTRIBUTE_NORMAL)
-   {
-      _ASSERTE(!::IsBadStringPtr(pstrFileName,cchFilename));
-      // If a valid filename buffer is supplied we'll create
-      // and return a new temporary filename, otherwise assume
-      // that 'pstrFileName' just contains a filename to use.
-      if( cchFilename > 0 ) {
-         ::GetTempPath(cchFilename, pstrFileName);
-         ::GetTempFileName(pstrFileName, _T("BV"), 0, pstrFileName);
+    if (pOpenStream == NULL)
+    {
+      return;
+    }
+
+    m_pStream = pOpenStream;
+    m_hFile = (HANDLE) _get_osfhandle(_fileno(pOpenStream));
+    ASSERT(!m_bCloseOnDelete);
+  }
+  CStdioFile(LPCTSTR lpszFileName, UINT nOpenFlags)
+  {
+    ASSERT(lpszFileName != NULL);
+
+    if (lpszFileName == NULL)
+    {
+      return;
+    }
+
+    if (!Open(lpszFileName, nOpenFlags))
+      return;
+  }
+
+  // Attributes
+  FILE* m_pStream;    // stdio FILE
+  // m_hFile from base class is _fileno(m_pStream)
+
+  // Operations
+  // reading and writing strings
+  virtual void WriteString(LPCTSTR lpsz)
+  {
+    ASSERT(lpsz != NULL);
+    ASSERT(m_pStream != NULL);
+
+    if (lpsz == NULL)
+    {
+      return;
+    }
+    CStdStringA foo(lpsz);
+    if (fputs(foo.c_str(), m_pStream) == _TEOF)
+      return;
+  }
+  virtual LPTSTR ReadString(_Out_z_cap_(nMax) LPTSTR lpsz, _In_ UINT nMax)
+  {
+    ASSERT(lpsz != NULL);
+    ASSERT(m_pStream != NULL);
+
+    if (lpsz == NULL)
+    {
+      return NULL;
+    }
+
+    CStdStringA foo;
+    char* lpszResult = fgets(foo.GetBuffer(nMax), nMax, m_pStream);
+    if (lpszResult == NULL && !feof(m_pStream))
+    {
+      ::clearerr_s(m_pStream);
+      return NULL;
+    }
+    memcpy((void*) lpsz, (void*) foo.GetBuffer(), foo.length());
+    return lpsz;
+  }
+  virtual BOOL ReadString(CStdString& rString)
+  {
+    rString = _T("");    // empty string without deallocating
+    const int nMaxSize = 128;
+    CStdStringA aString = CStdStringA(rString);
+    char* lpsz = aString.GetBuffer(nMaxSize);
+    char* lpszResult;
+    int nLen = 0;
+    for (;;)
+    {
+      lpszResult = fgets(lpsz, nMaxSize+1, m_pStream);
+      aString.ReleaseBuffer();
+
+      // handle error/eof case
+      if (lpszResult == NULL && !feof(m_pStream))
+      {
+        ::clearerr_s(m_pStream);
+        return FALSE;
       }
-      ::lstrcpyn(m_szFileName, pstrFileName, MAX_PATH);
-      m_szFileName[MAX_PATH - 1] = '\0';
-      return Open(pstrFileName, dwAccess, dwShareMode, dwFlags, dwAttributes);
-   }
+
+      // if string is read completely or EOF
+      if (lpszResult == NULL ||
+        (nLen = (int)lstrlenA(lpsz)) < nMaxSize ||
+        lpsz[nLen-1] == '\n')
+        break;
+
+      nLen = aString.GetLength();
+      lpsz = aString.GetBuffer(nMaxSize + nLen) + nLen;
+    }
+
+    // remove '\n' from end of string if present
+    lpsz = aString.GetBuffer(0);
+    nLen = aString.GetLength();
+    if (nLen != 0 && lpsz[nLen-1] == '\n')
+      aString.GetBufferSetLength(nLen-1);
+
+    rString = aString;
+    return nLen != 0;
+  }
+
+  // Implementation
+public:
+  virtual ~CStdioFile()
+  {
+    if (m_pStream != NULL && m_bCloseOnDelete)
+      Close();
+  }
+  virtual ULONGLONG GetPosition() const
+  {
+    ASSERT(m_pStream != NULL);
+
+    long pos = ftell(m_pStream);
+    if (pos == -1)
+      return 0;
+    return pos;
+  }
+  virtual ULONGLONG GetLength() const
+  {
+    LONG nCurrent;
+    LONG nLength;
+    LONG nResult;
+
+    nCurrent = ftell(m_pStream);
+    if (nCurrent == -1)
+      return 0;
+
+    nResult = fseek(m_pStream, 0, SEEK_END);
+    if (nResult != 0)
+      return 0;
+
+    nLength = ftell(m_pStream);
+    if (nLength == -1)
+      return 0;
+    nResult = fseek(m_pStream, nCurrent, SEEK_SET);
+    if (nResult != 0)
+      return 0;
+
+    return nLength;
+  }
+  virtual BOOL Open(LPCTSTR lpszFileName, UINT nOpenFlags)
+  {
+    ASSERT(lpszFileName != NULL);
+
+    if (lpszFileName == NULL)
+    {
+      return FALSE;
+    }
+
+    m_pStream = NULL;
+    //if (!CFile::Open(lpszFileName, (nOpenFlags & ~typeText)))
+    //  return FALSE;
+
+    //ASSERT(m_hFile != INVALID_HANDLE_VALUE);
+    //ASSERT(m_bCloseOnDelete);
+    m_bCloseOnDelete = TRUE;
+
+    char szMode[4]; // C-runtime open string
+    int nMode = 0;
+
+    // determine read/write mode depending on CFile mode
+    if (nOpenFlags & modeCreate)
+    {
+      if (nOpenFlags & modeNoTruncate)
+        szMode[nMode++] = 'a';
+      else
+        szMode[nMode++] = 'w';
+    }
+    else if (nOpenFlags & modeWrite)
+      szMode[nMode++] = 'a';
+    else
+      szMode[nMode++] = 'r';
+
+    // add '+' if necessary (when read/write modes mismatched)
+    if (szMode[0] == 'r' && (nOpenFlags & modeReadWrite) ||
+      szMode[0] != 'r' && !(nOpenFlags & modeWrite))
+    {
+      // current szMode mismatched, need to add '+' to fix
+      szMode[nMode++] = '+';
+    }
+
+    // will be inverted if not necessary
+    int nFlags = _O_RDONLY | _O_TEXT;
+    if (nOpenFlags & (modeWrite|modeReadWrite))
+      nFlags ^= _O_RDONLY;
+
+    if (nOpenFlags & typeBinary)
+      szMode[nMode++] = 'b', nFlags ^= _O_TEXT;
+    else
+      szMode[nMode++] = 't';
+    szMode[nMode++] = '\0';
+
+    // open a C-runtime low-level file handle
+    m_pStream = fopen(CStdStringA(lpszFileName).c_str(), szMode);
+
+    if (m_pStream == NULL)
+    {
+      CFile::Abort(); // close m_hFile
+      return FALSE;
+    }
+
+    return TRUE;
+  }
+  virtual UINT Read(void* lpBuf, UINT nCount)
+  {
+    ASSERT(m_pStream != NULL);
+
+    if (nCount == 0)
+      return 0;   // avoid Win32 "null-read"
+
+    if (lpBuf == NULL)
+    {
+      return 0;
+    }
+
+    UINT nRead = (UINT)fread(lpBuf, sizeof(BYTE), nCount, m_pStream);
+    int error = ferror(m_pStream);
+
+    if (nRead == 0 && !feof(m_pStream))
+      return 0;
+    if (ferror(m_pStream))
+    {
+      ::clearerr_s(m_pStream);
+      return 0;
+    }
+    return nRead;
+  }
+  virtual void Write(const void* lpBuf, UINT nCount)
+  {
+    ASSERT(m_pStream != NULL);
+
+    if (lpBuf == NULL)
+    {
+      return;
+    }
+
+    if (fwrite(lpBuf, sizeof(BYTE), nCount, m_pStream) != nCount)
+      return;
+  }
+  virtual ULONGLONG Seek(LONGLONG lOff, UINT nFrom)
+  {
+    ASSERT(nFrom == FILE_BEGIN || nFrom == FILE_END || nFrom == FILE_CURRENT);
+    ASSERT(m_pStream != NULL);
+
+    LONG lOff32;
+
+    if ((lOff < LONG_MIN) || (lOff > LONG_MAX))
+    {
+      return 0;
+    }
+
+    lOff32 = (LONG)lOff;
+    if (fseek(m_pStream, lOff32, nFrom) != 0)
+      return 0;
+
+    long pos = ftell(m_pStream);
+    return pos;
+  }
+  virtual void Abort()
+  {
+    if (m_pStream != NULL && m_bCloseOnDelete)
+      fclose(m_pStream);  // close but ignore errors
+    m_hFile = INVALID_HANDLE_VALUE;
+    m_pStream = NULL;
+    m_bCloseOnDelete = FALSE;
+  }
+  virtual void Flush()
+  {
+    if (m_pStream != NULL && fflush(m_pStream) != 0)
+      return;
+  }
+  virtual void Close()
+  {
+    ASSERT(m_pStream != NULL);
+
+    int nErr = 0;
+
+    if (m_pStream != NULL)
+      nErr = fclose(m_pStream);
+
+    m_hFile = INVALID_HANDLE_VALUE;
+    m_bCloseOnDelete = FALSE;
+    m_pStream = NULL;
+
+    if (nErr != 0)
+      return;
+  }
 };
 
 

@@ -946,7 +946,7 @@ static CStdStringW SMI2SSA(CStdStringW str, int CharSet)
 
 	// maven@maven.de
 	// now parse line
-	for(int i = 0, j = str.GetLength(); i < j; )
+	for(ptrdiff_t i = 0, j = str.GetLength(); i < j; )
 	{
 		int k;
 		if((k = lstr.Find('<', i)) < 0) break;
@@ -983,8 +983,8 @@ static CStdStringW SMI2SSA(CStdStringW str, int CharSet)
 						continue;
 
           std::map<CStdString, DWORD>::const_iterator it = g_colors.find(CStdString(arg));
-					if(it != g_colors.end())
-						color = (DWORD)it->second;
+          if(it != g_colors.end())
+            color = (DWORD)it->second;
 					else if((color = wcstol(arg, NULL, 16) ) == 0)
 						color = 0x00ffffff;  // default is white
 
@@ -1005,8 +1005,8 @@ static CStdStringW SMI2SSA(CStdStringW str, int CharSet)
 					if ( fsize = _tcstol(arg, &tmp, 10) == 0 )
 						continue;
 					
-					lstr.Insert(k + l + chars_inserted, CStdString(_T("{\\fs")) + arg + _T("&}"));
-					str.Insert(k + l + chars_inserted, CStdString(_T("{\\fs")) + arg + _T("&}"));
+					lstr.Insert(k + l + chars_inserted, CString(_T("{\\fs")) + arg + _T("&}"));
+					str.Insert(k + l + chars_inserted, CString(_T("{\\fs")) + arg + _T("&}"));
 					chars_inserted += 4 + arg.GetLength() + 2;
 				}
 */
@@ -1017,7 +1017,7 @@ static CStdStringW SMI2SSA(CStdStringW str, int CharSet)
 /*
 		if (lstr.Find(L"<font color=", k) == k)
 		{
-			CStdStringW arg = lstr.Mid(k+12, l-12); // may include 2 * " + #
+			CStringW arg = lstr.Mid(k+12, l-12); // may include 2 * " + #
 
 			arg.Remove('\"');
 			arg.Remove('#');
@@ -1027,7 +1027,7 @@ static CStdStringW SMI2SSA(CStdStringW str, int CharSet)
 			{
 				DWORD color;
 				
-				CStdString key = WToT(arg);
+				CString key = WToT(arg);
 				void* val;
 				if(g_colors.Lookup(key, val)) color = (DWORD)val;
 				else color = wcstol(arg, NULL, 16);
@@ -2573,7 +2573,9 @@ bool CSimpleTextSubtitle::Open(CStdString fn, int CharSet, CStdString name)
 		name = name.Mid(name.ReverseFind('.')+1);
 	}
 
-	return(Open(&f, CharSet, name));
+  bool ret = Open(&f, CharSet, name);
+  f.Close();
+	return(ret);
 }
 
 static int CountLines(CTextFile* f, ULONGLONG from, ULONGLONG to)
