@@ -88,7 +88,7 @@ case $host in
        ARCH="powerpc64-linux"
        AC_SUBST(ARCH_DEFINES, "-D_POWERPC64")
        ;;
-    arm-*-linux-gnu*)
+    arm*-*-linux-gnu*)
        ARCH="arm"
        AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
        ;;
@@ -307,7 +307,7 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -L/opt/local/lib"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/mysql5/mysql"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
-elif test "$host_cpu" = "arm" ; then
+elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
 # Compile for ARMv7a architecture, CortexA8 cpu and NEON coprocessor
   CFLAGS="$CFLAGS -Wa,-march=armv7a -mcpu=cortex-a8  -mtune=cortex-a8 -mfpu=neon -mno-apcs-stack-check -mvectorize-with-neon-quad -mfloat-abi=softfp"
   CXXFLAGS="$CXXFLAGS -Wa,-march=armv7a -mcpu=cortex-a8  -mtune=cortex-a8 -mfpu=neon -mno-apcs-stack-check -mvectorize-with-neon-quad -mfloat-abi=softfp"
@@ -1214,10 +1214,10 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
 
   else
   
-if test "$host_cpu" = "arm" ; then FFMPEG_EXTRACFLAGS="-mfpu=neon -mfloat-abi=softfp" ; fi
+if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then FFMPEG_EXTRACFLAGS="-mfpu=neon -mfloat-abi=softfp" ; fi
   
     ./configure \
-      `if test "$host_cpu" = "arm" ; then echo --arch=arm --cpu=cortex-a8; fi` \
+      `expr "X$host_cpu" : 'Xarm.*' > /dev/null && echo --arch=arm --cpu=cortex-a8` \
       --extra-cflags="$FFMPEG_EXTRACFLAGS" \
       --disable-static \
       --disable-ipv6 \
@@ -1237,7 +1237,7 @@ if test "$host_cpu" = "arm" ; then FFMPEG_EXTRACFLAGS="-mfpu=neon -mfloat-abi=so
       --enable-libfaad \
       --enable-protocol=http \
       --enable-pthreads \
-      `if test "$host_cpu" = "powerpc" || test "$host_cpu" = "powerpc64" || test "$host_cpu" = "arm"; then echo --enable-pic; fi` \
+      `case $host_cpu in powerpc*|arm*) echo --enable-pic ;; esac` \
       --cc="$CC"
   fi
 ], [$USE_EXTERNAL_FFMPEG])
@@ -1439,7 +1439,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
 ], [$BUILD_GOOM])
 
 XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
-if test "$host_cpu" != "arm" ; then
+if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
   if test "$host_vendor" = "apple" ; then
     ./configure \
       CFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
