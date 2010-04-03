@@ -252,6 +252,11 @@ AC_ARG_ENABLE([external-python],
             [use_external_python=$enableval],
             [use_external_python=no])
 
+AC_ARG_ENABLE([tegra],
+	[AS_HELP_STRING([--enable-tegra],[davilla is lazy, set his cflags for him])],
+	[use_tegra=$enableval],
+	[use_tegra=no])
+
 ### End of external library options
 
 # PCRE is a requirement
@@ -309,8 +314,15 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
 elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
 # Compile for ARMv7a architecture, CortexA8 cpu and NEON coprocessor
-  CFLAGS="$CFLAGS -Wa,-march=armv7a -mcpu=cortex-a8  -mtune=cortex-a8 -mfpu=neon -mno-apcs-stack-check -mvectorize-with-neon-quad -mfloat-abi=softfp"
-  CXXFLAGS="$CXXFLAGS -Wa,-march=armv7a -mcpu=cortex-a8  -mtune=cortex-a8 -mfpu=neon -mno-apcs-stack-check -mvectorize-with-neon-quad -mfloat-abi=softfp"
+  CFLAGS="$CFLAGS -mcpu=cortex-a8 -mtune=cortex-a8 -mfloat-abi=softfp -mno-apcs-stack-check"
+  CXXFLAGS="$CXXFLAGS -mcpu=cortex-a8  -mtune=cortex-a8 -mfloat-abi=softfp -mno-apcs-stack-check"
+  if test "x$use_tegra" = "xyes"; then
+    CFLAGS+=" -march=armv6 -mthumb-interwork"
+    CXXFLAGS+=" -march=armv6 -mthumb-interwork"
+  else
+    CFLAGS+=" -Wa,-march=armv7a -mfpu=neon -mvectorize-with-neon-quad"
+    CXXFLAGS+=" -Wa,-march=armv7a -mfpu=neon -mvectorize-with-neon-quad"
+  fi
 fi
 
 # Add top source directory for all builds so we can use config.h
