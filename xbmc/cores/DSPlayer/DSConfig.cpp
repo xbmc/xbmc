@@ -62,8 +62,6 @@ void CDSConfig::ClearConfig()
 HRESULT CDSConfig::ConfigureFilters()
 {
   HRESULT hr = S_OK;
-  
-  ClearConfig();
 
   BeginEnumFilters(CDSGraph::m_pFilterGraph, pEF, pBF)
   {
@@ -147,6 +145,11 @@ void CDSConfig::ShowPropertyPage(IBaseFilter *pBF)
   m_pCurrentProperty->Initialize();
 }
 
+
+CStdString CDSConfig::GetDXVAMode()
+{
+  return m_pStrDXVA;
+}
 void CDSConfig::SetDXVAGuid( const GUID& dxvaguid )
 {
   // IPinHook is calling the SetDxvaGuid once
@@ -154,7 +157,7 @@ void CDSConfig::SetDXVAGuid( const GUID& dxvaguid )
   if (dxvaguid == GUID_NULL)
     m_pStrDXVA = "";
   else
-    m_pStrDXVA = DShowUtil::GetDXVAMode(&dxvaguid);
+    m_pStrDXVA.Format("%s",DShowUtil::GetDXVAMode(&dxvaguid));
 }
 
 bool CDSConfig::GetffdshowFilters(IBaseFilter* pBF)

@@ -57,7 +57,7 @@ public:
    * Retrieve a string containing the current DXVA mode
    * @return A CStdString containing the current DXVA mode
    */
-  virtual CStdString GetDXVAMode() { return m_pStrDXVA; };
+  virtual CStdString GetDXVAMode();
   void SetDXVAGuid(const GUID& dxvaguid);
 
   /**
