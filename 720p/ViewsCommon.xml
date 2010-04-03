@@ -1103,15 +1103,15 @@
 
           <control type="textbox">
             <description>Plot/Details</description>
-            <posy>90</posy>
+            <posy>85</posy>
             <width>PanelStreamDetailTextWidth</width>
-            <height>261</height>
+            <height>300</height>
             <info>ListItem.Plot</info>
           </control>
 
 			<control type="group">
 				<description>Media Flags</description>
-				<posy>365</posy>
+				<posy>405</posy>
 				<include>PanelStreamFlags</include>
 			</control>
 
