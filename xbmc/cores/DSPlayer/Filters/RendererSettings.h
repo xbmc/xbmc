@@ -22,7 +22,7 @@
 #pragma once
 #ifndef RENDERERSETTINGS_H
 #define RENDERERSETTINGS_H
-#include "DShowUtil/DSGeometry.h"
+#include "cores/DSPlayer/DShowUtil/DSGeometry.h"
 
 #include <vector>
 typedef struct SubtitleStyle_sss
@@ -61,6 +61,7 @@ typedef struct
   dispmode dmFullscreenRes23d976Hz;
   dispmode dmFullscreenRes29d97Hz;
 }  AChFR;
+class TiXmlElement;
 
 class CDsSettings
 {
@@ -88,58 +89,22 @@ public:
       bool iVMR9FullscreenGUISupport;
       bool iVMR9VSync;
       bool iVMRDisableDesktopComposition;
-      int iVMRFlushGPUBeforeVSync;
-      int iVMRFlushGPUAfterPresent;
-      int iVMRFlushGPUWait;
+      bool iVMRFlushGPUBeforeVSync;
+      bool iVMRFlushGPUAfterPresent;
+      bool iVMRFlushGPUWait;
 
-      // SyncRenderer CDsSettings
-      int bSynchronizeVideo;
-      int bSynchronizeDisplay;
-      int bSynchronizeNearest;
+      // SyncRenderer settings Still dont know if this renderer will be added
+      bool bSynchronizeVideo;
+      bool bSynchronizeDisplay;
+      bool bSynchronizeNearest;
       int iLineDelta;
       int iColumnDelta;
       double fCycleDelta;
       double fTargetSyncOffset;
       double fControlLimit;
 
-      void SetDefault()
-      {
-        fVMR9AlterativeVSync = 0;
-        iVMR9VSyncOffset = 0;
-        iVMR9VSyncAccurate = 1;
-        iVMR9FullscreenGUISupport = 0;
-        iVMR9VSync = 1;
-        iVMRDisableDesktopComposition = 0;
-        iVMRFlushGPUBeforeVSync = 1;
-        iVMRFlushGPUAfterPresent = 1;
-        iVMRFlushGPUWait = 0;
-        bSynchronizeVideo = 0;
-        bSynchronizeDisplay = 0;
-        bSynchronizeNearest = 1;
-        iLineDelta = 0;
-        iColumnDelta = 0;
-        fCycleDelta = 0.0012;
-        fTargetSyncOffset = 12.0;
-        fControlLimit = 2.0;
-      }
-      void SetOptimal()
-      {
-        fVMR9AlterativeVSync = 1;
-        iVMR9VSyncAccurate = 1;
-        iVMR9VSync = 1;
-        iVMRDisableDesktopComposition = 1;
-        iVMRFlushGPUBeforeVSync = 1;
-        iVMRFlushGPUAfterPresent = 1;
-        iVMRFlushGPUWait = 0;
-        bSynchronizeVideo = 0;
-        bSynchronizeDisplay = 0;
-        bSynchronizeNearest = 1;
-        iLineDelta = 0;
-        iColumnDelta = 0;
-        fCycleDelta = 0.0012;
-        fTargetSyncOffset = 12.0;
-        fControlLimit = 2.0;
-      }
+      void SetDefault();
+      void SetOptimal();
     };
     class CRendererSettingsEVR : public CRendererSettingsShared
     {
@@ -289,6 +254,9 @@ public:
     CDsSettings(void);
     virtual ~CDsSettings(void);
     void LoadConfig();
+    void GetBoolean(const TiXmlElement* pRootElement, const char *tagName, bool& iValue, const bool iDefault);
+    void GetInteger(const TiXmlElement* pRootElement, const char *tagName, int& fValue, const int fDefault, const int fMin, const int fMax);
+    void GetDouble(const TiXmlElement* pRootElement, const char *tagName, double& fValue, const double fDefault, const double fMin, const double fMax);
     //void UpdateData(bool fSave);
     HINSTANCE          GetD3X9Dll();
     int              GetDXSdkRelease() { return m_nDXSdkRelease; };

@@ -2147,9 +2147,10 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
         }
       }
     }
-
+    //ill leave the code under this just in case we want to move the subs here
+    return S_OK;
     // paint the text on the backbuffer
-
+    
     AlphaBltSubPic(rSrcPri.Size());
   }
 

@@ -2151,14 +2151,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderer.cpp"
 					>
 				</File>
@@ -2371,44 +2363,8 @@
 					>
 				</File>
 				<Filter
-					Name="Helpers"
-					>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\RegKey.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\regkey.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\smartlist.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\win32\WINDirectShowEnumerator.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\win32\WINDirectShowEnumerator.h"
-						>
-					</File>
-				</Filter>
-				<Filter
 					Name="Filters"
 					>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DllLibmpcSubs.h"
-						>
-					</File>
 					<Filter
 						Name="Source"
 						>
@@ -2480,11 +2436,23 @@
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.h"
 							>
 						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.h"
+							>
+						</File>
 					</Filter>
 				</Filter>
 				<Filter
 					Name="Interfaces"
 					>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DllLibmpcSubs.h"
+						>
+					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IMpaDecFilter.h"
 						>
@@ -2611,6 +2579,34 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypes.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\RegKey.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\regkey.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\smartlist.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\win32\WINDirectShowEnumerator.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\win32\WINDirectShowEnumerator.h"
 						>
 					</File>
 				</Filter>
