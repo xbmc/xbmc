@@ -2433,6 +2433,14 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\PixelShaderCompiler.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\PixelShaderCompiler.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\RendererSettings.cpp"
 							>
 						</File>

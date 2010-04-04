@@ -475,31 +475,6 @@ protected:
   }
 };
 
-typedef ComPtrList<IMFSample> VideoSampleList;
-
-class SamplePool
-{
-public:
-    SamplePool();
-    virtual ~SamplePool();
-
-    HRESULT Initialize(VideoSampleList& samples);
-    HRESULT Clear();
-   
-    HRESULT GetSample(IMFSample **ppSample);    // Does not block.
-    HRESULT ReturnSample(IMFSample *pSample);   
-    BOOL    AreSamplesPending();
-
-private:
-    CCriticalSection                     m_lock;
-
-    VideoSampleList             m_VideoSampleQueue;      // Available queue
-
-    BOOL                        m_bInitialized;
-    DWORD                       m_cPending;
-};
-
-
 //-----------------------------------------------------------------------------
 // ThreadSafeQueue template
 // Thread-safe queue of COM interface pointers.

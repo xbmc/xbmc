@@ -29,6 +29,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "D3DResource.h"
 #include "IPaintCallback.h"
+#include "DShowUtil/smartlist.h"
 // Support ffdshow queueing.
 // This interface is used to check version of Media Player Classic.
 // {A273C7F6-25D4-46b0-B2C8-4F7FADC44E37}
@@ -122,7 +123,23 @@ public:
     Com::SmartPtr<ID3DXLine>      m_pLine;
     Com::SmartPtr<ID3DXFont>      m_pFont;
     Com::SmartPtr<ID3DXSprite>    m_pSprite;
-    
+    class CExternalPixelShader
+    {
+    public:
+      Com::SmartPtr<IDirect3DPixelShader9> m_pPixelShader;
+      CStdStringA m_SourceData;
+      CStdStringA m_SourceTarget;
+      HRESULT Compile(CPixelShaderCompiler *pCompiler)
+      {
+        HRESULT hr = pCompiler->CompileShader(m_SourceData, "main", m_SourceTarget, 0, &m_pPixelShader);
+        if(FAILED(hr)) 
+          return hr;
+
+        return S_OK;
+      }
+    };
+    std::vector<CExternalPixelShader>  m_pPixelShaders;//CAtlList
+    std::vector<CExternalPixelShader>  m_pPixelShadersScreenSpace;//CAtlList
     Com::SmartPtr<IDirect3DPixelShader9>    m_pResizerPixelShader[4]; // bl, bc1, bc2_1, bc2_2
     Com::SmartPtr<IDirect3DTexture9>    m_pScreenSizeTemporaryTexture[2];
     D3DFORMAT            m_SurfaceType;
@@ -130,7 +147,8 @@ public:
     D3DFORMAT            m_DisplayType;
     D3DTEXTUREFILTERTYPE      m_filter;
     D3DCAPS9        m_caps;
-
+    
+    std::auto_ptr<CPixelShaderCompiler>		m_pPSC;
     
 
     bool SettingsNeedResetDevice();
@@ -151,7 +169,7 @@ public:
     UINT GetAdapter(IDirect3D9 *pD3D, bool GetAdapter = false);
 
     float m_bicubicA;
-    
+    HRESULT InitResizers(float bicubicA, bool bNeedScreenSizeTexture);
 
     bool GetVBlank(int &_ScanLine, int &_bInVBlank, bool _bMeasureTime);
     bool WaitForVBlankRange(int &_RasterStart, int _RasterEnd, bool _bWaitIfInside, bool _bNeedAccurate, bool _bMeasure, bool &_bTakenLock);

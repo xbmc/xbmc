@@ -46,6 +46,29 @@
   typedef BOOL  (__stdcall *PTR_AvRevertMmThreadCharacteristics)(HANDLE AvrtHandle);
 
   class COuterEVR;
+  typedef Com::ComPtrList<IMFSample> VideoSampleList;
+
+  class SamplePool
+  {
+  public:
+      SamplePool();
+      virtual ~SamplePool();
+
+      HRESULT Initialize(VideoSampleList& samples);
+      HRESULT Clear();
+     
+      HRESULT GetSample(IMFSample **ppSample);    // Does not block.
+      HRESULT ReturnSample(IMFSample *pSample);   
+      BOOL    AreSamplesPending();
+
+  private:
+      CCriticalSection                     m_lock;
+
+      VideoSampleList             m_VideoSampleQueue;      // Available queue
+
+      BOOL                        m_bInitialized;
+      DWORD                       m_cPending;
+  };
 
   class CEVRAllocatorPresenter : 
     public CDX9AllocatorPresenter,
@@ -205,8 +228,8 @@
     CCritSec                m_SampleQueueLock;
     CCritSec                m_ImageProcessingLock;
 
-    Com::VideoSampleList    m_FreeSamples;
-    Com::VideoSampleList    m_ScheduledSamples;
+    VideoSampleList    m_FreeSamples;
+    VideoSampleList    m_ScheduledSamples;
     IMFSample *              m_pCurrentDisplaydSample;
     bool                    m_bWaitingSample;
     bool                    m_bLastSampleOffsetValid;

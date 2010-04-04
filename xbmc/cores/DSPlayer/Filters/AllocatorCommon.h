@@ -29,8 +29,7 @@
 #include <Vmr9.h>
 #include "Subtitles/subpic/ISubPic.h"
 #include "Subtitles/subpic/DX9SubPic.h"
-
-//#include "PixelShaderCompiler.h"
+#include "PixelShaderCompiler.h"
 
 // {4E4834FA-22C2-40e2-9446-F77DD05D245E}
 DEFINE_GUID(CLSID_VMR9AllocatorPresenter,
