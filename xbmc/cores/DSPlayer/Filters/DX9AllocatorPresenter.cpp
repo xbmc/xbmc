@@ -28,6 +28,7 @@
 #include "Subtitles/SubPic/DX9SubPic.h"
 #include "IPinHook.h"
 #include "DShowUtil/DShowUtil.h"
+#include "StreamsManager.h"
 #include "Utils/TimeUtils.h"
 #include "Log.h"
 #include "WindowingFactory.h"
@@ -813,6 +814,13 @@ bool CDX9AllocatorPresenter::SettingsNeedResetDevice()
 
   return bRet;*/
   return false;
+}
+
+void CDX9AllocatorPresenter::SetTime(REFERENCE_TIME rtNow)
+{
+  __super::SetTime(rtNow);
+  if (CStreamsManager::getSingleton()->SubtitleManager)
+    CStreamsManager::getSingleton()->SubtitleManager->SetTime(rtNow);
 }
 
 HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)

@@ -292,8 +292,6 @@ public:
   void Initialize();
   void Unload();
 
-  void Render();
-
   /** @remark renderRect represent the rendering surface size */
   HRESULT GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest, Com::SmartRect& renderRect);
 
@@ -332,11 +330,11 @@ public:
   */
   int AddSubtitle(const CStdString& subFilePath);
 
+  void SetTime(REFERENCE_TIME rtNow);
+
   SSubtitleStreamInfos* GetSubtitleStreamInfos(unsigned int iIndex = 0);
   SExternalSubtitleInfos* GetExternalSubtitleStreamInfos(unsigned int iIndex = 0);
 
-  void SetSegmentStart(REFERENCE_TIME iSegmentStart);
-  void SetSampleStart(REFERENCE_TIME iSampleStart);
   void SetTimePerFrame(REFERENCE_TIME iTimePerFrame);
 private:
   void DisconnectCurrentSubtitlePins(void);

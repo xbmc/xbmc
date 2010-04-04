@@ -2598,7 +2598,6 @@
 						>
 						<FileConfiguration
 							Name="Debug (DirectX)|Win32"
-							ExcludedFromBuild="true"
 							>
 							<Tool
 								Name="VCCustomBuildTool"
@@ -2610,7 +2609,6 @@
 						>
 						<FileConfiguration
 							Name="Debug (DirectX)|Win32"
-							ExcludedFromBuild="true"
 							>
 							<Tool
 								Name="VCCustomBuildTool"

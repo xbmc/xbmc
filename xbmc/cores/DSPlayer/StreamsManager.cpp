@@ -759,28 +759,15 @@ void CSubtitleManager::Unload()
   m_pManager.reset();
 }
 
-void CSubtitleManager::SetSegmentStart( REFERENCE_TIME iSegmentStart )
-{
-  if (m_pManager)
-    m_pManager->SetSegmentStart(iSegmentStart);
-}
-
-void CSubtitleManager::SetSampleStart( REFERENCE_TIME iSampleStart )
-{
-  if (m_pManager)
-    m_pManager->SetSampleStart(iSampleStart);
-}
-
 void CSubtitleManager::SetTimePerFrame( REFERENCE_TIME iTimePerFrame )
 {
   if (m_pManager)
     m_pManager->SetTimePerFrame(iTimePerFrame);
 }
-
-void CSubtitleManager::Render()
+void CSubtitleManager::SetTime(REFERENCE_TIME rtNow)
 {
   if (m_pManager)
-    m_pManager->Render(0, 0, 1440, 900);
+    m_pManager->SetTime(rtNow);
 }
 
 HRESULT CSubtitleManager::GetTexture( Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest, Com::SmartRect& renderRect )

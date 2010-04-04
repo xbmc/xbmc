@@ -17,11 +17,8 @@ BOOL g_disableAnim(TRUE);
 
 CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr)
 	: m_d3DDev(d3DDev), m_iSubtitleSel(-1), m_rtNow(-1), m_delay(0),
-	m_lastSize(size), m_textureSize(1024, 768)
+	m_lastSize(size), m_textureSize(1024, 768), m_rtTimePerFrame(0) //Set on XBMC Side
 {
-  g__rtTimePerFrame = 0; // Variable set on IPinHook on XBMC side
-  g__tSampleStart = 0;
-  g__tSegmentStart = 0;
 
 	//ATLTRACE("CSubManager constructor: texture size %dx%d, buffer ahead: %d, pow2tex: %d", g_textureSize.cx, g_textureSize.cy, g_subPicsBufferAhead, g_pow2tex);
 	m_pAllocator = (new CDX9SubPicAllocator(d3DDev, m_textureSize, g_pow2tex));
@@ -111,15 +108,18 @@ void CSubManager::SetEnable(bool enable)
 	}
 }
 
+void CSubManager::SetTime(REFERENCE_TIME rtNow)
+{
+  m_rtNow = rtNow;
+  m_pSubPicQueue->SetTime(m_rtNow);
+}
+
 HRESULT CSubManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest, Com::SmartRect& renderRect)
 {
   if (m_iSubtitleSel < 0)
     return E_INVALIDARG;
 
-  m_rtNow = g__tSegmentStart + g__tSampleStart - m_delay;
-  m_pSubPicQueue->SetTime(m_rtNow);
-
-  m_fps = 10000000.0 / g__rtTimePerFrame;
+  m_fps = 10000000.0 / m_rtTimePerFrame;
   m_pSubPicQueue->SetFPS(m_fps);
 
   Com::SmartSize renderSize(renderRect.right, renderRect.bottom);
@@ -128,7 +128,7 @@ HRESULT CSubManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com:
     m_pAllocator->ChangeDevice(m_d3DDev);
     m_pAllocator->SetCurSize(renderSize);
     m_pAllocator->SetCurVidRect(renderRect);
-    m_pSubPicQueue->Invalidate(m_rtNow+1000000);
+    m_pSubPicQueue->Invalidate(m_rtNow + 1000000);
     m_lastSize = renderSize;
   }
 
@@ -142,50 +142,6 @@ HRESULT CSubManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com:
   }
 
   return E_FAIL;
-}
-
-void CSubManager::Render(int x, int y, int width, int height)
-{
-	if (m_iSubtitleSel < 0)
-		return;
-
-  m_rtNow = g__tSegmentStart + g__tSampleStart - m_delay;
-  m_pSubPicQueue->SetTime(m_rtNow);
-
-	m_fps = 10000000.0 / g__rtTimePerFrame;
-	m_pSubPicQueue->SetFPS(m_fps);
-
-	Com::SmartSize size(width, height);
-	if (m_lastSize != size && width > 0 && height > 0)
-	{ //adjust texture size
-		//ATLTRACE("Size change from %dx%d to %dx%d", m_lastSize.cx, m_lastSize.cy, size.cx, size.cy);
-		m_pAllocator->ChangeDevice(m_d3DDev);
-		//m_pAllocator->SetMaxTextureSize(g_textureSize);
-		m_pAllocator->SetCurVidRect(Com::SmartRect(Com::SmartPoint(0,0), size));
-		m_pSubPicQueue->Invalidate(m_rtNow+1000000);
-		m_lastSize = size;
-	}
-
-	Com::SmartPtr<ISubPic> pSubPic;
-	if(m_pSubPicQueue->LookupSubPic(m_rtNow, pSubPic)) 
-	{
- 		Com::SmartRect rcSource, rcDest;
-		if (SUCCEEDED (pSubPic->GetSourceAndDest(&size, rcSource, rcDest))) {
-			rcDest.OffsetRect(x, y);
-			DWORD fvf, alphaTest, colorOp;
-			m_d3DDev->GetFVF(&fvf);
-			m_d3DDev->GetRenderState(D3DRS_ALPHATESTENABLE, &alphaTest); 
-			m_d3DDev->GetTextureStageState(0, D3DTSS_COLOROP, &colorOp); //change to it causes "white" osd artifact  
-
-			m_d3DDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
-
-			pSubPic->AlphaBlt(rcSource, rcDest, NULL/*pTarget*/);
-
-			m_d3DDev->SetFVF(fvf);
-			m_d3DDev->SetRenderState(D3DRS_ALPHATESTENABLE, alphaTest); 
-			m_d3DDev->SetTextureStageState(0, D3DTSS_COLOROP, colorOp);
-		}
-	}
 }
 
 static bool IsTextPin(IPin* pPin)
@@ -337,17 +293,7 @@ void CSubManager::SetDelay(int delay_ms)
 
 void CSubManager::SetTimePerFrame( REFERENCE_TIME timePerFrame )
 {
-  g__rtTimePerFrame = timePerFrame;
-}
-
-void CSubManager::SetSegmentStart( REFERENCE_TIME segmentStart )
-{
-  g__tSegmentStart = segmentStart;
-}
-
-void CSubManager::SetSampleStart( REFERENCE_TIME sampleStart )
-{
-  g__tSampleStart = sampleStart;
+  m_rtTimePerFrame = timePerFrame;
 }
 
 void CSubManager::Free()

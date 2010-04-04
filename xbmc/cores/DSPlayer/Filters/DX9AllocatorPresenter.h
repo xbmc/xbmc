@@ -135,6 +135,7 @@ public:
 
     bool SettingsNeedResetDevice();
 
+    STDMETHODIMP_(void) SetTime(REFERENCE_TIME rtNow);
     virtual HRESULT CreateDevice(CStdString &_Error);
     virtual HRESULT AllocSurfaces(D3DFORMAT Format = D3DFMT_A8R8G8B8);
     virtual void DeleteSurfaces();

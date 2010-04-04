@@ -141,9 +141,6 @@ static HRESULT (STDMETHODCALLTYPE * NewSegmentOrg)(IPinC * This, /* [in] */ REFE
 static HRESULT STDMETHODCALLTYPE NewSegmentMine(IPinC * This, /* [in] */ REFERENCE_TIME tStart, /* [in] */ REFERENCE_TIME tStop, /* [in] */ double dRate)
 {
   g_tSegmentStart = tStart;
-  if (CStreamsManager::getSingleton()->SubtitleManager)
-    CStreamsManager::getSingleton()->SubtitleManager->SetSegmentStart(g_tSegmentStart);
-
   return NewSegmentOrg(This, tStart, tStop, dRate);
 }
 
@@ -156,10 +153,7 @@ static HRESULT STDMETHODCALLTYPE ReceiveMineI(IMemInputPinC * This, IMediaSample
   {
     g_tSampleStart = rtStart;
     if (CStreamsManager::getSingleton()->SubtitleManager)
-    {
-      CStreamsManager::getSingleton()->SubtitleManager->SetSampleStart(g_tSampleStart);
       CStreamsManager::getSingleton()->SubtitleManager->SetTimePerFrame(rtStop - rtStart);
-    }
   }
   return ReceiveOrg(This, pSample);
 }

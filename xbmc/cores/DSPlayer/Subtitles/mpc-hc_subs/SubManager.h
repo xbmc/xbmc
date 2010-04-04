@@ -16,20 +16,15 @@ public:
 	CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr);
 	~CSubManager(void);
 
-	//void LoadSubtitlesForFile(const wchar_t* fn, IGraphBuilder* pGB, const wchar_t* paths);
-
 	void SetEnable(bool enable);
-	void Render(int x, int y, int width, int height);
 	int GetDelay(); 
 	void SetDelay(int delay);
 	bool IsModified() { return m_subresync.IsModified(); };
 
   void SetTimePerFrame(REFERENCE_TIME timePerFrame);
-  void SetSegmentStart(REFERENCE_TIME segmentStart);
-  void SetSampleStart(REFERENCE_TIME sampleStart);
+  void SetTime(REFERENCE_TIME rtNow);
 
   void SetSubPicProvider(ISubStream* pSubStream);
-
   void SetTextureSize(Com::SmartSize& pSize);
 
   //load internal subtitles through TextPassThruFilter
@@ -68,7 +63,7 @@ private:
   Com::SmartPtr<IDirect3DDevice9> m_d3DDev;
   Com::SmartPtr<ISubStream> m_pInternalSubStream;
 
-  REFERENCE_TIME g__tSampleStart, g__tSegmentStart, g__rtTimePerFrame;
+  REFERENCE_TIME m_rtTimePerFrame;
 
 	CSubresync m_subresync;
 };
