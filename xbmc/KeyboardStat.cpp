@@ -815,7 +815,7 @@ void CKeyboardStat::Update(XBMC_Event& event)
         else
           LookupKeyMapping(&m_VKey, NULL, NULL
                          , event.key.keysym.scancode
-                         , g_mapping_evdev
+                         , g_mapping_ubuntu
                          , sizeof(g_mapping_ubuntu)/sizeof(g_mapping_ubuntu[0]));
       }
 

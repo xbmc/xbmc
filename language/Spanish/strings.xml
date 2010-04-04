@@ -721,6 +721,7 @@
 	<string id="1048">- Nombre usuario</string>
 	<string id="1049">Configuración de script</string>
 	<string id="1050">Individual</string>
+  <string id="1051">Introduzca la dirección web</string>
 	<string id="1200">Cliente SMB</string>
 	<string id="1202">Grupo de trabajo</string>
 	<string id="1203">Usuario por defecto</string>
