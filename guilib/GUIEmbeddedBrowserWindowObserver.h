@@ -31,14 +31,12 @@
 
 #include "StdString.h"
 
-#include "llqtwebkit.h"
+#include "../lib/llqtwebkit/llqtwebkit.h"
 
 class CGUIEmbeddedBrowserWindowObserver : public LLEmbeddedBrowserWindowObserver
 {
 public:
   CGUIEmbeddedBrowserWindowObserver();
-  CGUIEmbeddedBrowserWindowObserver(float xPos, float yPos, float width,
-    float height);
   void init();
   void reset(void);
   void reshape(float widthIn, float heightIn);
@@ -62,12 +60,19 @@ public:
   void SetYPosition(float yPos);
   void SetWidth(float width);
   void SetHeight(float height);
+  void SetParams(float xPos, float yPos, float width, float height);
   float getXPos();
   float getYPos();
   float getAppWindowWidth();
   float getAppWindowHeight();
   CStdString getAppWindowName();
   void* getNativeWindowHandle();
+  void Back();
+  void Forward();
+  void Reload();
+  void Stop();
+  void Home();
+  void Go(const CStdString &url);
 private:
   float m_xPos;
   float m_yPos;
@@ -83,5 +88,8 @@ private:
   CStdString m_homeUrl;
   bool m_needsUpdate;
 };
+
+/* TODO: See if there's a better way for this than using a global */
+extern CGUIEmbeddedBrowserWindowObserver g_webBrowserObserver;
 
 #endif

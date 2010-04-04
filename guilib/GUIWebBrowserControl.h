@@ -31,23 +31,17 @@
 
 #include "GUIControl.h"
 #include "GUIEmbeddedBrowserWindowObserver.h"
+#include "StdString.h"
 
 class CGUIWebBrowserControl : public CGUIControl
 {
 public:
   CGUIWebBrowserControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
-  virtual ~CGUIWebBrowserControl(void);
   virtual CGUIWebBrowserControl *Clone() const { return new CGUIWebBrowserControl(*this); };
 
   virtual void Render();
   virtual void AllocResources();
-  virtual void FreeResources();
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  void Back();
-  void Forward();
-private:
-  unsigned int m_texture;
-  CGUIEmbeddedBrowserWindowObserver *m_observer;
 };
 
 #endif

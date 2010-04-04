@@ -27,10 +27,13 @@
 #include "utils/log.h"
 
 #include <cstdlib> // TODO: Use CLog::Log instead of std::cout.
+#include <cstdio>
 #include <GL/gl.h>
 
 /* Set this to a youtube vid until keyboard input is working */
 #define DEFAULT_HOMEURL "http://www.youtube.com/watch?v=Ohjkj6zOucs&hd=1&fs=0"
+
+CGUIEmbeddedBrowserWindowObserver g_webBrowserObserver;
 
 CGUIEmbeddedBrowserWindowObserver::CGUIEmbeddedBrowserWindowObserver() :
   m_xPos(0),
@@ -46,38 +49,7 @@ CGUIEmbeddedBrowserWindowObserver::CGUIEmbeddedBrowserWindowObserver() :
   m_appWindowName("XBMC Web Browser"),
   m_homeUrl(),
   m_needsUpdate(true)
-{
-  m_homeUrl =
-    CSpecialProtocol::TranslatePath("special://xbmc/tools/testpage.html");
-  if (!XFILE::CFile::Exists(m_homeUrl))
-  {
-    m_homeUrl = DEFAULT_HOMEURL;
-  }
-}
-
-CGUIEmbeddedBrowserWindowObserver::CGUIEmbeddedBrowserWindowObserver(float xPos,
-  float yPos, float width, float height) :
-  m_xPos(xPos),
-  m_yPos(yPos),
-  m_appWindowWidth(static_cast<int>(width)),
-  m_appWindowHeight(static_cast<int>(height)),
-  m_browserWindowWidth(m_appWindowWidth),
-  m_browserWindowHeight(m_appWindowHeight),
-  m_appTextureWidth(-1),
-  m_appTextureHeight(-1),
-  m_appTexture(0),
-  m_browserWindowId(0),
-  m_appWindowName("XBMC Web Browser"),
-  m_homeUrl(),
-  m_needsUpdate(true)
-{
-  m_homeUrl =
-    CSpecialProtocol::TranslatePath("special://xbmc/tools/testpage.html");
-  if (!XFILE::CFile::Exists(m_homeUrl))
-  {
-    m_homeUrl = DEFAULT_HOMEURL;
-  }
-}
+{}
 
 void CGUIEmbeddedBrowserWindowObserver::init()
 {
@@ -101,6 +73,16 @@ void CGUIEmbeddedBrowserWindowObserver::init()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_appTextureWidth, m_appTextureHeight,
     0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+
+  g_graphicsContext.ApplyStateBlock();
+
+  // set a home url
+  m_homeUrl =
+    CSpecialProtocol::TranslatePath("special://xbmc/tools/testpage.html");
+  if (!XFILE::CFile::Exists(m_homeUrl))
+  {
+    m_homeUrl = DEFAULT_HOMEURL;
+  }
 
   // create a single browser window and set things up.
   CStdString applicationDir =
@@ -146,7 +128,7 @@ void CGUIEmbeddedBrowserWindowObserver::init()
 
   // target name we open in external browser
   LLQtWebKit::getInstance()->setExternalTargetName(m_browserWindowId,
-    "XBMC External Browser");
+    "XBMC Web Browser");
 
   // turn on option to catch JavaScript window.open commands and open in same window
   LLQtWebKit::getInstance()->setWindowOpenBehavior(m_browserWindowId,
@@ -154,8 +136,8 @@ void CGUIEmbeddedBrowserWindowObserver::init()
 
   // go to the "home page"
   LLQtWebKit::getInstance()->navigateTo(m_browserWindowId, m_homeUrl);
-
-  g_graphicsContext.ApplyStateBlock();
+/*  LLQtWebKit::getInstance()->navigateTo(m_browserWindowId, "www.youtube.com");
+  LLQtWebKit::getInstance()->navigateTo(m_browserWindowId, "www.ustream.tv");*/
 }
 
 void CGUIEmbeddedBrowserWindowObserver::reset(void)
@@ -185,8 +167,8 @@ void CGUIEmbeddedBrowserWindowObserver::reshape(float widthIn, float heightIn)
 //   glOrtho(0.0f, widthIn, heightIn, 0.0f, -1.0f, 1.0f);
 
   // we use these elsewhere so save
-  m_appWindowWidth = m_browserWindowWidth = static_cast<int>(widthIn);
-  m_appWindowHeight = m_browserWindowHeight = static_cast<int>(heightIn);
+  m_appWindowWidth = m_browserWindowWidth = widthIn;
+  m_appWindowHeight = m_browserWindowHeight = heightIn;
 
 //   glMatrixMode(GL_MODELVIEW);
 //   glLoadIdentity();
@@ -545,6 +527,15 @@ void CGUIEmbeddedBrowserWindowObserver::SetHeight(float height)
   m_appWindowHeight = m_browserWindowHeight = height;
 }
 
+void CGUIEmbeddedBrowserWindowObserver::SetParams(float xPos, float yPos,
+                                                  float width, float height)
+{
+  m_xPos = xPos;
+  m_yPos = yPos;
+  m_appWindowWidth = m_browserWindowWidth = width;
+  m_appWindowHeight = m_browserWindowHeight = height;
+}
+
 float CGUIEmbeddedBrowserWindowObserver::getXPos()
 {
   return m_xPos;
@@ -580,4 +571,72 @@ void* CGUIEmbeddedBrowserWindowObserver::getNativeWindowHandle()
 #else
   return 0;
 #endif
+}
+
+void CGUIEmbeddedBrowserWindowObserver::Back()
+{
+  if (!LLQtWebKit::getInstance()->userAction(m_browserWindowId,
+    LLQtWebKit::UA_NAVIGATE_BACK))
+  {
+    CStdString message = "CGUIEmbeddedBrowserWindowObserver::Back: "
+      "could not navigate back";
+    CLog::Log(LOGERROR, message);
+  }
+}
+
+void CGUIEmbeddedBrowserWindowObserver::Forward()
+{
+  if (!LLQtWebKit::getInstance()->userAction(m_browserWindowId,
+    LLQtWebKit::UA_NAVIGATE_FORWARD))
+  {
+    CStdString message = "CGUIEmbeddedBrowserWindowObserver::Forward: "
+      "could not navigate forward";
+    CLog::Log(LOGERROR, message);
+  }
+}
+
+void CGUIEmbeddedBrowserWindowObserver::Reload()
+{
+  if (!LLQtWebKit::getInstance()->userAction(m_browserWindowId,
+    LLQtWebKit::UA_NAVIGATE_RELOAD))
+  {
+    CStdString message = "CGUIEmbeddedBrowserWindowObserver::Forward: "
+      "could not reload page";
+    CLog::Log(LOGERROR, message);
+  }
+}
+
+void CGUIEmbeddedBrowserWindowObserver::Stop()
+{
+  if (!LLQtWebKit::getInstance()->userAction(m_browserWindowId,
+    LLQtWebKit::UA_NAVIGATE_STOP))
+  {
+    CStdString message = "CGUIEmbeddedBrowserWindowObserver::Forward: "
+      "could not navigate stop loading page";
+    CLog::Log(LOGERROR, message);
+  }
+}
+
+void CGUIEmbeddedBrowserWindowObserver::Home()
+{
+  if (!LLQtWebKit::getInstance()->navigateTo(m_browserWindowId, m_homeUrl))
+  {
+    CStdString message = "CGUIEmbeddedBrowserWindowObserver::Home: "
+      "could not navigate to '";
+    message.append(m_homeUrl);
+    message.append("'");
+    CLog::Log(LOGERROR, message);
+  }
+}
+
+void CGUIEmbeddedBrowserWindowObserver::Go(const CStdString &url)
+{
+  if (!LLQtWebKit::getInstance()->navigateTo(m_browserWindowId, url))
+  {
+    CStdString message = "CGUIEmbeddedBrowserWindowObserver::Go: "
+      "could not navigate to '";
+    message.append(url);
+    message.append("'");
+    CLog::Log(LOGERROR, message);
+  }
 }
