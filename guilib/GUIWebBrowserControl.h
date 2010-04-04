@@ -41,6 +41,7 @@ public:
 
   virtual void Render();
   virtual void AllocResources();
+  virtual bool OnAction(const CAction &action);
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
 };
 

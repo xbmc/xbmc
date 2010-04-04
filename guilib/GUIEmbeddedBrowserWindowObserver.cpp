@@ -20,11 +20,12 @@
  */
 
 #include "GUIEmbeddedBrowserWindowObserver.h"
-#include "Key.h"
 #include "GraphicContext.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/File.h"
+#include "KeyboardStat.h"
 #include "utils/log.h"
+#include "utils/CharsetConverter.h"
 
 #include <cstdlib> // TODO: Use CLog::Log instead of std::cout.
 #include <cstdio>
@@ -32,6 +33,8 @@
 
 /* Set this to a youtube vid until keyboard input is working */
 #define DEFAULT_HOMEURL "http://www.youtube.com/watch?v=Ohjkj6zOucs&hd=1&fs=0"
+#define SCROLL_VALUE_INCREMENTS      10
+#define SCROLL_VALUE_PAGE_INCREMENTS 500
 
 CGUIEmbeddedBrowserWindowObserver g_webBrowserObserver;
 
@@ -136,8 +139,6 @@ void CGUIEmbeddedBrowserWindowObserver::init()
 
   // go to the "home page"
   LLQtWebKit::getInstance()->navigateTo(m_browserWindowId, m_homeUrl);
-/*  LLQtWebKit::getInstance()->navigateTo(m_browserWindowId, "www.youtube.com");
-  LLQtWebKit::getInstance()->navigateTo(m_browserWindowId, "www.ustream.tv");*/
 }
 
 void CGUIEmbeddedBrowserWindowObserver::reset(void)
@@ -275,26 +276,6 @@ void CGUIEmbeddedBrowserWindowObserver::Render(float xPos, float yPos,
   g_graphicsContext.ApplyStateBlock();
 }
 
-//TODO: Should probably define this to set XBMC keys
-LLQtWebKit::EKeyboardModifier
-  CGUIEmbeddedBrowserWindowObserver::getLLQtWebKitKeyboardModifierCode()
-{
-  int result = LLQtWebKit::KM_MODIFIER_NONE;
-
-//   int modifiers = glutGetModifiers();
-// 
-//   if ( GLUT_ACTIVE_SHIFT & modifiers )
-//     result |= LLQtWebKit::KM_MODIFIER_SHIFT;
-// 
-//   if ( GLUT_ACTIVE_CTRL & modifiers )
-//     result |= LLQtWebKit::KM_MODIFIER_CONTROL;
-// 
-//   if ( GLUT_ACTIVE_ALT & modifiers )
-//     result |= LLQtWebKit::KM_MODIFIER_ALT;
-
-  return (LLQtWebKit::EKeyboardModifier)result;
-}
-
 void CGUIEmbeddedBrowserWindowObserver::mouseButton(int button, int state,
   int xIn, int yIn)
 {
@@ -338,95 +319,67 @@ void CGUIEmbeddedBrowserWindowObserver::mouseMove(int xIn , int yIn)
     LLQtWebKit::KM_MODIFIER_NONE);
 }
 
-void CGUIEmbeddedBrowserWindowObserver::keyboard(unsigned char keyIn,
-  bool isDown)
+bool CGUIEmbeddedBrowserWindowObserver::keyboard(const CAction &action)
 {
-  // ESC key exits
-  if (keyIn == 27)
+  int id = action.GetID();
+  if (id == ACTION_MOVE_LEFT)
   {
-    reset();
+    int value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
+      LLQtWebKit::O_HORIZONTAL);
+    value -= SCROLL_VALUE_INCREMENTS;
+    return LLQtWebKit::getInstance()->setScrollBarValue(m_browserWindowId,
+      LLQtWebKit::O_HORIZONTAL, value);
+  }
+  else if (id == ACTION_MOVE_RIGHT)
+  {
+    int value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
+      LLQtWebKit::O_HORIZONTAL);
+    value += SCROLL_VALUE_INCREMENTS;
+    return LLQtWebKit::getInstance()->setScrollBarValue(m_browserWindowId,
+      LLQtWebKit::O_HORIZONTAL, value);
+  }
+  else if (id == ACTION_MOVE_UP)
+  {
+    int value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
+      LLQtWebKit::O_VERTICAL);
+    value -= SCROLL_VALUE_INCREMENTS;
+    return LLQtWebKit::getInstance()->setScrollBarValue(m_browserWindowId,
+      LLQtWebKit::O_VERTICAL, value);
+  }
+  else if (id == ACTION_MOVE_DOWN)
+  {
+    int value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
+      LLQtWebKit::O_VERTICAL);
+    value += SCROLL_VALUE_INCREMENTS;
+    return LLQtWebKit::getInstance()->setScrollBarValue(m_browserWindowId,
+      LLQtWebKit::O_VERTICAL, value);
+  }
+  else if (id == ACTION_PAGE_UP)
+  {
+    int value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
+      LLQtWebKit::O_VERTICAL);
+    value -= SCROLL_VALUE_PAGE_INCREMENTS;
+    return LLQtWebKit::getInstance()->setScrollBarValue(m_browserWindowId,
+      LLQtWebKit::O_VERTICAL, value);
+  }
+  else if (id == ACTION_PAGE_DOWN)
+  {
+    int value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
+      LLQtWebKit::O_VERTICAL);
+    value += SCROLL_VALUE_PAGE_INCREMENTS;
+    return LLQtWebKit::getInstance()->setScrollBarValue(m_browserWindowId,
+      LLQtWebKit::O_VERTICAL, value);
   }
 
-  if(keyIn == 127)
-  {
-    // Turn delete char into backspace
-    keyIn = LLQtWebKit::KEY_BACKSPACE;
-  }
+  uint32_t key = 0;
+  CStdString str;
+  wchar_t wc = action.GetUnicode();
+  CStdStringW wc2(&wc);
+  g_charsetConverter.wToUTF8(wc2, str);
 
-  // control-H goes home
-  if (keyIn == 8)
-  {
-    LLQtWebKit::getInstance()->navigateTo(m_browserWindowId, m_homeUrl);
-  }
-  else
-  // control-R reloads
-  if (keyIn == 18)
-  {
-    LLQtWebKit::getInstance()->userAction(m_browserWindowId,
-                                          LLQtWebKit::UA_NAVIGATE_RELOAD);
-  }
-  else
-  {
-    char text[2];
-    if(keyIn < 0x80)
-    {
-      text[0] = (char)keyIn;
-    }
-    else
-    {
-      text[0] = 0;
-    }
-
-    text[1] = 0;
-
-    std::cerr << "key " << (isDown?"down ":"up ") << (int)keyIn <<
-      ", modifiers = " << (int)getLLQtWebKitKeyboardModifierCode() << std::endl;
-
-    // send event to LLQtWebKit
-    LLQtWebKit::getInstance()->keyboardEvent(m_browserWindowId,
-      isDown?LLQtWebKit::KE_KEY_DOWN:LLQtWebKit::KE_KEY_UP, keyIn, text,
-      getLLQtWebKitKeyboardModifierCode());
-  }
-}
-
-/* TODO: Implement this so we can send input to browser */
-void CGUIEmbeddedBrowserWindowObserver::keyboardSpecial(int specialIn,
-  bool isDown)
-{
-  uint32_t key = LLQtWebKit::KEY_NONE;
-
-//   switch(specialIn)
-//   {
-//     case GLUT_KEY_F1:     key = LLQtWebKit::KEY_F1;   break;
-//     case GLUT_KEY_F2:     key = LLQtWebKit::KEY_F2;   break;
-//     case GLUT_KEY_F3:     key = LLQtWebKit::KEY_F3;   break;
-//     case GLUT_KEY_F4:     key = LLQtWebKit::KEY_F4;   break;
-//     case GLUT_KEY_F5:     key = LLQtWebKit::KEY_F5;   break;
-//     case GLUT_KEY_F6:     key = LLQtWebKit::KEY_F6;   break;
-//     case GLUT_KEY_F7:     key = LLQtWebKit::KEY_F7;   break;
-//     case GLUT_KEY_F8:     key = LLQtWebKit::KEY_F8;   break;
-//     case GLUT_KEY_F9:     key = LLQtWebKit::KEY_F9;   break;
-//     case GLUT_KEY_F10:      key = LLQtWebKit::KEY_F10;    break;
-//     case GLUT_KEY_F11:      key = LLQtWebKit::KEY_F11;    break;
-//     case GLUT_KEY_F12:      key = LLQtWebKit::KEY_F12;    break;
-//     case GLUT_KEY_LEFT:     key = LLQtWebKit::KEY_LEFT;   break;
-//     case GLUT_KEY_UP:     key = LLQtWebKit::KEY_UP;   break;
-//     case GLUT_KEY_RIGHT:    key = LLQtWebKit::KEY_RIGHT;  break;
-//     case GLUT_KEY_DOWN:     key = LLQtWebKit::KEY_DOWN;   break;
-//     case GLUT_KEY_PAGE_UP:    key = LLQtWebKit::KEY_PAGE_UP;  break;
-//     case GLUT_KEY_PAGE_DOWN:  key = LLQtWebKit::KEY_PAGE_DOWN;break;
-//     case GLUT_KEY_HOME:     key = LLQtWebKit::KEY_HOME;   break;
-//     case GLUT_KEY_END:      key = LLQtWebKit::KEY_END;    break;
-//     case GLUT_KEY_INSERT:   key = LLQtWebKit::KEY_INSERT; break;
-// 
-//     default:
-//     break;
-//   }
-
-  if(key != LLQtWebKit::KEY_NONE)
-  {
-    keyboard(key, isDown);
-  }
+  // send event to LLQtWebKit
+  return LLQtWebKit::getInstance()->keyboardEvent(m_browserWindowId,
+    LLQtWebKit::KE_KEY_DOWN, key, str.c_str(), LLQtWebKit::KM_MODIFIER_NONE);
 }
 
 /* Function to flag that an update is required - page grab happens in idle() so

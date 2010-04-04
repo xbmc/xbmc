@@ -30,6 +30,7 @@
  */
 
 #include "StdString.h"
+#include "Key.h"
 
 #include "../lib/llqtwebkit/llqtwebkit.h"
 
@@ -42,11 +43,9 @@ public:
   void reshape(float widthIn, float heightIn);
   void idle();
   void Render(float xPos, float yPos, float width, float height);
-  LLQtWebKit::EKeyboardModifier getLLQtWebKitKeyboardModifierCode();
   void mouseButton(int button, int state, int xIn, int yIn);
   void mouseMove(int xIn , int yIn);
-  void keyboard(unsigned char keyIn, bool isDown);
-  void keyboardSpecial(int specialIn, bool isDown);
+  bool keyboard(const CAction &action);
   void onPageChanged( const EventType &eventIn);
   void onNavigateBegin(const EventType &eventIn);
   void onNavigateComplete(const EventType &eventIn);

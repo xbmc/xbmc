@@ -44,6 +44,13 @@ void CGUIWebBrowserControl::Render()
   CGUIControl::Render();
 }
 
+bool CGUIWebBrowserControl::OnAction(const CAction &action)
+{
+  if (g_webBrowserObserver.keyboard(action))
+    return true;
+  return CGUIControl::OnAction(action);
+}
+
 EVENT_RESULT CGUIWebBrowserControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
