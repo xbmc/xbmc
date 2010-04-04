@@ -733,6 +733,11 @@ config.log
 /lib/libmodplug/src/Makefile
 /lib/libmodplug/src/config.h
 
+# /lib/libqtwebkit/
+/lib/llqtwebkit/.moc/
+/lib/llqtwebkit/.ui/
+/lib/llqtwebkit/Makefile
+
 /system/python/Lib/
 
 /tools/EventClients/Clients/OSXRemote/Makefile
