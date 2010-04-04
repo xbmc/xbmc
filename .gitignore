@@ -31,28 +31,38 @@ config.log
 .deps/
 
 # /
-/autotools
+/.dummy
+/.dummy.in
+/Makefile
+/Makefile.include
 /aclocal.m4
 /autom4te.cache/
-/BUILD
-/xbmc.log
-/xbmc.old.log
-/Makefile
-/Makefile.depend
-/Makefile.include
-/config.status
-/config.h
-/config.h.in
-/configure
-/xbmc-xrandr
-/svn_revision.h
-/build
-/.dummy.in
-/.dummy
 /build-aux/config.guess
 /build-aux/config.sub
 /build-aux/install-sh
 /build-aux/missing
+/autotools
+/BUILD
+/xbmc.log
+/xbmc.old.log
+/Makefile.depend
+/config.status
+/config.h
+/config.h.in
+/config.h.in~
+/configure
+/stamp-h1
+/xbmc.bin
+/xbmc-xrandr
+/svn_revision.h
+
+# /addons/
+/addons/net.sf.projectm.xbmc/projectM.vis
+/addons/net.sf.rsxs.euphoria/Euphoria.xbs
+/addons/net.sf.rsxs.plasma/Plasma.xbs
+/addons/net.sf.rsxs.solarwinds/Solarwinds.xbs
+/addons/org.xbmc.addons.glspectrum/opengl_spectrum.vis
+/addons/org.xbmc.addons.waveform/Waveform.vis
 
 # /guilib/
 /guilib/Makefile
@@ -140,10 +150,14 @@ config.log
 /visualisations/ProjectM.vis
 /visualisations/Waveform.vis
 /visualisations/opengl_spectrum.vis
+/visualisations/projectM/
 
 # /xbmc/
 /xbmc/DllPaths_generated.h
 /xbmc/Makefile
+
+# /xbmc/addons/
+/xbmc/addons/Makefile
 
 # /xbmc/linux/
 /xbmc/linux/Makefile
@@ -254,6 +268,7 @@ config.log
 
 # /xbmc/cores/dvdplayer/Codecs/libdvd/
 /xbmc/cores/dvdplayer/Codecs/libdvd/Makefile
+/xbmc/cores/dvdplayer/Codecs/libbdnav/config.h.in~
 
 # /xbmc/cores/dvdplayer/Codecs/libdvd/includes/
 /xbmc/cores/dvdplayer/Codecs/libdvd/includes/dv
@@ -707,6 +722,9 @@ config.log
 /lib/cpluff/po
 /lib/cpluff/stamp-h1
 /lib/cpluff/test
+/lib/cpluff/Makefile
+/lib/cpluff/libcpluff/Makefile
+/lib/cpluff/libcpluff/cpluffdef.h
 
 # /lib/libmodplug/
 /lib/libmodplug/libtool
@@ -801,6 +819,7 @@ config.log
 /xbmc/lib/libass/autom4te.cache/
 /xbmc/lib/libass/compile
 /xbmc/lib/libass/config.h.in
+/xbmc/lib/libass/config.h.in~
 /xbmc/lib/libass/configure
 /xbmc/lib/libass/install-sh
 /xbmc/lib/libass/libass/Makefile.in
