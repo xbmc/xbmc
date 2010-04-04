@@ -28,6 +28,7 @@
 #include "RendererSettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "D3DResource.h"
+#include "IPaintCallback.h"
 // Support ffdshow queueing.
 // This interface is used to check version of Media Player Classic.
 // {A273C7F6-25D4-46b0-B2C8-4F7FADC44E37}
@@ -48,7 +49,8 @@ public:
 
   class CDX9AllocatorPresenter
     : public ISubPicAllocatorPresenterImpl ,
-      public ID3DResource
+      public ID3DResource,
+      public IPaintCallback
 
   {
   public:
@@ -79,7 +81,6 @@ public:
     HMODULE m_hD3D9;
 
     CCritSec          m_RenderLock;
-    Com::SmartPtr<IDirectDraw>    m_pDirectDraw;
 
     Com::SmartPtr<IDirect3D9>      m_pD3D;
 
@@ -135,7 +136,6 @@ public:
     bool SettingsNeedResetDevice();
 
     virtual HRESULT CreateDevice(CStdString &_Error);
-//    virtual HRESULT AllocSurfaces(D3DFORMAT Format = D3DFMT_A2B10G10R10);
     virtual HRESULT AllocSurfaces(D3DFORMAT Format = D3DFMT_A8R8G8B8);
     virtual void DeleteSurfaces();
 
@@ -342,4 +342,7 @@ public:
     virtual void OnDestroyDevice();
     virtual void OnCreateDevice();
     virtual void OnResetDevice();
+
+    // IPainCallback
+    virtual void OnPaint(CRect destRect);
   };

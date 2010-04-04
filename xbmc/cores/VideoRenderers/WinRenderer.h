@@ -26,7 +26,6 @@
 #include "GraphicContext.h"
 #include "RenderFlags.h"
 #include "BaseRenderer.h"
-#include "D3DResource.h"
 #include "settings/VideoSettings.h"
 #include "WinBaseRenderer.h"
 

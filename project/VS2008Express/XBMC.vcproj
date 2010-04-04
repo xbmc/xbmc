@@ -2151,6 +2151,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderer.cpp"
 					>
 				</File>
@@ -2280,7 +2288,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="DSPlayer"
+				Name="dsplayer"
 				>
 				<File
 					RelativePath="..\..\xbmc\cores\DSPlayer\ChaptersManager.cpp"
@@ -2421,6 +2429,10 @@
 							>
 						</File>
 						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\IPaintCallback.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\RendererSettings.cpp"
 							>
 						</File>
@@ -2434,14 +2446,6 @@
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\VideoRenderers\WinDsRenderer.h"
 							>
 						</File>
 					</Filter>
@@ -2592,6 +2596,26 @@
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\smartlist.h"
 						>
+						<FileConfiguration
+							Name="Debug (DirectX)|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\smartptr.h"
+						>
+						<FileConfiguration
+							Name="Debug (DirectX)|Win32"
+							ExcludedFromBuild="true"
+							>
+							<Tool
+								Name="VCCustomBuildTool"
+							/>
+						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.cpp"

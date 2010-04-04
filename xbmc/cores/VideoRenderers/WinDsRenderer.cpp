@@ -33,11 +33,13 @@
 #include "MathUtils.h"
 #include "DShowUtil/DShowUtil.h"
 #include "StreamsManager.h"
+#include "IPaintCallback.h"
 
 CWinDsRenderer::CWinDsRenderer():
   m_bConfigured(false),
   m_D3DVideoTexture(NULL),
-  m_D3DMemorySurface(NULL)
+  m_D3DMemorySurface(NULL),
+  m_paintCallback(NULL)
 {
 }
 
@@ -123,19 +125,22 @@ void CWinDsRenderer::AutoCrop(bool bCrop)
 {
 }
 
-void CWinDsRenderer::PaintVideoTexture(IDirect3DTexture9* videoTexture, IDirect3DSurface9* videoSurface)
+void CWinDsRenderer::RegisterDsCallback(IPaintCallback *callback)
 {
-  // AddRef is done automatically by the SmartPtr
-  // videoTexture & videoSurface can be NULL to release texture
-  // If m_D3DVideoTexture isn't NULL, the old reference is released before the assignation
-
-  m_D3DVideoTexture = videoTexture;
-  m_D3DMemorySurface = videoSurface;
+  m_paintCallback = callback;
 }
-
+void CWinDsRenderer::UnRegisterDsCallback()
+{
+  m_paintCallback = NULL;
+}
 void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
-{  
-  RenderVideoTexture();
+{
+  CSingleLock lock(g_graphicsContext);
+  if (m_paintCallback)
+  {
+    m_paintCallback->OnPaint(m_destRect);
+  }
+  //RenderVideoTexture();
   RenderSubtitleTexture();
 }
 

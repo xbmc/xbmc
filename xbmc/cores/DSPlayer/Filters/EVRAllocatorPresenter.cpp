@@ -31,6 +31,7 @@
 #include "DShowUtil/DShowUtil.h"
 #include "DShowUtil/smartlist.h"
 #include "Utils/TimeUtils.h"
+#include "Application.h"
 #if (0)    // Set to 1 to activate EVR traces
   #define TRACE_EVR    TRACE
 #else
@@ -304,7 +305,6 @@ CEVRAllocatorPresenter::CEVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdStrin
 {
   HMODULE    hLib;
   g_dsSettings.LoadConfig();
-  g_renderManager.PreInit(RENDERER_DSHOW_EVR);
   m_nResetToken   = 0;
   m_hThread     = INVALID_HANDLE_VALUE;
   m_hGetMixerThread= INVALID_HANDLE_VALUE;
@@ -2090,7 +2090,10 @@ void CEVRAllocatorPresenter::RenderThread()
               ++m_OrderedPaint;
               if (!g_bExternalSubtitleTime)
                 __super::SetTime (g_tSegmentStart + nsSampleTime);
-              Paint(true);
+              //From the new frame the rendermanager will call the dx9allocator paint function
+              g_application.NewFrame();
+              //Wait 100 millisec for the rendermanager to do is job
+              g_application.WaitFrame(100);
             }
             else
             {
@@ -2216,8 +2219,11 @@ void CEVRAllocatorPresenter::RenderThread()
 
                 if (!g_bExternalSubtitleTime)
                   __super::SetTime (g_tSegmentStart + nsSampleTime);
-                Paint(true);
-                //m_pSink->Notify(EC_SCRUB_TIME, LODWORD(nsSampleTime), HIDWORD(nsSampleTime));
+                //Paint(true);
+                //From the new frame the rendermanager will call the dx9allocator paint function
+                g_application.NewFrame();
+                //Wait 100 millisec for the rendermanager to do is job
+                g_application.WaitFrame(100);
                 
                 NextSleepTime = 0;
                 m_pcFramesDrawn++;

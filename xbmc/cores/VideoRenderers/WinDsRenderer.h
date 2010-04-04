@@ -28,7 +28,7 @@
 #include "CriticalSection.h"
 
 class CBaseTexture;
-
+class IPaintCallback;
 class CWinDsRenderer : public CWinBaseRenderer
 {
 public:
@@ -49,9 +49,9 @@ public:
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual bool         IsConfigured() { return m_bConfigured; }
-
-  virtual void         PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface);
-
+  
+  virtual void         RegisterDsCallback(IPaintCallback *callback);
+  virtual void         UnRegisterDsCallback();
   // TODO:DIRECTX - implement these
   virtual bool         SupportsBrightness() { return false; }
   virtual bool         SupportsContrast() { return false; }
@@ -76,6 +76,7 @@ protected:
 
   Com::SmartPtr<IDirect3DTexture9> m_D3DVideoTexture;
   Com::SmartPtr<IDirect3DSurface9> m_D3DMemorySurface;
+  IPaintCallback* m_paintCallback;
   // clear colour for "black" bars
   DWORD m_clearColour;
   unsigned int m_flags;

@@ -26,6 +26,7 @@
 #elif defined(HAS_DX)
   #include "WinRenderer.h"
   #include "WinDsRenderer.h"
+  #include "../Dsplayer/IPaintCallback.h"  
 #elif defined(HAS_SDL)
   #include "LinuxRenderer.h"
 #endif
@@ -35,8 +36,10 @@
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
 
+
 namespace DXVA { class CProcessor; }
 class CVDPAU;
+class IPaintCallback;
 
 class CXBMCRenderManager
 {
@@ -75,11 +78,17 @@ public:
       m_pRenderer->ReleaseImage(source, preserve);
   }
 #if defined(HAS_DX)
-  inline void PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface)
+  inline void RegisterDsCallback(IPaintCallback *callback)
   {
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
-      m_pRenderer->PaintVideoTexture(videoTexture, videoSurface);
+      m_pRenderer->RegisterDsCallback(callback);
+  }
+  inline void UnRegisterDsCallback()
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      m_pRenderer->UnRegisterDsCallback();
   }
 #endif
 

@@ -30,9 +30,11 @@
 #include "D3DResource.h"
 #include "settings/VideoSettings.h"
 
+
 class CBaseTexture;
 
 namespace DXVA { class CProcessor; }
+class IPaintCallback;
 
 #define AUTOSOURCE -1
 
@@ -57,8 +59,9 @@ public:
   virtual void         UnInit() {};
   virtual void         Reset() {}; /* resets renderer after seek for example */
   virtual bool         IsConfigured() {return false;}
-
-  virtual void         PaintVideoTexture(IDirect3DTexture9* videoTexture,IDirect3DSurface9* videoSurface) {};
+  
+  virtual void         RegisterDsCallback(IPaintCallback *callback) {};
+  virtual void         UnRegisterDsCallback() {};
   // TODO:DIRECTX - implement these
   virtual bool         SupportsBrightness() { return false; };
   virtual bool         SupportsContrast() { return false; };

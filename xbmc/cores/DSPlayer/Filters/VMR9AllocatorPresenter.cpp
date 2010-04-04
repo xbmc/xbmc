@@ -30,6 +30,7 @@
 #include "SystemInfo.h"
 #include "MpConfig.h"
 #include "WindowingFactory.h"
+#include "Application.h"
 // ISubPicAllocatorPresenter
 
 
@@ -328,7 +329,7 @@ CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HWND hWnd, HRESULT& hr, CStdStr
   , m_rtPrevStart(-1)
 {
   g_dsSettings.LoadConfig();
-  g_renderManager.PreInit(RENDERER_DSHOW_VMR9);
+  
 }
 
 STDMETHODIMP CVMR9AllocatorPresenter::NonDelegatingQueryInterface(REFIID riid, void** ppv)
@@ -727,10 +728,13 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
 
     m_nTearingPos = (m_nTearingPos + 7) % m_NativeVideoSize.cx;
   }*/
+  //From the new frame the rendermanager will call the dx9allocator paint function
+  g_application.NewFrame();
+  //Wait 100 millisec for the rendermanager to do is job
+  g_application.WaitFrame(100);
 
-  Paint(true);
 
-    return S_OK;
+  return S_OK;
 }
 
 // IVMRWindowlessControl9
