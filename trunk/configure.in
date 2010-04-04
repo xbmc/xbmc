@@ -314,14 +314,14 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
 elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
 # Compile for ARMv7a architecture, CortexA8 cpu and NEON coprocessor
-  CFLAGS="$CFLAGS -mcpu=cortex-a8 -mtune=cortex-a8 -mfloat-abi=softfp -mno-apcs-stack-check"
-  CXXFLAGS="$CXXFLAGS -mcpu=cortex-a8  -mtune=cortex-a8 -mfloat-abi=softfp -mno-apcs-stack-check"
+  CFLAGS="$CFLAGS -mtune=cortex-a8 -mfloat-abi=softfp -mno-apcs-stack-check"
+  CXXFLAGS="$CXXFLAGS -mtune=cortex-a8 -mfloat-abi=softfp -mno-apcs-stack-check"
   if test "x$use_tegra" = "xyes"; then
-    CFLAGS+=" -march=armv6 -mthumb-interwork"
-    CXXFLAGS+=" -march=armv6 -mthumb-interwork"
+    CFLAGS+=" -Wa,-march=armv6 -mthumb-interwork"
+    CXXFLAGS+=" -Wa,-march=armv6 -mthumb-interwork"
   else
-    CFLAGS+=" -Wa,-march=armv7a -mfpu=neon -mvectorize-with-neon-quad"
-    CXXFLAGS+=" -Wa,-march=armv7a -mfpu=neon -mvectorize-with-neon-quad"
+    CFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8 -mfpu=neon -mvectorize-with-neon-quad"
+    CXXFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8 -mfpu=neon -mvectorize-with-neon-quad"
   fi
 fi
 
@@ -1226,7 +1226,12 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
 
   else
   
-if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then FFMPEG_EXTRACFLAGS="-mfpu=neon -mfloat-abi=softfp" ; fi
+    if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
+      FFMPEG_EXTRACFLAGS="-mfloat-abi=softfp"
+      if test "x$use_tegra" != "xyes"; then
+        FFMPEG_EXTRACFLAGS+=" -mfpu=neon"
+      fi
+    fi
   
     ./configure \
       `expr "X$host_cpu" : 'Xarm.*' > /dev/null && echo --arch=arm --cpu=cortex-a8` \
@@ -1377,6 +1382,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmpeg2], [
       --disable-sdl \
       --without-x
   else
+    CFLAGS="$CFLAGS" \
     ./configure \
       --with-pic \
       --disable-static \
