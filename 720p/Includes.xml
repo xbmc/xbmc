@@ -2079,7 +2079,7 @@
   </include>
 
   <include name="PanelStreamLayout">
-    <itemlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="163" height="250">
+    <itemlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="163" height="245">
       <control type="image">
         <description>Poster image</description>
         <include>PanelStreamImage</include>
@@ -2103,7 +2103,7 @@
 	
     </itemlayout>
 
-    <focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="163" height="250">
+    <focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="163" height="245">
       <control type="image">
         <description>Poster image</description>
         <include>PanelStreamImageFocus</include>

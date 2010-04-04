@@ -1102,26 +1102,26 @@
             <info>ListItem.Year</info>
           </control>
 
-		  <control type="image">
-			  <posy>55</posy>
-			  <posx>-2</posx>
-			  <align>center</align>
-			  <aspectratio>keep</aspectratio>
-			  <info>ListItem.StarRating</info>
-			  <colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
-		  </control>
+			<control type="image">
+				<posy>55</posy>
+				<posx>-2</posx>
+				<align>center</align>
+				<aspectratio>keep</aspectratio>
+				<info>ListItem.StarRating</info>
+				<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+			</control>
 
-          <control type="textbox">
-            <description>Plot/Details</description>
-            <posy>85</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>300</height>
-            <info>ListItem.Plot</info>
-          </control>
+			<control type="textbox">
+				<description>Plot/Details</description>
+				<posy>90</posy>
+				<width>PanelStreamDetailTextWidth</width>
+				<height>258</height>
+				<info>ListItem.Plot</info>
+			</control>
 
 		  <control type="group">
 				<description>Media Flags</description>
-				<posy>405</posy>
+				<posy>398</posy>
 				<include>PanelStreamFlags</include>
 			</control>
 
