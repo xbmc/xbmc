@@ -2093,7 +2093,7 @@ void CEVRAllocatorPresenter::RenderThread()
               //From the new frame the rendermanager will call the dx9allocator paint function
               g_application.NewFrame();
               //Wait 100 millisec for the rendermanager to do is job
-              g_application.WaitFrame(100);
+              //g_application.WaitFrame(100);
             }
             else
             {
@@ -2223,7 +2223,7 @@ void CEVRAllocatorPresenter::RenderThread()
                 //From the new frame the rendermanager will call the dx9allocator paint function
                 g_application.NewFrame();
                 //Wait 100 millisec for the rendermanager to do is job
-                g_application.WaitFrame(100);
+                //g_application.WaitFrame(100);
                 
                 NextSleepTime = 0;
                 m_pcFramesDrawn++;

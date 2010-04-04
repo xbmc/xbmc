@@ -33,7 +33,7 @@ CDsSettings::CDsSettings(void)
   nSPCSize = 3; // Threading queue
   nSPCMaxRes = 0; // default
   fSPCAllowAnimationWhenBuffering = false; // No Anim
-  iDX9Resizer = 2; //Dx9 Resizers
+  iDX9Resizer = 3; //Dx9 Resizers
 }
 
 CDsSettings::~CDsSettings(void)
@@ -96,10 +96,6 @@ void CDsSettings::LoadConfig()
     m_RenderSettings.SetDefault();
     //Implement the crap for saving the settings if they are not found
   }
-  
-  
-  //TODO Add the settings into the xbmc configs
-  //g_guiSettings.GetSetting("dsplayer.fVMR9AlterativeVSync");
 }
 
 

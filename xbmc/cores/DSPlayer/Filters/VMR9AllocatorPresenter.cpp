@@ -710,30 +710,9 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
     //AfxGetApp()->m_pMainWnd->PostMessage(WM_REARRANGERENDERLESS);
   }
 
-  // Tear test bars
-  //I definitely dont give a fuck about this
-  /*if (AfxGetMyApp()->m_fTearingTest)
-  {
-    RECT    rcTearing;
-    
-    rcTearing.left    = m_nTearingPos;
-    rcTearing.top    = 0;
-    rcTearing.right    = rcTearing.left + 4;
-    rcTearing.bottom  = m_NativeVideoSize.cy;
-    m_pD3DDev->ColorFill (m_pVideoSurface[m_nCurSurface], &rcTearing, D3DCOLOR_ARGB (255,255,0,0));
-
-    rcTearing.left  = (rcTearing.right + 15) % m_NativeVideoSize.cx;
-    rcTearing.right  = rcTearing.left + 4;
-    m_pD3DDev->ColorFill (m_pVideoSurface[m_nCurSurface], &rcTearing, D3DCOLOR_ARGB (255,255,0,0));
-
-    m_nTearingPos = (m_nTearingPos + 7) % m_NativeVideoSize.cx;
-  }*/
   //From the new frame the rendermanager will call the dx9allocator paint function
   g_application.NewFrame();
-  //Wait 100 millisec for the rendermanager to do is job
-  g_application.WaitFrame(100);
-
-
+  //The wait frame is not needed anymore
   return S_OK;
 }
 
