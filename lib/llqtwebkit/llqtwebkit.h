@@ -252,6 +252,20 @@ class LLQtWebKit
 			KM_MODIFIER_META = 0x08
 		}EKeyboardModifier;
 
+    typedef enum e_orientation
+    {
+      O_HORIZONTAL,
+      O_VERTICAL,
+    }EOrientation;
+
+    typedef enum e_scroll_bar_policy
+    {
+      SBP_AS_NEEDED,
+      SBP_ALWAYS_OFF,
+      SBP_ALWAYS_ON,
+      SBP_LL_ERROR,
+    }EScrollBarPolicy;
+
 		virtual ~LLQtWebKit();
 
 		// singleton access
@@ -331,6 +345,18 @@ class LLQtWebKit
 			uint32_t native_scan_code = 0,
 			uint32_t native_virtual_key = 0,
 			uint32_t native_modifiers = 0);
+
+    // used for manipulating scroll bar values
+    bool scroll(int browser_window_id, int x, int y);
+    int scrollBarMaximum(int browser_window_id, EOrientation orientation);
+    int scrollBarMinimum(int browser_window_id, EOrientation orientation);
+    EScrollBarPolicy scrollBarPolicy(int browser_window_id,
+        EOrientation orientation);
+    int scrollBarValue(int browser_window_id, EOrientation orientation);
+    bool setScrollBarPolicy(int browser_window_id, EOrientation orientation,
+        EScrollBarPolicy policy);
+    bool setScrollBarValue(int browser_window_id, EOrientation orientation,
+        int value);
 
 		bool focusBrowser(int browser_window_id, bool focus_browser);			// set/remove focus to given browser window
 

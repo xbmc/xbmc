@@ -462,6 +462,82 @@ bool LLQtWebKit::keyboardEvent(
 
 ////////////////////////////////////////////////////////////////////////////////
 //
+bool LLQtWebKit::scroll(int browser_window_id, int x, int y)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+        return browser_window->scroll(x, y);
+    return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+int LLQtWebKit::scrollBarMaximum(int browser_window_id,
+  EOrientation orientation)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+        return browser_window->scrollBarMaximum(orientation);
+    return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+int LLQtWebKit::scrollBarMinimum(int browser_window_id,
+  EOrientation orientation)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+        return browser_window->scrollBarMinimum(orientation);
+    return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+LLQtWebKit::EScrollBarPolicy LLQtWebKit::scrollBarPolicy(int browser_window_id,
+  EOrientation orientation)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+        return browser_window->scrollBarPolicy(orientation);
+    return LLQtWebKit::SBP_LL_ERROR;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+int LLQtWebKit::scrollBarValue(int browser_window_id, EOrientation orientation)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+        return browser_window->scrollBarValue(orientation);
+    return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+bool LLQtWebKit::setScrollBarPolicy(int browser_window_id,
+  EOrientation orientation, EScrollBarPolicy policy)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+        return browser_window->setScrollBarPolicy(orientation, policy);
+    return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+bool LLQtWebKit::setScrollBarValue(int browser_window_id,
+  EOrientation orientation,
+  int value)
+{
+    LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);
+    if (browser_window)
+        return browser_window->setScrollBarValue(orientation, value);
+    return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
 bool LLQtWebKit::focusBrowser(int browser_window_id, bool focus_browser)
 {
     LLEmbeddedBrowserWindow* browser_window = getBrowserWindowFromWindowId(browser_window_id);

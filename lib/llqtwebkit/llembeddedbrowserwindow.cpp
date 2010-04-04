@@ -657,6 +657,107 @@ void LLEmbeddedBrowserWindow::keyboardEvent(
 	delete event;
 }
 
+bool LLEmbeddedBrowserWindow::scroll(int x, int y)
+{
+  d->mPage->mainFrame()->scroll(x, y);
+  return true;
+}
+
+int LLEmbeddedBrowserWindow::scrollBarMaximum(
+  LLQtWebKit::EOrientation orientation)
+{
+  if (orientation == LLQtWebKit::O_VERTICAL)
+    return d->mPage->mainFrame()->scrollBarMaximum(Qt::Vertical);
+  else if (orientation == LLQtWebKit::O_HORIZONTAL)
+    return d->mPage->mainFrame()->scrollBarMaximum(Qt::Horizontal);
+  return 0;
+}
+
+int LLEmbeddedBrowserWindow::scrollBarMinimum(
+  LLQtWebKit::EOrientation orientation)
+{
+  if (orientation == LLQtWebKit::O_VERTICAL)
+    return d->mPage->mainFrame()->scrollBarMinimum(Qt::Vertical);
+  else if (orientation == LLQtWebKit::O_HORIZONTAL)
+    return d->mPage->mainFrame()->scrollBarMinimum(Qt::Horizontal);
+  return 0;
+}
+
+LLQtWebKit::EScrollBarPolicy LLEmbeddedBrowserWindow::scrollBarPolicy(
+  LLQtWebKit::EOrientation orientation)
+{
+  // get the policy
+  int value = -1;
+  if (orientation == LLQtWebKit::O_VERTICAL)
+    value = d->mPage->mainFrame()->scrollBarPolicy(Qt::Vertical);
+  else if (orientation == LLQtWebKit::O_HORIZONTAL)
+    value = d->mPage->mainFrame()->scrollBarPolicy(Qt::Horizontal);
+  else
+    return LLQtWebKit::SBP_LL_ERROR;
+
+  // return our corresponding enum value
+  if (value == Qt::ScrollBarAsNeeded)
+    return LLQtWebKit::SBP_AS_NEEDED;
+  else if (value == Qt::ScrollBarAlwaysOff)
+    return LLQtWebKit::SBP_ALWAYS_OFF;
+  else if (value == Qt::ScrollBarAlwaysOn)
+    return LLQtWebKit::SBP_ALWAYS_ON;
+  return LLQtWebKit::SBP_LL_ERROR;
+}
+
+int LLEmbeddedBrowserWindow::scrollBarValue(
+  LLQtWebKit::EOrientation orientation)
+{
+  if (orientation == LLQtWebKit::O_VERTICAL)
+    return d->mPage->mainFrame()->scrollBarValue(Qt::Vertical);
+  else if (orientation == LLQtWebKit::O_HORIZONTAL)
+    return d->mPage->mainFrame()->scrollBarValue(Qt::Horizontal);
+  return 0;
+}
+
+bool LLEmbeddedBrowserWindow::setScrollBarPolicy(
+  LLQtWebKit::EOrientation orientation, LLQtWebKit::EScrollBarPolicy policy)
+{
+  // set the corresponding Qt orientation value
+  Qt::Orientation qorientation;
+  if (orientation == LLQtWebKit::O_VERTICAL)
+    qorientation = Qt::Vertical;
+  else if (orientation == LLQtWebKit::O_HORIZONTAL)
+    qorientation = Qt::Horizontal;
+  else
+    return false;
+
+  // set the policy
+  if (policy == LLQtWebKit::SBP_AS_NEEDED)
+    d->mPage->mainFrame()->setScrollBarPolicy(qorientation,
+      Qt::ScrollBarAsNeeded);
+  else if (policy == LLQtWebKit::SBP_ALWAYS_OFF)
+    d->mPage->mainFrame()->setScrollBarPolicy(qorientation,
+      Qt::ScrollBarAlwaysOff);
+  else if (policy == LLQtWebKit::SBP_ALWAYS_ON)
+    d->mPage->mainFrame()->setScrollBarPolicy(qorientation,
+      Qt::ScrollBarAlwaysOn);
+  else
+    return false;
+  return true;
+}
+
+bool LLEmbeddedBrowserWindow::setScrollBarValue(
+  LLQtWebKit::EOrientation orientation, int value)
+{
+  // set the corresponding Qt orientation value
+  Qt::Orientation qorientation;
+  if (orientation == LLQtWebKit::O_VERTICAL)
+    qorientation = Qt::Vertical;
+  else if (orientation == LLQtWebKit::O_HORIZONTAL)
+    qorientation = Qt::Horizontal;
+  else
+    return false;
+
+  // set the value
+  d->mPage->mainFrame()->setScrollBarValue(qorientation, value);
+  return true;
+}
 
 // give focus to the browser so that input keyboard events work
 void LLEmbeddedBrowserWindow::focusBrowser(bool focus_browser)

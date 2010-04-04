@@ -110,6 +110,16 @@ public:
 		uint32_t native_virtual_key,
 		uint32_t native_modifiers);
 
+    bool scroll(int x, int y);
+    int scrollBarMaximum(LLQtWebKit::EOrientation orientation);
+    int scrollBarMinimum(LLQtWebKit::EOrientation orientation);
+    LLQtWebKit::EScrollBarPolicy scrollBarPolicy(
+      LLQtWebKit::EOrientation orientation);
+    int scrollBarValue(LLQtWebKit::EOrientation orientation);
+    bool setScrollBarPolicy(LLQtWebKit::EOrientation orientation,
+      LLQtWebKit::EScrollBarPolicy policy);
+    bool setScrollBarValue(LLQtWebKit::EOrientation orientation, int value);
+
     // allow consumers of this class and to observe browser events
     bool addObserver(LLEmbeddedBrowserWindowObserver* observer);
     bool remObserver(LLEmbeddedBrowserWindowObserver* observer);
