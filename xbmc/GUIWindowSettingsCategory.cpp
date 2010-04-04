@@ -432,6 +432,14 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
       control->SetDelayed();
     }
+    else if (strSetting.Equals("subtitles.border"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(35006), SUBTITLE_BORDER_OUTLINE);
+      pControl->AddLabel(g_localizeStrings.Get(35007), SUBTITLE_BORDER_OPAQUE);
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting.Equals("subtitles.style"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -440,6 +448,13 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(739), FONT_STYLE_BOLD);
       pControl->AddLabel(g_localizeStrings.Get(740), FONT_STYLE_ITALICS);
       pControl->AddLabel(g_localizeStrings.Get(741), FONT_STYLE_BOLD_ITALICS);
+      pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("subtitles.outline.width") || strSetting.Equals("subtitles.alpha")
+      || strSetting.Equals("subtitles.shadow.depth"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("subtitles.color"))

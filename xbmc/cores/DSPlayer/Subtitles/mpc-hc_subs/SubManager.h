@@ -4,7 +4,6 @@
 
 class CRenderedTextSubtitle;
 
-extern STSStyle g_style;
 extern BOOL g_overrideUserStyles;
 extern int g_subPicsBufferAhead;
 extern bool g_pow2tex;
@@ -24,6 +23,7 @@ public:
   void SetTimePerFrame(REFERENCE_TIME timePerFrame);
   void SetTime(REFERENCE_TIME rtNow);
 
+  void SetStyle(STSStyle& style);
   void SetSubPicProvider(ISubStream* pSubStream);
   void SetTextureSize(Com::SmartSize& pSize);
 
@@ -51,7 +51,10 @@ private:
 	int m_iSubtitleSel; // if(m_iSubtitleSel&(1<<31)): disabled
 	REFERENCE_TIME m_rtNow; //current time
 	double m_fps;
-	REFERENCE_TIME m_delay; 
+	REFERENCE_TIME m_delay;
+  
+  STSStyle m_style;
+  bool m_useDefaultStyle;
 
   Com::SmartSize m_textureSize;
 	Com::SmartSize m_lastSize;

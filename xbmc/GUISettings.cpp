@@ -614,6 +614,12 @@ void CGUISettings::Initialize()
   AddInt(sub, "subtitles.height", 289, 28, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
   AddInt(sub, "subtitles.style", 736, FONT_STYLE_BOLD, FONT_STYLE_NORMAL, 1, FONT_STYLE_BOLD_ITALICS, SPIN_CONTROL_TEXT);
   AddInt(sub, "subtitles.color", 737, SUBTITLE_COLOR_START + 1, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
+#ifdef _WIN32
+  AddInt(sub, "subtitles.border", 35005, SUBTITLE_BORDER_OUTLINE, SUBTITLE_BORDER_OUTLINE, 1, SUBTITLE_BORDER_OPAQUE, SPIN_CONTROL_TEXT);
+  AddInt(sub, "subtitles.outline.width", 35008, 2, 0, 1, 100, SPIN_CONTROL_INT);
+  AddInt(sub, "subtitles.shadow.depth", 35009, 3, 0, 1, 100, SPIN_CONTROL_INT);
+  AddInt(sub, "subtitles.alpha", 35010, 0, 0, 5, 255, SPIN_CONTROL_INT);
+#endif
   AddString(sub, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(sub, "subtitles.sep1");
   AddPath(sub, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);

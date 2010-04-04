@@ -2249,4 +2249,11 @@
   <string id="35002">Use EVR instead of VMR9 Renderer</string>
   <string id="35003">Audio Renderer</string>
   <string id="35004">Set all stable formats to libavcodec (ffdshow)</string>
+  <!-- Subtitles -->
+  <string id="35005">- Border line</string>
+  <string id="35006">Outline</string>
+  <string id="35007">Opaque</string>
+  <string id="35008">- Outline width</string>
+  <string id="35009">- Shadow depth</string>
+  <string id="35010">- Alpha</string>
 </strings>

@@ -2604,24 +2604,10 @@
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\smartlist.h"
 						>
-						<FileConfiguration
-							Name="Debug (DirectX)|Win32"
-							>
-							<Tool
-								Name="VCCustomBuildTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\smartptr.h"
 						>
-						<FileConfiguration
-							Name="Debug (DirectX)|Win32"
-							>
-							<Tool
-								Name="VCCustomBuildTool"
-							/>
-						</FileConfiguration>
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.cpp"

@@ -29,6 +29,7 @@
 #include "FGFilter.h"
 #include "DShowUtil/smartptr.h"
 #include "WindowingFactory.h"
+//#include "CharsetConverter.h"
 
 CStreamsManager *CStreamsManager::m_pSingleton = NULL;
 
@@ -723,6 +724,13 @@ CSubtitleManager::~CSubtitleManager()
   m_dll.Unload();
 }
 
+#define FONT_STYLE_NORMAL       0
+#define FONT_STYLE_BOLD         1
+#define FONT_STYLE_ITALICS      2
+#define FONT_STYLE_BOLD_ITALICS 3
+
+static color_t color[8] = { 0x0000FFFF, 0x00FFFFFF, 0x00FF9900, 0x0000FF00, 0x00FFCC, 0x00FFFF00, 0x00E5E5E5, 0x00C0C0C0 };
+
 void CSubtitleManager::Initialize()
 {
   // Initialize subtitles
@@ -743,6 +751,44 @@ void CSubtitleManager::Initialize()
     // No internal subs
   } 
   m_pManager->SetEnable(true);
+
+  STSStyle style;
+  style.SetDefault();
+  
+  // Build style based on XBMC settings
+  //subtitles.style subtitles.color subtitles.height subtitles.font subtitles.charset
+  style.colors[0] = color[g_guiSettings.GetInt("subtitles.color")];
+  style.alpha[0] = g_guiSettings.GetInt("subtitles.alpha");
+  style.fontSize = g_guiSettings.GetInt("subtitles.height");
+  int fontStyle = g_guiSettings.GetInt("subtitles.style");
+  switch (fontStyle)
+  {
+  case FONT_STYLE_NORMAL:
+  default:
+    style.fontWeight = FW_NORMAL;
+    break;
+  case FONT_STYLE_BOLD:
+    style.fontWeight = FW_BOLD;
+    break;
+  case FONT_STYLE_ITALICS:
+    style.fontWeight = FW_NORMAL;
+    style.fItalic = true;
+    break;
+  case FONT_STYLE_BOLD_ITALICS:
+    style.fItalic = true;
+    style.fontWeight = FW_BOLD;
+    break;
+  }
+
+  style.charSet = g_charsetConverter.getCharsetIdByName(g_guiSettings.GetString("subtitles.charset"));
+
+  style.borderStyle = g_guiSettings.GetInt("subtitles.border");
+  style.shadowDepthX = style.shadowDepthY = g_guiSettings.GetInt("subtitles.shadow.depth");
+  style.outlineWidthX = style.outlineWidthY = g_guiSettings.GetInt("subtitles.outline.width");
+
+
+
+  m_pManager->SetStyle(style);
 }
 
 void CSubtitleManager::Unload()
@@ -865,33 +911,8 @@ void CSubtitleManager::SetSubtitle( int iStream )
 
   if (m_pStreamManager->m_pIAMStreamSelect)
   {
-
-    /*int i = 0; long lIndex = -1;
-    for (std::vector<SSubtitleStreamInfos *>::iterator it = m_subtitleStreams.begin();
-      it != m_subtitleStreams.end(); ++it, i++)
-    {
-      if (iStream == i)
-        lIndex = (*it)->IAMStreamSelect_Index;
-      if ((*it)->flags == AMSTREAMSELECTINFO_ENABLED)
-      {
-        m_pIAMStreamSelect->Enable((*it)->IAMStreamSelect_Index, 0);
-        (*it)->flags = 0;
-        if (lIndex != -1)
-          break;
-      }
-    }*/
-
     if (disableIndex >= 0 && m_subtitleStreams[disableIndex]->connected)
       DisconnectCurrentSubtitlePins();
-
-    /*if (! m_bSubtitlesVisible)
-    {
-      // If subtitles aren't visible, only disconnect the subtitle track,
-      // and don't connect the new one. We change the flag for the xbmc gui
-      m_subtitleStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
-      m_pStreamManager->m_bChangingStream = false;
-      return;
-    }*/
 
     if (SUCCEEDED(m_pStreamManager->m_pIAMStreamSelect->Enable(m_subtitleStreams[enableIndex]->IAMStreamSelect_Index, AMSTREAMSELECTENABLE_ENABLE)))
     {
@@ -926,16 +947,6 @@ void CSubtitleManager::SetSubtitle( int iStream )
 
     m_subtitleStreams[disableIndex]->flags = 0;
     m_subtitleStreams[disableIndex]->connected = false;
-
-    if (! m_bSubtitlesVisible)
-    {
-      // If subtitles aren't visible, don't connect pins. Only change the flag
-      // for the xbmc gui
-      m_subtitleStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
-      m_subtitleStreams[enableIndex]->connected = false;
-      goto done;
-    }
-
 
     if (! connectedToPin)
     {
@@ -1105,8 +1116,6 @@ float CSubtitleManager::GetSubtitleDelay( void )
 IPin *CSubtitleManager::GetFirstSubtitlePin( void )
 {
   PIN_DIRECTION  pindir;
-  if (g_dsconfig.pIffdshowDecoder)
-    g_dsconfig.pIffdshowDecoder->compat_putParam(IDFF_subTextpin, 1); // ffdshow accept internal subtitle
 
   BeginEnumFilters(CDSGraph::m_pFilterGraph, pEF, pBF)
   {
