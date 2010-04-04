@@ -1084,6 +1084,16 @@
             <scroll>true</scroll>
           </control>
 
+		<control type="image">
+			<visible>true</visible>
+			<posx>330</posx>
+			<posy>0</posy>
+			<height>91</height>
+			<width>91</width>
+			<info>Listitem.Property(mediaTag::movieStudio)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+
           <control type="label">
             <description>Year</description>
             <posy>30</posy>

@@ -2091,7 +2091,7 @@
 	 <control type="label">
 	       <posx>81</posx>
 	       <posy>204</posy>
-	       <width>153</width>
+	       <width>132</width>
 	       <align>center</align>
 	       <aligny>center</aligny>
 	       <scroll>false</scroll>
@@ -2114,7 +2114,7 @@
 	 <control type="label">
 	       <posx>81</posx>
 	       <posy>204</posy>
-	       <width>153</width>
+	       <width>132</width>
 	       <align>center</align>
 	       <aligny>center</aligny>
 	       <scroll>false</scroll>
