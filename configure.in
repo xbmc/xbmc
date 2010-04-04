@@ -1608,9 +1608,9 @@ XB_CONFIG_MODULE([lib/cpluff], [
 
 XB_CONFIG_MODULE([lib/llqtwebkit], [
   if test "$use_vanilla_qt" = "no"; then
-    qmake
+    qmake `test $use_debug = "yes" && echo "CONFIG+=debug"`
   else
-    qmake DEFINES+=VANILLA_QT
+    qmake DEFINES+=VANILLA_QT `test $use_debug = "yes" && echo "CONFIG+=debug"`
   fi
 ], [$DISABLE_LLQTWEBKIT_BUILD])
 
