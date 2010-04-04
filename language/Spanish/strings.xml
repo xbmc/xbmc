@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: A.Soto-->
 <!-- Revisado por MaDDoGo-->
@@ -721,6 +721,7 @@
 	<string id="1048">- Nombre usuario</string>
 	<string id="1049">Configuración de script</string>
 	<string id="1050">Individual</string>
+  <string id="1051">Introduzca la dirección web</string>
 	<string id="1200">Cliente SMB</string>
 	<string id="1202">Grupo de trabajo</string>
 	<string id="1203">Usuario por defecto</string>
@@ -816,6 +817,7 @@
 	<string id="10018">Configuración-&gt;Red</string>
 	<string id="10019">Configuración-&gt;Apariencia</string>
 	<string id="10020">Scripts</string>
+	<string id="10021">Navegador Web</string>
 	<string id="10028">Vídeos/Lista de reproducción</string>
 	<string id="10034">Configuración-&gt;Perfiles</string>
 	<string id="10100">Cuadro de diálogo Sí/No</string>

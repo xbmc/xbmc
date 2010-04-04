@@ -181,6 +181,7 @@ const BUILT_IN commands[] = {
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
   { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
+  { "LIRC.Send",                  true,   "Sends a command to LIRC" },
 #endif
 #ifdef HAS_LCD
   { "LCD.Suspend",                false,  "Suspends LCDproc" },
@@ -1284,6 +1285,17 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     g_RemoteControl.setUsed(true);
     g_RemoteControl.Initialize();
+  }
+  else if (execute.Equals("lirc.send"))
+  {
+    CStdString command;
+    for (int i = 0; i < (int)params.size(); i++)
+    {
+      command += params[i];
+      if (i < (int)params.size() - 1)
+        command += ' ';
+    }
+    g_RemoteControl.AddSendCommand(command);
   }
 #endif
 #ifdef HAS_LCD
