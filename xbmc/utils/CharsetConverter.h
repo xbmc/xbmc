@@ -69,6 +69,9 @@ public:
 
   std::vector<CStdString> getCharsetLabels();
   CStdString& getCharsetLabelByName(const CStdString& charsetName);
+#ifdef _WIN32
+  int getCharsetIdByName(const CStdString& charsetName);
+#endif
   CStdString& getCharsetNameByLabel(const CStdString& charsetLabel);
   bool isBidiCharset(const CStdString& charset);
 
