@@ -30,6 +30,9 @@
 using namespace XFILE;
 CDsSettings::CDsSettings(void)
 {
+  nSPCSize = 3; // Threading queue
+  nSPCMaxRes = 0; // default
+  fSPCAllowAnimationWhenBuffering = false; // No Anim
 }
 
 CDsSettings::~CDsSettings(void)

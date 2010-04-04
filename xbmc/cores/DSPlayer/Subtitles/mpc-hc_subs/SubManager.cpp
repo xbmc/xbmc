@@ -126,7 +126,8 @@ HRESULT CSubManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com:
   if (m_lastSize != renderSize && renderRect.right > 0 && renderRect.bottom > 0)
   { 
     m_pAllocator->ChangeDevice(m_d3DDev);
-    m_pAllocator->SetCurVidRect(Com::SmartRect(Com::SmartPoint(0,0), renderSize));
+    m_pAllocator->SetCurSize(renderSize);
+    m_pAllocator->SetCurVidRect(renderRect);
     m_pSubPicQueue->Invalidate(m_rtNow+1000000);
     m_lastSize = renderSize;
   }

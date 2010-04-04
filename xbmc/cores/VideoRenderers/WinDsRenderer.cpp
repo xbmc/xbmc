@@ -155,11 +155,17 @@ void CWinDsRenderer::RenderSubtitleTexture()
 
     Com::SmartPtr<IDirect3DTexture9> pTexture;
     Com::SmartRect pSrc, pDst, pSize(m_destRect.x1, m_destRect.y1, m_destRect.x2, m_destRect.y2);
+    //Com::SmartRect pSrc, pDst, pSize;
+    //GetWindowRect(g_Windowing.GetHwnd(), &pSize);
     if (SUCCEEDED(CStreamsManager::getSingleton()->SubtitleManager->GetTexture(pTexture, pSrc, pDst, pSize)))
     {
       do
       {
         CSingleLock lock(g_graphicsContext);
+
+        // HACK
+        //pDst.top -= m_destRect.y1;
+        //pDst.bottom -= m_destRect.y1;
 
         D3DSURFACE_DESC d3dsd;
         ZeroMemory(&d3dsd, sizeof(d3dsd));
