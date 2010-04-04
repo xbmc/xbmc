@@ -1425,11 +1425,11 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStdStringW str, STSStyl
 		}
 
 		if(!cmd.Find(L"1c") || !cmd.Find(L"2c") || !cmd.Find(L"3c") || !cmd.Find(L"4c"))
-			params.push_back(cmd.Mid(2).Trim((wchar_t) L"&H")), cmd = cmd.Left(2);
+			params.push_back(cmd.Mid(2).Trim(L"&H")), cmd = cmd.Left(2);
 		else if(!cmd.Find(L"1a") || !cmd.Find(L"2a") || !cmd.Find(L"3a") || !cmd.Find(L"4a"))
-			params.push_back(cmd.Mid(2).Trim((wchar_t) L"&H")), cmd = cmd.Left(2);
+			params.push_back(cmd.Mid(2).Trim(L"&H")), cmd = cmd.Left(2);
 		else if(!cmd.Find(L"alpha"))
-			params.push_back(cmd.Mid(5).Trim((wchar_t) L"&H")), cmd = cmd.Left(5);
+			params.push_back(cmd.Mid(5).Trim(L"&H")), cmd = cmd.Left(5);
 		else if(!cmd.Find(L"an"))
 			params.push_back(cmd.Mid(2)), cmd = cmd.Left(2);
 		else if(!cmd.Find(L"a"))
@@ -1445,7 +1445,7 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStdStringW str, STSStyl
 		else if(!cmd.Find(L"clip"))
 			;
 		else if(!cmd.Find(L"c"))
-			params.push_back(cmd.Mid(1).Trim((wchar_t) L"&H")), cmd = cmd.Left(1);
+			params.push_back(cmd.Mid(1).Trim(L"&H")), cmd = cmd.Left(1);
         else if(!cmd.Find(L"fade"))
 			;
 		else if(!cmd.Find(L"fe"))
@@ -1965,7 +1965,7 @@ bool CRenderedTextSubtitle::ParseHtmlTag(CSubtitle* sub, CStdStringW str, STSSty
 		return(true);
 
 	bool fClosing = str[0] == '/';
-	str.Trim((wchar_t) L" /");
+	str.Trim(L" /");
 
 	int i = str.Find(' ');
 	if(i < 0) i = str.GetLength();

@@ -964,7 +964,7 @@ static CStdStringW SMI2SSA(CStdStringW str, int CharSet)
 			CStdStringW arg ;
 
 			args.Remove('\"'); args.Remove('#');	// may include 2 * " + #
-			arg.TrimLeft(); arg.TrimRight(L" >");
+			args.TrimLeft(); args.TrimRight(L" >");
 
 			for (;;)
 			{

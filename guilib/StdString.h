@@ -3608,6 +3608,11 @@ public:
     return TrimLeft(tTrim).TrimRight(tTrim);
   }
 
+  MYTYPE& Trim(PCMYSTR szTrimChars)
+  {
+    return TrimLeft(szTrimChars).TrimRight(szTrimChars);
+  }
+
   MYTYPE& TrimLeft()
   {
     this->erase(this->begin(),
