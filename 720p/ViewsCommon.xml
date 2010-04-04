@@ -1109,7 +1109,7 @@
             <info>ListItem.Plot</info>
           </control>
 
-			<control type="group">
+		  <control type="group">
 				<description>Media Flags</description>
 				<posy>405</posy>
 				<include>PanelStreamFlags</include>
@@ -1146,17 +1146,18 @@
 
           <control type="textbox">
             <description>Plot/Details</description>
-            <posy>90</posy>
+            <posy>85</posy>
             <width>PanelStreamDetailTextWidth</width>
-            <height>319</height>
+            <height>300</height>
             <info>ListItem.Plot</info>
           </control>
 
-			<control type="group">
+		  <control type="group">
 				<description>Media Flags</description>
-				<posy>425</posy>
+				<posy>405</posy>
 				<include>PanelStreamFlags</include>
 			</control>
+
 		</control>
 
         <control type="group">

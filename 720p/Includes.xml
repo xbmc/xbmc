@@ -2023,6 +2023,7 @@
   <include name="PanelStreamImage">
     <include>PanelStreamImageDims</include>
     <info>ListItem.Icon</info>
+	<bordertexture>amt-blank-poster-nofocus.png</bordertexture>
     <bordersize>3</bordersize>
   </include>
 
