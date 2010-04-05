@@ -53,10 +53,8 @@ bool CGUIWebBrowserControl::OnAction(const CAction &action)
 
 EVENT_RESULT CGUIWebBrowserControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
-  {
-    //TODO: implement handling of mouse events
-    return EVENT_RESULT_HANDLED;
-  }
+  EVENT_RESULT result = g_webBrowserObserver.mouseEvent(point, event);
+  if (result != EVENT_RESULT_UNHANDLED)
+    return result;
   return CGUIControl::OnMouseEvent(point, event);
 }

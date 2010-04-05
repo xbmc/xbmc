@@ -23,7 +23,6 @@
 #include "GraphicContext.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/File.h"
-#include "KeyboardStat.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 
@@ -319,9 +318,56 @@ void CGUIEmbeddedBrowserWindowObserver::mouseMove(int xIn , int yIn)
     LLQtWebKit::KM_MODIFIER_NONE);
 }
 
+EVENT_RESULT CGUIEmbeddedBrowserWindowObserver::mouseEvent(const CPoint &point,
+  const CMouseEvent &event)
+{
+  // adjust mouse coordinates for inputting to browser
+  int x = (point.x * m_browserWindowWidth) / m_appWindowWidth;
+  int y = (point.y * m_browserWindowHeight) / m_appWindowHeight;
+
+  // translate our mouse events to LLQtWebKit mouse events
+  int id = event.m_id;
+  LLQtWebKit::EMouseEvent llevent = LLQtWebKit::ME_MOUSE_MOVE;
+  LLQtWebKit::EMouseButton llmousebutton = LLQtWebKit::MB_MOUSE_BUTTON_LEFT;
+  if (id == ACTION_MOUSE_LEFT_CLICK)
+  {
+    llevent = LLQtWebKit::ME_MOUSE_DOWN;
+  }
+  else if (id == ACTION_MOUSE_RIGHT_CLICK)
+  {
+    llevent = LLQtWebKit::ME_MOUSE_DOWN;
+    llmousebutton = LLQtWebKit::MB_MOUSE_BUTTON_RIGHT;
+  }
+  else if (id == ACTION_MOUSE_MIDDLE_CLICK)
+  {
+    llevent = LLQtWebKit::ME_MOUSE_DOWN;
+    llmousebutton = LLQtWebKit::MB_MOUSE_BUTTON_MIDDLE;
+  }
+  else if (id == ACTION_MOUSE_DOUBLE_CLICK)
+  {
+    llevent = LLQtWebKit::ME_MOUSE_DOUBLE_CLICK;
+  }
+
+  // Send a mouse event to LLQtWebKit
+  if (llevent == LLQtWebKit::ME_MOUSE_DOWN)
+  {
+    if (LLQtWebKit::getInstance()->mouseEvent(m_browserWindowId, llevent,
+      llmousebutton, x, y, LLQtWebKit::KM_MODIFIER_NONE) &&
+      LLQtWebKit::getInstance()->mouseEvent(m_browserWindowId,
+        LLQtWebKit::ME_MOUSE_UP, llmousebutton, x, y,
+        LLQtWebKit::KM_MODIFIER_NONE))
+      return EVENT_RESULT_HANDLED;
+  }
+  else if (LLQtWebKit::getInstance()->mouseEvent(m_browserWindowId, llevent,
+    llmousebutton, x, y, LLQtWebKit::KM_MODIFIER_NONE))
+    return EVENT_RESULT_HANDLED;
+  return EVENT_RESULT_UNHANDLED;
+}
+
 bool CGUIEmbeddedBrowserWindowObserver::keyboard(const CAction &action)
 {
   int id = action.GetID();
+  uint32_t key = 0;
   if (id == ACTION_MOVE_LEFT)
   {
     int value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
@@ -370,16 +416,23 @@ bool CGUIEmbeddedBrowserWindowObserver::keyboard(const CAction &action)
     return LLQtWebKit::getInstance()->setScrollBarValue(m_browserWindowId,
       LLQtWebKit::O_VERTICAL, value);
   }
+  else if (id == ACTION_BACKSPACE)
+  {
+    key = LLQtWebKit::KEY_BACKSPACE;
+  }
 
-  uint32_t key = 0;
-  CStdString str;
+  CStdString str = "";
   wchar_t wc = action.GetUnicode();
   CStdStringW wc2(&wc);
   g_charsetConverter.wToUTF8(wc2, str);
 
   // send event to LLQtWebKit
-  return LLQtWebKit::getInstance()->keyboardEvent(m_browserWindowId,
-    LLQtWebKit::KE_KEY_DOWN, key, str.c_str(), LLQtWebKit::KM_MODIFIER_NONE);
+  if (LLQtWebKit::getInstance()->keyboardEvent(m_browserWindowId,
+    LLQtWebKit::KE_KEY_DOWN, key, str.c_str(), LLQtWebKit::KM_MODIFIER_NONE) &&
+    LLQtWebKit::getInstance()->keyboardEvent(m_browserWindowId,
+      LLQtWebKit::KE_KEY_UP, key, str.c_str(), LLQtWebKit::KM_MODIFIER_NONE))
+    return true;
+  return false;
 }
 
 /* Function to flag that an update is required - page grab happens in idle() so

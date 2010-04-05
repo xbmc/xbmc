@@ -31,6 +31,7 @@
 
 #include "StdString.h"
 #include "Key.h"
+#include "GUIControl.h"
 
 #include "../lib/llqtwebkit/llqtwebkit.h"
 
@@ -45,6 +46,7 @@ public:
   void Render(float xPos, float yPos, float width, float height);
   void mouseButton(int button, int state, int xIn, int yIn);
   void mouseMove(int xIn , int yIn);
+  EVENT_RESULT mouseEvent(const CPoint &point, const CMouseEvent &event);
   bool keyboard(const CAction &action);
   void onPageChanged( const EventType &eventIn);
   void onNavigateBegin(const EventType &eventIn);
