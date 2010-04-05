@@ -33,7 +33,7 @@
 #include <GL/gl.h>
 
 /* Set this to a youtube vid until keyboard input is working */
-#define DEFAULT_HOMEURL "http://www.youtube.com/watch?v=Ohjkj6zOucs&hd=1&fs=0"
+#define DEFAULT_HOMEURL "http://www.google.com"
 #define SCROLL_VALUE_INCREMENTS      10
 #define SCROLL_VALUE_PAGE_INCREMENTS 500
 
