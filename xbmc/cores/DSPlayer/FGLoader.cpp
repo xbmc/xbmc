@@ -137,8 +137,9 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
     CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.m_strPath.c_str());
     if(m_File.Open(pFileItem.m_strPath, READ_TRUNCATED | READ_BUFFERED))
     {
-      CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File, &Filters.Source.pBF, &hr);
-
+      Com::SmartPtr<IBaseFilter> pSrc;
+      CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File, &pSrc, &hr);
+      Filters.Source.pBF = pSrc;
       if (SUCCEEDED(hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC File Source")))
         CLog::Log(LOGNOTICE, "%s Successfully added xbmc source filter to the graph", __FUNCTION__);
       else
@@ -351,10 +352,10 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
 
   if (! Filters.Splitter.pBF)
   {
-    if (! CFilterCoreFactory::GetSplitterFilter(pFileItem, filter))
+    if ( FAILED(CFilterCoreFactory::GetSplitterFilter(pFileItem, filter)) )
       return E_FAIL;
     
-    if (FAILED(InsertSplitter(pFileItem, filter)))
+    if ( FAILED(InsertSplitter(pFileItem, filter)))
     {
       return E_FAIL;
     }

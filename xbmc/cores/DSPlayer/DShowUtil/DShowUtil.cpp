@@ -465,6 +465,20 @@ CStdStringW DShowUtil::GetFilterName(IBaseFilter* pBF)
   return(name);
 }
 
+CStdString DShowUtil::GetPinMainTypeString(IPin* pPin)
+{
+  AM_MEDIA_TYPE pMediaType;
+  pPin->ConnectionMediaType(&pMediaType);
+  if (pMediaType.majortype == MEDIATYPE_Audio)
+    return CStdString("Audio pin");
+  if (pMediaType.majortype == MEDIATYPE_Video)
+    return CStdString("Video pin");
+  if (pMediaType.majortype == MEDIATYPE_Text)
+    return CStdString("Text pin");
+
+  return CStdString("");
+}
+
 CStdStringW DShowUtil::GetPinName(IPin* pPin)
 {
   CStdStringW name;

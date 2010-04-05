@@ -215,23 +215,27 @@ STDMETHODIMP CFGManager::ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MED
     if(DShowUtil::GetCLSID(pBFUS) == clsid) return VFW_E_CANNOT_CONNECT;
   }
 
+  
+
   HRESULT hr = Com::SmartQIPtr<IFilterGraph2>(m_pUnkInner)->ConnectDirect(pPinOut, pPinIn, pmt);
 
 #ifdef _DSPLAYER_DEBUG
   CStdString filterNameIn, filterNameOut;
   CStdString pinNameIn, pinNameOut;
   Com::SmartPtr<IBaseFilter> pBFOut = DShowUtil::GetFilterFromPin(pPinOut);
-
+  CStdString strPinType;
+  strPinType = DShowUtil::GetPinMainTypeString(pPinOut);
   g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBFOut), filterNameOut);
   g_charsetConverter.wToUTF8(DShowUtil::GetPinName(pPinOut), pinNameOut);
   g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), filterNameIn);
   g_charsetConverter.wToUTF8(DShowUtil::GetPinName(pPinIn), pinNameIn);
 
-  CLog::Log(LOGDEBUG, "%s: %s connecting %s.%s pin to %s.%s", __FUNCTION__, 
+  CLog::Log(LOGDEBUG, "%s: %s connecting %s.%s.Type:%s pin to %s.%s", __FUNCTION__,
                                                                     (SUCCEEDED(hr) ? "Succeeded": "Failed"),
-                                                                    filterNameOut.c_str(), 
-                                                                    pinNameOut.c_str(), 
-                                                                    filterNameIn.c_str(), 
+                                                                    filterNameOut.c_str(),
+                                                                    pinNameOut.c_str(),
+                                                                    strPinType.c_str(),
+                                                                    filterNameIn.c_str(),
                                                                     pinNameIn.c_str());
 #endif
 

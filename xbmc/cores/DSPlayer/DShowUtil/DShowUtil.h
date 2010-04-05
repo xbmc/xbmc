@@ -183,6 +183,7 @@ public:
   static IPin* FindPin(IBaseFilter* pBF, PIN_DIRECTION direction, const AM_MEDIA_TYPE* pRequestedMT);
   static IPin* FindPinMajor(IBaseFilter* pBF, PIN_DIRECTION direction, const AM_MEDIA_TYPE* pRequestedMT);
   static CStdStringW GetFilterName(IBaseFilter* pBF);
+  static CStdString GetPinMainTypeString(IPin* pPin);
   static CStdStringW GetPinName(IPin* pPin);
   static IFilterGraph* GetGraphFromFilter(IBaseFilter* pBF);
   static IBaseFilter* GetFilterFromPin(IPin* pPin);

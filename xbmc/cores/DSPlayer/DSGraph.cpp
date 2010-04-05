@@ -219,7 +219,7 @@ void CDSGraph::UpdateTime()
 
  
   
-  if (( m_State.time >= m_State.time_total ))
+  if (( m_State.time_total != 0 && m_State.time >= m_State.time_total ))
     m_bReachedEnd = true;
 
   
