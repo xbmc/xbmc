@@ -21,6 +21,8 @@
 
 #include "GUIEmbeddedBrowserWindowObserver.h"
 #include "GraphicContext.h"
+#include "GUIDialogWebBrowserOSD.h"
+#include "GUIWindowManager.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "FileSystem/File.h"
 #include "utils/log.h"
@@ -368,57 +370,83 @@ bool CGUIEmbeddedBrowserWindowObserver::keyboard(const CAction &action)
 {
   int id = action.GetID();
   uint32_t key = 0;
+  bool do_scroll = false;
+  int value = 0;
+  LLQtWebKit::EOrientation orientation;
   if (id == ACTION_MOVE_LEFT)
   {
-    int value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
+    do_scroll = true;
+    value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
       LLQtWebKit::O_HORIZONTAL);
     value -= SCROLL_VALUE_INCREMENTS;
-    return LLQtWebKit::getInstance()->setScrollBarValue(m_browserWindowId,
-      LLQtWebKit::O_HORIZONTAL, value);
+    orientation = LLQtWebKit::O_HORIZONTAL;
   }
   else if (id == ACTION_MOVE_RIGHT)
   {
-    int value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
+    do_scroll = true;
+    value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
       LLQtWebKit::O_HORIZONTAL);
     value += SCROLL_VALUE_INCREMENTS;
-    return LLQtWebKit::getInstance()->setScrollBarValue(m_browserWindowId,
-      LLQtWebKit::O_HORIZONTAL, value);
+    orientation = LLQtWebKit::O_HORIZONTAL;
   }
   else if (id == ACTION_MOVE_UP)
   {
-    int value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
+    do_scroll = true;
+    value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
       LLQtWebKit::O_VERTICAL);
     value -= SCROLL_VALUE_INCREMENTS;
-    return LLQtWebKit::getInstance()->setScrollBarValue(m_browserWindowId,
-      LLQtWebKit::O_VERTICAL, value);
+    orientation = LLQtWebKit::O_VERTICAL;
   }
   else if (id == ACTION_MOVE_DOWN)
   {
-    int value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
+    do_scroll = true;
+    value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
       LLQtWebKit::O_VERTICAL);
     value += SCROLL_VALUE_INCREMENTS;
-    return LLQtWebKit::getInstance()->setScrollBarValue(m_browserWindowId,
-      LLQtWebKit::O_VERTICAL, value);
+    orientation = LLQtWebKit::O_VERTICAL;
   }
   else if (id == ACTION_PAGE_UP)
   {
-    int value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
+    do_scroll = true;
+    value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
       LLQtWebKit::O_VERTICAL);
     value -= SCROLL_VALUE_PAGE_INCREMENTS;
-    return LLQtWebKit::getInstance()->setScrollBarValue(m_browserWindowId,
-      LLQtWebKit::O_VERTICAL, value);
+    orientation = LLQtWebKit::O_VERTICAL;
   }
   else if (id == ACTION_PAGE_DOWN)
   {
-    int value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
+    do_scroll = true;
+    value = LLQtWebKit::getInstance()->scrollBarValue(m_browserWindowId,
       LLQtWebKit::O_VERTICAL);
     value += SCROLL_VALUE_PAGE_INCREMENTS;
-    return LLQtWebKit::getInstance()->setScrollBarValue(m_browserWindowId,
-      LLQtWebKit::O_VERTICAL, value);
+    orientation = LLQtWebKit::O_VERTICAL;
   }
   else if (id == ACTION_BACKSPACE)
   {
     key = LLQtWebKit::KEY_BACKSPACE;
+  }
+
+  // Check if we're scrolling
+  if (do_scroll)
+  {
+    // Scroll first
+    bool retval = LLQtWebKit::getInstance()->setScrollBarValue(
+      m_browserWindowId, orientation, value);
+
+    /* Display the web browser OSD if the window can't be scrolled any farther
+     * up or to the left.
+     */
+    if (value < 0)
+    {
+      CGUIDialogWebBrowserOSD *pOSD =
+        (CGUIDialogWebBrowserOSD *)g_windowManager.GetWindow(
+          WINDOW_DIALOG_WEB_BROWSER_OSD);
+      if (pOSD)
+        pOSD->DoModal();
+    }
+
+    // Return the return value from LLQtWebKit::setScrollBarValue
+    return retval;
   }
 
   CStdString str = "";
