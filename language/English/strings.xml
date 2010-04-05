@@ -2249,11 +2249,18 @@
   <string id="35002">Use EVR instead of VMR9 Renderer</string>
   <string id="35003">Audio Renderer</string>
   <string id="35004">Set all stable formats to libavcodec (ffdshow)</string>
-  <!-- Subtitles -->
-  <string id="35005">- Border line</string>
-  <string id="35006">Outline</string>
-  <string id="35007">Opaque</string>
-  <string id="35008">- Outline width</string>
-  <string id="35009">- Shadow depth</string>
-  <string id="35010">- Alpha</string>
+  <string id="35005">Nearest neighbor</string>
+  <string id="35006">Bilinear</string>
+  <string id="35007">Bilinear (PS 2.0)</string>
+  <string id="35008">Bicubic A=-0.60 (PS 2.0)</string>
+  <string id="35009">Bicubic A=-0.75 (PS 2.0)</string>
+  <string id="35010">Bicubic A=-1.00 (PS 2.0)</string>
+
+  <!--  35050-35100 Directshow Subtitles -->
+  <string id="35050">- Border line</string>
+  <string id="35051">Outline</string>
+  <string id="35052">Opaque</string>
+  <string id="35053">- Outline width</string>
+  <string id="35054">- Shadow depth</string>
+  <string id="35055">- Alpha</string>
 </strings>

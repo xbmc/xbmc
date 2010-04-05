@@ -25,22 +25,21 @@
 #include "cores/DSPlayer/DShowUtil/DSGeometry.h"
 
 #include <vector>
-typedef struct SubtitleStyle_sss
-{
-  wchar_t* fontName; 
-  int fontColor;
-  int fontIsBold;
-  int fontSize;
-  int fontCharset;
-  int shadow;
-  int borderWidth;
-  int isBorderOutline; //outline or opaque box
-} SubtitleStyle_ttt;
 enum
 {
   VIDRNDT_AP_SURFACE,
   VIDRNDT_AP_TEXTURE2D,
   VIDRNDT_AP_TEXTURE3D,
+};
+
+enum DS_RESIZERS
+{
+  DS_NEAREST_NEIGHBOR=0,
+  DS_BILINEAR,
+  DS_BILINEAR_2,
+  DS_BILINEAR_2_60,
+  DS_BILINEAR_2_75,
+  DS_BILINEAR_2_100
 };
 
 typedef struct
@@ -50,6 +49,7 @@ typedef struct
   int bpp, freq;
   DWORD dmDisplayFlags;
 } dispmode;
+
 typedef struct
 {
   bool bEnabled;
@@ -61,6 +61,8 @@ typedef struct
   dispmode dmFullscreenRes23d976Hz;
   dispmode dmFullscreenRes29d97Hz;
 }  AChFR;
+
+
 class TiXmlElement;
 
 class CDsSettings
@@ -185,7 +187,6 @@ public:
   LCID idMenuLang, idAudioLang, idSubtitlesLang;
   bool fAutoSpeakerConf;
 
-  SubtitleStyle_ttt subdefstyle;
   bool fOverridePlacement;
   int nHorPos, nVerPos;
   int nSPCSize;

@@ -39,6 +39,7 @@
 using namespace std;
 #ifdef HAS_DX
 #include "cores/DSPlayer/DSConfig.h"
+#include "cores/DSPlayer/Filters/RendererSettings.h"
 #include "DShowUtil/DShowUtil.h"
 #include "CharsetConverter.h"
 #include "LocalizeStrings.h"
@@ -109,6 +110,9 @@ void CGUIDialogVideoSettings::CreateSettings()
 
     AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_settings.m_currentVideoSettings.m_InterlaceMethod, entries);
   }
+#ifdef HAS_DX
+  if ( g_application.GetCurrentPlayer() == PCID_DVDPLAYER )
+#endif
   {
     vector<pair<int, int> > entries;
     entries.push_back(make_pair(VS_SCALINGMETHOD_NEAREST          , 16301));
@@ -136,6 +140,20 @@ void CGUIDialogVideoSettings::CreateSettings()
 
     AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&g_settings.m_currentVideoSettings.m_ScalingMethod, entries);
   }
+#ifdef HAS_DX
+  else if ( g_application.GetCurrentPlayer() == PCID_DSPLAYER )
+  {
+    vector<pair<int, int> > entries;
+    entries.push_back(make_pair(DS_NEAREST_NEIGHBOR  , 35005));
+    entries.push_back(make_pair(DS_BILINEAR          , 35006));
+    entries.push_back(make_pair(DS_BILINEAR_2        , 35007));
+    entries.push_back(make_pair(DS_BILINEAR_2_60     , 35008));
+    entries.push_back(make_pair(DS_BILINEAR_2_75     , 35009));
+    entries.push_back(make_pair(DS_BILINEAR_2_100    , 35010));
+    
+    AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&g_dsSettings.iDX9Resizer, entries);
+  }
+#endif
   AddBool(VIDEO_SETTINGS_CROP, 644, &g_settings.m_currentVideoSettings.m_Crop);
   {
     const int entries[] = {630, 631, 632, 633, 634, 635, 636 };

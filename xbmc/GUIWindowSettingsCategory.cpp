@@ -436,8 +436,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(35006), SUBTITLE_BORDER_OUTLINE);
-      pControl->AddLabel(g_localizeStrings.Get(35007), SUBTITLE_BORDER_OPAQUE);
+      pControl->AddLabel(g_localizeStrings.Get(35051), SUBTITLE_BORDER_OUTLINE);
+      pControl->AddLabel(g_localizeStrings.Get(35052), SUBTITLE_BORDER_OPAQUE);
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("subtitles.style"))
