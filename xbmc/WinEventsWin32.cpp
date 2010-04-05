@@ -512,7 +512,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 #ifdef HAS_DX
       if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
       {
-        if (g_application.m_pPlayer->IsInMenu())
+        if ( g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
         {
           g_application.m_pPlayer->ProcessDsWmCommand(ID_DVD_MOUSE_MOVE,lParam);
           return(0);
@@ -529,7 +529,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 #ifdef HAS_DX
       if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
       {
-        if (g_application.m_pPlayer->IsInMenu())
+        if ( g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
         {
           g_application.m_pPlayer->ProcessDsWmCommand(ID_DVD_MOUSE_CLICK,lParam);
           return(0);

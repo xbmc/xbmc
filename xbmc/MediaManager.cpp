@@ -289,12 +289,12 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
 #ifdef _WIN32
   if(!m_bhasoptical)
     return false;
-
   CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = TranslateDevicePath(devicePath, true);
-  std::map<CStdString,CCdInfo*>::iterator it;
-  it = m_mapCdInfo.find(strDevice);
-  if(it != m_mapCdInfo.end())
+
+  CdIo_t* dvddrive;
+  dvddrive = cdio_open_win32(strDevice.c_str());
+  if (dvddrive != NULL)
     return true;
   else
     return false;

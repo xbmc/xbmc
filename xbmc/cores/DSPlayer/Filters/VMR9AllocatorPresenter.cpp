@@ -646,7 +646,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
         m_NativeVideoSize = NativeVideoSize;
         m_AspectRatio = AspectRatio;
         //TODO Verify if its really needed
-        //AfxGetApp()->m_pMainWnd->PostMessage(WM_REARRANGERENDERLESS);
+        SendMessage(g_hWnd,WM_COMMAND, ID_DS_SET_WINDOW_POS,0);
       }
     }
     // If framerate not set by Video Decoder choose 23.97...
