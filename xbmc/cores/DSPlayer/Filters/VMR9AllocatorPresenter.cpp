@@ -689,15 +689,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
 
   if(lpPresInfo->rtEnd > lpPresInfo->rtStart)
   {
-    if(m_pSubPicQueue)
-    {
-      m_pSubPicQueue->SetFPS(m_fps);
-
-      if(m_fUseInternalTimer && !g_bExternalSubtitleTime)
-      {
-        __super::SetTime(g_tSegmentStart + g_tSampleStart);
-      }
-    }
+    __super::SetTime(g_tSegmentStart + g_tSampleStart);
   }
 
   Com::SmartSize VideoSize = m_NativeVideoSize;

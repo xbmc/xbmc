@@ -29,7 +29,9 @@
 //
 
 // Debug output
-#define DSubPicTraceLevel 3
+
+//#define DSubPicTraceLevel 3
+#define DSubPicTraceLevel 0
 #define TRACE odprintf
 void __cdecl odprintf(const wchar_t *format, ...)
 {

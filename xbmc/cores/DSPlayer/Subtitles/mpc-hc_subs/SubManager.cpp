@@ -53,7 +53,8 @@ void CSubManager::ApplyStyleSubStream(ISubStream* pSubStream)
     return;
 
   CLSID clsid;
-  pSubStream->GetClassID(&clsid);
+  if (FAILED(pSubStream->GetClassID(&clsid)))
+    return;
 
 	if(clsid == __uuidof(CRenderedTextSubtitle))
 	{

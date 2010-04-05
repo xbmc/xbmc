@@ -2623,7 +2623,7 @@ STDMETHODIMP CRenderedTextSubtitle::Render(SubPicDesc& spd, REFERENCE_TIME rt, d
 
 STDMETHODIMP CRenderedTextSubtitle::GetClassID(CLSID* pClassID)
 {
-	return pClassID ? *pClassID = __uuidof(this), S_OK : E_POINTER;
+	return pClassID ? *pClassID = __uuidof(CRenderedTextSubtitle), S_OK : E_POINTER;
 }
 
 // ISubStream
