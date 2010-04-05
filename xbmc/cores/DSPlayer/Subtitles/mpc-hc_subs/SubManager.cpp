@@ -61,7 +61,7 @@ void CSubManager::ApplyStyleSubStream(ISubStream* pSubStream)
 		CRenderedTextSubtitle* pRTS = (CRenderedTextSubtitle*)(ISubStream*)pSubStream;
 
     pRTS->SetDefaultStyle(m_style);
-		pRTS->SetOverride(true, &m_style);
+		//pRTS->SetOverride(true, &m_style); // Don't override, or maybe set an option on gui
 
 		pRTS->Deinit();
 	}
@@ -287,7 +287,7 @@ int CSubManager::GetDelay()
 void CSubManager::SetDelay(int delay_ms)
 {
 	m_subresync.AddShift(m_rtNow + m_delay, delay_ms - GetDelay());
-	m_delay = delay_ms*10000;
+	m_delay = delay_ms * 10000;
 }
 
 void CSubManager::SetTimePerFrame( REFERENCE_TIME timePerFrame )

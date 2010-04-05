@@ -786,8 +786,6 @@ void CSubtitleManager::Initialize()
   style.shadowDepthX = style.shadowDepthY = g_guiSettings.GetInt("subtitles.shadow.depth");
   style.outlineWidthX = style.outlineWidthY = g_guiSettings.GetInt("subtitles.outline.width");
 
-
-
   m_pManager->SetStyle(style);
 }
 
@@ -1098,8 +1096,8 @@ void CSubtitleManager::DisconnectCurrentSubtitlePins( void )
 void CSubtitleManager::SetSubtitleDelay( float fValue )
 {
   int delaysub = (int) -fValue * 1000; //1000 is a millisec
-  if (g_dsconfig.pIffdshowDecoder)
-    g_dsconfig.pIffdshowDecoder->compat_putParam(IDFF_subDelay, delaysub);
+  if (m_pManager)
+    m_pManager->SetDelay(delaysub);
 }
 
 float CSubtitleManager::GetSubtitleDelay( void )
