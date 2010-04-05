@@ -16,9 +16,6 @@ public:
 	~CSubManager(void);
 
 	void SetEnable(bool enable);
-	int GetDelay(); 
-	void SetDelay(int delay);
-	bool IsModified() { return m_subresync.IsModified(); };
 
   void SetTimePerFrame(REFERENCE_TIME timePerFrame);
   void SetTime(REFERENCE_TIME rtNow);
@@ -39,7 +36,7 @@ public:
 private:
 	friend class CTextPassThruInputPin;
 	friend class CTextPassThruFilter;
-	//ReplaceSubtitle, InvalidateSubtitle are called from CTextPassThruInputPin
+	//SetTextPassThruSubStream, InvalidateSubtitle are called from CTextPassThruInputPin
 	void SetTextPassThruSubStream(ISubStream* pSubStreamOld, ISubStream* pSubStreamNew);
 	void InvalidateSubtitle(DWORD_PTR nSubtitleId, REFERENCE_TIME rtInvalidate);
 
@@ -51,7 +48,6 @@ private:
 	int m_iSubtitleSel; // if(m_iSubtitleSel&(1<<31)): disabled
 	REFERENCE_TIME m_rtNow; //current time
 	double m_fps;
-	REFERENCE_TIME m_delay;
   
   STSStyle m_style;
   bool m_useDefaultStyle;

@@ -15,9 +15,8 @@ bool g_pow2tex(true);
 BOOL g_disableAnim(TRUE);
 
 CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr)
-	: m_d3DDev(d3DDev), m_iSubtitleSel(-1), m_rtNow(-1), m_delay(0),
-	m_lastSize(size), m_textureSize(1024, 768), m_rtTimePerFrame(0),
-  m_useDefaultStyle(true)//Set on XBMC Side
+	: m_d3DDev(d3DDev), m_iSubtitleSel(-1), m_rtNow(-1), m_lastSize(size),
+  m_textureSize(1024, 768), m_rtTimePerFrame(0), m_useDefaultStyle(true)//Set on XBMC Side
 {
 
 	//ATLTRACE("CSubManager constructor: texture size %dx%d, buffer ahead: %d, pow2tex: %d", g_textureSize.cx, g_textureSize.cy, g_subPicsBufferAhead, g_pow2tex);
@@ -72,7 +71,6 @@ void CSubManager::SetSubPicProvider(ISubStream* pSubStream)
   ApplyStyleSubStream(pSubStream);
 
 	m_pSubPicQueue->SetSubPicProvider(Com::SmartQIPtr<ISubPicProvider>(pSubStream));
-	m_delay = 0;
 	m_subresync.RemoveAll();
 }
 
@@ -277,17 +275,6 @@ HRESULT CSubManager::LoadExternalSubtitle( const wchar_t* subPath, ISubStream** 
   }
 
   return E_FAIL;
-}
-
-int CSubManager::GetDelay()
-{
-	return (int)(m_delay/10000);
-}
-
-void CSubManager::SetDelay(int delay_ms)
-{
-	m_subresync.AddShift(m_rtNow + m_delay, delay_ms - GetDelay());
-	m_delay = delay_ms * 10000;
 }
 
 void CSubManager::SetTimePerFrame( REFERENCE_TIME timePerFrame )

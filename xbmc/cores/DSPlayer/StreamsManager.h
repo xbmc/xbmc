@@ -348,4 +348,5 @@ private:
   bool m_bSubtitlesUnconnected;
   bool m_bSubtitlesVisible;
   AM_MEDIA_TYPE m_subtitleMediaType;
+  REFERENCE_TIME m_rtSubtitleDelay;
 };

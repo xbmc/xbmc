@@ -707,7 +707,7 @@ void CStreamsManager::FormatStreamName( SStreamInfos& s )
 }
 
 CSubtitleManager::CSubtitleManager(CStreamsManager* pStreamManager):
-  m_dll(), m_pStreamManager(pStreamManager)
+  m_dll(), m_pStreamManager(pStreamManager), m_rtSubtitleDelay(0)
 {
   m_dll.Load();
 
@@ -811,7 +811,7 @@ void CSubtitleManager::SetTimePerFrame( REFERENCE_TIME iTimePerFrame )
 void CSubtitleManager::SetTime(REFERENCE_TIME rtNow)
 {
   if (m_pManager)
-    m_pManager->SetTime(rtNow);
+    m_pManager->SetTime(rtNow - m_rtSubtitleDelay);
 }
 
 HRESULT CSubtitleManager::GetTexture( Com::SmartPtr<IDirect3DTexture9>& pTexture, Com::SmartRect& pSrc, Com::SmartRect& pDest, Com::SmartRect& renderRect )
@@ -1095,20 +1095,12 @@ void CSubtitleManager::DisconnectCurrentSubtitlePins( void )
 
 void CSubtitleManager::SetSubtitleDelay( float fValue )
 {
-  int delaysub = (int) -fValue * 1000; //1000 is a millisec
-  if (m_pManager)
-    m_pManager->SetDelay(delaysub);
+  m_rtSubtitleDelay = (int) (-fValue * 10000000i64); // second to directshow timebase
 }
 
 float CSubtitleManager::GetSubtitleDelay( void )
 {
-  if (g_dsconfig.pIffdshowDecoder)
-  {
-    int delaySub = 0;
-    g_dsconfig.pIffdshowDecoder->compat_getParam(IDFF_subDelay, &delaySub);
-    return (float) delaySub;
-  } else
-    return 0.0f;
+  return (float) m_rtSubtitleDelay / 10000000i64;
 }
 
 IPin *CSubtitleManager::GetFirstSubtitlePin( void )
