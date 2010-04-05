@@ -28,8 +28,7 @@
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 
-#include <cstdlib> // TODO: Use CLog::Log instead of std::cout.
-#include <cstdio>
+#include <sstream>
 #include <GL/gl.h>
 
 /* Set this to a youtube vid until keyboard input is working */
@@ -473,67 +472,104 @@ void CGUIEmbeddedBrowserWindowObserver::onPageChanged(const EventType &eventIn)
 
 void CGUIEmbeddedBrowserWindowObserver::onNavigateBegin(const EventType &eventIn)
 {
-  std::cout << "Event: begin navigation to " << eventIn.getEventUri() <<
-    std::endl;
+  std::stringstream oss;
+  oss << "CGUIEmbeddedBrowserWindowObserver::onNavigateBegin: begin navigation"
+    << " to " << eventIn.getEventUri();
+  CStdString msg = oss.str();
+  CLog::Log(LOGDEBUG, msg);
 }
 
 void CGUIEmbeddedBrowserWindowObserver::onNavigateComplete(
   const EventType &eventIn)
 {
-  std::cout << "Event: end navigation to " << eventIn.getEventUri() <<
-    " with response status of " << eventIn.getIntValue() << std::endl;
+  std::stringstream oss;
+  oss << "CGUIEmbeddedBrowserWindowObserver::onNavigateComplete: end navigation"
+    << " to " << eventIn.getEventUri() << " with response status of " <<
+    eventIn.getIntValue();
+  CStdString msg = oss.str();
+  CLog::Log(LOGDEBUG, msg);
   Render(m_xPos, m_yPos, m_appWindowWidth, m_appWindowHeight);
 }
 
 void CGUIEmbeddedBrowserWindowObserver::onUpdateProgress(
   const EventType &eventIn)
 {
-  std::cout << "Event: progress value updated to " << eventIn.getIntValue() <<
-    std::endl;
+  std::stringstream oss;
+  oss << "CGUIEmbeddedBrowserWindowObserver::onUpdateProgress: progress value"
+    << " updated to " << eventIn.getIntValue();
+  CStdString msg = oss.str();
+  CLog::Log(LOGDEBUG, msg);
 }
 
 void CGUIEmbeddedBrowserWindowObserver::onStatusTextChange(
   const EventType &eventIn)
 {
-  std::cout << "Event: status updated to " << eventIn.getStringValue() <<
-    std::endl;
+  std::stringstream oss;
+  oss << "CGUIEmbeddedBrowserWindowObserver::onStatusTextChange: status updated"
+    << " to " << eventIn.getStringValue();
+  CStdString msg = oss.str();
+  CLog::Log(LOGDEBUG, msg);
 }
 
 void CGUIEmbeddedBrowserWindowObserver::onTitleChange(const EventType &eventIn)
 {
-  std::cout << "Event: title changed to  " << eventIn.getStringValue() <<
-    std::endl;
+  std::stringstream oss;
+  oss << "CGUIEmbeddedBrowserWindowObserver::onTitleChange: title changed to "
+    << eventIn.getStringValue();
+  CStdString msg = oss.str();
+  CLog::Log(LOGDEBUG, msg);
 }
 
 void CGUIEmbeddedBrowserWindowObserver::onLocationChange(
   const EventType &eventIn)
 {
-  std::cout << "Event: location changed to " << eventIn.getStringValue() <<
-    std::endl;
+  std::stringstream oss;
+  oss << "CGUIEmbeddedBrowserWindowObserver::onLocationChange: location changed"
+    << " to " << eventIn.getStringValue();
+  CStdString msg = oss.str();
+  CLog::Log(LOGDEBUG, msg);
 }
 
 void CGUIEmbeddedBrowserWindowObserver::onClickLinkHref(const EventType &eventIn)
 {
-  std::cout << "Event: clicked on link:" << std::endl;
-  std::cout << "  URL:" << eventIn.getStringValue() << std::endl;
+  std::stringstream oss;
+  CStdString msg;
+  oss << "CGUIEmbeddedBrowserWindowObserver::onClickLinkHref: clicked on link";
+  msg = oss.str();
+  CLog::Log(LOGDEBUG, msg);
+  oss.str("");
+  oss << "CGUIEmbeddedBrowserWindowObserver::onClickLinkHref: URL = "
+    << eventIn.getStringValue();
+  msg = oss.str();
+  CLog::Log(LOGDEBUG, msg);
+  oss.str("");
 
   if (LLQtWebKit::LTT_TARGET_NONE == eventIn.getLinkType())
-    std::cout << "  No target attribute - opening in current window" <<
-      std::endl;
-
+  {
+    oss << "CGUIEmbeddedBrowserWindowObserver::onClickLinkHref: No target"
+      << " attribute - opening in current window";
+  }
   if (LLQtWebKit::LTT_TARGET_BLANK == eventIn.getLinkType())
-    std::cout << "  Blank target attribute (" << eventIn.getStringValue2() <<
-      ") - not navigating in this window" << std::endl;
-
+  {
+    oss << "CGUIEmbeddedBrowserWindowObserver::onClickLinkHref: Blank target"
+      << " attribute (" << eventIn.getStringValue2()
+      << ") - not navigating in this window";
+  }
   if (LLQtWebKit::LTT_TARGET_EXTERNAL == eventIn.getLinkType())
-    std::cout << "  External target attribute (" << eventIn.getStringValue2() <<
-      ") - not navigating in this window" << std::endl;
-
+  {
+    oss << "CGUIEmbeddedBrowserWindowObserver::onClickLinkHref: External target"
+      << " attribute (" << eventIn.getStringValue2()
+      << ") - not navigating in this window";
+  }
   if (LLQtWebKit::LTT_TARGET_OTHER == eventIn.getLinkType())
-    std::cout << "  Other target attribute (" << eventIn.getStringValue2() <<
-      ") - opening in current window" << std::endl;
+  {
+    oss << "CGUIEmbeddedBrowserWindowObserver::onClickLinkHref: Other target"
+      << " attribute (" << eventIn.getStringValue2()
+      << ") - opening in current window";
+  }
 
-  std::cout << std::endl;
+  msg = oss.str();
+  CLog::Log(LOGDEBUG, msg);
 }
 
 void CGUIEmbeddedBrowserWindowObserver::SetTexture(unsigned int *appTexture)
