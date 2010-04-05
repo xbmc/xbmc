@@ -103,15 +103,17 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   m_pMediaControl = m_pFilterGraph;
   m_pMediaEvent = m_pFilterGraph;
   m_pBasicAudio = m_pFilterGraph;
+  m_pBasicVideo = m_pFilterGraph;
   m_pVideoWindow = m_pFilterGraph;
 
   m_pMediaSeeking->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
   m_VideoInfo.time_format = TIME_FORMAT_MEDIA_TIME;
   if (m_pVideoWindow)
   {
-    m_pVideoWindow->put_Owner((OAHWND)g_hWnd);
-    m_pVideoWindow->put_WindowStyle(WS_CHILD|WS_CLIPSIBLINGS|WS_CLIPCHILDREN);
-    m_pVideoWindow->put_MessageDrain((OAHWND)g_hWnd);
+    //HRESULT hr;
+    //m_pVideoWindow->put_Owner((OAHWND)g_hWnd);
+    //m_pVideoWindow->put_WindowStyle(WS_CHILD|WS_CLIPSIBLINGS|WS_CLIPCHILDREN);
+    //m_pVideoWindow->put_MessageDrain((OAHWND)g_hWnd);
   }
   BeginEnumFilters(m_pFilterGraph, pEF, pBF)
 	{
@@ -286,6 +288,21 @@ void CDSGraph::UpdateTotalTime()
       if(SUCCEEDED(m_pMediaSeeking->GetDuration(&Duration)))
         m_State.time_total =  Duration;
     }
+  }
+}
+
+void CDSGraph::UpdateWindowPosition()
+{
+  if (m_pVideoWindow && m_pVideoWindow)
+  {
+    HRESULT hr;
+    Com::SmartRect videoRect, windowRect;
+    CRect vr;
+    vr = g_graphicsContext.GetViewWindow();
+    
+    hr = m_pBasicVideo->SetDefaultSourcePosition();
+    hr = m_pBasicVideo->SetDestinationPosition(videoRect.left, videoRect.top, videoRect.Width(), videoRect.Height());
+    hr = m_pVideoWindow->SetWindowPosition(windowRect.left, windowRect.top, windowRect.Width(), windowRect.Height());
   }
 }
 
@@ -899,21 +916,36 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
   
   if ( wParam == ID_DVD_MOUSE_MOVE)
   {
-    //not working yet
-    return;
+    //TODO make the xbmc gui stay hidden when moving mouse over menu
     POINT pt;
     pt.x = GET_X_LPARAM(lParam);
     pt.y = GET_Y_LPARAM(lParam);
-    HRESULT hr;
     ULONG pButtonIndex;
-    IDvdInfo2 *pDvdInfo = m_pDvdInfo2;
-    pDvdInfo->AddRef();
-    hr = pDvdInfo->GetButtonAtPosition(pt,&pButtonIndex);
-    if (SUCCEEDED(hr))
-    {
+    /**** Didnt found really where dvdplayer are doing it exactly so here it is *****/
+    XBMC_Event newEvent;
+    newEvent.type = XBMC_MOUSEMOTION;
+    newEvent.motion.x = pt.x;
+    newEvent.motion.y = pt.y;
+    g_application.OnEvent(newEvent);
+    /*CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
+    g_windowManager.SendMessage(msg);*/
+    /**** End of ugly hack ***/
+    if (SUCCEEDED(m_pDvdInfo2->GetButtonAtPosition(pt,&pButtonIndex)))
       m_pDvdControl2->SelectButton(pButtonIndex);
     
-    }
+  }
+  else if ( wParam == ID_DVD_MOUSE_CLICK)
+  {
+    POINT pt;
+    pt.x = GET_X_LPARAM(lParam);
+    pt.y = GET_Y_LPARAM(lParam);
+    ULONG pButtonIndex;
+    if (SUCCEEDED(m_pDvdInfo2->GetButtonAtPosition(pt,&pButtonIndex)))
+      m_pDvdControl2->SelectAndActivateButton(pButtonIndex);
+  }
+  else if ( wParam == ID_DS_SET_WINDOW_POS)
+  {
+    UpdateWindowPosition();
   }
   else if ( wParam == ID_PLAY_PLAY )
   {

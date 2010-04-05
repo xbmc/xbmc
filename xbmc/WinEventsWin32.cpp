@@ -512,15 +512,13 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 #ifdef HAS_DX
       if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
       {
-        //This is not working yet
-        if (0)//g_application.m_pPlayer->IsInMenu())
+        if (g_application.m_pPlayer->IsInMenu())
         {
           g_application.m_pPlayer->ProcessDsWmCommand(ID_DVD_MOUSE_MOVE,lParam);
+          return(0);
         }
-        
       }
 #endif
-
       newEvent.type = XBMC_MOUSEMOTION;
       newEvent.motion.x = GET_X_LPARAM(lParam);
       newEvent.motion.y = GET_Y_LPARAM(lParam);
@@ -528,6 +526,16 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       m_pEventFunc(newEvent);
       return(0);
     case WM_LBUTTONDOWN:
+#ifdef HAS_DX
+      if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
+      {
+        if (g_application.m_pPlayer->IsInMenu())
+        {
+          g_application.m_pPlayer->ProcessDsWmCommand(ID_DVD_MOUSE_CLICK,lParam);
+          return(0);
+        }
+      }
+#endif
     case WM_MBUTTONDOWN:
     case WM_RBUTTONDOWN:
       newEvent.type = XBMC_MOUSEBUTTONDOWN;

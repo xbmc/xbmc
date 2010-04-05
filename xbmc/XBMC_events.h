@@ -249,6 +249,7 @@ typedef union XBMC_Event {
 #define ID_STOP_DSPLAYER                910
 #define ID_SEEK_TO                      911
 #define ID_DS_HIDE_SUB                  912
+#define ID_DS_SET_WINDOW_POS            913
 //DVD COMMANDS
 #define ID_DVD_NAV_UP                   1000
 #define ID_DVD_NAV_DOWN                 1001
@@ -263,5 +264,7 @@ typedef union XBMC_Event {
 #define ID_DVD_MENU_AUDIO               1010
 #define ID_DVD_MENU_ANGLE               1011
 #define ID_DVD_MOUSE_MOVE               1012
+#define ID_DVD_MOUSE_CLICK              1013
+
 
 #endif /* _XBMC_events_h */

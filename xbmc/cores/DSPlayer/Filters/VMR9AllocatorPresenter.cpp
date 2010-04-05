@@ -698,7 +698,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   if(VideoSize != GetVideoSize())
   {
     m_AspectRatio.SetSize(arx, ary);
-    //TODO Verify if its really needed
+    SendMessage(g_hWnd,WM_COMMAND, ID_DS_SET_WINDOW_POS,0);
     //AfxGetApp()->m_pMainWnd->PostMessage(WM_REARRANGERENDERLESS);
   }
 

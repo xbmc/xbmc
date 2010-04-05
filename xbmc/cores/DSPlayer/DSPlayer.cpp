@@ -338,34 +338,22 @@ bool CDSPlayer::OnAction(const CAction &action)
         case ACTION_MOVE_DOWN:
           SendMessage(g_hWnd, WM_COMMAND, ID_DVD_NAV_DOWN,0);
         break;
-
-      /*case ACTION_MOUSE:
+        /*case ACTION_MOUSE_MOVE:
+        case ACTION_MOUSE_LEFT_CLICK:
         {
-          // check the action
-          CAction action2 = action;
-          action2.buttonCode = g_Mouse.bClick[MOUSE_LEFT_BUTTON] ? 1 : 0;
-          action2.amount1 = g_Mouse.GetLocation().x;
-          action2.amount2 = g_Mouse.GetLocation().y;
-
           CRect rs, rd;
           GetVideoRect(rs, rd);
-          if (action2.amount1 < rd.x1 || action2.amount1 > rd.x2 ||
-              action2.amount2 < rd.y1 || action2.amount2 > rd.y2)
-            return false; // out of bounds
-          //THREAD_ACTION(action2);
-          // convert to video coords...
-          CPoint pt(action2.amount1, action2.amount2);
+          CPoint pt(action.GetAmount(), action.GetAmount(1));
+          if (!rd.PtInRect(pt))
+            return false;
           pt -= CPoint(rd.x1, rd.y1);
           pt.x *= rs.Width() / rd.Width();
           pt.y *= rs.Height() / rd.Height();
           pt += CPoint(rs.x1, rs.y1);
-          LPARAM ptparam;
-          ptparam = g_geometryHelper.ConvertPointToLParam(pt.x,pt.y);
-          if (action2.buttonCode)
-            SendMessage(g_hWnd, WM_COMMAND, ID_DVD_MOUSE_CLICK,ptparam);
-          //return m_pDsGraph.OnMouseClick(pt);
-            
-          SendMessage(g_hWnd, WM_COMMAND, ID_DVD_MOUSE_MOVE,ptparam);
+          if (action.GetID() == ACTION_MOUSE_LEFT_CLICK)
+            SendMessage(g_hWnd, WM_COMMAND, ID_DVD_MOUSE_CLICK,MAKELPARAM(pt.x,pt.y));
+          else
+            SendMessage(g_hWnd, WM_COMMAND, ID_DVD_MOUSE_MOVE,MAKELPARAM(pt.x,pt.y));
           return true;
         }
         break;*/

@@ -107,6 +107,8 @@ public:
   virtual void UpdateTime();
   /// Update Dvd state
   virtual void UpdateDvdState();
+  // Updating the video position is needed for dvd menu navigation
+  virtual void UpdateWindowPosition();
   /// Update current player state
   virtual void UpdateState();
   /// @return Current playing time
@@ -155,8 +157,9 @@ private:
   Com::SmartQIPtr<IMediaEventEx>        m_pMediaEvent;
   Com::SmartQIPtr<IMediaSeeking>        m_pMediaSeeking;
   Com::SmartQIPtr<IBasicAudio>          m_pBasicAudio;
-  //dvd interface
+  //dvd stuff
   Com::SmartQIPtr<IVideoWindow>         m_pVideoWindow;
+  Com::SmartQIPtr<IBasicVideo>          m_pBasicVideo;
   Com::SmartQIPtr<IDvdInfo2>            m_pDvdInfo2;
   Com::SmartQIPtr<IDvdControl2>         m_pDvdControl2;
   Com::SmartPtr<IDvdState>              m_pDvdState;
