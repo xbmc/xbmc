@@ -29,5 +29,4 @@ public:
   CGUIWindowWebBrowser();
 
   virtual bool OnAction(const CAction &action);
-  virtual bool OnMessage(CGUIMessage &message);
 };

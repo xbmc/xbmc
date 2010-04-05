@@ -40,8 +40,3 @@ bool CGUIWindowWebBrowser::OnAction(const CAction &action)
     return CGUIWindow::OnAction(action);
   }
 }
-
-bool CGUIWindowWebBrowser::OnMessage(CGUIMessage &message)
-{
-  return CGUIWindow::OnMessage(message);
-}
