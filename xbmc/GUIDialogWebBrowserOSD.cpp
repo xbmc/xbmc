@@ -19,14 +19,14 @@
  *
  */
 
+/* TODO: Implement going left and right between buttons. Should also work on
+ * getting adress bar to show url whenever typed.
+ */
+
 #include "GUIDialogWebBrowserOSD.h"
 #include "GUIEmbeddedBrowserWindowObserver.h"
-#include "GUIWindowManager.h"
-#include "GUIWebBrowserControl.h"
 #include "GUIDialogKeyboard.h"
-#include "Key.h"
 #include "LocalizeStrings.h"
-#include <cstdio>
 
 #define ID_BUTTON_BACK        1
 #define ID_BUTTON_FORWARD     2
