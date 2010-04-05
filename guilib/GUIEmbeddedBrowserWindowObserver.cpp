@@ -24,15 +24,13 @@
 #include "GUIDialogWebBrowserOSD.h"
 #include "GUIWindowManager.h"
 #include "FileSystem/SpecialProtocol.h"
-#include "FileSystem/File.h"
+#include "GUISettings.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 
 #include <sstream>
 #include <GL/gl.h>
 
-/* Set this to a youtube vid until keyboard input is working */
-#define DEFAULT_HOMEURL "http://www.google.com"
 #define SCROLL_VALUE_INCREMENTS      10
 #define SCROLL_VALUE_PAGE_INCREMENTS 500
 
@@ -80,12 +78,8 @@ void CGUIEmbeddedBrowserWindowObserver::init()
   g_graphicsContext.ApplyStateBlock();
 
   // set a home url
-  m_homeUrl =
-    CSpecialProtocol::TranslatePath("special://xbmc/tools/testpage.html");
-  if (!XFILE::CFile::Exists(m_homeUrl))
-  {
-    m_homeUrl = DEFAULT_HOMEURL;
-  }
+  m_homeUrl = CSpecialProtocol::TranslatePath(
+    g_guiSettings.GetString("webbrowser.homeurl"));
 
   // create a single browser window and set things up.
   CStdString applicationDir =

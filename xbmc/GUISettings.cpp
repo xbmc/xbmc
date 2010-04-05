@@ -757,6 +757,10 @@ void CGUISettings::Initialize()
   AddInt(NULL, "window.height", 0, 480, 10, 1, INT_MAX, SPIN_CONTROL_INT);
 
   AddPath(NULL,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
+
+  CSettingsCategory *webbrowser = AddCategory(1, "webbrowser", 14000);
+  // TODO: would be nice to ship a page somewhere in special://xbmc/
+  AddString(webbrowser, "webbrowser.homeurl", 23000, "http://www.google.com", BUTTON_CONTROL_STANDARD);
 }
 
 CGUISettings::~CGUISettings(void)
