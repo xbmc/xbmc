@@ -30,8 +30,6 @@
  */
 
 #include "GUIControl.h"
-#include "GUIEmbeddedBrowserWindowObserver.h"
-#include "StdString.h"
 
 class CGUIWebBrowserControl : public CGUIControl
 {

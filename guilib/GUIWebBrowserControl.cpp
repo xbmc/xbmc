@@ -20,9 +20,8 @@
  */
 
 #include "GUIWebBrowserControl.h"
-#include "Application.h"
+#include "GUIEmbeddedBrowserWindowObserver.h"
 #include "Key.h"
-#include <cstdio>
 
 CGUIWebBrowserControl::CGUIWebBrowserControl(DWORD dwParentID,
       DWORD dwControlId, float posX, float posY, float width, float height)
