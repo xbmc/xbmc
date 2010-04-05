@@ -3295,9 +3295,6 @@ CStdString CUtil::ValidatePath(const CStdString &path)
       if (result[x] == '\\' && result[x+1] == '\\')
         result.Delete(x);
     }
-#ifdef _XBOX    
-    GetFatXQualifiedPath(result);
-#endif    
   }
   else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
   {
