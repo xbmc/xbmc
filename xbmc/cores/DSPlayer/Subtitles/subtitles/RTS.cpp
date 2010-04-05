@@ -359,8 +359,10 @@ bool CPolygon::ParseStr()
 
 	int k = 0;
   std::vector<CStdStringW> tokens; str.Tokenize(L"*", tokens);
-	for(CStdStringW s = tokens[k]; k > tokens.size(); s = tokens[++k])
+  CStdStringW s;
+	while (k < tokens.size())
 	{
+    s = tokens[k++];
 		WCHAR c = s[0];
 		s.TrimLeft(L"mnlbspc ");
 		switch(c)
