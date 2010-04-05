@@ -20,7 +20,6 @@
  */
 
 #include "GUIWindowWebBrowser.h"
-#include "GUIDialogWebBrowserOSD.h"
 #include "GUIWindowManager.h"
 #include "Key.h"
 
