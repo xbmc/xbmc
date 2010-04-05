@@ -45,14 +45,3 @@ bool CGUIWindowWebBrowser::OnMessage(CGUIMessage &message)
 {
   return CGUIWindow::OnMessage(message);
 }
-
-EVENT_RESULT CGUIWindowWebBrowser::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
-{
-  CGUIDialogWebBrowserOSD *pOSD = (CGUIDialogWebBrowserOSD *)g_windowManager.GetWindow(WINDOW_DIALOG_WEB_BROWSER_OSD);
-  if (pOSD)
-  {
-      pOSD->DoModal();
-  }
-  return CGUIWindow::OnMouseEvent(point, event);
-}
-
