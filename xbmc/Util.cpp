@@ -2264,8 +2264,8 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
     }
   }
   else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
-  {
 #endif
+  {
     result.Replace('\\', '/');
     if (bFixDoubleSlashes)
     {
