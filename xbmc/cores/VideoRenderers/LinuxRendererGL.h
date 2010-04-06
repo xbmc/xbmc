@@ -148,18 +148,17 @@ protected:
   void UpdateVideoFilter();
 
   // textures
-  void (CLinuxRendererGL::*m_textureLoad)(int source);
+  void (CLinuxRendererGL::*m_textureLoad)  (int index);
   void (CLinuxRendererGL::*m_textureDelete)(int index);
-  bool (CLinuxRendererGL::*m_textureCreate)(int index, bool clear);
+  bool (CLinuxRendererGL::*m_textureCreate)(int index);
 
-  void LoadYV12Textures(int source);
+  void LoadYV12Texture  (int index);
   void DeleteYV12Texture(int index);
-  void ClearYV12Texture(int index);
-  bool CreateYV12Texture(int index, bool clear = true);
+  bool CreateYV12Texture(int index);
 
-  void LoadNV12Textures(int source);
+  void LoadNV12Texture  (int index);
   void DeleteNV12Texture(int index);
-  bool CreateNV12Texture(int index, bool clear = true);
+  bool CreateNV12Texture(int index);
 
   void CalculateTextureSourceRects(int source, int num_planes);
 

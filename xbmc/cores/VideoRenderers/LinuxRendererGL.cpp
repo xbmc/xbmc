@@ -181,10 +181,10 @@ bool CLinuxRendererGL::ValidateRenderTarget()
 
      // create the yuv textures
     LoadShaders();
+
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
-    {
-      (this->*m_textureCreate)(i, true);
-    }
+      (this->*m_textureCreate)(i);
+
     m_bValidated = true;
     return true;
   }
@@ -498,7 +498,7 @@ void CLinuxRendererGL::LoadYV12Textures(int source)
   if (m_isSoftwareUpscaling != IsSoftwareUpscaling())
   {
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
-      (this->*m_textureCreate)(i, true);
+      (this->*m_textureCreate)(i);
 
     im->flags = IMAGE_FLAG_READY;
   }
@@ -1825,17 +1825,7 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
   }
 }
 
-void CLinuxRendererGL::ClearYV12Texture(int index)
-{
-  //YV12Image &im = m_image[index];
-
-  //memset(im.plane[0], 0,   im.stride[0] * im.height);
-  //memset(im.plane[1], 128, im.stride[1] * im.height>>im.cshift_y );
-  //memset(im.plane[2], 128, im.stride[2] * im.height>>im.cshift_y );
-  //SetEvent(m_eventTexturesDone[index]);
-}
-
-bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
+bool CLinuxRendererGL::CreateYV12Texture(int index)
 {
   // Remember if we're software upscaling.
   m_isSoftwareUpscaling = IsSoftwareUpscaling();
@@ -1847,8 +1837,6 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
-  if (clear)
-  {
     DeleteYV12Texture(index);
 
     im.height = m_sourceHeight;
@@ -1883,7 +1871,6 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
       for (int i = 0; i < 3; i++)
         im.plane[i] = new BYTE[im.planesize[i]];
     }
-  }
 
   glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++)
@@ -2047,15 +2034,14 @@ void CLinuxRendererGL::LoadNV12Textures(int source)
 
   glDisable(m_textureTarget);
 }
-bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
+
+bool CLinuxRendererGL::CreateNV12Texture(int index)
 {
   // since we also want the field textures, pitch must be texture aligned
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
-  if (clear)
-  {
     // Delte any old texture
     DeleteNV12Texture(index);
 
@@ -2098,7 +2084,6 @@ bool CLinuxRendererGL::CreateNV12Texture(int index, bool clear)
       for (int i = 0; i < 2; i++)
         im.plane[i] = new BYTE[im.planesize[i]];
     }
-  }
 
   glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++)
