@@ -100,7 +100,6 @@ void CSubManager::SetEnable(bool enable)
   if ((enable && m_iSubtitleSel < 0) || (!enable && m_iSubtitleSel >= 0))
   {
     m_iSubtitleSel ^= 0x80000000;
-    UpdateSubtitle();
   }
 }
 

@@ -2639,13 +2639,13 @@ bool CSimpleTextSubtitle::Open(CTextFile* f, int CharSet, CStdString name)
 
 bool CSimpleTextSubtitle::Open(BYTE* data, int len, int CharSet, CStdString name)
 {
-  TCHAR path[MAX_PATH];
-  if(!GetTempPath(MAX_PATH, path)) return(false);
+  char path[MAX_PATH];
+  if(!GetTempPathA(MAX_PATH, path)) return(false);
 
-  TCHAR fn[MAX_PATH];
-  if(!GetTempFileName(path, _T("vs"), 0, fn)) return(false);
+  char fn[MAX_PATH];
+  if(!GetTempFileNameA(path, "vs", 0, fn)) return(false);
 
-  FILE* tmp = _tfopen(fn, _T("wb"));
+  FILE* tmp = fopen(fn, "wb");
   if(!tmp) return(false);
 
   int i = 0;
@@ -2656,7 +2656,7 @@ bool CSimpleTextSubtitle::Open(BYTE* data, int len, int CharSet, CStdString name
 
   bool fRet = Open(fn, CharSet, name);
 
-  _tremove(fn);
+  remove(fn);
 
   return(fRet);
 }

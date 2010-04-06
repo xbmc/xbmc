@@ -340,7 +340,7 @@ STDMETHODIMP CSubtitleInputPin::Receive(IMediaSample* pSample)
           stse.marginRect.left = wcstol(sl.front(), NULL, 10); sl.pop_front();
           stse.marginRect.right = wcstol(sl.front(), NULL, 10); sl.pop_front();
           stse.marginRect.top = stse.marginRect.bottom = wcstol(sl.front(), NULL, 10); sl.pop_front();
-          if(fields == 10) stse.marginRect.bottom = wcstol(sl.front(), NULL, 10); sl.pop_front();
+          if(fields == 10) { stse.marginRect.bottom = wcstol(sl.front(), NULL, 10); sl.pop_front(); }
           stse.effect = sl.front(); sl.pop_front();
           stse.str = sl.front(); sl.pop_front();
         }
