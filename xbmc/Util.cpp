@@ -3270,7 +3270,7 @@ CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
   return strPath + MakeLegalFileName(strFileName, LegalType);
 }
 
-CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /* = true */)
+CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /* = false */)
 {
   CStdString result = path;
 
@@ -3307,7 +3307,7 @@ CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /*
       // Fixup for double forward slashes(/) but don't touch the :// of URLs
       for (int x = 2; x < result.GetLength() - 1; x++)
       {
-        if ( (result[x] == '/' && result[x + 1] == '/') && !(result[x - 1] == ':' || (result[x - 1] == '/' && result[x - 2] == ':')) )
+        if ( result[x] == '/' && result[x + 1] == '/' && !(result[x - 1] == ':' || (result[x - 1] == '/' && result[x - 2] == ':')) )
           result.Delete(x);
       }
     }

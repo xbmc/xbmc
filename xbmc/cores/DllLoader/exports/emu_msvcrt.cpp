@@ -423,9 +423,9 @@ extern "C"
     // or the python DLLs have malformed slashes on Win32 & Xbox
     // (-> E:\test\VIDEO_TS/VIDEO_TS.BUP))
     if (bWrite)
-      bResult = pFile->OpenForWrite(CUtil::ValidatePath(str), bOverwrite);
+      bResult = pFile->OpenForWrite(CUtil::ValidatePath(str, true), bOverwrite);
     else
-      bResult = pFile->Open(CUtil::ValidatePath(str));
+      bResult = pFile->Open(CUtil::ValidatePath(str, true));
     
     if (bResult)
     {
@@ -616,7 +616,7 @@ extern "C"
       }
 
       // Make sure the slashes are correct & translate the path
-      return _findfirst(CUtil::ValidatePath(_P(str)), data);
+      return _findfirst(CUtil::ValidatePath(_P(str), true), data);
     }
     // non-local files. handle through IDirectory-class - only supports '*.bah' or '*.*'
     CStdString strURL(file);
@@ -1485,7 +1485,7 @@ extern "C"
   {
     if (!dir) return -1;
     // Make sure the slashes are correct & translate the path
-    return mkdir( CUtil::ValidatePath(_P(dir)).c_str() );
+    return mkdir( CUtil::ValidatePath(_P(dir), true).c_str() );
   }
 
   char* dll_getcwd(char *buffer, int maxlen)

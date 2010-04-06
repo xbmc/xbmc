@@ -165,7 +165,7 @@ int xbp_mkdir(const char *dirname)
 
 int xbp_open(const char *filename, int oflag, int pmode)
 {
-  CStdString strPath = CUtil::ValidatePath(_P(filename));
+  CStdString strPath = CUtil::ValidatePath(_P(filename), true);
   
   int res = open(strPath.c_str(), oflag, pmode);
   return res;
@@ -177,7 +177,7 @@ FILE* xbp_fopen(const char *filename, const char *mode)
   char cName[1024];
   char* p;
 
-  CStdString strPath = CUtil::ValidatePath(_P(filename));
+  CStdString strPath = CUtil::ValidatePath(_P(filename), true);
   strcpy(cName, strPath.c_str());
   
   //for each "\\..\\" remove the directory before it
