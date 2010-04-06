@@ -42,8 +42,11 @@
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
+#ifdef HAVE_LIBVA
+#include "cores/dvdplayer/DVDCodecs/Video/VAAPI.h"
+#endif
 
- #ifdef HAS_GLX
+#ifdef HAS_GLX
 #include <GL/glx.h>
 #endif
 
@@ -1046,6 +1049,11 @@ void CLinuxRendererGL::LoadShaders(int field)
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
     m_renderMethod = RENDER_VDPAU;
   }
+  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VAAPI)
+  {
+    CLog::Log(LOGNOTICE, "GL: Using VAAPI render method");
+    m_renderMethod = RENDER_VAAPI;
+  }
   else
   /*
     Try GLSL shaders if they're supported and if the user has
@@ -1166,7 +1174,7 @@ void CLinuxRendererGL::LoadShaders(int field)
     m_pboused = false;
 
   // Now that we now the render method, setup texture function handlers
-  if (m_iFlags & CONF_FLAGS_FORMAT_NV12)
+  if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_NV12)
   {
     m_textureLoad   = &CLinuxRendererGL::LoadNV12Textures;
     m_textureCreate = &CLinuxRendererGL::CreateNV12Texture;
@@ -1263,6 +1271,13 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
   {
     UpdateVideoFilter();
     RenderVDPAU(renderBuffer, m_currentField);
+  }
+#endif
+#ifdef HAVE_LIBVA
+  else if (m_renderMethod & RENDER_VAAPI)
+  {
+    UpdateVideoFilter();
+    RenderVAAPI(renderBuffer, m_currentField);
   }
 #endif
   else
@@ -1627,6 +1642,59 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 #endif
 }
 
+void CLinuxRendererGL::RenderVAAPI(int index, int field)
+{
+#ifdef HAVE_LIBVA
+  VAAPI::CDecoder *o = m_buffers[m_iYV12RenderBuffer].vaapi_object;
+  if (!o)
+    return;
+
+  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+    g_graphicsContext.ClipToViewWindow();
+
+  glEnable(m_textureTarget);
+  glActiveTextureARB(GL_TEXTURE0);
+
+  // Try some clamping or wrapping
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+  if (m_pVideoFilterShader)
+  {
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, m_pVideoFilterShader->GetTextureFilter());
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, m_pVideoFilterShader->GetTextureFilter());
+    m_pVideoFilterShader->SetSourceTexture(0);
+    m_pVideoFilterShader->SetWidth(m_sourceWidth);
+    m_pVideoFilterShader->SetHeight(m_sourceHeight);
+    m_pVideoFilterShader->SetNonLinStretch(pow(m_pixelRatio, g_advancedSettings.m_videoNonLinStretchRatio));
+    m_pVideoFilterShader->Enable();
+  }
+  else
+  {
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  }
+
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  VerifyGLState();
+
+  glBegin(GL_QUADS);
+  glTexCoord2f(0.0, 0.0);  glVertex2f(m_destRect.x1, m_destRect.y1);
+  glTexCoord2f(1.0, 0.0);  glVertex2f(m_destRect.x2, m_destRect.y1);
+  glTexCoord2f(1.0, 1.0);  glVertex2f(m_destRect.x2, m_destRect.y2);
+  glTexCoord2f(0.0, 1.0);  glVertex2f(m_destRect.x1, m_destRect.y2);
+  glEnd();
+
+  VerifyGLState();
+
+  if (m_pVideoFilterShader)
+    m_pVideoFilterShader->Disable();
+
+  glBindTexture (m_textureTarget, 0);
+  glDisable(m_textureTarget);
+#endif
+}
+
 void CLinuxRendererGL::RenderSoftware(int index, int field)
 {
   YUVPLANES &planes = m_buffers[index].fields[field];
@@ -1709,6 +1777,9 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
 
 #ifdef HAVE_LIBVDPAU
   SAFE_RELEASE(m_buffers[index].vdpau);
+#endif
+#ifdef HAVE_LIBVA
+  SAFE_RELEASE(m_buffers[index].vaapi_object);
 #endif
 
   if( fields[FIELD_FULL][0].id == 0 ) return;
@@ -2322,6 +2393,16 @@ void CLinuxRendererGL::AddProcessor(CVDPAU* vdpau)
   YUVBUFFER &buf = m_buffers[NextYV12Texture()];
   SAFE_RELEASE(buf.vdpau);
   buf.vdpau = (CVDPAU*)vdpau->Acquire();
+}
+#endif
+
+#ifdef HAVE_LIBVA
+void CLinuxRendererGL::AddProcessor(VAAPI::CDecoder* vaapi_object, unsigned int vaapi_surface)
+{
+  YUVBUFFER &buf = m_buffers[NextYV12Texture()];
+  SAFE_RELEASE(buf.vaapi_object);
+  buf.vaapi_object  = (VAAPI::CDecoder*)vaapi_object->Acquire();
+  buf.vaapi_surface = vaapi_surface;
 }
 #endif
 

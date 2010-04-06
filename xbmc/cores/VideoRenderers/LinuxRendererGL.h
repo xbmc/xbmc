@@ -16,6 +16,7 @@ class CVDPAU;
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
+namespace VAAPI   { class CDecoder; }
 
 #define NUM_BUFFERS 3
 
@@ -69,6 +70,7 @@ enum RenderMethod
   RENDER_SW=0x04,
   RENDER_VDPAU=0x08,
   RENDER_POT=0x10,
+  RENDER_VAAPI=0x20,
 };
 
 enum RenderQuality
@@ -119,6 +121,9 @@ public:
 #ifdef HAVE_LIBVDPAU
   virtual void         AddProcessor(CVDPAU* vdpau);
 #endif
+#ifdef HAVE_LIBVA
+  virtual void         AddProcessor(VAAPI::CDecoder* vaapi_object, unsigned int vaapi_surface);
+#endif
 
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
@@ -163,6 +168,7 @@ protected:
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
   void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
   void RenderVDPAU(int renderBuffer, int field);      // render using vdpau hardware
+  void RenderVAAPI(int renderBuffer, int field);      // render using vdpau hardware
 
   CFrameBufferObject m_fbo;
 
@@ -218,6 +224,10 @@ protected:
 
 #ifdef HAVE_LIBVDPAU
     CVDPAU*   vdpau;
+#endif
+#ifdef HAVE_LIBVA
+    VAAPI::CDecoder* vaapi_object;
+    unsigned int     vaapi_surface;
 #endif
   };
 

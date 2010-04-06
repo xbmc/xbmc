@@ -51,6 +51,9 @@
 #ifdef HAS_DX
 #include "DXVA.h"
 #endif
+#ifdef HAVE_LIBVA
+#include "VAAPI.h"
+#endif
 
 enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
                                                 , const PixelFormat * fmt )
@@ -98,6 +101,19 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
     else
       dec->Release();
   }
+#endif
+#ifdef HAVE_LIBVA
+    if(*cur == PIX_FMT_VAAPI_VLD && method == RENDER_METHOD_VAAPI)
+    {
+      VAAPI::CDecoder* dec = new VAAPI::CDecoder();
+      if(dec->Open(avctx, *cur))
+      {
+        ctx->SetHardware(dec);
+        return *cur;
+      }
+      else
+        dec->Release();      
+    }
 #endif
     cur++;
   }

@@ -19,9 +19,11 @@
  *
  */
 #include "system.h"
+#ifdef HAVE_LIBVA
 #include "WindowingFactory.h"
 #include "Settings.h"
 #include "VAAPI.h"
+#include "DVDVideoCodec.h"
 #include <boost/scoped_array.hpp>
 
 using namespace boost;
@@ -205,11 +207,17 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 
 int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 {
-  return VC_BUFFER;
+  if(frame)
+    return VC_BUFFER | VC_PICTURE;
+  else
+    return VC_BUFFER;
 }
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
 {
+  picture->format        = DVDVideoPicture::FMT_VAAPI;
+  picture->vaapi_object  = this;
+  picture->vaapi_surface = (unsigned int)frame->data[3];
   return true;
 }
 
@@ -217,3 +225,5 @@ int CDecoder::Check(AVCodecContext* avctx)
 {
   return 0;
 }
+
+#endif
