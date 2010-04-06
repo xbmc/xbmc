@@ -148,15 +148,15 @@ protected:
   void UpdateVideoFilter();
 
   // textures
-  void (CLinuxRendererGL::*m_textureLoad)  (int index);
+  void (CLinuxRendererGL::*m_textureUpload)(int index);
   void (CLinuxRendererGL::*m_textureDelete)(int index);
   bool (CLinuxRendererGL::*m_textureCreate)(int index);
 
-  void LoadYV12Texture  (int index);
+  void UploadYV12Texture(int index);
   void DeleteYV12Texture(int index);
   bool CreateYV12Texture(int index);
 
-  void LoadNV12Texture  (int index);
+  void UploadNV12Texture(int index);
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index);
 

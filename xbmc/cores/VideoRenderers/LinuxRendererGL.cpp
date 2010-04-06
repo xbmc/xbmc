@@ -119,7 +119,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   memset(m_buffers, 0, sizeof(m_buffers));
 
   // default texture handlers to YUV
-  m_textureLoad   = &CLinuxRendererGL::LoadYV12Textures;
+  m_textureUpload = &CLinuxRendererGL::UploadYV12Texture;
   m_textureCreate = &CLinuxRendererGL::CreateYV12Texture;
   m_textureDelete = &CLinuxRendererGL::DeleteYV12Texture;
 
@@ -474,7 +474,7 @@ void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
   plane.flipindex = flipindex;
 }
 
-void CLinuxRendererGL::LoadYV12Textures(int source)
+void CLinuxRendererGL::UploadYV12Texture(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
   YV12Image* im     = &buf.image;
@@ -1176,14 +1176,14 @@ void CLinuxRendererGL::LoadShaders(int field)
   // Now that we now the render method, setup texture function handlers
   if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_NV12)
   {
-    m_textureLoad   = &CLinuxRendererGL::LoadNV12Textures;
+    m_textureUpload = &CLinuxRendererGL::UploadNV12Texture;
     m_textureCreate = &CLinuxRendererGL::CreateNV12Texture;
     m_textureDelete = &CLinuxRendererGL::DeleteNV12Texture;
   }
   else
   {
     // setup default YV12 texture handlers
-    m_textureLoad   = &CLinuxRendererGL::LoadYV12Textures;
+    m_textureUpload = &CLinuxRendererGL::UploadYV12Texture;
     m_textureCreate = &CLinuxRendererGL::CreateYV12Texture;
     m_textureDelete = &CLinuxRendererGL::DeleteYV12Texture;
   }
@@ -1238,7 +1238,7 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     m_currentField = FIELD_FULL;
 
   // call texture load function
-  (this->*m_textureLoad)(renderBuffer);
+  (this->*m_textureUpload)(renderBuffer);
 
   if (m_renderMethod & RENDER_GLSL)
   {
@@ -1964,7 +1964,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
 //********************************************************************************************************
 // NV12 Texture loading, creation and deletion
 //********************************************************************************************************
-void CLinuxRendererGL::LoadNV12Textures(int source)
+void CLinuxRendererGL::UploadNV12Texture(int source)
 {
   YUVBUFFER& buf    =  m_buffers[source];
   YV12Image* im     = &buf.image;
