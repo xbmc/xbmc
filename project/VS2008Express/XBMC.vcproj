@@ -6834,6 +6834,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\lib\libjsonrpc\AVPlaylistOperations.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libjsonrpc\AVPlaylistOperations.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\lib\libjsonrpc\FileItemHandler.cpp"
 					>
 				</File>
@@ -6847,14 +6855,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libjsonrpc\FileOperations.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libjsonrpc\GUIOperations.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libjsonrpc\GUIOperations.h"
 					>
 				</File>
 				<File
