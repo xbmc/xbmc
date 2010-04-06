@@ -64,10 +64,10 @@ if (players.length > 0) {
 
     document.write("<br></br>");
 
-    document.write("<img src=\"images/OSDPrevTrackFO.png\" onclick=CallMethod(\"" + player + "Player.SkipPrevious\")></img>");
-    document.write("<img src=\"images/OSDStopFO.png\" onclick=CallMethod(\"" + player + "Player.Stop\")></img>");
-    document.write("<img src=\"images/OSDPlayFO.png\" onclick=CallMethod(\"" + player + "Player.PlayPause\")></img>");
-    document.write("<img src=\"images/OSDNextTrackFO.png\" onclick=CallMethod(\"" + player + "Player.SkipNext\")></img>");
+    document.write("<a href=\"nowplaying.html\" onclick=CallMethod(\"" + player + "Player.SkipPrevious\")><img src=\"images/OSDPrevTrackFO.png\"></img></a>");
+    document.write("<a href=\"nowplaying.html\" onclick=CallMethod(\"" + player + "Player.Stop\")><img src=\"images/OSDStopFO.png\"></img></a>");
+    document.write("<a href=\"nowplaying.html\" onclick=CallMethod(\"" + player + "Player.PlayPause\")><img src=\"images/OSDPlayFO.png\"></img></a>");
+    document.write("<a href=\"nowplaying.html\" onclick=CallMethod(\"" + player + "Player.SkipNext\")><img src=\"images/OSDNextTrackFO.png\"></img></a>");
 
     document.write("<br></br>");
 
