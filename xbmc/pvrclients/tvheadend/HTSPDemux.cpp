@@ -74,7 +74,7 @@ bool cHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
   m_startup = true;
   return true;
 }
-
+int videoid = 0;
 void cHTSPDemux::Close()
 {
   m_session.Close();
@@ -85,11 +85,15 @@ bool cHTSPDemux::GetStreamProperties(PVR_STREAMPROPS* props)
   props->nstreams = m_Streams.nstreams;
   for (int i = 0; i < m_Streams.nstreams; i++)
   {
-    props->stream[i].id         = m_Streams.stream[i].id;
-    props->stream[i].physid     = m_Streams.stream[i].physid;
-    props->stream[i].codec_type = m_Streams.stream[i].codec_type;
-    props->stream[i].codec_id   = m_Streams.stream[i].codec_id;
-    props->stream[i].identifier = m_Streams.stream[i].identifier;
+    props->stream[i].id           = m_Streams.stream[i].id;
+    props->stream[i].physid       = m_Streams.stream[i].physid;
+    props->stream[i].codec_type   = m_Streams.stream[i].codec_type;
+    props->stream[i].codec_id     = m_Streams.stream[i].codec_id;
+    props->stream[i].language[0]  = m_Streams.stream[i].language[0];
+    props->stream[i].language[1]  = m_Streams.stream[i].language[1];
+    props->stream[i].language[2]  = m_Streams.stream[i].language[2];
+    props->stream[i].language[3]  = m_Streams.stream[i].language[3];
+    props->stream[i].identifier   = m_Streams.stream[i].identifier;
   }
   return (props->nstreams > 0);
 }
@@ -129,8 +133,8 @@ DemuxPacket* cHTSPDemux::Read()
         break;
 
       DemuxPacket* pkt = PVR->AllocateDemuxPacket(binlen);
-
       memcpy(pkt->pData, bin, binlen);
+
       pkt->iSize = binlen;
 
       if(!htsmsg_get_u32(msg, "duration", &duration))
@@ -249,6 +253,10 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       m_Streams.stream[m_Streams.nstreams].physid     = index;
       m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_AUDIO;
       m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_AC3;
+      m_Streams.stream[m_Streams.nstreams].language[0]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[1]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[2]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[3]= 0;
       m_Streams.stream[m_Streams.nstreams].identifier = -1;
       m_Streams.nstreams++;
     }
@@ -258,6 +266,10 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       m_Streams.stream[m_Streams.nstreams].physid     = index;
       m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_AUDIO;
       m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_MP2;
+      m_Streams.stream[m_Streams.nstreams].language[0]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[1]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[2]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[3]= 0;
       m_Streams.stream[m_Streams.nstreams].identifier = -1;
       m_Streams.nstreams++;
     }
@@ -267,15 +279,24 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       m_Streams.stream[m_Streams.nstreams].physid     = index;
       m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_AUDIO;
       m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_AAC;
+      m_Streams.stream[m_Streams.nstreams].language[0]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[1]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[2]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[3]= 0;
       m_Streams.stream[m_Streams.nstreams].identifier = -1;
       m_Streams.nstreams++;
     }
     else if(!strcmp(type, "MPEG2VIDEO"))
     {
       m_Streams.stream[m_Streams.nstreams].id         = m_Streams.nstreams;
+      videoid = index;
       m_Streams.stream[m_Streams.nstreams].physid     = index;
       m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_VIDEO;
       m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_MPEG2VIDEO;
+      m_Streams.stream[m_Streams.nstreams].language[0]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[1]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[2]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[3]= 0;
       m_Streams.stream[m_Streams.nstreams].identifier = -1;
       m_Streams.nstreams++;
     }
@@ -285,6 +306,10 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       m_Streams.stream[m_Streams.nstreams].physid     = index;
       m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_VIDEO;
       m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_H264;
+      m_Streams.stream[m_Streams.nstreams].language[0]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[1]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[2]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[3]= 0;
       m_Streams.stream[m_Streams.nstreams].identifier = -1;
       m_Streams.nstreams++;
     }
@@ -298,6 +323,10 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       m_Streams.stream[m_Streams.nstreams].physid     = index;
       m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_SUBTITLE;
       m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_DVB_SUBTITLE;
+      m_Streams.stream[m_Streams.nstreams].language[0]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[1]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[2]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[3]= 0;
       m_Streams.stream[m_Streams.nstreams].identifier = (composition_id & 0xffff) | ((ancillary_id & 0xffff) << 16);
       m_Streams.nstreams++;
     }
@@ -307,6 +336,10 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       m_Streams.stream[m_Streams.nstreams].physid     = index;
       m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_SUBTITLE;
       m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_TEXT;
+      m_Streams.stream[m_Streams.nstreams].language[0]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[1]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[2]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[3]= 0;
       m_Streams.stream[m_Streams.nstreams].identifier = -1;
       m_Streams.nstreams++;
     }
@@ -316,6 +349,10 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       m_Streams.stream[m_Streams.nstreams].physid     = index;
       m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_SUBTITLE;
       m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_DVB_TELETEXT;
+      m_Streams.stream[m_Streams.nstreams].language[0]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[1]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[2]= 0;
+      m_Streams.stream[m_Streams.nstreams].language[3]= 0;
       m_Streams.stream[m_Streams.nstreams].identifier = -1;
       m_Streams.nstreams++;
     }

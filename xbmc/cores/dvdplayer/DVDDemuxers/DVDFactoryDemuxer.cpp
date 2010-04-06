@@ -67,14 +67,19 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
 
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
   {
-    PVR_SERVERPROPS *pProps = g_PVRManager.GetCurrentClientProps();
-    if (pProps && pProps->HandleDemuxing)
+    std::string filename = pInputStream->GetFileName();
+    /* Use PVR demuxer only for live streams */
+    if (filename.substr(0, 14) == "pvr://channels")
     {
-      auto_ptr<CDVDDemuxPVRClient> demuxer(new CDVDDemuxPVRClient());
-      if(demuxer->Open(pInputStream))
-        return demuxer.release();
-      else
-        return NULL;
+      PVR_SERVERPROPS *pProps = g_PVRManager.GetCurrentClientProps();
+      if (pProps && pProps->HandleDemuxing)
+      {
+        auto_ptr<CDVDDemuxPVRClient> demuxer(new CDVDDemuxPVRClient());
+        if(demuxer->Open(pInputStream))
+          return demuxer.release();
+        else
+          return NULL;
+      }
     }
   }
 

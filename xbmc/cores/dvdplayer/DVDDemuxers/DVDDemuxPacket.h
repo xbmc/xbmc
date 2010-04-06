@@ -21,6 +21,9 @@
  *
  */
 
+#define DMX_SPECIALID_STREAMINFO    -10
+#define DMX_SPECIALID_STREAMCHANGE  -11
+
  typedef struct DemuxPacket
 {
   unsigned char* pData;   // data

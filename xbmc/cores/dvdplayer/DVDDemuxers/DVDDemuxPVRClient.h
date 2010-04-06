@@ -24,6 +24,7 @@
 #include <map>
 
 class CDVDDemuxPVRClient;
+struct PVR_STREAMPROPS;
 
 class CDemuxStreamVideoPVRClient : public CDemuxStreamVideo
 {
@@ -75,6 +76,7 @@ public:
   CDemuxStream* GetStream(int iStreamId);
   int GetNrOfStreams();
   std::string GetFileName();
+  virtual void GetStreamCodecName(int iStreamId, CStdString &strName);
 
 protected:
   CDVDInputStream* m_pInput;
@@ -83,9 +85,7 @@ protected:
   CDemuxStream* m_streams[MAX_PVR_STREAMS]; // maximum number of streams that ffmpeg can handle
 
 private:
-  /*
-   * Request streams from PVRClient
-   */
   void RequestStreams();
+  void UpdateStreams(PVR_STREAMPROPS *props);
 };
 

@@ -169,7 +169,20 @@ extern "C" {
       int physid;
       unsigned int codec_type;
       unsigned int codec_id;
+      char language[4];
       int identifier;
+
+      int fpsscale; // scale of 1000 and a rate of 29970 will result in 29.97 fps
+      int fpsrate;
+      int height; // height of the stream reported by the demuxer
+      int width; // width of the stream reported by the demuxer
+      float aspect; // display aspect of stream
+
+      int channels;
+      int samplerate;
+      int blockalign;
+      int bitrate;
+      int bits_per_sample;
     } stream[PVR_STREAM_MAX_STREAMS];
   } ATTRIBUTE_PACKED PVR_STREAMPROPS;
 
