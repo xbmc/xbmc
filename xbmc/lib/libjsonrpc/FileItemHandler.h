@@ -32,8 +32,8 @@ namespace JSONRPC
   class CFileItemHandler : public CJSONUtils
   {
   protected:
-    static void FillVideoDetails(const CVideoInfoTag *videoInfo, const Json::Value &parameterObject, Json::Value &result);
-    static void FillMusicDetails(const MUSIC_INFO::CMusicInfoTag *musicInfo, const Json::Value &parameterObject, Json::Value &result);
+    static void FillVideoDetails(const CVideoInfoTag *videoInfo, const CStdString &field, Json::Value &result);
+    static void FillMusicDetails(const MUSIC_INFO::CMusicInfoTag *musicInfo, const CStdString &field, Json::Value &result);
     static void HandleFileItemList(const char *id, const char *resultname, CFileItemList &items, const Json::Value &parameterObject, Json::Value &result);
 
     static bool FillFileItemList(const Json::Value &parameterObject, CFileItemList &list);
