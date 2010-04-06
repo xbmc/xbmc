@@ -23,6 +23,8 @@
 #include "Codecs/DllAvCodec.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include <libavcodec/vaapi.h>
+#include <va/va.h>
+#include <va/va_x11.h>
 
 
 namespace VAAPI {
@@ -39,7 +41,15 @@ public:
   virtual int  Check     (AVCodecContext* avctx);
   virtual void Close();
 
+  int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
+  void  RelBuffer(AVCodecContext *avctx, AVFrame *pic);
+
 protected:
-  VAAPIContext  *m_context;
+  VADisplay      m_display;
+  VAConfigID     m_config;
+  VAContextID    m_context;
+  VASurfaceID    m_surface;
   vaapi_context *m_hwaccel;
+};
+
 }

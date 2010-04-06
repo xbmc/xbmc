@@ -19,10 +19,12 @@
  *
  */
 
-#include "VAAPI.h"
 #include "WindowingFactory.h"
 #include "Settings.h"
+#include "VAAPI.h"
+#include <boost/scoped_array.hpp>
 
+using namespace boost;
 using namespace VAAPI;
 
 static void RelBufferS(AVCodecContext *avctx, AVFrame *pic)
@@ -33,13 +35,16 @@ static int GetBufferS(AVCodecContext *avctx, AVFrame *pic)
 
 CDecoder::CDecoder()
 {
-  m_context = calloc(1, sizeof(*m_context));
-  m_hwaccel = calloc(1, sizeof(*m_hwaccel));
+  m_display = NULL;
+  m_config  = NULL;
+  m_context = NULL;
+  m_surface = NULL;
+  m_hwaccel = (vaapi_context*)calloc(1, sizeof(*m_hwaccel));
 }
 
 CDecoder::~CDecoder()
 {
-  free(m_context_ff);
+  free(m_hwaccel);
 }
 
 void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
@@ -52,17 +57,17 @@ void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  void *surface = (void *)(uintptr_t)m_context->surface_id;
   pic->type           = FF_BUFFER_TYPE_USER;
   pic->age            = 1;
-  pic->data[0]        = surface;
+  pic->data[0]        = (uint8_t*)m_surface;
   pic->data[1]        = NULL;
   pic->data[2]        = NULL;
-  pic->data[3]        = surface;
+  pic->data[3]        = (uint8_t*)m_surface;
   pic->linesize[0]    = 0;
   pic->linesize[1]    = 0;
   pic->linesize[2]    = 0;
   pic->linesize[3]    = 0;
+  return 0;
 }
 
 void CDecoder::Close()
@@ -81,8 +86,8 @@ do { \
 
 bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 {
-  int entrypoint = VAEntrypointVLD;
-  int profile;
+  VAEntrypoint entrypoint = VAEntrypointVLD;
+  VAProfile    profile;
   
   switch (avctx->codec_id) {
   case CODEC_ID_MPEG2VIDEO:
@@ -100,62 +105,52 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
       return false;
   }
   VAConfigAttrib attrib;
-  VAConfigID     config_id = 0;
-  VAContextID    context_id = 0;
-  VASurfaceID    surface_id = 0;
-  VAStatus       status;
-
-  Display        display = NULL;
 
   int major_version, minor_version;
-  CHECK(vaInitialize(display, &major_version, &minor_version))
+  CHECK(vaInitialize(m_display, &major_version, &minor_version))
 
   int num_display_attrs, max_display_attrs;
-  max_display_attrs = vaMaxNumDisplayAttributes(display);
+  max_display_attrs = vaMaxNumDisplayAttributes(m_display);
 
   scoped_array<VADisplayAttribute> display_attrs(new VADisplayAttribute[max_display_attrs]);
 
   num_display_attrs = 0; /* XXX: workaround old GMA500 bug */
-  CHECK(vaQueryDisplayAttributes(display, display_attrs.get(), &num_display_attrs))
+  CHECK(vaQueryDisplayAttributes(m_display, display_attrs.get(), &num_display_attrs))
 
   for(int i = 0; i < num_display_attrs; i++) {
       VADisplayAttribute * const display_attr = &display_attrs[i];
       CLog::Log(LOGDEBUG, "VAAPI - %d (%s/%s) min %d max %d value 0x%x\n"
-              , display_attr->type,
+              , display_attr->type
               ,(display_attr->flags & VA_DISPLAY_ATTRIB_GETTABLE) ? "get" : "---"
-              ,(display_attr->flags & VA_DISPLAY_ATTRIB_SETTABLE) ? "set" : "---",
-              , display_attr->min_value,
-              , display_attr->max_value,
+              ,(display_attr->flags & VA_DISPLAY_ATTRIB_SETTABLE) ? "set" : "---"
+              , display_attr->min_value
+              , display_attr->max_value
               , display_attr->value);
   }
 
-  m_context->display               = display;
-  m_context->subpic_image.image_id = VA_INVALID_ID;
-  for(int i = 0; i < m_context->subpic_ids/m_context->subpic_ids[0]; i++)
-      m_context->subpic_ids[i]     = VA_INVALID_ID;
-
   attrib.type = VAConfigAttribRTFormat;
-  CHECK(vaGetConfigAttributes(context->display, profile, entrypoint, &attrib, 1);
+  CHECK(vaGetConfigAttributes(m_display, profile, entrypoint, &attrib, 1))
   if ((attrib.value & VA_RT_FORMAT_YUV420) == 0)
       return false;
 
-  CHECK(vaCreateConfig(m_context->display, profile, entrypoint, &attrib, 1, &config_id);
+  CHECK(vaCreateConfig(m_display, profile, entrypoint, &attrib, 1, &m_config))
 
-  m_hwaccel->config_id   = m_context->config_id;
-  m_hwaccel->context_id  = m_context->context_id;
+  m_hwaccel->config_id   = m_config;
+  m_hwaccel->context_id  = m_context;
 
   avctx->hwaccel_context = m_hwaccel;
   avctx->thread_count    = 1;
-  avctx->get_buffer      = GetBuffer;
-  avctx->reget_buffer    = GetBuffer;
-  avctx->release_buffer  = RelBuffer;
+  avctx->get_buffer      = GetBufferS;
+  avctx->reget_buffer    = GetBufferS;
+  avctx->release_buffer  = RelBufferS;
   avctx->draw_horiz_band = NULL;
   avctx->slice_flags     = SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
-
+  return true;
 }
 
 int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 {
+  return VC_BUFFER;
 }
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
@@ -165,4 +160,5 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
 
 int CDecoder::Check(AVCodecContext* avctx)
 {
+  return 0;
 }
