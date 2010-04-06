@@ -596,6 +596,7 @@ void CDVDPlayerVideo::Process()
 
             if(m_started == false)
             {
+              m_codecname = m_pVideoCodec->GetName();
               m_started = true;
               m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
             }

@@ -40,7 +40,7 @@ public:
     virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame) = 0;
     virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture) = 0;
     virtual int  Check     (AVCodecContext* avctx) = 0;
-    
+    virtual const std::string Name() = 0;
     virtual long              Release();
     virtual IHardwareDecoder* Acquire();
     protected:
@@ -60,7 +60,12 @@ public:
 
   bool               IsHardwareAllowed()                     { return !m_bSoftware; }
   IHardwareDecoder * GetHardware()                           { return m_pHardware; };
-  void               SetHardware(IHardwareDecoder* hardware) { m_pHardware = hardware; }
+  void               SetHardware(IHardwareDecoder* hardware) 
+  {
+    m_pHardware = hardware;
+    m_name += "-";
+    m_name += m_pHardware->Name();
+  }
 
 protected:
   static enum PixelFormat GetFormat(struct AVCodecContext * avctx, const PixelFormat * fmt);
