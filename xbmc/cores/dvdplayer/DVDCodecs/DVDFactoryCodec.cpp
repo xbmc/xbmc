@@ -52,6 +52,9 @@
 #include "Overlay/DVDOverlayCodecFFmpeg.h"
 
 #include "DVDStreamInfo.h"
+#ifdef _WIN32
+#include "SystemInfo.h"
+#endif
 
 
 CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
@@ -138,7 +141,10 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   hwSupport += "VDPAU:no ";
 #endif
 #if defined(_WIN32) && defined(HAS_DX)
-  hwSupport += "DXVA:yes ";
+  if(g_sysinfo.IsVistaOrHigher())
+    hwSupport += "DXVA:yes ";
+  else
+    hwSupport += "DXVA:no ";
 #elif defined(_WIN32)
   hwSupport += "DXVA:no ";
 #endif
