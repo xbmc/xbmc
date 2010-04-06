@@ -36,12 +36,15 @@ JSON_STATUS CMusicLibrary::GetArtists(const CStdString &method, ITransportLayer 
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
 
+  const Value param = ForceObject(parameterObject);
+  if (!ParameterIntOrNull(param, "genreid"))
+    return InvalidParams;
+
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
 
-  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
-  int genreID = param.get("genreid", -1).asInt();
+  int genreID = ParameterAsInt(param, -1, "genreid");
 
   CFileItemList items;
   if (musicdatabase.GetArtistsNav("", items, genreID, false))
@@ -56,13 +59,16 @@ JSON_STATUS CMusicLibrary::GetAlbums(const CStdString &method, ITransportLayer *
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
 
+  const Value param = ForceObject(parameterObject);
+  if (!(ParameterIntOrNull(param, "artistid") || ParameterIntOrNull(param, "albumid")))
+    return InvalidParams;
+
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
 
-  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
-  int artistID = param.get("artistid", -1).asInt();
-  int genreID = param.get("genreid", -1).asInt();
+  int artistID = ParameterAsInt(param, -1, "artistid");
+  int genreID  = ParameterAsInt(param, -1, "genreid");
 
   CFileItemList items;
   if (musicdatabase.GetAlbumsNav("", items, genreID, artistID))
@@ -77,14 +83,17 @@ JSON_STATUS CMusicLibrary::GetSongs(const CStdString &method, ITransportLayer *t
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
 
+  const Value param = ForceObject(parameterObject);
+  if (!(ParameterIntOrNull(param, "artistid") || ParameterIntOrNull(param, "albumid") || ParameterIntOrNull(param, "genreid")))
+    return InvalidParams;
+
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
 
-  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
-  int artistID = param.get("artistid", -1).asInt();
-  int albumID = param.get("albumid", -1).asInt();
-  int genreID = param.get("genreid", -1).asInt();
+  int artistID = ParameterAsInt(param, -1, "artistid");
+  int albumID  = ParameterAsInt(param, -1, "albumid");
+  int genreID  = ParameterAsInt(param, -1, "genreid");
 
   CFileItemList items;
   if (musicdatabase.GetSongsNav("", items, genreID, artistID, albumID))

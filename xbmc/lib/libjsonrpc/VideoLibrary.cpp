@@ -20,6 +20,7 @@
  */
 
 #include "VideoLibrary.h"
+#include "JSONUtils.h"
 #include "../VideoDatabase.h"
 #include "../Util.h"
 #include "Application.h"
@@ -70,12 +71,15 @@ JSON_STATUS CVideoLibrary::GetSeasons(const CStdString &method, ITransportLayer 
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
 
+  const Value param = ForceObject(parameterObject);
+  if (!ParameterIntOrNull(param, "tvshowid"))
+    return InvalidParams;
+
+  int tvshowID = ParameterAsInt(param, -1, "tvshowid");
+
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
-
-  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
-  int tvshowID = param.get("tvshowid", -1).asInt();
 
   CFileItemList items;
   if (videodatabase.GetSeasonsNav("", items, -1, -1, -1, -1, tvshowID))
@@ -90,13 +94,16 @@ JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
 
+  const Value param = ForceObject(parameterObject);
+  if (!(ParameterIntOrNull(param, "tvshowid") || ParameterIntOrNull(param, "season")))
+    return InvalidParams;
+
+  int tvshowID = ParameterAsInt(param, -1, "tvshowid");
+  int season   = ParameterAsInt(param, -1, "season");
+
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
-
-  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
-  int tvshowID = param.get("tvshowid", -1).asInt();
-  int season = param.get("season", -1).asInt();
 
   CFileItemList items;
   if (videodatabase.GetEpisodesNav("", items, -1, -1, -1, -1, tvshowID, season))
@@ -128,13 +135,16 @@ JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLa
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
 
+  const Value param = ForceObject(parameterObject);
+  if (!(ParameterIntOrNull(param, "artistid") || ParameterIntOrNull(param, "albumid")))
+    return InvalidParams;
+
+  int artistID = ParameterAsInt(param, -1, "artistid");
+  int albumID  = ParameterAsInt(param, -1, "albumid");
+
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
     return InternalError;
-
-  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
-  int artistID = param.get("artistid", -1).asInt();
-  int albumID  = param.get("albumid",  -1).asInt();
 
   CFileItemList items;
   if (videodatabase.GetMusicVideosNav("", items, -1, -1, artistID, -1, -1, albumID))

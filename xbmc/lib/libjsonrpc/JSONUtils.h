@@ -20,23 +20,16 @@
  *
  */
 
-#include "StdString.h"
 #include "JSONRPC.h"
-#include "JSONUtils.h"
-#include "../FileItem.h"
-#include "../VideoInfoTag.h"
-#include "../MusicInfoTag.h"
 
 namespace JSONRPC
 {
-  class CFileItemHandler : public CJSONUtils
+  class CJSONUtils
   {
   protected:
-    static void FillVideoDetails(const CVideoInfoTag *videoInfo, const Json::Value &parameterObject, Json::Value &result);
-    static void FillMusicDetails(const MUSIC_INFO::CMusicInfoTag *musicInfo, const Json::Value &parameterObject, Json::Value &result);
-    static void HandleFileItemList(const char *id, const char *resultname, CFileItemList &items, const Json::Value &parameterObject, Json::Value &result);
-  private:
-    static bool ParseSortMethods(const CStdString &method, const CStdString &order, SORT_METHOD &sortmethod, SORT_ORDER &sortorder);
-    static void Sort(CFileItemList &items, const Json::Value& parameterObject);
+    static inline bool ParameterIntOrNull(const Json::Value &parameterObject, const char *key) { return parameterObject[key].isInt() || parameterObject[key].isNull(); }
+    static inline int ParameterAsInt(const Json::Value &parameterObject, int fallback, const char *key) { return parameterObject[key].isInt() ? parameterObject[key].asInt() : fallback; }
+
+    static inline const Json::Value ForceObject(const Json::Value &value) { return value.isObject() ? value : Json::Value(Json::objectValue); }
   };
 }
