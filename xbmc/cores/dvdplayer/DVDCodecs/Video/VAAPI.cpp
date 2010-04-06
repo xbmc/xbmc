@@ -31,7 +31,7 @@ do { \
   VAStatus res = a; \
   if(res != VA_STATUS_SUCCESS) \
   { \
-    CLog::Log(LOGERROR, "VAAPI - failed executing "#a" at line %d with error %x", __LINE__, res); \
+    CLog::Log(LOGERROR, "VAAPI - failed executing "#a" at line %d with error %x:%s", __LINE__, res, vaErrorStr(res)); \
     return false; \
   } \
 } while(0);
@@ -40,7 +40,7 @@ do { \
 do { \
   VAStatus res = a; \
   if(res != VA_STATUS_SUCCESS) \
-    CLog::Log(LOGWARNING, "VAAPI - failed executing "#a" at line %d with error %x", __LINE__, res); \
+    CLog::Log(LOGWARNING, "VAAPI - failed executing "#a" at line %d with error %x:%s", __LINE__, res, vaErrorStr(res)); \
 } while(0);
 
 
@@ -179,6 +179,10 @@ void CDecoder::Close()
   for(std::list<VASurfaceID>::iterator it = m_surfaces_used.begin(); it != m_surfaces_used.end(); it++)
     WARN(vaDestroySurfaces(m_display, &(*it), 1))
   m_surfaces_used.clear();
+  
+  if(m_display)
+    WARN(vaTerminate(m_display))
+  m_display = NULL;
 }
 
 bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)

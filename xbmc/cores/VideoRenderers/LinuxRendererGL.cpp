@@ -2241,26 +2241,22 @@ void CLinuxRendererGL::DeleteVAAPITexture(int index)
   YUVBUFFER::VA &va    = m_buffers[index].vaapi;
   VAStatus status;
 
-  glDeleteTextures(1, &plane.id);
-  plane.id = 0;
-
-  if(va.object == NULL)
-  {
-    if(va.surfacegl)
-      CLog::Log(LOGERROR, "CLinuxRendererGL::DeleteVAAPITexture - unable to delete texture due to lacking display");
-    return;
-  }
-
   if(va.surfacegl)
   {
-    status = vaDestroySurfaceGLX(va.object->GetDisplay(), va.surfacegl);
-    if(status != VA_STATUS_SUCCESS)
+    if(va.object)
     {
-      CLog::Log(LOGERROR, "CLinuxRendererGL::DeleteVAAPITexture - failed delete surface (%d)", status);
-      return;
+      status = vaDestroySurfaceGLX(va.object->GetDisplay(), va.surfacegl);
+      if(status != VA_STATUS_SUCCESS)
+        CLog::Log(LOGERROR, "CLinuxRendererGL::DeleteVAAPITexture - failed delete surface (%d)", status);
     }
+    else
+      CLog::Log(LOGERROR, "CLinuxRendererGL::DeleteVAAPITexture - unable to delete texture due to lacking display");    
+
     va.surfacegl = NULL;
   }
+  if(plane.id && glIsTexture(plane.id))
+    glDeleteTextures(1, &plane.id);
+  plane.id = 0;
 
   SAFE_RELEASE(va.object);
 #endif
@@ -2317,10 +2313,9 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
   if(va.object == NULL)
     return;
 
-  //vaAssociateSurfaceGLX
-
   if(va.surfacegl == NULL)
   {
+    CLog::Log(LOGDEBUG, "CLinuxRendererGL::UploadVAAPITexture - creating vaapi surface for texture %d", index);
     status = vaCreateSurfaceGLX(va.object->GetDisplay()
                               , m_textureTarget
                               , plane.id
@@ -2331,16 +2326,31 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
       return;
     }
   }
+  int colorspace;
+  if(CONF_FLAGS_YUVCOEF_MASK(m_iFlags) == CONF_FLAGS_YUVCOEF_BT709)
+    colorspace = VA_SRC_BT709;
+  else
+    colorspace = VA_SRC_BT601;
+
+  int field;
+  if      (m_currentField == FIELD_ODD)
+    field = VA_TOP_FIELD;
+  else if (m_currentField == FIELD_EVEN)
+    field = VA_BOTTOM_FIELD;
+  else
+    field = VA_FRAME_PICTURE;
+
 #if USE_VAAPI_GLX_BIND
   status = vaAssociateSurfaceGLX(va.object->GetDisplay()
                                , va.surfacegl
                                , va.surface
-                               , VA_FRAME_PICTURE | VA_SRC_BT709);
+                               , field | colorspace);
 #else
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   status = vaCopySurfaceGLX(va.object->GetDisplay()
                           , va.surfacegl
                           , va.surface
-                          , VA_FRAME_PICTURE | VA_SRC_BT709);
+                          , field | colorspace);
 #endif
 
   if(status != VA_STATUS_SUCCESS)
