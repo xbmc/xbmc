@@ -170,20 +170,6 @@ JSON_STATUS CAVPlayerOperations::SeekTime(const CStdString &method, ITransportLa
   return ACK;
 }
 
-JSON_STATUS CAVPlayerOperations::GetPlaylist(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
-{
-  int playlist = PLAYLIST_NONE;
-  if (method.Left(5).Equals("audio"))
-    playlist = PLAYLIST_MUSIC;
-  else if (method.Left(5).Equals("video"))
-    playlist = PLAYLIST_VIDEO;
-
-  Value val = playlist;
-  result.swap(val);
-
-  return OK;
-}
-
 bool CAVPlayerOperations::IsCorrectPlayer(const CStdString &method)
 {
   return (method.Left(5).Equals("audio") && g_application.IsPlayingAudio()) || (method.Left(5).Equals("video") && g_application.IsPlayingVideo());
