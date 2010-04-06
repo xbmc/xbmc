@@ -319,12 +319,6 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 
   YV12Image &im = m_buffers[source].image;
 
-  if (!im.plane[0])
-  {
-     CLog::Log(LOGDEBUG, "CLinuxRendererGL::GetImage - image planes not allocated");
-     return -1;
-  }
-
   if ((im.flags&(~IMAGE_FLAG_READY)) != 0)
   {
      CLog::Log(LOGDEBUG, "CLinuxRenderer::GetImage - request image but none to give");
@@ -1180,6 +1174,12 @@ void CLinuxRendererGL::LoadShaders(int field)
     m_textureCreate = &CLinuxRendererGL::CreateNV12Texture;
     m_textureDelete = &CLinuxRendererGL::DeleteNV12Texture;
   }
+  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VAAPI)
+  {
+    m_textureUpload = &CLinuxRendererGL::UploadVAAPITexture;
+    m_textureCreate = &CLinuxRendererGL::CreateVAAPITexture;
+    m_textureDelete = &CLinuxRendererGL::DeleteVAAPITexture;
+  }
   else
   {
     // setup default YV12 texture handlers
@@ -1645,15 +1645,21 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 void CLinuxRendererGL::RenderVAAPI(int index, int field)
 {
 #ifdef HAVE_LIBVA
-  VAAPI::CDecoder *o = m_buffers[m_iYV12RenderBuffer].vaapi_object;
-  if (!o)
-    return;
+  YUVPLANE      &plane = m_buffers[index].fields[field][0];
+  YUVBUFFER::VA &va    = m_buffers[index].vaapi;
 
+  if(va.object == NULL)
+  {
+    CLog::Log(LOGINFO, "CLinuxRendererGL::RenderVAAPI - no vaapi object");
+    return;
+  }
+  
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
-    g_graphicsContext.ClipToViewWindow();
+      g_graphicsContext.ClipToViewWindow();
 
   glEnable(m_textureTarget);
   glActiveTextureARB(GL_TEXTURE0);
+  glBindTexture(m_textureTarget, plane.id);
 
   // Try some clamping or wrapping
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -1777,9 +1783,6 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
 
 #ifdef HAVE_LIBVDPAU
   SAFE_RELEASE(m_buffers[index].vdpau);
-#endif
-#ifdef HAVE_LIBVA
-  SAFE_RELEASE(m_buffers[index].vaapi_object);
 #endif
 
   if( fields[FIELD_FULL][0].id == 0 ) return;
@@ -2201,6 +2204,115 @@ void CLinuxRendererGL::DeleteNV12Texture(int index)
   }
 }
 
+void CLinuxRendererGL::DeleteVAAPITexture(int index)
+{
+#ifdef HAVE_LIBVA
+  YUVPLANE      &plane = m_buffers[index].fields[0][0];
+  YUVBUFFER::VA &va    = m_buffers[index].vaapi;
+  VAStatus status;
+
+  glDeleteTextures(1, &plane.id);
+  plane.id = 0;
+
+  if(va.object == NULL)
+  {
+    if(va.surfacegl)
+      CLog::Log(LOGERROR, "CLinuxRendererGL::DeleteVAAPITexture - unable to delete texture due to lacking display");
+    return;
+  }
+
+  if(va.surfacegl)
+  {
+    status = vaDestroySurfaceGLX(va.object->GetDisplay(), va.surfacegl);
+    if(status != VA_STATUS_SUCCESS)
+    {
+      CLog::Log(LOGERROR, "CLinuxRendererGL::DeleteVAAPITexture - failed delete surface (%d)", status);
+      return;
+    }
+    va.surfacegl = NULL;
+  }
+
+  SAFE_RELEASE(va.object);
+#endif
+}
+
+bool CLinuxRendererGL::CreateVAAPITexture(int index)
+{
+#ifdef HAVE_LIBVA
+  YV12Image &im     = m_buffers[index].image;
+  YUVFIELDS &fields = m_buffers[index].fields;
+  YUVPLANE  &plane  = fields[0][0];
+
+  DeleteVAAPITexture(index);
+
+  memset(&im    , 0, sizeof(im));
+  memset(&fields, 0, sizeof(fields));
+  im.height = m_sourceHeight;
+  im.width  = m_sourceWidth;
+
+  plane.texwidth  = im.width;
+  plane.texheight = im.height;
+
+  if(m_renderMethod & RENDER_POT)
+  {
+    plane.texwidth  = NP2(plane.texwidth);
+    plane.texheight = NP2(plane.texheight);
+  }
+
+  glEnable(m_textureTarget);
+  glGenTextures(1, &plane.id);
+  VerifyGLState();
+
+  glBindTexture(m_textureTarget, plane.id);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+  glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
+  glBindTexture(m_textureTarget, 0);
+  glDisable(m_textureTarget);
+#endif
+}
+
+void CLinuxRendererGL::UploadVAAPITexture(int index)
+{
+#ifdef HAVE_LIBVA
+  YUVPLANE      &plane = m_buffers[index].fields[0][0];
+  YUVBUFFER::VA &va    = m_buffers[index].vaapi;
+  VAStatus status;
+
+  if(va.object == NULL)
+    return;
+
+  //vaAssociateSurfaceGLX
+
+  if(va.surfacegl == NULL)
+  {
+    status = vaCreateSurfaceGLX(va.object->GetDisplay()
+                              , m_textureTarget
+                              , plane.id
+                              , &va.surfacegl);
+    if(status != VA_STATUS_SUCCESS)
+    {
+      CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to create vaapi glx surface (%d)", status);
+      return;
+    }
+  }
+
+  status = vaCopySurfaceGLX(va.object->GetDisplay()
+                          , va.surfacegl
+                          , va.surface
+                          , VA_FRAME_PICTURE | VA_SRC_BT709);
+
+  if(status != VA_STATUS_SUCCESS)
+  {
+    CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to copy surface to glx (%d)", status);
+    return;
+  }
+#endif
+}
+
 void CLinuxRendererGL::SetTextureFilter(GLenum method)
 {
   for (int i = 0 ; i<m_NumYV12Buffers ; i++)
@@ -2378,9 +2490,9 @@ void CLinuxRendererGL::AddProcessor(CVDPAU* vdpau)
 void CLinuxRendererGL::AddProcessor(VAAPI::CDecoder* vaapi_object, unsigned int vaapi_surface)
 {
   YUVBUFFER &buf = m_buffers[NextYV12Texture()];
-  SAFE_RELEASE(buf.vaapi_object);
-  buf.vaapi_object  = (VAAPI::CDecoder*)vaapi_object->Acquire();
-  buf.vaapi_surface = vaapi_surface;
+  SAFE_RELEASE(buf.vaapi.object);
+  buf.vaapi.object  = (VAAPI::CDecoder*)vaapi_object->Acquire();
+  buf.vaapi.surface = vaapi_surface;
 }
 #endif
 

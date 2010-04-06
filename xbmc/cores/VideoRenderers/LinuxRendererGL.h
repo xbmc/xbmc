@@ -159,6 +159,10 @@ protected:
   void UploadNV12Texture(int index);
   void DeleteNV12Texture(int index);
   bool CreateNV12Texture(int index);
+  
+  void UploadVAAPITexture(int index);
+  void DeleteVAAPITexture(int index);
+  bool CreateVAAPITexture(int index);
 
   void CalculateTextureSourceRects(int source, int num_planes);
 
@@ -225,8 +229,12 @@ protected:
     CVDPAU*   vdpau;
 #endif
 #ifdef HAVE_LIBVA
-    VAAPI::CDecoder* vaapi_object;
-    unsigned int     vaapi_surface;
+    struct VA
+    {
+      VAAPI::CDecoder* object;
+      unsigned int     surface;
+      void*            surfacegl;
+    } vaapi;
 #endif
   };
 
