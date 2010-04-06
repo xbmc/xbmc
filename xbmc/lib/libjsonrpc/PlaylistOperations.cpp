@@ -165,7 +165,7 @@ int CPlaylistOperations::PlaylistFromString(const string &id)
   tempID = tempID.ToLower();
   if (tempID.Equals("video"))
     return PLAYLIST_VIDEO;
-  else if (tempID.Equals("music"))
+  else if (tempID.Equals("audio"))
     return PLAYLIST_MUSIC;
   else
     return PLAYLIST_NONE;

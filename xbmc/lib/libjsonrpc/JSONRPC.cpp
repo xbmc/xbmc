@@ -53,27 +53,27 @@ Command CJSONRPC::m_commands[] = {
   { "Player.GetActivePlayers",          CPlayerOperations::GetActivePlayers,    Response,     ReadData,        "Returns all active players IDs"},
 
 // Music player
-  { "MusicPlayer.PlayPause",            CAVPlayerOperations::PlayPause,         Response,     ControlPlayback, "Pauses or unpause playback" },
-  { "MusicPlayer.Stop",                 CAVPlayerOperations::Stop,              Response,     ControlPlayback, "Stops playback" },
-  { "MusicPlayer.SkipPrevious",         CAVPlayerOperations::SkipPrevious,      Response,     ControlPlayback, "Skips to previous item on the playlist" },
-  { "MusicPlayer.SkipNext",             CAVPlayerOperations::SkipNext,          Response,     ControlPlayback, "Skips to next item on the playlist" },
+  { "AudioPlayer.PlayPause",            CAVPlayerOperations::PlayPause,         Response,     ControlPlayback, "Pauses or unpause playback" },
+  { "AudioPlayer.Stop",                 CAVPlayerOperations::Stop,              Response,     ControlPlayback, "Stops playback" },
+  { "AudioPlayer.SkipPrevious",         CAVPlayerOperations::SkipPrevious,      Response,     ControlPlayback, "Skips to previous item on the playlist" },
+  { "AudioPlayer.SkipNext",             CAVPlayerOperations::SkipNext,          Response,     ControlPlayback, "Skips to next item on the playlist" },
 
-  { "MusicPlayer.BigSkipBackward",      CAVPlayerOperations::BigSkipBackward,   Response,     ControlPlayback, "" },
-  { "MusicPlayer.BigSkipForward",       CAVPlayerOperations::BigSkipForward,    Response,     ControlPlayback, "" },
-  { "MusicPlayer.SmallSkipBackward",    CAVPlayerOperations::SmallSkipBackward, Response,     ControlPlayback, "" },
-  { "MusicPlayer.SmallSkipForward",     CAVPlayerOperations::SmallSkipForward,  Response,     ControlPlayback, "" },
+  { "AudioPlayer.BigSkipBackward",      CAVPlayerOperations::BigSkipBackward,   Response,     ControlPlayback, "" },
+  { "AudioPlayer.BigSkipForward",       CAVPlayerOperations::BigSkipForward,    Response,     ControlPlayback, "" },
+  { "AudioPlayer.SmallSkipBackward",    CAVPlayerOperations::SmallSkipBackward, Response,     ControlPlayback, "" },
+  { "AudioPlayer.SmallSkipForward",     CAVPlayerOperations::SmallSkipForward,  Response,     ControlPlayback, "" },
 
-  { "MusicPlayer.Rewind",               CAVPlayerOperations::Rewind,            Response,     ControlPlayback, "Rewind current playback" },
-  { "MusicPlayer.Forward",              CAVPlayerOperations::Forward,           Response,     ControlPlayback, "Forward current playback" },
+  { "AudioPlayer.Rewind",               CAVPlayerOperations::Rewind,            Response,     ControlPlayback, "Rewind current playback" },
+  { "AudioPlayer.Forward",              CAVPlayerOperations::Forward,           Response,     ControlPlayback, "Forward current playback" },
 
-  { "MusicPlayer.GetTime",              CAVPlayerOperations::GetTime,           Response,     ReadData,        "Retrieve time" },
-  { "MusicPlayer.GetTimeMS",            CAVPlayerOperations::GetTimeMS,         Response,     ReadData,        "Retrieve time in MS" },
-  { "MusicPlayer.GetPercentage",        CAVPlayerOperations::GetPercentage,     Response,     ReadData,        "Retrieve percentage" },
-  { "MusicPlayer.SeekTime",             CAVPlayerOperations::SeekTime,          Response,     ControlPlayback, "Seek to a specific time. Parameter integer in MS" },
+  { "AudioPlayer.GetTime",              CAVPlayerOperations::GetTime,           Response,     ReadData,        "Retrieve time" },
+  { "AudioPlayer.GetTimeMS",            CAVPlayerOperations::GetTimeMS,         Response,     ReadData,        "Retrieve time in MS" },
+  { "AudioPlayer.GetPercentage",        CAVPlayerOperations::GetPercentage,     Response,     ReadData,        "Retrieve percentage" },
+  { "AudioPlayer.SeekTime",             CAVPlayerOperations::SeekTime,          Response,     ControlPlayback, "Seek to a specific time. Parameter integer in MS" },
 
-  { "MusicPlayer.GetPlaylist",          CAVPlayerOperations::GetPlaylist,       Response,     ReadData,        "Retrieve active playlist" },
+  { "AudioPlayer.GetPlaylist",          CAVPlayerOperations::GetPlaylist,       Response,     ReadData,        "Retrieve active playlist" },
 
-  { "MusicPlayer.Record",               CAVPlayerOperations::Record,            Response,     ControlPlayback, "" },
+  { "AudioPlayer.Record",               CAVPlayerOperations::Record,            Response,     ControlPlayback, "" },
 
 // Video player
   { "VideoPlayer.PlayPause",            CAVPlayerOperations::PlayPause,         Response,     ControlPlayback, "Pauses or unpause playback" },
