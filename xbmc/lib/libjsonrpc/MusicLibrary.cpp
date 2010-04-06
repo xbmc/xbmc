@@ -94,51 +94,6 @@ JSON_STATUS CMusicLibrary::GetSongs(const CStdString &method, ITransportLayer *t
   return OK;
 }
 
-JSON_STATUS CMusicLibrary::GetSongInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
-{
-  if (!parameterObject.isObject())
-    return InvalidParams;
-  int songID = parameterObject.get("songid", -1).asInt();
-
-  if (songID < 0)
-    return InvalidParams;
-
-  CMusicDatabase musicdatabase;
-  if (!musicdatabase.Open())
-    return InternalError;
-
-  CSong songInfo;
-  if (musicdatabase.GetSongById(songID, songInfo))
-  {
-    if (!songInfo.strTitle.IsEmpty())
-      result["title"] = songInfo.strTitle.c_str();
-    if (!songInfo.strArtist.IsEmpty())
-      result["artist"] = songInfo.strArtist.c_str();
-    if (!songInfo.strAlbum.IsEmpty())
-      result["album"] = songInfo.strAlbum.c_str();
-    if (!songInfo.strAlbumArtist.IsEmpty())
-      result["albumartist"] = songInfo.strAlbumArtist.c_str();
-    if (!songInfo.strGenre.IsEmpty())
-      result["genre"] = songInfo.strGenre.c_str();
-    if (!songInfo.strThumb.IsEmpty())
-      result["thumbnail"] = songInfo.strThumb.c_str();
-    if (!songInfo.strComment.IsEmpty())
-      result["comment"] = songInfo.strComment.c_str();
-
-    if (songInfo.iTrack > 0)
-      result["track"] = songInfo.iTrack;
-    if (songInfo.iDuration > 0)
-      result["duration"] = songInfo.iDuration;
-
-    result["rating"]      = songInfo.rating;
-    result["year"]        = songInfo.iYear;
-    result["timesplayed"] = songInfo.iTimesPlayed;
-  }
-
-  musicdatabase.Close();
-  return OK;
-}
-
 JSON_STATUS CMusicLibrary::ScanForContent(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   g_application.getApplicationMessenger().ExecBuiltIn("updatelibrary(music)");

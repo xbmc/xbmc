@@ -153,8 +153,6 @@ Command CJSONRPC::m_commands[] = {
   { "MusicLibrary.GetAlbums",           CMusicLibrary::GetAlbums,               Response,     ReadData,        "Retrieve all albums from specified artist or genre" },
   { "MusicLibrary.GetSongs",            CMusicLibrary::GetSongs,                Response,     ReadData,        "Retrieve all songs from specified album, artist or genre" },
 
-  { "MusicLibrary.GetSongInfo",         CMusicLibrary::GetSongInfo,             Response,     ReadData,        "Retrieve the wanted info from the specified song" },
-
   { "MusicLibrary.ScanForContent",      CMusicLibrary::ScanForContent,          Response,     ScanLibrary,     "" },
 
 // Video library
@@ -166,11 +164,6 @@ Command CJSONRPC::m_commands[] = {
 
   { "VideoLibrary.GetMusicVideoAlbums", CVideoLibrary::GetMusicVideoAlbums,     Response,     ReadData,        "" },
   { "VideoLibrary.GetMusicVideos",      CVideoLibrary::GetMusicVideos,          Response,     ReadData,        "Parameter example { \"artistid\": 0, \"albumid\": 0, \"fields\": [\"plot\"], \"sortmethod\": \"artistignorethe\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
-
-  { "VideoLibrary.GetMovieInfo",        CVideoLibrary::GetMovieInfo,            Response,     ReadData,        "Parameter example { \"movieid\": 0, \"fields\": [\"plot\"] }" },
-  { "VideoLibrary.GetTVShowInfo",       CVideoLibrary::GetTVShowInfo,           Response,     ReadData,        "Parameter example { \"tvshowid\": 0, \"fields\": [\"plot\"] }" },
-  { "VideoLibrary.GetEpisodeInfo",      CVideoLibrary::GetEpisodeInfo,          Response,     ReadData,        "Parameter example { \"episodeinfo\": 0, \"fields\": [\"plot\"] }" },
-  { "VideoLibrary.GetMusicVideoInfo",   CVideoLibrary::GetMusicVideoInfo,       Response,     ReadData,        "Parameter example { \"musicvideoid\": 0, \"fields\": [\"plot\"] }" },
 
   { "VideoLibrary.ScanForContent",      CVideoLibrary::ScanForContent,          Response,     ScanLibrary,     "" },
 
