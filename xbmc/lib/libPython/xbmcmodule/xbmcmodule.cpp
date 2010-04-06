@@ -794,7 +794,7 @@ namespace PYXBMC
     CStdString strText;
     if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
-    return Py_BuildValue((char*)"s", CUtil::ValidatePath(strText).c_str());
+    return Py_BuildValue((char*)"s", CUtil::ValidatePath(strText, true).c_str());
   }
 
   // getRegion function
