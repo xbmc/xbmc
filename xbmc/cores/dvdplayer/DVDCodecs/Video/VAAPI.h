@@ -27,9 +27,12 @@
 #include <va/va_x11.h>
 #include <va/va_glx.h>
 #include <list>
+#include <boost/shared_ptr.hpp>
 
 
 namespace VAAPI {
+
+typedef boost::shared_ptr<VASurfaceID const> VASurfacePtr;
 
 class CDecoder
   : public CDVDVideoCodecFFmpeg::IHardwareDecoder
@@ -46,6 +49,7 @@ public:
   int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
   void  RelBuffer(AVCodecContext *avctx, AVFrame *pic);
 
+  VADisplay    GetDisplay() { return m_display; }
 protected:
   
   static const unsigned  m_surfaces_max = 32;

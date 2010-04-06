@@ -26,6 +26,24 @@
 #include "DVDVideoCodec.h"
 #include <boost/scoped_array.hpp>
 
+#define CHECK(a) \
+do { \
+  VAStatus res = a; \
+  if(res != VA_STATUS_SUCCESS) \
+  { \
+    CLog::Log(LOGERROR, "VAAPI - failed executing "#a" at line %d with error %x", __LINE__, res); \
+    return false; \
+  } \
+} while(0);
+
+#define WARN(a) \
+do { \
+  VAStatus res = a; \
+  if(res != VA_STATUS_SUCCESS) \
+    CLog::Log(LOGWARNING, "VAAPI - failed executing "#a" at line %d with error %x", __LINE__, res); \
+} while(0);
+
+
 using namespace boost;
 using namespace VAAPI;
 
@@ -34,6 +52,34 @@ static void RelBufferS(AVCodecContext *avctx, AVFrame *pic)
 
 static int GetBufferS(AVCodecContext *avctx, AVFrame *pic) 
 {  return ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->GetBuffer(avctx, pic); }
+
+
+namespace
+{
+  struct VASurfaceHolder
+  {
+    VASurfaceHolder(VASurfaceID id, VADisplay display)
+     : m_id(id)
+     , m_display(display)
+    {
+    }
+
+   ~VASurfaceHolder()
+    {
+      WARN(vaDestroySurfaces(m_display, &m_id, 1))
+    }
+    VASurfaceID m_id;
+    VADisplay   m_display;
+  };
+
+  shared_ptr<VASurfaceID const> VASurfaceIDPtr( VASurfaceID id, VADisplay display )
+  {
+    shared_ptr<VASurfaceHolder> sw( new VASurfaceHolder(id, display) );
+    return shared_ptr<VASurfaceID const>(sw,&sw->m_id);
+  }
+
+}
+
 
 CDecoder::CDecoder()
 {
@@ -45,6 +91,7 @@ CDecoder::CDecoder()
 
 CDecoder::~CDecoder()
 {
+  Close();
   free(m_hwaccel);
 }
 
@@ -116,18 +163,23 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 }
 
 void CDecoder::Close()
-{
-}
+{ 
+  if(m_context)
+    WARN(vaDestroyContext(m_display, m_context))
+  m_context = NULL;
 
-#define CHECK(a) \
-do { \
-  VAStatus res = a; \
-  if(res != VA_STATUS_SUCCESS) \
-  { \
-    CLog::Log(LOGERROR, "VAAPI - failed executing "#a" at line %d with error %x", __LINE__, res); \
-    return false; \
-  } \
-} while(0);
+  if(m_config)
+    WARN(vaDestroyConfig(m_display, m_config))
+  m_config = NULL;
+  
+  for(std::list<VASurfaceID>::iterator it = m_surfaces_free.begin(); it != m_surfaces_free.end(); it++)
+    WARN(vaDestroySurfaces(m_display, &(*it), 1))
+  m_surfaces_free.clear();
+
+  for(std::list<VASurfaceID>::iterator it = m_surfaces_used.begin(); it != m_surfaces_used.end(); it++)
+    WARN(vaDestroySurfaces(m_display, &(*it), 1))
+  m_surfaces_used.clear();
+}
 
 bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 {
@@ -201,6 +253,8 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   for(unsigned i = 0; i < m_surfaces_count; i++)
     m_surfaces_free.push_back(m_surfaces[i]);
 
+  //shared_ptr<VASurfaceID const> test = VASurfaceIDPtr(m_surfaces[0], m_display);
+  
   CHECK(vaCreateConfig(m_display, profile, entrypoint, &attrib, 1, &m_config))
 
 
@@ -212,9 +266,6 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
                       , m_surfaces
                       , m_surfaces_count
                       , &m_context))
-
-
-  //CHECK(vaCreateSurfaceGLX(va_context->display, GL_TEXTURE_2D, gl_texture, &gl_surface);
 
 
   m_hwaccel->display     = m_display;

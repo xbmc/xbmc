@@ -43,7 +43,18 @@
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
 #ifdef HAVE_LIBVA
+#include <va/va.h>
+#include <va/va_x11.h>
+#include <va/va_glx.h>
 #include "cores/dvdplayer/DVDCodecs/Video/VAAPI.h"
+
+#define USE_VAAPI_GLX_BIND                                \
+    (VA_MAJOR_VERSION == 0 &&                             \
+     ((VA_MINOR_VERSION == 30 &&                          \
+       VA_MICRO_VERSION == 4 && VA_SDS_VERSION >= 5) ||   \
+      (VA_MINOR_VERSION == 31 &&                          \
+       VA_MICRO_VERSION == 0 && VA_SDS_VERSION < 5)))
+
 #endif
 
 #ifdef HAS_GLX
@@ -1661,6 +1672,16 @@ void CLinuxRendererGL::RenderVAAPI(int index, int field)
   glActiveTextureARB(GL_TEXTURE0);
   glBindTexture(m_textureTarget, plane.id);
 
+#if USE_VAAPI_GLX_BIND
+  VAStatus status;
+  status = vaBeginRenderSurfaceGLX(va.object->GetDisplay(), va.surfacegl);
+  if(status != VA_STATUS_SUCCESS)
+  {
+    CLog::Log(LOGERROR, "CLinuxRendererGL::RenderVAAPI - vaBeginRenderSurfaceGLX failed (%d)", status);
+    return;
+  }
+#endif
+
   // Try some clamping or wrapping
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -1695,6 +1716,15 @@ void CLinuxRendererGL::RenderVAAPI(int index, int field)
 
   if (m_pVideoFilterShader)
     m_pVideoFilterShader->Disable();
+
+#if USE_VAAPI_GLX_BIND
+  status = vaEndRenderSurfaceGLX(va.object->GetDisplay(), va.surfacegl);
+  if(status != VA_STATUS_SUCCESS)
+  {
+    CLog::Log(LOGERROR, "CLinuxRendererGL::RenderVAAPI - vaEndRenderSurfaceGLX failed (%d)", status);
+    return;
+  }
+#endif
 
   glBindTexture (m_textureTarget, 0);
   glDisable(m_textureTarget);
@@ -2272,6 +2302,8 @@ bool CLinuxRendererGL::CreateVAAPITexture(int index)
   glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
   glBindTexture(m_textureTarget, 0);
   glDisable(m_textureTarget);
+  SetEvent(m_eventTexturesDone[index]);
+  return true;
 #endif
 }
 
@@ -2299,17 +2331,24 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
       return;
     }
   }
-
+#if USE_VAAPI_GLX_BIND
+  status = vaAssociateSurfaceGLX(va.object->GetDisplay()
+                               , va.surfacegl
+                               , va.surface
+                               , VA_FRAME_PICTURE | VA_SRC_BT709);
+#else
   status = vaCopySurfaceGLX(va.object->GetDisplay()
                           , va.surfacegl
                           , va.surface
                           , VA_FRAME_PICTURE | VA_SRC_BT709);
+#endif
 
   if(status != VA_STATUS_SUCCESS)
   {
     CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to copy surface to glx (%d)", status);
     return;
   }
+  SetEvent(m_eventTexturesDone[index]);
 #endif
 }
 
