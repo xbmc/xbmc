@@ -69,13 +69,38 @@ void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  
-  if(m_surfaces_free.empty())
-    return -1;
-
-  VASurfaceID surface = m_surfaces_free.front();
-  m_surfaces_free.pop_front();
-  m_surfaces_used.push_back(surface);
+  VASurfaceID surface = (VASurfaceID)pic->data[3];
+  if(surface)
+  {
+    /* reget call */
+    std::list<VASurfaceID>::iterator it = m_surfaces_free.begin();
+    for(; it != m_surfaces_free.end(); it++)
+    {    
+      if(*it == surface)
+      {
+        m_surfaces_used.push_back(surface);
+        m_surfaces_free.erase(it);
+        break;
+      }
+    }
+    if(it == m_surfaces_free.end())
+    {
+      CLog::Log(LOGERROR, "VAAPI - unable to find requested surface");
+      return -1;      
+    }
+  }
+  else
+  {
+    if(m_surfaces_free.empty())
+    {
+      CLog::Log(LOGERROR, "VAAPI - unable to find free surface");
+      return -1;
+    }
+    /* getbuffer call */
+    surface = m_surfaces_free.front();
+    m_surfaces_free.pop_front();
+    m_surfaces_used.push_back(surface);
+  }
   
   pic->type           = FF_BUFFER_TYPE_USER;
   pic->age            = 1;
@@ -192,6 +217,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   //CHECK(vaCreateSurfaceGLX(va_context->display, GL_TEXTURE_2D, gl_texture, &gl_surface);
 
 
+  m_hwaccel->display     = m_display;
   m_hwaccel->config_id   = m_config;
   m_hwaccel->context_id  = m_context;
 
