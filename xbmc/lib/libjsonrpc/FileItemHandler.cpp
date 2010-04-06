@@ -182,6 +182,27 @@ void CFileItemHandler::HandleFileItemList(const char *id, const char *resultname
   }
 }
 
+bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemList &list)
+{
+  Value param = ForceObject(parameterObject);
+
+  if (parameterObject.isString())
+    param["file"] = parameterObject.asString();
+  else
+    return false;
+
+  if (param["file"].isString())
+  {
+    CStdString file = param["file"].asString();
+    CFileItemPtr item = CFileItemPtr(new CFileItem(file, CUtil::HasSlashAtEnd(file)));
+    list.Add(item);
+  }
+  else
+    return false;
+
+  return true;
+}
+
 bool CFileItemHandler::ParseSortMethods(const CStdString &method, const CStdString &order, SORT_METHOD &sortmethod, SORT_ORDER &sortorder)
 {
   if (order.Equals("ascending"))

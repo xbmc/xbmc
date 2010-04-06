@@ -85,17 +85,11 @@ JSON_STATUS CAVPlaylistOperations::GetItems(const CStdString &method, ITransport
 
 JSON_STATUS CAVPlaylistOperations::Add(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!parameterObject.isMember("file"))
+  CFileItemList list;
+  if (!FillFileItemList(parameterObject, list))
     return InvalidParams;
 
-  if (parameterObject["file"].isString())
-  {
-    CStdString file = parameterObject["file"].asString();
-    CFileItemPtr item = CFileItemPtr(new CFileItem(file, CUtil::HasSlashAtEnd(file)));
-    g_playlistPlayer.Add(GetPlaylist(method), item);
-  }
-  else
-    return InvalidParams;
+  g_playlistPlayer.Add(GetPlaylist(method), list);
 
   NotifyAll();
   return ACK;
