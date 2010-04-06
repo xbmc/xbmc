@@ -136,6 +136,9 @@ Command CJSONRPC::m_commands[] = {
   { "AudioPlaylist.UnShuffle",                      CAVPlaylistOperations::Shuffle,                      Response,     ControlPlayback, "Shuffle audio playlist" },
 
 // Playlist
+  { "Playlist.Create",                              CPlaylistOperations::Create,                         Response,     ReadData,        "Creates a virtual playlist from a given one from a file" },
+  { "Playlist.Destroy",                             CPlaylistOperations::Destroy,                        Response,     ReadData,        "Destroys a virtual playlist" },
+
   { "Playlist.GetItems",                            CPlaylistOperations::GetItems,                       Response,     ReadData,        "Retrieve items in the playlist. Parameter example {\"playlist\": \"music\" }. playlist optional." },
   { "Playlist.Add",                                 CPlaylistOperations::Add,                            Response,     ControlPlayback, "Add items to the playlist. Parameter example {\"playlist\": \"music\", \"file\": \"/foo/bar.mp3\" }. playlist optional." },
   { "Playlist.Remove",                              CPlaylistOperations::Remove,                         Response,     ControlPlayback, "Remove items in the playlist. Parameter example {\"playlist\": \"music\", \"item\": 0 }. playlist optional." },
@@ -303,6 +306,7 @@ JSON_STATUS CJSONRPC::Announce(const CStdString &method, ITransportLayer *transp
 
 CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *transport, IClient *client)
 {
+  CLog::Log(LOGDEBUG, "JSONRPC: %s", inputString.c_str());
   Value inputroot, outputroot, result;
 
   JSON_STATUS errorCode = OK;

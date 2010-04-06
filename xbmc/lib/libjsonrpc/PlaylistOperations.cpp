@@ -25,170 +25,195 @@
 #include "Util.h"
 #include "GUIWindowManager.h"
 #include "GUIUserMessages.h"
+#include "StringUtils.h"
 
 using namespace Json;
 using namespace JSONRPC;
 using namespace PLAYLIST;
 using namespace std;
 
-JSON_STATUS CPlaylistOperations::GetItems(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+map<CStdString, CPlayListPtr> CPlaylistOperations::VirtualPlaylists;
+CCriticalSection CPlaylistOperations::VirtualCriticalSection;
+
+JSON_STATUS CPlaylistOperations::Create(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  CPlayList *playlist = NULL;
-  bool current;
-  if (!GetPlaylist(parameterObject, &playlist, current))
+  if (!parameterObject.isString() && !(parameterObject.isObject() && parameterObject.isMember("file") && parameterObject["file"].isString()))
     return InvalidParams;
 
-  CFileItemList items;
+  CSingleLock lock(VirtualCriticalSection);
+  CStdString file = parameterObject.isString() ? parameterObject.asString() : parameterObject["file"].asString();
+
+  CPlayListPtr playlist = CPlayListPtr(CPlayListFactory::Create(file));
+  if (playlist && playlist->Load(file))
+  {
+    CStdString id;
+
+    if (parameterObject.isObject() && parameterObject.isMember("playlistid") && parameterObject["playlistid"].isString())
+      id = parameterObject["playlistid"].asString();
+    else
+    {
+      do
+      {
+        id = StringUtils::CreateUUID();
+      } while (VirtualPlaylists.find(id) != VirtualPlaylists.end());
+    }
+
+    VirtualPlaylists[id] = playlist;
+    result["playlistid"] = id;
+
+    return OK;
+  }
+
+  return InvalidParams;
+}
+
+JSON_STATUS CPlaylistOperations::Destroy(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+{
+  if (!parameterObject.isString())
+    return InvalidParams;
+
+  CSingleLock lock(VirtualCriticalSection);
+  VirtualPlaylists.erase(parameterObject.asString());
+
+  return ACK;
+}
+
+JSON_STATUS CPlaylistOperations::GetItems(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+{
+  CSingleLock lock(VirtualCriticalSection);
+  CPlayListPtr playlist = GetPlaylist(parameterObject);
+
   if (playlist)
   {
+    CFileItemList items;
     for (int i = 0; i < playlist->size(); i++)
       items.Add((*playlist)[i]);
 
     CStdString name = playlist->GetName();
     if (!name.IsEmpty())
       result["name"] = playlist->GetName();
+
+    HandleFileItemList(NULL, "items", items, parameterObject, result);
+
+    return OK;
   }
 
-  HandleFileItemList(NULL, "items", items, parameterObject, result);
-
-  if (current)
-    result["current"] = g_playlistPlayer.GetCurrentSong();
-
-  return OK;
+  return InvalidParams;
 }
 
 JSON_STATUS CPlaylistOperations::Add(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!parameterObject.isMember("file"))
+  const Value param = ForceObject(parameterObject);
+  if (!param["file"].isString())
     return InvalidParams;
 
-  CPlayList *playlist = NULL;
-  bool current;
-  if (!GetPlaylist(parameterObject, &playlist, current))
-    return InvalidParams;
+  CSingleLock lock(VirtualCriticalSection);
+  CPlayListPtr playlist = GetPlaylist(param);
 
-  if (parameterObject["file"].isString())
+  if (playlist)
   {
-    CStdString file = parameterObject["file"].asString();
+    CStdString file = param["file"].asString();
     CFileItemPtr item = CFileItemPtr(new CFileItem(file, CUtil::HasSlashAtEnd(file)));
     playlist->Add(item);
+    return ACK;
   }
-  else
-    return InvalidParams;
 
-  NotifyAll();
-  return ACK;
+  return InvalidParams;
 }
 
 JSON_STATUS CPlaylistOperations::Remove(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!parameterObject.isMember("item"))
+  const Value param = ForceObject(parameterObject);
+  if (!(param["item"].isInt() || param["item"].isString()))
     return InvalidParams;
 
-  CPlayList *playlist = NULL;
-  bool current;
-  if (!GetPlaylist(parameterObject, &playlist, current))
-    return InvalidParams;
+  CSingleLock lock(VirtualCriticalSection);
+  CPlayListPtr playlist = GetPlaylist(param);
 
-  if (parameterObject["item"].isInt())
-    playlist->Remove(parameterObject["item"].asInt());
-  else if (parameterObject["item"].isString())
-    playlist->Remove(parameterObject["item"].asString());
-  else
-    return InvalidParams;
+  if (playlist)
+  {
+    if (param["item"].isInt())
+      playlist->Remove(param["item"].asInt());
+    else if (param["item"].isString())
+      playlist->Remove(param["item"].asString());
+    return ACK;
+  }
 
-  NotifyAll();
-  return ACK;
+  return InvalidParams;
 }
 
 JSON_STATUS CPlaylistOperations::Swap(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!parameterObject.isMember("item1") && !parameterObject.isMember("item2"))
+  const Value param = ForceObject(parameterObject);
+  if (!param["item1"].isInt() && !param["item2"].isInt())
     return InvalidParams;
 
-  CPlayList *playlist = NULL;
-  bool current;
-  if (!GetPlaylist(parameterObject, &playlist, current))
-    return InvalidParams;
+  CSingleLock lock(VirtualCriticalSection);
+  CPlayListPtr playlist = GetPlaylist(param);
 
-  if (parameterObject["item1"].isInt() && parameterObject["item2"].isInt())
-    playlist->Swap(parameterObject["item1"].asInt(), parameterObject["item1"].asInt());
-  else
-    return InvalidParams;
+  if (playlist && playlist->Swap(param["item1"].asInt(), param["item2"].asInt()))
+    return ACK;
 
-  NotifyAll();
-  return ACK;
+  return InvalidParams;
 }
 
 JSON_STATUS CPlaylistOperations::Clear(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  CPlayList *playlist = NULL;
-  bool current;
-  if (!GetPlaylist(parameterObject, &playlist, current))
-    return InvalidParams;
+  CSingleLock lock(VirtualCriticalSection);
+  CPlayListPtr playlist = GetPlaylist(parameterObject);
 
-  playlist->Clear();
+  if (playlist)
+  {
+    playlist->Clear();
+    return ACK;
+  }
 
-  NotifyAll();
-  return ACK;
+  return InvalidParams;
 }
 
 JSON_STATUS CPlaylistOperations::Shuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  CPlayList *playlist = NULL;
-  bool current;
-  if (!GetPlaylist(parameterObject, &playlist, current))
-    return InvalidParams;
+  CSingleLock lock(VirtualCriticalSection);
+  CPlayListPtr playlist = GetPlaylist(parameterObject);
 
-  playlist->Shuffle();
+  if (playlist)
+  {
+    playlist->Shuffle();
+    return ACK;
+  }
 
-  NotifyAll();
-  return ACK;
+  return InvalidParams;
 }
 
 JSON_STATUS CPlaylistOperations::UnShuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  CPlayList *playlist = NULL;
-  bool current;
-  if (!GetPlaylist(parameterObject, &playlist, current))
-    return InvalidParams;
+  CSingleLock lock(VirtualCriticalSection);
+  CPlayListPtr playlist = GetPlaylist(parameterObject);
 
-  playlist->UnShuffle();
-
-  NotifyAll();
-  return ACK;
-}
-
-int CPlaylistOperations::PlaylistFromString(const string &id)
-{
-  CStdString tempID = id;
-  tempID = tempID.ToLower();
-  if (tempID.Equals("video"))
-    return PLAYLIST_VIDEO;
-  else if (tempID.Equals("audio"))
-    return PLAYLIST_MUSIC;
-  else
-    return PLAYLIST_NONE;
-}
-
-bool CPlaylistOperations::GetPlaylist(const Value &parameterObject, CPlayList **playlist, bool &current)
-{
-  const Value id = (parameterObject.isObject() && parameterObject.isMember("playlist")) ? parameterObject["playlist"] : Value(nullValue);
-  int nbr;
-  if (id.isNull() || id.isString())
+  if (playlist)
   {
-    nbr = id.isNull() ? g_playlistPlayer.GetCurrentPlaylist() : PlaylistFromString(id.asString());
-    *playlist = &g_playlistPlayer.GetPlaylist(nbr);
-
-    current = g_playlistPlayer.GetCurrentPlaylist() == nbr;
-    return *playlist != NULL;
+    playlist->UnShuffle();
+    return ACK;
   }
-  else
-    return false;
+
+  return InvalidParams;
 }
 
-void CPlaylistOperations::NotifyAll()
+CPlayListPtr CPlaylistOperations::GetPlaylist(const Value &parameterObject)
 {
-  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  g_windowManager.SendThreadMessage(msg);
+  const Value param = ForceObject(parameterObject);
+  if (param["playlistid"].isString())
+  {
+    CStdString id = param["playlistid"].asString();
+    return VirtualPlaylists[id];
+  }
+  else if (param["file"].isString())
+  {
+    CStdString file = param["file"].asString();
+    CPlayListPtr playlist = CPlayListPtr(CPlayListFactory::Create(file));
+    if (playlist && playlist->Load(file))
+      return playlist;
+  }
+
+  return CPlayListPtr();
 }
