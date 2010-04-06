@@ -20,7 +20,7 @@ public:
   void SetTimePerFrame(REFERENCE_TIME timePerFrame);
   void SetTime(REFERENCE_TIME rtNow);
 
-  void SetStyle(STSStyle& style);
+  void SetStyle(STSStyle style);
   void SetSubPicProvider(ISubStream* pSubStream);
   void SetTextureSize(Com::SmartSize& pSize);
 

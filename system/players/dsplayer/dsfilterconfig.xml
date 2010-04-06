@@ -262,7 +262,7 @@
       <audio filter="ffdaudiodec" />
     </rule>
     <rule filetypes="mkv">
-      <source filter="haali" />
+      <source filter="mkvsource" />
       <splitter filter="mkvsplitter" />
       <video>
         <video dxva="true" filter="ffdvideodxvadec" />

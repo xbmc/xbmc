@@ -36,7 +36,7 @@ CSubManager::~CSubManager(void)
 {
 }
 
-void CSubManager::SetStyle(STSStyle& style)
+void CSubManager::SetStyle(STSStyle style)
 {
   m_style = style; m_useDefaultStyle = false;
   UpdateSubtitle();
@@ -191,8 +191,7 @@ HRESULT CSubManager::InsertPassThruFilter(IGraphBuilder* pGB)
 				continue;
 			
 			Com::SmartQIPtr<IBaseFilter> pTPTF = new CTextPassThruFilter(this);
-			CStdStringW name;
-			name.Format(L"XBMC Subtitles Pass thru %08x", pTPTF);
+			CStdStringW name = L"XBMC Subtitles Pass Thru";
 			if(FAILED(pGB->AddFilter(pTPTF, name)))
 				continue;
 
@@ -205,7 +204,7 @@ HRESULT CSubManager::InsertPassThruFilter(IGraphBuilder* pGB)
 					break;
 				}
 				Com::SmartQIPtr<IBaseFilter> pNTR = new CNullTextRenderer(NULL, &hr);
-        name.Format(L"XBMC Null Renderer %08x", pNTR);
+        name = L"XBMC Null Renderer";
 				if (FAILED(hr) || FAILED(pGB->AddFilter(pNTR, name)))
 					break;
 

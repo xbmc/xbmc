@@ -38,7 +38,7 @@ public:
 	COLORREF colors[4]; // usually: {primary, secondary, outline/background, shadow}
 	BYTE	alpha[4];
   int		charSet;
-  CStdString fontName;
+  CStdStringW fontName;
 	double	fontSize; // height
 	double	fontScaleX, fontScaleY; // percent
 	double	fontSpacing; // +/- pixels

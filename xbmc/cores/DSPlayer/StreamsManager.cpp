@@ -30,6 +30,7 @@
 #include "DShowUtil/smartptr.h"
 #include "WindowingFactory.h"
 //#include "CharsetConverter.h"
+#include "LangInfo.h"
 
 CStreamsManager *CStreamsManager::m_pSingleton = NULL;
 
@@ -780,7 +781,7 @@ void CSubtitleManager::Initialize()
     break;
   }
 
-  style.charSet = g_charsetConverter.getCharsetIdByName(g_guiSettings.GetString("subtitles.charset"));
+  style.charSet = g_charsetConverter.getCharsetIdByName(g_langInfo.GetSubtitleCharSet());
 
   style.borderStyle = g_guiSettings.GetInt("subtitles.border");
   style.shadowDepthX = style.shadowDepthY = g_guiSettings.GetInt("subtitles.shadow.depth");

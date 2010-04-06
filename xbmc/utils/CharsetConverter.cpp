@@ -430,7 +430,7 @@ int CCharsetConverter::getCharsetIdByName(const CStdString& charsetName)
     }
   }
 
-  return 0;
+  return 1;
 }
 #endif
 
