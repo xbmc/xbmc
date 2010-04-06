@@ -25,6 +25,8 @@
 #include <libavcodec/vaapi.h>
 #include <va/va.h>
 #include <va/va_x11.h>
+#include <va/va_glx.h>
+#include <list>
 
 
 namespace VAAPI {
@@ -45,10 +47,18 @@ public:
   void  RelBuffer(AVCodecContext *avctx, AVFrame *pic);
 
 protected:
+  
+  static const unsigned  m_surfaces_max = 32;
+  unsigned               m_surfaces_count;
+  VASurfaceID            m_surfaces[m_surfaces_max];
+
+  std::list<VASurfaceID> m_surfaces_used;
+  std::list<VASurfaceID> m_surfaces_free;
+
   VADisplay      m_display;
   VAConfigID     m_config;
   VAContextID    m_context;
-  VASurfaceID    m_surface;
+
   vaapi_context *m_hwaccel;
 };
 

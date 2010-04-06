@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
+#include "system.h"
 #include "WindowingFactory.h"
 #include "Settings.h"
 #include "VAAPI.h"
@@ -35,11 +35,10 @@ static int GetBufferS(AVCodecContext *avctx, AVFrame *pic)
 
 CDecoder::CDecoder()
 {
-  m_display = NULL;
-  m_config  = NULL;
-  m_context = NULL;
-  m_surface = NULL;
-  m_hwaccel = (vaapi_context*)calloc(1, sizeof(*m_hwaccel));
+  m_display  = NULL;
+  m_config   = NULL;
+  m_context  = NULL;
+  m_hwaccel  = (vaapi_context*)calloc(1, sizeof(vaapi_context));
 }
 
 CDecoder::~CDecoder()
@@ -49,20 +48,39 @@ CDecoder::~CDecoder()
 
 void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  pic->data[0]        = NULL;
-  pic->data[1]        = NULL;
-  pic->data[2]        = NULL;
-  pic->data[3]        = NULL;
+  VASurfaceID surface = (VASurfaceID)pic->data[3];
+  
+  for(std::list<VASurfaceID>::iterator it = m_surfaces_used.begin(); it != m_surfaces_used.end(); it++)
+  {    
+    if(*it == surface)
+    {
+      m_surfaces_free.push_back(surface);
+      m_surfaces_used.erase(it);
+      break;
+    }
+  }
+  pic->data[0] = NULL;
+  pic->data[1] = NULL;
+  pic->data[2] = NULL;
+  pic->data[3] = NULL;
 }
 
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
+  
+  if(m_surfaces_free.empty())
+    return -1;
+
+  VASurfaceID surface = m_surfaces_free.front();
+  m_surfaces_free.pop_front();
+  m_surfaces_used.push_back(surface);
+  
   pic->type           = FF_BUFFER_TYPE_USER;
   pic->age            = 1;
-  pic->data[0]        = (uint8_t*)m_surface;
+  pic->data[0]        = (uint8_t*)surface;
   pic->data[1]        = NULL;
   pic->data[2]        = NULL;
-  pic->data[3]        = (uint8_t*)m_surface;
+  pic->data[3]        = (uint8_t*)surface;
   pic->linesize[0]    = 0;
   pic->linesize[1]    = 0;
   pic->linesize[2]    = 0;
@@ -88,7 +106,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 {
   VAEntrypoint entrypoint = VAEntrypointVLD;
   VAProfile    profile;
-  
+
   switch (avctx->codec_id) {
   case CODEC_ID_MPEG2VIDEO:
       profile = VAProfileMPEG2Main;           break;
@@ -104,22 +122,27 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   default:
       return false;
   }
-  VAConfigAttrib attrib;
+  
+  if(avctx->codec_id == CODEC_ID_H264)
+    m_surfaces_count = 16 + 1 + 1;
+  else
+    m_surfaces_count = 2  + 1 + 1;
+
+  
+  m_display = vaGetDisplayGLX(g_Windowing.GetDisplay());
 
   int major_version, minor_version;
   CHECK(vaInitialize(m_display, &major_version, &minor_version))
 
-  int num_display_attrs, max_display_attrs;
-  max_display_attrs = vaMaxNumDisplayAttributes(m_display);
+  int num_display_attrs = 0;
+  scoped_array<VADisplayAttribute> display_attrs(new VADisplayAttribute[vaMaxNumDisplayAttributes(m_display)]);
 
-  scoped_array<VADisplayAttribute> display_attrs(new VADisplayAttribute[max_display_attrs]);
-
-  num_display_attrs = 0; /* XXX: workaround old GMA500 bug */
   CHECK(vaQueryDisplayAttributes(m_display, display_attrs.get(), &num_display_attrs))
 
-  for(int i = 0; i < num_display_attrs; i++) {
+  for(int i = 0; i < num_display_attrs; i++)
+  {
       VADisplayAttribute * const display_attr = &display_attrs[i];
-      CLog::Log(LOGDEBUG, "VAAPI - %d (%s/%s) min %d max %d value 0x%x\n"
+      CLog::Log(LOGDEBUG, "VAAPI - attrib %d (%s/%s) min %d max %d value 0x%x\n"
               , display_attr->type
               ,(display_attr->flags & VA_DISPLAY_ATTRIB_GETTABLE) ? "get" : "---"
               ,(display_attr->flags & VA_DISPLAY_ATTRIB_SETTABLE) ? "set" : "---"
@@ -128,12 +151,44 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
               , display_attr->value);
   }
 
+  int num_profiles = 0;
+  scoped_array<VAProfile> profiles(new VAProfile[vaMaxNumProfiles(m_display)]);
+  CHECK(vaQueryConfigProfiles(m_display, profiles.get(), &num_profiles))
+
+  for(int i = 0; i < num_profiles; i++)
+    CLog::Log(LOGDEBUG, "VAAPI - profile %d", profiles[i]);
+
+  VAConfigAttrib attrib;
   attrib.type = VAConfigAttribRTFormat;
   CHECK(vaGetConfigAttributes(m_display, profile, entrypoint, &attrib, 1))
   if ((attrib.value & VA_RT_FORMAT_YUV420) == 0)
       return false;
+  
+  CHECK(vaCreateSurfaces(m_display
+                       , avctx->width
+                       , avctx->height
+                       , VA_RT_FORMAT_YUV420
+                       , m_surfaces_count
+                       , m_surfaces))
+
+  for(unsigned i = 0; i < m_surfaces_count; i++)
+    m_surfaces_free.push_back(m_surfaces[i]);
 
   CHECK(vaCreateConfig(m_display, profile, entrypoint, &attrib, 1, &m_config))
+
+
+  CHECK(vaCreateContext(m_display
+                      , m_config
+                      , avctx->width
+                      , avctx->height
+                      , VA_PROGRESSIVE
+                      , m_surfaces
+                      , m_surfaces_count
+                      , &m_context))
+
+
+  //CHECK(vaCreateSurfaceGLX(va_context->display, GL_TEXTURE_2D, gl_texture, &gl_surface);
+
 
   m_hwaccel->config_id   = m_config;
   m_hwaccel->context_id  = m_context;
