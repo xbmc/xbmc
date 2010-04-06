@@ -753,13 +753,15 @@ void CSubtitleManager::Initialize()
   } 
   m_pManager->SetEnable(true);
 
-  STSStyle style;
-  style.SetDefault();
+  SSubStyle style;
+
+  /*memset(style.colors, 0, sizeof(style.colors));
+  memset(style.alpha, 0, sizeof(style.alpha));*/
   
   // Build style based on XBMC settings
   //subtitles.style subtitles.color subtitles.height subtitles.font subtitles.charset
-  style.colors[0] = color[g_guiSettings.GetInt("subtitles.color")];
-  style.alpha[0] = g_guiSettings.GetInt("subtitles.alpha");
+  style.color = color[g_guiSettings.GetInt("subtitles.color")];
+  style.alpha = g_guiSettings.GetInt("subtitles.alpha");
   style.fontSize = g_guiSettings.GetInt("subtitles.height");
   int fontStyle = g_guiSettings.GetInt("subtitles.style");
   switch (fontStyle)
@@ -786,8 +788,14 @@ void CSubtitleManager::Initialize()
   style.borderStyle = g_guiSettings.GetInt("subtitles.border");
   style.shadowDepthX = style.shadowDepthY = g_guiSettings.GetInt("subtitles.shadow.depth");
   style.outlineWidthX = style.outlineWidthY = g_guiSettings.GetInt("subtitles.outline.width");
+  
+  CStdStringW fontName;
+  g_charsetConverter.utf8ToW(g_guiSettings.GetString("subtitles.ds.font"), fontName);
+  style.fontName = (wchar_t *) CoTaskMemAlloc(fontName.length() * sizeof(wchar_t) + 2);
+  if (style.fontName)
+    wcscpy_s(style.fontName, fontName.length() + 1, fontName.c_str());
 
-  m_pManager->SetStyle(style);
+  m_pManager->SetStyle(&style);
 }
 
 void CSubtitleManager::Unload()

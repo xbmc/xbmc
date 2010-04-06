@@ -36,9 +36,29 @@ CSubManager::~CSubManager(void)
 {
 }
 
-void CSubManager::SetStyle(STSStyle style)
+void CSubManager::SetStyle(SSubStyle* style)
 {
-  m_style = style; m_useDefaultStyle = false;
+  m_style.SetDefault();
+
+  m_style.charSet = style->charSet;
+  m_style.fontSize = style->fontSize;
+  m_style.fontWeight = style->fontWeight;
+  m_style.fItalic = style->fItalic;
+  m_style.colors[0] = style->color;
+  m_style.alpha[0] = style->alpha;
+  m_style.borderStyle = style->borderStyle;
+  m_style.shadowDepthX = style->shadowDepthX;
+  m_style.shadowDepthY = style->shadowDepthY;
+  m_style.outlineWidthX = style->outlineWidthX;
+  m_style.outlineWidthY = style->outlineWidthY;
+  if (style->fontName)
+    m_style.fontName = style->fontName;
+
+  m_useDefaultStyle = false;
+  
+  if (style->fontName)
+    CoTaskMemFree(style->fontName);
+
   UpdateSubtitle();
 }
 void CSubManager::ApplyStyle(CRenderedTextSubtitle* pRTS)

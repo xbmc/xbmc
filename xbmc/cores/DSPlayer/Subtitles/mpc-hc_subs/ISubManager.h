@@ -4,6 +4,22 @@
 #include "../subpic/ISubPic.h"
 #include "../subtitles/STS.h"
 
+struct SSubStyle 
+{
+  COLORREF color;
+  BYTE alpha;
+  double fontSize;
+  int fontWeight;
+  bool fItalic;
+  int charSet;
+  int borderStyle;
+  double shadowDepthX;
+  double shadowDepthY;
+  double outlineWidthX;
+  double outlineWidthY;
+  wchar_t* fontName;
+};
+
 class ISubManager
 {
 public:
@@ -12,7 +28,7 @@ public:
   virtual void SetTextureSize(Com::SmartSize& pSize) = 0;
   virtual void SetTime(REFERENCE_TIME rtNow) = 0;
   virtual void SetSubPicProvider(ISubStream* pSubStream) = 0;
-  virtual void SetStyle(STSStyle style) = 0;
+  virtual void SetStyle(SSubStyle* style) = 0;
   virtual HRESULT InsertPassThruFilter(IGraphBuilder* pGB) = 0;
   virtual HRESULT LoadExternalSubtitle(const wchar_t* subPath, ISubStream** pSubPic) = 0;
   virtual HRESULT SetSubPicProviderToInternal() = 0;
