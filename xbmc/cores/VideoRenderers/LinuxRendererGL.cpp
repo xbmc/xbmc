@@ -1837,40 +1837,40 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
-    DeleteYV12Texture(index);
+  DeleteYV12Texture(index);
 
-    im.height = m_sourceHeight;
-    im.width  = m_sourceWidth;
-    im.cshift_x = 1;
-    im.cshift_y = 1;
+  im.height = m_sourceHeight;
+  im.width  = m_sourceWidth;
+  im.cshift_x = 1;
+  im.cshift_y = 1;
 
-    im.stride[0] = im.width;
-    im.stride[1] = im.width >> im.cshift_x;
-    im.stride[2] = im.width >> im.cshift_x;
+  im.stride[0] = im.width;
+  im.stride[1] = im.width >> im.cshift_x;
+  im.stride[2] = im.width >> im.cshift_x;
 
-    im.planesize[0] = im.stride[0] * im.height;
-    im.planesize[1] = im.stride[1] * ( im.height >> im.cshift_y );
-    im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
+  im.planesize[0] = im.stride[0] * im.height;
+  im.planesize[1] = im.stride[1] * ( im.height >> im.cshift_y );
+  im.planesize[2] = im.stride[2] * ( im.height >> im.cshift_y );
 
-    if (m_pboused)
+  if (m_pboused)
+  {
+    glGenBuffersARB(3, pbo);
+
+    for (int i = 0; i < 3; i++)
     {
-      glGenBuffersARB(3, pbo);
-
-      for (int i = 0; i < 3; i++)
-      {
-        glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
-        glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
-        im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
-        memset(im.plane[i], 0, im.planesize[i]);
-      }
-
-      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
+      glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
+      im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
+      memset(im.plane[i], 0, im.planesize[i]);
     }
-    else
-    {
-      for (int i = 0; i < 3; i++)
-        im.plane[i] = new BYTE[im.planesize[i]];
-    }
+
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+  }
+  else
+  {
+    for (int i = 0; i < 3; i++)
+      im.plane[i] = new BYTE[im.planesize[i]];
+  }
 
   glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++)
@@ -2042,48 +2042,48 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
   YUVFIELDS &fields = m_buffers[index].fields;
   GLuint    *pbo    = m_buffers[index].pbo;
 
-    // Delte any old texture
-    DeleteNV12Texture(index);
+  // Delete any old texture
+  DeleteNV12Texture(index);
 
-    im.height = m_sourceHeight;
-    im.width  = m_sourceWidth;
-    im.cshift_x = 1;
-    im.cshift_y = 1;
+  im.height = m_sourceHeight;
+  im.width  = m_sourceWidth;
+  im.cshift_x = 1;
+  im.cshift_y = 1;
 
-    im.stride[0] = im.width;
-    im.stride[1] = im.width;
-    im.stride[2] = 0;
+  im.stride[0] = im.width;
+  im.stride[1] = im.width;
+  im.stride[2] = 0;
 
-    im.plane[0] = NULL;
-    im.plane[1] = NULL;
-    im.plane[2] = NULL;
+  im.plane[0] = NULL;
+  im.plane[1] = NULL;
+  im.plane[2] = NULL;
 
-    // Y plane
-    im.planesize[0] = im.stride[0] * im.height;
-    // packed UV plane
-    im.planesize[1] = im.stride[1] * im.height / 2;
-    // third plane is not used
-    im.planesize[2] = 0;
+  // Y plane
+  im.planesize[0] = im.stride[0] * im.height;
+  // packed UV plane
+  im.planesize[1] = im.stride[1] * im.height / 2;
+  // third plane is not used
+  im.planesize[2] = 0;
 
-    if (m_pboused)
+  if (m_pboused)
+  {
+    glGenBuffersARB(2, pbo);
+
+    for (int i = 0; i < 2; i++)
     {
-      glGenBuffersARB(2, pbo);
-
-      for (int i = 0; i < 2; i++)
-      {
-        glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
-        glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
-        im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
-        memset(im.plane[i], 0, im.planesize[i]);
-      }
-
-      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[i]);
+      glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[i] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
+      im.plane[i] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
+      memset(im.plane[i], 0, im.planesize[i]);
     }
-    else
-    {
-      for (int i = 0; i < 2; i++)
-        im.plane[i] = new BYTE[im.planesize[i]];
-    }
+
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+  }
+  else
+  {
+    for (int i = 0; i < 2; i++)
+      im.plane[i] = new BYTE[im.planesize[i]];
+  }
 
   glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++)
