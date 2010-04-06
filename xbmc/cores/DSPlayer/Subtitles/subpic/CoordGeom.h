@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,109 +33,109 @@
 class Vector
 {
 public:
-	float x, y, z;
+  float x, y, z;
 
-	Vector() {x = y = z = 0;}
-	Vector(float x, float y, float z);
-	void Set(float x, float y, float z);
+  Vector() {x = y = z = 0;}
+  Vector(float x, float y, float z);
+  void Set(float x, float y, float z);
 
-	Vector Normal(Vector& a, Vector& b);
-	float Angle(Vector& a, Vector& b);
-	float Angle(Vector& a);
-	void Angle(float& u, float& v); // returns spherical coords in radian, -PI/2 <= u <= PI/2, -PI <= v <= PI
-	Vector Angle(); // does like prev., returns 'u' in 'ret.x', and 'v' in 'ret.y'
+  Vector Normal(Vector& a, Vector& b);
+  float Angle(Vector& a, Vector& b);
+  float Angle(Vector& a);
+  void Angle(float& u, float& v); // returns spherical coords in radian, -PI/2 <= u <= PI/2, -PI <= v <= PI
+  Vector Angle(); // does like prev., returns 'u' in 'ret.x', and 'v' in 'ret.y'
 
-	Vector Unit();
-	Vector& Unitalize();
-	float Length();
-	float Sum(); // x + y + z
-	float CrossSum(); // xy + xz + yz
-	Vector Cross(); // xy, xz, yz
-	Vector Pow(float exp);
+  Vector Unit();
+  Vector& Unitalize();
+  float Length();
+  float Sum(); // x + y + z
+  float CrossSum(); // xy + xz + yz
+  Vector Cross(); // xy, xz, yz
+  Vector Pow(float exp);
 
-	Vector& Min(Vector& a);
-	Vector& Max(Vector& a);
-	Vector Abs();
+  Vector& Min(Vector& a);
+  Vector& Max(Vector& a);
+  Vector Abs();
 
-	Vector Reflect(Vector& n);
-	Vector Refract(Vector& n, float nFront, float nBack, float* nOut = NULL);
-	Vector Refract2(Vector& n, float nFrom, float nTo, float* nOut = NULL);
+  Vector Reflect(Vector& n);
+  Vector Refract(Vector& n, float nFront, float nBack, float* nOut = NULL);
+  Vector Refract2(Vector& n, float nFrom, float nTo, float* nOut = NULL);
 
-	Vector operator - ();
-	float& operator [] (int i);
+  Vector operator - ();
+  float& operator [] (int i);
 
-	float operator | (Vector& v); // dot
-	Vector operator % (Vector& v); // cross
+  float operator | (Vector& v); // dot
+  Vector operator % (Vector& v); // cross
 
-	bool operator == (const Vector& v) const;
-	bool operator != (const Vector& v) const;
+  bool operator == (const Vector& v) const;
+  bool operator != (const Vector& v) const;
 
-	Vector operator + (float d);
-	Vector operator + (Vector& v);
-	Vector operator - (float d);
-	Vector operator - (Vector& v);
-	Vector operator * (float d);
-	Vector operator * (Vector& v);
-	Vector operator / (float d);
-	Vector operator / (Vector& v);
-	Vector& operator += (float d);
-	Vector& operator += (Vector& v);
-	Vector& operator -= (float d);
-	Vector& operator -= (Vector& v);
-	Vector& operator *= (float d);
-	Vector& operator *= (Vector& v);
-	Vector& operator /= (float d);
-	Vector& operator /= (Vector& v);
+  Vector operator + (float d);
+  Vector operator + (Vector& v);
+  Vector operator - (float d);
+  Vector operator - (Vector& v);
+  Vector operator * (float d);
+  Vector operator * (Vector& v);
+  Vector operator / (float d);
+  Vector operator / (Vector& v);
+  Vector& operator += (float d);
+  Vector& operator += (Vector& v);
+  Vector& operator -= (float d);
+  Vector& operator -= (Vector& v);
+  Vector& operator *= (float d);
+  Vector& operator *= (Vector& v);
+  Vector& operator /= (float d);
+  Vector& operator /= (Vector& v);
 };
 
 class Ray
 {
 public:
-	Vector p, d;
+  Vector p, d;
 
-	Ray() {}
-	Ray(Vector& p, Vector& d);
-	void Set(Vector& p, Vector& d);
+  Ray() {}
+  Ray(Vector& p, Vector& d);
+  void Set(Vector& p, Vector& d);
 
-	float GetDistanceFrom(Ray& r); // r = plane
-	float GetDistanceFrom(Vector& v); // v = point
+  float GetDistanceFrom(Ray& r); // r = plane
+  float GetDistanceFrom(Vector& v); // v = point
 
-	Vector operator [] (float t);
+  Vector operator [] (float t);
 };
 
 class XForm
 {
-	class Matrix
-	{
-	public:
-		float mat[4][4];
+  class Matrix
+  {
+  public:
+    float mat[4][4];
 
-		Matrix();
-		void Initalize();
+    Matrix();
+    void Initalize();
 
-		Matrix operator * (Matrix& m);
-		Matrix& operator *= (Matrix& m);
-	} m;
+    Matrix operator * (Matrix& m);
+    Matrix& operator *= (Matrix& m);
+  } m;
 
-	bool m_isWorldToLocal;
+  bool m_isWorldToLocal;
 
 public:
-	XForm() {}
-	XForm(Ray& r, Vector& s, bool isWorldToLocal = true);
+  XForm() {}
+  XForm(Ray& r, Vector& s, bool isWorldToLocal = true);
 
-	void Initalize();
-	void Initalize(Ray& r, Vector& s, bool isWorldToLocal = true);
+  void Initalize();
+  void Initalize(Ray& r, Vector& s, bool isWorldToLocal = true);
 
-	void operator *= (Vector& s); // scale
-	void operator += (Vector& t); // translate
-	void operator <<= (Vector& r); // rotate
+  void operator *= (Vector& s); // scale
+  void operator += (Vector& t); // translate
+  void operator <<= (Vector& r); // rotate
 
-	void operator /= (Vector& s); // scale
-	void operator -= (Vector& t); // translate
-	void operator >>= (Vector& r); // rotate
+  void operator /= (Vector& s); // scale
+  void operator -= (Vector& t); // translate
+  void operator >>= (Vector& r); // rotate
 
-//	transformations
-	Vector operator < (Vector& n); // normal
-	Vector operator << (Vector& v); // vector
-	Ray operator << (Ray& r); // ray
+//  transformations
+  Vector operator < (Vector& n); // normal
+  Vector operator << (Vector& v); // vector
+  Ray operator << (Ray& r); // ray
 };

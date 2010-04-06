@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,12 +27,12 @@
 #pragma once
 #include "..\DSUtil\SharedInclude.h"
 
-#define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
-//#define _ATL_CStdString_EXPLICIT_CONSTRUCTORS	// some CStdString constructors will be explicit
-#define WINVER			0x0600
+#define WIN32_LEAN_AND_MEAN    // Exclude rarely-used stuff from Windows headers
+//#define _ATL_CStdString_EXPLICIT_CONSTRUCTORS  // some CStdString constructors will be explicit
+#define WINVER      0x0600
 
 #ifndef VC_EXTRALEAN
-#define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
+#define VC_EXTRALEAN    // Exclude rarely-used stuff from Windows headers
 #endif
 
 #include <vector>

@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,15 +24,15 @@
 namespace ssf
 {
   class Split : public std::vector<CStdStringW>
-	{
-	public:
-		enum SplitType {Min, Def, Max};
-		Split();
-		Split(LPCWSTR sep, CStdStringW str, size_t limit = 0, SplitType type = Def);
-		Split(WCHAR sep, CStdStringW str, size_t limit = 0, SplitType type = Def);
-		operator size_t() {return size();}
-		void DoSplit(LPCWSTR sep, CStdStringW str, size_t limit, SplitType type);
-		int GetAtInt(size_t i);
-		float GetAtFloat(size_t i);
-	};
+  {
+  public:
+    enum SplitType {Min, Def, Max};
+    Split();
+    Split(LPCWSTR sep, CStdStringW str, size_t limit = 0, SplitType type = Def);
+    Split(WCHAR sep, CStdStringW str, size_t limit = 0, SplitType type = Def);
+    operator size_t() {return size();}
+    void DoSplit(LPCWSTR sep, CStdStringW str, size_t limit, SplitType type);
+    int GetAtInt(size_t i);
+    float GetAtFloat(size_t i);
+  };
 }

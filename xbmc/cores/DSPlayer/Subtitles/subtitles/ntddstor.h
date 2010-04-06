@@ -186,16 +186,16 @@ typedef enum _STORAGE_MEDIA_TYPE {
 } STORAGE_MEDIA_TYPE, *PSTORAGE_MEDIA_TYPE;
 
 typedef enum _STORAGE_BUS_TYPE {
-	BusTypeUnknown = 0x00,
-	BusTypeScsi,
-	BusTypeAtapi,
-	BusTypeAta,
-	BusType1394,
-	BusTypeSsa,
-	BusTypeFibre,
-	BusTypeUsb,
-	BusTypeRAID,
-	BusTypeMaxReserved = 0x7F
+  BusTypeUnknown = 0x00,
+  BusTypeScsi,
+  BusTypeAtapi,
+  BusTypeAta,
+  BusType1394,
+  BusTypeSsa,
+  BusTypeFibre,
+  BusTypeUsb,
+  BusTypeRAID,
+  BusTypeMaxReserved = 0x7F
 } STORAGE_BUS_TYPE, *PSTORAGE_BUS_TYPE;
 
 /* DEVICE_MEDIA_INFO.DeviceSpecific.DiskInfo.MediaCharacteristics constants */

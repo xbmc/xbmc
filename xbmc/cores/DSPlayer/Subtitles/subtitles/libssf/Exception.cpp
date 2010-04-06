@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,12 +24,12 @@
 
 namespace ssf
 {
-	Exception::Exception(LPCTSTR fmt, ...) 
-	{
-		va_list args;
-		va_start(args, fmt);
-		int len = _vsctprintf(fmt, args) + 1;
-		if(len > 0) _vstprintf_s(m_msg.GetBufferSetLength(len), len, fmt, args);
-		va_end(args);
-	}
+  Exception::Exception(LPCTSTR fmt, ...) 
+  {
+    va_list args;
+    va_start(args, fmt);
+    int len = _vsctprintf(fmt, args) + 1;
+    if(len > 0) _vstprintf_s(m_msg.GetBufferSetLength(len), len, fmt, args);
+    va_end(args);
+  }
 }

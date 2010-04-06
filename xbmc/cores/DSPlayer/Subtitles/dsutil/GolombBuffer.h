@@ -27,33 +27,33 @@
 class CGolombBuffer
 {
 public:
-	CGolombBuffer(BYTE* pBuffer, int nSize);
+  CGolombBuffer(BYTE* pBuffer, int nSize);
 
-	UINT64			BitRead(int nBits, bool fPeek = false);
-	UINT64			UExpGolombRead();
-	INT64			SExpGolombRead();
-	void			BitByteAlign();
+  UINT64      BitRead(int nBits, bool fPeek = false);
+  UINT64      UExpGolombRead();
+  INT64      SExpGolombRead();
+  void      BitByteAlign();
 
-	inline BYTE		ReadByte()  { return (BYTE) BitRead ( 8); };
-	inline SHORT	ReadShort() { return (SHORT)BitRead (16); };
-	inline DWORD	ReadDword() { return (DWORD)BitRead (32); };
-	void			ReadBuffer(BYTE* pDest, int nSize);
-	
-	void			Reset();
-	void			Reset(BYTE* pNewBuffer, int nNewSize);
+  inline BYTE    ReadByte()  { return (BYTE) BitRead ( 8); };
+  inline SHORT  ReadShort() { return (SHORT)BitRead (16); };
+  inline DWORD  ReadDword() { return (DWORD)BitRead (32); };
+  void      ReadBuffer(BYTE* pDest, int nSize);
+  
+  void      Reset();
+  void      Reset(BYTE* pNewBuffer, int nNewSize);
 
-	void			SetSize(int nValue) { m_nSize = nValue; };
-	int				GetSize()			{ return m_nSize; };
-	bool			IsEOF()				{ return m_nBitPos >= m_nSize; };
-	INT64			GetPos();
-	BYTE*			GetBufferPos()		{ return m_pBuffer + m_nBitPos; };
+  void      SetSize(int nValue) { m_nSize = nValue; };
+  int        GetSize()      { return m_nSize; };
+  bool      IsEOF()        { return m_nBitPos >= m_nSize; };
+  INT64      GetPos();
+  BYTE*      GetBufferPos()    { return m_pBuffer + m_nBitPos; };
 
-	void			SkipBytes(int nCount);
+  void      SkipBytes(int nCount);
 
 private :
-	BYTE*		m_pBuffer;
-	int			m_nSize;
-	int			m_nBitPos;
-	int			m_bitlen;
-	INT64		m_bitbuff;
+  BYTE*    m_pBuffer;
+  int      m_nSize;
+  int      m_nBitPos;
+  int      m_bitlen;
+  INT64    m_bitbuff;
 };

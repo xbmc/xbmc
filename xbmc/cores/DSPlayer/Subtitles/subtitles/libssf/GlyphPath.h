@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,21 +23,21 @@
 
 namespace ssf
 {
-	class GlyphPath
-	{
-	public:
-		GlyphPath() {}
-		virtual ~GlyphPath() {}
+  class GlyphPath
+  {
+  public:
+    GlyphPath() {}
+    virtual ~GlyphPath() {}
 
-		GlyphPath(const GlyphPath& path);
-		void operator = (const GlyphPath& path);
+    GlyphPath(const GlyphPath& path);
+    void operator = (const GlyphPath& path);
 
-		bool empty();
-		void clear();
-		void MovePoints(const Com::SmartPoint& o); 
-		void Enlarge(const GlyphPath& src, float size);
+    bool empty();
+    void clear();
+    void MovePoints(const Com::SmartPoint& o); 
+    void Enlarge(const GlyphPath& src, float size);
 
     std::vector<BYTE> types;
     std::vector<POINT> points;
-	};
+  };
 }

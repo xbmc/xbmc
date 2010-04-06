@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,19 +23,19 @@
 
 namespace ssf
 {
-	class FontWrapper
-	{
-		HFONT m_hFont;
-		CStdStringW m_key;
-		TEXTMETRIC m_tm;
+  class FontWrapper
+  {
+    HFONT m_hFont;
+    CStdStringW m_key;
+    TEXTMETRIC m_tm;
     std::map<DWORD, int> m_kerning;
 
-	public:
-		FontWrapper(HDC hDC, HFONT hFont, const CStdStringW& key);
-		virtual ~FontWrapper();
-		operator HFONT() const {return m_hFont;}
-		operator LPCWSTR() const {return m_key;}
-		const TEXTMETRIC& GetTextMetric() {return m_tm;}
-		int GetKernAmount(WCHAR c1, WCHAR c2);
-	};
+  public:
+    FontWrapper(HDC hDC, HFONT hFont, const CStdStringW& key);
+    virtual ~FontWrapper();
+    operator HFONT() const {return m_hFont;}
+    operator LPCWSTR() const {return m_key;}
+    const TEXTMETRIC& GetTextMetric() {return m_tm;}
+    int GetKernAmount(WCHAR c1, WCHAR c2);
+  };
 }

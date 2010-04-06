@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,20 +26,20 @@
 
 namespace ssf
 {
-	class File : public NodeFactory
-	{
-	public:
-		File();
-		virtual ~File();
+  class File : public NodeFactory
+  {
+  public:
+    File();
+    virtual ~File();
 
-		void Parse(InputStream& s, LPCWSTR predef = NULL);
+    void Parse(InputStream& s, LPCWSTR predef = NULL);
 
-		void ParseDefs(InputStream& s, Reference* pParentRef);
+    void ParseDefs(InputStream& s, Reference* pParentRef);
     void ParseTypes(InputStream& s, std::list<CStdStringW>& types);
-		void ParseName(InputStream& s, CStdStringW& name);
-		void ParseQuotedString(InputStream& s, Definition* pDef);
-		void ParseNumber(InputStream& s, Definition* pDef);
-		void ParseBlock(InputStream& s, Definition* pDef);
-		void ParseRefs(InputStream& s, Definition* pParentDef, LPCWSTR term = L";}]");
-	};
+    void ParseName(InputStream& s, CStdStringW& name);
+    void ParseQuotedString(InputStream& s, Definition* pDef);
+    void ParseNumber(InputStream& s, Definition* pDef);
+    void ParseBlock(InputStream& s, Definition* pDef);
+    void ParseRefs(InputStream& s, Definition* pParentDef, LPCWSTR term = L";}]");
+  };
 }

@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@
 
 CTextFile::CTextFile(enc e)
 {
-	m_encoding = m_defaultencoding = e;
-	m_offset = 0;
+  m_encoding = m_defaultencoding = e;
+  m_offset = 0;
 }
 
 bool CTextFile::Open(LPCTSTR lpszFileName)
@@ -74,7 +74,7 @@ bool CTextFile::Open(LPCTSTR lpszFileName)
       return(false);
   }
 
-	return(true);
+  return(true);
 }
 
 bool CTextFile::Save(LPCTSTR lpszFileName, enc e)
@@ -105,25 +105,25 @@ bool CTextFile::Save(LPCTSTR lpszFileName, enc e)
 
 void CTextFile::SetEncoding(enc e)
 {
-	m_encoding = e;
+  m_encoding = e;
 }
 
 CTextFile::enc CTextFile::GetEncoding()
 {
-	return m_encoding;
+  return m_encoding;
 }
 
 bool CTextFile::IsUnicode()
 {
-	return m_encoding == UTF8 || m_encoding == LE16 || m_encoding == BE16;
+  return m_encoding == UTF8 || m_encoding == LE16 || m_encoding == BE16;
 }
 
 // CFile
 
 CStdString CTextFile::GetFilePath() const
 {
-	// to avoid a CException coming from CTime
-	return m_strFileName; // __super::GetFilePath();
+  // to avoid a CException coming from CTime
+  return m_strFileName; // __super::GetFilePath();
 }
 
 // CStdioFile
@@ -135,44 +135,44 @@ ULONGLONG CTextFile::GetPosition()
 
 ULONGLONG CTextFile::GetLength()
 {
-	return(__super::GetLength() - m_offset);
+  return(__super::GetLength() - m_offset);
 }
 
 ULONGLONG CTextFile::Seek(LONGLONG lOff, UINT nFrom)
 {
-	ULONGLONG pos = GetPosition();
-	ULONGLONG len = GetLength();
+  ULONGLONG pos = GetPosition();
+  ULONGLONG len = GetLength();
 
-	switch(nFrom)
-	{
-	default:
+  switch(nFrom)
+  {
+  default:
   case FILE_BEGIN: lOff = lOff; break; // begin
-	case FILE_CURRENT: lOff = pos + lOff; break; //curent
-	case FILE_END: lOff = len - lOff; break; //end
-	}
+  case FILE_CURRENT: lOff = pos + lOff; break; //curent
+  case FILE_END: lOff = len - lOff; break; //end
+  }
 
-	lOff = max(min(lOff, len), 0) + m_offset;
+  lOff = max(min(lOff, len), 0) + m_offset;
 
-	pos = __super::Seek(lOff, FILE_BEGIN) - m_offset;
+  pos = __super::Seek(lOff, FILE_BEGIN) - m_offset;
 
-	return(pos);
+  return(pos);
 }
 
 void CTextFile::WriteString(LPCSTR lpsz/*CStdStringA str*/)
 {
-	CStdStringA str(lpsz);
+  CStdStringA str(lpsz);
   CStdString foo;
   CStdStringW fooW;
 
-	if(m_encoding == ASCII)
-	{
+  if(m_encoding == ASCII)
+  {
     __super::WriteString(AToT(str));
-	}
-	else if(m_encoding == ANSI)
-	{
-		str.Replace("\n", "\r\n");
-		Write((LPCSTR)str, str.GetLength());
-	}
+  }
+  else if(m_encoding == ANSI)
+  {
+    str.Replace("\n", "\r\n");
+    Write((LPCSTR)str, str.GetLength());
+  }
   else if(m_encoding == UTF8)
   {
     WriteString(AToW(str));
@@ -189,20 +189,20 @@ void CTextFile::WriteString(LPCSTR lpsz/*CStdStringA str*/)
 
 void CTextFile::WriteString(LPCWSTR lpsz/*CStdStringW str*/)
 {
-	CStdStringW str(lpsz);
+  CStdStringW str(lpsz);
 
-	if(m_encoding == ASCII)
-	{
-		__super::WriteString(WToT(str));
-	}
-	else if(m_encoding == ANSI)
-	{
-		str.Replace(L"\n", L"\r\n");
-		CStdStringA stra = CStdStringA(CStdString(str)); // TODO: codepage
-		Write((LPCSTR)stra, stra.GetLength());
-	}
-	else if(m_encoding == UTF8)
-	{
+  if(m_encoding == ASCII)
+  {
+    __super::WriteString(WToT(str));
+  }
+  else if(m_encoding == ANSI)
+  {
+    str.Replace(L"\n", L"\r\n");
+    CStdStringA stra = CStdStringA(CStdString(str)); // TODO: codepage
+    Write((LPCSTR)stra, stra.GetLength());
+  }
+  else if(m_encoding == UTF8)
+  {
     str.Replace(L"\n", L"\r\n");
     for(size_t i = 0; i < str.GetLength(); i++)
     {
@@ -231,19 +231,19 @@ void CTextFile::WriteString(LPCWSTR lpsz/*CStdStringW str*/)
         Write(&c, 1);
       }
     }
-	}
-	else if(m_encoding == LE16)
-	{
+  }
+  else if(m_encoding == LE16)
+  {
     str.Replace(L"\n", L"\r\n");
     Write((LPCWSTR)str, str.GetLength()*2);
-	}
-	else if(m_encoding == BE16)
-	{
+  }
+  else if(m_encoding == BE16)
+  {
     str.Replace(L"\n", L"\r\n");
     for(size_t i = 0; i < str.GetLength(); i++)
       str.SetAt(i, ((str[i]>>8)&0x00ff)|((str[i]<<8)&0xff00));
     Write((LPCWSTR)str, str.GetLength()*2);
-	}
+  }
 }
 
 BOOL CTextFile::ReadString(CStdStringA& str)
@@ -411,7 +411,7 @@ BOOL CTextFile::ReadString(CStdStringW& str)
 //
 
 CWebTextFile::CWebTextFile(LONGLONG llMaxSize)
-	: m_llMaxSize(llMaxSize)/*, m_dlSucceeded(false), m_dlTicket(0, 0)*/
+  : m_llMaxSize(llMaxSize)/*, m_dlSucceeded(false), m_dlTicket(0, 0)*/
 {
 }
 
@@ -419,8 +419,8 @@ bool CWebTextFile::Open(LPCTSTR lpszFileName)
 {
   CStdString fn(lpszFileName);
 
-	if(fn.Find(_T("http://")) != 0)
-		return __super::Open(lpszFileName);
+  if(fn.Find(_T("http://")) != 0)
+    return __super::Open(lpszFileName);
 
   /* Too bad we can't link on wbmc ... */
   return false;
@@ -441,20 +441,20 @@ bool CWebTextFile::Open(LPCTSTR lpszFileName)
 
 bool CWebTextFile::Save(LPCTSTR lpszFileName, enc e)
 {
-	// CWebTextFile is read-only...
-	ASSERT(0);
-	return(false);
+  // CWebTextFile is read-only...
+  ASSERT(0);
+  return(false);
 }
 
 void CWebTextFile::Close()
 {
-	__super::Close();
+  __super::Close();
 
-	if(!m_tempfn.IsEmpty())
-	{
-		_tremove(m_tempfn);
-		m_tempfn.Empty();
-	}
+  if(!m_tempfn.IsEmpty())
+  {
+    _tremove(m_tempfn);
+    m_tempfn.Empty();
+  }
 }
 
 /*
@@ -471,56 +471,56 @@ void CWebTextFile::OnFileComplete( TICKET aTicket, CStdStringA& aFilePath, INT a
 
 CStdStringW AToW(CStdStringA str)
 {
-	CStdStringW ret;
-	for(int i = 0, j = str.GetLength(); i < j; i++)
-		ret += (WCHAR)(BYTE)str[i];
-	return(ret);
+  CStdStringW ret;
+  for(int i = 0, j = str.GetLength(); i < j; i++)
+    ret += (WCHAR)(BYTE)str[i];
+  return(ret);
 }
 
 CStdStringA WToA(CStdStringW str)
 {
-	CStdStringA ret;
-	for(int i = 0, j = str.GetLength(); i < j; i++)
-		ret += (CHAR)(WORD)str[i];
-	return(ret);
+  CStdStringA ret;
+  for(int i = 0, j = str.GetLength(); i < j; i++)
+    ret += (CHAR)(WORD)str[i];
+  return(ret);
 }
 
 CStdString AToT(CStdStringA str)
 {
-	CStdString ret;
-	for(int i = 0, j = str.GetLength(); i < j; i++)
-		ret += (TCHAR)(BYTE)str[i];
-	return(ret);
+  CStdString ret;
+  for(int i = 0, j = str.GetLength(); i < j; i++)
+    ret += (TCHAR)(BYTE)str[i];
+  return(ret);
 }
 
 CStdString WToT(CStdStringW str)
 {
-	CStdString ret;
-	for(int i = 0, j = str.GetLength(); i < j; i++)
-		ret += (TCHAR)(WORD)str[i];
-	return(ret);
+  CStdString ret;
+  for(int i = 0, j = str.GetLength(); i < j; i++)
+    ret += (TCHAR)(WORD)str[i];
+  return(ret);
 }
 
 CStdStringA TToA(CStdString str)
 {
-	CStdStringA ret;
+  CStdStringA ret;
 #ifdef UNICODE
-	for(int i = 0, j = str.GetLength(); i < j; i++)
-		ret += (CHAR)(BYTE)str[i];
+  for(int i = 0, j = str.GetLength(); i < j; i++)
+    ret += (CHAR)(BYTE)str[i];
 #else
-	ret = str;
+  ret = str;
 #endif
-	return(ret);
+  return(ret);
 }
 
 CStdStringW TToW(CStdString str)
 {
-	CStdStringW ret;
+  CStdStringW ret;
 #ifdef UNICODE
-	ret = str;
+  ret = str;
 #else
-	for(int i = 0, j = str.GetLength(); i < j; i++)
-		ret += (WCHAR)(BYTE)str[i];
+  for(int i = 0, j = str.GetLength(); i < j; i++)
+    ret += (WCHAR)(BYTE)str[i];
 #endif
-	return(ret);
+  return(ret);
 }

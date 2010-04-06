@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,48 +26,48 @@
 
 namespace ssf
 {
-	class SubtitleFile : public File
-	{
-		static LPCWSTR s_predef;
+  class SubtitleFile : public File
+  {
+    static LPCWSTR s_predef;
 
-	public:
-		struct SegmentItem
-		{
-			Definition* pDef;
-			float start, stop;
-		};
+  public:
+    struct SegmentItem
+    {
+      Definition* pDef;
+      float start, stop;
+    };
 
     class Segment : public std::list<SegmentItem>
-		{
-		public:
-			float m_start, m_stop; 
-			Segment() {}
-			Segment(float start, float stop, const SegmentItem* si = NULL);
-			Segment(const Segment& s);
-			void operator = (const Segment& s);
-		};
+    {
+    public:
+      float m_start, m_stop; 
+      Segment() {}
+      Segment(float start, float stop, const SegmentItem* si = NULL);
+      Segment(const Segment& s);
+      void operator = (const Segment& s);
+    };
 
     class SegmentList : public std::list<Segment> 
-		{
+    {
       std::vector<Segment*> m_index;
-			size_t Index(bool fForce = false);
+      size_t Index(bool fForce = false);
 
-		public:
-			void clear();
-			void Insert(float start, float stop, Definition* pDef);
+    public:
+      void clear();
+      void Insert(float start, float stop, Definition* pDef);
       void Lookup(float at, std::list<SegmentItem>& sis);
-			bool Lookup(float at, size_t& k);
-			const Segment* GetSegment(size_t k);
-		};
+      bool Lookup(float at, size_t& k);
+      const Segment* GetSegment(size_t k);
+    };
 
-		SegmentList m_segments;
+    SegmentList m_segments;
 
-	public:
-		SubtitleFile();
-		virtual ~SubtitleFile();
+  public:
+    SubtitleFile();
+    virtual ~SubtitleFile();
 
-		void Parse(InputStream& s);
-		void Append(InputStream& s, float start, float stop, bool fSetTime = false);
+    void Parse(InputStream& s);
+    void Append(InputStream& s, float start, float stop, bool fSetTime = false);
     bool Lookup(float at, std::list<boost::shared_ptr<Subtitle>>& subs);
-	};
+  };
 }

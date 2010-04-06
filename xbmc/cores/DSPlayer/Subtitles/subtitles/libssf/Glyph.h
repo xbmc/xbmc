@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,36 +27,36 @@
 
 namespace ssf
 {
-	class Glyph
-	{
-		void Transform(GlyphPath& path, Com::SmartPoint org, const Com::SmartRect& subrect);
+  class Glyph
+  {
+    void Transform(GlyphPath& path, Com::SmartPoint org, const Com::SmartRect& subrect);
 
-		struct SplineCoeffs {float cx[4], cy[4];};
+    struct SplineCoeffs {float cx[4], cy[4];};
 
-	public:
-		WCHAR c;
-		Style style;
+  public:
+    WCHAR c;
+    Style style;
     std::vector<SplineCoeffs> spline;
-		Size scale;
-		bool vertical;
-		FontWrapper* font;
-		int ascent, descent, width, spacing, fill;
-		int row_ascent, row_descent;
-		GlyphPath path, path_bkg;
-		Com::SmartRect bbox;
-		Com::SmartPoint tl, tls;
-		Rasterizer ras, ras_bkg, ras_shadow;
+    Size scale;
+    bool vertical;
+    FontWrapper* font;
+    int ascent, descent, width, spacing, fill;
+    int row_ascent, row_descent;
+    GlyphPath path, path_bkg;
+    Com::SmartRect bbox;
+    Com::SmartPoint tl, tls;
+    Rasterizer ras, ras_bkg, ras_shadow;
 
-	public:
-		Glyph();
+  public:
+    Glyph();
 
-		void CreateBkg();
-		void CreateSplineCoeffs(const Com::SmartRect& spdrc);
-		void Transform(Com::SmartPoint org, const Com::SmartRect& subrect);
-		void Rasterize();
+    void CreateBkg();
+    void CreateSplineCoeffs(const Com::SmartRect& spdrc);
+    void Transform(Com::SmartPoint org, const Com::SmartRect& subrect);
+    void Rasterize();
 
-		float GetBackgroundSize() const;
-		float GetShadowDepth() const;
-		Com::SmartRect GetClipRect() const;
-	};
+    float GetBackgroundSize() const;
+    float GetShadowDepth() const;
+    Com::SmartRect GetClipRect() const;
+  };
 }

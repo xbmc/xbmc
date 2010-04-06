@@ -24,25 +24,25 @@
 
 enum ElementaryStreamTypes
 {
-      INVALID								= 0,
-      VIDEO_STREAM_MPEG1					= 0x01,
-      VIDEO_STREAM_MPEG2					= 0x02,
-      AUDIO_STREAM_MPEG1					= 0x03, // all layers including mp3
-      AUDIO_STREAM_MPEG2					= 0x04,
-      VIDEO_STREAM_H264					= 0x1b,
-      AUDIO_STREAM_LPCM					= 0x80,
-      AUDIO_STREAM_AC3					= 0x81,
-      AUDIO_STREAM_DTS					= 0x82,
-      AUDIO_STREAM_AC3_TRUE_HD			= 0x83,
-      AUDIO_STREAM_AC3_PLUS				= 0x84,
-      AUDIO_STREAM_DTS_HD					= 0x85,
-      AUDIO_STREAM_DTS_HD_MASTER_AUDIO	= 0x86,
-      PRESENTATION_GRAPHICS_STREAM		= 0x90,
-      INTERACTIVE_GRAPHICS_STREAM			= 0x91,
-      SUBTITLE_STREAM						= 0x92,
-      SECONDARY_AUDIO_AC3_PLUS			= 0xa1,
-      SECONDARY_AUDIO_DTS_HD				= 0xa2,
-      VIDEO_STREAM_VC1					= 0xea
+      INVALID                = 0,
+      VIDEO_STREAM_MPEG1          = 0x01,
+      VIDEO_STREAM_MPEG2          = 0x02,
+      AUDIO_STREAM_MPEG1          = 0x03, // all layers including mp3
+      AUDIO_STREAM_MPEG2          = 0x04,
+      VIDEO_STREAM_H264          = 0x1b,
+      AUDIO_STREAM_LPCM          = 0x80,
+      AUDIO_STREAM_AC3          = 0x81,
+      AUDIO_STREAM_DTS          = 0x82,
+      AUDIO_STREAM_AC3_TRUE_HD      = 0x83,
+      AUDIO_STREAM_AC3_PLUS        = 0x84,
+      AUDIO_STREAM_DTS_HD          = 0x85,
+      AUDIO_STREAM_DTS_HD_MASTER_AUDIO  = 0x86,
+      PRESENTATION_GRAPHICS_STREAM    = 0x90,
+      INTERACTIVE_GRAPHICS_STREAM      = 0x91,
+      SUBTITLE_STREAM            = 0x92,
+      SECONDARY_AUDIO_AC3_PLUS      = 0xa1,
+      SECONDARY_AUDIO_DTS_HD        = 0xa2,
+      VIDEO_STREAM_VC1          = 0xea
 };
 
 enum BDVM_VideoFormat
@@ -110,72 +110,72 @@ class CHdmvClipInfo
 {
 public:
 
-	struct Stream
-	{
-		Stream()
-		{
-			memset(this, 0, sizeof(*this));
-		}
-		SHORT					m_PID;
-		ElementaryStreamTypes	m_Type;
-		char					m_LanguageCode[4];
-		LCID					m_LCID;
+  struct Stream
+  {
+    Stream()
+    {
+      memset(this, 0, sizeof(*this));
+    }
+    SHORT          m_PID;
+    ElementaryStreamTypes  m_Type;
+    char          m_LanguageCode[4];
+    LCID          m_LCID;
 
-		// Valid for video types
-		BDVM_VideoFormat		m_VideoFormat;
-		BDVM_FrameRate			m_FrameRate;
-		BDVM_AspectRatio		m_AspectRatio;
-		// Valid for audio types
-		BDVM_ChannelLayout		m_ChannelLayout;
-		BDVM_SampleRate			m_SampleRate;
+    // Valid for video types
+    BDVM_VideoFormat    m_VideoFormat;
+    BDVM_FrameRate      m_FrameRate;
+    BDVM_AspectRatio    m_AspectRatio;
+    // Valid for audio types
+    BDVM_ChannelLayout    m_ChannelLayout;
+    BDVM_SampleRate      m_SampleRate;
 
-		LPCTSTR Format();
-	};
+    LPCTSTR Format();
+  };
 
-	struct PlaylistItem
-	{
-		CStdString				m_strFileName;
-		REFERENCE_TIME			m_rtIn;
-		REFERENCE_TIME			m_rtOut;
+  struct PlaylistItem
+  {
+    CStdString        m_strFileName;
+    REFERENCE_TIME      m_rtIn;
+    REFERENCE_TIME      m_rtOut;
 
-		REFERENCE_TIME Duration()
-		{
-			return m_rtOut - m_rtIn;
-		}
+    REFERENCE_TIME Duration()
+    {
+      return m_rtOut - m_rtIn;
+    }
 
-		bool operator == (const PlaylistItem& pi) const
-		{
-			return pi.m_strFileName == m_strFileName;
-		}
-	};
+    bool operator == (const PlaylistItem& pi) const
+    {
+      return pi.m_strFileName == m_strFileName;
+    }
+  };
 
-	CHdmvClipInfo(void);
-	~CHdmvClipInfo();
+  CHdmvClipInfo(void);
+  ~CHdmvClipInfo();
 
-	HRESULT		ReadInfo(LPCTSTR strFile);
-	Stream*		FindStream(SHORT wPID);
-	bool		IsHdmv()					{ return m_bIsHdmv; };
-	int			GetStreamNumber()			{ return int(m_Streams.size()); };
-	Stream*		GetStreamByIndex(int nIndex){ return (unsigned(nIndex) < m_Streams.size()) ? &m_Streams[nIndex] : NULL; };
+  HRESULT    ReadInfo(LPCTSTR strFile);
+  Stream*    FindStream(SHORT wPID);
+  bool    IsHdmv()          { return m_bIsHdmv; };
+  int      GetStreamNumber()      { return int(m_Streams.size()); };
+  Stream*    GetStreamByIndex(int nIndex){ return (unsigned(nIndex) < m_Streams.size()) ? &m_Streams[nIndex] : NULL; };
 
-  HRESULT		FindMainMovie(LPCTSTR strFolder, CStdString& strPlaylistFile, std::list<CStdString>& MainPlaylist);
+  HRESULT    FindMainMovie(LPCTSTR strFolder, CStdString& strPlaylistFile, std::list<CStdString>& MainPlaylist);
   HRESULT   ReadPlaylist(LPCTSTR strPath, LPCTSTR strFile, REFERENCE_TIME& rtDuration, std::list<CStdString>& Playlist);
 
 private :
-	DWORD		SequenceInfo_start_address;
-	DWORD		ProgramInfo_start_address;
+  DWORD    SequenceInfo_start_address;
+  DWORD    ProgramInfo_start_address;
 
-	HANDLE		m_hFile;
+  HANDLE    m_hFile;
 
 
-  std::vector<Stream>	m_Streams;
-	bool				m_bIsHdmv;
+  std::vector<Stream>  m_Streams;
+  bool        m_bIsHdmv;
 
-	DWORD		ReadDword();
-	SHORT		ReadShort();
-	BYTE		ReadByte();
-	void		ReadBuffer(BYTE* pBuff, int nLen);
+  DWORD    ReadDword();
+  SHORT    ReadShort();
+  BYTE    ReadByte();
+  void    ReadBuffer(BYTE* pBuff, int nLen);
 
-	HRESULT		ReadProgramInfo();
-	HRESULT		CloseFile(HRESULT hr);
+  HRESULT    ReadProgramInfo();
+  HRESULT    CloseFile(HRESULT hr);
 };

@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,55 +28,55 @@
 class CTextFile : protected ATL::CStdioFile
 {
 public:
-	typedef enum {ASCII, UTF8, LE16, BE16, ANSI} enc;
+  typedef enum {ASCII, UTF8, LE16, BE16, ANSI} enc;
 
 private:
-	enc m_encoding, m_defaultencoding;
-	int m_offset;
+  enc m_encoding, m_defaultencoding;
+  int m_offset;
   CStdString m_strFileName;
 
 public:
-	CTextFile(enc e = ASCII);
+  CTextFile(enc e = ASCII);
 
-	virtual bool Open(LPCTSTR lpszFileName);
-	virtual bool Save(LPCTSTR lpszFileName, enc e /*= ASCII*/);
+  virtual bool Open(LPCTSTR lpszFileName);
+  virtual bool Save(LPCTSTR lpszFileName, enc e /*= ASCII*/);
 
-	void SetEncoding(enc e);
-	enc GetEncoding();
-	bool IsUnicode();
+  void SetEncoding(enc e);
+  enc GetEncoding();
+  bool IsUnicode();
 
-	// CFile
+  // CFile
 
-	CStdString GetFilePath() const;
+  CStdString GetFilePath() const;
 
-	// CStdioFile
+  // CStdioFile
 
   ULONGLONG GetPosition();
-	ULONGLONG GetLength();
-	ULONGLONG Seek(LONGLONG lOff, UINT nFrom);
+  ULONGLONG GetLength();
+  ULONGLONG Seek(LONGLONG lOff, UINT nFrom);
 
-	void WriteString(LPCSTR lpsz/*CStdStringA str*/);
-	void WriteString(LPCWSTR lpsz/*CStdStringW str*/);
-	BOOL ReadString(CStdStringA& str);
-	BOOL ReadString(CStdStringW& str);
+  void WriteString(LPCSTR lpsz/*CStdStringA str*/);
+  void WriteString(LPCWSTR lpsz/*CStdStringW str*/);
+  BOOL ReadString(CStdStringA& str);
+  BOOL ReadString(CStdStringW& str);
 
 };
 
 class CWebTextFile : public CTextFile/*, IDownloadQueueObserver*/
 {
-	LONGLONG m_llMaxSize;
-	CStdString m_tempfn;
+  LONGLONG m_llMaxSize;
+  CStdString m_tempfn;
   /*CEvent m_downloadEvent;
   TICKET m_dlTicket;
   bool m_dlSucceeded;*/
 
 public:
-	CWebTextFile(LONGLONG llMaxSize = 1024*1024);
+  CWebTextFile(LONGLONG llMaxSize = 1024*1024);
 
   //void OnFileComplete(TICKET aTicket, CStdStringA& aFilePath, INT aByteRxCount, Result aResult);
-	bool Open(LPCTSTR lpszFileName);
-	bool Save(LPCTSTR lpszFileName, enc e /*= ASCII*/);
-	void Close();
+  bool Open(LPCTSTR lpszFileName);
+  bool Save(LPCTSTR lpszFileName, enc e /*= ASCII*/);
+  void Close();
 };
 
 extern CStdStringW AToW(CStdStringA str);

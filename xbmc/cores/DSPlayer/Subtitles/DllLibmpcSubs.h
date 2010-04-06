@@ -24,11 +24,8 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-extern "C" {
-  #include "libmpcSubs.h"
-}
+
 #include "DynamicDll.h"
-#include "utils/log.h"
 #include "mpc-hc_subs/ISubManager.h"
 
 class CSubManager;

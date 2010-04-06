@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,13 +23,13 @@
 
 namespace ssf
 {
-	class Exception
-	{
-		CStdString m_msg;
+  class Exception
+  {
+    CStdString m_msg;
 
-	public:
-		Exception(LPCTSTR fmt, ...);
-		
-		CStdString ToString() {return m_msg;}
-	};
+  public:
+    Exception(LPCTSTR fmt, ...);
+    
+    CStdString ToString() {return m_msg;}
+  };
 }

@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,22 +30,22 @@ enum {MSP_RGB32,MSP_RGB24,MSP_RGB16,MSP_RGB15,MSP_YUY2,MSP_YV12,MSP_IYUV,MSP_AYU
 
 class CMemSubPic : public ISubPicImpl
 {
-	SubPicDesc m_spd;
+  SubPicDesc m_spd;
 
 protected:
-	STDMETHODIMP_(void*) GetObject(); // returns SubPicDesc*
+  STDMETHODIMP_(void*) GetObject(); // returns SubPicDesc*
 
 public:
-	CMemSubPic(SubPicDesc& spd);
-	virtual ~CMemSubPic();
+  CMemSubPic(SubPicDesc& spd);
+  virtual ~CMemSubPic();
 
-	// ISubPic
-	STDMETHODIMP GetDesc(SubPicDesc& spd);
-	STDMETHODIMP CopyTo(ISubPic* pSubPic);
-	STDMETHODIMP ClearDirtyRect(DWORD color);
-	STDMETHODIMP Lock(SubPicDesc& spd);
-	STDMETHODIMP Unlock(RECT* pDirtyRect);
-	STDMETHODIMP AlphaBlt(RECT* pSrc, RECT* pDst, SubPicDesc* pTarget);
+  // ISubPic
+  STDMETHODIMP GetDesc(SubPicDesc& spd);
+  STDMETHODIMP CopyTo(ISubPic* pSubPic);
+  STDMETHODIMP ClearDirtyRect(DWORD color);
+  STDMETHODIMP Lock(SubPicDesc& spd);
+  STDMETHODIMP Unlock(RECT* pDirtyRect);
+  STDMETHODIMP AlphaBlt(RECT* pSrc, RECT* pDst, SubPicDesc* pTarget);
   STDMETHODIMP GetTexture(Com::SmartPtr<IDirect3DTexture9>&  pTexture);
 };
 
@@ -53,12 +53,12 @@ public:
 
 class CMemSubPicAllocator : public ISubPicAllocatorImpl
 {
-	int m_type;
-	Com::SmartSize m_maxsize;
+  int m_type;
+  Com::SmartSize m_maxsize;
 
-	bool Alloc(bool fStatic, ISubPic** ppSubPic);
+  bool Alloc(bool fStatic, ISubPic** ppSubPic);
 
 public:
-	CMemSubPicAllocator(int type, SIZE maxsize);
+  CMemSubPicAllocator(int type, SIZE maxsize);
 };
 

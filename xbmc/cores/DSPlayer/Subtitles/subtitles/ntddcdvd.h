@@ -60,8 +60,8 @@ extern "C" {
 typedef ULONG DVD_SESSION_ID, *PDVD_SESSION_ID;
 
 typedef struct _STORAGE_SET_READ_AHEAD {
-	LARGE_INTEGER  TriggerAddress;
-	LARGE_INTEGER  TargetAddress;
+  LARGE_INTEGER  TriggerAddress;
+  LARGE_INTEGER  TargetAddress;
 } STORAGE_SET_READ_AHEAD, *PSTORAGE_SET_READ_AHEAD;
 
 typedef enum DVD_STRUCTURE_FORMAT {
@@ -120,27 +120,27 @@ typedef struct _DVD_DISK_KEY_DESCRIPTOR {
 } DVD_DISK_KEY_DESCRIPTOR, *PDVD_DISK_KEY_DESCRIPTOR;
 
 typedef enum _DVD_KEY_TYPE {
-	DvdChallengeKey = 0x01,
-	DvdBusKey1,
-	DvdBusKey2,
-	DvdTitleKey,
-	DvdAsf,
-	DvdSetRpcKey = 0x6,
-	DvdGetRpcKey = 0x8,
-	DvdDiskKey = 0x80,
-	DvdInvalidateAGID = 0x3f
+  DvdChallengeKey = 0x01,
+  DvdBusKey1,
+  DvdBusKey2,
+  DvdTitleKey,
+  DvdAsf,
+  DvdSetRpcKey = 0x6,
+  DvdGetRpcKey = 0x8,
+  DvdDiskKey = 0x80,
+  DvdInvalidateAGID = 0x3f
 } DVD_KEY_TYPE;
 
 typedef struct _DVD_COPY_PROTECT_KEY {
-	ULONG  KeyLength;
-	DVD_SESSION_ID  SessionId;
-	DVD_KEY_TYPE  KeyType;
-	ULONG  KeyFlags;
-	union {
-		HANDLE  FileHandle;
-		LARGE_INTEGER  TitleOffset;
-	} Parameters;
-	UCHAR  KeyData[0];
+  ULONG  KeyLength;
+  DVD_SESSION_ID  SessionId;
+  DVD_KEY_TYPE  KeyType;
+  ULONG  KeyFlags;
+  union {
+    HANDLE  FileHandle;
+    LARGE_INTEGER  TitleOffset;
+  } Parameters;
+  UCHAR  KeyData[0];
 } DVD_COPY_PROTECT_KEY, *PDVD_COPY_PROTECT_KEY;
 
 #define DVD_CHALLENGE_KEY_LENGTH          (12 + sizeof(DVD_COPY_PROTECT_KEY))
@@ -199,10 +199,10 @@ typedef struct _DVD_ASF {
 } DVD_ASF, *PDVD_ASF;
 
 typedef struct _DVD_REGION {
-	UCHAR  CopySystem;
-	UCHAR  RegionData;
-	UCHAR  SystemRegion;
-	UCHAR  ResetCount;
+  UCHAR  CopySystem;
+  UCHAR  RegionData;
+  UCHAR  SystemRegion;
+  UCHAR  ResetCount;
 } DVD_REGION, *PDVD_REGION;
 
 #ifdef __cplusplus

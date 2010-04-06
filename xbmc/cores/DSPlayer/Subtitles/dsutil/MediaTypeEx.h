@@ -7,14 +7,14 @@
 class CMediaTypeEx : public CMediaType
 {
 public:
-	CMediaTypeEx();
-	CMediaTypeEx(const CMediaType& mt) {CMediaType::operator = (mt);}
+  CMediaTypeEx();
+  CMediaTypeEx(const CMediaType& mt) {CMediaType::operator = (mt);}
 
-	CStdString ToString(IPin* pPin = NULL);
+  CStdString ToString(IPin* pPin = NULL);
 
-	static CStdString GetVideoCodecName(const GUID& subtype, DWORD biCompression, DWORD *fourcc = NULL);
-	static CStdString GetAudioCodecName(const GUID& subtype, WORD wFormatTag);
-	static CStdString GetSubtitleCodecName(const GUID& subtype);
+  static CStdString GetVideoCodecName(const GUID& subtype, DWORD biCompression, DWORD *fourcc = NULL);
+  static CStdString GetAudioCodecName(const GUID& subtype, WORD wFormatTag);
+  static CStdString GetSubtitleCodecName(const GUID& subtype);
 
   //void Dump(std::list<CStdString>& sl);
 };

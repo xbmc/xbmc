@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,68 +24,68 @@
 class CNullRenderer : public CDSBaseRenderer
 {
 protected:
-	HRESULT DoRenderSample(IMediaSample* pSample) {return S_OK;}
+  HRESULT DoRenderSample(IMediaSample* pSample) {return S_OK;}
 
 public:
-	CNullRenderer(REFCLSID clsid, TCHAR* pName, LPUNKNOWN pUnk, HRESULT* phr);
+  CNullRenderer(REFCLSID clsid, TCHAR* pName, LPUNKNOWN pUnk, HRESULT* phr);
 };
 
 [uuid("579883A0-4E2D-481F-9436-467AAFAB7DE8")]
 class CNullVideoRenderer : public CNullRenderer
 {
 protected:
-	HRESULT CheckMediaType(const CMediaType* pmt);
+  HRESULT CheckMediaType(const CMediaType* pmt);
 
 public:
-	CNullVideoRenderer(LPUNKNOWN pUnk, HRESULT* phr);
+  CNullVideoRenderer(LPUNKNOWN pUnk, HRESULT* phr);
 };
 
 [uuid("DD9ED57D-6ABF-42E8-89A2-11D04798DC58")]
 class CNullUVideoRenderer : public CNullRenderer
 {
 protected:
-	HRESULT CheckMediaType(const CMediaType* pmt);
+  HRESULT CheckMediaType(const CMediaType* pmt);
 
 public:
-	CNullUVideoRenderer(LPUNKNOWN pUnk, HRESULT* phr);
+  CNullUVideoRenderer(LPUNKNOWN pUnk, HRESULT* phr);
 };
 
 [uuid("0C38BDFD-8C17-4E00-A344-F89397D3E22A")]
 class CNullAudioRenderer : public CNullRenderer
 {
 protected:
-	HRESULT CheckMediaType(const CMediaType* pmt);
+  HRESULT CheckMediaType(const CMediaType* pmt);
 
 public:
-	CNullAudioRenderer(LPUNKNOWN pUnk, HRESULT* phr);
+  CNullAudioRenderer(LPUNKNOWN pUnk, HRESULT* phr);
 };
 
 [uuid("64A45125-7343-4772-9DA4-179FAC9D462C")]
 class CNullUAudioRenderer : public CNullRenderer
 {
 protected:
-	HRESULT CheckMediaType(const CMediaType* pmt);
+  HRESULT CheckMediaType(const CMediaType* pmt);
 
 public:
-	CNullUAudioRenderer(LPUNKNOWN pUnk, HRESULT* phr);
+  CNullUAudioRenderer(LPUNKNOWN pUnk, HRESULT* phr);
 };
 
 [uuid("655D7613-C26C-4A25-BBBD-3C9C516122CC")]
 class CNullTextRenderer : public CBaseFilter, public CCritSec
 {
-	class CTextInputPin : public CBaseInputPin
-	{
-	public:
-		CTextInputPin(CBaseFilter* pFilter, CCritSec* pLock, HRESULT* phr) 
-			: CBaseInputPin(NAME("CTextInputPin"), pFilter, pLock, phr, L"In") {}
-	    HRESULT CheckMediaType(const CMediaType* pmt);
-	};
+  class CTextInputPin : public CBaseInputPin
+  {
+  public:
+    CTextInputPin(CBaseFilter* pFilter, CCritSec* pLock, HRESULT* phr) 
+      : CBaseInputPin(NAME("CTextInputPin"), pFilter, pLock, phr, L"In") {}
+      HRESULT CheckMediaType(const CMediaType* pmt);
+  };
 
   std::auto_ptr<CTextInputPin> m_pInput;
 
 public:
-	CNullTextRenderer(LPUNKNOWN pUnk, HRESULT* phr);
-	int GetPinCount() {return (int)!!m_pInput.get();}
-	CBasePin* GetPin(int n) {return n == 0 ? (CBasePin*)m_pInput.get() : NULL;}
+  CNullTextRenderer(LPUNKNOWN pUnk, HRESULT* phr);
+  int GetPinCount() {return (int)!!m_pInput.get();}
+  CBasePin* GetPin(int n) {return n == 0 ? (CBasePin*)m_pInput.get() : NULL;}
 };
 

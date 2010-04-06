@@ -7,41 +7,41 @@
 /*
 void SetDefaultStyle(const SubtitleStyle* s, BOOL overrideUserStyles)
 {
-	g_style.fontName = s->fontName;
-	g_style.colors[0] = s->fontColor;
-	g_style.fontWeight = (s->fontIsBold ? 700 : 400);
-	g_style.fontSize = s->fontSize; 
-	g_style.charSet = s->fontCharset;
-	g_style.shadowDepthX  = g_style.shadowDepthY = s->shadow;
-	g_style.outlineWidthX = g_style.outlineWidthY = s->borderWidth;
-	g_style.borderStyle = (s->isBorderOutline ? 0 : 1); // 0: outline, 1: opaque box
-	g_overrideUserStyles = overrideUserStyles;
+  g_style.fontName = s->fontName;
+  g_style.colors[0] = s->fontColor;
+  g_style.fontWeight = (s->fontIsBold ? 700 : 400);
+  g_style.fontSize = s->fontSize; 
+  g_style.charSet = s->fontCharset;
+  g_style.shadowDepthX  = g_style.shadowDepthY = s->shadow;
+  g_style.outlineWidthX = g_style.outlineWidthY = s->borderWidth;
+  g_style.borderStyle = (s->isBorderOutline ? 0 : 1); // 0: outline, 1: opaque box
+  g_overrideUserStyles = overrideUserStyles;
 }
 
 void SetAdvancedOptions(int subPicsBufferAhead, SIZE textureSize, BOOL pow2tex, BOOL disableAnim)
 {
-	g_subPicsBufferAhead = subPicsBufferAhead;
-	g_textureSize = textureSize;
-	g_pow2tex = pow2tex != 0;
-	g_disableAnim = disableAnim;
+  g_subPicsBufferAhead = subPicsBufferAhead;
+  g_textureSize = textureSize;
+  g_pow2tex = pow2tex != 0;
+  g_disableAnim = disableAnim;
 }*/
 
 /*
 BOOL LoadSubtitles(IDirect3DDevice9* d3DDev, SIZE size, const wchar_t* fn, IGraphBuilder* pGB, const wchar_t* paths, ISubManager** manager)
 {
-	*manager = NULL;
+  *manager = NULL;
   g_subManager.reset();
-	HRESULT hr = S_OK;
-	CSubManager *subManager(new CSubManager(d3DDev, size, hr));
-	if (FAILED(hr))
-	{
+  HRESULT hr = S_OK;
+  CSubManager *subManager(new CSubManager(d3DDev, size, hr));
+  if (FAILED(hr))
+  {
     delete subManager;
-		return FALSE;
-	}
-	subManager->LoadSubtitlesForFile(fn, pGB, paths);
-	g_subManager.reset(subManager);
+    return FALSE;
+  }
+  subManager->LoadSubtitlesForFile(fn, pGB, paths);
+  g_subManager.reset(subManager);
   *manager = g_subManager.get();
-	return TRUE;
+  return TRUE;
 }*/
 
 bool CreateSubtitleManager(IDirect3DDevice9* d3DDev, SIZE size, ISubManager ** pManager)

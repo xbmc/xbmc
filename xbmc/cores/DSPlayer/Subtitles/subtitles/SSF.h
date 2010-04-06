@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,42 +29,42 @@
 
 namespace ssf
 {
-	[uuid("E0593632-0AB7-47CA-8BE1-E9D2A6A4825E")]
-	class CRenderer : public ISubPicProviderImpl, public ISubStream
-	{
-		CStdString m_fn, m_name;
+  [uuid("E0593632-0AB7-47CA-8BE1-E9D2A6A4825E")]
+  class CRenderer : public ISubPicProviderImpl, public ISubStream
+  {
+    CStdString m_fn, m_name;
     std::auto_ptr<SubtitleFile> m_file;
     std::auto_ptr<Renderer> m_renderer;
 
-	public:
-		CRenderer(CCritSec* pLock);
-		virtual ~CRenderer();
+  public:
+    CRenderer(CCritSec* pLock);
+    virtual ~CRenderer();
 
-		bool Open(CStdString fn, CStdString name = _T(""));
-		bool Open(InputStream& s, CStdString name);
+    bool Open(CStdString fn, CStdString name = _T(""));
+    bool Open(InputStream& s, CStdString name);
 
-		void Append(REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, LPCWSTR str);
+    void Append(REFERENCE_TIME rtStart, REFERENCE_TIME rtStop, LPCWSTR str);
 
-		DECLARE_IUNKNOWN
-		STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+    DECLARE_IUNKNOWN
+    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
-		// ISubPicProvider
-		STDMETHODIMP_(__w64 int) GetStartPosition(REFERENCE_TIME rt, double fps);
+    // ISubPicProvider
+    STDMETHODIMP_(__w64 int) GetStartPosition(REFERENCE_TIME rt, double fps);
     STDMETHODIMP_(int) GetNext(int pos);
-		STDMETHODIMP_(REFERENCE_TIME) GetStart(int pos, double fps);
-		STDMETHODIMP_(REFERENCE_TIME) GetStop(int pos, double fps);
-		STDMETHODIMP_(bool) IsAnimated(int pos);
-		STDMETHODIMP Render(SubPicDesc& spd, REFERENCE_TIME rt, double fps, RECT& bbox);
+    STDMETHODIMP_(REFERENCE_TIME) GetStart(int pos, double fps);
+    STDMETHODIMP_(REFERENCE_TIME) GetStop(int pos, double fps);
+    STDMETHODIMP_(bool) IsAnimated(int pos);
+    STDMETHODIMP Render(SubPicDesc& spd, REFERENCE_TIME rt, double fps, RECT& bbox);
 
-		// IPersist
-		STDMETHODIMP GetClassID(CLSID* pClassID);
+    // IPersist
+    STDMETHODIMP GetClassID(CLSID* pClassID);
 
-		// ISubStream
-		STDMETHODIMP_(int) GetStreamCount();
-		STDMETHODIMP GetStreamInfo(int i, WCHAR** ppName, LCID* pLCID);
-		STDMETHODIMP_(int) GetStream();
-		STDMETHODIMP SetStream(int iStream);
-		STDMETHODIMP Reload();
-	};
+    // ISubStream
+    STDMETHODIMP_(int) GetStreamCount();
+    STDMETHODIMP GetStreamInfo(int i, WCHAR** ppName, LCID* pLCID);
+    STDMETHODIMP_(int) GetStream();
+    STDMETHODIMP SetStream(int iStream);
+    STDMETHODIMP Reload();
+  };
 
 }

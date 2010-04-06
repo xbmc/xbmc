@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,29 +43,29 @@ _COM_SMARTPTR_TYPEDEF(IXMLDOMDocument, IID_IXMLDOMDocument);
 #endif
 class CUSFSubtitles
 {
-	bool ParseUSFSubtitles(IXMLDOMNodePtr pNode);
-	 void ParseMetadata(IXMLDOMNodePtr pNode, metadata_t& m);
-	 void ParseStyle(IXMLDOMNodePtr pNode, style_t* s);
-	  void ParseFontstyle(IXMLDOMNodePtr pNode, fontstyle_t& fs);
-	  void ParsePal(IXMLDOMNodePtr pNode, posattriblist_t& pal);
-	 void ParseEffect(IXMLDOMNodePtr pNode, effect_t* e);
-	  void ParseKeyframe(IXMLDOMNodePtr pNode, keyframe_t* k);
-	 void ParseSubtitle(IXMLDOMNodePtr pNode, int start, int stop);
-	  void ParseText(IXMLDOMNodePtr pNode, CStdStringW& assstr);
-	  void ParseShape(IXMLDOMNodePtr pNode);
+  bool ParseUSFSubtitles(IXMLDOMNodePtr pNode);
+   void ParseMetadata(IXMLDOMNodePtr pNode, metadata_t& m);
+   void ParseStyle(IXMLDOMNodePtr pNode, style_t* s);
+    void ParseFontstyle(IXMLDOMNodePtr pNode, fontstyle_t& fs);
+    void ParsePal(IXMLDOMNodePtr pNode, posattriblist_t& pal);
+   void ParseEffect(IXMLDOMNodePtr pNode, effect_t* e);
+    void ParseKeyframe(IXMLDOMNodePtr pNode, keyframe_t* k);
+   void ParseSubtitle(IXMLDOMNodePtr pNode, int start, int stop);
+    void ParseText(IXMLDOMNodePtr pNode, CStdStringW& assstr);
+    void ParseShape(IXMLDOMNodePtr pNode);
 
 public:
-	CUSFSubtitles();
-	virtual ~CUSFSubtitles();
+  CUSFSubtitles();
+  virtual ~CUSFSubtitles();
 
-	bool Read(LPCTSTR fn);
-//	bool Write(LPCTSTR fn); // TODO
+  bool Read(LPCTSTR fn);
+//  bool Write(LPCTSTR fn); // TODO
 
-	metadata_t metadata;
+  metadata_t metadata;
   std::list<boost::shared_ptr<style_t>> styles;
-	std::list<boost::shared_ptr<effect_t>> effects;
-	std::list<boost::shared_ptr<text_t>> texts;
+  std::list<boost::shared_ptr<effect_t>> effects;
+  std::list<boost::shared_ptr<text_t>> texts;
 
-	bool ConvertToSTS(CSimpleTextSubtitle& sts);
-//	bool ConvertFromSTS(CSimpleTextSubtitle& sts); // TODO
+  bool ConvertToSTS(CSimpleTextSubtitle& sts);
+//  bool ConvertFromSTS(CSimpleTextSubtitle& sts); // TODO
 };

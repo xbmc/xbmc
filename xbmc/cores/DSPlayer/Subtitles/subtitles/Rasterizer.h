@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,63 +30,63 @@
 
 class Rasterizer
 {
-	bool fFirstSet;
-	Com::SmartPoint firstp, lastp;
+  bool fFirstSet;
+  Com::SmartPoint firstp, lastp;
 
 protected:
-	BYTE* mpPathTypes;
-	POINT* mpPathPoints;
-	int mPathPoints;
+  BYTE* mpPathTypes;
+  POINT* mpPathPoints;
+  int mPathPoints;
 
 private:
-	int mWidth, mHeight;
+  int mWidth, mHeight;
 
-	typedef std::pair<unsigned __int64, unsigned __int64> tSpan;
-	typedef std::vector<tSpan> tSpanBuffer;
+  typedef std::pair<unsigned __int64, unsigned __int64> tSpan;
+  typedef std::vector<tSpan> tSpanBuffer;
 
-	tSpanBuffer mOutline;
-	tSpanBuffer mWideOutline;
-	int mWideBorder;
+  tSpanBuffer mOutline;
+  tSpanBuffer mWideOutline;
+  int mWideBorder;
 
-	struct Edge {
-		int next;
-		int posandflag;
-	} *mpEdgeBuffer;
-	unsigned mEdgeHeapSize;
-	unsigned mEdgeNext;
+  struct Edge {
+    int next;
+    int posandflag;
+  } *mpEdgeBuffer;
+  unsigned mEdgeHeapSize;
+  unsigned mEdgeNext;
 
-	unsigned int* mpScanBuffer;
+  unsigned int* mpScanBuffer;
 
-	typedef unsigned char byte;
+  typedef unsigned char byte;
 
 protected:
-	byte *mpOverlayBuffer;
-	int mOverlayWidth, mOverlayHeight;
-	int mPathOffsetX, mPathOffsetY;
-	int mOffsetX, mOffsetY;
+  byte *mpOverlayBuffer;
+  int mOverlayWidth, mOverlayHeight;
+  int mPathOffsetX, mPathOffsetY;
+  int mOffsetX, mOffsetY;
 
 private:
-	void _TrashPath();
-	void _TrashOverlay();
-	void _ReallocEdgeBuffer(int edges);
-	void _EvaluateBezier(int ptbase, bool fBSpline);
-	void _EvaluateLine(int pt1idx, int pt2idx);
-	void _EvaluateLine(int x0, int y0, int x1, int y1);
-	static void _OverlapRegion(tSpanBuffer& dst, tSpanBuffer& src, int dx, int dy);
+  void _TrashPath();
+  void _TrashOverlay();
+  void _ReallocEdgeBuffer(int edges);
+  void _EvaluateBezier(int ptbase, bool fBSpline);
+  void _EvaluateLine(int pt1idx, int pt2idx);
+  void _EvaluateLine(int x0, int y0, int x1, int y1);
+  static void _OverlapRegion(tSpanBuffer& dst, tSpanBuffer& src, int dx, int dy);
 
 public:
-	Rasterizer();
-	virtual ~Rasterizer();
+  Rasterizer();
+  virtual ~Rasterizer();
 
-	bool BeginPath(HDC hdc);
-	bool EndPath(HDC hdc);
-	bool PartialBeginPath(HDC hdc, bool bClearPath);
-	bool PartialEndPath(HDC hdc, long dx, long dy);
-	bool ScanConvert();
-	bool CreateWidenedRegion(int borderX, int borderY);
-	void DeleteOutlines();
-	bool Rasterize(int xsub, int ysub, int fBlur, double fGaussianBlur);
-	Com::SmartRect Draw(SubPicDesc& spd, Com::SmartRect& clipRect, byte* pAlphaMask, int xsub, int ysub, const long* switchpts, bool fBody, bool fBorder);
-	void FillSolidRect(SubPicDesc& spd, int x, int y, int nWidth, int nHeight, DWORD lColor);
+  bool BeginPath(HDC hdc);
+  bool EndPath(HDC hdc);
+  bool PartialBeginPath(HDC hdc, bool bClearPath);
+  bool PartialEndPath(HDC hdc, long dx, long dy);
+  bool ScanConvert();
+  bool CreateWidenedRegion(int borderX, int borderY);
+  void DeleteOutlines();
+  bool Rasterize(int xsub, int ysub, int fBlur, double fGaussianBlur);
+  Com::SmartRect Draw(SubPicDesc& spd, Com::SmartRect& clipRect, byte* pAlphaMask, int xsub, int ysub, const long* switchpts, bool fBody, bool fBorder);
+  void FillSolidRect(SubPicDesc& spd, int x, int y, int nWidth, int nHeight, DWORD lColor);
 };
 

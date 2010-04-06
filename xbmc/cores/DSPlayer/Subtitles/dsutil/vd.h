@@ -1,25 +1,25 @@
-//	VirtualDub - Video processing and capture application
-//	Copyright (C) 1998-2001 Avery Lee
+//  VirtualDub - Video processing and capture application
+//  Copyright (C) 1998-2001 Avery Lee
 //
-//	This program is free software; you can redistribute it and/or modify
-//	it under the terms of the GNU General Public License as published by
-//	the Free Software Foundation; either version 2 of the License, or
-//	(at your option) any later version.
+//  This program is free software; you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation; either version 2 of the License, or
+//  (at your option) any later version.
 //
-//	This program is distributed in the hope that it will be useful,
-//	but WITHOUT ANY WARRANTY; without even the implied warranty of
-//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//	GNU General Public License for more details.
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
 //
-//	You should have received a copy of the GNU General Public License
-//	along with this program; if not, write to the Free Software
-//	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 //  Notes: 
 //  - BitBltFromI420ToRGB is from VirtualDub
 //  - BitBltFromYUY2ToRGB is from AviSynth 2.52
-//	- The core assembly function of CCpuID is from DVD2AVI
-//	(- vd.cpp/h should be renamed to something more sensible already :)
+//  - The core assembly function of CCpuID is from DVD2AVI
+//  (- vd.cpp/h should be renamed to something more sensible already :)
 
 #pragma once
 

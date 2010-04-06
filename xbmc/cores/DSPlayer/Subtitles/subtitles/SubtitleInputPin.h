@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,25 +29,25 @@
 
 class CSubtitleInputPin : public CBaseInputPin
 {
-	CCritSec m_csReceive;
+  CCritSec m_csReceive;
 
-	CCritSec* m_pSubLock;
-	Com::SmartPtr<ISubStream> m_pSubStream;
+  CCritSec* m_pSubLock;
+  Com::SmartPtr<ISubStream> m_pSubStream;
 
 protected:
-	virtual void AddSubStream(ISubStream* pSubStream) = 0;
-	virtual void RemoveSubStream(ISubStream* pSubStream) = 0;
-	virtual void InvalidateSubtitle(REFERENCE_TIME rtStart, ISubStream* pSubStream) = 0;
+  virtual void AddSubStream(ISubStream* pSubStream) = 0;
+  virtual void RemoveSubStream(ISubStream* pSubStream) = 0;
+  virtual void InvalidateSubtitle(REFERENCE_TIME rtStart, ISubStream* pSubStream) = 0;
 
 public:
-	CSubtitleInputPin(CBaseFilter* pFilter, CCritSec* pLock, CCritSec* pSubLock, HRESULT* phr);
+  CSubtitleInputPin(CBaseFilter* pFilter, CCritSec* pLock, CCritSec* pSubLock, HRESULT* phr);
 
-	HRESULT CheckMediaType(const CMediaType* pmt);
-	HRESULT CompleteConnect(IPin* pReceivePin);
-	HRESULT BreakConnect();
-	STDMETHODIMP ReceiveConnection(IPin* pConnector, const AM_MEDIA_TYPE* pmt);
-	STDMETHODIMP NewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
-	STDMETHODIMP Receive(IMediaSample* pSample);
+  HRESULT CheckMediaType(const CMediaType* pmt);
+  HRESULT CompleteConnect(IPin* pReceivePin);
+  HRESULT BreakConnect();
+  STDMETHODIMP ReceiveConnection(IPin* pConnector, const AM_MEDIA_TYPE* pmt);
+  STDMETHODIMP NewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
+  STDMETHODIMP Receive(IMediaSample* pSample);
 
-	ISubStream* GetSubStream() {return m_pSubStream;}
+  ISubStream* GetSubStream() {return m_pSubStream;}
 };

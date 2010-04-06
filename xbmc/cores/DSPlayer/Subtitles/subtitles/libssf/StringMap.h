@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,24 +23,24 @@
 
 namespace ssf
 {
-	template <class T = CStdString, class S = CStdString> 
+  template <class T = CStdString, class S = CStdString> 
   class StringMap : public std::map<S, T>
-	{
-	public:
-		StringMap() {}
-		StringMap(const StringMap& s2t) {*this = s2t;}
-		StringMap& operator = (const StringMap& s2t)
-		{
-			clear();
+  {
+  public:
+    StringMap() {}
+    StringMap(const StringMap& s2t) {*this = s2t;}
+    StringMap& operator = (const StringMap& s2t)
+    {
+      clear();
       std::map<S, T>::const_iterator pos = s2t.begin();
-			for(; pos != s2t.end(); ++pos) { (*this)[pos->first] = pos->second;}
-			return *this;
-		}
-	};
+      for(; pos != s2t.end(); ++pos) { (*this)[pos->first] = pos->second;}
+      return *this;
+    }
+  };
 
-	template <class T = CStdStringA, class S = CStdStringA> 
-	class StringMapA : public StringMap<T, S> {};
+  template <class T = CStdStringA, class S = CStdStringA> 
+  class StringMapA : public StringMap<T, S> {};
 
-	template <class T = CStdStringW, class S = CStdStringW> 
-	class StringMapW : public StringMap<T, S> {};
+  template <class T = CStdStringW, class S = CStdStringW> 
+  class StringMapW : public StringMap<T, S> {};
 }

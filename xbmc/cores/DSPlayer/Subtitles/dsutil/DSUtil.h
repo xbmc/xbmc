@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@
 #include "vd.h"
 #include "text.h"
 
-#define LCID_NOSUBTITLES			-1
+#define LCID_NOSUBTITLES      -1
 
 /*struct CFileStatus
 {
@@ -142,21 +142,21 @@ extern CStdString ReftimeToString(const REFERENCE_TIME& rtVal);
 REFERENCE_TIME StringToReftime(LPCTSTR strVal);
 extern COLORREF YCrCbToRGB_Rec601(BYTE Y, BYTE Cr, BYTE Cb);
 extern COLORREF YCrCbToRGB_Rec709(BYTE Y, BYTE Cr, BYTE Cb);
-extern DWORD	YCrCbToRGB_Rec601(BYTE A, BYTE Y, BYTE Cr, BYTE Cb);
-extern DWORD	YCrCbToRGB_Rec709(BYTE A, BYTE Y, BYTE Cr, BYTE Cb);
+extern DWORD  YCrCbToRGB_Rec601(BYTE A, BYTE Y, BYTE Cr, BYTE Cb);
+extern DWORD  YCrCbToRGB_Rec709(BYTE A, BYTE Y, BYTE Cr, BYTE Cb);
 
 class CPinInfo : public PIN_INFO
 {
 public:
-	CPinInfo() {pFilter = NULL;}
-	~CPinInfo() {if(pFilter) pFilter->Release();}
+  CPinInfo() {pFilter = NULL;}
+  ~CPinInfo() {if(pFilter) pFilter->Release();}
 };
 
 class CFilterInfo : public FILTER_INFO
 {
 public:
-	CFilterInfo() {pGraph = NULL;}
-	~CFilterInfo() {if(pGraph) pGraph->Release();}
+  CFilterInfo() {pGraph = NULL;}
+  ~CFilterInfo() {if(pGraph) pGraph->Release();}
 };
 
 #ifndef SAFE_RELEASE
@@ -228,8 +228,8 @@ template <typename T> __inline void INITDDSTRUCT(T& dd)
 template <class T>
 static CUnknown* WINAPI CreateInstance(LPUNKNOWN lpunk, HRESULT* phr)
 {
-	*phr = S_OK;
+  *phr = S_OK;
     CUnknown* punk = DNew T(lpunk, phr);
     if(punk == NULL) *phr = E_OUTOFMEMORY;
-	return punk;
+  return punk;
 }

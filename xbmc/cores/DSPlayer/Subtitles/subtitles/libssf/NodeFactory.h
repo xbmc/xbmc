@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,34 +25,34 @@
 
 namespace ssf
 {
-	class NodeFactory
-	{
-		Reference* m_root;
-		StringMapW<Node*> m_nodes;
+  class NodeFactory
+  {
+    Reference* m_root;
+    StringMapW<Node*> m_nodes;
     std::list<CStdStringW> m_newnodes;
-		bool m_predefined;
+    bool m_predefined;
 
-		unsigned __int64 m_counter;
-		CStdStringW GenName();
+    unsigned __int64 m_counter;
+    CStdStringW GenName();
 
-	public:
-		NodeFactory();
-		virtual ~NodeFactory();
+  public:
+    NodeFactory();
+    virtual ~NodeFactory();
 
-		virtual void clear();
+    virtual void clear();
 
-		void SetPredefined(bool predefined) {m_predefined = predefined;}
+    void SetPredefined(bool predefined) {m_predefined = predefined;}
 
-		void Commit();
-		void Rollback();
+    void Commit();
+    void Rollback();
 
-		Reference* CreateRootRef();
-		Reference* GetRootRef() const;
-		Reference* CreateRef(Definition* pParentDef);
-		Definition* CreateDef(Reference* pParentRef = NULL, CStdStringW type = L"", CStdStringW name = L"", NodePriority priority = PNormal);
-		Definition* GetDefByName(CStdStringW name) const;
+    Reference* CreateRootRef();
+    Reference* GetRootRef() const;
+    Reference* CreateRef(Definition* pParentDef);
+    Definition* CreateDef(Reference* pParentRef = NULL, CStdStringW type = L"", CStdStringW name = L"", NodePriority priority = PNormal);
+    Definition* GetDefByName(CStdStringW name) const;
     void GetNewDefs(std::list<Definition*>& defs);
 
-		void Dump(OutputStream& s) const;
-	};
+    void Dump(OutputStream& s) const;
+  };
 }

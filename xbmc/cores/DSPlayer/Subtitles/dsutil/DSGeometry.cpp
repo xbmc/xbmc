@@ -13,8 +13,8 @@ SmartSize::SmartSize(POINT initPt) throw()
 { *(POINT*)this = initPt; }
 SmartSize::SmartSize(DWORD dwSize) throw()
 {
-		cx = (short)LOWORD(dwSize);
-		cy = (short)HIWORD(dwSize);
+    cx = (short)LOWORD(dwSize);
+    cy = (short)HIWORD(dwSize);
 }
 BOOL SmartSize::operator==(SIZE size) const throw()
 { return (cx == size.cx && cy == size.cy); }
@@ -25,7 +25,7 @@ void SmartSize::operator+=(SIZE size) throw()
 void SmartSize::operator-=(SIZE size) throw()
 { cx -= size.cx; cy -= size.cy; }
 void SmartSize::SetSize(int CX, int CY) throw()
-{ cx = CX; cy = CY; }	
+{ cx = CX; cy = CY; }  
 SmartSize SmartSize::operator+(SIZE size) const throw()
 { return SmartSize(cx + size.cx, cy + size.cy); }
 SmartSize SmartSize::operator-(SIZE size) const throw()
@@ -52,8 +52,8 @@ SmartPoint::SmartPoint(SIZE initSize) throw()
 { *(SIZE*)this = initSize; }
 SmartPoint::SmartPoint(LPARAM dwPoint) throw()
 {
-		x = (short)GET_X_LPARAM(dwPoint);
-		y = (short)GET_Y_LPARAM(dwPoint);
+    x = (short)GET_X_LPARAM(dwPoint);
+    y = (short)GET_Y_LPARAM(dwPoint);
 }
 void SmartPoint::Offset(int xOffset, int yOffset) throw()
 { x += xOffset; y += yOffset; }
@@ -103,7 +103,7 @@ SmartRect::SmartRect(POINT point, SIZE size) throw()
 { right = (left = point.x) + size.cx; bottom = (top = point.y) + size.cy; }
 SmartRect::SmartRect(POINT topLeft, POINT bottomRight) throw()
 { left = topLeft.x; top = topLeft.y;
-		right = bottomRight.x; bottom = bottomRight.y; }
+    right = bottomRight.x; bottom = bottomRight.y; }
 int SmartRect::Width() const throw()
 { return right - left; }
 int SmartRect::Height() const throw()
@@ -206,59 +206,59 @@ SmartRect SmartRect::operator-(LPCRECT lpRect) const throw()
 { SmartRect rect(this); rect.DeflateRect(lpRect); return rect; }
 SmartRect SmartRect::operator&(const RECT& rect2) const throw()
 { SmartRect rect; ::IntersectRect(&rect, this, &rect2);
-		return rect; }
+    return rect; }
 SmartRect SmartRect::operator|(const RECT& rect2) const throw()
 { SmartRect rect; ::UnionRect(&rect, this, &rect2);
-		return rect; }
+    return rect; }
 BOOL SmartRect::SubtractRect(LPCRECT lpRectSrc1, LPCRECT lpRectSrc2) throw()
 { return ::SubtractRect(this, lpRectSrc1, lpRectSrc2); }
 
 void SmartRect::NormalizeRect() throw()
 {
-		int nTemp;
-		if (left > right)
-	{
-			nTemp = left;
-			left = right;
-			right = nTemp;
-	}
-		if (top > bottom)
-	{
-			nTemp = top;
-			top = bottom;
-			bottom = nTemp;
-	}
+    int nTemp;
+    if (left > right)
+  {
+      nTemp = left;
+      left = right;
+      right = nTemp;
+  }
+    if (top > bottom)
+  {
+      nTemp = top;
+      top = bottom;
+      bottom = nTemp;
+  }
 }
 
 void SmartRect::InflateRect(LPCRECT lpRect) throw()
 {
-		left -= lpRect->left;		top -= lpRect->top;
-		right += lpRect->right;		bottom += lpRect->bottom;
+    left -= lpRect->left;    top -= lpRect->top;
+    right += lpRect->right;    bottom += lpRect->bottom;
 }
 
 void SmartRect::InflateRect(int l, int t, int r, int b) throw()
 {
-		left -= l;			top -= t;
-		right += r;			bottom += b;
+    left -= l;      top -= t;
+    right += r;      bottom += b;
 }
 
 void SmartRect::DeflateRect(LPCRECT lpRect) throw()
 {
-		left += lpRect->left;	top += lpRect->top;
-		right -= lpRect->right;	bottom -= lpRect->bottom;
+    left += lpRect->left;  top += lpRect->top;
+    right -= lpRect->right;  bottom -= lpRect->bottom;
 }
 
 void SmartRect::DeflateRect(int l, int t, int r, int b) throw()
 {
-		left += l;		top += t;
-		right -= r;		bottom -= b;
+    left += l;    top += t;
+    right -= r;    bottom -= b;
 }
 
 SmartRect SmartRect::MulDiv(int nMultiplier, int nDivisor) const throw()
 {
-		return SmartRect(
-			::MulDiv(left, nMultiplier, nDivisor),
-			::MulDiv(top, nMultiplier, nDivisor),
-			::MulDiv(right, nMultiplier, nDivisor),
-			::MulDiv(bottom, nMultiplier, nDivisor));
+    return SmartRect(
+      ::MulDiv(left, nMultiplier, nDivisor),
+      ::MulDiv(top, nMultiplier, nDivisor),
+      ::MulDiv(right, nMultiplier, nDivisor),
+      ::MulDiv(bottom, nMultiplier, nDivisor));
 }

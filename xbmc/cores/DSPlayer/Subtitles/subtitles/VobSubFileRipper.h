@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,52 +29,52 @@
 
 typedef struct
 {
-	WORD perm_displ       : 2;
-	WORD ratio            : 2;
-	WORD system           : 2;
-	WORD compression      : 2;
-	WORD mode             : 1;
-	WORD letterboxed      : 1;
-	WORD source_res       : 2;
-	WORD cbrvbr           : 2;
-	WORD line21_2         : 1;
-	WORD line21_1         : 1;
+  WORD perm_displ       : 2;
+  WORD ratio            : 2;
+  WORD system           : 2;
+  WORD compression      : 2;
+  WORD mode             : 1;
+  WORD letterboxed      : 1;
+  WORD source_res       : 2;
+  WORD cbrvbr           : 2;
+  WORD line21_2         : 1;
+  WORD line21_1         : 1;
 } vidinfo;
 
 typedef struct 
 {
-	BYTE vob, cell; 
-	DWORD tTime, tOffset, tTotal; 
-	DWORD start, end;
-	int iAngle; 
-	bool fDiscontinuity;
+  BYTE vob, cell; 
+  DWORD tTime, tOffset, tTotal; 
+  DWORD start, end;
+  int iAngle; 
+  bool fDiscontinuity;
 } vc_t;
 
 typedef struct 
 {
-	int nAngles;
+  int nAngles;
   std::vector<vc_t> angles[10];
-	int iSelAngle;
-	RGBQUAD pal[16];
-	WORD ids[32];
+  int iSelAngle;
+  RGBQUAD pal[16];
+  WORD ids[32];
 } PGC;
 
 typedef struct VSFRipperData_t
 {
-	Com::SmartSize vidsize;
-	vidinfo vidinfo;
+  Com::SmartSize vidsize;
+  vidinfo vidinfo;
   std::vector<PGC> pgcs;
-	int iSelPGC;
-	bool fResetTime, fClosedCaption, fForcedOnly;
+  int iSelPGC;
+  bool fResetTime, fClosedCaption, fForcedOnly;
 
-	bool fClose, fBeep, fAuto; // only used by the UI externally, but may be set through the parameter file
-	bool fCloseIgnoreError;
+  bool fClose, fBeep, fAuto; // only used by the UI externally, but may be set through the parameter file
+  bool fCloseIgnoreError;
 
   std::vector<UINT> selvcs;
   std::map<BYTE, bool> selids;
 
-	void Reset();
-	void Copy(struct VSFRipperData_t& rd);
+  void Reset();
+  void Copy(struct VSFRipperData_t& rd);
 
 } VSFRipperData;
 
@@ -91,9 +91,9 @@ typedef struct {__int64 start, end; DWORD vc;} vcchunk;
 [uuid("9E2EBB5C-AD7C-452f-A48B-38685716AC46")]
 interface IVSFRipperCallback : public IUnknown
 {
-	STDMETHOD (OnMessage) (LPCTSTR msg) PURE;
-	STDMETHOD (OnProgress) (double progress /*0->1*/) PURE;
-	STDMETHOD (OnFinished) (bool fSucceeded) PURE;
+  STDMETHOD (OnMessage) (LPCTSTR msg) PURE;
+  STDMETHOD (OnProgress) (double progress /*0->1*/) PURE;
+  STDMETHOD (OnFinished) (bool fSucceeded) PURE;
 };
 
 // IVSFRipperCallbackImpl
@@ -105,21 +105,21 @@ interface IVSFRipperCallback : public IUnknown
 class IVSFRipperCallbackImpl : public CUnknown, public IVSFRipperCallback
 {
 protected:
-	DECLARE_IUNKNOWN
+  DECLARE_IUNKNOWN
     STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv)
-	{
-		return 
-			QI(IVSFRipperCallback)
-			__super::NonDelegatingQueryInterface(riid, ppv);
-	}
+  {
+    return 
+      QI(IVSFRipperCallback)
+      __super::NonDelegatingQueryInterface(riid, ppv);
+  }
 
-	// IVSFRipperCallback
-	STDMETHODIMP OnMessage(LPCTSTR msg) {return S_FALSE;}
-	STDMETHODIMP OnProgress(double progress /*0->1*/) {return S_FALSE;}
-	STDMETHODIMP OnFinished(bool fSucceeded) {return S_FALSE;}
+  // IVSFRipperCallback
+  STDMETHODIMP OnMessage(LPCTSTR msg) {return S_FALSE;}
+  STDMETHODIMP OnProgress(double progress /*0->1*/) {return S_FALSE;}
+  STDMETHODIMP OnFinished(bool fSucceeded) {return S_FALSE;}
 
 public:
-	IVSFRipperCallbackImpl() : CUnknown(NAME("IVSFRipperCallbackImpl"), NULL) {}
+  IVSFRipperCallbackImpl() : CUnknown(NAME("IVSFRipperCallbackImpl"), NULL) {}
 };
 
 //
@@ -129,64 +129,64 @@ public:
 [uuid("69F935BB-B8D0-43f5-AA2E-BBD0851CC9A6")]
 interface IVSFRipper : public IUnknown
 {
-	STDMETHOD (SetCallBack) (IVSFRipperCallback* pCallback) PURE;
-	STDMETHOD (LoadParamFile) (CStdString fn) PURE;
-	STDMETHOD (SetInput) (CStdString infn) PURE;
-	STDMETHOD (SetOutput) (CStdString outfn) PURE;
-	STDMETHOD (GetRipperData) (VSFRipperData& rd) PURE;
-	STDMETHOD (UpdateRipperData) (VSFRipperData& rd) PURE;
-	STDMETHOD (Index) () PURE;
-	STDMETHOD (IsIndexing) () PURE;
-	STDMETHOD (Abort) (bool fSavePartial) PURE;
+  STDMETHOD (SetCallBack) (IVSFRipperCallback* pCallback) PURE;
+  STDMETHOD (LoadParamFile) (CStdString fn) PURE;
+  STDMETHOD (SetInput) (CStdString infn) PURE;
+  STDMETHOD (SetOutput) (CStdString outfn) PURE;
+  STDMETHOD (GetRipperData) (VSFRipperData& rd) PURE;
+  STDMETHOD (UpdateRipperData) (VSFRipperData& rd) PURE;
+  STDMETHOD (Index) () PURE;
+  STDMETHOD (IsIndexing) () PURE;
+  STDMETHOD (Abort) (bool fSavePartial) PURE;
 };
 
 class CVobSubFileRipper : public CVobSubFile, protected CAMThread, public IVSFRipper
 {
 private:
-	bool m_fThreadActive, m_fBreakThread, m_fIndexing;
-	enum {CMD_EXIT, CMD_INDEX};
-	DWORD ThreadProc();
-	bool Create();
+  bool m_fThreadActive, m_fBreakThread, m_fIndexing;
+  enum {CMD_EXIT, CMD_INDEX};
+  DWORD ThreadProc();
+  bool Create();
 
-	//
+  //
 
-	typedef enum {LOG_INFO, LOG_WARNING, LOG_ERROR} log_t;
-	void Log(log_t type, LPCTSTR lpszFormat, ...);
-	void Progress(double progress);
-	void Finished(bool fSucceeded);
+  typedef enum {LOG_INFO, LOG_WARNING, LOG_ERROR} log_t;
+  void Log(log_t type, LPCTSTR lpszFormat, ...);
+  void Progress(double progress);
+  void Finished(bool fSucceeded);
 
-	//
+  //
 
-	CCritSec m_csAccessLock;
-	CStdString m_infn, m_outfn;
-	CVobFile m_vob;
-	VSFRipperData m_rd;
+  CCritSec m_csAccessLock;
+  CStdString m_infn, m_outfn;
+  CVobFile m_vob;
+  VSFRipperData m_rd;
 
-	bool LoadIfo(CStdString fn);
-	bool LoadVob(CStdString fn);
+  bool LoadIfo(CStdString fn);
+  bool LoadVob(CStdString fn);
   bool LoadChunks(std::vector<vcchunk>& chunks);
   bool SaveChunks(std::vector<vcchunk>& chunks);
 
-	//
+  //
 
-	CCritSec m_csCallback;
-	IVSFRipperCallback* m_pCallback;
+  CCritSec m_csCallback;
+  IVSFRipperCallback* m_pCallback;
 
 public:
     CVobSubFileRipper();
     virtual ~CVobSubFileRipper();
 
-	DECLARE_IUNKNOWN
+  DECLARE_IUNKNOWN
     STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
-	// IVSFRipper
-	STDMETHODIMP SetCallBack(IVSFRipperCallback* pCallback);
-	STDMETHODIMP LoadParamFile(CStdString fn);
-	STDMETHODIMP SetInput(CStdString infn);
-	STDMETHODIMP SetOutput(CStdString outfn);
-	STDMETHODIMP GetRipperData(VSFRipperData& rd);
-	STDMETHODIMP UpdateRipperData(VSFRipperData& rd);
-	STDMETHODIMP Index();
-	STDMETHODIMP IsIndexing();
-	STDMETHODIMP Abort(bool fSavePartial);
+  // IVSFRipper
+  STDMETHODIMP SetCallBack(IVSFRipperCallback* pCallback);
+  STDMETHODIMP LoadParamFile(CStdString fn);
+  STDMETHODIMP SetInput(CStdString infn);
+  STDMETHODIMP SetOutput(CStdString outfn);
+  STDMETHODIMP GetRipperData(VSFRipperData& rd);
+  STDMETHODIMP UpdateRipperData(VSFRipperData& rd);
+  STDMETHODIMP Index();
+  STDMETHODIMP IsIndexing();
+  STDMETHODIMP Abort(bool fSavePartial);
 };

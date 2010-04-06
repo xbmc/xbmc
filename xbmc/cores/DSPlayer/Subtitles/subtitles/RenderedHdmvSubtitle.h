@@ -31,39 +31,39 @@
 class CRenderedHdmvSubtitle : public ISubPicProviderImpl, public ISubStream
 {
 public:
-	CRenderedHdmvSubtitle(CCritSec* pLock);
-	~CRenderedHdmvSubtitle(void);
+  CRenderedHdmvSubtitle(CCritSec* pLock);
+  ~CRenderedHdmvSubtitle(void);
 
-	DECLARE_IUNKNOWN
+  DECLARE_IUNKNOWN
     STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
-	// ISubPicProvider
-	STDMETHODIMP_(__w64 int) GetStartPosition(REFERENCE_TIME rt, double fps);
+  // ISubPicProvider
+  STDMETHODIMP_(__w64 int) GetStartPosition(REFERENCE_TIME rt, double fps);
   STDMETHODIMP_(int) GetNext(int pos);
-	STDMETHODIMP_(REFERENCE_TIME) GetStart(int pos, double fps);
-	STDMETHODIMP_(REFERENCE_TIME) GetStop(int pos, double fps);
-	STDMETHODIMP_(bool) IsAnimated(int pos);
-	STDMETHODIMP Render(SubPicDesc& spd, REFERENCE_TIME rt, double fps, RECT& bbox);
-	STDMETHODIMP GetTextureSize (int pos, SIZE& MaxTextureSize, SIZE& VirtualSize, POINT& VirtualTopLeft);
+  STDMETHODIMP_(REFERENCE_TIME) GetStart(int pos, double fps);
+  STDMETHODIMP_(REFERENCE_TIME) GetStop(int pos, double fps);
+  STDMETHODIMP_(bool) IsAnimated(int pos);
+  STDMETHODIMP Render(SubPicDesc& spd, REFERENCE_TIME rt, double fps, RECT& bbox);
+  STDMETHODIMP GetTextureSize (int pos, SIZE& MaxTextureSize, SIZE& VirtualSize, POINT& VirtualTopLeft);
 
-	// IPersist
-	STDMETHODIMP GetClassID(CLSID* pClassID);
+  // IPersist
+  STDMETHODIMP GetClassID(CLSID* pClassID);
 
-	// ISubStream
-	STDMETHODIMP_(int) GetStreamCount();
-	STDMETHODIMP GetStreamInfo(int i, WCHAR** ppName, LCID* pLCID);
-	STDMETHODIMP_(int) GetStream();
-	STDMETHODIMP SetStream(int iStream);
-	STDMETHODIMP Reload();
+  // ISubStream
+  STDMETHODIMP_(int) GetStreamCount();
+  STDMETHODIMP GetStreamInfo(int i, WCHAR** ppName, LCID* pLCID);
+  STDMETHODIMP_(int) GetStream();
+  STDMETHODIMP SetStream(int iStream);
+  STDMETHODIMP Reload();
 
-	HRESULT ParseSample (IMediaSample* pSample);
-	HRESULT	NewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
+  HRESULT ParseSample (IMediaSample* pSample);
+  HRESULT  NewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
 
 private :
-	CStdString			m_name;
-	LCID			m_lcid;
-	REFERENCE_TIME	m_rtStart;
+  CStdString      m_name;
+  LCID      m_lcid;
+  REFERENCE_TIME  m_rtStart;
 
-	CHdmvSub		m_HdmvSub;
-	CCritSec		m_csCritSec;
+  CHdmvSub    m_HdmvSub;
+  CCritSec    m_csCritSec;
 };

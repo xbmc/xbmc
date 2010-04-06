@@ -1,6 +1,6 @@
 /* 
- *	Copyright (C) 2003-2006 Gabest
- *	http://www.gabest.org
+ *  Copyright (C) 2003-2006 Gabest
+ *  http://www.gabest.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,50 +25,50 @@
 
 namespace ssf
 {
-	Split::Split(LPCWSTR sep, CStdStringW str, size_t limit, SplitType type)
-	{
-		DoSplit(sep, str, limit, type);
-	}
+  Split::Split(LPCWSTR sep, CStdStringW str, size_t limit, SplitType type)
+  {
+    DoSplit(sep, str, limit, type);
+  }
 
-	Split::Split(WCHAR sep, CStdStringW str, size_t limit, SplitType type)
-	{
-		DoSplit(CStdStringW(&sep), str, limit, type);
-	}
+  Split::Split(WCHAR sep, CStdStringW str, size_t limit, SplitType type)
+  {
+    DoSplit(CStdStringW(&sep), str, limit, type);
+  }
 
-	void Split::DoSplit(LPCWSTR sep, CStdStringW str, size_t limit, SplitType type)
-	{
-		clear();
+  void Split::DoSplit(LPCWSTR sep, CStdStringW str, size_t limit, SplitType type)
+  {
+    clear();
 
-		if(size_t seplen = wcslen(sep))
-		{
-			for(int i = 0, j = 0, len = str.GetLength(); 
-				i <= len && (limit == 0 || size() < limit); 
-				i = j + (int)seplen)
-			{
-				j = str.Find(sep, i);
-				if(j < 0) j = len;
+    if(size_t seplen = wcslen(sep))
+    {
+      for(int i = 0, j = 0, len = str.GetLength(); 
+        i <= len && (limit == 0 || size() < limit); 
+        i = j + (int)seplen)
+      {
+        j = str.Find(sep, i);
+        if(j < 0) j = len;
 
-				CStdStringW s = i < j ? str.Mid(i, j - i) : L"";
+        CStdStringW s = i < j ? str.Mid(i, j - i) : L"";
 
-				switch(type)
-				{
-				case Min: s.Trim(); // fall through
-				case Def: if(s.empty()) break; // else fall through
-				case Max: push_back(s); break;
-				}
-			}
-		}
-	}
+        switch(type)
+        {
+        case Min: s.Trim(); // fall through
+        case Def: if(s.empty()) break; // else fall through
+        case Max: push_back(s); break;
+        }
+      }
+    }
+  }
 
-	int Split::GetAtInt(size_t i)
-	{
-		if(i >= size()) throw Exception(_T("Index out of bounds"));
-		return _wtoi(at(i));
-	}
+  int Split::GetAtInt(size_t i)
+  {
+    if(i >= size()) throw Exception(_T("Index out of bounds"));
+    return _wtoi(at(i));
+  }
 
-	float Split::GetAtFloat(size_t i)
-	{
-		if(i >= size()) throw Exception(_T("Index out of bounds"));
-		return (float)_wtof(at(i));
-	}
+  float Split::GetAtFloat(size_t i)
+  {
+    if(i >= size()) throw Exception(_T("Index out of bounds"));
+    return (float)_wtof(at(i));
+  }
 }
