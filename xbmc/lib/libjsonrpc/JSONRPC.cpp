@@ -26,7 +26,6 @@
 #include "AVPlaylistOperations.h"
 #include "PlaylistOperations.h"
 #include "FileOperations.h"
-#include "GUIOperations.h"
 #include "MusicLibrary.h"
 #include "VideoLibrary.h"
 #include "SystemOperations.h"
@@ -169,9 +168,6 @@ Command CJSONRPC::m_commands[] = {
   { "VideoLibrary.GetRecentlyAddedMusicVideos",     CVideoLibrary::GetRecentlyAddedMusicVideos,          Response,     ReadData,        "Retrieve all recently added music videos. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
 
   { "VideoLibrary.ScanForContent",                  CVideoLibrary::ScanForContent,                       Response,     ScanLibrary,     "" },
-
-// GUI Operations
-  { "GUI.GetLocalizedString",                       CGUIOperations::GetLocalizedString,                  Response,     ReadData,        "" },
 
 // System operations
   { "System.Shutdown",                              CSystemOperations::Shutdown,                         Response,     ControlPower,    "" },
