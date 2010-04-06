@@ -32,24 +32,27 @@ using namespace JSONRPC;
 using namespace PLAYLIST;
 using namespace std;
 
+#define PLAYLIST_MEMBER_VIRTUAL "playlist-virtual"
+#define PLAYLIST_MEMBER_FILE    "playlist-file"
+
 map<CStdString, CPlayListPtr> CPlaylistOperations::VirtualPlaylists;
 CCriticalSection CPlaylistOperations::VirtualCriticalSection;
 
 JSON_STATUS CPlaylistOperations::Create(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!parameterObject.isString() && !(parameterObject.isObject() && parameterObject.isMember("file") && parameterObject["file"].isString()))
+  if (!parameterObject.isString() && !(parameterObject.isObject() && parameterObject.isMember(PLAYLIST_MEMBER_FILE) && parameterObject[PLAYLIST_MEMBER_FILE].isString()))
     return InvalidParams;
 
   CSingleLock lock(VirtualCriticalSection);
-  CStdString file = parameterObject.isString() ? parameterObject.asString() : parameterObject["file"].asString();
+  CStdString file = parameterObject.isString() ? parameterObject.asString() : parameterObject[PLAYLIST_MEMBER_FILE].asString();
 
   CPlayListPtr playlist = CPlayListPtr(CPlayListFactory::Create(file));
   if (playlist && playlist->Load(file))
   {
     CStdString id;
 
-    if (parameterObject.isObject() && parameterObject.isMember("playlistid") && parameterObject["playlistid"].isString())
-      id = parameterObject["playlistid"].asString();
+    if (parameterObject.isObject() && parameterObject.isMember(PLAYLIST_MEMBER_VIRTUAL) && parameterObject[PLAYLIST_MEMBER_VIRTUAL].isString())
+      id = parameterObject[PLAYLIST_MEMBER_VIRTUAL].asString();
     else
     {
       do
@@ -59,7 +62,7 @@ JSON_STATUS CPlaylistOperations::Create(const CStdString &method, ITransportLaye
     }
 
     VirtualPlaylists[id] = playlist;
-    result["playlistid"] = id;
+    result[PLAYLIST_MEMBER_VIRTUAL] = id;
 
     return OK;
   }
@@ -202,14 +205,14 @@ JSON_STATUS CPlaylistOperations::UnShuffle(const CStdString &method, ITransportL
 CPlayListPtr CPlaylistOperations::GetPlaylist(const Value &parameterObject)
 {
   const Value param = ForceObject(parameterObject);
-  if (param["playlistid"].isString())
+  if (param[PLAYLIST_MEMBER_VIRTUAL].isString())
   {
-    CStdString id = param["playlistid"].asString();
+    CStdString id = param[PLAYLIST_MEMBER_VIRTUAL].asString();
     return VirtualPlaylists[id];
   }
-  else if (param["file"].isString())
+  else if (param[PLAYLIST_MEMBER_FILE].isString())
   {
-    CStdString file = param["file"].asString();
+    CStdString file = param[PLAYLIST_MEMBER_FILE].asString();
     CPlayListPtr playlist = CPlayListPtr(CPlayListFactory::Create(file));
     if (playlist && playlist->Load(file))
       return playlist;
