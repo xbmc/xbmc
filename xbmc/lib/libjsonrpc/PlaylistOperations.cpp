@@ -202,6 +202,40 @@ JSON_STATUS CPlaylistOperations::UnShuffle(const CStdString &method, ITransportL
   return InvalidParams;
 }
 
+bool CPlaylistOperations::FillFileItemList(const Value &parameterObject, CFileItemList &list)
+{
+  bool found = false;
+
+  if (parameterObject[PLAYLIST_MEMBER_FILE].isString())
+  {
+    CStdString file = parameterObject[PLAYLIST_MEMBER_FILE].asString();
+    CPlayListPtr playlist = CPlayListPtr(CPlayListFactory::Create(file));
+    if (playlist && playlist->Load(file))
+    {
+      for (int i = 0; i < playlist->size(); i++)
+        list.Add((*playlist)[i]);
+
+      found = true;
+    }
+  }
+
+  CSingleLock lock(VirtualCriticalSection);
+  if (parameterObject[PLAYLIST_MEMBER_VIRTUAL].isString())
+  {
+    CStdString id = parameterObject[PLAYLIST_MEMBER_VIRTUAL].asString();
+    CPlayListPtr playlist = VirtualPlaylists[id];
+    if (playlist)
+    {
+      for (int i = 0; i < playlist->size(); i++)
+        list.Add((*playlist)[i]);
+
+      found = true;
+    }
+  }
+
+  return found;
+}
+
 CPlayListPtr CPlaylistOperations::GetPlaylist(const Value &parameterObject)
 {
   const Value param = ForceObject(parameterObject);

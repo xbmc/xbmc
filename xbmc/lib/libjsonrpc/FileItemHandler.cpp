@@ -20,6 +20,7 @@
  */
 
 #include "FileItemHandler.h"
+#include "PlaylistOperations.h"
 #include "../Util.h"
 
 using namespace MUSIC_INFO;
@@ -178,8 +179,6 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
 
   if (parameterObject.isString())
     param["file"] = parameterObject.asString();
-  else
-    return false;
 
   if (param["file"].isString())
   {
@@ -187,8 +186,8 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
     CFileItemPtr item = CFileItemPtr(new CFileItem(file, CUtil::HasSlashAtEnd(file)));
     list.Add(item);
   }
-  else
-    return false;
+
+  CPlaylistOperations::FillFileItemList(param, list);
 
   return true;
 }

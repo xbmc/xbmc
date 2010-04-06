@@ -41,6 +41,8 @@ namespace JSONRPC
     static JSON_STATUS Clear(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
     static JSON_STATUS Shuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
     static JSON_STATUS UnShuffle(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
+
+    static bool FillFileItemList(const Json::Value &parameterObject, CFileItemList &list);
   private:
     static std::map<CStdString, PLAYLIST::CPlayListPtr> VirtualPlaylists;
     static CCriticalSection VirtualCriticalSection;
