@@ -560,6 +560,11 @@ void CGUISettings::Initialize()
   if(g_sysinfo.IsVistaOrHigher())
     renderers.insert(make_pair(34003, RENDER_METHOD_DXVA));
 #endif
+
+#ifdef HAVE_LIBVA
+  renderers.insert(make_pair(34004, RENDER_METHOD_VAAPI));
+#endif
+
   AddInt(vp, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, renderers, SPIN_CONTROL_TEXT);
 
 #ifdef HAS_GL

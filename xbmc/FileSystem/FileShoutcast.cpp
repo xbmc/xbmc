@@ -64,7 +64,7 @@ extern "C"
 }
 #endif
 
-const int SHOUTCASTTIMEOUT = 10;
+const int SHOUTCASTTIMEOUT = 60;
 static CRingBuffer m_ringbuf;
 
 static FileState m_fileState;
@@ -381,13 +381,12 @@ unsigned int CFileShoutcast::Read(void* lpBuf, int64_t uiBufSize)
   }
 
   int slept=0;
-  while (m_ringbuf.getMaxReadSize() <= 0 && slept < g_advancedSettings.m_curlconnecttimeout*1000)
+  while (m_ringbuf.getMaxReadSize() <= 0)
   {
     Sleep(10);
-    slept += 10;
+    if (slept += 10 > SHOUTCASTTIMEOUT*1000)
+      return -1;
   }
-  if (slept >= g_advancedSettings.m_curlconnecttimeout*1000)
-    return -1;
 
   int iRead = m_ringbuf.getMaxReadSize();
   if (iRead > uiBufSize) iRead = (int)uiBufSize;

@@ -138,9 +138,14 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   hwSupport += "VDPAU:no ";
 #endif
 #if defined(_WIN32) && defined(HAS_DX)
-  hwSupport += "DXVA:yes";
+  hwSupport += "DXVA:yes ";
 #elif defined(_WIN32)
-  hwSupport += "DXVA:no";
+  hwSupport += "DXVA:no ";
+#endif
+#if defined(HAVE_LIBVA)
+  hwSupport += "VAAPI:yes ";
+#else
+  hwSupport += "VAAPI:no ";
 #endif
 
   CLog::Log(LOGDEBUG, "CDVDFactoryCodec: compiled in hardware support: %s", hwSupport.c_str());

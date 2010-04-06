@@ -78,6 +78,7 @@ CVariant::CVariant(const char *str)
 
 CVariant::CVariant(const CVariant &variant)
 {
+  m_type = variant.m_type;
   *this = variant;
 }
 
