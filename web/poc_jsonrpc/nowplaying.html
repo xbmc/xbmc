@@ -12,6 +12,13 @@ function CallMethod(method)
   window.location.reload( false );
 }
 
+function CallPlay(player, playlistItem)
+{
+  var http_request = new XMLHttpRequest();
+  http_request.open( "POST", "jsonrpc", false );
+  http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"" + player + "Playlist.Play\", \"params\": " + playlistItem + ", \"id\": 1}");
+}
+
 function refresh()
 {
   window.location.reload( false );
@@ -69,7 +76,7 @@ if (players.length > 0) {
       var item = array[i];
 
       document.write("<tr class=\"" + (i % 2 == 0 ? "even" : "odd") + "\">");
-      document.write("<td class=\"label\">" + item["label"] + "</td>");
+      document.write("<td class=\"label\"><a href=\"nowplaying.html\" onclick=CallPlay(\"" + player + "\"," + i + ")>" + item["label"] + "</a></td>");
       if (i == activeItem)
         document.write("<td class=\"playing\"><img src=\"images/play.png\" height=16></img></td>");
       else
