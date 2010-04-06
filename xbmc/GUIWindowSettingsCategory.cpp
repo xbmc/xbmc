@@ -93,6 +93,7 @@
 #include "WIN32Util.h"
 #include "cores/AudioRenderers/AudioRendererFactory.h"
 #include "WinDirectshowEnumerator.h"
+#include "GUIDialogSelect.h"
 #endif
 #include <map>
 #include "Settings.h"
@@ -128,6 +129,29 @@ using namespace ADDON;
 #define PREDEFINED_SCREENSAVERS          5
 
 #define RSSEDITOR_PATH "special://home/scripts/RSS Editor/default.py"
+
+#ifdef HAS_DX
+int CALLBACK EnumFontCallback(ENUMLOGFONTEX *lpelfe, NEWTEXTMETRICEX *lpntme, DWORD FontType, LPARAM lParam)
+{
+  if (! lParam)
+    return 0;
+
+  CStdString label;
+  memcpy(label.GetBuffer(64), lpelfe->elfFullName, 64);
+
+  label.resize(strlen((char *) lpelfe->elfFullName));
+
+  // Excluse Bold, Italic...
+  if (lpelfe->elfStyle[0] != 0 && lpelfe->elfStyle[0] != 'R' && lpelfe->elfStyle[0] != 'N')
+    return 1;
+
+  std::vector<CStdString> *fonts = ((std::vector<CStdString> *) lParam);
+
+  fonts->push_back(label);
+
+  return 1;
+}
+#endif
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
     : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml")
@@ -432,6 +456,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
       control->SetDelayed();
     }
+#ifdef HAS_DX
     else if (strSetting.Equals("subtitles.border"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -457,6 +482,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetValue(pSettingInt->GetData());
     }
+#endif
     else if (strSetting.Equals("subtitles.color"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -473,6 +499,15 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInSubtitleFonts(pSetting);
     }
+#ifdef HAS_DX
+    else if (strSetting.Equals("subtitles.ds.font"))
+    {
+      CSettingString *pSettingString = (CSettingString*)pSetting;
+      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
+      CStdString label; label.Format(g_localizeStrings.Get(35056), pSettingString->GetData());
+      pControl->SetLabel(label); pControl->SettingsCategorySetTextAlign(XBFONT_LEFT);
+    }
+#endif
     else if (strSetting.Equals("subtitles.charset") || strSetting.Equals("locale.charset") || strSetting.Equals("karaoke.charset"))
     {
       FillInCharSets(pSetting);
@@ -1107,6 +1142,54 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     }
     g_weatherManager.Refresh();
   }
+#ifdef HAS_DX
+  else if (strSetting.Equals("subtitles.ds.font"))
+  {
+    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
+    CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
+
+    //g_windowManager.GetWindow();
+    CGUIDialogSelect *dialog = (CGUIDialogSelect *) g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+
+    HDC dc = GetDC(0);
+    LOGFONT lf; memset(&lf, 0, sizeof(LOGFONT));
+    lf.lfCharSet = g_charsetConverter.getCharsetIdByName(g_langInfo.GetSubtitleCharSet());
+    lf.lfFaceName[0] = '\0';
+
+    std::vector<CStdString> fonts;
+
+    EnumFontFamiliesEx(dc, &lf, (FONTENUMPROC) EnumFontCallback, (LPARAM) &fonts, 0);
+
+    ReleaseDC(0, dc);
+
+    // Sort
+    std::sort(fonts.begin(), fonts.end());
+
+    int i = 0;
+    int iSelected = -1;
+    for (std::vector<CStdString>::const_iterator it = fonts.begin();
+      it != fonts.end(); ++it, i++)
+    {
+      if ((*it).Equals(pSettingString->GetData()))
+        iSelected = i;
+
+      dialog->Add(*it);
+    }
+
+    dialog->EnableButton(false);
+    if (iSelected >= 0)
+      dialog->SetSelected(iSelected);
+
+    dialog->SetHeading(35057);
+    dialog->DoModal();
+
+    CStdString label;
+    label.Format(g_localizeStrings.Get(35056), dialog->GetSelectedLabelText());
+    pSettingString->SetData(dialog->GetSelectedLabelText());
+    pControl->SetLabel(label);
+
+  }
+#endif
   else if (strSetting.Equals("lookandfeel.rssedit"))
     CBuiltins::Execute("RunScript("RSSEDITOR_PATH")");
 

@@ -47,6 +47,9 @@ protected:
   void CheckNetworkSettings();
   void FillInSubtitleHeights(CSetting *pSetting);
   void FillInSubtitleFonts(CSetting *pSetting);
+#ifdef HAS_DX
+  void FillInDSSubtitleFonts( CSetting * pSetting );
+#endif
   void FillInCharSets(CSetting *pSetting);
   void FillInSkinFonts(CSetting *pSetting);
   void FillInSkins(CSetting *pSetting);
@@ -88,7 +91,6 @@ protected:
   void JumpToSection(int windowID, const CStdString &section);
   void JumpToPreviousSection();
   void ValidatePortNumber(CBaseSettingControl* pSettingControl, const CStdString& userPort, const CStdString& privPort, bool listening=true);
-
   std::vector<CBaseSettingControl *> m_vecSettings;
   int m_iSection;
   int m_iScreen;

@@ -2264,4 +2264,6 @@
   <string id="35053">- Outline width</string>
   <string id="35054">- Shadow depth</string>
   <string id="35055">- Alpha</string>
+  <string id="35056">Font to use for text subtitles (dsplayer only) : %s</string>
+  <string id="35057">Choose a font</string>
 </strings>
