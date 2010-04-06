@@ -56,9 +56,10 @@ namespace JSONRPC
     ControlAnnounce = 0x4,
     ControlPower = 0x8,
     Logging = 0x10,
+    ScanLibrary = 0x20,
   };
 
-  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlAnnounce | ControlPower | Logging);
+  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlAnnounce | ControlPower | Logging | ScanLibrary);
 
   typedef struct
   {

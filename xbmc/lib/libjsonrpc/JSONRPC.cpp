@@ -155,6 +155,8 @@ Command CJSONRPC::m_commands[] = {
 
   { "MusicLibrary.GetSongInfo",         CMusicLibrary::GetSongInfo,             Response,     ReadData,        "Retrieve the wanted info from the specified song" },
 
+  { "MusicLibrary.ScanForContent",      CMusicLibrary::ScanForContent,          Response,     ScanLibrary,     "" },
+
 // Video library
   { "VideoLibrary.GetMovies",           CVideoLibrary::GetMovies,               Response,     ReadData,        "Retrieve all movies. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
 
@@ -169,6 +171,8 @@ Command CJSONRPC::m_commands[] = {
   { "VideoLibrary.GetTVShowInfo",       CVideoLibrary::GetTVShowInfo,           Response,     ReadData,        "Parameter example { \"tvshowid\": 0, \"fields\": [\"plot\"] }" },
   { "VideoLibrary.GetEpisodeInfo",      CVideoLibrary::GetEpisodeInfo,          Response,     ReadData,        "Parameter example { \"episodeinfo\": 0, \"fields\": [\"plot\"] }" },
   { "VideoLibrary.GetMusicVideoInfo",   CVideoLibrary::GetMusicVideoInfo,       Response,     ReadData,        "Parameter example { \"musicvideoid\": 0, \"fields\": [\"plot\"] }" },
+
+  { "VideoLibrary.ScanForContent",      CVideoLibrary::ScanForContent,          Response,     ScanLibrary,     "" },
 
 // GUI Operations
   { "GUI.GetLocalizedString",           CGUIOperations::GetLocalizedString,     Response,     ReadData,        "" },
@@ -394,6 +398,8 @@ inline const char *CJSONRPC::PermissionToString(const OperationPermission &permi
     return "ControlPower";
   case Logging:
     return "Logging";
+  case ScanLibrary:
+    return "ScanLibrary";
   default:
     return "Unkown";
   }

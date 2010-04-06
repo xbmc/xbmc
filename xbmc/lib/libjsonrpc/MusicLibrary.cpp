@@ -25,6 +25,7 @@
 #include "../Util.h"
 #include "../MusicInfoTag.h"
 #include "../Song.h"
+#include "Application.h"
 
 using namespace MUSIC_INFO;
 using namespace Json;
@@ -136,4 +137,10 @@ JSON_STATUS CMusicLibrary::GetSongInfo(const CStdString &method, ITransportLayer
 
   musicdatabase.Close();
   return OK;
+}
+
+JSON_STATUS CMusicLibrary::ScanForContent(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+{
+  g_application.getApplicationMessenger().ExecBuiltIn("updatelibrary(music)");
+  return ACK;
 }

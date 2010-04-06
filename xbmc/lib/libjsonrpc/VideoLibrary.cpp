@@ -22,6 +22,7 @@
 #include "VideoLibrary.h"
 #include "../VideoDatabase.h"
 #include "../Util.h"
+#include "Application.h"
 
 using namespace Json;
 using namespace JSONRPC;
@@ -222,4 +223,10 @@ JSON_STATUS CVideoLibrary::GetMusicVideoInfo(const CStdString &method, ITranspor
 
   videodatabase.Close();*/
   return OK;
+}
+
+JSON_STATUS CVideoLibrary::ScanForContent(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+{
+  g_application.getApplicationMessenger().ExecBuiltIn("updatelibrary(video)");
+  return ACK;
 }
