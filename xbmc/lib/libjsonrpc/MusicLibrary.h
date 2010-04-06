@@ -34,5 +34,7 @@ namespace JSONRPC
     static JSON_STATUS GetSongs(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
 
     static JSON_STATUS ScanForContent(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
+
+    static bool FillFileItemList(const Json::Value &parameterObject, CFileItemList &list);
   };
 }

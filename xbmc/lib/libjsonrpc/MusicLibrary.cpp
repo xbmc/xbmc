@@ -108,3 +108,21 @@ JSON_STATUS CMusicLibrary::ScanForContent(const CStdString &method, ITransportLa
   g_application.getApplicationMessenger().ExecBuiltIn("updatelibrary(music)");
   return ACK;
 }
+
+bool CMusicLibrary::FillFileItemList(const Value &parameterObject, CFileItemList &list)
+{
+  CMusicDatabase musicdatabase;
+  if ((ParameterIntOrNull(parameterObject, "artistid") || ParameterIntOrNull(parameterObject, "albumid") || ParameterIntOrNull(parameterObject, "genreid")) && musicdatabase.Open())
+  {
+    int artistID = ParameterAsInt(parameterObject, -1, "artistid");
+    int albumID  = ParameterAsInt(parameterObject, -1, "albumid");
+    int genreID  = ParameterAsInt(parameterObject, -1, "genreid");
+
+    bool success = musicdatabase.GetSongsNav("", list, genreID, artistID, albumID);
+
+    musicdatabase.Close();
+    return success;
+  }
+
+  return false;
+}
