@@ -2209,22 +2209,15 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 
     for (int f = FIELD_FULL; f<=FIELD_EVEN ; f++)
     {
-      glBindTexture(m_textureTarget, fields[f][0].id);
-      glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
-      glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
-      VerifyGLState();
-
-      if (!(m_renderMethod & RENDER_SW))
+      for (int p = 0; p < 3; p++)
       {
-        glBindTexture(m_textureTarget, fields[f][1].id);
-        glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
-        glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
-        VerifyGLState();
-
-        glBindTexture(m_textureTarget, fields[f][2].id);
-        glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
-        glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
-        VerifyGLState();
+        if(glIsTexture(fields[f][p].id))
+        {
+          glBindTexture(m_textureTarget, fields[f][p].id);
+          glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
+          glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
+          VerifyGLState();
+        }
       }
     }
   }
