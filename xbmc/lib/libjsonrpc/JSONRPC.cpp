@@ -23,6 +23,7 @@
 #include "PlayerOperations.h"
 #include "AVPlayerOperations.h"
 #include "PicturePlayerOperations.h"
+#include "AVPlaylistOperations.h"
 #include "PlaylistOperations.h"
 #include "FileOperations.h"
 #include "GUIOperations.h"
@@ -111,6 +112,28 @@ Command CJSONRPC::m_commands[] = {
   { "PicturePlayer.ZoomIn",             CPicturePlayerOperations::ZoomIn,       Response,     ControlPlayback, "Zoom in once" },
   { "PicturePlayer.Zoom",               CPicturePlayerOperations::Zoom,         Response,     ControlPlayback, "Zooms current picture. Parameter integer of zoom level" },
   { "PicturePlayer.Rotate",             CPicturePlayerOperations::Rotate,       Response,     ControlPlayback, "Rotates current picture" },
+
+// Video Playlist
+  { "VideoPlaylist.Play",               CAVPlaylistOperations::Play,            Response,     ControlPlayback, "" },
+  { "VideoPlaylist.SkipPrevious",       CAVPlaylistOperations::SkipPrevious,    Response,     ControlPlayback, "" },
+  { "VideoPlaylist.SkipNext",           CAVPlaylistOperations::SkipNext,        Response,     ControlPlayback, "" },
+
+  { "VideoPlaylist.GetItems",           CAVPlaylistOperations::GetItems,        Response,     ReadData,        "" },
+  { "VideoPlaylist.Add",                CAVPlaylistOperations::Add,             Response,     ControlPlayback, "" },
+  { "VideoPlaylist.Clear",              CAVPlaylistOperations::Clear,           Response,     ControlPlayback, "Clear video playlist" },
+  { "VideoPlaylist.Shuffle",            CAVPlaylistOperations::Shuffle,         Response,     ControlPlayback, "Shuffle video playlist" },
+  { "VideoPlaylist.UnShuffle",          CAVPlaylistOperations::Shuffle,         Response,     ControlPlayback, "Shuffle video playlist" },
+
+// AudioPlaylist
+  { "AudioPlaylist.Play",               CAVPlaylistOperations::Play,            Response,     ControlPlayback, "" },
+  { "AudioPlaylist.SkipPrevious",       CAVPlaylistOperations::SkipPrevious,    Response,     ControlPlayback, "" },
+  { "AudioPlaylist.SkipNext",           CAVPlaylistOperations::SkipNext,        Response,     ControlPlayback, "" },
+
+  { "AudioPlaylist.GetItems",           CAVPlaylistOperations::GetItems,        Response,     ReadData,        "" },
+  { "AudioPlaylist.Add",                CAVPlaylistOperations::Add,             Response,     ControlPlayback, "" },
+  { "AudioPlaylist.Clear",              CAVPlaylistOperations::Clear,           Response,     ControlPlayback, "Clear audio playlist" },
+  { "AudioPlaylist.Shuffle",            CAVPlaylistOperations::Shuffle,         Response,     ControlPlayback, "Shuffle audio playlist" },
+  { "AudioPlaylist.UnShuffle",          CAVPlaylistOperations::Shuffle,         Response,     ControlPlayback, "Shuffle audio playlist" },
 
 // Playlist
   { "Playlist.GetItems",                CPlaylistOperations::GetItems,          Response,     ReadData,        "Retrieve items in the playlist. Parameter example {\"playlist\": \"music\" }. playlist optional." },
