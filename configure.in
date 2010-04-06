@@ -689,9 +689,12 @@ if test "$host_vendor" = "apple" ; then
   AC_MSG_NOTICE($vaapi_disabled)
 else
   if test "$use_vaapi" = "yes"; then
-    AC_CHECK_LIB([va], main,, use_vaapi=no;AC_MSG_RESULT($vaapi_not_found))
+    AC_CHECK_LIB([va-glx], main,, use_vaapi=no;AC_MSG_RESULT($vaapi_not_found), -lva)
   else
     AC_MSG_NOTICE($vaapi_disabled)
+  fi
+  if test "$use_vaapi" = "yes"; then
+    AC_CHECK_LIB([va]    , main,, use_vaapi=no;AC_MSG_RESULT($vaapi_not_found))
   fi
 fi
 
