@@ -1756,14 +1756,6 @@ int CXbmcHttp::xbmcGetGUIStatus()
       {
         output += closeTag+openTag+"Type:Spin"+closeTag+openTag+"Description:" + strTmp;
       }
-      else if (pControl->GetControlType() == CGUIControl::GUICONTROL_THUMBNAIL)
-      {
-        output += closeTag+openTag+"Type:ThumbNail"+closeTag+openTag+"Description:" + strTmp;
-      }
-      else if (pControl->GetControlType() == CGUIControl::GUICONTROL_LIST)
-      {
-        output += closeTag+openTag+"Type:List"+closeTag+openTag+"Description:" + strTmp;
-      }
     }
   }
   return SetResponse(output);

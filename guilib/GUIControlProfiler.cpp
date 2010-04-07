@@ -157,12 +157,7 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
     lpszType = "fixedlist"; break;
   case CGUIControl::GUICONTAINER_PANEL:
     lpszType = "panel"; break;
-  //case CGUIControl::GUICONTROL_LIST:
   //case CGUIControl::GUICONTROL_UNKNOWN:
-  //case CGUIControl::GUICONTROL_LISTEX:
-  //case CGUIControl::GUICONTROL_SPINBUTTON:
-  //case CGUIControl::GUICONTROL_THUMBNAIL:
-  //case CGUIControl::GUICONTROL_CONSOLE:
   default:
     break;
   }
