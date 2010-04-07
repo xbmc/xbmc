@@ -312,7 +312,7 @@
         </control>
         <control type="label" id="9105">
           <description>Episodes view button</description>
-          <label>$LOCALIZE[20360]</label>
+          <label>$LOCALIZE[31721]</label>
           <visible>Control.IsVisible(56) + Container.Content(episodes)</visible>
           <include>OMViewLabelItem</include>
         </control>
@@ -488,7 +488,7 @@
         <control type="button" id="927">
           <description>Episodes view button</description>
           <visible>!Control.IsVisible(56) + [Container.Content(episodes)]</visible>
-          <label>$LOCALIZE[20360]</label>
+          <label>$LOCALIZE[31721]</label>
           <onclick>Container.SetViewMode(56)</onclick>
           <onclick>SetFocus(50)</onclick>
           <include>OMButtonItem</include>
