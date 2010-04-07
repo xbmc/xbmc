@@ -1754,48 +1754,6 @@ CStdString CSysInfo::GetInternetState()
     return g_localizeStrings.Get(13297);
 }
 
-#if defined(_LINUX) && !defined(__APPLE__)
-CStdString CSysInfo::GetLinuxDistro()
-{
-  CStdString result = "";
-  
-  FILE* pipe = popen("unset PYTHONHOME; unset PYTHONPATH; /usr/bin/lsb_release -d | cut -f2", "r");
-  if (pipe)
-  {
-    char buffer[256];
-    memset(buffer, 0, sizeof(buffer)*sizeof(char));
-    if (fread(buffer, sizeof(buffer)*sizeof(char), 1, pipe) == 1)
-      result = buffer;
-    else
-      CLog::Log(LOGWARNING, "Unable to determine Linux distribution");
-    pclose(pipe);
-  }
-  
-  return result.Trim();
-}
-#endif
-
-#ifdef _LINUX
-CStdString CSysInfo::GetUnameVersion()
-{
-  CStdString result = "";
-  
-  FILE* pipe = popen("uname -rs", "r");
-  if (pipe)
-  {
-    char buffer[256];
-    memset(buffer, 0, sizeof(buffer)*sizeof(char));
-    if (fread(buffer, sizeof(buffer)*sizeof(char), 1, pipe) == 1)
-      result = buffer;
-    else
-      CLog::Log(LOGWARNING, "Unable to determine Uname version");
-    pclose(pipe);
-  }
-  
-  return result.Trim();
-}
-#endif
-
 CStdString CSysInfo::GetUserAgent()
 {
   CStdString result;
@@ -1804,11 +1762,9 @@ CStdString CSysInfo::GetUserAgent()
   result += "Windows; ";
   result += GetKernelVersion();
 #else
-  result += "Xbox; ";
-  result += GetKernelVersion();
+  result += "Xbox";
 #endif
   result += "; http://www.xbmc.org)";
-
 
   return result;
 }
