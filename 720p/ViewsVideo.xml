@@ -388,7 +388,7 @@
     </control>
   </include>
 
-
+<!--
 
   <include name="TVEpisodes">
     <control type="group">
@@ -778,7 +778,7 @@
     </control>
   </include>
 
-
+-->
 
   <include name="MediaPreview">
     <control type="group">
