@@ -201,3 +201,56 @@ JSON_STATUS CVideoLibrary::ScanForContent(const CStdString &method, ITransportLa
   g_application.getApplicationMessenger().ExecBuiltIn("updatelibrary(video)");
   return ACK;
 }
+
+bool CVideoLibrary::FillFileItemList(const Value &parameterObject, CFileItemList &list)
+{
+  CVideoDatabase videodatabase;
+  if ((parameterObject["movieid"].isInt() || parameterObject["episodeid"].isInt() || parameterObject["musicvideoid"].isInt()) && videodatabase.Open())
+  {
+    int movieID       = ParameterAsInt(parameterObject, -1, "movieid");
+    int episodeID     = ParameterAsInt(parameterObject, -1, "episodeid");
+    int musicVideoID  = ParameterAsInt(parameterObject, -1, "musicvideoid");
+
+    bool success = true;
+    if (movieID > 0)
+    {
+      CVideoInfoTag details;
+      videodatabase.GetMovieInfo("", details, movieID);
+      if (!details.IsEmpty())
+      {
+        CFileItemPtr item = CFileItemPtr(new CFileItem(details));
+        list.Add(item);
+        success &= true;
+      }
+      success = false;
+    }
+    if (episodeID > 0)
+    {
+      CVideoInfoTag details;
+      if (videodatabase.GetEpisodeInfo("", details, episodeID) && !details.IsEmpty())
+      {
+        CFileItemPtr item = CFileItemPtr(new CFileItem(details));
+        list.Add(item);
+        success &= true;
+      }
+      success = false;
+    }
+    if (musicVideoID > 0)
+    {
+      CVideoInfoTag details;
+      videodatabase.GetMusicVideoInfo("", details, musicVideoID);
+      if (!details.IsEmpty())
+      {
+        CFileItemPtr item = CFileItemPtr(new CFileItem(details));
+        list.Add(item);
+        success &= true;
+      }
+      success = false;
+    }
+
+    videodatabase.Close();
+    return success;
+  }
+
+  return false;
+}
