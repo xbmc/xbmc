@@ -407,7 +407,7 @@ public:
   // scanning hashes and paths scanned
   bool SetPathHash(const CStdString &path, const CStdString &hash);
   bool GetPathHash(const CStdString &path, CStdString &hash);
-  bool GetPaths(std::map<CStdString,VIDEO::SScanSettings> &paths);
+  bool GetPaths(std::set<CStdString> &paths);
   bool GetPathsForTvShow(int idShow, std::vector<int>& paths);
 
   // for music + musicvideo linkups - if no album and title given it will return the artist id, else the id of the matching video
@@ -559,7 +559,7 @@ protected:
 private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 35; };
+  virtual int GetMinVersion() const { return 36; };
   const char *GetDefaultDBName() const { return "MyVideos34.db"; };
 
   void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);

@@ -76,10 +76,10 @@ void CGUIToggleButtonControl::AllocResources()
   m_selectButton.AllocResources();
 }
 
-void CGUIToggleButtonControl::FreeResources()
+void CGUIToggleButtonControl::FreeResources(bool immediately)
 {
-  CGUIButtonControl::FreeResources();
-  m_selectButton.FreeResources();
+  CGUIButtonControl::FreeResources(immediately);
+  m_selectButton.FreeResources(immediately);
 }
 
 void CGUIToggleButtonControl::DynamicResourceAlloc(bool bOnOff)

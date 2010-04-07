@@ -76,7 +76,8 @@ void CTCPServer::Process()
     if (res < 0)
     {
       CLog::Log(LOGERROR, "JSONRPC Server: Select failed");
-      m_bStop = false;
+      Sleep(1000);
+      Initialize();
     }
     else if (res > 0)
     {

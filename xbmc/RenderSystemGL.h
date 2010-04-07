@@ -58,6 +58,8 @@ public:
 
   virtual bool TestRender();
 
+  virtual void GetGLSLVersion(int& major, int& minor);
+
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
   virtual bool PresentRenderImpl() = 0;
@@ -73,6 +75,9 @@ protected:
   int        m_height;
 
   CStdString m_RenderExtensions;
+
+  int        m_glslMajor;
+  int        m_glslMinor;
 };
 
 #endif // RENDER_SYSTEM_H

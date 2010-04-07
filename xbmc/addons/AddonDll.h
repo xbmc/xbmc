@@ -21,7 +21,7 @@
  */
 #include "Addon.h"
 #include "DllAddon.h"
-#include "AddonManager.h"
+#include "AddonStatusHandler.h"
 #include "GUIDialogSettings.h"
 #include "Util.h"
 #include "FileSystem/File.h"

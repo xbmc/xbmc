@@ -313,7 +313,7 @@ void CGUIControlGroupList::ScrollTo(float offset)
   m_scrollSpeed = (m_scrollOffset - m_offset) / m_scrollTime;
 }
 
-bool CGUIControlGroupList::SendMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIControlGroupList::SendMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   // transform our position into child coordinates
   CPoint childPoint(point);
@@ -331,20 +331,22 @@ bool CGUIControlGroupList::SendMouseEvent(const CPoint &point, const CMouseEvent
         { // we're on screen
           float offsetX = m_orientation == VERTICAL ? m_posX : m_posX + alignOffset + pos - m_offset;
           float offsetY = m_orientation == VERTICAL ? m_posY + alignOffset + pos - m_offset : m_posY;
-          if (child->SendMouseEvent(childPoint - CPoint(offsetX, offsetY), event))
+          EVENT_RESULT ret = child->SendMouseEvent(childPoint - CPoint(offsetX, offsetY), event);
+          if (ret)
           { // we've handled the action, and/or have focused an item
-            return true;
+            return ret;
           }
         }
         pos += Size(child) + m_itemGap;
       }
     }
     // none of our children want the event, but we may want it.
-    if (HitTest(childPoint) && OnMouseEvent(childPoint, event))
-      return true;
+    EVENT_RESULT ret;
+    if (HitTest(childPoint) && (ret = OnMouseEvent(childPoint, event)))
+      return ret;
   }
   m_focusedControl = 0;
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 void CGUIControlGroupList::UnfocusFromPoint(const CPoint &point)
@@ -420,7 +422,7 @@ float CGUIControlGroupList::GetAlignOffset() const
   return 0.0f;
 }
 
-bool CGUIControlGroupList::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIControlGroupList::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_WHEEL_UP || event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
@@ -434,15 +436,15 @@ bool CGUIControlGroupList::OnMouseEvent(const CPoint &point, const CMouseEvent &
       if (event.m_id == ACTION_MOUSE_WHEEL_DOWN && nextOffset > m_offset) // past our current offset
       {
         ScrollTo(nextOffset);
-        return true;
+        return EVENT_RESULT_HANDLED;
       }
       else if (event.m_id == ACTION_MOUSE_WHEEL_UP && nextOffset >= m_offset) // at least at our current offset
       {
         ScrollTo(offset);
-        return true;
+        return EVENT_RESULT_HANDLED;
       }
       offset = nextOffset;
     }
   }
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }

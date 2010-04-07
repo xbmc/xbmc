@@ -198,12 +198,12 @@ void CGUIListContainer::Scroll(int amount)
 void CGUIListContainer::ValidateOffset()
 { // first thing is we check the range of m_offset
   if (!m_layout) return;
-  if (m_offset > (int)m_items.size() - m_itemsPerPage)
+  if (m_offset > (int)m_items.size() - m_itemsPerPage || m_scrollOffset > ((int)m_items.size() - m_itemsPerPage) * m_layout->Size(m_orientation))
   {
     m_offset = m_items.size() - m_itemsPerPage;
     m_scrollOffset = m_offset * m_layout->Size(m_orientation);
   }
-  if (m_offset < 0)
+  if (m_offset < 0 || m_scrollOffset < 0)
   {
     m_offset = 0;
     m_scrollOffset = 0;
@@ -244,10 +244,10 @@ void CGUIListContainer::SelectItem(int item)
   }
 }
 
-bool CGUIListContainer::SelectItemFromPoint(const CPoint &point)
+int CGUIListContainer::GetCursorFromPoint(const CPoint &point, CPoint *itemPoint) const
 {
   if (!m_focusedLayout || !m_layout)
-    return false;
+    return -1;
 
   int row = 0;
   float pos = (m_orientation == VERTICAL) ? point.y : point.x;
@@ -257,26 +257,31 @@ bool CGUIListContainer::SelectItemFromPoint(const CPoint &point)
     if (pos < layout->Size(m_orientation) && row + m_offset < (int)m_items.size())
     { // found correct "row" -> check horizontal
       if (!InsideLayout(layout, point))
-        return false;
+        return -1;
 
-      SetContainerMoving(row - m_cursor);
-      m_cursor = row;
-      CGUIListItemLayout *focusedLayout = GetFocusedLayout();
-      if (focusedLayout)
-      {
-        CPoint pt(point);
-        if (m_orientation == VERTICAL)
-          pt.y = pos;
-        else
-          pt.x = pos;
-        focusedLayout->SelectItemFromPoint(pt);
-      }
-      return true;
+      if (itemPoint)
+        *itemPoint = m_orientation == VERTICAL ? CPoint(point.x, pos) : CPoint(pos, point.y);
+      return row;
     }
     row++;
     pos -= layout->Size(m_orientation);
   }
-  return false;
+  return -1;
+}
+
+bool CGUIListContainer::SelectItemFromPoint(const CPoint &point)
+{
+  CPoint itemPoint;
+  int row = GetCursorFromPoint(point, &itemPoint);
+  if (row < 0)
+    return false;
+
+  SetContainerMoving(row - m_cursor);
+  m_cursor = row;
+  CGUIListItemLayout *focusedLayout = GetFocusedLayout();
+  if (focusedLayout)
+    focusedLayout->SelectItemFromPoint(itemPoint);
+  return true;
 }
 
 //#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY

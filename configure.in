@@ -9,13 +9,15 @@ AH_TOP([#pragma once])
 # Ensure config.guess and config.sub exist and is executable
 # Also install latest version of these files if available
 AC_MSG_NOTICE([Ensuring config.guess and config.sub exist and is executable])
-test -f config.guess && chmod a+x config.guess
+test -f config.guess || cp -f /usr/share/misc/config.guess config.guess
+chmod a+x config.guess
 if [[ -x /usr/share/misc/config.guess ]] && \
     [[ $($PWD/config.guess -t | sed 's/-//g') -lt \
     $(/usr/share/misc/config.guess -t | sed 's/-//g') ]]; then
     cp -f /usr/share/misc/config.guess config.guess
 fi
-test -f config.sub && chmod a+x config.sub
+test -f config.sub || cp -f /usr/share/misc/config.sub config.sub
+chmod a+x config.sub
 if [[ -x /usr/share/misc/config.sub ]] && \
     [[ $($PWD/config.sub -t | sed 's/-//g') -lt \
     $(/usr/share/misc/config.sub -t | sed 's/-//g') ]]; then

@@ -53,7 +53,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
   virtual void AllocResources();
-  virtual void FreeResources();
+  virtual void FreeResources(bool immediately = false);
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
 
   virtual unsigned int GetRows() const;
@@ -94,7 +94,7 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
-  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   bool OnClick(int actionID);
   virtual void Render();
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
@@ -109,10 +109,11 @@ protected:
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
   virtual bool SelectItemFromPoint(const CPoint &point) { return false; };
+  virtual int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const { return -1; };
   virtual void Reset();
   virtual unsigned int GetNumItems() const { return m_items.size(); };
   virtual int GetCurrentPage() const;
-  bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point);
+  bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const;
 
   inline float Size() const;
   void MoveToRow(int row);

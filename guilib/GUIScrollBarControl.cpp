@@ -149,14 +149,14 @@ void CGUIScrollBar::SetValue(int value)
   SetInvalid();
 }
 
-void CGUIScrollBar::FreeResources()
+void CGUIScrollBar::FreeResources(bool immediately)
 {
-  CGUIControl::FreeResources();
-  m_guiBackground.FreeResources();
-  m_guiBarNoFocus.FreeResources();
-  m_guiBarFocus.FreeResources();
-  m_guiNibNoFocus.FreeResources();
-  m_guiNibFocus.FreeResources();
+  CGUIControl::FreeResources(immediately);
+  m_guiBackground.FreeResources(immediately);
+  m_guiBarNoFocus.FreeResources(immediately);
+  m_guiBarFocus.FreeResources(immediately);
+  m_guiNibNoFocus.FreeResources(immediately);
+  m_guiNibFocus.FreeResources(immediately);
 }
 
 void CGUIScrollBar::DynamicResourceAlloc(bool bOnOff)
@@ -264,7 +264,7 @@ void CGUIScrollBar::SetFromPosition(const CPoint &point)
   SetInvalid();
 }
 
-bool CGUIScrollBar::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIScrollBar::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_DRAG)
   {
@@ -279,23 +279,24 @@ bool CGUIScrollBar::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
       SendWindowMessage(msg);
     }
     SetFromPosition(point);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_MOUSE_LEFT_CLICK && m_guiBackground.HitTest(point))
   {
     SetFromPosition(point);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
     Move(-1);
+    return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
     Move(1);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 CStdString CGUIScrollBar::GetDescription() const

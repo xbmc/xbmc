@@ -1,6 +1,5 @@
 #!/bin/sh
 
-rm -rf bin/win32
 
 #libdvdcss
 cd libdvdcss
@@ -16,9 +15,8 @@ make
 strip -S src/.libs/libdvdcss-2.dll
 cd ..
 mkdir -p includes/dvdcss
-cp libdvdcss/src/dvdcss/dvdcss.h includes/dvdcss  
-mkdir -p bin/win32
-cp libdvdcss/src/.libs/libdvdcss-2.dll bin/win32
+cp libdvdcss/src/dvdcss/dvdcss.h includes/dvdcss
+cp libdvdcss/src/.libs/libdvdcss-2.dll ../../../../../system/players/dvdplayer/
 
 #libdvdread
 cd libdvdread
@@ -57,5 +55,5 @@ gcc \
 
 strip -S obj/libdvdnav.dll
 cd ..
-cp libdvdnav/obj/libdvdnav.dll bin/win32
+cp libdvdnav/obj/libdvdnav.dll ../../../../../system/players/dvdplayer/
 echo "***** Done *****"

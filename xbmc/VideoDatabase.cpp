@@ -44,6 +44,7 @@
 #include "LocalizeStrings.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "TextureCache.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -153,7 +154,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE actors ( idActor integer primary key, strActor text, strThumb text )\n");
 
     CLog::Log(LOGINFO, "create path table");
-    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath varchar(512), strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool, strSettings text, noUpdate bool)\n");
+    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath varchar(512), strContent text, strScraper text, strHash text, scanRecursive integer, useFolderNames bool, strSettings text, noUpdate bool, exclude bool)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_path ON path ( strPath )\n");
 
     CLog::Log(LOGINFO, "create files table");
@@ -357,7 +358,7 @@ int CVideoDatabase::GetPathId(const CStdString& strPath)
   return -1;
 }
 
-bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
+bool CVideoDatabase::GetPaths(set<CStdString> &paths)
 {
   try
   {
@@ -366,11 +367,8 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
 
     paths.clear();
 
-    SScanSettings settings;
-    memset(&settings, 0, sizeof(settings));
-
     // grab all paths with movie content set
-    if (!m_pDS->query("select strPath,scanRecursive,useFolderNames,noUpdate from path"
+    if (!m_pDS->query("select strPath,noUpdate from path"
                       " where (strContent = 'movies' or strContent = 'musicvideos')"
                       " and strPath NOT like 'multipath://%%'"
                       " order by strPath"))
@@ -379,21 +377,13 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
     while (!m_pDS->eof())
     {
       if (!m_pDS->fv("noUpdate").get_asBool())
-      {
-        CStdString strPath = m_pDS->fv("strPath").get_asString();
-
-        settings.parent_name = m_pDS->fv("useFolderNames").get_asBool();
-        settings.recurse     = m_pDS->fv("scanRecursive").get_asInt();
-        settings.parent_name_root = settings.parent_name && !settings.recurse;
-
-        paths.insert(pair<CStdString,SScanSettings>(strPath,settings));
-      }
+        paths.insert(m_pDS->fv("strPath").get_asString());
       m_pDS->next();
     }
     m_pDS->close();
 
     // then grab all tvshow paths
-    if (!m_pDS->query("select strPath,scanRecursive,useFolderNames,strContent,noUpdate from path"
+    if (!m_pDS->query("select strPath,noUpdate from path"
                       " where ( strContent = 'tvshows'"
                       "       or idPath in (select idPath from tvshowlinkpath))"
                       " and strPath NOT like 'multipath://%%'"
@@ -403,24 +393,7 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
     while (!m_pDS->eof())
     {
       if (!m_pDS->fv("noUpdate").get_asBool())
-      {
-        CStdString strPath = m_pDS->fv("strPath").get_asString();
-        CStdString strContent = m_pDS->fv("strContent").get_asString();
-        if(strContent.Equals("tvshows"))
-        {
-          settings.parent_name = m_pDS->fv("useFolderNames").get_asBool();
-          settings.recurse     = m_pDS->fv("scanRecursive").get_asInt();
-          settings.parent_name_root = settings.parent_name && !settings.recurse;
-        }
-        else
-        {
-          settings.parent_name = true;
-          settings.recurse = 0;
-          settings.parent_name_root = true;
-        }
-
-        paths.insert(pair<CStdString,SScanSettings>(strPath,settings));
-      }
+        paths.insert(m_pDS->fv("strPath").get_asString());
       m_pDS->next();
     }
     m_pDS->close();
@@ -441,15 +414,7 @@ bool CVideoDatabase::GetPaths(map<CStdString,VIDEO::SScanSettings> &paths)
     while (!m_pDS->eof())
     {
       if (!m_pDS->fv("noUpdate").get_asBool())
-      {
-        CStdString strPath = m_pDS->fv("strPath").get_asString();
-
-        settings.parent_name = false;
-        settings.recurse = 0;
-        settings.parent_name_root = settings.parent_name && !settings.recurse;
-
-        paths.insert(pair<CStdString,SScanSettings>(strPath,settings));
-      }
+        paths.insert(m_pDS->fv("strPath").get_asString());
       m_pDS->next();
     }
     m_pDS->close();
@@ -1427,8 +1392,10 @@ void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath)
     strPath2.Format("videodb://2/2/%i/",idTvShow);
     GetSeasonsNav(strPath2,items,-1,-1,-1,-1,idTvShow);
     for( int i=0;i<items.Size();++i )
+    {
       XFILE::CFile::Delete(items[i]->GetCachedSeasonThumb());
-
+      CTextureCache::Get().ClearCachedImage(items[i]->GetCachedSeasonThumb());
+    }
     DeleteThumbForItem(strPath,true);
 
     CStdString strSQL;
@@ -3232,17 +3199,17 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const Scraper
     CStdString strSQL;
     if (settings.exclude)
     { //NB See note in ::GetScraperForPath about strContent=='none'
-      strSQL=FormatSQL("update path set strContent='none', strScraper='', scanRecursive=0, useFolderNames=0, strSettings='', noUpdate=0 where idPath=%i", idPath);
+      strSQL=FormatSQL("update path set strContent='', strScraper='', scanRecursive=0, useFolderNames=0, strSettings='', noUpdate=0 , exclude=1 where idPath=%i", idPath);
     }
     else if(!scraper)
     { // catch clearing content, but not excluding
-      strSQL=FormatSQL("update path set strContent='', strScraper='', scanRecursive=0, useFolderNames=0, strSettings='', noUpdate=0 where idPath=%i", idPath);
+      strSQL=FormatSQL("update path set strContent='', strScraper='', scanRecursive=0, useFolderNames=0, strSettings='', noUpdate=0, exclude=0 where idPath=%i", idPath);
     }
     else
     {
       assert(scraper->Parent());
       CStdString content = TranslateContent(scraper->Content());
-      strSQL=FormatSQL("update path set strContent='%s', strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s', noUpdate=%i where idPath=%i", content.c_str(), scraper->Parent()->ID().c_str(),settings.recurse,settings.parent_name,scraper->GetSettings().c_str(),settings.noupdate, idPath);
+      strSQL=FormatSQL("update path set strContent='%s', strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s', noUpdate=%i, exclude=0 where idPath=%i", content.c_str(), scraper->Parent()->ID().c_str(),settings.recurse,settings.parent_name,scraper->GetSettings().c_str(),settings.noupdate, idPath);
     }
     m_pDS->exec(strSQL.c_str());
   }
@@ -3730,6 +3697,10 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     if (iVersion < 35)
     {
       m_pDS->exec("alter table settings add NonLinStretch bool");
+    }
+    if (iVersion < 36)
+    {
+      m_pDS->exec("alter table path add exclude bool");
     }
   }
   catch (...)
@@ -5553,7 +5524,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScanSet
 
     if (idPath > -1)
     {
-      CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings,path.noUpdate from path where path.idPath=%i",idPath);
+      CStdString strSQL=FormatSQL("select path.strContent,path.strScraper,path.scanRecursive,path.useFolderNames,path.strSettings,path.noUpdate,path.exclude from path where path.idPath=%i",idPath);
       m_pDS->query( strSQL.c_str() );
     }
 
@@ -5562,22 +5533,17 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScanSet
     if (!m_pDS->eof())
     { // path is stored in db
 
-      //!!!
-      //FIXME confusion arises here as VIDEODB_CONTENT_NONE has no relation to strContent == 'none'.
-      // Here, we are referring to paths which are explicitly excluded from scraping, by
-      // having settings.exclude == true
-      //!!
-      CStdString strcontent = m_pDS->fv("path.strContent").get_asString();
-      strcontent.ToLower();
-      if (strcontent.Equals("none"))
+      if (m_pDS->fv("path.exclude").get_asBool())
       {
         settings.exclude = true;
         m_pDS->close();
         return ScraperPtr();
       }
+      settings.exclude = false;
 
-      // path is not excluded
       // try and ascertain scraper for this path
+      CStdString strcontent = m_pDS->fv("path.strContent").get_asString();
+      strcontent.ToLower();
       content = TranslateContent(strcontent);
 
       //FIXME paths stored should not have empty strContent
@@ -7427,24 +7393,24 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
     if (!singleFiles)
     {
       // now dump path info
-      map<CStdString,SScanSettings> paths;
+      set<CStdString> paths;
       GetPaths(paths);
       TiXmlElement xmlPathElement("paths");
       TiXmlNode *pPaths = pMain->InsertEndChild(xmlPathElement);
-      for( map<CStdString,SScanSettings>::iterator iter=paths.begin();iter != paths.end();++iter)
+      for( set<CStdString>::iterator iter = paths.begin(); iter != paths.end(); ++iter)
       {
         bool foundDirectly = false;
         SScanSettings settings;
-        ScraperPtr info = GetScraperForPath(iter->first, settings, foundDirectly);
+        ScraperPtr info = GetScraperForPath(*iter, settings, foundDirectly);
         if (info && foundDirectly)
         {
           TiXmlElement xmlPathElement2("path");
           TiXmlNode *pPath = pPaths->InsertEndChild(xmlPathElement2);
-          XMLUtils::SetString(pPath,"url",iter->first);
-          XMLUtils::SetInt(pPath,"scanrecursive",iter->second.recurse);
-          XMLUtils::SetBoolean(pPath,"usefoldernames",iter->second.parent_name);
+          XMLUtils::SetString(pPath,"url", *iter);
+          XMLUtils::SetInt(pPath,"scanrecursive", settings.recurse);
+          XMLUtils::SetBoolean(pPath,"usefoldernames", settings.parent_name);
           XMLUtils::SetString(pPath,"content", TranslateContent(info->Content()));
-          XMLUtils::SetString(pPath,"scraperpath",info->ID());
+          XMLUtils::SetString(pPath,"scraperpath", info->ID());
         }
       }
       xmlDoc.SaveFile(xmlFile);
@@ -7813,14 +7779,22 @@ void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder,
   {
     item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
     if (CFile::Exists(item.GetCachedEpisodeThumb()))
+    {
       XFILE::CFile::Delete(item.GetCachedEpisodeThumb());
+      CTextureCache::Get().ClearCachedImage(item.GetCachedEpisodeThumb());
+    }
     else
+    {
       XFILE::CFile::Delete(item.GetCachedVideoThumb());
+      CTextureCache::Get().ClearCachedImage(item.GetCachedVideoThumb());
+    }
   }
   else
   {
     XFILE::CFile::Delete(item.GetCachedVideoThumb());
+    CTextureCache::Get().ClearCachedImage(item.GetCachedVideoThumb());
     XFILE::CFile::Delete(item.GetCachedFanart());
+    CTextureCache::Get().ClearCachedImage(item.GetCachedFanart());
   }
 
   // tell our GUI to completely reload all controls (as some of them

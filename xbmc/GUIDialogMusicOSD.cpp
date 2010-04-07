@@ -122,11 +122,11 @@ bool CGUIDialogMusicOSD::OnAction(const CAction &action)
   return CGUIDialog::OnAction(action);
 }
 
-bool CGUIDialogMusicOSD::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIDialogMusicOSD::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // pause
-    return g_application.OnAction(CAction(ACTION_PAUSE));
+    return g_application.OnAction(CAction(ACTION_PAUSE)) ? EVENT_RESULT_HANDLED : EVENT_RESULT_UNHANDLED;
   }
   return CGUIDialog::OnMouseEvent(point, event);
 }

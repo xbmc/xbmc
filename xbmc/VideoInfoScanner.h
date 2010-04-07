@@ -70,7 +70,7 @@ namespace VIDEO
   public:
     CVideoInfoScanner();
     virtual ~CVideoInfoScanner();
-    void Start(const CStdString& strDirectory, const ADDON::ScraperPtr& info, const SScanSettings& settings, bool bUpdateAll);
+    void Start(const CStdString& strDirectory, bool bUpdateAll);
     bool IsScanning();
     void Stop();
     void SetObserver(IVideoInfoScannerObserver* pObserver);
@@ -99,7 +99,7 @@ namespace VIDEO
     void FetchSeasonThumbs(int idTvShow, const CStdString &folderToCheck = "", bool download = true, bool overwrite = false);
   protected:
     virtual void Process();
-    bool DoScan(const CStdString& strDirectory, SScanSettings settings);
+    bool DoScan(const CStdString& strDirectory);
 
     int RetreiveInfoForTvShow(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo);
     int RetreiveInfoForMovie(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo);
@@ -139,7 +139,7 @@ namespace VIDEO
     CStdString m_strStartDir;
     CVideoDatabase m_database;
     ADDON::ScraperPtr m_info;
-    std::map<CStdString,SScanSettings> m_pathsToScan;
+    std::set<CStdString> m_pathsToScan;
     std::set<CStdString> m_pathsToCount;
     std::vector<int> m_pathsToClean;
     CNfoFile m_nfoReader;

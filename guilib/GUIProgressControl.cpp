@@ -202,14 +202,14 @@ float CGUIProgressControl::GetPercentage() const
 {
   return m_fPercent;
 }
-void CGUIProgressControl::FreeResources()
+void CGUIProgressControl::FreeResources(bool immediately)
 {
-  CGUIControl::FreeResources();
-  m_guiBackground.FreeResources();
-  m_guiMid.FreeResources();
-  m_guiRight.FreeResources();
-  m_guiLeft.FreeResources();
-  m_guiOverlay.FreeResources();
+  CGUIControl::FreeResources(immediately);
+  m_guiBackground.FreeResources(immediately);
+  m_guiMid.FreeResources(immediately);
+  m_guiRight.FreeResources(immediately);
+  m_guiLeft.FreeResources(immediately);
+  m_guiOverlay.FreeResources(immediately);
 }
 
 void CGUIProgressControl::DynamicResourceAlloc(bool bOnOff)

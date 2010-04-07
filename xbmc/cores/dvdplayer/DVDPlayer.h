@@ -174,7 +174,7 @@ public:
   virtual bool GetSubtitleVisible();
   virtual void SetSubtitleVisible(bool bVisible);
   virtual bool GetSubtitleExtension(CStdString &strSubtitleExtension) { return false; }
-  virtual bool AddSubtitle(const CStdString& strSubPath);
+  virtual int  AddSubtitle(const CStdString& strSubPath);
 
   virtual int GetAudioStreamCount();
   virtual int GetAudioStream();
@@ -246,7 +246,7 @@ protected:
   void ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket);
 
-  bool AddSubtitleFile(const std::string& filename);
+  int  AddSubtitleFile(const std::string& filename);
   /**
    * one of the DVD_PLAYSPEED defines
    */

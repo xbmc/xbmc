@@ -44,6 +44,16 @@ extern "C" {
 #endif
 }
 
+/* Some convenience macros introduced at this particular revision of libavcodec.
+ */
+#if LIBAVCODEC_VERSION_INT < (52<<16 | 25<<8)
+#define CH_LAYOUT_5POINT0_BACK      (CH_LAYOUT_SURROUND|CH_BACK_LEFT|CH_BACK_RIGHT)
+#define CH_LAYOUT_5POINT1_BACK      (CH_LAYOUT_5POINT0_BACK|CH_LOW_FREQUENCY)
+#undef CH_LAYOUT_7POINT1_WIDE
+#define CH_LAYOUT_7POINT1_WIDE      (CH_LAYOUT_5POINT1_BACK|\
+                                           CH_FRONT_LEFT_OF_CENTER|CH_FRONT_RIGHT_OF_CENTER)
+#endif
+
 #include "utils/SingleLock.h"
 
 class DllAvCodecInterface

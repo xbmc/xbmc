@@ -20,16 +20,13 @@
  *
  */
 #include "Addon.h"
-#include "../addons/include/xbmc_addon_dll.h"
+#include "include/xbmc_addon_dll.h"
 #include "tinyXML/tinyxml.h"
-#include "Thread.h"
 #include "StdString.h"
 #include "DateTime.h"
 #include "DownloadQueue.h"
 #include <vector>
 #include <map>
-
-class CCriticalSection;
 
 namespace ADDON
 {
@@ -64,31 +61,6 @@ namespace ADDON
   };
 
   /**
-  * Class - CAddonStatusHandler
-  * Used to informate the user about occurred errors and
-  * changes inside Add-on's, and ask him what to do.
-  * It can executed in the same thread as the calling
-  * function or in a seperate thread.
-  */
-  class CAddonStatusHandler : private CThread
-  {
-    public:
-      CAddonStatusHandler(IAddon* const addon, ADDON_STATUS status, CStdString message, bool sameThread = true);
-      ~CAddonStatusHandler();
-
-      /* Thread handling */
-      virtual void Process();
-      virtual void OnStartup();
-      virtual void OnExit();
-
-    private:
-      static CCriticalSection   m_critSection;
-      IAddon*                   m_addon;
-      ADDON_STATUS              m_status;
-      CStdString                m_message;
-  };
-
-  /**
   * Class - CAddonMgr
   * Holds references to all addons, enabled or
   * otherwise. Services the generic callbacks available
@@ -110,14 +82,7 @@ namespace ADDON
     bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE, bool enabledOnly = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
     bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
-   CStdString GetString(const CStdString &id, const int number);
-
-    /* Addon operations */
-    bool EnableAddon(AddonPtr &addon);
-    bool EnableAddon(const CStdString &id);
-    bool DisableAddon(AddonPtr &addon);
-    bool DisableAddon(const CStdString &id);
-    bool Clone(const AddonPtr& parent, AddonPtr& child);
+    CStdString GetString(const CStdString &id, const int number);
 
   private:
     /* Addon Repositories */

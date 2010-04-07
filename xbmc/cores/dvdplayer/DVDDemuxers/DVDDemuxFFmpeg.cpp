@@ -203,7 +203,7 @@ static offset_t dvd_file_seek(URLContext *h, offset_t pos, int whence)
   if(whence == AVSEEK_SIZE)
     return pInputStream->GetLength();
   else
-    return pInputStream->Seek(pos, whence);
+    return pInputStream->Seek(pos, whence & ~AVSEEK_FORCE);
 }
 
 static int dvd_file_close(URLContext *h)
@@ -439,8 +439,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   if (streaminfo || m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
-    /* too speed up live sources, only analyse very short */
-    if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
+    /* too speed up dvd switches, only analyse very short */
+    if(m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
       m_pFormatContext->max_analyze_duration = 500000;
 
 

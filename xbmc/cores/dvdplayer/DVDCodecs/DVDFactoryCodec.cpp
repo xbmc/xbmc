@@ -43,7 +43,7 @@
 #include "Audio/DVDAudioCodecLibFaad.h"
 #include "Audio/DVDAudioCodecPcm.h"
 #include "Audio/DVDAudioCodecLPcm.h"
-#if defined(USE_LIB52_DECODER) || defined(USE_LIBDTS_DECODER)
+#if defined(USE_LIBA52_DECODER) || defined(USE_LIBDTS_DECODER)
   #include "Audio/DVDAudioCodecPassthrough.h"
 #endif
 #include "Audio/DVDAudioCodecPassthroughFFmpeg.h"

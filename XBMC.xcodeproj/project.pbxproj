@@ -229,6 +229,8 @@
 		7C7B2B311134F36400713D6D /* mysqldataset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B2B2E1134F36400713D6D /* mysqldataset.cpp */; };
 		7C8A14561154CB2600E5FCFA /* TextureCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A14541154CB2600E5FCFA /* TextureCache.cpp */; };
 		7C8A14571154CB2600E5FCFA /* TextureCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A14541154CB2600E5FCFA /* TextureCache.cpp */; };
+		7C8A187C115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */; };
+		7C8A187D115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */; };
 		7CAA20511079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CAA20521079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CAA25351085963B0096DE39 /* PasswordManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA25331085963B0096DE39 /* PasswordManager.cpp */; };
@@ -281,6 +283,8 @@
 		88ECB6E70DE07BA6003396A7 /* libfontconfig.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E60DE07BA6003396A7 /* libfontconfig.1.dylib */; };
 		88ECB6EA0DE07BEE003396A7 /* libogg.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E90DE07BEE003396A7 /* libogg.0.dylib */; };
 		8DD76F790486A8DE00D96B5E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */; };
+		C80425711158A0DE00D158A6 /* controlslider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C80425701158A0DE00D158A6 /* controlslider.cpp */; };
+		C80425721158A0DE00D158A6 /* controlslider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C80425701158A0DE00D158A6 /* controlslider.cpp */; };
 		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
 		E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
 		E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
@@ -2102,6 +2106,8 @@
 		7C7B2B2F1134F36400713D6D /* mysqldataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mysqldataset.h; sourceTree = "<group>"; };
 		7C8A14541154CB2600E5FCFA /* TextureCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureCache.cpp; sourceTree = "<group>"; };
 		7C8A14551154CB2600E5FCFA /* TextureCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureCache.h; sourceTree = "<group>"; };
+		7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureDatabase.cpp; sourceTree = "<group>"; };
+		7C8A187B115B2A8200E5FCFA /* TextureDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureDatabase.h; sourceTree = "<group>"; };
 		7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseRenderer.cpp; sourceTree = "<group>"; };
 		7CAA20501079C8160096DE39 /* BaseRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseRenderer.h; sourceTree = "<group>"; };
 		7CAA205B107AFC280096DE39 /* Job.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Job.h; sourceTree = "<group>"; };
@@ -2187,6 +2193,7 @@
 		88ECB6E60DE07BA6003396A7 /* libfontconfig.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfontconfig.1.dylib; path = /opt/local/lib/libfontconfig.1.dylib; sourceTree = "<absolute>"; };
 		88ECB6E90DE07BEE003396A7 /* libogg.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.0.dylib; path = /opt/local/lib/libogg.0.dylib; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
+		C80425701158A0DE00D158A6 /* controlslider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controlslider.cpp; sourceTree = "<group>"; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E30B3E8E0D5D59290030A311 /* libshout-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libshout-x86-osx.a"; path = "xbmc/lib/libshout/libshout-x86-osx.a"; sourceTree = "<group>"; };
@@ -4846,9 +4853,11 @@
 				E38E1E150D25F9FD00618676 /* Tag.h */,
 				E38E1E160D25F9FD00618676 /* Temperature.cpp */,
 				E38E1E170D25F9FD00618676 /* Temperature.h */,
-				E38E1E180D25F9FD00618676 /* ThumbLoader.cpp */,
 				7C8A14541154CB2600E5FCFA /* TextureCache.cpp */,
 				7C8A14551154CB2600E5FCFA /* TextureCache.h */,
+				7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */,
+				7C8A187B115B2A8200E5FCFA /* TextureDatabase.h */,
+				E38E1E180D25F9FD00618676 /* ThumbLoader.cpp */,
 				E38E1E190D25F9FD00618676 /* ThumbLoader.h */,
 				E38E1E1A0D25F9FD00618676 /* ThumbnailCache.cpp */,
 				E38E1E1B0D25F9FD00618676 /* ThumbnailCache.h */,
@@ -5838,6 +5847,7 @@
 		E38E19DA0D25F9FB00618676 /* xbmcmodule */ = {
 			isa = PBXGroup;
 			children = (
+				C80425701158A0DE00D158A6 /* controlslider.cpp */,
 				E354EF030D99EDC900B55311 /* controlradiobutton.cpp */,
 				E38E257E0D263CE000618676 /* action.cpp */,
 				E38E19DC0D25F9FB00618676 /* action.h */,
@@ -8130,6 +8140,8 @@
 				18B4A0061152BFA5001AF8A6 /* ScreenSaver.cpp in Sources */,
 				18B4A0071152BFA5001AF8A6 /* Visualisation.cpp in Sources */,
 				7C8A14571154CB2600E5FCFA /* TextureCache.cpp in Sources */,
+				C80425711158A0DE00D158A6 /* controlslider.cpp in Sources */,
+				7C8A187D115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8992,6 +9004,8 @@
 				18B4A00C1152BFA5001AF8A6 /* ScreenSaver.cpp in Sources */,
 				18B4A00D1152BFA5001AF8A6 /* Visualisation.cpp in Sources */,
 				7C8A14561154CB2600E5FCFA /* TextureCache.cpp in Sources */,
+				C80425721158A0DE00D158A6 /* controlslider.cpp in Sources */,
+				7C8A187C115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

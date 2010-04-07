@@ -30,6 +30,6 @@ public:
   virtual ~CGUIWindowMusicOverlay(void);
   virtual bool OnMessage(CGUIMessage& message);
 protected:
-  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void SetDefaults();
 };

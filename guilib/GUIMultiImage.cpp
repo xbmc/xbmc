@@ -169,11 +169,11 @@ void CGUIMultiImage::AllocResources()
   m_image.SetFileName(m_files.size() ? m_files[0] : "");
 }
 
-void CGUIMultiImage::FreeResources()
+void CGUIMultiImage::FreeResources(bool immediately)
 {
-  m_image.FreeResources();
+  m_image.FreeResources(immediately);
   m_currentImage = 0;
-  CGUIControl::FreeResources();
+  CGUIControl::FreeResources(immediately);
 }
 
 void CGUIMultiImage::DynamicResourceAlloc(bool bOnOff)

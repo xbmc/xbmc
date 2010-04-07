@@ -56,6 +56,7 @@
 #include "LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "TextureCache.h"
 
 using namespace std;
 using namespace AUTOPTR;
@@ -2031,6 +2032,7 @@ bool CMusicDatabase::CleanupThumbs()
       if (strThumb.Left(strThumbsDir.size()) == strThumbsDir)
       { // only delete cached thumbs
         CFile::Delete(strThumb);
+        CTextureCache::Get().ClearCachedImage(strThumb);
       }
       m_pDS->next();
     }

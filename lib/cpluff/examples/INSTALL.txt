@@ -1,0 +1,149 @@
+INSTALLING C-PLUFF EXAMPLES
+===========================
+
+This directory includes examples of extensible applications based on
+C-Pluff. You can build the examples as part of the C-Pluff source tree at
+the same time as building the C-Pluff implementation or as a stand-alone
+build using an already installed C-Pluff instance.
+
+These are generic build and installation instructions. For more
+information on an individual example, see README.txt in the corresponding
+subdirectory.
+
+
+Building as part of the C-Pluff source tree
+-------------------------------------------
+
+This build method can be used if you are building the C-Pluff
+implementation and the examples at the same time using the supplied GNU
+autotools based build environment. If this is not the case, skip to the
+next section.
+
+Configure C-Pluff as usual using the configure script in the top level
+source directory. To build and install the examples make targets
+"examples" and "examples-install", respectively, in the top level source
+directory. This will build and install the C-Pluff implementation together
+with the example applications.
+
+Notice that example applications will be installed into the same prefix
+as the C-Pluff implementation.
+
+
+Building in stand-alone mode using GNU autotools
+------------------------------------------------
+
+This build method more correctly reflects the way real independent
+applications would be built. It is assumed that you already have an
+installed C-Pluff instance and you wish to configure, build and install
+the example applications separately using GNU autotools. If you wish to
+use Windows specific tools, skip to next section.
+
+If you don't have write access to the example source directory (because
+it is part of the installed C-Pluff documentation), make a personal copy
+of the source directory.
+
+  cp -r INSTALLED_SOURCE MY_SOURCE
+
+To use this build method, you must have some GNU tools installed because
+the C-Pluff source distribution does not ship intermediate build system
+files for examples. You will need these tools anyway if you are about to
+develop applications using a build system similar to these examples. The
+version numbers in parentheses are known working versions.
+
+  - GNU Autoconf (2.61)
+  - GNU Automake (1.10)
+  - GNU libtool (1.5.22)
+
+To bootstrap the build system, run the autogen.sh script in the source
+directory. It will invoke the above mentioned GNU tools to generate
+intermediate build system files.
+
+  ./autogen.sh
+
+Alternatively, if you want to get more familiar with the process, you can
+browse through the script and execute the necessary commands manually.
+
+Now you should have a build system in place and you can configure and
+build the examples using the standard autotools procedure.
+
+  Building in the source directory:
+    ./configure
+    make
+
+  Building in a separate build directory:
+    cd BUILD_DIR
+    SOURCE_DIR/configure
+    make
+
+When configuring, you can use the --prefix option to choose another
+installation prefix for the examples (the default is /usr/local).
+
+If C-Pluff has been installed into a location that is not included in the
+standard include or library path then you have to specify some additional
+environment variables to the configure script. Assuming that C-Pluff was
+installed into /usr/local (the default), you would have to set following
+environment variables before calling configure.
+
+  CPPFLAGS="-I/usr/local/include"
+  LDFLAGS="-L/usr/local/lib"
+  CPLUFF_LOADER="/usr/local/bin/cpluff-loader"
+
+Finally, install the example applications.
+
+  make install
+
+
+Building in stand-alone mode using Microsoft Visual C
+-----------------------------------------------------
+
+This build method is specific to Microsoft Visual C. It is provided
+separately because of complexity involved in setting up more generic GNU
+tools on Windows platform. Be warned that this build method is not being
+tested as often as the GNU autotools based build method. Please report
+any problems to the C-Pluff users mailing list.
+
+The included build environment and these instructions were initially
+tested with Microsoft Visual C++ 2005 Express Edition. The build
+environment relies only on command line tools. It is assumed that the
+given commands will be entered into command prompt.
+
+As the first step, you have to set up correct paths in common.nmake using
+Notepad or some other text editor. If you are building example source that
+has been extracted from cpluff-VER.zip (or cpluff-VER-only.zip) Windows
+distribution then the default settings should be fine. Examples will be
+installed to the same path as the C-Pluff implementation by default.
+
+Before trying to use the Visual C command line tools, you have to set up
+required environment variables by executing vcvarsall.bat in the Visual C
+installation directory. Alter the path in the following example as
+necessary for your installation.
+
+  C:\"Program Files"\"Microsoft Visual Studio 8"\VC\vcvarsall
+
+The C-Pluff Windows distribution includes a precompiled C-Pluff runtime
+library as DLL. Additionally, on Windows platform you will also need a
+corresponding import library to be able to compile software that uses a
+DLL. For some reason import libraries generated by different Windows
+compilers (MinGW, Visual C, Borland C, etc.) are generally incompatible.
+The C-Pluff Windows distribution only includes an import library for MinGW
+(libcpluff.dll.a) so you have to generate one for Visual C.
+
+This can be done using the Microsoft Library Manager, or lib.exe, and the
+export definitions provided in libcpluff.def. Execute the following
+command in the library directory containing libcpluff.def.
+
+  lib /machine:I386 /name:libcpluff-0.dll /def:libcpluff.def /out:libcpluff.lib
+
+This should generate libcpluff.lib, an import library for Visual C.
+
+Now you should be ready to build the examples. Build the examples by
+making target "all" in Makefile.nmake in the examples directory using
+nmake.
+
+  nmake /f Makefile.nmake all
+
+This compiles the examples but does not yet install them.  To install
+required files to the installation directory make target "install" in
+Makefile.nmake in the examples directory using nmake.
+
+  nmake /f Makefile.nmake install

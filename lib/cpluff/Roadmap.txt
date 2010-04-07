@@ -1,0 +1,12 @@
+C-Pluff (0.2.0) alpha
+
+  * [ ] Introduce C-Pluff C++ API and C++ runtime library.
+
+ -- Johannes Lehtinen <johannes.lehtinen@iki.fi>  ???
+
+C-Pluff (0.3.0) beta
+
+  * [ ] Introduce plug-in package format for distribution.
+  * [ ] Introduce tools for making and installing plug-in packages.
+
+ -- Johannes Lehtinen <johannes.lehtinen@iki.fi>  ???

@@ -38,7 +38,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void FrameMove();
 protected:
-  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void OnInitWindow();
   ADDON::CVisualisation *m_pVisualisation;
 };

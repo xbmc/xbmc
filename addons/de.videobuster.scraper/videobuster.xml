@@ -69,7 +69,7 @@
 			</RegExp>
 			<!-- Plot -->
 			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
-				<expression trim="1">&lt;div class=&quot;txt movie_description&quot;&gt;([^&lt;]*)&lt;</expression>
+				<expression trim="1">&lt;div class=&quot;txt movie_description&quot;&gt;(.*?)&lt;/div&gt;</expression>
 			</RegExp>
 			<!-- Trailer -->
 			<RegExp input="$$1" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://www.videobuster.de\1&lt;/url&gt;" dest="5+">
@@ -80,7 +80,10 @@
 				<expression>src=&quot;(http://gfx.videobuster.de/archive/resized)/w100/([^&quot;]*)&quot;</expression>
 			</RegExp>
 			<!-- Fanart -->
-			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBFanartById&quot;&gt;http://www.google.com/search?q=site:imdb.com+releaseinfo+\1+\2&lt;/url&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;url cache=&quot;google-\1&quot; function=&quot;GetTMDBFanartById&quot;&gt;http://www.google.com/search?q=site:imdb.com+releaseinfo+\1+\2&lt;/url&gt;" dest="5+">
+				<expression trim="1" encode="1">&lt;h1 style=&quot;margin-left:8px;&quot;>([^&lt;]*)&lt;/h1&gt;.*?Produktion:&lt;/div&gt;.*?&lt;div class=&quot;content&quot;&gt;.*?([0-9]*)&lt;/div&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url cache=&quot;google-\1&quot; function=&quot;GetTMDBThumbsById&quot;&gt;http://www.google.com/search?q=site:imdb.com+releaseinfo+\1+\2&lt;/url&gt;" dest="5+">
 				<expression trim="1" encode="1">&lt;h1 style=&quot;margin-left:8px;&quot;>([^&lt;]*)&lt;/h1&gt;.*?Produktion:&lt;/div&gt;.*?&lt;div class=&quot;content&quot;&gt;.*?([0-9]*)&lt;/div&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>

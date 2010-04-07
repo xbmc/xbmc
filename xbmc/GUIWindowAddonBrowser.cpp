@@ -89,8 +89,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
         if (iItem < 0) break;
         if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
-          OnClick(iItem);
-          return true;
+          return OnContextMenu(iItem);
         }
         if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
         {
@@ -156,7 +155,7 @@ void CGUIWindowAddonBrowser::Update()
     return;
 
   VECADDONS addons;
-  CAddonMgr::Get()->GetAddons(m_categories[m_currentCategory], addons, CONTENT_NONE, false);
+  CAddonMgr::Get()->GetAddons(m_categories[m_currentCategory], addons, CONTENT_NONE);
 
   for (unsigned i=0; i < addons.size(); i++)
   {
@@ -198,7 +197,8 @@ void CGUIWindowAddonBrowser::OnClick(int iItem)
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
 
-  AddonPtr addon;
+  //TODO handle installation via OnClick() ?
+/*  AddonPtr addon;
   TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
   if (CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"), addon, type, false))
   {
@@ -207,7 +207,7 @@ void CGUIWindowAddonBrowser::OnClick(int iItem)
     else
       CAddonMgr::Get()->DisableAddon(addon);
     Update();
-  }
+  }*/
 }
 
 bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
@@ -217,34 +217,23 @@ bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return false;
 
-  CGUIDialogContextMenu* pMenu = (CGUIDialogContextMenu*)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  if (!pMenu)
-    return false;
-
-  pMenu->Initialize();
   CFileItemPtr pItem = m_vecItems->Get(iItem);
 
   TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
   AddonPtr addon;
   if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"), addon, type, false))
     return false;
+  if (!addon->HasSettings())
+    return false;
+
+  CGUIDialogContextMenu* pMenu = (CGUIDialogContextMenu*)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  if (!pMenu)
+    return false;
+
+  pMenu->Initialize();
 
   int iSettingsLabel = 24020;
-  int iDisableLabel = 24021;
-  int iEnableLabel = 24022;
-
-  int btn_Disable = -1;
-  int btn_Enable = -1;
-  int btn_Settings = -1;
-
-  if (addon->Disabled())
-    btn_Enable = pMenu->AddButton(iEnableLabel);
-  else
-  {
-    btn_Disable = pMenu->AddButton(iDisableLabel);
-    if (addon->HasSettings())
-      btn_Settings = pMenu->AddButton(iSettingsLabel);
-  }
+  int btn_Settings = pMenu->AddButton(iSettingsLabel);
 
   pMenu->CenterWindow();
   pMenu->DoModal();
@@ -256,18 +245,6 @@ bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
   if (btnid == btn_Settings)
   {
     CGUIDialogAddonSettings::ShowAndGetInput(addon);
-    return true;
-  }
-  else if (btnid == btn_Disable)
-  {
-    CAddonMgr::Get()->DisableAddon(addon);
-    Update();
-    return true;
-  }
-  else if (btnid == btn_Enable)
-  {
-    CAddonMgr::Get()->EnableAddon(addon);
-    Update();
     return true;
   }
   return false;

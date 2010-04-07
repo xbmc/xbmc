@@ -204,10 +204,10 @@ void CGUIImage::FreeTextures(bool immediately /* = false */)
   m_fadingTextures.clear();
 }
 
-void CGUIImage::FreeResources()
+void CGUIImage::FreeResources(bool immediately)
 {
-  FreeTextures();
-  CGUIControl::FreeResources();
+  FreeTextures(immediately);
+  CGUIControl::FreeResources(immediately);
 }
 
 void CGUIImage::SetInvalid()

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Copyright 2007 Johannes Lehtinen
+ * This file is free software; Johannes Lehtinen gives unlimited
+ * permission to copy, distribute and modify it.
+-->
+<plugin
+  id="org.c-pluff.examples.cpfile.extension"
+  version="0.1"
+  name="File extension classification"
+  provider-name="Johannes Lehtinen">
+  <requires>
+    <c-pluff version="0.1"/>
+    <import plugin="org.c-pluff.examples.cpfile.core" version="0.1"/>
+  </requires>
+  <runtime library="libextension" funcs="cp_ex_cpfile_extension_funcs"/>
+  <extension-point
+    id="file-types"
+    name="File types by extension"
+    schema="file_types.xsd"/>
+  <extension
+    point="org.c-pluff.examples.cpfile.core.classifiers"
+    name="File extension classifier"
+    priority="20"
+    classifier="cp_ex_cpfile_extension_classifier"/>
+  <extension
+    point="org.c-pluff.examples.cpfile.extension.file-types"
+    name="Base file types">
+    <file-type description="text file">
+      <file-extension ext=".txt"/>
+      <file-extension ext=".text"/>
+    </file-type>
+  </extension>
+</plugin>

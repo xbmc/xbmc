@@ -66,14 +66,14 @@ void CGUIVideoControl::Render()
   CGUIControl::Render();
 }
 
-bool CGUIVideoControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIVideoControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (!g_application.IsPlayingVideo()) return false;
+  if (!g_application.IsPlayingVideo()) return EVENT_RESULT_UNHANDLED;
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // switch to fullscreen
     CGUIMessage message(GUI_MSG_FULLSCREEN, GetID(), GetParentID());
     g_windowManager.SendMessage(message);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // toggle the playlist window
@@ -81,9 +81,9 @@ bool CGUIVideoControl::OnMouseEvent(const CPoint &point, const CMouseEvent &even
       g_windowManager.PreviousWindow();
     else
       g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 bool CGUIVideoControl::CanFocus() const

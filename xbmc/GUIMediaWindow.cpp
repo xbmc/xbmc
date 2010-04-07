@@ -311,7 +311,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       else if ( message.GetParam1() == GUI_MSG_REFRESH_THUMBS )
       {
         for (int i = 0; i < m_vecItems->Size(); i++)
-          m_vecItems->Get(i)->FreeMemory();
+          m_vecItems->Get(i)->FreeMemory(true);
         break;  // the window will take care of any info images
       }
       else if (message.GetParam1() == GUI_MSG_REMOVED_MEDIA)

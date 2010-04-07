@@ -67,7 +67,7 @@ public:
   virtual void OnLeft();
   virtual void OnRight();
   virtual void AllocResources();
-  virtual void FreeResources();
+  virtual void FreeResources(bool immediately = false);
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetInvalid();
   virtual void SetPosition(float posX, float posY);
@@ -77,7 +77,7 @@ public:
   int GetYLocation() const { return m_iLocationY;};
 
 protected:
-  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UpdateColors();
   void SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);

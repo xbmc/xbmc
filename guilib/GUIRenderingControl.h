@@ -32,7 +32,7 @@ public:
 
   virtual void Render();
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
-  virtual void FreeResources();
+  virtual void FreeResources(bool immediately = false);
   virtual bool CanFocus() const { return false; }
   virtual bool CanFocusFromPoint(const CPoint &point) const;
   void LoadAddon(const ADDON::AddonPtr &addon);

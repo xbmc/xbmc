@@ -35,6 +35,8 @@
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGL;
+  m_glslMajor = 0;
+  m_glslMinor = 0;
 }
 
 CRenderSystemGL::~CRenderSystemGL()
@@ -95,6 +97,20 @@ bool CRenderSystemGL::InitRenderSystem()
   {
     sscanf(ver, "%d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
     m_RenderVersion = ver;
+  }
+
+  if (glewIsSupported("GL_ARB_shading_language_100"))
+  {
+    ver = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+    if (ver)
+    {
+      sscanf(ver, "%d.%d", &m_glslMajor, &m_glslMinor);
+    }
+    else
+    {
+      m_glslMajor = 1;
+      m_glslMinor = 0;
+    }
   }
 
   // Get our driver vendor and renderer
@@ -493,6 +509,12 @@ void CRenderSystemGL::SetViewPort(CRect& viewPort)
 
   glScissor((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
   glViewport((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
+}
+
+void CRenderSystemGL::GetGLSLVersion(int& major, int& minor)
+{
+  major = m_glslMajor;
+  minor = m_glslMinor;
 }
 
 #endif

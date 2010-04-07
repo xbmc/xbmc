@@ -115,7 +115,7 @@ void CGUIDialogVideoScan::OnSetTitle(const CStdString& strTitle)
   m_strTitle = strTitle;
 }
 
-void CGUIDialogVideoScan::StartScanning(const CStdString& strDirectory, const ADDON::ScraperPtr& info, const SScanSettings& settings, bool bUpdateAll)
+void CGUIDialogVideoScan::StartScanning(const CStdString& strDirectory, bool bUpdateAll)
 {
   m_ScanState = PREPARING;
 
@@ -124,7 +124,7 @@ void CGUIDialogVideoScan::StartScanning(const CStdString& strDirectory, const AD
     Show();
   }
 
-  m_videoInfoScanner.Start(strDirectory, info, settings, bUpdateAll);
+  m_videoInfoScanner.Start(strDirectory,bUpdateAll);
 }
 
 void CGUIDialogVideoScan::StopScanning()
