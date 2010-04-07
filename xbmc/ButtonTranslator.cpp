@@ -190,6 +190,100 @@ static const ActionMapping actions[] =
         {"increasepar"       , ACTION_INCREASE_PAR},
         {"decreasepar"       , ACTION_DECREASE_PAR}};
 
+static const ActionMapping windows[] =
+       {{"home"                     , WINDOW_HOME},
+        {"programs"                 , WINDOW_PROGRAMS},
+        {"pictures"                 , WINDOW_PICTURES},
+        {"filemanager"              , WINDOW_FILES},
+        {"files"                    , WINDOW_FILES}, // backward compat
+        {"settings"                 , WINDOW_SETTINGS_MENU},
+        {"music"                    , WINDOW_MUSIC},
+        {"video"                    , WINDOW_VIDEOS},
+        {"videos"                   , WINDOW_VIDEOS}, // backward compat
+        {"systeminfo"               , WINDOW_SYSTEM_INFORMATION},
+        {"testpattern"              , WINDOW_TEST_PATTERN},
+        {"screencalibration"        , WINDOW_SCREEN_CALIBRATION},
+        {"guicalibration"           , WINDOW_SCREEN_CALIBRATION}, // backward compat
+        {"picturessettings"         , WINDOW_SETTINGS_MYPICTURES},
+        {"programssettings"         , WINDOW_SETTINGS_MYPROGRAMS},
+        {"weathersettings"          , WINDOW_SETTINGS_MYWEATHER},
+        {"musicsettings"            , WINDOW_SETTINGS_MYMUSIC},
+        {"systemsettings"           , WINDOW_SETTINGS_SYSTEM},
+        {"videossettings"           , WINDOW_SETTINGS_MYVIDEOS},
+        {"networksettings"          , WINDOW_SETTINGS_NETWORK},
+        {"appearancesettings"       , WINDOW_SETTINGS_APPEARANCE},
+        {"scripts"                  , WINDOW_SCRIPTS},
+        {"videofiles"               , WINDOW_VIDEO_FILES},
+        {"videolibrary"             , WINDOW_VIDEO_NAV},
+        {"videoplaylist"            , WINDOW_VIDEO_PLAYLIST},
+        {"loginscreen"              , WINDOW_LOGIN_SCREEN},
+        {"profiles"                 , WINDOW_SETTINGS_PROFILES},
+        {"addonbrowser"             , WINDOW_ADDON_BROWSER},
+        {"yesnodialog"              , WINDOW_DIALOG_YES_NO},
+        {"progressdialog"           , WINDOW_DIALOG_PROGRESS},
+        {"virtualkeyboard"          , WINDOW_DIALOG_KEYBOARD},
+        {"volumebar"                , WINDOW_DIALOG_VOLUME_BAR},
+        {"submenu"                  , WINDOW_DIALOG_SUB_MENU},
+        {"favourites"               , WINDOW_DIALOG_FAVOURITES},
+        {"contextmenu"              , WINDOW_DIALOG_CONTEXT_MENU},
+        {"infodialog"               , WINDOW_DIALOG_KAI_TOAST},
+        {"numericinput"             , WINDOW_DIALOG_NUMERIC},
+        {"gamepadinput"             , WINDOW_DIALOG_GAMEPAD},
+        {"shutdownmenu"             , WINDOW_DIALOG_BUTTON_MENU},
+        {"musicscan"                , WINDOW_DIALOG_MUSIC_SCAN},
+        {"mutebug"                  , WINDOW_DIALOG_MUTE_BUG},
+        {"playercontrols"           , WINDOW_DIALOG_PLAYER_CONTROLS},
+        {"seekbar"                  , WINDOW_DIALOG_SEEK_BAR},
+        {"musicosd"                 , WINDOW_DIALOG_MUSIC_OSD},
+        {"addonsettings"            , WINDOW_DIALOG_ADDON_SETTINGS},
+        {"visualisationsettings"    , WINDOW_DIALOG_ADDON_SETTINGS}, // backward compat
+        {"visualisationpresetlist"  , WINDOW_DIALOG_VIS_PRESET_LIST},
+        {"osdvideosettings"         , WINDOW_DIALOG_VIDEO_OSD_SETTINGS},
+        {"osdaudiosettings"         , WINDOW_DIALOG_AUDIO_OSD_SETTINGS},
+        {"videobookmarks"           , WINDOW_DIALOG_VIDEO_BOOKMARKS},
+        {"filebrowser"              , WINDOW_DIALOG_FILE_BROWSER},
+        {"networksetup"             , WINDOW_DIALOG_NETWORK_SETUP},
+        {"mediasource"              , WINDOW_DIALOG_MEDIA_SOURCE},
+        {"profilesettings"          , WINDOW_DIALOG_PROFILE_SETTINGS},
+        {"locksettings"             , WINDOW_DIALOG_LOCK_SETTINGS},
+        {"contentsettings"          , WINDOW_DIALOG_CONTENT_SETTINGS},
+        {"videoscan"                , WINDOW_DIALOG_VIDEO_SCAN},
+        {"favourites"               , WINDOW_DIALOG_FAVOURITES},
+        {"songinformation"          , WINDOW_DIALOG_SONG_INFO},
+        {"smartplaylisteditor"      , WINDOW_DIALOG_SMART_PLAYLIST_EDITOR},
+        {"smartplaylistrule"        , WINDOW_DIALOG_SMART_PLAYLIST_RULE},
+        {"busydialog"               , WINDOW_DIALOG_BUSY},
+        {"pictureinfo"              , WINDOW_DIALOG_PICTURE_INFO},
+        {"accesspoints"             , WINDOW_DIALOG_ACCESS_POINTS},
+        {"fullscreeninfo"           , WINDOW_DIALOG_FULLSCREEN_INFO},
+        {"karaokeselector"          , WINDOW_DIALOG_KARAOKE_SONGSELECT},
+        {"karaokelargeselector"     , WINDOW_DIALOG_KARAOKE_SELECTOR},
+        {"sliderdialog"             , WINDOW_DIALOG_SLIDER},
+        {"musicplaylist"            , WINDOW_MUSIC_PLAYLIST},
+        {"musicfiles"               , WINDOW_MUSIC_FILES},
+        {"musiclibrary"             , WINDOW_MUSIC_NAV},
+        {"musicplaylisteditor"      , WINDOW_MUSIC_PLAYLIST_EDITOR},
+        {"teletext"                 , WINDOW_DIALOG_OSD_TELETEXT},
+        {"selectdialog"             , WINDOW_DIALOG_SELECT},
+        {"musicinformation"         , WINDOW_MUSIC_INFO},
+        {"okdialog"                 , WINDOW_DIALOG_OK},
+        {"movieinformation"         , WINDOW_VIDEO_INFO},
+        {"scriptsdebuginfo"         , WINDOW_SCRIPTS_INFO},
+        {"fullscreenvideo"          , WINDOW_FULLSCREEN_VIDEO},
+        {"visualisation"            , WINDOW_VISUALISATION},
+        {"slideshow"                , WINDOW_SLIDESHOW},
+        {"filestackingdialog"       , WINDOW_DIALOG_FILESTACKING},
+        {"karaoke"                  , WINDOW_KARAOKELYRICS},
+        {"weather"                  , WINDOW_WEATHER},
+        {"screensaver"              , WINDOW_SCREENSAVER},
+        {"videoosd"                 , WINDOW_OSD},
+        {"videomenu"                , WINDOW_VIDEO_MENU},
+        {"musicoverlay"             , WINDOW_MUSIC_OVERLAY},
+        {"videooverlay"             , WINDOW_VIDEO_OVERLAY},
+        {"startwindow"              , WINDOW_START},
+        {"startup"                  , WINDOW_STARTUP_ANIM}};
+
+
 CButtonTranslator& CButtonTranslator::GetInstance()
 {
   static CButtonTranslator sl_instance;
@@ -296,7 +390,7 @@ bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
         if (strcmpi(szWindow, "global") == 0)
           windowID = -1;
         else
-          windowID = TranslateWindowString(szWindow);
+          windowID = TranslateWindow(szWindow);
       }
       MapWindowActions(pWindow, windowID);
     }
@@ -795,11 +889,20 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
   return true;
 }
 
-int CButtonTranslator::TranslateWindowString(const char *szWindow)
+CStdString CButtonTranslator::TranslateWindow(int windowID)
 {
-  int windowID = WINDOW_INVALID;
-  CStdString strWindow = szWindow;
-  if (strWindow.IsEmpty()) return windowID;
+  for (unsigned int index = 0; index < sizeof(windows) / sizeof(windows[0]); ++index)
+  {
+    if (windows[index].action == windowID)
+      return windows[index].name;
+  }
+  return "";
+}
+
+int CButtonTranslator::TranslateWindow(const CStdString &window)
+{
+  CStdString strWindow(window);
+  if (strWindow.IsEmpty()) return WINDOW_INVALID;
   strWindow.ToLower();
   // eliminate .xml
   if (strWindow.Mid(strWindow.GetLength() - 4) == ".xml" )
@@ -815,99 +918,19 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
     // allow a full window id or a delta id
     int iWindow = atoi(strWindow.c_str());
     if (iWindow > WINDOW_INVALID)
-      windowID = iWindow;
-    else
-      windowID = WINDOW_HOME + iWindow;
+      return iWindow;
+    return WINDOW_HOME + iWindow;
   }
-  else if (strWindow.Equals("home")) windowID = WINDOW_HOME;
-  else if (strWindow.Equals("programs")) windowID = WINDOW_PROGRAMS;
-  else if (strWindow.Equals("pictures")) windowID = WINDOW_PICTURES;
-  else if (strWindow.Equals("files") || strWindow.Equals("filemanager")) windowID = WINDOW_FILES;
-  else if (strWindow.Equals("settings")) windowID = WINDOW_SETTINGS_MENU;
-  else if (strWindow.Equals("music")) windowID = WINDOW_MUSIC;
-  else if (strWindow.Equals("musicfiles")) windowID = WINDOW_MUSIC_FILES;
-  else if (strWindow.Equals("musiclibrary")) windowID = WINDOW_MUSIC_NAV;
-  else if (strWindow.Equals("musicplaylist")) windowID = WINDOW_MUSIC_PLAYLIST;
-  else if (strWindow.Equals("musicplaylisteditor")) windowID = WINDOW_MUSIC_PLAYLIST_EDITOR;
-  else if (strWindow.Equals("musicinformation")) windowID = WINDOW_MUSIC_INFO;
-  else if (strWindow.Equals("video") || strWindow.Equals("videos")) windowID = WINDOW_VIDEOS;
-  else if (strWindow.Equals("videofiles")) windowID = WINDOW_VIDEO_FILES;
-  else if (strWindow.Equals("videolibrary")) windowID = WINDOW_VIDEO_NAV;
-  else if (strWindow.Equals("videoplaylist")) windowID = WINDOW_VIDEO_PLAYLIST;
-  else if (strWindow.Equals("addonbrowser")) windowID = WINDOW_ADDON_BROWSER;
-  else if (strWindow.Equals("systeminfo")) windowID = WINDOW_SYSTEM_INFORMATION;
-  else if (strWindow.Equals("teletext")) windowID = WINDOW_DIALOG_OSD_TELETEXT;
-  else if (strWindow.Equals("guicalibration")) windowID = WINDOW_SCREEN_CALIBRATION;
-  else if (strWindow.Equals("screencalibration")) windowID = WINDOW_SCREEN_CALIBRATION;
-  else if (strWindow.Equals("testpattern")) windowID = WINDOW_TEST_PATTERN;
-  else if (strWindow.Equals("picturessettings")) windowID = WINDOW_SETTINGS_MYPICTURES;
-  else if (strWindow.Equals("programssettings")) windowID = WINDOW_SETTINGS_MYPROGRAMS;
-  else if (strWindow.Equals("weathersettings")) windowID = WINDOW_SETTINGS_MYWEATHER;
-  else if (strWindow.Equals("musicsettings")) windowID = WINDOW_SETTINGS_MYMUSIC;
-  else if (strWindow.Equals("systemsettings")) windowID = WINDOW_SETTINGS_SYSTEM;
-  else if (strWindow.Equals("videossettings")) windowID = WINDOW_SETTINGS_MYVIDEOS;
-  else if (strWindow.Equals("networksettings")) windowID = WINDOW_SETTINGS_NETWORK;
-  else if (strWindow.Equals("appearancesettings")) windowID = WINDOW_SETTINGS_APPEARANCE;
-  else if (strWindow.Equals("scripts")) windowID = WINDOW_SCRIPTS;
-  else if (strWindow.Equals("profiles")) windowID = WINDOW_SETTINGS_PROFILES;
-  else if (strWindow.Equals("yesnodialog")) windowID = WINDOW_DIALOG_YES_NO;
-  else if (strWindow.Equals("progressdialog")) windowID = WINDOW_DIALOG_PROGRESS;
-  else if (strWindow.Equals("virtualkeyboard")) windowID = WINDOW_DIALOG_KEYBOARD;
-  else if (strWindow.Equals("volumebar")) windowID = WINDOW_DIALOG_VOLUME_BAR;
-  else if (strWindow.Equals("submenu")) windowID = WINDOW_DIALOG_SUB_MENU;
-  else if (strWindow.Equals("favourites")) windowID = WINDOW_DIALOG_FAVOURITES;
-  else if (strWindow.Equals("contextmenu")) windowID = WINDOW_DIALOG_CONTEXT_MENU;
-  else if (strWindow.Equals("infodialog")) windowID = WINDOW_DIALOG_KAI_TOAST;
-  else if (strWindow.Equals("numericinput")) windowID = WINDOW_DIALOG_NUMERIC;
-  else if (strWindow.Equals("gamepadinput")) windowID = WINDOW_DIALOG_GAMEPAD;
-  else if (strWindow.Equals("shutdownmenu")) windowID = WINDOW_DIALOG_BUTTON_MENU;
-  else if (strWindow.Equals("scandialog")) windowID = WINDOW_DIALOG_MUSIC_SCAN;
-  else if (strWindow.Equals("mutebug")) windowID = WINDOW_DIALOG_MUTE_BUG;
-  else if (strWindow.Equals("playercontrols")) windowID = WINDOW_DIALOG_PLAYER_CONTROLS;
-  else if (strWindow.Equals("seekbar")) windowID = WINDOW_DIALOG_SEEK_BAR;
-  else if (strWindow.Equals("musicosd")) windowID = WINDOW_DIALOG_MUSIC_OSD;
-  else if (strWindow.Equals("visualisationpresetlist")) windowID = WINDOW_DIALOG_VIS_PRESET_LIST;
-  else if (strWindow.Equals("osdvideosettings")) windowID = WINDOW_DIALOG_VIDEO_OSD_SETTINGS;
-  else if (strWindow.Equals("osdaudiosettings")) windowID = WINDOW_DIALOG_AUDIO_OSD_SETTINGS;
-  else if (strWindow.Equals("videobookmarks")) windowID = WINDOW_DIALOG_VIDEO_BOOKMARKS;
-  else if (strWindow.Equals("profilesettings")) windowID = WINDOW_DIALOG_PROFILE_SETTINGS;
-  else if (strWindow.Equals("locksettings")) windowID = WINDOW_DIALOG_LOCK_SETTINGS;
-  else if (strWindow.Equals("contentsettings")) windowID = WINDOW_DIALOG_CONTENT_SETTINGS;
-  else if (strWindow.Equals("networksetup")) windowID = WINDOW_DIALOG_NETWORK_SETUP;
-  else if (strWindow.Equals("mediasource")) windowID = WINDOW_DIALOG_MEDIA_SOURCE;
-  else if (strWindow.Equals("smartplaylisteditor")) windowID = WINDOW_DIALOG_SMART_PLAYLIST_EDITOR;
-  else if (strWindow.Equals("smartplaylistrule")) windowID = WINDOW_DIALOG_SMART_PLAYLIST_RULE;
-  else if (strWindow.Equals("selectdialog")) windowID = WINDOW_DIALOG_SELECT;
-  else if (strWindow.Equals("okdialog")) windowID = WINDOW_DIALOG_OK;
-  else if (strWindow.Equals("movieinformation")) windowID = WINDOW_VIDEO_INFO;
-  else if (strWindow.Equals("scriptsdebuginfo")) windowID = WINDOW_SCRIPTS_INFO;
-  else if (strWindow.Equals("fullscreenvideo")) windowID = WINDOW_FULLSCREEN_VIDEO;
-  else if (strWindow.Equals("visualisation")) windowID = WINDOW_VISUALISATION;
-  else if (strWindow.Equals("slideshow")) windowID = WINDOW_SLIDESHOW;
-  else if (strWindow.Equals("filestackingdialog")) windowID = WINDOW_DIALOG_FILESTACKING;
-  else if (strWindow.Equals("weather")) windowID = WINDOW_WEATHER;
-  else if (strWindow.Equals("screensaver")) windowID = WINDOW_SCREENSAVER;
-  else if (strWindow.Equals("videoosd")) windowID = WINDOW_OSD;
-  else if (strWindow.Equals("videomenu")) windowID = WINDOW_VIDEO_MENU;
-  else if (strWindow.Equals("filebrowser")) windowID = WINDOW_DIALOG_FILE_BROWSER;
-  else if (strWindow.Equals("startup")) windowID = WINDOW_STARTUP_ANIM;
-  else if (strWindow.Equals("startwindow")) windowID = WINDOW_START;
-  else if (strWindow.Equals("loginscreen")) windowID = WINDOW_LOGIN_SCREEN;
-  else if (strWindow.Equals("musicoverlay")) windowID = WINDOW_MUSIC_OVERLAY;
-  else if (strWindow.Equals("videooverlay")) windowID = WINDOW_VIDEO_OVERLAY;
-  else if (strWindow.Equals("pictureinfo")) windowID = WINDOW_DIALOG_PICTURE_INFO;
-  else if (strWindow.Equals("addonsettings") || strWindow.Equals("visualisationsettings")) windowID = WINDOW_DIALOG_ADDON_SETTINGS;
-  else if (strWindow.Equals("fullscreeninfo")) windowID = WINDOW_DIALOG_FULLSCREEN_INFO;
-  else if (strWindow.Equals("karaokeselector")) windowID = WINDOW_DIALOG_KARAOKE_SONGSELECT;
-  else if (strWindow.Equals("karaokelargeselector")) windowID = WINDOW_DIALOG_KARAOKE_SELECTOR;
-  else if (strWindow.Equals("sliderdialog")) windowID = WINDOW_DIALOG_SLIDER;
-  else if (strWindow.Equals("songinformation")) windowID = WINDOW_DIALOG_SONG_INFO;
-  else if (strWindow.Equals("busydialog")) windowID = WINDOW_DIALOG_BUSY;
-  else
-    CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 
-  //CLog::Log(LOGDEBUG,"CButtonTranslator::TranslateWindowString(%s) returned Window ID (%i)", szWindow, windowID);
-  return windowID;
+  // run through the window structure
+  for (unsigned int index = 0; index < sizeof(windows) / sizeof(windows[0]); ++index)
+  {
+    if (strWindow.Equals(windows[index].name))
+      return windows[index].action;
+  }
+
+  CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
+  return WINDOW_INVALID;
 }
 
 uint32_t CButtonTranslator::TranslateGamepadString(const char *szButton)
