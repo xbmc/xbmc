@@ -46,6 +46,10 @@ class CGUIDialog;
 #define TMSG_PLAYLISTPLAYER_PLAY  210
 #define TMSG_PLAYLISTPLAYER_NEXT  211
 #define TMSG_PLAYLISTPLAYER_PREV  212
+#define TMSG_PLAYLISTPLAYER_ADD   213
+#define TMSG_PLAYLISTPLAYER_CLEAR 214
+#define TMSG_PLAYLISTPLAYER_SHUFFLE   215
+#define TMSG_PLAYLISTPLAYER_GET_ITEMS 216
 
 #define TMSG_PICTURE_SHOW         220
 #define TMSG_PICTURE_SLIDESHOW    221
@@ -105,7 +109,7 @@ public:
 
   void MediaPlay(std::string filename);
   void MediaPlay(const CFileItem &item);
-  void MediaPlay(const CFileItemList &item);
+  void MediaPlay(const CFileItemList &item, int song = 0);
   void MediaStop();
   void MediaPause();
   void MediaRestart(bool bWait);
@@ -114,6 +118,12 @@ public:
   void PlayListPlayerPlay(int iSong);
   void PlayListPlayerNext();
   void PlayListPlayerPrevious();
+  void PlayListPlayerAdd(int playlist, const CFileItem &item);
+  void PlayListPlayerAdd(int playlist, const CFileItemList &list);
+  void PlayListPlayerClear(int playlist);
+  void PlayListPlayerShuffle(int playlist, bool shuffle);
+  void PlayListPlayerGetItems(int playlist, CFileItemList &list);
+
   void PlayFile(const CFileItem &item, bool bRestart = false); // thread safe version of g_application.PlayFile()
   void PictureShow(std::string filename);
   void PictureSlideShow(std::string pathname, bool bScreensaver = false);
