@@ -28,6 +28,7 @@
 #include <queue>
 
 class CFileItem;
+class CFileItemList;
 class CGUIDialog;
 
 // defines here
@@ -104,6 +105,7 @@ public:
 
   void MediaPlay(std::string filename);
   void MediaPlay(const CFileItem &item);
+  void MediaPlay(const CFileItemList &item);
   void MediaStop();
   void MediaPause();
   void MediaRestart(bool bWait);

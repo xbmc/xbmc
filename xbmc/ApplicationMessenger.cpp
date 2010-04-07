@@ -256,24 +256,30 @@ case TMSG_POWERDOWN:
 
         //g_application.StopPlaying();
         // play file
-        CFileItem item;
         if(pMsg->lpVoid)
         {
-          item = *(CFileItem *)pMsg->lpVoid;
-          delete (CFileItem *)pMsg->lpVoid;
-        }
-        else
-        {
-          item.m_strPath = pMsg->strParam;
-          item.m_bIsFolder = false;
-          if (item.IsAudio())
-            item.SetMusicThumb();
-          else
-            item.SetVideoThumb();
-          item.FillInDefaultIcon();
-        }
+          CFileItemList *list = (CFileItemList *)pMsg->lpVoid;
 
-        g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO); //Note: this will play playlists always in the temp music playlist (default 2nd parameter), maybe needs some tweaking.
+          if (list->Size() > 0)
+          {
+            int playlist = PLAYLIST_MUSIC;
+            for (int i = 0; i < list->Size(); i++)
+            {
+              if ((*list)[i]->IsVideo())
+              {
+                playlist = PLAYLIST_VIDEO;
+                break;
+              }
+            }
+
+            g_playlistPlayer.ClearPlaylist(playlist);
+            g_playlistPlayer.Add(playlist, (*list));
+            g_playlistPlayer.SetCurrentPlaylist(playlist);
+            g_playlistPlayer.Play();
+          }
+
+          delete list;
+        }
       }
       break;
 
@@ -650,16 +656,30 @@ void CApplicationMessenger::ExecBuiltIn(const CStdString &command)
 
 void CApplicationMessenger::MediaPlay(string filename)
 {
-  ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
-  tMsg.strParam = filename;
-  SendMessage(tMsg, true);
+  CFileItem item;
+  item.m_strPath = filename;
+  item.m_bIsFolder = false;
+  if (item.IsAudio())
+    item.SetMusicThumb();
+  else
+    item.SetVideoThumb();
+  item.FillInDefaultIcon();
+
+  MediaPlay(item);
 }
 
 void CApplicationMessenger::MediaPlay(const CFileItem &item)
 {
+  CFileItemList list;
+  list.Add(CFileItemPtr(new CFileItem(item)));
+
+  MediaPlay(list);
+}
+
+void CApplicationMessenger::MediaPlay(const CFileItemList &list)
+{
   ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
-  CFileItem *pItem = new CFileItem(item);
-  tMsg.lpVoid = (void *)pItem;
+  tMsg.lpVoid = (void *)new CFileItemList(list);
   tMsg.dwParam1 = 0;
   tMsg.dwParam2 = 1;
   SendMessage(tMsg, true);
