@@ -662,8 +662,8 @@
           </control>
 
 	          <control type="group">
-	            <posy>200</posy>
-				<posx>-390</posx>
+	            <posy>210</posy>
+				<posx>-387</posx>
 	            <control type="textbox">
 	              <description>Plot</description>
 	              <width>650</width>
