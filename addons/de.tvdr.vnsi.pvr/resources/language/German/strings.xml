@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Tvheadend Hostname oder IP</string>
+    <string id="30001">VNSI Port</string>
+    <string id="30002">Priorität</string>
+    <string id="30003">Textkonvertierung (UTF-8)</string>
+    <string id="30004">Verbindungszeitüberlauf (s)</string>
+    <string id="30005">VDR Nachrichten erlauben</string>
+    <string id="30006">Aufnahmen aus Ordner lesen</string>
+    <string id="30007">VDR Aufnahmeordner</string>
+</strings>

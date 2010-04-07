@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Tvheadend Hostname or IP</string>
+    <string id="30001">VNSI Port</string>
+    <string id="30002">Priority</string>
+    <string id="30003">Character Set Conversion</string>
+    <string id="30004">Connect timeout (s)</string>
+    <string id="30005">Allow VDR Messages</string>
+    <string id="30006">Read recordings from directory</string>
+    <string id="30007">VDR recordings directory</string>
+</strings>

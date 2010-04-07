@@ -119,6 +119,7 @@ endif
 
 PVR_DIRS=\
 	xbmc/pvrclients/vdr-streamdev \
+	xbmc/pvrclients/vdr-vnsi \
 	xbmc/pvrclients/tvheadend
 
 LIBADDON_DIRS=\
@@ -329,6 +330,7 @@ endif
 endif
 pvrclients: exports
 	$(MAKE) -C xbmc/pvrclients/vdr-streamdev
+	$(MAKE) -C xbmc/pvrclients/vdr-vnsi
 	$(MAKE) -C xbmc/pvrclients/tvheadend
 screensavers: exports
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
