@@ -399,7 +399,7 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, SScraperInfo& 
   bool bScan=false;
   if (iFound == 0)
   {
-    m_database.GetScraperForPath(item->m_strPath,info,settings);
+    m_database.GetScraperForPath(item->m_strPath,info,settings,iFound);
   }
   SScraperInfo info2 = info;
   SScanSettings settings2 = settings;
