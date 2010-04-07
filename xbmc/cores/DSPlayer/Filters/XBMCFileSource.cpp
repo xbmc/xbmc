@@ -28,14 +28,20 @@ using namespace XFILE;
 #include "utils/log.h"
 #include "SingleLock.h"
 
-CXBMCFileStream::CXBMCFileStream(CFile *file, IBaseFilter **pBF, HRESULT *phr) :
+CXBMCFileStream::CXBMCFileStream(CStdString filepath, IBaseFilter **pBF, HRESULT *phr) :
     m_llLength(0)
 {
   if (! pBF)
     return;
   *pBF = 0;
-  m_llLength = file->GetLength();
-  m_pFile = file;
+  m_pFile.Close();
+  if (!m_pFile.Open(filepath, READ_TRUNCATED | READ_BUFFERED))
+  {
+    CLog::Log(LOGERROR,"%s Failed to read the file in the xbmc source filter", __FUNCTION__);
+    *phr = E_FAIL;
+    return;
+  }
+  m_llLength = m_pFile.GetLength();
   HRESULT hr;
   CXBMCFileReader* pXBMCReader = new CXBMCFileReader(this, NULL, &hr);
   *phr = hr;
@@ -56,7 +62,7 @@ HRESULT CXBMCFileStream::SetPointer(LONGLONG llPos)
   }
   else
   {
-    m_pFile->Seek(llPos);
+    m_pFile.Seek(llPos);
     return S_OK;
   }
 }
@@ -65,7 +71,7 @@ HRESULT CXBMCFileStream::Read(PBYTE pbBuffer, DWORD dwBytesToRead, BOOL bAlign, 
 {
   CSingleLock lck(m_csLock);
     
-  *pdwBytesRead = m_pFile->Read(pbBuffer, dwBytesToRead);
+  *pdwBytesRead = m_pFile.Read(pbBuffer, dwBytesToRead);
 
   return S_OK;
 }

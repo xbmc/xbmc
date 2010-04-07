@@ -33,7 +33,7 @@ class CXBMCFileReader;
 class CXBMCFileStream : public CAsyncStream
 {
 public:
-  CXBMCFileStream(CFile *file, IBaseFilter **pBF,HRESULT *phr);
+  CXBMCFileStream(CStdString filepath, IBaseFilter **pBF,HRESULT *phr);
   HRESULT SetPointer(LONGLONG llPos);
   HRESULT Read(PBYTE pbBuffer, DWORD dwBytesToRead, BOOL bAlign, LPDWORD pdwBytesRead);
   LONGLONG Size(LONGLONG *pSizeAvailable);
@@ -44,8 +44,8 @@ public:
 
 private:
     CCriticalSection  m_csLock;
-    LONGLONG       m_llLength;
-    CFile*         m_pFile;
+    LONGLONG          m_llLength;
+    CFile             m_pFile;
 };
 
 

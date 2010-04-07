@@ -27,14 +27,14 @@
 #include "Log.h"
 
 #include "filters/xbmcfilesource.h"
-
+//#include "FileSystem/Directory.h"
+//#include "filters/DvdNavigator/DvdNavigator.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "XMLUtils.h"
 #include "WINDirectShowEnumerator.h"
 #include "GuiSettings.h"
 #include "filters/VMR9AllocatorPresenter.h"
 #include "filters/EVRAllocatorPresenter.h"
-
 #include <ks.h>
 #include <Codecapi.h>
 #include "streamsmanager.h"
@@ -59,6 +59,7 @@ CFGLoader::CFGLoader():
 CFGLoader::~CFGLoader()
 {
   CSingleLock lock(*this);
+  m_File.Close();
   
   CFilterCoreFactory::Destroy();
   SAFE_DELETE(m_pFGF);
@@ -70,6 +71,45 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
 {
 
   HRESULT hr = E_FAIL;
+  
+
+  if (pFileItem.IsDVDImage())
+  {
+    /*pFile.Open(pFileItem.m_strPath,READ_TRUNCATED | READ_BUFFERED);
+    bool gotit = pDir.GetDirectory(,pList,"",true,true);
+    if (gotit)
+      CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.m_strPath.c_str());
+    else
+      CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.m_strPath.c_str());*/
+
+    
+  
+  }
+    /* Xbmc source filter */
+  if (CUtil::IsInArchive(pFileItem.m_strPath))
+  {
+    CFileItemList listitems;
+
+
+    Filters.PlayingArchive = true;
+    CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.m_strPath.c_str());
+    CXBMCFileStream* pXBMCStream = new CXBMCFileStream(pFileItem.m_strPath, &Filters.Source.pBF, &hr);
+    if (SUCCEEDED(hr))
+    {
+      hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC File Source");
+      if (FAILED(hr))
+      {
+        CLog::Log(LOGERROR, "%s Failed to add xbmc source filter to the graph", __FUNCTION__);
+        return hr;
+      }
+      Filters.Source.osdname = "XBMC File Source";
+      CLog::Log(LOGNOTICE, "%s Successfully added xbmc source filter to the graph", __FUNCTION__);
+    }
+
+        
+    return hr;
+
+  }
   /* DVD NAVIGATOR */
   if (pFileItem.IsDVDFile())
   {
@@ -130,51 +170,25 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
     }    
   }
 
-  /* rar archive */
-  if (CUtil::IsInArchive(pFileItem.m_strPath))
+  if (SUCCEEDED(hr = InsertFilter(filterName, Filters.Splitter)))
   {
-    Filters.PlayingArchive = true;
-    CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.m_strPath.c_str());
-    if(m_File.Open(pFileItem.m_strPath, READ_TRUNCATED | READ_BUFFERED))
-    {
-      Com::SmartPtr<IBaseFilter> pSrc;
-      CXBMCFileStream* pXBMCStream = new CXBMCFileStream(&m_File, &pSrc, &hr);
-      Filters.Source.pBF = pSrc;
-      if (SUCCEEDED(hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC File Source")))
-        CLog::Log(LOGNOTICE, "%s Successfully added xbmc source filter to the graph", __FUNCTION__);
-      else
-        CLog::Log(LOGERROR, "%s Failted to add xbmc source filter to the graph", __FUNCTION__);
-
-      Filters.Source.osdname = "XBMC File Source";
-      return hr;
-    } 
-    else 
-    {
-      CLog::Log(LOGERROR, "%s Failed to open \"%s\" with source filter!", __FUNCTION__, pFileItem.m_strPath.c_str());
-      return E_FAIL;
-    }
-  } 
-  else 
-  {
-    if (SUCCEEDED(hr = InsertFilter(filterName, Filters.Splitter)))
-    {
-      CStdString pWinFilePath = pFileItem.m_strPath;
-      if ( (pWinFilePath.Left(6)).Equals("smb://", false) )
-        pWinFilePath.Replace("smb://", "\\\\");
+    CStdString pWinFilePath = pFileItem.m_strPath;
+    if ( (pWinFilePath.Left(6)).Equals("smb://", false) )
+    pWinFilePath.Replace("smb://", "\\\\");
   
-      pWinFilePath.Replace("/", "\\");
+    pWinFilePath.Replace("/", "\\");
 
-      Com::SmartQIPtr<IFileSourceFilter> pFS = Filters.Splitter.pBF;
-      
-      CStdStringW strFileW;  
-      g_charsetConverter.utf8ToW(pWinFilePath, strFileW);
+    Com::SmartQIPtr<IFileSourceFilter> pFS = Filters.Splitter.pBF;
+    
+    CStdStringW strFileW;  
+    g_charsetConverter.utf8ToW(pWinFilePath, strFileW);
 
-      if (SUCCEEDED(hr = pFS->Load(strFileW.c_str(), NULL)))
-        CLog::Log(LOGNOTICE, "%s Successfully loaded file in the splitter", __FUNCTION__);
-      else
-        CLog::Log(LOGERROR, "%s Failed to load file in the splitter", __FUNCTION__);
-    }
+    if (SUCCEEDED(hr = pFS->Load(strFileW.c_str(), NULL)))
+    CLog::Log(LOGNOTICE, "%s Successfully loaded file in the splitter", __FUNCTION__);
+    else
+    CLog::Log(LOGERROR, "%s Failed to load file in the splitter", __FUNCTION__);
   }
+
 
   return hr;  
 }

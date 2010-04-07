@@ -402,24 +402,9 @@ CAsyncOutputPin::Connect(
 
 #pragma warning(disable:4355)
 
-CAsyncReader::CAsyncReader(
-    TCHAR *pName,
-    LPUNKNOWN pUnk,
-    CAsyncStream *pStream,
-    HRESULT *phr)
-  : CBaseFilter(
-                pName,
-                pUnk,
-                &m_csFilter,
-                CLSID_AsyncSample,
-                NULL
-                ),
-    m_OutputPin(
-                phr,
-                this,
-                &m_Io,
-                &m_csFilter),
-    m_Io(pStream)
+CAsyncReader::CAsyncReader(TCHAR *pName, LPUNKNOWN pUnk, CAsyncStream *pStream, HRESULT *phr)
+  : CBaseFilter(pName, pUnk, &m_csFilter, CLSID_AsyncSample, NULL ),
+    m_OutputPin(phr, this, &m_Io, &m_csFilter), m_Io(pStream)
 {
 }
 
