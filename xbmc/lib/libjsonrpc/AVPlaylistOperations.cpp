@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "GUIWindowManager.h"
 #include "GUIUserMessages.h"
+#include "Application.h"
 
 using namespace Json;
 using namespace JSONRPC;
@@ -33,18 +34,12 @@ using namespace std;
 
 JSON_STATUS CAVPlaylistOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  int playlist = GetPlaylist(method);
-  g_playlistPlayer.SetCurrentPlaylist(playlist);
+  g_playlistPlayer.SetCurrentPlaylist(GetPlaylist(method));
 
-  CFileItemList list;
-  if (FillFileItemList(parameterObject, list) && list.Size() > 0)
-  {
-    g_playlistPlayer.ClearPlaylist(playlist);
-    g_playlistPlayer.Add(GetPlaylist(method), list);
-  }
-
-  int song = parameterObject.isInt() ? parameterObject.asInt() : g_playlistPlayer.GetCurrentSong();
-  g_playlistPlayer.Play(song);
+  if (parameterObject.isInt())
+    g_application.getApplicationMessenger().PlayListPlayerPlay(parameterObject.asInt());
+  else
+    g_application.getApplicationMessenger().PlayListPlayerPlay();
 
   NotifyAll();
   return ACK;
