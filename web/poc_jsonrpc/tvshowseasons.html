@@ -30,29 +30,29 @@ var tvshowid = gup("tvshowid");
 
 var http_request = new XMLHttpRequest();
 http_request.open( "POST", "jsonrpc", false );
-http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetSeasons\", \"params\": { \"tvshowid\": " + tvshowid + ", \"fields\": [ \"season\" ] }, \"id\": 1}");
+http_request.send('{"jsonrpc": "2.0", "method": "VideoLibrary.GetSeasons", "params": { "tvshowid": ' + tvshowid + ', "fields": [ "season" ] }, "id": 1}');
 
 var the_object = JSON.parse(http_request.responseText);
 var result = the_object["result"];
 if (result) {
   var array = result["seasons"];
 
-  document.write("<table class=\"Episodes\"><thead><tr><th>Thumbnail</th><th>Info</th></tr></thead><tbody>");
+  document.write('<table class="Episodes"><thead><tr><th>Thumbnail</th><th>Info</th></tr></thead><tbody>');
   for (var i in array) {
     var item = array[i];
 
-    document.write("<tr class=\"" + (i % 2 == 0 ? "even" : "odd") + "\"><td class=\"cover\">");
-    document.write("<a href=\"tvshowepisodes.html?tvshowid=" + tvshowid + "&season=" + item["season"] + "\">");
-    document.write("<img src=\"" + (item["thumbnail"] ? ("thumb/" + item["thumbnail"] + ".jpg"): "images/nocover.jpg") + "\" class=\"cover\" alt=\"" + item["label"] + "\"></img>");
-    document.write("</a>");
-    document.write("</td><td class=\"info\">");
-    document.write("<h1>" + item["label"] + "</h1>");
+    document.write('<tr class="' + (i % 2 == 0 ? 'even' : 'odd') + '"><td class="cover">');
+    document.write('<a href="tvshowepisodes.html?tvshowid=' + tvshowid + '&season=' + item["season"] + '">');
+    document.write('<img src="' + (item["thumbnail"] ? ("thumb/" + item["thumbnail"] + ".jpg"): "images/nocover.jpg") + '" class="cover" alt="' + item["label"] + '"></img>');
+    document.write('</a>');
+    document.write('</td><td class="info">');
+    document.write('<h1>' + item["label"] + '</h1>');
     if (item["plot"])
       document.write(item["plot"]);
 
-    document.write("</td></tr>");
+    document.write('</td></tr>');
   }
-  document("</tbody></table>");
+  document('</tbody></table>');
 } else {
   document.write("Error");
 }
