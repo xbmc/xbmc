@@ -218,7 +218,7 @@ CAddon::CAddon(const AddonProps &props)
   else m_strLibName = props.libname;
   BuildProfilePath();
   CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
-  m_disabled = false;
+  m_disabled = true;
   m_hasStrings = false;
   m_checkedStrings = false;
 }
