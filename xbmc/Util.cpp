@@ -2247,7 +2247,7 @@ CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
   return strPath + MakeLegalFileName(strFileName, LegalType);
 }
 
-CStdString CUtil::ValidatePath(const CStdString &path)
+CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /* = false */)
 {
   CStdString result = path;
 
@@ -2265,12 +2265,40 @@ CStdString CUtil::ValidatePath(const CStdString &path)
   // check the path for incorrect slashes
 #ifdef _WIN32
   if (CUtil::IsDOSPath(path))
+  {
     result.Replace('/', '\\');
+    /* The double slash correction should only be used when *absolutely*
+       necessary! This applies to certain DLLs or use from Python DLLs/scripts
+       that incorrectly generate double (back) slashes.
+    */
+    if (bFixDoubleSlashes)
+    {
+      // Fixup for double back slashes (but ignore the \\ of unc-paths)
+      for (int x = 1; x < result.GetLength() - 1; x++)
+      {
+        if (result[x] == '\\' && result[x+1] == '\\')
+          result.Delete(x);
+      }
+    }
+  }
   else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
-    result.Replace('\\', '/');
-#else
-  result.Replace('\\', '/');
 #endif
+  {
+    result.Replace('\\', '/');
+    /* The double slash correction should only be used when *absolutely*
+       necessary! This applies to certain DLLs or use from Python DLLs/scripts
+       that incorrectly generate double (back) slashes.
+    */
+    if (bFixDoubleSlashes)
+    {
+      // Fixup for double forward slashes(/) but don't touch the :// of URLs
+      for (int x = 2; x < result.GetLength() - 1; x++)
+      {
+        if ( result[x] == '/' && result[x + 1] == '/' && !(result[x - 1] == ':' || (result[x - 1] == '/' && result[x - 2] == ':')) )
+          result.Delete(x);
+      }
+    }
+  }
   return result;
 }
 

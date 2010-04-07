@@ -596,6 +596,7 @@ void CDVDPlayerVideo::Process()
 
             if(m_started == false)
             {
+              m_codecname = m_pVideoCodec->GetName();
               m_started = true;
               m_messageParent.Put(new CDVDMsgInt(CDVDMsg::PLAYER_STARTED, DVDPLAYER_VIDEO));
             }
@@ -870,6 +871,10 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   else if(pSource->format == DVDVideoPicture::FMT_VDPAU)
     g_renderManager.AddProcessor(pSource->vdpau);
 #endif
+#ifdef HAVE_LIBVA
+  else if(pSource->format == DVDVideoPicture::FMT_VAAPI)
+    g_renderManager.AddProcessor(pSource->vaapi_object, pSource->vaapi_surface);
+#endif
 }
 #endif
 
@@ -935,6 +940,9 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
         break;
       case DVDVideoPicture::FMT_DXVA:
         flags |= CONF_FLAGS_FORMAT_DXVA;
+        break;
+      case DVDVideoPicture::FMT_VAAPI:
+        flags |= CONF_FLAGS_FORMAT_VAAPI;
         break;
     }
 

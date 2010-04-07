@@ -39,24 +39,28 @@ CSkinInfo g_SkinInfo; // global
 
 CSkinInfo::CSkinInfo()
 {
-  m_DefaultResolution = RES_PAL_4x3;
-  m_DefaultResolutionWide = RES_INVALID;
-  m_strBaseDir = "";
-  m_effectsSlowDown = 1.0f;
-  m_onlyAnimateToHome = true;
-  m_Version = 1.0;
+  SetDefaults();
 }
 
 CSkinInfo::~CSkinInfo()
 {}
 
-void CSkinInfo::Load(const CStdString& strSkinDir, bool loadIncludes)
+void CSkinInfo::SetDefaults()
 {
-  m_strBaseDir = strSkinDir;
+  m_strBaseDir = "";
   m_DefaultResolution = RES_PAL_4x3;
   m_DefaultResolutionWide = RES_INVALID;
   m_effectsSlowDown = 1.0f;
   m_Version = 1.0;
+  m_debugging = false;
+  m_onlyAnimateToHome = true;
+}
+
+void CSkinInfo::Load(const CStdString& strSkinDir, bool loadIncludes)
+{
+  SetDefaults();
+  m_strBaseDir = strSkinDir;
+
   // Load from skin.xml
   TiXmlDocument xmlDoc;
   CStdString strFile = m_strBaseDir + "\\skin.xml";
@@ -74,6 +78,7 @@ void CSkinInfo::Load(const CStdString& strSkinDir, bool loadIncludes)
 
       XMLUtils::GetDouble(root, "version", m_Version);
       XMLUtils::GetFloat(root, "effectslowdown", m_effectsSlowDown);
+      XMLUtils::GetBoolean(root, "debugging", m_debugging);
 
       // now load the startupwindow information
       LoadStartupWindows(root->FirstChildElement("startupwindows"));

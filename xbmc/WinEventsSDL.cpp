@@ -42,147 +42,146 @@ bool CWinEventsSDL::MessagePump()
   {
     switch(event.type)
     {
-    case SDL_QUIT:
-      if (!g_application.m_bStop) g_application.getApplicationMessenger().Quit();
-      break;
+      case SDL_QUIT:
+        if (!g_application.m_bStop) g_application.getApplicationMessenger().Quit();
+        break;
 
 #ifdef HAS_SDL_JOYSTICK
-    case SDL_JOYBUTTONUP:
-    case SDL_JOYBUTTONDOWN:
-    case SDL_JOYAXISMOTION:
-    case SDL_JOYBALLMOTION:
-    case SDL_JOYHATMOTION:
-      g_Joystick.Update(event);
-      ret = true;
-      break;
+      case SDL_JOYBUTTONUP:
+      case SDL_JOYBUTTONDOWN:
+      case SDL_JOYAXISMOTION:
+      case SDL_JOYBALLMOTION:
+      case SDL_JOYHATMOTION:
+        g_Joystick.Update(event);
+        ret = true;
+        break;
 #endif
 
-    case SDL_ACTIVEEVENT:
-      //If the window was inconified or restored
-      if( event.active.state & SDL_APPACTIVE )
-      {
-        g_application.m_AppActive = event.active.gain != 0;
-        g_Windowing.NotifyAppActiveChange(g_application.m_AppActive);
-      }
-      else if (event.active.state & SDL_APPINPUTFOCUS)
+      case SDL_ACTIVEEVENT:
+        //If the window was inconified or restored
+        if( event.active.state & SDL_APPACTIVE )
+        {
+          g_application.m_AppActive = event.active.gain != 0;
+          g_Windowing.NotifyAppActiveChange(g_application.m_AppActive);
+        }
+        else if (event.active.state & SDL_APPINPUTFOCUS)
       {
         g_application.m_AppFocused = event.active.gain != 0;
         g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
       }
       break;
 
-    case SDL_KEYDOWN:
-    {
-      // process any platform specific shortcuts before handing off to XBMC
-#ifdef __APPLE__
-      if (ProcessOSXShortcuts(event))
+      case SDL_KEYDOWN:
       {
-        ret = true;
-        break;
-      }
+        // process any platform specific shortcuts before handing off to XBMC
+#ifdef __APPLE__
+        if (ProcessOSXShortcuts(event))
+        {
+          ret = true;
+          break;
+        }
 #endif
 
-      XBMC_Event newEvent;
-      newEvent.type = XBMC_KEYDOWN;
-      newEvent.key.keysym.scancode = event.key.keysym.scancode;
-      newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
-      newEvent.key.keysym.mod =(XBMCMod) event.key.keysym.mod;
-      newEvent.key.keysym.unicode = event.key.keysym.unicode;
-      newEvent.key.state = event.key.state;
-      newEvent.key.type = event.key.type;
-      newEvent.key.which = event.key.which;
+        XBMC_Event newEvent;
+        newEvent.type = XBMC_KEYDOWN;
+        newEvent.key.keysym.scancode = event.key.keysym.scancode;
+        newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
+        newEvent.key.keysym.mod =(XBMCMod) event.key.keysym.mod;
+        newEvent.key.keysym.unicode = event.key.keysym.unicode;
+        newEvent.key.state = event.key.state;
+        newEvent.key.type = event.key.type;
+        newEvent.key.which = event.key.which;
 
-      // don't handle any more messages in the queue until we've handled keydown,
-      // if a keyup is in the queue it will reset the keypress before it is handled.
-      ret |= g_application.OnEvent(newEvent);
-      break;
-    }
-
-    case SDL_KEYUP:
-    {
-      XBMC_Event newEvent;
-      newEvent.type = XBMC_KEYUP;
-      newEvent.key.keysym.scancode = event.key.keysym.scancode;
-      newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
-      newEvent.key.keysym.mod =(XBMCMod) event.key.keysym.mod;
-      newEvent.key.keysym.unicode = event.key.keysym.unicode;
-      newEvent.key.state = event.key.state;
-      newEvent.key.type = event.key.type;
-      newEvent.key.which = event.key.which;
-
-      ret |= g_application.OnEvent(newEvent);
-      break;
-    }
-
-    case SDL_MOUSEBUTTONDOWN:
-    {
-      XBMC_Event newEvent;
-      newEvent.type = XBMC_MOUSEBUTTONDOWN;
-      newEvent.button.button = event.button.button;
-      newEvent.button.state = event.button.state;
-      newEvent.button.type = event.button.type;
-      newEvent.button.which = event.button.which;
-      newEvent.button.x = event.button.x;
-      newEvent.button.y = event.button.y;
-
-      ret |= g_application.OnEvent(newEvent);
-      break;
-    }
-
-    case SDL_MOUSEBUTTONUP:
-    {
-      XBMC_Event newEvent;
-      newEvent.type = XBMC_MOUSEBUTTONUP;
-      newEvent.button.button = event.button.button;
-      newEvent.button.state = event.button.state;
-      newEvent.button.type = event.button.type;
-      newEvent.button.which = event.button.which;
-      newEvent.button.x = event.button.x;
-      newEvent.button.y = event.button.y;
-
-      ret |= g_application.OnEvent(newEvent);
-      break;
-    }
-
-    case SDL_MOUSEMOTION:
-    {
-      if (0 == (SDL_GetAppState() & SDL_APPMOUSEFOCUS))
-      {
-        g_Mouse.SetActive(false);
+        // don't handle any more messages in the queue until we've handled keydown,
+        // if a keyup is in the queue it will reset the keypress before it is handled.
+        ret |= g_application.OnEvent(newEvent);
         break;
       }
-      XBMC_Event newEvent;
-      newEvent.type = XBMC_MOUSEMOTION;
-      newEvent.motion.xrel = event.motion.xrel;
-      newEvent.motion.yrel = event.motion.yrel;
-      newEvent.motion.state = event.motion.state;
-      newEvent.motion.type = event.motion.type;
-      newEvent.motion.which = event.motion.which;
-      newEvent.motion.x = event.motion.x;
-      newEvent.motion.y = event.motion.y;
 
-      ret |= g_application.OnEvent(newEvent);
-      break;
-    }
-    case SDL_VIDEORESIZE:
-    {
-      XBMC_Event newEvent;
-      newEvent.type = XBMC_VIDEORESIZE;
-      newEvent.resize.w = event.resize.w;
-      newEvent.resize.h = event.resize.h;
-      newEvent.resize.type = event.resize.type;
-      ret |= g_application.OnEvent(newEvent);
-      break;
-    }
-    case SDL_USEREVENT:
-    {
-      XBMC_Event newEvent;
-      newEvent.type = XBMC_USEREVENT;
-      newEvent.user.code = event.user.code;
-      ret |= g_application.OnEvent(newEvent);
-      break;
-    }
+      case SDL_KEYUP:
+      {
+        XBMC_Event newEvent;
+        newEvent.type = XBMC_KEYUP;
+        newEvent.key.keysym.scancode = event.key.keysym.scancode;
+        newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
+        newEvent.key.keysym.mod =(XBMCMod) event.key.keysym.mod;
+        newEvent.key.keysym.unicode = event.key.keysym.unicode;
+        newEvent.key.state = event.key.state;
+        newEvent.key.type = event.key.type;
+        newEvent.key.which = event.key.which;
 
+        ret |= g_application.OnEvent(newEvent);
+        break;
+      }
+
+      case SDL_MOUSEBUTTONDOWN:
+      {
+        XBMC_Event newEvent;
+        newEvent.type = XBMC_MOUSEBUTTONDOWN;
+        newEvent.button.button = event.button.button;
+        newEvent.button.state = event.button.state;
+        newEvent.button.type = event.button.type;
+        newEvent.button.which = event.button.which;
+        newEvent.button.x = event.button.x;
+        newEvent.button.y = event.button.y;
+
+        ret |= g_application.OnEvent(newEvent);
+        break;
+      }
+
+      case SDL_MOUSEBUTTONUP:
+      {
+        XBMC_Event newEvent;
+        newEvent.type = XBMC_MOUSEBUTTONUP;
+        newEvent.button.button = event.button.button;
+        newEvent.button.state = event.button.state;
+        newEvent.button.type = event.button.type;
+        newEvent.button.which = event.button.which;
+        newEvent.button.x = event.button.x;
+        newEvent.button.y = event.button.y;
+
+        ret |= g_application.OnEvent(newEvent);
+        break;
+      }
+
+      case SDL_MOUSEMOTION:
+      {
+        if (0 == (SDL_GetAppState() & SDL_APPMOUSEFOCUS))
+        {
+          g_Mouse.SetActive(false);
+          break;
+        }
+        XBMC_Event newEvent;
+        newEvent.type = XBMC_MOUSEMOTION;
+        newEvent.motion.xrel = event.motion.xrel;
+        newEvent.motion.yrel = event.motion.yrel;
+        newEvent.motion.state = event.motion.state;
+        newEvent.motion.type = event.motion.type;
+        newEvent.motion.which = event.motion.which;
+        newEvent.motion.x = event.motion.x;
+        newEvent.motion.y = event.motion.y;
+
+        ret |= g_application.OnEvent(newEvent);
+        break;
+      }
+      case SDL_VIDEORESIZE:
+      {
+        XBMC_Event newEvent;
+        newEvent.type = XBMC_VIDEORESIZE;
+        newEvent.resize.w = event.resize.w;
+        newEvent.resize.h = event.resize.h;
+        newEvent.resize.type = event.resize.type;
+        ret |= g_application.OnEvent(newEvent);
+        break;
+      }
+      case SDL_USEREVENT:
+      {
+        XBMC_Event newEvent;
+        newEvent.type = XBMC_USEREVENT;
+        newEvent.user.code = event.user.code;
+        ret |= g_application.OnEvent(newEvent);
+        break;
+      }
     }
     memset(&event, 0, sizeof(XBMC_Event));
   }

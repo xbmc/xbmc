@@ -42,7 +42,7 @@ public:
   wchar_t GetUnicode();// { return m_wUnicode;};
   uint8_t GetVKey() { return m_VKey;};
   unsigned int KeyHeld() const;
-  
+
   int HandleEvent(XBMC_Event& newEvent);
 
 private:

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Josue Jeriel Camargo Cruz-->
 <!--Email: josue.camargo@gmail.com-->
@@ -764,6 +764,7 @@
   <string id="10018">Configuración - Red</string>
   <string id="10019">Configuración - Apariencia</string>
   <string id="10020">Scripts</string>
+  <string id="10021">Navegador Web</string>
   <string id="10028">Vídeos/Lista de reproducción</string>
   <string id="10034">Configuración-&gt;Perfiles</string>
   <string id="10100">Cuadro de diálogo Sí/No</string>

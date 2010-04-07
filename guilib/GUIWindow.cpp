@@ -159,7 +159,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
     }
     else if (strValue == "previouswindow" && pChild->FirstChild())
     {
-      m_previousWindow = CButtonTranslator::TranslateWindowString(pChild->FirstChild()->Value());
+      m_previousWindow = CButtonTranslator::TranslateWindow(pChild->FirstChild()->Value());
     }
     else if (strValue == "defaultcontrol" && pChild->FirstChild())
     {

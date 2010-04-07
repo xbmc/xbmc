@@ -337,12 +337,21 @@ CStdString CSysInfo::GetKernelVersion()
 
   if (GetVersionEx((OSVERSIONINFO *)&osvi))
   {
-    if ( osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 0 )
+    if ( osvi.dwMajorVersion == 6 )
     {
-      if( osvi.wProductType == VER_NT_WORKSTATION )
-        strKernel.append("Vista");
-      else
-        strKernel.append("Server 2008");
+      if (osvi.dwMinorVersion == 0)
+      {
+        if( osvi.wProductType == VER_NT_WORKSTATION )
+          strKernel.append("Vista");
+        else
+          strKernel.append("Server 2008");
+      } else if (osvi.dwMinorVersion == 1)
+      {
+        if( osvi.wProductType == VER_NT_WORKSTATION )
+          strKernel.append("7");
+        else
+          strKernel.append("Server 2008 R2");
+      }
 
       if ( si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64 || si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_IA64)
         strKernel.append(", 64-bit Native");

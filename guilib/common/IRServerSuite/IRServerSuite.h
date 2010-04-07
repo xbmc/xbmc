@@ -41,6 +41,7 @@ public:
   //lirc stuff, not implemented
   bool IsInUse() {return false;}
   void setUsed(bool value);
+  void AddSendCommand(const CStdString& command) {}
 
 protected:
   virtual void Process();

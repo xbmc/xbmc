@@ -25,6 +25,7 @@
 #include "../Util.h"
 #include "../MusicInfoTag.h"
 #include "../Song.h"
+#include "Application.h"
 
 using namespace MUSIC_INFO;
 using namespace Json;
@@ -35,12 +36,15 @@ JSON_STATUS CMusicLibrary::GetArtists(const CStdString &method, ITransportLayer 
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
 
+  const Value param = ForceObject(parameterObject);
+  if (!ParameterIntOrNull(param, "genreid"))
+    return InvalidParams;
+
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
 
-  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
-  int genreID = param.get("genreid", -1).asInt();
+  int genreID = ParameterAsInt(param, -1, "genreid");
 
   CFileItemList items;
   if (musicdatabase.GetArtistsNav("", items, genreID, false))
@@ -55,13 +59,16 @@ JSON_STATUS CMusicLibrary::GetAlbums(const CStdString &method, ITransportLayer *
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
 
+  const Value param = ForceObject(parameterObject);
+  if (!(ParameterIntOrNull(param, "artistid") || ParameterIntOrNull(param, "albumid")))
+    return InvalidParams;
+
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
 
-  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
-  int artistID = param.get("artistid", -1).asInt();
-  int genreID = param.get("genreid", -1).asInt();
+  int artistID = ParameterAsInt(param, -1, "artistid");
+  int genreID  = ParameterAsInt(param, -1, "genreid");
 
   CFileItemList items;
   if (musicdatabase.GetAlbumsNav("", items, genreID, artistID))
@@ -76,14 +83,17 @@ JSON_STATUS CMusicLibrary::GetSongs(const CStdString &method, ITransportLayer *t
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
 
+  const Value param = ForceObject(parameterObject);
+  if (!(ParameterIntOrNull(param, "artistid") || ParameterIntOrNull(param, "albumid") || ParameterIntOrNull(param, "genreid")))
+    return InvalidParams;
+
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
 
-  const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
-  int artistID = param.get("artistid", -1).asInt();
-  int albumID = param.get("albumid", -1).asInt();
-  int genreID = param.get("genreid", -1).asInt();
+  int artistID = ParameterAsInt(param, -1, "artistid");
+  int albumID  = ParameterAsInt(param, -1, "albumid");
+  int genreID  = ParameterAsInt(param, -1, "genreid");
 
   CFileItemList items;
   if (musicdatabase.GetSongsNav("", items, genreID, artistID, albumID))
@@ -93,47 +103,26 @@ JSON_STATUS CMusicLibrary::GetSongs(const CStdString &method, ITransportLayer *t
   return OK;
 }
 
-JSON_STATUS CMusicLibrary::GetSongInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CMusicLibrary::ScanForContent(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!parameterObject.isObject())
-    return InvalidParams;
-  int songID = parameterObject.get("songid", -1).asInt();
+  g_application.getApplicationMessenger().ExecBuiltIn("updatelibrary(music)");
+  return ACK;
+}
 
-  if (songID < 0)
-    return InvalidParams;
-
+bool CMusicLibrary::FillFileItemList(const Value &parameterObject, CFileItemList &list)
+{
   CMusicDatabase musicdatabase;
-  if (!musicdatabase.Open())
-    return InternalError;
-
-  CSong songInfo;
-  if (musicdatabase.GetSongById(songID, songInfo))
+  if ((ParameterIntOrNull(parameterObject, "artistid") || ParameterIntOrNull(parameterObject, "albumid") || ParameterIntOrNull(parameterObject, "genreid")) && musicdatabase.Open())
   {
-    if (!songInfo.strTitle.IsEmpty())
-      result["title"] = songInfo.strTitle.c_str();
-    if (!songInfo.strArtist.IsEmpty())
-      result["artist"] = songInfo.strArtist.c_str();
-    if (!songInfo.strAlbum.IsEmpty())
-      result["album"] = songInfo.strAlbum.c_str();
-    if (!songInfo.strAlbumArtist.IsEmpty())
-      result["albumartist"] = songInfo.strAlbumArtist.c_str();
-    if (!songInfo.strGenre.IsEmpty())
-      result["genre"] = songInfo.strGenre.c_str();
-    if (!songInfo.strThumb.IsEmpty())
-      result["thumbnail"] = songInfo.strThumb.c_str();
-    if (!songInfo.strComment.IsEmpty())
-      result["comment"] = songInfo.strComment.c_str();
+    int artistID = ParameterAsInt(parameterObject, -1, "artistid");
+    int albumID  = ParameterAsInt(parameterObject, -1, "albumid");
+    int genreID  = ParameterAsInt(parameterObject, -1, "genreid");
 
-    if (songInfo.iTrack > 0)
-      result["track"] = songInfo.iTrack;
-    if (songInfo.iDuration > 0)
-      result["duration"] = songInfo.iDuration;
+    bool success = musicdatabase.GetSongsNav("", list, genreID, artistID, albumID);
 
-    result["rating"]      = songInfo.rating;
-    result["year"]        = songInfo.iYear;
-    result["timesplayed"] = songInfo.iTimesPlayed;
+    musicdatabase.Close();
+    return success;
   }
 
-  musicdatabase.Close();
-  return OK;
+  return false;
 }

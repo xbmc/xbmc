@@ -1756,14 +1756,6 @@ int CXbmcHttp::xbmcGetGUIStatus()
       {
         output += closeTag+openTag+"Type:Spin"+closeTag+openTag+"Description:" + strTmp;
       }
-      else if (pControl->GetControlType() == CGUIControl::GUICONTROL_THUMBNAIL)
-      {
-        output += closeTag+openTag+"Type:ThumbNail"+closeTag+openTag+"Description:" + strTmp;
-      }
-      else if (pControl->GetControlType() == CGUIControl::GUICONTROL_LIST)
-      {
-        output += closeTag+openTag+"Type:List"+closeTag+openTag+"Description:" + strTmp;
-      }
     }
   }
   return SetResponse(output);
@@ -2898,7 +2890,7 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
       filepath = paras[0];
     if (numParas>5)
     {
-      CStdString tmpFile = "special://temp/temp.bmp";
+      CStdString tmpFile = "special://temp/temp.png";
       CUtil::TakeScreenshot(tmpFile, true);
       int height, width;
       if (paras[4]=="")

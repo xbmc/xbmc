@@ -35,6 +35,7 @@
 #include "OverlayRenderer.h"
 
 namespace DXVA { class CProcessor; }
+namespace VAAPI { class CDecoder; }
 class CVDPAU;
 
 class CXBMCRenderManager
@@ -100,6 +101,15 @@ public:
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
       m_pRenderer->AddProcessor(vdpau);
+  }
+#endif
+
+#ifdef HAVE_LIBVA
+  void AddProcessor(VAAPI::CDecoder* vaapi_object, unsigned int vaapi_surface)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      m_pRenderer->AddProcessor(vaapi_object, vaapi_surface);
   }
 #endif
 
