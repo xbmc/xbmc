@@ -227,6 +227,7 @@ static void vp6_build_huff_tree(VP56Context *s, uint8_t coeff_model[],
         nodes[map[2*i+1]].count = b + !b;
     }
 
+    free_vlc(vlc);
     /* then build the huffman tree accodring to probabilities */
     ff_huff_build_tree(s->avctx, vlc, size, nodes, vp6_huff_cmp,
                        FF_HUFFMAN_FLAG_HNODE_FIRST);
@@ -601,6 +602,23 @@ static av_cold int vp6_decode_init(AVCodecContext *avctx)
     return 0;
 }
 
+static av_cold int vp6_decode_free(AVCodecContext *avctx)
+{
+    VP56Context *s = avctx->priv_data;
+    int pt, ct, cg;
+
+    vp56_free(avctx);
+
+    for (pt=0; pt<2; pt++) {
+        free_vlc(&s->dccv_vlc[pt]);
+        free_vlc(&s->runv_vlc[pt]);
+        for (ct=0; ct<3; ct++)
+            for (cg=0; cg<6; cg++)
+                free_vlc(&s->ract_vlc[pt][ct][cg]);
+    }
+    return 0;
+}
+
 AVCodec vp6_decoder = {
     "vp6",
     CODEC_TYPE_VIDEO,
@@ -608,7 +626,7 @@ AVCodec vp6_decoder = {
     sizeof(VP56Context),
     vp6_decode_init,
     NULL,
-    vp56_free,
+    vp6_decode_free,
     vp56_decode_frame,
     CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("On2 VP6"),
@@ -622,7 +640,7 @@ AVCodec vp6f_decoder = {
     sizeof(VP56Context),
     vp6_decode_init,
     NULL,
-    vp56_free,
+    vp6_decode_free,
     vp56_decode_frame,
     CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("On2 VP6 (Flash version)"),
@@ -636,7 +654,7 @@ AVCodec vp6a_decoder = {
     sizeof(VP56Context),
     vp6_decode_init,
     NULL,
-    vp56_free,
+    vp6_decode_free,
     vp56_decode_frame,
     CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("On2 VP6 (Flash version, with alpha channel)"),

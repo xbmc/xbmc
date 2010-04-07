@@ -465,7 +465,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   m_timeout = 0;
 
   // if format can be nonblocking, let's use that
-  m_pFormatContext->flags |= AVFMT_FLAG_NONBLOCK | AVFMT_FLAG_GENPTS;
+  m_pFormatContext->flags |= AVFMT_FLAG_NONBLOCK;
 
   // print some extra information
   m_dllAvFormat.dump_format(m_pFormatContext, 0, strFile.c_str(), 0);
@@ -555,6 +555,7 @@ void CDVDDemuxFFmpeg::Flush()
 {
   g_demuxer = this;
 
+  // naughty usage of an internal ffmpeg function
   if (m_pFormatContext)
     m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
 

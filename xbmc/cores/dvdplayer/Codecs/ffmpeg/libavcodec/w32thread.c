@@ -93,7 +93,7 @@ void avcodec_thread_free(AVCodecContext *s){
     av_freep(&s->thread_opaque);
 }
 
-int avcodec_thread_execute(AVCodecContext *s, int (*func)(AVCodecContext *c2, void *arg2),void *arg, int *ret, int count, int size){
+static int avcodec_thread_execute(AVCodecContext *s, int (*func)(AVCodecContext *c2, void *arg2),void *arg, int *ret, int count, int size){
     ThreadContext *c= s->thread_opaque;
     int i;
     int jobnr = 0;
@@ -116,7 +116,7 @@ int avcodec_thread_execute(AVCodecContext *s, int (*func)(AVCodecContext *c2, vo
     return 0;
 }
 
-int avcodec_thread_execute2(AVCodecContext *s, int (*func)(AVCodecContext *c2, void *arg2, int, int),void *arg, int *ret, int count){
+static int avcodec_thread_execute2(AVCodecContext *s, int (*func)(AVCodecContext *c2, void *arg2, int, int),void *arg, int *ret, int count){
     ThreadContext *c= s->thread_opaque;
     int i;
     for(i=0; i<s->thread_count; i++)
@@ -131,6 +131,9 @@ int avcodec_thread_init(AVCodecContext *s, int thread_count){
 
     s->thread_count= thread_count;
 av_log(NULL, AV_LOG_INFO, "[w32thread] thread count = %d\n", thread_count);
+    if (thread_count <= 1)
+        return 0;
+
     assert(!s->thread_opaque);
     c= av_mallocz(sizeof(ThreadContext)*thread_count);
     s->thread_opaque= c;

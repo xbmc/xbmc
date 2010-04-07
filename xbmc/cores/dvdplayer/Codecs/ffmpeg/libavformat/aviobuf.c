@@ -150,12 +150,13 @@ int64_t url_fseek(ByteIOContext *s, int64_t offset, int whence)
         offset1 >= 0 && offset1 <= (s->buf_end - s->buffer)) {
         /* can do the seek inside the buffer */
         s->buf_ptr = s->buffer + offset1;
-    } else if(s->is_streamed && !s->write_flag &&
-              offset1 >= 0 && offset1 < (s->buf_end - s->buffer) + (1<<16)){
+    } else if(s->is_streamed && !s->write_flag && offset1 >= 0 &&
+              (   offset1 < (s->buf_end - s->buffer) + (1<<16)
+               || (whence & AVSEEK_FORCE))){
         while(s->pos < offset && !s->eof_reached)
             fill_buffer(s);
         if (s->eof_reached)
-            return AVERROR(EPIPE);
+            return AVERROR_EOF;
         s->buf_ptr = s->buf_end + offset - s->pos;
     } else {
         int64_t res = AVERROR(EPIPE);
@@ -537,7 +538,6 @@ int url_fdopen(ByteIOContext **s, URLContext *h)
 {
     uint8_t *buffer;
     int buffer_size, max_packet_size;
-
 
     max_packet_size = url_get_max_packet_size(h);
     if (max_packet_size) {

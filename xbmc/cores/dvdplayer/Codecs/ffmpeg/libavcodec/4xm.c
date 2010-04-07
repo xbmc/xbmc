@@ -137,7 +137,7 @@ typedef struct FourXContext{
     int mv[256];
     VLC pre_vlc;
     int last_dc;
-    DECLARE_ALIGNED_16(DCTELEM, block[6][64]);
+    DECLARE_ALIGNED(16, DCTELEM, block)[6][64];
     void *bitstream_buffer;
     unsigned int bitstream_buffer_size;
     int version;
@@ -815,7 +815,7 @@ static av_cold int decode_init(AVCodecContext *avctx){
     init_vlcs(f);
 
     if(f->version>2) avctx->pix_fmt= PIX_FMT_RGB565;
-    else             avctx->pix_fmt= PIX_FMT_RGB555;
+    else             avctx->pix_fmt= PIX_FMT_BGR555;
 
     return 0;
 }

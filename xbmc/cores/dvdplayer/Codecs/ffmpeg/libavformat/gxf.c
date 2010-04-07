@@ -313,7 +313,7 @@ static int gxf_header(AVFormatContext *s, AVFormatParameters *ap) {
         st = s->streams[idx];
         if (!main_timebase.num || !main_timebase.den) {
             main_timebase.num = si.frames_per_second.den;
-            main_timebase.den = si.frames_per_second.num * si.fields_per_frame;
+            main_timebase.den = si.frames_per_second.num * 2;
         }
         st->start_time = si.first_field;
         if (si.first_field != AV_NOPTS_VALUE && si.last_field != AV_NOPTS_VALUE)
@@ -344,15 +344,17 @@ static int gxf_header(AVFormatContext *s, AVFormatParameters *ap) {
             if (!main_timebase.num || !main_timebase.den) {
                 // this may not always be correct, but simply the best we can get
                 main_timebase.num = fps.den;
-                main_timebase.den = fps.num;
+                main_timebase.den = fps.num * 2;
             }
         } else
             av_log(s, AV_LOG_INFO, "UMF packet too short\n");
     } else
         av_log(s, AV_LOG_INFO, "UMF packet missing\n");
     url_fskip(pb, len);
+    // set a fallback value, 60000/1001 is specified for audio-only files
+    // so use that regardless of why we do not know the video frame rate.
     if (!main_timebase.num || !main_timebase.den)
-        main_timebase = (AVRational){1, 50}; // set some arbitrary fallback
+        main_timebase = (AVRational){1001, 60000};
     for (i = 0; i < s->nb_streams; i++) {
         AVStream *st = s->streams[i];
         av_set_pts_info(st, 32, main_timebase.num, main_timebase.den);

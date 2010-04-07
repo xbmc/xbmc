@@ -47,6 +47,20 @@ int av_strstart(const char *str, const char *pfx, const char **ptr);
 int av_stristart(const char *str, const char *pfx, const char **ptr);
 
 /**
+ * Locate the first case-independent occurrence in the string haystack
+ * of the string needle.  A zero-length string needle is considered to
+ * match at the start of haystack.
+ *
+ * This function is a case-insensitive version of the standard strstr().
+ *
+ * @param haystack string to search in
+ * @param needle   string to search for
+ * @return         pointer to the located match within haystack
+ *                 or a null pointer if no match
+ */
+char *av_stristr(const char *haystack, const char *needle);
+
+/**
  * Copy the string src to dst, but no more than size - 1 bytes, and
  * null-terminate dst.
  *
@@ -83,7 +97,7 @@ size_t av_strlcat(char *dst, const char *src, size_t size);
 
 /**
  * Append output to a string, according to a format. Never write out of
- * the destination buffer, and and always put a terminating 0 within
+ * the destination buffer, and always put a terminating 0 within
  * the buffer.
  * @param dst destination buffer (string to which the output is
  *  appended)

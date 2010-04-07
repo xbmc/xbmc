@@ -242,7 +242,7 @@ int ff_wma_init(AVCodecContext *avctx, int flags2)
             if (s->version == 1) {
                 lpos = 0;
                 for (i = 0; i < 25; i++) {
-                    a = wma_critical_freqs[i];
+                    a = ff_wma_critical_freqs[i];
                     b = s->sample_rate;
                     pos = ((block_len * 2 * a) + (b >> 1)) / b;
                     if (pos > block_len)
@@ -277,7 +277,7 @@ int ff_wma_init(AVCodecContext *avctx, int flags2)
                     j = 0;
                     lpos = 0;
                     for (i = 0; i < 25; i++) {
-                        a = wma_critical_freqs[i];
+                        a = ff_wma_critical_freqs[i];
                         b = s->sample_rate;
                         pos = ((block_len * 2 * a) + (b << 1)) / (4 * b);
                         pos <<= 2;
@@ -343,9 +343,7 @@ int ff_wma_init(AVCodecContext *avctx, int flags2)
 
     /* init MDCT windows : simple sinus window */
     for (i = 0; i < s->nb_block_sizes; i++) {
-        int n;
-        n = 1 << (s->frame_len_bits - i);
-        ff_sine_window_init(ff_sine_windows[s->frame_len_bits - i], n);
+        ff_init_ff_sine_windows(s->frame_len_bits - i);
         s->windows[i] = ff_sine_windows[s->frame_len_bits - i];
     }
 

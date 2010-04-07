@@ -82,26 +82,29 @@ static int cyuv_decode_frame(AVCodecContext *avctx,
     unsigned char cur_byte;
     int pixel_groups;
 
+    if (avctx->codec_id == CODEC_ID_AURA) {
+        y_table = u_table;
+        u_table = v_table;
+    }
     /* sanity check the buffer size: A buffer has 3x16-bytes tables
      * followed by (height) lines each with 3 bytes to represent groups
      * of 4 pixels. Thus, the total size of the buffer ought to be:
      *    (3 * 16) + height * (width * 3 / 4) */
     if (buf_size != 48 + s->height * (s->width * 3 / 4)) {
-      av_log(avctx, AV_LOG_ERROR, "ffmpeg: cyuv: got a buffer with %d bytes when %d were expected\n",
-        buf_size,
-        48 + s->height * (s->width * 3 / 4));
-      return -1;
+        av_log(avctx, AV_LOG_ERROR, "got a buffer with %d bytes when %d were expected\n",
+               buf_size, 48 + s->height * (s->width * 3 / 4));
+        return -1;
     }
 
     /* pixel data starts 48 bytes in, after 3x16-byte tables */
     stream_ptr = 48;
 
-    if(s->frame.data[0])
+    if (s->frame.data[0])
         avctx->release_buffer(avctx, &s->frame);
 
     s->frame.buffer_hints = FF_BUFFER_HINTS_VALID;
     s->frame.reference = 0;
-    if(avctx->get_buffer(avctx, &s->frame) < 0) {
+    if (avctx->get_buffer(avctx, &s->frame) < 0) {
         av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
         return -1;
     }
@@ -164,6 +167,33 @@ static int cyuv_decode_frame(AVCodecContext *avctx,
     return buf_size;
 }
 
+static av_cold int cyuv_decode_end(AVCodecContext *avctx)
+{
+    CyuvDecodeContext *s = avctx->priv_data;
+
+    if (s->frame.data[0])
+        avctx->release_buffer(avctx, &s->frame);
+
+    return 0;
+}
+
+#if CONFIG_AURA_DECODER
+AVCodec aura_decoder = {
+    "aura",
+    CODEC_TYPE_VIDEO,
+    CODEC_ID_AURA,
+    sizeof(CyuvDecodeContext),
+    cyuv_decode_init,
+    NULL,
+    cyuv_decode_end,
+    cyuv_decode_frame,
+    CODEC_CAP_DR1,
+    NULL,
+    .long_name = NULL_IF_CONFIG_SMALL("Auravision AURA"),
+};
+#endif
+
+#if CONFIG_CYUV_DECODER
 AVCodec cyuv_decoder = {
     "cyuv",
     CODEC_TYPE_VIDEO,
@@ -171,10 +201,10 @@ AVCodec cyuv_decoder = {
     sizeof(CyuvDecodeContext),
     cyuv_decode_init,
     NULL,
-    NULL,
+    cyuv_decode_end,
     cyuv_decode_frame,
     CODEC_CAP_DR1,
     NULL,
     .long_name = NULL_IF_CONFIG_SMALL("Creative YUV (CYUV)"),
 };
-
+#endif

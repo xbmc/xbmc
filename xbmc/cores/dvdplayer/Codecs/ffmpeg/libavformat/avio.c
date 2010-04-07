@@ -19,10 +19,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+/* needed for usleep() */
+#define _XOPEN_SOURCE 600
+#include <unistd.h>
 #include "libavutil/avstring.h"
 #include "libavcodec/opt.h"
 #include "os_support.h"
 #include "avformat.h"
+#if CONFIG_NETWORK
+#include "network.h"
+#endif
 
 #if LIBAVFORMAT_VERSION_MAJOR >= 53
 /** @name Logging context. */
@@ -73,7 +79,11 @@ int url_open_protocol (URLContext **puc, struct URLProtocol *up,
     URLContext *uc;
     int err;
 
-    uc = av_malloc(sizeof(URLContext) + strlen(filename) + 1);
+#if CONFIG_NETWORK
+    if (!ff_network_init())
+        return AVERROR(EIO);
+#endif
+    uc = av_mallocz(sizeof(URLContext) + strlen(filename) + 1);
     if (!uc) {
         err = AVERROR(ENOMEM);
         goto fail;
@@ -90,11 +100,10 @@ int url_open_protocol (URLContext **puc, struct URLProtocol *up,
     err = up->url_open(uc, filename, flags);
     if (err < 0) {
         av_free(uc);
-        *puc = NULL;
-        return err;
+        goto fail;
     }
 
-    //We must be carefull here as url_seek() could be slow, for example for http
+    //We must be careful here as url_seek() could be slow, for example for http
     if(   (flags & (URL_WRONLY | URL_RDWR))
        || !strcmp(up->name, "file"))
         if(!uc->is_streamed && url_seek(uc, 0, SEEK_SET) < 0)
@@ -103,6 +112,9 @@ int url_open_protocol (URLContext **puc, struct URLProtocol *up,
     return 0;
  fail:
     *puc = NULL;
+#if CONFIG_NETWORK
+    ff_network_close();
+#endif
     return err;
 }
 
@@ -152,12 +164,21 @@ int url_read(URLContext *h, unsigned char *buf, int size)
 int url_read_complete(URLContext *h, unsigned char *buf, int size)
 {
     int ret, len;
+    int fast_retries = 5;
 
     len = 0;
     while (len < size) {
         ret = url_read(h, buf+len, size-len);
-        if (ret < 1)
-            return ret;
+        if (ret == AVERROR(EAGAIN)) {
+            ret = 0;
+            if (fast_retries)
+                fast_retries--;
+            else
+                usleep(1000);
+        } else if (ret < 1)
+            return ret < 0 ? ret : len;
+        if (ret)
+           fast_retries = FFMAX(fast_retries, 2);
         len += ret;
     }
     return len;
@@ -181,7 +202,7 @@ int64_t url_seek(URLContext *h, int64_t pos, int whence)
 
     if (!h->prot->url_seek)
         return AVERROR(EPIPE);
-    ret = h->prot->url_seek(h, pos, whence);
+    ret = h->prot->url_seek(h, pos, whence & ~AVSEEK_FORCE);
     return ret;
 }
 
@@ -192,6 +213,9 @@ int url_close(URLContext *h)
 
     if (h->prot->url_close)
         ret = h->prot->url_close(h);
+#if CONFIG_NETWORK
+    ff_network_close();
+#endif
     av_free(h);
     return ret;
 }

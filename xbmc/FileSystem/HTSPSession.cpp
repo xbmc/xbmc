@@ -162,7 +162,7 @@ using namespace HTSP;
 string CHTSPSession::GetGenre(unsigned type)
 {
   // look for full content
-  for(int i = 0; i < sizeof(g_dvb_content_type) / sizeof(g_dvb_content_type[0]); i++)
+  for(unsigned int i = 0; i < sizeof(g_dvb_content_type) / sizeof(g_dvb_content_type[0]); i++)
   {
     if(g_dvb_content_type[i].id == type)
       return g_dvb_content_type[i].genre;
@@ -170,7 +170,7 @@ string CHTSPSession::GetGenre(unsigned type)
 
   // look for group
   type = (type >> 4) & 0xf;
-  for(int i = 0; i < sizeof(g_dvb_content_group) / sizeof(g_dvb_content_group[0]); i++)
+  for(unsigned int i = 0; i < sizeof(g_dvb_content_group) / sizeof(g_dvb_content_group[0]); i++)
   {
     if(g_dvb_content_group[i].id == type)
       return g_dvb_content_group[i].genre;
@@ -493,8 +493,8 @@ bool CHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
                     , event.descs.c_str()
                     , event.start
                     , event.stop
-                    , event.next)
-                    , event.content;
+                    , event.next
+                    , event.content);
 
   return true;
 }

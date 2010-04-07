@@ -40,7 +40,12 @@ struct ogg_codec {
      */
     int (*header)(AVFormatContext *, int);
     int (*packet)(AVFormatContext *, int);
-    uint64_t (*gptopts)(AVFormatContext *, int, uint64_t);
+    /**
+     * Translate a granule into a timestamp.
+     * Will set dts if non-null and known.
+     * @return pts
+     */
+    uint64_t (*gptopts)(AVFormatContext *, int, uint64_t, int64_t *dts);
     /**
      * 1 if granule is the start time of the associated packet.
      * 0 if granule is the end time of the associated packet.
@@ -57,15 +62,19 @@ struct ogg_stream {
     unsigned int pflags;
     unsigned int pduration;
     uint32_t serial;
-    uint32_t seq;
     uint64_t granule;
     int64_t lastpts;
+    int64_t lastdts;
+    int64_t sync_pos;   ///< file offset of the first page needed to reconstruct the current packet
+    int64_t page_pos;   ///< file offset of the current page
     int flags;
     const struct ogg_codec *codec;
     int header;
     int nsegs, segp;
     uint8_t segments[255];
+    int incomplete; ///< whether we're expecting a continuation in the next page
     int page_end;   ///< current packet is the last one completed in the page
+    int keyframe_seek;
     void *private;
 };
 
@@ -90,18 +99,49 @@ struct ogg {
 #define OGG_FLAG_BOS  2
 #define OGG_FLAG_EOS  4
 
+extern const struct ogg_codec ff_dirac_codec;
 extern const struct ogg_codec ff_flac_codec;
 extern const struct ogg_codec ff_ogm_audio_codec;
 extern const struct ogg_codec ff_ogm_old_codec;
 extern const struct ogg_codec ff_ogm_text_codec;
 extern const struct ogg_codec ff_ogm_video_codec;
+extern const struct ogg_codec ff_old_dirac_codec;
 extern const struct ogg_codec ff_old_flac_codec;
+extern const struct ogg_codec ff_skeleton_codec;
 extern const struct ogg_codec ff_speex_codec;
 extern const struct ogg_codec ff_theora_codec;
 extern const struct ogg_codec ff_vorbis_codec;
 
-extern const AVMetadataConv ff_vorbiscomment_metadata_conv[];
+int ff_vorbis_comment(AVFormatContext *ms, AVMetadata **m, const uint8_t *buf, int size);
 
-int vorbis_comment(AVFormatContext *ms, uint8_t *buf, int size);
+static inline int
+ogg_find_stream (struct ogg * ogg, int serial)
+{
+    int i;
+
+    for (i = 0; i < ogg->nstreams; i++)
+        if (ogg->streams[i].serial == serial)
+            return i;
+
+    return -1;
+}
+
+static inline uint64_t
+ogg_gptopts (AVFormatContext * s, int i, uint64_t gp, int64_t *dts)
+{
+    struct ogg *ogg = s->priv_data;
+    struct ogg_stream *os = ogg->streams + i;
+    uint64_t pts = AV_NOPTS_VALUE;
+
+    if(os->codec && os->codec->gptopts){
+        pts = os->codec->gptopts(s, i, gp, dts);
+    } else {
+        pts = gp;
+        if (dts)
+            *dts = pts;
+    }
+
+    return pts;
+}
 
 #endif /* AVFORMAT_OGGDEC_H */

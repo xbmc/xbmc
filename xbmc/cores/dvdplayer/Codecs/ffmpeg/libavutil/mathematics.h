@@ -23,7 +23,7 @@
 
 #include <stdint.h>
 #include <math.h>
-#include "common.h"
+#include "attributes.h"
 #include "rational.h"
 
 #ifndef M_E
@@ -34,6 +34,9 @@
 #endif
 #ifndef M_LN10
 #define M_LN10         2.30258509299404568402  /* log_e 10 */
+#endif
+#ifndef M_LOG2_10
+#define M_LOG2_10      3.32192809488736234787  /* log_2 10 */
 #endif
 #ifndef M_PI
 #define M_PI           3.14159265358979323846  /* pi */
@@ -56,6 +59,11 @@ enum AVRounding {
     AV_ROUND_NEAR_INF = 5, ///< Round to nearest and halfway cases away from zero.
 };
 
+/**
+ * Returns the greatest common divisor of a and b.
+ * If both a and b are 0 or either or both are <0 then behavior is
+ * undefined.
+ */
 int64_t av_const av_gcd(int64_t a, int64_t b);
 
 /**
@@ -74,5 +82,14 @@ int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding) av_cons
  * Rescales a 64-bit integer by 2 rational numbers.
  */
 int64_t av_rescale_q(int64_t a, AVRational bq, AVRational cq) av_const;
+
+/**
+ * Compares 2 timestamps each in its own timebases.
+ * The result of the function is undefined if one of the timestamps
+ * is outside the int64_t range when represented in the others timebase.
+ * @returns -1 if ts_a is before ts_b, 1 if ts_a is after ts_b or 0 if they represent the same position
+ */
+int av_compare_ts(int64_t ts_a, AVRational tb_a, int64_t ts_b, AVRational tb_b);
+
 
 #endif /* AVUTIL_MATHEMATICS_H */

@@ -337,12 +337,15 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
   TiXmlNode* pRemote = pRoot->FirstChild();
   while (pRemote)
   {
-    const char *szRemote = pRemote->Value();
-    if (szRemote)
+    if (pRemote->Type() == TiXmlNode::ELEMENT)
     {
-      TiXmlAttribute* pAttr = pRemote->ToElement()->FirstAttribute();
-      const char* szDeviceName = pAttr->Value();
-      MapRemote(pRemote, szDeviceName);
+      const char *szRemote = pRemote->Value();
+      if (szRemote)
+      {
+        TiXmlAttribute* pAttr = pRemote->ToElement()->FirstAttribute();
+        const char* szDeviceName = pAttr->Value();
+        MapRemote(pRemote, szDeviceName);
+      }
     }
     pRemote = pRemote->NextSibling();
   }
@@ -352,6 +355,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
 
 void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
 {
+  CLog::Log(LOGINFO, "* Adding remote mapping for device '%s'", szDevice);
   lircButtonMap buttons;
   map<CStdString, lircButtonMap>::iterator it = lircRemotesMap.find(szDevice);
   if (it != lircRemotesMap.end())

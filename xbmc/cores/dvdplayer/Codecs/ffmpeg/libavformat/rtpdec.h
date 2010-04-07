@@ -74,6 +74,19 @@ void rtp_get_file_handles(URLContext *h, int *prtp_fd, int *prtcp_fd);
 #endif
 
 /**
+ * Send a dummy packet on both port pairs to set up the connection
+ * state in potential NAT routers, so that we're able to receive
+ * packets.
+ *
+ * Note, this only works if the NAT router doesn't remap ports. This
+ * isn't a standardized procedure, but it works in many cases in practice.
+ *
+ * The same routine is used with RDT too, even if RDT doesn't use normal
+ * RTP packets otherwise.
+ */
+void rtp_send_punch_packets(URLContext* rtp_handle);
+
+/**
  * some rtp servers assume client is dead if they don't hear from them...
  * so we send a Receiver Report to the provided ByteIO context
  * (we don't have access to the rtcp handle from here)
@@ -156,7 +169,6 @@ struct RTPDemuxContext {
 
     /* rtcp sender statistics receive */
     int64_t last_rtcp_ntp_time;    // TODO: move into statistics
-    int64_t first_rtcp_ntp_time;   // TODO: move into statistics
     uint32_t last_rtcp_timestamp;  // TODO: move into statistics
 
     /* rtcp sender statistics */
@@ -180,7 +192,7 @@ struct RTPDemuxContext {
 extern RTPDynamicProtocolHandler *RTPFirstDynamicPayloadHandler;
 void ff_register_dynamic_payload_handler(RTPDynamicProtocolHandler *handler);
 
-int rtsp_next_attr_and_value(const char **p, char *attr, int attr_size, char *value, int value_size); ///< from rtsp.c, but used by rtp dynamic protocol handlers.
+int ff_rtsp_next_attr_and_value(const char **p, char *attr, int attr_size, char *value, int value_size); ///< from rtsp.c, but used by rtp dynamic protocol handlers.
 
 void av_register_rtp_dynamic_payload_handlers(void);
 

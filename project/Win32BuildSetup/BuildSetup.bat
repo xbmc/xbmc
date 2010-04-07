@@ -30,10 +30,13 @@ SET buildconfig=Release (OpenGL)
 IF %target%==dx SET buildconfig=Release (DirectX)
 
 	IF "%VS90COMNTOOLS%"=="" (
-	  set NET="%ProgramFiles%\Microsoft Visual Studio 9.0 Express\Common7\IDE\VCExpress.exe"
-	) ELSE (
-	  set NET="%VS90COMNTOOLS%\..\IDE\VCExpress.exe"
+		set NET="%ProgramFiles%\Microsoft Visual Studio 9.0 Express\Common7\IDE\VCExpress.exe"
+	) ELSE IF EXIST "%VS90COMNTOOLS%\..\IDE\VCExpress.exe" (
+		set NET="%VS90COMNTOOLS%\..\IDE\VCExpress.exe"
+	) ELSE IF EXIST "%VS90COMNTOOLS%\..\IDE\devenv.exe" (
+		set NET="%VS90COMNTOOLS%\..\IDE\devenv.exe"
 	)
+  
 	IF NOT EXIST %NET% (
 	  set DIETEXT=Visual Studio .NET 2008 Express was not found.
 	  goto DIE
@@ -211,6 +214,10 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   IF NOT EXIST "%NSISExePath%" (
     rem try with space delim instead of tab
     FOR /F "tokens=2* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
+    IF NOT EXIST "%NSISExePath%" (
+      rem on win 7 x86, the previous fails
+      FOR /F "tokens=3* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
+    )
   )
   rem proper x64 registry checks
   IF NOT EXIST "%NSISExePath%" (

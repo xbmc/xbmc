@@ -22,6 +22,7 @@
 #include "avcodec.h"
 #include "get_bits.h"
 #include "dsputil.h"
+#include "fft.h"
 #include "lsp.h"
 
 #include <math.h>
@@ -893,9 +894,9 @@ static av_cold void init_mdct_win(TwinContext *tctx)
     }
 
 
-    ff_sine_window_init(ff_sine_windows[av_log2(size_m)    ], size_m  );
-    ff_sine_window_init(ff_sine_windows[av_log2(size_s/2)  ], size_s/2);
-    ff_sine_window_init(ff_sine_windows[av_log2(mtab->size)], mtab->size);
+    ff_init_ff_sine_windows(av_log2(size_m));
+    ff_init_ff_sine_windows(av_log2(size_s/2));
+    ff_init_ff_sine_windows(av_log2(mtab->size));
 }
 
 /**

@@ -1235,7 +1235,7 @@ void CApplication::StartWebServer()
 #endif
     }
 #ifdef HAS_HTTPAPI
-    if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+    if (g_settings.m_HttpApiBroadcastLevel>=1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
 #endif
   }
@@ -2262,7 +2262,7 @@ bool CApplication::OnAction(const CAction &action)
 {
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world about this action, ignoring mouse moves
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=2 && action.GetID() != ACTION_MOUSE_MOVE)
+  if (g_settings.m_HttpApiBroadcastLevel>=2 && action.GetID() != ACTION_MOUSE_MOVE)
   {
     CStdString tmp;
     tmp.Format("%i",action.GetID());
@@ -3717,7 +3717,7 @@ void CApplication::OnPlayBackEnded()
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
 #endif
 
@@ -3748,7 +3748,7 @@ void CApplication::OnPlayBackStarted()
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
 
@@ -3770,7 +3770,7 @@ void CApplication::OnQueueNextItem()
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnQueueNextItem;1");
 #endif
 
@@ -3801,7 +3801,7 @@ void CApplication::OnPlayBackStopped()
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
 
@@ -3824,7 +3824,7 @@ void CApplication::OnPlayBackPaused()
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackPaused;1");
 #endif
 
@@ -3841,7 +3841,7 @@ void CApplication::OnPlayBackResumed()
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackResumed;1");
 #endif
 
@@ -3858,7 +3858,7 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
   {
     CStdString tmp;
     tmp.Format("broadcastlevel; OnPlayBackSpeedChanged:%i;1",iSpeed);
@@ -3879,7 +3879,7 @@ void CApplication::OnPlayBackSeek(int iTime)
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
   {
     CStdString tmp;
     tmp.Format("broadcastlevel; OnPlayBackSeek:%i;1",iTime);
@@ -3900,7 +3900,7 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
   {
     CStdString tmp;
     tmp.Format("broadcastlevel; OnPlayBackSkeekChapter:%i;1",iChapter);

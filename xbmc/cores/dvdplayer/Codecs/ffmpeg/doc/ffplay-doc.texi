@@ -26,25 +26,12 @@ ffplay [options] @file{input_file}
 @end example
 
 @c man begin OPTIONS
+
+@include fftools-common-opts.texi
+
 @section Main options
 
 @table @option
-@item -h
-Show help.
-@item -version
-Show version.
-@item -L
-Show license.
-@item -formats
-Show available formats.
-@item -codecs
-Show available codecs.
-@item -bsfs
-Show available bitstream filters.
-@item -protocols
-Show available protocols.
-@item -filters
-Show available libavfilter filters.
 @item -x @var{width}
 Force displayed width.
 @item -y @var{height}
@@ -64,19 +51,8 @@ Seek by bytes.
 Disable graphical display.
 @item -f @var{fmt}
 Force format.
-@item -loglevel @var{loglevel}
-Set the logging level used by the library.
-@var{loglevel} is a number or a string containing one of the following values:
-@table @samp
-@item quiet
-@item panic
-@item fatal
-@item error
-@item warning
-@item info
-@item verbose
-@item debug
-@end table
+@item -window_title @var{title}
+Set window title (default is the input filename).
 @end table
 
 @section Advanced options

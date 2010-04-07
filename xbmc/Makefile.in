@@ -229,6 +229,7 @@ SRCS=Application.cpp \
      WinEventsSDL.cpp \
      AdvancedSettings.cpp \
      Bookmark.cpp \
+     TextureCache.cpp \
 
 LIB=xbmc.a
 

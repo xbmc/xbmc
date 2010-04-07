@@ -103,6 +103,35 @@ static uint8_t gray_decode[32] =
 };
 #endif
 
+const float ff_pow_0_7[10] = {
+    0.700000, 0.490000, 0.343000, 0.240100, 0.168070,
+    0.117649, 0.082354, 0.057648, 0.040354, 0.028248
+};
+
+const float ff_pow_0_75[10] = {
+    0.750000, 0.562500, 0.421875, 0.316406, 0.237305,
+    0.177979, 0.133484, 0.100113, 0.075085, 0.056314
+};
+
+const float ff_pow_0_55[10] = {
+    0.550000, 0.302500, 0.166375, 0.091506, 0.050328,
+    0.027681, 0.015224, 0.008373, 0.004605, 0.002533
+};
+
+const float ff_b60_sinc[61] = {
+ 0.898529  ,  0.865051  ,  0.769257  ,  0.624054  ,  0.448639  ,  0.265289   ,
+ 0.0959167 , -0.0412598 , -0.134338  , -0.178986  , -0.178528  , -0.142609   ,
+-0.0849304 , -0.0205078 ,  0.0369568 ,  0.0773926 ,  0.0955200 ,  0.0912781  ,
+ 0.0689392 ,  0.0357056 ,  0.        , -0.0305481 , -0.0504150 , -0.0570068  ,
+-0.0508423 , -0.0350037 , -0.0141602 ,  0.00665283,  0.0230713 ,  0.0323486  ,
+ 0.0335388 ,  0.0275879 ,  0.0167847 ,  0.00411987, -0.00747681, -0.0156860  ,
+-0.0193481 , -0.0183716 , -0.0137634 , -0.00704956,  0.        ,  0.00582886 ,
+ 0.00939941,  0.0103760 ,  0.00903320,  0.00604248,  0.00238037, -0.00109863 ,
+-0.00366211, -0.00497437, -0.00503540, -0.00402832, -0.00241089, -0.000579834,
+ 0.00103760,  0.00222778,  0.00277710,  0.00271606,  0.00213623,  0.00115967 ,
+ 0.
+};
+
 void ff_acelp_fc_pulse_per_track(
         int16_t* fc_v,
         const uint8_t *tab1,
@@ -135,6 +164,7 @@ void ff_decode_10_pulses_35bits(const int16_t *fixed_index,
     int i;
     int mask = (1 << bits) - 1;
 
+    fixed_sparse->no_repeat_mask = 0;
     fixed_sparse->n = 2 * half_pulse_count;
     for (i = 0; i < half_pulse_count; i++) {
         const int pos1   = gray_decode[fixed_index[2*i+1] & mask] + i;
@@ -177,8 +207,8 @@ void ff_weighted_vector_sumf(float *out, const float *in_a, const float *in_b,
                + weight_coeff_b * in_b[i];
 }
 
-void ff_adaptative_gain_control(float *buf_out, float speech_energ,
-                                int size, float alpha, float *gain_mem)
+void ff_adaptive_gain_control(float *buf_out, float speech_energ,
+                              int size, float alpha, float *gain_mem)
 {
     int i;
     float postfilter_energ = ff_dot_productf(buf_out, buf_out, size);
@@ -214,16 +244,14 @@ void ff_set_fixed_vector(float *out, const AMRFixed *in, float scale, int size)
     int i;
 
     for (i=0; i < in->n; i++) {
-        int x   = in->x[i];
+        int x   = in->x[i], repeats = !((in->no_repeat_mask >> i) & 1);
         float y = in->y[i] * scale;
-        out[x] += y;
 
-        x += in->pitch_lag;
-        while (x < size) {
-            y *= in->pitch_fac;
+        do {
             out[x] += y;
+            y *= in->pitch_fac;
             x += in->pitch_lag;
-        }
+        } while (x < size && repeats);
     }
 }
 
@@ -232,13 +260,11 @@ void ff_clear_fixed_vector(float *out, const AMRFixed *in, int size)
     int i;
 
     for (i=0; i < in->n; i++) {
-        int x  = in->x[i];
-        out[x] = 0.0;
+        int x  = in->x[i], repeats = !((in->no_repeat_mask >> i) & 1);
 
-        x += in->pitch_lag;
-        while (x < size) {
+        do {
             out[x] = 0.0;
             x += in->pitch_lag;
-        }
+        } while (x < size && repeats);
     }
 }

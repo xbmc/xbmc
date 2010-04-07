@@ -93,7 +93,10 @@ void CGUIListGroup::UpdateVisibility(const CGUIListItem *item)
 void CGUIListGroup::UpdateInfo(const CGUIListItem *item)
 {
   for (iControls it = m_children.begin(); it != m_children.end(); it++)
+  {
     (*it)->UpdateInfo(item);
+    (*it)->UpdateVisibility(item);
+  }
   // now we have to check our overlapping label pairs
   for (unsigned int i = 0; i < m_children.size(); i++)
   {

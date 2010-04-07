@@ -397,7 +397,7 @@ static int read_restart_header(MLPDecodeContext *m, GetBitContext *gbp,
     if (m->avctx->request_channels > 0
         && s->max_channel + 1 >= m->avctx->request_channels
         && substr < m->max_decoded_substream) {
-        av_log(m->avctx, AV_LOG_INFO,
+        av_log(m->avctx, AV_LOG_DEBUG,
                "Extracting %d channel downmix from substream %d. "
                "Further substreams will be skipped.\n",
                s->max_channel + 1, substr);
@@ -959,7 +959,7 @@ static int read_access_unit(AVCodecContext *avctx, void* data, int *data_size,
 
     length = (AV_RB16(buf) & 0xfff) * 2;
 
-    if (length > buf_size)
+    if (length < 4 || length > buf_size)
         return -1;
 
     init_get_bits(&gb, (buf + 4), (length - 4) * 8);
@@ -1134,7 +1134,6 @@ error:
     return -1;
 }
 
-#if CONFIG_MLP_DECODER
 AVCodec mlp_decoder = {
     "mlp",
     CODEC_TYPE_AUDIO,
@@ -1146,7 +1145,6 @@ AVCodec mlp_decoder = {
     read_access_unit,
     .long_name = NULL_IF_CONFIG_SMALL("MLP (Meridian Lossless Packing)"),
 };
-#endif /* CONFIG_MLP_DECODER */
 
 #if CONFIG_TRUEHD_DECODER
 AVCodec truehd_decoder = {

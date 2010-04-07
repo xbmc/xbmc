@@ -38,7 +38,10 @@ void write_##name##_array(const void *arg, int len, int dummy)\
 }
 
 WRITE_1D_FUNC(int8,   int8_t,   "%3"PRIi8, 15)
+WRITE_1D_FUNC(uint8,  uint8_t,  "0x%02"PRIx8, 15)
+WRITE_1D_FUNC(uint16, uint16_t, "0x%08"PRIx16, 7)
 WRITE_1D_FUNC(uint32, uint32_t, "0x%08"PRIx32, 7)
+WRITE_1D_FUNC(float,  float,    "%.18e", 3)
 
 #define WRITE_2D_FUNC(name, type)\
 void write_##name##_2d_array(const void *arg, int len, int len2)\
@@ -53,6 +56,7 @@ void write_##name##_2d_array(const void *arg, int len, int len2)\
 }
 
 WRITE_2D_FUNC(int8,   int8_t)
+WRITE_2D_FUNC(uint8,  uint8_t)
 WRITE_2D_FUNC(uint32, uint32_t)
 
 int main(int argc, char *argv[])
@@ -64,10 +68,10 @@ int main(int argc, char *argv[])
     tableinit();
 
     for (i = 0; tables[i].declaration; i++) {
-        printf(tables[i].declaration);
-        printf(" = {\n");
+        puts(tables[i].declaration);
+        puts(" = {\n");
         tables[i].printfunc(tables[i].data, tables[i].size, tables[i].size2);
-        printf("};\n");
+        puts("};\n");
     }
     return 0;
 }

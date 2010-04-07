@@ -60,7 +60,7 @@ root
 
 ## BEGIN INSTALLER ##
 
-title  Install XBMCLive to disk
+title  Install XBMCLive to Hard Disk
 kernel /install/vmlinuz vga=normal quiet preseed/file=/cdrom/install/preseed.cfg cdrom-detect/try-usb=true priority=critical -- 
 initrd /install/initrd.gz
 quiet

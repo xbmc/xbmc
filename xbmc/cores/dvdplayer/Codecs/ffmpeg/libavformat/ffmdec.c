@@ -354,7 +354,7 @@ static int ffm_read_header(AVFormatContext *s, AVFormatParameters *ap)
             codec->sample_rate = get_be32(pb);
             codec->channels = get_le16(pb);
             codec->frame_size = get_le16(pb);
-            codec->sample_fmt = get_le16(pb);
+            codec->sample_fmt = (int16_t) get_le16(pb);
             break;
         default:
             goto fail;
@@ -512,6 +512,16 @@ static int ffm_probe(AVProbeData *p)
     return 0;
 }
 
+static int ffm_close(AVFormatContext *s)
+{
+    int i;
+
+    for (i = 0; i < s->nb_streams; i++)
+        av_freep(&s->streams[i]->codec->rc_eq);
+
+    return 0;
+}
+
 AVInputFormat ffm_demuxer = {
     "ffm",
     NULL_IF_CONFIG_SMALL("FFM (FFserver live feed) format"),
@@ -519,6 +529,6 @@ AVInputFormat ffm_demuxer = {
     ffm_probe,
     ffm_read_header,
     ffm_read_packet,
-    NULL,
+    ffm_close,
     ffm_seek,
 };

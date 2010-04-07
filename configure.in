@@ -1208,7 +1208,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-ffserver \
       --disable-ffmpeg \
       --enable-shared \
-      --disable-ipv6 \
       --disable-decoder=mpeg_xvmc \
       --enable-postproc \
       --enable-gpl \
@@ -1225,7 +1224,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
   else
     ./configure \
       --disable-static \
-      --disable-ipv6 \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
       --enable-muxer=spdif \

@@ -71,6 +71,34 @@ There exist so-called @var{source filters} that do not have a video
 input, and we expect in the future some @var{sink filters} that will
 not have video output.
 
+@chapter graph2dot
+
+The @file{graph2dot} program included in the FFmpeg @file{tools}
+directory can be used to parse a filter graph description and issue a
+corresponding textual representation in the dot language.
+
+Invoke the command:
+@example
+graph2dot -h
+@end example
+
+to see how to use @file{graph2dot}.
+
+You can then pass the dot description to the @file{dot} program (from
+the graphviz suite of programs) and obtain a graphical representation
+of the filter graph.
+
+For example the sequence of commands:
+@example
+echo @var{GRAPH_DESCRIPTION} | \
+tools/graph2dot -o graph.tmp && \
+dot -Tpng graph.tmp -o graph.png && \
+display graph.png
+@end example
+
+can be used to create and display an image representing the graph
+described by the @var{GRAPH_DESCRIPTION} string.
+
 @chapter Available video filters
 
 When you configure your FFmpeg build, you can disable any of the
@@ -196,5 +224,31 @@ Flip the input video vertically.
 @example
 ./ffmpeg -i in.avi -vfilters "vflip" out.avi
 @end example
+
+@chapter Available video sources
+
+Below is a description of the currently available video sources.
+
+@section nullsrc
+
+Null video source, never return images. It is mainly useful as a
+template and to be employed in analysis / debugging tools.
+
+It accepts as optional parameter a string of the form
+``width:height'', where ``width'' and ``height'' specify the size of
+the configured source.
+
+The default values of ``width'' and ``height'' are respectively 352
+and 288 (corresponding to the CIF size format).
+
+@chapter Available video sinks
+
+Below is a description of the currently available video sinks.
+
+@section nullsink
+
+Null video sink, do absolutely nothing with the input video. It is
+mainly useful as a template and to be employed in analysis / debugging
+tools.
 
 @bye

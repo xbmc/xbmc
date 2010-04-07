@@ -46,13 +46,15 @@ static const PixelFormatTag pixelFormatBpsAVI[] = {
 };
 
 static const PixelFormatTag pixelFormatBpsMOV[] = {
+    { PIX_FMT_MONOWHITE, 1 },
+    { PIX_FMT_PAL8,      2 },
     { PIX_FMT_PAL8,      4 },
     { PIX_FMT_PAL8,      8 },
     // FIXME swscale does not support 16 bit in .mov, sample 16bit.mov
     // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap3/qtff3.html
-    { PIX_FMT_BGR555,   16 },
+    { PIX_FMT_RGB555BE, 16 },
     { PIX_FMT_RGB24,    24 },
-    { PIX_FMT_BGR32_1,  32 },
+    { PIX_FMT_ARGB,     32 },
     { PIX_FMT_NONE, 0 },
 };
 
@@ -113,17 +115,31 @@ static int raw_decode(AVCodecContext *avctx,
     frame->interlaced_frame = avctx->coded_frame->interlaced_frame;
     frame->top_field_first = avctx->coded_frame->top_field_first;
 
-    //4bpp raw in avi and mov (yes this is ugly ...)
-    if(avctx->bits_per_coded_sample == 4 && avctx->pix_fmt==PIX_FMT_PAL8 &&
+    //2bpp and 4bpp raw in avi and mov (yes this is ugly ...)
+    if((avctx->bits_per_coded_sample == 4 || avctx->bits_per_coded_sample == 2) &&
+       avctx->pix_fmt==PIX_FMT_PAL8 &&
        (!avctx->codec_tag || avctx->codec_tag == MKTAG('r','a','w',' '))){
         int i;
-        for(i=256*2; i+1 < context->length>>1; i++){
-            context->buffer[2*i+0]= buf[i-256*2]>>4;
-            context->buffer[2*i+1]= buf[i-256*2]&15;
-        }
-        buf= context->buffer + 256*4;
-        buf_size= context->length - 256*4;
+        uint8_t *dst = context->buffer + 256*4;
+        buf_size = context->length - 256*4;
+        if (avctx->bits_per_coded_sample == 4){
+            for(i=0; 2*i+1 < buf_size; i++){
+                dst[2*i+0]= buf[i]>>4;
+                dst[2*i+1]= buf[i]&15;
+            }
+        } else
+            for(i=0; 4*i+3 < buf_size; i++){
+                dst[4*i+0]= buf[i]>>6;
+                dst[4*i+1]= buf[i]>>4&3;
+                dst[4*i+2]= buf[i]>>2&3;
+                dst[4*i+3]= buf[i]   &3;
+            }
+        buf= dst;
     }
+
+    if(avctx->codec_tag == MKTAG('A', 'V', '1', 'x') ||
+       avctx->codec_tag == MKTAG('A', 'V', 'u', 'p'))
+        buf += buf_size - context->length;
 
     if(buf_size < context->length - (avctx->pix_fmt==PIX_FMT_PAL8 ? 256*4 : 0))
         return -1;

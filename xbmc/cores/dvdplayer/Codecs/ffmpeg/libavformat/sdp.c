@@ -18,12 +18,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <string.h>
 #include "libavutil/avstring.h"
 #include "libavutil/base64.h"
 #include "avformat.h"
 #include "internal.h"
 #include "avc.h"
 #include "rtp.h"
+#if CONFIG_NETWORK
+#include "network.h"
+#endif
 
 #if CONFIG_RTP_MUXER
 #define MAX_EXTRADATA_SIZE ((INT_MAX - 10) / 2)
@@ -68,14 +72,54 @@ static void sdp_write_header(char *buff, int size, struct sdp_session_level *s)
                             s->start_time, s->end_time);
 }
 
+#if CONFIG_NETWORK
+static void resolve_destination(char *dest_addr, int size)
+{
+    struct addrinfo hints, *ai, *cur;
+
+    if (!dest_addr[0])
+        return;
+
+    /* Resolve the destination, since it must be written
+     * as a numeric IP address in the SDP. */
+
+    memset(&hints, 0, sizeof(hints));
+    /* We only support IPv4 addresses in the SDP at the moment. */
+    hints.ai_family = AF_INET;
+    if (getaddrinfo(dest_addr, NULL, &hints, &ai))
+        return;
+    for (cur = ai; cur; cur = cur->ai_next) {
+        if (cur->ai_family == AF_INET) {
+            getnameinfo(cur->ai_addr, cur->ai_addrlen, dest_addr, size,
+                        NULL, 0, NI_NUMERICHOST);
+            break;
+        }
+    }
+    freeaddrinfo(ai);
+}
+#else
+static void resolve_destination(char *dest_addr, int size)
+{
+}
+#endif
+
 static int sdp_get_address(char *dest_addr, int size, int *ttl, const char *url)
 {
     int port;
     const char *p;
+    char proto[32];
 
-    url_split(NULL, 0, NULL, 0, dest_addr, size, &port, NULL, 0, url);
+    ff_url_split(proto, sizeof(proto), NULL, 0, dest_addr, size, &port, NULL, 0, url);
 
     *ttl = 0;
+
+    if (strcmp(proto, "rtp")) {
+        /* The url isn't for the actual rtp sessions,
+         * don't parse out anything else than the destination.
+         */
+        return 0;
+    }
+
     p = strchr(url, '?');
     if (p) {
         char buff[64];
@@ -211,19 +255,19 @@ static char *sdp_write_media_attributes(char *buff, int size, AVCodecContext *c,
                                      payload_type, config);
             break;
         case CODEC_ID_PCM_S16BE:
-            if (payload_type >= 96)
+            if (payload_type >= RTP_PT_PRIVATE)
                 av_strlcatf(buff, size, "a=rtpmap:%d L16/%d/%d\r\n",
                                          payload_type,
                                          c->sample_rate, c->channels);
             break;
         case CODEC_ID_PCM_MULAW:
-            if (payload_type >= 96)
+            if (payload_type >= RTP_PT_PRIVATE)
                 av_strlcatf(buff, size, "a=rtpmap:%d PCMU/%d/%d\r\n",
                                          payload_type,
                                          c->sample_rate, c->channels);
             break;
         case CODEC_ID_PCM_ALAW:
-            if (payload_type >= 96)
+            if (payload_type >= RTP_PT_PRIVATE)
                 av_strlcatf(buff, size, "a=rtpmap:%d PCMA/%d/%d\r\n",
                                          payload_type,
                                          c->sample_rate, c->channels);
@@ -257,7 +301,7 @@ static void sdp_write_media(char *buff, int size, AVCodecContext *c, const char 
 
     payload_type = ff_rtp_get_payload_type(c);
     if (payload_type < 0) {
-        payload_type = 96;  /* FIXME: how to assign a private pt? rtp.c is broken too */
+        payload_type = RTP_PT_PRIVATE + (c->codec_type == CODEC_TYPE_AUDIO);
     }
 
     switch (c->codec_type) {
@@ -293,7 +337,8 @@ int avf_sdp_create(AVFormatContext *ac[], int n_files, char *buff, int size)
     ttl = 0;
     if (n_files == 1) {
         port = sdp_get_address(dst, sizeof(dst), &ttl, ac[0]->filename);
-        if (port > 0) {
+        resolve_destination(dst, sizeof(dst));
+        if (dst[0]) {
             s.dst_addr = dst;
             s.ttl = ttl;
         }
@@ -304,6 +349,7 @@ int avf_sdp_create(AVFormatContext *ac[], int n_files, char *buff, int size)
     for (i = 0; i < n_files; i++) {
         if (n_files != 1) {
             port = sdp_get_address(dst, sizeof(dst), &ttl, ac[i]->filename);
+            resolve_destination(dst, sizeof(dst));
         }
         for (j = 0; j < ac[i]->nb_streams; j++) {
             sdp_write_media(buff, size,

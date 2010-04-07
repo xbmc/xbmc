@@ -49,10 +49,11 @@ void CRenderSystemGL::CheckOpenGLQuirks()
   if (strstr (m_RenderVendor, "NVIDIA"))
   {             
     // Nvidia 7300 (AppleTV) and 7600 cannot do DXT with NPOT under OSX
+    // Nvidia 9400M is slow as a dog
     if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
     {
-      char *arr[2]= { "7300","7600" };
-      for(int j = 0; j < 2; j++)
+      char *arr[3]= { "7300","7600","9400M" };
+      for(int j = 0; j < 3; j++)
       {
         if((int(m_RenderRenderer.find(arr[j])) > -1))
         {

@@ -122,7 +122,7 @@ void ff_mpeg12_common_init(MpegEncContext *s)
 {
 
     s->y_dc_scale_table=
-    s->c_dc_scale_table= mpeg2_dc_scale_table[s->intra_dc_precision];
+    s->c_dc_scale_table= ff_mpeg2_dc_scale_table[s->intra_dc_precision];
 
 }
 
@@ -2092,6 +2092,9 @@ static int vcr2_init_sequence(AVCodecContext *avctx)
     s->chroma_format = 1;
     s->codec_id= s->avctx->codec_id= CODEC_ID_MPEG2VIDEO;
     avctx->sub_id = 2; /* indicates MPEG-2 */
+    s1->save_width           = s->width;
+    s1->save_height          = s->height;
+    s1->save_progressive_seq = s->progressive_sequence;
     return 0;
 }
 
@@ -2201,7 +2204,7 @@ int ff_mpeg1_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size, 
                     return i-3;
                 }
             }
-            if(s && state == PICTURE_START_CODE){
+            if(pc->frame_start_found == 0 && s && state == PICTURE_START_CODE){
                 ff_fetch_timestamp(s, i-3, 1);
             }
         }

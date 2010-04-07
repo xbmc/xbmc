@@ -41,6 +41,7 @@ project server                          Diego Biurrun, Mans Rullgard
 mailinglists                            Michael Niedermayer, Baptiste Coudurier
 presets                                 Robert Swain
 metadata subsystem                      Aurelien Jacobs
+release management                      Diego Biurrun, Reinhard Tartler
 
 
 libavutil
@@ -97,8 +98,6 @@ Generic Parts:
     simple_idct.c, simple_idct.h        Michael Niedermayer
   postprocessing:
     libpostproc/*                       Michael Niedermayer
-  vdpau:
-    vdpau*                              Carl Eugen Hoyos
 
 Codecs:
   4xm.c                                 Michael Niedermayer
@@ -109,9 +108,13 @@ Codecs:
   aacenc.* aaccoder.* aacpsy.*          Alex Converse
   ac3*                                  Justin Ruggles
   alacenc.c                             Jaikrishnan Menon
+  alsdec.c                              Thilo Borgmann
   apedec.c                              Kostya Shishkov
   asv*                                  Michael Niedermayer
   atrac3*                               Benjamin Larsson
+  bgmc.c, bgmc.h                        Thilo Borgmann
+  bink.c                                Kostya Shishkov
+  binkaudio.c                           Peter Ross
   bmp.c                                 Mans Rullgard, Kostya Shishkov
   cavs*                                 Stefan Gehrer
   celp_filters.*                        Vitor Sessak
@@ -138,13 +141,18 @@ Codecs:
   idcinvideo.c                          Mike Melanson
   imc*                                  Benjamin Larsson
   indeo2*                               Kostya Shishkov
+  indeo5*                               Kostya Shishkov
   interplayvideo.c                      Mike Melanson
+  ivi*                                  Kostya Shishkov
   jpeg_ls.c                             Kostya Shishkov
   kmvc.c                                Kostya Shishkov
   lcl*.c                                Roberto Togni, Reimar Doeffinger
   libgsm.c                              Michel Bardiaux
+  libdirac*                             David Conrad
   libopenjpeg.c                         Jaikrishnan Menon
+  libschroedinger*                      David Conrad
   libspeexdec.c                         Justin Ruggles
+  libtheoraenc.c                        David Conrad
   libx264.c                             Mans Rullgard, Jason Garrett-Glaser
   loco.c                                Kostya Shishkov
   lzo.h, lzo.c                          Reimar Doeffinger
@@ -204,12 +212,18 @@ Codecs:
   vqavideo.c                            Mike Melanson
   wavpack.c                             Kostya Shishkov
   wmaprodec.c                           Sascha Sommer
+  wmavoice.c                            Ronald S. Bultje
   wmv2.c                                Michael Niedermayer
   wnv1.c                                Kostya Shishkov
   xan.c                                 Mike Melanson
   xl.c                                  Kostya Shishkov
   xvmc.c                                Ivan Kalvachev
   zmbv*                                 Kostya Shishkov
+
+Hardware acceleration:
+  dxva2*                                Laurent Aimar
+  vaapi*                                Gwenole Beauchesne
+  vdpau*                                Carl Eugen Hoyos
 
 
 libavdevice
@@ -239,10 +253,12 @@ Muxers/Demuxers:
   aiff.c                                Baptiste Coudurier
   ape.c                                 Kostya Shishkov
   avi*                                  Michael Niedermayer
+  bink.c                                Peter Ross
   crc.c                                 Michael Niedermayer
   daud.c                                Reimar Doeffinger
   dv.c                                  Roman Shaposhnik
   dxa.c                                 Kostya Shishkov
+  electronicarts.c                      Peter Ross
   ffm*                                  Baptiste Coudurier
   flac*                                 Justin Ruggles
   flic.c                                Mike Melanson
@@ -303,6 +319,7 @@ Muxers/Demuxers:
   wv.c                                  Kostya Shishkov
 
 Protocols:
+  http.c                                Ronald S. Bultje
   udp.c                                 Luca Abeni
 
 
@@ -328,8 +345,8 @@ GnuPG Fingerprints of maintainers and others who have svn write access
 ======================================================================
 
 Attila Kinali                 11F0 F9A6 A1D2 11F6 C745 D10C 6520 BCDD F2DF E765
-Benoit Fouet                  B22A 4F4F 43EF 636B BB66 FCDC 0023 AE1E 2985 49C8
 Baptiste Coudurier            8D77 134D 20CC 9220 201F C5DB 0AC9 325C 5C1A BAAA
+Benoit Fouet                  B22A 4F4F 43EF 636B BB66 FCDC 0023 AE1E 2985 49C8
 Daniel Verkamp                78A6 07ED 782C 653E C628 B8B9 F0EB 8DD8 2F0E 21C7
 Diego Biurrun                 8227 1E31 B6D9 4994 7427 E220 9CAE D6CC 4757 FCC5
 Jaikrishnan Menon             61A1 F09F 01C9 2D45 78E1 C862 25DC 8831 AF70 D368
@@ -338,5 +355,6 @@ Michael Niedermayer           9FF2 128B 147E F673 0BAD F133 611E C787 040B 0FAB
 Panagiotis Issaris            515C E262 10A8 FDCE 5481 7B9C 3AD7 D9A5 071D B3A9
 Peter Ross                    A907 E02F A6E5 0CD2 34CD 20D2 6760 79C5 AC40 DD6B
 Reimar Döffinger              C61D 16E5 9E2C D10C 8958 38A4 0899 A2B9 06D4 D9C7
+Reinhard Tartler              9300 5DC2 7E87 6C37 ED7B CA9A 9808 3544 9453 48A4
 Reynaldo H. Verdejo Pinochet  6E27 CD34 170C C78E 4D4F 5F40 C18E 077F 3114 452A
 Sascha Sommer                 38A0 F88B 868E 9D3A 97D4 D6A0 E823 706F 1E07 0D3C

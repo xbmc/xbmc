@@ -21,13 +21,13 @@
 
 #include <stdint.h>
 #include "config.h"
-#include "libavutil/common.h"
+#include "libavutil/attributes.h"
 
 #ifdef __ARMCC_VERSION
 
 #if HAVE_ARMV6
 #define bswap_16 bswap_16
-static av_always_inline av_const uint16_t bswap_16(uint16_t x)
+static av_always_inline av_const unsigned bswap_16(unsigned x)
 {
     __asm { rev16 x, x }
     return x;
@@ -44,7 +44,7 @@ static av_always_inline av_const uint32_t bswap_32(uint32_t x)
 
 #if HAVE_ARMV6
 #define bswap_16 bswap_16
-static av_always_inline av_const uint16_t bswap_16(uint16_t x)
+static av_always_inline av_const unsigned bswap_16(unsigned x)
 {
     __asm__("rev16 %0, %0" : "+r"(x));
     return x;
