@@ -4,7 +4,7 @@
 # $Id$
 
 # Allow console debug messages
-CONSOLEDEBUG = 1
+#CONSOLEDEBUG = 1
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
