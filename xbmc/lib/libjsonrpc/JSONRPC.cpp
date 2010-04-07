@@ -50,6 +50,7 @@ Command CJSONRPC::m_commands[] = {
   { "JSONRPC.Announce",                             CJSONRPC::Announce,                                  Response,     ReadData,        "Announce to other connected clients. Parameter example {\"sender\": \"foo\", \"message\": \"bar\", \"data\": \"somedata\" }. data is optional" },
 
 // Player
+  { "Player.Play",                                  CPlayerOperations::Play,                             Response,     ReadData,        ""},
   { "Player.GetActivePlayers",                      CPlayerOperations::GetActivePlayers,                 Response,     ReadData,        "Returns all active players IDs"},
 
 // Music player
