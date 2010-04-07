@@ -760,7 +760,7 @@ void CGUISettings::Initialize()
 
   CSettingsCategory *webbrowser = AddCategory(1, "webbrowser", 14000);
   // TODO: would be nice to ship a page somewhere in special://xbmc/
-  AddString(webbrowser, "webbrowser.homeurl", 23000, "http://www.google.com", BUTTON_CONTROL_STANDARD);
+  AddString(webbrowser, "webbrowser.homeurl", 23000, "http://www.youtube.com/watch?v=oHg5SJYRHA0", BUTTON_CONTROL_STANDARD);
 }
 
 CGUISettings::~CGUISettings(void)
