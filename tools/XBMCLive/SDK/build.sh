@@ -119,7 +119,7 @@ while read i; do
 		j=${i%%.$VARIANTNAME-variant}
 		mv $i $j
 	else
-		rm $i
+		rm -rf $i
 	fi
 done
 
