@@ -28,7 +28,6 @@
           </control>
 
           <control type="image">
-            <colordiffuse>cc888888</colordiffuse>
             <include>PicturesThumbImg</include>
           </control>
         </itemlayout>
@@ -40,7 +39,9 @@
 
           <control type="image">
             <include>PicturesThumbImg</include>
+			<include>PicturesImageFocus</include>
           </control>
+
         </focusedlayout>
       </control>
 

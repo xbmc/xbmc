@@ -2034,6 +2034,12 @@
 	<bordersize>3</bordersize>
   </include>
 
+  <include name="PicturesImageFocus">
+    <info>ListItem.Icon</info>
+	<bordertexture>amt-blank-poster-focus.png</bordertexture>
+	<bordersize>3</bordersize>
+  </include>
+
 <!--  <include name="PanelStreamNoThumb">
     <include>PanelStreamNoThumbDims</include>
     <include>NoThumbLabel</include>
