@@ -1724,15 +1724,6 @@ bool CApplication::LoadUserWindows()
         if (pType && pType->FirstChild())
           strType = pType->FirstChild()->Value();
       }
-      if (strType.Equals("dialog"))
-        pWindow = new CGUIDialog(0, "");
-      else if (strType.Equals("submenu"))
-        pWindow = new CGUIDialogSubMenu();
-      else if (strType.Equals("buttonmenu"))
-        pWindow = new CGUIDialogButtonMenu();
-      else
-        pWindow = new CGUIStandardWindow();
-
       int id = WINDOW_INVALID;
       if (!pRootElement->Attribute("id", &id))
       {
@@ -1740,20 +1731,26 @@ bool CApplication::LoadUserWindows()
         if (pType && pType->FirstChild())
           id = atol(pType->FirstChild()->Value());
       }
+      if (strType.Equals("dialog"))
+        pWindow = new CGUIDialog(id, FindFileData.cFileName);
+      else if (strType.Equals("submenu"))
+        pWindow = new CGUIDialogSubMenu(id, FindFileData.cFileName);
+      else if (strType.Equals("buttonmenu"))
+        pWindow = new CGUIDialogButtonMenu(id, FindFileData.cFileName);
+      else
+        pWindow = new CGUIStandardWindow(id, FindFileData.cFileName);
+
       // Check to make sure the pointer isn't still null
-      if (pWindow == NULL || id == WINDOW_INVALID)
+      if (pWindow == NULL)
       {
         CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
         return false;
       }
-      if (g_windowManager.GetWindow(WINDOW_HOME + id))
+      if (id == WINDOW_INVALID || g_windowManager.GetWindow(WINDOW_HOME + id))
       {
         delete pWindow;
         continue;
       }
-      // set the window's xml file, and add it to the window manager.
-      pWindow->SetProperty("xmlfile", FindFileData.cFileName);
-      pWindow->SetID(WINDOW_HOME + id);
       g_windowManager.AddCustomWindow(pWindow);
     }
     CloseHandle(hFind);
