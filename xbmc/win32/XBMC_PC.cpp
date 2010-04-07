@@ -178,6 +178,9 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
     LocalFree(szArglist);
   }
 
+  WSADATA wd;
+  WSAStartup(MAKEWORD(2,2), &wd);
+
   // Create and run the app
   g_application.Create();
 
@@ -187,9 +190,8 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
 #endif
 
   g_application.Run();
-
-  //Uninitialize COM
-  CoUninitialize();
+  
+  // put everything in CApplication::Cleanup() since this point is never reached
 
   return 0;
 }

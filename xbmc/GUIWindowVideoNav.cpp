@@ -163,6 +163,8 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           destPath = "videodb://1/6/";
         else if (strDestination.Equals("Movies"))
           destPath = "videodb://1/";
+        else if (strDestination.Equals("MovieSets"))
+          destPath = "videodb://1/7/";
         else if (strDestination.Equals("TvShowGenres"))
           destPath = "videodb://2/1/";
         else if (strDestination.Equals("TvShowTitles"))
@@ -850,7 +852,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
     if (pDialog->IsConfirmed())
     {
       CFileItemList items;
-      CDirectory::GetDirectory(pItem->m_strPath,items);
+      CDirectory::GetDirectory(pItem->m_strPath,items,"",false,false,DIR_CACHE_ONCE,true,true);
       for (int i=0;i<items.Size();++i)
         OnDeleteItem(items[i]);
 

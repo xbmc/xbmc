@@ -2227,10 +2227,21 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         }
         break;
       case INTEGER_GREATER_THAN:
-        if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
-          bReturn = atoi(GetItemImage((const CFileItem *)item, info.GetData1()).c_str()) > info.GetData2();
-        else
-          bReturn = atoi(GetImage(info.GetData1(), contextWindow).c_str()) > info.GetData2();
+        {
+          CStdString value;
+
+          if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+            value = GetItemImage((const CFileItem *)item, info.GetData1());
+          else
+            value = GetImage(info.GetData1(), contextWindow);
+
+          // Handle the case when a value contains time separator (:). This makes IntegerGreaterThan
+          // useful for Player.Time* members without adding a separate set of members returning time in seconds
+          if ( value.find_first_of( ':' ) )
+            bReturn = StringUtils::TimeStringToSeconds( value ) > info.GetData2();
+          else
+            bReturn = atoi( value.c_str() ) > info.GetData2();
+        }
         break;
       case STRING_STR:
           {

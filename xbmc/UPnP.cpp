@@ -2183,6 +2183,7 @@ int CUPnP::PopulateTagFromObject(CMusicInfoTag&          tag,
     }
     tag.SetTrackNumber(object.m_MiscInfo.original_track_number);
     tag.SetGenre((const char*)JoinString(object.m_Affiliation.genre, " / "));
+    tag.SetAlbum((const char*)object.m_Affiliation.album);
     if(resource)
         tag.SetDuration(resource->m_Duration);
     tag.SetLoaded();

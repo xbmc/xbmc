@@ -41,7 +41,7 @@ public:
                          , bool allowPrompting=false
                          , DIR_CACHE_TYPE cacheDirectory=DIR_CACHE_ONCE
                          , bool extFileInfo=true
-                         , bool allowThreads=true);
+                         , bool allowThreads=false);
 
   static bool Create(const CStdString& strPath);
   static bool Exists(const CStdString& strPath);

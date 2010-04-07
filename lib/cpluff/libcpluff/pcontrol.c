@@ -1109,7 +1109,6 @@ CP_HIDDEN void cpi_free_plugin(cp_plugin_info_t *plugin) {
 	
 	assert(plugin != NULL);
 	free(plugin->name);
-	free(plugin->summary);
 	free(plugin->identifier);
 	free(plugin->version);
 	free(plugin->provider_name);

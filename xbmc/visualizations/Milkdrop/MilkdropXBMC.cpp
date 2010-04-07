@@ -8,7 +8,7 @@
 #define strnicmp _strnicmp
 #define strcmpi  _strcmpi
 
-CPlugin* g_plugin;
+CPlugin* g_plugin=NULL;
 char g_visName[512];
 
 #define PRESETS_DIR "special://xbmc/addons/com.nullsoft.milkdrop.xbmc/presets"

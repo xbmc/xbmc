@@ -4,6 +4,7 @@ BIN_DIRS=	\
 	guilib/common \
 	guilib/tinyXML \
 	xbmc \
+	xbmc/addons \
 	xbmc/cdrip \
 	xbmc/cores \
 	xbmc/cores/DllLoader \
@@ -97,6 +98,7 @@ LIB_DIRS=\
 	xbmc/lib/libid3tag \
 	xbmc/lib/libapetag \
 	xbmc/lib/libPython/linux \
+	lib/cpluff \
 	lib/libmodplug \
 	lib/xbmc-dll-symbols \
 	lib/jsoncpp/jsoncpp/src/lib_json
@@ -282,6 +284,18 @@ xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a: force
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libbdnav
 xbmc/lib/libapetag/.libs/libapetag.a: force
 	$(MAKE) -C xbmc/lib/libapetag
+lib/cpluff/libcpluff/.libs/libcpluff.a: force
+	$(MAKE) -C lib/cpluff/libcpluff
+system/libcpluff-$(ARCH).so: lib/cpluff/libcpluff/.libs/libcpluff.a
+ifeq ($(findstring osx,$(ARCH)), osx)
+  ifeq ($(ARCH), powerpc-osx)
+	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -lbundle1.o -o $@ $<
+  else
+	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -o $@ $<
+  endif
+else
+	cp lib/cpluff/libcpluff/.libs/libcpluff.so $@
+endif
 lib/libmodplug/src/.libs/libmodplug.a: force
 	$(MAKE) -C lib/libmodplug
 system/players/paplayer/libmodplug-$(ARCH).so: lib/libmodplug/src/.libs/libmodplug.a
@@ -368,7 +382,7 @@ imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
-libs: libhdhomerun libid3tag imagelib libexif python
+libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-$(ARCH).so
 externals: libaddon codecs libs python pvrclients visualizations screensavers
 
 xcode_depends: \

@@ -118,7 +118,7 @@ CDirectory::CDirectory()
 CDirectory::~CDirectory()
 {}
 
-bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */, DIR_CACHE_TYPE cacheDirectory /* = DIR_CACHE_ONCE */, bool extFileInfo /* = true */, bool allowThreads /* = true */)
+bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, CStdString strMask /*=""*/, bool bUseFileDirectories /* = true */, bool allowPrompting /* = false */, DIR_CACHE_TYPE cacheDirectory /* = DIR_CACHE_ONCE */, bool extFileInfo /* = true */, bool allowThreads /* = false */)
 {
   try
   {
@@ -153,7 +153,8 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
           while(!get.Wait(10))
           {
             CSingleLock lock(g_graphicsContext);
-            if(g_windowManager.IsWindowVisible(WINDOW_DIALOG_PROGRESS))
+            if(g_windowManager.IsWindowVisible(WINDOW_DIALOG_PROGRESS)
+            || g_windowManager.IsWindowVisible(WINDOW_DIALOG_LOCK_SETTINGS))
             {
               if(dialog)
               {

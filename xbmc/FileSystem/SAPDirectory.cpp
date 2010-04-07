@@ -215,7 +215,7 @@ namespace SDP
       return 0;
 
     if(parse_sdp_type(&data, "i", value))
-      sdp->title = value;
+      sdp->info = value;
 
     if(parse_sdp_type(&data, "b", value))
       sdp->bandwidth = value;
@@ -515,10 +515,11 @@ namespace XFILE
 
       CFileItemPtr item(new CFileItem());
 
-      if(desc.title.length() > 0)
-        item->SetLabel(desc.title);
-      else
-        item->SetLabel(desc.name);
+      item->m_strTitle = desc.name;
+      item->SetLabel(item->m_strTitle);
+      if(desc.info.length() > 0 && desc.info != "N/A")
+        item->SetLabel2(desc.info);
+      item->SetLabelPreformated(true);
 
       item->m_strPath = it->path;
       items.Add(item);

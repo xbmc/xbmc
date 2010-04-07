@@ -23,6 +23,9 @@
 #include "AddonDll.h"
 #include "DllScreenSaver.h"
 
+namespace ADDON
+{
+
 class CScreenSaver : public ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>
 {
 public:
@@ -36,3 +39,4 @@ public:
   void GetInfo(SCR_INFO *info);
 };
 
+} /*namespace ADDON*/

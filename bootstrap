@@ -1,6 +1,9 @@
 #!/bin/sh
 
+set -e
+
 autoreconf -vif
+autoreconf -vif lib/cpluff
 autoreconf -vif xbmc/lib/libass
 autoreconf -vif xbmc/cores/dvdplayer/Codecs/libbdnav
 

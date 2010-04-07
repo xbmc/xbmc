@@ -952,6 +952,8 @@
 		F51CF2D00F6055A4004F4602 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CF2CE0F6055A4004F4602 /* sha1.c */; };
 		F5290C220EDF142A001167F0 /* PlayListURL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5290C210EDF142A001167F0 /* PlayListURL.cpp */; };
 		F52910140EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */; };
+		F52BFFDB115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */; };
+		F52BFFDC115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */; };
 		F5390F7A0F2BB7080081BAE0 /* Cdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D879D10EF4BE53007C68A9 /* Cdg.cpp */; };
 		F548786D0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */; };
 		F548786E0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */; };
@@ -3620,6 +3622,8 @@
 		F5290C210EDF142A001167F0 /* PlayListURL.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PlayListURL.cpp; path = xbmc/PlayListURL.cpp; sourceTree = SOURCE_ROOT; };
 		F52910120EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DirectoryNodeMusicVideoAlbum.h; path = xbmc/FileSystem/VideoDatabaseDirectory/DirectoryNodeMusicVideoAlbum.h; sourceTree = SOURCE_ROOT; };
 		F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = DirectoryNodeMusicVideoAlbum.cpp; path = xbmc/FileSystem/VideoDatabaseDirectory/DirectoryNodeMusicVideoAlbum.cpp; sourceTree = SOURCE_ROOT; };
+		F52BFFD9115D5574004B1D66 /* AddonStatusHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonStatusHandler.h; path = addons/AddonStatusHandler.h; sourceTree = "<group>"; };
+		F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonStatusHandler.cpp; path = addons/AddonStatusHandler.cpp; sourceTree = "<group>"; };
 		F548786B0FE060FF00E506FD /* DVDSubtitleParserMPL2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserMPL2.h; sourceTree = "<group>"; };
 		F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = DVDSubtitleParserMPL2.cpp; sourceTree = "<group>"; };
 		F54878790FE0619800E506FD /* PythonSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PythonSettings.cpp; sourceTree = "<group>"; };
@@ -4035,6 +4039,8 @@
 				18B49FF31152BFA5001AF8A6 /* AddonDll.h */,
 				18B49FF41152BFA5001AF8A6 /* AddonManager.cpp */,
 				18B49FF51152BFA5001AF8A6 /* AddonManager.h */,
+				F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */,
+				F52BFFD9115D5574004B1D66 /* AddonStatusHandler.h */,
 				18B49FF61152BFA5001AF8A6 /* DllAddon.h */,
 				18B49FF71152BFA5001AF8A6 /* DllScreenSaver.h */,
 				18B49FF81152BFA5001AF8A6 /* DllVisualisation.h */,
@@ -8142,6 +8148,7 @@
 				7C8A14571154CB2600E5FCFA /* TextureCache.cpp in Sources */,
 				C80425711158A0DE00D158A6 /* controlslider.cpp in Sources */,
 				7C8A187D115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */,
+				F52BFFDB115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9006,6 +9013,7 @@
 				7C8A14561154CB2600E5FCFA /* TextureCache.cpp in Sources */,
 				C80425721158A0DE00D158A6 /* controlslider.cpp in Sources */,
 				7C8A187C115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */,
+				F52BFFDC115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

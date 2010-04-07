@@ -1106,7 +1106,11 @@ bool CUtil::IsLiveTV(const CStdString& strFile)
   if (strFile.Left(14).Equals("pvr://channels"))
     return true;
 
-  if (IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile) || IsHTSP(strFile))
+  if(IsTuxBox(strFile)
+  || IsVTP(strFile)
+  || IsHDHomeRun(strFile)
+  || IsHTSP(strFile)
+  || strFile.Left(4).Equals("sap:"))
     return true;
 
   if (IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))

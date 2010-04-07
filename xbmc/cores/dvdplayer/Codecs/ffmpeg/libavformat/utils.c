@@ -375,6 +375,9 @@ static int set_codec_from_probe_data(AVFormatContext *s, AVStream *st, AVProbeDa
         } else if (!strcmp(fmt->name, "dts")) {
             st->codec->codec_id = CODEC_ID_DTS;
             st->codec->codec_type = CODEC_TYPE_AUDIO;
+        } else if (!strcmp(fmt->name, "aac")) {
+            st->codec->codec_id = CODEC_ID_AAC;
+            st->codec->codec_type = CODEC_TYPE_AUDIO;
         }
     }
     return !!fmt;
