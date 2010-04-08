@@ -730,6 +730,7 @@
   <string id="1048">Web server gebruikersnaam</string>
   <string id="1049">Script instellingen</string>
   <string id="1050">Singles</string>
+  <string id="1051">Voer url in</string>
 
   <string id="1200">SMB-client</string>
   <string id="1202">Werkgroep</string>
@@ -826,22 +827,23 @@
   <string id="10005">Muziek</string>
   <string id="10006">Video's</string>
   <string id="10007">Systeeminformatie</string>
-  <string id="10008">Instellingen-<string id="10008">Settings - General</string>gt;Algemeen</string>
-  <string id="10009">Instellingen-<string id="10009">Settings - Screen</string>gt;Beeld</string>
-  <string id="10010"> Instellingen-<string id="10010">Settings - Appearance - GUI Calibration</string>gt;Uiterlijk-<string id="10010">Settings - Appearance - GUI Calibration</string>gt;GUI-kalibratie</string>
-  <string id="10011"> Instellingen-<string id="10011">Settings - Videos - Screen Calibration</string>gt;Films-<string id="10011">Settings - Videos - Screen Calibration</string>gt;Schermkalibratie</string>
-  <string id="10012">Instellingen-<string id="10012">Settings - Pictures</string>gt;Afbeeldingen</string>
-  <string id="10013">Instellingen-<string id="10013">Settings - Programs</string>gt;Programma'</string>
-  <string id="10014">Instellingen-<string id="10014">Settings - Weather</string>gt;Weer</string>
-  <string id="10015">Instellingen-<string id="10015">Settings - Music</string>gt;Muziek</string>
-  <string id="10016">Instellingen-<string id="10016">Settings - System</string>gt;Systeem</string>
-  <string id="10017">Instellingen-<string id="10017">Settings - Videos</string>gt;Films</string>
-  <string id="10018">Instellingen-<string id="10018">Settings - Network</string>gt;Netwerk</string>
-  <string id="10019">Instellingen-<string id="10019">Settings - Appearance</string>gt;Uiterlijk</string>
+  <string id="10008">Instellingen - Algemeen</string>
+  <string id="10009">Instellingen - Beeld</string>
+  <string id="10010">Instellingen - GUI-kalibratie</string>
+  <string id="10011">Instellingen - Schermkalibratie</string>
+  <string id="10012">Instellingen - Afbeeldingen</string>
+  <string id="10013">Instellingen - Programma's</string>
+  <string id="10014">Instellingen - Weer</string>
+  <string id="10015">Instellingen - Muziek</string>
+  <string id="10016">Instellingen - Systeem</string>
+  <string id="10017">Instellingen - Films</string>
+  <string id="10018">Instellingen - Netwerk</string>
+  <string id="10019">Instellingen - Uiterlijk</string>
   <string id="10020">Scripts</string>
+  <string id="10021">Web Browser</string>
 
   <string id="10028">Video/Afspeellijst</string>
-  <string id="10034">Instellingen-<string id="10034">Settings - Profiles</string>gt;Profielen</string>
+  <string id="10034">Instellingen - Profielen</string>
 
   <string id="10100">Ja/Nee</string>
   <string id="10101">Voortgang</string>
@@ -2106,6 +2108,7 @@
   <string id="20252">Glazen vullen (video's)</string>
   <string id="20253">WebDAV server (HTTP)</string>
   <string id="20254">WebDAV server (HTTPS)</string>
+  <string id="20255">Eerste login, profiel bijwerken<string>
 
   <string id="20300">Web server directory (HTTP)</string>
   <string id="20301">Web server directory (HTTPS)</string>
@@ -2488,8 +2491,8 @@
   <string id="23050">Activeer teletext</string>
   <string id="23051">Stuk %i</string>
   <string id="23052">Bufferen %i bytes</string>
-  <string id="23053">Missing settings</string>
-  <string id="23054">Wrong settings</string>
+  <string id="23053">Instellingen ontbreken</string>
+  <string id="23054">Instellingen verkeerd</string>
 
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">Externe Player actief</string>
@@ -2502,6 +2505,7 @@
   <string id="24001">Add-ons</string>
 
   <string id="24005">Plugin</string>
+  <string id="24006">PVR client</string>
   <string id="24007">Scraper</string>
   <string id="24008">Schermbeveiliging</string>
   <string id="24009">Script</string>
@@ -2621,6 +2625,7 @@
   <string id="34001">Vorbis</string>
   <string id="34002">Wav</string>
   <string id="34003">DXVA</string>
+  <string id="34004">VAAPI</string>
 
   <string id="34100">Speaker Configuration</string>
   <string id="34101">2.0</string>

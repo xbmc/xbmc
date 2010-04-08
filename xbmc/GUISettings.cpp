@@ -796,9 +796,9 @@ void CGUISettings::Initialize()
   AddBool(pvrp, "pvrplayback.switchautoclose", 19168, true);
   AddBool(pvrp, "pvrplayback.playminimized", 19171, true);
   AddInt(pvrp, "pvrplayback.scantime", 19170, 5, 1, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
-  AddInt(pvrp, "pvrplayback.channelentrytimeout", 19073, 1000, 0, 250, 2000, SPIN_CONTROL_INT_PLUS, MASK_MS);
+  AddInt(pvrp, "pvrplayback.channelentrytimeout", 19073, 0, 0, 250, 2000, SPIN_CONTROL_INT_PLUS, MASK_MS);
   AddSeparator(pvrp, "pvrplayback.sep1");
-  AddBool(pvrp, "pvrplayback.signalquality", 19037, false);
+  AddBool(pvrp, "pvrplayback.signalquality", 19037, true);
   AddInt(pvrp, "pvrplayback.startlast", 19189, START_LAST_CHANNEL_OFF, START_LAST_CHANNEL_OFF, 1, START_LAST_CHANNEL_ON, SPIN_CONTROL_TEXT);
 
   CSettingsCategory* pvrr = AddCategory(8, "pvrrecord", 19043);

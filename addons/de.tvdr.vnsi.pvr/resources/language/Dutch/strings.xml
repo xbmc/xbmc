@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">VDR hostnaam of IP adres</string>
+    <string id="30001">VNSI Poort</string>
+    <string id="30002">Prioriteit</string>
+    <string id="30003">Character Set Conversie</string>
+    <string id="30004">Connectie timeout (s)</string>
+    <string id="30005">Berichten vanuit VDR toestaan</string>
+    <string id="30006">Lees opnames van directory</string>^M
+    <string id="30007">VDR opname directory</string>^M
+
+</strings>
