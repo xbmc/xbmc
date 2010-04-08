@@ -53,13 +53,11 @@ void CSubManager::SetStyle(SSubStyle* style)
   m_style.outlineWidthY = style->outlineWidthY;
   if (style->fontName)
     m_style.fontName = style->fontName;
-
-  m_useDefaultStyle = false;
   
   if (style->fontName)
     CoTaskMemFree(style->fontName);
 
-  UpdateSubtitle();
+  m_useDefaultStyle = false;
 }
 void CSubManager::ApplyStyle(CRenderedTextSubtitle* pRTS)
 {
@@ -91,10 +89,9 @@ void CSubManager::SetSubPicProvider(ISubStream* pSubStream)
   ApplyStyleSubStream(pSubStream);
 
   m_pSubPicQueue->SetSubPicProvider(Com::SmartQIPtr<ISubPicProvider>(pSubStream));
-  m_subresync.RemoveAll();
 }
 
-void CSubManager::SetTextPassThruSubStream(ISubStream* pSubStreamOld, ISubStream* pSubStreamNew)
+void CSubManager::SetTextPassThruSubStream(ISubStream* pSubStreamNew)
 {
   ApplyStyleSubStream(pSubStreamNew);
   m_pInternalSubStream = pSubStreamNew;
@@ -234,7 +231,7 @@ HRESULT CSubManager::InsertPassThruFilter(IGraphBuilder* pGB)
 
       if (pSubStream)
       {
-        ApplyStyleSubStream(pSubStream);
+        //SetSubPicProvider(pSubStream);
         return S_OK;
       }
       else

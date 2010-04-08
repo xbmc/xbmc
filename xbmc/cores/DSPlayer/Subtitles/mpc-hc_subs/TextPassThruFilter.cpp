@@ -36,22 +36,15 @@
 class CTextPassThruInputPin : public CSubtitleInputPin
 {
   CTextPassThruFilter* m_pTPTFilter;
-  Com::SmartPtr<ISubStream> m_pSubStreamOld;
 
 protected:
   void AddSubStream(ISubStream* pSubStream)
   {
-    if(m_pSubStreamOld)
-    {
-      if(pSubStream) m_pTPTFilter->m_pMainFrame->SetTextPassThruSubStream(m_pSubStreamOld, pSubStream);
-      m_pSubStreamOld = NULL;
-    }
+    if(pSubStream) m_pTPTFilter->m_pMainFrame->SetTextPassThruSubStream(pSubStream);
   }
 
   void RemoveSubStream(ISubStream* pSubStream)
   {
-    //ATLTRACE("RemoveSubStream");
-    m_pSubStreamOld = pSubStream;
   }
 
   void InvalidateSubtitle(REFERENCE_TIME rtStart, ISubStream* pSubStream)
@@ -60,12 +53,12 @@ protected:
   }
 
 public:
-    CTextPassThruInputPin(CTextPassThruFilter* pTPTFilter, CCritSec* pLock, CCritSec* pSubLock, HRESULT* phr);
+  CTextPassThruInputPin(CTextPassThruFilter* pTPTFilter, CCritSec* pLock, CCritSec* pSubLock, HRESULT* phr);
   STDMETHODIMP NewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
   STDMETHODIMP Receive(IMediaSample* pSample);
-    STDMETHODIMP EndOfStream();
-    STDMETHODIMP BeginFlush();
-    STDMETHODIMP EndFlush();
+  STDMETHODIMP EndOfStream();
+  STDMETHODIMP BeginFlush();
+  STDMETHODIMP EndFlush();
 };
 
 //
@@ -77,9 +70,9 @@ class CTextPassThruOutputPin : public CBaseOutputPin
   CTextPassThruFilter* m_pTPTFilter;
 
 public:
-    CTextPassThruOutputPin(CTextPassThruFilter* pTPTFilter, CCritSec* pLock, HRESULT* phr);
+  CTextPassThruOutputPin(CTextPassThruFilter* pTPTFilter, CCritSec* pLock, HRESULT* phr);
 
-    HRESULT CheckMediaType(const CMediaType* mtOut);
+  HRESULT CheckMediaType(const CMediaType* mtOut);
   HRESULT DecideBufferSize(IMemAllocator* pAllocator, ALLOCATOR_PROPERTIES* pProperties);
   HRESULT GetMediaType(int iPosition, CMediaType* pmt);
   STDMETHODIMP Notify(IBaseFilter* pSender, Quality q) {return S_OK;}

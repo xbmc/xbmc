@@ -37,7 +37,7 @@ private:
   friend class CTextPassThruInputPin;
   friend class CTextPassThruFilter;
   //SetTextPassThruSubStream, InvalidateSubtitle are called from CTextPassThruInputPin
-  void SetTextPassThruSubStream(ISubStream* pSubStreamOld, ISubStream* pSubStreamNew);
+  void SetTextPassThruSubStream(ISubStream* pSubStreamNew);
   void InvalidateSubtitle(DWORD_PTR nSubtitleId, REFERENCE_TIME rtInvalidate);
 
   void UpdateSubtitle();
@@ -64,5 +64,5 @@ private:
 
   REFERENCE_TIME m_rtTimePerFrame;
 
-  CSubresync m_subresync;
+  //CSubresync m_subresync;
 };
