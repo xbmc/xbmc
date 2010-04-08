@@ -594,7 +594,7 @@ void Rasterizer::_OverlapRegion(tSpanBuffer& dst, tSpanBuffer& src, int dx, int 
 
       // Flush span.
 
-      dst.push_back(tSpan(x1, x2));	
+      dst.push_back(tSpan(x1, x2));
     }
     else
     {
@@ -632,7 +632,7 @@ void Rasterizer::_OverlapRegion(tSpanBuffer& dst, tSpanBuffer& src, int dx, int 
 
       // Flush span.
 
-      dst.push_back(tSpan(x1, x2));	
+      dst.push_back(tSpan(x1, x2));
     }
   }
 
@@ -643,7 +643,7 @@ void Rasterizer::_OverlapRegion(tSpanBuffer& dst, tSpanBuffer& src, int dx, int 
 
   while(itB != itBE)
   {
-    dst.push_back(tSpan((*itB).first + offset1, (*itB).second + offset2));	
+    dst.push_back(tSpan((*itB).first + offset1, (*itB).second + offset2));
     ++itB;
   }
 }

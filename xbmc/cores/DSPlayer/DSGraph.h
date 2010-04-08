@@ -160,8 +160,6 @@ private:
   //dvd stuff
   Com::SmartQIPtr<IVideoWindow>         m_pVideoWindow;
   Com::SmartQIPtr<IBasicVideo>          m_pBasicVideo;
-  Com::SmartQIPtr<IDvdInfo2>            m_pDvdInfo2;
-  Com::SmartQIPtr<IDvdControl2>         m_pDvdControl2;
   Com::SmartPtr<IDvdState>              m_pDvdState;
   DVD_STATUS	                          m_pDvdStatus;
   std::vector<DvdTitle*>                m_pDvdTitles;

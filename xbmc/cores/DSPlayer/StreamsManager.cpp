@@ -40,9 +40,8 @@ CStreamsManager *CStreamsManager::getSingleton()
 }
 
 CStreamsManager::CStreamsManager(void):
-  m_pIAMStreamSelect(NULL),
-  m_init(false),
-  m_bChangingStream(false)
+  m_pIAMStreamSelect(NULL), m_init(false), m_bChangingStream(false),
+  m_dvdStreamLoaded(false)
 {
 }
 
@@ -108,6 +107,11 @@ void CStreamsManager::SetAudioStream(int iStream)
 {
   if (! m_init)
     return;
+
+  if (CFGLoader::Filters.isDVD)
+    return; // currently not implemented
+
+  CSingleLock lock(m_lock);
 
   long disableIndex = GetAudioStream(), enableIndex = iStream;
 
@@ -373,6 +377,12 @@ void CStreamsManager::LoadStreams()
     CStdString pinName;
     SStreamInfos *infos = NULL;
     bool audioPinAlreadyConnected = false;//, subtitlePinAlreadyConnected = FALSE;
+
+    // If we're playing a DVD, the bottom method doesn't work
+    if (CFGLoader::Filters.isDVD)
+    { // The playback need to be started in order to get informations
+      return;
+    }
 
     int nIn = 0, nOut = 0, nInC = 0, nOutC = 0;
     DShowUtil::CountPins(m_pSplitter, nIn, nOut, nInC, nOutC);
@@ -799,8 +809,11 @@ void CSubtitleManager::Initialize()
 
 void CSubtitleManager::Unload()
 {
-  m_pManager->SetSubPicProvider(NULL);
-  m_pManager->Free();
+  if (m_pManager)
+  {
+    m_pManager->SetSubPicProvider(NULL);
+    m_pManager->Free();
+  }
   while (! m_subtitleStreams.empty())
   {
     if (m_subtitleStreams.back()->external)
@@ -873,6 +886,12 @@ void CSubtitleManager::GetSubtitleName( int iStream, CStdString &strStreamName )
 
 void CSubtitleManager::SetSubtitle( int iStream )
 {
+
+  if (CFGLoader::Filters.isDVD)
+    return; // currently not implemented
+
+  CSingleLock lock(m_pStreamManager->m_lock);
+
   //If no subtitles just return
   if (GetSubtitleCount() <= 0)
     return;
@@ -1142,6 +1161,120 @@ CStdString CStreamsManager::ISOToLanguage( CStdString code )
     return DShowUtil::ISO6392ToLanguage(code);
 }
 
+void CStreamsManager::LoadDVDStreams()
+{
+  Com::SmartPtr<IDvdInfo2> pDvdI = CFGLoader::Filters.DVD.dvdInfo;
+  Com::SmartPtr<IDvdControl2> pDvdC = CFGLoader::Filters.DVD.dvdControl;
+
+  DVD_VideoAttributes vid;
+  // First, video
+  HRESULT hr = pDvdI->GetCurrentVideoAttributes(&vid);
+  if (SUCCEEDED(hr))
+  {
+    m_videoStream.width = vid.ulSourceResolutionX;
+    m_videoStream.height = vid.ulSourceResolutionY;
+    switch (vid.Compression)
+    {
+    case DVD_VideoCompression_MPEG1:
+      m_videoStream.codecname = "MPEG1";
+      break;
+    case DVD_VideoCompression_MPEG2:
+      m_videoStream.codecname = "MPEG2";
+      break;
+    default:
+      m_videoStream.codecname = "Unknown";
+    }
+  }
+
+  UpdateDVDStream();
+
+}
+
+void CStreamsManager::UpdateDVDStream()
+{
+  if (m_dvdStreamLoaded)
+    return;
+
+  // Second, audio
+  unsigned long nbrStreams = 0, currentStream = 0;
+  HRESULT hr = CFGLoader::Filters.DVD.dvdInfo->GetCurrentAudio(&nbrStreams, &currentStream);
+  if (FAILED(hr))
+    return;
+
+  CSingleLock lock(m_lock);
+
+  m_audioStreams.clear();
+  for (unsigned int i = 0; i < nbrStreams; i++)
+  {
+    std::auto_ptr<SAudioStreamInfos> s(new SAudioStreamInfos());
+    DVD_AudioAttributes audio;
+    hr = CFGLoader::Filters.DVD.dvdInfo->GetAudioAttributes(i, &audio);
+
+    s->channels = audio.bNumberOfChannels;
+    s->samplerate = audio.dwFrequency;
+    s->bitrate = 0;
+    s->lcid = audio.Language;
+    if (i == currentStream)
+    {
+      s->flags = AMSTREAMSELECTINFO_ENABLED;
+      s->connected = true;
+    }
+    switch (audio.AudioFormat)
+    {
+    case DVD_AudioFormat_AC3:
+      s->codecname = "Dolby AC3";
+      break;
+    case DVD_AudioFormat_MPEG1:
+      s->codecname = "MPEG1";
+      break;
+    case DVD_AudioFormat_MPEG1_DRC:
+      s->codecname = "MPEG1 (DCR)";
+      break;
+    case DVD_AudioFormat_MPEG2:
+      s->codecname = "MPEG2";
+      break;
+    case DVD_AudioFormat_MPEG2_DRC:
+      s->codecname = "MPEG2 (DCR)";
+      break;
+    case DVD_AudioFormat_LPCM:
+      s->codecname = "LPCM";
+      break;
+    case DVD_AudioFormat_DTS:
+      s->codecname = "DTS";
+      break;
+    case DVD_AudioFormat_SDDS:
+      s->codecname = "SDDS";
+      break;
+    default:
+      s->codecname = "Unknown";
+      break;
+    }
+    FormatStreamName((*s));
+
+    m_audioStreams.push_back(s.release());
+  }
+
+  BOOL isDisabled = false;
+  hr = CFGLoader::Filters.DVD.dvdInfo->GetCurrentSubpicture(&nbrStreams, &currentStream, &isDisabled);
+  if (FAILED(hr))
+    return;
+
+  for (int i = 0; i < nbrStreams; i++)
+  {
+    DVD_SubpictureAttributes subpic;
+    hr = CFGLoader::Filters.DVD.dvdInfo->GetSubpictureAttributes(i, &subpic);
+    if (subpic.Type != DVD_SPType_Language)
+      continue;
+
+    std::auto_ptr<SSubtitleStreamInfos> s(new SSubtitleStreamInfos());
+    s->lcid = subpic.Language;
+    FormatStreamName((*s));
+
+    SubtitleManager->GetSubtitles().push_back(s.release());
+  }
+
+  m_dvdStreamLoaded = true;
+}
 SSubtitleStreamInfos * CSubtitleManager::GetSubtitleStreamInfos( unsigned int iIndex /*= 0*/ )
 {
   if (iIndex > m_subtitleStreams.size())

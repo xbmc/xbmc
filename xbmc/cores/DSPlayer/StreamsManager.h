@@ -255,6 +255,8 @@ public:
    * @param[out] s A filled SStreamInfos structure
    */
   void GetStreamInfos(AM_MEDIA_TYPE *mt, SStreamInfos *s);
+  void LoadDVDStreams();
+  void UpdateDVDStream();
 
   SVideoStreamInfos* GetVideoStreamInfos(unsigned int iIndex = 0);
   SAudioStreamInfos* GetAudioStreamInfos(unsigned int iIndex = 0);
@@ -268,7 +270,6 @@ private:
 
   void FormatStreamName(SStreamInfos& s);
   CStdString ISOToLanguage(CStdString code);
-
   std::vector<SAudioStreamInfos *> m_audioStreams;
 
   Com::SmartPtr<IAMStreamSelect> m_pIAMStreamSelect;
@@ -281,6 +282,8 @@ private:
   bool m_bChangingStream;
 
   SVideoStreamInfos m_videoStream;
+  CCriticalSection m_lock;
+  bool m_dvdStreamLoaded;
 };
 
 class CSubtitleManager

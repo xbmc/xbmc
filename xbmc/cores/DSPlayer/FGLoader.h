@@ -73,6 +73,23 @@ struct SVideoRendererFilterInfos: SFilterInfos
   Com::SmartPtr<IQualProp> pQualProp;
 };
 
+struct SDVDFilters
+{
+  SDVDFilters()
+  {
+    Clear();
+  }
+
+  void Clear()
+  {
+    dvdControl.Release();
+    dvdInfo.Release();
+  }
+
+  Com::SmartQIPtr<IDvdControl2> dvdControl;
+  Com::SmartQIPtr<IDvdInfo2> dvdInfo;
+};
+
 
 struct SFilters
 {
@@ -83,12 +100,13 @@ struct SFilters
   SFilterInfos AudioRenderer;
   SVideoRendererFilterInfos VideoRenderer;
   std::vector<SFilterInfos> Extras;
-
-  bool PlayingArchive;
+  SDVDFilters DVD;
+  bool isDVD;
 
   void Clear()
   {
-    PlayingArchive = false;
+    isDVD = false;
+    DVD.Clear();
     Source.Clear();
     Splitter.Clear();
     Video.Clear();

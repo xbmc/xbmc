@@ -97,7 +97,11 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
 
   // Starts playback
   if (PlayerState != DSPLAYER_ERROR)
+  {
     m_pDsGraph.Play();
+    if (CFGLoader::Filters.isDVD)
+      CStreamsManager::getSingleton()->LoadDVDStreams();
+  }
 
   return (PlayerState != DSPLAYER_ERROR);
 }
@@ -232,7 +236,10 @@ void CDSPlayer::Process()
     CHECK_PLAYER_STATE
 
     if (m_currentRate == 1)
+    {
       CChaptersManager::getSingleton()->UpdateChapters();
+      CStreamsManager::getSingleton()->UpdateDVDStream();
+    }
     //Handle fastforward stuff
    
     Sleep(sleepTime);

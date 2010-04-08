@@ -115,18 +115,10 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
     //m_pVideoWindow->put_WindowStyle(WS_CHILD|WS_CLIPSIBLINGS|WS_CLIPCHILDREN);
     //m_pVideoWindow->put_MessageDrain((OAHWND)g_hWnd);
   }
-  BeginEnumFilters(m_pFilterGraph, pEF, pBF)
-	{
-		if((m_pDvdControl2 = pBF) && (m_pDvdInfo2 = pBF))
-    {
-      m_VideoInfo.isDVD = true;
-      break;
-    }
-	}
-	EndEnumFilters
   //TODO Ti-Ben
   //with the vmr9 we need to add AM_DVD_SWDEC_PREFER  AM_DVD_VMR9_ONLY on the ivmr9config prefs
-  
+
+  m_VideoInfo.isDVD = CFGLoader::Filters.isDVD;
   
   // Audio & subtitle streams
   START_PERFORMANCE_COUNTER
@@ -226,30 +218,7 @@ void CDSGraph::UpdateTime()
 }
 
 void CDSGraph::UpdateDvdState()
-{       
-  
-  
-  return;
-  //Not working so skip it
-  //according to msdn the titles can only be from 1 to 99
-  DVD_MenuAttributes* ma;
-  DVD_TitleAttributes* ta;
-  HRESULT hr;
-  DvdTitle* dvdtmp;
-  for (int i = 1; i < 100; i++)
-  {
-    dvdtmp = NULL;
-    hr = m_pDvdInfo2->GetTitleAttributes((ULONG)i, ma,ta);
-    if (FAILED(hr))
-      break;
-    //
-    //dvdtmp->menuInfo
-    //dvdtmp->titleInfo
-    dvdtmp->titleIndex = (ULONG)i;
-    m_pDvdTitles.push_back(dvdtmp);
-  }
-  
-  //m_pDvdInfo2
+{
 }
 
 void CDSGraph::UpdateTotalTime()
@@ -259,13 +228,13 @@ void CDSGraph::UpdateTotalTime()
 
   if (m_VideoInfo.isDVD)
   {
-    if (!m_pDvdInfo2)
+    if (!CFGLoader::Filters.DVD.dvdInfo)
       return;
 
     REFERENCE_TIME rtDur = 0;
     DVD_HMSF_TIMECODE tcDur;
     ULONG ulFlags;
-    if(SUCCEEDED(m_pDvdInfo2->GetTotalTitleTime(&tcDur, &ulFlags)))
+    if(SUCCEEDED(CFGLoader::Filters.DVD.dvdInfo->GetTotalTitleTime(&tcDur, &ulFlags)))
     {
       rtDur = DShowUtil::HMSF2RT(tcDur);
       m_State.time_total = DS_TIME_TO_MSEC(rtDur);
@@ -384,15 +353,15 @@ HRESULT CDSGraph::HandleGraphEvent()
       case EC_DVD_CURRENT_HMSF_TIME:
         {
         double fps = evParam2 == DVD_TC_FLAG_25fps ? 25.0
-				: evParam2 == DVD_TC_FLAG_30fps ? 30.0
-				: evParam2 == DVD_TC_FLAG_DropFrame ? 29.97
-				: 25.0;
+        : evParam2 == DVD_TC_FLAG_30fps ? 30.0
+        : evParam2 == DVD_TC_FLAG_DropFrame ? 29.97
+        : 25.0;
         
         // DOne in UpdateDvdState
         /* REFERENCE_TIME rtDur = 0;
-			  DVD_HMSF_TIMECODE tcDur;
+        DVD_HMSF_TIMECODE tcDur;
         ULONG ulFlags;
-			  if(SUCCEEDED(m_pDvdInfo2->GetTotalTitleTime(&tcDur, &ulFlags)))
+        if(SUCCEEDED(m_pDvdInfo2->GetTotalTitleTime(&tcDur, &ulFlags)))
           rtDur = DShowUtil::HMSF2RT(tcDur, fps);
         m_State.time_total = (double)rtDur / 10000;*/
 
@@ -411,66 +380,66 @@ HRESULT CDSGraph::HandleGraphEvent()
           m_pDvdStatus.DvdDomain = (DVD_DOMAIN)evParam1;
           CStdString Domain("-");
 
-			    switch(m_pDvdStatus.DvdDomain)
-			    {
-			    case DVD_DOMAIN_FirstPlay:
-				    
-				    if (m_pDvdInfo2 && SUCCEEDED (m_pDvdInfo2->GetDiscID (NULL, &m_pDvdStatus.DvdGuid)))
-				    {
-					    if (m_pDvdStatus.DvdTitleId != 0)
-					    {
-						    //s.NewDvd (llDVDGuid);
-						    // Set command line position
-						    m_pDvdControl2->PlayTitle(m_pDvdStatus.DvdTitleId, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
-						    if (m_pDvdStatus.DvdChapterId > 1)
-							    m_pDvdControl2->PlayChapterInTitle(m_pDvdStatus.DvdTitleId, m_pDvdStatus.DvdChapterId, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
-						    else
-						    {
-							    // Trick : skip trailers with somes DVDs
-							    m_pDvdControl2->Resume(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
-							    m_pDvdControl2->PlayAtTime(&m_pDvdStatus.DvdTimecode, DVD_CMD_FLAG_Flush, NULL);
-						    }
+          switch(m_pDvdStatus.DvdDomain)
+          {
+          case DVD_DOMAIN_FirstPlay:
+            
+            if (CFGLoader::Filters.DVD.dvdInfo && SUCCEEDED (CFGLoader::Filters.DVD.dvdInfo->GetDiscID (NULL, &m_pDvdStatus.DvdGuid)))
+            {
+              if (m_pDvdStatus.DvdTitleId != 0)
+              {
+                //s.NewDvd (llDVDGuid);
+                // Set command line position
+                CFGLoader::Filters.DVD.dvdControl->PlayTitle(m_pDvdStatus.DvdTitleId, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+                if (m_pDvdStatus.DvdChapterId > 1)
+                  CFGLoader::Filters.DVD.dvdControl->PlayChapterInTitle(m_pDvdStatus.DvdTitleId, m_pDvdStatus.DvdChapterId, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+                else
+                {
+                  // Trick : skip trailers with somes DVDs
+                  CFGLoader::Filters.DVD.dvdControl->Resume(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+                  CFGLoader::Filters.DVD.dvdControl->PlayAtTime(&m_pDvdStatus.DvdTimecode, DVD_CMD_FLAG_Flush, NULL);
+                }
 
-						    //m_iDVDTitle	  = s.lDVDTitle;
-						    m_pDvdStatus.DvdTitleId   = 0;
-						    m_pDvdStatus.DvdChapterId = 0;
-					    }
-					    /*else if (!s.NewDvd (llDVDGuid) && s.fRememberDVDPos)
-					    {
-						    // Set last remembered position (if founded...)
-						    DVD_POSITION*	DvdPos = s.CurrentDVDPosition();
+                //m_iDVDTitle	  = s.lDVDTitle;
+                m_pDvdStatus.DvdTitleId   = 0;
+                m_pDvdStatus.DvdChapterId = 0;
+              }
+              /*else if (!s.NewDvd (llDVDGuid) && s.fRememberDVDPos)
+              {
+                // Set last remembered position (if founded...)
+                DVD_POSITION*	DvdPos = s.CurrentDVDPosition();
 
-						    m_pDvdControl2->PlayTitle(DvdPos->lTitle, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
-						    m_pDvdControl2->Resume(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
-						    if (SUCCEEDED (hr = m_pDvdControl2->PlayAtTime (&DvdPos->Timecode, DVD_CMD_FLAG_Flush, NULL)))
-						    {
-							    m_iDVDTitle = DvdPos->lTitle;
-						    }
-					    }*/
-				    }
-				    Domain = _T("First Play"); 
+                m_pDvdControl2->PlayTitle(DvdPos->lTitle, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+                m_pDvdControl2->Resume(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+                if (SUCCEEDED (hr = m_pDvdControl2->PlayAtTime (&DvdPos->Timecode, DVD_CMD_FLAG_Flush, NULL)))
+                {
+                  m_iDVDTitle = DvdPos->lTitle;
+                }
+              }*/
+            }
+            Domain = _T("First Play"); 
             m_DvdState.isInMenu = false;
             break;
-			    case DVD_DOMAIN_VideoManagerMenu: 
+          case DVD_DOMAIN_VideoManagerMenu: 
             Domain = _T("Video Manager Menu"); 
             m_DvdState.isInMenu = true;
             break;
-			    case DVD_DOMAIN_VideoTitleSetMenu: 
+          case DVD_DOMAIN_VideoTitleSetMenu: 
             Domain = _T("Video Title Set Menu"); 
             //Entered menu
             m_DvdState.isInMenu = true;
             break;
-			    case DVD_DOMAIN_Title: 
-				    Domain.Format("Title %d", m_pDvdStatus.DvdTitleId);
+          case DVD_DOMAIN_Title: 
+            Domain.Format("Title %d", m_pDvdStatus.DvdTitleId);
             //left menu
             m_DvdState.isInMenu = false;
             m_pDvdStatus.DvdTitleId = (ULONG)evParam2;
-				    break;
-			    case DVD_DOMAIN_Stop: 
+            break;
+          case DVD_DOMAIN_Stop: 
             Domain = "stopped"; 
             break;
-			    default: Domain = _T("-"); break;
-			    }
+          default: Domain = _T("-"); break;
+          }
         }
         break;
       case EC_DVD_ERROR:
@@ -541,7 +510,7 @@ bool CDSGraph::OnMouseClick(tagPOINT pt)
 bool CDSGraph::OnMouseMove(tagPOINT pt)
 {
   HRESULT hr;
-  hr = m_pDvdControl2->SelectAtPosition(pt);
+  hr = CFGLoader::Filters.DVD.dvdControl->SelectAtPosition(pt);
   if (SUCCEEDED(hr))
     return true;
   return true;
@@ -682,8 +651,7 @@ HRESULT CDSGraph::UnloadGraph()
   }
   EndEnumFilters
 
-  m_pDvdInfo2.Release();
-  m_pDvdControl2.Release();
+  CFGLoader::Filters.DVD.Clear();
   m_pMediaControl.Release();
   m_pMediaEvent.Release();
   m_pMediaSeeking.Release();
@@ -759,11 +727,11 @@ void CDSGraph::SeekInMilliSec(double sec)
   }
   else
   {
-    if (!m_pDvdControl2)
+    if (!CFGLoader::Filters.DVD.dvdControl)
       return;
     seekrequest = seekrequest * 10000;
     DVD_HMSF_TIMECODE tc = DShowUtil::RT2HMSF(seekrequest);
-    m_pDvdControl2->PlayAtTime(&tc, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+    CFGLoader::Filters.DVD.dvdControl->PlayAtTime(&tc, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
   }
 }
 void CDSGraph::Seek(bool bPlus, bool bLargeStep)
@@ -930,8 +898,8 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
     /*CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
     g_windowManager.SendMessage(msg);*/
     /**** End of ugly hack ***/
-    if (SUCCEEDED(m_pDvdInfo2->GetButtonAtPosition(pt,&pButtonIndex)))
-      m_pDvdControl2->SelectButton(pButtonIndex);
+    if (SUCCEEDED(CFGLoader::Filters.DVD.dvdInfo->GetButtonAtPosition(pt,&pButtonIndex)))
+      CFGLoader::Filters.DVD.dvdControl->SelectButton(pButtonIndex);
     
   }
   else if ( wParam == ID_DVD_MOUSE_CLICK)
@@ -940,8 +908,8 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
     pt.x = GET_X_LPARAM(lParam);
     pt.y = GET_Y_LPARAM(lParam);
     ULONG pButtonIndex;
-    if (SUCCEEDED(m_pDvdInfo2->GetButtonAtPosition(pt,&pButtonIndex)))
-      m_pDvdControl2->SelectAndActivateButton(pButtonIndex);
+    if (SUCCEEDED(CFGLoader::Filters.DVD.dvdInfo->GetButtonAtPosition(pt, &pButtonIndex)))
+      CFGLoader::Filters.DVD.dvdControl->SelectAndActivateButton(pButtonIndex);
   }
   else if ( wParam == ID_DS_SET_WINDOW_POS)
   {
@@ -949,86 +917,86 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
   }
   else if ( wParam == ID_PLAY_PLAY )
   {
-        Play();
+    Play();
   }
   else if ( wParam == ID_SEEK_TO )
   {
-        SeekInMilliSec((LPARAM)lParam);
+    SeekInMilliSec((LPARAM)lParam);
   }
   else if ( wParam == ID_SEEK_FORWARDSMALL )
   {
-        Seek(true, false);
-        CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDSMALL",__FUNCTION__);
+    Seek(true, false);
+    CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDSMALL",__FUNCTION__);
   }
   else if ( wParam == ID_SEEK_FORWARDLARGE )
   {
-        Seek(true, true);
-        CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDLARGE",__FUNCTION__);
+    Seek(true, true);
+    CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDLARGE",__FUNCTION__);
   }
   else if ( wParam == ID_SEEK_BACKWARDSMALL )
   {
-        Seek(false,false);
-        CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDSMALL",__FUNCTION__);
+    Seek(false,false);
+    CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDSMALL",__FUNCTION__);
   }
   else if ( wParam == ID_SEEK_BACKWARDLARGE )
   {
-        Seek(false,true);
-        CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDLARGE",__FUNCTION__);
+    Seek(false,true);
+    CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDLARGE",__FUNCTION__);
   }
   else if ( wParam == ID_PLAY_PAUSE )
   {
-        Pause();
-        CLog::Log(LOGDEBUG,"%s ID_PLAY_PAUSE",__FUNCTION__);
+    Pause();
+    CLog::Log(LOGDEBUG,"%s ID_PLAY_PAUSE",__FUNCTION__);
   }
   else if ( wParam == ID_PLAY_STOP )
   {
-        Stop(true);
-        CLog::Log(LOGDEBUG,"%s ID_PLAY_STOP",__FUNCTION__);
+    Stop(true);
+    CLog::Log(LOGDEBUG,"%s ID_PLAY_STOP",__FUNCTION__);
   }
   else if ( wParam == ID_STOP_DSPLAYER )
   {
-        Stop(true);
-        CLog::Log(LOGDEBUG,"%s ID_STOP_DSPLAYER",__FUNCTION__);
+    Stop(true);
+    CLog::Log(LOGDEBUG,"%s ID_STOP_DSPLAYER",__FUNCTION__);
   }
 
 /*DVD COMMANDS*/
   if ( wParam == ID_DVD_NAV_UP )
   {
-    m_pDvdControl2->SelectRelativeButton(DVD_Relative_Upper);
+    CFGLoader::Filters.DVD.dvdControl->SelectRelativeButton(DVD_Relative_Upper);
   }
   else if ( wParam == ID_DVD_NAV_DOWN )
   {
-    m_pDvdControl2->SelectRelativeButton(DVD_Relative_Lower);
+    CFGLoader::Filters.DVD.dvdControl->SelectRelativeButton(DVD_Relative_Lower);
   }
   else if ( wParam == ID_DVD_NAV_LEFT )
   {
-    m_pDvdControl2->SelectRelativeButton(DVD_Relative_Left);
+    CFGLoader::Filters.DVD.dvdControl->SelectRelativeButton(DVD_Relative_Left);
   }
   else if ( wParam == ID_DVD_NAV_RIGHT )
   {
-    m_pDvdControl2->SelectRelativeButton(DVD_Relative_Right);
+    CFGLoader::Filters.DVD.dvdControl->SelectRelativeButton(DVD_Relative_Right);
   }
   else if ( wParam == ID_DVD_MENU_ROOT )
   {
     CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
     g_windowManager.SendMessage(msg);
-    m_pDvdControl2->ShowMenu(DVD_MENU_Root , DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+    CFGLoader::Filters.DVD.dvdControl->ShowMenu(DVD_MENU_Root , DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
   }
   else if ( wParam == ID_DVD_MENU_EXIT )
   {
-    m_pDvdControl2->Resume(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+    CFGLoader::Filters.DVD.dvdControl->Resume(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
   }
   else if ( wParam == ID_DVD_MENU_BACK )
   {
-    m_pDvdControl2->ReturnFromSubmenu(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+    CFGLoader::Filters.DVD.dvdControl->ReturnFromSubmenu(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
   }
   else if ( wParam == ID_DVD_MENU_SELECT )
   {
-    m_pDvdControl2->ActivateButton();
+    CFGLoader::Filters.DVD.dvdControl->ActivateButton();
   }
   else if ( wParam == ID_DVD_MENU_TITLE )
   {
-    m_pDvdControl2->ShowMenu(DVD_MENU_Title, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+    CFGLoader::Filters.DVD.dvdControl->ShowMenu(DVD_MENU_Title, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
   }
   else if ( wParam == ID_DVD_MENU_SUBTITLE )
   {

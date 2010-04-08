@@ -27,8 +27,6 @@
 #include "Log.h"
 
 #include "filters/xbmcfilesource.h"
-//#include "FileSystem/Directory.h"
-//#include "filters/DvdNavigator/DvdNavigator.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "XMLUtils.h"
 #include "WINDirectShowEnumerator.h"
@@ -90,8 +88,6 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
   {
     CFileItemList listitems;
 
-
-    Filters.PlayingArchive = true;
     CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.m_strPath.c_str());
     CXBMCFileStream* pXBMCStream = new CXBMCFileStream(pFileItem.m_strPath, &Filters.Source.pBF, &hr);
     if (SUCCEEDED(hr))
@@ -113,26 +109,28 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
   /* DVD NAVIGATOR */
   if (pFileItem.IsDVDFile())
   {
-    Com::SmartQIPtr<IDvdControl2> pDVDC;
-    Com::SmartQIPtr<IDvdInfo2> pDVDI;
-    //CLSID_DVDNavigator
     hr = InsertFilter(filterName, Filters.Splitter);
     if (SUCCEEDED(hr))
     {
-      Com::SmartPtr<IBaseFilter> pDvdBF = Filters.Splitter.pBF;
-      if(!((pDVDC = pDvdBF) && (pDVDI = pDvdBF)))
+      if(!((Filters.DVD.dvdControl = Filters.Splitter.pBF) && (Filters.DVD.dvdInfo = Filters.Splitter.pBF)))
+      {
+        Filters.DVD.Clear();
         return E_NOINTERFACE;
+      }
     }
-    
+
+    Filters.isDVD = true;
     CStdString dirA;
     CStdStringW dirW;
-    CUtil::GetDirectory(pFileItem.m_strPath,dirA);
-    g_charsetConverter.utf8ToW(dirA,dirW);
-    hr = pDVDC->SetDVDDirectory(dirW.c_str());
+    CUtil::GetDirectory(pFileItem.m_strPath, dirA);
+    g_charsetConverter.utf8ToW(dirA, dirW);
+
+    hr = Filters.DVD.dvdControl->SetDVDDirectory(dirW.c_str());
     if (FAILED(hr))
       CLog::Log(LOGERROR, "%s Failed loading dvd directory.", __FUNCTION__);
-    pDVDC->SetOption(DVD_ResetOnStop, FALSE);
-	  pDVDC->SetOption(DVD_HMSF_TimeCodeEvents, TRUE);
+
+    Filters.DVD.dvdControl->SetOption(DVD_ResetOnStop, FALSE);
+    Filters.DVD.dvdControl->SetOption(DVD_HMSF_TimeCodeEvents, TRUE);
     
     return hr;
   }
@@ -184,9 +182,9 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
     g_charsetConverter.utf8ToW(pWinFilePath, strFileW);
 
     if (SUCCEEDED(hr = pFS->Load(strFileW.c_str(), NULL)))
-    CLog::Log(LOGNOTICE, "%s Successfully loaded file in the splitter", __FUNCTION__);
+      CLog::Log(LOGNOTICE, "%s Successfully loaded file in the splitter", __FUNCTION__);
     else
-    CLog::Log(LOGERROR, "%s Failed to load file in the splitter", __FUNCTION__);
+      CLog::Log(LOGERROR, "%s Failed to load file in the splitter", __FUNCTION__);
   }
 
 
