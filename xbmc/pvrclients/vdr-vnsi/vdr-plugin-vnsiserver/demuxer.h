@@ -22,6 +22,8 @@
 #ifndef VNSIDEMUXER_H
 #define VNSIDEMUXER_H
 
+#include <vdr/device.h>
+
 #define DVD_TIME_BASE 1000000
 #define DVD_NOPTS_VALUE    (-1LL<<52) // should be possible to represent in both double and __int64
 
@@ -79,6 +81,78 @@ inline bool PesIsAudioPacket(const uchar *p)
 {
   return (PesIsMPEGAudioPacket(p) || PesIsPS1Packet(p));
 }
+
+#if APIVERSNUM < 10701
+
+#define TS_ERROR              0x80
+#define TS_PAYLOAD_START      0x40
+#define TS_TRANSPORT_PRIORITY 0x20
+#define TS_PID_MASK_HI        0x1F
+#define TS_SCRAMBLING_CONTROL 0xC0
+#define TS_ADAPT_FIELD_EXISTS 0x20
+#define TS_PAYLOAD_EXISTS     0x10
+#define TS_CONT_CNT_MASK      0x0F
+#define TS_ADAPT_DISCONT      0x80
+#define TS_ADAPT_RANDOM_ACC   0x40 // would be perfect for detecting independent frames, but unfortunately not used by all broadcasters
+#define TS_ADAPT_ELEM_PRIO    0x20
+#define TS_ADAPT_PCR          0x10
+#define TS_ADAPT_OPCR         0x08
+#define TS_ADAPT_SPLICING     0x04
+#define TS_ADAPT_TP_PRIVATE   0x02
+#define TS_ADAPT_EXTENSION    0x01
+
+inline bool TsHasPayload(const uchar *p)
+{
+  return p[3] & TS_PAYLOAD_EXISTS;
+}
+
+inline bool TsHasAdaptationField(const uchar *p)
+{
+  return p[3] & TS_ADAPT_FIELD_EXISTS;
+}
+
+inline bool TsPayloadStart(const uchar *p)
+{
+  return p[1] & TS_PAYLOAD_START;
+}
+
+inline bool TsError(const uchar *p)
+{
+  return p[1] & TS_ERROR;
+}
+
+inline int TsPid(const uchar *p)
+{
+  return (p[1] & TS_PID_MASK_HI) * 256 + p[2];
+}
+
+inline bool TsIsScrambled(const uchar *p)
+{
+  return p[3] & TS_SCRAMBLING_CONTROL;
+}
+
+inline int TsPayloadOffset(const uchar *p)
+{
+  return (p[3] & TS_ADAPT_FIELD_EXISTS) ? p[4] + 5 : 4;
+}
+
+inline int TsGetPayload(const uchar **p)
+{
+  int o = TsPayloadOffset(*p);
+  *p += o;
+  return TS_SIZE - o;
+}
+
+inline int TsContinuityCounter(const uchar *p)
+{
+  return p[3] & TS_CONT_CNT_MASK;
+}
+
+inline int TsGetAdaptationField(const uchar *p)
+{
+  return TsHasAdaptationField(p) ? p[5] : 0x00;
+}
+#endif
 
 enum eStreamContent
 {

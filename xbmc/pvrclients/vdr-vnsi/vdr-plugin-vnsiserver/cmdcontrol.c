@@ -565,7 +565,11 @@ bool cCmdControl::processCHANNELS_GetChannels() /* OPCODE 63 */
       resp->add_U32(channel->Sid());
       resp->add_U32(groupIndex);
       resp->add_U32(channel->Ca());
+#if APIVERSNUM >= 10701
       resp->add_U32(channel->Vtype());
+#else
+      resp->add_U32(2);
+#endif
     }
   }
 

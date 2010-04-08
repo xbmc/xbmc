@@ -246,14 +246,13 @@ bool cLiveStreamer::StreamChannel(const cChannel *channel, int priority, cxSocke
     {
       if (m_Channel->Vpid())
       {
+#if APIVERSNUM >= 10701
         if (m_Channel->Vtype() == 0x1B)
-        {
           m_Streams[m_NumStreams] = new cTSDemuxer(this, m_NumStreams, stH264, m_Channel->Vpid());
-        }
         else
-        {
+#endif
           m_Streams[m_NumStreams] = new cTSDemuxer(this, m_NumStreams, stMPEG2VIDEO, m_Channel->Vpid());
-        }
+
         m_Pids[m_NumStreams] = m_Channel->Vpid();
         m_NumStreams++;
       }
@@ -297,9 +296,11 @@ bool cLiveStreamer::StreamChannel(const cChannel *channel, int priority, cxSocke
             m_Pids[m_NumStreams]    = *SPids;
             m_Streams[m_NumStreams] = new cTSDemuxer(this, m_NumStreams, stDVBSUB, *SPids);
             m_Streams[m_NumStreams]->SetLanguage(m_Channel->Slang(index));
+#if APIVERSNUM >= 10709
             m_Streams[m_NumStreams]->SetSubtitlingDescriptor(m_Channel->SubtitlingType(index),
                                                              m_Channel->CompositionPageId(index),
                                                              m_Channel->AncillaryPageId(index));
+#endif
             m_NumStreams++;
           }
           index++;
