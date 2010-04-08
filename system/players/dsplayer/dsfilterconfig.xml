@@ -179,53 +179,41 @@
   
   <rules>
     <!-- Iso extension will be added soon -->
-	<!-- If you want to play a dvd select the file /dvdfolder/VIDEO_TS/VIDEO_TS.ifo -->
+    <!-- If you want to play a dvd select the file /dvdfolder/VIDEO_TS/VIDEO_TS.ifo -->
     <rule filetypes="ifo">
       <source filter="dvdnavigator" />
-	  <splitter filter="dvdnavigator" />
+      <splitter filter="dvdnavigator" />
       <video filter="mpeg2videodec" />
       <audio filter="ffdaudiodec" />
     </rule>
-    <rule filetypes="avi">
+    <rule filetypes="avi|divx">
       <source filter="avisource" />
       <splitter filter="avisplitter" />
-      <video filter="ffdvideodec" />
-      <audio filter="ffdaudiodec" />
-    </rule>
-	<rule filetypes="divx">
-      <source filter="avisource" />
-      <splitter filter="avisplitter" />
-      <video filter="ffdvideodec" />
+      <video filter="mpcvideodec" />
       <audio filter="ffdaudiodec" />
     </rule>
     <rule filetypes="ogm">
       <source filter="oggsource" />
       <splitter filter="oggsplitter" />
-      <video filter="ffdvideodec" />
+      <video filter="mpcvideodec" />
       <audio filter="ffdaudiodec" />
     </rule>  
       <rule filetypes="flv">
       <source filter="flvsource" />
       <splitter filter="flvsplitter" />
-      <video filter="ffdvideodec" />
+      <video filter="mpcvideodec" />
       <audio filter="ffdaudiodec" />
     </rule>
     <rule filetypes="mp4">
       <source filter="mp4source" />
       <splitter filter="mp4splitter" />
       <video>
-        <video dxva="true" filter="ffdvideodxvadec" />
-        <video filter="ffdvideodec" />
+        <video dxva="true" filter="mpcvideodec" />
+        <video filter="mpcvideodec" />
       </video>
       <audio filter="ffdaudiodec" />
     </rule>
-    <rule filetypes="mov">
-      <source filter="mp4source" />
-      <splitter filter="mp4splitter" />
-      <video filter="ffdvideodec" />
-      <audio filter="ffdaudiodec" />
-    </rule>
-    <rule filetypes="m4v">
+    <rule filetypes="mov|m4v">
       <source filter="mp4source" />
       <splitter filter="mp4splitter" />
       <video filter="ffdvideodec" />
@@ -237,25 +225,7 @@
       <video filter="mpeg2videodec" />
       <audio filter="ffdaudiodec" />
     </rule>
-    <rule filetypes="ts">
-      <source filter="mpegsource" />
-      <splitter filter="mpegsplitter" />
-      <video filter="ffdvideodec" />
-      <audio filter="ffdaudiodec" />
-    </rule>
-    <rule filetypes="mpeg">
-      <source filter="mpegsource" />
-      <splitter filter="mpegsplitter" />
-      <video filter="ffdvideodec" />
-      <audio filter="ffdaudiodec" />
-    </rule>
-    <rule filetypes="mpg">
-      <source filter="mpegsource" />
-      <splitter filter="mpegsplitter" />
-      <video filter="ffdvideodec" />
-      <audio filter="ffdaudiodec" />
-    </rule>
-    <rule filetypes="m2ts">
+    <rule filetypes="ts|mpeg|mpg|m2ts">
       <source filter="mpegsource" />
       <splitter filter="mpegsplitter" />
       <video filter="ffdvideodec" />
@@ -265,8 +235,8 @@
       <source filter="mkvsource" />
       <splitter filter="mkvsplitter" />
       <video>
-        <video dxva="true" filter="ffdvideodxvadec" />
-        <video filter="ffdvideodec" />
+        <video dxva="true" filter="mpcvideodec" />
+        <video filter="mpcvideodec" />
       </video>
       <audio filter="ffdaudiodec" />
       <!--<extra>
