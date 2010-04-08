@@ -156,8 +156,14 @@ void CWinDsRenderer::RenderSubtitleTexture()
     Com::SmartPtr<IDirect3DTexture9> pTexture;
     
     Com::SmartRect pSrc, pDst, pSize;
-    if (!GetWindowRect(g_Windowing.GetHwnd(), &pSize))
-      pSize.SetRect(m_destRect.x1, m_destRect.y1, m_destRect.x2, m_destRect.y2);
+    D3DDISPLAYMODE mode;
+    memset(&mode, 0, sizeof(D3DDISPLAYMODE));
+    if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))
+      pSize.SetRect(0, 0, mode.Width, mode.Height);
+    else
+      if (!GetWindowRect(g_Windowing.GetHwnd(), &pSize))
+        pSize.SetRect(m_destRect.x1, m_destRect.y1, m_destRect.x2, m_destRect.y2);
+
     if (SUCCEEDED(CStreamsManager::getSingleton()->SubtitleManager->GetTexture(pTexture, pSrc, pDst, pSize)))
     {
       do
