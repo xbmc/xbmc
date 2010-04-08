@@ -187,6 +187,7 @@ bool cParserH264::Parse_H264(size_t len, uint32_t next_startcode, int sc_offset)
     if (!Parse_SLH(nal_data, nal_len, &pkttype))
       return true;
 
+    m_StreamPacket.id         = m_streamID;
     m_StreamPacket.pts        = m_curPTS;
     m_StreamPacket.dts        = m_curDTS;
     m_StreamPacket.frametype  = pkttype;
