@@ -53,6 +53,9 @@ static void RelBufferS(AVCodecContext *avctx, AVFrame *pic)
 static int GetBufferS(AVCodecContext *avctx, AVFrame *pic) 
 {  return ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->GetBuffer(avctx, pic); }
 
+static inline VASurfaceID GetSurfaceID(AVFrame *pic)
+{ return (VASurfaceID)(uintptr_t)pic->data[3]; }
+
 
 namespace
 {
@@ -97,7 +100,7 @@ CDecoder::~CDecoder()
 
 void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  VASurfaceID surface = (VASurfaceID)pic->data[3];
+  VASurfaceID surface = GetSurfaceID(pic);
   
   for(std::list<VASurfaceID>::iterator it = m_surfaces_used.begin(); it != m_surfaces_used.end(); it++)
   {    
@@ -116,7 +119,7 @@ void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  VASurfaceID surface = (VASurfaceID)pic->data[3];
+  VASurfaceID surface = GetSurfaceID(pic);
   if(surface)
   {
     /* reget call */
@@ -298,7 +301,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
 {
   picture->format        = DVDVideoPicture::FMT_VAAPI;
   picture->vaapi_object  = this;
-  picture->vaapi_surface = (unsigned int)frame->data[3];
+  picture->vaapi_surface = GetSurfaceID(frame);
   return true;
 }
 
