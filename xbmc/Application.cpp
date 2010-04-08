@@ -2499,81 +2499,84 @@ bool CApplication::OnAction(const CAction &action)
       }
     }
 
-    // pause : pauses current audio song
-    if (action.GetID() == ACTION_PAUSE && m_iPlaySpeed == 1)
+    if (!CurrentFileItem().IsLiveTV())
     {
-      m_pPlayer->Pause();
-#ifdef HAS_KARAOKE
-      m_pKaraokeMgr->SetPaused( m_pPlayer->IsPaused() );
-#endif
-      if (!m_pPlayer->IsPaused())
-      { // unpaused - set the playspeed back to normal
-        SetPlaySpeed(1);
-      }
-      g_audioManager.Enable(m_pPlayer->IsPaused() && !g_audioContext.IsPassthroughActive());
-      return true;
-    }
-    if (!m_pPlayer->IsPaused())
-    {
-      // if we do a FF/RW in my music then map PLAY action togo back to normal speed
-      // if we are playing at normal speed, then allow play to pause
-      if (action.GetID() == ACTION_PLAYER_PLAY || action.GetID() == ACTION_PAUSE)
+      // pause : pauses current audio song
+      if (action.GetID() == ACTION_PAUSE && m_iPlaySpeed == 1)
       {
-        if (m_iPlaySpeed != 1)
-        {
+        m_pPlayer->Pause();
+#ifdef HAS_KARAOKE
+        m_pKaraokeMgr->SetPaused( m_pPlayer->IsPaused() );
+#endif
+        if (!m_pPlayer->IsPaused())
+        { // unpaused - set the playspeed back to normal
           SetPlaySpeed(1);
         }
-        else
-        {
-          m_pPlayer->Pause();
-        }
-        return true;
-      }
-      if (action.GetID() == ACTION_PLAYER_FORWARD || action.GetID() == ACTION_PLAYER_REWIND)
-      {
-        int iPlaySpeed = m_iPlaySpeed;
-        if (action.GetID() == ACTION_PLAYER_REWIND && iPlaySpeed == 1) // Enables Rewinding
-          iPlaySpeed *= -2;
-        else if (action.GetID() == ACTION_PLAYER_REWIND && iPlaySpeed > 1) //goes down a notch if you're FFing
-          iPlaySpeed /= 2;
-        else if (action.GetID() == ACTION_PLAYER_FORWARD && iPlaySpeed < 1) //goes up a notch if you're RWing
-          iPlaySpeed /= 2;
-        else
-          iPlaySpeed *= 2;
-
-        if (action.GetID() == ACTION_PLAYER_FORWARD && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
-          iPlaySpeed = 1;
-        if (iPlaySpeed > 32 || iPlaySpeed < -32)
-          iPlaySpeed = 1;
-
-        SetPlaySpeed(iPlaySpeed);
-        return true;
-      }
-      else if ((action.GetAmount() || GetPlaySpeed() != 1) && (action.GetID() == ACTION_ANALOG_REWIND || action.GetID() == ACTION_ANALOG_FORWARD))
-      {
-        // calculate the speed based on the amount the button is held down
-        int iPower = (int)(action.GetAmount() * MAX_FFWD_SPEED + 0.5f);
-        // returns 0 -> MAX_FFWD_SPEED
-        int iSpeed = 1 << iPower;
-        if (iSpeed != 1 && action.GetID() == ACTION_ANALOG_REWIND)
-          iSpeed = -iSpeed;
-        g_application.SetPlaySpeed(iSpeed);
-        if (iSpeed == 1)
-          CLog::Log(LOGDEBUG,"Resetting playspeed");
-        return true;
-      }
-    }
-    // allow play to unpause
-    else
-    {
-      if (action.GetID() == ACTION_PLAYER_PLAY)
-      {
-        // unpause, and set the playspeed back to normal
-        m_pPlayer->Pause();
         g_audioManager.Enable(m_pPlayer->IsPaused() && !g_audioContext.IsPassthroughActive());
-
-        g_application.SetPlaySpeed(1);
         return true;
+      }
+      if (!m_pPlayer->IsPaused())
+      {
+        // if we do a FF/RW in my music then map PLAY action togo back to normal speed
+        // if we are playing at normal speed, then allow play to pause
+        if (action.GetID() == ACTION_PLAYER_PLAY || action.GetID() == ACTION_PAUSE)
+        {
+          if (m_iPlaySpeed != 1)
+          {
+            SetPlaySpeed(1);
+          }
+          else
+          {
+            m_pPlayer->Pause();
+          }
+          return true;
+        }
+        if (action.GetID() == ACTION_PLAYER_FORWARD || action.GetID() == ACTION_PLAYER_REWIND)
+        {
+          int iPlaySpeed = m_iPlaySpeed;
+          if (action.GetID() == ACTION_PLAYER_REWIND && iPlaySpeed == 1) // Enables Rewinding
+            iPlaySpeed *= -2;
+          else if (action.GetID() == ACTION_PLAYER_REWIND && iPlaySpeed > 1) //goes down a notch if you're FFing
+            iPlaySpeed /= 2;
+          else if (action.GetID() == ACTION_PLAYER_FORWARD && iPlaySpeed < 1) //goes up a notch if you're RWing
+            iPlaySpeed /= 2;
+          else
+            iPlaySpeed *= 2;
+
+          if (action.GetID() == ACTION_PLAYER_FORWARD && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
+            iPlaySpeed = 1;
+          if (iPlaySpeed > 32 || iPlaySpeed < -32)
+            iPlaySpeed = 1;
+
+          SetPlaySpeed(iPlaySpeed);
+          return true;
+        }
+        else if ((action.GetAmount() || GetPlaySpeed() != 1) && (action.GetID() == ACTION_ANALOG_REWIND || action.GetID() == ACTION_ANALOG_FORWARD))
+        {
+          // calculate the speed based on the amount the button is held down
+          int iPower = (int)(action.GetAmount() * MAX_FFWD_SPEED + 0.5f);
+          // returns 0 -> MAX_FFWD_SPEED
+          int iSpeed = 1 << iPower;
+          if (iSpeed != 1 && action.GetID() == ACTION_ANALOG_REWIND)
+            iSpeed = -iSpeed;
+          g_application.SetPlaySpeed(iSpeed);
+          if (iSpeed == 1)
+            CLog::Log(LOGDEBUG,"Resetting playspeed");
+          return true;
+        }
+      }
+      // allow play to unpause
+      else
+      {
+        if (action.GetID() == ACTION_PLAYER_PLAY)
+        {
+          // unpause, and set the playspeed back to normal
+          m_pPlayer->Pause();
+          g_audioManager.Enable(m_pPlayer->IsPaused() && !g_audioContext.IsPassthroughActive());
+
+          g_application.SetPlaySpeed(1);
+          return true;
+        }
       }
     }
   }
@@ -3546,7 +3549,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_nextPlaylistItem = -1;
     m_currentStackPosition = 0;
     m_currentStack->Clear();
-   
+
     if (item.IsVideo())
       CUtil::ClearSubtitles();
   }
