@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef PVRCLIENT_TVHEADEND_OS_H
-#define PVRCLIENT_TVHEADEND_OS_H
+#ifndef PVRCLIENT_VNSI_OS_H
+#define PVRCLIENT_VNSI_OS_H
 
 #if defined(_WIN32) || defined(_WIN64)
 #define __WINDOWS__
@@ -41,4 +41,4 @@
 #define FALSE 0
 #endif
 
-#endif
+#endif /* PVRCLIENT_VNSI_OS_H */

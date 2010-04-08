@@ -134,7 +134,7 @@ ADDON_STATUS Create(void* hdl, void* props)
   if (!PVR->RegisterMe(hdl))
     return STATUS_UNKNOWN;
 
-  XBMC->Log(LOG_DEBUG, "Creating Tvheadend PVR-Client");
+  XBMC->Log(LOG_DEBUG, "Creating VDR VNSI PVR-Client");
 
   m_CurStatus    = STATUS_UNKNOWN;
   g_clientID     = pvrprops->clientID;

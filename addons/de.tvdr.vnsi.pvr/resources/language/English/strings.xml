@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
     <!-- settings labels -->
-    <string id="30000">Tvheadend Hostname or IP</string>
+    <string id="30000">VDR Hostname or IP</string>
     <string id="30001">VNSI Port</string>
     <string id="30002">Priority</string>
     <string id="30003">Character Set Conversion</string>

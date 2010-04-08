@@ -80,7 +80,7 @@ inline void cLiveReceiver::Activate(bool On)
 
 cLiveStreamer::cLiveStreamer()
  : cThread("cLiveStreamer stream processor")
- , cRingBufferLinear(MEGABYTE(3), TS_SIZE * 2, true)
+ , cRingBufferLinear(MEGABYTE(3), TS_SIZE, true)
 {
   m_Channel         = NULL;
   m_Priority        = NULL;
@@ -146,6 +146,7 @@ void cLiveStreamer::Action(void)
   int readTimeouts      = 0;
   int signalInfoCnt     = 90;
   bool showingNoSignal  = false;
+  bool recvRetry        = true;
 
   while (Running())
   {
@@ -185,9 +186,9 @@ void cLiveStreamer::Action(void)
     }
     else if (m_Receiver->IsAttached())
     {
-      cCondWait::SleepMs(20);
+      cCondWait::SleepMs(18);
       readTimeouts++;
-      if (readTimeouts > 300 || showingNoSignal)
+      if (readTimeouts > 400 || showingNoSignal)
       {
         if (!showingNoSignal)
           isyslog("VNSI: No data in 3 seconds, queuing no signal image %i, %i", readTimeouts, showingNoSignal);
@@ -201,13 +202,21 @@ void cLiveStreamer::Action(void)
         pkt.pts      = DVD_NOPTS_VALUE;
         sendStreamPacket(&pkt);
 
-        readTimeouts = 0;
+        readTimeouts    = 0;
         showingNoSignal = true;
+        recvRetry       = false;
       }
     }
-    else
+
+    if (!m_Receiver->IsAttached()) /** Double check here */
     {
-      return;
+      if (!recvRetry)
+      {
+        isyslog("VNSI: returning from streamer thread, receiver is no more attached");
+        return;
+      }
+      recvRetry = false;
+      cCondWait::SleepMs(20);
     }
 
     if (time(NULL) - m_lastInfoSendet > 1)
