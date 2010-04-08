@@ -158,8 +158,8 @@ STDMETHODIMP CSubtitleInputPin::ReceiveConnection(IPin* pConnector, const AM_MED
     RemoveSubStream(m_pSubStream);
     m_pSubStream = NULL;
 
-        m_Connected->Release();
-        m_Connected = NULL;
+    m_Connected->Release();
+    m_Connected = NULL;
   }
 
   return __super::ReceiveConnection(pConnector, pmt);
@@ -212,18 +212,18 @@ STDMETHODIMP CSubtitleInputPin::Receive(IMediaSample* pSample)
   HRESULT hr;
 
   hr = __super::Receive(pSample);
-    if(FAILED(hr)) return hr;
+  if(FAILED(hr)) return hr;
 
   CAutoLock cAutoLock(&m_csReceive);
 
   REFERENCE_TIME tStart, tStop;
-    pSample->GetTime(&tStart, &tStop);
+  pSample->GetTime(&tStart, &tStop);
   tStart += m_tStart; 
   tStop += m_tStart;
 
   BYTE* pData = NULL;
-    hr = pSample->GetPointer(&pData);
-    if(FAILED(hr) || pData == NULL) return hr;
+  hr = pSample->GetPointer(&pData);
+  if(FAILED(hr) || pData == NULL) return hr;
 
   int len = pSample->GetActualDataLength();
 
@@ -386,7 +386,7 @@ STDMETHODIMP CSubtitleInputPin::Receive(IMediaSample* pSample)
 
   hr = S_OK;
 
-    return hr;
+  return hr;
 }
 
 

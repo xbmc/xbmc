@@ -121,7 +121,6 @@ void CStreamsManager::SetAudioStream(int iStream)
   if (m_pIAMStreamSelect)
   {
 
-    m_pIAMStreamSelect->Enable(m_audioStreams[disableIndex]->IAMStreamSelect_Index, 0);
     m_audioStreams[disableIndex]->connected = false;
     m_audioStreams[disableIndex]->flags = 0;
 
@@ -747,12 +746,6 @@ void CSubtitleManager::Initialize()
 
   m_pManager.reset(pManager, std::bind2nd(std::ptr_fun(DeleteSubtitleManager), m_dll));
 
-  if (FAILED(m_pManager->InsertPassThruFilter(CDSGraph::m_pFilterGraph)))
-  {
-    // No internal subs
-  } 
-  m_pManager->SetEnable(true);
-
   SSubStyle style;
 
   /*memset(style.colors, 0, sizeof(style.colors));
@@ -796,6 +789,12 @@ void CSubtitleManager::Initialize()
     wcscpy_s(style.fontName, fontName.length() + 1, fontName.c_str());
 
   m_pManager->SetStyle(&style);
+
+  if (FAILED(m_pManager->InsertPassThruFilter(CDSGraph::m_pFilterGraph)))
+  {
+    // No internal subs
+  } 
+  m_pManager->SetEnable(true);
 }
 
 void CSubtitleManager::Unload()
@@ -925,7 +924,6 @@ void CSubtitleManager::SetSubtitle( int iStream )
     {
       m_subtitleStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
       m_subtitleStreams[enableIndex]->connected = true;
-      m_pManager->SetSubPicProviderToInternal();
       CLog::Log(LOGDEBUG, "%s Successfully selected subtitle stream", __FUNCTION__);
     }
   } 
@@ -988,11 +986,12 @@ void CSubtitleManager::SetSubtitle( int iStream )
     m_subtitleStreams[enableIndex]->flags = AMSTREAMSELECTINFO_ENABLED;
     m_subtitleStreams[enableIndex]->connected = true;
 
+    m_pManager->SetSubPicProviderToInternal();
+
 done:
     if (stopped)
       m_pStreamManager->m_pGraph->Play();
 
-    m_pManager->SetSubPicProviderToInternal();
     if (m_bSubtitlesVisible)
     {
       if (SUCCEEDED(hr))
@@ -1073,7 +1072,6 @@ void CSubtitleManager::DisconnectCurrentSubtitlePins( void )
 
   if (m_pStreamManager->m_pIAMStreamSelect)
   {
-    m_pStreamManager->m_pIAMStreamSelect->Enable(m_subtitleStreams[i]->IAMStreamSelect_Index, 0);
     m_subtitleStreams[i]->connected = false;
     m_subtitleStreams[i]->flags = 0;
   } 

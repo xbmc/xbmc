@@ -359,12 +359,8 @@ STDMETHODIMP ISubPicQueueImpl::SetSubPicProvider(ISubPicProvider* pSubPicProvide
 {
   CAutoLock cAutoLock(&m_csSubPicProvider);
 
-//  if(m_pSubPicProvider != pSubPicProvider)
-  {
-    m_pSubPicProvider = pSubPicProvider;
-
-    Invalidate();
-  }
+  m_pSubPicProvider = pSubPicProvider;
+  Invalidate();
 
   return S_OK;
 }
@@ -524,7 +520,9 @@ STDMETHODIMP_(bool) CSubPicQueue::LookupSubPic(REFERENCE_TIME rtNow, Com::SmartP
       if (Diff < rtBestStop)
       {
         rtBestStop = Diff;
+#if DSubPicTraceLevel > 0
         TRACE(L"   %f->%f", double(Diff) / 10000000.0, double(rtStop) / 10000000.0);
+#endif
         ppSubPic = pSubPic;
       }
 #if DSubPicTraceLevel > 2
