@@ -307,13 +307,13 @@
         <control type="image" id="9105">
           <description>TV Episodes Thumb</description>
           <texture>ViewThumbEpisodes.png</texture>
-          <visible>Control.IsVisible(54) + Window.IsActive(24)</visible>
+          <visible>Control.IsVisible(56) + Container.Content(episodes)</visible>
           <include>OMViewThumb</include>
         </control>
         <control type="label" id="9105">
           <description>Episodes view button</description>
-          <label>$LOCALIZE[20360]</label>
-          <visible>Control.IsVisible(54) + Window.IsActive(24)</visible>
+          <label>$LOCALIZE[31721]</label>
+          <visible>Control.IsVisible(56) + Container.Content(episodes)</visible>
           <include>OMViewLabelItem</include>
         </control>
 
@@ -359,16 +359,15 @@
         <control type="image" id="9109">
           <description>Info List Thumb</description>
           <texture>ViewThumbInfoList.png</texture>
-          <visible>Control.IsVisible(56)</visible>
+          <visible>Control.IsVisible(56) + !Container.Content(episodes)</visible>
           <include>OMViewThumb</include>
         </control>
         <control type="label" id="9109">
           <description>Info List view selected</description>
           <label>$LOCALIZE[31711]</label>
-          <visible>Control.IsVisible(56)</visible>
+          <visible>Control.IsVisible(56) + !Container.Content(episodes)</visible>
           <include>OMViewLabelItem</include>
         </control>
-
         <control type="image" id="9110">
           <description>Image Stream Thumb</description>
           <texture>ViewThumbImageStream.png</texture>
@@ -443,7 +442,7 @@
 
         <control type="button" id="912">
           <description>Info List view button</description>
-          <visible>!Control.IsVisible(56)</visible>
+          <visible>!Control.IsVisible(56) + !Container.Content(episodes)</visible>
           <label>$LOCALIZE[31711]</label>
           <onclick>Container.SetViewMode(56)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -488,9 +487,9 @@
 
         <control type="button" id="927">
           <description>Episodes view button</description>
-          <visible>!Control.IsVisible(54) + [Container.Content(episodes)]</visible>
-          <label>$LOCALIZE[20360]</label>
-          <onclick>Container.SetViewMode(54)</onclick>
+          <visible>!Control.IsVisible(56) + [Container.Content(episodes)]</visible>
+          <label>$LOCALIZE[31721]</label>
+          <onclick>Container.SetViewMode(56)</onclick>
           <onclick>SetFocus(50)</onclick>
           <include>OMButtonItem</include>
         </control>
