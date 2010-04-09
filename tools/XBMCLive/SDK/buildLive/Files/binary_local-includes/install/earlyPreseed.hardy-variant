@@ -1,4 +1,0 @@
-#!/bin/sh
-
-anna-install squashfs-udeb
-anna-install xbmclive-installhelpers
