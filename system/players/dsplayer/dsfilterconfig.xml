@@ -184,7 +184,7 @@
       <source filter="dvdnavigator" />
       <splitter filter="dvdnavigator" />
       <video filter="mpeg2videodec" />
-      <audio filter="ffdaudiodec" />
+      <audio filter="mpaaudiodec" />
     </rule>
     <rule filetypes="avi|divx">
       <source filter="avisource" />

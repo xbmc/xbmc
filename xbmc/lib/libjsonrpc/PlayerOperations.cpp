@@ -36,7 +36,7 @@ JSON_STATUS CPlayerOperations::GetActivePlayers(const CStdString &method, ITrans
   if (g_application.IsPlayingVideo())
     result.append("video");
   else if (g_application.IsPlayingAudio())
-    result.append("music");
+    result.append("audio");
 
   if (g_windowManager.IsWindowActive(WINDOW_SLIDESHOW))
     result.append("picture");

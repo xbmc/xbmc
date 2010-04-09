@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -18,19 +19,23 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "system.h"
+#include "../lib/libjsonrpc/ITransportLayer.h"
+#include "../lib/libjsonrpc/JSONRPC.h"
 
-#include "GUIOperations.h"
-#include "LocalizeStrings.h"
-
-using namespace Json;
-using namespace JSONRPC;
-
-JSON_STATUS CGUIOperations::GetLocalizedString(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+#ifdef HAS_JSONRPC
+class CPythonTransport : public JSONRPC::ITransportLayer
 {
-  if (!parameterObject.isInt())
-    return InvalidParams;
+public:
+  virtual bool Download(const char *path, Json::Value *result) { return false; }
+  virtual int GetCapabilities() { return JSONRPC::Response; }
 
-  Value val = g_localizeStrings.Get(parameterObject.asInt());
-  result.swap(val);
-  return OK;
-}
+  class CPythonClient : public JSONRPC::IClient
+  {
+  public:
+    virtual int  GetPermissionFlags() { return JSONRPC::OPERATION_PERMISSION_ALL; }
+    virtual int  GetAnnouncementFlags() { return 0; }
+    virtual bool SetAnnouncementFlags(int flags) { return true; }
+  };
+};
+#endif

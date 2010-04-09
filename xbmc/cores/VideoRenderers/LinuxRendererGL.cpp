@@ -2299,8 +2299,8 @@ bool CLinuxRendererGL::CreateVAAPITexture(int index)
   glBindTexture(m_textureTarget, 0);
   glDisable(m_textureTarget);
   SetEvent(m_eventTexturesDone[index]);
-  return true;
 #endif
+  return true;
 }
 
 void CLinuxRendererGL::UploadVAAPITexture(int index)

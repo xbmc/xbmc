@@ -32,7 +32,7 @@ class CGUIStandardWindow :
       public CGUIWindow
 {
 public:
-  CGUIStandardWindow(void);
+  CGUIStandardWindow(int id, const CStdString &xmlFile);
   virtual ~CGUIStandardWindow(void);
 
   virtual bool OnAction(const CAction &action);

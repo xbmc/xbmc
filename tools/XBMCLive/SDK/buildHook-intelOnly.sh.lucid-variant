@@ -20,6 +20,6 @@
 
 rm $WORKPATH/buildLive/Files/chroot_local-hooks/00-installCrystalHD
 
-cat $WORKPATH/buildLive/Files/chroot_local-packageslists/packages.list | grep -v fglrx > $WORKPATH/buildLive/Files/chroot_local-packageslists/packages.list.tmp
+cat $WORKPATH/buildLive/Files/chroot_local-packageslists/packages.list | grep -v fglrx | grep -v nvidia-common > $WORKPATH/buildLive/Files/chroot_local-packageslists/packages.list.tmp
 rm $WORKPATH/buildLive/Files/chroot_local-packageslists/packages.list
 mv $WORKPATH/buildLive/Files/chroot_local-packageslists/packages.list.tmp $WORKPATH/buildLive/Files/chroot_local-packageslists/packages.list

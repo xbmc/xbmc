@@ -4,6 +4,7 @@
 	<defaultthemename>textures.xpr</defaultthemename>
 	<version>2.11</version>
 	<effectslowdown>.75</effectslowdown>
+	<debugging>false</debugging>
 	<credits>
 		<skinname>Confluence</skinname>
 		<name>Coded by Jezz_X</name>

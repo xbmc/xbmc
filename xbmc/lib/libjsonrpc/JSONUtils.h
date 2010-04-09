@@ -20,14 +20,16 @@
  *
  */
 
-#include "StdString.h"
 #include "JSONRPC.h"
 
 namespace JSONRPC
 {
-  class CGUIOperations
+  class CJSONUtils
   {
-  public:
-    static JSON_STATUS GetLocalizedString(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
+  protected:
+    static inline bool ParameterIntOrNull(const Json::Value &parameterObject, const char *key) { return parameterObject[key].isInt() || parameterObject[key].isNull(); }
+    static inline int ParameterAsInt(const Json::Value &parameterObject, int fallback, const char *key) { return parameterObject[key].isInt() ? parameterObject[key].asInt() : fallback; }
+
+    static inline const Json::Value ForceObject(const Json::Value &value) { return value.isObject() ? value : Json::Value(Json::objectValue); }
   };
 }
