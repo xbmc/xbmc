@@ -79,7 +79,7 @@
   FUNCTION(PyLong_AsLong)
   FUNCTION(PyLong_AsLongLong)
   FUNCTION(PyErr_Format)
-#if !defined(_LINUX)
+#if Py_UNICODE_SIZE == 2
   FUNCTION(PyUnicodeUCS2_AsUnicode)
 #else
   FUNCTION(PyUnicodeUCS4_AsUnicode)
