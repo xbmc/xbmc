@@ -63,16 +63,11 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   if(!ctx->IsHardwareAllowed())
     return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);
 
-#if defined(HAVE_LIBVDPAU) || defined(HAVE_LIBVA) || defined(HAS_DX)
-  int method = g_guiSettings.GetInt("videoplayer.rendermethod");
-#endif
-
   const PixelFormat * cur = fmt;
   while(*cur != PIX_FMT_NONE)
   {
 #ifdef HAVE_LIBVDPAU
-    if(CVDPAU::IsVDPAUFormat(*cur) 
-    && (method == RENDER_METHOD_VDPAU || method == RENDER_METHOD_AUTO))
+    if(CVDPAU::IsVDPAUFormat(*cur) && g_guiSettings.GetBool("videoplayer.usevdpau"))
     {
       if(ctx->GetHardware())
         return *cur;
@@ -89,8 +84,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
     }
 #endif
 #ifdef HAS_DX
-  if(DXVA::CDecoder::Supports(*cur)
-  && method == RENDER_METHOD_DXVA)
+  if(DXVA::CDecoder::Supports(*cur) && g_guiSettings.GetBool("videoplayer.usedxva2"))
   {
     DXVA::CDecoder* dec = new DXVA::CDecoder();
     if(dec->Open(avctx, *cur))
@@ -103,7 +97,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   }
 #endif
 #ifdef HAVE_LIBVA
-    if(*cur == PIX_FMT_VAAPI_VLD && method == RENDER_METHOD_VAAPI)
+    if(*cur == PIX_FMT_VAAPI_VLD && && g_guiSettings.GetBool("videoplayer.usevaapi"))
     {
       VAAPI::CDecoder* dec = new VAAPI::CDecoder();
       if(dec->Open(avctx, *cur))
@@ -178,9 +172,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   pCodec = NULL;
 
 #ifdef HAVE_LIBVDPAU
-  int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
-  if((requestedMethod == RENDER_METHOD_VDPAU || requestedMethod == RENDER_METHOD_AUTO)
-  && !m_bSoftware)
+  if(g_guiSettings.GetBool("videoplayer.usevdpau") && !m_bSoftware)
   {
     while((pCodec = m_dllAvCodec.av_codec_next(pCodec)))
     {

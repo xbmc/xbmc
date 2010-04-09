@@ -52,7 +52,7 @@
 #include "Overlay/DVDOverlayCodecFFmpeg.h"
 
 #include "DVDStreamInfo.h"
-
+#include "GUISettings.h"
 
 CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
 {
@@ -157,7 +157,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   }
 
 #if defined(HAVE_LIBCRYSTALHD)
-  if (!hint.software && CCrystalHD::GetInstance()->DevicePresent())
+  if (!hint.software && CCrystalHD::GetInstance()->DevicePresent() && g_guiSettings.GetBool("videoplayer.usechd"))
   {
     if (hint.width <= 720 && (hint.codec == CODEC_ID_MPEG2VIDEO))
     {

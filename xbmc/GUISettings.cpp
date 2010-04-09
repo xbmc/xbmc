@@ -546,26 +546,23 @@ void CGUISettings::Initialize()
   renderers.insert(make_pair(13418, RENDER_METHOD_GLSL));
   renderers.insert(make_pair(13419, RENDER_METHOD_SOFTWARE));
 #endif
+  AddInt(vp, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, renderers, SPIN_CONTROL_TEXT);
 
 #ifdef HAVE_LIBVDPAU
-  renderers.insert(make_pair(13421, RENDER_METHOD_VDPAU));
+  AddBool(vp, "videoplayer.usevaapi", 24091, true);
 #endif
 
 #ifdef HAVE_LIBCRYSTALHD
-  if (CCrystalHD::GetInstance()->DevicePresent())
-    renderers.insert(make_pair(13425, RENDER_METHOD_CRYSTALHD));
+  AddBool(CCrystalHD::GetInstance()->DevicePresent() ? vp: NULL, "videoplayer.usechd", 24094, true);
 #endif
 
 #ifdef HAS_DX
-  if(g_sysinfo.IsVistaOrHigher())
-    renderers.insert(make_pair(34003, RENDER_METHOD_DXVA));
+  AddBool(g_sysinfo.IsVistaOrHigher() ? vp: NULL, "videoplayer.usedxva2", 24093, false);
 #endif
 
 #ifdef HAVE_LIBVA
-  renderers.insert(make_pair(34004, RENDER_METHOD_VAAPI));
+  AddBool(vp, "videoplayer.usevaapi", 24092, true);
 #endif
-
-  AddInt(vp, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, renderers, SPIN_CONTROL_TEXT);
 
 #ifdef HAS_GL
   AddBool(vp, "videoplayer.usepbo", 13424, true);

@@ -1065,8 +1065,7 @@ void CLinuxRendererGL::LoadShaders(int field)
     requested for it. (settings -> video -> player -> rendermethod)
    */
   if (glCreateProgram // TODO: proper check
-      && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL
-            || requestedMethod==RENDER_METHOD_VDPAU))
+      && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL))
   {
     if (m_pYUVShader)
     {
@@ -1105,7 +1104,6 @@ void CLinuxRendererGL::LoadShaders(int field)
    */
   else if (glewIsSupported("GL_ARB_fragment_program")
            && ((requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_ARB)
-           || (requestedMethod==RENDER_METHOD_CRYSTALHD)
            || err))
   {
     err = false;
