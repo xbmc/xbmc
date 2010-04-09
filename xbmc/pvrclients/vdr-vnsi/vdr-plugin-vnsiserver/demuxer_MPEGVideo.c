@@ -23,6 +23,7 @@
 #include <assert.h>
 #include "config.h"
 #include "bitstream.h"
+#include "receiver.h"
 
 #include "demuxer_MPEGVideo.h"
 
@@ -66,6 +67,10 @@ cParserMPEG2Video::cParserMPEG2Video(cTSDemuxer *demuxer, cLiveStreamer *streame
   m_Width             = 0;
   m_StreamPacket      = NULL;
   m_demuxer           = demuxer;
+
+  /* Set the streamer ready here to increase switch times, but if XBMC use also
+     VDPAU for SD content it must be changed */
+  streamer->SetReady();
 }
 
 cParserMPEG2Video::~cParserMPEG2Video()

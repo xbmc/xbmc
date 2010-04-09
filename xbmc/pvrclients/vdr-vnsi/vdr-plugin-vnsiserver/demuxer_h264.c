@@ -23,6 +23,7 @@
 #include <assert.h>
 #include "config.h"
 #include "bitstream.h"
+#include "receiver.h"
 
 #include "demuxer_h264.h"
 
@@ -206,17 +207,15 @@ bool cParserH264::Parse_H264(size_t len, uint32_t next_startcode, int sc_offset)
     if (!m_FoundFrame)
       return true;
 
+    /* Discard Packets until we have the picture size (XBMC can't enable VDPAU without it) */
+    if (!m_Width)
+      return true;
+    else
+      m_Streamer->SetReady();
+
     m_FoundFrame        = false;
     m_StreamPacket.data = m_pictureBuffer;
     m_StreamPacket.size = m_pictureBufferPtr;
-#if 0
-    LOGCONSOLE("pts=%lu, dts=%lu, length=%i, duration=%i, frametype=%i",
-               m_StreamPacket.pts,
-               m_StreamPacket.dts,
-               m_StreamPacket.size,
-               m_StreamPacket.duration,
-               m_StreamPacket.frametype);
-#endif
     SendPacket(&m_StreamPacket);
     m_firstPUSIseen = true;
     return true;

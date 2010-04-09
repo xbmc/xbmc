@@ -164,6 +164,9 @@ int cParser::ParsePESHeader(uint8_t *buf, size_t len)
 
 void cParser::SendPacket(sStreamPacket *pkt, bool checkTimestamp)
 {
+  if (!m_Streamer->IsReady())
+    return;
+
   assert(pkt->dts != DVD_NOPTS_VALUE);
   assert(pkt->pts != DVD_NOPTS_VALUE);
 
@@ -291,7 +294,7 @@ void cTSDemuxer::ProcessTSPacket(unsigned char *data)
 
   if (!TsHasPayload(data))
   {
-    dsyslog("VNSI-Error: no payload, size %d", bytes);
+    LOGCONSOLE("VNSI-Error: no payload, size %d", bytes);
     return;
   }
 

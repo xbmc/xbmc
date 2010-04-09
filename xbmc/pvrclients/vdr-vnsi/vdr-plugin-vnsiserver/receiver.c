@@ -89,6 +89,8 @@ cLiveStreamer::cLiveStreamer()
   m_Receiver        = NULL;
   m_Frontend        = -1;
   m_NumStreams      = 0;
+  m_streamReady     = false;
+  m_streamChangeSendet = false;
   m_lastInfoSendet  = time(NULL);
   memset(&m_FrontendInfo, 0, sizeof(m_FrontendInfo));
   for (int idx = 0; idx < MAXRECEIVEPIDS; ++idx)
@@ -141,8 +143,6 @@ cLiveStreamer::~cLiveStreamer()
 
 void cLiveStreamer::Action(void)
 {
-  sendStreamChange();
-
   int readTimeouts      = 0;
   int signalInfoCnt     = 90;
   bool showingNoSignal  = false;
@@ -487,6 +487,12 @@ cDevice *cLiveStreamer::GetDevice(const cChannel *Channel, int Priority)
 
 void cLiveStreamer::sendStreamPacket(sStreamPacket *pkt)
 {
+  if (!m_streamChangeSendet)
+  {
+    sendStreamChange();
+    m_streamChangeSendet = true;
+  }
+
   if (pkt)
   {
 #if 0
@@ -527,14 +533,28 @@ void cLiveStreamer::sendStreamChange()
         resp->add_String(m_Streams[idx]->GetLanguage());
       }
       else if (m_Streams[idx]->Type() == stMPEG2VIDEO)
+      {
         resp->add_String("MPEG2VIDEO");
+        resp->add_U32(m_Streams[idx]->GetFpsScale());
+        resp->add_U32(m_Streams[idx]->GetFpsRate());
+        resp->add_U32(m_Streams[idx]->GetHeight());
+        resp->add_U32(m_Streams[idx]->GetWidth());
+        resp->add_double(m_Streams[idx]->GetAspect());
+      }
       else if (m_Streams[idx]->Type() == stAC3)
       {
         resp->add_String("AC3");
         resp->add_String(m_Streams[idx]->GetLanguage());
       }
       else if (m_Streams[idx]->Type() == stH264)
+      {
         resp->add_String("H264");
+        resp->add_U32(m_Streams[idx]->GetFpsScale());
+        resp->add_U32(m_Streams[idx]->GetFpsRate());
+        resp->add_U32(m_Streams[idx]->GetHeight());
+        resp->add_U32(m_Streams[idx]->GetWidth());
+        resp->add_double(m_Streams[idx]->GetAspect());
+      }
       else if (m_Streams[idx]->Type() == stDVBSUB)
       {
         resp->add_String("DVBSUB");

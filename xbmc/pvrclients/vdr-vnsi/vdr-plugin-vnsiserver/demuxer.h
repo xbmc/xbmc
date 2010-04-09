@@ -198,9 +198,6 @@ class cLiveStreamer;
 
 class cParser
 {
-private:
-  cLiveStreamer *m_Streamer;
-
 public:
   cParser(cLiveStreamer *streamer, int streamID);
   virtual ~cParser() {};
@@ -210,6 +207,8 @@ public:
   int ParsePESHeader(uint8_t *buf, size_t len);
   void SendPacket(sStreamPacket *pkt, bool checkTimestamp = true);
   int64_t Rescale(int64_t a);
+
+  cLiveStreamer *m_Streamer;
 
   static int64_t m_startDTS;
   int64_t     m_LastDTS;

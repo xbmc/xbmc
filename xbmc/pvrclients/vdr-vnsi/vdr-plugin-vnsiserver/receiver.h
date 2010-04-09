@@ -64,7 +64,8 @@ private:
   int               m_Frontend;                     /*!> File descriptor to access used receiving device  */
   dvb_frontend_info m_FrontendInfo;                 /*!> DVB Information about the receiving device */
   time_t            m_lastInfoSendet;               /*!> Last queue status report sent */
-  cCondWait         m_Wait;
+  bool              m_streamChangeSendet;
+  bool              m_streamReady;
 
 protected:
   virtual void Action(void);
@@ -76,6 +77,8 @@ public:
   void Activate(bool On);
 
   bool StreamChannel(const cChannel *channel, int priority, cxSocket *Socket, cResponsePacket *resp);
+  void SetReady() { m_streamReady = true; }
+  bool IsReady() { return m_streamReady; }
 };
 
 #endif  /* VNSIRECEIVER_H */
