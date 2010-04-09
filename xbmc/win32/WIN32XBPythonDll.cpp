@@ -196,7 +196,7 @@ extern "C"
     va_end(va);
     return ret;
   }*/
-#if Py_UNICODE_SIZE == 2
+#ifndef _LINUX
   FUNCTION4(PyUnicodeUCS2_AsUnicode)
 #else
   FUNCTION4(PyUnicodeUCS4_AsUnicode)
@@ -321,7 +321,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyLong_AsLong)) &&
       dll.ResolveExport(DLL_FUNCTION(PyLong_AsLongLong)) &&
       dll.ResolveExport(DLL_VA_FUNCTION(PyErr_Format)) &&
-#if Py_UNICODE_SIZE == 2
+#ifndef _LINUX
       dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS2_AsUnicode)) &&
 #else
       dll.ResolveExport(DLL_FUNCTION(PyUnicodeUCS4_AsUnicode)) &&
