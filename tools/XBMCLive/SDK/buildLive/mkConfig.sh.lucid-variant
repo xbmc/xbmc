@@ -33,7 +33,7 @@ makeConfig()
 	configString="$configString --iso-volume XBMC_Live"
 	configString="$configString --iso-publisher http://xbmc.org"
 
-	configString="$configString --bootloader grub"
+	configString="$configString --bootloader grub2"
 
 	configString="$configString --debian-installer live"
         configString="$configString --debian-installer-preseedfile preseed.cfg"

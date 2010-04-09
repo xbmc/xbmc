@@ -5,20 +5,24 @@ bzip2 locales ntfs-3g  dosfstools unzip curl
 acpi acpi-support
 alsa-utils hal lirc pm-utils psmisc 
 fakeroot
-grub
+grub-pc
 xorg xinit fluxbox
 mesa-utils libgl1-mesa-dri xlibmesa-glu
 genext2fs
 cpufrequtils
 hts-tvheadend
-xbmc-ppa-keyring
-python-apt
-parted
-xbmc-live
-xbmc
-libgtk2.0-0
 policykit-1
-devicekit-power
-devicekit-disks
+upower
+udisks
 python-software-properties
 plymouth
+plymouth-theme-ubuntu-text
+plymouth-theme-ubuntu-logo
+parted
+xbmc-ppa-keyring
+python-apt
+xbmc-live
+xbmc
+g++ autoconf
+fglrx fglrx-amdcccle xorg-driver-fglrx
+nvidia-current libvdpau1

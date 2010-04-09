@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #      Copyright (C) 2005-2008 Team XBMC
 #      http://www.xbmc.org
@@ -18,8 +18,19 @@
 #  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #  http://www.gnu.org/copyleft/gpl.html
 
-rm $WORKPATH/buildLive/Files/chroot_local-hooks/00-installCrystalHD
+#
 
-cat $WORKPATH/buildLive/Files/chroot_local-packageslists/packages.list | grep -v fglrx > $WORKPATH/buildLive/Files/chroot_local-packageslists/packages.list.tmp
-rm $WORKPATH/buildLive/Files/chroot_local-packageslists/packages.list
-mv $WORKPATH/buildLive/Files/chroot_local-packageslists/packages.list.tmp $WORKPATH/buildLive/Files/chroot_local-packageslists/packages.list
+# Set Intel by default
+update-alternatives --set gl_conf /usr/lib/mesa/ld.so.conf
+ldconfig
+
+# let's make plymouth happy
+echo "blacklist radeon" > /etc/modprobe.d/blacklist-amd.conf
+
+echo "blacklist nouveau" > /etc/modprobe.d/blacklist-nvidia.conf
+echo "blacklist lbm-nouveau" >> /etc/modprobe.d/blacklist-nvidia.conf
+echo "blacklist nvidia-96" >> /etc/modprobe.d/blacklist-nvidia.conf
+echo "blacklist nvidia-173" >> /etc/modprobe.d/blacklist-nvidia.conf
+echo "alias nvidia nvidia-current"  >> /etc/modprobe.d/blacklist-nvidia.conf
+
+update-initramfs -u 
