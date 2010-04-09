@@ -42,7 +42,7 @@ public:
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
   virtual int  Check     (AVCodecContext* avctx);
   virtual void Close();
-  virtual const std::string Name() { return "dxva"; }
+  virtual const std::string Name() { return "dxva2"; }
 
   bool  OpenTarget(const GUID &guid);
   bool  OpenDecoder(AVCodecContext *avctx);
