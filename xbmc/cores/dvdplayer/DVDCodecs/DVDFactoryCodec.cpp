@@ -150,6 +150,12 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 
   CLog::Log(LOGDEBUG, "CDVDFactoryCodec: compiled in hardware support: %s", hwSupport.c_str());
 
+  // dvd's have weird still-frames in it, which is not fully supported in ffmpeg
+  if(hint.stills && (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO))
+  {
+    if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
+  }
+
 #if defined(HAVE_LIBCRYSTALHD)
   if (!hint.software && CCrystalHD::GetInstance()->DevicePresent())
   {
@@ -176,27 +182,9 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
     CLog::Log(LOGINFO, "CDVDFactoryCodec - High video resolution detected %dx%d, trying half resolution decoding ", hint.width, hint.height);
     options.push_back(CDVDCodecOption("lowres","1"));
   }
-  else
-#endif
-  { // non halfres mode, we can use other decoders
-    if (hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_MPEG1VIDEO)
-    {
-      CDVDCodecOptions dvdOptions;
-
-#ifdef HAVE_LIBVDPAU
-      if (hint.height >= 720)
-      {
-        CLog::Log(LOGNOTICE,"Trying VDPAU-MPEG from FFMPEG");
-        if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
-      }
 #endif
 
-      if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, dvdOptions)) ) return pCodec;
-    }
-  }
-
-  CDVDCodecOptions dvdOptions;
-  if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
+  if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, options)) ) return pCodec;
 
   return NULL;
 }

@@ -72,6 +72,7 @@ public:
   int width; // width of the stream reported by the demuxer
   float aspect; // display aspect as reported by demuxer
   bool vfr; // variable framerate
+  bool stills; // there may be odd still frames in video
 
   // AUDIO
   int channels;
