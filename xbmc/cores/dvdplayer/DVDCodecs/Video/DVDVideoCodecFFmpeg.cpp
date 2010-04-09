@@ -97,7 +97,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   }
 #endif
 #ifdef HAVE_LIBVA
-    if(*cur == PIX_FMT_VAAPI_VLD && && g_guiSettings.GetBool("videoplayer.usevaapi"))
+    if(*cur == PIX_FMT_VAAPI_VLD && g_guiSettings.GetBool("videoplayer.usevaapi"))
     {
       VAAPI::CDecoder* dec = new VAAPI::CDecoder();
       if(dec->Open(avctx, *cur))
