@@ -280,6 +280,9 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   else
     m_name = "ffmpeg";
 
+  if(m_pHardware)
+    m_name += "-" + m_pHardware->Name();
+
   return true;
 }
 

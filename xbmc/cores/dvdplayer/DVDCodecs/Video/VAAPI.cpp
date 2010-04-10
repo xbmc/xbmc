@@ -233,9 +233,13 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   VAConfigAttrib attrib;
   attrib.type = VAConfigAttribRTFormat;
   CHECK(vaGetConfigAttributes(m_display->get(), profile, entrypoint, &attrib, 1))
+
   if ((attrib.value & VA_RT_FORMAT_YUV420) == 0)
-      return false;
-  
+  {
+    CLog::Log(LOGERROR, "VAAPI - invalid yuv format %x", attrib.value);
+    return false;
+  }
+
   CHECK(vaCreateSurfaces(m_display->get()
                        , avctx->width
                        , avctx->height
