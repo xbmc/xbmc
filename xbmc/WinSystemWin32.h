@@ -163,14 +163,13 @@ public:
   pGetGestureInfo         PtrGetGestureInfo;
   pSetGestureConfig       PtrSetGestureConfig;
   pCloseGestureInfoHandle PtrCloseGestureInfoHandle;
-
+  const MONITOR_DETAILS &GetMonitor(int screen) const;
 protected:
   bool ChangeRefreshRate(int screen, float refresh);
   virtual bool ResizeInternal(bool forceRefresh = false);
   virtual bool UpdateResolutionsInternal();
   virtual bool CreateBlankWindow();
   virtual bool BlankNonActiveMonitor(bool bBlank);
-  const MONITOR_DETAILS &GetMonitor(int screen) const;
   /*!
    \brief Adds a resolution to the list of resolutions if we don't already have it
    \param res resolution to add.

@@ -43,18 +43,6 @@ void CFilterSelectionRule::Initialize(TiXmlElement* pRule, const CStdString &nod
   if (!m_name || m_name.IsEmpty())
     m_name = "un-named";
 
-  CLog::Log(LOGDEBUG, "CFilterSelectionRule::Initialize: creating rule: %s", m_name.c_str());
-
-  /*m_tInternetStream = GetTristate(pRule->Attribute("internetstream"));
-  m_tAudio = GetTristate(pRule->Attribute("audio"));
-  m_tVideo = GetTristate(pRule->Attribute("video"));
-
-  m_tDVD = GetTristate(pRule->Attribute("dvd"));
-  m_tDVDFile = GetTristate(pRule->Attribute("dvdfile"));
-  m_tDVDImage = GetTristate(pRule->Attribute("dvdimage"));*/
-
-  //m_protocols = pRule->Attribute("protocols");
-  //m_fileTypes = pRule->Attribute("filetypes");
   m_dxva = GetTristate(pRule->Attribute("dxva"));
 
   m_mimeTypes = pRule->Attribute("mimetypes");

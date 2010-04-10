@@ -126,8 +126,6 @@ private:
     if (!m_name || m_name.IsEmpty())
       m_name = "un-named";
 
-    CLog::Log(LOGDEBUG, "CGlobalFilterSelectionRule::Initialize: creating rule: %s", m_name.c_str());
-
     m_fileTypes = pRule->Attribute("filetypes");
     m_fileName = pRule->Attribute("filename");
 
