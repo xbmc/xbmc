@@ -72,11 +72,11 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   
   m_hReadyEvent.Reset();
 
-  if ( g_Windowing.IsFullScreen() && 
-       !g_guiSettings.GetBool("videoscreen.fakefullscreen") &&
-       !g_sysinfo.IsVistaOrHigher() )
+  if ( !g_sysinfo.IsVistaOrHigher() )
   {
     // Using VMR in true fullscreen. Calling SetFile() in Process makes XBMC freeze
+	// And i also dont want this crap on windows xp platform. When the player crash 
+	// when loading a video file xbmc is crash really hard.
     m_callSetFileFromThread = false;
     START_PERFORMANCE_COUNTER
       if (FAILED(m_pDsGraph.SetFile(currentFileItem, m_PlayerOptions)))

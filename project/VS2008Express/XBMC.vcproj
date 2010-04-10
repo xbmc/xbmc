@@ -2562,6 +2562,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DSTemplate.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DSTemplate.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\IPinHook.cpp"
 						>
 					</File>

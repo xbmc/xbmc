@@ -45,7 +45,7 @@
 
 using namespace std;
 
-RegKey::RegKey(HKEY base, const string& pathname, bool bCreate) throw(SysError)
+RegKey::RegKey(HKEY base, const CStdString& pathname, bool bCreate) throw(SysError)
 {
   HKEY hKey;
   int n;
@@ -63,7 +63,7 @@ RegKey::RegKey(HKEY base, const string& pathname, bool bCreate) throw(SysError)
   boost::shared_ptr<HKEYWrapper> shared(new HKEYWrapper(hKey));
   m_hkey = shared;
   size_t lastslash = pathname.rfind('\\');
-  if(lastslash != string::npos)
+  if(lastslash != CStdString::npos)
   {
     m_name = pathname.substr(lastslash + 1);
     n = RegOpenKeyEx(base, pathname.substr(0, lastslash).c_str(), 0, KEY_SET_VALUE, &hKey);
@@ -82,11 +82,11 @@ RegKey::RegKey(HKEY base, const string& pathname, bool bCreate) throw(SysError)
 
 }
 
-std::list<string> RegKey::getSubkeys() const throw(SysError)
+std::list<CStdString> RegKey::getSubkeys() const throw(SysError)
 {
   int n; 
   int c = 0; 
-  list<string> lst; 
+  list<CStdString> lst; 
   FILETIME ft; 
   do
   {
@@ -113,8 +113,8 @@ std::list<string> RegKey::getSubkeys() const throw(SysError)
 
 void RegKey::erase()throw(SysError)
 {
-  list<string> subs = getSubkeys(); 
-  for(list<string>::iterator it = subs.begin(); it != subs.end(); ++it)
+  list<CStdString> subs = getSubkeys(); 
+  for(list<CStdString>::iterator it = subs.begin(); it != subs.end(); ++it)
   {
     RegKey(m_hkey->get(), *it, false).erase(); 
   }
@@ -123,7 +123,7 @@ void RegKey::erase()throw(SysError)
     throw SysError(n); 
 }
 
-size_t RegKey::readRawData(const string& valueName, BYTE* buf, DWORD bufsize) const throw(SysError)
+size_t RegKey::readRawData(const CStdString& valueName, BYTE* buf, DWORD bufsize) const throw(SysError)
 {
   DWORD dwDummy; 
   int n = RegQueryValueEx(m_hkey->get(), (valueName == "" ? NULL : valueName.c_str()), NULL, 
@@ -133,7 +133,7 @@ size_t RegKey::readRawData(const string& valueName, BYTE* buf, DWORD bufsize) co
 
   return bufsize; 
 }
-std::string RegKey::getValue(const string& valueName) const throw(SysError)
+CStdString RegKey::getValue(const CStdString& valueName) const throw(SysError)
 {
   size_t size = readRawData(valueName, NULL, 0); 
   if(size)
@@ -146,31 +146,31 @@ std::string RegKey::getValue(const string& valueName) const throw(SysError)
     return ""; 
 }
 
-DWORD RegKey::getDwordValue(const string& valueName) const throw(SysError)
+DWORD RegKey::getDwordValue(const CStdString& valueName) const throw(SysError)
 {
   DWORD dwRet; 
   readRawData(valueName, (BYTE*)&dwRet, sizeof(DWORD)); 
   return dwRet; 
 }
 
-RECT RegKey::getRectValue(const string& valueName) const throw(SysError)
+RECT RegKey::getRectValue(const CStdString& valueName) const throw(SysError)
 {
   RECT rectRet; 
   readRawData(valueName, (BYTE*)&rectRet, sizeof(RECT)); 
   return rectRet; 
 }
 
-BYTE* RegKey::getBinaryValue(const string& valueName, BYTE* buf, DWORD dwBufSize) const throw(SysError)
+BYTE* RegKey::getBinaryValue(const CStdString& valueName, BYTE* buf, DWORD dwBufSize) const throw(SysError)
 {
   readRawData(valueName, buf, dwBufSize); 
   return buf; 
 }
 
-DWORD RegKey::getBinarySize(const string& valueName)
+DWORD RegKey::getBinarySize(const CStdString& valueName)
 {
   return readRawData(valueName, NULL, 0); 
 }
-void RegKey::setValue(const string& valueName, const string& value) throw(SysError)
+void RegKey::setValue(const CStdString& valueName, const CStdString& value) throw(SysError)
 {
   size_t s = value.size(); 
   int n = RegSetValueEx(m_hkey->get(), (valueName.c_str() == "" ? NULL : valueName.c_str()), 0,
@@ -179,7 +179,7 @@ void RegKey::setValue(const string& valueName, const string& value) throw(SysErr
   if(n != ERROR_SUCCESS)
     throw SysError(n); 
 }
-void RegKey::setValue(const string& valueName, DWORD value)throw(SysError)
+void RegKey::setValue(const CStdString& valueName, DWORD value)throw(SysError)
 {
   int n = RegSetValueEx(m_hkey->get(), (valueName.c_str() == "" ? NULL : valueName.c_str()), 0,
     REG_DWORD, (UCHAR*)&value, sizeof(value));
@@ -188,7 +188,7 @@ void RegKey::setValue(const string& valueName, DWORD value)throw(SysError)
     throw SysError(n); 
 }
 
-void RegKey::setValue(const string& valueName, const BYTE* buf, DWORD dwBufSize) throw(SysError)
+void RegKey::setValue(const CStdString& valueName, const BYTE* buf, DWORD dwBufSize) throw(SysError)
 {
   int n = RegSetValueEx(m_hkey->get(), (valueName.c_str() == "" ? NULL : valueName.c_str()), 0,
     REG_BINARY, buf, dwBufSize);
@@ -196,16 +196,16 @@ void RegKey::setValue(const string& valueName, const BYTE* buf, DWORD dwBufSize)
   if(n != ERROR_SUCCESS)
     throw SysError(n); 
 }
-void RegKey::eraseValue(const string& valueName) throw(SysError)
+void RegKey::eraseValue(const CStdString& valueName) throw(SysError)
 {
   int n = RegDeleteValue(m_hkey->get(), valueName.c_str());
 
   if(n != ERROR_SUCCESS)
     throw SysError(n); 
 }
-std::map<string, string> RegKey::getValues() const throw(SysError)
+std::map<CStdString, CStdString> RegKey::getValues() const throw(SysError)
 {
-  std::map<string, string> retlist; 
+  std::map<CStdString, CStdString> retlist; 
   char buf[MAX_PATH]; 
   char buf2[MAX_PATH]; 
   ULONG size, size2; 
@@ -223,23 +223,23 @@ std::map<string, string> RegKey::getValues() const throw(SysError)
         switch(dwType)
         {
         case REG_SZ:
-          retlist.insert(make_pair<string, string>(buf, buf2)); 
+          retlist.insert(make_pair<CStdString, CStdString>(buf, buf2)); 
           break; 
         case REG_DWORD:
         {
           ostringstream oss; 
           oss << *(int*)buf[2]; 
-          retlist.insert(make_pair<string, string>(buf, oss.str())); 
+          retlist.insert(make_pair<CStdString, CStdString>(buf, oss.str())); 
           break; 
         }
         case REG_EXPAND_SZ:
         {
           ExpandEnvironmentStrings(buf2, buf2, MAX_PATH); 
-          retlist.insert(make_pair<string, string>(buf, buf2)); 
+          retlist.insert(make_pair<CStdString, CStdString>(buf, buf2)); 
           break; 
         }
         default:
-          retlist.insert(make_pair<string, string>(buf, "[Unrecognized regvalue type]")); 
+          retlist.insert(make_pair<CStdString, CStdString>(buf, "[Unrecognized regvalue type]")); 
         }
       }
       case ERROR_NO_MORE_ITEMS:
@@ -252,7 +252,7 @@ std::map<string, string> RegKey::getValues() const throw(SysError)
   return retlist; 
 }
 
-RegKey RegKey::createSubkey(const string& name) throw (SysError)
+RegKey RegKey::createSubkey(const CStdString& name) throw (SysError)
 {
   return RegKey(m_hkey->get(), name); 
 }
@@ -262,7 +262,7 @@ RegKey::operator HKEY() const
   return m_hkey->get(); 
 }
 
-bool RegKey::hasValue(const string& name) const throw(SysError)
+bool RegKey::hasValue(const CStdString& name) const throw(SysError)
 {
   bool b = true; 
   try

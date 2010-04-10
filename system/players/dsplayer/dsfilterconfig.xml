@@ -138,6 +138,12 @@
       <guid>{765035B3-5944-4A94-806B-20EE3415F26F}</guid>
       <osdname>RealAlternative Source</osdname>
     </filter>
+	<filter name="tsfilesource" type="source">
+	  <!--<path>TSFileSource.ax</path>-->
+      <guid>{4F8BF30C-3BEB-43A3-8BF2-10096FD28CF2}</guid>
+      <osdname>TS File Source</osdname>
+    </filter>
+	
     <!--***************End Sources Filters****************-->
     <!--*******************Splitters**********************-->
     <filter name="avisplitter" type="splitter">
@@ -174,11 +180,22 @@
       <guid>{E21BE468-5C18-43EB-B0CC-DB93A847D769}</guid>
       <osdname>RealAlternative Splitter</osdname>
     </filter>
+	<filter name="mpeg2demultiplexer" type="splitter">
+      <guid>{AFB6C280-2C41-11D3-8A60-0000F81E0E4A}</guid>
+      <osdname>MPEG-2 Demultiplexer</osdname>
+    </filter>
     <!--***************End Splitters**********************-->
   </filters>
   
   <rules>
-    <!-- Iso extension will be added soon -->
+    <!-- DVD RULES -->
+    <!-- Iso still return a crash on this filter. -->
+	  <rule filetypes="iso">
+	    <source filter="tsfilesource" />
+	    <splitter filter="mpeg2demultiplexer" />
+      <video filter="ffdvideodec" />
+      <audio filter="ffdaudiodec" />
+    </rule>
     <!-- If you want to play a dvd select the file /dvdfolder/VIDEO_TS/VIDEO_TS.ifo -->
     <rule filetypes="ifo">
       <source filter="dvdnavigator" />
@@ -186,6 +203,7 @@
       <video filter="mpeg2videodec" />
       <audio filter="mpaaudiodec" />
     </rule>
+    <!-- END DVD RULES -->
     <rule filetypes="avi|divx">
       <source filter="avisource" />
       <splitter filter="avisplitter" />

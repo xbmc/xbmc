@@ -36,23 +36,23 @@
 class RegKey
 {
 public:
-  RegKey(HKEY base, const std::string& pathname, bool bCreate = true) throw (SysError);
+  RegKey(HKEY base, const CStdString& pathname, bool bCreate = true) throw (SysError);
   virtual ~RegKey() {};
-  std::list<std::string> getSubkeys() const throw(SysError);
+  std::list<CStdString> getSubkeys() const throw(SysError);
   void erase() throw(SysError);
-  std::string getValue(const std::string& valueName) const throw(SysError);
-  DWORD getDwordValue(const std::string& valueName) const throw(SysError);
-  RECT getRectValue(const std::string& valueName) const throw(SysError);
-  BYTE* getBinaryValue(const std::string& valueName, BYTE* buf, DWORD dwBufSize) const throw(SysError);
-  DWORD getBinarySize(const std::string& valueName);
-  void setValue(const std::string& valueName, const std::string& value) throw(SysError);
-  void setValue(const std::string& valueName, DWORD value) throw(SysError);
-  void setValue(const std::string& valueName, const BYTE* buf, DWORD dwBufSize) throw(SysError);
-  void eraseValue(const std::string& valueName) throw(SysError);
-  std::map<std::string,std::string> getValues() const throw(SysError);
-  RegKey createSubkey(const std::string& name) throw (SysError);
+  CStdString getValue(const CStdString& valueName) const throw(SysError);
+  DWORD getDwordValue(const CStdString& valueName) const throw(SysError);
+  RECT getRectValue(const CStdString& valueName) const throw(SysError);
+  BYTE* getBinaryValue(const CStdString& valueName, BYTE* buf, DWORD dwBufSize) const throw(SysError);
+  DWORD getBinarySize(const CStdString& valueName);
+  void setValue(const CStdString& valueName, const CStdString& value) throw(SysError);
+  void setValue(const CStdString& valueName, DWORD value) throw(SysError);
+  void setValue(const CStdString& valueName, const BYTE* buf, DWORD dwBufSize) throw(SysError);
+  void eraseValue(const CStdString& valueName) throw(SysError);
+  std::map<CStdString,CStdString> getValues() const throw(SysError);
+  RegKey createSubkey(const CStdString& name) throw (SysError);
   operator HKEY() const;
-  bool hasValue(const std::string& name) const throw(SysError);
+  bool hasValue(const CStdString& name) const throw(SysError);
 
 private:
   class HKEYWrapper
@@ -74,8 +74,8 @@ private:
   };
   boost::shared_ptr<HKEYWrapper> m_hkey;
   boost::shared_ptr<HKEYWrapper> m_hkeyfather;
-  std::string m_name;
-  size_t readRawData(const std::string& valueName, BYTE* buf, DWORD bufsize) const throw(SysError);
+  CStdString m_name;
+  size_t readRawData(const CStdString& valueName, BYTE* buf, DWORD bufsize) const throw(SysError);
 };
 
 #endif//REGKEY_H
