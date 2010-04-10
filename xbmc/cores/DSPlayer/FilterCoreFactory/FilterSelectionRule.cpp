@@ -106,7 +106,7 @@ bool CFilterSelectionRule::MatchesRegExp(const CStdString& str, CRegExp& regExp)
 
 void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdString> &vecCores, bool dxva, SVideoStreamIndexes *pStreamIndexes /*= NULL*/)
 {
-  CLog::Log(LOGDEBUG, "CFilterSelectionRule::GetFilters: considering rule: %s", m_name.c_str());
+  //CLog::Log(LOGDEBUG, "CFilterSelectionRule::GetFilters: considering rule: %s", m_name.c_str());
 
   if (m_bStreamDetails && (!item.HasVideoInfoTag() && (!pStreamIndexes))) return;
   /*
@@ -176,7 +176,7 @@ void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdStr
 
   if (CompileRegExp(m_fileName, regExp) && !MatchesRegExp(item.m_strPath, regExp)) return;
 
-  CLog::Log(LOGDEBUG, "CFilterSelectionRule::GetFilters: matches rule: %s", m_name.c_str());
+  //CLog::Log(LOGDEBUG, "CFilterSelectionRule::GetFilters: matches rule: %s", m_name.c_str());
 
   for (unsigned int i = 0; i < vecSubRules.size(); i++)
     vecSubRules[i]->GetFilters(item, vecCores, dxva, pStreamIndexes);

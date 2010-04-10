@@ -35,6 +35,7 @@
 #include "GUIDialogBusy.h"
 #include "DShowUtil/smartptr.h"
 #include "WindowingFactory.h"
+#include "GUIDialogOK.h"
 
 using namespace std;
 
@@ -72,11 +73,12 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   
   m_hReadyEvent.Reset();
 
-  if ( !g_sysinfo.IsVistaOrHigher() )
+  if ( g_Windowing.IsFullScreen() && !g_guiSettings.GetBool("videoscreen.fakefullscreen") &&  (
+    (g_sysinfo.IsVistaOrHigher() && g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer")) ||
+    (!g_sysinfo.IsVistaOrHigher() && !g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer")) ) ) // The test is broken, it doesn't work on Win7 either
   {
     // Using VMR in true fullscreen. Calling SetFile() in Process makes XBMC freeze
-	// And i also dont want this crap on windows xp platform. When the player crash 
-	// when loading a video file xbmc is crash really hard.
+    // We're no longer waiting indefinitly if a crash occured when trying to load the file
     m_callSetFileFromThread = false;
     START_PERFORMANCE_COUNTER
       if (FAILED(m_pDsGraph.SetFile(currentFileItem, m_PlayerOptions)))
@@ -109,6 +111,18 @@ bool CDSPlayer::CloseFile()
 {
   if (PlayerState == DSPLAYER_CLOSED)
     return true;
+
+  if (PlayerState = DSPLAYER_ERROR)
+  {
+    CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+    if (dialog)
+    {
+      dialog->SetHeading("Error");
+      dialog->SetLine(0, "An error occured when trying to render the file.");
+      dialog->SetLine(1, "Please look at the debug log for more informations.");
+      dialog->DoModal();
+    }
+  }
 
   PlayerState = DSPLAYER_CLOSING;
 
@@ -162,6 +176,12 @@ void CDSPlayer::OnStartup()
 
 void CDSPlayer::OnExit()
 {
+  if (PlayerState == DSPLAYER_LOADING)
+    PlayerState = DSPLAYER_ERROR;
+
+  // In case of, set the ready event
+  m_hReadyEvent.Set();
+
   if (PlayerState == DSPLAYER_CLOSING)
     m_callback.OnPlayBackStopped();
   else
@@ -238,7 +258,8 @@ void CDSPlayer::Process()
     if (m_currentRate == 1)
     {
       CChaptersManager::getSingleton()->UpdateChapters();
-      CStreamsManager::getSingleton()->UpdateDVDStream();
+      if (CFGLoader::Filters.isDVD)
+        CStreamsManager::getSingleton()->UpdateDVDStream();
     }
     //Handle fastforward stuff
    

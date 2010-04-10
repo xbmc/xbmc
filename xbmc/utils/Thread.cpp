@@ -210,7 +210,6 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 #ifndef _LINUX
   catch (const access_violation &e)
   {
-    throw;
     e.writelog(__FUNCTION__);
   }
   catch (const win32_exception &e)

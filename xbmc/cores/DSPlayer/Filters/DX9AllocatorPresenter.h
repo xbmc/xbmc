@@ -148,7 +148,7 @@ public:
     D3DTEXTUREFILTERTYPE      m_filter;
     D3DCAPS9        m_caps;
     
-    std::auto_ptr<CPixelShaderCompiler>		m_pPSC;
+    std::auto_ptr<CPixelShaderCompiler> m_pPSC;
     
 
     bool SettingsNeedResetDevice();
