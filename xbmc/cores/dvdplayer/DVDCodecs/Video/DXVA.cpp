@@ -55,6 +55,8 @@ static bool LoadDXVA()
   return true;
 }
 
+
+
 static void RelBufferS(AVCodecContext *avctx, AVFrame *pic)
 { ((CDecoder*)((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware())->RelBuffer(avctx, pic); }
 
@@ -106,6 +108,17 @@ static const dxva2_mode_t dxva2_modes[] = {
 
     { NULL, NULL, 0 }
 };
+
+static CStdString GUIDToString(const GUID& guid)
+{
+  CStdString buffer;
+  buffer.Format("%08X-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x\n"
+              , guid.Data1, guid.Data2, guid.Data3
+              , guid.Data4[0], guid.Data4[1]
+              , guid.Data4[2], guid.Data4[3], guid.Data4[4]
+              , guid.Data4[5], guid.Data4[6], guid.Data4[7]);
+  return buffer;
+}
 
 static const dxva2_mode_t *dxva2_find(const GUID *guid)
 {
@@ -224,10 +237,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
     if(mode)
       CLog::Log(LOGDEBUG, "DXVA - supports '%s'", mode->name);
     else
-      CLog::Log(LOGDEBUG, "DXVA - supports %08X-%04x-%04x-XXXX\n"
-                        , g->Data1
-                        , g->Data2
-                        , g->Data3);
+      CLog::Log(LOGDEBUG, "DXVA - supports %s", GUIDToString(*g).c_str());
   }
 
   m_format.Format = D3DFMT_UNKNOWN;
@@ -704,19 +714,21 @@ bool CProcessor::Open(const DXVA2_VideoDesc& dsc, unsigned size)
   for(unsigned i = 0; i < guid_count; i++)
   {
     GUID* g = &guid_list[i];
-    CLog::Log(LOGDEBUG, "DXVA - processor found %08X-%04x-%04x-XXXX\n"
-                      , g->Data1
-                      , g->Data2
-                      , g->Data3);
+    CLog::Log(LOGDEBUG, "DXVA - processor found %s", GUIDToString(*g).c_str());
 
     if(IsEqualGUID(*g, DXVA2_VideoProcProgressiveDevice))
       m_device = *g;
   }
 
-  CLog::Log(LOGDEBUG, "DXVA - processor selected %08X-%04x-%04x-XXXX\n"
-                    , m_device.Data1
-                    , m_device.Data2
-                    , m_device.Data3);
+  CLog::Log(LOGDEBUG, "DXVA - processor selected %s", GUIDToString(m_device).c_str());
+
+  CHECK(m_service->GetVideoProcessorCaps(m_device, &m_desc, D3DFMT_X8R8G8B8, &m_caps))
+
+  if (m_caps.DeviceCaps & DXVA2_VPDev_SoftwareDevice)
+    CLog::Log(LOGDEBUG, "DXVA - processor is software device");
+
+  if (m_caps.DeviceCaps & DXVA2_VPDev_EmulatedDXVA1)
+    CLog::Log(LOGDEBUG, "DXVA - processor is emulated dxva1");
 
   D3DFORMAT output = m_desc.Format;
   if(FAILED(m_service->CreateVideoProcessor(m_device, &m_desc, output, 0, &m_process)))
@@ -725,6 +737,9 @@ bool CProcessor::Open(const DXVA2_VideoDesc& dsc, unsigned size)
     output = D3DFMT_X8R8G8B8;
     CHECK(m_service->CreateVideoProcessor(m_device, &m_desc, output, 0, &m_process));
   }
+
+
+
 
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Brightness, &m_brightness));
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Contrast  , &m_contrast));

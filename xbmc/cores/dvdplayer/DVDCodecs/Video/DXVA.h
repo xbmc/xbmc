@@ -118,6 +118,7 @@ public:
   IDirectXVideoProcessor*        m_process;
   GUID                           m_device;
 
+  DXVA2_VideoProcessorCaps m_caps;
   DXVA2_VideoDesc  m_desc;
 
   DXVA2_ValueRange m_brightness;
