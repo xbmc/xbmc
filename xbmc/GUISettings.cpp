@@ -549,7 +549,7 @@ void CGUISettings::Initialize()
   AddInt(vp, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, renderers, SPIN_CONTROL_TEXT);
 
 #ifdef HAVE_LIBVDPAU
-  AddBool(vp, "videoplayer.usevaapi", 24091, true);
+  AddBool(vp, "videoplayer.usevdpau", 24091, true);
 #endif
 
 #ifdef HAVE_LIBCRYSTALHD
