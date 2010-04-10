@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 28883 -->
+<!--Based on english strings version 29149 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -731,6 +731,7 @@
   <string id="1048">- 用户名</string>
   <string id="1049">脚本设置</string>
   <string id="1050">单曲</string>
+  <string id="1051">输入网页地址</string>
 
   <string id="1200">SMB 共享设置</string>
   <string id="1202">工作组</string>
@@ -840,6 +841,7 @@
   <string id="10018">设置-&gt;网络设置</string>
   <string id="10019">设置-&gt;用户界面</string>
   <string id="10020">脚本</string>
+  <string id="10021">网页浏览器</string>
 
   <string id="10028">视频/播放列表</string>
   <string id="10034">设置-&gt;用户配置</string>
@@ -2138,6 +2140,11 @@
 
   <string id="24090">锁定扩展功能管理器</string>
 
+  <string id="24091">允许硬件加速（VDPAU）</string>
+  <string id="24092">允许硬件加速（VAAPI）</string>
+  <string id="24093">允许硬件加速（DXVA2）</string>
+  <string id="24094">允许硬件加速（CrystalHD）</string>
+
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">资料库模式</string>
   <string id="29801">QWERTY 键盘</string>
@@ -2226,7 +2233,8 @@
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
   <string id="34002">Wav</string>
-  <string id="34003">DXVA</string>
+  <string id="34003">DXVA2</string>
+  <string id="34004">VAAPI</string>
 
   <string id="34100">扬声器设置</string>
   <string id="34101">2.0</string>
