@@ -36,6 +36,8 @@
 
 using namespace std;
 
+#define IS_DSPLAYER ( (g_renderManager.GetRendererType() == RENDERER_DSHOW_VMR9) || (g_renderManager.GetRendererType() == RENDERER_DSHOW_EVR) )
+
 CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_DIRECTX;
@@ -154,9 +156,6 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
   SetViewPort(rc);
 
   BuildPresentParameters();
-  
-  if ((g_renderManager.GetRendererType() == RENDERER_DSHOW_VMR9) || g_renderManager.GetRendererType() == RENDERER_DSHOW_EVR ) // If we are using DSPlayer, the device need to be recreated
-    m_needNewDevice = true;
 
   OnDeviceLost();
   OnDeviceReset();
@@ -168,19 +167,19 @@ void CRenderSystemDX::BuildPresentParameters()
 {
   ZeroMemory( &m_D3DPP, sizeof(D3DPRESENT_PARAMETERS) );
   bool useWindow = g_guiSettings.GetBool("videoscreen.fakefullscreen") || !m_bFullScreenDevice;
-  m_D3DPP.Windowed					= useWindow;
-  m_D3DPP.SwapEffect				= D3DSWAPEFFECT_DISCARD;
-  m_D3DPP.BackBufferCount			= 1;
-  m_D3DPP.EnableAutoDepthStencil	= TRUE;
-  m_D3DPP.hDeviceWindow			= m_hDeviceWnd;
-  m_D3DPP.BackBufferWidth			= m_nBackBufferWidth;
-  m_D3DPP.BackBufferHeight			= m_nBackBufferHeight;
-  m_D3DPP.Flags   =   D3DPRESENTFLAG_LOCKABLE_BACKBUFFER | D3DPRESENTFLAG_VIDEO;
-  m_D3DPP.PresentationInterval = (m_bVSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
-  m_D3DPP.FullScreen_RefreshRateInHz = (useWindow) ? 0 : (int)m_refreshRate;
-  m_D3DPP.BackBufferFormat = D3DFMT_X8R8G8B8;
-  m_D3DPP.MultiSampleType = D3DMULTISAMPLE_NONE;
-  m_D3DPP.MultiSampleQuality = 0;
+  m_D3DPP.Windowed                    = useWindow;
+  m_D3DPP.SwapEffect                  = D3DSWAPEFFECT_DISCARD;
+  m_D3DPP.BackBufferCount             = 1;
+  m_D3DPP.EnableAutoDepthStencil      = TRUE;
+  m_D3DPP.hDeviceWindow               = m_hDeviceWnd;
+  m_D3DPP.BackBufferWidth             = m_nBackBufferWidth;
+  m_D3DPP.BackBufferHeight            = m_nBackBufferHeight;
+  m_D3DPP.Flags                       = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER | D3DPRESENTFLAG_VIDEO;
+  m_D3DPP.PresentationInterval        = (m_bVSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+  m_D3DPP.FullScreen_RefreshRateInHz  = (useWindow) ? 0 : (int)m_refreshRate;
+  m_D3DPP.BackBufferFormat            = D3DFMT_X8R8G8B8;
+  m_D3DPP.MultiSampleType             = D3DMULTISAMPLE_NONE;
+  m_D3DPP.MultiSampleQuality          = 0;
 
   // Try to create a 32-bit depth, 8-bit stencil
   if( FAILED( m_pD3D->CheckDeviceFormat( m_adapter,
@@ -239,7 +238,7 @@ void CRenderSystemDX::OnDeviceLost()
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
   SAFE_RELEASE(m_stateBlock);
 
-  if (m_needNewDevice)
+  if (m_needNewDevice || IS_DSPLAYER)
     DeleteDevice();
   else
   {
@@ -252,7 +251,7 @@ void CRenderSystemDX::OnDeviceLost()
 void CRenderSystemDX::OnDeviceReset()
 {
   CSingleLock lock(m_resourceSection);
-  if (m_needNewDevice)
+  if (m_needNewDevice || IS_DSPLAYER)
     CreateDevice();
   else
   {
@@ -319,9 +318,8 @@ bool CRenderSystemDX::CreateDevice()
     }
   }
   
-  HRESULT hrrr;  //To be able to show a com dialog over a fullscreen video playing we need this
   if (m_bFullScreenDevice)
-    hrrr=m_pD3DDevice->SetDialogBoxMode(TRUE);
+    hr=m_pD3DDevice->SetDialogBoxMode(TRUE); //To be able to show a com dialog over a fullscreen video playing we need this
 
   D3DDISPLAYMODE mode;
   if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))

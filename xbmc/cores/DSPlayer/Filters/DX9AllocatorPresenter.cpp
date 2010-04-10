@@ -1009,7 +1009,7 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
 
 HRESULT CDX9AllocatorPresenter::AllocSurfaces(D3DFORMAT Format)
 {
-    CAutoLock cAutoLock(this);
+  CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
 
   CDsSettings s = g_dsSettings;
@@ -1071,10 +1071,13 @@ void CDX9AllocatorPresenter::DeleteSurfaces()
   CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
 
+  m_pScreenSizeTemporaryTexture[0].Release();
+  m_pScreenSizeTemporaryTexture[1].Release();
+
   for(int i = 0; i < m_nNbDXSurface+2; i++)
   {
-    m_pVideoTexture[i] = NULL;
-    m_pVideoSurface[i] = NULL;
+    m_pVideoTexture[i].Release();
+    m_pVideoSurface[i].Release();
   }
 }
 
@@ -2414,16 +2417,15 @@ double CDX9AllocatorPresenter::GetFrameRate()
 
 bool CDX9AllocatorPresenter::ResetDevice()
 {
+  BeforeDeviceReset(); // Handle pre-reset specific renderer stuff
+
   StopWorkerThreads();
+  CStreamsManager::getSingleton()->SubtitleManager->StopThread();
+
   DeleteSurfaces();
-  HRESULT hr;
-  CStdString Error;
-  // TODO: Report error messages here
-  if(FAILED(hr = CreateDevice(Error)) || FAILED(hr = AllocSurfaces()))
-  {
-    return false;
-  }
-  OnDxResetDevice();
+
+  m_pD3DDev = NULL;
+  m_pD3D = NULL;
 
   return true;
 }
@@ -2839,26 +2841,35 @@ STDMETHODIMP CDX9AllocatorPresenter::GetDIB(BYTE* lpDib, DWORD* size)
 
 void CDX9AllocatorPresenter::OnLostDevice()
 {
-  //CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+  // XBMC gets a Reset event. We need to cleanup our ressources
+  CLog::Log(LOGDEBUG, "%s Device lost, cleaning ressources", __FUNCTION__);
+  ResetDevice();
 }
 
 void CDX9AllocatorPresenter::OnDestroyDevice()
 {
-  //Only this one is required for changing the device
-  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
-  m_bNeedNewDevice = true;
-  DeleteSurfaces();
+  // The device is going to be destroyed. Cleanup!
+  CLog::Log(LOGDEBUG, "%s Device destroyed, cleaning ressources", __FUNCTION__);
+  ResetDevice();
 }
 
 void CDX9AllocatorPresenter::OnCreateDevice()
 {
-  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+  // Do nothing!
 }
 
 void CDX9AllocatorPresenter::OnResetDevice()
 {
-  m_bPendingResetDevice = true;
-  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+
+  m_pD3DDev = g_Windowing.Get3DDevice();
+  m_pD3D = g_Windowing.Get3DObject();
+
+  CStreamsManager::getSingleton()->SubtitleManager->StartThread();
+
+  // Device is back, alloc our surface
+  HRESULT hr = AllocSurfaces();
+
+  AfterDeviceReset(); // handle post-reset stuff
 }
 
 void CDX9AllocatorPresenter::OnPaint(CRect destRect)

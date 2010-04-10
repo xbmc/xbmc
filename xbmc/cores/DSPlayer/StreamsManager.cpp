@@ -473,6 +473,13 @@ void CStreamsManager::LoadStreams()
   regex.clear();
 
   SubtitleManager->Initialize();
+  if (! SubtitleManager->Ready())
+  {
+    SubtitleManager->Unload();
+    SubtitleManager->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
+
+    return;
+  }
   
   /* We're done, internal audio & subtitles stream are loaded.
      We load external subtitle file */
@@ -480,8 +487,6 @@ void CStreamsManager::LoadStreams()
   std::vector<std::string> subtitles;
   CDVDFactorySubtitle::GetSubtitles(subtitles, CDSPlayer::currentFileItem.m_strPath);
 
-  SExternalSubtitleInfos *s = NULL;
-  
   for (std::vector<std::string>::const_iterator it = subtitles.begin(); it != subtitles.end(); ++it)
   {
     SubtitleManager->AddSubtitle(*it);
@@ -492,9 +497,6 @@ void CStreamsManager::LoadStreams()
   SubtitleManager->SetSubtitle(0);
 
   SubtitleManager->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
-
-  // What is that ?!
-  //g_settings.m_currentVideoSettings.m_SubtitleCached = true;
 }
 
 bool CStreamsManager::InitManager(CDSGraph *DSGraph)
@@ -807,6 +809,23 @@ void CSubtitleManager::Initialize()
   m_pManager->SetEnable(true);
 }
 
+bool CSubtitleManager::Ready()
+{
+  return (!!m_pManager);
+}
+
+void CSubtitleManager::StopThread()
+{
+  if (m_pManager)
+    m_pManager->StopThread();
+}
+
+void CSubtitleManager::StartThread()
+{
+  if (m_pManager)
+    m_pManager->StartThread(g_Windowing.Get3DDevice());
+}
+
 void CSubtitleManager::Unload()
 {
   if (m_pManager)
@@ -886,7 +905,6 @@ void CSubtitleManager::GetSubtitleName( int iStream, CStdString &strStreamName )
 
 void CSubtitleManager::SetSubtitle( int iStream )
 {
-
   if (CFGLoader::Filters.isDVD)
     return; // currently not implemented
 
@@ -1032,11 +1050,15 @@ void CSubtitleManager::SetSubtitleVisible( bool bVisible )
 {
   g_settings.m_currentVideoSettings.m_SubtitleOn = bVisible;
   m_bSubtitlesVisible = bVisible;
-  m_pManager->SetEnable(bVisible);
+  if (m_pManager)
+    m_pManager->SetEnable(bVisible);
 }
 
 int CSubtitleManager::AddSubtitle(const CStdString& subFilePath)
 {
+  if (! m_pManager)
+    return -1;
+
   std::auto_ptr<SExternalSubtitleInfos> s(new SExternalSubtitleInfos());
 
   if (m_subtitleStreams.empty())

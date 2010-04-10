@@ -16,7 +16,8 @@ BOOL g_disableAnim(TRUE);
 
 CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr)
   : m_d3DDev(d3DDev), m_iSubtitleSel(-1), m_rtNow(-1), m_lastSize(size),
-  m_textureSize(1024, 768), m_rtTimePerFrame(0), m_useDefaultStyle(true)//Set on XBMC Side
+  m_textureSize(1024, 768), m_rtTimePerFrame(0), m_useDefaultStyle(true),//Set on XBMC Side
+  m_pSubPicProvider(NULL)
 {
 
   //ATLTRACE("CSubManager constructor: texture size %dx%d, buffer ahead: %d, pow2tex: %d", g_textureSize.cx, g_textureSize.cy, g_subPicsBufferAhead, g_pow2tex);
@@ -34,6 +35,25 @@ CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr)
 
 CSubManager::~CSubManager(void)
 {
+}
+
+void CSubManager::StopThread()
+{
+  // Delete queue
+  m_pSubPicQueue->GetSubPicProvider(&m_pSubPicProvider);
+  m_pSubPicQueue.reset();
+}
+
+void CSubManager::StartThread(IDirect3DDevice9* pD3DDevice)
+{
+  HRESULT hr = S_OK;
+  m_pAllocator->ChangeDevice(pD3DDevice);
+  if (g_subPicsBufferAhead > 0)
+    m_pSubPicQueue.reset(new CSubPicQueue(g_subPicsBufferAhead, g_disableAnim, m_pAllocator, &hr));
+  else
+    m_pSubPicQueue.reset(new CSubPicQueueNoThread(m_pAllocator, &hr));
+
+  m_pSubPicQueue->SetSubPicProvider(m_pSubPicProvider);
 }
 
 void CSubManager::SetStyle(SSubStyle* style)
@@ -131,8 +151,11 @@ HRESULT CSubManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com:
   if (m_iSubtitleSel < 0)
     return E_INVALIDARG;
 
-  m_fps = 10000000.0 / m_rtTimePerFrame;
-  m_pSubPicQueue->SetFPS(m_fps);
+  if (m_rtTimePerFrame)
+  {
+    m_fps = 10000000.0 / m_rtTimePerFrame;
+    m_pSubPicQueue->SetFPS(m_fps);
+  }
 
   Com::SmartSize renderSize(renderRect.right, renderRect.bottom);
   if (m_lastSize != renderSize && renderRect.right > 0 && renderRect.bottom > 0)

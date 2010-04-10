@@ -158,7 +158,9 @@
     STDMETHODIMP  GetVideoService(HANDLE hDevice, REFIID riid, void **ppService);
 
   protected :
-    void      OnDxResetDevice();
+    // D3D Reset
+    void BeforeDeviceReset();
+    void AfterDeviceReset();
     virtual void  OnVBlankFinished(bool fAll, LONGLONG PerformanceCounter);
 
     double      m_ModeratedTime;

@@ -1565,8 +1565,6 @@ STDMETHODIMP CEVRAllocatorPresenter::InitializeDevice(AM_MEDIA_TYPE*  pMediaType
     }
     ASSERT (SUCCEEDED (hr));
   }
-
-
   return hr;
 }
 
@@ -2326,16 +2324,45 @@ void CEVRAllocatorPresenter::RenderThread()
   if (pfAvRevertMmThreadCharacteristics) pfAvRevertMmThreadCharacteristics (hAvrt);
 }
 
-void CEVRAllocatorPresenter::OnDxResetDevice()
+void CEVRAllocatorPresenter::BeforeDeviceReset()
 {
-  HRESULT    hr;
+  this->Lock();
+  m_ImageProcessingLock.Lock();
+  m_RenderLock.Lock();
+
+  // The device is going to be recreated, free ressources
+
+  m_bNeedNewDevice = true;
+  RemoveAllSamples();
+}
+
+void CEVRAllocatorPresenter::AfterDeviceReset()
+{
+
+  for(int i = 0; i < m_nNbDXSurface; i++)
+  {
+    Com::SmartPtr<IMFSample>  pMFSample;
+    HRESULT hr = pfMFCreateVideoSampleFromSurface (m_pVideoSurface[i], &pMFSample);
+
+    if (SUCCEEDED (hr))
+    {
+      pMFSample->SetUINT32 (GUID_SURFACE_INDEX, i);
+      m_FreeSamples.InsertBack(pMFSample);
+    }
+    ASSERT (SUCCEEDED (hr));
+  }
 
   // Reset DXVA Manager, and get new buffers
-  hr = m_pD3DManager->ResetDevice(m_pD3DDev, m_nResetToken);
+  HRESULT hr = m_pD3DManager->ResetDevice(m_pD3DDev, m_nResetToken);
   m_bNeedNewDevice = false;
+
   // Not necessary, but Microsoft documentation say Presenter should send this message...
   if (m_pSink)
     m_pSink->Notify (EC_DISPLAY_CHANGED, 0, 0);
+
+  m_RenderLock.Unlock();
+  m_ImageProcessingLock.Unlock();
+  this->Unlock();
 }
 
 

@@ -24,6 +24,9 @@ public:
   void SetSubPicProvider(ISubStream* pSubStream);
   void SetTextureSize(Com::SmartSize& pSize);
 
+  void StopThread();
+  void StartThread(IDirect3DDevice9* pD3DDevice);
+
   //load internal subtitles through TextPassThruFilter
   HRESULT InsertPassThruFilter(IGraphBuilder* pGB);
   HRESULT LoadExternalSubtitle(const wchar_t* subPath, ISubStream** pSubPic);
@@ -61,6 +64,7 @@ private:
   Com::SmartQIPtr<IAMStreamSelect> m_pSS; //graph filter with subtitles
   Com::SmartPtr<IDirect3DDevice9> m_d3DDev;
   Com::SmartPtr<ISubStream> m_pInternalSubStream;
+  ISubPicProvider* m_pSubPicProvider; // save when changing d3d device
 
   REFERENCE_TIME m_rtTimePerFrame;
 

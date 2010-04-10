@@ -218,8 +218,11 @@ public:
     void        DrawText(const RECT &rc, const CStdString &strText, int _Priority);
     void        DrawStats();
     HRESULT        AlphaBlt(RECT* pSrc, RECT* pDst, Com::SmartPtr<IDirect3DTexture9> pTexture);
-    virtual void    OnDxResetDevice() {};
-    virtual bool    ResetDevice();
+
+    // D3D Reset
+    virtual void BeforeDeviceReset() {};
+    virtual void AfterDeviceReset() {};
+    virtual bool ResetDevice();
 
     double GetFrameTime();
     double GetFrameRate();
