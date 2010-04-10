@@ -100,7 +100,7 @@ public:
   CProcessor();
  ~CProcessor();
 
-  bool Open(const DXVA2_VideoDesc& dsc, unsigned size);
+  bool Open(const DXVA2_VideoDesc& dsc);
   void Close();
   REFERENCE_TIME Add   (IDirect3DSurface9* source);
   bool           Render(const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time);

@@ -32,9 +32,11 @@
 #include "WindowingFactory.h"
 #include "Settings.h"
 #include "boost/shared_ptr.hpp"
+#include "AutoPtrHandle.h"
 
 using namespace DXVA;
 using namespace boost;
+using namespace AUTOPTR;
 
 typedef HRESULT (__stdcall *DXVA2CreateVideoServicePtr)(IDirect3DDevice9* pDD, REFIID riid, void** ppService);
 static DXVA2CreateVideoServicePtr g_DXVA2CreateVideoService;
@@ -287,7 +289,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
     return false;
   }
 
-  if(!m_processor->Open(m_format, 4))
+  if(!m_processor->Open(m_format))
     return false;
 
   avctx->get_buffer      = GetBufferS;
@@ -688,14 +690,13 @@ void CProcessor::Close()
 }
 
 
-bool CProcessor::Open(const DXVA2_VideoDesc& dsc, unsigned size)
+bool CProcessor::Open(const DXVA2_VideoDesc& dsc)
 {
   if(!LoadDXVA())
     return false;
 
   CSingleLock lock(m_section);
   m_desc = dsc;
-  m_size = size;
 
   CHECK(g_DXVA2CreateVideoService(g_Windowing.Get3DDevice(), IID_IDirectXVideoProcessorService, (void**)&m_service));
 
@@ -730,6 +731,9 @@ bool CProcessor::Open(const DXVA2_VideoDesc& dsc, unsigned size)
   if (m_caps.DeviceCaps & DXVA2_VPDev_EmulatedDXVA1)
     CLog::Log(LOGDEBUG, "DXVA - processor is emulated dxva1");
 
+  CLog::Log(LOGDEBUG, "DXVA - processor requires %d past frames and %d future frames", m_caps.NumBackwardRefSamples, m_caps.NumForwardRefSamples);
+  m_size = 3 + m_caps.NumBackwardRefSamples + m_caps.NumForwardRefSamples;
+
   D3DFORMAT output = m_desc.Format;
   if(FAILED(m_service->CreateVideoProcessor(m_device, &m_desc, output, 0, &m_process)))
   {
@@ -737,9 +741,6 @@ bool CProcessor::Open(const DXVA2_VideoDesc& dsc, unsigned size)
     output = D3DFMT_X8R8G8B8;
     CHECK(m_service->CreateVideoProcessor(m_device, &m_desc, output, 0, &m_process));
   }
-
-
-
 
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Brightness, &m_brightness));
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Contrast  , &m_contrast));
@@ -770,13 +771,13 @@ REFERENCE_TIME CProcessor::Add(IDirect3DSurface9* source)
   vs.SrcSurface->AddRef();
 
   if(!m_sample.empty())
-    m_sample.front().End = vs.Start;
+    m_sample.back().End = vs.Start;
 
-  m_sample.push_front(vs);
+  m_sample.push_back(vs);
   if(m_sample.size() > m_size)
   {
-    SAFE_RELEASE(m_sample.back().SrcSurface);
-    m_sample.pop_back();
+    SAFE_RELEASE(m_sample.front().SrcSurface);
+    m_sample.pop_front();
   }
 
   return m_time;
@@ -835,10 +836,14 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
   if(m_sample.empty())
     return false;
 
+  /* add a delay given number of forward references */
+  time -= m_caps.NumForwardRefSamples * 2;
+
+  /* find oldest needed frame */
   SSamples::iterator it = m_sample.begin();
   for(; it != m_sample.end(); it++)
   {
-    if(it->Start <= time)
+    if(it->Start >= time - m_caps.NumBackwardRefSamples * 2)
       break;
   }
 
@@ -848,24 +853,44 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
     return false;
   }
 
-  DXVA2_VideoSample vs;
-  vs = *it;
-  vs.DstRect = dst;
-  if(vs.End == 0)
-    vs.End = vs.Start + 2;
+  /* erase anything older than this */
+  for(SSamples::iterator it2 = m_sample.begin(); it2 != it; it2++)
+    SAFE_RELEASE(it2->SrcSurface);
+  it = m_sample.erase(m_sample.begin(), it);
 
-  if(time <  vs.Start
-  || time >= vs.End)
-    CLog::Log(LOGWARNING, "DXVA - image to render is outside of bounds [%"PRId64":%"PRId64") was %"PRId64,vs.Start, vs.End, time);
 
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
 
-  CropSource(vs.SrcRect, vs.DstRect, desc);
+  int count = 1 + m_caps.NumBackwardRefSamples + m_caps.NumForwardRefSamples;
+  int valid = 0;
+
+  auto_aptr<DXVA2_VideoSample> samp(new DXVA2_VideoSample[count]);
+  for(; it != m_sample.end() && valid < count; it++, valid++)
+  {
+    DXVA2_VideoSample& vs = samp[valid];
+    vs = *it;
+    vs.DstRect = dst;
+    if(vs.End == 0)
+      vs.End = vs.Start + 2;
+    CropSource(vs.SrcRect, vs.DstRect, desc);
+  }
+
+  if(time >= samp[valid-1].End)
+  {
+    CLog::Log(LOGWARNING, "CProcessor::Render - requested time %l64d is after last sample %l64d", time, samp[valid-1].End);
+    time = samp[valid-1].Start;
+  }
+  
+  if(time < samp[0].Start)
+  {
+    CLog::Log(LOGWARNING, "CProcessor::Render - requested time %%l64d is before first sample %l64d", time, samp[0].Start);
+    time = samp[0].Start;
+  }  
 
   DXVA2_VideoProcessBltParams blt = {};
-  blt.TargetFrame = vs.Start;
-  blt.TargetRect  = vs.DstRect;
+  blt.TargetFrame = time;
+  blt.TargetRect  = samp[0].DstRect;
   blt.ConstrictionSize.cx = blt.TargetRect.right  - blt.TargetRect.left;
   blt.ConstrictionSize.cy = blt.TargetRect.bottom - blt.TargetRect.top;
 
@@ -886,14 +911,7 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
   blt.BackgroundColor.Cr    = 0x8000;
   blt.BackgroundColor.Alpha = 0xffff;
 
-  CHECK(m_process->VideoProcessBlt(target, &blt, &vs, 1, NULL));
-
-  /* erase anything older than what we used */
-  it++;
-  for(SSamples::iterator it2 = it;it2 != m_sample.end(); it2++)
-    SAFE_RELEASE(it2->SrcSurface);
-  m_sample.erase(it, m_sample.end());
-
+  CHECK(m_process->VideoProcessBlt(target, &blt, samp.get(), valid, NULL));
   return true;
 }
 
