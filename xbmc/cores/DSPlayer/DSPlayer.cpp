@@ -112,7 +112,7 @@ bool CDSPlayer::CloseFile()
   if (PlayerState == DSPLAYER_CLOSED)
     return true;
 
-  if (PlayerState = DSPLAYER_ERROR)
+  if (PlayerState == DSPLAYER_ERROR)
   {
     CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (dialog)
