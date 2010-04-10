@@ -120,7 +120,9 @@ CLinuxRendererGL::YUVBUFFER::YUVBUFFER()
 
 CLinuxRendererGL::YUVBUFFER::~YUVBUFFER()
 {
+#ifdef HAVE_LIBVA
   delete &vaapi;
+#endif
 }
 
 CLinuxRendererGL::CLinuxRendererGL()
