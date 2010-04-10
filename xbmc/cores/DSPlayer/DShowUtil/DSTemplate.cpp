@@ -267,14 +267,21 @@ namespace Com
 
 	FilterTemplate &FilterTemplate::operator =(const FilterTemplate &ft)
 	{
-		if (moniker) { moniker->Release(); moniker = NULL; }
+		if (moniker) 
+    { 
+      moniker->Release(); 
+      moniker = NULL; 
+    }
 		moniker = ft.moniker;
-		if (moniker) moniker->AddRef();
+		if (moniker) 
+      moniker->AddRef();
 
 		input_pins.clear();
 		output_pins.clear();
+
     for (std::vector<PinTemplate>::const_iterator it = ft.input_pins.begin(); it != ft.input_pins.end(); it++)
       input_pins.push_back(*it);
+
     for (std::vector<PinTemplate>::const_iterator it = ft.output_pins.begin(); it != ft.output_pins.end(); it++)
       output_pins.push_back(*it);
 

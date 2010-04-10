@@ -26,7 +26,7 @@
 #include "filters/asyncio.h"
 #include "filters/asyncrdr.h"
 #include "CriticalSection.h"
-
+#include "File.h"
 using namespace XFILE;
 class CXBMCFileReader;
 
@@ -34,6 +34,7 @@ class CXBMCFileStream : public CAsyncStream
 {
 public:
   CXBMCFileStream(CStdString filepath, IBaseFilter **pBF,HRESULT *phr);
+  virtual ~CXBMCFileStream();
   HRESULT SetPointer(LONGLONG llPos);
   HRESULT Read(PBYTE pbBuffer, DWORD dwBytesToRead, BOOL bAlign, LPDWORD pdwBytesRead);
   LONGLONG Size(LONGLONG *pSizeAvailable);

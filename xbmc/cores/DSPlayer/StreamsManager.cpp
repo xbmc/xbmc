@@ -816,13 +816,13 @@ bool CSubtitleManager::Ready()
 
 void CSubtitleManager::StopThread()
 {
-  if (m_pManager)
+  if (!m_subtitleStreams.empty() && m_pManager)
     m_pManager->StopThread();
 }
 
 void CSubtitleManager::StartThread()
 {
-  if (m_pManager)
+  if (!m_subtitleStreams.empty() && m_pManager)
     m_pManager->StartThread(g_Windowing.Get3DDevice());
 }
 

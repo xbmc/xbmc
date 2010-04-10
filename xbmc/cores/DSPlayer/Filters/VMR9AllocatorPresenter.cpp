@@ -531,7 +531,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::TerminateDevice(DWORD_PTR dwUserID)
 
 STDMETHODIMP CVMR9AllocatorPresenter::GetSurface(DWORD_PTR dwUserID, DWORD SurfaceIndex, DWORD SurfaceFlags, IDirect3DSurface9** lplpSurface)
 {
-    if(!lplpSurface)
+  if(!lplpSurface)
     return E_POINTER;
 
   if(SurfaceIndex >= m_pSurfaces.size()) 
@@ -657,16 +657,6 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
 
   }
 
-    HRESULT hr;
-    if (m_bNeedNewDevice)
-    {
-      if (m_bPendingResetDevice)
-      {
-        return ChangeD3dDev();
-      }
-      else
-        return S_OK;
-    }
   if(!lpPresInfo || !lpPresInfo->lpSurf)
     return E_POINTER;
 
@@ -684,7 +674,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   }
   else
   {
-    hr = m_pD3DDev->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE);
+    m_pD3DDev->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE);
   }
 
   if(lpPresInfo->rtEnd > lpPresInfo->rtStart)
@@ -748,27 +738,26 @@ STDMETHODIMP CVMR9AllocatorPresenter::GetBorderColor(COLORREF* lpClr)
   return S_OK;
 }
 
-void CVMR9AllocatorPresenter::OnDestroyDevice()
+void CVMR9AllocatorPresenter::BeforeDeviceReset()
 {
-  //Only this one is required for changing the device
-  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
+  // The device is going to be recreated, free ressources
+  this->Lock();
+  m_RenderLock.Lock();
   m_bNeedNewDevice = true;
+  //DeleteSurfaces();
 }
 
-void CVMR9AllocatorPresenter::OnResetDevice()
+void CVMR9AllocatorPresenter::AfterDeviceReset()
 {
-  CLog::Log(LOGDEBUG,"%s",__FUNCTION__);
-}
 
-HRESULT CVMR9AllocatorPresenter::ChangeD3dDev()
-{
   HRESULT hr;
-  hr = m_pIVMRSurfAllocNotify->ChangeD3DDevice(g_Windowing.Get3DDevice(),g_Windowing.Get3DObject()->GetAdapterMonitor(GetAdapter(g_Windowing.Get3DObject())));
+  HMONITOR hMonitor = m_pD3D->GetAdapterMonitor(GetAdapter(m_pD3D));
+  hr = m_pIVMRSurfAllocNotify->ChangeD3DDevice(m_pD3DDev, hMonitor);
   if (SUCCEEDED(hr))
   {
     CLog::Log(LOGDEBUG,"%s Changed d3d device",__FUNCTION__);
     m_bNeedNewDevice = false;
-    m_bPendingResetDevice = false;
   }
-  return hr;
+  m_RenderLock.Unlock();
+  this->Unlock();
 }

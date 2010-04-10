@@ -22,7 +22,6 @@
 #pragma once
 #include "streams.h"
 #include "FgFilter.h"
-#include "File.h"
 #include "FileItem.h"
 #include "tinyXML/tinyxml.h"
 #include <list>
@@ -147,7 +146,6 @@ public:
 
 protected:
   CStdString                m_xbmcConfigFilePath;
-  XFILE::CFile              m_File;
 
   static bool               m_UsingDXVADecoder;
 

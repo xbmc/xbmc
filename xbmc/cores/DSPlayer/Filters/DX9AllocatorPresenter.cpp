@@ -2843,7 +2843,7 @@ void CDX9AllocatorPresenter::OnLostDevice()
 {
   // XBMC gets a Reset event. We need to cleanup our ressources
   CLog::Log(LOGDEBUG, "%s Device lost, cleaning ressources", __FUNCTION__);
-  ResetDevice();
+  //ResetDevice();
 }
 
 void CDX9AllocatorPresenter::OnDestroyDevice()

@@ -57,7 +57,6 @@ CFGLoader::CFGLoader():
 CFGLoader::~CFGLoader()
 {
   CSingleLock lock(*this);
-  m_File.Close();
   
   CFilterCoreFactory::Destroy();
   SAFE_DELETE(m_pFGF);
@@ -73,21 +72,11 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
 
   if (pFileItem.IsDVDImage())
   {
-    /*pFile.Open(pFileItem.m_strPath,READ_TRUNCATED | READ_BUFFERED);
-    bool gotit = pDir.GetDirectory(,pList,"",true,true);
-    if (gotit)
-      CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.m_strPath.c_str());
-    else
-      CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.m_strPath.c_str());*/
-
-    
-  
+    //TODO ...
   }
     /* Xbmc source filter */
   if (CUtil::IsInArchive(pFileItem.m_strPath))
   {
-    CFileItemList listitems;
-
     CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.m_strPath.c_str());
     CXBMCFileStream* pXBMCStream = new CXBMCFileStream(pFileItem.m_strPath, &Filters.Source.pBF, &hr);
     if (SUCCEEDED(hr))

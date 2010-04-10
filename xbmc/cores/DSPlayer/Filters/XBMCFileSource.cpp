@@ -19,8 +19,8 @@
  *
  */
 
-#include "File.h"
-using namespace XFILE;
+
+
 
 #include <streams.h>
 
@@ -53,6 +53,11 @@ CXBMCFileStream::CXBMCFileStream(CStdString filepath, IBaseFilter **pBF, HRESULT
   }
   else
     CLog::Log(LOGERROR,"%s Failed to create xbmc source filter", __FUNCTION__);
+}
+
+CXBMCFileStream::~CXBMCFileStream()
+{
+  m_pFile.Close();
 }
 
 HRESULT CXBMCFileStream::SetPointer(LONGLONG llPos)
