@@ -35,6 +35,7 @@
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "utils/log.h"
+#include "boost/shared_ptr.hpp"
 
 #ifndef _LINUX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
@@ -54,6 +55,8 @@
 #ifdef HAVE_LIBVA
 #include "VAAPI.h"
 #endif
+
+using namespace boost;
 
 enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
                                                 , const PixelFormat * fmt )
@@ -369,8 +372,13 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
   if(pData)
     m_iLastKeyframe++;
 
+  shared_ptr<CSingleLock> lock;
   if(m_pHardware)
   {
+    CCriticalSection* section = m_pHardware->Section();
+    if(section)
+      lock = shared_ptr<CSingleLock>(new CSingleLock(*section));
+
     int result;
     if(pData)
       result = m_pHardware->Check(m_pCodecContext);

@@ -27,6 +27,7 @@
 #include "Codecs/DllSwScale.h"
 
 class CVDPAU;
+class CCriticalSection;
 
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
 {
@@ -41,6 +42,7 @@ public:
     virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture) = 0;
     virtual int  Check     (AVCodecContext* avctx) = 0;
     virtual const std::string Name() = 0;
+    virtual CCriticalSection* Section() { return NULL; }
     virtual long              Release();
     virtual IHardwareDecoder* Acquire();
     protected:

@@ -104,6 +104,25 @@ static const GLubyte stipple_weave[] = {
   0xFF, 0xFF, 0xFF, 0xFF,
 };
 
+CLinuxRendererGL::YUVBUFFER::YUVBUFFER()
+#ifdef HAVE_LIBVA
+ : vaapi(*(new VAAPI::CHolder()))
+#endif
+{
+  memset(&fields, 0, sizeof(fields));
+  memset(&image , 0, sizeof(image));
+  memset(&pbo   , 0, sizeof(pbo));
+  flipindex = 0;
+#ifdef HAVE_LIBVDPAU
+  vdpau = NULL;
+#endif
+}
+
+CLinuxRendererGL::YUVBUFFER::~YUVBUFFER()
+{
+  delete &vaapi;
+}
+
 CLinuxRendererGL::CLinuxRendererGL()
 {
   m_textureTarget = GL_TEXTURE_2D;
@@ -126,8 +145,6 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_upscalingHeight = 0;
   memset(&m_imScaled, 0, sizeof(m_imScaled));
   m_isSoftwareUpscaling = false;
-
-  memset(m_buffers, 0, sizeof(m_buffers));
 
   // default texture handlers to YUV
   m_textureUpload = &CLinuxRendererGL::UploadYV12Texture;
@@ -1654,15 +1671,17 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 void CLinuxRendererGL::RenderVAAPI(int index, int field)
 {
 #ifdef HAVE_LIBVA
-  YUVPLANE      &plane = m_buffers[index].fields[field][0];
-  YUVBUFFER::VA &va    = m_buffers[index].vaapi;
+  YUVPLANE       &plane = m_buffers[index].fields[field][0];
+  VAAPI::CHolder &va    = m_buffers[index].vaapi;
 
-  if(va.object == NULL)
+  if(!va.surface)
   {
     CLog::Log(LOGINFO, "CLinuxRendererGL::RenderVAAPI - no vaapi object");
     return;
   }
-  
+  VAAPI::CDisplayPtr& display(va.surface->m_display);
+  CSingleLock lock(*display);
+
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
       g_graphicsContext.ClipToViewWindow();
 
@@ -1672,7 +1691,7 @@ void CLinuxRendererGL::RenderVAAPI(int index, int field)
 
 #if USE_VAAPI_GLX_BIND
   VAStatus status;
-  status = vaBeginRenderSurfaceGLX(va.object->GetDisplay(), va.surfacegl);
+  status = vaBeginRenderSurfaceGLX(display->get(), va.surfacegl);
   if(status != VA_STATUS_SUCCESS)
   {
     CLog::Log(LOGERROR, "CLinuxRendererGL::RenderVAAPI - vaBeginRenderSurfaceGLX failed (%d)", status);
@@ -1716,7 +1735,7 @@ void CLinuxRendererGL::RenderVAAPI(int index, int field)
     m_pVideoFilterShader->Disable();
 
 #if USE_VAAPI_GLX_BIND
-  status = vaEndRenderSurfaceGLX(va.object->GetDisplay(), va.surfacegl);
+  status = vaEndRenderSurfaceGLX(display->get(), va.surfacegl);
   if(status != VA_STATUS_SUCCESS)
   {
     CLog::Log(LOGERROR, "CLinuxRendererGL::RenderVAAPI - vaEndRenderSurfaceGLX failed (%d)", status);
@@ -2235,20 +2254,17 @@ void CLinuxRendererGL::DeleteNV12Texture(int index)
 void CLinuxRendererGL::DeleteVAAPITexture(int index)
 {
 #ifdef HAVE_LIBVA
-  YUVPLANE      &plane = m_buffers[index].fields[0][0];
-  YUVBUFFER::VA &va    = m_buffers[index].vaapi;
+  YUVPLANE       &plane = m_buffers[index].fields[0][0];
+  VAAPI::CHolder &va    = m_buffers[index].vaapi;
   VAStatus status;
 
-  if(va.surfacegl)
+  if(va.surfacegl && va.display)
   {
-    if(va.object)
-    {
-      status = vaDestroySurfaceGLX(va.object->GetDisplay(), va.surfacegl);
-      if(status != VA_STATUS_SUCCESS)
-        CLog::Log(LOGERROR, "CLinuxRendererGL::DeleteVAAPITexture - failed delete surface (%d)", status);
-    }
-    else
-      CLog::Log(LOGERROR, "CLinuxRendererGL::DeleteVAAPITexture - unable to delete texture due to lacking display");    
+    CSingleLock lock(*va.display);
+
+    status = vaDestroySurfaceGLX(va.display->get(), va.surfacegl);
+    if(status != VA_STATUS_SUCCESS)
+      CLog::Log(LOGERROR, "CLinuxRendererGL::DeleteVAAPITexture - failed delete surface (%d)", status);
 
     va.surfacegl = NULL;
   }
@@ -2256,7 +2272,9 @@ void CLinuxRendererGL::DeleteVAAPITexture(int index)
     glDeleteTextures(1, &plane.id);
   plane.id = 0;
 
-  SAFE_RELEASE(va.object);
+  va.display.reset();
+  va.surface.reset();
+
 #endif
 }
 
@@ -2304,17 +2322,33 @@ bool CLinuxRendererGL::CreateVAAPITexture(int index)
 void CLinuxRendererGL::UploadVAAPITexture(int index)
 {
 #ifdef HAVE_LIBVA
-  YUVPLANE      &plane = m_buffers[index].fields[0][0];
-  YUVBUFFER::VA &va    = m_buffers[index].vaapi;
+  YUVPLANE       &plane = m_buffers[index].fields[0][0];
+  VAAPI::CHolder &va    = m_buffers[index].vaapi;
   VAStatus status;
 
-  if(va.object == NULL)
+  if(!va.surface)
     return;
+
+  if(va.display && va.surface->m_display != va.display)
+  {
+    CLog::Log(LOGDEBUG, "CLinuxRendererGL::UploadVAAPITexture - context changed %d", index);
+    CSingleLock lock(*va.display);
+    if(va.surfacegl)
+    {
+      status = vaDestroySurfaceGLX(va.display->get(), va.surfacegl);
+      if(status != VA_STATUS_SUCCESS)
+        CLog::Log(LOGERROR, "CLinuxRendererGL::DeleteVAAPITexture - failed delete surface (%d)", status);
+      va.surfacegl = NULL;
+    }
+  }
+  va.display = va.surface->m_display;
+
+  CSingleLock lock(*va.display);
 
   if(va.surfacegl == NULL)
   {
     CLog::Log(LOGDEBUG, "CLinuxRendererGL::UploadVAAPITexture - creating vaapi surface for texture %d", index);
-    status = vaCreateSurfaceGLX(va.object->GetDisplay()
+    status = vaCreateSurfaceGLX(va.display->get()
                               , m_textureTarget
                               , plane.id
                               , &va.surfacegl);
@@ -2339,15 +2373,15 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
     field = VA_FRAME_PICTURE;
 
 #if USE_VAAPI_GLX_BIND
-  status = vaAssociateSurfaceGLX(va.object->GetDisplay()
+  status = vaAssociateSurfaceGLX(va.display->get()
                                , va.surfacegl
-                               , va.surface
+                               , va.surface->m_id
                                , field | colorspace);
 #else
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  status = vaCopySurfaceGLX(va.object->GetDisplay()
+  status = vaCopySurfaceGLX(va.display->get()
                           , va.surfacegl
-                          , va.surface
+                          , va.surface->m_id
                           , field | colorspace);
 #endif
 
@@ -2534,12 +2568,10 @@ void CLinuxRendererGL::AddProcessor(CVDPAU* vdpau)
 #endif
 
 #ifdef HAVE_LIBVA
-void CLinuxRendererGL::AddProcessor(VAAPI::CDecoder* vaapi_object, unsigned int vaapi_surface)
+void CLinuxRendererGL::AddProcessor(VAAPI::CHolder& holder)
 {
   YUVBUFFER &buf = m_buffers[NextYV12Texture()];
-  SAFE_RELEASE(buf.vaapi.object);
-  buf.vaapi.object  = (VAAPI::CDecoder*)vaapi_object->Acquire();
-  buf.vaapi.surface = vaapi_surface;
+  buf.vaapi.surface = holder.surface;
 }
 #endif
 

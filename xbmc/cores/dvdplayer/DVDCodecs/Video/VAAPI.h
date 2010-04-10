@@ -34,6 +34,45 @@ namespace VAAPI {
 
 typedef boost::shared_ptr<VASurfaceID const> VASurfacePtr;
 
+struct CDisplay
+  : CCriticalSection
+{
+  CDisplay(VADisplay display)
+    : m_display(display)
+  {}
+ ~CDisplay();
+
+  VADisplay get() { return m_display; }
+
+private:
+  VADisplay m_display;
+};
+
+typedef boost::shared_ptr<CDisplay> CDisplayPtr;
+
+struct CSurface
+{
+  CSurface(VASurfaceID id, CDisplayPtr display)
+   : m_id(id)
+   , m_display(display)
+  {}
+
+ ~CSurface();
+
+  VASurfaceID m_id;
+  CDisplayPtr m_display;
+};
+
+typedef boost::shared_ptr<CSurface> CSurfacePtr;
+
+// silly type to avoid includes
+struct CHolder
+{
+  CDisplayPtr display;
+  CSurfacePtr surface;
+  void*       surfacegl;
+};
+
 class CDecoder
   : public CDVDVideoCodecFFmpeg::IHardwareDecoder
 {
@@ -46,25 +85,28 @@ public:
   virtual int  Check     (AVCodecContext* avctx);
   virtual void Close();
   virtual const std::string Name() { return "vaapi"; }
+  virtual CCriticalSection* Section() { if(m_display) return m_display.get(); else return NULL; }
 
   int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
   void  RelBuffer(AVCodecContext *avctx, AVFrame *pic);
 
-  VADisplay    GetDisplay() { return m_display; }
+  VADisplay    GetDisplay() { return m_display->get(); }
 protected:
   
   static const unsigned  m_surfaces_max = 32;
   unsigned               m_surfaces_count;
   VASurfaceID            m_surfaces[m_surfaces_max];
 
-  std::list<VASurfaceID> m_surfaces_used;
-  std::list<VASurfaceID> m_surfaces_free;
+  std::list<CSurfacePtr> m_surfaces_used;
+  std::list<CSurfacePtr> m_surfaces_free;
 
-  VADisplay      m_display;
+  CDisplayPtr    m_display;
   VAConfigID     m_config;
   VAContextID    m_context;
 
   vaapi_context *m_hwaccel;
+
+  CHolder        m_holder; // silly struct to pass data to renderer
 };
 
 }

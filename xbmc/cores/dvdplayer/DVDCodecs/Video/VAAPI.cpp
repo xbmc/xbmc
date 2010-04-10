@@ -57,36 +57,27 @@ static inline VASurfaceID GetSurfaceID(AVFrame *pic)
 { return (VASurfaceID)(uintptr_t)pic->data[3]; }
 
 
-namespace
+CDisplay::~CDisplay()
 {
-  struct VASurfaceHolder
+  if(m_display)
   {
-    VASurfaceHolder(VASurfaceID id, VADisplay display)
-     : m_id(id)
-     , m_display(display)
-    {
-    }
-
-   ~VASurfaceHolder()
-    {
-      WARN(vaDestroySurfaces(m_display, &m_id, 1))
-    }
-    VASurfaceID m_id;
-    VADisplay   m_display;
-  };
-
-  shared_ptr<VASurfaceID const> VASurfaceIDPtr( VASurfaceID id, VADisplay display )
-  {
-    shared_ptr<VASurfaceHolder> sw( new VASurfaceHolder(id, display) );
-    return shared_ptr<VASurfaceID const>(sw,&sw->m_id);
+    CLog::Log(LOGDEBUG, "VAAPI - destroying display");
+    WARN(vaTerminate(m_display))
   }
-
 }
 
+CSurface::~CSurface()
+{
+  if(m_id)
+  {
+    CLog::Log(LOGDEBUG, "VAAPI - destroying surface %d", (int)m_id);
+    CSingleLock lock(*m_display);
+    WARN(vaDestroySurfaces(m_display->get(), &m_id, 1))
+  }
+}
 
 CDecoder::CDecoder()
 {
-  m_display  = NULL;
   m_config   = NULL;
   m_context  = NULL;
   m_hwaccel  = (vaapi_context*)calloc(1, sizeof(vaapi_context));
@@ -102,11 +93,11 @@ void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   VASurfaceID surface = GetSurfaceID(pic);
   
-  for(std::list<VASurfaceID>::iterator it = m_surfaces_used.begin(); it != m_surfaces_used.end(); it++)
+  for(std::list<CSurfacePtr>::iterator it = m_surfaces_used.begin(); it != m_surfaces_used.end(); it++)
   {    
-    if(*it == surface)
+    if((*it)->m_id == surface)
     {
-      m_surfaces_free.push_back(surface);
+      m_surfaces_free.push_back(*it);
       m_surfaces_used.erase(it);
       break;
     }
@@ -123,12 +114,12 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   if(surface)
   {
     /* reget call */
-    std::list<VASurfaceID>::iterator it = m_surfaces_free.begin();
+    std::list<CSurfacePtr>::iterator it = m_surfaces_free.begin();
     for(; it != m_surfaces_free.end(); it++)
     {    
-      if(*it == surface)
+      if((*it)->m_id == surface)
       {
-        m_surfaces_used.push_back(surface);
+        m_surfaces_used.push_back(*it);
         m_surfaces_free.erase(it);
         break;
       }
@@ -147,11 +138,11 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
       return -1;
     }
     /* getbuffer call */
-    surface = m_surfaces_free.front();
+    surface = m_surfaces_free.front()->m_id;
+    m_surfaces_used.push_back(m_surfaces_free.front());
     m_surfaces_free.pop_front();
-    m_surfaces_used.push_back(surface);
   }
-  
+
   pic->type           = FF_BUFFER_TYPE_USER;
   pic->age            = 1;
   pic->data[0]        = (uint8_t*)surface;
@@ -168,24 +159,17 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 void CDecoder::Close()
 { 
   if(m_context)
-    WARN(vaDestroyContext(m_display, m_context))
+    WARN(vaDestroyContext(m_display->get(), m_context))
   m_context = NULL;
 
   if(m_config)
-    WARN(vaDestroyConfig(m_display, m_config))
+    WARN(vaDestroyConfig(m_display->get(), m_config))
   m_config = NULL;
   
-  for(std::list<VASurfaceID>::iterator it = m_surfaces_free.begin(); it != m_surfaces_free.end(); it++)
-    WARN(vaDestroySurfaces(m_display, &(*it), 1))
   m_surfaces_free.clear();
-
-  for(std::list<VASurfaceID>::iterator it = m_surfaces_used.begin(); it != m_surfaces_used.end(); it++)
-    WARN(vaDestroySurfaces(m_display, &(*it), 1))
   m_surfaces_used.clear();
-  
-  if(m_display)
-    WARN(vaTerminate(m_display))
-  m_display = NULL;
+
+  m_display.reset();
 }
 
 bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
@@ -214,16 +198,18 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   else
     m_surfaces_count = 2  + 1 + 1;
 
-  
-  m_display = vaGetDisplayGLX(g_Windowing.GetDisplay());
+  VADisplay display;
+  display = vaGetDisplayGLX(g_Windowing.GetDisplay());
 
   int major_version, minor_version;
-  CHECK(vaInitialize(m_display, &major_version, &minor_version))
+  CHECK(vaInitialize(display, &major_version, &minor_version))
+
+  m_display = CDisplayPtr(new CDisplay(display));
 
   int num_display_attrs = 0;
-  scoped_array<VADisplayAttribute> display_attrs(new VADisplayAttribute[vaMaxNumDisplayAttributes(m_display)]);
+  scoped_array<VADisplayAttribute> display_attrs(new VADisplayAttribute[vaMaxNumDisplayAttributes(m_display->get())]);
 
-  CHECK(vaQueryDisplayAttributes(m_display, display_attrs.get(), &num_display_attrs))
+  CHECK(vaQueryDisplayAttributes(m_display->get(), display_attrs.get(), &num_display_attrs))
 
   for(int i = 0; i < num_display_attrs; i++)
   {
@@ -238,19 +224,19 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   }
 
   int num_profiles = 0;
-  scoped_array<VAProfile> profiles(new VAProfile[vaMaxNumProfiles(m_display)]);
-  CHECK(vaQueryConfigProfiles(m_display, profiles.get(), &num_profiles))
+  scoped_array<VAProfile> profiles(new VAProfile[vaMaxNumProfiles(m_display->get())]);
+  CHECK(vaQueryConfigProfiles(m_display->get(), profiles.get(), &num_profiles))
 
   for(int i = 0; i < num_profiles; i++)
     CLog::Log(LOGDEBUG, "VAAPI - profile %d", profiles[i]);
 
   VAConfigAttrib attrib;
   attrib.type = VAConfigAttribRTFormat;
-  CHECK(vaGetConfigAttributes(m_display, profile, entrypoint, &attrib, 1))
+  CHECK(vaGetConfigAttributes(m_display->get(), profile, entrypoint, &attrib, 1))
   if ((attrib.value & VA_RT_FORMAT_YUV420) == 0)
       return false;
   
-  CHECK(vaCreateSurfaces(m_display
+  CHECK(vaCreateSurfaces(m_display->get()
                        , avctx->width
                        , avctx->height
                        , VA_RT_FORMAT_YUV420
@@ -258,14 +244,14 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
                        , m_surfaces))
 
   for(unsigned i = 0; i < m_surfaces_count; i++)
-    m_surfaces_free.push_back(m_surfaces[i]);
+    m_surfaces_free.push_back(CSurfacePtr(new CSurface(m_surfaces[i], m_display)));
 
   //shared_ptr<VASurfaceID const> test = VASurfaceIDPtr(m_surfaces[0], m_display);
   
-  CHECK(vaCreateConfig(m_display, profile, entrypoint, &attrib, 1, &m_config))
+  CHECK(vaCreateConfig(m_display->get(), profile, entrypoint, &attrib, 1, &m_config))
 
 
-  CHECK(vaCreateContext(m_display
+  CHECK(vaCreateContext(m_display->get()
                       , m_config
                       , avctx->width
                       , avctx->height
@@ -275,7 +261,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
                       , &m_context))
 
 
-  m_hwaccel->display     = m_display;
+  m_hwaccel->display     = m_display->get();
   m_hwaccel->config_id   = m_config;
   m_hwaccel->context_id  = m_context;
 
@@ -291,6 +277,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 
 int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 {
+  m_holder.surface.reset();
   if(frame)
     return VC_BUFFER | VC_PICTURE;
   else
@@ -299,14 +286,43 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
 {
-  picture->format        = DVDVideoPicture::FMT_VAAPI;
-  picture->vaapi_object  = this;
-  picture->vaapi_surface = GetSurfaceID(frame);
+  VASurfaceID surface = GetSurfaceID(frame);
+
+
+  m_holder.surface.reset();
+
+  std::list<CSurfacePtr>::iterator it;
+  for(it = m_surfaces_used.begin(); it != m_surfaces_used.end() && !m_holder.surface; it++)
+  {    
+    if((*it)->m_id == surface)
+    {
+      m_holder.surface = *it;
+      break;
+    }
+  }
+
+  for(it = m_surfaces_free.begin(); it != m_surfaces_free.end() && !m_holder.surface; it++)
+  {    
+    if((*it)->m_id == surface)
+    {
+      m_holder.surface = *it;
+      break;
+    }
+  }
+  if(!m_holder.surface)
+  {
+    CLog::Log(LOGERROR, "VAAPI - Unable to find surface");
+    return false;
+  }
+
+  picture->format = DVDVideoPicture::FMT_VAAPI;
+  picture->vaapi  = &m_holder;
   return true;
 }
 
 int CDecoder::Check(AVCodecContext* avctx)
 {
+  m_holder.surface.reset();
   return 0;
 }
 
