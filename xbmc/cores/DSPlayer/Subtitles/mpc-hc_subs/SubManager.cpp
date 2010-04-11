@@ -142,6 +142,9 @@ void CSubManager::SetEnable(bool enable)
 
 void CSubManager::SetTime(REFERENCE_TIME rtNow)
 {
+  if (! m_pSubPicQueue)
+    return;
+
   m_rtNow = rtNow;
   m_pSubPicQueue->SetTime(m_rtNow);
 }
