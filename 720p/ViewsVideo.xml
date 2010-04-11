@@ -164,7 +164,7 @@
           <posy>28</posy>
           <width>764</width>
           <height>65</height>
-          <info>Container.ShowPlot</info>
+          <info>Container.Property(description)</info>
         </control>
       </control>
     </control>
