@@ -1,5 +1,5 @@
 #pragma once
-#include "Subresync.h"
+
 #include "ISubManager.h"
 
 class CRenderedTextSubtitle;

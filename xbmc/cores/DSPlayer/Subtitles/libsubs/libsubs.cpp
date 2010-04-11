@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <d3d9.h>
-#include "mpcSubs.h"
+#include "libsubs.h"
 #include "..\subtitles\RTS.h"
 #include "SubManager.h"
 

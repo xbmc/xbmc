@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="mpcSubs"
+	Name="libsubs_dll"
 	ProjectGUID="{CEE9D3EA-D6F9-49F1-9D36-0C3C0789AE97}"
 	RootNamespace="mpchc_subs"
 	Keyword="Win32Proj"
@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)\dsplayer_subs\$(ConfigurationName)"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			CharacterSet="1"
@@ -48,6 +48,7 @@
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
+				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="4"
@@ -71,10 +72,10 @@
 				IgnoreDefaultLibraryNames="LIBCMTD;LIBCMT"
 				GenerateDebugInformation="true"
 				AssemblyDebug="0"
-				ProgramDatabaseFile="$(SolutionDir)\dsplayer_subs\$(ConfigurationName)\$(TargetName).pdb"
+				ProgramDatabaseFile="$(ConfigurationName)\$(TargetName).pdb"
 				MapExports="false"
 				SubSystem="2"
-				ImportLibrary="$(SolutionDir)\dsplayer_subs\$(ConfigurationName)\libsubs.lib"
+				ImportLibrary="$(ConfigurationName)\libsubs.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -102,8 +103,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(SolutionDir)\dsplayer_subs\$(ConfigurationName)"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="..\common.vsprops;..\release.vsprops"
 			UseOfMFC="0"
@@ -132,7 +133,9 @@
 				AdditionalIncludeDirectories="..\..\..\..\;..\..\..\..\..\guilib;..\..\..\..\win32;..\..\include;..\..\baseclasses;..\..\..\..\lib\boost;..\..\DshowUtil/;..\..\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MPCSUBS_EXPORTS"
 				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="true"
+				BufferSecurityCheck="true"
+				EnableFunctionLevelLinking="false"
+				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="0"
@@ -154,6 +157,8 @@
 				AdditionalLibraryDirectories="..\..\libs"
 				IgnoreDefaultLibraryNames="LIBCMT"
 				GenerateDebugInformation="false"
+				ImportLibrary="$(ConfigurationName)\libsubs.lib"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -188,7 +193,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\mpcSubs.cpp"
+				RelativePath=".\libsubs.cpp"
 				>
 			</File>
 			<File
@@ -218,7 +223,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\mpcSubs.h"
+				RelativePath=".\libsubs.h"
 				>
 			</File>
 			<File

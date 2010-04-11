@@ -26,23 +26,23 @@
 #endif
 
 #include "DynamicDll.h"
-#include "mpc-hc_subs/ISubManager.h"
+#include "libsubs/ISubManager.h"
 
 class CSubManager;
 
-class DllLibMpcSubsInterface
+class DllLibSubsInterface
 {
 public:
-  virtual ~DllLibMpcSubsInterface() {}
+  virtual ~DllLibSubsInterface() {}
   virtual bool CreateSubtitleManager(IDirect3DDevice9* d3DDev, SIZE size, ISubManager ** pManager) = 0;
   virtual bool DeleteSubtitleManager(ISubManager * pManager) = 0;
 };
 
 
 
-class DllLibMpcSubs : public DllDynamic, DllLibMpcSubsInterface
+class DllLibSubs : public DllDynamic, DllLibSubsInterface
 {
-  DECLARE_DLL_WRAPPER(DllLibMpcSubs, "libsubs.dll")
+  DECLARE_DLL_WRAPPER(DllLibSubs, "libsubs.dll")
   
   /** @brief Create the Subtitle Manager from libsubs.dll
    * @param[in] p1 Pointer to the Direct3D9 Device

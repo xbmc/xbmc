@@ -32,6 +32,7 @@ public:
   HFONT hFont;
 
   CMyFont(STSStyle& style);
+  ~CMyFont();
 };
 
 class CPolygon;

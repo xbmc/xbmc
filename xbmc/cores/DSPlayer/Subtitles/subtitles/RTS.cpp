@@ -52,7 +52,8 @@ CMyFont::CMyFont(STSStyle& style)
   if(! (hFont = CreateFontIndirect(&lf)))
   {
     _tcscpy(lf.lfFaceName, _T("Arial"));
-    hFont = CreateFontIndirect(&lf);
+    if (! (hFont = CreateFontIndirect(&lf)))
+      ASSERT(0);
   }
 
   HFONT hOldFont = SelectFont(g_hDC, this->hFont);
@@ -61,6 +62,15 @@ CMyFont::CMyFont(STSStyle& style)
   m_ascent = ((tm.tmAscent + 4) >> 3);
   m_descent = ((tm.tmDescent + 4) >> 3);
   SelectFont(g_hDC, hOldFont);
+}
+
+CMyFont::~CMyFont()
+{
+  if (hFont)
+  {
+    DeleteObject(hFont);
+    hFont = 0;
+  }
 }
 
 // CWord
