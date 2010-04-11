@@ -98,9 +98,9 @@ void SaveSettings();
 
 extern "C" void Stop()
 {
-  SaveSettings();
   if(g_plugin)
   {
+    SaveSettings();
     g_plugin->PluginQuit();
     delete g_plugin;
     g_plugin = NULL;
