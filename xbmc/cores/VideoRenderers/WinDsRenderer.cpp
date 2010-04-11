@@ -36,10 +36,8 @@
 #include "IPaintCallback.h"
 
 CWinDsRenderer::CWinDsRenderer():
-  m_bConfigured(false),
-  m_D3DVideoTexture(NULL),
-  m_D3DMemorySurface(NULL),
-  m_paintCallback(NULL)
+  m_bConfigured(false), m_D3DVideoTexture(NULL), m_D3DMemorySurface(NULL),
+  m_paintCallback(NULL), m_pScreenSize(0, 0, 0, 0)
 {
 }
 
@@ -155,16 +153,21 @@ void CWinDsRenderer::RenderSubtitleTexture()
 
     Com::SmartPtr<IDirect3DTexture9> pTexture;
     
-    Com::SmartRect pSrc, pDst, pSize;
-    D3DDISPLAYMODE mode;
-    memset(&mode, 0, sizeof(D3DDISPLAYMODE));
-    if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))
-      pSize.SetRect(0, 0, mode.Width, mode.Height);
-    else
-      if (!GetWindowRect(g_Windowing.GetHwnd(), &pSize))
-        pSize.SetRect(m_destRect.x1, m_destRect.y1, m_destRect.x2, m_destRect.y2);
+    Com::SmartRect pSrc, pDst;
 
-    if (SUCCEEDED(CStreamsManager::getSingleton()->SubtitleManager->GetTexture(pTexture, pSrc, pDst, pSize)))
+    if (m_pScreenSize.Width() == 0) // Not init
+    {
+      D3DDISPLAYMODE mode;
+      memset(&mode, 0, sizeof(D3DDISPLAYMODE));
+      if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))
+        m_pScreenSize.SetRect(0, 0, mode.Width, mode.Height);
+      else
+        if (!GetWindowRect(g_Windowing.GetHwnd(), &m_pScreenSize))
+          m_pScreenSize.SetRect(lrint(m_destRect.x1), lrint(m_destRect.y1), lrint(m_destRect.x2), lrint(m_destRect.y2));
+      CLog::Log(LOGDEBUG, "%s Detected screen size : %dx%d", __FUNCTION__, m_pScreenSize.Width(), m_pScreenSize.Height());
+    }
+
+    if (SUCCEEDED(CStreamsManager::getSingleton()->SubtitleManager->GetTexture(pTexture, pSrc, pDst, m_pScreenSize)))
     {
       do
       {

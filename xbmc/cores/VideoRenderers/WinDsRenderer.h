@@ -80,6 +80,7 @@ protected:
   // clear colour for "black" bars
   DWORD m_clearColour;
   unsigned int m_flags;
+  Com::SmartRect m_pScreenSize;
 };
 
 
