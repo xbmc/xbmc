@@ -220,7 +220,7 @@ void CStreamsManager::SetAudioStream(int iStream)
 #endif
 
     /* Disable filter */
-standardway:
+//standardway:
 
     m_pGraph->Stop(); // Current position is kept by the graph
 
@@ -773,9 +773,11 @@ void CSubtitleManager::Initialize()
   {
   case FONT_STYLE_NORMAL:
   default:
+    style.fItalic = false;
     style.fontWeight = FW_NORMAL;
     break;
   case FONT_STYLE_BOLD:
+    style.fItalic = false;
     style.fontWeight = FW_BOLD;
     break;
   case FONT_STYLE_ITALICS:
@@ -1281,7 +1283,7 @@ void CStreamsManager::UpdateDVDStream()
   if (FAILED(hr))
     return;
 
-  for (int i = 0; i < nbrStreams; i++)
+  for (unsigned int i = 0; i < nbrStreams; i++)
   {
     DVD_SubpictureAttributes subpic;
     hr = CFGLoader::Filters.DVD.dvdInfo->GetSubpictureAttributes(i, &subpic);
