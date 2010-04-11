@@ -1,5 +1,5 @@
 <includes>
-
+ 
   <include name="List">
     <control type="group">
       <include>ListViewVisible</include>
@@ -281,7 +281,7 @@
 			    <height>42</height>
 			    <texture>MediaItemBG.png</texture>
 		    </control>
-		
+
 		    <control type="image">
 		        <posx>44</posx>
 			    <posy>2</posy>
@@ -543,7 +543,7 @@
           <posx>10</posx>
           <posy>-4</posy>
 		  <visible>!Container.Content(Episodes)</visible>
-		  
+
           <control type="label">
             <description>Title</description>
             <width>InfoListTitleWidth</width>
@@ -594,7 +594,7 @@
 	            <control type="textbox">
 	              <description>Plot</description>
 	              <width>InfoListTitleWidth</width>
-	              <height>260</height>
+	              <height>261</height>
 	              <info>ListItem.Plot</info>
 	              <visible>![Container.Content(seasons) | Container.Content(albums) | Container.Content(artists)]</visible>
 	            </control>
@@ -602,7 +602,7 @@
 	              <description>Plot</description>
 	              <width>InfoListTitleWidth</width>
 	              <height>317</height>
-	              <info>Container.ShowPlot</info>
+	              <info>ListItem.plotoutline</info>
 	              <visible>Container.Content(seasons)</visible>
 	            </control>
 	            <control type="textbox">
@@ -627,7 +627,7 @@
           <posx>400</posx>
           <posy>-4</posy>
 		  <visible>Container.Content(Episodes)</visible>
-		  
+
           <control type="textbox">
             <description>Title</description>
             <width>260</width>
@@ -1143,16 +1143,6 @@
             <scroll>true</scroll>
           </control>
 
-		<control type="image">
-			<visible>true</visible>
-			<posx>330</posx>
-			<posy>0</posy>
-			<height>91</height>
-			<width>91</width>
-			<info>Listitem.Property(mediaTag::movieStudio)</info>
-			<aspectratio>keep</aspectratio>
-		</control>
-
           <control type="label">
             <description>Year</description>
             <posy>30</posy>
@@ -1161,26 +1151,26 @@
             <info>ListItem.Year</info>
           </control>
 
-			<control type="image">
-				<posy>55</posy>
-				<posx>-2</posx>
-				<align>center</align>
-				<aspectratio>keep</aspectratio>
-				<info>ListItem.StarRating</info>
-				<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
-			</control>
+		  <control type="image">
+			  <posy>55</posy>
+			  <posx>-2</posx>
+			  <align>center</align>
+			  <aspectratio>keep</aspectratio>
+			  <info>ListItem.StarRating</info>
+			  <colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+		  </control>
 
-			<control type="textbox">
-				<description>Plot/Details</description>
-				<posy>90</posy>
-				<width>PanelStreamDetailTextWidth</width>
-				<height>258</height>
-				<info>ListItem.Plot</info>
-			</control>
+          <control type="textbox">
+            <description>Plot/Details</description>
+            <posy>90</posy>
+            <width>PanelStreamDetailTextWidth</width>
+            <height>261</height>
+            <info>ListItem.Plot</info>
+          </control>
 
-		  <control type="group">
+			<control type="group">
 				<description>Media Flags</description>
-				<posy>398</posy>
+				<posy>365</posy>
 				<include>PanelStreamFlags</include>
 			</control>
 
@@ -1215,18 +1205,17 @@
 
           <control type="textbox">
             <description>Plot/Details</description>
-            <posy>85</posy>
+            <posy>90</posy>
             <width>PanelStreamDetailTextWidth</width>
-            <height>300</height>
+            <height>319</height>
             <info>ListItem.Plot</info>
           </control>
 
-		  <control type="group">
+			<control type="group">
 				<description>Media Flags</description>
-				<posy>405</posy>
+				<posy>425</posy>
 				<include>PanelStreamFlags</include>
 			</control>
-
 		</control>
 
         <control type="group">
@@ -1253,7 +1242,7 @@
             <posy>68</posy>
             <width>PanelStreamDetailTextWidth</width>
             <height>390</height>
-            <info>Container.ShowPlot</info>
+            <info>Container.ListItem.plotoutline</info>
           </control>
         </control>
 
@@ -1284,7 +1273,7 @@
             <height>300</height>
             <info>ListItem.Plot</info>
           </control>
-		
+
 		  <control type="image">
 			  <posy>380</posy>
 			  <align>center</align>
@@ -1300,7 +1289,7 @@
 				<posy>425</posy>
 				<include>PanelStreamFlags</include>
 			</control>
-		
+
         </control>
 
         <control type="group">
