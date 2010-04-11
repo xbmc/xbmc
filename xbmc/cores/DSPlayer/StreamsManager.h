@@ -34,8 +34,8 @@
 #include "log.h"
 #include "CharsetConverter.h"
 #include "RegExp.h"
-#include "Subtitles/mpc-hc_subs/ISubManager.h"
-#include "Subtitles/DllLibmpcSubs.h"
+#include "Subtitles/libsubs/ISubManager.h"
+#include "Subtitles/DllLibSubs.h"
 
 enum SStreamType
 {
@@ -346,10 +346,10 @@ public:
 private:
   void DisconnectCurrentSubtitlePins(void);
   IPin *GetFirstSubtitlePin(void);
-  static void DeleteSubtitleManager(ISubManager * pManager, DllLibMpcSubs dll);
+  static void DeleteSubtitleManager(ISubManager * pManager, DllLibSubs dll);
 
   std::vector<SSubtitleStreamInfos *> m_subtitleStreams;
-  DllLibMpcSubs m_dll;
+  DllLibSubs m_dll;
   boost::shared_ptr<ISubManager> m_pManager;
   CStreamsManager* m_pStreamManager;
   bool m_bSubtitlesUnconnected;

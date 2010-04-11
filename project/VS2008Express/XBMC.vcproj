@@ -2633,7 +2633,7 @@
 					Name="Interfaces"
 					>
 					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DllLibmpcSubs.h"
+						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DllLibSubs.h"
 						>
 					</File>
 					<File

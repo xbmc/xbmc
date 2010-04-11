@@ -138,7 +138,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dsutil", "..\..\xbmc\cores\
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4} = {510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mpcSubs", "..\..\xbmc\cores\DSPlayer\Subtitles\mpc-hc_subs\mpc-hc_subs.vcproj", "{CEE9D3EA-D6F9-49F1-9D36-0C3C0789AE97}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libsubs_dll", "..\..\xbmc\cores\DSPlayer\Subtitles\libsubs\libsubs.vcproj", "{CEE9D3EA-D6F9-49F1-9D36-0C3C0789AE97}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D514EA4D-EAFB-47A9-A437-A582CA571251} = {D514EA4D-EAFB-47A9-A437-A582CA571251}
 		{5E56335F-0FB1-4EEA-B240-D8DC5E0608E4} = {5E56335F-0FB1-4EEA-B240-D8DC5E0608E4}

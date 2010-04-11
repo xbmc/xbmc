@@ -1321,7 +1321,7 @@ SExternalSubtitleInfos* CSubtitleManager::GetExternalSubtitleStreamInfos( unsign
   return reinterpret_cast<SExternalSubtitleInfos *>(m_subtitleStreams[iIndex]);
 }
 
-void CSubtitleManager::DeleteSubtitleManager( ISubManager * pManager, DllLibMpcSubs dll )
+void CSubtitleManager::DeleteSubtitleManager( ISubManager * pManager, DllLibSubs dll )
 {
   dll.DeleteSubtitleManager(pManager);
 }
