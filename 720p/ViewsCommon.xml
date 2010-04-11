@@ -1,5 +1,5 @@
 <includes>
-
+ 
   <include name="List">
     <control type="group">
       <include>ListViewVisible</include>
