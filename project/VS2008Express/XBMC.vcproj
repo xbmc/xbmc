@@ -150,6 +150,7 @@
 				ExceptionHandling="0"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
+				BufferSecurityCheck="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
@@ -170,6 +171,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				IgnoreImportLibrary="false"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
 				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib strmiids.lib dxguid.lib mfuuid.lib comctl32.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
@@ -183,8 +185,8 @@
 				SubSystem="2"
 				LargeAddressAware="2"
 				EntryPointSymbol=""
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
+				RandomizedBaseAddress="2"
+				DataExecutionPrevention="2"
 				TargetMachine="1"
 			/>
 			<Tool
