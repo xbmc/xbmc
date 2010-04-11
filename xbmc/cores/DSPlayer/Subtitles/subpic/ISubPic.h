@@ -418,7 +418,7 @@ protected:
   Com::SmartRect m_VideoRect, m_WindowRect;
 
   REFERENCE_TIME m_rtNow;
-  double m_fps;
+  float m_fps; //float is enought
 
   Com::SmartPtr<ISubPicProvider> m_SubPicProvider;
   Com::SmartPtr<ISubPicAllocator> m_pAllocator;

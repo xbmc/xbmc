@@ -65,13 +65,17 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="strmbasdU.lib Winmm.lib vfw32.lib version.lib"
+				OutputFile="$(SolutionDir)..\..\system\players\dsplayer\libsubs.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\libs"
 				IgnoreDefaultLibraryNames="LIBCMTD;LIBCMT"
 				GenerateDebugInformation="true"
 				AssemblyDebug="0"
+				ProgramDatabaseFile="$(SolutionDir)\dsplayer_subs\$(ConfigurationName)\$(TargetName).pdb"
 				MapExports="false"
 				SubSystem="2"
+				ImportLibrary="$(SolutionDir)\dsplayer_subs\$(ConfigurationName)\libsubs.lib"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -93,7 +97,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy $(OutDir)\mpcSubs.dll $(SolutionDir)..\..\system\players\dsplayer\"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
@@ -145,6 +149,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="strmbaseU.lib Winmm.lib vfw32.lib version.lib"
+				OutputFile="$(SolutionDir)..\..\system\players\dsplayer\libsubs.dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\libs"
 				IgnoreDefaultLibraryNames="LIBCMT"
@@ -169,7 +174,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy $(OutDir)\mpcSubs.dll $(SolutionDir)..\..\system\players\dsplayer\"
+				CommandLine=""
 			/>
 		</Configuration>
 	</Configurations>

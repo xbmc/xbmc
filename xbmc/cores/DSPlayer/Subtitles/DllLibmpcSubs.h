@@ -42,9 +42,9 @@ public:
 
 class DllLibMpcSubs : public DllDynamic, DllLibMpcSubsInterface
 {
-  DECLARE_DLL_WRAPPER(DllLibMpcSubs, "mpcSubs.dll")
+  DECLARE_DLL_WRAPPER(DllLibMpcSubs, "libsubs.dll")
   
-  /** @brief Create the Subtitle Manager from mpcSubs.dll
+  /** @brief Create the Subtitle Manager from libsubs.dll
    * @param[in] p1 Pointer to the Direct3D9 Device
    * @param[in] p2 ?
    * @param[out] p3 Receive a pointer to ISubManager
