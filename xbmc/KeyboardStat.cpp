@@ -66,7 +66,17 @@ struct XBMC_KeyMapping
 
 // Convert control keypresses e.g. ctrl-A from 0x01 to 0x41
 static XBMC_KeyMapping g_mapping_ctrlkeys[] =
-{ {0x61, 0x41, XBMCK_a, XBMCK_a}
+{ {0x30, 0x60, XBMCK_0, XBMCK_0}
+, {0x31, 0x61, XBMCK_1, XBMCK_1}
+, {0x32, 0x62, XBMCK_2, XBMCK_2}
+, {0x33, 0x63, XBMCK_3, XBMCK_3}
+, {0x34, 0x64, XBMCK_4, XBMCK_4}
+, {0x35, 0x65, XBMCK_5, XBMCK_5}
+, {0x36, 0x66, XBMCK_6, XBMCK_6}
+, {0x37, 0x67, XBMCK_7, XBMCK_7}
+, {0x38, 0x68, XBMCK_8, XBMCK_8}
+, {0x39, 0x69, XBMCK_9, XBMCK_9}
+, {0x61, 0x41, XBMCK_a, XBMCK_a}
 , {0x62, 0x42, XBMCK_b, XBMCK_b}
 , {0x63, 0x43, XBMCK_c, XBMCK_c}
 , {0x64, 0x44, XBMCK_d, XBMCK_d}
@@ -789,11 +799,13 @@ void CKeyboardStat::Update(XBMC_Event& event)
       // Windows.
       if (m_bCtrl)
       {
-        if (!m_VKey && !m_cAscii)
+        if (!m_VKey && !m_cAscii && (event.key.keysym.sym != XBMCK_LCTRL))
+        {
           LookupKeyMapping(&m_VKey, NULL, &m_wUnicode
                          , event.key.keysym.sym
                          , g_mapping_ctrlkeys
                          , sizeof(g_mapping_ctrlkeys)/sizeof(g_mapping_ctrlkeys[0]));
+        }
       }
 
       /* Check for standard non printable keys */
