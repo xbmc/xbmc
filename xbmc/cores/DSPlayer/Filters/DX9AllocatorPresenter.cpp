@@ -62,19 +62,19 @@ static void AdjustQuad(MYD3DVERTEX<texcoords>* v, double dx, double dy)
 
   for(int i = 0; i < 4; i++)
   {
-    v[i].x -= offset;
-    v[i].y -= offset;
+    v[i].x -= (float) offset;
+    v[i].y -= (float) offset;
     
     for(int j = 0; j < dsmax(texcoords-1, 1); j++)
     {
-      v[i].t[j].u -= offset*dx;
-      v[i].t[j].v -= offset*dy;
+      v[i].t[j].u -= (float) (offset*dx);
+      v[i].t[j].v -= (float) (offset*dy);
     }
 
     if(texcoords > 1)
     {
-      v[i].t[texcoords-1].u -= offset;
-      v[i].t[texcoords-1].v -= offset;
+      v[i].t[texcoords-1].u -= (float) offset;
+      v[i].t[texcoords-1].v -= (float) offset;
     }
   }
 }
@@ -548,7 +548,7 @@ public:
 
 void CDX9AllocatorPresenter::VSyncThread()
 {
-  HANDLE        hAvrt;
+  //HANDLE        hAvrt;
   HANDLE        hEvts[]    = { m_hEvtQuit};
   bool        bQuit    = false;
     TIMECAPS      tc;
@@ -1026,8 +1026,6 @@ HRESULT CDX9AllocatorPresenter::AllocSurfaces(D3DFORMAT Format)
   m_SurfaceType = Format;
 
   HRESULT hr;
-  if (!g_renderManager.IsConfigured())
-    g_renderManager.Configure(m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_fps, CONF_FLAGS_FULLSCREEN);
   if(g_dsSettings.iAPSurfaceUsage == VIDRNDT_AP_TEXTURE2D || g_dsSettings.iAPSurfaceUsage == VIDRNDT_AP_TEXTURE3D)
   {
     int nTexturesNeeded = g_dsSettings.iAPSurfaceUsage == VIDRNDT_AP_TEXTURE3D ? m_nNbDXSurface+2 : 1;
@@ -1215,7 +1213,7 @@ HRESULT CDX9AllocatorPresenter::InitResizers(float bicubicA, bool bNeedScreenSiz
     hr = m_pPSC->CompileShader(str, pEntries[i], pProfile, 0, &m_pResizerPixelShader[i], &DissAssembly, &ErrorMessage);
     if(FAILED(hr)) 
     {
-      TRACE("%ws", ErrorMessage.GetString());
+      //TRACE("%ws", ErrorMessage.GetString());
       ASSERT (0);
       return hr;
     }
@@ -1335,8 +1333,8 @@ HRESULT CDX9AllocatorPresenter::TextureResize(Com::SmartPtr<IDirect3DTexture9> p
 
   float dx = 1.0f/w;
   float dy = 1.0f/h;
-  float dx2 = 1.0/w;
-  float dy2 = 1.0/h;
+  float dx2 = 1.0f/w;
+  float dy2 = 1.0f/h;
 
   MYD3DVERTEX<1> v[] =
   {
@@ -1368,10 +1366,10 @@ HRESULT CDX9AllocatorPresenter::TextureResizeBilinear(Com::SmartPtr<IDirect3DTex
   // make const to give compiler a chance of optimising, also float faster than double and converted to float to sent to PS anyway
   const float dx = 1.0f/(float)desc.Width;
   const float dy = 1.0f/(float)desc.Height;
-  const float tx0 = SrcRect.left;
-  const float tx1 = SrcRect.right;
-  const float ty0 = SrcRect.top;
-  const float ty1 = SrcRect.bottom;
+  const float tx0 = (const float) SrcRect.left;
+  const float tx1 = (const float) SrcRect.right;
+  const float ty0 = (const float) SrcRect.top;
+  const float ty1 = (const float) SrcRect.bottom;
 
   MYD3DVERTEX<1> v[] =
   {
@@ -1411,10 +1409,10 @@ HRESULT CDX9AllocatorPresenter::TextureResizeBicubic1pass(Com::SmartPtr<IDirect3
   // make const to give compiler a chance of optimising, also float faster than double and converted to float to sent to PS anyway
   const float dx = 1.0f/(float)desc.Width;
   const float dy = 1.0f/(float)desc.Height;
-  const float tx0 = SrcRect.left;
-  const float tx1 = SrcRect.right;
-  const float ty0 = SrcRect.top;
-  const float ty1 = SrcRect.bottom;
+  const float tx0 = (const float) SrcRect.left;
+  const float tx1 = (const float) SrcRect.right;
+  const float ty0 = (const float) SrcRect.top;
+  const float ty1 = (const float) SrcRect.bottom;
 
   MYD3DVERTEX<1> v[] =
   {
@@ -1456,8 +1454,8 @@ HRESULT CDX9AllocatorPresenter::TextureResizeBicubic2pass(Com::SmartPtr<IDirect3
   if(!pTexture || FAILED(pTexture->GetLevelDesc(0, &desc)))
     return E_FAIL;
 
-  float Tex0_Width = desc.Width;
-  float Tex0_Height = desc.Height;
+  float Tex0_Width = (float) desc.Width;
+  float Tex0_Height = (float) desc.Height;
 
   double dx0 = 1.0/desc.Width;
   double dy0 = 1.0/desc.Height;
@@ -1471,8 +1469,8 @@ HRESULT CDX9AllocatorPresenter::TextureResizeBicubic2pass(Com::SmartPtr<IDirect3
   if(!m_pScreenSizeTemporaryTexture[0] || FAILED(m_pScreenSizeTemporaryTexture[0]->GetLevelDesc(0, &desc)))
     return TextureResizeBicubic1pass(pTexture, dst, SrcRect);
 
-  float Tex1_Width = desc.Width;
-  float Tex1_Height = desc.Height;
+  float Tex1_Width = (float) desc.Width;
+  float Tex1_Height = (float) desc.Height;
 
   double dx1 = 1.0/desc.Width;
   double dy1 = 1.0/desc.Height;
@@ -1482,15 +1480,15 @@ HRESULT CDX9AllocatorPresenter::TextureResizeBicubic2pass(Com::SmartPtr<IDirect3
 
   float dx2 = 1.0f/SrcTextSize.cx;
   float dy2 = 1.0f/SrcTextSize.cy;
-  float tx0 = SrcRect.left;
-  float tx1 = SrcRect.right;
-  float ty0 = SrcRect.top;
-  float ty1 = SrcRect.bottom;
+  float tx0 = (float) SrcRect.left;
+  float tx1 = (float) SrcRect.right;
+  float ty0 = (float) SrcRect.top;
+  float ty1 = (float) SrcRect.bottom;
 
   float tx0_2 = 0;
-  float tx1_2 = dst1.Width();
+  float tx1_2 = (float) dst1.Width();
   float ty0_2 = 0;
-  float ty1_2 = h;
+  float ty1_2 = (float) h;
 
 //  ASSERT(dst1.Height() == desc.Height);
 
@@ -1506,18 +1504,18 @@ HRESULT CDX9AllocatorPresenter::TextureResizeBicubic2pass(Com::SmartPtr<IDirect3
     {(float)dst1.right, (float)dst1.bottom, 0.5f, 2.0f, tx1, ty1},
   };
 
-  AdjustQuad(vx, 1.0, 0.0);    // Casimir666 : bug ici, génére des bandes verticales! TODO : pourquoi ??????
+  AdjustQuad(vx, 1.0, 0.0);
 
   MYD3DVERTEX<1> vy[] =
   {
-    {dst[0].x, dst[0].y, dst[0].z, 1.0/dst[0].z, tx0_2, ty0_2},
-    {dst[1].x, dst[1].y, dst[1].z, 1.0/dst[1].z, tx1_2, ty0_2},
-    {dst[2].x, dst[2].y, dst[2].z, 1.0/dst[2].z, tx0_2, ty1_2},
-    {dst[3].x, dst[3].y, dst[3].z, 1.0/dst[3].z, tx1_2, ty1_2},
+    {dst[0].x, dst[0].y, dst[0].z, 1.0f/dst[0].z, tx0_2, ty0_2},
+    {dst[1].x, dst[1].y, dst[1].z, 1.0f/dst[1].z, tx1_2, ty0_2},
+    {dst[2].x, dst[2].y, dst[2].z, 1.0f/dst[2].z, tx0_2, ty1_2},
+    {dst[3].x, dst[3].y, dst[3].z, 1.0f/dst[3].z, tx1_2, ty1_2},
   };
 
 
-  AdjustQuad(vy, 0.0, 1.0);    // Casimir666 : bug ici, génére des bandes horizontales! TODO : pourquoi ??????
+  AdjustQuad(vy, 0.0, 1.0);
 
   hr = m_pD3DDev->SetPixelShader(m_pResizerPixelShader[2]);
   {
@@ -1676,8 +1674,8 @@ void CDX9AllocatorPresenter::CalculateJitter(LONGLONG PerfCounter)
     double DeviationSum = 0;
     for (int i=0; i<NB_JITTER; i++)
     {
-      LONGLONG DevInt = m_pllJitter[i] - FrameTimeMean;
-      double Deviation = DevInt;
+      __int64 DevInt = (__int64)(m_pllJitter[i] - FrameTimeMean);
+      double Deviation = (double) DevInt;
       DeviationSum += Deviation*Deviation;
       m_MaxJitter = dsmax(m_MaxJitter, DevInt);
       m_MinJitter = dsmin(m_MinJitter, DevInt);
@@ -2490,7 +2488,7 @@ void CDX9AllocatorPresenter::DrawStats()
     RECT      rc = {700, 40, 0, 0 };
     rc.left = 40;
     CStdString    strText;
-    int TextHeight = 25.0*m_TextScale + 0.5;
+    int TextHeight = lrint(25.0*m_TextScale);
 //    strText.Format("Frame rate   : %7.03f   (%7.3f ms = %.03f, %s)   (%7.3f ms = %.03f%s)    Clock: %7.3f ms %+1.4f %%  %+1.9f  %+1.9f", m_fAvrFps, double(m_rtTimePerFrame) / 10000.0, 10000000.0 / (double)(m_rtTimePerFrame), m_bInterlaced ? L"I" : L"P", GetFrameTime() * 1000.0, GetFrameRate(), m_DetectedLock ? L" L" : L"", m_ClockDiff/10000.0, m_ModeratedTimeSpeed*100.0 - 100.0, m_ModeratedTimeSpeedDiff, m_ClockDiffCalc/10000.0);
     if (bDetailedStats > 1)
     {
@@ -2875,10 +2873,10 @@ void CDX9AllocatorPresenter::OnResetDevice()
 void CDX9AllocatorPresenter::OnPaint(CRect destRect)
 {
 
-  m_VideoRect.bottom = destRect.y2;
-  m_VideoRect.top = destRect.y1;
-  m_VideoRect.left = destRect.x1;
-  m_VideoRect.right = destRect.x2;
+  m_VideoRect.bottom = (long) destRect.y2;
+  m_VideoRect.top = (long) destRect.y1;
+  m_VideoRect.left = (long) destRect.x1;
+  m_VideoRect.right = (long) destRect.x2;
   Paint(false);
 
 }
