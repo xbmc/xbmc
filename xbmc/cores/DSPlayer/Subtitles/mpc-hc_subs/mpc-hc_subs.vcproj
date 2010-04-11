@@ -135,7 +135,7 @@
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -150,9 +150,10 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="strmbaseU.lib Winmm.lib vfw32.lib version.lib"
 				OutputFile="$(SolutionDir)..\..\system\players\dsplayer\libsubs.dll"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\libs"
 				IgnoreDefaultLibraryNames="LIBCMT"
+				GenerateDebugInformation="false"
 			/>
 			<Tool
 				Name="VCALinkTool"

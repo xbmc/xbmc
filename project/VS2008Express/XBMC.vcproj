@@ -248,7 +248,7 @@
 				MinimalRebuild="false"
 				ExceptionHandling="0"
 				RuntimeLibrary="0"
-				BufferSecurityCheck="false"
+				BufferSecurityCheck="true"
 				EnableFunctionLevelLinking="false"
 				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
@@ -285,8 +285,9 @@
 				LargeAddressAware="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
+				LinkTimeCodeGeneration="1"
+				RandomizedBaseAddress="2"
+				DataExecutionPrevention="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -2476,12 +2477,28 @@
 										Name="VCCLCompilerTool"
 									/>
 								</FileConfiguration>
+								<FileConfiguration
+									Name="Release (DirectX)|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+									/>
+								</FileConfiguration>
 							</File>
 							<File
 								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.h"
 								>
 								<FileConfiguration
 									Name="Debug (DirectX)|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCustomBuildTool"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release (DirectX)|Win32"
 									ExcludedFromBuild="true"
 									>
 									<Tool
@@ -2504,12 +2521,28 @@
 										Name="VCCLCompilerTool"
 									/>
 								</FileConfiguration>
+								<FileConfiguration
+									Name="Release (DirectX)|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+									/>
+								</FileConfiguration>
 							</File>
 							<File
 								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\AsyncReader.h"
 								>
 								<FileConfiguration
 									Name="Debug (DirectX)|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCustomBuildTool"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release (DirectX)|Win32"
 									ExcludedFromBuild="true"
 									>
 									<Tool
@@ -2552,12 +2585,28 @@
 										Name="VCCLCompilerTool"
 									/>
 								</FileConfiguration>
+								<FileConfiguration
+									Name="Release (DirectX)|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+									/>
+								</FileConfiguration>
 							</File>
 							<File
 								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\MultiFiles.h"
 								>
 								<FileConfiguration
 									Name="Debug (DirectX)|Win32"
+									ExcludedFromBuild="true"
+									>
+									<Tool
+										Name="VCCustomBuildTool"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release (DirectX)|Win32"
 									ExcludedFromBuild="true"
 									>
 									<Tool

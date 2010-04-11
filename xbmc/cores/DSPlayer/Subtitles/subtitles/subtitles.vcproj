@@ -168,7 +168,10 @@
 				AdditionalIncludeDirectories="..\..\..\..\;..\..\..\..\..\guilib;..\..\..\..\win32;..\..\include;..\..\baseclasses;..\..\..\..\lib\boost;..\..\DshowUtil/;..\..\"
 				PreprocessorDefinitions="WIN32;NDEBUG;"
 				RuntimeLibrary="0"
+				BufferSecurityCheck="true"
+				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="2"
+				DebugInformationFormat="0"
 				DisableSpecificWarnings="4244"
 			/>
 			<Tool
