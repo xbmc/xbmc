@@ -21,7 +21,7 @@
  */
 
 #pragma once
-
+#include <list>
 enum ElementaryStreamTypes
 {
       INVALID                = 0,

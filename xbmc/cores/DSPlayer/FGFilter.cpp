@@ -232,53 +232,7 @@ CFGFilterRegistry::CFGFilterRegistry(const CLSID& clsid, UINT64 merit)
   if(m_clsid == GUID_NULL) return;
 
   CStdString guid = DShowUtil::CStringFromGUID(m_clsid);
-  
-  //CRegKey key;
-  
-  
-  /*if(ERROR_SUCCESS == key.Open(HKEY_CLASSES_ROOT, _T("CLSID\\") + guid, KEY_READ))
-  {
-    ULONG nChars = 0;
-    if(ERROR_SUCCESS == key.QueryStringValue(NULL, NULL, &nChars))
-    {
-      CStdString name;
-      if(ERROR_SUCCESS == key.QueryStringValue(NULL, name.GetBuffer(nChars), &nChars))
-      {
-        name.ReleaseBuffer(nChars);
-        m_name = name;
-      }
-    }
-
-    key.Close();
-  }
-
-  if(ERROR_SUCCESS == key.Open(HKEY_CLASSES_ROOT, _T("CLSID\\{083863F1-70DE-11d0-BD40-00A0C911CE86}\\Instance\\") + guid, KEY_READ))
-  {
-    ULONG nChars = 0;
-    if(ERROR_SUCCESS == key.QueryStringValue(_T("FriendlyName"), NULL, &nChars))
-    {
-      CStdString name;
-      if(ERROR_SUCCESS == key.QueryStringValue(_T("FriendlyName"), name.GetBuffer(nChars), &nChars))
-      {
-        name.ReleaseBuffer(nChars);
-        m_name = name;
-      }
-    }
-
-    ULONG nBytes = 0;
-    if(ERROR_SUCCESS == key.QueryBinaryValue(_T("FilterData"), NULL, &nBytes))
-    {
-      CAutoVectorPtr<BYTE> buff;
-      if(buff.Allocate(nBytes) && ERROR_SUCCESS == key.QueryBinaryValue(_T("FilterData"), buff, &nBytes))
-      {
-        ExtractFilterData(buff, nBytes);
-      }
-    }
-
-    key.Close();
-  }
-
-  if(merit != MERIT64_DO_USE) m_merit.val = merit;*/
+ 
 }
 
 HRESULT CFGFilterRegistry::Create(IBaseFilter** ppBF)

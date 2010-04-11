@@ -245,7 +245,7 @@ STDMETHODIMP IDSMResourceBagImpl::ResRemoveAt(DWORD iIndex)
   return S_OK;
 }
 
-STDMETHODIMP IDSMResourceBagImpl::Resclear(DWORD_PTR tag)
+STDMETHODIMP IDSMResourceBagImpl::ResRemoveAll(DWORD_PTR tag)
 {
   if(tag)
   {

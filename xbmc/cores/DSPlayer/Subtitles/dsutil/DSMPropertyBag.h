@@ -90,7 +90,7 @@ public:
   STDMETHODIMP ResSet(DWORD iIndex, LPCWSTR pName, LPCWSTR pDesc, LPCWSTR pMime, BYTE* pData, DWORD len, DWORD_PTR tag = 0);
   STDMETHODIMP ResAppend(LPCWSTR pName, LPCWSTR pDesc, LPCWSTR pMime, BYTE* pData, DWORD len, DWORD_PTR tag = 0);
   STDMETHODIMP ResRemoveAt(DWORD iIndex);
-  STDMETHODIMP Resclear(DWORD_PTR tag = 0);
+  STDMETHODIMP ResRemoveAll(DWORD_PTR tag = 0);
 };
 
 // IDSMChapterBag
