@@ -1242,7 +1242,7 @@
             <posy>68</posy>
             <width>PanelStreamDetailTextWidth</width>
             <height>390</height>
-            <info>Container.ShowPlot</info>
+            <info>Container.ListItem.plotoutline</info>
           </control>
         </control>
 
