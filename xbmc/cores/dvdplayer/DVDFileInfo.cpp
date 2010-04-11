@@ -45,6 +45,7 @@
 #include "Codecs/DllAvFormat.h"
 #include "Codecs/DllAvCodec.h"
 #include "Codecs/DllSwScale.h"
+#include "File.h"
 
 
 bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)
@@ -246,6 +247,13 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
     delete pDemuxer;
 
   delete pInputStream;
+
+  if(!bOk)
+  {
+    XFILE::CFile file;
+    if(file.OpenForWrite(strTarget))
+      file.Close();
+  }
 
   int nTotalTime = CTimeUtils::GetTimeMS() - nTime;
   CLog::Log(LOGDEBUG,"%s - measured %d ms to extract thumb from file <%s> ", __FUNCTION__, nTotalTime, strFile.c_str());
