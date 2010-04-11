@@ -1,11 +1,11 @@
 <includes>
 	<!-- Available Media Flags
-
 		Listitem.Property(mediaTag::videoResolution)
 		Listitem.Property(mediaTag::audioCodec)
 		Listitem.Property(mediaTag::videoCodec)
 		Listitem.Property(mediaTag::aspectRatio)
 		Listitem.Property(mediaTag::videoFrameRate)
+		Listitem.Property(mediaTag::audioChannels)
 		Listitem.Property(mediaTag::contentRating)
 		Listitem.Property(mediaTag::movieStudio)
 	-->
@@ -84,10 +84,10 @@
  
 		<control type="image">
 			<visible>true</visible>
-			<posx>220</posx>
+			<posx>222.5</posx>
 			<posy>0</posy>
-			<height>40</height>
-			<width>90</width>
+			<height>37</height>
+			<width>95</width>
 			<info>Listitem.Property(mediaTag::audioCodec)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
