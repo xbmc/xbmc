@@ -281,7 +281,7 @@
 			    <height>42</height>
 			    <texture>MediaItemBG.png</texture>
 		    </control>
-		
+
 		    <control type="image">
 		        <posx>44</posx>
 			    <posy>2</posy>
@@ -543,7 +543,7 @@
           <posx>10</posx>
           <posy>-4</posy>
 		  <visible>!Container.Content(Episodes)</visible>
-		  
+
           <control type="label">
             <description>Title</description>
             <width>InfoListTitleWidth</width>
@@ -594,7 +594,7 @@
 	            <control type="textbox">
 	              <description>Plot</description>
 	              <width>InfoListTitleWidth</width>
-	              <height>260</height>
+	              <height>261</height>
 	              <info>ListItem.Plot</info>
 	              <visible>![Container.Content(seasons) | Container.Content(albums) | Container.Content(artists)]</visible>
 	            </control>
@@ -602,7 +602,7 @@
 	              <description>Plot</description>
 	              <width>InfoListTitleWidth</width>
 	              <height>317</height>
-	              <info>Container.ShowPlot</info>
+	              <info>ListItem.plotoutline</info>
 	              <visible>Container.Content(seasons)</visible>
 	            </control>
 	            <control type="textbox">
@@ -627,7 +627,7 @@
           <posx>400</posx>
           <posy>-4</posy>
 		  <visible>Container.Content(Episodes)</visible>
-		  
+
           <control type="textbox">
             <description>Title</description>
             <width>260</width>
@@ -1273,7 +1273,7 @@
             <height>300</height>
             <info>ListItem.Plot</info>
           </control>
-		
+
 		  <control type="image">
 			  <posy>380</posy>
 			  <align>center</align>
@@ -1289,7 +1289,7 @@
 				<posy>425</posy>
 				<include>PanelStreamFlags</include>
 			</control>
-		
+
         </control>
 
         <control type="group">

@@ -1111,7 +1111,7 @@
   
 	        <include>CustomMusicBackground</include>
 	      </control>
-	
+
 				<control type="largeimage">
 	        <description>Fanart background</description>
 	        <include>FullScreenBGImage</include>
@@ -2105,7 +2105,7 @@
 	       <textcolor>FFffffff</textcolor>
 	       <wrapmultiline>false</wrapmultiline>
 	 </control>
-	
+
     </itemlayout>
 
     <focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="163" height="250">

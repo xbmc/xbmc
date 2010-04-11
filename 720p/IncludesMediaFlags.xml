@@ -24,8 +24,8 @@
 		<control type="image">
 			<visible>true</visible>
 			<posx>150</posx>
-			<posy>0</posy>
-			<height>45</height>
+			<posy>5</posy>
+			<height>35</height>
 			<width>95</width>
 			<info>Listitem.Property(mediaTag::videoResolution)</info>
 			<aspectratio>keep</aspectratio>
@@ -33,9 +33,10 @@
  
 		<control type="image">
 			<visible>true</visible>
-			<posx>225</posx>
+			<posx>255</posx>
 			<posy>-15</posy>
 			<height>75</height>
+			<width>95</width>
 			<info>Listitem.Property(mediaTag::audioCodec)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
@@ -43,8 +44,8 @@
 		<control type="image">
 			<visible>true</visible>
 			<posx>355</posx>
-			<posy>-3</posy>
-			<height>52</height>
+			<posy>3</posy>
+			<height>40</height>
 			<width>95</width>
 			<info>Listitem.Property(mediaTag::audioChannels)</info>
 			<aspectratio>keep</aspectratio>
@@ -57,7 +58,6 @@
 			<height>70</height>
 			<width>130</width>
 			<info>Listitem.Property(mediaTag::movieStudio)</info>
-			<info>Listitem.Property(mediaTag::tvStudio)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
 	</include> 
