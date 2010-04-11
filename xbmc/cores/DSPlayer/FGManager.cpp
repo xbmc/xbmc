@@ -632,7 +632,7 @@ HRESULT CFGManager::AddToROT()
   Com::SmartPtr<IRunningObjectTable> pROT;
   Com::SmartPtr<IMoniker> pMoniker;
   WCHAR wsz[256] = {0};
-  swprintf(wsz, L"FilterGraph %08p pid %08x (XBMC)", (DWORD_PTR)this, GetCurrentProcessId());
+  _snwprintf_s(wsz, _countof(wsz), 255, L"FilterGraph %08p pid %08x (XBMC)", (DWORD_PTR)this, GetCurrentProcessId());
 
   if(SUCCEEDED(hr = GetRunningObjectTable(0, &pROT))
   && SUCCEEDED(hr = CreateItemMoniker(L"!", wsz, &pMoniker)))
@@ -668,7 +668,7 @@ STDMETHODIMP CFGManager::GetDeadEnd(int iIndex, std::list<CStdStringW>& path, st
 {
   CSingleLock CSingleLock(*this);
 
-  if(iIndex < 0 || iIndex >= m_deadends.size()) 
+  if(iIndex < 0 || (unsigned int) iIndex >= m_deadends.size()) 
     return E_FAIL;
 
   while (!path.empty())

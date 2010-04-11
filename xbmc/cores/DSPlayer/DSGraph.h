@@ -186,13 +186,13 @@ private:
 
     void Clear()
     {
-      time = 0;
-      time_total = 0;
+      time = 0.f;
+      time_total = 0.f;
       player_state = "";
       current_filter_state = State_Stopped;
     }
     double time;              // current playback time in millisec
-    __int64 time_total;        // total playback time in millisec
+    double time_total;        // total playback time in millisec
     FILTER_STATE current_filter_state;
 
     std::string player_state;  // full player state

@@ -271,64 +271,64 @@ public:
       return m_RefreshRate;
     }
 
-    LONG GetScanLines()
+    long GetScanLines()
     {
       if (m_DetectedRefreshRate)
-        return m_DetectedScanlinesPerFrame;
+        return (long) m_DetectedScanlinesPerFrame;
       return m_ScreenSize.cy;
     }
 
-    double          m_ldDetectedRefreshRateList[100];
-    double          m_ldDetectedScanlineRateList[100];
+    double         m_ldDetectedRefreshRateList[100];
+    double         m_ldDetectedScanlineRateList[100];
     int            m_DetectedRefreshRatePos;
-    bool          m_bSyncStatsAvailable;            
-    LONGLONG        m_pllJitter [NB_JITTER];    // Jitter buffer for stats
-    LONGLONG        m_pllSyncOffset [NB_JITTER];    // Jitter buffer for stats
-    LONGLONG        m_llLastPerf;
-    LONGLONG        m_JitterStdDev;
-    LONGLONG        m_MaxJitter;
-    LONGLONG        m_MinJitter;
-    LONGLONG        m_MaxSyncOffset;
-    LONGLONG        m_MinSyncOffset;
+    bool           m_bSyncStatsAvailable;            
+    __int64        m_pllJitter [NB_JITTER];    // Jitter buffer for stats
+    __int64        m_pllSyncOffset [NB_JITTER];    // Jitter buffer for stats
+    __int64        m_llLastPerf;
+    __int64        m_JitterStdDev;
+    __int64        m_MaxJitter;
+    __int64        m_MinJitter;
+    __int64        m_MaxSyncOffset;
+    __int64        m_MinSyncOffset;
     int            m_nNextJitter;
     int            m_nNextSyncOffset;
-    REFERENCE_TIME      m_rtTimePerFrame;
-    double          m_DetectedFrameRate;
-    double          m_DetectedFrameTime;
-    double          m_DetectedFrameTimeStdDev;
-    bool          m_DetectedLock;
-    LONGLONG        m_DetectedFrameTimeHistory[60];
-    double          m_DetectedFrameTimeHistoryHistory[500];
+    __int64        m_rtTimePerFrame;
+    double         m_DetectedFrameRate;
+    double         m_DetectedFrameTime;
+    double         m_DetectedFrameTimeStdDev;
+    bool           m_DetectedLock;
+    __int64        m_DetectedFrameTimeHistory[60];
+    double         m_DetectedFrameTimeHistoryHistory[500];
     int            m_DetectedFrameTimePos;
     int            m_bInterlaced;
 
-    double          m_TextScale;
+    double         m_TextScale;
 
     int            m_VBlankEndWait;
     int            m_VBlankStartWait;
-    LONGLONG        m_VBlankWaitTime;
-    LONGLONG        m_VBlankLockTime;
+    __int64        m_VBlankWaitTime;
+    __int64        m_VBlankLockTime;
     int            m_VBlankMin;
     int            m_VBlankMinCalc;
     int            m_VBlankMax;
     int            m_VBlankEndPresent;
-    LONGLONG        m_VBlankStartMeasureTime;
+    __int64        m_VBlankStartMeasureTime;
     int            m_VBlankStartMeasure;
 
-    LONGLONG        m_PresentWaitTime;
-    LONGLONG        m_PresentWaitTimeMin;
-    LONGLONG        m_PresentWaitTimeMax;
+    __int64        m_PresentWaitTime;
+    __int64        m_PresentWaitTimeMin;
+    __int64        m_PresentWaitTimeMax;
 
-    LONGLONG        m_PaintTime;
-    LONGLONG        m_PaintTimeMin;
-    LONGLONG        m_PaintTimeMax;
+    __int64        m_PaintTime;
+    __int64        m_PaintTimeMin;
+    __int64        m_PaintTimeMax;
 
-    LONGLONG        m_WaitForGPUTime;
+    __int64        m_WaitForGPUTime;
 
-    LONGLONG        m_RasterStatusWaitTime;
-    LONGLONG        m_RasterStatusWaitTimeMin;
-    LONGLONG        m_RasterStatusWaitTimeMax;
-    LONGLONG        m_RasterStatusWaitTimeMaxCalc;
+    __int64        m_RasterStatusWaitTime;
+    __int64        m_RasterStatusWaitTimeMin;
+    __int64        m_RasterStatusWaitTimeMax;
+    __int64        m_RasterStatusWaitTimeMaxCalc;
 
     double          m_ClockDiffCalc;
     double          m_ClockDiffPrim;
@@ -342,9 +342,9 @@ public:
     double          m_ModeratedTimeSpeedDiff;
 
     bool          m_bCorrectedFrameTime;
-    int            m_FrameTimeCorrection;
-    LONGLONG        m_LastFrameDuration;
-    LONGLONG        m_LastSampleTime;
+    int           m_FrameTimeCorrection;
+    __int64       m_LastFrameDuration;
+    __int64       m_LastSampleTime;
 
     CStdString          m_strStatsMsg[10];
     

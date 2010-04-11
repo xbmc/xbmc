@@ -75,7 +75,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
 
   if ( g_Windowing.IsFullScreen() && !g_guiSettings.GetBool("videoscreen.fakefullscreen") &&  (
     (g_sysinfo.IsVistaOrHigher() && g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer")) ||
-    (!g_sysinfo.IsVistaOrHigher() && !g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer")) ) ) // The test is broken, it doesn't work on Win7 either
+    (!g_sysinfo.IsVistaOrHigher() && !g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer")) ) ) // The test was broken, it doesn't work on Win7 either
   {
     // Using VMR in true fullscreen. Calling SetFile() in Process makes XBMC freeze
     // We're no longer waiting indefinitly if a crash occured when trying to load the file

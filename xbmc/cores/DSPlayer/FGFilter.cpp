@@ -360,8 +360,8 @@ void CFGFilterRegistry::ExtractFilterData(BYTE* p, UINT len)
         p += 4;
 
         ChkLen(8)
-        if(*(DWORD*)p < (p-base+8) || *(DWORD*)p >= len 
-        || *(DWORD*)(p+4) < (p-base+8) || *(DWORD*)(p+4) >= len)
+        if(*(DWORD*)p < (DWORD) (p-base+8) || *(DWORD*)p >= len 
+        || *(DWORD*)(p+4) < (DWORD) (p-base+8) || *(DWORD*)(p+4) >= len)
         {
           p += 8;
           continue;

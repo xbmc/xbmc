@@ -255,7 +255,7 @@ void CDSGraph::UpdateTotalTime()
     else
     {
       if(SUCCEEDED(m_pMediaSeeking->GetDuration(&Duration)))
-        m_State.time_total =  Duration;
+        m_State.time_total = (double) Duration;
     }
   }
 }
@@ -366,7 +366,7 @@ HRESULT CDSGraph::HandleGraphEvent()
         m_State.time_total = (double)rtDur / 10000;*/
 
         REFERENCE_TIME rtNow = DShowUtil::HMSF2RT(*((DVD_HMSF_TIMECODE*)&evParam1), fps);
-        m_State.time = (LONGLONG) rtNow / 10000;
+        m_State.time = rtNow / 10000.f;
 
         break;
         }
@@ -561,7 +561,7 @@ int CDSGraph::DoFFRW(int currentRate)
   //so 1 units of TIME_FORMAT_MEDIA_TIME is 0,0000001 sec or 0,0001 millisec
   //If playback speed is at 32x we will try to make it the closest to 32sec per sec
 
-  int stepInMsec = (( currentRate * 1000) / 4 );
+  __int64 stepInMsec = (( currentRate * 1000) / 4 );
   double startTimer = 0;
   if (currentRate != m_currentRate)
   {
@@ -586,8 +586,9 @@ int CDSGraph::DoFFRW(int currentRate)
     if (!m_pMediaSeeking)
       return 250;
 
-    HRESULT hr;
-    LONGLONG earliest, latest, msec_earliest;
+    HRESULT hr = S_OK;
+    __int64 earliest = 0, latest = 0;
+    double msec_earliest = 0;
     m_pMediaSeeking->GetAvailable(&earliest,&latest);
 
     msec_earliest = DS_TIME_TO_MSEC(earliest);
@@ -607,7 +608,7 @@ int CDSGraph::DoFFRW(int currentRate)
     }
 
     //seek to where we should be
-    SeekInMilliSec(stepInMsec);
+    SeekInMilliSec((double) stepInMsec);
     //stop when ready is currently make the graph wait for a frame to present before starting back again
     m_pMediaControl->StopWhenReady();
 
@@ -615,11 +616,11 @@ int CDSGraph::DoFFRW(int currentRate)
     UpdateState(); // We need to know the new state
   }
 
-  m_lAvgTimeToSeek = DS_TIME_TO_MSEC((CDSClock::GetAbsoluteClock() - startTimer));
+  m_lAvgTimeToSeek = (__int64) DS_TIME_TO_MSEC((CDSClock::GetAbsoluteClock() - startTimer));
   if ( m_lAvgTimeToSeek <= 0 )
     m_lAvgTimeToSeek = 50;
 
-  return m_lAvgTimeToSeek;
+  return (int) m_lAvgTimeToSeek; // Should never be over 250 / 300 ms, cast is fine
 }
 
 HRESULT CDSGraph::UnloadGraph()
@@ -892,8 +893,8 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
     /**** Didnt found really where dvdplayer are doing it exactly so here it is *****/
     XBMC_Event newEvent;
     newEvent.type = XBMC_MOUSEMOTION;
-    newEvent.motion.x = pt.x;
-    newEvent.motion.y = pt.y;
+    newEvent.motion.x = (uint16_t) pt.x;
+    newEvent.motion.y = (uint16_t) pt.y;
     g_application.OnEvent(newEvent);
     /*CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
     g_windowManager.SendMessage(msg);*/
