@@ -799,13 +799,11 @@ void CKeyboardStat::Update(XBMC_Event& event)
       // Windows.
       if (m_bCtrl)
       {
-        if (!m_VKey && !m_cAscii && (event.key.keysym.sym != XBMCK_LCTRL))
-        {
+        if (!m_VKey && !m_cAscii)
           LookupKeyMapping(&m_VKey, NULL, &m_wUnicode
                          , event.key.keysym.sym
                          , g_mapping_ctrlkeys
                          , sizeof(g_mapping_ctrlkeys)/sizeof(g_mapping_ctrlkeys[0]));
-        }
       }
 
       /* Check for standard non printable keys */
