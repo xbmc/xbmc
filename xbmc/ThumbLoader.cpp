@@ -69,13 +69,19 @@ bool CThumbLoader::LoadRemoteThumb(CFileItem *pItem)
   return pItem->HasThumbnail();
 }
 
-CThumbExtractor::CThumbExtractor(const CFileItem& item, const CStdString& listpath, bool thumb, const CStdString& path, const CStdString& target)
+CThumbExtractor::CThumbExtractor(const CFileItem& item, const CStdString& listpath, bool thumb, const CStdString& target)
 {
-  m_path = path;
   m_listpath = listpath;
   m_target = target;
   m_thumb = thumb;
   m_item = item;
+
+  m_path = item.m_strPath;
+  if (item.IsStack())
+    m_path = CStackDirectory::GetFirstStackedFile(item.m_strPath);
+
+  if (item.IsVideoDb() && item.HasVideoInfoTag())
+    m_path = item.GetVideoInfoTag()->m_strFileNameAndPath;
 }
 
 CThumbExtractor::~CThumbExtractor()
@@ -100,18 +106,19 @@ bool CThumbExtractor::DoWork()
   ||  CUtil::IsDAAP(m_path)
   ||  m_item.IsDVD()
   ||  m_item.IsDVDImage()
-  ||  m_item.IsDVDFile(false, true))
+  ||  m_item.IsDVDFile(false, true)
+  ||  m_item.IsInternetStream()
+  ||  m_item.IsPlayList())
     return false;
 
   if (CUtil::IsRemote(m_path) && !CUtil::IsOnLAN(m_path))
     return false;
 
   bool result=false;
-  if (m_thumb && g_guiSettings.GetBool("myvideos.extractflags") &&
-      g_guiSettings.GetBool("myvideos.extractthumb"))
+  if (m_thumb)
   {
     CLog::Log(LOGDEBUG,"%s - trying to extract thumb from video file %s", __FUNCTION__, m_path.c_str());
-    result=CDVDFileInfo::ExtractThumb(m_path, m_target, &m_item.GetVideoInfoTag()->m_streamDetails);
+    result = CDVDFileInfo::ExtractThumb(m_path, m_target, &m_item.GetVideoInfoTag()->m_streamDetails);
     if(result)
     {
       m_item.SetProperty("HasAutoThumb", "1");
@@ -119,9 +126,7 @@ bool CThumbExtractor::DoWork()
       m_item.SetThumbnailImage(m_target);
     }
   }
-  else if (m_item.HasVideoInfoTag() &&
-           g_guiSettings.GetBool("myvideos.extractflags")   &&
-           !m_item.GetVideoInfoTag()->HasStreamDetails())
+  else if (m_item.HasVideoInfoTag() && !m_item.GetVideoInfoTag()->HasStreamDetails())
   {
     result = CDVDFileInfo::GetFileStreamDetails(&m_item);
   }
@@ -211,16 +216,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
           pItem->SetThumbnailImage(cachedThumb);
         }
       }
-      else if (!item.m_bIsFolder && item.IsVideo() && !item.IsInternetStream() && !item.IsPlayList())
+      else if (!item.m_bIsFolder && item.IsVideo() && g_guiSettings.GetBool("myvideos.extractthumb"))
       {
-        CStdString path(item.m_strPath);
-        if (item.IsStack())
-          path = CStackDirectory::GetFirstStackedFile(item.m_strPath);
-
-        if (item.IsVideoDb() && item.HasVideoInfoTag())
-          path = item.GetVideoInfoTag()->m_strFileNameAndPath;
-
-        CThumbExtractor* extract = new CThumbExtractor(item, pItem->m_strPath, true, path, cachedThumb);
+        CThumbExtractor* extract = new CThumbExtractor(item, pItem->m_strPath, true, cachedThumb);
         AddJob(extract);
       }
     }
@@ -234,9 +232,9 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
   }
 
-  if (!pItem->m_bIsFolder && !pItem->IsInternetStream() &&
+  if (!pItem->m_bIsFolder &&
        pItem->HasVideoInfoTag() &&
-       g_guiSettings.GetBool("myvideos.extractflags")   &&
+       g_guiSettings.GetBool("myvideos.extractflags") &&
        !pItem->GetVideoInfoTag()->HasStreamDetails())
   {
     CThumbExtractor* extract = new CThumbExtractor(*pItem,pItem->m_strPath,false);
