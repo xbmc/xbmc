@@ -44,12 +44,15 @@ BOOL LoadSubtitles(IDirect3DDevice9* d3DDev, SIZE size, const wchar_t* fn, IGrap
   return TRUE;
 }*/
 
-bool CreateSubtitleManager(IDirect3DDevice9* d3DDev, SIZE size, ISubManager ** pManager)
+ILog* g_log = NULL;
+
+bool CreateSubtitleManager(IDirect3DDevice9* d3DDev, SIZE size, ILog* logger, ISubManager ** pManager)
 {
-  if (! pManager || !d3DDev)
+  if (! pManager || !d3DDev || !logger)
     return false;
 
   *pManager = NULL;
+  g_log = logger;
 
   HRESULT hr = S_OK;
   *pManager = new CSubManager(d3DDev, size, hr);
@@ -67,6 +70,8 @@ bool DeleteSubtitleManager(ISubManager * pManager)
 {
   if (pManager)
     delete pManager;
+
+  g_log = NULL;
 
   return true;
 }

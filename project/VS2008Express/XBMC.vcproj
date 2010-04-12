@@ -2637,6 +2637,18 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\ILog.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IMpaDecFilter.h"
 						>
 					</File>

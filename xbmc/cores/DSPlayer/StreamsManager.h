@@ -36,6 +36,7 @@
 #include "RegExp.h"
 #include "Subtitles/libsubs/ISubManager.h"
 #include "Subtitles/DllLibSubs.h"
+#include "Subtitles/ILogImpl.h"
 
 enum SStreamType
 {
@@ -351,6 +352,7 @@ private:
   std::vector<SSubtitleStreamInfos *> m_subtitleStreams;
   DllLibSubs m_dll;
   boost::shared_ptr<ISubManager> m_pManager;
+  boost::shared_ptr<ILogImpl> m_Log;
   CStreamsManager* m_pStreamManager;
   bool m_bSubtitlesUnconnected;
   bool m_bSubtitlesVisible;

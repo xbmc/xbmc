@@ -23,6 +23,7 @@
 #include "STS.h"
 
 #include "RealTextParser.h"
+#include "../ILog.h"
 #include <fstream>
 
 // gathered from http://www.netwave.or.jp/~shikai/shikai/shcolor.htm
@@ -2079,11 +2080,7 @@ void CSimpleTextSubtitle::ChangeUnknownStylesToDefault()
       if (it2 == unknown.end())
       {
         if(fReport)
-        {
-          CStdString msg;
-          msg.Format(_T("Unknown style found: \"%s\", changed to \"Default\"!\n\nPress Cancel to ignore further warnings."), stse.style);
-          if(MessageBox(NULL, msg, _T("Warning"), MB_OKCANCEL|MB_ICONWARNING) != IDOK) fReport = false;
-        }
+          g_log->Log(LOGWARNING, "%s Unknown style found: \"%s\", changed to \"Default\"!", __FUNCTION__, stse.style);
 
         unknown[stse.style] = NULL;
       } else
@@ -2600,9 +2597,7 @@ bool CSimpleTextSubtitle::Open(CTextFile* f, int CharSet, CStdString name)
       if(size() > 0)
       {
         int n = CountLines(f, pos, f->GetPosition());
-        CStdString s;
-        s.Format(_T("Syntax error at line %d!\t"), n+1);
-        // AfxMessageBox(s, MB_OK|MB_ICONERROR);
+        g_log->Log(LOGERROR, "%s Syntax error at line %d!", __FUNCTION__, n + 1);
         Empty();
         break;
       }

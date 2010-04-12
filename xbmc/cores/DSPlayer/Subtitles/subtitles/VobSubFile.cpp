@@ -25,8 +25,8 @@
 #include "unrar.h"
 #include "VobSubFile.h"
 
+#include "../ILog.h"
 #include <fstream>
-
 //
 
 struct lang_type {unsigned short id; LPCSTR lang_long;} lang_tbl[] =
@@ -410,7 +410,7 @@ bool CVobSubFile::ReadIdx(CStdString fn, int& ver)
       if(i < 0 || _stscanf(&s[i+_tcslen(buff)], _T("%d"), &ver) != 1
       || ver > VOBSUBIDXVER)
       {
-        MessageBox(0, _T("Wrong file version!"), NULL, MB_OK | MB_ICONERROR); //TODO: No MessageBox !
+        g_log->Log(LOGERROR, "%s Wrong file version!", __FUNCTION__);
         fError = true;
         continue;
       }

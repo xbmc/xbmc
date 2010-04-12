@@ -478,7 +478,7 @@ void CStreamsManager::LoadStreams()
     SubtitleManager->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
 
     return;
-  }
+  } 
   
   /* We're done, internal audio & subtitles stream are loaded.
      We load external subtitle file */
@@ -750,7 +750,10 @@ void CSubtitleManager::Initialize()
   SIZE s; s.cx = 0; s.cy = 0;
   ISubManager *pManager = NULL;
 
-  m_dll.CreateSubtitleManager(g_Windowing.Get3DDevice(), s, &pManager);
+  // Log manager for the DLL
+  m_Log.reset(new ILogImpl());
+
+  m_dll.CreateSubtitleManager(g_Windowing.Get3DDevice(), s, m_Log.get(), &pManager);
 
   if (!pManager)
     return;
@@ -1095,6 +1098,7 @@ int CSubtitleManager::AddSubtitle(const CStdString& subFilePath)
   
   CStdStringW unicodePath; g_charsetConverter.utf8ToW(s->path, unicodePath);
 
+  CLog::Log(LOGNOTICE, "%s Loading subtitle file \"%s\"", __FUNCTION__, s->path.c_str());
   if (SUCCEEDED(m_pManager->LoadExternalSubtitle(unicodePath.c_str(), &pSubStream)))
   {
     s->substream = pSubStream;
