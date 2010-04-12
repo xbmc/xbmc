@@ -92,6 +92,15 @@
   <string id="31126">TV Show Details</string>
   <string id="31127">Episode Details</string>
   <string id="31128">Banner</string>
+  <string id="31129">Rating</string>
+  <string id="31130">IMDb Rating</string>
+  <string id="31131">Genre</string>
+  <string id="31132">Duration</string>
+  <string id="31133">Subtitles</string>
+  <string id="31134">Cast</string>
+  <string id="31135">Director</string>
+  <string id="31136">Writer</string>
+
 
 <!--  Music  -->
   <string id="31220">Currently Playing</string>
