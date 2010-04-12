@@ -252,8 +252,8 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 
   //shared_ptr<VASurfaceID const> test = VASurfaceIDPtr(m_surfaces[0], m_display);
   
-  CHECK(vaCreateConfig(m_display->get(), profile, entrypoint, &attrib, 1, &m_config))
-
+  CHECK(vaCreateConfig(m_display->get(), profile, entrypoint, &attrib, 1, &m_hwaccel->config_id))
+  m_config = m_hwaccel->config_id;
 
   CHECK(vaCreateContext(m_display->get()
                       , m_config
@@ -262,12 +262,10 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
                       , VA_PROGRESSIVE
                       , m_surfaces
                       , m_surfaces_count
-                      , &m_context))
-
+                      , &m_hwaccel->context_id))
+  m_context = m_hwaccel->context_id;
 
   m_hwaccel->display     = m_display->get();
-  m_hwaccel->config_id   = m_config;
-  m_hwaccel->context_id  = m_context;
 
   avctx->hwaccel_context = m_hwaccel;
   avctx->thread_count    = 1;
