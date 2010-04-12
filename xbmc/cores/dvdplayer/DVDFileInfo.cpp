@@ -45,7 +45,7 @@
 #include "Codecs/DllAvFormat.h"
 #include "Codecs/DllAvCodec.h"
 #include "Codecs/DllSwScale.h"
-#include "File.h"
+#include "FileSystem/File.h"
 
 
 bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)
