@@ -5091,16 +5091,16 @@
   </include>
 
   <include name="PicturesThumbBG">
-    <width>100</width>
-    <height>100</height>
-    <texture border="1">ThumbBorder2.png</texture>
+    <width>105</width>
+    <height>104</height>
+    <texture border="3">picturesbg-focus.png</texture>
   </include>
 
   <include name="PicturesThumbImg">
-    <posx>1</posx>
-    <posy>1</posy>
-    <width>98</width>
-    <height>98</height>
+    <posx>4</posx>
+    <posy>4</posy>
+    <width>96</width>
+    <height>96</height>
     <info>ListItem.Icon</info>
     <aspectratio align="center" aligny="center">scale</aspectratio>
   </include>

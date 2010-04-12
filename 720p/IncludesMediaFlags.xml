@@ -45,7 +45,7 @@
 		<control type="image">
 			<visible>true</visible>
 			<posx>355</posx>
-			<posy>3</posy>
+			<posy>5</posy>
 			<height>40</height>
 			<width>95</width>
 			<info>Listitem.Property(mediaTag::audioChannels)</info>
