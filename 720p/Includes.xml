@@ -1799,12 +1799,12 @@
   <include name="ListViewVisible">
     <visible>Control.IsVisible(50)</visible>
   </include>
-
+<!--
   <include name="NoScrollbarsListView">
     <pagecontrol>-</pagecontrol>
     <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
   </include>
-
+-->
   <include name="NoIconsListView">
     <posx>-470</posx>
     <width>1280</width>
@@ -1958,12 +1958,12 @@
   <include name="InfoListVisible">
     <visible>Control.IsVisible(56)</visible>
   </include>
-
+<!--
   <include name="InfoListNoScrollbars">
     <pagecontrol>-</pagecontrol>
     <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
   </include>
-
+-->
   <constant name="InfoListTitleWidth">380</constant>
 
   <include name="InfoListItemDetailInfo">

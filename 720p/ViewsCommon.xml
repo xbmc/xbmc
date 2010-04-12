@@ -47,15 +47,15 @@
 
       <control type="list" id="50">
         <viewtype label="List">list</viewtype>
-        <include condition="Skin.HasSetting(HideScrollBars)">NoScrollbarsListView</include>
-        <include condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]">NoIconsListView</include>
+	     <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+         <include condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]">NoIconsListView</include>
         <posx>10</posx>
         <posy>180</posy>
         <width>840</width>
         <height>378</height>
         <scrolltime>200</scrolltime>
-        <pagecontrol>61</pagecontrol>
-        <onleft>61</onleft>
+	     <pagecontrol>-</pagecontrol>
+        <onleft>50</onleft>
         <onright>9009</onright>
         <onup>50</onup>
         <ondown>50</ondown>
@@ -159,7 +159,7 @@
         <texture>BlackGradient2.png</texture>
         <aspectratio>stretch</aspectratio>
       </control>
-
+<!--
       <control type="scrollbar" id="61">
         <include condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]">NoIconListViewScrollbar</include>
         <onup>61</onup>
@@ -171,6 +171,7 @@
         <height>380</height>
         <visible>!Skin.HasSetting(HideScrollBars)</visible>
       </control>
+-->
     </control>
 
     <control type="group">
@@ -192,15 +193,15 @@
 
       <control type="list" id="56">
         <viewtype label="InfoList">list</viewtype>
-        <include condition="Skin.HasSetting(HideScrollBars)">InfoListNoScrollbars</include>
-        <posx>-24</posx>
+  		<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+  		<posx>-24</posx>
         <posy>230</posy>
         <width>640</width>
         <height>454</height>
         <scrolltime>200</scrolltime>
-        <pagecontrol>61</pagecontrol>
+ 	  	<pagecontrol>-</pagecontrol>
         <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-        <onright>61</onright>
+        <onright>9009</onright>
         <onup>56</onup>
         <ondown>56</ondown>
     
@@ -460,7 +461,7 @@
         <texture>BlackGradient2.png</texture>
         <aspectratio>stretch</aspectratio>
       </control>
-
+<!--
       <control type="scrollbar" id="61">
         <posx>3</posx>
         <posy>225</posy>
@@ -470,8 +471,8 @@
         <onleft>50</onleft>
         <onright>9009</onright>
         <visible>!Skin.HasSetting(HideScrollBars)</visible>
-
       </control>
+-->
     </control>
 
 
