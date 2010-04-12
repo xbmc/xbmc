@@ -2018,7 +2018,7 @@ static int has_codec_parameters(AVCodecContext *enc)
         val = 1;
         break;
     }
-    return enc->codec_id != CODEC_ID_NONE && val != 0;
+    return enc->codec_id != CODEC_ID_PROBE && val != 0;
 }
 
 static int try_decode_frame(AVStream *st, AVPacket *avpkt)
