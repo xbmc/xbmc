@@ -593,7 +593,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
 
   m_MainThreadId = GetCurrentThreadId();
 
-  if (m_rtTimePerFrame == 0 || m_bNeedCheckSample)
+  if (m_rtTimePerFrame == 0 || m_bNeedCheckSample || !g_renderManager.IsConfigured())
   {
     m_bNeedCheckSample = false;
     Com::SmartPtr<IBaseFilter>  pVMR9;
