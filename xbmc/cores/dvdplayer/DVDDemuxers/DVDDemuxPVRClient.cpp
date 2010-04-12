@@ -22,6 +22,9 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDDemuxPVRClient.h"
 #include "PVRManager.h"
+#ifdef _WIN32
+#include <libavcodec/avcodec.h>
+#endif
 
 void CDemuxStreamVideoPVRClient::GetStreamInfo(std::string& strInfo)
 {

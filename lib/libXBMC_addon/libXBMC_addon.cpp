@@ -24,7 +24,15 @@
 #include <stdarg.h>
 #include <string>
 #include "../../addons/org.xbmc.addon.library/libXBMC_addon.h"
-#include "addons/AddonHelpers_local.h"
+#include "../../xbmc/addons/AddonHelpers_local.h"
+
+#ifdef _WIN32
+#include <windows.h>
+#define DLLEXPORT __declspec(dllexport)
+#else
+#define DLLEXPORT
+#endif
+
 
 using namespace std;
 
@@ -34,7 +42,7 @@ CB_AddOnLib *m_cb = NULL;
 extern "C"
 {
 
-int XBMC_register_me(void *hdl)
+DLLEXPORT int XBMC_register_me(void *hdl)
 {
   if (!hdl)
     fprintf(stderr, "libXBMC_addon-ERROR: XBMC_register_me is called with NULL handle !!!\n");
@@ -50,13 +58,13 @@ int XBMC_register_me(void *hdl)
   return 0;
 }
 
-void XBMC_unregister_me()
+DLLEXPORT void XBMC_unregister_me()
 {
   if (m_Handle && m_cb)
     m_Handle->AddOnLib_UnRegisterMe(m_Handle->addonData, m_cb);
 }
 
-void XBMC_log(const addon_log_t loglevel, const char *format, ... )
+DLLEXPORT void XBMC_log(const addon_log_t loglevel, const char *format, ... )
 {
   if (m_cb == NULL)
     return;
@@ -69,7 +77,7 @@ void XBMC_log(const addon_log_t loglevel, const char *format, ... )
   m_cb->Log(m_Handle->addonData, loglevel, buffer);
 }
 
-bool XBMC_get_setting(string settingName, void *settingValue)
+DLLEXPORT bool XBMC_get_setting(string settingName, void *settingValue)
 {
   if (m_cb == NULL)
     return false;
@@ -77,7 +85,7 @@ bool XBMC_get_setting(string settingName, void *settingValue)
   return m_cb->GetSetting(m_Handle->addonData, settingName.c_str(), settingValue);
 }
 
-void XBMC_queue_notification(const queue_msg_t type, const char *format, ... )
+DLLEXPORT void XBMC_queue_notification(const queue_msg_t type, const char *format, ... )
 {
   if (m_cb == NULL)
     return;
@@ -90,7 +98,7 @@ void XBMC_queue_notification(const queue_msg_t type, const char *format, ... )
   m_cb->QueueNotification(m_Handle->addonData, type, buffer);
 }
 
-void XBMC_unknown_to_utf8(string &str)
+DLLEXPORT void XBMC_unknown_to_utf8(string &str)
 {
   if (m_cb == NULL)
     return;
@@ -99,4 +107,4 @@ void XBMC_unknown_to_utf8(string &str)
   str = buffer;
 }
 
-}
+};

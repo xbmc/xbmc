@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="pvclient_vdr"
+	Name="pvrclient_vdr"
 	ProjectGUID="{838CDE27-AFDF-449F-9981-A78903C9C71E}"
 	RootNamespace="XBMC_VDR"
 	Keyword="Win32Proj"
@@ -42,8 +42,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\..\include;.;..\..\pthread_win32;..\..\windows;..\..\"
-				PreprocessorDefinitions="_WIN32;_DEBUG;_WINDOWS;VDR_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T"
+				AdditionalIncludeDirectories="..\..\..\..\addons\include;.;..\..\pthread_win32;..\..\windows;..\..\"
+				PreprocessorDefinitions="_WIN32;_DEBUG;_WINDOWS;VDR_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				ExceptionHandling="1"
 				BasicRuntimeChecks="3"
@@ -65,11 +65,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="ws2_32.lib ..\..\pthread_win32\pthreadVC2.lib ..\..\..\..\..\include\libXBMC_addonD.lib ..\..\..\..\..\include\libXBMC_pvrD.lib"
-				OutputFile="../../../../../addons/pvr/VDR/XBMC_VDR_win32.pvr"
+				AdditionalDependencies="ws2_32.lib ..\..\pthread_win32\pthreadVC2.lib"
+				OutputFile="../../../../../addons/de.tvdr.pvr/XBMC_VDR_win32.pvr"
 				LinkIncremental="1"
 				IgnoreAllDefaultLibraries="false"
-				IgnoreDefaultLibraryNames="libc;libcmt"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/XBMC_VDR.pdb"
 				SubSystem="2"
@@ -126,7 +126,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\..\include;.;..\..\pthread_win32;..\..\windows;..\..\"
+				AdditionalIncludeDirectories="..\..\..\..\addons\include;.;..\..\pthread_win32;..\..\windows;..\..\"
 				PreprocessorDefinitions="_WIN32;NDEBUG;_WINDOWS;VDR_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T"
 				ExceptionHandling="1"
 				BasicRuntimeChecks="0"
@@ -148,10 +148,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="ws2_32.lib ..\..\pthread_win32\pthreadVC2.lib ..\..\..\..\..\include\libXBMC_addon.lib ..\..\..\..\..\include\libXBMC_pvr.lib"
-				OutputFile="../../../../../addons/pvr/VDR/XBMC_VDR_win32.pvr"
+				AdditionalDependencies="ws2_32.lib ..\..\pthread_win32\pthreadVC2.lib"
+				OutputFile="../../../../../addons/de.tvdr.pvr/XBMC_VDR_win32.pvr"
 				LinkIncremental="1"
-				IgnoreDefaultLibraryNames="libc;libcmt"
+				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="false"
 				ProgramDatabaseFile="$(OutDir)/XBMC_VDR.pdb"
 				SubSystem="2"
@@ -198,11 +198,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\channelscan.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\client.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\windows\dirent.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\..\..\addons\org.xbmc.addon.library\dlfcn-win32.cpp"
 				>
 			</File>
 			<File
@@ -253,6 +261,10 @@
 			>
 			<File
 				RelativePath="..\..\channels.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\channelscan.h"
 				>
 			</File>
 			<File

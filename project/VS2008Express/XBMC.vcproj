@@ -1217,6 +1217,18 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPacket.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPVRClient.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxPVRClient.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemuxShoutcast.cpp"
 						>
 					</File>
@@ -1321,11 +1333,27 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamPVRManager.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamPVRManager.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamRTMP.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamRTMP.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamStack.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamStack.h"
 						>
 					</File>
 					<File
@@ -3658,6 +3686,94 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRChannelManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRChannelManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRChannelsOSD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRChannelsOSD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRCutterOSD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRCutterOSD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRDirectorOSD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRDirectorOSD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGroupManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGroupManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideInfo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideOSD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideOSD.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideSearch.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRGuideSearch.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRRecordingInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRRecordingInfo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRTimerSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRTimerSettings.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRUpdateProgressBar.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogPVRUpdateProgressBar.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIDialogSeekBar.cpp"
 					>
 				</File>
@@ -3727,146 +3843,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogYesNo.cpp"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="GUI Other"
-				>
-				<File
-					RelativePath="..\..\xbmc\GUILargeTextureManager.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUILargeTextureManager.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIMediaWindow.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIMediaWindow.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIViewStatePictures.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIViewStatePictures.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIViewStatePrograms.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIViewStatePrograms.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIViewStateScripts.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIViewStateScripts.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowAddonBrowser.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowAddonBrowser.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowFileManager.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowFullScreen.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowHome.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\karaoke\GUIWindowKaraokeLyrics.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\karaoke\GUIWindowKaraokeLyrics.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowLoginScreen.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowLoginScreen.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowOSD.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowPictures.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowPointer.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowPrograms.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowScreensaver.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowScripts.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowScriptsInfo.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowSlideShow.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowStartup.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowStartup.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowSystemInfo.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowVisualisation.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowWeather.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\SlideShowPicture.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\SlideShowPicture.h"
 					>
 				</File>
 			</Filter>
@@ -4339,6 +4315,22 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\PluginDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PVRDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PVRDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PVRFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PVRFile.h"
 					>
 				</File>
 				<File
@@ -5454,6 +5446,30 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\addons\AddonHelpers_Addon.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonHelpers_Addon.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonHelpers_local.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonHelpers_local.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonHelpers_PVR.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonHelpers_PVR.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\addons\AddonManager.cpp"
 					>
 				</File>
@@ -5474,6 +5490,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\addons\DllPVRClient.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\addons\DllScreenSaver.h"
 					>
 				</File>
@@ -5491,6 +5511,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\addons\IAddon.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\PVRClient.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\PVRClient.h"
 					>
 				</File>
 				<File
@@ -5515,6 +5543,222 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\addons\Visualisation.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="PVR"
+				>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateTV.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateTV.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowTV.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowTV.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRChannels.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRChannels.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVREpg.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVREpg.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PVRManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PVRManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRRecordings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRRecordings.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRTimers.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRTimers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TextSearch.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TextSearch.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\TVDatabase.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\TVDatabase.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="GUI Other"
+				>
+				<File
+					RelativePath="..\..\xbmc\GUILargeTextureManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUILargeTextureManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIMediaWindow.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIMediaWindow.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStatePictures.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStatePictures.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStatePrograms.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStatePrograms.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateScripts.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateScripts.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowAddonBrowser.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowAddonBrowser.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowFileManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowFullScreen.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowHome.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\GUIWindowKaraokeLyrics.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\karaoke\GUIWindowKaraokeLyrics.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowLoginScreen.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowLoginScreen.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowOSD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowPictures.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowPointer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowPrograms.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowScreensaver.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowScripts.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowScriptsInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowSlideShow.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowStartup.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowStartup.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowSystemInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowVisualisation.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowWeather.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\SlideShowPicture.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\SlideShowPicture.h"
 					>
 				</File>
 			</Filter>

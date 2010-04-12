@@ -25,11 +25,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <dlfcn.h>
 
 #ifndef _LINUX
-#define ADDON_DLL "\org.xbmc.addon.library\libXBMC_addon.dll"
+#include "dlfcn-win32.h"
+#define ADDON_DLL "\\org.xbmc.addon.library\\libXBMC_addon.dll"
 #else
+#include <dlfcn.h>
 #if defined(__APPLE__)
 #if defined(__POWERPC__)
 #define ADDON_DLL "/org.xbmc.addon.library/libXBMC_addon-powerpc-osx.so"

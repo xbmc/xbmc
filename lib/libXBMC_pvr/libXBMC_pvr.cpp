@@ -29,6 +29,13 @@
 #include "addons/AddonHelpers_local.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDDemuxPacket.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#define DLLEXPORT __declspec(dllexport)
+#else
+#define DLLEXPORT
+#endif
+
 using namespace std;
 
 AddonCB *m_Handle = NULL;
@@ -37,7 +44,7 @@ CB_PVRLib *m_cb   = NULL;
 extern "C"
 {
 
-int PVR_register_me(void *hdl)
+DLLEXPORT int PVR_register_me(void *hdl)
 {
   if (!hdl)
     fprintf(stderr, "libXBMC_pvr-ERROR: PVRLib_register_me is called with NULL handle !!!\n");
@@ -53,13 +60,13 @@ int PVR_register_me(void *hdl)
   return 0;
 }
 
-void PVR_unregister_me()
+DLLEXPORT void PVR_unregister_me()
 {
   if (m_Handle && m_cb)
     m_Handle->PVRLib_UnRegisterMe(m_Handle->addonData, m_cb);
 }
 
-void PVR_transfer_epg_entry(const PVRHANDLE handle, const PVR_PROGINFO *epgentry)
+DLLEXPORT void PVR_transfer_epg_entry(const PVRHANDLE handle, const PVR_PROGINFO *epgentry)
 {
   if (m_cb == NULL)
     return;
@@ -67,7 +74,7 @@ void PVR_transfer_epg_entry(const PVRHANDLE handle, const PVR_PROGINFO *epgentry
   m_cb->TransferEpgEntry(m_Handle->addonData, handle, epgentry);
 }
 
-void PVR_transfer_channel_entry(const PVRHANDLE handle, const PVR_CHANNEL *chan)
+DLLEXPORT void PVR_transfer_channel_entry(const PVRHANDLE handle, const PVR_CHANNEL *chan)
 {
   if (m_cb == NULL)
     return;
@@ -75,7 +82,7 @@ void PVR_transfer_channel_entry(const PVRHANDLE handle, const PVR_CHANNEL *chan)
   m_cb->TransferChannelEntry(m_Handle->addonData, handle, chan);
 }
 
-void PVR_transfer_timer_entry(const PVRHANDLE handle, const PVR_TIMERINFO *timer)
+DLLEXPORT void PVR_transfer_timer_entry(const PVRHANDLE handle, const PVR_TIMERINFO *timer)
 {
   if (m_cb == NULL)
     return;
@@ -83,7 +90,7 @@ void PVR_transfer_timer_entry(const PVRHANDLE handle, const PVR_TIMERINFO *timer
   m_cb->TransferTimerEntry(m_Handle->addonData, handle, timer);
 }
 
-void PVR_transfer_recording_entry(const PVRHANDLE handle, const PVR_RECORDINGINFO *recording)
+DLLEXPORT void PVR_transfer_recording_entry(const PVRHANDLE handle, const PVR_RECORDINGINFO *recording)
 {
   if (m_cb == NULL)
     return;
@@ -91,7 +98,7 @@ void PVR_transfer_recording_entry(const PVRHANDLE handle, const PVR_RECORDINGINF
   m_cb->TransferRecordingEntry(m_Handle->addonData, handle, recording);
 }
 
-void PVR_add_menu_hook(PVR_MENUHOOK *hook)
+DLLEXPORT void PVR_add_menu_hook(PVR_MENUHOOK *hook)
 {
   if (m_cb == NULL)
     return;
@@ -99,7 +106,7 @@ void PVR_add_menu_hook(PVR_MENUHOOK *hook)
   m_cb->AddMenuHook(m_Handle->addonData, hook);
 }
 
-void PVR_free_demux_packet(DemuxPacket* pPacket)
+DLLEXPORT void PVR_free_demux_packet(DemuxPacket* pPacket)
 {
   if (m_cb == NULL)
     return;
@@ -107,7 +114,7 @@ void PVR_free_demux_packet(DemuxPacket* pPacket)
   m_cb->FreeDemuxPacket(m_Handle->addonData, pPacket);
 }
 
-DemuxPacket* PVR_allocate_demux_packet(int iDataSize)
+DLLEXPORT DemuxPacket* PVR_allocate_demux_packet(int iDataSize)
 {
   if (m_cb == NULL)
     return NULL;

@@ -25,12 +25,13 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <dlfcn.h>
 #include "xbmc_pvr_types.h"
 
 #ifndef _LINUX
-#define PVR_HELPER_DLL "\org.xbmc.pvr.library\libXBMC_pvr.dll"
+#include "../org.xbmc.addon.library/dlfcn-win32.h"
+#define PVR_HELPER_DLL "\\org.xbmc.pvr.library\\libXBMC_pvr.dll"
 #else
+#include <dlfcn.h>
 #if defined(__APPLE__)
 #if defined(__POWERPC__)
 #define PVR_HELPER_DLL "/org.xbmc.pvr.library/libXBMC_pvr-powerpc-osx.so"
