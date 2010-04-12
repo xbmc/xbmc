@@ -1366,10 +1366,10 @@ HRESULT CDX9AllocatorPresenter::TextureResizeBilinear(Com::SmartPtr<IDirect3DTex
   // make const to give compiler a chance of optimising, also float faster than double and converted to float to sent to PS anyway
   const float dx = 1.0f/(float)desc.Width;
   const float dy = 1.0f/(float)desc.Height;
-  const float tx0 = (const float) SrcRect.left;
-  const float tx1 = (const float) SrcRect.right;
-  const float ty0 = (const float) SrcRect.top;
-  const float ty1 = (const float) SrcRect.bottom;
+  const float tx0 = SrcRect.left;
+  const float tx1 = SrcRect.right;
+  const float ty0 = SrcRect.top;
+  const float ty1 = SrcRect.bottom;
 
   MYD3DVERTEX<1> v[] =
   {
@@ -1409,10 +1409,10 @@ HRESULT CDX9AllocatorPresenter::TextureResizeBicubic1pass(Com::SmartPtr<IDirect3
   // make const to give compiler a chance of optimising, also float faster than double and converted to float to sent to PS anyway
   const float dx = 1.0f/(float)desc.Width;
   const float dy = 1.0f/(float)desc.Height;
-  const float tx0 = (const float) SrcRect.left;
-  const float tx1 = (const float) SrcRect.right;
-  const float ty0 = (const float) SrcRect.top;
-  const float ty1 = (const float) SrcRect.bottom;
+  const float tx0 = SrcRect.left;
+  const float tx1 = SrcRect.right;
+  const float ty0 = SrcRect.top;
+  const float ty1 = SrcRect.bottom;
 
   MYD3DVERTEX<1> v[] =
   {
@@ -1560,15 +1560,15 @@ HRESULT CDX9AllocatorPresenter::AlphaBlt(RECT* pSrc, RECT* pDst, Com::SmartPtr<I
 
   HRESULT hr;
 
-    do
+  do
   {
     D3DSURFACE_DESC d3dsd;
     ZeroMemory(&d3dsd, sizeof(d3dsd));
     if(FAILED(pTexture->GetLevelDesc(0, &d3dsd)) /*|| d3dsd.Type != D3DRTYPE_TEXTURE*/)
       break;
 
-        float w = (float)d3dsd.Width;
-        float h = (float)d3dsd.Height;
+    float w = (float)d3dsd.Width;
+    float h = (float)d3dsd.Height;
 
     struct
     {
@@ -1590,62 +1590,47 @@ HRESULT CDX9AllocatorPresenter::AlphaBlt(RECT* pSrc, RECT* pDst, Com::SmartPtr<I
     }
 */
 
-        hr = m_pD3DDev->SetTexture(0, pTexture);
+    hr = m_pD3DDev->SetTexture(0, pTexture);
 
     DWORD abe, sb, db;
     hr = m_pD3DDev->GetRenderState(D3DRS_ALPHABLENDENABLE, &abe);
     hr = m_pD3DDev->GetRenderState(D3DRS_SRCBLEND, &sb);
     hr = m_pD3DDev->GetRenderState(D3DRS_DESTBLEND, &db);
 
-        hr = m_pD3DDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-        hr = m_pD3DDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+    hr = m_pD3DDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+    hr = m_pD3DDev->SetRenderState(D3DRS_LIGHTING, FALSE);
     hr = m_pD3DDev->SetRenderState(D3DRS_ZENABLE, FALSE);
-      hr = m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-        hr = m_pD3DDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE); // pre-multiplied src and ...
-        hr = m_pD3DDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCALPHA); // ... inverse alpha channel for dst
+    hr = m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    hr = m_pD3DDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE); // pre-multiplied src and ...
+    hr = m_pD3DDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCALPHA); // ... inverse alpha channel for dst
 
     hr = m_pD3DDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-        hr = m_pD3DDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-        hr = m_pD3DDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    hr = m_pD3DDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    hr = m_pD3DDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
 
-        hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-        hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-        hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+    hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+    hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+    hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 
     hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
     hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 
-    /*//
+    hr = m_pD3DDev->SetPixelShader(NULL);
 
-    D3DCAPS9 d3dcaps9;
-    hr = m_pD3DDev->GetDeviceCaps(&d3dcaps9);
-    if(d3dcaps9.AlphaCmpCaps & D3DPCMPCAPS_LESS)
-    {
-      hr = m_pD3DDev->SetRenderState(D3DRS_ALPHAREF, (DWORD)0x000000FE);
-      hr = m_pD3DDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE); 
-      hr = m_pD3DDev->SetRenderState(D3DRS_ALPHAFUNC, D3DPCMPCAPS_LESS);
-    }
-
-    *///
-
-        hr = m_pD3DDev->SetPixelShader(NULL);
-
-        hr = m_pD3DDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
+    hr = m_pD3DDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
     hr = m_pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, pVertices, sizeof(pVertices[0]));
-
-        //
 
     m_pD3DDev->SetTexture(0, NULL);
 
-      m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, abe);
-        m_pD3DDev->SetRenderState(D3DRS_SRCBLEND, sb);
-        m_pD3DDev->SetRenderState(D3DRS_DESTBLEND, db);
+    m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, abe);
+    m_pD3DDev->SetRenderState(D3DRS_SRCBLEND, sb);
+    m_pD3DDev->SetRenderState(D3DRS_DESTBLEND, db);
 
     return S_OK;
-    }
+  }
   while(0);
 
-    return E_FAIL;
+  return E_FAIL;
 }
 
 void CDX9AllocatorPresenter::CalculateJitter(LONGLONG PerfCounter)

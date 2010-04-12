@@ -29,7 +29,6 @@
 #include "FGFilter.h"
 #include "DShowUtil/smartptr.h"
 #include "WindowingFactory.h"
-//#include "CharsetConverter.h"
 #include "LangInfo.h"
 
 CStreamsManager *CStreamsManager::m_pSingleton = NULL;
@@ -1099,6 +1098,14 @@ int CSubtitleManager::AddSubtitle(const CStdString& subFilePath)
   if (SUCCEEDED(m_pManager->LoadExternalSubtitle(unicodePath.c_str(), &pSubStream)))
   {
     s->substream = pSubStream;
+    // if the sub is a vob, it has an internal title, grab it
+    wchar_t* title = NULL;
+    if (SUCCEEDED(m_pManager->GetStreamTitle(pSubStream, &title)))
+    {
+      g_charsetConverter.wToUTF8(CStdStringW(title), s->displayname);
+      s->displayname += " [External]";
+      CoTaskMemFree(title);
+    }
     m_subtitleStreams.push_back(s.release());
 
     return m_subtitleStreams.size() - 1;

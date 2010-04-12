@@ -36,6 +36,8 @@ public:
 
   void Free();
 
+  HRESULT GetStreamTitle(ISubStream* pSubStream, wchar_t **subTitle);
+
 private:
   friend class CTextPassThruInputPin;
   friend class CTextPassThruFilter;

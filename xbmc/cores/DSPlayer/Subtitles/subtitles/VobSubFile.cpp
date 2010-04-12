@@ -203,7 +203,6 @@ CStdString FindLangFromId(WORD id)
 
 CVobSubFile::CVobSubFile(CCritSec* pLock)
   : ISubPicProviderImpl(pLock)
-  , m_sub(1024*1024)
 {
 }
 
@@ -284,7 +283,7 @@ void CVobSubFile::TrimExtension(CStdString& fn)
   int i = fn.ReverseFind('.');
   if(i > 0)
   {
-    CStdString ext = fn.Mid(i); //.MakeLower();
+    CStdString ext = fn.Mid(i).MakeLower();
     if(ext == _T(".ifo") || ext == _T(".idx") || ext == _T(".sub")
     || ext == _T(".sst") || ext == _T(".son") || ext == _T(".rar"))
       fn = fn.Left(i);
@@ -662,22 +661,21 @@ bool CVobSubFile::ReadIdx(CStdString fn, int& ver)
 
 bool CVobSubFile::ReadSub(CStdString fn)
 {
-  std::ifstream f;
-  f.open(fn, std::ios_base::in | std::ios_base::binary);
-  if(f.fail())
-    return(false);
+  ATL::CFile f;
+  if(! f.Open(fn, ATL::CFile::modeRead|ATL::CFile::typeBinary|ATL::CFile::shareDenyNone))
+    return false;
 
   //m_sub.SetLength(f.GetLength());
   m_sub.seekp(0); m_sub.seekg(0);
   m_sub.str("");
 
-  int len;
+  int len = 0;
   BYTE buff[2048];
-  f.read((char *)&buff[0], sizeof(buff));
-  while((len = f.gcount()) > 0 && *(DWORD*)buff == 0xba010000)
+  while((len = f.Read(buff, sizeof(buff))) > 0 && *(DWORD*)buff == 0xba010000)
   {
     m_sub.write((const char*)buff, len);
-    f.read((char *)buff, sizeof(buff));
+    if (m_sub.bad())
+      return false;
   }
 
   return(true);
@@ -1038,13 +1036,12 @@ BYTE* CVobSubFile::GetPacket(int idx, int& packetsize, int& datasize, int iLang)
     if(idx < 0 || idx >= sp.size())
       break;
 
-    m_sub.seekg(sp[idx].filepos, std::ios_base::beg);
-    if((int) m_sub.tellg() != sp[idx].filepos) 
+    m_sub.seekg(sp[idx].filepos, std::ios::beg);
+    if(m_sub.fail()) 
       break;
 
     BYTE buff[0x800];
-    m_sub.read((char *)buff, sizeof(buff));
-    if(sizeof(buff) != m_sub.gcount())
+    if(m_sub.rdbuf()->sgetn((char *)buff, sizeof(buff)) != sizeof(buff))
       break;
 
     BYTE offset = buff[0x16];
@@ -1065,7 +1062,7 @@ BYTE* CVobSubFile::GetPacket(int idx, int& packetsize, int& datasize, int iLang)
     if(!ret) break;
 
     int i = 0, sizeleft = packetsize;
-        for(int size; 
+    for(int size; 
       i < packetsize; 
       i += size, sizeleft -= size)
     {
@@ -1073,10 +1070,10 @@ BYTE* CVobSubFile::GetPacket(int idx, int& packetsize, int& datasize, int iLang)
       size = min(sizeleft, 0x800 - hsize);
       memcpy(&ret[i], &buff[hsize], size);
 
-            if(size != sizeleft) 
+      if(size != sizeleft) 
       {
         m_sub.read((char *)buff, sizeof(buff));
-        while(m_sub.gcount())
+        while(!m_sub.fail() || !m_sub.eof())
         {
           if(/*!(buff[0x15] & 0x80) &&*/ buff[buff[0x16] + 0x17] == (iLang|0x20)) 
             break;

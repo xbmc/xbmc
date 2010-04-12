@@ -347,3 +347,28 @@ void CSubManager::SetTextureSize( Com::SmartSize& pSize )
     m_pSubPicQueue->Invalidate(m_rtNow + 1000000);
   }
 }
+
+HRESULT CSubManager::GetStreamTitle(ISubStream* pSubStream, wchar_t **subTitle)
+{
+  if (! pSubStream || !subTitle) return E_POINTER;
+
+  CStdStringW title = "";
+  *subTitle = NULL;
+
+  CLSID clsid; pSubStream->GetClassID(&clsid);
+  if (clsid == VOBFILE_SUBTITLE)
+  {
+    // vob, extract title
+    title = ((CVobSubFile *) pSubStream)->GetLanguage();
+    if (title.empty())
+      return E_FAIL;
+
+    // Alloc mem
+    (*subTitle) = (wchar_t *) CoTaskMemAlloc(32);
+    wcscpy_s(*subTitle, 16, title.c_str());
+
+    return S_OK;
+  }
+
+  return E_FAIL;
+}

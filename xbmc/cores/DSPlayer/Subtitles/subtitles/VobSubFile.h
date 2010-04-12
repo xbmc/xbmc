@@ -18,7 +18,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
+#ifndef VOBSUBFILE_H
+#define VOBSUBFILE_H
 #pragma once
 
 #include "VobSubImage.h"
@@ -120,6 +121,13 @@ public:
   void Close();
 
   CStdString GetTitle() {return(m_title);}
+  CStdString GetLanguage() {
+    int i = 0;
+    if(m_iLang >= 0 && m_iLang < 32)
+      i = m_iLang;
+
+    return FindLangFromId(m_langs[i].id);
+  }
 
   DECLARE_IUNKNOWN
     STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
@@ -182,3 +190,4 @@ public:
   STDMETHODIMP SetStream(int iStream);
   STDMETHODIMP Reload() {return E_NOTIMPL;}
 };
+#endif
