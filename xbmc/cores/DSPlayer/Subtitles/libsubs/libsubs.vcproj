@@ -205,10 +205,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Subresync.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\TextPassThruFilter.cpp"
 				>
 			</File>
@@ -236,10 +232,6 @@
 			</File>
 			<File
 				RelativePath=".\SubManager.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Subresync.h"
 				>
 			</File>
 			<File

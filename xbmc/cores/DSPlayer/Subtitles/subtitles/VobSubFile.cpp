@@ -411,7 +411,7 @@ bool CVobSubFile::ReadIdx(CStdString fn, int& ver)
       if(i < 0 || _stscanf(&s[i+_tcslen(buff)], _T("%d"), &ver) != 1
       || ver > VOBSUBIDXVER)
       {
-        MessageBox(0, _T("Wrong file version!"), NULL, MB_OK | MB_ICONERROR);
+        MessageBox(0, _T("Wrong file version!"), NULL, MB_OK | MB_ICONERROR); //TODO: No MessageBox !
         fError = true;
         continue;
       }
@@ -424,7 +424,7 @@ bool CVobSubFile::ReadIdx(CStdString fn, int& ver)
     {
       TCHAR buff[] = _T("Vob/Cell ID:");
 
-            const TCHAR* s = str;
+      const TCHAR* s = str;
 
       int i = str.Find(buff);
       if(i >= 0)
@@ -438,7 +438,7 @@ bool CVobSubFile::ReadIdx(CStdString fn, int& ver)
     int i = str.Find(':');
     if(i <= 0) continue;
 
-    CStdString entry = str.Left(i); //.MakeLower();
+    CStdString entry = str.Left(i).MakeLower();
 
     str = str.Mid(i+1);
     str.Trim();
@@ -490,12 +490,11 @@ bool CVobSubFile::ReadIdx(CStdString fn, int& ver)
     {
       str.MakeLower();
 
-      int i = 0, j = 0;
+      int j = 0;
       std::vector<CStdString> tokens;
       str.Tokenize(_T(" "), tokens);
-      for(CStdString token = tokens[i]; 
-        j < 3 && !fError && i < tokens.size(); 
-        token = tokens[++i], j++)
+      CStdString token = tokens[0];
+      for(int i = 1; j < 3 && !fError && i < tokens.size(); token = tokens[i++], j++)
       {
         if(j == 0)
         {
@@ -674,7 +673,7 @@ bool CVobSubFile::ReadSub(CStdString fn)
 
   int len;
   BYTE buff[2048];
-  f.read((char *)buff, sizeof(buff));
+  f.read((char *)&buff[0], sizeof(buff));
   while((len = f.gcount()) > 0 && *(DWORD*)buff == 0xba010000)
   {
     m_sub.write((const char*)buff, len);

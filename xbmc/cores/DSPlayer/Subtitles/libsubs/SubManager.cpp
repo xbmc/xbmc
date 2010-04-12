@@ -292,7 +292,7 @@ HRESULT CSubManager::LoadExternalSubtitle( const wchar_t* subPath, ISubStream** 
     if(!pSubStream)
     {
       std::auto_ptr<CVobSubFile> pVSF(new CVobSubFile(&m_csSubLock));
-      if(CStdString(GetExtension(path).MakeLower()) == _T(".idx") && pVSF.get() && pVSF->Open(path) && pVSF->GetStreamCount() > 0)
+      if(CStdString(GetExtension(path).MakeLower()) == _T("idx") && pVSF.get() && pVSF->Open(path) && pVSF->GetStreamCount() > 0)
         pSubStream = pVSF.release();
     }
 
