@@ -71,6 +71,10 @@ struct CHolder
   CDisplayPtr display;
   CSurfacePtr surface;
   void*       surfacegl;
+
+  CHolder()
+   : surfacegl(NULL)
+  {}
 };
 
 class CDecoder
