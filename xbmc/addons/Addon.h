@@ -56,7 +56,7 @@ public:
 struct AddonProps
 {
 public:
-  AddonProps(CStdString &id, TYPE type, CStdString &versionstr)
+  AddonProps(const CStdString &id, TYPE type, const CStdString &versionstr)
     : id(id)
     , type(type)
     , version(versionstr)
