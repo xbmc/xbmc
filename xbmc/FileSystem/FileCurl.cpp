@@ -549,7 +549,7 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 {
   CStdString strProtocol = url2.GetTranslatedProtocol();
   url2.SetProtocol(strProtocol);
-  
+
   if( strProtocol.Equals("ftp")
   ||  strProtocol.Equals("ftps") )
   {
@@ -701,7 +701,7 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
       }
     }
   }
-  
+
   if (m_username.length() > 0 && m_password.length() > 0)
     m_url = url2.GetWithoutUserDetails();
   else
@@ -786,7 +786,7 @@ bool CFileCurl::IsInternet(bool checkDNS /* = true */)
 
   bool found = Exists(strURL);
   Close();
-  
+
   return found;
 }
 
@@ -934,10 +934,10 @@ bool CFileCurl::Exists(const CURL& url)
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
   g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
-  
+
   if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
     return true;
-  
+
   errno = ENOENT;
   return false;
 }
