@@ -128,6 +128,7 @@ bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
 
 bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabledOnly/*= true*/)
 {
+  CSingleLock lock(m_critSection);
   addons.clear();
   if (m_addons.find(type) != m_addons.end())
   {
@@ -149,6 +150,7 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYP
 
 bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly/*= true*/)
 {
+  CSingleLock lock(m_critSection);
   if (type != ADDON_UNKNOWN && m_addons.find(type) == m_addons.end())
     return false;
 
@@ -232,6 +234,7 @@ CStdString CAddonMgr::GetString(const CStdString &id, const int number)
 
 void CAddonMgr::FindAddons()
 {
+  CSingleLock lock(m_critSection);
   // parse the user & system dirs for addons of the requested type
   CFileItemList items;
   if (!CSpecialProtocol::XBMCIsHome())
@@ -335,6 +338,7 @@ bool CAddonMgr::DependenciesMet(AddonPtr &addon)
   if (!addon)
     return false;
 
+  CSingleLock lock(m_critSection);
   ADDONDEPS deps = addon->GetDeps();
   ADDONDEPS::iterator itr = deps.begin();
   while (itr != deps.end())

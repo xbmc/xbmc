@@ -22,6 +22,7 @@
 #include "Addon.h"
 #include "include/xbmc_addon_dll.h"
 #include "tinyXML/tinyxml.h"
+#include "utils/CriticalSection.h"
 #include "StdString.h"
 #include "DateTime.h"
 #include "DownloadQueue.h"
@@ -98,6 +99,7 @@ namespace ADDON
     MAPADDONS m_addons;
     CDateTime m_lastDirScan;
     std::map<CStdString, AddonPtr> m_idMap;
+    CCriticalSection m_critSection;
   };
 
 }; /* namespace ADDON */
