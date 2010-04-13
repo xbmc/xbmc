@@ -610,7 +610,6 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
 #endif
 
   /* Retrieve dependencies that this addon requires */
-  map<CStdString, pair<const AddonVersion, const AddonVersion> > deps;
   element = rootElement->FirstChildElement("dependencies");
   if (element)
   {
@@ -621,18 +620,18 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
     {
       do
       {
-        CStdString min = element->Attribute("minversion");
-        CStdString max = element->Attribute("maxversion");
-        CStdString id = element->GetText();
-        if (!id || (!min && ! max))
+        const char* min = element->Attribute("minversion");
+        const char* max = element->Attribute("maxversion");
+        const char* id = element->GetText();
+        if (!id || (!min && !max))
         {
           CLog::Log(LOGDEBUG, "ADDON: %s malformed <dependency> element, will ignore this dependency", strPath.c_str());
+          element = element->NextSiblingElement("dependency");
           continue;
         }
-        deps.insert(make_pair(id, make_pair(AddonVersion(min), AddonVersion(max))));
+        addonProps.dependencies.insert(make_pair(CStdString(id), make_pair(AddonVersion(min?min:""), AddonVersion(max?max:""))));
         element = element->NextSiblingElement("dependency");
       } while (element != NULL);
-      addonProps.dependencies = deps;
     }
   }
 
