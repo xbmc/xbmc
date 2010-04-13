@@ -825,6 +825,12 @@ bool CFileCurl::Open(const CURL& url)
 
   SetCorrectHeaders(m_state);
 
+  // since we can't know the stream size up front if we're gzipped/deflated
+  // flag the stream with an unknown file size rather than the compressed
+  // file size.
+  if (m_contentencoding.size() > 0)
+    m_state->m_fileSize = 0;
+
   // check if this stream is a shoutcast stream. sometimes checking the protocol line is not enough so examine other headers as well.
   // shoutcast streams should be handled by FileShoutcast.
   if (m_state->m_httpheader.GetProtoLine().Left(3) == "ICY" || !m_state->m_httpheader.GetValue("icy-notice1").IsEmpty()
