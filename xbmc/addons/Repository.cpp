@@ -50,7 +50,6 @@ CRepository::CRepository(const AddonProps& props) :
 {
   m_compressed = false;
   LoadFromXML(Path()+LibName());
-  SetUpdated(CDateTime::GetCurrentDateTime()-CDateTimeSpan(0,12,0,0));
 }
 
 CRepository::CRepository(const CRepository &rhs, const AddonPtr &self)
