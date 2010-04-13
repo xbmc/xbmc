@@ -694,6 +694,8 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
           SetUserAgent(value);
         else if (name.Equals("Cookie"))
           SetCookie(value);
+        else if (name.Equals("Encoding"))
+          SetContentEncoding(value);
         else
           SetRequestHeader(name, value);
       }
