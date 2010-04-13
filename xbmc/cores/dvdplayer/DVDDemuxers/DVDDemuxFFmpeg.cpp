@@ -430,7 +430,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   m_bMatroska = strcmp(m_pFormatContext->iformat->name, "matroska") == 0;
   m_bAVI = strcmp(m_pFormatContext->iformat->name, "avi") == 0;
 
-  if (streaminfo || m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+  if (streaminfo)
   {
     /* too speed up dvd switches, only analyse very short */
     if(m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -442,7 +442,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     if (iErr < 0)
     {
       CLog::Log(LOGWARNING,"could not find codec parameters for %s", strFile.c_str());
-      if (!streaminfo || (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3))
+      if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) || (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3))
       {
         // special case, our codecs can still handle it.
       }
