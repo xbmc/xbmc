@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\addons\include;."
+				AdditionalIncludeDirectories="..\..\..\..\..\\addons\libraries\addon\libXBMC_addon;..\..\..\..\..\\addons\libraries\addon\libXBMC_pvr;..\..\..\..\addons\include;."
 				PreprocessorDefinitions="_WIN32;_DEBUG;_WINDOWS;MPTV_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -127,7 +127,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\addons\include;."
+				AdditionalIncludeDirectories="..\..\..\..\..\\addons\libraries\addon\libXBMC_addon;..\..\..\..\..\\addons\libraries\addon\libXBMC_pvr;..\..\..\..\addons\include;."
 				PreprocessorDefinitions="_WIN32;_WINDOWS;MPTV_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="0"
@@ -214,7 +214,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\windows\Socket.cpp"
+				RelativePath="..\..\Socket.cpp"
 				>
 			</File>
 			<File
@@ -264,10 +264,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\windows\Socket.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\StdString.h"
 				>
 			</File>
@@ -280,6 +276,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath="..\..\README"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

@@ -424,21 +424,6 @@ bool CDVDPlayer::OpenInputStream()
     m_filename = g_mediaManager.TranslateDevicePath("");
   }
 
-  //margro: Added pvr://stream/ for MediaPortal streams
-  //        XBMC can handle rtsp:// streams directly, but
-  //        we don't know the URL of the live tv/radio stream on beforehand
-  //        So, we need to ask the PVR plugin for the stream URL for this
-  //        channel, before starting the right player
-  if (m_filename.compare(0, 6, "pvr://") == 0)
-  {
-    m_filename = XFILE::CPVRFile::TranslatePVRFilename(m_filename);
-    if(m_filename.length() == 0)
-    {
-      CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - unable to translate [%s] into input stream", m_item.m_strPath.c_str());
-      return false;
-    }
-  }
-
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_content);
   if(m_pInputStream == NULL)
   {

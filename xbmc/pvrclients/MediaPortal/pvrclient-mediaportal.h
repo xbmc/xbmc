@@ -50,8 +50,6 @@ public:
   static void* Process(void*);
 
   /* Server handling */
-  PVR_ERROR GetProperties(PVR_SERVERPROPS *props);
-
   bool Connect();
   void Disconnect();
   bool IsUp();

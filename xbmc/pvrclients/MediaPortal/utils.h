@@ -7,6 +7,8 @@
 
 using namespace std;
 
+#define delete_null(ptr) (delete (ptr), ptr = NULL)
+
 /**
  * String tokenize
  * Split string using the given delimiter into a vector of substrings

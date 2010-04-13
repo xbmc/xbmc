@@ -26,8 +26,8 @@
 //#include <string>
 #include "StdString.h"
 #include "pvrclient-mediaportal.h"
-#include "../../../include/libXBMC_addon.h"
-#include "../../../include/libXBMC_pvr.h"
+#include "libXBMC_addon.h"
+#include "libXBMC_pvr.h"
 
 #define DEFAULT_HOST                  "127.0.0.1"
 #define DEFAULT_PORT                  9596
@@ -39,10 +39,7 @@
 #define DEFAULT_HANDLE_MSG            false
 #define DEFAULT_RESOLVE_RTSP_HOSTNAME true
 #define DEFAULT_READ_GENRE            false
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#define DEFAULT_SLEEP_RTSP_URL        0
 
 extern bool         m_bCreated;
 extern std::string  m_sHostname;
@@ -60,9 +57,9 @@ extern std::string  g_sTVGroup;
 extern std::string  g_sRadioGroup;
 extern bool         m_bResolveRTSPHostname;
 extern bool         m_bReadGenre;
+extern int          m_iSleepOnRTSPurl;
 
-#ifdef __cplusplus
-}
-#endif
+extern cHelper_libXBMC_addon *XBMC;
+extern cHelper_libXBMC_pvr   *PVR;
 
 #endif /* CLIENT_H */

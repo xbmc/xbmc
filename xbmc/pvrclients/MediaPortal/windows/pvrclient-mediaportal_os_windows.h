@@ -79,4 +79,9 @@ static inline void pthread_mutex_unlock(pthread_mutex_t *mutex)
 {
 	ReleaseMutex(*mutex);
 }
+
+static inline void usleep(unsigned long usec)
+{
+  Sleep(usec/1000);
+}
 #endif

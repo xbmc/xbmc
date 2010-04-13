@@ -24,8 +24,8 @@
 #define __RECORDINGS_H
 
 #include <stdlib.h>
-#include "../../../include/libXBMC_addon.hh"
-#include "../../../include/libXBMC_pvr.h"
+#include "libXBMC_addon.h"
+#include "libXBMC_pvr.h"
 
 using namespace std;
 

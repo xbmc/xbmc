@@ -145,7 +145,7 @@ bool cEpg::ParseLine(string& data)
 
     if( epgfields.size() == 5 )
     {
-      XBMC_log(LOG_DEBUG, "%s: %s", epgfields[0].c_str(), epgfields[2].c_str());
+      XBMC->Log(LOG_DEBUG, "%s: %s", epgfields[0].c_str(), epgfields[2].c_str());
       // field 0 = start date + time
       // field 1 = end   date + time
       // field 2 = title
@@ -172,7 +172,7 @@ bool cEpg::ParseLine(string& data)
 
       if(m_StartTime < 0)
       {
-        XBMC_log(LOG_ERROR, "cEpg::ParseLine: Unable to convert start time '%s' into date+time", epgfields[0].c_str());
+        XBMC->Log(LOG_ERROR, "cEpg::ParseLine: Unable to convert start time '%s' into date+time", epgfields[0].c_str());
         return false;
       }
 
@@ -196,7 +196,7 @@ bool cEpg::ParseLine(string& data)
 
       if( m_EndTime < 0)
       {
-        XBMC_log(LOG_ERROR, "cEpg::ParseLine: Unable to convert end time '%s' into date+time", epgfields[0].c_str());
+        XBMC->Log(LOG_ERROR, "cEpg::ParseLine: Unable to convert end time '%s' into date+time", epgfields[0].c_str());
         return false;
       }
 
@@ -213,7 +213,7 @@ bool cEpg::ParseLine(string& data)
   }
   catch(std::exception &e)
   {
-    XBMC_log(LOG_ERROR, "Exception '%s' during parse EPG data string.", e.what());
+    XBMC->Log(LOG_ERROR, "Exception '%s' during parse EPG data string.", e.what());
   }
 
   return false;
@@ -274,7 +274,7 @@ void cEpg::SetGenre(string& Genre, int genreType, int genreSubType)
     } else if (m_genre.compare("music/ballet/dance (general)") == 0) {
       m_genre_type = EVCONTENTMASK_MUSICBALLETDANCE;
     } else {
-      //XBMC_log(LOG_DEBUG, "epg::setgenre: TODO mapping of MPTV's '%s' genre.", Genre.c_str());
+      //XBMC->Log(LOG_DEBUG, "epg::setgenre: TODO mapping of MPTV's '%s' genre.", Genre.c_str());
       m_genre_type     = genreType;
       m_genre_subtype  = genreSubType;
     }

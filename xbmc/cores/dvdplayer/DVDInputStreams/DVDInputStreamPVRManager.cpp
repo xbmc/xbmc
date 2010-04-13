@@ -90,8 +90,17 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
   if(transFile.substr(0, 6) != "pvr://")
   {
     m_pOtherStream = CDVDFactoryInputStream::CreateInputStream(m_pPlayer, transFile, content);
+    if (!m_pOtherStream)
+    {
+      CLog::Log(LOGERROR, "CDVDInputStreamPVRManager::Open - unable to create input stream for [%s]", transFile.c_str());
+      return false;
+    }
+    else
+      m_pOtherStream->SetFileItem(m_item);
+
     if (!m_pOtherStream->Open(transFile.c_str(), content))
     {
+      CLog::Log(LOGERROR, "CDVDInputStreamPVRManager::Open - error opening [%s]", transFile.c_str());
       delete m_pFile;
       m_pFile = NULL;
       delete m_pOtherStream;

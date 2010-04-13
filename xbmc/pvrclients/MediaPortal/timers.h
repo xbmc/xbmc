@@ -23,7 +23,7 @@
 #ifndef __TIMERS_H
 #define __TIMERS_H
 
-#include "../../addons/include/xbmc_pvr_lib++.h"
+#include "libXBMC_pvr.h"
 #include <stdlib.h>
 #include <string>
 
@@ -43,6 +43,7 @@ private:
   int m_priority;
   int m_channel;
   string m_title;
+  string m_directory;
   int m_index;
   time_t m_UTCdiff;
 
@@ -54,6 +55,7 @@ public:
   unsigned int Channel(void) const { return m_channel; }
   int Priority(void) const { return m_priority; }
   const char* Title(void) const { return m_title.c_str(); }
+  const char* Dir(void) const { return m_directory.c_str(); }
   time_t StartTime(void) const;
   time_t StopTime(void) const;
   bool ParseLine(const char *s);

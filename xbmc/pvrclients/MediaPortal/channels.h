@@ -23,7 +23,7 @@
 #ifndef __CHANNELS_H
 #define __CHANNELS_H
 
-#include "../../addons/include/xbmc_pvr_lib++.h"
+#include "libXBMC_pvr.h"
 #include <string>
 
 class cChannel
