@@ -42,6 +42,9 @@
 #include <sstream>
 #include <iomanip>
 #include <numeric>
+#if _MSC_VER > 1500
+#include <iterator> //for back_inserter on VS2010
+#endif
 #include "utils/log.h"
 
 using namespace std;
@@ -873,7 +876,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
 #endif
 #ifdef HAVE_LIBVA
   else if(pSource->format == DVDVideoPicture::FMT_VAAPI)
-    g_renderManager.AddProcessor(*pSource->vaapi);
+    g_renderManager.AddProcessor(pSource->vaapi_object, pSource->vaapi_surface);
 #endif
 }
 #endif

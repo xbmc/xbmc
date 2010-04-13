@@ -1,0 +1,298 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\MSWindows">
+      <UniqueIdentifier>{163e6efd-1651-4f5d-bb34-1c62d36d123c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\FreeBSD">
+      <UniqueIdentifier>{f6800311-e8fe-42a1-ba9c-a1d13eca96f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\image">
+      <UniqueIdentifier>{5d744855-6f82-48ed-91ca-2885ac0cc803}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\iso9660">
+      <UniqueIdentifier>{16bbc879-0297-462d-a147-b8042952e870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cdda_interface">
+      <UniqueIdentifier>{13759af7-f031-4756-8963-33ddbf41c496}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\paranoia">
+      <UniqueIdentifier>{fc4b6756-cd6d-4043-ad15-6d7db0c9bb17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include Files">
+      <UniqueIdentifier>{30472836-2732-4782-b598-f810c036ffca}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lib\driver\_cdio_aix.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\_cdio_bsdi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\_cdio_generic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\_cdio_linux.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\_cdio_osx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\_cdio_stdio.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\_cdio_stream.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\_cdio_sunos.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\cd_types.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\cdio.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\cdtext.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\device.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\disc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\ds.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\image_common.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\logging.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\read.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\scsi_mmc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\sector.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\track.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\MSWindows\win32.c">
+      <Filter>Source Files\MSWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\MSWindows\win32_ioctl.c">
+      <Filter>Source Files\MSWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\FreeBSD\freebsd.c">
+      <Filter>Source Files\FreeBSD</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\FreeBSD\freebsd_cam.c">
+      <Filter>Source Files\FreeBSD</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\FreeBSD\freebsd_ioctl.c">
+      <Filter>Source Files\FreeBSD</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\image\bincue.c">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\image\cdrdao.c">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\driver\image\nrg.c">
+      <Filter>Source Files\image</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\iso9660\iso9660.c">
+      <Filter>Source Files\iso9660</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\iso9660\iso9660_fs.c">
+      <Filter>Source Files\iso9660</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\iso9660\xa.c">
+      <Filter>Source Files\iso9660</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\cdda_interface\common_interface.c">
+      <Filter>Source Files\cdda_interface</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\cdda_interface\cooked_interface.c">
+      <Filter>Source Files\cdda_interface</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\cdda_interface\interface.c">
+      <Filter>Source Files\cdda_interface</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\cdda_interface\scan_devices.c">
+      <Filter>Source Files\cdda_interface</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\cdda_interface\smallft.c">
+      <Filter>Source Files\cdda_interface</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\cdda_interface\toc.c">
+      <Filter>Source Files\cdda_interface</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\cdda_interface\utils.c">
+      <Filter>Source Files\cdda_interface</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\paranoia\gap.c">
+      <Filter>Source Files\paranoia</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\paranoia\isort.c">
+      <Filter>Source Files\paranoia</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\paranoia\overlap.c">
+      <Filter>Source Files\paranoia</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\paranoia\p_block.c">
+      <Filter>Source Files\paranoia</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\paranoia\paranoia.c">
+      <Filter>Source Files\paranoia</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lib\driver\_cdio_stdio.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\driver\_cdio_stream.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\driver\cdio_assert.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\driver\cdio_private.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\driver\cdtext_private.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\driver\generic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\driver\image.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\driver\image_common.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\driver\portable.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\driver\scsi_mmc_private.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\driver\MSWindows\win32.h">
+      <Filter>Source Files\MSWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\driver\FreeBSD\freebsd.h">
+      <Filter>Source Files\FreeBSD</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\driver\image\nrg.h">
+      <Filter>Source Files\image</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\iso9660\iso9660_private.h">
+      <Filter>Source Files\iso9660</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\cdda_interface\common_interface.h">
+      <Filter>Source Files\cdda_interface</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\cdda_interface\drive_exceptions.h">
+      <Filter>Source Files\cdda_interface</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\cdda_interface\low_interface.h">
+      <Filter>Source Files\cdda_interface</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\cdda_interface\smallft.h">
+      <Filter>Source Files\cdda_interface</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\cdda_interface\utils.h">
+      <Filter>Source Files\cdda_interface</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\paranoia\gap.h">
+      <Filter>Source Files\paranoia</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\paranoia\isort.h">
+      <Filter>Source Files\paranoia</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\paranoia\overlap.h">
+      <Filter>Source Files\paranoia</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\paranoia\p_block.h">
+      <Filter>Source Files\paranoia</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\bytesex.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\bytesex_asm.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\cd_types.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\cdda.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\cdio.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\cdtext.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\device.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\disc.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\ds.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\dvd.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\iso9660.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\logging.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\paranoia.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\read.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\scsi_mmc.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\sector.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\track.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\types.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\util.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\version.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\cdio\xa.h">
+      <Filter>Include Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
