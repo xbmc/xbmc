@@ -19,7 +19,7 @@
 
   <!-- platform: xbmc platform this addon is compatible with:  atv|osx|xbox|windows|linux|all !-->
   <platforms>
-    <!--<platform>linux</platform> TODO: not yet tested !-->
+    <platform>linux</platform>
     <platform>windows</platform>
   </platforms>
 
