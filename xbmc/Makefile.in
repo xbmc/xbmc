@@ -216,6 +216,7 @@ SRCS=Application.cpp \
      Bookmark.cpp \
      TextureCache.cpp \
      TextureDatabase.cpp \
+     AddonDatabase.cpp \
 
 LIB=xbmc.a
 
