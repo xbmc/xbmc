@@ -11,7 +11,6 @@
 
 static const char *VERSION        = "0.0.1";
 static const char *DESCRIPTION    = "VDR-Network-Streaming-Interface (VNSI) Server";
-static const char *MAINMENUENTRY  = "Vnsiserver";
 
 class cPluginVNSIServer : public cPlugin {
 private:
@@ -31,8 +30,8 @@ public:
   virtual void MainThreadHook(void);
   virtual cString Active(void);
   virtual time_t WakeupTime(void);
-  virtual const char *MainMenuEntry(void) { return MAINMENUENTRY; }
-  virtual cOsdObject *MainMenuAction(void);
+  virtual const char *MainMenuEntry(void) { return NULL; }
+  virtual cOsdObject *MainMenuAction(void) { return NULL; }
   virtual cMenuSetupPage *SetupMenu(void);
   virtual bool SetupParse(const char *Name, const char *Value);
   virtual bool Service(const char *Id, void *Data = NULL);
@@ -102,12 +101,6 @@ time_t cPluginVNSIServer::WakeupTime(void)
 {
   // Return custom wakeup time for shutdown script
   return 0;
-}
-
-cOsdObject *cPluginVNSIServer::MainMenuAction(void)
-{
-  // Perform the action when selected from the main VDR menu.
-  return NULL;
 }
 
 cMenuSetupPage *cPluginVNSIServer::SetupMenu(void)

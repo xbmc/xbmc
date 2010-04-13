@@ -166,7 +166,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
     HandleException(e, "m_pDll->Create");
   }
   catch (ADDON_STATUS status)
-  { 
+  {
     if (status == STATUS_NEED_SETTINGS)
     { // catch request for settings in initalization
       if (TransferSettings() == STATUS_OK)
@@ -333,14 +333,16 @@ void CAddonDll<TheDll, TheStruct, TheProps>::SaveSettings()
 {
   // must save first, as TransferSettings() reloads saved settings!
   CAddon::SaveSettings();
-  TransferSettings();
+  if (m_initialized)
+    TransferSettings();
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
 void CAddonDll<TheDll, TheStruct, TheProps>::SaveFromDefault()
 {
   CAddon::SaveFromDefault();
-  TransferSettings();
+  if (m_initialized)
+    TransferSettings();
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
