@@ -59,21 +59,15 @@ static inline VASurfaceID GetSurfaceID(AVFrame *pic)
 
 CDisplay::~CDisplay()
 {
-  if(m_display)
-  {
-    CLog::Log(LOGDEBUG, "VAAPI - destroying display");
-    WARN(vaTerminate(m_display))
-  }
+  CLog::Log(LOGDEBUG, "VAAPI - destroying display");
+  WARN(vaTerminate(m_display))
 }
 
 CSurface::~CSurface()
 {
-  if(m_id)
-  {
-    CLog::Log(LOGDEBUG, "VAAPI - destroying surface %d", (int)m_id);
-    CSingleLock lock(*m_display);
-    WARN(vaDestroySurfaces(m_display->get(), &m_id, 1))
-  }
+  CLog::Log(LOGDEBUG, "VAAPI - destroying surface %d", (int)m_id);
+  CSingleLock lock(*m_display);
+  WARN(vaDestroySurfaces(m_display->get(), &m_id, 1))
 }
 
 CDecoder::CDecoder()
@@ -145,7 +139,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   pic->type           = FF_BUFFER_TYPE_USER;
   pic->age            = 1;
-  pic->data[0]        = (uint8_t*)surface;
+  pic->data[0]        = (uint8_t*)1;
   pic->data[1]        = NULL;
   pic->data[2]        = NULL;
   pic->data[3]        = (uint8_t*)surface;
