@@ -76,6 +76,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.strPath = "addons://"+addons[i]->ID();
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     share.strName = addons[i]->Name();
+    share.m_strThumbnailImage = "DefaultHardDisk.png";
     m_sources.push_back(share);
   }
 
