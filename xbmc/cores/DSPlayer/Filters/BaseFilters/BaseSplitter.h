@@ -27,43 +27,46 @@
 #include "IBufferInfo.h"
 #include "IBitRateInfo.h"
 #include "BaseSplitterFileEx.h"
-#include "AsyncReader.h"
+//#include "AsyncReader.h"
+#include "Subtitles/DSUtil/HdmvClipInfo.h"
 #include "Subtitles/DSUtil/DSMPropertyBag.h"
 #include "Subtitles/DSUtil/FontInstaller.h"
-#include "Filters/XBMCFileSource.h"
-class Packet : public std::vector<BYTE>
+#include "Filters/XBMCFileReader.h"
+#include <boost/shared_ptr.hpp>
+
+using namespace std;
+using namespace boost;
+
+class Packet : public vector<BYTE>
 {
 public:
-  DWORD TrackNumber;
-  BOOL bDiscontinuity, bSyncpoint, bAppendable;
-  static const REFERENCE_TIME INVALID_TIME = _I64_MIN;
-  REFERENCE_TIME rtStart, rtStop;
-  AM_MEDIA_TYPE* pmt;
-  Packet() {pmt = NULL; bDiscontinuity = bAppendable = FALSE;}
-  virtual ~Packet() {if(pmt) DeleteMediaType(pmt);}
-  virtual int GetDataSize() {return size();}
-  void SetData(const void* ptr, DWORD len) 
+	DWORD TrackNumber;
+	BOOL bDiscontinuity, bSyncPoint, bAppendable;
+	static const REFERENCE_TIME INVALID_TIME = _I64_MIN;
+	REFERENCE_TIME rtStart, rtStop;
+	AM_MEDIA_TYPE* pmt;
+	Packet() {pmt = NULL; bDiscontinuity = bAppendable = FALSE;}
+	virtual ~Packet() {if(pmt) DeleteMediaType(pmt);}
+	virtual int GetDataSize() {return size();}
+	void SetData(const void* ptr, DWORD len) 
   {
-    this->clear();
-    resize(len);
-    std::vector<BYTE> srcptr;
-    memcpy((void**)&srcptr,ptr,len);
-    for (std::vector<BYTE>::iterator it = srcptr.begin(); it != srcptr.end(); it++)
-      this->push_back(*it);}
+    resize(len); 
+    memcpy(&this[0], ptr, len);
+  }
 };
 
 class CPacketQueue 
-  : public CCritSec
-  , protected std::list<Com::SmartAutoPtrForList<Packet>>
+  : public CCritSec,
+    protected std::list<boost::shared_ptr<Packet>>
 {
   int m_size;
-
 public:
   CPacketQueue();
-  void Add(Com::SmartAutoPtr<Packet> p);
-  Com::SmartAutoPtr<Packet> Remove();
+  void Add(shared_ptr<Packet> p);
+  shared_ptr<Packet> Remove();
   void RemoveAll();
   int size(), GetSize();
+  
 };
 
 class CBaseSplitterFilter;
@@ -81,12 +84,12 @@ public:
   HRESULT GetAsyncReader(IAsyncReader** ppAsyncReader);
 
   DECLARE_IUNKNOWN;
-    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
-    HRESULT CheckMediaType(const CMediaType* pmt);
+  HRESULT CheckMediaType(const CMediaType* pmt);
 
-    HRESULT CheckConnect(IPin* pPin);
-    HRESULT BreakConnect();
+  HRESULT CheckConnect(IPin* pPin);
+  HRESULT BreakConnect();
   HRESULT CompleteConnect(IPin* pPin);
 
   STDMETHODIMP BeginFlush();
@@ -101,7 +104,7 @@ class CBaseSplitterOutputPin
   , public IBitRateInfo
 {
 protected:
-  std::vector<CMediaType> m_mts;
+  vector<CMediaType> m_mts;
   int m_nBuffers;
 
 private:
@@ -118,8 +121,8 @@ private:
   void MakeISCRHappy();
 
   // please only use DeliverPacket from the derived class
-    HRESULT GetDeliveryBuffer(IMediaSample** ppSample, REFERENCE_TIME* pStartTime, REFERENCE_TIME* pEndTime, DWORD dwFlags);
-    HRESULT Deliver(IMediaSample* pSample);
+  HRESULT GetDeliveryBuffer(IMediaSample** ppSample, REFERENCE_TIME* pStartTime, REFERENCE_TIME* pEndTime, DWORD dwFlags);
+  HRESULT Deliver(IMediaSample* pSample);
 
   // bitrate stats
 
@@ -138,7 +141,7 @@ protected:
 
   // override this if you need some second level stream specific demuxing (optional)
   // the default implementation will send the sample as is
-  virtual HRESULT DeliverPacket(Com::SmartAutoPtr<Packet> p);
+  virtual HRESULT DeliverPacket(boost::shared_ptr<Packet> p);
 
   // IMediaSeeking
 
@@ -161,7 +164,7 @@ protected:
   STDMETHODIMP GetPreroll(LONGLONG* pllPreroll);
 
 public:
-  CBaseSplitterOutputPin(std::vector<CMediaType>& mts, LPCWSTR pName, CBaseFilter* pFilter, CCritSec* pLock, HRESULT* phr, int nBuffers = 0);
+  CBaseSplitterOutputPin(vector<CMediaType>& mts, LPCWSTR pName, CBaseFilter* pFilter, CCritSec* pLock, HRESULT* phr, int nBuffers = 0);
   CBaseSplitterOutputPin(LPCWSTR pName, CBaseFilter* pFilter, CCritSec* pLock, HRESULT* phr, int nBuffers = 0);
   virtual ~CBaseSplitterOutputPin();
 
@@ -170,9 +173,9 @@ public:
 
   HRESULT SetName(LPCWSTR pName);
 
-    HRESULT DecideBufferSize(IMemAllocator* pAlloc, ALLOCATOR_PROPERTIES* pProperties);
-    HRESULT CheckMediaType(const CMediaType* pmt);
-    HRESULT GetMediaType(int iPosition, CMediaType* pmt);
+  HRESULT DecideBufferSize(IMemAllocator* pAlloc, ALLOCATOR_PROPERTIES* pProperties);
+  HRESULT CheckMediaType(const CMediaType* pmt);
+  HRESULT GetMediaType(int iPosition, CMediaType* pmt);
   CMediaType& CurrentMediaType() {return m_mt;}
 
   STDMETHODIMP Notify(IBaseFilter* pSender, Quality q);
@@ -183,16 +186,16 @@ public:
   void SetThreadPriority(int nPriority) {if(m_hThread) ::SetThreadPriority(m_hThread, nPriority);}
 
   HRESULT Active();
-    HRESULT Inactive();
+  HRESULT Inactive();
 
-    HRESULT DeliverBeginFlush();
+  HRESULT DeliverBeginFlush();
   HRESULT DeliverEndFlush();
-    HRESULT DeliverNewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
+  HRESULT DeliverNewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
 
   int QueueCount();
   int QueueSize();
-    HRESULT QueueEndOfStream();
-  HRESULT QueuePacket(Com::SmartAutoPtr<Packet> p);
+  HRESULT QueueEndOfStream();
+  HRESULT QueuePacket(auto_ptr<Packet> p);
 
   // returns true for everything which (the lack of) would not block other streams (subtitle streams, basically)
   virtual bool IsDiscontinuous();
@@ -222,22 +225,23 @@ class CBaseSplitterFilter
   , public IBufferInfo
 {
   CCritSec m_csPinMap;
-  std::map<DWORD, CBaseSplitterOutputPin*> m_pPinMap;
+  map<DWORD, CBaseSplitterOutputPin*> m_pPinMap;
 
   CCritSec m_csmtnew;
-  std::map<DWORD, CMediaType> m_mtnew;
+  map<DWORD, CMediaType> m_mtnew;
 
-  std::list<Com::SmartPtrForList<CBaseSplitterOutputPin>> m_pRetiredOutputs;
-
+  list<shared_ptr<CBaseSplitterOutputPin>> m_pRetiredOutputs;
+  
+  Com::SmartQIPtr<ISyncReader> m_pSyncReader;
 protected:
   CStdStringW m_fn;
 
-  Com::SmartAutoPtr<CBaseSplitterInputPin> m_pInput;
-  std::list<Com::SmartAutoPtrForList<CBaseSplitterOutputPin>> m_pOutputs;
+  auto_ptr<CBaseSplitterInputPin> m_pInput;
+  list<shared_ptr<CBaseSplitterOutputPin>> m_pOutputs;
 
   CBaseSplitterOutputPin* GetOutputPin(DWORD TrackNum);
   DWORD GetOutputTrackNum(CBaseSplitterOutputPin* pPin);
-  HRESULT AddOutputPin(DWORD TrackNum, Com::SmartAutoPtr<CBaseSplitterOutputPin> pPin);
+  HRESULT AddOutputPin(DWORD TrackNum, auto_ptr<CBaseSplitterOutputPin> pPin);
   HRESULT RenameOutputPin(DWORD TrackNumSrc, DWORD TrackNumDst, const AM_MEDIA_TYPE* pmt);
   virtual HRESULT DeleteOutputs();
   virtual HRESULT CreateOutputs(IAsyncReader* pAsyncReader) = 0; // override this ...
@@ -250,15 +254,15 @@ protected:
   REFERENCE_TIME m_rtStart, m_rtStop, m_rtCurrent, m_rtNewStart, m_rtNewStop;
   double m_dRate;
 
-  std::list<UINT64> m_bDiscontinuitySent;
-  std::list<CBaseSplitterOutputPin*> m_pActivePins;
+  list<UINT64> m_bDiscontinuitySent;
+  list<CBaseSplitterOutputPin*> m_pActivePins;
 
   CAMEvent m_eEndFlush;
   bool m_fFlushing;
 
   void DeliverBeginFlush();
   void DeliverEndFlush();
-  HRESULT DeliverPacket(Com::SmartAutoPtr<Packet> p);
+  HRESULT DeliverPacket(auto_ptr<Packet> p);
 
   DWORD m_priority;
 
@@ -272,7 +276,7 @@ protected:
   virtual bool DemuxInit() = 0;
   virtual void DemuxSeek(REFERENCE_TIME rt) = 0;
   virtual bool DemuxLoop() = 0;
-  virtual bool BuildPlaylist(LPCTSTR pszFileName, std::list<CHdmvClipInfo::PlaylistItem>& Items) { return false; };
+  virtual bool BuildPlaylist(LPCTSTR pszFileName, list<CHdmvClipInfo::PlaylistItem>& Items) { return false; };
 
 public:
   CBaseSplitterFilter(LPCTSTR pName, LPUNKNOWN pUnk, HRESULT* phr, const CLSID& clsid);
@@ -324,7 +328,7 @@ protected:
 
 private:
   REFERENCE_TIME m_rtLastStart, m_rtLastStop;
-  std::list<void*> m_LastSeekers;
+  list<void*> m_LastSeekers;
 
 public:
   // IAMOpenProgress
@@ -372,7 +376,7 @@ public:
 
   // IBufferInfo
 
-  STDMETHODIMP_(int) size();
+  STDMETHODIMP_(int) GetCount();
   STDMETHODIMP GetStatus(int i, int& samples, int& size);
   STDMETHODIMP_(DWORD) GetPriority();
 };

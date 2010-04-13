@@ -357,6 +357,7 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   END_PERFORMANCE_COUNTER
 
   START_PERFORMANCE_COUNTER
+  //hr = ConnectFilter(CFGLoader::Filters.Source.pBF , NULL);
   hr = ConnectFilter(CFGLoader::Filters.Splitter.pBF , NULL);
   END_PERFORMANCE_COUNTER
 

@@ -99,14 +99,13 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   if (FAILED(hr))
     return hr;
 
-  m_pMediaSeeking = m_pFilterGraph;
-  m_pMediaControl = m_pFilterGraph;
-  m_pMediaEvent = m_pFilterGraph;
-  m_pBasicAudio = m_pFilterGraph;
-  m_pBasicVideo = m_pFilterGraph;
-  m_pVideoWindow = m_pFilterGraph;
-
-  m_pMediaSeeking->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
+  hr = m_pFilterGraph->QueryInterface(__uuidof(m_pMediaSeeking), (void**)&m_pMediaSeeking);
+  hr = m_pFilterGraph->QueryInterface(__uuidof(m_pMediaControl), (void**)&m_pMediaControl);
+  hr = m_pFilterGraph->QueryInterface(__uuidof(m_pMediaEvent), (void**)&m_pMediaEvent);
+  hr = m_pFilterGraph->QueryInterface(__uuidof(m_pBasicAudio), (void**)&m_pBasicAudio);
+  hr = m_pFilterGraph->QueryInterface(__uuidof(m_pBasicVideo), (void**)&m_pBasicVideo);
+  hr = m_pFilterGraph->QueryInterface(__uuidof(m_pVideoWindow), (void**)&m_pVideoWindow);
+  hr = m_pMediaSeeking->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
   m_VideoInfo.time_format = TIME_FORMAT_MEDIA_TIME;
   if (m_pVideoWindow)
   {

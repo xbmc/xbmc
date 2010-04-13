@@ -28,13 +28,13 @@
 #include "CriticalSection.h"
 #include "File.h"
 using namespace XFILE;
-class CXBMCFileReader;
+class CXBMCASyncReader;
 
-class CXBMCFileStream : public CAsyncStream
+class CXBMCAsyncStream : public CAsyncStream
 {
 public:
-  CXBMCFileStream(CStdString filepath, IBaseFilter **pBF,HRESULT *phr);
-  virtual ~CXBMCFileStream();
+  CXBMCAsyncStream(CStdString filepath, IBaseFilter **pBF,HRESULT *phr);
+  virtual ~CXBMCAsyncStream();
   HRESULT SetPointer(LONGLONG llPos);
   HRESULT Read(PBYTE pbBuffer, DWORD dwBytesToRead, BOOL bAlign, LPDWORD pdwBytesRead);
   LONGLONG Size(LONGLONG *pSizeAvailable);
@@ -50,7 +50,7 @@ private:
 };
 
 
-class CXBMCFileReader : public CAsyncReader
+class CXBMCASyncReader : public CAsyncReader
 {
 public:
 
@@ -60,7 +60,7 @@ public:
 
   STDMETHODIMP Unregister();
 
-  CXBMCFileReader(CXBMCFileStream *pStream, CMediaType *pmt, HRESULT *phr);
+  CXBMCASyncReader(CXBMCAsyncStream *pStream, CMediaType *pmt, HRESULT *phr);
 
 };
 

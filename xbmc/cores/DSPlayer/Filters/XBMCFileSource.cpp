@@ -28,7 +28,7 @@
 #include "utils/log.h"
 #include "SingleLock.h"
 
-CXBMCFileStream::CXBMCFileStream(CStdString filepath, IBaseFilter **pBF, HRESULT *phr) :
+CXBMCAsyncStream::CXBMCAsyncStream(CStdString filepath, IBaseFilter **pBF, HRESULT *phr) :
     m_llLength(0)
 {
   if (! pBF)
@@ -43,7 +43,11 @@ CXBMCFileStream::CXBMCFileStream(CStdString filepath, IBaseFilter **pBF, HRESULT
   }
   m_llLength = m_pFile.GetLength();
   HRESULT hr;
-  CXBMCFileReader* pXBMCReader = new CXBMCFileReader(this, NULL, &hr);
+  CXBMCASyncReader* pXBMCReader = new CXBMCASyncReader(this, NULL, &hr);
+  if (pXBMCReader)
+    hr=S_OK;
+  else
+    hr=E_FAIL;
   *phr = hr;
   if (SUCCEEDED(hr))
   {
@@ -55,12 +59,12 @@ CXBMCFileStream::CXBMCFileStream(CStdString filepath, IBaseFilter **pBF, HRESULT
     CLog::Log(LOGERROR,"%s Failed to create xbmc source filter", __FUNCTION__);
 }
 
-CXBMCFileStream::~CXBMCFileStream()
+CXBMCAsyncStream::~CXBMCAsyncStream()
 {
   m_pFile.Close();
 }
 
-HRESULT CXBMCFileStream::SetPointer(LONGLONG llPos)
+HRESULT CXBMCAsyncStream::SetPointer(LONGLONG llPos)
 {
   if (llPos < 0 || llPos > m_llLength) {
     return S_FALSE;
@@ -72,7 +76,7 @@ HRESULT CXBMCFileStream::SetPointer(LONGLONG llPos)
   }
 }
 
-HRESULT CXBMCFileStream::Read(PBYTE pbBuffer, DWORD dwBytesToRead, BOOL bAlign, LPDWORD pdwBytesRead)
+HRESULT CXBMCAsyncStream::Read(PBYTE pbBuffer, DWORD dwBytesToRead, BOOL bAlign, LPDWORD pdwBytesRead)
 {
   CSingleLock lck(m_csLock);
     
@@ -81,36 +85,36 @@ HRESULT CXBMCFileStream::Read(PBYTE pbBuffer, DWORD dwBytesToRead, BOOL bAlign, 
   return S_OK;
 }
 
-LONGLONG CXBMCFileStream::Size(LONGLONG *pSizeAvailable)
+LONGLONG CXBMCAsyncStream::Size(LONGLONG *pSizeAvailable)
 {
   *pSizeAvailable = m_llLength;
   return m_llLength;
 }
 
-DWORD CXBMCFileStream::Alignment()
+DWORD CXBMCAsyncStream::Alignment()
 {
   return 1;
 }
-void CXBMCFileStream::Lock()
+void CXBMCAsyncStream::Lock()
 {
   m_csLock.getCriticalSection().Enter();
 }
-void CXBMCFileStream::Unlock()
+void CXBMCAsyncStream::Unlock()
 {
   m_csLock.getCriticalSection().Leave();
 }
 
-STDMETHODIMP CXBMCFileReader::Register()
+STDMETHODIMP CXBMCASyncReader::Register()
 {
   return S_OK;
 }
 
-STDMETHODIMP CXBMCFileReader::Unregister()
+STDMETHODIMP CXBMCASyncReader::Unregister()
 {
   return S_OK;
 }
 
-CXBMCFileReader::CXBMCFileReader(CXBMCFileStream *pStream, CMediaType *pmt, HRESULT *phr) :
+CXBMCASyncReader::CXBMCASyncReader(CXBMCAsyncStream *pStream, CMediaType *pmt, HRESULT *phr) :
   CAsyncReader(NAME("XBMC File Reader\0"), NULL, pStream, phr)
 {
   m_mt.majortype = MEDIATYPE_Stream;

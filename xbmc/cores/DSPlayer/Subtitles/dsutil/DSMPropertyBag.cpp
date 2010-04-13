@@ -190,7 +190,7 @@ IDSMResourceBagImpl::IDSMResourceBagImpl()
 
 // IDSMResourceBag
 
-STDMETHODIMP_(DWORD) IDSMResourceBagImpl::Ressize()
+STDMETHODIMP_(DWORD) IDSMResourceBagImpl::ResGetCount()
 {
   return m_resources.size();
 }
@@ -307,7 +307,7 @@ IDSMChapterBagImpl::IDSMChapterBagImpl()
 
 // IDSMRChapterBag
 
-STDMETHODIMP_(DWORD) IDSMChapterBagImpl::Chapsize()
+STDMETHODIMP_(DWORD) IDSMChapterBagImpl::ChapGetCount()
 {
   return m_chapters.size();
 }
@@ -356,7 +356,7 @@ STDMETHODIMP IDSMChapterBagImpl::ChapRemoveAt(DWORD iIndex)
   return S_OK;
 }
 
-STDMETHODIMP IDSMChapterBagImpl::Chapclear()
+STDMETHODIMP IDSMChapterBagImpl::ChapRemoveAll()
 {
   m_chapters.clear();
 

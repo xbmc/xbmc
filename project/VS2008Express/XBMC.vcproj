@@ -148,7 +148,7 @@
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;Py_NO_ENABLE_SHARED;D3D_DEBUG_INFO"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
-				BasicRuntimeChecks="0"
+				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				BufferSecurityCheck="true"
 				UsePrecompiledHeader="2"
@@ -2377,30 +2377,22 @@
 					Name="Filters"
 					>
 					<Filter
-						Name="Source"
+						Name="Splitters"
 						>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncio.cpp"
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\AviFile.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncio.h"
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\AviFile.h"
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.cpp"
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\AviSplitter.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.h"
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\AviSplitter.h"
 							>
 						</File>
 					</Filter>
@@ -2461,172 +2453,68 @@
 						</File>
 					</Filter>
 					<Filter
+						Name="Source"
+						>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.h"
+							>
+						</File>
+					</Filter>
+					<Filter
 						Name="BaseFilters"
 						>
-						<Filter
-							Name="BaseSource"
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncio.cpp"
 							>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.cpp"
-								>
-								<FileConfiguration
-									Name="Debug (DirectX)|Win32"
-									ExcludedFromBuild="true"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release (DirectX)|Win32"
-									ExcludedFromBuild="true"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-									/>
-								</FileConfiguration>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.h"
-								>
-								<FileConfiguration
-									Name="Debug (DirectX)|Win32"
-									ExcludedFromBuild="true"
-									>
-									<Tool
-										Name="VCCustomBuildTool"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release (DirectX)|Win32"
-									ExcludedFromBuild="true"
-									>
-									<Tool
-										Name="VCCustomBuildTool"
-									/>
-								</FileConfiguration>
-							</File>
-						</Filter>
-						<Filter
-							Name="BaseSplitter"
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncio.h"
 							>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\AsyncReader.cpp"
-								>
-								<FileConfiguration
-									Name="Debug (DirectX)|Win32"
-									ExcludedFromBuild="true"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release (DirectX)|Win32"
-									ExcludedFromBuild="true"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-									/>
-								</FileConfiguration>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\AsyncReader.h"
-								>
-								<FileConfiguration
-									Name="Debug (DirectX)|Win32"
-									ExcludedFromBuild="true"
-									>
-									<Tool
-										Name="VCCustomBuildTool"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release (DirectX)|Win32"
-									ExcludedFromBuild="true"
-									>
-									<Tool
-										Name="VCCustomBuildTool"
-									/>
-								</FileConfiguration>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitter.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitter.h"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFile.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFile.h"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFileEx.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFileEx.h"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\MultiFiles.cpp"
-								>
-								<FileConfiguration
-									Name="Debug (DirectX)|Win32"
-									ExcludedFromBuild="true"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release (DirectX)|Win32"
-									ExcludedFromBuild="true"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-									/>
-								</FileConfiguration>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\MultiFiles.h"
-								>
-								<FileConfiguration
-									Name="Debug (DirectX)|Win32"
-									ExcludedFromBuild="true"
-									>
-									<Tool
-										Name="VCCustomBuildTool"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release (DirectX)|Win32"
-									ExcludedFromBuild="true"
-									>
-									<Tool
-										Name="VCCustomBuildTool"
-									/>
-								</FileConfiguration>
-							</File>
-						</Filter>
-						<Filter
-							Name="BaseVideoFilter"
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.cpp"
 							>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseVideoFilter.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseVideoFilter.h"
-								>
-							</File>
-						</Filter>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitter.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitter.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFile.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFile.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFileEx.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFileEx.h"
+							>
+						</File>
 					</Filter>
 				</Filter>
 				<Filter

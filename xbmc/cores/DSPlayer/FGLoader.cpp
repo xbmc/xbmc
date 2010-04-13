@@ -26,7 +26,8 @@
 #include "charsetconverter.h"
 #include "Log.h"
 
-#include "filters/xbmcfilesource.h"
+#include "filters/XBMCFileSource.h"
+#include "filters/Splitters/AviSplitter.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "XMLUtils.h"
 #include "WINDirectShowEnumerator.h"
@@ -70,18 +71,43 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
   HRESULT hr = E_FAIL;
   
 
-  if (pFileItem.IsDVDImage())
+  if (0)
   {
-    //TODO ...
+    Com::SmartQIPtr<IFileSourceFilter> pBFSrc;
+    Com::SmartPtr<IBaseFilter> pBFF = DNew CAviSplitterFilter(NULL, &hr);
+    pBFSrc = pBFF;
+    if (SUCCEEDED(hr))
+      hr = pBFSrc->Load(DShowUtil::AToW(pFileItem.m_strPath).c_str(), NULL);
+    if (SUCCEEDED(hr))
+    {
+      
+      Filters.Source.pBF = pBFF.Detach();
+      CDSGraph::m_pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC File Source");
+      Filters.Source.osdname = "XBMC File Source";
+    }
   }
-    /* Xbmc source filter */
-  if (CUtil::IsInArchive(pFileItem.m_strPath))
+  if (0)
   {
-    CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.m_strPath.c_str());
-    CXBMCFileStream* pXBMCStream = new CXBMCFileStream(pFileItem.m_strPath, &Filters.Source.pBF, &hr);
+    CXBMCAsyncStream* pXBMCStream = new CXBMCAsyncStream(pFileItem.m_strPath, &Filters.Source.pBF, &hr);
     if (SUCCEEDED(hr))
     {
       hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC File Source");
+      if (FAILED(hr))
+        return hr;
+      Filters.Source.osdname = "XBMC File Source";
+    }
+    Filters.Splitter.pBF = DNew CAviSplitterFilter(NULL, &hr);
+    hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.Splitter.pBF, L"XBMC Avi Splitter");
+    return hr;
+  }
+  /* XBMC SOURCE FILTER  */
+  if (CUtil::IsInArchive(pFileItem.m_strPath))
+  {
+    CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.m_strPath.c_str());
+    CXBMCAsyncStream* pXBMCStream = new CXBMCAsyncStream(pFileItem.m_strPath, &Filters.Source.pBF, &hr);
+    if (SUCCEEDED(hr))
+    {
+      hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC Source Filter");
       if (FAILED(hr))
       {
         CLog::Log(LOGERROR, "%s Failed to add xbmc source filter to the graph", __FUNCTION__);
@@ -90,10 +116,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
       Filters.Source.osdname = "XBMC File Source";
       CLog::Log(LOGNOTICE, "%s Successfully added xbmc source filter to the graph", __FUNCTION__);
     }
-
-        
     return hr;
-
   }
   /* DVD NAVIGATOR */
   if (pFileItem.IsDVDFile())
@@ -156,7 +179,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
       }    
     }    
   }
-
+/* This is also adding the splitter with the insert filter function */
   if (SUCCEEDED(hr = InsertFilter(filterName, Filters.Splitter)))
   {
     CStdString pWinFilePath = pFileItem.m_strPath;
@@ -480,7 +503,7 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
 bool CFGLoader::LoadFilterCoreFactorySettings( const CStdString& fileStr, bool clear )
 {
   CLog::Log(LOGNOTICE, "Loading filter core factory settings from %s.", fileStr.c_str());
-  if (!CFile::Exists(fileStr))
+  if (!XFILE::CFile::Exists(fileStr))
   { // tell the user it doesn't exist
     CLog::Log(LOGNOTICE, "%s does not exist. Skipping.", fileStr.c_str());
     return false;

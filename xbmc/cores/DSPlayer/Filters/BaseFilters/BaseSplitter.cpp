@@ -41,23 +41,24 @@ CPacketQueue::CPacketQueue() : m_size(0)
 {
 }
 
-void CPacketQueue::Add(Com::SmartAutoPtr<Packet> p)
+void CPacketQueue::Add(shared_ptr<Packet> p)
 {
   CAutoLock cAutoLock(this);
 
-  if(p)
+  if(p.get())
   {
     m_size += p->GetDataSize();
     if(p->bAppendable && !p->bDiscontinuity && !p->pmt
     && p->rtStart == Packet::INVALID_TIME
-    && !empty() && back()->rtStart != Packet::INVALID_TIME)
+    && ! empty() && back()->rtStart != Packet::INVALID_TIME)
     {
-      Packet* tail = back();      
+      boost::shared_ptr<Packet> tail;
+      tail =  back();
       int oldsize = tail->size();
       int newsize = tail->size() + p->size();
       tail->resize(newsize, dsmax(1024, newsize)); // doubles the reserved buffer size
       //Not sure about this one
-      memcpy(&tail[0] , p, sizeof(p));
+      //memcpy(&tail[0] + oldsize, &(p.get())[0], p.get()->size());
       /*
       GetTail()->Append(*p); // too slow
       */
@@ -65,18 +66,26 @@ void CPacketQueue::Add(Com::SmartAutoPtr<Packet> p)
     }
   }
 
-  push_back(p);
+   push_back(p);
 }
 
-Com::SmartAutoPtr<Packet> CPacketQueue::Remove()
+shared_ptr<Packet> CPacketQueue::Remove()
 {
+  /*
+  CAutoLock cAutoLock(this);
+	ASSERT(__super::GetCount() > 0);
+	CAutoPtr<Packet> p = RemoveHead();
+	if(p) m_size -= p->GetDataSize();
+	return p;
+  */
   CAutoLock cAutoLock(this);
   ASSERT(__super::size() > 0);
-  Com::SmartAutoPtr<Packet> p;
-  p = this->front();
-  this->pop_front();
-  
-  if(p) m_size -= p->GetDataSize();
+  shared_ptr<Packet> p;
+  p = front();
+  erase(begin());
+  //p = auto_ptr<Packet>(front());
+  if(p.get()) 
+    m_size -= p.get()->GetDataSize();
   return p;
 }
 
@@ -84,7 +93,8 @@ void CPacketQueue::RemoveAll()
 {
   CAutoLock cAutoLock(this);
   m_size = 0;
-  __super::clear();
+  while (!__super::empty())
+    __super::pop_back();
 }
 
 int CPacketQueue::size()
@@ -194,13 +204,13 @@ STDMETHODIMP CBaseSplitterInputPin::EndFlush()
 // CBaseSplitterOutputPin
 //
 
-CBaseSplitterOutputPin::CBaseSplitterOutputPin(std::vector<CMediaType>& mts, LPCWSTR pName, CBaseFilter* pFilter, CCritSec* pLock, HRESULT* phr, int nBuffers)
+CBaseSplitterOutputPin::CBaseSplitterOutputPin(vector<CMediaType>& mts, LPCWSTR pName, CBaseFilter* pFilter, CCritSec* pLock, HRESULT* phr, int nBuffers)
   : CBaseOutputPin(NAME("CBaseSplitterOutputPin"), pFilter, pLock, phr, pName)
   , m_hrDeliver(S_OK) // just in case it were asked before the worker thread could be created and reset it
   , m_fFlushing(false)
   , m_eEndFlush(TRUE)
 {
-  for (std::vector<CMediaType>::iterator it = mts.begin(); it != mts.end(); it++)
+  for (vector<CMediaType>::iterator it = mts.begin(); it != mts.end(); it++)
   {
     m_mts.push_back(*it);
   }
@@ -371,10 +381,10 @@ int CBaseSplitterOutputPin::QueueSize()
 
 HRESULT CBaseSplitterOutputPin::QueueEndOfStream()
 {
-  return QueuePacket(Com::SmartAutoPtr<Packet>()); // NULL means EndOfStream
+  return QueuePacket(auto_ptr<Packet>()); // NULL means EndOfStream
 }
 
-HRESULT CBaseSplitterOutputPin::QueuePacket(Com::SmartAutoPtr<Packet> p)
+HRESULT CBaseSplitterOutputPin::QueuePacket(auto_ptr<Packet> p)
 {
   if(!ThreadExists()) return S_FALSE;
 
@@ -408,7 +418,7 @@ bool CBaseSplitterOutputPin::IsActive()
   {
     Com::SmartPtr<IPin> pPinTo;
     //Com::SmartQIPtr<IStreamSwitcherInputPin> pSSIP;
-    if(S_OK == pPin->ConnectedTo(&pPinTo))// && (pSSIP = pPinTo) && !pSSIP->IsActive())
+    if(FAILED(pPin->ConnectedTo(&pPinTo)))// && (pSSIP = pPinTo) && !pSSIP->IsActive())
       return(false);
     pPin = DShowUtil::GetFirstPin(DShowUtil::GetFilterFromPin(pPinTo), PINDIR_OUTPUT);
   }
@@ -440,7 +450,7 @@ DWORD CBaseSplitterOutputPin::ThreadProc()
     int cnt = 0;
     do
     {
-      Com::SmartAutoPtr<Packet> p;
+      boost::shared_ptr<Packet> p;
 
       {
         CAutoLock cAutoLock(&m_queue);
@@ -456,8 +466,8 @@ DWORD CBaseSplitterOutputPin::ThreadProc()
 
         // flushing can still start here, to release a blocked deliver call
 
-        HRESULT hr = p 
-          ? DeliverPacket(p) 
+        HRESULT hr = p.get()
+          ? DeliverPacket(p)
           : DeliverEndOfStream();
 
         m_eEndFlush.Wait(); // .. so we have to wait until it is done
@@ -474,7 +484,7 @@ DWORD CBaseSplitterOutputPin::ThreadProc()
   }
 }
 
-HRESULT CBaseSplitterOutputPin::DeliverPacket(Com::SmartAutoPtr<Packet> p)
+HRESULT CBaseSplitterOutputPin::DeliverPacket(boost::shared_ptr<Packet> p)
 {
   HRESULT hr;
 
@@ -567,7 +577,7 @@ HRESULT CBaseSplitterOutputPin::DeliverPacket(Com::SmartAutoPtr<Packet> p)
 
     bool fTimeValid = p->rtStart != Packet::INVALID_TIME;
 
-    ASSERT(!p->bSyncpoint || fTimeValid);
+    ASSERT(!p->bSyncPoint || fTimeValid);
 
     BYTE* pData = NULL;
     if(S_OK != (hr = pSample->GetPointer(&pData)) || !pData) break;
@@ -577,7 +587,7 @@ HRESULT CBaseSplitterOutputPin::DeliverPacket(Com::SmartAutoPtr<Packet> p)
     if(S_OK != (hr = pSample->SetTime(fTimeValid ? &p->rtStart : NULL, fTimeValid ? &p->rtStop : NULL))) break;
     if(S_OK != (hr = pSample->SetMediaTime(NULL, NULL))) break;
     if(S_OK != (hr = pSample->SetDiscontinuity(p->bDiscontinuity))) break;
-    if(S_OK != (hr = pSample->SetSyncPoint(p->bSyncpoint))) break;
+    if(S_OK != (hr = pSample->SetSyncPoint(p->bSyncPoint))) break;
     if(S_OK != (hr = pSample->SetPreroll(fTimeValid && p->rtStart < 0))) break;
     if(S_OK != (hr = Deliver(pSample))) break;
   }
@@ -597,10 +607,10 @@ void CBaseSplitterOutputPin::MakeISCRHappy()
 
     if(DShowUtil::GetCLSID(pBF) == DShowUtil::GUIDFromCString(_T("{48025243-2D39-11CE-875D-00608CB78066}"))) // ISCR
     {
-      Com::SmartAutoPtr<Packet> p(DNew Packet());
+      auto_ptr<Packet> p(DNew Packet());
       p->TrackNumber = (DWORD)-1;
       p->rtStart = -1; p->rtStop = 0;
-      p->bSyncpoint = FALSE;
+      p->bSyncPoint = FALSE;
       p->SetData(" ", 2);
       QueuePacket(p);
       break;
@@ -707,7 +717,7 @@ CBaseSplitterFilter::CBaseSplitterFilter(LPCTSTR pName, LPUNKNOWN pUnk, HRESULT*
 {
   if(phr) *phr = S_OK;
 
-  m_pInput.Attach(DNew CBaseSplitterInputPin(NAME("CBaseSplitterInputPin"), this, this, phr));
+  m_pInput.reset(DNew CBaseSplitterInputPin(NAME("CBaseSplitterInputPin"), this, this, phr));
 }
 
 CBaseSplitterFilter::~CBaseSplitterFilter()
@@ -724,7 +734,7 @@ STDMETHODIMP CBaseSplitterFilter::NonDelegatingQueryInterface(REFIID riid, void*
 
   *ppv = NULL;
 
-  if(m_pInput && riid == __uuidof(IFileSourceFilter)) 
+  if(m_pInput.get() && riid == __uuidof(IFileSourceFilter)) 
     return E_NOINTERFACE;
 
   return 
@@ -747,13 +757,16 @@ CBaseSplitterOutputPin* CBaseSplitterFilter::GetOutputPin(DWORD TrackNum)
 {
   CAutoLock cAutoLock(&m_csPinMap);
 
-  CBaseSplitterOutputPin* pPin = NULL;
+  CBaseSplitterOutputPin* pPin;
   //m_pPinMap.Lookup(TrackNum, pPin);
-  for (std::map<DWORD, CBaseSplitterOutputPin*>::iterator it = m_pPinMap.begin(); it != m_pPinMap.end(); it++)
+  map<DWORD, CBaseSplitterOutputPin*>::iterator it;
+  it = m_pPinMap.find(TrackNum);
+  pPin = it->second;
+  /*for (map<DWORD, CBaseSplitterOutputPin*>::iterator it = m_pPinMap.begin(); it != m_pPinMap.end(); it++)
   {
-    if (it->first == TrackNum)
-      pPin = it->second;
-  }
+    if (*it->first == TrackNum)
+      pPin = it->second.get();
+  }*/
   
   return pPin;
 }
@@ -762,7 +775,7 @@ DWORD CBaseSplitterFilter::GetOutputTrackNum(CBaseSplitterOutputPin* pPin)
 {
   CAutoLock cAutoLock(&m_csPinMap);
 
-  for (std::map<DWORD, CBaseSplitterOutputPin*>::iterator it = m_pPinMap.begin(); it != m_pPinMap.end(); it++)
+  for (map<DWORD, CBaseSplitterOutputPin*>::iterator it = m_pPinMap.begin(); it != m_pPinMap.end(); it++)
   {
     DWORD TrackNum;
     CBaseSplitterOutputPin* pPinTmp;
@@ -781,19 +794,19 @@ HRESULT CBaseSplitterFilter::RenameOutputPin(DWORD TrackNumSrc, DWORD TrackNumDs
 {
   CAutoLock cAutoLock(&m_csPinMap);
   DWORD TrackNum;
-  CBaseSplitterOutputPin* pPin = NULL;
-  std::map<DWORD, CBaseSplitterOutputPin*>::iterator it;
+  auto_ptr<CBaseSplitterOutputPin> pPin;
+  map<DWORD, CBaseSplitterOutputPin*>::iterator it;
   for (it = m_pPinMap.begin(); it != m_pPinMap.end(); it++)
   {
     
     if (it->first == TrackNumSrc)
     {
       TrackNum = it->first;
-      pPin = it->second;
+      pPin.reset(it->second);
       break;
     }
   }
-  if (!pPin)
+  if (!pPin.get())
     return E_FAIL;
   if(Com::SmartQIPtr<IPin> pPinTo = pPin->GetConnected())
   {
@@ -801,7 +814,7 @@ HRESULT CBaseSplitterFilter::RenameOutputPin(DWORD TrackNumSrc, DWORD TrackNumDs
       return VFW_E_TYPE_NOT_ACCEPTED;
   }
   m_pPinMap.erase(it);
-  m_pPinMap[TrackNumDst] = pPin;
+  m_pPinMap[TrackNumDst] = pPin.get();
 
   if(pmt)
   {
@@ -812,12 +825,12 @@ HRESULT CBaseSplitterFilter::RenameOutputPin(DWORD TrackNumSrc, DWORD TrackNumDs
   return S_OK;
 }
 
-HRESULT CBaseSplitterFilter::AddOutputPin(DWORD TrackNum, Com::SmartAutoPtr<CBaseSplitterOutputPin> pPin)
+HRESULT CBaseSplitterFilter::AddOutputPin(DWORD TrackNum, auto_ptr<CBaseSplitterOutputPin> pPin)
 {
   CAutoLock cAutoLock(&m_csPinMap);
 
-  if(!pPin) return E_INVALIDARG;
-  m_pPinMap[TrackNum] = pPin;
+  if(!(pPin.get())) return E_INVALIDARG;
+  m_pPinMap[TrackNum] = pPin.get();
   m_pOutputs.push_back(pPin);
   return S_OK;
 }
@@ -833,13 +846,14 @@ HRESULT CBaseSplitterFilter::DeleteOutputs()
 
   while(m_pOutputs.size())
   {
-    Com::SmartPtrForList<CBaseSplitterOutputPin> pPin = m_pOutputs.front();
+    //CBaseSplitterOutputPin* pPin = m_pOutputs.back().get();
+    boost::shared_ptr<CBaseSplitterOutputPin> pPin;
+    pPin = m_pOutputs.back();
     
-    m_pOutputs.pop_front();
-    //Com::SmartAutoPtr<CBaseSplitterOutputPin> pPin = m_pOutputs.RemoveHead();
-    if(IPin* pPinTo = pPin->GetConnected()) pPinTo->Disconnect();
-    pPin->Disconnect();
-    // we can't just let it be deleted now, something might have AddRefed on it (graphedit...)
+    m_pOutputs.pop_back();
+    if(IPin* pPinTo = pPin.get()->GetConnected()) 
+      pPinTo->Disconnect();
+    pPin.get()->Disconnect();
     m_pRetiredOutputs.push_back(pPin);
   }
 
@@ -855,7 +869,7 @@ HRESULT CBaseSplitterFilter::DeleteOutputs()
 
   m_fontinst.UninstallFonts();
 
-  //m_pSyncReader.Release();
+  m_pSyncReader.Release();
 
   return S_OK;
 }
@@ -863,7 +877,7 @@ HRESULT CBaseSplitterFilter::DeleteOutputs()
 void CBaseSplitterFilter::DeliverBeginFlush()
 {
   m_fFlushing = true;
-  for (std::list<Com::SmartAutoPtrForList<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it != m_pOutputs.end(); it++)
+  for (list<shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it != m_pOutputs.end(); it++)
   {
     (*it)->DeliverBeginFlush();
   }
@@ -874,7 +888,7 @@ void CBaseSplitterFilter::DeliverBeginFlush()
 void CBaseSplitterFilter::DeliverEndFlush()
 {
   
-  for (std::list<Com::SmartAutoPtrForList<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it != m_pOutputs.end(); it++)
+  for (list<shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it != m_pOutputs.end(); it++)
   {
     (*it)->DeliverEndFlush();
   }
@@ -886,8 +900,8 @@ void CBaseSplitterFilter::DeliverEndFlush()
 
 DWORD CBaseSplitterFilter::ThreadProc()
 {
-  //if(m_pSyncReader) 
-  //  m_pSyncReader->SetBreakEvent(GetRequestHandle());
+  if(m_pSyncReader) 
+    m_pSyncReader->SetBreakEvent(GetRequestHandle());
 
   if(!DemuxInit())
   {
@@ -925,9 +939,9 @@ DWORD CBaseSplitterFilter::ThreadProc()
     m_eEndFlush.Wait();
 
     m_pActivePins.clear();
-    for (std::list<Com::SmartAutoPtrForList<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it != m_pOutputs.end() && !m_fFlushing; it++)
+    for (list<shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it != m_pOutputs.end() && !m_fFlushing; it++)
     {
-      CBaseSplitterOutputPin* pPin = *it;
+      CBaseSplitterOutputPin* pPin = (*it).get();
       if(pPin->IsConnected() && pPin->IsActive())
       {
         m_pActivePins.push_back(pPin);
@@ -938,7 +952,7 @@ DWORD CBaseSplitterFilter::ThreadProc()
     do {m_bDiscontinuitySent.clear();}
     while(!DemuxLoop());
 
-    for (std::list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end() && !CheckRequest(&cmd); it++)
+    for (list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end() && !CheckRequest(&cmd); it++)
     {
       CBaseSplitterOutputPin* pPin = *it;
       pPin->QueueEndOfStream();
@@ -952,7 +966,7 @@ DWORD CBaseSplitterFilter::ThreadProc()
   return 0;
 }
 
-HRESULT CBaseSplitterFilter::DeliverPacket(Com::SmartAutoPtr<Packet> p)
+HRESULT CBaseSplitterFilter::DeliverPacket(auto_ptr<Packet> p)
 {
   HRESULT hr = S_FALSE;
 
@@ -962,7 +976,7 @@ HRESULT CBaseSplitterFilter::DeliverPacket(Com::SmartAutoPtr<Packet> p)
 
  //|| !m_pActivePins.Find(pPin))
   bool gotit = false;
-  for (std::list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end() ; it++)
+  for (list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end() ; it++)
   {
     if (*it  == pPin)
       gotit = true;
@@ -980,12 +994,13 @@ HRESULT CBaseSplitterFilter::DeliverPacket(Com::SmartAutoPtr<Packet> p)
     ASSERT(p->rtStart <= p->rtStop);
   }
 
+  CAutoLock cAutoLock(&m_csmtnew);
+  
+  CMediaType mt;  
+
+  if (!m_mtnew.empty())
   {
-    CAutoLock cAutoLock(&m_csmtnew);
-
-    CMediaType mt = NULL;
-    
-
+    //Might not even enter this part if its not mpeg2
     mt = m_mtnew.find(p->TrackNumber)->second;
     if (mt != NULL)
     {
@@ -993,20 +1008,22 @@ HRESULT CBaseSplitterFilter::DeliverPacket(Com::SmartAutoPtr<Packet> p)
       m_mtnew.erase(p->TrackNumber);
     }
   }
-  for ( std::list<UINT64>::iterator it = m_bDiscontinuitySent.begin(); it != m_bDiscontinuitySent.end(); it++)
+
+  for ( list<UINT64>::iterator it = m_bDiscontinuitySent.begin(); it != m_bDiscontinuitySent.end(); it++)
   {
-    if (*it == p->TrackNumber)
+    if ((*it) == p->TrackNumber)
       p->bDiscontinuity = TRUE;
   }
 
   DWORD TrackNumber = p->TrackNumber;
   BOOL bDiscontinuity = p->bDiscontinuity;
 
+  //p value should be null after the queue packet
   hr = pPin->QueuePacket(p);
 
   if(S_OK != hr)
   {
-    for ( std::list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end(); it++)
+    for ( list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end(); it++)
     {
       if (*it == pPin)
       {
@@ -1030,7 +1047,7 @@ HRESULT CBaseSplitterFilter::DeliverPacket(Com::SmartAutoPtr<Packet> p)
 bool CBaseSplitterFilter::IsAnyPinDrying()
 {
   int totalcount = 0, totalsize = 0;
-  for ( std::list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end(); it++)
+  for ( list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end(); it++)
   {
     CBaseSplitterOutputPin* pPin = *it;
     int count = pPin->QueueCount();
@@ -1039,9 +1056,9 @@ bool CBaseSplitterFilter::IsAnyPinDrying()
     {
       if(m_priority != THREAD_PRIORITY_BELOW_NORMAL && (count < MINPACKETS/3 || size < MINPACKETSIZE/3))
       {
-        for ( std::list<Com::SmartAutoPtrForList<CBaseSplitterOutputPin>>::iterator itt = m_pOutputs.begin(); itt != m_pOutputs.end(); itt++)
+        for ( list<shared_ptr<CBaseSplitterOutputPin>>::iterator itt = m_pOutputs.begin(); itt != m_pOutputs.end(); itt++)
         {
-          Com::SmartAutoPtr<CBaseSplitterOutputPin> pOutPin = *itt;
+          boost::shared_ptr<CBaseSplitterOutputPin> pOutPin = *itt;
           pOutPin->SetThreadPriority(THREAD_PRIORITY_BELOW_NORMAL);
         }
         //POSITION pos = m_pOutputs.GetHeadPosition();
@@ -1056,9 +1073,9 @@ bool CBaseSplitterFilter::IsAnyPinDrying()
 
   if(m_priority != THREAD_PRIORITY_NORMAL && (totalcount > MAXPACKETS*2/3 || totalsize > MAXPACKETSIZE*2/3))
   {
-    for ( std::list<Com::SmartAutoPtrForList<CBaseSplitterOutputPin>>::iterator itt = m_pOutputs.begin(); itt != m_pOutputs.end(); itt++)
+    for ( list<shared_ptr<CBaseSplitterOutputPin>>::iterator itt = m_pOutputs.begin(); itt != m_pOutputs.end(); itt++)
     {
-      Com::SmartAutoPtr<CBaseSplitterOutputPin> pOutPin = *itt;
+      boost::shared_ptr<CBaseSplitterOutputPin> pOutPin = *itt;
       pOutPin->SetThreadPriority(THREAD_PRIORITY_NORMAL);
     }
     //POSITION pos = m_pOutputs.GetHeadPosition();
@@ -1109,7 +1126,7 @@ HRESULT CBaseSplitterFilter::CompleteConnect(PIN_DIRECTION dir, CBasePin* pPin)
 
     ChapSort();
     //TODO
-    //m_pSyncReader = pAsyncReader;
+    m_pSyncReader = pAsyncReader;
   }
   else if(dir == PINDIR_OUTPUT)
   {
@@ -1125,29 +1142,38 @@ HRESULT CBaseSplitterFilter::CompleteConnect(PIN_DIRECTION dir, CBasePin* pPin)
 
 int CBaseSplitterFilter::GetPinCount()
 {
-  return (m_pInput ? 1 : 0) + m_pOutputs.size();
+  return (m_pInput.get() ? 1 : 0) + m_pOutputs.size();
 }
 
 CBasePin* CBaseSplitterFilter::GetPin(int n)
 {
-    CAutoLock cAutoLock(this);
-
-  if(n >= 0 && n < (int)m_pOutputs.size())
+  CAutoLock cAutoLock(this);
+/*
+  std::list<ISubPic*>::iterator pos = m_Queue.begin();
+  std::advance(pos, nSubPic);
+  if(pos != m_Queue.end())
   {
-    int i = 0;
-    for (std::list<Com::SmartAutoPtrForList<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it != m_pOutputs.end(); it++)
-    {
-      if (i == n)
-        m_pOutputs.remove(*it);
-      i++;
-    }
-    //if(POSITION pos = m_pOutputs.FindIndex(n))
-      //return m_pOutputs.GetAt(pos);
+    rtStart = (*pos)->GetStart();
+    rtStop = (*pos)->GetStop();
   }
 
-  if(n == m_pOutputs.size() && m_pInput)
+*/
+  if(n >= 0 && n < (int)m_pOutputs.size())
   {
-    return m_pInput;
+    list<shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin();
+    std::advance(it, n);
+     if(it != m_pOutputs.end())
+    {
+      return (*it).get();
+      }
+    //if(POSITION pos = m_pOutputs.FindIndex(n))
+      //return m_pOutputs.GetAt(pos);
+    //return m_pOutputs[n].get();
+  }
+
+  if(n == m_pOutputs.size() && m_pInput.get())
+  {
+    return m_pInput.get();
   }
 
   return NULL;
@@ -1206,17 +1232,18 @@ STDMETHODIMP CBaseSplitterFilter::Load(LPCOLESTR pszFileNameNew, const AM_MEDIA_
   m_fn = pszFileNameNew;
   HRESULT hr = E_FAIL;
   Com::SmartPtr<IAsyncReader> pAsyncReader;
-  std::list<CHdmvClipInfo::PlaylistItem> Items;
-  LPTSTR pszFileName = LPTSTR(DShowUtil::WToA(pszFileNameNew).c_str());
+  list<CHdmvClipInfo::PlaylistItem> Items;
+  CStdString strThatFile;
+  strThatFile = DShowUtil::WToA(pszFileNameNew);
 
   
   //if (BuildPlaylist (pszFileName, Items))
     //pAsyncReader = (IAsyncReader*)DNew CAsyncFileReader(Items, hr);
   //else
     //pAsyncReader = (IAsyncReader*)DNew CAsyncFileReader(CStdString(pszFileName), hr);
-  Com::SmartPtr<IBaseFilter> pBF;
+  
 
-  pAsyncReader = (IAsyncReader*)DNew CXBMCFileStream(CStdString(pszFileName), &pBF, &hr);
+  pAsyncReader = (IAsyncReader*)DNew CXBMCFileStream(strThatFile, hr);
   if(FAILED(hr)
   || FAILED(hr = DeleteOutputs())
   || FAILED(hr = CreateOutputs(pAsyncReader)))
@@ -1227,7 +1254,7 @@ STDMETHODIMP CBaseSplitterFilter::Load(LPCOLESTR pszFileNameNew, const AM_MEDIA_
 
   ChapSort();
   //TODO FIX THIS
-  //m_pSyncReader = pAsyncReader;
+  m_pSyncReader = pAsyncReader;
 
   return S_OK;
 }
@@ -1335,7 +1362,7 @@ HRESULT CBaseSplitterFilter::SetPositionsInternal(void* id, LONGLONG* pCurrent, 
 
   if(m_rtLastStart == rtCurrent && m_rtLastStop == rtStop)
   {
-    for (std::list<void*>::iterator it = m_LastSeekers.begin(); it != m_LastSeekers.end(); it++)
+    for (list<void*>::iterator it = m_LastSeekers.begin(); it != m_LastSeekers.end(); it++)
     {
       if ( id == *it)
       {
@@ -1470,7 +1497,7 @@ STDMETHODIMP CBaseSplitterFilter::GetKeyFrames(const GUID* pFormat, REFERENCE_TI
 
 // IBufferInfo
 
-STDMETHODIMP_(int) CBaseSplitterFilter::size()
+STDMETHODIMP_(int) CBaseSplitterFilter::GetCount()
 {
   CAutoLock cAutoLock(m_pLock);
 
@@ -1481,11 +1508,11 @@ STDMETHODIMP CBaseSplitterFilter::GetStatus(int i, int& samples, int& size)
 {
   CAutoLock cAutoLock(m_pLock);
   int xx = 0;
-  for (std::list<Com::SmartAutoPtrForList<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it!= m_pOutputs.end() ;it++)
+  for (list<shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it!= m_pOutputs.end() ;it++)
   {
     if (xx == i)
     {
-      CBaseSplitterOutputPin* pPin = *it;
+      CBaseSplitterOutputPin* pPin = (*it).get();
       samples = pPin->QueueCount();
       size = pPin->QueueSize();
       return pPin->IsConnected() ? S_OK : S_FALSE;
