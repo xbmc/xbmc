@@ -40,7 +40,7 @@
 //#ifdef HAS_SCRAPERS
 #include "Scraper.h"
 //#endif
-
+#include "Repository.h"
 
 using namespace std;
 
@@ -659,6 +659,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
     case ADDON_SCRAPER_LIBRARY:
     case ADDON_VIZ_LIBRARY:
       return AddonPtr(new CAddonLibrary(addonProps));
+    case ADDON_REPOSITORY:
+      return AddonPtr(new CRepository(addonProps));
     default:
       break;
   }

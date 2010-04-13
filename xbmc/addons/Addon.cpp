@@ -137,6 +137,12 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
         return g_localizeStrings.Get(24009);
       return "script";
     }
+    case ADDON::ADDON_REPOSITORY:
+    {
+      if (pretty)
+        return g_localizeStrings.Get(24011);
+      return "addon-repository";
+    }
     default:
     {
       return "";
@@ -154,6 +160,7 @@ const ADDON::TYPE TranslateType(const CStdString &string)
   else if (string.Equals("visualization-library")) return ADDON_VIZ_LIBRARY;
   else if (string.Equals("plugin")) return ADDON_PLUGIN;
   else if (string.Equals("script")) return ADDON_SCRIPT;
+  else if (string.Equals("addon-repository")) return ADDON_REPOSITORY;
   else return ADDON_UNKNOWN;
 }
 
