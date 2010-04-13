@@ -74,6 +74,7 @@ namespace ADDON
     virtual AddonPtr Clone(const AddonPtr& self) const =0;
     virtual const TYPE Type() const =0;
     virtual AddonProps Props() const =0;
+    virtual AddonProps& Props() =0;
     virtual const CStdString ID() const =0;
     virtual const AddonPtr Parent() const =0;
     virtual const CStdString Name() const =0;

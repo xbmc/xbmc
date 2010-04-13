@@ -112,6 +112,7 @@ public:
   // properties
   const TYPE Type() const { return m_props.type; }
   AddonProps Props() const { return m_props; }
+  AddonProps& Props() { return m_props; }
   const CStdString ID() const { return m_props.id; }
   const AddonPtr Parent() const { return m_parent; }
   const CStdString Name() const { return m_props.name; }
