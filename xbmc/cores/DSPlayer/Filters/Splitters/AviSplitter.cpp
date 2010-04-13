@@ -22,7 +22,6 @@
 
 #include <mmreg.h>
 #include "AviFile.h"
-//#include "AviReportWnd.h"
 #include "AviSplitter.h"
 
 //

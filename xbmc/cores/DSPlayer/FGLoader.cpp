@@ -28,6 +28,7 @@
 
 #include "filters/XBMCFileSource.h"
 #include "filters/Splitters/AviSplitter.h"
+#include "filters/Splitters/FLVSplitter.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "XMLUtils.h"
 #include "WINDirectShowEnumerator.h"
@@ -88,6 +89,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
   }
   if (0)
   {
+    //Adding the xbmc source filter
     CXBMCAsyncStream* pXBMCStream = new CXBMCAsyncStream(pFileItem.m_strPath, &Filters.Source.pBF, &hr);
     if (SUCCEEDED(hr))
     {
@@ -96,7 +98,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
         return hr;
       Filters.Source.osdname = "XBMC File Source";
     }
-    Filters.Splitter.pBF = DNew CAviSplitterFilter(NULL, &hr);
+    Filters.Splitter.pBF = DNew CFLVSplitterFilter(NULL, &hr);
     hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.Splitter.pBF, L"XBMC Avi Splitter");
     return hr;
   }

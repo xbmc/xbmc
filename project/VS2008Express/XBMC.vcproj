@@ -2419,6 +2419,26 @@
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFileEx.h"
 							>
 						</File>
+						<Filter
+							Name="flv"
+							>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseVideoFilter.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseVideoFilter.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\FLVSplitter.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\FLVSplitter.h"
+								>
+							</File>
+						</Filter>
 					</Filter>
 					<Filter
 						Name="Video Renderers"

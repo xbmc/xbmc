@@ -21,8 +21,6 @@
 
 #pragma once
 
-//#include <atlbase.h>
-//#include <atlcoll.h>
 #include "../BaseFilters/BaseSplitter.h"
 #include <boost/shared_ptr.hpp>
 

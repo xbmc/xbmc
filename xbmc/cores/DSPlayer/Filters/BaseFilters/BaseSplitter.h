@@ -27,7 +27,6 @@
 #include "IBufferInfo.h"
 #include "IBitRateInfo.h"
 #include "BaseSplitterFileEx.h"
-//#include "AsyncReader.h"
 #include "Subtitles/DSUtil/HdmvClipInfo.h"
 #include "Subtitles/DSUtil/DSMPropertyBag.h"
 #include "Subtitles/DSUtil/FontInstaller.h"
