@@ -2129,7 +2129,13 @@
   <string id="24051">Version:</string>
   <string id="24052">Disclaimer:</string>
   <string id="24053">License:</string>
-  <string id="24059">Would you like to install this Add-on?</string>
+  <string id="24059">Would you like to enable this Add-on?</string>
+  <string id="24060">Would you like to disable this Add-on?</string>
+  <string id="24061">Addon-on update available!</string>
+  <string id="24062">Enabled Add-ons</string>
+  <string id="24063">Enable auto-update</string>
+  <string id="24064">Add-on enabled</string>
+  <string id="24065">Add-on updated</string>
 
   <string id="24070">Add-on can not used</string>
   <string id="24071">An unknown error has occurred</string>

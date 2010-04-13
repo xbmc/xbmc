@@ -766,6 +766,7 @@ bool CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/addons");
+    CDirectory::Create("special://home/addons/packages");
     CDirectory::Create("special://home/media");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
@@ -4761,6 +4762,7 @@ void CApplication::ProcessSlow()
     g_lcd->Initialize();
   }
 #endif
+  ADDON::CAddonMgr::Get()->UpdateRepos();
 }
 
 // Global Idle Time in Seconds

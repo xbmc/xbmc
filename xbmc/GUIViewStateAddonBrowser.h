@@ -1,6 +1,7 @@
 #pragma once
+
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,27 +21,16 @@
  *
  */
 
-#include "IDirectory.h"
-#include "addons/AddonManager.h"
+#include "GUIViewState.h"
 
-class CURL;
-
-namespace XFILE 
+class CGUIViewStateAddonBrowser : public CGUIViewState
 {
+public:
+  CGUIViewStateAddonBrowser(const CFileItemList& items);
 
-  /*!
-  \ingroup windows
-  \brief Get access to shares and it's directories.
-  */
-  class CAddonsDirectory : public IDirectory
-  {
-  public:
-    CAddonsDirectory(void);
-    virtual ~CAddonsDirectory(void);
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    virtual bool Create(const char* strPath) { return true; }
-    virtual bool Exists(const char* strPath) { return true; }
+protected:
+  virtual void SaveViewState();
+  virtual CStdString GetExtensions();
+  virtual VECSOURCES& GetSources();
+};
 
-    static void GenerateListing(CURL &path, ADDON::VECADDONS& addons, CFileItemList &items);
-  };
-}

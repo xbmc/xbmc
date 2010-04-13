@@ -24,8 +24,8 @@
 #include "tinyXML/tinyxml.h"
 #include "utils/CriticalSection.h"
 #include "StdString.h"
-#include "DateTime.h"
-#include "DownloadQueue.h"
+#include "utils/Job.h"
+#include "utils/Stopwatch.h"
 #include <vector>
 #include <map>
 
@@ -64,7 +64,7 @@ namespace ADDON
   * otherwise. Services the generic callbacks available
   * to all addon variants.
   */
-  class CAddonMgr
+  class CAddonMgr : public IJobCallback
   {
   public:
     static CAddonMgr* Get();
@@ -86,10 +86,11 @@ namespace ADDON
                                  const CStdString &strPath);
     static bool AddonFromInfoXML(const CStdString &path, AddonPtr &addon);
     static AddonPtr AddonFromProps(AddonProps& props);
-  private:
+    void UpdateRepos();
     void FindAddons();
-    bool LoadAddonsXML();
-    bool SaveAddonsXML();
+
+    void OnJobComplete(unsigned int jobID, bool sucess, CJob* job);
+  private:
     bool DependenciesMet(AddonPtr &addon);
     bool UpdateIfKnown(AddonPtr &addon);
 
@@ -97,7 +98,7 @@ namespace ADDON
     static CAddonMgr* m_pInstance;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     MAPADDONS m_addons;
-    CDateTime m_lastDirScan;
+    CStopWatch m_watch;
     std::map<CStdString, AddonPtr> m_idMap;
     CCriticalSection m_critSection;
   };

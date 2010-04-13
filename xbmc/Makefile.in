@@ -29,6 +29,7 @@ SRCS=Application.cpp \
      GUIDialogMusicScan.cpp \
      GUIViewControl.cpp \
      GUIViewState.cpp \
+     GUIViewStateAddonBrowser.cpp \
      GUIViewStateMusic.cpp \
      GUIWindowMusicBase.cpp \
      GUIWindowMusicInfo.cpp \

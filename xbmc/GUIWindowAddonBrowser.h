@@ -22,35 +22,29 @@
  */
 
 #include "addons/Addon.h"
-#include "GUIWindow.h"
-#include "GUIViewControl.h"
+#include "GUIMediaWindow.h"
+#include "utils/Job.h"
 
 class CFileItem;
 class CFileItemList;
 
 class CGUIWindowAddonBrowser :
-      public CGUIWindow
+      public CGUIMediaWindow,
+      public IJobCallback
 {
 public:
   CGUIWindowAddonBrowser(void);
   virtual ~CGUIWindowAddonBrowser(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
 
+  // job callback
+  void OnJobComplete(unsigned int jobID, bool success, CJob* job);
+
+  static void AddJob(const CStdString& path);
 protected:
-  virtual void OnInitWindow();
-  int GetSelectedItem();
-  bool SelectItem(int select);
-  void OnClick(int iItem);
-  void OnSort();
-  void ClearListItems();
-  void Update();
-  void SetupControls();
-  void FreeControls();
-  bool OnContextMenu(int iItem);
-
-  CFileItemList* m_vecItems;
-  std::vector<ADDON::TYPE> m_categories;
-  int m_currentCategory;
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  virtual bool OnClick(int iItem);
+  virtual void UpdateButtons();
 };
 

@@ -20,9 +20,12 @@
  */
 #include "AddonManager.h"
 #include "Addon.h"
+#include "AddonDatabase.h"
 #include "StringUtils.h"
 #include "RegExp.h"
 #include "XMLUtils.h"
+#include "utils/JobManager.h"
+#include "utils/SingleLock.h"
 #include "FileItem.h"
 #include "Settings.h"
 #include "GUISettings.h"
@@ -58,6 +61,8 @@ map<TYPE, IAddonMgrCallback*> CAddonMgr::m_managers;
 
 CAddonMgr::CAddonMgr()
 {
+  FindAddons();
+  m_watch.StartZero();
 }
 
 CAddonMgr::~CAddonMgr()
@@ -237,11 +242,11 @@ CStdString CAddonMgr::GetString(const CStdString &id, const int number)
 void CAddonMgr::FindAddons()
 {
   CSingleLock lock(m_critSection);
+  m_addons.clear();
+  m_idMap.clear();
   // parse the user & system dirs for addons of the requested type
   CFileItemList items;
-  if (!CSpecialProtocol::XBMCIsHome())
-    CDirectory::GetDirectory("special://home/addons", items);
-  CDirectory::GetDirectory("special://xbmc/addons", items);
+  CDirectory::GetDirectory("special://home/addons", items);
 
   // store any addons with unresolved deps, then recheck at the end
   VECADDONS unresolved;
@@ -665,6 +670,33 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       break;
   }
   return AddonPtr();
+}
+
+void CAddonMgr::UpdateRepos()
+{
+  CSingleLock lock(m_critSection);
+  if (m_watch.GetElapsedSeconds() < 600)
+    return;
+  m_watch.StartZero();
+  VECADDONS addons;
+  GetAddons(ADDON_REPOSITORY,addons);
+  for (unsigned int i=0;i<addons.size();++i)
+  {
+    RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addons[i]);
+    if (repo->LastUpdate()+CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
+    {
+      CLog::Log(LOGDEBUG,"Checking repository %s for updates",repo->Name().c_str());
+      CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo),this); 
+    }
+  }
+}
+
+void CAddonMgr::OnJobComplete(unsigned int jobID, bool success, CJob* job)
+{
+  if (!success)
+    return;
+
+  ((CRepositoryUpdateJob*)job)->m_repo->SetUpdated(CDateTime::GetCurrentDateTime());
 }
 
 } /* namespace ADDON */

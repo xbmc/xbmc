@@ -19,267 +19,245 @@
  *
  */
 
-#include "addons/AddonManager.h"
 #include "GUIWindowAddonBrowser.h"
-#include "GUISpinControlEx.h"
-#include "GUIControlGroupList.h"
-#include "Settings.h"
+#include "addons/AddonManager.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogAddonSettings.h"
-#include "GUIDialogYesNo.h"
-#include "GUIDialogNumeric.h"
 #include "GUIDialogKeyboard.h"
+#include "GUIDialogYesNo.h"
+#include "GUIEditControl.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include "Util.h"
 #include "URL.h"
-#include "utils/log.h"
 #include "FileItem.h"
+#include "FileSystem/File.h"
+#include "FileSystem/Directory.h"
+#include "utils/FileOperationJob.h"
+#include "utils/JobManager.h"
+#include "Settings.h"
+#include "Application.h"
+#include "AddonDatabase.h"
 
-#define CONTROL_ADDONSLIST                 2
-#define CATEGORY_GROUP_ID                  3
-#define CONTROL_DEFAULT_CATEGORY_BUTTON   10
-#define CONTROL_HEADING_LABEL            411
-#define CONTROL_START_BUTTONS           -100
+#define CONTROL_AUTOUPDATE 5
 
 using namespace ADDON;
+using namespace XFILE;
 
 CGUIWindowAddonBrowser::CGUIWindowAddonBrowser(void)
-: CGUIWindow(WINDOW_ADDON_BROWSER, "AddonBrowser.xml")
+: CGUIMediaWindow(WINDOW_ADDON_BROWSER, "AddonBrowser.xml")
 {
-  m_vecItems = new CFileItemList;
 }
 
 CGUIWindowAddonBrowser::~CGUIWindowAddonBrowser()
 {
 }
 
-bool CGUIWindowAddonBrowser::OnAction(const CAction &action)
-{
-  if (action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    g_windowManager.PreviousWindow();
-    return true;
-  }
-  else if (action.GetID() == ACTION_CONTEXT_MENU || action.GetID() == ACTION_MOUSE_RIGHT_CLICK)
-  {
-    int iItem = GetSelectedItem();
-    return OnContextMenu(iItem);
-  }
-  return CGUIWindow::OnAction(action);
-}
-
 bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
-  case GUI_MSG_WINDOW_DEINIT:
+  case GUI_MSG_WINDOW_INIT:
     {
-      CGUIWindow::OnMessage(message);
-      ClearListItems();
-      return true;
+      m_vecItems->m_strPath = "";
+      SetHistoryForPath(m_vecItems->m_strPath);
     }
-    break;
-
   case GUI_MSG_CLICKED:
     {
-      if (message.GetSenderId() == CONTROL_ADDONSLIST)  // list control
+      int iControl = message.GetSenderId();
+      if (iControl == CONTROL_AUTOUPDATE)
       {
-        int iItem = GetSelectedItem();
-        int iAction = message.GetParam1();
-        if (iItem < 0) break;
-        if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
-        {
-          return OnContextMenu(iItem);
-        }
-        if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
-        {
-          return OnContextMenu(iItem);
-        }
+        g_settings.m_bAddonAutoUpdate = !g_settings.m_bAddonAutoUpdate;
+        g_settings.Save();
+        return true;
       }
     }
     break;
-  case GUI_MSG_FOCUSED:
-    {
-      CGUIWindow::OnMessage(message);
-      int focusedControl = GetFocusedControlID();
-      if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < CONTROL_START_BUTTONS+(int)m_categories.size())
-      {
-        m_currentCategory = focusedControl-CONTROL_START_BUTTONS;
-        Update();
-      }
-      return true;
-    }
-    break;
+   default:
+     break;
   }
-  return CGUIWindow::OnMessage(message);
+  return CGUIMediaWindow::OnMessage(message);
 }
 
-void CGUIWindowAddonBrowser::ClearListItems()
+void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
+                                               CContextButtons& buttons)
 {
-  m_vecItems->Clear();
-}
-
-void CGUIWindowAddonBrowser::OnInitWindow()
-{
-  CGUIWindow::OnInitWindow();
-  m_currentCategory = 0;
-  SetupControls();
-  Update();
-}
-
-int CGUIWindowAddonBrowser::GetSelectedItem()
-{
-  CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_ADDONSLIST);
-  g_windowManager.SendMessage(msg);
-
-  return msg.GetParam1();
-}
-
-bool CGUIWindowAddonBrowser::SelectItem(int select)
-{
-  CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_ADDONSLIST, select);
-  return g_windowManager.SendMessage(msg);
-}
-
-void CGUIWindowAddonBrowser::OnSort()
-{
-  m_vecItems->Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-}
-
-void CGUIWindowAddonBrowser::Update()
-{
-  int selected = GetSelectedItem();
-  m_vecItems->Clear();
-
-  if (m_categories.empty())
-    return;
-
-  VECADDONS addons;
-  CAddonMgr::Get()->GetAddons(m_categories[m_currentCategory], addons, CONTENT_NONE);
-
-  for (unsigned i=0; i < addons.size(); i++)
-  {
-    AddonPtr addon = addons[i];
-    CFileItemPtr pItem(new CFileItem(addon->ID(), false));
-    pItem->SetLabel(addon->Name());
-    pItem->SetProperty("Addon.ID", addon->ID());
-    pItem->SetProperty("Addon.Type", TranslateType(addon->Type()));
-    pItem->SetProperty("Addon.Disabled", addon->Disabled());
-    pItem->SetProperty("Addon.Name", addon->Name());
-    pItem->SetProperty("Addon.Version", addon->Version().Print());
-    pItem->SetProperty("Addon.Summary", addon->Summary());
-    pItem->SetProperty("Addon.Description", addon->Description());
-    pItem->SetProperty("Addon.Creator", addon->Author());
-    pItem->SetProperty("Addon.Disclaimer", addon->Disclaimer());
-    pItem->SetProperty("Addon.Rating", addon->Stars());
-    pItem->SetThumbnailImage(addon->Icon());
-    m_vecItems->Add(pItem);
-  }
-
-  OnSort();
-  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_ADDONSLIST, 0, 0, m_vecItems);
-  OnMessage(msg);
-  CGUIControl *control = GetFirstFocusableControl(CONTROL_START_BUTTONS + m_currentCategory);
-  ((CGUIButtonControl *)control)->SetSelected(true);
-
-  if (selected != 0)
-    SelectItem(selected);
-}
-
-void CGUIWindowAddonBrowser::OnClick(int iItem)
-{
-  if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return ;
-  CFileItemPtr pItem = (*m_vecItems)[iItem];
-  CStdString strPath = pItem->m_strPath;
-
-  // check if user is allowed to open this window
-  if (g_settings.GetCurrentProfile().addonmanagerLocked() && g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
-    if (!g_passwordManager.IsMasterLockUnlocked(true))
-      return;
-
-  //TODO handle installation via OnClick() ?
-/*  AddonPtr addon;
-  TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
-  if (CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"), addon, type, false))
-  {
-    if (addon->Disabled())
-      CAddonMgr::Get()->EnableAddon(addon);
-    else
-      CAddonMgr::Get()->DisableAddon(addon);
-    Update();
-  }*/
-}
-
-bool CGUIWindowAddonBrowser::OnContextMenu(int iItem)
-{
-  // check if user is allowed to open this window
-  if (g_settings.GetCurrentProfile().addonmanagerLocked() && g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
-    if (!g_passwordManager.IsMasterLockUnlocked(true))
-      return false;
-
-  CFileItemPtr pItem = m_vecItems->Get(iItem);
-
+  CFileItemPtr pItem = m_vecItems->Get(itemNumber);
   TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
   AddonPtr addon;
-  if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"), addon, type, false))
+  if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"), 
+                                  addon, type, false)) 
+    return;
+
+  if (addon->HasSettings())
+    buttons.Add(CONTEXT_BUTTON_SETTINGS,24020);
+}
+
+bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
+                                             CONTEXT_BUTTON button)
+{
+  CFileItemPtr pItem = m_vecItems->Get(itemNumber);
+  TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
+  AddonPtr addon;
+  if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"), 
+                                  addon, type, false)) 
     return false;
-  if (!addon->HasSettings())
-    return false;
+  if (button == CONTEXT_BUTTON_SETTINGS)
+    return CGUIDialogAddonSettings::ShowAndGetInput(addon);
 
-  CGUIDialogContextMenu* pMenu = (CGUIDialogContextMenu*)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
-  if (!pMenu)
-    return false;
-
-  pMenu->Initialize();
-
-  int iSettingsLabel = 24020;
-  int btn_Settings = pMenu->AddButton(iSettingsLabel);
-
-  pMenu->CenterWindow();
-  pMenu->DoModal();
-
-  int btnid = pMenu->GetButton();
-  if (btnid == -1)
-    return false;
-
-  if (btnid == btn_Settings)
-  {
-    CGUIDialogAddonSettings::ShowAndGetInput(addon);
-    return true;
-  }
   return false;
 }
 
-void CGUIWindowAddonBrowser::SetupControls()
+bool CGUIWindowAddonBrowser::OnClick(int iItem)
 {
-  FreeControls();
-  CGUIButtonControl* pOriginalCategoryButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_CATEGORY_BUTTON);
-  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CATEGORY_GROUP_ID);
-  if (!pOriginalCategoryButton || !group)
-    return;
-  pOriginalCategoryButton->SetVisible(false);
-  for (unsigned int i=ADDON::ADDON_UNKNOWN+1;i<ADDON_VIZ_LIBRARY;++i)
+  CFileItemPtr item = m_vecItems->Get(iItem);
+  if (!item->m_bIsFolder)
   {
-    if (!CAddonMgr::Get()->HasAddons((ADDON::TYPE)i))
-      continue;
-    CGUIButtonControl* pButton = pOriginalCategoryButton->Clone();
-    pButton->SetLabel(ADDON::TranslateType((ADDON::TYPE)i,true));
-    pButton->SetID(CONTROL_START_BUTTONS+m_categories.size());
-    pButton->SetVisible(true);
-    pButton->AllocResources();
-    group->AddControl(pButton);
-    m_categories.push_back((ADDON::TYPE)i);
+    AddonPtr addon;
+    if (CAddonMgr::Get()->GetAddon(item->GetProperty("Addon.ID"),addon))
+    {
+      if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24000),
+                                           addon->Name(),
+                                           g_localizeStrings.Get(24060),""))
+      {
+        CFileItemList list;
+        list.Add(CFileItemPtr(new CFileItem(CUtil::AddFileToFolder("special://home/addons",item->GetProperty("Addon.ID")),true)));
+        list[0]->Select(true);
+        CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,"special://home/addons/"),this);
+      }
+    }
+    else
+    {
+      if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24000),
+                                           item->GetProperty("Addon.Name"),
+                                           g_localizeStrings.Get(24059),""))
+      {
+        AddJob(item->GetProperty("Addon.Path"));
+      }
+    } 
+    return true;
+  }
+
+  return CGUIMediaWindow::OnClick(iItem);
+}
+
+void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
+                                           bool success, CJob* job2)
+{
+  if (success)
+  { 
+    CFileOperationJob* job = (CFileOperationJob*)job2;
+    if (job->GetAction() == CFileOperationJob::ActionCopy)
+    {
+      for (int i=0;i<job->GetItems().Size();++i)
+      {
+        CStdString strFolder = job->GetItems()[i]->m_strPath;
+        // zip is downloaded - now extract it
+        if (CUtil::IsZIP(strFolder))
+        {
+          AddJob(strFolder);
+        }
+        else
+        {
+          CURL url(strFolder);
+          // zip extraction job is done
+          if (url.GetProtocol() == "zip")
+          { 
+            CFileItemList list;
+            CDirectory::GetDirectory(url.Get(),list);
+            CStdString dirname = "";
+            for (int i=0;i<list.Size();++i)
+            {
+              if (list[i]->m_bIsFolder)
+              {
+                dirname = list[i]->GetLabel();
+                break;
+              }
+            }
+            strFolder = CUtil::AddFileToFolder("special://home/addons/",
+                                               dirname);
+          }
+          else // not reachable - in case we decide to allow non-zipped repos
+          {
+            CUtil::RemoveSlashAtEnd(strFolder);
+            strFolder = CUtil::AddFileToFolder("special://home/addons/",
+                                               CUtil::GetFileName(strFolder));
+          }
+          AddonPtr addon;
+          if (CAddonMgr::AddonFromInfoXML(strFolder,addon))
+          {
+            CStdString strFolder2;
+            CUtil::GetDirectory(strFolder,strFolder2);
+            for (ADDONDEPS::iterator it  = addon->GetDeps().begin();
+                                     it != addon->GetDeps().end();++it)
+            {
+              AddonPtr addon2;
+              if (!CAddonMgr::Get()->GetAddon(it->first,addon2))
+              {
+                CAddonDatabase database;
+                database.Open();
+                database.GetAddon(it->first,addon2);
+                AddJob(addon2->Path());
+              }
+            }
+            if (addon->Type() >= ADDON_VIZ_LIBRARY)
+              continue;
+            AddonPtr addon2;
+            if (CAddonMgr::Get()->GetAddon(addon->ID(),addon2))
+            {
+              g_application.m_guiDialogKaiToast.QueueNotification(
+                                                  CGUIDialogKaiToast::Info,
+                                                  addon->Name(),
+                                                  g_localizeStrings.Get(24065));
+            }
+            else
+            {
+              g_application.m_guiDialogKaiToast.QueueNotification(
+                                                  CGUIDialogKaiToast::Info,
+                                                  addon->Name(),
+                                                  g_localizeStrings.Get(24064));
+            }
+          }
+        }
+      }
+    }
+    CAddonMgr::Get()->FindAddons();
+
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
+    g_windowManager.SendThreadMessage(msg);
   }
 }
 
-void CGUIWindowAddonBrowser::FreeControls()
+void CGUIWindowAddonBrowser::UpdateButtons()
 {
-  CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(CATEGORY_GROUP_ID);
-  if (control)
+  SET_CONTROL_SELECTED(GetID(),CONTROL_AUTOUPDATE,g_settings.m_bAddonAutoUpdate);
+  CGUIMediaWindow::UpdateButtons();  
+}
+
+void CGUIWindowAddonBrowser::AddJob(const CStdString& path)
+{
+  CGUIWindowAddonBrowser* that = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
+  CFileItemList list;
+  CStdString dest="special://home/addons/packages/";
+  CStdString package = CUtil::AddFileToFolder("special://home/addons/packages/",
+                                              CUtil::GetFileName(path));
+  // check for cached copy
+  if (CFile::Exists(package))
   {
-    control->FreeResources();
-    control->ClearAll();
+    CStdString archive;
+    CUtil::CreateArchivePath(archive,"zip",package,"");
+    list.Add(CFileItemPtr(new CFileItem(archive,true)));
+    dest = "special://home/addons/";
   }
-  m_categories.clear();
+  else
+  {
+    list.Add(CFileItemPtr(new CFileItem(path,false)));
+  }
+
+  CUtil::GetDirectory(path,package);
+  list[0]->SetProperty("Repo.Path",package);
+  list[0]->Select(true);
+  CJobManager::GetInstance().AddJob(
+         new CFileOperationJob(CFileOperationJob::ActionCopy,list,dest),that);
 }
 

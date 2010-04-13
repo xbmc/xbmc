@@ -19,53 +19,65 @@
  *
  */
 
-#include "GUIViewStateScripts.h"
+#include "GUIViewStateAddonBrowser.h"
 #include "GUIBaseContainer.h"
 #include "FileItem.h"
 #include "Key.h"
 #include "ViewState.h"
 #include "Settings.h"
 #include "FileSystem/Directory.h"
+#include "addons/Addon.h"
+#include "addons/AddonManager.h"
 
 using namespace XFILE;
+using namespace ADDON;
 
-CGUIViewStateWindowScripts::CGUIViewStateWindowScripts(const CFileItemList& items) : CGUIViewState(items)
+CGUIViewStateAddonBrowser::CGUIViewStateAddonBrowser(const CFileItemList& items) : CGUIViewState(items)
 {
   AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | Foldername, empty
   AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
-  AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // Filename, Size | Foldername, Size
-  AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | FolderName, empty
   SetSortMethod(SORT_METHOD_LABEL);
 
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
   SetSortOrder(SORT_ORDER_ASC);
-  LoadViewState(items.m_strPath, WINDOW_SCRIPTS);
+  LoadViewState(items.m_strPath, WINDOW_ADDON_BROWSER);
 }
 
-void CGUIViewStateWindowScripts::SaveViewState()
+void CGUIViewStateAddonBrowser::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_SCRIPTS);
+  SaveViewToDb(m_items.m_strPath, WINDOW_ADDON_BROWSER);
 }
 
-CStdString CGUIViewStateWindowScripts::GetExtensions()
+CStdString CGUIViewStateAddonBrowser::GetExtensions()
 {
-#if defined(__APPLE__)
-  return ".py|.applescript";
-#else
-//  return ".py";
   return "";
-#endif
 }
 
-VECSOURCES& CGUIViewStateWindowScripts::GetSources()
+VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
 {
   m_sources.clear();
 
-  CMediaSource share;
-  share.strPath = "special://xbmc/scripts";
-  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-  m_sources.push_back(share);
+  VECADDONS addons;
+  CAddonMgr::Get()->GetAllAddons(addons);
+  if (addons.size())
+  {
+    CMediaSource share;
+    share.strPath = "addons://enabled/";
+    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    share.strName = g_localizeStrings.Get(24062);
+    m_sources.push_back(share);
+  }
+  addons.clear();
+  CAddonMgr::Get()->GetAddons(ADDON_REPOSITORY,addons,CONTENT_NONE,true);
+  for (unsigned int i=0;i<addons.size();++i)
+  {
+    CMediaSource share;
+    share.strPath = "addons://"+addons[i]->ID();
+    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    share.strName = addons[i]->Name();
+    m_sources.push_back(share);
+  }
 
   return CGUIViewState::GetSources();
 }

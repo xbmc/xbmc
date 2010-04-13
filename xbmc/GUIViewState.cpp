@@ -20,6 +20,7 @@
  */
 
 #include "GUIViewState.h"
+#include "GUIViewStateAddonBrowser.h"
 #include "GUIViewStateMusic.h"
 #include "GUIViewStateVideo.h"
 #include "GUIViewStatePictures.h"
@@ -119,6 +120,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (windowId==WINDOW_PROGRAMS)
     return new CGUIViewStateWindowPrograms(items);
+  
+  if (windowId==WINDOW_ADDON_BROWSER)
+    return new CGUIViewStateAddonBrowser(items);
 
   //  Use as fallback/default
   return new CGUIViewStateGeneral(items);
