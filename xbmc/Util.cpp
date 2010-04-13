@@ -3252,9 +3252,9 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile, int LegalType)
   // check if the filename is a legal FATX one.
   if (LegalType == LEGAL_FATX) 
   {
-    GetFatXQualifiedPath(result);
     result.TrimRight(".");
     result.TrimRight(" ");
+    GetFatXQualifiedPath(result);
   }
 
   return result;
