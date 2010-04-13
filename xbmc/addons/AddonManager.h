@@ -35,8 +35,6 @@ namespace ADDON
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
   typedef std::map<TYPE, VECADDONS>::iterator IMAPADDONS;
 
-  const int        ADDON_DIRSCAN_FREQ         = 300;
-  const CStdString ADDON_XBMC_REPO_URL        = "";
   const CStdString ADDON_METAFILE             = "description.xml";
   const CStdString ADDON_VIS_EXT              = "*.vis";
   const CStdString ADDON_PYTHON_EXT           = "*.py";
@@ -100,14 +98,6 @@ namespace ADDON
     bool SaveAddonsXML();
     bool DependenciesMet(AddonPtr &addon);
     bool UpdateIfKnown(AddonPtr &addon);
-
-    /* addons.xml */
-    CStdString GetAddonsXMLFile() const;
-    bool LoadAddonsXML(VECADDONPROPS& addons);
-    bool SaveAddonsXML(const VECADDONPROPS &addons);
-    bool SetAddons(TiXmlNode *root, const VECADDONPROPS &addons);
-    void GetAddons(const TiXmlElement* pRootElement, VECADDONPROPS &addons);
-    bool GetAddon(const TYPE &type, const TiXmlNode *node, VECADDONPROPS &addon);
 
     CAddonMgr();
     static CAddonMgr* m_pInstance;

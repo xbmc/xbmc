@@ -153,15 +153,6 @@ bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
 
 bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabledOnly/*= true*/)
 {
-  // recheck addons.xml & each addontype's directories no more than once every ADDON_DIRSCAN_FREQ seconds
-  CDateTimeSpan span;
-  span.SetDateTimeSpan(0, 0, 0, ADDON_DIRSCAN_FREQ);
-  if(!m_lastDirScan.IsValid() || (m_lastDirScan + span) < CDateTime::GetCurrentDateTime())
-  {
-    m_lastDirScan = CDateTime::GetCurrentDateTime();
-    LoadAddonsXML();
-  }
-
   addons.clear();
   if (m_addons.find(type) != m_addons.end())
   {
@@ -183,14 +174,6 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYP
 
 bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly/*= true*/)
 {
-  CDateTimeSpan span;
-  span.SetDateTimeSpan(0, 0, 0, ADDON_DIRSCAN_FREQ);
-  if(!m_lastDirScan.IsValid() || (m_lastDirScan + span) < CDateTime::GetCurrentDateTime())
-  {
-    m_lastDirScan = CDateTime::GetCurrentDateTime();
-    LoadAddonsXML();
-  }
-
   if (type != ADDON_UNKNOWN && m_addons.find(type) == m_addons.end())
     return false;
 
@@ -270,44 +253,6 @@ CStdString CAddonMgr::GetString(const CStdString &id, const int number)
     return addon->GetString(number);
 
   return "";
-}
-
-bool CAddonMgr::LoadAddonsXML()
-{
-  // NB. as addons are enabled by default, all this now checks for is
-  // cloned non-scraper addons
-  // i.e pvr clients only
-  VECADDONPROPS props;
-  if (!LoadAddonsXML(props))
-    return false;
-
-  // refresh addon dirs if neccesary/forced
-  FindAddons();
-
-  // now enable accordingly
-  VECADDONPROPS::const_iterator itr = props.begin();
-  while (itr != props.end())
-  {
-    if (itr->parent.size())
-    {
-      AddonPtr addon;
-      if (GetAddon(itr->parent, addon, itr->type, false))
-      { // multiple addon configurations
-        AddonPtr clone = addon->Clone(addon);
-        if (clone)
-        {
-          m_addons[addon->Type()].push_back(clone);
-        }
-      }
-      else
-      { // addon not found
-        CLog::Log(LOGERROR, "ADDON: Couldn't find addon to clone with requested with ID: %s", itr->parent.c_str());
-        //TODO we should really add but mark unavailable, to prompt user
-      }
-    }
-    ++itr;
-  }
-  return true;
 }
 
 void CAddonMgr::FindAddons()
@@ -749,137 +694,6 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       break;
   }
   return AddonPtr();
-}
-
-CStdString CAddonMgr::GetAddonsXMLFile() const
-{
-  CStdString folder;
-  if (g_settings.GetCurrentProfile().hasAddons())
-    CUtil::AddFileToFolder(g_settings.GetProfileUserDataFolder(),"addons.xml",folder);
-  else
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"addons.xml",folder);
-
-  return folder;
-}
-
-bool CAddonMgr::SaveAddonsXML()
-{
-  // NB only saves cloned non-scraper addons
-  //TODO lock
-  if (m_idMap.empty())
-    return true;
-
-  TiXmlDocument doc;
-  TiXmlNode *pRoot = NULL;
-  TiXmlElement xmlRootElement("addons");
-  pRoot = doc.InsertEndChild(xmlRootElement);
-
-  std::map<CStdString, AddonPtr>::iterator itr = m_idMap.begin();
-  while (itr != m_idMap.end())
-  {
-    AddonPtr addon = (*itr).second;
-    if (addon && addon->Parent())
-    {
-      TYPE type = addon->Type();
-      CStdString strType = TranslateType(type);
-      TiXmlElement sectionElement(strType);
-      TiXmlNode *node = pRoot->FirstChild(strType);
-      if (!node)
-        node = pRoot->InsertEndChild(sectionElement);
-
-      TiXmlElement element("addon");
-      XMLUtils::SetString(&element, "id", addon->ID());
-      XMLUtils::SetString(&element, "parentid", addon->Parent()->ID());
-      node->InsertEndChild(element);
-    }
-    itr++;
-  }
-  return doc.SaveFile(GetAddonsXMLFile());
-}
-
-bool CAddonMgr::LoadAddonsXML(VECADDONPROPS &addons)
-{
-  CStdString strXMLFile;
-  TiXmlDocument xmlDoc;
-  TiXmlElement *pRootElement = NULL;
-  strXMLFile = GetAddonsXMLFile();
-  if ( xmlDoc.LoadFile( strXMLFile ) )
-  {
-    pRootElement = xmlDoc.RootElement();
-    CStdString strValue;
-    if (pRootElement)
-      strValue = pRootElement->Value();
-    if ( strValue != "addons")
-    {
-      CLog::Log(LOGDEBUG, "ADDONS: %s does not contain <addons> element", strXMLFile.c_str());
-      return false;
-    }
-  }
-  else if (CFile::Exists(strXMLFile))
-  {
-    CLog::Log(LOGERROR, "ADDONS: Error loading %s: Line %d, %s", strXMLFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
-    return false;
-  }
-  else
-  {
-    CLog::Log(LOGINFO, "ADDONS: No addons.xml found");
-    return true; // no addons enabled for this profile yet
-  }
-
-  if (pRootElement)
-  { // parse addons...
-    GetAddons(pRootElement, addons);
-    return true;
-  }
-
-  return false;
-}
-
-void CAddonMgr::GetAddons(const TiXmlElement* pAddons, VECADDONPROPS &addons)
-{
-
-  const TiXmlNode *pType = 0;
-  while( ( pType = pAddons->IterateChildren( pType ) ) )
-  {
-    TYPE type = TranslateType(pType->Value());
-    const TiXmlNode *pAddon = pType->FirstChild();
-    while (pAddon > 0)
-    {
-      CStdString strValue = pAddon->Value();
-      if (strValue == "addon")
-      {
-        GetAddon(type, pAddon, addons);
-      }
-      pAddon = pAddon->NextSibling();
-    }
-  }
-}
-
-bool CAddonMgr::GetAddon(const TYPE &type, const TiXmlNode *node, VECADDONPROPS &addons)
-{
-  // id
-  const TiXmlNode *pNodeID = node->FirstChild("id");
-  CStdString id;
-  if (pNodeID && pNodeID->FirstChild())
-  {
-    id = pNodeID->FirstChild()->Value();
-  }
-  else
-    return false;
-
-  // will grab the version from description.xml
-  CStdString version;
-  AddonProps props(id, type, version);
-
-  // parent id
-  const TiXmlNode *pNodeParent = node->FirstChild("parentid");
-  if (pNodeParent && pNodeParent->FirstChild())
-  {
-    props.parent = pNodeParent->FirstChild()->Value();
-    addons.insert(addons.end(), props);
-    return true;
-  }
-  return false;
 }
 
 } /* namespace ADDON */
