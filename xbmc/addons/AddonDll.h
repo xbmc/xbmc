@@ -322,14 +322,16 @@ void CAddonDll<TheDll, TheStruct, TheProps>::SaveSettings()
 {
   // must save first, as TransferSettings() reloads saved settings!
   CAddon::SaveSettings();
-  TransferSettings();
+  if (m_initialized)
+    TransferSettings();
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
 void CAddonDll<TheDll, TheStruct, TheProps>::SaveFromDefault()
 {
   CAddon::SaveFromDefault();
-  TransferSettings();
+  if (m_initialized)
+    TransferSettings();
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
