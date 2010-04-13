@@ -82,7 +82,10 @@ namespace ADDON
     bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
     bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
     CStdString GetString(const CStdString &id, const int number);
-
+    
+    static bool AddonFromInfoXML(const TiXmlElement *xmlDoc, AddonPtr &addon,
+                                 const CStdString &strPath);
+    static bool AddonFromInfoXML(const CStdString &path, AddonPtr &addon);
   private:
     /* Addon Repositories */
     virtual void OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRxCount, Result aResult);
@@ -94,7 +97,6 @@ namespace ADDON
     void FindAddons();
     bool LoadAddonsXML();
     bool SaveAddonsXML();
-    bool AddonFromInfoXML(const CStdString &path, AddonPtr &addon);
     bool DependenciesMet(AddonPtr &addon);
     bool UpdateIfKnown(AddonPtr &addon);
 

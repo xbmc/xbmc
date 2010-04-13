@@ -464,13 +464,19 @@ bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
     return false;
   }
 
-  TiXmlElement *element = xmlDoc.RootElement();
+  const TiXmlElement *element = xmlDoc.RootElement();
   if (!element || strcmpi(element->Value(), "addoninfo") != 0)
   {
-    CLog::Log(LOGERROR, "ADDON: Error loading %s: cannot find <addon> root element", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: Error loading %s: cannot find <addon> root element", xmlDoc.Value());
     return false;
   }
 
+  return AddonFromInfoXML(element, addon, strPath);
+}
+
+bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
+                                 AddonPtr &addon, const CStdString &strPath)
+{
   /* Steps required to meet package requirements
   * 1. id exists and is valid
   * 2. type exists and is valid
@@ -485,8 +491,7 @@ bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
 
   /* Validate id */
   CStdString id;
-  element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("id");
+  const TiXmlElement *element = rootElement->FirstChildElement("id");
   if (!element)
   {
     CLog::Log(LOGERROR, "ADDON: %s missing <id> element, ignoring", strPath.c_str());
@@ -502,8 +507,7 @@ bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
 
   /* Validate type */
   TYPE type;
-  element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("type");
+  element = rootElement->FirstChildElement("type");
   if (!element)
   {
     CLog::Log(LOGERROR, "ADDON: %s missing <id> element, ignoring", strPath.c_str());
@@ -518,8 +522,7 @@ bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
 
   /* Retrieve Name */
   CStdString name;
-  element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("title");
+  element = rootElement->FirstChildElement("title");
   if (!element)
   {
     CLog::Log(LOGERROR, "ADDON: %s missing <title> element, ignoring", strPath.c_str());
@@ -529,8 +532,7 @@ bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
 
   /* Retrieve version */
   CStdString version;
-  element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("version");
+  element = rootElement->FirstChildElement("version");
   if (!element)
   {
     CLog::Log(LOGERROR, "ADDON: %s missing <version> element, ignoring", strPath.c_str());
@@ -549,12 +551,11 @@ bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
   /* Path, ID & Version are valid */
   AddonProps addonProps(id, type, version);
   addonProps.name = name;
-  addonProps.path = path;
-  addonProps.icon = CUtil::AddFileToFolder(path, "default.tbn");
+  CUtil::GetDirectory(strPath,addonProps.path);
+  addonProps.icon = CUtil::AddFileToFolder(addonProps.path, "default.tbn");
 
   /* Retrieve license */
-  element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("license");
+  element = rootElement->FirstChildElement("license");
 /*  if (!element)
   {
     CLog::Log(LOGERROR, "ADDON: %s missing <license> element, ignoring", strPath.c_str());
@@ -564,8 +565,7 @@ bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
 
   /* Retrieve platforms which this addon supports */
   CStdString platform;
-  element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("platforms")->FirstChildElement("platform");
+  element = rootElement->FirstChildElement("platforms")->FirstChildElement("platform");
   if (!element)
   {
     CLog::Log(LOGERROR, "ADDON: %s missing <platforms> element, ignoring", strPath.c_str());
@@ -617,8 +617,7 @@ bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
 
   /* Retrieve summary */
   CStdString summary;
-  element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("summary");
+  element = rootElement->FirstChildElement("summary");
   if (!element)
   {
     CLog::Log(LOGERROR, "ADDON: %s missing <summary> element, ignoring", strPath.c_str());
@@ -630,10 +629,9 @@ bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
   {
     /* Retrieve content types that this addon supports */
     CStdString platform;
-    element = NULL;
-    if (xmlDoc.RootElement()->FirstChildElement("supportedcontent"))
+    if (rootElement->FirstChildElement("supportedcontent"))
     {
-      element = xmlDoc.RootElement()->FirstChildElement("supportedcontent")->FirstChildElement("content");
+      element = rootElement->FirstChildElement("supportedcontent")->FirstChildElement("content");
     }
     if (!element)
     {
@@ -665,27 +663,23 @@ bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
 
   /*** Beginning of optional fields ***/
   /* Retrieve description */
-  element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("description");
+  element = rootElement->FirstChildElement("description");
   if (element)
     addonProps.description = element->GetText();
 
   /* Retrieve author */
-  element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("author");
+  element = rootElement->FirstChildElement("author");
   if (element)
     addonProps.author = element->GetText();
 
   /* Retrieve disclaimer */
-  element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("disclaimer");
+  element = rootElement->FirstChildElement("disclaimer");
   if (element)
     addonProps.disclaimer = element->GetText();
 
   /* Retrieve library file name */
   // will be replaced with default library name if unspecified
-  element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("library");
+  element = rootElement->FirstChildElement("library");
   if (element)
     addonProps.libname = element->GetText();
 
@@ -695,16 +689,14 @@ bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)
   * This is required for no overwrite to the fixed WIN32 add-on's
   * during compile time
   */
-  element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("librarywin32");
+  element = rootElement->FirstChildElement("librarywin32");
   if (element) // If it is found overwrite standard library name
     addonProps.libname = element->GetText();
 #endif
 
   /* Retrieve dependencies that this addon requires */
   std::map<CStdString, std::pair<const AddonVersion, const AddonVersion> > deps;
-  element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("dependencies");
+  element = rootElement->FirstChildElement("dependencies");
   if (element)
   {
     element = element->FirstChildElement("dependency");
