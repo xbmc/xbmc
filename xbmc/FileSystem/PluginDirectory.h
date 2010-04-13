@@ -39,7 +39,7 @@ namespace XFILE
 class CPluginDirectory : public IDirectory
 {
 public:
-  CPluginDirectory(const CONTENT_TYPE &content);
+  CPluginDirectory();
   ~CPluginDirectory(void);
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
   virtual bool IsAllowed(const CStdString &strFile) const { return true; };
@@ -62,7 +62,6 @@ public:
 
 private:
   ADDON::AddonPtr m_addon;
-  CONTENT_TYPE m_content;
   bool WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName);
 
   static std::vector<CPluginDirectory*> globalHandles;

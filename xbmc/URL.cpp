@@ -190,7 +190,7 @@ void CURL::Parse(const CStdString& strURL1)
   else
   if(strProtocol2.Equals("http")
     || strProtocol2.Equals("https")
-    || TranslateContent(m_strProtocol) != CONTENT_NONE // plugin paths
+    || strProtocol2.Equals("plugin")
     || strProtocol2.Equals("hdhomerun")
     || strProtocol2.Equals("rtsp")
     || strProtocol2.Equals("zip"))
