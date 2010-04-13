@@ -50,6 +50,7 @@ namespace ADDON
     CStdString m_info;
     CStdString m_checksum;
     CStdString m_datadir;
+    bool m_compressed;
     CCriticalSection m_critSection;
   };
 

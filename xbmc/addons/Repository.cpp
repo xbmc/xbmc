@@ -48,6 +48,7 @@ AddonPtr CRepository::Clone(const AddonPtr &self) const
 CRepository::CRepository(const AddonProps& props) :
   CAddon(props)
 {
+  m_compressed = false;
   LoadFromXML(Path()+LibName());
   SetUpdated(CDateTime::GetCurrentDateTime()-CDateTimeSpan(0,12,0,0));
 }
@@ -70,6 +71,13 @@ bool CRepository::LoadFromXML(const CStdString& xml)
     return false;
 
   XMLUtils::GetString(doc.RootElement(),"name", m_name);
+  TiXmlElement* info = doc.RootElement()->FirstChildElement("info");
+  if (info)
+  {
+    const char* attr = info->Attribute("compressed");
+    if (attr && stricmp(attr,"true") == 0)
+      m_compressed = true;
+  }
   XMLUtils::GetString(doc.RootElement(),"info", m_info);
   XMLUtils::GetString(doc.RootElement(),"checksum", m_checksum);
   XMLUtils::GetString(doc.RootElement(),"datadir", m_datadir);
@@ -100,9 +108,20 @@ VECADDONS CRepository::Parse()
   CSingleLock lock(m_critSection);
 
   VECADDONS result;
-
   TiXmlDocument doc;
-  doc.LoadFile(m_info);
+
+  CStdString file = m_info;
+  if (m_compressed)
+  {
+    CURL url(m_info);
+    CStdString opts = url.GetProtocolOptions();
+    if (!opts.IsEmpty())
+      opts += "&";
+    url.SetProtocolOptions(opts+"Encoding=gzip");
+    file = url.Get();
+  }
+
+  doc.LoadFile(file);
   if (doc.RootElement())
   {
     TiXmlElement* element = doc.FirstChildElement("addoninfo");
