@@ -3410,6 +3410,14 @@
 				Name="Database"
 				>
 				<File
+					RelativePath="..\..\xbmc\AddonDatabase.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\AddonDatabase.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\Album.cpp"
 					>
 				</File>
@@ -3747,6 +3755,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIMediaWindow.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateAddonBrowser.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateAddonBrowser.h"
 					>
 				</File>
 				<File
@@ -5491,6 +5507,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\addons\IAddon.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Repository.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Repository.h"
 					>
 				</File>
 				<File
