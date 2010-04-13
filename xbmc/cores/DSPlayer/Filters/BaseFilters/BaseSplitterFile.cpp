@@ -207,7 +207,7 @@ void CBaseSplitterFile::BitFlush()
 
 HRESULT CBaseSplitterFile::ByteRead(BYTE* pData, __int64 len)
 {
-    Seek(GetPos());
+  Seek(GetPos());
 	return Read(pData, len);
 }
 

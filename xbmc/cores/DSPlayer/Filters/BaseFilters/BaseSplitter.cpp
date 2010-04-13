@@ -582,14 +582,22 @@ HRESULT CBaseSplitterOutputPin::DeliverPacket(boost::shared_ptr<Packet> p)
     BYTE* pData = NULL;
     if(S_OK != (hr = pSample->GetPointer(&pData)) || !pData) break;
     //TODO
-    //memcpy(&pData[0], p->GetData(), nBytes);
-    if(S_OK != (hr = pSample->SetActualDataLength(nBytes))) break;
-    if(S_OK != (hr = pSample->SetTime(fTimeValid ? &p->rtStart : NULL, fTimeValid ? &p->rtStop : NULL))) break;
-    if(S_OK != (hr = pSample->SetMediaTime(NULL, NULL))) break;
-    if(S_OK != (hr = pSample->SetDiscontinuity(p->bDiscontinuity))) break;
-    if(S_OK != (hr = pSample->SetSyncPoint(p->bSyncPoint))) break;
-    if(S_OK != (hr = pSample->SetPreroll(fTimeValid && p->rtStart < 0))) break;
-    if(S_OK != (hr = Deliver(pSample))) break;
+    memcpy(pData, &p->at(0), nBytes);
+    if(S_OK != (hr = pSample->SetActualDataLength(nBytes))) 
+      break;
+    if(S_OK != (hr = pSample->SetTime(fTimeValid ? &p->rtStart : NULL, fTimeValid ? &p->rtStop : NULL))) 
+      break;
+    if(S_OK != (hr = pSample->SetMediaTime(NULL, NULL))) 
+      break;
+    if(S_OK != (hr = pSample->SetDiscontinuity(p->bDiscontinuity))) 
+      break;
+    if(S_OK != (hr = pSample->SetSyncPoint(p->bSyncPoint))) 
+      break;
+    if(S_OK != (hr = pSample->SetPreroll(fTimeValid && p->rtStart < 0))) 
+      break;
+    //The deliver should only failed when seeking
+    if(S_OK != (hr = Deliver(pSample))) 
+      break;
   }
   while(false);
 
@@ -627,6 +635,7 @@ HRESULT CBaseSplitterOutputPin::GetDeliveryBuffer(IMediaSample** ppSample, REFER
 
 HRESULT CBaseSplitterOutputPin::Deliver(IMediaSample* pSample)
 {
+  //SO????
   return __super::Deliver(pSample);
 }
 
@@ -952,7 +961,7 @@ DWORD CBaseSplitterFilter::ThreadProc()
     do {m_bDiscontinuitySent.clear();}
     while(!DemuxLoop());
 
-    for (list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end() && !CheckRequest(&cmd); it++)
+      for (list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end() && !CheckRequest(&cmd); it++)
     {
       CBaseSplitterOutputPin* pPin = *it;
       pPin->QueueEndOfStream();
@@ -975,6 +984,7 @@ HRESULT CBaseSplitterFilter::DeliverPacket(auto_ptr<Packet> p)
     return S_FALSE;
 
  //|| !m_pActivePins.Find(pPin))
+  
   bool gotit = false;
   for (list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end() ; it++)
   {

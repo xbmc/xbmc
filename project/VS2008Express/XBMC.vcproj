@@ -2395,6 +2395,30 @@
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\AviSplitter.h"
 							>
 						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitter.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitter.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFile.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFile.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFileEx.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFileEx.h"
+							>
+						</File>
 					</Filter>
 					<Filter
 						Name="Video Renderers"
@@ -2456,26 +2480,6 @@
 						Name="Source"
 						>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.h"
-							>
-						</File>
-					</Filter>
-					<Filter
-						Name="BaseFilters"
-						>
-						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\asyncio.cpp"
 							>
 						</File>
@@ -2492,27 +2496,19 @@
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitter.cpp"
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitter.h"
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.h"
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFile.cpp"
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFile.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFileEx.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFileEx.h"
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.h"
 							>
 						</File>
 					</Filter>

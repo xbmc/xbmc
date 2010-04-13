@@ -431,7 +431,8 @@ bool CAviSplitterFilter::DemuxLoop()
       CAviFile::strm_t* s = m_pFile->m_strms[i].get();
 
       DWORD f = m_tFrame[i];
-      if(f >= (DWORD)s->cs.size()) continue;
+      if(f >= (DWORD)s->cs.size()) 
+        continue;
 
       bool fUrgent = s->IsRawSubtitleStream();
 
@@ -441,7 +442,8 @@ bool CAviSplitterFilter::DemuxLoop()
         minFilePos = s->cs[f].filepos;
       }
 
-      if(fUrgent) break;
+      if(fUrgent) 
+        break;
     }
 
     if(minTrack == nTracks)

@@ -357,10 +357,11 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   END_PERFORMANCE_COUNTER
 
   START_PERFORMANCE_COUNTER
-  //hr = ConnectFilter(CFGLoader::Filters.Source.pBF , NULL);
   hr = ConnectFilter(CFGLoader::Filters.Splitter.pBF , NULL);
+  //In some case its going to failed because the source filter is not the splitter
+  if (hr == S_FALSE)
+    hr = ConnectFilter(CFGLoader::Filters.Source.pBF , NULL);
   END_PERFORMANCE_COUNTER
-
   if (hr != S_OK)
   {
     if (FAILED(hr = RecoverFromGraphError(pFileItem)))

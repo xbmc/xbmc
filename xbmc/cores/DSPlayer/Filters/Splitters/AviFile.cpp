@@ -136,11 +136,7 @@ HRESULT CAviFile::Parse(DWORD parentid, __int64 end)
       if(S_OK != Read(size))
         return E_FAIL;
 
-      //TRACE(_T("CAviFile::Parse(..): '%c%c%c%c'\n"),
-      //TCHAR((id>>0)&0xff), 
-      //TCHAR((id>>8)&0xff), 
-      //TCHAR((id>>16)&0xff),
-      //TCHAR((id>>24)&0xff));
+      CLog::Log(LOGDEBUG,"%s: '%c%c%c%c'\n", __FUNCTION__, TCHAR((id>>0)&0xff), TCHAR((id>>8)&0xff), TCHAR((id>>16)&0xff), TCHAR((id>>24)&0xff));
 
       if(parentid == FCC('INFO') && size > 0)
       {
@@ -171,7 +167,8 @@ HRESULT CAviFile::Parse(DWORD parentid, __int64 end)
         case FCC('ITCH'): // Technician. Identifies the technician who digitized the subject file; for example, “Smith, John.”
           {
             CStdStringA str;
-            if(S_OK != ByteRead((BYTE*)str.GetBufferSetLength(size), size)) return E_FAIL;
+            if(S_OK != ByteRead((BYTE*)str.GetBufferSetLength(size), size)) 
+              return E_FAIL;
             m_info[id] = str;
             break;
           }
@@ -184,7 +181,8 @@ HRESULT CAviFile::Parse(DWORD parentid, __int64 end)
       case FCC('avih'):
         m_avih.fcc = id;
         m_avih.cb = size;
-        if(S_OK != Read(m_avih, 8)) return E_FAIL;
+        if(S_OK != Read(m_avih, 8)) 
+          return E_FAIL;
         break;
       case FCC('strh'):
         if(!strm.get()) strm.reset(DNew strm_t());
@@ -210,11 +208,10 @@ HRESULT CAviFile::Parse(DWORD parentid, __int64 end)
         {
           if (strm->strh.fccType == FCC('vids'))
           {
+            //strm->strf.SetCount(sizeof(BITMAPINFOHEADER));
             strm->strf.resize(sizeof(BITMAPINFOHEADER));
             //BITMAPINFOHEADER* pbmi = &((BITMAPINFO*)strm->strf.GetData())->bmiHeader;
-            BITMAPINFO* bmpInfo;
-            memcpy(bmpInfo, &strm->strf[0], strm->strf.size());
-            BITMAPINFOHEADER* pbmi = &bmpInfo->bmiHeader;
+            BITMAPINFOHEADER* pbmi = &((BITMAPINFO*)&strm->strf[0])->bmiHeader;
             pbmi->biSize    = sizeof(BITMAPINFOHEADER);
             pbmi->biHeight    = m_avih.dwHeight;
             pbmi->biWidth    = m_avih.dwWidth;
