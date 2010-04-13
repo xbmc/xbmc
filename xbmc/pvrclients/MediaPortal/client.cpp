@@ -334,6 +334,10 @@ void Remove()
   curStatus = STATUS_UNKNOWN;
 }
 
+void Stop()
+{
+}
+
 void FreeSettings()
 {
 
@@ -586,11 +590,6 @@ int ReadLiveStream(unsigned char* buf, int buf_size)
   return g_client->ReadLiveStream(buf, buf_size);
 }
 
-DemuxPacket* DemuxRead()
-{
-  return NULL;
-}
-
 long long SeekLiveStream(long long pos, int whence)
 {
   return -1;
@@ -620,31 +619,6 @@ PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
 {
   return g_client->SignalQuality(qualityinfo);
 }
-
-
-/*******************************************/
-/** PVR Secondary Stream Functions        **/
-
-bool SwapLiveTVSecondaryStream()
-{
-  return false;
-}
-
-bool OpenSecondaryStream(const PVR_CHANNEL &channelinfo)
-{
-  return false;
-}
-
-void CloseSecondaryStream()
-{
-
-}
-
-int ReadSecondaryStream(unsigned char* buf, int buf_size)
-{
-  return 0;
-}
-
 
 /*******************************************/
 /** PVR Recording Stream Functions        **/
@@ -684,5 +658,15 @@ const char * GetLiveStreamURL(const PVR_CHANNEL &channelinfo)
 {
   return g_client->GetLiveStreamURL(channelinfo);
 }
+
+/** UNUSED API FUNCTIONS */
+DemuxPacket* DemuxRead(){return NULL;}
+void DemuxAbort(){}
+void DemuxReset(){}
+void DemuxFlush(){}
+bool SwapLiveTVSecondaryStream() { return false; }
+bool OpenSecondaryStream(const PVR_CHANNEL &channelinfo) { return false; }
+void CloseSecondaryStream() {}
+int ReadSecondaryStream(unsigned char* buf, int buf_size) { return 0; }
 
 } //extern "C"
