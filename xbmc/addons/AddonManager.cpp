@@ -110,31 +110,6 @@ bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTE
   return GetAddons(type, addons, content, enabledOnly);
 }
 
-void CAddonMgr::UpdateRepos()
-{
-  m_downloads.push_back(g_DownloadManager.RequestFile(ADDON_XBMC_REPO_URL, this));
-}
-
-bool CAddonMgr::ParseRepoXML(const CStdString &path)
-{
-  //TODO
-  //check file exists, for each addoninfo, create an AddonProps struct, store in m_remoteAddons
-  return false;
-}
-
-void CAddonMgr::OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRxCount, Result aResult)
-{
-  for (unsigned i=0; i < m_downloads.size(); i++)
-  {
-    if (m_downloads[i].wQueueId == aTicket.wQueueId
-        && m_downloads[i].dwItemId == aTicket.dwItemId)
-    {
-      CLog::Log(LOGINFO, "ADDONS: Downloaded addons.xml");
-      ParseRepoXML(aFilePath);
-    }
-  }
-}
-
 bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
 {
   VECADDONS temp;
@@ -378,17 +353,6 @@ bool CAddonMgr::DependenciesMet(AddonPtr &addon)
         return (dep->Version() >= min);
       else
         return (dep->Version() <= max);
-    }
-    for (unsigned i=0; i < m_remoteAddons.size(); i++)
-    {
-      if (m_remoteAddons[i].id == id)
-      {
-        if(m_remoteAddons[i].version >= min && m_remoteAddons[i].version <= max)
-        {
-          //TODO line up download
-          return false;
-        }
-      }
     }
     itr++;
   }
