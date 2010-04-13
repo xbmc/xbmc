@@ -724,46 +724,31 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   /*** end of optional fields ***/
 
   /* Create an addon object and store in a shared_ptr */
-  addon.reset();
-  switch (type)
+  addon = AddonFromProps(addonProps);
+
+  return addon.get() != NULL;
+}
+
+AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
+{
+  switch (addonProps.type)
   {
     case ADDON_PLUGIN:
     case ADDON_SCRIPT:
-    {
-      AddonPtr temp(new CAddon(addonProps));
-      addon = temp;
-      break;
-    }
+      return AddonPtr(new CAddon(addonProps));
     case ADDON_SCRAPER:
-    {
-      AddonPtr temp(new CScraper(addonProps));
-      addon = temp;
-      break;
-    }
+      return AddonPtr(new CScraper(addonProps));
     case ADDON_VIZ:
-    {
-      AddonPtr temp(new CVisualisation(addonProps));
-      addon = temp;
-      break;
-    }
+      return AddonPtr(new CVisualisation(addonProps));
     case ADDON_SCREENSAVER:
-    {
-      AddonPtr temp(new CScreenSaver(addonProps));
-      addon = temp;
-      break;
-    }
+      return AddonPtr(new CScreenSaver(addonProps));
     case ADDON_SCRAPER_LIBRARY:
     case ADDON_VIZ_LIBRARY:
-    {
-      AddonPtr temp(new CAddonLibrary(addonProps));
-      addon = temp;
-      break;
-    }
+      return AddonPtr(new CAddonLibrary(addonProps));
     default:
-      return false;
+      break;
   }
-
-  return true;
+  return AddonPtr();
 }
 
 CStdString CAddonMgr::GetAddonsXMLFile() const

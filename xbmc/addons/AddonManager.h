@@ -86,6 +86,7 @@ namespace ADDON
     static bool AddonFromInfoXML(const TiXmlElement *xmlDoc, AddonPtr &addon,
                                  const CStdString &strPath);
     static bool AddonFromInfoXML(const CStdString &path, AddonPtr &addon);
+    static AddonPtr AddonFromProps(AddonProps& props);
   private:
     /* Addon Repositories */
     virtual void OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRxCount, Result aResult);
