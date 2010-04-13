@@ -86,7 +86,7 @@ CDecoder::~CDecoder()
 void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   VASurfaceID surface = GetSurfaceID(pic);
-  
+
   for(std::list<CSurfacePtr>::iterator it = m_surfaces_used.begin(); it != m_surfaces_used.end(); it++)
   {    
     if((*it)->m_id == surface)
@@ -105,6 +105,7 @@ void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   VASurfaceID surface = GetSurfaceID(pic);
+  CSurface*   wrapper = NULL;
   if(surface)
   {
     /* reget call */
@@ -113,6 +114,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
     {    
       if((*it)->m_id == surface)
       {
+        wrapper = it->get();
         m_surfaces_used.push_back(*it);
         m_surfaces_free.erase(it);
         break;
@@ -132,14 +134,15 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
       return -1;
     }
     /* getbuffer call */
-    surface = m_surfaces_free.front()->m_id;
+    wrapper = m_surfaces_free.front().get();
+    surface = wrapper->m_id;
     m_surfaces_used.push_back(m_surfaces_free.front());
     m_surfaces_free.pop_front();
   }
 
   pic->type           = FF_BUFFER_TYPE_USER;
   pic->age            = 1;
-  pic->data[0]        = (uint8_t*)1;
+  pic->data[0]        = (uint8_t*)wrapper;
   pic->data[1]        = NULL;
   pic->data[2]        = NULL;
   pic->data[3]        = (uint8_t*)surface;
