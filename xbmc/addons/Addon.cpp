@@ -212,7 +212,7 @@ CAddon::CAddon(const AddonProps &props)
   else m_strLibName = props.libname;
   BuildProfilePath();
   CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
-  m_disabled = false;
+  m_enabled = true;
   m_hasStrings = false;
   m_checkedStrings = false;
 }
@@ -225,7 +225,7 @@ CAddon::CAddon(const CAddon &rhs, const AddonPtr &parent)
   BuildProfilePath();
   CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
   m_strLibName  = rhs.LibName();
-  m_disabled    = rhs.Disabled();
+  m_enabled = rhs.Enabled();
   m_hasStrings  = false;
   m_checkedStrings  = false;
 }

@@ -116,7 +116,7 @@ public:
   const CStdString ID() const { return m_props.id; }
   const AddonPtr Parent() const { return m_parent; }
   const CStdString Name() const { return m_props.name; }
-  bool Disabled() const { return m_disabled; }
+  bool Enabled() const { return m_enabled; }
   const AddonVersion Version();
   const CStdString Summary() const { return m_props.summary; }
   const CStdString Description() const { return m_props.description; }
@@ -146,8 +146,8 @@ private:
 
   virtual bool IsAddonLibrary() { return false; }
 
-  void Enable() { LoadStrings(); m_disabled = false; }
-  void Disable() { m_disabled = true; ClearStrings();}
+  void Enable() { LoadStrings(); m_enabled = true; }
+  void Disable() { m_enabled = false; ClearStrings();}
 
   virtual bool LoadStrings();
   virtual void ClearStrings();
@@ -157,7 +157,7 @@ private:
   void BuildLibName();
   CStdString  m_profile;
   CStdString  m_strLibName;
-  bool        m_disabled;
+  bool        m_enabled;
   CLocalizeStrings  m_strings;
 };
 
