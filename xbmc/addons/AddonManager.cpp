@@ -419,7 +419,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   element = rootElement->FirstChildElement("type");
   if (!element)
   {
-    CLog::Log(LOGERROR, "ADDON: %s missing <id> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <type> element, ignoring", strPath.c_str());
     return false;
   }
   type = TranslateType(element->GetText());
