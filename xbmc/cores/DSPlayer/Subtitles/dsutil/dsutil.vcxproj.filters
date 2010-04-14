@@ -42,9 +42,6 @@
     <ClCompile Include="MediaTypes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mmintrin64.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="NullRenderers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
