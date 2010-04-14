@@ -101,7 +101,7 @@ CStdString CDAVDirectory::GetStatusTag(const TiXmlElement *pElement)
  * <!ELEMENT propstat (prop, status, responsedescription?) >
  *
  */
-bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
+void CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
 {
   const TiXmlNode *pResponseChild;
   const TiXmlNode *pPropstatChild;
@@ -115,7 +115,8 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
       item.m_strPath = pResponseChild->ToElement()->GetText();
       CUtil::RemoveSlashAtEnd(item.m_strPath);
     }
-    else if (ValueWithoutNamespace(pResponseChild, "propstat"))
+    else 
+    if (ValueWithoutNamespace(pResponseChild, "propstat"))
     {
       if (GetStatusTag(pResponseChild->ToElement()) == "HTTP/1.1 200 OK")
       {
@@ -131,23 +132,27 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
               {
                 item.m_dwSize = strtoll(pPropChild->ToElement()->GetText(), NULL, 10);
               }
-              else if (ValueWithoutNamespace(pPropChild, "getlastmodified"))
+              else
+              if (ValueWithoutNamespace(pPropChild, "getlastmodified"))
               {
                 struct tm timeDate = {0};
                 strptime(pPropChild->ToElement()->GetText(), "%a, %d %b %Y %T", &timeDate);
                 item.m_dateTime = mktime(&timeDate);
               }
-              else if (ValueWithoutNamespace(pPropChild, "displayname"))
+              else
+              if (ValueWithoutNamespace(pPropChild, "displayname"))
               {
                 item.SetLabel(pPropChild->ToElement()->GetText());
               }
-              else if (!item.m_dateTime.IsValid() && ValueWithoutNamespace(pPropChild, "creationdate"))
+              else
+              if (!item.m_dateTime.IsValid() && ValueWithoutNamespace(pPropChild, "creationdate"))
               {
                 struct tm timeDate = {0};
                 strptime(pPropChild->ToElement()->GetText(), "%Y-%m-%dT%T", &timeDate);
                 item.m_dateTime = mktime(&timeDate);
               }
-              else if (ValueWithoutNamespace(pPropChild, "resourcetype"))
+              else 
+              if (ValueWithoutNamespace(pPropChild, "resourcetype"))
               {
                 if (ValueWithoutNamespace(pPropChild->FirstChild(), "collection"))
                 {
@@ -160,8 +165,6 @@ bool CDAVDirectory::ParseResponse(const TiXmlElement *pElement, CFileItem &item)
       }
     }
   }
-
-  return true;
 }
 
 bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
@@ -195,45 +198,45 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   }
 
   dav.ReadData(strResponse);
-  davResponse.Parse(strResponse.c_str());
 
   if (!strResponse)
   {
     CLog::Log(LOGERROR, "%s - Failed to get any response", __FUNCTION__);
+    return false;
   }
 
+  davResponse.Parse(strResponse.c_str());
+
   // Iterate over all responses
-  for ( pChild = davResponse.RootElement()->FirstChild(); pChild != 0; pChild = pChild->NextSibling())
+  for (pChild = davResponse.RootElement()->FirstChild(); pChild != 0; pChild = pChild->NextSibling())
   {
     if (ValueWithoutNamespace(pChild, "response"))
     {
       CFileItemPtr pItem(new CFileItem());
 
-      if (ParseResponse(pChild->ToElement(), *pItem))
+      ParseResponse(pChild->ToElement(), *pItem);
+      CURL url2(strPath);
+      CURL url3(pItem->m_strPath);
+
+      CUtil::AddFileToFolder(url2.GetWithoutFilename(), url3.GetFileName(), pItem->m_strPath);
+
+      if (pItem->GetLabel().IsEmpty())
       {
-        CURL url2(strPath);
-        CURL url3(pItem->m_strPath);
-
-        CUtil::AddFileToFolder(url2.GetWithoutFilename(), url3.GetFileName(), pItem->m_strPath);
-
-        if (pItem->GetLabel().IsEmpty())
-        {
-          CStdString name(pItem->m_strPath);
-          CUtil::RemoveSlashAtEnd(name);
-          CUtil::URLDecode(name);
-          pItem->SetLabel(CUtil::GetFileName(name));
-        }
-
-        if (pItem->m_bIsFolder)
-          CUtil::AddSlashAtEnd(pItem->m_strPath);
-
-        // Add back protocol options
-        if (!url2.GetProtocolOptions().IsEmpty())
-          pItem->m_strPath = pItem->m_strPath + "|" + url2.GetProtocolOptions();
-
-        if (!pItem->m_strPath.Equals(strPath))
-          items.Add(pItem);
+        CStdString name(pItem->m_strPath);
+        CUtil::RemoveSlashAtEnd(name);
+        CUtil::URLDecode(name);
+        pItem->SetLabel(CUtil::GetFileName(name));
       }
+
+      if (pItem->m_bIsFolder)
+        CUtil::AddSlashAtEnd(pItem->m_strPath);
+
+      // Add back protocol options
+      if (!url2.GetProtocolOptions().IsEmpty())
+        pItem->m_strPath = pItem->m_strPath + "|" + url2.GetProtocolOptions();
+
+      if (!pItem->m_strPath.Equals(strPath))
+        items.Add(pItem);
     }
   }
 
