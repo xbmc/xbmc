@@ -3,9 +3,11 @@ prefix=/usr/local
 installdir=$(prefix)
 WII_EXTRA_OPTS=
 
-all: wiimote install
+all: install
 
-wiimote:
+wiimote: Clients/WiiRemote/WiiRemote
+
+Clients/WiiRemote/WiiRemote:
 	cd Clients/WiiRemote && \
 	g++ CWIID_WiiRemote.cpp -lcwiid -DICON_PATH="\"$(installdir)/share/pixmaps/xbmc/\"" $(WII_EXTRA_OPTS) -o WiiRemote
 
@@ -13,7 +15,7 @@ j2me-remote:
 	cd Clients/J2ME\ Client
 	ant -f build.xml
 
-install:
+install: Clients/WiiRemote/WiiRemote
 	mkdir -p $(prefix)/bin
 	cp -a Clients/WiiRemote/WiiRemote $(prefix)/bin/xbmc-wiiremote
 	cp -a Clients/J2ME\ Client/j2me_remote.py $(prefix)/bin/xbmc-j2meremote
