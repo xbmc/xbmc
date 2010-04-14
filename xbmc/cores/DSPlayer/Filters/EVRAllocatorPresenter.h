@@ -27,6 +27,7 @@
 #include "DX9AllocatorPresenter.h"
 #include <mfapi.h>  // API Media Foundation
 #include <evr9.h>
+#include <queue>
 #include "dshowutil/smartlist.h"
 
   // dxva.dll
@@ -210,6 +211,8 @@
 
     VideoSampleList    m_FreeSamples;
     VideoSampleList    m_ScheduledSamples;
+
+    std::queue<IMFSample *>  m_pCurrentDisplaydSampleQueue;
     IMFSample *              m_pCurrentDisplaydSample;
     bool                    m_bWaitingSample;
     bool                    m_bLastSampleOffsetValid;

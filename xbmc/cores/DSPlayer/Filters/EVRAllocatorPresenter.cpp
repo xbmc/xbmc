@@ -32,8 +32,8 @@
 #include "DShowUtil/smartlist.h"
 #include "Utils/TimeUtils.h"
 #include "Application.h"
-#if (0)    // Set to 1 to activate EVR traces
-  #define TRACE_EVR    TRACE
+#if (_DEBUG || 0)    // Set to 1 to activate EVR traces
+  #define TRACE_EVR    CLog::DebugLog
 #else
   #define TRACE_EVR
 #endif
@@ -382,7 +382,7 @@ CEVRAllocatorPresenter::CEVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdStrin
 
   // Bufferize frame only with 3D texture!
   if (g_dsSettings.iAPSurfaceUsage == VIDRNDT_AP_TEXTURE3D)
-    m_nNbDXSurface  = dsmax (dsmin (g_dsSettings.iEvrBuffers, MAX_PICTURE_SLOTS-2), 4);
+    m_nNbDXSurface  = dsmax (dsmin (g_dsSettings.m_RenderSettings.iEvrBuffers, MAX_PICTURE_SLOTS-2), 4);
   else
     m_nNbDXSurface = 1;
 
@@ -1872,7 +1872,7 @@ LONGLONG CEVRAllocatorPresenter::GetClockTime(LONGLONG PerformanceCounter)
 
 void CEVRAllocatorPresenter::OnVBlankFinished(bool fAll, LONGLONG PerformanceCounter)
 {
-  if (!m_pCurrentDisplaydSample || !m_OrderedPaint || !fAll)
+  if (m_pCurrentDisplaydSampleQueue.empty() || !m_OrderedPaint || !fAll)
     return;
 
   LONGLONG      llClockTime;
@@ -1887,21 +1887,23 @@ void CEVRAllocatorPresenter::OnVBlankFinished(bool fAll, LONGLONG PerformanceCou
   {
     llClockTime = m_StarvationClock;
   }
-  m_pCurrentDisplaydSample->GetSampleDuration(&SampleDuration);
 
-  m_pCurrentDisplaydSample->GetSampleTime(&nsSampleTime);
+  IMFSample * currentSample = m_pCurrentDisplaydSampleQueue.front(); m_pCurrentDisplaydSampleQueue.pop();
+  currentSample->GetSampleDuration(&SampleDuration);
+
+  currentSample->GetSampleTime(&nsSampleTime);
   LONGLONG TimePerFrame = m_rtTimePerFrame;
   if (!TimePerFrame)
     return;
   if (SampleDuration > 1)
-    TimePerFrame = SampleDuration;  
+    TimePerFrame = SampleDuration;
 
   {
     m_nNextSyncOffset = (m_nNextSyncOffset+1) % NB_JITTER;
     LONGLONG SyncOffset = nsSampleTime - llClockTime;
 
     m_pllSyncOffset[m_nNextSyncOffset] = SyncOffset;
-//    TRACE_EVR("EVR: SyncOffset(%d, %d): %8I64d     %8I64d     %8I64d \n", m_nCurSurface, m_VSyncMode, m_LastPredictedSync, -SyncOffset, m_LastPredictedSync - (-SyncOffset));
+    TRACE_EVR("EVR: SyncOffset(%d, %d): %8I64d     %8I64d     %8I64d \n", m_nCurSurface, m_VSyncMode, m_LastPredictedSync, -SyncOffset, m_LastPredictedSync - (-SyncOffset));
 
     m_MaxSyncOffset = MINLONG64;
     m_MinSyncOffset = MAXLONG64;
@@ -1937,7 +1939,7 @@ void CEVRAllocatorPresenter::RenderThread()
   DWORD        dwTaskIndex  = 0;
   HANDLE        hEvts[]    = { m_hEvtQuit, m_hEvtFlush};
   bool        bQuit    = false;
-    TIMECAPS      tc;
+  TIMECAPS      tc;
   DWORD        dwResolution;
   MFTIME        nsSampleTime;
   LONGLONG      llClockTime;
@@ -1998,7 +2000,6 @@ void CEVRAllocatorPresenter::RenderThread()
         CAutoLock lock(this);
         CAutoLock lock2(&m_ImageProcessingLock);
         CAutoLock cRenderLock(&m_RenderLock);
-
         
         RemoveAllSamples();
 
@@ -2061,6 +2062,9 @@ void CEVRAllocatorPresenter::RenderThread()
             ++m_OrderedPaint;
             if (!g_bExternalSubtitleTime)
               __super::SetTime (g_tSegmentStart + nsSampleTime);
+            // Since the Drawing isn't in the same thread that rendering, we need to keep track of current displayed sample
+            if (m_pCurrentDisplaydSampleQueue.empty() || m_pCurrentDisplaydSampleQueue.back() != m_pCurrentDisplaydSample) //add only one time the sample to the queue
+              m_pCurrentDisplaydSampleQueue.push(m_pCurrentDisplaydSample);
             Paint(true);
             m_nDroppedUpdate = 0;
             CompleteFrameStep (false);
@@ -2088,10 +2092,11 @@ void CEVRAllocatorPresenter::RenderThread()
               ++m_OrderedPaint;
               if (!g_bExternalSubtitleTime)
                 __super::SetTime (g_tSegmentStart + nsSampleTime);
-              //From the new frame the rendermanager will call the dx9allocator paint function
+              
+              // Since the Drawing isn't in the same thread that rendering, we need to keep track of current displayed sample
+            if (m_pCurrentDisplaydSampleQueue.empty() || m_pCurrentDisplaydSampleQueue.back() != m_pCurrentDisplaydSample) //add only one time the sample to the queue
+              m_pCurrentDisplaydSampleQueue.push(m_pCurrentDisplaydSample);
               g_application.NewFrame();
-              //Wait 100 millisec for the rendermanager to do is job
-              //g_application.WaitFrame(100);
             }
             else
             {
@@ -2217,11 +2222,12 @@ void CEVRAllocatorPresenter::RenderThread()
 
                 if (!g_bExternalSubtitleTime)
                   __super::SetTime (g_tSegmentStart + nsSampleTime);
-                //Paint(true);
-                //From the new frame the rendermanager will call the dx9allocator paint function
+
+                // Since the Drawing isn't in the same thread that rendering, we need to keep track of current displayed sample
+                if (m_pCurrentDisplaydSampleQueue.empty() || m_pCurrentDisplaydSampleQueue.back() != m_pCurrentDisplaydSample) //add only one time the sample to the queue
+                  m_pCurrentDisplaydSampleQueue.push(m_pCurrentDisplaydSample);
+
                 g_application.NewFrame();
-                //Wait 100 millisec for the rendermanager to do is job
-                //g_application.WaitFrame(100);
                 
                 NextSleepTime = 0;
                 m_pcFramesDrawn++;
@@ -2241,7 +2247,7 @@ void CEVRAllocatorPresenter::RenderThread()
                 if (NextSleepTime < 0)
                   NextSleepTime = 0;
                 NextSleepTime = 1;
-                //TRACE_EVR ("EVR: Delay\n");
+                TRACE_EVR ("EVR: Delay\n");
               }
 
               if (bDoVSyncCorrection)
@@ -2264,7 +2270,7 @@ void CEVRAllocatorPresenter::RenderThread()
                 //VSyncOffsetMin; = (((VSyncOffsetMin) % VSyncTime) + VSyncTime) % VSyncTime;
                 //VSyncOffsetMax = (((VSyncOffsetMax) % VSyncTime) + VSyncTime) % VSyncTime;
 
-//                TRACE_EVR("EVR: SyncOffset(%d, %d): %8I64d     %8I64d     %8I64d     %8I64d\n", m_nCurSurface, m_VSyncMode,VSyncOffset0, VSyncOffsetMin, VSyncOffsetMax, VSyncOffsetMax - VSyncOffsetMin);
+                TRACE_EVR("EVR: SyncOffset(%d, %d): %8I64d     %8I64d     %8I64d     %8I64d\n", m_nCurSurface, m_VSyncMode,VSyncOffset0, VSyncOffsetMin, VSyncOffsetMax, VSyncOffsetMax - VSyncOffsetMin);
 
                 if (m_VSyncMode == 0)
                 {
@@ -2296,7 +2302,6 @@ void CEVRAllocatorPresenter::RenderThread()
 
             }
           }
-
           m_pCurrentDisplaydSample = NULL;
           if (bStepForward)
           {
@@ -2649,7 +2654,7 @@ void CEVRAllocatorPresenter::MoveToScheduledList(IMFSample* pSample, bool _bSort
       }
     }
 
-//    TRACE_EVR("EVR: Time: %f %f %f\n", Time / 10000000.0, SetDuration / 10000000.0, m_DetectedFrameRate);
+    TRACE_EVR("EVR: Time: %f %f %f\n", Time / 10000000.0, SetDuration / 10000000.0, m_DetectedFrameRate);
     if (!m_bCorrectedFrameTime && m_FrameTimeCorrection)
       --m_FrameTimeCorrection;
 

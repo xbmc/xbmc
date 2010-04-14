@@ -30,6 +30,7 @@
 #include "D3DResource.h"
 #include "IPaintCallback.h"
 #include "DShowUtil/smartlist.h"
+#include "utils/Event.h"
 // Support ffdshow queueing.
 // This interface is used to check version of Media Player Classic.
 // {A273C7F6-25D4-46b0-B2C8-4F7FADC44E37}

@@ -203,7 +203,6 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   , m_bIsEVR(bIsEVR)
   , m_VSyncMode(0)
   , m_TextScale(1.0)
-
 {
   g_Windowing.Register(this);
   if (m_bIsEVR)
@@ -551,7 +550,7 @@ void CDX9AllocatorPresenter::VSyncThread()
   //HANDLE        hAvrt;
   HANDLE        hEvts[]    = { m_hEvtQuit};
   bool        bQuit    = false;
-    TIMECAPS      tc;
+  TIMECAPS      tc;
   DWORD        dwResolution;
   DWORD        dwUser = 0;
   DWORD        dwTaskIndex  = 0;
@@ -564,9 +563,9 @@ void CDX9AllocatorPresenter::VSyncThread()
 
 //  Sleep(2000);  // Remove ugly patch : create a 2s delay on opening files with Win7!
 
-    timeGetDevCaps(&tc, sizeof(TIMECAPS));
+  timeGetDevCaps(&tc, sizeof(TIMECAPS));
   dwResolution = dsmin(dsmax(tc.wPeriodMin, 0), tc.wPeriodMax);
-    dwUser    = timeBeginPeriod(dwResolution);
+  dwUser    = timeBeginPeriod(dwResolution);
   //CMPlayerCApp *pApp = (CMPlayerCApp*)AfxGetApp();
   CDsSettings s = g_dsSettings;
 
@@ -1989,6 +1988,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
   
   if (!g_renderManager.IsStarted() || m_bNeedNewDevice)
     return false;
+
   LONGLONG StartPaint = CTimeUtils::GetPerfCounter();
   CAutoLock cRenderLock(&m_RenderLock);
 
@@ -2862,6 +2862,8 @@ void CDX9AllocatorPresenter::OnPaint(CRect destRect)
   m_VideoRect.top = (long) destRect.y1;
   m_VideoRect.left = (long) destRect.x1;
   m_VideoRect.right = (long) destRect.x2;
-  Paint(false);
+
+  //Need to be true for vsync
+  Paint(true);
 
 }
