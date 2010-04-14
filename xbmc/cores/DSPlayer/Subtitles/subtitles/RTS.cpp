@@ -1345,11 +1345,11 @@ void CRenderedTextSubtitle::ParseString(CSubtitle* sub, CStdStringW str, STSStyl
   str.Replace(L"\\n", (sub->m_wrapStyle < 2 || sub->m_wrapStyle == 3) ? L" " : L"\n");
   str.Replace(L"\\h", L"\x00A0");
 
-  for(int i = 0, j = 0, len = str.GetLength(); j <= len; j++)
+  for(int i = 0, j = 0, len = str.GetLength(); j < len; j++)
   {
     wchar_t c = str[j];
 
-    if(c != '\n' && c != ' ' && c != '\x00A0' && c != 0)
+    if(c != L'\n' && c != ' ' && c != L'\x00A0' && j != len - 1)
       continue;
 
     if(i < j)
@@ -1361,7 +1361,7 @@ void CRenderedTextSubtitle::ParseString(CSubtitle* sub, CStdStringW str, STSStyl
       }
     }
 
-    if(c == '\n')
+    if(c == L'\n')
     {
       if(CWord* w = DNew CText(style, CStdStringW(), m_ktype, m_kstart, m_kend))
       {
@@ -1369,7 +1369,7 @@ void CRenderedTextSubtitle::ParseString(CSubtitle* sub, CStdStringW str, STSStyl
         m_kstart = m_kend;
       }
     }
-    else if(c == ' ' || c == '\x00A0')
+    else if(c == L' ' || c == L'\x00A0')
     {
       wchar_t pszCh[2] = { c , 0 };
       if(CWord* w = DNew CText(style, CStdStringW((wchar_t*) &pszCh), m_ktype, m_kstart, m_kend))
@@ -1404,22 +1404,36 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStdStringW str, STSStyl
 
   for(int i = 0, j; (j = str.Find('\\', i)) >= 0; i = j)
   {
+    size_t pos = str.find_first_of(L"(\\", j + 1);
+
     CStdStringW cmd;
-    for(WCHAR c = str[++j]; c && c != '(' && c != '\\'; cmd += c, c = str[++j]);
+    if (pos == std::string::npos)
+      cmd = str.substr(j + 1);
+    else
+      cmd = str.substr(j + 1, pos - (j + 1));
+
     cmd.Trim();
     if(cmd.IsEmpty()) continue;
 
+    j = pos;
+
     std::vector<CStdStringW> params;
 
-    if(str[j] == '(')
+    if(j != std::string::npos && str[j] == L'(')
     {
+      pos = str.find_first_of(L')', j + 1);
+      
       CStdStringW param;
-      for(WCHAR c = str[++j]; c && c != ')'; param += c, c = str[++j]);
+      if (pos == std::string::npos)
+        param = str.substr(j + 1);
+      else
+        param = str.substr(j + 1, pos - (j + 1));
+
       param.Trim();
 
       while(!param.IsEmpty())
       {
-        int i = param.Find(','), j = param.Find('\\');
+        int i = param.Find(L','), j = param.Find(L'\\');
 
         if(i >= 0 && (j < 0 || i < j))
         {
@@ -1747,7 +1761,7 @@ bool CRenderedTextSubtitle::ParseSSATag(CSubtitle* sub, CStdStringW str, STSStyl
     {
       if(!p.IsEmpty())
       {
-        if(p[0] == '-' || p[0] == '+')
+        if(p[0] == L'-' || p[0] == L'+')
         {
           double n = CalcAnimation(style.fontSize + style.fontSize*wcstol(p, NULL, 10)/10, style.fontSize, fAnimate);
           style.fontSize = (n > 0) ? n : org.fontSize;
