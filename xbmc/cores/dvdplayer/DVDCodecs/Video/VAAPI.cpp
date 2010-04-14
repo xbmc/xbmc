@@ -72,6 +72,7 @@ CSurface::~CSurface()
 
 CDecoder::CDecoder()
 {
+  m_refs     = 0;
   m_config   = NULL;
   m_context  = NULL;
   m_hwaccel  = (vaapi_context*)calloc(1, sizeof(vaapi_context));
@@ -190,11 +191,6 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
       return false;
   }
   
-  if(avctx->codec_id == CODEC_ID_H264)
-    m_surfaces_count = 16 + 1 + 1;
-  else
-    m_surfaces_count = 2  + 1 + 1;
-
   VADisplay display;
   display = vaGetDisplayGLX(g_Windowing.GetDisplay());
 
@@ -236,6 +232,18 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
     CLog::Log(LOGERROR, "VAAPI - invalid yuv format %x", attrib.value);
     return false;
   }
+
+  m_refs = avctx->refs;
+  if(m_refs == 0)
+  {
+    if(avctx->codec_id == CODEC_ID_H264)
+      m_refs = 16;
+    else
+      m_refs = 2;
+  }
+  m_surfaces_count = m_refs + 1 + 1;
+
+  CLog::Log(LOGDEBUG, "VAAPI - allocating %d surfaces for given %d references", m_surfaces_count, avctx->refs);
 
   CHECK(vaCreateSurfaces(m_display->get()
                        , avctx->width
@@ -321,6 +329,15 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
 
 int CDecoder::Check(AVCodecContext* avctx)
 {
+  if(avctx->refs > m_refs)
+  {
+    CLog::Log(LOGERROR, "VAAPI - reference frame count increasing, reiniting decoder");
+    Close();
+    if(Open(avctx, avctx->pix_fmt))
+      return VC_FLUSHED;
+    else
+      return VC_ERROR;
+  }
   m_holder.surface.reset();
   return 0;
 }

@@ -101,6 +101,7 @@ protected:
   unsigned               m_surfaces_count;
   VASurfaceID            m_surfaces[m_surfaces_max];
 
+  int                    m_refs;
   std::list<CSurfacePtr> m_surfaces_used;
   std::list<CSurfacePtr> m_surfaces_free;
 
