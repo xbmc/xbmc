@@ -769,7 +769,11 @@ void CSubtitleManager::Initialize()
   //subtitles.style subtitles.color subtitles.height subtitles.font subtitles.charset
   style.color = color[g_guiSettings.GetInt("subtitles.color")];
   style.alpha = g_guiSettings.GetInt("subtitles.alpha");
-  style.fontSize = g_guiSettings.GetInt("subtitles.height");
+
+  g_graphicsContext.SetScalingResolution(RES_PAL_4x3, true);
+  style.fontSize = (float) g_guiSettings.GetInt("subtitles.height") / g_graphicsContext.GetGUIScaleY();
+  style.fontSize *= 26.6 / 72.0;
+
   int fontStyle = g_guiSettings.GetInt("subtitles.style");
   switch (fontStyle)
   {
