@@ -979,7 +979,7 @@ bool CUtil::IsSpecial(const CStdString& strFile)
 bool CUtil::IsPlugin(const CStdString& strFile)
 {
   CURL url(strFile);
-  return ADDON::TranslateContent(url.GetProtocol()) != CONTENT_NONE;
+  return url.GetProtocol().Equals("plugin");
 }
 
 bool CUtil::IsCDDA(const CStdString& strFile)

@@ -1,0 +1,310 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug (DirectX)|Win32">
+      <Configuration>Debug (DirectX)</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug (OpenGL)|Win32">
+      <Configuration>Debug (OpenGL)</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release (DirectX)|Win32">
+      <Configuration>Release (DirectX)</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release (OpenGL)|Win32">
+      <Configuration>Release (OpenGL)</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FE0A91C0-E30A-47CD-8A92-A508C9292452}</ProjectGuid>
+    <RootNamespace>UnrarXLib</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">UnrarXLib\$(Configuration)\vs2010\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">UnrarXLib\$(Configuration)\vs2010\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">UnrarXLib\$(Configuration)\vs2010\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">UnrarXLib\$(Configuration)\vs2010\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">UnrarXLib\$(Configuration)\vs2010\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">UnrarXLib\$(Configuration)\vs2010\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">UnrarXLib\$(Configuration)\vs2010\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">UnrarXLib\$(Configuration)\vs2010\</IntDir>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">UnrarXLibd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">UnrarXLibd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">UnrarXLib</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">UnrarXLib</TargetName>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>..\..\guilib;..\..\xbmc;..\..\xbmc\win32\;..\..\xbmc\lib\boost;..\..\lib\libSDL-WIN32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_LIB;_XBMC;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>rar.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(OutDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <DisableSpecificWarnings>4800;4018;4146;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\guilib;..\..\xbmc;..\..\xbmc\win32;..\..\xbmc\lib\boost;..\..\lib\libSDL-WIN32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_XBMC;_USE_32BIT_TIME_T;HAS_DX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>rar.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(OutDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4800;4018;4146;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(TargetPath)</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Full</Optimization>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>..\..\guilib;..\..\xbmc;..\..\xbmc\win32\;..\..\xbmc\lib\boost;..\..\lib\libSDL-WIN32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;WIN32;_LIB;_XBMC;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>rar.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(OutDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <DisableSpecificWarnings>4800;4018;4146;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\guilib;..\..\xbmc;..\..\xbmc\win32;..\..\xbmc\lib\boost;..\..\lib\libSDL-WIN32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_XBMC;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>rar.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(OutDir)$(ProjectName).pch</PrecompiledHeaderOutputFile>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4800;4018;4146;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName).lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\archive.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\arcread.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\cmddata.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\consio.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\crc.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\crypt.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\encname.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\errhnd.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\extinfo.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\extract.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\filcreat.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\file.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\filefn.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\filestr.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\find.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\getbits.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\global.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\int64.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\isnt.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\log.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\match.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\options.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\pathfn.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\rar.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\rarvm.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\rawread.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\rdwrfn.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\recvol.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\resource.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\rijndael.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\rs.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\savepos.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\scantree.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\sha1.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\strfn.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\strlist.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\system.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\timefn.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\ulinks.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\unicode.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\unpack.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\UnrarXLib\volume.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\archive.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\array.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\cmddata.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\coder.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\compress.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\consio.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\crc.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\crypt.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\encname.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\errhnd.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\extinfo.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\extract.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\filcreat.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\file.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\filefn.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\filestr.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\find.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\getbits.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\global.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\headers.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\int64.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\isnt.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\list.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\loclang.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\match.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\options.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\os.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\pathfn.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\rar.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\rardefs.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\rarfn.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\rarlang.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\raros.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\rartypes.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\rarvm.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\rawread.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\rdwrfn.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\recvol.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\resource.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\rijndael.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\rs.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\savepos.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\scantree.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\sha1.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\strfn.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\strlist.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\system.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\timefn.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\ulinks.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\unicode.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\unpack.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\unrar.h" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\UnrarX.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\version.hpp" />
+    <ClInclude Include="..\..\xbmc\lib\UnrarXLib\volume.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\xbmc\lib\UnrarXLib\ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="guilib.vcxproj">
+      <Project>{510441ac-b9e1-4b31-9c0c-eb3ad39d90c4}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

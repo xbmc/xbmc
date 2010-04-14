@@ -1,6 +1,8 @@
 @ECHO OFF
 rem ----Usage----
-rem BuildSetup [gl|dx] [clean|noclean]
+rem BuildSetup [vs2008|vs2010] [gl|dx] [clean|noclean]
+rem vs2008 for compiling with visual studio 2008 (default)
+rem vs2010 for compiling with visual studio 2010
 rem gl for opengl build (default)
 rem dx for directx build
 rem clean to force a full rebuild
@@ -16,10 +18,13 @@ rem Config
 rem If you get an error that Visual studio was not found, SET your path for VSNET main executable.
 rem -------------------------------------------------------------
 rem	CONFIG START
+SET comp=vs2008
 SET target=dx
 SET buildmode=ask
 SET promptlevel=prompt
-FOR %%b in (%1, %2, %3, %4) DO (
+FOR %%b in (%1, %2, %3, %4, %5) DO (
+  IF %%b==vs2008 SET comp=vs2008
+  IF %%b==vs2010 SET comp=vs2010
 	IF %%b==dx SET target=dx
 	IF %%b==gl SET target=gl
 	IF %%b==clean SET buildmode=clean
@@ -29,6 +34,7 @@ FOR %%b in (%1, %2, %3, %4) DO (
 SET buildconfig=Release (OpenGL)
 IF %target%==dx SET buildconfig=Release (DirectX)
 
+IF %comp%==vs2008 (
 	IF "%VS90COMNTOOLS%"=="" (
 		set NET="%ProgramFiles%\Microsoft Visual Studio 9.0 Express\Common7\IDE\VCExpress.exe"
 	) ELSE IF EXIST "%VS90COMNTOOLS%\..\IDE\VCExpress.exe" (
@@ -36,14 +42,34 @@ IF %target%==dx SET buildconfig=Release (DirectX)
 	) ELSE IF EXIST "%VS90COMNTOOLS%\..\IDE\devenv.exe" (
 		set NET="%VS90COMNTOOLS%\..\IDE\devenv.exe"
 	)
-  
-	IF NOT EXIST %NET% (
-	  set DIETEXT=Visual Studio .NET 2008 Express was not found.
+) ELSE IF %comp%==vs2010 (
+  IF "%VS100COMNTOOLS%"=="" (
+		set NET="%ProgramFiles%\Microsoft Visual Studio 10.0\Common7\IDE\VCExpress.exe"
+	) ELSE IF EXIST "%VS100COMNTOOLS%\..\IDE\VCExpress.exe" (
+		set NET="%VS100COMNTOOLS%\..\IDE\VCExpress.exe"
+	) ELSE IF EXIST "%VS100COMNTOOLS%\..\IDE\devenv.exe" (
+		set NET="%VS100COMNTOOLS%\..\IDE\devenv.exe"
+	)
+)
+
+  IF NOT EXIST %NET% (
+    IF %comp%==vs2008 (
+      set DIETEXT=Visual Studio .NET 2008 Express was not found.
+    ELSE IF %comp%==vs2010 (
+      set DIETEXT=Visual Studio .NET 2010 Express was not found.
+    )
 	  goto DIE
-	) 
+  )
+  
+  IF %comp%==vs2008 (
     set OPTS_EXE="..\VS2008Express\XBMC for Windows.sln" /build "%buildconfig%"
-	set CLEAN_EXE="..\VS2008Express\XBMC for Windows.sln" /clean "%buildconfig%"
-	set EXE= "..\VS2008Express\XBMC\%buildconfig%\XBMC.exe"
+    set CLEAN_EXE="..\VS2008Express\XBMC for Windows.sln" /clean "%buildconfig%"
+    set EXE= "..\VS2008Express\XBMC\%buildconfig%\XBMC.exe"
+  ) ELSE (
+    set OPTS_EXE="..\VS2010Express\XBMC for Windows.sln" /build "%buildconfig%"
+    set CLEAN_EXE="..\VS2010Express\XBMC for Windows.sln" /clean "%buildconfig%"
+    set EXE= "..\VS2010Express\XBMC\%buildconfig%\XBMC.exe"
+  )
 	
   rem	CONFIG END
   rem -------------------------------------------------------------
@@ -160,6 +186,11 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   copy ..\..\known_issues.txt BUILD_WIN32\Xbmc > NUL
   call dependencies\getdeps.bat > NUL
   xcopy dependencies\*.* BUILD_WIN32\Xbmc /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  IF %comp%==vs2008 (
+    xcopy vs_redistributable\vs2008\vcredist_x86.exe BUILD_WIN32\Xbmc /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  ) ELSE (
+    xcopy vs_redistributable\vs2010\vcredist_x86.exe BUILD_WIN32\Xbmc /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  )
   copy sources.xml BUILD_WIN32\Xbmc\userdata > NUL
   
   xcopy ..\..\language BUILD_WIN32\Xbmc\language /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
@@ -263,10 +294,15 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   IF %promptlevel%==noprompt (
   goto END
   )
-  IF NOT EXIST "%CD%\..\vs2008express\XBMC\%buildconfig%\" BuildLog.htm" goto END
+  IF %comp%==vs2008 (
+    SET log=%CD%\..\vs2008express\XBMC\%buildconfig%\" BuildLog.htm
+  ) ELSE (
+    SET log=%CD%\..\vs2008express\XBMC\%buildconfig%\" BuildLog.htm
+  )
+  IF NOT EXIST "%log%" goto END
   set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
   if /I %XBMC_BUILD_ANSWER% NEQ y goto END
-  start /D"%CD%\..\vs2008express\XBMC\%buildconfig%\" BuildLog.htm"
+  start /D"%log%"
   goto END
 
 :END

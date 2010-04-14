@@ -14,7 +14,7 @@ typedef int socklen_t;
 extern "C" int inet_pton(int af, const char *src, void *dst);
 #endif
 
-using namespace std;
+//using namespace std; On VS2010, bind conflicts with std::bind
 
 #define DEBUG
 
@@ -131,7 +131,7 @@ void CVTPSession::Close()
     closesocket(m_socket);
 }
 
-bool CVTPSession::Open(const string &host, int port)
+bool CVTPSession::Open(const std::string &host, int port)
 {
   struct sockaddr_in address = {};
 
@@ -166,7 +166,7 @@ bool CVTPSession::Open(const string &host, int port)
   }
 
   // VTP Server will send a greeting
-  string line;
+  std::string line;
   int    code;
   ReadResponse(code, line);
 
@@ -175,9 +175,9 @@ bool CVTPSession::Open(const string &host, int port)
   return true;
 }
 
-bool CVTPSession::ReadResponse(int &code, string &line)
+bool CVTPSession::ReadResponse(int &code, std::string &line)
 {
-  vector<string> lines;
+  std::vector<std::string> lines;
   if(ReadResponse(code, lines))
   {
     line = lines[lines.size()-1];
@@ -186,14 +186,14 @@ bool CVTPSession::ReadResponse(int &code, string &line)
   return false;
 }
 
-bool CVTPSession::ReadResponse(int &code, vector<string> &lines)
+bool CVTPSession::ReadResponse(int &code, std::vector<std::string> &lines)
 {
   fd_set         set_r, set_e;
   struct timeval tv;
   int            result;
   char           buffer[256];
   char           cont = 0;
-  string         line;
+  std::string         line;
   size_t         pos1 = 0, pos2 = 0, pos3 = 0;
 
   while(true)
@@ -265,9 +265,9 @@ bool CVTPSession::ReadResponse(int &code, vector<string> &lines)
   return true;
 }
 
-bool CVTPSession::SendCommand(const string &command)
+bool CVTPSession::SendCommand(const std::string &command)
 {
-  string buffer;
+  std::string buffer;
 
   buffer  = command;
   buffer += "\r\n";
@@ -282,9 +282,9 @@ bool CVTPSession::SendCommand(const string &command)
   return true;
 }
 
-bool CVTPSession::SendCommand(const string &command, int &code, string line)
+bool CVTPSession::SendCommand(const std::string &command, int &code, std::string line)
 {
-  vector<string> lines;
+  std::vector<std::string> lines;
   if(SendCommand(command, code, lines))
   {
     line = lines[lines.size()-1];
@@ -293,7 +293,7 @@ bool CVTPSession::SendCommand(const string &command, int &code, string line)
   return false;
 }
 
-bool CVTPSession::SendCommand(const string &command, int &code, vector<string> &lines)
+bool CVTPSession::SendCommand(const std::string &command, int &code, std::vector<std::string> &lines)
 {
   if(!SendCommand(command))
     return false;
@@ -310,29 +310,29 @@ bool CVTPSession::SendCommand(const string &command, int &code, vector<string> &
   return true;
 }
 
-bool CVTPSession::GetChannels(vector<Channel> &channels)
+bool CVTPSession::GetChannels(std::vector<Channel> &channels)
 {
-  vector<string> lines;
+  std::vector<std::string> lines;
   int            code;
 
   if(!SendCommand("LSTC", code, lines))
     return false;
 
-  for(vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
+  for(std::vector<std::string>::iterator it = lines.begin(); it != lines.end(); it++)
   {
-    string& data(*it);
+    std::string& data(*it);
     size_t space, colon;
     struct Channel channel;
 
     space = data.find(" ");
-    if(space == string::npos)
+    if(space == std::string::npos)
     {
       CLog::Log(LOGERROR, "CVTPSession::GetChannels - failed to parse line %s", it->c_str());
       continue;
     }
 
     colon = data.find(":", space+1);
-    if(colon == string::npos)
+    if(colon == std::string::npos)
     {
       CLog::Log(LOGERROR, "CVTPSession::GetChannels - failed to parse line %s", it->c_str());
       continue;
@@ -342,7 +342,7 @@ bool CVTPSession::GetChannels(vector<Channel> &channels)
     channel.name  = data.substr(space+1, colon-space-1);
 
     colon = channel.name.find(";");
-    if(colon != string::npos)
+    if(colon != std::string::npos)
     {
       channel.network = channel.name.substr(colon+1);
       channel.name.erase(colon);
@@ -364,7 +364,7 @@ SOCKET CVTPSession::GetStreamLive(int channel)
   SOCKET      sock;
   socklen_t   len = sizeof(address);
   char        buffer[1024];
-  string      result;
+  std::string      result;
   int         code;
 
   if(!SendCommand("CAPS TS", code, result))
@@ -425,7 +425,7 @@ void CVTPSession::AbortStreamLive()
   if(m_socket == INVALID_SOCKET)
     return;
 
-  string line;
+  std::string line;
   int    code;
   if(!SendCommand("ABRT 0", code, line))
     CLog::Log(LOGERROR, "CVTPSession::AbortStreamLive - failed");
@@ -437,7 +437,7 @@ bool CVTPSession::CanStreamLive(int channel)
     return false;
 
   char   buffer[1024];
-  string line;
+  std::string line;
   int    code;
 
   sprintf(buffer, "PROV %d %d", -1, channel);

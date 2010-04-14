@@ -61,8 +61,8 @@ class CPacketQueue
   int m_size;
 public:
   CPacketQueue();
-  void Add(shared_ptr<Packet> p);
-  shared_ptr<Packet> Remove();
+  void Add(boost::shared_ptr<Packet> p);
+  boost::shared_ptr<Packet> Remove();
   void RemoveAll();
   int size(), GetSize();
   
@@ -229,14 +229,14 @@ class CBaseSplitterFilter
   CCritSec m_csmtnew;
   map<DWORD, CMediaType> m_mtnew;
 
-  list<shared_ptr<CBaseSplitterOutputPin>> m_pRetiredOutputs;
+  list<boost::shared_ptr<CBaseSplitterOutputPin>> m_pRetiredOutputs;
   
   Com::SmartQIPtr<ISyncReader> m_pSyncReader;
 protected:
   CStdStringW m_fn;
 
   auto_ptr<CBaseSplitterInputPin> m_pInput;
-  list<shared_ptr<CBaseSplitterOutputPin>> m_pOutputs;
+  list<boost::shared_ptr<CBaseSplitterOutputPin>> m_pOutputs;
 
   CBaseSplitterOutputPin* GetOutputPin(DWORD TrackNum);
   DWORD GetOutputTrackNum(CBaseSplitterOutputPin* pPin);

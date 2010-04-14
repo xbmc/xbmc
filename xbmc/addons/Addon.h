@@ -56,7 +56,7 @@ public:
 struct AddonProps
 {
 public:
-  AddonProps(CStdString &id, TYPE type, CStdString &versionstr)
+  AddonProps(const CStdString &id, TYPE type, const CStdString &versionstr)
     : id(id)
     , type(type)
     , version(versionstr)
@@ -112,10 +112,11 @@ public:
   // properties
   const TYPE Type() const { return m_props.type; }
   AddonProps Props() const { return m_props; }
+  AddonProps& Props() { return m_props; }
   const CStdString ID() const { return m_props.id; }
   const AddonPtr Parent() const { return m_parent; }
   const CStdString Name() const { return m_props.name; }
-  bool Disabled() const { return m_disabled; }
+  bool Enabled() const { return m_enabled; }
   const AddonVersion Version();
   const CStdString Summary() const { return m_props.summary; }
   const CStdString Description() const { return m_props.description; }
@@ -127,7 +128,7 @@ public:
   const int Stars() const { return m_props.stars; }
   const CStdString Disclaimer() const { return m_props.disclaimer; }
   bool Supports(const CONTENT_TYPE &content) const { return (m_props.contents.count(content) == 1); }
-  ADDONDEPS GetDeps() { return m_props.dependencies; }
+  ADDONDEPS& GetDeps() { return m_props.dependencies; }
 
 protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
@@ -145,8 +146,8 @@ private:
 
   virtual bool IsAddonLibrary() { return false; }
 
-  void Enable() { LoadStrings(); m_disabled = false; }
-  void Disable() { m_disabled = true; ClearStrings();}
+  void Enable() { LoadStrings(); m_enabled = true; }
+  void Disable() { m_enabled = false; ClearStrings();}
 
   virtual bool LoadStrings();
   virtual void ClearStrings();
@@ -156,7 +157,7 @@ private:
   void BuildLibName();
   CStdString  m_profile;
   CStdString  m_strLibName;
-  bool        m_disabled;
+  bool        m_enabled;
   CLocalizeStrings  m_strings;
 };
 

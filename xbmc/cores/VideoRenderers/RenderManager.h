@@ -38,7 +38,7 @@
 
 
 namespace DXVA { class CProcessor; }
-namespace VAAPI { class CDecoder; }
+namespace VAAPI { class CSurfaceHolder; }
 class CVDPAU;
 class IPaintCallback;
 
@@ -124,11 +124,11 @@ public:
 #endif
 
 #ifdef HAVE_LIBVA
-  void AddProcessor(VAAPI::CDecoder* vaapi_object, unsigned int vaapi_surface)
+  void AddProcessor(VAAPI::CHolder& holder)
   {
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
-      m_pRenderer->AddProcessor(vaapi_object, vaapi_surface);
+      m_pRenderer->AddProcessor(holder);
   }
 #endif
 

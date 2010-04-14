@@ -207,8 +207,12 @@ int CCPUInfo::getUsedPercentage()
   ioTicks -= m_ioTicks;
 
 #ifdef _WIN32
+  if(userTicks + systemTicks == 0)
+    return m_lastUsedPercentage;
   int result = (int) ((userTicks + systemTicks - idleTicks) * 100 / (userTicks + systemTicks));
 #else
+  if(userTicks + niceTicks + systemTicks + idleTicks + ioTicks == 0)
+    return m_lastUsedPercentage;
   int result = (int) ((userTicks + niceTicks + systemTicks) * 100 / (userTicks + niceTicks + systemTicks + idleTicks + ioTicks));
 #endif
 

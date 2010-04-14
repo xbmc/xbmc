@@ -50,7 +50,7 @@
 #include "utils/GUIInfoManager.h"
 #include "utils/log.h"
 
-using namespace std;
+//using namespace std; On VS2010 error_code conflicts with std::error_code
 using namespace XFILE;
 using namespace MUSIC_INFO;
 

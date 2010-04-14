@@ -179,12 +179,12 @@ static int dvd_file_open(URLContext *h, const char *filename, int flags)
 }
 */
 
-static int dvd_file_read(URLContext *h, BYTE* buf, int size)
+static int dvd_file_read(void *h, uint8_t* buf, int size)
 {
   if(interrupt_cb())
     return -1;
 
-  CDVDInputStream* pInputStream = (CDVDInputStream*)h->priv_data;
+  CDVDInputStream* pInputStream = (CDVDInputStream*)h;
   return pInputStream->Read(buf, size);
 }
 /*
@@ -193,34 +193,17 @@ static int dvd_file_write(URLContext *h, BYTE* buf, int size)
   return -1;
 }
 */
-static offset_t dvd_file_seek(URLContext *h, offset_t pos, int whence)
+static offset_t dvd_file_seek(void *h, offset_t pos, int whence)
 {
   if(interrupt_cb())
     return -1;
 
-  CDVDInputStream* pInputStream = (CDVDInputStream*)h->priv_data;
+  CDVDInputStream* pInputStream = (CDVDInputStream*)h;
   if(whence == AVSEEK_SIZE)
     return pInputStream->GetLength();
   else
     return pInputStream->Seek(pos, whence & ~AVSEEK_FORCE);
 }
-
-static int dvd_file_close(URLContext *h)
-{
-  return 0;
-}
-
-URLProtocol dvd_file_protocol = {
-                                  "CDVDInputStream",
-                                  NULL,                 /*url_open*/
-                                  dvd_file_read,        /*url_read*/
-                                  NULL,                 /*url_write*/
-                                  dvd_file_seek,        /*url_seek*/
-                                  dvd_file_close,       /*url_close*/
-                                  NULL,                 /*URLProtocol*/
-                                  NULL,                 /*url_read_pause*/
-                                  NULL                  /*url_read_seek*/
-                                };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -297,11 +280,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       iformat = m_dllAvFormat.av_find_input_format("flv");
     else if( content.compare("video/x-flv") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("flv");
-
-    /* these are likely pure streams, and as such we don't */
-    /* want to try to look for streaminfo before playback */
-    if( iformat )
-      streaminfo = false;
   }
 
   if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
@@ -320,22 +298,18 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   else
   {
     m_timeout = 0;
-
-    // initialize url context to be used as filedevice
-    URLContext* context = (URLContext*)m_dllAvUtil.av_mallocz(sizeof(struct URLContext) + strFile.length() + 1);
-    context->prot = &dvd_file_protocol;
-    context->priv_data = (void*)m_pInput;
-    context->max_packet_size = FFMPEG_FILE_BUFFER_SIZE;
+    m_ioContext = m_dllAvFormat.av_alloc_put_byte(m_buffer, FFMPEG_FILE_BUFFER_SIZE, 0, m_pInput, dvd_file_read, NULL, dvd_file_seek);
+    m_ioContext->max_packet_size = FFMPEG_FILE_BUFFER_SIZE;
 
     if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
     {
-      context->max_packet_size = FFMPEG_DVDNAV_BUFFER_SIZE;
-      context->is_streamed = 1;
+      m_ioContext->max_packet_size = FFMPEG_DVDNAV_BUFFER_SIZE;
+      m_ioContext->is_streamed = 1;
     }
     else if (m_pInput->IsStreamType(DVDSTREAM_TYPE_TV))
     {
       if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
-        context->is_streamed = 1;
+        m_ioContext->is_streamed = 1;
 
       // this actually speeds up channel changes by almost a second
       // however, it alsa makes player not buffer anything, this
@@ -346,22 +320,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     else
     {
       if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
-        context->is_streamed = 1;
-    }
-
-#if LIBAVFORMAT_VERSION_INT >= (52<<16)
-    context->filename = (char *) &context[1];
-#endif
-
-    strcpy(context->filename, strFile.c_str());
-
-    // open our virtual file device
-    if(m_dllAvFormat.url_fdopen(&m_ioContext, context) < 0)
-    {
-      CLog::Log(LOGERROR, "%s - Unable to init io context", __FUNCTION__);
-      m_dllAvUtil.av_free(context);
-      Dispose();
-      return false;
+        m_ioContext->is_streamed = 1;
     }
 
     if( iformat == NULL )
@@ -375,10 +334,10 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       pd.filename = strFile.c_str();
 
       // read data using avformat's buffers
-      if(context->is_streamed)
-        pd.buf_size = m_dllAvFormat.get_partial_buffer(m_ioContext, pd.buf, context->max_packet_size);
+      if(m_ioContext->is_streamed)
+        pd.buf_size = m_dllAvFormat.get_partial_buffer(m_ioContext, pd.buf, m_ioContext->max_packet_size);
       else
-        pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, context->max_packet_size);
+        pd.buf_size = m_dllAvFormat.get_buffer(m_ioContext, pd.buf, m_ioContext->max_packet_size);
 
       if (pd.buf_size <= 0)
       {
@@ -435,7 +394,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   m_bMatroska = strcmp(m_pFormatContext->iformat->name, "matroska") == 0;
   m_bAVI = strcmp(m_pFormatContext->iformat->name, "avi") == 0;
 
-  if (streaminfo || m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+  if (streaminfo)
   {
     /* too speed up dvd switches, only analyse very short */
     if(m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -447,7 +406,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     if (iErr < 0)
     {
       CLog::Log(LOGWARNING,"could not find codec parameters for %s", strFile.c_str());
-      if (!streaminfo || (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3))
+      if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) || (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3))
       {
         // special case, our codecs can still handle it.
       }
@@ -516,7 +475,7 @@ void CDVDDemuxFFmpeg::Dispose()
         m_ioContext = m_pFormatContext->pb;
       }
       m_dllAvFormat.av_close_input_stream(m_pFormatContext);
-      m_dllAvFormat.url_fclose(m_ioContext);
+      m_dllAvUtil.av_free(m_ioContext);
     }
     else
       m_dllAvFormat.av_close_input_file(m_pFormatContext);

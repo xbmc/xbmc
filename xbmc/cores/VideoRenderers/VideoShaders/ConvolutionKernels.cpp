@@ -25,6 +25,10 @@
 #include "ConvolutionKernels.h"
 #include "MathUtils.h"
 
+#ifndef M_PI
+  #define M_PI       3.14159265358979323846
+#endif
+
 #define SINC(x) (sin(M_PI * (x)) / (M_PI * (x)))
 
 CConvolutionKernel::CConvolutionKernel(ESCALINGMETHOD method, int size)

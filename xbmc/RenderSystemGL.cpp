@@ -48,7 +48,7 @@ void CRenderSystemGL::CheckOpenGLQuirks()
 
 {
 #ifdef __APPLE__	
-  if (strstr (m_RenderVendor, "NVIDIA"))
+  if (m_RenderVendor.Find("NVIDIA") > -1)
   {             
     // Nvidia 7300 (AppleTV) and 7600 cannot do DXT with NPOT under OSX
     // Nvidia 9400M is slow as a dog
@@ -66,6 +66,11 @@ void CRenderSystemGL::CheckOpenGLQuirks()
     }
   }
 #endif
+  if (m_RenderVendor.Equals("Tungsten Graphics, Inc."))
+  {
+    if(m_RenderRenderer.Find("Poulsbo") >= 0)
+      m_renderCaps &= ~RENDER_CAPS_DXT_NPOT;
+  }
 }	
 
 bool CRenderSystemGL::InitRenderSystem()

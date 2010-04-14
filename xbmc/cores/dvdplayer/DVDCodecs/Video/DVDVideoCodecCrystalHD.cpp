@@ -54,8 +54,7 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
 {
   int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
 
-  if ((requestedMethod == RENDER_METHOD_AUTO ||
-       requestedMethod == RENDER_METHOD_CRYSTALHD) && !hints.software)
+  if (requestedMethod == RENDER_METHOD_AUTO && !hints.software)
   {
     switch (hints.codec)
     {

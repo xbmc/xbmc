@@ -285,6 +285,12 @@
 		8DD76F790486A8DE00D96B5E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */; };
 		C80425711158A0DE00D158A6 /* controlslider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C80425701158A0DE00D158A6 /* controlslider.cpp */; };
 		C80425721158A0DE00D158A6 /* controlslider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C80425701158A0DE00D158A6 /* controlslider.cpp */; };
+		C85EB756117460D50008E5A5 /* AddonDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB754117460D50008E5A5 /* AddonDatabase.cpp */; };
+		C85EB757117460D50008E5A5 /* AddonDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB754117460D50008E5A5 /* AddonDatabase.cpp */; };
+		C85EB75C1174614E0008E5A5 /* Repository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB75A1174614E0008E5A5 /* Repository.cpp */; };
+		C85EB75D1174614E0008E5A5 /* Repository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB75A1174614E0008E5A5 /* Repository.cpp */; };
+		C85EB762117461830008E5A5 /* GUIViewStateAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB760117461830008E5A5 /* GUIViewStateAddonBrowser.cpp */; };
+		C85EB763117461830008E5A5 /* GUIViewStateAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB760117461830008E5A5 /* GUIViewStateAddonBrowser.cpp */; };
 		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
 		E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
 		E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
@@ -2196,6 +2202,12 @@
 		88ECB6E90DE07BEE003396A7 /* libogg.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.0.dylib; path = /opt/local/lib/libogg.0.dylib; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
 		C80425701158A0DE00D158A6 /* controlslider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controlslider.cpp; sourceTree = "<group>"; };
+		C85EB754117460D50008E5A5 /* AddonDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonDatabase.cpp; sourceTree = "<group>"; };
+		C85EB755117460D50008E5A5 /* AddonDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonDatabase.h; sourceTree = "<group>"; };
+		C85EB75A1174614E0008E5A5 /* Repository.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Repository.cpp; path = addons/Repository.cpp; sourceTree = "<group>"; };
+		C85EB75B1174614E0008E5A5 /* Repository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Repository.h; path = addons/Repository.h; sourceTree = "<group>"; };
+		C85EB760117461830008E5A5 /* GUIViewStateAddonBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateAddonBrowser.cpp; sourceTree = "<group>"; };
+		C85EB761117461830008E5A5 /* GUIViewStateAddonBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateAddonBrowser.h; sourceTree = "<group>"; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E30B3E8E0D5D59290030A311 /* libshout-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libshout-x86-osx.a"; path = "xbmc/lib/libshout/libshout-x86-osx.a"; sourceTree = "<group>"; };
@@ -4034,6 +4046,8 @@
 		18B49FF01152BEEB001AF8A6 /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				C85EB75A1174614E0008E5A5 /* Repository.cpp */,
+				C85EB75B1174614E0008E5A5 /* Repository.h */,
 				18B49FF11152BFA5001AF8A6 /* Addon.cpp */,
 				18B49FF21152BFA5001AF8A6 /* Addon.h */,
 				18B49FF31152BFA5001AF8A6 /* AddonDll.h */,
@@ -4472,6 +4486,10 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				C85EB760117461830008E5A5 /* GUIViewStateAddonBrowser.cpp */,
+				C85EB761117461830008E5A5 /* GUIViewStateAddonBrowser.h */,
+				C85EB754117460D50008E5A5 /* AddonDatabase.cpp */,
+				C85EB755117460D50008E5A5 /* AddonDatabase.h */,
 				18B49FF01152BEEB001AF8A6 /* addons */,
 				E4A249F51095C880003D74C6 /* AutorunMediaJob.cpp */,
 				E4A249F61095C880003D74C6 /* AutorunMediaJob.h */,
@@ -8149,6 +8167,9 @@
 				C80425711158A0DE00D158A6 /* controlslider.cpp in Sources */,
 				7C8A187D115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */,
 				F52BFFDB115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */,
+				C85EB756117460D50008E5A5 /* AddonDatabase.cpp in Sources */,
+				C85EB75C1174614E0008E5A5 /* Repository.cpp in Sources */,
+				C85EB762117461830008E5A5 /* GUIViewStateAddonBrowser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9014,6 +9035,9 @@
 				C80425721158A0DE00D158A6 /* controlslider.cpp in Sources */,
 				7C8A187C115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */,
 				F52BFFDC115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */,
+				C85EB757117460D50008E5A5 /* AddonDatabase.cpp in Sources */,
+				C85EB75D1174614E0008E5A5 /* Repository.cpp in Sources */,
+				C85EB763117461830008E5A5 /* GUIViewStateAddonBrowser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
