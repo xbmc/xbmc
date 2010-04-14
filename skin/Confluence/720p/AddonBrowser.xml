@@ -132,29 +132,33 @@
 					<onleft>3</onleft>
 					<onright>50</onright>
 					<onup>2</onup>
-					<ondown>610</ondown>
+					<ondown>5</ondown>
 				</control>
-				<control type="togglebutton" id ="5">
-					<description>Enable auto-updates</description>
-					<posx>10</posx>
+				<control type="label">
+					<posx>0</posx>
 					<posy>90</posy>
 					<width>250</width>
-					<height>80</height>
-					<textoffsety>13</textoffsety>
-					<label>24063</label>
+					<height>45</height>
+					<font>font12caps</font>
+					<label>$LOCALIZE[24002]</label>
+					<textcolor>dialogheader</textcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+				</control>
+				<control type="radiobutton" id ="5">
+					<description>Enable auto-updates</description>
+					<posx>0</posx>
+					<posy>130</posy>
 					<include>ButtonCommonValues</include>
-					<align>left</align>
-					<aligny>top</aligny>
-					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<label>24063</label>
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<onup>3</onup>
-					<ondown>2</ondown>
+					<ondown>610</ondown>
 				</control>
 				<control type="button" id="610">
 					<description>Fake Button to fix Player Controls Navigation</description>
-					<onup>3</onup>
+					<onup>5</onup>
 					<ondown>603</ondown>
 					<visible>false</visible>
 				</control>
@@ -169,6 +173,47 @@
 					<ondown>2</ondown>
 					<visible>false</visible>
 				</control>
+			</control>
+		</control>
+		<control type="group">
+			<posx>470</posx>
+			<posy>0</posy>
+			<visible>!IsEmpty(Container.AddonCatagory)</visible>
+			<include>VisibleFadeEffect</include>
+			<animation effect="slide" end="-710,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="slide" start="-710,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>300</width>
+				<height>35</height>
+				<texture border="0,0,32,0">header.png</texture>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<posx>270</posx>
+				<label>$INFO[Container.AddonCatagory]</label>
+			</control>
+		</control>
+		<control type="group">
+			<posx>240</posx>
+			<posy>0</posy>
+			<visible>!IsEmpty(Container.RepoName)</visible>
+			<include>VisibleFadeEffect</include>
+			<animation effect="slide" end="-600,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="slide" start="-600,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>350</width>
+				<height>35</height>
+				<texture border="0,0,32,0">header.png</texture>
+			</control>
+			<control type="label">
+				<width>250</width>
+				<include>WindowTitleCommons</include>
+				<posx>320</posx>
+				<label>$INFO[Container.RepoName]</label>
 			</control>
 		</control>
 		<control type="group">

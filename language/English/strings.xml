@@ -2108,6 +2108,7 @@
   <!-- strings 24000 thru 24299 reserved for the addons framework -->
   <string id="24000">Add-on</string>
   <string id="24001">Add-ons</string>
+  <string id="24002">Add-on options</string>
 
   <string id="24005">Plugin</string>
   <string id="24007">Scraper</string>
@@ -2133,7 +2134,7 @@
   <string id="24060">Would you like to disable this Add-on?</string>
   <string id="24061">Addon-on update available!</string>
   <string id="24062">Enabled Add-ons</string>
-  <string id="24063">Enable auto-update</string>
+  <string id="24063">Auto update</string>
   <string id="24064">Add-on enabled</string>
   <string id="24065">Add-on updated</string>
 
