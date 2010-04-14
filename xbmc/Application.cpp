@@ -1736,13 +1736,13 @@ bool CApplication::LoadUserWindows()
       CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
 
       if (strType.Equals("dialog"))
-        pWindow = new CGUIDialog(id, FindFileData.cFileName);
+        pWindow = new CGUIDialog(id + WINDOW_HOME, FindFileData.cFileName);
       else if (strType.Equals("submenu"))
-        pWindow = new CGUIDialogSubMenu(id, FindFileData.cFileName);
+        pWindow = new CGUIDialogSubMenu(id + WINDOW_HOME, FindFileData.cFileName);
       else if (strType.Equals("buttonmenu"))
-        pWindow = new CGUIDialogButtonMenu(id, FindFileData.cFileName);
+        pWindow = new CGUIDialogButtonMenu(id + WINDOW_HOME, FindFileData.cFileName);
       else
-        pWindow = new CGUIStandardWindow(id, FindFileData.cFileName);
+        pWindow = new CGUIStandardWindow(id + WINDOW_HOME, FindFileData.cFileName);
 
       // Check to make sure the pointer isn't still null
       if (pWindow == NULL)
