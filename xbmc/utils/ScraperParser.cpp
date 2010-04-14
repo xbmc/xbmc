@@ -328,7 +328,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
         {
           CStdString strResultNoCase = strResult;
           strResultNoCase.ToLower();
-          if ((size_t) strResultNoCase.Find(m_param[iCompare-1]) != -1)
+          if (strResultNoCase.Find(m_param[iCompare-1]) != -1)
             dest += strResult;
         }
         else
@@ -436,11 +436,11 @@ bool CScraperParser::HasFunction(const CStdString& strTag)
 
 void CScraperParser::Clean(CStdString& strDirty)
 {
-  size_t i=0;
+  int i=0;
   CStdString strBuffer;
   while ((i=strDirty.Find("!!!CLEAN!!!",i)) != -1)
   {
-    size_t i2;
+    int i2;
     if ((i2=strDirty.Find("!!!CLEAN!!!",i+11)) != -1)
     {
       strBuffer = strDirty.substr(i+11,i2-i-11);
@@ -457,7 +457,7 @@ void CScraperParser::Clean(CStdString& strDirty)
   i=0;
   while ((i=strDirty.Find("!!!TRIM!!!",i)) != -1)
   {
-    size_t i2;
+    int i2;
     if ((i2=strDirty.Find("!!!TRIM!!!",i+10)) != -1)
     {
       strBuffer = strDirty.substr(i+10,i2-i-10);
@@ -472,7 +472,7 @@ void CScraperParser::Clean(CStdString& strDirty)
   i=0;
   while ((i=strDirty.Find("!!!ENCODE!!!",i)) != -1)
   {
-    size_t i2;
+    int i2;
     if ((i2=strDirty.Find("!!!ENCODE!!!",i+12)) != -1)
     {
       strBuffer = strDirty.substr(i+12,i2-i-12);
@@ -549,7 +549,7 @@ void CScraperParser::InsertToken(CStdString& strOutput, int buf, const char* tok
 {
   char temp[4];
   sprintf(temp,"\\%i",buf);
-  size_t i2=0;
+  int i2=0;
   while ((i2 = strOutput.Find(temp,i2)) != -1)
   {
     strOutput.Insert(i2,token);

@@ -5046,7 +5046,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
               CTimeUtils::GetTimeMS() - time);
 
     CStdString order(where);
-    bool maintainOrder = (size_t)order.ToLower().Find("order by") != -1;
+    bool maintainOrder = order.ToLower().Find("order by") != -1;
     Stack(items, VIDEODB_CONTENT_TVSHOWS, maintainOrder);
 
     // cleanup
