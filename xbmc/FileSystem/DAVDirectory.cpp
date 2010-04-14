@@ -199,9 +199,10 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
   dav.ReadData(strResponse);
 
-  if (!strResponse)
+  if (strResponse.IsEmpty())
   {
-    CLog::Log(LOGERROR, "%s - Failed to get any response", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Failed to get any response (%s)", __FUNCTION__, strPath.c_str());
+    dav.Close();
     return false;
   }
 
