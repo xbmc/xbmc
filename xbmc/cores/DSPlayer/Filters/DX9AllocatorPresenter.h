@@ -60,6 +60,7 @@ public:
     void          UpdateAlphaBitmap();
   protected:
     Com::SmartSize  m_ScreenSize;
+    Com::SmartRect  m_pScreenSize;
     UINT  m_RefreshRate;
 
 //    bool  m_fVMRSyncFix;

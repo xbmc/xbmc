@@ -127,184 +127,20 @@ void CWinDsRenderer::RegisterDsCallback(IPaintCallback *callback)
 {
   m_paintCallback = callback;
 }
+
 void CWinDsRenderer::UnRegisterDsCallback()
 {
   m_paintCallback = NULL;
 }
+
 void CWinDsRenderer::RenderDShowBuffer( DWORD flags )
 {
   CSingleLock lock(g_graphicsContext);
+
   if (m_paintCallback)
   {
     m_paintCallback->OnPaint(m_destRect);
   }
-  //RenderVideoTexture();
-  RenderSubtitleTexture();
-}
-
-void CWinDsRenderer::RenderSubtitleTexture()
-{
-  if (CStreamsManager::getSingleton()->SubtitleManager)
-  {
-
-    LPDIRECT3DDEVICE9 m_pD3DDevice = g_Windowing.Get3DDevice();
-    if (! m_pD3DDevice)
-      return;
-
-    Com::SmartPtr<IDirect3DTexture9> pTexture;
-    
-    Com::SmartRect pSrc, pDst;
-
-    if (m_pScreenSize.Width() == 0) // Not init
-    {
-      D3DDISPLAYMODE mode;
-      memset(&mode, 0, sizeof(D3DDISPLAYMODE));
-      if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))
-        m_pScreenSize.SetRect(0, 0, mode.Width, mode.Height);
-      else
-        if (!GetWindowRect(g_Windowing.GetHwnd(), &m_pScreenSize))
-          m_pScreenSize.SetRect(lrint(m_destRect.x1), lrint(m_destRect.y1), lrint(m_destRect.x2), lrint(m_destRect.y2));
-      CLog::Log(LOGDEBUG, "%s Detected screen size : %dx%d", __FUNCTION__, m_pScreenSize.Width(), m_pScreenSize.Height());
-    }
-
-    if (SUCCEEDED(CStreamsManager::getSingleton()->SubtitleManager->GetTexture(pTexture, pSrc, pDst, m_pScreenSize)))
-    {
-      do
-      {
-        CSingleLock lock(g_graphicsContext);
-
-        D3DSURFACE_DESC d3dsd;
-        ZeroMemory(&d3dsd, sizeof(d3dsd));
-        if(FAILED(pTexture->GetLevelDesc(0, &d3dsd)) /*|| d3dsd.Type != D3DRTYPE_TEXTURE*/)
-	        break;
-
-        float w = (float)d3dsd.Width;
-        float h = (float)d3dsd.Height;
-
-        struct
-        {
-	        float x, y, z, rhw;
-	        float tu, tv;
-        }
-        pVertices[] =
-        {
-	        {(float)pDst.left, (float)pDst.top, 0.5f, 2.0f, (float)pSrc.left / w, (float)pSrc.top / h},
-	        {(float)pDst.right, (float)pDst.top, 0.5f, 2.0f, (float)pSrc.right / w, (float)pSrc.top / h},
-	        {(float)pDst.left, (float)pDst.bottom, 0.5f, 2.0f, (float)pSrc.left / w, (float)pSrc.bottom / h},
-	        {(float)pDst.right, (float)pDst.bottom, 0.5f, 2.0f, (float)pSrc.right / w, (float)pSrc.bottom / h},
-        };
-
-        HRESULT hr = S_OK;
-
-        hr = m_pD3DDevice->SetTexture(0, pTexture);
-
-        DWORD abe, sb, db;
-        hr = m_pD3DDevice->GetRenderState(D3DRS_ALPHABLENDENABLE, &abe);
-        hr = m_pD3DDevice->GetRenderState(D3DRS_SRCBLEND, &sb);
-        hr = m_pD3DDevice->GetRenderState(D3DRS_DESTBLEND, &db);
-
-        hr = m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-        hr = m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-        hr = m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
-        hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-        hr = m_pD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE); // pre-multiplied src and ...
-        hr = m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCALPHA); // ... inverse alpha channel for dst
-
-        hr = m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-        hr = m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-        hr = m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-
-        hr = m_pD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-        hr = m_pD3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-        hr = m_pD3DDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-
-        hr = m_pD3DDevice->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-        hr = m_pD3DDevice->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
-
-        hr = m_pD3DDevice->SetPixelShader(NULL);
-
-        hr = m_pD3DDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
-        hr = m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, pVertices, sizeof(pVertices[0]));
-
-        hr = m_pD3DDevice->SetTexture(0, NULL);
-
-        hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, abe);
-        hr = m_pD3DDevice->SetRenderState(D3DRS_SRCBLEND, sb);
-        hr = m_pD3DDevice->SetRenderState(D3DRS_DESTBLEND, db);
-
-      } while(0);
-    }
-  }
-}
-
-void CWinDsRenderer::RenderVideoTexture()
-{
-  CSingleLock lock(g_graphicsContext);
-
-  HRESULT hr;
-  D3DSURFACE_DESC desc;
-
-  LPDIRECT3DDEVICE9 m_pD3DDevice = g_Windowing.Get3DDevice();
-  if (! m_pD3DDevice)
-    return;
-
-  if (!m_D3DVideoTexture || FAILED(m_D3DVideoTexture->GetLevelDesc(0, &desc)))
-    return;
-
-  float w = (float)desc.Width;
-  float h = (float)desc.Height;
-
-  struct CUSTOMVERTEX {
-    float x, y, z;
-    float rhw; 
-    float tu, tv;
-  };
-
-  CUSTOMVERTEX verts[4] =
-  {
-    {
-      m_destRect.x1, m_destRect.y1, 0.0f, 1.0f, 0, 0
-    },
-    {
-      m_destRect.x2, m_destRect.y1, 0.0f, 1.0f, 1, 0
-    },
-    {
-      m_destRect.x2 ,m_destRect.y2, 0.0f, 1.0f, 1, 1
-    },
-    {
-      m_destRect.x1 ,m_destRect.y2, 0.0f, 1.0f, 0, 1
-    },
-  };
-
-  for(int i = 0; i < countof(verts); i++)
-  {
-    verts[i].x -= 0.5;
-    verts[i].y -= 0.5;
-  }
-
-  hr = m_pD3DDevice->SetTexture(0, m_D3DVideoTexture);
-
-  hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-  hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-  hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-  hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-  hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-  hr = m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-
-  hr = m_pD3DDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_STENCILENABLE, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
-  hr = m_pD3DDevice->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
-  hr = m_pD3DDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
-
-  hr = m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(verts[0]));
-
-  m_pD3DDevice->SetTexture(0, NULL);
-  m_pD3DDevice->SetPixelShader( NULL );
 }
 
 bool CWinDsRenderer::Supports(EINTERLACEMETHOD method)
