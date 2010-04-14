@@ -331,7 +331,7 @@ int CDecoder::Check(AVCodecContext* avctx)
 {
   if(avctx->refs > m_refs)
   {
-    CLog::Log(LOGERROR, "VAAPI - reference frame count increasing, reiniting decoder");
+    CLog::Log(LOGWARNING, "VAAPI - reference frame count increasing, reiniting decoder");
     Close();
     if(Open(avctx, avctx->pix_fmt))
       return VC_FLUSHED;
