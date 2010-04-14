@@ -42,9 +42,7 @@
 #include <sstream>
 #include <iomanip>
 #include <numeric>
-#if _MSC_VER > 1500
-#include <iterator> //for back_inserter on VS2010
-#endif
+#include <iterator>
 #include "utils/log.h"
 
 using namespace std;
