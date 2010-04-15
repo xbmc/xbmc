@@ -354,6 +354,9 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
     map<CStdString,CFileOperationJob*>::iterator it = m_idtojob.find(items[i]->GetProperty("Addon.ID"));
     if (it != m_idtojob.end())
       items[i]->SetProperty("Addon.Status",g_localizeStrings.Get(13413));
+    items[i]->SetLabel2(items[i]->GetProperty("Addon.Status"));
+    // to avoid the view state overriding label 2
+    items[i]->SetLabelPreformated(true);   
   }
 
   return result;
