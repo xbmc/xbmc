@@ -58,7 +58,7 @@
 
   #define INVALID_SOCKET -1
   #define SOCKET_ERROR -1
-  
+
   #define closesocket ::close
 #else
   #error Platform specific socket support is not yet available on this platform!
@@ -111,7 +111,7 @@ enum SocketProtocol
 class Socket
 {
   public:
-  
+
     /*!
      * An unconnected socket may be created directly on the local
      * machine. The socket type (SOCK_STREAM, SOCK_DGRAM) and
@@ -129,7 +129,7 @@ class Socket
     virtual ~Socket();
 
     //Socket settings
-    
+
     /*!
      * Socket setFamily
      * \param family    Can be af_inet or af_inet6. Default: af_inet
@@ -178,19 +178,19 @@ class Socket
     bool setHostname ( const std::string host );
 
     // Server initialization
-    
+
     /*!
      * Socket create
      * Create a new socket
      * \return     True if succesful
      */
     bool create();
-    
+
     /*!
      * Socket close
      * Close the socket
      * \return     True if succesful
-     */    
+     */
     bool close();
 
     /*!
@@ -251,7 +251,7 @@ class Socket
      * \return    Number of bytes received or SOCKET_ERROR
      */
     int receive ( std::string& data ) const;
-    
+
     /*!
      * Socket receive function
      *

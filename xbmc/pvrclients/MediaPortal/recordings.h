@@ -53,7 +53,7 @@ public:
   cRecording(const PVR_RECORDINGINFO *Recording);
   cRecording();
   virtual ~cRecording();
-  
+
   bool ParseLine(const std::string& data);
   const char *ChannelName(void) const { return m_channelName.c_str(); }
   int Index(void) const { return m_Index; }

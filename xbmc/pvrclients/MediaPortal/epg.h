@@ -43,12 +43,12 @@ private:
   int m_genre_subtype;
   //time_t m_vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
   time_t m_UTCdiff;
-    
+
 public:
   cEpg();
   virtual ~cEpg();
   void Reset();
-  
+
   bool ParseLine(string& data);
   //bool ParseEntryLine(const char *s);
   //const char *Aux(void) const { return m_aux; }

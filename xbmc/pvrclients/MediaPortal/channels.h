@@ -38,7 +38,7 @@ public:
   cChannel(const PVR_CHANNEL *Channel);
   cChannel();
   virtual ~cChannel();
-  
+
   bool Parse(const std::string& data);
   const char *Name(void) const { return name.c_str(); }
   int UID(void) const { return uid; }

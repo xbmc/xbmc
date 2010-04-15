@@ -66,7 +66,7 @@ bool cRecording::ParseLine(const std::string& data)
     //[5] description
     //[6] stream_url
     //[7] filename (we can bypass rtsp streaming when XBMC and the TV server are on the same machine)
-    //[8] lifetime (mediaportal keep until?) 
+    //[8] lifetime (mediaportal keep until?)
 
     m_Index = atoi(fields[0].c_str());
 

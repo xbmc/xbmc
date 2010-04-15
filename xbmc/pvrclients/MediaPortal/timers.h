@@ -50,7 +50,7 @@ private:
 public:
   cTimer();
   virtual ~cTimer();
-  
+
   int Index(void) const { return m_index; }
   unsigned int Channel(void) const { return m_channel; }
   int Priority(void) const { return m_priority; }

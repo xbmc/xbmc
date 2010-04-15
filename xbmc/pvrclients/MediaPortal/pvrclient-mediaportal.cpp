@@ -892,7 +892,7 @@ int cPVRClientMediaPortal::GetCurrentClientChannel()
 
 bool cPVRClientMediaPortal::SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
-  
+
   XBMC->Log(LOG_DEBUG, "->SwitchChannel(%i)", channelinfo.number);
   string rtsp_url = GetLiveStreamURL(channelinfo);
 

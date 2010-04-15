@@ -62,7 +62,7 @@ bool cTimer::ParseLine(const char *s)
   vector<string> schedulefields;
   string data = s;
   uri::decode(data);
-  
+
   Tokenize(data, schedulefields, "|");
 
   if(schedulefields.size() >= 7)
@@ -96,7 +96,7 @@ bool cTimer::ParseLine(const char *s)
     timeinfo.tm_yday = 0;
 
     m_starttime = mktime (&timeinfo) + m_UTCdiff; //m_StartTime should be localtime, MP TV returns UTC
-    
+
     if( m_starttime < 0)
       return false;
 

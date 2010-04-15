@@ -140,7 +140,7 @@ bool cEpg::ParseLine(string& data)
   try
   {
     vector<string> epgfields;
-    
+
     Tokenize(data, epgfields, "|");
 
     if( epgfields.size() == 5 )
@@ -202,7 +202,7 @@ bool cEpg::ParseLine(string& data)
 
       m_Duration  = m_EndTime - m_StartTime;
       m_uid       = 0;
-      
+
       m_title = epgfields[2];
       m_description = epgfields[3];
       m_shortText = epgfields[2];
@@ -248,7 +248,7 @@ void cEpg::SetGenre(string& Genre, int genreType, int genreSubType)
       m_genre_subtype = DETECTIVE_THRILLER;
     } else if (m_genre.compare("religion") == 0) {
       m_genre_type = EVCONTENTMASK_ARTSCULTURE;
-      m_genre_subtype = RELIGION; 
+      m_genre_subtype = RELIGION;
     } else if (m_genre.compare("documentary") == 0) {
       m_genre_type = EVCONTENTMASK_NEWSCURRENTAFFAIRS;
       m_genre_subtype = DOCUMENTARY;
