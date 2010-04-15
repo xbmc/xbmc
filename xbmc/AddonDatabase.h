@@ -24,6 +24,7 @@
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "StdString.h"
+#include "FileItem.h"
 
 class CAddonDatabase : public CDatabase
 {
@@ -43,6 +44,7 @@ public:
   int GetRepoTimestamp(const CStdString& id, CStdString& timestamp);
   bool Search(const CStdString& search, ADDON::VECADDONS& items);
   bool SearchTitle(const CStdString& strSearch, ADDON::VECADDONS& items);
+  static void SetPropertiesFromAddon(const ADDON::AddonPtr& addon, CFileItemPtr& item); 
 protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);

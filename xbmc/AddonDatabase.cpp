@@ -337,4 +337,17 @@ bool CAddonDatabase::SearchTitle(const CStdString& search, VECADDONS& addons)
   return false;
 }
 
-
+void CAddonDatabase::SetPropertiesFromAddon(const AddonPtr& addon,
+                                           CFileItemPtr& pItem)
+{
+  pItem->SetProperty("Addon.ID", addon->ID());
+  pItem->SetProperty("Addon.Type", TranslateType(addon->Type()));
+  pItem->SetProperty("Addon.Name", addon->Name());
+  pItem->SetProperty("Addon.Version", addon->Version().Print());
+  pItem->SetProperty("Addon.Summary", addon->Summary());
+  pItem->SetProperty("Addon.Description", addon->Description());
+  pItem->SetProperty("Addon.Creator", addon->Author());
+  pItem->SetProperty("Addon.Disclaimer", addon->Disclaimer());
+  pItem->SetProperty("Addon.Rating", addon->Stars());
+  pItem->SetProperty("Addon.Path", addon->Path());
+}
