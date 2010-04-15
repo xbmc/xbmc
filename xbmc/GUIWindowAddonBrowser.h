@@ -23,10 +23,12 @@
 
 #include "addons/Addon.h"
 #include "GUIMediaWindow.h"
+#include "utils/CriticalSection.h"
 #include "utils/Job.h"
 
 class CFileItem;
 class CFileItemList;
+class CFileOperationJob;
 
 class CGUIWindowAddonBrowser :
       public CGUIMediaWindow,
@@ -37,14 +39,20 @@ public:
   virtual ~CGUIWindowAddonBrowser(void);
   virtual bool OnMessage(CGUIMessage& message);
 
+  void RegisterJob(const CStdString& id, CFileOperationJob* job);
+
   // job callback
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 
-  static void AddJob(const CStdString& path);
+  static CFileOperationJob* AddJob(const CStdString& path);
 protected:
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual bool OnClick(int iItem);
   virtual void UpdateButtons();
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  std::map<CStdString,CFileOperationJob*> m_idtojob;
+  std::map<CFileOperationJob*,CStdString> m_jobtoid;
+  CCriticalSection m_critSection;
 };
 
