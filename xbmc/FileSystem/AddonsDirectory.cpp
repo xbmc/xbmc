@@ -46,12 +46,15 @@ CAddonsDirectory::~CAddonsDirectory(void)
 bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CURL path(strPath);
+  items.ClearProperties();
 
   VECADDONS addons;
-
   // get info from repository
   if (path.GetHostName().Equals("enabled"))
+  {
     CAddonMgr::Get()->GetAllAddons(addons);
+    items.SetProperty("reponame",g_localizeStrings.Get(24062));
+  }
   else
   {
     AddonPtr addon;
@@ -65,6 +68,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addon);
       addons = CRepositoryUpdateJob::GrabAddons(repo,false);
     }
+    items.SetProperty("reponame",addon->Name());
   }
 
   if (path.GetFileName().IsEmpty())
@@ -87,6 +91,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     return true;
   }
 
+  items.SetProperty("addoncategory",path.GetFileName());
   TYPE type = TranslateType(path.GetFileName());
   for (unsigned int j=0;j<addons.size();++j)
     if (addons[j]->Type() != type)

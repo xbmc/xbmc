@@ -187,7 +187,7 @@
 		<control type="group">
 			<posx>470</posx>
 			<posy>0</posy>
-			<visible>!IsEmpty(Container.AddonCatagory)</visible>
+			<visible>!IsEmpty(Container.Property(AddonCategory))</visible>
 			<include>VisibleFadeEffect</include>
 			<animation effect="slide" end="-710,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
 			<animation effect="slide" start="-710,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
@@ -201,13 +201,13 @@
 			<control type="label">
 				<include>WindowTitleCommons</include>
 				<posx>270</posx>
-				<label>$INFO[Container.AddonCatagory]</label>
+				<label>$INFO[Container.Property(AddonCategory)]</label>
 			</control>
 		</control>
 		<control type="group">
 			<posx>240</posx>
 			<posy>0</posy>
-			<visible>!IsEmpty(Container.RepoName)</visible>
+			<visible>!IsEmpty(Container.Property(RepoName))</visible>
 			<include>VisibleFadeEffect</include>
 			<animation effect="slide" end="-600,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
 			<animation effect="slide" start="-600,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
@@ -222,7 +222,7 @@
 				<width>250</width>
 				<include>WindowTitleCommons</include>
 				<posx>320</posx>
-				<label>$INFO[Container.RepoName]</label>
+				<label>$INFO[Container.Property(RepoName)]</label>
 			</control>
 		</control>
 		<control type="group">
