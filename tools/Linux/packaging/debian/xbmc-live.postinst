@@ -50,7 +50,8 @@ case "$1" in
 		plugdev
 		netdev
 		powerdev
-		fuse"
+		fuse
+		polkituser"
 
 	# TODO: this probably isn't necessary anymore as PolicyKit is now being
 	# used
@@ -174,7 +175,14 @@ ENDOFBLOCK
 		org.freedesktop.devicekit.disks.filesystem-mount-system-internal
 		org.freedesktop.devicekit.disks.filesystem-unmount-others
 		org.freedesktop.devicekit.disks.drive-eject
-		org.freedesktop.devicekit.disks.drive-detach"
+		org.freedesktop.devicekit.disks.drive-detach
+		org.freedesktop.upower.suspend
+		org.freedesktop.upower.hibernate
+		org.freedesktop.udisks.filesystem-mount
+		org.freedesktop.udisks.filesystem-mount-system-internal
+		org.freedesktop.udisks.filesystem-unmount-others
+		org.freedesktop.udisks.drive-eject
+		org.freedesktop.udisks.drive-detach"
 
 	# Grant the 'xbmc' user each action from the list if not done already
 	for ACTION in $POLKIT_ACTIONS; do
