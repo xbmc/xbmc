@@ -314,7 +314,38 @@ void CGUIWindowAddonBrowser::UnRegisterJob(CFileOperationJob* job)
 bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
                                           CFileItemList& items)
 {
-  bool result = CGUIMediaWindow::GetDirectory(strDirectory,items);
+  bool result;
+  if (strDirectory.Equals("addons://downloading/"))
+  {
+    CAddonDatabase database;
+    database.Open();
+    CSingleLock lock(m_critSection);
+    VECADDONS addons;
+    for (map<CStdString,unsigned int>::iterator it = m_idtojobid.begin();
+         it != m_idtojobid.end();++it)
+    {
+      AddonPtr addon;
+      if (database.GetAddon(it->first,addon))
+        addons.push_back(addon);
+    }
+    CURL url(strDirectory);
+    CAddonsDirectory::GenerateListing(url,addons,items);
+    result = true;
+    items.SetProperty("Repo.Name",g_localizeStrings.Get(24067));
+    items.m_strPath = strDirectory;
+  }
+  else
+    result = CGUIMediaWindow::GetDirectory(strDirectory,items);
+
+  if (strDirectory.IsEmpty() && !m_jobtoid.empty())
+  {
+    CFileItemPtr item(new CFileItem("addons://downloading/",true));
+    item->SetLabel(g_localizeStrings.Get(24067));
+    item->SetLabelPreformated(true);
+    item->SetThumbnailImage("DefaultNetwork.png");
+    items.Add(item);
+  }
+  
   CSingleLock lock(m_critSection);
   for (int i=0;i<items.Size();++i)
   {
