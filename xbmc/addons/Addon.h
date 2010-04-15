@@ -68,7 +68,7 @@ public:
     , version(addon->Version())
   { if(addon->Parent()) parent = addon->Parent()->ID(); }
 
-  bool operator=(const AddonProps &rhs)
+  bool operator==(const AddonProps &rhs)
   { return (*this).id == rhs.id
     && (*this).type == rhs.type
     && (*this).version == rhs.version; }
