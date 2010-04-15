@@ -6,7 +6,7 @@
   <librarywin32>MilkDrop_win32dx.vis</librarywin32>
   <version>1.0.0</version>
   <platforms>
-    <platform>windows</platform>
+    <platform>windows-dx</platform>
   </platforms>
   <minversion>
     <xbmc>28000</xbmc>

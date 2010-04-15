@@ -9,7 +9,7 @@
   <platforms>
     <platform>osx</platform>
     <platform>linux</platform>
-    <platform>windows</platform>
+    <platform>windows-gl</platform>
   </platforms>
   <minversion>
     <xbmc>20000</xbmc>

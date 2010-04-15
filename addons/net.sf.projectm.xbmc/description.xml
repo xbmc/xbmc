@@ -8,7 +8,7 @@
   <version>1.0.0</version>
   <platforms>
     <platform>linux</platform>
-    <platform>windows</platform>
+    <platform>windows-gl</platform>
   </platforms>
   <minversion>
     <xbmc>25000</xbmc>
