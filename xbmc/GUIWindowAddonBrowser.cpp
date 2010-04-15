@@ -33,6 +33,7 @@
 #include "FileItem.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
+#include "FileSystem/AddonsDirectory.h"
 #include "utils/FileOperationJob.h"
 #include "utils/JobManager.h"
 #include "utils/SingleLock.h"
@@ -115,6 +116,24 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
   CFileItemPtr item = m_vecItems->Get(iItem);
   if (!item->m_bIsFolder)
   {
+    // cancel a downloading job
+    if (item->GetProperty("Addon.Status").Equals(g_localizeStrings.Get(13413)))
+    {
+      if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24000),
+                                           item->GetProperty("Addon.Name"),
+                                           g_localizeStrings.Get(24066),""))
+      {
+        CSingleLock lock(m_critSection);
+        map<CStdString,unsigned int>::iterator it = m_idtojobid.find(item->GetProperty("Addon.ID"));
+        if (it != m_idtojobid.end())
+        {
+          CJobManager::GetInstance().CancelJob(it->second);
+          UnRegisterJob(m_idtojob.find(item->GetProperty("Addon.ID"))->second);
+          Update(m_vecItems->m_strPath);
+        }
+      }
+      return true;
+    }
     AddonPtr addon;
     if (CAddonMgr::Get()->GetAddon(item->GetProperty("Addon.ID"),addon))
     {
@@ -134,8 +153,8 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
                                            item->GetProperty("Addon.Name"),
                                            g_localizeStrings.Get(24059),""))
       {
-        CFileOperationJob* job = AddJob(item->GetProperty("Addon.Path"));
-        RegisterJob(item->GetProperty("Addon.ID"),job);
+        pair<CFileOperationJob*,unsigned int> job = AddJob(item->GetProperty("Addon.Path"));
+        RegisterJob(item->GetProperty("Addon.ID"),job.first,job.second);
       }
     } 
     return true;
@@ -229,13 +248,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
     g_windowManager.SendThreadMessage(msg);
   }
-  CSingleLock lock(m_critSection);
-  map<CFileOperationJob*,CStdString>::iterator it = m_jobtoid.find((CFileOperationJob*)job2);
-  if (it != m_jobtoid.end())
-  {
-    m_idtojob.erase(m_idtojob.find(it->second));
-    m_jobtoid.erase(it);
-  }
+  UnRegisterJob((CFileOperationJob*)job2);
 }
 
 void CGUIWindowAddonBrowser::UpdateButtons()
@@ -244,7 +257,7 @@ void CGUIWindowAddonBrowser::UpdateButtons()
   CGUIMediaWindow::UpdateButtons();  
 }
 
-CFileOperationJob* CGUIWindowAddonBrowser::AddJob(const CStdString& path)
+pair<CFileOperationJob*,unsigned int> CGUIWindowAddonBrowser::AddJob(const CStdString& path)
 {
   CGUIWindowAddonBrowser* that = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
   CFileItemList list;
@@ -269,19 +282,33 @@ CFileOperationJob* CGUIWindowAddonBrowser::AddJob(const CStdString& path)
   list[0]->Select(true);
   CFileOperationJob* job = new CFileOperationJob(CFileOperationJob::ActionCopy,
                                                  list,dest);
-  CJobManager::GetInstance().AddJob(job,that);
+  unsigned int id = CJobManager::GetInstance().AddJob(job,that);
 
-  return job;
+  return make_pair(job,id);
 }
 
 void CGUIWindowAddonBrowser::RegisterJob(const CStdString& id,
-                                         CFileOperationJob* job)
+                                         CFileOperationJob* job,
+                                         unsigned int jobid)
 {
   CSingleLock lock(m_critSection);
   m_idtojob.insert(make_pair(id,job));
+  m_idtojobid.insert(make_pair(id,jobid));
   m_jobtoid.insert(make_pair(job,id));
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
   g_windowManager.SendThreadMessage(msg);
+}
+
+void CGUIWindowAddonBrowser::UnRegisterJob(CFileOperationJob* job)
+{
+  CSingleLock lock(m_critSection);
+  map<CFileOperationJob*,CStdString>::iterator it = m_jobtoid.find((CFileOperationJob*)job);
+  if (it != m_jobtoid.end())
+  {
+    m_idtojob.erase(m_idtojob.find(it->second));
+    m_idtojobid.erase(m_idtojobid.find(it->second));
+    m_jobtoid.erase(it);
+  }
 }
 
 bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,

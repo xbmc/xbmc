@@ -2137,6 +2137,8 @@
   <string id="24063">Auto update</string>
   <string id="24064">Add-on enabled</string>
   <string id="24065">Add-on updated</string>
+  <string id="24066">Cancel Add-on download?</string>
+  <string id="24067">Currently downloading addons</string>
 
   <string id="24070">Add-on can not used</string>
   <string id="24071">An unknown error has occurred</string>

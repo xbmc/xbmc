@@ -39,19 +39,22 @@ public:
   virtual ~CGUIWindowAddonBrowser(void);
   virtual bool OnMessage(CGUIMessage& message);
 
-  void RegisterJob(const CStdString& id, CFileOperationJob* job);
+  void RegisterJob(const CStdString& id, CFileOperationJob* job,
+                   unsigned int jobid);
 
   // job callback
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 
-  static CFileOperationJob* AddJob(const CStdString& path);
+  static std::pair<CFileOperationJob*,unsigned int> AddJob(const CStdString& path);
 protected:
+  void UnRegisterJob(CFileOperationJob* job);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual bool OnClick(int iItem);
   virtual void UpdateButtons();
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   std::map<CStdString,CFileOperationJob*> m_idtojob;
+  std::map<CStdString,unsigned int> m_idtojobid;
   std::map<CFileOperationJob*,CStdString> m_jobtoid;
   CCriticalSection m_critSection;
 };
