@@ -39,7 +39,7 @@ const CONTENT_TYPE  TranslateContent(const CStdString &string);
 const CStdString    TranslateType(const TYPE &type, bool pretty=false);
 const TYPE          TranslateType(const CStdString &string);
 
-struct AddonVersion
+class AddonVersion
 {
 public:
   AddonVersion(const CStdString &str) : str(str) {}
@@ -53,25 +53,34 @@ public:
   const CStdString str;
 };
 
-struct AddonProps
+class AddonProps
 {
 public:
   AddonProps(const CStdString &id, TYPE type, const CStdString &versionstr)
     : id(id)
     , type(type)
     , version(versionstr)
-  {}
+    , stars(0)
+  {
+  }
 
   AddonProps(const AddonPtr &addon)
     : id(addon->ID())
     , type(addon->Type())
-    , version(addon->Version())
-  { if(addon->Parent()) parent = addon->Parent()->ID(); }
+    , version(addon->Version().str)
+    , stars(0)
+  { 
+    if (addon->Parent())
+      parent = addon->Parent()->ID();
+  }
 
   bool operator==(const AddonProps &rhs)
-  { return (*this).id == rhs.id
-    && (*this).type == rhs.type
-    && (*this).version == rhs.version; }
+  { 
+    return    (*this).id == rhs.id
+           && (*this).type == rhs.type
+           && (*this).version == rhs.version;
+  }
+
   CStdString id;
   TYPE type;
   AddonVersion version;
@@ -90,6 +99,7 @@ public:
   ADDONDEPS dependencies;
   int        stars;
 };
+
 typedef std::vector<struct AddonProps> VECADDONPROPS;
 
 class CAddon : public IAddon
