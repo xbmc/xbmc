@@ -14,7 +14,7 @@
 				<height>720</height>
 				<texture border="20">black-back.png</texture>
 				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(50) | Control.IsVisible(51) | Control.IsVisible(500)</visible>
+				<visible>Control.IsVisible(50) | Control.IsVisible(51)</visible>
 			</control>
 			<control type="image">
 				<posx>0</posx>
@@ -23,7 +23,16 @@
 				<height>128</height>
 				<texture>floor.png</texture>
 				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(50) | Control.IsVisible(51) | Control.IsVisible(500)</visible>
+				<visible>Control.IsVisible(50) | Control.IsVisible(51)</visible>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>-5</posy>
+				<width>1280</width>
+				<height>725</height>
+				<texture border="0.5.0.0">ContentPanel4.png</texture>
+				<include>VisibleFadeEffect</include>
+				<visible>Control.IsVisible(500)</visible>
 			</control>
 			<control type="group">
 				<include>VisibleFadeEffect</include>
@@ -46,7 +55,7 @@
 			</control>
 			<control type="group">
 				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(51) | Control.IsVisible(500)</visible>
+				<visible>Control.IsVisible(51)</visible>
 				<control type="image">
 					<posx>75</posx>
 					<posy>60</posy>
@@ -68,7 +77,7 @@
 			<include>Window_OpenClose_Animation</include>		
 			<include>CommonRootView</include> <!-- view id = 50 -->
 			<include>FullWidthList</include> <!-- view id = 51 -->
-			<include>ThumbnailView</include> <!-- view id = 500 -->
+			<include>AddonInfoListView1</include> <!-- view id = 500 -->
 		</control>
 		<include>CommonPageCount</include>
 		<include>BehindDialogFadeOut</include>
