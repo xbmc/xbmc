@@ -171,10 +171,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 {
   CFileCurl dav;
   CURL url(strPath);
-  CStdString strResponse;
   CStdString strRequest = "PROPFIND";
-  TiXmlDocument davResponse;
-  TiXmlNode *pChild;
 
   dav.SetCustomRequest(strRequest);
   dav.SetContentType("text/xml; charset=\"utf-8\"");
@@ -197,47 +194,66 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     return false;
   }
 
-  dav.ReadData(strResponse);
-
-  if (strResponse.IsEmpty())
+  char buffer[MAX_PATH + 1024];
+  CStdString strResponse;
+  CStdString strHeader;
+  while (dav.ReadString(buffer, sizeof(buffer)))
   {
-    CLog::Log(LOGERROR, "%s - Failed to get any response (%s)", __FUNCTION__, strPath.c_str());
-    dav.Close();
-    return false;
-  }
-
-  davResponse.Parse(strResponse.c_str());
-
-  // Iterate over all responses
-  for (pChild = davResponse.RootElement()->FirstChild(); pChild != 0; pChild = pChild->NextSibling())
-  {
-    if (ValueWithoutNamespace(pChild, "response"))
+    if (strstr(buffer, "<D:response>") != NULL)
     {
-      CFileItemPtr pItem(new CFileItem());
+      if (strHeader.IsEmpty())
+        strHeader = strResponse;
+      
+      strResponse = strHeader;
+    }
+    strResponse.append(buffer, strlen(buffer));
 
-      ParseResponse(pChild->ToElement(), *pItem);
-      CURL url2(strPath);
-      CURL url3(pItem->m_strPath);
+    if (strstr(buffer, "</D:response>") != NULL)
+    {
+      TiXmlDocument davResponse;
 
-      CUtil::AddFileToFolder(url2.GetWithoutFilename(), url3.GetFileName(), pItem->m_strPath);
-
-      if (pItem->GetLabel().IsEmpty())
+      if (davResponse.Parse(strResponse.c_str()) != 0)
       {
-        CStdString name(pItem->m_strPath);
-        CUtil::RemoveSlashAtEnd(name);
-        CUtil::URLDecode(name);
-        pItem->SetLabel(CUtil::GetFileName(name));
+        CLog::Log(LOGERROR, "%s - Unable to process dav directory (%s)", __FUNCTION__, strPath.c_str());
+        dav.Close();
+        return false;
       }
 
-      if (pItem->m_bIsFolder)
-        CUtil::AddSlashAtEnd(pItem->m_strPath);
+      TiXmlNode *pChild;
+      // Iterate over all responses
+      for (pChild = davResponse.RootElement()->FirstChild(); pChild != 0; pChild = pChild->NextSibling())
+      {
+        if (ValueWithoutNamespace(pChild, "response"))
+        {
+          CFileItem item;
+          ParseResponse(pChild->ToElement(), item);
+          CURL url2(strPath);
+          CURL url3(item.m_strPath);
 
-      // Add back protocol options
-      if (!url2.GetProtocolOptions().IsEmpty())
-        pItem->m_strPath = pItem->m_strPath + "|" + url2.GetProtocolOptions();
+          CUtil::AddFileToFolder(url2.GetWithoutFilename(), url3.GetFileName(), item.m_strPath);
 
-      if (!pItem->m_strPath.Equals(strPath))
-        items.Add(pItem);
+          if (item.GetLabel().IsEmpty())
+          {
+            CStdString name(item.m_strPath);
+            CUtil::RemoveSlashAtEnd(name);
+            CUtil::URLDecode(name);
+            item.SetLabel(CUtil::GetFileName(name));
+          }
+
+          if (item.m_bIsFolder)
+            CUtil::AddSlashAtEnd(item.m_strPath);
+
+          // Add back protocol options
+          if (!url2.GetProtocolOptions().IsEmpty())
+            item.m_strPath += "|" + url2.GetProtocolOptions();
+
+          if (!item.m_strPath.Equals(strPath))
+          {
+            CFileItemPtr pItem(new CFileItem(item));
+            items.Add(pItem);
+          }
+        }
+      }
     }
   }
 
