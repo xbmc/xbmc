@@ -16,7 +16,7 @@ class CVDPAU;
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
-namespace VAAPI   { class CDecoder; }
+namespace VAAPI   { struct CHolder; }
 
 #define NUM_BUFFERS 3
 
@@ -122,7 +122,7 @@ public:
   virtual void         AddProcessor(CVDPAU* vdpau);
 #endif
 #ifdef HAVE_LIBVA
-  virtual void         AddProcessor(VAAPI::CDecoder* vaapi_object, unsigned int vaapi_surface);
+  virtual void         AddProcessor(VAAPI::CHolder& holder);
 #endif
 
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
@@ -220,6 +220,9 @@ protected:
 
   struct YUVBUFFER
   {
+    YUVBUFFER();
+   ~YUVBUFFER();
+
     YUVFIELDS fields;
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
@@ -229,12 +232,7 @@ protected:
     CVDPAU*   vdpau;
 #endif
 #ifdef HAVE_LIBVA
-    struct VA
-    {
-      VAAPI::CDecoder* object;
-      unsigned int     surface;
-      void*            surfacegl;
-    } vaapi;
+    VAAPI::CHolder& vaapi;
 #endif
   };
 

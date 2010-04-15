@@ -205,17 +205,21 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   IF EXIST %XBMC_SETUPFILE% del %XBMC_SETUPFILE% > NUL
   rem get path to makensis.exe from registry, first try tab delim
   FOR /F "tokens=2* delims=	" %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
+
   IF NOT EXIST "%NSISExePath%" (
     rem try with space delim instead of tab
     FOR /F "tokens=2* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
-    IF NOT EXIST "%NSISExePath%" (
-      rem on win 7 x86, the previous fails
-      FOR /F "tokens=3* delims=	" %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
-      IF NOT EXIST "%NSISExePath%" (
-        FOR /F "tokens=3* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
-      )
-    )
   )
+      
+  IF NOT EXIST "%NSISExePath%" (
+    rem fails on localized windows (Default) becomes (Par Défaut)
+    FOR /F "tokens=3* delims=	" %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
+  )
+
+  IF NOT EXIST "%NSISExePath%" (
+    FOR /F "tokens=3* delims= " %%A IN ('REG QUERY "HKLM\Software\NSIS" /ve') DO SET NSISExePath=%%B
+  )
+  
   rem proper x64 registry checks
   IF NOT EXIST "%NSISExePath%" (
     ECHO using x64 registry entries

@@ -4,9 +4,10 @@
 <link type="text/css" rel="stylesheet" href="basic.css" />
 <script type="text/javascript" src="json.js" />
 <script type="text/javascript">
-function PlayMovie(movieid)
-{
-  alert("Not implemented");
+function CallPlay(movieid) {
+  var http_request = new XMLHttpRequest();
+  http_request.open( "POST", "jsonrpc", false );
+  http_request.send('{ "jsonrpc": "2.0", "method": "XBMC.Play", "params": { "movieid": ' + movieid + ' }, "id": 1 }');
 }
 </script>
 </head>
@@ -34,29 +35,33 @@ function PlayMovie(movieid)
 <script type="text/javascript">
 var http_request = new XMLHttpRequest();
 http_request.open( "POST", "jsonrpc", false );
-var send = { "jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "id": 1 }
-http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetMovies\", \"params\": { \"fields\": [\"title\", \"plot\"] }, \"id\": 1}");
+http_request.send('{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "fields": ["title", "plot"] }, "id": 1}');
 
 var the_object = JSON.parse(http_request.responseText);
 var result = the_object["result"];
 var array = result["movies"];
 
-document.write("<table class=\"Movies\"><thead><tr><th>Thumbnail</th><th>Info</th></tr></thead><tbody>");
+document.write('<table class="Movies"><thead><tr><th>Thumbnail</th><th>Info</th></tr></thead><tbody>');
 for (var property in array) {
   var item = array[property];
 
-  document.write("<tr class=\"" + (property % 2 == 0 ? "even" : "odd") + "\"><td class=\"cover\">");
+  document.write('<tr class="' + (property % 2 == 0 ? "even" : "odd") + '"><td class="cover">');
+  var thumbnail = "images/DefaultVideo.png";
   if (item["thumbnail"])
-    document.write("<img src=thumb/" + item["thumbnail"] + ".jpg alt=\"" + item["title"] + "\" class=\"cover\" onclick=\"PlayMovie(" + item["movieid"] + ")\"></img>");
-  document.write("</td><td class=\"info\">");
+    thumbnail = "thumb/" + item["thumbnail"] + ".jpg";
 
-  document.write("<h1>" + item["title"] + "</h1>");
+  document.write('<a href="nowplaying.html" onclick=CallPlay(' + item["movieid"] + ')>');
+  document.write('<img src="' + thumbnail + '" class="cover"></img>');
+  document.write('</td><td class="info">');
+  document.write('</a>');
+
+  document.write('<h1>' + item["title"] + '</h1>');
   if (item["plot"])
     document.write(item["plot"]);
 
-  document.write("</td></tr>");
+  document.write('</td></tr>');
 }
-document.write("</tbody></table>");
+document.write('</tbody></table>');
 </script>
 </body>
 </html>

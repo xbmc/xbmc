@@ -21,3 +21,5 @@
 rm $WORKPATH/buildLive/Files/chroot_local-hooks/00-installCrystalHD
 
 sed -i '/fglrx/d' $WORKPATH/buildLive/Files/chroot_local-packageslists/packages.list
+sed -i '/nvidia-common/d' $WORKPATH/buildLive/Files/chroot_local-packageslists/packages.list
+

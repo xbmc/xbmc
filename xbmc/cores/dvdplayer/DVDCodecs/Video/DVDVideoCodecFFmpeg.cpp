@@ -35,6 +35,7 @@
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "utils/log.h"
+#include "boost/shared_ptr.hpp"
 
 #ifndef _LINUX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
@@ -55,6 +56,8 @@
 #include "VAAPI.h"
 #endif
 
+using namespace boost;
+
 enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
                                                 , const PixelFormat * fmt )
 {
@@ -63,16 +66,11 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   if(!ctx->IsHardwareAllowed())
     return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);
 
-#if defined(HAVE_LIBVDPAU) || defined(HAS_DX)
-  int method = g_guiSettings.GetInt("videoplayer.rendermethod");
-#endif
-
   const PixelFormat * cur = fmt;
   while(*cur != PIX_FMT_NONE)
   {
 #ifdef HAVE_LIBVDPAU
-    if(CVDPAU::IsVDPAUFormat(*cur) 
-    && (method == RENDER_METHOD_VDPAU || method == RENDER_METHOD_AUTO))
+    if(CVDPAU::IsVDPAUFormat(*cur) && g_guiSettings.GetBool("videoplayer.usevdpau"))
     {
       if(ctx->GetHardware())
         return *cur;
@@ -89,8 +87,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
     }
 #endif
 #ifdef HAS_DX
-  if(DXVA::CDecoder::Supports(*cur)
-  && method == RENDER_METHOD_DXVA)
+  if(DXVA::CDecoder::Supports(*cur) && g_guiSettings.GetBool("videoplayer.usedxva2"))
   {
     DXVA::CDecoder* dec = new DXVA::CDecoder();
     if(dec->Open(avctx, *cur))
@@ -103,7 +100,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   }
 #endif
 #ifdef HAVE_LIBVA
-    if(*cur == PIX_FMT_VAAPI_VLD && method == RENDER_METHOD_VAAPI)
+    if(*cur == PIX_FMT_VAAPI_VLD && g_guiSettings.GetBool("videoplayer.usevaapi"))
     {
       VAAPI::CDecoder* dec = new VAAPI::CDecoder();
       if(dec->Open(avctx, *cur))
@@ -178,9 +175,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   pCodec = NULL;
 
 #ifdef HAVE_LIBVDPAU
-  int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
-  if((requestedMethod == RENDER_METHOD_VDPAU || requestedMethod == RENDER_METHOD_AUTO)
-  && !m_bSoftware)
+  if(g_guiSettings.GetBool("videoplayer.usevdpau") && !m_bSoftware)
   {
     while((pCodec = m_dllAvCodec.av_codec_next(pCodec)))
     {
@@ -285,6 +280,9 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   else
     m_name = "ffmpeg";
 
+  if(m_pHardware)
+    m_name += "-" + m_pHardware->Name();
+
   return true;
 }
 
@@ -377,8 +375,13 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
   if(pData)
     m_iLastKeyframe++;
 
+  shared_ptr<CSingleLock> lock;
   if(m_pHardware)
   {
+    CCriticalSection* section = m_pHardware->Section();
+    if(section)
+      lock = shared_ptr<CSingleLock>(new CSingleLock(*section));
+
     int result;
     if(pData)
       result = m_pHardware->Check(m_pCodecContext);

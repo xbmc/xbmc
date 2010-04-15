@@ -22,10 +22,11 @@
 
 #include "StdString.h"
 #include "JSONRPC.h"
+#include "FileItemHandler.h"
 
 namespace JSONRPC
 {
-  class CXBMCOperations
+  class CXBMCOperations : CFileItemHandler
   {
   public:
     static JSON_STATUS GetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);

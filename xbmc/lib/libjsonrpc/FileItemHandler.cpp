@@ -22,6 +22,7 @@
 #include "FileItemHandler.h"
 #include "PlaylistOperations.h"
 #include "MusicLibrary.h"
+#include "VideoLibrary.h"
 #include "../Util.h"
 
 using namespace MUSIC_INFO;
@@ -184,12 +185,14 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
   if (param["file"].isString())
   {
     CStdString file = param["file"].asString();
+    printf("adding %s\n", file.c_str());
     CFileItemPtr item = CFileItemPtr(new CFileItem(file, CUtil::HasSlashAtEnd(file)));
     list.Add(item);
   }
 
   CPlaylistOperations::FillFileItemList(param, list);
   CMusicLibrary::FillFileItemList(param, list);
+  CVideoLibrary::FillFileItemList(param, list);
 
   return true;
 }

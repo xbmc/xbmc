@@ -39,7 +39,7 @@ class IStreamDetailsObserver;
 class CThumbExtractor : public CJob
 {
 public:
-  CThumbExtractor(const CFileItem& item, const CStdString& listpath, bool thumb, const CStdString& path="", const CStdString& strTarget="");
+  CThumbExtractor(const CFileItem& item, const CStdString& listpath, bool thumb, const CStdString& strTarget="");
   virtual ~CThumbExtractor();
 
   /*!

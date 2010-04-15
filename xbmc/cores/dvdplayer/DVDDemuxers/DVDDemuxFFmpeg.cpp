@@ -298,11 +298,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       iformat = m_dllAvFormat.av_find_input_format("flv");
     else if( content.compare("video/x-flv") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("flv");
-
-    /* these are likely pure streams, and as such we don't */
-    /* want to try to look for streaminfo before playback */
-    if( iformat )
-      streaminfo = false;
   }
 
   if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
@@ -437,7 +432,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   m_bMatroska = strcmp(m_pFormatContext->iformat->name, "matroska") == 0;
   m_bAVI = strcmp(m_pFormatContext->iformat->name, "avi") == 0;
 
-  if (streaminfo || m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+  if (streaminfo)
   {
     /* too speed up dvd switches, only analyse very short */
     if(m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -449,7 +444,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     if (iErr < 0)
     {
       CLog::Log(LOGWARNING,"could not find codec parameters for %s", strFile.c_str());
-      if (!streaminfo || (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3))
+      if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) || (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3))
       {
         // special case, our codecs can still handle it.
       }

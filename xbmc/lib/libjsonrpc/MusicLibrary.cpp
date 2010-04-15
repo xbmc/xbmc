@@ -112,7 +112,7 @@ JSON_STATUS CMusicLibrary::ScanForContent(const CStdString &method, ITransportLa
 bool CMusicLibrary::FillFileItemList(const Value &parameterObject, CFileItemList &list)
 {
   CMusicDatabase musicdatabase;
-  if ((ParameterIntOrNull(parameterObject, "artistid") || ParameterIntOrNull(parameterObject, "albumid") || ParameterIntOrNull(parameterObject, "genreid")) && musicdatabase.Open())
+  if ((parameterObject["artistid"].isInt() || parameterObject["albumid"].isInt() || parameterObject["genreid"].isInt()) && musicdatabase.Open())
   {
     int artistID = ParameterAsInt(parameterObject, -1, "artistid");
     int albumID  = ParameterAsInt(parameterObject, -1, "albumid");

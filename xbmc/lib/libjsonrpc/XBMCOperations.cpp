@@ -54,11 +54,14 @@ JSON_STATUS CXBMCOperations::ToggleMute(const CStdString &method, ITransportLaye
 
 JSON_STATUS CXBMCOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (!parameterObject.isString())
+  CFileItemList list;
+  if (FillFileItemList(parameterObject, list) && list.Size() > 0)
+  {
+    g_application.getApplicationMessenger().MediaPlay(list);
+    return ACK;
+  }
+  else
     return InvalidParams;
-
-  g_application.getApplicationMessenger().MediaPlay(parameterObject.asString());
-  return ACK;
 }
 
 JSON_STATUS CXBMCOperations::StartSlideshow(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)

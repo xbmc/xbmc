@@ -193,6 +193,12 @@ config.log
 /xbmc/cores/dvdplayer/Codecs/ffmpeg/config.h
 /xbmc/cores/dvdplayer/Codecs/ffmpeg/config.err
 /xbmc/cores/dvdplayer/Codecs/ffmpeg/config.mak
+/xbmc/cores/dvdplayer/Codecs/ffmpeg/ffprobe
+/xbmc/cores/dvdplayer/Codecs/ffmpeg/ffprobe_g
+/xbmc/cores/dvdplayer/Codecs/ffmpeg/.version
+/xbmc/cores/dvdplayer/Codecs/ffmpeg/version.h
+/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavutil/avconfig.h
+
 
 # /xbmc/cores/dvdplayer/Codecs/liba52/
 /xbmc/cores/dvdplayer/Codecs/liba52/config.log
@@ -709,7 +715,9 @@ config.log
 /lib/cpluff/aclocal.m4
 /lib/cpluff/autom4te.cache
 /lib/cpluff/auxliary
-/lib/cpluff/config*
+/lib/cpluff/config.h
+/lib/cpluff/config.h.in
+/lib/cpluff/configure
 /lib/cpluff/console
 /lib/cpluff/doc*
 /lib/cpluff/examples
@@ -734,6 +742,7 @@ config.log
 /lib/libmodplug/src/config.h
 
 /system/python/Lib/
+/system/python/python24.zip
 
 /tools/EventClients/Clients/OSXRemote/Makefile
 /tools/EventClients/Clients/OSXRemote/build/
