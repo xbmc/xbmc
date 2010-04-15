@@ -115,6 +115,9 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     pItem->SetLabel2(addon->Summary());
     pItem->SetThumbnailImage(addon->Icon());
     CAddonDatabase::SetPropertiesFromAddon(addon,pItem);
+    AddonPtr addon2;
+    if (CAddonMgr::Get()->GetAddon(addon->ID(),addon2))
+      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(305));
     items.Add(pItem);
   }
 }
