@@ -527,7 +527,8 @@ public:
   enum Modifier {
     MODIFIER_CTRL = 0x00010000,
     MODIFIER_SHIFT = 0x00020000,
-    MODIFIER_ALT = 0x00040000
+    MODIFIER_ALT = 0x00040000,
+    MODIFIER_SUPER = 0x00080000
   };
 
 private:

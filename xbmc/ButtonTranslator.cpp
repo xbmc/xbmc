@@ -1136,8 +1136,11 @@ uint32_t CButtonTranslator::TranslateKeyboardString(const char *szButton)
     else if (strKey.Equals("browser_favorites")) buttonCode = 0xF0AB;
     else if (strKey.Equals("browser_refresh")) buttonCode = 0xF0A8;
     else if (strKey.Equals("browser_search")) buttonCode = 0xF0AA;
+    else if (strKey.Equals("browser_forward")) buttonCode = 0xF0A7;
     else if (strKey.Equals("launch_app1_pc_icon")) buttonCode = 0xF0B6;
     else if (strKey.Equals("launch_media_select")) buttonCode = 0xF0B5;
+    else if (strKey.Equals("launch_file_browser")) buttonCode = 0xF0B8;
+    else if (strKey.Equals("launch_media_center")) buttonCode = 0xF0B9;
     else if (strKey.Equals("play_pause")) buttonCode = 0xF0B3;
     else if (strKey.Equals("stop")) buttonCode = 0xF0B2;
     else if (strKey.Equals("volume_up")) buttonCode = 0xF0AF;
@@ -1190,6 +1193,8 @@ uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
         button_id |= CKey::MODIFIER_SHIFT;
       else if (substr == "alt")
         button_id |= CKey::MODIFIER_ALT;
+      else if (substr == "super" || substr == "win")
+        button_id |= CKey::MODIFIER_SUPER;
       else
         CLog::Log(LOGERROR, "Keyboard Translator: Unknown key modifier %s in %s", substr.c_str(), strMod.c_str());
      }
