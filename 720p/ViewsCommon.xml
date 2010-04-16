@@ -218,9 +218,21 @@
 			    <height>42</height>
 			    <align>left</align>
 			    <aligny>center</aligny>
+			    <label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
+			    <font>MediumSmallDefaultCapsFont</font>
+			    <textcolor>Unfocused</textcolor>
+				<visible>Container.Content(episodes)</visible>
+		    </control>
+		    <control type="label">
+		        <posx>60</posx>
+			    <width>356</width>
+			    <height>42</height>
+			    <align>left</align>
+			    <aligny>center</aligny>
 			    <label>$INFO[ListItem.Label]</label>
 			    <font>MediumSmallDefaultCapsFont</font>
 			    <textcolor>Unfocused</textcolor>
+				<visible>!Container.Content(episodes)</visible>
 		    </control>
 		    <control type="image">
 			    <visible>!Container.Content(TVShows) + !Container.Content(Seasons)</visible>
@@ -321,7 +333,21 @@
 			    <font>MediumSmallDefaultCapsFont</font>
 			    <textcolor>Unfocused</textcolor>
 		      	<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
+				<visible>!Container.Content(episodes)</visible>
 		    </control>
+		    <control type="label">
+		        <posx>60</posx>
+			    <width>356</width>
+			    <height>42</height>
+			    <align>left</align>
+			    <aligny>center</aligny>
+			    <label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
+			    <font>MediumSmallDefaultCapsFont</font>
+			    <textcolor>Unfocused</textcolor>
+		      	<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
+				<visible>Container.Content(episodes)</visible>
+		    </control>
+
 <!--
 		    <control type="label">
 		      <visible>!IsEmpty(ListItem.Overlay)</visible>
@@ -351,6 +377,8 @@
 		      <animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
 		    </control>
 -->
+		<control type="group">
+			<visible>!Container.Content(episodes)</visible>
 		    <control type="label">
 				<description>shadow</description>
 		        <posx>61</posx>
@@ -390,7 +418,50 @@
 		        <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
 			    <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
 		    </control>
-
+		</control>
+		<control type="group">
+			<visible>Container.Content(episodes)</visible>
+		    <control type="label">
+				<description>shadow</description>
+		        <posx>61</posx>
+				<posy>2</posy>
+			    <width>356</width>
+			    <height>42</height>
+			    <align>left</align>
+			    <aligny>center</aligny>
+			    <label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
+			    <font>MediumSmallDefaultCapsFont</font>
+				<textcolor>6D000000</textcolor>
+		        <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+			    <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+		    </control>
+		    <control type="label">
+				<description>shadow</description>
+		        <posx>60</posx>
+				<posy>1</posy>
+			    <width>356</width>
+			    <height>42</height>
+			    <align>left</align>
+			    <aligny>center</aligny>
+			    <label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
+			    <font>MediumSmallDefaultCapsFont</font>
+				<textcolor>25000000</textcolor>
+		        <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+			    <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+		    </control>
+		    <control type="label">
+		        <posx>60</posx>
+			    <width>356</width>
+			    <height>42</height>
+			    <align>left</align>
+			    <aligny>center</aligny>
+			    <label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
+			    <font>MediumSmallDefaultCapsFont</font>
+		        <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+			    <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+		    </control>
+		</control>
+		
 		    <control type="image">
 			  <visible>!Container.Content(TVShows) + !Container.Content(Seasons)</visible>
 		      <posx>470</posx>
