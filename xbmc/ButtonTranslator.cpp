@@ -1201,6 +1201,8 @@ uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
         button_id |= CKey::MODIFIER_SHIFT;
       else if (substr == "alt")
         button_id |= CKey::MODIFIER_ALT;
+      else if (substr == "super" || substr == "win")
+        button_id |= CKey::MODIFIER_SUPER;
       else
         CLog::Log(LOGERROR, "Keyboard Translator: Unknown key modifier %s in %s", substr.c_str(), strMod.c_str());
      }

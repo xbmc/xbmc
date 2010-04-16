@@ -38,6 +38,7 @@ public:
   bool GetCtrl() { return m_bCtrl;};
   bool GetAlt() { return m_bAlt;};
   bool GetRAlt() { return m_bRAlt;};
+  bool GetSuper() { return m_bSuper;};
   char GetAscii();// { return m_cAscii;}; // FIXME should be replaced completly by GetUnicode()
   wchar_t GetUnicode();// { return m_wUnicode;};
   uint8_t GetVKey() { return m_VKey;};
@@ -50,6 +51,7 @@ private:
   bool m_bCtrl;
   bool m_bAlt;
   bool m_bRAlt;
+  bool m_bSuper;
   char m_cAscii;
   wchar_t m_wUnicode;
   uint8_t m_VKey;

@@ -2263,7 +2263,7 @@ bool CApplication::OnKey(const CKey& key)
       if (control)
       {
         if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||
-            (control->IsContainer() && g_Keyboard.GetShift() && !(g_Keyboard.GetCtrl() || g_Keyboard.GetAlt() || g_Keyboard.GetRAlt())))
+            (control->IsContainer() && g_Keyboard.GetShift() && !(g_Keyboard.GetCtrl() || g_Keyboard.GetAlt() || g_Keyboard.GetRAlt() || g_Keyboard.GetSuper())))
           useKeyboard = true;
       }
     }
@@ -3081,6 +3081,8 @@ bool CApplication::ProcessKeyboard()
         keyID |= CKey::MODIFIER_SHIFT;
     if (g_Keyboard.GetAlt())
         keyID |= CKey::MODIFIER_ALT;
+    if (g_Keyboard.GetSuper())
+        keyID |= CKey::MODIFIER_SUPER;
 
     // Create a key object with the keypress data and pass it to OnKey to be executed
     CKey key(keyID);

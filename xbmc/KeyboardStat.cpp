@@ -562,6 +562,7 @@ void CKeyboardStat::Reset()
   m_bCtrl = false;
   m_bAlt = false;
   m_bRAlt = false;
+  m_bSuper = false;
   m_cAscii = '\0';
   m_wUnicode = '\0';
   m_VKey = 0;
@@ -646,6 +647,12 @@ int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
       case XBMCK_RMETA:
         modstate |= XBMCKMOD_RMETA;
         break;
+      case XBMCK_LSUPER:
+        modstate |= XBMCKMOD_LSUPER;
+        break;
+      case XBMCK_RSUPER:
+        modstate |= XBMCKMOD_RSUPER;
+        break;
       case XBMCK_MODE:
         modstate |= XBMCKMOD_MODE;
         break;
@@ -693,6 +700,12 @@ int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
         break;
       case XBMCK_RMETA:
         modstate &= ~XBMCKMOD_RMETA;
+        break;
+      case XBMCK_LSUPER:
+        modstate &= ~XBMCKMOD_LSUPER;
+        break;
+      case XBMCK_RSUPER:
+        modstate &= ~XBMCKMOD_RSUPER;
         break;
       case XBMCK_MODE:
         modstate &= ~XBMCKMOD_MODE;
@@ -744,6 +757,7 @@ void CKeyboardStat::Update(XBMC_Event& event)
     m_bShift = (event.key.keysym.mod & XBMCKMOD_SHIFT) != 0;
     m_bAlt = (event.key.keysym.mod & XBMCKMOD_ALT) != 0;
     m_bRAlt = (event.key.keysym.mod & XBMCKMOD_RALT) != 0;
+    m_bSuper = (event.key.keysym.mod & XBMCKMOD_SUPER) != 0;
 
     CLog::Log(LOGDEBUG, "SDLKeyboard: scancode: %d, sym: %d, unicode: %d, modifier: %x", event.key.keysym.scancode, event.key.keysym.sym, event.key.keysym.unicode, event.key.keysym.mod);
 
