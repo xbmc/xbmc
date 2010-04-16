@@ -113,6 +113,10 @@ static XBMC_KeyMapping g_mapping_evdev[] =
 , { 136, 0xb2 } // Stop
 , { 138, 0x49 } // Info
 , { 147, 0x4d } // Menu
+, { 150, 0x9f } // Sleep
+, { 152, 0xb8 } // Launch file browser
+, { 163, 0xb4 } // Launch Mail
+, { 164, 0xab } // Browser favorites
 , { 166, 0x08 } // Back
 , { 167, 0xa7 } // Browser forward
 , { 171, 0xb0 } // Next track
@@ -120,6 +124,7 @@ static XBMC_KeyMapping g_mapping_evdev[] =
 , { 173, 0xb1 } // Prev track
 , { 174, 0xb2 } // Stop
 , { 176, 0x52 } // Rewind
+, { 179, 0xb9 } // Launch media center
 , { 180, 0xac } // Browser home
 , { 181, 0xa8 } // Browser refresh
 , { 214, 0x1B } // Close
