@@ -139,7 +139,9 @@ void CFileItemHandler::HandleFileItemList(const char *id, const char *resultname
     if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
       object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
 
-    if (!item->HasVideoInfoTag() && !item->HasMusicInfoTag() && !object.isMember("file"))
+/*    if (!item->HasVideoInfoTag() && !item->HasMusicInfoTag() && !object.isMember("file"))
+      object["file"] = item->m_strPath.c_str();*/
+    if (!object.isMember("file"))
       object["file"] = item->m_strPath.c_str();
 
     if (id)
