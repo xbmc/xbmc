@@ -27,7 +27,7 @@
           <bordersize>8</bordersize>
         </control>
         <control type="image">
-					<posx>5</posx>
+		  <posx>5</posx>
           <posy>348</posy>
           <width>420</width>
           <height>348</height>
@@ -54,7 +54,7 @@
         <width>840</width>
         <height>378</height>
         <scrolltime>200</scrolltime>
-	     <pagecontrol>-</pagecontrol>
+	     <pagecontrol>61</pagecontrol>
         <onleft>50</onleft>
         <onright>9009</onright>
         <onup>50</onup>
@@ -159,7 +159,7 @@
         <texture>BlackGradient2.png</texture>
         <aspectratio>stretch</aspectratio>
       </control>
-<!--
+
       <control type="scrollbar" id="61">
         <include condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]">NoIconListViewScrollbar</include>
         <onup>61</onup>
@@ -169,9 +169,8 @@
         <posx>28</posx>
         <posy>179</posy>
         <height>380</height>
-        <visible>!Skin.HasSetting(HideScrollBars)</visible>
       </control>
--->
+
     </control>
 
     <control type="group">
@@ -199,7 +198,7 @@
         <width>640</width>
         <height>454</height>
         <scrolltime>200</scrolltime>
- 	  	<pagecontrol>-</pagecontrol>
+ 	  	<pagecontrol>61</pagecontrol>
         <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
         <onright>9009</onright>
         <onup>56</onup>
@@ -461,7 +460,7 @@
         <texture>BlackGradient2.png</texture>
         <aspectratio>stretch</aspectratio>
       </control>
-<!--
+
       <control type="scrollbar" id="61">
         <posx>3</posx>
         <posy>225</posy>
@@ -470,9 +469,8 @@
         <ondown>61</ondown>
         <onleft>50</onleft>
         <onright>9009</onright>
-        <visible>!Skin.HasSetting(HideScrollBars)</visible>
       </control>
--->
+
     </control>
 
 

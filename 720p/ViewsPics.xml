@@ -15,7 +15,7 @@
         <viewtype label="Pictures">panel</viewtype>
         <width>456</width>
         <height>440</height>
-        <pagecontrol>-</pagecontrol>
+        <pagecontrol>61</pagecontrol>
         <onup>51</onup>
         <ondown>51</ondown>
         <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
@@ -45,7 +45,7 @@
 
         </focusedlayout>
       </control>
-<!--
+
       <control type="scrollbar" id="61">
         <onup>61</onup>
         <ondown>61</ondown>
@@ -56,7 +56,7 @@
         <height>440</height>
         <showonepage>true</showonepage>
       </control>
--->
+
       <control type="group">
         <description>Picture Details</description>
         <posx>560</posx>

@@ -7,7 +7,7 @@
 		Listitem.Property(mediaTag::videoFrameRate)
 		Listitem.Property(mediaTag::audioChannels)
 		Listitem.Property(mediaTag::contentRating)
-		Listitem.Property(mediaTag::movieStudio)
+		Listitem.Property(mediaTag::Studio)
 	-->
  
 	<include name="InfoListFlags">
