@@ -967,13 +967,13 @@
             </control>
 
 			<control type="label">
-			  <posy>30</posy>
-			  <posx>88</posx>
-              <description>IMDb Rating</description>
-              <font>MediumSmallTitleCapsFont</font>
-              <label>$INFO[ListItem.rating]</label>
-			  <align>left</align>
-            </control>
+				<posy>30</posy>
+				<posx>88</posx>
+				<description>IMDb Rating</description>
+				<font>MediumSmallTitleCapsFont</font>
+				<label>$INFO[ListItem.rating]</label>
+				<align>left</align>
+			</control>
 
 			<control type="label">
 			  <posy>56</posy>
@@ -990,7 +990,7 @@
 			  <posx>88</posx>
               <description>Genre</description>
               <font>MediumSmallTitleCapsFont</font>
-              <label>$INFO[ListItem.Genre]</label>
+              <label>$INFO[ListItem.FirstGenre]</label>
 			  <align>left</align>
             </control>
 
@@ -1047,6 +1047,7 @@
 			<control type="label">
 			  <posy>4</posy>
 			  <posx>415</posx>
+			  <width>455</width>
               <description>Cast</description>
               <font>MediumSmallTitleCapsFont</font>
               <label>$INFO[ListItem.Cast]</label>
@@ -1067,6 +1068,7 @@
 			<control type="label">
 			  <posy>30</posy>
 			  <posx>415</posx>
+			  <width>455</width>
               <font>MediumSmallTitleCapsFont</font>
               <label>$INFO[ListItem.Director]</label>
 			  <align>left</align>
@@ -1085,6 +1087,7 @@
 			<control type="label">
 			  <posy>56</posy>
 			  <posx>415</posx>
+			  <width>455</width>
               <font>MediumSmallTitleCapsFont</font>
               <label>$INFO[ListItem.Writer]</label>
 			  <align>left</align>
