@@ -120,7 +120,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
   // them back to CrystalHD class for re-queuing. This way we keep
   // the memory alloc/free to a minimum and don't churn memory for
   // each picture frame.
-  m_Device->BusyListPop();
+  m_Device->BusyListFlush();
 
   // If NULL is passed, DVDPlayer wants to process any queued picture frames.
   if (!pData)
