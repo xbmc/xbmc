@@ -415,7 +415,9 @@ void CMPCInputThread::Flush(void)
   m_PopEvent.Set();
   m_start_decoding = 0;
 #ifndef USE_FFMPEG_ANNEXB
-  reset_parser(m_nal_parser);
+  // Doing a full parser reinit here, works more reliable than resetting
+  free_parser(m_nal_parser);
+  m_nal_parser = init_parser();
 	if (m_extradata_size > 0)
 		parse_codec_private(m_nal_parser, m_extradata, m_extradata_size);
 #endif
