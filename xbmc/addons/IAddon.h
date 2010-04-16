@@ -64,9 +64,9 @@ namespace ADDON
   typedef boost::shared_ptr<CVisualisation> VizPtr;
 
   class CAddonMgr;
-  struct AddonVersion;
+  class AddonVersion;
   typedef std::map<CStdString, std::pair<const AddonVersion, const AddonVersion> > ADDONDEPS;
-  struct AddonProps;
+  class AddonProps;
 
   class IAddon
   {

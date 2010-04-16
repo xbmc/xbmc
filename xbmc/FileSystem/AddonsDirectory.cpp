@@ -46,12 +46,15 @@ CAddonsDirectory::~CAddonsDirectory(void)
 bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   CURL path(strPath);
+  items.ClearProperties();
 
   VECADDONS addons;
-
   // get info from repository
   if (path.GetHostName().Equals("enabled"))
+  {
     CAddonMgr::Get()->GetAllAddons(addons);
+    items.SetProperty("reponame",g_localizeStrings.Get(24062));
+  }
   else
   {
     AddonPtr addon;
@@ -65,6 +68,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addon);
       addons = CRepositoryUpdateJob::GrabAddons(repo,false);
     }
+    items.SetProperty("reponame",addon->Name());
   }
 
   if (path.GetFileName().IsEmpty())
@@ -87,6 +91,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     return true;
   }
 
+  items.SetProperty("addoncategory",path.GetFileName());
   TYPE type = TranslateType(path.GetFileName());
   for (unsigned int j=0;j<addons.size();++j)
     if (addons[j]->Type() != type)
@@ -108,17 +113,11 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     CFileItemPtr pItem(new CFileItem(path.Get(), false));
     pItem->SetLabel(addon->Name());
     pItem->SetLabel2(addon->Summary());
-    pItem->SetProperty("Addon.ID", addon->ID());
-    pItem->SetProperty("Addon.Type", TranslateType(addon->Type()));
-    pItem->SetProperty("Addon.Name", addon->Name());
-    pItem->SetProperty("Addon.Version", addon->Version().Print());
-    pItem->SetProperty("Addon.Summary", addon->Summary());
-    pItem->SetProperty("Addon.Description", addon->Description());
-    pItem->SetProperty("Addon.Creator", addon->Author());
-    pItem->SetProperty("Addon.Disclaimer", addon->Disclaimer());
-    pItem->SetProperty("Addon.Rating", addon->Stars());
-    pItem->SetProperty("Addon.Path", addon->Path());
     pItem->SetThumbnailImage(addon->Icon());
+    CAddonDatabase::SetPropertiesFromAddon(addon,pItem);
+    AddonPtr addon2;
+    if (CAddonMgr::Get()->GetAddon(addon->ID(),addon2))
+      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(305));
     items.Add(pItem);
   }
 }

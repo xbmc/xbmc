@@ -36,6 +36,6 @@ namespace XFILE
     private:
       bool ValueWithoutNamespace(const TiXmlNode *pNode, CStdString value);
       CStdString GetStatusTag(const TiXmlElement *pElement);
-      bool ParseResponse(const TiXmlElement *pElement, CFileItem &item);
+      void ParseResponse(const TiXmlElement *pElement, CFileItem &item);
   };
 }

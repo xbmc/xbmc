@@ -38,8 +38,10 @@
 #include "CocoaInterface.h"
 #endif
 #include "utils/FileUtils.h"
+#include "AddonDatabase.h"
 
 using namespace XFILE;
+using namespace ADDON;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -186,51 +188,20 @@ void CGUIWindowScripts::FrameMove()
 
 bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemList& items)
 {
-  if (!CGUIMediaWindow::GetDirectory(strDirectory,items))
-    return false;
-
-  // flatten any folders
-  for (int i = 0; i < items.Size(); i++)
+  VECADDONS addons;
+  CAddonMgr::Get()->GetAddons(ADDON_SCRIPT,addons);
+  
+  items.ClearItems();
+  for (unsigned i=0; i < addons.size(); i++)
   {
-    CFileItemPtr item = items[i];
-    if (item->m_bIsFolder && !item->IsParentFolder() && !item->m_bIsShareOrDrive && !item->GetLabel().Left(1).Equals("."))
-    { // folder item - let's check for a default.py file, and flatten if we have one
-      CStdString defaultPY;
-      CUtil::AddFileToFolder(item->m_strPath, "default.py", defaultPY);
-      if (!CFile::Exists(defaultPY)) {
-         CUtil::AddFileToFolder(item->m_strPath, "Default.py", defaultPY);
-         if (!CFile::Exists(defaultPY)) {
-            CUtil::AddFileToFolder(item->m_strPath, "DEFAULT.PY", defaultPY);
-         }
-      }
-
-      if (CFile::Exists(defaultPY))
-      { // yes, format the item up
-        item->m_strPath = defaultPY;
-        item->m_bIsFolder = false;
-        item->FillInDefaultIcon();
-        item->SetLabelPreformated(true);
-      }
-    }
-    if (item->GetLabel().Equals("autoexec.py") || (item->GetLabel().Left(1).Equals(".") && !item->IsParentFolder()))
-    {
-      items.Remove(i);
-      i--;
-    }
-
-#if defined(__APPLE__)
-    // Remove extension & set thumbnail AppleScripts
-    CStdString itemLabel = item->GetLabel();
-    if (CUtil::GetExtension(itemLabel) == ".applescript")
-    {
-      CUtil::RemoveExtension(itemLabel);
-      item->SetLabel(itemLabel);
-      item->SetThumbnailImage(Cocoa_GetIconFromBundle("/Applications/AppleScript/Script Editor.app", "SECompiledScript"));
-    }
-#endif
-  }
-
-  items.SetProgramThumbs();
+    AddonPtr addon = addons[i];
+    CFileItemPtr pItem(new CFileItem(addon->Path()+addon->LibName(),false));
+    pItem->SetLabel(addon->Name());
+    pItem->SetLabel2(addon->Summary());
+    pItem->SetThumbnailImage(addon->Icon());
+    CAddonDatabase::SetPropertiesFromAddon(addon,pItem);
+    items.Add(pItem);
+  }  	
 
   return true;
 }

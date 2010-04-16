@@ -116,6 +116,7 @@ protected:
   void SetDefaults();
   void LoadIncludes();
   bool LoadStartupWindows(const TiXmlElement *startup);
+  bool IsWide(RESOLUTION res) const;
 
   RESOLUTION m_DefaultResolution; // default resolution for the skin in 4:3 modes
   RESOLUTION m_DefaultResolutionWide; // default resolution for the skin in 16:9 modes

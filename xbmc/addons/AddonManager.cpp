@@ -514,10 +514,16 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
       CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Linux, ignoring", strPath.c_str());
       return false;
     }
-#elif defined(_WIN32)
-    if (!platforms.count("windows"))
+#elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
+    if (!platforms.count("windows-gl") && !platforms.count("windows"))
     {
-      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Windows, ignoring", strPath.c_str());
+      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Windows/OpenGL, ignoring", strPath.c_str());
+      return false;
+    }
+#elif defined(_WIN32) && defined(HAS_DX)
+    if (!platforms.count("windows-dx") && !platforms.count("windows"))
+    {
+      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Windows/DirectX, ignoring", strPath.c_str());
       return false;
     }
 #elif defined(__APPLE__)
