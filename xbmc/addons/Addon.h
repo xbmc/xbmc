@@ -100,7 +100,7 @@ public:
   int        stars;
 };
 
-typedef std::vector<struct AddonProps> VECADDONPROPS;
+typedef std::vector<class AddonProps> VECADDONPROPS;
 
 class CAddon : public IAddon
 {
