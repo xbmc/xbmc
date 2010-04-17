@@ -2380,13 +2380,16 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
   || status == VA_STATUS_ERROR_INVALID_DISPLAY)
   {
     va.display->lost(true);
-    va.display.reset();
-    va.surface.reset();
-    va.surfglx.reset();
+    for(int i = 0; i < NUM_BUFFERS; i++)
+    {
+      m_buffers[i].vaapi.display.reset();
+      m_buffers[i].vaapi.surface.reset();
+      m_buffers[i].vaapi.surfglx.reset();
+    }
   }
 
   if(status != VA_STATUS_SUCCESS)
-    CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to copy surface to glx (%d)", status);
+    CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to copy surface to glx %d - ", status, vaErrorStr(status));
 
   SetEvent(m_eventTexturesDone[index]);
 #endif

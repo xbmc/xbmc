@@ -63,7 +63,14 @@ static CDisplayPtr GetGlobalDisplay()
 
   CDisplayPtr display(display_global.lock());
   if(display)
+  {
+    if(display->lost())
+    {
+      CLog::Log(LOGERROR, "VAAPI - vaapi display is in lost state");
+      display.reset();
+    }    
     return display;
+  }
 
   VADisplay disp;
   disp = vaGetDisplayGLX(g_Windowing.GetDisplay());
@@ -205,6 +212,7 @@ void CDecoder::Close()
   memset(m_hwaccel , 0, sizeof(*m_hwaccel));
   memset(m_surfaces, 0, sizeof(*m_surfaces));
   m_display.reset();
+  m_holder.surface.reset();
 }
 
 bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
