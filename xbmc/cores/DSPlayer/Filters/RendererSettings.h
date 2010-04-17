@@ -126,7 +126,7 @@ public:
         iEVRHighColorResolution = 0;
         iEVREnableFrameTimeCorrection = 0;
         iEVROutputRange = 0;
-        iEvrBuffers = 10; // Needed because painting and rendering are not in the same thread
+        iEvrBuffers = 4; // Needed because painting and rendering are not in the same thread
       }
       void SetOptimal()
       {

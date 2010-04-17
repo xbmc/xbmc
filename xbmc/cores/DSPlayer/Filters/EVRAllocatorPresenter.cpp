@@ -2094,9 +2094,12 @@ void CEVRAllocatorPresenter::RenderThread()
                 __super::SetTime (g_tSegmentStart + nsSampleTime);
               
               // Since the Drawing isn't in the same thread that rendering, we need to keep track of current displayed sample
-            if (m_pCurrentDisplaydSampleQueue.empty() || m_pCurrentDisplaydSampleQueue.back() != m_pCurrentDisplaydSample) //add only one time the sample to the queue
-              m_pCurrentDisplaydSampleQueue.push(m_pCurrentDisplaydSample);
-              g_application.NewFrame();
+              if (m_pCurrentDisplaydSampleQueue.empty() || m_pCurrentDisplaydSampleQueue.back() != m_pCurrentDisplaydSample) //add only one time the sample to the queue
+                m_pCurrentDisplaydSampleQueue.push(m_pCurrentDisplaydSample);
+
+               g_application.NewFrame();
+               { m_drawingIsDone.WaitMSec(100); m_drawingIsDone.Reset(); }
+
             }
             else
             {
@@ -2228,6 +2231,7 @@ void CEVRAllocatorPresenter::RenderThread()
                   m_pCurrentDisplaydSampleQueue.push(m_pCurrentDisplaydSample);
 
                 g_application.NewFrame();
+                { m_drawingIsDone.WaitMSec(100); m_drawingIsDone.Reset(); } // Wait until the drawing is done
                 
                 NextSleepTime = 0;
                 m_pcFramesDrawn++;

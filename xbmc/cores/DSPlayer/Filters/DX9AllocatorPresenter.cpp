@@ -204,6 +204,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   , m_VSyncMode(0)
   , m_TextScale(1.0)
   , m_pScreenSize(0, 0, 0, 0)
+  , m_drawingIsDone()
 {
   g_Windowing.Register(this);
   if (m_bIsEVR)
@@ -1986,6 +1987,8 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
 {
 //  if (!fAll)
 //    return false;
+
+  CAutoSetEvent event(&m_drawingIsDone);
   
   if (!g_renderManager.IsStarted() || m_bNeedNewDevice)
     return false;
