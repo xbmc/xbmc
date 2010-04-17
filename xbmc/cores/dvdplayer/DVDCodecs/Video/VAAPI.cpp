@@ -176,6 +176,9 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   VAEntrypoint entrypoint = VAEntrypointVLD;
   VAProfile    profile;
 
+  CLog::Log(LOGDEBUG, "VAAPI - attempting to open codec %d with profile %d at level %d with %d reference frames", avctx->codec_id, avctx->profile, avctx->level, avctx->refs);
+
+
   switch (avctx->codec_id) {
   case CODEC_ID_MPEG2VIDEO:
       profile = VAProfileMPEG2Main;           break;
