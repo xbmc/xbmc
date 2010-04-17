@@ -264,7 +264,7 @@ bool CDecoder::EnsureContext(AVCodecContext *avctx)
     WARN(vaDestroyContext(m_display->get(), m_context))
   m_context = NULL;
 
-  const int old_surfaces_count = m_surfaces_count;
+  const unsigned old_surfaces_count = m_surfaces_count;
   m_refs = avctx->refs;
   if(m_refs == 0)
   {
