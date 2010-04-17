@@ -2342,7 +2342,6 @@ void CEVRAllocatorPresenter::BeforeDeviceReset()
   m_RenderLock.Lock();
 
   // The device is going to be recreated, free ressources
-
   m_bNeedNewDevice = true;
   RemoveAllSamples();
 }
@@ -2385,9 +2384,13 @@ void CEVRAllocatorPresenter::RemoveAllSamples()
   FlushSamples();
   m_ScheduledSamples.Clear();
   m_FreeSamples.Clear();
+
+  while (!m_pCurrentDisplaydSampleQueue.empty())
+    m_pCurrentDisplaydSampleQueue.pop();
+
   m_LastScheduledSampleTime = -1;
   m_LastScheduledUncorrectedSampleTime = -1;
-  ASSERT(m_nUsedBuffer == 0);
+  //ASSERT(m_nUsedBuffer == 0);
   m_nUsedBuffer = 0;
 }
 

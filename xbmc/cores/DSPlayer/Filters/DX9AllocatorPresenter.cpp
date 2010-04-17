@@ -203,6 +203,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   , m_bIsEVR(bIsEVR)
   , m_VSyncMode(0)
   , m_TextScale(1.0)
+  , m_pScreenSize(0, 0, 0, 0)
 {
   g_Windowing.Register(this);
   if (m_bIsEVR)
@@ -2424,10 +2425,10 @@ double CDX9AllocatorPresenter::GetFrameRate()
 
 bool CDX9AllocatorPresenter::ResetDevice()
 {
-  BeforeDeviceReset(); // Handle pre-reset specific renderer stuff
-
   StopWorkerThreads();
   CStreamsManager::getSingleton()->SubtitleManager->StopThread();
+
+  BeforeDeviceReset(); // Handle pre-reset specific renderer stuff
 
   DeleteSurfaces();
 
