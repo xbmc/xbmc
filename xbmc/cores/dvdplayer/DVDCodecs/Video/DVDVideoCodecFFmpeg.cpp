@@ -388,9 +388,6 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
     else
       result = m_pHardware->Decode(m_pCodecContext, NULL);
 
-    if(result & VC_FLUSHED)
-      Reset();
-
     if(result)
       return result;
   }
