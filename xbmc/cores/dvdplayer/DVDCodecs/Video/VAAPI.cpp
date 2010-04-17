@@ -397,12 +397,23 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
 
 int CDecoder::Check(AVCodecContext* avctx)
 {
+  if (m_display == NULL)
+  {
+    if(!Open(avctx, avctx->pix_fmt))
+    {
+      CLog::Log(LOGERROR, "VAAPI - Unable to recover device after display was closed");
+      Close();
+      return VC_ERROR;
+    }
+  }
+
   if (m_display->lost())
   {
     Close();
     if(!Open(avctx, avctx->pix_fmt))
     {
       CLog::Log(LOGERROR, "VAAPI - Unable to recover device after display was lost");
+      Close();
       return VC_ERROR;
     }
     return VC_FLUSHED;
