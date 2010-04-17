@@ -1348,7 +1348,9 @@ void CRenderedTextSubtitle::ParseString(CSubtitle* sub, CStdStringW str, STSStyl
   {
     wchar_t c = str[j];
 
-    if(c != L'\n' && c != ' ' && c != L'\x00A0' && j != len - 1)
+    if (j == len - 1)
+      j = len;
+    else if(c != L'\n' && c != ' ' && c != L'\x00A0')
       continue;
 
     if(i < j)
