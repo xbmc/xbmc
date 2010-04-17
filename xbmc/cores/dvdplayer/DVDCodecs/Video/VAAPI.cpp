@@ -190,18 +190,26 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 
 
   switch (avctx->codec_id) {
-  case CODEC_ID_MPEG2VIDEO:
+    case CODEC_ID_MPEG2VIDEO:
       profile = VAProfileMPEG2Main;           break;
-  case CODEC_ID_MPEG4:
-  case CODEC_ID_H263:
+    case CODEC_ID_MPEG4:
+    case CODEC_ID_H263:
       profile = VAProfileMPEG4AdvancedSimple; break;
-  case CODEC_ID_H264:
-      profile = VAProfileH264High;            break;
-  case CODEC_ID_WMV3:
+    case CODEC_ID_H264:
+    {
+      if     (avctx->profile == FF_PROFILE_H264_BASELINE)
+        profile = VAProfileH264Baseline;
+      else if(avctx->profile == FF_PROFILE_H264_MAIN)
+        profile = VAProfileH264Main;
+      else
+        profile = VAProfileH264High;
+      break;
+    }
+    case CODEC_ID_WMV3:
       profile = VAProfileVC1Main;             break;
-  case CODEC_ID_VC1:
+    case CODEC_ID_VC1:
       profile = VAProfileVC1Advanced;         break;
-  default:
+    default:
       return false;
   }
 
