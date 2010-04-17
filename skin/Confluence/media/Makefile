@@ -156,6 +156,7 @@ IMAGES= \
 	flagging/video/mpeg1video.png \
 	flagging/video/mpeg2video.png \
 	flagging/video/sd.png \
+	flagging/video/vc-1.png \
 	flagging/video/wvc1.png \
 	flagging/video/xvid.png \
 	floor.png \
