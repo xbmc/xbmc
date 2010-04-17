@@ -80,6 +80,7 @@ struct CHolder
 class CDecoder
   : public CDVDVideoCodecFFmpeg::IHardwareDecoder
 {
+  bool EnsureContext(AVCodecContext *avctx);
 public:
   CDecoder();
  ~CDecoder();

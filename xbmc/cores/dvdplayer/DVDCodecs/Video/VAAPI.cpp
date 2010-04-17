@@ -72,10 +72,11 @@ CSurface::~CSurface()
 
 CDecoder::CDecoder()
 {
-  m_refs     = 0;
-  m_config   = NULL;
-  m_context  = NULL;
-  m_hwaccel  = (vaapi_context*)calloc(1, sizeof(vaapi_context));
+  m_refs            = 0;
+  m_surfaces_count  = 0;
+  m_config          = NULL;
+  m_context         = NULL;
+  m_hwaccel         = (vaapi_context*)calloc(1, sizeof(vaapi_context));
 }
 
 CDecoder::~CDecoder()
@@ -233,42 +234,11 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
     return false;
   }
 
-  m_refs = avctx->refs;
-  if(m_refs == 0)
-  {
-    if(avctx->codec_id == CODEC_ID_H264)
-      m_refs = 16;
-    else
-      m_refs = 2;
-  }
-  m_surfaces_count = m_refs + 1 + 1;
-
-  CLog::Log(LOGDEBUG, "VAAPI - allocating %d surfaces for given %d references", m_surfaces_count, avctx->refs);
-
-  CHECK(vaCreateSurfaces(m_display->get()
-                       , avctx->width
-                       , avctx->height
-                       , VA_RT_FORMAT_YUV420
-                       , m_surfaces_count
-                       , m_surfaces))
-
-  for(unsigned i = 0; i < m_surfaces_count; i++)
-    m_surfaces_free.push_back(CSurfacePtr(new CSurface(m_surfaces[i], m_display)));
-
-  //shared_ptr<VASurfaceID const> test = VASurfaceIDPtr(m_surfaces[0], m_display);
-  
   CHECK(vaCreateConfig(m_display->get(), profile, entrypoint, &attrib, 1, &m_hwaccel->config_id))
   m_config = m_hwaccel->config_id;
 
-  CHECK(vaCreateContext(m_display->get()
-                      , m_config
-                      , avctx->width
-                      , avctx->height
-                      , VA_PROGRESSIVE
-                      , m_surfaces
-                      , m_surfaces_count
-                      , &m_hwaccel->context_id))
-  m_context = m_hwaccel->context_id;
+  if (!EnsureContext(avctx))
+    return false;
 
   m_hwaccel->display     = m_display->get();
 
@@ -282,8 +252,63 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   return true;
 }
 
+bool CDecoder::EnsureContext(AVCodecContext *avctx)
+{
+  if(avctx->refs && avctx->refs <= m_refs)
+    return true;
+
+  if(m_refs > 0)
+    CLog::Log(LOGWARNING, "VAAPI - reference frame count increasing, reiniting decoder");
+
+  if(m_context)
+    WARN(vaDestroyContext(m_display->get(), m_context))
+  m_context = NULL;
+
+  const int old_surfaces_count = m_surfaces_count;
+  m_refs = avctx->refs;
+  if(m_refs == 0)
+  {
+    if(avctx->codec_id == CODEC_ID_H264)
+      m_refs = 16;
+    else
+      m_refs = 2;
+  }
+  m_surfaces_count = m_refs + 1 + 1;
+
+  CLog::Log(LOGDEBUG, "VAAPI - allocating %d surfaces for given %d references", m_surfaces_count, avctx->refs);
+
+  if (m_surfaces_count > old_surfaces_count)
+  {
+    CHECK(vaCreateSurfaces(m_display->get()
+                         , avctx->width
+                         , avctx->height
+                         , VA_RT_FORMAT_YUV420
+                         , m_surfaces_count - old_surfaces_count
+                         , &m_surfaces[old_surfaces_count]))
+
+    for(unsigned i = old_surfaces_count; i < m_surfaces_count; i++)
+      m_surfaces_free.push_back(CSurfacePtr(new CSurface(m_surfaces[i], m_display)));
+  }
+
+  //shared_ptr<VASurfaceID const> test = VASurfaceIDPtr(m_surfaces[0], m_display);
+
+  CHECK(vaCreateContext(m_display->get()
+                      , m_config
+                      , avctx->width
+                      , avctx->height
+                      , VA_PROGRESSIVE
+                      , m_surfaces
+                      , m_surfaces_count
+                      , &m_hwaccel->context_id))
+  m_context = m_hwaccel->context_id;
+  return true;
+}
+
 int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 {
+  if (!EnsureContext(avctx))
+    return VC_ERROR;
+
   m_holder.surface.reset();
   if(frame)
     return VC_BUFFER | VC_PICTURE;
@@ -329,15 +354,6 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
 
 int CDecoder::Check(AVCodecContext* avctx)
 {
-  if(avctx->refs > m_refs)
-  {
-    CLog::Log(LOGWARNING, "VAAPI - reference frame count increasing, reiniting decoder");
-    Close();
-    if(Open(avctx, avctx->pix_fmt))
-      return VC_FLUSHED;
-    else
-      return VC_ERROR;
-  }
   m_holder.surface.reset();
   return 0;
 }
