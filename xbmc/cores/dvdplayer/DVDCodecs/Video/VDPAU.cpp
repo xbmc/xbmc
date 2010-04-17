@@ -128,6 +128,13 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
     return false;
   }
 
+  if(avctx->width  == 0
+  || avctx->height == 0)
+  {
+    CLog::Log(LOGWARNING,"(VDPAU) no width/height available, can't init");
+    return false;
+  }
+
   InitVDPAUProcs();
 
   if (vdp_device != VDP_INVALID_HANDLE)
