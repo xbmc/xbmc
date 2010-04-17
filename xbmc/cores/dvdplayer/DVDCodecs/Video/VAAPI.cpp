@@ -59,15 +59,22 @@ static inline VASurfaceID GetSurfaceID(AVFrame *pic)
 
 CDisplay::~CDisplay()
 {
-  CLog::Log(LOGDEBUG, "VAAPI - destroying display");
+  CLog::Log(LOGDEBUG, "VAAPI - destroying display 0x%x", (int)m_display);
   WARN(vaTerminate(m_display))
 }
 
 CSurface::~CSurface()
 {
-  CLog::Log(LOGDEBUG, "VAAPI - destroying surface %d", (int)m_id);
+  CLog::Log(LOGDEBUG, "VAAPI - destroying surface 0x%x", (int)m_id);
   CSingleLock lock(*m_display);
   WARN(vaDestroySurfaces(m_display->get(), &m_id, 1))
+}
+
+CSurfaceGL::~CSurfaceGL()
+{
+  CLog::Log(LOGDEBUG, "VAAPI - destroying glx surface 0x%x", (int)m_id);
+  CSingleLock lock(*m_display);
+  WARN(vaDestroySurfaceGLX(m_display->get(), m_id))
 }
 
 CDecoder::CDecoder()
@@ -167,7 +174,10 @@ void CDecoder::Close()
   
   m_surfaces_free.clear();
   m_surfaces_used.clear();
-
+  m_surfaces_count = 0;
+  m_refs           = 0;
+  memset(m_hwaccel , 0, sizeof(*m_hwaccel));
+  memset(m_surfaces, 0, sizeof(*m_surfaces));
   m_display.reset();
 }
 
@@ -194,7 +204,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   default:
       return false;
   }
-  
+
   VADisplay display;
   display = vaGetDisplayGLX(g_Windowing.GetDisplay());
 
@@ -309,10 +319,10 @@ bool CDecoder::EnsureContext(AVCodecContext *avctx)
 
 int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 {
-  if (!EnsureContext(avctx))
-    return VC_ERROR;
+  int status = Check(avctx);
+  if(status)
+    return status;
 
-  m_holder.surface.reset();
   if(frame)
     return VC_BUFFER | VC_PICTURE;
   else
@@ -357,6 +367,20 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
 
 int CDecoder::Check(AVCodecContext* avctx)
 {
+  if (m_display->lost())
+  {
+    Close();
+    if(!Open(avctx, avctx->pix_fmt))
+    {
+      CLog::Log(LOGERROR, "VAAPI - Unable to recover device after display was lost");
+      return VC_ERROR;
+    }
+    return VC_FLUSHED;
+  }
+
+  if (!EnsureContext(avctx))
+    return VC_ERROR;
+
   m_holder.surface.reset();
   return 0;
 }

@@ -39,20 +39,23 @@ struct CDisplay
 {
   CDisplay(VADisplay display)
     : m_display(display)
+    , m_lost(false)
   {}
  ~CDisplay();
 
   VADisplay get() { return m_display; }
-
+  bool      lost()          { return m_lost; }
+  void      lost(bool lost) { m_lost = lost; }
 private:
   VADisplay m_display;
+  bool      m_lost;
 };
 
 typedef boost::shared_ptr<CDisplay> CDisplayPtr;
 
 struct CSurface
 {
-  CSurface(VASurfaceID id, CDisplayPtr display)
+  CSurface(VASurfaceID id, CDisplayPtr& display)
    : m_id(id)
    , m_display(display)
   {}
@@ -65,15 +68,28 @@ struct CSurface
 
 typedef boost::shared_ptr<CSurface> CSurfacePtr;
 
+struct CSurfaceGL
+{
+  CSurfaceGL(void* id, CDisplayPtr& display)
+    : m_id(id)
+    , m_display(display)
+  {}
+ ~CSurfaceGL();
+ 
+  void*       m_id;
+  CDisplayPtr m_display;
+};
+
+typedef boost::shared_ptr<CSurfaceGL> CSurfaceGLPtr;
+
 // silly type to avoid includes
 struct CHolder
 {
-  CDisplayPtr display;
-  CSurfacePtr surface;
-  void*       surfacegl;
+  CDisplayPtr   display;
+  CSurfacePtr   surface;
+  CSurfaceGLPtr surfglx;
 
   CHolder()
-   : surfacegl(NULL)
   {}
 };
 

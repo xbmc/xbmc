@@ -1693,7 +1693,7 @@ void CLinuxRendererGL::RenderVAAPI(int index, int field)
 
 #if USE_VAAPI_GLX_BIND
   VAStatus status;
-  status = vaBeginRenderSurfaceGLX(display->get(), va.surfacegl);
+  status = vaBeginRenderSurfaceGLX(display->get(), va.surfglx->m_id);
   if(status != VA_STATUS_SUCCESS)
   {
     CLog::Log(LOGERROR, "CLinuxRendererGL::RenderVAAPI - vaBeginRenderSurfaceGLX failed (%d)", status);
@@ -1737,7 +1737,7 @@ void CLinuxRendererGL::RenderVAAPI(int index, int field)
     m_pVideoFilterShader->Disable();
 
 #if USE_VAAPI_GLX_BIND
-  status = vaEndRenderSurfaceGLX(display->get(), va.surfacegl);
+  status = vaEndRenderSurfaceGLX(display->get(), va.surfglx);
   if(status != VA_STATUS_SUCCESS)
   {
     CLog::Log(LOGERROR, "CLinuxRendererGL::RenderVAAPI - vaEndRenderSurfaceGLX failed (%d)", status);
@@ -2258,24 +2258,14 @@ void CLinuxRendererGL::DeleteVAAPITexture(int index)
 #ifdef HAVE_LIBVA
   YUVPLANE       &plane = m_buffers[index].fields[0][0];
   VAAPI::CHolder &va    = m_buffers[index].vaapi;
-  VAStatus status;
-
-  if(va.surfacegl && va.display)
-  {
-    CSingleLock lock(*va.display);
-
-    status = vaDestroySurfaceGLX(va.display->get(), va.surfacegl);
-    if(status != VA_STATUS_SUCCESS)
-      CLog::Log(LOGERROR, "CLinuxRendererGL::DeleteVAAPITexture - failed delete surface (%d)", status);
-
-    va.surfacegl = NULL;
-  }
-  if(plane.id && glIsTexture(plane.id))
-    glDeleteTextures(1, &plane.id);
-  plane.id = 0;
 
   va.display.reset();
   va.surface.reset();
+  va.surfglx.reset();
+
+  if(plane.id && glIsTexture(plane.id))
+    glDeleteTextures(1, &plane.id);
+  plane.id = 0;
 
 #endif
 }
@@ -2334,31 +2324,29 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
   if(va.display && va.surface->m_display != va.display)
   {
     CLog::Log(LOGDEBUG, "CLinuxRendererGL::UploadVAAPITexture - context changed %d", index);
-    CSingleLock lock(*va.display);
-    if(va.surfacegl)
-    {
-      status = vaDestroySurfaceGLX(va.display->get(), va.surfacegl);
-      if(status != VA_STATUS_SUCCESS)
-        CLog::Log(LOGERROR, "CLinuxRendererGL::DeleteVAAPITexture - failed delete surface (%d)", status);
-      va.surfacegl = NULL;
-    }
+    va.surfglx.reset();
   }
   va.display = va.surface->m_display;
 
   CSingleLock lock(*va.display);
 
-  if(va.surfacegl == NULL)
+  if(va.display->lost())
+    return;
+
+  if(!va.surfglx)
   {
     CLog::Log(LOGDEBUG, "CLinuxRendererGL::UploadVAAPITexture - creating vaapi surface for texture %d", index);
+    void* surface;
     status = vaCreateSurfaceGLX(va.display->get()
                               , m_textureTarget
                               , plane.id
-                              , &va.surfacegl);
+                              , &surface);
     if(status != VA_STATUS_SUCCESS)
     {
       CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to create vaapi glx surface (%d)", status);
       return;
     }
+    va.surfglx = VAAPI::CSurfaceGLPtr(new VAAPI::CSurfaceGL(surface, va.display));
   }
   int colorspace;
   if(CONF_FLAGS_YUVCOEF_MASK(m_iFlags) == CONF_FLAGS_YUVCOEF_BT709)
@@ -2376,22 +2364,30 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
 
 #if USE_VAAPI_GLX_BIND
   status = vaAssociateSurfaceGLX(va.display->get()
-                               , va.surfacegl
+                               , va.surfglx->m_id
                                , va.surface->m_id
                                , field | colorspace);
 #else
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   status = vaCopySurfaceGLX(va.display->get()
-                          , va.surfacegl
+                          , va.surfglx->m_id
                           , va.surface->m_id
                           , field | colorspace);
 #endif
 
-  if(status != VA_STATUS_SUCCESS)
+  // when a vaapi backend is lost (vdpau), we start getting these errors
+  if(status == VA_STATUS_ERROR_INVALID_SURFACE
+  || status == VA_STATUS_ERROR_INVALID_DISPLAY)
   {
-    CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to copy surface to glx (%d)", status);
-    return;
+    va.display->lost(true);
+    va.display.reset();
+    va.surface.reset();
+    va.surfglx.reset();
   }
+
+  if(status != VA_STATUS_SUCCESS)
+    CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to copy surface to glx (%d)", status);
+
   SetEvent(m_eventTexturesDone[index]);
 #endif
 }
