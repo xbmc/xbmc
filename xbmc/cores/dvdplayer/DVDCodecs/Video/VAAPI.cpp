@@ -25,6 +25,7 @@
 #include "VAAPI.h"
 #include "DVDVideoCodec.h"
 #include <boost/scoped_array.hpp>
+#include <boost/weak_ptr.hpp>
 
 #define CHECK(a) \
 do { \
@@ -56,6 +57,31 @@ static int GetBufferS(AVCodecContext *avctx, AVFrame *pic)
 static inline VASurfaceID GetSurfaceID(AVFrame *pic)
 { return (VASurfaceID)(uintptr_t)pic->data[3]; }
 
+static CDisplayPtr GetGlobalDisplay()
+{
+  static weak_ptr<CDisplay> display_global;
+
+  CDisplayPtr display(display_global.lock());
+  if(display)
+    return display;
+
+  VADisplay disp;
+  disp = vaGetDisplayGLX(g_Windowing.GetDisplay());
+
+  int major_version, minor_version;
+  VAStatus res = vaInitialize(disp, &major_version, &minor_version);
+
+  if(res != VA_STATUS_SUCCESS)
+  {
+    CLog::Log(LOGERROR, "VAAPI - unable to initialize display %d - %s", res, vaErrorStr(res));
+    return display;
+  }
+
+  CLog::Log(LOGDEBUG, "VAAPI - initialize version %d.%d", major_version, minor_version);
+  display = CDisplayPtr(new CDisplay(disp));
+  display_global = display;
+  return display;
+}
 
 CDisplay::~CDisplay()
 {
@@ -213,13 +239,9 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
       return false;
   }
 
-  VADisplay display;
-  display = vaGetDisplayGLX(g_Windowing.GetDisplay());
-
-  int major_version, minor_version;
-  CHECK(vaInitialize(display, &major_version, &minor_version))
-
-  m_display = CDisplayPtr(new CDisplay(display));
+  m_display = GetGlobalDisplay();
+  if(!m_display)
+    return false;
 
   int num_display_attrs = 0;
   scoped_array<VADisplayAttribute> display_attrs(new VADisplayAttribute[vaMaxNumDisplayAttributes(m_display->get())]);
