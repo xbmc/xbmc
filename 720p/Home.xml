@@ -823,11 +823,11 @@
 
 			<include condition="Skin.HasSetting(Background_0)">opacity_0</include>
 			<include condition="Skin.HasSetting(Background_10)">opacity_10</include>
-			<include condition="!Skin.HasSetting(Background_20)">opacity_20</include>
+			<include condition="Skin.HasSetting(Background_20)">opacity_20</include>
 			<include condition="Skin.HasSetting(Background_30)">opacity_30</include>
 			<include condition="Skin.HasSetting(Background_40)">opacity_40</include>
 			<include condition="Skin.HasSetting(Background_50)">opacity_50</include>
-			<include condition="Skin.HasSetting(Background_60)">opacity_60</include>
+			<include condition="!Skin.HasSetting(Background_60)">opacity_60</include>
 			<include condition="Skin.HasSetting(Background_70)">opacity_70</include>
 			<include condition="Skin.HasSetting(Background_80)">opacity_80</include>
 			<include condition="Skin.HasSetting(Background_90)">opacity_90</include>
