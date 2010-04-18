@@ -814,6 +814,26 @@
 			<height>720</height>
 			<texture>$INFO[Skin.String(Developer_Background)]</texture>
 		</control>
+		<control type="image">
+			<visible>Skin.HasSetting(Developer)</visible>
+			<width>1280</width>
+			<height>720</height>
+			<texture>Black.png</texture>
+			<aspectratio>stretch</aspectratio>
+
+			<include condition="Skin.HasSetting(Background_0)">opacity_0</include>
+			<include condition="Skin.HasSetting(Background_10)">opacity_10</include>
+			<include condition="!Skin.HasSetting(Background_20)">opacity_20</include>
+			<include condition="Skin.HasSetting(Background_30)">opacity_30</include>
+			<include condition="Skin.HasSetting(Background_40)">opacity_40</include>
+			<include condition="Skin.HasSetting(Background_50)">opacity_50</include>
+			<include condition="Skin.HasSetting(Background_60)">opacity_60</include>
+			<include condition="Skin.HasSetting(Background_70)">opacity_70</include>
+			<include condition="Skin.HasSetting(Background_80)">opacity_80</include>
+			<include condition="Skin.HasSetting(Background_90)">opacity_90</include>
+			<include condition="Skin.HasSetting(Background_100)">opacity_100</include>
+		</control>
+		
 		<!-- SubMenus -->
 		<control type="group" id="500">
 			<animation effect="fade" start="0" end="100" time="1000" delay="500">WindowOpen</animation>
