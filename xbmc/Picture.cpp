@@ -108,18 +108,9 @@ bool CPicture::CreateThumbnailFromMemory(const unsigned char* buffer, int bufSiz
 
 void CPicture::CreateFolderThumb(const CStdString *thumbs, const CStdString &folderThumb)
 { // we want to mold the thumbs together into one single one
-  CStdString cachedThumbs[4];
   const char *szThumbs[4];
   for (int i=0; i < 4; i++)
-  {
-    if (!thumbs[i].IsEmpty())
-    {
-      CFileItem item(thumbs[i], false);
-      cachedThumbs[i] = item.GetCachedPictureThumb();
-      CreateThumbnail(thumbs[i], cachedThumbs[i], true);
-    }
-    szThumbs[i] = cachedThumbs[i].c_str();
-  }
+    szThumbs[i] = thumbs[i].c_str();
 
   DllImageLib dll;
   if (!dll.Load()) return;

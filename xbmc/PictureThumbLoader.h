@@ -30,6 +30,7 @@ public:
   virtual ~CPictureThumbLoader();
   virtual bool LoadItem(CFileItem* pItem);
   void SetRegenerateThumbs(bool regenerate) { m_regenerateThumbs = regenerate; };
+  static void ProcessFoldersAndArchives(CFileItem *pItem);
 protected:
   virtual void OnLoaderFinish();
 private:

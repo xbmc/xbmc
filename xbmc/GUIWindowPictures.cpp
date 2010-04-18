@@ -29,11 +29,9 @@
 #include "GUIDialogPictureInfo.h"
 #include "GUIDialogProgress.h"
 #include "PlayListFactory.h"
-#include "FileSystem/MultiPathDirectory.h"
 #include "PictureInfoLoader.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
-#include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "PlayList.h"
 #include "Settings.h"
@@ -539,104 +537,7 @@ bool CGUIWindowPictures::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
 {
-  if (pItem->IsCBR() || pItem->IsCBZ())
-  {
-    CStdString strTBN(CUtil::ReplaceExtension(pItem->m_strPath,".tbn"));
-    if (CFile::Exists(strTBN))
-    {
-      if (CPicture::CreateThumbnail(strTBN, pItem->GetCachedPictureThumb(),true))
-      {
-        pItem->SetCachedPictureThumb();
-        pItem->FillInDefaultIcon();
-        return;
-      }
-    }
-  }
-  if ((pItem->m_bIsFolder || pItem->IsCBR() || pItem->IsCBZ()) && !pItem->m_bIsShareOrDrive && !pItem->HasThumbnail() && !pItem->IsParentFolder())
-  {
-    // first check for a folder.jpg
-    CStdString thumb = "folder.jpg";
-    CStdString strPath = pItem->m_strPath;
-    if (pItem->IsCBR())
-    {
-      CUtil::CreateArchivePath(strPath,"rar",pItem->m_strPath,"");
-      thumb = "cover.jpg";
-    }
-    if (pItem->IsCBZ())
-    {
-      CUtil::CreateArchivePath(strPath,"zip",pItem->m_strPath,"");
-      thumb = "cover.jpg";
-    }
-    if (pItem->IsMultiPath())
-      strPath = CMultiPathDirectory::GetFirstPath(pItem->m_strPath);
-    thumb = CUtil::AddFileToFolder(strPath, thumb);
-    if (CFile::Exists(thumb))
-      CPicture::CreateThumbnail(thumb, pItem->GetCachedPictureThumb(),true);
-    else if (!pItem->IsPlugin())
-    {
-      // we load the directory, grab 4 random thumb files (if available) and then generate
-      // the thumb.
-
-      CFileItemList items;
-
-      CDirectory::GetDirectory(strPath, items, g_settings.m_pictureExtensions, false, false);
-
-      // create the folder thumb by choosing 4 random thumbs within the folder and putting
-      // them into one thumb.
-      // count the number of images
-      for (int i=0; i < items.Size();)
-      {
-        if (!items[i]->IsPicture() || items[i]->IsZIP() || items[i]->IsRAR() || items[i]->IsPlayList())
-        {
-          items.Remove(i);
-        }
-        else
-          i++;
-      }
-
-      if (items.IsEmpty())
-      {
-        if (pItem->IsCBZ() || pItem->IsCBR())
-        {
-          CDirectory::GetDirectory(strPath, items, g_settings.m_pictureExtensions, false, false);
-          for (int i=0;i<items.Size();++i)
-          {
-            CFileItemPtr item = items[i];
-            if (item->m_bIsFolder)
-            {
-              OnItemLoaded(item.get());
-              pItem->SetThumbnailImage(items[i]->GetThumbnailImage());
-              pItem->SetIconImage(items[i]->GetIconImage());
-              return;
-            }
-          }
-        }
-        return; // no images in this folder
-      }
-
-      // randomize them
-      items.Randomize();
-
-      if (items.Size() < 4 || pItem->IsCBR() || pItem->IsCBZ())
-      { // less than 4 items, so just grab the first thumb
-        CStdString folderThumb(pItem->GetCachedPictureThumb());
-        items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-        CPicture::CreateThumbnail(items[0]->m_strPath, folderThumb);
-      }
-      else
-      {
-        // ok, now we've got the files to get the thumbs from, lets create it...
-        // we basically load the 4 thumbs, resample to 62x62 pixels, and add them
-        CStdString strFiles[4];
-        for (int thumb = 0; thumb < 4; thumb++)
-          strFiles[thumb] = items[thumb]->m_strPath;
-        CPicture::CreateFolderThumb(strFiles, pItem->GetCachedPictureThumb());
-      }
-    }
-    // refill in the icon to get it to update
-    pItem->SetCachedPictureThumb();
-    pItem->FillInDefaultIcon();
-  }
+  CPictureThumbLoader::ProcessFoldersAndArchives(pItem);
 }
 
 void CGUIWindowPictures::LoadPlayList(const CStdString& strPlayList)
