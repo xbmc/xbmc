@@ -312,7 +312,7 @@ bool CGUIWindowPictures::Update(const CStdString &strDirectory)
   m_vecItems->SetThumbnailImage("");
   if (g_guiSettings.GetBool("pictures.generatethumbs"))
     m_thumbLoader.Load(*m_vecItems);
-  m_vecItems->SetCachedPictureThumb();
+  m_vecItems->SetThumbnailImage(CPictureThumbLoader::GetCachedThumb(*m_vecItems));
 
   return true;
 }

@@ -2328,11 +2328,6 @@ void CFileItemList::SetCachedMusicThumbs()
   }
 }
 
-CStdString CFileItem::GetCachedPictureThumb() const
-{
-  return GetCachedThumb(m_strPath,g_settings.GetPicturesThumbFolder(),true);
-}
-
 void CFileItem::SetCachedMusicThumb()
 {
   // if it already has a thumbnail, then return
@@ -2456,14 +2451,6 @@ void CFileItem::SetUserMusicThumb(bool alwaysCheckRemote /* = false */)
   }
 
   SetCachedMusicThumb();
-}
-
-void CFileItem::SetCachedPictureThumb()
-{
-  if (IsParentFolder()) return;
-  CStdString cachedThumb(GetCachedPictureThumb());
-  if (CFile::Exists(cachedThumb))
-    SetThumbnailImage(cachedThumb);
 }
 
 CStdString CFileItem::GetCachedVideoThumb() const
