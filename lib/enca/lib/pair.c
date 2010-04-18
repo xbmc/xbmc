@@ -23,6 +23,7 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 #include "enca.h"
 #include "internal.h"
