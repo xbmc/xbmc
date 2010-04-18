@@ -72,6 +72,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       m_vecItems->m_strPath = "";
       SetHistoryForPath(m_vecItems->m_strPath);
     }
+    break;
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
