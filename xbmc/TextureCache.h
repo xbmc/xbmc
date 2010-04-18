@@ -90,6 +90,12 @@ public:
    */
   static CStdString GetCachedPath(const CStdString &file);
 
+  /*! \brief retrieve a wrapped URL for a thumb file
+   \param image name of the file
+   \return full wrapped URL of the thumb file
+   */
+  static CStdString GetWrappedThumbURL(const CStdString &image);
+
 private:
   /* \brief Job class for creating .dds versions of textures
    */
@@ -103,6 +109,29 @@ private:
     virtual bool DoWork();
 
     CStdString m_original;
+  };
+
+  /*! \brief Job class for caching textures
+   */
+  class CCacheJob : public CJob
+  {
+  public:
+    CCacheJob(const CStdString &url);
+
+    virtual const char* GetType() const { return "cacheimage"; };
+    virtual bool operator==(const CJob *job) const;
+    virtual bool DoWork();
+
+    /*! \brief Cache an image either full size or thumb sized
+     \param url URL of image to cache
+     \param original URL of cached version
+     \return hash of the image that we cached, empty on failure
+     */
+    static CStdString CacheImage(const CStdString &url, const CStdString &original);
+
+    CStdString m_url;
+    CStdString m_original;
+    CStdString m_hash;
   };
 
   // private construction, and no assignements; use the provided singleton methods
