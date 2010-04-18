@@ -910,6 +910,22 @@
           <visible>!Container.SortDirection(None)</visible>
           <include>DialogTextColors</include>
         </control>
+
+        <control type="label" id="990">
+          <description>Developer Items</description>
+          <label>Developer</label>
+          <visible>Skin.HasSetting(Developer)</visible>
+          <include>OMTitleItem</include>
+        </control>
+
+
+		<control type="button" id="995">
+			<description>Developer Refresh Button</description>
+         	<visible>Skin.HasSetting(Developer)</visible>
+          	<label>Refresh</label>
+          	<onclick>XBMC.ReloadSkin()</onclick>
+          	<include>OMButtonItem</include>
+		</control>
       </control>
 
     </control>

@@ -1,712 +1,591 @@
 <window id="0">
-  <defaultcontrol always="true">300</defaultcontrol>
-  <allowoverlay>no</allowoverlay>
-
-  <controls>
-    <control type="videowindow">
-      <description>Video Preview Window</description>
-      <include>FullScreenBGImage</include>
-    </control>
-    <control type="image">
-      <texture>Black.png</texture>
-      <animation effect="fade" start="100" end="0" time="600">WindowOpen</animation>
-      <animation effect="fade" start="0" end="100" time="600">WindowClose</animation>
-      <visible>Player.HasVideo</visible>
-      <include>FullScreenBGImage</include>
-    </control>
-
-<!-- Right hand backgrounds -->
-
-
+	<defaultcontrol always="true">300</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="videowindow">
+			<description>Video Preview Window</description>
+			<include>FullScreenBGImage</include>
+		</control>
+		<control type="image">
+			<texture>Black.png</texture>
+			<animation effect="fade" start="100" end="0" time="600">WindowOpen</animation>
+			<animation effect="fade" start="0" end="100" time="600">WindowClose</animation>
+			<visible>Player.HasVideo</visible>
+			<include>FullScreenBGImage</include>
+		</control>
+		<!-- Right hand backgrounds -->
 		<!-- Backgrounds -->
-    <control type="group" id="200">
-      <visible>!Player.HasVideo</visible>
-
-      <control type="group" id="216">
-        <description>Power Background Image</description>
-        <include>HomePowerBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>PowerBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGPowerMid.jpg</texture>
-            <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGPowerRight.jpg</texture>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Skin.HasSetting(EnableCustomBGHome)</visible>
-          <include>CustomPowerBackground</include>
-        </control>
-      </control>
-
-      <control type="group" id="215">
-        <description>System Background Image</description>
-        <include>HomeSystemBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>SystemBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGSystemMid.jpg</texture>
-            <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGSystemRight.jpg</texture>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Skin.HasSetting(EnableCustomBGHome)</visible>
-          <include>CustomSystemBackground</include>
-        </control>
-      </control>
-
-      <control type="group" id="214">
-        <description>Weather Background Image</description>
-        <include>HomeWeatherBGVisible</include>
-        <include>HomeBackgroundFade</include>
-        <include>HomeWeatherBGFade</include>
-
-        <control type="group">
-          <include>WeatherBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGWeatherMid.jpg</texture>
-            <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGWeatherRight.jpg</texture>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Skin.HasSetting(EnableCustomBGHome)</visible>
-          <include>CustomWeatherBackground</include>
-        </control>
-      </control>
-
-      <control type="group" id="240">
-        <description>App Store Background Image</description>
-        <include>HomeAppStoreBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>AppStoreBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGAppStoreMid.jpg</texture>
-            <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGAppStoreRight.jpg</texture>
-          </control>
-        </control>
-      </control>
-      
-      <control type="group" id="241">
-        <description>Favourites Background Image</description>
-        <include>HomeFavouritesBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>AppStoreBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGFavouritesMid.jpg</texture>
-            <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGFavouritesRight.jpg</texture>
-          </control>
-        </control>
-      </control>
-      
-      <control type="group" id="242">
-        <description>Help Background Image</description>
-        <include>HomeHelpBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>AppStoreBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGHelpMid.jpg</texture>
-            <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGHelpRight.jpg</texture>
-          </control>
-        </control>
-      </control>
-            
-      <control type="group" id="210">
-        <description>Videos Background Image</description>
-        <include>HomeVideosBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>VideosBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGVideosMid.png</texture>
-            <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGVideosRight.png</texture>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Skin.HasSetting(EnableCustomBGHome)</visible>
-          <include>CustomVideosBackground</include>
-        </control>
-      </control>
-
-      <control type="group" id="218">
-        <description>Movies Background Image</description>
-        <include>HomeMoviesBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>MoviesBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGMoviesMid.png</texture>
-            <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGMoviesRight.png</texture>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Skin.HasSetting(EnableCustomBGHome)</visible>
-          <include>CustomMoviesBackground</include>
-        </control>
-      </control>
-
-      <control type="group" id="217">
-        <description>TV Shows Background Image</description>
-        <include>HomeTVShowsBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>TVShowsBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGTVShowsMid.jpg</texture>
-            <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGTVShowsRight.jpg</texture>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Skin.HasSetting(EnableCustomBGHome)</visible>
-          <include>CustomTVShowsBackground</include>
-        </control>
-      </control>
-
-      <control type="group" id="211">
-        <description>Music Background Image</description>
-        <include>HomeMusicBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>MusicBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGMusicMid.jpg</texture>
-            <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGMusicRight.jpg</texture>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Skin.HasSetting(EnableCustomBGHome)</visible>
-          <include>CustomMusicBackground</include>
-        </control>
-      </control>
-
-      <control type="group" id="212">
-        <description>Pictures Background Image</description>
-        <include>HomePicturesBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>PicturesBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGPicturesMid.jpg</texture>
-            <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGPicturesRight.jpg</texture>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Skin.HasSetting(EnableCustomBGHome)</visible>
-          <include>CustomPicturesBackground</include>
-        </control>
-      </control>
-
-      <control type="group" id="213">
-        <description>Programs Background Image</description>
-        <include>HomeProgramsBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>ProgramsBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGProgramsMid.jpg</texture>
-            <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGProgramsRight.jpg</texture>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Skin.HasSetting(EnableCustomBGHome)</visible>
-          <include>CustomProgramsBackground</include>
-        </control>
-      </control>
-
-      <control type="group" id="219">
-        <description>DVD Background Image</description>
-        <include>HomeDVDBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>DVDBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundMidImage</include>
-            <texture>HomeBGDVDMid.png</texture>
-            <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
-          </control>
-          <control type="image">
-            <include>BackgroundRightImage</include>
-            <texture>HomeBGDVDRight.png</texture>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Skin.HasSetting(EnableCustomBGHome)</visible>
-          <include>CustomDVDBackground</include>
-        </control>
-      </control>
-
-      <include>HomeRightOverlay</include>
-    </control>
-
-		<!-- Behind Menu Backgrounds (on the left hand side)-->
-    <control type="group" id="201">
-      <visible>!Player.HasVideo</visible>
-
-      <control type="group" id="236">
-        <description>Power Background Image</description>
-        <include>HomePowerBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>PowerBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGPowerLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGPowerMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGPowerMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="235">
-        <description>System Background Image</description>
-        <include>HomeSystemBGVisible</include>
+		<control type="group" id="200">
+			<visible>!Player.HasVideo</visible>
+			<control type="group" id="216">
+				<description>Power Background Image</description>
+				<include>HomePowerBGVisible</include>
 				<include>HomeBackgroundFade</include>
-
+				<control type="group">
+					<include>PowerBGVisible</include>
+					<control type="image">
+						<include>BackgroundMidImage</include>
+						<texture>HomeBGPowerMid.jpg</texture>
+						<visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+					</control>
+					<control type="image">
+						<include>BackgroundRightImage</include>
+						<texture>HomeBGPowerRight.jpg</texture>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Skin.HasSetting(EnableCustomBGHome)</visible>
+					<include>CustomPowerBackground</include>
+				</control>
+			</control>
+			<control type="group" id="215">
+				<description>System Background Image</description>
+				<include>HomeSystemBGVisible</include>
+				<include>HomeBackgroundFade</include>
 				<control type="group">
 					<include>SystemBGVisible</include>
-
 					<control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGSystemLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGSystemMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGSystemMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="234">
-        <description>Weather Background Image</description>
-        <include>HomeWeatherBGVisible</include>
-        <include>HomeBackgroundFade</include>
-        <include>HomeWeatherBGFade</include>
-
-        <control type="group">
-          <include>WeatherBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGWeatherLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGWeatherMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGWeatherMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="241">
-        <description>App Store Background Image</description>
-        <include>HomeAppStoreBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>AppStoreBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGAppStoreLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGAppStoreMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGAppStoreMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-      
-      <control type="group" id="241">
-        <description>Favourites Background Image</description>
-        <include>HomeFavouritesBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>AppStoreBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGFavouritesLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGFavouritesMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGFavouritesMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-      
-      <control type="group" id="242">
-        <description>Help Background Image</description>
-        <include>HomeHelpBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>HelpBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGHelpLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGHelpMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGHelpMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-      
-      <control type="group" id="230">
-        <description>Videos Background Image</description>
-        <include>HomeVideosBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>VideosBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGVideosLeftLow.png</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGVideosMidLow.png</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGVideosMidRightLow.png</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="238">
-        <description>Movies Background Image</description>
-        <include>HomeMoviesBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>MoviesBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGMoviesLeftLow.png</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGMoviesMidLow.png</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGMoviesMidRightLow.png</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="237">
-        <description>TV Shows Background Image</description>
-        <include>HomeTVShowsBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>TVShowsBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGTVShowsLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGTVShowsMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGTVShowsMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="231">
-        <description>Music Background Image</description>
-        <include>HomeMusicBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>MusicBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGMusicLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGMusicMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGMusicMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="232">
-        <description>Pictures Background Image</description>
-        <include>HomePicturesBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>PicturesBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGPicturesLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGPicturesMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGPicturesMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="233">
-        <description>Programs Background Image</description>
-        <include>HomeProgramsBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>ProgramsBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGProgramsLeftLow.jpg</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGProgramsMidLow.jpg</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGProgramsMidRightLow.jpg</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="239">
-        <description>DVD Background Image</description>
-        <include>HomeDVDBGVisible</include>
-        <include>HomeBackgroundFade</include>
-
-        <control type="group">
-          <include>DVDBGVisible</include>
-
-          <control type="image">
-            <include>BackgroundLeftImage</include>
-            <texture>HomeBGDVDLeftLow.png</texture>
-          </control>
-
-          <control type="group">
-            <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-            <control type="image">
-              <include>BackgroundMidImage</include>
-              <texture>HomeBGDVDMidLow.png</texture>
-            </control>
-            <control type="image">
-              <include>BackgroundMidRightImage</include>
-              <texture>HomeBGDVDMidRightLow.png</texture>
-            </control>
-          </control>
-        </control>
-      </control>
-    </control>
-
-		<!-----THE FANART BACKGROUND------------------------------------------>
+						<include>BackgroundMidImage</include>
+						<texture>HomeBGSystemMid.jpg</texture>
+						<visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+					</control>
+					<control type="image">
+						<include>BackgroundRightImage</include>
+						<texture>HomeBGSystemRight.jpg</texture>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Skin.HasSetting(EnableCustomBGHome)</visible>
+					<include>CustomSystemBackground</include>
+				</control>
+			</control>
+			<control type="group" id="214">
+				<description>Weather Background Image</description>
+				<include>HomeWeatherBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<include>HomeWeatherBGFade</include>
+				<control type="group">
+					<include>WeatherBGVisible</include>
+					<control type="image">
+						<include>BackgroundMidImage</include>
+						<texture>HomeBGWeatherMid.jpg</texture>
+						<visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+					</control>
+					<control type="image">
+						<include>BackgroundRightImage</include>
+						<texture>HomeBGWeatherRight.jpg</texture>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Skin.HasSetting(EnableCustomBGHome)</visible>
+					<include>CustomWeatherBackground</include>
+				</control>
+			</control>
+			<control type="group" id="240">
+				<description>App Store Background Image</description>
+				<include>HomeAppStoreBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>AppStoreBGVisible</include>
+					<control type="image">
+						<include>BackgroundMidImage</include>
+						<texture>HomeBGAppStoreMid.jpg</texture>
+						<visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+					</control>
+					<control type="image">
+						<include>BackgroundRightImage</include>
+						<texture>HomeBGAppStoreRight.jpg</texture>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="241">
+				<description>Favourites Background Image</description>
+				<include>HomeFavouritesBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>AppStoreBGVisible</include>
+					<control type="image">
+						<include>BackgroundMidImage</include>
+						<texture>HomeBGFavouritesMid.jpg</texture>
+						<visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+					</control>
+					<control type="image">
+						<include>BackgroundRightImage</include>
+						<texture>HomeBGFavouritesRight.jpg</texture>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="242">
+				<description>Help Background Image</description>
+				<include>HomeHelpBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>AppStoreBGVisible</include>
+					<control type="image">
+						<include>BackgroundMidImage</include>
+						<texture>HomeBGHelpMid.jpg</texture>
+						<visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+					</control>
+					<control type="image">
+						<include>BackgroundRightImage</include>
+						<texture>HomeBGHelpRight.jpg</texture>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="210">
+				<description>Videos Background Image</description>
+				<include>HomeVideosBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>VideosBGVisible</include>
+					<control type="image">
+						<include>BackgroundMidImage</include>
+						<texture>HomeBGVideosMid.png</texture>
+						<visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+					</control>
+					<control type="image">
+						<include>BackgroundRightImage</include>
+						<texture>HomeBGVideosRight.png</texture>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Skin.HasSetting(EnableCustomBGHome)</visible>
+					<include>CustomVideosBackground</include>
+				</control>
+			</control>
+			<control type="group" id="218">
+				<description>Movies Background Image</description>
+				<include>HomeMoviesBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>MoviesBGVisible</include>
+					<control type="image">
+						<include>BackgroundMidImage</include>
+						<texture>HomeBGMoviesMid.png</texture>
+						<visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+					</control>
+					<control type="image">
+						<include>BackgroundRightImage</include>
+						<texture>HomeBGMoviesRight.png</texture>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Skin.HasSetting(EnableCustomBGHome)</visible>
+					<include>CustomMoviesBackground</include>
+				</control>
+			</control>
+			<control type="group" id="217">
+				<description>TV Shows Background Image</description>
+				<include>HomeTVShowsBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>TVShowsBGVisible</include>
+					<control type="image">
+						<include>BackgroundMidImage</include>
+						<texture>HomeBGTVShowsMid.jpg</texture>
+						<visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+					</control>
+					<control type="image">
+						<include>BackgroundRightImage</include>
+						<texture>HomeBGTVShowsRight.jpg</texture>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Skin.HasSetting(EnableCustomBGHome)</visible>
+					<include>CustomTVShowsBackground</include>
+				</control>
+			</control>
+			<control type="group" id="211">
+				<description>Music Background Image</description>
+				<include>HomeMusicBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>MusicBGVisible</include>
+					<control type="image">
+						<include>BackgroundMidImage</include>
+						<texture>HomeBGMusicMid.jpg</texture>
+						<visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+					</control>
+					<control type="image">
+						<include>BackgroundRightImage</include>
+						<texture>HomeBGMusicRight.jpg</texture>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Skin.HasSetting(EnableCustomBGHome)</visible>
+					<include>CustomMusicBackground</include>
+				</control>
+			</control>
+			<control type="group" id="212">
+				<description>Pictures Background Image</description>
+				<include>HomePicturesBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>PicturesBGVisible</include>
+					<control type="image">
+						<include>BackgroundMidImage</include>
+						<texture>HomeBGPicturesMid.jpg</texture>
+						<visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+					</control>
+					<control type="image">
+						<include>BackgroundRightImage</include>
+						<texture>HomeBGPicturesRight.jpg</texture>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Skin.HasSetting(EnableCustomBGHome)</visible>
+					<include>CustomPicturesBackground</include>
+				</control>
+			</control>
+			<control type="group" id="213">
+				<description>Programs Background Image</description>
+				<include>HomeProgramsBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>ProgramsBGVisible</include>
+					<control type="image">
+						<include>BackgroundMidImage</include>
+						<texture>HomeBGProgramsMid.jpg</texture>
+						<visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+					</control>
+					<control type="image">
+						<include>BackgroundRightImage</include>
+						<texture>HomeBGProgramsRight.jpg</texture>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Skin.HasSetting(EnableCustomBGHome)</visible>
+					<include>CustomProgramsBackground</include>
+				</control>
+			</control>
+			<control type="group" id="219">
+				<description>DVD Background Image</description>
+				<include>HomeDVDBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>DVDBGVisible</include>
+					<control type="image">
+						<include>BackgroundMidImage</include>
+						<texture>HomeBGDVDMid.png</texture>
+						<visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+					</control>
+					<control type="image">
+						<include>BackgroundRightImage</include>
+						<texture>HomeBGDVDRight.png</texture>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Skin.HasSetting(EnableCustomBGHome)</visible>
+					<include>CustomDVDBackground</include>
+				</control>
+			</control>
+			<include>HomeRightOverlay</include>
+		</control>
+		<!-- Behind Menu Backgrounds (on the left hand side)-->
+		<control type="group" id="201">
+			<visible>!Player.HasVideo</visible>
+			<control type="group" id="236">
+				<description>Power Background Image</description>
+				<include>HomePowerBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>PowerBGVisible</include>
+					<control type="image">
+						<include>BackgroundLeftImage</include>
+						<texture>HomeBGPowerLeftLow.jpg</texture>
+					</control>
+					<control type="group">
+						<visible>Skin.HasSetting(HomeBladeCentre)</visible>
+						<control type="image">
+							<include>BackgroundMidImage</include>
+							<texture>HomeBGPowerMidLow.jpg</texture>
+						</control>
+						<control type="image">
+							<include>BackgroundMidRightImage</include>
+							<texture>HomeBGPowerMidRightLow.jpg</texture>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="235">
+				<description>System Background Image</description>
+				<include>HomeSystemBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>SystemBGVisible</include>
+					<control type="image">
+						<include>BackgroundLeftImage</include>
+						<texture>HomeBGSystemLeftLow.jpg</texture>
+					</control>
+					<control type="group">
+						<visible>Skin.HasSetting(HomeBladeCentre)</visible>
+						<control type="image">
+							<include>BackgroundMidImage</include>
+							<texture>HomeBGSystemMidLow.jpg</texture>
+						</control>
+						<control type="image">
+							<include>BackgroundMidRightImage</include>
+							<texture>HomeBGSystemMidRightLow.jpg</texture>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="234">
+				<description>Weather Background Image</description>
+				<include>HomeWeatherBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<include>HomeWeatherBGFade</include>
+				<control type="group">
+					<include>WeatherBGVisible</include>
+					<control type="image">
+						<include>BackgroundLeftImage</include>
+						<texture>HomeBGWeatherLeftLow.jpg</texture>
+					</control>
+					<control type="group">
+						<visible>Skin.HasSetting(HomeBladeCentre)</visible>
+						<control type="image">
+							<include>BackgroundMidImage</include>
+							<texture>HomeBGWeatherMidLow.jpg</texture>
+						</control>
+						<control type="image">
+							<include>BackgroundMidRightImage</include>
+							<texture>HomeBGWeatherMidRightLow.jpg</texture>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="241">
+				<description>App Store Background Image</description>
+				<include>HomeAppStoreBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>AppStoreBGVisible</include>
+					<control type="image">
+						<include>BackgroundLeftImage</include>
+						<texture>HomeBGAppStoreLeftLow.jpg</texture>
+					</control>
+					<control type="group">
+						<visible>Skin.HasSetting(HomeBladeCentre)</visible>
+						<control type="image">
+							<include>BackgroundMidImage</include>
+							<texture>HomeBGAppStoreMidLow.jpg</texture>
+						</control>
+						<control type="image">
+							<include>BackgroundMidRightImage</include>
+							<texture>HomeBGAppStoreMidRightLow.jpg</texture>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="241">
+				<description>Favourites Background Image</description>
+				<include>HomeFavouritesBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>AppStoreBGVisible</include>
+					<control type="image">
+						<include>BackgroundLeftImage</include>
+						<texture>HomeBGFavouritesLeftLow.jpg</texture>
+					</control>
+					<control type="group">
+						<visible>Skin.HasSetting(HomeBladeCentre)</visible>
+						<control type="image">
+							<include>BackgroundMidImage</include>
+							<texture>HomeBGFavouritesMidLow.jpg</texture>
+						</control>
+						<control type="image">
+							<include>BackgroundMidRightImage</include>
+							<texture>HomeBGFavouritesMidRightLow.jpg</texture>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="242">
+				<description>Help Background Image</description>
+				<include>HomeHelpBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>HelpBGVisible</include>
+					<control type="image">
+						<include>BackgroundLeftImage</include>
+						<texture>HomeBGHelpLeftLow.jpg</texture>
+					</control>
+					<control type="group">
+						<visible>Skin.HasSetting(HomeBladeCentre)</visible>
+						<control type="image">
+							<include>BackgroundMidImage</include>
+							<texture>HomeBGHelpMidLow.jpg</texture>
+						</control>
+						<control type="image">
+							<include>BackgroundMidRightImage</include>
+							<texture>HomeBGHelpMidRightLow.jpg</texture>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="230">
+				<description>Videos Background Image</description>
+				<include>HomeVideosBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>VideosBGVisible</include>
+					<control type="image">
+						<include>BackgroundLeftImage</include>
+						<texture>HomeBGVideosLeftLow.png</texture>
+					</control>
+					<control type="group">
+						<visible>Skin.HasSetting(HomeBladeCentre)</visible>
+						<control type="image">
+							<include>BackgroundMidImage</include>
+							<texture>HomeBGVideosMidLow.png</texture>
+						</control>
+						<control type="image">
+							<include>BackgroundMidRightImage</include>
+							<texture>HomeBGVideosMidRightLow.png</texture>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="238">
+				<description>Movies Background Image</description>
+				<include>HomeMoviesBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>MoviesBGVisible</include>
+					<control type="image">
+						<include>BackgroundLeftImage</include>
+						<texture>HomeBGMoviesLeftLow.png</texture>
+					</control>
+					<control type="group">
+						<visible>Skin.HasSetting(HomeBladeCentre)</visible>
+						<control type="image">
+							<include>BackgroundMidImage</include>
+							<texture>HomeBGMoviesMidLow.png</texture>
+						</control>
+						<control type="image">
+							<include>BackgroundMidRightImage</include>
+							<texture>HomeBGMoviesMidRightLow.png</texture>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="237">
+				<description>TV Shows Background Image</description>
+				<include>HomeTVShowsBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>TVShowsBGVisible</include>
+					<control type="image">
+						<include>BackgroundLeftImage</include>
+						<texture>HomeBGTVShowsLeftLow.jpg</texture>
+					</control>
+					<control type="group">
+						<visible>Skin.HasSetting(HomeBladeCentre)</visible>
+						<control type="image">
+							<include>BackgroundMidImage</include>
+							<texture>HomeBGTVShowsMidLow.jpg</texture>
+						</control>
+						<control type="image">
+							<include>BackgroundMidRightImage</include>
+							<texture>HomeBGTVShowsMidRightLow.jpg</texture>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="231">
+				<description>Music Background Image</description>
+				<include>HomeMusicBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>MusicBGVisible</include>
+					<control type="image">
+						<include>BackgroundLeftImage</include>
+						<texture>HomeBGMusicLeftLow.jpg</texture>
+					</control>
+					<control type="group">
+						<visible>Skin.HasSetting(HomeBladeCentre)</visible>
+						<control type="image">
+							<include>BackgroundMidImage</include>
+							<texture>HomeBGMusicMidLow.jpg</texture>
+						</control>
+						<control type="image">
+							<include>BackgroundMidRightImage</include>
+							<texture>HomeBGMusicMidRightLow.jpg</texture>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="232">
+				<description>Pictures Background Image</description>
+				<include>HomePicturesBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>PicturesBGVisible</include>
+					<control type="image">
+						<include>BackgroundLeftImage</include>
+						<texture>HomeBGPicturesLeftLow.jpg</texture>
+					</control>
+					<control type="group">
+						<visible>Skin.HasSetting(HomeBladeCentre)</visible>
+						<control type="image">
+							<include>BackgroundMidImage</include>
+							<texture>HomeBGPicturesMidLow.jpg</texture>
+						</control>
+						<control type="image">
+							<include>BackgroundMidRightImage</include>
+							<texture>HomeBGPicturesMidRightLow.jpg</texture>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="233">
+				<description>Programs Background Image</description>
+				<include>HomeProgramsBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>ProgramsBGVisible</include>
+					<control type="image">
+						<include>BackgroundLeftImage</include>
+						<texture>HomeBGProgramsLeftLow.jpg</texture>
+					</control>
+					<control type="group">
+						<visible>Skin.HasSetting(HomeBladeCentre)</visible>
+						<control type="image">
+							<include>BackgroundMidImage</include>
+							<texture>HomeBGProgramsMidLow.jpg</texture>
+						</control>
+						<control type="image">
+							<include>BackgroundMidRightImage</include>
+							<texture>HomeBGProgramsMidRightLow.jpg</texture>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="239">
+				<description>DVD Background Image</description>
+				<include>HomeDVDBGVisible</include>
+				<include>HomeBackgroundFade</include>
+				<control type="group">
+					<include>DVDBGVisible</include>
+					<control type="image">
+						<include>BackgroundLeftImage</include>
+						<texture>HomeBGDVDLeftLow.png</texture>
+					</control>
+					<control type="group">
+						<visible>Skin.HasSetting(HomeBladeCentre)</visible>
+						<control type="image">
+							<include>BackgroundMidImage</include>
+							<texture>HomeBGDVDMidLow.png</texture>
+						</control>
+						<control type="image">
+							<include>BackgroundMidRightImage</include>
+							<texture>HomeBGDVDMidRightLow.png</texture>
+						</control>
+					</control>
+				</control>
+			</control>
+		</control>
+		<!-- THE FANART BACKGROUND -->
 		<control type="group">
 			<control type="largeimage">
 				<visible>Container(300).HasFocus(1000)</visible>
@@ -928,30 +807,30 @@
 				<height>720</height>
 				<visible>true</visible>
 			</control>
-			
 		</control>
-		<!------------------------------------------------------------------->
-
+		<control type="image">
+			<visible>Skin.String(Developer_Background) + Skin.HasSetting(Developer)</visible>
+			<width>1280</width>
+			<height>720</height>
+			<texture>$INFO[Skin.String(Developer_Background)]</texture>
+		</control>
 		<!-- SubMenus -->
-    <control type="group" id="500">
-      <animation effect="fade" start="0" end="100" time="1000" delay="500">WindowOpen</animation>
-      <animation type="WindowClose" condition="![Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)]">
-        <effect type="fade" time="300" />
-        <effect type="slide" time="200" end="-220,0" />
-      </animation>
-      <animation effect="fade" time="0" condition="[Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)]">WindowClose</animation>
-      <animation effect="fade" time="400" delay="200">Unfocus</animation>
-      <animation effect="slide" end="-440,0" time="0" condition="!Skin.HasSetting(HomeBladeCentre)">Conditional</animation>
-<!--
+		<control type="group" id="500">
+			<animation effect="fade" start="0" end="100" time="1000" delay="500">WindowOpen</animation>
+			<animation type="WindowClose" condition="![Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)]">
+				<effect type="fade" time="300"/>
+				<effect type="slide" time="200" end="-220,0"/>
+			</animation>
+			<animation effect="fade" time="0" condition="[Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)]">WindowClose</animation>
+			<animation effect="fade" time="400" delay="200">Unfocus</animation>
+			<animation effect="slide" end="-440,0" time="0" condition="!Skin.HasSetting(HomeBladeCentre)">Conditional</animation>
+			<!--
       <include condition="!Skin.HasSetting(HomeBladeCentre)">HomeBladeOffset</include>
 -->
-
-      <control type="group" id="301">
-        <include>HomeSubMenuGroupDims</include>
-
-        <include>HomeSubMenuBackground</include>
-
-        <!--
+			<control type="group" id="301">
+				<include>HomeSubMenuGroupDims</include>
+				<include>HomeSubMenuBackground</include>
+				<!--
         <control type="list" id="401">
           <description>Video Side Menu</description>
           <onup>401</onup>
@@ -1014,243 +893,230 @@
           </content>
         </control>
         -->
+				<control type="list" id="402">
+					<description>Music Side Menu</description>
+					<onup>402</onup>
+					<ondown>402</ondown>
+					<visible>[Container(300).HasFocus(2) | Control.HasFocus(402)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
+					<include>HomeSideMenu</include>
+					<focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
+						<control type="image">
+							<include>HomeSideMenuNFBGImage</include>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuNFBGLabel</include>
+						</control>
+						<control type="image">
+							<include>HomeSideMenuFOBGImage</include>
+							<animation effect="slide" start="0,116" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(402).OnNext + Container(402).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(402).OnNext + !Container(402).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-116" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(402).OnPrevious + Container(402).Position(3)">focus</animation>
+							<animation effect="slide" start="0,43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(402).OnPrevious + !Container(402).Position(3)">focus</animation>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuFOBGLabel</include>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(402).OnNext">focus</animation>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(402).OnPrevious">focus</animation>
+						</control>
+					</focusedlayout>
+					<content>
+						<item id="2">
+							<description>Playlists</description>
+							<label> $LOCALIZE[136] </label>
+							<onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+						</item>
+						<item id="3">
+							<description>Music Videos</description>
+							<label> $LOCALIZE[20389] </label>
+							<onclick>XBMC.ActivateWindow(MyVideoLibrary,musicvideos,return)</onclick>
+						</item>
+					</content>
+				</control>
+				<!--
+		        <control type="list" id="403">
+		          <description>Pictures Side Menu</description>
+		          <onup>403</onup>
+		          <ondown>403</ondown>
+		          <visible>[Container(300).HasFocus(3) | Control.HasFocus(403)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
+		          <include>HomeSideMenu</include>
 
-        <control type="list" id="402">
-          <description>Music Side Menu</description>
-          <onup>402</onup>
-          <ondown>402</ondown>
-          <visible>[Container(300).HasFocus(2) | Control.HasFocus(402)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
-          <include>HomeSideMenu</include>
+		          <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
+		            <control type="image">
+		              <include>HomeSideMenuNFBGImage</include>
+		            </control>
+		            <control type="label">
+		              <include>HomeSideMenuNFBGLabel</include>
+		            </control>
+		            <control type="image">
+		              <include>HomeSideMenuFOBGImage</include>
+		              <animation effect="slide" start="0,30" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(403).OnNext + Container(403).Position(0)">focus</animation>
+		              <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(403).OnNext + !Container(403).Position(0)">focus</animation>
+		              <animation effect="slide" start="0,-73" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(403).OnPrevious + Container(403).Position(1)">focus</animation>
+		              <animation effect="slide" start="0,30" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(403).OnPrevious + !Container(403).Position(1)">focus</animation>
+		            </control>
+		            <control type="label">
+		              <include>HomeSideMenuFOBGLabel</include>
+		              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(403).OnNext">focus</animation>
+		              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(403).OnPrevious">focus</animation>
+		            </control>
+		           </focusedlayout>
 
-          <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
-            <control type="image">
-              <include>HomeSideMenuNFBGImage</include>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuNFBGLabel</include>
-            </control>
-            <control type="image">
-              <include>HomeSideMenuFOBGImage</include>
-              <animation effect="slide" start="0,116" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(402).OnNext + Container(402).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(402).OnNext + !Container(402).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-116" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(402).OnPrevious + Container(402).Position(3)">focus</animation>
-              <animation effect="slide" start="0,43" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(402).OnPrevious + !Container(402).Position(3)">focus</animation>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuFOBGLabel</include>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(402).OnNext">focus</animation>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(402).OnPrevious">focus</animation>
-            </control>
-           </focusedlayout>
+		          <content>
+		            <item id="1">
+		              <description>Browse Button</description>
+		              <label> $LOCALIZE[31000] </label>
+		              <onclick>XBMC.ActivateWindow(2)</onclick>
+		            </item>
+		            <item id="2">
+		              <description>Settings Button</description>
+		              <label> $LOCALIZE[31060] </label>
+		              <onclick>XBMC.ActivateWindow(12)</onclick>
+		            </item>
+		          </content>
+		        </control>
+		        <control type="list" id="404">
+		          <description>Programs Side Menu</description>
+		          <onup>404</onup>
+		          <ondown>404</ondown>
+		          <visible>[Container(300).HasFocus(4) | Control.HasFocus(404)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
+		          <include>HomeSideMenu</include>
 
-          <content>
-            <item id="2">
-              <description>Playlists</description>
-              <label> $LOCALIZE[136] </label>
-              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
-            </item>
-            <item id="3">
-              <description>Music Videos</description>
-              <label> $LOCALIZE[20389] </label>
-              <onclick>XBMC.ActivateWindow(MyVideoLibrary,musicvideos,return)</onclick>
-            </item>
-          </content>
-        </control>
+		          <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
+		            <control type="image">
+		              <include>HomeSideMenuNFBGImage</include>
+		            </control>
+		            <control type="label">
+		              <include>HomeSideMenuNFBGLabel</include>
+		            </control>
+		            <control type="image">
+		              <include>HomeSideMenuFOBGImage</include>
+		              <animation effect="slide" start="0,159" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(404).OnNext + Container(404).Position(0)">focus</animation>
+		              <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(404).OnNext + !Container(404).Position(0)">focus</animation>
+		              <animation effect="slide" start="0,-159" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(404).OnPrevious + Container(404).Position(4)">focus</animation>
+		              <animation effect="slide" start="0,43" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(404).OnPrevious + !Container(404).Position(4)">focus</animation>
+		            </control>
+		            <control type="label">
+		              <include>HomeSideMenuFOBGLabel</include>
+		              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(404).OnNext">focus</animation>
+		              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(404).OnPrevious">focus</animation>
+		            </control>
+		           </focusedlayout>
 
-        <!--
-        <control type="list" id="403">
-          <description>Pictures Side Menu</description>
-          <onup>403</onup>
-          <ondown>403</ondown>
-          <visible>[Container(300).HasFocus(3) | Control.HasFocus(403)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
-          <include>HomeSideMenu</include>
+		          <content>
+		            <item id="1">
+		              <description>Browse Button</description>
+		              <label> $LOCALIZE[31000] </label>
+		              <onclick>XBMC.ActivateWindow(1)</onclick>
+		            </item>
+		            <item id="2">
+		              <description>Games Button</description>
+		              <label> $LOCALIZE[31051] </label>
+		              <onclick>XBMC.ActivateWindow(1,Games)</onclick>
+		            </item>
+		            <item id="3">
+		              <description>Emulators Button</description>
+		              <label> $LOCALIZE[31052] </label>
+		              <onclick>XBMC.ActivateWindow(1,Emus)</onclick>
+		            </item>
+		            <item id="4">
+		              <description>Apps Button</description>
+		              <label> $LOCALIZE[31053] </label>
+		              <onclick>XBMC.ActivateWindow(1,Apps)</onclick>
+		            </item>
+		            <item id="5">
+		              <description>Settings Button</description>
+		              <label> $LOCALIZE[31060] </label>
+		              <onclick>XBMC.ActivateWindow(13)</onclick>
+		            </item>
+		          </content>
+		        </control>
+		        <control type="list" id="405">
+		          <description>Weather Side Menu</description>
+		          <onup>405</onup>
+		          <ondown>405</ondown>
+		          <visible>[Container(300).HasFocus(5) | Control.HasFocus(405)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
+		          <include>HomeSideMenu</include>
 
-          <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
-            <control type="image">
-              <include>HomeSideMenuNFBGImage</include>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuNFBGLabel</include>
-            </control>
-            <control type="image">
-              <include>HomeSideMenuFOBGImage</include>
-              <animation effect="slide" start="0,30" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(403).OnNext + Container(403).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(403).OnNext + !Container(403).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-73" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(403).OnPrevious + Container(403).Position(1)">focus</animation>
-              <animation effect="slide" start="0,30" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(403).OnPrevious + !Container(403).Position(1)">focus</animation>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuFOBGLabel</include>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(403).OnNext">focus</animation>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(403).OnPrevious">focus</animation>
-            </control>
-           </focusedlayout>
+		          <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
+		            <control type="image">
+		              <include>HomeSideMenuNFBGImage</include>
+		            </control>
+		            <control type="label">
+		              <include>HomeSideMenuNFBGLabel</include>
+		            </control>
+		            <control type="image">
+		              <include>HomeSideMenuFOBGImage</include>
+		              <animation effect="slide" start="0,30" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(405).OnNext + Container(405).Position(0)">focus</animation>
+		              <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(405).OnNext + !Container(405).Position(0)">focus</animation>
+		              <animation effect="slide" start="0,-73" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(405).OnPrevious + Container(405).Position(1)">focus</animation>
+		              <animation effect="slide" start="0,30" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(405).OnPrevious + !Container(405).Position(1)">focus</animation>
+		            </control>
+		            <control type="label">
+		              <include>HomeSideMenuFOBGLabel</include>
+		              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(405).OnNext">focus</animation>
+		              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(405).OnPrevious">focus</animation>
+		            </control>
+		           </focusedlayout>
 
-          <content>
-            <item id="1">
-              <description>Browse Button</description>
-              <label> $LOCALIZE[31000] </label>
-              <onclick>XBMC.ActivateWindow(2)</onclick>
-            </item>
-            <item id="2">
-              <description>Settings Button</description>
-              <label> $LOCALIZE[31060] </label>
-              <onclick>XBMC.ActivateWindow(12)</onclick>
-            </item>
-          </content>
-        </control>
-        -->
-        
-        <!--
-        <control type="list" id="404">
-          <description>Programs Side Menu</description>
-          <onup>404</onup>
-          <ondown>404</ondown>
-          <visible>[Container(300).HasFocus(4) | Control.HasFocus(404)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
-          <include>HomeSideMenu</include>
-
-          <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
-            <control type="image">
-              <include>HomeSideMenuNFBGImage</include>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuNFBGLabel</include>
-            </control>
-            <control type="image">
-              <include>HomeSideMenuFOBGImage</include>
-              <animation effect="slide" start="0,159" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(404).OnNext + Container(404).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(404).OnNext + !Container(404).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-159" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(404).OnPrevious + Container(404).Position(4)">focus</animation>
-              <animation effect="slide" start="0,43" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(404).OnPrevious + !Container(404).Position(4)">focus</animation>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuFOBGLabel</include>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(404).OnNext">focus</animation>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(404).OnPrevious">focus</animation>
-            </control>
-           </focusedlayout>
-
-          <content>
-            <item id="1">
-              <description>Browse Button</description>
-              <label> $LOCALIZE[31000] </label>
-              <onclick>XBMC.ActivateWindow(1)</onclick>
-            </item>
-            <item id="2">
-              <description>Games Button</description>
-              <label> $LOCALIZE[31051] </label>
-              <onclick>XBMC.ActivateWindow(1,Games)</onclick>
-            </item>
-            <item id="3">
-              <description>Emulators Button</description>
-              <label> $LOCALIZE[31052] </label>
-              <onclick>XBMC.ActivateWindow(1,Emus)</onclick>
-            </item>
-            <item id="4">
-              <description>Apps Button</description>
-              <label> $LOCALIZE[31053] </label>
-              <onclick>XBMC.ActivateWindow(1,Apps)</onclick>
-            </item>
-            <item id="5">
-              <description>Settings Button</description>
-              <label> $LOCALIZE[31060] </label>
-              <onclick>XBMC.ActivateWindow(13)</onclick>
-            </item>
-          </content>
-        </control>
-        -->
-  
-        <!--
-        <control type="list" id="405">
-          <description>Weather Side Menu</description>
-          <onup>405</onup>
-          <ondown>405</ondown>
-          <visible>[Container(300).HasFocus(5) | Control.HasFocus(405)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
-          <include>HomeSideMenu</include>
-
-          <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
-            <control type="image">
-              <include>HomeSideMenuNFBGImage</include>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuNFBGLabel</include>
-            </control>
-            <control type="image">
-              <include>HomeSideMenuFOBGImage</include>
-              <animation effect="slide" start="0,30" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(405).OnNext + Container(405).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(405).OnNext + !Container(405).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-73" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(405).OnPrevious + Container(405).Position(1)">focus</animation>
-              <animation effect="slide" start="0,30" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(405).OnPrevious + !Container(405).Position(1)">focus</animation>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuFOBGLabel</include>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(405).OnNext">focus</animation>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(405).OnPrevious">focus</animation>
-            </control>
-           </focusedlayout>
-
-          <content>
-            <item id="1">
-              <description>Check Button</description>
-              <label> $LOCALIZE[31015] </label>
-              <onclick>XBMC.ActivateWindow(2600)</onclick>
-            </item>
-            <item id="2">
-              <description>Settings Button</description>
-              <label> $LOCALIZE[31060] </label>
-              <onclick>XBMC.ActivateWindow(14)</onclick>
-            </item>
-          </content>
-        </control>
-        -->
-  
-        <control type="list" id="406">
-          <description>System Side Menu</description>
-          <onup>406</onup>
-          <ondown>406</ondown>
-          <visible>[Container(300).HasFocus(6) | Control.HasFocus(406) | Control.HasFocus(506)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
-          <include>HomeSideMenu</include>
-
-          <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
-            <control type="image">
-              <include>HomeSideMenuNFBGImage</include>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuNFBGLabel</include>
-            </control>
-            <control type="image">
-              <include>HomeSideMenuFOBGImage</include>
-              <animation effect="slide" start="0,245" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(406).OnNext + Container(406).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(406).OnNext + !Container(406).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-245" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(406).OnPrevious + Container(406).Position(6)">focus</animation>
-              <animation effect="slide" start="0,43" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(406).OnPrevious + !Container(406).Position(6)">focus</animation>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuFOBGLabel</include>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(406).OnNext">focus</animation>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(406).OnPrevious">focus</animation>
-            </control>
-           </focusedlayout>
-
-          <content>
-            <!--
+		          <content>
+		            <item id="1">
+		              <description>Check Button</description>
+		              <label> $LOCALIZE[31015] </label>
+		              <onclick>XBMC.ActivateWindow(2600)</onclick>
+		            </item>
+		            <item id="2">
+		              <description>Settings Button</description>
+		              <label> $LOCALIZE[31060] </label>
+		              <onclick>XBMC.ActivateWindow(14)</onclick>
+		            </item>
+		          </content>
+		        </control>
+		        -->
+				<control type="list" id="406">
+					<description>System Side Menu</description>
+					<onup>406</onup>
+					<ondown>406</ondown>
+					<visible>[Container(300).HasFocus(6) | Control.HasFocus(406) | Control.HasFocus(506)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
+					<include>HomeSideMenu</include>
+					<focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
+						<control type="image">
+							<include>HomeSideMenuNFBGImage</include>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuNFBGLabel</include>
+						</control>
+						<control type="image">
+							<include>HomeSideMenuFOBGImage</include>
+							<animation effect="slide" start="0,245" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(406).OnNext + Container(406).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(406).OnNext + !Container(406).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-245" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(406).OnPrevious + Container(406).Position(6)">focus</animation>
+							<animation effect="slide" start="0,43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(406).OnPrevious + !Container(406).Position(6)">focus</animation>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuFOBGLabel</include>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(406).OnNext">focus</animation>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(406).OnPrevious">focus</animation>
+						</control>
+					</focusedlayout>
+					<content>
+						<!--
             <item id="1">
               <description>Settings Button</description>
               <label> $LOCALIZE[31060] </label>
               <onclick>SetFocus(506)</onclick>
             </item>
             -->
-            <item id="2">
-              <description>Scripts Button</description>
-              <label> $LOCALIZE[31061] </label>
-              <onclick>XBMC.ActivateWindow(20)</onclick>
-            </item>
-            <item id="3">
-              <description>My Files Button</description>
-              <label> $LOCALIZE[31062] </label>
-              <onclick>XBMC.ActivateWindow(3)</onclick>
-            </item>
-            <!--
+						<item id="2">
+							<description>Scripts Button</description>
+							<label> $LOCALIZE[31061] </label>
+							<onclick>XBMC.ActivateWindow(20)</onclick>
+						</item>
+						<item id="3">
+							<description>My Files Button</description>
+							<label> $LOCALIZE[31062] </label>
+							<onclick>XBMC.ActivateWindow(3)</onclick>
+						</item>
+						<!--
             <item id="4">
               <description>My Favorites Button</description>
               <label> $LOCALIZE[31063] </label>
@@ -1258,91 +1124,86 @@
               <onclick>XBMC.ActivateWindow(Favourites)</onclick>
             </item>
             -->
-            <item id="9">
-              <description>Profiles Settings Button</description>
-              <label> $LOCALIZE[31064] </label>
-              <onclick>XBMC.ActivateWindow(34)</onclick>
-            </item>
-            <!--
+						<item id="9">
+							<description>Profiles Settings Button</description>
+							<label> $LOCALIZE[31064] </label>
+							<onclick>XBMC.ActivateWindow(34)</onclick>
+						</item>
+						<!--
             <item id="5">
               <description>Info Button</description>
               <label> $LOCALIZE[31065] </label>
               <onclick>XBMC.ActivateWindow(7)</onclick>
             </item>
             -->
-            <item id="6">
-              <description>Credits Button</description>
-              <label> $LOCALIZE[31800] </label>
-              <onclick>XBMC.ActivateWindow(4)</onclick>
-            </item>
-          </content>
-        </control>
-
-        <control type="list" id="407">
-          <description>Power Side Menu</description>
-          <onup>407</onup>
-          <ondown>407</ondown>
-          <visible>[Container(300).HasFocus(111) | Container(300).HasFocus(112) | Container(300).HasFocus(113) | Control.HasFocus(407)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
-          <include>HomeSideMenu</include>
-
-          <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
-            <control type="image">
-              <include>HomeSideMenuNFBGImage</include>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuNFBGLabel</include>
-            </control>
-            <control type="image">
-              <include>HomeSideMenuFOBGImage</include>
-              <animation effect="slide" start="0,245" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(407).OnNext + Container(407).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(407).OnNext + !Container(407).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-159" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(407).OnPrevious + [Container(407).Position(4) + System.Platform.Xbox + !System.HasLoginScreen]">focus</animation>
-              <animation effect="slide" start="0,-202" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(407).OnPrevious + [Container(407).Position(5) + System.Platform.Xbox + System.HasLoginScreen]">focus</animation>
-              <animation effect="slide" start="0,-202" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(407).OnPrevious + [Container(407).Position(5) + !System.Platform.Xbox + !System.HasLoginScreen]">focus</animation>
-              <animation effect="slide" start="0,-245" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(407).OnPrevious + [Container(407).Position(6) + !System.Platform.Xbox + System.HasLoginScreen]">focus</animation>
-              <animation effect="slide" start="0,43" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(407).OnPrevious + ![[Container(407).Position(4) + System.Platform.Xbox + !System.HasLoginScreen] | [Container(407).Position(5) + System.Platform.Xbox + System.HasLoginScreen] | [Container(407).Position(5) + !System.Platform.Xbox + !System.HasLoginScreen] | [Container(407).Position(6) + !System.Platform.Xbox + System.HasLoginScreen]]">focus</animation>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuFOBGLabel</include>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(407).OnNext">focus</animation>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(407).OnPrevious">focus</animation>
-            </control>
-           </focusedlayout>
-
-          <content>
-
-            <item id="111">
-              <description>Quit Button</description>
-              <label> $LOCALIZE[31007] </label>
-              <onclick>Plex.Shutdown()</onclick>
-              <visible>Skin.HasSetting(ShowSleep) | Skin.HasSetting(ShowShutDown)</visible>
-            </item>
-
-            <item id="112">
-              <description>Sleep Button</description>
-              <label> $LOCALIZE[13450] </label>
-              <onclick>XBMC.SleepSystem()</onclick>
-              <visible>!Skin.HasSetting(ShowSleep)</visible>
-            </item>
-            <item id="113">
-              <description>Shut Down Button</description>
-              <label> $LOCALIZE[31961] </label>
-              <onclick>XBMC.ShutDownSystem()</onclick>
-              <visible>!Skin.HasSetting(ShowShutDown)</visible>
-            </item>
-            <!--
+						<item id="6">
+							<description>Credits Button</description>
+							<label> $LOCALIZE[31800] </label>
+							<onclick>XBMC.ActivateWindow(4)</onclick>
+						</item>
+					</content>
+				</control>
+				<control type="list" id="407">
+					<description>Power Side Menu</description>
+					<onup>407</onup>
+					<ondown>407</ondown>
+					<visible>[Container(300).HasFocus(111) | Container(300).HasFocus(112) | Container(300).HasFocus(113) | Control.HasFocus(407)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
+					<include>HomeSideMenu</include>
+					<focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
+						<control type="image">
+							<include>HomeSideMenuNFBGImage</include>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuNFBGLabel</include>
+						</control>
+						<control type="image">
+							<include>HomeSideMenuFOBGImage</include>
+							<animation effect="slide" start="0,245" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(407).OnNext + Container(407).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(407).OnNext + !Container(407).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-159" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(407).OnPrevious + [Container(407).Position(4) + System.Platform.Xbox + !System.HasLoginScreen]">focus</animation>
+							<animation effect="slide" start="0,-202" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(407).OnPrevious + [Container(407).Position(5) + System.Platform.Xbox + System.HasLoginScreen]">focus</animation>
+							<animation effect="slide" start="0,-202" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(407).OnPrevious + [Container(407).Position(5) + !System.Platform.Xbox + !System.HasLoginScreen]">focus</animation>
+							<animation effect="slide" start="0,-245" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(407).OnPrevious + [Container(407).Position(6) + !System.Platform.Xbox + System.HasLoginScreen]">focus</animation>
+							<animation effect="slide" start="0,43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(407).OnPrevious + ![[Container(407).Position(4) + System.Platform.Xbox + !System.HasLoginScreen] | [Container(407).Position(5) + System.Platform.Xbox + System.HasLoginScreen] | [Container(407).Position(5) + !System.Platform.Xbox + !System.HasLoginScreen] | [Container(407).Position(6) + !System.Platform.Xbox + System.HasLoginScreen]]">focus</animation>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuFOBGLabel</include>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(407).OnNext">focus</animation>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(407).OnPrevious">focus</animation>
+						</control>
+					</focusedlayout>
+					<content>
+						<item id="111">
+							<description>Quit Button</description>
+							<label> $LOCALIZE[31007] </label>
+							<onclick>Plex.Shutdown()</onclick>
+							<visible>Skin.HasSetting(ShowSleep) | Skin.HasSetting(ShowShutDown)</visible>
+						</item>
+						<item id="112">
+							<description>Sleep Button</description>
+							<label> $LOCALIZE[13450] </label>
+							<onclick>XBMC.SleepSystem()</onclick>
+							<visible>!Skin.HasSetting(ShowSleep)</visible>
+						</item>
+						<item id="113">
+							<description>Shut Down Button</description>
+							<label> $LOCALIZE[31961] </label>
+							<onclick>XBMC.ShutDownSystem()</onclick>
+							<visible>!Skin.HasSetting(ShowShutDown)</visible>
+						</item>
+						<!--
             <item id="3">
               <description>Reload Button</description>
               <label> $LOCALIZE[31073] </label>
               <onclick>XBMC.RestartApp()</onclick>
             </item>
             -->
-            <item id="4">
-              <description>Refresh Button</description>
-              <label> $LOCALIZE[31075] </label>
-              <onclick>XBMC.ReloadSkin()</onclick>
-            </item>
-            <!--
+						<item id="4">
+							<description>Refresh Button</description>
+							<label> $LOCALIZE[31075] </label>
+							<onclick>XBMC.ReloadSkin()</onclick>
+						</item>
+						<!--
             <item id="5">
               <description>Dashboard Button</description>
               <label> $LOCALIZE[31074] </label>
@@ -1362,672 +1223,629 @@
               <visible>!System.Platform.Xbox</visible>
             </item>
             -->
-            <item id="8">
-              <description>Logout Button</description>
-              <label> $LOCALIZE[20126] </label>
-              <onclick>System.LogOff</onclick>
-              <visible>System.HasLoginScreen</visible>
-            </item>
-          </content>
-        </control>
-
-        <control type="list" id="408">
-          <description>TV Shows Side Menu</description>
-          <onup>408</onup>
-          <ondown>408</ondown>
-          <visible>[Container(300).HasFocus(8) | Control.HasFocus(408)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
-          <include>HomeSideMenu</include>
-
-          <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
-            <control type="image">
-              <include>HomeSideMenuNFBGImage</include>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuNFBGLabel</include>
-            </control>
-            <control type="image">
-              <include>HomeSideMenuFOBGImage</include>
-              <animation effect="slide" start="0,202" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(408).OnNext + Container(408).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(408).OnNext + !Container(408).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-202" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(408).OnPrevious + Container(408).Position(5)">focus</animation>
-              <animation effect="slide" start="0,43" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(408).OnPrevious + !Container(408).Position(5)">focus</animation>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuFOBGLabel</include>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(408).OnNext">focus</animation>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(408).OnPrevious">focus</animation>
-            </control>
-           </focusedlayout>
-
-          <content>
-<!--
+						<item id="8">
+							<description>Logout Button</description>
+							<label> $LOCALIZE[20126] </label>
+							<onclick>System.LogOff</onclick>
+							<visible>System.HasLoginScreen</visible>
+						</item>
+					</content>
+				</control>
+				<control type="list" id="408">
+					<description>TV Shows Side Menu</description>
+					<onup>408</onup>
+					<ondown>408</ondown>
+					<visible>[Container(300).HasFocus(8) | Control.HasFocus(408)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
+					<include>HomeSideMenu</include>
+					<focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
+						<control type="image">
+							<include>HomeSideMenuNFBGImage</include>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuNFBGLabel</include>
+						</control>
+						<control type="image">
+							<include>HomeSideMenuFOBGImage</include>
+							<animation effect="slide" start="0,202" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(408).OnNext + Container(408).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(408).OnNext + !Container(408).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-202" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(408).OnPrevious + Container(408).Position(5)">focus</animation>
+							<animation effect="slide" start="0,43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(408).OnPrevious + !Container(408).Position(5)">focus</animation>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuFOBGLabel</include>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(408).OnNext">focus</animation>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(408).OnPrevious">focus</animation>
+						</control>
+					</focusedlayout>
+					<content>
+						<!--
             <item id="1">
               <description>Browse Button</description>
               <label> $LOCALIZE[31000] </label>
               <onclick>XBMC.ActivateWindow(24)</onclick>
             </item>
 -->
-            <item id="5">
-              <description>Recently Added</description>
-              <label> $LOCALIZE[31045] </label>
-              <onclick>XBMC.ActivateWindow(MyVideoLibrary,recentlyaddedepisodes,return)</onclick>
-            </item>
-            <item id="2">
-              <description>By Genre</description>
-              <label> $LOCALIZE[31044] $LOCALIZE[515] </label>
-              <onclick>XBMC.ActivateWindow(MyVideoLibrary,tvshowgenres,return)</onclick>
-            </item>
-            <item id="3">
-              <description>By Year</description>
-              <label> $LOCALIZE[31044] $LOCALIZE[345] </label>
-              <onclick>XBMC.ActivateWindow(MyVideoLibrary,tvshowyears,return)</onclick>
-            </item>
-            <item id="4">
-              <description>By Actor</description>
-              <label> $LOCALIZE[31044] $LOCALIZE[20337] </label>
-              <onclick>XBMC.ActivateWindow(MyVideoLibrary,tvshowactors,return)</onclick>
-            </item>
-            <!--
+						<item id="5">
+							<description>Recently Added</description>
+							<label> $LOCALIZE[31045] </label>
+							<onclick>XBMC.ActivateWindow(MyVideoLibrary,recentlyaddedepisodes,return)</onclick>
+						</item>
+						<item id="2">
+							<description>By Genre</description>
+							<label> $LOCALIZE[31044] $LOCALIZE[515] </label>
+							<onclick>XBMC.ActivateWindow(MyVideoLibrary,tvshowgenres,return)</onclick>
+						</item>
+						<item id="3">
+							<description>By Year</description>
+							<label> $LOCALIZE[31044] $LOCALIZE[345] </label>
+							<onclick>XBMC.ActivateWindow(MyVideoLibrary,tvshowyears,return)</onclick>
+						</item>
+						<item id="4">
+							<description>By Actor</description>
+							<label> $LOCALIZE[31044] $LOCALIZE[20337] </label>
+							<onclick>XBMC.ActivateWindow(MyVideoLibrary,tvshowactors,return)</onclick>
+						</item>
+						<!--
             <item id="6">
               <description>Video Plugins</description>
               <label> $LOCALIZE[1037] </label>
               <onclick>XBMC.ActivateWindow(MyVideoLibrary,plugins,return)</onclick>
             </item>
             -->
-            <!--
+						<!--
             <item id="7">
               <description>Settings Button</description>
               <label> $LOCALIZE[31060] </label>
               <onclick>XBMC.ActivateWindow(17)</onclick>
             </item>
             -->
-          </content>
-        </control>
-
-        <control type="list" id="409">
-          <description>Movies Side Menu</description>
-          <onup>409</onup>
-          <ondown>409</ondown>
-          <visible>[Container(300).HasFocus(9) | Control.HasFocus(409)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
-          <include>HomeSideMenu</include>
-
-          <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
-            <control type="image">
-              <include>HomeSideMenuNFBGImage</include>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuNFBGLabel</include>
-            </control>
-            <control type="image">
-              <include>HomeSideMenuFOBGImage</include>
-              <animation effect="slide" start="0,288" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(409).OnNext + Container(409).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(409).OnNext + !Container(409).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-288" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(409).OnPrevious + Container(409).Position(7)">focus</animation>
-              <animation effect="slide" start="0,43" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(409).OnPrevious + !Container(409).Position(7)">focus</animation>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuFOBGLabel</include>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(409).OnNext">focus</animation>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(409).OnPrevious">focus</animation>
-            </control>
-           </focusedlayout>
-
-          <content>
-<!--
+					</content>
+				</control>
+				<control type="list" id="409">
+					<description>Movies Side Menu</description>
+					<onup>409</onup>
+					<ondown>409</ondown>
+					<visible>[Container(300).HasFocus(9) | Control.HasFocus(409)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
+					<include>HomeSideMenu</include>
+					<focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
+						<control type="image">
+							<include>HomeSideMenuNFBGImage</include>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuNFBGLabel</include>
+						</control>
+						<control type="image">
+							<include>HomeSideMenuFOBGImage</include>
+							<animation effect="slide" start="0,288" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(409).OnNext + Container(409).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(409).OnNext + !Container(409).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-288" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(409).OnPrevious + Container(409).Position(7)">focus</animation>
+							<animation effect="slide" start="0,43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(409).OnPrevious + !Container(409).Position(7)">focus</animation>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuFOBGLabel</include>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(409).OnNext">focus</animation>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(409).OnPrevious">focus</animation>
+						</control>
+					</focusedlayout>
+					<content>
+						<!--
             <item id="1">
               <description>Browse Button</description>
               <label> $LOCALIZE[31000] </label>
               <onclick>XBMC.ActivateWindow(24)</onclick>
             </item>
 -->
-            <item id="7">
-              <description>Recently Added</description>
-              <label> $LOCALIZE[31045] </label>
-              <onclick>XBMC.ActivateWindow(MyVideoLibrary,recentlyaddedmovies,return)</onclick>
-            </item>
-            <item id="2">
-              <description>By Genre</description>
-              <label> $LOCALIZE[31044] $LOCALIZE[515] </label>
-              <onclick>XBMC.ActivateWindow(MyVideoLibrary,moviegenres,return)</onclick>
-            </item>
-            <item id="3">
-              <description>By Year</description>
-              <label> $LOCALIZE[31044] $LOCALIZE[345] </label>
-              <onclick>XBMC.ActivateWindow(MyVideoLibrary,movieyears,return)</onclick>
-            </item>
-            <item id="4">
-              <description>By Actor</description>
-              <label> $LOCALIZE[31044] $LOCALIZE[20337] </label>
-              <onclick>XBMC.ActivateWindow(MyVideoLibrary,movieactors,return)</onclick>
-            </item>
-            <item id="5">
-              <description>By Director</description>
-              <label> $LOCALIZE[31044] $LOCALIZE[20339] </label>
-              <onclick>XBMC.ActivateWindow(MyVideoLibrary,moviedirectors,return)</onclick>
-            </item>
-            <item id="6">
-              <description>By Studio</description>
-              <label> $LOCALIZE[31044] $LOCALIZE[572] </label>
-              <onclick>XBMC.ActivateWindow(MyVideoLibrary,moviestudios,return)</onclick>
-            </item>
-            <!--
+						<item id="7">
+							<description>Recently Added</description>
+							<label> $LOCALIZE[31045] </label>
+							<onclick>XBMC.ActivateWindow(MyVideoLibrary,recentlyaddedmovies,return)</onclick>
+						</item>
+						<item id="2">
+							<description>By Genre</description>
+							<label> $LOCALIZE[31044] $LOCALIZE[515] </label>
+							<onclick>XBMC.ActivateWindow(MyVideoLibrary,moviegenres,return)</onclick>
+						</item>
+						<item id="3">
+							<description>By Year</description>
+							<label> $LOCALIZE[31044] $LOCALIZE[345] </label>
+							<onclick>XBMC.ActivateWindow(MyVideoLibrary,movieyears,return)</onclick>
+						</item>
+						<item id="4">
+							<description>By Actor</description>
+							<label> $LOCALIZE[31044] $LOCALIZE[20337] </label>
+							<onclick>XBMC.ActivateWindow(MyVideoLibrary,movieactors,return)</onclick>
+						</item>
+						<item id="5">
+							<description>By Director</description>
+							<label> $LOCALIZE[31044] $LOCALIZE[20339] </label>
+							<onclick>XBMC.ActivateWindow(MyVideoLibrary,moviedirectors,return)</onclick>
+						</item>
+						<item id="6">
+							<description>By Studio</description>
+							<label> $LOCALIZE[31044] $LOCALIZE[572] </label>
+							<onclick>XBMC.ActivateWindow(MyVideoLibrary,moviestudios,return)</onclick>
+						</item>
+						<!--
             <item id="8">
               <description>Video Plugins</description>
               <label> $LOCALIZE[1037] </label>
               <onclick>XBMC.ActivateWindow(MyVideoLibrary,plugins,return)</onclick>
             </item>
             -->
-            <!--
+						<!--
             <item id="9">
               <description>Settings Button</description>
               <label> $LOCALIZE[31060] </label>
               <onclick>XBMC.ActivateWindow(17)</onclick>
             </item>
             -->
-          </content>
-        </control>
-
-				      <control type="list" id="411">
-			          <description>Library Side Menu</description>
-			          <onup>411</onup>
-			          <ondown>411</ondown>
-			          <visible>[Container(300).HasFocus(1001) | Control.HasFocus(411)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
-			          <include>HomeSideMenu</include>
-
-			          <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
-			            <control type="image">
-			              <include>HomeSideMenuNFBGImage</include>
-			            </control>
-			            <control type="label">
-			              <include>HomeSideMenuNFBGLabel</include>
-			            </control>
-			            <control type="image">
-			              <include>HomeSideMenuFOBGImage</include>
-			              <animation effect="slide" start="0,116" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(411).OnNext + Container(411).Position(0)">focus</animation>
-			              <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(411).OnNext + !Container(411).Position(0)">focus</animation>
-			              <animation effect="slide" start="0,-116" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(411).OnPrevious + Container(411).Position(3)">focus</animation>
-			              <animation effect="slide" start="0,43" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(411).OnPrevious + !Container(411).Position(3)">focus</animation>
-			            </control>
-			            <control type="label">
-			              <include>HomeSideMenuFOBGLabel</include>
-			              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(411).OnNext">focus</animation>
-			              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(411).OnPrevious">focus</animation>
-			            </control>
-			           </focusedlayout>
-
-			          <content>
-				          <item id="1">
-			              <description></description>
-			              <label>Recently Viewed</label>
-			              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
-			            </item>
-				          <item id="2">
-			              <description></description>
-			              <label>Recently Added</label>
-			              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
-			            </item>
-			  
-			            <item id="3">
-			              <description></description>
-			              <label>By Tag</label>
-			              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
-			            </item>
-			            <item id="4">
-			              <description></description>
-			              <label>By Collection</label>
-			              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
-			            </item>
-			            <item id="5">
-			              <description></description>
-			              <label>By Rating</label>
-			              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
-			            </item>
-			            <item id="6">
-			              <description></description>
-			              <label>By Genre</label>
-			              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
-			            </item>
-			            <item id="8">
-			              <description></description>
-			              <label>By Year</label>
-			              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
-			            </item>
-			          </content>
-			        </control>
-
-				      <control type="list" id="412">
-			          <description>Library Side Menu</description>
-			          <onup>412</onup>
-			          <ondown>412</ondown>
-			          <visible>[Container(300).HasFocus(1002) | Control.HasFocus(412)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
-			          <include>HomeSideMenu</include>
-
-			          <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
-			            <control type="image">
-			              <include>HomeSideMenuNFBGImage</include>
-			            </control>
-			            <control type="label">
-			              <include>HomeSideMenuNFBGLabel</include>
-			            </control>
-			            <control type="image">
-			              <include>HomeSideMenuFOBGImage</include>
-			              <animation effect="slide" start="0,116" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(412).OnNext + Container(411).Position(0)">focus</animation>
-			              <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(412).OnNext + !Container(411).Position(0)">focus</animation>
-			              <animation effect="slide" start="0,-116" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(412).OnPrevious + Container(411).Position(3)">focus</animation>
-			              <animation effect="slide" start="0,43" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(412).OnPrevious + !Container(411).Position(3)">focus</animation>
-			            </control>
-			            <control type="label">
-			              <include>HomeSideMenuFOBGLabel</include>
-			              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(412).OnNext">focus</animation>
-			              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(412).OnPrevious">focus</animation>
-			            </control>
-			           </focusedlayout>
-
-			          <content>
-			            <item id="2">
-			              <description>Playlists</description>
-			              <label> $LOCALIZE[136] </label>
-			              <onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
-			            </item>
-			          </content>
-			        </control>
-      </control>
-
-		<!--Sub Submenu -->
-      <control type="group" id="302">
-        <include>HomeSubSubMenuGroupDims</include>
-        <animation effect="fade" time="500" delay="100">Focus</animation>
-        <animation effect="fade" time="200">Unfocus</animation>
-        <visible allowhiddenfocus="true">Control.HasFocus(506)</visible>
-        <include>HomeSubMenuBackground</include>
-
-        <control type="list" id="506">
-          <description>Settings Sub Side Menu</description>
-          <onup>506</onup>
-          <ondown>506</ondown>
-          <onleft>301</onleft>
-          <onright>506</onright>
-          <scrolltime>200</scrolltime>
-          <visible allowhiddenfocus="true">Control.HasFocus(506)</visible>
-          <include>HomeSideMenuDims</include>
-          <include>HomeSlideLeft</include>
-
-          <itemlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
-            <control type="image">
-              <include>HomeSideMenuNFBGImage</include>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuNFBGLabel</include>
-            </control>
-          </itemlayout>
-
-          <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
-            <control type="image">
-              <include>HomeSideMenuNFBGImage</include>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuNFBGLabel</include>
-            </control>
-            <control type="image">
-              <include>HomeSideMenuFOBGImage</include>
-              <animation effect="slide" start="0,288" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(506).OnNext + Container(506).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(506).OnNext + !Container(506).Position(0)">focus</animation>
-              <animation effect="slide" start="0,-288" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(506).OnPrevious + Container(506).Position(7)">focus</animation>
-              <animation effect="slide" start="0,43" end="0,0" time="400" reversible="false"  tween="quadratic" easing="out" condition="Container(506).OnPrevious + !Container(506).Position(7)">focus</animation>
-            </control>
-            <control type="label">
-              <include>HomeSideMenuFOBGLabel</include>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(506).OnNext">focus</animation>
-              <animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(506).OnPrevious">focus</animation>
-            </control>
-          </focusedlayout>
-
-          <content>
-            <item id="8">
-              <description>Skin Settings Button</description>
-              <label> $LOCALIZE[31603] </label>
-              <onclick>XBMC.ActivateWindow(1001)</onclick>
-            </item>
-            <item id="7">
-              <description>Appearance Settings Button</description>
-              <label> $LOCALIZE[31601] </label>
-              <onclick>XBMC.ActivateWindow(19)</onclick>
-            </item>
-            <item id="1">
-              <description>Video Settings Button</description>
-              <label> $LOCALIZE[31001] </label>
-              <onclick>XBMC.ActivateWindow(17)</onclick>
-            </item>
-            <item id="2">
-              <description>Music Settings Button</description>
-              <label> $LOCALIZE[31002] </label>
-             <onclick>XBMC.ActivateWindow(15)</onclick>
-            </item>
-            <item id="3">
-             <description>Pictures Settings Button</description>
-              <label> $LOCALIZE[31003] </label>
-              <onclick>XBMC.ActivateWindow(12)</onclick>
-            </item>
-            <item id="4">
-              <description>Programs Settings Button</description>
-              <label> $LOCALIZE[31004] </label>
-              <onclick>XBMC.ActivateWindow(13)</onclick>
-            </item>
-            <item id="5">
-              <description>System Settings Button</description>
-              <label> $LOCALIZE[31006] </label>
-              <onclick>XBMC.ActivateWindow(16)</onclick>
-            </item>
-            <item id="6">
-              <description>Network Settings Button</description>
-              <label> $LOCALIZE[31602] </label>
-              <onclick>XBMC.ActivateWindow(18)</onclick>
-            </item>
-          </content>
-        </control>
-      </control>
-    </control>
-
-    <control type="group">
-      <animation effect="slide" end="-440,0" time="0" condition="!Skin.HasSetting(HomeBladeCentre)">Conditional</animation>
-      <animation effect="slide" end="-180,0" time="100" condition="!Skin.HasSetting(HomeBladeCentre) + [Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)]">Conditional</animation>
-
-<!-- Settings Panel -->
-      <control type="group">
-        <visible>Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)</visible>
-        <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-        <control type="image">
-          <description>Submenu Background Image</description>
-          <posx>798</posx>
-          <posy>0</posy>
-          <include>HomeSubMenuBlade</include>
-        </control>
-
-        <control type="image">
-          <visible>Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)</visible>
-          <animation type="Visible" condition="Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)">
-            <effect type="zoom" tween="back" start="698,0,100,720" end="0,0,798,720" time="800"  delay="100" />
-          </animation>
-          <include>SettingsCentreBladeBG</include>
-        </control>
-
-        <control type="group">
-          <visible>Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)</visible>
-          <animation type="Visible" condition="Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)">
-            <effect type="zoom" tween="back" center="851,0" start="0,100" end="100,100" time="800"  delay="100" />
-          </animation>
-
-          <control type="image">
-            <description>Submenu Background Image</description>
-            <include>SettingsCentreBlade</include>
-          </control>
-        </control>
-      </control>
-
-      <control type="group">
-        <visible>Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)</visible>
-        <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
-        <animation type="Visible" condition="Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)">
-          <effect type="zoom" tween="back" center="0,0" start="0,100" end="100,100" time="800"  delay="100" />
-        </animation>
-
-        <control type="image">
-          <description>Submenu Background Image</description>
-          <visible>Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)</visible>
-          <include>SettingTransSubBladeDims</include>
-          <include>HomeBladeSubTexture</include>
-        </control>
-
-        <control type="image">
-          <visible>Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)</visible>
-          <include>SettingTransCentreBladeBGDims</include>
-          <include>SettingsCentreBladeBG</include>
-        </control>
-
-        <control type="group">
-          <visible>Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)</visible>
-
-          <control type="image">
-            <description>Submenu Background Image</description>
-            <include>SettingTransCentreBladeDims</include>
-            <include>HomeBladeSubTexture</include>
-          </control>
-        </control>
-      </control>
-
-      <control type="image">
-        <description>Background Image Left Blade</description>
-        <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-        <posx>0</posx>
-        <posy>0</posy>
-        <width>846</width>
-        <height>720</height>
-        <texture border="0,0,500,0">HomeBladeLeft.png</texture>
-        <include>HomeSlideLeft</include>
-      </control>
-
-      <control type="image">
-        <description>Background Image Left Blade</description>
-        <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
-        <posx>0</posx>
-        <posy>0</posy>
-        <width>846</width>
-        <height>720</height>
-        <texture border="0,0,500,0">HomeBladeLeft.png</texture>
-        <animation effect="slide" tween="cubic" start="-865,0" time="500" delay="90" condition="!Window.Previous(SettingsCategory.xml) + !Window.Previous(1001) + !Window.Previous(7) + !Window.Previous(34)">WindowOpen</animation>
-        <animation effect="slide" tween="circle" easing="inout" end="-865,0" delay="300" time="500" condition="!Window.Next(SettingsCategory.xml) + !Window.Next(1001) + !Window.Next(7) + !Window.Next(34)">WindowClose</animation>
-      </control>
-
-  <!-- Main Menu -->
-      <control type="wraplist" id="300">
-        <description>Home Main Menu</description>
-        <posx>0</posx>
-        <posy>20</posy>
-        <width>829</width>
-        <height>700</height>
-        <onup>300</onup>
-        <ondown>300</ondown>
-        <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-        <onright>301</onright>
-        <focusposition>5</focusposition>
-        <scrolltime>200</scrolltime>
-        <include>HomeSlideLeft</include>
-        <visible allowhiddenfocus="true">Control.HasFocus(300)</visible>
-        <animation effect="fade" start="0" end="100" time="500">Visible</animation>
-        <animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
-
-        <itemlayout width="600" height="60">
-          <control type="label">
-            <posx>802</posx>
-            <posy>10</posy>
-            <width>600</width>
-            <height>0</height>
-            <info>ListItem.Label</info>
-            <align>right</align>
-            <aligny>center</aligny>
-            <font>HomeScreenUnselectedItems</font>
-            <textcolor>HomeMain2</textcolor>
-            <shadowcolor>HomeShadow</shadowcolor>
-          </control>
-        </itemlayout>
-  
-        <focusedlayout width="600" height="140">
-          <control type="label">
-            <include>HomeMainMenuFOLabel2</include>
-          </control>
-        </focusedlayout>
-  
-        <content>
-          <item id="6">
-            <description>Preferences Menu</description>
-            <label> $LOCALIZE[31955] </label>
-            <onclick>SetFocus(506)</onclick>
-          </item>
-          <item id="111">
-            <description>Quit Button</description>
-            <label> $LOCALIZE[31007] </label>
-            <onclick>Plex.ShutDown</onclick>
-            <visible>!Skin.HasSetting(HidePower) + !Skin.HasSetting(ShowSleep) + !Skin.HasSetting(ShowShutDown)</visible>
-          </item>
-          <item id="112">
-            <description>Sleep Button</description>
-            <label> $LOCALIZE[31960] </label>
-            <onclick>Plex.SleepSystem</onclick>
-            <visible>!Skin.HasSetting(HidePower) + Skin.HasSetting(ShowSleep) + !Skin.HasSetting(ShowShutDown)</visible>
-          </item>
-          <item id="113">
-            <description>Shut Down Button</description>
-            <label> $LOCALIZE[31961] </label>
-            <onclick>Plex.ShutDownSystem</onclick>
-            <visible>!Skin.HasSetting(HidePower) + !Skin.HasSetting(ShowSleep) + Skin.HasSetting(ShowShutDown)</visible>
-          </item>
-          <item id="13">
-            <description>Help Menu</description>
-            <label> $LOCALIZE[31954] </label>
-            <visible>!Skin.HasSetting(HideHelp)</visible>
-            <onclick>Plex.ActivateWindow(1,plex://localhost/system/help,return)</onclick>
-          </item>
-          <item id="11">
-            <description>Favorites Menu</description>
-            <label> $LOCALIZE[31063] </label>
-            <onclick>Plex.ActivateWindow(Favourites)</onclick>
-            <visible>!Skin.HasSetting(HideFavourites)</visible>
-          </item>
-          <item id="12">
-            <description>App Store Menu</description>
-            <label> $LOCALIZE[31952] </label>
-            <onclick>Plex.ActivateWindow(1,plex://localhost/system/appstore,return)</onclick>
-            <visible>!Skin.HasSetting(HideAppStore)</visible>
-          </item>
-          <item id="1">
-            <description>My Videos Button</description>
-            <label> $LOCALIZE[31001] </label>
-            <visible>!Skin.HasSetting(HideVideos)</visible>
-            <onclick>XBMC.ActivateWindow(24)</onclick>
-          </item>
-          <item id="9">
-            <description>My Movies Button</description>
-            <label> $LOCALIZE[31111] </label>
-            <onclick>XBMC.ActivateWindow(MyVideoLibrary,movietitles,return)</onclick>
-            <visible>false</visible>
-          </item>
-          <item id="8">
-            <description>My TV Shows Button</description>
-            <label> $LOCALIZE[31008] </label>
-            <onclick>XBMC.ActivateWindow(MyVideoLibrary,tvshowtitles,return)</onclick>
-            <visible>false</visible>
-          </item>
-          <item id="2">
-            <description>My Music Button</description>
-            <label> $LOCALIZE[31002] </label>
-            <visible>!Skin.HasSetting(HideMusic)</visible>
-            <onclick>XBMC.ActivateWindow(5)</onclick>
-          </item>
-          <item id="3">
-            <description>My Pics Button</description>
-            <label> $LOCALIZE[31003] </label>
-            <visible>!Skin.HasSetting(HidePictures)</visible>
-            <onclick>XBMC.ActivateWindow(2)</onclick>
-          </item>
-          <item id="4">
-            <description>My Programs Menu</description>
-            <label> $LOCALIZE[31004] </label>
-            <visible>!Skin.HasSetting(HidePrograms)</visible>
-            <onclick>XBMC.ActivateWindow(1)</onclick>
-          </item>
-          <item id="10">
-            <description>DVD Button</description>
-            <label>DVD</label>
-            <visible>System.HasMediadvd + !Skin.HasSetting(HideDVD)</visible>
-            <onclick>XBMC.PlayDVD</onclick>
-          </item>
-          <item id="5">
-            <description>My Weather Button</description>
-            <label> $LOCALIZE[31005] </label>
-            <onclick>XBMC.ActivateWindow(2600)</onclick>
-            <visible>!Skin.HasSetting(HideWeather)</visible>
-            <visible>System.HasNetwork</visible>
-          </item>
-        </content>
-      </control>
-  
-      <control type="group">
-        <posy>349</posy>
-        <include>HomeSlideLeft</include>
-        <visible>Skin.HasSetting(HomeBladeCentre)</visible>
-
-        <control type="label">
-          <info>Container(300).ListItem(0).Label</info>
-          <include>HomeMainMenuFOLabel</include>
-          <include>HomeMainMenuOverFade</include>
-        </control>
-      </control>
-
-      <control type="group">
-        <posy>349</posy>
-        <visible>!Skin.HasSetting(HomeBladeCentre)</visible>
-        <animation effect="slide" tween="cubic" start="-865,0" time="500" delay="90" condition="!Window.Previous(SettingsCategory.xml) + !Window.Previous(1001) + !Window.Previous(7) + !Window.Previous(34)">WindowOpen</animation>
-        <animation effect="slide" tween="circle" easing="inout" end="-865,0" delay="300" time="500" condition="!Window.Next(SettingsCategory.xml) + !Window.Next(1001) + !Window.Next(7) + !Window.Next(34)">WindowClose</animation>
-        <animation effect="slide" tween="back" start="-440,0" end="-620,0" time="800" delay="100" condition="[Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)]">WindowClose</animation>
-  
-        <control type="label">
-          <info>Container(300).ListItem(0).Label</info>
-          <include>HomeMainMenuFOLabel</include>
-          <include>HomeMainMenuOverFade</include>
-        </control>
-      </control>
-
-      <control type="group">
-        <include>HomeSlideLeft</include>
-
-        <control type="image">
-          <posx>582</posx>
-          <posy>0</posy>
-          <width>246</width>
-          <height>720</height>
-          <texture diffuse="HomeMenuDiffuse.png">HomeBladeLeftMenuOverlay.png</texture>
-        </control>
-      </control>
-    </control>
-
-
-<!-- Home Widgets -->
+					</content>
+				</control>
+				<control type="list" id="411">
+					<description>Library Side Menu</description>
+					<onup>411</onup>
+					<ondown>411</ondown>
+					<visible>[Container(300).HasFocus(1001) | Control.HasFocus(411)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
+					<include>HomeSideMenu</include>
+					<focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
+						<control type="image">
+							<include>HomeSideMenuNFBGImage</include>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuNFBGLabel</include>
+						</control>
+						<control type="image">
+							<include>HomeSideMenuFOBGImage</include>
+							<animation effect="slide" start="0,116" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(411).OnNext + Container(411).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(411).OnNext + !Container(411).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-116" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(411).OnPrevious + Container(411).Position(3)">focus</animation>
+							<animation effect="slide" start="0,43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(411).OnPrevious + !Container(411).Position(3)">focus</animation>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuFOBGLabel</include>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(411).OnNext">focus</animation>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(411).OnPrevious">focus</animation>
+						</control>
+					</focusedlayout>
+					<content>
+						<item id="1">
+							<description/>
+							<label>Recently Viewed</label>
+							<onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+						</item>
+						<item id="2">
+							<description/>
+							<label>Recently Added</label>
+							<onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+						</item>
+						<item id="3">
+							<description/>
+							<label>By Tag</label>
+							<onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+						</item>
+						<item id="4">
+							<description/>
+							<label>By Collection</label>
+							<onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+						</item>
+						<item id="5">
+							<description/>
+							<label>By Rating</label>
+							<onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+						</item>
+						<item id="6">
+							<description/>
+							<label>By Genre</label>
+							<onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+						</item>
+						<item id="8">
+							<description/>
+							<label>By Year</label>
+							<onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+						</item>
+					</content>
+				</control>
+				<control type="list" id="412">
+					<description>Library Side Menu</description>
+					<onup>412</onup>
+					<ondown>412</ondown>
+					<visible>[Container(300).HasFocus(1002) | Control.HasFocus(412)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
+					<include>HomeSideMenu</include>
+					<focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
+						<control type="image">
+							<include>HomeSideMenuNFBGImage</include>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuNFBGLabel</include>
+						</control>
+						<control type="image">
+							<include>HomeSideMenuFOBGImage</include>
+							<animation effect="slide" start="0,116" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(412).OnNext + Container(411).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(412).OnNext + !Container(411).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-116" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(412).OnPrevious + Container(411).Position(3)">focus</animation>
+							<animation effect="slide" start="0,43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(412).OnPrevious + !Container(411).Position(3)">focus</animation>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuFOBGLabel</include>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(412).OnNext">focus</animation>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(412).OnPrevious">focus</animation>
+						</control>
+					</focusedlayout>
+					<content>
+						<item id="2">
+							<description>Playlists</description>
+							<label> $LOCALIZE[136] </label>
+							<onclick>XBMC.ActivateWindow(501,Playlists)</onclick>
+						</item>
+					</content>
+				</control>
+			</control>
+			<!--Sub Submenu -->
+			<control type="group" id="302">
+				<include>HomeSubSubMenuGroupDims</include>
+				<animation effect="fade" time="500" delay="100">Focus</animation>
+				<animation effect="fade" time="200">Unfocus</animation>
+				<visible allowhiddenfocus="true">Control.HasFocus(506)</visible>
+				<include>HomeSubMenuBackground</include>
+				<control type="list" id="506">
+					<description>Settings Sub Side Menu</description>
+					<onup>506</onup>
+					<ondown>506</ondown>
+					<onleft>301</onleft>
+					<onright>506</onright>
+					<scrolltime>200</scrolltime>
+					<visible allowhiddenfocus="true">Control.HasFocus(506)</visible>
+					<include>HomeSideMenuDims</include>
+					<include>HomeSlideLeft</include>
+					<itemlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
+						<control type="image">
+							<include>HomeSideMenuNFBGImage</include>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuNFBGLabel</include>
+						</control>
+					</itemlayout>
+					<focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
+						<control type="image">
+							<include>HomeSideMenuNFBGImage</include>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuNFBGLabel</include>
+						</control>
+						<control type="image">
+							<include>HomeSideMenuFOBGImage</include>
+							<animation effect="slide" start="0,288" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(506).OnNext + Container(506).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(506).OnNext + !Container(506).Position(0)">focus</animation>
+							<animation effect="slide" start="0,-288" end="0,0" time="500" reversible="false" tween="quadratic" easing="out" condition="Container(506).OnPrevious + Container(506).Position(7)">focus</animation>
+							<animation effect="slide" start="0,43" end="0,0" time="400" reversible="false" tween="quadratic" easing="out" condition="Container(506).OnPrevious + !Container(506).Position(7)">focus</animation>
+						</control>
+						<control type="label">
+							<include>HomeSideMenuFOBGLabel</include>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(506).OnNext">focus</animation>
+							<animation effect="fade" start="0" end="100" time="200" delay="300" reversible="false" condition="Container(506).OnPrevious">focus</animation>
+						</control>
+					</focusedlayout>
+					<content>
+						<item id="8">
+							<description>Skin Settings Button</description>
+							<label> $LOCALIZE[31603] </label>
+							<onclick>XBMC.ActivateWindow(1001)</onclick>
+						</item>
+						<item id="7">
+							<description>Appearance Settings Button</description>
+							<label> $LOCALIZE[31601] </label>
+							<onclick>XBMC.ActivateWindow(19)</onclick>
+						</item>
+						<item id="1">
+							<description>Video Settings Button</description>
+							<label> $LOCALIZE[31001] </label>
+							<onclick>XBMC.ActivateWindow(17)</onclick>
+						</item>
+						<item id="2">
+							<description>Music Settings Button</description>
+							<label> $LOCALIZE[31002] </label>
+							<onclick>XBMC.ActivateWindow(15)</onclick>
+						</item>
+						<item id="3">
+							<description>Pictures Settings Button</description>
+							<label> $LOCALIZE[31003] </label>
+							<onclick>XBMC.ActivateWindow(12)</onclick>
+						</item>
+						<item id="4">
+							<description>Programs Settings Button</description>
+							<label> $LOCALIZE[31004] </label>
+							<onclick>XBMC.ActivateWindow(13)</onclick>
+						</item>
+						<item id="5">
+							<description>System Settings Button</description>
+							<label> $LOCALIZE[31006] </label>
+							<onclick>XBMC.ActivateWindow(16)</onclick>
+						</item>
+						<item id="6">
+							<description>Network Settings Button</description>
+							<label> $LOCALIZE[31602] </label>
+							<onclick>XBMC.ActivateWindow(18)</onclick>
+						</item>
+						<item id="7">
+							<description>Developer Settings Button</description>
+							<label> Developer </label>
+							<onclick>XBMC.ActivateWindow(1002)</onclick>
+						</item>
+					</content>
+				</control>
+			</control>
+		</control>
 		<control type="group">
-      <description>Current Weather Summary</description>
-      <include>HomeWeatherSummaryPos</include>
+			<animation effect="slide" end="-440,0" time="0" condition="!Skin.HasSetting(HomeBladeCentre)">Conditional</animation>
+			<animation effect="slide" end="-180,0" time="100" condition="!Skin.HasSetting(HomeBladeCentre) + [Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)]">Conditional</animation>
+			<!-- Settings Panel -->
+			<control type="group">
+				<visible>Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)</visible>
+				<visible>Skin.HasSetting(HomeBladeCentre)</visible>
+				<control type="image">
+					<description>Submenu Background Image</description>
+					<posx>798</posx>
+					<posy>0</posy>
+					<include>HomeSubMenuBlade</include>
+				</control>
+				<control type="image">
+					<visible>Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)</visible>
+					<animation type="Visible" condition="Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)">
+						<effect type="zoom" tween="back" start="698,0,100,720" end="0,0,798,720" time="800" delay="100"/>
+					</animation>
+					<include>SettingsCentreBladeBG</include>
+				</control>
+				<control type="group">
+					<visible>Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)</visible>
+					<animation type="Visible" condition="Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)">
+						<effect type="zoom" tween="back" center="851,0" start="0,100" end="100,100" time="800" delay="100"/>
+					</animation>
+					<control type="image">
+						<description>Submenu Background Image</description>
+						<include>SettingsCentreBlade</include>
+					</control>
+				</control>
+			</control>
+			<control type="group">
+				<visible>Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)</visible>
+				<visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+				<animation type="Visible" condition="Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)">
+					<effect type="zoom" tween="back" center="0,0" start="0,100" end="100,100" time="800" delay="100"/>
+				</animation>
+				<control type="image">
+					<description>Submenu Background Image</description>
+					<visible>Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)</visible>
+					<include>SettingTransSubBladeDims</include>
+					<include>HomeBladeSubTexture</include>
+				</control>
+				<control type="image">
+					<visible>Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)</visible>
+					<include>SettingTransCentreBladeBGDims</include>
+					<include>SettingsCentreBladeBG</include>
+				</control>
+				<control type="group">
+					<visible>Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)</visible>
+					<control type="image">
+						<description>Submenu Background Image</description>
+						<include>SettingTransCentreBladeDims</include>
+						<include>HomeBladeSubTexture</include>
+					</control>
+				</control>
+			</control>
+			<control type="image">
+				<description>Background Image Left Blade</description>
+				<visible>Skin.HasSetting(HomeBladeCentre)</visible>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>846</width>
+				<height>720</height>
+				<texture border="0,0,500,0">HomeBladeLeft.png</texture>
+				<include>HomeSlideLeft</include>
+			</control>
+			<control type="image">
+				<description>Background Image Left Blade</description>
+				<visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>846</width>
+				<height>720</height>
+				<texture border="0,0,500,0">HomeBladeLeft.png</texture>
+				<animation effect="slide" tween="cubic" start="-865,0" time="500" delay="90" condition="!Window.Previous(SettingsCategory.xml) + !Window.Previous(1001) + !Window.Previous(7) + !Window.Previous(34)">WindowOpen</animation>
+				<animation effect="slide" tween="circle" easing="inout" end="-865,0" delay="300" time="500" condition="!Window.Next(SettingsCategory.xml) + !Window.Next(1001) + !Window.Next(7) + !Window.Next(34)">WindowClose</animation>
+			</control>
+			<!-- Main Menu -->
+			<control type="wraplist" id="300">
+				<description>Home Main Menu</description>
+				<posx>0</posx>
+				<posy>20</posy>
+				<width>829</width>
+				<height>700</height>
+				<onup>300</onup>
+				<ondown>300</ondown>
+				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+				<onright>301</onright>
+				<focusposition>5</focusposition>
+				<scrolltime>200</scrolltime>
+				<include>HomeSlideLeft</include>
+				<visible allowhiddenfocus="true">Control.HasFocus(300)</visible>
+				<animation effect="fade" start="0" end="100" time="500">Visible</animation>
+				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+				<itemlayout width="600" height="60">
+					<control type="label">
+						<posx>802</posx>
+						<posy>10</posy>
+						<width>600</width>
+						<height>0</height>
+						<info>ListItem.Label</info>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>HomeScreenUnselectedItems</font>
+						<textcolor>HomeMain2</textcolor>
+						<shadowcolor>HomeShadow</shadowcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout width="600" height="140">
+					<control type="label">
+						<include>HomeMainMenuFOLabel2</include>
+					</control>
+				</focusedlayout>
+				<content>
+					<item id="6">
+						<description>Preferences Menu</description>
+						<label> $LOCALIZE[31955] </label>
+						<onclick>SetFocus(506)</onclick>
+					</item>
+					<item id="111">
+						<description>Quit Button</description>
+						<label> $LOCALIZE[31007] </label>
+						<onclick>Plex.ShutDown</onclick>
+						<visible>!Skin.HasSetting(HidePower) + !Skin.HasSetting(ShowSleep) + !Skin.HasSetting(ShowShutDown)</visible>
+					</item>
+					<item id="112">
+						<description>Sleep Button</description>
+						<label> $LOCALIZE[31960] </label>
+						<onclick>Plex.SleepSystem</onclick>
+						<visible>!Skin.HasSetting(HidePower) + Skin.HasSetting(ShowSleep) + !Skin.HasSetting(ShowShutDown)</visible>
+					</item>
+					<item id="113">
+						<description>Shut Down Button</description>
+						<label> $LOCALIZE[31961] </label>
+						<onclick>Plex.ShutDownSystem</onclick>
+						<visible>!Skin.HasSetting(HidePower) + !Skin.HasSetting(ShowSleep) + Skin.HasSetting(ShowShutDown)</visible>
+					</item>
+					<item id="13">
+						<description>Help Menu</description>
+						<label> $LOCALIZE[31954] </label>
+						<visible>!Skin.HasSetting(HideHelp)</visible>
+						<onclick>Plex.ActivateWindow(1,plex://localhost/system/help,return)</onclick>
+					</item>
+					<item id="11">
+						<description>Favorites Menu</description>
+						<label> $LOCALIZE[31063] </label>
+						<onclick>Plex.ActivateWindow(Favourites)</onclick>
+						<visible>!Skin.HasSetting(HideFavourites)</visible>
+					</item>
+					<item id="12">
+						<description>App Store Menu</description>
+						<label> $LOCALIZE[31952] </label>
+						<onclick>Plex.ActivateWindow(1,plex://localhost/system/appstore,return)</onclick>
+						<visible>!Skin.HasSetting(HideAppStore)</visible>
+					</item>
+					<item id="1">
+						<description>My Videos Button</description>
+						<label> $LOCALIZE[31001] </label>
+						<visible>!Skin.HasSetting(HideVideos)</visible>
+						<onclick>XBMC.ActivateWindow(24)</onclick>
+					</item>
+					<item id="9">
+						<description>My Movies Button</description>
+						<label> $LOCALIZE[31111] </label>
+						<onclick>XBMC.ActivateWindow(MyVideoLibrary,movietitles,return)</onclick>
+						<visible>false</visible>
+					</item>
+					<item id="8">
+						<description>My TV Shows Button</description>
+						<label> $LOCALIZE[31008] </label>
+						<onclick>XBMC.ActivateWindow(MyVideoLibrary,tvshowtitles,return)</onclick>
+						<visible>false</visible>
+					</item>
+					<item id="2">
+						<description>My Music Button</description>
+						<label> $LOCALIZE[31002] </label>
+						<visible>!Skin.HasSetting(HideMusic)</visible>
+						<onclick>XBMC.ActivateWindow(5)</onclick>
+					</item>
+					<item id="3">
+						<description>My Pics Button</description>
+						<label> $LOCALIZE[31003] </label>
+						<visible>!Skin.HasSetting(HidePictures)</visible>
+						<onclick>XBMC.ActivateWindow(2)</onclick>
+					</item>
+					<item id="4">
+						<description>My Programs Menu</description>
+						<label> $LOCALIZE[31004] </label>
+						<visible>!Skin.HasSetting(HidePrograms)</visible>
+						<onclick>XBMC.ActivateWindow(1)</onclick>
+					</item>
+					<item id="10">
+						<description>DVD Button</description>
+						<label>DVD</label>
+						<visible>System.HasMediadvd + !Skin.HasSetting(HideDVD)</visible>
+						<onclick>XBMC.PlayDVD</onclick>
+					</item>
+					<item id="5">
+						<description>My Weather Button</description>
+						<label> $LOCALIZE[31005] </label>
+						<onclick>XBMC.ActivateWindow(2600)</onclick>
+						<visible>!Skin.HasSetting(HideWeather)</visible>
+						<visible>System.HasNetwork</visible>
+					</item>
+				</content>
+			</control>
+			<control type="group">
+				<posy>349</posy>
+				<include>HomeSlideLeft</include>
+				<visible>Skin.HasSetting(HomeBladeCentre)</visible>
+				<control type="label">
+					<info>Container(300).ListItem(0).Label</info>
+					<include>HomeMainMenuFOLabel</include>
+					<include>HomeMainMenuOverFade</include>
+				</control>
+			</control>
+			<control type="group">
+				<posy>349</posy>
+				<visible>!Skin.HasSetting(HomeBladeCentre)</visible>
+				<animation effect="slide" tween="cubic" start="-865,0" time="500" delay="90" condition="!Window.Previous(SettingsCategory.xml) + !Window.Previous(1001) + !Window.Previous(7) + !Window.Previous(34)">WindowOpen</animation>
+				<animation effect="slide" tween="circle" easing="inout" end="-865,0" delay="300" time="500" condition="!Window.Next(SettingsCategory.xml) + !Window.Next(1001) + !Window.Next(7) + !Window.Next(34)">WindowClose</animation>
+				<animation effect="slide" tween="back" start="-440,0" end="-620,0" time="800" delay="100" condition="[Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)]">WindowClose</animation>
+				<control type="label">
+					<info>Container(300).ListItem(0).Label</info>
+					<include>HomeMainMenuFOLabel</include>
+					<include>HomeMainMenuOverFade</include>
+				</control>
+			</control>
+			<control type="group">
+				<include>HomeSlideLeft</include>
+				<control type="image">
+					<posx>582</posx>
+					<posy>0</posy>
+					<width>246</width>
+					<height>720</height>
+					<texture diffuse="HomeMenuDiffuse.png">HomeBladeLeftMenuOverlay.png</texture>
+				</control>
+			</control>
+		</control>
+		<!-- Home Widgets -->
+		<control type="group">
+			<description>Current Weather Summary</description>
+			<include>HomeWeatherSummaryPos</include>
 			<visible>Skin.HasSetting(ShowWeatherOnHome) + Weather.IsFetched</visible>
 			<include>HomeSlideRight</include>
-
-      <control type="image">
-        <description>Dialog Background</description>
-        <include>HomeWeatherSummaryBGDims</include>
-        <include>DialogBGTexture</include>
-        <colordiffuse>99eeeeee</colordiffuse>
-      </control>
-
-      <control type="group">
-				<posy>7</posy>
-
-  			<control type="label">
-  				<description>Weather Conditions</description>
-  				<posx>HomeWeatherTextWidth</posx>
-  				<width>HomeWeatherTextWidth</width>
-  				<align>right</align>
-  				<font>SmallTitleCapsFont</font>
-  				<label>$INFO[Weather.Conditions]</label>
-  			</control>
-
-  			<control type="label">
-  				<description>Weather Conditions</description>
-  				<posx>HomeWeatherTextWidth</posx>
-  				<posy>16</posy>
-  				<width>HomeWeatherTextWidth</width>
-  				<align>right</align>
-  				<label>$INFO[Weather.Temperature]</label>
-  			</control>
+			<control type="image">
+				<description>Dialog Background</description>
+				<include>HomeWeatherSummaryBGDims</include>
+				<include>DialogBGTexture</include>
+				<colordiffuse>99eeeeee</colordiffuse>
 			</control>
-
+			<control type="group">
+				<posy>7</posy>
+				<control type="label">
+					<description>Weather Conditions</description>
+					<posx>HomeWeatherTextWidth</posx>
+					<width>HomeWeatherTextWidth</width>
+					<align>right</align>
+					<font>SmallTitleCapsFont</font>
+					<label>$INFO[Weather.Conditions]</label>
+				</control>
+				<control type="label">
+					<description>Weather Conditions</description>
+					<posx>HomeWeatherTextWidth</posx>
+					<posy>16</posy>
+					<width>HomeWeatherTextWidth</width>
+					<align>right</align>
+					<label>$INFO[Weather.Temperature]</label>
+				</control>
+			</control>
 			<control type="image">
 				<description>Weather image</description>
 				<include>HomeWeatherSummaryImgDims</include>
@@ -2036,78 +1854,66 @@
 				<info>Weather.Conditions</info>
 			</control>
 		</control>
-		
-    <control type="group">
-      <description>RSS</description>
-      <posx>75</posx>
-      <posy>678</posy>
-      <visible>System.GetBool(LookAndFeel.EnableRSSFeeds) + System.HasNetwork</visible>
-      <animation type="WindowOpen">
-        <effect type="slide" start="0,50" time="700" delay="100" />
-        <effect type="fade" time="700" delay="500" />
-      </animation>
-      <animation type="WindowClose">
-        <effect type="slide" end="0,50" time="300" />
-        <effect type="fade" time="100" delay="100" />
-      </animation>
-
-      <control type="image">
-        <description>RSS Background</description>
-        <width>1253</width>
-        <height>43</height>
-        <texture border="30,30,0,0">HomeRSS.png</texture>
-      </control>
-
-      <control type="rss">
-        <description>Rss Feed</description>
-        <posx>30</posx>
-        <posy>10</posy>
-        <width>1210</width>
-        <font>RssFeedFont</font>
-        <urlset>1</urlset>
-        <textcolor>Highlighted</textcolor>
-        <headlinecolor>Focused</headlinecolor>
-        <titlecolor>Highlighted</titlecolor>
-        <animation effect="fade" time="700" delay="300">WindowOpen</animation>
-        <animation effect="fade" time="100">WindowClose</animation>
-      </control>
-
-      <control type="group">
-        <description>Fades for RSS text</description>
-        <posy>4</posy>
-
-        <control type="image">
-          <description>Left hand fade for RSS</description>
-          <posx>29</posx>
-          <width>40</width>
-          <height>40</height>
-          <texture>BlackGradient.png</texture>
-        </control>
-
-        <control type="image">
-          <description>Right hand fade for RSS</description>
-          <posx>1168</posx>
-          <width>40</width>
-          <height>40</height>
-          <texture flipx="true">BlackGradient.png</texture>
-        </control>
-      </control>
-    </control>
-
-<!-- Music Now Playing -->
-    <include>MusicNowPlayingIndicators</include>
-
-    <control type="group">
-      <posx>0</posx>
-      <posy>540</posy>
-      <visible>Player.HasAudio + !Skin.HasSetting(HomeAudioNowPlaying)</visible>
-      <include>HomeSlideLeft</include>
-
-      <include>MusicNowPlaying</include>
-    </control>
-
-    <include>Clock</include>
-
-  </controls>
+		<control type="group">
+			<description>RSS</description>
+			<posx>75</posx>
+			<posy>678</posy>
+			<visible>System.GetBool(LookAndFeel.EnableRSSFeeds) + System.HasNetwork</visible>
+			<animation type="WindowOpen">
+				<effect type="slide" start="0,50" time="700" delay="100"/>
+				<effect type="fade" time="700" delay="500"/>
+			</animation>
+			<animation type="WindowClose">
+				<effect type="slide" end="0,50" time="300"/>
+				<effect type="fade" time="100" delay="100"/>
+			</animation>
+			<control type="image">
+				<description>RSS Background</description>
+				<width>1253</width>
+				<height>43</height>
+				<texture border="30,30,0,0">HomeRSS.png</texture>
+			</control>
+			<control type="rss">
+				<description>Rss Feed</description>
+				<posx>30</posx>
+				<posy>10</posy>
+				<width>1210</width>
+				<font>RssFeedFont</font>
+				<urlset>1</urlset>
+				<textcolor>Highlighted</textcolor>
+				<headlinecolor>Focused</headlinecolor>
+				<titlecolor>Highlighted</titlecolor>
+				<animation effect="fade" time="700" delay="300">WindowOpen</animation>
+				<animation effect="fade" time="100">WindowClose</animation>
+			</control>
+			<control type="group">
+				<description>Fades for RSS text</description>
+				<posy>4</posy>
+				<control type="image">
+					<description>Left hand fade for RSS</description>
+					<posx>29</posx>
+					<width>40</width>
+					<height>40</height>
+					<texture>BlackGradient.png</texture>
+				</control>
+				<control type="image">
+					<description>Right hand fade for RSS</description>
+					<posx>1168</posx>
+					<width>40</width>
+					<height>40</height>
+					<texture flipx="true">BlackGradient.png</texture>
+				</control>
+			</control>
+		</control>
+		<!-- Music Now Playing -->
+		<include>MusicNowPlayingIndicators</include>
+		<control type="group">
+			<posx>0</posx>
+			<posy>540</posy>
+			<visible>Player.HasAudio + !Skin.HasSetting(HomeAudioNowPlaying)</visible>
+			<include>HomeSlideLeft</include>
+			<include>MusicNowPlaying</include>
+		</control>
+		<include>Clock</include>
+	</controls>
 </window>
-

@@ -1054,7 +1054,7 @@
 			</control>
 			<control type="group">
 				<description>System Background Image</description>
-				<visible>Window.IsVisible(MyScripts) | Window.IsVisible(FileManager) | Window.IsVisible(SettingsCategory.xml) | Window.IsVisible(1001) | Window.IsVisible(7) | Window.IsVisible(34) | Window.IsVisible(130)</visible>
+				<visible>Window.IsVisible(MyScripts) | Window.IsVisible(FileManager) | Window.IsVisible(SettingsCategory.xml) | Window.IsVisible(1001) | Window.IsVisible(1002) | Window.IsVisible(7) | Window.IsVisible(34) | Window.IsVisible(130)</visible>
 				<control type="group">
 					<include>SystemBGVisible</include>
 					<control type="image">
@@ -1092,6 +1092,12 @@
 				</control>
 				<include>CustomPowerBackground</include>
 			</control>
+		</control>
+		<control type="image">
+			<visible>Skin.String(Developer_Background) + Skin.HasSetting(Developer)</visible>
+			<width>1280</width>
+			<height>720</height>
+			<texture>$INFO[Skin.String(Developer_Background)]</texture>
 		</control>
 	</include>
 	<include name="CustomBGMultiImage">
