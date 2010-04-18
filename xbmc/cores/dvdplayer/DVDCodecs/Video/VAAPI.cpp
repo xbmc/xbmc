@@ -45,6 +45,7 @@ do { \
 } while(0);
 
 
+using namespace std;
 using namespace boost;
 using namespace VAAPI;
 
@@ -222,27 +223,34 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 
   CLog::Log(LOGDEBUG, "VAAPI - attempting to open codec %d with profile %d at level %d with %d reference frames", avctx->codec_id, avctx->profile, avctx->level, avctx->refs);
 
-
+  vector<VAProfile> accepted;
   switch (avctx->codec_id) {
     case CODEC_ID_MPEG2VIDEO:
-      profile = VAProfileMPEG2Main;           break;
+      accepted.push_back(VAProfileMPEG2Main);
+      break;
     case CODEC_ID_MPEG4:
     case CODEC_ID_H263:
-      profile = VAProfileMPEG4AdvancedSimple; break;
+      accepted.push_back(VAProfileMPEG4AdvancedSimple);
+      break;
     case CODEC_ID_H264:
     {
-      if     (avctx->profile == FF_PROFILE_H264_BASELINE)
-        profile = VAProfileH264Baseline;
-      else if(avctx->profile == FF_PROFILE_H264_MAIN)
-        profile = VAProfileH264Main;
+      if  (avctx->profile == FF_PROFILE_H264_BASELINE)
+        accepted.push_back(VAProfileH264Baseline);
       else
-        profile = VAProfileH264High;
+      {
+        if(avctx->profile == FF_PROFILE_H264_MAIN)
+          accepted.push_back(VAProfileH264Main); 
+        // fallback to high profile if main profile is not available
+        accepted.push_back(VAProfileH264High);
+      }
       break;
     }
     case CODEC_ID_WMV3:
-      profile = VAProfileVC1Main;             break;
+      accepted.push_back(VAProfileVC1Main);
+      break;
     case CODEC_ID_VC1:
-      profile = VAProfileVC1Advanced;         break;
+      accepted.push_back(VAProfileVC1Advanced);
+      break;
     default:
       return false;
   }
@@ -274,6 +282,18 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 
   for(int i = 0; i < num_profiles; i++)
     CLog::Log(LOGDEBUG, "VAAPI - profile %d", profiles[i]);
+
+  vector<VAProfile>::iterator selected = find_first_of(accepted.begin()
+                                                     , accepted.end()
+                                                     , profiles.get()
+                                                     , profiles.get()+num_profiles);
+  if(selected == accepted.end())
+  {
+    CLog::Log(LOGDEBUG, "VAAPI - unable to find a suitable profile");
+    return false;
+  }
+
+  profile = *selected;
 
   VAConfigAttrib attrib;
   attrib.type = VAConfigAttribRTFormat;
