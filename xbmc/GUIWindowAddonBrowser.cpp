@@ -50,6 +50,7 @@ using namespace std;
 CGUIWindowAddonBrowser::CGUIWindowAddonBrowser(void)
 : CGUIMediaWindow(WINDOW_ADDON_BROWSER, "AddonBrowser.xml")
 {
+  m_thumbLoader.SetNumOfWorkers(1);
 }
 
 CGUIWindowAddonBrowser::~CGUIWindowAddonBrowser()
@@ -60,6 +61,12 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
+    case GUI_MSG_WINDOW_DEINIT:
+    {
+      if (m_thumbLoader.IsLoading())
+        m_thumbLoader.StopThread();
+    }
+    break;
   case GUI_MSG_WINDOW_INIT:
     {
       m_vecItems->m_strPath = "";
@@ -361,3 +368,17 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
 
   return result;
 }
+
+bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)
+{
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
+  
+  if (!CGUIMediaWindow::Update(strDirectory))
+    return false;
+  
+  m_thumbLoader.Load(*m_vecItems);
+  
+  return true;
+}
+
