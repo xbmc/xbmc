@@ -33,11 +33,9 @@
 
 using namespace XFILE;
 
-CTextureCache::CDDSJob::CDDSJob(const CStdString &url, const CStdString &original)
+CTextureCache::CDDSJob::CDDSJob(const CStdString &original)
 {
-  m_url = url;
   m_original = original;
-  m_dds = CUtil::AddFileToFolder("dds", CUtil::ReplaceExtension(CTextureCache::GetCacheFile(url), ".dds"));
 }
 
 bool CTextureCache::CDDSJob::operator==(const CJob* job) const
@@ -54,13 +52,14 @@ bool CTextureCache::CDDSJob::operator==(const CJob* job) const
 bool CTextureCache::CDDSJob::DoWork()
 {
   CTexture texture;
-  if (texture.LoadFromFile(CTextureCache::GetCachedPath(m_original)))
+  if (texture.LoadFromFile(m_original))
   { // convert to DDS
     CDDSImage dds;
     CLog::Log(LOGDEBUG, "Creating DDS version of: %s", m_original.c_str()); 
     if (dds.Compress(texture.GetWidth(), texture.GetHeight(), texture.GetPitch(), texture.GetPixels(), 40))
     {
-      dds.WriteFile(CTextureCache::GetCachedPath(m_dds));
+      CStdString ddsFile = CUtil::ReplaceExtension(m_original, ".dds");
+      dds.WriteFile(ddsFile);
       return true;
     }
   }
@@ -95,36 +94,43 @@ void CTextureCache::Deinitialize()
   m_database.Close();
 }
 
-CStdString CTextureCache::CheckAndCacheImage(const CStdString &url)
+CStdString CTextureCache::GetCachedImage(const CStdString &url)
 {
   if (CUtil::GetExtension(url).Equals(".dds") || 0 == strncmp(url.c_str(), "special://skin/", 15))
     return url; // already cached
 
   // lookup the item in the database
-  CStdString cacheFile, ddsFile;
-  if (GetCachedTexture(url, cacheFile, ddsFile))
+  CStdString cacheFile;
+  if (GetCachedTexture(url, cacheFile))
+    return GetCachedPath(cacheFile);
+  return "";
+}
+
+CStdString CTextureCache::CheckAndCacheImage(const CStdString &url)
+{
+  CStdString path(GetCachedImage(url));
+  if (!path.IsEmpty())
   {
-    CStdString path = GetCachedPath(ddsFile);
-    if (!ddsFile.IsEmpty() && ddsFile != "failed" && CFile::Exists(path))
-      return path;
-    path = GetCachedPath(cacheFile);
-    if (CFile::Exists(path))
-    {
-      if (ddsFile != "failed")
-        AddJob(new CDDSJob(url, cacheFile));
-      return path;
+    if (0 != strncmp(url.c_str(), "special://skin/", 15)) // TODO: should skin images be .dds'd (currently they're not necessarily writeable)
+    { // check for dds version
+      CStdString ddsPath = CUtil::ReplaceExtension(path, ".dds");
+      if (CFile::Exists(ddsPath))
+        return ddsPath;
+      if (g_advancedSettings.m_useDDSFanart)
+        AddJob(new CDDSJob(path));
     }
+    return path;
   }
 
   // Cache the texture
-  CStdString originalFile = CUtil::AddFileToFolder("original", GetCacheFile(url));
+  CStdString originalFile = GetCacheFile(url);
   CStdString originalURL = GetCachedPath(originalFile);
 
   CStdString hash = GetImageHash(url);
   if (!hash.IsEmpty() && CFile::Cache(url, originalURL))
   {
-    AddCachedTexture(url, originalFile, "", hash);
-    AddJob(new CDDSJob(url, originalFile));
+    AddCachedTexture(url, originalFile, hash);
+    AddJob(new CDDSJob(originalFile));
     return originalURL;
   }
 
@@ -133,34 +139,34 @@ CStdString CTextureCache::CheckAndCacheImage(const CStdString &url)
 
 void CTextureCache::ClearCachedImage(const CStdString &url)
 {
-  CStdString cachedFile, ddsFile;
-  if (ClearCachedTexture(url, cachedFile, ddsFile))
+  CStdString cachedFile;
+  if (ClearCachedTexture(url, cachedFile))
   {
-    CStdString path = GetCachedPath(ddsFile);
-    if (!ddsFile.IsEmpty() && ddsFile != "failed" && CFile::Exists(path))
+    CStdString path = GetCachedPath(cachedFile);
+    if (CFile::Exists(path))
       CFile::Delete(path);
-    path = GetCachedPath(cachedFile);
+    path = CUtil::ReplaceExtension(path, ".dds");
     if (CFile::Exists(path))
       CFile::Delete(path);
   }
 }
 
-bool CTextureCache::GetCachedTexture(const CStdString &url, CStdString &cachedURL, CStdString &ddsURL)
+bool CTextureCache::GetCachedTexture(const CStdString &url, CStdString &cachedURL)
 {
   CSingleLock lock(m_databaseSection);
-  return m_database.GetCachedTexture(url, cachedURL, ddsURL);
+  return m_database.GetCachedTexture(url, cachedURL);
 }
 
-bool CTextureCache::AddCachedTexture(const CStdString &url, const CStdString &cachedURL, const CStdString &ddsURL, const CStdString &hash)
+bool CTextureCache::AddCachedTexture(const CStdString &url, const CStdString &cachedURL, const CStdString &hash)
 {
   CSingleLock lock(m_databaseSection);
-  return m_database.AddCachedTexture(url, cachedURL, ddsURL, hash);
+  return m_database.AddCachedTexture(url, cachedURL, hash);
 }
 
-bool CTextureCache::ClearCachedTexture(const CStdString &url, CStdString &cachedURL, CStdString &ddsURL)
+bool CTextureCache::ClearCachedTexture(const CStdString &url, CStdString &cachedURL)
 {
   CSingleLock lock(m_databaseSection);
-  return m_database.ClearCachedTexture(url, cachedURL, ddsURL);
+  return m_database.ClearCachedTexture(url, cachedURL);
 }
 
 CStdString CTextureCache::GetImageHash(const CStdString &url) const
@@ -187,10 +193,5 @@ CStdString CTextureCache::GetCachedPath(const CStdString &file)
 
 void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  CDDSJob *ddsJob = (CDDSJob *)job;
-  if (success)
-    AddCachedTexture(ddsJob->m_url, ddsJob->m_original, ddsJob->m_dds, "");
-  else
-    AddCachedTexture(ddsJob->m_url, ddsJob->m_original, "failed", "");
   return CJobQueue::OnJobComplete(jobID, success, job);
 }

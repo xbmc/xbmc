@@ -30,9 +30,9 @@ public:
   virtual ~CTextureDatabase();
   virtual bool Open();
 
-  bool GetCachedTexture(const CStdString &originalURL, CStdString &cacheFile, CStdString &ddsFile);
-  bool AddCachedTexture(const CStdString &originalURL, const CStdString &cachedFile, const CStdString &ddsFile, const CStdString &imageHash = "");
-  bool ClearCachedTexture(const CStdString &originalURL, CStdString &cacheFile, CStdString &ddsFile);
+  bool GetCachedTexture(const CStdString &originalURL, CStdString &cacheFile);
+  bool AddCachedTexture(const CStdString &originalURL, const CStdString &cachedFile, const CStdString &imageHash = "");
+  bool ClearCachedTexture(const CStdString &originalURL, CStdString &cacheFile);
 
 protected:
   /*! \brief retrieve a hash for the given url
@@ -44,6 +44,6 @@ protected:
 
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 3; };
+  virtual int GetMinVersion() const { return 4; };
   const char *GetDefaultDBName() const { return "Textures"; };
 };

@@ -33,7 +33,7 @@
  both as originals (direct copies) and as .dds textures for fast loading. Images
  may be periodically checked for updates and may be purged from the cache if
  unused for a set period of time.
- 
+
  */
 class CTextureCache : public CJobQueue
 {
@@ -61,14 +61,20 @@ public:
 
    \param image url of the image to cache
    \return cached url of this image
-   \sa CacheImageToDB
+   \sa GetCachedImage
    */
   CStdString CheckAndCacheImage(const CStdString &image);
 
+  /*! \brief retrieve the cached version of the given image (if it exists)
+   \param image url of the image
+   \return cached url of this image, empty if none exists
+   \sa ClearCachedImage
+   */
+  CStdString GetCachedImage(const CStdString &image);
+
   /*! \brief clear the cached version of the given image
-   \param image url of the image to cache
-   \return cached url of this image
-   \sa CacheImageToDB
+   \param image url of the image
+   \sa GetCachedImage
    */
   void ClearCachedImage(const CStdString &image);
 
@@ -90,15 +96,13 @@ private:
   class CDDSJob : public CJob
   {
   public:
-    CDDSJob(const CStdString &url, const CStdString &original);
-    
-    virtual const char* GetType() const { return "ddscache"; };
+    CDDSJob(const CStdString &original);
+
+    virtual const char* GetType() const { return "ddscompress"; };
     virtual bool operator==(const CJob *job) const;
     virtual bool DoWork();
-    
-    CStdString m_url;
+
     CStdString m_original;
-    CStdString m_dds;
   };
 
   // private construction, and no assignements; use the provided singleton methods
@@ -111,29 +115,26 @@ private:
    Thread-safe wrapper of CTextureDatabase::AddCachedTexture
    \param image url of the original image
    \param cacheFile url of the cached image
-   \param ddsFile url of the dds version of the cached image
    \param hash hash of the original image
    \return true if we successfully added to the database, false otherwise.
    */
-  bool AddCachedTexture(const CStdString &image, const CStdString &cacheFile, const CStdString &ddsFile, const CStdString &hash);
+  bool AddCachedTexture(const CStdString &image, const CStdString &cacheFile, const CStdString &hash);
 
   /*! \brief Get an image from the database
    Thread-safe wrapper of CTextureDatabase::GetCachedTexture
    \param image url of the original image
    \param cacheFile [out] url of the cached original (if available)
-   \param ddsFile [out] url of the dds original (if available)
    \return true if we have a cached version of this image, false otherwise.
    */
-  bool GetCachedTexture(const CStdString &url, CStdString &cacheFile, CStdString &ddsFile);
+  bool GetCachedTexture(const CStdString &url, CStdString &cacheFile);
 
   /*! \brief Clear an image from the database
    Thread-safe wrapper of CTextureDatabase::ClearCachedTexture
    \param image url of the original image
    \param cacheFile [out] url of the cached original (if available)
-   \param ddsFile [out] url of the dds original (if available)
    \return true if we had a cached version of this image, false otherwise.
    */
-  bool ClearCachedTexture(const CStdString &url, CStdString &cacheFile, CStdString &ddsFile);
+  bool ClearCachedTexture(const CStdString &url, CStdString &cacheFile);
 
   /*! \brief retrieve a hash for the given image
    Combines the size, ctime and mtime of the image file into a "unique" hash
