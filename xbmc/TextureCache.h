@@ -111,6 +111,12 @@ private:
   CTextureCache const& operator=(CTextureCache const&);
   virtual ~CTextureCache();
 
+  /*! \brief Check if the given image is a cached image
+   \param image url of the image
+   \return true if this is a cached image, false otherwise.
+   */
+  bool IsCachedImage(const CStdString &image) const;
+
   /*! \brief Add this image to the database
    Thread-safe wrapper of CTextureDatabase::AddCachedTexture
    \param image url of the original image
