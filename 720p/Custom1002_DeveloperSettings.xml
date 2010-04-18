@@ -89,229 +89,150 @@
 					<include>GeneralSkinOption</include>
 				</control>
 				<control type="button" id="213">
-					<description>Clear Custom Background</description>
+					<description>Dim Background</description>
+					<label>Dim Background</label>
+					<onclick>Skin.ToggleSetting(bg_brightness)</onclick>
+					<include>GeneralSkinOption</include>
+				</control>
+				
+				<control type="radiobutton" id="214">
+					<description>Dim Background</description>
+					<visible>Skin.HasSetting(bg_brightness)</visible>
+					<selected>Skin.HasSetting(Background_0)</selected>
+					<label>0%</label>
+					<include>opacity_reset</include>
+					<onclick>Skin.ToggleSetting(Background_0)</onclick>
+					<onclick>Skin.ToggleSetting(Background_20)</onclick>
+					<onclick>XBMC.ReloadSkin()</onclick>
+					<textoffsetx>80</textoffsetx>
+					<include>GeneralSkinOption</include>
+				</control>
+				<control type="radiobutton" id="215">
+					<description>Dim Background</description>
+					<visible>Skin.HasSetting(bg_brightness)</visible>
+					<selected>Skin.HasSetting(Background_10)</selected>
+					<label>10%</label>
+					<include>opacity_reset</include>
+					<onclick>Skin.ToggleSetting(Background_10)</onclick>
+					<onclick>Skin.ToggleSetting(Background_20)</onclick>
+					<onclick>XBMC.ReloadSkin()</onclick>
+					<textoffsetx>80</textoffsetx>
+					<include>GeneralSkinOption</include>
+				</control>
+				<control type="radiobutton" id="216">
+					<description>Dim Background</description>
+					<visible>Skin.HasSetting(bg_brightness)</visible>
+					<selected>!Skin.HasSetting(Background_20)</selected>
+					<label>20%</label>
+					<onclick>XBMC.ReloadSkin()</onclick>
+					<include>opacity_reset</include>
+					<textoffsetx>80</textoffsetx>
+					<include>GeneralSkinOption</include>
+				</control>
+				<control type="radiobutton" id="217">
+					<description>Dim Background</description>
+					<visible>Skin.HasSetting(bg_brightness)</visible>
+					<selected>Skin.HasSetting(Background_30)</selected>
+					<label>30%</label>
+					<include>opacity_reset</include>
+					<onclick>Skin.ToggleSetting(Background_30)</onclick>
+					<onclick>Skin.ToggleSetting(Background_20)</onclick>
+					<onclick>XBMC.ReloadSkin()</onclick>
+					<textoffsetx>80</textoffsetx>
+					<include>GeneralSkinOption</include>
+				</control>
+				<control type="radiobutton" id="218">
+					<description>Dim Background</description>
+					<visible>Skin.HasSetting(bg_brightness)</visible>
+					<selected>Skin.HasSetting(Background_40)</selected>
+					<label>40%</label>
+					<include>opacity_reset</include>
+					<onclick>Skin.ToggleSetting(Background_40)</onclick>
+					<onclick>Skin.ToggleSetting(Background_20)</onclick>
+					<onclick>XBMC.ReloadSkin()</onclick>
+					<textoffsetx>80</textoffsetx>
+					<include>GeneralSkinOption</include>
+				</control>
+				<control type="radiobutton" id="219">
+					<description>Dim Background</description>
+					<visible>Skin.HasSetting(bg_brightness)</visible>
+					<selected>Skin.HasSetting(Background_50)</selected>
+					<label>50%</label>
+					<include>opacity_reset</include>
+					<onclick>Skin.ToggleSetting(Background_50)</onclick>
+					<onclick>Skin.ToggleSetting(Background_20)</onclick>
+					<onclick>XBMC.ReloadSkin()</onclick>
+					<textoffsetx>80</textoffsetx>
+					<include>GeneralSkinOption</include>
+				</control>
+				<control type="radiobutton" id="220">
+					<description>Dim Background</description>
+					<visible>Skin.HasSetting(bg_brightness)</visible>
+					<selected>Skin.HasSetting(Background_60)</selected>
+					<label>60%</label>
+					<include>opacity_reset</include>
+					<onclick>Skin.ToggleSetting(Background_60)</onclick>
+					<onclick>Skin.ToggleSetting(Background_20)</onclick>
+					<onclick>XBMC.ReloadSkin()</onclick>
+					<textoffsetx>80</textoffsetx>
+					<include>GeneralSkinOption</include>
+				</control>
+				<control type="radiobutton" id="221">
+					<description>Dim Background</description>
+					<visible>Skin.HasSetting(bg_brightness)</visible>
+					<selected>Skin.HasSetting(Background_70)</selected>
+					<label>70%</label>
+					<include>opacity_reset</include>
+					<onclick>Skin.ToggleSetting(Background_70)</onclick>
+					<onclick>Skin.ToggleSetting(Background_20)</onclick>
+					<onclick>XBMC.ReloadSkin()</onclick>
+					<textoffsetx>80</textoffsetx>
+					<include>GeneralSkinOption</include>
+				</control>
+				<control type="radiobutton" id="222">
+					<description>Dim Background</description>
+					<visible>Skin.HasSetting(bg_brightness)</visible>
+					<selected>Skin.HasSetting(Background_80)</selected>
+					<label>80%</label>
+					<include>opacity_reset</include>
+					<onclick>Skin.ToggleSetting(Background_80)</onclick>
+					<onclick>Skin.ToggleSetting(Background_20)</onclick>
+					<onclick>XBMC.ReloadSkin()</onclick>
+					<textoffsetx>80</textoffsetx>
+					<include>GeneralSkinOption</include>
+				</control>
+				<control type="radiobutton" id="223">
+					<description>Dim Background</description>
+					<visible>Skin.HasSetting(bg_brightness)</visible>
+					<selected>Skin.HasSetting(Background_90)</selected>
+					<label>90%</label>
+					<include>opacity_reset</include>
+					<onclick>Skin.ToggleSetting(Background_90)</onclick>
+					<onclick>Skin.ToggleSetting(Background_20)</onclick>
+					<onclick>XBMC.ReloadSkin()</onclick>
+					<textoffsetx>80</textoffsetx>
+					<include>GeneralSkinOption</include>
+				</control>
+				<control type="radiobutton" id="224">
+					<description>Dim Background</description>
+					<visible>Skin.HasSetting(bg_brightness)</visible>
+					<selected>Skin.HasSetting(Background_100)</selected>
+					<label>100%</label>
+					<include>opacity_reset</include>
+					<onclick>Skin.ToggleSetting(Background_100)</onclick>
+					<onclick>Skin.ToggleSetting(Background_20)</onclick>
+					<onclick>XBMC.ReloadSkin()</onclick>
+					<textoffsetx>80</textoffsetx>
+					<include>GeneralSkinOption</include>
+				</control>
+				
+				
+				<control type="button" id="225">
+					<description>Refresh</description>
 					<label>Refresh</label>
 					<onclick>XBMC.ReloadSkin()</onclick>
 					<include>GeneralSkinOption</include>
 				</control>
-			</control>
-			<!-- Backgrounds Options -->
-			<control type="grouplist" id="203">
-				<onup>1000</onup>
-				<pagecontrol>61</pagecontrol>
-				<visible allowhiddenfocus="false">Container(101).HasFocus(8) | ControlGroup(203).HasFocus()</visible>
-				<include>CustomSettingsList</include>
-				<control type="togglebutton" id="301">
-					<description>Custom Videos BG image</description>
-					<label>$LOCALIZE[20141] $LOCALIZE[3] $LOCALIZE[31623] $LOCALIZE[31657]</label>
-					<altlabel>$LOCALIZE[31659] $LOCALIZE[3] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
-					<onclick>Skin.SetImage(CustomVideosBG)</onclick>
-					<altclick>Skin.Reset(CustomVideosBG)</altclick>
-					<usealttexture>Skin.String(CustomVideosBG)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="302">
-					<description>Custom Videos BG Images Folder</description>
-					<onclick>Skin.SetPath(CustomVideosBGFolder)</onclick>
-					<onclick>Skin.Reset(CustomVideosBG)</onclick>
-					<altclick>Skin.Reset(CustomVideosBGFolder)</altclick>
-					<label>$LOCALIZE[20141] $LOCALIZE[3] $LOCALIZE[31623] $LOCALIZE[31658]</label>
-					<altlabel>$LOCALIZE[192] $LOCALIZE[3] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
-					<usealttexture>Skin.String(CustomVideosBGFolder)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="303">
-					<description>Custom Movies BG image</description>
-					<label>$LOCALIZE[20141] $LOCALIZE[342] $LOCALIZE[31623] $LOCALIZE[31657]</label>
-					<altlabel>$LOCALIZE[31659] $LOCALIZE[342] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
-					<onclick>Skin.SetImage(CustomMoviesBG)</onclick>
-					<altclick>Skin.Reset(CustomMoviesBG)</altclick>
-					<usealttexture>Skin.String(CustomMoviesBG)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="304">
-					<description>Custom Movies BG Images Folder</description>
-					<onclick>Skin.SetPath(CustomMoviesBGFolder)</onclick>
-					<onclick>Skin.Reset(CustomMoviesBG)</onclick>
-					<altclick>Skin.Reset(CustomMoviesBGFolder)</altclick>
-					<label>$LOCALIZE[20141] $LOCALIZE[342] $LOCALIZE[31623] $LOCALIZE[31658]</label>
-					<altlabel>$LOCALIZE[192] $LOCALIZE[342] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
-					<usealttexture>Skin.String(CustomMoviesBGFolder)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="305">
-					<description>Custom TV Shows BG image</description>
-					<label>$LOCALIZE[20141] $LOCALIZE[20343] $LOCALIZE[31623] $LOCALIZE[31657]</label>
-					<altlabel>$LOCALIZE[31659] $LOCALIZE[20343] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
-					<onclick>Skin.SetImage(CustomTVShowsBG)</onclick>
-					<altclick>Skin.Reset(CustomTVShowsBG)</altclick>
-					<usealttexture>Skin.String(CustomTVShowsBG)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="306">
-					<description>Custom TV Shows BG Images Folder</description>
-					<onclick>Skin.SetPath(CustomTVShowsBGFolder)</onclick>
-					<onclick>Skin.Reset(CustomTVShowsBG)</onclick>
-					<altclick>Skin.Reset(CustomTVShowsBGFolder)</altclick>
-					<label>$LOCALIZE[20141] $LOCALIZE[20343] $LOCALIZE[31623] $LOCALIZE[31658]</label>
-					<altlabel>$LOCALIZE[192] $LOCALIZE[20343] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
-					<usealttexture>Skin.String(CustomTVShowsBGFolder)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="307">
-					<description>Custom Music BG image</description>
-					<label>$LOCALIZE[20141] $LOCALIZE[2] $LOCALIZE[31623] $LOCALIZE[31657]</label>
-					<altlabel>$LOCALIZE[31659] $LOCALIZE[2] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
-					<onclick>Skin.SetImage(CustomMusicBG)</onclick>
-					<altclick>Skin.Reset(CustomMusicBG)</altclick>
-					<usealttexture>Skin.String(CustomMusicBG)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="308">
-					<description>Custom Music BG Images Folder</description>
-					<onclick>Skin.SetPath(CustomMusicBGFolder)</onclick>
-					<onclick>Skin.Reset(CustomMusicBG)</onclick>
-					<altclick>Skin.Reset(CustomMusicBGFolder)</altclick>
-					<label>$LOCALIZE[20141] $LOCALIZE[2] $LOCALIZE[31623] $LOCALIZE[31658]</label>
-					<altlabel>$LOCALIZE[192] $LOCALIZE[2] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
-					<usealttexture>Skin.String(CustomMusicBGFolder)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="309">
-					<description>Custom Pictures BG image</description>
-					<label>$LOCALIZE[20141] $LOCALIZE[1] $LOCALIZE[31623] $LOCALIZE[31657]</label>
-					<altlabel>$LOCALIZE[31659] $LOCALIZE[1] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
-					<onclick>Skin.SetImage(CustomPicturesBG)</onclick>
-					<altclick>Skin.Reset(CustomPicturesBG)</altclick>
-					<usealttexture>Skin.String(CustomPicturesBG)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="310">
-					<description>Custom Pictures BG Images Folder</description>
-					<onclick>Skin.SetPath(CustomPicturesBGFolder)</onclick>
-					<onclick>Skin.Reset(CustomPicturesBG)</onclick>
-					<altclick>Skin.Reset(CustomPicturesBGFolder)</altclick>
-					<label>$LOCALIZE[20141] $LOCALIZE[1] $LOCALIZE[31623] $LOCALIZE[31658]</label>
-					<altlabel>$LOCALIZE[192] $LOCALIZE[1] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
-					<usealttexture>Skin.String(CustomPicturesBGFolder)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="311">
-					<description>Custom Programs BG image</description>
-					<label>$LOCALIZE[20141] $LOCALIZE[0] $LOCALIZE[31623] $LOCALIZE[31657]</label>
-					<altlabel>$LOCALIZE[31659] $LOCALIZE[0] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
-					<onclick>Skin.SetImage(CustomProgramsBG)</onclick>
-					<altclick>Skin.Reset(CustomProgramsBG)</altclick>
-					<usealttexture>Skin.String(CustomProgramsBG)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="312">
-					<description>Custom Programs BG Images Folder</description>
-					<onclick>Skin.SetPath(CustomProgramsBGFolder)</onclick>
-					<onclick>Skin.Reset(CustomProgramsBG)</onclick>
-					<altclick>Skin.Reset(CustomProgramsBGFolder)</altclick>
-					<label>$LOCALIZE[20141] $LOCALIZE[0] $LOCALIZE[31623] $LOCALIZE[31658]</label>
-					<altlabel>$LOCALIZE[192] $LOCALIZE[0] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
-					<usealttexture>Skin.String(CustomProgramsBGFolder)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="313">
-					<description>Custom DVD BG image</description>
-					<label>$LOCALIZE[20141] $LOCALIZE[446] $LOCALIZE[31623] $LOCALIZE[31657]</label>
-					<altlabel>$LOCALIZE[31659] $LOCALIZE[446] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
-					<onclick>Skin.SetImage(CustomDVDBG)</onclick>
-					<altclick>Skin.Reset(CustomDVDBG)</altclick>
-					<usealttexture>Skin.String(CustomDVDBG)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="314">
-					<description>Custom DVD BG Images Folder</description>
-					<onclick>Skin.SetPath(CustomDVDBGFolder)</onclick>
-					<onclick>Skin.Reset(CustomDVDBG)</onclick>
-					<altclick>Skin.Reset(CustomDVDBGFolder)</altclick>
-					<label>$LOCALIZE[20141] $LOCALIZE[446] $LOCALIZE[31623] $LOCALIZE[31658]</label>
-					<altlabel>$LOCALIZE[192] $LOCALIZE[446] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
-					<usealttexture>Skin.String(CustomDVDBGFolder)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="315">
-					<description>Custom Weather BG image</description>
-					<label>$LOCALIZE[20141] $LOCALIZE[8] $LOCALIZE[31623] $LOCALIZE[31657]</label>
-					<altlabel>$LOCALIZE[31659] $LOCALIZE[8] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
-					<onclick>Skin.SetImage(CustomWeatherBG)</onclick>
-					<altclick>Skin.Reset(CustomWeatherBG)</altclick>
-					<usealttexture>Skin.String(CustomWeatherBG)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="316">
-					<description>Custom Weather BG Images Folder</description>
-					<onclick>Skin.SetPath(CustomWeatherBGFolder)</onclick>
-					<onclick>Skin.Reset(CustomWeatherBG)</onclick>
-					<altclick>Skin.Reset(CustomWeatherBGFolder)</altclick>
-					<label>$LOCALIZE[20141] $LOCALIZE[8] $LOCALIZE[31623] $LOCALIZE[31658]</label>
-					<altlabel>$LOCALIZE[192] $LOCALIZE[8] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
-					<usealttexture>Skin.String(CustomWeatherBGFolder)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="317">
-					<description>Custom System BG image</description>
-					<label>$LOCALIZE[20141] $LOCALIZE[31955] $LOCALIZE[31623] $LOCALIZE[31657]</label>
-					<altlabel>$LOCALIZE[31659] $LOCALIZE[31955] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
-					<onclick>Skin.SetImage(CustomSystemBG)</onclick>
-					<altclick>Skin.Reset(CustomSystemBG)</altclick>
-					<usealttexture>Skin.String(CustomSystemBG)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="318">
-					<description>Custom System BG Images Folder</description>
-					<onclick>Skin.SetPath(CustomSystemBGFolder)</onclick>
-					<onclick>Skin.Reset(CustomSystemBG)</onclick>
-					<altclick>Skin.Reset(CustomSystemBGFolder)</altclick>
-					<label>$LOCALIZE[20141] $LOCALIZE[31955] $LOCALIZE[31623] $LOCALIZE[31658]</label>
-					<altlabel>$LOCALIZE[192] $LOCALIZE[31955] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
-					<usealttexture>Skin.String(CustomSystemBGFolder)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="319">
-					<description>Custom Power BG image</description>
-					<label>$LOCALIZE[20141] $LOCALIZE[31007] $LOCALIZE[31623] $LOCALIZE[31657]</label>
-					<altlabel>$LOCALIZE[31659] $LOCALIZE[31007] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
-					<onclick>Skin.SetImage(CustomPowerBG)</onclick>
-					<altclick>Skin.Reset(CustomPowerBG)</altclick>
-					<usealttexture>Skin.String(CustomPowerBG)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="320">
-					<description>Custom Power BG Images Folder</description>
-					<onclick>Skin.SetPath(CustomPowerBGFolder)</onclick>
-					<onclick>Skin.Reset(CustomPowerBG)</onclick>
-					<altclick>Skin.Reset(CustomPowerBGFolder)</altclick>
-					<label>$LOCALIZE[20141] $LOCALIZE[31007] $LOCALIZE[31623] $LOCALIZE[31658]</label>
-					<altlabel>$LOCALIZE[192] $LOCALIZE[31007] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
-					<usealttexture>Skin.String(CustomPowerBGFolder)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<!--
-				<control type="togglebutton" id="250">
-					<description>Custom AMT BG image</description>
-					<label>$LOCALIZE[20141] $LOCALIZE[31661] $LOCALIZE[31623] $LOCALIZE[31657]</label>
-					<altlabel>$LOCALIZE[31659] $LOCALIZE[31661] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
-					<onclick>Skin.SetImage(CustomAMTBG)</onclick>
-					<altclick>Skin.Reset(CustomAMTBG)</altclick>
-					<usealttexture>Skin.String(CustomAMTBG)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="251">
-					<description>Custom AMT BG Images Folder</description>
-					<onclick>Skin.SetPath(CustomAMTBGFolder)</onclick>
-					<onclick>Skin.Reset(CustomAMTBG)</onclick>
-					<altclick>Skin.Reset(CustomAMTBGFolder)</altclick>
-					<label>$LOCALIZE[20141] $LOCALIZE[31661] $LOCALIZE[31623] $LOCALIZE[31658]</label>
-					<altlabel>$LOCALIZE[192] $LOCALIZE[31661] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
-					<usealttexture>Skin.String(CustomAMTBGFolder)</usealttexture>
-					<include>GeneralSkinOption</include>
-				</control>
-				-->
 			</control>
 			<!-- Scrollbar -->
 			<control type="scrollbar" id="61">

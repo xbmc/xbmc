@@ -1099,7 +1099,79 @@
 			<height>720</height>
 			<texture>$INFO[Skin.String(Developer_Background)]</texture>
 		</control>
+		<control type="image">
+			<visible>Skin.HasSetting(Developer)</visible>
+			<width>1280</width>
+			<height>720</height>
+			<texture>Black.png</texture>
+			<aspectratio>stretch</aspectratio>
+
+			<include condition="Skin.HasSetting(Background_0)">opacity_0</include>
+			<include condition="Skin.HasSetting(Background_10)">opacity_10</include>
+			<include condition="!Skin.HasSetting(Background_20)">opacity_20</include>
+			<include condition="Skin.HasSetting(Background_30)">opacity_30</include>
+			<include condition="Skin.HasSetting(Background_40)">opacity_40</include>
+			<include condition="Skin.HasSetting(Background_50)">opacity_50</include>
+			<include condition="Skin.HasSetting(Background_60)">opacity_60</include>
+			<include condition="Skin.HasSetting(Background_70)">opacity_70</include>
+			<include condition="Skin.HasSetting(Background_80)">opacity_80</include>
+			<include condition="Skin.HasSetting(Background_90)">opacity_90</include>
+			<include condition="Skin.HasSetting(Background_100)">opacity_100</include>
+		</control>
 	</include>
+	
+	<!-- Developer BG Dimming -->
+	<include name="opacity_reset">
+		<onclick>Skin.Reset(Background_0)</onclick>
+		<onclick>Skin.Reset(Background_10)</onclick>
+		<onclick>Skin.Reset(Background_20)</onclick>
+		<onclick>Skin.Reset(Background_30)</onclick>
+		<onclick>Skin.Reset(Background_40)</onclick>
+		<onclick>Skin.Reset(Background_50)</onclick>
+		<onclick>Skin.Reset(Background_60)</onclick>
+		<onclick>Skin.Reset(Background_70)</onclick>
+		<onclick>Skin.Reset(Background_80)</onclick>
+		<onclick>Skin.Reset(Background_90)</onclick>
+		<onclick>Skin.Reset(Background_100)</onclick>
+	</include>
+	
+	
+	<include name="opacity_0">
+		<animation effect="fade" end="0" time="0" condition="true">conditional</animation>
+	</include>
+	<include name="opacity_10">
+		<animation effect="fade" end="10" time="0" condition="true">conditional</animation>
+	</include>
+	<include name="opacity_20">
+		<animation effect="fade" end="20" time="0" condition="true">conditional</animation>
+	</include>
+	<include name="opacity_30">
+		<animation effect="fade" end="30" time="0" condition="true">conditional</animation>
+	</include>
+	<include name="opacity_40">
+		<animation effect="fade" end="40" time="0" condition="true">conditional</animation>
+	</include>
+	<include name="opacity_50">
+		<animation effect="fade" end="50" time="0" condition="true">conditional</animation>
+	</include>
+	<include name="opacity_60">
+		<animation effect="fade" end="60" time="0" condition="true">conditional</animation>
+	</include>
+	<include name="opacity_70">
+		<animation effect="fade" end="70" time="0" condition="true">conditional</animation>
+	</include>
+	<include name="opacity_80">
+		<animation effect="fade" end="80" time="0" condition="true">conditional</animation>
+	</include>
+	<include name="opacity_90">
+		<animation effect="fade" end="90" time="0" condition="true">conditional</animation>
+	</include>
+	<include name="opacity_100">
+		<animation effect="fade" end="100" time="0" condition="true">conditional</animation>
+	</include>
+	
+	
+	
 	<include name="CustomBGMultiImage">
 		<timeperimage>15000</timeperimage>
 		<fadetime>1000</fadetime>
