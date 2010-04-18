@@ -33,6 +33,5 @@ public:
 protected:
   virtual void OnLoaderFinish();
 private:
-  bool DownloadVideoThumb(CFileItem *item, const CStdString &cachedThumb);
   bool m_regenerateThumbs;
 };

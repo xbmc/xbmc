@@ -45,29 +45,17 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   pItem->SetCachedPictureThumb();
   if (pItem->m_bIsShareOrDrive) return true;
 
-  if(pItem->HasThumbnail())
+  if (pItem->HasThumbnail())
   {
     CStdString thumb(pItem->GetThumbnailImage());
 
     // look for remote thumbs
     if (!g_TextureManager.CanLoad(thumb))
     {
-      CStdString cachedThumb(pItem->GetCachedPictureThumb());
-      if(CFile::Exists(cachedThumb))
-        pItem->SetThumbnailImage(cachedThumb);
-      else
-      {
-        // see if we have additional info to download this thumb with
-        if (pItem->HasVideoInfoTag())
-          return DownloadVideoThumb(pItem, cachedThumb);
-        else
-        {
-          thumb = CTextureCache::Get().CheckAndCacheImage(thumb);
-          pItem->SetThumbnailImage(thumb);
-          pItem->FillInDefaultIcon();
-          return !thumb.IsEmpty();
-        }
-      }
+      thumb = CTextureCache::Get().CheckAndCacheImage(thumb);
+      pItem->SetThumbnailImage(thumb);
+      pItem->FillInDefaultIcon();
+      return !thumb.IsEmpty();
     }
     else if (m_regenerateThumbs)
     {
@@ -89,18 +77,4 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
 void CPictureThumbLoader::OnLoaderFinish()
 {
   m_regenerateThumbs = false;
-}
-
-bool CPictureThumbLoader::DownloadVideoThumb(CFileItem *item, const CStdString &cachedThumb)
-{
-  if (item->GetVideoInfoTag()->m_strPictureURL.m_url.size())
-  { // yep - download using this thumb
-    if (CScraperUrl::DownloadThumbnail(cachedThumb, item->GetVideoInfoTag()->m_strPictureURL.m_url[0]))
-      item->SetThumbnailImage(cachedThumb);
-    else
-      item->SetThumbnailImage("");
-  }
-  if (item->HasProperty("labelonthumbload"))
-    item->SetLabel(item->GetProperty("labelonthumbload"));
-  return true; // we don't need to do anything else here
 }
