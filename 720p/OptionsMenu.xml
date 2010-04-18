@@ -911,7 +911,7 @@
           <include>DialogTextColors</include>
         </control>
 
-        <control type="label" id="990">
+        <control type="label" id="995">
           <description>Developer Items</description>
           <label>Developer</label>
           <visible>Skin.HasSetting(Developer)</visible>
@@ -919,7 +919,7 @@
         </control>
 
 
-		<control type="button" id="995">
+		<control type="button" id="996">
 			<description>Developer Refresh Button</description>
          	<visible>Skin.HasSetting(Developer)</visible>
           	<label>Refresh</label>
