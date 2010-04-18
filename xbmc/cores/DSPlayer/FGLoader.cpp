@@ -310,8 +310,7 @@ HRESULT CFGLoader::InsertVideoRenderer()
       m_CurrentRenderer = DIRECTSHOW_RENDERER_EVR;
     else 
       m_CurrentRenderer = DIRECTSHOW_RENDERER_VMR9;
-  }
-    
+  }    
 
   // Renderers
   if (m_CurrentRenderer == DIRECTSHOW_RENDERER_EVR)
@@ -339,7 +338,7 @@ HRESULT CFGLoader::InsertVideoRenderer()
 
   if (SUCCEEDED(hr))
   {
-    CLog::Log(LOGDEBUG, "%s Allocator presenter successfully added to the graph (Renderer: %d)",  __FUNCTION__, m_CurrentRenderer);
+    CLog::Log(LOGDEBUG, "%s Allocator presenter successfully added to the graph (Renderer: %s)",  __FUNCTION__, Filters.VideoRenderer.osdname.c_str());
   } else {
     CLog::Log(LOGERROR, "%s Failed to add allocator presenter to the graph (hr = %X)", __FUNCTION__, hr);
   }

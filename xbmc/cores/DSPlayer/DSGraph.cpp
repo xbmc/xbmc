@@ -838,7 +838,7 @@ CStdString CDSGraph::GetAudioInfo()
 
   audioInfo.Format("Audio Decoder: %s (%s, %d Hz, %d Channels) | Renderer: %s",
     CFGLoader::Filters.Audio.osdname,
-    c->GetAudioCodecName(),
+    c->GetAudioCodecDisplayName(),
     c->GetSampleRate(),
     c->GetChannels(),
     CFGLoader::Filters.AudioRenderer.osdname);
@@ -852,7 +852,7 @@ CStdString CDSGraph::GetVideoInfo()
   CStreamsManager *c = CStreamsManager::getSingleton();
   videoInfo.Format("Video Decoder: %s (%s, %dx%d)",
     CFGLoader::Filters.Video.osdname,
-    c->GetVideoCodecName(),
+    c->GetVideoCodecDisplayName(),
     c->GetPictureWidth(),
     c->GetPictureHeight());
 

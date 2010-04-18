@@ -544,11 +544,26 @@ int CStreamsManager::GetSampleRate()
   return (i == -1) ? 0 : m_audioStreams[i]->samplerate;
 }
 
+void CStreamsManager::ExtractCodecInfos(SStreamInfos& s, CStdString& codecInfos)
+{
+  std::vector<CStdString> tokens;
+  codecInfos.Tokenize("|", tokens);
+
+  if (tokens.empty() || tokens.size() != 2)
+  {
+    s.codecname = s.codec = codecInfos;
+    return;
+  }
+
+  s.codecname = tokens[0];
+  s.codec = tokens[1];
+}
+
 void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s )
 {
   if (pMediaType->majortype == MEDIATYPE_Audio)
   {
-    SAudioStreamInfos *infos = reinterpret_cast<SAudioStreamInfos *>(s);
+    SAudioStreamInfos* infos = reinterpret_cast<SAudioStreamInfos *>(s);
     if (pMediaType->formattype == FORMAT_WaveFormatEx)
     {
       if (pMediaType->cbFormat >= sizeof(WAVEFORMATEX))
@@ -557,7 +572,7 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         infos->channels = f->nChannels;
         infos->samplerate = f->nSamplesPerSec;
         infos->bitrate = f->nAvgBytesPerSec;
-        infos->codecname = CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, f->wFormatTag);
+        ExtractCodecInfos(*infos, CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, f->wFormatTag));
       }
     } 
     else if (pMediaType->formattype == FORMAT_VorbisFormat2)
@@ -568,7 +583,7 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         infos->channels = v->Channels;
         infos->samplerate = v->SamplesPerSec;
         infos->bitrate = v->BitsPerSample;
-        infos->codecname = CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, 0);
+        ExtractCodecInfos(*infos, CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, 0));
       }
     } else if (pMediaType->formattype == FORMAT_VorbisFormat)
     {
@@ -578,13 +593,13 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         infos->channels = v->nChannels;
         infos->samplerate = v->nSamplesPerSec;
         infos->bitrate = v->nAvgBitsPerSec;
-        infos->codecname = CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, 0);
+        ExtractCodecInfos(*infos, CMediaTypeEx::GetAudioCodecName(pMediaType->subtype, 0));
       }
     }
   } 
   else if (pMediaType->majortype == MEDIATYPE_Video)
   {
-    SVideoStreamInfos *infos = reinterpret_cast<SVideoStreamInfos *>(s);
+    SVideoStreamInfos* infos = reinterpret_cast<SVideoStreamInfos* >(s);
 
     if (pMediaType->formattype == FORMAT_VideoInfo)
     {
@@ -593,7 +608,7 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         VIDEOINFOHEADER *v = reinterpret_cast<VIDEOINFOHEADER *>(pMediaType->pbFormat);
         infos->width = v->bmiHeader.biWidth;
         infos->height = v->bmiHeader.biHeight;
-        infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression, &infos->fourcc);
+        ExtractCodecInfos(*infos, CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression, &infos->fourcc));
       }
     } 
     else if (pMediaType->formattype == FORMAT_MPEG2Video)
@@ -603,11 +618,12 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         MPEG2VIDEOINFO *m = reinterpret_cast<MPEG2VIDEOINFO *>(pMediaType->pbFormat);
         infos->width = m->hdr.bmiHeader.biWidth;
         infos->height = m->hdr.bmiHeader.biHeight;
-        infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, m->hdr.bmiHeader.biCompression, &infos->fourcc);
+        ExtractCodecInfos(*infos, CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, m->hdr.bmiHeader.biCompression, &infos->fourcc));
         if (infos->fourcc == 0)
         {
           infos->fourcc = 'MPG2';
           infos->codecname = "MPEG2 Video";
+          infos->codec = "mpeg2";
         }
       }
     } 
@@ -618,7 +634,7 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         VIDEOINFOHEADER2 *v = reinterpret_cast<VIDEOINFOHEADER2 *>(pMediaType->pbFormat);
         infos->width = v->bmiHeader.biWidth;
         infos->height = v->bmiHeader.biHeight;
-        infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression, &infos->fourcc);
+        ExtractCodecInfos(*infos, CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, v->bmiHeader.biCompression, &infos->fourcc));
       }
     } 
     else if (pMediaType->formattype == FORMAT_MPEGVideo)
@@ -628,13 +644,13 @@ void CStreamsManager::GetStreamInfos( AM_MEDIA_TYPE *pMediaType, SStreamInfos *s
         MPEG1VIDEOINFO *m = reinterpret_cast<MPEG1VIDEOINFO *>(pMediaType->pbFormat);
         infos->width = m->hdr.bmiHeader.biWidth;
         infos->height = m->hdr.bmiHeader.biHeight;
-        infos->codecname = CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, m->hdr.bmiHeader.biCompression, &infos->fourcc);
+        ExtractCodecInfos(*infos, CMediaTypeEx::GetVideoCodecName(pMediaType->subtype, m->hdr.bmiHeader.biCompression, &infos->fourcc));
       }
     }
   } 
   else if (pMediaType->majortype == MEDIATYPE_Subtitle)
   {
-    SSubtitleStreamInfos *infos = reinterpret_cast<SSubtitleStreamInfos *>(s);
+    SSubtitleStreamInfos* infos = reinterpret_cast<SSubtitleStreamInfos* >(s);
 
     if (pMediaType->formattype == FORMAT_SubtitleInfo
       && pMediaType->cbFormat >= sizeof(SUBTITLEINFO))
@@ -665,12 +681,12 @@ int CStreamsManager::GetPictureHeight()
 CStdString CStreamsManager::GetAudioCodecName()
 {
   int i = GetAudioStream();
-  return (i == -1) ? "" : m_audioStreams[i]->codecname;
+  return (i == -1) ? "" : m_audioStreams[i]->codec;
 }
 
 CStdString CStreamsManager::GetVideoCodecName()
 {
-  return m_videoStream.codecname;
+  return m_videoStream.codec;
 }
 
 SVideoStreamInfos * CStreamsManager::GetVideoStreamInfos( unsigned int iIndex /*= 0*/ )

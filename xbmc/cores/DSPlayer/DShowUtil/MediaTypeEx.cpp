@@ -185,33 +185,33 @@ CStdString CMediaTypeEx::GetVideoCodecName(const GUID& subtype, DWORD biCompress
 
   if(names.empty())
   {
-    names['WMV1'] = _T("Windows Media Video 7");
-    names['WMV2'] = _T("Windows Media Video 8");
-    names['WMV3'] = _T("Windows Media Video 9");
-    names['DIV3'] = _T("DivX 3");
-    names['MP43'] = _T("MSMPEG4v3");
-    names['MP42'] = _T("MSMPEG4v2");
-    names['MP41'] = _T("MSMPEG4v1");
-    names['DX50'] = _T("DivX 5");
-    names['DIVX'] = _T("DivX 6");
-    names['XVID'] = _T("Xvid");
-    names['MP4V'] = _T("MPEG4 Video");
-    names['AVC1'] = _T("MPEG4 Video (H264)");
-    names['H264'] = _T("MPEG4 Video (H264)");
-    names['RV10'] = _T("RealVideo 1");
-    names['RV20'] = _T("RealVideo 2");
-    names['RV30'] = _T("RealVideo 3");
-    names['RV40'] = _T("RealVideo 4");
-    names['FLV1'] = _T("Flash Video 1");
-    names['FLV4'] = _T("Flash Video 4");
+    names['WMV1'] = _T("Windows Media Video 7|wmv");
+    names['WMV2'] = _T("Windows Media Video 8|wmv");
+    names['WMV3'] = _T("Windows Media Video 9|wmv");
+    names['DIV3'] = _T("DivX 3|divx");
+    names['MP43'] = _T("MSMPEG4v3|mp4");
+    names['MP42'] = _T("MSMPEG4v2|mp4");
+    names['MP41'] = _T("MSMPEG4v1|mp4");
+    names['DX50'] = _T("DivX 5|divx");
+    names['DIVX'] = _T("DivX 6|divx");
+    names['XVID'] = _T("Xvid|xvid");
+    names['MP4V'] = _T("MPEG4 Video|mp4");
+    names['AVC1'] = _T("MPEG4 Video (H264)|h264");
+    names['H264'] = _T("MPEG4 Video (H264)|h264");
+    names['RV10'] = _T("RealVideo 1|rv");
+    names['RV20'] = _T("RealVideo 2|rv");
+    names['RV30'] = _T("RealVideo 3|rv");
+    names['RV40'] = _T("RealVideo 4|rv");
+    names['FLV1'] = _T("Flash Video 1|flv");
+    names['FLV4'] = _T("Flash Video 4|flv");
     names['VP50'] = _T("On2 VP5");
     names['VP60'] = _T("On2 VP6");
     names['SVQ3'] = _T("SVQ3");
     names['SVQ1'] = _T("SVQ1");
     names['H263'] = _T("H263");
-    names['WVC1'] = _T("WMV 9 Advanced Profile (VC1)");
-    names['WMV3'] = _T("WMV 9 (VC1)");
-    names['CCV1'] = _T("MPEG4 Video (H264)");
+    names['WVC1'] = _T("WMV 9 Advanced Profile (VC1)|vc1");
+    names['WMV3'] = _T("WMV 9 (VC1)|vc1");
+    names['CCV1'] = _T("MPEG4 Video (H264)|h264");
     // names[''] = _T("");
   }
 
@@ -268,7 +268,7 @@ CStdString CMediaTypeEx::GetAudioCodecName(const GUID& subtype, WORD wFormatTag)
     names[WAVE_FORMAT_MEDIAVISION_ADPCM] = _T("Media Vision ADPCM");
     names[WAVE_FORMAT_YAMAHA_ADPCM] = _T("Yamaha ADPCM");
     names[WAVE_FORMAT_DSPGROUP_TRUESPEECH] = _T("DSP Group Truespeech");
-    names[WAVE_FORMAT_DOLBY_AC2] = _T("Dolby AC2");
+    names[WAVE_FORMAT_DOLBY_AC2] = _T("Dolby AC2|ac2");
     names[WAVE_FORMAT_GSM610] = _T("GSM610");
     names[WAVE_FORMAT_MSNAUDIO] = _T("MSN Audio");
     names[WAVE_FORMAT_ANTEX_ADPCME] = _T("Antex ADPCME");
@@ -278,8 +278,8 @@ CStdString CMediaTypeEx::GetAudioCodecName(const GUID& subtype, WORD wFormatTag)
     names[WAVE_FORMAT_G721_ADPCM] = _T("G721");
     names[WAVE_FORMAT_G728_CELP] = _T("G728");
     names[WAVE_FORMAT_MSG723] = _T("MSG723");
-    names[WAVE_FORMAT_MPEG] = _T("MPEG Audio");
-    names[WAVE_FORMAT_MPEGLAYER3] = _T("MPEG Audio Layer 3 (MP3)");
+    names[WAVE_FORMAT_MPEG] = _T("MPEG Audio|mpeg");
+    names[WAVE_FORMAT_MPEGLAYER3] = _T("MPEG Audio Layer 3|mp3");
     names[WAVE_FORMAT_LUCENT_G723] = _T("Lucent G723");
     names[WAVE_FORMAT_VOXWARE] = _T("Voxware");
     names[WAVE_FORMAT_G726_ADPCM] = _T("G726");
@@ -296,8 +296,8 @@ CStdString CMediaTypeEx::GetAudioCodecName(const GUID& subtype, WORD wFormatTag)
     names[WAVE_FORMAT_CREATIVE_FASTSPEECH8] = _T("Creative Fastspeech 8");
     names[WAVE_FORMAT_CREATIVE_FASTSPEECH10] = _T("Creative Fastspeech 10");
     names[WAVE_FORMAT_UHER_ADPCM] = _T("UHER ADPCM");
-    names[WAVE_FORMAT_DOLBY_AC3] = _T("Dolby AC3");
-    names[WAVE_FORMAT_DVD_DTS] = _T("DTS (DCA)");
+    names[WAVE_FORMAT_DOLBY_AC3] = _T("Dolby AC3|ac3");
+    names[WAVE_FORMAT_DVD_DTS] = _T("DTS|dca");
     names[WAVE_FORMAT_AAC] = _T("AAC");
     names[WAVE_FORMAT_FLAC] = _T("FLAC");
     names[WAVE_FORMAT_TTA1] = _T("TTA");
@@ -311,10 +311,10 @@ CStdString CMediaTypeEx::GetAudioCodecName(const GUID& subtype, WORD wFormatTag)
     names[WAVE_FORMAT_SIPR] = _T("RealAudio SIPR");
     names[WAVE_FORMAT_PS2_PCM] = _T("PS2 PCM");
     names[WAVE_FORMAT_PS2_ADPCM] = _T("PS2 ADPCM");
-    names[0x0160] = _T("Windows Media Audio");
-    names[0x0161] = _T("Windows Media Audio");
-    names[0x0162] = _T("Windows Media Audio");
-    names[0x0163] = _T("Windows Media Audio");
+    names[0x0160] = _T("Windows Media Audio|wma");
+    names[0x0161] = _T("Windows Media Audio|wma");
+    names[0x0162] = _T("Windows Media Audio|wma");
+    names[0x0163] = _T("Windows Media Audio|wma");
   }
 
   std::map<WORD, CStdString>::iterator it = names.find(wFormatTag);
@@ -322,10 +322,10 @@ CStdString CMediaTypeEx::GetAudioCodecName(const GUID& subtype, WORD wFormatTag)
   {
     if(subtype == MEDIASUBTYPE_Vorbis) str = _T("Vorbis (deprecated)");
     else if(subtype == MEDIASUBTYPE_Vorbis2) str = _T("Vorbis");
-    else if(subtype == MEDIASUBTYPE_MP4A) str = _T("MPEG4 Audio");
-    else if(subtype == MEDIASUBTYPE_FLAC_FRAMED) str = _T("FLAC (framed)");
-    else if(subtype == MEDIASUBTYPE_DOLBY_AC3) str += _T("Dolby AC3");
-    else if(subtype == MEDIASUBTYPE_DTS) str += _T("DTS");
+    else if(subtype == MEDIASUBTYPE_MP4A) str = _T("MPEG4 Audio|mp4");
+    else if(subtype == MEDIASUBTYPE_FLAC_FRAMED) str = _T("FLAC (framed)|flac");
+    else if(subtype == MEDIASUBTYPE_DOLBY_AC3) str += _T("Dolby AC3|ac3");
+    else if(subtype == MEDIASUBTYPE_DTS) str += _T("DTS|dca");
     else str.Format(_T("0x%04x"), wFormatTag);
   } else {
     str = it->second;
@@ -333,8 +333,8 @@ CStdString CMediaTypeEx::GetAudioCodecName(const GUID& subtype, WORD wFormatTag)
 
   if(wFormatTag == WAVE_FORMAT_PCM)
   {
-    if(subtype == MEDIASUBTYPE_DOLBY_AC3) str += _T(" (AC3)");
-    else if(subtype == MEDIASUBTYPE_DTS) str += _T(" (DTS)");
+    if(subtype == MEDIASUBTYPE_DOLBY_AC3) str += _T(" (AC3)|ac3");
+    else if(subtype == MEDIASUBTYPE_DTS) str += _T(" (DTS)|dca");
   }
 
   return str;

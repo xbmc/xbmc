@@ -68,7 +68,8 @@ struct SStreamInfos
 {
   unsigned int IAMStreamSelect_Index; ///< IAMStreamSelect index of the stream
   CStdString displayname; ///< Stream displayname
-  CStdString codecname; ///< Stream codec displayname
+  CStdString codecname; ///< Stream codec name
+  CStdString codec; ///< Stream codec ID
   DWORD flags; ///< Stream flags. Set to AMSTREAMSELECTINFO_ENABLED if the stream if selected in the GUI, 0 otherwise
   Com::SmartPtr<IPin> pObj; ///< Output pin of the splitter
   Com::SmartPtr<IPin> pUnk; ///< Not used
@@ -231,8 +232,10 @@ public:
   int GetBitsPerSample();
   /// @return The sample rate of the current audio stream
   int GetSampleRate();
-  /// @return The displayname of the audio codec used in the media file (ie FLAC, MP3, DTS ...)
+  /// @return The ID of the audio codec used in the media file (ie FLAC, MP3, DTS ...)
   CStdString GetAudioCodecName();
+  /// @return The displayname of the audio codec used in the media file (ie FLAC, MP3, DTS ...)
+  CStdString GetAudioCodecDisplayName() { int i = GetAudioStream(); return (i == -1) ? "" : m_audioStreams[i]->codecname; }
   /// @return An instance to the IAMStreamSelect interface if the splitter expose it, NULL otherwise
   IAMStreamSelect *GetStreamSelector() { return m_pIAMStreamSelect; }
   
@@ -243,8 +246,10 @@ public:
   int GetPictureWidth();
   /// @return Current video height
   int GetPictureHeight();
-  /// @return The displayname of the video codec used in the media file (XviD, DivX, h264, ...)
+  /// @return The ID of the video codec used in the media file (XviD, DivX, h264, ...)
   CStdString GetVideoCodecName();
+  /// @return The displayname of the video codec used in the media file (XviD, DivX, h264, ...)
+  CStdString GetVideoCodecDisplayName() { return m_videoStream.codecname; }
   
   /** Initialize the manager
    * @param[in] DSGraph Pointer to CDSGraph
@@ -270,6 +275,7 @@ private:
   static CStreamsManager *m_pSingleton;
 
   void FormatStreamName(SStreamInfos& s);
+  void ExtractCodecInfos(SStreamInfos& s, CStdString& codecInfos);
   CStdString ISOToLanguage(CStdString code);
   std::vector<SAudioStreamInfos *> m_audioStreams;
 
