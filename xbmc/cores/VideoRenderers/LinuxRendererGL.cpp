@@ -2389,7 +2389,7 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
   }
 
   if(status != VA_STATUS_SUCCESS)
-    CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to copy surface to glx %d - ", status, vaErrorStr(status));
+    CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to copy surface to glx %d - %s", status, vaErrorStr(status));
 
   SetEvent(m_eventTexturesDone[index]);
 #endif
