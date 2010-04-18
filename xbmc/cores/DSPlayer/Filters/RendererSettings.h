@@ -69,7 +69,7 @@ class CDsSettings
 {
 public:
   bool    m_fTearingTest;
-  int      m_fDisplayStats;
+  int     m_fDisplayStats;
   bool    m_bResetStats; // Set to reset the presentation statistics
   CStdString    m_strVersion;
   CStdString    m_strD3DX9Version;
@@ -86,7 +86,7 @@ public:
         SetDefault();
       }
       bool fVMR9AlterativeVSync;
-      int iVMR9VSyncOffset;
+      int  iVMR9VSyncOffset;
       bool iVMR9VSyncAccurate;
       bool iVMR9FullscreenGUISupport;
       bool iVMR9VSync;
@@ -123,15 +123,16 @@ public:
       void SetDefault()
       {
         CRendererSettingsShared::SetDefault();
-        iEVRHighColorResolution = 0;
-        iEVREnableFrameTimeCorrection = 0;
+
+        iEVRHighColorResolution = false;
+        iEVREnableFrameTimeCorrection = false;
         iEVROutputRange = 0;
         iEvrBuffers = 4; // Needed because painting and rendering are not in the same thread
       }
       void SetOptimal()
       {
         CRendererSettingsShared::SetOptimal();
-        iEVRHighColorResolution = 0;
+        iEVRHighColorResolution = false;
       }
     };
 
@@ -255,6 +256,8 @@ public:
 public:
   CDsSettings(void);
   virtual ~CDsSettings(void);
+  void SetDefault();
+
   void LoadConfig();
   void GetBoolean(const TiXmlElement* pRootElement, const char *tagName, bool& iValue, const bool iDefault);
   void GetInteger(const TiXmlElement* pRootElement, const char *tagName, int& fValue, const int fDefault, const int fMin, const int fMax);
@@ -279,4 +282,5 @@ public:
 extern class CDsSettings g_dsSettings;
 extern bool g_bNoDuration;
 extern bool g_bExternalSubtitleTime;
+
 #endif

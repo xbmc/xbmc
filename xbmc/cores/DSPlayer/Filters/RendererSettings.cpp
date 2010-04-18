@@ -30,30 +30,37 @@
 using namespace XFILE;
 CDsSettings::CDsSettings(void)
 {
-  nSPCSize = 3; // Threading queue
-  nSPCMaxRes = 0; // default
-  fSPCAllowAnimationWhenBuffering = false; // No Anim
-  iDX9Resizer = 3; //Dx9 Resizers
 }
 
 CDsSettings::~CDsSettings(void)
 {
 }
 
-void CDsSettings::LoadConfig()
+void CDsSettings::SetDefault()
 {
   m_RenderSettings.SetDefault();
+
   iAPSurfaceUsage = VIDRNDT_AP_TEXTURE3D; //This one is required to work with xbmc gui
   fVMR9MixerMode = true;
-  CStdString strDsConfigFile = "special://masterprofile//dsconfig.xml";
+  nSPCSize = 3; // Threading queue
+  nSPCMaxRes = 0; // default
+  fSPCAllowAnimationWhenBuffering = false; // No Anim
+  iDX9Resizer = 3; //Dx9 Resizers
+}
+
+void CDsSettings::LoadConfig()
+{
+  SetDefault();
+
+  CStdString strDsConfigFile = "special://masterprofile/dsconfig.xml";
   bool bExists = CFile::Exists(strDsConfigFile);
   
   if (!bExists)
   {
-    CUtil::AddFileToFolder("special://masterprofile","dsconfig.xml");
+    CUtil::AddFileToFolder("special://masterprofile", "dsconfig.xml");
   }
   
-// load the xml file
+  // load the xml file
   TiXmlDocument xmlDoc;
 
   if (!xmlDoc.LoadFile(strDsConfigFile))
@@ -73,28 +80,25 @@ void CDsSettings::LoadConfig()
   TiXmlElement *pElement = pRootElement->FirstChildElement("videorenderers");
   if (pElement)
   {
-    GetBoolean(pElement,"VMR9AlterativeVSync",m_RenderSettings.fVMR9AlterativeVSync,false);
-    GetInteger(pElement,"VMR9VSyncOffset",m_RenderSettings.iVMR9VSyncOffset, 0, 0 , 100);
-    GetBoolean(pElement,"iVMR9VSyncAccurate",m_RenderSettings.iVMR9VSyncAccurate, false);
-    GetBoolean(pElement,"iVMR9VSync",m_RenderSettings.iVMR9VSync, false);
-    GetBoolean(pElement,"iVMRDisableDesktopComposition",m_RenderSettings.iVMRDisableDesktopComposition,false);
-    GetBoolean(pElement,"iVMRFlushGPUBeforeVSync",m_RenderSettings.iVMRFlushGPUBeforeVSync,false);
-    GetBoolean(pElement,"iVMRFlushGPUAfterPresent",m_RenderSettings.iVMRFlushGPUAfterPresent,false);
-    GetBoolean(pElement,"iVMRFlushGPUWait",m_RenderSettings.iVMRFlushGPUWait,false);
-    GetBoolean(pElement,"bSynchronizeVideo",m_RenderSettings.bSynchronizeVideo,false);
-    GetBoolean(pElement,"bSynchronizeDisplay",m_RenderSettings.bSynchronizeDisplay,false);
-    GetBoolean(pElement,"bSynchronizeNearest",m_RenderSettings.bSynchronizeNearest,false);
-    GetInteger(pElement,"iLineDelta",m_RenderSettings.iLineDelta,0,0,100);
-    GetInteger(pElement,"iColumnDelta",m_RenderSettings.iColumnDelta,0,0,100);
-    GetDouble(pElement,"fCycleDelta",m_RenderSettings.fCycleDelta,0,0,100);
-    GetDouble(pElement,"fTargetSyncOffset",m_RenderSettings.fTargetSyncOffset,0,0,100);
-    GetDouble(pElement,"fControlLimit",m_RenderSettings.fControlLimit,0,0,100);
-    GetInteger(pElement,"DX9Resizer",iDX9Resizer,3,0,5);
-  }
-  else
-  {
-    m_RenderSettings.SetDefault();
-    //Implement the crap for saving the settings if they are not found
+    GetBoolean(pElement, "VMR9AlterativeVSync", m_RenderSettings.fVMR9AlterativeVSync, false);
+    GetInteger(pElement, "VMR9VSyncOffset", m_RenderSettings.iVMR9VSyncOffset, 0, 0 , 100);
+    GetBoolean(pElement, "VMR9VSyncAccurate", m_RenderSettings.iVMR9VSyncAccurate, false);
+    GetBoolean(pElement, "VMR9VSync", m_RenderSettings.iVMR9VSync, false);
+    GetBoolean(pElement, "VMRDisableDesktopComposition", m_RenderSettings.iVMRDisableDesktopComposition, false);
+    GetBoolean(pElement, "VMRFlushGPUBeforeVSync", m_RenderSettings.iVMRFlushGPUBeforeVSync, false);
+    GetBoolean(pElement, "VMRFlushGPUAfterPresent", m_RenderSettings.iVMRFlushGPUAfterPresent, false);
+    GetBoolean(pElement, "VMRFlushGPUWait", m_RenderSettings.iVMRFlushGPUWait, false);
+    GetBoolean(pElement, "SynchronizeVideo", m_RenderSettings.bSynchronizeVideo, false);
+    GetBoolean(pElement, "SynchronizeDisplay", m_RenderSettings.bSynchronizeDisplay, false);
+    GetBoolean(pElement, "SynchronizeNearest", m_RenderSettings.bSynchronizeNearest, false);
+    GetInteger(pElement, "LineDelta", m_RenderSettings.iLineDelta, 0, 0, 100);
+    GetInteger(pElement, "ColumnDelta", m_RenderSettings.iColumnDelta, 0, 0, 100);
+    GetDouble(pElement, "CycleDelta", m_RenderSettings.fCycleDelta, 0, 0, 100);
+    GetDouble(pElement, "TargetSyncOffset", m_RenderSettings.fTargetSyncOffset, 0, 0, 100);
+    GetDouble(pElement, "ControlLimit", m_RenderSettings.fControlLimit, 0, 0, 100);
+    GetInteger(pElement, "DX9Resizer", iDX9Resizer, 3, 0, 5);
+
+    GetInteger(pElement, "EVRBuffers", m_RenderSettings.iEvrBuffers, 4, 4, 60);
   }
 }
 
@@ -125,25 +129,22 @@ void CDsSettings::GetDouble(const TiXmlElement* pRootElement, const char *tagNam
 }
 void CDsSettings::CRendererSettingsShared::SetDefault()
 {
-  //ID_VIEW_VSYNC
-  //ID_VIEW_VSYNCACCURATE
-  //ID_VIEW_ALTERNATIVEVSYNC
-  fVMR9AlterativeVSync = 0; // Alternative VSync
+  fVMR9AlterativeVSync = false; // Alternative VSync
   iVMR9VSyncOffset = 0; // Vsync Offset
   //The accurate vsync to 1 with dxva is making the video totaly out of sync
-  iVMR9VSyncAccurate = 0; // Accurate VSync
-  iVMR9FullscreenGUISupport = 1; //Needed for filters property page
-  iVMR9VSync = 1; //Vsync
-  iVMRDisableDesktopComposition = 0; //Disable desktop composition (Aero)
-  //ID_VIEW_FLUSHGPU_BEFOREVSYNC
-  //ID_VIEW_FLUSHGPU_AFTERPRESENT
-  //ID_VIEW_FLUSHGPU_WAIT
-  iVMRFlushGPUBeforeVSync = 0; //Flush GPU before VSync
-  iVMRFlushGPUAfterPresent = 0; //Flush GPU after Present
-  iVMRFlushGPUWait = 0; //Wait for flushes
-  bSynchronizeVideo = 0;
-  bSynchronizeDisplay = 0;
-  bSynchronizeNearest = 1;
+  iVMR9VSyncAccurate = false; // Accurate VSync
+  iVMR9FullscreenGUISupport = true; //Needed for filters property page
+  iVMR9VSync = true; //Vsync
+  iVMRDisableDesktopComposition = false; //Disable desktop composition (Aero)
+
+  iVMRFlushGPUBeforeVSync = false; //Flush GPU before VSync
+  iVMRFlushGPUAfterPresent = false; //Flush GPU after Present
+  iVMRFlushGPUWait = false; //Wait for flushes
+
+  bSynchronizeVideo = false;
+  bSynchronizeDisplay = false;
+  bSynchronizeNearest = true;
+
   iLineDelta = 0;
   iColumnDelta = 0;
   fCycleDelta = 0.0012; //Frequency adjustement
@@ -153,16 +154,16 @@ void CDsSettings::CRendererSettingsShared::SetDefault()
 
 void CDsSettings::CRendererSettingsShared::SetOptimal()
 {
-  fVMR9AlterativeVSync = 1;
-  iVMR9VSyncAccurate = 1;
-  iVMR9VSync = 1;
-  iVMRDisableDesktopComposition = 1;
-  iVMRFlushGPUBeforeVSync = 1;
-  iVMRFlushGPUAfterPresent = 1;
-  iVMRFlushGPUWait = 0;
-  bSynchronizeVideo = 0;
-  bSynchronizeDisplay = 0;
-  bSynchronizeNearest = 1;
+  fVMR9AlterativeVSync = true;
+  iVMR9VSyncAccurate = true;
+  iVMR9VSync = true;
+  iVMRDisableDesktopComposition = true;
+  iVMRFlushGPUBeforeVSync = true;
+  iVMRFlushGPUAfterPresent = true;
+  iVMRFlushGPUWait = false;
+  bSynchronizeVideo = false;
+  bSynchronizeDisplay = false;
+  bSynchronizeNearest = true;
   iLineDelta = 0;
   iColumnDelta = 0;
   fCycleDelta = 0.0012;
