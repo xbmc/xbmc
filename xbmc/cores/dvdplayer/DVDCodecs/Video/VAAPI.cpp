@@ -92,7 +92,7 @@ static CDisplayPtr GetGlobalDisplay()
 
 CDisplay::~CDisplay()
 {
-  CLog::Log(LOGDEBUG, "VAAPI - destroying display 0x%x", (int)m_display);
+  CLog::Log(LOGDEBUG, "VAAPI - destroying display %p", m_display);
   WARN(vaTerminate(m_display))
 }
 
@@ -105,7 +105,7 @@ CSurface::~CSurface()
 
 CSurfaceGL::~CSurfaceGL()
 {
-  CLog::Log(LOGDEBUG, "VAAPI - destroying glx surface 0x%x", (int)m_id);
+  CLog::Log(LOGDEBUG, "VAAPI - destroying glx surface %p", m_id);
   CSingleLock lock(*m_display);
   WARN(vaDestroySurfaceGLX(m_display->get(), m_id))
 }
