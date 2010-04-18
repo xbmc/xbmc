@@ -311,3 +311,14 @@ void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   }
   return CJobQueue::OnJobComplete(jobID, success, job);
 }
+
+CStdString CTextureCache::GetUniqueImage(const CStdString &url, const CStdString &extension)
+{
+  Crc32 crc;
+  crc.ComputeFromLowerCase(url);
+  CStdString hex;
+  hex.Format("%08x", (unsigned int)crc);
+  CStdString hash;
+  hash.Format("generated/%c/%s%s", hex[0], hex.c_str(), extension.c_str());
+  return GetCachedPath(hash);
+}

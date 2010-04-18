@@ -47,6 +47,12 @@ bool CTextureDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create textures index");
     m_pDS->exec("CREATE INDEX idxTexture ON texture(urlhash)");
+
+    CLog::Log(LOGINFO, "create path table");
+    m_pDS->exec("CREATE TABLE path (id integer primary key, urlhash integer, url text, texture text)\n");
+
+    CLog::Log(LOGINFO, "create path index");
+    m_pDS->exec("CREATE INDEX idxPath ON path(urlhash)");
   }
   catch (...)
   {
@@ -63,6 +69,14 @@ bool CTextureDatabase::UpdateOldVersion(int version)
   {
     m_pDS->exec("DROP TABLE texture");
     m_pDS->exec("CREATE TABLE texture (id integer primary key, urlhash integer, url text, cachedurl text, usecount integer, lastusetime text, imagehash text)\n");
+  }
+  if (version < 5)
+  {
+    CLog::Log(LOGINFO, "create path table");
+    m_pDS->exec("CREATE TABLE path (id integer primary key, urlhash integer, url text, texture text)\n");
+
+    CLog::Log(LOGINFO, "create path index");
+    m_pDS->exec("CREATE INDEX idxPath ON path(urlhash)");
   }
   return true;
 }
@@ -169,4 +183,63 @@ unsigned int CTextureDatabase::GetURLHash(const CStdString &url) const
   Crc32 crc;
   crc.ComputeFromLowerCase(url);
   return (unsigned int)crc;
+}
+
+CStdString CTextureDatabase::GetTextureForPath(const CStdString &url)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return "";
+    if (NULL == m_pDS.get()) return "";
+
+    unsigned int hash = GetURLHash(url);
+
+    CStdString sql = FormatSQL("select texture from path where urlhash=%u", hash);
+    m_pDS->query(sql.c_str());
+
+    if (!m_pDS->eof())
+    { // have some information
+      CStdString texture = m_pDS->fv(0).get_asString();
+      m_pDS->close();
+      return texture;
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s, failed on url '%s'", __FUNCTION__, url.c_str());
+  }
+  return "";
+}
+
+void CTextureDatabase::SetTextureForPath(const CStdString &url, const CStdString &texture)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    unsigned int hash = GetURLHash(url);
+
+    CStdString sql = FormatSQL("select id from path where urlhash=%u", hash);
+    m_pDS->query(sql.c_str());
+    if (!m_pDS->eof())
+    { // update
+      int pathID = m_pDS->fv(0).get_asInt();
+      m_pDS->close();
+      sql = FormatSQL("update path set texture='%s' where id=%u", texture.c_str(), pathID);
+      m_pDS->exec(sql.c_str());
+    }
+    else
+    { // add the texture
+      m_pDS->close();
+      sql = FormatSQL("insert into path (id, urlhash, url, texture) values(NULL, %u, '%s', '%s')", hash, url.c_str(), texture.c_str());
+      m_pDS->exec(sql.c_str());
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on url '%s'", __FUNCTION__, url.c_str());
+  }
+  return;
 }

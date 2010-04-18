@@ -97,6 +97,13 @@ public:
    */
   static CStdString GetWrappedThumbURL(const CStdString &image);
 
+  /*! \brief get a unique image path to associate with the given URL, useful for caching images
+   \param url path to retrieve a unique image for
+   \param extension type of file we want
+   \return a "unique" path to an image with the appropriate extension
+   */
+  static CStdString GetUniqueImage(const CStdString &url, const CStdString &extension);
+
 private:
   /* \brief Job class for creating .dds versions of textures
    */

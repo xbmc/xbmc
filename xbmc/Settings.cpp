@@ -1857,6 +1857,8 @@ void CSettings::CreateProfileFolders()
   CDirectory::Create(GetBookmarksThumbFolder());
   CDirectory::Create(GetProgramsThumbFolder());
   CDirectory::Create(GetPicturesThumbFolder());
+  CStdString generatedThumbsFolder = CUtil::AddFileToFolder(GetThumbnailsFolder(), "generated");
+  CDirectory::Create(generatedThumbsFolder);
   CLog::Log(LOGINFO, "thumbnails folder: %s", GetThumbnailsFolder().c_str());
   for (unsigned int hex=0; hex < 16; hex++)
   {
@@ -1866,6 +1868,7 @@ void CSettings::CreateProfileFolders()
     CDirectory::Create(CUtil::AddFileToFolder(GetMusicThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetThumbnailsFolder(), strHex));
+    CDirectory::Create(CUtil::AddFileToFolder(generatedThumbsFolder, strHex));
   }
   CDirectory::Create("special://profile/addon_data");
   CDirectory::Create("special://profile/keymaps");
