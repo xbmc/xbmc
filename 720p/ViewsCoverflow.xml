@@ -1,1161 +1,1024 @@
 <includes>
-  <include name="Coverflow">
-
-    <control type="group">
-      <include>CoverflowVisible</include>
-
-      <control type="group">
-        <visible>Container.Content(tvshows)</visible>
- <!--   <include>FanartOnTVProjectorScreen</include>  -->
-      </control>
-
-      <include>MediaViewBGOverlay</include>
-    </control>
-
-    <control type="group">
-      <include>CoverflowVisible</include>
-      <include>MediaViewFade</include>
-
-      <control type="group" id="7001">
-        <posy>230</posy>
-        <visible>Control.IsVisible(55) + Container.OnNext</visible>
-        <animation effect="slide" end="-100,0" time="250" reversible="false">Hidden</animation>
-
-        <control type="group">
-          <posx>20</posx>
-          <visible>Container.OnNext</visible>
-          <animation effect="fade" start="100" end="0" time="250" reversible="false">Hidden</animation>
-          <animation effect="rotatey" center="0" start="-65" end="-65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(-4).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(-4).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(-4).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(-4).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>120</posx>
-          <animation effect="rotatey" center="100" start="-65" end="-65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(-3).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(-3).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(-3).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(-3).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>220</posx>
-          <animation effect="rotatey" center="200" start="-65" end="-65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(-2).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(-2).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(-2).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(-2).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>1000</posx>
-          <visible>!Container.OnNext</visible>
-          <animation effect="fade" start="0" end="100" delay="0" time="250" reversible="false">Visible</animation>
-          <animation effect="rotatey" center="1380" start="65" end="65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(3).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(3).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(3).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(3).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>900</posx>
-          <animation effect="rotatey" center="1280" start="65" end="65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(2).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(2).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(2).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(2).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>800</posx>
-          <animation effect="rotatey" center="1180" start="65" end="65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(1).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(1).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(1).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(1).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Container.OnNext</visible>
-          <animation effect="slide" end="-120,0" time="250" reversible="false">Hidden</animation>
-
-          <control type="group">
-            <posx>700</posx>
-            <visible>Container.OnNext</visible>
-            <animation effect="rotatey" center="1080" start="0" end="-65" time="250" reversible="false" tween="quadratic" easing="in">Hidden</animation>
-            <animation effect="rotatey" center="1080" start="65" end="65" time="0" condition="true">Conditional</animation>
-
-            <control type="group">
-              <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-              <control type="image">
-                <include>CoverflowMusicThumb</include>
-                <info>Container(55).ListItem(0).Icon</info>
-              </control>
-              <control type="image">
-                <description>Glass overlay</description>
-                <include>CoverflowGlassOverlay</include>
-              </control>
-              <control type="image">
-                <include>CoverflowMusicThumbBackdropDims</include>
-                <texture>black.png</texture>
-              </control>
-              <control type="image">
-                <include>CoverflowMusicThumbReflection</include>
-                <info>Container(55).ListItem(0).Icon</info>
-              </control>
-            </control>
-
-            <control type="group">
-              <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-              <control type="image">
-                <include>CoverflowThumb</include>
-                <info>Container(55).ListItem(0).Icon</info>
-              </control>
-              <control type="image">
-                <include>CoverflowThumbBackdropDims</include>
-                <texture>black.png</texture>
-              </control>
-              <control type="image">
-                <include>CoverflowThumbReflection</include>
-                <info>Container(55).ListItem(0).Icon</info>
-              </control>
-            </control>
-          </control>
-
-          <control type="group">
-            <posx>460</posx>
-            <visible>Container.OnNext</visible>
-            <animation effect="rotatey" center="450" start="0" end="-65" time="250" reversible="false" tween="quadratic" easing="out">Hidden</animation>
-
-            <control type="group">
-              <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-              <control type="image">
-                <include>CoverflowMusicThumb</include>
-                <info>Container(55).ListItem(-1).Icon</info>
-              </control>
-              <control type="image">
-                <description>Glass overlay</description>
-                <include>CoverflowGlassOverlay</include>
-              </control>
-              <control type="image">
-                <include>CoverflowMusicThumbBackdropDims</include>
-                <texture>black.png</texture>
-              </control>
-              <control type="image">
-                <include>CoverflowMusicThumbReflection</include>
-                <info>Container(55).ListItem(-1).Icon</info>
-              </control>
-            </control>
-
-            <control type="group">
-              <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-              <control type="image">
-                <include>CoverflowThumb</include>
-                <info>Container(55).ListItem(-1).Icon</info>
-              </control>
-              <control type="image">
-                <include>CoverflowThumbBackdropDims</include>
-                <texture>black.png</texture>
-              </control>
-              <control type="image">
-                <include>CoverflowThumbReflection</include>
-                <info>Container(55).ListItem(-1).Icon</info>
-              </control>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="7002">
-        <posy>230</posy>
-        <visible>Control.IsVisible(55) + Container.OnPrevious</visible>
-        <animation effect="slide" end="100,0" time="250" reversible="false">Hidden</animation>
-
-        <control type="group">
-          <posx>900</posx>
-          <visible>Container.OnPrevious</visible>
-          <animation effect="fade" start="100" end="0" time="250" reversible="false">Hidden</animation>
-          <animation effect="rotatey" center="1280" start="65" end="65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(4).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(4).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(4).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(4).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>800</posx>
-          <animation effect="rotatey" center="1180" start="65" end="65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(3).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(3).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(3).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(3).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>700</posx>
-          <animation effect="rotatey" center="1080" start="65" end="65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(2).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(2).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(2).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(2).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>-80</posx>
-          <visible>!Container.OnPrevious</visible>
-          <animation effect="fade" start="0" end="100" time="250" reversible="false">Visible</animation>
-          <animation effect="rotatey" center="-100" start="-65" end="-65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(-3).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(-3).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(-3).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(-3).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>20</posx>
-          <animation effect="rotatey" center="0" start="-65" end="-65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(-2).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(-2).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(-2).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(-2).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>120</posx>
-          <animation effect="rotatey" center="100" start="-65" end="-65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(-1).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(-1).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(-1).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(-1).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Container.OnPrevious</visible>
-          <animation effect="slide" end="120,0" time="250" reversible="false">Hidden</animation>
-
-          <control type="group">
-            <posx>220</posx>
-            <visible>Container.OnPrevious</visible>
-            <animation effect="rotatey" center="200" start="0" end="65" time="250" reversible="false" tween="quadratic" easing="in">Hidden</animation>
-            <animation effect="rotatey" center="200" start="-65" end="-65" time="0" condition="true">Conditional</animation>
-
-            <control type="group">
-              <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-  
-              <control type="image">
-                <include>CoverflowMusicThumb</include>
-                <info>Container(55).ListItem(0).Icon</info>
-              </control>
-              <control type="image">
-                <description>Glass overlay</description>
-                <include>CoverflowGlassOverlay</include>
-              </control>
-              <control type="image">
-                <include>CoverflowMusicThumbBackdropDims</include>
-                <texture>black.png</texture>
-              </control>
-              <control type="image">
-                <include>CoverflowMusicThumbReflection</include>
-                <info>Container(55).ListItem(0).Icon</info>
-              </control>
-            </control>
-
-            <control type="group">
-              <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-              <control type="image">
-                <include>CoverflowThumb</include>
-                <info>Container(55).ListItem(0).Icon</info>
-              </control>
-              <control type="image">
-                <include>CoverflowThumbBackdropDims</include>
-                <texture>black.png</texture>
-              </control>
-              <control type="image">
-                <include>CoverflowThumbReflection</include>
-                <info>Container(55).ListItem(0).Icon</info>
-              </control>
-            </control>
-          </control>
-
-          <control type="group">
-            <posx>460</posx>
-            <visible>Container.OnPrevious</visible>
-            <animation effect="rotatey" center="840" start="0" end="65" time="250" reversible="false" tween="quadratic" easing="out">Hidden</animation>
-
-            <control type="group">
-              <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-  
-              <control type="image">
-                <include>CoverflowMusicThumb</include>
-                <info>Container(55).ListItem(1).Icon</info>
-              </control>
-              <control type="image">
-                <description>Glass overlay</description>
-                <include>CoverflowGlassOverlay</include>
-              </control>
-              <control type="image">
-                <include>CoverflowMusicThumbBackdropDims</include>
-                <texture>black.png</texture>
-              </control>
-              <control type="image">
-                <include>CoverflowMusicThumbReflection</include>
-                <info>Container(55).ListItem(1).Icon</info>
-              </control>
-            </control>
-
-            <control type="group">
-              <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-  
-              <control type="image">
-                <include>CoverflowThumb</include>
-                <info>Container(55).ListItem(1).Icon</info>
-              </control>
-              <control type="image">
-                <include>CoverflowThumbBackdropDims</include>
-                <texture>black.png</texture>
-              </control>
-              <control type="image">
-                <include>CoverflowThumbReflection</include>
-                <info>Container(55).ListItem(1).Icon</info>
-              </control>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group" id="7000">
-        <posy>230</posy>
-        <visible>Control.IsVisible(55) + !Control.IsVisible(7001)  + !Control.IsVisible(7002)</visible>
-
-        <control type="group">
-          <posx>20</posx>
-          <animation effect="rotatey" center="0" start="-65" end="-65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(-3).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(-3).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(-3).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(-3).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>120</posx>
-          <animation effect="rotatey" center="100" start="-65" end="-65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(-2).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(-2).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(-2).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(-2).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>220</posx>
-          <animation effect="rotatey" center="200" start="-65" end="-65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(-1).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(-1).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(-1).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(-1).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>900</posx>
-          <animation effect="rotatey" center="1280" start="65" end="65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(3).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(3).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(3).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(3).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>800</posx>
-          <animation effect="rotatey" center="1180" start="65" end="65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(2).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(2).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(2).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(2).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>700</posx>
-          <animation effect="rotatey" center="1080" start="65" end="65" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(1).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(1).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(1).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbBackdropDims</include>
-              <texture>black.png</texture>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(1).Icon</info>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>460</posx>
-
-          <control type="group">
-            <visible>[Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowMusicThumb</include>
-              <info>Container(55).ListItem(0).Icon</info>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>CoverflowGlassOverlay</include>
-            </control>
-            <control type="image">
-              <include>CoverflowMusicThumbReflection</include>
-              <info>Container(55).ListItem(0).Icon</info>
-            </control>
-          </control>
-
-          <control type="group">
-            <visible>![Container.Content(albums) | Container.Content(songs)]</visible>
-
-            <control type="image">
-              <include>CoverflowThumb</include>
-              <info>Container(55).ListItem(0).Icon</info>
-            </control>
-            <control type="image">
-              <include>CoverflowThumbReflection</include>
-              <info>Container(55).ListItem(0).Icon</info>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="wraplist" id="55">
-        <description>Fake list to control coverflow movement</description>
-        <posx>460</posx>
-        <posy>230</posy>
-        <width>366</width>
-        <height>350</height>
-        <onleft>55</onleft>
-        <onright>55</onright>
-        <onup>9009</onup>
-        <ondown>Skin.ToggleSetting(HideNowPlayingMusicInfo)</ondown>
-        <viewtype label="31022">list</viewtype>
-        <pagecontrol>60</pagecontrol>
-        <orientation>horizontal</orientation>
-        <scrolltime>250</scrolltime>
-        <focusedposition>3</focusedposition>
-
-        <itemlayout height="1" width="1">
+	<include name="Coverflow">
+		<control type="group">
+			<include>CoverflowVisible</include>
+			<control type="group">
+				<visible>Container.Content(tvshows)</visible>
+				<!--   <include>FanartOnTVProjectorScreen</include>  -->
+			</control>
+			<include>MediaViewBGOverlay</include>
+		</control>
+		<control type="group">
+			<include>CoverflowVisible</include>
+			<include>MediaViewFade</include>
+			<control type="group" id="7001">
+				<posy>230</posy>
+				<visible>Control.IsVisible(55) + Container.OnNext</visible>
+				<animation effect="slide" end="-100,0" time="250" reversible="false">Hidden</animation>
+				<control type="group">
+					<posx>20</posx>
+					<visible>Container.OnNext</visible>
+					<animation effect="fade" start="100" end="0" time="250" reversible="false">Hidden</animation>
+					<animation effect="rotatey" center="0" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(-4).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(-4).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(-4).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(-4).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>120</posx>
+					<animation effect="rotatey" center="100" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(-3).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(-3).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(-3).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(-3).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>220</posx>
+					<animation effect="rotatey" center="200" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(-2).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(-2).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(-2).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(-2).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>1000</posx>
+					<visible>!Container.OnNext</visible>
+					<animation effect="fade" start="0" end="100" delay="0" time="250" reversible="false">Visible</animation>
+					<animation effect="rotatey" center="1380" start="65" end="65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(3).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(3).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(3).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(3).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>900</posx>
+					<animation effect="rotatey" center="1280" start="65" end="65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(2).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(2).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(2).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(2).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>800</posx>
+					<animation effect="rotatey" center="1180" start="65" end="65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(1).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(1).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(1).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(1).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Container.OnNext</visible>
+					<animation effect="slide" end="-120,0" time="250" reversible="false">Hidden</animation>
+					<control type="group">
+						<posx>700</posx>
+						<visible>Container.OnNext</visible>
+						<animation effect="rotatey" center="1080" start="0" end="-65" time="250" reversible="false" tween="quadratic" easing="in">Hidden</animation>
+						<animation effect="rotatey" center="1080" start="65" end="65" time="0" condition="true">Conditional</animation>
+						<control type="group">
+							<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+							<control type="image">
+								<include>CoverflowMusicThumb</include>
+								<info>Container(55).ListItem(0).Icon</info>
+							</control>
+							<control type="image">
+								<description>Glass overlay</description>
+								<include>CoverflowGlassOverlay</include>
+							</control>
+							<control type="image">
+								<include>CoverflowMusicThumbBackdropDims</include>
+								<texture>black.png</texture>
+							</control>
+							<control type="image">
+								<include>CoverflowMusicThumbReflection</include>
+								<info>Container(55).ListItem(0).Icon</info>
+							</control>
+						</control>
+						<control type="group">
+							<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+							<control type="image">
+								<include>CoverflowThumb</include>
+								<info>Container(55).ListItem(0).Icon</info>
+							</control>
+							<control type="image">
+								<include>CoverflowThumbBackdropDims</include>
+								<texture>black.png</texture>
+							</control>
+							<control type="image">
+								<include>CoverflowThumbReflection</include>
+								<info>Container(55).ListItem(0).Icon</info>
+							</control>
+						</control>
+					</control>
+					<control type="group">
+						<posx>460</posx>
+						<visible>Container.OnNext</visible>
+						<animation effect="rotatey" center="450" start="0" end="-65" time="250" reversible="false" tween="quadratic" easing="out">Hidden</animation>
+						<control type="group">
+							<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+							<control type="image">
+								<include>CoverflowMusicThumb</include>
+								<info>Container(55).ListItem(-1).Icon</info>
+							</control>
+							<control type="image">
+								<description>Glass overlay</description>
+								<include>CoverflowGlassOverlay</include>
+							</control>
+							<control type="image">
+								<include>CoverflowMusicThumbBackdropDims</include>
+								<texture>black.png</texture>
+							</control>
+							<control type="image">
+								<include>CoverflowMusicThumbReflection</include>
+								<info>Container(55).ListItem(-1).Icon</info>
+							</control>
+						</control>
+						<control type="group">
+							<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+							<control type="image">
+								<include>CoverflowThumb</include>
+								<info>Container(55).ListItem(-1).Icon</info>
+							</control>
+							<control type="image">
+								<include>CoverflowThumbBackdropDims</include>
+								<texture>black.png</texture>
+							</control>
+							<control type="image">
+								<include>CoverflowThumbReflection</include>
+								<info>Container(55).ListItem(-1).Icon</info>
+							</control>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="7002">
+				<posy>230</posy>
+				<visible>Control.IsVisible(55) + Container.OnPrevious</visible>
+				<animation effect="slide" end="100,0" time="250" reversible="false">Hidden</animation>
+				<control type="group">
+					<posx>900</posx>
+					<visible>Container.OnPrevious</visible>
+					<animation effect="fade" start="100" end="0" time="250" reversible="false">Hidden</animation>
+					<animation effect="rotatey" center="1280" start="65" end="65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(4).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(4).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(4).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(4).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>800</posx>
+					<animation effect="rotatey" center="1180" start="65" end="65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(3).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(3).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(3).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(3).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>700</posx>
+					<animation effect="rotatey" center="1080" start="65" end="65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(2).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(2).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(2).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(2).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>-80</posx>
+					<visible>!Container.OnPrevious</visible>
+					<animation effect="fade" start="0" end="100" time="250" reversible="false">Visible</animation>
+					<animation effect="rotatey" center="-100" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(-3).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(-3).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(-3).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(-3).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>20</posx>
+					<animation effect="rotatey" center="0" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(-2).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(-2).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(-2).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(-2).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>120</posx>
+					<animation effect="rotatey" center="100" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(-1).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(-1).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(-1).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(-1).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Container.OnPrevious</visible>
+					<animation effect="slide" end="120,0" time="250" reversible="false">Hidden</animation>
+					<control type="group">
+						<posx>220</posx>
+						<visible>Container.OnPrevious</visible>
+						<animation effect="rotatey" center="200" start="0" end="65" time="250" reversible="false" tween="quadratic" easing="in">Hidden</animation>
+						<animation effect="rotatey" center="200" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+						<control type="group">
+							<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+							<control type="image">
+								<include>CoverflowMusicThumb</include>
+								<info>Container(55).ListItem(0).Icon</info>
+							</control>
+							<control type="image">
+								<description>Glass overlay</description>
+								<include>CoverflowGlassOverlay</include>
+							</control>
+							<control type="image">
+								<include>CoverflowMusicThumbBackdropDims</include>
+								<texture>black.png</texture>
+							</control>
+							<control type="image">
+								<include>CoverflowMusicThumbReflection</include>
+								<info>Container(55).ListItem(0).Icon</info>
+							</control>
+						</control>
+						<control type="group">
+							<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+							<control type="image">
+								<include>CoverflowThumb</include>
+								<info>Container(55).ListItem(0).Icon</info>
+							</control>
+							<control type="image">
+								<include>CoverflowThumbBackdropDims</include>
+								<texture>black.png</texture>
+							</control>
+							<control type="image">
+								<include>CoverflowThumbReflection</include>
+								<info>Container(55).ListItem(0).Icon</info>
+							</control>
+						</control>
+					</control>
+					<control type="group">
+						<posx>460</posx>
+						<visible>Container.OnPrevious</visible>
+						<animation effect="rotatey" center="840" start="0" end="65" time="250" reversible="false" tween="quadratic" easing="out">Hidden</animation>
+						<control type="group">
+							<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+							<control type="image">
+								<include>CoverflowMusicThumb</include>
+								<info>Container(55).ListItem(1).Icon</info>
+							</control>
+							<control type="image">
+								<description>Glass overlay</description>
+								<include>CoverflowGlassOverlay</include>
+							</control>
+							<control type="image">
+								<include>CoverflowMusicThumbBackdropDims</include>
+								<texture>black.png</texture>
+							</control>
+							<control type="image">
+								<include>CoverflowMusicThumbReflection</include>
+								<info>Container(55).ListItem(1).Icon</info>
+							</control>
+						</control>
+						<control type="group">
+							<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+							<control type="image">
+								<include>CoverflowThumb</include>
+								<info>Container(55).ListItem(1).Icon</info>
+							</control>
+							<control type="image">
+								<include>CoverflowThumbBackdropDims</include>
+								<texture>black.png</texture>
+							</control>
+							<control type="image">
+								<include>CoverflowThumbReflection</include>
+								<info>Container(55).ListItem(1).Icon</info>
+							</control>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group" id="7000">
+				<posy>230</posy>
+				<visible>Control.IsVisible(55) + !Control.IsVisible(7001)  + !Control.IsVisible(7002)</visible>
+				<control type="group">
+					<posx>20</posx>
+					<animation effect="rotatey" center="0" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(-3).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(-3).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(-3).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(-3).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>120</posx>
+					<animation effect="rotatey" center="100" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(-2).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(-2).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(-2).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(-2).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>220</posx>
+					<animation effect="rotatey" center="200" start="-65" end="-65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(-1).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(-1).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(-1).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(-1).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>900</posx>
+					<animation effect="rotatey" center="1280" start="65" end="65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(3).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(3).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(3).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(3).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>800</posx>
+					<animation effect="rotatey" center="1180" start="65" end="65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(2).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(2).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(2).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(2).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>700</posx>
+					<animation effect="rotatey" center="1080" start="65" end="65" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(1).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(1).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(1).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbBackdropDims</include>
+							<texture>black.png</texture>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(1).Icon</info>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posx>460</posx>
+					<control type="group">
+						<visible>[Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowMusicThumb</include>
+							<info>Container(55).ListItem(0).Icon</info>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>CoverflowGlassOverlay</include>
+						</control>
+						<control type="image">
+							<include>CoverflowMusicThumbReflection</include>
+							<info>Container(55).ListItem(0).Icon</info>
+						</control>
+					</control>
+					<control type="group">
+						<visible>![Container.Content(albums) | Container.Content(songs)]</visible>
+						<control type="image">
+							<include>CoverflowThumb</include>
+							<info>Container(55).ListItem(0).Icon</info>
+						</control>
+						<control type="image">
+							<include>CoverflowThumbReflection</include>
+							<info>Container(55).ListItem(0).Icon</info>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="wraplist" id="55">
+				<description>Fake list to control coverflow movement</description>
+				<posx>460</posx>
+				<posy>230</posy>
+				<width>366</width>
+				<height>350</height>
+				<onleft>55</onleft>
+				<onright>55</onright>
+				<onup>9009</onup>
+				<ondown>Skin.ToggleSetting(HideNowPlayingMusicInfo)</ondown>
+				<viewtype label="31022">list</viewtype>
+				<pagecontrol>60</pagecontrol>
+				<orientation>horizontal</orientation>
+				<scrolltime>250</scrolltime>
+				<focusedposition>3</focusedposition>
+				<itemlayout height="1" width="1">
         </itemlayout>
-
-        <focusedlayout height="350" width="350">
+				<focusedlayout height="350" width="350">
         </focusedlayout>
-      </control>
-
-      <control type="group">
-        <description>Shadow Overlays</description>
-
-        <control type="group">
-          <visible>!Skin.HasTheme(lite) | ![[Container.Content(tvshows) | Container.Content(episodes)] + Skin.HasSetting(UseLowTVOverlay) + Control.IsVisible(55)]</visible>
-
-          <control type="image">
-            <include>CoverflowLeftShadowOverlayDims</include>
-            <include>CoverflowShadowOverlayVertDims</include>
-            <texture>BlackGradient.png</texture>
-          </control>
-          <control type="image">
-            <include>CoverflowRightShadowOverlayDims</include>
-            <include>CoverflowShadowOverlayVertDims</include>
-            <texture flipx="true">BlackGradient.png</texture>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Skin.HasTheme(lite) + [Container.Content(tvshows) + Skin.HasSetting(UseLowTVOverlay) + Control.IsVisible(55)]</visible>
-
-          <control type="image">
-            <include>CoverflowLeftShadowOverlayDims</include>
-            <include>CoverflowShadowOverlayLowVertDims</include>
-            <texture>BlackGradient.png</texture>
-          </control>
-          <control type="image">
-            <include>CoverflowRightShadowOverlayDims</include>
-            <include>CoverflowShadowOverlayLowVertDims</include>
-            <texture flipx="true">BlackGradient.png</texture>
-          </control>
-        </control>
-      </control>
-
-      <control type="group">
-        <control type="label">
-          <description>Album name</description>
-          <info>ListItem.Album</info>
-          <include>CoverflowMainLabel</include>
-          <visible>Container.Content(albums)</visible>
-        </control>
-        <control type="label">
-          <description>Episode Name</description>
-          <info>ListItem.Title</info>
-          <include>CoverflowMainLabel</include>
-          <visible>Container.Content(episodes)</visible>
-        </control>
-        <control type="label">
-          <description>Title</description>
-          <info>ListItem.Label</info>
-          <include>CoverflowMainLabel</include>
-          <visible>![Container.Content(albums) | Container.Content(episodes)]</visible>
-        </control>
-
-        <control type="label">
-          <description>Artist</description>
-          <info>ListItem.Artist</info>
-          <include>CoverflowDetailLabel</include>
-          <visible>Container.Content(albums)</visible>
-        </control>
-        <control type="label">
-          <description>Album and Artist</description>
-          <label>$INFO[ListItem.Album,, -] $INFO[ListItem.Artist]</label>
-          <include>CoverflowDetailLabel</include>
-          <visible>Container.Content(songs)</visible>
-        </control>
-        <control type="label">
-          <description>Episode No.</description>
-          <label>$INFO[ListItem.Episode,$LOCALIZE[20359] ] $INFO[ListItem.Date,(,)]</label>
-          <include>CoverflowDetailLabel</include>
-          <visible>Container.Content(episodes)</visible>
-        </control>
-        <control type="label">
-          <description>Detail</description>
-          <info>ListItem.Label2</info>
-          <include>CoverflowDetailLabel</include>
-          <visible>![Container.Content(albums) | Container.Content(songs) | Container.Content(episodes)] + IsEmpty(ListItem.StarRating)</visible>
-        </control>
-        <control type="image">
-          <include>CoverflowDetailLabel</include>
-          <include>StarRatingImage</include>
-          <visible>![Container.Content(albums) | Container.Content(songs) | Container.Content(episodes)] + !IsEmpty(ListItem.StarRating)</visible>
-        </control>
-
-        <control type="image">
-          <include>CoverflowSubDetailLabel</include>
-          <include>StarRatingImage</include>
-          <visible>Container.Content(episodes)</visible>
-        </control>
-      </control>
-    </control>
-
-    <control type="group">
-      <include>CoverflowVisible</include>
-      <include>CommonSortLetters</include>
-    </control>
-
-  </include>
+			</control>
+			<control type="group">
+				<description>Shadow Overlays</description>
+				<control type="group">
+					<visible>!Skin.HasTheme(lite) | ![[Container.Content(tvshows) | Container.Content(episodes)] + Skin.HasSetting(UseLowTVOverlay) + Control.IsVisible(55)]</visible>
+					<control type="image">
+						<include>CoverflowLeftShadowOverlayDims</include>
+						<include>CoverflowShadowOverlayVertDims</include>
+						<texture>BlackGradient.png</texture>
+					</control>
+					<control type="image">
+						<include>CoverflowRightShadowOverlayDims</include>
+						<include>CoverflowShadowOverlayVertDims</include>
+						<texture flipx="true">BlackGradient.png</texture>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Skin.HasTheme(lite) + [Container.Content(tvshows) + Skin.HasSetting(UseLowTVOverlay) + Control.IsVisible(55)]</visible>
+					<control type="image">
+						<include>CoverflowLeftShadowOverlayDims</include>
+						<include>CoverflowShadowOverlayLowVertDims</include>
+						<texture>BlackGradient.png</texture>
+					</control>
+					<control type="image">
+						<include>CoverflowRightShadowOverlayDims</include>
+						<include>CoverflowShadowOverlayLowVertDims</include>
+						<texture flipx="true">BlackGradient.png</texture>
+					</control>
+				</control>
+			</control>
+			<control type="group">
+				<control type="label">
+					<description>Album name</description>
+					<info>ListItem.Album</info>
+					<include>CoverflowMainLabel</include>
+					<visible>Container.Content(albums)</visible>
+				</control>
+				<control type="label">
+					<description>Episode Name</description>
+					<info>ListItem.Title</info>
+					<include>CoverflowMainLabel</include>
+					<visible>Container.Content(episodes)</visible>
+				</control>
+				<control type="label">
+					<description>Title</description>
+					<info>ListItem.Label</info>
+					<include>CoverflowMainLabel</include>
+					<visible>![Container.Content(albums) | Container.Content(episodes)]</visible>
+				</control>
+				<control type="label">
+					<description>Artist</description>
+					<info>ListItem.Artist</info>
+					<include>CoverflowDetailLabel</include>
+					<visible>Container.Content(albums)</visible>
+				</control>
+				<control type="label">
+					<description>Album and Artist</description>
+					<label>$INFO[ListItem.Album,, -] $INFO[ListItem.Artist]</label>
+					<include>CoverflowDetailLabel</include>
+					<visible>Container.Content(songs)</visible>
+				</control>
+				<control type="label">
+					<description>Episode No.</description>
+					<label>$INFO[ListItem.Episode,$LOCALIZE[20359] ] $INFO[ListItem.Date,(,)]</label>
+					<include>CoverflowDetailLabel</include>
+					<visible>Container.Content(episodes)</visible>
+				</control>
+				<control type="label">
+					<description>Detail</description>
+					<info>ListItem.Label2</info>
+					<include>CoverflowDetailLabel</include>
+					<visible>![Container.Content(albums) | Container.Content(songs) | Container.Content(episodes)] + IsEmpty(ListItem.StarRating)</visible>
+				</control>
+				<control type="image">
+					<include>CoverflowDetailLabel</include>
+					<include>StarRatingImage</include>
+					<visible>![Container.Content(albums) | Container.Content(songs) | Container.Content(episodes)] + !IsEmpty(ListItem.StarRating)</visible>
+				</control>
+				<control type="image">
+					<include>CoverflowSubDetailLabel</include>
+					<include>StarRatingImage</include>
+					<visible>Container.Content(episodes)</visible>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<include>CoverflowVisible</include>
+			<include>CommonSortLetters</include>
+		</control>
+	</include>
 </includes>

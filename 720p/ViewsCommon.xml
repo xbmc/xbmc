@@ -1,354 +1,327 @@
 <includes>
- 
-  <include name="List">
-    <control type="group">
-      <include>ListViewVisible</include>
-      <include>BackgroundOverlayFade</include>
-      <include>MediaViewBGOverlay</include>
-    </control>
-
-    <control type="group">
-      <include>ListViewVisible</include>
-      <include>MediaListSelectDelay</include>
-      <include>MediaViewTransition</include>
-      <visible>![Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]</visible>
-
-      <control type="group">
-        <posx>34</posx>
-        <posy>260</posy>
-
-        <control type="image">
-          <posx>-3</posx>
-          <posy>-8</posy>
-          <width>436</width>
-          <height>364</height>
-          <info>ListItem.Icon</info>
-          <aspectratio aligny="bottom">keep</aspectratio>
-          <bordersize>8</bordersize>
-        </control>
-        <control type="image">
-		  <posx>5</posx>
-          <posy>348</posy>
-          <width>420</width>
-          <height>348</height>
-          <info>ListItem.Icon</info>
-          <texture flipy="true" diffuse="DiffuseMirror.png" />
-          <aspectratio aligny="top">keep</aspectratio>
-        </control>
-
-      </control>
-    </control>
-
-    <control type="group">
-      <include>ListViewVisible</include>
-      <include>MediaViewFade</include>
-      <posx>460</posx>
-      <posy>80</posy>
-
-      <control type="list" id="50">
-        <viewtype label="List">list</viewtype>
-	     <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-         <include condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]">NoIconsListView</include>
-        <posx>10</posx>
-        <posy>180</posy>
-        <width>840</width>
-        <height>378</height>
-        <scrolltime>200</scrolltime>
-	     <pagecontrol>61</pagecontrol>
-        <onleft>50</onleft>
-        <onright>9009</onright>
-        <onup>50</onup>
-        <ondown>50</ondown>
-
-        <itemlayout condition="![Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]" width="840" height="42">
-          <include>ListViewItemLayoutWide</include>
-        </itemlayout>
-
-        <focusedlayout condition="![Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]" width="840" height="42">
-          <include>ListViewFocusedLayoutWide</include>
-        </focusedlayout>
-
-        <itemlayout condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]" width="1280" height="42">
-          <control type="image">
-            <include>MediaItemBGSuperWide</include>
-          </control>
-          <control type="label">
-            <width>1026</width>
-            <include>MediaItemMainInfoNFWide</include>
-          </control>
-          <control type="image">
-            <posx>1128</posx>
-            <include>TVEpisodeItemOverlayWide</include>
-            <include>MediaItemNFFade</include>
-          </control>
-          <control type="label">
-            <visible>!IsEmpty(ListItem.Overlay)</visible>
-            <posx>1154</posx>
-            <include>InfoListItemDetailInfoNFWide</include>
-          </control>
-          <control type="label">
-            <visible>IsEmpty(ListItem.Overlay)</visible>
-            <posx>1154</posx>
-            <include>MediaItemDetailInfoNFWide</include>
-          </control>
-        </itemlayout>
-
-        <focusedlayout condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]" width="1280" height="42">
-          <control type="image">
-            <include>MediaItemBGWide</include>
-          </control>
-          <control type="image">
-            <posx>50</posx>
-            <width>1260</width>
-            <include>MediaItemFocusBG</include>
-          </control>
-          <control type="image">
-            <visible>!IsEmpty(ListItem.Label2)</visible>
-            <posx>1122</posx>
-            <include>MediaItemDetailBGWide</include>
-          </control>
-          <control type="label">
-            <width>1026</width>
-            <include>MediaItemMainInfoNFWide</include>
-            <include>MediaListItemFadeOut</include>
-          </control>
-          <control type="label">
-            <visible>!IsEmpty(ListItem.Overlay)</visible>
-            <posx>1154</posx>
-            <include>InfoListItemDetailInfoNFWide</include>
-            <include>MediaListItemFadeOut</include>
-          </control>
-          <control type="label">
-            <visible>IsEmpty(ListItem.Overlay)</visible>
-            <posx>1154</posx>
-            <include>MediaItemDetailInfoNFWide</include>
-            <include>MediaListItemFadeOut</include>
-          </control>
-          <control type="label">
-            <width>1026</width>
-            <include>MediaItemMainInfoFOWide</include>
-            <include>MediaListItemFade</include>
-          </control>
-          <control type="image">
-            <posx>1128</posx>
-            <include>TVEpisodeItemOverlayWide</include>
-            <include>MediaListItemFade</include>
-          </control>
-          <control type="label">
-            <visible>!IsEmpty(ListItem.Overlay)</visible>
-            <posx>1154</posx>
-            <include>InfoListItemDetailInfoFOWide</include>
-            <include>MediaListItemFade</include>
-          </control>
-          <control type="label">
-            <visible>IsEmpty(ListItem.Overlay)</visible>
-            <posx>1154</posx>
-            <include>MediaItemDetailInfoFOWide</include>
-            <include>MediaListItemFade</include>
-          </control>
-        </focusedlayout>
-      </control>
-
-      <control type="image">
-        <description>List overlay</description>
-        <visible>![Container(50).Position(8)] + !Skin.HasTheme(lite)</visible>
-        <include condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]">NoIconListViewFadeOverlay</include>
-        <posy>488</posy>
-        <width>660</width>
-        <height>100</height>
-        <texture>BlackGradient2.png</texture>
-        <aspectratio>stretch</aspectratio>
-      </control>
-
-      <control type="scrollbar" id="61">
-        <include condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]">NoIconListViewScrollbar</include>
-        <onup>61</onup>
-        <ondown>61</ondown>
-        <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-        <onright>50</onright>
-        <posx>28</posx>
-        <posy>179</posy>
-        <height>380</height>
-      </control>
-
-    </control>
-
-    <control type="group">
-      <include>ListViewVisible</include>
-      <include>CommonSortLetters</include>
-    </control>
-  </include>
-
-
-  <include name="InfoList">
-    <control type="group">
-      <include>InfoListVisible</include>
-      <include>MediaViewBGOverlay</include>
-    </control>
-
-    <control type="group">
-      <include>InfoListVisible</include>
-      <include>MediaViewFade</include>
-
-      <control type="list" id="56">
-        <viewtype label="InfoList">list</viewtype>
-  		<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-  		<posx>-24</posx>
-        <posy>230</posy>
-        <width>640</width>
-        <height>454</height>
-        <scrolltime>200</scrolltime>
- 	  	<pagecontrol>61</pagecontrol>
-        <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-        <onright>9009</onright>
-        <onup>56</onup>
-        <ondown>56</ondown>
-    
-        <itemlayout height="42" width="530">
-		    <control type="image">
-			    <posx>0</posx>
-			    <posy>-6</posy>
-			    <width>679</width>
-			    <height>54</height>
-			    <texture>MediaItemBG.png</texture>
-		    </control>
-		    <control type="label">
-		        <posx>60</posx>
-			    <width>356</width>
-			    <height>42</height>
-			    <align>left</align>
-			    <aligny>center</aligny>
-			    <label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
-			    <font>MediumSmallDefaultCapsFont</font>
-			    <textcolor>Unfocused</textcolor>
-				<visible>Container.Content(episodes)</visible>
-		    </control>
-		    <control type="label">
-		        <posx>60</posx>
-			    <width>356</width>
-			    <height>42</height>
-			    <align>left</align>
-			    <aligny>center</aligny>
-			    <label>$INFO[ListItem.Label]</label>
-			    <font>MediumSmallDefaultCapsFont</font>
-			    <textcolor>Unfocused</textcolor>
-				<visible>!Container.Content(episodes)</visible>
-		    </control>
-		    <control type="image">
-			    <visible>!Container.Content(TVShows) + !Container.Content(Seasons)</visible>
-		     	<posx>470</posx>
-				<posy>10</posy>
-				<width>16</width>
-				<height>25</height>
-				<info>ListItem.Overlay</info>
-		        <animation effect="fade" start="30" end="30" time="0" condition="true">Conditional</animation>
-		    </control>
-
-		    <control type="label">
-		      <visible>IsEmpty(ListItem.Overlay)</visible>
-		    	<posx>550</posx>
-		    	<posy>2</posy>
-		    	<width>104</width>
-		    	<height>42</height>
-		    	<align>right</align>
-		    	<aligny>center</aligny>
-		    	<label>$INFO[ListItem.Label2]</label>
-		    	<font>SmallDefaultCapsFont</font>
-		    	<textcolor>Unfocused</textcolor>
-		    </control>
-
-		    <control type="label">
-		      <visible>!IsEmpty(ListItem.Overlay) + [!Container.Content(TVShows) + !Container.Content(Seasons)]</visible>
-		      <posx>550</posx>
-		      <posy>2</posy>
-		      <width>95</width>
-		      <height>42</height>
-		      <align>right</align>
-		      <aligny>center</aligny>
-		      <label>$INFO[ListItem.Duration]</label>
-		      <font>SmallDefaultCapsFont</font>
-		      <textcolor>Unfocused</textcolor>
-		    </control>
-
-		    <control type="label">
-			  <visible>Container.Content(TVShows) | Container.Content(Seasons)</visible>
-		      <posx>550</posx>
-		      <posy>2</posy>
-		      <width>95</width>
-		      <height>42</height>
-		      <align>right</align>
-		      <aligny>center</aligny>
-              <label>$INFO[ListItem.Episode] $LOCALIZE[20360]</label>
-		      <font>SmallDefaultCapsFont</font>
-		      <textcolor>Unfocused</textcolor>
-		    </control>
-
-        </itemlayout>
-
-        <focusedlayout height="42" width="530">
-		    <control type="image">
-		        <posx>0</posx>
-			    <posy>0</posy>
-			    <width>530</width>
-			    <height>42</height>
-			    <texture>MediaItemBG.png</texture>
-		    </control>
-
-		    <control type="image">
-		        <posx>44</posx>
-			    <posy>2</posy>
-			    <width>530</width>
-			    <height>41</height>
-			    <texture aspectratio="stretch" flipx="true">InfoList_focused.png</texture>
-			    <animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
-			    <animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false"  tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
-		    </control>
-		    <control type="image">
-		      <visible>!IsEmpty(ListItem.Label2) | Container.Content(Movies)</visible>
-		      <posx>458</posx>
-		      <posy>12</posy>
-		      <width>116</width>
-		      <height>22</height>
-		      <texture border="13,0,0,0">InfoList_focused_detail.png</texture>
-		      <animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
-		    <animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false"  tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
-		    </control>
-		    <control type="image">
-		      <visible>Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes)</visible>
-		      <posx>450</posx>
-		      <posy>12</posy>
-		      <width>124</width>
-		      <height>22</height>
-		      <texture border="13,0,0,0">InfoList_focused_detail.png</texture>
-		      <animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
-		    <animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false"  tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
-		    </control>
-		    <control type="label">
-		        <posx>60</posx>
-			    <width>356</width>
-			    <height>42</height>
-			    <align>left</align>
-			    <aligny>center</aligny>
-			    <label>$INFO[ListItem.Label]</label>
-			    <font>MediumSmallDefaultCapsFont</font>
-			    <textcolor>Unfocused</textcolor>
-		      	<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
-				<visible>!Container.Content(episodes)</visible>
-		    </control>
-		    <control type="label">
-		        <posx>60</posx>
-			    <width>356</width>
-			    <height>42</height>
-			    <align>left</align>
-			    <aligny>center</aligny>
-			    <label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
-			    <font>MediumSmallDefaultCapsFont</font>
-			    <textcolor>Unfocused</textcolor>
-		      	<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
-				<visible>Container.Content(episodes)</visible>
-		    </control>
-
-<!--
+	<include name="List">
+		<control type="group">
+			<include>ListViewVisible</include>
+			<include>BackgroundOverlayFade</include>
+			<include>MediaViewBGOverlay</include>
+		</control>
+		<control type="group">
+			<include>ListViewVisible</include>
+			<include>MediaListSelectDelay</include>
+			<include>MediaViewTransition</include>
+			<visible>![Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]</visible>
+			<control type="group">
+				<posx>34</posx>
+				<posy>260</posy>
+				<control type="image">
+					<posx>-3</posx>
+					<posy>-8</posy>
+					<width>436</width>
+					<height>364</height>
+					<info>ListItem.Icon</info>
+					<aspectratio aligny="bottom">keep</aspectratio>
+					<bordersize>8</bordersize>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>348</posy>
+					<width>420</width>
+					<height>348</height>
+					<info>ListItem.Icon</info>
+					<texture flipy="true" diffuse="DiffuseMirror.png"/>
+					<aspectratio aligny="top">keep</aspectratio>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<include>ListViewVisible</include>
+			<include>MediaViewFade</include>
+			<posx>460</posx>
+			<posy>80</posy>
+			<control type="list" id="50">
+				<viewtype label="List">list</viewtype>
+				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+				<include condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]">NoIconsListView</include>
+				<posx>10</posx>
+				<posy>180</posy>
+				<width>840</width>
+				<height>378</height>
+				<scrolltime>200</scrolltime>
+				<pagecontrol>61</pagecontrol>
+				<onleft>50</onleft>
+				<onright>9009</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<itemlayout condition="![Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]" width="840" height="42">
+					<include>ListViewItemLayoutWide</include>
+				</itemlayout>
+				<focusedlayout condition="![Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]" width="840" height="42">
+					<include>ListViewFocusedLayoutWide</include>
+				</focusedlayout>
+				<itemlayout condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]" width="1280" height="42">
+					<control type="image">
+						<include>MediaItemBGSuperWide</include>
+					</control>
+					<control type="label">
+						<width>1026</width>
+						<include>MediaItemMainInfoNFWide</include>
+					</control>
+					<control type="image">
+						<posx>1128</posx>
+						<include>TVEpisodeItemOverlayWide</include>
+						<include>MediaItemNFFade</include>
+					</control>
+					<control type="label">
+						<visible>!IsEmpty(ListItem.Overlay)</visible>
+						<posx>1154</posx>
+						<include>InfoListItemDetailInfoNFWide</include>
+					</control>
+					<control type="label">
+						<visible>IsEmpty(ListItem.Overlay)</visible>
+						<posx>1154</posx>
+						<include>MediaItemDetailInfoNFWide</include>
+					</control>
+				</itemlayout>
+				<focusedlayout condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]" width="1280" height="42">
+					<control type="image">
+						<include>MediaItemBGWide</include>
+					</control>
+					<control type="image">
+						<posx>50</posx>
+						<width>1260</width>
+						<include>MediaItemFocusBG</include>
+					</control>
+					<control type="image">
+						<visible>!IsEmpty(ListItem.Label2)</visible>
+						<posx>1122</posx>
+						<include>MediaItemDetailBGWide</include>
+					</control>
+					<control type="label">
+						<width>1026</width>
+						<include>MediaItemMainInfoNFWide</include>
+						<include>MediaListItemFadeOut</include>
+					</control>
+					<control type="label">
+						<visible>!IsEmpty(ListItem.Overlay)</visible>
+						<posx>1154</posx>
+						<include>InfoListItemDetailInfoNFWide</include>
+						<include>MediaListItemFadeOut</include>
+					</control>
+					<control type="label">
+						<visible>IsEmpty(ListItem.Overlay)</visible>
+						<posx>1154</posx>
+						<include>MediaItemDetailInfoNFWide</include>
+						<include>MediaListItemFadeOut</include>
+					</control>
+					<control type="label">
+						<width>1026</width>
+						<include>MediaItemMainInfoFOWide</include>
+						<include>MediaListItemFade</include>
+					</control>
+					<control type="image">
+						<posx>1128</posx>
+						<include>TVEpisodeItemOverlayWide</include>
+						<include>MediaListItemFade</include>
+					</control>
+					<control type="label">
+						<visible>!IsEmpty(ListItem.Overlay)</visible>
+						<posx>1154</posx>
+						<include>InfoListItemDetailInfoFOWide</include>
+						<include>MediaListItemFade</include>
+					</control>
+					<control type="label">
+						<visible>IsEmpty(ListItem.Overlay)</visible>
+						<posx>1154</posx>
+						<include>MediaItemDetailInfoFOWide</include>
+						<include>MediaListItemFade</include>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="image">
+				<description>List overlay</description>
+				<visible>![Container(50).Position(8)] + !Skin.HasTheme(lite)</visible>
+				<include condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]">NoIconListViewFadeOverlay</include>
+				<posy>488</posy>
+				<width>660</width>
+				<height>100</height>
+				<texture>BlackGradient2.png</texture>
+				<aspectratio>stretch</aspectratio>
+			</control>
+			<control type="scrollbar" id="61">
+				<include condition="[Skin.HasSetting(HideListViewIcons) | [Skin.HasSetting(HideListViewIconsVideos) + [Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)]] | [Skin.HasSetting(HideListViewIconsMusic) + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]]]">NoIconListViewScrollbar</include>
+				<onup>61</onup>
+				<ondown>61</ondown>
+				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+				<onright>50</onright>
+				<posx>28</posx>
+				<posy>179</posy>
+				<height>380</height>
+			</control>
+		</control>
+		<control type="group">
+			<include>ListViewVisible</include>
+			<include>CommonSortLetters</include>
+		</control>
+	</include>
+	<include name="InfoList">
+		<control type="group">
+			<include>InfoListVisible</include>
+			<include>MediaViewBGOverlay</include>
+		</control>
+		<control type="group">
+			<include>InfoListVisible</include>
+			<include>MediaViewFade</include>
+			<control type="list" id="56">
+				<viewtype label="InfoList">list</viewtype>
+				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+				<posx>-24</posx>
+				<posy>230</posy>
+				<width>640</width>
+				<height>454</height>
+				<scrolltime>200</scrolltime>
+				<pagecontrol>61</pagecontrol>
+				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+				<onright>9009</onright>
+				<onup>56</onup>
+				<ondown>56</ondown>
+				<itemlayout height="42" width="530">
+					<control type="image">
+						<posx>0</posx>
+						<posy>-6</posy>
+						<width>679</width>
+						<height>54</height>
+						<texture>MediaItemBG.png</texture>
+					</control>
+					<control type="label">
+						<posx>60</posx>
+						<width>356</width>
+						<height>42</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
+						<font>MediumSmallDefaultCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+						<visible>Container.Content(episodes)</visible>
+					</control>
+					<control type="label">
+						<posx>60</posx>
+						<width>356</width>
+						<height>42</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+						<font>MediumSmallDefaultCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+						<visible>!Container.Content(episodes)</visible>
+					</control>
+					<control type="image">
+						<visible>!Container.Content(TVShows) + !Container.Content(Seasons)</visible>
+						<posx>470</posx>
+						<posy>10</posy>
+						<width>16</width>
+						<height>25</height>
+						<info>ListItem.Overlay</info>
+						<animation effect="fade" start="30" end="30" time="0" condition="true">Conditional</animation>
+					</control>
+					<control type="label">
+						<visible>IsEmpty(ListItem.Overlay)</visible>
+						<posx>550</posx>
+						<posy>2</posy>
+						<width>104</width>
+						<height>42</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label2]</label>
+						<font>SmallDefaultCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+					</control>
+					<control type="label">
+						<visible>!IsEmpty(ListItem.Overlay) + [!Container.Content(TVShows) + !Container.Content(Seasons)]</visible>
+						<posx>550</posx>
+						<posy>2</posy>
+						<width>95</width>
+						<height>42</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Duration]</label>
+						<font>SmallDefaultCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+					</control>
+					<control type="label">
+						<visible>Container.Content(TVShows) | Container.Content(Seasons)</visible>
+						<posx>550</posx>
+						<posy>2</posy>
+						<width>95</width>
+						<height>42</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Episode] $LOCALIZE[20360]</label>
+						<font>SmallDefaultCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout height="42" width="530">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>530</width>
+						<height>42</height>
+						<texture>MediaItemBG.png</texture>
+					</control>
+					<control type="image">
+						<posx>44</posx>
+						<posy>2</posy>
+						<width>530</width>
+						<height>41</height>
+						<texture aspectratio="stretch" flipx="true">InfoList_focused.png</texture>
+						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
+						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
+					</control>
+					<control type="image">
+						<visible>!IsEmpty(ListItem.Label2) | Container.Content(Movies)</visible>
+						<posx>458</posx>
+						<posy>12</posy>
+						<width>116</width>
+						<height>22</height>
+						<texture border="13,0,0,0">InfoList_focused_detail.png</texture>
+						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
+						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
+					</control>
+					<control type="image">
+						<visible>Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes)</visible>
+						<posx>450</posx>
+						<posy>12</posy>
+						<width>124</width>
+						<height>22</height>
+						<texture border="13,0,0,0">InfoList_focused_detail.png</texture>
+						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
+						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
+					</control>
+					<control type="label">
+						<posx>60</posx>
+						<width>356</width>
+						<height>42</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+						<font>MediumSmallDefaultCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+						<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
+						<visible>!Container.Content(episodes)</visible>
+					</control>
+					<control type="label">
+						<posx>60</posx>
+						<width>356</width>
+						<height>42</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
+						<font>MediumSmallDefaultCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+						<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
+						<visible>Container.Content(episodes)</visible>
+					</control>
+					<!--
 		    <control type="label">
 		      <visible>!IsEmpty(ListItem.Overlay)</visible>
 		      <posx>456</posx>
@@ -377,430 +350,401 @@
 		      <animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
 		    </control>
 -->
-		<control type="group">
-			<visible>!Container.Content(episodes)</visible>
-		    <control type="label">
-				<description>shadow</description>
-		        <posx>61</posx>
-				<posy>2</posy>
-			    <width>356</width>
-			    <height>42</height>
-			    <align>left</align>
-			    <aligny>center</aligny>
-			    <label>$INFO[ListItem.Label]</label>
-			    <font>MediumSmallDefaultCapsFont</font>
-				<textcolor>6D000000</textcolor>
-		        <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
-			    <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
-		    </control>
-		    <control type="label">
-				<description>shadow</description>
-		        <posx>60</posx>
-				<posy>1</posy>
-			    <width>356</width>
-			    <height>42</height>
-			    <align>left</align>
-			    <aligny>center</aligny>
-			    <label>$INFO[ListItem.Label]</label>
-			    <font>MediumSmallDefaultCapsFont</font>
-				<textcolor>25000000</textcolor>
-		        <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
-			    <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
-		    </control>
-		    <control type="label">
-		        <posx>60</posx>
-			    <width>356</width>
-			    <height>42</height>
-			    <align>left</align>
-			    <aligny>center</aligny>
-			    <label>$INFO[ListItem.Label]</label>
-			    <font>MediumSmallDefaultCapsFont</font>
-		        <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
-			    <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
-		    </control>
+					<control type="group">
+						<visible>!Container.Content(episodes)</visible>
+						<control type="label">
+							<description>shadow</description>
+							<posx>61</posx>
+							<posy>2</posy>
+							<width>356</width>
+							<height>42</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<font>MediumSmallDefaultCapsFont</font>
+							<textcolor>6D000000</textcolor>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+						</control>
+						<control type="label">
+							<description>shadow</description>
+							<posx>60</posx>
+							<posy>1</posy>
+							<width>356</width>
+							<height>42</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<font>MediumSmallDefaultCapsFont</font>
+							<textcolor>25000000</textcolor>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+						</control>
+						<control type="label">
+							<posx>60</posx>
+							<width>356</width>
+							<height>42</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<font>MediumSmallDefaultCapsFont</font>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+						</control>
+					</control>
+					<control type="group">
+						<visible>Container.Content(episodes)</visible>
+						<control type="label">
+							<description>shadow</description>
+							<posx>61</posx>
+							<posy>2</posy>
+							<width>356</width>
+							<height>42</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
+							<font>MediumSmallDefaultCapsFont</font>
+							<textcolor>6D000000</textcolor>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+						</control>
+						<control type="label">
+							<description>shadow</description>
+							<posx>60</posx>
+							<posy>1</posy>
+							<width>356</width>
+							<height>42</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
+							<font>MediumSmallDefaultCapsFont</font>
+							<textcolor>25000000</textcolor>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+						</control>
+						<control type="label">
+							<posx>60</posx>
+							<width>356</width>
+							<height>42</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
+							<font>MediumSmallDefaultCapsFont</font>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+						</control>
+					</control>
+					<control type="image">
+						<visible>!Container.Content(TVShows) + !Container.Content(Seasons)</visible>
+						<posx>470</posx>
+						<posy>10</posy>
+						<width>16</width>
+						<height>25</height>
+						<info>ListItem.Overlay</info>
+						<include>MediaListItemFade</include>
+					</control>
+					<control type="label">
+						<visible>!IsEmpty(ListItem.Overlay) + [!Container.Content(TVShows) + !Container.Content(Seasons)]</visible>
+						<posx>550</posx>
+						<posy>2</posy>
+						<width>95</width>
+						<height>42</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Duration]</label>
+						<include>MediaItemDetailFontFO</include>
+						<include>MediaListItemFade</include>
+					</control>
+					<control type="label">
+						<visible>Container.Content(TVShows) | Container.Content(Seasons)</visible>
+						<posx>550</posx>
+						<posy>2</posy>
+						<width>95</width>
+						<height>42</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Episode] $LOCALIZE[20360]</label>
+						<font>SmallDefaultCapsFont</font>
+						<include>MediaItemDetailFontFO</include>
+						<include>MediaListItemFade</include>
+					</control>
+					<control type="label">
+						<visible>IsEmpty(ListItem.Overlay)</visible>
+						<posx>550</posx>
+						<posy>2</posy>
+						<width>95</width>
+						<height>42</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label2]</label>
+						<font>SmallDefaultCapsFont</font>
+						<include>MediaListItemFade</include>
+					</control>
+				</focusedlayout>
+			</control>
 		</control>
 		<control type="group">
-			<visible>Container.Content(episodes)</visible>
-		    <control type="label">
-				<description>shadow</description>
-		        <posx>61</posx>
-				<posy>2</posy>
-			    <width>356</width>
-			    <height>42</height>
-			    <align>left</align>
-			    <aligny>center</aligny>
-			    <label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
-			    <font>MediumSmallDefaultCapsFont</font>
-				<textcolor>6D000000</textcolor>
-		        <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
-			    <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
-		    </control>
-		    <control type="label">
-				<description>shadow</description>
-		        <posx>60</posx>
-				<posy>1</posy>
-			    <width>356</width>
-			    <height>42</height>
-			    <align>left</align>
-			    <aligny>center</aligny>
-			    <label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
-			    <font>MediumSmallDefaultCapsFont</font>
-				<textcolor>25000000</textcolor>
-		        <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
-			    <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
-		    </control>
-		    <control type="label">
-		        <posx>60</posx>
-			    <width>356</width>
-			    <height>42</height>
-			    <align>left</align>
-			    <aligny>center</aligny>
-			    <label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
-			    <font>MediumSmallDefaultCapsFont</font>
-		        <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
-			    <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
-		    </control>
+			<posx>558</posx>
+			<include>InfoListVisible</include>
+			<include>MediaViewFade</include>
+			<control type="image">
+				<description>List overlay</description>
+				<posx>-590</posx>
+				<posy>666</posy>
+				<visible>![Container(56).Position(7)] + !Skin.HasTheme(lite)</visible>
+				<width>650</width>
+				<height>100</height>
+				<texture>BlackGradient2.png</texture>
+				<aspectratio>stretch</aspectratio>
+			</control>
+			<control type="scrollbar" id="61">
+				<posx>3</posx>
+				<posy>225</posy>
+				<height>465</height>
+				<onup>61</onup>
+				<ondown>61</ondown>
+				<onleft>50</onleft>
+				<onright>9009</onright>
+			</control>
 		</control>
-		
-		    <control type="image">
-			  <visible>!Container.Content(TVShows) + !Container.Content(Seasons)</visible>
-		      <posx>470</posx>
-			  <posy>10</posy>
-			  <width>16</width>
-			  <height>25</height>
-			  <info>ListItem.Overlay</info>
-		      <include>MediaListItemFade</include>
-		    </control>
-
-		    <control type="label">
-		      <visible>!IsEmpty(ListItem.Overlay) + [!Container.Content(TVShows) + !Container.Content(Seasons)]</visible>
-		      <posx>550</posx>
-		      <posy>2</posy>
-		      <width>95</width>
-		      <height>42</height>
-		      <align>right</align>
-		      <aligny>center</aligny>
-		      <label>$INFO[ListItem.Duration]</label>
-		      <include>MediaItemDetailFontFO</include>
-		      <include>MediaListItemFade</include>
-		    </control>
-
-		    <control type="label">
-			  <visible>Container.Content(TVShows) | Container.Content(Seasons)</visible>
-		      <posx>550</posx>
-		      <posy>2</posy>
-		      <width>95</width>
-		      <height>42</height>
-		      <align>right</align>
-		      <aligny>center</aligny>
-              <label>$INFO[ListItem.Episode] $LOCALIZE[20360]</label>
-		      <font>SmallDefaultCapsFont</font>
-		      <include>MediaItemDetailFontFO</include>
-		      <include>MediaListItemFade</include>
-		    </control>
-
-		    <control type="label">
-		      <visible>IsEmpty(ListItem.Overlay)</visible>
-		      <posx>550</posx>
-		      <posy>2</posy>
-		      <width>95</width>
-		      <height>42</height>
-		      <align>right</align>
-		      <aligny>center</aligny>
-		      <label>$INFO[ListItem.Label2]</label>
-		      <font>SmallDefaultCapsFont</font>
-		      <include>MediaListItemFade</include>
-		    </control>
-
-        </focusedlayout>
-      </control>
-    </control>
-
-    <control type="group">
-      <posx>558</posx>
-      <include>InfoListVisible</include>
-      <include>MediaViewFade</include>
-
-      <control type="image">
-        <description>List overlay</description>
-		<posx>-590</posx>
-        <posy>666</posy>
-        <visible>![Container(56).Position(7)] + !Skin.HasTheme(lite)</visible>
-        <width>650</width>
-        <height>100</height>
-        <texture>BlackGradient2.png</texture>
-        <aspectratio>stretch</aspectratio>
-      </control>
-
-      <control type="scrollbar" id="61">
-        <posx>3</posx>
-        <posy>225</posy>
-        <height>465</height>
-        <onup>61</onup>
-        <ondown>61</ondown>
-        <onleft>50</onleft>
-        <onright>9009</onright>
-      </control>
-
-    </control>
-
-
-    <control type="group">
-      <include>InfoListVisible</include>
-      <include>MediaViewFade</include>
-
-      <control type="group">
-        <posx>592</posx>
-        <posy>237</posy>
-        <include>MediaListSelectDelay</include>
-
-        <control type="group">
-          <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-		  <posx>400</posx>
-		  <posy>-5</posy>
-
-          <control type="image">
-            <description>Thumb image</description>
-			<visible>!Container.Content(Episodes)</visible>
-            <posx>0</posx>
-            <width>270</width>
-            <height>366</height>
-            <texture>amt-blank-poster.png</texture>
-            <info>ListItem.Icon</info>
-            <aspectratio align="left" aligny="top">keep</aspectratio>
-		    <bordertexture border="7">ThumbBorder.png</bordertexture>
-       		<bordersize>4</bordersize>
-         </control>
-
-          <control type="image">
-            <description>Thumb image</description>
-			<visible>Container.Content(Episodes)</visible>
-            <posx>-392</posx>
-            <width>365</width>
-            <height>205</height>
-            <texture>amt-blank-poster.png</texture>
-            <info>ListItem.Icon</info>
-            <aspectratio align="right" aligny="top">keep</aspectratio>
-		    <bordertexture border="7">ThumbBorder.png</bordertexture>
-       		<bordersize>4</bordersize>
-         </control>
-
-    <!--
+		<control type="group">
+			<include>InfoListVisible</include>
+			<include>MediaViewFade</include>
+			<control type="group">
+				<posx>592</posx>
+				<posy>237</posy>
+				<include>MediaListSelectDelay</include>
+				<control type="group">
+					<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+					<posx>400</posx>
+					<posy>-5</posy>
+					<control type="image">
+						<description>Thumb image</description>
+						<visible>!Container.Content(Episodes)</visible>
+						<posx>0</posx>
+						<width>270</width>
+						<height>366</height>
+						<texture>amt-blank-poster.png</texture>
+						<info>ListItem.Icon</info>
+						<aspectratio align="left" aligny="top">keep</aspectratio>
+						<bordertexture border="7">ThumbBorder.png</bordertexture>
+						<bordersize>4</bordersize>
+					</control>
+					<control type="image">
+						<description>Thumb image</description>
+						<visible>Container.Content(Episodes)</visible>
+						<posx>-392</posx>
+						<width>365</width>
+						<height>205</height>
+						<texture>amt-blank-poster.png</texture>
+						<info>ListItem.Icon</info>
+						<aspectratio align="right" aligny="top">keep</aspectratio>
+						<bordertexture border="7">ThumbBorder.png</bordertexture>
+						<bordersize>4</bordersize>
+					</control>
+					<!--
           <control type="label">
             <description>No Thumb label</description>
             <include>InfoListNoThumbDims</include>
             <include>NoThumbLabel</include>
           </control>-->
-  
-          <control type="group">
-            <description>Watched/Unwatched Overlay</description>
- 			<visible>!Container.Content(episodes)</visible>
-            <posx>234</posx>
-            <posy>25</posy>
-            <include>WatchedUnwatchedOverlay</include>
-          </control>
-           <control type="group">
-            <description>Watched/Unwatched Overlay</description>
- 			<visible>Container.Content(episodes)</visible>
-            <posx>-63</posx>
-            <posy>25</posy>
-            <include>WatchedUnwatchedOverlay</include>
-          </control>       </control>
-
-<!-- Layout for any except Episodes -->
-
-        <control type="group">
-          <posx>10</posx>
-          <posy>-4</posy>
-		  <visible>!Container.Content(Episodes)</visible>
-
-          <control type="label">
-            <description>Title</description>
-            <width>InfoListTitleWidth</width>
-            <font>MediumLargeTitleCapsFont</font>
-            <label>$INFO[ListItem.Title]</label>
-            <visible>![Container.Content(albums) | Container.Content(artists)]</visible>
-          </control>
-          <control type="label">
-            <description>Album</description>
-            <width>InfoListTitleWidth</width>
-            <font>MediumLargeTitleCapsFont</font>
-            <label>$INFO[ListItem.Album]</label>
-            <visible>Container.Content(albums)</visible>
-          </control>
-          <control type="label">
-            <description>Artist</description>
-            <width>InfoListTitleWidth</width>
-            <font>MediumLargeTitleCapsFont</font>
-            <label>$INFO[ListItem.Artist]</label>
-            <visible>Container.Content(artists)</visible>
-          </control>
-
-          <control type="label">
-            <description>Year</description>
-			<visible>Container.Content(movies)</visible>
-            <posy>28</posy>
-            <width>InfoListTitleWidth</width>
-            <font>SmallTitleCapsFont</font>
-            <label>$INFO[ListItem.Year]</label>
-            <textcolor>Focused</textcolor>
-          </control>
-
-
-	        <control type="image">
-				<description>Star Rating</description>
-				<align>left</align>
-				<info>ListItem.StarRating</info>
-				<aspectratio>keep</aspectratio>
-				<width>120</width>
-				<height>47</height>
-				<posy>50</posy>
-				<posx>-2</posx>
-				<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
-	        </control>
-
-	          <control type="group">
-	            <posy>95</posy>
-	            <control type="textbox">
-	              <description>Plot</description>
-	              <width>InfoListTitleWidth</width>
-	              <height>261</height>
-	              <info>ListItem.Plot</info>
-	              <visible>![Container.Content(seasons) | Container.Content(albums) | Container.Content(artists)]</visible>
-	            </control>
-	            <control type="textbox">
-	              <description>Plot</description>
-	              <width>InfoListTitleWidth</width>
-	              <height>317</height>
-	              <info>ListItem.plotoutline</info>
-	              <visible>Container.Content(seasons)</visible>
-	            </control>
-	            <control type="textbox">
-	              <description>Album review</description>
-	              <width>InfoListTitleWidth</width>
-	              <height>317</height>
-	              <info>ListItem.Property(description)</info>
-	              <visible>Container.Content(albums) | Container.Content(artists)</visible>
-	            </control>
-	          </control>
-			</control>
-
-	        <control type="group">
-				<posy>400</posy>
-				<posx>11</posx>
-				<include>InfoListFlags</include>
-		 	</control>
-
-<!-- Layout for Episodes -->
-
-        <control type="group">
-          <posx>400</posx>
-          <posy>-4</posy>
-		  <visible>Container.Content(Episodes)</visible>
-
-          <control type="textbox">
-            <description>Title</description>
-            <width>260</width>
-            <height>60</height>
-            <font>MediumLargeTitleCapsFont</font>
-            <label>$INFO[ListItem.Title]</label>
-		  <visible>Container.Content(Episodes)</visible>
-          </control>
-
-          <control type="label">
-            <description>Star Rating Label</description>
-			<posy>70</posy>
-			<posx>60</posx>
-            <width>80</width>
-            <font>MediumTitleFont</font>
-            <label>$LOCALIZE[563]:</label>
-			<align>right</align>
-            <textcolor>FFFF9900</textcolor>
-		  <visible>Container.Content(Episodes)</visible>
-          </control>
-          <control type="image">
-			<description>Star Rating</description>
-			<align>left</align>
-			<info>ListItem.StarRating</info>
-			<aspectratio>keep</aspectratio>
-			<width>120</width>
-			<height>47</height>
-			<posy>59</posy>
-			<posx>67</posx>
-			<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
-          </control>
-          <control type="label">
-            <description>Duration Label</description>
-			<posy>100</posy>
-			<posx>60</posx>
-            <width>80</width>
-            <font>MediumTitleFont</font>
-            <label>$LOCALIZE[2050]:</label>
-			<align>right</align>
-            <textcolor>FFFF9900</textcolor>
-		  <visible>Container.Content(Episodes)</visible>
-          </control>
-          <control type="label">
-            <description>Duration</description>
-			<posx>70</posx>
-			<posy>103</posy>
-            <width>180</width>
-            <label>$INFO[ListItem.Duration]</label>
-			<align>left</align>
-		  <visible>Container.Content(Episodes)</visible>
-          </control>
-          <control type="label">
-            <description>Director Label</description>
-			<posy>130</posy>
-			<posx>60</posx>
-            <width>80</width>
-            <font>MediumTitleFont</font>
-            <label>$LOCALIZE[20339]:</label>
-			<align>right</align>
-            <textcolor>FFFF9900</textcolor>
-		  <visible>Container.Content(Episodes)</visible>
-          </control>
-          <control type="label">
-            <description>Director</description>
-			<posx>70</posx>
-			<posy>133</posy>
-            <width>180</width>
-			<label fallback="31047">$INFO[ListItem.Director]</label>
-			<align>left</align>
-		  <visible>Container.Content(Episodes)</visible>
-          </control>
-          <control type="label">
-            <description>Writer Label</description>
-			<posx>60</posx>
-			<posy>160</posy>
-            <width>80</width>
-            <font>MediumTitleFont</font>
-            <textcolor>FFFF9900</textcolor>
-            <label>$LOCALIZE[31029]:</label>
-			<align>right</align>
-		  <visible>Container.Content(Episodes)</visible>
-          </control>
-          <control type="label">
-            <description>Writer</description>
-			<posx>70</posx>
-			<posy>163</posy>
-            <width>180</width>
-			<label fallback="31047">$INFO[ListItem.Writer]</label>
-			<align>left</align>
-		  <visible>Container.Content(Episodes)</visible>
-          </control>
-
-	          <control type="group">
-	            <posy>210</posy>
-				<posx>-387</posx>
-	            <control type="textbox">
-	              <description>Plot</description>
-	              <width>650</width>
-	              <height>175</height>
-	              <info>ListItem.Plot</info>
-	              <visible>Container.Content(Episodes)</visible>
-	            </control>
-<!--
+					<control type="group">
+						<description>Watched/Unwatched Overlay</description>
+						<visible>!Container.Content(episodes)</visible>
+						<posx>234</posx>
+						<posy>25</posy>
+						<include>WatchedUnwatchedOverlay</include>
+					</control>
+					<control type="group">
+						<description>Watched/Unwatched Overlay</description>
+						<visible>Container.Content(episodes)</visible>
+						<posx>-63</posx>
+						<posy>25</posy>
+						<include>WatchedUnwatchedOverlay</include>
+					</control>
+				</control>
+				<!-- Layout for any except Episodes -->
+				<control type="group">
+					<posx>10</posx>
+					<posy>-4</posy>
+					<visible>!Container.Content(Episodes)</visible>
+					<control type="label">
+						<description>Title</description>
+						<width>InfoListTitleWidth</width>
+						<font>MediumLargeTitleCapsFont</font>
+						<label>$INFO[ListItem.Title]</label>
+						<visible>![Container.Content(albums) | Container.Content(artists)]</visible>
+					</control>
+					<control type="label">
+						<description>Album</description>
+						<width>InfoListTitleWidth</width>
+						<font>MediumLargeTitleCapsFont</font>
+						<label>$INFO[ListItem.Album]</label>
+						<visible>Container.Content(albums)</visible>
+					</control>
+					<control type="label">
+						<description>Artist</description>
+						<width>InfoListTitleWidth</width>
+						<font>MediumLargeTitleCapsFont</font>
+						<label>$INFO[ListItem.Artist]</label>
+						<visible>Container.Content(artists)</visible>
+					</control>
+					<control type="label">
+						<description>Year</description>
+						<visible>Container.Content(movies)</visible>
+						<posy>28</posy>
+						<width>InfoListTitleWidth</width>
+						<font>SmallTitleCapsFont</font>
+						<label>$INFO[ListItem.Year]</label>
+						<textcolor>Focused</textcolor>
+					</control>
+					<control type="image">
+						<description>Star Rating</description>
+						<align>left</align>
+						<info>ListItem.StarRating</info>
+						<aspectratio>keep</aspectratio>
+						<width>120</width>
+						<height>47</height>
+						<posy>50</posy>
+						<posx>-2</posx>
+						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+					</control>
+					<control type="group">
+						<posy>95</posy>
+						<control type="textbox">
+							<description>Plot</description>
+							<width>InfoListTitleWidth</width>
+							<height>261</height>
+							<info>ListItem.Plot</info>
+							<visible>![Container.Content(seasons) | Container.Content(albums) | Container.Content(artists)]</visible>
+						</control>
+						<control type="textbox">
+							<description>Plot</description>
+							<width>InfoListTitleWidth</width>
+							<height>317</height>
+							<info>ListItem.plotoutline</info>
+							<visible>Container.Content(seasons)</visible>
+						</control>
+						<control type="textbox">
+							<description>Album review</description>
+							<width>InfoListTitleWidth</width>
+							<height>317</height>
+							<info>ListItem.Property(description)</info>
+							<visible>Container.Content(albums) | Container.Content(artists)</visible>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<posy>400</posy>
+					<posx>11</posx>
+					<include>InfoListFlags</include>
+				</control>
+				<!-- Layout for Episodes -->
+				<control type="group">
+					<posx>400</posx>
+					<posy>-4</posy>
+					<visible>Container.Content(Episodes)</visible>
+					<control type="textbox">
+						<description>Title</description>
+						<width>260</width>
+						<height>60</height>
+						<font>MediumLargeTitleCapsFont</font>
+						<label>$INFO[ListItem.Title]</label>
+						<visible>Container.Content(Episodes)</visible>
+					</control>
+					<control type="label">
+						<description>Star Rating Label</description>
+						<posy>70</posy>
+						<posx>60</posx>
+						<width>80</width>
+						<font>MediumTitleFont</font>
+						<label>$LOCALIZE[563]:</label>
+						<align>right</align>
+						<textcolor>FFFF9900</textcolor>
+						<visible>Container.Content(Episodes)</visible>
+					</control>
+					<control type="image">
+						<description>Star Rating</description>
+						<align>left</align>
+						<info>ListItem.StarRating</info>
+						<aspectratio>keep</aspectratio>
+						<width>120</width>
+						<height>47</height>
+						<posy>59</posy>
+						<posx>67</posx>
+						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+					</control>
+					<control type="label">
+						<description>Duration Label</description>
+						<posy>100</posy>
+						<posx>60</posx>
+						<width>80</width>
+						<font>MediumTitleFont</font>
+						<label>$LOCALIZE[2050]:</label>
+						<align>right</align>
+						<textcolor>FFFF9900</textcolor>
+						<visible>Container.Content(Episodes)</visible>
+					</control>
+					<control type="label">
+						<description>Duration</description>
+						<posx>70</posx>
+						<posy>103</posy>
+						<width>180</width>
+						<label>$INFO[ListItem.Duration]</label>
+						<align>left</align>
+						<visible>Container.Content(Episodes)</visible>
+					</control>
+					<control type="label">
+						<description>Director Label</description>
+						<posy>130</posy>
+						<posx>60</posx>
+						<width>80</width>
+						<font>MediumTitleFont</font>
+						<label>$LOCALIZE[20339]:</label>
+						<align>right</align>
+						<textcolor>FFFF9900</textcolor>
+						<visible>Container.Content(Episodes)</visible>
+					</control>
+					<control type="label">
+						<description>Director</description>
+						<posx>70</posx>
+						<posy>133</posy>
+						<width>180</width>
+						<label fallback="31047">$INFO[ListItem.Director]</label>
+						<align>left</align>
+						<visible>Container.Content(Episodes)</visible>
+					</control>
+					<control type="label">
+						<description>Writer Label</description>
+						<posx>60</posx>
+						<posy>160</posy>
+						<width>80</width>
+						<font>MediumTitleFont</font>
+						<textcolor>FFFF9900</textcolor>
+						<label>$LOCALIZE[31029]:</label>
+						<align>right</align>
+						<visible>Container.Content(Episodes)</visible>
+					</control>
+					<control type="label">
+						<description>Writer</description>
+						<posx>70</posx>
+						<posy>163</posy>
+						<width>180</width>
+						<label fallback="31047">$INFO[ListItem.Writer]</label>
+						<align>left</align>
+						<visible>Container.Content(Episodes)</visible>
+					</control>
+					<control type="group">
+						<posy>210</posy>
+						<posx>-387</posx>
+						<control type="textbox">
+							<description>Plot</description>
+							<width>650</width>
+							<height>175</height>
+							<info>ListItem.Plot</info>
+							<visible>Container.Content(Episodes)</visible>
+						</control>
+						<!--
 	            <control type="textbox">
 	              <description>Plot</description>
 	              <width>InfoListTitleWidth</width>
@@ -816,368 +760,353 @@
 	              <visible>Container.Content(albums) | Container.Content(artists)</visible>
 	            </control>
 -->
+					</control>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<include>InfoListVisible</include>
+			<include>CommonSortLetters</include>
+		</control>
+	</include>
+	<!--
+  	<include name="GridView">
+	    <control type="group">
+	      <include>GridViewVisible</include>
+	      <include>MediaViewBGOverlay</include>
+	    </control>
+
+	    <control type="group">
+	      <posy>206</posy>
+	      <include>PanelStreamVisible</include>
+	      <include>MediaViewFade</include>
+
+	      <control type="panel" id="59">
+	        <viewtype label="Panel Stream">panel</viewtype>
+	        <onup>52</onup>
+	        <ondown>52</ondown>
+	        <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+	        <onright>9009</onright>
+	        <orientation>vertical</orientation>
+	        <include condition="Window.IsMedia + !Skin.HasSetting(HideFocusDetailForPanel)">PanelStreamContentWithDetail</include>
+	        <include condition="!Window.IsMedia | Skin.HasSetting(HideFocusDetailForPanel)">PanelStreamContent</include>
+	      </control>
+
+	      <control type="group">
+	        <visible>!Skin.HasSetting(HideFocusDetailForPanel)</visible>
+	        <posx>754</posx>
+	        <posy>30</posy>
+
+	        <control type="group">
+	          <visible>![Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(artists) | Container.Content(albums) | Container.Content(songs)]</visible>
+
+	          <control type="label">
+	            <description>Title</description>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <label>$INFO[ListItem.Label]</label>
+	            <font>TitleCapsFont</font>
+	            <scroll>true</scroll>
 	          </control>
-        </control>
-      </control>
-    </control>
 
+	          <control type="textbox">
+	            <description>Detail</description>
+	            <posy>36</posy>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <height>340</height>
+	            <info>ListItem.Label2</info>
+	          </control>
 
-    <control type="group">
-      <include>InfoListVisible</include>
-      <include>CommonSortLetters</include>
-    </control>
-  </include>
+	          <control type="textbox">
+	            <description>Plot/Details</description>
+	            <posy>68</posy>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <height>348</height>
+	            <info>ListItem.Plot</info>
+	          </control>
 
-<!--
-  <include name="GridView">
-    <control type="group">
-      <include>GridViewVisible</include>
-      <include>MediaViewBGOverlay</include>
-    </control>
+	        </control>
 
-    <control type="group">
-      <posy>206</posy>
-      <include>PanelStreamVisible</include>
-      <include>MediaViewFade</include>
+	        <control type="group">
+	          <visible>Container.Content(movies)</visible>
 
-      <control type="panel" id="59">
-        <viewtype label="Panel Stream">panel</viewtype>
-        <onup>52</onup>
-        <ondown>52</ondown>
-        <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-        <onright>9009</onright>
-        <orientation>vertical</orientation>
-        <include condition="Window.IsMedia + !Skin.HasSetting(HideFocusDetailForPanel)">PanelStreamContentWithDetail</include>
-        <include condition="!Window.IsMedia | Skin.HasSetting(HideFocusDetailForPanel)">PanelStreamContent</include>
-      </control>
+	          <control type="label">
+	            <description>Movie Title</description>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <label>$INFO[ListItem.Label]</label>
+	            <font>TitleCapsFont</font>
+	            <scroll>true</scroll>
+	          </control>
 
-      <control type="group">
-        <visible>!Skin.HasSetting(HideFocusDetailForPanel)</visible>
-        <posx>754</posx>
-        <posy>30</posy>
+	          <control type="textbox">
+	            <description>Plot/Details</description>
+	            <posy>36</posy>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <height>348</height>
+	            <info>ListItem.Plot</info>
+	          </control>
 
-        <control type="group">
-          <visible>![Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(artists) | Container.Content(albums) | Container.Content(songs)]</visible>
+	          <control type="group">
+	            <posy>390</posy>
+	            <include>StarRatingDetails</include>
+	          </control>
+	        </control>
 
-          <control type="label">
-            <description>Title</description>
-            <width>PanelStreamDetailTextWidth</width>
-            <label>$INFO[ListItem.Label]</label>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-          </control>
+	        <control type="group">
+	          <visible>Container.Content(tvshows)</visible>
 
-          <control type="textbox">
-            <description>Detail</description>
-            <posy>36</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>340</height>
-            <info>ListItem.Label2</info>
-          </control>
+	          <control type="label">
+	            <description>TV Show Title</description>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <label>$INFO[ListItem.TVShowTitle]</label>
+	            <font>TitleCapsFont</font>
+	            <scroll>true</scroll>
+	          </control>
 
-          <control type="textbox">
-            <description>Plot/Details</description>
-            <posy>68</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>348</height>
-            <info>ListItem.Plot</info>
-          </control>
+	          <control type="label">
+	            <description>Genre</description>
+	            <posy>36</posy>
+	            <font>MediumTitleCapsFont</font>
+	            <textcolor>Unfocused</textcolor>
+	            <label>$INFO[ListItem.Genre]</label>
+	          </control>
 
-        </control>
+	          <control type="textbox">
+	            <description>Plot/Details</description>
+	            <posy>68</posy>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <height>300</height>
+	            <info>ListItem.Plot</info>
+	          </control>
 
-        <control type="group">
-          <visible>Container.Content(movies)</visible>
+	          <control type="group">
+	            <posy>380</posy>
+	            <include>StarRatingDetails</include>
+	          </control>
+	        </control>
 
-          <control type="label">
-            <description>Movie Title</description>
-            <width>PanelStreamDetailTextWidth</width>
-            <label>$INFO[ListItem.Label]</label>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-          </control>
+	        <control type="group">
+	          <visible>Container.Content(seasons)</visible>
 
-          <control type="textbox">
-            <description>Plot/Details</description>
-            <posy>36</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>348</height>
-            <info>ListItem.Plot</info>
-          </control>
+	          <control type="label">
+	            <description>Season</description>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <info>ListItem.Label</info>
+	            <font>TitleCapsFont</font>
+	            <scroll>true</scroll>
+	          </control>
 
-          <control type="group">
-            <posy>390</posy>
-            <include>StarRatingDetails</include>
-          </control>
-        </control>
+	          <control type="label">
+	            <description>Tv Show Title</description>
+	            <posy>36</posy>
+	            <font>MediumTitleCapsFont</font>
+	            <textcolor>Unfocused</textcolor>
+	            <label>$INFO[ListItem.TVShowTitle]</label>
+	          </control>
 
-        <control type="group">
-          <visible>Container.Content(tvshows)</visible>
+	          <control type="textbox">
+	            <description>Plot/Details</description>
+	            <posy>68</posy>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <height>390</height>
+	            <info>Container.ShowPlot</info>
+	          </control>
+	        </control>
 
-          <control type="label">
-            <description>TV Show Title</description>
-            <width>PanelStreamDetailTextWidth</width>
-            <label>$INFO[ListItem.TVShowTitle]</label>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-          </control>
+	        <control type="group">
+	          <visible>Container.Content(episodes)</visible>
+	          <posx>20</posx>
 
-          <control type="label">
-            <description>Genre</description>
-            <posy>36</posy>
-            <font>MediumTitleCapsFont</font>
-            <textcolor>Unfocused</textcolor>
-            <label>$INFO[ListItem.Genre]</label>
-          </control>
+	          <control type="label">
+	            <description>Episode Title</description>
+	            <width>PanelStreamEpisodeDetailTextWidth</width>
+	            <label>$INFO[ListItem.Title]</label>
+	            <font>TitleCapsFont</font>
+	            <scroll>true</scroll>
+	          </control>
 
-          <control type="textbox">
-            <description>Plot/Details</description>
-            <posy>68</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>300</height>
-            <info>ListItem.Plot</info>
-          </control>
+	          <control type="label">
+	            <description>Episode</description>
+	            <posy>36</posy>
+	            <font>MediumTitleCapsFont</font>
+	            <textcolor>Unfocused</textcolor>
+	            <label>$INFO[ListItem.Episode,$LOCALIZE[20359] ]</label>
+	          </control>
 
-          <control type="group">
-            <posy>380</posy>
-            <include>StarRatingDetails</include>
-          </control>
-        </control>
+	          <control type="textbox">
+	            <description>Plot/Details</description>
+	            <posy>68</posy>
+	            <width>PanelStreamEpisodeDetailTextWidth</width>
+	            <height>300</height>
+	            <info>ListItem.Plot</info>
+	          </control>
 
-        <control type="group">
-          <visible>Container.Content(seasons)</visible>
+	          <control type="group">
+	            <posy>380</posy>
+	            <include>StarRatingDetails</include>
+	          </control>
+	        </control>
 
-          <control type="label">
-            <description>Season</description>
-            <width>PanelStreamDetailTextWidth</width>
-            <info>ListItem.Label</info>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-          </control>
+	        <control type="group">
+	          <visible>Container.Content(artists)</visible>
 
-          <control type="label">
-            <description>Tv Show Title</description>
-            <posy>36</posy>
-            <font>MediumTitleCapsFont</font>
-            <textcolor>Unfocused</textcolor>
-            <label>$INFO[ListItem.TVShowTitle]</label>
-          </control>
+	          <control type="label">
+	            <description>Artist Name</description>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <font>TitleCapsFont</font>
+	            <scroll>true</scroll>
+	            <info>ListItem.Artist</info>
+	          </control>
 
-          <control type="textbox">
-            <description>Plot/Details</description>
-            <posy>68</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>390</height>
-            <info>Container.ShowPlot</info>
-          </control>
-        </control>
+	          <control type="label">
+	            <description>Genre</description>
+	            <posy>30</posy>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <font>MediumTitleCapsFont</font>
+	            <textcolor>Unfocused</textcolor>
+	            <info>ListItem.Genre</info>
+	          </control>
 
-        <control type="group">
-          <visible>Container.Content(episodes)</visible>
-          <posx>20</posx>
+	          <control type="textbox">
+	            <description>Review</description>
+	            <posy>68</posy>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <height>390</height>
+	            <info>ListItem.Property(description)</info>
+	          </control>
+	        </control>
 
-          <control type="label">
-            <description>Episode Title</description>
-            <width>PanelStreamEpisodeDetailTextWidth</width>
-            <label>$INFO[ListItem.Title]</label>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-          </control>
+	        <control type="group">
+	          <visible>Container.Content(albums)</visible>
 
-          <control type="label">
-            <description>Episode</description>
-            <posy>36</posy>
-            <font>MediumTitleCapsFont</font>
-            <textcolor>Unfocused</textcolor>
-            <label>$INFO[ListItem.Episode,$LOCALIZE[20359] ]</label>
-          </control>
+	          <control type="label">
+	            <description>Album Title</description>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <label>$INFO[ListItem.Album]</label>
+	            <font>TitleCapsFont</font>
+	            <scroll>true</scroll>
+	          </control>
 
-          <control type="textbox">
-            <description>Plot/Details</description>
-            <posy>68</posy>
-            <width>PanelStreamEpisodeDetailTextWidth</width>
-            <height>300</height>
-            <info>ListItem.Plot</info>
-          </control>
+	          <control type="label">
+	            <description>Artist</description>
+	            <posy>30</posy>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <font>MediumSmallTitleCapsFont</font>
+	            <label>$INFO[ListItem.Artist]</label>
+	          </control>
 
-          <control type="group">
-            <posy>380</posy>
-            <include>StarRatingDetails</include>
-          </control>
-        </control>
+	          <control type="label">
+	            <description>Year</description>
+	            <posy>56</posy>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <font>MediumSmallTitleCapsFont</font>
+	            <textcolor>Unfocused</textcolor>
+	            <label>$INFO[ListItem.Year]</label>
+	          </control>
 
-        <control type="group">
-          <visible>Container.Content(artists)</visible>
+	          <control type="textbox">
+	            <description>Review</description>
+	            <posy>90</posy>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <height>370</height>
+	            <info>ListItem.Property(description)</info>
+	          </control>
+	        </control>
 
-          <control type="label">
-            <description>Artist Name</description>
-            <width>PanelStreamDetailTextWidth</width>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-            <info>ListItem.Artist</info>
-          </control>
+	        <control type="group">
+	          <visible>Container.Content(songs)</visible>
 
-          <control type="label">
-            <description>Genre</description>
-            <posy>30</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <font>MediumTitleCapsFont</font>
-            <textcolor>Unfocused</textcolor>
-            <info>ListItem.Genre</info>
-          </control>
+	          <control type="label">
+	            <description>Song Title</description>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <label>$INFO[ListItem.Title]</label>
+	            <font>TitleCapsFont</font>
+	            <scroll>true</scroll>
+	          </control>
 
-          <control type="textbox">
-            <description>Review</description>
-            <posy>68</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>390</height>
-            <info>ListItem.Property(description)</info>
-          </control>
-        </control>
+	          <control type="label">
+	            <description>Artist</description>
+	            <posy>30</posy>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <font>MediumTitleCapsFont</font>
+	            <textcolor>Unfocused</textcolor>
+	            <label>$INFO[ListItem.Artist]</label>
+	          </control>
 
-        <control type="group">
-          <visible>Container.Content(albums)</visible>
+	          <control type="label">
+	            <description>Album</description>
+	            <posy>56</posy>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <font>MediumSmallTitleCapsFont</font>
+	            <textcolor>Unfocused</textcolor>
+	            <label>$INFO[ListItem.Album]</label>
+	          </control>
 
-          <control type="label">
-            <description>Album Title</description>
-            <width>PanelStreamDetailTextWidth</width>
-            <label>$INFO[ListItem.Album]</label>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-          </control>
+	          <control type="image">
+	            <width>76</width>
+	            <height>20</height>
+	            <info>ListItem.Rating</info>
+	            <include>MediaInfoWideValue</include>
+	          </control>
 
-          <control type="label">
-            <description>Artist</description>
-            <posy>30</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <font>MediumSmallTitleCapsFont</font>
-            <label>$INFO[ListItem.Artist]</label>
-          </control>
-
-          <control type="label">
-            <description>Year</description>
-            <posy>56</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <font>MediumSmallTitleCapsFont</font>
-            <textcolor>Unfocused</textcolor>
-            <label>$INFO[ListItem.Year]</label>
-          </control>
-
-          <control type="textbox">
-            <description>Review</description>
-            <posy>90</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>370</height>
-            <info>ListItem.Property(description)</info>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Container.Content(songs)</visible>
-
-          <control type="label">
-            <description>Song Title</description>
-            <width>PanelStreamDetailTextWidth</width>
-            <label>$INFO[ListItem.Title]</label>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-          </control>
-
-          <control type="label">
-            <description>Artist</description>
-            <posy>30</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <font>MediumTitleCapsFont</font>
-            <textcolor>Unfocused</textcolor>
-            <label>$INFO[ListItem.Artist]</label>
-          </control>
-
-          <control type="label">
-            <description>Album</description>
-            <posy>56</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <font>MediumSmallTitleCapsFont</font>
-            <textcolor>Unfocused</textcolor>
-            <label>$INFO[ListItem.Album]</label>
-          </control>
-
-          <control type="image">
-            <width>76</width>
-            <height>20</height>
-            <info>ListItem.Rating</info>
-            <include>MediaInfoWideValue</include>
-          </control>
-
-          <control type="textbox">
-            <description>Review</description>
-            <posy>110</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>358</height>
-            <info>ListItem.Comment</info>
-          </control>
-        </control>
-      </control>
-    </control>
-  </include>
--->
-
-  <include name="PanelStream">
-    <control type="group">
-      <include>PanelStreamVisible</include>
-      <include>MediaViewBGOverlay</include>
-    </control>
-
-    <control type="group">
-      <posy>206</posy>
-      <include>PanelStreamVisible</include>
-      <include>MediaViewFade</include>
-
-      <control type="panel" id="52">
-        <viewtype label="Panel Stream">panel</viewtype>
-        <onup>52</onup>
-        <ondown>52</ondown>
-        <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-        <onright>9009</onright>
-        <orientation>vertical</orientation>
-        <include condition="Window.IsMedia + !Skin.HasSetting(HideFocusDetailForPanel)">PanelStreamContentWithDetail</include>
-        <include condition="!Window.IsMedia | Skin.HasSetting(HideFocusDetailForPanel)">PanelStreamContent</include>
-      </control>
-
-      <control type="group">
-        <visible>!Skin.HasSetting(HideFocusDetailForPanel)</visible>
-        <posx>824</posx>
-        <posy>30</posy>
-
-
-
-        <control type="group">
-          <visible>![Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(artists) | Container.Content(albums) | Container.Content(songs)]</visible>
-
-          <control type="label">
-            <description>Title</description>
-            <width>PanelStreamDetailTextWidth</width>
-            <label>$INFO[ListItem.Label]</label>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-          </control>
-
-          <control type="textbox">
-            <description>Year</description>
-            <posy>30</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>340</height>
-            <info>ListItem.Year</info>
-          </control>
-
-
-		  <control type="image">
-			  <posy>55</posy>
-			  <align>center</align>
-			  <aspectratio>keep</aspectratio>
-			  <info>ListItem.StarRating</info>
-			  <colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
-		  </control>
-
-		<!--
+	          <control type="textbox">
+	            <description>Review</description>
+	            <posy>110</posy>
+	            <width>PanelStreamDetailTextWidth</width>
+	            <height>358</height>
+	            <info>ListItem.Comment</info>
+	          </control>
+	        </control>
+	      </control>
+	    </control>
+	</include>
+    -->
+	<include name="PanelStream">
+		<control type="group">
+			<include>PanelStreamVisible</include>
+			<include>MediaViewBGOverlay</include>
+		</control>
+		<control type="group">
+			<posy>206</posy>
+			<include>PanelStreamVisible</include>
+			<include>MediaViewFade</include>
+			<control type="panel" id="52">
+				<viewtype label="Panel Stream">panel</viewtype>
+				<onup>52</onup>
+				<ondown>52</ondown>
+				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+				<onright>9009</onright>
+				<orientation>vertical</orientation>
+				<include condition="Window.IsMedia + !Skin.HasSetting(HideFocusDetailForPanel)">PanelStreamContentWithDetail</include>
+				<include condition="!Window.IsMedia | Skin.HasSetting(HideFocusDetailForPanel)">PanelStreamContent</include>
+			</control>
+			<control type="group">
+				<visible>!Skin.HasSetting(HideFocusDetailForPanel)</visible>
+				<posx>824</posx>
+				<posy>30</posy>
+				<control type="group">
+					<visible>![Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(artists) | Container.Content(albums) | Container.Content(songs)]</visible>
+					<control type="label">
+						<description>Title</description>
+						<width>PanelStreamDetailTextWidth</width>
+						<label>$INFO[ListItem.Label]</label>
+						<font>TitleCapsFont</font>
+						<scroll>true</scroll>
+					</control>
+					<control type="textbox">
+						<description>Year</description>
+						<posy>30</posy>
+						<width>PanelStreamDetailTextWidth</width>
+						<height>340</height>
+						<info>ListItem.Year</info>
+					</control>
+					<control type="image">
+						<posy>55</posy>
+						<align>center</align>
+						<aspectratio>keep</aspectratio>
+						<info>ListItem.StarRating</info>
+						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+					</control>
+					<!--
           <control type="textbox">
             <description>Detail</description>
             <posy>36</posy>
@@ -1186,504 +1115,425 @@
             <info>ListItem.Label2</info>
           </control>
 		-->
-          <control type="textbox">
-            <description>Plot/Details</description>
-            <posy>90</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>319</height>
-            <info>ListItem.Plot</info>
-          </control>
-
-			<control type="group">
-				<description>Media Flags</description>
-				<posy>425</posy>
-				<include>PanelStreamFlags</include>
-			</control>
-
-        </control>
-
-        <control type="group">
-          <visible>Container.Content(movies)</visible>
-
-          <control type="label">
-            <description>Title</description>
-            <width>PanelStreamDetailTextWidth</width>
-            <label>$INFO[ListItem.Label]</label>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-          </control>
-
-          <control type="label">
-            <description>Year</description>
-            <posy>30</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>340</height>
-            <info>ListItem.Year</info>
-          </control>
-
-		  <control type="image">
-			  <posy>55</posy>
-			  <posx>-2</posx>
-			  <align>center</align>
-			  <aspectratio>keep</aspectratio>
-			  <info>ListItem.StarRating</info>
-			  <colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
-		  </control>
-
-          <control type="textbox">
-            <description>Plot/Details</description>
-            <posy>90</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>261</height>
-            <info>ListItem.Plot</info>
-          </control>
-
-			<control type="group">
-				<description>Media Flags</description>
-				<posy>365</posy>
-				<include>PanelStreamFlags</include>
-			</control>
-
-        </control>
-
-        <control type="group">
-          <visible>Container.Content(tvshows)</visible>
-
-          <control type="label">
-            <description>Title</description>
-            <width>PanelStreamDetailTextWidth</width>
-            <label>$INFO[ListItem.Label]</label>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-          </control>
-
-          <control type="label">
-            <description>Genre</description>
-            <posy>30</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>340</height>
-            <label>$INFO[ListItem.Genre]</label>
-          </control>
-
-		  <control type="image">
-			  <posy>55</posy>
-			  <align>center</align>
-			  <aspectratio>keep</aspectratio>
-			  <info>ListItem.StarRating</info>
-			  <colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
-		  </control>
-
-          <control type="textbox">
-            <description>Plot/Details</description>
-            <posy>90</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>319</height>
-            <info>ListItem.Plot</info>
-          </control>
-
-			<control type="group">
-				<description>Media Flags</description>
-				<posy>425</posy>
-				<include>PanelStreamFlags</include>
+					<control type="textbox">
+						<description>Plot/Details</description>
+						<posy>90</posy>
+						<width>PanelStreamDetailTextWidth</width>
+						<height>319</height>
+						<info>ListItem.Plot</info>
+					</control>
+					<control type="group">
+						<description>Media Flags</description>
+						<posy>425</posy>
+						<include>PanelStreamFlags</include>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Container.Content(movies)</visible>
+					<control type="label">
+						<description>Title</description>
+						<width>PanelStreamDetailTextWidth</width>
+						<label>$INFO[ListItem.Label]</label>
+						<font>TitleCapsFont</font>
+						<scroll>true</scroll>
+					</control>
+					<control type="label">
+						<description>Year</description>
+						<posy>30</posy>
+						<width>PanelStreamDetailTextWidth</width>
+						<height>340</height>
+						<info>ListItem.Year</info>
+					</control>
+					<control type="image">
+						<posy>55</posy>
+						<posx>-2</posx>
+						<align>center</align>
+						<aspectratio>keep</aspectratio>
+						<info>ListItem.StarRating</info>
+						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+					</control>
+					<control type="textbox">
+						<description>Plot/Details</description>
+						<posy>90</posy>
+						<width>PanelStreamDetailTextWidth</width>
+						<height>261</height>
+						<info>ListItem.Plot</info>
+					</control>
+					<control type="group">
+						<description>Media Flags</description>
+						<posy>365</posy>
+						<include>PanelStreamFlags</include>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Container.Content(tvshows)</visible>
+					<control type="label">
+						<description>Title</description>
+						<width>PanelStreamDetailTextWidth</width>
+						<label>$INFO[ListItem.Label]</label>
+						<font>TitleCapsFont</font>
+						<scroll>true</scroll>
+					</control>
+					<control type="label">
+						<description>Genre</description>
+						<posy>30</posy>
+						<width>PanelStreamDetailTextWidth</width>
+						<height>340</height>
+						<label>$INFO[ListItem.Genre]</label>
+					</control>
+					<control type="image">
+						<posy>55</posy>
+						<align>center</align>
+						<aspectratio>keep</aspectratio>
+						<info>ListItem.StarRating</info>
+						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+					</control>
+					<control type="textbox">
+						<description>Plot/Details</description>
+						<posy>90</posy>
+						<width>PanelStreamDetailTextWidth</width>
+						<height>319</height>
+						<info>ListItem.Plot</info>
+					</control>
+					<control type="group">
+						<description>Media Flags</description>
+						<posy>425</posy>
+						<include>PanelStreamFlags</include>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Container.Content(seasons)</visible>
+					<control type="label">
+						<description>Season</description>
+						<width>PanelStreamDetailTextWidth</width>
+						<info>ListItem.Label</info>
+						<font>TitleCapsFont</font>
+						<scroll>true</scroll>
+					</control>
+					<control type="label">
+						<description>Tv Show Title</description>
+						<posy>36</posy>
+						<font>MediumTitleCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+						<label>$INFO[ListItem.TVShowTitle]</label>
+					</control>
+					<control type="textbox">
+						<description>Plot/Details</description>
+						<posy>68</posy>
+						<width>PanelStreamDetailTextWidth</width>
+						<height>390</height>
+						<info>Container.ListItem.plotoutline</info>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Container.Content(episodes)</visible>
+					<posx>20</posx>
+					<control type="label">
+						<description>Episode Title</description>
+						<width>PanelStreamEpisodeDetailTextWidth</width>
+						<label>$INFO[ListItem.Title]</label>
+						<font>TitleCapsFont</font>
+						<scroll>true</scroll>
+					</control>
+					<control type="label">
+						<description>Episode</description>
+						<posy>36</posy>
+						<font>MediumTitleCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+						<label>$INFO[ListItem.Episode,$LOCALIZE[20359] ]</label>
+					</control>
+					<control type="textbox">
+						<description>Plot/Details</description>
+						<posy>68</posy>
+						<width>PanelStreamEpisodeDetailTextWidth</width>
+						<height>300</height>
+						<info>ListItem.Plot</info>
+					</control>
+					<control type="image">
+						<posy>380</posy>
+						<align>center</align>
+						<aspectratio>keep</aspectratio>
+						<info>ListItem.StarRating</info>
+						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+					</control>
+					<control type="group">
+						<description>Media Flags</description>
+						<posy>425</posy>
+						<include>PanelStreamFlags</include>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Container.Content(artists)</visible>
+					<control type="label">
+						<description>Artist Name</description>
+						<width>PanelStreamDetailTextWidth</width>
+						<font>TitleCapsFont</font>
+						<scroll>true</scroll>
+						<info>ListItem.Artist</info>
+					</control>
+					<control type="label">
+						<description>Genre</description>
+						<posy>30</posy>
+						<width>PanelStreamDetailTextWidth</width>
+						<font>MediumTitleCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+						<info>ListItem.Genre</info>
+					</control>
+					<control type="textbox">
+						<description>Review</description>
+						<posy>68</posy>
+						<width>PanelStreamDetailTextWidth</width>
+						<height>390</height>
+						<info>ListItem.Property(description)</info>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Container.Content(albums)</visible>
+					<control type="label">
+						<description>Album Title</description>
+						<width>PanelStreamDetailTextWidth</width>
+						<label>$INFO[ListItem.Album]</label>
+						<font>TitleCapsFont</font>
+						<scroll>true</scroll>
+					</control>
+					<control type="label">
+						<description>Artist</description>
+						<posy>30</posy>
+						<width>PanelStreamDetailTextWidth</width>
+						<font>MediumSmallTitleCapsFont</font>
+						<label>$INFO[ListItem.Artist]</label>
+					</control>
+					<control type="label">
+						<description>Year</description>
+						<posy>56</posy>
+						<width>PanelStreamDetailTextWidth</width>
+						<font>MediumSmallTitleCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+						<label>$INFO[ListItem.Year]</label>
+					</control>
+					<control type="textbox">
+						<description>Review</description>
+						<posy>90</posy>
+						<width>PanelStreamDetailTextWidth</width>
+						<height>370</height>
+						<info>ListItem.Property(description)</info>
+					</control>
+				</control>
+				<control type="group">
+					<visible>Container.Content(songs)</visible>
+					<control type="label">
+						<description>Song Title</description>
+						<width>PanelStreamDetailTextWidth</width>
+						<label>$INFO[ListItem.Title]</label>
+						<font>TitleCapsFont</font>
+						<scroll>true</scroll>
+					</control>
+					<control type="label">
+						<description>Artist</description>
+						<posy>30</posy>
+						<width>PanelStreamDetailTextWidth</width>
+						<font>MediumTitleCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+						<label>$INFO[ListItem.Artist]</label>
+					</control>
+					<control type="label">
+						<description>Album</description>
+						<posy>56</posy>
+						<width>PanelStreamDetailTextWidth</width>
+						<font>MediumSmallTitleCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+						<label>$INFO[ListItem.Album]</label>
+					</control>
+					<control type="image">
+						<width>76</width>
+						<height>20</height>
+						<info>ListItem.Rating</info>
+						<include>MediaInfoWideValue</include>
+					</control>
+					<control type="textbox">
+						<description>Review</description>
+						<posy>110</posy>
+						<width>PanelStreamDetailTextWidth</width>
+						<height>358</height>
+						<info>ListItem.Comment</info>
+					</control>
+				</control>
 			</control>
 		</control>
-
-        <control type="group">
-          <visible>Container.Content(seasons)</visible>
-
-          <control type="label">
-            <description>Season</description>
-            <width>PanelStreamDetailTextWidth</width>
-            <info>ListItem.Label</info>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-          </control>
-
-          <control type="label">
-            <description>Tv Show Title</description>
-            <posy>36</posy>
-            <font>MediumTitleCapsFont</font>
-            <textcolor>Unfocused</textcolor>
-            <label>$INFO[ListItem.TVShowTitle]</label>
-          </control>
-
-          <control type="textbox">
-            <description>Plot/Details</description>
-            <posy>68</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>390</height>
-            <info>Container.ListItem.plotoutline</info>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Container.Content(episodes)</visible>
-          <posx>20</posx>
-
-          <control type="label">
-            <description>Episode Title</description>
-            <width>PanelStreamEpisodeDetailTextWidth</width>
-            <label>$INFO[ListItem.Title]</label>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-          </control>
-
-          <control type="label">
-            <description>Episode</description>
-            <posy>36</posy>
-            <font>MediumTitleCapsFont</font>
-            <textcolor>Unfocused</textcolor>
-            <label>$INFO[ListItem.Episode,$LOCALIZE[20359] ]</label>
-          </control>
-
-          <control type="textbox">
-            <description>Plot/Details</description>
-            <posy>68</posy>
-            <width>PanelStreamEpisodeDetailTextWidth</width>
-            <height>300</height>
-            <info>ListItem.Plot</info>
-          </control>
-
-		  <control type="image">
-			  <posy>380</posy>
-			  <align>center</align>
-			  <aspectratio>keep</aspectratio>
-			  <info>ListItem.StarRating</info>
-			  <colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
-		  </control>
-
-
-
-		  	<control type="group">
-				<description>Media Flags</description>
-				<posy>425</posy>
-				<include>PanelStreamFlags</include>
+	</include>
+	<include name="WallStream">
+		<control type="group">
+			<include>WallStreamVisible</include>
+			<include>MediaViewFade</include>
+			<control type="panel" id="53">
+				<viewtype label="Wall Stream">panel</viewtype>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1281</width>
+				<height>720</height>
+				<onup>53</onup>
+				<ondown>53</ondown>
+				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+				<onright>9009</onright>
+				<orientation>vertical</orientation>
+				<!-- Generic -->
+				<itemlayout condition="![Container.Content(episodes) | Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]" width="WallStreamPosterWidth" height="WallStreamPosterHeight">
+					<control type="image">
+						<description>Poster</description>
+						<colordiffuse>cc999999</colordiffuse>
+						<include>WallStreamPoster</include>
+					</control>
+				</itemlayout>
+				<focusedlayout condition="![Container.Content(episodes) | Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]" width="WallStreamPosterWidth" height="WallStreamPosterHeight">
+					<control type="group">
+						<include>WallStreamPosterSlideAnim</include>
+						<control type="image">
+							<description>Poster</description>
+							<include>WallStreamPosterFocusDims</include>
+							<include>WallStreamPoster</include>
+							<bordertexture border="14">ThumbShadow2.png</bordertexture>
+							<bordersize>8</bordersize>
+							<include>WallStreamPosterZoomAnim</include>
+						</control>
+						<control type="image">
+							<description>Glass Overlay</description>
+							<include>WallStreamPosterOverlayFocusDims</include>
+							<include>GlassTextureOverlay2</include>
+							<include>WallStreamPosterOverlayZoomAnim</include>
+							<visible>!IsEmpty(ListItem.Thumb)</visible>
+						</control>
+					</control>
+				</focusedlayout>
+				<!-- Music -->
+				<itemlayout condition="[Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]" width="WallStreamCoverWidth" height="WallStreamCoverHeight">
+					<control type="image">
+						<description>Album Cover</description>
+						<colordiffuse>cc999999</colordiffuse>
+						<include>WallStreamAlbumCover</include>
+					</control>
+				</itemlayout>
+				<focusedlayout condition="[Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]" width="WallStreamCoverWidth" height="WallStreamCoverHeight">
+					<control type="group">
+						<include>WallStreamAlbumCoverSlideAnim</include>
+						<control type="image">
+							<description>Album Cover</description>
+							<include>WallStreamAlbumCoverFocusDims</include>
+							<include>WallStreamAlbumCover</include>
+							<bordertexture border="14">ThumbShadow2.png</bordertexture>
+							<bordersize>8</bordersize>
+							<include>WallStreamAlbumCoverZoomAnim</include>
+						</control>
+						<control type="image">
+							<description>Glass Overlay</description>
+							<include>WallStreamAlbumOverlayFocusDims</include>
+							<include>GlassTextureOverlay2</include>
+							<include>WallStreamAlbumOverlayZoomAnim</include>
+							<visible>!IsEmpty(ListItem.Thumb)</visible>
+						</control>
+					</control>
+				</focusedlayout>
+				<!-- Episodes -->
+				<itemlayout condition="Container.Content(episodes)" width="WallStreamEpThumbWidth" height="WallStreamEpThumbHeight">
+					<control type="image">
+						<description>Episode Thumb</description>
+						<colordiffuse>cc999999</colordiffuse>
+						<include>WallStreamEpThumb</include>
+					</control>
+				</itemlayout>
+				<focusedlayout condition="Container.Content(episodes)" width="WallStreamEpThumbWidth" height="WallStreamEpThumbHeight">
+					<control type="group">
+						<include>WallStreamEpThumbSlideAnim</include>
+						<control type="image">
+							<description>Episode Thumb</description>
+							<include>WallStreamEpThumbFocusDims</include>
+							<include>WallStreamEpThumb</include>
+							<bordertexture border="14">ThumbShadow2.png</bordertexture>
+							<bordersize>8</bordersize>
+							<include>WallStreamEpThumbZoomAnim</include>
+						</control>
+						<control type="image">
+							<description>Glass Overlay</description>
+							<include>WallStreamEpThumbOverlayFocusDims</include>
+							<include>GlassTextureOverlay2</include>
+							<include>WallStreamEpThumbOverlayZoomAnim</include>
+							<visible>!IsEmpty(ListItem.Thumb)</visible>
+						</control>
+					</control>
+				</focusedlayout>
 			</control>
-
-        </control>
-
-        <control type="group">
-          <visible>Container.Content(artists)</visible>
-
-          <control type="label">
-            <description>Artist Name</description>
-            <width>PanelStreamDetailTextWidth</width>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-            <info>ListItem.Artist</info>
-          </control>
-
-          <control type="label">
-            <description>Genre</description>
-            <posy>30</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <font>MediumTitleCapsFont</font>
-            <textcolor>Unfocused</textcolor>
-            <info>ListItem.Genre</info>
-          </control>
-
-          <control type="textbox">
-            <description>Review</description>
-            <posy>68</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>390</height>
-            <info>ListItem.Property(description)</info>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Container.Content(albums)</visible>
-
-          <control type="label">
-            <description>Album Title</description>
-            <width>PanelStreamDetailTextWidth</width>
-            <label>$INFO[ListItem.Album]</label>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-          </control>
-
-          <control type="label">
-            <description>Artist</description>
-            <posy>30</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <font>MediumSmallTitleCapsFont</font>
-            <label>$INFO[ListItem.Artist]</label>
-          </control>
-
-          <control type="label">
-            <description>Year</description>
-            <posy>56</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <font>MediumSmallTitleCapsFont</font>
-            <textcolor>Unfocused</textcolor>
-            <label>$INFO[ListItem.Year]</label>
-          </control>
-
-          <control type="textbox">
-            <description>Review</description>
-            <posy>90</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>370</height>
-            <info>ListItem.Property(description)</info>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>Container.Content(songs)</visible>
-
-          <control type="label">
-            <description>Song Title</description>
-            <width>PanelStreamDetailTextWidth</width>
-            <label>$INFO[ListItem.Title]</label>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-          </control>
-
-          <control type="label">
-            <description>Artist</description>
-            <posy>30</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <font>MediumTitleCapsFont</font>
-            <textcolor>Unfocused</textcolor>
-            <label>$INFO[ListItem.Artist]</label>
-          </control>
-
-          <control type="label">
-            <description>Album</description>
-            <posy>56</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <font>MediumSmallTitleCapsFont</font>
-            <textcolor>Unfocused</textcolor>
-            <label>$INFO[ListItem.Album]</label>
-          </control>
-
-          <control type="image">
-            <width>76</width>
-            <height>20</height>
-            <info>ListItem.Rating</info>
-            <include>MediaInfoWideValue</include>
-          </control>
-
-          <control type="textbox">
-            <description>Review</description>
-            <posy>110</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>358</height>
-            <info>ListItem.Comment</info>
-          </control>
-        </control>
-      </control>
-    </control>
-  </include>
-
-  <include name="WallStream">
-    <control type="group">
-      <include>WallStreamVisible</include>
-      <include>MediaViewFade</include>
-
-      <control type="panel" id="53">
-        <viewtype label="Wall Stream">panel</viewtype>
-        <posx>0</posx>
-        <posy>0</posy>
-        <width>1281</width>
-        <height>720</height>
-        <onup>53</onup>
-        <ondown>53</ondown>
-        <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-        <onright>9009</onright>
-        <orientation>vertical</orientation>
-
-        <!-- Generic -->
-        <itemlayout condition="![Container.Content(episodes) | Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]" width="WallStreamPosterWidth" height="WallStreamPosterHeight">
-          <control type="image">
-            <description>Poster</description>
-            <colordiffuse>cc999999</colordiffuse>
-            <include>WallStreamPoster</include>
-          </control>
-        </itemlayout>
-
-        <focusedlayout condition="![Container.Content(episodes) | Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]" width="WallStreamPosterWidth" height="WallStreamPosterHeight">
-          <control type="group">
-            <include>WallStreamPosterSlideAnim</include>
-
-            <control type="image">
-              <description>Poster</description>
-              <include>WallStreamPosterFocusDims</include>
-              <include>WallStreamPoster</include>
-              <bordertexture border="14">ThumbShadow2.png</bordertexture>
-              <bordersize>8</bordersize>
-              <include>WallStreamPosterZoomAnim</include>
-            </control>
-            <control type="image">
-              <description>Glass Overlay</description>
-              <include>WallStreamPosterOverlayFocusDims</include>
-              <include>GlassTextureOverlay2</include>
-              <include>WallStreamPosterOverlayZoomAnim</include>
-              <visible>!IsEmpty(ListItem.Thumb)</visible>
-            </control>
-          </control>
-        </focusedlayout>
-
-        <!-- Music -->
-        <itemlayout condition="[Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]" width="WallStreamCoverWidth" height="WallStreamCoverHeight">
-          <control type="image">
-            <description>Album Cover</description>
-            <colordiffuse>cc999999</colordiffuse>
-            <include>WallStreamAlbumCover</include>
-          </control>
-        </itemlayout>
-
-        <focusedlayout condition="[Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]" width="WallStreamCoverWidth" height="WallStreamCoverHeight">
-          <control type="group">
-            <include>WallStreamAlbumCoverSlideAnim</include>
-
-            <control type="image">
-              <description>Album Cover</description>
-              <include>WallStreamAlbumCoverFocusDims</include>
-              <include>WallStreamAlbumCover</include>
-              <bordertexture border="14">ThumbShadow2.png</bordertexture>
-              <bordersize>8</bordersize>
-              <include>WallStreamAlbumCoverZoomAnim</include>
-            </control>
-            <control type="image">
-              <description>Glass Overlay</description>
-              <include>WallStreamAlbumOverlayFocusDims</include>
-              <include>GlassTextureOverlay2</include>
-              <include>WallStreamAlbumOverlayZoomAnim</include>
-              <visible>!IsEmpty(ListItem.Thumb)</visible>
-            </control>
-          </control>
-        </focusedlayout>
-
-        <!-- Episodes -->
-        <itemlayout condition="Container.Content(episodes)" width="WallStreamEpThumbWidth" height="WallStreamEpThumbHeight">
-          <control type="image">
-            <description>Episode Thumb</description>
-            <colordiffuse>cc999999</colordiffuse>
-            <include>WallStreamEpThumb</include>
-          </control>
-        </itemlayout>
-
-        <focusedlayout condition="Container.Content(episodes)" width="WallStreamEpThumbWidth" height="WallStreamEpThumbHeight">
-          <control type="group">
-            <include>WallStreamEpThumbSlideAnim</include>
-
-            <control type="image">
-              <description>Episode Thumb</description>
-              <include>WallStreamEpThumbFocusDims</include>
-              <include>WallStreamEpThumb</include>
-              <bordertexture border="14">ThumbShadow2.png</bordertexture>
-              <bordersize>8</bordersize>
-              <include>WallStreamEpThumbZoomAnim</include>
-            </control>
-            <control type="image">
-              <description>Glass Overlay</description>
-              <include>WallStreamEpThumbOverlayFocusDims</include>
-              <include>GlassTextureOverlay2</include>
-              <include>WallStreamEpThumbOverlayZoomAnim</include>
-              <visible>!IsEmpty(ListItem.Thumb)</visible>
-            </control>
-          </control>
-        </focusedlayout>
-      </control>
-
-      <control type="group">
-        <visible>![Container(53).OnNext | Container(53).OnPrevious] + !Skin.HasSetting(HideInfoInWallStream)</visible>
-        <include>WallStreamFadeAnim</include>
-
-        <!-- Generic Info -->
-        <control type="group">
-          <description>1st Row (Generic)</description>
-          <visible>![Container.Content(episodes) | Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
-          <posy>45</posy>
-
-          <include>WallStreamGenericFirstRowInfo</include>
-        </control>
-
-        <control type="group">
-          <description>2nd Row (Generic)</description>
-          <visible>![Container.Content(episodes) | Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
-          <posy>233</posy>
-
-          <include>WallStreamGenericSecondRowInfo</include>
-        </control>
-
-        <control type="group">
-          <description>3rd Row (Generic)</description>
-          <posy>451</posy>
-          <visible>![Container.Content(episodes) | Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
-
-          <include>WallStreamGenericThirdRowInfo</include>
-        </control>
-
-        <!-- Music Info -->
-        <control type="group">
-          <description>1st Row (Music)</description>
-          <visible>[Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
-          <posy>45</posy>
-
-          <include>WallStreamMusicFirstRowInfo</include>
-        </control>
-
-        <control type="group">
-          <description>2nd Row (Music)</description>
-          <visible>[Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
-          <posy>176</posy>
-
-          <include>WallStreamMusicSecondRowInfo</include>
-        </control>
-
-        <control type="group">
-          <description>3rd Row (Music)</description>
-          <visible>[Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
-          <posy>336</posy>
-
-          <include>WallStreamMusicThirdRowInfo</include>
-        </control>
-
-        <control type="group">
-          <description>4th Row (Music)</description>
-          <visible>[Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
-          <posy>496</posy>
-
-          <include>WallStreamMusicFourthRowInfo</include>
-        </control>
-
-        <!-- Episode Info -->
-        <control type="group">
-          <description>1st Row (Episodes)</description>
-          <visible>Container.Content(episodes)</visible>
-          <posy>45</posy>
-
-          <include>WallStreamEpisodesFirstRowInfo</include>
-        </control>
-
-        <control type="group">
-          <description>2nd Row (Episodes)</description>
-          <visible>Container.Content(episodes)</visible>
-          <posy>210</posy>
-
-          <include>WallStreamEpisodesSecondRowInfo</include>
-        </control>
-
-        <control type="group">
-          <description>3rd Row (Episodes)</description>
-          <visible>Container.Content(episodes)</visible>
-          <posy>390</posy>
-
-          <include>WallStreamEpisodesThirdRowInfo</include>
-        </control>
-
-        <control type="group">
-          <description>4th Row (Episodes)</description>
-          <visible>Container.Content(episodes)</visible>
-          <posy>554</posy>
-
-          <include>WallStreamEpisodesFourthRowInfo</include>
-        </control>
-      </control>
-
-    </control>
-  </include>
-
+			<control type="group">
+				<visible>![Container(53).OnNext | Container(53).OnPrevious] + !Skin.HasSetting(HideInfoInWallStream)</visible>
+				<include>WallStreamFadeAnim</include>
+				<!-- Generic Info -->
+				<control type="group">
+					<description>1st Row (Generic)</description>
+					<visible>![Container.Content(episodes) | Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
+					<posy>45</posy>
+					<include>WallStreamGenericFirstRowInfo</include>
+				</control>
+				<control type="group">
+					<description>2nd Row (Generic)</description>
+					<visible>![Container.Content(episodes) | Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
+					<posy>233</posy>
+					<include>WallStreamGenericSecondRowInfo</include>
+				</control>
+				<control type="group">
+					<description>3rd Row (Generic)</description>
+					<posy>451</posy>
+					<visible>![Container.Content(episodes) | Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
+					<include>WallStreamGenericThirdRowInfo</include>
+				</control>
+				<!-- Music Info -->
+				<control type="group">
+					<description>1st Row (Music)</description>
+					<visible>[Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
+					<posy>45</posy>
+					<include>WallStreamMusicFirstRowInfo</include>
+				</control>
+				<control type="group">
+					<description>2nd Row (Music)</description>
+					<visible>[Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
+					<posy>176</posy>
+					<include>WallStreamMusicSecondRowInfo</include>
+				</control>
+				<control type="group">
+					<description>3rd Row (Music)</description>
+					<visible>[Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
+					<posy>336</posy>
+					<include>WallStreamMusicThirdRowInfo</include>
+				</control>
+				<control type="group">
+					<description>4th Row (Music)</description>
+					<visible>[Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary) | Window.IsVisible(MyMusicPlaylist)]</visible>
+					<posy>496</posy>
+					<include>WallStreamMusicFourthRowInfo</include>
+				</control>
+				<!-- Episode Info -->
+				<control type="group">
+					<description>1st Row (Episodes)</description>
+					<visible>Container.Content(episodes)</visible>
+					<posy>45</posy>
+					<include>WallStreamEpisodesFirstRowInfo</include>
+				</control>
+				<control type="group">
+					<description>2nd Row (Episodes)</description>
+					<visible>Container.Content(episodes)</visible>
+					<posy>210</posy>
+					<include>WallStreamEpisodesSecondRowInfo</include>
+				</control>
+				<control type="group">
+					<description>3rd Row (Episodes)</description>
+					<visible>Container.Content(episodes)</visible>
+					<posy>390</posy>
+					<include>WallStreamEpisodesThirdRowInfo</include>
+				</control>
+				<control type="group">
+					<description>4th Row (Episodes)</description>
+					<visible>Container.Content(episodes)</visible>
+					<posy>554</posy>
+					<include>WallStreamEpisodesFourthRowInfo</include>
+				</control>
+			</control>
+		</control>
+	</include>
 </includes>

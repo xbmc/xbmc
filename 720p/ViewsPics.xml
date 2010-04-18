@@ -1,102 +1,91 @@
 <includes>
-  <include name="Pictures">
-    <control type="group">
-      <include>PicturesViewVisible</include>
-      <include>MediaViewBGOverlay</include>
-    </control>
-
-    <control type="group">
-      <posx>30</posx>
-      <posy>250</posy>
-      <include>PicturesViewVisible</include>
-      <include>MediaViewFade</include>
-
-      <control type="panel" id="51">
-        <viewtype label="Pictures">panel</viewtype>
-        <width>456</width>
-        <height>440</height>
-        <pagecontrol>61</pagecontrol>
-        <onup>51</onup>
-        <ondown>51</ondown>
-        <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-        <onright>9009</onright>
-        <orientation>vertical</orientation>
-
-        <itemlayout width="114" height="110">
- <!--
+	<include name="Pictures">
+		<control type="group">
+			<include>PicturesViewVisible</include>
+			<include>MediaViewBGOverlay</include>
+		</control>
+		<control type="group">
+			<posx>30</posx>
+			<posy>250</posy>
+			<include>PicturesViewVisible</include>
+			<include>MediaViewFade</include>
+			<control type="panel" id="51">
+				<viewtype label="Pictures">panel</viewtype>
+				<width>456</width>
+				<height>440</height>
+				<pagecontrol>61</pagecontrol>
+				<onup>51</onup>
+				<ondown>51</ondown>
+				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+				<onright>9009</onright>
+				<orientation>vertical</orientation>
+				<itemlayout width="114" height="110">
+					<!--
           <control type="image">
             <include>PicturesThumbBG</include>
           </control>
--->
-          <control type="image">
-            <include>PicturesThumbImg</include>
-			<include>PicturesImageNoFocus</include>
-          </control>
-        </itemlayout>
-
-        <focusedlayout width="114" height="110">
-          <control type="image">
-            <include>PicturesThumbBG</include>
-          </control>
-
-          <control type="image">
-            <include>PicturesThumbImg</include>
-          </control>
-
-        </focusedlayout>
-      </control>
-
-      <control type="scrollbar" id="61">
-        <onup>61</onup>
-        <ondown>61</ondown>
-        <onright>9009</onright>
-        <onleft>50</onleft>
-        <posx>488</posx>
-        <posy>0</posy>
-        <height>440</height>
-        <showonepage>true</showonepage>
-      </control>
-
-      <control type="group">
-        <description>Picture Details</description>
-        <posx>560</posx>
-
-        <control type="group">
-          <description>Large Picture Thumb</description>
-          <posy>-8</posy>
-          <visible>![Container(51).OnNext | Container(51).OnPrevious]</visible>
-          <include>MediaListSelectDelay</include>
-
-          <control type="image">
-            <description>Preview thumb</description>
-            <width>656</width>
-            <height>376</height>
-            <aspectratio align="left" aligny="top">keep</aspectratio>
-            <bordertexture border="14">ThumbShadow2.png</bordertexture>
-            <bordersize>8</bordersize>
-            <info>ListItem.Icon</info>
-            <visible>IsEmpty(ListItem.Thumb)</visible>
-          </control>
-          <control type="image">
-            <description>Preview thumb</description>
-            <width>656</width>
-            <height>376</height>
-            <aspectratio align="left" aligny="top">keep</aspectratio>
-            <bordertexture border="14">ThumbShadow2.png</bordertexture>
-            <bordersize>8</bordersize>
-            <info>ListItem.Thumb</info>
-          </control>
-          <control type="largeimage">
-            <description>Preview thumb</description>
-            <posx>8</posx>
-            <posy>8</posy>
-            <width>640</width>
-            <height>360</height>
-            <aspectratio align="left" aligny="top">keep</aspectratio>
-  				  <info>ListItem.FileNameAndPath</info>
-          </control>
-
-          <!--
+		  -->
+					<control type="image">
+						<include>PicturesThumbImg</include>
+						<include>PicturesImageNoFocus</include>
+					</control>
+				</itemlayout>
+				<focusedlayout width="114" height="110">
+					<control type="image">
+						<include>PicturesThumbBG</include>
+					</control>
+					<control type="image">
+						<include>PicturesThumbImg</include>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="scrollbar" id="61">
+				<onup>61</onup>
+				<ondown>61</ondown>
+				<onright>9009</onright>
+				<onleft>50</onleft>
+				<posx>488</posx>
+				<posy>0</posy>
+				<height>440</height>
+				<showonepage>true</showonepage>
+			</control>
+			<control type="group">
+				<description>Picture Details</description>
+				<posx>560</posx>
+				<control type="group">
+					<description>Large Picture Thumb</description>
+					<posy>-8</posy>
+					<visible>![Container(51).OnNext | Container(51).OnPrevious]</visible>
+					<include>MediaListSelectDelay</include>
+					<control type="image">
+						<description>Preview thumb</description>
+						<width>656</width>
+						<height>376</height>
+						<aspectratio align="left" aligny="top">keep</aspectratio>
+						<bordertexture border="14">ThumbShadow2.png</bordertexture>
+						<bordersize>8</bordersize>
+						<info>ListItem.Icon</info>
+						<visible>IsEmpty(ListItem.Thumb)</visible>
+					</control>
+					<control type="image">
+						<description>Preview thumb</description>
+						<width>656</width>
+						<height>376</height>
+						<aspectratio align="left" aligny="top">keep</aspectratio>
+						<bordertexture border="14">ThumbShadow2.png</bordertexture>
+						<bordersize>8</bordersize>
+						<info>ListItem.Thumb</info>
+					</control>
+					<control type="largeimage">
+						<description>Preview thumb</description>
+						<posx>8</posx>
+						<posy>8</posy>
+						<width>640</width>
+						<height>360</height>
+						<aspectratio align="left" aligny="top">keep</aspectratio>
+						<info>ListItem.FileNameAndPath</info>
+					</control>
+					<!--
           <control type="image">
             <description>Glass overlay</description>
             <posx>8</posx>
@@ -107,114 +96,101 @@
             <visible>!IsEmpty(ListItem.Thumb)</visible>
           </control>
           -->
-        </control>
-
-        <control type="group">
-          <posx>12</posx>
-          <posy>380</posy>
-
-          <control type="label">
-            <description>Name</description>
-            <width>PicturesInfoTextWidth</width>
-            <font>MediumSmallTitleCapsFont</font>
-            <info>ListItem.Label</info>
-          </control>
-
-          <control type="label">
-            <description>Date</description>
-            <posy>22</posy>
-            <width>PicturesInfoTextWidth</width>
-            <font>MediumSmallDefaultCapsFont</font>
-            <label>$INFO[ListItem.PictureDateTime]</label>
-            <visible>!IsEmpty(ListItem.PictureDateTime)</visible>
-          </control>
-          <control type="label">
-            <description>Date</description>
-            <posy>22</posy>
-            <width>PicturesInfoTextWidth</width>
-            <font>MediumSmallDefaultCapsFont</font>
-            <label>$INFO[ListItem.Date]</label>
-            <visible>IsEmpty(ListItem.PictureDateTime)</visible>
-          </control>
-
-          <control type="label">
-            <description>Resolution</description>
-            <posy>42</posy>
-            <width>PicturesInfoTextWidth</width>
-            <font>MediumSmallDefaultCapsFont</font>
-            <label>$INFO[ListItem.PictureResolution]</label>
-          </control>
-        </control>
-      </control>
-    </control>
-  </include>
-
-
-  <include name="ImageStream">
-    <control type="group">
-      <include>ImageStreamVisible</include>
-      <include>BackgroundOverlayFade</include>
-      <include>MovieViewBGOverlay</include>
-
-      <control type="group">
-        <visible>!Container.OnNext + !Container.OnPrevious</visible>
-        <animation effect="fade" start="0" end="100" time="800" delay="200">Visible</animation>
-        <animation effect="fade" start="0" end="0" time="0">Hidden</animation>
-
-  			<control type="image">
-  				<description>Image Thumb</description>
-          <include>ImageStreamLargeImage</include>
-  				<info>ListItem.Thumb</info>
-  			</control>
-  			<control type="largeimage">
-  				<description>Image</description>
-          <include>ImageStreamLargeImage</include>
-  				<info>ListItem.FileNameAndPath</info>
-  			</control>
-  		</control>
-    </control>
-
-    <control type="group">
-      <posy>500</posy>
-      <include>ImageStreamVisible</include>
-      <include>MediaViewFade</include>
-      <animation effect="slide" start="0,0" end="0,300" time="1000" delay="3000" reversible="false" tween="quadratic" condition="![Container.OnNext | Container.OnPrevious]">Conditional</animation>
-
-      <control type="image">
-        <description>Thumbs Strip BG</description>
-        <posy>-10</posy>
-        <width>1280</width>
-        <height>200</height>
-        <texture>ImageStreamBar.png</texture>
-      </control>
-
-      <control type="wraplist" id="57">
-        <viewtype label="Image Stream">wraplist</viewtype>
-        <posx>10</posx>
-        <width>1260</width>
-        <height>180</height>
-        <onleft>57</onleft>
-        <onright>57</onright>
-        <onup>9009</onup>
-        <ondown>Skin.ToggleSetting(HideNowPlayingMusicInfo)</ondown>
-        <scrolltime>200</scrolltime>
-        <pagecontrol>-</pagecontrol>
-        <orientation>horizontal</orientation>
-        <focusposition>3</focusposition>
-
-        <itemlayout width="180" height="180">
-          <control type="image">
-            <include>ImageStreamThumbBG</include>
-          </control>
-          <control type="image">
-            <include>ImageStreamThumb</include>
-          </control>
-        </itemlayout>
-
-        <focusedlayout width="180" height="180">
-          <control type="image">
-            <include>ImageStreamThumbBGFocus</include>
- <!--
+				</control>
+				<control type="group">
+					<posx>12</posx>
+					<posy>380</posy>
+					<control type="label">
+						<description>Name</description>
+						<width>PicturesInfoTextWidth</width>
+						<font>MediumSmallTitleCapsFont</font>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<description>Date</description>
+						<posy>22</posy>
+						<width>PicturesInfoTextWidth</width>
+						<font>MediumSmallDefaultCapsFont</font>
+						<label>$INFO[ListItem.PictureDateTime]</label>
+						<visible>!IsEmpty(ListItem.PictureDateTime)</visible>
+					</control>
+					<control type="label">
+						<description>Date</description>
+						<posy>22</posy>
+						<width>PicturesInfoTextWidth</width>
+						<font>MediumSmallDefaultCapsFont</font>
+						<label>$INFO[ListItem.Date]</label>
+						<visible>IsEmpty(ListItem.PictureDateTime)</visible>
+					</control>
+					<control type="label">
+						<description>Resolution</description>
+						<posy>42</posy>
+						<width>PicturesInfoTextWidth</width>
+						<font>MediumSmallDefaultCapsFont</font>
+						<label>$INFO[ListItem.PictureResolution]</label>
+					</control>
+				</control>
+			</control>
+		</control>
+	</include>
+	<include name="ImageStream">
+		<control type="group">
+			<include>ImageStreamVisible</include>
+			<include>BackgroundOverlayFade</include>
+			<include>MovieViewBGOverlay</include>
+			<control type="group">
+				<visible>!Container.OnNext + !Container.OnPrevious</visible>
+				<animation effect="fade" start="0" end="100" time="800" delay="200">Visible</animation>
+				<animation effect="fade" start="0" end="0" time="0">Hidden</animation>
+				<control type="image">
+					<description>Image Thumb</description>
+					<include>ImageStreamLargeImage</include>
+					<info>ListItem.Thumb</info>
+				</control>
+				<control type="largeimage">
+					<description>Image</description>
+					<include>ImageStreamLargeImage</include>
+					<info>ListItem.FileNameAndPath</info>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<posy>500</posy>
+			<include>ImageStreamVisible</include>
+			<include>MediaViewFade</include>
+			<animation effect="slide" start="0,0" end="0,300" time="1000" delay="3000" reversible="false" tween="quadratic" condition="![Container.OnNext | Container.OnPrevious]">Conditional</animation>
+			<control type="image">
+				<description>Thumbs Strip BG</description>
+				<posy>-10</posy>
+				<width>1280</width>
+				<height>200</height>
+				<texture>ImageStreamBar.png</texture>
+			</control>
+			<control type="wraplist" id="57">
+				<viewtype label="Image Stream">wraplist</viewtype>
+				<posx>10</posx>
+				<width>1260</width>
+				<height>180</height>
+				<onleft>57</onleft>
+				<onright>57</onright>
+				<onup>9009</onup>
+				<ondown>Skin.ToggleSetting(HideNowPlayingMusicInfo)</ondown>
+				<scrolltime>200</scrolltime>
+				<pagecontrol>-</pagecontrol>
+				<orientation>horizontal</orientation>
+				<focusposition>3</focusposition>
+				<itemlayout width="180" height="180">
+					<control type="image">
+						<include>ImageStreamThumbBG</include>
+					</control>
+					<control type="image">
+						<include>ImageStreamThumb</include>
+					</control>
+				</itemlayout>
+				<focusedlayout width="180" height="180">
+					<control type="image">
+						<include>ImageStreamThumbBGFocus</include>
+						<!--
             <animation type="focus">
               <effect type="zoom" tween="quadratic" start="10,10,160,160" end="-18,-44,216,216" time="600" delay="200"/>
             </animation>
@@ -222,10 +198,10 @@
               <effect type="zoom" tween="quadratic" start="-18,-44,216,216" end="10,10,160,160" time="350"/>
             </animation>
 -->
-          </control>
-          <control type="image">
-            <include>ImageStreamThumb</include>
-<!--
+					</control>
+					<control type="image">
+						<include>ImageStreamThumb</include>
+						<!--
             <animation type="focus">
               <effect type="zoom" tween="quadratic" start="21,21,138,138" end="-1,-31,184,188" time="600" delay="200"/>
             </animation>
@@ -233,38 +209,34 @@
               <effect type="zoom" tween="quadratic" start="-1,-31,184,188" end="21,21,138,138" time="350"/>
             </animation>
 -->
-          </control>
-        </focusedlayout>
-      </control>
-
-      <control type="group">
-        <posy>176</posy>
-
-        <control type="image">
-          <description>BG for Image Name</description>
-          <posy>-1</posy>
-          <width>1280</width>
-          <height>34</height>
-          <texture>White.png</texture>
-          <colordiffuse>66999999</colordiffuse>
-        </control>
-        <control type="image">
-          <description>BG for Image Name</description>
-          <width>1280</width>
-          <height>32</height>
-          <texture>Black.png</texture>
-          <colordiffuse>cc999999</colordiffuse>
-        </control>
-
-        <control type="label">
-          <posy>3</posy>
-          <width>1280</width>
-          <align>center</align>
-          <font>MediumTitleCapsFont</font>
-          <label>$INFO[ListItem.Label]</label>
-        </control>
-      </control>
-    </control>
-  </include>
-
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="group">
+				<posy>176</posy>
+				<control type="image">
+					<description>BG for Image Name</description>
+					<posy>-1</posy>
+					<width>1280</width>
+					<height>34</height>
+					<texture>White.png</texture>
+					<colordiffuse>66999999</colordiffuse>
+				</control>
+				<control type="image">
+					<description>BG for Image Name</description>
+					<width>1280</width>
+					<height>32</height>
+					<texture>Black.png</texture>
+					<colordiffuse>cc999999</colordiffuse>
+				</control>
+				<control type="label">
+					<posy>3</posy>
+					<width>1280</width>
+					<align>center</align>
+					<font>MediumTitleCapsFont</font>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+			</control>
+		</control>
+	</include>
 </includes>

@@ -1,561 +1,488 @@
 <includes>
-
-<!-- MusicAlbums -->
-  <include name="MusicAlbums">
-    <control type="group">
-      <include>MusicAlbumsVisible</include>
-      <include>MediaViewBGOverlay</include>
-    </control>
-
-    <control type="group">
-      <posy>216</posy>
-      <include>MusicAlbumsVisible</include>
-      <include>MediaViewFade</include>
-
-      <control type="group">
-        <control type="image">
-          <include>MusicAlbumItemDivider</include>
-        </control>
-
-        <control type="group">
-          <posy>MusicAlbumItemNFHeight</posy>
-
-          <control type="image">
-            <include>MusicAlbumItemDivider</include>
-          </control>
-
-          <control type="group">
-            <posy>MusicAlbumItemNFHeight</posy>
-
-            <control type="group">
-              <posy>MusicAlbumItemNFHeight</posy>
-              <visible>Control.HasFocus(51)</visible>
-              <include>MediaFade</include>
-
-              <control type="image">
-                <posy>0</posy>
-                <width>843</width>
-                <height>122</height>
-                <texture>Black.png</texture>
-                <colordiffuse>66999999</colordiffuse>
-                <visible>Skin.HasTheme(lite)</visible>
-              </control>
-              <control type="image">
-                <posy>-52</posy>
-                <width>951</width>
-                <height>174</height>
-                <texture>MusicAlbumItemFO.png</texture>
-                <visible>!Skin.HasTheme(lite)</visible>
-              </control>
-
-              <control type="group">
-                <posy>MusicAlbumItemFOHeight</posy>
-
-                <control type="image">
-                  <include>MusicAlbumItemDivider</include>
-                </control>
-
-                <control type="group">
-                  <posy>MusicAlbumItemNFHeight</posy>
-
-                  <control type="image">
-                    <include>MusicAlbumItemDivider</include>
-                  </control>
-
-                  <control type="group">
-                    <posy>MusicAlbumItemNFHeight</posy>
-
-                    <control type="image">
-                      <include>MusicAlbumItemDivider</include>
-                    </control>
-                  </control>
-                </control>
-              </control>
-            </control>
-
-            <control type="group">
-              <visible>!Control.HasFocus(51)</visible>
-              <include>MediaFade</include>
-
-              <control type="image">
-                <include>MusicAlbumItemDivider</include>
-              </control>
-
-              <control type="group">
-                <posy>MusicAlbumItemNFHeight</posy>
-
-                <control type="image">
-                  <include>MusicAlbumItemDivider</include>
-                </control>
-
-                <control type="group">
-                  <posy>MusicAlbumItemNFHeight</posy>
-
-                  <control type="image">
-                    <include>MusicAlbumItemDivider</include>
-                  </control>
-
-                  <control type="group">
-                    <posy>MusicAlbumItemNFHeight</posy>
-
-                    <control type="image">
-                      <include>MusicAlbumItemDivider</include>
-                    </control>
-
-                    <control type="group">
-                      <posy>MusicAlbumItemNFHeight</posy>
-
-                      <control type="image">
-                        <include>MusicAlbumItemDivider</include>
-                      </control>
-
-                      <control type="group">
-                        <posy>MusicAlbumItemNFHeight</posy>
-      
-                        <control type="image">
-                          <include>MusicAlbumItemDivider</include>
-                        </control>
-                      </control>
-                    </control>
-                  </control>
-                </control>
-              </control>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="wraplist" id="51">
-        <include condition="!Skin.HasSetting(HideScrollBars)">MusicAlbumWithScrollbar</include>
-        <include condition="Skin.HasSetting(HideScrollBars)">MusicAlbumWithoutScrollbar</include>
-        <viewtype label="Albums">icon</viewtype>
-        <width>1280</width>
-        <height>490</height>
-        <pagecontrol>61</pagecontrol>
-        <onup>51</onup>
-        <ondown>51</ondown>
-        <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-        <orientation>vertical</orientation>
-        <focusposition>3</focusposition>
-
-        <itemlayout width="1280" height="MusicAlbumItemNFHeight">
-          <control type="group">
-            <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-
-            <control type="image">
-              <include>MusicAlbumNFCoverDims</include>
-              <info>ListItem.Thumb</info>
-              <include>MusicAlbumCoverTexture</include>
-              <bordertexture border="14">ThumbShadow2.png</bordertexture>
-              <bordersize>4</bordersize>
-            </control>
-            <control type="label">
-              <include>MusicAlbumNoThumbLabelDims</include>
-              <include>NoThumbLabel</include>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>MusicAlbumsCoverOverlayDims</include>
-              <include>GlassTextureOverlay</include>
-            </control>
-          </control>
-
-          <control type="label">
-            <info>ListItem.Album</info>
-            <visible>Window.IsVisible(MyMusicLibrary)</visible>
-            <include>MusicAlbumMainLabelNF</include>
-          </control>
-          <control type="label">
-            <info>ListItem.Label</info>
-            <visible>!Window.IsVisible(MyMusicLibrary)</visible>
-            <include>MusicAlbumMainLabelNF</include>
-          </control>
-    
-          <control type="label">
-            <info>ListItem.Artist</info>
-            <visible>Window.IsVisible(MyMusicLibrary)</visible>
-            <include>MusicAlbumSubLabelNF</include>
-          </control>
-          <control type="label">
-            <info>ListItem.Label2</info>
-            <visible>!Window.IsVisible(MyMusicLibrary)</visible>
-            <include>MusicAlbumSubLabelNF</include>
-          </control>
-
-          <control type="image">
-            <description>Fade non-focused album details</description>
-            <width>1280</width>
-            <height>MusicAlbumItemNFHeight</height>
-            <texture>BlackTransparent.png</texture>
-            <colordiffuse>cc666666</colordiffuse>
-            <visible>!Skin.HasTheme(lite)</visible>
-          </control>
-        </itemlayout>
-
-        <focusedlayout width="1280" height="MusicAlbumItemFOHeight">
-          <control type="group">
-            <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-
-            <control type="image">
-              <include>MusicAlbumFocusCoverDims</include>
-              <info>ListItem.Thumb</info>
-              <include>MusicAlbumCoverTexture</include>
-              <bordertexture border="14">ThumbShadow2.png</bordertexture>
-              <bordersize>6</bordersize>
-            </control>
-            <control type="label">
-              <include>MusicAlbumFocusNoThumbLabelDims</include>
-              <include>NoThumbLabel</include>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <include>MusicAlbumsFocusCoverOverlayDims</include>
-              <include>GlassTextureOverlay</include>
-            </control>
-          </control>
-
-          <control type="label">
-            <info>ListItem.Album</info>
-            <visible>Window.IsVisible(MyMusicLibrary)</visible>
-            <include>MusicAlbumMainLabelFO</include>
-          </control>
-          <control type="label">
-            <info>ListItem.Label</info>
-            <visible>!Window.IsVisible(MyMusicLibrary)</visible>
-            <include>MusicAlbumMainLabelFO</include>
-          </control>
-    
-          <control type="label">
-            <info>ListItem.Artist</info>
-            <visible>Window.IsVisible(MyMusicLibrary)</visible>
-            <include>MusicAlbumSubLabelFO</include>
-          </control>
-          <control type="label">
-            <info>ListItem.Label2</info>
-            <visible>!Window.IsVisible(MyMusicLibrary)</visible>
-            <include>MusicAlbumSubLabelFO</include>
-          </control>
-    
-          <control type="image">
-            <description>Fade non-focused album details</description>
-            <posx>-200</posx>
-            <width>1480</width>
-            <height>MusicAlbumItemFOHeight</height>
-            <texture>BlackTransparent.png</texture>
-            <colordiffuse>cc666666</colordiffuse>
-            <animation effect="slide" start="0,0" end="1480,0" time="MusicAlbumFocusZoomTime" delay="MusicAlbumFocusZoomDelay" reversible="false">Focus</animation>
-            <visible>!Skin.HasTheme(lite)</visible>
-          </control>
-        </focusedlayout>
-      </control>
-
-      <control type="group">
-        <posx>859</posx>
-        <posy>-5</posy>
-        <visible>Control.HasFocus(51)</visible>
-
-        <control type="image">
-          <posx>-16</posx>
-          <posy>5</posy>
-          <width>437</width>
-          <height>504</height>
-          <texture>Black.png</texture>
-          <colordiffuse>66999999</colordiffuse>
-          <visible>Skin.HasTheme(lite)</visible>
-        </control>
-        <control type="image">
-          <posx>-16</posx>
-          <width>437</width>
-          <height>509</height>
-          <texture>MusicAlbumDetailsPanel.png</texture>
-          <visible>!Skin.HasTheme(lite)</visible>
-        </control>
-
-        <control type="group">
-          <posx>28</posx>
-          <include>MediaListSelectDelay</include>
-          <animation effect="slide" end="0,60" time="0" condition="!Window.IsVisible(MyMusicLibrary)">Conditional</animation>
-
-          <control type="group">
-            <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-
-            <control type="image">
-              <include>MusicAlbumLargeCoverDims</include>
-              <info>ListItem.Thumb</info>
-              <include>MusicAlbumCoverTexture</include>
-              <bordertexture border="14">ThumbShadow2.png</bordertexture>
-              <bordersize>6</bordersize>
-            </control>
-            <control type="label">
-              <posy>68</posy>
-              <width>316</width>
-              <font>XLargeTitleCapsFont</font>
-              <include>NoThumbLabel</include>
-            </control>
-            <control type="image">
-              <description>Glass overlay</description>
-              <posx>1</posx>
-              <posy>27</posy>
-              <width>180</width>
-              <height>180</height>
-              <include>GlassTextureOverlay</include>
-            </control>
-          </control>
-          
-          <control type="group">
-            <description>Artist</description>
-            <include>MusicAlbumsDetailsArtistPos</include>
-            <visible>Window.IsVisible(MyMusicLibrary)</visible>
-
-            <control type="label">
-              <label>$LOCALIZE[557]</label>
-              <include>MusicAlbumDetailInfoCaption</include>
-            </control>
-            <control type="label">
-              <info>ListItem.Artist</info>
-              <include>MusicAlbumDetailInfoValue</include>
-            </control>
-
-            <control type="group">
-              <description>Album</description>
-              <posy>MusicAlbumDetailInfoHeight</posy>
-
-              <control type="label">
-                <label>$LOCALIZE[558]</label>
-                <include>MusicAlbumDetailInfoCaption</include>
-              </control>
-              <control type="label">
-                <info>ListItem.Album</info>
-                <include>MusicAlbumDetailInfoValue</include>
-              </control>
-
-              <control type="group">
-                <description>Year</description>
-                <posy>MusicAlbumDetailInfoHeight</posy>
-
-                <control type="label">
-                  <label>$LOCALIZE[562]</label>
-                  <include>MusicAlbumDetailInfoCaption</include>
-                </control>
-                <control type="label">
-                  <info>ListItem.Year</info>
-                  <include>MusicAlbumDetailInfoValue</include>
-                </control>
-
-                <control type="group">
-                  <description>Rating</description>
-                  <posy>MusicAlbumDetailInfoHeight</posy>
-
-                  <control type="label">
-                    <label>$LOCALIZE[563]</label>
-                    <include>MusicAlbumDetailInfoCaption</include>
-                  </control>
-                  <control type="label">
-                    <info>ListItem.Rating</info>
-                    <include>MusicAlbumDetailInfoValue</include>
-                  </control>
-                </control>
-              </control>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="scrollbar" id="61">
-        <posx>1228</posx>
-        <posy>18</posy>
-        <height>464</height>
-        <onup>61</onup>
-        <ondown>61</ondown>
-        <onleft>51</onleft>
-        <onright>9009</onright>
-        <visible>!Skin.HasSetting(HideScrollBars)</visible>
-      </control>
-
-    </control>
-
-    <control type="group">
-      <include>MusicAlbumsVisible</include>
-      <include>CommonSortLetters</include>
-    </control>
-  </include>
-
-
-
-<!-- MusicSongs -->
-  <include name="MusicSongs">
-    <control type="group">
-      <include>MusicSongsVisible</include>
-      <include>MediaViewBGOverlay</include>
-    </control>
-
-    <control type="group">
-      <include>MusicSongsVisible</include>
-      <include>MediaViewFade</include>
-
-      <control type="group">
-        <posx>34</posx>
-        <posy>260</posy>
-
-        <control type="group">
-          <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-
-          <control type="image">
-            <include>MusicSongsCoverDims</include>
-            <info>ListItem.Thumb</info>
-            <texture>DefaultAlbumCover.png</texture>
-            <aspectratio>stretch</aspectratio>
-            <bordertexture border="14">ThumbShadow.png</bordertexture>
-            <bordersize>8</bordersize>
-          </control>
-          <!--
+	<!-- MusicAlbums -->
+	<include name="MusicAlbums">
+		<control type="group">
+			<include>MusicAlbumsVisible</include>
+			<include>MediaViewBGOverlay</include>
+		</control>
+		<control type="group">
+			<posy>216</posy>
+			<include>MusicAlbumsVisible</include>
+			<include>MediaViewFade</include>
+			<control type="group">
+				<control type="image">
+					<include>MusicAlbumItemDivider</include>
+				</control>
+				<control type="group">
+					<posy>MusicAlbumItemNFHeight</posy>
+					<control type="image">
+						<include>MusicAlbumItemDivider</include>
+					</control>
+					<control type="group">
+						<posy>MusicAlbumItemNFHeight</posy>
+						<control type="group">
+							<posy>MusicAlbumItemNFHeight</posy>
+							<visible>Control.HasFocus(51)</visible>
+							<include>MediaFade</include>
+							<control type="image">
+								<posy>0</posy>
+								<width>843</width>
+								<height>122</height>
+								<texture>Black.png</texture>
+								<colordiffuse>66999999</colordiffuse>
+								<visible>Skin.HasTheme(lite)</visible>
+							</control>
+							<control type="image">
+								<posy>-52</posy>
+								<width>951</width>
+								<height>174</height>
+								<texture>MusicAlbumItemFO.png</texture>
+								<visible>!Skin.HasTheme(lite)</visible>
+							</control>
+							<control type="group">
+								<posy>MusicAlbumItemFOHeight</posy>
+								<control type="image">
+									<include>MusicAlbumItemDivider</include>
+								</control>
+								<control type="group">
+									<posy>MusicAlbumItemNFHeight</posy>
+									<control type="image">
+										<include>MusicAlbumItemDivider</include>
+									</control>
+									<control type="group">
+										<posy>MusicAlbumItemNFHeight</posy>
+										<control type="image">
+											<include>MusicAlbumItemDivider</include>
+										</control>
+									</control>
+								</control>
+							</control>
+						</control>
+						<control type="group">
+							<visible>!Control.HasFocus(51)</visible>
+							<include>MediaFade</include>
+							<control type="image">
+								<include>MusicAlbumItemDivider</include>
+							</control>
+							<control type="group">
+								<posy>MusicAlbumItemNFHeight</posy>
+								<control type="image">
+									<include>MusicAlbumItemDivider</include>
+								</control>
+								<control type="group">
+									<posy>MusicAlbumItemNFHeight</posy>
+									<control type="image">
+										<include>MusicAlbumItemDivider</include>
+									</control>
+									<control type="group">
+										<posy>MusicAlbumItemNFHeight</posy>
+										<control type="image">
+											<include>MusicAlbumItemDivider</include>
+										</control>
+										<control type="group">
+											<posy>MusicAlbumItemNFHeight</posy>
+											<control type="image">
+												<include>MusicAlbumItemDivider</include>
+											</control>
+											<control type="group">
+												<posy>MusicAlbumItemNFHeight</posy>
+												<control type="image">
+													<include>MusicAlbumItemDivider</include>
+												</control>
+											</control>
+										</control>
+									</control>
+								</control>
+							</control>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="wraplist" id="51">
+				<include condition="!Skin.HasSetting(HideScrollBars)">MusicAlbumWithScrollbar</include>
+				<include condition="Skin.HasSetting(HideScrollBars)">MusicAlbumWithoutScrollbar</include>
+				<viewtype label="Albums">icon</viewtype>
+				<width>1280</width>
+				<height>490</height>
+				<pagecontrol>61</pagecontrol>
+				<onup>51</onup>
+				<ondown>51</ondown>
+				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+				<orientation>vertical</orientation>
+				<focusposition>3</focusposition>
+				<itemlayout width="1280" height="MusicAlbumItemNFHeight">
+					<control type="group">
+						<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+						<control type="image">
+							<include>MusicAlbumNFCoverDims</include>
+							<info>ListItem.Thumb</info>
+							<include>MusicAlbumCoverTexture</include>
+							<bordertexture border="14">ThumbShadow2.png</bordertexture>
+							<bordersize>4</bordersize>
+						</control>
+						<control type="label">
+							<include>MusicAlbumNoThumbLabelDims</include>
+							<include>NoThumbLabel</include>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>MusicAlbumsCoverOverlayDims</include>
+							<include>GlassTextureOverlay</include>
+						</control>
+					</control>
+					<control type="label">
+						<info>ListItem.Album</info>
+						<visible>Window.IsVisible(MyMusicLibrary)</visible>
+						<include>MusicAlbumMainLabelNF</include>
+					</control>
+					<control type="label">
+						<info>ListItem.Label</info>
+						<visible>!Window.IsVisible(MyMusicLibrary)</visible>
+						<include>MusicAlbumMainLabelNF</include>
+					</control>
+					<control type="label">
+						<info>ListItem.Artist</info>
+						<visible>Window.IsVisible(MyMusicLibrary)</visible>
+						<include>MusicAlbumSubLabelNF</include>
+					</control>
+					<control type="label">
+						<info>ListItem.Label2</info>
+						<visible>!Window.IsVisible(MyMusicLibrary)</visible>
+						<include>MusicAlbumSubLabelNF</include>
+					</control>
+					<control type="image">
+						<description>Fade non-focused album details</description>
+						<width>1280</width>
+						<height>MusicAlbumItemNFHeight</height>
+						<texture>BlackTransparent.png</texture>
+						<colordiffuse>cc666666</colordiffuse>
+						<visible>!Skin.HasTheme(lite)</visible>
+					</control>
+				</itemlayout>
+				<focusedlayout width="1280" height="MusicAlbumItemFOHeight">
+					<control type="group">
+						<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+						<control type="image">
+							<include>MusicAlbumFocusCoverDims</include>
+							<info>ListItem.Thumb</info>
+							<include>MusicAlbumCoverTexture</include>
+							<bordertexture border="14">ThumbShadow2.png</bordertexture>
+							<bordersize>6</bordersize>
+						</control>
+						<control type="label">
+							<include>MusicAlbumFocusNoThumbLabelDims</include>
+							<include>NoThumbLabel</include>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<include>MusicAlbumsFocusCoverOverlayDims</include>
+							<include>GlassTextureOverlay</include>
+						</control>
+					</control>
+					<control type="label">
+						<info>ListItem.Album</info>
+						<visible>Window.IsVisible(MyMusicLibrary)</visible>
+						<include>MusicAlbumMainLabelFO</include>
+					</control>
+					<control type="label">
+						<info>ListItem.Label</info>
+						<visible>!Window.IsVisible(MyMusicLibrary)</visible>
+						<include>MusicAlbumMainLabelFO</include>
+					</control>
+					<control type="label">
+						<info>ListItem.Artist</info>
+						<visible>Window.IsVisible(MyMusicLibrary)</visible>
+						<include>MusicAlbumSubLabelFO</include>
+					</control>
+					<control type="label">
+						<info>ListItem.Label2</info>
+						<visible>!Window.IsVisible(MyMusicLibrary)</visible>
+						<include>MusicAlbumSubLabelFO</include>
+					</control>
+					<control type="image">
+						<description>Fade non-focused album details</description>
+						<posx>-200</posx>
+						<width>1480</width>
+						<height>MusicAlbumItemFOHeight</height>
+						<texture>BlackTransparent.png</texture>
+						<colordiffuse>cc666666</colordiffuse>
+						<animation effect="slide" start="0,0" end="1480,0" time="MusicAlbumFocusZoomTime" delay="MusicAlbumFocusZoomDelay" reversible="false">Focus</animation>
+						<visible>!Skin.HasTheme(lite)</visible>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="group">
+				<posx>859</posx>
+				<posy>-5</posy>
+				<visible>Control.HasFocus(51)</visible>
+				<control type="image">
+					<posx>-16</posx>
+					<posy>5</posy>
+					<width>437</width>
+					<height>504</height>
+					<texture>Black.png</texture>
+					<colordiffuse>66999999</colordiffuse>
+					<visible>Skin.HasTheme(lite)</visible>
+				</control>
+				<control type="image">
+					<posx>-16</posx>
+					<width>437</width>
+					<height>509</height>
+					<texture>MusicAlbumDetailsPanel.png</texture>
+					<visible>!Skin.HasTheme(lite)</visible>
+				</control>
+				<control type="group">
+					<posx>28</posx>
+					<include>MediaListSelectDelay</include>
+					<animation effect="slide" end="0,60" time="0" condition="!Window.IsVisible(MyMusicLibrary)">Conditional</animation>
+					<control type="group">
+						<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+						<control type="image">
+							<include>MusicAlbumLargeCoverDims</include>
+							<info>ListItem.Thumb</info>
+							<include>MusicAlbumCoverTexture</include>
+							<bordertexture border="14">ThumbShadow2.png</bordertexture>
+							<bordersize>6</bordersize>
+						</control>
+						<control type="label">
+							<posy>68</posy>
+							<width>316</width>
+							<font>XLargeTitleCapsFont</font>
+							<include>NoThumbLabel</include>
+						</control>
+						<control type="image">
+							<description>Glass overlay</description>
+							<posx>1</posx>
+							<posy>27</posy>
+							<width>180</width>
+							<height>180</height>
+							<include>GlassTextureOverlay</include>
+						</control>
+					</control>
+					<control type="group">
+						<description>Artist</description>
+						<include>MusicAlbumsDetailsArtistPos</include>
+						<visible>Window.IsVisible(MyMusicLibrary)</visible>
+						<control type="label">
+							<label>$LOCALIZE[557]</label>
+							<include>MusicAlbumDetailInfoCaption</include>
+						</control>
+						<control type="label">
+							<info>ListItem.Artist</info>
+							<include>MusicAlbumDetailInfoValue</include>
+						</control>
+						<control type="group">
+							<description>Album</description>
+							<posy>MusicAlbumDetailInfoHeight</posy>
+							<control type="label">
+								<label>$LOCALIZE[558]</label>
+								<include>MusicAlbumDetailInfoCaption</include>
+							</control>
+							<control type="label">
+								<info>ListItem.Album</info>
+								<include>MusicAlbumDetailInfoValue</include>
+							</control>
+							<control type="group">
+								<description>Year</description>
+								<posy>MusicAlbumDetailInfoHeight</posy>
+								<control type="label">
+									<label>$LOCALIZE[562]</label>
+									<include>MusicAlbumDetailInfoCaption</include>
+								</control>
+								<control type="label">
+									<info>ListItem.Year</info>
+									<include>MusicAlbumDetailInfoValue</include>
+								</control>
+								<control type="group">
+									<description>Rating</description>
+									<posy>MusicAlbumDetailInfoHeight</posy>
+									<control type="label">
+										<label>$LOCALIZE[563]</label>
+										<include>MusicAlbumDetailInfoCaption</include>
+									</control>
+									<control type="label">
+										<info>ListItem.Rating</info>
+										<include>MusicAlbumDetailInfoValue</include>
+									</control>
+								</control>
+							</control>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="scrollbar" id="61">
+				<posx>1228</posx>
+				<posy>18</posy>
+				<height>464</height>
+				<onup>61</onup>
+				<ondown>61</ondown>
+				<onleft>51</onleft>
+				<onright>9009</onright>
+				<visible>!Skin.HasSetting(HideScrollBars)</visible>
+			</control>
+		</control>
+		<control type="group">
+			<include>MusicAlbumsVisible</include>
+			<include>CommonSortLetters</include>
+		</control>
+	</include>
+	<!-- MusicSongs -->
+	<include name="MusicSongs">
+		<control type="group">
+			<include>MusicSongsVisible</include>
+			<include>MediaViewBGOverlay</include>
+		</control>
+		<control type="group">
+			<include>MusicSongsVisible</include>
+			<include>MediaViewFade</include>
+			<control type="group">
+				<posx>34</posx>
+				<posy>260</posy>
+				<control type="group">
+					<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+					<control type="image">
+						<include>MusicSongsCoverDims</include>
+						<info>ListItem.Thumb</info>
+						<texture>DefaultAlbumCover.png</texture>
+						<aspectratio>stretch</aspectratio>
+						<bordertexture border="14">ThumbShadow.png</bordertexture>
+						<bordersize>8</bordersize>
+					</control>
+					<!--
           <control type="image">
             <description>Glass overlay</description>
             <include>MusicSongsCoverOverlayDims</include>
             <include>GlassTextureOverlay</include>
           </control>-->
-          <control type="image">
-            <include>MusicSongsCoverRflctnDims</include>
-            <info>ListItem.Icon</info>
-            <texture flipy="true" diffuse="DiffuseMirror.png">DefaultAlbumCover.png</texture>
-            <aspectratio>stretch</aspectratio>
-          </control>
-          <control type="label">
-            <include>MusicSongsNoThumbDims</include>
-            <font>LargeTitleCapsFont</font>
-            <include>NoThumbLabel</include>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>362</posx>
-          <posy>4</posy>
-
-          <control type="grouplist">
-            <orientation>vertical</orientation>
-            <itemgap>0</itemgap>
-
-            <control type="label">
-              <description>Artist name</description>
-              <height>30</height>
-              <font>TitleCapsFont</font>
-              <include>MusicSongsAlbumInfo</include>
-              <label>$INFO[ListItem.Artist]</label>
-            </control>
-
-            <control type="label">
-              <description>Album name</description>
-              <height>26</height>
-              <font>MediumSmallDefaultCapsFont</font>
-              <include>MusicSongsAlbumInfo</include>
-              <label>$INFO[ListItem.Album]</label>
-            </control>
-
-            <control type="label">
-              <description>No. of tracks</description>
-              <height>22</height>
-              <font>SmallDefaultCapsFont</font>
-              <include>MusicSongsAlbumInfo</include>
-              <label>$LOCALIZE[182]: $INFO[Container.NumItems]</label>
-            </control>
-
-            <control type="label">
-              <description>Album Year</description>
-              <height>26</height>
-              <font>MediumSmallDefaultFont</font>
-              <include>MusicSongsAlbumInfo</include>
-              <info>ListItem.Year</info>
-            </control>
-          </control>
-        </control>
-      </control>
-    </control>
-
-    <control type="group">
-      <include>MusicSongsVisible</include>
-      <include>MediaViewFade</include>
-      <posx>670</posx>
-      <posy>260</posy>
-
-      <control type="list" id="57">
-        <viewtype label="Songs">list</viewtype>
-        <posx>10</posx>
-        <width>640</width>
-        <height>378</height>
-        <pagecontrol>-</pagecontrol>
-        <onright>9009</onright>
-        <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-        <onup>57</onup>
-        <ondown>57</ondown>
-
-        <itemlayout height="42" width="640">
-          <control type="image">
-            <include>MediaItemBG</include>
-          </control>
-          <control type="label">
-            <include>MusicSongTrackNoNF</include>
-          </control>
-          <control type="label">
-            <include>MediaNumberedItemTitleNF</include>
-          </control>
-          <control type="label">
-            <include>MediaItemDetailInfoNF</include>
-          </control>
-        </itemlayout>
-
-        <focusedlayout height="42" width="640">
-          <control type="image">
-            <include>MediaItemBG</include>
-          </control>
-          <control type="image">
-            <include>MediaItemFocusBG</include>
-          </control>
-          <control type="image">
-            <visible>!IsEmpty(ListItem.Label2)</visible>
-            <include>MediaItemDetailBG</include>
-          </control>
-          <control type="label">
-            <include>MusicSongTrackNoNF</include>
-            <include>MediaListItemFadeOut</include>
-          </control>
-          <control type="label">
-            <include>MusicSongTrackNoFO</include>
-            <include>MediaListItemFade</include>
-          </control>
-          <control type="label">
-            <include>MediaNumberedItemTitleNF</include>
-            <include>MediaListItemFadeOut</include>
-          </control>
-          <control type="label">
-            <include>MediaNumberedItemTitleFO</include>
-            <include>MediaListItemFade</include>
-          </control>
-          <control type="label">
-            <include>MediaItemDetailInfoNF</include>
-            <include>MediaListItemFadeOut</include>
-          </control>
-          <control type="label">
-            <include>MediaItemDetailInfoFO</include>
-            <include>MediaListItemFade</include>
-          </control>
-        </focusedlayout>
-      </control>
-
-      <control type="image">
-        <description>Songs List overlay</description>
-        <visible>![Container(57).Position(8)] + !Skin.HasTheme(lite)</visible>
-        <posy>308</posy>
-        <width>660</width>
-        <height>100</height>
-        <texture>BlackGradient2.png</texture>
-        <aspectratio>stretch</aspectratio>
-      </control>
-    </control>
-
-    <control type="group">
-      <include>MusicSongsVisible</include>
-      <include>CommonSortLetters</include>
-    </control>
-  </include>
-
+					<control type="image">
+						<include>MusicSongsCoverRflctnDims</include>
+						<info>ListItem.Icon</info>
+						<texture flipy="true" diffuse="DiffuseMirror.png">DefaultAlbumCover.png</texture>
+						<aspectratio>stretch</aspectratio>
+					</control>
+					<control type="label">
+						<include>MusicSongsNoThumbDims</include>
+						<font>LargeTitleCapsFont</font>
+						<include>NoThumbLabel</include>
+					</control>
+				</control>
+				<control type="group">
+					<posx>362</posx>
+					<posy>4</posy>
+					<control type="grouplist">
+						<orientation>vertical</orientation>
+						<itemgap>0</itemgap>
+						<control type="label">
+							<description>Artist name</description>
+							<height>30</height>
+							<font>TitleCapsFont</font>
+							<include>MusicSongsAlbumInfo</include>
+							<label>$INFO[ListItem.Artist]</label>
+						</control>
+						<control type="label">
+							<description>Album name</description>
+							<height>26</height>
+							<font>MediumSmallDefaultCapsFont</font>
+							<include>MusicSongsAlbumInfo</include>
+							<label>$INFO[ListItem.Album]</label>
+						</control>
+						<control type="label">
+							<description>No. of tracks</description>
+							<height>22</height>
+							<font>SmallDefaultCapsFont</font>
+							<include>MusicSongsAlbumInfo</include>
+							<label>$LOCALIZE[182]: $INFO[Container.NumItems]</label>
+						</control>
+						<control type="label">
+							<description>Album Year</description>
+							<height>26</height>
+							<font>MediumSmallDefaultFont</font>
+							<include>MusicSongsAlbumInfo</include>
+							<info>ListItem.Year</info>
+						</control>
+					</control>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<include>MusicSongsVisible</include>
+			<include>MediaViewFade</include>
+			<posx>670</posx>
+			<posy>260</posy>
+			<control type="list" id="57">
+				<viewtype label="Songs">list</viewtype>
+				<posx>10</posx>
+				<width>640</width>
+				<height>378</height>
+				<pagecontrol>-</pagecontrol>
+				<onright>9009</onright>
+				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+				<onup>57</onup>
+				<ondown>57</ondown>
+				<itemlayout height="42" width="640">
+					<control type="image">
+						<include>MediaItemBG</include>
+					</control>
+					<control type="label">
+						<include>MusicSongTrackNoNF</include>
+					</control>
+					<control type="label">
+						<include>MediaNumberedItemTitleNF</include>
+					</control>
+					<control type="label">
+						<include>MediaItemDetailInfoNF</include>
+					</control>
+				</itemlayout>
+				<focusedlayout height="42" width="640">
+					<control type="image">
+						<include>MediaItemBG</include>
+					</control>
+					<control type="image">
+						<include>MediaItemFocusBG</include>
+					</control>
+					<control type="image">
+						<visible>!IsEmpty(ListItem.Label2)</visible>
+						<include>MediaItemDetailBG</include>
+					</control>
+					<control type="label">
+						<include>MusicSongTrackNoNF</include>
+						<include>MediaListItemFadeOut</include>
+					</control>
+					<control type="label">
+						<include>MusicSongTrackNoFO</include>
+						<include>MediaListItemFade</include>
+					</control>
+					<control type="label">
+						<include>MediaNumberedItemTitleNF</include>
+						<include>MediaListItemFadeOut</include>
+					</control>
+					<control type="label">
+						<include>MediaNumberedItemTitleFO</include>
+						<include>MediaListItemFade</include>
+					</control>
+					<control type="label">
+						<include>MediaItemDetailInfoNF</include>
+						<include>MediaListItemFadeOut</include>
+					</control>
+					<control type="label">
+						<include>MediaItemDetailInfoFO</include>
+						<include>MediaListItemFade</include>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="image">
+				<description>Songs List overlay</description>
+				<visible>![Container(57).Position(8)] + !Skin.HasTheme(lite)</visible>
+				<posy>308</posy>
+				<width>660</width>
+				<height>100</height>
+				<texture>BlackGradient2.png</texture>
+				<aspectratio>stretch</aspectratio>
+			</control>
+		</control>
+		<control type="group">
+			<include>MusicSongsVisible</include>
+			<include>CommonSortLetters</include>
+		</control>
+	</include>
 </includes>

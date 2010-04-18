@@ -1,96 +1,84 @@
 <includes>
-  <include name="TV">
-    <control type="group">
-      <include>TVWideVisible</include>
-	<!--  <include>FanartOnTVProjectorScreen</include>  -->
-      <include>MediaViewBGOverlay</include>
-    </control>
-
-    <control type="group">
-      <include>TVWideVisible</include>
-      <include>MediaViewFade</include>
-
-      <control type="group">
-        <include>MediaListSelectDelay</include>
-        <posx>70</posx>
-
-        <control type="group">
-          <posy>235</posy>
-          <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-
-          <control type="image">
-            <description>Wide icon</description>
-            <include>TVWideIconDims</include>
-            <texture>DefaultWideIcon.png</texture>
-            <info>ListItem.Banner</info>
-            <aspectratio align="left">keep</aspectratio>
-            <bordertexture border="12">ThumbShadow2.png</bordertexture>
-            <bordersize>8</bordersize>
-          </control>
-          <control type="label">
-            <posy>30</posy>
-            <width>288</width>
-            <font>TitleCapsFont</font>
-            <include>NoThumbLabel</include>
-          </control>
-          <control type="image">
-            <description>Wide icon glass overlay</description>
-            <include>TVWideIconOverlayDims</include>
-            <include>GlassTextureOverlay</include>
-            <visible>!Skin.HasTheme(lite)</visible>
-          </control>
-        </control>
-
-        <control type="textbox">
-          <description>Show outline</description>
-          <include>TVWidePlotDims</include>
-          <info>ListItem.Plot</info>
-          <autoscroll>Control.HasFocus(57)</autoscroll>
-        </control>
-
-        <control type="group">
-          <description>Genre</description>
-          <posy>530</posy>
-
-          <control type="label">
-            <description>Caption</description>
-            <label>$LOCALIZE[515]</label>
-            <include>MediaInfoCaption</include>
-          </control>
-          <control type="label">
-            <description>Value</description>
-            <width>TVWideInfoValueWidth</width>
-            <info>ListItem.Genre</info>
-            <font>DefaultFont</font>
-            <include>MediaInfoWideValue</include>
-          </control>
-
-          <control type="group">
-            <description>First Aired</description>
-            <posy>TVShowsDetailsGap</posy>
-
-            <control type="label">
-              <description>Caption</description>
-              <label>$LOCALIZE[20416]</label>
-              <include>MediaInfoCaption</include>
-            </control>
-            <control type="label">
-              <description>Value</description>
-              <info>ListItem.Property(originallyAvailableAt)</info>
-              <include>MediaInfoValue</include>
-            </control>
-
-            <control type="group">
-              <description>Rating</description>
-              <posy>TVShowsDetailsGap</posy>
-
-              <control type="label">
-                <description>Caption</description>
-                <label>$LOCALIZE[563]</label>
-                <include>MediaInfoCaption</include>
-              </control>
-
-			        <control type="image">
+	<include name="TV">
+		<control type="group">
+			<include>TVWideVisible</include>
+			<!--  <include>FanartOnTVProjectorScreen</include>  -->
+			<include>MediaViewBGOverlay</include>
+		</control>
+		<control type="group">
+			<include>TVWideVisible</include>
+			<include>MediaViewFade</include>
+			<control type="group">
+				<include>MediaListSelectDelay</include>
+				<posx>70</posx>
+				<control type="group">
+					<posy>235</posy>
+					<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+					<control type="image">
+						<description>Wide icon</description>
+						<include>TVWideIconDims</include>
+						<texture>DefaultWideIcon.png</texture>
+						<info>ListItem.Banner</info>
+						<aspectratio align="left">keep</aspectratio>
+						<bordertexture border="12">ThumbShadow2.png</bordertexture>
+						<bordersize>8</bordersize>
+					</control>
+					<control type="label">
+						<posy>30</posy>
+						<width>288</width>
+						<font>TitleCapsFont</font>
+						<include>NoThumbLabel</include>
+					</control>
+					<control type="image">
+						<description>Wide icon glass overlay</description>
+						<include>TVWideIconOverlayDims</include>
+						<include>GlassTextureOverlay</include>
+						<visible>!Skin.HasTheme(lite)</visible>
+					</control>
+				</control>
+				<control type="textbox">
+					<description>Show outline</description>
+					<include>TVWidePlotDims</include>
+					<info>ListItem.Plot</info>
+					<autoscroll>Control.HasFocus(57)</autoscroll>
+				</control>
+				<control type="group">
+					<description>Genre</description>
+					<posy>530</posy>
+					<control type="label">
+						<description>Caption</description>
+						<label>$LOCALIZE[515]</label>
+						<include>MediaInfoCaption</include>
+					</control>
+					<control type="label">
+						<description>Value</description>
+						<width>TVWideInfoValueWidth</width>
+						<info>ListItem.Genre</info>
+						<font>DefaultFont</font>
+						<include>MediaInfoWideValue</include>
+					</control>
+					<control type="group">
+						<description>First Aired</description>
+						<posy>TVShowsDetailsGap</posy>
+						<control type="label">
+							<description>Caption</description>
+							<label>$LOCALIZE[20416]</label>
+							<include>MediaInfoCaption</include>
+						</control>
+						<control type="label">
+							<description>Value</description>
+							<info>ListItem.Property(originallyAvailableAt)</info>
+							<include>MediaInfoValue</include>
+						</control>
+						<control type="group">
+							<description>Rating</description>
+							<posy>TVShowsDetailsGap</posy>
+							<control type="label">
+								<description>Caption</description>
+								<label>$LOCALIZE[563]</label>
+								<include>MediaInfoCaption</include>
+							</control>
+							<control type="image">
 								<description>Star Rating</description>
 								<align>left</align>
 								<info>ListItem.StarRating</info>
@@ -100,523 +88,469 @@
 								<posy>4</posy>
 								<posx>90</posx>
 								<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
-			        </control>
-
-              <control type="group">
-                <description>Runtime</description>
-                <posy>TVShowsDetailsGap</posy>
-
-                <control type="label">
-                  <description>Caption</description>
-                  <label>$LOCALIZE[2050]</label>
-                  <include>MediaInfoCaption</include>
-                </control>
-                <control type="label">
-                  <description>Value</description>
-                  <info>ListItem.Duration</info>
-                  <include>MediaInfoValue</include>
-                </control>
-              </control>
-
-              <control type="group">
-                <description>Network</description>
+							</control>
+							<control type="group">
+								<description>Runtime</description>
+								<posy>TVShowsDetailsGap</posy>
+								<control type="label">
+									<description>Caption</description>
+									<label>$LOCALIZE[2050]</label>
+									<include>MediaInfoCaption</include>
+								</control>
+								<control type="label">
+									<description>Value</description>
+									<info>ListItem.Duration</info>
+									<include>MediaInfoValue</include>
+								</control>
+							</control>
+							<control type="group">
+								<description>Network</description>
 								<posy>60</posy>
-                <control type="label">
-                  <description>Caption</description>
-                  <label>$LOCALIZE[573]</label>
-                  <include>MediaInfoCaption</include>
-                </control>
-                <control type="label">
-                  <description>Value</description>
-                  <info>ListItem.Studio</info>
-                  <include>MediaInfoValue</include>
-                </control>
-              </control>
-
-            </control>
-          </control>
-        </control>
-      </control>
-    </control>
-
-    <control type="group">
-      <include>TVSeasonsVisible</include>
-      <include>MediaViewBGOverlay</include>
-    </control>
-
-    <control type="group">
-      <include>TVSeasonsVisible</include>
-      <include>MediaViewFade</include>
-      <include>TVSeasonsFadeOutAnim</include>
-
-      <control type="group">
-        <posx>70</posx>
-        <posy>226</posy>
-
-        <control type="label">
-          <description>Synopsis label</description>
-          <label>$LOCALIZE[31119]</label>
-          <font>MediumSmallDefaultCapsFont</font>
-          <textcolor>Highlighted</textcolor>
-        </control>
-
-        <control type="textbox">
-          <posy>28</posy>
-          <width>764</width>
-          <height>65</height>
-          <info>Container.Property(description)</info>
-        </control>
-      </control>
-    </control>
-
-    <control type="group">
-      <include>TVSeasonsVisible</include>
-      <include>MediaViewFade</include>
-      <include>TVSeasonsFadeInAnim</include>
-
-      <control type="group">
-        <include>TVSeasonsThumbPos</include>
-        <animation effect="rotatey" center="840" start="32" end="32" time="0" condition="true">Conditional</animation>
-        <include>MediaListSelectLongDelay</include>
-        <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-
-        <control type="image">
-          <description>Season Thumb</description>
-          <include>TVSeasonsSeasonThumbDims</include>
-          <texture>amt-blank-poster.png</texture>
-          <info>ListItem.Thumb</info>
-          <bordertexture border="12">ThumbShadow2.png</bordertexture>
-          <bordersize>6</bordersize>
-          <visible>Control.IsVisible(57)</visible>
-        </control>
-        <control type="label">
-          <posy>66</posy>
-          <width>272</width>
-          <font>LargeTitleCapsFont</font>
-          <include>NoThumbLabel</include>
-          <visible>Control.IsVisible(57)</visible>
-        </control>
-        <control type="image">
-          <description>Season Thumb reflection</description>
-          <include>TVSeasonsSeasonThumbRflctnDims</include>
-          <texture flipy="true" diffuse="DiffuseMirror.png">amt-blank-poster.png</texture>
-          <info>ListItem.Thumb</info>
-          <aspectratio>stretch</aspectratio>
-          <visible>Control.IsVisible(57)</visible>
-        </control>
-      </control>
-    </control>
-
-    <control type="list" id="57">
-      <viewtype label="TV">list</viewtype>
-      <posx>646</posx>
-      <posy>242</posy>
-      <width>TVViewListWidth</width>
-      <height>378</height>
-      <pagecontrol>-</pagecontrol>
-      <scrolltime>200</scrolltime>
-      <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-      <onright>9009</onright>
-      <onup>57</onup>
-      <ondown>57</ondown>
-      <include>MediaViewFade</include>
-      <include>TVSeasonsListAnim</include>
-
-      <itemlayout condition="Container.Content(tvshows)" width="TVViewListWidth" height="42">
-        <control type="image">
-          <include>MediaItemBG</include>
-        </control>
-        <control type="label">
-          <include>MediaItemMainInfoNF</include>
-        </control>
-
-        <control type="label">
-          <include>TVTotalEpisodesDetailsNF</include>
-        </control>
-        <control type="label">
-          <include>TVUnwatchedEpisodesDetailsNF</include>
-        </control>
-        <control type="image">
-          <include>TVUnwatchedEpisodesDetailsImage</include>
-          <include>MediaItemNFFade</include>
-        </control>
-      </itemlayout>
-
-      <focusedlayout condition="Container.Content(tvshows)" width="TVViewListWidth" height="42">
-        <control type="image">
-          <include>MediaItemBG</include>
-        </control>
-        <control type="image">
-          <include>MediaItemFocusBG</include>
-        </control>
-        <control type="image">
-          <visible>!IsEmpty(ListItem.Episode)</visible>
-          <include>MediaItemDetailBG</include>
-        </control>
-        <control type="label">
-          <include>MediaItemMainInfoNF</include>
-          <include>MediaListItemFadeOut</include>
-        </control>
-        <control type="label">
-          <include>MediaItemMainInfoFO</include>
-          <include>MediaListItemFade</include>
-        </control>
-
-        <control type="label">
-          <include>TVTotalEpisodesDetailsNF</include>
-          <include>MediaListItemFadeOut</include>
-        </control>
-        <control type="label">
-          <include>TVTotalEpisodesDetailsFO</include>
-          <include>MediaListItemFade</include>
-        </control>
-        <control type="label">
-          <include>TVUnwatchedEpisodesDetailsNF</include>
-          <include>MediaListItemFadeOut</include>
-        </control>
-        <control type="label">
-          <include>TVUnwatchedEpisodesDetailsFO</include>
-          <include>MediaListItemFade</include>
-        </control>
-        <control type="image">
-          <include>TVUnwatchedEpisodesDetailsImage</include>
-          <include>MediaListItemFade</include>
-        </control>
-      </focusedlayout>
-
-      <itemlayout condition="Container.Content(seasons)" width="TVViewListWidth" height="42">
-        <control type="image">
-          <include>TVSeasonsItemBGDims</include>
-          <include>MediaItemBG</include>
-        </control>
-        <control type="label">
-          <include>MediaItemMainInfoNF</include>
-        </control>
-
-        <control type="label">
-          <include>TVTotalEpisodesDetailsNF</include>
-        </control>
-        <control type="label">
-          <include>TVUnwatchedEpisodesDetailsNF</include>
-        </control>
-        <control type="image">
-          <include>TVUnwatchedEpisodesDetailsImage</include>
-          <include>MediaItemNFFade</include>
-        </control>
-        <control type="label">
-          <include>TVWatchedEpisodesDetailsNF</include>
-        </control>
-        <control type="image">
-          <include>TVWatchedEpisodesDetailsImage</include>
-          <include>MediaItemNFFade</include>
-        </control>
-      </itemlayout>
-
-      <focusedlayout condition="Container.Content(seasons)" width="TVViewListWidth" height="42">
-        <control type="image">
-          <include>TVSeasonsItemBGDims</include>
-          <include>MediaItemBG</include>
-        </control>
-        <control type="image">
-          <include>TVSeasonsItemFocusBGDims</include>
-          <include>MediaItemFocusBG</include>
-        </control>
-        <control type="image">
-          <visible>!IsEmpty(ListItem.Episode)</visible>
-          <include>TVSeasonsItemDetailBGDims</include>
-          <include>MediaItemDetailBG</include>
-        </control>
-        <control type="label">
-          <include>MediaItemMainInfoNF</include>
-          <include>MediaListItemFadeOut</include>
-        </control>
-        <control type="label">
-          <include>MediaItemMainInfoFO</include>
-          <include>MediaListItemFade</include>
-        </control>
-        <control type="label">
-          <include>TVTotalEpisodesDetailsNF</include>
-          <include>MediaListItemFadeOut</include>
-        </control>
-        <control type="label">
-          <include>TVTotalEpisodesDetailsFO</include>
-          <include>MediaListItemFade</include>
-        </control>
-        <control type="label">
-          <include>TVUnwatchedEpisodesDetailsNF</include>
-          <include>MediaListItemFadeOut</include>
-        </control>
-        <control type="label">
-          <include>TVUnwatchedEpisodesDetailsFO</include>
-          <include>MediaListItemFade</include>
-        </control>
-        <control type="image">
-          <include>TVUnwatchedEpisodesDetailsImage</include>
-          <include>MediaListItemFade</include>
-        </control>
-        <control type="label">
-          <include>TVWatchedEpisodesDetailsNF</include>
-          <include>MediaListItemFadeOut</include>
-        </control>
-        <control type="label">
-          <include>TVWatchedEpisodesDetailsFO</include>
-          <include>MediaListItemFade</include>
-        </control>
-        <control type="image">
-          <include>TVWatchedEpisodesDetailsImage</include>
-          <include>MediaListItemFade</include>
-        </control>
-      </focusedlayout>
-    </control>
-
-    <control type="group">
-      <include>TVWideVisible</include>
-      <include>MediaViewFade</include>
-
-      <control type="image">
-        <description>TV Show List overlay</description>
-        <visible>![Container(57).Position(8)] + !Skin.HasTheme(lite)</visible>
-        <posx>636</posx>
-        <posy>550</posy>
-        <width>660</width>
-        <height>100</height>
-        <texture>BlackGradient2.png</texture>
-        <aspectratio>stretch</aspectratio>
-      </control>
-
-      <include>CommonSortLetters</include>
-    </control>
-  </include>
-
-<!--
-
-  <include name="TVEpisodes">
-    <control type="group">
-      <include>TVEpisodesVisible</include>
-
-      <control type="group">
-        <visible>!IsEmpty(ListItem.Thumb) + Skin.HasSetting(ShowEpThumbOnTVWall) + [[IsEmpty(FanArt.Image) + IsEmpty(ListItem.Property(fanart_image))] | Skin.HasSetting(HideFanartForTV)] + [[!Skin.HasSetting(CustomTVShowsBG) + !Skin.HasSetting(CustomTVShowsBGFolder)] | Skin.HasSetting(HideCustomBGForTVShows)]</visible>
-        <include>MediaListSelectDelay</include>
-
-        <include>TVProjectScreenOverlay</include>
-
-        <control type="image">
-          <description>Episode Thumb</description>
-          <info>ListItem.Thumb</info>
-          <texture>bookmark-resume.png</texture>
-          <include>TVProjectScreenImage</include>
-        </control>
-      </control>
-
-      <include>MediaViewBGOverlay</include>
-    </control>
-
-    <control type="group">
-      <visible>Skin.HasSetting(ShowSeasonThumbInEps)</visible>
-
-      <control type="group">
-        <include>TVEpisodesVisible</include>
-        <include>MediaViewFade</include>
-        <include>TVEpisodesSlideAnim</include>
-
-        <control type="group">
-          <animation effect="rotatey" center="30" start="32" end="32" time="0" condition="true">Conditional</animation>
-
-          <control type="group">
-            <include>MediaFade</include>
-            <posy>159</posy>
-            <posx>74</posx>
-            <visible>!IsEmpty(Container.SeasonThumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-
-            <control type="image">
-              <description>Season Thumb</description>
-              <width>312</width>
-              <height>482</height>
-              <texture>amt-blank-poster.png</texture>
-              <info>Container.SeasonThumb</info>
-              <aspectratio>stretch</aspectratio>
-              <bordertexture border="12">ThumbShadow2.png</bordertexture>
-              <bordersize>6</bordersize>
-              <visible>Control.IsVisible(54)</visible>
-            </control>
-            <control type="label">
-              <posy>68</posy>
-              <width>312</width>
-              <font>LargeTitleCapsFont</font>
-              <visible>IsEmpty(Container.SeasonThumb)</visible>
-              <include>NoThumbLabel</include>
-              <visible>Control.IsVisible(54)</visible>
-            </control>
-            <control type="image">
-              <description>Season thumb reflection</description>
-              <posx>6</posx>
-              <posy>476</posy>
-              <width>300</width>
-              <height>470</height>
-              <texture flipy="true" diffuse="DiffuseMirror.png">amt-blank-poster.png</texture>
-              <info>Container.SeasonThumb</info>
-              <aspectratio>stretch</aspectratio>
-              <visible>Control.IsVisible(54)</visible>
-            </control>
-          </control>
-        </control>
-      </control>
-
-      <control type="group">
-        <include>TVEpisodesVisible</include>
-        <include>MediaViewFade</include>
-        <include>TVEpisodesFadeAnim</include>
-
-        <control type="group">
-          <include>TVEpisodesSeasonThumbPos</include>
-          <include>MediaFade</include>
-          <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-
-          <control type="image">
-            <description>Episode Thumb</description>
-            <include>TVEpisodesSeasonEpThumbDims</include>
-            <texture>bookmark-resume.png</texture>
-            <info>ListItem.Thumb</info>
-            <aspectratio align="left" aligny="bottom">keep</aspectratio>
-            <bordertexture border="12">ThumbShadow2.png</bordertexture>
-            <bordersize>9</bordersize>
-          </control>
-          <control type="label">
-            <include>TVEpisodesSeasonNoThumbDims</include>
-            <font>MediumTitleCapsFont</font>
-            <include>NoThumbLabel</include>
-          </control>
-          <control type="image">
-            <description>Episode Thumb glass overlay</description>
-            <include>TVEpisodesSeasonEpThumbOverlayDims</include>
-            <include>GlassTextureOverlay</include>
-            <visible>!Skin.HasTheme(lite)</visible>
-          </control>
-          <control type="image">
-            <include>TVEpisodesSeasonEpThumbBGDims</include>
-            <aspectratio>stretch</aspectratio>
-            <texture>Black.png</texture>
-            <visible>Control.IsVisible(54)</visible>
-          </control>
-          <control type="image">
-            <include>TVEpisodesSeasonEpThumbRflctnDims</include>
-            <texture flipy="true" diffuse="DiffuseMirror.png">bookmark-resume.png</texture>
-            <info>ListItem.Thumb</info>
-            <aspectratio align="left" aligny="top">keep</aspectratio>
-            <visible>Control.IsVisible(54)</visible>
-          </control>
-        </control>
-      </control>
-    </control>
-
-    <control type="group">
-      <visible>!Skin.HasSetting(ShowSeasonThumbInEps)</visible>
-      <include>TVEpisodesVisible</include>
-      <include>MediaViewFade</include>
-      <include>TVEpisodesFadeAnim</include>
-
-      <control type="group">
-        <posx>28</posx>
-        <posy>270</posy>
-        <include>MediaListSelectDelay</include>
-
-        <control type="group">
-          <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-
-          <control type="image">
-            <description>Episode Thumb</description>
-            <include>TVEpisodesEpThumbDims</include>
-            <texture>bookmark-resume.png</texture>
-            <info>ListItem.Thumb</info>
-            <aspectratio align="right" aligny="bottom">keep</aspectratio>
-            <bordertexture border="14">ThumbShadow.png</bordertexture>
-            <bordersize>8</bordersize>
-          </control>
-
-          <control type="label">
-            <description>No Thumb label</description>
-            <include>TVEpisodesNoThumbDims</include>
-            <font>MediumTitleCapsFont</font>
-            <include>NoThumbLabel</include>
-          </control>
-
-          <control type="group">
-            <description>Watched/Unwatched Overlay</description>
-            <include>TVEpisodesWtchUnwtchOverlayDims</include>
-  
-            <include>WatchedUnwatchedOverlay</include>
-          </control>
-  
-          <control type="image">
-            <description>Episode Thumb Reflection</description>
-            <include>TVEpisodesEpThumbRflctnDims</include>
-            <texture flipy="true" diffuse="DiffuseMirrorWide.png">bookmark-resume.png</texture>
-            <info>ListItem.Thumb</info>
-            <aspectratio align="right" aligny="top">keep</aspectratio>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>370</posx>
-          <posy>-4</posy>
-
-          <control type="label">
-            <description>Season</description>
-            <font>MediumTitleCapsFont</font>
-            <textcolor>Unfocused</textcolor>
-            <label>$INFO[ListItem.Season,$LOCALIZE[20373] ]</label>
-          </control>
-
-          <control type="textbox">
-            <description>Title</description>
-            <posy>22</posy>
-            <width>306</width>
-            <height>68</height>
-            <font>MediumTitleCapsFont</font>
-            <align>left</align>
-            <label>$INFO[ListItem.Title]</label>
-          </control>
-
-          <control type="group">
-            <description>Runtime</description>
-            <posy>92</posy>
-
-            <control type="label">
-              <description>Caption</description>
-              <label>$LOCALIZE[2050]</label>
-              <include>MediaInfoCaption</include>
-            </control>
-            <control type="label">
-              <description>Value</description>
-              <info>ListItem.Duration</info>
-              <include>TVEpisodesDetailValue</include>
-            </control>
-
-            <control type="group">
-              <description>Air date</description>
-              <posy>TVEpisodesDetailsGap</posy>
-
-              <control type="label">
-                <description>Caption</description>
-                <label>$LOCALIZE[31122]</label>
-                <include>MediaInfoCaption</include>
-              </control>
-              <control type="label">
-                <description>Value</description>
-                <info>ListItem.Property(originallyAvailableAt)</info>
-                <include>TVEpisodesDetailValue</include>
-              </control>
-
-              <control type="group">
-                <description>Rating</description>
-                <posy>TVEpisodesDetailsGap</posy>
-  
-                <control type="label">
-                  <description>Caption</description>
-                  <label>$LOCALIZE[563]</label>
-                  <include>MediaInfoCaption</include>
-                </control>
-				        <control type="image">
+								<control type="label">
+									<description>Caption</description>
+									<label>$LOCALIZE[573]</label>
+									<include>MediaInfoCaption</include>
+								</control>
+								<control type="label">
+									<description>Value</description>
+									<info>ListItem.Studio</info>
+									<include>MediaInfoValue</include>
+								</control>
+							</control>
+						</control>
+					</control>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<include>TVSeasonsVisible</include>
+			<include>MediaViewBGOverlay</include>
+		</control>
+		<control type="group">
+			<include>TVSeasonsVisible</include>
+			<include>MediaViewFade</include>
+			<include>TVSeasonsFadeOutAnim</include>
+			<control type="group">
+				<posx>70</posx>
+				<posy>226</posy>
+				<control type="label">
+					<description>Synopsis label</description>
+					<label>$LOCALIZE[31119]</label>
+					<font>MediumSmallDefaultCapsFont</font>
+					<textcolor>Highlighted</textcolor>
+				</control>
+				<control type="textbox">
+					<posy>28</posy>
+					<width>764</width>
+					<height>65</height>
+					<info>Container.Property(description)</info>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<include>TVSeasonsVisible</include>
+			<include>MediaViewFade</include>
+			<include>TVSeasonsFadeInAnim</include>
+			<control type="group">
+				<include>TVSeasonsThumbPos</include>
+				<animation effect="rotatey" center="840" start="32" end="32" time="0" condition="true">Conditional</animation>
+				<include>MediaListSelectLongDelay</include>
+				<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+				<control type="image">
+					<description>Season Thumb</description>
+					<include>TVSeasonsSeasonThumbDims</include>
+					<texture>amt-blank-poster.png</texture>
+					<info>ListItem.Thumb</info>
+					<bordertexture border="12">ThumbShadow2.png</bordertexture>
+					<bordersize>6</bordersize>
+					<visible>Control.IsVisible(57)</visible>
+				</control>
+				<control type="label">
+					<posy>66</posy>
+					<width>272</width>
+					<font>LargeTitleCapsFont</font>
+					<include>NoThumbLabel</include>
+					<visible>Control.IsVisible(57)</visible>
+				</control>
+				<control type="image">
+					<description>Season Thumb reflection</description>
+					<include>TVSeasonsSeasonThumbRflctnDims</include>
+					<texture flipy="true" diffuse="DiffuseMirror.png">amt-blank-poster.png</texture>
+					<info>ListItem.Thumb</info>
+					<aspectratio>stretch</aspectratio>
+					<visible>Control.IsVisible(57)</visible>
+				</control>
+			</control>
+		</control>
+		<control type="list" id="57">
+			<viewtype label="TV">list</viewtype>
+			<posx>646</posx>
+			<posy>242</posy>
+			<width>TVViewListWidth</width>
+			<height>378</height>
+			<pagecontrol>-</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+			<onright>9009</onright>
+			<onup>57</onup>
+			<ondown>57</ondown>
+			<include>MediaViewFade</include>
+			<include>TVSeasonsListAnim</include>
+			<itemlayout condition="Container.Content(tvshows)" width="TVViewListWidth" height="42">
+				<control type="image">
+					<include>MediaItemBG</include>
+				</control>
+				<control type="label">
+					<include>MediaItemMainInfoNF</include>
+				</control>
+				<control type="label">
+					<include>TVTotalEpisodesDetailsNF</include>
+				</control>
+				<control type="label">
+					<include>TVUnwatchedEpisodesDetailsNF</include>
+				</control>
+				<control type="image">
+					<include>TVUnwatchedEpisodesDetailsImage</include>
+					<include>MediaItemNFFade</include>
+				</control>
+			</itemlayout>
+			<focusedlayout condition="Container.Content(tvshows)" width="TVViewListWidth" height="42">
+				<control type="image">
+					<include>MediaItemBG</include>
+				</control>
+				<control type="image">
+					<include>MediaItemFocusBG</include>
+				</control>
+				<control type="image">
+					<visible>!IsEmpty(ListItem.Episode)</visible>
+					<include>MediaItemDetailBG</include>
+				</control>
+				<control type="label">
+					<include>MediaItemMainInfoNF</include>
+					<include>MediaListItemFadeOut</include>
+				</control>
+				<control type="label">
+					<include>MediaItemMainInfoFO</include>
+					<include>MediaListItemFade</include>
+				</control>
+				<control type="label">
+					<include>TVTotalEpisodesDetailsNF</include>
+					<include>MediaListItemFadeOut</include>
+				</control>
+				<control type="label">
+					<include>TVTotalEpisodesDetailsFO</include>
+					<include>MediaListItemFade</include>
+				</control>
+				<control type="label">
+					<include>TVUnwatchedEpisodesDetailsNF</include>
+					<include>MediaListItemFadeOut</include>
+				</control>
+				<control type="label">
+					<include>TVUnwatchedEpisodesDetailsFO</include>
+					<include>MediaListItemFade</include>
+				</control>
+				<control type="image">
+					<include>TVUnwatchedEpisodesDetailsImage</include>
+					<include>MediaListItemFade</include>
+				</control>
+			</focusedlayout>
+			<itemlayout condition="Container.Content(seasons)" width="TVViewListWidth" height="42">
+				<control type="image">
+					<include>TVSeasonsItemBGDims</include>
+					<include>MediaItemBG</include>
+				</control>
+				<control type="label">
+					<include>MediaItemMainInfoNF</include>
+				</control>
+				<control type="label">
+					<include>TVTotalEpisodesDetailsNF</include>
+				</control>
+				<control type="label">
+					<include>TVUnwatchedEpisodesDetailsNF</include>
+				</control>
+				<control type="image">
+					<include>TVUnwatchedEpisodesDetailsImage</include>
+					<include>MediaItemNFFade</include>
+				</control>
+				<control type="label">
+					<include>TVWatchedEpisodesDetailsNF</include>
+				</control>
+				<control type="image">
+					<include>TVWatchedEpisodesDetailsImage</include>
+					<include>MediaItemNFFade</include>
+				</control>
+			</itemlayout>
+			<focusedlayout condition="Container.Content(seasons)" width="TVViewListWidth" height="42">
+				<control type="image">
+					<include>TVSeasonsItemBGDims</include>
+					<include>MediaItemBG</include>
+				</control>
+				<control type="image">
+					<include>TVSeasonsItemFocusBGDims</include>
+					<include>MediaItemFocusBG</include>
+				</control>
+				<control type="image">
+					<visible>!IsEmpty(ListItem.Episode)</visible>
+					<include>TVSeasonsItemDetailBGDims</include>
+					<include>MediaItemDetailBG</include>
+				</control>
+				<control type="label">
+					<include>MediaItemMainInfoNF</include>
+					<include>MediaListItemFadeOut</include>
+				</control>
+				<control type="label">
+					<include>MediaItemMainInfoFO</include>
+					<include>MediaListItemFade</include>
+				</control>
+				<control type="label">
+					<include>TVTotalEpisodesDetailsNF</include>
+					<include>MediaListItemFadeOut</include>
+				</control>
+				<control type="label">
+					<include>TVTotalEpisodesDetailsFO</include>
+					<include>MediaListItemFade</include>
+				</control>
+				<control type="label">
+					<include>TVUnwatchedEpisodesDetailsNF</include>
+					<include>MediaListItemFadeOut</include>
+				</control>
+				<control type="label">
+					<include>TVUnwatchedEpisodesDetailsFO</include>
+					<include>MediaListItemFade</include>
+				</control>
+				<control type="image">
+					<include>TVUnwatchedEpisodesDetailsImage</include>
+					<include>MediaListItemFade</include>
+				</control>
+				<control type="label">
+					<include>TVWatchedEpisodesDetailsNF</include>
+					<include>MediaListItemFadeOut</include>
+				</control>
+				<control type="label">
+					<include>TVWatchedEpisodesDetailsFO</include>
+					<include>MediaListItemFade</include>
+				</control>
+				<control type="image">
+					<include>TVWatchedEpisodesDetailsImage</include>
+					<include>MediaListItemFade</include>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="group">
+			<include>TVWideVisible</include>
+			<include>MediaViewFade</include>
+			<control type="image">
+				<description>TV Show List overlay</description>
+				<visible>![Container(57).Position(8)] + !Skin.HasTheme(lite)</visible>
+				<posx>636</posx>
+				<posy>550</posy>
+				<width>660</width>
+				<height>100</height>
+				<texture>BlackGradient2.png</texture>
+				<aspectratio>stretch</aspectratio>
+			</control>
+			<include>CommonSortLetters</include>
+		</control>
+	</include>
+	<!--
+	<include name="TVEpisodes">
+		<control type="group">
+			<include>TVEpisodesVisible</include>
+			<control type="group">
+				<visible>!IsEmpty(ListItem.Thumb) + Skin.HasSetting(ShowEpThumbOnTVWall) + [[IsEmpty(FanArt.Image) + IsEmpty(ListItem.Property(fanart_image))] | Skin.HasSetting(HideFanartForTV)] + [[!Skin.HasSetting(CustomTVShowsBG) + !Skin.HasSetting(CustomTVShowsBGFolder)] | Skin.HasSetting(HideCustomBGForTVShows)]</visible>
+				<include>MediaListSelectDelay</include>
+				<include>TVProjectScreenOverlay</include>
+				<control type="image">
+					<description>Episode Thumb</description>
+					<info>ListItem.Thumb</info>
+					<texture>bookmark-resume.png</texture>
+					<include>TVProjectScreenImage</include>
+				</control>
+			</control>
+			<include>MediaViewBGOverlay</include>
+		</control>
+		<control type="group">
+			<visible>Skin.HasSetting(ShowSeasonThumbInEps)</visible>
+			<control type="group">
+				<include>TVEpisodesVisible</include>
+				<include>MediaViewFade</include>
+				<include>TVEpisodesSlideAnim</include>
+				<control type="group">
+					<animation effect="rotatey" center="30" start="32" end="32" time="0" condition="true">Conditional</animation>
+					<control type="group">
+						<include>MediaFade</include>
+						<posy>159</posy>
+						<posx>74</posx>
+						<visible>!IsEmpty(Container.SeasonThumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+						<control type="image">
+							<description>Season Thumb</description>
+							<width>312</width>
+							<height>482</height>
+							<texture>amt-blank-poster.png</texture>
+							<info>Container.SeasonThumb</info>
+							<aspectratio>stretch</aspectratio>
+							<bordertexture border="12">ThumbShadow2.png</bordertexture>
+							<bordersize>6</bordersize>
+							<visible>Control.IsVisible(54)</visible>
+						</control>
+						<control type="label">
+							<posy>68</posy>
+							<width>312</width>
+							<font>LargeTitleCapsFont</font>
+							<visible>IsEmpty(Container.SeasonThumb)</visible>
+							<include>NoThumbLabel</include>
+							<visible>Control.IsVisible(54)</visible>
+						</control>
+						<control type="image">
+							<description>Season thumb reflection</description>
+							<posx>6</posx>
+							<posy>476</posy>
+							<width>300</width>
+							<height>470</height>
+							<texture flipy="true" diffuse="DiffuseMirror.png">amt-blank-poster.png</texture>
+							<info>Container.SeasonThumb</info>
+							<aspectratio>stretch</aspectratio>
+							<visible>Control.IsVisible(54)</visible>
+						</control>
+					</control>
+				</control>
+			</control>
+			<control type="group">
+				<include>TVEpisodesVisible</include>
+				<include>MediaViewFade</include>
+				<include>TVEpisodesFadeAnim</include>
+				<control type="group">
+					<include>TVEpisodesSeasonThumbPos</include>
+					<include>MediaFade</include>
+					<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+					<control type="image">
+						<description>Episode Thumb</description>
+						<include>TVEpisodesSeasonEpThumbDims</include>
+						<texture>bookmark-resume.png</texture>
+						<info>ListItem.Thumb</info>
+						<aspectratio align="left" aligny="bottom">keep</aspectratio>
+						<bordertexture border="12">ThumbShadow2.png</bordertexture>
+						<bordersize>9</bordersize>
+					</control>
+					<control type="label">
+						<include>TVEpisodesSeasonNoThumbDims</include>
+						<font>MediumTitleCapsFont</font>
+						<include>NoThumbLabel</include>
+					</control>
+					<control type="image">
+						<description>Episode Thumb glass overlay</description>
+						<include>TVEpisodesSeasonEpThumbOverlayDims</include>
+						<include>GlassTextureOverlay</include>
+						<visible>!Skin.HasTheme(lite)</visible>
+					</control>
+					<control type="image">
+						<include>TVEpisodesSeasonEpThumbBGDims</include>
+						<aspectratio>stretch</aspectratio>
+						<texture>Black.png</texture>
+						<visible>Control.IsVisible(54)</visible>
+					</control>
+					<control type="image">
+						<include>TVEpisodesSeasonEpThumbRflctnDims</include>
+						<texture flipy="true" diffuse="DiffuseMirror.png">bookmark-resume.png</texture>
+						<info>ListItem.Thumb</info>
+						<aspectratio align="left" aligny="top">keep</aspectratio>
+						<visible>Control.IsVisible(54)</visible>
+					</control>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<visible>!Skin.HasSetting(ShowSeasonThumbInEps)</visible>
+			<include>TVEpisodesVisible</include>
+			<include>MediaViewFade</include>
+			<include>TVEpisodesFadeAnim</include>
+			<control type="group">
+				<posx>28</posx>
+				<posy>270</posy>
+				<include>MediaListSelectDelay</include>
+				<control type="group">
+					<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+					<control type="image">
+						<description>Episode Thumb</description>
+						<include>TVEpisodesEpThumbDims</include>
+						<texture>bookmark-resume.png</texture>
+						<info>ListItem.Thumb</info>
+						<aspectratio align="right" aligny="bottom">keep</aspectratio>
+						<bordertexture border="14">ThumbShadow.png</bordertexture>
+						<bordersize>8</bordersize>
+					</control>
+					<control type="label">
+						<description>No Thumb label</description>
+						<include>TVEpisodesNoThumbDims</include>
+						<font>MediumTitleCapsFont</font>
+						<include>NoThumbLabel</include>
+					</control>
+					<control type="group">
+						<description>Watched/Unwatched Overlay</description>
+						<include>TVEpisodesWtchUnwtchOverlayDims</include>
+						<include>WatchedUnwatchedOverlay</include>
+					</control>
+					<control type="image">
+						<description>Episode Thumb Reflection</description>
+						<include>TVEpisodesEpThumbRflctnDims</include>
+						<texture flipy="true" diffuse="DiffuseMirrorWide.png">bookmark-resume.png</texture>
+						<info>ListItem.Thumb</info>
+						<aspectratio align="right" aligny="top">keep</aspectratio>
+					</control>
+				</control>
+				<control type="group">
+					<posx>370</posx>
+					<posy>-4</posy>
+					<control type="label">
+						<description>Season</description>
+						<font>MediumTitleCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+						<label>$INFO[ListItem.Season,$LOCALIZE[20373] ]</label>
+					</control>
+					<control type="textbox">
+						<description>Title</description>
+						<posy>22</posy>
+						<width>306</width>
+						<height>68</height>
+						<font>MediumTitleCapsFont</font>
+						<align>left</align>
+						<label>$INFO[ListItem.Title]</label>
+					</control>
+					<control type="group">
+						<description>Runtime</description>
+						<posy>92</posy>
+						<control type="label">
+							<description>Caption</description>
+							<label>$LOCALIZE[2050]</label>
+							<include>MediaInfoCaption</include>
+						</control>
+						<control type="label">
+							<description>Value</description>
+							<info>ListItem.Duration</info>
+							<include>TVEpisodesDetailValue</include>
+						</control>
+						<control type="group">
+							<description>Air date</description>
+							<posy>TVEpisodesDetailsGap</posy>
+							<control type="label">
+								<description>Caption</description>
+								<label>$LOCALIZE[31122]</label>
+								<include>MediaInfoCaption</include>
+							</control>
+							<control type="label">
+								<description>Value</description>
+								<info>ListItem.Property(originallyAvailableAt)</info>
+								<include>TVEpisodesDetailValue</include>
+							</control>
+							<control type="group">
+								<description>Rating</description>
+								<posy>TVEpisodesDetailsGap</posy>
+								<control type="label">
+									<description>Caption</description>
+									<label>$LOCALIZE[563]</label>
+									<include>MediaInfoCaption</include>
+								</control>
+								<control type="image">
 									<description>Star Rating</description>
 									<align>left</align>
 									<info>ListItem.StarRating</info>
@@ -626,974 +560,865 @@
 									<posy>4</posy>
 									<posx>80</posx>
 									<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
-				        </control>
-
-                <control type="group">
-                  <description>Writer</description>
-                  <include>TVEpsiodesWriterPos</include>
-
-                  <control type="label">
-                    <description>Caption</description>
-                    <label>$LOCALIZE[20417]</label>
-                    <include>MediaInfoCaption</include>
-                  </control>
-                  <control type="label">
-                    <description>Value</description>
-                    <include>TVEpisodesWideValueDims</include>
-                    <info>ListItem.Writer</info>
-                    <include>TVEpisodesDetailValue</include>
-                  </control>
-
-                  <control type="group">
-                    <description>Director</description>
-                    <posy>TVEpisodesDetailsGap</posy>
-
-                    <control type="label">
-                      <description>Caption</description>
-                      <label>$LOCALIZE[20339]</label>
-                      <include>MediaInfoCaption</include>
-                    </control>
-                    <control type="label">
-                      <description>Value</description>
-                      <include>TVEpisodesWideValueDims</include>
-                      <info>ListItem.Director</info>
-                      <include>TVEpisodesDetailValue</include>
-                    </control>
-                  </control>
-                </control>
-              </control>
-            </control>
-          </control>
-        </control>
-
-        <control type="textbox">
-          <description>Plot</description>
-          <include>TVEpisodesPlotDims</include>
-          <info>ListItem.Plot</info>
-        </control>
-
+								</control>
+								<control type="group">
+									<description>Writer</description>
+									<include>TVEpsiodesWriterPos</include>
+									<control type="label">
+										<description>Caption</description>
+										<label>$LOCALIZE[20417]</label>
+										<include>MediaInfoCaption</include>
+									</control>
+									<control type="label">
+										<description>Value</description>
+										<include>TVEpisodesWideValueDims</include>
+										<info>ListItem.Writer</info>
+										<include>TVEpisodesDetailValue</include>
+									</control>
+									<control type="group">
+										<description>Director</description>
+										<posy>TVEpisodesDetailsGap</posy>
+										<control type="label">
+											<description>Caption</description>
+											<label>$LOCALIZE[20339]</label>
+											<include>MediaInfoCaption</include>
+										</control>
+										<control type="label">
+											<description>Value</description>
+											<include>TVEpisodesWideValueDims</include>
+											<info>ListItem.Director</info>
+											<include>TVEpisodesDetailValue</include>
+										</control>
+									</control>
+								</control>
+							</control>
+						</control>
+					</control>
+				</control>
+				<control type="textbox">
+					<description>Plot</description>
+					<include>TVEpisodesPlotDims</include>
+					<info>ListItem.Plot</info>
+				</control>
 				<control type="group">
 					<description>Media Flags</description>
 					<posy>400</posy>
 					<include>EpisodeListFlags</include>
 				</control>
-      </control>
-    </control>
-
-    <control type="group">
-      <include>TVEpisodesVisible</include>
-      <include>MediaViewFade</include>
-      <include>TVEpisodesFadeAnim</include>
-
-      <control type="list" id="54">
-        <viewtype label="Episodes">list</viewtype>
-        <posx>708</posx>
-        <posy>242</posy>
-        <width>640</width>
-        <height>420</height>
-        <pagecontrol>-</pagecontrol>
-        <onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-        <onright>9009</onright>
-        <onup>54</onup>
-        <ondown>54</ondown>
-
-        <itemlayout height="42" width="640">
-          <control type="image">
-            <include>MediaItemBG</include>
-          </control>
-          <control type="label">
-            <include>TVEpisodeItemNoNF</include>
-          </control>
-          <control type="label">
-            <include>MediaNumberedItemTitleNF</include>
-          </control>
-          <control type="image">
-            <include>TVEpisodeItemOverlay</include>
-            <include>MediaItemNFFade</include>
-          </control>
-          <control type="label">
-            <include>TVEpisodeItemDateNF</include>
-          </control>
-        </itemlayout>
-
-        <focusedlayout height="42" width="640">
-          <control type="image">
-            <include>MediaItemBG</include>
-          </control>
-          <control type="image">
-            <include>MediaItemFocusBG</include>
-          </control>
-          <control type="image">
-            <include>MediaItemDetailBG</include>
-          </control>
-          <control type="label">
-            <include>TVEpisodeItemNoNF</include>
-            <include>MediaListItemFadeOut</include>
-          </control>
-          <control type="label">
-            <include>TVEpisodeItemNoFO</include>
-            <include>MediaListItemFade</include>
-          </control>
-          <control type="label">
-            <include>MediaNumberedItemTitleNF</include>
-            <include>MediaListItemFadeOut</include>
-          </control>
-          <control type="label">
-            <include>MediaNumberedItemTitleFO</include>
-            <include>MediaListItemFade</include>
-          </control>
-          <control type="image">
-            <include>TVEpisodeItemOverlay</include>
-            <include>MediaListItemFade</include>
-          </control>
-          <control type="label">
-            <include>TVEpisodeItemDateNF</include>
-            <include>MediaListItemFadeOut</include>
-          </control>
-          <control type="label">
-            <include>TVEpisodeItemDateFO</include>
-            <include>MediaListItemFade</include>
-          </control>
-        </focusedlayout>
-      </control>
-    </control>
-
-    <control type="group">
-      <include>TVEpisodesVisible</include>
-      <include>MediaViewFade</include>
-      <include>TVEpisodesFadeAnim</include>
-
-      <control type="image">
-        <description>Episode List overlay</description>
-        <visible>![Container(54).Position(9)] + !Skin.HasTheme(lite)</visible>
-        <posx>726</posx>
-        <posy>592</posy>
-        <width>650</width>
-        <height>100</height>
-        <texture>BlackGradient2.png</texture>
-        <aspectratio>stretch</aspectratio>
-      </control>
-
-      <include>CommonSortLetters</include>
-    </control>
-  </include>
-
--->
-
-  <include name="MediaPreview">
-    <control type="group">
-      <include>MediaPreviewVisible</include>
-      <include>MediaViewFade</include>
-      <include condition="!Skin.HasSetting(HideInfoInMediaPreview) +  !Skin.HasSetting(ShowAnimMediaPreview)">MovieViewBGOverlay</include>
-
-      <control type="group">
-        <visible>Skin.HasSetting(HideInfoInMediaPreview) + !Skin.HasSetting(ShowAnimMediaPreview)</visible>
-
-        <control type="image">
-          <width>1280</width>
-          <height>54</height>
-          <texture>Black.png</texture>
-          <colordiffuse>99cccccc</colordiffuse>
-        </control>
-
-        <control type="group">
-          <posy>450</posy>
-
-          <control type="image">
-            <width>1280</width>
-            <height>64</height>
-            <texture>Black.png</texture>
-            <colordiffuse>99cccccc</colordiffuse>
-          </control>
-
-          <control type="image">
-            <description>Glass overlay for movie title to sit on</description>
-            <posx>343</posx>
-            <width>593</width>
-            <height>50</height>
-            <texture>GlassTitleBar.png</texture>
-          </control>
-
-          <control type="label">
-            <description>Title</description>
-            <posy>8</posy>
-            <width>1280</width>
-            <align>center</align>
-            <label>$INFO[ListItem.Label]</label>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-          </control>
-        </control>
-      </control>
-
-      <control type="group">
-        <visible>!Container.OnNext + !Container.OnPrevious</visible>
-        <visible>!Skin.HasSetting(HideInfoInMediaPreview) + !Skin.HasSetting(ShowAnimMediaPreview)</visible>
-        <animation effect="fade" start="0" end="100" time="400" delay="100">Visible</animation>
-
-        <control type="image">
-          <description>Glass overlay for movie title to sit on</description>
-          <posx>260</posx>
-          <posy>64</posy>
-          <width>593</width>
-          <height>50</height>
-          <texture>GlassTitleBar.png</texture>
-        </control>
-
-        <control type="group">
-          <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-
-          <control type="group">
-            <posx>52</posx>
-            <posy>73</posy>
-
-            <control type="group">
-              <visible>!Container.Content(episodes)</visible>
-
-              <control type="image">
-                <description>Larger thumb</description>
-                <include>MediaPreviewPosterDims</include>
-                <texture>amt-blank-poster.png</texture>
-                <info>ListItem.Icon</info>
-                <aspectratio aligny="middle">keep</aspectratio>
-              </control>
-<!--
+			</control>
+		</control>
+		<control type="group">
+			<include>TVEpisodesVisible</include>
+			<include>MediaViewFade</include>
+			<include>TVEpisodesFadeAnim</include>
+			<control type="list" id="54">
+				<viewtype label="Episodes">list</viewtype>
+				<posx>708</posx>
+				<posy>242</posy>
+				<width>640</width>
+				<height>420</height>
+				<pagecontrol>-</pagecontrol>
+				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+				<onright>9009</onright>
+				<onup>54</onup>
+				<ondown>54</ondown>
+				<itemlayout height="42" width="640">
+					<control type="image">
+						<include>MediaItemBG</include>
+					</control>
+					<control type="label">
+						<include>TVEpisodeItemNoNF</include>
+					</control>
+					<control type="label">
+						<include>MediaNumberedItemTitleNF</include>
+					</control>
+					<control type="image">
+						<include>TVEpisodeItemOverlay</include>
+						<include>MediaItemNFFade</include>
+					</control>
+					<control type="label">
+						<include>TVEpisodeItemDateNF</include>
+					</control>
+				</itemlayout>
+				<focusedlayout height="42" width="640">
+					<control type="image">
+						<include>MediaItemBG</include>
+					</control>
+					<control type="image">
+						<include>MediaItemFocusBG</include>
+					</control>
+					<control type="image">
+						<include>MediaItemDetailBG</include>
+					</control>
+					<control type="label">
+						<include>TVEpisodeItemNoNF</include>
+						<include>MediaListItemFadeOut</include>
+					</control>
+					<control type="label">
+						<include>TVEpisodeItemNoFO</include>
+						<include>MediaListItemFade</include>
+					</control>
+					<control type="label">
+						<include>MediaNumberedItemTitleNF</include>
+						<include>MediaListItemFadeOut</include>
+					</control>
+					<control type="label">
+						<include>MediaNumberedItemTitleFO</include>
+						<include>MediaListItemFade</include>
+					</control>
+					<control type="image">
+						<include>TVEpisodeItemOverlay</include>
+						<include>MediaListItemFade</include>
+					</control>
+					<control type="label">
+						<include>TVEpisodeItemDateNF</include>
+						<include>MediaListItemFadeOut</include>
+					</control>
+					<control type="label">
+						<include>TVEpisodeItemDateFO</include>
+						<include>MediaListItemFade</include>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+		<control type="group">
+			<include>TVEpisodesVisible</include>
+			<include>MediaViewFade</include>
+			<include>TVEpisodesFadeAnim</include>
+			<control type="image">
+				<description>Episode List overlay</description>
+				<visible>![Container(54).Position(9)] + !Skin.HasTheme(lite)</visible>
+				<posx>726</posx>
+				<posy>592</posy>
+				<width>650</width>
+				<height>100</height>
+				<texture>BlackGradient2.png</texture>
+				<aspectratio>stretch</aspectratio>
+			</control>
+			<include>CommonSortLetters</include>
+		</control>
+	</include>
+	-->
+	<include name="MediaPreview">
+		<control type="group">
+			<include>MediaPreviewVisible</include>
+			<include>MediaViewFade</include>
+			<include condition="!Skin.HasSetting(HideInfoInMediaPreview) +  !Skin.HasSetting(ShowAnimMediaPreview)">MovieViewBGOverlay</include>
+			<control type="group">
+				<visible>Skin.HasSetting(HideInfoInMediaPreview) + !Skin.HasSetting(ShowAnimMediaPreview)</visible>
+				<control type="image">
+					<width>1280</width>
+					<height>54</height>
+					<texture>Black.png</texture>
+					<colordiffuse>99cccccc</colordiffuse>
+				</control>
+				<control type="group">
+					<posy>450</posy>
+					<control type="image">
+						<width>1280</width>
+						<height>64</height>
+						<texture>Black.png</texture>
+						<colordiffuse>99cccccc</colordiffuse>
+					</control>
+					<control type="image">
+						<description>Glass overlay for movie title to sit on</description>
+						<posx>343</posx>
+						<width>593</width>
+						<height>50</height>
+						<texture>GlassTitleBar.png</texture>
+					</control>
+					<control type="label">
+						<description>Title</description>
+						<posy>8</posy>
+						<width>1280</width>
+						<align>center</align>
+						<label>$INFO[ListItem.Label]</label>
+						<font>TitleCapsFont</font>
+						<scroll>true</scroll>
+					</control>
+				</control>
+			</control>
+			<control type="group">
+				<visible>!Container.OnNext + !Container.OnPrevious</visible>
+				<visible>!Skin.HasSetting(HideInfoInMediaPreview) + !Skin.HasSetting(ShowAnimMediaPreview)</visible>
+				<animation effect="fade" start="0" end="100" time="400" delay="100">Visible</animation>
+				<control type="image">
+					<description>Glass overlay for movie title to sit on</description>
+					<posx>260</posx>
+					<posy>64</posy>
+					<width>593</width>
+					<height>50</height>
+					<texture>GlassTitleBar.png</texture>
+				</control>
+				<control type="group">
+					<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+					<control type="group">
+						<posx>52</posx>
+						<posy>73</posy>
+						<control type="group">
+							<visible>!Container.Content(episodes)</visible>
+							<control type="image">
+								<description>Larger thumb</description>
+								<include>MediaPreviewPosterDims</include>
+								<texture>amt-blank-poster.png</texture>
+								<info>ListItem.Icon</info>
+								<aspectratio aligny="middle">keep</aspectratio>
+							</control>
+							<!--
               <control type="label">
                 <include>MediaPreviewPosterNoThumbDims</include>
                 <font>LargeTitleCapsFont</font>
                 <include>NoThumbLabel</include>
               </control>
 -->
-              <control type="image">
-                <description>Glass overlay</description>
-                <posx>0</posx>
-                <posy>0</posy>
-                <width>230</width>
-                <height>214</height>
-                <include>GlassTextureOverlay2</include>
-                <colordiffuse>ffcccccc</colordiffuse>
-              </control>
-            </control>
-
-            <control type="group">
-              <visible>Container.Content(episodes)</visible>
-
-              <control type="image">
-                <description>Larger thumb</description>
-                <include>MediaPreviewPosterDims</include>
-                <texture>amt-blank-poster.png</texture>
-                <info>ListItem.Thumb</info>
-                <aspectratio aligny="top">keep</aspectratio>
-              </control>
-            </control>
-          </control>
-
-          <control type="group">
-            <posx>308</posx>
-            <posy>130</posy>
-
-            <include>WatchedUnwatchedOverlay</include>
-          </control>
-        </control>
-
-        <control type="group">
-          <posx>380</posx>
-          <posy>72</posy>
-
-          <control type="label">
-            <description>Movie Title</description>
-            <width>660</width>
-            <label>$INFO[ListItem.Label]</label>
-            <font>TitleCapsFont</font>
-            <scroll>true</scroll>
-          </control>
-          <control type="label">
-            <description>Movie Year</description>
-			<posy>30</posy>
-            <width>660</width>
-            <label>$INFO[ListItem.Year]</label>
-            <scroll>true</scroll>
-          </control>
-
-          <control type="image">
-            <description>Trailer Indicator</description>
-            <include>MediaPreviewTrailerIndicDims</include>
-            <aspectratio>keep</aspectratio>
-            <texture>Trailer.png</texture>
-            <visible>!IsEmpty(ListItem.Trailer)</visible>
-          </control>
-
-          <control type="textbox">
-            <description>Plot/Details</description>
-            <posy>64</posy>
-            <width>870</width>
-            <height>167</height>
-            <info>ListItem.Plot</info>
-          </control>
-
-          <control type="group">
-            <posy>245</posy>
-			<posx>20</posx>
-            <visible>Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)</visible>
-
-			<control type="label">
-			  <posy>4</posy>
-			  <posx>74</posx>
-              <description>Rating</description>
-              <font>MediumSmallTitleCapsFont</font>
-              <label>$LOCALIZE[31129]:</label>
-			  <textcolor>FFfd9800</textcolor>
-			  <align>right</align>
-            </control>
-
-			<control type="image">
-				<posx>74</posx>
-				<posy>1</posy>
-				<height>27</height>
-			  	<aspectratio>keep</aspectratio>
-			  	<info>ListItem.StarRating</info>
-			  	<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
-				<align>left</align>
-		 	</control>
-
-			<control type="label">
-			  <posy>30</posy>
-			  <posx>74</posx>
-              <description>IMDb Rating</description>
-              <font>MediumSmallTitleCapsFont</font>
-              <label>$LOCALIZE[31130]:</label>
-			  <textcolor>FFfd9800</textcolor>
-			  <align>right</align>
-            </control>
-
-			<control type="label">
-				<posy>30</posy>
-				<posx>88</posx>
-				<description>IMDb Rating</description>
-				<font>MediumSmallTitleCapsFont</font>
-				<label>$INFO[ListItem.rating]</label>
-				<align>left</align>
+							<control type="image">
+								<description>Glass overlay</description>
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>230</width>
+								<height>214</height>
+								<include>GlassTextureOverlay2</include>
+								<colordiffuse>ffcccccc</colordiffuse>
+							</control>
+						</control>
+						<control type="group">
+							<visible>Container.Content(episodes)</visible>
+							<control type="image">
+								<description>Larger thumb</description>
+								<include>MediaPreviewPosterDims</include>
+								<texture>amt-blank-poster.png</texture>
+								<info>ListItem.Thumb</info>
+								<aspectratio aligny="top">keep</aspectratio>
+							</control>
+						</control>
+					</control>
+					<control type="group">
+						<posx>308</posx>
+						<posy>130</posy>
+						<include>WatchedUnwatchedOverlay</include>
+					</control>
+				</control>
+				<control type="group">
+					<posx>380</posx>
+					<posy>72</posy>
+					<control type="label">
+						<description>Movie Title</description>
+						<width>660</width>
+						<label>$INFO[ListItem.Label]</label>
+						<font>TitleCapsFont</font>
+						<scroll>true</scroll>
+					</control>
+					<control type="label">
+						<description>Movie Year</description>
+						<posy>30</posy>
+						<width>660</width>
+						<label>$INFO[ListItem.Year]</label>
+						<scroll>true</scroll>
+					</control>
+					<control type="image">
+						<description>Trailer Indicator</description>
+						<include>MediaPreviewTrailerIndicDims</include>
+						<aspectratio>keep</aspectratio>
+						<texture>Trailer.png</texture>
+						<visible>!IsEmpty(ListItem.Trailer)</visible>
+					</control>
+					<control type="textbox">
+						<description>Plot/Details</description>
+						<posy>64</posy>
+						<width>870</width>
+						<height>167</height>
+						<info>ListItem.Plot</info>
+					</control>
+					<control type="group">
+						<posy>245</posy>
+						<posx>20</posx>
+						<visible>Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)</visible>
+						<control type="label">
+							<posy>4</posy>
+							<posx>74</posx>
+							<description>Rating</description>
+							<font>MediumSmallTitleCapsFont</font>
+							<label>$LOCALIZE[31129]:</label>
+							<textcolor>FFfd9800</textcolor>
+							<align>right</align>
+						</control>
+						<control type="image">
+							<posx>74</posx>
+							<posy>1</posy>
+							<height>27</height>
+							<aspectratio>keep</aspectratio>
+							<info>ListItem.StarRating</info>
+							<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+							<align>left</align>
+						</control>
+						<control type="label">
+							<posy>30</posy>
+							<posx>74</posx>
+							<description>IMDb Rating</description>
+							<font>MediumSmallTitleCapsFont</font>
+							<label>$LOCALIZE[31130]:</label>
+							<textcolor>FFfd9800</textcolor>
+							<align>right</align>
+						</control>
+						<control type="label">
+							<posy>30</posy>
+							<posx>88</posx>
+							<description>IMDb Rating</description>
+							<font>MediumSmallTitleCapsFont</font>
+							<label>$INFO[ListItem.rating]</label>
+							<align>left</align>
+						</control>
+						<control type="label">
+							<posy>56</posy>
+							<posx>74</posx>
+							<description>Genre</description>
+							<font>MediumSmallTitleCapsFont</font>
+							<label>$LOCALIZE[31131]:</label>
+							<textcolor>FFfd9800</textcolor>
+							<align>right</align>
+						</control>
+						<control type="label">
+							<posy>56</posy>
+							<posx>88</posx>
+							<description>Genre</description>
+							<font>MediumSmallTitleCapsFont</font>
+							<label>$INFO[ListItem.FirstGenre]</label>
+							<align>left</align>
+						</control>
+						<control type="label">
+							<posy>82</posy>
+							<posx>74</posx>
+							<description>Duration</description>
+							<font>MediumSmallTitleCapsFont</font>
+							<label>$LOCALIZE[31132]:</label>
+							<textcolor>FFfd9800</textcolor>
+							<align>right</align>
+						</control>
+						<control type="label">
+							<posy>82</posy>
+							<posx>88</posx>
+							<description>Duration</description>
+							<font>MediumSmallTitleCapsFont</font>
+							<label>$INFO[ListItem.Duration]</label>
+							<align>left</align>
+						</control>
+						<control type="label">
+							<posy>108</posy>
+							<posx>74</posx>
+							<description>Subtitles</description>
+							<font>MediumSmallTitleCapsFont</font>
+							<label>$LOCALIZE[31133]:</label>
+							<textcolor>FFfd9800</textcolor>
+							<visible>Container.Content(movies)</visible>
+							<align>right</align>
+						</control>
+						<control type="label">
+							<posy>108</posy>
+							<posx>88</posx>
+							<description>Subtitles</description>
+							<font>MediumSmallTitleCapsFont</font>
+							<label>$INFO[SubtitleLanguage]</label>
+							<align>left</align>
+						</control>
+						<!-- Right Side Items -->
+						<control type="label">
+							<posy>4</posy>
+							<posx>401</posx>
+							<description>Cast</description>
+							<font>MediumSmallTitleCapsFont</font>
+							<label>$LOCALIZE[31134]:</label>
+							<textcolor>FFfd9800</textcolor>
+							<align>right</align>
+						</control>
+						<control type="label">
+							<posy>4</posy>
+							<posx>415</posx>
+							<width>455</width>
+							<description>Cast</description>
+							<font>MediumSmallTitleCapsFont</font>
+							<label>$INFO[ListItem.Cast]</label>
+							<textcolor>FFfd9800</textcolor>
+							<align>right</align>
+						</control>
+						<control type="label">
+							<posy>30</posy>
+							<posx>401</posx>
+							<description>Director</description>
+							<font>MediumSmallTitleCapsFont</font>
+							<label>$LOCALIZE[31135]:</label>
+							<textcolor>FFfd9800</textcolor>
+							<align>right</align>
+						</control>
+						<control type="label">
+							<posy>30</posy>
+							<posx>415</posx>
+							<width>455</width>
+							<font>MediumSmallTitleCapsFont</font>
+							<label>$INFO[ListItem.Director]</label>
+							<align>left</align>
+						</control>
+						<control type="label">
+							<posy>56</posy>
+							<posx>401</posx>
+							<description>Writer</description>
+							<font>MediumSmallTitleCapsFont</font>
+							<label>$LOCALIZE[31136]:</label>
+							<textcolor>FFfd9800</textcolor>
+							<align>right</align>
+						</control>
+						<control type="label">
+							<posy>56</posy>
+							<posx>415</posx>
+							<width>455</width>
+							<font>MediumSmallTitleCapsFont</font>
+							<label>$INFO[ListItem.Writer]</label>
+							<align>left</align>
+						</control>
+					</control>
+				</control>
 			</control>
-
-			<control type="label">
-			  <posy>56</posy>
-			  <posx>74</posx>
-              <description>Genre</description>
-              <font>MediumSmallTitleCapsFont</font>
-              <label>$LOCALIZE[31131]:</label>
-			  <textcolor>FFfd9800</textcolor>
-			  <align>right</align>
-            </control>
-
-			<control type="label">
-			  <posy>56</posy>
-			  <posx>88</posx>
-              <description>Genre</description>
-              <font>MediumSmallTitleCapsFont</font>
-              <label>$INFO[ListItem.FirstGenre]</label>
-			  <align>left</align>
-            </control>
-
-			<control type="label">
-			  <posy>82</posy>
-			  <posx>74</posx>
-              <description>Duration</description>
-              <font>MediumSmallTitleCapsFont</font>
-              <label>$LOCALIZE[31132]:</label>
-			  <textcolor>FFfd9800</textcolor>
-			  <align>right</align>
-            </control>
-
-			<control type="label">
-			  <posy>82</posy>
-			  <posx>88</posx>
-              <description>Duration</description>
-              <font>MediumSmallTitleCapsFont</font>
-              <label>$INFO[ListItem.Duration]</label>
-			  <align>left</align>
-            </control>
-
-			<control type="label">
-			  <posy>108</posy>
-			  <posx>74</posx>
-              <description>Subtitles</description>
-              <font>MediumSmallTitleCapsFont</font>
-              <label>$LOCALIZE[31133]:</label>
-			  <textcolor>FFfd9800</textcolor>
-              <visible>Container.Content(movies)</visible>
-			  <align>right</align>
-            </control>
-
-			<control type="label">
-			  <posy>108</posy>
-			  <posx>88</posx>
-              <description>Subtitles</description>
-              <font>MediumSmallTitleCapsFont</font>
-              <label>$INFO[SubtitleLanguage]</label>
-			  <align>left</align>
-            </control>
-
-			<!-- Right Side Items -->
-			<control type="label">
-			  <posy>4</posy>
-			  <posx>401</posx>
-              <description>Cast</description>
-              <font>MediumSmallTitleCapsFont</font>
-              <label>$LOCALIZE[31134]:</label>
-			  <textcolor>FFfd9800</textcolor>
-			  <align>right</align>
-            </control>
-
-			<control type="label">
-			  <posy>4</posy>
-			  <posx>415</posx>
-			  <width>455</width>
-              <description>Cast</description>
-              <font>MediumSmallTitleCapsFont</font>
-              <label>$INFO[ListItem.Cast]</label>
-			  <textcolor>FFfd9800</textcolor>
-			  <align>right</align>
-            </control>
-
-			<control type="label">
-			  <posy>30</posy>
-			  <posx>401</posx>
-              <description>Director</description>
-              <font>MediumSmallTitleCapsFont</font>
-              <label>$LOCALIZE[31135]:</label>
-			  <textcolor>FFfd9800</textcolor>
-			  <align>right</align>
-            </control>
-
-			<control type="label">
-			  <posy>30</posy>
-			  <posx>415</posx>
-			  <width>455</width>
-              <font>MediumSmallTitleCapsFont</font>
-              <label>$INFO[ListItem.Director]</label>
-			  <align>left</align>
-            </control>
-
-			<control type="label">
-			  <posy>56</posy>
-			  <posx>401</posx>
-              <description>Writer</description>
-              <font>MediumSmallTitleCapsFont</font>
-              <label>$LOCALIZE[31136]:</label>
-			  <textcolor>FFfd9800</textcolor>
-			  <align>right</align>
-            </control>
-
-			<control type="label">
-			  <posy>56</posy>
-			  <posx>415</posx>
-			  <width>455</width>
-              <font>MediumSmallTitleCapsFont</font>
-              <label>$INFO[ListItem.Writer]</label>
-			  <align>left</align>
-            </control>
-			
-          </control>
-
-        </control>
-      </control>
-    </control>
-
-    <control type="group">
-      <include>MediaPreviewVisible</include>
-      <visible>Skin.HasSetting(ShowAnimMediaPreview)</visible>
-
-      <control type="image">
-        <description>Black overlay behind clock etc</description>
-        <width>750</width>
-        <height>54</height>
-        <texture>BlackTransparent.png</texture>
-      </control>
-
-      <control type="image">
-        <description>Black overlay for small thumbs to sit on</description>
-        <posx>750</posx>
-        <width>530</width>
-        <height>110</height>
-        <texture>BlackTransparent.png</texture>
-      </control>
-
-      <control type="group">
-        <posy>388</posy>
-
-        <control type="group">
-          <visible>Skin.HasSetting(HideInfoInMediaPreview)</visible>
-
-          <control type="image">
-            <description>Black overlay for poster to sit on</description>
-            <width>264</width>
-            <height>350</height>
-            <texture>BlackTransparent.png</texture>
-          </control>
-
-          <control type="group">
-            <posx>300</posx>
-            <posy>282</posy>
-
-            <control type="image">
-              <description>Black for under title</description>
-              <posx>-36</posx>
-              <width>1016</width>
-              <height>50</height>
-              <texture>BlackTransparent.png</texture>
-            </control>
-            <control type="image">
-              <description>Glass overlay for movie title to sit on</description>
-              <posx>-110</posx>
-              <width>593</width>
-              <height>50</height>
-              <texture>GlassTitleBar.png</texture>
-            </control>
-
-            <control type="label">
-              <description>Movie Title</description>
-              <posy>4</posy>
-              <width>980</width>
-              <label>$INFO[ListItem.Label]</label>
-              <font>TitleCapsFont</font>
-              <scroll>true</scroll>
-            </control>
-          </control>
-        </control>
-
-        <control type="group">
-          <visible>!Skin.HasSetting(HideInfoInMediaPreview)</visible>
-
-          <control type="image">
-            <description>Black overlay for info to sit on</description>
-            <width>1280</width>
-            <height>350</height>
-            <texture>BlackTransparent.png</texture>
-          </control>
-
-          <control type="group">
-            <posx>264</posx>
-
-            <control type="image">
-              <description>Glass overlay for movie title to sit on</description>
-              <posx>-150</posx>
-              <width>593</width>
-              <height>50</height>
-              <texture>GlassTitleBar.png</texture>
-            </control>
-
-            <control type="label">
-              <description>Movie Title</description>
-              <posy>4</posy>
-              <width>990</width>
-              <label>$INFO[ListItem.Label]</label>
-              <font>TitleCapsFont</font>
-              <scroll>true</scroll>
-            </control>
-
-            <control type="textbox">
-              <description>Plot/Details</description>
-              <posy>36</posy>
-              <width>990</width>
-              <height>150</height>
-              <info>ListItem.Plot</info>
-            </control>
-
-            <control type="group">
-              <posy>190</posy>
-
-              <control type="grouplist">
-                <itemgap>0</itemgap>
-                <orientation>vertical</orientation>
-
-                <control type="label">
-                  <description>Genre</description>
-                  <info>ListItem.Genre</info>
-                  <include>MediaPreviewAnimDetailsLabel</include>
-                </control>
-
-                <control type="label">
-                  <description>Date</description>
-                  <info>ListItem.Year</info>
-                  <info>ListItem.Premiered</info>
-                  <include>MediaPreviewAnimDetailsLabel</include>
-                </control>
-
-                <control type="label">
-                  <description>Runtime</description>
-                  <info>ListItem.Duration</info>
-                  <include>MediaPreviewAnimDetailsLabel</include>
-                </control>
-
-                <control type="label">
-                  <description>MPAA Rating</description>
-                  <info>ListItem.MPAA</info>
-                  <include>MediaPreviewAnimDetailsLabel</include>
-                </control>
-              </control>
-
-              <control type="group">
-                <posx>730</posx>
-                <include>StarRatingDetails</include>
-              </control>
-            </control>
-          </control>
-        </control>
-      </control>
-    </control>
-
-    <control type="group">
-      <posy>502</posy>
-      <include>MediaPreviewVisible</include>
-      <include>MediaViewFade</include>
-
-      <control type="image">
-        <description>Black overlay for thumbs to sit on</description>
-        <posy>2</posy>
-        <width>1280</width>
-        <height>216</height>
-        <texture>Black.png</texture>
-        <visible>!Skin.HasSetting(ShowAnimMediaPreview)</visible>
-      </control>
-
-      <control type="wraplist" id="51">
-        <viewtype label="Media Preview">wraplist</viewtype>
-        <include condition="Skin.HasSetting(ShowAnimMediaPreview)">MediaPreviewAnimList</include>
-        <posx>1</posx>
-        <posy>-13</posy>
-        <width>1772</width>
-        <height>720</height>
-        <onleft>51</onleft>
-        <onright>51</onright>
-        <onup>9009</onup>
-        <scrolltime>200</scrolltime>
-        <pagecontrol>-</pagecontrol>
-        <orientation>horizontal</orientation>
-        <focusposition>4</focusposition>
-        <include>MediaViewFade</include>
-        <animation effect="slide" start="0,0" end="-512,0" time="0" condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)">Conditional</animation>
-
-        <itemlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + !Container.Content(episodes)" width="142" height="220">
-          <control type="image">
-            <include>MediaPreviewThumb</include>
-            <colordiffuse>ff999999</colordiffuse>
-          </control>
-<!--
+		</control>
+		<control type="group">
+			<include>MediaPreviewVisible</include>
+			<visible>Skin.HasSetting(ShowAnimMediaPreview)</visible>
+			<control type="image">
+				<description>Black overlay behind clock etc</description>
+				<width>750</width>
+				<height>54</height>
+				<texture>BlackTransparent.png</texture>
+			</control>
+			<control type="image">
+				<description>Black overlay for small thumbs to sit on</description>
+				<posx>750</posx>
+				<width>530</width>
+				<height>110</height>
+				<texture>BlackTransparent.png</texture>
+			</control>
+			<control type="group">
+				<posy>388</posy>
+				<control type="group">
+					<visible>Skin.HasSetting(HideInfoInMediaPreview)</visible>
+					<control type="image">
+						<description>Black overlay for poster to sit on</description>
+						<width>264</width>
+						<height>350</height>
+						<texture>BlackTransparent.png</texture>
+					</control>
+					<control type="group">
+						<posx>300</posx>
+						<posy>282</posy>
+						<control type="image">
+							<description>Black for under title</description>
+							<posx>-36</posx>
+							<width>1016</width>
+							<height>50</height>
+							<texture>BlackTransparent.png</texture>
+						</control>
+						<control type="image">
+							<description>Glass overlay for movie title to sit on</description>
+							<posx>-110</posx>
+							<width>593</width>
+							<height>50</height>
+							<texture>GlassTitleBar.png</texture>
+						</control>
+						<control type="label">
+							<description>Movie Title</description>
+							<posy>4</posy>
+							<width>980</width>
+							<label>$INFO[ListItem.Label]</label>
+							<font>TitleCapsFont</font>
+							<scroll>true</scroll>
+						</control>
+					</control>
+				</control>
+				<control type="group">
+					<visible>!Skin.HasSetting(HideInfoInMediaPreview)</visible>
+					<control type="image">
+						<description>Black overlay for info to sit on</description>
+						<width>1280</width>
+						<height>350</height>
+						<texture>BlackTransparent.png</texture>
+					</control>
+					<control type="group">
+						<posx>264</posx>
+						<control type="image">
+							<description>Glass overlay for movie title to sit on</description>
+							<posx>-150</posx>
+							<width>593</width>
+							<height>50</height>
+							<texture>GlassTitleBar.png</texture>
+						</control>
+						<control type="label">
+							<description>Movie Title</description>
+							<posy>4</posy>
+							<width>990</width>
+							<label>$INFO[ListItem.Label]</label>
+							<font>TitleCapsFont</font>
+							<scroll>true</scroll>
+						</control>
+						<control type="textbox">
+							<description>Plot/Details</description>
+							<posy>36</posy>
+							<width>990</width>
+							<height>150</height>
+							<info>ListItem.Plot</info>
+						</control>
+						<control type="group">
+							<posy>190</posy>
+							<control type="grouplist">
+								<itemgap>0</itemgap>
+								<orientation>vertical</orientation>
+								<control type="label">
+									<description>Genre</description>
+									<info>ListItem.Genre</info>
+									<include>MediaPreviewAnimDetailsLabel</include>
+								</control>
+								<control type="label">
+									<description>Date</description>
+									<info>ListItem.Year</info>
+									<info>ListItem.Premiered</info>
+									<include>MediaPreviewAnimDetailsLabel</include>
+								</control>
+								<control type="label">
+									<description>Runtime</description>
+									<info>ListItem.Duration</info>
+									<include>MediaPreviewAnimDetailsLabel</include>
+								</control>
+								<control type="label">
+									<description>MPAA Rating</description>
+									<info>ListItem.MPAA</info>
+									<include>MediaPreviewAnimDetailsLabel</include>
+								</control>
+							</control>
+							<control type="group">
+								<posx>730</posx>
+								<include>StarRatingDetails</include>
+							</control>
+						</control>
+					</control>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<posy>502</posy>
+			<include>MediaPreviewVisible</include>
+			<include>MediaViewFade</include>
+			<control type="image">
+				<description>Black overlay for thumbs to sit on</description>
+				<posy>2</posy>
+				<width>1280</width>
+				<height>216</height>
+				<texture>Black.png</texture>
+				<visible>!Skin.HasSetting(ShowAnimMediaPreview)</visible>
+			</control>
+			<control type="wraplist" id="51">
+				<viewtype label="Media Preview">wraplist</viewtype>
+				<include condition="Skin.HasSetting(ShowAnimMediaPreview)">MediaPreviewAnimList</include>
+				<posx>1</posx>
+				<posy>-13</posy>
+				<width>1772</width>
+				<height>720</height>
+				<onleft>51</onleft>
+				<onright>51</onright>
+				<onup>9009</onup>
+				<scrolltime>200</scrolltime>
+				<pagecontrol>-</pagecontrol>
+				<orientation>horizontal</orientation>
+				<focusposition>4</focusposition>
+				<include>MediaViewFade</include>
+				<animation effect="slide" start="0,0" end="-512,0" time="0" condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)">Conditional</animation>
+				<itemlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + !Container.Content(episodes)" width="142" height="220">
+					<control type="image">
+						<include>MediaPreviewThumb</include>
+						<colordiffuse>ff999999</colordiffuse>
+					</control>
+					<!--
           <control type="label">
             <description>No Thumb label</description>
             <include>MediaPreviewThumbNoThumbDims</include>
             <include>NoThumbLabel</include>
           </control>
 -->
-          <control type="image">
-            <include>MediaPreviewThumbRflctnDims</include>
-            <texture flipy="true" diffuse="DiffuseMirror.png">amt-blank-poster.png</texture>
-            <include>MediaPreviewThumb</include>
-          </control>
-        </itemlayout>
-
-        <focusedlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + !Container.Content(episodes)" width="142" height="220">
-          <control type="image">
-            <include>MediaPreviewThumbRflctnDims</include>
-            <texture flipy="true" diffuse="DiffuseMirror.png">amt-blank-poster.png</texture>
-            <include>MediaPreviewThumb</include>
-            <include>MediaPreviewThumbRflctnAnim</include>
-          </control>
-          <control type="image">
-            <texture border="12">ThumbBorder.png</texture>
-            <include>MediaPreviewThumbBorderDims</include>
-          </control>
-          <control type="image">
-            <include>MediaPreviewThumb</include>
-            <include>MediaPreviewThumbAnim</include>
-          </control>
-<!--
+					<control type="image">
+						<include>MediaPreviewThumbRflctnDims</include>
+						<texture flipy="true" diffuse="DiffuseMirror.png">amt-blank-poster.png</texture>
+						<include>MediaPreviewThumb</include>
+					</control>
+				</itemlayout>
+				<focusedlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + !Container.Content(episodes)" width="142" height="220">
+					<control type="image">
+						<include>MediaPreviewThumbRflctnDims</include>
+						<texture flipy="true" diffuse="DiffuseMirror.png">amt-blank-poster.png</texture>
+						<include>MediaPreviewThumb</include>
+						<include>MediaPreviewThumbRflctnAnim</include>
+					</control>
+					<control type="image">
+						<texture border="12">ThumbBorder.png</texture>
+						<include>MediaPreviewThumbBorderDims</include>
+					</control>
+					<control type="image">
+						<include>MediaPreviewThumb</include>
+						<include>MediaPreviewThumbAnim</include>
+					</control>
+					<!--
           <control type="label">
             <include>MediaPreviewThumbNoThumbDims</include>
             <include>NoThumbLabel</include>
             <include>MediaPreviewThumbNoThumbAnim</include>
           </control>
 -->
-        </focusedlayout>
-
-        <itemlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)" width="256" height="220">
-          <control type="image">
-            <include>MediaPreviewEpThumb</include>
-            <colordiffuse>cc999999</colordiffuse>
-          </control>
-<!--
+				</focusedlayout>
+				<itemlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)" width="256" height="220">
+					<control type="image">
+						<include>MediaPreviewEpThumb</include>
+						<colordiffuse>cc999999</colordiffuse>
+					</control>
+					<!--
           <control type="label">
             <description>No Thumb label</description>
             <include>MediaPreviewThumbNoThumbDims</include>
             <include>NoThumbLabel</include>
           </control>
 -->
-          <include>MediaPreviewEpThumbOverlay</include>
-        </itemlayout>
-
-        <focusedlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)" width="256" height="220">
-          <control type="image">
-            <include>MediaPreviewEpThumb</include>
-            <include>MediaPreviewEpThumbAnim</include>
-          </control>
-<!--
+					<include>MediaPreviewEpThumbOverlay</include>
+				</itemlayout>
+				<focusedlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)" width="256" height="220">
+					<control type="image">
+						<include>MediaPreviewEpThumb</include>
+						<include>MediaPreviewEpThumbAnim</include>
+					</control>
+					<!--
           <control type="label">
             <include>MediaPreviewThumbNoThumbDims</include>
             <include>NoThumbLabel</include>
             <include>MediaPreviewThumbNoThumbAnim</include>
           </control>
 -->
-          <include>MediaPreviewEpThumbOverlay</include>
-        </focusedlayout>
-
-        <itemlayout condition="Skin.HasSetting(ShowAnimMediaPreview)" width="106" height="78">
-          <control type="image">
-            <include>MediaPreviewAnimThumb</include>
-            <colordiffuse>ff999999</colordiffuse>
-          </control>
-        </itemlayout>
-
-        <focusedlayout condition="Skin.HasSetting(ShowAnimMediaPreview)" width="142" height="220">
-          <control type="image">
-            <include>MediaPreviewAnimThumb</include>
-            <include>MediaPreviewAnimThumbAnim</include>
-          </control>
-        </focusedlayout>
-      </control>
-
-      <control type="group">
-        <visible>!Skin.HasSetting(ShowAnimMediaPreview)</visible>
-
-        <control type="image">
-          <description>Left hand fade on thumb strip</description>
-          <width>140</width>
-          <height>220</height>
-          <texture>BlackGradient.png</texture>
-        </control>
-
-        <control type="image">
-          <description>Right hand fade on thumb strip</description>
-          <posx>1140</posx>
-          <width>140</width>
-          <height>220</height>
-          <texture flipx="true">BlackGradient.png</texture>
-        </control>
-      </control>
-    </control>
-
-    <control type="group">
-      <include>MediaPreviewVisible</include>
-      <include>CommonSortLetters</include>
-    </control>
-  </include>
-
-
-
-  <include name="Showcase">
-    <control type="group">
-      <include>ShowcaseVisible</include>
-      <include>MediaViewFade</include>
-      <include>MovieViewBGOverlay</include>
-
-      <control type="image">
-        <description>Glass overlay for movie title to sit on</description>
-        <posx>343</posx>
-        <posy>503</posy>
-        <width>593</width>
-        <height>50</height>
-        <texture>GlassTitleBar.png</texture>
-      </control>
-
-      <control type="wraplist" id="58">
-        <include>ShowcaseListDims</include>
-        <onleft>56</onleft>
-        <onright>56</onright>
-        <onup>9009</onup>
-<!--        <ondown>Skin.ToggleSetting(HideNowPlayingMusicInfo)</ondown>-->
-        <scrolltime>200</scrolltime>
-        <viewtype label="SHOWCASE">wraplist</viewtype>
-        <pagecontrol>-</pagecontrol>
-        <orientation>horizontal</orientation>
-        <focusposition>3</focusposition>
-        <include>MediaViewFade</include>
-
-        <itemlayout height="ShowcaseItemHeight" width="235">
-          <control type="image">
-            <include>ShowcasePoster</include>
-          </control>
-<!--
+					<include>MediaPreviewEpThumbOverlay</include>
+				</focusedlayout>
+				<itemlayout condition="Skin.HasSetting(ShowAnimMediaPreview)" width="106" height="78">
+					<control type="image">
+						<include>MediaPreviewAnimThumb</include>
+						<colordiffuse>ff999999</colordiffuse>
+					</control>
+				</itemlayout>
+				<focusedlayout condition="Skin.HasSetting(ShowAnimMediaPreview)" width="142" height="220">
+					<control type="image">
+						<include>MediaPreviewAnimThumb</include>
+						<include>MediaPreviewAnimThumbAnim</include>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="group">
+				<visible>!Skin.HasSetting(ShowAnimMediaPreview)</visible>
+				<control type="image">
+					<description>Left hand fade on thumb strip</description>
+					<width>140</width>
+					<height>220</height>
+					<texture>BlackGradient.png</texture>
+				</control>
+				<control type="image">
+					<description>Right hand fade on thumb strip</description>
+					<posx>1140</posx>
+					<width>140</width>
+					<height>220</height>
+					<texture flipx="true">BlackGradient.png</texture>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<include>MediaPreviewVisible</include>
+			<include>CommonSortLetters</include>
+		</control>
+	</include>
+	<include name="Showcase">
+		<control type="group">
+			<include>ShowcaseVisible</include>
+			<include>MediaViewFade</include>
+			<include>MovieViewBGOverlay</include>
+			<control type="image">
+				<description>Glass overlay for movie title to sit on</description>
+				<posx>343</posx>
+				<posy>503</posy>
+				<width>593</width>
+				<height>50</height>
+				<texture>GlassTitleBar.png</texture>
+			</control>
+			<control type="wraplist" id="58">
+				<include>ShowcaseListDims</include>
+				<onleft>56</onleft>
+				<onright>56</onright>
+				<onup>9009</onup>
+				<!--        <ondown>Skin.ToggleSetting(HideNowPlayingMusicInfo)</ondown>-->
+				<scrolltime>200</scrolltime>
+				<viewtype label="SHOWCASE">wraplist</viewtype>
+				<pagecontrol>-</pagecontrol>
+				<orientation>horizontal</orientation>
+				<focusposition>3</focusposition>
+				<include>MediaViewFade</include>
+				<itemlayout height="ShowcaseItemHeight" width="235">
+					<control type="image">
+						<include>ShowcasePoster</include>
+					</control>
+					<!--
           <control type="label">
             <include>ShowcaseNoThumbLabelDims</include>
             <colordiffuse>f0808080</colordiffuse>
             <include>NoThumbLabel</include>
           </control>
 -->
-        </itemlayout>
-
-        <focusedlayout height="ShowcaseFocusHeight" width="200">
-          <control type="group">
-            <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-
-            <control type="image">
-              <posx>-9</posx>
-              <posy>1</posy>
-              <width>242</width>
-              <height>ShowcaseFocusHeight</height>
-              <texture border="12">ThumbBorder.png</texture>
-              <animation type="focus">
-                <effect type="fade" start="0" end="100" time="550"/>
-                <effect type="zoom" tween="quadratic" start="100,100" end="120,120" center="225,150" time="600" delay="200"/>
-              </animation>
-              <animation type="unfocus">
-                <effect type="zoom" tween="quadratic" start="120,120" end="100,100" center="225,150" time="350"/>
-                <effect type="fade" start="100" end="0" time="350"/>
-              </animation>
-            </control>
-            <control type="image">
-              <include>ShowcasePoster</include>
-              <include>ShowcaseFocusAnim</include>
-            </control>
-            <control type="image">
-              <posx>0</posx>
-              <posy>10</posy>
-              <width>225</width>
-              <height>ShowcaseItemHeight</height>
-              <texture>amt-blank-poster.png</texture>
-              <info>ListItem.Icon</info>
-              <aspectratio aligny="bottom">stretch</aspectratio>
-              <animation effect="fade" start="100" end="0" time="300" reversible="false">Unfocus</animation>
-              <include>ShowcaseFocusAnim</include>
-            </control>
-<!--
+				</itemlayout>
+				<focusedlayout height="ShowcaseFocusHeight" width="200">
+					<control type="group">
+						<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+						<control type="image">
+							<posx>-9</posx>
+							<posy>1</posy>
+							<width>242</width>
+							<height>ShowcaseFocusHeight</height>
+							<texture border="12">ThumbBorder.png</texture>
+							<animation type="focus">
+								<effect type="fade" start="0" end="100" time="550"/>
+								<effect type="zoom" tween="quadratic" start="100,100" end="120,120" center="225,150" time="600" delay="200"/>
+							</animation>
+							<animation type="unfocus">
+								<effect type="zoom" tween="quadratic" start="120,120" end="100,100" center="225,150" time="350"/>
+								<effect type="fade" start="100" end="0" time="350"/>
+							</animation>
+						</control>
+						<control type="image">
+							<include>ShowcasePoster</include>
+							<include>ShowcaseFocusAnim</include>
+						</control>
+						<control type="image">
+							<posx>0</posx>
+							<posy>10</posy>
+							<width>225</width>
+							<height>ShowcaseItemHeight</height>
+							<texture>amt-blank-poster.png</texture>
+							<info>ListItem.Icon</info>
+							<aspectratio aligny="bottom">stretch</aspectratio>
+							<animation effect="fade" start="100" end="0" time="300" reversible="false">Unfocus</animation>
+							<include>ShowcaseFocusAnim</include>
+						</control>
+						<!--
             <control type="label">
               <include>ShowcaseNoThumbLabelDims</include>
               <include>NoThumbLabel</include>
               <include>ShowcaseFocusAnim</include>
             </control>
 -->
-            <control type="image">
-              <description>Glass overlay</description>
-              <posx>-5</posx>
-              <posy>4</posy>
-              <width>233</width>
-              <height>192</height>
-              <include>GlassTextureOverlay2</include>
-              <include>ShowcaseFocusPosterOverlayAnim</include>
-            </control>
-            <control type="image">
-              <description>Watched/Unwatched Overlay Background</description>
-              <posx>198</posx>
-              <posy>60</posy>
-              <width>32</width>
-              <height>39</height>
-              <texture>OverlayWUBG.png</texture>
-              <visible>!Skin.HasSetting(HideWatchedIcons) + !IsEmpty(ListItem.Overlay)</visible>
-              <include>ShowcaseFocusPosterOverlayAnim</include>
-            </control>
-            <control type="image">
-              <description>Watched/Unwatched Overlay</description>
-              <posx>206</posx>
-              <posy>64</posy>
-              <width>23</width>
-              <height>23</height>
-              <info>ListItem.Overlay</info>
-              <visible>!Skin.HasSetting(HideWatchedIcons)</visible>
-              <include>ShowcaseFocusPosterOverlayAnim</include>
-            </control>
-          </control>
-        </focusedlayout>
-      </control>
-
-      <control type="group">
-        <include>MediaViewFade</include>
-
-        <control type="image">
-          <description>Left hand fade on thumb strip</description>
-          <posx>-175</posx>
-          <posy>65</posy>
-          <width>440</width>
-          <height>439</height>
-          <texture>BlackGradient.png</texture>
-        </control>
-
-        <control type="image">
-          <description>Right hand fade on thumb strip</description>
-          <posx>1015</posx>
-          <posy>65</posy>
-          <width>440</width>
-          <height>439</height>
-          <texture flipx="true">BlackGradient.png</texture>
-        </control>
-      </control>
-
-      <control type="group">
-        <posx>0</posx>
-        <posy>520</posy>
-        <animation effect="fade" start="0" end="100" time="400" delay="100" reversible="true">Visible</animation>
-        <animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-        <include>ShowcaseVisible</include>
-
-        <control type="label">
-          <description>Movie Title</description>
-          <posx>0</posx>
-          <width>1280</width>
-          <height>30</height>
-          <align>center</align>
-          <font>XLargeTitleCapsFont</font>
-          <scroll>true</scroll>
-          <label>$INFO[ListItem.Label]</label>
-        </control>
-
-        <control type="label">
-          <posy>40</posy>
-          <width>1280</width>
-          <height>30</height>
-          <align>center</align>
-          <font>VideoDetailXCapsFont</font>
-          <label>$INFO[ListItem.Year]</label>
-          <visible>Window.IsVisible(25)</visible>
-        </control>
-
-        <control type="group">
-          <visible>!IsEmpty(ListItem.StarRating)</visible>
-
-          <control type="label">
-            <description>Star Rating caption</description>
+						<control type="image">
+							<description>Glass overlay</description>
+							<posx>-5</posx>
+							<posy>4</posy>
+							<width>233</width>
+							<height>192</height>
+							<include>GlassTextureOverlay2</include>
+							<include>ShowcaseFocusPosterOverlayAnim</include>
+						</control>
+						<control type="image">
+							<description>Watched/Unwatched Overlay Background</description>
+							<posx>198</posx>
+							<posy>60</posy>
+							<width>32</width>
+							<height>39</height>
+							<texture>OverlayWUBG.png</texture>
+							<visible>!Skin.HasSetting(HideWatchedIcons) + !IsEmpty(ListItem.Overlay)</visible>
+							<include>ShowcaseFocusPosterOverlayAnim</include>
+						</control>
+						<control type="image">
+							<description>Watched/Unwatched Overlay</description>
+							<posx>206</posx>
+							<posy>64</posy>
+							<width>23</width>
+							<height>23</height>
+							<info>ListItem.Overlay</info>
+							<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
+							<include>ShowcaseFocusPosterOverlayAnim</include>
+						</control>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="group">
+				<include>MediaViewFade</include>
+				<control type="image">
+					<description>Left hand fade on thumb strip</description>
+					<posx>-175</posx>
+					<posy>65</posy>
+					<width>440</width>
+					<height>439</height>
+					<texture>BlackGradient.png</texture>
+				</control>
+				<control type="image">
+					<description>Right hand fade on thumb strip</description>
+					<posx>1015</posx>
+					<posy>65</posy>
+					<width>440</width>
+					<height>439</height>
+					<texture flipx="true">BlackGradient.png</texture>
+				</control>
+			</control>
+			<control type="group">
+				<posx>0</posx>
+				<posy>520</posy>
+				<animation effect="fade" start="0" end="100" time="400" delay="100" reversible="true">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+				<include>ShowcaseVisible</include>
+				<control type="label">
+					<description>Movie Title</description>
+					<posx>0</posx>
+					<width>1280</width>
+					<height>30</height>
+					<align>center</align>
+					<font>XLargeTitleCapsFont</font>
+					<scroll>true</scroll>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+				<control type="label">
+					<posy>40</posy>
+					<width>1280</width>
+					<height>30</height>
+					<align>center</align>
+					<font>VideoDetailXCapsFont</font>
+					<label>$INFO[ListItem.Year]</label>
+					<visible>Window.IsVisible(25)</visible>
+				</control>
+				<control type="group">
+					<visible>!IsEmpty(ListItem.StarRating)</visible>
+					<control type="label">
+						<description>Star Rating caption</description>
 						<visible>!IsEmpty(ListItem.Rating)</visible>
 						<posx>-50</posx>
-            <posy>115</posy>
-            <width>1280</width>
-            <height>20</height>
-            <font>VideoDetailCapsFont</font>
-            <scroll>true</scroll>
-            <align>center</align>
-            <label>$LOCALIZE[31120]:</label>
-          </control>
-  
-          <control type="image">
-            <description>Star Rating</description>
-            <posx>645</posx>
-            <posy>120</posy>
-            <height>20</height>
-            <aspectratio>stretch</aspectratio>
-            <include>StarRatingImage</include>
-          </control>
-        </control>
-
-        <control type="label">
-          <description>Runtime</description>
-          <posy>150</posy>
-          <width>1280</width>
-          <height>20</height>
-          <align>center</align>
-          <font>LargeDefaultCapsFont</font>
-          <scroll>true</scroll>
-          <label>$INFO[ListItem.Duration,$LOCALIZE[2050]  ]</label>
-        </control>
-      </control>
-
-      <include>CommonSortLetters</include>
-    </control>
-  </include>
-
+						<posy>115</posy>
+						<width>1280</width>
+						<height>20</height>
+						<font>VideoDetailCapsFont</font>
+						<scroll>true</scroll>
+						<align>center</align>
+						<label>$LOCALIZE[31120]:</label>
+					</control>
+					<control type="image">
+						<description>Star Rating</description>
+						<posx>645</posx>
+						<posy>120</posy>
+						<height>20</height>
+						<aspectratio>stretch</aspectratio>
+						<include>StarRatingImage</include>
+					</control>
+				</control>
+				<control type="label">
+					<description>Runtime</description>
+					<posy>150</posy>
+					<width>1280</width>
+					<height>20</height>
+					<align>center</align>
+					<font>LargeDefaultCapsFont</font>
+					<scroll>true</scroll>
+					<label>$INFO[ListItem.Duration,$LOCALIZE[2050]  ]</label>
+				</control>
+			</control>
+			<include>CommonSortLetters</include>
+		</control>
+	</include>
 </includes>
