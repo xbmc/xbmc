@@ -60,10 +60,11 @@ public:
    to the database.
 
    \param image url of the image to cache
+   \param returnDDS if we're allowed to return a DDS version, defaults to true
    \return cached url of this image
    \sa GetCachedImage
    */
-  CStdString CheckAndCacheImage(const CStdString &image);
+  CStdString CheckAndCacheImage(const CStdString &image, bool returnDDS = true);
 
   /*! \brief retrieve the cached version of the given image (if it exists)
    \param image url of the image

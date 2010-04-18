@@ -175,12 +175,12 @@ CStdString CTextureCache::GetWrappedThumbURL(const CStdString &image)
   return CUtil::AddFileToFolder("thumb://" + url, CUtil::GetFileName(image));
 }
 
-CStdString CTextureCache::CheckAndCacheImage(const CStdString &url)
+CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnDDS)
 {
   CStdString path(GetCachedImage(url));
   if (!path.IsEmpty())
   {
-    if (0 != strncmp(url.c_str(), "special://skin/", 15)) // TODO: should skin images be .dds'd (currently they're not necessarily writeable)
+    if (returnDDS && 0 != strncmp(url.c_str(), "special://skin/", 15)) // TODO: should skin images be .dds'd (currently they're not necessarily writeable)
     { // check for dds version
       CStdString ddsPath = CUtil::ReplaceExtension(path, ".dds");
       if (CFile::Exists(ddsPath))
