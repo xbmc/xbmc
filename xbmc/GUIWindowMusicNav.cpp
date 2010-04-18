@@ -823,7 +823,6 @@ void CGUIWindowMusicNav::SetPluginThumb(int iItem, const VECSOURCES &sources)
     {
       XFILE::CFile::Delete(cachedThumb);
       CFileItem item2(CUtil::AddFileToFolder(itemPath, "default.py"), false);
-      XFILE::CFile::Delete(item2.GetCachedProgramThumb());
       CTextureCache::Get().ClearCachedImage(item2.GetCachedProgramThumb());
     }
     else

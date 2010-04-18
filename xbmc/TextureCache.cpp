@@ -248,16 +248,15 @@ CStdString CTextureCache::CheckAndCacheImage(const CStdString &url)
 
 void CTextureCache::ClearCachedImage(const CStdString &url)
 {
+  CStdString path(url);
   CStdString cachedFile;
   if (ClearCachedTexture(url, cachedFile))
-  {
-    CStdString path = GetCachedPath(cachedFile);
-    if (CFile::Exists(path))
-      CFile::Delete(path);
-    path = CUtil::ReplaceExtension(path, ".dds");
-    if (CFile::Exists(path))
-      CFile::Delete(path);
-  }
+    path = GetCachedPath(cachedFile);
+  if (CFile::Exists(path))
+    CFile::Delete(path);
+  path = CUtil::ReplaceExtension(path, ".dds");
+  if (CFile::Exists(path))
+    CFile::Delete(path);
 }
 
 bool CTextureCache::GetCachedTexture(const CStdString &url, CStdString &cachedURL)

@@ -1298,8 +1298,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           item->SetLabel(g_localizeStrings.Get(415));
           item->SetProperty("labelonthumbload",g_localizeStrings.Get(20015));
           // make sure any previously cached thumb is removed
-          if (CFile::Exists(item->GetCachedPictureThumb()))
-            CFile::Delete(item->GetCachedPictureThumb());
           CTextureCache::Get().ClearCachedImage(item->GetCachedPictureThumb());
           items.Add(item);
         }
@@ -1425,13 +1423,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
       if (result == "thumb://None")
       {
-        CFile::Delete(cachedThumb);
         CTextureCache::Get().ClearCachedImage(cachedThumb);
         if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
         {
           CFileItem item2(strPath,false);
           CUtil::AddFileToFolder(strPath,"default.py",item2.m_strPath);
-          CFile::Delete(item2.GetCachedProgramThumb());
           CTextureCache::Get().ClearCachedImage(item2.GetCachedProgramThumb());
         }
       }
