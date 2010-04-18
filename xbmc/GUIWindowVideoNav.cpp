@@ -1247,7 +1247,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CUtil::WipeDir(strPath);
       XFILE::CDirectory::Create(strPath);
       CFileItemPtr noneitem(new CFileItem("thumb://None", false));
-      int i=1;
       CStdString cachedThumb = m_vecItems->Get(itemNumber)->GetCachedSeasonThumb();
       if (button == CONTEXT_BUTTON_SET_ACTOR_THUMB)
         cachedThumb = m_vecItems->Get(itemNumber)->GetCachedActorThumb();
@@ -1272,6 +1271,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       noneitem->SetIconImage("DefaultFolder.png");
       noneitem->SetLabel(g_localizeStrings.Get(20018));
 
+      vector<CStdString> thumbs;
       if (button != CONTEXT_BUTTON_SET_ARTIST_THUMB &&
           button != CONTEXT_BUTTON_SET_PLUGIN_THUMB)
       {
@@ -1280,26 +1280,23 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           m_database.GetTvShowInfo("",tag,m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iDbId);
         else
           tag = *m_vecItems->Get(itemNumber)->GetVideoInfoTag();
-        for (vector<CScraperUrl::SUrlEntry>::iterator iter=tag.m_strPictureURL.m_url.begin();iter != tag.m_strPictureURL.m_url.end();++iter)
-        {
-          if ((iter->m_type != CScraperUrl::URL_TYPE_SEASON ||
-               iter->m_season != m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iSeason) &&
-               button == CONTEXT_BUTTON_SET_SEASON_THUMB)
-          {
-            continue;
-          }
+        if (button == CONTEXT_BUTTON_SET_SEASON_THUMB)
+          tag.m_strPictureURL.GetThumbURLs(thumbs, m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iSeason);
+        else
+          tag.m_strPictureURL.GetThumbURLs(thumbs);
 
+        for (unsigned int i = 0; i < thumbs.size(); i++)
+        {
           CStdString strItemPath;
-          strItemPath.Format("thumb://Remote%i",i++);
+          strItemPath.Format("thumb://Remote%i",i);
           CFileItemPtr item(new CFileItem(strItemPath, false));
-          item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
+          item->SetThumbnailImage(thumbs[i]);
           item->SetIconImage("DefaultPicture.png");
-          item->GetVideoInfoTag()->m_strPictureURL.m_url.push_back(*iter);
-          item->SetLabel(g_localizeStrings.Get(415));
-          item->SetProperty("labelonthumbload",g_localizeStrings.Get(20015));
-          // make sure any previously cached thumb is removed
-          CTextureCache::Get().ClearCachedImage(item->GetCachedPictureThumb());
+          item->SetLabel(g_localizeStrings.Get(20015));
           items.Add(item);
+
+          // TODO: Do we need to clear the cached image?
+          //    CTextureCache::Get().ClearCachedImage(thumbs[i]);
         }
       }
 
@@ -1411,15 +1408,8 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CTextureCache::Get().ClearCachedImage(cachedThumb);
       if (result.Left(14) == "thumb://Remote")
       {
-        CFileItem chosen(result,false);
-        CStdString thumb = chosen.GetCachedPictureThumb();
-        if (CFile::Exists(thumb))
-        {
-          // NOTE: This could fail if the thumbloader was too slow and the user too impatient
-          CFile::Cache(thumb, cachedThumb);
-        }
-        else
-          result = "thumb://None";
+        int number = atoi(result.Mid(14));
+        CFile::Cache(thumbs[number], cachedThumb);
       }
       if (result == "thumb://None")
       {
