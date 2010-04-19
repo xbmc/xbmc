@@ -926,6 +926,15 @@
           	<onclick>XBMC.ReloadSkin()</onclick>
           	<include>OMButtonItem</include>
 		</control>
+		<control type="radiobutton" id="997">
+          	<description>Dev Background</description>
+          	<label>Dev Background</label>
+			<onclick>Skin.ToggleSetting(Developer_Background_Visible)</onclick>
+			<selected>Skin.HasSetting(Developer_Background_Visible)</selected>
+          	<include>OMButtonItem</include>
+        </control>
+		
+		
       </control>
 
     </control>

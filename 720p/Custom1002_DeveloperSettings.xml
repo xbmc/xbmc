@@ -73,7 +73,16 @@
 					<selected>Skin.HasSetting(Developer)</selected>
 					<include>GeneralSkinOption</include>
 				</control>
-				<control type="button" id="211">
+				<control type="radiobutton" id="211">
+					<description>Dev Background</description>
+					<label>Show Dev Background</label>
+					<onclick>Skin.ToggleSetting(Developer_Background_Visible)</onclick>
+					<selected>Skin.HasSetting(Developer_Background_Visible)</selected>
+					<include>GeneralSkinOption</include>
+				</control>
+
+
+				<control type="button" id="212">
 					<description>Set Custom Background</description>
 					<visible>!Skin.String(Developer_Background)</visible>
 					<label>Set Custom Background</label>
@@ -81,21 +90,21 @@
 					<onclick>XBMC.ReloadSkin()</onclick>
 					<include>GeneralSkinOption</include>
 				</control>
-				<control type="button" id="212">
+				<control type="button" id="213">
 					<description>Clear Custom Background</description>
 					<visible>Skin.String(Developer_Background)</visible>
 					<label>Reset Custom Background</label>
 					<onclick>Skin.Reset(Developer_Background)</onclick>
 					<include>GeneralSkinOption</include>
 				</control>
-				<control type="button" id="213">
+				<control type="button" id="214">
 					<description>Dim Background</description>
 					<label>Dim Background</label>
 					<onclick>Skin.ToggleSetting(bg_brightness)</onclick>
 					<include>GeneralSkinOption</include>
 				</control>
 				
-				<control type="radiobutton" id="214">
+				<control type="radiobutton" id="215">
 					<description>Dim Background</description>
 					<visible>Skin.HasSetting(bg_brightness)</visible>
 					<selected>Skin.HasSetting(Background_0)</selected>
@@ -107,7 +116,7 @@
 					<textoffsetx>80</textoffsetx>
 					<include>GeneralSkinOption</include>
 				</control>
-				<control type="radiobutton" id="215">
+				<control type="radiobutton" id="216">
 					<description>Dim Background</description>
 					<visible>Skin.HasSetting(bg_brightness)</visible>
 					<selected>Skin.HasSetting(Background_10)</selected>
@@ -119,7 +128,7 @@
 					<textoffsetx>80</textoffsetx>
 					<include>GeneralSkinOption</include>
 				</control>
-				<control type="radiobutton" id="216">
+				<control type="radiobutton" id="217">
 					<description>Dim Background</description>
 					<visible>Skin.HasSetting(bg_brightness)</visible>
 					<selected>Skin.HasSetting(Background_20)</selected>
@@ -131,7 +140,7 @@
 					<textoffsetx>80</textoffsetx>
 					<include>GeneralSkinOption</include>
 				</control>
-				<control type="radiobutton" id="217">
+				<control type="radiobutton" id="218">
 					<description>Dim Background</description>
 					<visible>Skin.HasSetting(bg_brightness)</visible>
 					<selected>Skin.HasSetting(Background_30)</selected>
@@ -143,7 +152,7 @@
 					<textoffsetx>80</textoffsetx>
 					<include>GeneralSkinOption</include>
 				</control>
-				<control type="radiobutton" id="218">
+				<control type="radiobutton" id="219">
 					<description>Dim Background</description>
 					<visible>Skin.HasSetting(bg_brightness)</visible>
 					<selected>Skin.HasSetting(Background_40)</selected>
@@ -155,7 +164,7 @@
 					<textoffsetx>80</textoffsetx>
 					<include>GeneralSkinOption</include>
 				</control>
-				<control type="radiobutton" id="219">
+				<control type="radiobutton" id="220">
 					<description>Dim Background</description>
 					<visible>Skin.HasSetting(bg_brightness)</visible>
 					<selected>Skin.HasSetting(Background_50)</selected>
@@ -167,7 +176,7 @@
 					<textoffsetx>80</textoffsetx>
 					<include>GeneralSkinOption</include>
 				</control>
-				<control type="radiobutton" id="220">
+				<control type="radiobutton" id="221">
 					<description>Dim Background</description>
 					<visible>Skin.HasSetting(bg_brightness)</visible>
 					<selected>!Skin.HasSetting(Background_60)</selected>
@@ -177,7 +186,7 @@
 					<textoffsetx>80</textoffsetx>
 					<include>GeneralSkinOption</include>
 				</control>
-				<control type="radiobutton" id="221">
+				<control type="radiobutton" id="222">
 					<description>Dim Background</description>
 					<visible>Skin.HasSetting(bg_brightness)</visible>
 					<selected>Skin.HasSetting(Background_70)</selected>
@@ -189,7 +198,7 @@
 					<textoffsetx>80</textoffsetx>
 					<include>GeneralSkinOption</include>
 				</control>
-				<control type="radiobutton" id="222">
+				<control type="radiobutton" id="223">
 					<description>Dim Background</description>
 					<visible>Skin.HasSetting(bg_brightness)</visible>
 					<selected>Skin.HasSetting(Background_80)</selected>
@@ -201,7 +210,7 @@
 					<textoffsetx>80</textoffsetx>
 					<include>GeneralSkinOption</include>
 				</control>
-				<control type="radiobutton" id="223">
+				<control type="radiobutton" id="224">
 					<description>Dim Background</description>
 					<visible>Skin.HasSetting(bg_brightness)</visible>
 					<selected>Skin.HasSetting(Background_90)</selected>
@@ -213,7 +222,7 @@
 					<textoffsetx>80</textoffsetx>
 					<include>GeneralSkinOption</include>
 				</control>
-				<control type="radiobutton" id="224">
+				<control type="radiobutton" id="225">
 					<description>Dim Background</description>
 					<visible>Skin.HasSetting(bg_brightness)</visible>
 					<selected>Skin.HasSetting(Background_100)</selected>
@@ -227,7 +236,7 @@
 				</control>
 				
 				
-				<control type="button" id="225">
+				<control type="button" id="226">
 					<description>Refresh</description>
 					<label>Refresh</label>
 					<onclick>XBMC.ReloadSkin()</onclick>
