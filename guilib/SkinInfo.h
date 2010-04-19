@@ -65,6 +65,11 @@ public:
   CStdString GetBaseDir() const;
   double GetVersion() const { return m_Version; };
 
+  /*! \brief Return whether skin debugging is enabled
+   \return true if skin debugging (set via <debugging>true</debugging> in skin.xml) is enabled.
+   */
+  bool IsDebugging() const { return m_debugging; };
+
   /*! \brief Get the id of the first window to load
    The first window is generally Startup.xml unless it doesn't exist or if the skinner
    has specified which start windows they support and the user is going to somewhere other
@@ -108,8 +113,10 @@ protected:
    */
   bool GetResolution(const TiXmlNode *node, const char *tag, RESOLUTION &res) const;
 
+  void SetDefaults();
   void LoadIncludes();
   bool LoadStartupWindows(const TiXmlElement *startup);
+  bool IsWide(RESOLUTION res) const;
 
   RESOLUTION m_DefaultResolution; // default resolution for the skin in 4:3 modes
   RESOLUTION m_DefaultResolutionWide; // default resolution for the skin in 16:9 modes
@@ -121,6 +128,7 @@ protected:
 
   std::vector<CStartupWindow> m_startupWindows;
   bool m_onlyAnimateToHome;
+  bool m_debugging;
 };
 
 extern CSkinInfo g_SkinInfo;

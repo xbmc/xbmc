@@ -16,7 +16,7 @@ extern "C" int inet_pton(int af, const char *src, void *dst);
 
 using namespace JSONRPC;
 using namespace ANNOUNCEMENT;
-using namespace std;
+//using namespace std; On VS2010, bind conflicts with std::bind
 using namespace Json;
 
 #define RECEIVEBUFFER 1024
@@ -143,7 +143,7 @@ void CTCPServer::Announce(EAnnouncementFlag flag, const char *sender, const char
     root["params"]["data"] = data;
 
   StyledWriter writer;
-  string str = writer.write(root);
+  std::string str = writer.write(root);
 
   for (unsigned int i = 0; i < m_connections.size(); i++)
   {
@@ -266,7 +266,7 @@ void CTCPServer::CTCPClient::PushBuffer(CTCPServer *host, const char *buffer, in
     if (m_beginBrackets > 0 && m_endBrackets > 0 && m_beginBrackets == m_endBrackets)
     {
       CSingleLock lock (m_critSection);
-      string line = CJSONRPC::MethodCall(m_buffer, host, this);
+      std::string line = CJSONRPC::MethodCall(m_buffer, host, this);
       send(m_socket, line.c_str(), line.size(), 0);
       m_beginBrackets = m_endBrackets = 0;
       m_buffer.clear();

@@ -52,28 +52,25 @@ CDVDVideoCodecCrystalHD::~CDVDVideoCodecCrystalHD()
 
 bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
-
-  if ((requestedMethod == RENDER_METHOD_AUTO ||
-       requestedMethod == RENDER_METHOD_CRYSTALHD) && !hints.software)
+  if (g_guiSettings.GetBool("videoplayer.usechd") && !hints.software)
   {
     switch (hints.codec)
     {
       case CODEC_ID_MPEG2VIDEO:
         m_codec_type = CRYSTALHD_CODEC_ID_MPEG2;
-        m_pFormatName = "bcm-mpeg2";
+        m_pFormatName = "chd-mpeg2";
       break;
       case CODEC_ID_H264:
         m_codec_type = CRYSTALHD_CODEC_ID_H264;
-        m_pFormatName = "bcm-h264";
+        m_pFormatName = "chd-h264";
       break;
       case CODEC_ID_VC1:
         m_codec_type = CRYSTALHD_CODEC_ID_VC1;
-        m_pFormatName = "bcm-vc1";
+        m_pFormatName = "chd-vc1";
       break;
       case CODEC_ID_WMV3:
         m_codec_type = CRYSTALHD_CODEC_ID_WMV3;
-        m_pFormatName = "bcm-wmv3";
+        m_pFormatName = "chd-wmv3";
       break;
       default:
         return false;
@@ -123,7 +120,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
   // them back to CrystalHD class for re-queuing. This way we keep
   // the memory alloc/free to a minimum and don't churn memory for
   // each picture frame.
-  m_Device->BusyListPop();
+  m_Device->BusyListFlush();
 
   // If NULL is passed, DVDPlayer wants to process any queued picture frames.
   if (!pData)

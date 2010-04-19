@@ -1014,6 +1014,7 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
     }
     /* all parameters are there */
     mpegts_close_filter(ts, filter);
+    pes->stream->ctx_flags &= ~AVFMTCTX_NOHEADER;
 }
 
 static void pat_cb(MpegTSFilter *filter, const uint8_t *section, int section_len)
@@ -1422,6 +1423,7 @@ static int mpegts_read_header(AVFormatContext *s,
 
     if (s->iformat == &mpegts_demuxer) {
         /* normal demux */
+        s->ctx_flags |= AVFMTCTX_NOHEADER;
 
         /* first do a scaning to get all the services */
         url_fseek(pb, pos, SEEK_SET);
@@ -1437,7 +1439,6 @@ static int mpegts_read_header(AVFormatContext *s,
 
         dprintf(ts->stream, "tuning done\n");
 
-        s->ctx_flags |= AVFMTCTX_NOHEADER;
     } else {
         AVStream *st;
         int pcr_pid, pid, nb_packets, nb_pcrs, ret, pcr_l;

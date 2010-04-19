@@ -34,6 +34,7 @@
 
 #define MAX_STRING_POST_SIZE 20000
 #define PAGE_FILE_NOT_FOUND "<html><head><title>File not found</title></head><body>File not found</body></html>"
+#define PAGE_JSONRPC_INFO   "<html><head><title>JSONRPC</title></head><body>JSONRPC active and working</body></html>"
 
 using namespace XFILE;
 using namespace std;
@@ -114,11 +115,20 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   CLog::Log(LOGNOTICE, "WebServer: %s | %s", method, url);
 
   CStdString strURL = url;
+  bool get  = strcmp(method, "GET")  == 0;
+  bool post = strcmp(method, "POST") == 0;
 
-  if (strURL.Equals("/jsonrpc") && strcmp (method, "POST") == 0)
-    return JSONRPC(server, con_cls, connection, upload_data, upload_data_size);
+#ifdef HAS_JSONRPC
+  if (strURL.Equals("/jsonrpc"))
+  {
+    if (post)
+      return JSONRPC(server, con_cls, connection, upload_data, upload_data_size);
+    else if (get)
+      return CreateMemoryDownloadResponse(connection, (void *)PAGE_JSONRPC_INFO, strlen(PAGE_JSONRPC_INFO));
+  }
+#endif
 
-  if (strcmp(method, "GET") == 0)
+  if (get)
   {
     if (strURL.Left(18).Equals("/xbmcCmds/xbmcHttp"))
       return HttpApi(connection);
@@ -126,23 +136,23 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     {
       strURL = strURL.Right(strURL.length() - 7);
       strURL = strURL.Left(strURL.length() - 4);
-      return CreateDownloadResponse(connection, strURL);
+      return CreateFileDownloadResponse(connection, strURL);
     }
     else if (strURL.Left(4).Equals("/vfs"))
     {
       strURL = strURL.Right(strURL.length() - 5);
       CUtil::URLDecode(strURL);
-      return CreateDownloadResponse(connection, strURL);
+      return CreateFileDownloadResponse(connection, strURL);
     }
 #ifdef HAS_WEB_INTERFACE
     else if (strURL.Equals("/"))
-      return CreateDownloadResponse(connection, "special://xbmc/web/index.html");
+      return CreateFileDownloadResponse(connection, "special://xbmc/web/index.html");
     else
     {
       strURL.Format("special://xbmc/web%s", strURL.c_str());
       if (CDirectory::Exists(strURL))
         strURL += "/index.html";
-      return CreateDownloadResponse(connection, strURL);
+      return CreateFileDownloadResponse(connection, strURL);
     }
 #endif
   }
@@ -220,7 +230,7 @@ int CWebServer::HttpApi(struct MHD_Connection *connection)
   return MHD_NO;
 }
 
-int CWebServer::CreateDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL)
+int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL)
 {
   int ret = MHD_NO;
   CFile *file = new CFile();
@@ -254,13 +264,19 @@ int CWebServer::CreateDownloadResponse(struct MHD_Connection *connection, const 
   {
     delete file;
     CLog::Log(LOGERROR, "WebServer: Failed to open %s", strURL.c_str());
-    struct MHD_Response *response = MHD_create_response_from_data (strlen (PAGE_FILE_NOT_FOUND),
-                                              (void *) PAGE_FILE_NOT_FOUND,
-                                              MHD_NO, MHD_NO);
+    struct MHD_Response *response = MHD_create_response_from_data (strlen(PAGE_FILE_NOT_FOUND), (void *)PAGE_FILE_NOT_FOUND, MHD_NO, MHD_NO);
     ret = MHD_queue_response (connection, MHD_HTTP_NOT_FOUND, response);
     MHD_destroy_response (response);
   }
 
+  return ret;
+}
+
+int CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, void *data, size_t size)
+{
+  struct MHD_Response *response = MHD_create_response_from_data (size, data, MHD_NO, MHD_NO);
+  int ret = MHD_queue_response (connection, MHD_HTTP_OK, response);
+  MHD_destroy_response (response);
   return ret;
 }
 

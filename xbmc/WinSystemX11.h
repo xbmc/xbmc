@@ -62,6 +62,9 @@ protected:
   Window       m_wmWindow;
   Display*     m_dpy;
   bool         m_bWasFullScreenBeforeMinimize;
+
+private:
+  bool IsSuitableVisual(XVisualInfo *vInfo);
 };
 
 #endif // WINDOW_SYSTEM_H

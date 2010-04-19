@@ -64,6 +64,7 @@ namespace BCM
 };
 
 #define __MODULE_NAME__ "CrystalHD"
+//#define USE_CHD_SINGLE_THREADED_API
 
 class DllLibCrystalHDInterface
 {
@@ -415,7 +416,9 @@ void CMPCInputThread::Flush(void)
   m_PopEvent.Set();
   m_start_decoding = 0;
 #ifndef USE_FFMPEG_ANNEXB
-  reset_parser(m_nal_parser);
+  // Doing a full parser reinit here, works more reliable than resetting
+  free_parser(m_nal_parser);
+  m_nal_parser = init_parser();
 	if (m_extradata_size > 0)
 		parse_codec_private(m_nal_parser, m_extradata, m_extradata_size);
 #endif
@@ -1349,6 +1352,20 @@ void CMPCOutputThread::Process(void)
   {
     if (!GetDecoderOutput())
       Sleep(1);
+
+#ifdef USE_CHD_SINGLE_THREADED_API
+    while (!m_bStop)
+    {
+      ret = m_dll->DtsGetDriverStatus(m_Device, &decoder_status);
+      if (ret == BCM::BC_STS_SUCCESS && decoder_status.ReadyListCount != 0)
+      {
+        double pts = pts_itod(decoder_status.NextTimeStamp);
+        fprintf(stdout, "cpbEmptySize(%d), NextTimeStamp(%f)\n", decoder_status.cpbEmptySize, pts);
+        break;
+      }
+      Sleep(10);
+    }
+#endif
   }
   CLog::Log(LOGDEBUG, "%s: Output Thread Stopped...", __MODULE_NAME__);
 }
@@ -1373,6 +1390,9 @@ CCrystalHD::CCrystalHD() :
   {
     uint32_t mode = BCM::DTS_PLAYBACK_MODE          |
                     BCM::DTS_LOAD_FILE_PLAY_FW      |
+#ifdef USE_CHD_SINGLE_THREADED_API
+                    BCM::DTS_SINGLE_THREADED_MODE   |
+#endif
                     BCM::DTS_PLAYBACK_DROP_RPT_MODE |
                     DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
 
@@ -1516,7 +1536,11 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
       CLog::Log(LOGERROR, "%s: open decoder failed", __MODULE_NAME__);
       break;
     }
+#ifdef USE_CHD_SINGLE_THREADED_API
+    res = m_dll->DtsSetVideoParams(m_Device, videoAlg, FALSE, FALSE, TRUE, 0x80 | 0x80000000 | BCM::vdecFrameRate23_97);
+#else
     res = m_dll->DtsSetVideoParams(m_Device, videoAlg, FALSE, FALSE, TRUE, 0x80000000 | BCM::vdecFrameRate23_97);
+#endif
     if (res != BCM::BC_STS_SUCCESS)
     {
       CLog::Log(LOGDEBUG, "%s: set video params failed", __MODULE_NAME__);
@@ -1637,13 +1661,23 @@ int CCrystalHD::GetReadyCount(void)
     return 0;
 }
 
-void CCrystalHD::BusyListPop(void)
+void CCrystalHD::BusyListFlush(void)
 {
   if (m_pOutputThread)
   {
     // leave one around, DVDPlayer expects it
     while( m_BusyList.Count() > 1)
       m_pOutputThread->FreeListPush( m_BusyList.Pop() );
+  }
+}
+
+void CCrystalHD::ReadyListPop(void)
+{
+  if (m_pOutputThread)
+  {
+    // leave one around, DVDPlayer expects it
+    if ( m_pOutputThread->GetReadyCount() )
+      m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
   }
 }
 

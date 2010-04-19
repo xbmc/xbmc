@@ -74,7 +74,7 @@ public:
     else
       return 0;
   }
-
+  virtual const std::string Name() { return "vdpau"; }
 
   bool MakePixmap(int width, int height);
   bool MakePixmapGL();

@@ -29,6 +29,7 @@ SRCS=Application.cpp \
      GUIDialogMusicScan.cpp \
      GUIViewControl.cpp \
      GUIViewState.cpp \
+     GUIViewStateAddonBrowser.cpp \
      GUIViewStateMusic.cpp \
      GUIWindowMusicBase.cpp \
      GUIWindowMusicInfo.cpp \
@@ -216,6 +217,7 @@ SRCS=Application.cpp \
      Bookmark.cpp \
      TextureCache.cpp \
      TextureDatabase.cpp \
+     AddonDatabase.cpp \
 
 ifeq (@HAVE_XBMC_WEB_BROWSER@,1)
   SRCS += GUIWindowWebBrowser.cpp \

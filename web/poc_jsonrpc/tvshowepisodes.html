@@ -3,6 +3,13 @@
 <link type="text/css" rel="stylesheet" href="basic.css" />
 <script type="text/javascript" src="json.js" />
 <script type="text/javascript" src="help.js" />
+<script type="text/javascript">
+function CallPlay(episodeid) {
+  var http_request = new XMLHttpRequest();
+  http_request.open( "POST", "jsonrpc", false );
+  http_request.send('{"jsonrpc": "2.0", "method": "XBMC.Play", "params": { "episodeid": ' + episodeid + ' }, "id": 1}');
+}
+</script>
 </head>
 <body>
 <table class="Navigation">
@@ -31,27 +38,33 @@ var season   = gup("season");
 
 var http_request = new XMLHttpRequest();
 http_request.open( "POST", "jsonrpc", false );
-http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"VideoLibrary.GetEpisodes\", \"params\": { \"tvshowid\": " + tvshowid + ", \"season\": " + season + ", \"fields\": [\"plot\"] }, \"id\": 1}");
+http_request.send('{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": { "tvshowid": ' + tvshowid + ', "season": ' + season + ', "fields": ["plot"] }, "id": 1}');
 
 var the_object = JSON.parse(http_request.responseText);
 var result = the_object["result"];
 if (result) {
   var array = result["episodes"];
 
-  document.write("<table class=\"Episodes\"><thead><tr><th>Thumbnail</th><th>Info</th></tr></thead><tbody>");
+  document.write('<table class="Episodes"><thead><tr><th>Thumbnail</th><th>Info</th></tr></thead><tbody>');
   for (var i in array) {
     var item = array[i];
-    document.write("<tr class=\"" + (i % 2 == 0 ? "even" : "odd") + "\"><td class=\"cover\">");
-    document.write("<img src=\"" + (item["thumbnail"] ? ("thumb/" + item["thumbnail"] + ".jpg"): "images/nocover.jpg") + "\" class=\"cover\" alt=\"" + item["label"] + "\"></img>");
-    document.write("</td><td class=\"info\">");
+    document.write('<tr class="" + (i % 2 == 0 ? "even" : "odd") + ""><td class="cover">');
+    var thumbnail = "images/DefaultVideo.png";
+    if (item["thumbnail"])
+      thumbnail = "thumb/" + item["thumbnail"] + ".jpg";
 
-    document.write("<h1>" + item["label"] + "</h1>");
+    document.write('<a href="nowplaying.html" onclick=CallPlay(' + item["episodeid"] + ')>');
+    document.write('<img src="' + thumbnail + '" class="cover"></img>');
+    document.write('</td><td class="info">');
+    document.write('</a>');
+
+    document.write('<h1>' + item["label"] + '</h1>');
     if (item["plot"])
       document.write(item["plot"]);
 
-    document.write("</td></tr>");
+    document.write('</td></tr>');
   }
-  document("</tbody></table>");
+  document('</tbody></table>');
 } else {
   document.write("Error");
 }

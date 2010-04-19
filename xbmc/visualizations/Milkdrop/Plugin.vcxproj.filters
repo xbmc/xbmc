@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Milkdrop">
+      <UniqueIdentifier>{04f02a49-1301-4632-98a8-87b9a07049f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Framework">
+      <UniqueIdentifier>{3077ef82-96dc-461c-aa69-faa5cb0b0bfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EvalLib">
+      <UniqueIdentifier>{786d27fa-7523-42e7-a465-a1fcf9186fc1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MilkdropXBMC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XmlDocument.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop\milkdropfs.cpp">
+      <Filter>Source Files\Milkdrop</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop\plugin.cpp">
+      <Filter>Source Files\Milkdrop</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop\state.cpp">
+      <Filter>Source Files\Milkdrop</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop\support.cpp">
+      <Filter>Source Files\Milkdrop</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop\dxcontext.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop\fft.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop\pluginshell.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop\utility.cpp">
+      <Filter>Source Files\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop\evallib\Cal_tab.c">
+      <Filter>Source Files\EvalLib</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop\evallib\cfunc.c">
+      <Filter>Source Files\EvalLib</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop\evallib\Compiler.c">
+      <Filter>Source Files\EvalLib</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop\evallib\eval.c">
+      <Filter>Source Files\EvalLib</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop\evallib\Gettok.c">
+      <Filter>Source Files\EvalLib</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop\evallib\Lextab.c">
+      <Filter>Source Files\EvalLib</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop\evallib\Llsave.c">
+      <Filter>Source Files\EvalLib</Filter>
+    </ClCompile>
+    <ClCompile Include="vis_milkdrop\evallib\Yylex.c">
+      <Filter>Source Files\EvalLib</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="XmlDocument.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop\plugin.h">
+      <Filter>Source Files\Milkdrop</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop\state.h">
+      <Filter>Source Files\Milkdrop</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop\support.h">
+      <Filter>Source Files\Milkdrop</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop\dxcontext.h">
+      <Filter>Source Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop\fft.h">
+      <Filter>Source Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop\pluginshell.h">
+      <Filter>Source Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop\utility.h">
+      <Filter>Source Files\Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop\evallib\cal_tab.h">
+      <Filter>Source Files\EvalLib</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop\evallib\Compiler.h">
+      <Filter>Source Files\EvalLib</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop\evallib\eval.h">
+      <Filter>Source Files\EvalLib</Filter>
+    </ClInclude>
+    <ClInclude Include="vis_milkdrop\evallib\Lex.h">
+      <Filter>Source Files\EvalLib</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

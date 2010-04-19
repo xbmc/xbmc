@@ -179,6 +179,7 @@ public:
   bool m_bMyVideoPlaylistShuffle;
   bool m_bMyVideoNavFlatten;
   bool m_bStartVideoWindowed;
+  bool m_bAddonAutoUpdate;
 
   int m_iVideoStartWindow;
 

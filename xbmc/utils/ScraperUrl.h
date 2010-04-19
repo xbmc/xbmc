@@ -60,6 +60,12 @@ public:
 
   const SUrlEntry GetFirstThumb() const;
   const SUrlEntry GetSeasonThumb(int) const;
+
+  /*! \brief fetch the full URL (including referrer) of thumbs
+   \param thumbs [out] vector of thumb URLs to fill
+   \param season number of season that we want thumbs for, -1 indicates no season (the default)
+   */
+  void GetThumbURLs(std::vector<CStdString> &thumbs, int season = -1) const;
   void Clear();
   static bool Get(const SUrlEntry&, std::string&, XFILE::CFileCurl& http,
                  const CStdString& cacheContext);

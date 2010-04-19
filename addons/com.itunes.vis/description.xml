@@ -12,6 +12,6 @@
     <xbmc>20000</xbmc>
   </minversion>
   <summary>iTunes Visualization Wrapper</summary>
-  <description>Some description</description>
-  <author>TEAMXBMC</author>
+  <description>iTunes Visualization Wrapper allows you to use visualizations from your OSX iTunes install in XBMC</description>
+  <author>Team XBMC</author>
 </addoninfo>

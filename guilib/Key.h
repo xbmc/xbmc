@@ -309,9 +309,7 @@
 #define WINDOW_SETTINGS_APPEARANCE        10019
 
 #define WINDOW_SCRIPTS                    10020
-#define WINDOW_VIDEO_GENRE                10021
-#define WINDOW_VIDEO_ACTOR                10022
-#define WINDOW_VIDEO_YEAR                 10023
+
 #define WINDOW_VIDEO_FILES                10024
 #define WINDOW_VIDEO_NAV                  10025
 #define WINDOW_VIDEO_PLAYLIST             10028
@@ -531,7 +529,8 @@ public:
   enum Modifier {
     MODIFIER_CTRL = 0x00010000,
     MODIFIER_SHIFT = 0x00020000,
-    MODIFIER_ALT = 0x00040000
+    MODIFIER_ALT = 0x00040000,
+    MODIFIER_SUPER = 0x00080000
   };
 
 private:

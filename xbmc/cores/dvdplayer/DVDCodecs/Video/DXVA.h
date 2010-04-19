@@ -42,6 +42,7 @@ public:
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
   virtual int  Check     (AVCodecContext* avctx);
   virtual void Close();
+  virtual const std::string Name() { return "dxva2"; }
 
   bool  OpenTarget(const GUID &guid);
   bool  OpenDecoder(AVCodecContext *avctx);
@@ -83,6 +84,7 @@ protected:
   SVideoBuffer                 m_buffer[m_buffer_max];
   unsigned                     m_buffer_count;
   unsigned                     m_buffer_age;
+  int                          m_refs;
 
   struct dxva_context*         m_context;
 
@@ -99,7 +101,7 @@ public:
   CProcessor();
  ~CProcessor();
 
-  bool Open(const DXVA2_VideoDesc& dsc, unsigned size);
+  bool Open(const DXVA2_VideoDesc& dsc);
   void Close();
   REFERENCE_TIME Add   (IDirect3DSurface9* source);
   bool           Render(const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time);
@@ -117,6 +119,7 @@ public:
   IDirectXVideoProcessor*        m_process;
   GUID                           m_device;
 
+  DXVA2_VideoProcessorCaps m_caps;
   DXVA2_VideoDesc  m_desc;
 
   DXVA2_ValueRange m_brightness;

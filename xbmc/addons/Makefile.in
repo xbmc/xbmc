@@ -6,7 +6,8 @@ SRCS=Addon.cpp \
 		 ScreenSaver.cpp \
 		 Scraper.cpp \
 		 Visualisation.cpp \
-		 fft.cpp
+		 fft.cpp \
+		 Repository.cpp \
 
 LIB=addons.a
 

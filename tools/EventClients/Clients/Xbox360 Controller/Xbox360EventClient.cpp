@@ -6,6 +6,9 @@
 #include "../../lib/c++/xbmcclient.h"
 #pragma comment(lib, "wsock32.lib")      // needed for xmbclient.h?
 
+// You can have up to 4 xbox360 controllers on a system
+#define MAX_NUM_CONTROLLERS 4
+
 // global variable :(
 // needed for exit event handler
 CXBMCClient *client;
@@ -56,12 +59,46 @@ void checkButton(Xbox360Controller &cont, CXBMCClient *client, int num, const ch
   }
 }
 
+void checkAll(Xbox360Controller &cont)
+{
+  if (cont.isConnected())
+  {
+    cont.updateState();
+    checkButton(cont, client, 0, "a");
+    checkButton(cont, client, 1, "b");
+    checkButton(cont, client, 2, "x");
+    checkButton(cont, client, 3, "y");
+    checkButton(cont, client, 4, "dpadup");
+    checkButton(cont, client, 5, "dpaddown");
+    checkButton(cont, client, 6, "dpadleft");
+    checkButton(cont, client, 7, "dpadright");
+    checkButton(cont, client, 8, "start");
+    checkButton(cont, client, 9, "back");
+    checkButton(cont, client, 10, "leftthumbbutton");
+    checkButton(cont, client, 11, "rightthumbbutton");
+    checkButton(cont, client, 12, "white");
+    checkButton(cont, client, 13, "black");
+    checkTrigger(cont, client, 0, "rightanalogtrigger");
+    checkTrigger(cont, client, 1, "leftanalogtrigger");
+    checkThumb(cont, client, 0, "leftthumbstickleft", "leftthumbstickright");
+    checkThumb(cont, client, 1, "leftthumbstickdown", "leftthumbstickup");
+    checkThumb(cont, client, 2, "rightthumbstickleft", "rightthumbstickright");
+    checkThumb(cont, client, 3, "rightthumbstickdown", "rightthumbstickup");
+  } 
+}
+
 int main(int argc, char* argv[])
 {
   char *host = "localhost";
   char *port = "9777";
+  Xbox360Controller *controllers[MAX_NUM_CONTROLLERS];
+  int i;
 
-  Xbox360Controller cont(0);
+  // Get access to all potential controllers
+  for ( i = 0; i < MAX_NUM_CONTROLLERS; i++)
+  {
+    controllers[i] = new Xbox360Controller(i);
+  }
 
   // Start Winsock stuff
   WSADATA wsaData;
@@ -92,29 +129,10 @@ int main(int argc, char* argv[])
 
   while(true)
   {
-    if (cont.isConnected())
+    // Check each controller for activity
+    for ( i = 0; i < MAX_NUM_CONTROLLERS; i++ )
     {
-      cont.updateState();
-      checkButton(cont, client, 0, "a");
-      checkButton(cont, client, 1, "b");
-      checkButton(cont, client, 2, "x");
-      checkButton(cont, client, 3, "y");
-      checkButton(cont, client, 4, "dpadup");
-      checkButton(cont, client, 5, "dpaddown");
-      checkButton(cont, client, 6, "dpadleft");
-      checkButton(cont, client, 7, "dpadright");
-      checkButton(cont, client, 8, "start");
-      checkButton(cont, client, 9, "back");
-      checkButton(cont, client, 10, "leftthumbbutton");
-      checkButton(cont, client, 11, "rightthumbbutton");
-      checkButton(cont, client, 12, "white");
-      checkButton(cont, client, 13, "black");
-      checkTrigger(cont, client, 0, "rightanalogtrigger");
-      checkTrigger(cont, client, 1, "leftanalogtrigger");
-      checkThumb(cont, client, 0, "leftthumbstickleft", "leftthumbstickright");
-      checkThumb(cont, client, 1, "leftthumbstickdown", "leftthumbstickup");
-      checkThumb(cont, client, 2, "rightthumbstickleft", "rightthumbstickright");
-      checkThumb(cont, client, 3, "rightthumbstickdown", "rightthumbstickup");
+      checkAll(*controllers[i]);
     }
     Sleep(10);
   }

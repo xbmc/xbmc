@@ -8,8 +8,15 @@ function CallMethod(method)
 {
   var http_request = new XMLHttpRequest();
   http_request.open( "POST", "jsonrpc", false );
-  http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"" + method + "\", \"params\": { \"fields\": [\"title\", \"plot\"] }, \"id\": 1}");
+  http_request.send('{"jsonrpc": "2.0", "method": "' + method + '", "params": { "fields": ["title", "plot"] }, "id": 1}');
   window.location.reload( false );
+}
+
+function CallPlay(player, playlistItem)
+{
+  var http_request = new XMLHttpRequest();
+  http_request.open( "POST", "jsonrpc", false );
+  http_request.send('{"jsonrpc": "2.0", "method": "' + player + 'Playlist.Play", "params": ' + playlistItem + ', "id": 1}');
 }
 
 function refresh()
@@ -34,7 +41,7 @@ function refresh()
 setTimeout( "refresh()", 5*1000 );
 var http_request = new XMLHttpRequest();
 http_request.open( "POST", "jsonrpc", false );
-http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"Player.GetActivePlayers\", \"id\": 1}");
+http_request.send('{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}');
 
 var players = JSON.parse(http_request.responseText)["result"];
 if (players.length > 0) {
@@ -42,7 +49,7 @@ if (players.length > 0) {
 
   http_request = new XMLHttpRequest();
   http_request.open( "POST", "jsonrpc", false );
-  http_request.send("{\"jsonrpc\": \"2.0\", \"method\": \"Playlist.GetItems\", \"params\": { \"fields\": [\"title\", \"plot\"] }, \"id\": 1}");
+  http_request.send('{"jsonrpc": "2.0", "method": "' + player + 'Playlist.GetItems", "params": { "fields": ["title", "plot"] }, "id": 1}');
 
   var the_object = JSON.parse(http_request.responseText);
   var result = the_object["result"];
@@ -51,32 +58,32 @@ if (players.length > 0) {
 
   if (activeItem >= 0) {
    if (array[activeItem]["thumbnail"])
-     document.write("<img src=\"thumb/" + array[activeItem]["thumbnail"] + ".jpg\"></img>");
+     document.write('<img src="thumb/' + array[activeItem]["thumbnail"] + '.jpg"></img>"');
     else
-      document.write("<img src=\"images/DefaultAlbumCover.png\"></img>");
+      document.write('<img src="images/DefaultAlbumCover.png"></img>');
 
-    document.write("<br></br>");
+    document.write('<br></br>');
 
-    document.write("<img src=\"images/OSDPrevTrackFO.png\" onclick=CallMethod(\"" + player + "Player.SkipPrevious\")></img>");
-    document.write("<img src=\"images/OSDStopFO.png\" onclick=CallMethod(\"" + player + "Player.Stop\")></img>");
-    document.write("<img src=\"images/OSDPlayFO.png\" onclick=CallMethod(\"" + player + "Player.PlayPause\")></img>");
-    document.write("<img src=\"images/OSDNextTrackFO.png\" onclick=CallMethod(\"" + player + "Player.SkipNext\")></img>");
+    document.write('<a href="nowplaying.html" onclick=CallMethod("' + player + 'Player.SkipPrevious")><img src="images/OSDPrevTrackFO.png"></img></a>');
+    document.write('<a href="nowplaying.html" onclick=CallMethod("' + player + 'Player.Stop")><img src="images/OSDStopFO.png"></img></a>');
+    document.write('<a href="nowplaying.html" onclick=CallMethod("' + player + 'Player.PlayPause")><img src="images/OSDPlayFO.png"></img></a>');
+    document.write('<a href="nowplaying.html" onclick=CallMethod("' + player + 'Player.SkipNext")><img src="images/OSDNextTrackFO.png"></img></a>');
 
-    document.write("<br></br>");
+    document.write('<br></br>');
 
-    document.write("<table class=\"Playlist\"><tbody>");
+    document.write('<table class="Playlist"><tbody>');
     for (var i in array) {
       var item = array[i];
 
-      document.write("<tr class=\"" + (i % 2 == 0 ? "even" : "odd") + "\">");
-      document.write("<td class=\"label\">" + item["label"] + "</td>");
+      document.write('<tr class="' + (i % 2 == 0 ? "even" : "odd") + '">');
+      document.write('<td class="label"><a href="nowplaying.html" onclick=CallPlay("' + player + '",' + i + ')>' + item["label"] + '</a></td>');
       if (i == activeItem)
-        document.write("<td class=\"playing\"><img src=\"images/play.png\" height=16></img></td>");
+        document.write('<td class="playing"><img src="images/play.png" height=16></img></td>');
       else
-        document.write("<td class=\"playing\"></td>");
-      document.write("</tr>");
+        document.write('<td class="playing"></td>');
+      document.write('</tr>');
     }
-    document.write("</tbody></table>");
+    document.write('</tbody></table>');
   }
 } else {
   document.write("Nothings playing");

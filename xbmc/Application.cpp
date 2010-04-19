@@ -222,6 +222,7 @@
 #include "GUIDialogFullScreenInfo.h"
 #include "GUIDialogTeletext.h"
 #include "GUIDialogSlider.h"
+#include "GUIControlFactory.h"
 #include "cores/dlgcache.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -769,6 +770,7 @@ bool CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/addons");
+    CDirectory::Create("special://home/addons/packages");
     CDirectory::Create("special://home/media");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
@@ -1731,15 +1733,6 @@ bool CApplication::LoadUserWindows()
         if (pType && pType->FirstChild())
           strType = pType->FirstChild()->Value();
       }
-      if (strType.Equals("dialog"))
-        pWindow = new CGUIDialog(0, "");
-      else if (strType.Equals("submenu"))
-        pWindow = new CGUIDialogSubMenu();
-      else if (strType.Equals("buttonmenu"))
-        pWindow = new CGUIDialogButtonMenu();
-      else
-        pWindow = new CGUIStandardWindow();
-
       int id = WINDOW_INVALID;
       if (!pRootElement->Attribute("id", &id))
       {
@@ -1747,20 +1740,30 @@ bool CApplication::LoadUserWindows()
         if (pType && pType->FirstChild())
           id = atol(pType->FirstChild()->Value());
       }
+      int visibleCondition = 0;
+      CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
+
+      if (strType.Equals("dialog"))
+        pWindow = new CGUIDialog(id + WINDOW_HOME, FindFileData.cFileName);
+      else if (strType.Equals("submenu"))
+        pWindow = new CGUIDialogSubMenu(id + WINDOW_HOME, FindFileData.cFileName);
+      else if (strType.Equals("buttonmenu"))
+        pWindow = new CGUIDialogButtonMenu(id + WINDOW_HOME, FindFileData.cFileName);
+      else
+        pWindow = new CGUIStandardWindow(id + WINDOW_HOME, FindFileData.cFileName);
+
       // Check to make sure the pointer isn't still null
-      if (pWindow == NULL || id == WINDOW_INVALID)
+      if (pWindow == NULL)
       {
         CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
         return false;
       }
-      if (g_windowManager.GetWindow(WINDOW_HOME + id))
+      if (id == WINDOW_INVALID || g_windowManager.GetWindow(WINDOW_HOME + id))
       {
         delete pWindow;
         continue;
       }
-      // set the window's xml file, and add it to the window manager.
-      pWindow->SetProperty("xmlfile", FindFileData.cFileName);
-      pWindow->SetID(WINDOW_HOME + id);
+      pWindow->SetVisibleCondition(visibleCondition, false);
       g_windowManager.AddCustomWindow(pWindow);
     }
     CloseHandle(hFind);
@@ -2069,12 +2072,24 @@ void CApplication::RenderMemoryStatus()
 
   g_cpuInfo.getUsedPercentage(); // must call it to recalculate pct values
 
+  // reset the window scaling and fade status
+  RESOLUTION res = g_graphicsContext.GetVideoResolution();
+  g_graphicsContext.SetRenderingResolution(res, false);
+
+  static int yShift = 20;
+  static int xShift = 40;
+  static unsigned int lastShift = time(NULL);
+  time_t now = time(NULL);
+  if (now - lastShift > 10)
+  {
+    yShift *= -1;
+    if (now % 5 == 0)
+      xShift *= -1;
+    lastShift = now;
+  }
+
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
   {
-    // reset the window scaling and fade status
-    RESOLUTION res = g_graphicsContext.GetVideoResolution();
-    g_graphicsContext.SetRenderingResolution(res, false);
-
     CStdString info;
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
@@ -2089,24 +2104,47 @@ void CApplication::RenderMemoryStatus()
               g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
 #endif
 
-    static int yShift = 20;
-    static int xShift = 40;
-    static unsigned int lastShift = time(NULL);
-    time_t now = time(NULL);
-    if (now - lastShift > 10)
-    {
-      yShift *= -1;
-      if (now % 5 == 0)
-        xShift *= -1;
-      lastShift = now;
-    }
 
     float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
     float y = yShift + 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
 
     CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, info);
   }
+
+  // render the skin debug info
+  if (g_SkinInfo.IsDebugging())
+  {
+    CStdString info;
+    CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
+    CPoint point(m_guiPointer.GetXPosition(), m_guiPointer.GetYPosition());
+    if (window)
+    {
+      CStdString windowName = CButtonTranslator::TranslateWindow(window->GetID());
+      if (!windowName.IsEmpty())
+        windowName += " (" + window->GetProperty("xmlfile") + ")";
+      else
+        windowName = window->GetProperty("xmlfile");
+      info = "Window: " + windowName + "  ";
+      // transform the mouse coordinates to this window's coordinates
+      g_graphicsContext.SetScalingResolution(window->GetCoordsRes(), true);
+      point.x *= g_graphicsContext.GetGUIScaleX();
+      point.y *= g_graphicsContext.GetGUIScaleY();
+      g_graphicsContext.SetRenderingResolution(res, false);
+    }
+    info.AppendFormat("Mouse: (%d,%d)  ", (int)point.x, (int)point.y);
+    if (window)
+    {
+      CGUIControl *control = window->GetFocusedControl();
+      if (control)
+        info.AppendFormat("Focused: %i (%s)", control->GetID(), CGUIControlFactory::TranslateControlType(control->GetControlType()).c_str());
+    }
+
+    float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
+    float y = yShift + 0.08f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
+    CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, info);
+  }
 }
+
 // OnKey() translates the key into a CAction which is sent on to our Window Manager.
 // The window manager will return true if the event is processed, false otherwise.
 // If not already processed, this routine handles global keypresses.  It returns
@@ -2188,7 +2226,7 @@ bool CApplication::OnKey(const CKey& key)
       if (control)
       {
         if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||
-            (control->IsContainer() && g_Keyboard.GetShift() && !(g_Keyboard.GetCtrl() || g_Keyboard.GetAlt() || g_Keyboard.GetRAlt())))
+            (control->IsContainer() && g_Keyboard.GetShift() && !(g_Keyboard.GetCtrl() || g_Keyboard.GetAlt() || g_Keyboard.GetRAlt() || g_Keyboard.GetSuper())))
           useKeyboard = true;
       }
     }
@@ -3003,6 +3041,8 @@ bool CApplication::ProcessKeyboard()
         keyID |= CKey::MODIFIER_SHIFT;
     if (g_Keyboard.GetAlt())
         keyID |= CKey::MODIFIER_ALT;
+    if (g_Keyboard.GetSuper())
+        keyID |= CKey::MODIFIER_SUPER;
 
     // Create a key object with the keypress data and pass it to OnKey to be executed
     CKey key(keyID);
@@ -3147,10 +3187,7 @@ bool CApplication::Cleanup()
     while(1); // execution ends
 #endif
 #ifdef _WIN32
-
-    int i=0;
-    while((WSACleanup() == 0) && (i <= 20))
-      i++;
+    WSACleanup();
 
     //Uninitialize COM
     CoUninitialize();
@@ -4732,6 +4769,7 @@ void CApplication::ProcessSlow()
     g_lcd->Initialize();
   }
 #endif
+  ADDON::CAddonMgr::Get()->UpdateRepos();
 }
 
 // Global Idle Time in Seconds

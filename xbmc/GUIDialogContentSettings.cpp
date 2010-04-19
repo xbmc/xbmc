@@ -116,7 +116,7 @@ void CGUIDialogContentSettings::SetupPage()
   {
     FillListControl();
     SET_CONTROL_VISIBLE(CONTROL_SCRAPER_LIST);
-    if (m_scraper && !m_scraper->Disabled())
+    if (m_scraper && m_scraper->Enabled())
     {
       m_bShowScanSettings = true;
       if (m_scraper->Supports(m_content) && m_scraper->HasSettings())
@@ -373,7 +373,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
     dialog->m_origContent = dialog->m_content;
     dialog->m_scraper = scraper;
     // toast selected but disabled scrapers
-    if (scraper->Disabled())
+    if (!scraper->Enabled())
       g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24023), scraper->Name(), 2000, true);
   }
 
