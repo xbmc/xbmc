@@ -38,9 +38,9 @@
 #define DLL_PATH_YM_CODEC      "special://xbmc/system/players/paplayer/stsoundlibrary-@ARCH@.so"
 #define DLL_PATH_SHN_CODEC     "special://xbmc/system/players/paplayer/libshnplay-@ARCH@.so"
 #if defined(_LINUX) && !defined(__APPLE__)
-#define DLL_PATH_FLAC_CODEC    "libFLAC.so.8"
-#define DLL_PATH_OGG_CODEC     "libvorbisfile.so.3"
-#define DLL_PATH_MODPLUG_CODEC "libmodplug.so.0"
+#define DLL_PATH_FLAC_CODEC    "@LIBFLAC_BASENAME@"
+#define DLL_PATH_OGG_CODEC     "@LIBVORBISFILE_BASENAME@"
+#define DLL_PATH_MODPLUG_CODEC "@LIBMODPLUG_BASENAME@"
 #else
 #define DLL_PATH_FLAC_CODEC    "special://xbmc/system/players/paplayer/libFLAC-@ARCH@.so"
 #define DLL_PATH_OGG_CODEC     "special://xbmc/system/players/paplayer/vorbisfile-@ARCH@.so"
@@ -54,8 +54,8 @@
 #define DLL_PATH_LIBMPEG2      "special://xbmc/system/players/dvdplayer/libmpeg2-@ARCH@.so"
 #define DLL_PATH_LIBDVDNAV     "special://xbmc/system/players/dvdplayer/libdvdnav-@ARCH@.so"
 #if defined(_LINUX) && !defined(__APPLE__)
-#define DLL_PATH_LIBFAAD       "libfaad.so.0"
-#define DLL_PATH_LIBMAD        "libmad.so.0"
+#define DLL_PATH_LIBFAAD       "@LIBFAAD_BASENAME@"
+#define DLL_PATH_LIBMAD        "@LIBMAD_BASENAME@"
 #else
 #define DLL_PATH_LIBFAAD       "special://xbmc/system/players/dvdplayer/libfaad-@ARCH@.so"
 #define DLL_PATH_LIBMAD        "special://xbmc/system/players/dvdplayer/libmad-@ARCH@.so"
@@ -71,9 +71,9 @@
 /* cdrip */
 #if defined(_LINUX) && !defined(__APPLE__)
 #define DLL_PATH_LAME_ENC      "libmp3lame.so.0"
-#define DLL_PATH_OGG           "libogg.so.0"
-#define DLL_PATH_VORBIS_ENC    "libvorbisenc.so.2"
-#define DLL_PATH_VORBIS        "libvorbis.so.0"
+#define DLL_PATH_OGG           "@LIBOGG_BASENAME@"
+#define DLL_PATH_VORBIS_ENC    "@LIBVORBISENC_BASENAME@"
+#define DLL_PATH_VORBIS        "@LIBVORBIS_BASENAME@"
 #else
 #define DLL_PATH_LAME_ENC      "special://xbmc/system/cdrip/lame_enc-@ARCH@.so"
 #define DLL_PATH_OGG           "special://xbmc/system/cdrip/ogg-@ARCH@.so"
@@ -89,4 +89,3 @@
 #endif
 
 #endif
-

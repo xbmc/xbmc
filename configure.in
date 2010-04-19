@@ -471,14 +471,78 @@ else
                     AC_MSG_ERROR($missing_library))
 fi
 
-# libcurl GnuTLS or OpenSSL check
-# checks whether to use libcurl.so.* or libcurl-gnutls.so.* for libcurl basename
+# check for library basenames
 if test "$host_vendor" != "apple"; then
+  # libcurl
   LIBCURL_BASENAME=$(readlink -e /usr/lib/libcurl.so | \
                      sed -e 's/^\/usr\/lib\///' | \
                      sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
   if [[ ! -e "/usr/lib/$LIBCURL_BASENAME" ]]; then
     AC_MSG_ERROR([Error occurred determining basename of libcurl library])
+  fi
+
+  # libFLAC
+  LIBFLAC_BASENAME=$(readlink -e /usr/lib/libFLAC.so | \
+                     sed -e 's/^\/usr\/lib\///' | \
+                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
+  if [[ ! -e "/usr/lib/$LIBFLAC_BASENAME" ]]; then
+    AC_MSG_ERROR([Error occurred determining basename of libFLAC library])
+  fi
+
+  # libvorbisfile
+  LIBVORBISFILE_BASENAME=$(readlink -e /usr/lib/libvorbisfile.so | \
+                     sed -e 's/^\/usr\/lib\///' | \
+                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
+  if [[ ! -e "/usr/lib/$LIBVORBISFILE_BASENAME" ]]; then
+    AC_MSG_ERROR([Error occurred determining basename of libvorbisfile library])
+  fi
+
+  # libmodplug
+  LIBMODPLUG_BASENAME=$(readlink -e /usr/lib/libmodplug.so | \
+                     sed -e 's/^\/usr\/lib\///' | \
+                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
+  if [[ ! -e "/usr/lib/$LIBMODPLUG_BASENAME" ]]; then
+    AC_MSG_ERROR([Error occurred determining basename of libmodplug library])
+  fi
+
+  # libfaad
+  LIBFAAD_BASENAME=$(readlink -e /usr/lib/libfaad.so | \
+                     sed -e 's/^\/usr\/lib\///' | \
+                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
+  if [[ ! -e "/usr/lib/$LIBFAAD_BASENAME" ]]; then
+    AC_MSG_ERROR([Error occurred determining basename of libfaad library])
+  fi
+
+  # libmad
+  LIBMAD_BASENAME=$(readlink -e /usr/lib/libmad.so | \
+                     sed -e 's/^\/usr\/lib\///' | \
+                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
+  if [[ ! -e "/usr/lib/$LIBMAD_BASENAME" ]]; then
+    AC_MSG_ERROR([Error occurred determining basename of libmad library])
+  fi
+
+  # libogg
+  LIBOGG_BASENAME=$(readlink -e /usr/lib/libogg.so | \
+                     sed -e 's/^\/usr\/lib\///' | \
+                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
+  if [[ ! -e "/usr/lib/$LIBOGG_BASENAME" ]]; then
+    AC_MSG_ERROR([Error occurred determining basename of libogg library])
+  fi
+
+  # libvorbisenc
+  LIBVORBISENC_BASENAME=$(readlink -e /usr/lib/libvorbisenc.so | \
+                     sed -e 's/^\/usr\/lib\///' | \
+                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
+  if [[ ! -e "/usr/lib/$LIBVORBISENC_BASENAME" ]]; then
+    AC_MSG_ERROR([Error occurred determining basename of libvorbisenc library])
+  fi
+
+  # libvorbis
+  LIBVORBIS_BASENAME=$(readlink -e /usr/lib/libvorbis.so | \
+                     sed -e 's/^\/usr\/lib\///' | \
+                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
+  if [[ ! -e "/usr/lib/$LIBVORBIS_BASENAME" ]]; then
+    AC_MSG_ERROR([Error occurred determining basename of libvorbis library])
   fi
 fi
 
@@ -1164,6 +1228,14 @@ AC_SUBST(OUTPUT_FILES)
 AC_SUBST(HAVE_XBMC_NONFREE)
 AC_SUBST(USE_ASAP_CODEC)
 AC_SUBST(LIBCURL_BASENAME)
+AC_SUBST(LIBFLAC_BASENAME)
+AC_SUBST(LIBVORBISFILE_BASENAME)
+AC_SUBST(LIBMODPLUG_BASENAME)
+AC_SUBST(LIBFAAD_BASENAME)
+AC_SUBST(LIBMAD_BASENAME)
+AC_SUBST(LIBOGG_BASENAME)
+AC_SUBST(LIBVORBISENC_BASENAME)
+AC_SUBST(LIBVORBIS_BASENAME)
 # Function to run the configure scripts in our submodules
 # Consists of three paramaters, the path to the submodule, the configure command
 # with appropriate arguments, and a third parameter set to 1 if we are to skip
