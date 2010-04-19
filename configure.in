@@ -471,6 +471,17 @@ else
                     AC_MSG_ERROR($missing_library))
 fi
 
+# libcurl GnuTLS or OpenSSL check
+# checks whether to use libcurl.so.* or libcurl-gnutls.so.* for libcurl basename
+if test "$host_vendor" != "apple"; then
+  LIBCURL_BASENAME=$(readlink -e /usr/lib/libcurl.so | \
+                     sed -e 's/^\/usr\/lib\///' | \
+                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
+  if [[ ! -e "/usr/lib/$LIBCURL_BASENAME" ]]; then
+    AC_MSG_ERROR([Error occurred determining basename of libcurl library])
+  fi
+fi
+
 # PulseAudio
 if test "$host_vendor" = "apple" ; then
   use_pulse="no"
@@ -1152,6 +1163,7 @@ AC_SUBST(USE_PYTHON2_4)
 AC_SUBST(OUTPUT_FILES)
 AC_SUBST(HAVE_XBMC_NONFREE)
 AC_SUBST(USE_ASAP_CODEC)
+AC_SUBST(LIBCURL_BASENAME)
 # Function to run the configure scripts in our submodules
 # Consists of three paramaters, the path to the submodule, the configure command
 # with appropriate arguments, and a third parameter set to 1 if we are to skip
