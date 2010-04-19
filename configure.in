@@ -474,74 +474,83 @@ fi
 # check for library basenames
 if test "$host_vendor" != "apple"; then
   # libcurl
-  LIBCURL_BASENAME=$(readlink -e /usr/lib/libcurl.so | \
-                     sed -e 's/^\/usr\/lib\///' | \
-                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
-  if [[ ! -e "/usr/lib/$LIBCURL_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libcurl library])
+  LIBCURL_BASENAME=$(gcc $CFLAGS -print-file-name=libcurl.so | \
+                     while read output; do objdump -p $output | \
+                     grep SONAME | \
+                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
+  if [ -z "$LIBCURL_BASENAME" ]; then
+    echo "Unable to determine basename of libcurl library"
   fi
 
   # libFLAC
-  LIBFLAC_BASENAME=$(readlink -e /usr/lib/libFLAC.so | \
-                     sed -e 's/^\/usr\/lib\///' | \
-                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
-  if [[ ! -e "/usr/lib/$LIBFLAC_BASENAME" ]]; then
+  LIBFLAC_BASENAME=$(gcc $CFLAGS -print-file-name=libFLAC.so | \
+                     while read output; do objdump -p $output | \
+                     grep SONAME | \
+                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
+  if [[ -z "$LIBFLAC_BASENAME" ]]; then
     AC_MSG_ERROR([Error occurred determining basename of libFLAC library])
   fi
 
   # libvorbisfile
-  LIBVORBISFILE_BASENAME=$(readlink -e /usr/lib/libvorbisfile.so | \
-                     sed -e 's/^\/usr\/lib\///' | \
-                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
-  if [[ ! -e "/usr/lib/$LIBVORBISFILE_BASENAME" ]]; then
+  LIBVORBISFILE_BASENAME=$(gcc $CFLAGS -print-file-name=libvorbisfile.so | \
+                     while read output; do objdump -p $output | \
+                     grep SONAME | \
+                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
+  if [[ -z "$LIBVORBISFILE_BASENAME" ]]; then
     AC_MSG_ERROR([Error occurred determining basename of libvorbisfile library])
   fi
 
   # libmodplug
-  LIBMODPLUG_BASENAME=$(readlink -e /usr/lib/libmodplug.so | \
-                     sed -e 's/^\/usr\/lib\///' | \
-                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
-  if [[ ! -e "/usr/lib/$LIBMODPLUG_BASENAME" ]]; then
+  LIBMODPLUG_BASENAME=$(gcc $CFLAGS -print-file-name=libmodplug.so | \
+                     while read output; do objdump -p $output | \
+                     grep SONAME | \
+                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
+  if [[ -z "$LIBMODPLUG_BASENAME" ]]; then
     AC_MSG_ERROR([Error occurred determining basename of libmodplug library])
   fi
 
   # libfaad
-  LIBFAAD_BASENAME=$(readlink -e /usr/lib/libfaad.so | \
-                     sed -e 's/^\/usr\/lib\///' | \
-                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
-  if [[ ! -e "/usr/lib/$LIBFAAD_BASENAME" ]]; then
+  LIBFAAD_BASENAME=$(gcc $CFLAGS -print-file-name=libfaad.so | \
+                     while read output; do objdump -p $output | \
+                     grep SONAME | \
+                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
+  if [[ -z "$LIBFAAD_BASENAME" ]]; then
     AC_MSG_ERROR([Error occurred determining basename of libfaad library])
   fi
 
   # libmad
-  LIBMAD_BASENAME=$(readlink -e /usr/lib/libmad.so | \
-                     sed -e 's/^\/usr\/lib\///' | \
-                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
-  if [[ ! -e "/usr/lib/$LIBMAD_BASENAME" ]]; then
+  LIBMAD_BASENAME=$(gcc $CFLAGS -print-file-name=libmad.so | \
+                     while read output; do objdump -p $output | \
+                     grep SONAME | \
+                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
+  if [[ -z "$LIBMAD_BASENAME" ]]; then
     AC_MSG_ERROR([Error occurred determining basename of libmad library])
   fi
 
   # libogg
-  LIBOGG_BASENAME=$(readlink -e /usr/lib/libogg.so | \
-                     sed -e 's/^\/usr\/lib\///' | \
-                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
-  if [[ ! -e "/usr/lib/$LIBOGG_BASENAME" ]]; then
+  LIBOGG_BASENAME=$(gcc $CFLAGS -print-file-name=libogg.so | \
+                     while read output; do objdump -p $output | \
+                     grep SONAME | \
+                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
+  if [[ -z "$LIBOGG_BASENAME" ]]; then
     AC_MSG_ERROR([Error occurred determining basename of libogg library])
   fi
 
   # libvorbisenc
-  LIBVORBISENC_BASENAME=$(readlink -e /usr/lib/libvorbisenc.so | \
-                     sed -e 's/^\/usr\/lib\///' | \
-                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
-  if [[ ! -e "/usr/lib/$LIBVORBISENC_BASENAME" ]]; then
+  LIBVORBISENC_BASENAME=$(gcc $CFLAGS -print-file-name=libvorbisenc.so | \
+                     while read output; do objdump -p $output | \
+                     grep SONAME | \
+                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
+  if [[ -z "$LIBVORBISENC_BASENAME" ]]; then
     AC_MSG_ERROR([Error occurred determining basename of libvorbisenc library])
   fi
 
   # libvorbis
-  LIBVORBIS_BASENAME=$(readlink -e /usr/lib/libvorbis.so | \
-                     sed -e 's/^\/usr\/lib\///' | \
-                     sed -e 's/\.[[0-9]]\+\.[[0-9]]\+$//')
-  if [[ ! -e "/usr/lib/$LIBVORBIS_BASENAME" ]]; then
+  LIBVORBIS_BASENAME=$(gcc $CFLAGS -print-file-name=libvorbis.so | \
+                     while read output; do objdump -p $output | \
+                     grep SONAME | \
+                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
+  if [[ -z "$LIBVORBIS_BASENAME" ]]; then
     AC_MSG_ERROR([Error occurred determining basename of libvorbis library])
   fi
 fi
