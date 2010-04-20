@@ -1,4 +1,4 @@
-LIBRARY	libvorbisfile
+LIBRARY	vorbisfile
 EXPORTS
 ov_clear
 ov_open
