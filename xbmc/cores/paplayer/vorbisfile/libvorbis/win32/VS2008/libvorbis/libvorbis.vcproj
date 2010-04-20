@@ -49,10 +49,9 @@
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				CompileAs="1"
-				DisableSpecificWarnings="4244;4100;4267;4189;4305;4127;4706"
+				DisableSpecificWarnings="4244;4100;4267;4189;4305;4127;4706,4701"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -120,10 +119,9 @@
 				BufferSecurityCheck="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="0"
 				CompileAs="1"
-				DisableSpecificWarnings="4244;4100;4267;4189;4305;4127;4706"
+				DisableSpecificWarnings="4244;4100;4267;4189;4305;4127;4706,4701"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -192,10 +190,9 @@
 				EnableEnhancedInstructionSet="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				CompileAs="1"
-				DisableSpecificWarnings="4244;4100;4267;4189;4305;4127;4706"
+				DisableSpecificWarnings="4244;4100;4267;4189;4305;4127;4706,4701"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -282,10 +279,9 @@
 				EnableEnhancedInstructionSet="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				CompileAs="1"
-				DisableSpecificWarnings="4244;4100;4267;4189;4305;4127;4706"
+				DisableSpecificWarnings="4244;4100;4267;4189;4305;4127;4706,4701"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
