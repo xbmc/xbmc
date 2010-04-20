@@ -216,7 +216,8 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
           pItem->SetThumbnailImage(cachedThumb);
         }
       }
-      else if (!item.m_bIsFolder && item.IsVideo() && g_guiSettings.GetBool("myvideos.extractthumb"))
+      else if (!item.m_bIsFolder && item.IsVideo() && g_guiSettings.GetBool("myvideos.extractthumb") &&
+               g_guiSettings.GetBool("myvideos.extractflags"))
       {
         CThumbExtractor* extract = new CThumbExtractor(item, pItem->m_strPath, true, cachedThumb);
         AddJob(extract);
