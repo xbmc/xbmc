@@ -37,8 +37,8 @@ CGUIAudioManager g_audioManager;
 
 CGUIAudioManager::CGUIAudioManager()
 {
-  m_bInitialized = false;
   m_actionSound=NULL;
+  m_bEnabled=true;
 }
 
 CGUIAudioManager::~CGUIAudioManager()
@@ -48,20 +48,13 @@ CGUIAudioManager::~CGUIAudioManager()
 
 void CGUIAudioManager::Initialize(int iDevice)
 {
-  if (m_bInitialized)
-    return;
-
-  if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
-    return;
+  CSingleLock lock(m_cs);
 
   if (iDevice==CAudioContext::DEFAULT_DEVICE)
   {
-    CSingleLock lock(m_cs);
-    CLog::Log(LOGDEBUG, "CGUIAudioManager::Initialize");
     bool bAudioOnAllSpeakers=false;
     g_audioContext.SetupSpeakerConfig(2, bAudioOnAllSpeakers);
     g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
-    m_bInitialized = true;
   }
 }
 
@@ -69,17 +62,11 @@ void CGUIAudioManager::DeInitialize(int iDevice)
 {
   if (!(iDevice == CAudioContext::DIRECTSOUND_DEVICE || iDevice == CAudioContext::DEFAULT_DEVICE)) return;
 
-  if (!m_bInitialized)
-    return;
-
   CSingleLock lock(m_cs);
-  CLog::Log(LOGDEBUG, "CGUIAudioManager::DeInitialize");
-
   if (m_actionSound) //  Wait for finish when an action sound is playing
     while(m_actionSound->IsPlaying()) {}
 
   Stop();
-  m_bInitialized = false;
 }
 
 void CGUIAudioManager::Stop()
@@ -155,7 +142,7 @@ void CGUIAudioManager::FreeUnused()
 void CGUIAudioManager::PlayActionSound(const CAction& action)
 {
   // it's not possible to play gui sounds when passthrough is active
-  if (!m_bInitialized || g_audioContext.IsPassthroughActive())
+  if (!m_bEnabled || g_audioContext.IsPassthroughActive())
     return;
 
   CSingleLock lock(m_cs);
@@ -163,7 +150,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
   actionSoundMap::iterator it=m_actionSoundMap.find(action.id);
   if (it==m_actionSoundMap.end())
     return;
-
+  
   if (m_actionSound)
   {
     delete m_actionSound;
@@ -186,7 +173,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
 void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
 {
   // it's not possible to play gui sounds when passthrough is active
-  if (!m_bInitialized || g_audioContext.IsPassthroughActive())
+  if (!m_bEnabled || g_audioContext.IsPassthroughActive())
     return;
 
   CSingleLock lock(m_cs);
@@ -236,7 +223,7 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
 void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
 {
   // it's not possible to play gui sounds when passthrough is active
-  if (!m_bInitialized || g_audioContext.IsPassthroughActive())
+  if (g_audioContext.IsPassthroughActive())
     return;
 
   CSingleLock lock(m_cs);
@@ -276,8 +263,6 @@ bool CGUIAudioManager::Load()
 
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
     return true;
-  else
-    Enable(true);
 
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="SKINDEFAULT")
   {
@@ -290,14 +275,14 @@ bool CGUIAudioManager::Load()
   }
   else
     m_strMediaDir = CUtil::AddFileToFolder("special://xbmc/sounds", g_guiSettings.GetString("lookandfeel.soundskin"));
-
+    
   CStdString strSoundsXml = CUtil::AddFileToFolder(m_strMediaDir, "sounds.xml");
 
   //  Load our xml file
   TiXmlDocument xmlDoc;
 
   CLog::Log(LOGINFO, "Loading %s", strSoundsXml.c_str());
-
+  
   //  Load the config file
   if (!xmlDoc.LoadFile(strSoundsXml))
   {
@@ -390,14 +375,11 @@ bool CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const CStdString&
 // \brief Enable/Disable nav sounds
 void CGUIAudioManager::Enable(bool bEnable)
 {
-  // always deinit audio when we don't want gui sounds
+  // Enable/Disable has no effect if nav sounds are turned off
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
-    bEnable = false;
+    return;
 
-  if (bEnable)
-    Initialize(CAudioContext::DEFAULT_DEVICE);
-  else
-    DeInitialize(CAudioContext::DEFAULT_DEVICE);
+  m_bEnabled=bEnable;
 }
 
 // \brief Sets the volume of all playing sounds
