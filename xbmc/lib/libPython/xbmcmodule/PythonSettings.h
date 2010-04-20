@@ -38,7 +38,7 @@
   #include "lib/libPython/Python/Include/Python.h"
 #endif
 
-#include "utils/IAddon.h"
+#include "addons/IAddon.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,7 +48,7 @@ namespace PYXBMC
 {
   typedef struct {
     PyObject_HEAD
-    ADDON::IAddon* pAddon;
+    ADDON::AddonPtr pAddon;
   } Settings;
 
   extern PyTypeObject Settings_Type;

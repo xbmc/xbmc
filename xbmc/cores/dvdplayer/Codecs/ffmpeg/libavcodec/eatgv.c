@@ -22,7 +22,7 @@
 /**
  * @file libavcodec/eatgv.c
  * Electronic Arts TGV Video Decoder
- * by Peter Ross (suxen_drol at hotmail dot com)
+ * by Peter Ross (pross@xvid.org)
  *
  * Technical details here:
  * http://wiki.multimedia.cx/index.php?title=Electronic_Arts_TGV
@@ -191,6 +191,10 @@ static int tgv_decode_inter(TgvContext * s, const uint8_t *buf, const uint8_t *b
         for(j=0; j<16; j++)
             s->block_codebook[i][15-j] = tmp[get_bits(&gb, 2)];
     }
+
+    if (get_bits_left(&gb) < vector_bits *
+        (s->avctx->height/4) * (s->avctx->width/4))
+        return -1;
 
     /* read vectors and build frame */
     for(y=0; y<s->avctx->height/4; y++)

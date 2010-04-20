@@ -1,6 +1,6 @@
 #include "GUIRenderingControl.h"
 #include "GUIUserMessages.h"
-#include "visualizations/Visualisation.h"
+#include "addons/Visualisation.h"
 #include "utils/SingleLock.h"
 
 using namespace std;
@@ -75,7 +75,7 @@ void CGUIRenderingControl::Render()
   CGUIControl::Render();
 }
 
-void CGUIRenderingControl::FreeResources()
+void CGUIRenderingControl::FreeResources(bool immediately)
 {
   if (!m_addon) return;
 

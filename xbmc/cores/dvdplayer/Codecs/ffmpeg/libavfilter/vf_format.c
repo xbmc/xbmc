@@ -23,6 +23,7 @@
  * format and noformat video filters
  */
 
+#include "libavutil/pixdesc.h"
 #include "avfilter.h"
 
 typedef struct {
@@ -56,7 +57,7 @@ static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
 
         memcpy(pix_fmt_name, cur, pix_fmt_name_len);
         pix_fmt_name[pix_fmt_name_len] = 0;
-        pix_fmt = avcodec_get_pix_fmt(pix_fmt_name);
+        pix_fmt = av_get_pix_fmt(pix_fmt_name);
 
         if (pix_fmt == PIX_FMT_NONE) {
             av_log(ctx, AV_LOG_ERROR, "Unknown pixel format: %s\n", pix_fmt_name);
@@ -84,37 +85,11 @@ static AVFilterFormats *make_format_list(FormatContext *format, int flag)
     return formats;
 }
 
+#if CONFIG_FORMAT_FILTER
 static int query_formats_format(AVFilterContext *ctx)
 {
     avfilter_set_common_formats(ctx, make_format_list(ctx->priv, 1));
     return 0;
-}
-
-static int query_formats_noformat(AVFilterContext *ctx)
-{
-    avfilter_set_common_formats(ctx, make_format_list(ctx->priv, 0));
-    return 0;
-}
-
-static AVFilterPicRef *get_video_buffer(AVFilterLink *link, int perms,
-                                        int w, int h)
-{
-    return avfilter_get_video_buffer(link->dst->outputs[0], perms, w, h);
-}
-
-static void start_frame(AVFilterLink *link, AVFilterPicRef *picref)
-{
-    avfilter_start_frame(link->dst->outputs[0], picref);
-}
-
-static void end_frame(AVFilterLink *link)
-{
-    avfilter_end_frame(link->dst->outputs[0]);
-}
-
-static void draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
-{
-    avfilter_draw_slice(link->dst->outputs[0], y, h, slice_dir);
 }
 
 AVFilter avfilter_vf_format = {
@@ -129,15 +104,23 @@ AVFilter avfilter_vf_format = {
 
     .inputs    = (AVFilterPad[]) {{ .name            = "default",
                                     .type            = CODEC_TYPE_VIDEO,
-                                    .get_video_buffer= get_video_buffer,
-                                    .start_frame     = start_frame,
-                                    .draw_slice      = draw_slice,
-                                    .end_frame       = end_frame, },
+                                    .get_video_buffer= avfilter_null_get_video_buffer,
+                                    .start_frame     = avfilter_null_start_frame,
+                                    .draw_slice      = avfilter_null_draw_slice,
+                                    .end_frame       = avfilter_null_end_frame, },
                                   { .name = NULL}},
     .outputs   = (AVFilterPad[]) {{ .name            = "default",
                                     .type            = CODEC_TYPE_VIDEO },
                                   { .name = NULL}},
 };
+#endif /* CONFIG_FORMAT_FILTER */
+
+#if CONFIG_NOFORMAT_FILTER
+static int query_formats_noformat(AVFilterContext *ctx)
+{
+    avfilter_set_common_formats(ctx, make_format_list(ctx->priv, 0));
+    return 0;
+}
 
 AVFilter avfilter_vf_noformat = {
     .name      = "noformat",
@@ -151,12 +134,14 @@ AVFilter avfilter_vf_noformat = {
 
     .inputs    = (AVFilterPad[]) {{ .name            = "default",
                                     .type            = CODEC_TYPE_VIDEO,
-                                    .get_video_buffer= get_video_buffer,
-                                    .start_frame     = start_frame,
-                                    .draw_slice      = draw_slice,
-                                    .end_frame       = end_frame, },
+                                    .get_video_buffer= avfilter_null_get_video_buffer,
+                                    .start_frame     = avfilter_null_start_frame,
+                                    .draw_slice      = avfilter_null_draw_slice,
+                                    .end_frame       = avfilter_null_end_frame, },
                                   { .name = NULL}},
     .outputs   = (AVFilterPad[]) {{ .name            = "default",
                                     .type            = CODEC_TYPE_VIDEO },
                                   { .name = NULL}},
 };
+#endif /* CONFIG_NOFORMAT_FILTER */
+

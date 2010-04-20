@@ -41,7 +41,9 @@
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
 #include "utils/log.h"
+#include "TextureCache.h"
 
+using namespace std;
 using namespace XFILE;
 
 #define CONTROL_IMAGE            3
@@ -285,7 +287,7 @@ void CGUIWindowMusicInfo::Update()
   }
 
   // disable the GetThumb button if the user isn't allowed it
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser);
 
   if (!m_album.strArtist.IsEmpty() && CLastFmManager::GetInstance()->IsLastFmEnabled())
   {
@@ -414,30 +416,27 @@ void CGUIWindowMusicInfo::OnGetThumb()
   }
 
   // Grab the thumbnail(s) from the web
-  CScraperUrl url;
+  vector<CStdString> thumbs;
   if (m_bArtistInfo)
-    url = m_artist.thumbURL;
+    m_artist.thumbURL.GetThumbURLs(thumbs);
   else
-    url = m_album.thumbURL;
+    m_album.thumbURL.GetThumbURLs(thumbs);
 
-  for (unsigned int i = 0; i < url.m_url.size(); i++)
+  for (unsigned int i = 0; i < thumbs.size(); ++i)
   {
-    CStdString strThumb;
-    strThumb.Format("thumb://Remote%i",i);
-    CFileItemPtr item(new CFileItem(strThumb, false));
-    item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
+    CStdString strItemPath;
+    strItemPath.Format("thumb://Remote%i", i);
+    CFileItemPtr item(new CFileItem(strItemPath, false));
+    item->SetThumbnailImage(thumbs[i]);
     item->SetIconImage("DefaultPicture.png");
-    item->GetVideoInfoTag()->m_strPictureURL.m_url.push_back(url.m_url[i]);
-    item->SetLabel(g_localizeStrings.Get(415));
-    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20015));
-    // make sure any previously cached thumb is removed
-    if (CFile::Exists(item->GetCachedPictureThumb()))
-      CFile::Delete(item->GetCachedPictureThumb());
+    item->SetLabel(g_localizeStrings.Get(20015));
+    
+    // TODO: Do we need to clear the cached image?
+    //    CTextureCache::Get().ClearCachedImage(thumb);
     items.Add(item);
   }
 
   // local thumb
-  CStdString cachedLocalThumb;
   CStdString localThumb;
   if (m_bArtistInfo)
   {
@@ -451,14 +450,10 @@ void CGUIWindowMusicInfo::OnGetThumb()
     localThumb = m_albumItem->GetUserMusicThumb();
   if (CFile::Exists(localThumb))
   {
-    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
-    if (CPicture::CreateThumbnail(localThumb, cachedLocalThumb))
-    {
-      CFileItemPtr item(new CFileItem("thumb://Local", false));
-      item->SetThumbnailImage(cachedLocalThumb);
-      item->SetLabel(g_localizeStrings.Get(20017));
-      items.Add(item);
-    }
+    CFileItemPtr item(new CFileItem("thumb://Local", false));
+    item->SetThumbnailImage(localThumb);
+    item->SetLabel(g_localizeStrings.Get(20017));
+    items.Add(item);
   }
   else
   {
@@ -489,27 +484,24 @@ void CGUIWindowMusicInfo::OnGetThumb()
   else
     cachedThumb = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
 
-  if (result.Left(14).Equals("thumb://Remote"))
+  CTextureCache::Get().ClearCachedImage(cachedThumb);
+  if (result.Left(14) == "thumb://Remote")
   {
-    CFileItem chosen(result, false);
-    CStdString thumb = chosen.GetCachedPictureThumb();
-    if (CFile::Exists(thumb))
-    {
-      // NOTE: This could fail if the thumbloader was too slow and the user too impatient
-      CFile::Cache(thumb, cachedThumb);
-    }
-    else
-      result = "thumb://None";
-  }
-  if (result == "thumb://None")
-  { // cache the default thumb
-    CFile::Delete(cachedThumb);
-    cachedThumb = "";
+    int number = atoi(result.Mid(14));
+    CFile::Cache(thumbs[number], cachedThumb);
   }
   else if (result == "thumb://Local")
-    CFile::Cache(cachedLocalThumb, cachedThumb);
+    CFile::Cache(localThumb, cachedThumb);
   else if (CFile::Exists(result))
     CPicture::CreateThumbnail(result, cachedThumb);
+  else
+    result = "thumb://None";
+
+  if (result == "thumb://None")
+  { // clear this thumb (note - it'll likely be recached, nothing we can do about that at this point)
+    CTextureCache::Get().ClearCachedImage(cachedThumb);
+    cachedThumb = "";
+  }
 
   m_albumItem->SetThumbnailImage(cachedThumb);
   m_hasUpdatedThumb = true;
@@ -538,25 +530,18 @@ void CGUIWindowMusicInfo::OnGetFanart()
   }
 
   // Grab the thumbnails from the web
-  CStdString strPath;
-  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"fanartthumbs",strPath);
-  CUtil::WipeDir(strPath);
-  XFILE::CDirectory::Create(strPath);
   for (unsigned int i = 0; i < m_artist.fanart.GetNumFanarts(); i++)
   {
     CStdString strItemPath;
     strItemPath.Format("fanart://Remote%i",i);
     CFileItemPtr item(new CFileItem(strItemPath, false));
-    item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
+    CStdString thumb = m_artist.fanart.GetPreviewURL(i);
+    item->SetThumbnailImage(CTextureCache::GetWrappedThumbURL(thumb));
     item->SetIconImage("DefaultPicture.png");
-    item->GetVideoInfoTag()->m_fanart = m_artist.fanart;
-    item->SetProperty("fanart_number", (int)i);
-    item->SetLabel(g_localizeStrings.Get(415));
-    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20441));
+    item->SetLabel(g_localizeStrings.Get(20441));
 
-    // make sure any previously cached thumb is removed
-    if (CFile::Exists(item->GetCachedPictureThumb()))
-      CFile::Delete(item->GetCachedPictureThumb());
+    // TODO: Do we need to clear the cached image?
+    //    CTextureCache::Get().ClearCachedImage(thumb);
     items.Add(item);
   }
 
@@ -572,9 +557,9 @@ void CGUIWindowMusicInfo::OnGetFanart()
     CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
     itemLocal->SetThumbnailImage(strLocal);
     itemLocal->SetLabel(g_localizeStrings.Get(20438));
-    // make sure any previously cached thumb is removed
-    if (CFile::Exists(itemLocal->GetCachedPictureThumb()))
-      CFile::Delete(itemLocal->GetCachedPictureThumb());
+
+    // TODO: Do we need to clear the cached image?
+    CTextureCache::Get().ClearCachedImage(strLocal);
     items.Add(itemLocal);
   }
   else
@@ -600,8 +585,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
   if (result.Equals("fanart://Local"))
     result = strLocal;
 
-  if (CFile::Exists(cachedThumb))
-    CFile::Delete(cachedThumb);
+  CTextureCache::Get().ClearCachedImage(cachedThumb);
 
   if (!result.Equals("fanart://None"))
   { // local file

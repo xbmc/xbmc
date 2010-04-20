@@ -18,19 +18,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#define _XOPEN_SOURCE 600
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <inttypes.h>
+
+static uint32_t state;
+static uint32_t ran(void){
+    return state= state*1664525+1013904223;
+}
 
 int main(int argc, char** argv)
 {
     FILE *f;
     int count, maxburst, length;
 
-    if (argc < 4){
-        printf("USAGE: trasher <filename> <count> <maxburst>\n");
+    if (argc < 5){
+        printf("USAGE: trasher <filename> <count> <maxburst> <seed>\n");
         return 1;
     }
 
@@ -41,16 +44,15 @@ int main(int argc, char** argv)
     }
     count= atoi(argv[2]);
     maxburst= atoi(argv[3]);
-
-    srandom (time (0));
+    state= atoi(argv[4]);
 
     fseek(f, 0, SEEK_END);
     length= ftell(f);
     fseek(f, 0, SEEK_SET);
 
     while(count--){
-        int burst= 1 + random() * (uint64_t) (abs(maxburst)-1) / RAND_MAX;
-        int pos= random() * (uint64_t) length / RAND_MAX;
+        int burst= 1 + ran() * (uint64_t) (abs(maxburst)-1) / UINT32_MAX;
+        int pos= ran() * (uint64_t) length / UINT32_MAX;
         fseek(f, pos, SEEK_SET);
 
         if(maxburst<0) burst= -maxburst;
@@ -59,7 +61,7 @@ int main(int argc, char** argv)
             continue;
 
         while(burst--){
-            int val= random() * 256ULL / RAND_MAX;
+            int val= ran() * 256ULL / UINT32_MAX;
 
             if(maxburst<0) val=0;
 

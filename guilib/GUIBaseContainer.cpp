@@ -31,6 +31,7 @@
 #include "StringUtils.h"
 #include "GUIStaticItem.h"
 #include "Key.h"
+#include "MathUtils.h"
 
 using namespace std;
 
@@ -542,27 +543,61 @@ bool CGUIBaseContainer::OnMouseOver(const CPoint &point)
   return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id >= ACTION_MOUSE_LEFT_CLICK && event.m_id <= ACTION_MOUSE_DOUBLE_CLICK)
   {
     if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
     {
       OnClick(event.m_id);
-      return true;
+      return EVENT_RESULT_HANDLED;
     }
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
     Scroll(-1);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
     Scroll(1);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
-  return false;
+  else if (event.m_id == ACTION_GESTURE_NOTIFY)
+  {
+    return (m_orientation == HORIZONTAL) ? EVENT_RESULT_PAN_HORIZONTAL : EVENT_RESULT_PAN_VERTICAL;
+  }
+  else if (event.m_id == ACTION_GESTURE_BEGIN)
+  { // grab exclusive access
+    CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
+    SendWindowMessage(msg);
+    return EVENT_RESULT_HANDLED;
+  }
+  else if (event.m_id == ACTION_GESTURE_PAN)
+  { // do the drag and validate our offset (corrects for end of scroll)
+    m_scrollOffset -= (m_orientation == HORIZONTAL) ? event.m_offsetX : event.m_offsetY;
+    float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
+    int offset = (int)MathUtils::round_int(m_scrollOffset / size);
+    m_offset = offset;
+    ValidateOffset();
+    return EVENT_RESULT_HANDLED;
+  }
+  else if (event.m_id == ACTION_GESTURE_END)
+  { // release exclusive access
+    CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
+    SendWindowMessage(msg);
+    // and compute the nearest offset from this and scroll there
+    float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
+    float offset = m_scrollOffset / size;
+    int toOffset = (int)MathUtils::round_int(offset);
+    if (toOffset < offset)
+      m_offset = toOffset+1;
+    else
+      m_offset = toOffset-1;
+    ScrollToOffset(toOffset);
+    return EVENT_RESULT_HANDLED;
+  }
+  return EVENT_RESULT_UNHANDLED;
 }
 
 bool CGUIBaseContainer::OnClick(int actionID)
@@ -653,9 +688,9 @@ void CGUIBaseContainer::AllocResources()
   CalculateLayout();
 }
 
-void CGUIBaseContainer::FreeResources()
+void CGUIBaseContainer::FreeResources(bool immediately)
 {
-  CGUIControl::FreeResources();
+  CGUIControl::FreeResources(immediately);
   if (m_staticContent)
   { // free any static content
     Reset();
@@ -928,7 +963,7 @@ void CGUIBaseContainer::FreeMemory(int keepStart, int keepEnd)
   }
 }
 
-bool CGUIBaseContainer::InsideLayout(const CGUIListItemLayout *layout, const CPoint &point)
+bool CGUIBaseContainer::InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const
 {
   if (!layout) return false;
   if ((m_orientation == VERTICAL && layout->Size(HORIZONTAL) && point.x > layout->Size(HORIZONTAL)) ||

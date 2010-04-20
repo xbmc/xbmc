@@ -367,7 +367,7 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
   m_sources.clear();
   //  Musicdb shares
   CFileItemList items;
-  CDirectory::GetDirectory("videodb://", items);
+  CDirectory::GetDirectory("videodb://", items, "", true, false, DIR_CACHE_ONCE, true, false);
   for (int i=0; i<items.Size(); ++i)
   {
     CFileItemPtr item=items[i];

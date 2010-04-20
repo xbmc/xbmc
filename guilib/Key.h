@@ -279,6 +279,13 @@
 #define ACTION_INCREASE_PAR           219
 #define ACTION_DECREASE_PAR           220
 
+#define ACTION_GESTURE_NOTIFY         221
+#define ACTION_GESTURE_BEGIN          222
+#define ACTION_GESTURE_ZOOM           223
+#define ACTION_GESTURE_ROTATE         224
+#define ACTION_GESTURE_PAN            225
+#define ACTION_GESTURE_END            226
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000
@@ -302,9 +309,7 @@
 #define WINDOW_SETTINGS_APPEARANCE        10019
 
 #define WINDOW_SCRIPTS                    10020
-#define WINDOW_VIDEO_GENRE                10021
-#define WINDOW_VIDEO_ACTOR                10022
-#define WINDOW_VIDEO_YEAR                 10023
+
 #define WINDOW_VIDEO_FILES                10024
 #define WINDOW_VIDEO_NAV                  10025
 #define WINDOW_VIDEO_PLAYLIST             10028
@@ -380,7 +385,8 @@
 #define WINDOW_MUSIC_OVERLAY              12903
 #define WINDOW_VIDEO_OVERLAY              12904
 
-#define WINDOW_STARTUP                    12999 // for startup animations
+#define WINDOW_START                      12998 // first window to load
+#define WINDOW_STARTUP_ANIM               12999 // for startup animations
 
 // WINDOW_ID's from 13000 to 13099 reserved for Python
 
@@ -419,6 +425,8 @@ public:
    \return true if this is a mouse action, false otherwise
    */
   bool IsMouse() const { return (m_id >= ACTION_MOUSE_START && m_id <= ACTION_MOUSE_END); };
+
+  bool IsGesture() const { return (m_id >= ACTION_GESTURE_NOTIFY && m_id <= ACTION_GESTURE_END); };
 
   /*! \brief Human-readable name of the action
    \return name of the action
@@ -519,7 +527,8 @@ public:
   enum Modifier {
     MODIFIER_CTRL = 0x00010000,
     MODIFIER_SHIFT = 0x00020000,
-    MODIFIER_ALT = 0x00040000
+    MODIFIER_ALT = 0x00040000,
+    MODIFIER_SUPER = 0x00080000
   };
 
 private:

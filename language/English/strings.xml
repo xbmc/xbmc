@@ -730,6 +730,7 @@
   <string id="1048">- Username</string>
   <string id="1049">Script settings</string>
   <string id="1050">Singles</string>
+  <string id="1051">Enter web address</string>
 
   <string id="1200">SMB client</string>
   <string id="1202">Workgroup</string>
@@ -839,6 +840,7 @@
   <string id="10018">Settings - Network</string>
   <string id="10019">Settings - Appearance</string>
   <string id="10020">Scripts</string>
+  <string id="10021">Web Browser</string>
 
   <string id="10028">Videos/Playlist</string>
   <string id="10034">Settings - Profiles</string>
@@ -1711,6 +1713,7 @@
   <string id="20252">Filling glasses (videos)</string>
   <string id="20253">WebDAV server (HTTP)</string>
   <string id="20254">WebDAV server (HTTPS)</string>
+  <string id="20255">First logon, edit your profile</string>
 
   <string id="20300">Web server directory (HTTP)</string>
   <string id="20301">Web server directory (HTTPS)</string>
@@ -2116,16 +2119,19 @@
   <!-- strings 24000 thru 24299 reserved for the addons framework -->
   <string id="24000">Add-on</string>
   <string id="24001">Add-ons</string>
+  <string id="24002">Add-on options</string>
 
   <string id="24005">Plugin</string>
   <string id="24007">Scraper</string>
   <string id="24008">Screensaver</string>
   <string id="24009">Script</string>
   <string id="24010">Visualization</string>
+  <string id="24011">Add-on repository</string>
 
   <string id="24020">Configure Add-on</string>
   <string id="24021">Disable Add-on</string>
   <string id="24022">Enable Add-on</string>
+  <string id="24023">Add-on disabled</string>
   <string id="24027">Weather service</string>
   <string id="24028">Weather.com (standard)</string>
   <string id="24030">This Add-on can not be configured</string>
@@ -2135,7 +2141,15 @@
   <string id="24051">Version:</string>
   <string id="24052">Disclaimer:</string>
   <string id="24053">License:</string>
-  <string id="24059">Would you like to install this Add-on?</string>
+  <string id="24059">Would you like to enable this Add-on?</string>
+  <string id="24060">Would you like to disable this Add-on?</string>
+  <string id="24061">Addon-on update available!</string>
+  <string id="24062">Enabled Add-ons</string>
+  <string id="24063">Auto update</string>
+  <string id="24064">Add-on enabled</string>
+  <string id="24065">Add-on updated</string>
+  <string id="24066">Cancel Add-on download?</string>
+  <string id="24067">Currently downloading addons</string>
 
   <string id="24070">Add-on can not used</string>
   <string id="24071">An unknown error has occurred</string>
@@ -2146,6 +2160,11 @@
   <string id="24089">Add-on restarts</string>
 
   <string id="24090">Lock Add-on manager</string>
+
+  <string id="24091">Allow hardware acceleration (VDPAU)</string>
+  <string id="24092">Allow hardware acceleration (VAAPI)</string>
+  <string id="24093">Allow hardware acceleration (DXVA2)</string>
+  <string id="24094">Allow hardware acceleration (CrystalHD)</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
@@ -2235,7 +2254,8 @@
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
   <string id="34002">Wav</string>
-  <string id="34003">DXVA</string>
+  <string id="34003">DXVA2</string>
+  <string id="34004">VAAPI</string>
 
   <string id="34100">Speaker Configuration</string>
   <string id="34101">2.0</string>

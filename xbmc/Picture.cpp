@@ -24,7 +24,6 @@
 #include "GUISettings.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
-#include "FileSystem/FileCurl.h"
 #include "Util.h"
 #include "DllImageLib.h"
 #include "utils/log.h"
@@ -37,27 +36,7 @@ bool CPicture::CreateThumbnail(const CStdString& file, const CStdString& thumbFi
   if (checkExistence && CFile::Exists(thumbFile))
     return true;
 
-  CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", file.c_str(), thumbFile.c_str());
-
-  if (CUtil::IsInternetStream(file, true))
-  {
-    CFileCurl stream;
-    CStdString thumbData;
-    if (stream.Get(file, thumbData))
-      return CreateThumbnailFromMemory((const unsigned char *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(file), thumbFile);
-    
-    return false;
-  }
-  
-  // load our dll
-  DllImageLib dll;
-  if (!dll.Load()) return false;
-  if (!dll.CreateThumbnail(file.c_str(), thumbFile.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize, g_guiSettings.GetBool("pictures.useexifrotation")))
-  {
-    CLog::Log(LOGERROR, "%s: Unable to create thumbfile %s from image %s", __FUNCTION__, thumbFile.c_str(), file.c_str());
-    return false;
-  }
-  return true;
+  return CacheImage(file, thumbFile, g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize);
 }
 
 bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFile, int width, int height)
@@ -71,9 +50,8 @@ bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFil
 
     if (CUtil::IsInternetStream(sourceUrl, true))
     {
-      CFileCurl stream;
-      CStdString tempFile = "special://temp/image_download.jpg";
-      if (stream.Download(sourceUrl, tempFile))
+      CStdString tempFile = CUtil::ReplaceExtension("special://temp/image_download", CUtil::GetExtension(sourceUrl));
+      if (CFile::Cache(sourceUrl, tempFile))
       {
         if (!dll.CreateThumbnail(tempFile.c_str(), destFile.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
         {
@@ -97,15 +75,7 @@ bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFil
   else
   {
     CLog::Log(LOGINFO, "Caching image from: %s to %s", sourceUrl.c_str(), destFile.c_str());
-    if (CUtil::IsInternetStream(sourceUrl, true))
-    {
-      CFileCurl stream;
-      return stream.Download(sourceUrl, destFile);
-    }
-    else
-    {
-      return CFile::Cache(sourceUrl, destFile);
-    }
+    return CFile::Cache(sourceUrl, destFile);
   }
 }
 
@@ -138,18 +108,9 @@ bool CPicture::CreateThumbnailFromMemory(const unsigned char* buffer, int bufSiz
 
 void CPicture::CreateFolderThumb(const CStdString *thumbs, const CStdString &folderThumb)
 { // we want to mold the thumbs together into one single one
-  CStdString cachedThumbs[4];
   const char *szThumbs[4];
   for (int i=0; i < 4; i++)
-  {
-    if (!thumbs[i].IsEmpty())
-    {
-      CFileItem item(thumbs[i], false);
-      cachedThumbs[i] = item.GetCachedPictureThumb();
-      CreateThumbnail(thumbs[i], cachedThumbs[i], true);
-    }
-    szThumbs[i] = cachedThumbs[i].c_str();
-  }
+    szThumbs[i] = thumbs[i].c_str();
 
   DllImageLib dll;
   if (!dll.Load()) return;

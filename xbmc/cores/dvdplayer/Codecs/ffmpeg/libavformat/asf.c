@@ -106,6 +106,10 @@ const ff_asf_guid ff_asf_metadata_header = {
         0xea, 0xcb, 0xf8, 0xc5, 0xaf, 0x5b, 0x77, 0x48, 0x84, 0x67, 0xaa, 0x8c, 0x44, 0xfa, 0x4c, 0xca
 };
 
+const ff_asf_guid ff_asf_marker_header = {
+        0x01, 0xCD, 0x87, 0xF4, 0x51, 0xA9, 0xCF, 0x11, 0x8E, 0xE6, 0x00, 0xC0, 0x0C, 0x20, 0x53, 0x65
+};
+
 /* I am not a number !!! This GUID is the one found on the PC used to
    generate the stream */
 const ff_asf_guid ff_asf_my_guid = {
@@ -128,13 +132,23 @@ const ff_asf_guid ff_asf_digital_signature = {
     0xfc, 0xb3, 0x11, 0x22, 0x23, 0xbd, 0xd2, 0x11, 0xb4, 0xb7, 0x00, 0xa0, 0xc9, 0x55, 0xfc, 0x6e
 };
 
+/* List of official tags at http://msdn.microsoft.com/en-us/library/dd743066(VS.85).aspx */
 const AVMetadataConv ff_asf_metadata_conv[] = {
-    { "AlbumArtist", "artist"    },
-    { "AlbumTitle" , "album"     },
-    { "Author"     , "author"    },
-    { "Genre"      , "genre"     },
-    { "Copyright"  , "copyright" },
-    { "TrackNumber", "track"     },
-    { "Year"       , "year"      },
+    { "WM/AlbumArtist"     , "album_artist"},
+    { "WM/AlbumTitle"      , "album  "     },
+    { "Author"             , "artist"      },
+    { "Description"        , "comment"     },
+    { "WM/Composer"        , "composer"    },
+    { "WM/EncodedBy"       , "encoded_by"  },
+    { "WM/EncodingSettings", "encoder"     },
+    { "WM/Genre"           , "genre"       },
+    { "WM/Language"        , "language"    },
+    { "WM/OriginalFilename", "filename"    },
+    { "WM/PartOfSet"       , "disc"        },
+    { "WM/Publisher"       , "publisher"   },
+    { "WM/Tool"            , "encoder"     },
+    { "WM/TrackNumber"     , "track"       },
+    { "WM/Track"           , "track"       },
+//  { "Year"               , "date"        }, TODO: conversion year<->date
     { 0 }
 };

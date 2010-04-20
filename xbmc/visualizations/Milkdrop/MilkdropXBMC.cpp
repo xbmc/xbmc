@@ -1,21 +1,42 @@
-//#include <xtl.h>
 #include <windows.h>
 #include <io.h>
 #include "vis_milkdrop/Plugin.h"
-#include "../../../visualisations/xbmc_vis.h"
+#include "../../addons/include/xbmc_vis_dll.h"
+#include "../../addons/include/xbmc_addon_cpp_dll.h"
 #include "XmlDocument.h"
 
 #define strnicmp _strnicmp
 #define strcmpi  _strcmpi
 
-CPlugin* g_plugin;
+CPlugin* g_plugin=NULL;
 char g_visName[512];
 
-#define PRESETS_DIR "special://xbmc/visualisations/Milkdrop"
+#define PRESETS_DIR "special://xbmc/addons/com.nullsoft.milkdrop.xbmc/presets"
 #define CONFIG_FILE "special://profile/visualisations/Milkdrop.conf"
 
 char m_szPresetSave[256] = "";
 char g_packFolder[256] = "Milkdrop";
+
+// settings vector
+std::vector<DllSetting> g_vecSettings;
+StructSetting** g_structSettings;
+unsigned int g_uiVisElements;
+
+int htoi(const char *str) /* Convert hex string to integer */
+{
+  unsigned int digit, number = 0;
+  while (*str)
+  {
+    if (isdigit(*str))
+      digit = *str - '0';
+    else
+      digit = tolower(*str)-'a'+10;
+    number<<=4;
+    number+=digit;
+    str++;
+  }
+  return number;
+}
 
 
 void SetPresetDir(const char *pack)
@@ -24,18 +45,14 @@ void SetPresetDir(const char *pack)
   if (len >= 4 && strcmpi(pack + len - 4, ".zip") == 0)
   {
     // Zip file
-    strcpy(g_plugin->m_szPresetDir, "zip://special%3A%2F%2Fxbmc%2Fvisualisations%2F"); 
-    strcat(g_plugin->m_szPresetDir,  g_packFolder);
-    strcat(g_plugin->m_szPresetDir,  "%2F");
+    strcpy(g_plugin->m_szPresetDir, "zip://special%3A%2F%2Fxbmc%2Faddons%2Fcom.nullsoft.milkdrop.xbmc%2Fpresets%2F"); 
     strcat(g_plugin->m_szPresetDir,  pack);
     strcat(g_plugin->m_szPresetDir, "/");
   }
   else if (len >= 4 && strcmpi(pack + len - 4, ".rar") == 0)
   {
     // Rar file
-    strcpy(g_plugin->m_szPresetDir, "rar://special%3A%2F%2Fxbmc%2Fvisualisations%2F"); 
-    strcat(g_plugin->m_szPresetDir,  g_packFolder);
-    strcat(g_plugin->m_szPresetDir,  "%2F");
+    strcpy(g_plugin->m_szPresetDir, "zip://special%3A%2F%2Fxbmc%2Faddons%2Fcom.nullsoft.milkdrop.xbmc%2Fpresets%2F"); 
     strcat(g_plugin->m_szPresetDir,  pack);
     strcat(g_plugin->m_szPresetDir, "/");
   }
@@ -49,12 +66,27 @@ void SetPresetDir(const char *pack)
   }
 }
 
-extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName, float fPixelRatio, const char *szSubModuleName)
+void Preinit()
 {
-	strcpy(g_visName, szVisualisationName);
-	g_plugin = new CPlugin;
-	g_plugin->PluginPreInitialize(0, 0);
-	g_plugin->PluginInitialize((LPDIRECT3DDEVICE9)pd3dDevice, iPosX, iPosY, iWidth, iHeight, fPixelRatio);
+  if(!g_plugin)
+  {
+    g_plugin = new CPlugin;
+    g_plugin->PluginPreInitialize(0, 0);
+  }
+}
+
+extern "C" ADDON_STATUS Create(void* hdl, void* props)
+{
+  if (!props)
+    return STATUS_UNKNOWN;
+
+  VIS_PROPS* visprops = (VIS_PROPS*)props;
+  strcpy(g_visName, visprops->name);
+	
+  Preinit();
+  g_plugin->PluginInitialize((LPDIRECT3DDEVICE9)visprops->device, visprops->x, visprops->y, visprops->width, visprops->height, visprops->pixelRatio);
+
+  return STATUS_NEED_SETTINGS;
 }
 
 extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName)
@@ -66,16 +98,23 @@ void SaveSettings();
 
 extern "C" void Stop()
 {
-  SaveSettings();
-	g_plugin->PluginQuit();
-	delete g_plugin;
-  m_vecSettings.clear();
-  m_uiVisElements = 0;
+  if(g_plugin)
+  {
+    SaveSettings();
+    g_plugin->PluginQuit();
+    delete g_plugin;
+    g_plugin = NULL;
+  }
+  g_vecSettings.clear();
+  g_uiVisElements = 0;
 }
 
 unsigned char waves[2][576];
 
-extern "C" void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+//-- Audiodata ----------------------------------------------------------------
+// Called by XBMC to pass new audio data to the vis
+//-----------------------------------------------------------------------------
+extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
 	int ipos=0;
 	while (ipos < 576)
@@ -103,7 +142,10 @@ extern "C" void GetInfo(VIS_INFO* pInfo)
 	pInfo->iSyncDelay = 0;
 }
 
-extern "C" bool OnAction(long flags, void *param)
+//-- OnAction -----------------------------------------------------------------
+// Handle XBMC actions such as next preset, lock preset, album art changed etc
+//-----------------------------------------------------------------------------
+extern "C" bool OnAction(long flags, const void *param)
 {
   bool ret = false;
 	if (flags == VIS_ACTION_NEXT_PRESET)
@@ -134,8 +176,8 @@ extern "C" bool OnAction(long flags, void *param)
     g_plugin->LoadRandomPreset(g_plugin->m_fBlendTimeUser);
     ret = true;
   }
-  if (ret)
-    SaveSettings();
+  /*if (ret)
+    SaveSettings();*/
 	return ret;
 }
 
@@ -144,7 +186,7 @@ void FindPresetPacks()
   struct _finddata_t c_file;
   long hFile;
   int numPacks = 0;
-  VisSetting setting10(VisSetting::SPIN, "Preset Pack");
+  DllSetting setting10(DllSetting::SPIN, "Preset Pack", "30009");
   char searchFolder[255];
   sprintf(searchFolder, "%s/*", PRESETS_DIR);
 
@@ -189,7 +231,7 @@ void FindPresetPacks()
     _findclose( hFile );
   }
 
-  m_vecSettings.push_back(setting10);
+  g_vecSettings.push_back(setting10);
 
 }
 
@@ -203,8 +245,8 @@ void LoadSettings()
 
   // update our settings structure
   // setup our settings structure (passable to GUI)
-  m_vecSettings.clear();
-  m_uiVisElements = 0;
+  g_vecSettings.clear();
+  g_uiVisElements = 0;
 
 	// Load the config file
 	if (doc.Load(szXMLFile) >= 0)
@@ -237,10 +279,6 @@ void LoadSettings()
       {
         g_plugin->m_bHardCutsDisabled = !strcmpi(doc.GetNodeText(node),"true");
       }
-//      else if (!strcmpi(doc.GetNodeTag(node),"AnisotropicFiltering"))
-//      {
-//        g_plugin->m_bAnisotropicFiltering = !strcmpi(doc.GetNodeText(node),"true");
-//      }
       else if (!strcmpi(doc.GetNodeTag(node),"TexSize"))
       {
         g_plugin->m_nTexSize = atoi(doc.GetNodeText(node));
@@ -337,7 +375,7 @@ void LoadSettings()
 
   g_plugin->UpdatePresetList();
 
-  VisSetting setting(VisSetting::SPIN, "Automatic Blend Time");
+  DllSetting setting(DllSetting::SPIN, "Automatic Blend Time", "30000");
   for (int i=0; i < 50; i++)
   {
     char temp[10];
@@ -345,8 +383,8 @@ void LoadSettings()
     setting.AddEntry(temp);
   }
   setting.current = (int)(g_plugin->m_fBlendTimeAuto * 5 - 1);
-  m_vecSettings.push_back(setting);
-  VisSetting setting2(VisSetting::SPIN, "Time Between Presets");
+  g_vecSettings.push_back(setting);
+  DllSetting setting2(DllSetting::SPIN, "Time Between Presets", "30001");
   for (int i=0; i < 55; i++)
   {
     char temp[10];
@@ -354,8 +392,8 @@ void LoadSettings()
     setting2.AddEntry(temp);
   }
   setting2.current = (int)(g_plugin->m_fTimeBetweenPresets - 5);
-  m_vecSettings.push_back(setting2);
-  VisSetting setting3(VisSetting::SPIN, "Additional Random Time");
+  g_vecSettings.push_back(setting2);
+  DllSetting setting3(DllSetting::SPIN, "Additional Random Time", "30002");
   for (int i=0; i < 55; i++)
   {
     char temp[10];
@@ -363,14 +401,11 @@ void LoadSettings()
     setting3.AddEntry(temp);
   }
   setting3.current = (int)(g_plugin->m_fTimeBetweenPresetsRand - 5);
-  m_vecSettings.push_back(setting3);
-//  VisSetting setting4(VisSetting::CHECK, "Enable Anisotropic Filtering");
-//  setting4.current = g_plugin->m_bAnisotropicFiltering ? 1 : 0;
-//  m_vecSettings.push_back(setting4);
-  VisSetting setting5(VisSetting::CHECK, "Enable Hard Cuts");
+  g_vecSettings.push_back(setting3);
+  DllSetting setting5(DllSetting::CHECK, "Enable Hard Cuts", "30004");
   setting5.current = g_plugin->m_bHardCutsDisabled ? 0 : 1;
-  m_vecSettings.push_back(setting5);
-  VisSetting setting6(VisSetting::SPIN, "Loudness Threshold For Hard Cuts");
+  g_vecSettings.push_back(setting5);
+  DllSetting setting6(DllSetting::SPIN, "Loudness Threshold For Hard Cuts", "30005");
   for (int i=0; i <= 100; i+=5)
   {
     char temp[10];
@@ -378,8 +413,8 @@ void LoadSettings()
     setting6.AddEntry(temp);
   }
   setting6.current = (int)((g_plugin->m_fHardCutLoudnessThresh - 1.25f) * 10.0f);
-  m_vecSettings.push_back(setting6);
-  VisSetting setting7(VisSetting::SPIN, "Average Time Between Hard Cuts");
+  g_vecSettings.push_back(setting6);
+  DllSetting setting7(DllSetting::SPIN, "Average Time Between Hard Cuts", "30006");
   for (int i=0; i <= 115; i+=5)
   {
     char temp[10];
@@ -387,8 +422,8 @@ void LoadSettings()
     setting7.AddEntry(temp);
   }
   setting7.current = (int)((g_plugin->m_fHardCutHalflife - 5)/5);
-  m_vecSettings.push_back(setting7);
-  VisSetting setting8(VisSetting::SPIN, "Maximum Refresh Rate");
+  g_vecSettings.push_back(setting7);
+  DllSetting setting8(DllSetting::SPIN, "Maximum Refresh Rate" ,"30007");
   for (int i=20; i <= 60; i+=5)
   {
     char temp[10];
@@ -396,11 +431,11 @@ void LoadSettings()
     setting8.AddEntry(temp);
   }
   setting8.current = (g_plugin->m_max_fps_fs - 20) / 5;
-  m_vecSettings.push_back(setting8);
+  g_vecSettings.push_back(setting8);
 
-  VisSetting setting9(VisSetting::CHECK, "Enable Stereo 3d");
+  DllSetting setting9(DllSetting::CHECK, "Enable Stereo 3d" ,"30008");
   setting9.current = g_plugin->m_bAlways3D ? 1 : 0;
-  m_vecSettings.push_back(setting9);
+  g_vecSettings.push_back(setting9);
 
 }
 
@@ -418,7 +453,6 @@ void SaveSettings()
   doc.WriteTag("EnableRating", g_plugin->m_bEnableRating);
   doc.WriteTag("InstaScan", g_plugin->m_bInstaScan);
   doc.WriteTag("HardCutsDisabled", g_plugin->m_bHardCutsDisabled);
-//  doc.WriteTag("AnisotropicFiltering", g_plugin->m_bAnisotropicFiltering);
   doc.WriteTag("TexSize", g_plugin->m_nTexSize);
   doc.WriteTag("MeshSize", g_plugin->m_nGridX);
   doc.WriteTag("BlendTimeAuto", g_plugin->m_fBlendTimeAuto);
@@ -448,74 +482,144 @@ void SaveSettings()
   doc.Close();
 }
 
-extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
+//-- GetPresets ---------------------------------------------------------------
+// Return a list of presets to XBMC for display
+//-----------------------------------------------------------------------------
+extern "C" unsigned int GetPresets(char ***presets)
 {
-  if (!pPresets || !numPresets || !currentPreset || !locked || !g_plugin) return;
-  *pPresets = g_plugin->m_pPresetAddr;
-  *numPresets = g_plugin->m_nPresets;
-  *currentPreset = g_plugin->m_nCurrentPreset;
-  *locked = g_plugin->m_bHoldPreset;
+  if (!presets || !g_plugin) return 0;
+  *presets = g_plugin->m_pPresetAddr;
+  return g_plugin->m_nPresets;
 }
 
-extern "C" unsigned int GetSettings(StructSetting*** sSet)
-{ 
-  m_uiVisElements = VisUtils::VecToStruct(m_vecSettings, &m_structSettings);
-  *sSet = m_structSettings;
-  return m_uiVisElements;
+//-- GetPreset ----------------------------------------------------------------
+// Return the index of the current playing preset
+//-----------------------------------------------------------------------------
+extern "C" unsigned GetPreset()
+{
+  if (g_plugin)
+    return g_plugin->m_nCurrentPreset;
+  return 0;
 }
+
+//-- IsLocked -----------------------------------------------------------------
+// Returns true if this add-on use settings
+//-----------------------------------------------------------------------------
+extern "C" bool IsLocked()
+{
+  if(g_plugin)
+    return g_plugin->m_bHoldPreset;
+  else
+    return false;
+}
+
+//-- Destroy-------------------------------------------------------------------
+// Do everything before unload of this add-on
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" void Destroy()
+{
+  Stop();
+}
+
+//-- HasSettings --------------------------------------------------------------
+// Returns true if this add-on use settings
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" bool HasSettings()
+{
+  return true;
+}
+
+//-- GetStatus ---------------------------------------------------------------
+// Returns the current Status of this visualisation
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+extern "C" ADDON_STATUS GetStatus()
+{
+  return STATUS_OK;
+}
+
+//-- GetSettings --------------------------------------------------------------
+// Return the settings for XBMC to display
+//-----------------------------------------------------------------------------
+
+extern "C" unsigned int GetSettings(StructSetting ***sSet)
+{
+  Preinit();
+  g_uiVisElements = DllUtils::VecToStruct(g_vecSettings, &g_structSettings);
+  *sSet = g_structSettings;
+  return g_uiVisElements;
+}
+
+//-- FreeSettings --------------------------------------------------------------
+// Free the settings struct passed from XBMC
+//-----------------------------------------------------------------------------
 
 extern "C" void FreeSettings()
 {
-  VisUtils::FreeStruct(m_uiVisElements, &m_structSettings);
+  DllUtils::FreeStruct(g_uiVisElements, &g_structSettings);
 }
 
-extern "C" void UpdateSetting(int num, StructSetting*** sSet)
+//-- UpdateSetting ------------------------------------------------------------
+// Handle setting change request from XBMC
+//-----------------------------------------------------------------------------
+extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
 {
-  VisUtils::StructToVec(m_uiVisElements, sSet, &m_vecSettings);
-  VisSetting &setting = m_vecSettings[num];
-  if (strcmpi(setting.name, "Use Preset") == 0)
-    OnAction(34, (void *)&setting.current);
-  else if (strcmpi(setting.name, "Automatic Blend Time") == 0)
-    g_plugin->m_fBlendTimeAuto = (float)(setting.current + 1) / 5.0f;
-  else if (strcmpi(setting.name, "Time Between Presets") == 0)
-    g_plugin->m_fTimeBetweenPresets = (float)(setting.current + 5);
-  else if (strcmpi(setting.name, "Additional Random Time") == 0)
-    g_plugin->m_fTimeBetweenPresetsRand = (float)(setting.current + 5);
-//  else if (strcmpi(setting.name, "Enable Anisotropic Filtering") == 0)
-//    g_plugin->m_bAnisotropicFiltering = setting.current == 1;
-  else if (strcmpi(setting.name, "Enable Hard Cuts") == 0)
-    g_plugin->m_bHardCutsDisabled = setting.current == 0;
-  else if (strcmpi(setting.name, "Loudness Threshold For Hard Cuts") == 0)
-    g_plugin->m_fHardCutLoudnessThresh = (float)setting.current/10.0f + 1.25f;
-  else if (strcmpi(setting.name, "Average Time Between Hard Cuts") == 0)
-    g_plugin->m_fHardCutHalflife = (float)setting.current*5 + 5;
-  else if (strcmpi(setting.name, "Maximum Refresh Rate") == 0)
-    g_plugin->m_max_fps_fs = setting.current*5 + 20;
-  else if (strcmpi(setting.name, "Enable Stereo 3d") == 0)
-    g_plugin->m_bAlways3D = setting.current == 1;
-  else if (strcmpi(setting.name, "Preset Pack") == 0)
+  if (!id || !value)
+    return STATUS_UNKNOWN;
+
+  Preinit();
+
+  if (strcmpi(id, "Use Preset") == 0)
+    OnAction(34, &value);
+  else if (strcmpi(id, "Automatic Blend Time") == 0)
+    g_plugin->m_fBlendTimeAuto = (float)(*(int*)value + 1) / 5.0f;
+  else if (strcmpi(id, "Time Between Presets") == 0)
+    g_plugin->m_fTimeBetweenPresets = (float)(*(int*)value + 5);
+  else if (strcmpi(id, "Additional Random Time") == 0)
+    g_plugin->m_fTimeBetweenPresetsRand = (float)(*(int*)value + 5);
+  else if (strcmpi(id, "Enable Hard Cuts") == 0)
+    g_plugin->m_bHardCutsDisabled = *(int*)value == 0;
+  else if (strcmpi(id, "Loudness Threshold For Hard Cuts") == 0)
+    g_plugin->m_fHardCutLoudnessThresh = (float)(*(int*)value)/10.0f + 1.25f;
+  else if (strcmpi(id, "Average Time Between Hard Cuts") == 0)
+    g_plugin->m_fHardCutHalflife = (float)*(int*)value*5 + 5;
+  else if (strcmpi(id, "Maximum Refresh Rate") == 0)
+    g_plugin->m_max_fps_fs = *(int*)value*5 + 20;
+  else if (strcmpi(id, "Enable Stereo 3d") == 0)
+    g_plugin->m_bAlways3D = *(int*)value == 1;
+  else if (strcmpi(id, "Preset Pack") == 0)
   {
-    
-    // Check if its a zip or a folder
-    SetPresetDir(setting.entry[setting.current]);
+   
+    if(!g_vecSettings.empty() && !g_vecSettings[0].entry.empty() && *(int*)value < g_vecSettings[0].entry.size())
+    {
+      // Check if its a zip or a folder
+      SetPresetDir(g_vecSettings[0].entry[*(int*)value]);
 
-    // save dir so that we can resave the .xml file
-    sprintf(m_szPresetSave, "%s", setting.entry[setting.current]);
+      // save dir so that we can resave the .xml file
+      sprintf(m_szPresetSave, "%s", g_vecSettings[0].entry[*(int*)value]);
 
-    g_plugin->m_bHoldPreset = false; // Disable locked preset as its no longer there
-    g_plugin->UpdatePresetList();	
+      g_plugin->m_bHoldPreset = false; // Disable locked preset as its no longer there
+      g_plugin->UpdatePresetList();	
 
-    // set current preset index to -1 because current preset is no longer in the list
-    g_plugin->m_nCurrentPreset = -1;
-    g_plugin->LoadRandomPreset(g_plugin->m_fBlendTimeUser);
+      // set current preset index to -1 because current preset is no longer in the list
+      g_plugin->m_nCurrentPreset = -1;
+      g_plugin->LoadRandomPreset(g_plugin->m_fBlendTimeUser);
+    }
   }
+  else
+    return STATUS_UNKNOWN;
+
   SaveSettings();
+
+  return STATUS_OK;
 }
 
 //-- GetSubModules ------------------------------------------------------------
 // Return any sub modules supported by this vis
 //-----------------------------------------------------------------------------
-extern "C" int GetSubModules(char ***names, char ***paths)
+extern "C" unsigned int GetSubModules(char ***names)
 {
   return 0; // this vis supports 0 sub modules
 }

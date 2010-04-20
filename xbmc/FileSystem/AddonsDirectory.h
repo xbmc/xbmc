@@ -21,7 +21,7 @@
  */
 
 #include "IDirectory.h"
-#include "AddonManager.h"
+#include "addons/AddonManager.h"
 
 class CURL;
 
@@ -41,7 +41,6 @@ namespace XFILE
     virtual bool Create(const char* strPath) { return true; }
     virtual bool Exists(const char* strPath) { return true; }
 
-  private:
-    void GenerateListing(CURL &path, ADDON::VECADDONS& addons, CFileItemList &items);
+    static void GenerateListing(CURL &path, ADDON::VECADDONS& addons, CFileItemList &items);
   };
 }

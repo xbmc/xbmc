@@ -22,6 +22,7 @@
 #endif /* HAVE_CONFIG_H */
 
 #include <math.h>
+#include <string.h>
 
 #include "enca.h"
 #include "internal.h"

@@ -60,10 +60,10 @@ void CGUIBorderedImage::AllocResources()
   CGUIImage::AllocResources();
 }
 
-void CGUIBorderedImage::FreeResources()
+void CGUIBorderedImage::FreeResources(bool immediately)
 {
-  m_borderImage.FreeResources();
-  CGUIImage::FreeResources();
+  m_borderImage.FreeResources(immediately);
+  CGUIImage::FreeResources(immediately);
 }
 
 void CGUIBorderedImage::DynamicResourceAlloc(bool bOnOff)

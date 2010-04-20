@@ -47,6 +47,7 @@
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
 #include "GUIUserMessages.h"
+#include "TextureCache.h"
 
 using namespace std;
 using namespace XFILE;
@@ -100,12 +101,12 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       m_bViewReview = true;
       Refresh();
 
-      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx"));
-      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx"));
+      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
 
       VIDEODB_CONTENT_TYPE type = GetContentType(m_movieItem.get());
       if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
-        CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
+        CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
       else
         CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
 
@@ -259,7 +260,8 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       m_castList->SetContent("tvshows");
       // special case stuff for shows (not currently retrieved from the library in filemode (ref: GetTvShowInfo vs GetTVShowsByWhere)
       m_movieItem->m_dateTime.SetFromDateString(m_movieItem->GetVideoInfoTag()->m_strPremiered);
-      m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
+      if(m_movieItem->GetVideoInfoTag()->m_iYear == 0 && m_movieItem->m_dateTime.IsValid())
+        m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
       m_movieItem->SetProperty("watchedepisodes", m_movieItem->GetVideoInfoTag()->m_playCount);
       m_movieItem->SetProperty("unwatchedepisodes", m_movieItem->GetVideoInfoTag()->m_iEpisode - m_movieItem->GetVideoInfoTag()->m_playCount);
       m_movieItem->GetVideoInfoTag()->m_playCount = (m_movieItem->GetVideoInfoTag()->m_iEpisode == m_movieItem->GetVideoInfoTag()->m_playCount) ? 1 : 0;
@@ -269,7 +271,8 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       m_castList->SetContent("episodes");
       // special case stuff for episodes (not currently retrieved from the library in filemode (ref: GetEpisodeInfo vs GetEpisodesByWhere)
       m_movieItem->m_dateTime.SetFromDateString(m_movieItem->GetVideoInfoTag()->m_strFirstAired);
-      m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
+      if(m_movieItem->GetVideoInfoTag()->m_iYear == 0 && m_movieItem->m_dateTime.IsValid())
+        m_movieItem->GetVideoInfoTag()->m_iYear = m_movieItem->m_dateTime.GetYear();
       if (CFile::Exists(m_movieItem->GetCachedEpisodeThumb()))
         m_movieItem->SetThumbnailImage(m_movieItem->GetCachedEpisodeThumb());
       // retrieve the season thumb.
@@ -635,34 +638,28 @@ void CGUIWindowVideoInfo::OnGetThumb()
   }
 
   // Grab the thumbnails from the web
-  int i=1;
-  for (std::vector<CScraperUrl::SUrlEntry>::iterator iter=m_movieItem->GetVideoInfoTag()->m_strPictureURL.m_url.begin();iter != m_movieItem->GetVideoInfoTag()->m_strPictureURL.m_url.end();++iter)
-  {
-    if (iter->m_type == CScraperUrl::URL_TYPE_SEASON)
-      continue;
-    CStdString strItemPath;
-    strItemPath.Format("thumb://Remote%i",i++);
-    CFileItemPtr item(new CFileItem(strItemPath, false));
-    item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
-    item->SetIconImage("DefaultPicture.png");
-    item->GetVideoInfoTag()->m_strPictureURL.m_url.push_back(*iter);
-    item->SetLabel(g_localizeStrings.Get(415));
-    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20015));
+  vector<CStdString> thumbs;
+  m_movieItem->GetVideoInfoTag()->m_strPictureURL.GetThumbURLs(thumbs);
 
-    // make sure any previously cached thumb is removed
-    if (CFile::Exists(item->GetCachedPictureThumb()))
-      CFile::Delete(item->GetCachedPictureThumb());
+  for (unsigned int i = 0; i < thumbs.size(); ++i)
+  {
+    CStdString strItemPath;
+    strItemPath.Format("thumb://Remote%i", i);
+    CFileItemPtr item(new CFileItem(strItemPath, false));
+    item->SetThumbnailImage(thumbs[i]);
+    item->SetIconImage("DefaultPicture.png");
+    item->SetLabel(g_localizeStrings.Get(20015));
+
+    // TODO: Do we need to clear the cached image?
+    //    CTextureCache::Get().ClearCachedImage(thumb);
     items.Add(item);
   }
 
-  CStdString cachedLocalThumb;
   CStdString localThumb(m_movieItem->GetUserVideoThumb());
   if (CFile::Exists(localThumb))
   {
-    CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
-    CPicture::CreateThumbnail(localThumb, cachedLocalThumb);
     CFileItemPtr item(new CFileItem("thumb://Local", false));
-    item->SetThumbnailImage(cachedLocalThumb);
+    item->SetThumbnailImage(localThumb);
     item->SetLabel(g_localizeStrings.Get(20017));
     items.Add(item);
   }
@@ -691,21 +688,15 @@ void CGUIWindowVideoInfo::OnGetThumb()
   CStdString cachedThumb(item.GetCachedVideoThumb());
   if (!m_movieItem->m_bIsFolder && m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
     cachedThumb = item.GetCachedEpisodeThumb();
+  CTextureCache::Get().ClearCachedImage(cachedThumb);
 
   if (result.Left(14) == "thumb://Remote")
   {
-    CFileItem chosen(result, false);
-    CStdString thumb = chosen.GetCachedPictureThumb();
-    if (CFile::Exists(thumb))
-    {
-      // NOTE: This could fail if the thumbloader was too slow and the user too impatient
-      CFile::Cache(thumb, cachedThumb);
-    }
-    else
-      result = "thumb://None";
+    int number = atoi(result.Mid(14));
+    CFile::Cache(thumbs[number], cachedThumb);
   }
   else if (result == "thumb://Local")
-    CFile::Cache(cachedLocalThumb, cachedThumb);
+    CFile::Cache(localThumb, cachedThumb);
   else if (CFile::Exists(result))
     CPicture::CreateThumbnail(result, cachedThumb);
   else
@@ -750,25 +741,18 @@ void CGUIWindowVideoInfo::OnGetFanart()
   m_movieItem->GetVideoInfoTag()->m_fanart.Unpack();
 
   // Grab the thumbnails from the web
-  CStdString strPath;
-  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"fanartthumbs",strPath);
-  CUtil::WipeDir(strPath);
-  XFILE::CDirectory::Create(strPath);
   for (unsigned int i = 0; i < m_movieItem->GetVideoInfoTag()->m_fanart.GetNumFanarts(); i++)
   {
     CStdString strItemPath;
     strItemPath.Format("fanart://Remote%i",i);
     CFileItemPtr item(new CFileItem(strItemPath, false));
-    item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
+    CStdString thumb = m_movieItem->GetVideoInfoTag()->m_fanart.GetPreviewURL(i);
+    item->SetThumbnailImage(CTextureCache::GetWrappedThumbURL(thumb));
     item->SetIconImage("DefaultPicture.png");
-    item->GetVideoInfoTag()->m_fanart = m_movieItem->GetVideoInfoTag()->m_fanart;
-    item->SetProperty("fanart_number", (int)i);
-    item->SetLabel(g_localizeStrings.Get(415));
-    item->SetProperty("labelonthumbload", g_localizeStrings.Get(20441));
+    item->SetLabel(g_localizeStrings.Get(20441));
 
-    // make sure any previously cached thumb is removed
-    if (CFile::Exists(item->GetCachedPictureThumb()))
-      CFile::Delete(item->GetCachedPictureThumb());
+    // TODO: Do we need to clear the cached image?
+//    CTextureCache::Get().ClearCachedImage(thumb);
     items.Add(item);
   }
 
@@ -778,9 +762,9 @@ void CGUIWindowVideoInfo::OnGetFanart()
     CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
     itemLocal->SetThumbnailImage(strLocal);
     itemLocal->SetLabel(g_localizeStrings.Get(20438));
-    // make sure any previously cached thumb is removed
-    if (CFile::Exists(itemLocal->GetCachedPictureThumb()))
-      CFile::Delete(itemLocal->GetCachedPictureThumb());
+
+    // TODO: Do we need to clear the cached image?
+    CTextureCache::Get().ClearCachedImage(strLocal);
     items.Add(itemLocal);
   }
   else
@@ -798,8 +782,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) || result.Equals("fanart://Current"))
     return;   // user cancelled
 
-  if (CFile::Exists(cachedThumb))
-    CFile::Delete(cachedThumb);
+  CTextureCache::Get().ClearCachedImage(cachedThumb);
 
   if (result.Equals("fanart://Local"))
     result = strLocal;

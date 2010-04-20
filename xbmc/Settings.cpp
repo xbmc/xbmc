@@ -95,6 +95,7 @@ void CSettings::Initialize()
   m_bMyVideoPlaylistShuffle = false;
   m_bMyVideoNavFlatten = false;
   m_bStartVideoWindowed = false;
+  m_bAddonAutoUpdate = true;
 
   m_nVolumeLevel = 0;
   m_dynamicRangeCompressionLevel = 0;
@@ -102,6 +103,7 @@ void CSettings::Initialize()
   m_bMute = false;
   m_fZoomAmount = 1.0f;
   m_fPixelRatio = 1.0f;
+  m_bNonLinStretch = false;
 
   m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u|.dng|.nef|.cr2|.crw|.orf|.arw|.erf|.3fr|.dcr|.x3f|.mef|.raf|.mrw|.pef|.sr2|.rss";
   m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga|.url|.pxml|.tta|.rss|.cm3|.cms|.dlt";
@@ -117,8 +119,6 @@ void CSettings::Initialize()
     m_logFolder = "special://home/";              // log file location
   #endif
 
-  m_iLastLoadedProfileIndex = 0;
-
   // defaults for scanning
   m_bMyMusicIsScanning = false;
 
@@ -132,7 +132,9 @@ void CSettings::Initialize()
 
   m_userAgent = g_sysinfo.GetUserAgent();
 
-  bUseLoginScreen = false;
+  m_usingLoginScreen = false;
+  m_lastUsedProfile = 0;
+  m_currentProfile = 0;
 }
 
 CSettings::~CSettings(void)
@@ -699,7 +701,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetFloat(pElement, "audiodelay", m_defaultVideoSettings.m_AudioDelay, 0.0f, -10.0f, 10.0f);
     GetFloat(pElement, "subtitledelay", m_defaultVideoSettings.m_SubtitleDelay, 0.0f, -10.0f, 10.0f);
     XMLUtils::GetBoolean(pElement, "autocrop", m_defaultVideoSettings.m_Crop);
-    XMLUtils::GetBoolean(pElement, "nonlinstretch", m_defaultVideoSettings.m_NonLinStretch);
+    XMLUtils::GetBoolean(pElement, "nonlinstretch", m_defaultVideoSettings.m_CustomNonLinStretch);
+    XMLUtils::GetBoolean(pElement, "addonautoupdate", m_bAddonAutoUpdate);
 
     GetFloat(pElement, "boblightvalue", m_defaultVideoSettings.m_BoblightValue, 10.0, 0.0, 20.0);
     GetFloat(pElement, "boblightvaluemin", m_defaultVideoSettings.m_BoblightValueMin, 0.0, 0.0, 1.0);
@@ -870,7 +873,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetFloat(pNode, "audiodelay", m_defaultVideoSettings.m_AudioDelay);
   XMLUtils::SetFloat(pNode, "subtitledelay", m_defaultVideoSettings.m_SubtitleDelay);
   XMLUtils::SetBoolean(pNode, "autocrop", m_defaultVideoSettings.m_Crop); 
-  XMLUtils::SetBoolean(pNode, "nonlinstretch", m_defaultVideoSettings.m_NonLinStretch);
+  XMLUtils::SetBoolean(pNode, "nonlinstretch", m_defaultVideoSettings.m_CustomNonLinStretch);
+  XMLUtils::SetBoolean(pNode, "addonautoupdate", m_bAddonAutoUpdate);
 
   XMLUtils::SetFloat(pNode, "boblightvalue", m_defaultVideoSettings.m_BoblightValue);
   XMLUtils::SetFloat(pNode, "boblightvaluemin", m_defaultVideoSettings.m_BoblightValueMin);
@@ -905,10 +909,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   return xmlDoc.SaveFile(strSettingsFile);
 }
 
-bool CSettings::LoadProfile(int index)
+bool CSettings::LoadProfile(unsigned int index)
 {
-  int iOldIndex = m_iLastLoadedProfileIndex;
-  m_iLastLoadedProfileIndex = index;
+  unsigned int oldProfile = m_currentProfile;
+  m_currentProfile = index;
   CStdString strOldSkin = g_guiSettings.GetString("lookandfeel.skin");
   CStdString strOldFont = g_guiSettings.GetString("lookandfeel.font");
   CStdString strOldTheme = g_guiSettings.GetString("lookandfeel.skintheme");
@@ -941,7 +945,7 @@ bool CSettings::LoadProfile(int index)
     // always reload the skin - we need it for the new language strings
     g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
 
-    if (m_iLastLoadedProfileIndex != 0)
+    if (m_currentProfile != 0)
     {
       TiXmlDocument doc;
       if (doc.LoadFile(CUtil::AddFileToFolder(GetUserDataFolder(),"guisettings.xml")))
@@ -964,14 +968,15 @@ bool CSettings::LoadProfile(int index)
     return true;
   }
 
-  m_iLastLoadedProfileIndex = iOldIndex;
+  m_currentProfile = oldProfile;
 
   return false;
 }
 
-bool CSettings::DeleteProfile(int index)
+bool CSettings::DeleteProfile(unsigned int index)
 {
-  if (index < 0 && index >= (int)m_vecProfiles.size())
+  const CProfile *profile = GetProfile(index);
+  if (!profile)
     return false;
 
   CGUIDialogYesNo* dlgYesNo = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -979,7 +984,7 @@ bool CSettings::DeleteProfile(int index)
   {
     CStdString message;
     CStdString str = g_localizeStrings.Get(13201);
-    message.Format(str.c_str(), m_vecProfiles.at(index).getName());
+    message.Format(str.c_str(), profile->getName());
     dlgYesNo->SetHeading(13200);
     dlgYesNo->SetLine(0, message);
     dlgYesNo->SetLine(1, "");
@@ -989,9 +994,9 @@ bool CSettings::DeleteProfile(int index)
     if (dlgYesNo->IsConfirmed())
     {
       //delete profile
-      CStdString strDirectory = m_vecProfiles[index].getDirectory();
+      CStdString strDirectory = profile->getDirectory();
       m_vecProfiles.erase(m_vecProfiles.begin()+index);
-      if (index == m_iLastLoadedProfileIndex)
+      if (index == m_currentProfile)
       {
         LoadProfile(0);
         Save();
@@ -1012,173 +1017,73 @@ bool CSettings::DeleteProfile(int index)
   return true;
 }
 
-bool CSettings::SaveSettingsToProfile(int index)
+void CSettings::LoadProfiles(const CStdString& profilesFile)
 {
-  /*CProfile& profile = m_vecProfiles.at(index);
-  return SaveSettings(profile.getFileName(), false);*/
-  return true;
-}
+  // clear out our profiles
+  m_vecProfiles.clear();
 
-
-bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
-{
   TiXmlDocument profilesDoc;
-  if (!CFile::Exists(strSettingsFile))
-  { // set defaults, or assume no rss feeds??
-    return false;
-  }
-  if (!profilesDoc.LoadFile(strSettingsFile))
+  if (CFile::Exists(profilesFile))
   {
-    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", strSettingsFile.c_str(), profilesDoc.ErrorRow(), profilesDoc.ErrorDesc());
-    return false;
-  }
+    if (profilesDoc.LoadFile(profilesFile))
+    {
+      TiXmlElement *rootElement = profilesDoc.RootElement();
+      if (rootElement && strcmpi(rootElement->Value(),"profiles") == 0)
+      {
+        XMLUtils::GetUInt(rootElement, "lastloaded", m_lastUsedProfile);
+        XMLUtils::GetBoolean(rootElement, "useloginscreen", m_usingLoginScreen);
 
-  TiXmlElement *pRootElement = profilesDoc.RootElement();
-  if (!pRootElement || strcmpi(pRootElement->Value(),"profiles") != 0)
-  {
-    CLog::Log(LOGERROR, "Error loading %s, no <profiles> node", strSettingsFile.c_str());
-    return false;
-  }
-  GetInteger(pRootElement,"lastloaded",m_iLastLoadedProfileIndex,0,0,1000);
-  if (m_iLastLoadedProfileIndex < 0)
-    m_iLastLoadedProfileIndex = 0;
-
-  XMLUtils::GetBoolean(pRootElement,"useloginscreen",bUseLoginScreen);
-
-  TiXmlElement* pProfile = pRootElement->FirstChildElement("profile");
-  CProfile profile;
-
-  while (pProfile)
-  {
-    profile.setName("Master user");
-    if (CDirectory::Exists("special://home/userdata"))
-      profile.setDirectory("special://home/userdata");
+        TiXmlElement* pProfile = rootElement->FirstChildElement("profile");
+        
+        CStdString defaultDir("special://home/userdata");
+        if (!CDirectory::Exists(defaultDir))
+          defaultDir = "special://xbmc/userdata";
+        while (pProfile)
+        {
+          CProfile profile(defaultDir);
+          profile.Load(pProfile);
+          m_vecProfiles.push_back(profile);
+          pProfile = pProfile->NextSiblingElement("profile");
+        }
+      }
+      else
+        CLog::Log(LOGERROR, "Error loading %s, no <profiles> node", profilesFile.c_str());
+    }
     else
-      profile.setDirectory("special://xbmc/userdata");
-
-    CStdString strName;
-    XMLUtils::GetString(pProfile,"name",strName);
-    profile.setName(strName);
-
-    CStdString strDirectory;
-    XMLUtils::GetPath(pProfile,"directory",strDirectory);
-    profile.setDirectory(strDirectory);
-
-    CStdString strThumb;
-    XMLUtils::GetPath(pProfile,"thumbnail",strThumb);
-    profile.setThumb(strThumb);
-
-    bool bHas=true;
-    XMLUtils::GetBoolean(pProfile, "hasdatabases", bHas);
-    profile.setDatabases(bHas);
-
-    bHas = true;
-    XMLUtils::GetBoolean(pProfile, "canwritedatabases", bHas);
-    profile.setWriteDatabases(bHas);
-
-    bHas = true;
-    XMLUtils::GetBoolean(pProfile, "hassources", bHas);
-    profile.setSources(bHas);
-
-    bHas = true;
-    XMLUtils::GetBoolean(pProfile, "canwritesources", bHas);
-    profile.setWriteSources(bHas);
-
-    bHas = false;
-    XMLUtils::GetBoolean(pProfile, "lockaddonmanager", bHas);
-    profile.setAddonManagerLocked(bHas);
-
-    bHas = false;
-    XMLUtils::GetBoolean(pProfile, "locksettings", bHas);
-    profile.setSettingsLocked(bHas);
-
-    bHas = false;
-    XMLUtils::GetBoolean(pProfile, "lockfiles", bHas);
-    profile.setFilesLocked(bHas);
-
-    bHas = false;
-    XMLUtils::GetBoolean(pProfile, "lockmusic", bHas);
-    profile.setMusicLocked(bHas);
-
-    bHas = false;
-    XMLUtils::GetBoolean(pProfile, "lockvideo", bHas);
-    profile.setVideoLocked(bHas);
-
-    bHas = false;
-    XMLUtils::GetBoolean(pProfile, "lockpictures", bHas);
-    profile.setPicturesLocked(bHas);
-
-    bHas = false;
-    XMLUtils::GetBoolean(pProfile, "lockprograms", bHas);
-    profile.setProgramsLocked(bHas);
-
-    LockType iLockMode;
-    int lockMode = (int)LOCK_MODE_EVERYONE;
-    XMLUtils::GetInt(pProfile,"lockmode",lockMode);
-    iLockMode = (LockType)lockMode;
-
-    if (iLockMode > LOCK_MODE_QWERTY || iLockMode < LOCK_MODE_EVERYONE)
-      iLockMode = LOCK_MODE_EVERYONE;
-    profile.setLockMode(iLockMode);
-
-    CStdString strLockCode;
-    XMLUtils::GetString(pProfile,"lockcode",strLockCode);
-    profile.setLockCode(strLockCode);
-
-    CStdString strDate;
-    XMLUtils::GetString(pProfile,"lastdate",strDate);
-    profile.setDate(strDate);
-
-    m_vecProfiles.push_back(profile);
-    pProfile = pProfile->NextSiblingElement("profile");
+      CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", profilesFile.c_str(), profilesDoc.ErrorRow(), profilesDoc.ErrorDesc());
   }
 
-  if (m_iLastLoadedProfileIndex >= (int)m_vecProfiles.size() || m_iLastLoadedProfileIndex < 0)
-    m_iLastLoadedProfileIndex = 0;
+  if (m_vecProfiles.empty())
+  { // add the master user
+    CProfile profile("special://masterprofile/", "Master user");
+    m_vecProfiles.push_back(profile);
+  }
 
-  return true;
+  // check the validity of the previous profile index
+  if (m_lastUsedProfile >= m_vecProfiles.size())
+    m_lastUsedProfile = 0;
+
+  m_currentProfile = m_lastUsedProfile;
+
+  // the login screen runs as the master profile, so if we're using this, we need to ensure
+  // we switch to the master profile
+  if (m_usingLoginScreen)
+    m_currentProfile = 0;
 }
 
-bool CSettings::SaveProfiles(const CStdString& strSettingsFile) const
+bool CSettings::SaveProfiles(const CStdString& profilesFile) const
 {
   TiXmlDocument xmlDoc;
   TiXmlElement xmlRootElement("profiles");
   TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
   if (!pRoot) return false;
-  XMLUtils::SetInt(pRoot,"lastloaded",m_iLastLoadedProfileIndex);
-  XMLUtils::SetBoolean(pRoot,"useloginscreen",bUseLoginScreen);
-  for (unsigned int iProfile=0;iProfile<m_vecProfiles.size();++iProfile)
-  {
-    TiXmlElement profileNode("profile");
-    TiXmlNode *pNode = pRoot->InsertEndChild(profileNode);
-    XMLUtils::SetString(pNode,"name",m_vecProfiles[iProfile].getName());
-    XMLUtils::SetPath(pNode,"directory",m_vecProfiles[iProfile].getDirectory());
-    XMLUtils::SetPath(pNode,"thumbnail",m_vecProfiles[iProfile].getThumb());
-    XMLUtils::SetString(pNode,"lastdate",m_vecProfiles[iProfile].getDate());
+  XMLUtils::SetInt(pRoot,"lastloaded", m_currentProfile);
+  XMLUtils::SetBoolean(pRoot,"useloginscreen",m_usingLoginScreen);
+  for (unsigned int i = 0; i < m_vecProfiles.size(); ++i)
+    m_vecProfiles[i].Save(pRoot);
 
-    if (m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
-    {
-      XMLUtils::SetInt(pNode,"lockmode",m_vecProfiles[iProfile].getLockMode());
-      XMLUtils::SetString(pNode,"lockcode",m_vecProfiles[iProfile].getLockCode());
-      XMLUtils::SetBoolean(pNode,"lockmusic",m_vecProfiles[iProfile].musicLocked());
-      XMLUtils::SetBoolean(pNode,"lockvideo",m_vecProfiles[iProfile].videoLocked());
-      XMLUtils::SetBoolean(pNode,"lockpictures",m_vecProfiles[iProfile].picturesLocked());
-      XMLUtils::SetBoolean(pNode,"lockprograms",m_vecProfiles[iProfile].programsLocked());
-      XMLUtils::SetBoolean(pNode,"locksettings",m_vecProfiles[iProfile].settingsLocked());
-      XMLUtils::SetBoolean(pNode,"lockaddonmanager",m_vecProfiles[iProfile].addonmanagerLocked());
-      XMLUtils::SetBoolean(pNode,"lockfiles",m_vecProfiles[iProfile].filesLocked());
-    }
-
-    if (iProfile > 0)
-    {
-      XMLUtils::SetBoolean(pNode,"hasdatabases",m_vecProfiles[iProfile].hasDatabases());
-      XMLUtils::SetBoolean(pNode,"canwritedatabases",m_vecProfiles[iProfile].canWriteDatabases());
-      XMLUtils::SetBoolean(pNode,"hassources",m_vecProfiles[iProfile].hasSources());
-      XMLUtils::SetBoolean(pNode,"canwritesources",m_vecProfiles[iProfile].canWriteSources());
-    }
-  }
   // save the file
-  return xmlDoc.SaveFile(strSettingsFile);
+  return xmlDoc.SaveFile(profilesFile);
 }
 
 bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
@@ -1667,10 +1572,10 @@ void CSettings::LoadUserFolderLayout()
 CStdString CSettings::GetProfileUserDataFolder() const
 {
   CStdString folder;
-  if (m_iLastLoadedProfileIndex == 0)
+  if (m_currentProfile == 0)
     return GetUserDataFolder();
 
-  CUtil::AddFileToFolder(GetUserDataFolder(),m_vecProfiles[m_iLastLoadedProfileIndex].getDirectory(),folder);
+  CUtil::AddFileToFolder(GetUserDataFolder(),GetCurrentProfile().getDirectory(),folder);
 
   return folder;
 }
@@ -1689,13 +1594,13 @@ CStdString CSettings::GetUserDataItem(const CStdString& strFile) const
 
 CStdString CSettings::GetUserDataFolder() const
 {
-  return m_vecProfiles[0].getDirectory();
+  return GetMasterProfile().getDirectory();
 }
 
 CStdString CSettings::GetDatabaseFolder() const
 {
   CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+  if (GetCurrentProfile().hasDatabases())
     CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Database", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Database", folder);
@@ -1706,7 +1611,7 @@ CStdString CSettings::GetDatabaseFolder() const
 CStdString CSettings::GetCDDBFolder() const
 {
   CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+  if (GetCurrentProfile().hasDatabases())
     CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Database/CDDB", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Database/CDDB", folder);
@@ -1717,7 +1622,7 @@ CStdString CSettings::GetCDDBFolder() const
 CStdString CSettings::GetThumbnailsFolder() const
 {
   CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+  if (GetCurrentProfile().hasDatabases())
     CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails", folder);
@@ -1728,7 +1633,7 @@ CStdString CSettings::GetThumbnailsFolder() const
 CStdString CSettings::GetMusicThumbFolder() const
 {
   CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+  if (GetCurrentProfile().hasDatabases())
     CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Music", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Music", folder);
@@ -1739,7 +1644,7 @@ CStdString CSettings::GetMusicThumbFolder() const
 CStdString CSettings::GetLastFMThumbFolder() const
 {
   CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+  if (GetCurrentProfile().hasDatabases())
     CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Music/LastFM", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Music/LastFM", folder);
@@ -1750,7 +1655,7 @@ CStdString CSettings::GetLastFMThumbFolder() const
 CStdString CSettings::GetMusicArtistThumbFolder() const
 {
   CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+  if (GetCurrentProfile().hasDatabases())
     CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Music/Artists", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Music/Artists", folder);
@@ -1761,7 +1666,7 @@ CStdString CSettings::GetMusicArtistThumbFolder() const
 CStdString CSettings::GetVideoThumbFolder() const
 {
   CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+  if (GetCurrentProfile().hasDatabases())
     CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Video", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Video", folder);
@@ -1772,7 +1677,7 @@ CStdString CSettings::GetVideoThumbFolder() const
 CStdString CSettings::GetVideoFanartFolder() const
 {
   CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+  if (GetCurrentProfile().hasDatabases())
     CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Video/Fanart", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Video/Fanart", folder);
@@ -1783,7 +1688,7 @@ CStdString CSettings::GetVideoFanartFolder() const
 CStdString CSettings::GetMusicFanartFolder() const
 {
   CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+  if (GetCurrentProfile().hasDatabases())
     CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Music/Fanart", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Music/Fanart", folder);
@@ -1794,7 +1699,7 @@ CStdString CSettings::GetMusicFanartFolder() const
 CStdString CSettings::GetBookmarksThumbFolder() const
 {
   CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+  if (GetCurrentProfile().hasDatabases())
     CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Video/Bookmarks", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Video/Bookmarks", folder);
@@ -1805,7 +1710,7 @@ CStdString CSettings::GetBookmarksThumbFolder() const
 CStdString CSettings::GetPicturesThumbFolder() const
 {
   CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+  if (GetCurrentProfile().hasDatabases())
     CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Pictures", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Pictures", folder);
@@ -1816,7 +1721,7 @@ CStdString CSettings::GetPicturesThumbFolder() const
 CStdString CSettings::GetProgramsThumbFolder() const
 {
   CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+  if (GetCurrentProfile().hasDatabases())
     CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Programs", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Programs", folder);
@@ -1827,7 +1732,7 @@ CStdString CSettings::GetProgramsThumbFolder() const
 CStdString CSettings::GetGameSaveThumbFolder() const
 {
   CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasDatabases())
+  if (GetCurrentProfile().hasDatabases())
     CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/GameSaves", folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/GameSaves", folder);
@@ -1846,7 +1751,7 @@ CStdString CSettings::GetProfilesThumbFolder() const
 CStdString CSettings::GetSourcesFile() const
 {
   CStdString folder;
-  if (m_vecProfiles[m_iLastLoadedProfileIndex].hasSources())
+  if (GetCurrentProfile().hasSources())
     CUtil::AddFileToFolder(GetProfileUserDataFolder(),"sources.xml",folder);
   else
     CUtil::AddFileToFolder(GetUserDataFolder(),"sources.xml",folder);
@@ -1947,7 +1852,7 @@ void CSettings::LoadRSSFeeds()
 CStdString CSettings::GetSettingsFile() const
 {
   CStdString settings;
-  if (m_iLastLoadedProfileIndex == 0)
+  if (m_currentProfile == 0)
     settings = "special://masterprofile/guisettings.xml";
   else
     settings = "special://profile/guisettings.xml";
@@ -1970,6 +1875,8 @@ void CSettings::CreateProfileFolders()
   CDirectory::Create(GetBookmarksThumbFolder());
   CDirectory::Create(GetProgramsThumbFolder());
   CDirectory::Create(GetPicturesThumbFolder());
+  CStdString generatedThumbsFolder = CUtil::AddFileToFolder(GetThumbnailsFolder(), "generated");
+  CDirectory::Create(generatedThumbsFolder);
   CLog::Log(LOGINFO, "thumbnails folder: %s", GetThumbnailsFolder().c_str());
   for (unsigned int hex=0; hex < 16; hex++)
   {
@@ -1978,8 +1885,73 @@ void CSettings::CreateProfileFolders()
     CDirectory::Create(CUtil::AddFileToFolder(GetPicturesThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetMusicThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex));
+    CDirectory::Create(CUtil::AddFileToFolder(GetThumbnailsFolder(), strHex));
+    CDirectory::Create(CUtil::AddFileToFolder(generatedThumbsFolder, strHex));
   }
   CDirectory::Create("special://profile/addon_data");
   CDirectory::Create("special://profile/keymaps");
 }
 
+static CProfile emptyProfile;
+
+const CProfile &CSettings::GetMasterProfile() const
+{
+  if (GetNumProfiles())
+    return m_vecProfiles[0];
+  CLog::Log(LOGERROR, "%s - master profile requested while none exists", __FUNCTION__);
+  return emptyProfile;
+}
+
+const CProfile &CSettings::GetCurrentProfile() const
+{
+  if (m_currentProfile < m_vecProfiles.size())
+    return m_vecProfiles[m_currentProfile];
+  CLog::Log(LOGERROR, "%s - last profile index (%u) is outside the valid range (%ld)", __FUNCTION__, m_currentProfile, m_vecProfiles.size());
+  return emptyProfile;
+}
+
+void CSettings::UpdateCurrentProfileDate()
+{
+  if (m_currentProfile < m_vecProfiles.size())
+    m_vecProfiles[m_currentProfile].setDate();
+}
+
+const CProfile *CSettings::GetProfile(unsigned int index) const
+{
+  if (index < GetNumProfiles())
+    return &m_vecProfiles[index];
+  return NULL;
+}
+
+CProfile *CSettings::GetProfile(unsigned int index)
+{
+  if (index < GetNumProfiles())
+    return &m_vecProfiles[index];
+  return NULL;
+}
+
+unsigned int CSettings::GetNumProfiles() const
+{
+  return m_vecProfiles.size();
+}
+
+int CSettings::GetProfileIndex(const CStdString &name) const
+{
+  for (unsigned int i = 0; i < m_vecProfiles.size(); i++)
+    if (m_vecProfiles[i].getName().Equals(name))
+      return i;
+  return -1;
+}
+
+void CSettings::AddProfile(const CProfile &profile)
+{
+  m_vecProfiles.push_back(profile);
+}
+
+void CSettings::LoadMasterForLogin()
+{
+  // save the previous user
+  m_lastUsedProfile = m_currentProfile;
+  if (m_currentProfile != 0)
+    LoadProfile(0);
+}

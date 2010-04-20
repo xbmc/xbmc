@@ -19,6 +19,7 @@ public:
   void setUsed(bool value);
   bool IsInUse() const { return m_used; }
   bool IsInitialized() const { return m_bInitialized; }
+  void AddSendCommand(const CStdString& command);
 
 private:
   int     m_fd;
@@ -37,6 +38,9 @@ private:
   uint32_t    m_firstClickTime;
   CStdString  m_deviceName;
   bool        CheckDevice();
+  CStdString  m_sendData;
+  bool        m_inReply;
+  int         m_nrSending;
 };
 
 extern CRemoteControl g_RemoteControl;

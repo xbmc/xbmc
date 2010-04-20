@@ -22,6 +22,7 @@
 #include "GUISliderControl.h"
 #include "utils/GUIInfoManager.h"
 #include "Key.h"
+#include "MathUtils.h"
 
 CGUISliderControl::CGUISliderControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, int iType)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
@@ -49,27 +50,10 @@ CGUISliderControl::~CGUISliderControl(void)
 void CGUISliderControl::Render()
 {
   m_guiBackground.SetPosition( m_posX, m_posY );
-  float proportion = 0;
   if (!IsDisabled())
   {
-    switch (m_iType)
-    {
-    case SPIN_CONTROL_TYPE_FLOAT:
-      if (m_iInfoCode) m_fValue = (float)g_infoManager.GetInt(m_iInfoCode);
-
-      proportion = (m_fValue - m_fStart) / (m_fEnd - m_fStart);
-      break;
-
-    case SPIN_CONTROL_TYPE_INT:
-      if (m_iInfoCode) m_iValue = g_infoManager.GetInt(m_iInfoCode);
-
-      proportion = (float)(m_iValue - m_iStart) / (float)(m_iEnd - m_iStart);
-      break;
-    default:
-      if (m_iInfoCode) m_iPercent = g_infoManager.GetInt(m_iInfoCode);
-      proportion = 0.01f * m_iPercent;
-      break;
-    }
+    if (m_iInfoCode)
+      SetIntValue(g_infoManager.GetInt(m_iInfoCode));
 
     float fScaleX = m_width == 0 ? 1.0f : m_width / m_guiBackground.GetTextureWidth();
     float fScaleY = m_height == 0 ? 1.0f : m_height / m_guiBackground.GetTextureHeight();
@@ -80,7 +64,7 @@ void CGUISliderControl::Render()
 
     float fWidth = (m_guiBackground.GetTextureWidth() - m_guiMid.GetTextureWidth())*fScaleX;
 
-    float fPos = m_guiBackground.GetXPosition() + proportion * fWidth;
+    float fPos = m_guiBackground.GetXPosition() + GetProportion() * fWidth;
 
     if ((int)fWidth > 1)
     {
@@ -168,7 +152,7 @@ void CGUISliderControl::Move(int iNumSteps)
     if (m_iPercent > 100) m_iPercent = 100;
     break;
   }
-  SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
+  SEND_CLICK_MESSAGE(GetID(), GetParentID(), MathUtils::round_int(100*GetProportion()));
 }
 
 void CGUISliderControl::SetPercentage(int iPercent)
@@ -250,12 +234,12 @@ void CGUISliderControl::SetFloatRange(float fStart, float fEnd)
   }
 }
 
-void CGUISliderControl::FreeResources()
+void CGUISliderControl::FreeResources(bool immediately)
 {
-  CGUIControl::FreeResources();
-  m_guiBackground.FreeResources();
-  m_guiMid.FreeResources();
-  m_guiMidFocus.FreeResources();
+  CGUIControl::FreeResources(immediately);
+  m_guiBackground.FreeResources(immediately);
+  m_guiMid.FreeResources(immediately);
+  m_guiMidFocus.FreeResources(immediately);
 }
 
 void CGUISliderControl::DynamicResourceAlloc(bool bOnOff)
@@ -308,10 +292,10 @@ void CGUISliderControl::SetFromPosition(const CPoint &point)
     m_iPercent = (int)(fPercent * 100 + 0.49f);
     break;
   }
-  SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
+  SEND_CLICK_MESSAGE(GetID(), GetParentID(), MathUtils::round_int(fPercent));
 }
 
-bool CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_DRAG)
   {
@@ -326,24 +310,24 @@ bool CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEvent &eve
       SendWindowMessage(msg);
     }
     SetFromPosition(point);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_MOUSE_LEFT_CLICK && m_guiBackground.HitTest(point))
   {
     SetFromPosition(point);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
     Move(10);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
   else if (event.m_id == ACTION_MOUSE_WHEEL_DOWN)
   {
     Move(-10);
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 void CGUISliderControl::SetInfo(int iInfo)
@@ -373,3 +357,11 @@ void CGUISliderControl::UpdateColors()
   m_guiMidFocus.SetDiffuseColor(m_diffuseColor);
 }
 
+float CGUISliderControl::GetProportion() const
+{
+  if (m_iType == SPIN_CONTROL_TYPE_FLOAT)
+    return (m_fValue - m_fStart) / (m_fEnd - m_fStart);
+  else if (m_iType == SPIN_CONTROL_TYPE_INT)
+    return (float)(m_iValue - m_iStart) / (float)(m_iEnd - m_iStart);
+  return 0.01f * m_iPercent;
+}

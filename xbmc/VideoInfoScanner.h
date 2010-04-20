@@ -21,7 +21,7 @@
  */
 #include "utils/Thread.h"
 #include "VideoDatabase.h"
-#include "Scraper.h"
+#include "addons/Scraper.h"
 #include "NfoFile.h"
 #include "IMDB.h"
 #include "DateTime.h"
@@ -70,7 +70,7 @@ namespace VIDEO
   public:
     CVideoInfoScanner();
     virtual ~CVideoInfoScanner();
-    void Start(const CStdString& strDirectory, const ADDON::ScraperPtr& info, const SScanSettings& settings, bool bUpdateAll);
+    void Start(const CStdString& strDirectory, bool bUpdateAll);
     bool IsScanning();
     void Stop();
     void SetObserver(IVideoInfoScannerObserver* pObserver);
@@ -83,9 +83,8 @@ namespace VIDEO
     bool OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
     static CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false);
     long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::ScraperPtr &scraper, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool bCombined=false, bool bRefresh=false);
-    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const ADDON::ScraperPtr &info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL, bool ignoreNfo=false);
+    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, CONTENT_TYPE content, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL, bool ignoreNfo=false);
     static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
-    static int GetPathHash(const CFileItemList &items, CStdString &hash);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
     CNfoFile::NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, ADDON::ScraperPtr& scraper, CScraperUrl& scrUrl);
     CIMDB m_IMDB;
@@ -100,11 +99,34 @@ namespace VIDEO
     void FetchSeasonThumbs(int idTvShow, const CStdString &folderToCheck = "", bool download = true, bool overwrite = false);
   protected:
     virtual void Process();
-    bool DoScan(const CStdString& strDirectory, SScanSettings settings);
+    bool DoScan(const CStdString& strDirectory);
+
+    int RetreiveInfoForTvShow(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo);
+    int RetreiveInfoForMovie(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo);
+    int RetreiveInfoForMusicVideo(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo);
+
+    /*! \brief Update the progress bar with the heading and line and check for cancellation
+     \param progress CGUIDialogProgress bar
+     \param heading string id of heading
+     \param line1   string to set for the first line
+     \return true if the user has cancelled the scanner, false otherwise
+     */
+    bool ProgressCancelled(CGUIDialogProgress* progress, int heading, const CStdString &line1);
+
+    /*! \brief Find a url for the given video using the given scraper
+     \param videoName name of the video to lookup
+     \param scraper scraper to use for the lookup
+     \param url [out] returned url from the scraper
+     \param progress CGUIDialogProgress bar
+     \return >0 on success, <0 on failure, and 0 on no info found
+     */
+    int FindVideo(const CStdString &videoName, const ADDON::ScraperPtr &scraper, CScraperUrl &url, CGUIDialogProgress *progress);
 
     virtual void Run();
     int CountFiles(const CStdString& strPath);
     void FetchActorThumbs(const std::vector<SActorInfo>& actors, const CStdString& strPath);
+    static int GetPathHash(const CFileItemList &items, CStdString &hash);
+    void SetScraperInfo(const ADDON::ScraperPtr& info) { m_info = info; };
 
   protected:
     IVideoInfoScannerObserver* m_pObserver;
@@ -117,7 +139,7 @@ namespace VIDEO
     CStdString m_strStartDir;
     CVideoDatabase m_database;
     ADDON::ScraperPtr m_info;
-    std::map<CStdString,SScanSettings> m_pathsToScan;
+    std::set<CStdString> m_pathsToScan;
     std::set<CStdString> m_pathsToCount;
     std::vector<int> m_pathsToClean;
     CNfoFile m_nfoReader;

@@ -37,7 +37,7 @@ public:
   void ClearIncludes();
   bool LoadIncludes(const CStdString &includeFile);
   void ResolveIncludes(TiXmlElement *node, const CStdString &type);
-  bool ResolveConstant(const CStdString &constant, float &value);
+  bool ResolveConstant(const CStdString &constant, float &value) const;
   bool LoadIncludesFromXML(const TiXmlElement *root);
 
 private:

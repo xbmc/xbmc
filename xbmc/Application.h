@@ -67,7 +67,6 @@ class CFileItemList;
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
 class DPMSSupport;
-class CProfile;
 class CSplash;
 
 class CBackgroundPlayer : public CThread
@@ -119,9 +118,7 @@ public:
   void RestartApp();
   void LoadSkin(const CStdString& strSkin);
   void UnloadSkin();
-  bool LoadUserWindows(const CStdString& strSkinPath);
-  void DelayLoadSkin();
-  void CancelDelayLoadSkin();
+  bool LoadUserWindows();
   void ReloadSkin();
   const CStdString& CurrentFile();
   CFileItem& CurrentFileItem();
@@ -230,7 +227,6 @@ public:
   inline bool IsInScreenSaver() { return m_bScreenSave; };
   int m_iScreenSaveLock; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
 
-  unsigned int m_skinReloadTime;
   bool m_bIsPaused;
   bool m_bPlaybackStarting;
 
@@ -347,9 +343,9 @@ protected:
 
   void SaveCurrentFileSettings();
 
-  CProfile* InitDirectoriesLinux();
-  CProfile* InitDirectoriesOSX();
-  CProfile* InitDirectoriesWin32();
+  bool InitDirectoriesLinux();
+  bool InitDirectoriesOSX();
+  bool InitDirectoriesWin32();
 
   CApplicationMessenger m_applicationMessenger;
 #if defined(HAS_LINUX_NETWORK)

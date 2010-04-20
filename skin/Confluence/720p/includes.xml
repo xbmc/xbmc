@@ -4,6 +4,7 @@
 	<include file="ViewsMusicLibrary.xml" />
 	<include file="ViewsFileMode.xml" />
 	<include file="ViewsPictures.xml" />
+	<include file="ViewsAddonBrowser.xml" />
 	<include file="IncludesCodecFlagging.xml" />
 	<include file="IncludesHomeRecentlyAdded.xml" />
 
@@ -148,6 +149,18 @@
 			<width>1280</width>
 			<height>720</height>
 			<imagepath fallback="special://skin/backgrounds/settings.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_Settings_Folder)]</imagepath>
+			<timeperimage>10000</timeperimage>
+			<randomize>true</randomize>
+			<fadetime>1000</fadetime>
+		</control>
+	</include>
+	<include name="CommonAddonsBackground">
+		<control type="multiimage">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<imagepath fallback="special://skin/backgrounds/addons.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_Addons_Folder)]</imagepath>
 			<timeperimage>10000</timeperimage>
 			<randomize>true</randomize>
 			<fadetime>1000</fadetime>
@@ -557,7 +570,7 @@
 				<texturefocus>OSDRewindFO.png</texturefocus>
 				<texturenofocus>OSDRewindNF.png</texturenofocus>
 				<onleft>600</onleft>
-				<onright>601</onright>
+				<onright>603</onright>
 				<onup>610</onup>
 				<ondown>608</ondown>
 				<onclick>XBMC.PlayerControl(Rewind)</onclick>
@@ -565,23 +578,8 @@
 			</control>
 			<control type="group">
 				<animation effect="slide" start="0,0" end="40,0" time="0" condition="Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo">Conditional</animation>
-				<control type="button" id="601">
-					<posx>40</posx>
-					<posy>2</posy>
-					<width>39</width>
-					<height>39</height>
-					<label>-</label>
-					<texturefocus>OSDStopFO.png</texturefocus>
-					<texturenofocus>OSDStopNF.png</texturenofocus>
-					<onleft>606</onleft>
-					<onright>603</onright>
-					<onup>610</onup>
-					<ondown>608</ondown>
-					<onclick>down</onclick>
-					<onclick>XBMC.PlayerControl(Stop)</onclick>
-				</control>
 				<control type="togglebutton" id="603">
-					<posx>80</posx>
+					<posx>40</posx>
 					<posy>2</posy>
 					<width>39</width>
 					<height>39</height>
@@ -591,11 +589,26 @@
 					<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
 					<alttexturefocus>OSDPlayFO.png</alttexturefocus>
 					<alttexturenofocus>OSDPlayNF.png</alttexturenofocus>
-					<onleft>601</onleft>
-					<onright>607</onright>
+					<onleft>606</onleft>
+					<onright>601</onright>
 					<onup>610</onup>
 					<ondown>608</ondown>
 					<onclick>XBMC.PlayerControl(Play)</onclick>
+				</control>
+				<control type="button" id="601">
+					<posx>80</posx>
+					<posy>2</posy>
+					<width>39</width>
+					<height>39</height>
+					<label>-</label>
+					<texturefocus>OSDStopFO.png</texturefocus>
+					<texturenofocus>OSDStopNF.png</texturenofocus>
+					<onleft>603</onleft>
+					<onright>607</onright>
+					<onup>610</onup>
+					<ondown>608</ondown>
+					<onclick>down</onclick>
+					<onclick>XBMC.PlayerControl(Stop)</onclick>
 				</control>
 				<control type="button" id="607">
 					<posx>120</posx>
@@ -605,7 +618,7 @@
 					<label>-</label>
 					<texturefocus>OSDForwardFO.png</texturefocus>
 					<texturenofocus>OSDForwardNF.png</texturenofocus>
-					<onleft>603</onleft>
+					<onleft>601</onleft>
 					<onright>602</onright>
 					<onup>610</onup>
 					<ondown>608</ondown>

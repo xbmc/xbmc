@@ -253,6 +253,8 @@ void CBaseRenderer::SetViewMode(int viewMode)
   bool is43 = (sourceFrameRatio < 8.f/(3.f*sqrt(3.f)) &&
               g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL);
 
+  g_settings.m_bNonLinStretch = false;
+
   if ( g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ZOOM ||
        (is43 && g_guiSettings.GetInt("videoplayer.stretch43") == VIEW_MODE_ZOOM))
   { // zoom image so no black bars
@@ -291,6 +293,7 @@ void CBaseRenderer::SetViewMode(int viewMode)
     float stretchAmount = (screenWidth / screenHeight) * g_settings.m_ResInfo[res].fPixelRatio / sourceFrameRatio;
     g_settings.m_fPixelRatio = pow(stretchAmount, float(2.0/3.0));
     g_settings.m_fZoomAmount = pow(stretchAmount, float((stretchAmount < 1.0) ? -1.0/3.0 : 1.0/3.0));
+    g_settings.m_bNonLinStretch = true;
   }
   else if ( g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9 ||
            (is43 && g_guiSettings.GetInt("videoplayer.stretch43") == VIEW_MODE_STRETCH_16x9))
@@ -328,13 +331,11 @@ void CBaseRenderer::SetViewMode(int viewMode)
   {
     g_settings.m_fZoomAmount = g_settings.m_currentVideoSettings.m_CustomZoomAmount;
     g_settings.m_fPixelRatio = g_settings.m_currentVideoSettings.m_CustomPixelRatio;
+    g_settings.m_bNonLinStretch = g_settings.m_currentVideoSettings.m_CustomNonLinStretch;
   }
   else // if (g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL)
   {
     g_settings.m_fPixelRatio = 1.0;
     g_settings.m_fZoomAmount = 1.0;
   }
-  
-  if (g_settings.m_currentVideoSettings.m_ViewMode != VIEW_MODE_CUSTOM)
-    g_settings.m_currentVideoSettings.m_NonLinStretch = g_settings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_WIDE_ZOOM;
 }

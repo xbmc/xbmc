@@ -42,13 +42,12 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="regex;..\..\..\cores\paplayer;..\..\..\xbmc\cores\dvdplayer\DVDCodecs;..\..\libiconv;..\..\..\cores\dvdplayer\DVDCodecs\Audio\libmad;..\..\..\..\lib\libiconv\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;XBMC;HAVE_ICONV"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;XBMC;HAVE_ICONV;ANSI_PROTOTYPES;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -107,11 +106,10 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="regex;..\..\..\cores\paplayer;..\..\..\xbmc\cores\dvdplayer\DVDCodecs;..\..\libiconv;..\..\..\cores\dvdplayer\DVDCodecs\Audio\libmad;..\..\..\..\lib\libiconv\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;XBMC;HAVE_ICONV"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;XBMC;HAVE_ICONV;ANSI_PROTOTYPES;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="0"
 			/>
 			<Tool

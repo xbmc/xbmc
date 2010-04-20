@@ -84,24 +84,32 @@ void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int 
   if (pixels == NULL)
     return;
 
-  Allocate(width, height, format);
-
-  unsigned int srcPitch = pitch ? pitch : GetPitch(width);
-  unsigned int srcRows = GetRows(height);
-  unsigned int dstPitch = GetPitch(m_textureWidth);
-  unsigned int dstRows = GetRows(m_textureHeight);
-
-  if (srcPitch == dstPitch)
-    memcpy(m_pixels, pixels, srcPitch * std::min(srcRows, dstRows));
+  if (format & XB_FMT_DXT_MASK && !g_Windowing.SupportsDXT())
+  { // compressed format that we don't support
+    Allocate(width, height, XB_FMT_A8R8G8B8);
+    CDDSImage::Decompress(m_pixels, std::min(width, m_textureWidth), std::min(height, m_textureHeight), GetPitch(m_textureWidth), pixels, format);
+  }
   else
   {
-    const unsigned char *src = pixels;
-    unsigned char* dst = m_pixels;
-    for (unsigned int y = 0; y < srcRows && y < dstRows; y++)
+    Allocate(width, height, format);
+
+    unsigned int srcPitch = pitch ? pitch : GetPitch(width);
+    unsigned int srcRows = GetRows(height);
+    unsigned int dstPitch = GetPitch(m_textureWidth);
+    unsigned int dstRows = GetRows(m_textureHeight);
+
+    if (srcPitch == dstPitch)
+      memcpy(m_pixels, pixels, srcPitch * std::min(srcRows, dstRows));
+    else
     {
-      memcpy(dst, src, std::min(srcPitch, dstPitch));
-      src += srcPitch;
-      dst += dstPitch;
+      const unsigned char *src = pixels;
+      unsigned char* dst = m_pixels;
+      for (unsigned int y = 0; y < srcRows && y < dstRows; y++)
+      {
+        memcpy(dst, src, std::min(srcPitch, dstPitch));
+        src += srcPitch;
+        dst += dstPitch;
+      }
     }
   }
   ClampToEdge();
@@ -146,10 +154,12 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   if (CUtil::GetExtension(texturePath).Equals(".dds"))
   { // special case for DDS images
     CDDSImage image;
-    CLog::Log(LOGDEBUG, "%s - loading dds file: %s", __FUNCTION__, texturePath.c_str());
-    image.ReadFile(texturePath);
-    Update(image.GetWidth(), image.GetHeight(), 0, image.GetFormat(), image.GetData(), false);
-    return true;
+    if (image.ReadFile(texturePath))
+    {
+      Update(image.GetWidth(), image.GetHeight(), 0, image.GetFormat(), image.GetData(), false);
+      return true;
+    }
+    return false;
   }
 
   DllImageLib dll;

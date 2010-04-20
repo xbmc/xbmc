@@ -24,29 +24,45 @@ config.log
 *.dylib
 *.lineno
 *.py[co]
+*.ver
+*.rej
 
 .libs/
 .deps/
 
 # /
-/autotools
+/.dummy
+/.dummy.in
+/Makefile
+/Makefile.include
 /aclocal.m4
 /autom4te.cache/
+/build-aux/config.guess
+/build-aux/config.sub
+/build-aux/install-sh
+/build-aux/missing
+/autotools
 /BUILD
 /xbmc.log
 /xbmc.old.log
-/Makefile
 /Makefile.depend
-/Makefile.include
-/config.guess
 /config.status
-/config.sub
 /config.h
 /config.h.in
+/config.h.in~
 /configure
+/stamp-h1
+/xbmc.bin
 /xbmc-xrandr
 /svn_revision.h
-/build
+
+# /addons/
+/addons/net.sf.projectm.xbmc/projectM.vis
+/addons/net.sf.rsxs.euphoria/Euphoria.xbs
+/addons/net.sf.rsxs.plasma/Plasma.xbs
+/addons/net.sf.rsxs.solarwinds/Solarwinds.xbs
+/addons/org.xbmc.addons.glspectrum/opengl_spectrum.vis
+/addons/org.xbmc.addons.waveform/Waveform.vis
 
 # /guilib/
 /guilib/Makefile
@@ -98,6 +114,13 @@ config.log
 
 # /system/
 /system/profiles.xml
+/system/players/paplayer/wavpack.dll
+/system/players/paplayer/libmodplug.dll
+/system/players/paplayer/StSoundLibrary.dll
+
+# /addons/
+/addons/vis.dxspectrum/*.vis
+/addons/vis.waveform/*.vis
 
 # /tools/Changelog/
 /tools/Changelog/Changelog.txt
@@ -127,10 +150,14 @@ config.log
 /visualisations/ProjectM.vis
 /visualisations/Waveform.vis
 /visualisations/opengl_spectrum.vis
+/visualisations/projectM/
 
 # /xbmc/
 /xbmc/DllPaths_generated.h
 /xbmc/Makefile
+
+# /xbmc/addons/
+/xbmc/addons/Makefile
 
 # /xbmc/linux/
 /xbmc/linux/Makefile
@@ -166,6 +193,12 @@ config.log
 /xbmc/cores/dvdplayer/Codecs/ffmpeg/config.h
 /xbmc/cores/dvdplayer/Codecs/ffmpeg/config.err
 /xbmc/cores/dvdplayer/Codecs/ffmpeg/config.mak
+/xbmc/cores/dvdplayer/Codecs/ffmpeg/ffprobe
+/xbmc/cores/dvdplayer/Codecs/ffmpeg/ffprobe_g
+/xbmc/cores/dvdplayer/Codecs/ffmpeg/.version
+/xbmc/cores/dvdplayer/Codecs/ffmpeg/version.h
+/xbmc/cores/dvdplayer/Codecs/ffmpeg/libavutil/avconfig.h
+
 
 # /xbmc/cores/dvdplayer/Codecs/liba52/
 /xbmc/cores/dvdplayer/Codecs/liba52/config.log
@@ -241,6 +274,7 @@ config.log
 
 # /xbmc/cores/dvdplayer/Codecs/libdvd/
 /xbmc/cores/dvdplayer/Codecs/libdvd/Makefile
+/xbmc/cores/dvdplayer/Codecs/libbdnav/config.h.in~
 
 # /xbmc/cores/dvdplayer/Codecs/libdvd/includes/
 /xbmc/cores/dvdplayer/Codecs/libdvd/includes/dv
@@ -672,9 +706,35 @@ config.log
 /xbmc/lib/cximage-6.0/zlib/zconf.h
 /xbmc/lib/cximage-6.0/zlib/Makefile
 
+# /skin/
 /skin/Confluence/media/Textures.xbt
 /skin/PM3.HD/media/Textures.xbt
 
+# /lib/cpluff/
+/lib/cpluff/ABOUT-NLS
+/lib/cpluff/aclocal.m4
+/lib/cpluff/autom4te.cache
+/lib/cpluff/auxliary
+/lib/cpluff/config.h
+/lib/cpluff/config.h.in
+/lib/cpluff/configure
+/lib/cpluff/console
+/lib/cpluff/doc*
+/lib/cpluff/examples
+/lib/cpluff/libcpluff/docsrc
+/lib/cpluff/libcpluff/Makefile.in
+/lib/cpluff/libtool
+/lib/cpluff/loader
+/lib/cpluff/m4
+/lib/cpluff/Makefile.in
+/lib/cpluff/po
+/lib/cpluff/stamp-h1
+/lib/cpluff/test
+/lib/cpluff/Makefile
+/lib/cpluff/libcpluff/Makefile
+/lib/cpluff/libcpluff/cpluffdef.h
+
+# /lib/libmodplug/
 /lib/libmodplug/libtool
 /lib/libmodplug/src/stamp-h1
 /lib/libmodplug/Makefile
@@ -682,6 +742,7 @@ config.log
 /lib/libmodplug/src/config.h
 
 /system/python/Lib/
+/system/python/python24.zip
 
 /tools/EventClients/Clients/OSXRemote/Makefile
 /tools/EventClients/Clients/OSXRemote/build/
@@ -767,6 +828,7 @@ config.log
 /xbmc/lib/libass/autom4te.cache/
 /xbmc/lib/libass/compile
 /xbmc/lib/libass/config.h.in
+/xbmc/lib/libass/config.h.in~
 /xbmc/lib/libass/configure
 /xbmc/lib/libass/install-sh
 /xbmc/lib/libass/libass/Makefile.in

@@ -72,6 +72,7 @@
 #include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "GUILargeTextureManager.h"
+#include "TextureCache.h"
 #include "LastFmManager.h"
 #include "SmartPlaylist.h"
 #ifdef HAS_FILESYSTEM_RAR
@@ -217,6 +218,7 @@
 #include "GUIDialogFullScreenInfo.h"
 #include "GUIDialogTeletext.h"
 #include "GUIDialogSlider.h"
+#include "GUIControlFactory.h"
 #include "cores/dlgcache.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -301,7 +303,6 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_dpms = NULL;
   m_dpmsIsActive = false;
   m_iScreenSaveLock = 0;
-  m_skinReloadTime = 0;
   m_bInitializing = true;
   m_eForcedNextPlayer = EPC_NONE;
   m_strPlayListFile = "";
@@ -463,25 +464,13 @@ bool CApplication::Create()
   win32_exception::install_handler();
 #endif
 
-  CProfile *profile;
-
-  // only the InitDirectories* for the current platform should return
-  // non-null (if at all i.e. to set a profile)
+  // only the InitDirectories* for the current platform should return true
   // putting this before the first log entries saves another ifdef for g_settings.m_logFolder
-  profile = InitDirectoriesLinux();
-  if (!profile)
-    profile = InitDirectoriesOSX();
-  if (!profile)
-    profile = InitDirectoriesWin32();
-  if (profile)
-  {
-    profile->setName("Master user");
-    profile->setLockMode(LOCK_MODE_EVERYONE);
-    profile->setLockCode("");
-    profile->setDate("");
-    g_settings.m_vecProfiles.push_back(*profile);
-    delete profile;
-  }
+  bool inited = InitDirectoriesLinux();
+  if (!inited)
+    inited = InitDirectoriesOSX();
+  if (!inited)
+    inited = InitDirectoriesWin32();
 
   if (!CLog::Init(_P(g_settings.m_logFolder).c_str()))
   {
@@ -489,6 +478,7 @@ bool CApplication::Create()
     return false;
   }
 
+  g_settings.LoadProfiles(PROFILES_FILE);
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 #if defined(__APPLE__)
@@ -523,7 +513,6 @@ bool CApplication::Create()
       for (int i=0;i<items.Size();++i)
           CFile::Cache(items[i]->m_strPath,"special://masterprofile/"+CUtil::GetFileName(items[i]->m_strPath));
     }
-    g_settings.m_vecProfiles[0].setDirectory("special://masterprofile/");
     g_settings.m_logFolder = "special://masterprofile/";
   }
 
@@ -591,9 +580,6 @@ bool CApplication::Create()
   g_powerManager.Initialize();
 
   CLog::Log(LOGNOTICE, "load settings...");
-  g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
-  if (g_settings.bUseLoginScreen && g_settings.m_iLastLoadedProfileIndex != 0)
-    g_settings.m_iLastLoadedProfileIndex = 0;
 
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
   g_powerManager.SetDefaults();
@@ -703,12 +689,12 @@ bool CApplication::Create()
     strSkinPath = strSkinBase + g_guiSettings.GetString("lookandfeel.skin");
   }
   CLog::Log(LOGINFO, "Checking skin version of: %s", g_guiSettings.GetString("lookandfeel.skin").c_str());
-  if (!g_SkinInfo.Check(strSkinPath))
+  if (!CSkinInfo::Check(strSkinPath))
   {
     // reset to the default skin (DEFAULT_SKIN)
     CLog::Log(LOGINFO, "The above skin isn't suitable - checking the version of the default: %s", DEFAULT_SKIN);
     strSkinPath = strSkinBase + DEFAULT_SKIN;
-    if (!g_SkinInfo.Check(strSkinPath))
+    if (!CSkinInfo::Check(strSkinPath))
     {
       CLog::Log(LOGERROR, "No suitable skin version found. We require at least version %5.4f", g_SkinInfo.GetMinVersion());
       FatalErrorHandler(false, false, true);
@@ -733,7 +719,7 @@ bool CApplication::Create()
   return Initialize();
 }
 
-CProfile* CApplication::InitDirectoriesLinux()
+bool CApplication::InitDirectoriesLinux()
 {
 /*
    The following is the directory mapping for Platform Specific Mode:
@@ -755,8 +741,6 @@ CProfile* CApplication::InitDirectoriesLinux()
 */
 
 #if defined(_LINUX) && !defined(__APPLE__)
-  CProfile* profile = NULL;
-
   CStdString userName;
   if (getenv("USER"))
     userName = getenv("USER");
@@ -790,6 +774,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
     CDirectory::Create("special://home/addons");
+    CDirectory::Create("special://home/addons/packages");
     CDirectory::Create("special://home/media");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
@@ -819,25 +804,15 @@ CProfile* CApplication::InitDirectoriesLinux()
     g_settings.m_logFolder = strTempPath;
   }
 
-  g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles( PROFILES_FILE );
-
-  if (g_settings.m_vecProfiles.size()==0)
-  {
-    profile = new CProfile;
-    profile->setDirectory("special://masterprofile/");
-  }
-  return profile;
+  return true;
 #else
-  return NULL;
+  return false;
 #endif
 }
 
-CProfile* CApplication::InitDirectoriesOSX()
+bool CApplication::InitDirectoriesOSX()
 {
 #ifdef __APPLE__
-  CProfile* profile = NULL;
-
   CStdString userName;
   if (getenv("USER"))
     userName = getenv("USER");
@@ -915,24 +890,15 @@ CProfile* CApplication::InitDirectoriesOSX()
     g_settings.m_logFolder = strTempPath;
   }
 
-  g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles( PROFILES_FILE );
-
-  if (g_settings.m_vecProfiles.size()==0)
-  {
-    profile = new CProfile;
-    profile->setDirectory("special://masterprofile/");
-  }
-  return profile;
+  return true;
 #else
-  return NULL;
+  return false;
 #endif
 }
 
-CProfile* CApplication::InitDirectoriesWin32()
+bool CApplication::InitDirectoriesWin32()
 {
 #ifdef _WIN32
-  CProfile* profile = NULL;
   CStdString strExecutablePath;
 
   CUtil::GetHomePath(strExecutablePath);
@@ -990,15 +956,6 @@ CProfile* CApplication::InitDirectoriesWin32()
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile/").c_str());
   }
 
-  g_settings.m_vecProfiles.clear();
-  g_settings.LoadProfiles(PROFILES_FILE);
-
-  if (g_settings.m_vecProfiles.size()==0)
-  {
-    profile = new CProfile;
-    profile->setDirectory("special://masterprofile/");
-  }
-
   // Expand the DLL search path with our directories
   CWIN32Util::ExtendDllPath();
 
@@ -1015,9 +972,9 @@ CProfile* CApplication::InitDirectoriesWin32()
       g_application.getApplicationMessenger().OpticalMount(it->strPath);
   // remove end
 
-  return profile;
+  return true;
 #else
-  return NULL;
+  return false;
 #endif
 }
 
@@ -1168,26 +1125,20 @@ bool CApplication::Initialize()
   SAFE_DELETE(m_splash);
 
   if (g_guiSettings.GetBool("masterlock.startuplock") &&
-      g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE &&
-     !g_settings.m_vecProfiles[0].getLockCode().IsEmpty())
+      g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+     !g_settings.GetMasterProfile().getLockCode().IsEmpty())
   {
      g_passwordManager.CheckStartUpLock();
   }
 
   // check if we should use the login screen
-  if (g_settings.bUseLoginScreen)
+  if (g_settings.UsingLoginScreen())
   {
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
   }
   else
   {
-    // test for a startup window, and activate that instead of home
-    RESOLUTION res = RES_INVALID;
-    CStdString startupPath = g_SkinInfo.GetSkinPath("Startup.xml", &res);
-    int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
-    if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
-      startWindow = WINDOW_STARTUP;
-    g_windowManager.ActivateWindow(startWindow);
+    g_windowManager.ActivateWindow(g_SkinInfo.GetFirstWindow());
   }
 
 #ifdef HAS_PYTHON
@@ -1210,7 +1161,7 @@ bool CApplication::Initialize()
     RestoreMusicScanSettings();
   }
 
-  if (!g_settings.bUseLoginScreen)
+  if (!g_settings.UsingLoginScreen())
     UpdateLibraries();
 
   m_slowTimer.StartZero();
@@ -1264,7 +1215,7 @@ void CApplication::StartWebServer()
 #endif
     }
 #ifdef HAS_HTTPAPI
-    if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+    if (g_settings.m_HttpApiBroadcastLevel>=1)
       getApplicationMessenger().HttpApi("broadcastlevel; StartUp;1");
 #endif
   }
@@ -1536,17 +1487,6 @@ void CApplication::StopServices()
 #endif
 }
 
-void CApplication::DelayLoadSkin()
-{
-  m_skinReloadTime = CTimeUtils::GetFrameTime() + 2000;
-  return ;
-}
-
-void CApplication::CancelDelayLoadSkin()
-{
-  m_skinReloadTime = 0;
-}
-
 void CApplication::ReloadSkin()
 {
   CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, g_windowManager.GetActiveWindow());
@@ -1554,7 +1494,7 @@ void CApplication::ReloadSkin()
   // Reload the skin, restoring the previously focused control.  We need this as
   // the window unload will reset all control states.
   CGUIWindow* pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
-  unsigned iCtrlID = pWindow->GetFocusedControlID();
+  int iCtrlID = pWindow->GetFocusedControlID();
   g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
   pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
   if (pWindow && pWindow->HasSaveLastControl())
@@ -1586,8 +1526,6 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   }
   // close the music and video overlays (they're re-opened automatically later)
   CSingleLock lock(g_graphicsContext);
-
-  m_skinReloadTime = 0;
 
   CStdString strSkinPath = g_settings.GetSkinFolder(strSkin);
   CLog::Log(LOGINFO, "  load skin from:%s", strSkinPath.c_str());
@@ -1640,7 +1578,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   CLog::Log(LOGINFO, "  load new skin...");
   CGUIWindowHome *pHome = (CGUIWindowHome *)g_windowManager.GetWindow(WINDOW_HOME);
-  if (!g_SkinInfo.Check(strSkinPath) || !pHome || !pHome->Load("Home.xml"))
+  if (!CSkinInfo::Check(strSkinPath) || !pHome || !pHome->Load("Home.xml"))
   {
     // failed to load home.xml
     // fallback to default skin
@@ -1654,7 +1592,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   }
 
   // Load the user windows
-  LoadUserWindows(strSkinPath);
+  LoadUserWindows();
 
   int64_t end, freq;
   end = CurrentHostCounter();
@@ -1673,17 +1611,12 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   g_windowManager.AddMsgTarget(&g_fontManager);
   g_windowManager.SetCallback(*this);
   g_windowManager.Initialize();
+  CTextureCache::Get().Initialize();
   g_audioManager.Enable(true);
   g_audioManager.Load();
 
-  CGUIDialogFullScreenInfo* pDialog = NULL;
-  RESOLUTION res;
-  CStdString strPath = g_SkinInfo.GetSkinPath("DialogFullScreenInfo.xml", &res);
-  if (CFile::Exists(strPath))
-    pDialog = new CGUIDialogFullScreenInfo;
-
-  if (pDialog)
-    g_windowManager.Add(pDialog); // window id = 142
+  if (g_SkinInfo.HasSkinFile("DialogFullScreenInfo.xml"))
+    g_windowManager.Add(new CGUIDialogFullScreenInfo);
 
   CLog::Log(LOGINFO, "  skin loaded...");
 
@@ -1715,6 +1648,7 @@ void CApplication::UnloadSkin()
   g_audioManager.Enable(false);
 
   g_windowManager.DeInitialize();
+  CTextureCache::Get().Deinitialize();
 
   //These windows are not handled by the windowmanager (why not?) so we should unload them manually
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
@@ -1740,34 +1674,21 @@ void CApplication::UnloadSkin()
   g_infoManager.Clear();
 }
 
-bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
+bool CApplication::LoadUserWindows()
 {
-  WIN32_FIND_DATA FindFileData;
-  WIN32_FIND_DATA NextFindFileData;
-  HANDLE hFind;
-  TiXmlDocument xmlDoc;
-  RESOLUTION resToUse = RES_INVALID;
-
   // Start from wherever home.xml is
-  g_SkinInfo.GetSkinPath("Home.xml", &resToUse);
   std::vector<CStdString> vecSkinPath;
-  if (resToUse == RES_HDTV_1080i)
-    vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(RES_HDTV_1080i)));
-  if (resToUse == RES_HDTV_720p)
-    vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(RES_HDTV_720p)));
-  if (resToUse == RES_PAL_16x9 || resToUse == RES_NTSC_16x9 || resToUse == RES_HDTV_480p_16x9 || resToUse == RES_HDTV_720p || resToUse == RES_HDTV_1080i)
-    vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(g_SkinInfo.GetDefaultWideResolution())));
-  vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(g_SkinInfo.GetDefaultResolution())));
+  g_SkinInfo.GetSkinPaths(vecSkinPath);
   for (unsigned int i = 0;i < vecSkinPath.size();++i)
   {
     CStdString strPath = CUtil::AddFileToFolder(vecSkinPath[i], "custom*.xml");
     CLog::Log(LOGINFO, "Loading user windows, path %s", vecSkinPath[i].c_str());
-    hFind = FindFirstFile(_P(strPath).c_str(), &NextFindFileData);
 
-    CStdString strFileName;
+    WIN32_FIND_DATA NextFindFileData;
+    HANDLE hFind = FindFirstFile(_P(strPath).c_str(), &NextFindFileData);
     while (hFind != INVALID_HANDLE_VALUE)
     {
-      FindFileData = NextFindFileData;
+      WIN32_FIND_DATA FindFileData = NextFindFileData;
 
       if (!FindNextFile(hFind, &NextFindFileData))
       {
@@ -1779,11 +1700,12 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
       if (!strcmp(FindFileData.cFileName, ".") || !strcmp(FindFileData.cFileName, ".."))
         continue;
 
-      strFileName = CUtil::AddFileToFolder(vecSkinPath[i], FindFileData.cFileName);
+      CStdString strFileName = CUtil::AddFileToFolder(vecSkinPath[i], FindFileData.cFileName);
       CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
       CStdString strLower(FindFileData.cFileName);
       strLower.MakeLower();
       strLower = CUtil::AddFileToFolder(vecSkinPath[i], strLower);
+      TiXmlDocument xmlDoc;
       if (!xmlDoc.LoadFile(strFileName) && !xmlDoc.LoadFile(strLower))
       {
         CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", strFileName.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
@@ -1811,15 +1733,6 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
         if (pType && pType->FirstChild())
           strType = pType->FirstChild()->Value();
       }
-      if (strType.Equals("dialog"))
-        pWindow = new CGUIDialog(0, "");
-      else if (strType.Equals("submenu"))
-        pWindow = new CGUIDialogSubMenu();
-      else if (strType.Equals("buttonmenu"))
-        pWindow = new CGUIDialogButtonMenu();
-      else
-        pWindow = new CGUIStandardWindow();
-
       int id = WINDOW_INVALID;
       if (!pRootElement->Attribute("id", &id))
       {
@@ -1827,20 +1740,30 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
         if (pType && pType->FirstChild())
           id = atol(pType->FirstChild()->Value());
       }
+      int visibleCondition = 0;
+      CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
+
+      if (strType.Equals("dialog"))
+        pWindow = new CGUIDialog(id + WINDOW_HOME, FindFileData.cFileName);
+      else if (strType.Equals("submenu"))
+        pWindow = new CGUIDialogSubMenu(id + WINDOW_HOME, FindFileData.cFileName);
+      else if (strType.Equals("buttonmenu"))
+        pWindow = new CGUIDialogButtonMenu(id + WINDOW_HOME, FindFileData.cFileName);
+      else
+        pWindow = new CGUIStandardWindow(id + WINDOW_HOME, FindFileData.cFileName);
+
       // Check to make sure the pointer isn't still null
-      if (pWindow == NULL || id == WINDOW_INVALID)
+      if (pWindow == NULL)
       {
         CLog::Log(LOGERROR, "Out of memory / Failed to create new object in LoadUserWindows");
         return false;
       }
-      if (g_windowManager.GetWindow(WINDOW_HOME + id))
+      if (id == WINDOW_INVALID || g_windowManager.GetWindow(WINDOW_HOME + id))
       {
         delete pWindow;
         continue;
       }
-      // set the window's xml file, and add it to the window manager.
-      pWindow->SetProperty("xmlfile", FindFileData.cFileName);
-      pWindow->SetID(WINDOW_HOME + id);
+      pWindow->SetVisibleCondition(visibleCondition, false);
       g_windowManager.AddCustomWindow(pWindow);
     }
     CloseHandle(hFind);
@@ -1973,9 +1896,28 @@ bool CApplication::WaitFrame(unsigned int timeout)
 #ifdef HAS_SDL
   // Wait for all other frames to be presented
   SDL_mutexP(m_frameMutex);
+  //wait until event is set, but modify remaining time
+  DWORD dwStartTime = CTimeUtils::GetTimeMS();
+  DWORD dwRemainingTime = timeout;
   while(m_frameCount > 0)
   {
-    int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, timeout);
+    int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, dwRemainingTime);
+    if (result == 0)
+    {
+      //fix time to wait because of spurious wakeups
+      DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
+      if(dwElapsed < dwRemainingTime)
+      {
+        dwRemainingTime -= dwElapsed;
+        continue;
+      }
+      else
+      {
+        //ran out of time
+        result = SDL_MUTEX_TIMEDOUT;
+      }
+    }
+
     if(result == SDL_MUTEX_TIMEDOUT)
       break;
     if(result < 0)
@@ -2031,10 +1973,29 @@ void CApplication::Render()
 #ifdef HAS_SDL
       SDL_mutexP(m_frameMutex);
 
+      //wait until event is set, but modify remaining time
+      DWORD dwStartTime = CTimeUtils::GetTimeMS();
+      DWORD dwRemainingTime = 100;
       // If we have frames or if we get notified of one, consume it.
       while(m_frameCount == 0)
       {
-        int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, 100);
+        int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, dwRemainingTime);
+        if (result == 0)
+        {
+          //fix time to wait because of spurious wakeups
+          DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
+          if(dwElapsed < dwRemainingTime)
+          {
+            dwRemainingTime -= dwElapsed;
+            continue;
+          }
+          else
+          {
+            //ran out of time
+            result = SDL_MUTEX_TIMEDOUT;
+          }
+        }
+
         if(result == SDL_MUTEX_TIMEDOUT)
           break;
         if(result < 0)
@@ -2119,12 +2080,24 @@ void CApplication::RenderMemoryStatus()
 
   g_cpuInfo.getUsedPercentage(); // must call it to recalculate pct values
 
+  // reset the window scaling and fade status
+  RESOLUTION res = g_graphicsContext.GetVideoResolution();
+  g_graphicsContext.SetRenderingResolution(res, false);
+
+  static int yShift = 20;
+  static int xShift = 40;
+  static unsigned int lastShift = time(NULL);
+  time_t now = time(NULL);
+  if (now - lastShift > 10)
+  {
+    yShift *= -1;
+    if (now % 5 == 0)
+      xShift *= -1;
+    lastShift = now;
+  }
+
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
   {
-    // reset the window scaling and fade status
-    RESOLUTION res = g_graphicsContext.GetVideoResolution();
-    g_graphicsContext.SetRenderingResolution(res, false);
-
     CStdString info;
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
@@ -2139,24 +2112,47 @@ void CApplication::RenderMemoryStatus()
               g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
 #endif
 
-    static int yShift = 20;
-    static int xShift = 40;
-    static unsigned int lastShift = time(NULL);
-    time_t now = time(NULL);
-    if (now - lastShift > 10)
-    {
-      yShift *= -1;
-      if (now % 5 == 0)
-        xShift *= -1;
-      lastShift = now;
-    }
 
     float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
     float y = yShift + 0.04f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
 
     CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, info);
   }
+
+  // render the skin debug info
+  if (g_SkinInfo.IsDebugging())
+  {
+    CStdString info;
+    CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
+    CPoint point(m_guiPointer.GetXPosition(), m_guiPointer.GetYPosition());
+    if (window)
+    {
+      CStdString windowName = CButtonTranslator::TranslateWindow(window->GetID());
+      if (!windowName.IsEmpty())
+        windowName += " (" + window->GetProperty("xmlfile") + ")";
+      else
+        windowName = window->GetProperty("xmlfile");
+      info = "Window: " + windowName + "  ";
+      // transform the mouse coordinates to this window's coordinates
+      g_graphicsContext.SetScalingResolution(window->GetCoordsRes(), true);
+      point.x *= g_graphicsContext.GetGUIScaleX();
+      point.y *= g_graphicsContext.GetGUIScaleY();
+      g_graphicsContext.SetRenderingResolution(res, false);
+    }
+    info.AppendFormat("Mouse: (%d,%d)  ", (int)point.x, (int)point.y);
+    if (window)
+    {
+      CGUIControl *control = window->GetFocusedControl();
+      if (control)
+        info.AppendFormat("Focused: %i (%s)", control->GetID(), CGUIControlFactory::TranslateControlType(control->GetControlType()).c_str());
+    }
+
+    float x = xShift + 0.04f * g_graphicsContext.GetWidth() + g_settings.m_ResInfo[res].Overscan.left;
+    float y = yShift + 0.08f * g_graphicsContext.GetHeight() + g_settings.m_ResInfo[res].Overscan.top;
+    CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, info);
+  }
 }
+
 // OnKey() translates the key into a CAction which is sent on to our Window Manager.
 // The window manager will return true if the event is processed, false otherwise.
 // If not already processed, this routine handles global keypresses.  It returns
@@ -2238,7 +2234,7 @@ bool CApplication::OnKey(const CKey& key)
       if (control)
       {
         if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||
-            (control->IsContainer() && g_Keyboard.GetShift() && !(g_Keyboard.GetCtrl() || g_Keyboard.GetAlt() || g_Keyboard.GetRAlt())))
+            (control->IsContainer() && g_Keyboard.GetShift() && !(g_Keyboard.GetCtrl() || g_Keyboard.GetAlt() || g_Keyboard.GetRAlt() || g_Keyboard.GetSuper())))
           useKeyboard = true;
       }
     }
@@ -2315,7 +2311,7 @@ bool CApplication::OnAction(const CAction &action)
 {
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world about this action, ignoring mouse moves
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=2 && action.GetID() != ACTION_MOUSE_MOVE)
+  if (g_settings.m_HttpApiBroadcastLevel>=2 && action.GetID() != ACTION_MOUSE_MOVE)
   {
     CStdString tmp;
     tmp.Format("%i",action.GetID());
@@ -3053,6 +3049,8 @@ bool CApplication::ProcessKeyboard()
         keyID |= CKey::MODIFIER_SHIFT;
     if (g_Keyboard.GetAlt())
         keyID |= CKey::MODIFIER_ALT;
+    if (g_Keyboard.GetSuper())
+        keyID |= CKey::MODIFIER_SUPER;
 
     // Create a key object with the keypress data and pass it to OnKey to be executed
     CKey key(keyID);
@@ -3117,7 +3115,7 @@ bool CApplication::Cleanup()
 
     g_windowManager.Delete(WINDOW_DIALOG_OSD_TELETEXT);
 
-    g_windowManager.Delete(WINDOW_STARTUP);
+    g_windowManager.Delete(WINDOW_STARTUP_ANIM);
     g_windowManager.Delete(WINDOW_LOGIN_SCREEN);
     g_windowManager.Delete(WINDOW_VISUALISATION);
     g_windowManager.Delete(WINDOW_KARAOKELYRICS);
@@ -3196,6 +3194,12 @@ bool CApplication::Cleanup()
 #ifdef _CRTDBG_MAP_ALLOC
     _CrtDumpMemoryLeaks();
     while(1); // execution ends
+#endif
+#ifdef _WIN32
+    WSACleanup();
+
+    //Uninitialize COM
+    CoUninitialize();
 #endif
     return true;
   }
@@ -3755,7 +3759,7 @@ void CApplication::OnPlayBackEnded()
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
 #endif
 
@@ -3786,7 +3790,7 @@ void CApplication::OnPlayBackStarted()
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
 
@@ -3808,7 +3812,7 @@ void CApplication::OnQueueNextItem()
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnQueueNextItem;1");
 #endif
 
@@ -3839,7 +3843,7 @@ void CApplication::OnPlayBackStopped()
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
 
@@ -3862,7 +3866,7 @@ void CApplication::OnPlayBackPaused()
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackPaused;1");
 #endif
 
@@ -3879,7 +3883,7 @@ void CApplication::OnPlayBackResumed()
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackResumed;1");
 #endif
 
@@ -3896,7 +3900,7 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
   {
     CStdString tmp;
     tmp.Format("broadcastlevel; OnPlayBackSpeedChanged:%i;1",iSpeed);
@@ -3917,7 +3921,7 @@ void CApplication::OnPlayBackSeek(int iTime)
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
   {
     CStdString tmp;
     tmp.Format("broadcastlevel; OnPlayBackSeek:%i;1",iTime);
@@ -3938,7 +3942,7 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
 
 #ifdef HAS_HTTPAPI
   // Let's tell the outside world as well
-  if (m_pXbmcHttp && g_settings.m_HttpApiBroadcastLevel>=1)
+  if (g_settings.m_HttpApiBroadcastLevel>=1)
   {
     CStdString tmp;
     tmp.Format("broadcastlevel; OnPlayBackSkeekChapter:%i;1",iChapter);
@@ -4217,11 +4221,10 @@ bool CApplication::WakeUpScreenSaver()
   // if Screen saver is active
   if (m_bScreenSave)
   {
-    int iProfile = g_settings.m_iLastLoadedProfileIndex;
     if (m_iScreenSaveLock == 0)
-      if (g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE &&
-          (g_settings.bUseLoginScreen || g_guiSettings.GetBool("masterlock.startuplock")) &&
-          g_settings.m_vecProfiles[iProfile].getLockMode() != LOCK_MODE_EVERYONE &&
+      if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+          (g_settings.UsingLoginScreen() || g_guiSettings.GetBool("masterlock.startuplock")) &&
+          g_settings.GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
           m_screenSaverMode != "Dim" && m_screenSaverMode != "Black" && m_screenSaverMode != "Visualisation")
       {
         m_iScreenSaveLock = 2;
@@ -4641,12 +4644,6 @@ void CApplication::Process()
 {
   MEASURE_FUNCTION;
 
-  // check if we need to load a new skin
-  if (m_skinReloadTime && CTimeUtils::GetFrameTime() >= m_skinReloadTime)
-  {
-    ReloadSkin();
-  }
-
   // dispatch the messages generated by python or other threads to the current window
   g_windowManager.DispatchThreadMessages();
 
@@ -4784,6 +4781,7 @@ void CApplication::ProcessSlow()
     g_lcd->Initialize();
   }
 #endif
+  ADDON::CAddonMgr::Get()->UpdateRepos();
 }
 
 // Global Idle Time in Seconds
@@ -5179,9 +5177,8 @@ void CApplication::UpdateLibraries()
   {
     CLog::Log(LOGNOTICE, "%s - Starting video library startup scan", __FUNCTION__);
     CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    VIDEO::SScanSettings settings;
     if (scanner && !scanner->IsScanning())
-      scanner->StartScanning("",ADDON::ScraperPtr(),settings,false);
+      scanner->StartScanning("", false);
   }
 
   if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))

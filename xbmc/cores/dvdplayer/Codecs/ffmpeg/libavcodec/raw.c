@@ -51,6 +51,10 @@ const PixelFormatTag ff_raw_pixelFormatTags[] = {
     { PIX_FMT_UYVY422, MKTAG('U', 'Y', 'N', 'Y') },
     { PIX_FMT_UYVY422, MKTAG('u', 'y', 'v', '1') },
     { PIX_FMT_UYVY422, MKTAG('2', 'V', 'u', '1') },
+    { PIX_FMT_UYVY422, MKTAG('A', 'V', 'R', 'n') }, /* Avid AVI Codec 1:1 */
+    { PIX_FMT_UYVY422, MKTAG('A', 'V', '1', 'x') }, /* Avid 1:1x */
+    { PIX_FMT_UYVY422, MKTAG('A', 'V', 'u', 'p') },
+    { PIX_FMT_UYVY422, MKTAG('V', 'D', 'T', 'Z') }, /* SoftLab-NSK VideoTizer */
     { PIX_FMT_GRAY8,   MKTAG('G', 'R', 'E', 'Y') },
     { PIX_FMT_RGB555,  MKTAG('R', 'G', 'B', 15) },
     { PIX_FMT_BGR555,  MKTAG('B', 'G', 'R', 15) },
@@ -60,6 +64,7 @@ const PixelFormatTag ff_raw_pixelFormatTags[] = {
 
     /* quicktime */
     { PIX_FMT_UYVY422, MKTAG('2', 'v', 'u', 'y') },
+    { PIX_FMT_UYVY422, MKTAG('2', 'V', 'u', 'y') },
     { PIX_FMT_UYVY422, MKTAG('A', 'V', 'U', 'I') }, /* FIXME merge both fields */
     { PIX_FMT_YUYV422, MKTAG('y', 'u', 'v', '2') },
     { PIX_FMT_YUYV422, MKTAG('y', 'u', 'v', 's') },

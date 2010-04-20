@@ -30,9 +30,9 @@
 #include "GUIDialogMusicScan.h"
 #include "utils/GUIInfoManager.h"
 #include "MusicInfoTag.h"
-#include "AddonManager.h"
-#include "Scraper.h"
-#include "Addon.h"
+#include "addons/AddonManager.h"
+#include "addons/Scraper.h"
+#include "addons/Addon.h"
 #include "Util.h"
 #include "Artist.h"
 #include "Album.h"
@@ -56,6 +56,7 @@
 #include "LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "TextureCache.h"
 
 using namespace std;
 using namespace AUTOPTR;
@@ -2030,7 +2031,7 @@ bool CMusicDatabase::CleanupThumbs()
       CStdString strThumb = m_pDS->fv("strThumb").get_asString();
       if (strThumb.Left(strThumbsDir.size()) == strThumbsDir)
       { // only delete cached thumbs
-        CFile::Delete(strThumb);
+        CTextureCache::Get().ClearCachedImage(strThumb);
       }
       m_pDS->next();
     }

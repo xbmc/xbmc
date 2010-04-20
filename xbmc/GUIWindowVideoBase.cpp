@@ -25,8 +25,8 @@
 #include "utils/IMDB.h"
 #include "utils/RegExp.h"
 #include "utils/GUIInfoManager.h"
-#include "utils/AddonManager.h"
-#include "utils/IAddon.h"
+#include "addons/AddonManager.h"
+#include "addons/IAddon.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowVideoNav.h"
 #include "GUIDialogFileBrowser.h"
@@ -81,7 +81,6 @@ using namespace ADDON;
 #define CONTROL_PLAY_DVD           6
 #define CONTROL_STACK              7
 #define CONTROL_BTNSCAN            8
-#define CONTROL_IMDB               9
 
 CGUIWindowVideoBase::CGUIWindowVideoBase(int id, const CStdString &xmlFile)
     : CGUIMediaWindow(id, xmlFile)
@@ -207,8 +206,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
               CUtil::GetDirectory(item->m_strPath,strDir);
 
             SScanSettings settings;
-            int iFound;
-            m_database.GetScraperForPath(strDir, scraper, settings, iFound);
+            bool foundDirectly = false;
+            scraper = m_database.GetScraperForPath(strDir, settings, foundDirectly);
 
             if (!scraper &&
               !(m_database.HasMovieInfo(item->m_strPath) ||
@@ -227,7 +226,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
               return true;
             }
 
-            if (scraper->Content() == CONTENT_TVSHOWS && iFound == 1 && !settings.parent_name_root) // dont lookup on root tvshow folder
+            if (scraper && scraper->Content() == CONTENT_TVSHOWS && foundDirectly && !settings.parent_name_root) // dont lookup on root tvshow folder
               return true;
           }
 
@@ -243,7 +242,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         else if (iAction == ACTION_DELETE_ITEM)
         {
           // is delete allowed?
-          if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases())
+          if (g_settings.GetCurrentProfile().canWriteDatabases())
           {
             // must be at the title window
             if (GetID() == WINDOW_VIDEO_NAV)
@@ -262,10 +261,6 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return true;
           }
         }
-      }
-      else if (iControl == CONTROL_IMDB)
-      {
-        OnManualScrape();
       }
     }
     break;
@@ -294,7 +289,6 @@ void CGUIWindowVideoBase::UpdateButtons()
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, nWindow);
 
   CONTROL_ENABLE(CONTROL_BTNSCAN);
-  CONTROL_ENABLE(CONTROL_IMDB);
 
   CGUIMediaWindow::UpdateButtons();
 }
@@ -302,9 +296,6 @@ void CGUIWindowVideoBase::UpdateButtons()
 void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scraper)
 {
   if (!pItem)
-    return;
-
-  if (!scraper)
     return;
 
   if (pItem->IsParentFolder() || pItem->m_bIsShareOrDrive || pItem->m_strPath.Equals("add"))
@@ -325,7 +316,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
     if (item.m_bIsFolder && scraper->Content() != CONTENT_TVSHOWS)
     {
       CFileItemList items;
-      CDirectory::GetDirectory(item.m_strPath, items);
+      CDirectory::GetDirectory(item.m_strPath, items,"",false,false,DIR_CACHE_ONCE,true,true);
       items.Stack();
 
       // check for media files
@@ -354,7 +345,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
   }
 
   bool modified = ShowIMDB(&item, scraper);
-  if (modified && scraper->Content() != CONTENT_PLUGIN &&
+  if (modified &&
      (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
       g_windowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)) // since we can be called from the music library we need this check
   {
@@ -413,79 +404,78 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
 
   CVideoInfoTag movieDetails;
   movieDetails.Reset();
-  m_database.Open(); // since we can be called from the music library
+  if (info)
+  {
+    m_database.Open(); // since we can be called from the music library
 
-  if (info->Content() == CONTENT_MOVIES)
-  {
-    if (m_database.HasMovieInfo(item->m_strPath))
+    if (info->Content() == CONTENT_MOVIES)
     {
-      bHasInfo = true;
-      m_database.GetMovieInfo(item->m_strPath, movieDetails);
-    }
-  }
-  if (info->Content() == CONTENT_TVSHOWS)
-  {
-    if (item->m_bIsFolder)
-    {
-      if (m_database.HasTvShowInfo(item->m_strPath))
+      if (m_database.HasMovieInfo(item->m_strPath))
       {
         bHasInfo = true;
-        m_database.GetTvShowInfo(item->m_strPath, movieDetails);
+        m_database.GetMovieInfo(item->m_strPath, movieDetails);
       }
     }
-    else
+    if (info->Content() == CONTENT_TVSHOWS)
     {
-      int EpisodeHint=-1;
-      if (item->HasVideoInfoTag())
-        EpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
-      int idEpisode=-1;
-      if ((idEpisode = m_database.GetEpisodeId(item->m_strPath,EpisodeHint)) > -1)
+      if (item->m_bIsFolder)
       {
-        bHasInfo = true;
-        m_database.GetEpisodeInfo(item->m_strPath, movieDetails, idEpisode);
+        if (m_database.HasTvShowInfo(item->m_strPath))
+        {
+          bHasInfo = true;
+          m_database.GetTvShowInfo(item->m_strPath, movieDetails);
+        }
       }
       else
       {
-        // !! WORKAROUND !!
-        // As we cannot add an episode to a non-existing tvshow entry, we have to check the parent directory
-        // to see if it`s already in our video database. If it's not yet part of the database we will exit here.
-        // (Ticket #4764)
-        //
-        // NOTE: This will fail for episodes on multipath shares, as the parent path isn't what is stored in the
-        //       database.  Possible solutions are to store the paths in the db separately and rely on the show
-        //       stacking stuff, or to modify GetTvShowId to do support multipath:// shares
-        CStdString strParentDirectory;
-        CUtil::GetParentPath(item->m_strPath, strParentDirectory);
-        if (m_database.GetTvShowId(strParentDirectory) < 0)
+        int EpisodeHint=-1;
+        if (item->HasVideoInfoTag())
+          EpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
+        int idEpisode=-1;
+        if ((idEpisode = m_database.GetEpisodeId(item->m_strPath,EpisodeHint)) > -1)
         {
-          CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
-          return false;
+          bHasInfo = true;
+          m_database.GetEpisodeInfo(item->m_strPath, movieDetails, idEpisode);
+        }
+        else
+        {
+          // !! WORKAROUND !!
+          // As we cannot add an episode to a non-existing tvshow entry, we have to check the parent directory
+          // to see if it`s already in our video database. If it's not yet part of the database we will exit here.
+          // (Ticket #4764)
+          //
+          // NOTE: This will fail for episodes on multipath shares, as the parent path isn't what is stored in the
+          //       database.  Possible solutions are to store the paths in the db separately and rely on the show
+          //       stacking stuff, or to modify GetTvShowId to do support multipath:// shares
+          CStdString strParentDirectory;
+          CUtil::GetParentPath(item->m_strPath, strParentDirectory);
+          if (m_database.GetTvShowId(strParentDirectory) < 0)
+          {
+            CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
+            return false;
+          }
         }
       }
     }
-  }
-  if (info->Content() == CONTENT_MUSICVIDEOS)
-  {
-    if (m_database.HasMusicVideoInfo(item->m_strPath))
+    if (info->Content() == CONTENT_MUSICVIDEOS)
     {
-      bHasInfo = true;
-      m_database.GetMusicVideoInfo(item->m_strPath, movieDetails);
+      if (m_database.HasMusicVideoInfo(item->m_strPath))
+      {
+        bHasInfo = true;
+        m_database.GetMusicVideoInfo(item->m_strPath, movieDetails);
+      }
     }
+    m_database.Close();
   }
-  if (info->Content() == CONTENT_PLUGIN)
+  else if(item->HasVideoInfoTag())
   {
-    if (!item->HasVideoInfoTag())
-      return false;
-    movieDetails = *item->GetVideoInfoTag();
-    movieDetails.m_strIMDBNumber = "xx" + ADDON::TranslateContent(info->Content()); // disable refresh+get thumb button
-
     bHasInfo = true;
+    movieDetails = *item->GetVideoInfoTag();
   }
 
-  m_database.Close();
   if (bHasInfo)
   {
-    if (info->Content() == CONTENT_NONE) // disable refresh button
+    if (!info || info->Content() == CONTENT_NONE) // disable refresh button
       movieDetails.m_strIMDBNumber = "xx"+movieDetails.m_strIMDBNumber;
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item);
@@ -495,7 +485,10 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   }
 
   // quietly return if Internet lookups are disabled
-  if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() && !g_passwordManager.bMasterUser)
+  if (!g_settings.GetCurrentProfile().canWriteDatabases() && !g_passwordManager.bMasterUser)
+    return false;
+
+  if(!info)
     return false;
 
   CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
@@ -511,7 +504,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   m_database.Open();
   // 2. Look for a nfo File to get the search URL
   SScanSettings settings;
-  m_database.GetScraperForPath(item->m_strPath,info,settings);
+  info = m_database.GetScraperForPath(item->m_strPath,settings);
 
   if (!info)
     return false;
@@ -669,7 +662,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
             m_database.DeleteDetailsForTvShow(item->m_strPath);
         }
       }
-      if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info,!pDlgInfo->RefreshAll(),&scrUrl,pDlgProgress,ignoreNfo))
+      if (scanner.RetrieveVideoInfo(list,settings.parent_name_root,info->Content(),!pDlgInfo->RefreshAll(),&scrUrl,pDlgProgress,ignoreNfo))
       {
         if (info->Content() == CONTENT_MOVIES)
           m_database.GetMovieInfo(item->m_strPath,movieDetails);
@@ -682,17 +675,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
             m_database.GetTvShowInfo(item->m_strPath,movieDetails);
           else
             m_database.GetEpisodeInfo(item->m_strPath,movieDetails);
-        }
-
-        // set path hash
-        if (info->Content() == CONTENT_MOVIES || info->Content() == CONTENT_MUSICVIDEOS)
-        {
-          CStdString hash, strParent;
-          CFileItemList items;
-          CUtil::GetParentPath(list.m_strPath,strParent);
-          CDirectory::GetDirectory(strParent,items,g_settings.m_videoExtensions);
-          scanner.GetPathHash(items, hash);
-          m_database.SetPathHash(strParent, hash);
         }
 
         // got all movie details :-)
@@ -756,83 +738,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   } while (needsRefresh);
   m_database.Close();
   return listNeedsUpdating;
-}
-
-void CGUIWindowVideoBase::OnManualScrape()
-{
-  // NOTE! this only works for movies 
-  // previous OnManualIMDB only worked for IMDb, so not a regression!
-  // if we were tracking current content type this would work for all content
-  CStdString strInput;
-  if (!CGUIDialogKeyboard::ShowAndGetInput(strInput, g_localizeStrings.Get(16009), false))
-    return;
-
-  CFileItem item(strInput);
-  item.m_strPath = "special://temp/";
-  CFile::Delete(item.GetCachedVideoThumb().c_str());
-
-  ScraperPtr scraper;
-  m_database.Open();
-  m_database.GetScraperForPath(m_vecItems->m_strPath, scraper);
-
-  if (!scraper)
-    return;
-
-  ShowIMDB(&item,scraper);
-
-  return;
-}
-
-bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel)
-{
-#ifdef HAS_DVD_DRIVE
-  CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
-  if (pCdInfo == NULL)
-    return false;
-  if (!CFile::Exists(strFileName))
-    return false;
-  CStdString label = pCdInfo->GetDiscLabel().TrimRight(" ");
-  int iLabelCD = label.GetLength();
-  int iLabelDB = strDVDLabel.GetLength();
-  if (iLabelDB < iLabelCD)
-    return false;
-  CStdString dbLabel = strDVDLabel.Left(iLabelCD);
-  return (dbLabel == label);
-#else
-  return false;
-#endif
-}
-
-bool CGUIWindowVideoBase::CheckMovie(const CStdString& strFileName)
-{
-  if (!m_database.HasMovieInfo(strFileName))
-    return true;
-
-  CVideoInfoTag movieDetails;
-  m_database.GetMovieInfo(strFileName, movieDetails);
-  CFileItem movieFile(movieDetails.m_strFileNameAndPath, false);
-  if (!movieFile.IsOnDVD())
-    return true;
-  CGUIDialogOK *pDlgOK = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-  if (!pDlgOK)
-    return true;
-  while (1)
-  {
-//    if (IsCorrectDiskInDrive(strFileName, movieDetails.m_strDVDLabel))
- //   {
-      return true;
- //   }
-    pDlgOK->SetHeading( 428);
-    pDlgOK->SetLine( 0, 429 );
-//    pDlgOK->SetLine( 1, movieDetails.m_strDVDLabel );
-    pDlgOK->SetLine( 2, "" );
-    pDlgOK->DoModal();
-    if (!pDlgOK->IsConfirmed())
-    {
-      break;
-    }
-  }
-  return false;
 }
 
 void CGUIWindowVideoBase::OnQueueItem(int iItem)
@@ -1265,7 +1170,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (item->m_bIsFolder)
       {
         m_database.SetPathHash(strPath,""); // to force scan
-        OnScan(strPath,info,settings);
+        OnScan(strPath);
       }
       else
         OnInfo(item.get(),info);
@@ -1479,8 +1384,8 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
   // HACK: stacked files need to be treated as folders in order to be deleted
   if (item->IsStack())
     item->m_bIsFolder = true;
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE &&
-      g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].filesLocked())
+  if (g_settings.GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+      g_settings.GetCurrentProfile().filesLocked())
   {
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return;
@@ -1938,18 +1843,14 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &i
     return 0;
   }
 
-  int found = 0;
-  if (item->HasVideoInfoTag())  // files view shouldn't need this check I think?
-    m_database.GetScraperForPath(item->GetVideoInfoTag()->m_strPath,info,settings,found);
-  else
-    m_database.GetScraperForPath(item->m_strPath,info,settings,found);
-
-  return found;
+  bool foundDirectly = false;
+  info = m_database.GetScraperForPath(item->HasVideoInfoTag() ? item->GetVideoInfoTag()->m_strPath : item->m_strPath, settings, foundDirectly);
+  return foundDirectly ? 1 : 0;
 }
 
-void CGUIWindowVideoBase::OnScan(const CStdString& strPath, const ScraperPtr& info, const SScanSettings& settings)
+void CGUIWindowVideoBase::OnScan(const CStdString& strPath)
 {
   CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (pDialog)
-    pDialog->StartScanning(strPath,info,settings,false);
+    pDialog->StartScanning(strPath, false);
 }

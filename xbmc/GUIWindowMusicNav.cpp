@@ -50,6 +50,7 @@
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
 #include "utils/log.h"
+#include "TextureCache.h"
 
 using namespace std;
 using namespace XFILE;
@@ -528,8 +529,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     if (dir.HasAlbumInfo(item->m_strPath) && !dir.IsAllItem(item->m_strPath) &&
         item->m_bIsFolder && !item->IsVideoDb() && !item->IsParentFolder()   &&
        !item->IsLastFM() &&  !item->IsShoutCast()                            &&
-       !item->IsPluginRoot() && !item->IsPlugin()                            &&
-       !item->m_strPath.Left(14).Equals("musicsearch://"))
+       !item->IsPlugin() && !item->m_strPath.Left(14).Equals("musicsearch://"))
     {
       buttons.Add(CONTEXT_BUTTON_INFO_ALL, 20059);
     }
@@ -593,8 +593,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
         buttons.Add(CONTEXT_BUTTON_MARK_UNWATCHED, 16104); //Mark as UnWatched
       else
         buttons.Add(CONTEXT_BUTTON_MARK_WATCHED, 16103);   //Mark as Watched
-      if ((g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) &&
-          !item->IsPluginRoot() && !item->IsPlugin())
+      if ((g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser) && !item->IsPlugin())
       {
         buttons.Add(CONTEXT_BUTTON_RENAME, 16105);
         buttons.Add(CONTEXT_BUTTON_DELETE, 646);
@@ -819,11 +818,12 @@ void CGUIWindowMusicNav::SetPluginThumb(int iItem, const VECSOURCES &sources)
     if (picturePath.Equals("thumb://Current"))
       return;
 
+    CTextureCache::Get().ClearCachedImage(cachedThumb);
     if (picturePath.Equals("thumb://None"))
     {
       XFILE::CFile::Delete(cachedThumb);
       CFileItem item2(CUtil::AddFileToFolder(itemPath, "default.py"), false);
-      XFILE::CFile::Delete(item2.GetCachedProgramThumb());
+      CTextureCache::Get().ClearCachedImage(item2.GetCachedProgramThumb());
     }
     else
       XFILE::CFile::Cache(picturePath, cachedThumb);

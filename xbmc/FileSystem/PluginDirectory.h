@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 #include "../utils/CriticalSection.h"
-#include "../utils/IAddon.h"
+#include "../addons/IAddon.h"
 
 class CURL;
 class CFileItemList;
@@ -39,14 +39,13 @@ namespace XFILE
 class CPluginDirectory : public IDirectory
 {
 public:
-  CPluginDirectory(const CONTENT_TYPE &content);
+  CPluginDirectory();
   ~CPluginDirectory(void);
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
   virtual bool IsAllowed(const CStdString &strFile) const { return true; };
   virtual bool Exists(const char* strPath) { return true; }
   static bool RunScriptWithParams(const CStdString& strPath);
   static bool HasPlugins(const CONTENT_TYPE &type);
-  bool GetPluginsDirectory(const CONTENT_TYPE &type, CFileItemList &items);
   bool StartScript(const CStdString& strPath);
   static bool GetPluginResult(const CStdString& strPath, CFileItem &resultItem);
 
@@ -63,7 +62,6 @@ public:
 
 private:
   ADDON::AddonPtr m_addon;
-  CONTENT_TYPE m_content;
   bool WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName);
 
   static std::vector<CPluginDirectory*> globalHandles;

@@ -24,6 +24,7 @@
 #include "dsputil_ppc.h"
 #include "util_altivec.h"
 #include "types_altivec.h"
+#include "dsputil_altivec.h"
 
 /*
   altivec-enhanced gmc1. ATM this code assume stride is a multiple of 8,
@@ -33,8 +34,8 @@
 void gmc1_altivec(uint8_t *dst /* align 8 */, uint8_t *src /* align1 */, int stride, int h, int x16, int y16, int rounder)
 {
 POWERPC_PERF_DECLARE(altivec_gmc1_num, GMC1_PERF_COND);
-    const DECLARE_ALIGNED_16(unsigned short, rounder_a) = rounder;
-    const DECLARE_ALIGNED_16(unsigned short, ABCD[8]) =
+    const DECLARE_ALIGNED(16, unsigned short, rounder_a) = rounder;
+    const DECLARE_ALIGNED(16, unsigned short, ABCD)[8] =
         {
             (16-x16)*(16-y16), /* A */
             (   x16)*(16-y16), /* B */

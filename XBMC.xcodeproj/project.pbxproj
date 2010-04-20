@@ -38,6 +38,18 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		18B4A0021152BFA5001AF8A6 /* Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF11152BFA5001AF8A6 /* Addon.cpp */; };
+		18B4A0031152BFA5001AF8A6 /* AddonManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF41152BFA5001AF8A6 /* AddonManager.cpp */; };
+		18B4A0041152BFA5001AF8A6 /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF91152BFA5001AF8A6 /* fft.cpp */; };
+		18B4A0051152BFA5001AF8A6 /* Scraper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFC1152BFA5001AF8A6 /* Scraper.cpp */; };
+		18B4A0061152BFA5001AF8A6 /* ScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFE1152BFA5001AF8A6 /* ScreenSaver.cpp */; };
+		18B4A0071152BFA5001AF8A6 /* Visualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B4A0001152BFA5001AF8A6 /* Visualisation.cpp */; };
+		18B4A0081152BFA5001AF8A6 /* Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF11152BFA5001AF8A6 /* Addon.cpp */; };
+		18B4A0091152BFA5001AF8A6 /* AddonManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF41152BFA5001AF8A6 /* AddonManager.cpp */; };
+		18B4A00A1152BFA5001AF8A6 /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF91152BFA5001AF8A6 /* fft.cpp */; };
+		18B4A00B1152BFA5001AF8A6 /* Scraper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFC1152BFA5001AF8A6 /* Scraper.cpp */; };
+		18B4A00C1152BFA5001AF8A6 /* ScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFE1152BFA5001AF8A6 /* ScreenSaver.cpp */; };
+		18B4A00D1152BFA5001AF8A6 /* Visualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B4A0001152BFA5001AF8A6 /* Visualisation.cpp */; };
 		18CCEAEE1112F5B800615FC6 /* PCMRemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18CCEAEC1112F5B800615FC6 /* PCMRemap.cpp */; };
 		18CCEAEF1112F5B800615FC6 /* PCMRemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18CCEAEC1112F5B800615FC6 /* PCMRemap.cpp */; };
 		431AE5D9109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */; };
@@ -215,6 +227,10 @@
 		7C779E57104A58F900F444C4 /* KeyboardStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E52104A58F900F444C4 /* KeyboardStat.cpp */; };
 		7C7B2B301134F36400713D6D /* mysqldataset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B2B2E1134F36400713D6D /* mysqldataset.cpp */; };
 		7C7B2B311134F36400713D6D /* mysqldataset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B2B2E1134F36400713D6D /* mysqldataset.cpp */; };
+		7C8A14561154CB2600E5FCFA /* TextureCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A14541154CB2600E5FCFA /* TextureCache.cpp */; };
+		7C8A14571154CB2600E5FCFA /* TextureCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A14541154CB2600E5FCFA /* TextureCache.cpp */; };
+		7C8A187C115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */; };
+		7C8A187D115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */; };
 		7CAA20511079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CAA20521079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CAA25351085963B0096DE39 /* PasswordManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA25331085963B0096DE39 /* PasswordManager.cpp */; };
@@ -267,6 +283,14 @@
 		88ECB6E70DE07BA6003396A7 /* libfontconfig.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E60DE07BA6003396A7 /* libfontconfig.1.dylib */; };
 		88ECB6EA0DE07BEE003396A7 /* libogg.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6E90DE07BEE003396A7 /* libogg.0.dylib */; };
 		8DD76F790486A8DE00D96B5E /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */; };
+		C80425711158A0DE00D158A6 /* controlslider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C80425701158A0DE00D158A6 /* controlslider.cpp */; };
+		C80425721158A0DE00D158A6 /* controlslider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C80425701158A0DE00D158A6 /* controlslider.cpp */; };
+		C85EB756117460D50008E5A5 /* AddonDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB754117460D50008E5A5 /* AddonDatabase.cpp */; };
+		C85EB757117460D50008E5A5 /* AddonDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB754117460D50008E5A5 /* AddonDatabase.cpp */; };
+		C85EB75C1174614E0008E5A5 /* Repository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB75A1174614E0008E5A5 /* Repository.cpp */; };
+		C85EB75D1174614E0008E5A5 /* Repository.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB75A1174614E0008E5A5 /* Repository.cpp */; };
+		C85EB762117461830008E5A5 /* GUIViewStateAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB760117461830008E5A5 /* GUIViewStateAddonBrowser.cpp */; };
+		C85EB763117461830008E5A5 /* GUIViewStateAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C85EB760117461830008E5A5 /* GUIViewStateAddonBrowser.cpp */; };
 		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
 		E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
 		E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
@@ -776,7 +800,6 @@
 		E38E22AC0D25F9FE00618676 /* PlayListWPL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DED0D25F9FD00618676 /* PlayListWPL.cpp */; };
 		E38E22AE0D25F9FE00618676 /* Profile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DF10D25F9FD00618676 /* Profile.cpp */; };
 		E38E22AF0D25F9FE00618676 /* ProgramDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DF30D25F9FD00618676 /* ProgramDatabase.cpp */; };
-		E38E22B10D25F9FE00618676 /* ScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DFA0D25F9FD00618676 /* ScreenSaver.cpp */; };
 		E38E22B30D25F9FE00618676 /* SectionLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DFE0D25F9FD00618676 /* SectionLoader.cpp */; };
 		E38E22B40D25F9FE00618676 /* VideoSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E010D25F9FD00618676 /* VideoSettings.cpp */; };
 		E38E22B50D25F9FE00618676 /* Settings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E030D25F9FD00618676 /* Settings.cpp */; };
@@ -836,8 +859,6 @@
 		E38E22FC0D25F9FE00618676 /* VideoInfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E950D25F9FD00618676 /* VideoInfoScanner.cpp */; };
 		E38E22FD0D25F9FE00618676 /* VideoInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E970D25F9FD00618676 /* VideoInfoTag.cpp */; };
 		E38E22FE0D25F9FE00618676 /* ViewDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E990D25F9FD00618676 /* ViewDatabase.cpp */; };
-		E38E22FF0D25F9FE00618676 /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E9D0D25F9FD00618676 /* fft.cpp */; };
-		E38E23010D25F9FE00618676 /* Visualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA10D25F9FD00618676 /* Visualisation.cpp */; };
 		E38E23030D25F9FE00618676 /* VorbisTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA50D25F9FD00618676 /* VorbisTag.cpp */; };
 		E38E23040D25F9FE00618676 /* XBApplicationEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA70D25F9FD00618676 /* XBApplicationEx.cpp */; };
 		E38E23150D25F9FE00618676 /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED10D25F9FD00618676 /* xbmc.cpp */; };
@@ -937,6 +958,8 @@
 		F51CF2D00F6055A4004F4602 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CF2CE0F6055A4004F4602 /* sha1.c */; };
 		F5290C220EDF142A001167F0 /* PlayListURL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5290C210EDF142A001167F0 /* PlayListURL.cpp */; };
 		F52910140EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */; };
+		F52BFFDB115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */; };
+		F52BFFDC115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */; };
 		F5390F7A0F2BB7080081BAE0 /* Cdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D879D10EF4BE53007C68A9 /* Cdg.cpp */; };
 		F548786D0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */; };
 		F548786E0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */; };
@@ -1492,7 +1515,6 @@
 		F5A1CAAA0F6B06CF00A96ABD /* PlayListWPL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DED0D25F9FD00618676 /* PlayListWPL.cpp */; };
 		F5A1CAAC0F6B06CF00A96ABD /* Profile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DF10D25F9FD00618676 /* Profile.cpp */; };
 		F5A1CAAD0F6B06CF00A96ABD /* ProgramDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DF30D25F9FD00618676 /* ProgramDatabase.cpp */; };
-		F5A1CAAE0F6B06CF00A96ABD /* ScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DFA0D25F9FD00618676 /* ScreenSaver.cpp */; };
 		F5A1CAB00F6B06CF00A96ABD /* SectionLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DFE0D25F9FD00618676 /* SectionLoader.cpp */; };
 		F5A1CAB10F6B06CF00A96ABD /* VideoSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E010D25F9FD00618676 /* VideoSettings.cpp */; };
 		F5A1CAB20F6B06CF00A96ABD /* Settings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E030D25F9FD00618676 /* Settings.cpp */; };
@@ -1552,8 +1574,6 @@
 		F5A1CAEB0F6B06CF00A96ABD /* VideoInfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E950D25F9FD00618676 /* VideoInfoScanner.cpp */; };
 		F5A1CAEC0F6B06CF00A96ABD /* VideoInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E970D25F9FD00618676 /* VideoInfoTag.cpp */; };
 		F5A1CAED0F6B06CF00A96ABD /* ViewDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E990D25F9FD00618676 /* ViewDatabase.cpp */; };
-		F5A1CAEE0F6B06CF00A96ABD /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E9D0D25F9FD00618676 /* fft.cpp */; };
-		F5A1CAEF0F6B06CF00A96ABD /* Visualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA10D25F9FD00618676 /* Visualisation.cpp */; };
 		F5A1CAF10F6B06CF00A96ABD /* VorbisTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA50D25F9FD00618676 /* VorbisTag.cpp */; };
 		F5A1CAF20F6B06CF00A96ABD /* XBApplicationEx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EA70D25F9FD00618676 /* XBApplicationEx.cpp */; };
 		F5A1CAF60F6B06CF00A96ABD /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED10D25F9FD00618676 /* xbmc.cpp */; };
@@ -1748,12 +1768,6 @@
 		F5A7B431113CBBE20059D6AA /* GUIDialogAddonSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B42E113CBBE20059D6AA /* GUIDialogAddonSettings.cpp */; };
 		F5A7B434113CBC6A0059D6AA /* GUIWindowAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B433113CBC6A0059D6AA /* GUIWindowAddonBrowser.cpp */; };
 		F5A7B435113CBC6A0059D6AA /* GUIWindowAddonBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B433113CBC6A0059D6AA /* GUIWindowAddonBrowser.cpp */; };
-		F5A7B442113CBC9D0059D6AA /* Scraper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B441113CBC9D0059D6AA /* Scraper.cpp */; };
-		F5A7B443113CBC9D0059D6AA /* Scraper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B441113CBC9D0059D6AA /* Scraper.cpp */; };
-		F5A7B44D113CBCE70059D6AA /* AddonManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B448113CBCE70059D6AA /* AddonManager.cpp */; };
-		F5A7B44E113CBCE70059D6AA /* Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B44A113CBCE70059D6AA /* Addon.cpp */; };
-		F5A7B44F113CBCE70059D6AA /* AddonManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B448113CBCE70059D6AA /* AddonManager.cpp */; };
-		F5A7B450113CBCE70059D6AA /* Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7B44A113CBCE70059D6AA /* Addon.cpp */; };
 		F5A9D3091097C9370050490F /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
 		F5A9D30A1097C9370050490F /* AliasShortcutUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */; };
 		F5AAC9CF0FB0D20100DBB77C /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */; };
@@ -1882,6 +1896,23 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		18B49FF11152BFA5001AF8A6 /* Addon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Addon.cpp; path = addons/Addon.cpp; sourceTree = "<group>"; };
+		18B49FF21152BFA5001AF8A6 /* Addon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Addon.h; path = addons/Addon.h; sourceTree = "<group>"; };
+		18B49FF31152BFA5001AF8A6 /* AddonDll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonDll.h; path = addons/AddonDll.h; sourceTree = "<group>"; };
+		18B49FF41152BFA5001AF8A6 /* AddonManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonManager.cpp; path = addons/AddonManager.cpp; sourceTree = "<group>"; };
+		18B49FF51152BFA5001AF8A6 /* AddonManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonManager.h; path = addons/AddonManager.h; sourceTree = "<group>"; };
+		18B49FF61152BFA5001AF8A6 /* DllAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DllAddon.h; path = addons/DllAddon.h; sourceTree = "<group>"; };
+		18B49FF71152BFA5001AF8A6 /* DllScreenSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DllScreenSaver.h; path = addons/DllScreenSaver.h; sourceTree = "<group>"; };
+		18B49FF81152BFA5001AF8A6 /* DllVisualisation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DllVisualisation.h; path = addons/DllVisualisation.h; sourceTree = "<group>"; };
+		18B49FF91152BFA5001AF8A6 /* fft.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fft.cpp; path = addons/fft.cpp; sourceTree = "<group>"; };
+		18B49FFA1152BFA5001AF8A6 /* fft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fft.h; path = addons/fft.h; sourceTree = "<group>"; };
+		18B49FFB1152BFA5001AF8A6 /* IAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IAddon.h; path = addons/IAddon.h; sourceTree = "<group>"; };
+		18B49FFC1152BFA5001AF8A6 /* Scraper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Scraper.cpp; path = addons/Scraper.cpp; sourceTree = "<group>"; };
+		18B49FFD1152BFA5001AF8A6 /* Scraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Scraper.h; path = addons/Scraper.h; sourceTree = "<group>"; };
+		18B49FFE1152BFA5001AF8A6 /* ScreenSaver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ScreenSaver.cpp; path = addons/ScreenSaver.cpp; sourceTree = "<group>"; };
+		18B49FFF1152BFA5001AF8A6 /* ScreenSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScreenSaver.h; path = addons/ScreenSaver.h; sourceTree = "<group>"; };
+		18B4A0001152BFA5001AF8A6 /* Visualisation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Visualisation.cpp; path = addons/Visualisation.cpp; sourceTree = "<group>"; };
+		18B4A0011152BFA5001AF8A6 /* Visualisation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Visualisation.h; path = addons/Visualisation.h; sourceTree = "<group>"; };
 		18CCEAEC1112F5B800615FC6 /* PCMRemap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PCMRemap.cpp; sourceTree = "<group>"; };
 		18CCEAED1112F5B800615FC6 /* PCMRemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCMRemap.h; sourceTree = "<group>"; };
 		431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRendererUtil.cpp; sourceTree = "<group>"; };
@@ -2081,6 +2112,10 @@
 		7C779E53104A58F900F444C4 /* KeyboardStat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardStat.h; sourceTree = "<group>"; };
 		7C7B2B2E1134F36400713D6D /* mysqldataset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mysqldataset.cpp; sourceTree = "<group>"; };
 		7C7B2B2F1134F36400713D6D /* mysqldataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mysqldataset.h; sourceTree = "<group>"; };
+		7C8A14541154CB2600E5FCFA /* TextureCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureCache.cpp; sourceTree = "<group>"; };
+		7C8A14551154CB2600E5FCFA /* TextureCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureCache.h; sourceTree = "<group>"; };
+		7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureDatabase.cpp; sourceTree = "<group>"; };
+		7C8A187B115B2A8200E5FCFA /* TextureDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureDatabase.h; sourceTree = "<group>"; };
 		7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseRenderer.cpp; sourceTree = "<group>"; };
 		7CAA20501079C8160096DE39 /* BaseRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseRenderer.h; sourceTree = "<group>"; };
 		7CAA205B107AFC280096DE39 /* Job.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Job.h; sourceTree = "<group>"; };
@@ -2166,6 +2201,13 @@
 		88ECB6E60DE07BA6003396A7 /* libfontconfig.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfontconfig.1.dylib; path = /opt/local/lib/libfontconfig.1.dylib; sourceTree = "<absolute>"; };
 		88ECB6E90DE07BEE003396A7 /* libogg.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.0.dylib; path = /opt/local/lib/libogg.0.dylib; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
+		C80425701158A0DE00D158A6 /* controlslider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controlslider.cpp; sourceTree = "<group>"; };
+		C85EB754117460D50008E5A5 /* AddonDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonDatabase.cpp; sourceTree = "<group>"; };
+		C85EB755117460D50008E5A5 /* AddonDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonDatabase.h; sourceTree = "<group>"; };
+		C85EB75A1174614E0008E5A5 /* Repository.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Repository.cpp; path = addons/Repository.cpp; sourceTree = "<group>"; };
+		C85EB75B1174614E0008E5A5 /* Repository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Repository.h; path = addons/Repository.h; sourceTree = "<group>"; };
+		C85EB760117461830008E5A5 /* GUIViewStateAddonBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIViewStateAddonBrowser.cpp; sourceTree = "<group>"; };
+		C85EB761117461830008E5A5 /* GUIViewStateAddonBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIViewStateAddonBrowser.h; sourceTree = "<group>"; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E30B3E8E0D5D59290030A311 /* libshout-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libshout-x86-osx.a"; path = "xbmc/lib/libshout/libshout-x86-osx.a"; sourceTree = "<group>"; };
@@ -2621,7 +2663,6 @@
 		E38E16880D25F9FA00618676 /* DllLibid3tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibid3tag.h; sourceTree = "<group>"; };
 		E38E16890D25F9FA00618676 /* DNSNameCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DNSNameCache.cpp; sourceTree = "<group>"; };
 		E38E168A0D25F9FA00618676 /* DNSNameCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DNSNameCache.h; sourceTree = "<group>"; };
-		E38E168B0D25F9FA00618676 /* doxygen.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = doxygen.hpp; sourceTree = "<group>"; };
 		E38E168C0D25F9FA00618676 /* DynamicDll.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DynamicDll.cpp; sourceTree = "<group>"; };
 		E38E168D0D25F9FA00618676 /* DynamicDll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DynamicDll.h; sourceTree = "<group>"; };
 		E38E16900D25F9FA00618676 /* Favourites.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Favourites.cpp; sourceTree = "<group>"; };
@@ -3357,9 +3398,6 @@
 		E38E1DF20D25F9FD00618676 /* Profile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Profile.h; sourceTree = "<group>"; };
 		E38E1DF30D25F9FD00618676 /* ProgramDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProgramDatabase.cpp; sourceTree = "<group>"; };
 		E38E1DF40D25F9FD00618676 /* ProgramDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgramDatabase.h; sourceTree = "<group>"; };
-		E38E1DF70D25F9FD00618676 /* DllScreenSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllScreenSaver.h; sourceTree = "<group>"; };
-		E38E1DFA0D25F9FD00618676 /* ScreenSaver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScreenSaver.cpp; sourceTree = "<group>"; };
-		E38E1DFB0D25F9FD00618676 /* ScreenSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenSaver.h; sourceTree = "<group>"; };
 		E38E1DFE0D25F9FD00618676 /* SectionLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SectionLoader.cpp; sourceTree = "<group>"; };
 		E38E1DFF0D25F9FD00618676 /* SectionLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SectionLoader.h; sourceTree = "<group>"; };
 		E38E1E010D25F9FD00618676 /* VideoSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoSettings.cpp; sourceTree = "<group>"; };
@@ -3481,11 +3519,6 @@
 		E38E1E980D25F9FD00618676 /* VideoInfoTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoInfoTag.h; sourceTree = "<group>"; };
 		E38E1E990D25F9FD00618676 /* ViewDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ViewDatabase.cpp; sourceTree = "<group>"; };
 		E38E1E9A0D25F9FD00618676 /* ViewDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewDatabase.h; sourceTree = "<group>"; };
-		E38E1E9C0D25F9FD00618676 /* DllVisualisation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllVisualisation.h; sourceTree = "<group>"; };
-		E38E1E9D0D25F9FD00618676 /* fft.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fft.cpp; sourceTree = "<group>"; };
-		E38E1E9E0D25F9FD00618676 /* fft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fft.h; sourceTree = "<group>"; };
-		E38E1EA10D25F9FD00618676 /* Visualisation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Visualisation.cpp; sourceTree = "<group>"; };
-		E38E1EA20D25F9FD00618676 /* Visualisation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Visualisation.h; sourceTree = "<group>"; };
 		E38E1EA50D25F9FD00618676 /* VorbisTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VorbisTag.cpp; sourceTree = "<group>"; };
 		E38E1EA60D25F9FD00618676 /* VorbisTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VorbisTag.h; sourceTree = "<group>"; };
 		E38E1EA70D25F9FD00618676 /* XBApplicationEx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBApplicationEx.cpp; sourceTree = "<group>"; };
@@ -3601,6 +3634,8 @@
 		F5290C210EDF142A001167F0 /* PlayListURL.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PlayListURL.cpp; path = xbmc/PlayListURL.cpp; sourceTree = SOURCE_ROOT; };
 		F52910120EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DirectoryNodeMusicVideoAlbum.h; path = xbmc/FileSystem/VideoDatabaseDirectory/DirectoryNodeMusicVideoAlbum.h; sourceTree = SOURCE_ROOT; };
 		F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = DirectoryNodeMusicVideoAlbum.cpp; path = xbmc/FileSystem/VideoDatabaseDirectory/DirectoryNodeMusicVideoAlbum.cpp; sourceTree = SOURCE_ROOT; };
+		F52BFFD9115D5574004B1D66 /* AddonStatusHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonStatusHandler.h; path = addons/AddonStatusHandler.h; sourceTree = "<group>"; };
+		F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonStatusHandler.cpp; path = addons/AddonStatusHandler.cpp; sourceTree = "<group>"; };
 		F548786B0FE060FF00E506FD /* DVDSubtitleParserMPL2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserMPL2.h; sourceTree = "<group>"; };
 		F548786C0FE060FF00E506FD /* DVDSubtitleParserMPL2.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; path = DVDSubtitleParserMPL2.cpp; sourceTree = "<group>"; };
 		F54878790FE0619800E506FD /* PythonSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PythonSettings.cpp; sourceTree = "<group>"; };
@@ -3713,14 +3748,6 @@
 		F5A7B42F113CBBE20059D6AA /* GUIDialogAddonSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogAddonSettings.h; sourceTree = "<group>"; };
 		F5A7B432113CBC6A0059D6AA /* GUIWindowAddonBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowAddonBrowser.h; sourceTree = "<group>"; };
 		F5A7B433113CBC6A0059D6AA /* GUIWindowAddonBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowAddonBrowser.cpp; sourceTree = "<group>"; };
-		F5A7B440113CBC9D0059D6AA /* Scraper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scraper.h; sourceTree = "<group>"; };
-		F5A7B441113CBC9D0059D6AA /* Scraper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Scraper.cpp; sourceTree = "<group>"; };
-		F5A7B448113CBCE70059D6AA /* AddonManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonManager.cpp; sourceTree = "<group>"; };
-		F5A7B449113CBCE70059D6AA /* AddonManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonManager.h; sourceTree = "<group>"; };
-		F5A7B44A113CBCE70059D6AA /* Addon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Addon.cpp; sourceTree = "<group>"; };
-		F5A7B44B113CBCE70059D6AA /* AddonDll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonDll.h; sourceTree = "<group>"; };
-		F5A7B44C113CBCE70059D6AA /* Addon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Addon.h; sourceTree = "<group>"; };
-		F5A7B451113CBD120059D6AA /* IAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAddon.h; sourceTree = "<group>"; };
 		F5A9D3071097C9370050490F /* AliasShortcutUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AliasShortcutUtils.h; sourceTree = "<group>"; };
 		F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AliasShortcutUtils.cpp; sourceTree = "<group>"; };
 		F5AAC9CE0FB0D20100DBB77C /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = /opt/local/lib/libsqlite3.0.dylib; sourceTree = "<absolute>"; };
@@ -4014,6 +4041,34 @@
 				09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */,
 			);
 			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		18B49FF01152BEEB001AF8A6 /* addons */ = {
+			isa = PBXGroup;
+			children = (
+				C85EB75A1174614E0008E5A5 /* Repository.cpp */,
+				C85EB75B1174614E0008E5A5 /* Repository.h */,
+				18B49FF11152BFA5001AF8A6 /* Addon.cpp */,
+				18B49FF21152BFA5001AF8A6 /* Addon.h */,
+				18B49FF31152BFA5001AF8A6 /* AddonDll.h */,
+				18B49FF41152BFA5001AF8A6 /* AddonManager.cpp */,
+				18B49FF51152BFA5001AF8A6 /* AddonManager.h */,
+				F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */,
+				F52BFFD9115D5574004B1D66 /* AddonStatusHandler.h */,
+				18B49FF61152BFA5001AF8A6 /* DllAddon.h */,
+				18B49FF71152BFA5001AF8A6 /* DllScreenSaver.h */,
+				18B49FF81152BFA5001AF8A6 /* DllVisualisation.h */,
+				18B49FF91152BFA5001AF8A6 /* fft.cpp */,
+				18B49FFA1152BFA5001AF8A6 /* fft.h */,
+				18B49FFB1152BFA5001AF8A6 /* IAddon.h */,
+				18B49FFC1152BFA5001AF8A6 /* Scraper.cpp */,
+				18B49FFD1152BFA5001AF8A6 /* Scraper.h */,
+				18B49FFE1152BFA5001AF8A6 /* ScreenSaver.cpp */,
+				18B49FFF1152BFA5001AF8A6 /* ScreenSaver.h */,
+				18B4A0001152BFA5001AF8A6 /* Visualisation.cpp */,
+				18B4A0011152BFA5001AF8A6 /* Visualisation.h */,
+			);
+			name = addons;
 			sourceTree = "<group>";
 		};
 		19C28FBDFE9D53C911CA2CBB /* Products */ = {
@@ -4431,6 +4486,11 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				C85EB760117461830008E5A5 /* GUIViewStateAddonBrowser.cpp */,
+				C85EB761117461830008E5A5 /* GUIViewStateAddonBrowser.h */,
+				C85EB754117460D50008E5A5 /* AddonDatabase.cpp */,
+				C85EB755117460D50008E5A5 /* AddonDatabase.h */,
+				18B49FF01152BEEB001AF8A6 /* addons */,
 				E4A249F51095C880003D74C6 /* AutorunMediaJob.cpp */,
 				E4A249F61095C880003D74C6 /* AutorunMediaJob.h */,
 				7C62F24010505BC7002AD2C1 /* Bookmark.cpp */,
@@ -4509,7 +4569,6 @@
 				E38E16880D25F9FA00618676 /* DllLibid3tag.h */,
 				E38E16890D25F9FA00618676 /* DNSNameCache.cpp */,
 				E38E168A0D25F9FA00618676 /* DNSNameCache.h */,
-				E38E168B0D25F9FA00618676 /* doxygen.hpp */,
 				F5987F040FBDF274008EF4FB /* DPMSSupport.cpp */,
 				F5987F030FBDF274008EF4FB /* DPMSSupport.h */,
 				E38E168C0D25F9FA00618676 /* DynamicDll.cpp */,
@@ -4818,12 +4877,14 @@
 				E38E1E150D25F9FD00618676 /* Tag.h */,
 				E38E1E160D25F9FD00618676 /* Temperature.cpp */,
 				E38E1E170D25F9FD00618676 /* Temperature.h */,
+				7C8A14541154CB2600E5FCFA /* TextureCache.cpp */,
+				7C8A14551154CB2600E5FCFA /* TextureCache.h */,
+				7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */,
+				7C8A187B115B2A8200E5FCFA /* TextureDatabase.h */,
 				E38E1E180D25F9FD00618676 /* ThumbLoader.cpp */,
 				E38E1E190D25F9FD00618676 /* ThumbLoader.h */,
 				E38E1E1A0D25F9FD00618676 /* ThumbnailCache.cpp */,
 				E38E1E1B0D25F9FD00618676 /* ThumbnailCache.h */,
-				F5A7B441113CBC9D0059D6AA /* Scraper.cpp */,
-				F5A7B440113CBC9D0059D6AA /* Scraper.h */,
 				E38E1DF60D25F9FD00618676 /* screensavers */,
 				E38E1E1C0D25F9FD00618676 /* UPnP.cpp */,
 				E38E1E1D0D25F9FD00618676 /* UPnP.h */,
@@ -5810,6 +5871,7 @@
 		E38E19DA0D25F9FB00618676 /* xbmcmodule */ = {
 			isa = PBXGroup;
 			children = (
+				C80425701158A0DE00D158A6 /* controlslider.cpp */,
 				E354EF030D99EDC900B55311 /* controlradiobutton.cpp */,
 				E38E257E0D263CE000618676 /* action.cpp */,
 				E38E19DC0D25F9FB00618676 /* action.h */,
@@ -6615,9 +6677,6 @@
 		E38E1DF60D25F9FD00618676 /* screensavers */ = {
 			isa = PBXGroup;
 			children = (
-				E38E1DF70D25F9FD00618676 /* DllScreenSaver.h */,
-				E38E1DFA0D25F9FD00618676 /* ScreenSaver.cpp */,
-				E38E1DFB0D25F9FD00618676 /* ScreenSaver.h */,
 			);
 			path = screensavers;
 			sourceTree = "<group>";
@@ -6634,11 +6693,6 @@
 		E38E1E220D25F9FD00618676 /* utils */ = {
 			isa = PBXGroup;
 			children = (
-				F5A7B448113CBCE70059D6AA /* AddonManager.cpp */,
-				F5A7B449113CBCE70059D6AA /* AddonManager.h */,
-				F5A7B44A113CBCE70059D6AA /* Addon.cpp */,
-				F5A7B44B113CBCE70059D6AA /* AddonDll.h */,
-				F5A7B44C113CBCE70059D6AA /* Addon.h */,
 				E38E1E230D25F9FD00618676 /* AlarmClock.cpp */,
 				E38E1E240D25F9FD00618676 /* AlarmClock.h */,
 				F5A9D3081097C9370050490F /* AliasShortcutUtils.cpp */,
@@ -6695,7 +6749,6 @@
 				E38E1E430D25F9FD00618676 /* HTMLUtil.h */,
 				E38E1E460D25F9FD00618676 /* HttpHeader.cpp */,
 				E38E1E470D25F9FD00618676 /* HttpHeader.h */,
-				F5A7B451113CBD120059D6AA /* IAddon.h */,
 				E38E1E4A0D25F9FD00618676 /* IMDB.cpp */,
 				E38E1E4B0D25F9FD00618676 /* IMDB.h */,
 				E38E1E4C0D25F9FD00618676 /* InfoLoader.cpp */,
@@ -6788,11 +6841,6 @@
 		E38E1E9B0D25F9FD00618676 /* visualizations */ = {
 			isa = PBXGroup;
 			children = (
-				E38E1E9C0D25F9FD00618676 /* DllVisualisation.h */,
-				E38E1E9D0D25F9FD00618676 /* fft.cpp */,
-				E38E1E9E0D25F9FD00618676 /* fft.h */,
-				E38E1EA10D25F9FD00618676 /* Visualisation.cpp */,
-				E38E1EA20D25F9FD00618676 /* Visualisation.h */,
 			);
 			path = visualizations;
 			sourceTree = "<group>";
@@ -7750,7 +7798,6 @@
 				E38E22AC0D25F9FE00618676 /* PlayListWPL.cpp in Sources */,
 				E38E22AE0D25F9FE00618676 /* Profile.cpp in Sources */,
 				E38E22AF0D25F9FE00618676 /* ProgramDatabase.cpp in Sources */,
-				E38E22B10D25F9FE00618676 /* ScreenSaver.cpp in Sources */,
 				E38E22B30D25F9FE00618676 /* SectionLoader.cpp in Sources */,
 				E38E22B40D25F9FE00618676 /* VideoSettings.cpp in Sources */,
 				E38E22B50D25F9FE00618676 /* Settings.cpp in Sources */,
@@ -7810,8 +7857,6 @@
 				E38E22FC0D25F9FE00618676 /* VideoInfoScanner.cpp in Sources */,
 				E38E22FD0D25F9FE00618676 /* VideoInfoTag.cpp in Sources */,
 				E38E22FE0D25F9FE00618676 /* ViewDatabase.cpp in Sources */,
-				E38E22FF0D25F9FE00618676 /* fft.cpp in Sources */,
-				E38E23010D25F9FE00618676 /* Visualisation.cpp in Sources */,
 				E38E23030D25F9FE00618676 /* VorbisTag.cpp in Sources */,
 				E38E23040D25F9FE00618676 /* XBApplicationEx.cpp in Sources */,
 				E38E23150D25F9FE00618676 /* xbmc.cpp in Sources */,
@@ -8112,9 +8157,19 @@
 				F5A7B42C113CBB950059D6AA /* AddonsDirectory.cpp in Sources */,
 				F5A7B430113CBBE20059D6AA /* GUIDialogAddonSettings.cpp in Sources */,
 				F5A7B434113CBC6A0059D6AA /* GUIWindowAddonBrowser.cpp in Sources */,
-				F5A7B442113CBC9D0059D6AA /* Scraper.cpp in Sources */,
-				F5A7B44D113CBCE70059D6AA /* AddonManager.cpp in Sources */,
-				F5A7B44E113CBCE70059D6AA /* Addon.cpp in Sources */,
+				18B4A0021152BFA5001AF8A6 /* Addon.cpp in Sources */,
+				18B4A0031152BFA5001AF8A6 /* AddonManager.cpp in Sources */,
+				18B4A0041152BFA5001AF8A6 /* fft.cpp in Sources */,
+				18B4A0051152BFA5001AF8A6 /* Scraper.cpp in Sources */,
+				18B4A0061152BFA5001AF8A6 /* ScreenSaver.cpp in Sources */,
+				18B4A0071152BFA5001AF8A6 /* Visualisation.cpp in Sources */,
+				7C8A14571154CB2600E5FCFA /* TextureCache.cpp in Sources */,
+				C80425711158A0DE00D158A6 /* controlslider.cpp in Sources */,
+				7C8A187D115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */,
+				F52BFFDB115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */,
+				C85EB756117460D50008E5A5 /* AddonDatabase.cpp in Sources */,
+				C85EB75C1174614E0008E5A5 /* Repository.cpp in Sources */,
+				C85EB762117461830008E5A5 /* GUIViewStateAddonBrowser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8616,7 +8671,6 @@
 				F5A1CAAA0F6B06CF00A96ABD /* PlayListWPL.cpp in Sources */,
 				F5A1CAAC0F6B06CF00A96ABD /* Profile.cpp in Sources */,
 				F5A1CAAD0F6B06CF00A96ABD /* ProgramDatabase.cpp in Sources */,
-				F5A1CAAE0F6B06CF00A96ABD /* ScreenSaver.cpp in Sources */,
 				F5A1CAB00F6B06CF00A96ABD /* SectionLoader.cpp in Sources */,
 				F5A1CAB10F6B06CF00A96ABD /* VideoSettings.cpp in Sources */,
 				F5A1CAB20F6B06CF00A96ABD /* Settings.cpp in Sources */,
@@ -8676,8 +8730,6 @@
 				F5A1CAEB0F6B06CF00A96ABD /* VideoInfoScanner.cpp in Sources */,
 				F5A1CAEC0F6B06CF00A96ABD /* VideoInfoTag.cpp in Sources */,
 				F5A1CAED0F6B06CF00A96ABD /* ViewDatabase.cpp in Sources */,
-				F5A1CAEE0F6B06CF00A96ABD /* fft.cpp in Sources */,
-				F5A1CAEF0F6B06CF00A96ABD /* Visualisation.cpp in Sources */,
 				F5A1CAF10F6B06CF00A96ABD /* VorbisTag.cpp in Sources */,
 				F5A1CAF20F6B06CF00A96ABD /* XBApplicationEx.cpp in Sources */,
 				F5A1CAF60F6B06CF00A96ABD /* xbmc.cpp in Sources */,
@@ -8973,9 +9025,19 @@
 				F5A7B42D113CBB950059D6AA /* AddonsDirectory.cpp in Sources */,
 				F5A7B431113CBBE20059D6AA /* GUIDialogAddonSettings.cpp in Sources */,
 				F5A7B435113CBC6A0059D6AA /* GUIWindowAddonBrowser.cpp in Sources */,
-				F5A7B443113CBC9D0059D6AA /* Scraper.cpp in Sources */,
-				F5A7B44F113CBCE70059D6AA /* AddonManager.cpp in Sources */,
-				F5A7B450113CBCE70059D6AA /* Addon.cpp in Sources */,
+				18B4A0081152BFA5001AF8A6 /* Addon.cpp in Sources */,
+				18B4A0091152BFA5001AF8A6 /* AddonManager.cpp in Sources */,
+				18B4A00A1152BFA5001AF8A6 /* fft.cpp in Sources */,
+				18B4A00B1152BFA5001AF8A6 /* Scraper.cpp in Sources */,
+				18B4A00C1152BFA5001AF8A6 /* ScreenSaver.cpp in Sources */,
+				18B4A00D1152BFA5001AF8A6 /* Visualisation.cpp in Sources */,
+				7C8A14561154CB2600E5FCFA /* TextureCache.cpp in Sources */,
+				C80425721158A0DE00D158A6 /* controlslider.cpp in Sources */,
+				7C8A187C115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */,
+				F52BFFDC115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */,
+				C85EB757117460D50008E5A5 /* AddonDatabase.cpp in Sources */,
+				C85EB75D1174614E0008E5A5 /* Repository.cpp in Sources */,
+				C85EB763117461830008E5A5 /* GUIViewStateAddonBrowser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -91,16 +91,6 @@ CFileItem::CFileItem(const CStdString &path, const CAlbum& album)
   else
     m_strThumbnailImage.clear();
 
-  /* TODO: remove when we remove old properties */
-  SetProperty("description", album.strReview);
-  SetProperty("theme", album.strThemes);
-  SetProperty("mood", album.strMoods);
-  SetProperty("style", album.strStyles);
-  SetProperty("type", album.strType);
-  SetProperty("label", album.strLabel);
-  if (album.iRating > 0)
-    SetProperty("rating", album.iRating);
-
   CMusicDatabase::SetPropertiesFromAlbum(*this,album);
 }
 
@@ -722,11 +712,6 @@ bool CFileItem::IsStack() const
 bool CFileItem::IsPlugin() const
 {
   return CUtil::IsPlugin(m_strPath);
-}
-
-bool CFileItem::IsPluginRoot() const
-{
-  return CUtil::IsPluginRoot(m_strPath);
 }
 
 bool CFileItem::IsMultiPath() const
@@ -2343,11 +2328,6 @@ void CFileItemList::SetCachedMusicThumbs()
   }
 }
 
-CStdString CFileItem::GetCachedPictureThumb() const
-{
-  return GetCachedThumb(m_strPath,g_settings.GetPicturesThumbFolder(),true);
-}
-
 void CFileItem::SetCachedMusicThumb()
 {
   // if it already has a thumbnail, then return
@@ -2471,14 +2451,6 @@ void CFileItem::SetUserMusicThumb(bool alwaysCheckRemote /* = false */)
   }
 
   SetCachedMusicThumb();
-}
-
-void CFileItem::SetCachedPictureThumb()
-{
-  if (IsParentFolder()) return;
-  CStdString cachedThumb(GetCachedPictureThumb());
-  if (CFile::Exists(cachedThumb))
-    SetThumbnailImage(cachedThumb);
 }
 
 CStdString CFileItem::GetCachedVideoThumb() const
@@ -2617,18 +2589,11 @@ CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jp
   CStdString folderThumb;
   CStdString strFolder = m_strPath;
 
-  if (IsStack())
+  if (IsStack() ||
+      CUtil::IsInRAR(strFolder) ||
+      CUtil::IsInZIP(strFolder))
   {
-    CStdString strPath;
-    CUtil::GetParentPath(m_strPath,strPath);
-    CStdString strFolder = CStackDirectory::GetStackedTitlePath(m_strPath);
-  }
-
-  if (CUtil::IsInRAR(strFolder) || CUtil::IsInZIP(strFolder))
-  {
-    CStdString strPath, strParent;
-    CUtil::GetDirectory(strFolder,strPath);
-    CUtil::GetParentPath(strPath,strParent);
+    CUtil::GetParentPath(m_strPath,strFolder);
   }
 
   if (IsMultiPath())
@@ -2760,7 +2725,7 @@ CStdString CFileItem::GetLocalFanart() const
     return "";
 
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_settings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
+  CDirectory::GetDirectory(strDir, items, g_settings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false, true);
 
   CStdStringArray fanarts;
   StringUtils::SplitString(g_advancedSettings.m_fanartImages, "|", fanarts);
@@ -3123,7 +3088,7 @@ CStdString CFileItem::FindTrailer() const
   CStdString strDir;
   CUtil::GetDirectory(strFile, strDir);
   CFileItemList items;
-  CDirectory::GetDirectory(strDir, items, g_settings.m_videoExtensions, true, false, DIR_CACHE_ALWAYS, false);
+  CDirectory::GetDirectory(strDir, items, g_settings.m_videoExtensions, true, false, DIR_CACHE_ALWAYS, false, true);
   CUtil::RemoveExtension(strFile);
   strFile += "-trailer";
   CStdString strFile3 = CUtil::AddFileToFolder(strDir, "movie-trailer");

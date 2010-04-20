@@ -36,7 +36,7 @@
 #include "PlayListFactory.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogOK.h"
-#include "AddonManager.h"
+#include "addons/AddonManager.h"
 #include "PartyModeManager.h"
 #include "MusicDatabase.h"
 #include "GUIWindowManager.h"
@@ -53,6 +53,7 @@
 #include "StringUtils.h"
 #include "MediaManager.h"
 #include "utils/log.h"
+#include "TextureCache.h"
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
@@ -162,6 +163,8 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           destPath = "videodb://1/6/";
         else if (strDestination.Equals("Movies"))
           destPath = "videodb://1/";
+        else if (strDestination.Equals("MovieSets"))
+          destPath = "videodb://1/7/";
         else if (strDestination.Equals("TvShowGenres"))
           destPath = "videodb://2/1/";
         else if (strDestination.Equals("TvShowTitles"))
@@ -792,12 +795,12 @@ void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, ADDON::ScraperPtr& scraper)
 {
   m_database.Open(); // since we can be called from the music library without being inited
   if (pItem->IsVideoDb())
-    m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath,scraper);
+    scraper = m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath);
   else
   {
     CStdString strPath,strFile;
     CUtil::Split(pItem->m_strPath,strPath,strFile);
-    m_database.GetScraperForPath(strPath,scraper);
+    scraper = m_database.GetScraperForPath(strPath);
   }
   m_database.Close();
   CGUIWindowVideoBase::OnInfo(pItem,scraper);
@@ -849,7 +852,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
     if (pDialog->IsConfirmed())
     {
       CFileItemList items;
-      CDirectory::GetDirectory(pItem->m_strPath,items);
+      CDirectory::GetDirectory(pItem->m_strPath,items,"",false,false,DIR_CACHE_ONCE,true,true);
       for (int i=0;i<items.Size();++i)
         OnDeleteItem(items[i]);
 
@@ -1095,7 +1098,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     if (!item->IsParentFolder())
     {
       // can we update the database?
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser)
+      if (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
       {
         if (node == NODE_TYPE_TITLE_TVSHOWS)
         {
@@ -1244,7 +1247,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CUtil::WipeDir(strPath);
       XFILE::CDirectory::Create(strPath);
       CFileItemPtr noneitem(new CFileItem("thumb://None", false));
-      int i=1;
       CStdString cachedThumb = m_vecItems->Get(itemNumber)->GetCachedSeasonThumb();
       if (button == CONTEXT_BUTTON_SET_ACTOR_THUMB)
         cachedThumb = m_vecItems->Get(itemNumber)->GetCachedActorThumb();
@@ -1269,6 +1271,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       noneitem->SetIconImage("DefaultFolder.png");
       noneitem->SetLabel(g_localizeStrings.Get(20018));
 
+      vector<CStdString> thumbs;
       if (button != CONTEXT_BUTTON_SET_ARTIST_THUMB &&
           button != CONTEXT_BUTTON_SET_PLUGIN_THUMB)
       {
@@ -1277,27 +1280,23 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           m_database.GetTvShowInfo("",tag,m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iDbId);
         else
           tag = *m_vecItems->Get(itemNumber)->GetVideoInfoTag();
-        for (vector<CScraperUrl::SUrlEntry>::iterator iter=tag.m_strPictureURL.m_url.begin();iter != tag.m_strPictureURL.m_url.end();++iter)
-        {
-          if ((iter->m_type != CScraperUrl::URL_TYPE_SEASON ||
-               iter->m_season != m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iSeason) &&
-               button == CONTEXT_BUTTON_SET_SEASON_THUMB)
-          {
-            continue;
-          }
+        if (button == CONTEXT_BUTTON_SET_SEASON_THUMB)
+          tag.m_strPictureURL.GetThumbURLs(thumbs, m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_iSeason);
+        else
+          tag.m_strPictureURL.GetThumbURLs(thumbs);
 
+        for (unsigned int i = 0; i < thumbs.size(); i++)
+        {
           CStdString strItemPath;
-          strItemPath.Format("thumb://Remote%i",i++);
+          strItemPath.Format("thumb://Remote%i",i);
           CFileItemPtr item(new CFileItem(strItemPath, false));
-          item->SetThumbnailImage("http://this.is/a/thumb/from/the/web");
+          item->SetThumbnailImage(thumbs[i]);
           item->SetIconImage("DefaultPicture.png");
-          item->GetVideoInfoTag()->m_strPictureURL.m_url.push_back(*iter);
-          item->SetLabel(g_localizeStrings.Get(415));
-          item->SetProperty("labelonthumbload",g_localizeStrings.Get(20015));
-          // make sure any previously cached thumb is removed
-          if (CFile::Exists(item->GetCachedPictureThumb()))
-            CFile::Delete(item->GetCachedPictureThumb());
+          item->SetLabel(g_localizeStrings.Get(20015));
           items.Add(item);
+
+          // TODO: Do we need to clear the cached image?
+          //    CTextureCache::Get().ClearCachedImage(thumbs[i]);
         }
       }
 
@@ -1406,26 +1405,20 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       // delete the thumbnail if that's what the user wants, else overwrite with the
       // new thumbnail
+      CTextureCache::Get().ClearCachedImage(cachedThumb);
       if (result.Left(14) == "thumb://Remote")
       {
-        CFileItem chosen(result,false);
-        CStdString thumb = chosen.GetCachedPictureThumb();
-        if (CFile::Exists(thumb))
-        {
-          // NOTE: This could fail if the thumbloader was too slow and the user too impatient
-          CFile::Cache(thumb, cachedThumb);
-        }
-        else
-          result = "thumb://None";
+        int number = atoi(result.Mid(14));
+        CFile::Cache(thumbs[number], cachedThumb);
       }
       if (result == "thumb://None")
       {
-        CFile::Delete(cachedThumb);
+        CTextureCache::Get().ClearCachedImage(cachedThumb);
         if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
         {
           CFileItem item2(strPath,false);
           CUtil::AddFileToFolder(strPath,"default.py",item2.m_strPath);
-          CFile::Delete(item2.GetCachedProgramThumb());
+          CTextureCache::Get().ClearCachedImage(item2.GetCachedProgramThumb());
         }
       }
       else
@@ -1440,8 +1433,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_UPDATE_LIBRARY:
     {
-      VIDEO::SScanSettings settings;
-      OnScan("",ADDON::ScraperPtr(),settings);
+      OnScan("");
       return true;
     }
   case CONTEXT_BUTTON_UNLINK_MOVIE:

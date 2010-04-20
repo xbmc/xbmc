@@ -25,7 +25,7 @@
 #include "libavutil/avutil.h"
 
 #define LIBAVFILTER_VERSION_MAJOR  1
-#define LIBAVFILTER_VERSION_MINOR 12
+#define LIBAVFILTER_VERSION_MINOR 18
 #define LIBAVFILTER_VERSION_MICRO  0
 
 #define LIBAVFILTER_VERSION_INT AV_VERSION_INT(LIBAVFILTER_VERSION_MAJOR, \
@@ -47,12 +47,12 @@ unsigned avfilter_version(void);
 /**
  * Returns the libavfilter build-time configuration.
  */
-const char * avfilter_configuration(void);
+const char *avfilter_configuration(void);
 
 /**
  * Returns the libavfilter license.
  */
-const char * avfilter_license(void);
+const char *avfilter_license(void);
 
 
 typedef struct AVFilterContext AVFilterContext;
@@ -105,6 +105,7 @@ typedef struct AVFilterPicRef
     int h;                      ///< image height
 
     int64_t pts;                ///< presentation timestamp in units of 1/AV_TIME_BASE
+    int64_t pos;                ///< byte position in stream, -1 if unknown
 
     AVRational pixel_aspect;    ///< pixel aspect ratio
 
@@ -192,6 +193,16 @@ struct AVFilterFormats
 AVFilterFormats *avfilter_make_format_list(const enum PixelFormat *pix_fmts);
 
 /**
+ * Adds pix_fmt to the list of pixel formats contained in *avff.
+ * If *avff is NULL the function allocates the filter formats struct
+ * and puts its pointer in *avff.
+ *
+ * @return a non negative value in case of success, or a negative
+ * value corresponding to an AVERROR code in case of error
+ */
+int avfilter_add_colorspace(AVFilterFormats **avff, enum PixelFormat pix_fmt);
+
+/**
  * Returns a list of all colorspaces supported by FFmpeg.
  */
 AVFilterFormats *avfilter_all_colorspaces(void);
@@ -221,8 +232,9 @@ AVFilterFormats *avfilter_merge_formats(AVFilterFormats *a, AVFilterFormats *b);
 void avfilter_formats_ref(AVFilterFormats *formats, AVFilterFormats **ref);
 
 /**
- * Removes *ref as a reference to the format list it currently points to,
- * deallocates that list if this was the last reference, and sets *ref to NULL.
+ * If *ref is non-NULL, removes *ref as a reference to the format list
+ * it currently points to, deallocates that list if this was the last
+ * reference, and sets *ref to NULL.
  *
  *         Before                                 After
  *   ________                               ________         NULL
@@ -383,6 +395,19 @@ void avfilter_set_common_formats(AVFilterContext *ctx, AVFilterFormats *formats)
 /** Default handler for query_formats() */
 int avfilter_default_query_formats(AVFilterContext *ctx);
 
+/** start_frame() handler for filters which simply pass video along */
+void avfilter_null_start_frame(AVFilterLink *link, AVFilterPicRef *picref);
+
+/** draw_slice() handler for filters which simply pass video along */
+void avfilter_null_draw_slice(AVFilterLink *link, int y, int h, int slice_dir);
+
+/** end_frame() handler for filters which simply pass video along */
+void avfilter_null_end_frame(AVFilterLink *link);
+
+/** get_video_buffer() handler for filters which simply pass video along */
+AVFilterPicRef *avfilter_null_get_video_buffer(AVFilterLink *link,
+                                                  int perms, int w, int h);
+
 /**
  * Filter definition. This defines the pads a filter contains, and all the
  * callback functions used to interact with the filter.
@@ -409,11 +434,12 @@ typedef struct AVFilter
     void (*uninit)(AVFilterContext *ctx);
 
     /**
-     * Query formats supported by the filter and its pads. Should set the
+     * Queries formats supported by the filter and its pads, and sets the
      * in_formats for links connected to its output pads, and out_formats
      * for links connected to its input pads.
      *
-     * Should return zero on success.
+     * @return zero on success, a negative value corresponding to an
+     * AVERROR code otherwise
      */
     int (*query_formats)(AVFilterContext *);
 

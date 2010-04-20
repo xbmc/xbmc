@@ -36,7 +36,7 @@
 #include "MediaManager.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
-#include "utils/AddonManager.h"
+#include "addons/AddonManager.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
 #include "Picture.h"
@@ -287,16 +287,17 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
   // Next, Add buttons to the ContextMenu that should ONLY be visible for sources and not autosourced items
   CMediaSource *share = GetShare(type, item.get());
 
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser)
+  if (g_settings.GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser)
   {
     if (share)
     {
       // Note. from now on, remove source & disable plugin should mean the same thing
       //TODO might be smart to also combine editing source & plugin settings into one concept/dialog
+      // Note. Temporarily disabled ability to remove plugin sources until installer is operational
 
       CURL url(share->strPath);
-      bool isUUID = StringUtils::ValidateUUID(url.GetHostName());
-      if (!share->m_ignore && !isUUID)
+      bool isAddon = ADDON::TranslateContent(url.GetProtocol()) != CONTENT_NONE;
+      if (!share->m_ignore && !isAddon)
         buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027); // Edit Source
       else
       {
@@ -306,8 +307,8 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
           buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045); // Plugin Settings
       }
       buttons.Add(CONTEXT_BUTTON_SET_DEFAULT, 13335); // Set as Default
-      if (!share->m_ignore)
-        buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source / disable plugin
+      if (!share->m_ignore && !isAddon)
+        buttons.Add(CONTEXT_BUTTON_REMOVE_SOURCE, 522); // Remove Source
 
       buttons.Add(CONTEXT_BUTTON_SET_THUMB, 20019);
     }
@@ -316,9 +317,9 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
 
     buttons.Add(CONTEXT_BUTTON_ADD_SOURCE, 1026); // Add Source
   }
-  if (share && LOCK_MODE_EVERYONE != g_settings.m_vecProfiles[0].getLockMode())
+  if (share && LOCK_MODE_EVERYONE != g_settings.GetMasterProfile().getLockMode())
   {
-    if (share->m_iHasLock == 0 && (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser))
+    if (share->m_iHasLock == 0 && (g_settings.GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser))
       buttons.Add(CONTEXT_BUTTON_ADD_LOCK, 12332);
     else if (share->m_iHasLock == 1)
       buttons.Add(CONTEXT_BUTTON_REMOVE_LOCK, 12335);
@@ -345,12 +346,12 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
   // Add Source doesn't require a valid share
   if (button == CONTEXT_BUTTON_ADD_SOURCE)
   {
-    if (g_settings.m_iLastLoadedProfileIndex == 0)
+    if (g_settings.IsMasterUser())
     {
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
     }
-    else if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+    else if (!g_settings.GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
       return false;
 
     return CGUIDialogMediaSource::ShowAndAddMediaSource(type);
@@ -386,7 +387,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
   switch (button)
   {
   case CONTEXT_BUTTON_EDIT_SOURCE:
-    if (g_settings.m_iLastLoadedProfileIndex == 0)
+    if (g_settings.IsMasterUser())
     {
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
@@ -398,26 +399,20 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
 
   case CONTEXT_BUTTON_REMOVE_SOURCE:
   {
-    if (g_settings.m_iLastLoadedProfileIndex == 0)
+    if (g_settings.IsMasterUser())
     {
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
     }
     else
     {
-      if (!g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsMasterLockUnlocked(false))
+      if (!g_settings.GetCurrentProfile().canWriteSources() && !g_passwordManager.IsMasterLockUnlocked(false))
         return false;
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+      if (g_settings.GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
         return false;
     }
-    // prompt user if they want to really delete the source/disable the plugin
-    bool yes(false);
-    bool plugin = item->IsPlugin();
-    if (plugin)
-      yes = CGUIDialogYesNo::ShowAndGetInput(24009, 24010, 24011, 0);
-    else
-      yes = CGUIDialogYesNo::ShowAndGetInput(751, 0, 750, 0);
-    if (yes)
+    // prompt user if they want to really delete the source
+    if (CGUIDialogYesNo::ShowAndGetInput(751, 0, 750, 0))
     { // check default before we delete, as deletion will kill the share object
       CStdString defaultSource(GetDefaultShareNameByType(type));
       if (!defaultSource.IsEmpty())
@@ -425,18 +420,12 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
         if (share->strName.Equals(defaultSource))
           ClearDefault(type);
       }
-      if (plugin)
-      {
-        CURL path(share->strPath);
-        ADDON::CAddonMgr::Get()->DisableAddon(path.GetHostName());
-      }
-      else
-        g_settings.DeleteSource(type, share->strName, share->strPath);
+      g_settings.DeleteSource(type, share->strName, share->strPath);
     }
     return true;
   }
   case CONTEXT_BUTTON_SET_DEFAULT:
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+    if (g_settings.GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
       return false;
     else if (!g_passwordManager.IsMasterLockUnlocked(true))
       return false;
@@ -446,7 +435,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
     return true;
 
   case CONTEXT_BUTTON_CLEAR_DEFAULT:
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+    if (g_settings.GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
       return false;
     else if (!g_passwordManager.IsMasterLockUnlocked(true))
       return false;
@@ -456,7 +445,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
 
   case CONTEXT_BUTTON_SET_THUMB:
     {
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
+      if (g_settings.GetCurrentProfile().canWriteSources() && !g_passwordManager.IsProfileLockUnlocked())
         return false;
       else if (!g_passwordManager.IsMasterLockUnlocked(true))
         return false;
@@ -525,8 +514,6 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
         }
         else if (type == "video")
           cachedThumb = item->GetCachedVideoThumb();
-        else if (type == "pictures")
-          cachedThumb = item->GetCachedPictureThumb();
         else  // assume "programs"
           cachedThumb = item->GetCachedProgramThumb();
         XFILE::CFile::Cache(strThumb, cachedThumb);

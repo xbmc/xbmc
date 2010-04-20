@@ -28,6 +28,7 @@
 #include "utils/log.h"
 
 #ifdef _WIN32
+#include <tpcshrd.h>
 
 HWND g_hWnd = NULL;
 
@@ -43,6 +44,9 @@ CWinSystemWin32::CWinSystemWin32()
   m_nMonitorsCount = 0;
   m_nPrimary = 0;
   m_nSecondary = 0;
+  PtrCloseGestureInfoHandle = NULL;
+  PtrSetGestureConfig = NULL;
+  PtrGetGestureInfo = NULL;
 }
 
 CWinSystemWin32::~CWinSystemWin32()
@@ -135,6 +139,17 @@ bool CWinSystemWin32::CreateNewWindow(const CStdString& name, bool fullScreen, R
   {
     return false;
   }
+
+  const DWORD dwHwndTabletProperty = 
+      TABLET_DISABLE_PENBARRELFEEDBACK | // disables UI feedback on pen button down (circle)
+      TABLET_DISABLE_FLICKS; // disables pen flicks (back, forward, drag down, drag up)
+  
+  SetProp(hWnd, MICROSOFT_TABLETPENSERVICE_PROPERTY, reinterpret_cast<HANDLE>(dwHwndTabletProperty));
+
+  // setup our touch pointers
+  PtrGetGestureInfo = (pGetGestureInfo) GetProcAddress( GetModuleHandle( TEXT( "user32" ) ), "GetGestureInfo" );
+  PtrSetGestureConfig = (pSetGestureConfig) GetProcAddress( GetModuleHandle( TEXT( "user32" ) ), "SetGestureConfig" );
+  PtrCloseGestureInfoHandle = (pCloseGestureInfoHandle) GetProcAddress( GetModuleHandle( TEXT( "user32" ) ), "CloseGestureInfoHandle" );
 
   m_hWnd = hWnd;
   g_hWnd = hWnd;

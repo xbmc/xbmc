@@ -23,9 +23,9 @@
 #include "PlayerOperations.h"
 #include "AVPlayerOperations.h"
 #include "PicturePlayerOperations.h"
+#include "AVPlaylistOperations.h"
 #include "PlaylistOperations.h"
 #include "FileOperations.h"
-#include "GUIOperations.h"
 #include "MusicLibrary.h"
 #include "VideoLibrary.h"
 #include "SystemOperations.h"
@@ -41,134 +41,153 @@ using namespace std;
 
 Command CJSONRPC::m_commands[] = {
 // JSON-RPC
-  { "JSONRPC.Introspect",               CJSONRPC::Introspect,                   Response,     ReadData,        "Enumerates all actions and descriptions. Parameter example {\"getdescriptions\": true, \"getpermissions\": true, \"filterbytransport\": true }. All parameters optional" },
-  { "JSONRPC.Version",                  CJSONRPC::Version,                      Response,     ReadData,        "Retrieve the jsonrpc protocol version" },
-  { "JSONRPC.Permission",               CJSONRPC::Permission,                   Response,     ReadData,        "Retrieve the clients permissions" },
-  { "JSONRPC.Ping",                     CJSONRPC::Ping,                         Response,     ReadData,        "Ping responder" },
-  { "JSONRPC.GetAnnouncementFlags",     CJSONRPC::GetAnnouncementFlags,         Announcing,   ReadData,        "Get announcement flags" },
-  { "JSONRPC.SetAnnouncementFlags",     CJSONRPC::SetAnnouncementFlags,         Announcing,   ControlAnnounce, "Change the announcement flags. Parameter example {\"playback\": true, \"gui\": false }" },
-  { "JSONRPC.Announce",                 CJSONRPC::Announce,                     Response,     ReadData,        "Announce to other connected clients. Parameter example {\"sender\": \"foo\", \"message\": \"bar\", \"data\": \"somedata\" }. data is optional" },
+  { "JSONRPC.Introspect",                           CJSONRPC::Introspect,                                Response,     ReadData,        "Enumerates all actions and descriptions. Parameter example {\"getdescriptions\": true, \"getpermissions\": true, \"filterbytransport\": true }. All parameters optional" },
+  { "JSONRPC.Version",                              CJSONRPC::Version,                                   Response,     ReadData,        "Retrieve the jsonrpc protocol version" },
+  { "JSONRPC.Permission",                           CJSONRPC::Permission,                                Response,     ReadData,        "Retrieve the clients permissions" },
+  { "JSONRPC.Ping",                                 CJSONRPC::Ping,                                      Response,     ReadData,        "Ping responder" },
+  { "JSONRPC.GetAnnouncementFlags",                 CJSONRPC::GetAnnouncementFlags,                      Announcing,   ReadData,        "Get announcement flags" },
+  { "JSONRPC.SetAnnouncementFlags",                 CJSONRPC::SetAnnouncementFlags,                      Announcing,   ControlAnnounce, "Change the announcement flags. Parameter example {\"playback\": true, \"gui\": false }" },
+  { "JSONRPC.Announce",                             CJSONRPC::Announce,                                  Response,     ReadData,        "Announce to other connected clients. Parameter example {\"sender\": \"foo\", \"message\": \"bar\", \"data\": \"somedata\" }. data is optional" },
 
 // Player
-  { "Player.GetActivePlayers",          CPlayerOperations::GetActivePlayers,    Response,     ReadData,        "Returns all active players IDs"},
+  { "Player.GetActivePlayers",                      CPlayerOperations::GetActivePlayers,                 Response,     ReadData,        "Returns all active players IDs"},
 
 // Music player
-  { "MusicPlayer.PlayPause",            CAVPlayerOperations::PlayPause,         Response,     ControlPlayback, "Pauses or unpause playback" },
-  { "MusicPlayer.Stop",                 CAVPlayerOperations::Stop,              Response,     ControlPlayback, "Stops playback" },
-  { "MusicPlayer.SkipPrevious",         CAVPlayerOperations::SkipPrevious,      Response,     ControlPlayback, "Skips to previous item on the playlist" },
-  { "MusicPlayer.SkipNext",             CAVPlayerOperations::SkipNext,          Response,     ControlPlayback, "Skips to next item on the playlist" },
+  { "AudioPlayer.PlayPause",                        CAVPlayerOperations::PlayPause,                      Response,     ControlPlayback, "Pauses or unpause playback" },
+  { "AudioPlayer.Stop",                             CAVPlayerOperations::Stop,                           Response,     ControlPlayback, "Stops playback" },
+  { "AudioPlayer.SkipPrevious",                     CAVPlayerOperations::SkipPrevious,                   Response,     ControlPlayback, "Skips to previous item on the playlist" },
+  { "AudioPlayer.SkipNext",                         CAVPlayerOperations::SkipNext,                       Response,     ControlPlayback, "Skips to next item on the playlist" },
 
-  { "MusicPlayer.BigSkipBackward",      CAVPlayerOperations::BigSkipBackward,   Response,     ControlPlayback, "" },
-  { "MusicPlayer.BigSkipForward",       CAVPlayerOperations::BigSkipForward,    Response,     ControlPlayback, "" },
-  { "MusicPlayer.SmallSkipBackward",    CAVPlayerOperations::SmallSkipBackward, Response,     ControlPlayback, "" },
-  { "MusicPlayer.SmallSkipForward",     CAVPlayerOperations::SmallSkipForward,  Response,     ControlPlayback, "" },
+  { "AudioPlayer.BigSkipBackward",                  CAVPlayerOperations::BigSkipBackward,                Response,     ControlPlayback, "" },
+  { "AudioPlayer.BigSkipForward",                   CAVPlayerOperations::BigSkipForward,                 Response,     ControlPlayback, "" },
+  { "AudioPlayer.SmallSkipBackward",                CAVPlayerOperations::SmallSkipBackward,              Response,     ControlPlayback, "" },
+  { "AudioPlayer.SmallSkipForward",                 CAVPlayerOperations::SmallSkipForward,               Response,     ControlPlayback, "" },
 
-  { "MusicPlayer.Rewind",               CAVPlayerOperations::Rewind,            Response,     ControlPlayback, "Rewind current playback" },
-  { "MusicPlayer.Forward",              CAVPlayerOperations::Forward,           Response,     ControlPlayback, "Forward current playback" },
+  { "AudioPlayer.Rewind",                           CAVPlayerOperations::Rewind,                         Response,     ControlPlayback, "Rewind current playback" },
+  { "AudioPlayer.Forward",                          CAVPlayerOperations::Forward,                        Response,     ControlPlayback, "Forward current playback" },
 
-  { "MusicPlayer.GetTime",              CAVPlayerOperations::GetTime,           Response,     ReadData,        "Retrieve time" },
-  { "MusicPlayer.GetTimeMS",            CAVPlayerOperations::GetTimeMS,         Response,     ReadData,        "Retrieve time in MS" },
-  { "MusicPlayer.GetPercentage",        CAVPlayerOperations::GetPercentage,     Response,     ReadData,        "Retrieve percentage" },
-  { "MusicPlayer.SeekTime",             CAVPlayerOperations::SeekTime,          Response,     ControlPlayback, "Seek to a specific time. Parameter integer in MS" },
+  { "AudioPlayer.GetTime",                          CAVPlayerOperations::GetTime,                        Response,     ReadData,        "Retrieve time" },
+  { "AudioPlayer.GetTimeMS",                        CAVPlayerOperations::GetTimeMS,                      Response,     ReadData,        "Retrieve time in MS" },
+  { "AudioPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage,                  Response,     ReadData,        "Retrieve percentage" },
+  { "AudioPlayer.SeekTime",                         CAVPlayerOperations::SeekTime,                       Response,     ControlPlayback, "Seek to a specific time. Parameter integer in MS" },
 
-  { "MusicPlayer.GetPlaylist",          CAVPlayerOperations::GetPlaylist,       Response,     ReadData,        "Retrieve active playlist" },
-
-  { "MusicPlayer.Record",               CAVPlayerOperations::Record,            Response,     ControlPlayback, "" },
+  { "AudioPlayer.Record",                           CAVPlayerOperations::Record,                         Response,     ControlPlayback, "" },
 
 // Video player
-  { "VideoPlayer.PlayPause",            CAVPlayerOperations::PlayPause,         Response,     ControlPlayback, "Pauses or unpause playback" },
-  { "VideoPlayer.Stop",                 CAVPlayerOperations::Stop,              Response,     ControlPlayback, "Stops playback" },
-  { "VideoPlayer.SkipPrevious",         CAVPlayerOperations::SkipPrevious,      Response,     ControlPlayback, "Skips to previous item on the playlist" },
-  { "VideoPlayer.SkipNext",             CAVPlayerOperations::SkipNext,          Response,     ControlPlayback, "Skips to next item on the playlist" },
+  { "VideoPlayer.PlayPause",                        CAVPlayerOperations::PlayPause,                      Response,     ControlPlayback, "Pauses or unpause playback" },
+  { "VideoPlayer.Stop",                             CAVPlayerOperations::Stop,                           Response,     ControlPlayback, "Stops playback" },
+  { "VideoPlayer.SkipPrevious",                     CAVPlayerOperations::SkipPrevious,                   Response,     ControlPlayback, "Skips to previous item on the playlist" },
+  { "VideoPlayer.SkipNext",                         CAVPlayerOperations::SkipNext,                       Response,     ControlPlayback, "Skips to next item on the playlist" },
 
-  { "VideoPlayer.BigSkipBackward",      CAVPlayerOperations::BigSkipBackward,   Response,     ControlPlayback, "" },
-  { "VideoPlayer.BigSkipForward",       CAVPlayerOperations::BigSkipForward,    Response,     ControlPlayback, "" },
-  { "VideoPlayer.SmallSkipBackward",    CAVPlayerOperations::SmallSkipBackward, Response,     ControlPlayback, "" },
-  { "VideoPlayer.SmallSkipForward",     CAVPlayerOperations::SmallSkipForward,  Response,     ControlPlayback, "" },
+  { "VideoPlayer.BigSkipBackward",                  CAVPlayerOperations::BigSkipBackward,                Response,     ControlPlayback, "" },
+  { "VideoPlayer.BigSkipForward",                   CAVPlayerOperations::BigSkipForward,                 Response,     ControlPlayback, "" },
+  { "VideoPlayer.SmallSkipBackward",                CAVPlayerOperations::SmallSkipBackward,              Response,     ControlPlayback, "" },
+  { "VideoPlayer.SmallSkipForward",                 CAVPlayerOperations::SmallSkipForward,               Response,     ControlPlayback, "" },
 
-  { "VideoPlayer.Rewind",               CAVPlayerOperations::Rewind,            Response,     ControlPlayback, "Rewind current playback" },
-  { "VideoPlayer.Forward",              CAVPlayerOperations::Forward,           Response,     ControlPlayback, "Forward current playback" },
+  { "VideoPlayer.Rewind",                           CAVPlayerOperations::Rewind,                         Response,     ControlPlayback, "Rewind current playback" },
+  { "VideoPlayer.Forward",                          CAVPlayerOperations::Forward,                        Response,     ControlPlayback, "Forward current playback" },
 
-  { "VideoPlayer.GetTime",              CAVPlayerOperations::GetTime,           Response,     ReadData,        "Retrieve time" },
-  { "VideoPlayer.GetTimeMS",            CAVPlayerOperations::GetTimeMS,         Response,     ReadData,        "Retrieve time in MS" },
-  { "VideoPlayer.GetPercentage",        CAVPlayerOperations::GetPercentage,     Response,     ReadData,        "Retrieve percentage" },
-  { "VideoPlayer.SeekTime",             CAVPlayerOperations::SeekTime,          Response,     ControlPlayback, "Seek to a specific time. Parameter integer in MS" },
-
-  { "VideoPlayer.GetPlaylist",          CAVPlayerOperations::GetPlaylist,       Response,     ReadData,        "Retrieve active playlist" },
+  { "VideoPlayer.GetTime",                          CAVPlayerOperations::GetTime,                        Response,     ReadData,        "Retrieve time" },
+  { "VideoPlayer.GetTimeMS",                        CAVPlayerOperations::GetTimeMS,                      Response,     ReadData,        "Retrieve time in MS" },
+  { "VideoPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage,                  Response,     ReadData,        "Retrieve percentage" },
+  { "VideoPlayer.SeekTime",                         CAVPlayerOperations::SeekTime,                       Response,     ControlPlayback, "Seek to a specific time. Parameter integer in MS" },
 
 // Picture player
-  { "PicturePlayer.PlayPause",          CPicturePlayerOperations::PlayPause,    Response,     ControlPlayback, "Pauses or unpause slideshow" },
-  { "PicturePlayer.Stop",               CPicturePlayerOperations::Stop,         Response,     ControlPlayback, "Stops slideshow" },
-  { "PicturePlayer.SkipPrevious",       CPicturePlayerOperations::SkipPrevious, Response,     ControlPlayback, "Skips to previous picture in the slideshow" },
-  { "PicturePlayer.SkipNext",           CPicturePlayerOperations::SkipNext,     Response,     ControlPlayback, "Skips to next picture in the slideshow" },
+  { "PicturePlayer.PlayPause",                      CPicturePlayerOperations::PlayPause,                 Response,     ControlPlayback, "Pauses or unpause slideshow" },
+  { "PicturePlayer.Stop",                           CPicturePlayerOperations::Stop,                      Response,     ControlPlayback, "Stops slideshow" },
+  { "PicturePlayer.SkipPrevious",                   CPicturePlayerOperations::SkipPrevious,              Response,     ControlPlayback, "Skips to previous picture in the slideshow" },
+  { "PicturePlayer.SkipNext",                       CPicturePlayerOperations::SkipNext,                  Response,     ControlPlayback, "Skips to next picture in the slideshow" },
 
-  { "PicturePlayer.MoveLeft",           CPicturePlayerOperations::MoveLeft,     Response,     ControlPlayback, "If picture is zoomed move viewport left otherwise skip previous" },
-  { "PicturePlayer.MoveRight",          CPicturePlayerOperations::MoveRight,    Response,     ControlPlayback, "If picture is zoomed move viewport right otherwise skip previous" },
-  { "PicturePlayer.MoveDown",           CPicturePlayerOperations::MoveDown,     Response,     ControlPlayback, "If picture is zoomed move viewport down" },
-  { "PicturePlayer.MoveUp",             CPicturePlayerOperations::MoveUp,       Response,     ControlPlayback, "If picture is zoomed move viewport up" },
+  { "PicturePlayer.MoveLeft",                       CPicturePlayerOperations::MoveLeft,                  Response,     ControlPlayback, "If picture is zoomed move viewport left otherwise skip previous" },
+  { "PicturePlayer.MoveRight",                      CPicturePlayerOperations::MoveRight,                 Response,     ControlPlayback, "If picture is zoomed move viewport right otherwise skip previous" },
+  { "PicturePlayer.MoveDown",                       CPicturePlayerOperations::MoveDown,                  Response,     ControlPlayback, "If picture is zoomed move viewport down" },
+  { "PicturePlayer.MoveUp",                         CPicturePlayerOperations::MoveUp,                    Response,     ControlPlayback, "If picture is zoomed move viewport up" },
 
-  { "PicturePlayer.ZoomOut",            CPicturePlayerOperations::ZoomOut,      Response,     ControlPlayback, "Zoom out once" },
-  { "PicturePlayer.ZoomIn",             CPicturePlayerOperations::ZoomIn,       Response,     ControlPlayback, "Zoom in once" },
-  { "PicturePlayer.Zoom",               CPicturePlayerOperations::Zoom,         Response,     ControlPlayback, "Zooms current picture. Parameter integer of zoom level" },
-  { "PicturePlayer.Rotate",             CPicturePlayerOperations::Rotate,       Response,     ControlPlayback, "Rotates current picture" },
+  { "PicturePlayer.ZoomOut",                        CPicturePlayerOperations::ZoomOut,                   Response,     ControlPlayback, "Zoom out once" },
+  { "PicturePlayer.ZoomIn",                         CPicturePlayerOperations::ZoomIn,                    Response,     ControlPlayback, "Zoom in once" },
+  { "PicturePlayer.Zoom",                           CPicturePlayerOperations::Zoom,                      Response,     ControlPlayback, "Zooms current picture. Parameter integer of zoom level" },
+  { "PicturePlayer.Rotate",                         CPicturePlayerOperations::Rotate,                    Response,     ControlPlayback, "Rotates current picture" },
+
+// Video Playlist
+  { "VideoPlaylist.Play",                           CAVPlaylistOperations::Play,                         Response,     ControlPlayback, "" },
+  { "VideoPlaylist.SkipPrevious",                   CAVPlaylistOperations::SkipPrevious,                 Response,     ControlPlayback, "" },
+  { "VideoPlaylist.SkipNext",                       CAVPlaylistOperations::SkipNext,                     Response,     ControlPlayback, "" },
+
+  { "VideoPlaylist.GetItems",                       CAVPlaylistOperations::GetItems,                     Response,     ReadData,        "" },
+  { "VideoPlaylist.Add",                            CAVPlaylistOperations::Add,                          Response,     ControlPlayback, "" },
+  { "VideoPlaylist.Clear",                          CAVPlaylistOperations::Clear,                        Response,     ControlPlayback, "Clear video playlist" },
+  { "VideoPlaylist.Shuffle",                        CAVPlaylistOperations::Shuffle,                      Response,     ControlPlayback, "Shuffle video playlist" },
+  { "VideoPlaylist.UnShuffle",                      CAVPlaylistOperations::Shuffle,                      Response,     ControlPlayback, "Shuffle video playlist" },
+
+// AudioPlaylist
+  { "AudioPlaylist.Play",                           CAVPlaylistOperations::Play,                         Response,     ControlPlayback, "" },
+  { "AudioPlaylist.SkipPrevious",                   CAVPlaylistOperations::SkipPrevious,                 Response,     ControlPlayback, "" },
+  { "AudioPlaylist.SkipNext",                       CAVPlaylistOperations::SkipNext,                     Response,     ControlPlayback, "" },
+
+  { "AudioPlaylist.GetItems",                       CAVPlaylistOperations::GetItems,                     Response,     ReadData,        "" },
+  { "AudioPlaylist.Add",                            CAVPlaylistOperations::Add,                          Response,     ControlPlayback, "" },
+  { "AudioPlaylist.Clear",                          CAVPlaylistOperations::Clear,                        Response,     ControlPlayback, "Clear audio playlist" },
+  { "AudioPlaylist.Shuffle",                        CAVPlaylistOperations::Shuffle,                      Response,     ControlPlayback, "Shuffle audio playlist" },
+  { "AudioPlaylist.UnShuffle",                      CAVPlaylistOperations::Shuffle,                      Response,     ControlPlayback, "Shuffle audio playlist" },
 
 // Playlist
-  { "Playlist.GetItems",                CPlaylistOperations::GetItems,          Response,     ReadData,        "Retrieve items in the playlist. Parameter example {\"playlist\": \"music\" }. playlist optional." },
-  { "Playlist.Add",                     CPlaylistOperations::Add,               Response,     ControlPlayback, "Add items to the playlist. Parameter example {\"playlist\": \"music\", \"file\": \"/foo/bar.mp3\" }. playlist optional." },
-  { "Playlist.Remove",                  CPlaylistOperations::Remove,            Response,     ControlPlayback, "Remove items in the playlist. Parameter example {\"playlist\": \"music\", \"item\": 0 }. playlist optional." },
-  { "Playlist.Swap",                    CPlaylistOperations::Swap,              Response,     ControlPlayback, "Swap items in the playlist. Parameter example {\"playlist\": \"music\", \"item1\": 0, \"item2\": 1 }. playlist optional." },
-  { "Playlist.Shuffle",                 CPlaylistOperations::Shuffle,           Response,     ControlPlayback, "Shuffle playlist" },
+  { "Playlist.Create",                              CPlaylistOperations::Create,                         Response,     ReadData,        "Creates a virtual playlist from a given one from a file" },
+  { "Playlist.Destroy",                             CPlaylistOperations::Destroy,                        Response,     ReadData,        "Destroys a virtual playlist" },
+
+  { "Playlist.GetItems",                            CPlaylistOperations::GetItems,                       Response,     ReadData,        "Retrieve items in the playlist. Parameter example {\"playlist\": \"music\" }. playlist optional." },
+  { "Playlist.Add",                                 CPlaylistOperations::Add,                            Response,     ControlPlayback, "Add items to the playlist. Parameter example {\"playlist\": \"music\", \"file\": \"/foo/bar.mp3\" }. playlist optional." },
+  { "Playlist.Remove",                              CPlaylistOperations::Remove,                         Response,     ControlPlayback, "Remove items in the playlist. Parameter example {\"playlist\": \"music\", \"item\": 0 }. playlist optional." },
+  { "Playlist.Swap",                                CPlaylistOperations::Swap,                           Response,     ControlPlayback, "Swap items in the playlist. Parameter example {\"playlist\": \"music\", \"item1\": 0, \"item2\": 1 }. playlist optional." },
+  { "Playlist.Shuffle",                             CPlaylistOperations::Shuffle,                        Response,     ControlPlayback, "Shuffle playlist" },
 
 // File
-  { "Files.GetShares",                  CFileOperations::GetRootDirectory,      Response,     ReadData,        "Get the root directory of the media windows" },
-  { "Files.Download",                   CFileOperations::Download,              FileDownload, ReadData,        "Specify a file to download to get info about how to download it, i.e a proper URL" },
+  { "Files.GetSources",                             CFileOperations::GetRootDirectory,                   Response,     ReadData,        "Get the root directory of the media windows" },
+  { "Files.Download",                               CFileOperations::Download,                           FileDownload, ReadData,        "Specify a file to download to get info about how to download it, i.e a proper URL" },
 
-  { "Files.GetDirectory",               CFileOperations::GetDirectory,          Response,     ReadData,        "Retrieve the specified directory" },
+  { "Files.GetDirectory",                           CFileOperations::GetDirectory,                       Response,     ReadData,        "Retrieve the specified directory" },
 
 // Music library
-  { "MusicLibrary.GetArtists",          CMusicLibrary::GetArtists,              Response,     ReadData,        "Retrieve all artists" },
-  { "MusicLibrary.GetAlbums",           CMusicLibrary::GetAlbums,               Response,     ReadData,        "Retrieve all albums from specified artist or genre" },
-  { "MusicLibrary.GetSongs",            CMusicLibrary::GetSongs,                Response,     ReadData,        "Retrieve all songs from specified album, artist or genre" },
+  { "MusicLibrary.GetArtists",                      CMusicLibrary::GetArtists,                           Response,     ReadData,        "Retrieve all artists" },
+  { "MusicLibrary.GetAlbums",                       CMusicLibrary::GetAlbums,                            Response,     ReadData,        "Retrieve all albums from specified artist or genre" },
+  { "MusicLibrary.GetSongs",                        CMusicLibrary::GetSongs,                             Response,     ReadData,        "Retrieve all songs from specified album, artist or genre" },
 
-  { "MusicLibrary.GetSongInfo",         CMusicLibrary::GetSongInfo,             Response,     ReadData,        "Retrieve the wanted info from the specified song" },
+  { "MusicLibrary.ScanForContent",                  CMusicLibrary::ScanForContent,                       Response,     ScanLibrary,     "" },
 
 // Video library
-  { "VideoLibrary.GetMovies",           CVideoLibrary::GetMovies,               Response,     ReadData,        "Retrieve all movies. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
+  { "VideoLibrary.GetMovies",                       CVideoLibrary::GetMovies,                            Response,     ReadData,        "Retrieve all movies. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
 
-  { "VideoLibrary.GetTVShows",          CVideoLibrary::GetTVShows,              Response,     ReadData,        "Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"artistignorethe\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
-  { "VideoLibrary.GetSeasons",          CVideoLibrary::GetSeasons,              Response,     ReadData,        "Parameter example { \"tvshowid\": 0, \"fields\": [\"plot\"], \"sortmethod\": \"artistignorethe\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
-  { "VideoLibrary.GetEpisodes",         CVideoLibrary::GetEpisodes,             Response,     ReadData,        "Parameter example { \"tvshowid\": 0, \"seasonid\": 0, \"fields\": [\"plot\"], \"sortmethod\": \"artistignorethe\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
+  { "VideoLibrary.GetTVShows",                      CVideoLibrary::GetTVShows,                           Response,     ReadData,        "Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"label\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
+  { "VideoLibrary.GetSeasons",                      CVideoLibrary::GetSeasons,                           Response,     ReadData,        "Parameter example { \"tvshowid\": 0, \"fields\": [\"season\"], \"sortmethod\": \"label\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
+  { "VideoLibrary.GetEpisodes",                     CVideoLibrary::GetEpisodes,                          Response,     ReadData,        "Parameter example { \"tvshowid\": 0, \"season\": 1, \"fields\": [\"plot\"], \"sortmethod\": \"episode\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
 
-  { "VideoLibrary.GetMusicVideoAlbums", CVideoLibrary::GetMusicVideoAlbums,     Response,     ReadData,        "" },
-  { "VideoLibrary.GetMusicVideos",      CVideoLibrary::GetMusicVideos,          Response,     ReadData,        "Parameter example { \"artistid\": 0, \"albumid\": 0, \"fields\": [\"plot\"], \"sortmethod\": \"artistignorethe\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
+  { "VideoLibrary.GetMusicVideoAlbums",             CVideoLibrary::GetMusicVideoAlbums,                  Response,     ReadData,        "" },
+  { "VideoLibrary.GetMusicVideos",                  CVideoLibrary::GetMusicVideos,                       Response,     ReadData,        "Parameter example { \"artistid\": 0, \"albumid\": 0, \"fields\": [\"plot\"], \"sortmethod\": \"artistignorethe\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. sortorder, sortmethod, start and end are optional" },
 
-  { "VideoLibrary.GetMovieInfo",        CVideoLibrary::GetMovieInfo,            Response,     ReadData,        "Parameter example { \"movieid\": 0, \"fields\": [\"plot\"] }" },
-  { "VideoLibrary.GetTVShowInfo",       CVideoLibrary::GetTVShowInfo,           Response,     ReadData,        "Parameter example { \"tvshowid\": 0, \"fields\": [\"plot\"] }" },
-  { "VideoLibrary.GetEpisodeInfo",      CVideoLibrary::GetEpisodeInfo,          Response,     ReadData,        "Parameter example { \"episodeinfo\": 0, \"fields\": [\"plot\"] }" },
-  { "VideoLibrary.GetMusicVideoInfo",   CVideoLibrary::GetMusicVideoInfo,       Response,     ReadData,        "Parameter example { \"musicvideoid\": 0, \"fields\": [\"plot\"] }" },
+  { "VideoLibrary.GetRecentlyAddedMovies",          CVideoLibrary::GetRecentlyAddedMovies,               Response,     ReadData,        "Retrieve all recently added movies. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
+  { "VideoLibrary.GetRecentlyAddedEpisodes",        CVideoLibrary::GetRecentlyAddedEpisodes,             Response,     ReadData,        "Retrieve all recently added episodes. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
+  { "VideoLibrary.GetRecentlyAddedMusicVideos",     CVideoLibrary::GetRecentlyAddedMusicVideos,          Response,     ReadData,        "Retrieve all recently added music videos. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
 
-// GUI Operations
-  { "GUI.GetLocalizedString",           CGUIOperations::GetLocalizedString,     Response,     ReadData,        "" },
+  { "VideoLibrary.ScanForContent",                  CVideoLibrary::ScanForContent,                       Response,     ScanLibrary,     "" },
 
 // System operations
-  { "System.Shutdown",                  CSystemOperations::Shutdown,            Response,     ControlPower,    "" },
-  { "System.Suspend",                   CSystemOperations::Suspend,             Response,     ControlPower,    "" },
-  { "System.Hibernate",                 CSystemOperations::Hibernate,           Response,     ControlPower,    "" },
-  { "System.Reboot",                    CSystemOperations::Reboot,              Response,     ControlPower,    "" },
+  { "System.Shutdown",                              CSystemOperations::Shutdown,                         Response,     ControlPower,    "" },
+  { "System.Suspend",                               CSystemOperations::Suspend,                          Response,     ControlPower,    "" },
+  { "System.Hibernate",                             CSystemOperations::Hibernate,                        Response,     ControlPower,    "" },
+  { "System.Reboot",                                CSystemOperations::Reboot,                           Response,     ControlPower,    "" },
 
-  { "System.GetInfo",                   CSystemOperations::GetInfo,             Response,     ReadData,        "Retrieve info about the system" },
+  { "System.GetInfo",                               CSystemOperations::GetInfo,                          Response,     ReadData,        "Retrieve info about the system" },
 
 // XBMC Operations
-  { "XBMC.GetVolume",                   CXBMCOperations::GetVolume,             Response,     ReadData,        "Retrieve the current volume" },
-  { "XBMC.SetVolume",                   CXBMCOperations::SetVolume,             Response,     ControlPlayback, "Set volume. Parameter integer between 0 amd 100" },
-  { "XBMC.ToggleMute",                  CXBMCOperations::ToggleMute,            Response,     ControlPlayback, "Toggle mute" },
+  { "XBMC.GetVolume",                               CXBMCOperations::GetVolume,                          Response,     ReadData,        "Retrieve the current volume" },
+  { "XBMC.SetVolume",                               CXBMCOperations::SetVolume,                          Response,     ControlPlayback, "Set volume. Parameter integer between 0 amd 100" },
+  { "XBMC.ToggleMute",                              CXBMCOperations::ToggleMute,                         Response,     ControlPlayback, "Toggle mute" },
 
-  { "XBMC.Play",                        CXBMCOperations::Play,                  Response,     ControlPlayback, "Starts playback" },
-  { "XBMC.StartSlideshow",              CXBMCOperations::StartSlideshow,        Response,     ControlPlayback, "Starts slideshow. Parameter example {\"directory\": \"/foo/\", \"random\": true, \"recursive\": true} or just string to recursively and random run directory" },
+  { "XBMC.Play",                                    CXBMCOperations::Play,                               Response,     ControlPlayback, "Starts playback" },
+  { "XBMC.StartSlideshow",                          CXBMCOperations::StartSlideshow,                     Response,     ControlPlayback, "Starts slideshow. Parameter example {\"directory\": \"/foo/\", \"random\": true, \"recursive\": true} or just string to recursively and random run directory" },
 
-  { "XBMC.Log",                         CXBMCOperations::Log,                   Response,     Logging,         "Logs a line in the xbmc.log. Parameter example {\"message\": \"foo\", \"level\": \"info\"} or just a string to log message with level debug" },
+  { "XBMC.Log",                                     CXBMCOperations::Log,                                Response,     Logging,         "Logs a line in the xbmc.log. Parameter example {\"message\": \"foo\", \"level\": \"info\"} or just a string to log message with level debug" },
 
-  { "XBMC.Quit",                        CXBMCOperations::Quit,                  Response,     ControlPower,    "Quit xbmc" }
+  { "XBMC.Quit",                                    CXBMCOperations::Quit,                               Response,     ControlPower,    "Quit xbmc" }
 };
 
 CJSONRPC::CActionMap CJSONRPC::m_actionMap(m_commands, sizeof(m_commands) / sizeof(m_commands[0]) );
@@ -279,6 +298,7 @@ JSON_STATUS CJSONRPC::Announce(const CStdString &method, ITransportLayer *transp
 
 CStdString CJSONRPC::MethodCall(const CStdString &inputString, ITransportLayer *transport, IClient *client)
 {
+  CLog::Log(LOGDEBUG, "JSONRPC: %s", inputString.c_str());
   Value inputroot, outputroot, result;
 
   JSON_STATUS errorCode = OK;
@@ -371,6 +391,8 @@ inline const char *CJSONRPC::PermissionToString(const OperationPermission &permi
     return "ControlPower";
   case Logging:
     return "Logging";
+  case ScanLibrary:
+    return "ScanLibrary";
   default:
     return "Unkown";
   }

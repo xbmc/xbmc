@@ -30,7 +30,7 @@
 #include "lib/libscrobbler/lastfmscrobbler.h"
 #include "Weather.h"
 #include "PartyModeManager.h"
-#include "visualizations/Visualisation.h"
+#include "addons/Visualisation.h"
 #include "ButtonTranslator.h"
 #include "utils/AlarmClock.h"
 #ifdef HAS_LCD
@@ -759,7 +759,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       if (strTest.Left(7).Equals("window("))
       {
         CStdString window(strTest.Mid(7, strTest.Find(")", 7) - 7).ToLower());
-        winID = CButtonTranslator::TranslateWindowString(window.c_str());
+        winID = CButtonTranslator::TranslateWindow(window);
       }
       if (winID != WINDOW_INVALID)
       {
@@ -772,7 +772,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
       if (window.Find("xml") >= 0)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, 0, ConditionalStringParameter(window)));
-      int winID = CButtonTranslator::TranslateWindowString(window.c_str());
+      int winID = CButtonTranslator::TranslateWindow(window);
       if (winID != WINDOW_INVALID)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, winID, 0));
     }
@@ -782,7 +782,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
       if (window.Find("xml") >= 0)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, 0, ConditionalStringParameter(window)));
-      int winID = CButtonTranslator::TranslateWindowString(window.c_str());
+      int winID = CButtonTranslator::TranslateWindow(window);
       if (winID != WINDOW_INVALID)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, winID, 0));
     }
@@ -791,7 +791,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
       if (window.Find("xml") >= 0)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, 0, ConditionalStringParameter(window)));
-      int winID = CButtonTranslator::TranslateWindowString(window.c_str());
+      int winID = CButtonTranslator::TranslateWindow(window);
       if (winID != WINDOW_INVALID)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, winID, 0));
     }
@@ -800,7 +800,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
       if (window.Find("xml") >= 0)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, 0, ConditionalStringParameter(window)));
-      int winID = CButtonTranslator::TranslateWindowString(window.c_str());
+      int winID = CButtonTranslator::TranslateWindow(window);
       if (winID != WINDOW_INVALID)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, winID, 0));
     }
@@ -809,7 +809,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString window(strTest.Mid(12, strTest.GetLength() - 13).ToLower());
       if (window.Find("xml") >= 0)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, 0, ConditionalStringParameter(window)));
-      int winID = CButtonTranslator::TranslateWindowString(window.c_str());
+      int winID = CButtonTranslator::TranslateWindow(window);
       if (winID != WINDOW_INVALID)
         return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, winID, 0));
     }
@@ -1390,7 +1390,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     }
     break;
   case SYSTEM_PROFILENAME:
-    strLabel = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getName();
+    strLabel = g_settings.GetCurrentProfile().getName();
     break;
   case SYSTEM_LANGUAGE:
     strLabel = g_guiSettings.GetString("locale.language");
@@ -1760,13 +1760,13 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     return result;
   }
   else if (condition == SYSTEM_HASLOCKS)
-    bReturn = g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE;
+    bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
   else if (condition == SYSTEM_ISMASTER)
-    bReturn = g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+    bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
   else if (condition == SYSTEM_LOGGEDON)
     bReturn = !(g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN);
   else if (condition == SYSTEM_HAS_LOGINSCREEN)
-    bReturn = g_settings.bUseLoginScreen;
+    bReturn = g_settings.UsingLoginScreen();
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
   else if (condition == SYSTEM_INTERNET_STATE)
@@ -2086,10 +2086,21 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         }
         break;
       case INTEGER_GREATER_THAN:
-        if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
-          bReturn = atoi(GetItemImage((const CFileItem *)item, info.GetData1()).c_str()) > info.GetData2();
-        else
-          bReturn = atoi(GetImage(info.GetData1(), contextWindow).c_str()) > info.GetData2();
+        {
+          CStdString value;
+
+          if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+            value = GetItemImage((const CFileItem *)item, info.GetData1());
+          else
+            value = GetImage(info.GetData1(), contextWindow);
+
+          // Handle the case when a value contains time separator (:). This makes IntegerGreaterThan
+          // useful for Player.Time* members without adding a separate set of members returning time in seconds
+          if ( value.find_first_of( ':' ) )
+            bReturn = StringUtils::TimeStringToSeconds( value ) > info.GetData2();
+          else
+            bReturn = atoi( value.c_str() ) > info.GetData2();
+        }
         break;
       case STRING_STR:
           {
@@ -2543,7 +2554,7 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
     return g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON);
   else if (info == SYSTEM_PROFILETHUMB)
   {
-    CStdString thumb = g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getThumb();
+    CStdString thumb = g_settings.GetCurrentProfile().getThumb();
     if (thumb.IsEmpty())
       thumb = "unknown-user.png";
     return thumb;
@@ -3070,23 +3081,21 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_PLOT_OUTLINE:
       return m_currentFile->GetVideoInfoTag()->m_strPlotOutline;
     case VIDEOPLAYER_EPISODE:
-      if (m_currentFile->GetVideoInfoTag()->m_iEpisode > 0)
       {
         CStdString strYear;
         if (m_currentFile->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
           strYear.Format("S%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
-        else
+        else if(m_currentFile->GetVideoInfoTag()->m_iEpisode > 0) 
           strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
         return strYear;
       }
       break;
     case VIDEOPLAYER_SEASON:
-      if (m_currentFile->GetVideoInfoTag()->m_iSeason > -1)
       {
         CStdString strYear;
         if (m_currentFile->GetVideoInfoTag()->m_iSpecialSortSeason > 0)
           strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iSpecialSortSeason);
-        else
+        else if(m_currentFile->GetVideoInfoTag()->m_iSeason > 0)
           strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iSeason);
         return strYear;
       }
@@ -3761,7 +3770,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       CStdString strResult;
       if (item->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
         strResult.Format("S%d",item->GetVideoInfoTag()->m_iEpisode);
-      else if (item->GetVideoInfoTag()->m_iEpisode >= 0) // if m_iEpisode = -1 there's no episode detail
+      else if (item->GetVideoInfoTag()->m_iEpisode > 0) // if m_iEpisode = -1 there's no episode detail
         strResult.Format("%d",item->GetVideoInfoTag()->m_iEpisode);
       return strResult;
     }
@@ -3772,7 +3781,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       CStdString strResult;
       if (item->GetVideoInfoTag()->m_iSpecialSortSeason > 0)
         strResult.Format("%d",item->GetVideoInfoTag()->m_iSpecialSortSeason);
-      else if (item->GetVideoInfoTag()->m_iSeason >= 0) // if m_iSeason = -1 there's no season detail
+      else if (item->GetVideoInfoTag()->m_iSeason > 0) // if m_iSeason = -1 there's no season detail
         strResult.Format("%d",item->GetVideoInfoTag()->m_iSeason);
       return strResult;
     }

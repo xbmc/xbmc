@@ -1458,8 +1458,7 @@ bool CDVDPlayer::CheckSceneSkip(CCurrentStream& current)
     return false;
 
   CEdl::Cut cut;
-  if(m_Edl.InCut(DVD_TIME_TO_MSEC(current.dts), &cut));
-    return cut.action == CEdl::CUT;
+  return m_Edl.InCut(DVD_TIME_TO_MSEC(current.dts), &cut) && cut.action == CEdl::CUT;
 }
 
 void CDVDPlayer::CheckAutoSceneSkip()
@@ -2058,16 +2057,20 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
      */
     const int clock = DVD_TIME_TO_MSEC(m_clock.GetClock());
     /*
-     * If a backwards seek (either small or large) occurs within 10 seconds of the end of the last
-     * automated commercial skip, then seek back to the start of the commercial break under the
-     * assumption that it was flagged incorrectly. 10 seconds grace period is allowed in case the
-     * watcher has to fumble around finding the remote. Only happens once per commercial break.
+     * If a large backwards seek occurs within 10 seconds of the end of the last automated
+     * commercial skip, then seek back to the start of the commercial break under the assumption
+     * it was flagged incorrectly. 10 seconds grace period is allowed in case the watcher has to
+     * fumble around finding the remote. Only happens once per commercial break.
+     *
+     * Small skip does not trigger this in case the start of the commercial break was in fact fine
+     * but it skipped too far into the program. In that case small skip backwards behaves as normal.
      */
-    if (!bPlus && m_EdlAutoSkipMarkers.seek_to_start
+    if (!bPlus && bLargeStep
+    &&  m_EdlAutoSkipMarkers.seek_to_start
     &&  clock >= m_EdlAutoSkipMarkers.commbreak_end
     &&  clock <= m_EdlAutoSkipMarkers.commbreak_end + 10*1000) // Only if within 10 seconds of the end (in msec)
     {
-      CLog::Log(LOGDEBUG, "%s - Seeking back to start of commercial break [%s - %s] as backwards skip activated within 10 seconds of the automatic commercial skip (only done once per break).",
+      CLog::Log(LOGDEBUG, "%s - Seeking back to start of commercial break [%s - %s] as large backwards skip activated within 10 seconds of the automatic commercial skip (only done once per break).",
                 __FUNCTION__, CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_start).c_str(),
                 CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_end).c_str());
       seek = m_EdlAutoSkipMarkers.commbreak_start;
@@ -2428,6 +2431,7 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source)
     float aspect = static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->GetVideoAspectRatio();
     if(aspect != 0.0)
       hint.aspect = aspect;
+    hint.software = true;
   }
 
   if(m_CurrentVideo.id    < 0
@@ -3187,7 +3191,7 @@ int CDVDPlayer::SeekChapter(int iChapter)
   return 0;
 }
 
-bool CDVDPlayer::AddSubtitle(const CStdString& strSubPath)
+int CDVDPlayer::AddSubtitle(const CStdString& strSubPath)
 {
   return AddSubtitleFile(strSubPath);
 }
@@ -3218,23 +3222,22 @@ int CDVDPlayer::GetSourceBitrate()
 }
 
 
-bool CDVDPlayer::AddSubtitleFile(const std::string& filename)
+int CDVDPlayer::AddSubtitleFile(const std::string& filename)
 {
   std::string ext = CUtil::GetExtension(filename);
   if(ext == ".idx")
   {
     CDVDDemuxVobsub v;
     if(!v.Open(filename))
-      return false;
-
+      return -1;
     m_SelectionStreams.Update(NULL, &v);
-    return true;
+    return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, m_SelectionStreams.Source(STREAM_SOURCE_DEMUX_SUB, filename), 0);
   }
   if(ext == ".sub")
   {
     CStdString strReplace(CUtil::ReplaceExtension(filename,".idx"));
     if (XFILE::CFile::Exists(strReplace))
-      return false;
+      return -1;
   }
   SelectionStream s;
   s.source   = m_SelectionStreams.Source(STREAM_SOURCE_TEXT, filename);
@@ -3243,7 +3246,7 @@ bool CDVDPlayer::AddSubtitleFile(const std::string& filename)
   s.filename = filename;
   s.name     = CUtil::GetFileName(filename);
   m_SelectionStreams.Update(s);
-  return true;
+  return m_SelectionStreams.IndexOf(STREAM_SUBTITLE, s.source, s.id);
 }
 
 void CDVDPlayer::UpdatePlayState(double timeout)

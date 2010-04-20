@@ -98,7 +98,6 @@ public:
   static bool IsInArchive(const CStdString& strFile);
   static bool IsSpecial(const CStdString& strFile);
   static bool IsPlugin(const CStdString& strFile);
-  static bool IsPluginRoot(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
   static bool IsMythTV(const CStdString& strFile);
@@ -166,7 +165,7 @@ public:
   static CStdString MakeLegalFileName(const CStdString &strFile, int LegalType=LEGAL_NONE);
   static CStdString MakeLegalPath(const CStdString &strPath, int LegalType=LEGAL_NONE);
 #endif
-  static CStdString ValidatePath(const CStdString &path); ///< return a validated path, with correct directory separators.
+  static CStdString ValidatePath(const CStdString &path, bool bFixDoubleSlashes = false); ///< return a validated path, with correct directory separators.
   
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &function, std::vector<CStdString> &parameters);
@@ -198,6 +197,13 @@ public:
   static void ClearFileItemCache();
 
   static void InitRandomSeed();
+
+  // Get decimal integer representation of roman digit, ivxlcdm are valid
+  // return 0 for other chars;
+  static int LookupRomanDigit(char roman_digit);
+  // Translate a string of roman numerals to decimal a decimal integer
+  // return -1 on error, valid range is 1-3999
+  static int TranslateRomanNumeral(const char* roman_numeral);
 
 #ifdef _LINUX
   // this will run the command using sudo in a new process.

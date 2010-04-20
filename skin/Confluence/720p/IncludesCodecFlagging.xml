@@ -92,7 +92,7 @@
 			<height>33</height>
 			<aspectratio>keep</aspectratio>
 			<texture>flagging/audio/dolbydigital.png</texture>
-			<visible>[substring(ListItem.AudioCodec,ac3) + substring(ListItem.AudioChannels,6)]</visible>
+			<visible>[stringcompare(ListItem.AudioCodec,ac3) + substring(ListItem.AudioChannels,6)]</visible>
 		</control>
 		<control type="image">
 			<description>Audio Codec Image</description>
@@ -101,7 +101,7 @@
 			<aspectratio>keep</aspectratio>
 			<texture>$INFO[ListItem.AudioCodec,flagging/audio/,.png]</texture>
 			<!-- Don't show if I want the Dolby Digital Logo -->
-			<visible>![substring(ListItem.AudioCodec,ac3) + substring(ListItem.AudioChannels,6)]</visible>
+			<visible>![stringcompare(ListItem.AudioCodec,ac3) + substring(ListItem.AudioChannels,6)]</visible>
 		</control>
 	</include>
 	<include name="AspectCodecFlaggingConditions">

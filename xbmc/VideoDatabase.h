@@ -21,7 +21,7 @@
  */
 #include "Database.h"
 #include "VideoInfoTag.h"
-#include "Scraper.h"
+#include "addons/Scraper.h"
 #include "Bookmark.h"
 
 #include <memory>
@@ -60,7 +60,7 @@ namespace VIDEO
 // these defines are based on how many columns we have and which column certain data is going to be in
 // when we do GetDetailsForMovie()
 #define VIDEODB_MAX_COLUMNS 21
-#define VIDEODB_DETAILS_FILEID			VIDEODB_MAX_COLUMNS + 1
+#define VIDEODB_DETAILS_FILEID			1
 #define VIDEODB_DETAILS_FILE			VIDEODB_MAX_COLUMNS + 2
 #define VIDEODB_DETAILS_PATH			VIDEODB_MAX_COLUMNS + 3
 #define VIDEODB_DETAILS_PLAYCOUNT		VIDEODB_MAX_COLUMNS + 4
@@ -356,7 +356,7 @@ public:
   int SetDetailsForMovie(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
   int SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details);
   int SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, int idShow, int idEpisode=-1);
-  void SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
+  int SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
   void SetStreamDetailsForFile(const CStreamDetails& details, const CStdString &strFileNameAndPath);
   void SetStreamDetailsForFileId(const CStreamDetails& details, int idFile);
   void SetDetail(const CStdString& strDetail, int id, int field, VIDEODB_CONTENT_TYPE type);
@@ -390,16 +390,24 @@ public:
 
   // scraper settings
   void SetScraperForPath(const CStdString& filePath, const ADDON::ScraperPtr& info, const VIDEO::SScanSettings& settings);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, int& iFound);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings, int& iFound);
+  ADDON::ScraperPtr GetScraperForPath(const CStdString& strPath);
+  ADDON::ScraperPtr GetScraperForPath(const CStdString& strPath, VIDEO::SScanSettings& settings);
+
+  /*! \brief Retrieve the scraper and settings we should use for the specified path
+   If the scraper is not set on this particular path, we'll recursively check parent folders.
+   \param strPath path to start searching in.
+   \param settings [out] scan settings for this folder.
+   \param foundDirectly [out] true if a scraper was found directly for strPath, false if it was in a parent path.
+   \return A ScraperPtr containing the scraper information. Returns NULL if a trivial (Content == CONTENT_NONE)
+           scraper or no scraper is found.
+   */
+  ADDON::ScraperPtr GetScraperForPath(const CStdString& strPath, VIDEO::SScanSettings& settings, bool& foundDirectly);
   CONTENT_TYPE GetContentForPath(const CStdString& strPath);
 
   // scanning hashes and paths scanned
   bool SetPathHash(const CStdString &path, const CStdString &hash);
   bool GetPathHash(const CStdString &path, CStdString &hash);
-  bool GetPaths(std::map<CStdString,VIDEO::SScanSettings> &paths);
+  bool GetPaths(std::set<CStdString> &paths);
   bool GetPathsForTvShow(int idShow, std::vector<int>& paths);
 
   // for music + musicvideo linkups - if no album and title given it will return the artist id, else the id of the matching video
@@ -545,13 +553,13 @@ protected:
   void GetCommonDetails(std::auto_ptr<dbiplus::Dataset> &pDS, CVideoInfoTag &details);
   bool GetPeopleNav(const CStdString& strBaseDir, CFileItemList& items, const CStdString &type, int idContent=-1);
 
-  void GetDetailsFromDB(std::auto_ptr<dbiplus::Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details);
+  void GetDetailsFromDB(std::auto_ptr<dbiplus::Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details, int idxOffset = 2);
   CStdString GetValueString(const CVideoInfoTag &details, int min, int max, const SDbTableOffsets *offsets) const;
 
 private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 35; };
+  virtual int GetMinVersion() const { return 37; };
   const char *GetDefaultDBName() const { return "MyVideos34.db"; };
 
   void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);

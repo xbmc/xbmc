@@ -33,7 +33,7 @@
 #include "Thread.h"
 #include "ScraperParser.h"
 #include "VideoInfoTag.h"
-#include "Scraper.h"
+#include "addons/Scraper.h"
 #include "DateTime.h"
 #include "FileSystem/FileCurl.h"
 

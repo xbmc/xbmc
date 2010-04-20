@@ -21,36 +21,44 @@
  *
  */
 
-#include "Addon.h"
-#include "GUIWindow.h"
-#include "GUIViewControl.h"
+#include "addons/Addon.h"
+#include "GUIMediaWindow.h"
+#include "utils/CriticalSection.h"
+#include "utils/Job.h"
+#include "PictureThumbLoader.h"
 
 class CFileItem;
 class CFileItemList;
+class CFileOperationJob;
 
 class CGUIWindowAddonBrowser :
-      public CGUIWindow
+      public CGUIMediaWindow,
+      public IJobCallback
 {
 public:
   CGUIWindowAddonBrowser(void);
   virtual ~CGUIWindowAddonBrowser(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
 
+  void RegisterJob(const CStdString& id, CFileOperationJob* job,
+                   unsigned int jobid);
+
+  // job callback
+  void OnJobComplete(unsigned int jobID, bool success, CJob* job);
+
+  static std::pair<CFileOperationJob*,unsigned int> AddJob(const CStdString& path);
 protected:
-  virtual void OnInitWindow();
-  int GetSelectedItem();
-  bool SelectItem(int select);
-  void OnClick(int iItem);
-  void OnSort();
-  void ClearListItems();
-  void Update();
-  void SetupControls();
-  void FreeControls();
-  bool OnContextMenu(int iItem);
-
-  CFileItemList* m_vecItems;
-  std::vector<ADDON::TYPE> m_categories;
-  int m_currentCategory;
+  void UnRegisterJob(CFileOperationJob* job);
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  virtual bool OnClick(int iItem);
+  virtual void UpdateButtons();
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
+  virtual bool Update(const CStdString &strDirectory);
+  std::map<CStdString,CFileOperationJob*> m_idtojob;
+  std::map<CStdString,unsigned int> m_idtojobid;
+  std::map<CFileOperationJob*,CStdString> m_jobtoid;
+  CCriticalSection m_critSection;
+  CPictureThumbLoader m_thumbLoader;
 };
 

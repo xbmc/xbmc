@@ -38,7 +38,7 @@ public:
   int  GetResumeItemOffset(const CFileItem *item);
 
   void AddToDatabase(int iItem);
-  static void OnScan(const CStdString& strPath, const ADDON::ScraperPtr& info, const VIDEO::SScanSettings& settings);
+  static void OnScan(const CStdString& strPath);
   virtual void OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scraper);
   virtual void OnStreamDetails(const CStreamDetails &details, const CStdString &strFileName, long lFileId);
   static void MarkWatched(const CFileItemPtr &pItem, bool mark);
@@ -49,8 +49,6 @@ public:
   //! If the user cancels the operation on the menu "false" is returned
   static bool OnResumeShowMenu(CFileItem &item);
 
-private:
-  bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
 protected:
   virtual void UpdateButtons();
   virtual bool Update(const CStdString &strDirectory);
@@ -67,7 +65,6 @@ protected:
   virtual void OnDeleteItem(CFileItemPtr pItem);
   virtual void OnDeleteItem(int iItem);
   virtual void DoSearch(const CStdString& strSearch, CFileItemList& items) {};
-  virtual CStdString GetQuickpathName(const CStdString& strPath) const {return strPath;};
 
   bool OnClick(int iItem);
   void OnRestartItem(int iItem);
@@ -77,9 +74,6 @@ protected:
   void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
 
   bool ShowIMDB(CFileItem *item, const ADDON::ScraperPtr& content);
-
-  void OnManualScrape();
-  bool CheckMovie(const CStdString& strFileName);
 
   void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);
   void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);

@@ -244,6 +244,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_NUMEPISODES);
     fields.push_back(FIELD_NUMWATCHED);
     fields.push_back(FIELD_PLAYCOUNT);
+    fields.push_back(FIELD_PATH);
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
   else if (type == "episodes")
@@ -514,11 +515,11 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
   else if (strType == "tvshows")
   {
     if (m_field == FIELD_GENRE)
-      query = "idshow" + negate + " in (select idshow from genrelinktvshow join genre on genre.idgenre=genrelinktvshow.idgenre where genre.strGenre" + parameter + ")";
+      query = "tvshow.idshow" + negate + " in (select idshow from genrelinktvshow join genre on genre.idgenre=genrelinktvshow.idgenre where genre.strGenre" + parameter + ")";
     else if (m_field == FIELD_DIRECTOR)
-      query = "idshow" + negate + " in (select idshow from directorlinktvshow join actors on actors.idactor=directorlinktvshow.iddirector where actors.strActor" + parameter + ")";
+      query = "tvshow.idshow" + negate + " in (select idshow from directorlinktvshow join actors on actors.idactor=directorlinktvshow.iddirector where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_ACTOR)
-      query = "idshow" + negate + " in (select idshow from actorlinktvshow join actors on actors.idactor=actorlinktvshow.idactor where actors.strActor" + parameter + ")";
+      query = "tvshow.idshow" + negate + " in (select idshow from actorlinktvshow join actors on actors.idactor=actorlinktvshow.idactor where actors.strActor" + parameter + ")";
   }
   else if (strType == "episodes")
   {
@@ -686,6 +687,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_PLAYCOUNT) result = "watched";
     else if (field == FIELD_RANDOM) result = "random()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idshow";       // only used for order clauses
+    else if (field == FIELD_PATH) return "strPath";
     return result;
   }
   if (type == "episodes")

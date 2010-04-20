@@ -21,7 +21,8 @@
 
 #include "GUIWindowVisualisation.h"
 #include "GUIVisualisationControl.h"
-#include "visualizations/Visualisation.h"
+#include "addons/Visualisation.h"
+#include "addons/AddonManager.h"
 #include "Application.h"
 #include "GUIDialogMusicOSD.h"
 #include "GUIUserMessages.h"
@@ -152,6 +153,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
     {
       m_addon->UpdateTrack();
     }
+    break;
   }
   case GUI_MSG_WINDOW_DEINIT:
     {
@@ -175,7 +177,9 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       }
 
       AddonPtr viz;
-      CAddonMgr::Get()->GetDefault(ADDON_VIZ, viz);
+      if (!CAddonMgr::Get()->GetDefault(ADDON_VIZ, viz))
+        return false;
+
       m_addon = boost::dynamic_pointer_cast<CVisualisation>(viz);
       if (!m_addon)
         return false;
@@ -221,16 +225,16 @@ bool CGUIWindowVisualisation::UpdateTrack()
   return false;
 }
 
-bool CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_RIGHT_CLICK)
   { // no control found to absorb this click - go back to GUI
     OnAction(CAction(ACTION_SHOW_GUI));
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // no control found to absorb this click - toggle the track INFO
-    return g_application.OnAction(CAction(ACTION_PAUSE));
+    return g_application.OnAction(CAction(ACTION_PAUSE)) ? EVENT_RESULT_HANDLED : EVENT_RESULT_UNHANDLED;
   }
   if (event.m_id != ACTION_MOUSE_MOVE || event.m_offsetX || event.m_offsetY)
   { // some other mouse action has occurred - bring up the OSD
@@ -240,9 +244,9 @@ bool CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CMouseEven
       pOSD->SetAutoClose(3000);
       pOSD->DoModal();
     }
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 void CGUIWindowVisualisation::FrameMove()

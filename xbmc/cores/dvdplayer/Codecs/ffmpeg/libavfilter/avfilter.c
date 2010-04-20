@@ -22,18 +22,19 @@
 /* #define DEBUG */
 
 #include "libavcodec/imgconvert.h"
+#include "libavutil/pixdesc.h"
 #include "avfilter.h"
 
 unsigned avfilter_version(void) {
     return LIBAVFILTER_VERSION_INT;
 }
 
-const char * avfilter_configuration(void)
+const char *avfilter_configuration(void)
 {
     return FFMPEG_CONFIGURATION;
 }
 
-const char * avfilter_license(void)
+const char *avfilter_license(void)
 {
 #define LICENSE_PREFIX "libavfilter license: "
     return LICENSE_PREFIX FFMPEG_LICENSE + sizeof(LICENSE_PREFIX) - 1;
@@ -104,8 +105,9 @@ int avfilter_link(AVFilterContext *src, unsigned srcpad,
 int avfilter_insert_filter(AVFilterLink *link, AVFilterContext *filt,
                            unsigned in, unsigned out)
 {
-    av_log(link->dst, AV_LOG_INFO, "auto-inserting filter '%s'\n",
-            filt->filter->name);
+    av_log(link->dst, AV_LOG_INFO, "auto-inserting filter '%s' "
+           "between the filter '%s' and the filter '%s'\n",
+           filt->name, link->src->name, link->dst->name);
 
     link->dst->inputs[link->dstpad] = NULL;
     if(avfilter_link(filt, out, link->dst, link->dstpad)) {
@@ -169,11 +171,12 @@ int avfilter_config_links(AVFilterContext *filter)
 static void dprintf_picref(void *ctx, AVFilterPicRef *picref, int end)
 {
     dprintf(ctx,
-            "picref[%p data[%p, %p, %p, %p] linesize[%d, %d, %d, %d] pts:%"PRId64" s:%dx%d]%s",
+            "picref[%p data[%p, %p, %p, %p] linesize[%d, %d, %d, %d] pts:%"PRId64" pos:%"PRId64" a:%d/%d s:%dx%d]%s",
             picref,
             picref->data    [0], picref->data    [1], picref->data    [2], picref->data    [3],
             picref->linesize[0], picref->linesize[1], picref->linesize[2], picref->linesize[3],
-            picref->pts, picref->w, picref->h,
+            picref->pts, picref->pos,
+            picref->pixel_aspect.num, picref->pixel_aspect.den, picref->w, picref->h,
             end ? "\n" : "");
 }
 
@@ -182,7 +185,7 @@ static void dprintf_link(void *ctx, AVFilterLink *link, int end)
     dprintf(ctx,
             "link[%p s:%dx%d fmt:%-16s %-16s->%-16s]%s",
             link, link->w, link->h,
-            avcodec_get_pix_fmt_name(link->format),
+            av_pix_fmt_descriptors[link->format].name,
             link->src ? link->src->filter->name : "",
             link->dst ? link->dst->filter->name : "",
             end ? "\n" : "");
@@ -261,6 +264,7 @@ void avfilter_start_frame(AVFilterLink *link, AVFilterPicRef *picref)
         link->cur_pic = avfilter_default_get_video_buffer(link, dst->min_perms, link->w, link->h);
         link->srcpic = picref;
         link->cur_pic->pts = link->srcpic->pts;
+        link->cur_pic->pos = link->srcpic->pos;
         link->cur_pic->pixel_aspect = link->srcpic->pixel_aspect;
     }
     else
@@ -297,7 +301,8 @@ void avfilter_draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
 
     /* copy the slice if needed for permission reasons */
     if(link->srcpic) {
-        avcodec_get_chroma_sub_sample(link->format, &hsub, &vsub);
+        hsub = av_pix_fmt_descriptors[link->format].log2_chroma_w;
+        vsub = av_pix_fmt_descriptors[link->format].log2_chroma_h;
 
         for(i = 0; i < 4; i ++) {
             if(link->srcpic->data[i]) {

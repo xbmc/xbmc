@@ -24,7 +24,7 @@
 #include "AdvancedSettings.h"
 #include "Key.h"
 
-CGUIStandardWindow::CGUIStandardWindow(void) : CGUIWindow(0, "")
+CGUIStandardWindow::CGUIStandardWindow(int id, const CStdString &xmlFile) : CGUIWindow(id, xmlFile)
 {
 }
 

@@ -140,13 +140,13 @@ int MysqlDatabase::connect() {
       }
     }
 
-    CLog::Log(LOGERROR, "Unable to open database:%s [%d](%s)",
+    CLog::Log(LOGERROR, "Unable to open database: %s [%d](%s)",
               db.c_str(), mysql_errno(conn), mysql_error(conn));
     return DB_CONNECTION_NONE;
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "Unable to open database:%s (%u)",
+    CLog::Log(LOGERROR, "Unable to open database: %s (%u)",
               db.c_str(), GetLastError());
   }
   return DB_CONNECTION_NONE;

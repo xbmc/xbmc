@@ -76,10 +76,14 @@ static av_cold int xan_decode_init(AVCodecContext *avctx)
 
     s->buffer1_size = avctx->width * avctx->height;
     s->buffer1 = av_malloc(s->buffer1_size);
+    if (!s->buffer1)
+        return -1;
     s->buffer2_size = avctx->width * avctx->height;
     s->buffer2 = av_malloc(s->buffer2_size + 130);
-    if (!s->buffer1 || !s->buffer2)
+    if (!s->buffer2) {
+        av_freep(&s->buffer1);
         return -1;
+    }
 
     return 0;
 }
@@ -370,7 +374,7 @@ static int xan_decode_frame(AVCodecContext *avctx,
 
     palette_control->palette_changed = 0;
     memcpy(s->current_frame.data[1], palette_control->palette,
-        AVPALETTE_SIZE);
+           AVPALETTE_SIZE);
     s->current_frame.palette_has_changed = 1;
 
     s->buf = buf;
@@ -405,8 +409,8 @@ static av_cold int xan_decode_end(AVCodecContext *avctx)
     if (s->current_frame.data[0])
         avctx->release_buffer(avctx, &s->current_frame);
 
-    av_free(s->buffer1);
-    av_free(s->buffer2);
+    av_freep(&s->buffer1);
+    av_freep(&s->buffer2);
 
     return 0;
 }
@@ -435,5 +439,6 @@ AVCodec xan_wc4_decoder = {
     xan_decode_end,
     xan_decode_frame,
     CODEC_CAP_DR1,
+    .long_name = NULL_IF_CONFIG_SMALL("Wing Commander IV / Xxan"),
 };
 */

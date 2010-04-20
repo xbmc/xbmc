@@ -63,6 +63,7 @@
       <comma>SkipPrevious</comma>
       <tab>FullScreen</tab>
       <printscreen>Screenshot</printscreen>
+      <s mod="ctrl">Screenshot</s>
       <minus>VolumeDown</minus>
       <plus>VolumeUp</plus>
       <zero>Number0</zero>
@@ -412,11 +413,6 @@
       <backspace>PreviousMenu</backspace>
     </keyboard>
   </Settings>
-  <AddonBrowser>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </AddonBrowser>
   <MyPicturesSettings>
     <keyboard>
       <backspace>PreviousMenu</backspace>

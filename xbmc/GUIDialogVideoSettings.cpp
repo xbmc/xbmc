@@ -145,7 +145,7 @@ void CGUIDialogVideoSettings::CreateSettings()
   AddSlider(VIDEO_SETTINGS_PIXEL_RATIO, 217, &g_settings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.01f, 2.0f, FormatFloat);
 
 #ifdef HAS_VIDEO_PLAYBACK
-  if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
+  if (g_renderManager.Supports(RENDERFEATURE_BRIGHTNESS))
     AddSlider(VIDEO_SETTINGS_BRIGHTNESS, 464, &g_settings.m_currentVideoSettings.m_Brightness, 0, 1, 100, FormatInteger);
   if (g_renderManager.Supports(RENDERFEATURE_CONTRAST))
     AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_settings.m_currentVideoSettings.m_Contrast, 0, 1, 100, FormatInteger);
@@ -156,7 +156,7 @@ void CGUIDialogVideoSettings::CreateSettings()
   if (g_renderManager.Supports(RENDERFEATURE_SHARPNESS))
     AddSlider(VIDEO_SETTING_VDPAU_SHARPNESS, 16313, &g_settings.m_currentVideoSettings.m_Sharpness, -1.0f, 0.02f, 1.0f, FormatFloat);
   if (g_renderManager.Supports(RENDERFEATURE_NONLINSTRETCH))
-    AddBool(VIDEO_SETTINGS_NONLIN_STRETCH, 659, &g_settings.m_currentVideoSettings.m_NonLinStretch);
+    AddBool(VIDEO_SETTINGS_NONLIN_STRETCH, 659, &g_settings.m_currentVideoSettings.m_CustomNonLinStretch);
 #endif
   AddSeparator(8);
   AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
@@ -186,6 +186,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
     g_renderManager.SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
     g_settings.m_currentVideoSettings.m_CustomZoomAmount = g_settings.m_fZoomAmount;
     g_settings.m_currentVideoSettings.m_CustomPixelRatio = g_settings.m_fPixelRatio;
+    g_settings.m_currentVideoSettings.m_CustomNonLinStretch = g_settings.m_bNonLinStretch;
     UpdateSetting(VIDEO_SETTINGS_ZOOM);
     UpdateSetting(VIDEO_SETTINGS_PIXEL_RATIO);
     UpdateSetting(VIDEO_SETTINGS_NONLIN_STRETCH);
@@ -202,14 +203,14 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
   if (setting.id == VIDEO_SETTINGS_CALIBRATION)
   {
     // launch calibration window
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    if (g_settings.GetCurrentProfile().settingsLocked() && g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
     g_windowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
   }
   else if (setting.id == VIDEO_SETTINGS_MAKE_DEFAULT)
   {
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+    if (g_settings.GetCurrentProfile().settingsLocked() && g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
 

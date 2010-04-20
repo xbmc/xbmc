@@ -21,6 +21,8 @@ public:
   const CStdString &GetAverageSpeed()     { return m_avgSpeed; }
   const CStdString &GetCurrentOperation() { return m_currentOperation; }
   const CStdString &GetCurrentFile()      { return m_currentFile; }
+  const CFileItemList &GetItems()         { return m_items; }
+  FileAction GetAction()                  { return m_action; }
 private:
   class CFileOperation : public XFILE::IFileCallback
   {

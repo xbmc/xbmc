@@ -74,7 +74,7 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
       return;
 
     if (!g_passwordManager.IsMasterLockUnlocked(false))
-      if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked())
+      if (g_settings.GetCurrentProfile().musicLocked())
         return ;
 
     RunCdda();
@@ -160,9 +160,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   bool bAllowMusic = true;
   if (!g_passwordManager.IsMasterLockUnlocked(false))
   {
-    bAllowVideo = !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].videoLocked();
-    bAllowPictures = !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].picturesLocked();
-    bAllowMusic = !g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].musicLocked();
+    bAllowVideo = !g_settings.GetCurrentProfile().videoLocked();
+    bAllowPictures = !g_settings.GetCurrentProfile().picturesLocked();
+    bAllowMusic = !g_settings.GetCurrentProfile().musicLocked();
   }
 
   // is this a root folder we have to check the content to determine a disc type

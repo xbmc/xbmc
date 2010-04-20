@@ -66,7 +66,17 @@ struct XBMC_KeyMapping
 
 // Convert control keypresses e.g. ctrl-A from 0x01 to 0x41
 static XBMC_KeyMapping g_mapping_ctrlkeys[] =
-{ {0x61, 0x41, XBMCK_a, XBMCK_a}
+{ {0x30, 0x60, XBMCK_0, XBMCK_0}
+, {0x31, 0x61, XBMCK_1, XBMCK_1}
+, {0x32, 0x62, XBMCK_2, XBMCK_2}
+, {0x33, 0x63, XBMCK_3, XBMCK_3}
+, {0x34, 0x64, XBMCK_4, XBMCK_4}
+, {0x35, 0x65, XBMCK_5, XBMCK_5}
+, {0x36, 0x66, XBMCK_6, XBMCK_6}
+, {0x37, 0x67, XBMCK_7, XBMCK_7}
+, {0x38, 0x68, XBMCK_8, XBMCK_8}
+, {0x39, 0x69, XBMCK_9, XBMCK_9}
+, {0x61, 0x41, XBMCK_a, XBMCK_a}
 , {0x62, 0x42, XBMCK_b, XBMCK_b}
 , {0x63, 0x43, XBMCK_c, XBMCK_c}
 , {0x64, 0x44, XBMCK_d, XBMCK_d}
@@ -102,13 +112,19 @@ static XBMC_KeyMapping g_mapping_evdev[] =
 , { 135, 0x5d } // Right click
 , { 136, 0xb2 } // Stop
 , { 138, 0x49 } // Info
-, { 166, 0xa6 } // Browser back
+, { 147, 0x4d } // Menu
+, { 150, 0x9f } // Sleep
+, { 152, 0xb8 } // Launch file browser
+, { 163, 0xb4 } // Launch Mail
+, { 164, 0xab } // Browser favorites
+, { 166, 0x08 } // Back
 , { 167, 0xa7 } // Browser forward
 , { 171, 0xb0 } // Next track
 , { 172, 0xb3 } // Play_Pause
 , { 173, 0xb1 } // Prev track
 , { 174, 0xb2 } // Stop
 , { 176, 0x52 } // Rewind
+, { 179, 0xb9 } // Launch media center
 , { 180, 0xac } // Browser home
 , { 181, 0xa8 } // Browser refresh
 , { 214, 0x1B } // Close
@@ -481,7 +497,7 @@ CKeyboardStat::CKeyboardStat()
   keynames[XBMCK_RMETA] = "right meta";
   keynames[XBMCK_LMETA] = "left meta";
   keynames[XBMCK_LSUPER] = "left super";	/* "Windows" keys */
-  keynames[XBMCK_RSUPER] = "right super";	
+  keynames[XBMCK_RSUPER] = "right super";
   keynames[XBMCK_MODE] = "alt gr";
   keynames[XBMCK_COMPOSE] = "compose";
 
@@ -546,6 +562,7 @@ void CKeyboardStat::Reset()
   m_bCtrl = false;
   m_bAlt = false;
   m_bRAlt = false;
+  m_bSuper = false;
   m_cAscii = '\0';
   m_wUnicode = '\0';
   m_VKey = 0;
@@ -583,10 +600,10 @@ int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
   else
     return 0;
 
-  if ( state == XBMC_PRESSED ) 
+  if ( state == XBMC_PRESSED )
   {
     keysym->mod = (XBMCMod)modstate;
-    switch (keysym->sym) 
+    switch (keysym->sym)
     {
       case XBMCK_UNKNOWN:
         break;
@@ -630,6 +647,12 @@ int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
       case XBMCK_RMETA:
         modstate |= XBMCKMOD_RMETA;
         break;
+      case XBMCK_LSUPER:
+        modstate |= XBMCKMOD_LSUPER;
+        break;
+      case XBMCK_RSUPER:
+        modstate |= XBMCKMOD_RSUPER;
+        break;
       case XBMCK_MODE:
         modstate |= XBMCKMOD_MODE;
         break;
@@ -637,10 +660,10 @@ int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
         repeatable = 1;
         break;
     }
-  } 
-  else 
+  }
+  else
   {
-    switch (keysym->sym) 
+    switch (keysym->sym)
     {
       case XBMCK_UNKNOWN:
         break;
@@ -678,6 +701,12 @@ int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
       case XBMCK_RMETA:
         modstate &= ~XBMCKMOD_RMETA;
         break;
+      case XBMCK_LSUPER:
+        modstate &= ~XBMCKMOD_LSUPER;
+        break;
+      case XBMCK_RSUPER:
+        modstate &= ~XBMCKMOD_RSUPER;
+        break;
       case XBMCK_MODE:
         modstate &= ~XBMCKMOD_MODE;
         break;
@@ -689,21 +718,21 @@ int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
 
   if(state == XBMC_RELEASED)
     if ( XBMC_KeyRepeat.timestamp &&
-      XBMC_KeyRepeat.evt.key.keysym.sym == keysym->sym ) 
+      XBMC_KeyRepeat.evt.key.keysym.sym == keysym->sym )
     {
       XBMC_KeyRepeat.timestamp = 0;
     }
-  
-  if ( keysym->sym != XBMCK_UNKNOWN ) 
+
+  if ( keysym->sym != XBMCK_UNKNOWN )
   {
     /* Update internal keyboard state */
     XBMC_ModState = (XBMCMod)modstate;
     XBMC_KeyState[keysym->sym] = state;
   }
-  
+
   newEvent.key.state = state;
   Update(newEvent);
-  
+
   return 0;
 }
 
@@ -728,6 +757,7 @@ void CKeyboardStat::Update(XBMC_Event& event)
     m_bShift = (event.key.keysym.mod & XBMCKMOD_SHIFT) != 0;
     m_bAlt = (event.key.keysym.mod & XBMCKMOD_ALT) != 0;
     m_bRAlt = (event.key.keysym.mod & XBMCKMOD_RALT) != 0;
+    m_bSuper = (event.key.keysym.mod & XBMCKMOD_SUPER) != 0;
 
     CLog::Log(LOGDEBUG, "SDLKeyboard: scancode: %d, sym: %d, unicode: %d, modifier: %x", event.key.keysym.scancode, event.key.keysym.sym, event.key.keysym.unicode, event.key.keysym.mod);
 
@@ -814,7 +844,7 @@ void CKeyboardStat::Update(XBMC_Event& event)
         else
           LookupKeyMapping(&m_VKey, NULL, NULL
                          , event.key.keysym.scancode
-                         , g_mapping_evdev
+                         , g_mapping_ubuntu
                          , sizeof(g_mapping_ubuntu)/sizeof(g_mapping_ubuntu[0]));
       }
 

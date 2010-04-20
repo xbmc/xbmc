@@ -171,11 +171,11 @@ void CGUIButtonControl::AllocResources()
     m_height = m_imgFocus.GetHeight();
 }
 
-void CGUIButtonControl::FreeResources()
+void CGUIButtonControl::FreeResources(bool immediately)
 {
-  CGUIControl::FreeResources();
-  m_imgFocus.FreeResources();
-  m_imgNoFocus.FreeResources();
+  CGUIControl::FreeResources(immediately);
+  m_imgFocus.FreeResources(immediately);
+  m_imgNoFocus.FreeResources(immediately);
 }
 
 void CGUIButtonControl::DynamicResourceAlloc(bool bOnOff)
@@ -226,14 +226,14 @@ void CGUIButtonControl::UpdateColors()
   m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
 }
 
-bool CGUIButtonControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIButtonControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   {
     OnAction(CAction(ACTION_SELECT_ITEM));
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 CStdString CGUIButtonControl::GetDescription() const

@@ -35,6 +35,8 @@
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGL;
+  m_glslMajor = 0;
+  m_glslMinor = 0;
 }
 
 CRenderSystemGL::~CRenderSystemGL()
@@ -46,13 +48,14 @@ void CRenderSystemGL::CheckOpenGLQuirks()
 
 {
 #ifdef __APPLE__	
-  if (strstr (m_RenderVendor, "NVIDIA"))
+  if (m_RenderVendor.Find("NVIDIA") > -1)
   {             
     // Nvidia 7300 (AppleTV) and 7600 cannot do DXT with NPOT under OSX
+    // Nvidia 9400M is slow as a dog
     if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
     {
-      char *arr[2]= { "7300","7600" };
-      for(int j = 0; j < 2; j++)
+      char *arr[3]= { "7300","7600","9400M" };
+      for(int j = 0; j < 3; j++)
       {
         if((int(m_RenderRenderer.find(arr[j])) > -1))
         {
@@ -63,6 +66,11 @@ void CRenderSystemGL::CheckOpenGLQuirks()
     }
   }
 #endif
+  if (m_RenderVendor.Equals("Tungsten Graphics, Inc."))
+  {
+    if(m_RenderRenderer.Find("Poulsbo") >= 0)
+      m_renderCaps &= ~RENDER_CAPS_DXT_NPOT;
+  }
 }	
 
 bool CRenderSystemGL::InitRenderSystem()
@@ -94,6 +102,20 @@ bool CRenderSystemGL::InitRenderSystem()
   {
     sscanf(ver, "%d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
     m_RenderVersion = ver;
+  }
+
+  if (glewIsSupported("GL_ARB_shading_language_100"))
+  {
+    ver = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+    if (ver)
+    {
+      sscanf(ver, "%d.%d", &m_glslMajor, &m_glslMinor);
+    }
+    else
+    {
+      m_glslMajor = 1;
+      m_glslMinor = 0;
+    }
   }
 
   // Get our driver vendor and renderer
@@ -492,6 +514,12 @@ void CRenderSystemGL::SetViewPort(CRect& viewPort)
 
   glScissor((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
   glViewport((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
+}
+
+void CRenderSystemGL::GetGLSLVersion(int& major, int& minor)
+{
+  major = m_glslMajor;
+  minor = m_glslMinor;
 }
 
 #endif

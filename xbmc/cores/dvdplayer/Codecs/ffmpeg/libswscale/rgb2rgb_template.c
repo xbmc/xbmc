@@ -34,7 +34,6 @@
 #undef EMMS
 #undef SFENCE
 #undef MMREG_SIZE
-#undef PREFETCHW
 #undef PAVGB
 
 #if HAVE_SSE2
@@ -45,15 +44,12 @@
 
 #if HAVE_AMD3DNOW
 #define PREFETCH  "prefetch"
-#define PREFETCHW "prefetchw"
 #define PAVGB     "pavgusb"
 #elif HAVE_MMX2
 #define PREFETCH "prefetchnta"
-#define PREFETCHW "prefetcht0"
 #define PAVGB     "pavgb"
 #else
 #define PREFETCH  " # nop"
-#define PREFETCHW " # nop"
 #endif
 
 #if HAVE_AMD3DNOW
@@ -2356,7 +2352,7 @@ static inline void RENAME(rgb24toyv12)(const uint8_t *src, uint8_t *ydst, uint8_
     }
 }
 
-static void RENAME(interleaveBytes)(uint8_t *src1, uint8_t *src2, uint8_t *dest,
+static void RENAME(interleaveBytes)(const uint8_t *src1, const uint8_t *src2, uint8_t *dest,
                              long width, long height, long src1Stride,
                              long src2Stride, long dstStride)
 {

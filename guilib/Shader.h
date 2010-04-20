@@ -217,6 +217,7 @@ namespace Shaders {
 
   protected:
     GLint         m_lastProgram;
+    bool          m_validated;
   };
 
 

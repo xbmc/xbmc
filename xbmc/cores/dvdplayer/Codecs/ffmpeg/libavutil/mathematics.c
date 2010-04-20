@@ -24,8 +24,8 @@
  */
 
 #include <assert.h>
-#include "avutil.h"
-#include "common.h"
+#include <stdint.h>
+#include <limits.h>
 #include "mathematics.h"
 
 const uint8_t ff_sqrt_tab[256]={
@@ -134,6 +134,14 @@ int64_t av_rescale_q(int64_t a, AVRational bq, AVRational cq){
     int64_t b= bq.num * (int64_t)cq.den;
     int64_t c= cq.num * (int64_t)bq.den;
     return av_rescale_rnd(a, b, c, AV_ROUND_NEAR_INF);
+}
+
+int av_compare_ts(int64_t ts_a, AVRational tb_a, int64_t ts_b, AVRational tb_b){
+    int64_t a= tb_a.num * (int64_t)tb_b.den;
+    int64_t b= tb_b.num * (int64_t)tb_a.den;
+    if (av_rescale_rnd(ts_a, a, b, AV_ROUND_DOWN) < ts_b) return -1;
+    if (av_rescale_rnd(ts_b, b, a, AV_ROUND_DOWN) < ts_a) return  1;
+    return 0;
 }
 
 #ifdef TEST

@@ -419,7 +419,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
 
       // enable CDDB lookup if the current dir is CDDA
       if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA() &&
-         (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+         (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
       }
@@ -444,8 +444,8 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       else if (!inPlaylists && !m_vecItems->IsInternetStream()           &&
                !item->IsLastFM() && !item->IsShoutCast()                 &&
                !item->m_strPath.Equals("add") && !item->IsParentFolder() &&
-               !item->IsPluginRoot() && !item->IsPlugin()                &&
-              (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
+               !item->IsPlugin()                                         &&
+              (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_SCAN, 13352);
       }

@@ -36,7 +36,7 @@
  */
 
 /** Extract VASurfaceID from a Picture */
-static inline VASurfaceID ff_vaapi_get_surface(Picture *pic)
+static inline VASurfaceID ff_vaapi_get_surface_id(Picture *pic)
 {
     return (uintptr_t)pic->data[3];
 }
@@ -45,7 +45,7 @@ static inline VASurfaceID ff_vaapi_get_surface(Picture *pic)
 int ff_vaapi_common_end_frame(MpegEncContext *s);
 
 /** Allocate a new picture parameter buffer */
-void *ff_vaapi_alloc_picture(struct vaapi_context *vactx, unsigned int size);
+void *ff_vaapi_alloc_pic_param(struct vaapi_context *vactx, unsigned int size);
 
 /** Allocate a new IQ matrix buffer */
 void *ff_vaapi_alloc_iq_matrix(struct vaapi_context *vactx, unsigned int size);

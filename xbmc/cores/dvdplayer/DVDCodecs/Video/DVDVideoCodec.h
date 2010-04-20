@@ -33,6 +33,7 @@
 #define FRAME_TYPE_D 4
 
 namespace DXVA { class CProcessor; }
+namespace VAAPI { class CHolder; }
 class CVDPAU;
 
 // should be entirely filled by all codecs
@@ -53,6 +54,9 @@ struct DVDVideoPicture
     };
     struct {
       CVDPAU* vdpau;
+    };
+    struct {
+      VAAPI::CHolder* vaapi;
     };
   };
 
@@ -77,6 +81,7 @@ struct DVDVideoPicture
     FMT_UYVY,       // place holder for future expansion
     FMT_YUY2,       //place holder for future expansion
     FMT_DXVA,
+    FMT_VAAPI,
   } format;
 };
 

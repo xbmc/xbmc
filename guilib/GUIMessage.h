@@ -112,6 +112,11 @@
  */
 #define GUI_MSG_EXCLUSIVE_MOUSE 37
 
+/*!
+ \brief A request for supported gestures is made
+ */
+#define GUI_MSG_GESTURE_NOTIFY  38
+
 #define GUI_MSG_USER         1000
 
 /*!

@@ -20,6 +20,7 @@
  */
 
 #include "GUIViewState.h"
+#include "GUIViewStateAddonBrowser.h"
 #include "GUIViewStateMusic.h"
 #include "GUIViewStateVideo.h"
 #include "GUIViewStatePictures.h"
@@ -33,7 +34,7 @@
 #include "ViewDatabase.h"
 #include "AutoSwitch.h"
 #include "GUIWindowManager.h"
-#include "utils/AddonManager.h"
+#include "addons/AddonManager.h"
 #include "ViewState.h"
 #include "GUISettings.h"
 #include "Settings.h"
@@ -119,6 +120,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (windowId==WINDOW_PROGRAMS)
     return new CGUIViewStateWindowPrograms(items);
+  
+  if (windowId==WINDOW_ADDON_BROWSER)
+    return new CGUIViewStateAddonBrowser(items);
 
   //  Use as fallback/default
   return new CGUIViewStateGeneral(items);
@@ -286,7 +290,7 @@ bool CGUIViewState::HideParentDirItems()
 
 bool CGUIViewState::DisableAddSourceButtons()
 {
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser)
+  if (g_settings.GetCurrentProfile().canWriteSources() || g_passwordManager.bMasterUser)
     return !g_guiSettings.GetBool("filelists.showaddsourcebuttons");
 
   return true;
@@ -352,7 +356,7 @@ VECSOURCES& CGUIViewState::GetSources()
     // eg. pictures://UUID
     CMediaSource plugin;
     CURL path;
-    path.SetProtocol(ADDON::TranslateContent(m_content));
+    path.SetProtocol("plugin");
     path.SetHostName(addons[i]->ID());
     plugin.strPath = path.Get();
     plugin.strName = addons[i]->Name();

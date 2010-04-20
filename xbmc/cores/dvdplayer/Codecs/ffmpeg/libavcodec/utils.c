@@ -31,11 +31,13 @@
 #include "libavutil/avstring.h"
 #include "libavutil/integer.h"
 #include "libavutil/crc.h"
+#include "libavutil/pixdesc.h"
 #include "avcodec.h"
 #include "dsputil.h"
 #include "opt.h"
 #include "imgconvert.h"
 #include "audioconvert.h"
+#include "libxvid_internal.h"
 #include "internal.h"
 #include <stdlib.h>
 #include <stdarg.h>
@@ -117,7 +119,7 @@ typedef struct InternalBuffer{
 
 #define INTERNAL_BUFFER_SIZE 32
 
-void avcodec_align_dimensions(AVCodecContext *s, int *width, int *height){
+void avcodec_align_dimensions2(AVCodecContext *s, int *width, int *height, int linesize_align[4]){
     int w_align= 1;
     int h_align= 1;
 
@@ -180,6 +182,36 @@ void avcodec_align_dimensions(AVCodecContext *s, int *width, int *height){
     *height= FFALIGN(*height, h_align);
     if(s->codec_id == CODEC_ID_H264)
         *height+=2; // some of the optimized chroma MC reads one line too much
+
+    linesize_align[0] =
+    linesize_align[1] =
+    linesize_align[2] =
+    linesize_align[3] = STRIDE_ALIGN;
+//STRIDE_ALIGN is 8 for SSE* but this does not work for SVQ1 chroma planes
+//we could change STRIDE_ALIGN to 16 for x86/sse but it would increase the
+//picture size unneccessarily in some cases. The solution here is not
+//pretty and better ideas are welcome!
+#if HAVE_MMX
+    if(s->codec_id == CODEC_ID_SVQ1 || s->codec_id == CODEC_ID_VP5 ||
+       s->codec_id == CODEC_ID_VP6 || s->codec_id == CODEC_ID_VP6F ||
+       s->codec_id == CODEC_ID_VP6A) {
+        linesize_align[0] =
+        linesize_align[1] =
+        linesize_align[2] = 16;
+    }
+#endif
+}
+
+void avcodec_align_dimensions(AVCodecContext *s, int *width, int *height){
+    int chroma_shift = av_pix_fmt_descriptors[s->pix_fmt].log2_chroma_w;
+    int linesize_align[4];
+    int align;
+    avcodec_align_dimensions2(s, width, height, linesize_align);
+    align = FFMAX(linesize_align[0], linesize_align[3]);
+    linesize_align[1] <<= chroma_shift;
+    linesize_align[2] <<= chroma_shift;
+    align = FFMAX3(align, linesize_align[1], linesize_align[2]);
+    *width=FFALIGN(*width, align);
 }
 
 int avcodec_check_dimensions(void *av_log_ctx, unsigned int w, unsigned int h){
@@ -244,7 +276,7 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
 
         avcodec_get_chroma_sub_sample(s->pix_fmt, &h_chroma_shift, &v_chroma_shift);
 
-        avcodec_align_dimensions(s, &w, &h);
+        avcodec_align_dimensions2(s, &w, &h, stride_align);
 
         if(!(s->flags&CODEC_FLAG_EMU_EDGE)){
             w+= EDGE_WIDTH*2;
@@ -260,16 +292,6 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
 
             unaligned = 0;
             for (i=0; i<4; i++){
-//STRIDE_ALIGN is 8 for SSE* but this does not work for SVQ1 chroma planes
-//we could change STRIDE_ALIGN to 16 for x86/sse but it would increase the
-//picture size unneccessarily in some cases. The solution here is not
-//pretty and better ideas are welcome!
-#if HAVE_MMX
-                if(s->codec_id == CODEC_ID_SVQ1)
-                    stride_align[i]= 16;
-                else
-#endif
-                stride_align[i] = STRIDE_ALIGN;
                 unaligned |= picture.linesize[i] % stride_align[i];
             }
         } while (unaligned);
@@ -662,7 +684,7 @@ int avcodec_decode_subtitle2(AVCodecContext *avctx, AVSubtitle *sub,
     return ret;
 }
 
-int avcodec_close(AVCodecContext *avctx)
+av_cold int avcodec_close(AVCodecContext *avctx)
 {
     /* If there is a user-supplied mutex locking routine, call it. */
     if (ff_lockmgr_cb) {
@@ -683,6 +705,8 @@ int avcodec_close(AVCodecContext *avctx)
         avctx->codec->close(avctx);
     avcodec_default_free_buffers(avctx);
     av_freep(&avctx->priv_data);
+    if(avctx->codec->encode)
+        av_freep(&avctx->extradata);
     avctx->codec = NULL;
     entangled_thread_counter--;
 
@@ -745,7 +769,7 @@ AVCodec *avcodec_find_decoder_by_name(const char *name)
     return NULL;
 }
 
-int av_get_bit_rate(AVCodecContext *ctx)
+static int get_bit_rate(AVCodecContext *ctx)
 {
     int bit_rate;
     int bits_per_sample;
@@ -883,7 +907,7 @@ void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode)
             snprintf(buf + strlen(buf), buf_size - strlen(buf),
                      ", pass 2");
     }
-    bitrate = av_get_bit_rate(enc);
+    bitrate = get_bit_rate(enc);
     if (bitrate != 0) {
         snprintf(buf + strlen(buf), buf_size - strlen(buf),
                  ", %d kb/s", bitrate / 1000);
@@ -895,12 +919,12 @@ unsigned avcodec_version( void )
   return LIBAVCODEC_VERSION_INT;
 }
 
-const char * avcodec_configuration(void)
+const char *avcodec_configuration(void)
 {
     return FFMPEG_CONFIGURATION;
 }
 
-const char * avcodec_license(void)
+const char *avcodec_license(void)
 {
 #define LICENSE_PREFIX "libavcodec license: "
     return LICENSE_PREFIX FFMPEG_LICENSE + sizeof(LICENSE_PREFIX) - 1;
@@ -963,6 +987,9 @@ int av_get_bits_per_sample(enum CodecID codec_id){
         return 3;
     case CODEC_ID_ADPCM_SBPRO_4:
     case CODEC_ID_ADPCM_CT:
+    case CODEC_ID_ADPCM_IMA_WAV:
+    case CODEC_ID_ADPCM_MS:
+    case CODEC_ID_ADPCM_YAMAHA:
         return 4;
     case CODEC_ID_PCM_ALAW:
     case CODEC_ID_PCM_MULAW:
@@ -1195,6 +1222,12 @@ int av_parse_video_frame_rate(AVRational *frame_rate, const char *arg)
         return -1;
     else
         return 0;
+}
+
+int ff_match_2uint16(const uint16_t (*tab)[2], int size, int a, int b){
+    int i;
+    for(i=0; i<size && !(tab[i][0]==a && tab[i][1]==b); i++);
+    return i;
 }
 
 void av_log_missing_feature(void *avc, const char *feature, int want_sample)

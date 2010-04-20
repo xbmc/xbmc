@@ -1,0 +1,45 @@
+@import "common_style.css";
+html {
+  background-color: #eff6fd;
+}
+body {
+  margin: 0;
+  padding: 0;
+
+  /* For IE */
+  text-align: center;
+}
+#content {
+  text-align: justify;
+  margin: 0 auto;
+  padding: 2ex 6ex 2ex 10ex;
+  background-color: white;
+  background-image: url(img/pageborder.png);
+  background-position: 100% 0;
+  background-repeat: repeat-y;
+
+  /* Using width instead of max-width for IE */
+  width: 70ex;
+}
+span.signature {
+  font-style: italic;
+}
+ul.menu {
+  text-align: center;
+  padding-left: 0;
+}
+ul.menu li {
+  display: inline;
+}
+ul.menu li:before {
+  content: "[";
+}
+ul.menu li:after {
+  content: "]";
+}
+pre.example {
+  border-style: solid;
+  border-width: 1px;
+  padding: 0.5ex;
+  background-color: #e0e0e0;
+}

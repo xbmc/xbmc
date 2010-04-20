@@ -11,16 +11,22 @@ case "$1" in
 	# get a console session going, we're in trouble anyway. ceros
 	sed -i.bak-xbmc-live s/allowed_users=console/allowed_users=anybody/ /etc/X11/Xwrapper.config
 
-	# Add the 'xbmc' user if the primary one is missing
-	xbmcUser=$(getent passwd 1000 | sed -e 's/\:.*//')
-	if [ ! -n "$xbmcUser" ]; then
-		clearTextPWD=xbmc
-		encryptedPWD=$(echo $clearTextPWD | mkpasswd -s)
+	xbmcUser=xbmc
+	# Read configuration variable file if it is present
+	[ -r /etc/default/xbmc-live ] && . /etc/default/xbmc-live
 
-		adduser --disabled-password --gecos "XBMC Live User" xbmc
-		usermod -p $encryptedPWD xbmc
+	if ! getent passwd $xbmcUser >/dev/null; then
+		xbmcUser=$(getent passwd 1000 | sed -e 's/\:.*//')
+		if [ -z "$xbmcUser" ]; then
+			# Add the 'xbmc' user if the primary one is missing
+			clearTextPWD=xbmc
+			encryptedPWD=$(echo $clearTextPWD | mkpasswd -s)
 
-		xbmcUser=xbmc
+			adduser --disabled-password --gecos "XBMC Live User" xbmc
+			usermod -p $encryptedPWD xbmc
+
+			xbmcUser=xbmc
+		fi
 	fi
 
 	# Add 'xbmcUser' user to the appropriate groups
@@ -44,7 +50,8 @@ case "$1" in
 		plugdev
 		netdev
 		powerdev
-		fuse"
+		fuse
+		polkituser"
 
 	# TODO: this probably isn't necessary anymore as PolicyKit is now being
 	# used
@@ -168,7 +175,14 @@ ENDOFBLOCK
 		org.freedesktop.devicekit.disks.filesystem-mount-system-internal
 		org.freedesktop.devicekit.disks.filesystem-unmount-others
 		org.freedesktop.devicekit.disks.drive-eject
-		org.freedesktop.devicekit.disks.drive-detach"
+		org.freedesktop.devicekit.disks.drive-detach
+		org.freedesktop.upower.suspend
+		org.freedesktop.upower.hibernate
+		org.freedesktop.udisks.filesystem-mount
+		org.freedesktop.udisks.filesystem-mount-system-internal
+		org.freedesktop.udisks.filesystem-unmount-others
+		org.freedesktop.udisks.drive-eject
+		org.freedesktop.udisks.drive-detach"
 
 	# Grant the 'xbmc' user each action from the list if not done already
 	for ACTION in $POLKIT_ACTIONS; do
@@ -205,8 +219,9 @@ ENDOFBLOCK
     ;;
 esac
 
-# Upstart scripts tested on karmic only and not backward compatible ATM
-if [ "$(lsb_release -c | grep karmic)" ]; then
+# Upstart scripts tested on karmic+ only (>=9.10)  and not backward compatible ATM
+release="$(lsb_release -r | cut -f2 | sed 's/\.//')"
+if [ $release -ge 910 ]; then
 	if [ -f "/etc/init.d/xbmc-live" ]; then
 		rm /etc/init.d/xbmc-live >/dev/null
 		update-rc.d -f xbmc-live remove >/dev/null

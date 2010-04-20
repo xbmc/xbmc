@@ -20,7 +20,7 @@
  */
 
 #include "GUIDialogVisualisationPresetList.h"
-#include "visualizations/Visualisation.h"
+#include "addons/Visualisation.h"
 #include "GUIWindowManager.h"
 #include "GUIListContainer.h"
 #include "GUIUserMessages.h"

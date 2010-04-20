@@ -116,11 +116,11 @@ void CGUICheckMarkControl::AllocResources()
   m_imgCheckMarkNoFocus.AllocResources();
 }
 
-void CGUICheckMarkControl::FreeResources()
+void CGUICheckMarkControl::FreeResources(bool immediately)
 {
-  CGUIControl::FreeResources();
-  m_imgCheckMark.FreeResources();
-  m_imgCheckMarkNoFocus.FreeResources();
+  CGUIControl::FreeResources(immediately);
+  m_imgCheckMark.FreeResources(immediately);
+  m_imgCheckMarkNoFocus.FreeResources(immediately);
 }
 
 void CGUICheckMarkControl::DynamicResourceAlloc(bool bOnOff)
@@ -148,14 +148,14 @@ bool CGUICheckMarkControl::GetSelected() const
   return m_bSelected;
 }
 
-bool CGUICheckMarkControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUICheckMarkControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   {
     OnAction(CAction(ACTION_SELECT_ITEM));
-    return true;
+    return EVENT_RESULT_HANDLED;
   }
-  return false;
+  return EVENT_RESULT_UNHANDLED;
 }
 
 void CGUICheckMarkControl::SetLabel(const string &label)

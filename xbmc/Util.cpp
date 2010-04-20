@@ -38,6 +38,7 @@
 #include "Application.h"
 #include "AutoPtrHandle.h"
 #include "Util.h"
+#include "addons/Addon.h"
 #include "utils/IoSupport.h"
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/VirtualPathDirectory.h"
@@ -978,13 +979,7 @@ bool CUtil::IsSpecial(const CStdString& strFile)
 bool CUtil::IsPlugin(const CStdString& strFile)
 {
   CURL url(strFile);
-  return !url.GetProtocol().IsEmpty() && StringUtils::ValidateUUID(url.GetHostName());
-}
-
-bool CUtil::IsPluginRoot(const CStdString& strFile)
-{
-  CURL url(strFile);
-  return url.GetProtocol().Equals("plugin") && url.GetFileName().IsEmpty();
+  return url.GetProtocol().Equals("plugin");
 }
 
 bool CUtil::IsCDDA(const CStdString& strFile)
@@ -1102,7 +1097,11 @@ bool CUtil::IsHTSP(const CStdString& strFile)
 
 bool CUtil::IsLiveTV(const CStdString& strFile)
 {
-  if (IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile) || IsHTSP(strFile))
+  if(IsTuxBox(strFile)
+  || IsVTP(strFile)
+  || IsHDHomeRun(strFile)
+  || IsHTSP(strFile)
+  || strFile.Left(4).Equals("sap:"))
     return true;
 
   if (IsMythTV(strFile) && CMythDirectory::IsLiveTV(strFile))
@@ -2234,7 +2233,7 @@ CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
   return strPath + MakeLegalFileName(strFileName, LegalType);
 }
 
-CStdString CUtil::ValidatePath(const CStdString &path)
+CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /* = false */)
 {
   CStdString result = path;
 
@@ -2252,12 +2251,40 @@ CStdString CUtil::ValidatePath(const CStdString &path)
   // check the path for incorrect slashes
 #ifdef _WIN32
   if (CUtil::IsDOSPath(path))
+  {
     result.Replace('/', '\\');
+    /* The double slash correction should only be used when *absolutely*
+       necessary! This applies to certain DLLs or use from Python DLLs/scripts
+       that incorrectly generate double (back) slashes.
+    */
+    if (bFixDoubleSlashes)
+    {
+      // Fixup for double back slashes (but ignore the \\ of unc-paths)
+      for (int x = 1; x < result.GetLength() - 1; x++)
+      {
+        if (result[x] == '\\' && result[x+1] == '\\')
+          result.Delete(x);
+      }
+    }
+  }
   else if (path.Find("://") >= 0 || path.Find(":\\\\") >= 0)
-    result.Replace('\\', '/');
-#else
-  result.Replace('\\', '/');
 #endif
+  {
+    result.Replace('\\', '/');
+    /* The double slash correction should only be used when *absolutely*
+       necessary! This applies to certain DLLs or use from Python DLLs/scripts
+       that incorrectly generate double (back) slashes.
+    */
+    if (bFixDoubleSlashes)
+    {
+      // Fixup for double forward slashes(/) but don't touch the :// of URLs
+      for (int x = 2; x < result.GetLength() - 1; x++)
+      {
+        if ( result[x] == '/' && result[x + 1] == '/' && !(result[x - 1] == ':' || (result[x - 1] == '/' && result[x - 2] == ':')) )
+          result.Delete(x);
+      }
+    }
+  }
   return result;
 }
 
@@ -2708,7 +2735,7 @@ void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items,
   {
     if (myItems[i]->m_bIsFolder)
       CUtil::GetRecursiveListing(myItems[i]->m_strPath,items,strMask,bUseFileDirectories);
-    else if (!myItems[i]->IsRAR() && !myItems[i]->IsZIP())
+    else
       items.Add(myItems[i]);
   }
 }
@@ -2941,23 +2968,27 @@ void CUtil::WipeDir(const CStdString& strPath) // DANGEROUS!!!!
   if (!CDirectory::Exists(strPath)) return;
 
   CFileItemList items;
-  CUtil::GetRecursiveListing(strPath,items,"");
+  GetRecursiveListing(strPath,items,"");
   for (int i=0;i<items.Size();++i)
   {
     if (!items[i]->m_bIsFolder)
       CFile::Delete(items[i]->m_strPath);
   }
   items.Clear();
-  CUtil::GetRecursiveDirsListing(strPath,items);
+  GetRecursiveDirsListing(strPath,items);
   for (int i=items.Size()-1;i>-1;--i) // need to wipe them backwards
   {
-    CUtil::AddSlashAtEnd(items[i]->m_strPath);
-    CDirectory::Remove(items[i]->m_strPath);
+    CStdString strDir = items[i]->m_strPath;
+    AddSlashAtEnd(strDir);
+    CDirectory::Remove(strDir);
   }
 
-  CStdString tmpPath = strPath;
-  AddSlashAtEnd(tmpPath);
-  CDirectory::Remove(tmpPath);
+  if (!HasSlashAtEnd(strPath))
+  {
+    CStdString tmpPath = strPath;
+    AddSlashAtEnd(tmpPath);
+    CDirectory::Remove(tmpPath);
+  }
 }
 
 void CUtil::CopyDirRecursive(const CStdString& strSrcPath, const CStdString& strDstPath)
@@ -3109,3 +3140,116 @@ bool CUtil::SudoCommand(const CStdString &strCommand)
   return WEXITSTATUS(n) == 0;
 }
 #endif
+
+int CUtil::LookupRomanDigit(char roman_digit)
+{
+  switch (roman_digit)
+  {
+    case 'i':
+    case 'I':
+      return 1;
+    case 'v':
+    case 'V':
+      return 5;
+    case 'x':
+    case 'X':
+      return 10;
+    case 'l':
+    case 'L':
+      return 50;
+    case 'c':
+    case 'C':
+      return 100;
+    case 'd':
+    case 'D':
+      return 500;
+    case 'm':
+    case 'M':
+      return 1000;
+    default:
+      return 0;
+  }
+}
+
+int CUtil::TranslateRomanNumeral(const char* roman_numeral)
+{
+  
+  int decimal = -1;
+
+  if (roman_numeral && roman_numeral[0])
+  {
+    int temp_sum  = 0,
+        last      = 0,
+        repeat    = 0,
+        trend     = 1;
+    decimal = 0;
+    while (*roman_numeral)
+    {
+      int digit = CUtil::LookupRomanDigit(*roman_numeral);
+      int test  = last;
+      
+      // General sanity checks
+
+      // numeral not in LUT
+      if (!digit)
+        return -1;
+      
+      while (test > 5)
+        test /= 10;
+      
+      // N = 10^n may not precede (N+1) > 10^(N+1)
+      if (test == 1 && digit > last * 10)
+        return -1;
+      
+      // N = 5*10^n may not precede (N+1) >= N
+      if (test == 5 && digit >= last) 
+        return -1;
+
+      // End general sanity checks
+
+      if (last < digit)
+      {
+        // smaller numerals may not repeat before a larger one
+        if (repeat) 
+          return -1;
+
+        temp_sum += digit;
+        
+        repeat  = 0;
+        trend   = 0;
+      }
+      else if (last == digit)
+      {
+        temp_sum += digit;
+        repeat++;
+        trend = 1;
+      }
+      else
+      {
+        if (!repeat)
+          decimal += 2 * last - temp_sum;
+        else
+          decimal += temp_sum;
+        
+        temp_sum = digit;
+
+        trend   = 1;
+        repeat  = 0;
+      }
+      // Post general sanity checks
+
+      // numerals may not repeat more than thrice
+      if (repeat == 3)
+        return -1;
+
+      last = digit;
+      roman_numeral++;
+    }
+
+    if (trend)
+      decimal += temp_sum;
+    else
+      decimal += 2 * last - temp_sum;
+  }
+  return decimal;
+}

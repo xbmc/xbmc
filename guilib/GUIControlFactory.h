@@ -45,10 +45,21 @@ class CGUIControlFactory
 public:
   CGUIControlFactory(void);
   virtual ~CGUIControlFactory(void);
-  static CStdString GetType(const TiXmlElement *pControlNode);
   CGUIControl* Create(int parentID, const CRect &rect, TiXmlElement* pControlNode, bool insideContainer = false);
   void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
+
+  /*! \brief translate from control name to control type
+   \param type name of the control
+   \return type of control
+   */
+  static CGUIControl::GUICONTROLTYPES TranslateControlType(const CStdString &type);
+
+  /*! \brief translate from control type to control name
+   \param type type of the control
+   \return name of control
+   */
+  static CStdString TranslateControlType(CGUIControl::GUICONTROLTYPES type);
 
   /*! \brief grab a dimension out of the XML
    
@@ -93,6 +104,7 @@ public:
   static bool GetAction(const TiXmlElement* pElement, CGUIActionDescriptor &action);
   static bool GetHitRect(const TiXmlNode* pRootNode, CRect &rect);
 private:
+  static CStdString GetType(const TiXmlElement *pControlNode);
   bool GetNavigation(const TiXmlElement *node, const char *tag, int &direction, std::vector<CGUIActionDescriptor> &actions);
   bool GetCondition(const TiXmlNode *control, const char *tag, int &condition);
   static bool GetConditionalVisibility(const TiXmlNode* control, int &condition, CGUIInfoBool &allowHiddenFocus);

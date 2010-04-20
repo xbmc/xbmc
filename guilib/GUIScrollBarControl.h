@@ -52,7 +52,7 @@ public:
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual void AllocResources();
-  virtual void FreeResources();
+  virtual void FreeResources(bool immediately = false);
   virtual void DynamicResourceAlloc(bool bOnOff);
   virtual void SetInvalid();
   virtual void SetRange(int pageSize, int numItems);
@@ -63,7 +63,7 @@ public:
   virtual bool IsVisible() const;
 protected:
   virtual bool HitTest(const CPoint &point) const;
-  virtual bool OnMouseEvent(const CPoint &point, const CMouseEvent &event);
+  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UpdateColors();
   void UpdateBarSize();
   virtual void Move(int iNumSteps);

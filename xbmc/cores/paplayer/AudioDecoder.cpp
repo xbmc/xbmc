@@ -187,7 +187,7 @@ void CAudioDecoder::PrefixData(void *data, unsigned int size)
 
 int CAudioDecoder::ReadSamples(int numsamples)
 {
-  if (m_status == STATUS_NO_FILE || m_status == STATUS_ENDING || m_status == STATUS_ENDING)
+  if (m_status == STATUS_NO_FILE || m_status == STATUS_ENDING || m_status == STATUS_ENDED)
     return RET_SLEEP;             // nothing loaded yet
 
   // start playing once we're fully queued and we're ready to go

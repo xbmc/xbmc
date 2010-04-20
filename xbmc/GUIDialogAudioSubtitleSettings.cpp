@@ -336,15 +336,15 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
               strFileNameNoExtNoCase = CUtil::ReplaceExtension(strPath3,".");
               strFileNameNoExtNoCase.ToLower();
               CUtil::GetDirectory(strPath,strDir);
-              CDirectory::GetDirectory(strDir,items,".rar|.zip",false);
+              CDirectory::GetDirectory(strDir,items,".rar|.zip",false,false,DIR_CACHE_ONCE,true,true);
               for (int i=0;i<items.Size();++i)
                 CUtil::CacheRarSubtitles(items[i]->m_strPath,strFileNameNoExtNoCase);
             }
             g_settings.m_currentVideoSettings.m_SubtitleOn = true;
-
-            if(g_application.m_pPlayer->AddSubtitle("special://temp/subtitle.idx"))
+            int id = g_application.m_pPlayer->AddSubtitle("special://temp/subtitle.idx");
+            if(id >= 0)
             {
-              m_subtitleStream = g_application.m_pPlayer->GetSubtitleCount() - 1;
+              m_subtitleStream = id;
               g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
               g_application.m_pPlayer->SetSubtitleVisible(true);
             }
@@ -360,10 +360,13 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
         CUtil::GetExtension(strPath,strExt);
         if (CFile::Cache(strPath,"special://temp/subtitle.browsed"+strExt))
         {
-          g_settings.m_currentVideoSettings.m_SubtitleOn = true;
-          g_application.m_pPlayer->SetSubtitleVisible(true);
-          g_application.m_pPlayer->AddSubtitle("special://temp/subtitle.browsed"+strExt);
-          g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
+          int id = g_application.m_pPlayer->AddSubtitle("special://temp/subtitle.browsed"+strExt);
+          if(id >= 0)
+          {
+            m_subtitleStream = id;
+            g_application.m_pPlayer->SetSubtitle(m_subtitleStream);
+            g_application.m_pPlayer->SetSubtitleVisible(true);
+          }
         }
 
         Close();
@@ -373,8 +376,8 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   }
   else if (setting.id == AUDIO_SETTINGS_MAKE_DEFAULT)
   {
-    if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].settingsLocked() &&
-        g_settings.m_vecProfiles[0].getLockMode() != ::LOCK_MODE_EVERYONE)
+    if (g_settings.GetCurrentProfile().settingsLocked() &&
+        g_settings.GetMasterProfile().getLockMode() != ::LOCK_MODE_EVERYONE)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
 

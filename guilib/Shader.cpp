@@ -352,19 +352,7 @@ bool CGLSLShaderProgram::CompileAndLink()
   }
   VerifyGLState();
 
-  // validate the program
-  glValidateProgram(m_shaderProgram);
-  glGetProgramiv(m_shaderProgram, GL_VALIDATE_STATUS, params);
-  if (params[0]!=GL_TRUE)
-  {
-    GLchar log[LOG_SIZE];
-    CLog::Log(LOGERROR, "GL: Error validating shader");
-    glGetProgramInfoLog(m_shaderProgram, LOG_SIZE, NULL, log);
-    CLog::Log(LOGERROR, "%s", log);
-    goto error;
-  }
-  VerifyGLState();
-
+  m_validated = false;
   m_ok = true;
   OnCompiledAndLinked();
   VerifyGLState();
@@ -388,6 +376,21 @@ bool CGLSLShaderProgram::Enable()
     glUseProgram(m_shaderProgram);
     if (OnEnabled())
     {
+      if (!m_validated)
+      {
+        // validate the program
+        GLint params[4];
+        glValidateProgram(m_shaderProgram);
+        glGetProgramiv(m_shaderProgram, GL_VALIDATE_STATUS, params);
+        if (params[0]!=GL_TRUE)
+        {
+          GLchar log[LOG_SIZE];
+          CLog::Log(LOGERROR, "GL: Error validating shader");
+          glGetProgramInfoLog(m_shaderProgram, LOG_SIZE, NULL, log);
+          CLog::Log(LOGERROR, "%s", log);
+        }
+        m_validated = true;
+      }
       VerifyGLState();
       return true;
     }

@@ -38,8 +38,8 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowVideoBase.h"
-#include "Addon.h" // for TranslateType, TranslateContent
-#include "AddonManager.h"
+#include "addons/Addon.h" // for TranslateType, TranslateContent
+#include "addons/AddonManager.h"
 #include "LastFmManager.h"
 #include "LCD.h"
 #include "log.h"
@@ -181,6 +181,7 @@ const BUILT_IN commands[] = {
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
   { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
+  { "LIRC.Send",                  true,   "Sends a command to LIRC" },
 #endif
 #ifdef HAS_LCD
   { "LCD.Suspend",                false,  "Suspends LCDproc" },
@@ -255,16 +256,11 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     g_application.getApplicationMessenger().Minimize();
   }
-  else if (execute.Equals("loadprofile") && g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
+  else if (execute.Equals("loadprofile") && g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE)
   {
-    for (unsigned int i=0;i<g_settings.m_vecProfiles.size();++i )
-    {
-      if (g_settings.m_vecProfiles[i].getName().Equals(parameter))
-      {
-        CGUIWindowLoginScreen::LoadProfile(i);
-        break;
-      }
-    }
+    int index = g_settings.GetProfileIndex(parameter);
+    if (index >= 0)
+      CGUIWindowLoginScreen::LoadProfile(index);
   }
   else if (execute.Equals("mastermode"))
   {
@@ -310,7 +306,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
 
     // confirm the window destination is valid prior to switching
-    int iWindow = CButtonTranslator::TranslateWindowString(strWindow.c_str());
+    int iWindow = CButtonTranslator::TranslateWindow(strWindow);
     if (iWindow != WINDOW_INVALID)
     {
       // disable the screensaver
@@ -353,7 +349,15 @@ int CBuiltins::Execute(const CStdString& execString)
       for(unsigned int i = 1; i < argc; i++)
         argv[i] = (char*)params[i].c_str();
 
-      g_pythonParser.evalFile(params[0].c_str(), argc, (const char**)argv);
+      AddonPtr script;
+      CURL url(params[0]);
+      if (!CAddonMgr::Get()->GetAddon(url.GetFileName(), script, ADDON_SCRIPT))
+      {
+        CLog::Log(LOGERROR, "Could not find addon: %s", url.GetFileName().c_str());
+        return -1;
+      }
+      CStdString scriptpath(script->Path()+script->LibName());
+      g_pythonParser.evalFile(scriptpath.c_str(), argc, (const char**)argv);
       delete [] argv;
     }
   }
@@ -886,7 +890,7 @@ int CBuiltins::Execute(const CStdString& execString)
     // also set the default color theme
     g_guiSettings.SetString("lookandfeel.skincolors", CUtil::ReplaceExtension(strSkinTheme, ".xml"));
 
-    g_application.DelayLoadSkin();
+    g_application.ReloadSkin();
   }
   else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setfile") ||
            execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric") || execute.Equals("skin.setlargeimage"))
@@ -988,7 +992,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else
     {
-      int id = CButtonTranslator::TranslateWindowString(params[0]);
+      int id = CButtonTranslator::TranslateWindow(params[0]);
       CGUIWindow *window = (CGUIWindow *)g_windowManager.GetWindow(id);
       if (window && window->IsDialog())
         ((CGUIDialog *)window)->Close(bForce);
@@ -996,10 +1000,9 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("system.logoff"))
   {
-    if (g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN || !g_settings.bUseLoginScreen)
+    if (g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN || !g_settings.UsingLoginScreen())
       return -1;
 
-    g_settings.m_iLastUsedProfileIndex = g_settings.m_iLastLoadedProfileIndex;
     g_application.StopPlaying();
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && musicScan->IsScanning())
@@ -1016,7 +1019,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
 
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
-    g_settings.LoadProfile(0); // login screen always runs as default user
+    g_settings.LoadMasterForLogin();
     g_passwordManager.bMasterUser = false;
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
     g_application.StartEventServer(); // event server could be needed in some situations
@@ -1049,13 +1052,12 @@ int CBuiltins::Execute(const CStdString& execString)
     if (params[0].Equals("video"))
     {
       CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      VIDEO::SScanSettings settings;
       if (scanner)
       {
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-          CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",ScraperPtr(),settings);
+          CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "");
       }
     }
   }
@@ -1220,7 +1222,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("control.message") && params.size() >= 2)
   {
     int controlID = atoi(params[0].c_str());
-    int windowID = (params.size() == 3) ? CButtonTranslator::TranslateWindowString(params[2].c_str()) : g_windowManager.GetActiveWindow();
+    int windowID = (params.size() == 3) ? CButtonTranslator::TranslateWindow(params[2]) : g_windowManager.GetActiveWindow();
     if (params[1] == "moveup")
       g_windowManager.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
     else if (params[1] == "movedown")
@@ -1237,7 +1239,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (params.size() == 2)
     {
       // have a window - convert it
-      int windowID = CButtonTranslator::TranslateWindowString(params[0].c_str());
+      int windowID = CButtonTranslator::TranslateWindow(params[0]);
       CGUIMessage message(GUI_MSG_CLICKED, atoi(params[1].c_str()), windowID);
       g_windowManager.SendMessage(message);
     }
@@ -1253,7 +1255,7 @@ int CBuiltins::Execute(const CStdString& execString)
     int actionID;
     if (CButtonTranslator::TranslateActionString(params[0].c_str(), actionID))
     {
-      int windowID = params.size() == 2 ? CButtonTranslator::TranslateWindowString(params[1].c_str()) : WINDOW_INVALID;
+      int windowID = params.size() == 2 ? CButtonTranslator::TranslateWindow(params[1]) : WINDOW_INVALID;
       g_application.getApplicationMessenger().SendAction(CAction(actionID), windowID);
     }
   }
@@ -1283,6 +1285,17 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     g_RemoteControl.setUsed(true);
     g_RemoteControl.Initialize();
+  }
+  else if (execute.Equals("lirc.send"))
+  {
+    CStdString command;
+    for (int i = 0; i < (int)params.size(); i++)
+    {
+      command += params[i];
+      if (i < (int)params.size() - 1)
+        command += ' ';
+    }
+    g_RemoteControl.AddSendCommand(command);
   }
 #endif
 #ifdef HAS_LCD

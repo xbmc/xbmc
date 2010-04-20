@@ -21,13 +21,15 @@
 
 #include "system.h"
 #include "GUIWindowScreensaver.h"
-#include "utils/AddonManager.h"
+#include "addons/AddonManager.h"
 #include "Application.h"
 #include "GUIPassword.h"
 #include "GUISettings.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include "utils/SingleLock.h"
+
+using namespace ADDON;
 
 CGUIWindowScreensaver::CGUIWindowScreensaver(void)
     : CGUIWindow(WINDOW_SCREENSAVER, "")
@@ -86,10 +88,10 @@ bool CGUIWindowScreensaver::OnAction(const CAction &action)
 }
 
 // called when the mouse is moved/clicked etc. etc.
-bool CGUIWindowScreensaver::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+EVENT_RESULT CGUIWindowScreensaver::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   g_windowManager.PreviousWindow();
-  return true;
+  return EVENT_RESULT_HANDLED;
 }
 
 bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
@@ -130,8 +132,8 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 
       m_addon.reset();
       // Setup new screensaver instance
-      ADDON::AddonPtr addon;
-      if (!ADDON::CAddonMgr::Get()->GetAddon(g_guiSettings.GetString("screensaver.mode"), addon, ADDON::ADDON_SCREENSAVER))
+      AddonPtr addon;
+      if (!CAddonMgr::Get()->GetAddon(g_guiSettings.GetString("screensaver.mode"), addon, ADDON_SCREENSAVER))
         return false;
 
       m_addon = boost::dynamic_pointer_cast<CScreenSaver>(addon);

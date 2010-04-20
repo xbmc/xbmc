@@ -27,7 +27,7 @@
 class CGUIViewStateWindowVideo : public CGUIViewState
 {
 public:
-  CGUIViewStateWindowVideo(const CFileItemList& items) : CGUIViewState(items, CONTENT_MOVIES) {}
+  CGUIViewStateWindowVideo(const CFileItemList& items) : CGUIViewState(items, CONTENT_VIDEO) {}
 
 protected:
   virtual CStdString GetLockType();

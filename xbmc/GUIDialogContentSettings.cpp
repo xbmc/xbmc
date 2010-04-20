@@ -24,7 +24,8 @@
 #include "GUIDialogOK.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
-#include "utils/IAddon.h"
+#include "addons/IAddon.h"
+#include "Application.h"
 #include "FileItem.h"
 #include "VideoDatabase.h"
 #include "VideoInfoScanner.h"
@@ -81,7 +82,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       AddonPtr last = m_scraper;
       m_scraper = m_scrapers[m_content][iSelected];
 
-      if (!last && m_scraper)
+      if (m_scraper != last)
         SetupPage();
 
       m_bNeedSave = m_scraper != last;
@@ -115,7 +116,7 @@ void CGUIDialogContentSettings::SetupPage()
   {
     FillListControl();
     SET_CONTROL_VISIBLE(CONTROL_SCRAPER_LIST);
-    if (m_scraper)
+    if (m_scraper && m_scraper->Enabled())
     {
       m_bShowScanSettings = true;
       if (m_scraper->Supports(m_content) && m_scraper->HasSettings())
@@ -249,8 +250,7 @@ void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
 
   AddonPtr addon;
   CStdString defaultID;
-  CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, content);
-  if (addon)
+  if (CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, content))
     defaultID = addon->ID();
 
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
@@ -343,8 +343,7 @@ bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory,
 {
   CVideoDatabase database;
   database.Open();
-  int iFound;
-  database.GetScraperForPath(strDirectory,scraper,settings, iFound);
+  scraper = database.GetScraperForPath(strDirectory, settings);
   bool bResult = Show(scraper,settings,bRunScan);
   if (bResult)
     database.SetScraperForPath(strDirectory,scraper,settings);
@@ -373,7 +372,11 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
     dialog->m_content = scraper->Content();
     dialog->m_origContent = dialog->m_content;
     dialog->m_scraper = scraper;
+    // toast selected but disabled scrapers
+    if (!scraper->Enabled())
+      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24023), scraper->Name(), 2000, true);
   }
+
   dialog->m_bRunScan = bRunScan;
   dialog->m_bScanRecursive = (settings.recurse > 0 && !settings.parent_name) || (settings.recurse > 1 && settings.parent_name);
   dialog->m_bUseDirNames   = settings.parent_name;

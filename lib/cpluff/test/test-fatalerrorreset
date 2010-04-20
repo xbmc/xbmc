@@ -1,0 +1,10 @@
+#! /bin/sh
+
+# Copyright 2007 Johannes Lehtinen
+# This shell script is free software; Johannes Lehtinen gives unlimited
+# permission to copy, distribute and modify it.
+
+set -e
+
+trap "" SIGABRT
+! ./testsuite fatalerrorreset 2> /dev/null

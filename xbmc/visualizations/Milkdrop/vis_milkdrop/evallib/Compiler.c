@@ -141,7 +141,9 @@ functionType fnTable[27] = {{ "sin",   _asm_sin,   1 },
 //---------------------------------------------------------------------------------------------------------------
 void *realAddress(void *fn)
 {
-#ifdef _DEBUG
+#if defined(_DEBUG) && 0
+  // if this ever is needed, it should check that, the the data
+  // is of the expected jump format before assuming it is so
 	// Debug Mode
 	char *ptr = (char *)fn;
 	ptr += (*(int *)((ptr+1))+5);

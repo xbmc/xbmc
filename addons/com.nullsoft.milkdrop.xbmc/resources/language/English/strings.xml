@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Automatic Blend Time</string>
+    <string id="30001">Time Between Presets</string>
+    <string id="30002">Additional Random Time</string>
+    <string id="30003">Enable Anisotropic Filtering</string>
+    <string id="30004">Enable Hard Cuts</string>
+    <string id="30005">Loudness Threshold For Hard Cuts</string>
+    <string id="30006">Average Time Between Hard Cuts</string>
+    <string id="30007">Maximum Refresh Rate</string>
+    <string id="30008">Enable Stereo 3D</string>
+    <string id="30009">Preset Pack</string>
+</strings>

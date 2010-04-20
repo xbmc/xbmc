@@ -16,6 +16,7 @@ class CVDPAU;
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
+namespace VAAPI   { struct CHolder; }
 
 #define NUM_BUFFERS 3
 
@@ -69,6 +70,7 @@ enum RenderMethod
   RENDER_SW=0x04,
   RENDER_VDPAU=0x08,
   RENDER_POT=0x10,
+  RENDER_VAAPI=0x20,
 };
 
 enum RenderQuality
@@ -119,6 +121,9 @@ public:
 #ifdef HAVE_LIBVDPAU
   virtual void         AddProcessor(CVDPAU* vdpau);
 #endif
+#ifdef HAVE_LIBVA
+  virtual void         AddProcessor(VAAPI::CHolder& holder);
+#endif
 
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
@@ -143,18 +148,21 @@ protected:
   void UpdateVideoFilter();
 
   // textures
-  void (CLinuxRendererGL::*m_textureLoad)(int source);
+  void (CLinuxRendererGL::*m_textureUpload)(int index);
   void (CLinuxRendererGL::*m_textureDelete)(int index);
-  bool (CLinuxRendererGL::*m_textureCreate)(int index, bool clear);
+  bool (CLinuxRendererGL::*m_textureCreate)(int index);
 
-  void LoadYV12Textures(int source);
+  void UploadYV12Texture(int index);
   void DeleteYV12Texture(int index);
-  void ClearYV12Texture(int index);
-  bool CreateYV12Texture(int index, bool clear = true);
+  bool CreateYV12Texture(int index);
 
-  void LoadNV12Textures(int source);
+  void UploadNV12Texture(int index);
   void DeleteNV12Texture(int index);
-  bool CreateNV12Texture(int index, bool clear = true);
+  bool CreateNV12Texture(int index);
+  
+  void UploadVAAPITexture(int index);
+  void DeleteVAAPITexture(int index);
+  bool CreateVAAPITexture(int index);
 
   void CalculateTextureSourceRects(int source, int num_planes);
 
@@ -163,6 +171,7 @@ protected:
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
   void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
   void RenderVDPAU(int renderBuffer, int field);      // render using vdpau hardware
+  void RenderVAAPI(int renderBuffer, int field);      // render using vdpau hardware
 
   CFrameBufferObject m_fbo;
 
@@ -211,6 +220,9 @@ protected:
 
   struct YUVBUFFER
   {
+    YUVBUFFER();
+   ~YUVBUFFER();
+
     YUVFIELDS fields;
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
@@ -218,6 +230,9 @@ protected:
 
 #ifdef HAVE_LIBVDPAU
     CVDPAU*   vdpau;
+#endif
+#ifdef HAVE_LIBVA
+    VAAPI::CHolder& vaapi;
 #endif
   };
 
@@ -253,7 +268,7 @@ protected:
   bool m_pboused;
 
   bool  m_nonLinStretch;
-  float m_customPixelRatio;
+  float m_pixelRatio;
 };
 
 

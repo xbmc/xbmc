@@ -40,8 +40,6 @@
 
 #define MAX_PES_PAYLOAD 200*1024
 
-typedef struct PESContext PESContext;
-
 enum MpegTSFilterType {
     MPEGTS_PES,
     MPEGTS_SECTION,
@@ -140,7 +138,7 @@ enum MpegTSState {
 #define PES_HEADER_SIZE 9
 #define MAX_PES_HEADER_SIZE (9 + 255)
 
-struct PESContext {
+typedef struct PESContext {
     int pid;
     int pcr_pid; /**< if -1 then all packets containing PCR are considered */
     int stream_type;
@@ -158,7 +156,7 @@ struct PESContext {
     int64_t ts_packet_pos; /**< position of first TS packet of this PES packet */
     uint8_t header[MAX_PES_HEADER_SIZE];
     uint8_t *buffer;
-};
+} PESContext;
 
 extern AVInputFormat mpegts_demuxer;
 
@@ -943,7 +941,7 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
 
         add_pid_to_pmt(ts, h->id, pid);
 
-        av_program_add_stream_index(ts->stream, h->id, st->index);
+        ff_program_add_stream_index(ts->stream, h->id, st->index);
 
         desc_list_len = get16(&p, p_end) & 0xfff;
         if (desc_list_len < 0)
@@ -1008,7 +1006,7 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
             p = desc_end;
 
             if (prog_reg_desc == AV_RL32("HDMV") && stream_type == 0x83 && pes->sub_st) {
-                av_program_add_stream_index(ts->stream, h->id, pes->sub_st->index);
+                ff_program_add_stream_index(ts->stream, h->id, pes->sub_st->index);
                 pes->sub_st->codec->codec_tag = st->codec->codec_tag;
             }
         }
@@ -1016,6 +1014,7 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
     }
     /* all parameters are there */
     mpegts_close_filter(ts, filter);
+    pes->stream->ctx_flags &= ~AVFMTCTX_NOHEADER;
 }
 
 static void pat_cb(MpegTSFilter *filter, const uint8_t *section, int section_len)
@@ -1320,7 +1319,7 @@ static int mpegts_probe(AVProbeData *p)
     else                                    return -1;
 #else
     /* only use the extension for safer guess */
-    if (match_ext(p->filename, "ts"))
+    if (av_match_ext(p->filename, "ts"))
         return AVPROBE_SCORE_MAX;
     else
         return 0;
@@ -1424,6 +1423,7 @@ static int mpegts_read_header(AVFormatContext *s,
 
     if (s->iformat == &mpegts_demuxer) {
         /* normal demux */
+        s->ctx_flags |= AVFMTCTX_NOHEADER;
 
         /* first do a scaning to get all the services */
         url_fseek(pb, pos, SEEK_SET);
@@ -1439,7 +1439,6 @@ static int mpegts_read_header(AVFormatContext *s,
 
         dprintf(ts->stream, "tuning done\n");
 
-        s->ctx_flags |= AVFMTCTX_NOHEADER;
     } else {
         AVStream *st;
         int pcr_pid, pid, nb_packets, nb_pcrs, ret, pcr_l;
@@ -1748,7 +1747,7 @@ static int read_seek(AVFormatContext *s, int stream_index, int64_t target_ts, in
 /**************************************************************/
 /* parsing functions - called from other demuxers such as RTP */
 
-MpegTSContext *mpegts_parse_open(AVFormatContext *s)
+MpegTSContext *ff_mpegts_parse_open(AVFormatContext *s)
 {
     MpegTSContext *ts;
 
@@ -1759,12 +1758,15 @@ MpegTSContext *mpegts_parse_open(AVFormatContext *s)
     ts->raw_packet_size = TS_PACKET_SIZE;
     ts->stream = s;
     ts->auto_guess = 1;
+    mpegts_open_section_filter(ts, SDT_PID, sdt_cb, ts, 1);
+    mpegts_open_section_filter(ts, PAT_PID, pat_cb, ts, 1);
+
     return ts;
 }
 
 /* return the consumed length if a packet was output, or -1 if no
    packet is output */
-int mpegts_parse_packet(MpegTSContext *ts, AVPacket *pkt,
+int ff_mpegts_parse_packet(MpegTSContext *ts, AVPacket *pkt,
                         const uint8_t *buf, int len)
 {
     int len1;
@@ -1789,7 +1791,7 @@ int mpegts_parse_packet(MpegTSContext *ts, AVPacket *pkt,
     return len1 - len;
 }
 
-void mpegts_parse_close(MpegTSContext *ts)
+void ff_mpegts_parse_close(MpegTSContext *ts)
 {
     int i;
 

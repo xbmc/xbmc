@@ -49,13 +49,13 @@ static int vaapi_mpeg2_start_frame(AVCodecContext *avctx, av_unused const uint8_
     vactx->slice_param_size = sizeof(VASliceParameterBufferMPEG2);
 
     /* Fill in VAPictureParameterBufferMPEG2 */
-    pic_param = ff_vaapi_alloc_picture(vactx, sizeof(VAPictureParameterBufferMPEG2));
+    pic_param = ff_vaapi_alloc_pic_param(vactx, sizeof(VAPictureParameterBufferMPEG2));
     if (!pic_param)
         return -1;
     pic_param->horizontal_size                                  = s->width;
     pic_param->vertical_size                                    = s->height;
-    pic_param->forward_reference_picture                        = 0xffffffff;
-    pic_param->backward_reference_picture                       = 0xffffffff;
+    pic_param->forward_reference_picture                        = VA_INVALID_ID;
+    pic_param->backward_reference_picture                       = VA_INVALID_ID;
     pic_param->picture_coding_type                              = s->pict_type;
     pic_param->f_code                                           = mpeg2_get_f_code(s);
     pic_param->picture_coding_extension.value                   = 0; /* reset all bits */
@@ -73,10 +73,10 @@ static int vaapi_mpeg2_start_frame(AVCodecContext *avctx, av_unused const uint8_
 
     switch (s->pict_type) {
     case FF_B_TYPE:
-        pic_param->backward_reference_picture = ff_vaapi_get_surface(&s->next_picture);
+        pic_param->backward_reference_picture = ff_vaapi_get_surface_id(&s->next_picture);
         // fall-through
     case FF_P_TYPE:
-        pic_param->forward_reference_picture = ff_vaapi_get_surface(&s->last_picture);
+        pic_param->forward_reference_picture = ff_vaapi_get_surface_id(&s->last_picture);
         break;
     }
 

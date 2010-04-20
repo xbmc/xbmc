@@ -4,6 +4,7 @@ BIN_DIRS=	\
 	guilib/common \
 	guilib/tinyXML \
 	xbmc \
+	xbmc/addons \
 	xbmc/cdrip \
 	xbmc/cores \
 	xbmc/cores/DllLoader \
@@ -95,6 +96,7 @@ LIB_DIRS=\
 	xbmc/lib/libid3tag \
 	xbmc/lib/libapetag \
 	xbmc/lib/libPython/linux \
+	lib/cpluff \
 	lib/libmodplug \
 	lib/xbmc-dll-symbols \
 	lib/jsoncpp/jsoncpp/src/lib_json
@@ -106,6 +108,9 @@ VIS_DIRS=\
 	xbmc/visualizations/OpenGLSpectrum \
 	xbmc/visualizations/WaveForm \
 	xbmc/visualizations/XBMCProjectM
+ifeq ($(findstring osx,$(ARCH)), osx)
+VIS_DIRS+=xbmc/visualizations/iTunes
+endif
 ifneq (@BUILD_GOOM@,1)
 VIS_DIRS+=xbmc/visualizations/Goom
 endif
@@ -255,20 +260,30 @@ xbmc/linux/linux.a: force
 	$(MAKE) -C xbmc/linux
 xbmc/posix/posix.a: force
 	$(MAKE) -C xbmc/posix
-xbmc/screensavers/screensaver.a: force
-	$(MAKE) -C xbmc/screensavers
+xbmc/addons/addons.a: force
+	$(MAKE) -C xbmc/addons
 xbmc/settings/settings.a: force
 	$(MAKE) -C xbmc/settings
 xbmc/utils/utils.a: force
 	$(MAKE) -C xbmc/utils
-xbmc/visualizations/visualization.a: force
-	$(MAKE) -C xbmc/visualizations
 xbmc/osx/osx.a: force
 	$(MAKE) -C xbmc/osx
 xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a: force
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libbdnav
 xbmc/lib/libapetag/.libs/libapetag.a: force
 	$(MAKE) -C xbmc/lib/libapetag
+lib/cpluff/libcpluff/.libs/libcpluff.a: force
+	$(MAKE) -C lib/cpluff/libcpluff
+system/libcpluff-$(ARCH).so: lib/cpluff/libcpluff/.libs/libcpluff.a
+ifeq ($(findstring osx,$(ARCH)), osx)
+  ifeq ($(ARCH), powerpc-osx)
+	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -lbundle1.o -o $@ $<
+  else
+	ld -all_load -bundle -flat_namespace -undefined suppress -arch @ARCHTYPE@ -o $@ $<
+  endif
+else
+	cp lib/cpluff/libcpluff/.libs/libcpluff.so $@
+endif
 lib/libmodplug/src/.libs/libmodplug.a: force
 	$(MAKE) -C lib/libmodplug
 system/players/paplayer/libmodplug-$(ARCH).so: lib/libmodplug/src/.libs/libmodplug.a
@@ -292,6 +307,9 @@ visualizations: exports
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
 	$(MAKE) -C xbmc/visualizations/WaveForm
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
+ifeq ($(findstring osx,$(ARCH)), osx)
+	$(MAKE) -C xbmc/visualizations/iTunes
+endif
 ifneq (@BUILD_GOOM@,1)
 ifeq ($(or $(findstring powerpc-linux,$(ARCH)),$(findstring powerpc64-linux,$(ARCH))),)
 	$(MAKE) -C xbmc/visualizations/Goom
@@ -346,7 +364,7 @@ imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
-libs: libhdhomerun libid3tag imagelib libexif python
+libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-$(ARCH).so
 externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
@@ -412,9 +430,8 @@ OBJSXBMC=	\
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/lib/libapetag/.libs/libapetag.a \
-	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
-	xbmc/visualizations/visualization.a
+	xbmc/addons/addons.a
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
 OBJSXBMC+= \
@@ -503,7 +520,7 @@ install-datas: install-scripts
 	@echo "Done!"
 	@echo "Copying system files to $(prefix)/share/xbmc"
 	@# Arch independent files
-	@find addons language media scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find addons language media scripts sounds userdata system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Skins
 	@find skin -regextype posix-extended -type f -not -iregex '.*/\.svn/.*|^skin/[^/]*/media/.*[^x][^b][^t]' -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %-75.75f\r"
 	@# Icons and links

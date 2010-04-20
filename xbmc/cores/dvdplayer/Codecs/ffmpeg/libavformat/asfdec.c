@@ -82,6 +82,7 @@ static void print_guid(const ff_asf_guid *g)
     else PRINT_IF_GUID(g, ff_asf_ext_stream_embed_stream_header);
     else PRINT_IF_GUID(g, ff_asf_ext_stream_audio_stream);
     else PRINT_IF_GUID(g, ff_asf_metadata_header);
+    else PRINT_IF_GUID(g, ff_asf_marker_header);
     else PRINT_IF_GUID(g, stream_bitrate_guid);
     else PRINT_IF_GUID(g, ff_asf_language_guid);
     else
@@ -122,9 +123,12 @@ static void get_str16(ByteIOContext *pb, char *buf, int buf_size)
 static void get_str16_nolen(ByteIOContext *pb, int len, char *buf, int buf_size)
 {
     char* q = buf;
-    for (; len > 1; len -= 2) {
+    while (len > 1) {
         uint8_t tmp;
-        PUT_UTF8(get_le16(pb), tmp, if (q - buf < buf_size - 1) *q++ = tmp;)
+        uint32_t ch;
+
+        GET_UTF16(ch, (len -= 2) >= 0 ? get_le16(pb) : 0, break;)
+        PUT_UTF8(ch, tmp, if (q - buf < buf_size - 1) *q++ = tmp;)
     }
     if (len > 0)
         url_fskip(pb, len);
@@ -154,25 +158,26 @@ static void get_tag(AVFormatContext *s, const char *key, int type, int len)
 {
     char *value;
 
-    if ((unsigned)len >= UINT_MAX)
+    if ((unsigned)len >= (UINT_MAX - 1)/2)
         return;
 
-    value = av_malloc(len+1);
+    value = av_malloc(2*len+1);
     if (!value)
         return;
 
-    if (type <= 1) {         // unicode or byte
-        get_str16_nolen(s->pb, len, value, len);
-    } else if (type <= 5) {  // boolean or DWORD or QWORD or WORD
+    if (type == 0) {         // UTF16-LE
+        get_str16_nolen(s->pb, len, value, 2*len + 1);
+    } else if (type > 1 && type <= 5) {  // boolean or DWORD or QWORD or WORD
         uint64_t num = get_value(s->pb, type);
         snprintf(value, len, "%"PRIu64, num);
     } else {
         url_fskip(s->pb, len);
+        av_freep(&value);
+        av_log(s, AV_LOG_DEBUG, "Unsupported value type %d in tag %s.\n", type, key);
         return;
     }
-    if (!strncmp(key, "WM/", 3))
-        key += 3;
-    av_metadata_set2(&s->metadata, key, value, AV_METADATA_DONT_STRDUP_VAL);
+    av_metadata_set2(&s->metadata, key, value, 0);
+    av_freep(&value);
 }
 
 static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
@@ -436,9 +441,13 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
                     char name[1024];
 
                     name_len = get_le16(pb);
+                    if (name_len%2)     // must be even, broken lavf versions wrote len-1
+                        name_len += 1;
                     get_str16_nolen(pb, name_len, name, sizeof(name));
                     value_type = get_le16(pb);
                     value_len  = get_le16(pb);
+                    if (!value_type && value_len%2)
+                        value_len += 1;
                     get_tag(s, name, value_type, value_len);
             }
         } else if (!guidcmp(&g, &ff_asf_metadata_header)) {
@@ -512,6 +521,32 @@ static int asf_read_header(AVFormatContext *s, AVFormatParameters *ap)
             get_guid(pb, &g);
             v1 = get_le32(pb);
             v2 = get_le16(pb);
+        } else if (!guidcmp(&g, &ff_asf_marker_header)) {
+            int i, count, name_len;
+            char name[1024];
+
+            get_le64(pb);            // reserved 16 bytes
+            get_le64(pb);            // ...
+            count = get_le32(pb);    // markers count
+            get_le16(pb);            // reserved 2 bytes
+            name_len = get_le16(pb); // name length
+            for(i=0;i<name_len;i++){
+                get_byte(pb); // skip the name
+            }
+
+            for(i=0;i<count;i++){
+                int64_t pres_time;
+                int name_len;
+
+                get_le64(pb);             // offset, 8 bytes
+                pres_time = get_le64(pb); // presentation time
+                get_le16(pb);             // entry length
+                get_le32(pb);             // send time
+                get_le32(pb);             // flags
+                name_len = get_le32(pb);  // name length
+                get_str16_nolen(pb, name_len * 2, name, sizeof(name));
+                ff_new_chapter(s, i, (AVRational){1, 10000000}, pres_time, AV_NOPTS_VALUE, name );
+            }
 #if 0
         } else if (!guidcmp(&g, &ff_asf_codec_comment_header)) {
             int len, v1, n, num;

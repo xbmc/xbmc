@@ -43,8 +43,8 @@
 /* @name window coefficients
  * @{
  */
-DECLARE_ALIGNED(16, extern float,  ff_aac_kbd_long_1024[1024]);
-DECLARE_ALIGNED(16, extern float,  ff_aac_kbd_short_128[128]);
+DECLARE_ALIGNED(16, extern float,  ff_aac_kbd_long_1024)[1024];
+DECLARE_ALIGNED(16, extern float,  ff_aac_kbd_short_128)[128];
 // @}
 
 /* @name number of scalefactor window bands for long and short transform windows respectively
@@ -64,6 +64,8 @@ extern const uint8_t  * const ff_aac_spectral_bits [11];
 extern const uint16_t  ff_aac_spectral_sizes[11];
 
 extern const float *ff_aac_codebook_vectors[];
+extern const float *ff_aac_codebook_vector_vals[];
+extern const uint16_t *ff_aac_codebook_vector_idx[];
 
 extern const uint16_t * const ff_swb_offset_1024[13];
 extern const uint16_t * const ff_swb_offset_128 [13];

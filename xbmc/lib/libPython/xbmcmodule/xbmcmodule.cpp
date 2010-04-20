@@ -49,6 +49,7 @@
 #include "lib/libhttpapi/XBMChttp.h"
 #include "lib/libhttpapi/HttpApi.h"
 #endif
+#include "pyjsonrpc.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"
 #include "GUIAudioManager.h"
@@ -327,6 +328,33 @@ namespace PYXBMC
 
     CUtil::URLDecode(parameter);
     return PyString_FromString(CHttpApi::MethodCall(execute, parameter).c_str());
+	}
+#endif
+
+#ifdef HAS_JSONRPC
+  // executehttpapi() method
+  PyDoc_STRVAR(executeJSONRPC__doc__,
+    "executeJSONRPC(jsonrpccommand) -- Execute an JSONRPC command.\n"
+    "\n"
+    "jsonrpccommand    : string - jsonrpc command to execute.\n"
+    "\n"
+    "List of commands - \n"
+    "\n"
+    "example:\n"
+    "  - response = xbmc.executeJSONRPC('{ \"jsonrpc\": \"2.0\", \"method\": \"JSONRPC.Introspect\", \"id\": 1 }')\n");
+
+  PyObject* XBMC_ExecuteJSONRPC(PyObject *self, PyObject *args)
+  {
+    char *cLine = NULL;
+    if (!PyArg_ParseTuple(args, (char*)"s", &cLine))
+      return NULL;
+
+    CStdString method = cLine;
+
+    CPythonTransport transport;
+    CPythonTransport::CPythonClient client;
+
+    return PyString_FromString(JSONRPC::CJSONRPC::MethodCall(method, &transport, &client).c_str());
 	}
 #endif
 
@@ -734,6 +762,46 @@ namespace PYXBMC
     return Py_BuildValue((char*)"s", strPath.c_str());
   }
 
+  // getcleanmovietitle function
+  PyDoc_STRVAR(getCleanMovieTitle__doc__,
+    "getCleanMovieTitle(path[, usefoldername]) -- Returns a clean movie title and year string if available.\n"
+    "\n"
+    "path           : string or unicode - String to clean\n"
+    "bool           : [opt] bool - use folder names (defaults to false)\n"
+    "\n"
+    "example:\n"
+    "  - title, year = xbmc.getCleanMovieTitle('/path/to/moviefolder/test.avi', True)\n");
+
+  PyObject* XBMC_GetCleanMovieTitle(PyObject *self, PyObject *args, PyObject *kwds)
+  {
+    static const char *keywords[] = { "path", "usefoldername", NULL };
+    PyObject *pObjectText;
+    char bUseFolderName = false;
+    // parse arguments to constructor
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"O|b",
+      (char**)keywords,
+      &pObjectText,
+      &bUseFolderName
+      ))
+    {
+      return NULL;
+    };
+
+    CStdString strPath;
+    if (!PyXBMCGetUnicodeString(strPath, pObjectText, 1)) return NULL;
+
+    CFileItem item(strPath, false);
+    CStdString strName = item.GetMovieName(bUseFolderName);
+
+    CStdString strTitle, strTitleAndYear, strYear;
+    CUtil::CleanString(strName, strTitle, strTitleAndYear, strYear, bUseFolderName);
+
+    return Py_BuildValue((char*)"s,s", strTitle.c_str(), strYear.c_str());
+  }
+
   // validatePath function
   PyDoc_STRVAR(validatePath__doc__,
     "validatePath(path) -- Returns the validated path.\n"
@@ -754,7 +822,7 @@ namespace PYXBMC
     CStdString strText;
     if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
-    return Py_BuildValue((char*)"s", CUtil::ValidatePath(strText).c_str());
+    return Py_BuildValue((char*)"s", CUtil::ValidatePath(strText, true).c_str());
   }
 
   // getRegion function
@@ -908,6 +976,9 @@ namespace PYXBMC
 #ifdef HAS_HTTPAPI
     {(char*)"executehttpapi", (PyCFunction)XBMC_ExecuteHttpApi, METH_VARARGS, executeHttpApi__doc__},
 #endif
+#ifdef HAS_JSONRPC
+    {(char*)"executeJSONRPC", (PyCFunction)XBMC_ExecuteJSONRPC, METH_VARARGS, executeJSONRPC__doc__},
+#endif
     {(char*)"getInfoLabel", (PyCFunction)XBMC_GetInfoLabel, METH_VARARGS, getInfoLabel__doc__},
     {(char*)"getInfoImage", (PyCFunction)XBMC_GetInfoImage, METH_VARARGS, getInfoImage__doc__},
     {(char*)"getCondVisibility", (PyCFunction)XBMC_GetCondVisibility, METH_VARARGS, getCondVisibility__doc__},
@@ -924,6 +995,8 @@ namespace PYXBMC
 
     {(char*)"getRegion", (PyCFunction)XBMC_GetRegion, METH_VARARGS|METH_KEYWORDS, getRegion__doc__},
     {(char*)"getSupportedMedia", (PyCFunction)XBMC_GetSupportedMedia, METH_VARARGS|METH_KEYWORDS, getSupportedMedia__doc__},
+
+    {(char*)"getCleanMovieTitle", (PyCFunction)XBMC_GetCleanMovieTitle, METH_VARARGS|METH_KEYWORDS, getCleanMovieTitle__doc__},
 
     {(char*)"skinHasImage", (PyCFunction)XBMC_SkinHasImage, METH_VARARGS|METH_KEYWORDS, skinHasImage__doc__},
     {NULL, NULL, 0, NULL}

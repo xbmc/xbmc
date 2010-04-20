@@ -23,13 +23,18 @@ extern "C" {
   #endif
   /* libavformat/riff.h is not a public header, so include it here */
   #include <xbmc/cores/dvdplayer/Codecs/ffmpeg/libavformat/riff.h>
-  /* av_read_frame_flush() is defined for us in DllAvFormat.c */
+  /* av_read_frame_flush() is defined for us in lib/xbmc-dll-symbols/DllAvFormat.c */
   void av_read_frame_flush(AVFormatContext *s);
 #else
   #include "libavformat/avformat.h"
   #include "libavformat/riff.h"
 #endif
 }
+
+/* Flag introduced without a version bump */
+#ifndef AVSEEK_FORCE
+#define AVSEEK_FORCE 0x20000
+#endif
 
 typedef int64_t offset_t;
 
@@ -226,7 +231,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_read_frame)
     RESOLVE_METHOD(av_read_play)
     RESOLVE_METHOD(av_read_pause)
-    RESOLVE_METHOD(av_read_frame_flush)
+    RESOLVE_METHOD_RENAME(ff_read_frame_flush, av_read_frame_flush)
     RESOLVE_METHOD(av_seek_frame)
     RESOLVE_METHOD_RENAME(av_find_stream_info, av_find_stream_info_dont_call)
     RESOLVE_METHOD(av_open_input_file)

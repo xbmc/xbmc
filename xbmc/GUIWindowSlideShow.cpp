@@ -273,6 +273,11 @@ void CGUIWindowSlideShow::Render()
   int iSlides = m_slides->Size();
   if (!iSlides) return ;
 
+  if (m_iNextSlide < 0 || m_iNextSlide >= m_slides->Size())
+    m_iNextSlide = 0;
+  if (m_iCurrentSlide < 0 || m_iCurrentSlide >= m_slides->Size())
+    m_iCurrentSlide = 0;
+
   // Create our background loader if necessary
   if (!m_pBackgroundLoader)
   {
@@ -825,7 +830,7 @@ void CGUIWindowSlideShow::AddItems(const CStdString &strPath, path_set *recursiv
 
   // fetch directory and sort accordingly
   CFileItemList items;
-  if (!CDirectory::GetDirectory(strPath, items, g_settings.m_pictureExtensions))
+  if (!CDirectory::GetDirectory(strPath, items, g_settings.m_pictureExtensions,false,false,DIR_CACHE_ONCE,true,true))
     return;
   items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 

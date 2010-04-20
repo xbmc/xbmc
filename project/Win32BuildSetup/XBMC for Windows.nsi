@@ -118,16 +118,8 @@ Section "XBMC" SecXBMC
   ;Turn on overwrite for rest of install
   SetOverwrite on
   
-  SetOutPath "$INSTDIR\visualisations"
-  !if "${xbmc_target}" == "gl"
-    File "${xbmc_root}\Xbmc\visualisations\*_win32.vis"
-    SetOutPath "$INSTDIR\visualisations\projectM"
-    File /nonfatal /r "${xbmc_root}\Xbmc\visualisations\projectM\*.*"
-  !else
-    File "${xbmc_root}\Xbmc\visualisations\*_win32dx.vis"
-    SetOutPath "$INSTDIR\visualisations\Milkdrop"
-    File /nonfatal /r "${xbmc_root}\Xbmc\visualisations\Milkdrop\*.*"
-  !endif
+  SetOutPath "$INSTDIR\addons"
+  File /r "${xbmc_root}\Xbmc\addons\*.*"
   SetOutPath "$INSTDIR\web"
   File /r "${xbmc_root}\Xbmc\web\*.*"
 
@@ -337,6 +329,7 @@ Section "Uninstall"
   RMDir /r "$INSTDIR\sounds"
   RMDir /r "$INSTDIR\system"
   RMDir /r "$INSTDIR\visualisations"
+  RMDir /r "$INSTDIR\addons"
   RMDir /r "$INSTDIR\web"
   RMDir /r "$INSTDIR\cache"
 

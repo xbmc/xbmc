@@ -89,17 +89,25 @@ bool CFanart::Unpack()
   return true;
 }
 
-const CStdString CFanart::GetImageURL() const
+CStdString CFanart::GetImageURL(unsigned int index) const
 {
-  if (m_fanart.size() == 0)
+  if (index >= m_fanart.size())
     return "";
-
-  CStdString result;
+  
   if (m_url.IsEmpty())
-    result = m_fanart[0].strImage;
-  else
-    result.Format("%s%s", m_url.c_str(), m_fanart[0].strImage.c_str());
-  return result;
+    return m_fanart[index].strImage;
+  return CUtil::AddFileToFolder(m_url, m_fanart[index].strImage);
+}
+
+CStdString CFanart::GetPreviewURL(unsigned int index) const
+{
+  if (index >= m_fanart.size())
+    return "";
+  
+  CStdString thumb = !m_fanart[index].strPreview.IsEmpty() ? m_fanart[index].strPreview : m_fanart[index].strImage;
+  if (m_url.IsEmpty())
+    return thumb;
+  return CUtil::AddFileToFolder(m_url, thumb);
 }
 
 const CStdString CFanart::GetColor(unsigned int index) const

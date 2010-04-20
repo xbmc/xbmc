@@ -59,5 +59,6 @@ protected:
   virtual void ValidateOffset();
   virtual void SelectItem(int item);
   virtual bool SelectItemFromPoint(const CPoint &point);
+  virtual int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const;
 };
 

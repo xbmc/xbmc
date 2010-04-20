@@ -26,6 +26,7 @@
   <string id="31030">完整列表</string>
   <string id="31031">图片缩略图</string>
   <string id="31032">图片卷动</string>
+  <string id="31033">信息</string>
 
   <!-- Extra labels -->
   <string id="31040">正在播放</string>
@@ -59,8 +60,8 @@
   <string id="31106">其他选项</string>
   <string id="31107"></string>
   <string id="31108">隐藏主菜单按钮</string>
-  <string id="31109">主界面背景</string>
-  <string id="31110">编辑主界面背景</string>
+  <string id="31109">媒体背景</string>
+  <string id="31110">编辑媒体背景</string>
   <string id="31111">隐藏</string>
   <string id="31112">选项</string>
   <string id="31113">单个图片</string>

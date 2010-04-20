@@ -96,7 +96,7 @@ public:
   CGUIListItemLayout *GetFocusedLayout();
 
   void FreeIcons();
-  void FreeMemory();
+  void FreeMemory(bool immediately = false);
   void SetInvalid();
 
   bool m_bIsFolder;     ///< is item a folder or a file

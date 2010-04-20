@@ -34,31 +34,6 @@
 
 using namespace std;
 
-static int doubleVisAttributes[] =
-{
-  GLX_RENDER_TYPE, GLX_RGBA_BIT,
-  GLX_RED_SIZE, 8,
-  GLX_GREEN_SIZE, 8,
-  GLX_BLUE_SIZE, 8,
-  GLX_ALPHA_SIZE, 8,
-  GLX_DEPTH_SIZE, 8,
-  GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-  GLX_DOUBLEBUFFER, True,
-  None
-};
-
-static int doubleVisAttributesOld[] =
-{
-  GLX_RGBA,
-  GLX_RED_SIZE, 8,
-  GLX_GREEN_SIZE, 8,
-  GLX_BLUE_SIZE, 8,
-  GLX_ALPHA_SIZE, 8,
-  GLX_DEPTH_SIZE, 8,
-  GLX_DOUBLEBUFFER,
-  None
-};
-
 CWinSystemX11::CWinSystemX11() : CWinSystemBase()
 {
   m_eWindowSystem = WINDOW_SYSTEM_X11;
@@ -269,6 +244,26 @@ void CWinSystemX11::UpdateResolutions()
 
 }
 
+bool CWinSystemX11::IsSuitableVisual(XVisualInfo *vInfo)
+{
+  int value;
+  if (glXGetConfig(m_dpy, vInfo, GLX_RGBA, &value) || !value)
+    return false;
+  if (glXGetConfig(m_dpy, vInfo, GLX_DOUBLEBUFFER, &value) || !value)
+    return false;
+  if (glXGetConfig(m_dpy, vInfo, GLX_RED_SIZE, &value) || value < 8)
+    return false;
+  if (glXGetConfig(m_dpy, vInfo, GLX_GREEN_SIZE, &value) || value < 8)
+    return false;
+  if (glXGetConfig(m_dpy, vInfo, GLX_BLUE_SIZE, &value) || value < 8)
+    return false;
+  if (glXGetConfig(m_dpy, vInfo, GLX_ALPHA_SIZE, &value) || value < 8)
+    return false;
+  if (glXGetConfig(m_dpy, vInfo, GLX_DEPTH_SIZE, &value) || value < 8)
+    return false;
+  return true;
+}
+
 bool CWinSystemX11::RefreshGlxContext()
 {
   bool retVal = false;
@@ -288,46 +283,60 @@ bool CWinSystemX11::RefreshGlxContext()
     return true;
   }
 
-  GLXFBConfig *fbConfigs  = NULL;
+  XVisualInfo vMask;
+  XVisualInfo *visuals;
   XVisualInfo *vInfo      = NULL;
-  int availableFBs        = 0;
+  int availableVisuals    = 0;
+  vMask.screen = DefaultScreen(m_dpy);
+  XWindowAttributes winAttr;
   m_glWindow = info.info.x11.window;
   m_wmWindow = info.info.x11.wmwindow;
 
-  int major, minor;
-  if(!glXQueryVersion(m_dpy, &major, &minor))
-    return false;
+  /* Assume a depth of 24 in case the below calls to XGetWindowAttributes()
+     or XGetVisualInfo() fail. That shouldn't happen unless something is
+     fatally wrong, but lets prepare for everything. */
+  vMask.depth = 24;
 
-  if(major > 1 || (major == 1 && minor >= 3))
+  if (XGetWindowAttributes(m_dpy, m_glWindow, &winAttr))
   {
-    // query compatible framebuffers based on double buffered attributes
-    if (!(fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &availableFBs)))
+    vMask.visualid = XVisualIDFromVisual(winAttr.visual);
+    vInfo = XGetVisualInfo(m_dpy, VisualScreenMask | VisualIDMask, &vMask, &availableVisuals);
+    if (!vInfo)
+      CLog::Log(LOGWARNING, "Failed to get VisualInfo of SDL visual 0x%x", (unsigned) vInfo->visualid);
+    else if(!IsSuitableVisual(vInfo))
     {
-      CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
-      return false;
-    }
-
-    for (int i = 0; i < availableFBs; i++)
-    {
-      // obtain the xvisual from the first compatible framebuffer
-      vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
-      if (vInfo)
-      {
-        if (vInfo->depth == 24)
-        {
-          CLog::Log(LOGNOTICE, "Using fbConfig[%i]",i);
-          break;
-        }
-        XFree(vInfo);
-        vInfo = NULL;
-      }
+      CLog::Log(LOGWARNING, "Visual 0x%x of the SDL window is not suitable, looking for another one...",
+                (unsigned) vInfo->visualid);
+      vMask.depth = vInfo->depth;
+      XFree(vInfo);
+      vInfo = NULL;
     }
   }
   else
-    vInfo = glXChooseVisual(m_dpy, DefaultScreen(m_dpy), doubleVisAttributesOld);
+    CLog::Log(LOGWARNING, "Failed to get SDL window attributes");
+
+  /* As per glXMakeCurrent documentation, we have to use the same visual as
+     m_glWindow. Since that was not suitable for use, we try to use another
+     one with the same depth and hope that the used implementation is less
+     strict than the documentation. */
+  if (!vInfo)
+  {
+    visuals = XGetVisualInfo(m_dpy, VisualScreenMask | VisualDepthMask, &vMask, &availableVisuals);
+    for (int i = 0; i < availableVisuals; i++)
+    {
+      if (IsSuitableVisual(&visuals[i]))
+      {
+        vMask.visualid = visuals[i].visualid;
+        vInfo = XGetVisualInfo(m_dpy, VisualScreenMask | VisualIDMask, &vMask, &availableVisuals);
+        break;
+      }
+    }
+    XFree(visuals);
+  }
 
   if (vInfo)
   {
+    CLog::Log(LOGNOTICE, "Using visual 0x%x", (unsigned) vInfo->visualid);
     if (m_glContext)
       glXDestroyContext(m_dpy, m_glContext);
 
@@ -343,7 +352,6 @@ bool CWinSystemX11::RefreshGlxContext()
   }
   else
     CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
-  XFree(fbConfigs);
 
   return retVal;
 }

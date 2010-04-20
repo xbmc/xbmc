@@ -120,13 +120,7 @@ void CAdvancedSettings::Initialize()
 
   m_songInfoDuration = 10;
   m_busyDialogDelay = 2000;
-#ifdef _DEBUG
-  m_logLevel     = LOG_LEVEL_DEBUG;
-  m_logLevelHint = LOG_LEVEL_DEBUG;
-#else
-  m_logLevel     = LOG_LEVEL_NORMAL;
-  m_logLevelHint = LOG_LEVEL_NORMAL;
-#endif
+
   m_cddbAddress = "freedb.freedb.org";
 
   m_handleMounting = g_application.IsStandAlone();
@@ -162,6 +156,8 @@ void CAdvancedSettings::Initialize()
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ \\[\\(-]([0-9]+)x([0-9]+)([^\\\\/]*)$"));
   // foo.103*, 103 foo
   m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\\\/\\._ -]([0-9]+)([0-9][0-9])([\\._ -][^\\\\/]*)$"));
+  // Part I, Pt.VI
+  m_tvshowStackRegExps.push_back(TVShowRegexp(false,"[\\/._ -]p(?:ar)?t[_. -]()([ivx]+)([._ -][^\\/]*)$"));
 
   m_tvshowMultiPartStackRegExp = "^[-_EeXx]+([0-9]+)";
 

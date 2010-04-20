@@ -81,11 +81,11 @@ void CGUIRadioButtonControl::AllocResources()
   SetPosition(m_posX, m_posY);
 }
 
-void CGUIRadioButtonControl::FreeResources()
+void CGUIRadioButtonControl::FreeResources(bool immediately)
 {
-  CGUIButtonControl::FreeResources();
-  m_imgRadioOn.FreeResources();
-  m_imgRadioOff.FreeResources();
+  CGUIButtonControl::FreeResources(immediately);
+  m_imgRadioOn.FreeResources(immediately);
+  m_imgRadioOff.FreeResources(immediately);
 }
 
 void CGUIRadioButtonControl::DynamicResourceAlloc(bool bOnOff)

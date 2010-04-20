@@ -46,7 +46,7 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;&quot;..\..\lib\libcurl-mingw32\include&quot;;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;&quot;..\..\lib\libcurl-mingw32\include&quot;;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL"
 				StringPooling="false"
 				MinimalRebuild="false"
@@ -82,7 +82,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
-				DelayLoadDLLs="dwmapi.dll;libmicrohttpd-5.dll"
+				DelayLoadDLLs="dwmapi.dll;libmicrohttpd-5.dll;libssh.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
 				SubSystem="2"
@@ -143,7 +143,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;&quot;..\..\lib\libcurl-mingw32\include&quot;;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;&quot;..\..\lib\libcurl-mingw32\include&quot;;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;Py_NO_ENABLE_SHARED;D3D_DEBUG_INFO"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -176,7 +176,7 @@
 				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
 				ModuleDefinitionFile=""
-				DelayLoadDLLs="dwmapi.dll;libmicrohttpd-5.dll"
+				DelayLoadDLLs="dwmapi.dll;libmicrohttpd-5.dll;libssh.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
 				SubSystem="2"
@@ -239,7 +239,7 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;&quot;..\..\lib\libcurl-mingw32\include&quot;;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;&quot;..\..\lib\libcurl-mingw32\include&quot;;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX"
 				StringPooling="false"
 				MinimalRebuild="false"
@@ -275,7 +275,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\libSDL-WIN32\lib"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
-				DelayLoadDLLs="dwmapi.dll;libmicrohttpd-5.dll"
+				DelayLoadDLLs="dwmapi.dll;libmicrohttpd-5.dll;libssh.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
 				SubSystem="2"
@@ -336,7 +336,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;&quot;..\..\lib\libcurl-mingw32\include&quot;;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\xbmc\lib\libglew;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include;..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;&quot;..\..\lib\libcurl-mingw32\include&quot;;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include;..\..\lib\libiconv\include;..\..\lib\libcdio\include;..\..\lib;..\..\lib\jsoncpp\jsoncpp\include;..\..\lib\libmicrohttpd_win32\include;..\..\lib\libssh_win32\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;Py_NO_ENABLE_SHARED"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -370,7 +370,7 @@
 				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
 				ModuleDefinitionFile=""
-				DelayLoadDLLs="dwmapi.dll;libmicrohttpd-5.dll"
+				DelayLoadDLLs="dwmapi.dll;libmicrohttpd-5.dll;libssh.dll"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
 				SubSystem="2"
@@ -2079,30 +2079,6 @@
 				</Filter>
 			</Filter>
 			<Filter
-				Name="Visualisations"
-				>
-				<File
-					RelativePath="..\..\xbmc\visualizations\DllVisualisation.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\visualizations\fft.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\visualizations\fft.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\visualizations\Visualisation.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\visualizations\Visualisation.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="VideoRenderers"
 				>
 				<File
@@ -2209,26 +2185,6 @@
 						>
 					</File>
 				</Filter>
-			</Filter>
-			<Filter
-				Name="Screensavers"
-				>
-				<File
-					RelativePath="..\..\xbmc\screensavers\DllScreenSaver.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\screensavers\ScreenSaver.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\screensavers\ScreenSaver.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\screensavers\xbmc_scr.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="AudioRenderers"
@@ -2387,14 +2343,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowTestPatternGL.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\Scraper.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\Scraper.h"
 					>
 				</File>
 				<File
@@ -2845,26 +2793,6 @@
 			<Filter
 				Name="Utils"
 				>
-				<File
-					RelativePath="..\..\xbmc\utils\Addon.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\Addon.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\AddonDll.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\AddonManager.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\AddonManager.h"
-					>
-				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\AlarmClock.cpp"
 					>
@@ -3382,6 +3310,22 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\TextureCache.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\TextureCache.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\TextureDatabase.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\TextureDatabase.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\Thread.cpp"
 					>
 				</File>
@@ -3465,6 +3409,14 @@
 			<Filter
 				Name="Database"
 				>
+				<File
+					RelativePath="..\..\xbmc\AddonDatabase.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\AddonDatabase.h"
+					>
+				</File>
 				<File
 					RelativePath="..\..\xbmc\Album.cpp"
 					>
@@ -3806,6 +3758,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIViewStateAddonBrowser.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateAddonBrowser.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIViewStatePictures.cpp"
 					>
 				</File>
@@ -4006,30 +3966,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\MythDirectory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\MythDirectory.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\MythFile.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\MythFile.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\MythSession.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\MythSession.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\FileSystem\DAAPDirectory.cpp"
 					>
 				</File>
@@ -4183,6 +4119,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\FileRTV.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileSFTP.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\FileSFTP.h"
 					>
 				</File>
 				<File
@@ -4346,6 +4290,30 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\FileSystem\MythDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\MythDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\MythFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\MythFile.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\MythSession.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\MythSession.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\FileSystem\NptXbmcFile.cpp"
 					>
 				</File>
@@ -4435,6 +4403,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\SAPFile.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SFTPDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\SFTPDirectory.h"
 					>
 				</File>
 				<File
@@ -5478,6 +5454,94 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="Addons"
+				>
+				<File
+					RelativePath="..\..\xbmc\addons\Addon.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Addon.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonDll.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonStatusHandler.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\AddonStatusHandler.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\DllAddon.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\DllScreenSaver.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\DllVisualisation.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\fft.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\fft.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\IAddon.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Repository.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Repository.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Scraper.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Scraper.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\ScreenSaver.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\ScreenSaver.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Visualisation.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Visualisation.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -6130,6 +6194,10 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlradiobutton.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\controlslider.cpp"
 						>
 					</File>
 					<File
@@ -6790,6 +6858,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\lib\libjsonrpc\AVPlaylistOperations.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libjsonrpc\AVPlaylistOperations.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\lib\libjsonrpc\FileItemHandler.cpp"
 					>
 				</File>
@@ -6803,14 +6879,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libjsonrpc\FileOperations.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libjsonrpc\GUIOperations.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libjsonrpc\GUIOperations.h"
 					>
 				</File>
 				<File

@@ -136,7 +136,7 @@ enum cavs_mv_loc {
   MV_BWD_X3
 };
 
-DECLARE_ALIGNED_8(typedef, struct) {
+DECLARE_ALIGNED(8, typedef, struct) {
     int16_t x;
     int16_t y;
     int16_t dist;
@@ -160,6 +160,7 @@ typedef struct {
     int aspect_ratio;
     int mb_width, mb_height;
     int pic_type;
+    int stream_revision; ///<0 for samples from 2006, 1 for rm52j encoder
     int progressive;
     int pic_structure;
     int skip_mode_flag; ///< select between skip_count or one skip_flag per MB
@@ -247,8 +248,13 @@ static inline void modify_pred(const int_fast8_t *mod_table, int *mode) {
 }
 
 static inline void set_intra_mode_default(AVSContext *h) {
-    h->pred_mode_Y[3] =  h->pred_mode_Y[6] = INTRA_L_LP;
-    h->top_pred_Y[h->mbx*2+0] = h->top_pred_Y[h->mbx*2+1] = INTRA_L_LP;
+    if(h->stream_revision > 0) {
+        h->pred_mode_Y[3] =  h->pred_mode_Y[6] = NOT_AVAIL;
+        h->top_pred_Y[h->mbx*2+0] = h->top_pred_Y[h->mbx*2+1] = NOT_AVAIL;
+    } else {
+        h->pred_mode_Y[3] =  h->pred_mode_Y[6] = INTRA_L_LP;
+        h->top_pred_Y[h->mbx*2+0] = h->top_pred_Y[h->mbx*2+1] = INTRA_L_LP;
+    }
 }
 
 static inline void set_mvs(cavs_vector *mv, enum cavs_block size) {

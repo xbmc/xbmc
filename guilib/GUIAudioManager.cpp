@@ -94,8 +94,8 @@ void CGUIAudioManager::DeInitialize(int iDevice)
   Mix_CloseAudio();
 #endif
   m_bInitialized = false;
-
 }
+
 void CGUIAudioManager::Stop()
 {
   CSingleLock lock(m_cs);
@@ -368,7 +368,7 @@ bool CGUIAudioManager::Load()
       if (pIdNode)
       {
         if (pIdNode->FirstChild())
-          id = CButtonTranslator::TranslateWindowString(pIdNode->FirstChild()->Value());
+          id = CButtonTranslator::TranslateWindow(pIdNode->FirstChild()->Value());
       }
 
       CWindowSounds sounds;

@@ -115,8 +115,8 @@ static int mpc_read_header(AVFormatContext *s, AVFormatParameters *ap)
     st->codec->sample_rate = mpc_rate[st->codec->extradata[2] & 3];
     av_set_pts_info(st, 32, MPC_FRAMESIZE, st->codec->sample_rate);
     /* scan for seekpoints */
-    s->start_time = 0;
-    s->duration = (int64_t)c->fcount * MPC_FRAMESIZE * AV_TIME_BASE / st->codec->sample_rate;
+    st->start_time = 0;
+    st->duration = c->fcount;
 
     /* try to read APE tags */
     if (!url_is_streamed(s->pb)) {
@@ -170,6 +170,8 @@ static int mpc_read_packet(AVFormatContext *s, AVPacket *pkt)
 
     pkt->data[0] = curbits;
     pkt->data[1] = (c->curframe > c->fcount);
+    pkt->data[2] = 0;
+    pkt->data[3] = 0;
 
     pkt->stream_index = 0;
     pkt->pts = cur;

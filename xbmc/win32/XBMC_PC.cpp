@@ -21,6 +21,7 @@
 
 #include "../../xbmc/Application.h"
 #include "../../xbmc/AdvancedSettings.h"
+#include "../../xbmc/utils/log.h"
 #include "WIN32Util.h"
 #include "shellapi.h"
 #include "dbghelp.h"
@@ -101,6 +102,16 @@ LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp )
 //-----------------------------------------------------------------------------
 INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
 {
+  //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
+  //the loglevel set with the --debug flag
+#ifdef _DEBUG
+  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
+  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
+#else
+  g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
+  g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
+#endif
+
   // Initializes CreateMiniDump to handle exceptions.
   SetUnhandledExceptionFilter( CreateMiniDump );
 
@@ -158,9 +169,17 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
             --i;
         }
       }
+      else if(strArgW.Equals(L"--debug"))
+      {
+        g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
+        g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
+      }
     }
     LocalFree(szArglist);
   }
+
+  WSADATA wd;
+  WSAStartup(MAKEWORD(2,2), &wd);
 
   // Create and run the app
   g_application.Create();
@@ -171,9 +190,8 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
 #endif
 
   g_application.Run();
-
-  //Uninitialize COM
-  CoUninitialize();
+  
+  // put everything in CApplication::Cleanup() since this point is never reached
 
   return 0;
 }

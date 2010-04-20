@@ -31,15 +31,15 @@ using namespace JSONRPC;
 
 JSON_STATUS CPlayerOperations::GetActivePlayers(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  result["players"] = arrayValue;
+  result = arrayValue;
 
   if (g_application.IsPlayingVideo())
-    result["players"].append("video");
+    result.append("video");
   else if (g_application.IsPlayingAudio())
-    result["players"].append("music");
+    result.append("audio");
 
   if (g_windowManager.IsWindowActive(WINDOW_SLIDESHOW))
-    result["players"].append("picture");
+    result.append("picture");
 
   return OK;
 }

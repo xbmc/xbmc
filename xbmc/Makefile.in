@@ -24,12 +24,12 @@ SRCS=Application.cpp \
      GUIWindowSettingsCategory.cpp \
      GUIWindowSettingsProfile.cpp \
      GUIWindowSettingsScreenCalibration.cpp \
-     Scraper.cpp \
      Settings.cpp \
      SettingsControls.cpp \
      GUIDialogMusicScan.cpp \
      GUIViewControl.cpp \
      GUIViewState.cpp \
+     GUIViewStateAddonBrowser.cpp \
      GUIViewStateMusic.cpp \
      GUIWindowMusicBase.cpp \
      GUIWindowMusicInfo.cpp \
@@ -216,6 +216,9 @@ SRCS=Application.cpp \
      AdvancedSettings.cpp \
      Bookmark.cpp \
      Boblight.cpp \
+     TextureCache.cpp \
+     TextureDatabase.cpp \
+     AddonDatabase.cpp \
 
 LIB=xbmc.a
 

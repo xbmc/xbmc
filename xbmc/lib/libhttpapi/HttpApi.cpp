@@ -9,7 +9,7 @@
 CStdString CHttpApi::WebMethodCall(CStdString &command, CStdString &parameter)
 {
   CStdString response = MethodCall(command, parameter);
-  response.Format("%s%s%s", m_pXbmcHttp->incWebHeader ? "<html>" : "", response.c_str(), m_pXbmcHttp->incWebFooter ? "</html>" : "");
+  response.Format("%s%s%s", m_pXbmcHttp->incWebHeader ? "<html>\n" : "", response.c_str(), m_pXbmcHttp->incWebFooter ? "\n</html>" : "");
   return response;
 }
 

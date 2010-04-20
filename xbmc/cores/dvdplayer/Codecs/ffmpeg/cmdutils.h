@@ -56,6 +56,11 @@ int opt_default(const char *opt, const char *arg);
 int opt_loglevel(const char *opt, const char *arg);
 
 /**
+ * Limit the execution time.
+ */
+int opt_timelimit(const char *opt, const char *arg);
+
+/**
  * Parses a string and returns its corresponding value as a double.
  * Exits from the application if the string cannot be correctly
  * parsed or the corresponding value is invalid.
@@ -182,6 +187,12 @@ void show_bsfs(void);
  * program.
  */
 void show_protocols(void);
+
+/**
+ * Prints a listing containing all the pixel formats supported by the
+ * program.
+ */
+void show_pix_fmts(void);
 
 /**
  * Returns a positive value if reads from standard input a line

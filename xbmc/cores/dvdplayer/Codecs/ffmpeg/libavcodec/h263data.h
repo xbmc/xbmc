@@ -33,12 +33,12 @@
 #include "mpegvideo.h"
 
 /* intra MCBPC, mb_type = (intra), then (intraq) */
-const uint8_t intra_MCBPC_code[9] = { 1, 1, 2, 3, 1, 1, 2, 3, 1 };
-const uint8_t intra_MCBPC_bits[9] = { 1, 3, 3, 3, 4, 6, 6, 6, 9 };
+const uint8_t ff_h263_intra_MCBPC_code[9] = { 1, 1, 2, 3, 1, 1, 2, 3, 1 };
+const uint8_t ff_h263_intra_MCBPC_bits[9] = { 1, 3, 3, 3, 4, 6, 6, 6, 9 };
 
 /* inter MCBPC, mb_type = (inter), (intra), (interq), (intraq), (inter4v) */
 /* Changed the tables for interq and inter4v+q, following the standard ** Juanjo ** */
-const uint8_t inter_MCBPC_code[28] = {
+const uint8_t ff_h263_inter_MCBPC_code[28] = {
     1, 3, 2, 5,
     3, 4, 3, 3,
     3, 7, 6, 5,
@@ -47,7 +47,7 @@ const uint8_t inter_MCBPC_code[28] = {
     1, 0, 0, 0, /* Stuffing */
     2, 12, 14, 15,
 };
-const uint8_t inter_MCBPC_bits[28] = {
+const uint8_t ff_h263_inter_MCBPC_bits[28] = {
     1, 4, 4, 6, /* inter  */
     5, 8, 8, 7, /* intra  */
     3, 7, 7, 9, /* interQ */
@@ -57,7 +57,7 @@ const uint8_t inter_MCBPC_bits[28] = {
     11, 13, 13, 13,/* inter4Q*/
 };
 
-static const uint8_t h263_mbtype_b_tab[15][2] = {
+const uint8_t h263_mbtype_b_tab[15][2] = {
  {1, 1},
  {3, 3},
  {1, 5},
@@ -75,32 +75,14 @@ static const uint8_t h263_mbtype_b_tab[15][2] = {
  {1, 8},
 };
 
-static const int h263_mb_type_b_map[15]= {
-    MB_TYPE_DIRECT2 | MB_TYPE_L0L1,
-    MB_TYPE_DIRECT2 | MB_TYPE_L0L1 | MB_TYPE_CBP,
-    MB_TYPE_DIRECT2 | MB_TYPE_L0L1 | MB_TYPE_CBP | MB_TYPE_QUANT,
-                      MB_TYPE_L0                                 | MB_TYPE_16x16,
-                      MB_TYPE_L0   | MB_TYPE_CBP                 | MB_TYPE_16x16,
-                      MB_TYPE_L0   | MB_TYPE_CBP | MB_TYPE_QUANT | MB_TYPE_16x16,
-                      MB_TYPE_L1                                 | MB_TYPE_16x16,
-                      MB_TYPE_L1   | MB_TYPE_CBP                 | MB_TYPE_16x16,
-                      MB_TYPE_L1   | MB_TYPE_CBP | MB_TYPE_QUANT | MB_TYPE_16x16,
-                      MB_TYPE_L0L1                               | MB_TYPE_16x16,
-                      MB_TYPE_L0L1 | MB_TYPE_CBP                 | MB_TYPE_16x16,
-                      MB_TYPE_L0L1 | MB_TYPE_CBP | MB_TYPE_QUANT | MB_TYPE_16x16,
-    0, //stuffing
-    MB_TYPE_INTRA4x4                | MB_TYPE_CBP,
-    MB_TYPE_INTRA4x4                | MB_TYPE_CBP | MB_TYPE_QUANT,
-};
-
-static const uint8_t cbpc_b_tab[4][2] = {
+const uint8_t cbpc_b_tab[4][2] = {
 {0, 1},
 {2, 2},
 {7, 3},
 {6, 3},
 };
 
-const uint8_t cbpy_tab[16][2] =
+const uint8_t ff_h263_cbpy_tab[16][2] =
 {
   {3,4}, {5,5}, {4,5}, {9,4}, {3,5}, {7,4}, {2,6}, {11,4},
   {2,5}, {3,6}, {5,4}, {10,4}, {4,4}, {8,4}, {6,4}, {3,2}
@@ -177,7 +159,7 @@ const int8_t inter_run[102] = {
  35, 36, 37, 38, 39, 40,
 };
 
-static RLTable rl_inter = {
+RLTable ff_h263_rl_inter = {
     102,
     58,
     inter_vlc,
@@ -246,7 +228,7 @@ static const int8_t intra_level_aic[102] = {
  1,  1,  1,  1,  1,  1,
 };
 
-static RLTable rl_intra_aic = {
+RLTable rl_intra_aic = {
     102,
     58,
     intra_vlc_aic,
@@ -254,23 +236,7 @@ static RLTable rl_intra_aic = {
     intra_level_aic,
 };
 
-static const uint8_t wrong_run[102] = {
- 1,  2,  3,  5,  4, 10,  9,  8,
-11, 15, 17, 16, 23, 22, 21, 20,
-19, 18, 25, 24, 27, 26, 11,  7,
- 6,  1,  2, 13,  2,  2,  2,  2,
- 6, 12,  3,  9,  1,  3,  4,  3,
- 7,  4,  1,  1,  5,  5, 14,  6,
- 1,  7,  1,  8,  1,  1,  1,  1,
-10,  1,  1,  5,  9, 17, 25, 24,
-29, 33, 32, 41,  2, 23, 28, 31,
- 3, 22, 30,  4, 27, 40,  8, 26,
- 6, 39,  7, 38, 16, 37, 15, 10,
-11, 12, 13, 14,  1, 21, 20, 18,
-19,  2,  1, 34, 35, 36
-};
-
-static const uint16_t h263_format[8][2] = {
+const uint16_t h263_format[8][2] = {
     { 0, 0 },
     { 128, 96 },
     { 176, 144 },
@@ -284,7 +250,7 @@ const uint8_t ff_aic_dc_scale_table[32]={
     0, 2, 4, 6, 8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62
 };
 
-static const uint8_t modified_quant_tab[2][32]={
+const uint8_t modified_quant_tab[2][32]={
 //  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
 {
     0, 3, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9,10,11,12,13,14,15,16,17,18,18,19,20,21,22,23,24,25,26,27,28
@@ -298,17 +264,36 @@ const uint8_t ff_h263_chroma_qscale_table[32]={
     0, 1, 2, 3, 4, 5, 6, 6, 7, 8, 9, 9,10,10,11,11,12,12,12,13,13,13,14,14,14,14,14,15,15,15,15,15
 };
 
-const uint16_t ff_mba_max[6]={
+uint16_t ff_mba_max[6]={
      47,  98, 395,1583,6335,9215
 };
 
-const uint8_t ff_mba_length[7]={
+uint8_t ff_mba_length[7]={
       6,   7,   9,  11,  13,  14,  14
 };
 
 const uint8_t ff_h263_loop_filter_strength[32]={
 //  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
     0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 5, 5, 6, 6, 7, 7, 7, 8, 8, 8, 9, 9, 9,10,10,10,11,11,11,12,12,12
+};
+
+const AVRational ff_h263_pixel_aspect[16]={
+ {0, 1},
+ {1, 1},
+ {12, 11},
+ {10, 11},
+ {16, 11},
+ {40, 33},
+ {0, 1},
+ {0, 1},
+ {0, 1},
+ {0, 1},
+ {0, 1},
+ {0, 1},
+ {0, 1},
+ {0, 1},
+ {0, 1},
+ {0, 1},
 };
 
 #endif /* AVCODEC_H263DATA_H */

@@ -30,7 +30,7 @@
 #endif // _MSC_VER > 1000
 
 #include "tinyXML/tinyxml.h"
-#include "Scraper.h"
+#include "addons/Scraper.h"
 #include "utils/CharsetConverter.h"
 
 class CVideoInfoTag;
@@ -51,7 +51,7 @@ public:
     ERROR_NFO    = 4
   };
 
-  NFOResult Create(const CStdString&, ADDON::ScraperPtr&, int episode=-1);
+  NFOResult Create(const CStdString&, const ADDON::ScraperPtr&, int episode=-1);
   template<class T>
     bool GetDetails(T& details,const char* document=NULL)
   {
