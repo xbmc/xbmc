@@ -246,9 +246,10 @@ CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnD
   return url;
 }
 
-void CTextureCache::ClearCachedImage(const CStdString &url)
+void CTextureCache::ClearCachedImage(const CStdString &url, bool deleteSource /*= false */)
 {
-  CStdString path(url);
+  // TODO: This can be removed when the texture cache covers everything.
+  CStdString path = deleteSource ? url : "";
   CStdString cachedFile;
   if (ClearCachedTexture(url, cachedFile))
     path = GetCachedPath(cachedFile);

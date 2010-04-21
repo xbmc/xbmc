@@ -77,7 +77,7 @@ public:
    \param image url of the image
    \sa GetCachedImage
    */
-  void ClearCachedImage(const CStdString &image);
+  void ClearCachedImage(const CStdString &image, bool deleteSource = false);
 
   /*! \brief retrieve the cache file to associate with the given image
    \param url location of the image

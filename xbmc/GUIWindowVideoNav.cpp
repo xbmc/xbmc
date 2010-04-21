@@ -1405,7 +1405,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       // delete the thumbnail if that's what the user wants, else overwrite with the
       // new thumbnail
-      CTextureCache::Get().ClearCachedImage(cachedThumb);
+      CTextureCache::Get().ClearCachedImage(cachedThumb, true);
       if (result.Left(14) == "thumb://Remote")
       {
         int number = atoi(result.Mid(14));
@@ -1413,12 +1413,12 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
       if (result == "thumb://None")
       {
-        CTextureCache::Get().ClearCachedImage(cachedThumb);
+        CTextureCache::Get().ClearCachedImage(cachedThumb, true);
         if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
         {
           CFileItem item2(strPath,false);
           CUtil::AddFileToFolder(strPath,"default.py",item2.m_strPath);
-          CTextureCache::Get().ClearCachedImage(item2.GetCachedProgramThumb());
+          CTextureCache::Get().ClearCachedImage(item2.GetCachedProgramThumb(), true);
         }
       }
       else

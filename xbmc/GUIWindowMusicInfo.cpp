@@ -484,7 +484,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
   else
     cachedThumb = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
 
-  CTextureCache::Get().ClearCachedImage(cachedThumb);
+  CTextureCache::Get().ClearCachedImage(cachedThumb, true);
   if (result.Left(14) == "thumb://Remote")
   {
     int number = atoi(result.Mid(14));
@@ -499,7 +499,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
 
   if (result == "thumb://None")
   { // clear this thumb (note - it'll likely be recached, nothing we can do about that at this point)
-    CTextureCache::Get().ClearCachedImage(cachedThumb);
+    CTextureCache::Get().ClearCachedImage(cachedThumb, true);
     cachedThumb = "";
   }
 
@@ -585,7 +585,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
   if (result.Equals("fanart://Local"))
     result = strLocal;
 
-  CTextureCache::Get().ClearCachedImage(cachedThumb);
+  CTextureCache::Get().ClearCachedImage(cachedThumb, true);
 
   if (!result.Equals("fanart://None"))
   { // local file
