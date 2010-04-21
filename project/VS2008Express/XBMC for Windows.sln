@@ -146,6 +146,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libid3tag_dll", "..\..\xbmc
 		{96798038-06CE-4382-BD5B-F9C366724DEB} = {96798038-06CE-4382-BD5B-F9C366724DEB}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libadpcm_dll", "..\..\xbmc\cores\paplayer\ADPCMCodec\adpcm.vcproj", "{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug (DirectX)|Win32 = Debug (DirectX)|Win32
@@ -534,6 +536,14 @@ Global
 		{AEABB6CE-8F0F-4507-8DC4-5E3BCE5962DA}.Release (DirectX)|Win32.Build.0 = Release|Win32
 		{AEABB6CE-8F0F-4507-8DC4-5E3BCE5962DA}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
 		{AEABB6CE-8F0F-4507-8DC4-5E3BCE5962DA}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
