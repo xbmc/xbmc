@@ -42,6 +42,8 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libPlatinum\$(Configuration)\vs2010\</IntDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libPlatinum\$(Configuration)\vs2010\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libPlatinum\$(Configuration)\vs2010\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libPlatinumd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libPlatinum</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
