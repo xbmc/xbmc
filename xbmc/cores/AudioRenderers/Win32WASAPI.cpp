@@ -424,7 +424,7 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
   if (!m_bIsAllocated)
     return 0;
 
-  DWORD dwFlags = m_bMuting ? AUDCLNT_BUFFERFLAGS_SILENT : 0;
+  DWORD dwFlags = m_bMuting || m_nCurrentVolume == VOLUME_MINIMUM ? AUDCLNT_BUFFERFLAGS_SILENT : 0; 
 
   unsigned int uiBytesToWrite, uiSrcBytesToWrite;
   BYTE* pBuffer = NULL;
@@ -449,7 +449,7 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
 
   //Adjust the volume if necessary.
   if(!m_bPassthrough)
-    m_pcmAmplifier.DeAmplify((short*)data, uiBytesToWrite / 2);
+    m_pcmAmplifier.DeAmplify((short*)pBuffer, uiBytesToWrite / 2);
 
   // Release the buffer
   m_pRenderClient->ReleaseBuffer(uiBytesToWrite/m_uiBytesPerFrame, dwFlags);
