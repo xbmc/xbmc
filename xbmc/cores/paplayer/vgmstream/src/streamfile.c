@@ -7,7 +7,7 @@
 #ifdef _WIN32
 #define IS_VALID_STREAM(stream)     (stream != NULL && (stream->_ptr != NULL))
 #else
-#define IS_VALID_STREAM(stream)     true
+#define IS_VALID_STREAM(stream)     (stream)
 #endif
 
 typedef struct {
