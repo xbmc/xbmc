@@ -246,7 +246,7 @@ void CAddonMgr::FindAddons()
   m_idMap.clear();
   // parse the user & system dirs for addons of the requested type
   CFileItemList items;
-  CDirectory::GetDirectory("special://home/addons", items);
+  CDirectory::GetDirectory("special://xbmc/addons", items);
 
   // store any addons with unresolved deps, then recheck at the end
   VECADDONS unresolved;
