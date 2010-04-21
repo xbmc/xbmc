@@ -2432,6 +2432,7 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source)
     if(aspect != 0.0)
       hint.aspect = aspect;
     hint.software = true;
+    hint.stills   = true;
   }
 
   if(m_CurrentVideo.id    < 0
