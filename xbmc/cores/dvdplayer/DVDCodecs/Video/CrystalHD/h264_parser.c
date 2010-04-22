@@ -156,6 +156,17 @@ static inline uint32_t bits_read(struct buf_reader *buf)
   return bits_read;
 }
 
+/* skips stuffing bytes in the buf_reader */ 
+static inline void skip_emulation_prevention_three_byte(struct buf_reader *buf) 
+{ 
+  if(buf->cur_pos - buf->buf > 2 && 
+    *(buf->cur_pos-2) == 0x00 && 
+    *(buf->cur_pos-1) == 0x00 && 
+    *buf->cur_pos == 0x03) { 
+      buf->cur_pos++; 
+    } 
+}
+
 /*
  * read len bits from the buffer and return them
  * @return right aligned bits
@@ -178,6 +189,8 @@ static inline uint32_t read_bits(struct buf_reader *buf, int len)
       if (buf->cur_offset == 0) {
         buf->cur_pos++;
         buf->cur_offset = 8;
+
+        skip_emulation_prevention_three_byte(buf);
       }
       return bits;
     }
@@ -186,6 +199,8 @@ static inline uint32_t read_bits(struct buf_reader *buf, int len)
       len -= buf->cur_offset;
       buf->cur_pos++;
       buf->cur_offset = 8;
+
+      skip_emulation_prevention_three_byte(buf);
     }
   }
   return bits;
@@ -258,11 +273,7 @@ struct nal_unit* parse_nal_header(struct buf_reader *buf,
 
   switch (nal->nal_unit_type) {
     case NAL_SPS:
-      decode_nal(&ibuf.buf, &ibuf.len, buf->cur_pos, buf->len - 1);
-      ibuf.cur_pos = ibuf.buf;
-
-      parse_sps(&ibuf, &nal->sps);
-      free(ibuf.buf);
+      parse_sps(buf, &nal->sps);
       break;
     case NAL_PPS:
       parse_pps(buf, &nal->pps);

@@ -137,7 +137,8 @@ public:
 
   int  GetInputCount(void);
   int  GetReadyCount(void);
-  void BusyListPop(void);
+  void ReadyListPop(void);
+  void BusyListFlush(void);
 
   bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   void SetDropState(bool bDrop);

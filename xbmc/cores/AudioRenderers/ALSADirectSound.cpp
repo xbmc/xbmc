@@ -159,10 +159,10 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
     if(deviceuse == "default")
       switch(iChannels)
       {
-        case 8: deviceuse = "surround71"; break;
-        case 6: deviceuse = "surround51"; break;
-        case 5: deviceuse = "surround50"; break;
-        case 4: deviceuse = "surround40"; break;
+        case 8: deviceuse = "plug:surround71"; break;
+        case 6: deviceuse = "plug:surround51"; break;
+        case 5: deviceuse = "plug:surround50"; break;
+        case 4: deviceuse = "plug:surround40"; break;
       }
 
     if(deviceuse != device)

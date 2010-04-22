@@ -376,9 +376,6 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   if (!SetupMuxer(hints, "spdif", m_SPDIF))
     return false;
 
-#if (LIBAVFORMAT_VERSION_INT > AV_VERSION_INT(52, 59, 0))
-  #error Make sure upstream FFmpeg still needs this workaround (issue #1735)
-#endif
   Reset();
 
   /* we will check the first packet's crc */

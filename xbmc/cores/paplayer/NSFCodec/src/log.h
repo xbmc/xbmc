@@ -26,7 +26,9 @@
 #ifndef _LOG_H_
 #define _LOG_H_
 
+#ifndef _WIN32
 #include <stdio.h>
+#endif
 
 extern int log_init(void);
 extern void log_shutdown(void);

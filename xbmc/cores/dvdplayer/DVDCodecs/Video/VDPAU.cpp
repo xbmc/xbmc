@@ -115,6 +115,13 @@ CVDPAU::CVDPAU()
 
 bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
 {
+  if(avctx->width  == 0
+  || avctx->height == 0)
+  {
+    CLog::Log(LOGWARNING,"(VDPAU) no width/height available, can't init");
+    return false;
+  }
+
   dl_handle  = dlopen("libvdpau.so.1", RTLD_LAZY);
   if (!dl_handle)
   {
