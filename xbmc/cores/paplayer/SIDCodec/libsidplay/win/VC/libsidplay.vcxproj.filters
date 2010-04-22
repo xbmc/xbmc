@@ -149,9 +149,6 @@
     <ClInclude Include="..\..\include\sidplay\event.h">
       <Filter>Header Files %28Public%29</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\include\sidplay\sid2gui.h">
-      <Filter>Header Files %28Public%29</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\sidplay\sid2types.h">
       <Filter>Header Files %28Public%29</Filter>
     </ClInclude>
@@ -165,9 +162,6 @@
       <Filter>Header Files %28Public%29</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\sidenv.h">
-      <Filter>Header Files %28Public%29</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\sidplay\sidplay.h">
       <Filter>Header Files %28Public%29</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\sidplay\sidplay2.h">
