@@ -20,20 +20,21 @@
  */
 
 #include "DSPlayer.h"
+#include "dshowutil/dshowutil.h" // unload loaded filters
+#include "DShowUtil/smartptr.h"
+
 #include "winsystemwin32.h" //Important needed to get the right hwnd
 #include "utils/GUIInfoManager.h"
+#include "utils/SystemInfo.h"
 #include "MouseStat.h"
-#include "Application.h"
+#include "GUISettings.h"
 #include "Settings.h"
 #include "FileItem.h"
 #include "utils/log.h"
-#include "RegExp.h"
 #include "URL.h"
 
-#include "dshowutil/dshowutil.h" // unload loaded filters
 #include "GUIWindowManager.h"
 #include "GUIDialogBusy.h"
-#include "DShowUtil/smartptr.h"
 #include "WindowingFactory.h"
 #include "GUIDialogOK.h"
 
@@ -104,10 +105,6 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
     m_pDsGraph.Play();
     if (CFGLoader::Filters.isDVD)
       CStreamsManager::getSingleton()->LoadDVDStreams();
-  } else if (errorWindow) {
-    // Something to show?
-    errorWindow->DoModal();
-    errorWindow = NULL;
   }
 
   return (PlayerState != DSPLAYER_ERROR);
@@ -119,13 +116,20 @@ bool CDSPlayer::CloseFile()
 
   if (PlayerState == DSPLAYER_ERROR)
   {
-    CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (dialog)
+    // Something to show?
+    if (errorWindow)
     {
-      dialog->SetHeading("Error");
-      dialog->SetLine(0, "An error occured when trying to render the file.");
-      dialog->SetLine(1, "Please look at the debug log for more informations.");
-      dialog->DoModal();
+      errorWindow->DoModal();
+      errorWindow = NULL;
+    } else {
+      CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
+      if (dialog)
+      {
+        dialog->SetHeading("Error");
+        dialog->SetLine(0, "An error occured when trying to render the file.");
+        dialog->SetLine(1, "Please look at the debug log for more informations.");
+        dialog->DoModal();
+      }
     }
   }
 

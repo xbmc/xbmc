@@ -20,14 +20,10 @@
  */
 
 #pragma once
-#include "streams.h"
+
+#include <list>
 #include "FgFilter.h"
 #include "FileItem.h"
-#include "tinyXML/tinyxml.h"
-#include <list>
-#include "SystemInfo.h" //g_sysinfo
-#include "GUISettings.h"//g_guiSettings
-
 #include "DShowUtil/smartptr.h"
 
 enum DIRECTSHOW_RENDERER

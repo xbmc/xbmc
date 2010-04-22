@@ -21,12 +21,10 @@
 *
 */
 
-//#include "Intsafe.h"
 #include "cores/IPlayer.h"
 #include "utils/Thread.h"
 #include "SingleLock.h"
 #include "StdString.h"
-#include "StringUtils.h"
 #include "DSGraph.h"
 #include "DSClock.h"
 
@@ -36,6 +34,7 @@
 #include "TimeUtils.h"
 #include "Event.h"
 #include "GUIDialogBoxBase.h"
+
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif

@@ -21,30 +21,26 @@
 
 #include "FGLoader.h"
 #include "DSPlayer.h"
+#include "streamsmanager.h"
 #include "dshowutil/dshowutil.h"
+#include "DShowUtil/smartptr.h"
 
-#include "XMLUtils.h"
 #include "charsetconverter.h"
 #include "Log.h"
-
-#include "filters/XBMCFileSource.h"
-#include "filters/Splitters/AviSplitter.h"
-#include "filters/Splitters/FLVSplitter.h"
-#include "FileSystem/SpecialProtocol.h"
-#include "XMLUtils.h"
-#include "WINDirectShowEnumerator.h"
-#include "GuiSettings.h"
-#include "filters/VMR9AllocatorPresenter.h"
-#include "filters/EVRAllocatorPresenter.h"
-#include <ks.h>
-#include <Codecapi.h>
-#include "streamsmanager.h"
 #include "GUIDialogOK.h"
 #include "GUIWindowManager.h"
 #include "filtercorefactory/filtercorefactory.h"
 #include "Settings.h"
-#include "DShowUtil/smartptr.h"
-#include "SingleLock.h"
+#include "GUISettings.h"
+#include "utils/SystemInfo.h"
+
+#include "filters/XBMCFileSource.h"
+#include "filters/Splitters/AviSplitter.h"
+#include "filters/Splitters/FLVSplitter.h"
+#include "filters/VMR9AllocatorPresenter.h"
+#include "filters/EVRAllocatorPresenter.h"
+
+#include "WINDirectShowEnumerator.h"
 
 using namespace std;
 

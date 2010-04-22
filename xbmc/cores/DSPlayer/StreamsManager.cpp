@@ -30,6 +30,7 @@
 #include "DShowUtil/smartptr.h"
 #include "WindowingFactory.h"
 #include "LangInfo.h"
+#include "GUISettings.h"
 
 CStreamsManager *CStreamsManager::m_pSingleton = NULL;
 
