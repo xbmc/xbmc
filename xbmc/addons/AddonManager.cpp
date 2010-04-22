@@ -244,9 +244,15 @@ void CAddonMgr::FindAddons()
   CSingleLock lock(m_critSection);
   m_addons.clear();
   m_idMap.clear();
+  LoadAddons("special://home/addons");
+  LoadAddons("special://xbmc/addons");
+}
+
+void CAddonMgr::LoadAddons(const CStdString &path)
+{
   // parse the user & system dirs for addons of the requested type
   CFileItemList items;
-  CDirectory::GetDirectory("special://xbmc/addons", items);
+  CDirectory::GetDirectory(path, items);
 
   // store any addons with unresolved deps, then recheck at the end
   VECADDONS unresolved;
@@ -263,6 +269,13 @@ void CAddonMgr::FindAddons()
     AddonPtr addon;
     if (!AddonFromInfoXML(item->m_strPath, addon))
       continue;
+
+    // only load if addon with same id isn't already loaded
+    if(m_idMap.find(addon->ID()) != m_idMap.end())
+    {
+      CLog::Log(LOGDEBUG, "ADDON: already loaded id %s, bypassing package", addon->ID().c_str());
+      continue;
+    }
 
     // refuse to store addons with missing library
     CStdString library(CUtil::AddFileToFolder(addon->Path(), addon->LibName()));
