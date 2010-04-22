@@ -15,6 +15,6 @@
     <xbmc>20000</xbmc>
   </minversion>
   <summary>OpenGL Visualization</summary>
-  <description>Visualisation showing a rotating 3D Spectrum Analyzer</description>
-  <author>TEAMXBMC</author>
+  <description>OpenGL Visualization showing a rotating 3D Spectrum Analyzer</description>
+  <author>Team XBMC</author>
 </addoninfo>
