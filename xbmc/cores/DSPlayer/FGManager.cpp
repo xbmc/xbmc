@@ -972,7 +972,8 @@ HRESULT CFGManager::RecoverFromGraphError(const CFileItem& pFileItem)
       dialog->SetLine(0, strError.c_str());
       dialog->SetLine(1, "more details or see XBMC Wiki - 'DSPlayer codecs'");
       dialog->SetLine(2, "section for more informations.");
-      dialog->DoModal();
+      
+      CDSPlayer::errorWindow = dialog;
 
       return E_FAIL;
     }

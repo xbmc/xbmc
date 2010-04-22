@@ -35,6 +35,7 @@
 
 #include "TimeUtils.h"
 #include "Event.h"
+#include "GUIDialogBoxBase.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -131,6 +132,7 @@ public:
 
   static DSPLAYER_STATE PlayerState;
   static CFileItem currentFileItem;
+  static CGUIDialogBoxBase* errorWindow;
 
   CCriticalSection m_StateSection;
 protected:

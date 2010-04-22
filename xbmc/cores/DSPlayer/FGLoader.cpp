@@ -20,6 +20,7 @@
  */
 
 #include "FGLoader.h"
+#include "DSPlayer.h"
 #include "dshowutil/dshowutil.h"
 
 #include "XMLUtils.h"
@@ -358,9 +359,9 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
     {
       dialog->SetHeading("Extension not found");
       dialog->SetLine(0, "Impossible to play the media file : the media");
-      dialog->SetLine(1, "extension \"" + CURL(pFileItem.m_strPath).GetFileType() + "\" isn't");
-      dialog->SetLine(2, "declared in dsfilterconfig.xml.");
-      dialog->DoModal();
+      dialog->SetLine(1, "extension \"" + CURL(pFileItem.m_strPath).GetFileType() + "\" isn't declared in dsfilterconfig.xml.");
+      dialog->SetLine(2, "");
+      CDSPlayer::errorWindow = dialog;
     }
     return E_FAIL;
   }

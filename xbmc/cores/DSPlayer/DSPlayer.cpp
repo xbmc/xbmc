@@ -41,6 +41,7 @@ using namespace std;
 
 DSPLAYER_STATE CDSPlayer::PlayerState = DSPLAYER_CLOSED;
 CFileItem CDSPlayer::currentFileItem;
+CGUIDialogBoxBase *CDSPlayer::errorWindow = NULL;
 
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
     : IPlayer(callback), CThread(), m_pDsGraph(&m_pDsClock, callback),
@@ -103,6 +104,10 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
     m_pDsGraph.Play();
     if (CFGLoader::Filters.isDVD)
       CStreamsManager::getSingleton()->LoadDVDStreams();
+  } else if (errorWindow) {
+    // Something to show?
+    errorWindow->DoModal();
+    errorWindow = NULL;
   }
 
   return (PlayerState != DSPLAYER_ERROR);
