@@ -28,6 +28,9 @@ Boston, MA 02111-1307, USA.  */
 #endif
 void freeargv (char **vector);
 
+#ifdef _MSC_VER
+#define alloca _alloca
+#endif
 
 #define ISBLANK(ch) ((ch) == ' ' || (ch) == '\t')
 

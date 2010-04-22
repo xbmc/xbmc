@@ -113,6 +113,10 @@ static XBMC_KeyMapping g_mapping_evdev[] =
 , { 136, 0xb2 } // Stop
 , { 138, 0x49 } // Info
 , { 147, 0x4d } // Menu
+, { 150, 0x9f } // Sleep
+, { 152, 0xb8 } // Launch file browser
+, { 163, 0xb4 } // Launch Mail
+, { 164, 0xab } // Browser favorites
 , { 166, 0x08 } // Back
 , { 167, 0xa7 } // Browser forward
 , { 171, 0xb0 } // Next track
@@ -120,6 +124,7 @@ static XBMC_KeyMapping g_mapping_evdev[] =
 , { 173, 0xb1 } // Prev track
 , { 174, 0xb2 } // Stop
 , { 176, 0x52 } // Rewind
+, { 179, 0xb9 } // Launch media center
 , { 180, 0xac } // Browser home
 , { 181, 0xa8 } // Browser refresh
 , { 214, 0x1B } // Close
@@ -557,6 +562,7 @@ void CKeyboardStat::Reset()
   m_bCtrl = false;
   m_bAlt = false;
   m_bRAlt = false;
+  m_bSuper = false;
   m_cAscii = '\0';
   m_wUnicode = '\0';
   m_VKey = 0;
@@ -641,6 +647,12 @@ int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
       case XBMCK_RMETA:
         modstate |= XBMCKMOD_RMETA;
         break;
+      case XBMCK_LSUPER:
+        modstate |= XBMCKMOD_LSUPER;
+        break;
+      case XBMCK_RSUPER:
+        modstate |= XBMCKMOD_RSUPER;
+        break;
       case XBMCK_MODE:
         modstate |= XBMCKMOD_MODE;
         break;
@@ -688,6 +700,12 @@ int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
         break;
       case XBMCK_RMETA:
         modstate &= ~XBMCKMOD_RMETA;
+        break;
+      case XBMCK_LSUPER:
+        modstate &= ~XBMCKMOD_LSUPER;
+        break;
+      case XBMCK_RSUPER:
+        modstate &= ~XBMCKMOD_RSUPER;
         break;
       case XBMCK_MODE:
         modstate &= ~XBMCKMOD_MODE;
@@ -739,6 +757,7 @@ void CKeyboardStat::Update(XBMC_Event& event)
     m_bShift = (event.key.keysym.mod & XBMCKMOD_SHIFT) != 0;
     m_bAlt = (event.key.keysym.mod & XBMCKMOD_ALT) != 0;
     m_bRAlt = (event.key.keysym.mod & XBMCKMOD_RALT) != 0;
+    m_bSuper = (event.key.keysym.mod & XBMCKMOD_SUPER) != 0;
 
     CLog::Log(LOGDEBUG, "SDLKeyboard: scancode: %d, sym: %d, unicode: %d, modifier: %x", event.key.keysym.scancode, event.key.keysym.sym, event.key.keysym.unicode, event.key.keysym.mod);
 

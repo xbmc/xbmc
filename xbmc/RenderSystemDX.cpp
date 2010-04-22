@@ -130,10 +130,6 @@ void CRenderSystemDX::SetMonitor(HMONITOR monitor)
   if (!m_pD3D)
     return;
 
-  // fake fullscreen mode
-  if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
-    return;
-
   // find the appropriate screen
   for (unsigned int adapter = 0; adapter < m_pD3D->GetAdapterCount(); adapter++)
   {

@@ -1164,7 +1164,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (item->IsVideoDb())
         strPath = item->GetVideoInfoTag()->m_strPath;
 
-      if (info->Content() == CONTENT_NONE)
+      if (!info || info->Content() == CONTENT_NONE)
         return false;
 
       if (item->m_bIsFolder)

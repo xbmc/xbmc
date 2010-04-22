@@ -47,7 +47,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>.\;..\include;..\libcharset\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IN_LIBRARY;NO_XMALLOC;ENABLE_RELOCATABLE;set_relocation_prefix=libiconv_set_relocation_prefix;relocate=libiconv_relocate;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IN_LIBRARY;NO_XMALLOC;ENABLE_RELOCATABLE;set_relocation_prefix=libiconv_set_relocation_prefix;relocate=libiconv_relocate;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -64,7 +64,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <AdditionalIncludeDirectories>.\;..\include;..\libcharset\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;IN_LIBRARY;NO_XMALLOC;ENABLE_RELOCATABLE;set_relocation_prefix=libiconv_set_relocation_prefix;relocate=libiconv_relocate;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;IN_LIBRARY;NO_XMALLOC;ENABLE_RELOCATABLE;set_relocation_prefix=libiconv_set_relocation_prefix;relocate=libiconv_relocate;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
@@ -75,9 +75,6 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\lib\genaliases.c" />
-    <ClCompile Include="..\lib\genaliases2.c" />
-    <ClCompile Include="..\lib\genflags.c" />
     <ClCompile Include="..\lib\iconv.c" />
     <ClCompile Include="..\libcharset\lib\localcharset.c" />
     <ClCompile Include="..\lib\relocatable.c" />

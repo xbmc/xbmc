@@ -48,7 +48,6 @@
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -64,7 +63,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="d3dx9.lib"
 				OutputFile="../../../addons/org.xbmc.addons.dxspectrum/Spectrum_win32dx.vis"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Spectrum_win32dx.pdb"
 				SubSystem="2"
@@ -126,7 +125,6 @@
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -142,7 +140,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib ws2_32.lib d3dx9.lib"
 				OutputFile="../../../addons/org.xbmc.addons.dxspectrum/Spectrum_win32dx.vis"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Spectrum_win32dx.pdb"
 				SubSystem="2"

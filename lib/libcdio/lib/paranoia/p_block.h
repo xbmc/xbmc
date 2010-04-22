@@ -34,8 +34,13 @@
 #define JIGGLE_MODULO        15     /* sectors */
 #define MIN_SILENCE_BOUNDARY 1024   /* 16 bit words */
 
+#ifndef min
 #define min(x,y) ((x)>(y)?(y):(x))
+#endif
+
+#ifndef max
 #define max(x,y) ((x)<(y)?(y):(x))
+#endif
 
 #include "isort.h"
 

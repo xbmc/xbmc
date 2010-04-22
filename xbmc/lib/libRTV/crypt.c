@@ -172,7 +172,7 @@ int rtv_encrypt(const char * plaintext, u32 plaintext_len,
     /* make up a key and obfuscatory material; get the time */
     key    = rand();
     obfusc = rand();
-    t      = time(NULL);
+    t      = (u32)time(NULL);
 
     p = NULL;//getenv("TIMEOFF");
     if (p)

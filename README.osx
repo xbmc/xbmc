@@ -130,7 +130,7 @@ If you understand the following two lines, you can run it to automate
 the installation of the ports in the above order:
 
   sudo bash
-  cat README.osx | perl -ne 'print `port install $1` if /^ \$ sudo port install (.*)$/;'
+  perl -ne 'print `port install $1` if /^ \$ sudo port install (.*)$/;' README.osx
 
 Finally, fix the mysql package default install location with this symlink:
 

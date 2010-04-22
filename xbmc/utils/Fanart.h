@@ -60,8 +60,14 @@ public:
   bool Unpack();
   ///
   /// Retrieves the fanart full res image URL
+  /// \param index - index of image to retrieve (defaults to 0)
   /// \return A CStdString containing the full URL to the full resolution fanart image
-  const CStdString GetImageURL() const;
+  CStdString GetImageURL(unsigned int index = 0) const;
+  ///
+  /// Retrieves the fanart preview image URL, or full res image URL if that doesn't exist
+  /// \param index - index of image to retrieve (defaults to 0)
+  /// \return A CStdString containing the full URL to the full resolution fanart image
+  CStdString GetPreviewURL(unsigned int index = 0) const;
   ///
   /// Used to return a specified fanart theme color value
   /// \param index: 0 based index of the color to retrieve.  A fanart theme contains 3 colors, indices 0-2, arranged from darkest to lightest.

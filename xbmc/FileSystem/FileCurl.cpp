@@ -690,6 +690,8 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
           if(m_httpauth.IsEmpty())
             m_httpauth = "any";
         }
+        else if (name.Equals("Referer"))
+          SetReferer(value);
         else if (name.Equals("User-Agent"))
           SetUserAgent(value);
         else if (name.Equals("Cookie"))

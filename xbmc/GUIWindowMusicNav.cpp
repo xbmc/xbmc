@@ -818,13 +818,12 @@ void CGUIWindowMusicNav::SetPluginThumb(int iItem, const VECSOURCES &sources)
     if (picturePath.Equals("thumb://Current"))
       return;
 
-    CTextureCache::Get().ClearCachedImage(cachedThumb);
+    CTextureCache::Get().ClearCachedImage(cachedThumb, true);
     if (picturePath.Equals("thumb://None"))
     {
       XFILE::CFile::Delete(cachedThumb);
       CFileItem item2(CUtil::AddFileToFolder(itemPath, "default.py"), false);
-      XFILE::CFile::Delete(item2.GetCachedProgramThumb());
-      CTextureCache::Get().ClearCachedImage(item2.GetCachedProgramThumb());
+      CTextureCache::Get().ClearCachedImage(item2.GetCachedProgramThumb(), true);
     }
     else
       XFILE::CFile::Cache(picturePath, cachedThumb);

@@ -53,6 +53,8 @@
 #include <netdb.h>
 #else
 #include <windows.h>
+#include <io.h>
+#include <time.h>
 #define snprintf _snprintf
 #endif /* _XBOX */
 

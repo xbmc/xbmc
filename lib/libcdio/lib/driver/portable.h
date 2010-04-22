@@ -58,7 +58,9 @@
 # endif
 
 # ifndef S_ISCHR
-#  define	_S_IFCHR 0020000	/* character special */
+#  ifndef _S_IFCHR
+#   define	_S_IFCHR 0020000	/* character special */
+#  endif
 #  define S_ISCHR(x) (x & _S_IFCHR)
 # endif
 #endif /*MSVC*/

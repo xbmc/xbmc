@@ -1392,10 +1392,7 @@ void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath)
     strPath2.Format("videodb://2/2/%i/",idTvShow);
     GetSeasonsNav(strPath2,items,-1,-1,-1,-1,idTvShow);
     for( int i=0;i<items.Size();++i )
-    {
-      XFILE::CFile::Delete(items[i]->GetCachedSeasonThumb());
-      CTextureCache::Get().ClearCachedImage(items[i]->GetCachedSeasonThumb());
-    }
+      CTextureCache::Get().ClearCachedImage(items[i]->GetCachedSeasonThumb(), true);
     DeleteThumbForItem(strPath,true);
 
     CStdString strSQL;
@@ -3910,7 +3907,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
       if (idContent == VIDEODB_CONTENT_MOVIES)
         strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath,files.playCount from genre join genrelinkmovie on genre.idGenre=genrelinkmovie.idGenre join movie on genrelinkmovie.idMovie = movie.idMovie join files on files.idFile=movie.idFile join path on path.idPath = files.idPath");
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
-        strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath from genre join genrelinktvshow on genre.idGenre=genrelinkTvShow.idGenre join tvshow on genrelinkTvShow.idShow = tvshow.idShow join tvshowlinkpath on tvshowlinkpath.idShow=tvshow.idShow join files on files.idPath=tvshowlinkpath.idPath join path on path.idPath = files.idPath");
+        strSQL=FormatSQL("SELECT genre.idgenre,genre.strgenre,path.strPath FROM genre JOIN genrelinktvshow ON genre.idGenre=genrelinktvshow.idGenre JOIN tvshow ON genrelinktvshow.idShow=tvshow.idShow JOIN tvshowlinkpath ON tvshowlinkpath.idShow=tvshow.idShow JOIN files ON files.idPath=tvshowlinkpath.idPath JOIN path ON path.idPath=files.idPath");
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
         strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath,files.playCount from genre join genrelinkmusicvideo on genre.idGenre=genrelinkmusicvideo.idGenre join musicvideo on genrelinkmusicvideo.idMVideo = musicvideo.idMVideo join files on musicvideo.idFile=files.idFile join path on path.idPath = files.idPath");
     }
@@ -3923,7 +3920,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
         group = " group by genre.idgenre";
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
-        strSQL=FormatSQL("select distinct genre.idGenre,genre.strGenre from genre join genrelinktvshow on genre.idGenre=genrelinkTvShow.idGenre join tvshow on genrelinkTvShow.idShow=tvshow.idShow");
+        strSQL=FormatSQL("SELECT DISTINCT genre.idGenre,genre.strGenre FROM genre JOIN genrelinktvshow ON genre.idGenre=genrelinktvshow.idGenre JOIN tvshow ON genrelinktvshow.idShow=tvshow.idShow");
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
         strSQL=FormatSQL("select genre.idGenre,genre.strGenre,count(1),count(files.playCount) from genre join genrelinkmusicvideo on genre.idGenre=genrelinkmusicvideo.idGenre join musicvideo on genrelinkmusicvideo.idMVideo=musicvideo.idMVideo join files on files.idFile=musicvideo.idFile ");
@@ -4045,7 +4042,7 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
         strSQL += " group by studio.idStudio";
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
-        strSQL=FormatSQL("select distinct studio.idStudio, studio.strStudio from studio join studiolinktvshow on studio.idStudio=studiolinkTvShow.idStudio join tvshow on studiolinkTvShow.idShow=tvshow.idShow");
+        strSQL=FormatSQL("SELECT DISTINCT studio.idStudio, studio.strStudio FROM studio JOIN studiolinktvshow ON studio.idStudio=studiolinktvshow.idStudio JOIN tvshow ON studiolinktvshow.idShow=tvshow.idShow");
     }
 
     // run query
@@ -7820,22 +7817,14 @@ void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder,
   {
     item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
     if (CFile::Exists(item.GetCachedEpisodeThumb()))
-    {
-      XFILE::CFile::Delete(item.GetCachedEpisodeThumb());
-      CTextureCache::Get().ClearCachedImage(item.GetCachedEpisodeThumb());
-    }
+      CTextureCache::Get().ClearCachedImage(item.GetCachedEpisodeThumb(), true);
     else
-    {
-      XFILE::CFile::Delete(item.GetCachedVideoThumb());
-      CTextureCache::Get().ClearCachedImage(item.GetCachedVideoThumb());
-    }
+      CTextureCache::Get().ClearCachedImage(item.GetCachedVideoThumb(), true);
   }
   else
   {
-    XFILE::CFile::Delete(item.GetCachedVideoThumb());
-    CTextureCache::Get().ClearCachedImage(item.GetCachedVideoThumb());
-    XFILE::CFile::Delete(item.GetCachedFanart());
-    CTextureCache::Get().ClearCachedImage(item.GetCachedFanart());
+    CTextureCache::Get().ClearCachedImage(item.GetCachedVideoThumb(), true);
+    CTextureCache::Get().ClearCachedImage(item.GetCachedFanart(), true);
   }
 
   // tell our GUI to completely reload all controls (as some of them
