@@ -76,12 +76,9 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(OutDir)libsidplay.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>
-      </AssemblerListingLocation>
-      <ObjectFileName>
-      </ObjectFileName>
-      <ProgramDataBaseFileName>
-      </ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
@@ -127,17 +124,15 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <PrecompiledHeaderOutputFile>$(OutDir)libsidplay.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>
-      </AssemblerListingLocation>
-      <ObjectFileName>
-      </ObjectFileName>
-      <ProgramDataBaseFileName>
-      </ProgramDataBaseFileName>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4231;4355;4910;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <XMLDocumentationFileName>$(IntDir)</XMLDocumentationFileName>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -200,13 +195,11 @@
     <ClInclude Include="..\..\include\sidplay\c64env.h" />
     <ClInclude Include="..\..\include\sidplay\component.h" />
     <ClInclude Include="..\..\include\sidplay\event.h" />
-    <ClInclude Include="..\..\include\sidplay\sid2gui.h" />
     <ClInclude Include="..\..\include\sidplay\sid2types.h" />
     <ClInclude Include="..\..\include\sidplay\sidbuilder.h" />
     <ClInclude Include="sidconfig.h" />
     <ClInclude Include="..\..\include\sidplay\sidendian.h" />
     <ClInclude Include="..\..\include\sidenv.h" />
-    <ClInclude Include="..\..\include\sidplay\sidplay.h" />
     <ClInclude Include="..\..\include\sidplay\sidplay2.h" />
     <ClInclude Include="..\..\include\sidplay\sidtypes.h" />
     <ClInclude Include="..\..\include\sidplay\sidusage.h" />
