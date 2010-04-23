@@ -26,7 +26,7 @@
 				<include>backgroundfade</include>
 				<fadetime>FanartCrossfadeTime</fadetime>
 				<visible>!Skin.HasSetting(VideoLibraryTVFanart)</visible>
-				<visible>Container.Content(TVShows) | [Container.Content(Episodes) + substring(Container.FolderPath,videodb://5/)]</visible>
+				<visible>Container.Content(TVShows) | [Container.Content(Episodes) + stringcompare(Container.FolderPath,videodb://5/)]</visible>
 			</control>
 			<control type="image">
 				<posx>0</posx>
@@ -38,7 +38,7 @@
 				<include>backgroundfade</include>
 				<fadetime>FanartCrossfadeTime</fadetime>
 				<visible>!Skin.HasSetting(VideoLibraryTVFanart)</visible>
-				<visible>Container.Content(Seasons) | [Container.Content(Episodes) + !substring(Container.FolderPath,videodb://5/)]</visible>
+				<visible>Container.Content(Seasons) | [Container.Content(Episodes) + !stringcompare(Container.FolderPath,videodb://5/)]</visible>
 			</control>
 			<control type="image">
 				<posx>0</posx>
