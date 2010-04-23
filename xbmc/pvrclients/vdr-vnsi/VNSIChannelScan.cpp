@@ -569,7 +569,7 @@ void cVNSIChannelScan::Action()
       if (requestID == VDR_SCANNER_PERCENTAGE)
       {
         uint32_t percent = ntohl(*(uint32_t*)&userData[0]);
-        if (percent >= 0)
+        if (percent >= 0 && percent <= 100)
           SetProgress(percent);
       }
       else if (requestID == VDR_SCANNER_SIGNAL)

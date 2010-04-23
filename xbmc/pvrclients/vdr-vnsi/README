@@ -27,7 +27,7 @@ The connection of this AddOn depend upon a installed VNSI-Server-Plugin on the V
 is included inside the "vdr-plugin-vnsiserver" directory of this Addon.
 VDR itself need no patches or modification to use all current features.
 
-VDR Versions older as 1.7.2 are not supported by this plugin.
+VDR Versions older as 1.6.0 are not supported by this plugin.
 
 ------------------------------------------
 PLUGIN INSTALLATION INSTRUCTIONS:
@@ -51,6 +51,12 @@ you must patch wirbelscan with the file in "patches/vdr-wirbelscan-0.0.5-pre11e-
 
 Please load VDR with VNSI plugin together with the modified wirbelscan plugin and you can access the
 "Search Channels" option inside "Settings->TV->General"
+
+Note: Please notice the warning on the wirbelscan plugin homepage:
+      "Development Version - kein Support. Benutzung auf eigene Verantwortung."
+      "Development Version - no support. Use at your own risk."
+      This means, the time how long the scan run and problems on VDR side are dependet on wirbelscan
+      and not part of VNSI.
 
 
 ------------------------------------------

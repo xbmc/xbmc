@@ -78,6 +78,11 @@ public:
    */
   void StartChannelScan();
 
+  /*! \brief Get info about a running channel scan
+   \return true if scan is running
+   */
+  bool ChannelScanRunning() { return m_bChannelScanRunning; }
+
   /*! \brief Set the TV Database to it's initial state and delete all
    the data inside.
    */
@@ -345,6 +350,7 @@ private:
   CTVDatabase         m_database;
   CRITICAL_SECTION    m_critSection;
   bool                m_bFirstStart;            /* Is set if this is first startup of PVRManager */
+  bool                m_bChannelScanRunning;    /* Is set if a channel scan is running */
 
   /*--- GUIInfoManager information data ---*/
   DWORD               m_infoToggleStart;        /* Time to toogle pvr infos like in System info */

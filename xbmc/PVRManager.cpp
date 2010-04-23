@@ -112,6 +112,7 @@ void CPVRManager::Start()
   m_recordingToggleStart    = NULL;
   m_recordingToggleCurrent  = 0;
   m_LastChannel             = 0;
+  m_bChannelScanRunning     = false;
 
   /* Discover, load and create chosen Client add-on's. */
   CAddonMgr::Get()->RegisterAddonMgrCallback(ADDON_PVRDLL, this);
@@ -893,6 +894,7 @@ void CPVRManager::StartChannelScan()
 {
   std::vector<long> clients;
   long scanningClientID = -1;
+  m_bChannelScanRunning = true;
 
   CLIENTMAPITR itr = m_clients.begin();
   while (itr != m_clients.end())
@@ -957,6 +959,7 @@ void CPVRManager::StartChannelScan()
   /* Create the supervisor thread again */
   Create();
   CLog::Log(LOGNOTICE, "PVR: Channel scan finished after %li.%li seconds", (CTimeUtils::GetTimeMS()-perfCnt)/1000, (CTimeUtils::GetTimeMS()-perfCnt)%1000);
+  m_bChannelScanRunning = false;
 }
 
 void CPVRManager::ResetDatabase()
