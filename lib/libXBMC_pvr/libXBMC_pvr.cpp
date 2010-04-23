@@ -106,6 +106,30 @@ DLLEXPORT void PVR_add_menu_hook(PVR_MENUHOOK *hook)
   m_cb->AddMenuHook(m_Handle->addonData, hook);
 }
 
+DLLEXPORT void PVR_recording(const char *Name, const char *FileName, bool On)
+{
+  if (m_cb == NULL)
+    return;
+
+  m_cb->Recording(m_Handle->addonData, Name, FileName, On);
+}
+
+DLLEXPORT void PVR_trigger_timer_update()
+{
+  if (m_cb == NULL)
+    return;
+
+  m_cb->TriggerTimerUpdate(m_Handle->addonData);
+}
+
+DLLEXPORT void PVR_trigger_recording_update()
+{
+  if (m_cb == NULL)
+    return;
+
+  m_cb->TriggerTimerUpdate(m_Handle->addonData);
+}
+
 DLLEXPORT void PVR_free_demux_packet(DemuxPacket* pPacket)
 {
   if (m_cb == NULL)

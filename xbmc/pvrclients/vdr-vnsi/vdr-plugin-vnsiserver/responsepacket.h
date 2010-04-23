@@ -35,6 +35,7 @@ public:
 
   bool init(uint32_t requestID);
   bool initScan(uint32_t opCode);
+  bool initStatus(uint32_t opCode);
   bool initStream(uint32_t opCode, uint32_t streamID, uint32_t duration, int64_t dts, int64_t pts);
   void finalise();
   void finaliseStream();

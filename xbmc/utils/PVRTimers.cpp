@@ -521,6 +521,8 @@ void cPVRTimers::Unload()
 
 bool cPVRTimers::Update()
 {
+  CSingleLock lock(m_critSection);
+
   CLIENTMAP *clients = g_PVRManager.Clients();
 
   Clear();
@@ -559,6 +561,7 @@ int cPVRTimers::GetTimers(CFileItemList* results)
 
 cPVRTimerInfoTag *cPVRTimers::GetTimer(cPVRTimerInfoTag *Timer)
 {
+  CSingleLock lock(m_critSection);
   for (unsigned int i = 0; i < size(); i++)
   {
     if (at(i).Number() == Timer->Number() &&
@@ -590,6 +593,7 @@ cPVRTimerInfoTag *cPVRTimers::GetMatch(const cPVREPGInfoTag *Epg, int *Match)
 
 cPVRTimerInfoTag *cPVRTimers::GetNextActiveTimer(void)
 {
+  CSingleLock lock(m_critSection);
   cPVRTimerInfoTag *t0 = NULL;
   for (unsigned int i = 0; i < size(); i++)
   {

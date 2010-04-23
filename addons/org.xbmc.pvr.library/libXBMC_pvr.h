@@ -113,6 +113,18 @@ public:
       dlsym(m_libXBMC_pvr, "PVR_add_menu_hook");
     if (AddMenuHook == NULL)            { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+    Recording               = (void (*)(const char *Name, const char *FileName, bool On))
+      dlsym(m_libXBMC_pvr, "PVR_recording");
+    if (Recording == NULL)              { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+    TriggerTimerUpdate      = (void (*)())
+      dlsym(m_libXBMC_pvr, "PVR_trigger_timer_update");
+    if (TriggerTimerUpdate == NULL)     { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+    TriggerRecordingUpdate  = (void (*)())
+      dlsym(m_libXBMC_pvr, "PVR_trigger_recording_update");
+    if (TriggerRecordingUpdate == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
 #ifdef USE_DEMUX
     FreeDemuxPacket         = (void (*)(DemuxPacket* pPacket))
       dlsym(m_libXBMC_pvr, "PVR_free_demux_packet");
@@ -131,6 +143,9 @@ public:
   void (*TransferTimerEntry)(const PVRHANDLE handle, const PVR_TIMERINFO *timer);
   void (*TransferRecordingEntry)(const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);
   void (*AddMenuHook)(PVR_MENUHOOK *hook);
+  void (*Recording)(const char *Name, const char *FileName, bool On);
+  void (*TriggerTimerUpdate)();
+  void (*TriggerRecordingUpdate)();
 #ifdef USE_DEMUX
   void (*FreeDemuxPacket)(DemuxPacket* pPacket);
   DemuxPacket* (*AllocateDemuxPacket)(int iDataSize);

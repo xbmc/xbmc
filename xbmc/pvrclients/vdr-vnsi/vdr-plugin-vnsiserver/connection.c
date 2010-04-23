@@ -51,13 +51,16 @@
 
 cConnection::cConnection(cServer *server, int fd, unsigned int id, const char *ClientAdr)
 {
-  m_Id            = id;
-  m_server        = server;
-  m_Streamer      = NULL;
-  m_isStreaming   = false;
-  m_Channel       = NULL;
-  m_NetLogFile    = NULL;
-  m_ClientAddress = ClientAdr;
+  m_Id                      = id;
+  m_server                  = server;
+  m_Streamer                = NULL;
+  m_isStreaming             = false;
+  m_Channel                 = NULL;
+  m_NetLogFile              = NULL;
+  m_ClientAddress           = ClientAdr;
+  m_StatusInterfaceEnabled  = false;
+  m_OSDInterfaceEnabled     = false;
+
   m_socket.set_handle(fd);
 
   Start();
@@ -279,3 +282,168 @@ void cConnection::StopChannelStreaming()
     m_Channel  = NULL;
   }
 }
+
+void cConnection::TimerChange(const cTimer *Timer, eTimerChange Change)
+{
+  if (m_StatusInterfaceEnabled)
+  {
+    cResponsePacket *resp = new cResponsePacket();
+    if (!resp->initStatus(VDR_STATUS_TIMERCHANGE))
+    {
+      delete resp;
+      return;
+    }
+
+    resp->add_U32((int)Change);
+    resp->add_String(Timer ? *Timer->ToText(true) : "-");
+
+    resp->finalise();
+    m_socket.write(resp->getPtr(), resp->getLen());
+    delete resp;
+  }
+}
+
+//void cConnection::ChannelSwitch(const cDevice *Device, int ChannelNumber)
+//{
+//
+//}
+
+void cConnection::Recording(const cDevice *Device, const char *Name, const char *FileName, bool On)
+{
+  if (m_StatusInterfaceEnabled)
+  {
+    cResponsePacket *resp = new cResponsePacket();
+    if (!resp->initStatus(VDR_STATUS_RECORDING))
+    {
+      delete resp;
+      return;
+    }
+
+    resp->add_U32(Device->CardIndex());
+    resp->add_U32(On);
+    if (Name)
+      resp->add_String(Name);
+    else
+      resp->add_String("");
+
+    if (FileName)
+      resp->add_String(FileName);
+    else
+      resp->add_String("");
+
+    resp->finalise();
+    m_socket.write(resp->getPtr(), resp->getLen());
+    delete resp;
+  }
+}
+
+//void cConnection::Replaying(const cControl *Control, const char *Name, const char *FileName, bool On)
+//{
+//
+//}
+//
+//void cConnection::SetVolume(int Volume, bool Absolute)
+//{
+//
+//}
+//
+//void cConnection::SetAudioTrack(int Index, const char * const *Tracks)
+//{
+//
+//}
+//
+//void cConnection::SetAudioChannel(int AudioChannel)
+//{
+//
+//}
+//
+//void cConnection::SetSubtitleTrack(int Index, const char * const *Tracks)
+//{
+//
+//}
+//
+//void cConnection::OsdClear(void)
+//{
+//
+//}
+//
+//void cConnection::OsdTitle(const char *Title)
+//{
+//
+//}
+
+void cConnection::OsdStatusMessage(const char *Message)
+{
+  if (m_StatusInterfaceEnabled && Message)
+  {
+    /* Ignore this messages */
+    if (strcasecmp(Message, trVDR("Channel not available!")) == 0) return;
+    else if (strcasecmp(Message, trVDR("Delete timer?")) == 0) return;
+    else if (strcasecmp(Message, trVDR("Delete recording?")) == 0) return;
+    else if (strcasecmp(Message, trVDR("Press any key to cancel shutdown")) == 0) return;
+    else if (strcasecmp(Message, trVDR("Press any key to cancel restart")) == 0) return;
+    else if (strcasecmp(Message, trVDR("Editing - shut down anyway?")) == 0) return;
+    else if (strcasecmp(Message, trVDR("Recording - shut down anyway?")) == 0) return;
+    else if (strcasecmp(Message, trVDR("shut down anyway?")) == 0) return;
+    else if (strcasecmp(Message, trVDR("Recording - restart anyway?")) == 0) return;
+    else if (strcasecmp(Message, trVDR("Editing - restart anyway?")) == 0) return;
+    else if (strcasecmp(Message, trVDR("Delete channel?")) == 0) return;
+    else if (strcasecmp(Message, trVDR("Timer still recording - really delete?")) == 0) return;
+    else if (strcasecmp(Message, trVDR("Delete marks information?")) == 0) return;
+    else if (strcasecmp(Message, trVDR("Delete resume information?")) == 0) return;
+    else if (strcasecmp(Message, trVDR("CAM is in use - really reset?")) == 0) return;
+    else if (strcasecmp(Message, trVDR("Really restart?")) == 0) return;
+    else if (strcasecmp(Message, trVDR("Stop recording?")) == 0) return;
+    else if (strcasecmp(Message, trVDR("Cancel editing?")) == 0) return;
+    else if (strcasecmp(Message, trVDR("Cutter already running - Add to cutting queue?")) == 0) return;
+    else if (strcasecmp(Message, trVDR("No index-file found. Creating may take minutes. Create one?")) == 0) return;
+
+    cResponsePacket *resp = new cResponsePacket();
+    if (!resp->initStatus(VDR_STATUS_MESSAGE))
+    {
+      delete resp;
+      return;
+    }
+
+//    else if (type == mtWarning)
+//      resp->add_U32(1);
+//    else if (type == mtError)
+//      resp->add_U32(2);
+//    else
+    resp->add_U32(0);
+    resp->add_String(Message);
+    resp->finalise();
+    m_socket.write(resp->getPtr(), resp->getLen());
+    delete resp;
+  }
+}
+
+//void cConnection::OsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue)
+//{
+//
+//}
+//
+//void cConnection::OsdItem(const char *Text, int Index)
+//{
+//
+//}
+//
+//void cConnection::OsdCurrentItem(const char *Text)
+//{
+//
+//}
+//
+//void cConnection::OsdTextItem(const char *Text, bool Scroll)
+//{
+//
+//}
+//
+//void cConnection::OsdChannel(const char *Text)
+//{
+//
+//}
+//
+//void cConnection::OsdProgramme(time_t PresentTime, const char *PresentTitle, const char *PresentSubtitle, time_t FollowingTime, const char *FollowingTitle, const char *FollowingSubtitle)
+//{
+//
+//}

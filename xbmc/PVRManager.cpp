@@ -428,6 +428,7 @@ void CPVRManager::Process()
   m_LastRadioChannelCheck  = Now+CHANNELCHECKDELTA/2;
   m_LastRecordingsCheck    = Now;
   m_LastEPGUpdate          = Now;
+  m_LastTimersCheck        = Now;
   /* Check the last EPG scan date if XBMC is restarted to prevent a rescan if
      the time is not longer as one hour ago */
   m_database.Open();
@@ -463,6 +464,18 @@ void CPVRManager::Process()
       CLog::Log(LOGDEBUG,"PVR: Updating Recordings list");
       PVRRecordings.Update(true);
       m_LastRecordingsCheck = Now;
+    }
+
+    /* Check for new or updated Timers */
+    if (Now - m_LastTimersCheck > TIMERCHECKDELTA) // don't do this too often
+    {
+      CLog::Log(LOGDEBUG,"PVR: Updating Timers list");
+      PVRTimers.Update();
+      SyncInfo();
+      CGUIWindowTV *pTVWin = (CGUIWindowTV *)g_windowManager.GetWindow(WINDOW_TV);
+      if (pTVWin)
+        pTVWin->UpdateData(TV_WINDOW_TIMERS);
+      m_LastTimersCheck = Now;
     }
 
     /* Check for new or updated EPG entries */
@@ -1475,6 +1488,11 @@ int CPVRManager::GetPlayingGroup()
 void CPVRManager::TriggerRecordingsUpdate(bool force)
 {
   m_LastRecordingsCheck = CTimeUtils::GetTimeMS()/1000-RECORDINGCHECKDELTA + (force ? 0 : 5);
+}
+
+void CPVRManager::TriggerTimersUpdate(bool force)
+{
+  m_LastTimersCheck = CTimeUtils::GetTimeMS()/1000-TIMERCHECKDELTA + (force ? 0 : 5);
 }
 
 bool CPVRManager::OpenLiveStream(const cPVRChannelInfoTag* tag)

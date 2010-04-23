@@ -84,6 +84,22 @@ bool cResponsePacket::initScan(uint32_t opCode)
   return true;
 }
 
+bool cResponsePacket::initStatus(uint32_t opCode)
+{
+  if (buffer) return false;
+
+  bufSize = 512;
+  buffer = (uint8_t*)malloc(bufSize);
+  if (!buffer) return false;
+
+  *(uint32_t*)&buffer[0] = htonl(CHANNEL_STATUS); // RR channel
+  *(uint32_t*)&buffer[4] = htonl(opCode);
+  *(uint32_t*)&buffer[userDataLenPos] = 0;
+  bufUsed = headerLength;
+
+  return true;
+}
+
 bool cResponsePacket::initStream(uint32_t opCode, uint32_t streamID, uint32_t duration, int64_t dts, int64_t pts)
 {
   if (buffer) return false;

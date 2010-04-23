@@ -125,6 +125,9 @@ public:
 
 class cPVRTimers : public std::vector<cPVRTimerInfoTag>
 {
+private:
+  CCriticalSection m_critSection;
+
 public:
   cPVRTimers(void);
   bool Load() { return Update(); }

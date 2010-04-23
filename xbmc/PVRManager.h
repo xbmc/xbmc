@@ -208,6 +208,10 @@ public:
    */
   void TriggerRecordingsUpdate(bool force=true);
 
+  /*! \brief Trigger a timer list update
+   */
+  void TriggerTimersUpdate(bool force=true);
+
 
   /*! \name Stream reading functions
    PVR Client internal input stream access, is used if
@@ -384,6 +388,7 @@ private:
   int                 m_LastTVChannelCheck;
   int                 m_LastRadioChannelCheck;
   int                 m_LastRecordingsCheck;
+  int                 m_LastTimersCheck;
   int                 m_LastEPGUpdate;
   int                 m_LastEPGScan;
 

@@ -32,12 +32,15 @@
 #include <inttypes.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <vdr/thread.h>
 
 #define CLOSESOCKET(fd) do { if(fd>=0) { ::close(fd); fd=-1; } } while(0)
 
 class cxSocket {
  private:
   int m_fd;
+  cMutex m_MutexWrite;
+  cMutex m_MutexRead;
 
   cxSocket(const cxSocket& s);//{ m_fd = s.m_fd>=0 ? dup(s.m_fd) : -1; }
   cxSocket &operator=(const cxSocket &S);// { close(); m_fd = S.m_fd >= 0 ? dup(S.m_fd) : -1; return *this; };
@@ -120,7 +123,7 @@ class cxPoller : public cPoller {
     cxPoller(cxSocket* Socks, int count, bool Out=false)
     {
       for(int i=0; i<count; i++)
-	Add(Socks[i].handle(), Out);
+        Add(Socks[i].handle(), Out);
     }
 };
 

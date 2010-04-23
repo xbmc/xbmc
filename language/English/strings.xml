@@ -1713,6 +1713,8 @@
   <string id="19194">Continue?</string>
   <string id="19195">Client actions</string>
   <string id="19196">PVR client specific actions</string>
+  <string id="19197">Recording started on: %s</string>
+  <string id="19198">Recording finished on: %s</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>

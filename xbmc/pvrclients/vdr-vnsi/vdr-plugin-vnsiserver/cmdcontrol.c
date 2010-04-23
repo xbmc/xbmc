@@ -130,6 +130,14 @@ bool cCmdControl::processPacket()
       result = process_GetTime();
       break;
 
+    case VDR_ENABLESTATUSINTERFACE:
+      result = process_EnableStatusInterface();
+      break;
+
+    case VDR_ENABLEOSDINTERFACE:
+      result = process_EnableOSDInterface();
+      break;
+
 
     /** OPCODE 20 - 39: VNSI network functions for live streaming */
     /** NOTE: Live streaming opcodes are handled by cConnection::Action(void) */
@@ -317,6 +325,30 @@ bool cCmdControl::process_GetTime() /* OPCODE 2 */
 
   m_resp->add_U32(timeNow);
   m_resp->add_S32(timeOffset);
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
+  return true;
+}
+
+bool cCmdControl::process_EnableStatusInterface()
+{
+  bool enabled = m_req->extract_U8();
+
+  m_req->getClient()->SetStatusInterface(enabled);
+
+  m_resp->add_U32(VDR_RET_OK);
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
+  return true;
+}
+
+bool cCmdControl::process_EnableOSDInterface()
+{
+  bool enabled = m_req->extract_U8();
+
+  m_req->getClient()->SetOSDInterface(enabled);
+
+  m_resp->add_U32(VDR_RET_OK);
   m_resp->finalise();
   m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;

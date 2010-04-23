@@ -27,6 +27,7 @@
 #include "PVRRecordings.h"
 #include "PVRClient.h"
 #include "log.h"
+#include "PVRManager.h"
 
 namespace ADDON
 {
@@ -42,6 +43,9 @@ CAddonHelpers_PVR::CAddonHelpers_PVR(CAddon* addon)
   m_callbacks->TransferTimerEntry     = PVRTransferTimerEntry;
   m_callbacks->TransferRecordingEntry = PVRTransferRecordingEntry;
   m_callbacks->AddMenuHook            = PVRAddMenuHook;
+  m_callbacks->Recording              = PVRRecording;
+  m_callbacks->TriggerTimerUpdate     = PVRTriggerTimerUpdate;
+  m_callbacks->TriggerRecordingUpdate = PVRTriggerRecordingUpdate;
   m_callbacks->FreeDemuxPacket        = PVRFreeDemuxPacket;
   m_callbacks->AllocateDemuxPacket    = PVRAllocateDemuxPacket;
 };
@@ -241,6 +245,65 @@ void CAddonHelpers_PVR::PVRAddMenuHook(void *addonData, PVR_MENUHOOK *hook)
   hookInt.hook_id   = hook->hook_id;
   hookInt.string_id = hook->string_id;
   hooks->push_back(hookInt);
+}
+
+void CAddonHelpers_PVR::PVRRecording(void *addonData, const char *Name, const char *FileName, bool On)
+{
+  CAddonHelpers* addon = (CAddonHelpers*) addonData;
+  if (addon == NULL)
+  {
+    CLog::Log(LOGERROR, "PVR: PVRRecording is called with NULL-Pointer!!!");
+    return;
+  }
+
+  CAddonHelpers_PVR* addonHelper = addon->GetHelperPVR();
+
+  CStdString line1;
+  CStdString line2;
+  if (On)
+    line1.Format(g_localizeStrings.Get(19197), addonHelper->m_addon->Name());
+  else
+    line1.Format(g_localizeStrings.Get(19198), addonHelper->m_addon->Name());
+
+  if (Name)
+    line2 = Name;
+  else if (FileName)
+    line2 = FileName;
+  else
+    line2 = "";
+
+  g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, line1, line2, 5000, false);
+  CLog::Log(LOGDEBUG, "%s: %s-%s - Recording %s : %s %s", __FUNCTION__, TranslateType(addonHelper->m_addon->Type()).c_str(), addonHelper->m_addon->Name().c_str(), On ? "started" : "finished", Name, FileName);
+}
+
+void CAddonHelpers_PVR::PVRTriggerTimerUpdate(void *addonData)
+{
+  CAddonHelpers* addon = (CAddonHelpers*) addonData;
+  if (addon == NULL)
+  {
+    CLog::Log(LOGERROR, "PVR: PVRTriggerTimerUpdate is called with NULL-Pointer!!!");
+    return;
+  }
+
+  CAddonHelpers_PVR* addonHelper = addon->GetHelperPVR();
+
+  g_PVRManager.TriggerTimersUpdate(false);
+  CLog::Log(LOGDEBUG, "%s: %s-%s - Triggered Timer Update", __FUNCTION__, TranslateType(addonHelper->m_addon->Type()).c_str(), addonHelper->m_addon->Name().c_str());
+}
+
+void CAddonHelpers_PVR::PVRTriggerRecordingUpdate(void *addonData)
+{
+  CAddonHelpers* addon = (CAddonHelpers*) addonData;
+  if (addon == NULL)
+  {
+    CLog::Log(LOGERROR, "PVR: PVRTriggerRecordingUpdate is called with NULL-Pointer!!!");
+    return;
+  }
+
+  CAddonHelpers_PVR* addonHelper = addon->GetHelperPVR();
+
+  g_PVRManager.TriggerRecordingsUpdate(false);
+  CLog::Log(LOGDEBUG, "%s: %s-%s - Triggered Recording Update", __FUNCTION__, TranslateType(addonHelper->m_addon->Type()).c_str(), addonHelper->m_addon->Name().c_str());
 }
 
 void CAddonHelpers_PVR::PVRFreeDemuxPacket(void *addonData, DemuxPacket* pPacket)

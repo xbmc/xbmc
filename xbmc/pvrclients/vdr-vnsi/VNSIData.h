@@ -42,6 +42,8 @@ public:
   CStdString  GetServerName() { return m_session.GetServerName(); }
   CStdString  GetVersion()    { return m_session.GetVersion(); }
   bool        SupportChannelScan();
+  bool        EnableStatusInterface(bool onOff);
+  bool        EnableOSDInterface(bool onOff);
   bool        GetTime(time_t *localTime, int *gmtOffset);
   bool        GetDriveSpace(long long *total, long long *used);
   int         GetGroupsCount();

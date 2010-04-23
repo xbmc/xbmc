@@ -194,7 +194,7 @@ ADDON_STATUS Create(void* hdl, void* props)
     g_iConnectTimeout = DEFAULT_TIMEOUT;
   }
 
-  /* Read setting "ignorechannels" from settings.xml */
+  /* Read setting "handlemessages" from settings.xml */
   if (!XBMC->GetSetting("handlemessages", &g_bHandleMessages))
   {
     /* If setting is unknown fallback to defaults */
@@ -202,7 +202,7 @@ ADDON_STATUS Create(void* hdl, void* props)
     g_bHandleMessages = DEFAULT_HANDLE_MSG;
   }
 
-  /* Read setting "ignorechannels" from settings.xml */
+  /* Read setting "usedirectory" from settings.xml */
   if (!XBMC->GetSetting("usedirectory", &g_bUseRecordingsDir))
   {
     /* If setting is unknown fallback to defaults */
@@ -234,6 +234,8 @@ ADDON_STATUS Create(void* hdl, void* props)
     m_CurStatus = STATUS_LOST_CONNECTION;
     return m_CurStatus;
   }
+
+  VNSIData->EnableStatusInterface(g_bHandleMessages);
 
   m_CurStatus = STATUS_OK;
   m_bCreated = true;
@@ -305,6 +307,7 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
   {
     XBMC->Log(LOG_INFO, "Changed Setting 'handlemessages' from %u to %u", g_bHandleMessages, *(bool*) settingValue);
     g_bHandleMessages = *(bool*) settingValue;
+    if (VNSIData) VNSIData->EnableStatusInterface(g_bHandleMessages);
   }
   else if (str == "usedirectory")
   {

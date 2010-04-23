@@ -257,6 +257,8 @@ ssize_t cxSocket::recv(void *buf, size_t size, int flags,
 
 ssize_t cxSocket::write(const void *buffer, size_t size, int timeout_ms)
 {
+  cMutexLock CmdLock((cMutex*)&m_MutexWrite);
+
   ssize_t written = (ssize_t)size;
   const unsigned char *ptr = (const unsigned char *)buffer;
   cPoller poller(m_fd, true);
@@ -293,6 +295,8 @@ ssize_t cxSocket::write(const void *buffer, size_t size, int timeout_ms)
 
 ssize_t cxSocket::read(void *buffer, size_t size, int timeout_ms)
 {
+  cMutexLock CmdLock((cMutex*)&m_MutexRead);
+
   ssize_t missing = (ssize_t)size;
   unsigned char *ptr = (unsigned char *)buffer;
   cPoller poller(m_fd);

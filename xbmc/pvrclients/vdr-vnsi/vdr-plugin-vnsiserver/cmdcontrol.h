@@ -46,6 +46,8 @@ private:
 
   bool process_Login();
   bool process_GetTime();
+  bool process_EnableStatusInterface();
+  bool process_EnableOSDInterface();
 
   bool processRecStream_Open();
   bool processRecStream_Close();

@@ -40,6 +40,8 @@ const static uint32_t CHANNEL_SCAN             = 6;
 /* OPCODE 1 - 19: VNSI network functions for general purpose */
 const static uint32_t VDR_LOGIN                 = 1;
 const static uint32_t VDR_GETTIME               = 2;
+const static uint32_t VDR_ENABLESTATUSINTERFACE = 3;
+const static uint32_t VDR_ENABLEOSDINTERFACE    = 4;
 
 /* OPCODE 20 - 39: VNSI network functions for live streaming */
 const static uint32_t VDR_CHANNELSTREAM_OPEN    = 20;
@@ -102,6 +104,11 @@ const static uint32_t VDR_SCANNER_TRANSPONDER = 4;
 const static uint32_t VDR_SCANNER_NEWCHANNEL  = 5;
 const static uint32_t VDR_SCANNER_FINISHED    = 6;
 const static uint32_t VDR_SCANNER_STATUS      = 7;
+
+/** Status packet types (server -> client) */
+const static uint32_t VDR_STATUS_TIMERCHANGE  = 1;
+const static uint32_t VDR_STATUS_RECORDING    = 2;
+const static uint32_t VDR_STATUS_MESSAGE      = 3;
 
 /** Packet return codes */
 const static uint32_t VDR_RET_OK              = 0;
