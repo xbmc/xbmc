@@ -11,9 +11,6 @@
 		<Platform
 			Name="Win32"
 		/>
-		<Platform
-			Name="Xbox"
-		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -155,88 +152,6 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|Xbox"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="lib\XBOX;include;lib;lib/driver"
-				PreprocessorDefinitions="_XBOX;_DEBUG;_CONSOLE;HAVE_CONFIG_H;MSVC"
-				MinimalRebuild="TRUE"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				BufferSecurityCheck="TRUE"
-				EnableEnhancedInstructionSet="1"
-				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)/$(ProjectName)d.lib"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Xbox"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="3"
-				GlobalOptimizations="TRUE"
-				FavorSizeOrSpeed="2"
-				OmitFramePointers="TRUE"
-				AdditionalIncludeDirectories="lib\XBOX;include;lib;lib/driver"
-				PreprocessorDefinitions="_XBOX;NDEBUG;_CONSOLE;HAVE_CONFIG_H;MSVC"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="TRUE"
-				EnableEnhancedInstructionSet="1"
-				RuntimeTypeInfo="TRUE"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile="$(OutDir)/$(ProjectName).pch"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="0"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
 			/>
 		</Configuration>
 	</Configurations>

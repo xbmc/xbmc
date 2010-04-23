@@ -20,6 +20,7 @@
  */
 
 #include "GUIViewState.h"
+#include "GUIViewStateAddonBrowser.h"
 #include "GUIViewStateMusic.h"
 #include "GUIViewStateVideo.h"
 #include "GUIViewStatePictures.h"
@@ -123,6 +124,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (windowId==WINDOW_PROGRAMS)
     return new CGUIViewStateWindowPrograms(items);
+  
+  if (windowId==WINDOW_ADDON_BROWSER)
+    return new CGUIViewStateAddonBrowser(items);
 
   //  Use as fallback/default
   return new CGUIViewStateGeneral(items);
@@ -356,7 +360,7 @@ VECSOURCES& CGUIViewState::GetSources()
     // eg. pictures://UUID
     CMediaSource plugin;
     CURL path;
-    path.SetProtocol(ADDON::TranslateContent(m_content));
+    path.SetProtocol("plugin");
     path.SetHostName(addons[i]->ID());
     plugin.strPath = path.Get();
     plugin.strName = addons[i]->Name();

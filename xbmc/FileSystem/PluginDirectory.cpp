@@ -46,9 +46,8 @@ using namespace ADDON;
 vector<CPluginDirectory *> CPluginDirectory::globalHandles;
 CCriticalSection CPluginDirectory::m_handleLock;
 
-CPluginDirectory::CPluginDirectory(const CONTENT_TYPE &content)
+CPluginDirectory::CPluginDirectory()
 {
-  m_content = content;
   m_fetchComplete = CreateEvent(NULL, false, false, NULL);
   m_listItems = new CFileItemList;
   m_fileResult = new CFileItem;
@@ -137,7 +136,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
 bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &resultItem)
 {
   CURL url(strPath);
-  CPluginDirectory* newDir = new CPluginDirectory(TranslateContent(url.GetProtocol()));
+  CPluginDirectory* newDir = new CPluginDirectory();
 
   bool success = newDir->StartScript(strPath);
 
@@ -371,8 +370,6 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
 bool CPluginDirectory::GetDirectory(const CStdString& strPath, CFileItemList& items)
 {
   CURL url(strPath);
-  // should never be called without addon id
-  assert(!url.GetHostName().IsEmpty());
 
   bool success = this->StartScript(strPath);
 

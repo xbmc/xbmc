@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 29149 -->
+<!--Based on english strings version 29227 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -2114,6 +2114,7 @@
   <string id="24008">屏幕保护</string>
   <string id="24009">脚本</string>
   <string id="24010">可视化效果</string>
+  <string id="24011">扩展功能库</string>
 
   <string id="24020">设置扩展功能</string>
   <string id="24021">禁用扩展功能</string>
@@ -2128,7 +2129,13 @@
   <string id="24051">版本：</string>
   <string id="24052">免责声明：</string>
   <string id="24053">许可证：</string>
-  <string id="24059">要安装此扩展功能吗？</string>
+  <string id="24059">要启用此扩展功能吗？</string>
+  <string id="24060">要禁用此扩展功能吗？</string>
+  <string id="24061">扩展功能有可用更新！</string>
+  <string id="24062">已启用扩展功能</string>
+  <string id="24063">启用自动更新</string>
+  <string id="24064">扩展功能已启用</string>
+  <string id="24065">扩展功能已更新</string>
 
   <string id="24070">扩展功能不可用</string>
   <string id="24071">发生未知错误</string>

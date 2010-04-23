@@ -39,7 +39,7 @@ const CONTENT_TYPE  TranslateContent(const CStdString &string);
 const CStdString    TranslateType(const TYPE &type, bool pretty=false);
 const TYPE          TranslateType(const CStdString &string);
 
-struct AddonVersion
+class AddonVersion
 {
 public:
   AddonVersion(const CStdString &str) : str(str) {}
@@ -53,25 +53,34 @@ public:
   const CStdString str;
 };
 
-struct AddonProps
+class AddonProps
 {
 public:
-  AddonProps(CStdString &id, TYPE type, CStdString &versionstr)
+  AddonProps(const CStdString &id, TYPE type, const CStdString &versionstr)
     : id(id)
     , type(type)
     , version(versionstr)
-  {}
+    , stars(0)
+  {
+  }
 
   AddonProps(const AddonPtr &addon)
     : id(addon->ID())
     , type(addon->Type())
-    , version(addon->Version())
-  { if(addon->Parent()) parent = addon->Parent()->ID(); }
+    , version(addon->Version().str)
+    , stars(0)
+  { 
+    if (addon->Parent())
+      parent = addon->Parent()->ID();
+  }
 
-  bool operator=(const AddonProps &rhs)
-  { return (*this).id == rhs.id
-    && (*this).type == rhs.type
-    && (*this).version == rhs.version; }
+  bool operator==(const AddonProps &rhs)
+  { 
+    return    (*this).id == rhs.id
+           && (*this).type == rhs.type
+           && (*this).version == rhs.version;
+  }
+
   CStdString id;
   TYPE type;
   AddonVersion version;
@@ -90,7 +99,8 @@ public:
   ADDONDEPS dependencies;
   int        stars;
 };
-typedef std::vector<struct AddonProps> VECADDONPROPS;
+
+typedef std::vector<class AddonProps> VECADDONPROPS;
 
 class CAddon : public IAddon
 {
@@ -112,10 +122,11 @@ public:
   // properties
   const TYPE Type() const { return m_props.type; }
   AddonProps Props() const { return m_props; }
+  AddonProps& Props() { return m_props; }
   const CStdString ID() const { return m_props.id; }
   const AddonPtr Parent() const { return m_parent; }
   const CStdString Name() const { return m_props.name; }
-  bool Disabled() const { return m_disabled; }
+  bool Enabled() const { return m_enabled; }
   const AddonVersion Version();
   const CStdString Summary() const { return m_props.summary; }
   const CStdString Description() const { return m_props.description; }
@@ -127,7 +138,7 @@ public:
   const int Stars() const { return m_props.stars; }
   const CStdString Disclaimer() const { return m_props.disclaimer; }
   bool Supports(const CONTENT_TYPE &content) const { return (m_props.contents.count(content) == 1); }
-  ADDONDEPS GetDeps() { return m_props.dependencies; }
+  ADDONDEPS& GetDeps() { return m_props.dependencies; }
 
 protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
@@ -145,8 +156,8 @@ private:
 
   virtual bool IsAddonLibrary() { return false; }
 
-  void Enable() { LoadStrings(); m_disabled = false; }
-  void Disable() { m_disabled = true; ClearStrings();}
+  void Enable() { LoadStrings(); m_enabled = true; }
+  void Disable() { m_enabled = false; ClearStrings();}
 
   virtual bool LoadStrings();
   virtual void ClearStrings();
@@ -156,7 +167,7 @@ private:
   void BuildLibName();
   CStdString  m_profile;
   CStdString  m_strLibName;
-  bool        m_disabled;
+  bool        m_enabled;
   CLocalizeStrings  m_strings;
 };
 

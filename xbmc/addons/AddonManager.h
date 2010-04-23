@@ -22,9 +22,10 @@
 #include "Addon.h"
 #include "include/xbmc_addon_dll.h"
 #include "tinyXML/tinyxml.h"
+#include "utils/CriticalSection.h"
 #include "StdString.h"
-#include "DateTime.h"
-#include "DownloadQueue.h"
+#include "utils/Job.h"
+#include "utils/Stopwatch.h"
 #include <vector>
 #include <map>
 
@@ -35,8 +36,6 @@ namespace ADDON
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
   typedef std::map<TYPE, VECADDONS>::iterator IMAPADDONS;
 
-  const int        ADDON_DIRSCAN_FREQ         = 300;
-  const CStdString ADDON_XBMC_REPO_URL        = "";
   const CStdString ADDON_METAFILE             = "description.xml";
   const CStdString ADDON_VIS_EXT              = "*.vis";
   const CStdString ADDON_PYTHON_EXT           = "*.py";
@@ -66,7 +65,7 @@ namespace ADDON
   * otherwise. Services the generic callbacks available
   * to all addon variants.
   */
-  class CAddonMgr : public IDownloadQueueObserver
+  class CAddonMgr : public IJobCallback
   {
   public:
     static CAddonMgr* Get();
@@ -82,44 +81,27 @@ namespace ADDON
     bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE, bool enabledOnly = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
     bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
-   CStdString GetString(const CStdString &id, const int number);
-
-    /* Addon operations */
-    bool EnableAddon(AddonPtr &addon);
-    bool EnableAddon(const CStdString &id);
-    bool DisableAddon(AddonPtr &addon);
-    bool DisableAddon(const CStdString &id);
-    bool Clone(const AddonPtr& parent, AddonPtr& child);
-
-  private:
-    /* Addon Repositories */
-    virtual void OnFileComplete(TICKET aTicket, CStdString& aFilePath, INT aByteRxCount, Result aResult);
-    std::vector<TICKET> m_downloads;
-    VECADDONPROPS m_remoteAddons;
+    CStdString GetString(const CStdString &id, const int number);
+    
+    static bool AddonFromInfoXML(const TiXmlElement *xmlDoc, AddonPtr &addon,
+                                 const CStdString &strPath);
+    static bool AddonFromInfoXML(const CStdString &path, AddonPtr &addon);
+    static AddonPtr AddonFromProps(AddonProps& props);
     void UpdateRepos();
-    bool ParseRepoXML(const CStdString &path);
-
     void FindAddons();
-    bool LoadAddonsXML();
-    bool SaveAddonsXML();
-    bool AddonFromInfoXML(const CStdString &path, AddonPtr &addon);
+
+    void OnJobComplete(unsigned int jobID, bool sucess, CJob* job);
+  private:
     bool DependenciesMet(AddonPtr &addon);
     bool UpdateIfKnown(AddonPtr &addon);
-
-    /* addons.xml */
-    CStdString GetAddonsXMLFile() const;
-    bool LoadAddonsXML(VECADDONPROPS& addons);
-    bool SaveAddonsXML(const VECADDONPROPS &addons);
-    bool SetAddons(TiXmlNode *root, const VECADDONPROPS &addons);
-    void GetAddons(const TiXmlElement* pRootElement, VECADDONPROPS &addons);
-    bool GetAddon(const TYPE &type, const TiXmlNode *node, VECADDONPROPS &addon);
 
     CAddonMgr();
     static CAddonMgr* m_pInstance;
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     MAPADDONS m_addons;
-    CDateTime m_lastDirScan;
+    CStopWatch m_watch;
     std::map<CStdString, AddonPtr> m_idMap;
+    CCriticalSection m_critSection;
   };
 
 }; /* namespace ADDON */

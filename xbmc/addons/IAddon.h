@@ -53,6 +53,7 @@ namespace ADDON
     ADDON_SCRAPER,
     ADDON_SCREENSAVER,
     ADDON_PLUGIN,
+    ADDON_REPOSITORY,
     ADDON_VIZ_LIBRARY, // add noninstallable after this and installable before
     ADDON_SCRAPER_LIBRARY
   } TYPE;
@@ -63,9 +64,9 @@ namespace ADDON
   typedef boost::shared_ptr<CVisualisation> VizPtr;
 
   class CAddonMgr;
-  struct AddonVersion;
+  class AddonVersion;
   typedef std::map<CStdString, std::pair<const AddonVersion, const AddonVersion> > ADDONDEPS;
-  struct AddonProps;
+  class AddonProps;
 
   class IAddon
   {
@@ -74,10 +75,11 @@ namespace ADDON
     virtual AddonPtr Clone(const AddonPtr& self) const =0;
     virtual const TYPE Type() const =0;
     virtual AddonProps Props() const =0;
+    virtual AddonProps& Props() =0;
     virtual const CStdString ID() const =0;
     virtual const AddonPtr Parent() const =0;
     virtual const CStdString Name() const =0;
-    virtual bool Disabled() const =0;
+    virtual bool Enabled() const =0;
     virtual const AddonVersion Version() =0;
     virtual const CStdString Summary() const =0;
     virtual const CStdString Description() const =0;
@@ -97,7 +99,7 @@ namespace ADDON
     virtual CStdString GetSetting(const CStdString& key) const =0;
     virtual TiXmlElement* GetSettingsXML() =0;
     virtual CStdString GetString(uint32_t id) =0;
-    virtual ADDONDEPS GetDeps() =0;
+    virtual ADDONDEPS& GetDeps() =0;
 
   private:
     friend class CAddonMgr;

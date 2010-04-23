@@ -297,6 +297,11 @@ bool CSkinInfo::LoadStartupWindows(const TiXmlElement *startup)
   return true;
 }
 
+bool CSkinInfo::IsWide(RESOLUTION res) const
+{
+  return (res == RES_PAL_16x9 || res == RES_NTSC_16x9 || res == RES_HDTV_480p_16x9 || res == RES_HDTV_720p || res == RES_HDTV_1080i);
+}
+
 void CSkinInfo::GetSkinPaths(std::vector<CStdString> &paths) const
 {
   RESOLUTION resToUse = RES_INVALID;
@@ -305,9 +310,10 @@ void CSkinInfo::GetSkinPaths(std::vector<CStdString> &paths) const
     paths.push_back(CUtil::AddFileToFolder(m_strBaseDir, GetDirFromRes(RES_HDTV_1080i)));
   if (resToUse == RES_HDTV_720p)
     paths.push_back(CUtil::AddFileToFolder(m_strBaseDir, GetDirFromRes(RES_HDTV_720p)));
-  if (resToUse == RES_PAL_16x9 || resToUse == RES_NTSC_16x9 || resToUse == RES_HDTV_480p_16x9 || resToUse == RES_HDTV_720p || resToUse == RES_HDTV_1080i)
+  if (resToUse != m_DefaultResolutionWide && IsWide(resToUse))
     paths.push_back(CUtil::AddFileToFolder(m_strBaseDir, GetDirFromRes(m_DefaultResolutionWide)));
-  paths.push_back(CUtil::AddFileToFolder(m_strBaseDir, GetDirFromRes(m_DefaultResolution)));
+  if (resToUse != m_DefaultResolution && (!IsWide(resToUse) || m_DefaultResolutionWide != m_DefaultResolution))
+    paths.push_back(CUtil::AddFileToFolder(m_strBaseDir, GetDirFromRes(m_DefaultResolution)));
 }
 
 bool CSkinInfo::GetResolution(const TiXmlNode *root, const char *tag, RESOLUTION &res) const

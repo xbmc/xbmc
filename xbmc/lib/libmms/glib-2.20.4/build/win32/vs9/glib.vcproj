@@ -12,9 +12,6 @@
 		<Platform
 			Name="Win32"
 		/>
-		<Platform
-			Name="x64"
-		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
@@ -149,172 +146,6 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="2"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-				CommandLine="if exist ..\..\..\config.h goto DONE_CONFIG_H&#x0D;&#x0A;copy ..\..\..\config.h.win32 ..\..\..\config.h&#x0D;&#x0A;:DONE_CONFIG_H&#x0D;&#x0A;if exist ..\..\..\glibconfig.h goto DONE_GLIBCONFIG_H&#x0D;&#x0A;copy ..\..\..\glibconfig.h.win32 ..\..\..\glibconfig.h&#x0D;&#x0A;:DONE_GLIBCONFIG_H&#x0D;&#x0A;"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="../../..;../../../glib;../../../../dependencies/$(PlatformName)/proxy-libintl-20080916/include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;GLIB_COMPILATION;DLL_EXPORT;HAVE_CONFIG_H;G_LOG_DOMAIN=\&quot;Glib\&quot;;G_ENABLE_DEBUG;G_DISABLE_DEPRECATED;PCRE_STATIC;LINK_SIZE=2;MAX_NAME_SIZE=32;MAX_NAME_COUNT=10000;NEWLINE=-1;POSIX_MALLOC_THRESHOLD=10;MATCH_LIMIT=10000000;MATCH_LIMIT_RECURSION=10000000"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-				CompileAs="1"
-				ForcedIncludeFiles="msvc_recommended_pragmas.h"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="intl.lib Ws2_32.lib"
-				OutputFile="$(OutDir)\$(ProjectName)-2-vs9.dll"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="../../../../dependencies/$(PlatformName)/proxy-libintl-20080916/lib"
-				ModuleDefinitionFile="../../../glib/glib.def"
-				GenerateDebugInformation="true"
-				SubSystem="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary="$(TargetDir)$(ProjectName)-2.0.lib"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
-			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="2"
-			CharacterSet="2"
-			WholeProgramOptimization="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-				CommandLine="if exist ..\..\..\config.h goto GLIB_CONFIG&#x0D;&#x0A;copy ..\..\..\config.h.win32 ..\..\..\config.h&#x0D;&#x0A;:GLIB_CONFIG&#x0D;&#x0A;if exist ..\..\..\glibconfig.h\ goto END&#x0D;&#x0A;copy ..\..\..\glibconfig.h.win32 ..\..\..\glibconfig.h&#x0D;&#x0A;:END&#x0D;&#x0A;"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="3"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="../../..;../../../glib;../../../../dependencies/$(PlatformName)/proxy-libintl-20080916/include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;GLIB_COMPILATION;DLL_EXPORT;HAVE_CONFIG_H;G_LOG_DOMAIN=\&quot;Glib\&quot;;G_DISABLE_DEPRECATED;PCRE_STATIC;LINK_SIZE=2;MAX_NAME_SIZE=32;MAX_NAME_COUNT=10000;NEWLINE=-1;POSIX_MALLOC_THRESHOLD=10;MATCH_LIMIT=10000000;MATCH_LIMIT_RECURSION=10000000"
-				RuntimeLibrary="2"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-				CompileAs="1"
-				ForcedIncludeFiles="msvc_recommended_pragmas.h"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="intl.lib Ws2_32.lib"
-				OutputFile="$(OutDir)\$(ProjectName)-2-vs9.dll"
-				LinkIncremental="1"
-				AdditionalLibraryDirectories="../../../../dependencies/$(PlatformName)/proxy-libintl-20080916/lib"
-				ModuleDefinitionFile="../../../glib/glib.def"
-				GenerateDebugInformation="true"
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				ImportLibrary="$(TargetDir)$(ProjectName)-2.0.lib"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -581,22 +412,6 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							PreprocessorDefinitions="LIBDIR=&quot;/irrelevant/lib&quot;"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|x64"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							PreprocessorDefinitions="LIBDIR=&quot;/irrelevant/lib&quot;"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|x64"
 						>
 						<Tool
 							Name="VCCLCompilerTool"

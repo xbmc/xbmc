@@ -84,6 +84,7 @@ protected:
   SVideoBuffer                 m_buffer[m_buffer_max];
   unsigned                     m_buffer_count;
   unsigned                     m_buffer_age;
+  int                          m_refs;
 
   struct dxva_context*         m_context;
 

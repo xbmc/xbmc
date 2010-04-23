@@ -59,25 +59,20 @@ static inline VASurfaceID GetSurfaceID(AVFrame *pic)
 
 CDisplay::~CDisplay()
 {
-  if(m_display)
-  {
-    CLog::Log(LOGDEBUG, "VAAPI - destroying display");
-    WARN(vaTerminate(m_display))
-  }
+  CLog::Log(LOGDEBUG, "VAAPI - destroying display");
+  WARN(vaTerminate(m_display))
 }
 
 CSurface::~CSurface()
 {
-  if(m_id)
-  {
-    CLog::Log(LOGDEBUG, "VAAPI - destroying surface %d", (int)m_id);
-    CSingleLock lock(*m_display);
-    WARN(vaDestroySurfaces(m_display->get(), &m_id, 1))
-  }
+  CLog::Log(LOGDEBUG, "VAAPI - destroying surface %d", (int)m_id);
+  CSingleLock lock(*m_display);
+  WARN(vaDestroySurfaces(m_display->get(), &m_id, 1))
 }
 
 CDecoder::CDecoder()
 {
+  m_refs     = 0;
   m_config   = NULL;
   m_context  = NULL;
   m_hwaccel  = (vaapi_context*)calloc(1, sizeof(vaapi_context));
@@ -92,7 +87,7 @@ CDecoder::~CDecoder()
 void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   VASurfaceID surface = GetSurfaceID(pic);
-  
+
   for(std::list<CSurfacePtr>::iterator it = m_surfaces_used.begin(); it != m_surfaces_used.end(); it++)
   {    
     if((*it)->m_id == surface)
@@ -111,6 +106,7 @@ void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   VASurfaceID surface = GetSurfaceID(pic);
+  CSurface*   wrapper = NULL;
   if(surface)
   {
     /* reget call */
@@ -119,6 +115,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
     {    
       if((*it)->m_id == surface)
       {
+        wrapper = it->get();
         m_surfaces_used.push_back(*it);
         m_surfaces_free.erase(it);
         break;
@@ -138,14 +135,15 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
       return -1;
     }
     /* getbuffer call */
-    surface = m_surfaces_free.front()->m_id;
+    wrapper = m_surfaces_free.front().get();
+    surface = wrapper->m_id;
     m_surfaces_used.push_back(m_surfaces_free.front());
     m_surfaces_free.pop_front();
   }
 
   pic->type           = FF_BUFFER_TYPE_USER;
   pic->age            = 1;
-  pic->data[0]        = (uint8_t*)surface;
+  pic->data[0]        = (uint8_t*)wrapper;
   pic->data[1]        = NULL;
   pic->data[2]        = NULL;
   pic->data[3]        = (uint8_t*)surface;
@@ -193,11 +191,6 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
       return false;
   }
   
-  if(avctx->codec_id == CODEC_ID_H264)
-    m_surfaces_count = 16 + 1 + 1;
-  else
-    m_surfaces_count = 2  + 1 + 1;
-
   VADisplay display;
   display = vaGetDisplayGLX(g_Windowing.GetDisplay());
 
@@ -239,6 +232,18 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
     CLog::Log(LOGERROR, "VAAPI - invalid yuv format %x", attrib.value);
     return false;
   }
+
+  m_refs = avctx->refs;
+  if(m_refs == 0)
+  {
+    if(avctx->codec_id == CODEC_ID_H264)
+      m_refs = 16;
+    else
+      m_refs = 2;
+  }
+  m_surfaces_count = m_refs + 1 + 1;
+
+  CLog::Log(LOGDEBUG, "VAAPI - allocating %d surfaces for given %d references", m_surfaces_count, avctx->refs);
 
   CHECK(vaCreateSurfaces(m_display->get()
                        , avctx->width
@@ -324,6 +329,15 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
 
 int CDecoder::Check(AVCodecContext* avctx)
 {
+  if(avctx->refs > m_refs)
+  {
+    CLog::Log(LOGWARNING, "VAAPI - reference frame count increasing, reiniting decoder");
+    Close();
+    if(Open(avctx, avctx->pix_fmt))
+      return VC_FLUSHED;
+    else
+      return VC_ERROR;
+  }
   m_holder.surface.reset();
   return 0;
 }

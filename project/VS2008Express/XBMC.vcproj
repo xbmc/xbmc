@@ -3438,6 +3438,14 @@
 				Name="Database"
 				>
 				<File
+					RelativePath="..\..\xbmc\AddonDatabase.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\AddonDatabase.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\Album.cpp"
 					>
 				</File>
@@ -3775,6 +3783,18 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogSeekBar.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateAddonBrowser.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStateAddonBrowser.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIViewStatePictures.cpp"
 					>
 				</File>
 				<File
@@ -5519,6 +5539,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\addons\PVRClient.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Repository.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\Repository.h"
 					>
 				</File>
 				<File

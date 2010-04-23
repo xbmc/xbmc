@@ -106,7 +106,7 @@ if ! which lh > /dev/null ; then
 	cd $THISDIR
 fi
 
-echo "Start building variant $VARIANTNAME ..."
+echo "Start building, using Ubuntu $VARIANTNAME repositories ..."
 
 
 cd $WORKPATH

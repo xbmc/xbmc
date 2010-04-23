@@ -162,6 +162,7 @@ CDecoder::CDecoder()
   m_decoder   = NULL;
   m_processor = NULL;
   m_buffer_count = 0;
+  m_refs         = 0;
   memset(&m_format, 0, sizeof(m_format));
   m_context          = (dxva_context*)calloc(1, sizeof(dxva_context));
   m_context->cfg     = (DXVA2_ConfigPictureDecode*)calloc(1, sizeof(DXVA2_ConfigPictureDecode));
@@ -349,6 +350,12 @@ int CDecoder::Check(AVCodecContext* avctx)
     }
   }
 
+  if(avctx->refs > m_refs)
+  {
+    CLog::Log(LOGWARNING, "CDecoder::Check - number of required reference frames increased, resetting device");
+    Close();
+  }
+
   if(m_format.SampleWidth  == 0
   || m_format.SampleHeight == 0)
   {
@@ -514,10 +521,16 @@ bool CDecoder::OpenDecoder(AVCodecContext *avctx)
   m_format.UABProtectionLevel = FALSE;
   m_format.Reserved = 0;
 
-  if(avctx->codec_id == CODEC_ID_H264)
-    m_context->surface_count = 16 + 1 + 1; // 16 ref + 1 decode + 1 libavcodec safety
-  else
-    m_context->surface_count = 2  + 1 + 1; // 2  ref + 1 decode + 1 libavcodec safety
+  m_refs = avctx->refs;
+  if(m_refs == 0)
+  {
+    if(avctx->codec_id == CODEC_ID_H264)
+      m_refs = 16;
+    else
+      m_refs = 2;
+  }
+  m_context->surface_count = m_refs + 1 + 1; // refs + 1 decode + 1 libavcodec safety
+  CLog::Log(LOGDEBUG, "DXVA - allocating %d surfaces for given %d references", m_context->surface_count, avctx->refs);
 
   CHECK(m_service->CreateSurface( (m_format.SampleWidth  + 15) & ~15
                                 , (m_format.SampleHeight + 15) & ~15

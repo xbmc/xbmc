@@ -549,7 +549,7 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 {
   CStdString strProtocol = url2.GetTranslatedProtocol();
   url2.SetProtocol(strProtocol);
-  
+
   if( strProtocol.Equals("ftp")
   ||  strProtocol.Equals("ftps") )
   {
@@ -694,12 +694,14 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
           SetUserAgent(value);
         else if (name.Equals("Cookie"))
           SetCookie(value);
+        else if (name.Equals("Encoding"))
+          SetContentEncoding(value);
         else
           SetRequestHeader(name, value);
       }
     }
   }
-  
+
   if (m_username.length() > 0 && m_password.length() > 0)
     m_url = url2.GetWithoutUserDetails();
   else
@@ -784,7 +786,7 @@ bool CFileCurl::IsInternet(bool checkDNS /* = true */)
 
   bool found = Exists(strURL);
   Close();
-  
+
   return found;
 }
 
@@ -824,6 +826,12 @@ bool CFileCurl::Open(const CURL& url)
     return false;
 
   SetCorrectHeaders(m_state);
+
+  // since we can't know the stream size up front if we're gzipped/deflated
+  // flag the stream with an unknown file size rather than the compressed
+  // file size.
+  if (m_contentencoding.size() > 0)
+    m_state->m_fileSize = 0;
 
   // check if this stream is a shoutcast stream. sometimes checking the protocol line is not enough so examine other headers as well.
   // shoutcast streams should be handled by FileShoutcast.
@@ -926,10 +934,10 @@ bool CFileCurl::Exists(const CURL& url)
 
   CURLcode result = g_curlInterface.easy_perform(m_state->m_easyHandle);
   g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
-  
+
   if (result == CURLE_WRITE_ERROR || result == CURLE_OK)
     return true;
-  
+
   errno = ENOENT;
   return false;
 }

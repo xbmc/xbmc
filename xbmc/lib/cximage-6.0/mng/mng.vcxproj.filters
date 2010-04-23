@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{be26cd6d-47bf-48e9-b39f-f24bf6b05231}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{37efb8d1-bea0-4ea3-9532-b6eab136ba86}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="libmng_callback_xs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_chunk_descr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_chunk_io.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_chunk_prc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_chunk_xs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_cms.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_display.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_dither.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_error.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_filter.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_hlapi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_jpeg.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_object_prc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_pixels.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_prop_xs.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_read.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_trace.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_write.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="libmng_zlib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="libmng_chunk_descr.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_chunk_io.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_chunk_prc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_chunks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_cms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_conf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_display.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_dither.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_error.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_jpeg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_memory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_object_prc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_objects.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_pixels.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_read.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_trace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_write.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libmng_zlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
