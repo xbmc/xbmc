@@ -1000,8 +1000,7 @@
 								<description>Watched</description>
 								<font>MediaPreviewSummary</font>
 								<label>$INFO[ListItem.WatchedEpisodes]</label>
-								<textcolor>FFfd9800</textcolor>
-								<align>right</align>
+								<align>left</align>
 							</control>
 							<control type="label">
 								<posy>32</posy>
