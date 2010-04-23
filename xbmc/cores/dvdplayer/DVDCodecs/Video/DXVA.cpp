@@ -290,7 +290,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
     return false;
   }
 
-  if(!m_processor->Open(m_format))
+  if(!m_processor->Open(m_format, m_decoder))
     return false;
 
   avctx->get_buffer      = GetBufferS;
@@ -697,13 +697,14 @@ void CProcessor::Close()
   CSingleLock lock(m_section);
   SAFE_RELEASE(m_process);
   SAFE_RELEASE(m_service);
+  SAFE_RELEASE(m_decoder);
   for(unsigned i = 0; i < m_sample.size(); i++)
     SAFE_RELEASE(m_sample[i].SrcSurface);
   m_sample.clear();
 }
 
 
-bool CProcessor::Open(const DXVA2_VideoDesc& dsc)
+bool CProcessor::Open(const DXVA2_VideoDesc& dsc, IDirectXVideoDecoder* decoder)
 {
   if(!LoadDXVA())
     return false;
@@ -761,6 +762,8 @@ bool CProcessor::Open(const DXVA2_VideoDesc& dsc)
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Saturation, &m_saturation));
 
   m_time = 0;
+  decoder->AddRef();
+  m_decoder = decoder;
   return true;
 }
 
