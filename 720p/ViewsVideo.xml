@@ -859,7 +859,6 @@
 								<textcolor>FFfd9800</textcolor>
 								<align>right</align>
 							</control>
-							<visible>container.content(movies)</visible>
 							<control type="label">
 								<posy>34</posy>
 								<posx>88</posx>
@@ -1200,13 +1199,6 @@
 						<include>MediaPreviewEpThumb</include>
 						<colordiffuse>cc999999</colordiffuse>
 					</control>
-					<!--
-          <control type="label">
-            <description>No Thumb label</description>
-            <include>MediaPreviewThumbNoThumbDims</include>
-            <include>NoThumbLabel</include>
-          </control>
--->
 					<include>MediaPreviewEpThumbOverlay</include>
 				</itemlayout>
 				<focusedlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)" width="256" height="220">
@@ -1214,13 +1206,6 @@
 						<include>MediaPreviewEpThumb</include>
 						<include>MediaPreviewEpThumbAnim</include>
 					</control>
-					<!--
-          <control type="label">
-            <include>MediaPreviewThumbNoThumbDims</include>
-            <include>NoThumbLabel</include>
-            <include>MediaPreviewThumbNoThumbAnim</include>
-          </control>
--->
 					<include>MediaPreviewEpThumbOverlay</include>
 				</focusedlayout>
 				<itemlayout condition="Skin.HasSetting(ShowAnimMediaPreview)" width="106" height="78">
