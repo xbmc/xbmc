@@ -1,0 +1,14 @@
+# /etc/live-persistence.binds example
+#
+# If this file is present in the proper path, each uncommented not empty line
+# will be treated as a directory which should not be made persistent and
+# which it's content should be volatile.
+#
+# This is achieved by bind mounting on it a tmpfs clone of the directory specified
+
+# Exclude some standard temporary paths
+/tmp
+/var/log
+/var/cache
+/var/tmp
+
