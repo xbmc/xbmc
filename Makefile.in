@@ -125,6 +125,7 @@ PVR_DIRS=\
 
 LIBADDON_DIRS=\
 	lib/libXBMC_addon \
+	lib/libXBMC_gui \
 	lib/libXBMC_pvr \
 
 CONFLUENCE_MEDIA=skin/Confluence/media
@@ -338,6 +339,7 @@ screensavers: exports
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
 libaddon: exports
 	$(MAKE) -C lib/libXBMC_addon
+	$(MAKE) -C lib/libXBMC_gui
 	$(MAKE) -C lib/libXBMC_pvr
 libpython: dllloader
 	$(MAKE) -C xbmc/lib/libPython

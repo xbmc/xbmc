@@ -412,6 +412,11 @@
 #define WINDOW_PYTHON_START               13000
 #define WINDOW_PYTHON_END                 13099
 
+// WINDOW_ID's from 14000 to 14099 reserved for Addons
+
+#define WINDOW_ADDON_START                14000
+#define WINDOW_ADDON_END                  14099
+
 #define ICON_TYPE_NONE          101
 #define ICON_TYPE_PROGRAMS      102
 #define ICON_TYPE_MUSIC         103

@@ -71,6 +71,7 @@ bool cPluginVNSIServer::Start(void)
 {
   VNSIServerConfig.readNoSignalStream();
   Server = new cServer(VNSIServerConfig.listen_port);
+
   return true;
 }
 

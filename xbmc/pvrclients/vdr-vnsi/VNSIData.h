@@ -41,6 +41,7 @@ public:
   int         GetProtocol()   { return m_session.GetProtocol(); }
   CStdString  GetServerName() { return m_session.GetServerName(); }
   CStdString  GetVersion()    { return m_session.GetVersion(); }
+  bool        SupportChannelScan();
   bool        GetTime(time_t *localTime, int *gmtOffset);
   bool        GetDriveSpace(long long *total, long long *used);
   int         GetGroupsCount();
@@ -61,6 +62,7 @@ public:
   PVR_ERROR   GetRecordingsList(PVRHANDLE handle);
   CStdString  GetRecordingPath(int index);
   PVR_ERROR   DeleteRecording(CStdString path);
+
 
 protected:
   virtual void Action(void);

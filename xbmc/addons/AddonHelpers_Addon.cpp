@@ -23,6 +23,7 @@
 #include "Addon.h"
 #include "AddonHelpers_Addon.h"
 #include "log.h"
+#include "LangInfo.h"
 
 namespace ADDON
 {
@@ -37,6 +38,8 @@ CAddonHelpers_Addon::CAddonHelpers_Addon(CAddon* addon)
   m_callbacks->QueueNotification  = QueueNotification;
   m_callbacks->GetSetting         = GetAddonSetting;
   m_callbacks->UnknownToUTF8      = UnknownToUTF8;
+  m_callbacks->GetLocalizedString = GetLocalizedString;
+  m_callbacks->GetDVDMenuLanguage = GetDVDMenuLanguage;
 }
 
 CAddonHelpers_Addon::~CAddonHelpers_Addon()
@@ -193,5 +196,41 @@ char* CAddonHelpers_Addon::UnknownToUTF8(const char *sourceDest)
   strcpy(buffer, string.c_str());
   return buffer;
 }
+
+char* CAddonHelpers_Addon::GetLocalizedString(const void* addonData, long dwCode)
+{
+  CAddonHelpers* helper = (CAddonHelpers*) addonData;
+  if (!helper)
+    return NULL;
+
+  CAddonHelpers_Addon* addonHelper = helper->GetHelperAddon();
+
+  CStdString string;
+  if (dwCode >= 30000 && dwCode <= 30999)
+    string = addonHelper->m_addon->GetString(dwCode).c_str();
+  else if (dwCode >= 32000 && dwCode <= 32999)
+    string = addonHelper->m_addon->GetString(dwCode).c_str();
+  else
+    string = g_localizeStrings.Get(dwCode).c_str();
+
+  char *buffer = (char*) malloc (string.length()+1);
+  strcpy(buffer, string.c_str());
+  return buffer;
+}
+
+char* CAddonHelpers_Addon::GetDVDMenuLanguage(const void* addonData)
+{
+  CAddonHelpers* helper = (CAddonHelpers*) addonData;
+  if (!helper)
+    return NULL;
+
+  CStdString string = g_langInfo.GetDVDMenuLanguage();
+
+  char *buffer = (char*) malloc (string.length()+1);
+  strcpy(buffer, string.c_str());
+  return buffer;
+}
+
+
 
 }; /* namespace ADDON */

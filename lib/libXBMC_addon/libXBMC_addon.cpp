@@ -107,4 +107,22 @@ DLLEXPORT void XBMC_unknown_to_utf8(string &str)
   str = buffer;
 }
 
+DLLEXPORT string XBMC_get_localized_string(int dwCode)
+{
+  if (m_cb == NULL)
+    return "";
+
+  string buffer = m_cb->GetLocalizedString(m_Handle->addonData, dwCode);
+  return buffer;
+}
+
+DLLEXPORT string XBMC_get_dvd_menu_language()
+{
+  if (m_cb == NULL)
+    return "";
+
+  string buffer = m_cb->GetDVDMenuLanguage(m_Handle->addonData);
+  return buffer;
+}
+
 };

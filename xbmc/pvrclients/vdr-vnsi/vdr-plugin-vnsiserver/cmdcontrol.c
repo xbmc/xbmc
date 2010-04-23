@@ -32,11 +32,15 @@
 #include "connection.h"
 #include "recplayer.h"
 #include "vdrcommand.h"
+#include "wirbelscanservice.h" /// copied from modified wirbelscan plugin
+                               /// must be hold up to date with wirbelscan
 
 cCmdControl::cCmdControl()
- {
-  req         = NULL;
-  resp        = NULL;
+{
+  m_req                   = NULL;
+  m_resp                  = NULL;
+  m_processSCAN_Response  = NULL;
+  m_processSCAN_Socket    = NULL;
 
   Start();
 }
@@ -49,7 +53,7 @@ cCmdControl::~cCmdControl()
 
 bool cCmdControl::recvRequest(cRequestPacket* newRequest)
 {
-  req_queue.push(newRequest);
+  m_req_queue.push(newRequest);
   m_Wait.Signal();
   LOGCONSOLE("recvReq set req and signalled");
   return true;
@@ -59,7 +63,7 @@ void cCmdControl::Action(void)
 {
   int errorCnt = 0;
 
-  if (req_queue.size() != 0)
+  if (m_req_queue.size() != 0)
   {
     esyslog("VNSI-Error: Response handler thread started with still present packets in queue, exiting thread");
     return;
@@ -69,7 +73,7 @@ void cCmdControl::Action(void)
   {
     LOGCONSOLE("threadMethod waiting");
     m_Wait.Wait();  // unlocks, waits, relocks
-    if (req_queue.size() == 0)
+    if (m_req_queue.size() == 0)
     {
       if (!Running())
         break;
@@ -86,12 +90,12 @@ void cCmdControl::Action(void)
     errorCnt = 0;
 
     // signalled with something in queue
-    LOGCONSOLE("thread woken with req, queue size: %i", req_queue.size());
+    LOGCONSOLE("thread woken with req, queue size: %i", m_req_queue.size());
 
-    while (req_queue.size())
+    while (m_req_queue.size())
     {
-      req = req_queue.front();
-      req_queue.pop();
+      m_req = m_req_queue.front();
+      m_req_queue.pop();
 
       if (!processPacket())
       {
@@ -104,17 +108,18 @@ void cCmdControl::Action(void)
 
 bool cCmdControl::processPacket()
 {
-  resp = new cResponsePacket();
-  if (!resp->init(req->getRequestID()))
+  m_resp = new cResponsePacket();
+  if (!m_resp->init(m_req->getRequestID()))
   {
     esyslog("VNSI-Error: Response packet init fail");
-    delete resp;
-    delete req;
+    delete m_resp;
+    delete m_req;
+    m_resp = NULL;
     return false;
   }
 
   bool result = false;
-  switch(req->getOpCode())
+  switch(m_req->getOpCode())
   {
     /** OPCODE 1 - 19: VNSI network functions for general purpose */
     case VDR_LOGIN:
@@ -230,13 +235,35 @@ bool cCmdControl::processPacket()
     case VDR_EPG_GETFORCHANNEL:
       result = processEPG_GetForChannel();
       break;
+
+
+    /** OPCODE 140 - 159: VNSI network functions for channel scanning */
+    case VDR_SCAN_SUPPORTED:
+      result = processSCAN_ScanSupported();
+      break;
+
+    case VDR_SCAN_GETCOUNTRIES:
+      result = processSCAN_GetCountries();
+      break;
+
+    case VDR_SCAN_GETSATELLITES:
+      result = processSCAN_GetSatellites();
+      break;
+
+    case VDR_SCAN_START:
+      result = processSCAN_Start();
+      break;
+
+    case VDR_SCAN_STOP:
+      result = processSCAN_Stop();
+      break;
   }
 
-  delete resp;
-  resp = NULL;
+  delete m_resp;
+  m_resp = NULL;
 
-  delete req;
-  req = NULL;
+  delete m_req;
+  m_req = NULL;
 
   return result;
 }
@@ -246,11 +273,11 @@ bool cCmdControl::processPacket()
 
 bool cCmdControl::process_Login() /* OPCODE 1 */
 {
-  if (req->getDataLength() <= 4) return false;
+  if (m_req->getDataLength() <= 4) return false;
 
-  uint32_t protocolVersion  = req->extract_U32();
-  bool netLog               = req->extract_U8();
-  const char *clientName    = req->extract_String();
+  uint32_t protocolVersion  = m_req->extract_U32();
+  bool netLog               = m_req->extract_U8();
+  const char *clientName    = m_req->extract_String();
 
   if (protocolVersion != VNSIProtocolVersion)
   {
@@ -262,22 +289,22 @@ bool cCmdControl::process_Login() /* OPCODE 1 */
   isyslog("VNSI: Welcome client '%s' with protocol version '%lu'", clientName, protocolVersion);
 
   if (netLog)
-    req->getClient()->EnableNetLog(true, clientName);
+    m_req->getClient()->EnableNetLog(true, clientName);
 
   // Send the login reply
   time_t timeNow        = time(NULL);
   struct tm* timeStruct = localtime(&timeNow);
   int timeOffset        = timeStruct->tm_gmtoff;
 
-  resp->add_U32(VNSIProtocolVersion);
-  resp->add_U32(timeNow);
-  resp->add_S32(timeOffset);
-  resp->add_String("VDR-Network-Streaming-Interface (VNSI) Server");
-  resp->add_String(VNSI_SERVER_VERSION);
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->add_U32(VNSIProtocolVersion);
+  m_resp->add_U32(timeNow);
+  m_resp->add_S32(timeOffset);
+  m_resp->add_String("VDR-Network-Streaming-Interface (VNSI) Server");
+  m_resp->add_String(VNSI_SERVER_VERSION);
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
 
-  req->getClient()->SetLoggedIn(true);
+  m_req->getClient()->SetLoggedIn(true);
   delete clientName;
   return true;
 }
@@ -288,10 +315,10 @@ bool cCmdControl::process_GetTime() /* OPCODE 2 */
   struct tm* timeStruct = localtime(&timeNow);
   int timeOffset        = timeStruct->tm_gmtoff;
 
-  resp->add_U32(timeNow);
-  resp->add_S32(timeOffset);
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->add_U32(timeNow);
+  m_resp->add_S32(timeOffset);
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
@@ -304,102 +331,102 @@ bool cCmdControl::process_GetTime() /* OPCODE 2 */
 
 bool cCmdControl::processRecStream_Open() /* OPCODE 40 */
 {
-  const char *fileName  = req->extract_String();
+  const char *fileName  = m_req->extract_String();
   cRecording *recording = Recordings.GetByName(fileName);
 
   LOGCONSOLE("%s: recording pointer %p", fileName, recording);
 
   if (recording)
   {
-    req->getClient()->m_RecPlayer = new cRecPlayer(recording);
+    m_req->getClient()->m_RecPlayer = new cRecPlayer(recording);
 
-    resp->add_U32(VDR_RET_OK);
-    resp->add_U32(req->getClient()->m_RecPlayer->getLengthFrames());
-    resp->add_U64(req->getClient()->m_RecPlayer->getLengthBytes());
+    m_resp->add_U32(VDR_RET_OK);
+    m_resp->add_U32(m_req->getClient()->m_RecPlayer->getLengthFrames());
+    m_resp->add_U64(m_req->getClient()->m_RecPlayer->getLengthBytes());
 
 #if VDRVERSNUM < 10703
-    resp->add_U8(true);//added for TS
+    m_resp->add_U8(true);//added for TS
 #else
-    resp->add_U8(recording->IsPesRecording());//added for TS
+    m_resp->add_U8(recording->IsPesRecording());//added for TS
 #endif
 
     LOGCONSOLE("written totalLength");
   }
   else
   {
-    resp->add_U32(VDR_RET_DATAUNKNOWN);
+    m_resp->add_U32(VDR_RET_DATAUNKNOWN);
 
     LOGCONSOLE("recording '%s' not found", fileName);
   }
 
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
 bool cCmdControl::processRecStream_Close() /* OPCODE 41 */
 {
-  if (req->getClient()->m_RecPlayer)
+  if (m_req->getClient()->m_RecPlayer)
   {
-    delete req->getClient()->m_RecPlayer;
-    req->getClient()->m_RecPlayer = NULL;
+    delete m_req->getClient()->m_RecPlayer;
+    m_req->getClient()->m_RecPlayer = NULL;
   }
 
-  resp->add_U32(VDR_RET_OK);
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->add_U32(VDR_RET_OK);
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
 bool cCmdControl::processRecStream_GetBlock() /* OPCODE 42 */
 {
-  if (req->getClient()->IsStreaming())
+  if (m_req->getClient()->IsStreaming())
   {
     esyslog("VNSI-Error: Get block called during live streaming");
     return false;
   }
 
-  if (!req->getClient()->m_RecPlayer)
+  if (!m_req->getClient()->m_RecPlayer)
   {
     esyslog("VNSI-Error: Get block called when no recording open");
     return false;
   }
 
-  uint64_t position  = req->extract_U64();
-  uint32_t amount    = req->extract_U32();
+  uint64_t position  = m_req->extract_U64();
+  uint32_t amount    = m_req->extract_U32();
 
 //  LOGCONSOLE("getblock pos = %llu length = %lu", position, amount);
 
   uint8_t sendBuffer[amount];
-  uint32_t amountReceived = req->getClient()->m_RecPlayer->getBlock(&sendBuffer[0], position, amount);
+  uint32_t amountReceived = m_req->getClient()->m_RecPlayer->getBlock(&sendBuffer[0], position, amount);
 
   if (!amountReceived)
   {
-    resp->add_U32(0);
+    m_resp->add_U32(0);
     LOGCONSOLE("written 4(0) as getblock got 0");
   }
   else
   {
-    resp->copyin(sendBuffer, amountReceived);
+    m_resp->copyin(sendBuffer, amountReceived);
   }
 
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
-//  LOGCONSOLE("Finished getblock, have sent %lu", resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
+//  LOGCONSOLE("Finished getblock, have sent %lu", m_resp->getLen());
   return true;
 }
 
 bool cCmdControl::processRecStream_PositionFromFrameNumber() /* OPCODE 43 */
 {
   uint64_t retval       = 0;
-  uint32_t frameNumber  = req->extract_U32();
+  uint32_t frameNumber  = m_req->extract_U32();
 
-  if (req->getClient()->m_RecPlayer)
-    retval = req->getClient()->m_RecPlayer->positionFromFrameNumber(frameNumber);
+  if (m_req->getClient()->m_RecPlayer)
+    retval = m_req->getClient()->m_RecPlayer->positionFromFrameNumber(frameNumber);
 
-  resp->add_U64(retval);
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->add_U64(retval);
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
 
   LOGCONSOLE("Wrote posFromFrameNum reply to client");
   return true;
@@ -408,14 +435,14 @@ bool cCmdControl::processRecStream_PositionFromFrameNumber() /* OPCODE 43 */
 bool cCmdControl::processRecStream_FrameNumberFromPosition() /* OPCODE 44 */
 {
   uint32_t retval   = 0;
-  uint64_t position = req->extract_U64();
+  uint64_t position = m_req->extract_U64();
 
-  if (req->getClient()->m_RecPlayer)
-    retval = req->getClient()->m_RecPlayer->frameNumberFromPosition(position);
+  if (m_req->getClient()->m_RecPlayer)
+    retval = m_req->getClient()->m_RecPlayer->frameNumberFromPosition(position);
 
-  resp->add_U32(retval);
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->add_U32(retval);
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
 
   LOGCONSOLE("Wrote frameNumFromPos reply to client");
   return true;
@@ -424,29 +451,29 @@ bool cCmdControl::processRecStream_FrameNumberFromPosition() /* OPCODE 44 */
 bool cCmdControl::processRecStream_GetIFrame() /* OPCODE 45 */
 {
   bool success            = false;
-  uint32_t frameNumber    = req->extract_U32();
-  uint32_t direction      = req->extract_U32();
+  uint32_t frameNumber    = m_req->extract_U32();
+  uint32_t direction      = m_req->extract_U32();
   uint64_t rfilePosition  = 0;
   uint32_t rframeNumber   = 0;
   uint32_t rframeLength   = 0;
 
-  if (req->getClient()->m_RecPlayer)
-    success = req->getClient()->m_RecPlayer->getNextIFrame(frameNumber, direction, &rfilePosition, &rframeNumber, &rframeLength);
+  if (m_req->getClient()->m_RecPlayer)
+    success = m_req->getClient()->m_RecPlayer->getNextIFrame(frameNumber, direction, &rfilePosition, &rframeNumber, &rframeLength);
 
   // returns file position, frame number, length
   if (success)
   {
-    resp->add_U64(rfilePosition);
-    resp->add_U32(rframeNumber);
-    resp->add_U32(rframeLength);
+    m_resp->add_U64(rfilePosition);
+    m_resp->add_U32(rframeNumber);
+    m_resp->add_U32(rframeLength);
   }
   else
   {
-    resp->add_U32(0);
+    m_resp->add_U32(0);
   }
 
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
 
   LOGCONSOLE("Wrote GNIF reply to client %llu %lu %lu", rfilePosition, rframeNumber, rframeLength);
   return true;
@@ -461,10 +488,10 @@ bool cCmdControl::processCHANNELS_GroupsCount() /* OPCODE 60 */
   for (int curr = Channels.GetNextGroup(-1); curr >= 0; curr = Channels.GetNextGroup(curr))
     count++;
 
-  resp->add_U32(count);
+  m_resp->add_U32(count);
 
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
@@ -472,18 +499,18 @@ bool cCmdControl::processCHANNELS_ChannelsCount() /* OPCODE 61 */
 {
   int count = Channels.MaxNumber();
 
-  resp->add_U32(count);
+  m_resp->add_U32(count);
 
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
 bool cCmdControl::processCHANNELS_GroupList() /* OPCODE 62 */
 {
-  if (req->getDataLength() != 4) return false;
+  if (m_req->getDataLength() != 4) return false;
 
-  bool radio = req->extract_U32();
+  bool radio = m_req->extract_U32();
 
   int countInGroup = 0;
   int index        = 0;
@@ -495,9 +522,9 @@ bool cCmdControl::processCHANNELS_GroupList() /* OPCODE 62 */
     {
       if (countInGroup)
       {
-        resp->add_U32(index);
-        resp->add_U32(countInGroup);
-        resp->add_String(toUTF8.Convert(group->Name()));
+        m_resp->add_U32(index);
+        m_resp->add_U32(countInGroup);
+        m_resp->add_String(toUTF8.Convert(group->Name()));
       }
       group = channel;
       countInGroup = 0;
@@ -520,21 +547,21 @@ bool cCmdControl::processCHANNELS_GroupList() /* OPCODE 62 */
 
   if (countInGroup)
   {
-    resp->add_U32(index);
-    resp->add_U32(countInGroup);
-    resp->add_String(group->Name());
+    m_resp->add_U32(index);
+    m_resp->add_U32(countInGroup);
+    m_resp->add_String(group->Name());
   }
 
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
 bool cCmdControl::processCHANNELS_GetChannels() /* OPCODE 63 */
 {
-  if (req->getDataLength() != 4) return false;
+  if (m_req->getDataLength() != 4) return false;
 
-  bool radio = req->extract_U32();
+  bool radio = m_req->extract_U32();
 
   int groupIndex = 0;
   const cChannel* group = NULL;
@@ -560,21 +587,21 @@ bool cCmdControl::processCHANNELS_GetChannels() /* OPCODE 63 */
       if (radio != isRadio)
         continue;
 
-      resp->add_U32(channel->Number());
-      resp->add_String(toUTF8.Convert(channel->Name()));
-      resp->add_U32(channel->Sid());
-      resp->add_U32(groupIndex);
-      resp->add_U32(channel->Ca());
+      m_resp->add_U32(channel->Number());
+      m_resp->add_String(toUTF8.Convert(channel->Name()));
+      m_resp->add_U32(channel->Sid());
+      m_resp->add_U32(groupIndex);
+      m_resp->add_U32(channel->Ca());
 #if APIVERSNUM >= 10701
-      resp->add_U32(channel->Vtype());
+      m_resp->add_U32(channel->Vtype());
 #else
-      resp->add_U32(2);
+      m_resp->add_U32(2);
 #endif
     }
   }
 
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
@@ -585,16 +612,16 @@ bool cCmdControl::processTIMER_GetCount() /* OPCODE 80 */
 {
   int count = Timers.Count();
 
-  resp->add_U32(count);
+  m_resp->add_U32(count);
 
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
 bool cCmdControl::processTIMER_Get() /* OPCODE 81 */
 {
-  uint32_t number = req->extract_U32();
+  uint32_t number = m_req->extract_U32();
 
   cCharSetConv toUTF8;
   int numTimers = Timers.Count();
@@ -603,29 +630,29 @@ bool cCmdControl::processTIMER_Get() /* OPCODE 81 */
     cTimer *timer = Timers.Get(number-1);
     if (timer)
     {
-      resp->add_U32(VDR_RET_OK);
+      m_resp->add_U32(VDR_RET_OK);
 
-      resp->add_U32(timer->Index()+1);
-      resp->add_U32(timer->HasFlags(tfActive));
-      resp->add_U32(timer->Recording());
-      resp->add_U32(timer->Pending());
-      resp->add_U32(timer->Priority());
-      resp->add_U32(timer->Lifetime());
-      resp->add_U32(timer->Channel()->Number());
-      resp->add_U32(timer->StartTime());
-      resp->add_U32(timer->StopTime());
-      resp->add_U32(timer->Day());
-      resp->add_U32(timer->WeekDays());
-      resp->add_String(toUTF8.Convert(timer->File()));
+      m_resp->add_U32(timer->Index()+1);
+      m_resp->add_U32(timer->HasFlags(tfActive));
+      m_resp->add_U32(timer->Recording());
+      m_resp->add_U32(timer->Pending());
+      m_resp->add_U32(timer->Priority());
+      m_resp->add_U32(timer->Lifetime());
+      m_resp->add_U32(timer->Channel()->Number());
+      m_resp->add_U32(timer->StartTime());
+      m_resp->add_U32(timer->StopTime());
+      m_resp->add_U32(timer->Day());
+      m_resp->add_U32(timer->WeekDays());
+      m_resp->add_String(toUTF8.Convert(timer->File()));
     }
     else
-      resp->add_U32(VDR_RET_DATAUNKNOWN);
+      m_resp->add_U32(VDR_RET_DATAUNKNOWN);
   }
   else
-    resp->add_U32(VDR_RET_DATAUNKNOWN);
+    m_resp->add_U32(VDR_RET_DATAUNKNOWN);
 
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
@@ -635,7 +662,7 @@ bool cCmdControl::processTIMER_GetList() /* OPCODE 82 */
   cTimer *timer;
   int numTimers = Timers.Count();
 
-  resp->add_U32(numTimers);
+  m_resp->add_U32(numTimers);
 
   for (int i = 0; i < numTimers; i++)
   {
@@ -643,37 +670,37 @@ bool cCmdControl::processTIMER_GetList() /* OPCODE 82 */
     if (!timer)
       continue;
 
-    resp->add_U32(timer->Index()+1);
-    resp->add_U32(timer->HasFlags(tfActive));
-    resp->add_U32(timer->Recording());
-    resp->add_U32(timer->Pending());
-    resp->add_U32(timer->Priority());
-    resp->add_U32(timer->Lifetime());
-    resp->add_U32(timer->Channel()->Number());
-    resp->add_U32(timer->StartTime());
-    resp->add_U32(timer->StopTime());
-    resp->add_U32(timer->Day());
-    resp->add_U32(timer->WeekDays());
-    resp->add_String(toUTF8.Convert(timer->File()));
+    m_resp->add_U32(timer->Index()+1);
+    m_resp->add_U32(timer->HasFlags(tfActive));
+    m_resp->add_U32(timer->Recording());
+    m_resp->add_U32(timer->Pending());
+    m_resp->add_U32(timer->Priority());
+    m_resp->add_U32(timer->Lifetime());
+    m_resp->add_U32(timer->Channel()->Number());
+    m_resp->add_U32(timer->StartTime());
+    m_resp->add_U32(timer->StopTime());
+    m_resp->add_U32(timer->Day());
+    m_resp->add_U32(timer->WeekDays());
+    m_resp->add_String(toUTF8.Convert(timer->File()));
   }
 
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
 bool cCmdControl::processTIMER_Add() /* OPCODE 83 */
 {
-  uint32_t flags      = req->extract_U32() > 0 ? tfActive : tfNone;
-  uint32_t priority   = req->extract_U32();
-  uint32_t lifetime   = req->extract_U32();
-  uint32_t number     = req->extract_U32();
-  time_t startTime    = req->extract_U32();
-  time_t stopTime     = req->extract_U32();
-  time_t day          = req->extract_U32();
-  uint32_t weekdays   = req->extract_U32();
-  const char *file    = req->extract_String();
-  const char *aux     = req->extract_String();
+  uint32_t flags      = m_req->extract_U32() > 0 ? tfActive : tfNone;
+  uint32_t priority   = m_req->extract_U32();
+  uint32_t lifetime   = m_req->extract_U32();
+  uint32_t number     = m_req->extract_U32();
+  time_t startTime    = m_req->extract_U32();
+  time_t stopTime     = m_req->extract_U32();
+  time_t day          = m_req->extract_U32();
+  uint32_t weekdays   = m_req->extract_U32();
+  const char *file    = m_req->extract_String();
+  const char *aux     = m_req->extract_String();
 
   struct tm tm_r;
   struct tm *time = localtime_r(&startTime, &tm_r);
@@ -694,39 +721,39 @@ bool cCmdControl::processTIMER_Add() /* OPCODE 83 */
       Timers.Add(timer);
       Timers.SetModified();
       isyslog("VNSI: Timer %s added", *timer->ToDescr());
-      resp->add_U32(VDR_RET_OK);
-      resp->finalise();
-      req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+      m_resp->add_U32(VDR_RET_OK);
+      m_resp->finalise();
+      m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
       return true;
     }
     else
     {
       esyslog("VNSI-Error: Timer already defined: %d %s", t->Index() + 1, *t->ToText());
-      resp->add_U32(VDR_RET_DATALOCKED);
+      m_resp->add_U32(VDR_RET_DATALOCKED);
     }
   }
   else
   {
     esyslog("VNSI-Error: Error in timer settings");
-    resp->add_U32(VDR_RET_DATAINVALID);
+    m_resp->add_U32(VDR_RET_DATAINVALID);
   }
 
   delete timer;
 
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
 bool cCmdControl::processTIMER_Delete() /* OPCODE 84 */
 {
-  uint32_t number = req->extract_U32();
-  bool     force  = req->extract_U32();
+  uint32_t number = m_req->extract_U32();
+  bool     force  = m_req->extract_U32();
 
   if (number <= 0 || number > Timers.Count())
   {
     esyslog("VNSI-Error: Unable to delete timer - invalid timer identifier");
-    resp->add_U32(VDR_RET_DATAINVALID);
+    m_resp->add_U32(VDR_RET_DATAINVALID);
   }
   else
   {
@@ -745,47 +772,47 @@ bool cCmdControl::processTIMER_Delete() /* OPCODE 84 */
           else
           {
             esyslog("VNSI-Error: Timer \"%i\" is recording and can be deleted (use force=1 to stop it)", number);
-            resp->add_U32(VDR_RET_RECRUNNING);
-            resp->finalise();
-            req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+            m_resp->add_U32(VDR_RET_RECRUNNING);
+            m_resp->finalise();
+            m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
             return true;
           }
         }
         isyslog("VNSI: Deleting timer %s", *timer->ToDescr());
         Timers.Del(timer);
         Timers.SetModified();
-        resp->add_U32(VDR_RET_OK);
+        m_resp->add_U32(VDR_RET_OK);
       }
       else
       {
         esyslog("VNSI-Error: Unable to delete timer - timers being edited at VDR");
-        resp->add_U32(VDR_RET_DATALOCKED);
+        m_resp->add_U32(VDR_RET_DATALOCKED);
       }
     }
     else
     {
       esyslog("VNSI-Error: Unable to delete timer - invalid timer identifier");
-      resp->add_U32(VDR_RET_DATAINVALID);
+      m_resp->add_U32(VDR_RET_DATAINVALID);
     }
   }
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
 bool cCmdControl::processTIMER_Update() /* OPCODE 85 */
 {
-  int length      = req->getDataLength();
-  uint32_t index  = req->extract_U32();
-  bool active     = req->extract_U32();
+  int length      = m_req->getDataLength();
+  uint32_t index  = m_req->extract_U32();
+  bool active     = m_req->extract_U32();
 
   cTimer *timer = Timers.Get(index - 1);
   if (!timer)
   {
     esyslog("VNSI-Error: Timer \"%lu\" not defined", index);
-    resp->add_U32(VDR_RET_DATAUNKNOWN);
-    resp->finalise();
-    req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+    m_resp->add_U32(VDR_RET_DATAUNKNOWN);
+    m_resp->finalise();
+    m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
     return true;
   }
 
@@ -801,15 +828,15 @@ bool cCmdControl::processTIMER_Update() /* OPCODE 85 */
   else
   {
     uint32_t flags      = active ? tfActive : tfNone;
-    uint32_t priority   = req->extract_U32();
-    uint32_t lifetime   = req->extract_U32();
-    uint32_t number     = req->extract_U32();
-    time_t startTime    = req->extract_U32();
-    time_t stopTime     = req->extract_U32();
-    time_t day          = req->extract_U32();
-    uint32_t weekdays   = req->extract_U32();
-    const char *file    = req->extract_String();
-    const char *aux     = req->extract_String();
+    uint32_t priority   = m_req->extract_U32();
+    uint32_t lifetime   = m_req->extract_U32();
+    uint32_t number     = m_req->extract_U32();
+    time_t startTime    = m_req->extract_U32();
+    time_t stopTime     = m_req->extract_U32();
+    time_t day          = m_req->extract_U32();
+    uint32_t weekdays   = m_req->extract_U32();
+    const char *file    = m_req->extract_String();
+    const char *aux     = m_req->extract_String();
 
     struct tm tm_r;
     struct tm *time = localtime_r(&startTime, &tm_r);
@@ -823,9 +850,9 @@ bool cCmdControl::processTIMER_Update() /* OPCODE 85 */
     if (!t.Parse(buffer))
     {
       esyslog("VNSI-Error: Error in timer settings");
-      resp->add_U32(VDR_RET_DATAINVALID);
-      resp->finalise();
-      req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+      m_resp->add_U32(VDR_RET_DATAINVALID);
+      m_resp->finalise();
+      m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
       return true;
     }
   }
@@ -833,9 +860,9 @@ bool cCmdControl::processTIMER_Update() /* OPCODE 85 */
   *timer = t;
   Timers.SetModified();
 
-  resp->add_U32(VDR_RET_OK);
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->add_U32(VDR_RET_OK);
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
@@ -848,12 +875,12 @@ bool cCmdControl::processRECORDINGS_GetDiskSpace() /* OPCODE 100 */
   int Percent = VideoDiskSpace(&FreeMB);
   int Total   = (FreeMB / (100 - Percent)) * 100;
 
-  resp->add_U32(Total);
-  resp->add_U32(FreeMB);
-  resp->add_U32(Percent);
+  m_resp->add_U32(Total);
+  m_resp->add_U32(FreeMB);
+  m_resp->add_U32(Percent);
 
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
@@ -868,10 +895,10 @@ bool cCmdControl::processRECORDINGS_GetCount() /* OPCODE 101 */
     count = recording->Index() + 1;
   }
 
-  resp->add_U32(count);
+  m_resp->add_U32(count);
 
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
@@ -881,7 +908,7 @@ bool cCmdControl::processRECORDINGS_GetList() /* OPCODE 102 */
   cRecordings Recordings;
   Recordings.Load();
 
-  resp->add_String(VideoDirectory);
+  m_resp->add_String(VideoDirectory);
   for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording))
   {
   #if APIVERSNUM >= 10705
@@ -912,36 +939,36 @@ bool cCmdControl::processRECORDINGS_GetList() /* OPCODE 102 */
     }
     LOGCONSOLE("GRI: RC: recordingStart=%lu recordingDuration=%lu", recordingStart, recordingDuration);
 
-    resp->add_U32(recordingStart);
-    resp->add_U32(recordingDuration);
-    resp->add_U32(recording->priority);
-    resp->add_U32(recording->lifetime);
-    resp->add_String(recording->Info()->ChannelName() ? toUTF8.Convert(recording->Info()->ChannelName()) : "");
+    m_resp->add_U32(recordingStart);
+    m_resp->add_U32(recordingDuration);
+    m_resp->add_U32(recording->priority);
+    m_resp->add_U32(recording->lifetime);
+    m_resp->add_String(recording->Info()->ChannelName() ? toUTF8.Convert(recording->Info()->ChannelName()) : "");
     if (!isempty(recording->Info()->Title()))
-      resp->add_String(toUTF8.Convert(recording->Info()->Title()));
+      m_resp->add_String(toUTF8.Convert(recording->Info()->Title()));
     else
-      resp->add_String("");
+      m_resp->add_String("");
     if (!isempty(recording->Info()->ShortText()))
-      resp->add_String(toUTF8.Convert(recording->Info()->ShortText()));
+      m_resp->add_String(toUTF8.Convert(recording->Info()->ShortText()));
     else
-      resp->add_String("");
+      m_resp->add_String("");
     if (!isempty(recording->Info()->Description()))
-      resp->add_String(toUTF8.Convert(recording->Info()->Description()));
+      m_resp->add_String(toUTF8.Convert(recording->Info()->Description()));
     else
-      resp->add_String("");
+      m_resp->add_String("");
 
-    resp->add_String(toUTF8.Convert(recording->FileName()));
+    m_resp->add_String(toUTF8.Convert(recording->FileName()));
   }
 
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
 bool cCmdControl::processRECORDINGS_GetInfo() /* OPCODE 103 */
 {
   cCharSetConv toUTF8;
-  const char *fileName  = req->extract_String();
+  const char *fileName  = m_req->extract_String();
 
   cRecordings Recordings;
   Recordings.Load(); // probably have to do this
@@ -975,44 +1002,44 @@ bool cCmdControl::processRECORDINGS_GetInfo() /* OPCODE 103 */
   }
   LOGCONSOLE("GRI: RC: recordingStart=%lu recordingDuration=%lu", recordingStart, recordingDuration);
 
-  resp->add_U32(recordingStart);
-  resp->add_U32(recordingDuration);
-  resp->add_U32(recording->priority);
-  resp->add_U32(recording->lifetime);
-  resp->add_String(recording->Info()->ChannelName() ? toUTF8.Convert(recording->Info()->ChannelName()) : "");
+  m_resp->add_U32(recordingStart);
+  m_resp->add_U32(recordingDuration);
+  m_resp->add_U32(recording->priority);
+  m_resp->add_U32(recording->lifetime);
+  m_resp->add_String(recording->Info()->ChannelName() ? toUTF8.Convert(recording->Info()->ChannelName()) : "");
   if (!isempty(recording->Info()->Title()))
-    resp->add_String(toUTF8.Convert(recording->Info()->Title()));
+    m_resp->add_String(toUTF8.Convert(recording->Info()->Title()));
   else
-    resp->add_String("");
+    m_resp->add_String("");
   if (!isempty(recording->Info()->ShortText()))
-    resp->add_String(toUTF8.Convert(recording->Info()->ShortText()));
+    m_resp->add_String(toUTF8.Convert(recording->Info()->ShortText()));
   else
-    resp->add_String("");
+    m_resp->add_String("");
   if (!isempty(recording->Info()->Description()))
-    resp->add_String(toUTF8.Convert(recording->Info()->Description()));
+    m_resp->add_String(toUTF8.Convert(recording->Info()->Description()));
   else
-    resp->add_String("");
+    m_resp->add_String("");
 
 #if APIVERSNUM < 10703
-  resp->add_double((double)FRAMESPERSEC);
+  m_resp->add_double((double)FRAMESPERSEC);
 #else
-  resp->add_double((double)recording->Info()->FramesPerSecond());
+  m_resp->add_double((double)recording->Info()->FramesPerSecond());
 #endif
 
   if (event != NULL)
   {
     if (event->Vps())
-      resp->add_U32(event->Vps());
+      m_resp->add_U32(event->Vps());
     else
-      resp->add_U32(0);
+      m_resp->add_U32(0);
   }
   else
-    resp->add_U32(0);
+    m_resp->add_U32(0);
 
   const cComponents* components = recording->Info()->Components();
   if (components)
   {
-    resp->add_U32(components->NumComponents());
+    m_resp->add_U32(components->NumComponents());
 
     tComponent* component;
     for (int i = 0; i < components->NumComponents(); i++)
@@ -1021,26 +1048,26 @@ bool cCmdControl::processRECORDINGS_GetInfo() /* OPCODE 103 */
 
       LOGCONSOLE("GRI: C: %i %u %u %s %s", i, component->stream, component->type, component->language, component->description);
 
-      resp->add_U8(component->stream);
-      resp->add_U8(component->type);
+      m_resp->add_U8(component->stream);
+      m_resp->add_U8(component->type);
 
       if (component->language)
-        resp->add_String(component->language);
+        m_resp->add_String(component->language);
       else
-        resp->add_String("");
+        m_resp->add_String("");
 
       if (component->description)
-        resp->add_String(component->description);
+        m_resp->add_String(component->description);
       else
-        resp->add_String("");
+        m_resp->add_String("");
     }
   }
   else
-    resp->add_U32(0);
+    m_resp->add_U32(0);
 
   // Done. send it
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
 
   LOGCONSOLE("Written getrecinfo");
   return true;
@@ -1048,7 +1075,7 @@ bool cCmdControl::processRECORDINGS_GetInfo() /* OPCODE 103 */
 
 bool cCmdControl::processRECORDINGS_Delete() /* OPCODE 104 */
 {
-  const char *recName = req->extract_String();
+  const char *recName = m_req->extract_String();
 
   cRecordings Recordings;
   Recordings.Load(); // probably have to do this
@@ -1069,36 +1096,36 @@ bool cCmdControl::processRECORDINGS_Delete() /* OPCODE 104 */
         // Copy svdrdeveldevelp's way of doing this, see if it works
         Recordings.DelByName(recording->FileName());
         isyslog("VNSI: Recording \"%s\" deleted", recording->FileName());
-        resp->add_U32(VDR_RET_OK);
+        m_resp->add_U32(VDR_RET_OK);
       }
       else
       {
         esyslog("VNSI-Error: Error while deleting recording!");
-        resp->add_U32(VDR_RET_ERROR);
+        m_resp->add_U32(VDR_RET_ERROR);
       }
     }
     else
     {
       esyslog("VNSI-Error: Recording \"%s\" is in use by timer %d", recording->Name(), rc->Timer()->Index() + 1);
-      resp->add_U32(VDR_RET_DATALOCKED);
+      m_resp->add_U32(VDR_RET_DATALOCKED);
     }
   }
   else
   {
     esyslog("VNSI-Error: Error in recording name \"%s\"", recName);
-    resp->add_U32(VDR_RET_DATAUNKNOWN);
+    m_resp->add_U32(VDR_RET_DATAUNKNOWN);
   }
 
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   return true;
 }
 
 bool cCmdControl::processRECORDINGS_Move() /* OPCODE 105 */
 {
   LOGCONSOLE("Process move recording");
-  const char *fileName  = req->extract_String();
-  const char *newPath   = req->extract_String();
+  const char *fileName  = m_req->extract_String();
+  const char *newPath   = m_req->extract_String();
 
   cRecordings Recordings;
   Recordings.Load(); // probably have to do this
@@ -1174,9 +1201,9 @@ bool cCmdControl::processRECORDINGS_Move() /* OPCODE 105 */
           delete[] titleDirName;
           delete[] newContainer;
 
-          resp->add_U32(VDR_RET_ERROR);
-          resp->finalise();
-          req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+          m_resp->add_U32(VDR_RET_ERROR);
+          m_resp->finalise();
+          m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
           return true;
         }
       }
@@ -1186,9 +1213,9 @@ bool cCmdControl::processRECORDINGS_Move() /* OPCODE 105 */
         delete[] titleDirName;
         delete[] newContainer;
 
-        resp->add_U32(VDR_RET_ERROR);
-        resp->finalise();
-        req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+        m_resp->add_U32(VDR_RET_ERROR);
+        m_resp->finalise();
+        m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
         return true;
       }
 
@@ -1214,16 +1241,16 @@ bool cCmdControl::processRECORDINGS_Move() /* OPCODE 105 */
         // Tell VDR
         Recordings.Update();
         // Success. Send a different packet from just a ulong
-        resp->add_U32(VDR_RET_OK); // success
-        resp->add_String(newDir);
+        m_resp->add_U32(VDR_RET_OK); // success
+        m_resp->add_String(newDir);
       }
       else
       {
-        resp->add_U32(VDR_RET_ERROR);
+        m_resp->add_U32(VDR_RET_ERROR);
       }
 
-      resp->finalise();
-      req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+      m_resp->finalise();
+      m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
 
       delete[] dateDirName;
       delete[] titleDirName;
@@ -1232,16 +1259,16 @@ bool cCmdControl::processRECORDINGS_Move() /* OPCODE 105 */
     }
     else
     {
-      resp->add_U32(VDR_RET_DATALOCKED);
-      resp->finalise();
-      req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+      m_resp->add_U32(VDR_RET_DATALOCKED);
+      m_resp->finalise();
+      m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
     }
   }
   else
   {
-    resp->add_U32(VDR_RET_DATAUNKNOWN);
-    resp->finalise();
-    req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+    m_resp->add_U32(VDR_RET_DATAUNKNOWN);
+    m_resp->finalise();
+    m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
   }
 
   return true;
@@ -1252,18 +1279,18 @@ bool cCmdControl::processRECORDINGS_Move() /* OPCODE 105 */
 
 bool cCmdControl::processEPG_GetForChannel() /* OPCODE 120 */
 {
-  uint32_t channelNumber  = req->extract_U32();
-  uint32_t startTime      = req->extract_U32();
-  uint32_t duration       = req->extract_U32();
+  uint32_t channelNumber  = m_req->extract_U32();
+  uint32_t startTime      = m_req->extract_U32();
+  uint32_t duration       = m_req->extract_U32();
 
   LOGCONSOLE("get schedule called for channel %lu", channelNumber);
 
   cChannel* channel = Channels.GetByNumber(channelNumber);
   if (!channel)
   {
-    resp->add_U32(0);
-    resp->finalise();
-    req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+    m_resp->add_U32(0);
+    m_resp->finalise();
+    m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
 
     LOGCONSOLE("written 0 because channel = NULL");
     return true;
@@ -1273,9 +1300,9 @@ bool cCmdControl::processEPG_GetForChannel() /* OPCODE 120 */
   const cSchedules *Schedules = cSchedules::Schedules(MutexLock);
   if (!Schedules)
   {
-    resp->add_U32(0);
-    resp->finalise();
-    req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+    m_resp->add_U32(0);
+    m_resp->finalise();
+    m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
 
     LOGCONSOLE("written 0 because Schedule!s! = NULL");
     return true;
@@ -1284,9 +1311,9 @@ bool cCmdControl::processEPG_GetForChannel() /* OPCODE 120 */
   const cSchedule *Schedule = Schedules->GetSchedule(channel->GetChannelID());
   if (!Schedule)
   {
-    resp->add_U32(0);
-    resp->finalise();
-    req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+    m_resp->add_U32(0);
+    m_resp->finalise();
+    m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
 
     LOGCONSOLE("written 0 because Schedule = NULL");
     return true;
@@ -1337,15 +1364,15 @@ bool cCmdControl::processEPG_GetForChannel() /* OPCODE 120 */
     if (!thisEventSubTitle)     thisEventSubTitle     = empty;
     if (!thisEventDescription)  thisEventDescription  = empty;
 
-    resp->add_U32(thisEventID);
-    resp->add_U32(thisEventTime);
-    resp->add_U32(thisEventDuration);
-    resp->add_U32(thisEventContent);
-    resp->add_U32(thisEventRating);
+    m_resp->add_U32(thisEventID);
+    m_resp->add_U32(thisEventTime);
+    m_resp->add_U32(thisEventDuration);
+    m_resp->add_U32(thisEventContent);
+    m_resp->add_U32(thisEventRating);
 
-    resp->add_String(toUTF8.Convert(thisEventTitle));
-    resp->add_String(toUTF8.Convert(thisEventSubTitle));
-    resp->add_String(toUTF8.Convert(thisEventDescription));
+    m_resp->add_String(toUTF8.Convert(thisEventTitle));
+    m_resp->add_String(toUTF8.Convert(thisEventSubTitle));
+    m_resp->add_String(toUTF8.Convert(thisEventDescription));
 
     atLeastOneEvent = true;
   }
@@ -1354,15 +1381,268 @@ bool cCmdControl::processEPG_GetForChannel() /* OPCODE 120 */
 
   if (!atLeastOneEvent)
   {
-    resp->add_U32(0);
+    m_resp->add_U32(0);
     LOGCONSOLE("Written 0 because no data");
   }
 
-  resp->finalise();
-  req->getClient()->GetSocket()->write(resp->getPtr(), resp->getLen());
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
 
   LOGCONSOLE("written schedules packet");
 
   return true;
 }
 
+
+/** OPCODE 140 - 169: VNSI network functions for channel scanning */
+
+bool cCmdControl::processSCAN_ScanSupported() /* OPCODE 140 */
+{
+  /** Note: Using "WirbelScanService-StopScan-v1.0" to detect
+            a present service interface in wirbelscan plugin,
+            it returns true if supported */
+  cPlugin *p = cPluginManager::GetPlugin("wirbelscan");
+  if (p && p->Service("WirbelScanService-StopScan-v1.0", NULL))
+    m_resp->add_U32(VDR_RET_OK);
+  else
+    m_resp->add_U32(VDR_RET_NOTSUPPORTED);
+
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
+  return true;
+}
+
+bool cCmdControl::processSCAN_GetCountries() /* OPCODE 141 */
+{
+  if (!m_processSCAN_Response)
+  {
+    m_processSCAN_Response = m_resp;
+    cPlugin *p = cPluginManager::GetPlugin("wirbelscan");
+    if (p)
+    {
+      m_resp->add_U32(VDR_RET_OK);
+      p->Service("WirbelScanService-GetCountries-v1.0", (void*) processSCAN_AddCountry);
+    }
+    else
+    {
+      m_resp->add_U32(VDR_RET_NOTSUPPORTED);
+    }
+    m_processSCAN_Response = NULL;
+  }
+  else
+  {
+    m_resp->add_U32(VDR_RET_DATALOCKED);
+  }
+
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
+  return true;
+}
+
+bool cCmdControl::processSCAN_GetSatellites() /* OPCODE 142 */
+{
+  if (!m_processSCAN_Response)
+  {
+    m_processSCAN_Response = m_resp;
+    cPlugin *p = cPluginManager::GetPlugin("wirbelscan");
+    if (p)
+    {
+      m_resp->add_U32(VDR_RET_OK);
+      p->Service("WirbelScanService-GetSatellites-v1.0", (void*) processSCAN_AddSatellite);
+    }
+    else
+    {
+      m_resp->add_U32(VDR_RET_NOTSUPPORTED);
+    }
+    m_processSCAN_Response = NULL;
+  }
+  else
+  {
+    m_resp->add_U32(VDR_RET_DATALOCKED);
+  }
+
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
+  return true;
+}
+
+bool cCmdControl::processSCAN_Start() /* OPCODE 143 */
+{
+  WirbelScanService_DoScan_v1_0 svc;
+  svc.type              = (scantype_t)m_req->extract_U32();
+  svc.scan_tv           = (bool)m_req->extract_U8();
+  svc.scan_radio        = (bool)m_req->extract_U8();
+  svc.scan_fta          = (bool)m_req->extract_U8();
+  svc.scan_scrambled    = (bool)m_req->extract_U8();
+  svc.scan_hd           = (bool)m_req->extract_U8();
+  svc.CountryIndex      = (int)m_req->extract_U32();
+  svc.DVBC_Inversion    = (int)m_req->extract_U32();
+  svc.DVBC_Symbolrate   = (int)m_req->extract_U32();
+  svc.DVBC_QAM          = (int)m_req->extract_U32();
+  svc.DVBT_Inversion    = (int)m_req->extract_U32();
+  svc.SatIndex          = (int)m_req->extract_U32();
+  svc.ATSC_Type         = (int)m_req->extract_U32();
+  svc.SetPercentage     = processSCAN_SetPercentage;
+  svc.SetSignalStrength = processSCAN_SetSignalStrength;
+  svc.SetDeviceInfo     = processSCAN_SetDeviceInfo;
+  svc.SetTransponder    = processSCAN_SetTransponder;
+  svc.NewChannel        = processSCAN_NewChannel;
+  svc.IsFinished        = processSCAN_IsFinished;
+  svc.SetStatus         = processSCAN_SetStatus;
+  m_processSCAN_Socket  = m_req->getClient()->GetSocket();
+
+  cPlugin *p = cPluginManager::GetPlugin("wirbelscan");
+  if (p)
+  {
+    if (p->Service("WirbelScanService-DoScan-v1.0", (void*) &svc))
+      m_resp->add_U32(VDR_RET_OK);
+    else
+      m_resp->add_U32(VDR_RET_ERROR);
+  }
+  else
+  {
+    m_resp->add_U32(VDR_RET_NOTSUPPORTED);
+  }
+
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
+  return true;
+}
+
+bool cCmdControl::processSCAN_Stop() /* OPCODE 144 */
+{
+  cPlugin *p = cPluginManager::GetPlugin("wirbelscan");
+  if (p)
+  {
+    p->Service("WirbelScanService-StopScan-v1.0", NULL);
+    m_resp->add_U32(VDR_RET_OK);
+  }
+  else
+  {
+    m_resp->add_U32(VDR_RET_NOTSUPPORTED);
+  }
+  m_resp->finalise();
+  m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
+  return true;
+}
+
+cResponsePacket *cCmdControl::m_processSCAN_Response = NULL;
+cxSocket *cCmdControl::m_processSCAN_Socket = NULL;
+
+void cCmdControl::processSCAN_AddCountry(int index, const char *isoName, const char *longName)
+{
+  m_processSCAN_Response->add_U32(index);
+  m_processSCAN_Response->add_String(isoName);
+  m_processSCAN_Response->add_String(longName);
+}
+
+void cCmdControl::processSCAN_AddSatellite(int index, const char *shortName, const char *longName)
+{
+  m_processSCAN_Response->add_U32(index);
+  m_processSCAN_Response->add_String(shortName);
+  m_processSCAN_Response->add_String(longName);
+}
+
+void cCmdControl::processSCAN_SetPercentage(int percent)
+{
+  cResponsePacket *resp = new cResponsePacket();
+  if (!resp->initScan(VDR_SCANNER_PERCENTAGE))
+  {
+    delete resp;
+    return;
+  }
+  resp->add_U32(percent);
+  resp->finalise();
+  m_processSCAN_Socket->write(resp->getPtr(), resp->getLen());
+  delete resp;
+}
+
+void cCmdControl::processSCAN_SetSignalStrength(int strength, bool locked)
+{
+  cResponsePacket *resp = new cResponsePacket();
+  if (!resp->initScan(VDR_SCANNER_SIGNAL))
+  {
+    delete resp;
+    return;
+  }
+  strength *= 100;
+  strength /= 0xFFFF;
+  resp->add_U32(strength);
+  resp->add_U32(locked);
+  resp->finalise();
+  m_processSCAN_Socket->write(resp->getPtr(), resp->getLen());
+  delete resp;
+}
+
+void cCmdControl::processSCAN_SetDeviceInfo(const char *Info)
+{
+  cResponsePacket *resp = new cResponsePacket();
+  if (!resp->initScan(VDR_SCANNER_DEVICE))
+  {
+    delete resp;
+    return;
+  }
+  resp->add_String(Info);
+  resp->finalise();
+  m_processSCAN_Socket->write(resp->getPtr(), resp->getLen());
+  delete resp;
+}
+
+void cCmdControl::processSCAN_SetTransponder(const char *Info)
+{
+  cResponsePacket *resp = new cResponsePacket();
+  if (!resp->initScan(VDR_SCANNER_TRANSPONDER))
+  {
+    delete resp;
+    return;
+  }
+  resp->add_String(Info);
+  resp->finalise();
+  m_processSCAN_Socket->write(resp->getPtr(), resp->getLen());
+  delete resp;
+}
+
+void cCmdControl::processSCAN_NewChannel(const char *Name, bool isRadio, bool isEncrypted, bool isHD)
+{
+  cResponsePacket *resp = new cResponsePacket();
+  if (!resp->initScan(VDR_SCANNER_NEWCHANNEL))
+  {
+    delete resp;
+    return;
+  }
+  resp->add_U32(isRadio);
+  resp->add_U32(isEncrypted);
+  resp->add_U32(isHD);
+  resp->add_String(Name);
+  resp->finalise();
+  m_processSCAN_Socket->write(resp->getPtr(), resp->getLen());
+  delete resp;
+}
+
+void cCmdControl::processSCAN_IsFinished()
+{
+  cResponsePacket *resp = new cResponsePacket();
+  if (!resp->initScan(VDR_SCANNER_FINISHED))
+  {
+    delete resp;
+    return;
+  }
+  resp->finalise();
+  m_processSCAN_Socket->write(resp->getPtr(), resp->getLen());
+  m_processSCAN_Socket = NULL;
+  delete resp;
+}
+
+void cCmdControl::processSCAN_SetStatus(int status)
+{
+  cResponsePacket *resp = new cResponsePacket();
+  if (!resp->initScan(VDR_SCANNER_STATUS))
+  {
+    delete resp;
+    return;
+  }
+  resp->add_U32(status);
+  resp->finalise();
+  m_processSCAN_Socket->write(resp->getPtr(), resp->getLen());
+  delete resp;
+}

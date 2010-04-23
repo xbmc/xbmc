@@ -118,6 +118,14 @@ public:
       dlsym(m_libXBMC_addon, "XBMC_unknown_to_utf8");
     if (UnknownToUTF8 == NULL)      { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
+    GetLocalizedString = (std::string (*)(int dwCode))
+      dlsym(m_libXBMC_addon, "XBMC_get_localized_string");
+    if (GetLocalizedString == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+    GetDVDMenuLanguage = (std::string (*)())
+      dlsym(m_libXBMC_addon, "XBMC_get_dvd_menu_language");
+    if (GetDVDMenuLanguage == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
     return XBMC_register_me(m_Handle) > 0;
   }
 
@@ -125,6 +133,8 @@ public:
   bool (*GetSetting)(std::string settingName, void *settingValue);
   void (*QueueNotification)(const queue_msg_t type, const char *format, ... );
   void (*UnknownToUTF8)(std::string &str);
+  std::string (*GetLocalizedString)(int dwCode);
+  std::string (*GetDVDMenuLanguage)();
 
 protected:
   int (*XBMC_register_me)(void *HANDLE);

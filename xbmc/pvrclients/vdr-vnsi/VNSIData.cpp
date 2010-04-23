@@ -143,6 +143,27 @@ bool cVNSIData::GetDriveSpace(long long *total, long long *used)
   return true;
 }
 
+bool cVNSIData::SupportChannelScan()
+{
+  cRequestPacket vrp;
+  if (!vrp.init(VDR_SCAN_SUPPORTED))
+  {
+    XBMC->Log(LOG_ERROR, "cVNSIData::SupportChannelScan - Can't init cRequestPacket");
+    return false;
+  }
+
+  cResponsePacket* vresp = ReadResult(&vrp);
+  if (!vresp)
+  {
+    XBMC->Log(LOG_ERROR, "cVNSIData::SupportChannelScan - Can't get response packed");
+    return false;
+  }
+
+  uint32_t ret = vresp->extract_U32();
+  delete vresp;
+  return ret == VDR_RET_OK ? true : false;
+}
+
 int cVNSIData::GetGroupsCount()
 {
   cRequestPacket vrp;

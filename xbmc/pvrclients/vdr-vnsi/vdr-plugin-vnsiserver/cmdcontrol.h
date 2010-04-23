@@ -30,6 +30,8 @@
 
 typedef std::queue<cRequestPacket*> RequestPacketQueue;
 
+class cxSocket;
+
 class cCmdControl : public cThread
 {
 public:
@@ -73,11 +75,31 @@ private:
 
   bool processEPG_GetForChannel();
 
+  bool processSCAN_ScanSupported();
+  bool processSCAN_GetCountries();
+  bool processSCAN_GetSatellites();
+  bool processSCAN_Start();
+  bool processSCAN_Stop();
+
+  /** Static callback functions to interact with wirbelscan plugin over
+      the plugin service interface */
+  static void processSCAN_AddCountry(int index, const char *isoName, const char *longName);
+  static void processSCAN_AddSatellite(int index, const char *shortName, const char *longName);
+  static void processSCAN_SetPercentage(int percent);
+  static void processSCAN_SetSignalStrength(int strength, bool locked);
+  static void processSCAN_SetDeviceInfo(const char *Info);
+  static void processSCAN_SetTransponder(const char *Info);
+  static void processSCAN_NewChannel(const char *Name, bool isRadio, bool isEncrypted, bool isHD);
+  static void processSCAN_IsFinished();
+  static void processSCAN_SetStatus(int status);
+  static cResponsePacket *m_processSCAN_Response;
+  static cxSocket *m_processSCAN_Socket;
+
   virtual void Action(void);
 
-  cRequestPacket     *req;
-  RequestPacketQueue  req_queue;
-  cResponsePacket    *resp;
+  cRequestPacket     *m_req;
+  RequestPacketQueue  m_req_queue;
+  cResponsePacket    *m_resp;
   cCondWait           m_Wait;
 };
 

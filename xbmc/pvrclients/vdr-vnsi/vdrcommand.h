@@ -31,6 +31,8 @@ const static uint32_t CHANNEL_REQUEST_RESPONSE = 1;
 const static uint32_t CHANNEL_STREAM           = 2;
 const static uint32_t CHANNEL_KEEPALIVE        = 3;
 const static uint32_t CHANNEL_NETLOG           = 4;
+const static uint32_t CHANNEL_STATUS           = 5;
+const static uint32_t CHANNEL_SCAN             = 6;
 
 
 /** Response packets operation codes */
@@ -76,6 +78,13 @@ const static uint32_t VDR_RECORDINGS_MOVE       = 105;
 /* OPCODE 120 - 139: VNSI network functions for epg access and manipulating */
 const static uint32_t VDR_EPG_GETFORCHANNEL     = 120;
 
+/* OPCODE 140 - 159: VNSI network functions for channel scanning */
+const static uint32_t VDR_SCAN_SUPPORTED        = 140;
+const static uint32_t VDR_SCAN_GETCOUNTRIES     = 141;
+const static uint32_t VDR_SCAN_GETSATELLITES    = 142;
+const static uint32_t VDR_SCAN_START            = 143;
+const static uint32_t VDR_SCAN_STOP             = 144;
+
 
 /** Stream packet types (server -> client) */
 const static uint32_t VDR_STREAM_CHANGE       = 1;
@@ -85,10 +94,19 @@ const static uint32_t VDR_STREAM_MUXPKT       = 4;
 const static uint32_t VDR_STREAM_SIGNALINFO   = 5;
 const static uint32_t VDR_STREAM_CONTENTINFO  = 6;
 
+/** Scan packet types (server -> client) */
+const static uint32_t VDR_SCANNER_PERCENTAGE  = 1;
+const static uint32_t VDR_SCANNER_SIGNAL      = 2;
+const static uint32_t VDR_SCANNER_DEVICE      = 3;
+const static uint32_t VDR_SCANNER_TRANSPONDER = 4;
+const static uint32_t VDR_SCANNER_NEWCHANNEL  = 5;
+const static uint32_t VDR_SCANNER_FINISHED    = 6;
+const static uint32_t VDR_SCANNER_STATUS      = 7;
 
 /** Packet return codes */
 const static uint32_t VDR_RET_OK              = 0;
 const static uint32_t VDR_RET_RECRUNNING      = 1;
+const static uint32_t VDR_RET_NOTSUPPORTED    = 995;
 const static uint32_t VDR_RET_DATAUNKNOWN     = 996;
 const static uint32_t VDR_RET_DATALOCKED      = 997;
 const static uint32_t VDR_RET_DATAINVALID     = 998;

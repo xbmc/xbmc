@@ -31,7 +31,7 @@ endif
 
 -include Make.config
 
-OBJS = client.o VNSIData.o VNSIDemux.o VNSIRecording.o VNSISession.o recordings.o requestpacket.o responsepacket.o thread.o tools.o
+OBJS = client.o VNSIChannelScan.o VNSIData.o VNSIDemux.o VNSIRecording.o VNSISession.o recordings.o requestpacket.o responsepacket.o thread.o tools.o
 
 all: pvrVNSI
 

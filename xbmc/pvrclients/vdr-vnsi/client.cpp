@@ -24,6 +24,7 @@
 #include "VNSIDemux.h"
 #include "VNSIRecording.h"
 #include "VNSIData.h"
+#include "VNSIChannelScan.h"
 
 using namespace std;
 
@@ -48,6 +49,7 @@ int           g_iPriority               = DEFAULT_PRIORITY;     ///< The Priorit
 CStdString    g_szUserPath              = "";
 CStdString    g_szClientPath            = "";
 cHelper_libXBMC_addon *XBMC   = NULL;
+cHelper_libXBMC_gui   *GUI    = NULL;
 cHelper_libXBMC_pvr   *PVR    = NULL;
 cVNSIDemux      *VNSIDemuxer       = NULL;
 cVNSIData       *VNSIData          = NULL;
@@ -128,6 +130,10 @@ ADDON_STATUS Create(void* hdl, void* props)
 
   XBMC = new cHelper_libXBMC_addon;
   if (!XBMC->RegisterMe(hdl))
+    return STATUS_UNKNOWN;
+
+  GUI = new cHelper_libXBMC_gui;
+  if (!GUI->RegisterMe(hdl))
     return STATUS_UNKNOWN;
 
   PVR = new cHelper_libXBMC_pvr;
@@ -341,7 +347,10 @@ PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
   props->SupportBouquets           = false;
   props->HandleInputStream         = true;
   props->HandleDemuxing            = true;
-  props->SupportChannelScan        = false;
+  if (VNSIData && VNSIData->SupportChannelScan())
+    props->SupportChannelScan      = true;
+  else
+    props->SupportChannelScan      = false;
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -386,6 +395,12 @@ PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset)
   return PVR_ERROR_SERVER_ERROR;
 }
 
+PVR_ERROR DialogChannelScan()
+{
+  cVNSIChannelScan scanner;
+  scanner.Open();
+  return PVR_ERROR_NO_ERROR;
+}
 
 /*******************************************/
 /** PVR EPG Functions                     **/
@@ -628,7 +643,6 @@ long long LengthRecordedStream(void)
 
 
 /** UNUSED API FUNCTIONS */
-PVR_ERROR DialogChannelScan() { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR MenuHook(const PVR_MENUHOOK &menuhook) { return PVR_ERROR_NOT_IMPLEMENTED; }
 int GetNumBouquets() { return 0; }
 PVR_ERROR RequestBouquetsList(PVRHANDLE handle, int radio) { return PVR_ERROR_NOT_IMPLEMENTED; }

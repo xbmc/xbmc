@@ -40,6 +40,18 @@ Run a "make plugins" and depented on your environment a "make install".
 And add "-P'vnsiserver'" to your startup options.
 
 
+------------------------------------------
+CHANNEL SCANNING
+
+For channel scan's a modified version of the wirbelscan plugin for VDR (Version dev-0.0.5-pre11e) is
+required. You can download the orginal source from here "http://wirbel.htpc-forum.de/wirbelscan/index2.html".
+
+The VNSI communicate with wirbelscan over VDR's plugin service interface, to add this feature
+you must patch wirbelscan with the file in "patches/vdr-wirbelscan-0.0.5-pre11e-AddServiceInterface.diff".
+
+Please load VDR with VNSI plugin together with the modified wirbelscan plugin and you can access the
+"Search Channels" option inside "Settings->TV->General"
+
 
 ------------------------------------------
 

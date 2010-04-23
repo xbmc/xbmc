@@ -22,6 +22,7 @@
 #include "Addon.h"
 #include "AddonHelpers_local.h"
 #include "AddonHelpers_Addon.h"
+#include "AddonHelpers_GUI.h"
 #include "AddonHelpers_PVR.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "log.h"
@@ -34,12 +35,15 @@ CAddonHelpers::CAddonHelpers(CAddon* addon)
   m_addon       = addon;
   m_callbacks   = new AddonCB;
   m_helperAddon = NULL;
+  m_helperGUI   = NULL;
   m_helperPVR   = NULL;
 
   m_callbacks->libBasePath           = strdup(_P("special://xbmc/addons"));
   m_callbacks->addonData             = this;
   m_callbacks->AddOnLib_RegisterMe   = CAddonHelpers::AddOnLib_RegisterMe;
   m_callbacks->AddOnLib_UnRegisterMe = CAddonHelpers::AddOnLib_UnRegisterMe;
+  m_callbacks->GUILib_RegisterMe     = CAddonHelpers::GUILib_RegisterMe;
+  m_callbacks->GUILib_UnRegisterMe   = CAddonHelpers::GUILib_UnRegisterMe;
   m_callbacks->PVRLib_RegisterMe     = CAddonHelpers::PVRLib_RegisterMe;
   m_callbacks->PVRLib_UnRegisterMe   = CAddonHelpers::PVRLib_UnRegisterMe;
 }
@@ -48,6 +52,8 @@ CAddonHelpers::~CAddonHelpers()
 {
   delete m_helperAddon;
   m_helperAddon = NULL;
+  delete m_helperGUI;
+  m_helperGUI = NULL;
   delete m_helperPVR;
   m_helperPVR = NULL;
   delete m_callbacks;
@@ -78,6 +84,32 @@ void CAddonHelpers::AddOnLib_UnRegisterMe(void *addonData, CB_AddOnLib *cbTable)
 
   delete helper->m_helperAddon;
   helper->m_helperAddon = NULL;
+}
+
+CB_GUILib* CAddonHelpers::GUILib_RegisterMe(void *addonData)
+{
+  CAddonHelpers* helper = (CAddonHelpers*) addonData;
+  if (helper == NULL)
+  {
+    CLog::Log(LOGERROR, "Addon-Helper: GUILib_RegisterMe is called with NULL-Pointer!!!");
+    return NULL;
+  }
+
+  helper->m_helperGUI = new CAddonHelpers_GUI(helper->m_addon);
+  return helper->m_helperGUI->GetCallbacks();
+}
+
+void CAddonHelpers::GUILib_UnRegisterMe(void *addonData, CB_GUILib *cbTable)
+{
+  CAddonHelpers* helper = (CAddonHelpers*) addonData;
+  if (helper == NULL)
+  {
+    CLog::Log(LOGERROR, "Addon-Helper: GUILib_UnRegisterMe is called with NULL-Pointer!!!");
+    return;
+  }
+
+  delete helper->m_helperGUI;
+  helper->m_helperGUI = NULL;
 }
 
 CB_PVRLib* CAddonHelpers::PVRLib_RegisterMe(void *addonData)

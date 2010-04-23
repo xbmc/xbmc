@@ -25,6 +25,7 @@
 
 #include "StdString.h"
 #include "../../../addons/org.xbmc.addon.library/libXBMC_addon.h"
+#include "../../../addons/org.xbmc.gui.library/libXBMC_gui.h"
 #include "../../../addons/org.xbmc.pvr.library/libXBMC_pvr.h"
 
 #define DEFAULT_HOST          "127.0.0.1"
@@ -52,6 +53,7 @@ extern bool         g_bHandleMessages;    ///< Send VDR's OSD status messages to
 extern bool         g_bUseRecordingsDir;  ///< Use a normal directory if true for recordings
 extern CStdString   g_szRecordingsDir;    ///< The path to the recordings directory
 extern cHelper_libXBMC_addon *XBMC;
+extern cHelper_libXBMC_gui   *GUI;
 extern cHelper_libXBMC_pvr   *PVR;
 
 #endif /* CLIENT_H */
