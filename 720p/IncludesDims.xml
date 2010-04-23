@@ -1418,10 +1418,10 @@
 		<width>288</width>
 	</include>
 	<include name="MediaPreviewThumbDims">
-		<posx>18</posx>
-		<posy>34</posy>
-		<width>106</width>
-		<height>156</height>
+		<posx>7.5</posx>
+		<posy>29</posy>
+		<width>124</width>
+		<height>183</height>
 	</include>
 	<include name="MediaPreviewEpThumbDims">
 		<posx>18</posx>

@@ -380,7 +380,7 @@
 					<control type="group">
 						<include>MediaFade</include>
 						<posy>159</posy>
-						<posx>74</posx>
+						<posx>73</posx>
 						<visible>!IsEmpty(Container.SeasonThumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 						<control type="image">
 							<description>Season Thumb</description>
@@ -700,6 +700,7 @@
 	</include>
 	-->
 	<include name="MediaPreview">
+
 		<control type="group">
 			<include>MediaPreviewVisible</include>
 			<include>MediaViewFade</include>
@@ -714,26 +715,13 @@
 				</control>
 				<control type="group">
 					<posy>450</posy>
-					<control type="image">
-						<width>1280</width>
-						<height>64</height>
-						<texture>Black.png</texture>
-						<colordiffuse>99cccccc</colordiffuse>
-					</control>
-					<control type="image">
-						<description>Glass overlay for movie title to sit on</description>
-						<posx>343</posx>
-						<width>593</width>
-						<height>50</height>
-						<texture>GlassTitleBar.png</texture>
-					</control>
 					<control type="label">
 						<description>Title</description>
 						<posy>8</posy>
 						<width>1280</width>
 						<align>center</align>
 						<label>$INFO[ListItem.Label]</label>
-						<font>TitleCapsFont</font>
+						<font>LargeTitleFont</font>
 						<scroll>true</scroll>
 					</control>
 				</control>
@@ -742,14 +730,6 @@
 				<visible>!Container.OnNext + !Container.OnPrevious</visible>
 				<visible>!Skin.HasSetting(HideInfoInMediaPreview) + !Skin.HasSetting(ShowAnimMediaPreview)</visible>
 				<animation effect="fade" start="0" end="100" time="400" delay="100">Visible</animation>
-				<control type="image">
-					<description>Glass overlay for movie title to sit on</description>
-					<posx>260</posx>
-					<posy>64</posy>
-					<width>593</width>
-					<height>50</height>
-					<texture>GlassTitleBar.png</texture>
-				</control>
 				<control type="group">
 					<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 					<control type="group">
@@ -763,22 +743,6 @@
 								<texture>amt-blank-poster.png</texture>
 								<info>ListItem.Icon</info>
 								<aspectratio aligny="middle">keep</aspectratio>
-							</control>
-							<!--
-              <control type="label">
-                <include>MediaPreviewPosterNoThumbDims</include>
-                <font>LargeTitleCapsFont</font>
-                <include>NoThumbLabel</include>
-              </control>
--->
-							<control type="image">
-								<description>Glass overlay</description>
-								<posx>0</posx>
-								<posy>0</posy>
-								<width>230</width>
-								<height>214</height>
-								<include>GlassTextureOverlay2</include>
-								<colordiffuse>ffcccccc</colordiffuse>
 							</control>
 						</control>
 						<control type="group">
@@ -805,13 +769,14 @@
 						<description>Movie Title</description>
 						<width>660</width>
 						<label>$INFO[ListItem.Label]</label>
-						<font>TitleCapsFont</font>
+						<font>LargeTitleFont</font>
 						<scroll>true</scroll>
 					</control>
 					<control type="label">
 						<description>Movie Year</description>
-						<posy>30</posy>
+						<posy>32</posy>
 						<width>660</width>
+						<font>MediaPreviewYear</font>
 						<label>$INFO[ListItem.Year]</label>
 						<scroll>true</scroll>
 					</control>
@@ -828,23 +793,24 @@
 						<width>870</width>
 						<height>167</height>
 						<info>ListItem.Plot</info>
+						<font>MediaPreviewSummary</font>						
 					</control>
 					<control type="group">
-						<posy>245</posy>
-						<posx>20</posx>
+						<posy>243</posy>
+						<posx>31</posx>
 						<visible>Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)</visible>
 						<control type="label">
 							<posy>4</posy>
-							<posx>74</posx>
+							<posx>73</posx>
 							<description>Rating</description>
-							<font>MediumSmallTitleCapsFont</font>
+							<font>MediaPreviewDetailsHeader</font>
 							<label>$LOCALIZE[31129]:</label>
 							<textcolor>FFfd9800</textcolor>
 							<align>right</align>
 						</control>
 						<control type="image">
-							<posx>74</posx>
-							<posy>1</posy>
+							<posx>73</posx>
+							<posy>2</posy>
 							<height>27</height>
 							<aspectratio>keep</aspectratio>
 							<info>ListItem.StarRating</info>
@@ -852,71 +818,71 @@
 							<align>left</align>
 						</control>
 						<control type="label">
-							<posy>30</posy>
-							<posx>74</posx>
+							<posy>32</posy>
+							<posx>73</posx>
 							<description>IMDb Rating</description>
-							<font>MediumSmallTitleCapsFont</font>
+							<font>MediaPreviewDetailsHeader</font>
 							<label>$LOCALIZE[31130]:</label>
 							<textcolor>FFfd9800</textcolor>
 							<align>right</align>
 						</control>
 						<control type="label">
-							<posy>30</posy>
+							<posy>34</posy>
 							<posx>88</posx>
 							<description>IMDb Rating</description>
-							<font>MediumSmallTitleCapsFont</font>
+							<font>MediaPreviewSummary</font>
 							<label>$INFO[ListItem.rating]</label>
 							<align>left</align>
 						</control>
 						<control type="label">
-							<posy>56</posy>
-							<posx>74</posx>
+							<posy>60</posy>
+							<posx>73</posx>
 							<description>Genre</description>
-							<font>MediumSmallTitleCapsFont</font>
+							<font>MediaPreviewDetailsHeader</font>
 							<label>$LOCALIZE[31131]:</label>
 							<textcolor>FFfd9800</textcolor>
 							<align>right</align>
 						</control>
 						<control type="label">
-							<posy>56</posy>
+							<posy>62</posy>
 							<posx>88</posx>
 							<description>Genre</description>
-							<font>MediumSmallTitleCapsFont</font>
+							<font>MediaPreviewSummary</font>
 							<label>$INFO[ListItem.FirstGenre]</label>
 							<align>left</align>
 						</control>
 						<control type="label">
-							<posy>82</posy>
-							<posx>74</posx>
+							<posy>88</posy>
+							<posx>73</posx>
 							<description>Duration</description>
-							<font>MediumSmallTitleCapsFont</font>
+							<font>MediaPreviewDetailsHeader</font>
 							<label>$LOCALIZE[31132]:</label>
 							<textcolor>FFfd9800</textcolor>
 							<align>right</align>
 						</control>
 						<control type="label">
-							<posy>82</posy>
+							<posy>90</posy>
 							<posx>88</posx>
 							<description>Duration</description>
-							<font>MediumSmallTitleCapsFont</font>
+							<font>MediaPreviewSummary</font>
 							<label>$INFO[ListItem.Duration]</label>
 							<align>left</align>
 						</control>
 						<control type="label">
-							<posy>108</posy>
-							<posx>74</posx>
+							<posy>116</posy>
+							<posx>73</posx>
 							<description>Subtitles</description>
-							<font>MediumSmallTitleCapsFont</font>
+							<font>MediaPreviewDetailsHeader</font>
 							<label>$LOCALIZE[31133]:</label>
 							<textcolor>FFfd9800</textcolor>
 							<visible>Container.Content(movies)</visible>
 							<align>right</align>
 						</control>
 						<control type="label">
-							<posy>108</posy>
+							<posy>118</posy>
 							<posx>88</posx>
 							<description>Subtitles</description>
-							<font>MediumSmallTitleCapsFont</font>
+							<font>MediaPreviewSummary</font>
 							<label>$INFO[SubtitleLanguage]</label>
 							<align>left</align>
 						</control>
@@ -925,59 +891,65 @@
 							<posy>4</posy>
 							<posx>401</posx>
 							<description>Cast</description>
-							<font>MediumSmallTitleCapsFont</font>
+							<font>MediaPreviewDetailsHeader</font>
 							<label>$LOCALIZE[31134]:</label>
 							<textcolor>FFfd9800</textcolor>
 							<align>right</align>
 						</control>
 						<control type="label">
-							<posy>4</posy>
+							<posy>6</posy>
 							<posx>415</posx>
 							<width>455</width>
 							<description>Cast</description>
-							<font>MediumSmallTitleCapsFont</font>
+							<font>MediaPreviewSummary</font>
 							<label>$INFO[ListItem.Cast]</label>
 							<textcolor>FFfd9800</textcolor>
 							<align>right</align>
 						</control>
 						<control type="label">
-							<posy>30</posy>
+							<posy>32</posy>
 							<posx>401</posx>
 							<description>Director</description>
-							<font>MediumSmallTitleCapsFont</font>
+							<font>MediaPreviewDetailsHeader</font>
 							<label>$LOCALIZE[31135]:</label>
 							<textcolor>FFfd9800</textcolor>
 							<align>right</align>
 						</control>
 						<control type="label">
-							<posy>30</posy>
+							<posy>34</posy>
 							<posx>415</posx>
 							<width>455</width>
-							<font>MediumSmallTitleCapsFont</font>
+							<font>MediaPreviewSummary</font>
 							<label>$INFO[ListItem.Director]</label>
 							<align>left</align>
 						</control>
 						<control type="label">
-							<posy>56</posy>
+							<posy>60</posy>
 							<posx>401</posx>
 							<description>Writer</description>
-							<font>MediumSmallTitleCapsFont</font>
+							<font>MediaPreviewDetailsHeader</font>
 							<label>$LOCALIZE[31136]:</label>
 							<textcolor>FFfd9800</textcolor>
 							<align>right</align>
 						</control>
 						<control type="label">
-							<posy>56</posy>
+							<posy>62</posy>
 							<posx>415</posx>
 							<width>455</width>
-							<font>MediumSmallTitleCapsFont</font>
+							<font>MediaPreviewSummary</font>
 							<label>$INFO[ListItem.Writer]</label>
 							<align>left</align>
 						</control>
 					</control>
 				</control>
+				<control type="group">
+					<posx>745</posx>
+					<posy>443</posy>
+					<include>MediaPreviewFlags</include>
+				</control>
 			</control>
 		</control>
+
 		<control type="group">
 			<include>MediaPreviewVisible</include>
 			<visible>Skin.HasSetting(ShowAnimMediaPreview)</visible>
@@ -1103,20 +1075,12 @@
 			<posy>502</posy>
 			<include>MediaPreviewVisible</include>
 			<include>MediaViewFade</include>
-			<control type="image">
-				<description>Black overlay for thumbs to sit on</description>
-				<posy>2</posy>
-				<width>1280</width>
-				<height>216</height>
-				<texture>Black.png</texture>
-				<visible>!Skin.HasSetting(ShowAnimMediaPreview)</visible>
-			</control>
 			<control type="wraplist" id="51">
 				<viewtype label="Media Preview">wraplist</viewtype>
 				<include condition="Skin.HasSetting(ShowAnimMediaPreview)">MediaPreviewAnimList</include>
-				<posx>1</posx>
+				<posx>13</posx>
 				<posy>-13</posy>
-				<width>1772</width>
+				<width>1251</width>
 				<height>720</height>
 				<onleft>51</onleft>
 				<onright>51</onright>
@@ -1127,46 +1091,26 @@
 				<focusposition>4</focusposition>
 				<include>MediaViewFade</include>
 				<animation effect="slide" start="0,0" end="-512,0" time="0" condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)">Conditional</animation>
-				<itemlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + !Container.Content(episodes)" width="142" height="220">
+				<itemlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + !Container.Content(episodes)" width="139" height="220">
 					<control type="image">
-						<include>MediaPreviewThumb</include>
-						<colordiffuse>ff999999</colordiffuse>
-					</control>
-					<!--
-          <control type="label">
-            <description>No Thumb label</description>
-            <include>MediaPreviewThumbNoThumbDims</include>
-            <include>NoThumbLabel</include>
-          </control>
--->
-					<control type="image">
-						<include>MediaPreviewThumbRflctnDims</include>
-						<texture flipy="true" diffuse="DiffuseMirror.png">amt-blank-poster.png</texture>
 						<include>MediaPreviewThumb</include>
 					</control>
 				</itemlayout>
-				<focusedlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + !Container.Content(episodes)" width="142" height="220">
+				<focusedlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + !Container.Content(episodes)" width="139" height="220">
 					<control type="image">
-						<include>MediaPreviewThumbRflctnDims</include>
-						<texture flipy="true" diffuse="DiffuseMirror.png">amt-blank-poster.png</texture>
+						<posx>4.5</posx>
+						<posy>26</posy>
+						<width>130</width>
+						<height>189</height>
+						<bordertexture>amt-blank-poster-focus.png</bordertexture>
+						<bordersize>3</bordersize>
+						<texture>amt-blank-poster.png</texture>
+						<info>ListItem.Icon</info>
+						<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+					</control>
+					<control type="image">
 						<include>MediaPreviewThumb</include>
-						<include>MediaPreviewThumbRflctnAnim</include>
 					</control>
-					<control type="image">
-						<texture border="12">ThumbBorder.png</texture>
-						<include>MediaPreviewThumbBorderDims</include>
-					</control>
-					<control type="image">
-						<include>MediaPreviewThumb</include>
-						<include>MediaPreviewThumbAnim</include>
-					</control>
-					<!--
-          <control type="label">
-            <include>MediaPreviewThumbNoThumbDims</include>
-            <include>NoThumbLabel</include>
-            <include>MediaPreviewThumbNoThumbAnim</include>
-          </control>
--->
 				</focusedlayout>
 				<itemlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)" width="256" height="220">
 					<control type="image">
@@ -1208,22 +1152,6 @@
 						<include>MediaPreviewAnimThumbAnim</include>
 					</control>
 				</focusedlayout>
-			</control>
-			<control type="group">
-				<visible>!Skin.HasSetting(ShowAnimMediaPreview)</visible>
-				<control type="image">
-					<description>Left hand fade on thumb strip</description>
-					<width>140</width>
-					<height>220</height>
-					<texture>BlackGradient.png</texture>
-				</control>
-				<control type="image">
-					<description>Right hand fade on thumb strip</description>
-					<posx>1140</posx>
-					<width>140</width>
-					<height>220</height>
-					<texture flipx="true">BlackGradient.png</texture>
-				</control>
 			</control>
 		</control>
 		<control type="group">
