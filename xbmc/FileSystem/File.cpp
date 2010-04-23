@@ -334,7 +334,7 @@ bool CFile::Open(const CStdString& strFileName, unsigned int flags)
     }
     catch (...)
     {
-      CLog::Log(LOGDEBUG,"File::Open - unknown exception when opening %s", strFileName.c_str());
+      CLog::Log(LOGERROR, "File::Open - unknown exception when opening %s", strFileName.c_str());
       SAFE_DELETE(m_pFile);
       return false;
     }

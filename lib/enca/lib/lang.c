@@ -21,6 +21,8 @@
 #  include "config.h"
 #endif /* HAVE_CONFIG_H */
 
+#include <string.h>
+
 #include "enca.h"
 #include "internal.h"
 

@@ -57,13 +57,14 @@
 			<description>control area</description>
 			<posx>30</posx>
 			<posy>80</posy>
-			<width>740</width>
+			<width>730</width>
 			<height>420</height>
 			<itemgap>-1</itemgap>
+			<pagecontrol>30</pagecontrol>
 			<onup>2</onup>
 			<ondown>2</ondown>
-			<onleft>10</onleft>
-			<onright>10</onright>
+			<onleft>30</onleft>
+			<onright>30</onright>
 		</control>
 		<control type="button" id="3">
 			<description>Default Button</description>
@@ -107,6 +108,21 @@
 			<description>Default Seperator</description>
 			<height>2</height>
 			<texture>separator2.png</texture>
+		</control>
+		<control type="scrollbar" id="30">
+			<posx>760</posx>
+			<posy>80</posy>
+			<width>25</width>
+			<height>430</height>
+			<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+			<texturesliderbar border="2,16,2,16">ScrollBarV_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="2,16,2,16">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>ScrollBarNib.png</textureslidernib>
+			<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+			<onleft>2</onleft>
+			<onright>10</onright>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
 		</control>
 		<control type="group" id="9001">
 			<posy>540</posy>

@@ -383,7 +383,6 @@
   </Settings>
   <AddonBrowser>
     <remote>
-      <back>PreviousMenu</back>
     </remote>
   </AddonBrowser>
   <MyPicturesSettings>

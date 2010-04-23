@@ -271,7 +271,7 @@ void CGUIDialogSongInfo::OnGetThumb()
 
   CStdString cachedThumb(CUtil::GetCachedAlbumThumb(m_song->GetMusicInfoTag()->GetAlbum(), m_song->GetMusicInfoTag()->GetArtist()));
 
-  CTextureCache::Get().ClearCachedImage(cachedThumb);
+  CTextureCache::Get().ClearCachedImage(cachedThumb, true);
   if (result == "thumb://None")
   {
     CFile::Delete(cachedThumb);

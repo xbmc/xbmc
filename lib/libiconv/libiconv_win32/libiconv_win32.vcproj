@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\;..\include;..\libcharset\include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;IN_LIBRARY;NO_XMALLOC;ENABLE_RELOCATABLE;set_relocation_prefix=libiconv_set_relocation_prefix;relocate=libiconv_relocate"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;IN_LIBRARY;NO_XMALLOC;ENABLE_RELOCATABLE;set_relocation_prefix=libiconv_set_relocation_prefix;relocate=libiconv_relocate;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -108,7 +108,7 @@
 				EnableIntrinsicFunctions="true"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories=".\;..\include;..\libcharset\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;IN_LIBRARY;NO_XMALLOC;ENABLE_RELOCATABLE;set_relocation_prefix=libiconv_set_relocation_prefix;relocate=libiconv_relocate"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;IN_LIBRARY;NO_XMALLOC;ENABLE_RELOCATABLE;set_relocation_prefix=libiconv_set_relocation_prefix;relocate=libiconv_relocate;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -153,18 +153,6 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
-			<File
-				RelativePath="..\lib\genaliases.c"
-				>
-			</File>
-			<File
-				RelativePath="..\lib\genaliases2.c"
-				>
-			</File>
-			<File
-				RelativePath="..\lib\genflags.c"
-				>
-			</File>
 			<File
 				RelativePath="..\lib\iconv.c"
 				>

@@ -11,15 +11,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\lib\genaliases.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\genaliases2.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\lib\genflags.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\iconv.c">
       <Filter>Source Files</Filter>
     </ClCompile>

@@ -302,7 +302,14 @@ IF %comp%==vs2008 (
   IF NOT EXIST %log% goto END
   set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
   if /I %XBMC_BUILD_ANSWER% NEQ y goto END
-  start %log%
+  
+  IF %comp%==vs2008 (
+    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%" BuildLog.htm
+  ) ELSE (
+    SET log="%CD%\..\vs2008express\XBMC\%buildconfig%" BuildLog.htm
+  )
+  
+  start /D%log%
   goto END
 
 :END

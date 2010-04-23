@@ -50,6 +50,7 @@
 #include "StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "TextureCache.h"
 
 #ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -1316,16 +1317,12 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
         resolution = slide->GetPictureInfoTag()->GetInfo(SLIDE_RESOLUTION);
       slideOutput+=closeTag+openTag+prefix+"Resolution:" + resolution;
       CFileItem item(*slide);
-      item.SetCachedPictureThumb();
-      if (autoGetPictureThumbs && !item.HasThumbnail())
+      thumb = CTextureCache::Get().GetCachedImage(CTextureCache::GetWrappedThumbURL(item.m_strPath));
+      if (autoGetPictureThumbs && thumb.IsEmpty())
+        thumb = CTextureCache::Get().CheckAndCacheImage(CTextureCache::GetWrappedThumbURL(item.m_strPath), false);
+      if (thumb.IsEmpty())
       {
-        CPicture::CreateThumbnail(item.m_strPath, item.GetCachedPictureThumb());
-        item.SetCachedPictureThumb();
-      }
-      thumb = item.GetCachedPictureThumb();
-      if (!item.HasThumbnail())
-      {
-        thumb = "[None] " + thumb;
+        thumb = "[None]";
         copyThumb("DefaultPicture.png",thumbSlideFn);
       }
       else

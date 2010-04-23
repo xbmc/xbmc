@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 29227 -->
+<!--Based on english strings version 29298 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -2108,6 +2108,7 @@
   <!-- strings 24000 thru 24299 reserved for the addons framework -->
   <string id="24000">扩展功能</string>
   <string id="24001">扩展功能</string>
+  <string id="24002">扩展功能选项</string>
 
   <string id="24005">插件</string>
   <string id="24007">刮削器</string>
@@ -2133,9 +2134,11 @@
   <string id="24060">要禁用此扩展功能吗？</string>
   <string id="24061">扩展功能有可用更新！</string>
   <string id="24062">已启用扩展功能</string>
-  <string id="24063">启用自动更新</string>
+  <string id="24063">自动更新</string>
   <string id="24064">扩展功能已启用</string>
   <string id="24065">扩展功能已更新</string>
+  <string id="24066">取消扩展功能下载？</string>
+  <string id="24067">当前下载扩展功能</string>
 
   <string id="24070">扩展功能不可用</string>
   <string id="24071">发生未知错误</string>

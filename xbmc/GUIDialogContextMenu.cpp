@@ -514,8 +514,6 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
         }
         else if (type == "video")
           cachedThumb = item->GetCachedVideoThumb();
-        else if (type == "pictures")
-          cachedThumb = item->GetCachedPictureThumb();
         else  // assume "programs"
           cachedThumb = item->GetCachedProgramThumb();
         XFILE::CFile::Cache(strThumb, cachedThumb);

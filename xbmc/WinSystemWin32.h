@@ -24,17 +24,8 @@
 
 #include "WinSystem.h"
 
-enum MonitorType
-{
-  MONITOR_TYPE_PRIMARY = 1,
-  MONITOR_TYPE_SECONDARY = 2
-};
-
-#define MAX_MONITORS_NUM 2
-
 struct MONITOR_DETAILS
 {
-  MonitorType type;
   int ScreenWidth;
   int ScreenHeight;
   RECT MonitorRC;
@@ -44,6 +35,7 @@ struct MONITOR_DETAILS
   char MonitorName[128];
   char CardName[128];
   char DeviceName[128];
+  int ScreenNumber; // XBMC POV, not Windows. Windows primary is XBMC #0, then each secondary is +1.
 };
 
 #ifndef WM_GESTURE
@@ -141,7 +133,7 @@ public:
   virtual void UpdateResolutions();
   virtual bool CenterWindow();
   virtual void NotifyAppFocusChange(bool bGaining);
-  virtual int GetNumScreens() { return m_nMonitorsCount; };
+  virtual int GetNumScreens() { return m_MonitorsInfo.size(); };
   virtual void ShowOSMouse(bool show);
 
   virtual bool Minimize();
@@ -168,8 +160,8 @@ protected:
   bool ChangeRefreshRate(int screen, float refresh);
   virtual bool ResizeInternal(bool forceRefresh = false);
   virtual bool UpdateResolutionsInternal();
-  virtual bool CreateBlankWindow();
-  virtual bool BlankNonActiveMonitor(bool bBlank);
+  virtual bool CreateBlankWindows();
+  virtual bool BlankNonActiveMonitors(bool bBlank);
   const MONITOR_DETAILS &GetMonitor(int screen) const;
   /*!
    \brief Adds a resolution to the list of resolutions if we don't already have it
@@ -178,14 +170,12 @@ protected:
   void AddResolution(const RESOLUTION_INFO &res);
 
   HWND m_hWnd;
-  HWND m_hBlankWindow;
+  std::vector<HWND> m_hBlankWindows;
   HDC m_hDC;
   HINSTANCE m_hInstance;
   HICON m_hIcon;
-  MONITOR_DETAILS m_MonitorsInfo[MAX_MONITORS_NUM];
-  int m_nMonitorsCount;
+  std::vector<MONITOR_DETAILS> m_MonitorsInfo;
   int m_nPrimary;
-  int m_nSecondary;
 };
 
 extern HWND g_hWnd;

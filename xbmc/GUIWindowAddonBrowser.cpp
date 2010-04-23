@@ -50,6 +50,7 @@ using namespace std;
 CGUIWindowAddonBrowser::CGUIWindowAddonBrowser(void)
 : CGUIMediaWindow(WINDOW_ADDON_BROWSER, "AddonBrowser.xml")
 {
+  m_thumbLoader.SetNumOfWorkers(1);
 }
 
 CGUIWindowAddonBrowser::~CGUIWindowAddonBrowser()
@@ -60,11 +61,18 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
+    case GUI_MSG_WINDOW_DEINIT:
+    {
+      if (m_thumbLoader.IsLoading())
+        m_thumbLoader.StopThread();
+    }
+    break;
   case GUI_MSG_WINDOW_INIT:
     {
       m_vecItems->m_strPath = "";
       SetHistoryForPath(m_vecItems->m_strPath);
     }
+    break;
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -137,14 +145,18 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
     AddonPtr addon;
     if (CAddonMgr::Get()->GetAddon(item->GetProperty("Addon.ID"),addon))
     {
+      CStdString path = item->GetProperty("Addon.Path");
+      if (!path.Left(22).Equals("special://home/addons/") || path.length() <= 22)
+        return false; //TODO - print a message saying that addon is in wrong location and can't be deleted
+
       if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24000),
                                            addon->Name(),
                                            g_localizeStrings.Get(24060),""))
       {
         CFileItemList list;
-        list.Add(CFileItemPtr(new CFileItem(CUtil::AddFileToFolder("special://home/addons",item->GetProperty("Addon.ID")),true)));
+        list.Add(CFileItemPtr(new CFileItem(path,true)));
         list[0]->Select(true);
-        CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,"special://home/addons/"),this);
+        CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""),this);
       }
     }
     else
@@ -361,3 +373,17 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
 
   return result;
 }
+
+bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)
+{
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopThread();
+  
+  if (!CGUIMediaWindow::Update(strDirectory))
+    return false;
+  
+  m_thumbLoader.Load(*m_vecItems);
+  
+  return true;
+}
+

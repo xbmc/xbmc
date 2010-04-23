@@ -30,9 +30,10 @@ public:
   virtual ~CPictureThumbLoader();
   virtual bool LoadItem(CFileItem* pItem);
   void SetRegenerateThumbs(bool regenerate) { m_regenerateThumbs = regenerate; };
+  static void ProcessFoldersAndArchives(CFileItem *pItem);
+  static CStdString GetCachedThumb(const CFileItem &item);
 protected:
   virtual void OnLoaderFinish();
 private:
-  bool DownloadVideoThumb(CFileItem *item, const CStdString &cachedThumb);
   bool m_regenerateThumbs;
 };

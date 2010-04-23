@@ -15,6 +15,6 @@
     <xbmc>20000</xbmc>
   </minversion>
   <summary>Visualization</summary>
-  <description>Visualization showing a Waveform Graph</description>
+  <description>Waveform is a simple Visualization showing 2 Waveform Graphs on the screen, One each for Left and Right channels that move to the beat of the music</description>
   <author>MrC</author>
 </addoninfo>
