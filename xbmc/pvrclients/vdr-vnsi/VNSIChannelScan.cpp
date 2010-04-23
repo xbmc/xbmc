@@ -270,6 +270,7 @@ bool cVNSIChannelScan::OnClick(int controlId)
     {
       m_running = true;
       m_stopped = false;
+      m_Canceled = false;
       m_window->SetProperty("Scanning", "running");
       m_window->SetControlLabel(BUTTON_START, XBMC->GetLocalizedString(222).c_str());
       StartScan();
@@ -568,7 +569,8 @@ void cVNSIChannelScan::Action()
       if (requestID == VDR_SCANNER_PERCENTAGE)
       {
         uint32_t percent = ntohl(*(uint32_t*)&userData[0]);
-        SetProgress(percent);
+        if (percent >= 0)
+          SetProgress(percent);
       }
       else if (requestID == VDR_SCANNER_SIGNAL)
       {

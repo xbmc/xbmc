@@ -762,7 +762,6 @@ GUIHANDLE CAddonHelpers_GUI::Window_AddItem(void *addonData, GUIHANDLE handle, G
 
   CGUIAddonWindow *pAddonWindow = (CGUIAddonWindow*)handle;
   CFileItemPtr pItem((CFileItem*)item);
-  fprintf(stderr, "<<<<<<<<<<<<<< %s\n", pItem.get()->GetLabel().c_str());
   Lock();
   pAddonWindow->AddItem(pItem, itemPosition);
   Unlock();
