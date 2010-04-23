@@ -2044,7 +2044,7 @@ LCID DShowUtil::ISO6392ToLcid(LPCSTR code)
   return 0;
 }
 
-CStdString ISO6391To6392(LPCSTR code)
+CStdString DShowUtil::ISO6391To6392(LPCSTR code)
 {
   CHAR tmp[2+1];
   strncpy_s(tmp, code, 2);

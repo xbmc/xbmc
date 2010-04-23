@@ -1,4 +1,6 @@
 #pragma once
+#ifndef _SMARTPTR_H
+#define _SMARTPTR_H
 #include "utils/log.h"
 
 /*
@@ -587,3 +589,4 @@ namespace Com
 
 
 }
+#endif

@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include "Filters/IMpaDecFilter.h"
 #include "Filters/IffDecoder.h"
 #include "Filters/IffdshowBase.h"
 #include "Filters/IffdshowDecVideo.h"
@@ -81,12 +80,6 @@ protected:
    * @return True if the filter expose a property page, false else*/
   bool LoadPropertiesPage(IBaseFilter *pBF);
   /**
-   * Load configuration from the MP Audio Decoder
-   * @param[in] pBF Try to load the configuration from this filter
-   * @return True if the filter is a MP Audio Decoder, false else
-   */
-  bool GetMpaDec(IBaseFilter* pBF);
-  /**
    * Load configuration from FFDShow
    * @param[in] pBF Try to load the configuration from this filter
    * @return True if the filter is FFDShow, false else
@@ -98,7 +91,6 @@ private:
   CCriticalSection m_pLock;
   CStdString                     m_pStrDXVA;
   //Direct Show Filters
-  IMpaDecFilter*                 m_pIMpaDecFilter; // References will be released elsewhere
   std::vector<IBaseFilter *>     m_pPropertiesFilters;
   //current page
   CDSPropertyPage*               m_pCurrentProperty;

@@ -31,7 +31,8 @@
 #include "Subtitles/DSUtil/DSMPropertyBag.h"
 #include "Subtitles/DSUtil/FontInstaller.h"
 #include "Filters/XBMCFileReader.h"
-#include <boost/shared_ptr.hpp>
+#include "DShowUtil/SmartList.h"
+
 
 using namespace std;
 using namespace boost;
@@ -56,13 +57,13 @@ public:
 
 class CPacketQueue 
   : public CCritSec,
-    protected std::list<boost::shared_ptr<Packet>>
+    protected std::list<Com::Auto_Ptr<Packet>>
 {
   int m_size;
 public:
   CPacketQueue();
-  void Add(boost::shared_ptr<Packet> p);
-  boost::shared_ptr<Packet> Remove();
+  void Add(Com::Auto_Ptr<Packet> p);
+  Com::Auto_Ptr<Packet> Remove();
   void RemoveAll();
   int size(), GetSize();
   
@@ -115,7 +116,7 @@ private:
   CAMEvent m_eEndFlush;
 
   enum {CMD_EXIT};
-    DWORD ThreadProc();
+  DWORD ThreadProc();
 
   void MakeISCRHappy();
 
@@ -140,7 +141,7 @@ protected:
 
   // override this if you need some second level stream specific demuxing (optional)
   // the default implementation will send the sample as is
-  virtual HRESULT DeliverPacket(boost::shared_ptr<Packet> p);
+  virtual HRESULT DeliverPacket(Com::Auto_Ptr<Packet> p);
 
   // IMediaSeeking
 
@@ -168,7 +169,7 @@ public:
   virtual ~CBaseSplitterOutputPin();
 
   DECLARE_IUNKNOWN;
-    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
   HRESULT SetName(LPCWSTR pName);
 
@@ -194,7 +195,7 @@ public:
   int QueueCount();
   int QueueSize();
   HRESULT QueueEndOfStream();
-  HRESULT QueuePacket(auto_ptr<Packet> p);
+  HRESULT QueuePacket(Com::Auto_Ptr<Packet> p);
 
   // returns true for everything which (the lack of) would not block other streams (subtitle streams, basically)
   virtual bool IsDiscontinuous();
@@ -229,18 +230,18 @@ class CBaseSplitterFilter
   CCritSec m_csmtnew;
   map<DWORD, CMediaType> m_mtnew;
 
-  list<boost::shared_ptr<CBaseSplitterOutputPin>> m_pRetiredOutputs;
+  list<Com::Auto_Ptr<CBaseSplitterOutputPin>> m_pRetiredOutputs;
   
   Com::SmartQIPtr<ISyncReader> m_pSyncReader;
 protected:
   CStdStringW m_fn;
 
-  auto_ptr<CBaseSplitterInputPin> m_pInput;
-  list<boost::shared_ptr<CBaseSplitterOutputPin>> m_pOutputs;
+  Com::Auto_Ptr<CBaseSplitterInputPin> m_pInput;
+  list<Com::Auto_Ptr<CBaseSplitterOutputPin>> m_pOutputs;
 
   CBaseSplitterOutputPin* GetOutputPin(DWORD TrackNum);
   DWORD GetOutputTrackNum(CBaseSplitterOutputPin* pPin);
-  HRESULT AddOutputPin(DWORD TrackNum, auto_ptr<CBaseSplitterOutputPin> pPin);
+  HRESULT AddOutputPin(DWORD TrackNum, Com::Auto_Ptr<CBaseSplitterOutputPin> pPin);
   HRESULT RenameOutputPin(DWORD TrackNumSrc, DWORD TrackNumDst, const AM_MEDIA_TYPE* pmt);
   virtual HRESULT DeleteOutputs();
   virtual HRESULT CreateOutputs(IAsyncReader* pAsyncReader) = 0; // override this ...
@@ -261,7 +262,7 @@ protected:
 
   void DeliverBeginFlush();
   void DeliverEndFlush();
-  HRESULT DeliverPacket(auto_ptr<Packet> p);
+  HRESULT DeliverPacket(Com::Auto_Ptr<Packet> p);
 
   DWORD m_priority;
 
@@ -282,7 +283,7 @@ public:
   virtual ~CBaseSplitterFilter();
 
   DECLARE_IUNKNOWN;
-    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
   bool IsAnyPinDrying();
 
@@ -324,6 +325,7 @@ public:
 protected:
   friend class CBaseSplitterOutputPin;
   virtual HRESULT SetPositionsInternal(void* id, LONGLONG* pCurrent, DWORD dwCurrentFlags, LONGLONG* pStop, DWORD dwStopFlags);
+  CStdString m_pStrCurrentFile;
 
 private:
   REFERENCE_TIME m_rtLastStart, m_rtLastStop;

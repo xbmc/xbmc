@@ -30,7 +30,7 @@ HRESULT CAviFile::Init()
   m_isamv = (dw[2] == FCC('AMV '));
   Seek(0);
   HRESULT hr = Parse(0, GetLength());
-  if(m_movis.size() == 0) // FAILED(hr) is allowed as long as there was a movi chunk found
+  if(m_movis.size() == 0)
     return E_FAIL;
 
   if(m_avih.dwStreams == 0 && m_strms.size() > 0)
@@ -43,10 +43,8 @@ HRESULT CAviFile::Init()
   {
     strm_t* s = m_strms[i].get();
     if(s->strh.fccType != FCC('auds')) continue;
-    //WAVEFORMATEX* wfe = (WAVEFORMATEX*)s->strf.GetData();
     WAVEFORMATEX *wfe = (WAVEFORMATEX*)&s->strf[0];
     
-    //memcpy(wfe, &s->strf[0], s->strf.size());
     if(wfe->wFormatTag == 0x55 && wfe->nBlockAlign == 1152 
     && s->strh.dwScale == 1 && s->strh.dwRate != wfe->nSamplesPerSec)
     {

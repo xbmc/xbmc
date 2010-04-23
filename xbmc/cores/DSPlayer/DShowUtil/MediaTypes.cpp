@@ -20,7 +20,9 @@
  */
 
 #include <dshow.h>
+#ifndef MEDIATYPE_NULL
 #include <initguid.h>
+#endif
 #include <moreuuids.h>
 #include "MediaTypes.h"
 #include "DShowUtil.h"

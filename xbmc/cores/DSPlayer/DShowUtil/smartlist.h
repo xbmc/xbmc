@@ -22,8 +22,14 @@
 #ifndef SMARTLIST_H
 #define SMARTLIST_H
 
+#ifndef _SMARTPTR_H
+#include "SmartPtr.h"
+#endif
+
 namespace Com
 {
+
+#include "CriticalSection.h"
 template <class T>
 struct NoOp
 {
@@ -528,6 +534,172 @@ private:
   ComPtrList<T>  m_list;
 };
 
+//This is just easier than auto_ptr which not allow copy constructors for stl containers
+template< typename T >
+class Auto_Ptr
+{
+public:
+	Auto_Ptr() throw() :
+		m_p( NULL )
+	{
+	}
+	template< typename Y >
+	Auto_Ptr( Auto_Ptr< Y >& p ) throw()
+	{
+		m_p = p.Detach();  // Transfer ownership
+	}
+
+	Auto_Ptr( Auto_Ptr< T >& p ) throw()
+	{
+		m_p = p.Detach();  // Transfer ownership
+	}
+
+	explicit Auto_Ptr( T* p ) throw() :
+		m_p( p )
+	{
+	}
+	~Auto_Ptr() throw()
+	{
+		Release();
+	}
+
+	// Templated version to allow pBase = pDerived
+	template< typename Y >
+	Auto_Ptr< T >& operator=( Auto_Ptr< Y >& p ) throw()
+	{
+		if(m_p==p.m_p)
+		{
+			// This means that two Auto_Ptr of two different types had the same m_p in them
+			// which is never correct
+			_ASSERTE(FALSE);
+		}
+		else
+		{
+			Release();
+			Attach( p.Detach() );  // Transfer ownership
+		}
+		return( *this );
+	}
+	Auto_Ptr< T >& operator=( Auto_Ptr< T >& p ) throw()
+	{
+		if(*this==p)
+		{
+			if(this!=&p)
+			{
+				p.Detach();
+			}
+			else
+			{
+			}
+		}
+		else
+		{
+			Release();
+			Attach( p.Detach() );  // Transfer ownership
+		}
+		return( *this );
+	}
+
+  //OPERATOR FOR RETURNING std::auto_ptr
+  operator std::auto_ptr< T >()//(_In_ const std::auto_ptr<Q>& lp) throw()
+	{
+    return std::auto_ptr<T>(*this);
+	}
+
+  Auto_Ptr< T >& get() throw()
+  {
+    return *this;
+  }
+  //OPERATOR FOR RETURNING boost::shared_ptr
+  /*operator boost::shared_ptr< T >()
+	{
+    return boost::shared_ptr<T>(*this);
+	}*/
+
+	// basic comparison operators
+	bool operator!=(Auto_Ptr<T>& p) const
+	{
+		return !operator==(p);
+	}
+
+	bool operator==(Auto_Ptr<T>& p) const
+	{
+		return m_p==p.m_p;
+	}
+
+	operator T*() const throw()
+	{
+		return( m_p );
+	}
+
+	T* operator->() const throw()
+	{
+		SMARTASSUME( m_p != NULL );
+		return( m_p );
+	}
+
+	// Attach to an existing pointer (takes ownership)
+	void Attach( T* p ) throw()
+	{
+		SMARTASSUME( m_p == NULL );
+		m_p = p;
+	}
+	// Detach the pointer (releases ownership)
+	T* Detach() throw()
+	{
+		T* p;
+
+		p = m_p;
+		m_p = NULL;
+
+		return( p );
+	}
+	// Delete the object pointed to, and set the pointer to NULL
+	void Release() throw()
+	{
+		delete m_p;
+		m_p = NULL;
+	}
+  // Delete the object pointed to, and set the pointer to NULL
+	void Free() throw()
+	{
+		delete m_p;
+		m_p = NULL;
+	}
+public:
+	T* m_p;
 };
+
+#ifdef __STREAMS__
+/*template<class T>
+class Auto_List : public CGenericList<T>
+{
+public:
+  Auto_List( UINT nBlockSize = 10 ):CGenericList() {}
+  bool empty() { return (GetCount() < 1);}
+  bool IsEmpty() { return (GetCount() < 1);}
+  int size() { return GetCount(); }
+  T* GetPrev(POSITION& rp) {return Get(Prev(rp));}
+};*/
+
+template< class T >
+class Auto_Ptr_List :	public CGenericList< T >
+{
+public:
+  Auto_Ptr_List()  : CGenericList<T>("AutoPtrList"){}
+  bool empty() { return (GetCount() < 1);}
+  bool IsEmpty() { return (GetCount() < 1);}
+  int size() { return GetCount(); }
+  T* GetPrev(POSITION& rp) {return Get(Prev(rp));}
+private:
+	// Private to prevent use
+	Auto_Ptr_List( const Auto_Ptr_List& ) throw();
+	Auto_Ptr_List& operator=( const Auto_Ptr_List& ) throw();
+};
+#endif
+
+
+
+};//End Com Namespace
 
 #endif

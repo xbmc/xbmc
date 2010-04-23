@@ -22,6 +22,7 @@
  */
 
 #include "MacrovisionKicker.h"
+#include "streams.h"
 #include "dvdmedia.h"
 #include "DShowUtil/smartptr.h"
 

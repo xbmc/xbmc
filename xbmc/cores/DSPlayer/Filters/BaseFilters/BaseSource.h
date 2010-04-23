@@ -92,7 +92,7 @@ public:
     return AM_FILTER_MISC_FLAGS_IS_SOURCE;
   }
 };
-
+#if 0
 class CBaseStream 
   : public CSourceStream
   , public CSourceSeeking
@@ -128,3 +128,4 @@ public:
 
   STDMETHODIMP Notify(IBaseFilter* pSender, Quality q);
 };
+#endif

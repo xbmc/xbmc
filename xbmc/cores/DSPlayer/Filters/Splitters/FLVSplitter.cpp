@@ -147,7 +147,7 @@ HRESULT CFLVSplitterFilter::CreateOutputs(IAsyncReader* pAsyncReader)
     m_pFile.reset(); 
     return hr;
   }
-
+  
 	m_rtNewStart = m_rtCurrent = 0;
 	m_rtNewStop = m_rtStop = m_rtDuration = 0;
 
@@ -481,7 +481,7 @@ HRESULT CFLVSplitterFilter::CreateOutputs(IAsyncReader* pAsyncReader)
 		{
 			vector<CMediaType> mts;
 			mts.push_back(mt);
-			auto_ptr<CBaseSplitterOutputPin> pPinOut(DNew CBaseSplitterOutputPin(mts, name, this, this, &hr));
+			Com::Auto_Ptr<CBaseSplitterOutputPin> pPinOut(DNew CBaseSplitterOutputPin(mts, name, this, this, &hr));
 			EXECUTE_ASSERT(SUCCEEDED(AddOutputPin(t.TagType, pPinOut)));
 		}
 
@@ -645,7 +645,7 @@ bool CFLVSplitterFilter::DemuxLoop()
 {
 	HRESULT hr = S_OK;
 
-	auto_ptr<Packet> p;
+	Com::Auto_Ptr<Packet> p;
 
 	Tag t;
 	AudioTag at;
@@ -674,7 +674,7 @@ bool CFLVSplitterFilter::DemuxLoop()
 			}
 			__int64 dataSize = next - m_pFile->GetPos();
 			if (dataSize <= 0) goto NextTag;
-			p.reset(DNew Packet());
+			p.Attach(DNew Packet());
 			p->TrackNumber = t.TagType;
 			p->rtStart = 10000i64 * (t.TimeStamp + tsOffset); 
 			p->rtStop = p->rtStart + 1;
@@ -699,8 +699,7 @@ CFLVSourceFilter::CFLVSourceFilter(LPUNKNOWN pUnk, HRESULT* phr)
 	: CFLVSplitterFilter(pUnk, phr)
 {
 	m_clsid = __uuidof(this);
-	m_pInput.release();
+	m_pInput.Release();
 }
-
 
 

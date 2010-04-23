@@ -1,4 +1,3 @@
-#include "CriticalSection.h"
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -31,7 +30,8 @@
 
 #ifndef __ASYNCIO_H__
 #define __ASYNCIO_H__
-
+#include "CriticalSection.h"
+#include "Streams.h"
 //
 // definition of CAsyncFile object that performs file access. It provides
 // asynchronous, unbuffered, aligned reads from a file, using a worker thread
@@ -155,10 +155,10 @@ typedef CGenericList<CAsyncRequest> CRequestList;
 class CAsyncIo
 {
 
-    CCriticalSection m_csReader;
+    CCritSec m_csReader;
     CAsyncStream *m_pStream;
 
-    CCriticalSection m_csLists;      // locks access to the list and events
+    CCritSec m_csLists;      // locks access to the list and events
     BOOL m_bFlushing;        // true if between BeginFlush/EndFlush
 
     CRequestList m_listWork;

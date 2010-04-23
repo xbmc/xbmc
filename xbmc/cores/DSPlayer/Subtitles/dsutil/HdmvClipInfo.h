@@ -101,8 +101,10 @@ typedef signed char int8;
 typedef unsigned short uint16;
 typedef short int16;
 
-typedef unsigned long uint32;
-typedef long int32;
+#ifndef _LIBEBML_T_H_INCLUDED_
+typedef signed __int32 int32;
+typedef unsigned __int32 uint32;
+#endif
 
 
 

@@ -25,7 +25,6 @@
 #include "log.h"
 #include "CharsetConverter.h"
 #include "streams.h"
-#include "uuids.h"//CLSID_SystemDeviceEnum and CLSID_AudioRendererCategory
 #include "DShowUtil/regkey.h"
 #include "DShowUtil/DShowUtil.h"
 

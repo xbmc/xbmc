@@ -41,7 +41,7 @@ CPacketQueue::CPacketQueue() : m_size(0)
 {
 }
 
-void CPacketQueue::Add(boost::shared_ptr<Packet> p)
+void CPacketQueue::Add(Com::Auto_Ptr<Packet> p)
 {
   CAutoLock cAutoLock(this);
 
@@ -52,7 +52,7 @@ void CPacketQueue::Add(boost::shared_ptr<Packet> p)
     && p->rtStart == Packet::INVALID_TIME
     && ! empty() && back()->rtStart != Packet::INVALID_TIME)
     {
-      boost::shared_ptr<Packet> tail;
+      Com::Auto_Ptr<Packet> tail;
       tail =  back();
       int oldsize = tail->size();
       int newsize = tail->size() + p->size();
@@ -69,7 +69,7 @@ void CPacketQueue::Add(boost::shared_ptr<Packet> p)
    push_back(p);
 }
 
-boost::shared_ptr<Packet> CPacketQueue::Remove()
+Com::Auto_Ptr<Packet> CPacketQueue::Remove()
 {
   /*
   CAutoLock cAutoLock(this);
@@ -80,10 +80,10 @@ boost::shared_ptr<Packet> CPacketQueue::Remove()
   */
   CAutoLock cAutoLock(this);
   ASSERT(__super::size() > 0);
-  boost::shared_ptr<Packet> p;
+  Com::Auto_Ptr<Packet> p;
   p = front();
   erase(begin());
-  //p = auto_ptr<Packet>(front());
+  //p = Com::Auto_Ptr<Packet>(front());
   if(p.get()) 
     m_size -= p.get()->GetDataSize();
   return p;
@@ -275,13 +275,14 @@ HRESULT CBaseSplitterOutputPin::DecideBufferSize(IMemAllocator* pAlloc, ALLOCATO
     pProperties->cBuffers = dsmax(pProperties->cBuffers, 2);
   }
 
-    ALLOCATOR_PROPERTIES Actual;
-    if(FAILED(hr = pAlloc->SetProperties(pProperties, &Actual))) return hr;
+  ALLOCATOR_PROPERTIES Actual;
+  if(FAILED(hr = pAlloc->SetProperties(pProperties, &Actual))) 
+    return hr;
 
-    if(Actual.cbBuffer < pProperties->cbBuffer) return E_FAIL;
+  if(Actual.cbBuffer < pProperties->cbBuffer) return E_FAIL;
     ASSERT(Actual.cBuffers == pProperties->cBuffers);
 
-    return NOERROR;
+  return NOERROR;
 }
 
 HRESULT CBaseSplitterOutputPin::CheckMediaType(const CMediaType* pmt)
@@ -297,10 +298,12 @@ HRESULT CBaseSplitterOutputPin::CheckMediaType(const CMediaType* pmt)
 
 HRESULT CBaseSplitterOutputPin::GetMediaType(int iPosition, CMediaType* pmt)
 {
-    CAutoLock cAutoLock(m_pLock);
+  CAutoLock cAutoLock(m_pLock);
 
-  if(iPosition < 0) return E_INVALIDARG;
-  if(iPosition >= m_mts.size()) return VFW_S_NO_MORE_ITEMS;
+  if(iPosition < 0) 
+    return E_INVALIDARG;
+  if(iPosition >= m_mts.size())
+    return VFW_S_NO_MORE_ITEMS;
 
   *pmt = m_mts[iPosition];
 
@@ -381,10 +384,10 @@ int CBaseSplitterOutputPin::QueueSize()
 
 HRESULT CBaseSplitterOutputPin::QueueEndOfStream()
 {
-  return QueuePacket(auto_ptr<Packet>()); // NULL means EndOfStream
+  return QueuePacket(Com::Auto_Ptr<Packet>()); // NULL means EndOfStream
 }
 
-HRESULT CBaseSplitterOutputPin::QueuePacket(auto_ptr<Packet> p)
+HRESULT CBaseSplitterOutputPin::QueuePacket(Com::Auto_Ptr<Packet> p)
 {
   if(!ThreadExists()) return S_FALSE;
 
@@ -450,7 +453,7 @@ DWORD CBaseSplitterOutputPin::ThreadProc()
     int cnt = 0;
     do
     {
-      boost::shared_ptr<Packet> p;
+      Com::Auto_Ptr<Packet> p;
 
       {
         CAutoLock cAutoLock(&m_queue);
@@ -466,8 +469,7 @@ DWORD CBaseSplitterOutputPin::ThreadProc()
 
         // flushing can still start here, to release a blocked deliver call
 
-        HRESULT hr = p.get()
-          ? DeliverPacket(p)
+        HRESULT hr = p ? DeliverPacket(p)
           : DeliverEndOfStream();
 
         m_eEndFlush.Wait(); // .. so we have to wait until it is done
@@ -484,7 +486,7 @@ DWORD CBaseSplitterOutputPin::ThreadProc()
   }
 }
 
-HRESULT CBaseSplitterOutputPin::DeliverPacket(boost::shared_ptr<Packet> p)
+HRESULT CBaseSplitterOutputPin::DeliverPacket(Com::Auto_Ptr<Packet> p)
 {
   HRESULT hr;
 
@@ -615,7 +617,7 @@ void CBaseSplitterOutputPin::MakeISCRHappy()
 
     if(DShowUtil::GetCLSID(pBF) == DShowUtil::GUIDFromCString(_T("{48025243-2D39-11CE-875D-00608CB78066}"))) // ISCR
     {
-      auto_ptr<Packet> p(DNew Packet());
+      Com::Auto_Ptr<Packet> p(DNew Packet());
       p->TrackNumber = (DWORD)-1;
       p->rtStart = -1; p->rtStop = 0;
       p->bSyncPoint = FALSE;
@@ -724,9 +726,10 @@ CBaseSplitterFilter::CBaseSplitterFilter(LPCTSTR pName, LPUNKNOWN pUnk, HRESULT*
   , m_rtLastStop(_I64_MIN)
   , m_priority(THREAD_PRIORITY_NORMAL)
 {
-  if(phr) *phr = S_OK;
-
-  m_pInput.reset(DNew CBaseSplitterInputPin(NAME("CBaseSplitterInputPin"), this, this, phr));
+  if(phr) 
+    *phr = S_OK;
+  m_pStrCurrentFile = "";
+  m_pInput.Attach(DNew CBaseSplitterInputPin(NAME("CBaseSplitterInputPin"), this, this, phr));
 }
 
 CBaseSplitterFilter::~CBaseSplitterFilter()
@@ -803,7 +806,7 @@ HRESULT CBaseSplitterFilter::RenameOutputPin(DWORD TrackNumSrc, DWORD TrackNumDs
 {
   CAutoLock cAutoLock(&m_csPinMap);
   DWORD TrackNum;
-  auto_ptr<CBaseSplitterOutputPin> pPin;
+  Com::Auto_Ptr<CBaseSplitterOutputPin> pPin;
   map<DWORD, CBaseSplitterOutputPin*>::iterator it;
   for (it = m_pPinMap.begin(); it != m_pPinMap.end(); it++)
   {
@@ -811,7 +814,7 @@ HRESULT CBaseSplitterFilter::RenameOutputPin(DWORD TrackNumSrc, DWORD TrackNumDs
     if (it->first == TrackNumSrc)
     {
       TrackNum = it->first;
-      pPin.reset(it->second);
+      pPin.Attach(it->second);
       break;
     }
   }
@@ -834,11 +837,12 @@ HRESULT CBaseSplitterFilter::RenameOutputPin(DWORD TrackNumSrc, DWORD TrackNumDs
   return S_OK;
 }
 
-HRESULT CBaseSplitterFilter::AddOutputPin(DWORD TrackNum, auto_ptr<CBaseSplitterOutputPin> pPin)
+HRESULT CBaseSplitterFilter::AddOutputPin(DWORD TrackNum, Com::Auto_Ptr<CBaseSplitterOutputPin> pPin)
 {
   CAutoLock cAutoLock(&m_csPinMap);
 
-  if(!(pPin.get())) return E_INVALIDARG;
+  if(!(pPin.get())) 
+    return E_INVALIDARG;
   m_pPinMap[TrackNum] = pPin.get();
   m_pOutputs.push_back(pPin);
   return S_OK;
@@ -856,7 +860,7 @@ HRESULT CBaseSplitterFilter::DeleteOutputs()
   while(m_pOutputs.size())
   {
     //CBaseSplitterOutputPin* pPin = m_pOutputs.back().get();
-    boost::shared_ptr<CBaseSplitterOutputPin> pPin;
+    Com::Auto_Ptr<CBaseSplitterOutputPin> pPin;
     pPin = m_pOutputs.back();
     
     m_pOutputs.pop_back();
@@ -886,7 +890,7 @@ HRESULT CBaseSplitterFilter::DeleteOutputs()
 void CBaseSplitterFilter::DeliverBeginFlush()
 {
   m_fFlushing = true;
-  for (list<boost::shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it != m_pOutputs.end(); it++)
+  for (list<Com::Auto_Ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it != m_pOutputs.end(); it++)
   {
     (*it)->DeliverBeginFlush();
   }
@@ -897,7 +901,7 @@ void CBaseSplitterFilter::DeliverBeginFlush()
 void CBaseSplitterFilter::DeliverEndFlush()
 {
   
-  for (list<boost::shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it != m_pOutputs.end(); it++)
+  for (list<Com::Auto_Ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it != m_pOutputs.end(); it++)
   {
     (*it)->DeliverEndFlush();
   }
@@ -948,7 +952,7 @@ DWORD CBaseSplitterFilter::ThreadProc()
     m_eEndFlush.Wait();
 
     m_pActivePins.clear();
-    for (list<boost::shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it != m_pOutputs.end() && !m_fFlushing; it++)
+    for (list<Com::Auto_Ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it != m_pOutputs.end() && !m_fFlushing; it++)
     {
       CBaseSplitterOutputPin* pPin = (*it).get();
       if(pPin->IsConnected() && pPin->IsActive())
@@ -975,7 +979,7 @@ DWORD CBaseSplitterFilter::ThreadProc()
   return 0;
 }
 
-HRESULT CBaseSplitterFilter::DeliverPacket(auto_ptr<Packet> p)
+HRESULT CBaseSplitterFilter::DeliverPacket(Com::Auto_Ptr<Packet> p)
 {
   HRESULT hr = S_FALSE;
 
@@ -1066,9 +1070,9 @@ bool CBaseSplitterFilter::IsAnyPinDrying()
     {
       if(m_priority != THREAD_PRIORITY_BELOW_NORMAL && (count < MINPACKETS/3 || size < MINPACKETSIZE/3))
       {
-        for ( list<boost::shared_ptr<CBaseSplitterOutputPin>>::iterator itt = m_pOutputs.begin(); itt != m_pOutputs.end(); itt++)
+        for ( list<Com::Auto_Ptr<CBaseSplitterOutputPin>>::iterator itt = m_pOutputs.begin(); itt != m_pOutputs.end(); itt++)
         {
-          boost::shared_ptr<CBaseSplitterOutputPin> pOutPin = *itt;
+          Com::Auto_Ptr<CBaseSplitterOutputPin> pOutPin = *itt;
           pOutPin->SetThreadPriority(THREAD_PRIORITY_BELOW_NORMAL);
         }
         //POSITION pos = m_pOutputs.GetHeadPosition();
@@ -1083,9 +1087,9 @@ bool CBaseSplitterFilter::IsAnyPinDrying()
 
   if(m_priority != THREAD_PRIORITY_NORMAL && (totalcount > MAXPACKETS*2/3 || totalsize > MAXPACKETSIZE*2/3))
   {
-    for ( list<boost::shared_ptr<CBaseSplitterOutputPin>>::iterator itt = m_pOutputs.begin(); itt != m_pOutputs.end(); itt++)
+    for ( list<Com::Auto_Ptr<CBaseSplitterOutputPin>>::iterator itt = m_pOutputs.begin(); itt != m_pOutputs.end(); itt++)
     {
-      boost::shared_ptr<CBaseSplitterOutputPin> pOutPin = *itt;
+      Com::Auto_Ptr<CBaseSplitterOutputPin> pOutPin = *itt;
       pOutPin->SetThreadPriority(THREAD_PRIORITY_NORMAL);
     }
     //POSITION pos = m_pOutputs.GetHeadPosition();
@@ -1158,27 +1162,15 @@ int CBaseSplitterFilter::GetPinCount()
 CBasePin* CBaseSplitterFilter::GetPin(int n)
 {
   CAutoLock cAutoLock(this);
-/*
-  std::list<ISubPic*>::iterator pos = m_Queue.begin();
-  std::advance(pos, nSubPic);
-  if(pos != m_Queue.end())
-  {
-    rtStart = (*pos)->GetStart();
-    rtStop = (*pos)->GetStop();
-  }
 
-*/
   if(n >= 0 && n < (int)m_pOutputs.size())
   {
-    list<boost::shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin();
+    list<Com::Auto_Ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin();
     std::advance(it, n);
-     if(it != m_pOutputs.end())
+    if(it != m_pOutputs.end())
     {
       return (*it).get();
-      }
-    //if(POSITION pos = m_pOutputs.FindIndex(n))
-      //return m_pOutputs.GetAt(pos);
-    //return m_pOutputs[n].get();
+    }
   }
 
   if(n == m_pOutputs.size() && m_pInput.get())
@@ -1245,7 +1237,7 @@ STDMETHODIMP CBaseSplitterFilter::Load(LPCOLESTR pszFileNameNew, const AM_MEDIA_
   list<CHdmvClipInfo::PlaylistItem> Items;
   CStdString strThatFile;
   strThatFile = DShowUtil::WToA(pszFileNameNew);
-
+m_pStrCurrentFile = strThatFile;
   
   //if (BuildPlaylist (pszFileName, Items))
     //pAsyncReader = (IAsyncReader*)DNew CAsyncFileReader(Items, hr);
@@ -1518,7 +1510,7 @@ STDMETHODIMP CBaseSplitterFilter::GetStatus(int i, int& samples, int& size)
 {
   CAutoLock cAutoLock(m_pLock);
   int xx = 0;
-  for (list<boost::shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it!= m_pOutputs.end() ;it++)
+  for (list<Com::Auto_Ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it!= m_pOutputs.end() ;it++)
   {
     if (xx == i)
     {

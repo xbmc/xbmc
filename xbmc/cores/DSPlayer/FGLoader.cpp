@@ -36,7 +36,7 @@
 
 #include "filters/XBMCFileSource.h"
 #include "filters/Splitters/AviSplitter.h"
-#include "filters/Splitters/FLVSplitter.h"
+#include "filters/DsVideoDecoder/XBMCVideoDecFilter.h"
 #include "filters/VMR9AllocatorPresenter.h"
 #include "filters/EVRAllocatorPresenter.h"
 
@@ -68,6 +68,24 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
 
   HRESULT hr = E_FAIL;
   
+#if 0
+  //Keep that stuff ill remove it when im done with sources filters Ti-BEN
+  if (0)
+  {
+    Com::SmartQIPtr<IFileSourceFilter> pBFSrc;
+    Com::SmartPtr<IBaseFilter> pBFF = DNew CMatroskaSourceFilter(NULL, &hr);
+    hr = pBFF->QueryInterface(IID_IFileSourceFilter,(void**)&pBFSrc);
+    if (SUCCEEDED(hr))
+      hr = pBFSrc->Load(DShowUtil::AToW(pFileItem.m_strPath).c_str(), NULL);
+    if (SUCCEEDED(hr))
+    {
+      
+      Filters.Source.pBF = pBFF.Detach();
+      CDSGraph::m_pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC File Source");
+      Filters.Splitter.osdname = "XBMC File Source";
+    }
+    return hr;
+  }
 
   if (0)
   {
@@ -95,10 +113,11 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
         return hr;
       Filters.Source.osdname = "XBMC File Source";
     }
-    Filters.Splitter.pBF = DNew CFLVSplitterFilter(NULL, &hr);
+    Filters.Splitter.pBF = DNew CMatroskaSplitterFilter(NULL, &hr);
     hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.Splitter.pBF, L"XBMC Avi Splitter");
     return hr;
   }
+  #endif
   /* XBMC SOURCE FILTER  */
   if (CUtil::IsInArchive(pFileItem.m_strPath))
   {
@@ -477,6 +496,17 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
   f.pBF = NULL;
 
   CFGFilterFile *filter = NULL;
+  //TODO Add an option to the gui for forcing internal filters when supported
+#if 0
+  if (filterName.Equals("mpcvideodec"))
+  {
+    Com::SmartPtr<IBaseFilter> pBF = new CXBMCVideoDecFilter(NULL, &hr);
+    Filters.Video.pBF = pBF.Detach();
+    hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.Video.pBF, L"Internal MpcVideoDec");
+    Filters.Video.osdname = "Internal MpcVideoDec";
+    return hr;
+  }
+#endif
   if (! (filter = CFilterCoreFactory::GetFilterFromName(filterName)))
     return E_FAIL;
 

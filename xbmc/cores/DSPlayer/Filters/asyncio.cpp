@@ -284,7 +284,7 @@ CAsyncIo::WaitForNext(
         else
         {
             //  Hold the critical section while checking the list state
-            CSingleLock lck(m_csLists);
+            CAutoLock lck(&m_csLists);
             if(m_bFlushing && !m_bWaiting)
             {
                 // can't block as we are between BeginFlush and EndFlush
@@ -372,7 +372,7 @@ CAsyncIo::BeginFlush()
 {
     // hold the lock while emptying the work list
     {
-        CSingleLock lock(m_csLists);
+        CAutoLock lck(&m_csLists);
 
         // prevent further requests being queued.
         // Also WaitForNext will refuse to block if this is set
@@ -419,7 +419,7 @@ CAsyncIo::BeginFlush()
         m_evAllDone.Wait();
         {
             // hold critsec to check
-            CSingleLock lock(m_csLists);
+            CAutoLock lck(&m_csLists);
 
             if(m_cItemsOut == 0)
             {
@@ -444,7 +444,7 @@ CAsyncIo::BeginFlush()
 HRESULT
 CAsyncIo::EndFlush()
 {
-    CSingleLock lock(m_csLists);
+    CAutoLock lck(&m_csLists);
 
     m_bFlushing = FALSE;
 
@@ -519,7 +519,7 @@ CAsyncIo::CloseThread(void)
 CAsyncRequest*
 CAsyncIo::GetWorkItem()
 {
-    CSingleLock lck(m_csLists);
+    CAutoLock lck(&m_csLists);
     CAsyncRequest * preq  = m_listWork.RemoveHead();
 
     // force event set correctly
@@ -536,7 +536,7 @@ CAsyncIo::GetWorkItem()
 CAsyncRequest*
 CAsyncIo::GetDoneItem()
 {
-    CSingleLock lock(m_csLists);
+    CAutoLock lck(&m_csLists);
     CAsyncRequest * preq  = m_listDone.RemoveHead();
 
     // force event set correctly if list now empty
@@ -563,7 +563,7 @@ CAsyncIo::GetDoneItem()
 HRESULT
 CAsyncIo::PutWorkItem(CAsyncRequest* pRequest)
 {
-    CSingleLock lock(m_csLists);
+    CAutoLock lck(&m_csLists);
     HRESULT hr;
 
     if(m_bFlushing)
@@ -593,7 +593,7 @@ CAsyncIo::PutWorkItem(CAsyncRequest* pRequest)
 HRESULT
 CAsyncIo::PutDoneItem(CAsyncRequest* pRequest)
 {
-    ASSERT(m_csLists.getCriticalSection().Owning());
+    ASSERT(CritCheckIn(&m_csLists));
     if(m_listDone.AddTail(pRequest))
     {
         // event should now be in a set state - force this
@@ -617,7 +617,7 @@ CAsyncIo::ProcessRequests(void)
     for(;;)
     {
         {
-            CSingleLock lock(m_csLists);
+            CAutoLock lck(&m_csLists);
 
             preq = GetWorkItem();
             if(preq == NULL)
@@ -636,7 +636,7 @@ CAsyncIo::ProcessRequests(void)
 
         // regain critsec to replace on done list
         {
-            CSingleLock l(m_csLists);
+            CAutoLock l(&m_csLists);
 
             PutDoneItem(preq);
 

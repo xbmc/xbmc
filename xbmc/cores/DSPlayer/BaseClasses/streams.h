@@ -174,7 +174,9 @@ LONG_PTR _SetWindowLongPtr(HWND hwnd, int nIndex, T p)
 #include <amfilter.h>   // Main streams architecture class hierachy
 #include <transfrm.h>   // Generic transform filter
 #include <transip.h>    // Generic transform-in-place filter
+#ifndef OUR_GUID_ENTRY
 #include <uuids.h>      // declaration of type GUIDs and well-known clsids
+#endif
 #include <source.h>	// Generic source filter
 #include <outputq.h>    // Output pin queueing
 #include <errors.h>     // HRESULT status and error definitions

@@ -40,7 +40,7 @@ class CAviSplitterFilter : public CBaseSplitterFilter
   Com::SmartAutoVectorPtr<DWORD> m_tFrame;
 
 protected:
-  std::auto_ptr<CAviFile> m_pFile;
+  Com::Auto_Ptr<CAviFile> m_pFile;
   HRESULT CreateOutputs(IAsyncReader* pAsyncReader);
 
   bool DemuxInit();

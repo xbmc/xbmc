@@ -28,7 +28,6 @@
 
 #include "FGFilter.h"
 #include "DSConfig.h"
-#include "Filters/IMPCVideoDecFilter.h"
 #include "Filters/IffdshowDecVideo.h"
 #include "File.h"
 #include "FileItem.h"

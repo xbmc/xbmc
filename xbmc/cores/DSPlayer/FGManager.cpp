@@ -43,7 +43,6 @@
 #include <dmodshow.h>
 #include <D3d9.h>
 #include <Vmr9.h>
-#include "Filters/IMpaDecFilter.h"
 #include "Log.h"
 #include "FileSystem/SpecialProtocol.h"
 

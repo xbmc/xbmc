@@ -30,6 +30,7 @@
 // CBaseStream
 //
 
+#if 0
 CBaseStream::CBaseStream(TCHAR* name, CSource* pParent, HRESULT* phr) 
 	: CSourceStream(name, phr, pParent, L"Output")
 	, CSourceSeeking(name, pParent->GetOwner(), phr, &m_cSharedState)
@@ -185,3 +186,4 @@ STDMETHODIMP CBaseStream::Notify(IBaseFilter* pSender, Quality q)
 {
 	return E_NOTIMPL;
 }
+#endif

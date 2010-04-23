@@ -55,7 +55,7 @@ protected:
   CStdString        m_strCurrentFile;
   REFERENCE_TIME*   m_pCurrentPTSOffset;
   ULONGLONG         m_llTotalLength;
-  CCriticalSection  m_csLock;
+  CCritSec  m_csLock;
   __int64           m_llLength;
   CFile             m_pFile;
 public:
