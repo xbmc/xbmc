@@ -127,7 +127,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="win32addconfig.bat"
+				CommandLine="copy &quot;$(SolutionDir)..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\win32_config.h&quot; &quot;$(SolutionDir)..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\config.h&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -222,7 +222,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="win32addconfig.bat"
+				CommandLine="copy &quot;$(SolutionDir)..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\win32_config.h&quot; &quot;$(SolutionDir)..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\config.h&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
