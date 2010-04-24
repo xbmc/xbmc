@@ -38,7 +38,7 @@ public:
   void OnDisable();
   void OnSettings();
 
-  static bool ShowForItem(CFileItemPtr& item);
+  static bool ShowForItem(const CFileItemPtr& item);
 protected:
   CFileItemPtr m_item;
   ADDON::AddonPtr m_addon;

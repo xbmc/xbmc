@@ -127,7 +127,7 @@ void CGUIDialogAddonInfo::OnSettings()
   CGUIDialogAddonSettings::ShowAndGetInput(m_addon);
 }
 
-bool CGUIDialogAddonInfo::ShowForItem(CFileItemPtr& item)
+bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
 {
   CGUIDialogAddonInfo* dialog = (CGUIDialogAddonInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_INFO);
   if (!dialog)
@@ -146,9 +146,12 @@ bool CGUIDialogAddonInfo::ShowForItem(CFileItemPtr& item)
       dialog->m_item->SetProperty("Addon.Installed","true");
     else
       dialog->m_item->SetProperty("Addon.Installed","false");
-    CAddonDatabase database;
-    database.Open();
-    database.GetAddon(item->GetProperty("Addon.ID"),dialog->m_addon);
+    if (!dialog->m_addon)
+    {
+      CAddonDatabase database;
+      database.Open();
+      database.GetAddon(item->GetProperty("Addon.ID"),dialog->m_addon);
+    }
   }
   if (TranslateType(item->GetProperty("Addon.Type")) == ADDON_REPOSITORY)
   {
