@@ -705,7 +705,7 @@ void CAddonMgr::UpdateRepos()
     if (repo->LastUpdate()+CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
     {
       CLog::Log(LOGDEBUG,"Checking repository %s for updates",repo->Name().c_str());
-      CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo),this); 
+      CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo),this);
     }
   }
 }

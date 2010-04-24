@@ -146,7 +146,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
         {
           return OnClick(iItem);
         }
-      } 
+      }
     }
     break;
    default:
@@ -175,8 +175,8 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
   TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
   AddonPtr addon;
-  if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"), 
-                                  addon, type, false)) 
+  if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"),
+                                  addon, type, false))
     return;
 
   if (addon->HasSettings())
@@ -189,8 +189,8 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
   TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
   AddonPtr addon;
-  if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"), 
-                                  addon, type, false)) 
+  if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"),
+                                  addon, type, false))
     return false;
   if (button == CONTEXT_BUTTON_SETTINGS)
     return CGUIDialogAddonSettings::ShowAndGetInput(addon);
@@ -233,7 +233,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
                                            bool success, CJob* job2)
 {
   if (success)
-  { 
+  {
     CFileOperationJob* job = (CFileOperationJob*)job2;
     if (job->GetAction() == CFileOperationJob::ActionCopy)
     {
@@ -250,7 +250,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
           CURL url(strFolder);
           // zip extraction job is done
           if (url.GetProtocol() == "zip")
-          { 
+          {
             CFileItemList list;
             CDirectory::GetDirectory(url.Get(),list);
             CStdString dirname = "";
@@ -320,7 +320,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
 void CGUIWindowAddonBrowser::UpdateButtons()
 {
   SET_CONTROL_SELECTED(GetID(),CONTROL_AUTOUPDATE,g_settings.m_bAddonAutoUpdate);
-  CGUIMediaWindow::UpdateButtons();  
+  CGUIMediaWindow::UpdateButtons();
 }
 
 pair<CFileOperationJob*,unsigned int> CGUIWindowAddonBrowser::AddJob(const CStdString& path)
@@ -417,7 +417,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
     item->SetThumbnailImage("DefaultNetwork.png");
     items.Add(item);
   }
-  
+
   CSingleLock lock(m_critSection);
   for (int i=0;i<items.Size();++i)
   {
@@ -428,7 +428,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
       items[i]->SetProperty("Addon.Status",g_localizeStrings.Get(13413));
     items[i]->SetLabel2(items[i]->GetProperty("Addon.Status"));
     // to avoid the view state overriding label 2
-    items[i]->SetLabelPreformated(true);   
+    items[i]->SetLabelPreformated(true);
   }
 
   return result;
@@ -438,12 +438,12 @@ bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
-  
+
   if (!CGUIMediaWindow::Update(strDirectory))
     return false;
-  
+
   m_thumbLoader.Load(*m_vecItems);
-  
+
   return true;
 }
 

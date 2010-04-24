@@ -31,7 +31,7 @@
 
 using namespace ADDON;
 
-namespace XFILE 
+namespace XFILE
 {
 
 CAddonsDirectory::CAddonsDirectory(void)
@@ -63,7 +63,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   {
     CAddonDatabase database;
     database.Open();
-    database.GetAddons(addons); 
+    database.GetAddons(addons);
     items.SetProperty("reponame",g_localizeStrings.Get(24032));
   }
   else
