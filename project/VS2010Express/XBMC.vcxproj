@@ -265,6 +265,26 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\CpuId.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\cspinfo.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoder.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderH264.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderMpeg2.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderVC1.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\ffmpegctx.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CompileAsC</CompileAs>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">NotUsing</PrecompiledHeader>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(NOINHERIT)</ForcedIncludeFiles>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\H264Nalu.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\VideoDecDXVAAllocator.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\VideoDecOutputPin.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\XBMCVideoDecFilter.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSauth.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSscramble.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\DeCSSInputPin.cpp" />
     <ClCompile Include="..\..\xbmc\win32\NetworkWin32.cpp" />
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Create</PrecompiledHeader>
@@ -1032,6 +1052,33 @@
     <ClCompile Include="..\..\lib\jsoncpp\jsoncpp\src\lib_json\json_writer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\config.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\CpuId.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\cspinfo.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoder.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderH264.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderMpeg2.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderVC1.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\ffImgfmt.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\ffmpegctx.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\H264Nalu.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\H264QuantizationMatrix.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\intrin_fixed.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\VideoDecDXVAAllocator.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\VideoDecOutputPin.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\XBMCVideoDecFilter.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSauth.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSscramble.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\DeCSSInputPin.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllAvCodec.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllAvFormat.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllPostProc.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllSwScale.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include\libavutil\avconfig.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avformat.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avio.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavutil\common.h" />
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h" />
     <ClInclude Include="..\..\xbmc\win32\pch.h" />
     <ClInclude Include="..\..\xbmc\win32\PlatformDefs.h" />
@@ -1131,14 +1178,7 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamRTMP.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.h" />
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\avcodec.h" />
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\avformat.h" />
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\avio.h" />
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\common.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\decoder.h" />
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\DllAvCodec.h" />
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\DllAvFormat.h" />
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\DllPostProc.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvd_types.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvdnav.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvdnav_events.h" />
@@ -1282,8 +1322,6 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\DllLibSubs.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\ILog.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.h" />
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IMpaDecFilter.h" />
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IMPCVideoDecFilter.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\ffdshow_constants.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffDecoder.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffdshowBase.h" />

@@ -82,9 +82,6 @@
     <Filter Include="cores\dsplayer\Filters\Splitters">
       <UniqueIdentifier>{04630a22-43cd-4ba5-b315-d789849dcf79}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\dsplayer\Filters\Splitters\flv">
-      <UniqueIdentifier>{7ca392d8-33c5-4af9-be29-c84a927e7866}</UniqueIdentifier>
-    </Filter>
     <Filter Include="cores\dsplayer\Filters\Video Renderers">
       <UniqueIdentifier>{b17ca670-8077-41e8-b9a5-3afa8f5bdec8}</UniqueIdentifier>
     </Filter>
@@ -216,6 +213,21 @@
     </Filter>
     <Filter Include="libraries\jsoncpp">
       <UniqueIdentifier>{6e1268b2-dced-46fc-b253-85e67bbcc6a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\dsplayer\Filters\BaseClassFilters">
+      <UniqueIdentifier>{b4e74397-2542-4bf7-84f8-9df59090eb76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\dsplayer\Filters\Include">
+      <UniqueIdentifier>{06b4b21d-069d-475d-b2c2-8db2473fd20e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\dsplayer\Filters\Splitters\AVI">
+      <UniqueIdentifier>{982ae644-c205-45d1-973c-c2802bf747b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\dsplayer\Filters\Splitters\FLV">
+      <UniqueIdentifier>{7ca392d8-33c5-4af9-be29-c84a927e7866}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\dsplayer\Filters\Video Decoders">
+      <UniqueIdentifier>{333a2702-47ab-4268-94d7-3d8d023910ab}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -726,26 +738,8 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\StreamsManager.cpp">
       <Filter>cores\dsplayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\AviFile.cpp">
-      <Filter>cores\dsplayer\Filters\Splitters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\AviSplitter.cpp">
-      <Filter>cores\dsplayer\Filters\Splitters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitter.cpp">
-      <Filter>cores\dsplayer\Filters\Splitters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFile.cpp">
-      <Filter>cores\dsplayer\Filters\Splitters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFileEx.cpp">
-      <Filter>cores\dsplayer\Filters\Splitters</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseVideoFilter.cpp">
-      <Filter>cores\dsplayer\Filters\Splitters\flv</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\FLVSplitter.cpp">
-      <Filter>cores\dsplayer\Filters\Splitters\flv</Filter>
+      <Filter>cores\dsplayer\Filters\Splitters\FLV</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\AllocatorCommon.cpp">
       <Filter>cores\dsplayer\Filters\Video Renderers</Filter>
@@ -764,12 +758,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.cpp">
       <Filter>cores\dsplayer\Filters\Video Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\asyncio.cpp">
-      <Filter>cores\dsplayer\Filters\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.cpp">
-      <Filter>cores\dsplayer\Filters\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.cpp">
       <Filter>cores\dsplayer\Filters\Source</Filter>
@@ -2277,6 +2265,75 @@
     <ClCompile Include="..\..\lib\jsoncpp\jsoncpp\src\lib_json\json_writer.cpp">
       <Filter>libraries\jsoncpp</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\asyncio.cpp">
+      <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.cpp">
+      <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.cpp">
+      <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitter.cpp">
+      <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFile.cpp">
+      <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFileEx.cpp">
+      <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\VideoDecOutputPin.cpp">
+      <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSauth.cpp">
+      <Filter>cores\dsplayer\Filters\Include</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSscramble.cpp">
+      <Filter>cores\dsplayer\Filters\Include</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\DeCSSInputPin.cpp">
+      <Filter>cores\dsplayer\Filters\Include</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\AviFile.cpp">
+      <Filter>cores\dsplayer\Filters\Splitters\AVI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\AviSplitter.cpp">
+      <Filter>cores\dsplayer\Filters\Splitters\AVI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseVideoFilter.cpp">
+      <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\CpuId.cpp">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\cspinfo.cpp">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoder.cpp">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderH264.cpp">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderMpeg2.cpp">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderVC1.cpp">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\ffmpegctx.c">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\H264Nalu.cpp">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\VideoDecDXVAAllocator.cpp">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\XBMCVideoDecFilter.cpp">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -2576,28 +2633,7 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.h">
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\avcodec.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\avformat.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\avio.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\common.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\decoder.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\DllAvCodec.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\DllAvFormat.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\DllPostProc.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvd_types.h">
@@ -2966,26 +3002,8 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\StreamsManager.h">
       <Filter>cores\dsplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\AviFile.h">
-      <Filter>cores\dsplayer\Filters\Splitters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\AviSplitter.h">
-      <Filter>cores\dsplayer\Filters\Splitters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitter.h">
-      <Filter>cores\dsplayer\Filters\Splitters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFile.h">
-      <Filter>cores\dsplayer\Filters\Splitters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFileEx.h">
-      <Filter>cores\dsplayer\Filters\Splitters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseVideoFilter.h">
-      <Filter>cores\dsplayer\Filters\Splitters\flv</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\FLVSplitter.h">
-      <Filter>cores\dsplayer\Filters\Splitters\flv</Filter>
+      <Filter>cores\dsplayer\Filters\Splitters\FLV</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\AllocatorCommon.h">
       <Filter>cores\dsplayer\Filters\Video Renderers</Filter>
@@ -3008,12 +3026,6 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\VMR9AllocatorPresenter.h">
       <Filter>cores\dsplayer\Filters\Video Renderers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\asyncio.h">
-      <Filter>cores\dsplayer\Filters\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.h">
-      <Filter>cores\dsplayer\Filters\Source</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.h">
       <Filter>cores\dsplayer\Filters\Source</Filter>
     </ClInclude>
@@ -3027,12 +3039,6 @@
       <Filter>cores\dsplayer\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.h">
-      <Filter>cores\dsplayer\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IMpaDecFilter.h">
-      <Filter>cores\dsplayer\Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IMPCVideoDecFilter.h">
       <Filter>cores\dsplayer\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\ffdshow_constants.h">
@@ -4810,6 +4816,111 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\XBMCOperations.h">
       <Filter>libraries\libjsonrpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\asyncio.h">
+      <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\asyncrdr.h">
+      <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.h">
+      <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitter.h">
+      <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFile.h">
+      <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitterFileEx.h">
+      <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\VideoDecOutputPin.h">
+      <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSauth.h">
+      <Filter>cores\dsplayer\Filters\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSscramble.h">
+      <Filter>cores\dsplayer\Filters\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\DeCSSInputPin.h">
+      <Filter>cores\dsplayer\Filters\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\AviFile.h">
+      <Filter>cores\dsplayer\Filters\Splitters\AVI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\AviSplitter.h">
+      <Filter>cores\dsplayer\Filters\Splitters\AVI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseVideoFilter.h">
+      <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\CpuId.h">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\cspinfo.h">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoder.h">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderH264.h">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderMpeg2.h">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderVC1.h">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\ffImgfmt.h">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\ffmpegctx.h">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\H264Nalu.h">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\H264QuantizationMatrix.h">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\intrin_fixed.h">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\VideoDecDXVAAllocator.h">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\XBMCVideoDecFilter.h">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllAvCodec.h">
+      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllAvFormat.h">
+      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllPostProc.h">
+      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllSwScale.h">
+      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include\libavutil\avconfig.h">
+      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avformat.h">
+      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavutil\common.h">
+      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avio.h">
+      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\config.h">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

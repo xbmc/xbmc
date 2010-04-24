@@ -326,7 +326,7 @@ namespace Com
 
       file = tmpstrPath;
       CStdString		progfiles, sysdir, windir;
-      LPSTR temp;
+      LPSTR temp = NULL;
       SHGetSpecialFolderPath(NULL, temp, CSIDL_PROGRAM_FILES, FALSE);	
       progfiles = temp;
 		  SHGetSpecialFolderPath(NULL, temp, CSIDL_SYSTEM, FALSE);		

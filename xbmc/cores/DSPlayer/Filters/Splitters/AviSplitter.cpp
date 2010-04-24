@@ -202,7 +202,7 @@ HRESULT CAviSplitterFilter::CreateOutputs(IAsyncReader* pAsyncReader)
       mt.majortype = MEDIATYPE_Interleaved;
       mt.subtype = FOURCCMap(s->strh.fccHandler);
       mt.formattype = FORMAT_DvInfo;
-      BYTE *newFmt;
+      BYTE *newFmt = NULL;
       memcpy(newFmt, &s->strf[0], s->strf.size());
       mt.SetFormat(newFmt, dsmax(s->strf.size(), sizeof(DVINFO)));
       mt.SetSampleSize(s->strh.dwSuggestedBufferSize > 0 

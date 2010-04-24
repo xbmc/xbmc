@@ -2556,6 +2556,7 @@
 							</FileConfiguration>
 							<FileConfiguration
 								Name="Release (DirectX)|Win32"
+								ExcludedFromBuild="true"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
@@ -2686,14 +2687,6 @@
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\decss\DeCSSInputPin.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\fourcc_guids.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\ITrackInfo.h"
 							>
 						</File>
 					</Filter>
