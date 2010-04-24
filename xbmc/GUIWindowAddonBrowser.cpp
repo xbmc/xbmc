@@ -36,10 +36,12 @@
 #include "FileSystem/AddonsDirectory.h"
 #include "utils/FileOperationJob.h"
 #include "utils/JobManager.h"
+#include "utils/log.h"
 #include "utils/SingleLock.h"
 #include "Settings.h"
 #include "Application.h"
 #include "AddonDatabase.h"
+#include "AdvancedSettings.h"
 
 #define CONTROL_AUTOUPDATE 5
 
@@ -69,8 +71,58 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
-      m_vecItems->m_strPath = "";
-      SetHistoryForPath(m_vecItems->m_strPath);
+      // check for valid quickpath parameter
+      CStdString strDestination = message.GetNumStringParams() ? message.GetStringParam(0) : "";
+      CStdString strReturn = message.GetNumStringParams() > 1 ? message.GetStringParam(1) : "";
+      bool returning = strReturn.CompareNoCase("return") == 0;
+
+      if (!strDestination.IsEmpty())
+      {
+        message.SetStringParam("");
+        CLog::Log(LOGINFO, "Attempting to %s to: %s", returning ? "return" : "quickpath", strDestination.c_str());
+      }
+
+      CStdString destPath;
+      if (!strDestination.IsEmpty())
+      {
+        if (strDestination.Equals("$ROOT") || strDestination.Equals("Root"))
+          destPath = "";
+        else if (strDestination.Equals("Enabled"))
+          destPath = "addons://enabled/";
+        else if (strDestination.Equals("Available"))
+          destPath = "addons://all/";
+        else if (strDestination.Equals("Scrapers"))
+          destPath = "addons://enabled/scraper";
+        else if (strDestination.Equals("Screensavers"))
+          destPath = "addons://enabled/screensaver";
+        else if (strDestination.Equals("Plugins"))
+          destPath = "addons://enabled/plugin";
+        else if (strDestination.Equals("Visualizations"))
+          destPath = "addons://enabled/visualization";
+        else if (strDestination.Equals("Scripts"))
+          destPath = "addons://enabled/script";
+        else if (strDestination.Equals("AvailableScrapers"))
+          destPath = "addons://all/scraper";
+        else if (strDestination.Equals("AvailableScreensavers"))
+          destPath = "addons://all/screensaver";
+        else if (strDestination.Equals("AvailablePlugins"))
+          destPath = "addons://all/plugin";
+        else if (strDestination.Equals("AvailableVisualizations"))
+          destPath = "addons://all/visualization";
+        else if (strDestination.Equals("AvailableScripts"))
+          destPath = "addons://all/script";
+        else
+        {
+          CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());
+          destPath = strDestination;
+        }
+        if (!returning || m_vecItems->m_strPath.Left(destPath.GetLength()) != destPath)
+        { // we're not returning to the same path, so set our directory to the requested path
+          m_vecItems->m_strPath = destPath;
+        }
+        SetHistoryForPath(m_vecItems->m_strPath);
+        m_startDirectory = returning ? destPath : "";
+      }
     }
     break;
   case GUI_MSG_CLICKED:
@@ -88,6 +140,20 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
      break;
   }
   return CGUIMediaWindow::OnMessage(message);
+}
+
+bool CGUIWindowAddonBrowser::OnAction(const CAction& action)
+{
+  if (action.GetID() == ACTION_PARENT_DIR)
+  {
+    if (g_advancedSettings.m_bUseEvilB &&
+        m_vecItems->m_strPath == m_startDirectory)
+    {
+      g_windowManager.PreviousWindow();
+      return true;
+    }
+  }
+  return CGUIMediaWindow::OnAction(action);
 }
 
 void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
