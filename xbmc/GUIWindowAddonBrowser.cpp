@@ -211,7 +211,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
             strFolder = CUtil::AddFileToFolder("special://home/addons/",
                                                dirname);
           }
-          else // not reachable - in case we decide to allow non-zipped repos
+          else
           {
             CUtil::RemoveSlashAtEnd(strFolder);
             strFolder = CUtil::AddFileToFolder("special://home/addons/",
@@ -276,21 +276,27 @@ pair<CFileOperationJob*,unsigned int> CGUIWindowAddonBrowser::AddJob(const CStdS
   CStdString dest="special://home/addons/packages/";
   CStdString package = CUtil::AddFileToFolder("special://home/addons/packages/",
                                               CUtil::GetFileName(path));
-  // check for cached copy
-  if (CFile::Exists(package))
+  if (CUtil::HasSlashAtEnd(path))
   {
-    CStdString archive;
-    CUtil::CreateArchivePath(archive,"zip",package,"");
-    list.Add(CFileItemPtr(new CFileItem(archive,true)));
     dest = "special://home/addons/";
+    list.Add(CFileItemPtr(new CFileItem(path,true)));
   }
   else
   {
-    list.Add(CFileItemPtr(new CFileItem(path,false)));
+    // check for cached copy
+    if (CFile::Exists(package))
+    {
+      CStdString archive;
+      CUtil::CreateArchivePath(archive,"zip",package,"");
+      list.Add(CFileItemPtr(new CFileItem(archive,true)));
+      dest = "special://home/addons/";
+    }
+    else
+    {
+      list.Add(CFileItemPtr(new CFileItem(path,false)));
+    }
   }
 
-  CUtil::GetDirectory(path,package);
-  list[0]->SetProperty("Repo.Path",package);
   list[0]->Select(true);
   CFileOperationJob* job = new CFileOperationJob(CFileOperationJob::ActionCopy,
                                                  list,dest);
