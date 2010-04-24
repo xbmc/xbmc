@@ -127,6 +127,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="win32addconfig.bat"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -221,6 +222,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="win32addconfig.bat"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -2556,10 +2558,10 @@
 							</FileConfiguration>
 							<FileConfiguration
 								Name="Release (DirectX)|Win32"
-								ExcludedFromBuild="true"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
+									AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer\codecs\ffmpeg\libavcodec;..\..\xbmc\cores\dvdplayer\codecs\ffmpeg\libavutil"
 									UsePrecompiledHeader="0"
 									ForcedIncludeFiles="$(NOINHERIT)"
 								/>
