@@ -52,6 +52,8 @@
 		18B4A00D1152BFA5001AF8A6 /* Visualisation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B4A0001152BFA5001AF8A6 /* Visualisation.cpp */; };
 		18CCEAEE1112F5B800615FC6 /* PCMRemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18CCEAEC1112F5B800615FC6 /* PCMRemap.cpp */; };
 		18CCEAEF1112F5B800615FC6 /* PCMRemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18CCEAEC1112F5B800615FC6 /* PCMRemap.cpp */; };
+		18E9C8EE11834DF600DF8B9F /* GUIDialogAddonInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18E9C8EC11834DF600DF8B9F /* GUIDialogAddonInfo.cpp */; };
+		18E9C8EF11834DF600DF8B9F /* GUIDialogAddonInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18E9C8EC11834DF600DF8B9F /* GUIDialogAddonInfo.cpp */; };
 		431AE5D9109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */; };
 		431AE5DA109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */; };
 		43248C4E0FBE224000B88866 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; };
@@ -1915,6 +1917,8 @@
 		18B4A0011152BFA5001AF8A6 /* Visualisation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Visualisation.h; path = addons/Visualisation.h; sourceTree = "<group>"; };
 		18CCEAEC1112F5B800615FC6 /* PCMRemap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PCMRemap.cpp; sourceTree = "<group>"; };
 		18CCEAED1112F5B800615FC6 /* PCMRemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCMRemap.h; sourceTree = "<group>"; };
+		18E9C8EC11834DF600DF8B9F /* GUIDialogAddonInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogAddonInfo.cpp; sourceTree = "<group>"; };
+		18E9C8ED11834DF600DF8B9F /* GUIDialogAddonInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogAddonInfo.h; sourceTree = "<group>"; };
 		431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRendererUtil.cpp; sourceTree = "<group>"; };
 		431AE5D8109C1A63007428C3 /* OverlayRendererUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayRendererUtil.h; sourceTree = "<group>"; };
 		43348AA1107747CD00F859CF /* Edl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Edl.cpp; sourceTree = "<group>"; };
@@ -4486,6 +4490,8 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				18E9C8EC11834DF600DF8B9F /* GUIDialogAddonInfo.cpp */,
+				18E9C8ED11834DF600DF8B9F /* GUIDialogAddonInfo.h */,
 				C85EB760117461830008E5A5 /* GUIViewStateAddonBrowser.cpp */,
 				C85EB761117461830008E5A5 /* GUIViewStateAddonBrowser.h */,
 				C85EB754117460D50008E5A5 /* AddonDatabase.cpp */,
@@ -8170,6 +8176,7 @@
 				C85EB756117460D50008E5A5 /* AddonDatabase.cpp in Sources */,
 				C85EB75C1174614E0008E5A5 /* Repository.cpp in Sources */,
 				C85EB762117461830008E5A5 /* GUIViewStateAddonBrowser.cpp in Sources */,
+				18E9C8EE11834DF600DF8B9F /* GUIDialogAddonInfo.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9038,6 +9045,7 @@
 				C85EB757117460D50008E5A5 /* AddonDatabase.cpp in Sources */,
 				C85EB75D1174614E0008E5A5 /* Repository.cpp in Sources */,
 				C85EB763117461830008E5A5 /* GUIViewStateAddonBrowser.cpp in Sources */,
+				18E9C8EF11834DF600DF8B9F /* GUIDialogAddonInfo.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
