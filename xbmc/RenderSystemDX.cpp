@@ -295,15 +295,15 @@ bool CRenderSystemDX::CreateDevice()
     // Try a second time, may fail the first time due to back buffer count,
     // which will be corrected down to 1 by the runtime
     hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
-      D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_D3DPP, &m_pD3DDevice );
+      D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
     if( FAILED( hr ) )
     {
       hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
-        D3DCREATE_MIXED_VERTEXPROCESSING, &m_D3DPP, &m_pD3DDevice );
+        D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
       if( FAILED( hr ) )
       {
         hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
-          D3DCREATE_SOFTWARE_VERTEXPROCESSING, &m_D3DPP, &m_pD3DDevice );
+          D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
       }
       if(FAILED( hr ) )
         return false;
