@@ -453,6 +453,28 @@ NPT_Win32Thread::EntryPoint(void* argument)
     NPT_System::GetCurrentTimeStamp(now);
     NPT_System::SetRandomSeed(now.m_NanoSeconds + ::GetCurrentThreadId());
 
+    // set a default name
+    #pragma pack(push,8)
+    struct THREADNAME_INFO
+    {
+      DWORD  dwType;     // must be 0x1000
+      LPCSTR szName;     // pointer to name (in same addr space)
+      DWORD  dwThreadID; // thread ID (-1 caller thread)
+      DWORD  dwFlags;    // reserved for future use, most be zero
+    } info;
+    #pragma pack(pop)
+    info.dwType     = 0x1000;
+    info.szName     = "Neptune Thread";
+    info.dwThreadID = GetCurrentThreadId();
+    info.dwFlags    = 0;
+    __try
+    {
+      RaiseException(0x406d1388, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR *)&info);
+    }
+    __except(EXCEPTION_EXECUTE_HANDLER)
+    {
+    }
+
     // run the thread 
     thread->Run();
     
