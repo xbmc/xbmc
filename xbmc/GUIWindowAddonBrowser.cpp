@@ -143,20 +143,48 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
       return true;
     }
     AddonPtr addon;
+    bool disable=false;
+    bool install=false;
+    CStdString path = item->GetProperty("Addon.Path");
     if (CAddonMgr::Get()->GetAddon(item->GetProperty("Addon.ID"),addon))
     {
-      CStdString path = item->GetProperty("Addon.Path");
-      if (!path.Left(22).Equals("special://home/addons/") || path.length() <= 22)
-        return false; //TODO - print a message saying that addon is in wrong location and can't be deleted
-
-      if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24000),
-                                           addon->Name(),
-                                           g_localizeStrings.Get(24060),""))
+      // update available
+      if (item->GetProperty("Addon.Status").Equals(g_localizeStrings.Get(24068)))
       {
-        CFileItemList list;
-        list.Add(CFileItemPtr(new CFileItem(path,true)));
-        list[0]->Select(true);
-        CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""),this);
+        AddonPtr addon;
+        CAddonDatabase database;
+        database.Open();
+        if (database.GetAddon(item->GetProperty("Addon.ID"),addon))
+        {
+          bool cancel;
+          if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24000),
+                                               addon->Name(),
+                                               g_localizeStrings.Get(24068),"",
+                                               cancel,
+                                               g_localizeStrings.Get(24069),
+                                               g_localizeStrings.Get(24075)))
+          {
+            disable = true;
+          }
+          else
+          {
+            if (!cancel)
+              install = true;
+          }
+          item->SetProperty("Addon.Path",addon->Path());
+        }
+      }
+      else
+      {
+        if (!path.Left(22).Equals("special://home/addons/") || path.length() <= 22)
+          return false; //TODO - print a message saying that addon is in wrong location and can't be deleted
+        
+        if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24000),
+                                             addon->Name(),
+                                             g_localizeStrings.Get(24060),""))
+        {
+          disable = true;
+        }
       }
     }
     else
@@ -165,10 +193,21 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
                                            item->GetProperty("Addon.Name"),
                                            g_localizeStrings.Get(24059),""))
       {
-        pair<CFileOperationJob*,unsigned int> job = AddJob(item->GetProperty("Addon.Path"));
-        RegisterJob(item->GetProperty("Addon.ID"),job.first,job.second);
+        install = true;
       }
     } 
+    if (install)
+    {
+      pair<CFileOperationJob*,unsigned int> job = AddJob(item->GetProperty("Addon.Path"));
+      RegisterJob(item->GetProperty("Addon.ID"),job.first,job.second);
+    }
+    if (disable)
+    {
+      CFileItemList list;
+      list.Add(CFileItemPtr(new CFileItem(path,true)));
+      list[0]->Select(true);
+      CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""),this);
+    }
     return true;
   }
 
