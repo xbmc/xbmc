@@ -3496,6 +3496,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogAddonInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogAddonInfo.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIDialogAddonSettings.cpp"
 					>
 				</File>
