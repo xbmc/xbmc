@@ -151,7 +151,7 @@ void CGUIDialogVideoSettings::CreateSettings()
     entries.push_back(make_pair(DS_BILINEAR_2_75     , 35009));
     entries.push_back(make_pair(DS_BILINEAR_2_100    , 35010));
     
-    AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&g_dsSettings.iDX9Resizer, entries);
+    AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, &g_dsSettings.iDX9Resizer, entries);
   }
 #endif
   AddBool(VIDEO_SETTINGS_CROP, 644, &g_settings.m_currentVideoSettings.m_Crop);

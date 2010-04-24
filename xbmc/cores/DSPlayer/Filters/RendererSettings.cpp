@@ -45,7 +45,7 @@ void CDsSettings::SetDefault()
   nSPCSize = 3; // Threading queue
   nSPCMaxRes = 0; // default
   fSPCAllowAnimationWhenBuffering = false; // No Anim
-  iDX9Resizer = 3; //Dx9 Resizers
+  iDX9Resizer = 1; //Dx9 Resizers
 }
 
 void CDsSettings::LoadConfig()
@@ -96,7 +96,8 @@ void CDsSettings::LoadConfig()
     GetDouble(pElement, "CycleDelta", m_RenderSettings.fCycleDelta, 0, 0, 100);
     GetDouble(pElement, "TargetSyncOffset", m_RenderSettings.fTargetSyncOffset, 0, 0, 100);
     GetDouble(pElement, "ControlLimit", m_RenderSettings.fControlLimit, 0, 0, 100);
-    GetInteger(pElement, "DX9Resizer", iDX9Resizer, 3, 0, 5);
+    
+    //GetInteger(pElement, "DX9Resizer", iDX9Resizer, 3, 0, 5); Set in GUI
 
     GetInteger(pElement, "EVRBuffers", m_RenderSettings.iEvrBuffers, 4, 4, 60);
   }
