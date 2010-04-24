@@ -115,7 +115,7 @@ bool CAddonDatabase::GetAddon(const CStdString& id, AddonPtr& addon)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS2.get()) return -1;
 
-    CStdString sql = FormatSQL("select id from addon where addonID like '%s'",id.c_str());
+    CStdString sql = FormatSQL("select id from addon where addonID like '%s' order by version desc",id.c_str());
     m_pDS2->query(sql.c_str());
     if (!m_pDS2->eof())
       return GetAddon(m_pDS2->fv(0).get_asInt(),addon);
@@ -156,6 +156,34 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr& addon)
     CLog::Log(LOGERROR, "%s failed on addon %i", __FUNCTION__, id);
   }
   addon.reset();
+  return false;
+}
+
+bool CAddonDatabase::GetAddons(VECADDONS& addons)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS2.get()) return -1;
+
+    CStdString sql = FormatSQL("select distinct addonID from addon");
+    m_pDS->query(sql.c_str());
+    while (!m_pDS->eof())
+    {
+      sql = FormatSQL("select id from addon where addonID='%s' order by version desc",m_pDS->fv(0).get_asString().c_str());
+      m_pDS2->query(sql.c_str());
+      AddonPtr addon;
+      if (GetAddon(m_pDS2->fv(0).get_asInt(),addon))
+        addons.push_back(addon);
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
   return false;
 }
 
