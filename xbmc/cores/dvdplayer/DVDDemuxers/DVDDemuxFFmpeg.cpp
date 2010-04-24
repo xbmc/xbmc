@@ -268,18 +268,10 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     std::string content = m_pInput->GetContent();
 
     /* check if we can get a hint from content */
-    if( content.compare("audio/aacp") == 0 )
-      iformat = m_dllAvFormat.av_find_input_format("aac");
-    else if( content.compare("audio/aac") == 0 )
-      iformat = m_dllAvFormat.av_find_input_format("aac");
-    else if( content.compare("video/x-vobsub") == 0 )
+    if     ( content.compare("video/x-vobsub") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("mpeg");
     else if( content.compare("video/x-dvd-mpeg") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("mpeg");
-    else if( content.compare("video/flv") == 0 )
-      iformat = m_dllAvFormat.av_find_input_format("flv");
-    else if( content.compare("video/x-flv") == 0 )
-      iformat = m_dllAvFormat.av_find_input_format("flv");
   }
 
   if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
@@ -350,6 +342,22 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
 
       iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
+
+      if(!iformat)
+      {
+        std::string content = m_pInput->GetContent();
+
+        /* check if we can get a hint from content */
+        if( content.compare("audio/aacp") == 0 )
+          iformat = m_dllAvFormat.av_find_input_format("aac");
+        else if( content.compare("audio/aac") == 0 )
+          iformat = m_dllAvFormat.av_find_input_format("aac");
+        else if( content.compare("video/flv") == 0 )
+          iformat = m_dllAvFormat.av_find_input_format("flv");
+        else if( content.compare("video/x-flv") == 0 )
+          iformat = m_dllAvFormat.av_find_input_format("flv");
+      }
+
       if (!iformat)
       {
         // av_probe_input_format failed, re-probe the ffmpeg/ffplay method.
