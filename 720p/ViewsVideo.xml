@@ -116,6 +116,28 @@
 									<info>ListItem.Studio</info>
 									<include>MediaInfoValue</include>
 								</control>
+								
+								<control type="image">
+									<visible>true</visible>
+									<posx>475</posx>
+									<posy>-50</posy>
+									<height>75</height>
+									<width>75</width>
+									<info>Listitem.Property(mediaTag::studio)</info>
+									<aspectratio>keep</aspectratio>
+									<align>left</align>
+								</control>
+								
+								<control type="image">
+									<visible>true</visible>
+									<posx>470</posx>
+									<posy>-120</posy>
+									<height>40</height>
+									<width>95</width>
+									<info>Listitem.Property(mediaTag::contentRating)</info>
+									<aspectratio>keep</aspectratio>
+								</control>
+								
 							</control>
 						</control>
 					</control>
