@@ -62,6 +62,60 @@
 			<aspectratio>keep</aspectratio>
 		</control>
 	</include> 
+	<include name="MediaPreviewFlags">
+		<!-- width 400 -->
+		<control type="image">
+			<visible>true</visible>
+			<posx>0</posx>
+			<posy>0</posy>
+			<height>40</height>
+			<width>95</width>
+			<info>Listitem.Property(mediaTag::contentRating)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+ 
+		<control type="image">
+			<visible>true</visible>
+			<posx>110</posx>
+			<posy>0</posy>
+			<height>40</height>
+			<width>95</width>
+			<info>Listitem.Property(mediaTag::videoResolution)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+ 
+		<control type="image">
+			<visible>true</visible>
+			<posx>220</posx>
+			<posy>0</posy>
+			<height>40</height>
+			<width>95</width>
+			<info>Listitem.Property(mediaTag::audioCodec)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+ 
+		<control type="image">
+			<visible>true</visible>
+			<posx>330</posx>
+			<posy>0</posy>
+			<height>40</height>
+			<width>95</width>
+			<info>Listitem.Property(mediaTag::audioChannels)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+ 
+		<control type="image">
+			<visible>true</visible>
+			<posx>435</posx>
+			<posy>-27.5</posy>
+			<height>95</height>
+			<width>95</width>
+			<info>Listitem.Property(mediaTag::studio)</info>
+			<aspectratio>keep</aspectratio>
+			<align>left</align>
+		</control>
+		
+	</include>
 	<include name="PanelStreamFlags">
 		<control type="image">
 			<visible>!IsEmpty(ListItem.Property(mediaType::movie))</visible>

@@ -1100,7 +1100,7 @@
 			<texture>$INFO[Skin.String(Developer_Background)]</texture>
 		</control>
 		<control type="image">
-			<visible>Skin.HasSetting(Developer) + Developer_Background_Visible</visible>
+			<visible>Skin.HasSetting(Developer) + Skin.HasSetting(Developer_Background_Visible)</visible>
 			<width>1280</width>
 			<height>720</height>
 			<texture>Black.png</texture>

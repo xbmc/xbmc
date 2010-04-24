@@ -1,6 +1,35 @@
 <fonts>
   <fontset id="Default" unicode="false">
 
+<!-- Jay's Fonts -->
+	<font>
+		<name>LargeTitleFont</name>
+		<filename>HelveticaNeue</filename>
+		<variant>Condensed Bold</variant>
+		<size>26</size>
+	</font>
+	
+	<font>
+		<name>MediaPreviewYear</name>
+		<filename>HelveticaNeue</filename>
+		<variant>Regular</variant>
+		<size>22</size>
+	</font>
+	
+	<font>
+		<name>MediaPreviewSummary</name>
+		<filename>HelveticaNeue</filename>
+		<variant>Regular</variant>
+		<size>18</size>
+	</font>
+	
+	<font>
+		<name>MediaPreviewDetailsHeader</name>
+		<filename>HelveticaNeue</filename>
+		<variant>Condensed Bold</variant>
+		<size>20</size>
+	</font>
+
 <!-- Default fonts -->
     <font>
       <name>NPArtistFont</name>
@@ -23,7 +52,7 @@
     <font>
       <name>NPNextFont</name>
       <filename>HelveticaNeue</filename>
-			<variant>Regular</variant>
+		<variant>Regular</variant>
       <size>20</size>
     </font>
 
@@ -37,7 +66,7 @@
     <font>
       <name>XLargeDefaultCapsFont</name>
       <filename>HelveticaNeue</filename>
-			<variant>Condensed Bold</variant>
+	  <variant>Condensed Bold</variant>
       <size>32</size>
     </font>
 
@@ -58,7 +87,7 @@
     <font>
       <name>MediumDefaultFont</name>
       <filename>HelveticaNeue</filename>
-			<variant>Regular</variant>
+	  <variant>Regular</variant>
       <size>20</size>
     </font>
 
@@ -223,7 +252,7 @@
     <font>
       <name>TitleCapsFont</name>
       <filename>HelveticaNeue</filename>
-			<variant>Condensed Bold</variant>
+	  <variant>Condensed Bold</variant>
       <size>24</size>
     </font>
 
