@@ -42,13 +42,15 @@ public:
   bool GetRepository(int id, ADDON::VECADDONS& addons);
   bool SetRepoTimestamp(const CStdString& id, const CStdString& timestamp);
   int GetRepoTimestamp(const CStdString& id, CStdString& timestamp);
+  bool GetSystemEnabled(const CStdString& id);
+  bool SetSystemEnabled(const CStdString& id, bool enabled);
   bool Search(const CStdString& search, ADDON::VECADDONS& items);
   bool SearchTitle(const CStdString& strSearch, ADDON::VECADDONS& items);
   static void SetPropertiesFromAddon(const ADDON::AddonPtr& addon, CFileItemPtr& item); 
 protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 2; }
+  virtual int GetMinVersion() const { return 3; }
   const char *GetDefaultDBName() const { return "Addons"; }
 };
 

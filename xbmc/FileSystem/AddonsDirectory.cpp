@@ -52,7 +52,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   // get info from repository
   if (path.GetHostName().Equals("enabled"))
   {
-    CAddonMgr::Get()->GetAllAddons(addons);
+    CAddonMgr::Get()->GetAllAddons(addons, false);
     items.SetProperty("reponame",g_localizeStrings.Get(24062));
   }
   else
@@ -118,6 +118,8 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     AddonPtr addon2;
     if (CAddonMgr::Get()->GetAddon(addon->ID(),addon2))
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(305));
+    else if (pItem->GetProperty("Addon.Path").Left(22).Equals("special://xbmc/addons/"))
+      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24068));
     items.Add(pItem);
   }
 }

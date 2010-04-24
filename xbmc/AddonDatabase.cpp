@@ -58,6 +58,9 @@ bool CAddonDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create addonlinkrepo table");
     m_pDS->exec("CREATE TABLE addonlinkrepo (idRepo integer, idAddon integer)\n");
+
+    CLog::Log(LOGINFO, "create system enabled table");
+    m_pDS->exec("CREATE TABLE systemenabled (addonID text, enabled bool)\n");
   }
   catch (...)
   {
@@ -73,6 +76,10 @@ bool CAddonDatabase::UpdateOldVersion(int version)
   if (version < 2)
   {
     m_pDS->exec("alter table addon add description text");
+  }
+  if (version < 3)
+  {
+    m_pDS->exec("CREATE TABLE systemenabled (addonID text, enabled bool)\n");
   }
   return true;
 }
@@ -301,6 +308,48 @@ bool CAddonDatabase::GetRepository(const CStdString& id, VECADDONS& addons)
     CLog::Log(LOGERROR, "%s failed on repo %s", __FUNCTION__, id.c_str());
   }
   return false;
+}
+
+bool CAddonDatabase::GetSystemEnabled(const CStdString& id)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return true;
+    if (NULL == m_pDS.get()) return true;
+
+    CStdString strSQL = FormatSQL("select enabled from systemenabled where addonID='%s'",id.c_str());
+    m_pDS->query(strSQL.c_str());
+    if (!m_pDS->eof())
+      return m_pDS->fv(0).get_asInt() > 0;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on repo %s", __FUNCTION__, id.c_str());
+  }
+  return false;
+}
+
+bool CAddonDatabase::SetSystemEnabled(const CStdString& id, bool enabled)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    if (enabled)
+    {
+      m_pDS->exec(FormatSQL("insert into systemenabled (addonID, enabled) values ('%s','%i')", id.c_str(), enabled));
+    }
+    else
+    {
+      m_pDS->exec(FormatSQL("delete from systemenabled where addonID='%s'", id.c_str()));
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on repo %s", __FUNCTION__, id.c_str());
+  }
+  return true;
 }
 
 bool CAddonDatabase::Search(const CStdString& search, VECADDONS& items)

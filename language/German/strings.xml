@@ -2597,7 +2597,16 @@
   <string id="24051">Version:</string>
   <string id="24052">Hinweis:</string>
   <string id="24053">Lizenz:</string>
-  <string id="24059">Möchten Sie diese Erweiterung installieren?</string>
+  <string id="24059">Möchten Sie diese Erweiterung aktivieren?</string>
+  <string id="24060">Möchten Sie diese Erweiterung deaktivieren?</string>
+  <string id="24061">Update für Erweiterung verfügbar!</string>
+  <string id="24062">Installierte Erweiterungen</string>
+  <string id="24063">Auto update</string>
+  <string id="24064">Erweiterung aktviert</string>
+  <string id="24065">Erweiterung aktualisiert</string>
+  <string id="24066">Download der Erweiterung abbrechen?</string>
+  <string id="24067">Derzeit runterladende Erweiterungen</string>
+  <string id="24068">Deaktivierte Systemerweiterung</string>
 
   <string id="24070">Erweiterung kann nicht genutzt werden.</string>
   <string id="24071">Ein unbekannter Fehler ist aufgetreten</string>

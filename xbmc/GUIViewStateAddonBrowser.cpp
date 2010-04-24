@@ -59,7 +59,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
   m_sources.clear();
 
   VECADDONS addons;
-  CAddonMgr::Get()->GetAllAddons(addons);
+  CAddonMgr::Get()->GetAllAddons(addons, false);
   if (addons.size())
   {
     CMediaSource share;

@@ -146,17 +146,29 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
     if (CAddonMgr::Get()->GetAddon(item->GetProperty("Addon.ID"),addon))
     {
       CStdString path = item->GetProperty("Addon.Path");
-      if (!path.Left(22).Equals("special://home/addons/") || path.length() <= 22)
+      TYPE type = TranslateType(item->GetProperty("Addon.Type"));
+      if ((!path.Left(22).Equals("special://home/addons/") || path.length() <= 22) && type != ADDON_PVRDLL)
         return false; //TODO - print a message saying that addon is in wrong location and can't be deleted
 
       if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24000),
                                            addon->Name(),
                                            g_localizeStrings.Get(24060),""))
       {
-        CFileItemList list;
-        list.Add(CFileItemPtr(new CFileItem(path,true)));
-        list[0]->Select(true);
-        CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""),this);
+        if (path.Left(22).Equals("special://home/addons/"))
+        {
+          CFileItemList list;
+          list.Add(CFileItemPtr(new CFileItem(path,true)));
+          list[0]->Select(true);
+          CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""),this);
+        }
+        else
+        {
+          CAddonDatabase database;
+          database.Open();
+          database.SetSystemEnabled(addon->ID(), false);
+          CAddonMgr::Get()->FindAddons();
+          Update(m_vecItems->m_strPath);
+        }
       }
     }
     else
@@ -165,8 +177,19 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
                                            item->GetProperty("Addon.Name"),
                                            g_localizeStrings.Get(24059),""))
       {
-        pair<CFileOperationJob*,unsigned int> job = AddJob(item->GetProperty("Addon.Path"));
-        RegisterJob(item->GetProperty("Addon.ID"),job.first,job.second);
+        if (item->GetProperty("Addon.Path").Left(22).Equals("special://home/addons/"))
+        {
+          pair<CFileOperationJob*,unsigned int> job = AddJob(item->GetProperty("Addon.Path"));
+          RegisterJob(item->GetProperty("Addon.ID"),job.first,job.second);
+        }
+        else
+        {
+          CAddonDatabase database;
+          database.Open();
+          database.SetSystemEnabled(addon->ID(), true);
+          CAddonMgr::Get()->FindAddons();
+          Update(m_vecItems->m_strPath);
+        }
       }
     } 
     return true;

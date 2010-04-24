@@ -256,12 +256,20 @@ void CAddonMgr::FindAddons()
 
 void CAddonMgr::LoadAddons(const CStdString &path)
 {
+  bool systemPath = false;
+  if (path == "special://xbmc/addons")
+    systemPath = true;
+
   // parse the user & system dirs for addons of the requested type
   CFileItemList items;
   CDirectory::GetDirectory(path, items);
 
   // store any addons with unresolved deps, then recheck at the end
   VECADDONS unresolved;
+
+  CAddonDatabase database;
+  if (systemPath)
+    database.Open();
 
   // for all folders found
   for (int i = 0; i < items.Size(); ++i)
@@ -275,6 +283,18 @@ void CAddonMgr::LoadAddons(const CStdString &path)
     AddonPtr addon;
     if (!AddonFromInfoXML(item->m_strPath, addon))
       continue;
+
+    // Normally all system addons are enabled as default, but to prevent
+    // trouble with PVR dll's set them to disabled as default, Other as 
+    // screensavers or visualization where ever only one running at a time,
+    // PVR dll's are more critical, PVRManager load all pvr addons on startup 
+    // and they running always in the background and due to not available
+    // backend servers they report a lot of errors during startup!
+    if (systemPath && addon->Type() == ADDON_PVRDLL)
+    {
+      if (!database.GetSystemEnabled(addon->ID()))
+        addon->Disable();
+    }
 
     // only load if addon with same id isn't already loaded
     if(m_idMap.find(addon->ID()) != m_idMap.end())
@@ -320,6 +340,9 @@ void CAddonMgr::LoadAddons(const CStdString &path)
       }
     }
   }
+
+  if (systemPath)
+    database.Close();
 
   for (unsigned i = 0; i < unresolved.size(); i++)
   {
@@ -687,11 +710,7 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
     case ADDON_SCREENSAVER:
       return AddonPtr(new CScreenSaver(addonProps));
     case ADDON_PVRDLL:
-    {
-      AddonPtr temp(new CPVRClient(addonProps));
-      addon = temp;
-      break;
-    }
+      return AddonPtr(new CPVRClient(addonProps));
     case ADDON_SCRAPER_LIBRARY:
     case ADDON_VIZ_LIBRARY:
       return AddonPtr(new CAddonLibrary(addonProps));
