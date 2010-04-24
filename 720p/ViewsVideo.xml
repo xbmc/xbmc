@@ -999,7 +999,7 @@
 								<width>455</width>
 								<description>Watched</description>
 								<font>MediaPreviewSummary</font>
-								<label>$INFO[ListItem.WatchedEpisodes]</label>
+								<label>$INFO[ListItem.Property(WatchedEpisodes)]</label>
 								<align>left</align>
 							</control>
 							<control type="label">
@@ -1016,7 +1016,7 @@
 								<posx>415</posx>
 								<width>455</width>
 								<font>MediaPreviewSummary</font>
-								<label>$INFO[ListItem.UnWatchedEpisodes]</label>
+								<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
 								<align>left</align>
 							</control>
 						</control>
