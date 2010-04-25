@@ -140,15 +140,9 @@ VECADDONS CRepository::Parse()
       if (CAddonMgr::AddonFromInfoXML(element,addon,m_info))
       {
         if (m_zipped)
-        {
           addon->Props().path = CUtil::AddFileToFolder(m_datadir,addon->ID()+"-"+addon->Version().str+".zip");
-          addon->Props().icon = CUtil::AddFileToFolder(m_datadir,addon->ID()+".tbn");
-        }
         else
-        {
           addon->Props().path = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/");
-          addon->Props().icon = CUtil::AddFileToFolder(addon->Props().path,"default.tbn");
-        }
         result.push_back(addon);
       }
       element = element->NextSiblingElement("addoninfo");
