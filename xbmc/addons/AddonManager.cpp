@@ -427,14 +427,14 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   const TiXmlElement *element = rootElement->FirstChildElement("id");
   if (!element)
   {
-    CLog::Log(LOGERROR, "ADDON: %s missing <id> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <id> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
   id = element->GetText();
   //FIXME since we no longer required uuids, should we bother validating anything?
   if (id.IsEmpty())
   {
-    CLog::Log(LOGERROR, "ADDON: %s has invalid <id> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s has invalid <id> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
 
@@ -443,13 +443,13 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   element = rootElement->FirstChildElement("type");
   if (!element)
   {
-    CLog::Log(LOGERROR, "ADDON: %s missing <type> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <type> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
   type = TranslateType(element->GetText());
   if (type == ADDON_UNKNOWN)
   {
-    CLog::Log(LOGERROR, "ADDON: %s has invalid type identifier: '%d'", strPath.c_str(), type);
+    CLog::Log(LOGERROR, "ADDON: %s has invalid type identifier: '%d'", rootElement->GetDocument()->Value(), type);
     return false;
   }
 
@@ -458,7 +458,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   element = rootElement->FirstChildElement("title");
   if (!element)
   {
-    CLog::Log(LOGERROR, "ADDON: %s missing <title> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <title> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
   name = element->GetText();
@@ -468,7 +468,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   element = rootElement->FirstChildElement("version");
   if (!element)
   {
-    CLog::Log(LOGERROR, "ADDON: %s missing <version> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <version> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
   /* Validate version */
@@ -477,7 +477,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   versionRE.RegComp(ADDON_VERSION_RE.c_str());
   if (versionRE.RegFind(version.c_str()) != 0)
   {
-    CLog::Log(LOGERROR, "ADDON: %s has invalid <version> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s has invalid <version> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
 
@@ -491,7 +491,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   element = rootElement->FirstChildElement("license");
 /*  if (!element)
   {
-    CLog::Log(LOGERROR, "ADDON: %s missing <license> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <license> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
   addonProps.license = element->GetText();*/
@@ -501,7 +501,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   element = rootElement->FirstChildElement("platforms")->FirstChildElement("platform");
   if (!element)
   {
-    CLog::Log(LOGERROR, "ADDON: %s missing <platforms> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <platforms> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
 
@@ -524,31 +524,31 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
 #if defined(_LINUX) && !defined(__APPLE__)
     if (!platforms.count("linux"))
     {
-      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Linux, ignoring", strPath.c_str());
+      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Linux, ignoring", rootElement->GetDocument()->Value());
       return false;
     }
 #elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
     if (!platforms.count("windows-gl") && !platforms.count("windows"))
     {
-      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Windows/OpenGL, ignoring", strPath.c_str());
+      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Windows/OpenGL, ignoring", rootElement->GetDocument()->Value());
       return false;
     }
 #elif defined(_WIN32) && defined(HAS_DX)
     if (!platforms.count("windows-dx") && !platforms.count("windows"))
     {
-      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Windows/DirectX, ignoring", strPath.c_str());
+      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Windows/DirectX, ignoring", rootElement->GetDocument()->Value());
       return false;
     }
 #elif defined(__APPLE__)
     if (!platforms.count("osx"))
     {
-      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under OSX, ignoring", strPath.c_str());
+      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under OSX, ignoring", rootElement->GetDocument()->Value());
       return false;
     }
 #elif defined(_XBOX)
     if (!platforms.count("xbox"))
     {
-      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under XBOX, ignoring", strPath.c_str());
+      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under XBOX, ignoring", rootElement->GetDocument()->Value());
       return false;
     }
 #endif
@@ -559,7 +559,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   element = rootElement->FirstChildElement("summary");
   if (!element)
   {
-    CLog::Log(LOGERROR, "ADDON: %s missing <summary> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <summary> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
   addonProps.summary = element->GetText();
@@ -574,7 +574,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
     }
     if (!element)
     {
-      CLog::Log(LOGERROR, "ADDON: %s missing <supportedcontent> element, ignoring", strPath.c_str());
+      CLog::Log(LOGERROR, "ADDON: %s missing <supportedcontent> element, ignoring", rootElement->GetDocument()->Value());
       return false;
     }
 
@@ -639,7 +639,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   {
     element = element->FirstChildElement("dependency");
     if (!element)
-      CLog::Log(LOGDEBUG, "ADDON: %s missing at least one <dependency> element, will ignore this dependency", strPath.c_str());
+      CLog::Log(LOGDEBUG, "ADDON: %s missing at least one <dependency> element, will ignore this dependency", rootElement->GetDocument()->Value());
     else
     {
       do
@@ -649,7 +649,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
         const char* id = element->GetText();
         if (!id || (!min && !max))
         {
-          CLog::Log(LOGDEBUG, "ADDON: %s malformed <dependency> element, will ignore this dependency", strPath.c_str());
+          CLog::Log(LOGDEBUG, "ADDON: %s malformed <dependency> element, will ignore this dependency", rootElement->GetDocument()->Value());
           element = element->NextSiblingElement("dependency");
           continue;
         }
