@@ -2779,8 +2779,10 @@
 				<include>WtchUnwtchOverlayBGDims</include>
 				<texture flipy="true">OverlayWUBG.png</texture>
 				<animation effect="rotate" center="0,0" start="-90" end="-90" time="0" condition="true">Conditional</animation>
+				<!--
 				<animation effect="slide" tween="quadratic" end="12,0" time="300" delay="100">Focus</animation>
 				<animation effect="slide" tween="quadratic" end="0,0" time="200">Unfocus</animation>
+				-->
 				<visible>!IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideWatchedIcons)</visible>
 			</control>
 			<control type="image">
@@ -2789,8 +2791,10 @@
 				<posy>4</posy>
 				<include>WtchUnwtchOverlayDims</include>
 				<info>ListItem.Overlay</info>
+				<!--
 				<animation effect="slide" tween="quadratic" end="0,12" time="300" delay="100">Focus</animation>
 				<animation effect="slide" tween="quadratic" end="0,0" time="200">Unfocus</animation>
+				-->
 				<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
 			</control>
 		</control>

@@ -909,7 +909,7 @@
 							<align>left</align>
 						</control>
 						<control type="label">
-							<visible>Container.Content(movie)</visible>
+							<visible>Container.Content(movies)</visible>
 							<posy>88</posy>
 							<posx>73</posx>
 							<description>Duration</description>
@@ -919,7 +919,7 @@
 							<align>right</align>
 						</control>
 						<control type="label">
-							<visible>Container.Content(movie)</visible>
+							<visible>Container.Content(movies)</visible>
 							<posy>90</posy>
 							<posx>88</posx>
 							<description>Duration</description>
@@ -928,18 +928,17 @@
 							<align>left</align>
 						</control>
 						<control type="label">
-							<visible>Container.Content(movie)</visible>
+							<visible>Container.Content(movies)</visible>
 							<posy>116</posy>
 							<posx>73</posx>
 							<description>Subtitles</description>
 							<font>MediaPreviewDetailsHeader</font>
 							<label>$LOCALIZE[31133]:</label>
 							<textcolor>FFfd9800</textcolor>
-							<visible>Container.Content(movies)</visible>
 							<align>right</align>
 						</control>
 						<control type="label">
-							<visible>Container.Content(movie)</visible>
+							<visible>Container.Content(movies)</visible>
 							<posy>118</posy>
 							<posx>88</posx>
 							<description>Subtitles</description>
@@ -949,7 +948,7 @@
 						</control>
 						<!-- Right Side Items -->
 						<control type="group">
-							<visible>Container.Content(movie)</visible>
+							<visible>Container.Content(movies)</visible>
 							<control type="label">
 								<posy>4</posy>
 								<posx>401</posx>
@@ -1181,9 +1180,9 @@
 			<control type="wraplist" id="51">
 				<viewtype label="Media Preview">wraplist</viewtype>
 				<include condition="Skin.HasSetting(ShowAnimMediaPreview)">MediaPreviewAnimList</include>
-				<posx>13</posx>
+				<posx>3</posx>
 				<posy>-13</posy>
-				<width>1251</width>
+				<width>1763</width>
 				<height>720</height>
 				<onleft>51</onleft>
 				<onright>51</onright>
@@ -1194,12 +1193,12 @@
 				<focusposition>4</focusposition>
 				<include>MediaViewFade</include>
 				<animation effect="slide" start="0,0" end="-512,0" time="0" condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)">Conditional</animation>
-				<itemlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + !Container.Content(episodes)" width="139" height="220">
+				<itemlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + !Container.Content(episodes)" width="142" height="220">
 					<control type="image">
 						<include>MediaPreviewThumb</include>
 					</control>
 				</itemlayout>
-				<focusedlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + !Container.Content(episodes)" width="139" height="220">
+				<focusedlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + !Container.Content(episodes)" width="142" height="220">
 					<control type="image">
 						<posx>4.5</posx>
 						<posy>26</posy>
@@ -1218,14 +1217,24 @@
 				<itemlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)" width="256" height="220">
 					<control type="image">
 						<include>MediaPreviewEpThumb</include>
-						<colordiffuse>cc999999</colordiffuse>
 					</control>
 					<include>MediaPreviewEpThumbOverlay</include>
 				</itemlayout>
 				<focusedlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)" width="256" height="220">
 					<control type="image">
+						<posx>15</posx>
+						<posy>31</posy>
+						<width>232</width>
+						<height>162</height>
+						<aspectratio aligny="bottom">keep</aspectratio>
+						<texture>amt-blank-poster.png</texture>
+						<bordertexture>amt-blank-poster-focus.png</bordertexture>
+						<bordersize>3</bordersize>
+						<info>ListItem.Icon</info>
+						<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+					</control>
+					<control type="image">
 						<include>MediaPreviewEpThumb</include>
-						<include>MediaPreviewEpThumbAnim</include>
 					</control>
 					<include>MediaPreviewEpThumbOverlay</include>
 				</focusedlayout>
