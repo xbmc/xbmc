@@ -2109,6 +2109,7 @@
   <string id="24000">Add-on</string>
   <string id="24001">Add-ons</string>
   <string id="24002">Add-on options</string>
+  <string id="24003">Add-on Information</string>
 
   <string id="24005">Plugin</string>
   <string id="24007">Scraper</string>
@@ -2117,9 +2118,9 @@
   <string id="24010">Visualization</string>
   <string id="24011">Add-on repository</string>
 
-  <string id="24020">Configure Add-on</string>
-  <string id="24021">Disable Add-on</string>
-  <string id="24022">Enable Add-on</string>
+  <string id="24020">Configure</string>
+  <string id="24021">Disable</string>
+  <string id="24022">Enable</string>
   <string id="24023">Add-on disabled</string>
   <string id="24027">Weather service</string>
   <string id="24028">Weather.com (standard)</string>
@@ -2132,7 +2133,7 @@
 
   <string id="24050">Available Add-ons</string>
   <string id="24051">Version:</string>
-  <string id="24052">Disclaimer:</string>
+  <string id="24052">Disclaimer</string>
   <string id="24053">License:</string>
   <string id="24059">Would you like to enable this Add-on?</string>
   <string id="24060">Would you like to disable this Add-on?</string>
