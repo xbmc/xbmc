@@ -92,7 +92,7 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
                                TranslateType(addon->Type(),false).c_str(),
                                addon->Name().c_str(), addon->Summary().c_str(),
                                addon->Description().c_str(),addon->Stars(),
-                               addon->Path().c_str(), addon->Icon().c_str(),
+                               addon->Path().c_str(), addon->Props().icon.c_str(),
                                addon->ID().c_str(), addon->Version().str.c_str());
     m_pDS->exec(sql.c_str());
     int idAddon = m_pDS->lastinsertid();

@@ -134,7 +134,7 @@ public:
   const CStdString Profile() const { return m_profile; }
   const CStdString LibName() const { return m_strLibName; }
   const CStdString Author() const { return m_props.author; }
-  const CStdString Icon() const { return m_props.icon; }
+  const CStdString Icon() const;
   const int Stars() const { return m_props.stars; }
   const CStdString Disclaimer() const { return m_props.disclaimer; }
   bool Supports(const CONTENT_TYPE &content) const { return (m_props.contents.count(content) == 1); }
