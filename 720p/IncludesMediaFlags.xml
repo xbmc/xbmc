@@ -67,7 +67,7 @@
 			<orientation>horizontal</orientation>
 			<height>95</height>
 			<control type="image">
-				<visible>true</visible>
+				<visible>!IsEmpty(Listitem.Property(mediaTag::contentRating))</visible>
 				<height>40</height>
 				<width min="0" max="95">auto</width>
 				<info>Listitem.Property(mediaTag::contentRating)</info>
@@ -76,7 +76,7 @@
 			</control>
  
 			<control type="image">
-				<visible>true</visible>
+				<visible>!IsEmpty(Listitem.Property(mediaTag::videoResolution))</visible>
 				<height>40</height>
 				<width min="0" max="95">auto</width>
 				<info>Listitem.Property(mediaTag::videoResolution)</info>
@@ -84,7 +84,7 @@
 			</control>
  
 			<control type="image">
-				<visible>true</visible>
+				<visible>!IsEmpty(Listitem.Property(mediaTag::audioCodec))</visible>
 				<height>40</height>
 				<width min="0" max="95">auto</width>
 				<info>Listitem.Property(mediaTag::audioCodec)</info>
@@ -92,7 +92,7 @@
 			</control>
  
 			<control type="image">
-				<visible>true</visible>
+				<visible>!IsEmpty(Listitem.Property(mediaTag::audioChannels))</visible>
 				<height>40</height>
 				<width min="0" max="95">auto</width>
 				<info>Listitem.Property(mediaTag::audioChannels)</info>
@@ -100,7 +100,8 @@
 			</control>
  
 			<control type="image">
-				<visible>true</visible>
+				<animation effect="slide" start="0,0" end="0,-27.5" time="0" condition="TRUE">Conditional</animation>
+				<visible>!IsEmpty(Listitem.Property(mediaTag::studio))</visible>
 				<height>90</height>
 				<width min="0" max="95">auto</width>
 				<info>Listitem.Property(mediaTag::studio)</info>

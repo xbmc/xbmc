@@ -1165,6 +1165,7 @@
 				<control type="group">
 					<posx>745</posx>
 					<posy>443</posy>
+					<width>475</width>
 					<include>MediaPreviewFlags</include>
 				</control>
 			</control>
