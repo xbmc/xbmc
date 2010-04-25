@@ -58,7 +58,7 @@ namespace ADDON
   class CRepositoryUpdateJob : public CJob
   {
   public:
-    CRepositoryUpdateJob(RepositoryPtr& repo);
+    CRepositoryUpdateJob(RepositoryPtr& repo, bool param = true);
     virtual ~CRepositoryUpdateJob() {}
 
     virtual bool DoWork();
