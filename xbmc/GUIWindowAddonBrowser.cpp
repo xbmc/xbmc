@@ -21,6 +21,7 @@
 
 #include "GUIWindowAddonBrowser.h"
 #include "addons/AddonManager.h"
+#include "addons/Repository.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogAddonInfo.h"
 #include "GUIDialogAddonSettings.h"
@@ -176,6 +177,12 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
                                   addon, type, false))
     return;
 
+  if (addon->Type() == ADDON_REPOSITORY)
+  {
+    buttons.Add(CONTEXT_BUTTON_SCAN,24034);
+    buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY,24035);
+  }
+
   if (addon->HasSettings())
     buttons.Add(CONTEXT_BUTTON_SETTINGS,24020);
 }
@@ -189,10 +196,26 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
   if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"),
                                   addon, type, false))
     return false;
+
   if (button == CONTEXT_BUTTON_SETTINGS)
     return CGUIDialogAddonSettings::ShowAndGetInput(addon);
 
-  return false;
+  if (button == CONTEXT_BUTTON_UPDATE_LIBRARY)
+  {
+    CAddonDatabase database;
+    database.Open();
+    database.DeleteRepository(addon->ID());
+    button = CONTEXT_BUTTON_SCAN;
+  }
+
+  if (button == CONTEXT_BUTTON_SCAN)
+  {
+    RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addon);
+    CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo,false),this);
+    return true;
+  }
+
+  return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
 bool CGUIWindowAddonBrowser::OnClick(int iItem)

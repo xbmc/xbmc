@@ -115,7 +115,7 @@ bool CAddonDatabase::GetAddon(const CStdString& id, AddonPtr& addon)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS2.get()) return -1;
 
-    CStdString sql = FormatSQL("select id from addon where addonID like '%s' order by version desc",id.c_str());
+    CStdString sql = FormatSQL("select id from addon where addonID='%s' order by version desc",id.c_str());
     m_pDS2->query(sql.c_str());
     if (!m_pDS2->eof())
       return GetAddon(m_pDS2->fv(0).get_asInt(),addon);
@@ -187,6 +187,45 @@ bool CAddonDatabase::GetAddons(VECADDONS& addons)
   return false;
 }
 
+void CAddonDatabase::DeleteRepository(const CStdString& id)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    CStdString sql = FormatSQL("select id from repo where addonID='%s'",id.c_str());
+    m_pDS->query(sql.c_str());
+    if (!m_pDS->eof())
+      DeleteRepository(m_pDS->fv(0).get_asInt());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on repo '%s'", __FUNCTION__, id.c_str());
+  }
+}
+
+void CAddonDatabase::DeleteRepository(int idRepo)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    CStdString sql = FormatSQL("delete from repo where id=%i",idRepo);
+    m_pDS->exec(sql.c_str());
+    sql = FormatSQL("delete from addon where id in (select idAddon from addonlinkrepo where idRepo=%i)",idRepo);
+    m_pDS->exec(sql.c_str());
+    sql = FormatSQL("delete from addonlinkrepo where idRepo=%i",idRepo);
+    m_pDS->exec(sql.c_str());
+
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on repo %i", __FUNCTION__, idRepo);
+  }
+}
+
 int CAddonDatabase::AddRepository(const CStdString& id, const VECADDONS& addons, const CStdString& checksum)
 {
   try
@@ -197,14 +236,7 @@ int CAddonDatabase::AddRepository(const CStdString& id, const VECADDONS& addons,
     CStdString sql;
     int idRepo = GetRepoChecksum(id,sql);
     if (idRepo > -1)
-    {
-      sql = FormatSQL("delete from repo where id=%i",idRepo);
-      m_pDS->exec(sql.c_str());
-      sql = FormatSQL("delete from addon where id in (select idAddon from addonlinkrepo where idRepo=%i)",idRepo);
-      m_pDS->exec(sql.c_str());
-      sql = FormatSQL("delete from addonlinkrepo where idRepo=%i",idRepo);
-      m_pDS->exec(sql.c_str());
-    }
+      DeleteRepository(idRepo);
 
     CDateTime time = CDateTime::GetCurrentDateTime();
     sql = FormatSQL("insert into repo (id,addonID,checksum,lastcheck) values (NULL,'%s','%s','%s')",id.c_str(),checksum.c_str(),time.GetAsDBDateTime().c_str());
