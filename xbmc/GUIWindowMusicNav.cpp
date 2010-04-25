@@ -541,9 +541,6 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       buttons.Add(CONTEXT_BUTTON_INFO_ALL, 21884);
     }
 
-    if (m_vecItems->m_strPath.Equals("plugin://music/"))
-      buttons.Add(CONTEXT_BUTTON_SET_PLUGIN_THUMB, 1044);
-
     //Set default or clear default
     NODE_TYPE nodetype = dir.GetDirectoryType(item->m_strPath);
     if (!item->IsParentFolder() && !inPlaylists &&
@@ -648,10 +645,6 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_INFO_ALL:
     OnInfoAll(itemNumber);
-    return true;
-
-  case CONTEXT_BUTTON_SET_PLUGIN_THUMB:
-    SetPluginThumb(itemNumber, g_settings.m_musicSources);
     return true;
 
   case CONTEXT_BUTTON_UPDATE_LIBRARY:
@@ -765,78 +758,6 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
 
   return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
-}
-
-void CGUIWindowMusicNav::SetPluginThumb(int iItem, const VECSOURCES &sources)
-{
-  CFileItemList items;
-
-  CStdString itemPath = m_vecItems->Get(iItem)->m_strPath;
-  itemPath.Replace("plugin://", "special://home/plugins/");
-  CStdString picturePath = itemPath;
-  CFileItem item(picturePath, true);
-  CStdString cachedThumb = item.GetCachedProgramThumb();
-
-  if (XFILE::CFile::Exists(cachedThumb))
-  {
-    CFileItemPtr item(new CFileItem("thumb://Current", false));
-    item->SetThumbnailImage(cachedThumb);
-    item->SetLabel(g_localizeStrings.Get(20016));
-    items.Add(item);
-  }
-  else
-  {
-    CFileItem item2(CUtil::AddFileToFolder(picturePath, "default.py"), false);
-    if (XFILE::CFile::Exists(item2.GetCachedProgramThumb()))
-    {
-      CFileItemPtr item(new CFileItem("thumb://Current", false));
-      item->SetThumbnailImage(item2.GetCachedProgramThumb());
-      item->SetLabel(g_localizeStrings.Get(20016));
-      items.Add(item);
-    }
-  }
-
-  CStdString localThumb = CUtil::AddFileToFolder(picturePath, "default.tbn");
-  if (XFILE::CFile::Exists(localThumb))
-  {
-    CFileItemPtr item(new CFileItem(localThumb, false));
-    item->SetThumbnailImage(localThumb);
-    item->SetLabel(g_localizeStrings.Get(20017));
-    items.Add(item);
-  }
-  else
-  {
-    CFileItemPtr nItem(new CFileItem("thumb://None", false));
-    nItem->SetLabel(g_localizeStrings.Get(20018));
-    nItem->SetIconImage("DefaultFolder.png");
-    items.Add(nItem);
-  }
-
-  if (CGUIDialogFileBrowser::ShowAndGetImage(items, sources,
-                                             g_localizeStrings.Get(20019), picturePath))
-  {
-    if (picturePath.Equals("thumb://Current"))
-      return;
-
-    CTextureCache::Get().ClearCachedImage(cachedThumb, true);
-    if (picturePath.Equals("thumb://None"))
-    {
-      XFILE::CFile::Delete(cachedThumb);
-      CFileItem item2(CUtil::AddFileToFolder(itemPath, "default.py"), false);
-      CTextureCache::Get().ClearCachedImage(item2.GetCachedProgramThumb(), true);
-    }
-    else
-      XFILE::CFile::Cache(picturePath, cachedThumb);
-
-    if (picturePath.Equals("thumb://None") || CPicture::CreateThumbnail(picturePath, cachedThumb))
-    {
-      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-      g_windowManager.SendMessage(msg);
-      Update(m_vecItems->m_strPath);
-    }
-    else
-      CLog::Log(LOGERROR, " %s Could not cache plugin thumb: %s", __FUNCTION__, picturePath.c_str());
-  }
 }
 
 bool CGUIWindowMusicNav::GetSongsFromPlayList(const CStdString& strPlayList, CFileItemList &items)
