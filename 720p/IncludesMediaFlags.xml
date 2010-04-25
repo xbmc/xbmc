@@ -101,7 +101,7 @@
  
 			<control type="image">
 				<visible>true</visible>
-				<height min="0" max="95">auto</height>
+				<height>90</height>
 				<width min="0" max="95">auto</width>
 				<info>Listitem.Property(mediaTag::studio)</info>
 				<aspectratio>keep</aspectratio>
