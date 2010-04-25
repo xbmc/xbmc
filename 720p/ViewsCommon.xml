@@ -710,7 +710,7 @@
 						<posx>70</posx>
 						<posy>133</posy>
 						<width>180</width>
-						<label fallback="31047">$INFO[ListItem.Director]</label>
+						<label fallback="31047">$INFO[ListItem.Property(FirstDirector)]</label>
 						<align>left</align>
 						<visible>Container.Content(Episodes)</visible>
 					</control>
@@ -730,7 +730,7 @@
 						<posx>70</posx>
 						<posy>163</posy>
 						<width>180</width>
-						<label fallback="31047">$INFO[ListItem.Writer]</label>
+						<label fallback="31047">$INFO[ListItem.Property(FirstWriter)]</label>
 						<align>left</align>
 						<visible>Container.Content(Episodes)</visible>
 					</control>

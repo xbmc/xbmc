@@ -1212,6 +1212,14 @@
 							<visible>!Skin.HasSetting(ShowShutDown)</visible>
 						</item>
 						<!--
+						<item id="114">
+							<description>Sleep Display Button</description>
+							<label> $LOCALIZE[31964] </label>
+							<onclick>XBMC.SleepDisplay()</onclick>
+							<visible>!Skin.HasSetting(ShowSleep)</visible>
+						</item>
+						-->
+						<!--
             <item id="3">
               <description>Reload Button</description>
               <label> $LOCALIZE[31073] </label>
