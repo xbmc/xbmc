@@ -63,58 +63,50 @@
 		</control>
 	</include> 
 	<include name="MediaPreviewFlags">
-		<!-- width 400 -->
-		<control type="image">
-			<visible>true</visible>
-			<posx>0</posx>
-			<posy>0</posy>
-			<height>40</height>
-			<width>95</width>
-			<info>Listitem.Property(mediaTag::contentRating)</info>
-			<aspectratio>keep</aspectratio>
-		</control>
- 
-		<control type="image">
-			<visible>true</visible>
-			<posx>110</posx>
-			<posy>0</posy>
-			<height>40</height>
-			<width>95</width>
-			<info>Listitem.Property(mediaTag::videoResolution)</info>
-			<aspectratio>keep</aspectratio>
-		</control>
- 
-		<control type="image">
-			<visible>true</visible>
-			<posx>220</posx>
-			<posy>0</posy>
-			<height>40</height>
-			<width>95</width>
-			<info>Listitem.Property(mediaTag::audioCodec)</info>
-			<aspectratio>keep</aspectratio>
-		</control>
- 
-		<control type="image">
-			<visible>true</visible>
-			<posx>330</posx>
-			<posy>0</posy>
-			<height>40</height>
-			<width>95</width>
-			<info>Listitem.Property(mediaTag::audioChannels)</info>
-			<aspectratio>keep</aspectratio>
-		</control>
- 
-		<control type="image">
-			<visible>true</visible>
-			<posx>435</posx>
-			<posy>-27.5</posy>
+		<control type="grouplist">
+			<orientation>horizontal</orientation>
 			<height>95</height>
-			<width>95</width>
-			<info>Listitem.Property(mediaTag::studio)</info>
-			<aspectratio>keep</aspectratio>
-			<align>left</align>
+			<control type="image">
+				<visible>true</visible>
+				<height>40</height>
+				<width min="0" max="95">auto</width>
+				<info>Listitem.Property(mediaTag::contentRating)</info>
+				<aspectratio>keep</aspectratio>
+				<aligny>center</aligny>
+			</control>
+ 
+			<control type="image">
+				<visible>true</visible>
+				<height>40</height>
+				<width min="0" max="95">auto</width>
+				<info>Listitem.Property(mediaTag::videoResolution)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+ 
+			<control type="image">
+				<visible>true</visible>
+				<height>40</height>
+				<width min="0" max="95">auto</width>
+				<info>Listitem.Property(mediaTag::audioCodec)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+ 
+			<control type="image">
+				<visible>true</visible>
+				<height>40</height>
+				<width min="0" max="95">auto</width>
+				<info>Listitem.Property(mediaTag::audioChannels)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+ 
+			<control type="image">
+				<visible>true</visible>
+				<height min="0" max="95">auto</height>
+				<width min="0" max="95">auto</width>
+				<info>Listitem.Property(mediaTag::studio)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
 		</control>
-		
 	</include>
 	<include name="PanelStreamFlags">
 		<control type="image">

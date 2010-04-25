@@ -787,50 +787,168 @@
 				<control type="group">
 					<posx>380</posx>
 					<posy>72</posy>
-					<control type="label">
-						<description>Movie Title</description>
-						<width>660</width>
-						<label>$INFO[ListItem.Label]</label>
-						<font>LargeTitleFont</font>
-						<scroll>true</scroll>
+					<control type="group">
+						<visible>!Container.Content(episodes)</visible>
+						<control type="label">
+							<description>Movie Title</description>
+							<width>660</width>
+							<label>$INFO[ListItem.Label]</label>
+							<font>LargeTitleFont</font>
+							<scroll>true</scroll>
+						</control>
+						<control type="label">
+							<visible>container.content(movies)</visible>
+							<description>Movie Year</description>
+							<posy>32</posy>
+							<width>660</width>
+							<font>MediaPreviewYear</font>
+							<label>$INFO[ListItem.Year]</label>
+							<scroll>true</scroll>
+						</control>
+						<control type="label">
+							<visible>container.content(tvshows)</visible>
+							<description># of TV Episodes</description>
+							<posy>32</posy>
+							<width>660</width>
+							<font>MediaPreviewYear</font>
+							<label>$INFO[ListItem.Episode] $LOCALIZE[31137]</label>
+							<scroll>true</scroll>
+						</control>
+						<control type="image">
+							<description>Trailer Indicator</description>
+							<include>MediaPreviewTrailerIndicDims</include>
+							<aspectratio>keep</aspectratio>
+							<texture>Trailer.png</texture>
+							<visible>!IsEmpty(ListItem.Trailer)</visible>
+						</control>
+						<control type="textbox">
+							<visible>!Container.content(episodes)</visible>
+							<description>Plot/Details</description>
+							<posy>64</posy>
+							<width>870</width>
+							<height>167</height>
+							<info>ListItem.Plot</info>
+							<font>MediaPreviewSummary</font>						
+						</control>
 					</control>
-					<control type="label">
-						<visible>container.content(movies)</visible>
-						<description>Movie Year</description>
-						<posy>32</posy>
-						<width>660</width>
-						<font>MediaPreviewYear</font>
-						<label>$INFO[ListItem.Year]</label>
-						<scroll>true</scroll>
+					<control type="group">
+						<visible>Container.Content(episodes)</visible>
+						<posx>95</posx>
+						<control type="label">
+							<description>Title</description>
+							<width>565</width>
+							<label>$INFO[ListItem.Episode]. $INFO[ListItem.Label]</label>
+							<font>LargeTitleFont</font>
+							<scroll>true</scroll>
+						</control>
+						<control type="textbox">
+							<description>Plot/Details</description>
+							<posy>32</posy>
+							<width>775</width>
+							<height>467</height>
+							<info>ListItem.Plot</info>
+							<font>MediaPreviewSummary</font>						
+						</control>
 					</control>
-					<control type="label">
-						<visible>container.content(tvshows)</visible>
-						<description># of TV Episodes</description>
-						<posy>32</posy>
-						<width>660</width>
-						<font>MediaPreviewYear</font>
-						<label>$INFO[ListItem.Episode] $LOCALIZE[31137]</label>
-						<scroll>true</scroll>
-					</control>
-					<control type="image">
-						<description>Trailer Indicator</description>
-						<include>MediaPreviewTrailerIndicDims</include>
-						<aspectratio>keep</aspectratio>
-						<texture>Trailer.png</texture>
-						<visible>!IsEmpty(ListItem.Trailer)</visible>
-					</control>
-					<control type="textbox">
-						<description>Plot/Details</description>
-						<posy>64</posy>
-						<width>870</width>
-						<height>167</height>
-						<info>ListItem.Plot</info>
-						<font>MediaPreviewSummary</font>						
+					<control type="group">
+						<visible>container.content(episodes)</visible>
+						<posy>260</posy>
+						<posx>-325</posx>
+						
+						<control type="label">
+							<posy>4</posy>
+							<posx>73</posx>
+							<description>Rating</description>
+							<font>MediaPreviewDetailsHeader</font>
+							<label>$LOCALIZE[31129]:</label>
+							<textcolor>FFfd9800</textcolor>
+							<align>right</align>
+						</control>
+						<control type="image">
+							<posx>73</posx>
+							<posy>2</posy>
+							<height>27</height>
+							<aspectratio>keep</aspectratio>
+							<info>ListItem.StarRating</info>
+							<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+							<align>left</align>
+						</control>
+						<control type="label">
+							<posy>32</posy>
+							<posx>73</posx>
+							<description>First Aired</description>
+							<font>MediaPreviewDetailsHeader</font>
+							<label>$LOCALIZE[31140]:</label>
+							<textcolor>FFfd9800</textcolor>
+							<align>right</align>
+						</control>
+						<control type="label">
+							<posy>34</posy>
+							<posx>88</posx>
+							<description>First Aired</description>
+							<font>MediaPreviewSummary</font>
+							<label>$INFO[ListItem.year]</label>
+							<align>left</align>
+						</control>
+						<control type="label">
+							<posy>60</posy>
+							<posx>73</posx>
+							<description>Duration</description>
+							<font>MediaPreviewDetailsHeader</font>
+							<label>$LOCALIZE[31132]:</label>
+							<textcolor>FFfd9800</textcolor>
+							<align>right</align>
+						</control>
+						<control type="label">
+							<posy>62</posy>
+							<posx>88</posx>
+							<description>Duration</description>
+							<font>MediaPreviewSummary</font>
+							<label>$INFO[ListItem.Duration]</label>
+							<align>left</align>
+						</control>
+						<control type="label">
+							<posy>88</posy>
+							<posx>73</posx>
+							<description>Writer</description>
+							<font>MediaPreviewDetailsHeader</font>
+							<label>$LOCALIZE[31136]:</label>
+							<textcolor>FFfd9800</textcolor>
+							<align>right</align>
+						</control>
+						<control type="label">
+							<posy>90</posy>
+							<posx>88</posx>
+							<description>Writer</description>
+							<font>MediaPreviewSummary</font>
+							<label>$INFO[ListItem.Writer]</label>
+							<align>left</align>
+						</control>
+						<control type="label">
+							<posy>116</posy>
+							<posx>73</posx>
+							<description>Director</description>
+							<font>MediaPreviewDetailsHeader</font>
+							<label>$LOCALIZE[31135]:</label>
+							<textcolor>FFfd9800</textcolor>
+							<align>right</align>
+						</control>
+						<control type="label">
+							<posy>118</posy>
+							<posx>88</posx>
+							<description>Director</description>
+							<font>MediaPreviewSummary</font>
+							<label>$INFO[Listitem.Director]</label>
+							<align>left</align>
+						</control>
+						
+						
+						
 					</control>
 					<control type="group">
 						<posy>243</posy>
 						<posx>31</posx>
-						<visible>Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)</visible>
+						<visible>Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)</visible>
 						<control type="label">
 							<posy>4</posy>
 							<posx>73</posx>
