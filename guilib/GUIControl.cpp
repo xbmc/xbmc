@@ -593,6 +593,10 @@ void CGUIControl::SetInitialVisibility()
     if (anim.GetType() == ANIM_TYPE_CONDITIONAL)
       anim.SetInitialCondition(GetParentID());
   }
+  // and check for conditional enabling - note this overrides SetEnabled() from the code currently
+  // this may need to be reviewed at a later date
+  if (m_enableCondition)
+    m_enabled = g_infoManager.GetBool(m_enableCondition, m_parentID);
   m_allowHiddenFocus.Update(m_parentID);
   UpdateColors();
 }
