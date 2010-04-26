@@ -27,6 +27,7 @@
 #include "utils/JobManager.h"
 #include "utils/SingleLock.h"
 #include "FileItem.h"
+#include "LangInfo.h"
 #include "Settings.h"
 #include "GUISettings.h"
 #include "DownloadQueueManager.h"
@@ -455,13 +456,11 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
 
   /* Retrieve Name */
   CStdString name;
-  element = rootElement->FirstChildElement("title");
-  if (!element)
+  if (!GetTranslatedString(rootElement,"title",name))
   {
     CLog::Log(LOGERROR, "ADDON: %s missing <title> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
-  name = element->GetText();
 
   /* Retrieve version */
   CStdString version;
@@ -557,13 +556,11 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
 
   /* Retrieve summary */
   CStdString summary;
-  element = rootElement->FirstChildElement("summary");
-  if (!element)
+  if (!GetTranslatedString(rootElement,"summary",summary))
   {
     CLog::Log(LOGERROR, "ADDON: %s missing <summary> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
-  addonProps.summary = element->GetText();
 
   if (addonProps.type == ADDON_SCRAPER || addonProps.type == ADDON_PLUGIN)
   {
@@ -609,8 +606,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
 
   /* Retrieve description */
   element = rootElement->FirstChildElement("description");
-  if (element)
-    addonProps.description = element->GetText();
+  GetTranslatedString(rootElement,"description",addonProps.description);
 
   /* Retrieve author */
   element = rootElement->FirstChildElement("author");
@@ -619,8 +615,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
 
   /* Retrieve disclaimer */
   element = rootElement->FirstChildElement("disclaimer");
-  if (element)
-    addonProps.disclaimer = element->GetText();
+  GetTranslatedString(rootElement,"disclaimer",addonProps.disclaimer);
 
   /* Retrieve library file name */
   // will be replaced with default library name if unspecified
@@ -671,6 +666,27 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   addon = AddonFromProps(addonProps);
 
   return addon.get() != NULL;
+}
+
+bool CAddonMgr::GetTranslatedString(const TiXmlElement *xmldoc, const char *tag, CStdString& data)
+{
+  const TiXmlElement *element = xmldoc->FirstChildElement(tag);
+  const TiXmlElement *enelement = NULL;
+  while (element)
+  {
+    const char* lang = element->Attribute("lang");
+    if (lang && strcmp(lang,g_langInfo.GetDVDAudioLanguage().c_str()) == 0)
+      break;
+    if (!lang || strcmp(lang,"en") == 0)
+      enelement = element;
+    element = element->NextSiblingElement(tag);
+  }
+  if (!element)
+    element = enelement;
+  if (element)
+    data = element->GetText();
+
+  return element != NULL;
 }
 
 AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
