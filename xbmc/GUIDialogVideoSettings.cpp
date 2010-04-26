@@ -67,7 +67,7 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
-  m_usePopupSliders = g_SkinInfo.HasSkinFile("DialogSlider.xml");
+  m_usePopupSliders = ADDON::g_SkinInfo.HasSkinFile("DialogSlider.xml");
   // clear out any old settings
   m_settings.clear();
   // create our settings

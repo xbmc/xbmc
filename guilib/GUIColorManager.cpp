@@ -54,7 +54,7 @@ void CGUIColorManager::Load(const CStdString &colorFile)
 
   // first load the default color map if it exists
   CStdString path, basePath;
-  CUtil::AddFileToFolder(g_SkinInfo.GetBaseDir(), "colors", basePath);
+  CUtil::AddFileToFolder(ADDON::g_SkinInfo.GetBaseDir(), "colors", basePath);
   CUtil::AddFileToFolder(basePath, "defaults.xml", path);
 
   if (xmlDoc.LoadFile(PTH_IC(path)))

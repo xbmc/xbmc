@@ -57,7 +57,7 @@ extern "C" {
 #endif
 
 using namespace std;
-using ADDON::CSkinInfo;
+using namespace ADDON;
 
 namespace PYXBMC
 {

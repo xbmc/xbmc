@@ -29,6 +29,7 @@
 #include "tinyXML/tinyxml.h"
 
 using namespace std;
+using namespace ADDON;
 
 CGUIListItemLayout::CGUIListItemLayout()
 : m_group(0, 0, 0, 0, 0, 0)

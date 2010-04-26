@@ -66,6 +66,7 @@
 #include "StringUtils.h"
 
 using namespace std;
+using namespace ADDON;
 
 typedef struct
 {
