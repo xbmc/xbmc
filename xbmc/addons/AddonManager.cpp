@@ -555,8 +555,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   }
 
   /* Retrieve summary */
-  CStdString summary;
-  if (!GetTranslatedString(rootElement,"summary",summary))
+  if (!GetTranslatedString(rootElement,"summary",addonProps.summary))
   {
     CLog::Log(LOGERROR, "ADDON: %s missing <summary> element, ignoring", rootElement->GetDocument()->Value());
     return false;
