@@ -688,6 +688,7 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CScreenSaver(addonProps));
     case ADDON_SCRAPER_LIBRARY:
     case ADDON_VIZ_LIBRARY:
+    case ADDON_SCRIPT_LIBRARY:
       return AddonPtr(new CAddonLibrary(addonProps));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
