@@ -1106,25 +1106,16 @@
 						<info>ListItem.StarRating</info>
 						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
 					</control>
-					<!--
-          <control type="textbox">
-            <description>Detail</description>
-            <posy>36</posy>
-            <width>PanelStreamDetailTextWidth</width>
-            <height>340</height>
-            <info>ListItem.Label2</info>
-          </control>
-		-->
 					<control type="textbox">
 						<description>Plot/Details</description>
 						<posy>90</posy>
 						<width>PanelStreamDetailTextWidth</width>
-						<height>319</height>
+						<height>279</height>
 						<info>ListItem.Plot</info>
 					</control>
 					<control type="group">
 						<description>Media Flags</description>
-						<posy>425</posy>
+						<posy>390</posy>
 						<include>PanelStreamFlags</include>
 					</control>
 				</control>
@@ -1156,12 +1147,12 @@
 						<description>Plot/Details</description>
 						<posy>90</posy>
 						<width>PanelStreamDetailTextWidth</width>
-						<height>261</height>
+						<height>279</height>
 						<info>ListItem.Plot</info>
 					</control>
 					<control type="group">
 						<description>Media Flags</description>
-						<posy>365</posy>
+						<posy>390</posy>
 						<include>PanelStreamFlags</include>
 					</control>
 				</control>
