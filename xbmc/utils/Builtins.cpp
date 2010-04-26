@@ -350,13 +350,10 @@ int CBuiltins::Execute(const CStdString& execString)
         argv[i] = (char*)params[i].c_str();
 
       AddonPtr script;
-      CURL url(params[0]);
-      if (!CAddonMgr::Get()->GetAddon(url.GetFileName(), script, ADDON_SCRIPT))
-      {
-        CLog::Log(LOGERROR, "Could not find addon: %s", url.GetFileName().c_str());
-        return -1;
-      }
-      CStdString scriptpath(script->Path()+script->LibName());
+      CStdString scriptpath(params[0]);
+      if (CAddonMgr::Get()->GetAddon(params[0], script))
+        scriptpath = CUtil::AddFileToFolder(script->Path(),script->LibName());
+
       g_pythonParser.evalFile(scriptpath.c_str(), argc, (const char**)argv);
       delete [] argv;
     }
