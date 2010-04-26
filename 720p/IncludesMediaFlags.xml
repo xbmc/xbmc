@@ -108,20 +108,28 @@
 		<control type="grouplist">
 			<orientation>horizontal</orientation>
 			<itemgap>20</itemgap>
-			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::contentRating))</visible>
-				<height>40</height>
-				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::contentRating)</info>
-				<aspectratio>keep</aspectratio>
-				<aligny>center</aligny>
-			</control>
- 
+
 			<control type="image">
 				<visible>!IsEmpty(Listitem.Property(mediaTag::videoResolution))</visible>
 				<height>40</height>
 				<width min="1" max="95">auto</width>
 				<info>Listitem.Property(mediaTag::videoResolution)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+			
+			<control type="image">
+				<visible>!IsEmpty(Listitem.Property(mediaTag::videoCodec))</visible>
+				<height>40</height>
+				<width min="1" max="95">auto</width>
+				<info>Listitem.Property(mediaTag::videoCodec)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+			
+			<control type="image">
+				<visible>!IsEmpty(Listitem.Property(mediaTag::audioCodec))</visible>
+				<height>40</height>
+				<width min="1" max="95">auto</width>
+				<info>Listitem.Property(mediaTag::audioCodec)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
  
@@ -130,15 +138,6 @@
 				<height>40</height>
 				<width min="1" max="95">auto</width>
 				<info>Listitem.Property(mediaTag::audioChannels)</info>
-				<aspectratio>keep</aspectratio>
-			</control>
- 
-			<control type="image">
-				<animation effect="slide" start="0,0" end="0,-27.5" time="0" condition="TRUE">Conditional</animation>
-				<visible>!IsEmpty(Listitem.Property(mediaTag::studio))</visible>
-				<height>90</height>
-				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::studio)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
 		</control>

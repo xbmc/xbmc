@@ -1089,7 +1089,7 @@
 						<description>Title</description>
 						<width>PanelStreamDetailTextWidth</width>
 						<label>$INFO[ListItem.Label]</label>
-						<font>TitleCapsFont</font>
+						<font>LargeTitleFont</font>
 						<scroll>true</scroll>
 					</control>
 					<control type="textbox">
@@ -1097,6 +1097,7 @@
 						<posy>30</posy>
 						<width>PanelStreamDetailTextWidth</width>
 						<height>340</height>
+						<font>MediaPreviewYear</font>
 						<info>ListItem.Year</info>
 					</control>
 					<control type="image">
@@ -1123,36 +1124,73 @@
 					<visible>Container.Content(movies)</visible>
 					<control type="label">
 						<description>Title</description>
-						<width>PanelStreamDetailTextWidth</width>
+						<width>325</width>
 						<label>$INFO[ListItem.Label]</label>
-						<font>TitleCapsFont</font>
+						<font>LargeTitleFont</font>
 						<scroll>true</scroll>
 					</control>
-					<control type="label">
-						<description>Year</description>
+					<control type="image">
+						<posx>330</posx>
+						<posy>0</posy>
+						<visible>!IsEmpty(Listitem.Property(mediaTag::studio))</visible>
+						<height>95</height>
+						<width>95</width>
+						<info>Listitem.Property(mediaTag::studio)</info>
+						<aspectratio>keep</aspectratio>
+						<align>left</align>
+					</control>
+					<control type="grouplist">
 						<posy>30</posy>
-						<width>PanelStreamDetailTextWidth</width>
-						<height>340</height>
-						<info>ListItem.Year</info>
+						<orientation>horizontal</orientation>
+						<itemgap>10</itemgap>
+						<control type="label">
+							<description>Year</description>
+							<width min="1" max="400">auto</width>
+							<font>MediaPreviewYear</font>
+							<height>340</height>
+							<info>ListItem.Year</info>
+						</control>
+						<control type="image">
+							<animation effect="slide" start="0,0" end="0,-2" time="0" condition="TRUE">Conditional</animation>
+							<height>27</height>
+							<width min="1" max="400">auto</width>
+							<align>center</align>
+							<aspectratio>keep</aspectratio>
+							<info>ListItem.StarRating</info>
+							<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+						</control>
 					</control>
 					<control type="image">
-						<posy>55</posy>
-						<posx>-2</posx>
-						<align>center</align>
+						<posx>2</posx>
+						<posy>68</posy>
+						<visible>!IsEmpty(Listitem.Property(mediaTag::contentRating))</visible>
+						<height>40</height>
+						<width>95</width>
+						<info>Listitem.Property(mediaTag::contentRating)</info>
 						<aspectratio>keep</aspectratio>
-						<info>ListItem.StarRating</info>
-						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+						<aligny>center</aligny>
 					</control>
-					<control type="textbox">
-						<description>Plot/Details</description>
-						<posy>90</posy>
-						<width>PanelStreamDetailTextWidth</width>
-						<height>279</height>
-						<info>ListItem.Plot</info>
+					<control type="grouplist">
+						<posy>115</posy>
+						<itemgap>20</itemgap>
+						<control type="label">
+							<visible>!IsEmpty(listitem.Tagline)</visible>
+							<info>listitem.Tagline</info>
+							<font>MediaPreviewSummary</font>
+							<textcolor>fff8a337</textcolor>
+							<width>PanelStreamDetailTextWidth</width>
+						</control>
+						<control type="textbox">
+							<description>Plot/Details</description>
+							<width>PanelStreamDetailTextWidth</width>
+							<font>MediaPreviewSummary</font>
+							<height>258</height>
+							<info>ListItem.Plot</info>
+						</control>
 					</control>
 					<control type="group">
 						<description>Media Flags</description>
-						<posy>390</posy>
+						<posy>396</posy>
 						<include>PanelStreamFlags</include>
 					</control>
 				</control>
@@ -1162,7 +1200,7 @@
 						<description>Title</description>
 						<width>PanelStreamDetailTextWidth</width>
 						<label>$INFO[ListItem.Label]</label>
-						<font>TitleCapsFont</font>
+						<font>MediaPreviewYear</font>
 						<scroll>true</scroll>
 					</control>
 					<control type="label">
