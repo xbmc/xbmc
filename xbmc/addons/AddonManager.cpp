@@ -485,6 +485,8 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   AddonProps addonProps(id, type, version);
   addonProps.name = name;
   CUtil::GetDirectory(strPath,addonProps.path);
+  /* Set Icon */
+  addonProps.icon = "icon.png";
 
   /* Retrieve license */
   element = rootElement->FirstChildElement("license");
