@@ -159,6 +159,9 @@ void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, bool focused)
     LoadControl(child, &m_group);
     child = child->NextSiblingElement("control");
   }
+  // ensure width and height are valid
+  m_width = std::max(1.0f, m_width);
+  m_height = std::max(1.0f, m_height);
 }
 
 //#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
