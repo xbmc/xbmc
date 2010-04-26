@@ -943,14 +943,18 @@ int CBuiltins::Execute(const CStdString& execString)
       {
         CURL url;
         url.SetProtocol("addons");
-        url.SetHostName(strMask);
+        url.SetHostName("enabled");
+        url.SetFileName(strMask+"/");
         localShares.clear();
         CStdString content = (params.size() > 2) ? params[2] : "";
         content.ToLower();
         url.SetPassword(content);
+        CStdString strMask;
+        if (type == ADDON_SCRIPT)
+          strMask = ".py";
         CStdString replace;
-        if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), "", TranslateType(type, true), replace, true, true))
-          g_settings.SetSkinString(string, replace);
+        if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, TranslateType(type, true), replace, true, true, true))
+          g_settings.SetSkinString(string, CUtil::GetFileName(replace));
       }
       else 
       {
