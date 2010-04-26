@@ -337,7 +337,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else
 #endif
-		{
+    {
       unsigned int argc = params.size();
       char ** argv = new char*[argc];
 
