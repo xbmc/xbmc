@@ -141,8 +141,8 @@ VECADDONS CRepository::Parse()
       {
         if (m_zipped)
         {
-          addon->Props().path = CUtil::AddFileToFolder(m_datadir,addon->ID()+"-"+addon->Version().str+".zip");
-          addon->Props().icon = CUtil::AddFileToFolder(m_datadir,addon->ID()+".png");
+          addon->Props().path = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/"+addon->ID()+"-"+addon->Version().str+".zip");
+          addon->Props().icon = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/icon.png");
         }
         else
           addon->Props().path = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/");
