@@ -45,7 +45,9 @@ CAddonsDirectory::~CAddonsDirectory(void)
 
 bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  CURL path(strPath);
+  CStdString path1(strPath);
+  CUtil::RemoveSlashAtEnd(path1);
+  CURL path(path1);
   items.ClearProperties();
 
   VECADDONS addons;
