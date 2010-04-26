@@ -776,7 +776,7 @@ namespace PYXBMC
   {
     static const char *keywords[] = { "path", "usefoldername", NULL };
     PyObject *pObjectText;
-    char bUseFolderName = false;
+    bool bUseFolderName = false;
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
       args,

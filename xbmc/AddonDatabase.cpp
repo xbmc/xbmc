@@ -95,7 +95,7 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
                                addon->Path().c_str(), addon->Props().icon.c_str(),
                                addon->ID().c_str(), addon->Version().str.c_str());
     m_pDS->exec(sql.c_str());
-    int idAddon = m_pDS->lastinsertid();
+    int idAddon = (int)m_pDS->lastinsertid();
 
     sql = FormatSQL("insert into addonlinkrepo (idRepo, idAddon) values (%i,%i)",idRepo,idAddon);
     m_pDS->exec(sql.c_str());
@@ -112,8 +112,8 @@ bool CAddonDatabase::GetAddon(const CStdString& id, AddonPtr& addon)
 {
   try
   {
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS2.get()) return -1;
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS2.get()) return false;
 
     CStdString sql = FormatSQL("select id from addon where addonID='%s' order by version desc",id.c_str());
     m_pDS2->query(sql.c_str());
@@ -132,8 +132,8 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr& addon)
 {
   try
   {
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS2.get()) return -1;
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS2.get()) return false;
 
     CStdString sql = FormatSQL("select * from addon where id=%i",id);
     m_pDS2->query(sql.c_str());
@@ -163,8 +163,8 @@ bool CAddonDatabase::GetAddons(VECADDONS& addons)
 {
   try
   {
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS2.get()) return -1;
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS2.get()) return false;
 
     CStdString sql = FormatSQL("select distinct addonID from addon");
     m_pDS->query(sql.c_str());
@@ -241,7 +241,7 @@ int CAddonDatabase::AddRepository(const CStdString& id, const VECADDONS& addons,
     CDateTime time = CDateTime::GetCurrentDateTime();
     sql = FormatSQL("insert into repo (id,addonID,checksum,lastcheck) values (NULL,'%s','%s','%s')",id.c_str(),checksum.c_str(),time.GetAsDBDateTime().c_str());
     m_pDS->exec(sql.c_str());
-    idRepo = m_pDS->lastinsertid();
+    idRepo = (int)m_pDS->lastinsertid();
     for (unsigned int i=0;i<addons.size();++i)
       AddAddon(addons[i],idRepo);
 
@@ -304,8 +304,8 @@ bool CAddonDatabase::SetRepoTimestamp(const CStdString& id, const CStdString& ti
 {
   try
   {
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
 
     CStdString sql = FormatSQL("update repo set lastcheck='%s' where addonID='%s'",time.c_str(),id.c_str());
     m_pDS->exec(sql.c_str());
@@ -323,8 +323,8 @@ bool CAddonDatabase::GetRepository(int id, VECADDONS& addons)
 {
   try
   {
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL = FormatSQL("select * from addonlinkrepo where idRepo=%i",id);
     m_pDS->query(strSQL.c_str());
@@ -348,8 +348,8 @@ bool CAddonDatabase::GetRepository(const CStdString& id, VECADDONS& addons)
 {
   try
   {
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL = FormatSQL("select id from repo where addonID='%s'",id.c_str());
     m_pDS->query(strSQL.c_str());
