@@ -22,7 +22,7 @@
 #include "GUIColorManager.h"
 #include "Util.h"
 #include "FileSystem/SpecialProtocol.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
 

@@ -32,7 +32,7 @@
 #include "GUIEditControl.h"
 #endif
 
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "utils/GUIInfoManager.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"

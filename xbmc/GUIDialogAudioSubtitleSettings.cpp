@@ -31,7 +31,7 @@
 #include "FileSystem/File.h"
 #include "URL.h"
 #include "FileItem.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "Settings.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"

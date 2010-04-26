@@ -29,7 +29,7 @@
 #include "Util.h"
 #include "GUISettings.h"
 #include "Settings.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 
 using namespace std;
 

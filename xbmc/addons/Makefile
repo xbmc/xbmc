@@ -5,6 +5,7 @@ SRCS=Addon.cpp \
 		 AddonStatusHandler.cpp \
 		 ScreenSaver.cpp \
 		 Scraper.cpp \
+		 Skin.cpp \
 		 Visualisation.cpp \
 		 fft.cpp \
 		 Repository.cpp \

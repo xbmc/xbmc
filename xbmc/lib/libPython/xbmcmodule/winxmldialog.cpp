@@ -39,7 +39,7 @@
 #include "../XBPythonDll.h"
 #include "pyutil.h"
 #include "GUIPythonWindowXMLDialog.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "Util.h"
 #include "FileSystem/File.h"
 

@@ -13,7 +13,7 @@
 #else
 #include <lzo/lzo1x.h>
 #endif
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "GUISettings.h"
 #include "Util.h"
 #include "FileSystem/SpecialProtocol.h"

@@ -43,7 +43,7 @@
 #include "GUIFontManager.h"
 #include "GUIColorManager.h"
 #include "GUITextLayout.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
 #endif

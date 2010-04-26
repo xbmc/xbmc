@@ -19,7 +19,7 @@
  *
  */
 
-#include "SkinInfo.h"
+#include "Skin.h"
 #include "GUIWindowManager.h"
 #include "GUISettings.h"
 #include "FileSystem/File.h"

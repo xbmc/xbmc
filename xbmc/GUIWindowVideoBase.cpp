@@ -62,7 +62,7 @@
 #include "utils/log.h"
 #include "utils/FileUtils.h"
 
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "MediaManager.h"
 
 using namespace std;

@@ -61,7 +61,7 @@
 #include "XMLUtils.h"
 #include "GUIFontManager.h"
 #include "GUIColorManager.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "Settings.h"
 #include "StringUtils.h"
 

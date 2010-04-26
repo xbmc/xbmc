@@ -22,7 +22,7 @@
 #include "pyutil.h"
 #include <wchar.h>
 #include <vector>
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "tinyXML/tinyxml.h"
 #include "utils/CharsetConverter.h"
 #include "CriticalSection.h"

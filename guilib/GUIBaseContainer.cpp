@@ -27,7 +27,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "XMLUtils.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "StringUtils.h"
 #include "GUIStaticItem.h"
 #include "Key.h"

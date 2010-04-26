@@ -25,7 +25,7 @@
 #include "GUIWindowManager.h"
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "StringUtils.h"
 #include "GUIControlFactory.h"
 #include "tinyXML/tinyxml.h"

@@ -68,7 +68,7 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "MediaManager.h"
 #include "TimeUtils.h"
 #include "SingleLock.h"

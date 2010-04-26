@@ -22,7 +22,7 @@
 #include "VisibleEffect.h"
 #include "utils/GUIInfoManager.h"
 #include "utils/log.h"
-#include "SkinInfo.h" // for the effect time adjustments
+#include "addons/Skin.h" // for the effect time adjustments
 #include "StringUtils.h"
 #include "Tween.h"
 #include "tinyXML/tinyxml.h"

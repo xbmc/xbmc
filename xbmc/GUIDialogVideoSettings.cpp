@@ -32,7 +32,7 @@
 #include "VideoDatabase.h"
 #include "GUIDialogYesNo.h"
 #include "Settings.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 
 using namespace std;
 
