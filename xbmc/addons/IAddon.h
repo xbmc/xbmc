@@ -62,6 +62,8 @@ namespace ADDON
   typedef boost::shared_ptr<IAddon> AddonPtr;
   class CVisualisation;
   typedef boost::shared_ptr<CVisualisation> VizPtr;
+  class CSkinInfo;
+  typedef boost::shared_ptr<CSkinInfo> SkinPtr;
 
   class CAddonMgr;
   class AddonVersion;

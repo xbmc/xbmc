@@ -28,6 +28,9 @@
 
 class TiXmlNode;
 
+namespace ADDON
+{
+
 class CSkinInfo
 {
 public:
@@ -131,4 +134,5 @@ protected:
   bool m_debugging;
 };
 
-extern CSkinInfo g_SkinInfo;
+} /*namespace ADDON*/
+extern ADDON::CSkinInfo g_SkinInfo;

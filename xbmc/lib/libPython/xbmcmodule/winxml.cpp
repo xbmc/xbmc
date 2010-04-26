@@ -44,6 +44,7 @@
 #include "FileSystem/File.h"
 
 using namespace std;
+using ADDON::CSkinInfo;
 
 #define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
 

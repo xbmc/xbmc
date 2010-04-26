@@ -269,6 +269,7 @@
 #endif
 
 using namespace std;
+using namespace ADDON;
 using namespace XFILE;
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;

@@ -35,6 +35,9 @@ using namespace XFILE;
 
 #define SKIN_MIN_VERSION 2.1f
 
+namespace ADDON
+{
+
 CSkinInfo g_SkinInfo; // global
 
 CSkinInfo::CSkinInfo()
@@ -350,3 +353,5 @@ int CSkinInfo::GetFirstWindow() const
     startWindow = WINDOW_STARTUP_ANIM;
   return startWindow;
 }
+
+} /*namespace ADDON*/

@@ -1460,7 +1460,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString strSkin = pControl->GetCurrentLabel();
     CStdString strSkinPath = g_settings.GetSkinFolder(strSkin);
-    if (CSkinInfo::Check(strSkinPath))
+    if (ADDON::CSkinInfo::Check(strSkinPath))
     {
       m_strErrorMessage.Empty();
       pControl->SetItemInvalid(false);
