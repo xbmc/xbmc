@@ -161,6 +161,7 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     pItem->SetLabel(addon->Name());
     pItem->SetLabel2(addon->Summary());
     pItem->SetThumbnailImage(addon->Icon());
+    pItem->SetProperty("fanart_image",addon->FanArt());
     CAddonDatabase::SetPropertiesFromAddon(addon,pItem);
     AddonPtr addon2;
     if (CAddonMgr::Get()->GetAddon(addon->ID(),addon2))

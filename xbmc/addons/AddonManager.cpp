@@ -479,6 +479,8 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   addonProps.icon = "icon.png";
   /* Set Changelog */
   addonProps.changelog = CUtil::AddFileToFolder(addonProps.path,"changelog.txt");
+  /* Set Fanart */
+  addonProps.changelog = CUtil::AddFileToFolder(addonProps.path,"fanart.jpg");
 
   /* Retrieve license */
   element = rootElement->FirstChildElement("license");
