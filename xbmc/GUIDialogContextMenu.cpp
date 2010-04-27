@@ -471,14 +471,11 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       // see if there's a local thumb for this item
       CStdString folderThumb = item->GetFolderThumb();
       if (XFILE::CFile::Exists(folderThumb))
-      { // cache it
-        if (CPicture::CreateThumbnail(folderThumb, item->GetCachedProgramThumb()))
-        {
-          CFileItemPtr local(new CFileItem("thumb://Local", false));
-          local->SetThumbnailImage(item->GetCachedProgramThumb());
-          local->SetLabel(g_localizeStrings.Get(20017));
-          items.Add(local);
-        }
+      {
+        CFileItemPtr local(new CFileItem("thumb://Local", false));
+        local->SetThumbnailImage(folderThumb);
+        local->SetLabel(g_localizeStrings.Get(20017));
+        items.Add(local);
       }
       // and add a "no thumb" entry as well
       CFileItemPtr nothumb(new CFileItem("thumb://None", false));
@@ -495,6 +492,9 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       if (strThumb == "thumb://Current")
         return true;
 
+      if (strThumb == "thumb://Local")
+        strThumb = folderThumb;
+
       if (strThumb == "thumb://None")
         strThumb = "";
 
@@ -504,7 +504,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
         g_settings.SaveSources();
       }
       else if (!strThumb.IsEmpty())
-      { // this is icky as we have to cache using a bunch of different criteria
+      { // this is some sort of an auto-share, so we have to cache it based on the criteria we use to retrieve them
         CStdString cachedThumb;
         if (type == "music")
         {
