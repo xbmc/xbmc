@@ -142,7 +142,9 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
         // iItem is checked for validity inside these routines
         if (iAction == ACTION_SHOW_INFO)
         {
-          return CGUIDialogAddonInfo::ShowForItem((*m_vecItems)[iItem]);
+          if (!m_vecItems->Get(iItem)->GetProperty("Addon.ID").IsEmpty())
+            return CGUIDialogAddonInfo::ShowForItem((*m_vecItems)[iItem]);
+          return false;
         }
       }
     }
