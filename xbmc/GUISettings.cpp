@@ -38,6 +38,7 @@
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
 #include "addons/Visualisation.h"
+#include "addons/AddonManager.h"
 #include "WindowingFactory.h"
 #include "PowerManager.h"
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
@@ -45,6 +46,7 @@
 #include "GUIFont.h" // for FONT_STYLE_* definitions
 
 using namespace std;
+using namespace ADDON;
 
 // String id's of the masks
 #define MASK_MINS   14044
@@ -206,6 +208,14 @@ CSettingPath::CSettingPath(int iOrder, const char *strSetting, int iLabel, const
 {
 }
 
+CSettingAddon::CSettingAddon(int iOrder, const char *strSetting, int iLabel, const char *strData, const TYPE type, const CONTENT_TYPE content)
+  : CSettingString(iOrder, strSetting, iLabel, strData, SPIN_CONTROL_TEXT, false, -1)
+  , m_type(type)
+  , m_content(content)
+{
+  m_entries.insert(std::make_pair(strData, "Default"));
+}
+
 void CSettingsGroup::GetCategories(vecSettingsCategory &vecCategories)
 {
   vecCategories.clear();
@@ -262,7 +272,7 @@ void CGUISettings::Initialize()
   AddBool(ml, "musiclibrary.showcompilationartists", 13414, true);
   AddSeparator(ml,"musiclibrary.sep1");
   AddBool(ml,"musiclibrary.downloadinfo", 20192, false);
-  AddString(ml, "musiclibrary.scraper", 20194, "allmusic.xml", SPIN_CONTROL_TEXT);
+  AddDefaultAddon(ml, "musiclibrary.scraper", 20194, "allmusic.xml", ADDON_SCRAPER, CONTENT_ALBUMS);
   AddBool(ml, "musiclibrary.updateonstartup", 22000, false);
   AddBool(NULL, "musiclibrary.backgroundupdate", 22001, false);
   AddSeparator(ml,"musiclibrary.sep2");
@@ -286,7 +296,7 @@ void CGUISettings::Initialize()
   AddInt(mp, "musicplayer.crossfade", 13314, 0, 0, 1, 15, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddBool(mp, "musicplayer.crossfadealbumtracks", 13400, true);
   AddSeparator(mp, "musicplayer.sep3");
-  AddString(mp, "musicplayer.visualisation", 250, DEFAULT_VISUALISATION, SPIN_CONTROL_TEXT);
+  AddDefaultAddon(mp, "musicplayer.visualisation", 250, DEFAULT_VISUALISATION, ADDON_VIZ);
 
   CSettingsCategory* mf = AddCategory(3, "musicfiles", 14081);
   AddBool(mf, "musicfiles.usetags", 258, true);
@@ -636,9 +646,9 @@ void CGUISettings::Initialize()
   AddBool(NULL, "postprocessing.dering", 311, false);
 
   CSettingsCategory* scp = AddCategory(5, "scrapers", 21412);
-  AddString(scp, "scrapers.moviedefault", 21413, "tmdb.xml", SPIN_CONTROL_TEXT);
-  AddString(scp, "scrapers.tvshowdefault", 21414, "tvdb.xml", SPIN_CONTROL_TEXT);
-  AddString(scp, "scrapers.musicvideodefault", 21415, "mtv.xml", SPIN_CONTROL_TEXT);
+  AddDefaultAddon(scp, "scrapers.moviedefault", 21413, "tmdb.xml", ADDON_SCRAPER, CONTENT_MOVIES);
+  AddDefaultAddon(scp, "scrapers.tvshowdefault", 21414, "tvdb.xml", ADDON_SCRAPER, CONTENT_TVSHOWS);
+  AddDefaultAddon(scp, "scrapers.musicvideodefault", 21415, "mtv.xml", ADDON_SCRAPER, CONTENT_MUSICVIDEOS);
   AddSeparator(scp,"scrapers.sep2");
   AddBool(scp, "scrapers.langfallback", 21416, false);
 
@@ -709,6 +719,7 @@ void CGUISettings::Initialize()
   // appearance settings
   AddGroup(7, 480);
   CSettingsCategory* laf = AddCategory(7,"lookandfeel", 166);
+//  AddDefaultAddon(laf, "lookandfeel.skin",166,DEFAULT_SKIN, ADDON_SKIN);
   AddString(laf, "lookandfeel.skin",166,DEFAULT_SKIN, SPIN_CONTROL_TEXT);
   AddString(laf, "lookandfeel.skintheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(laf, "lookandfeel.skincolors",14078, "SKINDEFAULT", SPIN_CONTROL_TEXT);
@@ -745,7 +756,7 @@ void CGUISettings::Initialize()
 
   CSettingsCategory* ss = AddCategory(7, "screensaver", 360);
   AddInt(ss, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddString(ss, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
+  AddDefaultAddon(ss, "screensaver.mode", 356, "Dim", ADDON_SCREENSAVER);
   AddBool(ss, "screensaver.usemusicvisinstead", 13392, true);
   AddBool(ss, "screensaver.usedimonpause", 22014, true);
   AddSeparator(ss, "screensaver.sep1");
@@ -975,6 +986,14 @@ void CGUISettings::AddPath(CSettingsCategory* cat, const char *strSetting, int i
 {
   int iOrder = cat?++cat->m_entries:0;
   CSettingPath* pSetting = new CSettingPath(iOrder, CStdString(strSetting).ToLower(), iLabel, strData, iControlType, bAllowEmpty, iHeadingString);
+  if (!pSetting) return ;
+  settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
+}
+
+void CGUISettings::AddDefaultAddon(CSettingsCategory* cat, const char *strSetting, int iLabel, const char *strData, const TYPE type, const CONTENT_TYPE content/*=CONTENT_NONE*/)
+{
+  int iOrder = cat?++cat->m_entries:0;
+  CSettingAddon* pSetting = new CSettingAddon(iOrder, CStdString(strSetting).ToLower(), iLabel, strData, type, content);
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }
