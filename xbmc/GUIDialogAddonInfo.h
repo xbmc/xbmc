@@ -23,7 +23,6 @@
 
 #include "GUIDialog.h"
 #include "addons/IAddon.h"
-#include "utils/CriticalSection.h"
 #include "utils/Job.h"
 
 class CGUIDialogAddonInfo :
@@ -50,6 +49,5 @@ protected:
   CFileItemPtr m_item;
   ADDON::AddonPtr m_addon;
   unsigned int m_jobid;
-  CCriticalSection m_critSection;
 };
 
