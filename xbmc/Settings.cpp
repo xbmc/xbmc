@@ -1689,14 +1689,6 @@ CStdString CSettings::GetBookmarksThumbFolder() const
   return folder;
 }
 
-CStdString CSettings::GetProfilesThumbFolder() const
-{
-  CStdString folder;
-  CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Profiles", folder);
-
-  return folder;
-}
-
 CStdString CSettings::GetSourcesFile() const
 {
   CStdString folder;

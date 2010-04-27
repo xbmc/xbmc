@@ -1004,8 +1004,6 @@ bool CApplication::Initialize()
   CDirectory::Create(g_settings.GetProfileUserDataFolder());
   g_settings.CreateProfileFolders();
 
-  CDirectory::Create(g_settings.GetProfilesThumbFolder());
-
   CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
 
 #ifdef _LINUX // TODO: Win32 has no special://home/ mapping by default, so we

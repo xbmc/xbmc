@@ -316,7 +316,6 @@ public:
   CStdString GetMusicArtistThumbFolder() const;
   CStdString GetVideoThumbFolder() const;
   CStdString GetBookmarksThumbFolder() const;
-  CStdString GetProfilesThumbFolder() const;
   CStdString GetSourcesFile() const;
   CStdString GetSkinFolder() const;
   CStdString GetSkinFolder(const CStdString& skinName) const;

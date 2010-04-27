@@ -189,7 +189,6 @@ public:
   CStdString GetCachedVideoThumb() const;
   CStdString GetCachedEpisodeThumb() const;
   CStdString GetCachedArtistThumb() const;
-  CStdString GetCachedProfileThumb() const;
   CStdString GetCachedSeasonThumb() const;
   CStdString GetCachedActorThumb() const;
   /*!
