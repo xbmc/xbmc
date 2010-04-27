@@ -100,15 +100,17 @@ CStdString CRepository::Checksum()
   CFile file;
   file.Open(m_checksum);
   CStdString checksum;
-  char* temp = new char[file.GetLength()+1];
-  if (temp)
+  try
   {
+    char* temp = new char[file.GetLength()+1];
     file.Read(temp,file.GetLength());
     temp[file.GetLength()] = 0;
     checksum = temp;
     delete[] temp;
   }
-
+  catch (...)
+  {
+  }
   return checksum;
 }
 
