@@ -73,6 +73,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
+      m_rootDir.AllowNonLocalSources(false);
       // check for valid quickpath parameter
       CStdString strDestination = message.GetNumStringParams() ? message.GetStringParam(0) : "";
       CStdString strReturn = message.GetNumStringParams() > 1 ? message.GetStringParam(1) : "";
