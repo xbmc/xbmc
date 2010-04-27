@@ -1689,17 +1689,6 @@ CStdString CSettings::GetBookmarksThumbFolder() const
   return folder;
 }
 
-CStdString CSettings::GetPicturesThumbFolder() const
-{
-  CStdString folder;
-  if (GetCurrentProfile().hasDatabases())
-    CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Pictures", folder);
-  else
-    CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Pictures", folder);
-
-  return folder;
-}
-
 CStdString CSettings::GetProfilesThumbFolder() const
 {
   CStdString folder;
@@ -1833,7 +1822,6 @@ void CSettings::CreateProfileFolders()
   CDirectory::Create(GetVideoFanartFolder());
   CDirectory::Create(GetMusicFanartFolder());
   CDirectory::Create(GetBookmarksThumbFolder());
-  CDirectory::Create(GetPicturesThumbFolder());
   CStdString generatedThumbsFolder = CUtil::AddFileToFolder(GetThumbnailsFolder(), "generated");
   CDirectory::Create(generatedThumbsFolder);
   CLog::Log(LOGINFO, "thumbnails folder: %s", GetThumbnailsFolder().c_str());
@@ -1841,7 +1829,6 @@ void CSettings::CreateProfileFolders()
   {
     CStdString strHex;
     strHex.Format("%x",hex);
-    CDirectory::Create(CUtil::AddFileToFolder(GetPicturesThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetMusicThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetThumbnailsFolder(), strHex));
