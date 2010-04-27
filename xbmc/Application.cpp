@@ -1007,8 +1007,15 @@ bool CApplication::Initialize()
 
   g_windowManager.Add(new CGUIWindowHome);                     // window id = 0
 
+  // Make sure we have at least the default skin
   if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")))
-    LoadSkin(DEFAULT_SKIN);
+  {
+    if (!LoadSkin(DEFAULT_SKIN))
+    {
+      CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", DEFAULT_SKIN);
+      FatalErrorHandler(true, true, true);
+    }
+  }
 
   g_windowManager.Add(new CGUIWindowPrograms);                 // window id = 1
   g_windowManager.Add(new CGUIWindowPictures);                 // window id = 2
