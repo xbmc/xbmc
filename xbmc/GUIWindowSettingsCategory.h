@@ -25,7 +25,6 @@
 #include "SettingsControls.h"
 #include "GUISettings.h"
 #include "utils/Stopwatch.h"
-#include "addons/IAddon.h"
 
 class CGUIWindowSettingsCategory :
       public CGUIWindow
@@ -65,7 +64,7 @@ protected:
   void FillInNetworkInterfaces(CSetting *pSetting);
   void NetworkInterfaceChanged(void);
 
-  void FillInScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected, const CONTENT_TYPE& content);
+  void FillInAddons(CGUISpinControlEx *pControl, CSettingAddon *pSetting);
 
   void FillInAudioDevices(CSetting* pSetting, bool Passthrough = false);
   void FillInWeatherScripts(CGUISpinControlEx *pControl, const CStdString& strSelected);

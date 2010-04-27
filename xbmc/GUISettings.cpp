@@ -216,6 +216,33 @@ CSettingAddon::CSettingAddon(int iOrder, const char *strSetting, int iLabel, con
   m_entries.insert(std::make_pair(strData, "Default"));
 }
 
+void CSettingAddon::SetData(int pos)
+{
+  if (pos < 0 || (unsigned)pos >= m_entries.size())
+    return;
+
+  unsigned i=0;
+  for (map<CStdString,CStdString>::iterator it=m_entries.begin(); it != m_entries.end(); ++it,i++)
+  {
+    if ((unsigned)pos == i)
+    {
+      CSettingString::SetData(it->first);
+      return;
+    }
+  }
+}
+
+int CSettingAddon::GetPos()
+{
+  unsigned i=0;
+  for (map<CStdString,CStdString>::iterator it=m_entries.begin(); it != m_entries.end(); ++it,i++)
+  {
+    if (it->first == GetData())
+      return i;
+  }
+  return 0;
+}
+
 void CSettingsGroup::GetCategories(vecSettingsCategory &vecCategories)
 {
   vecCategories.clear();

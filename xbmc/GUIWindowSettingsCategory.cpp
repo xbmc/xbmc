@@ -80,7 +80,6 @@
 #endif
 #include "GUIDialogAccessPoints.h"
 #include "FileSystem/Directory.h"
-#include "utils/ScraperParser.h"
 
 #include "FileItem.h"
 #include "GUIToggleButtonControl.h"
@@ -370,29 +369,16 @@ void CGUIWindowSettingsCategory::CreateSettings()
         continue;
       }
     }
+    else if (pSetting->GetType() == SETTINGS_TYPE_ADDON)
+    {
+      CSettingAddon *pSettingAddon = (CSettingAddon*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      FillInAddons(pControl, pSettingAddon);
+      continue;
+    }
     if (strSetting.Equals("musicplayer.visualisation"))
     {
       FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
-    }
-    else if (strSetting.Equals("musiclibrary.scraper"))
-    {
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, g_guiSettings.GetString("musiclibrary.scraper"), CONTENT_ALBUMS);
-    }
-    else if (strSetting.Equals("scrapers.moviedefault"))
-    {
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.moviedefault"), CONTENT_MOVIES);
-    }
-    else if (strSetting.Equals("scrapers.tvshowdefault"))
-    {
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.tvshowdefault"), CONTENT_TVSHOWS);
-    }
-    else if (strSetting.Equals("scrapers.musicvideodefault"))
-    {
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.musicvideodefault"), CONTENT_MUSICVIDEOS);
     }
     else if (strSetting.Equals("videooutput.aspect"))
     {
@@ -1126,7 +1112,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
 
   // ok, now check the various special things we need to do
-  if (strSetting.Equals("musicplayer.visualisation"))
+  if (pSettingControl->GetSetting()->GetType() == SETTINGS_TYPE_ADDON)
+  {
+    CSettingAddon *pSettingAddon = (CSettingAddon*)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+    FillInAddons(pControl, pSettingAddon);
+  }
+  else if (strSetting.Equals("musicplayer.visualisation"))
   { // new visualisation choosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1159,26 +1151,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CMusicDatabase musicdatabase;
     musicdatabase.Clean();
     CUtil::DeleteMusicDatabaseDirectoryCache();
-  }
-  else if (strSetting.Equals("musiclibrary.scraper"))
-  {
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_ALBUMS);
-  }
-  else if (strSetting.Equals("scrapers.moviedefault"))
-  {
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_MOVIES); //TODO langify these
-  }
-  else if (strSetting.Equals("scrapers.tvshowdefault"))
-  {
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_TVSHOWS);
-  }
-  else if (strSetting.Equals("scrapers.musicvideodefault"))
-  {
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_MUSICVIDEOS);
   }
   else if (strSetting.Equals("videolibrary.cleanup"))
   {
@@ -2841,12 +2813,15 @@ void CGUIWindowSettingsCategory::FillInSortMethods(CSetting *pSetting, int windo
   delete state;
 }
 
-void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected, const CONTENT_TYPE& content)
+void CGUIWindowSettingsCategory::FillInAddons(CGUISpinControlEx *pControl, CSettingAddon *pSetting)
 {
   VECADDONS addons;
   pControl->Clear();
+  CStdString strSelected = pSetting->GetData();
 
-  CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, content);
+  pSetting->m_entries.clear();
+
+  CAddonMgr::Get()->GetAddons(pSetting->m_type, addons, pSetting->m_content);
   if (addons.empty())
   {
     pControl->AddLabel(g_localizeStrings.Get(231), 0); // "None"
@@ -2854,28 +2829,18 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
     return;
   }
 
-  int j = 0;
-  int k = 0;
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
   {
-    if ((*it)->Name().Equals(strSelected))
-    {
-      if (content == CONTENT_ALBUMS) // native strContent would be albums or artists but we're using the same scraper for both
-        g_guiSettings.SetString("musiclibrary.scraper", (*it)->Name());
-      else if (content == CONTENT_MOVIES)
-        g_guiSettings.SetString("scrapers.moviedefault", (*it)->Name());
-      else if (content == CONTENT_TVSHOWS)
-        g_guiSettings.SetString("scrapers.tvshowdefault", (*it)->Name());
-      else if (content == CONTENT_MUSICVIDEOS)
-        g_guiSettings.SetString("scrapers.musicvideodefault", (*it)->Name());
-      k = j;
-    }
-    pControl->AddLabel((*it)->Name(),j++);
+    AddonPtr addon = *it;
+    pSetting->m_entries.insert(std::make_pair(addon->ID(),addon->Name()));
   }
-  if (j == 0)
-    pControl->AddLabel(g_localizeStrings.Get(231), 0); // "None"
 
-  pControl->SetValue(k);
+  unsigned i=0;
+  for (map<CStdString,CStdString>::iterator it=pSetting->m_entries.begin();
+       it != pSetting->m_entries.end();++it)
+  {
+    pControl->AddLabel(it->second, i++);
+  }
 }
 
 void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
