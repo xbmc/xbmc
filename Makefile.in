@@ -115,8 +115,8 @@ ifneq (@BUILD_GOOM@,1)
 VIS_DIRS+=xbmc/visualizations/Goom
 endif
 
-CONFLUENCE_MEDIA=skin/Confluence/media
-PM3HD_MEDIA=skin/PM3.HD/media
+CONFLUENCE_MEDIA=addons/org.xbmc.addons.confluence/media
+PM3HD_MEDIA=addons/org.xbmc.addons.pm3-hd/media
 
 SKIN_DIRS=\
 	$(CONFLUENCE_MEDIA) \
