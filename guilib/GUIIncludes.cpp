@@ -26,7 +26,6 @@
 #include "tinyXML/tinyxml.h"
 
 using namespace std;
-using namespace ADDON;
 
 CGUIIncludes::CGUIIncludes()
 {

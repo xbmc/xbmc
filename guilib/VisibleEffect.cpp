@@ -28,7 +28,6 @@
 #include "tinyXML/tinyxml.h"
 
 using namespace std;
-using namespace ADDON;
 
 CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
 {

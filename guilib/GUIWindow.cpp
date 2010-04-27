@@ -45,7 +45,6 @@
 #endif
 
 using namespace std;
-using namespace ADDON;
 
 CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
 {

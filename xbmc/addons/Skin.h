@@ -134,6 +134,5 @@ protected:
   bool m_debugging;
 };
 
-extern CSkinInfo g_SkinInfo;
-
 } /*namespace ADDON*/
+extern ADDON::CSkinInfo g_SkinInfo;

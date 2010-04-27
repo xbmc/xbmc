@@ -32,7 +32,6 @@
 #include "Key.h"
 
 using namespace std;
-using namespace ADDON;
 
 #define SCROLL_SPEED 6.0f
 #define ANALOG_SCROLL_START 0.8f
