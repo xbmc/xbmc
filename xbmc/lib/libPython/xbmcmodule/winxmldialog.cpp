@@ -57,7 +57,7 @@ extern "C" {
 #endif
 
 using namespace std;
-using ADDON::CSkinInfo;
+using namespace ADDON;
 
 namespace PYXBMC
 {
@@ -92,7 +92,7 @@ namespace PYXBMC
     if (!bForceDefaultSkin)
     {
       // Check to see if the XML file exists in current skin. If not use fallback path to find a skin for the script
-      strSkinPath = g_SkinInfo.GetSkinPath(strXMLname, &res);
+      strSkinPath = g_SkinInfo->GetSkinPath(strXMLname, &res);
 
       if (!XFILE::CFile::Exists(strSkinPath))
       {
@@ -100,8 +100,8 @@ namespace PYXBMC
         CStdString basePath;
         CUtil::AddFileToFolder(strFallbackPath, "resources", basePath);
         CUtil::AddFileToFolder(basePath, "skins", basePath);
-        CUtil::AddFileToFolder(basePath, CUtil::GetFileName(g_SkinInfo.GetBaseDir()), basePath);
-        strSkinPath = g_SkinInfo.GetSkinPath(strXMLname, &res, basePath);
+        CUtil::AddFileToFolder(basePath, CUtil::GetFileName(g_SkinInfo->GetBaseDir()), basePath);
+        strSkinPath = g_SkinInfo->GetSkinPath(strXMLname, &res, basePath);
         if (!XFILE::CFile::Exists(strSkinPath))
         {
           // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
@@ -112,7 +112,10 @@ namespace PYXBMC
 
     if (bForceDefaultSkin)
     {
-      CSkinInfo skinInfo;
+      //FIXME make this static method of current skin?
+      CStdString str("none");
+      AddonProps props(str, ADDON_SKIN, str);
+      CSkinInfo skinInfo(props);
       CStdString basePath;
       CUtil::AddFileToFolder(strFallbackPath, "resources", basePath);
       CUtil::AddFileToFolder(basePath, "skins", basePath);

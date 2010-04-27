@@ -910,13 +910,13 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
   if (!root)
     return;
 
-  g_SkinInfo.ResolveIncludes(root);
+  g_SkinInfo->ResolveIncludes(root);
 
   vector<CGUIListItemPtr> items;
   TiXmlElement *item = root->FirstChildElement("item");
   while (item)
   {
-    g_SkinInfo.ResolveIncludes(item);
+    g_SkinInfo->ResolveIncludes(item);
     if (item->FirstChild())
     {
       CGUIStaticItemPtr newItem(new CGUIStaticItem(item, GetParentID()));

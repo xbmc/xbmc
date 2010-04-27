@@ -678,25 +678,6 @@ bool CApplication::Create()
   if (!CButtonTranslator::GetInstance().Load())
     FatalErrorHandler(false, false, true);
 
-  // check the skin file for testing purposes
-  CStdString strSkinBase = "special://home/skin/";
-  CStdString strSkinPath = strSkinBase + g_guiSettings.GetString("lookandfeel.skin");
-  if (!CFile::Exists(strSkinPath)) {
-    strSkinBase = "special://xbmc/skin/";
-    strSkinPath = strSkinBase + g_guiSettings.GetString("lookandfeel.skin");
-  }
-  CLog::Log(LOGINFO, "Checking skin version of: %s", g_guiSettings.GetString("lookandfeel.skin").c_str());
-  if (!CSkinInfo::Check(strSkinPath))
-  {
-    // reset to the default skin (DEFAULT_SKIN)
-    CLog::Log(LOGINFO, "The above skin isn't suitable - checking the version of the default: %s", DEFAULT_SKIN);
-    strSkinPath = strSkinBase + DEFAULT_SKIN;
-    if (!CSkinInfo::Check(strSkinPath))
-    {
-      CLog::Log(LOGERROR, "No suitable skin version found. We require at least version %5.4f", g_SkinInfo.GetMinVersion());
-      FatalErrorHandler(false, false, true);
-    }
-  }
   int iResolution = g_graphicsContext.GetVideoResolution();
   CLog::Log(LOGINFO, "GUI format %ix%i %s",
             g_settings.m_ResInfo[iResolution].iWidth,
@@ -1137,7 +1118,7 @@ bool CApplication::Initialize()
   }
   else
   {
-    g_windowManager.ActivateWindow(g_SkinInfo.GetFirstWindow());
+    g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
   }
 
 #ifdef HAS_PYTHON
@@ -1538,7 +1519,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   UnloadSkin();
 
   // Load in the skin.xml file if it exists
-  g_SkinInfo.Load(strSkinPath);
+  g_SkinInfo->Load(strSkinPath);
 
   CLog::Log(LOGINFO, "  load fonts for skin...");
   g_graphicsContext.SetMediaDir(strSkinPath);
@@ -1577,7 +1558,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   CLog::Log(LOGINFO, "  load new skin...");
   CGUIWindowHome *pHome = (CGUIWindowHome *)g_windowManager.GetWindow(WINDOW_HOME);
-  if (!CSkinInfo::Check(strSkinPath) || !pHome || !pHome->Load("Home.xml"))
+  if (!pHome || !pHome->Load("Home.xml"))
   {
     // failed to load home.xml
     // fallback to default skin
@@ -1614,7 +1595,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   g_audioManager.Enable(true);
   g_audioManager.Load();
 
-  if (g_SkinInfo.HasSkinFile("DialogFullScreenInfo.xml"))
+  if (g_SkinInfo->HasSkinFile("DialogFullScreenInfo.xml"))
     g_windowManager.Add(new CGUIDialogFullScreenInfo);
 
   CLog::Log(LOGINFO, "  skin loaded...");
@@ -1677,7 +1658,7 @@ bool CApplication::LoadUserWindows()
 {
   // Start from wherever home.xml is
   std::vector<CStdString> vecSkinPath;
-  g_SkinInfo.GetSkinPaths(vecSkinPath);
+  g_SkinInfo->GetSkinPaths(vecSkinPath);
   for (unsigned int i = 0;i < vecSkinPath.size();++i)
   {
     CStdString strPath = CUtil::AddFileToFolder(vecSkinPath[i], "custom*.xml");
@@ -2111,7 +2092,7 @@ void CApplication::RenderMemoryStatus()
   }
 
   // render the skin debug info
-  if (g_SkinInfo.IsDebugging())
+  if (g_SkinInfo->IsDebugging())
   {
     CStdString info;
     CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());

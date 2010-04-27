@@ -1432,11 +1432,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     CStdString strSkin = pControl->GetCurrentLabel();
     CStdString strSkinPath = g_settings.GetSkinFolder(strSkin);
-    if (ADDON::CSkinInfo::Check(strSkinPath))
+    if (/*ADDON::CSkinInfo::Check(strSkinPath)*/true)
     {
       m_strErrorMessage.Empty();
       pControl->SetItemInvalid(false);
-      if (strSkin != ".svn" && strSkin != g_guiSettings.GetString("lookandfeel.skin"))
+      if (strSkin != g_guiSettings.GetString("lookandfeel.skin"))
       {
         g_guiSettings.SetString("lookandfeel.skin", strSkin);
         g_application.ReloadSkin();
@@ -1444,7 +1444,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
     else
     {
-      m_strErrorMessage.Format("Incompatible skin. We require skins of version %0.2f or higher", g_SkinInfo.GetMinVersion());
+      m_strErrorMessage.Format("Incompatible skin. We require skins of version %0.2f or higher", g_SkinInfo->GetMinVersion());
       pControl->SetItemInvalid(true);
     }
   }
@@ -2158,7 +2158,7 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
 
   int iSkinFontSet = 0;
 
-  CStdString strPath = g_SkinInfo.GetSkinPath("Font.xml");
+  CStdString strPath = g_SkinInfo->GetSkinPath("Font.xml");
 
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(strPath))
@@ -2667,7 +2667,7 @@ void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
   vector<CStdString> vecColors;
 
   CStdString strPath;
-  CUtil::AddFileToFolder(g_SkinInfo.GetBaseDir(),"colors",strPath);
+  CUtil::AddFileToFolder(g_SkinInfo->GetBaseDir(),"colors",strPath);
 
   CFileItemList items;
   CDirectory::GetDirectory(PTH_IC(strPath), items, ".xml");
@@ -2706,7 +2706,7 @@ void CGUIWindowSettingsCategory::FillInStartupWindow(CSetting *pSetting)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
-  const vector<CSkinInfo::CStartupWindow> &startupWindows = g_SkinInfo.GetStartupWindows();
+  const vector<CSkinInfo::CStartupWindow> &startupWindows = g_SkinInfo->GetStartupWindows();
 
   // TODO: How should we localize this?
   // In the long run there is no way to do it really without the skin having some
