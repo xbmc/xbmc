@@ -7,6 +7,7 @@
   <platforms>
     <platform>all</platform>
   </platforms>
+  <library>skin.xml</library>
   <minversion>
     <xbmc>28000</xbmc>
   </minversion>

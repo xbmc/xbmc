@@ -2,6 +2,7 @@
 <addoninfo>
   <id>org.xbmc.addons.pm3.hd</id>
   <type>skin</type>
+  <library>skin.xml</library>
   <title>PM3.HD</title>
   <version>2.11</version>
   <platforms>
