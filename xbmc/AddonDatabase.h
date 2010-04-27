@@ -35,8 +35,11 @@ public:
 
   int AddAddon(const ADDON::AddonPtr& item, int idRepo);
   bool GetAddon(const CStdString& addonID, ADDON::AddonPtr& addon);
+  bool GetAddons(ADDON::VECADDONS& addons);
   bool GetAddon(int id, ADDON::AddonPtr& addon);
   int AddRepository(const CStdString& id, const ADDON::VECADDONS& addons, const CStdString& checksum);
+  void DeleteRepository(const CStdString& id);
+  void DeleteRepository(int id);
   int GetRepoChecksum(const CStdString& id, CStdString& checksum);
   bool GetRepository(const CStdString& id, ADDON::VECADDONS& addons);
   bool GetRepository(int id, ADDON::VECADDONS& addons);

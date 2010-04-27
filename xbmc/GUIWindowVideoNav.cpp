@@ -1130,9 +1130,6 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         if (node == NODE_TYPE_SEASONS && item->m_bIsFolder)
           buttons.Add(CONTEXT_BUTTON_SET_SEASON_THUMB, 20371);
 
-        if (m_vecItems->m_strPath.Equals("plugin://video/"))
-          buttons.Add(CONTEXT_BUTTON_SET_PLUGIN_THUMB, 1044);
-
         if (item->m_strPath.Left(14).Equals("videodb://1/7/") && item->m_strPath.size() > 14 && item->m_bIsFolder) // sets
         {
           buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
@@ -1237,7 +1234,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_SET_SEASON_THUMB:
   case CONTEXT_BUTTON_SET_ACTOR_THUMB:
   case CONTEXT_BUTTON_SET_ARTIST_THUMB:
-  case CONTEXT_BUTTON_SET_PLUGIN_THUMB:
   case CONTEXT_BUTTON_SET_MOVIESET_THUMB:
     {
       // Grab the thumbnails from the web
@@ -1254,13 +1250,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         cachedThumb = m_vecItems->Get(itemNumber)->GetCachedArtistThumb();
       if (button == CONTEXT_BUTTON_SET_MOVIESET_THUMB)
         cachedThumb = m_vecItems->Get(itemNumber)->GetCachedVideoThumb();
-      if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
-      {
-        strPath = m_vecItems->Get(itemNumber)->m_strPath;
-        strPath.Replace("plugin://video/","special://home/plugins/video/");
-        CFileItem item(strPath,true);
-        cachedThumb = item.GetCachedProgramThumb();
-      }
       if (CFile::Exists(cachedThumb))
       {
         CFileItemPtr item(new CFileItem("thumb://Current", false));
@@ -1272,8 +1261,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       noneitem->SetLabel(g_localizeStrings.Get(20018));
 
       vector<CStdString> thumbs;
-      if (button != CONTEXT_BUTTON_SET_ARTIST_THUMB &&
-          button != CONTEXT_BUTTON_SET_PLUGIN_THUMB)
+      if (button != CONTEXT_BUTTON_SET_ARTIST_THUMB)
       {
         CVideoInfoTag tag;
         if (button == CONTEXT_BUTTON_SET_SEASON_THUMB)
@@ -1301,41 +1289,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
 
       bool local=false;
-      if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
-      {
-        if (items.Size() == 0)
-        {
-          CFileItem item2(strPath,false);
-          CUtil::AddFileToFolder(strPath,"default.py",item2.m_strPath);
-          if (CFile::Exists(item2.GetCachedProgramThumb()))
-          {
-            CFileItemPtr item(new CFileItem("thumb://Current", false));
-            item->SetThumbnailImage(item2.GetCachedProgramThumb());
-            item->SetLabel(g_localizeStrings.Get(20016));
-            items.Add(item);
-            local = true;
-          }
-        }
-        CStdString strThumb;
-        CUtil::AddFileToFolder(strPath,"folder.jpg",strThumb);
-        if (CFile::Exists(strThumb))
-        {
-          CFileItemPtr item(new CFileItem(strThumb,false));
-          item->SetThumbnailImage(strThumb);
-          item->SetLabel(g_localizeStrings.Get(20017));
-          items.Add(item);
-          local = true;
-        }
-        CUtil::AddFileToFolder(strPath,"default.tbn",strThumb);
-        if (CFile::Exists(strThumb))
-        {
-          CFileItemPtr item(new CFileItem(strThumb,false));
-          item->SetThumbnailImage(strThumb);
-          item->SetLabel(g_localizeStrings.Get(20017));
-          items.Add(item);
-          local = true;
-        }
-      }
       if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
       {
         CStdString picturePath;
@@ -1405,22 +1358,14 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       // delete the thumbnail if that's what the user wants, else overwrite with the
       // new thumbnail
-      CTextureCache::Get().ClearCachedImage(cachedThumb);
+      CTextureCache::Get().ClearCachedImage(cachedThumb, true);
       if (result.Left(14) == "thumb://Remote")
       {
         int number = atoi(result.Mid(14));
         CFile::Cache(thumbs[number], cachedThumb);
       }
       if (result == "thumb://None")
-      {
-        CTextureCache::Get().ClearCachedImage(cachedThumb);
-        if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
-        {
-          CFileItem item2(strPath,false);
-          CUtil::AddFileToFolder(strPath,"default.py",item2.m_strPath);
-          CTextureCache::Get().ClearCachedImage(item2.GetCachedProgramThumb());
-        }
-      }
+        CTextureCache::Get().ClearCachedImage(cachedThumb, true);
       else
         CFile::Cache(result,cachedThumb);
 

@@ -41,10 +41,10 @@
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(Configuration)\vs2010\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(Configuration)\vs2010\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(Configuration)\vs2010\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(Configuration)\vs2010\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</LinkIncremental>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Spectrum_win32dx</TargetName>
@@ -79,7 +79,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "../../../addons/org.xbmc.addons.dxspectrum/$(TargetFileName)"</Command>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\addons\org.xbmc.addons.dxspectrum\$(TargetFileName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">
@@ -108,7 +108,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "../../../addons/org.xbmc.addons.dxspectrum/$(TargetFileName)"</Command>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\addons\org.xbmc.addons.dxspectrum\$(TargetFileName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

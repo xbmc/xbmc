@@ -28,6 +28,10 @@
 
 class CFileItem;
 class CFileItemList;
+namespace ADDON
+{
+  class CSkinInfo;
+}
 
 #include "GUIDialogSeekBar.h"
 #include "GUIDialogKaiToast.h"
@@ -116,7 +120,7 @@ public:
   bool IsCurrentThread() const;
   void Stop();
   void RestartApp();
-  void LoadSkin(const CStdString& strSkin);
+  bool LoadSkin(const CStdString& skinID);
   void UnloadSkin();
   bool LoadUserWindows();
   void ReloadSkin();
@@ -274,6 +278,7 @@ public:
 
 protected:
   void RenderScreenSaver();
+  void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
 
   friend class CApplicationMessenger;
   // screensaver

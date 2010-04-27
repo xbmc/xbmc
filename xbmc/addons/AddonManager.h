@@ -85,9 +85,11 @@ namespace ADDON
     static bool AddonFromInfoXML(const TiXmlElement *xmlDoc, AddonPtr &addon,
                                  const CStdString &strPath);
     static bool AddonFromInfoXML(const CStdString &path, AddonPtr &addon);
+    static bool GetTranslatedString(const TiXmlElement *xmldoc, const char *tag, CStdString& data);
     static AddonPtr AddonFromProps(AddonProps& props);
     void UpdateRepos();
     void FindAddons();
+    void LoadAddons(const CStdString &path);
 
     void OnJobComplete(unsigned int jobID, bool sucess, CJob* job);
   private:

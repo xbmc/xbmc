@@ -22,7 +22,7 @@
 #include "pyutil.h"
 #include <wchar.h>
 #include <vector>
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "tinyXML/tinyxml.h"
 #include "utils/CharsetConverter.h"
 #include "CriticalSection.h"
@@ -105,7 +105,7 @@ namespace PYXBMC
     control.SetAttribute("type", cControlType);
     TiXmlElement filler("description");
     control.InsertEndChild(filler);
-    g_SkinInfo.ResolveIncludes(&control, cControlType);
+    g_SkinInfo->ResolveIncludes(&control, cControlType);
 
     // ok, now check for our texture type
     TiXmlElement *pTexture = control.FirstChildElement(cTextureType);

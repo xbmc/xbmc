@@ -199,15 +199,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(SettingInfo &setting)
         !strThumb.Equals("thumb://Current"))
     {
       m_bNeedSave = true;
-      CFileItem item(strThumb);
-      item.m_strPath = strThumb;
-      m_strThumb = item.GetCachedProfileThumb();
-      CTextureCache::Get().ClearCachedImage(m_strThumb);
-
-      if (!strThumb.Equals("thumb://None"))
-        CPicture::CreateThumbnail(strThumb, m_strThumb);
-      else
-        m_strThumb.clear();
+      m_strThumb = strThumb.Equals("thumb://None") ? "" : strThumb;
 
       CGUIImage *pImage = (CGUIImage*)GetControl(2);
       if (pImage)

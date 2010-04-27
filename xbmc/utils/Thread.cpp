@@ -58,16 +58,6 @@ static void MakeTlsKeys()
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-
-#define MS_VC_EXCEPTION 0x406d1388
-typedef struct tagTHREADNAME_INFO
-{
-  DWORD dwType; // must be 0x1000
-  LPCSTR szName; // pointer to name (in same addr space)
-  DWORD dwThreadID; // thread ID (-1 caller thread)
-  DWORD dwFlags; // reserved for future use, most be zero
-} THREADNAME_INFO;
-
 CThread::CThread()
 {
 #ifdef __APPLE__
@@ -384,15 +374,24 @@ int CThread::GetNormalPriority(void)
 
 void CThread::SetName( LPCTSTR szThreadName )
 {
-  THREADNAME_INFO info;
+#ifdef _WIN32
+  const unsigned int MS_VC_EXCEPTION = 0x406d1388;
+  struct THREADNAME_INFO
+  {
+    DWORD dwType;     // must be 0x1000
+    LPCSTR szName;    // pointer to name (in same addr space)
+    DWORD dwThreadID; // thread ID (-1 caller thread)
+    DWORD dwFlags;    // reserved for future use, most be zero
+  } info;
+
   info.dwType = 0x1000;
   info.szName = szThreadName;
   info.dwThreadID = m_ThreadId;
   info.dwFlags = 0;
-#ifndef _LINUX
+
   try
   {
-    RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info);
+    RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR *)&info);
   }
   catch(...)
   {

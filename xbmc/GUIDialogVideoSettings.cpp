@@ -32,7 +32,7 @@
 #include "VideoDatabase.h"
 #include "GUIDialogYesNo.h"
 #include "Settings.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 
 using namespace std;
 
@@ -76,7 +76,7 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
-  m_usePopupSliders = g_SkinInfo.HasSkinFile("DialogSlider.xml");
+  m_usePopupSliders = g_SkinInfo->HasSkinFile("DialogSlider.xml");
   // clear out any old settings
   m_settings.clear();
   // create our settings

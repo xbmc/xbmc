@@ -14,9 +14,6 @@
     <ClCompile Include="..\fribidi.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\fribidi_bidi_types.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\fribidi_char_sets.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -44,13 +41,7 @@
     <ClCompile Include="..\fribidi_char_type.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\fribidi_create_char_types.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\fribidi_create_mirroring.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\fribidi_main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\fribidi_mem.c">

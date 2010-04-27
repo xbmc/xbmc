@@ -680,7 +680,7 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const VECSOURCES &shares, const CStdS
 }
 
 // same as above, starting in a single directory
-bool CGUIDialogFileBrowser::ShowAndGetFile(const CStdString &directory, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs /* = false */, bool useFileDirectories /* = false */)
+bool CGUIDialogFileBrowser::ShowAndGetFile(const CStdString &directory, const CStdString &mask, const CStdString &heading, CStdString &path, bool useThumbs /* = false */, bool useFileDirectories /* = false */, bool singleList /* = false */)
 {
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
   if (!browser)
@@ -688,16 +688,29 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const CStdString &directory, const CS
   g_windowManager.AddUniqueInstance(browser);
 
   browser->m_useFileDirectories = useFileDirectories;
-
-  // add a single share for this directory
-  VECSOURCES shares;
-  CMediaSource share;
-  share.strPath = directory;
-  CUtil::RemoveSlashAtEnd(share.strPath); // this is needed for the dodgy code in WINDOW_INIT
-  shares.push_back(share);
   browser->m_browsingForImages = useThumbs;
   browser->SetHeading(heading);
-  browser->SetSources(shares);
+
+  // add a single share for this directory
+  if (!singleList)
+  {
+    VECSOURCES shares;
+    CMediaSource share;
+    share.strPath = directory;
+    CUtil::RemoveSlashAtEnd(share.strPath); // this is needed for the dodgy code in WINDOW_INIT
+    shares.push_back(share);
+    browser->SetSources(shares);
+  }
+  else
+  {
+    browser->m_vecItems->Clear();
+    CDirectory::GetDirectory(directory,*browser->m_vecItems);
+    CFileItemPtr item(new CFileItem("file://Browse", false));
+    item->SetLabel(g_localizeStrings.Get(20153));
+    item->SetIconImage("DefaultFolder.png");
+    browser->m_vecItems->Add(item);
+    browser->m_singleList = true;
+  }
   CStdString strMask = mask;
   if (mask == "/")
     browser->m_browsingForFolders=1;
@@ -717,6 +730,15 @@ bool CGUIDialogFileBrowser::ShowAndGetFile(const CStdString &directory, const CS
   bool confirmed(browser->IsConfirmed());
   if (confirmed)
     path = browser->m_selectedPath;
+  if (path == "file://Browse")
+  { // "Browse for thumb"
+    g_windowManager.Remove(browser->GetID());
+    delete browser;
+    VECSOURCES shares;
+    g_mediaManager.GetLocalDrives(shares);
+
+    return ShowAndGetFile(shares, mask, heading, path, useThumbs,useFileDirectories);
+  }
   g_windowManager.Remove(browser->GetID());
   delete browser;
   return confirmed;

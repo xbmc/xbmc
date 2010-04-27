@@ -22,7 +22,7 @@
 #include "FileSystem/File.h"
 #include "GUIFontManager.h"
 #include "GUIWindowManager.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "MathUtils.h"
 #include "utils/log.h"
 

@@ -21,7 +21,9 @@
 
 #include "GUIWindowAddonBrowser.h"
 #include "addons/AddonManager.h"
+#include "addons/Repository.h"
 #include "GUIDialogContextMenu.h"
+#include "GUIDialogAddonInfo.h"
 #include "GUIDialogAddonSettings.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
@@ -36,10 +38,12 @@
 #include "FileSystem/AddonsDirectory.h"
 #include "utils/FileOperationJob.h"
 #include "utils/JobManager.h"
+#include "utils/log.h"
 #include "utils/SingleLock.h"
 #include "Settings.h"
 #include "Application.h"
 #include "AddonDatabase.h"
+#include "AdvancedSettings.h"
 
 #define CONTROL_AUTOUPDATE 5
 
@@ -69,8 +73,56 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
-      m_vecItems->m_strPath = "";
-      SetHistoryForPath(m_vecItems->m_strPath);
+      m_rootDir.AllowNonLocalSources(false);
+      // check for valid quickpath parameter
+      CStdString strDestination = message.GetNumStringParams() ? message.GetStringParam(0) : "";
+      CStdString strReturn = message.GetNumStringParams() > 1 ? message.GetStringParam(1) : "";
+      bool returning = strReturn.CompareNoCase("return") == 0;
+
+      if (!strDestination.IsEmpty())
+      {
+        message.SetStringParam("");
+        CLog::Log(LOGINFO, "Attempting to %s to: %s", returning ? "return" : "quickpath", strDestination.c_str());
+      }
+
+      CStdString destPath;
+      if (!strDestination.IsEmpty())
+      {
+        if (strDestination.Equals("$ROOT") || strDestination.Equals("Root"))
+          destPath = "";
+        else if (strDestination.Equals("Enabled"))
+          destPath = "addons://enabled/";
+        else if (strDestination.Equals("Available"))
+          destPath = "addons://all/";
+        else if (strDestination.Equals("Scrapers"))
+          destPath = "addons://enabled/scraper";
+        else if (strDestination.Equals("Screensavers"))
+          destPath = "addons://enabled/screensaver";
+        else if (strDestination.Equals("Plugins"))
+          destPath = "addons://enabled/plugin";
+        else if (strDestination.Equals("Visualizations"))
+          destPath = "addons://enabled/visualization";
+        else if (strDestination.Equals("Scripts"))
+          destPath = "addons://enabled/script";
+        else if (strDestination.Equals("AvailableScrapers"))
+          destPath = "addons://all/scraper";
+        else if (strDestination.Equals("AvailableScreensavers"))
+          destPath = "addons://all/screensaver";
+        else if (strDestination.Equals("AvailablePlugins"))
+          destPath = "addons://all/plugin";
+        else if (strDestination.Equals("AvailableVisualizations"))
+          destPath = "addons://all/visualization";
+        else if (strDestination.Equals("AvailableScripts"))
+          destPath = "addons://all/script";
+        else
+        {
+          CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());
+          destPath = strDestination;
+        }
+      }
+      m_vecItems->m_strPath = destPath;
+      SetHistoryForPath(destPath);
+      m_startDirectory = returning ? destPath : "";
     }
     break;
   case GUI_MSG_CLICKED:
@@ -82,6 +134,20 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
         g_settings.Save();
         return true;
       }
+      else if (m_viewControl.HasControl(iControl))  // list/thumb control
+      {
+        // get selected item
+        int iItem = m_viewControl.GetSelectedItem();
+        int iAction = message.GetParam1();
+
+        // iItem is checked for validity inside these routines
+        if (iAction == ACTION_SHOW_INFO)
+        {
+          if (!m_vecItems->Get(iItem)->GetProperty("Addon.ID").IsEmpty())
+            return CGUIDialogAddonInfo::ShowForItem((*m_vecItems)[iItem]);
+          return false;
+        }
+      }
     }
     break;
    default:
@@ -90,15 +156,38 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
+bool CGUIWindowAddonBrowser::OnAction(const CAction& action)
+{
+  if (action.GetID() == ACTION_PARENT_DIR)
+  {
+    if (g_advancedSettings.m_bUseEvilB &&
+        m_vecItems->m_strPath == m_startDirectory)
+    {
+      g_windowManager.PreviousWindow();
+      return true;
+    }
+  }
+  return CGUIMediaWindow::OnAction(action);
+}
+
 void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
                                                CContextButtons& buttons)
 {
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
+  if (pItem->m_strPath.Equals("addons://enabled/"))
+    buttons.Add(CONTEXT_BUTTON_SCAN,24034);
+  
   TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
   AddonPtr addon;
-  if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"), 
-                                  addon, type, false)) 
+  if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"),
+                                  addon, type, false))
     return;
+
+  if (addon->Type() == ADDON_REPOSITORY)
+  {
+    buttons.Add(CONTEXT_BUTTON_SCAN,24034);
+    buttons.Add(CONTEXT_BUTTON_UPDATE_LIBRARY,24035);
+  }
 
   if (addon->HasSettings())
     buttons.Add(CONTEXT_BUTTON_SETTINGS,24020);
@@ -108,15 +197,39 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
                                              CONTEXT_BUTTON button)
 {
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
+  if (pItem->m_strPath.Equals("addons://enabled/"))
+  {
+    if (button == CONTEXT_BUTTON_SCAN)
+    {
+      CAddonMgr::Get()->FindAddons();
+      return true;
+    }
+  }
   TYPE type = TranslateType(pItem->GetProperty("Addon.Type"));
   AddonPtr addon;
-  if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"), 
-                                  addon, type, false)) 
+  if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"),
+                                  addon, type, false))
     return false;
+
   if (button == CONTEXT_BUTTON_SETTINGS)
     return CGUIDialogAddonSettings::ShowAndGetInput(addon);
 
-  return false;
+  if (button == CONTEXT_BUTTON_UPDATE_LIBRARY)
+  {
+    CAddonDatabase database;
+    database.Open();
+    database.DeleteRepository(addon->ID());
+    button = CONTEXT_BUTTON_SCAN;
+  }
+
+  if (button == CONTEXT_BUTTON_SCAN)
+  {
+    RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addon);
+    CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo,false),this);
+    return true;
+  }
+
+  return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
 bool CGUIWindowAddonBrowser::OnClick(int iItem)
@@ -142,29 +255,8 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
       }
       return true;
     }
-    AddonPtr addon;
-    if (CAddonMgr::Get()->GetAddon(item->GetProperty("Addon.ID"),addon))
-    {
-      if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24000),
-                                           addon->Name(),
-                                           g_localizeStrings.Get(24060),""))
-      {
-        CFileItemList list;
-        list.Add(CFileItemPtr(new CFileItem(CUtil::AddFileToFolder("special://home/addons",item->GetProperty("Addon.ID")),true)));
-        list[0]->Select(true);
-        CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,"special://home/addons/"),this);
-      }
-    }
-    else
-    {
-      if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24000),
-                                           item->GetProperty("Addon.Name"),
-                                           g_localizeStrings.Get(24059),""))
-      {
-        pair<CFileOperationJob*,unsigned int> job = AddJob(item->GetProperty("Addon.Path"));
-        RegisterJob(item->GetProperty("Addon.ID"),job.first,job.second);
-      }
-    } 
+
+    CGUIDialogAddonInfo::ShowForItem(item);
     return true;
   }
 
@@ -175,7 +267,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
                                            bool success, CJob* job2)
 {
   if (success)
-  { 
+  {
     CFileOperationJob* job = (CFileOperationJob*)job2;
     if (job->GetAction() == CFileOperationJob::ActionCopy)
     {
@@ -192,7 +284,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
           CURL url(strFolder);
           // zip extraction job is done
           if (url.GetProtocol() == "zip")
-          { 
+          {
             CFileItemList list;
             CDirectory::GetDirectory(url.Get(),list);
             CStdString dirname = "";
@@ -207,7 +299,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
             strFolder = CUtil::AddFileToFolder("special://home/addons/",
                                                dirname);
           }
-          else // not reachable - in case we decide to allow non-zipped repos
+          else
           {
             CUtil::RemoveSlashAtEnd(strFolder);
             strFolder = CUtil::AddFileToFolder("special://home/addons/",
@@ -262,7 +354,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
 void CGUIWindowAddonBrowser::UpdateButtons()
 {
   SET_CONTROL_SELECTED(GetID(),CONTROL_AUTOUPDATE,g_settings.m_bAddonAutoUpdate);
-  CGUIMediaWindow::UpdateButtons();  
+  CGUIMediaWindow::UpdateButtons();
 }
 
 pair<CFileOperationJob*,unsigned int> CGUIWindowAddonBrowser::AddJob(const CStdString& path)
@@ -272,21 +364,27 @@ pair<CFileOperationJob*,unsigned int> CGUIWindowAddonBrowser::AddJob(const CStdS
   CStdString dest="special://home/addons/packages/";
   CStdString package = CUtil::AddFileToFolder("special://home/addons/packages/",
                                               CUtil::GetFileName(path));
-  // check for cached copy
-  if (CFile::Exists(package))
+  if (CUtil::HasSlashAtEnd(path))
   {
-    CStdString archive;
-    CUtil::CreateArchivePath(archive,"zip",package,"");
-    list.Add(CFileItemPtr(new CFileItem(archive,true)));
     dest = "special://home/addons/";
+    list.Add(CFileItemPtr(new CFileItem(path,true)));
   }
   else
   {
-    list.Add(CFileItemPtr(new CFileItem(path,false)));
+    // check for cached copy
+    if (CFile::Exists(package))
+    {
+      CStdString archive;
+      CUtil::CreateArchivePath(archive,"zip",package,"");
+      list.Add(CFileItemPtr(new CFileItem(archive,true)));
+      dest = "special://home/addons/";
+    }
+    else
+    {
+      list.Add(CFileItemPtr(new CFileItem(path,false)));
+    }
   }
 
-  CUtil::GetDirectory(path,package);
-  list[0]->SetProperty("Repo.Path",package);
   list[0]->Select(true);
   CFileOperationJob* job = new CFileOperationJob(CFileOperationJob::ActionCopy,
                                                  list,dest);
@@ -353,7 +451,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
     item->SetThumbnailImage("DefaultNetwork.png");
     items.Add(item);
   }
-  
+
   CSingleLock lock(m_critSection);
   for (int i=0;i<items.Size();++i)
   {
@@ -364,7 +462,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
       items[i]->SetProperty("Addon.Status",g_localizeStrings.Get(13413));
     items[i]->SetLabel2(items[i]->GetProperty("Addon.Status"));
     // to avoid the view state overriding label 2
-    items[i]->SetLabelPreformated(true);   
+    items[i]->SetLabelPreformated(true);
   }
 
   return result;
@@ -374,12 +472,12 @@ bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)
 {
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopThread();
-  
+
   if (!CGUIMediaWindow::Update(strDirectory))
     return false;
-  
+
   m_thumbLoader.Load(*m_vecItems);
-  
+
   return true;
 }
 

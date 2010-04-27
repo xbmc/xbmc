@@ -22,3 +22,4 @@ sed -i -e "/bootloader/s/grub/grub2/" $WORKPATH/buildLive/mkConfig.sh
 
 sed -i -e "s/grub/grub-pc/" $WORKPATH/buildLive/Files/chroot_local-packageslists/packages.list
 
+sed -i -e "/grub2_instead_of_grub_legacy/s/false/true/" $WORKPATH/buildLive/Files/binary_debian-installer/preseed.cfg

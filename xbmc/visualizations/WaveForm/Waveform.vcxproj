@@ -68,13 +68,13 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">$(Configuration)\vs2010\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">$(Configuration)\vs2010\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(Configuration)\vs2010\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(Configuration)\vs2010\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(Configuration)\vs2010\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(Configuration)\vs2010\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">true</LinkIncremental>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">.vis</TargetExt>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">.vis</TargetExt>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">.vis</TargetExt>
@@ -110,7 +110,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "../../addons/vis.waveform/$(TargetFileName)"</Command>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\addons\org.xbmc.addons.waveform\$(TargetFileName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">
@@ -137,13 +137,13 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "../../addons/vis.waveform/$(TargetFileName)"</Command>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\addons\org.xbmc.addons.waveform\$(TargetFileName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;WAVEFORM_EXPORTS;_WIN32PC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;WAVEFORM_EXPORTS;_WIN32PC;_CRT_NONSTDC_NO_DEPRECATE%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -165,13 +165,13 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "../../addons/vis.waveform/$(TargetFileName)"</Command>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\addons\org.xbmc.addons.waveform\$(TargetFileName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;WAVEFORM_EXPORTS;_WIN32PC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;WAVEFORM_EXPORTS;_WIN32PC;_CRT_NONSTDC_NO_DEPRECATE%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -192,7 +192,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "../../addons/vis.waveform/$(TargetFileName)"</Command>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\addons\org.xbmc.addons.waveform\$(TargetFileName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

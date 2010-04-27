@@ -688,7 +688,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   CStdString cachedThumb(item.GetCachedVideoThumb());
   if (!m_movieItem->m_bIsFolder && m_movieItem->GetVideoInfoTag()->m_iSeason > -1)
     cachedThumb = item.GetCachedEpisodeThumb();
-  CTextureCache::Get().ClearCachedImage(cachedThumb);
+  CTextureCache::Get().ClearCachedImage(cachedThumb, true);
 
   if (result.Left(14) == "thumb://Remote")
   {
@@ -782,7 +782,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) || result.Equals("fanart://Current"))
     return;   // user cancelled
 
-  CTextureCache::Get().ClearCachedImage(cachedThumb);
+  CTextureCache::Get().ClearCachedImage(cachedThumb, true);
 
   if (result.Equals("fanart://Local"))
     result = strLocal;

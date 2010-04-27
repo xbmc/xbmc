@@ -32,7 +32,7 @@
 #include "GUIEditControl.h"
 #endif
 
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "utils/GUIInfoManager.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
@@ -93,8 +93,8 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   else
   {
     // FIXME: strLowerPath needs to eventually go since resToUse can get incorrectly overridden
-    strLowerPath =  g_SkinInfo.GetSkinPath(CStdString(strFileName).ToLower(), &resToUse);
-    strPath = g_SkinInfo.GetSkinPath(strFileName, &resToUse);
+    strLowerPath =  g_SkinInfo->GetSkinPath(CStdString(strFileName).ToLower(), &resToUse);
+    strPath = g_SkinInfo->GetSkinPath(strFileName, &resToUse);
   }
 
   if (!bContainsPath)
@@ -137,7 +137,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_needsScaling);
 
   // Resolve any includes that may be present
-  g_SkinInfo.ResolveIncludes(pRootElement);
+  g_SkinInfo->ResolveIncludes(pRootElement);
   // now load in the skin file
   SetDefaults();
 
@@ -186,7 +186,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
     else if (strValue == "coordinates")
     {
       // resolve any includes within coordinates tag (such as multiple origin includes)
-      g_SkinInfo.ResolveIncludes(pChild);
+      g_SkinInfo->ResolveIncludes(pChild);
       TiXmlNode* pSystem = pChild->FirstChild("system");
       if (pSystem)
       {
@@ -201,8 +201,8 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
       while (originElement)
       {
         COrigin origin;
-        g_SkinInfo.ResolveConstant(originElement->Attribute("x"), origin.x);
-        g_SkinInfo.ResolveConstant(originElement->Attribute("y"), origin.y);
+        g_SkinInfo->ResolveConstant(originElement->Attribute("x"), origin.x);
+        g_SkinInfo->ResolveConstant(originElement->Attribute("y"), origin.y);
         if (originElement->FirstChild())
           origin.condition = g_infoManager.TranslateString(originElement->FirstChild()->Value());
         m_origins.push_back(origin);
@@ -211,14 +211,14 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
     }
     else if (strValue == "camera")
     { // z is fixed
-      g_SkinInfo.ResolveConstant(pChild->Attribute("x"), m_camera.x);
-      g_SkinInfo.ResolveConstant(pChild->Attribute("y"), m_camera.y);
+      g_SkinInfo->ResolveConstant(pChild->Attribute("x"), m_camera.x);
+      g_SkinInfo->ResolveConstant(pChild->Attribute("y"), m_camera.y);
       m_hasCamera = true;
     }
     else if (strValue == "controls")
     {
       // resolve any includes within controls tag (such as whole <control> includes)
-      g_SkinInfo.ResolveIncludes(pChild);
+      g_SkinInfo->ResolveIncludes(pChild);
 
       TiXmlElement *pControl = pChild->FirstChildElement();
       while (pControl)

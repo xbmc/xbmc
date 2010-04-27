@@ -43,10 +43,10 @@
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\vs2010\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\vs2010\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\vs2010\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\vs2010\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</LinkIncremental>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
@@ -60,7 +60,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;HAS_DX;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;HAS_DX;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Sync</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -84,14 +84,14 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "../../../addons/com.nullsoft.milkdrop.xbmc/$(TargetFileName)"</Command>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\addons\com.nullsoft.milkdrop.xbmc\$(TargetFileName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;HAS_DX;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;HAS_DX;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
       <PrecompiledHeader>
@@ -114,7 +114,7 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "../../../addons/com.nullsoft.milkdrop.xbmc/$(TargetFileName)"</Command>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\addons\com.nullsoft.milkdrop.xbmc\$(TargetFileName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

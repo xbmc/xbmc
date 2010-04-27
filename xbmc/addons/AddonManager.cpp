@@ -27,6 +27,7 @@
 #include "utils/JobManager.h"
 #include "utils/SingleLock.h"
 #include "FileItem.h"
+#include "LangInfo.h"
 #include "Settings.h"
 #include "GUISettings.h"
 #include "DownloadQueueManager.h"
@@ -44,6 +45,7 @@
 #include "Scraper.h"
 //#endif
 #include "Repository.h"
+#include "Skin.h"
 
 using namespace std;
 
@@ -127,6 +129,8 @@ bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
   if (CAddonMgr::Get()->GetAddons(ADDON_SCREENSAVER, temp, CONTENT_NONE, enabledOnly))
     addons.insert(addons.end(), temp.begin(), temp.end());
   if (CAddonMgr::Get()->GetAddons(ADDON_SCRIPT, temp, CONTENT_NONE, enabledOnly))
+    addons.insert(addons.end(), temp.begin(), temp.end());
+  if (CAddonMgr::Get()->GetAddons(ADDON_SKIN, temp, CONTENT_NONE, enabledOnly))
     addons.insert(addons.end(), temp.begin(), temp.end());
   if (CAddonMgr::Get()->GetAddons(ADDON_VIZ, temp, CONTENT_NONE, enabledOnly))
     addons.insert(addons.end(), temp.begin(), temp.end());
@@ -244,9 +248,15 @@ void CAddonMgr::FindAddons()
   CSingleLock lock(m_critSection);
   m_addons.clear();
   m_idMap.clear();
+  LoadAddons("special://home/addons");
+  LoadAddons("special://xbmc/addons");
+}
+
+void CAddonMgr::LoadAddons(const CStdString &path)
+{
   // parse the user & system dirs for addons of the requested type
   CFileItemList items;
-  CDirectory::GetDirectory("special://home/addons", items);
+  CDirectory::GetDirectory(path, items);
 
   // store any addons with unresolved deps, then recheck at the end
   VECADDONS unresolved;
@@ -264,25 +274,19 @@ void CAddonMgr::FindAddons()
     if (!AddonFromInfoXML(item->m_strPath, addon))
       continue;
 
+    // only load if addon with same id isn't already loaded
+    if(m_idMap.find(addon->ID()) != m_idMap.end())
+    {
+      CLog::Log(LOGDEBUG, "ADDON: already loaded id %s, bypassing package", addon->ID().c_str());
+      continue;
+    }
+
     // refuse to store addons with missing library
     CStdString library(CUtil::AddFileToFolder(addon->Path(), addon->LibName()));
     if (!CFile::Exists(library))
     {
       CLog::Log(LOGDEBUG, "ADDON: Missing library file %s, bypassing package", library.c_str());
       continue;
-    }
-
-    // check for/cache icon thumbnail
-    //TODO cache one thumb per addon id instead
-    CFileItem item2(CUtil::AddFileToFolder(addon->Path(), addon->LibName()), false);
-    item2.SetCachedProgramThumb();
-    if (!item2.HasThumbnail())
-      item2.SetUserProgramThumb();
-    if (!item2.HasThumbnail())
-      item2.SetThumbnailImage(addon->Icon());
-    if (item2.HasThumbnail())
-    {
-      XFILE::CFile::Cache(item2.GetThumbnailImage(),item->GetCachedProgramThumb());
     }
 
     if (!DependenciesMet(addon))
@@ -414,14 +418,14 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   const TiXmlElement *element = rootElement->FirstChildElement("id");
   if (!element)
   {
-    CLog::Log(LOGERROR, "ADDON: %s missing <id> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <id> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
   id = element->GetText();
   //FIXME since we no longer required uuids, should we bother validating anything?
   if (id.IsEmpty())
   {
-    CLog::Log(LOGERROR, "ADDON: %s has invalid <id> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s has invalid <id> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
 
@@ -430,32 +434,30 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   element = rootElement->FirstChildElement("type");
   if (!element)
   {
-    CLog::Log(LOGERROR, "ADDON: %s missing <type> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <type> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
   type = TranslateType(element->GetText());
   if (type == ADDON_UNKNOWN)
   {
-    CLog::Log(LOGERROR, "ADDON: %s has invalid type identifier: '%d'", strPath.c_str(), type);
+    CLog::Log(LOGERROR, "ADDON: %s has invalid type identifier: '%d'", rootElement->GetDocument()->Value(), type);
     return false;
   }
 
   /* Retrieve Name */
   CStdString name;
-  element = rootElement->FirstChildElement("title");
-  if (!element)
+  if (!GetTranslatedString(rootElement,"title",name))
   {
-    CLog::Log(LOGERROR, "ADDON: %s missing <title> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <title> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
-  name = element->GetText();
 
   /* Retrieve version */
   CStdString version;
   element = rootElement->FirstChildElement("version");
   if (!element)
   {
-    CLog::Log(LOGERROR, "ADDON: %s missing <version> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <version> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
   /* Validate version */
@@ -464,7 +466,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   versionRE.RegComp(ADDON_VERSION_RE.c_str());
   if (versionRE.RegFind(version.c_str()) != 0)
   {
-    CLog::Log(LOGERROR, "ADDON: %s has invalid <version> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s has invalid <version> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
 
@@ -472,13 +474,14 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   AddonProps addonProps(id, type, version);
   addonProps.name = name;
   CUtil::GetDirectory(strPath,addonProps.path);
-  addonProps.icon = CUtil::AddFileToFolder(addonProps.path, "default.tbn");
+  /* Set Icon */
+  addonProps.icon = "icon.png";
 
   /* Retrieve license */
   element = rootElement->FirstChildElement("license");
 /*  if (!element)
   {
-    CLog::Log(LOGERROR, "ADDON: %s missing <license> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <license> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
   addonProps.license = element->GetText();*/
@@ -488,7 +491,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   element = rootElement->FirstChildElement("platforms")->FirstChildElement("platform");
   if (!element)
   {
-    CLog::Log(LOGERROR, "ADDON: %s missing <platforms> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <platforms> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
 
@@ -511,45 +514,42 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
 #if defined(_LINUX) && !defined(__APPLE__)
     if (!platforms.count("linux"))
     {
-      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Linux, ignoring", strPath.c_str());
+      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Linux, ignoring", rootElement->GetDocument()->Value());
       return false;
     }
 #elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
     if (!platforms.count("windows-gl") && !platforms.count("windows"))
     {
-      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Windows/OpenGL, ignoring", strPath.c_str());
+      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Windows/OpenGL, ignoring", rootElement->GetDocument()->Value());
       return false;
     }
 #elif defined(_WIN32) && defined(HAS_DX)
     if (!platforms.count("windows-dx") && !platforms.count("windows"))
     {
-      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Windows/DirectX, ignoring", strPath.c_str());
+      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under Windows/DirectX, ignoring", rootElement->GetDocument()->Value());
       return false;
     }
 #elif defined(__APPLE__)
     if (!platforms.count("osx"))
     {
-      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under OSX, ignoring", strPath.c_str());
+      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under OSX, ignoring", rootElement->GetDocument()->Value());
       return false;
     }
 #elif defined(_XBOX)
     if (!platforms.count("xbox"))
     {
-      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under XBOX, ignoring", strPath.c_str());
+      CLog::Log(LOGNOTICE, "ADDON: %s is not supported under XBOX, ignoring", rootElement->GetDocument()->Value());
       return false;
     }
 #endif
   }
 
   /* Retrieve summary */
-  CStdString summary;
-  element = rootElement->FirstChildElement("summary");
-  if (!element)
+  if (!GetTranslatedString(rootElement,"summary",addonProps.summary))
   {
-    CLog::Log(LOGERROR, "ADDON: %s missing <summary> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <summary> element, ignoring", rootElement->GetDocument()->Value());
     return false;
   }
-  addonProps.summary = element->GetText();
 
   if (addonProps.type == ADDON_SCRAPER || addonProps.type == ADDON_PLUGIN)
   {
@@ -561,7 +561,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
     }
     if (!element)
     {
-      CLog::Log(LOGERROR, "ADDON: %s missing <supportedcontent> element, ignoring", strPath.c_str());
+      CLog::Log(LOGERROR, "ADDON: %s missing <supportedcontent> element, ignoring", rootElement->GetDocument()->Value());
       return false;
     }
 
@@ -588,10 +588,14 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   }
 
   /*** Beginning of optional fields ***/
+  /* Retrieve icon */
+  element = rootElement->FirstChildElement("icon");
+  if (element)
+    addonProps.icon = element->GetText();
+
   /* Retrieve description */
   element = rootElement->FirstChildElement("description");
-  if (element)
-    addonProps.description = element->GetText();
+  GetTranslatedString(rootElement,"description",addonProps.description);
 
   /* Retrieve author */
   element = rootElement->FirstChildElement("author");
@@ -600,8 +604,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
 
   /* Retrieve disclaimer */
   element = rootElement->FirstChildElement("disclaimer");
-  if (element)
-    addonProps.disclaimer = element->GetText();
+  GetTranslatedString(rootElement,"disclaimer",addonProps.disclaimer);
 
   /* Retrieve library file name */
   // will be replaced with default library name if unspecified
@@ -626,7 +629,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   {
     element = element->FirstChildElement("dependency");
     if (!element)
-      CLog::Log(LOGDEBUG, "ADDON: %s missing at least one <dependency> element, will ignore this dependency", strPath.c_str());
+      CLog::Log(LOGDEBUG, "ADDON: %s missing at least one <dependency> element, will ignore this dependency", rootElement->GetDocument()->Value());
     else
     {
       do
@@ -636,7 +639,7 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
         const char* id = element->GetText();
         if (!id || (!min && !max))
         {
-          CLog::Log(LOGDEBUG, "ADDON: %s malformed <dependency> element, will ignore this dependency", strPath.c_str());
+          CLog::Log(LOGDEBUG, "ADDON: %s malformed <dependency> element, will ignore this dependency", rootElement->GetDocument()->Value());
           element = element->NextSiblingElement("dependency");
           continue;
         }
@@ -654,6 +657,27 @@ bool CAddonMgr::AddonFromInfoXML(const TiXmlElement *rootElement,
   return addon.get() != NULL;
 }
 
+bool CAddonMgr::GetTranslatedString(const TiXmlElement *xmldoc, const char *tag, CStdString& data)
+{
+  const TiXmlElement *element = xmldoc->FirstChildElement(tag);
+  const TiXmlElement *enelement = NULL;
+  while (element)
+  {
+    const char* lang = element->Attribute("lang");
+    if (lang && strcmp(lang,g_langInfo.GetDVDAudioLanguage().c_str()) == 0)
+      break;
+    if (!lang || strcmp(lang,"en") == 0)
+      enelement = element;
+    element = element->NextSiblingElement(tag);
+  }
+  if (!element)
+    element = enelement;
+  if (element)
+    data = element->GetText();
+
+  return element != NULL;
+}
+
 AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
 {
   switch (addonProps.type)
@@ -663,12 +687,15 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CAddon(addonProps));
     case ADDON_SCRAPER:
       return AddonPtr(new CScraper(addonProps));
+    case ADDON_SKIN:
+      return AddonPtr(new CSkinInfo(addonProps));
     case ADDON_VIZ:
       return AddonPtr(new CVisualisation(addonProps));
     case ADDON_SCREENSAVER:
       return AddonPtr(new CScreenSaver(addonProps));
     case ADDON_SCRAPER_LIBRARY:
     case ADDON_VIZ_LIBRARY:
+    case ADDON_SCRIPT_LIBRARY:
       return AddonPtr(new CAddonLibrary(addonProps));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
@@ -692,7 +719,7 @@ void CAddonMgr::UpdateRepos()
     if (repo->LastUpdate()+CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
     {
       CLog::Log(LOGDEBUG,"Checking repository %s for updates",repo->Name().c_str());
-      CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo),this); 
+      CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo),this);
     }
   }
 }

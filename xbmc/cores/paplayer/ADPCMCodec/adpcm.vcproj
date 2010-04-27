@@ -1,110 +1,181 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
-	Name="adpcm"
+	Version="9,00"
+	Name="libadpcm_dll"
 	ProjectGUID="{2A8CBFB5-C226-4BB3-8C03-7C75D511A4A2}"
-	Keyword="Win32Proj">
+	RootNamespace="libadpcm_dll"
+	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="Debug"
 			IntermediateDirectory="Debug"
 			ConfigurationType="2"
-			CharacterSet="2">
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
-				MinimalRebuild="TRUE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
+				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="4"/>
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4244;4267;4311;4312"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
-			<Tool
-				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/adpcm.dll"
-				LinkIncremental="2"
-				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(OutDir)/adpcm.pdb"
-				SubSystem="2"
-				TargetMachine="1"/>
-			<Tool
-				Name="VCMIDLTool"/>
-			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
-			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				ResourceOutputFileName=""/>
+				ResourceOutputFileName=""
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
+				Name="VCLinkerTool"
+				OutputFile="..\..\..\..\system\players\paplayer\adpcm.dll"
+				LinkIncremental="1"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="adpcm.pdb"
+				SubSystem="2"
+				ProfileGuidedDatabase=""
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="$(TargetName).lib"
+				TargetMachine="1"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="2"
-			CharacterSet="2">
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="3"/>
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4244;4267;4311;4312"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				ResourceOutputFileName=""
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/adpcm.dll"
+				OutputFile="..\..\..\..\system\players\paplayer\adpcm.dll"
 				LinkIncremental="1"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(TargetName).pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				TargetMachine="1"/>
+				ProfileGuidedDatabase=""
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				ImportLibrary="$(TargetName).lib"
+				TargetMachine="1"
+			/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				ResourceOutputFileName=""/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 	</Configurations>
 	<References>
@@ -113,42 +184,31 @@
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			>
 			<File
-				RelativePath=".\ADPCMDll.cpp">
+				RelativePath=".\ADPCMDll.cpp"
+				>
 			</File>
 			<File
-				RelativePath=".\mywav.h">
+				RelativePath=".\uXboxAdpcmDecoder.c"
+				>
 			</File>
 			<File
-				RelativePath=".\uXboxAdpcmDecoder.c">
-			</File>
-			<File
-				RelativePath=".\uXboxAdpcmDecoder.h">
+				RelativePath=".\uXboxAdpcmDecoder.h"
+				>
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			>
 			<File
-				RelativePath=".\adpcm.ico">
-			</File>
-			<File
-				RelativePath=".\adpcm.rc">
-			</File>
-			<File
-				RelativePath=".\small.ico">
+				RelativePath=".\mywav.h"
+				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt">
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

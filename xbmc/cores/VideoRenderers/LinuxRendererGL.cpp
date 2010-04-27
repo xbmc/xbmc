@@ -2427,6 +2427,9 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
     if ((m_renderMethod & RENDER_VDPAU) && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
       return true;
 
+    if (m_renderMethod & RENDER_VAAPI)
+      return false;
+
     return (m_renderMethod & RENDER_GLSL)
         || (m_renderMethod & RENDER_ARB)
         || ((m_renderMethod & RENDER_SW) && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
@@ -2436,6 +2439,9 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
   {
     if ((m_renderMethod & RENDER_VDPAU) && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
       return true;
+
+    if (m_renderMethod & RENDER_VAAPI)
+      return false;
 
     return (m_renderMethod & RENDER_GLSL)
         || (m_renderMethod & RENDER_ARB)
@@ -2486,6 +2492,9 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
 #endif
     return false;
   }
+
+  if(m_renderMethod & RENDER_VAAPI)
+    return false;
 
   if(method == VS_INTERLACEMETHOD_DEINTERLACE)
     return true;

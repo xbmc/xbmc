@@ -106,7 +106,7 @@ void CSettings::Initialize()
   m_bNonLinStretch = false;
 
   m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u|.dng|.nef|.cr2|.crw|.orf|.arw|.erf|.3fr|.dcr|.x3f|.mef|.raf|.mrw|.pef|.sr2|.rss";
-  m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga|.url|.pxml|.tta|.rss|.cm3|.cms|.dlt";
+  m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga|.url|.pxml|.tta|.rss|.cm3|.cms|.dlt|.brstm";
   m_videoExtensions = ".m4v|.3g2|.3gp|.nsv|.tp|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.mts|.m2t|.m2ts|.evo|.ogv|.sdp|.avs|.rec|.url|.pxml|.vc1|.h264|.rcv|.rss|.mpls";
   // internal music extensions
   m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.asapstream|.cdda";
@@ -1707,47 +1707,6 @@ CStdString CSettings::GetBookmarksThumbFolder() const
   return folder;
 }
 
-CStdString CSettings::GetPicturesThumbFolder() const
-{
-  CStdString folder;
-  if (GetCurrentProfile().hasDatabases())
-    CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Pictures", folder);
-  else
-    CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Pictures", folder);
-
-  return folder;
-}
-
-CStdString CSettings::GetProgramsThumbFolder() const
-{
-  CStdString folder;
-  if (GetCurrentProfile().hasDatabases())
-    CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Programs", folder);
-  else
-    CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Programs", folder);
-
-  return folder;
-}
-
-CStdString CSettings::GetGameSaveThumbFolder() const
-{
-  CStdString folder;
-  if (GetCurrentProfile().hasDatabases())
-    CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/GameSaves", folder);
-  else
-    CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/GameSaves", folder);
-
-  return folder;
-}
-
-CStdString CSettings::GetProfilesThumbFolder() const
-{
-  CStdString folder;
-  CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Profiles", folder);
-
-  return folder;
-}
-
 CStdString CSettings::GetSourcesFile() const
 {
   CStdString folder;
@@ -1873,8 +1832,6 @@ void CSettings::CreateProfileFolders()
   CDirectory::Create(GetVideoFanartFolder());
   CDirectory::Create(GetMusicFanartFolder());
   CDirectory::Create(GetBookmarksThumbFolder());
-  CDirectory::Create(GetProgramsThumbFolder());
-  CDirectory::Create(GetPicturesThumbFolder());
   CStdString generatedThumbsFolder = CUtil::AddFileToFolder(GetThumbnailsFolder(), "generated");
   CDirectory::Create(generatedThumbsFolder);
   CLog::Log(LOGINFO, "thumbnails folder: %s", GetThumbnailsFolder().c_str());
@@ -1882,7 +1839,6 @@ void CSettings::CreateProfileFolders()
   {
     CStdString strHex;
     strHex.Format("%x",hex);
-    CDirectory::Create(CUtil::AddFileToFolder(GetPicturesThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetMusicThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetThumbnailsFolder(), strHex));

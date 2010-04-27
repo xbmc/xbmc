@@ -57,8 +57,15 @@ private:
   public:
     virtual bool DoWork()
     {
+      //temporary log line to figure out occasional hangs where m_event never gets set
+      CLog::Log(LOGDEBUG, "CGetDirectory::DoWork retrieving %s", m_dir.c_str());
+
       m_list.m_strPath = m_dir;
-      return m_imp.GetDirectory(m_dir, m_list);
+      bool result = m_imp.GetDirectory(m_dir, m_list);
+
+      //temporary log line to figure out occasional hangs where m_event never gets set
+      CLog::Log(LOGDEBUG, "CGetDirectory::DoWork retrieving %s %s", m_dir.c_str(), result ? "succeeded" : "failed");
+      return result;
     }
     CStdString     m_dir;
     CFileItemList& m_list;
@@ -81,6 +88,8 @@ public:
 
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job)
   {
+    //temporary log line to figure out occasional hangs where m_event never gets set
+    CLog::Log(LOGDEBUG, "CGetDirectory::OnJobComplete called");
     m_result = success;
     m_event.Set();
   }

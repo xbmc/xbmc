@@ -158,14 +158,11 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
                                                  , pData
                                                  , iSize);
 
-#if (LIBAVCODEC_VERSION_INT > AV_VERSION_INT(52, 59, 0))
-  #error Make sure upstream version still needs this workaround (ffmpeg issue #1709)
-#endif
-  /* upstream ac3dec is bugged, returns the packet size, not a negative value on error */
-  if (m_pCodecContext->codec_id == CODEC_ID_AC3 && iBytesUsed > iSize)
+  /* some codecs will attempt to consume more data than what we gave */
+  if (iBytesUsed > iSize)
   {
-    m_iBufferSize1 = 0;
-    return iSize;
+    CLog::Log(LOGWARNING, "CDVDAudioCodecFFmpeg::Decode - decoder attempted to consume more data than given");
+    iBytesUsed = iSize;
   }
 
   if(m_iBufferSize1 == 0 && iBytesUsed >= 0)
@@ -257,28 +254,50 @@ int CDVDAudioCodecFFmpeg::GetBitsPerSample()
 
 void CDVDAudioCodecFFmpeg::BuildChannelMap()
 {
-  int index = 0;
-  if (m_pCodecContext->channel_layout & CH_FRONT_LEFT           ) m_channelMap[index++] = PCM_FRONT_LEFT           ;
-  if (m_pCodecContext->channel_layout & CH_FRONT_RIGHT          ) m_channelMap[index++] = PCM_FRONT_RIGHT          ;
-  if (m_pCodecContext->channel_layout & CH_FRONT_CENTER         ) m_channelMap[index++] = PCM_FRONT_CENTER         ;
-  if (m_pCodecContext->channel_layout & CH_LOW_FREQUENCY        ) m_channelMap[index++] = PCM_LOW_FREQUENCY        ;
-  if (m_pCodecContext->channel_layout & CH_BACK_LEFT            ) m_channelMap[index++] = PCM_BACK_LEFT            ;
-  if (m_pCodecContext->channel_layout & CH_BACK_RIGHT           ) m_channelMap[index++] = PCM_BACK_RIGHT           ;
-  if (m_pCodecContext->channel_layout & CH_FRONT_LEFT_OF_CENTER ) m_channelMap[index++] = PCM_FRONT_LEFT_OF_CENTER ;
-  if (m_pCodecContext->channel_layout & CH_FRONT_RIGHT_OF_CENTER) m_channelMap[index++] = PCM_FRONT_RIGHT_OF_CENTER;
-  if (m_pCodecContext->channel_layout & CH_BACK_CENTER          ) m_channelMap[index++] = PCM_BACK_CENTER          ;
-  if (m_pCodecContext->channel_layout & CH_SIDE_LEFT            ) m_channelMap[index++] = PCM_SIDE_LEFT            ;
-  if (m_pCodecContext->channel_layout & CH_SIDE_RIGHT           ) m_channelMap[index++] = PCM_SIDE_RIGHT           ;
-  if (m_pCodecContext->channel_layout & CH_TOP_CENTER           ) m_channelMap[index++] = PCM_TOP_CENTER           ;
-  if (m_pCodecContext->channel_layout & CH_TOP_FRONT_LEFT       ) m_channelMap[index++] = PCM_TOP_FRONT_LEFT       ;
-  if (m_pCodecContext->channel_layout & CH_TOP_FRONT_CENTER     ) m_channelMap[index++] = PCM_TOP_FRONT_CENTER     ;
-  if (m_pCodecContext->channel_layout & CH_TOP_FRONT_RIGHT      ) m_channelMap[index++] = PCM_TOP_FRONT_RIGHT      ;
-  if (m_pCodecContext->channel_layout & CH_TOP_BACK_LEFT        ) m_channelMap[index++] = PCM_TOP_BACK_LEFT        ;
-  if (m_pCodecContext->channel_layout & CH_TOP_BACK_CENTER      ) m_channelMap[index++] = PCM_TOP_BACK_CENTER      ;
-  if (m_pCodecContext->channel_layout & CH_TOP_BACK_RIGHT       ) m_channelMap[index++] = PCM_TOP_BACK_RIGHT       ;
+  int index;
+  int bits;
+  int layout;
 
+  /* count the number of bits in the channel_layout */
+  layout = m_pCodecContext->channel_layout;
+  for(bits = 0; layout; ++bits)
+    layout &= layout - 1;
+
+  layout = m_pCodecContext->channel_layout;
+
+  /* if there are more bits set then there are channels, clear the LFE bit to try to work around it */
+  if (bits > m_pCodecContext->channels) {
+    CLog::Log(LOGINFO, "CDVDAudioCodecFFMpeg::GetChannelMap - FFmpeg only reported %d channels, but the layout contains %d, trying to fix", m_pCodecContext->channels, bits);
+
+    /* if it is DTS and the real channel count is not an even number, turn off the LFE bit */
+    if (m_pCodecContext->codec_id == CODEC_ID_DTS && m_pCodecContext->channels & 1)
+      layout &= ~CH_LOW_FREQUENCY;
+  }
+
+  if (bits >= m_pCodecContext->channels)
+  {
+    index = 0;
+    if (layout & CH_FRONT_LEFT           ) m_channelMap[index++] = PCM_FRONT_LEFT           ;
+    if (layout & CH_FRONT_RIGHT          ) m_channelMap[index++] = PCM_FRONT_RIGHT          ;
+    if (layout & CH_FRONT_CENTER         ) m_channelMap[index++] = PCM_FRONT_CENTER         ;
+    if (layout & CH_LOW_FREQUENCY        ) m_channelMap[index++] = PCM_LOW_FREQUENCY        ;
+    if (layout & CH_BACK_LEFT            ) m_channelMap[index++] = PCM_BACK_LEFT            ;
+    if (layout & CH_BACK_RIGHT           ) m_channelMap[index++] = PCM_BACK_RIGHT           ;
+    if (layout & CH_FRONT_LEFT_OF_CENTER ) m_channelMap[index++] = PCM_FRONT_LEFT_OF_CENTER ;
+    if (layout & CH_FRONT_RIGHT_OF_CENTER) m_channelMap[index++] = PCM_FRONT_RIGHT_OF_CENTER;
+    if (layout & CH_BACK_CENTER          ) m_channelMap[index++] = PCM_BACK_CENTER          ;
+    if (layout & CH_SIDE_LEFT            ) m_channelMap[index++] = PCM_SIDE_LEFT            ;
+    if (layout & CH_SIDE_RIGHT           ) m_channelMap[index++] = PCM_SIDE_RIGHT           ;
+    if (layout & CH_TOP_CENTER           ) m_channelMap[index++] = PCM_TOP_CENTER           ;
+    if (layout & CH_TOP_FRONT_LEFT       ) m_channelMap[index++] = PCM_TOP_FRONT_LEFT       ;
+    if (layout & CH_TOP_FRONT_CENTER     ) m_channelMap[index++] = PCM_TOP_FRONT_CENTER     ;
+    if (layout & CH_TOP_FRONT_RIGHT      ) m_channelMap[index++] = PCM_TOP_FRONT_RIGHT      ;
+    if (layout & CH_TOP_BACK_LEFT        ) m_channelMap[index++] = PCM_TOP_BACK_LEFT        ;
+    if (layout & CH_TOP_BACK_CENTER      ) m_channelMap[index++] = PCM_TOP_BACK_CENTER      ;
+    if (layout & CH_TOP_BACK_RIGHT       ) m_channelMap[index++] = PCM_TOP_BACK_RIGHT       ;
+  } else
   /* if there is less channels in the map then advertised, we need to fix it */
-  if (index < m_pCodecContext->channels)
+  if (bits < m_pCodecContext->channels)
   {
     CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg did not repot the channel layout properly, trying to guess");
 

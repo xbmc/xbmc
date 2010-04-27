@@ -389,6 +389,7 @@ xcode_depends: \
 # platform independend objects
 OBJSXBMC=	\
 	xbmc/xbmc.a \
+	xbmc/addons/addons.a \
 	xbmc/cores/playercorefactory/playercorefactory.a \
 	xbmc/cores/dvdplayer/DVDPlayer.a \
 	xbmc/cores/paplayer/paplayer.a \
@@ -430,8 +431,7 @@ OBJSXBMC=	\
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/lib/libapetag/.libs/libapetag.a \
-	xbmc/settings/settings.a \
-	xbmc/addons/addons.a
+	xbmc/settings/settings.a
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
 OBJSXBMC+= \

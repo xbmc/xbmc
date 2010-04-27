@@ -92,7 +92,7 @@
       <ImportLibrary>$(Configuration)DLL\vs2010\libfaad2.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "../../../../../../system/players/dvdplayer/$(TargetFileName)"</Command>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -140,7 +140,7 @@
       <ImportLibrary>$(Configuration)DLL\vs2010\libfaad2.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy "$(TargetPath)" "../../../../../../system/players/dvdplayer/$(TargetFileName)"</Command>
+      <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

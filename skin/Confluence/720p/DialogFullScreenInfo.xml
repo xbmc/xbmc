@@ -82,7 +82,7 @@
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[VideoPlayer.VideoCodec,flagging/video/,.png]</texture>
 						<!-- Don't show if its one of the 500 divx codecs -->
-						<visible>![substring(VideoPlayer.VideoCodec,divx) | substring(VideoPlayer.VideoCodec,div3) |substring(VideoPlayer.VideoCodec,div4) | substring(VideoPlayer.VideoCodec,div5)]</visible>
+						<visible>![stringcompare(VideoPlayer.VideoCodec,divx) | stringcompare(VideoPlayer.VideoCodec,div3) |stringcompare(VideoPlayer.VideoCodec,div4) | stringcompare(VideoPlayer.VideoCodec,div5)]</visible>
 					</control>
 					<control type="image">
 						<description>Divx Codec Image</description>
@@ -90,7 +90,7 @@
 						<height>40</height>
 						<aspectratio>keep</aspectratio>
 						<texture>flagging/video/divx.png</texture>
-						<visible>substring(VideoPlayer.VideoCodec,divx) | substring(VideoPlayer.VideoCodec,div3) |substring(VideoPlayer.VideoCodec,div4) | substring(VideoPlayer.VideoCodec,div5)</visible>
+						<visible>stringcompare(VideoPlayer.VideoCodec,divx) | stringcompare(VideoPlayer.VideoCodec,div3) |stringcompare(VideoPlayer.VideoCodec,div4) | stringcompare(VideoPlayer.VideoCodec,div5)</visible>
 					</control>
 					
 					<control type="image">
@@ -99,7 +99,7 @@
 						<height>40</height>
 						<aspectratio>keep</aspectratio>
 						<texture>flagging/audio/dolbydigital.png</texture>
-						<visible>[stringcompare(VideoPlayer.AudioCodec,ac3) + substring(VideoPlayer.AudioChannels,6)]</visible>
+						<visible>[stringcompare(VideoPlayer.AudioCodec,ac3) + stringcompare(VideoPlayer.AudioChannels,6)]</visible>
 					</control>
 					<control type="image">
 						<description>Audio Codec Image</description>
@@ -108,7 +108,7 @@
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[VideoPlayer.AudioCodec,flagging/audio/,.png]</texture>
 						<!-- Don't show if I want the Dolby Digital Logo -->
-						<visible>![stringcompare(VideoPlayer.AudioCodec,ac3) + substring(VideoPlayer.AudioChannels,6)]</visible>
+						<visible>![stringcompare(VideoPlayer.AudioCodec,ac3) + stringcompare(VideoPlayer.AudioChannels,6)]</visible>
 					</control>
 					
 					<control type="image">

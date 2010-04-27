@@ -42,6 +42,8 @@ AddonPtr CRepository::Clone(const AddonPtr &self) const
   result->m_info = m_info;
   result->m_checksum = m_checksum;
   result->m_datadir = m_datadir;
+  result->m_compressed = m_compressed;
+  result->m_zipped = m_zipped;
   return AddonPtr(result);
 }
 
@@ -49,6 +51,7 @@ CRepository::CRepository(const AddonProps& props) :
   CAddon(props)
 {
   m_compressed = false;
+  m_zipped = false;
   LoadFromXML(Path()+LibName());
 }
 
@@ -80,6 +83,13 @@ bool CRepository::LoadFromXML(const CStdString& xml)
   XMLUtils::GetString(doc.RootElement(),"info", m_info);
   XMLUtils::GetString(doc.RootElement(),"checksum", m_checksum);
   XMLUtils::GetString(doc.RootElement(),"datadir", m_datadir);
+  info = doc.RootElement()->FirstChildElement("datadir");
+  if (info)
+  {
+    const char* attr = info->Attribute("zip");
+    if (attr && stricmp(attr,"true") == 0)
+      m_zipped = true;
+  }
 
   return true;
 }
@@ -123,15 +133,19 @@ VECADDONS CRepository::Parse()
   doc.LoadFile(file);
   if (doc.RootElement())
   {
-    TiXmlElement* element = doc.FirstChildElement("addoninfo");
+    TiXmlElement* element = doc.RootElement()->FirstChildElement("addoninfo");
     while (element)
     {
       AddonPtr addon;
       if (CAddonMgr::AddonFromInfoXML(element,addon,m_info))
       {
-        CUtil::GetDirectory(m_info,addon->Props().path);
-        addon->Props().path = CUtil::AddFileToFolder(m_datadir,addon->ID()+"-"+addon->Version().str+".zip");
-        addon->Props().icon = CUtil::AddFileToFolder(m_datadir,addon->ID()+".tbn");
+        if (m_zipped)
+        {
+          addon->Props().path = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/"+addon->ID()+"-"+addon->Version().str+".zip");
+          addon->Props().icon = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/icon.png");
+        }
+        else
+          addon->Props().path = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/");
         result.push_back(addon);
       }
       element = element->NextSiblingElement("addoninfo");
@@ -162,7 +176,7 @@ void CRepository::SetUpdated(const CDateTime& time)
   database.SetRepoTimestamp(ID(),time.GetAsDBDateTime());
 }
 
-CRepositoryUpdateJob::CRepositoryUpdateJob(RepositoryPtr& repo)
+CRepositoryUpdateJob::CRepositoryUpdateJob(RepositoryPtr& repo, bool check)
 {
   m_repo = boost::dynamic_pointer_cast<CRepository>(repo->Clone(repo));
 }

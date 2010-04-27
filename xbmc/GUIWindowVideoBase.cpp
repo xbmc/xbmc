@@ -62,7 +62,7 @@
 #include "utils/log.h"
 #include "utils/FileUtils.h"
 
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "MediaManager.h"
 
 using namespace std;
@@ -1164,7 +1164,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       if (item->IsVideoDb())
         strPath = item->GetVideoInfoTag()->m_strPath;
 
-      if (info->Content() == CONTENT_NONE)
+      if (!info || info->Content() == CONTENT_NONE)
         return false;
 
       if (item->m_bIsFolder)
