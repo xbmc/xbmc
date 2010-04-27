@@ -27,7 +27,6 @@ class CMediaSource;
 
 enum CONTEXT_BUTTON { CONTEXT_BUTTON_CANCELLED = 0,
                       CONTEXT_BUTTON_LAUNCH,
-                      CONTEXT_BUTTON_GAMESAVES,
                       CONTEXT_BUTTON_RENAME,
                       CONTEXT_BUTTON_DELETE,
                       CONTEXT_BUTTON_COPY,

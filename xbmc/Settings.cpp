@@ -1700,28 +1700,6 @@ CStdString CSettings::GetPicturesThumbFolder() const
   return folder;
 }
 
-CStdString CSettings::GetProgramsThumbFolder() const
-{
-  CStdString folder;
-  if (GetCurrentProfile().hasDatabases())
-    CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Programs", folder);
-  else
-    CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Programs", folder);
-
-  return folder;
-}
-
-CStdString CSettings::GetGameSaveThumbFolder() const
-{
-  CStdString folder;
-  if (GetCurrentProfile().hasDatabases())
-    CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/GameSaves", folder);
-  else
-    CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/GameSaves", folder);
-
-  return folder;
-}
-
 CStdString CSettings::GetProfilesThumbFolder() const
 {
   CStdString folder;
@@ -1855,7 +1833,6 @@ void CSettings::CreateProfileFolders()
   CDirectory::Create(GetVideoFanartFolder());
   CDirectory::Create(GetMusicFanartFolder());
   CDirectory::Create(GetBookmarksThumbFolder());
-  CDirectory::Create(GetProgramsThumbFolder());
   CDirectory::Create(GetPicturesThumbFolder());
   CStdString generatedThumbsFolder = CUtil::AddFileToFolder(GetThumbnailsFolder(), "generated");
   CDirectory::Create(generatedThumbsFolder);

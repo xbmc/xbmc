@@ -189,7 +189,6 @@ public:
   CStdString GetCachedVideoThumb() const;
   CStdString GetCachedEpisodeThumb() const;
   CStdString GetCachedArtistThumb() const;
-  CStdString GetCachedGameSaveThumb() const;
   CStdString GetCachedProfileThumb() const;
   CStdString GetCachedSeasonThumb() const;
   CStdString GetCachedActorThumb() const;
@@ -219,7 +218,6 @@ public:
   // Sets the cached thumb for the item if it exists
   void SetCachedVideoThumb();
   void SetCachedArtistThumb();
-  void SetCachedGameSavesThumb();
   void SetCachedMusicThumb();
   void SetCachedSeasonThumb();
 
@@ -414,9 +412,7 @@ public:
   bool AlwaysCache() const;
 
   void SetCachedVideoThumbs();
-  void SetCachedGameSavesThumbs();
   void SetCachedMusicThumbs();
-  void SetGameSavesThumbs();
 
   void Swap(unsigned int item1, unsigned int item2);
 

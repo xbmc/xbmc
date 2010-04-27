@@ -2786,11 +2786,6 @@ CStdString CFileItem::GetCachedThumb(const CStdString &path, const CStdString &p
   return CUtil::AddFileToFolder(path2, thumb);
 }
 
-CStdString CFileItem::GetCachedGameSaveThumb() const
-{
-  return "";
-}
-
 /*void CFileItem::SetThumb()
 {
   // we need to know the type of file at this point
@@ -2880,37 +2875,6 @@ bool CFileItem::LoadMusicTag()
     }
   }
   return false;
-}
-
-void CFileItem::SetCachedGameSavesThumb()
-{
-  if (IsParentFolder()) return;
-  CStdString thumb(GetCachedGameSaveThumb());
-  if (CFile::Exists(thumb))
-    SetThumbnailImage(thumb);
-}
-
-void CFileItemList::SetCachedGameSavesThumbs()
-{
-  // TODO: Investigate caching time to see if it speeds things up
-  for (unsigned int i = 0; i < m_items.size(); ++i)
-  {
-    CFileItemPtr pItem = m_items[i];
-    pItem->SetCachedGameSavesThumb();
-  }
-}
-
-void CFileItemList::SetGameSavesThumbs()
-{
-  // No User thumbs
-  // TODO: Is there a speed up if we cache the program thumbs first?
-  for (unsigned int i = 0; i < m_items.size(); i++)
-  {
-    CFileItemPtr pItem = m_items[i];
-    if (pItem->IsParentFolder())
-      continue;
-    pItem->SetCachedGameSavesThumb();
-  }
 }
 
 void CFileItemList::Swap(unsigned int item1, unsigned int item2)

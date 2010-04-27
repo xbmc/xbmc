@@ -317,8 +317,6 @@ public:
   CStdString GetVideoThumbFolder() const;
   CStdString GetBookmarksThumbFolder() const;
   CStdString GetPicturesThumbFolder() const;
-  CStdString GetProgramsThumbFolder() const;
-  CStdString GetGameSaveThumbFolder() const;
   CStdString GetProfilesThumbFolder() const;
   CStdString GetSourcesFile() const;
   CStdString GetSkinFolder() const;
