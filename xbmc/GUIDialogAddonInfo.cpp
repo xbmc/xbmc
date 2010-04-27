@@ -162,9 +162,12 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
     else
       dialog->m_item->SetProperty("Addon.Installed","false");
 
+    AddonPtr addon;
     CAddonDatabase database;
     database.Open();
-    database.GetAddon(item->GetProperty("Addon.ID"),dialog->m_addon);
+    if (database.GetAddon(item->GetProperty("Addon.ID"),addon))
+      dialog->m_addon = addon;
+
     if (!dialog->m_addon)
       return false;
   }
