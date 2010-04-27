@@ -94,6 +94,23 @@ void CSkinInfo::Start(const CStdString& strSkinDir /* = "" */)
     LoadIncludes();
 }
 
+/*bool CSkinInfo::Check(const CStdString& strSkinDir)
+{
+  CSkinInfo info;
+  info.Load(strSkinDir, false);
+  if (info.GetVersion() < GetMinVersion())
+  {
+    CLog::Log(LOGERROR, "%s(%s) version is to old (%f versus %f)", __FUNCTION__, strSkinDir.c_str(), info.GetVersion(), GetMinVersion());
+    return false;
+  }
+  if (!info.HasSkinFile("Home.xml") || !info.HasSkinFile("Font.xml"))
+  {
+    CLog::Log(LOGERROR, "%s(%s) does not contain Home.xml or Font.xml", __FUNCTION__, strSkinDir.c_str());
+    return false;
+  }
+  return true;
+}*/
+
 CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, const CStdString& strBaseDir /* = "" */) const
 {
   CStdString strPathToUse = Path();
