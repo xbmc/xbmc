@@ -248,7 +248,8 @@ void CAddonMgr::FindAddons()
   CSingleLock lock(m_critSection);
   m_addons.clear();
   m_idMap.clear();
-  LoadAddons("special://home/addons");
+  if (!CSpecialProtocol::XBMCIsHome())
+    LoadAddons("special://home/addons");
   LoadAddons("special://xbmc/addons");
 }
 
