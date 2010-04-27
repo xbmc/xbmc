@@ -30,6 +30,7 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include "TextureManager.h"
+#include "TextureCache.h"
 #include "VideoInfoTag.h"
 #include "VideoDatabase.h"
 #include "utils/log.h"
@@ -67,6 +68,25 @@ bool CThumbLoader::LoadRemoteThumb(CFileItem *pItem)
     }
   }
   return pItem->HasThumbnail();
+}
+
+CStdString CThumbLoader::GetCachedThumb(const CFileItem &item)
+{
+  CTextureDatabase db;
+  if (db.Open())
+    return db.GetTextureForPath(item.m_strPath);
+  return "";
+}
+
+bool CThumbLoader::CheckAndCacheThumb(CFileItem &item)
+{
+  if (item.HasThumbnail() && !g_TextureManager.CanLoad(item.GetThumbnailImage()))
+  {
+    CStdString thumb = CTextureCache::Get().CheckAndCacheImage(item.GetThumbnailImage());
+    item.SetThumbnailImage(thumb);
+    return !thumb.IsEmpty();
+  }
+  return false;
 }
 
 CThumbExtractor::CThumbExtractor(const CFileItem& item, const CStdString& listpath, bool thumb, const CStdString& target)
