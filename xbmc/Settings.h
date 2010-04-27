@@ -22,7 +22,7 @@
 
 #define PRE_SKIN_VERSION_9_10_COMPATIBILITY 1
 
-#define DEFAULT_SKIN        "Confluence"
+#define DEFAULT_SKIN        "org.xbmc.addons.confluence"
 #define DEFAULT_FANART_HEIGHT 0
 #ifdef MID
 #define DEFAULT_VSYNC       VSYNC_DISABLED

@@ -2667,7 +2667,7 @@ void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
   vector<CStdString> vecColors;
 
   CStdString strPath;
-  CUtil::AddFileToFolder(g_SkinInfo->GetBaseDir(),"colors",strPath);
+  CUtil::AddFileToFolder(g_SkinInfo->Path(),"colors",strPath);
 
   CFileItemList items;
   CDirectory::GetDirectory(PTH_IC(strPath), items, ".xml");
