@@ -451,10 +451,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInSkinFonts(pSetting);
     }
-    else if (strSetting.Equals("lookandfeel.skin"))
-    {
-      FillInSkins(pSetting);
-    }
     else if (strSetting.Equals("lookandfeel.soundskin"))
     {
       FillInSoundSkins(pSetting);
@@ -1117,6 +1113,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CSettingAddon *pSettingAddon = (CSettingAddon*)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
     FillInAddons(pControl, pSettingAddon);
+    if (pSettingAddon->m_type == ADDON_SKIN)
+    {
+      g_application.ReloadSkin();
+    }
   }
   else if (strSetting.Equals("musicplayer.visualisation"))
   { // new visualisation choosen...
@@ -1425,27 +1425,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     {
       g_guiSettings.SetString("lookandfeel.font", strSkinFontSet);
       g_application.ReloadSkin();
-    }
-  }
-  else if (strSetting.Equals("lookandfeel.skin"))
-  { // new skin choosen...
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    CStdString strSkin = pControl->GetCurrentLabel();
-    CStdString strSkinPath = g_settings.GetSkinFolder(strSkin);
-    if (/*ADDON::CSkinInfo::Check(strSkinPath)*/true)
-    {
-      m_strErrorMessage.Empty();
-      pControl->SetItemInvalid(false);
-      if (strSkin != g_guiSettings.GetString("lookandfeel.skin"))
-      {
-        g_guiSettings.SetString("lookandfeel.skin", strSkin);
-        g_application.ReloadSkin();
-      }
-    }
-    else
-    {
-      m_strErrorMessage.Format("Incompatible skin. We require skins of version %0.2f or higher", g_SkinInfo->GetMinVersion());
-      pControl->SetItemInvalid(true);
     }
   }
   else if (strSetting.Equals("lookandfeel.soundskin"))
@@ -2213,53 +2192,6 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
     pControl->SetValue(1);
     pControl->SetEnabled(false);
   }
-}
-
-void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
-{
-  CBaseSettingControl *setting = GetSetting(pSetting->GetSetting());
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(setting->GetID());
-  pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
-  pControl->Clear();
-  pControl->SetShowRange(true);
-  setting->SetDelayed();
-
-  //find skins...
-  CFileItemList items;
-  CDirectory::GetDirectory("special://xbmc/skin/", items);
-  if (!CSpecialProtocol::XBMCIsHome())
-    CDirectory::GetDirectory("special://home/skin/", items);
-
-  int iCurrentSkin = 0;
-  int iSkin = 0;
-  vector<CStdString> vecSkins;
-  for (int i = 0; i < items.Size(); ++i)
-  {
-    CFileItemPtr pItem = items[i];
-    if (pItem->m_bIsFolder)
-    {
-      if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
-      if (strcmpi(pItem->GetLabel().c_str(), "fonts") == 0) continue;
-      if (strcmpi(pItem->GetLabel().c_str(), "media") == 0) continue;
-      //   if (CSkinInfo::Check(pItem->m_strPath))
-      //   {
-      vecSkins.push_back(pItem->GetLabel());
-      //   }
-    }
-  }
-
-  sort(vecSkins.begin(), vecSkins.end(), sortstringbyname());
-  for (unsigned int i = 0; i < vecSkins.size(); ++i)
-  {
-    CStdString strSkin = vecSkins[i];
-    if (strcmpi(strSkin.c_str(), g_guiSettings.GetString("lookandfeel.skin").c_str()) == 0)
-    {
-      iCurrentSkin = iSkin;
-    }
-    pControl->AddLabel(strSkin, iSkin++);
-  }
-  pControl->SetValue(iCurrentSkin);
-  return ;
 }
 
 void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
