@@ -153,7 +153,7 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
       database.GetAddon(item->GetProperty("Addon.ID"),dialog->m_addon);
     }
   }
-  if (TranslateType(item->GetProperty("Addon.Type")) == ADDON_REPOSITORY)
+  if (TranslateType(item->GetProperty("Addon.intType")) == ADDON_REPOSITORY)
   {
     CAddonDatabase database;
     database.Open();
