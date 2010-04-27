@@ -880,12 +880,6 @@ bool CApplication::InitDirectoriesWin32()
   SetEnvironmentVariable("XBMC_HOME", strExecutablePath.c_str());
   CSpecialProtocol::SetXBMCPath(strExecutablePath);
 
-  // check if we already ran in platform or portable mode
-  if(XFILE::CDirectory::Exists(CWIN32Util::GetProfilePath()+"\\XBMC\\userdata\\Database"))
-    g_application.EnablePlatformDirectories(true);
-  else if(XFILE::CDirectory::Exists("special://xbmc/userdata/Database"))
-    g_application.EnablePlatformDirectories(false);
-
   if (m_bPlatformDirectories)
   {
 
