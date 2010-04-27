@@ -286,19 +286,6 @@ void CAddonMgr::LoadAddons(const CStdString &path)
       continue;
     }
 
-    // check for/cache icon thumbnail
-    //TODO cache one thumb per addon id instead
-    CFileItem item2(CUtil::AddFileToFolder(addon->Path(), addon->LibName()), false);
-    item2.SetCachedProgramThumb();
-    if (!item2.HasThumbnail())
-      item2.SetUserProgramThumb();
-    if (!item2.HasThumbnail())
-      item2.SetThumbnailImage(addon->Icon());
-    if (item2.HasThumbnail())
-    {
-      XFILE::CFile::Cache(item2.GetThumbnailImage(),item->GetCachedProgramThumb());
-    }
-
     if (!DependenciesMet(addon))
     {
       unresolved.push_back(addon);
