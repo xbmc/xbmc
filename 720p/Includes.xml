@@ -681,6 +681,17 @@
 		<textcolor>HomeMain</textcolor>
 		<shadowcolor>HomeShadow</shadowcolor>
 	</include>
+  <include name="HomeMainMenuFOCaption2">
+    <posx>797</posx>
+    <posy>4</posy>
+    <width>250</width>
+    <height>20</height>
+    <info>ListItem.Label2</info>
+    <align>right</align>
+    <aligny>center</aligny>
+    <font>HomeMenuInfoFont</font>
+    <textcolor>HomeMain</textcolor>
+  </include>
 	<include name="HomeMainMenuOverFade">
 		<visible>![Container(300).OnPrevious | Container(300).OnNext] + ![Window.Next(SettingsCategory.xml) | Window.Next(1001) | Window.Next(7) | Window.Next(34)]</visible>
 		<animation effect="fade" start="0" end="100" time="0" delay="500" reversible="false">Visible</animation>

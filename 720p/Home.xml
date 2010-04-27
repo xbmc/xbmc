@@ -1716,6 +1716,9 @@
 					<control type="label">
 						<include>HomeMainMenuFOLabel2</include>
 					</control>
+					<control type="label">
+            <include>HomeMainMenuFOCaption2</include>
+          </control>
 				</focusedlayout>
 				<content>
 					<item id="6">
@@ -1819,6 +1822,11 @@
 					<include>HomeMainMenuFOLabel</include>
 					<include>HomeMainMenuOverFade</include>
 				</control>
+        <control type="label">
+          <info>Container(300).ListItem(0).Label2</info>
+          <include>HomeMainMenuFOCaption</include>
+          <include>HomeMainMenuOverFade</include>
+        </control>
 			</control>
 			<control type="group">
 				<posy>349</posy>
@@ -1831,6 +1839,11 @@
 					<include>HomeMainMenuFOLabel</include>
 					<include>HomeMainMenuOverFade</include>
 				</control>
+			     <control type="label">
+          	<info>Container(300).ListItem(0).Label2</info>
+          	<include>HomeMainMenuFOCaption</include>
+          	<include>HomeMainMenuOverFade</include>
+        	</control>
 			</control>
 			<control type="group">
 				<include>HomeSlideLeft</include>
