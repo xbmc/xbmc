@@ -43,6 +43,7 @@
 #include "Settings.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "TextureCache.h"
 
 #ifdef _WIN32
 #include "WIN32Util.h"
@@ -515,7 +516,14 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
         else if (type == "video")
           cachedThumb = item->GetCachedVideoThumb();
         else  // assume "programs"
-          cachedThumb = item->GetCachedProgramThumb();
+        { // store the thumb for this share
+          CTextureDatabase db;
+          if (db.Open())
+          {
+            cachedThumb = CTextureCache::GetUniqueImage(item->m_strPath, CUtil::GetExtension(strThumb));
+            db.SetTextureForPath(item->m_strPath, cachedThumb);
+          }
+        }
         XFILE::CFile::Cache(strThumb, cachedThumb);
       }
 

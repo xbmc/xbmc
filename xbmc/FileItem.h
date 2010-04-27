@@ -189,7 +189,6 @@ public:
   CStdString GetCachedVideoThumb() const;
   CStdString GetCachedEpisodeThumb() const;
   CStdString GetCachedArtistThumb() const;
-  CStdString GetCachedProgramThumb() const;
   CStdString GetCachedGameSaveThumb() const;
   CStdString GetCachedProfileThumb() const;
   CStdString GetCachedSeasonThumb() const;
@@ -220,7 +219,6 @@ public:
   // Sets the cached thumb for the item if it exists
   void SetCachedVideoThumb();
   void SetCachedArtistThumb();
-  void SetCachedProgramThumb();
   void SetCachedGameSavesThumb();
   void SetCachedMusicThumb();
   void SetCachedSeasonThumb();
@@ -238,7 +236,6 @@ public:
 
   // Caches the user thumb and assigns it to the item
   void SetUserVideoThumb();
-  void SetUserProgramThumb();
   void SetUserMusicThumb(bool alwaysCheckRemote = false);
 
   // finds a matching local trailer file
@@ -417,10 +414,8 @@ public:
   bool AlwaysCache() const;
 
   void SetCachedVideoThumbs();
-  void SetCachedProgramThumbs();
   void SetCachedGameSavesThumbs();
   void SetCachedMusicThumbs();
-  void SetProgramThumbs();
   void SetGameSavesThumbs();
 
   void Swap(unsigned int item1, unsigned int item2);

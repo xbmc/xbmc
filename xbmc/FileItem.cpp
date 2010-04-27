@@ -2306,17 +2306,6 @@ void CFileItemList::SetCachedVideoThumbs()
   }
 }
 
-void CFileItemList::SetCachedProgramThumbs()
-{
-  CSingleLock lock(m_lock);
-  // TODO: Investigate caching time to see if it speeds things up
-  for (unsigned int i = 0; i < m_items.size(); ++i)
-  {
-    CFileItemPtr pItem = m_items[i];
-    pItem->SetCachedProgramThumb();
-  }
-}
-
 void CFileItemList::SetCachedMusicThumbs()
 {
   CSingleLock lock(m_lock);
@@ -2797,66 +2786,9 @@ CStdString CFileItem::GetCachedThumb(const CStdString &path, const CStdString &p
   return CUtil::AddFileToFolder(path2, thumb);
 }
 
-CStdString CFileItem::GetCachedProgramThumb() const
-{
-  return GetCachedThumb(m_strPath,g_settings.GetProgramsThumbFolder());
-}
-
 CStdString CFileItem::GetCachedGameSaveThumb() const
 {
   return "";
-}
-
-void CFileItem::SetCachedProgramThumb()
-{
-  // don't set any thumb for programs on DVD, as they're bound to be named the
-  // same (D:\default.xbe).
-  if (IsParentFolder()) return;
-  CStdString thumb(GetCachedProgramThumb());
-  if (CFile::Exists(thumb))
-    SetThumbnailImage(thumb);
-}
-
-void CFileItem::SetUserProgramThumb()
-{
-  if (m_bIsShareOrDrive) return;
-  if (IsParentFolder()) return;
-
-  if (IsShortCut())
-  {
-    CShortcut shortcut;
-    if ( shortcut.Create( m_strPath ) )
-    {
-      // use the shortcut's thumb
-      if (!shortcut.m_strThumb.IsEmpty())
-        m_strThumbnailImage = shortcut.m_strThumb;
-      else
-      {
-        CFileItem item(shortcut.m_strPath,false);
-        item.SetUserProgramThumb();
-        m_strThumbnailImage = item.m_strThumbnailImage;
-      }
-      return;
-    }
-  }
-  // 1.  Try <filename>.tbn
-  CStdString fileThumb(GetTBNFile());
-  CStdString thumb(GetCachedProgramThumb());
-  if (CFile::Exists(fileThumb))
-  { // cache
-    if (CPicture::CreateThumbnail(fileThumb, thumb))
-      SetThumbnailImage(thumb);
-  }
-  else if (m_bIsFolder)
-  {
-    // 3. cache the folder image
-    CStdString folderThumb(GetFolderThumb());
-    if (CFile::Exists(folderThumb))
-    {
-      if (CPicture::CreateThumbnail(folderThumb, thumb))
-        SetThumbnailImage(thumb);
-    }
-  }
 }
 
 /*void CFileItem::SetThumb()
@@ -2885,20 +2817,6 @@ void CFileItem::SetUserProgramThumb()
   //  * Thumbs are cached from here using file or folder path
 
 }*/
-
-void CFileItemList::SetProgramThumbs()
-{
-  // TODO: Is there a speed up if we cache the program thumbs first?
-  for (unsigned int i = 0; i < m_items.size(); i++)
-  {
-    CFileItemPtr pItem = m_items[i];
-    if (pItem->IsParentFolder())
-      continue;
-    pItem->SetCachedProgramThumb();
-    if (!pItem->HasThumbnail())
-      pItem->SetUserProgramThumb();
-  }
-}
 
 bool CFileItem::LoadMusicTag()
 {
@@ -2991,7 +2909,7 @@ void CFileItemList::SetGameSavesThumbs()
     CFileItemPtr pItem = m_items[i];
     if (pItem->IsParentFolder())
       continue;
-    pItem->SetCachedGameSavesThumb();  // was  pItem->SetCachedProgramThumb(); oringally
+    pItem->SetCachedGameSavesThumb();
   }
 }
 

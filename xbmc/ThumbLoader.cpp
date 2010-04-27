@@ -35,6 +35,7 @@
 #include "VideoDatabase.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
+#include "Shortcut.h"
 
 #include "cores/dvdplayer/DVDFileInfo.h"
 
@@ -292,12 +293,67 @@ CProgramThumbLoader::~CProgramThumbLoader()
 
 bool CProgramThumbLoader::LoadItem(CFileItem *pItem)
 {
-  if (pItem->m_bIsShareOrDrive) return true;
-  if (!pItem->HasThumbnail())
-    pItem->SetUserProgramThumb();
-  else
-    LoadRemoteThumb(pItem);
+  if (pItem->IsParentFolder()) return true;
+  return FillThumb(*pItem);
+}
+
+bool CProgramThumbLoader::FillThumb(CFileItem &item)
+{
+  // no need to do anything if we already have a thumb set
+  if (CheckAndCacheThumb(item) || item.HasThumbnail())
+    return true;
+
+  // see whether we have a cached image for this item
+  CStdString thumb = GetCachedThumb(item);
+  if (!thumb.IsEmpty())
+  {
+    item.SetThumbnailImage(CTextureCache::Get().CheckAndCacheImage(thumb));
+    return true;
+  }
+  thumb = GetLocalThumb(item);
+  if (!thumb.IsEmpty())
+  {
+    CTextureDatabase db;
+    if (db.Open())
+      db.SetTextureForPath(item.m_strPath, thumb);
+    thumb = CTextureCache::Get().CheckAndCacheImage(thumb);
+  }
+  item.SetThumbnailImage(thumb);
   return true;
+}
+
+CStdString CProgramThumbLoader::GetLocalThumb(const CFileItem &item)
+{
+  // look for the thumb
+  if (item.IsShortCut())
+  {
+    CShortcut shortcut;
+    if ( shortcut.Create( item.m_strPath ) )
+    {
+      // use the shortcut's thumb
+      if (!shortcut.m_strThumb.IsEmpty())
+        return shortcut.m_strThumb;
+      else
+      {
+        CFileItem cut(shortcut.m_strPath,false);
+        if (FillThumb(cut))
+          return cut.GetThumbnailImage();
+      }
+    }
+  }
+  else if (item.m_bIsFolder)
+  {
+    CStdString folderThumb = item.GetFolderThumb();
+    if (XFILE::CFile::Exists(folderThumb))
+      return folderThumb;
+  }
+  else
+  {
+    CStdString fileThumb(item.GetTBNFile());
+    if (CFile::Exists(fileThumb))
+      return fileThumb;
+  }
+  return "";
 }
 
 CMusicThumbLoader::CMusicThumbLoader()
