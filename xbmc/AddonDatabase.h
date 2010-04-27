@@ -51,7 +51,7 @@ public:
 protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 2; }
+  virtual int GetMinVersion() const { return 3; }
   const char *GetDefaultDBName() const { return "Addons"; }
 };
 

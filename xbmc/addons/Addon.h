@@ -95,6 +95,7 @@ public:
   CStdString source;
   CStdString icon;
   CStdString disclaimer;
+  CStdString changelog;
   std::set<CONTENT_TYPE> contents;
   ADDONDEPS dependencies;
   int        stars;
@@ -134,6 +135,7 @@ public:
   const CStdString Profile() const { return m_profile; }
   const CStdString LibName() const { return m_strLibName; }
   const CStdString Author() const { return m_props.author; }
+  const CStdString ChangeLog() const { return m_props.changelog; }
   const CStdString Icon() const;
   const int Stars() const { return m_props.stars; }
   const CStdString Disclaimer() const { return m_props.disclaimer; }

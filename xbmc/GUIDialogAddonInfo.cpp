@@ -24,12 +24,14 @@
 #include "addons/AddonManager.h"
 #include "AddonDatabase.h"
 #include "FileItem.h"
+#include "FileSystem/File.h"
 #include "GUIDialogAddonSettings.h"
 #include "GUIWindowAddonBrowser.h"
 #include "GUIWindowManager.h"
 #include "URL.h"
 #include "utils/JobManager.h"
 #include "utils/FileOperationJob.h"
+#include "utils/SingleLock.h"
 
 #define CONTROL_BTN_INSTALL          6
 #define CONTROL_BTN_DISABLE          7
@@ -38,6 +40,7 @@
 
 using namespace std;
 using namespace ADDON;
+using namespace XFILE;
 
 CGUIDialogAddonInfo::CGUIDialogAddonInfo(void)
     : CGUIDialog(WINDOW_DIALOG_ADDON_INFO, "DialogAddonInfo.xml")
@@ -54,6 +57,9 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      if (m_jobid)
+        CJobManager::GetInstance().CancelJob(m_jobid);
+      CSingleLock lock(m_critSection); // to make sure we're not busy with a callback
     }
     break;
 
@@ -71,7 +77,17 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, 
                   m_item->GetProperty("Addon.Installed").Equals("true") &&
                   m_addon->HasSettings());
+      m_item->SetProperty("Addon.Changelog",g_localizeStrings.Get(13413));
 
+      if (m_addon->Type() != ADDON_REPOSITORY)
+      {
+        CFileItemList items;
+        items.Add(CFileItemPtr(new CFileItem(m_addon->ChangeLog(),false)));
+        items[0]->Select(true);
+        m_jobid = CJobManager::GetInstance().AddJob(
+          new CFileOperationJob(CFileOperationJob::ActionCopy,items,
+                                "special://temp/"),this);
+      }
       return true;
     }
     break;
@@ -146,12 +162,12 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
       dialog->m_item->SetProperty("Addon.Installed","true");
     else
       dialog->m_item->SetProperty("Addon.Installed","false");
+
+    CAddonDatabase database;
+    database.Open();
+    database.GetAddon(item->GetProperty("Addon.ID"),dialog->m_addon);
     if (!dialog->m_addon)
-    {
-      CAddonDatabase database;
-      database.Open();
-      database.GetAddon(item->GetProperty("Addon.ID"),dialog->m_addon);
-    }
+      return false;
   }
   if (TranslateType(item->GetProperty("Addon.intType")) == ADDON_REPOSITORY)
   {
@@ -175,5 +191,32 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
   }
   dialog->DoModal(); 
   return true;
+}
+
+void CGUIDialogAddonInfo::OnJobComplete(unsigned int jobID, bool success,
+                                        CJob* job)
+{
+  if (!IsActive())
+    return;
+
+  m_jobid = 0;
+  if (!success)
+  {
+    m_item->SetProperty("Addon.Changelog",g_localizeStrings.Get(195));
+    return;
+  }
+
+  CSingleLock lock(m_critSection);
+
+  CFile file;
+  if (file.Open("special://temp/"+
+      CUtil::GetFileName(((CFileOperationJob*)job)->GetItems()[0]->m_strPath)))
+  {
+    char* temp = new char[file.GetLength()+1];
+    file.Read(temp,file.GetLength());
+    temp[file.GetLength()] = '\0';
+    m_item->SetProperty("Addon.Changelog",temp);
+    delete[] temp;
+  }
 }
 

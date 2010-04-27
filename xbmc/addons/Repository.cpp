@@ -145,9 +145,13 @@ VECADDONS CRepository::Parse()
         {
           addon->Props().path = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/"+addon->ID()+"-"+addon->Version().str+".zip");
           addon->Props().icon = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/icon.png");
+          addon->Props().changelog = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/changelog-"+addon->Version().str+".txt");
         }
         else
+        {
           addon->Props().path = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/");
+          addon->Props().changelog = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/changelog.txt");
+        }
         result.push_back(addon);
       }
       element = element->NextSiblingElement("addoninfo");

@@ -23,9 +23,12 @@
 
 #include "GUIDialog.h"
 #include "addons/IAddon.h"
+#include "utils/CriticalSection.h"
+#include "utils/Job.h"
 
 class CGUIDialogAddonInfo :
-      public CGUIDialog
+      public CGUIDialog,
+      public IJobCallback
 {
 public:
   CGUIDialogAddonInfo(void);
@@ -40,8 +43,13 @@ public:
   void OnSettings();
 
   static bool ShowForItem(const CFileItemPtr& item);
+
+  // job callback
+  void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 protected:
   CFileItemPtr m_item;
   ADDON::AddonPtr m_addon;
+  unsigned int m_jobid;
+  CCriticalSection m_critSection;
 };
 
