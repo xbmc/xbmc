@@ -35,9 +35,10 @@ using namespace XFILE;
 
 #define SKIN_MIN_VERSION 2.1f
 
+ADDON::CSkinInfo g_SkinInfo; // global
+
 namespace ADDON
 {
-CSkinInfo g_SkinInfo;
 
 CSkinInfo::CSkinInfo()
 {
