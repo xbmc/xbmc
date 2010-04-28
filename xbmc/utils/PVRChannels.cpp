@@ -507,42 +507,45 @@ bool cPVRChannels::Update()
     bool found = false;
     bool changed = false;
 
-    for (unsigned int j = 0; j < PVRChannels_tmp.size(); j++)
+    if (!at(i).IsVirtual())
     {
-      if (at(i).UniqueID() == PVRChannels_tmp[j].UniqueID() &&
-          at(i).ClientID() == PVRChannels_tmp[j].ClientID())
+      for (unsigned int j = 0; j < PVRChannels_tmp.size(); j++)
       {
-        if (at(i).ClientNumber() != PVRChannels_tmp[j].ClientNumber())
+        if (at(i).UniqueID() == PVRChannels_tmp[j].UniqueID() &&
+            at(i).ClientID() == PVRChannels_tmp[j].ClientID())
         {
-          at(i).SetClientNumber(PVRChannels_tmp[j].ClientNumber());
-          changed = true;
-        }
+          if (at(i).ClientNumber() != PVRChannels_tmp[j].ClientNumber())
+          {
+            at(i).SetClientNumber(PVRChannels_tmp[j].ClientNumber());
+            changed = true;
+          }
 
-        if (at(i).ClientName() != PVRChannels_tmp[j].ClientName())
-        {
-          at(i).SetClientName(PVRChannels_tmp[j].ClientName());
-          at(i).SetName(PVRChannels_tmp[j].ClientName());
-          changed = true;
-        }
+          if (at(i).ClientName() != PVRChannels_tmp[j].ClientName())
+          {
+            at(i).SetClientName(PVRChannels_tmp[j].ClientName());
+            at(i).SetName(PVRChannels_tmp[j].ClientName());
+            changed = true;
+          }
 
-        found = true;
-        PVRChannels_tmp.erase(PVRChannels_tmp.begin()+j);
-        break;
+          found = true;
+          PVRChannels_tmp.erase(PVRChannels_tmp.begin()+j);
+          break;
+        }
       }
-    }
 
-    if (changed)
-    {
-      database->UpdateDBChannel(at(i));
-      CLog::Log(LOGINFO,"PVR: Updated %s channel %s", m_bRadio?"Radio":"TV", at(i).Name().c_str());
-    }
+      if (changed)
+      {
+        database->UpdateDBChannel(at(i));
+        CLog::Log(LOGINFO,"PVR: Updated %s channel %s", m_bRadio?"Radio":"TV", at(i).Name().c_str());
+      }
 
-    if (!found)
-    {
-      CLog::Log(LOGINFO,"PVR: Removing %s channel %s (no more present)", m_bRadio?"Radio":"TV", at(i).Name().c_str());
-      database->RemoveDBChannel(at(i));
-      erase(begin()+i);
-      i--;
+      if (!found)
+      {
+        CLog::Log(LOGINFO,"PVR: Removing %s channel %s (no more present)", m_bRadio?"Radio":"TV", at(i).Name().c_str());
+        database->RemoveDBChannel(at(i));
+        erase(begin()+i);
+        i--;
+      }
     }
   }
 
@@ -667,7 +670,7 @@ void cPVRChannels::ReNumberAndCheck(void)
   m_iHiddenChannels = 0;
   for (unsigned int i = 0; i < size(); i++)
   {
-    if (at(i).ClientNumber() <= 0)
+    if (at(i).ClientNumber() <= 0 && !at(i).IsVirtual())
     {
       CLog::Log(LOGERROR, "PVR: Channel '%s' from client '%ld' is invalid, removing from list", at(i).Name().c_str(), at(i).ClientID());
       erase(begin()+i);
@@ -675,7 +678,7 @@ void cPVRChannels::ReNumberAndCheck(void)
       break;
     }
 
-    if (at(i).UniqueID() <= 0)
+    if (at(i).UniqueID() <= 0 && !at(i).IsVirtual())
       CLog::Log(LOGNOTICE, "PVR: Channel '%s' from client '%ld' have no unique ID. Contact PVR Client developer.", at(i).Name().c_str(), at(i).ClientID());
 
     if (at(i).Name().IsEmpty())
@@ -689,9 +692,9 @@ void cPVRChannels::ReNumberAndCheck(void)
     if (at(i).IsHidden())
       m_iHiddenChannels++;
 
-    CStdString path;
     at(i).SetNumber(Number);
 
+    CStdString path;
     if (!m_bRadio)
       path.Format("pvr://channels/tv/all/%i.pvr", Number);
     else

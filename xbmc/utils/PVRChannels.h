@@ -164,6 +164,10 @@ public:
        ///< If false ignore EPG for this channel.
   void SetGrabEpg(bool grabEpg) { m_grabEpg = grabEpg; }
        ///< Change the EPG grabbing flag
+  bool IsVirtual() { return m_bIsVirtual; }
+       ///< If true it is a virtual channel
+  void SetVirtual(bool virtualChannel) { m_bIsVirtual = virtualChannel; }
+       ///< Change the virtual flag
   CStdString Grabber(void) const { return m_grabber; }
        ///< Get the EPG scraper name
   void SetGrabber(CStdString Grabber) { m_grabber = Grabber; }

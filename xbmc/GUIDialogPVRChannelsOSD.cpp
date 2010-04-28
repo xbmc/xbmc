@@ -90,15 +90,6 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
       }
     }
     break;
-  case GUI_MSG_SETFOCUS:
-    {
-      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
-      {
-        m_viewControl.SetFocused();
-        return true;
-      }
-    }
-    break;
   }
 
   return CGUIDialog::OnMessage(message);
@@ -149,7 +140,10 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
   if (!g_application.PlayFile(*pItem))
   {
     CGUIDialogOK::ShowAndGetInput(19033,0,19136,0);
+    return;
   }
+  m_viewControl.SetItems(*m_vecItems);
+  m_viewControl.SetSelectedItem(item);
 }
 
 void CGUIDialogPVRChannelsOSD::ShowInfo(int item)

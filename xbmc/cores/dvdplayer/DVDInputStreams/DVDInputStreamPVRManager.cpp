@@ -115,17 +115,18 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
 // close file and reset everyting
 void CDVDInputStreamPVRManager::Close()
 {
+  if (m_pOtherStream)
+  {
+    m_pOtherStream->Close();
+    delete m_pOtherStream;
+  }
+
   if (m_pFile)
   {
     m_pFile->Close();
     delete m_pFile;
   }
 
-  if (m_pOtherStream)
-  {
-    m_pOtherStream->Close();
-    delete m_pOtherStream;
-  }
   CDVDInputStream::Close();
 
   m_pPlayer         = NULL;

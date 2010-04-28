@@ -785,13 +785,7 @@ long CTVDatabase::UpdateDBChannel(const cPVRChannelInfoTag &info)
 
     long channelId = info.m_iIdChannel;
 
-    if (channelId < 0)   // no match found, update required
-    {
-      return false;
-    }
-
     CStdString SQL;
-
     SQL=FormatSQL("select * from Channels WHERE Channels.idChannel = '%u'", channelId);
     m_pDS->query(SQL.c_str());
 

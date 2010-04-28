@@ -502,7 +502,7 @@ void CPVRManager::Process()
     EnterCriticalSection(&m_critSection);
 
     /* Get Signal information of the current playing channel */
-    if (m_currentPlayingChannel && g_guiSettings.GetBool("pvrplayback.signalquality"))
+    if (m_currentPlayingChannel && g_guiSettings.GetBool("pvrplayback.signalquality") && !m_currentPlayingChannel->GetPVRChannelInfoTag()->IsVirtual())
     {
       m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->SignalQuality(m_qualityInfo);
     }
@@ -1613,7 +1613,8 @@ void CPVRManager::CloseStream()
     ResetQualityData();
 
     /* Close the Client connection */
-    m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->CloseLiveStream();
+    if (m_currentPlayingChannel->GetPVRChannelInfoTag()->StreamURL().IsEmpty())
+      m_clients[m_currentPlayingChannel->GetPVRChannelInfoTag()->ClientID()]->CloseLiveStream();
     delete m_currentPlayingChannel;
     m_currentPlayingChannel = NULL;
   }
@@ -1797,7 +1798,12 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   {
     m_LastChannel         = tagPrev->Number();
     m_LastChannelChanged  = CTimeUtils::GetTimeMS();
-    m_playingClientName   = m_clients[tagNow->ClientID()]->GetBackendName() + ":" + m_clients[tagNow->ClientID()]->GetConnectionString();
+    if (tagNow->ClientID() == 999)
+      m_playingClientName = g_localizeStrings.Get(19209);
+    else if (!tagNow->IsVirtual())
+      m_playingClientName = m_clients[tagNow->ClientID()]->GetBackendName() + ":" + m_clients[tagNow->ClientID()]->GetConnectionString();
+    else
+      m_playingClientName = g_localizeStrings.Get(13205);
   }
   if (CTimeUtils::GetTimeMS() - m_LastChannelChanged >= g_guiSettings.GetInt("pvrplayback.channelentrytimeout") && m_LastChannel != m_PreviousChannel[m_PreviousChannelIndex])
      m_PreviousChannel[m_PreviousChannelIndex ^= 1] = m_LastChannel;
@@ -1830,7 +1836,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
   SaveCurrentChannelSettings();
 
   /* Perform Channelswitch */
-  if (!m_clients[tag->ClientID()]->SwitchChannel(*tag))
+  if (tag->StreamURL().IsEmpty() && !m_clients[tag->ClientID()]->SwitchChannel(*tag))
   {
     CGUIDialogOK::ShowAndGetInput(19033,0,19136,0);
     LeaveCriticalSection(&m_critSection);
@@ -1894,7 +1900,7 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel, bool preview/* = false*/)
         LeaveCriticalSection(&m_critSection);
         return true;
       }
-      else if (m_clients[tag->ClientID()]->SwitchChannel(*tag))
+      else if (!tag->StreamURL().IsEmpty() || m_clients[tag->ClientID()]->SwitchChannel(*tag))
       {
         /* Update the Playing channel data and the current epg data */
         delete m_currentPlayingChannel;
@@ -1958,7 +1964,7 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel, bool preview/* = false*/
         LeaveCriticalSection(&m_critSection);
         return true;
       }
-      else if (m_clients[tag->ClientID()]->SwitchChannel(*tag))
+      else if (!tag->StreamURL().IsEmpty() || m_clients[tag->ClientID()]->SwitchChannel(*tag))
       {
         /* Update the Playing channel data and the current epg data */
         delete m_currentPlayingChannel;

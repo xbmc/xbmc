@@ -1715,6 +1715,22 @@
   <string id="19196">PVR client specific actions</string>
   <string id="19197">Recording started on: %s</string>
   <string id="19198">Recording finished on: %s</string>
+  <string id="19199">Channel manager</string>
+  <string id="19200">EPG source:</string>
+  <string id="19201">Channel name:</string>
+  <string id="19202">Channel icon:</string>
+  <string id="19203">Edit channel</string>
+  <string id="19204">New channel</string>
+  <string id="19205">Group Managment</string>
+  <string id="19206">Activate EPG:</string>
+  <string id="19207">Group:</string>
+  <string id="19208">Enter new channel name</string>
+  <string id="19209">XBMC internal virtual channel</string>
+  <string id="19210">Client</string>
+  <string id="19211">Delete Channel</string>
+  <string id="19212">List contains changes</string>
+  <string id="19213">Select channel client</string>
+  <string id="19214">Enter a valid URL for the new channel</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>

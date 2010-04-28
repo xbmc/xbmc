@@ -23,7 +23,6 @@
 #include "Application.h"
 #include "GUIWindowManager.h"
 #include "URL.h"
-#include "MediaManager.h"
 #include "LocalizeStrings.h"
 #include "utils/log.h"
 #include "GUISettings.h"
@@ -1513,7 +1512,7 @@ bool CGUIWindowTV::ShowTimerSettings(CFileItem *item)
 
 void CGUIWindowTV::ShowGroupManager(bool IsRadio)
 {
-  /* Load timer settings dialog */
+  /* Load group manager dialog */
   CGUIDialogPVRGroupManager* pDlgInfo = (CGUIDialogPVRGroupManager*)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_GROUP_MANAGER);
 
   if (!pDlgInfo)

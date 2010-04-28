@@ -1809,6 +1809,22 @@
   <string id="19196">PVR Klient spezifische Aktionen</string>
   <string id="19197">Aufnahme gestarted auf: %s</string>
   <string id="19198">Aufnahme beendet auf: %s</string>
+  <string id="19199">Kanalverwaltung</string>
+  <string id="19200">EPG Quelle:</string>
+  <string id="19201">Kanalname:</string>
+  <string id="19202">Kanallogo:</string>
+  <string id="19203">Kanal bearbeiten</string>
+  <string id="19204">Neuer Kanal</string>
+  <string id="19205">Gruppenverwaltung</string>
+  <string id="19206">EPG Aktivieren:</string>
+  <string id="19207">Gruppe:</string>
+  <string id="19208">Bitte geben Sie den neuen Kanalnamen ein</string>
+  <string id="19209">XBMC interner virtueller Kanal</string>
+  <string id="19210">Klient</string>
+  <string id="19211">Kanal löschen</string>
+  <string id="19212">Liste enthält Änderungen</string>
+  <string id="19213">Wählen Sie die Kanalquelle</string>
+  <string id="19214">Bitte geben Sie eine URL für den Kanal ein</string>
 
   <string id="19499">Andere/Unbekannt</string>
   <string id="19500">Movie/Drama</string>

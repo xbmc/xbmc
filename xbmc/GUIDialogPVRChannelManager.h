@@ -21,6 +21,8 @@
  */
 
 #include "GUIDialog.h"
+#include "GUIViewControl.h"
+#include "GUIDialogContextMenu.h"
 
 class CGUIDialogPVRChannelManager : public CGUIDialog
 {
@@ -29,6 +31,27 @@ public:
   virtual ~CGUIDialogPVRChannelManager(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction& action);
-  virtual void OnInitWindow();
-  virtual void OnDeinitWindow(int nextWindowID);
+  virtual void OnWindowLoaded();
+  virtual void OnWindowUnload();
+  virtual bool HasListItems() const { return true; };
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0);
+
+protected:
+  virtual bool OnPopupMenu(int iItem);
+  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+
+private:
+  void Clear();
+  void Update();
+  void SaveList();
+  void Renumber();
+  void SetData(int iItem);
+  bool m_bIsRadio;
+  bool m_bMovingMode;
+  bool m_bContainsChanges;
+
+  unsigned int m_iSelected;
+  CFileItemList* m_channelItems;
+  CGUIViewControl m_viewControl;
 };

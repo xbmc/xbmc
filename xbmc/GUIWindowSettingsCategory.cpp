@@ -55,6 +55,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
+#include "GUIDialogPVRChannelManager.h"
 #include "GUIWindowPrograms.h"
 #include "addons/Visualisation.h"
 #include "addons/AddonManager.h"
@@ -1057,6 +1058,13 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       //CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       //if (pControl) pControl->SetEnabled(!g_guiSettings.GetString("weather.plugin").IsEmpty() && CScriptSettings::SettingsExist(basepath));
     }
+    else if (!strSetting.Equals("pvrmanager.enabled")
+             && !strSetting.Equals("pvrmanager.resetdb")
+             && strSetting.Left(3).Equals("pvr"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrmanager.enabled"));
+    }
 #if defined(_LINUX) && !defined(__APPLE__)
     else if (strSetting.Equals("audiooutput.custompassthrough"))
     {
@@ -1973,6 +1981,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     if (CGUIDialogYesNo::ShowAndGetInput(19098, 19118, 19194, 0))
       g_PVRManager.StartChannelScan();
+  }
+  else if (strSetting.Equals("pvrmanager.channelmanager"))
+  {
+    CGUIDialogPVRChannelManager *dialog = (CGUIDialogPVRChannelManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
+    if (dialog)
+    {
+       dialog->DoModal();
+    }
   }
 
   UpdateSettings();
