@@ -57,12 +57,15 @@ config.log
 /svn_revision.h
 
 # /addons/
-/addons/net.sf.projectm.xbmc/projectM.vis
-/addons/net.sf.rsxs.euphoria/Euphoria.xbs
-/addons/net.sf.rsxs.plasma/Plasma.xbs
-/addons/net.sf.rsxs.solarwinds/Solarwinds.xbs
-/addons/org.xbmc.addons.glspectrum/opengl_spectrum.vis
-/addons/org.xbmc.addons.waveform/Waveform.vis
+/addons/packages
+/addons/screensaver.rsxs.euphoria/Euphoria.xbs
+/addons/screensaver.rsxs.plasma/Plasma.xbs
+/addons/screensaver.rsxs.solarwinds/Solarwinds.xbs
+/addons/skin.confluence/media/Textures.xbt
+/addons/skin.pm3-hd/media/Textures.xbt
+/addons/visualization.glspectrum/opengl_spectrum.vis
+/addons/visualization.projectm/projectM.vis
+/addons/visualization.waveform/Waveform.vis
 
 # /guilib/
 /guilib/Makefile
