@@ -492,6 +492,17 @@ const char* Cocoa_GetAppVersion()
   return strVersion;
 }
 
+int Cocoa_GL_GetOSVersion()
+{
+  SInt32 version;
+
+  if (!Gestalt(gestaltSystemVersion, &version) == noErr)
+    version = 0x1040;
+  
+  return(version);
+}
+
+
 NSWindow* childWindow = nil;
 NSWindow* mainWindow = nil;
 
