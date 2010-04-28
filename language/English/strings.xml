@@ -2162,6 +2162,7 @@
   <string id="24092">Allow hardware acceleration (VAAPI)</string>
   <string id="24093">Allow hardware acceleration (DXVA2)</string>
   <string id="24094">Allow hardware acceleration (CrystalHD)</string>
+  <string id="24095">Allow hardware acceleration (VDADecoder)</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
