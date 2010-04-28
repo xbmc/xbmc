@@ -492,12 +492,21 @@ const char* Cocoa_GetAppVersion()
   return strVersion;
 }
 
-int Cocoa_GL_GetOSVersion()
+bool Cocoa_HasVDADecoder()
+{
+  bool result = false;
+
+  if (Cocoa_GetOSVersion() >= 0x1060)
+    result == access("/System/Frameworks/VideoDecodeAcceleration.framework/VideoDecodeAcceleration", 0) == 0;
+  
+  return(result);
+}
+
+int Cocoa_GetOSVersion()
 {
   SInt32 version;
 
-  if (!Gestalt(gestaltSystemVersion, &version) == noErr)
-    version = 0x1040;
+  Gestalt(gestaltSystemVersion, &version);
   
   return(version);
 }
