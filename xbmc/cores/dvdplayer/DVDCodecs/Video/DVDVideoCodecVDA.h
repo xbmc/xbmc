@@ -21,7 +21,6 @@
  */
 
 #if defined(__APPLE__)
-
 #include "DVDVideoCodec.h"
 #include <CoreVideo/CoreVideo.h>
 
@@ -51,11 +50,8 @@ public:
 protected:
   void  DisplayQueuePop(void);
   static void VDADecoderCallback(
-    void                *decompressionOutputRefCon,
-    CFDictionaryRef frameInfo,
-    OSStatus        status, 
-    uint32_t        infoFlags,
-    CVImageBufferRef  imageBuffer);
+    void *decompressionOutputRefCon, CFDictionaryRef frameInfo,
+    OSStatus status, uint32_t infoFlags, CVImageBufferRef imageBuffer);
 
   DllLibVDADecoder  *m_dll;
   void              *m_vda_decoder;   // opaque vdadecoder reference
@@ -63,7 +59,7 @@ protected:
 
   pthread_mutex_t   m_queue_mutex;    // mutex protecting queue manipulation
   frame_queue       *m_display_queue; // display-order queue - next display frame is always at the queue head
-  int32_t           m_queue_depth;    // we will try to keep the queue depth around 10 frames
+  int32_t           m_queue_depth;    // we will try to keep the queue depth around 16+1 frames
 
   DVDVideoPicture   m_pVideoBuffer;
 };
