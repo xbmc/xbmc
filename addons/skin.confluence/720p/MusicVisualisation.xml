@@ -1,0 +1,284 @@
+<window id="2006">
+	<defaultcontrol>-</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<control type="visualisation" id="2">
+			<description>visualisation</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+<!--			<visible>IsEmpty(MusicPlayer.Property(Fanart_Image)</visible>
+		</control>
+		<control type="image">
+			<description>Fanart image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<texture>$INFO[MusicPlayer.Property(Fanart_Image)]</texture>
+			<visible>!IsEmpty(MusicPlayer.Property(Fanart_Image))</visible>
+-->		</control>
+
+		<control type="group">
+			<visible>Player.ShowInfo + ![Window.IsVisible(VisualisationSettings) | Window.IsVisible(VisualisationPresetList)]</visible>
+			<animation effect="fade" start="0" end="100" time="300" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="300" delay="150" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="fade" start="0" end="100" time="300" tween="quadratic" easing="out">visible</animation>
+			<animation effect="fade" start="100" end="0" time="300" delay="150" tween="quadratic" easing="out">hidden</animation>
+			<control type="image">
+				<description>media info background image</description>
+				<posx>0</posx>
+				<posy>270r</posy>
+				<width>1280</width>
+				<height>270</height>
+				<texture>HomeNowPlayingBack.png</texture>
+			</control>
+			<control type="image">
+				<description>media info background image</description>
+				<posx>0</posx>
+				<posy>270r</posy>
+				<width>1280</width>
+				<height>270</height>
+				<colordiffuse>88FFFFFF</colordiffuse>
+				<texture>HomeNowPlayingBack.png</texture>
+			</control>
+			<control type="image">
+				<description>cover image</description>
+				<posx>10</posx>
+				<posy>290r</posy>
+				<width>340</width>
+				<height>260</height>
+				<fadetime>200</fadetime>
+				<texture background="true">$INFO[MusicPlayer.cover]</texture>
+				<aspectratio aligny="bottom">keep</aspectratio>
+				<bordertexture border="8">ThumbShadow.png</bordertexture>
+				<bordersize>8</bordersize>
+			</control>
+			<control type="progress">
+				<description>Progressbar</description>
+				<posx>10</posx>
+				<posy>30r</posy>
+				<width>340</width>
+				<height>14</height>
+				<info>Player.Progress</info>
+			</control>
+			<control type="group">
+				<posx>370</posx>
+				<posy>180r</posy>
+				<control type="grouplist">
+					<description>Media Codec Flagging Images</description>
+					<posx>340</posx>
+					<posy>0</posy>
+					<width>550</width>
+					<align>right</align>
+					<itemgap>0</itemgap>
+					<orientation>horizontal</orientation>
+					<control type="image">
+						<description>Rating image</description>
+						<width>120</width>
+						<height>40</height>
+						<aspectratio align="right">keep</aspectratio>
+						<texture>LeftRating/$INFO[Player.StarRating]</texture>
+					</control>
+					<control type="image">
+						<description>Codec Image</description>
+						<width>80</width>
+						<height>40</height>
+						<aspectratio>keep</aspectratio>
+						<texture>$INFO[MusicPlayer.Codec,flagging/audio/,.png]</texture>
+					</control>
+					<control type="image">
+						<description>Channels Image</description>
+						<width>80</width>
+						<height>40</height>
+						<aspectratio>keep</aspectratio>
+						<texture>$INFO[MusicPlayer.Channels,flagging/audio/,.png]</texture>
+					</control>
+				</control>
+				<control type="label">
+					<description>Playing Label</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>500</width>
+					<height>25</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<label>31040</label>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>35</posy>
+					<width>880</width>
+					<height>30</height>
+					<label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Album, - ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>grey</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>65</posy>
+					<width>880</width>
+					<height>30</height>
+					<label>$INFO[MusicPlayer.Title]</label>
+					<scroll>true</scroll>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font24_title</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<posx>0</posx>
+					<posy>110</posy>
+					<width>300</width>
+					<height>20</height>
+					<label>$INFO[musicplayer.Playlistposition,[COLOR=blue]$LOCALIZE[554]:[/COLOR] ]$INFO[musicplayer.Playlistlength, / ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12_title</font>
+					<textcolor>grey2</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<posx>890</posx>
+					<posy>115</posy>
+					<width>500</width>
+					<height>25</height>
+					<label>$INFO[Player.Time]$INFO[Player.Duration, / ]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font35_title</font>
+					<textcolor>grey</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<posx>890</posx>
+					<posy>150</posy>
+					<width>890</width>
+					<height>20</height>
+					<label>[COLOR=blue]$LOCALIZE[209] :[/COLOR] $INFO[MusicPlayer.offset(1).Artist,, - ]$INFO[MusicPlayer.offset(1).Title]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12_title</font>
+					<textcolor>grey2</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<visible>Player.ShowInfo</visible>
+			<animation effect="slide" start="0,0" end="160,0" delay="0" time="300" condition="!Window.IsVisible(MusicOSD)">hidden</animation>
+			<animation effect="slide" start="160,0" end="0,0" delay="0" time="300" condition="!Window.IsVisible(MusicOSD)">visible</animation>
+			<include>Clock</include>
+		</control>
+		<control type="group" id="0">
+			<posx>240</posx>
+			<posy>100</posy>
+			<include>VisibleFadeEffect</include>
+			<visible>Player.ShowCodec + ![Window.IsVisible(121) | Window.IsVisible(122)]</visible>
+			<control type="image">
+				<description>gradient</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>800</width>
+				<height>200</height>
+				<colordiffuse>CCFFFFFF</colordiffuse>
+				<texture border="20">OverlayDialogBackground.png</texture>
+			</control>
+			<control type="label">
+				<posx>30</posx>
+				<posy>20</posy>
+				<width>360</width>
+				<height>25</height>
+				<label>$LOCALIZE[31046]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font13_title</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<posx>30</posx>
+				<posy>50</posy>
+				<width>360</width>
+				<height>100</height>
+				<label>$INFO[musicplayer.Codec,· Codec: ,]$INFO[musicplayer.Bitrate,[CR]· Bitrate: ,kbps]$INFO[musicplayer.bitspersample,[CR]· Bits:,bit]$INFO[musicplayer.Samplerate,[CR]· Freq.: ,kHz]$INFO[musicplayer.Channels,[CR]· Channels: ]</label>
+				<align>left</align>
+				<aligny>top</aligny>
+				<font>font13</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<posx>760</posx>
+				<posy>20</posy>
+				<width>360</width>
+				<height>25</height>
+				<label>$LOCALIZE[250]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font13_title</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<posx>760</posx>
+				<posy>50</posy>
+				<width>right</width>
+				<height>25</height>
+				<label>$INFO[Visualisation.Name] [I]($LOCALIZE[20166])[/I] ·[CR]fps: $INFO[System.FPS] ·</label>
+				<align>right</align>
+				<aligny>top</aligny>
+				<font>font13</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>Visualisation.Locked</visible>
+			</control>
+			<control type="label">
+				<posx>760</posx>
+				<posy>50</posy>
+				<width>360</width>
+				<height>25</height>
+				<label>$INFO[Visualisation.Name] ·[CR]fps: $INFO[System.FPS] ·</label>
+				<align>right</align>
+				<aligny>top</aligny>
+				<font>font13</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>!Visualisation.Locked</visible>
+			</control>
+			<control type="label">
+				<posx>760</posx>
+				<posy>105</posy>
+				<width>360</width>
+				<height>25</height>
+				<label>$LOCALIZE[31047]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font13_title</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<posx>760</posx>
+				<posy>135</posy>
+				<width>360</width>
+				<height>25</height>
+				<label fallback="· (UnAvailable)">$INFO[Visualisation.Preset,, ·]</label>
+				<align>right</align>
+				<aligny>top</aligny>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<wrapmultiline>true</wrapmultiline>
+			</control>
+		</control>
+	</controls>
+</window>

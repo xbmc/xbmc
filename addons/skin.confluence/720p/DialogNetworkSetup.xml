@@ -1,0 +1,214 @@
+<window id="128">
+	<defaultcontrol>10</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>240</posx>
+		<posy>155</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>800</width>
+			<height>410</height>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<posx>80</posx>
+			<posy>10</posy>
+			<width>640</width>
+			<height>90</height>
+			<aspectratio>stretch</aspectratio>
+			<texture>GlassTitleBar.png</texture>
+		</control>
+		<control type="button">
+			<description>Close Window button</description>
+			<posx>710</posx>
+			<posy>9</posy>
+			<width>64</width>
+			<height>32</height>
+			<label>-</label>
+			<font>-</font>
+			<onclick>PreviousMenu</onclick>
+			<texturefocus>DialogCloseButton-focus.png</texturefocus>
+			<texturenofocus>DialogCloseButton.png</texturenofocus>
+			<onleft>10</onleft>
+			<onright>10</onright>
+			<onup>10</onup>
+			<ondown>10</ondown>
+			<visible>system.getbool(input.enablemouse)</visible>
+		</control>
+		<control type="label" id="2">
+			<description>header label</description>
+			<posx>20</posx>
+			<posy>18</posy>
+			<width>760</width>
+			<height>30</height>
+			<font>font13_title</font>
+			<label>$LOCALIZE[1007]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+		</control>
+		<control type="spincontrolex" id="10">
+			<description>Protocol SpinControl</description>
+			<posx>20</posx>
+			<posy>70</posy>
+			<height>41</height>
+			<width>760</width>
+			<texturefocus border="5">MenuItemFO.png</texturefocus>
+			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+			<textcolor>white</textcolor>
+			<disabledcolor>grey3</disabledcolor>
+			<textoffsetx>12</textoffsetx>
+			<aligny>center</aligny>
+			<reverse>yes</reverse>
+			<font>font132</font>
+			<label>1008</label>
+			<onup>18</onup>
+			<ondown>11</ondown>
+			<onleft>10</onleft>
+			<onright>10</onright>
+		</control>
+		<control type="button" id="11">
+			<description>Server Address Button</description>
+			<posx>20</posx>
+			<posy>110</posy>
+			<width>585</width>
+			<height>41</height>
+			<textoffsetx>12</textoffsetx>
+			<aligny>center</aligny>
+			<texturefocus border="5">MenuItemFO.png</texturefocus>
+			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+			<font>font13</font>
+			<label>-</label>
+			<onup>10</onup>
+			<onleft>12</onleft>
+			<onright>12</onright>
+			<ondown>16</ondown>
+		</control>
+		<control type="button" id="12">
+			<description>Server Browse Button</description>
+			<posx>610</posx>
+			<posy>110</posy>
+			<width>170</width>
+			<height>41</height>
+			<textoffsetx>12</textoffsetx>
+			<font>font12_title</font>
+			<label>1024</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+			<texturefocus border="5">button-focus.png</texturefocus>\n
+			<onup>10</onup>
+			<onleft>11</onleft>
+			<onright>11</onright>
+			<ondown>16</ondown>
+		</control>
+		<control type="button" id="16">
+			<description>Remote path Button</description>
+			<posx>20</posx>
+			<posy>150</posy>
+			<width>760</width>
+			<height>41</height>
+			<textoffsetx>12</textoffsetx>
+			<aligny>center</aligny>
+			<texturefocus border="5">MenuItemFO.png</texturefocus>
+			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+			<font>font13</font>
+			<label>-</label>
+			<onup>11</onup>
+			<onleft>16</onleft>
+			<onright>16</onright>
+			<ondown>13</ondown>
+		</control>
+		<control type="button" id="13">
+			<description>Port Button</description>
+			<posx>20</posx>
+			<posy>190</posy>
+			<width>760</width>
+			<height>41</height>
+			<textoffsetx>12</textoffsetx>
+			<aligny>center</aligny>
+			<texturefocus border="5">MenuItemFO.png</texturefocus>
+			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+			<font>font13</font>
+			<label>1013</label>
+			<onup>16</onup>
+			<onleft>13</onleft>
+			<onright>13</onright>
+			<ondown>14</ondown>
+		</control>
+		<control type="button" id="14">
+			<description>Username Button</description>
+			<posx>20</posx>
+			<posy>230</posy>
+			<width>760</width>
+			<height>41</height>
+			<textoffsetx>12</textoffsetx>
+			<aligny>center</aligny>
+			<texturefocus border="5">MenuItemFO.png</texturefocus>
+			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+			<font>font13</font>
+			<label>1014</label>
+			<onup>13</onup>
+			<onleft>14</onleft>
+			<onright>14</onright>
+			<ondown>15</ondown>
+		</control>
+		<control type="button" id="15">
+			<description>Password Button</description>
+			<posx>20</posx>
+			<posy>270</posy>
+			<width>760</width>
+			<height>41</height>
+			<textoffsetx>12</textoffsetx>
+			<aligny>center</aligny>
+			<texturefocus border="5">MenuItemFO.png</texturefocus>
+			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+			<font>font13</font>
+			<label>15052</label>
+			<onup>14</onup>
+			<onleft>15</onleft>
+			<onright>15</onright>
+			<ondown>18</ondown>
+		</control>
+		<control type="button" id="18">
+			<description>Ok Button</description>
+			<posx>195</posx>
+			<posy>340</posy>
+			<width>200</width>
+			<height>40</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+			<texturefocus border="3">button-focus.png</texturefocus>\n
+			<font>font12_title</font>
+			<label>186</label>
+			<onup>15</onup>
+			<onleft>19</onleft>
+			<onright>19</onright>
+			<ondown>10</ondown>
+		</control>
+		<control type="button" id="19">
+			<description>Cancel Button</description>
+			<posx>405</posx>
+			<posy>340</posy>
+			<width>200</width>
+			<height>40</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+			<texturefocus border="3">button-focus.png</texturefocus>\n
+			<font>font12_title</font>
+			<label>222</label>
+			<onup>15</onup>
+			<onleft>18</onleft>
+			<onright>18</onright>
+			<ondown>10</ondown>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,45 @@
+<window id="2009">
+	<controls>
+		<control type="karvisualisation" id="1">
+			<description>visualisation</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<visibility>false</visibility>
+		</control>
+		<control type="image" id="2">
+			<description>fullscreen image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<visibility>false</visibility>
+		</control>
+		<control type="group">
+			<visible>MusicPlayer.Offset(number).Exists + !IntegerGreaterThan(Player.TimeRemaining,20)</visible>
+			<animation effect="slide" start="0,-40" end="0,0" time="100">Visible</animation>
+			<posx>420</posx>
+			<posy>0</posy>
+			<control type="image">
+				<posx>0</posx>
+				<posy>-10</posy>
+				<width>470</width>
+				<height>55</height>
+				<texture flipy="true" border="20,20,20,2">InfoMessagePanel.png</texture>
+			</control>
+			<control type="label" id="402">
+				<description>Next Song Name</description>
+				<posx>5</posx>
+				<posy>5</posy>
+				<width>470</width>
+				<height>25</height>
+				<font>font13_title</font>
+				<textcolor>blue</textcolor>
+				<label>[COLOR=blue]$LOCALIZE[209] :[/COLOR] [COLOR=selected]$INFO[MusicPlayer.offset(1).Title][/COLOR]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+			</control>
+		</control>
+	</controls>
+</window>

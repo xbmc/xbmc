@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated by taxigps-->
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">修改您的</string>
+  <string id="31001">喜欢</string>
+  <string id="31002">讨厌</string>
+  <string id="31003">电源选项</string>
+  <string id="31004">工作中...</string>
+  <string id="31005">隐藏信息</string>
+
+  <string id="31007">插件</string>
+
+  <string id="31020">最新增加</string>
+  <string id="31021">视频 - 文件</string>
+  <string id="31022">音乐 - 文件</string>
+  <string id="31023">播放</string>
+  <string id="31024">页</string>
+  <string id="31025">项</string>
+  <string id="31026">其他选项</string>
+  <string id="31027">所在地</string>
+ 
+  <!-- View Type labels -->
+  <string id="31028">海报卷动</string>
+  <string id="31029">同人画</string>
+  <string id="31030">完整列表</string>
+  <string id="31031">图片缩略图</string>
+  <string id="31032">图片卷动</string>
+  <string id="31033">信息</string>
+
+  <!-- Extra labels -->
+  <string id="31040">正在播放</string>
+
+  <string id="31042">播放</string>
+  <string id="31043">暂停</string>
+  <string id="31044">快进</string>
+  <string id="31045">回退</string>
+  <string id="31046">音频属性</string>
+  <string id="31047">当前预设</string>
+  <string id="31048">可视化效果设置</string>
+  <string id="31049">结束时间</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">打开播放列表</string>
+  <string id="31056">保存播放列表</string>
+  <string id="31057">关闭播放列表</string>
+  <string id="31058">系统音乐文件</string>
+  <string id="31059">当前播放列表</string>
+  <string id="31060">这是一个堆叠文件，请选择要播放的片段。</string>
+  <string id="31061">当前选择</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100"></string>
+  <string id="31101">主界面选项</string>
+  <string id="31102">背景</string>
+  <string id="31103">图片幻灯片播放时显示“暂停”状态</string>
+  <string id="31104">窗口播放预告片[COLOR=grey3]（仅在视频信息显示画面）[/COLOR]</string>
+  <string id="31105">背景扫描器显示媒体标题</string>
+  <string id="31106">其他选项</string>
+  <string id="31107"></string>
+  <string id="31108">隐藏主菜单按钮</string>
+  <string id="31109">媒体背景</string>
+  <string id="31110">编辑媒体背景</string>
+  <string id="31111">隐藏</string>
+  <string id="31112">选项</string>
+  <string id="31113">单个图片</string>
+  <string id="31114">多个图片</string>
+  <string id="31115">自定义</string>
+  <string id="31116">附加脚本</string>
+  <string id="31117">显示最新加入视频</string>
+  <string id="31118">主页面子菜单</string>
+  <string id="31119">启用自定义脚本按钮</string>
+  <string id="31120">按钮标签</string>
+  <string id="31121">脚本目录</string>
+  <string id="31122">天气页面</string>
+  <string id="31123">剧集中以“海报”代替“宽幅图标”</string>
+  <string id="31124">在背景显示“正在播放”视频</string>
+  <string id="31125">在背景显示“正在播放”可视效果</string>
+
+  <string id="31126">在音乐OSD菜单启用歌词按钮</string>
+  <string id="31127">歌词脚本目录</string>
+  <string id="31128">XBMC歌词</string>
+  <string id="31129">在视频OSD菜单启用字幕下载</string>
+  <string id="31130">字幕脚本目录</string>
+
+  <string id="31140">音乐OSD</string>
+  <string id="31141">视频OSD</string>
+
+  <!-- Script labels -->
+  <string id="31200">快捷方式</string>
+  <string id="31201">分类</string>
+  <string id="31202">显示演员表</string>
+  <string id="31203">选择歌曲</string>
+  <string id="31204">区块链接</string>
+  <string id="31205">歌词来源</string>
+
+  <!-- The Weather Channel Script labels -->
+  <string id="31250">雷达 &amp; 天气预报</string>
+  <string id="31251">天气预报</string>
+  <string id="31252">天气频道脚本</string>
+
+  <!-- Extra labels -->
+  <string id="31300">当前温度</string>
+  <string id="31301">最近修改</string>
+  <string id="31302">菜单</string>
+  <string id="31303"></string>
+  <string id="31304">图片</string>
+  <string id="31305">未检测到光盘</string>
+  <string id="31306">弹出</string>
+  <string id="31307">隐藏同人画</string>
+  <string id="31308">电影详细资料</string>
+  <string id="31309">己用内存：</string>
+  <string id="31310">音轨号</string>
+  <string id="31311">同人画图片[CR][CR]不可用[CR][CR]按键设置</string>
+  <string id="31312">当前刮削器</string>
+  <string id="31313">选择刮削器</string>
+  <string id="31314">内容扫描选项</string>
+  <string id="31315">基本信息</string>
+  <string id="31316"></string>
+  <string id="31317">设置同人画目录</string>
+  <string id="31318">小同人画</string>
+  <string id="31319">选择用户配置文件</string>
+  <string id="31320">最近登录</string>
+  <string id="31321">卡拉OK歌曲选择器</string>
+  <string id="31322">首播</string>
+  <string id="31323">最新电影</string>
+  <string id="31324">最新剧集</string>
+  <string id="31325">播放列表选项</string>
+  <string id="31326">创建</string>
+  <string id="31327">分辨率</string>
+  <string id="31328">最新增加</string>
+  <string id="31329">[B]时钟设置！[/B] [COLOR=grey2] - 系统自动关闭于[/COLOR]</string>
+  <string id="31330">点此按钮播放预告片</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">暂停</string>
+  <string id="31352">停止</string>
+  <string id="31353">快进</string>
+  <string id="31354">快退</string>
+  <string id="31355">电影菜单</string>
+  <string id="31356">下载字幕</string>
+  <string id="31357"></string>
+
+  <!-- Description Labels  -->
+  <string id="31400">[B]设置用户界面[/B][CR][CR]变换皮肤 · 设置语言和区域 · 修改文件列表参数 · 设置屏幕保护</string>
+  <string id="31401">[B]设置视频参数[/B][CR][CR]管理视频资料库 · 设置视频播放参数 · 修改视频列表参数 · 设置字幕字体</string>
+  <string id="31402">[B]设置音乐参数[/B][CR][CR]管理音乐资料库 · 设置音乐播放参数 · 修改音乐列表参数 · 设置音乐提交 · 设置卡拉OK选项</string>
+  <string id="31403">[B]设置图片参数[/B][CR][CR]设置图片列表参数 · 设置幻灯片播放</string>
+  <string id="31404">[B]设置天气预报[/B][CR][CR]设置三个获取天气信息的城市</string>
+  <string id="31405">[B]设置网络参数[/B][CR][CR]设置通过UPnP和HTTP控制XBMC · 设置文件共享 · 设置互联网访问参数</string>
+  <string id="31406">[B]设置系统参数[/B][CR][CR]设置和校正显示器 · 设置音频输出 · 设置摇控器 · 设置节电参数 · 启用调试 · 设置管理员和锁定</string>
+  <string id="31407">[B]设置皮肤参数[/B][CR][CR]设置Confluence皮肤 · 增加和删除主菜单项 · 修改皮肤背景</string>
+  <string id="31408">[B]设置扩展功能[/B][CR][CR]管理你安装的扩展功能 · 在xbmc.org浏览并安装扩展功能 · 修改扩展功能设置</string>
+
+  <string id="31421">选择您的用户配置文件[CR]登录并继续</string>
+</strings>

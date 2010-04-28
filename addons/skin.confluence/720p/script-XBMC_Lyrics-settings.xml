@@ -1,0 +1,389 @@
+<window type="dialog">
+	<defaultcontrol>201</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>220</posx>
+		<posy>85</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image">
+			<posx>-220</posx>
+			<posy>-85</posy>
+			<width>1280</width>
+			<height>720</height>
+			<texture>black-back.png</texture>
+			<animation effect="fade" time="400">Visible</animation>
+			<animation effect="fade" time="200">Hidden</animation>
+			<visible>Window.IsVisible(Visualisation)</visible>
+		</control>
+		<control type="group">
+			<visible>!Window.IsVisible(script-Apple_Movie_Trailers-chooser.xml)</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="image">
+				<description>background image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>840</width>
+				<height>550</height>
+				<texture border="40">DialogBack.png</texture>
+			</control>
+			<control type="image">
+				<posx>230</posx>
+				<posy>10</posy>
+				<width>570</width>
+				<height>528</height>
+				<texture border="5">black-back2.png</texture>
+			</control>
+			<control type="image">
+				<posx>230</posx>
+				<posy>10</posy>
+				<width>570</width>
+				<height>100</height>
+				<aspectratio>stretch</aspectratio>
+				<texture>GlassTitleBar.png</texture>
+			</control>
+			<control type="button">
+				<description>Close Window button</description>
+				<posx>730</posx>
+				<posy>9</posy>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>PreviousMenu</onclick>
+				<texturefocus>DialogCloseButton-focus.png</texturefocus>
+				<texturenofocus>DialogCloseButton.png</texturenofocus>
+				<onleft>201</onleft>
+				<onright>201</onright>
+				<onup>201</onup>
+				<ondown>201</ondown>
+				<visible>system.getbool(input.enablemouse)</visible>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<posx>240</posx>
+				<posy>20</posy>
+				<width>550</width>
+				<height>30</height>
+				<font>font24_title</font>
+				<label>$LOCALIZE[SCRIPT0]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label" id="30">
+				<description>Version label</description>
+				<posx>790</posx>
+				<posy>23</posy>
+				<width>300</width>
+				<height>30</height>
+				<font>font10</font>
+				<label>-</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<textcolor>grey2</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<!-- ** Required ** Do not change id's or type's -->
+			<control type="scrollbar" id="60">
+				<posx>803</posx>
+				<posy>70</posy>
+				<width>25</width>
+				<height>440</height>
+				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onleft>2000</onleft>
+				<onright>9000</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="grouplist" id="9000">
+				<posx>230</posx>
+				<posy>70</posy>
+				<width>570</width>
+				<height>440</height>
+				<itemgap>-1</itemgap>
+				<pagecontrol>60</pagecontrol>
+				<onleft>2000</onleft>
+				<onright>60</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<control type="button" id="201">
+					<description>Setting1 Button</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>570</width>
+					<height>40</height>
+					<font>font13</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus>MenuItemFO.png</texturefocus>
+					<texturenofocus>MenuItemNF.png</texturenofocus>
+					<label>$LOCALIZE[SCRIPT201]</label>
+				</control>
+				<control type="image" id="1">
+					<description>separator image</description>
+					<width>570</width>
+					<height>2</height>
+					<texture>separator2.png</texture>
+				</control>
+				<control type="radiobutton" id="202">
+					<description>Setting2 Button</description>
+					<width>570</width>
+					<height>40</height>
+					<label>$LOCALIZE[SCRIPT202]</label>
+					<pulseonselect>no</pulseonselect>
+					<font>font13</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus>MenuItemFO.png</texturefocus>
+					<texturenofocus>MenuItemNF.png</texturenofocus>
+				</control>
+				<control type="button" id="203">
+					<description>Setting2 Button</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>570</width>
+					<height>40</height>
+					<label>$LOCALIZE[SCRIPT203]</label>
+					<font>font13</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus>MenuItemFO.png</texturefocus>
+					<texturenofocus>MenuItemNF.png</texturenofocus>
+				</control>
+				<control type="radiobutton" id="210">
+					<description>Setting10 Button</description>
+					<width>570</width>
+					<height>40</height>
+					<label>$LOCALIZE[SCRIPT210]</label>
+					<pulseonselect>no</pulseonselect>
+					<font>font13</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus>MenuItemFO.png</texturefocus>
+					<texturenofocus>MenuItemNF.png</texturenofocus>
+				</control>
+				<control type="radiobutton" id="211">
+					<description>Setting11 Button</description>
+					<width>570</width>
+					<height>40</height>
+					<label>$LOCALIZE[SCRIPT211]</label>
+					<pulseonselect>no</pulseonselect>
+					<font>font13</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus>MenuItemFO.png</texturefocus>
+					<texturenofocus>MenuItemNF.png</texturenofocus>
+				</control>
+				<control type="image" id="2">
+					<description>separator image</description>
+					<width>570</width>
+					<height>2</height>
+					<texture>separator2.png</texture>
+				</control>
+				<control type="radiobutton" id="204">
+					<description>Setting4 Button</description>
+					<width>570</width>
+					<height>40</height>
+					<label>$LOCALIZE[SCRIPT204]</label>
+					<pulseonselect>no</pulseonselect>
+					<font>font13</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus>MenuItemFO.png</texturefocus>
+					<texturenofocus>MenuItemNF.png</texturenofocus>
+				</control>
+				<control type="radiobutton" id="205">
+					<description>Setting5 Button</description>
+					<width>570</width>
+					<height>40</height>
+					<label>$LOCALIZE[SCRIPT205]</label>
+					<pulseonselect>no</pulseonselect>
+					<font>font13</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus>MenuItemFO.png</texturefocus>
+					<texturenofocus>MenuItemNF.png</texturenofocus>
+				</control>
+				<control type="image" id="3">
+					<description>separator image</description>
+					<width>570</width>
+					<height>2</height>
+					<texture>separator2.png</texture>
+				</control>
+				<control type="radiobutton" id="206">
+					<description>Setting6 Button</description>
+					<width>570</width>
+					<height>40</height>
+					<label>$LOCALIZE[SCRIPT206]</label>
+					<pulseonselect>no</pulseonselect>
+					<font>font13</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus>MenuItemFO.png</texturefocus>
+					<texturenofocus>MenuItemNF.png</texturenofocus>
+				</control>
+				<control type="button" id="207">
+					<description>Setting7 Button</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>570</width>
+					<height>40</height>
+					<label>$LOCALIZE[SCRIPT207]</label>
+					<font>font13</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus>MenuItemFO.png</texturefocus>
+					<texturenofocus>MenuItemNF.png</texturenofocus>
+				</control>
+				<control type="image" id="4">
+					<description>separator image</description>
+					<width>570</width>
+					<height>2</height>
+					<texture>separator2.png</texture>
+				</control>
+				<control type="button" id="208">
+					<description>Setting8 Button</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>570</width>
+					<height>40</height>
+					<label>$LOCALIZE[SCRIPT208]</label>
+					<font>font13</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus>MenuItemFO.png</texturefocus>
+					<texturenofocus>MenuItemNF.png</texturenofocus>
+				</control>
+				<control type="radiobutton" id="209">
+					<description>Setting9 Button</description>
+					<width>570</width>
+					<height>40</height>
+					<label>$LOCALIZE[SCRIPT209]</label>
+					<pulseonselect>no</pulseonselect>
+					<font>font13</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus>MenuItemFO.png</texturefocus>
+					<texturenofocus>MenuItemNF.png</texturenofocus>
+				</control>
+			</control>
+			<!-- ** Required ** Do not change id's or type's -->
+			<control type="group" id="2000">
+				<posx>10</posx>
+				<posy>20</posy>
+				<control type="image">
+					<description>LOGO</description>
+					<posx>0</posx>
+					<posy>10</posy>
+					<width>220</width>
+					<height>80</height>
+					<aspectratio>keep</aspectratio>
+					<texture>Confluence_Logo.png</texture>
+				</control>
+				<control type="button" id="250">
+					<description>OK button</description>
+					<posx>0</posx>
+					<posy>90</posy>
+					<width>215</width>
+					<height>51</height>
+					<label>$LOCALIZE[SCRIPT250]</label>
+					<font>font13_title</font>
+					<align>right</align>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<onleft>9000</onleft>
+					<onright>9000</onright>
+					<onup>253</onup>
+					<ondown>251</ondown>
+				</control>
+				<control type="button" id="251">
+					<description>Cancel button</description>
+					<posx>0</posx>
+					<posy>140</posy>
+					<width>215</width>
+					<height>51</height>
+					<label>$LOCALIZE[SCRIPT251]</label>
+					<font>font13_title</font>
+					<align>right</align>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<onleft>9000</onleft>
+					<onright>9000</onright>
+					<onup>250</onup>
+					<ondown>252</ondown>
+				</control>
+				<control type="button" id="252">
+					<description>Update button</description>
+					<posx>0</posx>
+					<posy>190</posy>
+					<width>215</width>
+					<height>51</height>
+					<label>$LOCALIZE[SCRIPT252]</label>
+					<font>font13_title</font>
+					<align>right</align>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<onleft>9000</onleft>
+					<onright>9000</onright>
+					<onup>251</onup>
+					<ondown>254</ondown>
+				</control>
+				<control type="button" id="254">
+					<description>Play button</description>
+					<posx>0</posx>
+					<posy>240</posy>
+					<width>215</width>
+					<height>51</height>
+					<label>$LOCALIZE[SCRIPT254]</label>
+					<font>font13_title</font>
+					<align>right</align>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<onleft>9000</onleft>
+					<onright>9000</onright>
+					<onup>252</onup>
+					<ondown>255</ondown>
+				</control>
+				<control type="button" id="255">
+					<description>Defaults button</description>
+					<posx>0</posx>
+					<posy>290</posy>
+					<width>215</width>
+					<height>51</height>
+					<label>$LOCALIZE[SCRIPT255]</label>
+					<font>font13_title</font>
+					<align>right</align>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<onleft>9000</onleft>
+					<onright>9000</onright>
+					<onup>254</onup>
+					<ondown>253</ondown>
+				</control>
+				<control type="button" id="253">
+					<description>Credits button</description>
+					<posx>0</posx>
+					<posy>340</posy>
+					<width>215</width>
+					<height>51</height>
+					<label>$LOCALIZE[SCRIPT253]</label>
+					<font>font13_title</font>
+					<align>right</align>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<onleft>9000</onleft>
+					<onright>9000</onright>
+					<onup>255</onup>
+					<ondown>250</ondown>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,101 @@
+<window id="11">
+	<defaultcontrol>8</defaultcontrol>
+	<controls>
+		<control type="videowindow" id="20">
+			<description>videowindow</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<visible>Player.HasVideo</visible>
+		</control>
+		<control type="group">
+			<visible>!Player.HasVideo</visible>
+			<include>CommonSettingsBackground</include>
+		</control>
+		<control type="image">
+			<description>Overlay</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<texture>black-back.png</texture>
+			<include>dialogeffect</include>
+		</control>
+		<control type="button">
+			<description>Close Window button</description>
+			<posx>100r</posx>
+			<posy>0</posy>
+			<width>64</width>
+			<height>32</height>
+			<label>-</label>
+			<font>-</font>
+			<onclick>PreviousMenu</onclick>
+			<texturefocus>DialogCloseButton-focus.png</texturefocus>
+			<texturenofocus>DialogCloseButton.png</texturenofocus>
+			<onleft>1</onleft>
+			<onright>1</onright>
+			<onup>1</onup>
+			<ondown>1</ondown>
+			<visible>system.getbool(input.enablemouse)</visible>
+		</control>
+		<control type="mover" id="8">
+			<description>top left mover</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>128</width>
+			<height>128</height>
+			<texturefocus>CalibrateTopLeft.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="mover" id="9">
+			<description>right bottom mover</description>
+			<posx>700</posx>
+			<posy>500</posy>
+			<width>128</width>
+			<height>128</height>
+			<texturefocus>CalibrateBottomRight.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="mover" id="10">
+			<description>subtitle position mover</description>
+			<posx>200</posx>
+			<posy>500</posy>
+			<width>512</width>
+			<height>128</height>
+			<texturefocus>CalibrateSubtitles.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="resize" id="11">
+			<description>pixel aspect ratio box</description>
+			<posx>0</posx>
+			<posy>232</posy>
+			<width>256</width>
+			<height>256</height>
+			<texturefocus>CalibratePixelRatio.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+		</control>
+		<control type="group">
+			<posx>240</posx>
+			<posy>80</posy>
+			<control type="label" id="2">
+				<description>coordinates label</description>
+				<posx>20</posx>
+				<posy>10</posy>
+				<width>750</width>
+				<label>-</label>
+				<align>center</align>
+				<font>font13caps</font>
+			</control>
+			<control type="label" id="3">
+				<description>help information</description>
+				<posx>20</posx>
+				<posy>40</posy>
+				<width>750</width>
+				<label>-</label>
+				<align>center</align>
+				<font>font13caps</font>
+			</control>
+		</control>
+	</controls>
+</window>

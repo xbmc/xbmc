@@ -1,0 +1,232 @@
+<includes>
+	<include name="PictureWrapView">
+		<control type="group">
+			<visible>Control.IsVisible(510)</visible>
+			<include>VisibleFadeEffect</include>
+			<posx>0</posx>
+			<posy>440</posy>
+			<control type="wraplist" id="510">
+				<posx>-25</posx>
+				<posy>5</posy>
+				<width>1330</width>
+				<height>250</height>
+				<onleft>508</onleft>
+				<onright>508</onright>
+				<onup>2</onup>
+				<ondown>60</ondown>
+				<viewtype label="31032">wrap</viewtype>
+				<pagecontrol>60</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<focusposition>3</focusposition>
+				<orientation>horizontal</orientation>
+				<preloaditems>4</preloaditems>
+				<itemlayout height="200" width="190">
+					<control type="image">
+						<posx>15</posx>
+						<posy>40</posy>
+						<width>160</width>
+						<height>160</height>
+						<aspectratio>stretch</aspectratio>
+						<bordertexture border="10">ThumbShadow.png</bordertexture>
+						<bordersize>8</bordersize>
+						<fadetime>200</fadetime>
+						<texture border="2">ThumbBG.png</texture>
+					</control>
+					<control type="image">
+						<posx>25</posx>
+						<posy>50</posy>
+						<width>140</width>
+						<height>140</height>
+						<aspectratio>keep</aspectratio>
+						<texture background="true">$INFO[ListItem.Icon]</texture>
+					</control>
+				</itemlayout>
+				<focusedlayout height="200" width="190">
+					<control type="image">
+						<posx>15</posx>
+						<posy>40</posy>
+						<width>160</width>
+						<height>160</height>
+						<aspectratio>stretch</aspectratio>
+						<bordertexture border="10">ThumbShadow.png</bordertexture>
+						<bordersize>8</bordersize>
+						<fadetime>200</fadetime>
+						<texture border="2">ThumbBG.png</texture>
+						<animation reversible="false" effect="zoom" start="15,40,160,160" end="-10,-5,210,210" time="200">focus</animation>
+						<animation reversible="false" effect="zoom" end="15,40,160,160" start="-10,-5,210,210" time="200">unfocus</animation>
+					</control>
+					<control type="image">
+						<posx>25</posx>
+						<posy>50</posy>
+						<width>140</width>
+						<height>140</height>
+						<aspectratio>keep</aspectratio>
+						<texture background="true">$INFO[ListItem.Icon]</texture>
+						<animation reversible="false" effect="zoom" start="25,50,140,140" end="5,10,180,180" time="200">focus</animation>
+						<animation reversible="false" effect="zoom" end="25,50,140,140" start="5,10,180,180" time="200">unfocus</animation>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>200</posy>
+				<width>1200</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="scrollbar" id="60">
+				<posx>310</posx>
+				<posy>225</posy>
+				<width>660</width>
+				<height>25</height>
+				<texturesliderbackground border="14,0,14,0">ScrollBarH.png</texturesliderbackground>
+				<texturesliderbar border="14,0,14,0">ScrollBarH_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="14,0,14,0">ScrollBarH_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onup>510</onup>
+				<ondown>2</ondown>
+				<showonepage>false</showonepage>
+				<orientation>horizontal</orientation>
+				<visible>Control.IsVisible(510)</visible>
+			</control>
+		</control>
+	</include>
+	<include name="PictureThumbView">
+		<control type="group">
+			<visible>Control.IsVisible(511)</visible>
+			<control type="panel" id="511">
+				<posx>40</posx>
+				<posy>80</posy>
+				<width>432</width>
+				<height>576</height>
+				<onleft>2</onleft>
+				<onright>60</onright>
+				<onup>511</onup>
+				<ondown>511</ondown>
+				<viewtype label="$LOCALIZE[31031]">list</viewtype>
+				<pagecontrol>60</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<preloaditems>2</preloaditems>
+				<itemlayout height="144" width="144">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>144</width>
+						<height>144</height>
+						<aspectratio>stretch</aspectratio>
+						<bordertexture border="10">ThumbShadow.png</bordertexture>
+						<bordersize>8</bordersize>
+						<fadetime>200</fadetime>
+						<texture border="2">ThumbBG.png</texture>
+					</control>
+					<control type="image">
+						<posx>10</posx>
+						<posy>10</posy>
+						<width>124</width>
+						<height>124</height>
+						<aspectratio>keep</aspectratio>
+						<texture background="true">$INFO[ListItem.Icon]</texture>
+					</control>
+				</itemlayout>
+				<focusedlayout height="144" width="144">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>144</width>
+						<height>144</height>
+						<aspectratio>stretch</aspectratio>
+						<bordertexture border="10">folder-Focus.png</bordertexture>
+						<bordersize>8</bordersize>
+						<fadetime>200</fadetime>
+						<texture border="2">ThumbBG.png</texture>
+					</control>
+					<control type="image">
+						<posx>10</posx>
+						<posy>10</posy>
+						<width>124</width>
+						<height>124</height>
+						<aspectratio>keep</aspectratio>
+						<texture background="true">$INFO[ListItem.Icon]</texture>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="scrollbar" id="60">
+				<posx>480</posx>
+				<posy>80</posy>
+				<width>25</width>
+				<height>576</height>
+				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onleft>510</onleft>
+				<onright>2</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+				<visible>Control.IsVisible(511)</visible>
+			</control>
+			<control type="group">
+				<posx>540</posx>
+				<posy>60</posy>
+				<control type="label">
+					<description>Title txt</description>
+					<posx>0</posx>
+					<posy>20</posy>
+					<width>700</width>
+					<height>15</height>
+					<label>$INFO[ListItem.Label]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font24_title</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="image">
+					<posx>-9</posx>
+					<posy>50</posy>
+					<width>700</width>
+					<height>500</height>
+					<texture background="true">$INFO[ListItem.FilenameAndPath]</texture>
+					<fadetime>600</fadetime>
+					<aspectratio>keep</aspectratio>
+					<bordertexture border="8">ThumbShadow.png</bordertexture>
+					<bordersize>9</bordersize>
+				</control>
+				<control type="label">
+					<description>Date time txt</description>
+					<posx>0</posx>
+					<posy>570</posy>
+					<width>700</width>
+					<height>15</height>
+					<label>$INFO[ListItem.PictureDateTime,[COLOR=blue]$LOCALIZE[31326][/COLOR] - ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font13caps</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>Resolution txt</description>
+					<posx>0</posx>
+					<posy>600</posy>
+					<width>700</width>
+					<height>15</height>
+					<label>$INFO[ListItem.PictureResolution,[COLOR=blue]$LOCALIZE[31327][/COLOR] - ]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font13caps</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</control>
+		</control>
+	</include>
+</includes>

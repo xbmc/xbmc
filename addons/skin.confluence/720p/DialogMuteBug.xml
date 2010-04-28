@@ -1,0 +1,32 @@
+<window id="113">
+	<defaultcontrol>-</defaultcontrol>
+	<include>dialogeffect</include>
+	<coordinates>
+		<system>0</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<control type="group">
+			<posx>80r</posx>
+			<posy>0</posy>
+			<animation effect="slide" end="100,0" time="200" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="slide" start="100,0" time="200" tween="quadratic" easing="out">WindowOpen</animation>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>80</width>
+				<height>35</height>
+				<texture flipx="true" border="32,0,0,0">header.png</texture>
+			</control>
+			<control type="image">
+				<posx>35</posx>
+				<posy>0</posy>
+				<width>30</width>
+				<height>30</height>
+				<aspectratio>keep</aspectratio>
+				<texture>icon-mute.png</texture>
+			</control>
+		</control>
+	</controls>
+</window>

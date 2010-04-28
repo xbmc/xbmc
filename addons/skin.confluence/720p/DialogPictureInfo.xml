@@ -1,0 +1,152 @@
+<window id="139">
+	<defaultcontrol always="true">5</defaultcontrol>
+	<controls>
+		<control type="group">
+			<animation effect="slide" start="640,0" end="0,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="slide" start="0,0" end="640,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
+			<control type="image">
+				<posx>640</posx>
+				<posy>0</posy>
+				<width>640</width>
+				<height>720</height>
+				<texture border="15,0,0,0" flipx="true">MediaBladeSub.png</texture>
+			</control>
+			<control type="button">
+				<description>Close Window button</description>
+				<posx>660</posx>
+				<posy>0</posy>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>PreviousMenu</onclick>
+				<texturefocus>DialogCloseButton-focus.png</texturefocus>
+				<texturenofocus>DialogCloseButton.png</texturenofocus>
+				<onleft>5</onleft>
+				<onright>5</onright>
+				<onup>5</onup>
+				<ondown>5</ondown>
+				<visible>system.getbool(input.enablemouse)</visible>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<posx>35r</posx>
+				<posy>40</posy>
+				<width>710</width>
+				<height>30</height>
+				<font>font30_title</font>
+				<label>$LOCALIZE[13406]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="scrollbar" id="60">
+				<posx>1235</posx>
+				<posy>90</posy>
+				<width>25</width>
+				<height>600</height>
+				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onleft>5</onleft>
+				<onright>5</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="list" id="5">
+				<posx>670</posx>
+				<posy>90</posy>
+				<width>560</width>
+				<height>601</height>
+				<onleft>60</onleft>
+				<onright>60</onright>
+				<onup>5</onup>
+				<ondown>5</ondown>
+				<pagecontrol>60</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="40">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>560</width>
+						<height>41</height>
+						<texture border="5">MenuItemNF.png</texture>
+					</control>
+					<control type="label">
+						<posx>170</posx>
+						<posy>0</posy>
+						<width>160</width>
+						<height>35</height>
+						<font>font12_title</font>
+						<aligny>center</aligny>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<label>$INFO[ListItem.Label][COLOR=grey2] : [/COLOR]</label>
+					</control>
+					<control type="label">
+						<posx>170</posx>
+						<posy>0</posy>
+						<width>390</width>
+						<height>35</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<shadowcolor>black</shadowcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<info>ListItem.Label2</info>
+					</control>
+				</itemlayout>
+				<focusedlayout height="40">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>560</width>
+						<height>41</height>
+						<visible>!Control.HasFocus(5)</visible>
+						<texture border="5">MenuItemNF.png</texture>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>560</width>
+						<height>41</height>
+						<visible>Control.HasFocus(5)</visible>
+						<texture border="5">MenuItemFO.png</texture>
+					</control>
+					<control type="label">
+						<posx>170</posx>
+						<posy>0</posy>
+						<width>160</width>
+						<height>35</height>
+						<font>font12_title</font>
+						<aligny>center</aligny>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<label>$INFO[ListItem.Label][COLOR=grey2] : [/COLOR]</label>
+					</control>
+					<control type="label">
+						<posx>170</posx>
+						<posy>0</posy>
+						<width>390</width>
+						<height>35</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<shadowcolor>black</shadowcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>left</align>
+						<info>ListItem.Label2</info>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+		<include>SideBladeRight</include>
+		<include>Clock</include>
+	</controls>
+</window>

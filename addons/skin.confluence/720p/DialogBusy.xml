@@ -1,0 +1,52 @@
+<window id="136">
+	<animation effect="fade" time="100">WindowOpen</animation>
+	<animation effect="fade" time="200">WindowClose</animation>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<texture>black-back.png</texture>
+			<animation effect="fade" delay="10000" time="600">WindowOpen</animation>
+		</control>
+		<control type="group">
+			<posx>1070</posx>
+			<posy>638</posy>
+			<control type="image">
+				<description>background image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>200</width>
+				<height>72</height>
+				<texture border="20">OverlayDialogBackground.png</texture>
+			</control>
+			<control type="image">
+				<description>Busy animation</description>
+				<posx>20</posx>
+				<posy>20</posy>
+				<width>32</width>
+				<height>32</height>
+				<texture>busy.png</texture>
+				<animation effect="rotate" start="0" end="360" center="36,36" time="1200" loop="true" condition="true">conditional</animation>
+			</control>
+			<control type="label">
+				<description>Busy label</description>
+				<posx>60</posx>
+				<posy>20</posy>
+				<width>120</width>
+				<height>32</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label>$LOCALIZE[31004]</label>
+				<font>font12</font>
+			</control>
+		</control>
+	</controls>
+</window>

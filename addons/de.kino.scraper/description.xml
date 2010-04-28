@@ -15,7 +15,7 @@
   <description>Download Movie information from www.kino.de</description>
   <author>TEAMXBMC</author>
   <dependencies>
-    <dependency minversion="1.0.0" maxversion="">org.themoviedb.scraper.common</dependency>
+    <dependency minversion="1.0.0" maxversion="">metadata.common.themoviedb.org</dependency>
   </dependencies>
   <supportedcontent>
     <content>movies</content>

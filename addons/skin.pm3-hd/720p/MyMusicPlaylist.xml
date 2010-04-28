@@ -1,0 +1,109 @@
+<window id="500">
+	<defaultcontrol always="true">50</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>CommonBackground</include>
+		<control type="group">
+			<include>Window_OpenClose_Right_Panel_Animation</include>
+			<include>ContentPanel</include>
+			<include>CommonRootView</include>
+			<include>CommonListView</include>
+			<include>SongInfoListView</include>
+			<include>AllViewCommonPageControls</include>
+			<include>CommonFileCount</include>
+			<include>ScrollOffsetLabel</include>
+		</control>
+		<control type="group">
+			<include>Window_OpenClose_Left_Panel_Animation</include>
+			<include>CommonNowPlaying</include>
+			<control type="group" id="9000">
+				<posx>0</posx>
+				<posy>130</posy>
+				<control type="button" id="2">
+					<description>View As button</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<include>ButtonCommonValues</include>
+					<label>-</label>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>611</onup>
+					<ondown>20</ondown>
+				</control>
+				<control type="radiobutton" id="20">
+					<description>Shuffle button</description>
+					<posx>0</posx>
+					<posy>45</posy>
+					<include>ButtonCommonValues</include>
+					<label>191</label>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>2</onup>
+					<ondown>26</ondown>
+				</control>
+				<control type="button" id="26">
+					<description>Repeat button</description>
+					<posx>0</posx>
+					<posy>90</posy>
+					<include>ButtonCommonValues</include>
+					<label>-</label>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>20</onup>
+					<ondown>21</ondown>
+				</control>
+				<control type="button" id="21">
+					<description>Save button</description>
+					<posx>0</posx>
+					<posy>135</posy>
+					<label>190</label>
+					<include>ButtonCommonValues</include>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>26</onup>
+					<ondown>22</ondown>
+				</control>
+				<control type="button" id="22">
+					<description>Clear button</description>
+					<posx>0</posx>
+					<posy>180</posy>
+					<label>192</label>
+					<onclick>ReplaceWindow(music)</onclick>
+					<include>ButtonCommonValues</include>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>21</onup>
+					<ondown>610</ondown>
+				</control>
+				<control type="button" id="610">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>22</onup>
+					<ondown>603</ondown>
+					<visible>false</visible>
+				</control>
+				<control type="group">
+					<posx>0</posx>
+					<posy>225</posy>
+					<include>CommonNowPlaying_Controls</include>
+				</control>
+				<control type="button" id="611">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>607</onup>
+					<ondown>2</ondown>
+					<visible>false</visible>
+				</control>
+			</control>
+		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>128</height>
+			<texture>Header.png</texture>
+		</control>
+		<control type="label">
+			<include>WindowTitleCommons</include>
+			<label>$LOCALIZE[9] - $LOCALIZE[10517]</label>
+		</control>
+	</controls>
+</window>

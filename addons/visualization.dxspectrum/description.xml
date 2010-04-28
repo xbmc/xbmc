@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <id>visualization.dxspectrum</id>
+  <type>visualization</type>
+  <title>DirectX Spectrum</title>
+  <librarywin32>Spectrum_win32dx.vis</librarywin32>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>windows-dx</platform>
+  </platforms>
+  <minversion>
+    <xbmc>28000</xbmc>
+  </minversion>
+  <summary>DirectX Visualization</summary>
+  <description>Visualisation showing a rotating 3D Spectrum Analyzer</description>
+  <author>Team XBMC</author>
+</addoninfo>

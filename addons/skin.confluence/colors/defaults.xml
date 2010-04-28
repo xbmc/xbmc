@@ -1,0 +1,10 @@
+<colors>
+	<color name="white">FFFFFFFF</color>
+	<color name="grey">FFb4b4b4</color>
+	<color name="grey2">88FFFFFF</color>
+	<color name="grey3">33FFFFFF</color>
+	<color name="black">FF000000</color>
+	<color name="blue">FF0084ff</color>
+	<color name="selected">FFEB9E17</color>
+	<color name="dialogheader">DDced8da</color>
+</colors>

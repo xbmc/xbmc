@@ -1,0 +1,2823 @@
+<window>
+	<defaultcontrol>20000</defaultcontrol>
+	<allowoverlay>false</allowoverlay>
+	<zorder>1</zorder>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<control type="button" id="20000">
+			<description>dummy button to set initial view</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<texturenofocus>-</texturenofocus>
+			<texturefocus>-</texturefocus>
+			<onfocus>Skin.SetString(twc-defaultview,201)</onfocus>
+			<onfocus>SetProperty(CurrentView,206)</onfocus>
+			<onfocus>SetProperty(CurrentMapList,1)</onfocus>
+			<onfocus>SetFocus(2000)</onfocus>
+			<visible>IsEmpty(Skin.String(twc-defaultview))</visible>
+		</control>
+		<control type="button" id="20000">
+			<description>dummy button to set initial view</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<texturenofocus>-</texturenofocus>
+			<texturefocus>-</texturefocus>
+			<onfocus>SetProperty(CurrentView,206)</onfocus>
+			<onfocus>SetProperty(CurrentMapList,1)</onfocus>
+			<onfocus>SetFocus(2000)</onfocus>
+			<visible>!IsEmpty(Skin.String(twc-defaultview))</visible>
+		</control>
+		<control type="group">
+			<posx>60</posx>
+			<posy>40</posy>
+			<animation effect="fade" time="200">WindowOpen</animation>
+			<animation effect="fade" time="300">WindowClose</animation>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1160</width>
+				<height>660</height>
+				<texture border="20">DialogBack.png</texture>
+			</control>
+			<control type="image">
+				<posx>268</posx>
+				<posy>10</posy>
+				<width>855</width>
+				<height>638</height>
+				<texture border="5">black-back2.png</texture>
+			</control>
+			<control type="image">
+				<posx>268</posx>
+				<posy>10</posy>
+				<width>824</width>
+				<height>100</height>
+				<aspectratio>stretch</aspectratio>
+				<texture>GlassTitleBar.png</texture>
+			</control>
+			<control type="button">
+				<description>Close Window button</description>
+				<posx>1050</posx>
+				<posy>9</posy>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>PreviousMenu</onclick>
+				<texturefocus>DialogCloseButton-focus.png</texturefocus>
+				<texturenofocus>DialogCloseButton.png</texturenofocus>
+				<onleft>1</onleft>
+				<onright>1</onright>
+				<onup>1</onup>
+				<ondown>1</ondown>
+				<visible>system.getbool(input.enablemouse)</visible>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<posx>300</posx>
+				<posy>20</posy>
+				<width>760</width>
+				<height>30</height>
+				<font>font16caps</font>
+				<label>$INFO[Weather.Location]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="image">
+				<description>LOGO</description>
+				<posx>10</posx>
+				<posy>20</posy>
+				<width>190</width>
+				<height>80</height>
+				<aspectratio>keep</aspectratio>
+				<texture>Confluence_Logo.png</texture>
+			</control>
+			<control type="image">
+				<posx>190</posx>
+				<posy>30</posy>
+				<width>60</width>
+				<height>60</height>
+				<texture>twc-logo.png</texture>
+			</control>
+			<!-- Main Menu Buttons -->
+			<control type="grouplist" id="2000">
+				<description>control area</description>
+				<posx>10</posx>
+				<posy>100</posy>
+				<width>260</width>
+				<height>601</height>
+				<itemgap>-1</itemgap>
+				<onleft>2000</onleft>
+				<onright>3000</onright>
+				<onup>2000</onup>
+				<ondown>2000</ondown>
+				<pagecontrol>-</pagecontrol>
+				<control type="button" id="201">
+					<height>70</height>
+					<width>241</width>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>top</aligny>
+					<textoffsety>0</textoffsety>
+					<font>font30_title</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>SCRIPT201</label>
+					<onclick>SetProperty(CurrentView,201)</onclick>
+				</control>
+				<control type="button" id="202">
+					<height>70</height>
+					<width>241</width>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>top</aligny>
+					<textoffsety>0</textoffsety>
+					<font>font30_title</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>SCRIPT202</label>
+					<onclick>SetProperty(CurrentView,202)</onclick>
+				</control>
+				<control type="button" id="203">
+					<height>70</height>
+					<width>241</width>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>top</aligny>
+					<textoffsety>0</textoffsety>
+					<font>font30_title</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>SCRIPT203</label>
+					<onclick>SetProperty(CurrentView,203)</onclick>
+				</control>
+				<control type="button" id="204">
+					<height>70</height>
+					<width>241</width>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>top</aligny>
+					<textoffsety>0</textoffsety>
+					<font>font30_title</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>SCRIPT204</label>
+					<onclick>SetProperty(CurrentView,204)</onclick>
+				</control>
+				<control type="button" id="200">
+					<height>70</height>
+					<width>241</width>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>top</aligny>
+					<textoffsety>0</textoffsety>
+					<font>font30_title</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>SCRIPT200</label>
+					<onclick>SetProperty(CurrentView,200)</onclick>
+				</control>
+				<control type="button" id="206">
+					<height>70</height>
+					<width>241</width>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>top</aligny>
+					<textoffsety>0</textoffsety>
+					<font>font30_title</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>SCRIPT206</label>
+					<onclick>SetProperty(CurrentView,206)</onclick>
+			                <enable>!IsEmpty(Window.Property(Alerts))</enable>
+				</control>
+				<control type="button" id="205">
+					<height>70</height>
+					<width>241</width>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>top</aligny>
+					<textoffsety>0</textoffsety>
+					<font>font30_title</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>SCRIPT205</label>
+					<onclick>SetProperty(CurrentView,205)</onclick>
+				</control>
+			</control>
+			<!-- The Extra Labels for the above buttons button -->
+			<control type="label">
+				<posx>250</posx>
+				<posy>138</posy>
+				<width>260</width>
+				<height>25</height>
+				<font>font13caps</font>
+				<textcolor>grey2</textcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>31251</label>
+			</control>
+			<control type="label">
+				<posx>250</posx>
+				<posy>207</posy>
+				<width>260</width>
+				<height>25</height>
+				<font>font13caps</font>
+				<textcolor>grey2</textcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>31251</label>
+			</control>
+			<control type="label">
+				<posx>250</posx>
+				<posy>276</posy>
+				<width>260</width>
+				<height>25</height>
+				<font>font13caps</font>
+				<textcolor>grey2</textcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>31251</label>
+			</control>
+			<control type="label">
+				<posx>250</posx>
+				<posy>345</posy>
+				<width>260</width>
+				<height>25</height>
+				<font>font13caps</font>
+				<textcolor>grey2</textcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>31251</label>
+			</control>
+			<control type="label">
+				<posx>250</posx>
+				<posy>414</posy>
+				<width>260</width>
+				<height>25</height>
+				<font>font13caps</font>
+				<textcolor>grey2</textcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>31250</label>
+			</control>
+			<control type="label">
+				<posx>250</posx>
+				<posy>483</posy>
+				<width>260</width>
+				<height>25</height>
+				<font>font13caps</font>
+				<textcolor>grey2</textcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>8</label>
+			</control>
+			<control type="label">
+				<posx>250</posx>
+				<posy>552</posy>
+				<width>260</width>
+				<height>25</height>
+				<font>font13caps</font>
+				<textcolor>grey2</textcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>31252</label>
+			</control>
+			<!-- 36 Hour forecast section ** Required ** -->
+			<control type="group" id="3000">
+				<posx>290</posx>
+				<posy>60</posy>
+				<visible>StringCompare(Window.Property(CurrentView),201) | [StringCompare(Window.Property(CurrentView),206) + IsEmpty(Window.Property(Alerts)) + StringCompare(Skin.String(twc-defaultview),201)]</visible>
+				<animation effect="fade" reversible="true" time="300">VisibleChange</animation>
+				<!-- Video button -->
+				<control type="label">
+					<description>Current Item header label</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>590</width>
+					<height>30</height>
+					<font>font24_title</font>
+					<label>$LOCALIZE[SCRIPT201] - $LOCALIZE[31251]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>selected</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="button" id="302">
+					<description>Video Button</description>
+					<posx>600</posx>
+					<posy>0</posy>
+					<width>200</width>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>SCRIPT302</label>
+					<font>font12_title</font>
+					<texturenofocus>MenuItemNF.png</texturenofocus>
+					<texturefocus border="5">button-focus.png</texturefocus>
+					<onclick>XBMC.PlayMedia($INFO[Window.Property(Video)])</onclick>
+					<onleft>2000</onleft>
+					<onright>2000</onright>
+					<onup>2000</onup>
+					<ondown>2000</ondown>
+					<visible>!IsEmpty(Window.Property(Video))</visible>
+				</control>
+				<control type="button">
+					<description>dummy button so can't lose navigation</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texturenofocus>-</texturenofocus>
+					<texturefocus>-</texturefocus>
+					<onfocus>SetFocus(2000)</onfocus>
+					<onleft>2000</onleft>
+					<onright>2000</onright>
+					<onup>2000</onup>
+					<ondown>2000</ondown>
+					<visible>!Control.IsVisible(302)</visible>
+				</control>
+				<!-- Loading label used to inform user when fetching info -->
+				<control type="label">
+					<description>loading label</description>
+					<posx>0</posx>
+					<posy>200</posy>
+					<width>830</width>
+					<height>40</height>
+					<font>font30</font>
+					<aligny>top</aligny>
+					<align>center</align>
+					<label>SCRIPT101</label>
+					<visible>IsEmpty(Window.Property(36Hour1title))</visible>
+				</control>
+				<!-- Forecast main group -->
+				<control type="group">
+					<visible>!IsEmpty(Window.Property(36Hour1title))</visible>
+					<posx>0</posx>
+					<posy>40</posy>
+					<!-- First 12 hour forecast -->
+					<control type="group">
+						<posx>0</posx>
+						<posy>0</posy>
+						<!-- Forecast heading -->
+						<control type="label">
+							<description>heading</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>260</width>
+							<height>24</height>
+							<font>font13_title</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<info>Window.Property(36Hour1title)</info>
+							<aligny>center</aligny>
+							<align>center</align>
+						</control>
+						<!-- Weather icon -->
+						<control type="image">
+							<description>forecast icon</description>
+							<posx>0</posx>
+							<posy>35</posy>
+							<width>120</width>
+							<height>120</height>
+							<aspectratio>keep</aspectratio>
+							<info>Window.Property(36Hour1icon)</info>
+						</control>
+						<!-- Brief weather outlook -->
+						<control type="label">
+							<description>brief label</description>
+							<posx>0</posx>
+							<posy>150</posy>
+							<width>120</width>
+							<height>120</height>
+							<font>font12</font>
+							<textcolor>grey2</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<wrapmultiline>true</wrapmultiline>
+							<info>Window.Property(36Hour1brief)</info>
+						</control>
+						<!-- Forecasted temperature heading -->
+						<control type="label">
+							<description>temp title</description>
+							<posx>130</posx>
+							<posy>35</posy>
+							<width>130</width>
+							<height>25</height>
+							<font>font12_title</font>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>bottom</aligny>
+							<align>center</align>
+							<info>Window.Property(36Hour1temptitle)</info>
+						</control>
+						<!-- Forecasted temperature -->
+						<control type="label">
+							<description>temp</description>
+							<posx>130</posx>
+							<posy>55</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font30</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(36Hour1temp)</info>
+						</control>
+						<!-- Forecasted precipitation title -->
+						<control type="label">
+							<description>precip title</description>
+							<posx>130</posx>
+							<posy>120</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font12_title</font>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(36Hour1preciptitle)</info>
+						</control>
+						<!-- Forecasted precipitation -->
+						<control type="label">
+							<description>precip</description>
+							<posx>130</posx>
+							<posy>140</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font30</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(36Hour1precip)</info>
+						</control>
+						<!-- Outlook -->
+						<control type="textbox">
+							<description>outlook</description>
+							<posx>0</posx>
+							<posy>210</posy>
+							<width>260</width>
+							<height>190</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>left</align>
+							<aligny>top</aligny>
+							<info>Window.Property(36Hour1outlook)</info>
+							<autoscroll time="2000" delay="6000" repeat="6000">VisibleChange</autoscroll>
+							<visible>!IsEmpty(Window.Property(36Hour1title)) + [StringCompare(Window.Property(CurrentView),201) | [StringCompare(Window.Property(CurrentView),206) + IsEmpty(Window.Property(Alerts)) + StringCompare(Skin.String(twc-defaultview),201)]]</visible>
+						</control>
+						<!-- Sunrise/Sunset -->
+						<control type="label">
+							<description>daylight</description>
+							<posx>0</posx>
+							<posy>420</posy>
+							<width>260</width>
+							<height>20</height>
+							<font>font12caps</font>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>center</aligny>
+							<align>center</align>
+							<info>Window.Property(36Hour1daylight)</info>
+						</control>
+						<control type="image">
+							<posx>265</posx>
+							<posy>0</posy>
+							<width>5</width>
+							<height>460</height>
+							<aspectratio>stretch</aspectratio>
+							<texture>separator_vertical.png</texture>
+						</control>
+					</control>
+					<!-- Second 12 hour forecast -->
+					<control type="group">
+						<posx>285</posx>
+						<posy>0</posy>
+						<!-- Forecast heading -->
+						<control type="label">
+							<description>heading</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>260</width>
+							<height>24</height>
+							<font>font13_title</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<info>Window.Property(36Hour2title)</info>
+							<aligny>center</aligny>
+							<align>center</align>
+						</control>
+						<!-- Weather icon -->
+						<control type="image">
+							<description>forecast icon</description>
+							<posx>0</posx>
+							<posy>35</posy>
+							<width>120</width>
+							<height>120</height>
+							<aspectratio>keep</aspectratio>
+							<info>Window.Property(36Hour2icon)</info>
+						</control>
+						<!-- Brief weather outlook -->
+						<control type="label">
+							<description>brief label</description>
+							<posx>0</posx>
+							<posy>150</posy>
+							<width>120</width>
+							<height>120</height>
+							<font>font12</font>
+							<textcolor>grey2</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<wrapmultiline>true</wrapmultiline>
+							<info>Window.Property(36Hour2brief)</info>
+						</control>
+						<!-- Forecasted temperature heading -->
+						<control type="label">
+							<description>temp title</description>
+							<posx>130</posx>
+							<posy>35</posy>
+							<width>130</width>
+							<height>25</height>
+							<font>font12_title</font>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>bottom</aligny>
+							<align>center</align>
+							<info>Window.Property(36Hour2temptitle)</info>
+						</control>
+						<!-- Forecasted temperature -->
+						<control type="label">
+							<description>temp</description>
+							<posx>130</posx>
+							<posy>55</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font30</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(36Hour2temp)</info>
+						</control>
+						<!-- Forecasted precipitation title -->
+						<control type="label">
+							<description>precip title</description>
+							<posx>130</posx>
+							<posy>120</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font12_title</font>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(36Hour2preciptitle)</info>
+						</control>
+						<!-- Forecasted precipitation -->
+						<control type="label">
+							<description>precip</description>
+							<posx>130</posx>
+							<posy>140</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font30</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(36Hour2precip)</info>
+						</control>
+						<!-- Outlook -->
+						<control type="textbox">
+							<description>outlook</description>
+							<posx>0</posx>
+							<posy>210</posy>
+							<width>260</width>
+							<height>190</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>left</align>
+							<aligny>top</aligny>
+							<info>Window.Property(36Hour2outlook)</info>
+							<autoscroll time="2000" delay="6000" repeat="6000">VisibleChange</autoscroll>
+							<visible>!IsEmpty(Window.Property(36Hour2title)) + [StringCompare(Window.Property(CurrentView),201) | [StringCompare(Window.Property(CurrentView),206) + IsEmpty(Window.Property(Alerts)) + StringCompare(Skin.String(twc-defaultview),201)]]</visible>
+						</control>
+						<!-- Sunrise/Sunset -->
+						<control type="label">
+							<description>daylight</description>
+							<posx>0</posx>
+							<posy>420</posy>
+							<width>260</width>
+							<height>20</height>
+							<font>font12caps</font>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>center</aligny>
+							<align>center</align>
+							<info>Window.Property(36Hour2daylight)</info>
+						</control>
+						<control type="image">
+							<posx>265</posx>
+							<posy>0</posy>
+							<width>5</width>
+							<height>460</height>
+							<aspectratio>stretch</aspectratio>
+							<texture>separator_vertical.png</texture>
+						</control>
+					</control>
+					<!-- Third 12 hour forecast -->
+					<control type="group">
+						<posx>570</posx>
+						<posy>0</posy>
+						<!-- Forecast heading -->
+						<control type="label">
+							<description>heading</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>260</width>
+							<height>24</height>
+							<font>font13_title</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<info>Window.Property(36Hour3title)</info>
+							<aligny>center</aligny>
+							<align>center</align>
+						</control>
+						<!-- Weather icon -->
+						<control type="image">
+							<description>forecast icon</description>
+							<posx>0</posx>
+							<posy>35</posy>
+							<width>120</width>
+							<height>120</height>
+							<aspectratio>keep</aspectratio>
+							<info>Window.Property(36Hour3icon)</info>
+						</control>
+						<!-- Brief weather outlook -->
+						<control type="label">
+							<description>brief label</description>
+							<posx>0</posx>
+							<posy>150</posy>
+							<width>120</width>
+							<height>120</height>
+							<font>font12</font>
+							<textcolor>grey2</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<wrapmultiline>true</wrapmultiline>
+							<info>Window.Property(36Hour3brief)</info>
+						</control>
+						<!-- Forecasted temperature heading -->
+						<control type="label">
+							<description>temp title</description>
+							<posx>130</posx>
+							<posy>35</posy>
+							<width>130</width>
+							<height>25</height>
+							<font>font12_title</font>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>bottom</aligny>
+							<align>center</align>
+							<info>Window.Property(36Hour3temptitle)</info>
+						</control>
+						<!-- Forecasted temperature -->
+						<control type="label">
+							<description>temp</description>
+							<posx>130</posx>
+							<posy>55</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font30</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(36Hour3temp)</info>
+						</control>
+						<!-- Forecasted precipitation title -->
+						<control type="label">
+							<description>precip title</description>
+							<posx>130</posx>
+							<posy>120</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font12_title</font>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(36Hour3preciptitle)</info>
+						</control>
+						<!-- Forecasted precipitation -->
+						<control type="label">
+							<description>precip</description>
+							<posx>130</posx>
+							<posy>140</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font30</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(36Hour3precip)</info>
+						</control>
+						<!-- Outlook -->
+						<control type="textbox">
+							<description>outlook</description>
+							<posx>0</posx>
+							<posy>210</posy>
+							<width>260</width>
+							<height>190</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>left</align>
+							<aligny>top</aligny>
+							<info>Window.Property(36Hour3outlook)</info>
+							<autoscroll time="2000" delay="6000" repeat="6000">VisibleChange</autoscroll>
+							<visible>!IsEmpty(Window.Property(36Hour3title)) + [StringCompare(Window.Property(CurrentView),201) | [StringCompare(Window.Property(CurrentView),206) + IsEmpty(Window.Property(Alerts)) + StringCompare(Skin.String(twc-defaultview),201)]]</visible>
+						</control>
+						<!-- Sunrise/Sunset -->
+						<control type="label">
+							<description>daylight</description>
+							<posx>0</posx>
+							<posy>420</posy>
+							<width>260</width>
+							<height>20</height>
+							<font>font12caps</font>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>center</aligny>
+							<align>center</align>
+							<info>Window.Property(36Hour3daylight)</info>
+						</control>
+					</control>
+				</control>
+				<!-- User instruction label -->
+				<control type="label">
+					<description>info label</description>
+					<posx>0</posx>
+					<posy>530</posy>
+					<width>510</width>
+					<height>100</height>
+					<font>font12caps</font>
+					<align>left</align>
+					<aligny>top</aligny>
+					<label>$LOCALIZE[SCRIPT53][CR]$LOCALIZE[SCRIPT52]</label>
+				</control>
+			</control>
+			<!-- Hour by hour forecast section ** Required ** -->
+			<control type="group" id="3000">
+				<posx>290</posx>
+				<posy>60</posy>
+				<visible>StringCompare(Window.Property(CurrentView),202) | [StringCompare(Window.Property(CurrentView),206) + IsEmpty(Window.Property(Alerts)) + StringCompare(Skin.String(twc-defaultview),202)]</visible>
+				<animation effect="fade" reversible="true" time="300">VisibleChange</animation>
+				<!-- Loading label used to inform user when fetching info -->
+				<control type="label">
+					<description>Current Item header label</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>590</width>
+					<height>30</height>
+					<font>font24_title</font>
+					<label>$LOCALIZE[SCRIPT202] - $LOCALIZE[31251]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>selected</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>loading label</description>
+					<posx>0</posx>
+					<posy>200</posy>
+					<width>830</width>
+					<height>40</height>
+					<font>font30</font>
+					<aligny>top</aligny>
+					<align>center</align>
+					<label>SCRIPT102</label>
+					<visible>IsEmpty(Window.Property(HBHHead1))</visible>
+				</control>
+				<control type="group">
+					<posy>50</posy>
+					<visible>!IsEmpty(Window.Property(HBHHead1))</visible>
+					<!-- Time heading -->
+					<control type="label">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>70</width>
+						<height>20</height>
+						<font>font10_title</font>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<info>Window.Property(HBHHead1)</info>
+					</control>
+					<!-- Condition heading -->
+					<control type="label">
+						<posx>80</posx>
+						<posy>0</posy>
+						<width>250</width>
+						<height>20</height>
+						<font>font10_title</font>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<info>Window.Property(HBHHead2)</info>
+					</control>
+					<!-- Feels like heading -->
+					<control type="label">
+						<posx>335</posx>
+						<posy>0</posy>
+						<width>80</width>
+						<height>20</height>
+						<font>font10_title</font>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<wrapmultiline>true</wrapmultiline>
+						<info>Window.Property(HBHHead3)</info>
+					</control>
+					<!-- Chance of precipitation heading -->
+					<control type="label">
+						<posx>420</posx>
+						<posy>0</posy>
+						<width>80</width>
+						<height>20</height>
+						<font>font10_title</font>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<wrapmultiline>true</wrapmultiline>
+						<info>Window.Property(HBHHead4)</info>
+					</control>
+					<!-- Humidity heading -->
+					<control type="label">
+						<posx>510</posx>
+						<posy>0</posy>
+						<width>80</width>
+						<height>20</height>
+						<font>font10_title</font>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<wrapmultiline>true</wrapmultiline>
+						<info>Window.Property(HBHHead5)</info>
+					</control>
+					<!-- Wind heading -->
+					<control type="label">
+						<posx>600</posx>
+						<posy>0</posy>
+						<width>200</width>
+						<height>20</height>
+						<font>font10_title</font>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<wrapmultiline>true</wrapmultiline>
+						<info>Window.Property(HBHHead6)</info>
+					</control>
+					<!-- Forecast list ** required ** -->
+					<control type="list" id="600">
+						<posx>0</posx>
+						<posy>30</posy>
+						<width>810</width>
+						<height>401</height>
+						<onleft>2000</onleft>
+						<onright>6000</onright>
+						<onup>600</onup>
+						<ondown>600</ondown>
+						<viewtype label="535">list</viewtype>
+						<pagecontrol>6000</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="80">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>810</width>
+								<height>81</height>
+								<texture border="5">MenuItemNF.png</texture>
+							</control>
+							<control type="label">
+								<posx>35</posx>
+								<posy>0</posy>
+								<width>70</width>
+								<height>80</height>
+								<font>font13_title</font>
+								<textcolor>white</textcolor>
+								<shadowcolor>black</shadowcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<info>ListItem.Label</info>
+							</control>
+							<control type="image">
+								<posx>80</posx>
+								<posy>0</posy>
+								<width>250</width>
+								<height>80</height>
+								<colordiffuse>33FFFFFF</colordiffuse>
+								<texture border="5">StackFO.png</texture>
+							</control>
+							<control type="image">
+								<posx>90</posx>
+								<posy>5</posy>
+								<width>70</width>
+								<height>70</height>
+								<info>ListItem.Property(icon)</info>
+							</control>
+							<control type="label">
+								<posx>235</posx>
+								<posy>0</posy>
+								<width>130</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<wrapmultiline>true</wrapmultiline>
+								<label>[B]$INFO[ListItem.Property(temp)][/B][CR][COLOR=grey2]$INFO[ListItem.Property(brief)][/COLOR]</label>
+							</control>
+							<control type="label">
+								<posx>375</posx>
+								<posy>0</posy>
+								<width>80</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<info>ListItem.Property(feels)</info>
+							</control>
+							<control type="image">
+								<posx>420</posx>
+								<posy>0</posy>
+								<width>80</width>
+								<height>80</height>
+								<colordiffuse>33FFFFFF</colordiffuse>
+								<texture border="5">StackFO.png</texture>
+							</control>
+							<control type="label">
+								<posx>460</posx>
+								<posy>0</posy>
+								<width>80</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<info>ListItem.Property(precip)</info>
+							</control>
+							<control type="label">
+								<posx>550</posx>
+								<posy>0</posy>
+								<width>80</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<info>ListItem.Property(humidity)</info>
+							</control>
+							<control type="image">
+								<posx>600</posx>
+								<posy>0</posy>
+								<width>200</width>
+								<height>80</height>
+								<colordiffuse>33FFFFFF</colordiffuse>
+								<texture border="5">StackFO.png</texture>
+							</control>
+							<control type="label">
+								<posx>700</posx>
+								<posy>0</posy>
+								<width>190</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<wrapmultiline>true</wrapmultiline>
+								<info>ListItem.Property(wind)</info>
+							</control>
+						</itemlayout>
+						<focusedlayout height="80">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>810</width>
+								<height>81</height>
+								<texture border="5">MenuItemNF.png</texture>
+							</control>
+							<control type="label">
+								<posx>35</posx>
+								<posy>0</posy>
+								<width>70</width>
+								<height>80</height>
+								<font>font13_title</font>
+								<textcolor>white</textcolor>
+								<shadowcolor>black</shadowcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<info>ListItem.Label</info>
+							</control>
+							<control type="image">
+								<posx>80</posx>
+								<posy>0</posy>
+								<width>250</width>
+								<height>80</height>
+								<colordiffuse>33FFFFFF</colordiffuse>
+								<texture border="5">StackFO.png</texture>
+								<visible>!Control.HasFocus(600)</visible>
+							</control>
+							<control type="image">
+								<posx>80</posx>
+								<posy>0</posy>
+								<width>250</width>
+								<height>80</height>
+								<colordiffuse>66FFFFFF</colordiffuse>
+								<texture border="5">StackFO.png</texture>
+								<visible>Control.HasFocus(600)</visible>
+							</control>
+							<control type="image">
+								<posx>90</posx>
+								<posy>5</posy>
+								<width>70</width>
+								<height>70</height>
+								<info>ListItem.Property(icon)</info>
+							</control>
+							<control type="label">
+								<posx>235</posx>
+								<posy>0</posy>
+								<width>130</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<wrapmultiline>true</wrapmultiline>
+								<label>[B]$INFO[ListItem.Property(temp)][/B][CR][COLOR=grey2]$INFO[ListItem.Property(brief)][/COLOR]</label>
+							</control>
+							<control type="label">
+								<posx>375</posx>
+								<posy>0</posy>
+								<width>80</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<info>ListItem.Property(feels)</info>
+							</control>
+							<control type="image">
+								<posx>420</posx>
+								<posy>0</posy>
+								<width>80</width>
+								<height>80</height>
+								<colordiffuse>33FFFFFF</colordiffuse>
+								<texture border="5">StackFO.png</texture>
+								<visible>!Control.HasFocus(600)</visible>
+							</control>
+							<control type="image">
+								<posx>420</posx>
+								<posy>0</posy>
+								<width>80</width>
+								<height>80</height>
+								<colordiffuse>66FFFFFF</colordiffuse>
+								<texture border="5">StackFO.png</texture>
+								<visible>Control.HasFocus(600)</visible>
+							</control>
+							<control type="label">
+								<posx>460</posx>
+								<posy>0</posy>
+								<width>80</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<info>ListItem.Property(precip)</info>
+							</control>
+							<control type="label">
+								<posx>550</posx>
+								<posy>0</posy>
+								<width>80</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<info>ListItem.Property(humidity)</info>
+							</control>
+							<control type="image">
+								<posx>600</posx>
+								<posy>0</posy>
+								<width>200</width>
+								<height>80</height>
+								<colordiffuse>33FFFFFF</colordiffuse>
+								<texture border="5">StackFO.png</texture>
+								<visible>!Control.HasFocus(600)</visible>
+							</control>
+							<control type="image">
+								<posx>600</posx>
+								<posy>0</posy>
+								<width>200</width>
+								<height>80</height>
+								<colordiffuse>66FFFFFF</colordiffuse>
+								<texture border="5">StackFO.png</texture>
+								<visible>Control.HasFocus(600)</visible>
+							</control>
+							<control type="label">
+								<posx>700</posx>
+								<posy>0</posy>
+								<width>190</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<wrapmultiline>true</wrapmultiline>
+								<info>ListItem.Property(wind)</info>
+							</control>
+						</focusedlayout>
+					</control>
+					<!-- Scrollbar for forecast list -->
+					<control type="scrollbar" id="6000">
+						<description>Scroll Bar</description>
+						<posx>805</posx>
+						<posy>30</posy>
+						<width>25</width>
+						<height>400</height>
+						<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+						<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+						<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+						<textureslidernib>ScrollBarNib.png</textureslidernib>
+						<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+						<onleft>700</onleft>
+						<onright>2000</onright>
+						<showonepage>true</showonepage>
+						<orientation>vertical</orientation>
+					</control>
+				</control>
+				<!-- User instruction label -->
+				<control type="label">
+					<description>info label</description>
+					<posx>0</posx>
+					<posy>530</posy>
+					<width>510</width>
+					<height>100</height>
+					<font>font12caps</font>
+					<align>left</align>
+					<aligny>top</aligny>
+					<label>$LOCALIZE[SCRIPT54][CR]$LOCALIZE[SCRIPT52]</label>
+				</control>
+			</control>
+			<!-- Weekend forecast section ** Required ** -->
+			<control type="group" id="3000">
+				<posx>290</posx>
+				<posy>60</posy>
+				<visible>StringCompare(Window.Property(CurrentView),203) | [StringCompare(Window.Property(CurrentView),206) + IsEmpty(Window.Property(Alerts)) + StringCompare(Skin.String(twc-defaultview),203)]</visible>
+				<animation effect="fade" reversible="true" time="300">VisibleChange</animation>
+				<!-- Loading label used to inform user when fetching info -->
+				<control type="label">
+					<description>Current Item header label</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>590</width>
+					<height>30</height>
+					<font>font24_title</font>
+					<label>$LOCALIZE[SCRIPT203] - $LOCALIZE[31251]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>selected</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>loading label</description>
+					<posx>0</posx>
+					<posy>200</posy>
+					<width>830</width>
+					<height>40</height>
+					<font>font30</font>
+					<aligny>top</aligny>
+					<align>center</align>
+					<label>SCRIPT103</label>
+					<visible>IsEmpty(Window.Property(Weekend1day))</visible>
+				</control>
+				<!-- Details/Outlook toggle button -->
+				<control type="togglebutton" id="300">
+					<description>Weekend Toggle Button</description>
+					<posx>600</posx>
+					<posy>0</posy>
+					<width>200</width>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>SCRIPT300</label>
+					<altlabel>SCRIPT301</altlabel>
+					<usealttexture>!IsEmpty(Window.Property(WeekendToggle))</usealttexture>
+					<font>font12_title</font>
+					<texturenofocus>MenuItemNF.png</texturenofocus>
+					<texturefocus border="5">button-focus.png</texturefocus>
+					<alttexturenofocus>MenuItemNF.png</alttexturenofocus>
+					<alttexturefocus border="5">button-focus.png</alttexturefocus>
+					<onleft>2000</onleft>
+					<onright>2000</onright>
+					<onup>2000</onup>
+					<ondown>2000</ondown>
+					<visible>[!IsEmpty(Window.Property(Weekend1outlook)) | !IsEmpty(Window.Property(Weekend2outlook)) | !IsEmpty(Window.Property(Weekend3outlook))] + !IsEmpty(Window.Property(Weekend3day))</visible>
+				</control>
+				<control type="button">
+					<description>dummy button so can't lose navigation</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texturenofocus>-</texturenofocus>
+					<texturefocus>-</texturefocus>
+					<onfocus>SetFocus(2000)</onfocus>
+					<onleft>2000</onleft>
+					<onright>2000</onright>
+					<onup>2000</onup>
+					<ondown>2000</ondown>
+					<visible>!Control.IsVisible(302)</visible>
+				</control>
+				<!-- Forecast main group -->
+				<control type="group">
+					<visible>!IsEmpty(Window.Property(Weekend1day))</visible>
+					<posx>0</posx>
+					<posy>50</posy>
+					<!-- Friday forecast -->
+					<control type="group">
+						<posx>0</posx>
+						<posy>0</posy>
+						<!-- Forecast heading -->
+						<control type="label">
+							<description>heading</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>260</width>
+							<height>24</height>
+							<font>font13_title</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<info>Window.Property(Weekend1day)</info>
+							<aligny>center</aligny>
+							<align>center</align>
+						</control>
+						<!-- Weather icon -->
+						<control type="image">
+							<description>forecast icon</description>
+							<posx>0</posx>
+							<posy>35</posy>
+							<width>120</width>
+							<height>120</height>
+							<aspectratio>keep</aspectratio>
+							<info>Window.Property(Weekend1Icon)</info>
+						</control>
+						<!-- Brief weather outlook -->
+						<control type="label">
+							<description>brief label</description>
+							<posx>0</posx>
+							<posy>150</posy>
+							<width>120</width>
+							<height>120</height>
+							<font>font12</font>
+							<textcolor>grey2</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<wrapmultiline>true</wrapmultiline>
+							<info>Window.Property(Weekend1brief)</info>
+						</control>
+						<!-- Forecasted High temperature heading -->
+						<control type="label">
+							<description>temp title</description>
+							<posx>130</posx>
+							<posy>35</posy>
+							<width>130</width>
+							<height>25</height>
+							<font>font12_title</font>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>bottom</aligny>
+							<align>center</align>
+							<info>Window.Property(Weekend1hightitle)</info>
+						</control>
+						<!-- Forecasted High temperature -->
+						<control type="label">
+							<description>temp</description>
+							<posx>130</posx>
+							<posy>55</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font30</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(Weekend1hightemp)</info>
+						</control>
+						<!-- Forecasted low title -->
+						<control type="label">
+							<description>temp title</description>
+							<posx>130</posx>
+							<posy>120</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font12_title</font>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(Weekend1lowtitle)</info>
+						</control>
+						<!-- Forecasted low  temperature -->
+						<control type="label">
+							<description>temp</description>
+							<posx>130</posx>
+							<posy>140</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font30</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(Weekend1lowtemp)</info>
+						</control>
+						<!-- Forecasted precipitation -->
+						<control type="label">
+							<description>precip</description>
+							<posx>0</posx>
+							<posy>210</posy>
+							<width>260</width>
+							<height>25</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[Window.Property(Weekend1preciptitle)] $INFO[Window.Property(Weekend1precip)]</label>
+						</control>
+						<!-- Outlook -->
+						<control type="textbox">
+							<description>outlook</description>
+							<posx>0</posx>
+							<posy>240</posy>
+							<width>260</width>
+							<height>190</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>left</align>
+							<aligny>top</aligny>
+							<info>Window.Property(Weekend1outlook)</info>
+							<autoscroll time="2000" delay="6000" repeat="6000">VisibleChange</autoscroll>
+							<visible>IsEmpty(Window.Property(Weekend1Observed)) + IsEmpty(Window.Property(WeekendToggle))</visible>
+						</control>
+						<!-- Details -->
+						<control type="textbox">
+							<description>details</description>
+							<posx>0</posx>
+							<posy>240</posy>
+							<width>260</width>
+							<height>190</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>center</align>
+							<aligny>top</aligny>
+							<label>$INFO[Window.Property(Weekend1windtitle)] $INFO[Window.Property(Weekend1wind)][CR]$INFO[Window.Property(Weekend1uvtitle)] $INFO[Window.Property(Weekend1uv)][CR]$INFO[Window.Property(Weekend1humiditytitle)] $INFO[Window.Property(Weekend1humidity)][CR][CR][CR]$INFO[Window.Property(Weekend1sunrisetitle)] $INFO[Window.Property(Weekend1sunrise)][CR]$INFO[Window.Property(Weekend1sunsettitle)] $INFO[Window.Property(Weekend1sunset)]</label>
+							<autoscroll time="2000" delay="6000" repeat="6000">VisibleChange</autoscroll>
+							<visible>IsEmpty(Window.Property(Weekend1Observed)) + !IsEmpty(Window.Property(WeekendToggle))</visible>
+						</control>
+						<!-- Observed, averages and records-->
+						<control type="textbox">
+							<description>Observed</description>
+							<posx>0</posx>
+							<posy>230</posy>
+							<width>260</width>
+							<height>190</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>center</align>
+							<aligny>top</aligny>
+							<label>[B]$INFO[Window.Property(Weekend1observed)][/B][CR][CR]$INFO[Window.Property(Weekend1observedpreciptitle)] $INFO[Window.Property(Weekend1observedprecip)][CR][CR]$INFO[Window.Property(Weekend1observedavghightitle)] $INFO[Window.Property(Weekend1observedavghigh)][CR]$INFO[Window.Property(Weekend1observedavglowtitle)] $INFO[Window.Property(Weekend1observedavglow)][CR][CR]$INFO[Window.Property(Weekend1observedrecordhightitle)] $INFO[Window.Property(Weekend1observedrecordhigh)][CR]$INFO[Window.Property(Weekend1observedrecordlowtitle)] $INFO[Window.Property(Weekend1observedrecordlow)]</label>
+							<autoscroll time="2000" delay="6000" repeat="6000">VisibleChange</autoscroll>
+							<visible>!IsEmpty(Window.Property(Weekend1Observed))</visible>
+						</control>
+						<control type="image">
+							<posx>265</posx>
+							<posy>0</posy>
+							<width>5</width>
+							<height>460</height>
+							<aspectratio>stretch</aspectratio>
+							<texture>separator_vertical.png</texture>
+						</control>
+					</control>
+					<!-- Saturday forecast -->
+					<control type="group">
+						<posx>285</posx>
+						<posy>0</posy>
+						<!-- Forecast heading -->
+						<control type="label">
+							<description>heading</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>260</width>
+							<height>24</height>
+							<font>font13_title</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<info>Window.Property(Weekend2day)</info>
+							<aligny>center</aligny>
+							<align>center</align>
+						</control>
+						<!-- Weather icon -->
+						<control type="image">
+							<description>forecast icon</description>
+							<posx>0</posx>
+							<posy>35</posy>
+							<width>120</width>
+							<height>120</height>
+							<aspectratio>keep</aspectratio>
+							<info>Window.Property(Weekend2Icon)</info>
+						</control>
+						<!-- Brief weather outlook -->
+						<control type="label">
+							<description>brief label</description>
+							<posx>0</posx>
+							<posy>150</posy>
+							<width>120</width>
+							<height>120</height>
+							<font>font12</font>
+							<textcolor>grey2</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<wrapmultiline>true</wrapmultiline>
+							<info>Window.Property(Weekend2brief)</info>
+						</control>
+						<!-- Forecasted High temperature heading -->
+						<control type="label">
+							<description>temp title</description>
+							<posx>130</posx>
+							<posy>35</posy>
+							<width>130</width>
+							<height>25</height>
+							<font>font12_title</font>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>bottom</aligny>
+							<align>center</align>
+							<info>Window.Property(Weekend2hightitle)</info>
+						</control>
+						<!-- Forecasted High temperature -->
+						<control type="label">
+							<description>temp</description>
+							<posx>130</posx>
+							<posy>55</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font30</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(Weekend2hightemp)</info>
+						</control>
+						<!-- Forecasted low title -->
+						<control type="label">
+							<description>temp title</description>
+							<posx>130</posx>
+							<posy>120</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font12_title</font>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(Weekend2lowtitle)</info>
+						</control>
+						<!-- Forecasted low  temperature -->
+						<control type="label">
+							<description>temp</description>
+							<posx>130</posx>
+							<posy>140</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font30</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(Weekend2lowtemp)</info>
+						</control>
+						<!-- Forecasted precipitation -->
+						<control type="label">
+							<description>precip</description>
+							<posx>0</posx>
+							<posy>210</posy>
+							<width>260</width>
+							<height>25</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[Window.Property(Weekend2preciptitle)] $INFO[Window.Property(Weekend2precip)]</label>
+						</control>
+						<!-- Outlook -->
+						<control type="textbox">
+							<description>outlook</description>
+							<posx>0</posx>
+							<posy>240</posy>
+							<width>260</width>
+							<height>190</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>left</align>
+							<aligny>top</aligny>
+							<info>Window.Property(Weekend2outlook)</info>
+							<autoscroll time="2000" delay="6000" repeat="6000">VisibleChange</autoscroll>
+							<visible>IsEmpty(Window.Property(Weekend2Observed)) + IsEmpty(Window.Property(WeekendToggle))</visible>
+						</control>
+						<!-- Details -->
+						<control type="textbox">
+							<description>Details</description>
+							<posx>0</posx>
+							<posy>240</posy>
+							<width>260</width>
+							<height>190</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>center</align>
+							<aligny>top</aligny>
+							<label>$INFO[Window.Property(Weekend2windtitle)] $INFO[Window.Property(Weekend2wind)][CR]$INFO[Window.Property(Weekend2uvtitle)] $INFO[Window.Property(Weekend2uv)][CR]$INFO[Window.Property(Weekend2humiditytitle)] $INFO[Window.Property(Weekend2humidity)][CR][CR][CR]$INFO[Window.Property(Weekend2sunrisetitle)] $INFO[Window.Property(Weekend2sunrise)][CR]$INFO[Window.Property(Weekend2sunsettitle)] $INFO[Window.Property(Weekend2sunset)]</label>
+							<autoscroll time="2000" delay="6000" repeat="6000">VisibleChange</autoscroll>
+							<visible>IsEmpty(Window.Property(Weekend2Observed)) + !IsEmpty(Window.Property(WeekendToggle))</visible>
+						</control>
+						<!-- Observed, averages and records-->
+						<control type="textbox">
+							<description>Observed</description>
+							<posx>0</posx>
+							<posy>230</posy>
+							<width>260</width>
+							<height>190</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>center</align>
+							<aligny>top</aligny>
+							<label>[B]$INFO[Window.Property(Weekend2observed)][/B][CR][CR]$INFO[Window.Property(Weekend2observedpreciptitle)] $INFO[Window.Property(Weekend2observedprecip)][CR][CR]$INFO[Window.Property(Weekend2observedavghightitle)] $INFO[Window.Property(Weekend2observedavghigh)][CR]$INFO[Window.Property(Weekend2observedavglowtitle)] $INFO[Window.Property(Weekend2observedavglow)][CR][CR]$INFO[Window.Property(Weekend2observedrecordhightitle)] $INFO[Window.Property(Weekend2observedrecordhigh)][CR]$INFO[Window.Property(Weekend2observedrecordlowtitle)] $INFO[Window.Property(Weekend2observedrecordlow)]</label>
+							<autoscroll time="2000" delay="6000" repeat="6000">VisibleChange</autoscroll>
+							<visible>!IsEmpty(Window.Property(Weekend2Observed))</visible>
+						</control>
+						<control type="image">
+							<posx>265</posx>
+							<posy>0</posy>
+							<width>5</width>
+							<height>460</height>
+							<aspectratio>stretch</aspectratio>
+							<texture>separator_vertical.png</texture>
+						</control>
+					</control>
+					<!-- Sunday forecast -->
+					<control type="group">
+						<posx>570</posx>
+						<posy>0</posy>
+						<!-- Forecast heading -->
+						<control type="label">
+							<description>heading</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>260</width>
+							<height>24</height>
+							<font>font13_title</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<info>Window.Property(Weekend3day)</info>
+							<aligny>center</aligny>
+							<align>center</align>
+						</control>
+						<!-- Weather icon -->
+						<control type="image">
+							<description>forecast icon</description>
+							<posx>0</posx>
+							<posy>35</posy>
+							<width>120</width>
+							<height>120</height>
+							<aspectratio>keep</aspectratio>
+							<info>Window.Property(Weekend3Icon)</info>
+						</control>
+						<!-- Brief weather outlook -->
+						<control type="label">
+							<description>brief label</description>
+							<posx>0</posx>
+							<posy>150</posy>
+							<width>120</width>
+							<height>120</height>
+							<font>font12</font>
+							<textcolor>grey2</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<wrapmultiline>true</wrapmultiline>
+							<info>Window.Property(Weekend3brief)</info>
+						</control>
+						<!-- Forecasted High temperature heading -->
+						<control type="label">
+							<description>temp title</description>
+							<posx>130</posx>
+							<posy>35</posy>
+							<width>130</width>
+							<height>25</height>
+							<font>font12_title</font>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>bottom</aligny>
+							<align>center</align>
+							<info>Window.Property(Weekend3hightitle)</info>
+						</control>
+						<!-- Forecasted High temperature -->
+						<control type="label">
+							<description>temp</description>
+							<posx>130</posx>
+							<posy>55</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font30</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(Weekend3hightemp)</info>
+						</control>
+						<!-- Forecasted low title -->
+						<control type="label">
+							<description>temp title</description>
+							<posx>130</posx>
+							<posy>120</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font12_title</font>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(Weekend3lowtitle)</info>
+						</control>
+						<!-- Forecasted low  temperature -->
+						<control type="label">
+							<description>temp</description>
+							<posx>130</posx>
+							<posy>140</posy>
+							<width>130</width>
+							<height>20</height>
+							<font>font30</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<aligny>top</aligny>
+							<align>center</align>
+							<info>Window.Property(Weekend3lowtemp)</info>
+						</control>
+						<!-- Forecasted precipitation -->
+						<control type="label">
+							<description>precip</description>
+							<posx>0</posx>
+							<posy>210</posy>
+							<width>260</width>
+							<height>25</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[Window.Property(Weekend3preciptitle)] $INFO[Window.Property(Weekend3precip)]</label>
+						</control>
+						<!-- Outlook -->
+						<control type="textbox">
+							<description>outlook</description>
+							<posx>0</posx>
+							<posy>240</posy>
+							<width>260</width>
+							<height>190</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>left</align>
+							<aligny>top</aligny>
+							<info>Window.Property(Weekend3outlook)</info>
+							<autoscroll time="2000" delay="6000" repeat="6000">VisibleChange</autoscroll>
+							<visible>IsEmpty(Window.Property(Weekend3Observed)) + IsEmpty(Window.Property(WeekendToggle))</visible>
+						</control>
+						<!-- Details -->
+						<control type="textbox">
+							<description>Details</description>
+							<posx>0</posx>
+							<posy>240</posy>
+							<width>260</width>
+							<height>190</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>center</align>
+							<aligny>top</aligny>
+							<label>$INFO[Window.Property(Weekend3windtitle)] $INFO[Window.Property(Weekend3wind)][CR]$INFO[Window.Property(Weekend3uvtitle)] $INFO[Window.Property(Weekend3uv)][CR]$INFO[Window.Property(Weekend3humiditytitle)] $INFO[Window.Property(Weekend3humidity)][CR][CR][CR]$INFO[Window.Property(Weekend3sunrisetitle)] $INFO[Window.Property(Weekend3sunrise)][CR]$INFO[Window.Property(Weekend3sunsettitle)] $INFO[Window.Property(Weekend3sunset)]</label>
+							<autoscroll time="2000" delay="6000" repeat="6000">VisibleChange</autoscroll>
+							<visible>IsEmpty(Window.Property(Weekend3Observed)) + !IsEmpty(Window.Property(WeekendToggle))</visible>
+						</control>
+						<!-- Observed, averages and records-->
+						<control type="textbox">
+							<description>Observed</description>
+							<posx>0</posx>
+							<posy>230</posy>
+							<width>260</width>
+							<height>190</height>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>center</align>
+							<aligny>top</aligny>
+							<label>[B]$INFO[Window.Property(Weekend3observed)][/B][CR][CR]$INFO[Window.Property(Weekend3observedpreciptitle)] $INFO[Window.Property(Weekend3observedprecip)][CR][CR]$INFO[Window.Property(Weekend3observedavghightitle)] $INFO[Window.Property(Weekend3observedavghigh)][CR]$INFO[Window.Property(Weekend3observedavglowtitle)] $INFO[Window.Property(Weekend3observedavglow)][CR][CR]$INFO[Window.Property(Weekend3observedrecordhightitle)] $INFO[Window.Property(Weekend3observedrecordhigh)][CR]$INFO[Window.Property(Weekend3observedrecordlowtitle)] $INFO[Window.Property(Weekend3observedrecordlow)]</label>
+							<autoscroll time="2000" delay="6000" repeat="6000">VisibleChange</autoscroll>
+							<visible>!IsEmpty(Window.Property(Weekend3Observed))</visible>
+						</control>
+					</control>
+				</control>
+				<!-- User instruction label -->
+				<control type="label">
+					<description>info label</description>
+					<posx>0</posx>
+					<posy>530</posy>
+					<width>510</width>
+					<height>100</height>
+					<font>font12caps</font>
+					<align>left</align>
+					<aligny>top</aligny>
+					<label>$LOCALIZE[SCRIPT55][CR]$LOCALIZE[SCRIPT52]</label>
+				</control>
+			</control>
+			<!-- 10 Day forecast section ** Required ** -->
+			<control type="group" id="3000">
+				<posx>290</posx>
+				<posy>60</posy>
+				<visible>StringCompare(Window.Property(CurrentView),204) | [StringCompare(Window.Property(CurrentView),206) + IsEmpty(Window.Property(Alerts)) + StringCompare(Skin.String(twc-defaultview),204)]</visible>
+				<animation effect="fade" reversible="true" time="300">VisibleChange</animation>
+				<!-- Loading label used to inform user when fetching info -->
+				<control type="label">
+					<description>Current Item header label</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>590</width>
+					<height>30</height>
+					<font>font24_title</font>
+					<label>$LOCALIZE[SCRIPT204] - $LOCALIZE[31251]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>selected</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>loading label</description>
+					<posx>0</posx>
+					<posy>200</posy>
+					<width>830</width>
+					<height>40</height>
+					<font>font30</font>
+					<aligny>top</aligny>
+					<align>center</align>
+					<label>SCRIPT104</label>
+					<visible>IsEmpty(Window.Property(10DayHead1))</visible>
+				</control>
+				<control type="group">
+					<posy>50</posy>
+					<visible>!IsEmpty(Window.Property(10DayHead1))</visible>
+
+					<!-- Condition heading -->
+					<control type="label">
+						<posx>130</posx>
+						<posy>0</posy>
+						<width>250</width>
+						<height>20</height>
+						<font>font10_title</font>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<info>Window.Property(10DayHead1)</info>
+					</control>
+					<!-- Hi Low heading -->
+					<control type="label">
+						<posx>385</posx>
+						<posy>0</posy>
+						<width>80</width>
+						<height>20</height>
+						<font>font10_title</font>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<wrapmultiline>true</wrapmultiline>
+						<label>$INFO[Window.Property(10DayHead2)][CR]$INFO[Window.Property(10DayHead3)]</label>
+					</control>
+					<!-- Chance of precipitation heading -->
+					<control type="label">
+						<posx>470</posx>
+						<posy>0</posy>
+						<width>80</width>
+						<height>20</height>
+						<font>font10_title</font>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<wrapmultiline>true</wrapmultiline>
+						<info>Window.Property(10DayHead4)</info>
+					</control>
+					<!-- Wind heading -->
+					<control type="label">
+						<posx>550</posx>
+						<posy>0</posy>
+						<width>230</width>
+						<height>20</height>
+						<font>font10_title</font>
+						<textcolor>blue</textcolor>
+						<shadowcolor>black</shadowcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<wrapmultiline>true</wrapmultiline>
+						<info>Window.Property(10DayHead5)</info>
+					</control>
+					<!-- Forecast list ** required ** -->
+					<control type="list" id="700">
+						<posx>0</posx>
+						<posy>30</posy>
+						<width>810</width>
+						<height>401</height>
+						<onleft>2000</onleft>
+						<onright>6000</onright>
+						<onup>700</onup>
+						<ondown>700</ondown>
+						<viewtype label="535">list</viewtype>
+						<pagecontrol>6000</pagecontrol>
+						<scrolltime>200</scrolltime>
+						<itemlayout height="80">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>810</width>
+								<height>81</height>
+								<texture border="5">MenuItemNF.png</texture>
+							</control>
+							<control type="label">
+								<posx>60</posx>
+								<posy>0</posy>
+								<width>120</width>
+								<height>80</height>
+								<font>font13_title</font>
+								<textcolor>white</textcolor>
+								<shadowcolor>black</shadowcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Label][CR]$INFO[ListItem.Property(date)]</label>
+							</control>
+							<control type="image">
+								<posx>130</posx>
+								<posy>0</posy>
+								<width>250</width>
+								<height>80</height>
+								<colordiffuse>33FFFFFF</colordiffuse>
+								<texture border="5">StackFO.png</texture>
+							</control>
+							<control type="image">
+								<posx>140</posx>
+								<posy>5</posy>
+								<width>70</width>
+								<height>70</height>
+								<info>ListItem.Property(icon)</info>
+							</control>
+							<control type="label">
+								<posx>285</posx>
+								<posy>0</posy>
+								<width>130</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>grey2</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<wrapmultiline>true</wrapmultiline>
+								<label>$INFO[ListItem.Property(brief)]</label>
+							</control>
+							<control type="label">
+								<posx>425</posx>
+								<posy>0</posy>
+								<width>80</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<label>[B]$INFO[ListItem.Property(high)][/B][CR]$INFO[ListItem.Property(low)]</label>
+							</control>
+							<control type="image">
+								<posx>470</posx>
+								<posy>0</posy>
+								<width>80</width>
+								<height>80</height>
+								<colordiffuse>33FFFFFF</colordiffuse>
+								<texture border="5">StackFO.png</texture>
+							</control>
+							<control type="label">
+								<posx>510</posx>
+								<posy>0</posy>
+								<width>80</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<info>ListItem.Property(precip)</info>
+							</control>
+							<control type="label">
+								<posx>670</posx>
+								<posy>0</posy>
+								<width>530</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<wrapmultiline>true</wrapmultiline>
+								<label>$INFO[ListItem.Property(speed)][CR][COLOR=grey2]$INFO[ListItem.Property(wind)][/COLOR]</label>
+							</control>
+						</itemlayout>
+						<focusedlayout height="80">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>810</width>
+								<height>81</height>
+								<texture border="5">MenuItemNF.png</texture>
+							</control>
+							<control type="label">
+								<posx>60</posx>
+								<posy>0</posy>
+								<width>120</width>
+								<height>80</height>
+								<font>font13_title</font>
+								<textcolor>white</textcolor>
+								<shadowcolor>black</shadowcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Label][CR]$INFO[ListItem.Property(date)]</label>
+							</control>
+							<control type="image">
+								<posx>130</posx>
+								<posy>0</posy>
+								<width>250</width>
+								<height>80</height>
+								<colordiffuse>33FFFFFF</colordiffuse>
+								<texture border="5">StackFO.png</texture>
+								<visible>!Control.HasFocus(700)</visible>
+							</control>
+							<control type="image">
+								<posx>130</posx>
+								<posy>0</posy>
+								<width>250</width>
+								<height>80</height>
+								<colordiffuse>66FFFFFF</colordiffuse>
+								<texture border="5">StackFO.png</texture>
+								<visible>Control.HasFocus(700)</visible>
+							</control>
+							<control type="image">
+								<posx>140</posx>
+								<posy>5</posy>
+								<width>70</width>
+								<height>70</height>
+								<info>ListItem.Property(icon)</info>
+							</control>
+							<control type="label">
+								<posx>285</posx>
+								<posy>0</posy>
+								<width>130</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>grey2</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<wrapmultiline>true</wrapmultiline>
+								<label>$INFO[ListItem.Property(brief)]</label>
+							</control>
+							<control type="label">
+								<posx>425</posx>
+								<posy>0</posy>
+								<width>80</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<label>[B]$INFO[ListItem.Property(high)][/B][CR]$INFO[ListItem.Property(low)]</label>
+							</control>
+							<control type="image">
+								<posx>470</posx>
+								<posy>0</posy>
+								<width>80</width>
+								<height>80</height>
+								<colordiffuse>33FFFFFF</colordiffuse>
+								<texture border="5">StackFO.png</texture>
+								<visible>!Control.HasFocus(700)</visible>
+							</control>
+							<control type="image">
+								<posx>470</posx>
+								<posy>0</posy>
+								<width>80</width>
+								<height>80</height>
+								<colordiffuse>66FFFFFF</colordiffuse>
+								<texture border="5">StackFO.png</texture>
+								<visible>Control.HasFocus(700)</visible>
+							</control>
+							<control type="label">
+								<posx>510</posx>
+								<posy>0</posy>
+								<width>80</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<info>ListItem.Property(precip)</info>
+							</control>
+							<control type="label">
+								<posx>670</posx>
+								<posy>0</posy>
+								<width>530</width>
+								<height>80</height>
+								<font>font12</font>
+								<textcolor>white</textcolor>
+								<selectedcolor>selected</selectedcolor>
+								<align>center</align>
+								<aligny>center</aligny>
+								<wrapmultiline>true</wrapmultiline>
+								<label>$INFO[ListItem.Property(speed)][CR][COLOR=grey2]$INFO[ListItem.Property(wind)][/COLOR]</label>
+							</control>
+						</focusedlayout>
+					</control>
+					<!-- Scrollbar for forecast list -->
+					<control type="scrollbar" id="6000">
+						<description>Scroll Bar</description>
+						<posx>805</posx>
+						<posy>30</posy>
+						<width>25</width>
+						<height>400</height>
+						<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+						<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+						<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+						<textureslidernib>ScrollBarNib.png</textureslidernib>
+						<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+						<onleft>600</onleft>
+						<onright>2000</onright>
+						<showonepage>true</showonepage>
+						<orientation>vertical</orientation>
+					</control>
+				</control>
+				<!-- User instruction label -->
+				<control type="label">
+					<description>info label</description>
+					<posx>0</posx>
+					<posy>530</posy>
+					<width>510</width>
+					<height>100</height>
+					<font>font12caps</font>
+					<align>left</align>
+					<aligny>top</aligny>
+					<label>$LOCALIZE[SCRIPT56][CR]$LOCALIZE[SCRIPT52]</label>
+				</control>
+			</control>
+			<!-- Maps section ** Required ** -->
+			<control type="group" id="3000">
+				<posx>290</posx>
+				<posy>60</posy>
+				<visible>StringCompare(Window.Property(CurrentView),200) | [StringCompare(Window.Property(CurrentView),206) + IsEmpty(Window.Property(Alerts)) + StringCompare(Skin.String(twc-defaultview),200)]</visible>
+				<animation effect="fade" reversible="true" time="300">VisibleChange</animation>
+				<!-- Main buttons ** required ** -->
+				<control type="label">
+					<description>Current Item header label</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>590</width>
+					<height>30</height>
+					<font>font24_title</font>
+					<label>$LOCALIZE[SCRIPT200] - $LOCALIZE[31250]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>selected</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="group" id="5200">
+					<posx>120</posx>
+					<posy>40</posy>
+					<control type="image">
+						<posx>-5</posx>
+						<posy>0</posy>
+						<width>610</width>
+						<height>470</height>
+						<texture>black-back.png</texture>
+					</control>
+					<control type="radiobutton" id="5201">
+						<description>Map List Button</description>
+						<posx>0</posx>
+						<posy>5</posy>
+						<width>200</width>
+						<height>50</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[Skin.String(twc-maplist1-title)]</label>
+						<font>font12_title</font>
+						<textcolor>white</textcolor>
+						<disabledcolor>grey3</disabledcolor>
+						<pulseonselect>false</pulseonselect>
+						<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+						<texturefocus border="5">button-focus.png</texturefocus>
+						<onleft>2000</onleft>
+						<onright>5202</onright>
+						<onup>5100</onup>
+						<ondown>5100</ondown>
+						<visible>!IsEmpty(Window.Property(MapList1))</visible>
+						<onclick>SetProperty(CurrentMapList,1)</onclick>
+						<textoffsetx>20</textoffsetx>
+						<selected>StringCompare(Window.Property(CurrentMapList),1)</selected>
+					</control>
+					<control type="radiobutton" id="5202">
+						<description>Map List Button</description>
+						<posx>200</posx>
+						<posy>5</posy>
+						<width>200</width>
+						<height>50</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[Skin.String(twc-maplist2-title)]</label>
+						<font>font12_title</font>
+						<textcolor>white</textcolor>
+						<disabledcolor>grey3</disabledcolor>
+						<pulseonselect>false</pulseonselect>
+						<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+						<texturefocus border="5">button-focus.png</texturefocus>
+						<onleft>5201</onleft>
+						<onright>5203</onright>
+						<onup>5100</onup>
+						<ondown>5100</ondown>
+						<visible>!IsEmpty(Window.Property(MapList2))</visible>
+						<onclick>SetProperty(CurrentMapList,2)</onclick>
+						<textoffsetx>20</textoffsetx>
+						<selected>StringCompare(Window.Property(CurrentMapList),2)</selected>
+					</control>
+					<control type="radiobutton" id="5203">
+						<description>Map List Button</description>
+						<posx>400</posx>
+						<posy>5</posy>
+						<width>200</width>
+						<height>50</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[Skin.String(twc-maplist3-title)]</label>
+						<font>font12_title</font>
+						<textcolor>white</textcolor>
+						<disabledcolor>grey3</disabledcolor>
+						<pulseonselect>false</pulseonselect>
+						<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+						<texturefocus border="5">button-focus.png</texturefocus>
+						<onleft>5202</onleft>
+						<onright>2000</onright>
+						<onup>5100</onup>
+						<ondown>5100</ondown>
+						<visible>!IsEmpty(Window.Property(MapList3))</visible>
+						<onclick>SetProperty(CurrentMapList,3)</onclick>
+						<textoffsetx>20</textoffsetx>
+						<selected>StringCompare(Window.Property(CurrentMapList),3)</selected>
+					</control>
+					<control type="multiimage">
+						<description>maps multiimage</description>
+						<posx>10</posx>
+						<posy>60</posy>
+						<width>580</width>
+						<height>400</height>
+						<imagepath>$INFO[Skin.String(TWC-MapsPath)]</imagepath>
+						<timeperimage>500</timeperimage>
+						<pauseatend>1000</pauseatend>
+						<fadetime>0</fadetime>
+						<randomize>false</randomize>
+						<loop>yes</loop>
+						<aspectratio>keep</aspectratio>
+						<aligny>center</aligny>
+						<animation effect="fade" time="200" start="100" end="15" condition="Control.HasFocus(5201) | Control.HasFocus(5202) | Control.HasFocus(5203) | ControlGroup(5100).HasFocus">Conditional</animation>
+					</control>
+				</control>
+				<control type="group" id="5100">
+					<posx>120</posx>
+					<posy>40</posy>
+					<visible>Control.HasFocus(5201) | Control.HasFocus(5202) | Control.HasFocus(5203) | ControlGroup(5100).HasFocus</visible>
+					<!-- Local maps list ** Required ** -->
+					<control type="group">
+						<visible>StringCompare(Window.Property(CurrentMapList),1)</visible>
+						<control type="list" id="500">
+							<posx>10</posx>
+							<posy>60</posy>
+							<width>550</width>
+							<height>401</height>
+							<onleft>2000</onleft>
+							<onright>5000</onright>
+							<onup>5200</onup>
+							<ondown>500</ondown>
+							<viewtype label="535">list</viewtype>
+							<pagecontrol>5000</pagecontrol>
+							<scrolltime>200</scrolltime>
+							<itemlayout height="40">
+								<control type="image">
+									<posx>0</posx>
+									<posy>0</posy>
+									<width>550</width>
+									<height>41</height>
+									<texture>MenuItemNF.png</texture>
+								</control>
+								<control type="label">
+									<posx>10</posx>
+									<posy>0</posy>
+									<width>530</width>
+									<height>40</height>
+									<font>font12caps</font>
+									<aligny>center</aligny>
+									<textcolor>grey2</textcolor>
+									<selectedcolor>selected</selectedcolor>
+									<align>left</align>
+									<info>ListItem.Label</info>
+								</control>
+							</itemlayout>
+							<focusedlayout height="40">
+								<control type="image">
+									<posx>0</posx>
+									<posy>0</posy>
+									<width>550</width>
+									<height>41</height>
+									<texture>MenuItemNF.png</texture>
+									<visible>!Control.HasFocus(500)</visible>
+								</control>
+								<control type="image">
+									<posx>0</posx>
+									<posy>0</posy>
+									<width>550</width>
+									<height>41</height>
+									<texture>MenuItemFO.png</texture>
+									<visible>Control.HasFocus(500)</visible>
+								</control>
+								<control type="label">
+									<posx>10</posx>
+									<posy>0</posy>
+									<width>530</width>
+									<height>40</height>
+									<font>font12caps</font>
+									<aligny>center</aligny>
+									<textcolor>white</textcolor>
+									<selectedcolor>selected</selectedcolor>
+									<align>left</align>
+									<info>ListItem.Label</info>
+								</control>
+							</focusedlayout>
+						</control>
+						<!-- Scrollbar for maps list -->
+						<control type="scrollbar" id="5000">
+							<description>Scroll Bar</description>
+							<posx>570</posx>
+							<posy>60</posy>
+							<width>25</width>
+							<height>400</height>
+							<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+							<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+							<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+							<textureslidernib>ScrollBarNib.png</textureslidernib>
+							<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+							<onleft>500</onleft>
+							<onright>500</onright>
+							<showonepage>true</showonepage>
+							<orientation>vertical</orientation>
+						</control>
+					</control>
+					<!-- National maps list ** Required ** -->
+					<control type="group">
+						<visible>StringCompare(Window.Property(CurrentMapList),2)</visible>
+						<control type="list" id="501">
+							<posx>10</posx>
+							<posy>60</posy>
+							<width>550</width>
+							<height>401</height>
+							<onleft>2000</onleft>
+							<onright>5010</onright>
+							<onup>5200</onup>
+							<ondown>500</ondown>
+							<viewtype label="535">list</viewtype>
+							<pagecontrol>5010</pagecontrol>
+							<scrolltime>200</scrolltime>
+							<itemlayout height="40">
+								<control type="image">
+									<posx>0</posx>
+									<posy>0</posy>
+									<width>550</width>
+									<height>41</height>
+									<texture>MenuItemNF.png</texture>
+								</control>
+								<control type="label">
+									<posx>10</posx>
+									<posy>0</posy>
+									<width>530</width>
+									<height>40</height>
+									<font>font12caps</font>
+									<aligny>center</aligny>
+									<textcolor>grey2</textcolor>
+									<selectedcolor>selected</selectedcolor>
+									<align>left</align>
+									<info>ListItem.Label</info>
+								</control>
+							</itemlayout>
+							<focusedlayout height="40">
+								<control type="image">
+									<posx>0</posx>
+									<posy>0</posy>
+									<width>550</width>
+									<height>41</height>
+									<texture>MenuItemNF.png</texture>
+									<visible>!Control.HasFocus(501)</visible>
+								</control>
+								<control type="image">
+									<posx>0</posx>
+									<posy>0</posy>
+									<width>550</width>
+									<height>41</height>
+									<texture>MenuItemFO.png</texture>
+									<visible>Control.HasFocus(501)</visible>
+								</control>
+								<control type="label">
+									<posx>10</posx>
+									<posy>0</posy>
+									<width>530</width>
+									<height>40</height>
+									<font>font12caps</font>
+									<aligny>center</aligny>
+									<textcolor>white</textcolor>
+									<selectedcolor>selected</selectedcolor>
+									<align>left</align>
+									<info>ListItem.Label</info>
+								</control>
+							</focusedlayout>
+						</control>
+						<!-- Scrollbar for maps list -->
+						<control type="scrollbar" id="5010">
+							<description>Scroll Bar</description>
+							<posx>570</posx>
+							<posy>60</posy>
+							<width>25</width>
+							<height>400</height>
+							<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+							<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+							<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+							<textureslidernib>ScrollBarNib.png</textureslidernib>
+							<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+							<onleft>501</onleft>
+							<onright>501</onright>
+							<showonepage>true</showonepage>
+							<orientation>vertical</orientation>
+						</control>
+					</control>
+					<!-- Travel maps list ** Required ** -->
+					<control type="group">
+						<visible>StringCompare(Window.Property(CurrentMapList),3)</visible>
+						<control type="list" id="502">
+							<posx>10</posx>
+							<posy>60</posy>
+							<width>550</width>
+							<height>401</height>
+							<onleft>2000</onleft>
+							<onright>5020</onright>
+							<onup>5200</onup>
+							<ondown>500</ondown>
+							<viewtype label="535">list</viewtype>
+							<pagecontrol>5020</pagecontrol>
+							<scrolltime>200</scrolltime>
+							<itemlayout height="40">
+								<control type="image">
+									<posx>0</posx>
+									<posy>0</posy>
+									<width>550</width>
+									<height>41</height>
+									<texture>MenuItemNF.png</texture>
+								</control>
+								<control type="label">
+									<posx>10</posx>
+									<posy>0</posy>
+									<width>530</width>
+									<height>40</height>
+									<font>font12caps</font>
+									<aligny>center</aligny>
+									<textcolor>grey2</textcolor>
+									<selectedcolor>selected</selectedcolor>
+									<align>left</align>
+									<info>ListItem.Label</info>
+								</control>
+							</itemlayout>
+							<focusedlayout height="40">
+								<control type="image">
+									<posx>0</posx>
+									<posy>0</posy>
+									<width>550</width>
+									<height>41</height>
+									<texture>MenuItemNF.png</texture>
+									<visible>!Control.HasFocus(502)</visible>
+								</control>
+								<control type="image">
+									<posx>0</posx>
+									<posy>0</posy>
+									<width>550</width>
+									<height>41</height>
+									<texture>MenuItemFO.png</texture>
+									<visible>Control.HasFocus(502)</visible>
+								</control>
+								<control type="label">
+									<posx>10</posx>
+									<posy>0</posy>
+									<width>530</width>
+									<height>40</height>
+									<font>font12caps</font>
+									<aligny>center</aligny>
+									<textcolor>white</textcolor>
+									<selectedcolor>selected</selectedcolor>
+									<align>left</align>
+									<info>ListItem.Label</info>
+								</control>
+							</focusedlayout>
+						</control>
+						<!-- Scrollbar for maps list -->
+						<control type="scrollbar" id="5020">
+							<description>Scroll Bar</description>
+							<posx>570</posx>
+							<posy>60</posy>
+							<width>25</width>
+							<height>400</height>
+							<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+							<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+							<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+							<textureslidernib>ScrollBarNib.png</textureslidernib>
+							<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+							<onleft>502</onleft>
+							<onright>502</onright>
+							<showonepage>true</showonepage>
+							<orientation>vertical</orientation>
+						</control>
+					</control>
+				</control>
+				<!-- User instruction label -->
+				<control type="label">
+					<description>info label</description>
+					<posx>0</posx>
+					<posy>530</posy>
+					<width>510</width>
+					<height>100</height>
+					<font>font12caps</font>
+					<align>left</align>
+					<aligny>top</aligny>
+					<label>$LOCALIZE[SCRIPT51][CR]$LOCALIZE[SCRIPT52]</label>
+				</control>
+				<!-- Maps multiimage ** Required ** -->
+				<control type="group">
+					<posx>220</posx>
+					<posy>60</posy>
+					<width>600</width>
+					<height>420</height>
+					<animation effect="zoom" reversible="true" start="220,60,600,420" end="0,350,200,140" time="200" condition="Control.HasFocus(5201) | Control.HasFocus(5202) | Control.HasFocus(5203) | ControlGroup(5100).HasFocus">Conditional</animation>
+				</control>
+				<!-- Toggle map button -->
+				<control type="button" id="301">
+					<description>Toggle button</description>
+					<visible>false</visible>
+				</control>
+			</control>
+			<!-- Alerts section ** Required ** -->
+			<control type="group" id="3000">
+				<posx>290</posx>
+				<posy>60</posy>
+				<visible>StringCompare(Window.Property(CurrentView),206) + !IsEmpty(Window.Property(Alerts))</visible>
+				<animation effect="fade" reversible="true" time="300">VisibleChange</animation>
+				<control type="label">
+					<description>Current Item header label</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>590</width>
+					<height>30</height>
+					<font>font24_title</font>
+					<label>$LOCALIZE[SCRIPT206] - $LOCALIZE[8]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>selected</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="textbox">
+					<description>alert</description>
+					<posx>0</posx>
+					<posy>40</posy>
+					<width>790</width>
+					<height>480</height>
+					<font>font13</font>
+					<textcolor>white</textcolor>
+					<pagecontrol>8000</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<align>left</align>
+					<aligny>top</aligny>
+					<spinheight>-5</spinheight>
+					<info>Window.Property(Alerts)</info>
+					<autoscroll time="2000" delay="10000" repeat="15000">!Control.Hasfocus(8000)</autoscroll>
+					<visible>StringCompare(Window.Property(CurrentView),206)</visible>
+				</control>
+				<!-- Scrollbar for alert textbox -->
+				<control type="scrollbar" id="8000">
+					<description>Scroll Bar</description>
+					<posx>800</posx>
+					<posy>40</posy>
+					<width>25</width>
+					<height>480</height>
+					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+					<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>ScrollBarNib.png</textureslidernib>
+					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+					<onleft>2000</onleft>
+					<onright>2000</onright>
+					<showonepage>true</showonepage>
+					<orientation>vertical</orientation>
+				</control>
+				<!-- User instruction label -->
+				<control type="label">
+					<description>info label</description>
+					<posx>0</posx>
+					<posy>530</posy>
+					<width>510</width>
+					<height>100</height>
+					<font>font12caps</font>
+					<align>left</align>
+					<aligny>top</aligny>
+					<label>[CR]$LOCALIZE[SCRIPT52]</label>
+				</control>
+			</control>
+			<!-- Settings section ** Required ** -->
+			<control type="group" id="3000">
+				<posx>290</posx>
+				<posy>60</posy>
+				<visible>StringCompare(Window.Property(CurrentView),205)</visible>
+				<animation effect="fade" reversible="true" time="300">VisibleChange</animation>
+				<control type="label">
+					<description>Current Item header label</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>590</width>
+					<height>30</height>
+					<font>font24_title</font>
+					<label>$LOCALIZE[SCRIPT205] - $LOCALIZE[31252]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>selected</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<!-- Settings group -->
+				<control type="grouplist" id="9000">
+					<posx>0</posx>
+					<posy>40</posy>
+					<width>790</width>
+					<height>241</height>
+					<itemgap>-1</itemgap>
+					<pagecontrol>-</pagecontrol>
+					<onleft>2000</onleft>
+					<onright>2000</onright>
+					<onup>2000</onup>
+					<ondown>9000</ondown>
+					<!-- Setting 1 -->
+					<control type="radiobutton" id="400">
+						<description>enable animations</description>
+						<width>790</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<label>SCRIPT400</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<selected>!Skin.HasSetting(twc-animated)</selected>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<pulseonselect>false</pulseonselect>
+					</control>
+					<!-- Setting 2 -->
+					<control type="radiobutton" id="401">
+						<description>enable metric</description>
+						<width>790</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<label>SCRIPT401</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<selected>Skin.HasSetting(twc-metric)</selected>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<pulseonselect>false</pulseonselect>
+					</control>
+					<!-- Setting 3 -->
+					<control type="radiobutton" id="402">
+						<description>show alerts at start</description>
+						<width>790</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<label>SCRIPT402</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<selected>!Skin.HasSetting(twc-show-alerts)</selected>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<pulseonselect>false</pulseonselect>
+					</control>
+					<!-- Setting 4 -->
+					<control type="button" id="403">
+						<description>map list #1 category</description>
+						<width>790</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<disabledcolor>disabled</disabledcolor>
+						<label>SCRIPT403</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label2>$INFO[Skin.String(twc-maplist1-category)]</label2>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<pulseonselect>false</pulseonselect>
+					</control>
+					<!-- Setting 5 -->
+					<control type="button" id="404">
+						<description>map list #2 category</description>
+						<width>790</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<disabledcolor>disabled</disabledcolor>
+						<label>SCRIPT404</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label2>$INFO[Skin.String(twc-maplist2-category)]</label2>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<pulseonselect>false</pulseonselect>
+					</control>
+					<!-- Setting 6 -->
+					<control type="button" id="405">
+						<description>map list #3 category</description>
+						<width>790</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<disabledcolor>disabled</disabledcolor>
+						<label>SCRIPT405</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label2>$INFO[Skin.String(twc-maplist3-category)]</label2>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<pulseonselect>false</pulseonselect>
+					</control>
+				</control>
+				<!-- info headers -->
+				<control type="image">
+					<posx>0</posx>
+					<posy>310</posy>
+					<width>300</width>
+					<height>200</height>
+					<texture>weather.com/default/weather.png</texture>
+					<bordertexture border="8">ThumbBorder.png</bordertexture>
+					<bordersize>8</bordersize>
+				</control>
+				<control type="label">
+					<description>header</description>
+					<posx>320</posx>
+					<posy>350</posy>
+					<width>450</width>
+					<height>100</height>
+					<font>font12_title</font>
+					<textcolor>selected</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<align>left</align>
+					<aligny>top</aligny>
+					<label>$LOCALIZE[SCRIPT0]</label>
+				</control>
+				<control type="label">
+					<description>info headers</description>
+					<posx>320</posx>
+					<posy>390</posy>
+					<width>170</width>
+					<height>100</height>
+					<font>font12_title</font>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<align>left</align>
+					<aligny>top</aligny>
+					<label>$LOCALIZE[SCRIPT600]:[CR][CR]$LOCALIZE[SCRIPT601]:[CR][CR]$LOCALIZE[SCRIPT602]:[CR][CR]$LOCALIZE[SCRIPT603]:</label>
+				</control>
+				<!-- info values -->
+				<control type="label">
+					<description>info headers</description>
+					<posx>500</posx>
+					<posy>390</posy>
+					<width>300</width>
+					<height>100</height>
+					<font>font12_title</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<align>left</align>
+					<aligny>top</aligny>
+					<label>$INFO[Window.Property(version)][CR][CR]$INFO[Window.Property(author)][CR][CR]$LOCALIZE[SCRIPT2][CR][CR]$INFO[Window.Property(defaultview)]</label>
+				</control>
+				<!-- User instruction label -->
+				<control type="label">
+					<description>info label</description>
+					<posx>0</posx>
+					<posy>530</posy>
+					<width>510</width>
+					<height>100</height>
+					<font>font12caps</font>
+					<align>left</align>
+					<aligny>top</aligny>
+					<label>[CR]$LOCALIZE[SCRIPT52]</label>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,194 @@
+<window id="130">
+	<defaultcontrol>1</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>290</posx>
+		<posy>75</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>700</width>
+			<height>570</height>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<posx>80</posx>
+			<posy>10</posy>
+			<width>450</width>
+			<height>90</height>
+			<aspectratio>stretch</aspectratio>
+			<texture>GlassTitleBar.png</texture>
+		</control>
+		<control type="button">
+			<description>Close Window button</description>
+			<posx>610</posx>
+			<posy>9</posy>
+			<width>64</width>
+			<height>32</height>
+			<label>-</label>
+			<font>-</font>
+			<onclick>PreviousMenu</onclick>
+			<texturefocus>DialogCloseButton-focus.png</texturefocus>
+			<texturenofocus>DialogCloseButton.png</texturenofocus>
+			<onleft>1</onleft>
+			<onright>1</onright>
+			<onup>1</onup>
+			<ondown>1</ondown>
+			<visible>system.getbool(input.enablemouse)</visible>
+		</control>
+		<control type="label">
+			<description>header label</description>
+			<posx>20</posx>
+			<posy>18</posy>
+			<width>660</width>
+			<height>30</height>
+			<font>font13_title</font>
+			<label>$INFO[Window.Property(heading)]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+		</control>
+		<control type="image" id="2">
+			<description>profile image</description>
+			<posx>20</posx>
+			<posy>70</posy>
+			<width>150</width>
+			<height>150</height>
+			<align>left</align>
+			<aspectratio>stretch</aspectratio>
+			<texture>unknown-user.png</texture>
+			<bordertexture border="12">ThumbBorder.png</bordertexture>
+			<bordersize>10</bordersize>
+		</control>
+		<control type="label">
+			<description>profile name label</description>
+			<posx>200</posx>
+			<posy>70</posy>
+			<width>460</width>
+			<align>left</align>
+			<font>font13_title</font>
+			<textcolor>blue</textcolor>
+			<label>$LOCALIZE[20093]</label>
+		</control>
+		<control type="label" id="1000">
+			<description>profile name Value</description>
+			<posx>200</posx>
+			<posy>95</posy>
+			<width>460</width>
+			<align>left</align>
+			<font>font16caps</font>
+			<textcolor>white</textcolor>
+		</control>
+		<control type="label">
+			<description>profile directory label</description>
+			<posx>200</posx>
+			<posy>155</posy>
+			<width>460</width>
+			<align>left</align>
+			<font>font13_title</font>
+			<textcolor>blue</textcolor>
+			<label>$LOCALIZE[20070]</label>
+		</control>
+		<control type="label" id="1001">
+			<description>profile directory Value</description>
+			<posx>200</posx>
+			<posy>180</posy>
+			<width>460</width>
+			<align>left</align>
+			<font>font13</font>
+			<textcolor>white</textcolor>
+		</control>
+		<control type="grouplist" id="5">
+			<description>control area</description>
+			<posx>20</posx>
+			<posy>240</posy>
+			<width>660</width>
+			<height>240</height>
+			<itemgap>-1</itemgap>
+			<pagecontrol>60</pagecontrol>
+			<onleft>28</onleft>
+			<onright>60</onright>
+			<onup>28</onup>
+			<ondown>28</ondown>
+		</control>
+		<control type="button" id="7">
+			<description>Default Button</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<height>40</height>
+			<font>font13</font>
+			<textcolor>grey2</textcolor>
+			<focusedcolor>white</focusedcolor>
+			<texturefocus>MenuItemFO.png</texturefocus>
+			<texturenofocus>MenuItemNF.png</texturenofocus>
+		</control>
+		<control type="radiobutton" id="8">
+			<description>Default RadioButton</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<height>40</height>
+			<font>font13</font>
+			<textcolor>grey2</textcolor>
+			<focusedcolor>white</focusedcolor>
+			<texturefocus>MenuItemFO.png</texturefocus>
+			<texturenofocus>MenuItemNF.png</texturenofocus>
+		</control>
+		<control type="spincontrolex" id="9">
+			<description>Default SpinControlex</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<height>40</height>
+			<font>font13</font>
+			<textcolor>grey2</textcolor>
+			<focusedcolor>white</focusedcolor>
+			<texturefocus>MenuItemFO.png</texturefocus>
+			<texturenofocus>MenuItemNF.png</texturenofocus>
+			<aligny>center</aligny>
+			<reverse>yes</reverse>
+		</control>
+		<control type="image" id="11">
+			<description>separator image</description>
+			<height>2</height>
+			<texture>separator2.png</texture>
+		</control>
+		<control type="button" id="28">
+			<description>Ok Button</description>
+			<posx>145</posx>
+			<posy>500</posy>
+			<width>200</width>
+			<height>40</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+			<texturefocus border="5">button-focus.png</texturefocus>
+			<font>font12_title</font>
+			<label>186</label>
+			<onleft>29</onleft>
+			<onright>29</onright>
+			<onup>5</onup>
+			<ondown>5</ondown>
+		</control>
+		<control type="button" id="29">
+			<description>Cancel Button</description>
+			<posx>355</posx>
+			<posy>500</posy>
+			<width>200</width>
+			<height>40</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+			<texturefocus border="5">button-focus.png</texturefocus>
+			<font>font12_title</font>
+			<label>222</label>
+			<onleft>28</onleft>
+			<onright>28</onright>
+			<onup>5</onup>
+			<ondown>5</ondown>
+		</control>
+	</controls>
+</window>

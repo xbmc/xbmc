@@ -1,0 +1,226 @@
+<window>
+	<coordinates>
+		<system>1</system>
+		<posx>215</posx>
+		<posy>105</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>850</width>
+			<height>510</height>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>850</width>
+			<height>510</height>
+			<texture border="40">DialogFront.png</texture>
+		</control>
+		<control type="label" id="500">
+			<description>heading label</description>
+			<posx>40</posx>
+			<posy>40</posy>
+			<width>790</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font18</font>
+			<label>-</label>
+			<textcolor>white</textcolor>
+		</control>
+		<control type="image">
+			<posx>40</posx>
+			<posy>78</posy>
+			<width>790</width>
+			<height>2</height>
+			<texture>separator.png</texture>
+		</control>
+		<!-- skin selection controls -->
+		<!-- ** Required ** Do not change <description> or <type> -->
+		<control type="multiimage" id="501">
+			<posx>500</posx>
+			<posy>100</posy>
+			<width>310</width>
+			<height>315</height>
+			<imagepath>thumbs</imagepath>
+			<info>Skin.String(AMT-chooser-thumbfolder)</info>
+			<timeperimage>2000</timeperimage>
+			<fadetime>500</fadetime>
+			<visible>!Control.IsVisible(504) + !Control.IsVisible(505)</visible>
+			<aspectratio>keep</aspectratio>
+		</control>
+		<control type="textbox" id="505">
+			<posx>500</posx>
+			<posy>100</posy>
+			<width>310</width>
+			<height>315</height>
+			<font>font12</font>
+			<info>Container(503).ListItem.Label2</info>
+		</control>
+		<!-- ** Required ** Do not change <id> or <type> -->
+		<control type="list" id="503">
+			<posx>45</posx>
+			<posy>100</posy>
+			<width>450</width>
+			<height>320</height>
+			<onup>503</onup>
+			<onleft>503</onleft>
+			<onright>503</onright>
+			<ondown>503</ondown>
+			<pagecontrol>-</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="40">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>450</width>
+					<height>35</height>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>430</width>
+					<height>35</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="40">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>450</width>
+					<height>35</height>
+					<visible>!Control.HasFocus(503)</visible>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>450</width>
+					<height>35</height>
+					<visible>Control.HasFocus(503)</visible>
+					<texture border="5">button-focus.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>430</width>
+					<height>35</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="label">
+			<description>Page label</description>
+			<posx>40</posx>
+			<posy>430</posy>
+			<width>450</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font12b</font>
+			<label>($INFO[Container(503).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(503).CurrentPage]/$INFO[Container(503).NumPages])</label>
+			<visible>Control.IsVisible(503)</visible>
+		</control>
+		<!-- ** Required ** Do not change <description> -->
+		<control type="label" id="502">
+			<description>Chooser Warning Label</description>
+			<posx>500</posx>
+			<posy>430</posy>
+			<width>310</width>
+			<height>20</height>
+			<align>center</align>
+			<font>font12b</font>
+			<label>$LOCALIZE[SCRIPT231]</label>
+		</control>
+		<!-- ** Required ** Do not change <id> or <type> -->
+		<control type="list" id="504">
+			<posx>45</posx>
+			<posy>100</posy>
+			<width>760</width>
+			<height>320</height>
+			<onup>504</onup>
+			<onleft>504</onleft>
+			<onright>504</onright>
+			<ondown>504</ondown>
+			<pagecontrol>-</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="40">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>760</width>
+					<height>35</height>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>740</width>
+					<height>35</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="40">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>760</width>
+					<height>35</height>
+					<visible>!Control.HasFocus(504)</visible>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>760</width>
+					<height>35</height>
+					<visible>Control.HasFocus(504)</visible>
+					<texture border="5">button-focus.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>740</width>
+					<height>35</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="label">
+			<description>Page label</description>
+			<posx>40</posx>
+			<posy>430</posy>
+			<width>760</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font12b</font>
+			<label>($INFO[Container(504).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(504).CurrentPage]/$INFO[Container(504).NumPages])</label>
+			<visible>Control.IsVisible(504)</visible>
+		</control>
+	</controls>
+</window>

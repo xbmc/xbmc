@@ -1,0 +1,39 @@
+<window id="2007">
+	<defaultcontrol>2</defaultcontrol>
+	<controls>
+		<control type="group" id="13">
+			<posx>130r</posx>
+			<posy>10</posy>
+			<visible>!Skin.HasSetting(Show_SlideShow_Paused)</visible>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>120</width>
+				<height>35</height>
+				<texture>black-back.png</texture>
+				<bordertexture border="3">NoCover_1.png</bordertexture>
+				<bordersize>5</bordersize>
+			</control>
+			<control type="label">
+				<description>paused label</description>
+				<posx>10</posx>
+				<posy>0</posy>
+				<width>100</width>
+				<height>35</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font10</font>
+				<textcolor>white</textcolor>
+				<label>31043</label>
+			</control>
+		</control>
+		<!-- media infos -->
+		<control type="group">
+			<posx>20</posx>
+			<posy>180r</posy>
+			<visible>Player.ShowInfo + Player.HasMedia</visible>
+			<include>VisibleFadeEffect</include>
+			<include>SmallMusicInfo</include>
+		</control>
+	</controls>
+</window>

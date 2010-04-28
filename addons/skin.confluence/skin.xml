@@ -1,0 +1,13 @@
+<skin>
+	<defaultresolution>720p</defaultresolution>
+	<defaultresolutionwide>720p</defaultresolutionwide>
+	<defaultthemename>textures.xpr</defaultthemename>
+	<version>2.11</version>
+	<effectslowdown>.75</effectslowdown>
+	<debugging>false</debugging>
+	<credits>
+		<skinname>Confluence</skinname>
+		<name>Coded by Jezz_X</name>
+		<name>Graphics by Jezz_X, Team Razorfish</name>
+	</credits>
+</skin>

@@ -1,0 +1,363 @@
+<window id="7">
+	<defaultcontrol always="true">95</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>CommonSettingsBackground</include>
+		<include>CommonMediaPlayingBackground</include>
+		<control type="group">
+			<posx>90</posx>
+			<posy>50</posy>
+			<animation type="WindowOpen" reversible="false">
+				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300" />
+				<effect type="fade" start="0" end="100" time="300" />
+			</animation>
+			<animation type="WindowClose" reversible="false">
+				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300" />
+				<effect type="fade" start="100" end="0" time="300" />
+			</animation>			
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1100</width>
+				<height>640</height>
+				<texture border="20">DialogBack.png</texture>
+			</control>
+			<control type="image">
+				<description>LOGO</description>
+				<posx>30</posx>
+				<posy>15</posy>
+				<width>220</width>
+				<height>80</height>
+				<aspectratio>keep</aspectratio>
+				<texture>Confluence_Logo.png</texture>
+			</control>
+			<control type="grouplist" id="9000">
+				<posx>10</posx>
+				<posy>90</posy>
+				<width>260</width>
+				<height>481</height>
+				<itemgap>-1</itemgap>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<control type="button" id="95">
+					<description>Button Summary Values</description>
+					<height>60</height>
+					<width>241</width>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>20037</label>
+				</control>
+				<control type="button" id="94">
+					<description>Button Storage</description>
+					<height>60</height>
+					<width>241</width>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>13277</label>
+				</control>
+				<control type="button" id="92">
+					<description>Button HDD</description>
+					<height>60</height>
+					<width>241</width>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>13275</label>
+					<visible>System.Platform.Xbox</visible>
+				</control>
+				<control type="button" id="93">
+					<description>Button DVD</description>
+					<height>60</height>
+					<width>241</width>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>13276</label>
+					<visible>System.Platform.Xbox</visible>
+				</control>
+				<control type="button" id="96">
+					<description>Button Network</description>
+					<height>60</height>
+					<width>241</width>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>13279</label>
+				</control>
+				<control type="button" id="97">
+					<description>Button Video</description>
+					<height>60</height>
+					<width>241</width>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>13280</label>
+				</control>
+				<control type="button" id="98">
+					<description>Button Hardware</description>
+					<height>60</height>
+					<width>241</width>
+					<textoffsetx>0</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font13_title</font>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>13281</label>
+				</control>
+			</control>
+			<control type="image">
+				<posx>268</posx>
+				<posy>10</posy>
+				<width>790</width>
+				<height>618</height>
+				<texture border="5">black-back2.png</texture>
+			</control>
+			<control type="image">
+				<posx>268</posx>
+				<posy>10</posy>
+				<width>804</width>
+				<height>100</height>
+				<aspectratio>stretch</aspectratio>
+				<texture>GlassTitleBar.png</texture>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<posx>300</posx>
+				<posy>20</posy>
+				<width>740</width>
+				<height>30</height>
+				<font>font24_title</font>
+				<label>$LOCALIZE[130] - $INFO[Control.GetLabel(40)]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label" id="40">
+				<description>Hiddenlabel to pass to above</description>
+				<visible>false</visible>
+			</control>
+			<control type="group">
+				<posx>290</posx>
+				<posy>100</posy>
+				<control type="label" id="2">
+					<description>Label 2</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>750</width>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="label" id="3">
+					<description>Label 3</description>
+					<posx>0</posx>
+					<posy>35</posy>
+					<width>750</width>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="label" id="4">
+					<description>Label 4</description>
+					<posx>0</posx>
+					<posy>70</posy>
+					<width>750</width>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="label" id="5">
+					<description>Label 5</description>
+					<posx>0</posx>
+					<posy>105</posy>
+					<width>750</width>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="label" id="6">
+					<description>Label 6</description>
+					<posx>0</posx>
+					<posy>140</posy>
+					<width>750</width>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="label" id="7">
+					<description>Label 7</description>
+					<posx>0</posx>
+					<posy>175</posy>
+					<width>750</width>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="label" id="8">
+					<description>Label 8</description>
+					<posx>0</posx>
+					<posy>210</posy>
+					<width>750</width>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="label" id="9">
+					<description>Label 9</description>
+					<posx>0</posx>
+					<posy>245</posy>
+					<width>750</width>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="label" id="10">
+					<description>Label 10</description>
+					<posx>0</posx>
+					<posy>280</posy>
+					<width>750</width>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="label" id="11">
+					<description>Label 11</description>
+					<posx>0</posx>
+					<posy>315</posy>
+					<width>750</width>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="label" id="52">
+					<description>XBMC XBE BUILD Version</description>
+					<posx>750</posx>
+					<posy>400</posy>
+					<width>700</width>
+					<label>144</label>
+					<align>right</align>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<font>font13_title</font>
+				</control>
+				<control type="label" id="52">
+					<description>CPU Text</description>
+					<posx>420</posx>
+					<posy>450</posy>
+					<width>350</width>
+					<height>25</height>
+					<label>$LOCALIZE[13271] $INFO[System.CPUUsage]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<font>font12_title</font>
+				</control>
+				<control type="progress">
+					<description>CPU BAR</description>
+					<posx>430</posx>
+					<posy>455</posy>
+					<width>320</width>
+					<height>16</height>
+					<info>System.CPUUsage</info>
+				</control>
+				<control type="label" id="52">
+					<description>Memory Text</description>
+					<posx>420</posx>
+					<posy>480</posy>
+					<width>350</width>
+					<height>25</height>
+					<label>$LOCALIZE[31309] $INFO[system.memory(used.percent)]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<font>font12_title</font>
+				</control>
+				<control type="progress">
+					<description>Memory BAR</description>
+					<posx>430</posx>
+					<posy>485</posy>
+					<width>320</width>
+					<height>16</height>
+					<info>system.memory(used)</info>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<posx>60</posx>
+			<posy>0</posy>
+			<animation effect="slide" end="-310,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="slide" start="-310,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>250</width>
+				<height>35</height>
+				<texture border="0,0,32,0">header.png</texture>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<posx>220</posx>
+				<label>$LOCALIZE[130]</label>
+			</control>
+		</control>
+		<control type="group">
+			<posx>20</posx>
+			<posy>0</posy>
+			<animation effect="slide" end="-270,0" time="400" tween="quadratic" easing="out">WindowClose</animation>
+			<animation effect="slide" start="-270,0" time="400" tween="quadratic" easing="out">WindowOpen</animation>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>80</width>
+				<height>35</height>
+				<texture border="0,0,32,0">header.png</texture>
+			</control>
+			<control type="button">
+				<posx>20</posx>
+				<posy>5</posy>
+				<width>25</width>
+				<height>20</height>
+				<texturenofocus>HomeIcon.png</texturenofocus>
+				<texturefocus>HomeIcon-Focus.png</texturefocus>
+				<label>-</label>
+				<onclick>ActivateWindow(Home)</onclick>
+			</control>
+		</control>
+		<include>Clock</include>
+	</controls>
+</window>

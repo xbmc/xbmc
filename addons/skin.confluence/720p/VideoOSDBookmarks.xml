@@ -1,0 +1,158 @@
+<window id="125">
+	<defaultcontrol always="true">2</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>240</posx>
+		<posy>115</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>800</width>
+			<height>490</height>
+			<colordiffuse>DDFFFFFF</colordiffuse>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<posx>80</posx>
+			<posy>10</posy>
+			<width>640</width>
+			<height>90</height>
+			<aspectratio>stretch</aspectratio>
+			<texture>GlassTitleBar.png</texture>
+		</control>
+		<control type="button">
+			<description>Close Window button</description>
+			<posx>710</posx>
+			<posy>9</posy>
+			<width>64</width>
+			<height>32</height>
+			<label>-</label>
+			<font>-</font>
+			<onclick>PreviousMenu</onclick>
+			<texturefocus>DialogCloseButton-focus.png</texturefocus>
+			<texturenofocus>DialogCloseButton.png</texturenofocus>
+			<onleft>2</onleft>
+			<onright>2</onright>
+			<onup>2</onup>
+			<ondown>2</ondown>
+			<visible>system.getbool(input.enablemouse)</visible>
+		</control>
+		<control type="label">
+			<description>header label</description>
+			<posx>20</posx>
+			<posy>18</posy>
+			<width>760</width>
+			<height>30</height>
+			<font>font13_title</font>
+			<label>[UPPERCASE]$LOCALIZE[298][/UPPERCASE] - ($INFO[Container(11).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages])</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+		</control>
+		<control type="panel" id="11">
+			<posx>40</posx>
+			<posy>65</posy>
+			<width>720</width>
+			<height>350</height>
+			<onleft>2</onleft>
+			<onright>3</onright>
+			<ondown>2</ondown>
+			<onup>2</onup>
+			<scrolltime>200</scrolltime>
+			<viewtype label="536">icon</viewtype>
+			<pagecontrol>-</pagecontrol>
+			<orientation>horizontal</orientation>
+			<itemlayout height="175" width="240">
+				<control type="image">
+					<posx>2</posx>
+					<posy>2</posy>
+					<width>235</width>
+					<height>170</height>
+					<texture border="3">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>7</posx>
+					<posy>7</posy>
+					<width>220</width>
+					<height>140</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>112</posx>
+					<posy>150</posy>
+					<width>225</width>
+					<height>15</height>
+					<font>font12</font>
+					<selectedcolor>green</selectedcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="175" width="240">
+				<control type="image">
+					<posx>2</posx>
+					<posy>2</posy>
+					<width>235</width>
+					<height>170</height>
+					<texture border="3">folder-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>7</posx>
+					<posy>7</posy>
+					<width>220</width>
+					<height>140</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>112</posx>
+					<posy>1507</posy>
+					<width>225</width>
+					<height>15</height>
+					<font>font12</font>
+					<selectedcolor>green</selectedcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="grouplist" id="9000">
+			<posx>20</posx>
+			<posy>425</posy>
+			<width>760</width>
+			<height>40</height>
+			<itemgap>2</itemgap>
+			<align>center</align>
+			<orientation>horizontal</orientation>
+			<onleft>9000</onleft>
+			<onright>9000</onright>
+			<onup>11</onup>
+			<ondown>11</ondown>
+			<control type="button" id="2">
+				<description>Create Bookmark button</description>
+				<label>294</label>
+				<width>250</width>
+				<include>ButtonInfoDialogsCommonValues</include>
+			</control>
+			<control type="button" id="3">
+				<description>Clear Bookmark button</description>
+				<label>296</label>
+				<width>250</width>
+				<include>ButtonInfoDialogsCommonValues</include>
+			</control>
+			<control type="button" id="4">
+				<description>Clear Bookmark button</description>
+				<label>20406</label>
+				<width>250</width>
+				<include>ButtonInfoDialogsCommonValues</include>
+				<visible>videoplayer.content(episodes)</visible>
+			</control>
+		</control>
+	</controls>
+</window>
