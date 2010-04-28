@@ -164,18 +164,19 @@ static void VDADecoderCallback(
 {
   CDVDVideoCodecVDA *ctx = (CDVDVideoCodecVDA *)decompressionOutputRefCon;
 
-  if (NULL == imageBuffer) 
+  if (imageBuffer == NULL) 
   {
-    printf("myDecoderOutputCallback - NULL image buffer!\n");
-    if (kVDADecodeInfo_FrameDropped & infoFlags) {
-        printf("myDecoderOutputCallback - frame dropped!\n");
-    }
+    CLog::Log(LOGERROR, "%s - imageBuffer is NULL", __FUNCTION__);
     return;
   }
-
-  if (kCVPixelFormatType_420YpCbCr8Planar != CVPixelBufferGetPixelFormatType(imageBuffer)) {
-    printf("myDecoderOutputCallback - image buffer format not 'yv12'!\n");
+  if (kCVPixelFormatType_420YpCbCr8Planar != CVPixelBufferGetPixelFormatType(imageBuffer))
+  {
+    CLog::Log(LOGERROR, "%s - imageBuffer format is not 'yv12", __FUNCTION__);
     return;
+  }
+  if (kVDADecodeInfo_FrameDropped & infoFlags)
+  {
+    CLog::Log(LOGDEBUG, "%s - frame dropped", __FUNCTION__);
   }
 
   // allocate a new frame and populate it with some information
@@ -325,7 +326,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     
     if (kVDADecoderNoErr != status) 
     {
-      CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Codec", __func__);
+      CLog::Log(LOGNOTICE, "%s - failed to open VDADecoder Codec", __FUNCTION__);
       return FALSE;
     }
     
@@ -401,7 +402,7 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
 
   if (status = kVDADecoderNoErr) 
   {
-    CLog::Log(LOGERROR, "VDADecoderDecode failed. err: %d\n", (int)status);
+    CLog::Log(LOGNOTICE, "%s - VDADecoderDecode failed with status(%d)", __FUNCTION__, (int)status);
     return VC_ERROR;
   }
 
