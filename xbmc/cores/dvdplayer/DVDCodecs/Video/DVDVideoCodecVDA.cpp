@@ -170,7 +170,7 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
   m_display_queue = NULL;
   pthread_mutex_init(&m_queue_mutex, NULL);
 
-  memset(&m_pVideoBuffer, 0, sizeof(DVDVideoPicture));
+  memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
   m_dll = new DllLibVDADecoder;
   if (m_dll)
     m_dll->Load();
@@ -269,31 +269,31 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     }
     
     //First make sure all properties are reset
-    memset(&m_pVideoBuffer, 0, sizeof(DVDVideoPicture));
+    memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
 
     //Allocate for YV12 frame
     unsigned int iPixels = width*height;
     unsigned int iChromaPixels = iPixels/4;
 
-    m_pVideoBuffer.iWidth = width;
-    m_pVideoBuffer.iHeight = height;
+    m_videobuffer.iWidth = width;
+    m_videobuffer.iHeight = height;
 
-    m_pVideoBuffer.iLineSize[0] = width;   //Y
-    m_pVideoBuffer.iLineSize[1] = width/2; //U
-    m_pVideoBuffer.iLineSize[2] = width/2; //V
-    m_pVideoBuffer.iLineSize[3] = 0;
+    m_videobuffer.iLineSize[0] = width;   //Y
+    m_videobuffer.iLineSize[1] = width/2; //U
+    m_videobuffer.iLineSize[2] = width/2; //V
+    m_videobuffer.iLineSize[3] = 0;
 
-    m_pVideoBuffer.data[0] = (BYTE*)_aligned_malloc(iPixels, 16);       //Y
-    m_pVideoBuffer.data[1] = (BYTE*)_aligned_malloc(iChromaPixels, 16); //U
-    m_pVideoBuffer.data[2] = (BYTE*)_aligned_malloc(iChromaPixels, 16); //V
-    m_pVideoBuffer.data[3] = NULL;
+    m_videobuffer.data[0] = (BYTE*)_aligned_malloc(iPixels, 16);       //Y
+    m_videobuffer.data[1] = (BYTE*)_aligned_malloc(iChromaPixels, 16); //U
+    m_videobuffer.data[2] = (BYTE*)_aligned_malloc(iChromaPixels, 16); //V
+    m_videobuffer.data[3] = NULL;
 
     //Set all data to 0 for less artifacts.. hmm.. what is black in YUV??
-    memset( m_pVideoBuffer.data[0], 0, iPixels );
-    memset( m_pVideoBuffer.data[1], 0, iChromaPixels );
-    memset( m_pVideoBuffer.data[2], 0, iChromaPixels );
-    m_pVideoBuffer.pts = DVD_NOPTS_VALUE;
-    m_pVideoBuffer.iFlags = DVP_FLAG_ALLOCATED;
+    memset( m_videobuffer.data[0], 0, iPixels );
+    memset( m_videobuffer.data[1], 0, iChromaPixels );
+    memset( m_videobuffer.data[2], 0, iChromaPixels );
+    m_videobuffer.pts = DVD_NOPTS_VALUE;
+    m_videobuffer.iFlags = DVP_FLAG_ALLOCATED;
 
     if (decoderConfiguration)
       CFRelease(decoderConfiguration);
@@ -315,11 +315,11 @@ void CDVDVideoCodecVDA::Dispose()
     m_dll->VDADecoderDestroy((VDADecoder)m_vda_decoder);
     m_vda_decoder = NULL;
 
-    if( !(m_pVideoBuffer.iFlags & DVP_FLAG_ALLOCATED) )
+    if( !(m_videobuffer.iFlags & DVP_FLAG_ALLOCATED) )
     {
-      _aligned_free(m_pVideoBuffer.data[0]);
-      _aligned_free(m_pVideoBuffer.data[1]);
-      _aligned_free(m_pVideoBuffer.data[2]);
+      _aligned_free(m_videobuffer.data[0]);
+      _aligned_free(m_videobuffer.data[1]);
+      _aligned_free(m_videobuffer.data[2]);
     }
   }
 }
@@ -331,11 +331,13 @@ void CDVDVideoCodecVDA::SetDropState(bool bDrop)
 int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
 {
   OSStatus status;
-
   //
   CFDictionaryRef avc_pts = MakeDictionaryWithDisplayTime(pts);
   CFDataRef avc_demux = CFDataCreate(kCFAllocatorDefault, pData, iSize);
 	
+  pthread_mutex_lock(&m_queue_mutex);
+  m_dts_queue.push(dts);
+  pthread_mutex_unlock(&m_queue_mutex);
   status = m_dll->VDADecoderDecode((VDADecoder)m_vda_decoder, 0, avc_demux, avc_pts);
 	
   CFRelease(avc_pts);
@@ -368,7 +370,7 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   CVPixelBufferRef yuvframe;
   
   // clone the video picture buffer settings
-  *pDvdVideoPicture = m_pVideoBuffer;
+  *pDvdVideoPicture = m_videobuffer;
 
   // get the top yuv frame, we risk getting the wrong frame if the frame queue
   // depth is less than the number of encoded reference frames. If queue depth
@@ -377,6 +379,7 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   // we don't lockout the vdadecoder while doing the memcpy of planes out.
   pthread_mutex_lock(&m_queue_mutex);
   yuvframe = m_display_queue->frame;
+  pDvdVideoPicture->dts = m_dts_queue.front(); // m_dts_queue gets popped in DisplayQueuePop
   pDvdVideoPicture->pts = m_display_queue->frametime;
   pthread_mutex_unlock(&m_queue_mutex);
 
@@ -409,6 +412,8 @@ void CDVDVideoCodecVDA::DisplayQueuePop(void)
   frame_queue *top_frame = m_display_queue;
   m_display_queue = m_display_queue->nextframe;
   m_queue_depth--;
+  if (!m_dts_queue.empty())
+    m_dts_queue.pop();
   pthread_mutex_unlock(&m_queue_mutex);
 
   // release the frame buffer
@@ -438,6 +443,11 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
   if (kVDADecodeInfo_FrameDropped & infoFlags)
   {
     CLog::Log(LOGDEBUG, "%s - frame dropped", __FUNCTION__);
+    pthread_mutex_lock(&m_queue_mutex);
+    if (!m_dts_queue.empty())
+      m_dts_queue.pop();
+    pthread_mutex_unlock(&m_queue_mutex);
+    return;
   }
 
   // allocate a new frame and populate it with some information

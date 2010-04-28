@@ -21,6 +21,8 @@
  */
 
 #if defined(__APPLE__)
+#include <queue>
+
 #include "DVDVideoCodec.h"
 #include <CoreVideo/CoreVideo.h>
 
@@ -60,8 +62,9 @@ protected:
   pthread_mutex_t   m_queue_mutex;    // mutex protecting queue manipulation
   frame_queue       *m_display_queue; // display-order queue - next display frame is always at the queue head
   int32_t           m_queue_depth;    // we will try to keep the queue depth around 16+1 frames
+  std::queue<double> m_dts_queue;
 
-  DVDVideoPicture   m_pVideoBuffer;
+  DVDVideoPicture   m_videobuffer;
 };
 
 #endif
