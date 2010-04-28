@@ -92,7 +92,7 @@ public:
   virtual OSStatus VDADecoderDecode(
     VDADecoder decoder, uint32_t decodeFlags, CFTypeRef compressedBuffer, CFDictionaryRef frameInfo) = 0;
   virtual OSStatus VDADecoderFlush(VDADecoder decoder, uint32_t flushFlags) = 0;
-  virtual OSStatus VDADecoderDestroy(VDADecoder decoder)= 0;
+  virtual OSStatus VDADecoderDestroy(VDADecoder decoder) = 0;
   virtual CFStringRef Get_kVDADecoderConfiguration_Height() = 0;
   virtual CFStringRef Get_kVDADecoderConfiguration_Width() = 0;
   virtual CFStringRef Get_kVDADecoderConfiguration_SourceFormat() = 0;
@@ -146,10 +146,12 @@ static double GetFrameDisplayTimeFromDictionary(CFDictionaryRef inFrameInfoDicti
   CFNumberRef timeNumber = NULL;
   double outValue = 0.0;
 
-  if (NULL == inFrameInfoDictionary) return 0.0;
+  if (NULL == inFrameInfoDictionary)
+    return 0.0;
 
   timeNumber = (CFNumberRef)CFDictionaryGetValue(inFrameInfoDictionary, CFSTR("VideoDisplayTimeKey"));
-  if (timeNumber) CFNumberGetValue(timeNumber, kCFNumberDoubleType, &outValue);
+  if (timeNumber)
+    CFNumberGetValue(timeNumber, kCFNumberDoubleType, &outValue);
 
   return outValue;
 }
@@ -293,9 +295,12 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     m_pVideoBuffer.pts = DVD_NOPTS_VALUE;
     m_pVideoBuffer.iFlags = DVP_FLAG_ALLOCATED;
 
-    if (decoderConfiguration) CFRelease(decoderConfiguration);
-    if (destinationImageBufferAttributes) CFRelease(destinationImageBufferAttributes);
-    if (emptyDictionary) CFRelease(emptyDictionary);
+    if (decoderConfiguration)
+      CFRelease(decoderConfiguration);
+    if (destinationImageBufferAttributes)
+      CFRelease(destinationImageBufferAttributes);
+    if (emptyDictionary)
+      CFRelease(emptyDictionary);
 
     return true;
   }
@@ -450,7 +455,8 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
   pthread_mutex_lock(&ctx->m_queue_mutex);
 	
   frame_queue *queueWalker = ctx->m_display_queue;
-  if (!queueWalker || (newFrame->frametime < queueWalker->frametime)) {
+  if (!queueWalker || (newFrame->frametime < queueWalker->frametime))
+  {
     // we have an empty queue, or this frame earlier than the current queue head
     newFrame->nextframe = queueWalker;
     ctx->m_display_queue = newFrame;
@@ -461,7 +467,8 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
 
     while (!frameInserted) {
       nextFrame = queueWalker->nextframe;
-      if (!nextFrame || (newFrame->frametime < nextFrame->frametime)) {
+      if (!nextFrame || (newFrame->frametime < nextFrame->frametime))
+      {
         // if the next frame is the tail of the queue, or our new frame is ealier
         newFrame->nextframe = nextFrame;
         queueWalker->nextframe = newFrame;
