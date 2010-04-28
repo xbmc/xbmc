@@ -2124,6 +2124,12 @@
     <ClCompile Include="..\..\xbmc\addons\Repository.cpp">
       <Filter>Source Files\Addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\Skin.cpp">
+      <Filter>Source Files\Addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\GUIDialogAddonInfo.cpp">
+      <Filter>Source Files\GUI Dialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -4480,6 +4486,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\Repository.h">
       <Filter>Source Files\Addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\Skin.h">
+      <Filter>Source Files\Addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\GUIDialogAddonInfo.h">
+      <Filter>Source Files\GUI Dialog</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
