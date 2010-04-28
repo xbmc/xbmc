@@ -234,7 +234,8 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
 
   memset(&m_pVideoBuffer, 0, sizeof(DVDVideoPicture));
   m_dll = new DllLibVDADecoder;
-  m_dll->Load();
+  if (m_dll)
+    m_dll->Load();
 }
 
 CDVDVideoCodecVDA::~CDVDVideoCodecVDA()
@@ -250,7 +251,7 @@ CV_EXPORT const CFStringRef kCVPixelBufferIOSurfacePropertiesKey;
 
 bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if (g_guiSettings.GetBool("videoplayer.usevda") && !hints.software)
+  if (m_dll && g_guiSettings.GetBool("videoplayer.usevda") && !hints.software)
   {
     switch (hints.codec)
     {
