@@ -443,10 +443,10 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
   if (kVDADecodeInfo_FrameDropped & infoFlags)
   {
     CLog::Log(LOGDEBUG, "%s - frame dropped", __FUNCTION__);
-    pthread_mutex_lock(&m_queue_mutex);
-    if (!m_dts_queue.empty())
-      m_dts_queue.pop();
-    pthread_mutex_unlock(&m_queue_mutex);
+    pthread_mutex_lock(&ctx->m_queue_mutex);
+    if (!ctx->m_dts_queue.empty())
+      ctx->m_dts_queue.pop();
+    pthread_mutex_unlock(&ctx->m_queue_mutex);
     return;
   }
 
