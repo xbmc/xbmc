@@ -387,7 +387,7 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   CVPixelBufferLockBaseAddress(yuvframe, 0);
   for (size_t i = 0; i < 3; i++)
   {
-    UInt32 width = CVPixelBufferGetBytesPerRowOfPlane(yuvframe, i);
+    UInt32 width = CVPixelBufferGetWidthOfPlane(yuvframe, i);
     UInt32 height = CVPixelBufferGetHeightOfPlane(yuvframe, i);
 
     void *plane_ptr = CVPixelBufferGetBaseAddressOfPlane(yuvframe, i);
