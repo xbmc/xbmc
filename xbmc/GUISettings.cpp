@@ -598,10 +598,7 @@ void CGUISettings::Initialize()
   AddBool(CCrystalHD::GetInstance()->DevicePresent() ? vp: NULL, "videoplayer.usechd", 13428, true);
 #endif
 #ifdef HAVE_LIBVDADECODER
-/*
-  if (g_sysinfo.HasVDADecoder())
-    AddBool(CCrystalHD::GetInstance()->DevicePresent() ? vp: NULL, "videoplayer.usevda", 13429, true);
-*/
+  AddBool(g_sysinfo.HasVDADecoder() ? vp: NULL, "videoplayer.usevda", 13429, true);
 #endif
 
 #ifdef HAS_GL

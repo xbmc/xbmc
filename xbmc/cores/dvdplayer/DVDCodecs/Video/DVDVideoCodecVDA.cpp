@@ -103,7 +103,7 @@ public:
 
 class DllLibVDADecoder : public DllDynamic, DllLibVDADecoderInterface
 {
-  DECLARE_DLL_WRAPPER(DllLibVDADecoder, "/System/Frameworks/VideoDecodeAcceleration.framework/VideoDecodeAcceleration")
+  DECLARE_DLL_WRAPPER(DllLibVDADecoder, "/System/Library/Frameworks/VideoDecodeAcceleration.framework/Versions/Current/VideoDecodeAcceleration")
 
   DEFINE_METHOD5(OSStatus, VDADecoderCreate, (CFDictionaryRef p1, CFDictionaryRef p2, VDADecoderOutputCallback* p3, void* p4, VDADecoder* p5))
   DEFINE_METHOD4(OSStatus, VDADecoderDecode, (VDADecoder p1, uint32_t p2, CFTypeRef p3, CFDictionaryRef p4))
@@ -186,8 +186,9 @@ CDVDVideoCodecVDA::~CDVDVideoCodecVDA()
     delete m_dll;
 }
 
-// need to export this as it's only present (CVPixelBuffer.h) in 10.6SDK.
-CV_EXPORT const CFStringRef kCVPixelBufferIOSurfacePropertiesKey;
+#if (MAC_OS_X_VERSION_MAX_ALLOWED < 1060)
+//  extern const CFStringRef kCVPixelBufferIOSurfacePropertiesKey __attribute__((weak_import));
+#endif
 
 bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
@@ -212,20 +213,21 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       &kCFTypeDictionaryKeyCallBacks,
       &kCFTypeDictionaryValueCallBacks));
 
-    SInt32 width = (SInt32)hints.width;
+    SInt32 width  = (SInt32)hints.width;
     SInt32 height = (SInt32)hints.height;
     SInt32 format = 'avc1';
 
     CFNumberRef avcWidth  = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &width);
     CFNumberRef avcHeight = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &height);
     CFNumberRef avcFormat = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &format);
-    CFDataRef avcCData  = CFDataCreate(kCFAllocatorDefault, (const uint8_t*)hints.extradata, hints.extrasize);
+    CFDataRef avcCData    = CFDataCreate(kCFAllocatorDefault, (const uint8_t*)hints.extradata, hints.extrasize);
     
     CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_Height(), avcHeight);
     CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_Width(), avcWidth);
     CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_SourceFormat(), avcFormat);
     CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_avcCData(), avcCData);
-    
+
+/*
     // create a CFDictionary describing the desired destination image buffer
     CFMutableDictionaryRef destinationImageBufferAttributes = CFDictionaryCreateMutable(
       kCFAllocatorDefault,
@@ -233,9 +235,6 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       &kCFTypeDictionaryKeyCallBacks,
       &kCFTypeDictionaryValueCallBacks);
 
-#if (MAC_OS_X_VERSION_MAX_ALLOWED < 1060)
-    CFStringRef kCVPixelBufferIOSurfacePropertiesKey = (CFStringRef)dlsym(RTLD_NEXT, "kCVPixelBufferIOSurfacePropertiesKey");
-#endif
     OSType cvPixelFormatType = kCVPixelFormatType_420YpCbCr8Planar;
     CFNumberRef pixelFormat = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &cvPixelFormatType);
     CFDictionaryRef emptyDictionary = CFDictionaryCreate(
@@ -251,15 +250,21 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       kCVPixelBufferPixelFormatTypeKey,
       pixelFormat);
     //
+#if (MAC_OS_X_VERSION_MAX_ALLOWED < 1060)
+    const CFStringRef kCVPixelBufferPlaneAlignmentKey = (CFStringRef)dlsym(RTLD_NEXT, "kCVPixelBufferPlaneAlignmentKey");
+    const CFStringRef kCVPixelBufferIOSurfacePropertiesKey = (CFStringRef)dlsym(RTLD_NEXT, "kCVPixelBufferIOSurfacePropertiesKey");
+#endif
     CFDictionarySetValue(
       destinationImageBufferAttributes,
       kCVPixelBufferIOSurfacePropertiesKey,
       emptyDictionary);
+*/
     
     // create the hardware decoder object
     OSStatus status = m_dll->VDADecoderCreate(
       decoderConfiguration,
-      destinationImageBufferAttributes, 
+//      destinationImageBufferAttributes, 
+      NULL, 
       (VDADecoderOutputCallback *)&VDADecoderCallback,
       this,
       (VDADecoder*)&m_vda_decoder);
@@ -277,8 +282,13 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     unsigned int iPixels = width*height;
     unsigned int iChromaPixels = iPixels/4;
 
-    m_videobuffer.iWidth = width;
+    m_videobuffer.iWidth  = width;
     m_videobuffer.iHeight = height;
+    m_videobuffer.iDisplayWidth  = width;
+    m_videobuffer.iDisplayHeight = height;
+    m_videobuffer.format = DVDVideoPicture::FMT_YUV420P;
+    m_videobuffer.color_range = 0;
+    m_videobuffer.color_matrix = 4;
 
     m_videobuffer.iLineSize[0] = width;   //Y
     m_videobuffer.iLineSize[1] = width/2; //U
@@ -299,11 +309,12 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
     if (decoderConfiguration)
       CFRelease(decoderConfiguration);
+/*
     if (destinationImageBufferAttributes)
       CFRelease(destinationImageBufferAttributes);
     if (emptyDictionary)
       CFRelease(emptyDictionary);
-
+*/
     return true;
   }
 
@@ -393,7 +404,8 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     UInt32 height = CVPixelBufferGetHeightOfPlane(yuvframe, i);
 
     void *plane_ptr = CVPixelBufferGetBaseAddressOfPlane(yuvframe, i);
-    memcpy(pDvdVideoPicture->data[i], plane_ptr, width * height);
+    if (plane_ptr)
+      memcpy(pDvdVideoPicture->data[i], plane_ptr, width * height);
   }
   // unlock the pixel buffer
   CVPixelBufferUnlockBaseAddress(yuvframe, 0);
@@ -437,10 +449,11 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
     CLog::Log(LOGERROR, "%s - imageBuffer is NULL", __FUNCTION__);
     return;
   }
-  if (kCVPixelFormatType_420YpCbCr8Planar != CVPixelBufferGetPixelFormatType(imageBuffer))
+  OSType PixelFormatType = CVPixelBufferGetPixelFormatType(imageBuffer);
+  if (PixelFormatType != kCVPixelFormatType_420YpCbCr8Planar)
   {
     CLog::Log(LOGERROR, "%s - imageBuffer format is not 'yv12", __FUNCTION__);
-    return;
+    //return;
   }
   if (kVDADecodeInfo_FrameDropped & infoFlags)
   {

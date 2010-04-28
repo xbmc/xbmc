@@ -496,9 +496,9 @@ bool Cocoa_HasVDADecoder()
 {
   bool result = false;
 
-  if (Cocoa_GetOSVersion() >= 0x1060)
-    result == access("/System/Frameworks/VideoDecodeAcceleration.framework/VideoDecodeAcceleration", 0) == 0;
-  
+  if (Cocoa_GetOSVersion() >= 0x1063)
+    result = access("/System/Library/Frameworks/VideoDecodeAcceleration.framework/Versions/Current/VideoDecodeAcceleration", 0) == 0;
+
   return(result);
 }
 
