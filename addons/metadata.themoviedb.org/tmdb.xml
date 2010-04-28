@@ -57,6 +57,9 @@
 			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5+">
 				<expression>&lt;rating&gt;([^&lt;]*)&lt;/rating&gt;</expression>
 			</RegExp>
+			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="5+">
+				<expression>&lt;certification&gt;([^&lt;]*)&lt;/certification&gt;</expression>
+			</RegExp>
 			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
 				<expression repeat="yes">&lt;category type=&quot;genre&quot;.*?name=&quot;([^&quot;]*)&quot;</expression>
 			</RegExp>
