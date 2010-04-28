@@ -591,8 +591,10 @@ void CGUISettings::Initialize()
 
 
 #ifdef __APPLE__
+/*
   if (g_sysinfo.HasVDADecoder())
     AddBool(CCrystalHD::GetInstance()->DevicePresent() ? vp: NULL, "videoplayer.usevda", 24095, true);
+*/
 #endif
 
 #ifdef HAVE_LIBCRYSTALHD
