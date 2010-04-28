@@ -372,7 +372,9 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (pSetting->GetType() == SETTINGS_TYPE_ADDON)
     {
       CSettingAddon *pSettingAddon = (CSettingAddon*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CBaseSettingControl *control = GetSetting(strSetting);
+      control->SetDelayed();
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
       FillInAddons(pControl, pSettingAddon);
       continue;
     }
