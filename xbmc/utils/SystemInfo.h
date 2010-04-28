@@ -101,6 +101,7 @@ public:
   CStdString GetUserAgent();
   bool HasInternet() const;
   bool IsAppleTV();
+  bool HasVDADecoder();
   bool IsAeroDisabled();
   bool IsVistaOrHigher();
   static CStdString GetKernelVersion();
