@@ -155,70 +155,6 @@ static double GetFrameDisplayTimeFromDictionary(CFDictionaryRef inFrameInfoDicti
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-static void VDADecoderCallback(
-  void                *decompressionOutputRefCon,
-   CFDictionaryRef    frameInfo,
-   OSStatus           status, 
-   uint32_t           infoFlags,
-   CVImageBufferRef   imageBuffer)
-{
-  CDVDVideoCodecVDA *ctx = (CDVDVideoCodecVDA *)decompressionOutputRefCon;
-
-  if (imageBuffer == NULL) 
-  {
-    CLog::Log(LOGERROR, "%s - imageBuffer is NULL", __FUNCTION__);
-    return;
-  }
-  if (kCVPixelFormatType_420YpCbCr8Planar != CVPixelBufferGetPixelFormatType(imageBuffer))
-  {
-    CLog::Log(LOGERROR, "%s - imageBuffer format is not 'yv12", __FUNCTION__);
-    return;
-  }
-  if (kVDADecodeInfo_FrameDropped & infoFlags)
-  {
-    CLog::Log(LOGDEBUG, "%s - frame dropped", __FUNCTION__);
-  }
-
-  // allocate a new frame and populate it with some information
-  // this pointer to a frame_queue type keeps track of the newest decompressed frame
-  // and is then inserted into a linked list of  frame pointers depending on the display time
-  // parsed out of the bitstream and stored in the frameInfo dictionary by the client
-  frame_queue *newFrame = (frame_queue*)calloc(sizeof(frame_queue), 1);
-  newFrame->nextframe = NULL;
-  newFrame->frame = CVPixelBufferRetain(imageBuffer);
-  newFrame->frametime = GetFrameDisplayTimeFromDictionary(frameInfo);
-	
-  // since the frames we get may be in decode order rather than presentation order
-  // our hypothetical callback places them in a queue of frames which will
-  // hold them in display order for display on another thread
-  pthread_mutex_lock(&ctx->m_queue_mutex);
-	
-  frame_queue *queueWalker = ctx->m_display_queue;
-  if (!queueWalker || (newFrame->frametime < queueWalker->frametime)) {
-    // we have an empty queue, or this frame earlier than the current queue head
-    newFrame->nextframe = queueWalker;
-    ctx->m_display_queue = newFrame;
-  } else {
-    // walk the queue and insert this frame where it belongs in display order
-    bool frameInserted = false;
-    frame_queue *nextFrame = NULL;
-
-    while (!frameInserted) {
-      nextFrame = queueWalker->nextframe;
-      if (!nextFrame || (newFrame->frametime < nextFrame->frametime)) {
-        // if the next frame is the tail of the queue, or our new frame is ealier
-        newFrame->nextframe = nextFrame;
-        queueWalker->nextframe = newFrame;
-        frameInserted = true;
-      }
-      queueWalker = nextFrame;
-    }
-  }
-
-  ctx->m_queue_depth++;
-
-  pthread_mutex_unlock(&ctx->m_queue_mutex);	
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
@@ -473,5 +409,70 @@ void CDVDVideoCodecVDA::DisplayQueuePop(void)
   // release the frame buffer
   CVPixelBufferRelease(top_frame->frame);
   free(top_frame);
+}
+
+void CDVDVideoCodecVDA::VDADecoderCallback(
+  void                *decompressionOutputRefCon,
+   CFDictionaryRef    frameInfo,
+   OSStatus           status, 
+   uint32_t           infoFlags,
+   CVImageBufferRef   imageBuffer)
+{
+  CDVDVideoCodecVDA *ctx = (CDVDVideoCodecVDA *)decompressionOutputRefCon;
+
+  if (imageBuffer == NULL) 
+  {
+    CLog::Log(LOGERROR, "%s - imageBuffer is NULL", __FUNCTION__);
+    return;
+  }
+  if (kCVPixelFormatType_420YpCbCr8Planar != CVPixelBufferGetPixelFormatType(imageBuffer))
+  {
+    CLog::Log(LOGERROR, "%s - imageBuffer format is not 'yv12", __FUNCTION__);
+    return;
+  }
+  if (kVDADecodeInfo_FrameDropped & infoFlags)
+  {
+    CLog::Log(LOGDEBUG, "%s - frame dropped", __FUNCTION__);
+  }
+
+  // allocate a new frame and populate it with some information
+  // this pointer to a frame_queue type keeps track of the newest decompressed frame
+  // and is then inserted into a linked list of  frame pointers depending on the display time
+  // parsed out of the bitstream and stored in the frameInfo dictionary by the client
+  frame_queue *newFrame = (frame_queue*)calloc(sizeof(frame_queue), 1);
+  newFrame->nextframe = NULL;
+  newFrame->frame = CVPixelBufferRetain(imageBuffer);
+  newFrame->frametime = GetFrameDisplayTimeFromDictionary(frameInfo);
+	
+  // since the frames we get may be in decode order rather than presentation order
+  // our hypothetical callback places them in a queue of frames which will
+  // hold them in display order for display on another thread
+  pthread_mutex_lock(&ctx->m_queue_mutex);
+	
+  frame_queue *queueWalker = ctx->m_display_queue;
+  if (!queueWalker || (newFrame->frametime < queueWalker->frametime)) {
+    // we have an empty queue, or this frame earlier than the current queue head
+    newFrame->nextframe = queueWalker;
+    ctx->m_display_queue = newFrame;
+  } else {
+    // walk the queue and insert this frame where it belongs in display order
+    bool frameInserted = false;
+    frame_queue *nextFrame = NULL;
+
+    while (!frameInserted) {
+      nextFrame = queueWalker->nextframe;
+      if (!nextFrame || (newFrame->frametime < nextFrame->frametime)) {
+        // if the next frame is the tail of the queue, or our new frame is ealier
+        newFrame->nextframe = nextFrame;
+        queueWalker->nextframe = newFrame;
+        frameInserted = true;
+      }
+      queueWalker = nextFrame;
+    }
+  }
+
+  ctx->m_queue_depth++;
+
+  pthread_mutex_unlock(&ctx->m_queue_mutex);	
 }
 #endif
