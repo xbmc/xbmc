@@ -132,9 +132,13 @@ void CGUIDialogAddonInfo::OnDisable()
 {
   CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
   CFileItemList list;
-  list.Add(CFileItemPtr(new CFileItem(m_addon->Path(),true)));
-  list[0]->Select(true);
-  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""),window);
+  AddonPtr localAddon;
+  if (CAddonMgr::Get()->GetAddon(m_addon->ID(), localAddon))
+  {
+    list.Add(CFileItemPtr(new CFileItem(localAddon->Path(),true)));
+    list[0]->Select(true);
+    CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""),window);
+  }
 }
 
 void CGUIDialogAddonInfo::OnSettings()
