@@ -925,7 +925,7 @@ bool CSettings::LoadProfile(unsigned int index)
     g_infoManager.ResetLibraryBools();
 
     // always reload the skin - we need it for the new language strings
-    g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
+    g_application.ReloadSkin();
 
     if (m_currentProfile != 0)
     {
