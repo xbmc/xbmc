@@ -86,8 +86,11 @@ static HRESULT TextureBlt(Com::SmartPtr<IDirect3DDevice9> pD3DDev, MYD3DVERTEX<t
     return E_POINTER;
 
   DWORD FVF = 0;
-
-  switch(texcoords)
+  if ((texcoords > 0) && (texcoords < 9 ))
+    FVF = texcoords * D3DFVF_TEX1;
+  else 
+    return E_FAIL;
+  /*switch(texcoords)
   {
     case 1: FVF = D3DFVF_TEX1; break;
     case 2: FVF = D3DFVF_TEX2; break;
@@ -98,7 +101,7 @@ static HRESULT TextureBlt(Com::SmartPtr<IDirect3DDevice9> pD3DDev, MYD3DVERTEX<t
     case 7: FVF = D3DFVF_TEX7; break;
     case 8: FVF = D3DFVF_TEX8; break;
     default: return E_FAIL;
-  }
+  }*/
 
   HRESULT hr;
 
@@ -131,7 +134,9 @@ static HRESULT TextureBlt(Com::SmartPtr<IDirect3DDevice9> pD3DDev, MYD3DVERTEX<t
     }
     hr = pD3DDev->SetFVF(D3DFVF_XYZRHW | FVF);
 
-    MYD3DVERTEX<texcoords> tmp = v[2]; v[2] = v[3]; v[3] = tmp;
+    MYD3DVERTEX<texcoords> tmp = v[2]; 
+    v[2] = v[3]; 
+    v[3] = tmp;
     hr = pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, v, sizeof(v[0]));
 
     for(int i = 0; i < texcoords; i++)
@@ -1985,8 +1990,6 @@ void CDX9AllocatorPresenter::UpdateAlphaBitmap()
 
 STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
 {
-//  if (!fAll)
-//    return false;
 
   CAutoSetEvent event(&m_drawingIsDone);
   
@@ -2019,185 +2022,162 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
   Com::SmartRect rSrcPri(Com::SmartPoint(0, 0), m_WindowRect.Size());
   Com::SmartRect rDstPri(m_WindowRect);
 
-  //!!!!m_pD3DDev->BeginScene();
-  //!!!!m_pD3DDev->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
-
-  //!!!!m_pD3DDev->SetRenderTarget(0, pBackBuffer);
-
-
+  if(g_renderManager.IsConfigured())//!rDstVid.IsRectEmpty())
   {
-    
-
-    //!!!!hr = m_pD3DDev->Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
-
-    // paint the video on the backbuffer
-
-    if(g_renderManager.IsConfigured())//!rDstVid.IsRectEmpty())
+    if(m_pVideoTexture[m_nCurSurface])
     {
-      if(m_pVideoTexture[m_nCurSurface])
+      Com::SmartPtr<IDirect3DTexture9> pVideoTexture = m_pVideoTexture[m_nCurSurface];
+    
+      if(m_pVideoTexture[m_nNbDXSurface] && m_pVideoTexture[m_nNbDXSurface+1] && !m_pPixelShaders.empty())
       {
-        Com::SmartPtr<IDirect3DTexture9> pVideoTexture = m_pVideoTexture[m_nCurSurface];
-        //return S_OK;
-        
-        if(m_pVideoTexture[m_nNbDXSurface] && m_pVideoTexture[m_nNbDXSurface+1] && !m_pPixelShaders.empty())
+        static __int64 counter = 0;
+        static long start = clock();
+
+        long stop = clock();
+        long diff = stop - start;
+
+        if(diff >= 10*60*CLOCKS_PER_SEC) start = stop; // reset after 10 min (ps float has its limits in both range and accuracy)
+
+        int src = m_nCurSurface, dst = m_nNbDXSurface;
+
+        D3DSURFACE_DESC desc;
+        m_pVideoTexture[src]->GetLevelDesc(0, &desc);
+
+        float fConstData[][4] = 
         {
-          static __int64 counter = 0;
-          static long start = clock();
+          {(float)desc.Width, (float)desc.Height, (float)(counter++), (float)diff / CLOCKS_PER_SEC},
+          {1.0f / desc.Width, 1.0f / desc.Height, 0, 0},
+        };
+        hr = m_pD3DDev->SetPixelShaderConstantF(0, (float*)fConstData, countof(fConstData));
 
-          long stop = clock();
-          long diff = stop - start;
-
-          if(diff >= 10*60*CLOCKS_PER_SEC) start = stop; // reset after 10 min (ps float has its limits in both range and accuracy)
-
-          int src = m_nCurSurface, dst = m_nNbDXSurface;
-
-          D3DSURFACE_DESC desc;
-          m_pVideoTexture[src]->GetLevelDesc(0, &desc);
-
-          float fConstData[][4] = 
-          {
-            {(float)desc.Width, (float)desc.Height, (float)(counter++), (float)diff / CLOCKS_PER_SEC},
-            {1.0f / desc.Width, 1.0f / desc.Height, 0, 0},
-          };
-          hr = m_pD3DDev->SetPixelShaderConstantF(0, (float*)fConstData, countof(fConstData));
-
-          Com::SmartPtr<IDirect3DSurface9> pRT;
-          hr = m_pD3DDev->GetRenderTarget(0, &pRT);
-          
-          for (std::vector<CExternalPixelShader>::iterator it; it != m_pPixelShaders.end(); it++)
-          {
-            pVideoTexture = m_pVideoTexture[dst];
-
-            hr = m_pD3DDev->SetRenderTarget(0, m_pVideoSurface[dst]);
-            CExternalPixelShader &Shader = *it;
-            if (!Shader.m_pPixelShader)
-              Shader.Compile(m_pPSC.get());
-            hr = m_pD3DDev->SetPixelShader(Shader.m_pPixelShader);
-            TextureCopy(m_pVideoTexture[src]);
-            src    = dst;
-            if(++dst >= m_nNbDXSurface+2) dst = m_nNbDXSurface;
-          }
-
-          hr = m_pD3DDev->SetRenderTarget(0, pRT);
-          hr = m_pD3DDev->SetPixelShader(NULL);
-        }
+        Com::SmartPtr<IDirect3DSurface9> pRT;
+        hr = m_pD3DDev->GetRenderTarget(0, &pRT);
         
-
-        Vector dst[4];
-        Transform(rDstVid, dst);
-
-        DWORD iDX9Resizer = g_dsSettings.iDX9Resizer;
-
-        float A = 0;
-
-        switch(iDX9Resizer)
+        for (std::vector<CExternalPixelShader>::iterator it; it != m_pPixelShaders.end(); it++)
         {
-          case 3: A = -0.60f; break;
-          case 4: A = -0.751f; break;  // FIXME : 0.75 crash recent D3D, or eat CPU 
-          case 5: A = -1.00f; break;
+          pVideoTexture = m_pVideoTexture[dst];
+
+          hr = m_pD3DDev->SetRenderTarget(0, m_pVideoSurface[dst]);
+          CExternalPixelShader &Shader = *it;
+          if (!Shader.m_pPixelShader)
+            Shader.Compile(m_pPSC.get());
+          hr = m_pD3DDev->SetPixelShader(Shader.m_pPixelShader);
+          TextureCopy(m_pVideoTexture[src]);
+          src  = dst;
+          if(++dst >= m_nNbDXSurface+2) 
+            dst = m_nNbDXSurface;
         }
-        bool bScreenSpacePixelShaders = false;// = !m_pPixelShadersScreenSpace.IsEmpty();
 
-        hr = InitResizers(A, bScreenSpacePixelShaders);
+        hr = m_pD3DDev->SetRenderTarget(0, pRT);
+        hr = m_pD3DDev->SetPixelShader(NULL);
+      }
+      
 
-        if (!m_pScreenSizeTemporaryTexture[0] || !m_pScreenSizeTemporaryTexture[1])
+      Vector dst[4];
+      Transform(rDstVid, dst);
+
+      DWORD iDX9Resizer = g_dsSettings.iDX9Resizer;
+
+      float A = 0;
+
+      switch(iDX9Resizer)
+      {
+        case 3: A = -0.60f; break;
+        case 4: A = -0.751f; break;  // FIXME : 0.75 crash recent D3D, or eat CPU 
+        case 5: A = -1.00f; break;
+      }
+      bool bScreenSpacePixelShaders = false;// = !m_pPixelShadersScreenSpace.IsEmpty();
+
+      hr = InitResizers(A, bScreenSpacePixelShaders);
+
+      if (!m_pScreenSizeTemporaryTexture[0] || !m_pScreenSizeTemporaryTexture[1])
+        bScreenSpacePixelShaders = false;
+
+      if (bScreenSpacePixelShaders)
+      {
+        Com::SmartPtr<IDirect3DSurface9> pRT;
+        hr = m_pScreenSizeTemporaryTexture[1]->GetSurfaceLevel(0, &pRT);
+        if (hr != S_OK)
+        bScreenSpacePixelShaders = false;
+        if (bScreenSpacePixelShaders)
+        {
+        hr = m_pD3DDev->SetRenderTarget(0, pRT);
+        if (hr != S_OK)
           bScreenSpacePixelShaders = false;
-
-        if (bScreenSpacePixelShaders)
-        {
-          Com::SmartPtr<IDirect3DSurface9> pRT;
-          hr = m_pScreenSizeTemporaryTexture[1]->GetSurfaceLevel(0, &pRT);
-          if (hr != S_OK)
-            bScreenSpacePixelShaders = false;
-          if (bScreenSpacePixelShaders)
-          {
-            hr = m_pD3DDev->SetRenderTarget(0, pRT);
-            if (hr != S_OK)
-              bScreenSpacePixelShaders = false;
-            hr = m_pD3DDev->Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
-          }
+        hr = m_pD3DDev->Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
         }
+      }
 
-        if(rSrcVid.Size() != rDstVid.Size())
+      if(rSrcVid.Size() != rDstVid.Size())
+      {
+        if(iDX9Resizer == 0 || iDX9Resizer == 1)
         {
-          if(iDX9Resizer == 0 || iDX9Resizer == 1)
-          {
-            D3DTEXTUREFILTERTYPE Filter = iDX9Resizer == 0 ? D3DTEXF_POINT : D3DTEXF_LINEAR;
-            hr = TextureResize(pVideoTexture, dst, Filter, rSrcVid);
-          }
-          else if(iDX9Resizer == 2)
-          {
-            hr = TextureResizeBilinear(pVideoTexture, dst, rSrcVid);
-          }
-          else if(iDX9Resizer >= 3)
-          {
-            hr = TextureResizeBicubic2pass(pVideoTexture, dst, rSrcVid);
-          }
+        D3DTEXTUREFILTERTYPE Filter = iDX9Resizer == 0 ? D3DTEXF_POINT : D3DTEXF_LINEAR;
+        hr = TextureResize(pVideoTexture, dst, Filter, rSrcVid);
         }
-        else hr = TextureResize(pVideoTexture, dst, D3DTEXF_POINT, rSrcVid);
-
-        if (bScreenSpacePixelShaders)
+        else if(iDX9Resizer == 2)
         {
-          static __int64 counter = 555;
-          static long start = clock() + 333;
-
-          long stop = clock() + 333;
-          long diff = stop - start;
-
-          if(diff >= 10*60*CLOCKS_PER_SEC) start = stop; // reset after 10 dsmin (ps float has its limits in both range and accuracy)
-
-          D3DSURFACE_DESC desc;
-          m_pScreenSizeTemporaryTexture[0]->GetLevelDesc(0, &desc);
-
-#if 1
-          float fConstData[][4] = 
-          {
-            {(float)desc.Width, (float)desc.Height, (float)(counter++), (float)diff / CLOCKS_PER_SEC},
-            {1.0f / desc.Width, 1.0f / desc.Height, 0, 0},
-          };
-#else
-          float fConstData[][4] = 
-          {
-            {(float)m_ScreenSize.cx, (float)m_ScreenSize.cy, (float)(counter++), (float)diff / CLOCKS_PER_SEC},
-            {1.0f / m_ScreenSize.cx, 1.0f / m_ScreenSize.cy, 0, 0},
-          };
-#endif
-
-          hr = m_pD3DDev->SetPixelShaderConstantF(0, (float*)fConstData, countof(fConstData));
-
-          int src = 1, dst = 0;
-
-          hr = m_pD3DDev->SetPixelShader(NULL);
+        hr = TextureResizeBilinear(pVideoTexture, dst, rSrcVid);
         }
+        else if(iDX9Resizer >= 3)
+        {
+        hr = TextureResizeBicubic2pass(pVideoTexture, dst, rSrcVid);
+        }
+      }
+      else hr = TextureResize(pVideoTexture, dst, D3DTEXF_POINT, rSrcVid);
+
+      if (bScreenSpacePixelShaders)
+      {
+        static __int64 counter = 555;
+        static long start = clock() + 333;
+
+        long stop = clock() + 333;
+        long diff = stop - start;
+
+        if(diff >= 10*60*CLOCKS_PER_SEC) start = stop; // reset after 10 dsmin (ps float has its limits in both range and accuracy)
+
+        D3DSURFACE_DESC desc;
+        m_pScreenSizeTemporaryTexture[0]->GetLevelDesc(0, &desc);
+        float fConstData[][4] = 
+        {
+          {(float)desc.Width, (float)desc.Height, (float)(counter++), (float)diff / CLOCKS_PER_SEC},
+          {1.0f / desc.Width, 1.0f / desc.Height, 0, 0},
+        };
+
+        hr = m_pD3DDev->SetPixelShaderConstantF(0, (float*)fConstData, countof(fConstData));
+
+        int src = 1, dst = 0;
+
+        hr = m_pD3DDev->SetPixelShader(NULL);
       }
     }
-    
-    // Subtitle drawing
-    if (CStreamsManager::getSingleton()->SubtitleManager)
-    {
-
-      Com::SmartPtr<IDirect3DTexture9> pTexture;
-    
-      Com::SmartRect pSrc, pDst;
-
-      if (m_pScreenSize.Width() == 0) // Not init
-      {
-        D3DDISPLAYMODE mode;
-        memset(&mode, 0, sizeof(D3DDISPLAYMODE));
-        if (SUCCEEDED(m_pD3DDev->GetDisplayMode(0, &mode)))
-          m_pScreenSize.SetRect(0, 0, mode.Width, mode.Height);
-        else
-          if (!GetWindowRect(g_Windowing.GetHwnd(), &m_pScreenSize))
-            m_pScreenSize.SetRect(lrint(m_VideoRect.left), lrint(m_VideoRect.top), lrint(m_VideoRect.right), lrint(m_VideoRect.bottom));
-        CLog::Log(LOGDEBUG, "%s Detected screen size : %dx%d", __FUNCTION__, m_pScreenSize.Width(), m_pScreenSize.Height());
-      }
-
-      if (SUCCEEDED(CStreamsManager::getSingleton()->SubtitleManager->GetTexture(pTexture, pSrc, pDst, m_pScreenSize)))
-      {
-        AlphaBlt(&pSrc, &pDst, pTexture);
-      }
-    }    
   }
+  
+  // Subtitle drawing
+  if (CStreamsManager::getSingleton()->SubtitleManager)
+  {
+
+    Com::SmartPtr<IDirect3DTexture9> pTexture;
+  
+    Com::SmartRect pSrc, pDst;
+
+    if (m_pScreenSize.Width() == 0) // Not init
+    {
+    D3DDISPLAYMODE mode;
+    memset(&mode, 0, sizeof(D3DDISPLAYMODE));
+    if (SUCCEEDED(m_pD3DDev->GetDisplayMode(0, &mode)))
+      m_pScreenSize.SetRect(0, 0, mode.Width, mode.Height);
+    else
+      if (!GetWindowRect(g_Windowing.GetHwnd(), &m_pScreenSize))
+      m_pScreenSize.SetRect(lrint(m_VideoRect.left), lrint(m_VideoRect.top), lrint(m_VideoRect.right), lrint(m_VideoRect.bottom));
+    CLog::Log(LOGDEBUG, "%s Detected screen size : %dx%d", __FUNCTION__, m_pScreenSize.Width(), m_pScreenSize.Height());
+    }
+
+    if (SUCCEEDED(CStreamsManager::getSingleton()->SubtitleManager->GetTexture(pTexture, pSrc, pDst, m_pScreenSize)))
+    {
+    AlphaBlt(&pSrc, &pDst, pTexture);
+    }
+  }  
 
   if (g_dsSettings.m_fDisplayStats)
     DrawStats();
@@ -2324,7 +2304,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
       m_PresentWaitTimeMax = dsmax(m_PresentWaitTimeMax, m_PresentWaitTime);
     }
   }
-
+#endif
   if (bDoVSyncInPresent)
   {
     LONGLONG Time = CTimeUtils::GetPerfCounter();
@@ -2332,23 +2312,10 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
       CalculateJitter(Time);
     OnVBlankFinished(fAll, Time);
   }
-#endif
+
   if (bTakenLock)
     UnlockD3DDevice();
 
-  
-/*  if (!bWaited)
-  {
-    bWaited = true;
-    WaitForVBlank(bWaited);
-    TRACE("Double VBlank\n");
-    ASSERT(bWaited);
-    if (!bDoVSyncInPresent)
-    {
-      CalculateJitter();
-      OnVBlankFinished(fAll);
-    }
-  }*/
   bool fResetDevice = m_bPendingResetDevice;
 
   if(hr == D3DERR_DEVICELOST && m_pD3DDev->TestCooperativeLevel() == D3DERR_DEVICENOTRESET
@@ -2402,11 +2369,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
 
   if (m_OrderedPaint)
     --m_OrderedPaint;
-  else
-  {
-    //if (m_bIsEVR)
-    //  TRACE("UNORDERED PAINT!!!!!!\n");
-  }
+
   return(true);
 }
 

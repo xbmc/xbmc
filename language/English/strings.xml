@@ -2271,6 +2271,11 @@
   <string id="35008">Bicubic A=-0.60 (PS 2.0)</string>
   <string id="35009">Bicubic A=-0.75 (PS 2.0)</string>
   <string id="35010">Bicubic A=-1.00 (PS 2.0)</string>
+  <string id="35011">Stats hidden</string>
+  <string id="35012">Stats minimal</string>
+  <string id="35013">Stats medium</string>
+  <string id="35014">Stats large</string>
+  <string id="35015">Renderer stats</string>
 
   <!--  35050-35100 Directshow Subtitles -->
   <string id="35050">- Border line</string>

@@ -42,6 +42,14 @@ enum DS_RESIZERS
   DS_BILINEAR_2_100
 };
 
+enum DS_STATS
+{
+  DS_STATS_NONE = 0,
+  DS_STATS_1 = 3,
+  DS_STATS_2 = 2,
+  DS_STATS_3 = 1
+};
+
 typedef struct
 {
   bool fValid;

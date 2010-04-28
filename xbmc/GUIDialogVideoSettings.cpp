@@ -72,7 +72,7 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 #define VIDEO_SETTING_VDPAU_SHARPNESS     20
 
 #define VIDEO_SETTINGS_NONLIN_STRETCH     21
-
+#define VIDEO_SETTINGS_DS_STATS           22
 #define VIDEO_SETTINGS_DS_FILTERS         0x20
 
 void CGUIDialogVideoSettings::CreateSettings()
@@ -152,7 +152,14 @@ void CGUIDialogVideoSettings::CreateSettings()
     entries.push_back(make_pair(DS_BILINEAR_2_100    , 35010));
     
     AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, &g_dsSettings.iDX9Resizer, entries);
+    entries.clear();
+    entries.push_back(make_pair(DS_STATS_NONE  , 35011));
+    entries.push_back(make_pair(DS_STATS_1          , 35012));
+    entries.push_back(make_pair(DS_STATS_2        , 35013));
+    entries.push_back(make_pair(DS_STATS_3     , 35014));
+    AddSpin(VIDEO_SETTINGS_DS_STATS, 35015, &g_dsSettings.m_fDisplayStats, entries);
   }
+
 #endif
   AddBool(VIDEO_SETTINGS_CROP, 644, &g_settings.m_currentVideoSettings.m_Crop);
   {

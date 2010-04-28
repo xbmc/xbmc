@@ -30,6 +30,7 @@
 using namespace XFILE;
 CDsSettings::CDsSettings(void)
 {
+  m_fDisplayStats = 0;
 }
 
 CDsSettings::~CDsSettings(void)
