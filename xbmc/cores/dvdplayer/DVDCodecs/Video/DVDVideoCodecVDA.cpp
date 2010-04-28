@@ -53,13 +53,12 @@ enum {
 // http://developer.apple.com/mac/library/technotes/tn2010/tn2267.html
 // VDADecoder API (keep this until VDADecoder.h is public)
 enum {
-	kVDADecoderNoErr = 0,
-	kVDADecoderHardwareNotSupportedErr = -12470,		
-	kVDADecoderFormatNotSupportedErr = -12471,
-	kVDADecoderConfigurationError = -12472,
-	kVDADecoderDecoderFailedErr = -12473,
+  kVDADecoderNoErr = 0,
+  kVDADecoderHardwareNotSupportedErr = -12470,		
+  kVDADecoderFormatNotSupportedErr = -12471,
+  kVDADecoderConfigurationError = -12472,
+  kVDADecoderDecoderFailedErr = -12473,
 };
-
 enum {
   kVDADecodeInfo_Asynchronous = 1UL << 0,
   kVDADecodeInfo_FrameDropped = 1UL << 1
@@ -68,20 +67,20 @@ enum {
   // tells the decoder not to bother returning
   // a CVPixelBuffer in the outputCallback. The
   // output callback will still be called.
-	kVDADecoderDecodeFlags_DontEmitFrame = 1 << 0
+  kVDADecoderDecodeFlags_DontEmitFrame = 1 << 0
 };
 enum {
   // decode and return buffers for all frames currently in flight
-	kVDADecoderFlush_EmitFrames = 1 << 0		
+  kVDADecoderFlush_EmitFrames = 1 << 0		
 };
 typedef struct OpaqueVDADecoder* VDADecoder;
 
 typedef void (*VDADecoderOutputCallback)(
-		void 				*decompressionOutputRefCon, 
-		CFDictionaryRef 	frameInfo, 
-		OSStatus 			status, 
-		uint32_t 			infoFlags,
-		CVImageBufferRef 	imageBuffer );
+  void *decompressionOutputRefCon, 
+  CFDictionaryRef frameInfo, 
+  OSStatus status, 
+  uint32_t infoFlags,
+  CVImageBufferRef imageBuffer);
 
 class DllLibVDADecoderInterface
 {
@@ -163,10 +162,10 @@ static void VDADecoderCallback(
    uint32_t           infoFlags,
    CVImageBufferRef   imageBuffer)
 {
-	CDVDVideoCodecVDA *ctx = (CDVDVideoCodecVDA *)decompressionOutputRefCon;
+  CDVDVideoCodecVDA *ctx = (CDVDVideoCodecVDA *)decompressionOutputRefCon;
 
-	if (NULL == imageBuffer) 
-	{
+  if (NULL == imageBuffer) 
+  {
     printf("myDecoderOutputCallback - NULL image buffer!\n");
     if (kVDADecodeInfo_FrameDropped & infoFlags) {
         printf("myDecoderOutputCallback - frame dropped!\n");
@@ -174,7 +173,7 @@ static void VDADecoderCallback(
     return;
   }
 
-	if (kCVPixelFormatType_420YpCbCr8Planar != CVPixelBufferGetPixelFormatType(imageBuffer)) {
+  if (kCVPixelFormatType_420YpCbCr8Planar != CVPixelBufferGetPixelFormatType(imageBuffer)) {
     printf("myDecoderOutputCallback - image buffer format not 'yv12'!\n");
     return;
   }
@@ -195,24 +194,24 @@ static void VDADecoderCallback(
 	
   frame_queue *queueWalker = ctx->m_display_queue;
   if (!queueWalker || (newFrame->frametime < queueWalker->frametime)) {
-      // we have an empty queue, or this frame earlier than the current queue head
-      newFrame->nextframe = queueWalker;
-      ctx->m_display_queue = newFrame;
+    // we have an empty queue, or this frame earlier than the current queue head
+    newFrame->nextframe = queueWalker;
+    ctx->m_display_queue = newFrame;
   } else {
-      // walk the queue and insert this frame where it belongs in display order
-      Boolean     frameInserted = false;
-      frame_queue *nextFrame = NULL;
+    // walk the queue and insert this frame where it belongs in display order
+    bool frameInserted = false;
+    frame_queue *nextFrame = NULL;
 
-      while (!frameInserted) {
-          nextFrame = queueWalker->nextframe;
-          if (!nextFrame || (newFrame->frametime < nextFrame->frametime)) {
-              // if the next frame is the tail of the queue, or our new frame is ealier
-              newFrame->nextframe = nextFrame;
-              queueWalker->nextframe = newFrame;
-              frameInserted = true;
-          }
-          queueWalker = nextFrame;
+    while (!frameInserted) {
+      nextFrame = queueWalker->nextframe;
+      if (!nextFrame || (newFrame->frametime < nextFrame->frametime)) {
+        // if the next frame is the tail of the queue, or our new frame is ealier
+        newFrame->nextframe = nextFrame;
+        queueWalker->nextframe = newFrame;
+        frameInserted = true;
       }
+      queueWalker = nextFrame;
+    }
   }
 
   ctx->m_queue_depth++;
@@ -230,7 +229,7 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
 
   m_queue_depth = 0;
   m_display_queue = NULL;
-	pthread_mutex_init(&m_queue_mutex, NULL);
+  pthread_mutex_init(&m_queue_mutex, NULL);
 
   memset(&m_pVideoBuffer, 0, sizeof(DVDVideoPicture));
   m_dll = new DllLibVDADecoder;
@@ -240,7 +239,7 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
 
 CDVDVideoCodecVDA::~CDVDVideoCodecVDA()
 {
-	Dispose();
+  Dispose();
 
   if (m_dll)
     delete m_dll;
@@ -369,18 +368,18 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 
 void CDVDVideoCodecVDA::Dispose()
 {
-	if (m_vda_decoder)
-	{
-		m_dll->VDADecoderDestroy((VDADecoder)m_vda_decoder);
-		m_vda_decoder = NULL;
-    
+  if (m_vda_decoder)
+  {
+    m_dll->VDADecoderDestroy((VDADecoder)m_vda_decoder);
+    m_vda_decoder = NULL;
+
     if( !(m_pVideoBuffer.iFlags & DVP_FLAG_ALLOCATED) )
     {
       _aligned_free(m_pVideoBuffer.data[0]);
       _aligned_free(m_pVideoBuffer.data[1]);
       _aligned_free(m_pVideoBuffer.data[2]);
     }
-	}
+  }
 }
 
 void CDVDVideoCodecVDA::SetDropState(bool bDrop)
@@ -398,28 +397,28 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
   status = m_dll->VDADecoderDecode((VDADecoder)m_vda_decoder, 0, avc_demux, avc_pts);
 	
   CFRelease(avc_pts);
-	CFRelease(avc_demux);
-	
+  CFRelease(avc_demux);
+
   if (status = kVDADecoderNoErr) 
-	{
-		CLog::Log(LOGERROR, "VDADecoderDecode failed. err: %d\n", (int)status);
-		return VC_ERROR;
+  {
+    CLog::Log(LOGERROR, "VDADecoderDecode failed. err: %d\n", (int)status);
+    return VC_ERROR;
   }
 
   // todo: queue depth is related to the number of reference frames in encoded h.264
   // so we need to buffer until we get N ref frames + 1
-	if (m_queue_depth < 16)
-		return VC_BUFFER;
+  if (m_queue_depth < 16)
+    return VC_BUFFER;
 
-	return VC_PICTURE | VC_BUFFER;
+  return VC_PICTURE | VC_BUFFER;
 }
 
 void CDVDVideoCodecVDA::Reset(void)
 {
-	m_dll->VDADecoderFlush((VDADecoder)m_vda_decoder, 0);
-	
-	while (m_queue_depth)
-		DisplayQueuePop();
+  m_dll->VDADecoderFlush((VDADecoder)m_vda_decoder, 0);
+
+  while (m_queue_depth)
+    DisplayQueuePop();
 }
 
 bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
@@ -434,43 +433,43 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   // is greater than the number of encoded reference frames, then the top frame
   // will never change and we can just grab a ref to the frame/pts. This way
   // we don't lockout the vdadecoder while doing the memcpy of planes out.
-	pthread_mutex_lock(&m_queue_mutex);
+  pthread_mutex_lock(&m_queue_mutex);
   yuvframe = m_display_queue->frame;
   pDvdVideoPicture->pts = m_display_queue->frametime;
-	pthread_mutex_unlock(&m_queue_mutex);
+  pthread_mutex_unlock(&m_queue_mutex);
 
   // lock the yuvframe down
-	CVPixelBufferLockBaseAddress(yuvframe, 0);
-	for (size_t i = 0; i < 3; i++)
-	{
-		UInt32 width = CVPixelBufferGetBytesPerRowOfPlane(yuvframe, i);
-		UInt32 height = CVPixelBufferGetHeightOfPlane(yuvframe, i);
+  CVPixelBufferLockBaseAddress(yuvframe, 0);
+  for (size_t i = 0; i < 3; i++)
+  {
+    UInt32 width = CVPixelBufferGetBytesPerRowOfPlane(yuvframe, i);
+    UInt32 height = CVPixelBufferGetHeightOfPlane(yuvframe, i);
 
-		void *plane_ptr = CVPixelBufferGetBaseAddressOfPlane(yuvframe, i);
-		memcpy(pDvdVideoPicture->data[i], plane_ptr, width * height);
-	}
+    void *plane_ptr = CVPixelBufferGetBaseAddressOfPlane(yuvframe, i);
+    memcpy(pDvdVideoPicture->data[i], plane_ptr, width * height);
+  }
   // unlock the pixel buffer
-	CVPixelBufferUnlockBaseAddress(yuvframe, 0);
+  CVPixelBufferUnlockBaseAddress(yuvframe, 0);
 	
   // now we can pop the top frame
-	DisplayQueuePop();
+  DisplayQueuePop();
 
-	return VC_PICTURE | VC_BUFFER;
+  return VC_PICTURE | VC_BUFFER;
 }
 
 void CDVDVideoCodecVDA::DisplayQueuePop(void)
 {
-	if (!m_display_queue || m_queue_depth == 0) return;
+  if (!m_display_queue || m_queue_depth == 0) return;
 
-	// pop the current frame off the queue
-	pthread_mutex_lock(&m_queue_mutex);
-	frame_queue *top_frame = m_display_queue;
-	m_display_queue = m_display_queue->nextframe;
-	m_queue_depth--;
-	pthread_mutex_unlock(&m_queue_mutex);
+  // pop the current frame off the queue
+  pthread_mutex_lock(&m_queue_mutex);
+  frame_queue *top_frame = m_display_queue;
+  m_display_queue = m_display_queue->nextframe;
+  m_queue_depth--;
+  pthread_mutex_unlock(&m_queue_mutex);
 
-	// release the frame buffer
-	CVPixelBufferRelease(top_frame->frame);
-	free(top_frame);
+  // release the frame buffer
+  CVPixelBufferRelease(top_frame->frame);
+  free(top_frame);
 }
 #endif

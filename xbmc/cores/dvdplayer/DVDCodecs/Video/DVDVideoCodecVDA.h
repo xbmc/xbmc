@@ -36,8 +36,8 @@ class DllLibVDADecoder;
 class CDVDVideoCodecVDA : public CDVDVideoCodec
 {
 public:
-	CDVDVideoCodecVDA();
-	virtual ~CDVDVideoCodecVDA();
+  CDVDVideoCodecVDA();
+  virtual ~CDVDVideoCodecVDA();
 
   // Required overrides
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
@@ -53,7 +53,7 @@ public:
   int32_t           m_queue_depth;    // we will try to keep the queue depth around 10 frames
 
 protected:
-	void  DisplayQueuePop(void);
+  void  DisplayQueuePop(void);
 
   DllLibVDADecoder  *m_dll;
   void              *m_vda_decoder;   // opaque vdadecoder reference
@@ -61,7 +61,6 @@ protected:
 
 
   DVDVideoPicture   m_pVideoBuffer;
-	
 };
 
 #endif
