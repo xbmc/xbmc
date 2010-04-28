@@ -20,7 +20,7 @@
  *
  */
 
-#if defined(__APPLE__)
+#if defined(HAVE_LIBVDADECODER)
 #include <queue>
 
 #include "DVDVideoCodec.h"

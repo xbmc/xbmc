@@ -37,6 +37,8 @@ vaapi_not_found="== Could not find libva. VAAPI support disabled. =="
 vaapi_disabled="== VAAPI support manually disabled. =="
 crystalhd_not_found="== Could not find libldil. CrystalHD support disabled. =="
 crystalhd_disabled="== CrystalHD support manually disabled. =="
+vdadecoder_enabled="== VDADecoder support enabled. =="
+vdadecoder_disabled="== VDADecoder support manually disabled. =="
 ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
 
 # External library message strings
@@ -135,6 +137,12 @@ AC_ARG_ENABLE([crystalhd],
                [enable CrystalHD decoding (default is yes)])],
             [use_crystalhd=$enableval],
             [use_crystalhd=yes])
+
+AC_ARG_ENABLE([vdadecoder],
+            [AS_HELP_STRING([--enable-vdadecoder],
+               [enable VDADecoder decoding (default is yes)])],
+            [use_vdadecoder=$enableval],
+            [use_vdadecoder=yes])
 
 AC_ARG_ENABLE([profiling],
             [AS_HELP_STRING([--enable-profiling],
@@ -794,6 +802,21 @@ else
   AC_MSG_NOTICE($crystalhd_disabled)
 fi
 
+# VDADecoder
+if test "$host_vendor" = "apple" ; then
+  if test "$use_vdadecoder" = "yes"; then
+    HAVE_LIBVDADECODER=1
+    AC_DEFINE([HAVE_LIBVDADECODER], [1], [Define to 1 if you have the `VDADecoder' library.])
+    AC_MSG_NOTICE($vdadecoder_enabled)
+  else
+    use_vdadecoder ="no"
+    AC_MSG_NOTICE($vdadecoder_disabled)
+  fi
+else
+  use_vdadecoder ="no"
+  AC_MSG_NOTICE($vdadecoder_disabled)
+fi
+
 # platform specific bin utilities
 if test "$host_vendor" != "apple" ; then
   AC_CHECK_PROG(HAVE_GAWK,gawk,"yes","no",)
@@ -957,6 +980,12 @@ if test "$use_crystalhd" = "yes"; then
   final_message="$final_message\n  CrystalHD:\tYes"
 else
   final_message="$final_message\n  CrystalHD:\tNo"
+fi
+
+if test "$use_vdadecoder" = "yes"; then
+  final_message="$final_message\n  VDADecoder:\tYes"
+else
+  final_message="$final_message\n  VDADecoder:\tNo"
 fi
 
 if test "$use_joystick" = "yes"; then

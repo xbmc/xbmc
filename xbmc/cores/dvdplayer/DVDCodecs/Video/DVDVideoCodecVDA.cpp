@@ -19,11 +19,13 @@
  *
  */
 
-#if defined(__APPLE__)
-#if (defined HAVE_CONFIG_H)
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
+#elif defined(_WIN32)
+#include "system.h"
 #endif
 
+#if defined(HAVE_LIBVDADECODER)
 #include "DynamicDll.h"
 #include "GUISettings.h"
 #include "DVDClock.h"
