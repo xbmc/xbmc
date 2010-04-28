@@ -48,17 +48,22 @@ public:
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
   
-  pthread_mutex_t   m_queue_mutex;    // mutex protecting queue manipulation
-  frame_queue       *m_display_queue; // display-order queue - next display frame is always at the queue head
-  int32_t           m_queue_depth;    // we will try to keep the queue depth around 10 frames
-
 protected:
   void  DisplayQueuePop(void);
+  static void VDADecoderCallback(
+    void                *decompressionOutputRefCon,
+    CFDictionaryRef frameInfo,
+    OSStatus        status, 
+    uint32_t        infoFlags,
+    CVImageBufferRef  imageBuffer);
 
   DllLibVDADecoder  *m_dll;
   void              *m_vda_decoder;   // opaque vdadecoder reference
   const char        *m_pFormatName;
 
+  pthread_mutex_t   m_queue_mutex;    // mutex protecting queue manipulation
+  frame_queue       *m_display_queue; // display-order queue - next display frame is always at the queue head
+  int32_t           m_queue_depth;    // we will try to keep the queue depth around 10 frames
 
   DVDVideoPicture   m_pVideoBuffer;
 };
