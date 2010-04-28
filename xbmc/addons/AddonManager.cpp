@@ -248,19 +248,34 @@ void CAddonMgr::FindAddons()
   CSingleLock lock(m_critSection);
   m_addons.clear();
   m_idMap.clear();
+
+  // store any addons with unresolved deps, then recheck at the end
+  map<CStdString, AddonPtr> unresolved;
+
   if (!CSpecialProtocol::XBMCIsHome())
-    LoadAddons("special://home/addons");
-  LoadAddons("special://xbmc/addons");
+    LoadAddons("special://home/addons",unresolved);
+  LoadAddons("special://xbmc/addons",unresolved);
+
+  for (map<CStdString,AddonPtr>::iterator it = unresolved.begin(); 
+                                          it != unresolved.end(); ++it)
+  {
+    if (DependenciesMet(it->second))
+    {
+      if (!UpdateIfKnown(it->second))
+      {
+        m_addons[it->second->Type()].push_back(it->second);
+        m_idMap.insert(make_pair(it->first,it->second));
+      }
+    }
+  }
 }
 
-void CAddonMgr::LoadAddons(const CStdString &path)
+void CAddonMgr::LoadAddons(const CStdString &path, 
+                           map<CStdString, AddonPtr>& unresolved)
 {
   // parse the user & system dirs for addons of the requested type
   CFileItemList items;
   CDirectory::GetDirectory(path, items);
-
-  // store any addons with unresolved deps, then recheck at the end
-  VECADDONS unresolved;
 
   // for all folders found
   for (int i = 0; i < items.Size(); ++i)
@@ -276,7 +291,8 @@ void CAddonMgr::LoadAddons(const CStdString &path)
       continue;
 
     // only load if addon with same id isn't already loaded
-    if(m_idMap.find(addon->ID()) != m_idMap.end())
+    if(m_idMap.find(addon->ID()) != m_idMap.end() ||
+       unresolved.find(addon->ID()) != unresolved.end())
     {
       CLog::Log(LOGDEBUG, "ADDON: already loaded id %s, bypassing package", addon->ID().c_str());
       continue;
@@ -292,7 +308,7 @@ void CAddonMgr::LoadAddons(const CStdString &path)
 
     if (!DependenciesMet(addon))
     {
-      unresolved.push_back(addon);
+      unresolved.insert(make_pair(addon->ID(),addon));
       continue;
     }
     else
@@ -306,20 +322,6 @@ void CAddonMgr::LoadAddons(const CStdString &path)
       }
     }
   }
-
-  for (unsigned i = 0; i < unresolved.size(); i++)
-  {
-    AddonPtr& addon = unresolved[i];
-    if (DependenciesMet(addon))
-    {
-      if (!UpdateIfKnown(addon))
-      {
-        m_addons[addon->Type()].push_back(addon);
-        m_idMap.insert(make_pair(addon->ID(), addon));
-      }
-    }
-  }
-//  CLog::Log(LOGINFO, "ADDON: Found %"PRIuS" addons", m_addons.find(type) == m_addons.end() ? 0: m_addons[type].size(), TranslateType(type).c_str());
 }
 
 bool CAddonMgr::UpdateIfKnown(AddonPtr &addon)
@@ -345,8 +347,6 @@ bool CAddonMgr::UpdateIfKnown(AddonPtr &addon)
 
 bool CAddonMgr::DependenciesMet(AddonPtr &addon)
 {
-  // As remote repos are not functioning,
-  // this will fail if a dependency is not found locally
   if (!addon)
     return false;
 
@@ -364,15 +364,24 @@ bool CAddonMgr::DependenciesMet(AddonPtr &addon)
       AddonPtr dep = m_idMap[id];
       // we're guaranteed to have at least max OR min here
       if (!min.str.IsEmpty() && !max.str.IsEmpty())
-        return (dep->Version() >= min && dep->Version() <= max);
+      {
+        if (dep->Version() < min || dep->Version() > max)
+          return false;
+      }
       else if (!min.str.IsEmpty())
-        return (dep->Version() >= min);
+      {
+        if (dep->Version() < min)
+          return false;
+      }
       else
-        return (dep->Version() <= max);
+      {
+        if (dep->Version() > max)
+          return false;
+      }
     }
     itr++;
   }
-  return deps.empty();
+  return true;
 }
 
 bool CAddonMgr::AddonFromInfoXML(const CStdString &path, AddonPtr &addon)

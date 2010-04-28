@@ -89,7 +89,8 @@ namespace ADDON
     static AddonPtr AddonFromProps(AddonProps& props);
     void UpdateRepos();
     void FindAddons();
-    void LoadAddons(const CStdString &path);
+    void LoadAddons(const CStdString &path, 
+                    std::map<CStdString, AddonPtr>& unresolved);
 
     void OnJobComplete(unsigned int jobID, bool sucess, CJob* job);
   private:
