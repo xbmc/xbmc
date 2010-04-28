@@ -3,7 +3,7 @@
   <id>skin.confluence</id>
   <type>skin</type>
   <title>Confluence</title>
-  <version>2.11</version>
+  <version>1.1.0</version>
   <platforms>
     <platform>all</platform>
   </platforms>
@@ -11,7 +11,8 @@
   <minversion>
     <xbmc>28000</xbmc>
   </minversion>
+  <author>Jezz_X (Team XBMC)</author>
   <summary>Confluence skin by Jezz_X</summary>
-  <description></description>
-  <author>Jezz_X</author>
+  <description>Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC to understand and use.</description>
+  <disclaimer>Confluence is the default skin for XBMC removing it may cause issues</disclaimer>
 </addoninfo>
