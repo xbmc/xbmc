@@ -222,68 +222,113 @@
 					<font>font13</font>
 					<textcolor>blue</textcolor>
 				</control>
-				<control type="label">
-					<description>Description Page Count</description>
-					<posx>600</posx>
-					<posy>170</posy>
-					<width>300</width>
-					<height>25</height>
-					<label>$INFO[Container(400).CurrentPage, $LOCALIZE[31024] [COLOR=blue]([/COLOR]]$INFO[Container(400).NumPages,/,[COLOR=blue])[/COLOR]]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<textcolor>grey</textcolor>
+				<control type="group">
+					<visible>!IsEmpty(ListItem.Property(Addon.Disclaimer))</visible>
+					<control type="label">
+						<description>Description Page Count</description>
+						<posx>600</posx>
+						<posy>170</posy>
+						<width>300</width>
+						<height>25</height>
+						<label>$INFO[Container(400).CurrentPage, $LOCALIZE[31024] [COLOR=blue]([/COLOR]]$INFO[Container(400).NumPages,/,[COLOR=blue])[/COLOR]]</label>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>font12</font>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="textbox" id="400">
+						<description>Description</description>
+						<posx>10</posx>
+						<posy>195</posy>
+						<width>580</width>
+						<height>160</height>
+						<font>font12</font>
+						<align>justify</align>
+						<textcolor>white</textcolor>
+						<label>$INFO[ListItem.Property(Addon.Description)]</label>
+						<pagecontrol>60</pagecontrol>
+					</control>
+					<control type="scrollbar" id="60">
+						<posx>610</posx>
+						<posy>190</posy>
+						<width>25</width>
+						<height>175</height>
+						<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+						<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+						<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+						<textureslidernib>ScrollBarNib.png</textureslidernib>
+						<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+						<onleft>9000</onleft>
+						<onright>61</onright>
+						<showonepage>false</showonepage>
+						<orientation>vertical</orientation>
+					</control>
+					<control type="label">
+						<description>Disclaimer txt</description>
+						<posx>0</posx>
+						<posy>370</posy>
+						<width>600</width>
+						<height>25</height>
+						<label>$LOCALIZE[24052]</label>
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>font13</font>
+						<textcolor>orange</textcolor>
+					</control>
+					<control type="textbox">
+						<description>Disclaimer</description>
+						<posx>10</posx>
+						<posy>395</posy>
+						<width>580</width>
+						<height>40</height>
+						<font>font12</font>
+						<align>justify</align>
+						<textcolor>white</textcolor>
+						<label>$INFO[ListItem.Property(Addon.Disclaimer)]</label>
+						<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
+					</control>
 				</control>
-				<control type="textbox" id="400">
-					<description>Description</description>
-					<posx>10</posx>
-					<posy>195</posy>
-					<width>580</width>
-					<height>160</height>
-					<font>font12</font>
-					<align>justify</align>
-					<textcolor>white</textcolor>
-					<label>$INFO[ListItem.Property(Addon.Description)]</label>
-					<pagecontrol>60</pagecontrol>
-				</control>
-				<control type="scrollbar" id="60">
-					<posx>610</posx>
-					<posy>190</posy>
-					<width>25</width>
-					<height>175</height>
-					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
-					<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
-					<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
-					<textureslidernib>ScrollBarNib.png</textureslidernib>
-					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-					<onleft>9000</onleft>
-					<onright>9000</onright>
-					<showonepage>false</showonepage>
-					<orientation>vertical</orientation>
-				</control>
-				<control type="label">
-					<description>Disclaimer txt</description>
-					<posx>0</posx>
-					<posy>370</posy>
-					<width>600</width>
-					<height>25</height>
-					<label>$LOCALIZE[24052]</label>
-					<align>left</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<textcolor>orange</textcolor>
-				</control>
-				<control type="textbox">
-					<description>Disclaimer</description>
-					<posx>10</posx>
-					<posy>395</posy>
-					<width>580</width>
-					<height>40</height>
-					<font>font12</font>
-					<align>justify</align>
-					<textcolor>white</textcolor>
-					<label>$INFO[ListItem.Property(Addon.Disclaimer)]</label>
-					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
+				<control type="group">
+					<visible>IsEmpty(ListItem.Property(Addon.Disclaimer))</visible>
+					<control type="label">
+						<description>Description Page Count</description>
+						<posx>600</posx>
+						<posy>170</posy>
+						<width>300</width>
+						<height>25</height>
+						<label>$INFO[Container(401).CurrentPage, $LOCALIZE[31024] [COLOR=blue]([/COLOR]]$INFO[Container(401).NumPages,/,[COLOR=blue])[/COLOR]]</label>
+						<align>right</align>
+						<aligny>center</aligny>
+						<font>font12</font>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="textbox" id="401">
+						<description>Description</description>
+						<posx>10</posx>
+						<posy>195</posy>
+						<width>580</width>
+						<height>250</height>
+						<font>font12</font>
+						<align>justify</align>
+						<textcolor>white</textcolor>
+						<label>$INFO[ListItem.Property(Addon.Description)]</label>
+						<pagecontrol>61</pagecontrol>
+					</control>
+					<control type="scrollbar" id="61">
+						<posx>610</posx>
+						<posy>190</posy>
+						<width>25</width>
+						<height>250</height>
+						<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+						<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+						<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+						<textureslidernib>ScrollBarNib.png</textureslidernib>
+						<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+						<onleft>60</onleft>
+						<onright>9000</onright>
+						<showonepage>true</showonepage>
+						<orientation>vertical</orientation>
+					</control>
 				</control>
 			</control>
 			<control type="group" id="9000">
