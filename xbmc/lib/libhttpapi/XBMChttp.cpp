@@ -2605,7 +2605,11 @@ int CXbmcHttp::xbmcSTSetting(int numParas, CStdString paras[])
     for (i=0; i<numParas; i++)
     {
       if (paras[i]=="myvideowatchmode")
-        tmp.Format("%i",g_settings.m_iMyVideoWatchMode);
+      {
+        CGUIWindow *window = g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
+        int watchMode = (window) ? g_settings.GetWatchMode(((CGUIMediaWindow *)window)->CurrentDirectory().GetContent()) : VIDEO_SHOW_ALL;
+        tmp.Format("%i", watchMode);
+      }
       else if (paras[i]=="mymusicstartwindow")
         tmp.Format("%i",g_settings.m_iMyMusicStartWindow);
       else if (paras[i]=="videostartwindow")
