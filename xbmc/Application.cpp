@@ -1536,7 +1536,6 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   UnloadSkin();
 
   CLog::Log(LOGINFO, "  load skin from:%s", skin->Path().c_str());
-
   g_SkinInfo = skin;
   g_SkinInfo->Start();
 
