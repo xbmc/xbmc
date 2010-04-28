@@ -1213,7 +1213,11 @@
   <string id="13422">Start slideshow here</string>
   <string id="13423">Remember for this path</string>
   <string id="13424">Use pixel buffer objects</string>
-  <string id="13425">Broadcom Crystal HD</string>
+  <string id="13425">Allow hardware acceleration (VDPAU)</string>
+  <string id="13426">Allow hardware acceleration (VAAPI)</string>
+  <string id="13427">Allow hardware acceleration (DXVA2)</string>
+  <string id="13428">Allow hardware acceleration (CrystalHD)</string>
+  <string id="13429">Allow hardware acceleration (VDADecoder)</string>
 
   <string id="13500">A/V sync method</string>
   <string id="13501">Audio clock</string>
@@ -2158,11 +2162,11 @@
 
   <string id="24090">Lock Add-on manager</string>
 
-  <string id="24091">Allow hardware acceleration (VDPAU)</string>
-  <string id="24092">Allow hardware acceleration (VAAPI)</string>
-  <string id="24093">Allow hardware acceleration (DXVA2)</string>
-  <string id="24094">Allow hardware acceleration (CrystalHD)</string>
-  <string id="24095">Allow hardware acceleration (VDADecoder)</string>
+  <string id="24091"></string>
+  <string id="24092"></string>
+  <string id="24093"></string>
+  <string id="24094"></string>
+  <string id="24095"></string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>

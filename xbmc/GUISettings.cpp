@@ -586,32 +586,28 @@ void CGUISettings::Initialize()
   AddInt(vp, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, renderers, SPIN_CONTROL_TEXT);
 
 #ifdef HAVE_LIBVDPAU
-  AddBool(vp, "videoplayer.usevdpau", 24091, true);
+  AddBool(vp, "videoplayer.usevdpau", 13425, true);
 #endif
-
-
+#ifdef HAVE_LIBVA
+  AddBool(vp, "videoplayer.usevaapi", 13426, true);
+#endif
+#ifdef HAS_DX
+  AddBool(g_sysinfo.IsVistaOrHigher() ? vp: NULL, "videoplayer.usedxva2", 13427, false);
+#endif
+#ifdef HAVE_LIBCRYSTALHD
+  AddBool(CCrystalHD::GetInstance()->DevicePresent() ? vp: NULL, "videoplayer.usechd", 13428, true);
+#endif
 #ifdef __APPLE__
 /*
   if (g_sysinfo.HasVDADecoder())
-    AddBool(CCrystalHD::GetInstance()->DevicePresent() ? vp: NULL, "videoplayer.usevda", 24095, true);
+    AddBool(CCrystalHD::GetInstance()->DevicePresent() ? vp: NULL, "videoplayer.usevda", 13429, true);
 */
-#endif
-
-#ifdef HAVE_LIBCRYSTALHD
-  AddBool(CCrystalHD::GetInstance()->DevicePresent() ? vp: NULL, "videoplayer.usechd", 24094, true);
-#endif
-
-#ifdef HAS_DX
-  AddBool(g_sysinfo.IsVistaOrHigher() ? vp: NULL, "videoplayer.usedxva2", 24093, false);
-#endif
-
-#ifdef HAVE_LIBVA
-  AddBool(vp, "videoplayer.usevaapi", 24092, true);
 #endif
 
 #ifdef HAS_GL
   AddBool(vp, "videoplayer.usepbo", 13424, true);
 #endif
+
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(NULL, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
