@@ -4,7 +4,7 @@ DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 CXXFLAGS=-fPIC
 OBJS=opengl_spectrum.o
 
-SLIB=../../../addons/visualisation.glspectrum/opengl_spectrum.vis
+SLIB=../../../addons/visualization.glspectrum/opengl_spectrum.vis
 
 $(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)

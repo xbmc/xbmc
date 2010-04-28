@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>visualisation.projectm</id>
+  <id>visualization.projectm</id>
   <type>visualization</type>
   <title>projectM</title>
   <library>projectM.vis</library>

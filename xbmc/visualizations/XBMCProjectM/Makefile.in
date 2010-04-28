@@ -1,7 +1,7 @@
 ARCH=@ARCH@
 INCLUDES=-I. -I../../addons/include
 OBJS=Main.o
-SLIB=../../../addons/visualisation.projectm/projectM.vis
+SLIB=../../../addons/visualization.projectm/projectM.vis
 DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 CXXFLAGS=-fPIC
 DIRS=libprojectM

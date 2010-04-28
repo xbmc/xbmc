@@ -218,7 +218,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="opengl32.lib glu32.lib"
-				OutputFile="../../../addons/visualisation.waveform/Waveform_win32.vis"
+				OutputFile="../../../addons/visualization.waveform/Waveform_win32.vis"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Waveform.pdb"
