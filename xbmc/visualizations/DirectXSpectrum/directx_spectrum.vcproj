@@ -139,7 +139,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib ws2_32.lib d3dx9.lib"
-				OutputFile="../../../addons/org.xbmc.addons.dxspectrum/Spectrum_win32dx.vis"
+				OutputFile="../../../addons/visualization.dxspectrum/Spectrum_win32dx.vis"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Spectrum_win32dx.pdb"

@@ -145,7 +145,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="D3dx9.lib"
-				OutputFile="../../../addons/com.nullsoft.milkdrop.xbmc/MilkDrop_win32dx.vis"
+				OutputFile="../../../addons/visualization.milkdrop/MilkDrop_win32dx.vis"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(TargetName).pdb"

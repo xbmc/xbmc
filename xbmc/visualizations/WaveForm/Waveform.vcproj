@@ -63,7 +63,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="opengl32.lib glu32.lib"
-				OutputFile="../../addons/vis.waveform/Waveform_win32.vis"
+				OutputFile="../../addons/visualization..waveform/Waveform_win32.vis"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Waveform.pdb"
@@ -139,7 +139,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib glu32.lib"
-				OutputFile="../../addons/vis.waveform/Waveform_win32.vis"
+				OutputFile="../../addons/visualization..waveform/Waveform_win32.vis"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -294,7 +294,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="opengl32.lib winmm.lib ws2_32.lib glu32.lib"
-				OutputFile="../../addons/vis.waveform/Waveform_win32.vis"
+				OutputFile="../../addons/visualization.waveform/Waveform_win32.vis"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
