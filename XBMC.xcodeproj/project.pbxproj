@@ -961,6 +961,8 @@
 		F52910140EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */; };
 		F52B063B11869862004B1D66 /* Skin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B063A11869862004B1D66 /* Skin.cpp */; };
 		F52B063C11869862004B1D66 /* Skin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B063A11869862004B1D66 /* Skin.cpp */; };
+		F52B06BA1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */; };
+		F52B06BB1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */; };
 		F52BFFDB115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */; };
 		F52BFFDC115D5574004B1D66 /* AddonStatusHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */; };
 		F5390F7A0F2BB7080081BAE0 /* Cdg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D879D10EF4BE53007C68A9 /* Cdg.cpp */; };
@@ -3638,6 +3640,8 @@
 		F52910130EE1D5F0001167F0 /* DirectoryNodeMusicVideoAlbum.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = DirectoryNodeMusicVideoAlbum.cpp; path = xbmc/FileSystem/VideoDatabaseDirectory/DirectoryNodeMusicVideoAlbum.cpp; sourceTree = SOURCE_ROOT; };
 		F52B063911869862004B1D66 /* Skin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Skin.h; path = xbmc/addons/Skin.h; sourceTree = SOURCE_ROOT; };
 		F52B063A11869862004B1D66 /* Skin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Skin.cpp; path = xbmc/addons/Skin.cpp; sourceTree = SOURCE_ROOT; };
+		F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDVideoCodecVDA.cpp; path = xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecVDA.cpp; sourceTree = SOURCE_ROOT; };
+		F52B06B91187CE18004B1D66 /* DVDVideoCodecVDA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDVideoCodecVDA.h; path = xbmc/cores/dvdplayer/DVDCodecs/Video/DVDVideoCodecVDA.h; sourceTree = SOURCE_ROOT; };
 		F52BFFD9115D5574004B1D66 /* AddonStatusHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AddonStatusHandler.h; path = addons/AddonStatusHandler.h; sourceTree = "<group>"; };
 		F52BFFDA115D5574004B1D66 /* AddonStatusHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AddonStatusHandler.cpp; path = addons/AddonStatusHandler.cpp; sourceTree = "<group>"; };
 		F548786B0FE060FF00E506FD /* DVDSubtitleParserMPL2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleParserMPL2.h; sourceTree = "<group>"; };
@@ -5220,6 +5224,8 @@
 				E38E153C0D25F9F900618676 /* DVDVideoCodec.h */,
 				F595994410E9F322004B58B3 /* DVDVideoCodecCrystalHD.cpp */,
 				F595994310E9F322004B58B3 /* DVDVideoCodecCrystalHD.h */,
+				F52B06B81187CE18004B1D66 /* DVDVideoCodecVDA.cpp */,
+				F52B06B91187CE18004B1D66 /* DVDVideoCodecVDA.h */,
 				E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */,
 				E38E153E0D25F9F900618676 /* DVDVideoCodecFFmpeg.h */,
 				E38E153F0D25F9F900618676 /* DVDVideoCodecLibMpeg2.cpp */,
@@ -8177,6 +8183,7 @@
 				C85EB762117461830008E5A5 /* GUIViewStateAddonBrowser.cpp in Sources */,
 				18E9C8EE11834DF600DF8B9F /* GUIDialogAddonInfo.cpp in Sources */,
 				F52B063B11869862004B1D66 /* Skin.cpp in Sources */,
+				F52B06BA1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9046,6 +9053,7 @@
 				C85EB763117461830008E5A5 /* GUIViewStateAddonBrowser.cpp in Sources */,
 				18E9C8EF11834DF600DF8B9F /* GUIDialogAddonInfo.cpp in Sources */,
 				F52B063C11869862004B1D66 /* Skin.cpp in Sources */,
+				F52B06BB1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
