@@ -427,7 +427,7 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   CVPixelBufferRef yuvframe;
   
   // clone the video picture buffer settings
-  memcpy(pDvdVideoPicture, &m_pVideoBuffer, sizeof(DVDVideoPicture));
+  *pDvdVideoPicture = m_pVideoBuffer;
 
   // get the top yuv frame, we risk getting the wrong frame if the frame queue
   // depth is less than the number of encoded reference frames. If queue depth
@@ -460,7 +460,8 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
 void CDVDVideoCodecVDA::DisplayQueuePop(void)
 {
-  if (!m_display_queue || m_queue_depth == 0) return;
+  if (!m_display_queue || m_queue_depth == 0)
+    return;
 
   // pop the current frame off the queue
   pthread_mutex_lock(&m_queue_mutex);
