@@ -258,7 +258,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       case CODEC_ID_H264:
         // source must be H.264 with valid avcC atom in extradata
         if (hints.extrasize < 7 || hints.extradata == NULL)
-          return FALSE;
+          return false;
         m_pFormatName = "vda-h264";
       break;
       default:
@@ -327,7 +327,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     if (kVDADecoderNoErr != status) 
     {
       CLog::Log(LOGNOTICE, "%s - failed to open VDADecoder Codec", __FUNCTION__);
-      return FALSE;
+      return false;
     }
     
     //First make sure all properties are reset
