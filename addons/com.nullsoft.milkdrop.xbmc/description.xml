@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>com.nullsoft.milkdrop.xbmc</id>
+  <id>visaulisation.milkdrop</id>
   <type>visualization</type>
   <title>MilkDrop</title>
   <librarywin32>MilkDrop_win32dx.vis</librarywin32>

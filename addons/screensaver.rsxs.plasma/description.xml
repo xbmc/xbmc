@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>net.sf.rsxs.plasma</id>
+  <id>screensaver.plasma</id>
   <type>screensaver</type>
   <title>Plasma</title>
   <library>Plasma.xbs</library>

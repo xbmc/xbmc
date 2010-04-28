@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>com.discogs.scraper.common</id>
+  <id>metadata.common.discogs.com</id>
   <type>scraper-library</type>
   <title>Discogs</title>
   <library>discogs.xml</library>

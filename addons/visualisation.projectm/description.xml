@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>net.sf.projectm.xbmc</id>
+  <id>visualisation.projectm</id>
   <type>visualization</type>
   <title>projectM</title>
   <library>projectM.vis</library>

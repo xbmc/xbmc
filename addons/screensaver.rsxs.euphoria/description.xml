@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>net.sf.rsxs.euphoria</id>
+  <id>screensaver.euphoria</id>
   <type>screensaver</type>
   <title>Euphoria</title>
   <library>Euphoria.xbs</library>

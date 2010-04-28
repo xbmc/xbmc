@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>net.sf.rsxs.solarwinds</id>
+  <id>screensaver.solarwinds</id>
   <type>screensaver</type>
   <title>Solarwinds</title>
   <library>Solarwinds.xbs</library>

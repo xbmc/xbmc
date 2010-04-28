@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>org.themoviedb.scraper.common</id>
+  <id>metadata.common.themoviedb.org</id>
   <type>scraper-library</type>
   <title>TMDb</title>
   <library>tmdb.xml</library>

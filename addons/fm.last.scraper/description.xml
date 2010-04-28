@@ -15,7 +15,7 @@
   <description>Download Music information</description>
   <author>TEAMXBMC</author>
   <dependencies>
-    <dependency minversion="1.0.0" maxversion="">fm.last.scraper.common</dependency>
+    <dependency minversion="1.0.0" maxversion="">metadata.common.last.fm</dependency>
   </dependencies>
   <supportedcontent>
     <content>albums</content>

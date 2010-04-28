@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>com.dtrailer.scraper.common</id>
+  <id>metadata.common.dtrailer.com</id>
   <type>scraper-library</type>
   <title>DTrailer</title>
   <library>dtrailer.xml</library>

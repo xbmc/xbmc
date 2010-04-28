@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>org.xbmc.addons.pm3.hd</id>
+  <id>skin.pm3-hd</id>
   <type>skin</type>
   <library>skin.xml</library>
   <title>PM3.HD</title>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>org.themoviedb.scraper</id>
+  <id>metadata.themoviedb.org</id>
   <type>scraper</type>
   <title>TMDB</title>
   <library>tmdb.xml</library>
@@ -15,8 +15,8 @@
   <description>Download movie information</description>
   <author>TEAMXBMC</author>
   <dependencies>
-    <dependency minversion="1.0.0" maxversion="">org.themoviedb.scraper.common</dependency>
-    <dependency minversion="1.0.0" maxversion="">com.dtrailer.scraper.common</dependency>
+    <dependency minversion="1.0.0" maxversion="">metadata.common.themoviedb.org</dependency>
+    <dependency minversion="1.0.0" maxversion="">metadata.common.dtrailer.com</dependency>
   </dependencies>
   <supportedcontent>
     <content>movies</content>
