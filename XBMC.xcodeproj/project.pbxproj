@@ -9100,6 +9100,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GENERATE_PROFILING_CODE = NO;
 				HEADER_SEARCH_PATHS = (
+					$SYSROOT,
 					guilib,
 					xbmc,
 					xbmc/osx,
@@ -9189,6 +9190,7 @@
 				GCC_UNROLL_LOOPS = YES;
 				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
+					$SYSROOT,
 					guilib,
 					xbmc,
 					xbmc/osx,
@@ -9334,6 +9336,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GENERATE_PROFILING_CODE = NO;
 				HEADER_SEARCH_PATHS = (
+					$SYSROOT,
 					guilib,
 					xbmc,
 					xbmc/osx,
@@ -9425,6 +9428,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;
 				HEADER_SEARCH_PATHS = (
+					$SYSROOT,
 					guilib,
 					xbmc,
 					xbmc/osx,
