@@ -71,7 +71,7 @@
 				<texture>$INFO[ListItem.Icon]</texture>
 			</control>
 			<control type="label">
-				<description>Song Title value</description>
+				<description>Addon Title value</description>
 				<posx>280</posx>
 				<posy>80</posy>
 				<width>580</width>
@@ -86,6 +86,8 @@
 			<control type="group">
 				<posx>270</posx>
 				<posy>130</posy>
+				<visible>![Control.HasFocus(10) | Control.HasFocus(62)]</visible>
+				<include>VisibleFadeEffect</include>
 				<control type="label">
 					<description>Type txt</description>
 					<posx>150</posx>
@@ -326,9 +328,66 @@
 						<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
 						<onleft>60</onleft>
 						<onright>9000</onright>
-						<showonepage>true</showonepage>
+						<showonepage>false</showonepage>
 						<orientation>vertical</orientation>
 					</control>
+				</control>
+			</control>
+			<control type="group">
+				<posx>270</posx>
+				<posy>130</posy>
+				<include>VisibleFadeEffect</include>
+				<visible>Control.HasFocus(10) | Control.HasFocus(62)</visible>
+				<control type="label">
+					<description>Description txt</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>300</width>
+					<height>25</height>
+					<label>$LOCALIZE[24036]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font13</font>
+					<textcolor>blue</textcolor>
+				</control>
+				<control type="label">
+					<description>Description Page Count</description>
+					<posx>600</posx>
+					<posy>0</posy>
+					<width>300</width>
+					<height>25</height>
+					<label>$INFO[Container(403).CurrentPage, $LOCALIZE[31024] [COLOR=blue]([/COLOR]]$INFO[Container(403).NumPages,/,[COLOR=blue])[/COLOR]]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+				</control>
+				<control type="textbox" id="403">
+					<description>Description</description>
+					<posx>10</posx>
+					<posy>30</posy>
+					<width>580</width>
+					<height>410</height>
+					<font>font12</font>
+					<align>justify</align>
+					<textcolor>white</textcolor>
+					<label>$INFO[ListItem.Property(Addon.ChangeLog)]</label>
+					<pagecontrol>62</pagecontrol>
+				</control>
+				<control type="scrollbar" id="62">
+					<posx>610</posx>
+					<posy>30</posy>
+					<width>25</width>
+					<height>410</height>
+					<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+					<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>ScrollBarNib.png</textureslidernib>
+					<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+					<onleft>9000</onleft>
+					<onright>9000</onright>
+					<showonepage>false</showonepage>
+					<orientation>vertical</orientation>
 				</control>
 			</control>
 			<control type="group" id="9000">
@@ -348,7 +407,7 @@
 					<texturefocus border="5">MenuItemFO.png</texturefocus>
 					<onleft>60</onleft>
 					<onright>60</onright>
-					<onup>8</onup>
+					<onup>10</onup>
 					<ondown>7</ondown>
 				</control>
 				<control type="button" id="7">
@@ -400,6 +459,23 @@
 					<onleft>60</onleft>
 					<onright>60</onright>
 					<onup>9</onup>
+					<ondown>10</ondown>
+				</control>
+				<control type="button" id="10">
+					<description>Changelog button</description>
+					<posx>0</posx>
+					<posy>200</posy>
+					<width>255</width>
+					<height>51</height>
+					<textoffsetx>20</textoffsetx>
+					<label>24036</label>
+					<font>font13_title</font>
+					<align>right</align>
+					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+					<texturefocus border="5">MenuItemFO.png</texturefocus>
+					<onleft>62</onleft>
+					<onright>62</onright>
+					<onup>8</onup>
 					<ondown>6</ondown>
 				</control>
 			</control>
