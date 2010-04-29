@@ -21,14 +21,17 @@
  *
  */
 
+#include "Addon.h"
 #include "GraphicContext.h" // needed for the RESOLUTION members
 #include "GUIIncludes.h"    // needed for the GUIInclude member
-
 #define CREDIT_LINE_LENGTH 50
 
 class TiXmlNode;
 
-class CSkinInfo
+namespace ADDON
+{
+
+class CSkinInfo : public CAddon
 {
 public:
   class CStartupWindow
@@ -42,14 +45,13 @@ public:
     CStdString m_name;
   };
 
-  CSkinInfo();
-  ~CSkinInfo();
+  CSkinInfo(const ADDON::AddonProps &props);
+  virtual ~CSkinInfo();
 
   /*! \brief Load information regarding the skin from the given skin directory
-   \param skinDir folder of the skin to load
-   \param loadIncludes whether the includes from the skin should also be loaded (defaults to true)
+   \param skinDir folder of the skin to load (defaults to this skin's basedir)
    */
-  void Load(const CStdString& skinDir, bool loadIncludes = true);
+  void Start(const CStdString& skinDir = "");
 
   bool HasSkinFile(const CStdString &strFile) const;
 
@@ -62,7 +64,6 @@ public:
    */
   CStdString GetSkinPath(const CStdString& file, RESOLUTION *res = NULL, const CStdString& baseDir = "") const;
 
-  CStdString GetBaseDir() const;
   double GetVersion() const { return m_Version; };
 
   /*! \brief Return whether skin debugging is enabled
@@ -96,7 +97,7 @@ public:
    */
   void GetSkinPaths(std::vector<CStdString> &paths) const;
 
-  static bool Check(const CStdString& strSkinDir); // checks if everything is present and accounted for without loading the skin
+//  static bool Check(const CStdString& strSkinDir); // checks if everything is present and accounted for without loading the skin
   static double GetMinVersion();
 protected:
   /*! \brief Given a resolution, retrieve the corresponding directory name
@@ -120,7 +121,6 @@ protected:
 
   RESOLUTION m_DefaultResolution; // default resolution for the skin in 4:3 modes
   RESOLUTION m_DefaultResolutionWide; // default resolution for the skin in 16:9 modes
-  CStdString m_strBaseDir;
   double m_Version;
 
   float m_effectsSlowDown;
@@ -131,4 +131,6 @@ protected:
   bool m_debugging;
 };
 
-extern CSkinInfo g_SkinInfo;
+} /*namespace ADDON*/
+
+extern boost::shared_ptr<ADDON::CSkinInfo> g_SkinInfo;

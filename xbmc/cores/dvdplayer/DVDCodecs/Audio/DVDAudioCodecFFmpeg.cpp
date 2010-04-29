@@ -158,14 +158,11 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
                                                  , pData
                                                  , iSize);
 
-#if (LIBAVCODEC_VERSION_INT > AV_VERSION_INT(52, 59, 0))
-  #error Make sure upstream version still needs this workaround (ffmpeg issue #1709)
-#endif
-  /* upstream ac3dec is bugged, returns the packet size, not a negative value on error */
-  if (m_pCodecContext->codec_id == CODEC_ID_AC3 && iBytesUsed > iSize)
+  /* some codecs will attempt to consume more data than what we gave */
+  if (iBytesUsed > iSize)
   {
-    m_iBufferSize1 = 0;
-    return iSize;
+    CLog::Log(LOGWARNING, "CDVDAudioCodecFFmpeg::Decode - decoder attempted to consume more data than given");
+    iBytesUsed = iSize;
   }
 
   if(m_iBufferSize1 == 0 && iBytesUsed >= 0)

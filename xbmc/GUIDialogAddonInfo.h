@@ -1,4 +1,5 @@
 #pragma once
+
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -20,19 +21,33 @@
  *
  */
 
-#include "StdString.h"
-#include "ThumbLoader.h"
+#include "GUIDialog.h"
+#include "addons/IAddon.h"
+#include "utils/Job.h"
 
-class CPictureThumbLoader : public CThumbLoader
+class CGUIDialogAddonInfo :
+      public CGUIDialog,
+      public IJobCallback
 {
 public:
-  CPictureThumbLoader();
-  virtual ~CPictureThumbLoader();
-  virtual bool LoadItem(CFileItem* pItem);
-  void SetRegenerateThumbs(bool regenerate) { m_regenerateThumbs = regenerate; };
-  static void ProcessFoldersAndArchives(CFileItem *pItem);
+  CGUIDialogAddonInfo(void);
+  virtual ~CGUIDialogAddonInfo(void);
+  bool OnMessage(CGUIMessage& message);
+  
+  virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_item; }
+  virtual bool HasListItems() const { return true; }
+
+  void OnInstall();
+  void OnDisable();
+  void OnSettings();
+
+  static bool ShowForItem(const CFileItemPtr& item);
+
+  // job callback
+  void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 protected:
-  virtual void OnLoaderFinish();
-private:
-  bool m_regenerateThumbs;
+  CFileItemPtr m_item;
+  ADDON::AddonPtr m_addon;
+  unsigned int m_jobid;
 };
+

@@ -27,6 +27,7 @@
 #include "Audio/DVDAudioCodec.h"
 #include "Overlay/DVDOverlayCodec.h"
 
+#include "Video/DVDVideoCodecVDA.h"
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
 #if defined(HAVE_LIBCRYSTALHD)
@@ -155,6 +156,13 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   {
     if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
   }
+#if defined(__APPLE__)
+  if (g_guiSettings.GetBool("videoplayer.usevda") && !hint.software && hint.codec == CODEC_ID_H264)
+  {
+    CLog::Log(LOGINFO, "Trying Apple VDA Decoder...");
+    if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
+  }
+#endif
 
 #if defined(HAVE_LIBCRYSTALHD)
   if (g_guiSettings.GetBool("videoplayer.usechd") && CCrystalHD::GetInstance()->DevicePresent() && !hint.software )

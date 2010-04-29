@@ -82,9 +82,6 @@
     <Filter Include="cores\dsplayer\Filters\Splitters">
       <UniqueIdentifier>{04630a22-43cd-4ba5-b315-d789849dcf79}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\dsplayer\Filters\Video Renderers">
-      <UniqueIdentifier>{b17ca670-8077-41e8-b9a5-3afa8f5bdec8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="cores\dsplayer\Filters\Source">
       <UniqueIdentifier>{a5b336c3-d9b0-4ee5-ac95-4b3a9d910978}</UniqueIdentifier>
     </Filter>
@@ -228,6 +225,9 @@
     </Filter>
     <Filter Include="cores\dsplayer\Filters\Video Decoders">
       <UniqueIdentifier>{333a2702-47ab-4268-94d7-3d8d023910ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cores\dsplayer\Filters\Video Renderers">
+      <UniqueIdentifier>{b17ca670-8077-41e8-b9a5-3afa8f5bdec8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1335,9 +1335,6 @@
     <ClCompile Include="..\..\xbmc\Zeroconf.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\AddonDatabase.cpp">
-      <Filter>Source Files\Database</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\Album.cpp">
       <Filter>Source Files\Database</Filter>
     </ClCompile>
@@ -2274,6 +2271,12 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.cpp">
       <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\Skin.cpp">
+      <Filter>Source Files\Addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\GUIDialogAddonInfo.cpp">
+      <Filter>Source Files\GUI Dialog</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitter.cpp">
       <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
     </ClCompile>
@@ -2333,6 +2336,18 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\XBMCVideoDecFilter.cpp">
       <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\AddonDatabase.cpp" />
+    <ClCompile Include="..\..\xbmc\GUIViewStateAddonBrowser.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\Repository.cpp" />
+    <ClCompile Include="..\..\xbmc\AddonDatabase.cpp" />
+    <ClCompile Include="..\..\xbmc\GUIViewStateAddonBrowser.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\Repository.cpp" />
+    <ClCompile Include="..\..\xbmc\AddonDatabase.cpp" />
+    <ClCompile Include="..\..\xbmc\GUIViewStateAddonBrowser.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\Repository.cpp" />
+    <ClCompile Include="..\..\xbmc\AddonDatabase.cpp">
+      <Filter>Source Files\Database</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4826,6 +4841,12 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.h">
       <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\Skin.h">
+      <Filter>Source Files\Addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\GUIDialogAddonInfo.h">
+      <Filter>Source Files\GUI Dialog</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSplitter.h">
       <Filter>cores\dsplayer\Filters\BaseClassFilters</Filter>
     </ClInclude>
@@ -4919,9 +4940,15 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avio.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\config.h">
-      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
-    </ClInclude>
+    <ClInclude Include="..\..\xbmc\AddonDatabase.h" />
+    <ClInclude Include="..\..\xbmc\GUIViewStateAddonBrowser.h" />
+    <ClInclude Include="..\..\xbmc\addons\Repository.h" />
+    <ClInclude Include="..\..\xbmc\AddonDatabase.h" />
+    <ClInclude Include="..\..\xbmc\GUIViewStateAddonBrowser.h" />
+    <ClInclude Include="..\..\xbmc\addons\Repository.h" />
+    <ClInclude Include="..\..\xbmc\AddonDatabase.h" />
+    <ClInclude Include="..\..\xbmc\GUIViewStateAddonBrowser.h" />
+    <ClInclude Include="..\..\xbmc\addons\Repository.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\win32\XBMC.ico">

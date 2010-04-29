@@ -32,6 +32,7 @@
 #undef free
 
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "memguard.h"
 #include "log.h"

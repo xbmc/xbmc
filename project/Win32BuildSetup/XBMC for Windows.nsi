@@ -50,7 +50,7 @@
   !define MUI_FINISHPAGE_LINK "Please visit http://xbmc.org for more information."
   !define MUI_FINISHPAGE_LINK_LOCATION "http://xbmc.org"
   !define MUI_FINISHPAGE_RUN "$INSTDIR\XBMC.exe"
-  !define MUI_FINISHPAGE_RUN_PARAMETERS $RunArgs
+  ;!define MUI_FINISHPAGE_RUN_PARAMETERS $RunArgs
   !define MUI_FINISHPAGE_RUN_NOTCHECKED
   !define MUI_ABORTWARNING  
 ;--------------------------------
@@ -60,7 +60,6 @@
   !insertmacro MUI_PAGE_LICENSE "..\..\LICENSE.GPL"
   !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
-  Page custom ProfileSettings ProfileSettingsLeave
   
   ;Start Menu Folder Page Configuration
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
@@ -137,17 +136,9 @@ Section "XBMC" SecXBMC
   Delete "$SMPROGRAMS\$StartMenuFolder\XBMC (Windowed).lnk"
   
   CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
-  ${If} $PageProfileState == "1"
-    StrCpy $RunArgs "-p"
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC (Portable).lnk" "$INSTDIR\XBMC.exe" \
-      "-p" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
-      "" "Start XBMC (Portable)."
-  ${Else}
-    StrCpy $RunArgs ""
-    CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk" "$INSTDIR\XBMC.exe" \
-      "" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
-      "" "Start XBMC."
-  ${EndIf}
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk" "$INSTDIR\XBMC.exe" \
+    "" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
+    "" "Start XBMC."
   CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall XBMC.lnk" "$INSTDIR\Uninstall.exe" \
     "" "$INSTDIR\Uninstall.exe" 0 SW_SHOWNORMAL \
     "" "Uninstall XBMC."
@@ -223,49 +214,6 @@ SectionGroupEnd
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SecXBMC} $(DESC_SecXBMC)
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
-  
-;--------------------------------
-; Profile settings
-
-Var PageProfileDialog
-Var PageProfileRadioButton1
-Var PageProfileRadioButton2
-
-Function ProfileSettings
-  !insertmacro MUI_HEADER_TEXT "Choose Profile path" "Choose where XBMC should store it's data."
-  nsDialogs::Create /NOUNLOAD 1018
-  Pop $PageProfileDialog
-
-  ${If} $PageProfileDialog == error
-    Abort
-  ${EndIf}
-  
-  ${NSD_CreateRadioButton} 0 10u 100% 32u "Store data in $APPDATA\XBMC\ $\nDefault mode. XBMC stores all data and plugins in the user profile directory."
-  Pop $PageProfileRadioButton1
-  
-  ${NSD_CreateRadioButton} 0 40u 100% 32u "Store data in $INSTDIR\ $\nPortable mode. XBMC stores everything in the XBMC installation directory. $\nNote: This will require XBMC started with administrator rights."
-  Pop $PageProfileRadioButton2
-  
-  ${If} $PageProfileState == "1"
-    ${NSD_SetState} $PageProfileRadioButton2 ${BST_CHECKED} 
-  ${Else}
-    ${NSD_SetState} $PageProfileRadioButton1 ${BST_CHECKED} 
-  ${EndIf}
-
-
-  nsDialogs::Show
-FunctionEnd
-
-Function ProfileSettingsLeave
-  ${NSD_GetState} $PageProfileRadioButton1 $0
-  ${If} $0 == ${BST_CHECKED}
-    StrCpy $PageProfileState  "0"
-  ${EndIf}
-  ${NSD_GetState} $PageProfileRadioButton2 $0
-  ${If} $0 == ${BST_CHECKED}
-    StrCpy $PageProfileState  "1"
-  ${EndIf} 
-FunctionEnd
 
 ;--------------------------------
 ;Uninstaller Section

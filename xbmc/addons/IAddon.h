@@ -55,13 +55,16 @@ namespace ADDON
     ADDON_PLUGIN,
     ADDON_REPOSITORY,
     ADDON_VIZ_LIBRARY, // add noninstallable after this and installable before
-    ADDON_SCRAPER_LIBRARY
+    ADDON_SCRAPER_LIBRARY,
+    ADDON_SCRIPT_LIBRARY,
   } TYPE;
 
   class IAddon;
   typedef boost::shared_ptr<IAddon> AddonPtr;
   class CVisualisation;
   typedef boost::shared_ptr<CVisualisation> VizPtr;
+  class CSkinInfo;
+  typedef boost::shared_ptr<CSkinInfo> SkinPtr;
 
   class CAddonMgr;
   class AddonVersion;
@@ -86,6 +89,8 @@ namespace ADDON
     virtual const CStdString Path() const =0;
     virtual const CStdString Profile() const =0;
     virtual const CStdString LibName() const =0;
+    virtual const CStdString ChangeLog() const =0;
+    virtual const CStdString FanArt() const =0;
     virtual const CStdString Author() const =0;
     virtual const CStdString Icon() const =0;
     virtual const int  Stars() const =0;

@@ -39,6 +39,7 @@ public:
   CGUIWindowAddonBrowser(void);
   virtual ~CGUIWindowAddonBrowser(void);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction &action);
 
   void RegisterJob(const CStdString& id, CFileOperationJob* job,
                    unsigned int jobid);
@@ -60,5 +61,6 @@ protected:
   std::map<CFileOperationJob*,CStdString> m_jobtoid;
   CCriticalSection m_critSection;
   CPictureThumbLoader m_thumbLoader;
+  CStdString m_startDirectory;
 };
 

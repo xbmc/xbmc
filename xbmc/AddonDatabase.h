@@ -35,8 +35,11 @@ public:
 
   int AddAddon(const ADDON::AddonPtr& item, int idRepo);
   bool GetAddon(const CStdString& addonID, ADDON::AddonPtr& addon);
+  bool GetAddons(ADDON::VECADDONS& addons);
   bool GetAddon(int id, ADDON::AddonPtr& addon);
   int AddRepository(const CStdString& id, const ADDON::VECADDONS& addons, const CStdString& checksum);
+  void DeleteRepository(const CStdString& id);
+  void DeleteRepository(int id);
   int GetRepoChecksum(const CStdString& id, CStdString& checksum);
   bool GetRepository(const CStdString& id, ADDON::VECADDONS& addons);
   bool GetRepository(int id, ADDON::VECADDONS& addons);
@@ -48,7 +51,7 @@ public:
 protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 2; }
+  virtual int GetMinVersion() const { return 4; }
   const char *GetDefaultDBName() const { return "Addons"; }
 };
 

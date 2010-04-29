@@ -492,6 +492,26 @@ const char* Cocoa_GetAppVersion()
   return strVersion;
 }
 
+bool Cocoa_HasVDADecoder()
+{
+  bool result = false;
+
+  if (Cocoa_GetOSVersion() >= 0x1060)
+    result == access("/System/Frameworks/VideoDecodeAcceleration.framework/VideoDecodeAcceleration", 0) == 0;
+  
+  return(result);
+}
+
+int Cocoa_GetOSVersion()
+{
+  SInt32 version;
+
+  Gestalt(gestaltSystemVersion, &version);
+  
+  return(version);
+}
+
+
 NSWindow* childWindow = nil;
 NSWindow* mainWindow = nil;
 

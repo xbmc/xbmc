@@ -22,7 +22,7 @@
 #include "GUIFontManager.h"
 #include "GraphicContext.h"
 #include "GUIWindowManager.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "GUIFontTTF.h"
 #include "GUIFont.h"
 #include "XMLUtils.h"
@@ -402,7 +402,7 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
 bool GUIFontManager::OpenFontFile(TiXmlDocument& xmlDoc)
 {
   // Get the file to load fonts from:
-  CStdString strPath = g_SkinInfo.GetSkinPath("Font.xml", &m_skinResolution);
+  CStdString strPath = g_SkinInfo->GetSkinPath("Font.xml", &m_skinResolution);
   CLog::Log(LOGINFO, "Loading fonts from %s", strPath.c_str());
 
   // first try our preferred file

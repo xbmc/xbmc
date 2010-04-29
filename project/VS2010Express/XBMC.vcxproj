@@ -271,6 +271,11 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\xbmc\AddonDatabase.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\Repository.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\Skin.cpp" />
+    <ClCompile Include="..\..\xbmc\GUIDialogAddonInfo.cpp" />
+    <ClCompile Include="..\..\xbmc\GUIViewStateAddonBrowser.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\CpuId.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\cspinfo.cpp" />
@@ -282,6 +287,11 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CompileAsC</CompileAs>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">NotUsing</PrecompiledHeader>
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(NOINHERIT)</ForcedIncludeFiles>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">NotUsing</PrecompiledHeader>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CompileAsC</CompileAs>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(NOINHERIT)</ForcedIncludeFiles>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\H264Nalu.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\VideoDecDXVAAllocator.cpp" />
@@ -715,7 +725,6 @@
     <ClCompile Include="..\..\xbmc\utils\Win32Exception.cpp" />
     <ClCompile Include="..\..\xbmc\XBApplicationEx.cpp" />
     <ClCompile Include="..\..\xbmc\Zeroconf.cpp" />
-    <ClCompile Include="..\..\xbmc\AddonDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\Album.cpp" />
     <ClCompile Include="..\..\xbmc\Artist.cpp" />
     <ClCompile Include="..\..\xbmc\Bookmark.cpp" />
@@ -1057,7 +1066,11 @@
     <ClCompile Include="..\..\lib\jsoncpp\jsoncpp\src\lib_json\json_writer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\config.h" />
+    <ClInclude Include="..\..\xbmc\AddonDatabase.h" />
+    <ClInclude Include="..\..\xbmc\addons\Repository.h" />
+    <ClInclude Include="..\..\xbmc\addons\Skin.h" />
+    <ClInclude Include="..\..\xbmc\GUIDialogAddonInfo.h" />
+    <ClInclude Include="..\..\xbmc\GUIViewStateAddonBrowser.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\CpuId.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\cspinfo.h" />

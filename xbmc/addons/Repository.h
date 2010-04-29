@@ -50,14 +50,15 @@ namespace ADDON
     CStdString m_info;
     CStdString m_checksum;
     CStdString m_datadir;
-    bool m_compressed;
+    bool m_compressed; // gzipped info xml
+    bool m_zipped;     // zipped addons
     CCriticalSection m_critSection;
   };
 
   class CRepositoryUpdateJob : public CJob
   {
   public:
-    CRepositoryUpdateJob(RepositoryPtr& repo);
+    CRepositoryUpdateJob(RepositoryPtr& repo, bool param = true);
     virtual ~CRepositoryUpdateJob() {}
 
     virtual bool DoWork();

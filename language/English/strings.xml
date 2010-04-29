@@ -1213,7 +1213,11 @@
   <string id="13422">Start slideshow here</string>
   <string id="13423">Remember for this path</string>
   <string id="13424">Use pixel buffer objects</string>
-  <string id="13425">Broadcom Crystal HD</string>
+  <string id="13425">Allow hardware acceleration (VDPAU)</string>
+  <string id="13426">Allow hardware acceleration (VAAPI)</string>
+  <string id="13427">Allow hardware acceleration (DXVA2)</string>
+  <string id="13428">Allow hardware acceleration (CrystalHD)</string>
+  <string id="13429">Allow hardware acceleration (VDADecoder)</string>
 
   <string id="13500">A/V sync method</string>
   <string id="13501">Audio clock</string>
@@ -2109,6 +2113,7 @@
   <string id="24000">Add-on</string>
   <string id="24001">Add-ons</string>
   <string id="24002">Add-on options</string>
+  <string id="24003">Add-on Information</string>
 
   <string id="24005">Plugin</string>
   <string id="24007">Scraper</string>
@@ -2117,18 +2122,22 @@
   <string id="24010">Visualization</string>
   <string id="24011">Add-on repository</string>
 
-  <string id="24020">Configure Add-on</string>
-  <string id="24021">Disable Add-on</string>
-  <string id="24022">Enable Add-on</string>
+  <string id="24020">Configure</string>
+  <string id="24021">Disable</string>
+  <string id="24022">Enable</string>
   <string id="24023">Add-on disabled</string>
   <string id="24027">Weather service</string>
   <string id="24028">Weather.com (standard)</string>
   <string id="24030">This Add-on can not be configured</string>
   <string id="24031">Error loading settings</string>
+  <string id="24032">All repositories</string>
+  <string id="24033">Repositories</string>
+  <string id="24034">Check for updates</string>
+  <string id="24035">Force refresh</string>
 
   <string id="24050">Available Add-ons</string>
   <string id="24051">Version:</string>
-  <string id="24052">Disclaimer:</string>
+  <string id="24052">Disclaimer</string>
   <string id="24053">License:</string>
   <string id="24059">Would you like to enable this Add-on?</string>
   <string id="24060">Would you like to disable this Add-on?</string>
@@ -2139,21 +2148,25 @@
   <string id="24065">Add-on updated</string>
   <string id="24066">Cancel Add-on download?</string>
   <string id="24067">Currently downloading addons</string>
+  <string id="24068">Update available</string>
+  <string id="24069">Update</string>
 
   <string id="24070">Add-on can not used</string>
   <string id="24071">An unknown error has occurred</string>
   <string id="24072">Settings required</string>
   <string id="24073">Could not connect</string>
   <string id="24074">Needs to restart</string>
+  <string id="24075">Disable</string>
   <string id="24080">Try to reconnect?</string>
   <string id="24089">Add-on restarts</string>
 
   <string id="24090">Lock Add-on manager</string>
 
-  <string id="24091">Allow hardware acceleration (VDPAU)</string>
-  <string id="24092">Allow hardware acceleration (VAAPI)</string>
-  <string id="24093">Allow hardware acceleration (DXVA2)</string>
-  <string id="24094">Allow hardware acceleration (CrystalHD)</string>
+  <string id="24091"></string>
+  <string id="24092"></string>
+  <string id="24093"></string>
+  <string id="24094"></string>
+  <string id="24095"></string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>

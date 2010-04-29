@@ -234,9 +234,6 @@
     <ClCompile Include="..\..\guilib\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\guilib\SkinInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\guilib\TextureBundle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -537,9 +534,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\guilib\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\guilib\SkinInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\guilib\StdString.h">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="guilib"
 	ProjectGUID="{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}"
 	RootNamespace="guilib"
@@ -622,10 +622,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\SkinInfo.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\TextureBundle.cpp"
 				>
 			</File>
@@ -1015,10 +1011,6 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\Shader.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\SkinInfo.h"
 				>
 			</File>
 			<File

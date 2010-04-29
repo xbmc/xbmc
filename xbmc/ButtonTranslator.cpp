@@ -259,6 +259,7 @@ static const ActionMapping windows[] =
         {"karaokeselector"          , WINDOW_DIALOG_KARAOKE_SONGSELECT},
         {"karaokelargeselector"     , WINDOW_DIALOG_KARAOKE_SELECTOR},
         {"sliderdialog"             , WINDOW_DIALOG_SLIDER},
+        {"addoninformation"         , WINDOW_DIALOG_ADDON_INFO},
         {"musicplaylist"            , WINDOW_MUSIC_PLAYLIST},
         {"musicfiles"               , WINDOW_MUSIC_FILES},
         {"musiclibrary"             , WINDOW_MUSIC_NAV},

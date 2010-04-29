@@ -16,6 +16,9 @@
 */
 
 #pragma once
+
+#ifndef __INTRIN_H_
+
 #define __INTRIN_H_
 #ifndef RC_INVOKED
 #ifndef __midl
@@ -1573,4 +1576,6 @@ __MACHINEX64(__int64 _InterlockedXor64_np(__int64 *, __int64))
 }
 #endif
 #endif
+#endif
+
 #endif

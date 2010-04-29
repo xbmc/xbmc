@@ -26,6 +26,8 @@
 #ifndef _DXVA2API_H
 #define _DXVA2API_H
 
+#define MINGW_DXVA2API_H_VERSION (1)
+
 #if __GNUC__ >=3
 #pragma GCC system_header
 #endif
@@ -38,6 +40,8 @@
 //#define DXVA2API_USE_BITFIELDS
 
 /****************STRUCTURES******************/
+#pragma pack(push, 1)
+
 typedef struct _DXVA2_ExtendedFormat {
 #ifdef DXVA2API_USE_BITFIELDS
   union {
@@ -89,7 +93,7 @@ typedef struct _DXVA2_ConfigPictureDecode {
   UINT ConfigHostInverseScan;
   UINT ConfigSpecificIDCT;
   UINT Config4GroupedCoefs;
-  UINT ConfigMinRenderTargetBuffCount;
+  USHORT ConfigMinRenderTargetBuffCount;
   USHORT ConfigDecoderSpecific;
 } DXVA2_ConfigPictureDecode;
 
@@ -337,6 +341,7 @@ typedef struct {
     SHORT   comp_model_value[3][16][8];
 } DXVA_FilmGrainChar_H264;
 
+#pragma pack(pop)
 
 /*************INTERFACES************/
 #ifdef __cplusplus

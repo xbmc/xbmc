@@ -925,7 +925,7 @@ bool CSettings::LoadProfile(unsigned int index)
     g_infoManager.ResetLibraryBools();
 
     // always reload the skin - we need it for the new language strings
-    g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
+    g_application.ReloadSkin();
 
     if (m_currentProfile != 0)
     {
@@ -1689,47 +1689,6 @@ CStdString CSettings::GetBookmarksThumbFolder() const
   return folder;
 }
 
-CStdString CSettings::GetPicturesThumbFolder() const
-{
-  CStdString folder;
-  if (GetCurrentProfile().hasDatabases())
-    CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Pictures", folder);
-  else
-    CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Pictures", folder);
-
-  return folder;
-}
-
-CStdString CSettings::GetProgramsThumbFolder() const
-{
-  CStdString folder;
-  if (GetCurrentProfile().hasDatabases())
-    CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/Programs", folder);
-  else
-    CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Programs", folder);
-
-  return folder;
-}
-
-CStdString CSettings::GetGameSaveThumbFolder() const
-{
-  CStdString folder;
-  if (GetCurrentProfile().hasDatabases())
-    CUtil::AddFileToFolder(GetProfileUserDataFolder(), "Thumbnails/GameSaves", folder);
-  else
-    CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/GameSaves", folder);
-
-  return folder;
-}
-
-CStdString CSettings::GetProfilesThumbFolder() const
-{
-  CStdString folder;
-  CUtil::AddFileToFolder(GetUserDataFolder(), "Thumbnails/Profiles", folder);
-
-  return folder;
-}
-
 CStdString CSettings::GetSourcesFile() const
 {
   CStdString folder;
@@ -1855,8 +1814,6 @@ void CSettings::CreateProfileFolders()
   CDirectory::Create(GetVideoFanartFolder());
   CDirectory::Create(GetMusicFanartFolder());
   CDirectory::Create(GetBookmarksThumbFolder());
-  CDirectory::Create(GetProgramsThumbFolder());
-  CDirectory::Create(GetPicturesThumbFolder());
   CStdString generatedThumbsFolder = CUtil::AddFileToFolder(GetThumbnailsFolder(), "generated");
   CDirectory::Create(generatedThumbsFolder);
   CLog::Log(LOGINFO, "thumbnails folder: %s", GetThumbnailsFolder().c_str());
@@ -1864,7 +1821,6 @@ void CSettings::CreateProfileFolders()
   {
     CStdString strHex;
     strHex.Format("%x",hex);
-    CDirectory::Create(CUtil::AddFileToFolder(GetPicturesThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetMusicThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetVideoThumbFolder(), strHex));
     CDirectory::Create(CUtil::AddFileToFolder(GetThumbnailsFolder(), strHex));

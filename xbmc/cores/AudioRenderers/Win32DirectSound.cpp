@@ -346,22 +346,24 @@ unsigned int CWin32DirectSound::AddPackets(const void* data, unsigned int len)
     else
       memcpy(start, pBuffer, size);
 
+    pBuffer += size * m_uiDataBytesPerFrame / m_uiBytesPerFrame;
+    len     -= size * m_uiDataBytesPerFrame / m_uiBytesPerFrame;
+
     m_BufferOffset += size;
     if (startWrap) // Write-region wraps to beginning of buffer
     {
       // Remap the data to the correct channels into the buffer
       if (m_remap.CanRemap())
-        m_remap.Remap((void*)(pBuffer + size), startWrap, sizeWrap / m_uiBytesPerFrame);
+        m_remap.Remap((void*)pBuffer, startWrap, sizeWrap / m_uiBytesPerFrame);
       else
-        memcpy(startWrap, pBuffer + size, sizeWrap);
+        memcpy(startWrap, pBuffer, sizeWrap);
       m_BufferOffset = sizeWrap;
+
+      pBuffer += sizeWrap * m_uiDataBytesPerFrame / m_uiBytesPerFrame;
+      len     -= sizeWrap * m_uiDataBytesPerFrame / m_uiBytesPerFrame;
     }
 
-    size_t bytes = size + sizeWrap;
-    m_CacheLen += bytes; // This data is now in the cache
-    pBuffer += bytes; // Update buffer pointer
-    len -= (bytes / m_uiBytesPerFrame) * m_uiDataBytesPerFrame; // Update remaining data len
-
+    m_CacheLen += size + sizeWrap; // This data is now in the cache
     m_pBuffer->Unlock(start, size, startWrap, sizeWrap);
   }
 
