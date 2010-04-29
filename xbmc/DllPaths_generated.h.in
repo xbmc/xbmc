@@ -88,4 +88,7 @@
 #define DLL_PATH_LIBCRYSTALHD "libcrystalhd.dylib"
 #endif
 
+/* apple vdadecoder */
+#define DLL_PATH_LIBVDADECODER  "/System/Library/Frameworks/VideoDecodeAcceleration.framework/Versions/Current/VideoDecodeAcceleration"
+
 #endif
