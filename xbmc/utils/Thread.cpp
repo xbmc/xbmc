@@ -337,7 +337,7 @@ void CThread::SetPrioritySched_RR(void)
 
   // make thread fixed, set to 'true' for a non-fixed thread
   theFixedPolicy.timeshare = false;
-  result = thread_policy_set(pthread_mach_thread_np(m_ThreadHandle->m_hThread), THREAD_EXTENDED_POLICY, 
+  result = thread_policy_set(pthread_mach_thread_np(ThreadId()), THREAD_EXTENDED_POLICY, 
     (thread_policy_t)&theFixedPolicy, THREAD_EXTENDED_POLICY_COUNT);
 
   int policy;
