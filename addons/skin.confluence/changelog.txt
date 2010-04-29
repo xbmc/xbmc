@@ -1,5 +1,5 @@
 1.1.0
-Redisigned the video and Music OSD Info and controls 
+Redesigned the video and Music OSD Info and controls 
 Added more images for codec flagging on videos and audio
 Added all the windows needed for the new Addon Browser
 Removed the right hand side bar graphic from all windows and only made the left hand one visible if a menu is there
