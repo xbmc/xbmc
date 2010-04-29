@@ -46,6 +46,7 @@ public:
   // job callback
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 protected:
+  void OnInitWindow();
   CFileItemPtr m_item;
   ADDON::AddonPtr m_addon;
   unsigned int m_jobid;
