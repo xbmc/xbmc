@@ -12,8 +12,8 @@
     <xbmc>20000</xbmc>
   </minversion>
   <summary>TMDB Movie Scraper</summary>
-  <description>Download movie information</description>
-  <author>TEAMXBMC</author>
+  <description>themoviedb.org is a free and open movie database. It's completely user driven by people like you. TMDb is currently used by millions of people every month and with their and powerful API, it is also used by many popular media centers like XBMC to retrieve Movie Metadata, Posters and Fanart to enrich the users experience</description>
+  <author>Team XBMC</author>
   <dependencies>
     <dependency minversion="1.0.0" maxversion="">metadata.common.themoviedb.org</dependency>
     <dependency minversion="1.0.0" maxversion="">metadata.common.dtrailer.com</dependency>
