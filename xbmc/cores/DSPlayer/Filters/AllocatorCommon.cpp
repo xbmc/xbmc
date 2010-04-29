@@ -54,7 +54,7 @@ HRESULT CreateAP9(const CLSID& clsid, HWND hWnd, ISubPicAllocatorPresenter** ppA
 
   if(FAILED(hr))
   {
-    Error += L"\n";
+    Error += "\n";
     Error += GetWindowsErrorMessage(hr, NULL);
 
     CLog::Log(LOGERROR, "%s %s", __FUNCTION__, Error.c_str());
@@ -119,8 +119,8 @@ CStdString GetWindowsErrorMessage(HRESULT _Error, HMODULE _Module)
   case D3DERR_NOTAVAILABLE                     : return _T("D3DERR_NOTAVAILABLE");
   case D3DERR_OUTOFVIDEOMEMORY                 : return _T("D3DERR_OUTOFVIDEOMEMORY");
   case D3DERR_INVALIDDEVICE                    : return _T("D3DERR_INVALIDDEVICE");
-  case D3DERR_INVALIDCALL                      : return _T("D3DERR_INVALIDCALL");
-  case D3DERR_DRIVERINVALIDCALL                : return _T("D3DERR_DRIVERINVALIDCALL");
+  case D3DERR_INVALIDCALL                      : return _T("D3DERR_INVALIDCAL");
+  case D3DERR_DRIVERINVALIDCALL                : return _T("D3DERR_DRIVERINVALIDCAL");
   case D3DERR_WASSTILLDRAWING                  : return _T("D3DERR_WASSTILLDRAWING");
   case D3DOK_NOAUTOGEN                         : return _T("D3DOK_NOAUTOGEN");
   case D3DERR_DEVICEREMOVED                    : return _T("D3DERR_DEVICEREMOVED");
@@ -144,73 +144,73 @@ CStdString GetWindowsErrorMessage(HRESULT _Error, HMODULE _Module)
   return Temp + errmsg;
 }
 
-const wchar_t *GetD3DFormatStr(D3DFORMAT Format)
+const char *GetD3DFormatStr(D3DFORMAT Format)
 {
   switch (Format)
   {
-  case D3DFMT_R8G8B8 : return L"R8G8B8";
-  case D3DFMT_A8R8G8B8 : return L"A8R8G8B8";
-  case D3DFMT_X8R8G8B8 : return L"X8R8G8B8";
-  case D3DFMT_R5G6B5 : return L"R5G6B5";
-  case D3DFMT_X1R5G5B5 : return L"X1R5G5B5";
-  case D3DFMT_A1R5G5B5 : return L"A1R5G5B5";
-  case D3DFMT_A4R4G4B4 : return L"A4R4G4B4";
-  case D3DFMT_R3G3B2 : return L"R3G3B2";
-  case D3DFMT_A8 : return L"A8";
-  case D3DFMT_A8R3G3B2 : return L"A8R3G3B2";
-  case D3DFMT_X4R4G4B4 : return L"X4R4G4B4";
-  case D3DFMT_A2B10G10R10: return L"A2B10G10R10";
-  case D3DFMT_A8B8G8R8 : return L"A8B8G8R8";
-  case D3DFMT_X8B8G8R8 : return L"X8B8G8R8";
-  case D3DFMT_G16R16 : return L"G16R16";
-  case D3DFMT_A2R10G10B10: return L"A2R10G10B10";
-  case D3DFMT_A16B16G16R16 : return L"A16B16G16R16";
-  case D3DFMT_A8P8 : return L"A8P8";
-  case D3DFMT_P8 : return L"P8";
-  case D3DFMT_L8 : return L"L8";
-  case D3DFMT_A8L8 : return L"A8L8";
-  case D3DFMT_A4L4 : return L"A4L4";
-  case D3DFMT_V8U8 : return L"V8U8";
-  case D3DFMT_L6V5U5 : return L"L6V5U5";
-  case D3DFMT_X8L8V8U8 : return L"X8L8V8U8";
-  case D3DFMT_Q8W8V8U8 : return L"Q8W8V8U8";
-  case D3DFMT_V16U16 : return L"V16U16";
-  case D3DFMT_A2W10V10U10: return L"A2W10V10U10";
-  case D3DFMT_UYVY : return L"UYVY";
-  case D3DFMT_R8G8_B8G8: return L"R8G8_B8G8";
-  case D3DFMT_YUY2 : return L"YUY2";
-  case D3DFMT_G8R8_G8B8: return L"G8R8_G8B8";
-  case D3DFMT_DXT1 : return L"DXT1";
-  case D3DFMT_DXT2 : return L"DXT2";
-  case D3DFMT_DXT3 : return L"DXT3";
-  case D3DFMT_DXT4 : return L"DXT4";
-  case D3DFMT_DXT5 : return L"DXT5";
-  case D3DFMT_D16_LOCKABLE : return L"D16_LOCKABLE";
-  case D3DFMT_D32: return L"D32";
-  case D3DFMT_D15S1: return L"D15S1";
-  case D3DFMT_D24S8: return L"D24S8";
-  case D3DFMT_D24X8: return L"D24X8";
-  case D3DFMT_D24X4S4: return L"D24X4S4";
-  case D3DFMT_D16: return L"D16";
-  case D3DFMT_D32F_LOCKABLE: return L"D32F_LOCKABLE";
-  case D3DFMT_D24FS8 : return L"D24FS8";
-  case D3DFMT_D32_LOCKABLE : return L"D32_LOCKABLE";
-  case D3DFMT_S8_LOCKABLE: return L"S8_LOCKABLE";
-  case D3DFMT_L16: return L"L16";
-  case D3DFMT_VERTEXDATA : return L"VERTEXDATA";
-  case D3DFMT_INDEX16: return L"INDEX16";
-  case D3DFMT_INDEX32: return L"INDEX32";
-  case D3DFMT_Q16W16V16U16 : return L"Q16W16V16U16";
-  case D3DFMT_MULTI2_ARGB8 : return L"MULTI2_ARGB8";
-  case D3DFMT_R16F : return L"R16F";
-  case D3DFMT_G16R16F: return L"G16R16F";
-  case D3DFMT_A16B16G16R16F: return L"A16B16G16R16F";
-  case D3DFMT_R32F : return L"R32F";
-  case D3DFMT_G32R32F: return L"G32R32F";
-  case D3DFMT_A32B32G32R32F: return L"A32B32G32R32F";
-  case D3DFMT_CxV8U8 : return L"CxV8U8";
-  case D3DFMT_A1 : return L"A1";
-  case D3DFMT_BINARYBUFFER : return L"BINARYBUFFER";
+  case D3DFMT_R8G8B8 : return "R8G8B8";
+  case D3DFMT_A8R8G8B8 : return "A8R8G8B8";
+  case D3DFMT_X8R8G8B8 : return "X8R8G8B8";
+  case D3DFMT_R5G6B5 : return "R5G6B5";
+  case D3DFMT_X1R5G5B5 : return "X1R5G5B5";
+  case D3DFMT_A1R5G5B5 : return "A1R5G5B5";
+  case D3DFMT_A4R4G4B4 : return "A4R4G4B4";
+  case D3DFMT_R3G3B2 : return "R3G3B2";
+  case D3DFMT_A8 : return "A8";
+  case D3DFMT_A8R3G3B2 : return "A8R3G3B2";
+  case D3DFMT_X4R4G4B4 : return "X4R4G4B4";
+  case D3DFMT_A2B10G10R10: return "A2B10G10R10";
+  case D3DFMT_A8B8G8R8 : return "A8B8G8R8";
+  case D3DFMT_X8B8G8R8 : return "X8B8G8R8";
+  case D3DFMT_G16R16 : return "G16R16";
+  case D3DFMT_A2R10G10B10: return "A2R10G10B10";
+  case D3DFMT_A16B16G16R16 : return "A16B16G16R16";
+  case D3DFMT_A8P8 : return "A8P8";
+  case D3DFMT_P8 : return "P8";
+  case D3DFMT_L8 : return "L8";
+  case D3DFMT_A8L8 : return "A8L8";
+  case D3DFMT_A4L4 : return "A4L4";
+  case D3DFMT_V8U8 : return "V8U8";
+  case D3DFMT_L6V5U5 : return "L6V5U5";
+  case D3DFMT_X8L8V8U8 : return "X8L8V8U8";
+  case D3DFMT_Q8W8V8U8 : return "Q8W8V8U8";
+  case D3DFMT_V16U16 : return "V16U16";
+  case D3DFMT_A2W10V10U10: return "A2W10V10U10";
+  case D3DFMT_UYVY : return "UYVY";
+  case D3DFMT_R8G8_B8G8: return "R8G8_B8G8";
+  case D3DFMT_YUY2 : return "YUY2";
+  case D3DFMT_G8R8_G8B8: return "G8R8_G8B8";
+  case D3DFMT_DXT1 : return "DXT1";
+  case D3DFMT_DXT2 : return "DXT2";
+  case D3DFMT_DXT3 : return "DXT3";
+  case D3DFMT_DXT4 : return "DXT4";
+  case D3DFMT_DXT5 : return "DXT5";
+  case D3DFMT_D16_LOCKABLE : return "D16_LOCKABLE";
+  case D3DFMT_D32: return "D32";
+  case D3DFMT_D15S1: return "D15S1";
+  case D3DFMT_D24S8: return "D24S8";
+  case D3DFMT_D24X8: return "D24X8";
+  case D3DFMT_D24X4S4: return "D24X4S4";
+  case D3DFMT_D16: return "D16";
+  case D3DFMT_D32F_LOCKABLE: return "D32F_LOCKABLE";
+  case D3DFMT_D24FS8 : return "D24FS8";
+  case D3DFMT_D32_LOCKABLE : return "D32_LOCKABLE";
+  case D3DFMT_S8_LOCKABLE: return "S8_LOCKABLE";
+  case D3DFMT_L16: return "L16";
+  case D3DFMT_VERTEXDATA : return "VERTEXDATA";
+  case D3DFMT_INDEX16: return "INDEX16";
+  case D3DFMT_INDEX32: return "INDEX32";
+  case D3DFMT_Q16W16V16U16 : return "Q16W16V16U16";
+  case D3DFMT_MULTI2_ARGB8 : return "MULTI2_ARGB8";
+  case D3DFMT_R16F : return "R16F";
+  case D3DFMT_G16R16F: return "G16R16F";
+  case D3DFMT_A16B16G16R16F: return "A16B16G16R16F";
+  case D3DFMT_R32F : return "R32F";
+  case D3DFMT_G32R32F: return "G32R32F";
+  case D3DFMT_A32B32G32R32F: return "A32B32G32R32F";
+  case D3DFMT_CxV8U8 : return "CxV8U8";
+  case D3DFMT_A1 : return "A1";
+  case D3DFMT_BINARYBUFFER : return "BINARYBUFFER";
   }
-  return L"Unknown";
+  return "Unknown";
 }

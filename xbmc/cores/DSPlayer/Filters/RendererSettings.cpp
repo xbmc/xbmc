@@ -30,6 +30,7 @@
 using namespace XFILE;
 CDsSettings::CDsSettings(void)
 {
+  LoadConfig();
 }
 
 CDsSettings::~CDsSettings(void)

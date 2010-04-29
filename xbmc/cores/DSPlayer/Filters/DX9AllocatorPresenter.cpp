@@ -276,7 +276,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   m_DetectedScanlineTime = 0;
   m_DetectedScanlineTimePrim = 0;
   m_DetectedRefreshRate = 0;
-  CDsSettings s = g_dsSettings;
+
   if (g_dsSettings.m_RenderSettings.iVMRDisableDesktopComposition)
   {
     m_bDesktopCompositionDisabled = true;
@@ -593,7 +593,7 @@ void CDX9AllocatorPresenter::VSyncThread()
 
           int VSyncPos = GetVBlackPos();
           int WaitRange = dsmax(m_ScreenSize.cy / 40, 5);
-          int MinRange = dsmax(dsmin(int(0.003 * double(m_ScreenSize.cy) * double(m_RefreshRate) + 0.5), m_ScreenSize.cy/3), 5); // 1.8  ms or dsmax 33 % of Time
+          int MinRange = dsmax(dsmin(int(0.003 * double(m_ScreenSize.cy) * double(m_RefreshRate) + 0.5), m_ScreenSize.cy/3), 5); // 1.8  ms or max 33 % of Time
 
           VSyncPos += MinRange + WaitRange;
 
@@ -887,6 +887,7 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
   }
 
   m_RefreshRate = d3ddm.RefreshRate;
+  m_DisplayType = d3ddm.Format;
   m_ScreenSize.SetSize(d3ddm.Width, d3ddm.Height);
 
     D3DPRESENT_PARAMETERS pp;
@@ -2245,8 +2246,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
   // Create a query object
 
 
-#if 0
-  {
+  /*{
     Com::SmartPtr<IDirect3DQuery9> pEventQuery;
     m_pD3DDev->CreateQuery(D3DQUERYTYPE_EVENT, &pEventQuery);
 
@@ -2289,21 +2289,22 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
 
     }
     m_VBlankStartMeasureTime = CTimeUtils::GetPerfCounter();
-    m_VBlankStartMeasure = ScanLine;
+    m_VBlankStartMeasure = ScanLine;*/
 
-    if (fAll && bDoVSyncInPresent)
-    {
-      m_PresentWaitTime = (CTimeUtils::GetPerfCounter() - llPerf) + PresentWaitTime;
-      m_PresentWaitTimeMin = dsmin(m_PresentWaitTimeMin, m_PresentWaitTime);
-      m_PresentWaitTimeMax = dsmax(m_PresentWaitTimeMax, m_PresentWaitTime);
-    }
-    else
-    {
-      m_PresentWaitTime = 0;
-      m_PresentWaitTimeMin = dsmin(m_PresentWaitTimeMin, m_PresentWaitTime);
-      m_PresentWaitTimeMax = dsmax(m_PresentWaitTimeMax, m_PresentWaitTime);
-    }
+  LONGLONG llPerf = CTimeUtils::GetPerfCounter();
+  if (fAll && bDoVSyncInPresent)
+  {
+    m_PresentWaitTime = (CTimeUtils::GetPerfCounter() - llPerf) + PresentWaitTime;
+    m_PresentWaitTimeMin = dsmin(m_PresentWaitTimeMin, m_PresentWaitTime);
+    m_PresentWaitTimeMax = dsmax(m_PresentWaitTimeMax, m_PresentWaitTime);
   }
+  else
+  {
+    m_PresentWaitTime = 0;
+    m_PresentWaitTimeMin = dsmin(m_PresentWaitTimeMin, m_PresentWaitTime);
+    m_PresentWaitTimeMax = dsmax(m_PresentWaitTimeMax, m_PresentWaitTime);
+  }
+
   if (bDoVSyncInPresent)
   {
     LONGLONG Time = CTimeUtils::GetPerfCounter();
@@ -2311,8 +2312,6 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
       CalculateJitter(Time);
     OnVBlankFinished(fAll, Time);
   }
-
-#endif
 
   if (bTakenLock)
     UnlockD3DDevice();
@@ -2533,7 +2532,7 @@ void CDX9AllocatorPresenter::DrawStats()
 
     if (bDetailedStats > 1)
     {
-      strText.Format("Formats      : Surface %s    Backbuffer %s    Display %s     Device D3DDev      D3DExError: %s", GetD3DFormatStr(m_SurfaceType), GetD3DFormatStr(m_BackbufferType), GetD3DFormatStr(m_DisplayType), m_D3DDevExError.c_str());
+      strText.Format("Formats      : Surface %s    Backbuffer %s    Display %s     Device D3DDev      D3DExError: %s", GetD3DFormatStr(m_SurfaceType), GetD3DFormatStr(D3DFMT_X8R8G8B8), GetD3DFormatStr(m_DisplayType), m_D3DDevExError.c_str());
       DrawText(rc, strText, 1);
       OffsetRect (&rc, 0, TextHeight);
 
@@ -2548,7 +2547,7 @@ void CDX9AllocatorPresenter::DrawStats()
     if (m_bSyncStatsAvailable)
     {
       if (bDetailedStats > 1)
-        strText.Format("Sync offset  : dsmin = %+8.3f ms, dsmax = %+8.3f ms, StdDev = %7.3f ms, Avr = %7.3f ms, Mode = %d", (double(llMinSyncOffset)/10000.0), (double(llMaxSyncOffset)/10000.0), m_fSyncOffsetStdDev/10000.0, m_fSyncOffsetAvr/10000.0, m_VSyncMode);
+        strText.Format("Sync offset  : min = %+8.3f ms, max = %+8.3f ms, StdDev = %7.3f ms, Avr = %7.3f ms, Mode = %d", (double(llMinSyncOffset)/10000.0), (double(llMaxSyncOffset)/10000.0), m_fSyncOffsetStdDev/10000.0, m_fSyncOffsetAvr/10000.0, m_VSyncMode);
       else
         strText.Format("Sync offset  : Mode = %d", m_VSyncMode);
       DrawText(rc, strText, 1);
@@ -2557,12 +2556,12 @@ void CDX9AllocatorPresenter::DrawStats()
 
     if (bDetailedStats > 1)
     {
-      strText.Format("Jitter       : dsmin = %+8.3f ms, dsmax = %+8.3f ms, StdDev = %7.3f ms", (double(llMinJitter)/10000.0), (double(llMaxJitter)/10000.0), m_fJitterStdDev/10000.0);
+      strText.Format("Jitter       : min = %+8.3f ms, max = %+8.3f ms, StdDev = %7.3f ms", (double(llMinJitter)/10000.0), (double(llMaxJitter)/10000.0), m_fJitterStdDev/10000.0);
       DrawText(rc, strText, 1);
       OffsetRect (&rc, 0, TextHeight);
     }
 
-    if (m_pAllocator && bDetailedStats > 1)
+    /*if (m_pAllocator && bDetailedStats > 1)
     {
       CDX9SubPicAllocator *pAlloc = (CDX9SubPicAllocator *)m_pAllocator.m_ptr;
 
@@ -2586,14 +2585,14 @@ void CDX9AllocatorPresenter::DrawStats()
       strText.Format("Subtitles    : Free %d     Allocated %d     Buffered %d     QueueStart %7.3f     QueueEnd %7.3f", nFree, nAlloc, nSubPic, (double(QueueStart)/10000000.0), (double(QueueEnd)/10000000.0));
       DrawText(rc, strText, 1);
        OffsetRect (&rc, 0, TextHeight);
-    }
+    }*/ // No available right now
 
     if (bDetailedStats > 1)
     {
       if (m_VBlankEndPresent == -100000)
-        strText.Format("VBlank Wait  : Start %4d   End %4d   Wait %7.3f ms   Lock %7.3f ms   Offset %4d   dsmax %4d", m_VBlankStartWait, m_VBlankEndWait, (double(m_VBlankWaitTime)/10000.0), (double(m_VBlankLockTime)/10000.0), m_VBlankMin, m_VBlankMax - m_VBlankMin);
+        strText.Format("VBlank Wait  : Start %4d   End %4d   Wait %7.3f ms   Lock %7.3f ms   Offset %4d   max %4d", m_VBlankStartWait, m_VBlankEndWait, (double(m_VBlankWaitTime)/10000.0), (double(m_VBlankLockTime)/10000.0), m_VBlankMin, m_VBlankMax - m_VBlankMin);
       else
-        strText.Format("VBlank Wait  : Start %4d   End %4d   Wait %7.3f ms   Lock %7.3f ms   Offset %4d   dsmax %4d   EndPresent %4d", m_VBlankStartWait, m_VBlankEndWait, (double(m_VBlankWaitTime)/10000.0), (double(m_VBlankLockTime)/10000.0), m_VBlankMin, m_VBlankMax - m_VBlankMin, m_VBlankEndPresent);
+        strText.Format("VBlank Wait  : Start %4d   End %4d   Wait %7.3f ms   Lock %7.3f ms   Offset %4d   max %4d   EndPresent %4d", m_VBlankStartWait, m_VBlankEndWait, (double(m_VBlankWaitTime)/10000.0), (double(m_VBlankLockTime)/10000.0), m_VBlankMin, m_VBlankMax - m_VBlankMin, m_VBlankEndPresent);
     }
     else
     {
@@ -2611,7 +2610,7 @@ void CDX9AllocatorPresenter::DrawStats()
 
     if (bDetailedStats > 1 && bDoVSyncInPresent)
     {
-      strText.Format("Present Wait : Wait %7.3f ms   dsmin %7.3f ms   dsmax %7.3f ms", (double(m_PresentWaitTime)/10000.0), (double(m_PresentWaitTimeMin)/10000.0), (double(m_PresentWaitTimeMax)/10000.0));
+      strText.Format("Present Wait : Wait %7.3f ms   min %7.3f ms   max %7.3f ms", (double(m_PresentWaitTime)/10000.0), (double(m_PresentWaitTimeMin)/10000.0), (double(m_PresentWaitTimeMax)/10000.0));
       DrawText(rc, strText, 1);
       OffsetRect (&rc, 0, TextHeight);
     }
@@ -2619,9 +2618,9 @@ void CDX9AllocatorPresenter::DrawStats()
     if (bDetailedStats > 1)
     {
       if (m_WaitForGPUTime)
-        strText.Format("Paint Time   : Draw %7.3f ms   dsmin %7.3f ms   dsmax %7.3f ms   GPU %7.3f ms", (double(m_PaintTime-m_WaitForGPUTime)/10000.0), (double(m_PaintTimeMin)/10000.0), (double(m_PaintTimeMax)/10000.0), (double(m_WaitForGPUTime)/10000.0));
+        strText.Format("Paint Time   : Draw %7.3f ms   min %7.3f ms   max %7.3f ms   GPU %7.3f ms", (double(m_PaintTime-m_WaitForGPUTime)/10000.0), (double(m_PaintTimeMin)/10000.0), (double(m_PaintTimeMax)/10000.0), (double(m_WaitForGPUTime)/10000.0));
       else
-        strText.Format("Paint Time   : Draw %7.3f ms   dsmin %7.3f ms   dsmax %7.3f ms", (double(m_PaintTime-m_WaitForGPUTime)/10000.0), (double(m_PaintTimeMin)/10000.0), (double(m_PaintTimeMax)/10000.0));
+        strText.Format("Paint Time   : Draw %7.3f ms   min %7.3f ms   max %7.3f ms", (double(m_PaintTime-m_WaitForGPUTime)/10000.0), (double(m_PaintTimeMin)/10000.0), (double(m_PaintTimeMax)/10000.0));
     }
     else
     {
@@ -2635,7 +2634,7 @@ void CDX9AllocatorPresenter::DrawStats()
 
     if (bDetailedStats > 1)
     {
-      strText.Format("Raster Status: Wait %7.3f ms   dsmin %7.3f ms   dsmax %7.3f ms", (double(m_RasterStatusWaitTime)/10000.0), (double(m_RasterStatusWaitTimeMin)/10000.0), (double(m_RasterStatusWaitTimeMax)/10000.0));
+      strText.Format("Raster Status: Wait %7.3f ms   min %7.3f ms   max %7.3f ms", (double(m_RasterStatusWaitTime)/10000.0), (double(m_RasterStatusWaitTimeMin)/10000.0), (double(m_RasterStatusWaitTimeMax)/10000.0));
       DrawText(rc, strText, 1);
        OffsetRect (&rc, 0, TextHeight);
     }
@@ -2691,7 +2690,7 @@ void CDX9AllocatorPresenter::DrawStats()
       
       for (int i=0; i<6; i++)
       {
-        if (m_strStatsMsg[i][0])
+        if (!m_strStatsMsg[i].empty())
         {
           DrawText(rc, m_strStatsMsg[i], 1);
           OffsetRect (&rc, 0, TextHeight);

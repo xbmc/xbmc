@@ -328,8 +328,7 @@ CVMR9AllocatorPresenter::CVMR9AllocatorPresenter(HWND hWnd, HRESULT& hr, CStdStr
   , m_fUseInternalTimer(false)
   , m_rtPrevStart(-1)
 {
-  g_dsSettings.LoadConfig();
-  
+    
 }
 
 STDMETHODIMP CVMR9AllocatorPresenter::NonDelegatingQueryInterface(REFIID riid, void** ppv)

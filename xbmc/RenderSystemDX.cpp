@@ -33,6 +33,7 @@
 #include "AdvancedSettings.h"
 #include "SystemInfo.h"
 #include "VideoRenderers/RenderManager.h"
+#include "Filters\RendererSettings.h"
 
 using namespace std;
 
@@ -314,7 +315,7 @@ bool CRenderSystemDX::CreateDevice()
     }
   }
   
-  if (m_bFullScreenDevice)
+  if (g_dsSettings.m_RenderSettings.iVMR9FullscreenGUISupport && m_bFullScreenDevice)
     hr=m_pD3DDevice->SetDialogBoxMode(TRUE); //To be able to show a com dialog over a fullscreen video playing we need this
 
   D3DDISPLAYMODE mode;

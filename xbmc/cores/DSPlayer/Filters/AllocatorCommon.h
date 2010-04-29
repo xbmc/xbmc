@@ -43,7 +43,7 @@ extern bool queue_ffdshow_support;
 
 extern bool IsVMR9InGraph(IFilterGraph* pFG);
 extern CStdString GetWindowsErrorMessage(HRESULT _Error, HMODULE _Module);
-extern const wchar_t *GetD3DFormatStr(D3DFORMAT Format);
+extern const char *GetD3DFormatStr(D3DFORMAT Format);
 
 extern HRESULT CreateAP9(const CLSID& clsid, HWND hWnd, ISubPicAllocatorPresenter** ppAP);
 extern HRESULT CreateEVR(const CLSID& clsid, HWND hWnd, ISubPicAllocatorPresenter** ppAP);
