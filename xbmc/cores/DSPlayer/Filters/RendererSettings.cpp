@@ -30,7 +30,6 @@
 using namespace XFILE;
 CDsSettings::CDsSettings(void)
 {
-  m_fDisplayStats = 0;
 }
 
 CDsSettings::~CDsSettings(void)
@@ -47,6 +46,7 @@ void CDsSettings::SetDefault()
   nSPCMaxRes = 0; // default
   fSPCAllowAnimationWhenBuffering = false; // No Anim
   iDX9Resizer = 1; //Dx9 Resizers
+  m_fDisplayStats = 0;
 }
 
 void CDsSettings::LoadConfig()
@@ -134,12 +134,12 @@ void CDsSettings::CRendererSettingsShared::SetDefault()
   fVMR9AlterativeVSync = false; // Alternative VSync
   iVMR9VSyncOffset = 0; // Vsync Offset
   //The accurate vsync to 1 with dxva is making the video totaly out of sync
-  iVMR9VSyncAccurate = false; // Accurate VSync
+  iVMR9VSyncAccurate = true; // Accurate VSync
   iVMR9FullscreenGUISupport = true; //Needed for filters property page
   iVMR9VSync = true; //Vsync
   iVMRDisableDesktopComposition = false; //Disable desktop composition (Aero)
 
-  iVMRFlushGPUBeforeVSync = false; //Flush GPU before VSync
+  iVMRFlushGPUBeforeVSync = true; //Flush GPU before VSync
   iVMRFlushGPUAfterPresent = false; //Flush GPU after Present
   iVMRFlushGPUWait = false; //Wait for flushes
 
