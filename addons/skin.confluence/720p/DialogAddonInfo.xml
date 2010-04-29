@@ -9,6 +9,7 @@
 	<controls>
 		<control type="group">
 			<include>VisibleFadeEffect</include>
+			<visible>!Window.isVisible(AddonSettings)</visible>
 			<control type="image">
 				<description>background image</description>
 				<posx>0</posx>
