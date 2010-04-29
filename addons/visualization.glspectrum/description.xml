@@ -15,6 +15,8 @@
     <xbmc>20000</xbmc>
   </minversion>
   <summary>OpenGL Visualization</summary>
-  <description>OpenGL Visualization showing a rotating 3D Spectrum Analyzer</description>
+  <description>Opengl Spectrum is a Visualisation showing a rotating 3D Spectrum Analyzer rendered in Opengl that moves to the beat of the music creating a wave effect across the spectrum grid.  
+  
+  It also has settings to adjust the spectrum bar height, Its speed, and how the bars are rendered (solid, points, wire frame) and is a nice light weight, low cpu useage visualisation that looks great</description>
   <author>Team XBMC</author>
 </addoninfo>
