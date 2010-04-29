@@ -436,8 +436,8 @@ static void setupWindowMenu(void)
 /* Main entry point to executable - should *not* be SDL_main! */
 int main(int argc, char *argv[])
 {
-    NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-    XBMCDelegate			*xbmc_delegate;
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    XBMCDelegate *xbmc_delegate;
 
     // Block SIGPIPE
     // SIGPIPE repeatably kills us, turn it off
