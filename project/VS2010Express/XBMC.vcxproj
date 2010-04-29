@@ -275,7 +275,6 @@
     <ClCompile Include="..\..\xbmc\addons\Repository.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Skin.cpp" />
     <ClCompile Include="..\..\xbmc\GUIDialogAddonInfo.cpp" />
-    <ClCompile Include="..\..\xbmc\GUIViewStateAddonBrowser.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\CpuId.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\cspinfo.cpp" />
@@ -300,6 +299,7 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSauth.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSscramble.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Subtitles\decss\DeCSSInputPin.cpp" />
+    <ClCompile Include="..\..\xbmc\GUIViewStateAddonBrowser.cpp" />
     <ClCompile Include="..\..\xbmc\win32\NetworkWin32.cpp" />
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Create</PrecompiledHeader>
@@ -774,7 +774,6 @@
     <ClCompile Include="..\..\xbmc\GUIDialogYesNo.cpp" />
     <ClCompile Include="..\..\xbmc\GUILargeTextureManager.cpp" />
     <ClCompile Include="..\..\xbmc\GUIMediaWindow.cpp" />
-    <ClCompile Include="..\..\xbmc\GUIViewStateAddonBrowser.cpp" />
     <ClCompile Include="..\..\xbmc\GUIViewStatePictures.cpp" />
     <ClCompile Include="..\..\xbmc\GUIViewStatePrograms.cpp" />
     <ClCompile Include="..\..\xbmc\GUIViewStateScripts.cpp" />
@@ -988,7 +987,6 @@
     <ClCompile Include="..\..\xbmc\addons\AddonManager.cpp" />
     <ClCompile Include="..\..\xbmc\addons\AddonStatusHandler.cpp" />
     <ClCompile Include="..\..\xbmc\addons\fft.cpp" />
-    <ClCompile Include="..\..\xbmc\addons\Repository.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Scraper.cpp" />
     <ClCompile Include="..\..\xbmc\addons\ScreenSaver.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Visualisation.cpp" />
@@ -1070,7 +1068,6 @@
     <ClInclude Include="..\..\xbmc\addons\Repository.h" />
     <ClInclude Include="..\..\xbmc\addons\Skin.h" />
     <ClInclude Include="..\..\xbmc\GUIDialogAddonInfo.h" />
-    <ClInclude Include="..\..\xbmc\GUIViewStateAddonBrowser.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\CpuId.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\cspinfo.h" />
@@ -1097,6 +1094,7 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avformat.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avio.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavutil\common.h" />
+    <ClInclude Include="..\..\xbmc\GUIViewStateAddonBrowser.h" />
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h" />
     <ClInclude Include="..\..\xbmc\win32\pch.h" />
     <ClInclude Include="..\..\xbmc\win32\PlatformDefs.h" />
@@ -1229,14 +1227,10 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\CodecFactory.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllAc3codec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllAdpcm.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllAdplug.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllASAP.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllDCACodec.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllDumb.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllGensApu.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllLibFlac.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllLibshnplay.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllMACDll.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllNosefart.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllSidplay2.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllStSound.h" />
@@ -1257,7 +1251,6 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\OGGcodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\PAPlayer.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\ReplayGain.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\RingHoldBuffer.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\SIDCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\SPCCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\TimidityCodec.h" />
@@ -1452,7 +1445,6 @@
     <ClInclude Include="..\..\xbmc\VideoReferenceClock.h" />
     <ClInclude Include="..\..\xbmc\utils\WebServer.h" />
     <ClInclude Include="..\..\xbmc\Zeroconf.h" />
-    <ClInclude Include="..\..\xbmc\AddonDatabase.h" />
     <ClInclude Include="..\..\xbmc\Album.h" />
     <ClInclude Include="..\..\xbmc\Artist.h" />
     <ClInclude Include="..\..\xbmc\Bookmark.h" />
@@ -1487,7 +1479,6 @@
     <ClInclude Include="..\..\xbmc\GUIDialogVisualisationPresetList.h" />
     <ClInclude Include="..\..\xbmc\GUILargeTextureManager.h" />
     <ClInclude Include="..\..\xbmc\GUIMediaWindow.h" />
-    <ClInclude Include="..\..\xbmc\GUIViewStateAddonBrowser.h" />
     <ClInclude Include="..\..\xbmc\GUIViewStatePictures.h" />
     <ClInclude Include="..\..\xbmc\GUIViewStatePrograms.h" />
     <ClInclude Include="..\..\xbmc\GUIViewStateScripts.h" />
@@ -1654,7 +1645,6 @@
     <ClInclude Include="..\..\xbmc\addons\DllVisualisation.h" />
     <ClInclude Include="..\..\xbmc\addons\fft.h" />
     <ClInclude Include="..\..\xbmc\addons\IAddon.h" />
-    <ClInclude Include="..\..\xbmc\addons\Repository.h" />
     <ClInclude Include="..\..\xbmc\addons\Scraper.h" />
     <ClInclude Include="..\..\xbmc\addons\ScreenSaver.h" />
     <ClInclude Include="..\..\xbmc\addons\Visualisation.h" />
