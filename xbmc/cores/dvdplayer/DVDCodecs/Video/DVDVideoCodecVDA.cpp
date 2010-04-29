@@ -181,7 +181,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     {
       case CODEC_ID_H264:
         // TODO: need to quality h264 encoding (profile, level and number of reference frame)
-        // source must be H.264 with valid avcC atom in extradata
+        // source must be H.264 with valid avcC atom data in extradata
         if (hints.extrasize < 7 || hints.extradata == NULL)
           return false;
         m_format = 'avc1';
