@@ -318,7 +318,7 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
 
   if (status != kVDADecoderNoErr) 
   {
-    CLog::Log(LOGNOTICE, "%s - VDADecoderDecode failed with status(%d)", __FUNCTION__, (int)status);
+    CLog::Log(LOGNOTICE, "%s - failed with status(%d)", __FUNCTION__, (int)status);
     return VC_ERROR;
   }
 
