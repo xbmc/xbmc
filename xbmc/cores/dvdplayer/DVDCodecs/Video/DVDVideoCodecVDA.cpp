@@ -37,23 +37,19 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreVideo/CoreVideo.h>
 
-// missing in 10.4/10.5 SDKs
+// missing in 10.4/10.5 SDKs.
 #if (MAC_OS_X_VERSION_MAX_ALLOWED < 1060)
 #include "dlfcn.h"
 enum {
-  // Component Y'CbCr 8-bit 4:2:2, ordered Cb Y'0 Cr Y'1
+  // component Y'CbCr 8-bit 4:2:2, ordered Cb Y'0 Cr Y'1 .
   kCVPixelFormatType_422YpCbCr8 = FourCharCode('2vuy')
-};
-enum {
-  // Planar Component Y'CbCr 8-bit 4:2:0
-  kCVPixelFormatType_420YpCbCr8Planar = FourCharCode('y420')
 };
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-//#include <VideoDecodeAcceleration/VDADecoder.h>
 // http://developer.apple.com/mac/library/technotes/tn2010/tn2267.html
-// VDADecoder API (keep this until VDADecoder.h is public)
+// VDADecoder API (keep this until VDADecoder.h is public).
+// #include <VideoDecodeAcceleration/VDADecoder.h>
 enum {
   kVDADecoderNoErr = 0,
   kVDADecoderHardwareNotSupportedErr = -12470,		
@@ -66,15 +62,15 @@ enum {
   kVDADecodeInfo_FrameDropped = 1UL << 1
 };
 enum {
-  // tells the decoder not to bother returning
-  // a CVPixelBuffer in the outputCallback. The
-  // output callback will still be called.
+  // tells the decoder not to bother returning a CVPixelBuffer
+  // in the outputCallback. The output callback will still be called.
   kVDADecoderDecodeFlags_DontEmitFrame = 1 << 0
 };
 enum {
-  // decode and return buffers for all frames currently in flight
+  // decode and return buffers for all frames currently in flight.
   kVDADecoderFlush_EmitFrames = 1 << 0		
 };
+
 typedef struct OpaqueVDADecoder* VDADecoder;
 
 typedef void (*VDADecoderOutputCallback)(
@@ -84,6 +80,7 @@ typedef void (*VDADecoderOutputCallback)(
   uint32_t infoFlags,
   CVImageBufferRef imageBuffer);
 
+////////////////////////////////////////////////////////////////////////////////////////////
 class DllLibVDADecoderInterface
 {
 public:
@@ -103,7 +100,7 @@ public:
 
 class DllLibVDADecoder : public DllDynamic, DllLibVDADecoderInterface
 {
-  DECLARE_DLL_WRAPPER(DllLibVDADecoder, "/System/Frameworks/VideoDecodeAcceleration.framework/VideoDecodeAcceleration")
+  DECLARE_DLL_WRAPPER(DllLibVDADecoder, DLL_PATH_LIBVDADECODER)
 
   DEFINE_METHOD5(OSStatus, VDADecoderCreate, (CFDictionaryRef p1, CFDictionaryRef p2, VDADecoderOutputCallback* p3, void* p4, VDADecoder* p5))
   DEFINE_METHOD4(OSStatus, VDADecoderDecode, (VDADecoder p1, uint32_t p2, CFTypeRef p3, CFDictionaryRef p4))
@@ -134,19 +131,15 @@ static CFDictionaryRef MakeDictionaryWithDisplayTime(double inFrameDisplayTime)
     kCFAllocatorDefault, kCFNumberDoubleType, &inFrameDisplayTime);
 
   return CFDictionaryCreate(
-    kCFAllocatorDefault,
-    (const void **)&key,
-    (const void **)&value,
-    1,
-    &kCFTypeDictionaryKeyCallBacks,
-    &kCFTypeDictionaryValueCallBacks);
+    kCFAllocatorDefault, (const void **)&key, (const void **)&value, 1,
+    &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 }
 
 // helper function to extract a time from a dictionary
 static double GetFrameDisplayTimeFromDictionary(CFDictionaryRef inFrameInfoDictionary)
 {
-  CFNumberRef timeNumber = NULL;
   double outValue = 0.0;
+  CFNumberRef timeNumber = NULL;
 
   if (NULL == inFrameInfoDictionary)
     return 0.0;
@@ -159,46 +152,39 @@ static double GetFrameDisplayTimeFromDictionary(CFDictionaryRef inFrameInfoDicti
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
 {
-  m_pFormatName = "vda-h264";
-
-  m_dll = NULL;
+  m_dll = new DllLibVDADecoder;
   m_vda_decoder = NULL;
+  m_pFormatName = "";
 
   m_queue_depth = 0;
   m_display_queue = NULL;
   pthread_mutex_init(&m_queue_mutex, NULL);
 
+  m_swcontext = NULL;
   memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
-  m_dll = new DllLibVDADecoder;
-  if (m_dll)
-    m_dll->Load();
 }
 
 CDVDVideoCodecVDA::~CDVDVideoCodecVDA()
 {
   Dispose();
-
-  if (m_dll)
-    delete m_dll;
+  delete m_dll;
 }
-
-// need to export this as it's only present (CVPixelBuffer.h) in 10.6SDK.
-CV_EXPORT const CFStringRef kCVPixelBufferIOSurfacePropertiesKey;
 
 bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  if (m_dll && g_guiSettings.GetBool("videoplayer.usevda") && !hints.software)
+  if (g_guiSettings.GetBool("videoplayer.usevda") && !hints.software)
   {
     switch (hints.codec)
     {
       case CODEC_ID_H264:
+        // TODO: need to quality h264 encoding (profile, level and number of reference frame)
         // source must be H.264 with valid avcC atom in extradata
         if (hints.extrasize < 7 || hints.extradata == NULL)
           return false;
+        m_format = 'avc1';
         m_pFormatName = "vda-h264";
       break;
       default:
@@ -206,79 +192,49 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       break;
     }
 
-    CFMutableDictionaryRef decoderConfiguration = (CFDictionaryCreateMutable(
-      kCFAllocatorDefault,
-      4,
-      &kCFTypeDictionaryKeyCallBacks,
-      &kCFTypeDictionaryValueCallBacks));
+    // input stream is qualified, now we can load the dlls.
+    if (!m_dll->Load() || !m_dllSwScale.Load())
+      return false;
 
-    SInt32 width = (SInt32)hints.width;
-    SInt32 height = (SInt32)hints.height;
-    SInt32 format = 'avc1';
+    CFMutableDictionaryRef decoderConfiguration = CFDictionaryCreateMutable(
+      kCFAllocatorDefault, 4, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+
+    SInt32 width  = hints.width;
+    SInt32 height = hints.height;
 
     CFNumberRef avcWidth  = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &width);
     CFNumberRef avcHeight = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &height);
-    CFNumberRef avcFormat = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &format);
-    CFDataRef avcCData  = CFDataCreate(kCFAllocatorDefault, (const uint8_t*)hints.extradata, hints.extrasize);
+    CFNumberRef avcFormat = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &m_format);
+    CFDataRef   avcCData  = CFDataCreate(kCFAllocatorDefault, (const uint8_t*)hints.extradata, hints.extrasize);
     
     CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_Height(), avcHeight);
-    CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_Width(), avcWidth);
+    CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_Width(),  avcWidth);
     CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_SourceFormat(), avcFormat);
     CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_avcCData(), avcCData);
     
-    // create a CFDictionary describing the desired destination image buffer
-    CFMutableDictionaryRef destinationImageBufferAttributes = CFDictionaryCreateMutable(
-      kCFAllocatorDefault,
-      2,
-      &kCFTypeDictionaryKeyCallBacks,
-      &kCFTypeDictionaryValueCallBacks);
-
-#if (MAC_OS_X_VERSION_MAX_ALLOWED < 1060)
-    CFStringRef kCVPixelBufferIOSurfacePropertiesKey = (CFStringRef)dlsym(RTLD_NEXT, "kCVPixelBufferIOSurfacePropertiesKey");
-#endif
-    OSType cvPixelFormatType = kCVPixelFormatType_420YpCbCr8Planar;
-    CFNumberRef pixelFormat = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &cvPixelFormatType);
-    CFDictionaryRef emptyDictionary = CFDictionaryCreate(
-      kCFAllocatorDefault, // our empty IOSurface properties dictionary
-      NULL,
-      NULL,
-      0,
-      &kCFTypeDictionaryKeyCallBacks,
-      &kCFTypeDictionaryValueCallBacks);
-    //
-    CFDictionarySetValue(
-      destinationImageBufferAttributes,
-      kCVPixelBufferPixelFormatTypeKey,
-      pixelFormat);
-    //
-    CFDictionarySetValue(
-      destinationImageBufferAttributes,
-      kCVPixelBufferIOSurfacePropertiesKey,
-      emptyDictionary);
-    
-    // create the hardware decoder object
-    OSStatus status = m_dll->VDADecoderCreate(
-      decoderConfiguration,
-      destinationImageBufferAttributes, 
-      (VDADecoderOutputCallback *)&VDADecoderCallback,
-      this,
-      (VDADecoder*)&m_vda_decoder);
-    
-    if (kVDADecoderNoErr != status) 
+    // create the VDADecoder object using defaulted '2vuy' video format buffers.
+    OSStatus status = m_dll->VDADecoderCreate(decoderConfiguration, NULL, 
+      (VDADecoderOutputCallback *)&VDADecoderCallback, this, (VDADecoder*)&m_vda_decoder);
+    CFRelease(decoderConfiguration);
+    if (status != kVDADecoderNoErr) 
     {
       CLog::Log(LOGNOTICE, "%s - failed to open VDADecoder Codec", __FUNCTION__);
       return false;
     }
-    
-    //First make sure all properties are reset
-    memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
 
-    //Allocate for YV12 frame
-    unsigned int iPixels = width*height;
+    // allocate a YV12 DVDVideoPicture buffer.
+    // first make sure all properties are reset.
+    memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
+    unsigned int iPixels = width * height;
     unsigned int iChromaPixels = iPixels/4;
 
-    m_videobuffer.iWidth = width;
+    m_videobuffer.iWidth  = width;
     m_videobuffer.iHeight = height;
+    m_videobuffer.iDisplayWidth  = width;
+    m_videobuffer.iDisplayHeight = height;
+    m_videobuffer.format = DVDVideoPicture::FMT_YUV420P;
+    m_videobuffer.color_range  = 0;
+    m_videobuffer.color_matrix = 4;
 
     m_videobuffer.iLineSize[0] = width;   //Y
     m_videobuffer.iLineSize[1] = width/2; //U
@@ -290,19 +246,20 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     m_videobuffer.data[2] = (BYTE*)_aligned_malloc(iChromaPixels, 16); //V
     m_videobuffer.data[3] = NULL;
 
-    //Set all data to 0 for less artifacts.. hmm.. what is black in YUV??
-    memset( m_videobuffer.data[0], 0, iPixels );
-    memset( m_videobuffer.data[1], 0, iChromaPixels );
-    memset( m_videobuffer.data[2], 0, iChromaPixels );
+    // set all data to 0 for less artifacts.. hmm.. what is black in YUV??
+    memset(m_videobuffer.data[0], 0, iPixels);
+    memset(m_videobuffer.data[1], 0, iChromaPixels);
+    memset(m_videobuffer.data[2], 0, iChromaPixels);
     m_videobuffer.pts = DVD_NOPTS_VALUE;
     m_videobuffer.iFlags = DVP_FLAG_ALLOCATED;
 
-    if (decoderConfiguration)
-      CFRelease(decoderConfiguration);
-    if (destinationImageBufferAttributes)
-      CFRelease(destinationImageBufferAttributes);
-    if (emptyDictionary)
-      CFRelease(emptyDictionary);
+    // pre-alloc ffmpeg swscale context.
+    m_swcontext = m_dllSwScale.sws_getContext(
+      m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_UYVY422, 
+      m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_YUV420P, 
+      SWS_FAST_BILINEAR, NULL, NULL, NULL);
+
+    m_DropPictures = false;
 
     return true;
   }
@@ -316,23 +273,32 @@ void CDVDVideoCodecVDA::Dispose()
   {
     m_dll->VDADecoderDestroy((VDADecoder)m_vda_decoder);
     m_vda_decoder = NULL;
-
-    if( !(m_videobuffer.iFlags & DVP_FLAG_ALLOCATED) )
-    {
-      _aligned_free(m_videobuffer.data[0]);
-      _aligned_free(m_videobuffer.data[1]);
-      _aligned_free(m_videobuffer.data[2]);
-    }
   }
+  if (m_videobuffer.iFlags & DVP_FLAG_ALLOCATED)
+  {
+    _aligned_free(m_videobuffer.data[0]);
+    _aligned_free(m_videobuffer.data[1]);
+    _aligned_free(m_videobuffer.data[2]);
+    m_videobuffer.iFlags = 0;
+  }
+  if (m_swcontext)
+  {
+    m_dllSwScale.sws_freeContext(m_swcontext);
+    m_swcontext = NULL;
+  }
+  m_dllSwScale.Unload();
+  m_dll->Unload();
 }
 
 void CDVDVideoCodecVDA::SetDropState(bool bDrop)
 {
+  m_DropPictures = bDrop;
 }
 
 int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
 {
   OSStatus status;
+  uint32_t avc_flags = 0;
   //
   CFDictionaryRef avc_pts = MakeDictionaryWithDisplayTime(pts);
   CFDataRef avc_demux = CFDataCreate(kCFAllocatorDefault, pData, iSize);
@@ -340,19 +306,22 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
   pthread_mutex_lock(&m_queue_mutex);
   m_dts_queue.push(dts);
   pthread_mutex_unlock(&m_queue_mutex);
-  status = m_dll->VDADecoderDecode((VDADecoder)m_vda_decoder, 0, avc_demux, avc_pts);
+
+  if (m_DropPictures)
+    avc_flags = kVDADecoderDecodeFlags_DontEmitFrame;
+  status = m_dll->VDADecoderDecode((VDADecoder)m_vda_decoder, avc_flags, avc_demux, avc_pts);
 	
   CFRelease(avc_pts);
   CFRelease(avc_demux);
 
-  if (status = kVDADecoderNoErr) 
+  if (status != kVDADecoderNoErr) 
   {
-    CLog::Log(LOGNOTICE, "%s - VDADecoderDecode failed with status(%d)", __FUNCTION__, (int)status);
+    CLog::Log(LOGNOTICE, "%s - failed with status(%d)", __FUNCTION__, (int)status);
     return VC_ERROR;
   }
 
-  // todo: queue depth is related to the number of reference frames in encoded h.264
-  // so we need to buffer until we get N ref frames + 1
+  // TODO: queue depth is related to the number of reference frames in encoded h.264.
+  // so we need to buffer until we get N ref frames + 1.
   if (m_queue_depth < 16)
     return VC_BUFFER;
 
@@ -370,8 +339,8 @@ void CDVDVideoCodecVDA::Reset(void)
 bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
   CVPixelBufferRef yuvframe;
-  
-  // clone the video picture buffer settings
+
+  // clone the video picture buffer settings.
   *pDvdVideoPicture = m_videobuffer;
 
   // get the top yuv frame, we risk getting the wrong frame if the frame queue
@@ -381,27 +350,39 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   // we don't lockout the vdadecoder while doing the memcpy of planes out.
   pthread_mutex_lock(&m_queue_mutex);
   yuvframe = m_display_queue->frame;
-  pDvdVideoPicture->dts = m_dts_queue.front(); // m_dts_queue gets popped in DisplayQueuePop
+  // m_dts_queue gets popped in DisplayQueuePop
+  pDvdVideoPicture->dts = m_dts_queue.front();
   pDvdVideoPicture->pts = m_display_queue->frametime;
   pthread_mutex_unlock(&m_queue_mutex);
 
-  // lock the yuvframe down
+  // lock the CVPixelBuffer down
   CVPixelBufferLockBaseAddress(yuvframe, 0);
-  for (size_t i = 0; i < 3; i++)
-  {
-    UInt32 width = CVPixelBufferGetWidthOfPlane(yuvframe, i);
-    UInt32 height = CVPixelBufferGetHeightOfPlane(yuvframe, i);
-
-    void *plane_ptr = CVPixelBufferGetBaseAddressOfPlane(yuvframe, i);
-    memcpy(pDvdVideoPicture->data[i], plane_ptr, width * height);
-  }
-  // unlock the pixel buffer
+  int yuv422_stride = CVPixelBufferGetBytesPerRowOfPlane(yuvframe, 0);
+  uint8_t *yuv422_ptr = (uint8_t*)CVPixelBufferGetBaseAddressOfPlane(yuvframe, 0);
+  if (yuv422_ptr)
+    UYVY422_to_YUV420P(yuv422_ptr, yuv422_stride, pDvdVideoPicture);
+  // unlock the CVPixelBuffer
   CVPixelBufferUnlockBaseAddress(yuvframe, 0);
-	
-  // now we can pop the top frame
+
+  // now we can pop the top frame.
   DisplayQueuePop();
 
   return VC_PICTURE | VC_BUFFER;
+}
+
+void CDVDVideoCodecVDA::UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_stride, DVDVideoPicture *picture)
+{
+  // convert PIX_FMT_UYVY422 to PIX_FMT_YUV420P.
+  if (m_swcontext)
+  {
+    uint8_t *src[]  = { yuv422_ptr, 0, 0, 0 };
+    int srcStride[] = { yuv422_stride, 0, 0, 0 };
+
+    uint8_t *dst[]  = { picture->data[0], picture->data[1], picture->data[2], 0 };
+    int dstStride[] = { picture->iLineSize[0], picture->iLineSize[1], picture->iLineSize[2], 0 };
+  
+    m_dllSwScale.sws_scale(m_swcontext, src, srcStride, 0, picture->iHeight, dst, dstStride);
+  }
 }
 
 void CDVDVideoCodecVDA::DisplayQueuePop(void)
@@ -409,7 +390,7 @@ void CDVDVideoCodecVDA::DisplayQueuePop(void)
   if (!m_display_queue || m_queue_depth == 0)
     return;
 
-  // pop the current frame off the queue
+  // pop the top frame off the queue
   pthread_mutex_lock(&m_queue_mutex);
   frame_queue *top_frame = m_display_queue;
   m_display_queue = m_display_queue->nextframe;
@@ -418,7 +399,7 @@ void CDVDVideoCodecVDA::DisplayQueuePop(void)
     m_dts_queue.pop();
   pthread_mutex_unlock(&m_queue_mutex);
 
-  // release the frame buffer
+  // and release it
   CVPixelBufferRelease(top_frame->frame);
   free(top_frame);
 }
@@ -430,21 +411,22 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
    uint32_t           infoFlags,
    CVImageBufferRef   imageBuffer)
 {
-  CDVDVideoCodecVDA *ctx = (CDVDVideoCodecVDA *)decompressionOutputRefCon;
+  CDVDVideoCodecVDA *ctx = (CDVDVideoCodecVDA*)decompressionOutputRefCon;
 
-  if (imageBuffer == NULL) 
+  if (imageBuffer == NULL)
   {
     CLog::Log(LOGERROR, "%s - imageBuffer is NULL", __FUNCTION__);
     return;
   }
-  if (kCVPixelFormatType_420YpCbCr8Planar != CVPixelBufferGetPixelFormatType(imageBuffer))
+  if (CVPixelBufferGetPixelFormatType(imageBuffer) != kCVPixelFormatType_422YpCbCr8)
   {
-    CLog::Log(LOGERROR, "%s - imageBuffer format is not 'yv12", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - imageBuffer format is not '2vuy", __FUNCTION__);
     return;
   }
   if (kVDADecodeInfo_FrameDropped & infoFlags)
   {
     CLog::Log(LOGDEBUG, "%s - frame dropped", __FUNCTION__);
+    // don't forget to pop the dts queue since we are dropping this frame.
     pthread_mutex_lock(&ctx->m_queue_mutex);
     if (!ctx->m_dts_queue.empty())
       ctx->m_dts_queue.pop();
@@ -452,36 +434,37 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
     return;
   }
 
-  // allocate a new frame and populate it with some information
+  // allocate a new frame and populate it with some information.
   // this pointer to a frame_queue type keeps track of the newest decompressed frame
-  // and is then inserted into a linked list of  frame pointers depending on the display time
+  // and is then inserted into a linked list of frame pointers depending on the display time
   // parsed out of the bitstream and stored in the frameInfo dictionary by the client
   frame_queue *newFrame = (frame_queue*)calloc(sizeof(frame_queue), 1);
   newFrame->nextframe = NULL;
   newFrame->frame = CVPixelBufferRetain(imageBuffer);
   newFrame->frametime = GetFrameDisplayTimeFromDictionary(frameInfo);
-	
+
   // since the frames we get may be in decode order rather than presentation order
   // our hypothetical callback places them in a queue of frames which will
   // hold them in display order for display on another thread
   pthread_mutex_lock(&ctx->m_queue_mutex);
-	
+  //
   frame_queue *queueWalker = ctx->m_display_queue;
   if (!queueWalker || (newFrame->frametime < queueWalker->frametime))
   {
-    // we have an empty queue, or this frame earlier than the current queue head
+    // we have an empty queue, or this frame earlier than the current queue head.
     newFrame->nextframe = queueWalker;
     ctx->m_display_queue = newFrame;
   } else {
-    // walk the queue and insert this frame where it belongs in display order
+    // walk the queue and insert this frame where it belongs in display order.
     bool frameInserted = false;
     frame_queue *nextFrame = NULL;
-
-    while (!frameInserted) {
+    //
+    while (!frameInserted)
+    {
       nextFrame = queueWalker->nextframe;
       if (!nextFrame || (newFrame->frametime < nextFrame->frametime))
       {
-        // if the next frame is the tail of the queue, or our new frame is ealier
+        // if the next frame is the tail of the queue, or our new frame is ealier.
         newFrame->nextframe = nextFrame;
         queueWalker->nextframe = newFrame;
         frameInserted = true;
@@ -489,9 +472,9 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
       queueWalker = nextFrame;
     }
   }
-
   ctx->m_queue_depth++;
-
+  //
   pthread_mutex_unlock(&ctx->m_queue_mutex);	
 }
+
 #endif

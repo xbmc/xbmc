@@ -61,12 +61,15 @@ void CSkinInfo::SetDefaults()
 
 void CSkinInfo::Start(const CStdString& strSkinDir /* = "" */)
 {
+  CStdString dir2(strSkinDir);
+  if (dir2.IsEmpty())
+    dir2 = Path(); 
   bool loadIncludes = true;
   SetDefaults();
 
   // Load from skin.xml
   TiXmlDocument xmlDoc;
-  CStdString strFile = Path() + "\\skin.xml";
+  CStdString strFile = CUtil::AddFileToFolder(dir2,"skin.xml");
   if (xmlDoc.LoadFile(strFile))
   { // ok - get the default skin folder out of it...
     const TiXmlNode* root = xmlDoc.RootElement();

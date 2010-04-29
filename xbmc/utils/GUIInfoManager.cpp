@@ -2230,8 +2230,14 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         bReturn = g_cpuInfo.HasCoreId(info.GetData1());
         break;
       case SYSTEM_SETTING:
-        if ( m_stringParameters[info.GetData1()].Equals("hidewatched") )
-          bReturn = g_settings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED;
+        {
+          if ( m_stringParameters[info.GetData1()].Equals("hidewatched") )
+          {
+            CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+            if (window)
+              bReturn = g_settings.GetWatchMode(((CGUIMediaWindow *)window)->CurrentDirectory().GetContent()) == VIDEO_SHOW_UNWATCHED;
+          }
+        }
         break;
       case CONTAINER_SCROLL_PREVIOUS:
       case CONTAINER_MOVE_PREVIOUS:

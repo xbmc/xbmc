@@ -62,36 +62,6 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
     }
     break;
 
-  case GUI_MSG_WINDOW_INIT:
-    {
-      CGUIDialog::OnMessage(message);
-
-      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_UPDATE, 
-                  m_item->GetProperty("Addon.UpdateAvail").Equals("true"));
-      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, 
-                  m_item->GetProperty("Addon.Installed").Equals("false"));
-      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_DISABLE, 
-                  m_item->GetProperty("Addon.Installed").Equals("true") &&
-        !m_item->GetProperty("Addon.Path").Mid(0,15).Equals("special://xbmc/"));
-      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, 
-                  m_item->GetProperty("Addon.Installed").Equals("true") &&
-                  m_addon->HasSettings());
-      m_item->SetProperty("Addon.Changelog",g_localizeStrings.Get(13413));
-
-      if (m_addon->Type() != ADDON_REPOSITORY)
-      {
-        CFileItemList items;
-        items.Add(CFileItemPtr(new CFileItem(m_addon->ChangeLog(),false)));
-        items[0]->Select(true);
-        m_jobid = CJobManager::GetInstance().AddJob(
-          new CFileOperationJob(CFileOperationJob::ActionCopy,items,
-                                "special://temp/"),this);
-      }
-      return true;
-    }
-    break;
-
-
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -119,6 +89,32 @@ default:
   }
 
   return CGUIDialog::OnMessage(message);
+}
+
+void CGUIDialogAddonInfo::OnInitWindow()
+{
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_UPDATE, 
+              m_item->GetProperty("Addon.UpdateAvail").Equals("true"));
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, 
+              m_item->GetProperty("Addon.Installed").Equals("false"));
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_DISABLE, 
+              m_item->GetProperty("Addon.Installed").Equals("true") &&
+    !m_item->GetProperty("Addon.Path").Mid(0,15).Equals("special://xbmc/"));
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, 
+              m_item->GetProperty("Addon.Installed").Equals("true") &&
+              m_addon->HasSettings());
+  m_item->SetProperty("Addon.Changelog",g_localizeStrings.Get(13413));
+
+  if (m_addon->Type() != ADDON_REPOSITORY)
+  {
+    CFileItemList items;
+    items.Add(CFileItemPtr(new CFileItem(m_addon->ChangeLog(),false)));
+    items[0]->Select(true);
+    m_jobid = CJobManager::GetInstance().AddJob(
+      new CFileOperationJob(CFileOperationJob::ActionCopy,items,
+                            "special://temp/"),this);
+  }
+  CGUIDialog::OnInitWindow();
 }
 
 void CGUIDialogAddonInfo::OnInstall()

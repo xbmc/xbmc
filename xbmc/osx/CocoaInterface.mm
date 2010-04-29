@@ -28,6 +28,7 @@
 #import <OpenGL/gl.h>
 
 #import "CocoaInterface.h"
+#import "DllPaths_generated.h"
 
 // hack for Cocoa_GL_ResizeWindow
 //extern "C" void SDL_SetWidthHeight(int w, int h);
@@ -496,9 +497,9 @@ bool Cocoa_HasVDADecoder()
 {
   bool result = false;
 
-  if (Cocoa_GetOSVersion() >= 0x1060)
-    result == access("/System/Frameworks/VideoDecodeAcceleration.framework/VideoDecodeAcceleration", 0) == 0;
-  
+  if (Cocoa_GetOSVersion() >= 0x1063)
+    result = access(DLL_PATH_LIBVDADECODER, 0) == 0;
+
   return(result);
 }
 
