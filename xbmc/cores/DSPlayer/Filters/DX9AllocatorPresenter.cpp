@@ -2304,7 +2304,6 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
       m_PresentWaitTimeMax = dsmax(m_PresentWaitTimeMax, m_PresentWaitTime);
     }
   }
-#endif
   if (bDoVSyncInPresent)
   {
     LONGLONG Time = CTimeUtils::GetPerfCounter();
@@ -2312,6 +2311,8 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
       CalculateJitter(Time);
     OnVBlankFinished(fAll, Time);
   }
+
+#endif
 
   if (bTakenLock)
     UnlockD3DDevice();
@@ -2856,5 +2857,4 @@ void CDX9AllocatorPresenter::OnPaint(CRect destRect)
 
   //Need to be true for vsync
   Paint(true);
-
 }
