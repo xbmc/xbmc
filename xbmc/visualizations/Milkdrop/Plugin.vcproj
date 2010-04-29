@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="visMilkdrop"
 	ProjectGUID="{5E479372-4F34-426D-AA1E-9879E94C105D}"
 	RootNamespace="visMilkdrop"
@@ -66,7 +66,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="D3dx9.lib"
-				OutputFile="../../../addons/vizualisation.milkdrop/MilkDrop_win32dx.vis"
+				OutputFile="../../../addons/visualization.milkdrop/MilkDrop_win32dx.vis"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Plugin.pdb"
