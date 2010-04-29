@@ -33,9 +33,9 @@ public:
     m_instance = NULL;
 
 #ifdef HAS_DBUS
-    if (CUDisksProvider::HasUDisks() ) { 
+    if (CUDisksProvider::HasUDisks())
       m_instance = new CUDisksProvider();
-    } else if (CDeviceKitDisksProvider::HasDeviceKitDisks())
+    else if (CDeviceKitDisksProvider::HasDeviceKitDisks())
       m_instance = new CDeviceKitDisksProvider();
 #endif
 #ifdef HAS_HAL
