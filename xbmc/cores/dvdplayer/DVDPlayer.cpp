@@ -2463,9 +2463,20 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source)
   m_CurrentVideo.stream = (void*)pStream;
   m_CurrentVideo.started = false;
 
+#if defined(__APPLE__)
+  // Apple thread scheduler works a little different than Linux. It
+  // will favor OS GUI side and can cause DVDPlayerVideo to miss frame
+  // updates when the OS gets busy. Apple's recomended method is to
+  // elevate time critical threads to SCHED_RR and OSX does this for
+  // the CoreAudio audio device handler thread. We do the same for
+  // the DVDPlayerVideo thread so it can run to sleep without getting
+  // swapped out by a busy OS.
+  m_dvdPlayerVideo.SetPrioritySched_RR();
+#else
   /* use same priority for video thread as demuxing thread, as */
   /* otherwise demuxer will starve if video consumes the full cpu */
   m_dvdPlayerVideo.SetPriority(GetThreadPriority(*this));
+#endif
   return true;
 
 }
