@@ -342,10 +342,10 @@ void CThread::SetPrioritySched_RR(void)
 
   int policy;
   struct sched_param param;
-  result = pthread_getschedparam(m_ThreadHandle->m_hThread, &policy, &param );
+  result = pthread_getschedparam(ThreadId(), &policy, &param );
   // change from default SCHED_OTHER to SCHED_RR
   policy = SCHED_RR;
-  result = pthread_setschedparam(m_ThreadHandle->m_hThread, policy, &param );
+  result = pthread_setschedparam(ThreadId(), policy, &param );
 #endif
 }
 
@@ -355,7 +355,7 @@ int CThread::GetMinPriority(void)
   struct sched_param sched;
   int rtn, policy;
 
-  rtn = pthread_getschedparam(m_ThreadHandle->m_hThread, &policy, &sched);
+  rtn = pthread_getschedparam(ThreadId(), &policy, &sched);
   int min = sched_get_priority_min(policy);
 
   return(min);
@@ -370,7 +370,7 @@ int CThread::GetMaxPriority(void)
   struct sched_param sched;
   int rtn, policy;
 
-  rtn = pthread_getschedparam(m_ThreadHandle->m_hThread, &policy, &sched);
+  rtn = pthread_getschedparam(ThreadId(), &policy, &sched);
   int max = sched_get_priority_max(policy);
 
   return(max);
@@ -385,7 +385,7 @@ int CThread::GetNormalPriority(void)
   struct sched_param sched;
   int rtn, policy;
 
-  rtn = pthread_getschedparam(m_ThreadHandle->m_hThread, &policy, &sched);
+  rtn = pthread_getschedparam(ThreadId(), &policy, &sched);
   int min = sched_get_priority_min(policy);
   int max = sched_get_priority_max(policy);
 
