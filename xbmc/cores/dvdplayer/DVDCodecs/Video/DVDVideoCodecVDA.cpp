@@ -165,7 +165,7 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
 {
   m_dll = new DllLibVDADecoder;
   m_vda_decoder = NULL;
-  m_pFormatName = "vda-unknown";
+  m_pFormatName = "";
 
   m_queue_depth = 0;
   m_display_queue = NULL;
@@ -323,7 +323,7 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
   CFRelease(avc_pts);
   CFRelease(avc_demux);
 
-  if (status = kVDADecoderNoErr) 
+  if (status != kVDADecoderNoErr) 
   {
     CLog::Log(LOGNOTICE, "%s - VDADecoderDecode failed with status(%d)", __FUNCTION__, (int)status);
     return VC_ERROR;
@@ -348,7 +348,7 @@ void CDVDVideoCodecVDA::Reset(void)
 bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
   CVPixelBufferRef yuvframe;
-  
+
   // clone the video picture buffer settings
   *pDvdVideoPicture = m_videobuffer;
 
@@ -371,7 +371,7 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     UYVY422_to_YUV420P(yuv422_ptr, yuv422_stride, pDvdVideoPicture);
   // unlock the pixel buffer
   CVPixelBufferUnlockBaseAddress(yuvframe, 0);
-	
+
   // now we can pop the top frame
   DisplayQueuePop();
 
@@ -449,12 +449,12 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
   newFrame->nextframe = NULL;
   newFrame->frame = CVPixelBufferRetain(imageBuffer);
   newFrame->frametime = GetFrameDisplayTimeFromDictionary(frameInfo);
-	
+
   // since the frames we get may be in decode order rather than presentation order
   // our hypothetical callback places them in a queue of frames which will
   // hold them in display order for display on another thread
   pthread_mutex_lock(&ctx->m_queue_mutex);
-	
+
   frame_queue *queueWalker = ctx->m_display_queue;
   if (!queueWalker || (newFrame->frametime < queueWalker->frametime))
   {

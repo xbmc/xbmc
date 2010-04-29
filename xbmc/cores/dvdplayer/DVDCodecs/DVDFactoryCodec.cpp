@@ -128,10 +128,15 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   CDVDCodecOptions options;
 
   CStdString hwSupport;
-#ifdef HAVE_LIBCRYSTALHD
-  hwSupport += "Crystal HD:yes ";
+#ifdef HAVE_LIBVDADECODER
+  hwSupport += "VDADecoder:yes ";
 #else
-  hwSupport += "Crystal HD:no ";
+  hwSupport += "VDADecoder:no ";
+#endif
+#ifdef HAVE_LIBCRYSTALHD
+  hwSupport += "CrystalHD:yes ";
+#else
+  hwSupport += "CrystalHD:no ";
 #endif
 #if defined(HAVE_LIBVDPAU) && defined(_LINUX)
   hwSupport += "VDPAU:yes ";
