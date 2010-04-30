@@ -37,6 +37,32 @@
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreVideo/CoreVideo.h>
 
+/*
+ * if extradata size is greater than 7, then have a valid quicktime 
+ * avcC atom header.
+ *
+ *      -: avcC atom header :-
+ *  -----------------------------------
+ *  1 byte  - version
+ *  1 byte  - h.264 stream profile
+ *  1 byte  - h.264 compatible profiles
+ *  1 byte  - h.264 stream level
+ *  6 bits  - reserved set to 63
+ *  2 bits  - NAL length 
+ *            ( 0 - 1 byte; 1 - 2 bytes; 3 - 4 bytes)
+ *  3 bit   - reserved
+ *  5 bits  - number of SPS 
+ *  for (i=0; i < number of SPS; i++) {
+ *      2 bytes - SPS length
+ *      SPS length bytes - SPS NAL unit
+ *  }
+ *  1 byte  - number of PPS
+ *  for (i=0; i < number of PPS; i++) {
+ *      2 bytes - PPS length 
+ *      PPS length bytes - PPS NAL unit 
+ *  }
+*/
+
 // missing in 10.4/10.5 SDKs.
 #if (MAC_OS_X_VERSION_MAX_ALLOWED < 1060)
 #include "dlfcn.h"
@@ -177,6 +203,9 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   if (g_guiSettings.GetBool("videoplayer.usevda") && !hints.software)
   {
+    // use extradata so VDADecoder can convert demux frames to byte-stream format (annex B)
+    bool use_extradata = true;
+
     switch (hints.codec)
     {
       case CODEC_ID_H264:
@@ -190,8 +219,18 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
         // valid avcC atom data always starts with the value 1 (version)
         if ( *(char*)hints.extradata != 1 )
         {
-          CLog::Log(LOGNOTICE, "%s - invalid avcC atom data", __FUNCTION__);
-          return false;
+          char *buff = (char*)hints.extradata;
+          if (buff[0] == 0 && buff[1] == 0 && buff[2] == 0 && buff[3] == 1)
+          {
+            // looky, looky. A NAL start code. Don't use extradata as h.264 demux
+            // frames from ts/m2ts containers is already in byte-stream format.
+            use_extradata = false;
+          }
+          else
+          {
+            CLog::Log(LOGNOTICE, "%s - invalid avcC atom data", __FUNCTION__);
+            return false;
+          }
         }
         m_format = 'avc1';
         m_pFormatName = "vda-h264";
@@ -214,12 +253,15 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     CFNumberRef avcWidth  = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &width);
     CFNumberRef avcHeight = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &height);
     CFNumberRef avcFormat = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &m_format);
-    CFDataRef   avcCData  = CFDataCreate(kCFAllocatorDefault, (const uint8_t*)hints.extradata, hints.extrasize);
+    CFDataRef   avcCData;
+    if (use_extradata)
+      avcCData  = CFDataCreate(kCFAllocatorDefault, (const uint8_t*)hints.extradata, hints.extrasize);
     
     CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_Height(), avcHeight);
     CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_Width(),  avcWidth);
     CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_SourceFormat(), avcFormat);
-    CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_avcCData(), avcCData);
+    if (use_extradata)
+      CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_avcCData(), avcCData);
     
     // create the VDADecoder object using defaulted '2vuy' video format buffers.
     OSStatus status = m_dll->VDADecoderCreate(decoderConfiguration, NULL, 
