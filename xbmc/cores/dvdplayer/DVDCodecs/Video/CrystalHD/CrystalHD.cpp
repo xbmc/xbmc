@@ -356,23 +356,34 @@ CMPCInputThread::CMPCInputThread(void *device, DllLibCrystalHD *dll, CRYSTALHD_C
   m_start_decoding(0)
 {
   m_PopEvent.Set();
+
 #ifdef USE_FFMPEG_ANNEXB
-  m_annexbfiltering = init_h264_mp4toannexb_filter((uint8_t*)extradata, extradata_size);
+  m_annexbfiltering = NULL;
+  // valid avcC atom data always starts with the value 1 (version)
+  if ( *(char*)extradata == 1 )
+  {
+    m_annexbfiltering = init_h264_mp4toannexb_filter((uint8_t*)extradata, extradata_size);
+  }
 #else
   m_extradata = NULL;
   m_extradata_size = 0;
-  m_nal_parser = init_parser();
-
-  if (extradata_size > 0)
+  m_nal_parser = NULL;
+  // valid avcC atom data always starts with the value 1 (version)
+  if ( *(char*)extradata == 1 )
   {
-    m_extradata_size = extradata_size;
-    m_extradata = (uint8_t*)malloc(extradata_size);
-    memcpy(m_extradata, extradata, extradata_size);
-    if (parse_codec_private(m_nal_parser, m_extradata, m_extradata_size) != 0)
+    m_nal_parser = init_parser();
+
+    if (extradata_size > 0)
     {
-      free(m_extradata);
-      m_extradata = NULL;
-      m_extradata_size = 0;
+      m_extradata_size = extradata_size;
+      m_extradata = (uint8_t*)malloc(extradata_size);
+      memcpy(m_extradata, extradata, extradata_size);
+      if (parse_codec_private(m_nal_parser, m_extradata, m_extradata_size) != 0)
+      {
+        free(m_extradata);
+        m_extradata = NULL;
+        m_extradata_size = 0;
+      }
     }
   }
 #endif
@@ -389,8 +400,8 @@ CMPCInputThread::~CMPCInputThread()
 #else
 	if (m_extradata)
 		free(m_extradata);
-
-  free_parser(m_nal_parser);
+  if (m_nal_parser)
+    free_parser(m_nal_parser);
 #endif
 }
 
@@ -416,11 +427,14 @@ void CMPCInputThread::Flush(void)
   m_PopEvent.Set();
   m_start_decoding = 0;
 #ifndef USE_FFMPEG_ANNEXB
-  // Doing a full parser reinit here, works more reliable than resetting
-  free_parser(m_nal_parser);
-  m_nal_parser = init_parser();
-	if (m_extradata_size > 0)
-		parse_codec_private(m_nal_parser, m_extradata, m_extradata_size);
+  if (m_nal_parser)
+  {
+    // Doing a full parser reinit here, works more reliable than resetting
+    free_parser(m_nal_parser);
+    m_nal_parser = init_parser();
+    if (m_extradata_size > 0)
+      parse_codec_private(m_nal_parser, m_extradata, m_extradata_size);
+  }
 #endif
 }
 
@@ -648,45 +662,62 @@ void CMPCInputThread::ProcessH264(CMPCDecodeBuffer* pInput)
   int64_t demuxer_pts = pInput->GetPts();
   uint8_t *demuxer_content = pInput->GetPtr();
 
-  while (bytes < demuxer_bytes)
+  if (m_nal_parser)
   {
-    uint8_t *decode_bytestream;
-    uint32_t decode_bytestream_bytes;
-    coded_picture *completed_pic = NULL;
-    
-    bytes += parse_frame(m_nal_parser, demuxer_content + bytes, demuxer_bytes - bytes, demuxer_pts,
-      &decode_bytestream, &decode_bytestream_bytes, &completed_pic);
-
-    if (completed_pic && completed_pic->sps_nal != NULL &&
-        completed_pic->sps_nal->sps.pic_width > 0 &&
-        completed_pic->sps_nal->sps.pic_height > 0)
+    while (bytes < demuxer_bytes)
     {
-      m_start_decoding = 1;
-    }
+      uint8_t *decode_bytestream;
+      uint32_t decode_bytestream_bytes;
+      coded_picture *completed_pic = NULL;
+      
+      bytes += parse_frame(m_nal_parser, demuxer_content + bytes, demuxer_bytes - bytes, demuxer_pts,
+        &decode_bytestream, &decode_bytestream_bytes, &completed_pic);
 
-    if (decode_bytestream_bytes > 0 && m_start_decoding &&
-        completed_pic->slc_nal != NULL && completed_pic->pps_nal != NULL)
+      if (completed_pic && completed_pic->sps_nal != NULL &&
+          completed_pic->sps_nal->sps.pic_width > 0 &&
+          completed_pic->sps_nal->sps.pic_height > 0)
+      {
+        m_start_decoding = 1;
+      }
+
+      if (decode_bytestream_bytes > 0 && m_start_decoding &&
+          completed_pic->slc_nal != NULL && completed_pic->pps_nal != NULL)
+      {
+        BCM::BC_STATUS ret;
+
+        do
+        {
+          ret = m_dll->DtsProcInput(m_Device, decode_bytestream, decode_bytestream_bytes, completed_pic->pts, 0);
+          if (ret == BCM::BC_STS_BUSY)
+          {
+            CLog::Log(LOGDEBUG, "%s: DtsProcInput returned BC_STS_BUSY", __MODULE_NAME__);
+            Sleep(m_SleepTime); // Buffer is full, sleep it empty
+          }
+        } while (!m_bStop && ret != BCM::BC_STS_SUCCESS);
+
+        free(decode_bytestream);
+      }
+
+      if (completed_pic)
+        free_coded_picture(completed_pic);
+
+      if (m_nal_parser->last_nal_res == 3)
+        m_dll->DtsFlushInput(m_Device, 2);
+    }
+    else
     {
       BCM::BC_STATUS ret;
 
       do
       {
-        ret = m_dll->DtsProcInput(m_Device, decode_bytestream, decode_bytestream_bytes, completed_pic->pts, 0);
+        ret = m_dll->DtsProcInput(m_Device, decode_bytestream, decode_bytestream_bytes, demuxer_pts, 0);
         if (ret == BCM::BC_STS_BUSY)
         {
           CLog::Log(LOGDEBUG, "%s: DtsProcInput returned BC_STS_BUSY", __MODULE_NAME__);
           Sleep(m_SleepTime); // Buffer is full, sleep it empty
         }
       } while (!m_bStop && ret != BCM::BC_STS_SUCCESS);
-
-      free(decode_bytestream);
     }
-
-    if (completed_pic)
-      free_coded_picture(completed_pic);
-
-    if (m_nal_parser->last_nal_res == 3)
-      m_dll->DtsFlushInput(m_Device, 2);
   }
 }
 #endif
