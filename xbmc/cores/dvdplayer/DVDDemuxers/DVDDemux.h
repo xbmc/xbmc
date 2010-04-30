@@ -128,6 +128,8 @@ public:
     iWidth = 0;
     fAspect = 0.0;
     bVFR = false;
+    iH264Level = 0;
+    iH264Profile = 0;
     type = STREAM_VIDEO;
   }
 
@@ -138,6 +140,9 @@ public:
   int iWidth; // width of the stream reported by the demuxer
   float fAspect; // display aspect of stream
   bool bVFR;  // variable framerate
+  int iH264Level; // h264 level of the stream reported by the decoder. used to qualify hw decoders.
+  int iH264Profile; // h264 profile of the stream reported by the decoder. used to qualify hw decoders.
+  
 };
 
 class CDemuxStreamAudio : public CDemuxStream
