@@ -928,6 +928,7 @@
 		</control>
 		<control type="radiobutton" id="997">
           	<description>Dev Background</description>
+			<visible>Skin.HasSetting(Developer)</visible>
           	<label>Dev Background</label>
 			<onclick>Skin.ToggleSetting(Developer_Background_Visible)</onclick>
 			<selected>Skin.HasSetting(Developer_Background_Visible)</selected>
