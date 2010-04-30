@@ -351,7 +351,8 @@ void CThread::SetPrioritySched_RR(void)
 
 int CThread::GetMinPriority(void)
 {
-#if defined(__APPLE__)
+#if 0
+//#if defined(__APPLE__)
   struct sched_param sched;
   int rtn, policy;
 
@@ -366,7 +367,8 @@ int CThread::GetMinPriority(void)
 
 int CThread::GetMaxPriority(void)
 {
-#if defined(__APPLE__)
+#if 0
+//#if defined(__APPLE__)
   struct sched_param sched;
   int rtn, policy;
 
@@ -381,7 +383,8 @@ int CThread::GetMaxPriority(void)
 
 int CThread::GetNormalPriority(void)
 {
-#if defined(__APPLE__)
+#if 0
+//#if defined(__APPLE__)
   struct sched_param sched;
   int rtn, policy;
 
