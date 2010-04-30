@@ -638,6 +638,13 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       }
     }
 #endif
+    else if (strSetting.Equals("videoscreen.screenmode"))
+    {
+      // The user may have rejected the new resolution.
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+      if (pControl && (pControl->GetValue() != g_guiSettings.GetResolution()))
+          pControl->SetValue(g_guiSettings.GetResolution());
+    }
 #if defined(__APPLE__) || defined(_WIN32)
     else if (strSetting.Equals("videoscreen.blankdisplays"))
     {
