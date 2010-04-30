@@ -222,8 +222,11 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
           char *buff = (char*)hints.extradata;
           if (buff[0] == 0 && buff[1] == 0 && buff[2] == 0 && buff[3] == 1)
           {
-            // looky, looky. A NAL start code. Don't use extradata as h.264 demux
-            // frames from ts/m2ts containers is already in byte-stream format.
+            // looky, looky. A NAL start code. h.264 demux frames from ts/m2ts
+            // containers is already in byte-stream format. Not sure what to do
+            // here, this does not work so two choices, 1) pass a null avcC atom data
+            // or 2) byte-to-bit stream convert the demux data and create a valid
+            // avcC atom data. 2) will be icky.
             use_extradata = false;
           }
           else
