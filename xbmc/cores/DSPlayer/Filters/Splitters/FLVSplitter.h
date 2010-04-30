@@ -74,7 +74,7 @@ class CFLVSplitterFilter : public CBaseSplitterFilter
 	void AlternateSeek(REFERENCE_TIME rt);
 
 protected:
-	boost::shared_ptr<CBaseSplitterFileEx> m_pFile;
+	shared_ptr<CBaseSplitterFileEx> m_pFile;
 	HRESULT CreateOutputs(IAsyncReader* pAsyncReader);
 
 	bool DemuxInit();

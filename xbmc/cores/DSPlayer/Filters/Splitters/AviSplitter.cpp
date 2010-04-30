@@ -50,10 +50,10 @@ HRESULT CAviSplitterFilter::CreateOutputs(IAsyncReader* pAsyncReader)
 
   HRESULT hr = E_FAIL;
 
-  m_pFile.Release();
-  m_tFrame.Free();//elease();
+  m_pFile.reset(NULL);//.Free();
+  m_tFrame.Free();
 
-  m_pFile.Attach(DNew CAviFile(pAsyncReader, hr));
+  m_pFile.reset(DNew CAviFile(pAsyncReader, hr));
   if(!m_pFile.get()) return E_OUTOFMEMORY;
 
   bool fShiftDown = !!(::GetKeyState(VK_SHIFT)&0x8000);
@@ -76,7 +76,7 @@ HRESULT CAviSplitterFilter::CreateOutputs(IAsyncReader* pAsyncReader)
 
   if(FAILED(hr)) 
   {
-    m_pFile.Release();
+    m_pFile.release();
     return hr;
   }
 
@@ -202,7 +202,8 @@ HRESULT CAviSplitterFilter::CreateOutputs(IAsyncReader* pAsyncReader)
       mt.majortype = MEDIATYPE_Interleaved;
       mt.subtype = FOURCCMap(s->strh.fccHandler);
       mt.formattype = FORMAT_DvInfo;
-      BYTE *newFmt = NULL;
+      //mt.SetFormat(s->strf.GetData(), dsmax(s->strf.size(), sizeof(DVINFO)));
+      BYTE *newFmt;
       memcpy(newFmt, &s->strf[0], s->strf.size());
       mt.SetFormat(newFmt, dsmax(s->strf.size(), sizeof(DVINFO)));
       mt.SetSampleSize(s->strh.dwSuggestedBufferSize > 0 
@@ -227,7 +228,7 @@ HRESULT CAviSplitterFilter::CreateOutputs(IAsyncReader* pAsyncReader)
 
     HRESULT hr;
 
-    Com::Auto_Ptr<CBaseSplitterOutputPin> pPinOut(DNew CAviSplitterOutputPin(mts, name, this, this, &hr));
+    auto_ptr<CBaseSplitterOutputPin> pPinOut(DNew CAviSplitterOutputPin(mts, name, this, this, &hr));
     AddOutputPin(i, pPinOut);
   }
   //std::map<DWORD, CStdStringA> m_pFile->m_info.begin;
@@ -484,7 +485,7 @@ bool CAviSplitterFilter::DemuxLoop()
         size = s->cs[f].orgsize;
       }
 
-      Com::Auto_Ptr<Packet> p(DNew Packet());
+      auto_ptr<Packet> p(DNew Packet());
 
       p->TrackNumber = minTrack;
       p->bSyncPoint = (BOOL)s->cs[f].fKeyFrame;
@@ -754,7 +755,7 @@ CAviSourceFilter::CAviSourceFilter(LPUNKNOWN pUnk, HRESULT* phr)
   : CAviSplitterFilter(pUnk, phr)
 {
   m_clsid = __uuidof(this);
-  m_pInput.Release();
+  m_pInput.release();
   
 }
 
