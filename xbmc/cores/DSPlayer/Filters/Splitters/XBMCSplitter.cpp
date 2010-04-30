@@ -35,7 +35,7 @@
 CXBMCSplitterFilter::CXBMCSplitterFilter(LPUNKNOWN pUnk, HRESULT* phr)
   :CSource(NAME("CXBMCSplitterFilter"), pUnk, __uuidof(this), phr)
   ,m_rtStart((long)0)
-  //,m_pAudioStream(phr,this,L"CDSAudioStream")
+  ,m_pAudioStream(GetOwner(), this, phr)
   ,m_pVideoStream(GetOwner(), this, phr)
 {
   
@@ -142,8 +142,6 @@ return true;
 void CXBMCSplitterFilter::AddStream(int iId)
 {
   
-  CMediaType mt;
-  vector<CMediaType> mts;
   CStdStringW name, label;
   AVStream *pStream = m_pFormatContext->streams[iId];
   if (!pStream)
@@ -152,31 +150,12 @@ void CXBMCSplitterFilter::AddStream(int iId)
   
   if (pCodecContext->codec_type == CODEC_TYPE_VIDEO)
   {
-    m_pVideoStream.SetAVStream(pStream,m_pFormatContext);
+    m_pVideoStream.SetAVStream(pStream, m_pFormatContext);
   }
   else if(pCodecContext->codec_type == CODEC_TYPE_AUDIO)
   {
-    //m_pAudioStream.SetAVStream(pStream);
+    m_pAudioStream.SetAVStream(pStream, m_pFormatContext);
   }
-#if 0
-    VIDEOINFOHEADER*	vih = NULL;
-    mt.majortype = MEDIATYPE_Video;
-    mt.formattype = FORMAT_VideoInfo;
-    
-    pCodecContext = pStream->codec;
-    mt.subtype = FOURCCMap(pCodecContext->codec_tag);
-    
-    //vih->bmiHeader.biWidth = pCodecContext->width;
-    //vih->bmiHeader.biHeight = pCodecContext->height;
-    //vih->bmiHeader.biCompression = pCodecContext->codec_tag;
-    name = L"VIDEO";
-    //mt.SetSampleSize(pCodecContext->width * pCodecContext->height * 4);
-    //mts.push_back(mt);
-    
-  }
-  else
-    return;
-#endif
   
 }
 

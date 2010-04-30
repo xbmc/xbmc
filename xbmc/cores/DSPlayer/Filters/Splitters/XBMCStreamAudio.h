@@ -36,47 +36,46 @@ class CXBMCSplitterFilter;
 class CDSAudioStream : public CSourceStream
 {
 public:
-  CDSAudioStream  (HRESULT *phr, CXBMCSplitterFilter *pParent, LPCWSTR pPinName);
+  CDSAudioStream(LPUNKNOWN pUnk, CXBMCSplitterFilter *pParent, HRESULT *phr);
   ~CDSAudioStream ();
 
     
+// CBaseOutputPin
+  HRESULT DecideBufferSize(IMemAllocator* _memAlloc, ALLOCATOR_PROPERTIES* _properties);
 
-  void SetAVStream(AVStream* pStream);
+  
   // CSourceStream
   HRESULT FillBuffer(IMediaSample* _samp);
   HRESULT GetMediaType(int _position, CMediaType* _pmt);
   HRESULT CheckMediaType(const CMediaType *pMediaType);
   HRESULT SetMediaType(const CMediaType *pMediaType);
-  
-
-  // CBaseOutputPin
-  HRESULT DecideBufferSize(IMemAllocator* _memAlloc, ALLOCATOR_PROPERTIES* _properties);
-  //virtual HRESULT CompleteConnect(IPin *pReceivePin);
   virtual HRESULT OnThreadCreate();
 
     // CBasePin
-  virtual HRESULT __stdcall Notify(IBaseFilter * pSender, Quality q);
+  HRESULT __stdcall Notify(IBaseFilter * pSender, Quality q);
 
-    // CBaseOutputPin
-    HRESULT GetDeliveryBuffer(IMediaSample ** ppSample,REFERENCE_TIME * pStartTime, REFERENCE_TIME * pEndTime, DWORD dwFlags);
+  void SetAVStream(AVStream* pStream, AVFormatContext* pFmt);
+  double ConvertTimestamp(int64_t pts, int den, int num);
+  void UpdateCurrentPTS();
+
 protected:
   CMediaType m_MediaType;
-  int m_nCurrentBitDepth;
-
-  AVCodecContext *m_pVideoCodecCtx;
+  AVFormatContext *m_pAudioFormatCtx;
+  AVCodecContext *m_pAudioCodecCtx;
 
   DllAvFormat m_dllAvFormat;
   DllAvCodec  m_dllAvCodec;
   DllAvUtil   m_dllAvUtil;
-private:
+
   AVStream* m_pStream;
   std::vector<CMediaType> m_mts;
-
+private:
   void fillNextFrame(unsigned char* _buffer, int _buffersize, __int64& time_);
   void fillNextFrameProcedural(unsigned char* _buffer, int _buffersize, __int64& time_);
   void fillNextFrameFromStream(unsigned char* _buffer, int _buffersize, __int64& time_);
   int processNewSamplesFromStream(unsigned char* _buffer, int _samples, __int64& time_);
-
+  
+  void Flush();
   int mBitsPerSample;
   int mChannels;
   int mSamplesPerSec;
@@ -89,6 +88,7 @@ private:
   int mSBAvailableSamples;
 
   bool mEOS;
+  double   m_iCurrentPts; // used for stream length estimation
 };
 
 #endif

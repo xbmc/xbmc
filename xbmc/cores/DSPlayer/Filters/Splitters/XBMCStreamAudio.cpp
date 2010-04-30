@@ -23,7 +23,12 @@
 #include "XBMCSplitter.h"
 #include "wxdebug.h"
 #include "moreuuids.h"
+#include "utils/Win32Exception.h"
 
+#include "DVDPlayer/DVDDemuxers/DVDDemux.h"
+#include "DVDPlayer/DVDDemuxers/DVDDemuxUtils.h"
+#include "DShowUtil/DShowUtil.h"
+#include "MMReg.h"
 const int WaveBufferSize = 16*1024;     // Size of each allocated buffer
                                         // Originally used to be 2K, but at
                                         // 44khz/16bit/stereo you would get
@@ -39,8 +44,8 @@ const int BITS_PER_BYTE = 8;
 //--------------------------------------------------------------------
 //
 //--------------------------------------------------------------------
-CDSAudioStream::CDSAudioStream(HRESULT *phr, CXBMCSplitterFilter *pParent, LPCWSTR pPinName) :
-    CSourceStream(NAME("CDSAudioStream"),phr, pParent, pPinName)
+CDSAudioStream::CDSAudioStream(LPUNKNOWN pUnk, CXBMCSplitterFilter *pParent, HRESULT *phr) :
+    CSourceStream(NAME("CDSAudioStream"),phr, pParent, L"DS Audio Pin")
 {
     ASSERT(phr);
     
@@ -66,37 +71,52 @@ CDSAudioStream::~CDSAudioStream()
 
 
 //We are setting the media type at the same time
-void CDSAudioStream::SetAVStream(AVStream* pStream)
+void CDSAudioStream::SetAVStream(AVStream* pStream,AVFormatContext* pFmt)
 {
   
   m_pStream = pStream;
-  m_pVideoCodecCtx = m_pStream->codec;
+  m_pAudioFormatCtx = pFmt;
+  m_pAudioCodecCtx = m_pStream->codec;
   AVCodec *pCodec;
 
-  pCodec = m_dllAvCodec.avcodec_find_decoder(m_pVideoCodecCtx->codec_id);
-  int resopen = m_dllAvCodec.avcodec_open(m_pVideoCodecCtx,pCodec);
+  pCodec = m_dllAvCodec.avcodec_find_decoder(m_pAudioCodecCtx->codec_id);
+  int resopen = m_dllAvCodec.avcodec_open(m_pAudioCodecCtx,pCodec);
   CMediaType mt;
   mt.InitMediaType();
-  WAVEFORMATEX *wavefmt;
-
-  wavefmt =(WAVEFORMATEX*)calloc(sizeof(WAVEFORMATEX) + m_pVideoCodecCtx->extradata_size,1);
-
-  wavefmt->wFormatTag= m_pVideoCodecCtx->codec_tag;
-  wavefmt->nChannels= m_pVideoCodecCtx->channels;
-  wavefmt->nSamplesPerSec= m_pVideoCodecCtx->sample_rate;
-  wavefmt->nAvgBytesPerSec= m_pVideoCodecCtx->bit_rate/8;
-  wavefmt->nBlockAlign= m_pVideoCodecCtx->block_align ? m_pVideoCodecCtx->block_align : 1;
-  wavefmt->wBitsPerSample= m_pVideoCodecCtx->bits_per_coded_sample;
-  wavefmt->cbSize= m_pVideoCodecCtx->extradata_size;
-  if(m_pVideoCodecCtx->extradata_size)
-    memcpy(wavefmt + 1, m_pVideoCodecCtx->extradata, m_pVideoCodecCtx->extradata_size);
-  HRESULT hr = CreateAudioMediaType(wavefmt,&mt,TRUE);
-
-  /* end bitmapinfoheader */
+  mt.majortype = MEDIATYPE_Audio;
+  WAVEFORMATEX *wavefmt = (WAVEFORMATEX*)mt.AllocFormatBuffer(sizeof(WAVEFORMATEX));
+  if( m_pAudioCodecCtx->codec_id == CODEC_ID_MP3)
+  {
+    wavefmt->wFormatTag = WAVE_FORMAT_MPEGLAYER3;
+  }
+  else
+  {
+    ///wavefmt->wFormatTag = m_pAudioCodecCtx->codec_tag;
+  }
   
-  //mt.SetSampleSize(pvi->bmiHeader.biSizeImage);
-  //memset(mt.Format(), 0, mt.FormatLength());
-  //mt.AllocFormatBuffer(sizeof(VIDEOINFOHEADER));
+  wavefmt->nChannels= m_pAudioCodecCtx->channels;
+  wavefmt->nSamplesPerSec= m_pAudioCodecCtx->sample_rate;
+  wavefmt->nAvgBytesPerSec= m_pAudioCodecCtx->bit_rate/8;
+  wavefmt->nBlockAlign= m_pAudioCodecCtx->block_align ? m_pAudioCodecCtx->block_align : 1;
+  wavefmt->wBitsPerSample= m_pAudioCodecCtx->bits_per_coded_sample;
+  wavefmt->cbSize= m_pAudioCodecCtx->extradata_size;
+  //if(m_pAudioCodecCtx->extradata_size)
+  //  memcpy(wavefmt + 1, m_pAudioCodecCtx->extradata, m_pAudioCodecCtx->extradata_size);
+  
+  
+  //mt.subtype.Data1 = wavefmt->wFormatTag;
+  mt.lSampleSize = m_pAudioCodecCtx->bit_rate*3;
+  mt.bFixedSizeSamples = 1;
+  mt.bTemporalCompression = 0;
+  mt.cbFormat = 18 + wavefmt->cbSize;
+  mt.pbFormat = (PBYTE)wavefmt;
+  //mt.SetFormat((PBYTE)wavefmt, sizeof(WAVEFORMATEX));
+  mt.formattype = FORMAT_WaveFormatEx;
+  mt.subtype = MEDIASUBTYPE_MP3;
+  
+  //mt.pbFormat = wavefmt;
+  //mt.pbFormat = (PBYTE)wavefmt;
+
   
   
 
@@ -106,6 +126,16 @@ void CDSAudioStream::SetAVStream(AVStream* pStream)
 
   
 }
+
+void CDSAudioStream::Flush()
+{
+  if (m_pAudioFormatCtx)
+    m_dllAvFormat.av_read_frame_flush(m_pAudioFormatCtx);
+
+  m_iCurrentPts = DVD_NOPTS_VALUE;
+
+}
+
 //--------------------------------------------------------------------
 //
 //--------------------------------------------------------------------
@@ -192,11 +222,12 @@ HRESULT CDSAudioStream::SetMediaType(const CMediaType *pMediaType)
 
   if(SUCCEEDED(hr))
   {
-    /*WAVEFORMATEX* waveFormat = (WAVEFORMATEX*)pMediaType->Format();
+    m_MediaType = *pMediaType;
+    WAVEFORMATEX* waveFormat = (WAVEFORMATEX*)pMediaType->Format();
     mChannels = waveFormat->nChannels;
     mSamplesPerSec = waveFormat->nSamplesPerSec;
     mBitsPerSample = waveFormat->wBitsPerSample;
-    mBytesPerSample = (mBitsPerSample/8) * mChannels;*/
+    mBytesPerSample = (mBitsPerSample/8) * mChannels;
   } 
 
   return hr;
@@ -211,13 +242,22 @@ HRESULT CDSAudioStream::SetMediaType(const CMediaType *pMediaType)
 //--------------------------------------------------------------------
 HRESULT CDSAudioStream::DecideBufferSize(IMemAllocator* pAlloc, ALLOCATOR_PROPERTIES* pProperties)
 {
-    CheckPointer(pAlloc,E_POINTER);
-    CheckPointer(pProperties,E_POINTER);
+  CheckPointer(pAlloc,E_POINTER);
+  CheckPointer(pProperties,E_POINTER);
 
-    CAutoLock cAutoLock(m_pFilter->pStateLock());
-    HRESULT hr = NOERROR;
-
-    WAVEFORMATEX *pwfexCurrent = (WAVEFORMATEX*)m_mt.Format();
+  CAutoLock cAutoLock(m_pFilter->pStateLock());
+  HRESULT hr = NOERROR;
+  
+  WAVEFORMATEX *pwfexCurrent = (WAVEFORMATEX*)m_mt.Format();
+  pProperties->cBuffers=4;
+  pProperties->cbBuffer=48000*8*4/5;
+  pProperties->cbAlign=1;
+  pProperties->cbPrefix=0;
+  
+  ALLOCATOR_PROPERTIES actual;
+ if(FAILED(hr=pAlloc->SetProperties(pProperties,&actual))) 
+   return hr;
+ return pProperties->cBuffers>actual.cBuffers || pProperties->cbBuffer>actual.cbBuffer?E_FAIL:S_OK;
 
     if(WAVE_FORMAT_PCM == pwfexCurrent->wFormatTag)
     {
@@ -547,7 +587,7 @@ HRESULT CDSAudioStream::OnThreadCreate()
 //--------------------------------------------------------------------
 //
 //--------------------------------------------------------------------
-HRESULT CDSAudioStream::GetDeliveryBuffer(IMediaSample ** ppSample,REFERENCE_TIME * pStartTime, REFERENCE_TIME * pEndTime, DWORD dwFlags)
+/*HRESULT CDSAudioStream::GetDeliveryBuffer(IMediaSample ** ppSample,REFERENCE_TIME * pStartTime, REFERENCE_TIME * pEndTime, DWORD dwFlags)
 {
     return CSourceStream::GetDeliveryBuffer(ppSample,pStartTime,pEndTime,dwFlags);
-}
+}*/

@@ -122,7 +122,7 @@ protected:
 	
   CCritSec m_SeekLock;
   int             videoStream, audioStream;
-  //CDSAudioStream   m_pAudioStream;
+  CDSAudioStream   m_pAudioStream;
   CDSVideoStream   m_pVideoStream;
 };
 

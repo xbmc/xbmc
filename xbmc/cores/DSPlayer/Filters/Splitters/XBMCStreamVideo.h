@@ -66,10 +66,11 @@ protected:
   DllAvUtil   m_dllAvUtil;
   bool m_bMatroska;
   bool m_bAVI;
-private:
+
   AVPacket m_pPacket;
   AVStream*        m_pStream;
   std::vector<CMediaType> m_mts;
+private:
     void getSize();
     void getSizeFromStream();
     void getSizeProcedural();
