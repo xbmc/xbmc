@@ -203,31 +203,66 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   if (g_guiSettings.GetBool("videoplayer.usevda") && !hints.software)
   {
-    // use extradata so VDADecoder can convert demux frames to byte-stream format (annex B)
-    bool use_extradata = true;
+    int32_t width;
+    int32_t height;
+    CFDataRef avcCData;
+    uint8_t* extradata; // extra data for codec to use
+    unsigned int extrasize; // size of extra data
+    
+    //
+    width  = hints.width;
+    height = hints.height;
+    extrasize = hints.extrasize;
+    extradata = (uint8_t*)hints.extradata;
 
     switch (hints.codec)
     {
       case CODEC_ID_H264:
         // TODO: need to quality h264 encoding (profile, level and number of reference frame)
         // source must be H.264 with valid avcC atom data in extradata
-        if (hints.extrasize < 7 || hints.extradata == NULL)
+        if (extrasize < 7 || extradata == NULL)
         {
           CLog::Log(LOGNOTICE, "%s - avcC atom too data small or missing", __FUNCTION__);
           return false;
         }
         // valid avcC atom data always starts with the value 1 (version)
-        if ( *(char*)hints.extradata != 1 )
+        if ( *extradata != 1 )
         {
-          char *buff = (char*)hints.extradata;
-          if (buff[0] == 0 && buff[1] == 0 && buff[2] == 0 && buff[3] == 1)
+          if (extradata[0] == 0 && extradata[1] == 0 && extradata[2] == 0 && extradata[3] == 1)
           {
             // looky, looky. A NAL start code. h.264 demux frames from ts/m2ts
-            // containers is already in byte-stream format. Not sure what to do
-            // here, this does not work so two choices, 1) pass a null avcC atom data
-            // or 2) byte-to-bit stream convert the demux data and create a valid
-            // avcC atom data. 2) will be icky.
-            use_extradata = false;
+            // containers is already in byte-stream format. Three choices;
+            // 1) set extrasize to zero.
+            // 2 pass a null avcC atom data.
+            // 3) byte-to-bit stream convert the demux data and create a valid avcC atom data.
+            // #3 is going to be icky...
+            int choice = 2;
+            switch (choice)
+            {
+              case 1:
+                extrasize = 0;
+                extradata = NULL;
+              break;
+              case 2:
+                extrasize = 7;
+                extradata = new uint8_t[extrasize];
+                // make a null avcC header
+                extradata[0] = 0x01;          // version
+                extradata[1] = hints.h264profile; // profile
+                extradata[2] = hints.h264profile & 0xE0; // compatible profiles
+                extradata[3] = hints.h264level;  // level
+                extradata[4] = 0xff;
+                extradata[5] = 0xe1;
+                extradata[6] = 0x00;
+              break;
+              case 3:
+                // TODO
+              break;
+            }
+            // CFDataCreate makes a copy of extradata contents
+            avcCData = CFDataCreate(kCFAllocatorDefault, (const uint8_t*)extradata, extrasize);
+            if (extradata)
+              delete extradata;
           }
           else
           {
@@ -235,6 +270,12 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
             return false;
           }
         }
+        else
+        {
+          // CFDataCreate makes a copy of extradata contents
+          avcCData = CFDataCreate(kCFAllocatorDefault, (const uint8_t*)extradata, extrasize);
+        }
+
         m_format = 'avc1';
         m_pFormatName = "vda-h264";
       break;
@@ -250,21 +291,14 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     CFMutableDictionaryRef decoderConfiguration = CFDictionaryCreateMutable(
       kCFAllocatorDefault, 4, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
 
-    SInt32 width  = hints.width;
-    SInt32 height = hints.height;
-
     CFNumberRef avcWidth  = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &width);
     CFNumberRef avcHeight = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &height);
     CFNumberRef avcFormat = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &m_format);
-    CFDataRef   avcCData;
-    if (use_extradata)
-      avcCData  = CFDataCreate(kCFAllocatorDefault, (const uint8_t*)hints.extradata, hints.extrasize);
     
     CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_Height(), avcHeight);
     CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_Width(),  avcWidth);
     CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_SourceFormat(), avcFormat);
-    if (use_extradata)
-      CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_avcCData(), avcCData);
+    CFDictionarySetValue(decoderConfiguration, m_dll->Get_kVDADecoderConfiguration_avcCData(), avcCData);
     
     // create the VDADecoder object using defaulted '2vuy' video format buffers.
     OSStatus status = m_dll->VDADecoderCreate(decoderConfiguration, NULL, 
