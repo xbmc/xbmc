@@ -114,7 +114,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
   bool ControlGroupHasFocus(int groupID, int controlID);
-  virtual bool HasID(int id);
+  virtual bool HasID(int controlID) const { return controlID >= m_controlID && controlID < m_controlID + m_idRange; };
   void SetIDRange(int range) { m_idRange = range; };
   int GetIDRange() const { return m_idRange; };
   int GetPreviousWindow() { return m_previousWindow; };
