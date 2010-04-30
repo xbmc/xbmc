@@ -127,10 +127,12 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   CDVDVideoCodec* pCodec = NULL;
   CDVDCodecOptions options;
 
+  //when support for a hardware decoder is not compiled in
+  //only print it if it's actually available on the platform
   CStdString hwSupport;
-#ifdef HAVE_LIBVDADECODER
+#if defined(HAVE_LIBVDADECODER) && defined(__APPLE__)
   hwSupport += "VDADecoder:yes ";
-#else
+#elif defined(__APPLE__)
   hwSupport += "VDADecoder:no ";
 #endif
 #ifdef HAVE_LIBCRYSTALHD
@@ -148,9 +150,9 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 #elif defined(_WIN32)
   hwSupport += "DXVA:no ";
 #endif
-#if defined(HAVE_LIBVA)
+#if defined(HAVE_LIBVA) && defined(_LINUX)
   hwSupport += "VAAPI:yes ";
-#else
+#elif defined(_LINUX)
   hwSupport += "VAAPI:no ";
 #endif
 
