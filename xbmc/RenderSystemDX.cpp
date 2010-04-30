@@ -203,6 +203,8 @@ void CRenderSystemDX::BuildPresentParameters()
 
 bool CRenderSystemDX::DestroyRenderSystem()
 {
+  DeleteDevice();
+
   SAFE_RELEASE(m_stateBlock);
   SAFE_RELEASE(m_pD3D);
   SAFE_RELEASE(m_pD3DDevice);
