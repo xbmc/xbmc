@@ -68,7 +68,7 @@ void CDSVideoStream::SetAVStream(AVStream* pStream,AVFormatContext* pFmt)
   pCodec = m_dllAvCodec.avcodec_find_decoder(m_pVideoCodecCtx->codec_id);
   int resopen = m_dllAvCodec.avcodec_open(m_pVideoCodecCtx,pCodec);
   //m_dllAvFormat.av
-  //VIDEOINFOHEADER *pvi = (VIDEOINFOHEADER*)pMediaType->AllocFormatBuffer(SIZE_VIDEOHEADER + m_cbBitmapInfo);
+  
   
   AVFrame *pFrame;
 
@@ -81,32 +81,42 @@ void CDSVideoStream::SetAVStream(AVStream* pStream,AVFormatContext* pFmt)
     //m_pStream->codec->
   CMediaType mt;
   mt.InitMediaType();
-  VIDEOINFOHEADER *pvi = (VIDEOINFOHEADER*)mt.AllocFormatBuffer(SIZE_PREHEADER + numbytes);
-  if (pvi == 0) 
-    return;//E_OUTOFMEMORY
-  ZeroMemory(pvi, mt.cbFormat);
-  pvi->AvgTimePerFrame = 417083;
-  //setting the BITMAPINFOHEADER
-  mt.SetType(&MEDIATYPE_Video);
-  mt.SetSubtype(&MEDIASUBTYPE_XVID);
-  mt.SetFormatType(&FORMAT_VideoInfo);
+  mt.majortype = MEDIATYPE_Video;
+  
+  
+  
+  
+  
+  
+  mt.formattype = FORMAT_VideoInfo;
   mt.SetTemporalCompression(FALSE);
-  BITMAPINFOHEADER *bmphdr;
-  bmphdr=(BITMAPINFOHEADER*)calloc(sizeof(BITMAPINFOHEADER) + m_pVideoCodecCtx->extradata_size,1);
-  bmphdr->biSize= sizeof(BITMAPINFOHEADER) + m_pVideoCodecCtx->extradata_size;
-  bmphdr->biWidth= m_pVideoCodecCtx->width;
-  bmphdr->biHeight= m_pVideoCodecCtx->height;
-  bmphdr->biBitCount= m_pVideoCodecCtx->bits_per_coded_sample;
-  bmphdr->biSizeImage = bmphdr->biWidth * bmphdr->biHeight * bmphdr->biBitCount/8;
-  bmphdr->biCompression= m_pVideoCodecCtx->codec_tag;
+  mt.bFixedSizeSamples = FALSE;
+  VIDEOINFOHEADER *pvi = (VIDEOINFOHEADER*)mt.AllocFormatBuffer(sizeof(VIDEOINFOHEADER));
   
-  memcpy(&(pvi->bmiHeader), bmphdr, sizeof(bmphdr));
-  CopyMemory(HEADER(pvi),bmphdr,sizeof(BITMAPINFOHEADER));
-  /* end bitmapinfoheader */
   
-  //mt.SetSampleSize(pvi->bmiHeader.biSizeImage);
-  //memset(mt.Format(), 0, mt.FormatLength());
-  //mt.AllocFormatBuffer(sizeof(VIDEOINFOHEADER));
+  //FIX THE FRAMERATE  
+  pvi->AvgTimePerFrame = 417083;
+  pvi->dwBitErrorRate = 0;
+  pvi->dwBitRate = m_pVideoCodecCtx->bit_rate;
+  pvi->bmiHeader.biSize = sizeof(pvi->bmiHeader);
+  pvi->bmiHeader.biWidth= m_pVideoCodecCtx->width;
+  pvi->bmiHeader.biHeight= m_pVideoCodecCtx->height;
+  pvi->bmiHeader.biBitCount= m_pVideoCodecCtx->bits_per_coded_sample;
+  pvi->bmiHeader.biSizeImage = m_pVideoCodecCtx->width * m_pVideoCodecCtx->height * m_pVideoCodecCtx->bits_per_coded_sample / 8;
+  pvi->bmiHeader.biCompression= m_pVideoCodecCtx->codec_tag;
+  //TOFIX The bitplanes is depending on the subtype
+  pvi->bmiHeader.biPlanes = 1;
+  pvi->bmiHeader.biClrUsed = 0;
+  pvi->bmiHeader.biClrImportant = 0;
+  pvi->bmiHeader.biYPelsPerMeter = 0;
+  pvi->bmiHeader.biXPelsPerMeter = 0;
+  
+  mt.subtype = MEDIASUBTYPE_XVID;
+  mt.subtype = MEDIATYPE_Video;
+  mt.subtype.Data1 = pvi->bmiHeader.biCompression;
+
+  mt.SetFormat((PBYTE)pvi,sizeof(VIDEOINFOHEADER));
+   
   
   
 
@@ -252,6 +262,11 @@ HRESULT CDSVideoStream::SetMediaType(const CMediaType *pMediaType)
     }
   } 
 
+  int ret = m_dllAvFormat.av_seek_frame(m_pVideoFormatCtx, -1, 0, AVSEEK_FLAG_BYTE);
+  m_pPacket.data=NULL;
+  if(ret >= 0)
+    UpdateCurrentPTS();
+
   return hr;
 
 } // SetMediaType
@@ -270,10 +285,24 @@ HRESULT CDSVideoStream::FillBuffer(IMediaSample *pms)
     BYTE *pData = 0;
     pms->GetPointer(&pData);
     long lDataLen = pms->GetSize();
-
+    
     ZeroMemory(pData, lDataLen);
     {
         __int64 time = 0;
+        if(m_dllAvFormat.av_read_frame(m_pVideoFormatCtx, &m_pPacket)<0)
+        {
+
+        //last frame
+        }
+        else
+        {
+          memcpy(pData,m_pPacket.data,m_pPacket.size);
+          //pData = m_pPacket.data;
+          
+          //pms->g
+        
+        }
+        /*
         if ( fillNextFrame(pData,lDataLen,time) )
         {
             // Set time
@@ -282,7 +311,7 @@ HRESULT CDSVideoStream::FillBuffer(IMediaSample *pms)
             pms->SetTime(&timeStart,&timeEnd);
         }
         else
-            return S_FALSE;
+            return S_FALSE;*/
     }
 
     pms->SetSyncPoint(TRUE);
@@ -614,6 +643,22 @@ double CDSVideoStream::ConvertTimestamp(int64_t pts, int den, int num)
     timestamp = 0;
 
   return timestamp*DVD_TIME_BASE;
+}
+
+void CDSVideoStream::UpdateCurrentPTS()
+{
+  m_iCurrentPts = DVD_NOPTS_VALUE;
+  for(unsigned int i = 0; i < m_pVideoFormatCtx->nb_streams; i++)
+  {
+    AVStream *stream = m_pVideoFormatCtx->streams[i];
+    if(stream && stream->cur_dts != (int64_t)AV_NOPTS_VALUE)
+    {
+      double ts = ConvertTimestamp(stream->cur_dts, stream->time_base.den, stream->time_base.num);
+      if(m_iCurrentPts == DVD_NOPTS_VALUE || m_iCurrentPts > ts )
+        m_iCurrentPts = ts;
+    }
+  }
+
 }
 
 extern __int64 g_chanka;

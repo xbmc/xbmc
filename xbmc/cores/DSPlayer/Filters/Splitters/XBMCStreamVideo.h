@@ -28,7 +28,7 @@
 #include "DVDPlayer/DVDClock.h"
 #include "DVDPlayer/DVDDemuxers/DVDDemuxFFmpeg.h"
 class CXBMCSplitterFilter;
-
+struct AVPacket;
 //********************************************************************
 //
 //********************************************************************
@@ -54,19 +54,20 @@ public:
 
   void SetAVStream(AVStream* pStream,AVFormatContext* pFmt);
   double ConvertTimestamp(int64_t pts, int den, int num);
-    
+  void UpdateCurrentPTS();
 protected:
   CMediaType m_MediaType;
   int m_nCurrentBitDepth;
   AVFormatContext *m_pVideoFormatCtx;
   AVCodecContext *m_pVideoCodecCtx;
-
+  
   DllAvFormat m_dllAvFormat;
   DllAvCodec  m_dllAvCodec;
   DllAvUtil   m_dllAvUtil;
   bool m_bMatroska;
   bool m_bAVI;
 private:
+  AVPacket m_pPacket;
   AVStream*        m_pStream;
   std::vector<CMediaType> m_mts;
     void getSize();
