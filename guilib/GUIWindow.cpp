@@ -721,6 +721,11 @@ bool CGUIWindow::ControlGroupHasFocus(int groupID, int controlID)
   return false;
 }
 
+bool CGUIWindow::HasID(int id)
+{
+  return (id >= m_controlID && id < m_controlID + m_idRange);
+}
+
 void CGUIWindow::SaveControlStates()
 {
   ResetControlStates();
