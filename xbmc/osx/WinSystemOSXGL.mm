@@ -25,9 +25,10 @@
 // and obj-c's typedef unsigned char BOOL
 #define BOOL XBMC_BOOL 
 #include "WinSystemOSXGL.h"
+#include "SystemGlobals.h"
 #undef BOOL
 
-CWinSystemOSXGL g_Windowing;
+CWinSystemOSXGL& g_Windowing = g_SystemGlobals.m_Windowing;
 
 CWinSystemOSXGL::CWinSystemOSXGL()
 {

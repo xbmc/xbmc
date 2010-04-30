@@ -165,7 +165,7 @@ private:
   int  bHold[5];
 };
 
-extern CMouseStat g_Mouse;
+extern CMouseStat& g_Mouse;
 
 #endif
 

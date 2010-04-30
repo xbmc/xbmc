@@ -24,8 +24,9 @@
 
 #include "WinSystemX11GL.h"
 #include "utils/log.h"
+#include "SystemGlobals.h"
 
-CWinSystemX11GL g_Windowing;
+CWinSystemX11GL& g_Windowing = g_SystemGlobals.m_Windowing;
 
 CWinSystemX11GL::CWinSystemX11GL()
 {
