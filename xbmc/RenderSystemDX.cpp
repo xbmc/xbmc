@@ -52,24 +52,24 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_DIRECTX;
 
-  m_pD3D = NULL;
-  m_pD3DDevice = NULL;
-  m_hFocusWnd = NULL;
-  m_hDeviceWnd = NULL;
-  m_nBackBufferWidth = 0;
+  m_pD3D        = NULL;
+  m_pD3DDevice  = NULL;
+  m_hFocusWnd   = NULL;
+  m_hDeviceWnd  = NULL;
+  m_nBackBufferWidth  = 0;
   m_nBackBufferHeight = 0;
   m_bFullScreenDevice = 0;
-  m_bVSync = true;
-  m_nDeviceStatus = S_OK;
-  m_stateBlock = NULL;
-  m_inScene = false;
-  m_needNewDevice = false;
-  m_adapter = D3DADAPTER_DEFAULT;
-  m_screenHeight = 0;
-  m_systemFreq = CurrentHostFrequency();
-  m_useD3D9Ex         = false;
-  m_defaultD3DUsage   = 0;
-  m_defaultD3DPool    = D3DPOOL_MANAGED;
+  m_bVSync          = true;
+  m_nDeviceStatus   = S_OK;
+  m_stateBlock      = NULL;
+  m_inScene         = false;
+  m_needNewDevice   = false;
+  m_adapter         = D3DADAPTER_DEFAULT;
+  m_screenHeight    = 0;
+  m_systemFreq      = CurrentHostFrequency();
+  m_useD3D9Ex       = false;
+  m_defaultD3DUsage = 0;
+  m_defaultD3DPool  = D3DPOOL_MANAGED;
 
   ZeroMemory(&m_D3DPP, sizeof(D3DPRESENT_PARAMETERS));
 }
@@ -110,7 +110,7 @@ bool CRenderSystemDX::InitRenderSystem()
   if(m_pD3D->GetAdapterIdentifier(m_adapter, 0, &AIdentifier) == D3D_OK)
   {
     m_RenderRenderer = (const char*)AIdentifier.Description;
-    m_RenderVendor = (const char*)AIdentifier.Driver;
+    m_RenderVendor   = (const char*)AIdentifier.Driver;
     m_RenderVersion.Format("%d.%d.%d.%04d", HIWORD(AIdentifier.DriverVersion.HighPart), LOWORD(AIdentifier.DriverVersion.HighPart),
                                             HIWORD(AIdentifier.DriverVersion.LowPart), LOWORD(AIdentifier.DriverVersion.LowPart));
   }
@@ -155,10 +155,10 @@ bool CRenderSystemDX::InitRenderSystem()
 
 void CRenderSystemDX::SetRenderParams(unsigned int width, unsigned int height, bool fullScreen, float refreshRate)
 {
-  m_nBackBufferWidth = width;
+  m_nBackBufferWidth  = width;
   m_nBackBufferHeight = height;
   m_bFullScreenDevice = fullScreen;
-  m_refreshRate = refreshRate;
+  m_refreshRate       = refreshRate;
 }
 
 void CRenderSystemDX::SetMonitor(HMONITOR monitor)
@@ -172,7 +172,7 @@ void CRenderSystemDX::SetMonitor(HMONITOR monitor)
     HMONITOR hMonitor = m_pD3D->GetAdapterMonitor(adapter);
     if (hMonitor == monitor && adapter != m_adapter)
     {
-      m_adapter = adapter;
+      m_adapter       = adapter;
       m_needNewDevice = true;
       break;
     }
@@ -199,18 +199,18 @@ void CRenderSystemDX::BuildPresentParameters()
 {
   ZeroMemory( &m_D3DPP, sizeof(D3DPRESENT_PARAMETERS) );
   bool useWindow = g_guiSettings.GetBool("videoscreen.fakefullscreen") || !m_bFullScreenDevice;
-  m_D3DPP.Windowed					= useWindow;
-  m_D3DPP.SwapEffect				= D3DSWAPEFFECT_DISCARD;
-  m_D3DPP.BackBufferCount			= 1;
-  m_D3DPP.EnableAutoDepthStencil	= TRUE;
-  m_D3DPP.hDeviceWindow			= m_hDeviceWnd;
-  m_D3DPP.BackBufferWidth			= m_nBackBufferWidth;
-  m_D3DPP.BackBufferHeight			= m_nBackBufferHeight;
-  m_D3DPP.Flags   =   D3DPRESENTFLAG_VIDEO | D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+  m_D3DPP.Windowed           = useWindow;
+  m_D3DPP.SwapEffect         = D3DSWAPEFFECT_DISCARD;
+  m_D3DPP.BackBufferCount    = 1;
+  m_D3DPP.EnableAutoDepthStencil = TRUE;
+  m_D3DPP.hDeviceWindow      = m_hDeviceWnd;
+  m_D3DPP.BackBufferWidth    = m_nBackBufferWidth;
+  m_D3DPP.BackBufferHeight   = m_nBackBufferHeight;
+  m_D3DPP.Flags              = D3DPRESENTFLAG_VIDEO | D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
   m_D3DPP.PresentationInterval = (m_bVSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
   m_D3DPP.FullScreen_RefreshRateInHz = (useWindow) ? 0 : (int)m_refreshRate;
-  m_D3DPP.BackBufferFormat = D3DFMT_X8R8G8B8;
-  m_D3DPP.MultiSampleType = D3DMULTISAMPLE_NONE;
+  m_D3DPP.BackBufferFormat   = D3DFMT_X8R8G8B8;
+  m_D3DPP.MultiSampleType    = D3DMULTISAMPLE_NONE;
   m_D3DPP.MultiSampleQuality = 0;
 
 
@@ -744,11 +744,11 @@ void CRenderSystemDX::SetViewPort(CRect& viewPort)
 
   D3DVIEWPORT9 newviewport;
 
-  newviewport.MinZ = 0.0f;
-  newviewport.MaxZ = 1.0f;
-  newviewport.X = (DWORD)viewPort.x1;
-  newviewport.Y = (DWORD)viewPort.y1;
-  newviewport.Width = (DWORD)(viewPort.x2 - viewPort.x1);
+  newviewport.MinZ   = 0.0f;
+  newviewport.MaxZ   = 1.0f;
+  newviewport.X      = (DWORD)viewPort.x1;
+  newviewport.Y      = (DWORD)viewPort.y1;
+  newviewport.Width  = (DWORD)(viewPort.x2 - viewPort.x1);
   newviewport.Height = (DWORD)(viewPort.y2 - viewPort.y1);
   m_pD3DDevice->SetViewport(&newviewport);
 }
