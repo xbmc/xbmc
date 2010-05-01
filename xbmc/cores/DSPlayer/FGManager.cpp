@@ -341,7 +341,7 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
 
   //update ffdshow registry to avoid stupid connection problem
   //TODO move updateregistry to the xbmc gui like setting the stable codecs for ffdshow
-  UpdateRegistry();
+  //UpdateRegistry();
 
   //Clearing config need to be done before the file is loaded. Some config are set when the pin are getting connected
   g_dsconfig.ClearConfig();
