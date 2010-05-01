@@ -255,7 +255,7 @@ public:
   cTSDemuxer(cLiveStreamer *streamer, int id, eStreamType type, int pid);
   virtual ~cTSDemuxer();
 
-  void ProcessTSPacket(unsigned char *data);
+  bool ProcessTSPacket(unsigned char *data);
 
   void SetLanguage(const char *language);
   const char *GetLanguage() { return m_language; }

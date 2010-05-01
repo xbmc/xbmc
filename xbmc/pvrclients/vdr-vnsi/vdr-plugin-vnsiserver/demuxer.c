@@ -281,7 +281,7 @@ cTSDemuxer::~cTSDemuxer()
     delete m_pesParser;
 }
 
-void cTSDemuxer::ProcessTSPacket(unsigned char *data)
+bool cTSDemuxer::ProcessTSPacket(unsigned char *data)
 {
   bool pusi  = TsPayloadStart(data);
   int  bytes = TS_SIZE - TsPayloadOffset(data);
@@ -289,20 +289,20 @@ void cTSDemuxer::ProcessTSPacket(unsigned char *data)
   if (TsError(data))
   {
     dsyslog("VNSI-Error: transport error");
-    return;
+    return false;
   }
 
   if (!TsHasPayload(data))
   {
     LOGCONSOLE("VNSI-Error: no payload, size %d", bytes);
-    return;
+    return true;
   }
 
   /* drop broken PES packets */
   if (m_pesError && !pusi)
   {
     dsyslog("VNSI-Error: dropping broken PES packet");
-    return;
+    return false;
   }
 
   /* strip ts header */
@@ -315,7 +315,7 @@ void cTSDemuxer::ProcessTSPacket(unsigned char *data)
     {
       esyslog("VNSI-Error: payload not PES ?");
       m_pesError = true;
-      return;
+      return false;
     }
     m_pesError = false;
   }
@@ -323,6 +323,8 @@ void cTSDemuxer::ProcessTSPacket(unsigned char *data)
   /* Parse the data */
   if (m_pesParser)
     m_pesParser->Parse(data, bytes, pusi);
+
+  return true;
 }
 
 void cTSDemuxer::SetLanguage(const char *language)
