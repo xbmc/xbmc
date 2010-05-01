@@ -130,7 +130,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   //when support for a hardware decoder is not compiled in
   //only print it if it's actually available on the platform
   CStdString hwSupport;
-#if defined(HAVE_LIBVDADECODER)
+#if defined(HAVE_LIBVDADECODER) && defined(__APPLE__)
   hwSupport += "VDADecoder:yes ";
 #elif defined(__APPLE__)
   hwSupport += "VDADecoder:no ";
