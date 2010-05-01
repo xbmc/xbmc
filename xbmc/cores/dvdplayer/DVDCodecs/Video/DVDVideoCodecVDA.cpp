@@ -248,9 +248,9 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
                 extradata = new uint8_t[extrasize];
                 // make a null avcC header
                 extradata[0] = 0x01;          // version
-                extradata[1] = hints.h264profile; // profile
-                extradata[2] = hints.h264profile & 0xE0; // compatible profiles
-                extradata[3] = hints.h264level;  // level
+                extradata[1] = hints.profile; // profile
+                extradata[2] = hints.profile & 0xE0; // compatible profiles
+                extradata[3] = hints.level;  // level
                 extradata[4] = 0xff;
                 extradata[5] = 0xe1;
                 extradata[6] = 0x00;

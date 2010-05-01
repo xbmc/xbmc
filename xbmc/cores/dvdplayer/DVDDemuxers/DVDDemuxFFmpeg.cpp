@@ -981,12 +981,9 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
           st->fAspect = 0.0;
         else
           st->fAspect = av_q2d(pStream->sample_aspect_ratio) * pStream->codec->width / pStream->codec->height;
+        st->iLevel = pStream->codec->level;
+        st->iProfile = pStream->codec->profile;
 
-        if (pStream->codec->codec_id == CODEC_ID_H264)
-        {
-          st->iH264Level = pStream->codec->level;
-          st->iH264Profile = pStream->codec->profile;
-        }
 
         break;
       }
