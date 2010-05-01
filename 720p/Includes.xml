@@ -822,7 +822,7 @@
 			<visible>![Control.IsVisible(53) + Window.IsMedia]</visible>
 			<control type="group">
 				<description>Videos Background Image</description>
-				<visible>[Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)] + ![[Window.IsActive(24) + Control.IsVisible(51)] | [Control.IsVisible(54) | Control.IsVisible(57)]]</visible>
+				<visible>[Window.IsActive(24) | Window.IsVisible(MyVideoPlaylist)] + ![Control.IsVisible(54) | Control.IsVisible(57)]</visible>
 				<visible>!Container.Content(movies)</visible>
 				<control type="group">
 					<visible>IsEmpty(ListItem.Property(fanart_image))</visible>
