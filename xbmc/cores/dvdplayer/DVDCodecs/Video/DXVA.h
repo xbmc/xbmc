@@ -44,8 +44,9 @@ public:
   virtual void Close();
   virtual const std::string Name() { return "dxva2"; }
 
+  bool  OpenProcessor();
   bool  OpenTarget(const GUID &guid);
-  bool  OpenDecoder(AVCodecContext *avctx);
+  bool  OpenDecoder();
   int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
   void  RelBuffer(AVCodecContext *avctx, AVFrame *pic);
 
@@ -101,11 +102,12 @@ public:
   CProcessor();
  ~CProcessor();
 
-  bool Open(const DXVA2_VideoDesc& dsc, IDirectXVideoDecoder* decoder);
+  bool Open(const DXVA2_VideoDesc& dsc);
   void Close();
   REFERENCE_TIME Add   (IDirect3DSurface9* source);
   bool           Render(const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time);
   void           CropSource(RECT& dst, RECT& src, const D3DSURFACE_DESC& desc);
+  int            Size() { return m_size; }
 
   CProcessor* Acquire();
   long        Release();
@@ -136,7 +138,6 @@ public:
   long              m_references;
 
 protected:
-  IDirectXVideoDecoder* m_decoder;
 };
 
 };
