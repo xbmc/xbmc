@@ -206,7 +206,7 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.hDeviceWindow      = m_hDeviceWnd;
   m_D3DPP.BackBufferWidth    = m_nBackBufferWidth;
   m_D3DPP.BackBufferHeight   = m_nBackBufferHeight;
-  m_D3DPP.Flags              = D3DPRESENTFLAG_VIDEO | D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+  m_D3DPP.Flags              = D3DPRESENTFLAG_VIDEO;
   m_D3DPP.PresentationInterval = (m_bVSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
   m_D3DPP.FullScreen_RefreshRateInHz = (useWindow) ? 0 : (int)m_refreshRate;
   m_D3DPP.BackBufferFormat   = D3DFMT_X8R8G8B8;

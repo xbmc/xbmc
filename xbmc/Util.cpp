@@ -1896,8 +1896,7 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
   unsigned char* outpixels = NULL;
 
 #ifdef HAS_DX
-  LPDIRECT3DSURFACE9 lpSurface = NULL;
-
+  LPDIRECT3DSURFACE9 lpSurface = NULL, lpBackbuffer = NULL;
   g_graphicsContext.Lock();
   if (g_application.IsPlayingVideo())
   {
@@ -1905,10 +1904,16 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
     g_renderManager.SetupScreenshot();
 #endif
   }
+  g_application.RenderNoPresent();
+
+  if (FAILED(g_Windowing.Get3DDevice()->CreateOffscreenPlainSurface(g_Windowing.GetWidth(), g_Windowing.GetHeight(), D3DFMT_X8R8G8B8, D3DPOOL_SYSTEMMEM, &lpSurface, NULL)))
+    return;
+
+  if (FAILED(g_Windowing.Get3DDevice()->GetRenderTarget(0, &lpBackbuffer)))
+    return;
 
   // now take screenshot
-  g_application.RenderNoPresent();
-  if (SUCCEEDED(g_Windowing.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
+  if (SUCCEEDED(g_Windowing.Get3DDevice()->GetRenderTargetData(lpBackbuffer, lpSurface)))
   {
     D3DLOCKED_RECT lr;
     D3DSURFACE_DESC desc;
@@ -1926,12 +1931,14 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
     {
       CLog::Log(LOGERROR, "%s LockRect failed", __FUNCTION__);
     }
-    lpSurface->Release();
   }
   else
   {
     CLog::Log(LOGERROR, "%s GetBackBuffer failed", __FUNCTION__);
   }
+  lpSurface->Release();
+  lpBackbuffer->Release();
+
   g_graphicsContext.Unlock();
 
 #elif defined(HAS_GL)
