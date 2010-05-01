@@ -29,6 +29,7 @@ using namespace dbiplus;
 
 CTVDatabase::CTVDatabase(void)
 {
+  oneWriteSQLString = "";
 }
 
 CTVDatabase::~CTVDatabase(void)
@@ -411,27 +412,44 @@ bool CTVDatabase::EraseOldEPG()
   }
 }
 
-long CTVDatabase::AddEPGEntry(const cPVREPGInfoTag &info)
+long CTVDatabase::AddEPGEntry(const cPVREPGInfoTag &info, bool oneWrite, bool firstWrite, bool lastWrite)
 {
   try
   {
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
-    if (info.GetUniqueBroadcastID() <= 0) return -1;
 
-    CStdString SQL = FormatSQL("insert into GuideData (idDatabaseBroadcast, idChannel, StartTime, "
-                               "EndTime, strTitle, strPlotOutline, strPlot, GenreType, GenreSubType, "
-                               "firstAired, parentalRating, starRating, notify, seriesNum, "
-                               "episodeNum, episodePart, episodeName, idUniqueBroadcast) "
-                               "values (NULL,'%i','%s','%s','%s','%s','%s','%i','%i','%s','%i','%i','%i','%s','%s','%s','%s','%i')\n",
-                               info.ChannelID(), info.Start().GetAsDBDateTime().c_str(), info.End().GetAsDBDateTime().c_str(),
-                               info.Title().c_str(), info.PlotOutline().c_str(), info.Plot().c_str(), info.GenreType(), info.GenreSubType(),
-                               info.FirstAired().GetAsDBDateTime().c_str(), info.ParentalRating(), info.StarRating(), info.Notify(),
-                               info.SeriesNum().c_str(), info.EpisodeNum().c_str(), info.EpisodePart().c_str(), info.EpisodeName().c_str(),
-                               info.GetUniqueBroadcastID());
+    if (!oneWrite && firstWrite)
+      m_pDS->insert();
 
-    m_pDS->exec(SQL.c_str());
-    return (long)m_pDS->lastinsertid();
+    if (info.GetUniqueBroadcastID() > 0)
+    {
+      CStdString SQL = FormatSQL("INSERT INTO GuideData (idDatabaseBroadcast, idChannel, StartTime, "
+                                 "EndTime, strTitle, strPlotOutline, strPlot, GenreType, GenreSubType, "
+                                 "firstAired, parentalRating, starRating, notify, seriesNum, "
+                                 "episodeNum, episodePart, episodeName, idUniqueBroadcast) "
+                                 "VALUES (NULL,'%i','%s','%s','%s','%s','%s','%i','%i','%s','%i','%i','%i','%s','%s','%s','%s','%i')\n",
+                                 info.ChannelID(), info.Start().GetAsDBDateTime().c_str(), info.End().GetAsDBDateTime().c_str(),
+                                 info.Title().c_str(), info.PlotOutline().c_str(), info.Plot().c_str(), info.GenreType(), info.GenreSubType(),
+                                 info.FirstAired().GetAsDBDateTime().c_str(), info.ParentalRating(), info.StarRating(), info.Notify(),
+                                 info.SeriesNum().c_str(), info.EpisodeNum().c_str(), info.EpisodePart().c_str(), info.EpisodeName().c_str(),
+                                 info.GetUniqueBroadcastID());
+
+      if (oneWrite)
+      {
+        m_pDS->exec(SQL.c_str());
+        return (long)m_pDS->lastinsertid();
+      }
+      else
+        m_pDS->add_insert_sql(SQL);
+    }
+
+    if (!oneWrite && lastWrite)
+    {
+      m_pDS->post();
+      m_pDS->clear_insert_sql();
+    }
+    return 0;
   }
   catch (...)
   {
@@ -441,66 +459,90 @@ long CTVDatabase::AddEPGEntry(const cPVREPGInfoTag &info)
   return -1;
 }
 
-bool CTVDatabase::UpdateEPGEntry(const cPVREPGInfoTag &info)
+bool CTVDatabase::UpdateEPGEntry(const cPVREPGInfoTag &info, bool oneWrite, bool firstWrite, bool lastWrite)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
-    if (info.GetUniqueBroadcastID() <= 0) return false;
+    if (NULL == m_pDS2.get()) return false;
 
-    CStdString SQL;
+    if (!oneWrite && firstWrite)
+      m_pDS2->insert();
 
-    SQL=FormatSQL("select idDatabaseBroadcast from GuideData WHERE (GuideData.idUniqueBroadcast = '%u' OR GuideData.StartTime = '%s') AND GuideData.idChannel = '%u'", info.GetUniqueBroadcastID(), info.Start().GetAsDBDateTime().c_str(), info.ChannelID());
-    m_pDS->query(SQL.c_str());
-
-    if (m_pDS->num_rows() > 0)
+    if (info.GetUniqueBroadcastID() > 0)
     {
-      int id = m_pDS->fv("idDatabaseBroadcast").get_asInt();
-      m_pDS->close();
-      // update the item
-      SQL = FormatSQL("update GuideData set idChannel=%i, StartTime='%s', EndTime='%s', strTitle='%s', strPlotOutline='%s', "
-                      "strPlot='%s', GenreType=%i, GenreSubType=%i, firstAired='%s', parentalRating=%i, starRating=%i, "
-                      "notify=%i, seriesNum='%s', episodeNum='%s', episodePart='%s', episodeName='%s', "
-                      "idUniqueBroadcast=%i WHERE idDatabaseBroadcast=%i",
-                      info.ChannelID(), info.Start().GetAsDBDateTime().c_str(), info.End().GetAsDBDateTime().c_str(),
-                      info.Title().c_str(), info.PlotOutline().c_str(), info.Plot().c_str(), info.GenreType(), info.GenreSubType(),
-                      info.FirstAired().GetAsDBDateTime().c_str(), info.ParentalRating(), info.StarRating(), info.Notify(),
-                      info.SeriesNum().c_str(), info.EpisodeNum().c_str(), info.EpisodePart().c_str(), info.EpisodeName().c_str(),
-                      info.GetUniqueBroadcastID(), id);
+      CStdString SQL = FormatSQL("select idDatabaseBroadcast from GuideData WHERE (GuideData.idUniqueBroadcast = '%u' OR GuideData.StartTime = '%s') AND GuideData.idChannel = '%u'", info.GetUniqueBroadcastID(), info.Start().GetAsDBDateTime().c_str(), info.ChannelID());
+      m_pDS->query(SQL.c_str());
 
-      m_pDS->exec(SQL.c_str());
-      return true;
-    }
-    else   // add the items
-    {
-      m_pDS->close();
-      SQL = FormatSQL("insert into GuideData (idDatabaseBroadcast, idChannel, StartTime, "
-                      "EndTime, strTitle, strPlotOutline, strPlot, GenreType, GenreSubType, "
-                      "firstAired, parentalRating, starRating, notify, seriesNum, "
-                      "episodeNum, episodePart, episodeName, idUniqueBroadcast) "
-                      "values (NULL,'%i','%s','%s','%s','%s','%s','%i','%i','%s','%i','%i','%i','%s','%s','%s','%s','%i')\n",
-                      info.ChannelID(), info.Start().GetAsDBDateTime().c_str(), info.End().GetAsDBDateTime().c_str(),
-                      info.Title().c_str(), info.PlotOutline().c_str(), info.Plot().c_str(), info.GenreType(), info.GenreSubType(),
-                      info.FirstAired().GetAsDBDateTime().c_str(), info.ParentalRating(), info.StarRating(), info.Notify(),
-                      info.SeriesNum().c_str(), info.EpisodeNum().c_str(), info.EpisodePart().c_str(), info.EpisodeName().c_str(),
-                      info.GetUniqueBroadcastID());
-
-      m_pDS->exec(SQL.c_str());
-
-      if (GetEPGDataEnd(info.ChannelID()) > info.End())
+      if (m_pDS->num_rows() > 0)
       {
-        CLog::Log(LOGNOTICE, "TV-Database: erasing epg data due to event change on channel %s", info.ChannelName().c_str());
-        EraseChannelEPGAfterTime(info.ChannelID(), info.End());
+        int id = m_pDS->fv("idDatabaseBroadcast").get_asInt();
+        m_pDS->close();
+        // update the item
+        SQL = FormatSQL("update GuideData set idChannel=%i, StartTime='%s', EndTime='%s', strTitle='%s', strPlotOutline='%s', "
+                        "strPlot='%s', GenreType=%i, GenreSubType=%i, firstAired='%s', parentalRating=%i, starRating=%i, "
+                        "notify=%i, seriesNum='%s', episodeNum='%s', episodePart='%s', episodeName='%s', "
+                        "idUniqueBroadcast=%i WHERE idDatabaseBroadcast=%i",
+                        info.ChannelID(), info.Start().GetAsDBDateTime().c_str(), info.End().GetAsDBDateTime().c_str(),
+                        info.Title().c_str(), info.PlotOutline().c_str(), info.Plot().c_str(), info.GenreType(), info.GenreSubType(),
+                        info.FirstAired().GetAsDBDateTime().c_str(), info.ParentalRating(), info.StarRating(), info.Notify(),
+                        info.SeriesNum().c_str(), info.EpisodeNum().c_str(), info.EpisodePart().c_str(), info.EpisodeName().c_str(),
+                        info.GetUniqueBroadcastID(), id);
+
+        if (oneWrite)
+          m_pDS->exec(SQL.c_str());
+        else
+          m_pDS2->add_insert_sql(SQL);
+
+        return true;
       }
-      return true;
+      else   // add the items
+      {
+        m_pDS->close();
+        SQL = FormatSQL("insert into GuideData (idDatabaseBroadcast, idChannel, StartTime, "
+                        "EndTime, strTitle, strPlotOutline, strPlot, GenreType, GenreSubType, "
+                        "firstAired, parentalRating, starRating, notify, seriesNum, "
+                        "episodeNum, episodePart, episodeName, idUniqueBroadcast) "
+                        "values (NULL,'%i','%s','%s','%s','%s','%s','%i','%i','%s','%i','%i','%i','%s','%s','%s','%s','%i')\n",
+                        info.ChannelID(), info.Start().GetAsDBDateTime().c_str(), info.End().GetAsDBDateTime().c_str(),
+                        info.Title().c_str(), info.PlotOutline().c_str(), info.Plot().c_str(), info.GenreType(), info.GenreSubType(),
+                        info.FirstAired().GetAsDBDateTime().c_str(), info.ParentalRating(), info.StarRating(), info.Notify(),
+                        info.SeriesNum().c_str(), info.EpisodeNum().c_str(), info.EpisodePart().c_str(), info.EpisodeName().c_str(),
+                        info.GetUniqueBroadcastID());
+
+        if (oneWrite)
+        {
+          m_pDS->exec(SQL.c_str());
+        }
+        else
+        {
+          if (firstWrite)
+            m_pDS2->insert();
+
+          m_pDS2->add_insert_sql(SQL);
+        }
+
+        if (GetEPGDataEnd(info.ChannelID()) > info.End())
+        {
+          CLog::Log(LOGNOTICE, "TV-Database: erasing epg data due to event change on channel %s", info.ChannelName().c_str());
+          EraseChannelEPGAfterTime(info.ChannelID(), info.End());
+        }
+      }
     }
+
+    if (!oneWrite && lastWrite)
+    {
+      m_pDS2->post();
+      m_pDS2->clear_insert_sql();
+    }
+    return true;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s (%s on Channel %s) failed", __FUNCTION__, info.Title().c_str(), info.ChannelName().c_str());
-    return false;
   }
+  return false;
 }
 
 bool CTVDatabase::RemoveEPGEntry(const cPVREPGInfoTag &info)
@@ -714,7 +756,7 @@ bool CTVDatabase::EraseClientChannels(long clientID)
   }
 }
 
-long CTVDatabase::AddDBChannel(const cPVRChannelInfoTag &info)
+long CTVDatabase::AddDBChannel(const cPVRChannelInfoTag &info, bool oneWrite, bool firstWrite, bool lastWrite)
 {
   try
   {
@@ -723,7 +765,6 @@ long CTVDatabase::AddDBChannel(const cPVRChannelInfoTag &info)
     if (NULL == m_pDS.get()) return -1;
 
     long channelId = info.ChannelID();
-
     if (channelId < 0)
     {
       CStdString SQL = FormatSQL("insert into Channels (idChannel, idClient, Number, Name, ClientName, "
@@ -735,10 +776,21 @@ long CTVDatabase::AddDBChannel(const cPVRChannelInfoTag &info)
                                  info.EncryptionSystem(), info.m_radio, info.m_grabEpg, info.m_grabber.c_str(),
                                  info.m_hide, info.m_bIsVirtual, info.m_strInputFormat.c_str(), info.m_strStreamURL.c_str());
 
-      m_pDS->exec(SQL.c_str());
-      channelId = (long)m_pDS->lastinsertid();
-    }
+      if (oneWrite)
+      {
+        m_pDS->exec(SQL.c_str());
+        channelId = (long)m_pDS->lastinsertid();
+      }
+      else
+      {
+        if (firstWrite)
+          m_pDS->insert();
 
+        m_pDS->add_insert_sql(SQL);
+        if (lastWrite)
+          m_pDS->post();
+      }
+    }
     return channelId;
   }
   catch (...)
@@ -1555,3 +1607,4 @@ bool CTVDatabase::SetChannelSettings(unsigned int channelID, const CVideoSetting
     return false;
   }
 }
+

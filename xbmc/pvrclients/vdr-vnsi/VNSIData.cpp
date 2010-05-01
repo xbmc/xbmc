@@ -312,6 +312,7 @@ bool cVNSIData::GetChannelsList(PVRHANDLE handle, bool radio)
     tag.bouquet       = vresp->extract_U32();
     tag.encryption    = vresp->extract_U32();
     uint32_t vtype    = vresp->extract_U32();
+    tag.radio         = radio;
     tag.input_format  = "";
     tag.stream_url    = "";
 

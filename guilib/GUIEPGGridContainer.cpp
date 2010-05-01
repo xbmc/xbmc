@@ -693,6 +693,8 @@ void CGUIEPGGridContainer::UpdateItems()
   gridDuration = m_gridEnd - m_gridStart;
 
   m_blocks = (gridDuration.GetDays()*24*60 + gridDuration.GetHours()*60 + gridDuration.GetMinutes()) / MINSPERBLOCK;
+  if (m_blocks >= MAXBLOCKS)
+    m_blocks = MAXBLOCKS;
 
   /* if less than one page, can't display grid */
   if (m_blocks < m_blocksPerPage)
@@ -707,13 +709,12 @@ void CGUIEPGGridContainer::UpdateItems()
 
   long tick(CTimeUtils::GetTimeMS());
 
-  for (unsigned int row = 0; row < m_channelItems.size(); ++row)
+  for (unsigned int row = 0; row < m_channelItems.size() && row < MAXCHANNELS; ++row)
   {
     CDateTime gridCursor = m_gridStart; //reset cursor for new channel
     unsigned long progIdx   = m_epgItemsPtr[row].start;
     unsigned long lastIdx   = m_epgItemsPtr[row].stop;
-    CGUIListItemPtr item    = m_programmeItems[progIdx];
-    unsigned int channelnum = ((CFileItem *)item.get())->GetEPGInfoTag()->ChannelNumber();
+    unsigned int channelnum = ((CFileItem *)m_programmeItems[progIdx].get())->GetEPGInfoTag()->ChannelNumber();
 
     /** FOR EACH BLOCK **********************************************************************/
 
@@ -796,7 +797,7 @@ void CGUIEPGGridContainer::UpdateItems()
 
   /******************************************* END ******************************************/
 
-  CLog::Log(LOGDEBUG, "%s completed successfully in %u ms", __FUNCTION__, CTimeUtils::GetTimeMS()-tick);
+  CLog::Log(LOGDEBUG, "%s completed successfully in %u ms", __FUNCTION__, (unsigned int)(CTimeUtils::GetTimeMS()-tick));
 
   m_channels = (int)m_epgItemsPtr.size();
   m_item = GetItem(m_channelCursor);
@@ -1632,9 +1633,9 @@ void CGUIEPGGridContainer::FreeProgrammeMemory(int keepStart, int keepEnd)
       unsigned long progIdx = m_epgItemsPtr[i].start;
       unsigned long lastIdx = m_epgItemsPtr[i].stop;
 
-      for (int j = progIdx; j < keepStart+progIdx && j < lastIdx; ++j)
+      for (unsigned int j = progIdx; j < keepStart+progIdx && j < lastIdx; ++j)
         m_programmeItems[j]->FreeMemory();
-      for (int j = keepEnd+progIdx + 1; j < lastIdx; ++j)
+      for (unsigned int j = keepEnd+progIdx + 1; j < lastIdx; ++j)
         m_programmeItems[j]->FreeMemory();
     }
   }
@@ -1645,7 +1646,7 @@ void CGUIEPGGridContainer::FreeProgrammeMemory(int keepStart, int keepEnd)
       unsigned long progIdx = m_epgItemsPtr[i].start;
       unsigned long lastIdx = m_epgItemsPtr[i].stop;
 
-      for (int j = keepEnd+progIdx + 1; j < keepStart+progIdx && j < lastIdx; ++j)
+      for (unsigned int j = keepEnd+progIdx + 1; j < keepStart+progIdx && j < lastIdx; ++j)
         m_programmeItems[j]->FreeMemory();
     }
   }

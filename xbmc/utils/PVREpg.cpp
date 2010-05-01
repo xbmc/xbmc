@@ -646,7 +646,7 @@ void cPVREpgs::Load()
           if (ret)
           {
             for (unsigned int i = 0; i < p->InfoTags()->size(); i++)
-              database->UpdateEPGEntry(*p->InfoTags()->at(i));
+              database->AddEPGEntry(*p->InfoTags()->at(i), false, (i==0), (i >= p->InfoTags()->size()-1));
           }
         }
 
@@ -710,7 +710,7 @@ void cPVREpgs::Load()
           if (ret)
           {
             for (unsigned int i = 0; i < p->InfoTags()->size(); i++)
-              database->UpdateEPGEntry(*p->InfoTags()->at(i));
+              database->AddEPGEntry(*p->InfoTags()->at(i), false, (i==0), (i >= p->InfoTags()->size()-1));
           }
         }
 
@@ -831,7 +831,7 @@ void cPVREpgs::Update(bool Scan)
           if (ret)
           {
             for (unsigned int j = 0; j < p->InfoTags()->size(); j++)
-              database->UpdateEPGEntry(*p->InfoTags()->at(j));
+              database->UpdateEPGEntry(*p->InfoTags()->at(j), false, (j==0), (j >= p->InfoTags()->size()-1));
 
             PVRChannelsTV[i].ResetChannelEPGLinks();
           }
@@ -963,7 +963,7 @@ void cPVREpgs::Update(bool Scan)
           if (ret)
           {
             for (unsigned int j = 0; j < p->InfoTags()->size(); j++)
-              database->UpdateEPGEntry(*p->InfoTags()->at(j));
+              database->UpdateEPGEntry(*p->InfoTags()->at(j), false, (j==0), (j >= p->InfoTags()->size()-1));
 
             PVRChannelsRadio[i].ResetChannelEPGLinks();
           }

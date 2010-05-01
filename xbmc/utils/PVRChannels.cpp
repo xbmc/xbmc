@@ -435,7 +435,6 @@ bool cPVRChannels::Load(bool radio)
   Clear();
 
   database->Open();
-
   if (database->GetDBNumChannels(m_bRadio) > 0)
   {
     database->GetDBChannelList(*this, m_bRadio);
@@ -456,17 +455,17 @@ bool cPVRChannels::Load(bool radio)
       }
       itr++;
     }
-
     ReNumberAndCheck();
     SearchAndSetChannelIcons();
-
     for (unsigned int i = 0; i < size(); i++)
-      at(i).SetChannelID(database->AddDBChannel(at(i)));
+      database->AddDBChannel(at(i), false, (i==0), (i >= size()-1));
 
+    clear();
+    database->GetDBChannelList(*this, m_bRadio);
     database->Compress(true);
     database->Close();
+    ReNumberAndCheck();
   }
-
   return false;
 }
 

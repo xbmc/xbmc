@@ -50,8 +50,8 @@ public:
   bool EraseChannelEPG(long channelID);
   bool EraseChannelEPGAfterTime(long channelID, CDateTime after);
   bool EraseOldEPG();
-  long AddEPGEntry(const cPVREPGInfoTag &info);
-  bool UpdateEPGEntry(const cPVREPGInfoTag &info);
+  long AddEPGEntry(const cPVREPGInfoTag &info, bool oneWrite = true, bool firstWrite = false, bool lastWrite = false);
+  bool UpdateEPGEntry(const cPVREPGInfoTag &info, bool oneWrite = true, bool firstWrite = false, bool lastWrite = false);
   bool RemoveEPGEntry(const cPVREPGInfoTag &info);
   bool RemoveEPGEntries(unsigned int channelID, const CDateTime &start, const CDateTime &end);
   bool GetEPGForChannel(const cPVRChannelInfoTag &channelinfo, cPVREpg *epg, const CDateTime &start, const CDateTime &end);
@@ -61,7 +61,7 @@ public:
   /* Database Channel handling */
   bool EraseChannels();
   bool EraseClientChannels(long clientID);
-  long AddDBChannel(const cPVRChannelInfoTag &info);
+  long AddDBChannel(const cPVRChannelInfoTag &info, bool oneWrite = true, bool firstWrite = false, bool lastWrite = false);
   bool RemoveDBChannel(const cPVRChannelInfoTag &info);
   long UpdateDBChannel(const cPVRChannelInfoTag &info);
   int  GetDBNumChannels(bool radio);
@@ -102,6 +102,8 @@ protected:
   long GetRadioChannelGroupId(const CStdString &groupname);
 
 private:
+  CStdString oneWriteSQLString;
+//  char *InsertSQLString(char *dest, const char *src);
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
 };

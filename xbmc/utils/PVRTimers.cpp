@@ -530,9 +530,12 @@ bool cPVRTimers::Update()
   CLIENTMAPITR itr = clients->begin();
   while (itr != clients->end())
   {
-    if ((*itr).second->GetNumTimers() > 0)
+    if (g_PVRManager.GetClientProps((*itr).second->GetID())->SupportTimers)
     {
-      (*itr).second->GetAllTimers(this);
+      if ((*itr).second->GetNumTimers() > 0)
+      {
+        (*itr).second->GetAllTimers(this);
+      }
     }
     itr++;
   }
@@ -565,7 +568,7 @@ cPVRTimerInfoTag *cPVRTimers::GetTimer(cPVRTimerInfoTag *Timer)
   for (unsigned int i = 0; i < size(); i++)
   {
     if (at(i).Number() == Timer->Number() &&
-        (at(i).Weekdays() && at(i).Weekdays() == Timer->Weekdays() || !at(i).Weekdays() && at(i).FirstDay() == Timer->FirstDay()) &&
+        ((at(i).Weekdays() && at(i).Weekdays() == Timer->Weekdays()) || (!at(i).Weekdays() && at(i).FirstDay() == Timer->FirstDay())) &&
         at(i).Start() == Timer->Start() &&
         at(i).Stop() == Timer->Stop())
       return &at(i);
@@ -615,6 +618,11 @@ bool cPVRTimers::AddTimer(const CFileItem &item)
   }
 
   const cPVRTimerInfoTag* tag = item.GetPVRTimerInfoTag();
+  if (!g_PVRManager.GetClientProps(tag->ClientID())->SupportTimers)
+  {
+    CGUIDialogOK::ShowAndGetInput(19033,0,19215,0);
+    return false;
+  }
   return tag->Add();
 }
 

@@ -37,7 +37,7 @@ public:
   cVNSISession();
   ~cVNSISession();
 
-  bool              Open(CStdString hostname, int port, long timeout, CStdString name = "");
+  bool              Open(CStdString hostname, int port, long timeout, const char *name = "");
   void              Close();
   void              Abort();
 

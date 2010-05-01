@@ -63,7 +63,7 @@ void cVNSISession::Close()
   }
 }
 
-bool cVNSISession::Open(CStdString hostname, int port, long timeout, CStdString name)
+bool cVNSISession::Open(CStdString hostname, int port, long timeout, const char *name)
 {
   struct hostent hostbuf, *hp;
   int herr, fd, r, res, err;
@@ -211,10 +211,10 @@ bool cVNSISession::Open(CStdString hostname, int port, long timeout, CStdString 
     if (!vrp.init(VDR_LOGIN))                 throw "Can't init cRequestPacket";
     if (!vrp.add_U32(VNSIProtocolVersion))    throw "Can't add protocol version to RequestPacket";
     if (!vrp.add_U8(false))                   throw "Can't add netlog flag";
-    if (name.IsEmpty())
-      if (!vrp.add_String("XBMC Media Center")) throw "Can't add client name to RequestPacket";
+    if (name && strlen(name) > 0)
+      if (!vrp.add_String(name))                throw "Can't add client name to RequestPacket";
     else
-      if (!vrp.add_String(name.c_str()))        throw "Can't add client name to RequestPacket";
+      if (!vrp.add_String("XBMC Media Center")) throw "Can't add client name to RequestPacket";
 
     // read welcome
     cResponsePacket* vresp = ReadResult(&vrp);
@@ -231,7 +231,7 @@ bool cVNSISession::Open(CStdString hostname, int port, long timeout, CStdString 
     m_version   = ServerVersion;
     m_protocol  = protocol;
 
-    if (name.IsEmpty())
+    if (!name || strlen(name) <= 0)
       XBMC->Log(LOG_NOTICE, "Logged in at '%lu+%lu' to '%s' Version: '%s' with protocol version '%lu'", vdrTime, vdrTimeOffset, ServerName, ServerVersion, protocol);
 
     delete vresp;

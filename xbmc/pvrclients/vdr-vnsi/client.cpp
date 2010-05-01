@@ -342,7 +342,7 @@ PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
   props->SupportTimeShift          = false;
   props->SupportEPG                = true;
   props->SupportRecordings         = true;
-  props->SupportTimers             = false;
+  props->SupportTimers             = true;
   props->SupportTV                 = true;
   props->SupportRadio              = true;
   props->SupportChannelSettings    = false;
@@ -502,10 +502,10 @@ int GetNumRecordings(void)
 
 PVR_ERROR RequestRecordingsList(PVRHANDLE handle)
 {
-  if (IsClientConnected() && VNSIData && VNSIData->GetRecordingsList(handle))
-    return PVR_ERROR_NO_ERROR;
+  if (!VNSIData || !IsClientConnected())
+    return PVR_ERROR_SERVER_ERROR;
 
-  return PVR_ERROR_SERVER_ERROR;
+  return VNSIData->GetRecordingsList(handle);
 }
 
 PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo)

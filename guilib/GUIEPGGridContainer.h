@@ -26,8 +26,8 @@
 #include "GUIControl.h"
 #include "GUIListItemLayout.h"
 
-#define MAXCHANNELS 500
-#define MAXBLOCKS   1152 //! !!_FOUR_!! days of 5 minute blocks
+#define MAXCHANNELS 750
+#define MAXBLOCKS   2304 //! !!_EIGHT_!! days of 5 minute blocks
 
 struct GridItemsPtr
 {
