@@ -102,7 +102,7 @@ void CGUIDialogAddonInfo::OnInitWindow()
     !m_item->GetProperty("Addon.Path").Mid(0,15).Equals("special://xbmc/"));
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, 
               m_item->GetProperty("Addon.Installed").Equals("true") &&
-              m_addon->HasSettings());
+              m_localAddon->HasSettings());
   m_item->SetProperty("Addon.Changelog",g_localizeStrings.Get(13413));
 
   if (m_addon->Type() != ADDON_REPOSITORY)
@@ -128,10 +128,9 @@ void CGUIDialogAddonInfo::OnDisable()
 {
   CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
   CFileItemList list;
-  AddonPtr localAddon;
-  if (CAddonMgr::Get()->GetAddon(m_addon->ID(), localAddon))
+  if (m_localAddon.get())
   {
-    list.Add(CFileItemPtr(new CFileItem(localAddon->Path(),true)));
+    list.Add(CFileItemPtr(new CFileItem(m_localAddon->Path(),true)));
     list[0]->Select(true);
     CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""),window);
   }
@@ -139,7 +138,7 @@ void CGUIDialogAddonInfo::OnDisable()
 
 void CGUIDialogAddonInfo::OnSettings()
 {
-  CGUIDialogAddonSettings::ShowAndGetInput(m_addon);
+  CGUIDialogAddonSettings::ShowAndGetInput(m_localAddon);
 }
 
 bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
@@ -153,6 +152,7 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
   {
     CAddonMgr::Get()->GetAddon(item->GetProperty("Addon.ID"),dialog->m_addon);
     dialog->m_item->SetProperty("Addon.Installed","true");
+    dialog->m_localAddon = dialog->m_addon;
   }
   else
   {
@@ -161,6 +161,7 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
       dialog->m_item->SetProperty("Addon.Installed","true");
     else
       dialog->m_item->SetProperty("Addon.Installed","false");
+    dialog->m_localAddon = dialog->m_addon;
 
     AddonPtr addon;
     CAddonDatabase database;
