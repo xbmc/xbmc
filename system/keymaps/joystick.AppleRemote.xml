@@ -253,4 +253,9 @@
       <button id="6">Close</button>
     </joystick>
   </PictureInfo>
+  <AddonBrowser>
+    <joystick name="AppleRemote">
+      <button id="6">ParentDir</button>
+    </joystick>
+  </AddonBrowser>
 </keymap>
