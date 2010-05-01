@@ -266,6 +266,110 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
     return false;
   }
 
+  m_format.SampleWidth  = avctx->width;
+  m_format.SampleHeight = avctx->height;
+  m_format.SampleFormat.SampleFormat           = DXVA2_SampleProgressiveFrame;
+  m_format.SampleFormat.VideoLighting          = DXVA2_VideoLighting_dim;
+
+  if     (avctx->color_range == AVCOL_RANGE_JPEG)
+    m_format.SampleFormat.NominalRange = DXVA2_NominalRange_0_255;
+  else if(avctx->color_range == AVCOL_RANGE_MPEG)
+    m_format.SampleFormat.NominalRange = DXVA2_NominalRange_16_235;
+  else
+    m_format.SampleFormat.NominalRange = DXVA2_NominalRange_Unknown;
+
+  switch(avctx->chroma_sample_location)
+  {
+    case AVCHROMA_LOC_LEFT:
+      m_format.SampleFormat.VideoChromaSubsampling = DXVA2_VideoChromaSubsampling_Horizontally_Cosited 
+                                                   | DXVA2_VideoChromaSubsampling_Vertically_AlignedChromaPlanes;
+      break;
+    case AVCHROMA_LOC_CENTER:
+      m_format.SampleFormat.VideoChromaSubsampling = DXVA2_VideoChromaSubsampling_Vertically_AlignedChromaPlanes;
+      break;
+    case AVCHROMA_LOC_TOPLEFT:
+      m_format.SampleFormat.VideoChromaSubsampling = DXVA2_VideoChromaSubsampling_Horizontally_Cosited 
+                                                   | DXVA2_VideoChromaSubsampling_Vertically_Cosited;
+      break;
+    default:
+      m_format.SampleFormat.VideoChromaSubsampling = DXVA2_VideoChromaSubsampling_Unknown;      
+  }
+
+  switch(avctx->colorspace)
+  {
+    case AVCOL_SPC_BT709:
+      m_format.SampleFormat.VideoTransferMatrix = DXVA2_VideoTransferMatrix_BT709;
+      break;
+    case AVCOL_SPC_BT470BG:
+    case AVCOL_SPC_SMPTE170M:
+      m_format.SampleFormat.VideoTransferMatrix = DXVA2_VideoTransferMatrix_BT601;
+      break;
+    case AVCOL_SPC_SMPTE240M:
+      m_format.SampleFormat.VideoTransferMatrix = DXVA2_VideoTransferMatrix_SMPTE240M;
+      break;
+    case AVCOL_SPC_FCC:
+    case AVCOL_SPC_UNSPECIFIED:
+    case AVCOL_SPC_RGB:
+    default:
+      m_format.SampleFormat.VideoTransferMatrix = DXVA2_VideoTransferMatrix_Unknown;
+  }
+
+  switch(avctx->color_primaries)
+  {
+    case AVCOL_PRI_BT709:
+      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_BT709;
+      break;
+    case AVCOL_PRI_BT470M:
+      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_BT470_2_SysM;
+      break;
+    case AVCOL_PRI_BT470BG:
+      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_BT470_2_SysBG;
+      break;
+    case AVCOL_PRI_SMPTE170M:
+      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_SMPTE170M;
+      break;
+    case AVCOL_PRI_SMPTE240M:
+      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_SMPTE240M;
+      break;
+    case AVCOL_PRI_FILM:
+    case AVCOL_PRI_UNSPECIFIED:
+    default:
+      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_Unknown;
+  }
+
+  switch(avctx->color_trc)
+  {
+    case AVCOL_TRC_BT709:
+      m_format.SampleFormat.VideoTransferFunction = DXVA2_VideoTransFunc_709;
+      break;
+    case AVCOL_TRC_GAMMA22:
+      m_format.SampleFormat.VideoTransferFunction = DXVA2_VideoTransFunc_22;
+      break;
+    case AVCOL_TRC_GAMMA28:
+      m_format.SampleFormat.VideoTransferFunction = DXVA2_VideoTransFunc_28;
+      break;
+    default:
+      m_format.SampleFormat.VideoTransferFunction = DXVA2_VideoTransFunc_Unknown;
+  }
+
+  if (avctx->time_base.den > 0 && avctx->time_base.num > 0)
+  {
+    m_format.InputSampleFreq.Numerator   = avctx->time_base.num;
+    m_format.InputSampleFreq.Denominator = avctx->time_base.den;
+  } 
+  m_format.OutputFrameFreq = m_format.InputSampleFreq;
+  m_format.UABProtectionLevel = FALSE;
+  m_format.Reserved = 0;
+
+  m_refs = avctx->refs;
+  if(m_refs == 0)
+  {
+    if(avctx->codec_id == CODEC_ID_H264)
+      m_refs = 16;
+    else
+      m_refs = 2;
+  }
+
   if(!OpenDecoder(avctx))
     return false;
 
@@ -426,109 +530,6 @@ bool CDecoder::OpenTarget(const GUID &guid)
 
 bool CDecoder::OpenDecoder(AVCodecContext *avctx)
 {
-  m_format.SampleWidth  = avctx->width;
-  m_format.SampleHeight = avctx->height;
-  m_format.SampleFormat.SampleFormat           = DXVA2_SampleProgressiveFrame;
-  m_format.SampleFormat.VideoLighting          = DXVA2_VideoLighting_dim;
-
-  if     (avctx->color_range == AVCOL_RANGE_JPEG)
-    m_format.SampleFormat.NominalRange = DXVA2_NominalRange_0_255;
-  else if(avctx->color_range == AVCOL_RANGE_MPEG)
-    m_format.SampleFormat.NominalRange = DXVA2_NominalRange_16_235;
-  else
-    m_format.SampleFormat.NominalRange = DXVA2_NominalRange_Unknown;
-
-  switch(avctx->chroma_sample_location)
-  {
-    case AVCHROMA_LOC_LEFT:
-      m_format.SampleFormat.VideoChromaSubsampling = DXVA2_VideoChromaSubsampling_Horizontally_Cosited 
-                                                   | DXVA2_VideoChromaSubsampling_Vertically_AlignedChromaPlanes;
-      break;
-    case AVCHROMA_LOC_CENTER:
-      m_format.SampleFormat.VideoChromaSubsampling = DXVA2_VideoChromaSubsampling_Vertically_AlignedChromaPlanes;
-      break;
-    case AVCHROMA_LOC_TOPLEFT:
-      m_format.SampleFormat.VideoChromaSubsampling = DXVA2_VideoChromaSubsampling_Horizontally_Cosited 
-                                                   | DXVA2_VideoChromaSubsampling_Vertically_Cosited;
-      break;
-    default:
-      m_format.SampleFormat.VideoChromaSubsampling = DXVA2_VideoChromaSubsampling_Unknown;      
-  }
-
-  switch(avctx->colorspace)
-  {
-    case AVCOL_SPC_BT709:
-      m_format.SampleFormat.VideoTransferMatrix = DXVA2_VideoTransferMatrix_BT709;
-      break;
-    case AVCOL_SPC_BT470BG:
-    case AVCOL_SPC_SMPTE170M:
-      m_format.SampleFormat.VideoTransferMatrix = DXVA2_VideoTransferMatrix_BT601;
-      break;
-    case AVCOL_SPC_SMPTE240M:
-      m_format.SampleFormat.VideoTransferMatrix = DXVA2_VideoTransferMatrix_SMPTE240M;
-      break;
-    case AVCOL_SPC_FCC:
-    case AVCOL_SPC_UNSPECIFIED:
-    case AVCOL_SPC_RGB:
-    default:
-      m_format.SampleFormat.VideoTransferMatrix = DXVA2_VideoTransferMatrix_Unknown;
-  }
-
-  switch(avctx->color_primaries)
-  {
-    case AVCOL_PRI_BT709:
-      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_BT709;
-      break;
-    case AVCOL_PRI_BT470M:
-      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_BT470_2_SysM;
-      break;
-    case AVCOL_PRI_BT470BG:
-      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_BT470_2_SysBG;
-      break;
-    case AVCOL_PRI_SMPTE170M:
-      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_SMPTE170M;
-      break;
-    case AVCOL_PRI_SMPTE240M:
-      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_SMPTE240M;
-      break;
-    case AVCOL_PRI_FILM:
-    case AVCOL_PRI_UNSPECIFIED:
-    default:
-      m_format.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_Unknown;
-  }
-
-  switch(avctx->color_trc)
-  {
-    case AVCOL_TRC_BT709:
-      m_format.SampleFormat.VideoTransferFunction = DXVA2_VideoTransFunc_709;
-      break;
-    case AVCOL_TRC_GAMMA22:
-      m_format.SampleFormat.VideoTransferFunction = DXVA2_VideoTransFunc_22;
-      break;
-    case AVCOL_TRC_GAMMA28:
-      m_format.SampleFormat.VideoTransferFunction = DXVA2_VideoTransFunc_28;
-      break;
-    default:
-      m_format.SampleFormat.VideoTransferFunction = DXVA2_VideoTransFunc_Unknown;
-  }
-
-  if (avctx->time_base.den > 0 && avctx->time_base.num > 0)
-  {
-    m_format.InputSampleFreq.Numerator   = avctx->time_base.num;
-    m_format.InputSampleFreq.Denominator = avctx->time_base.den;
-  } 
-  m_format.OutputFrameFreq = m_format.InputSampleFreq;
-  m_format.UABProtectionLevel = FALSE;
-  m_format.Reserved = 0;
-
-  m_refs = avctx->refs;
-  if(m_refs == 0)
-  {
-    if(avctx->codec_id == CODEC_ID_H264)
-      m_refs = 16;
-    else
-      m_refs = 2;
-  }
   m_context->surface_count = m_refs + 1 + 1; // refs + 1 decode + 1 libavcodec safety
   CLog::Log(LOGDEBUG, "DXVA - allocating %d surfaces for given %d references", m_context->surface_count, avctx->refs);
 
