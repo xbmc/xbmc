@@ -130,7 +130,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   //when support for a hardware decoder is not compiled in
   //only print it if it's actually available on the platform
   CStdString hwSupport;
-#if defined(HAVE_LIBVDADECODER) && defined(__APPLE__)
+#if defined(HAVE_LIBVDADECODER)
   hwSupport += "VDADecoder:yes ";
 #elif defined(__APPLE__)
   hwSupport += "VDADecoder:no ";
@@ -163,7 +163,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   {
     if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
   }
-#if defined(__APPLE__)
+#if defined(HAVE_LIBVDADECODER)
   if (g_guiSettings.GetBool("videoplayer.usevda") && !hint.software && hint.codec == CODEC_ID_H264)
   {
     CLog::Log(LOGINFO, "Trying Apple VDA Decoder...");
