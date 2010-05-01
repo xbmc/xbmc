@@ -31,8 +31,22 @@
 #include "D3DResource.h"
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
+#include "utils/SystemInfo.h"
 
 using namespace std;
+
+// Dynamic loading of Direct3DCreate9Ex to keep compatibility with 2000/XP.
+typedef HRESULT (WINAPI *LPDIRECT3DCREATE9EX)( UINT SDKVersion, IDirect3D9Ex **ppD3D);
+static LPDIRECT3DCREATE9EX g_Direct3DCreate9Ex;
+static HMODULE             g_D3D9ExHandle;
+
+static bool LoadD3D9Ex()
+{
+  g_Direct3DCreate9Ex = (LPDIRECT3DCREATE9EX)GetProcAddress( GetModuleHandle("d3d9.dll"), "Direct3DCreate9Ex" );
+  if(g_Direct3DCreate9Ex == NULL)
+    return false;
+  return true;
+}
 
 CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
 {
@@ -53,6 +67,9 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   m_adapter = D3DADAPTER_DEFAULT;
   m_screenHeight = 0;
   m_systemFreq = CurrentHostFrequency();
+  m_useD3D9Ex         = false;
+  m_defaultD3DUsage   = 0;
+  m_defaultD3DPool    = D3DPOOL_MANAGED;
 
   ZeroMemory(&m_D3DPP, sizeof(D3DPRESENT_PARAMETERS));
 }
@@ -68,12 +85,23 @@ bool CRenderSystemDX::InitRenderSystem()
   m_renderCaps = 0;
   D3DADAPTER_IDENTIFIER9 AIdentifier;
 
+  m_useD3D9Ex = (g_sysinfo.IsVistaOrHigher() && LoadD3D9Ex());
   m_pD3D = NULL;
 
-  m_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
-  if(m_pD3D == NULL)
-    return false;
-
+  if (m_useD3D9Ex)
+  {
+    HRESULT hr;
+    if (FAILED(hr=g_Direct3DCreate9Ex(D3D_SDK_VERSION, (IDirect3D9Ex**) &m_pD3D)))
+      return false;
+    CLog::Log(LOGDEBUG, "%s - using D3D9Ex", __FUNCTION__);
+  }
+  else
+  {
+    m_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
+    if(m_pD3D == NULL)
+      return false;
+  }
+  
   UpdateMonitor();
 
   if(CreateDevice()==false)
@@ -109,6 +137,18 @@ bool CRenderSystemDX::InitRenderSystem()
     m_renderCaps |= RENDER_CAPS_NPOT;
   }
   m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
+
+  if (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES)
+  {
+    m_defaultD3DUsage = D3DUSAGE_DYNAMIC;
+    m_defaultD3DPool  = D3DPOOL_DEFAULT;
+    CLog::Log(LOGDEBUG, "%s - using D3DCAPS2_DYNAMICTEXTURES", __FUNCTION__);
+  }
+  else
+  {
+    m_defaultD3DUsage = 0;
+    m_defaultD3DPool  = D3DPOOL_MANAGED;
+  }
 
   return true;
 }
@@ -173,6 +213,7 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.MultiSampleType = D3DMULTISAMPLE_NONE;
   m_D3DPP.MultiSampleQuality = 0;
 
+
   // Try to create a 32-bit depth, 8-bit stencil
   if( FAILED( m_pD3D->CheckDeviceFormat( m_adapter,
     D3DDEVTYPE_HAL,  m_D3DPP.BackBufferFormat,  D3DUSAGE_DEPTHSTENCIL,
@@ -198,6 +239,17 @@ void CRenderSystemDX::BuildPresentParameters()
     }
     else
       m_D3DPP.AutoDepthStencilFormat = D3DFMT_D24X8;
+  }
+
+  if (m_useD3D9Ex)
+  {
+    ZeroMemory( &m_D3DDMEX, sizeof(D3DDISPLAYMODEEX) );
+    m_D3DDMEX.Size             = sizeof(D3DDISPLAYMODEEX);
+    m_D3DDMEX.Width            = m_D3DPP.BackBufferWidth;
+    m_D3DDMEX.Height           = m_D3DPP.BackBufferHeight;
+    m_D3DDMEX.RefreshRate      = m_D3DPP.FullScreen_RefreshRateInHz;
+    m_D3DDMEX.Format           = m_D3DPP.BackBufferFormat;
+    m_D3DDMEX.ScanLineOrdering = D3DSCANLINEORDERING_PROGRESSIVE;
   }
 }
 
@@ -245,12 +297,16 @@ void CRenderSystemDX::OnDeviceLost()
 void CRenderSystemDX::OnDeviceReset()
 {
   CSingleLock lock(m_resourceSection);
+
   if (m_needNewDevice)
     CreateDevice();
   else
   {
     // just need a reset
-    m_nDeviceStatus = m_pD3DDevice->Reset(&m_D3DPP);
+    if (m_useD3D9Ex)
+      m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
+    else
+      m_nDeviceStatus = m_pD3DDevice->Reset(&m_D3DPP);
   }
 
   if (m_nDeviceStatus == S_OK)
@@ -290,25 +346,55 @@ bool CRenderSystemDX::CreateDevice()
 
   BuildPresentParameters();
 
-  hr = m_pD3D->CreateDevice(m_adapter, devType, m_hFocusWnd,
-    D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
-  if (FAILED(hr))
+  if (m_useD3D9Ex)
   {
-    // Try a second time, may fail the first time due to back buffer count,
-    // which will be corrected down to 1 by the runtime
-    hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
-      D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
-    if( FAILED( hr ) )
+    hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx(m_adapter, devType, m_hFocusWnd,
+      D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
+
+    if (FAILED(hr))
     {
+      // Try a second time, may fail the first time due to back buffer count,
+      // which will be corrected down to 1 by the runtime
+      hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, devType, m_hFocusWnd,
+        D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
+      if( FAILED( hr ) )
+      {
+        hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, devType, m_hFocusWnd,
+          D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP,  m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
+        if( FAILED( hr ) )
+        {
+          hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, devType, m_hFocusWnd,
+            D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP,  m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
+        }
+        if(FAILED( hr ) )
+          return false;
+      }
+    }
+  }
+  else
+  {
+
+    hr = m_pD3D->CreateDevice(m_adapter, devType, m_hFocusWnd,
+      D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
+
+    if (FAILED(hr))
+    {
+      // Try a second time, may fail the first time due to back buffer count,
+      // which will be corrected down to 1 by the runtime
       hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
-        D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
+        D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
       if( FAILED( hr ) )
       {
         hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
-          D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
+          D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
+        if( FAILED( hr ) )
+        {
+          hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
+            D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
+        }
+        if(FAILED( hr ) )
+          return false;
       }
-      if(FAILED( hr ) )
-        return false;
     }
   }
 
