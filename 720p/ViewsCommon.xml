@@ -224,7 +224,6 @@
 						<animation effect="fade" start="30" end="30" time="0" condition="true">Conditional</animation>
 					</control>
 					<control type="label">
-						<visible>IsEmpty(ListItem.Overlay)</visible>
 						<posx>550</posx>
 						<posy>2</posy>
 						<width>104</width>
@@ -469,7 +468,6 @@
 						<include>MediaListItemFade</include>
 					</control>
 					<control type="label">
-						<visible>IsEmpty(ListItem.Overlay)</visible>
 						<posx>550</posx>
 						<posy>2</posy>
 						<width>95</width>
@@ -591,11 +589,20 @@
 					</control>
 					<control type="label">
 						<description>Year</description>
-						<visible>Container.Content(movies)</visible>
+						<visible>Container.Content(movies) | Container.Content(albums)</visible>
 						<posy>28</posy>
 						<width>InfoListTitleWidth</width>
 						<font>SmallTitleCapsFont</font>
 						<label>$INFO[ListItem.Year]</label>
+						<textcolor>Focused</textcolor>
+					</control>
+					<control type="label">
+						<description>Genre</description>
+						<visible>Container.Content(artists)</visible>
+						<posy>28</posy>
+						<width>InfoListTitleWidth</width>
+						<font>SmallTitleCapsFont</font>
+						<label>$INFO[ListItem.Genre]</label>
 						<textcolor>Focused</textcolor>
 					</control>
 					<control type="image">
