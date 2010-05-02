@@ -31,6 +31,7 @@
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodecVDA.h"
+#include "Codecs/DllAvFormat.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
@@ -178,6 +179,172 @@ static double GetFrameDisplayTimeFromDictionary(CFDictionaryRef inFrameInfoDicti
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
+// TODO: refactor this so as not to need these ffmpeg routines. 
+// These are not exposed in ffmpeg's API so we dupe them here.
+// AVC helper functions for muxers, 
+//  * Copyright (c) 2006 Baptiste Coudurier <baptiste.coudurier@smartjog.com>
+// This is part of FFmpeg
+//  * License as published by the Free Software Foundation; either
+//  * version 2.1 of the License, or (at your option) any later version.
+#define VDA_RB24(x)                          \
+  ((((const uint8_t*)(x))[0] << 16) |        \
+   (((const uint8_t*)(x))[1] <<  8) |        \
+   ((const uint8_t*)(x))[2])
+
+#define VDA_RB32(x)                          \
+  ((((const uint8_t*)(x))[0] << 24) |        \
+   (((const uint8_t*)(x))[1] << 16) |        \
+   (((const uint8_t*)(x))[2] <<  8) |        \
+   ((const uint8_t*)(x))[3])
+
+static const uint8_t *avc_find_startcode_internal(const uint8_t *p, const uint8_t *end)
+{
+  const uint8_t *a = p + 4 - ((intptr_t)p & 3);
+
+  for (end -= 3; p < a && p < end; p++)
+  {
+    if (p[0] == 0 && p[1] == 0 && p[2] == 1)
+      return p;
+  }
+
+  for (end -= 3; p < end; p += 4)
+  {
+    uint32_t x = *(const uint32_t*)p;
+    if ((x - 0x01010101) & (~x) & 0x80808080) // generic
+    {
+      if (p[1] == 0)
+      {
+        if (p[0] == 0 && p[2] == 1)
+          return p;
+        if (p[2] == 0 && p[3] == 1)
+          return p+1;
+      }
+      if (p[3] == 0)
+      {
+        if (p[2] == 0 && p[4] == 1)
+          return p+2;
+        if (p[4] == 0 && p[5] == 1)
+          return p+3;
+      }
+    }
+  }
+
+  for (end += 3; p < end; p++)
+  {
+    if (p[0] == 0 && p[1] == 0 && p[2] == 1)
+      return p;
+  }
+
+  return end + 3;
+}
+
+const uint8_t *avc_find_startcode(const uint8_t *p, const uint8_t *end)
+{
+  const uint8_t *out= avc_find_startcode_internal(p, end);
+  if (p<out && out<end && !out[-1])
+    out--;
+  return out;
+}
+
+const int avc_parse_nal_units(DllAvFormat *av_format_ctx,
+  ByteIOContext *pb, const uint8_t *buf_in, int size)
+{
+  const uint8_t *p = buf_in;
+  const uint8_t *end = p + size;
+  const uint8_t *nal_start, *nal_end;
+
+  size = 0;
+  nal_start = avc_find_startcode(p, end);
+  while (nal_start < end)
+  {
+    while (!*(nal_start++));
+    nal_end = avc_find_startcode(nal_start, end);
+    av_format_ctx->put_be32(pb, nal_end - nal_start);
+    av_format_ctx->put_buffer(pb, nal_start, nal_end - nal_start);
+    size += 4 + nal_end - nal_start;
+    nal_start = nal_end;
+  }
+  return size;
+}
+
+const int avc_parse_nal_units_buf(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx,
+  const uint8_t *buf_in, uint8_t **buf, int *size)
+{
+  ByteIOContext *pb;
+  int ret = av_format_ctx->url_open_dyn_buf(&pb);
+  if (ret < 0)
+    return ret;
+
+  avc_parse_nal_units(av_format_ctx, pb, buf_in, *size);
+
+  av_util_ctx->av_freep(buf);
+  *size = av_format_ctx->url_close_dyn_buf(pb, buf);
+  return 0;
+}
+
+const int isom_write_avcc(DllAvUtil *av_util_ctx, DllAvFormat *av_format_ctx, 
+  ByteIOContext *pb, const uint8_t *data, int len)
+{
+  // extradata from bytestream h264, convert to avcC atom data for bitstream
+  if (len > 6)
+  {
+    /* check for h264 start code */
+    if (VDA_RB32(data) == 0x00000001 || VDA_RB24(data) == 0x000001)
+    {
+      uint8_t *buf=NULL, *end, *start;
+      uint32_t sps_size=0, pps_size=0;
+      uint8_t *sps=0, *pps=0;
+
+      int ret = avc_parse_nal_units_buf(av_util_ctx, av_format_ctx, data, &buf, &len);
+      if (ret < 0)
+        return ret;
+      start = buf;
+      end = buf + len;
+
+      /* look for sps and pps */
+      while (buf < end)
+      {
+        unsigned int size;
+        uint8_t nal_type;
+        size = VDA_RB32(buf);
+        nal_type = buf[4] & 0x1f;
+        if (nal_type == 7) /* SPS */
+        {
+          sps = buf + 4;
+          sps_size = size;
+        }
+        else if (nal_type == 8) /* PPS */
+        {
+          pps = buf + 4;
+          pps_size = size;
+        }
+        buf += size + 4;
+      }
+      assert(sps);
+      assert(pps);
+
+      av_format_ctx->put_byte(pb, 1); /* version */
+      av_format_ctx->put_byte(pb, sps[1]); /* profile */
+      av_format_ctx->put_byte(pb, sps[2]); /* profile compat */
+      av_format_ctx->put_byte(pb, sps[3]); /* level */
+      av_format_ctx->put_byte(pb, 0xff); /* 6 bits reserved (111111) + 2 bits nal size length - 1 (11) */
+      av_format_ctx->put_byte(pb, 0xe1); /* 3 bits reserved (111) + 5 bits number of sps (00001) */
+
+      av_format_ctx->put_be16(pb, sps_size);
+      av_format_ctx->put_buffer(pb, sps, sps_size);
+      av_format_ctx->put_byte(pb, 1); /* number of pps */
+      av_format_ctx->put_be16(pb, pps_size);
+      av_format_ctx->put_buffer(pb, pps, pps_size);
+      av_util_ctx->av_free(start);
+    }
+    else
+    {
+      av_format_ctx->put_buffer(pb, data, len);
+    }
+  }
+  return 0;
+}
+////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
 {
@@ -189,6 +356,7 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
   m_display_queue = NULL;
   pthread_mutex_init(&m_queue_mutex, NULL);
 
+  m_convert_bytestream = false;
   m_swcontext = NULL;
   memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
 }
@@ -206,7 +374,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     int32_t width;
     int32_t height;
     CFDataRef avcCData;
-    uint8_t* extradata; // extra data for codec to use
+    uint8_t *extradata; // extra data for codec to use
     unsigned int extrasize; // size of extra data
     
     //
@@ -230,39 +398,26 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
         {
           if (extradata[0] == 0 && extradata[1] == 0 && extradata[2] == 0 && extradata[3] == 1)
           {
-            // looky, looky. A NAL start code. h.264 demux frames from ts/m2ts
-            // containers is already in byte-stream format. Three choices;
-            // 1) set extrasize to zero.
-            // 2 pass a null avcC atom data.
-            // 3) byte-to-bit stream convert the demux data and create a valid avcC atom data.
-            // #3 is going to be icky...
-            int choice = 2;
-            switch (choice)
-            {
-              case 1:
-                extrasize = 0;
-                extradata = NULL;
-              break;
-              case 2:
-                extrasize = 7;
-                extradata = new uint8_t[extrasize];
-                // make a null avcC header
-                extradata[0] = 0x01;          // version
-                extradata[1] = hints.profile; // profile
-                extradata[2] = hints.profile & 0xE0; // compatible profiles
-                extradata[3] = hints.level;  // level
-                extradata[4] = 0xff;
-                extradata[5] = 0xe1;
-                extradata[6] = 0x00;
-              break;
-              case 3:
-                // TODO
-              break;
-            }
+            // video content is from x264 or from bytestream h264 (AnnexB format)
+            // NAL reformating to bitstream format needed
+            if (!m_dllAvUtil.Load() || !m_dllAvFormat.Load())
+              return false;
+
+            ByteIOContext *pb;
+            if (m_dllAvFormat.url_open_dyn_buf(&pb) < 0)
+              return false;
+
+            m_convert_bytestream = true;
+            // create a valid avcC atom data from ffmpeg's extradata
+            isom_write_avcc(&m_dllAvUtil, &m_dllAvFormat, pb, extradata, extrasize);
+            // unhook from ffmpeg's extradata
+            extradata = NULL;
+            // extract the avcC atom data into extradata then write it into avcCData for VDADecoder
+            extrasize = m_dllAvFormat.url_close_dyn_buf(pb, &extradata);
             // CFDataCreate makes a copy of extradata contents
             avcCData = CFDataCreate(kCFAllocatorDefault, (const uint8_t*)extradata, extrasize);
-            if (extradata)
-              delete extradata;
+            // done with the converted extradata, we MUST free using av_free
+            m_dllAvUtil.av_free(extradata);
           }
           else
           {
@@ -284,7 +439,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       break;
     }
 
-    // input stream is qualified, now we can load the dlls.
+    // input stream is qualified, now we can load dlls.
     if (!m_dll->Load() || !m_dllSwScale.Load())
       return false;
 
@@ -306,7 +461,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     CFRelease(decoderConfiguration);
     if (status != kVDADecoderNoErr) 
     {
-      CLog::Log(LOGNOTICE, "%s - failed to open VDADecoder Codec", __FUNCTION__);
+      CLog::Log(LOGNOTICE, "%s - VDADecoder Codec failed to open,status(%d)", __FUNCTION__, (int)status);
       return false;
     }
 
@@ -369,6 +524,11 @@ void CDVDVideoCodecVDA::Dispose()
     _aligned_free(m_videobuffer.data[2]);
     m_videobuffer.iFlags = 0;
   }
+  if (m_convert_bytestream)
+  {
+    m_dllAvUtil.Unload();
+    m_dllAvFormat.Unload();
+  }
   if (m_swcontext)
   {
     m_dllSwScale.sws_freeContext(m_swcontext);
@@ -387,9 +547,27 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
 {
   OSStatus status;
   uint32_t avc_flags = 0;
-  //
+  CFDataRef avc_demux;
   CFDictionaryRef avc_pts = MakeDictionaryWithDisplayTime(pts);
-  CFDataRef avc_demux = CFDataCreate(kCFAllocatorDefault, pData, iSize);
+  //
+  if (m_convert_bytestream)
+  {
+    // convert demuxer packet from bytestream (AnnexB) to bitstream
+    ByteIOContext *pb;
+    int demuxer_bytes;
+    uint8_t *demuxer_content;
+
+    if(m_dllAvFormat.url_open_dyn_buf(&pb) < 0)
+      return VC_ERROR;
+    demuxer_bytes = avc_parse_nal_units(&m_dllAvFormat, pb, pData, iSize);
+    demuxer_bytes = m_dllAvFormat.url_close_dyn_buf(pb, &demuxer_content);
+    avc_demux = CFDataCreate(kCFAllocatorDefault, demuxer_content, demuxer_bytes);
+    m_dllAvUtil.av_free(demuxer_content);
+  }
+  else
+  {
+    avc_demux = CFDataCreate(kCFAllocatorDefault, pData, iSize);
+  }
 	
   pthread_mutex_lock(&m_queue_mutex);
   m_dts_queue.push(dts);
@@ -397,14 +575,13 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
 
   if (m_DropPictures)
     avc_flags = kVDADecoderDecodeFlags_DontEmitFrame;
+
   status = m_dll->VDADecoderDecode((VDADecoder)m_vda_decoder, avc_flags, avc_demux, avc_pts);
-	
   CFRelease(avc_pts);
   CFRelease(avc_demux);
-
   if (status != kVDADecoderNoErr) 
   {
-    CLog::Log(LOGNOTICE, "%s - failed with status(%d)", __FUNCTION__, (int)status);
+    CLog::Log(LOGNOTICE, "%s - VDADecoderDecode failed, status(%d)", __FUNCTION__, (int)status);
     return VC_ERROR;
   }
 

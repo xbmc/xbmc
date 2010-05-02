@@ -25,6 +25,7 @@
 
 #include "DVDVideoCodec.h"
 #include "Codecs/DllSwScale.h"
+#include "Codecs/DllAvFormat.h"
 #include <CoreVideo/CoreVideo.h>
 
 // tracks a frame in and output queue in display order
@@ -68,6 +69,10 @@ protected:
   frame_queue       *m_display_queue; // display-order queue - next display frame is always at the queue head
   int32_t           m_queue_depth;    // we will try to keep the queue depth around 16+1 frames
   std::queue<double> m_dts_queue;
+  
+  bool              m_convert_bytestream;
+  DllAvUtil         m_dllAvUtil;
+  DllAvFormat       m_dllAvFormat;
 
   DllSwScale        m_dllSwScale;
   struct SwsContext *m_swcontext;
