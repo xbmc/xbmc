@@ -1474,6 +1474,16 @@ bool CCrystalHD::DevicePresent(void)
   return m_Device != NULL;
 }
 
+bool CCrystalHD::Wake(void)
+{
+  return true;
+}
+
+bool CCrystalHD::Sleep(void)
+{
+  return true;
+}
+
 void CCrystalHD::RemoveInstance(void)
 {
   if (m_pInstance)
