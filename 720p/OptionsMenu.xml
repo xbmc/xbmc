@@ -433,7 +433,7 @@
 <!-- Possible View Options -->
         <control type="button" id="911">
           <description>List view button</description>
-          <visible>!Control.IsVisible(50)</visible>
+          <visible>!Control.IsVisible(50) + !Container.Content(movies)</visible>
           <label>$LOCALIZE[535]</label>
           <onclick>Container.SetViewMode(50)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -460,7 +460,7 @@
 
         <control type="button" id="916">
           <description>Showcase view button</description>
-          <visible>!Control.IsVisible(58) + [Container.Content(movies)]</visible>
+          <visible>!Control.IsVisible(58) + !Container.Content(movies)</visible>
           <label>$LOCALIZE[31702]</label>
           <onclick>Container.SetViewMode(58)</onclick>
           <onclick>SetFocus(50)</onclick>
