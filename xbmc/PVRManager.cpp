@@ -680,7 +680,7 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
           {
             kBTotal /= 1024; // Convert to MBytes
             kBUsed /= 1024;  // Convert to MBytes
-            m_backendDiskspace.Format("%s %0.1f GByte - %s: %0.1f GByte", g_localizeStrings.Get(20161), (float) kBTotal / 1024, g_localizeStrings.Get(20162), (float) kBUsed / 1024);
+            m_backendDiskspace.Format("%s %.1f GByte - %s: %.1f GByte", g_localizeStrings.Get(20161), (float) kBTotal / 1024, g_localizeStrings.Get(20162), (float) kBUsed / 1024);
           }
           else
           {

@@ -139,6 +139,10 @@ bool cVNSIData::GetDriveSpace(long long *total, long long *used)
   *total = totalspace;
   *used  = (totalspace - freespace);
 
+  /* Convert from kBytes to Bytes */
+  *total *= 1024;
+  *used  *= 1024;
+
   delete vresp;
   return true;
 }
