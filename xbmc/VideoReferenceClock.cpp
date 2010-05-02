@@ -847,7 +847,8 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
   if (CheckMissed) //set to true from the vblank run function, set to false from Wait and GetTime
   {
     if (NrVBlanks < m_MissedVblanks) //if this is true the vblank detection in the run function is wrong
-      CLog::Log(LOGDEBUG, "CVideoReferenceClock: detected %i vblanks, missed %i", NrVBlanks, m_MissedVblanks);
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: detected %i vblanks, missed %i, refreshrate might have changed",
+                NrVBlanks, m_MissedVblanks);
 
     NrVBlanks -= m_MissedVblanks; //subtract the vblanks we missed
     m_MissedVblanks = 0;
@@ -1059,14 +1060,8 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
 
       //if the vblank clock was late with its update, we update the clock ourselves
       if (Late && CurrTime == m_CurrTime)
-      {
-#ifndef HAVE_LIBVDPAU
-        // vdpau spams the log with missed vblanks so only log if vdpau is not compiled in.
-        // actually checking for vdpau enabled is too messy to be used in this routine.
-        CLog::Log(LOGDEBUG, "CVideoReferenceClock: vblank clock was late: SleepTime %i", SleepTime);
-#endif
         UpdateClock(1, false); //update the clock by 1 vblank
-      }
+
     }
     return m_CurrTime;
   }
