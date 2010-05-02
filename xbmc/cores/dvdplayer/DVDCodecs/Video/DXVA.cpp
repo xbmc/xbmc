@@ -34,7 +34,7 @@
 #include "boost/shared_ptr.hpp"
 #include "AutoPtrHandle.h"
 
-#define ALLOW_ADDING_SURFACES 1
+#define ALLOW_ADDING_SURFACES 0
 
 using namespace DXVA;
 using namespace boost;
