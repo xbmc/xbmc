@@ -480,87 +480,32 @@ else
 fi
 
 # check for library basenames
+AC_DEFUN([XB_FIND_SONAME],
+[
+  AC_MSG_CHECKING([for lib$2 soname])
+  $1_SONAME=$( gcc -print-file-name=lib$2.so | \
+                while read output; do objdump -p $output | \
+                  grep "SONAME" | \
+                  sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
+  if [[ -z "$$1_SONAME" ]]; then
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([Unable to determine soname of lib$2 library])
+  else
+    AC_MSG_RESULT([$$1_SONAME])
+    AC_SUBST($1_SONAME)
+  fi
+])
+
 if test "$host_vendor" != "apple"; then
-  # libcurl
-  LIBCURL_BASENAME=$(gcc $CFLAGS -print-file-name=libcurl.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [ -z "$LIBCURL_BASENAME" ]; then
-    echo "Unable to determine basename of libcurl library"
-  fi
-
-  # libFLAC
-  LIBFLAC_BASENAME=$(gcc $CFLAGS -print-file-name=libFLAC.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBFLAC_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libFLAC library])
-  fi
-
-  # libvorbisfile
-  LIBVORBISFILE_BASENAME=$(gcc $CFLAGS -print-file-name=libvorbisfile.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBVORBISFILE_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libvorbisfile library])
-  fi
-
-  # libmodplug
-  LIBMODPLUG_BASENAME=$(gcc $CFLAGS -print-file-name=libmodplug.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBMODPLUG_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libmodplug library])
-  fi
-
-  # libfaad
-  LIBFAAD_BASENAME=$(gcc $CFLAGS -print-file-name=libfaad.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBFAAD_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libfaad library])
-  fi
-
-  # libmad
-  LIBMAD_BASENAME=$(gcc $CFLAGS -print-file-name=libmad.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBMAD_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libmad library])
-  fi
-
-  # libogg
-  LIBOGG_BASENAME=$(gcc $CFLAGS -print-file-name=libogg.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBOGG_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libogg library])
-  fi
-
-  # libvorbisenc
-  LIBVORBISENC_BASENAME=$(gcc $CFLAGS -print-file-name=libvorbisenc.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBVORBISENC_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libvorbisenc library])
-  fi
-
-  # libvorbis
-  LIBVORBIS_BASENAME=$(gcc $CFLAGS -print-file-name=libvorbis.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBVORBIS_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libvorbis library])
-  fi
+  XB_FIND_SONAME([CURL],        [curl])
+  XB_FIND_SONAME([FLAC],        [FLAC])
+  XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
+  XB_FIND_SONAME([MODPLUG],     [modplug])
+  XB_FIND_SONAME([FAAD],        [faad])
+  XB_FIND_SONAME([MAD],         [mad])
+  XB_FIND_SONAME([OGG],         [ogg])
+  XB_FIND_SONAME([VORBISENC],   [vorbisenc])
+  XB_FIND_SONAME([VORBIS],      [vorbis])
 fi
 
 # PulseAudio
@@ -1264,6 +1209,7 @@ AC_SUBST(LIBVORBIS_BASENAME)
 # running the script, anything else if not.
 AC_DEFUN([XB_CONFIG_MODULE],[
 AC_CONFIG_COMMANDS_POST([
+if false; then
 if [[ $3 != "1" ]]; then
     if [[ -d $1 ]]; then
         pushd $1
@@ -1279,6 +1225,9 @@ if [[ $3 != "1" ]]; then
     fi
 else
     AC_MSG_NOTICE([[Skipping configuration of submodule $1.]])
+fi
+else
+  true
 fi
 ])
 ])
