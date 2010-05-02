@@ -69,6 +69,18 @@
 			<visible>[Container.Content(TVShows) | Container.Content(Seasons) |Container.Content(Episodes)] + [!IsEmpty(Skin.String(Home_Custom_Back_TVShow_Folder) + Skin.HasSetting(HomeMenuNoTVShowsButton)])</visible>
 		</control>
 	</include>
+	<include name="CommonTVBackground">
+		<control type="multiimage">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>720</height>
+			<imagepath fallback="special://skin/backgrounds/tv.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_TV_Folder)]</imagepath>
+			<timeperimage>10000</timeperimage>
+			<randomize>true</randomize>
+			<fadetime>1000</fadetime>
+		</control>
+	</include>
 	<include name="CommonMusicBackground">
 		<control type="multiimage">
 			<posx>0</posx>
@@ -428,7 +440,7 @@
 			<font>font12_title</font>
 			<textcolor>grey2</textcolor>
 			<shadowcolor>black</shadowcolor>
-			<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos)</visible>
+			<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos) + !videoplayer.content(LiveTV)</visible>
 		</control>
 		<control type="label">
 			<description>TV Show Title label</description>
@@ -457,6 +469,22 @@
 			<textcolor>white</textcolor>
 			<shadowcolor>black</shadowcolor>
 			<visible>videoplayer.content(musicvideos)</visible>
+			<scrollout>false</scrollout>
+			<pauseatend>2000</pauseatend>
+		</control>
+		<control type="fadelabel">
+			<description>Channel label</description>
+			<posx>160</posx>
+			<posy>20</posy>
+			<height>30</height>
+			<width>325</width>
+			<label>$INFO[VideoPlayer.ChannelName]</label>
+			<align>left</align>
+			<aligny>center</aligny>
+			<font>font12_title</font>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<visible>videoplayer.content(LiveTV)</visible>
 			<scrollout>false</scrollout>
 			<pauseatend>2000</pauseatend>
 		</control>

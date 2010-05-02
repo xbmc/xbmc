@@ -115,18 +115,18 @@
 					<posx>720</posx>
 					<posy>0</posy>
 					<control type="button" id="5">
-						<description>Addons push button</description>
+						<description>TV push button</description>
 						<posx>0</posx>
 						<posy>0</posy>
 						<height>250</height>
 						<width>235</width>
-						<label>[B]$LOCALIZE[24001][/B]</label>
+						<label>[B]$LOCALIZE[19180][/B]</label>
 						<align>center</align>
 						<aligny>-</aligny>
 						<textcolor>grey2</textcolor>
 						<focusedcolor>white</focusedcolor>
 						<font>font22</font>
-						<onclick>ActivateWindow(AddonBrowser)</onclick>
+						<onclick>ActivateWindow(MyTVSettings)</onclick>
 						<texturefocus border="5">button-focus.png</texturefocus>
 						<texturenofocus>-</texturenofocus>
 						<textoffsetx>0</textoffsetx>
@@ -142,7 +142,7 @@
 						<width>215</width>
 						<height>200</height>
 						<aspectratio>keep</aspectratio>
-						<texture>icon_addons.png</texture>
+						<texture>icon_tv.png</texture>
 					</control>
 				</control>
 				<control type="group">
@@ -289,20 +289,20 @@
 			<control type="group" id="9000">
 				<posx>0</posx>
 				<posy>130</posy>
-				<control type="button" id="20">
-					<description>Filemanager button</description>
+				<control type="button" id="19">
+					<description>Addons button</description>
 					<posx>0</posx>
 					<posy>0</posy>
 					<include>ButtonCommonValues</include>
-					<label>7</label>
-					<onclick>ActivateWindow(FileManager)</onclick>
+					<label>24001</label>
+					<onclick>ActivateWindow(AddonBrowser)</onclick>
 					<onleft>5</onleft>
 					<onright>2</onright>
 					<onup>611</onup>
-					<ondown>23</ondown>
+					<ondown>20</ondown>
 				</control>
-				<control type="button" id="23">
-					<description>Profiles push button</description>
+				<control type="button" id="20">
+					<description>Profiles button</description>
 					<posx>0</posx>
 					<posy>45</posy>
 					<include>ButtonCommonValues</include>
@@ -310,38 +310,50 @@
 					<onclick>ActivateWindow(Profiles)</onclick>
 					<onleft>5</onleft>
 					<onright>2</onright>
-					<onup>20</onup>
+					<onup>19</onup>
 					<ondown>21</ondown>
 				</control>
 				<control type="button" id="21">
-					<description>Skin Settings button</description>
+					<description>Filemanager button</description>
 					<posx>0</posx>
 					<posy>90</posy>
+					<include>ButtonCommonValues</include>
+					<label>7</label>
+					<onclick>ActivateWindow(FileManager)</onclick>
+					<onleft>5</onleft>
+					<onright>2</onright>
+					<onup>20</onup>
+					<ondown>22</ondown>
+				</control>
+				<control type="button" id="22">
+					<description>Skin Settings button</description>
+					<posx>0</posx>
+					<posy>135</posy>
 					<include>ButtonCommonValues</include>
 					<label>20077</label>
 					<onclick>ActivateWindow(1111)</onclick>
 					<onleft>5</onleft>
 					<onright>2</onright>
-					<onup>23</onup>
-					<ondown>22</ondown>
+					<onup>21</onup>
+					<ondown>23</ondown>
 					<pulseonselect>no</pulseonselect>
 					<visible>true</visible>
 				</control>
-				<control type="button" id="22">
+				<control type="button" id="23">
 					<description>About XBMC button</description>
 					<posx>0</posx>
-					<posy>135</posy>
+					<posy>180</posy>
 					<include>ButtonCommonValues</include>
 					<label>482</label>
 					<onclick>ActivateWindow(1112)</onclick>
 					<onleft>5</onleft>
 					<onright>2</onright>
-					<onup>21</onup>
+					<onup>22</onup>
 					<ondown>610</ondown>
 				</control>
 				<control type="button" id="610">
 					<description>Fake Button to fix Player Controls Navigation</description>
-					<onup>22</onup>
+					<onup>23</onup>
 					<ondown>603</ondown>
 					<visible>false</visible>
 				</control>
@@ -353,7 +365,7 @@
 				<control type="button" id="611">
 					<description>Fake Button to fix Player Controls Navigation</description>
 					<onup>607</onup>
-					<ondown>20</ondown>
+					<ondown>19</ondown>
 					<visible>false</visible>
 				</control>
 			</control>

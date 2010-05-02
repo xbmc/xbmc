@@ -126,6 +126,9 @@ IMAGES= \
 	DefaultVideoPlugins.png \
 	DefaultVideo.png \
 	DefaultXboxDVD.png \
+	DefaultIconError.png \
+	DefaultIconInfo.png \
+	DefaultIconWarning.png \
 	DialogBack.png \
 	DialogFront.png \
 	DialogLeft.png \
@@ -137,7 +140,20 @@ IMAGES= \
 	filemanager-select.png \
 	folder-focus.png \
 	Footer.png \
+	genre-a-moviedrama.png \
+	genre-b-news.png \
+	genre-c-show.png \
+	genre-d-sports.png \
+	genre-e-child.png \
+	genre-f-music.png \
+	genre-g-arts.png \
+	genre-h-social.png \
+	genre-i-science.png \
+	genre-j-hobby.png \
+	genre-k-special.png \
+	genre-l-unknown.png \
 	gradient.png \
+	guide.png \
 	Header.png \
 	home-button-focus.gif \
 	home-button.png \
@@ -146,6 +162,7 @@ IMAGES= \
 	homeinfo-blank.png \
 	homeinfo-system.png \
 	Home-Menu-Back-2.png \
+	Home-Menu-Back-3.png \
 	Home-Menu-Back.png \
 	home-playmedia-focus.gif \
 	home-playmedia.png \
@@ -156,9 +173,12 @@ IMAGES= \
 	icon_music.png \
 	icon_network.png \
 	icon_pics.png \
+	icon_record.png \
+	icon_schedule.png \
 	icon_system.png \
 	icon_video.png \
 	icon_weather.png \
+	keyboard-btn-space-focus2.png \
 	lastfm-hate-focus.png \
 	lastfm-hate-nofocus.png \
 	lastfm-love-focus.png \
@@ -170,9 +190,11 @@ IMAGES= \
 	osd_button_audioSELNF.png \
 	osd_button_bookmarkFO.png \
 	osd_button_bookmarkSELNF.png \
+	osd_button_channels.png \
 	osd_button_dvdmenu2.png \
 	osd_button_dvdmenuNF.png \
 	osd_button_dvdmenu.png \
+	osd_button_epg.png \
 	osd_button_ffFO.png \
 	osd_button_ffSELNF.png \
 	osd_button_info_1_nofocus.png \
@@ -186,6 +208,7 @@ IMAGES= \
 	osd_button_playFO.png \
 	osd_button_playlistFO.png \
 	osd_button_playNF.png \
+	osd_button_portal.png \
 	osd_button_presetsFO.png \
 	osd_button_presetsSELNF.png \
 	osd_button_rec2.png \
@@ -196,6 +219,7 @@ IMAGES= \
 	osd_button_skip_minusFO.png \
 	osd_button_skip_plusFO.png \
 	osd_button_stopFO.png \
+	osd_button_txt.png \
 	osd_button_videoFO.png \
 	osd_button_videoSELNF.png \
 	osd_button_visFO.png \
@@ -204,10 +228,12 @@ IMAGES= \
 	osd_panel_audio.png \
 	osd_panel.png \
 	osd-panel-top.png \
+	osd_panel_tv.png \
 	osd_slider_bg_2.png \
 	osd_slider_bg.png \
 	osd_slider_nibNF.png \
 	osd_slider_nib.png \
+	OverlayRecording.png \
 	OverlayHasTrainer.png \
 	OverlayHD.png \
 	OverlayLocked.png \
@@ -255,6 +281,9 @@ IMAGES= \
 	ProgressBuffer.png \
 	ProgressFront2.png \
 	ProgressFront.png \
+	ProgressGreen.png \
+	ProgressRed.png \
+	ProgressYellow.png \
 	radiobutton-focus-2.png \
 	radiobutton-focus.png \
 	radiobutton-nofocus.png \
@@ -311,13 +340,17 @@ IMAGES= \
 	sub-suspend-focus.gif \
 	sub-suspend-nofocus.png \
 	thumb-back.png \
+	tv-background.png \
 	unknown-user.png \
 	VeticalLight.png \
 	VolumeIcon-Mute.png \
 	VolumeIcon.png \
 	white-reflect.png \
 	Wide_Icon_Diffuse.png \
-	xbmc-logo.png
+	xbmc-logo.png \
+	ruler-side-horiz.png \
+	ruler-side-vert.png \
+	icon_tv.png
 
 all: $(TARGET)
 
