@@ -381,6 +381,19 @@ static void setupWindowMenu(void)
 
 - (void) workspaceWillSleepNotification:(NSNotification *) note
 {
+  SDL_Event event;
+
+  // Post an media stop event to the application thread.
+  memset(&event, 0, sizeof(event));
+  event.type = SDL_USEREVENT;
+  event.user.code = TMSG_MEDIA_STOP;
+  SDL_PushEvent(&event);
+
+  // Post an suspend event to the application thread.
+  memset(&event, 0, sizeof(event));
+  event.type = SDL_USEREVENT;
+  event.user.code = TMSG_SUSPEND;
+  SDL_PushEvent(&event);
 }
 
 - (void) deviceDidMountNotification:(NSNotification *) note 
