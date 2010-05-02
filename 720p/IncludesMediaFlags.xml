@@ -57,6 +57,62 @@
 			</control>
 		</control>
 	</include> 
+	<include name="InfoListFlagsEpisodes">
+		<control type="grouplist">
+			<orientation>horizontal</orientation>
+			<itemgap>20</itemgap>
+ 
+			<control type="image">
+				<visible>!IsEmpty(Listitem.Property(mediaTag::videoResolution))</visible>
+				<height>40</height>
+				<width min="1" max="95">auto</width>
+				<info>Listitem.Property(mediaTag::videoResolution)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+ 
+			<control type="image">
+				<visible>!IsEmpty(Listitem.Property(mediaTag::videoCodec))</visible>
+				<height>40</height>
+				<width min="1" max="95">auto</width>
+				<info>Listitem.Property(mediaTag::videoCodec)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+
+			<control type="image">
+				<visible>!IsEmpty(Listitem.Property(mediaTag::audioCodec))</visible>
+				<height>40</height>
+				<width min="1" max="95">auto</width>
+				<info>Listitem.Property(mediaTag::audioCodec)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+ 
+			<control type="image">
+				<visible>!IsEmpty(Listitem.Property(mediaTag::audioChannels))</visible>
+				<height>40</height>
+				<width min="1" max="95">auto</width>
+				<info>Listitem.Property(mediaTag::audioChannels)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+		</control>
+
+<!-- Not finished 
+			<control type="image">
+				<visible>!IsEmpty(Listitem.Property(mediaTag::contentRating))</visible>
+				<height>40</height>
+				<width min="1" max="95">auto</width>
+				<info>Listitem.Property(mediaTag::contentRating)</info>
+				<aspectratio>keep</aspectratio>
+				<aligny>center</aligny>
+			</control>
+			<control type="image">
+				<visible>!IsEmpty(Listitem.Property(mediaTag::studio))</visible>
+				<height>90</height>
+				<width min="1" max="95">auto</width>
+				<info>Listitem.Property(mediaTag::studio)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+-->
+	</include> 
 	<include name="MediaPreviewFlags">
 		<control type="grouplist">
 			<orientation>horizontal</orientation>
