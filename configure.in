@@ -727,15 +727,15 @@ fi
 if test "$use_external_python" = "yes"; then
   AC_CHECK_LIB([python2.6], [main],
     [AC_DEFINE([HAVE_LIBPYTHON2_6], [1],
-    [Define to 1 if you have the `python2.6' library.])
+    [Define to 1 if you have the 'python2.6' library.])
     USE_PYTHON2_6=1],
   [AC_CHECK_LIB([python2.5], [main],
     [AC_DEFINE([HAVE_LIBPYTHON2_5], [1],
-    [Define to 1 if you have the `python2.5' library.])
+    [Define to 1 if you have the 'python2.5' library.])
     USE_PYTHON2_5=1],
   [AC_CHECK_LIB([python2.4], [main],
     [AC_DEFINE([HAVE_LIBPYTHON2_4], [1],
-    [Define to 1 if you have the `python2.4' library.])
+    [Define to 1 if you have the 'python2.4' library.])
     USE_PYTHON2_4=1],
   [AC_MSG_ERROR($missing_library)] )] )] )
 
@@ -787,7 +787,7 @@ fi
 # CrystalHD
 if test "$use_crystalhd" = "yes"; then
   AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h],AC_DEFINE([HAVE_LIBCRYSTALHD], [], 
-    [Define to 1 if you have the `Broadcom Crystal HD' library.]), 
+    [Define to 1 if you have the 'Broadcom Crystal HD' library.]), 
     use_crystalhd=no;AC_MSG_RESULT($crystalhd_not_found), [#define __LINUX_USER__])
 else
   AC_MSG_NOTICE($crystalhd_disabled)
@@ -797,7 +797,7 @@ fi
 if test "$host_vendor" = "apple" ; then
   if test "$use_vdadecoder" = "yes"; then
     HAVE_LIBVDADECODER=1
-    AC_DEFINE([HAVE_LIBVDADECODER], [1], [Define to 1 if you have the `VDADecoder' library.])
+    AC_DEFINE([HAVE_LIBVDADECODER], [1], [Define to 1 if you have the 'VDADecoder' library.])
     AC_MSG_NOTICE($vdadecoder_enabled)
   else
     use_vdadecoder ="no"
@@ -1275,7 +1275,7 @@ if [[ $3 != "1" ]]; then
             popd
         fi
     else
-        AC_MSG_ERROR([[Submodule $1 doesn't exist]])
+        AC_MSG_ERROR([[Submodule $1 does not exist]])
     fi
 else
     AC_MSG_NOTICE([[Skipping configuration of submodule $1.]])
