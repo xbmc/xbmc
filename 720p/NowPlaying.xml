@@ -13,6 +13,15 @@
       <texture>NowPlayingBG.png</texture>  
     </control>
 	-->
+	
+		<control type="largeimage">
+			<description>Fanart background</description>
+			<include>FullScreenBGImage</include>
+			<info>MusicPlayer.Fanart</info>
+			<visible>!IsEmpty(MusicPlayer.Fanart)</visible>
+			<include>BackgroundFade</include>
+			<animation effect="fade" end="20" time="0" condition="true">conditional</animation>
+		</control>
     
     <!-- Normal view -->
     <control type="group">

@@ -387,19 +387,23 @@
 							<label>$INFO[ListItem.Album]</label>
 						</control>
 						<control type="label">
-							<description>No. of tracks</description>
-							<height>22</height>
-							<font>SmallDefaultCapsFont</font>
-							<include>MusicSongsAlbumInfo</include>
-							<label>$LOCALIZE[182]: $INFO[Container.NumItems]</label>
-						</control>
-						<control type="label">
 							<description>Album Year</description>
 							<height>26</height>
 							<font>MediumSmallDefaultFont</font>
 							<include>MusicSongsAlbumInfo</include>
 							<info>ListItem.Year</info>
 						</control>
+						<control type="textbox">
+							<description>Plot/Details</description>
+							<posy>36</posy>
+							<width>310</width>
+							<height>258</height>
+							<info>ListItem.Plot</info>
+						</control>
+					</control>
+					<control type="group">
+						<posy>390</posy>
+						<include>InfoListFlags</include>
 					</control>
 				</control>
 			</control>
@@ -435,9 +439,11 @@
 				</itemlayout>
 				<focusedlayout height="42" width="640">
 					<control type="image">
+						<posx>10</posx>
 						<include>MediaItemBG</include>
 					</control>
 					<control type="image">
+						<posx>10</posx>
 						<include>MediaItemFocusBG</include>
 					</control>
 					<control type="image">
