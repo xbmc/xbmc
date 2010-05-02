@@ -433,7 +433,7 @@
 <!-- Possible View Options -->
         <control type="button" id="911">
           <description>List view button</description>
-          <visible>!Control.IsVisible(50) + !Container.Content(movies) + !Container.Content(Episodes)</visible>
+          <visible>!Control.IsVisible(50) + !Container.Content(movies) + !Container.Content(Episodes) + !Container.Content(Seasons)</visible>
           <label>$LOCALIZE[535]</label>
           <onclick>Container.SetViewMode(50)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -451,7 +451,7 @@
 
         <control type="button" id="915">
           <description>Media Preview button</description>
-          <visible>!Control.IsVisible(51)</visible>
+          <visible>!Control.IsVisible(51) + !Container.Content(Seasons)</visible>
           <label>$LOCALIZE[31707]</label>
           <onclick>Container.SetViewMode(51)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -559,7 +559,7 @@
 
         <control type="button" id="958">
           <description>Wall Stream view button</description>
-          <visible>!Control.IsVisible(53)</visible>
+          <visible>!Control.IsVisible(53) + !Container.Content(Seasons)</visible>
           <label>$LOCALIZE[31714]</label>
           <onclick>Container.SetViewMode(53)</onclick>
           <onclick>SetFocus(50)</onclick>
