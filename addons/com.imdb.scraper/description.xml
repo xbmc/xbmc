@@ -17,10 +17,10 @@ The Internet Movie Database (IMDb) is a HUGE collection of movie information. Th
   <author>Team XBMC</author>
   <dependencies>
     <dependency minversion="1.0.0" maxversion="">com.imdb.scraper.common</dependency>
-    <dependency minversion="1.0.0" maxversion="">org.themoviedb.scraper.common</dependency>
+    <dependency minversion="1.0.0" maxversion="">metadata.common.themoviedb.org</dependency>
     <dependency minversion="1.0.0" maxversion="">com.movieposterdb.scraper.common</dependency>
     <dependency minversion="1.0.0" maxversion="">com.impa.scraper.common</dependency>
-    <dependency minversion="1.0.0" maxversion="">com.dtrailer.scraper.common</dependency>
+    <dependency minversion="1.0.0" maxversion="">metadata.common.dtrailer.com</dependency>
   </dependencies>
   <supportedcontent>
     <content>movies</content>

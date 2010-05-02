@@ -143,6 +143,16 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
         return g_localizeStrings.Get(24009);
       return "script";
     }
+    case ADDON::ADDON_SKIN:
+    {
+      if (pretty)
+        return g_localizeStrings.Get(166);
+      return "skin";
+    }
+    case ADDON::ADDON_SCRIPT_LIBRARY:
+    {
+      return "script-library";
+    }
     case ADDON::ADDON_REPOSITORY:
     {
       if (pretty)
@@ -166,6 +176,8 @@ const ADDON::TYPE TranslateType(const CStdString &string)
   else if (string.Equals("visualization-library")) return ADDON_VIZ_LIBRARY;
   else if (string.Equals("plugin")) return ADDON_PLUGIN;
   else if (string.Equals("script")) return ADDON_SCRIPT;
+  else if (string.Equals("skin")) return ADDON_SKIN;
+  else if (string.Equals("script-library")) return ADDON_SCRIPT_LIBRARY;
   else if (string.Equals("addon-repository")) return ADDON_REPOSITORY;
   else return ADDON_UNKNOWN;
 }
@@ -268,6 +280,9 @@ void CAddon::BuildLibName()
   case ADDON_SCREENSAVER:
     ext = ADDON_SCREENSAVER_EXT;
     break;
+  case ADDON_SKIN:
+    m_strLibName = "skin.xml";
+    return;
   case ADDON_VIZ:
     ext = ADDON_VIS_EXT;
     break;
@@ -508,6 +523,13 @@ void CAddon::BuildProfilePath()
   m_profile.Format("special://profile/addon_data/%s/", ID().c_str());
 }
 
+const CStdString CAddon::Icon() const
+{
+  if (CURL::IsFullPath(m_props.icon))
+    return m_props.icon;
+  return CUtil::AddFileToFolder(m_props.path, m_props.icon);
+}
+
 /**
  * CAddonLibrary
  *
@@ -525,6 +547,8 @@ TYPE CAddonLibrary::SetAddonType()
     return ADDON_SCRAPER;
   else if (Type() == ADDON_VIZ_LIBRARY)
     return ADDON_VIZ;
+  else if (Type() == ADDON_SCRIPT_LIBRARY)
+    return ADDON_SCRIPT;
   else
     return ADDON_UNKNOWN;
 }

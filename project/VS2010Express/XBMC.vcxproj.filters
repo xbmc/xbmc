@@ -2124,6 +2124,12 @@
     <ClCompile Include="..\..\xbmc\addons\Repository.cpp">
       <Filter>Source Files\Addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\Skin.cpp">
+      <Filter>Source Files\Addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\GUIDialogAddonInfo.cpp">
+      <Filter>Source Files\GUI Dialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -2423,28 +2429,28 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.h">
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\avcodec.h">
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllAvCodec.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\avformat.h">
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllAvFormat.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\avio.h">
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllPostProc.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\common.h">
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllSwScale.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\decoder.h">
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include\libavutil\avconfig.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\DllAvCodec.h">
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avformat.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\DllAvFormat.h">
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavutil\common.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\DllPostProc.h">
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avio.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvd_types.h">
@@ -2543,28 +2549,16 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllAdpcm.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllAdplug.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllASAP.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllDCACodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllDumb.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllGensApu.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllLibFlac.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllLibshnplay.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllMACDll.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllNosefart.h">
@@ -2625,9 +2619,6 @@
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\ReplayGain.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\RingHoldBuffer.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\SIDCodec.h">
@@ -4480,6 +4471,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\Repository.h">
       <Filter>Source Files\Addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\Skin.h">
+      <Filter>Source Files\Addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\GUIDialogAddonInfo.h">
+      <Filter>Source Files\GUI Dialog</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

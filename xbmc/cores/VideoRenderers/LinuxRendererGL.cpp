@@ -991,7 +991,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_LINEAR:
     SetTextureFilter(m_scalingMethod == VS_SCALINGMETHOD_NEAREST ? GL_NEAREST : GL_LINEAR);
     m_renderQuality = RQ_SINGLEPASS;
-    if ((m_renderMethod & RENDER_VDPAU) && nonLinStretch)
+    if (((m_renderMethod & RENDER_VDPAU) || (m_renderMethod & RENDER_VAAPI)) && nonLinStretch)
     {
       m_pVideoFilterShader = new StretchFilterShader();
       if (!m_pVideoFilterShader->CompileAndLink())
@@ -1006,7 +1006,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_LANCZOS3_FAST:
   case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_CUBIC:
-    if ((m_renderMethod & RENDER_GLSL))
+    if (m_renderMethod & RENDER_GLSL)
     {
       if (!m_fbo.Initialize())
       {
@@ -2424,6 +2424,9 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
     if ((m_renderMethod & RENDER_VDPAU) && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
       return true;
 
+    if (m_renderMethod & RENDER_VAAPI)
+      return false;
+
     return (m_renderMethod & RENDER_GLSL)
         || (m_renderMethod & RENDER_ARB)
         || ((m_renderMethod & RENDER_SW) && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
@@ -2433,6 +2436,9 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
   {
     if ((m_renderMethod & RENDER_VDPAU) && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
       return true;
+
+    if (m_renderMethod & RENDER_VAAPI)
+      return false;
 
     return (m_renderMethod & RENDER_GLSL)
         || (m_renderMethod & RENDER_ARB)
@@ -2456,7 +2462,8 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
 
   if (feature == RENDERFEATURE_NONLINSTRETCH)
   {
-    if (((m_renderMethod & RENDER_GLSL) && (m_textureTarget != GL_TEXTURE_RECTANGLE_ARB)) || (m_renderMethod & RENDER_VDPAU))
+    if (((m_renderMethod & RENDER_GLSL) && (m_textureTarget != GL_TEXTURE_RECTANGLE_ARB)) ||
+        (m_renderMethod & RENDER_VDPAU) || (m_renderMethod & RENDER_VAAPI))
       return true;
   }
 
@@ -2484,6 +2491,9 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
     return false;
   }
 
+  if(m_renderMethod & RENDER_VAAPI)
+    return false;
+
   if(method == VS_INTERLACEMETHOD_DEINTERLACE)
     return true;
 
@@ -2509,7 +2519,8 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
   || method == VS_SCALINGMETHOD_LANCZOS3_FAST
   || method == VS_SCALINGMETHOD_LANCZOS3)
   {
-    if ((glewIsSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL)) || m_renderMethod & RENDER_VDPAU)
+    if ((glewIsSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL)) ||
+        (m_renderMethod & RENDER_VDPAU) || (m_renderMethod & RENDER_VAAPI))
       return true;
   }
  

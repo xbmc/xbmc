@@ -68,6 +68,20 @@ public:
   virtual ~CThumbLoader();
 
   bool LoadRemoteThumb(CFileItem *pItem);
+
+  /*! \brief Checks whether the given item has a thumb that needs caching, and if so caches it.
+   \param item CFileItem to check for a cachable thumb.
+   \return true if we successfully cache a thumb, false otherwise.
+   \sa GetCachedThumb
+   */
+  static bool CheckAndCacheThumb(CFileItem &item);
+
+  /*! \brief Checks whether the given item has a thumb listed in the texture database
+   \param item CFileItem to check for a thumb
+   \return the thumb associated with this item
+   \sa CheckAndCacheThumb
+   */
+  static CStdString GetCachedThumb(const CFileItem &item);
 };
 
 class CVideoThumbLoader : public CThumbLoader, public CJobQueue
@@ -101,6 +115,23 @@ public:
   CProgramThumbLoader();
   virtual ~CProgramThumbLoader();
   virtual bool LoadItem(CFileItem* pItem);
+
+  /*! \brief Fill the thumb of a programs item
+   First uses a cached thumb from a previous run, then checks for a local thumb
+   and caches it for the next run
+   \param item the CFileItem object to fill
+   \return true if we fill the thumb, false otherwise
+   \sa GetLocalThumb
+   */
+  static bool FillThumb(CFileItem &item);
+
+  /*! \brief Get a local thumb for a programs item
+   Shortcuts are checked, then we check for a file or folder thumb
+   \param item the CFileItem object to check
+   \return the local thumb (if it exists)
+   \sa FillThumb
+   */
+  static CStdString GetLocalThumb(const CFileItem &item);
 };
 
 class CMusicThumbLoader : public CThumbLoader

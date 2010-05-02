@@ -71,12 +71,12 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
   }
   addons.clear();
   CAddonMgr::Get()->GetAddons(ADDON_REPOSITORY,addons,CONTENT_NONE,true);
-  for (unsigned int i=0;i<addons.size();++i)
+  if (addons.size())
   {
     CMediaSource share;
-    share.strPath = "addons://"+addons[i]->ID();
+    share.strPath = "addons://repos/";
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-    share.strName = addons[i]->Name();
+    share.strName = g_localizeStrings.Get(24033);
     m_sources.push_back(share);
   }
 

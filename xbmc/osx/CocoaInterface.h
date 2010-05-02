@@ -69,6 +69,9 @@ extern "C"
   // Version.
   //
   const char* Cocoa_GetAppVersion();
+  bool Cocoa_HasVDADecoder();
+  int Cocoa_GetOSVersion();
+
   
   void  Cocoa_MakeChildWindow();
   void  Cocoa_DestroyChildWindow();

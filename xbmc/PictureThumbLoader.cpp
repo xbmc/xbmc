@@ -49,23 +49,13 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
   if (pItem->m_bIsShareOrDrive) return true;
   if (pItem->IsParentFolder()) return true;
 
-  if (pItem->HasThumbnail())
-  {
-    CStdString thumb(pItem->GetThumbnailImage());
+  if (CheckAndCacheThumb(*pItem))
+    return true;
 
-    // look for remote thumbs
-    if (!g_TextureManager.CanLoad(thumb))
-    {
-      thumb = CTextureCache::Get().CheckAndCacheImage(thumb);
-      pItem->SetThumbnailImage(thumb);
-      pItem->FillInDefaultIcon();
-      return !thumb.IsEmpty();
-    }
-    else if (m_regenerateThumbs)
-    {
-      CTextureCache::Get().ClearCachedImage(thumb);
-      pItem->SetThumbnailImage("");
-    }
+  if (pItem->HasThumbnail() && m_regenerateThumbs)
+  {
+    CTextureCache::Get().ClearCachedImage(pItem->GetThumbnailImage());
+    pItem->SetThumbnailImage("");
   }
 
   CStdString thumb;
@@ -89,14 +79,6 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
 void CPictureThumbLoader::OnLoaderFinish()
 {
   m_regenerateThumbs = false;
-}
-
-CStdString CPictureThumbLoader::GetCachedThumb(const CFileItem &item)
-{
-  CTextureDatabase db;
-  if (db.Open())
-    return db.GetTextureForPath(item.m_strPath);
-  return "";
 }
 
 void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)

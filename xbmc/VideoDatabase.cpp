@@ -4828,6 +4828,8 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->GetVideoInfoTag()->m_strGenre = it->second.genre;
         pItem->GetVideoInfoTag()->m_strShowTitle = showTitle;
         pItem->GetVideoInfoTag()->m_iEpisode = it->second.numEpisodes;
+        pItem->SetProperty("totalepisodes", it->second.numEpisodes);
+        pItem->SetProperty("numepisodes", it->second.numEpisodes); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", it->second.numWatched);
         pItem->SetProperty("unwatchedepisodes", it->second.numEpisodes - it->second.numWatched);
         pItem->GetVideoInfoTag()->m_playCount = (it->second.numEpisodes == it->second.numWatched) ? 1 : 0;
@@ -4860,6 +4862,8 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         int totalEpisodes = m_pDS->fv(4).get_asInt();
         int watchedEpisodes = m_pDS->fv(5).get_asInt();
         pItem->GetVideoInfoTag()->m_iEpisode = totalEpisodes;
+        pItem->SetProperty("totalepisodes", totalEpisodes);
+        pItem->SetProperty("numepisodes", totalEpisodes); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", watchedEpisodes);
         pItem->SetProperty("unwatchedepisodes", totalEpisodes - watchedEpisodes);
         pItem->GetVideoInfoTag()->m_playCount = (totalEpisodes == watchedEpisodes) ? 1 : 0;
@@ -5030,6 +5034,8 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
         pItem->m_strPath.Format("%s%ld/", strBaseDir.c_str(), idShow);
         pItem->m_dateTime.SetFromDateString(movie.m_strPremiered);
         pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
+        pItem->SetProperty("totalepisodes", movie.m_iEpisode);
+        pItem->SetProperty("numepisodes", movie.m_iEpisode); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", movie.m_playCount);
         pItem->SetProperty("unwatchedepisodes", movie.m_iEpisode - movie.m_playCount);
         pItem->GetVideoInfoTag()->m_playCount = (movie.m_iEpisode == movie.m_playCount) ? 1 : 0;
@@ -5099,6 +5105,8 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
 
             // increment episode counts
             pItem->GetVideoInfoTag()->m_iEpisode += jItem->GetVideoInfoTag()->m_iEpisode;
+            pItem->IncrementProperty("totalepisodes", jItem->GetPropertyInt("totalepisodes"));
+            pItem->IncrementProperty("numepisodes", jItem->GetPropertyInt("numepisodes")); // will be changed later to reflect watchmode setting
             pItem->IncrementProperty("watchedepisodes", jItem->GetPropertyInt("watchedepisodes"));
             pItem->IncrementProperty("unwatchedepisodes", jItem->GetPropertyInt("unwatchedepisodes"));
 

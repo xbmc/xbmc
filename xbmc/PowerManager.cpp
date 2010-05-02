@@ -28,6 +28,9 @@
 #include "utils/log.h"
 #include "AnnouncementManager.h"
 
+#if defined(HAVE_LIBCRYSTALHD)
+#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
+#endif
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #endif
@@ -35,6 +38,7 @@
 #ifdef __APPLE__
 #include "osx/CocoaPowerSyscall.h"
 #elif defined(_LINUX) && defined(HAS_DBUS)
+#include "linux/ConsoleUPowerSyscall.h"
 #include "linux/ConsoleDeviceKitPowerSyscall.h"
 #ifdef HAS_HAL
 #include "linux/HALPowerSyscall.h"
@@ -74,6 +78,8 @@ void CPowerManager::Initialize()
 #elif defined(_LINUX) && defined(HAS_DBUS)
   if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
     m_instance = new CConsoleDeviceKitPowerSyscall();
+  else if (CConsoleUPowerSyscall::HasDeviceConsoleKit())
+    m_instance = new CConsoleUPowerSyscall();
 #ifdef HAS_HAL
   else
     m_instance = new CHALPowerSyscall();
@@ -147,6 +153,9 @@ bool CPowerManager::Suspend()
   bool success = false;
   if (CanSuspend())
   {
+#if defined(HAVE_LIBCRYSTALHD)
+    CCrystalHD::GetInstance()->Sleep();
+#endif
     g_application.m_bRunResumeJobs = true;
 #ifdef HAS_LCD
     g_lcd->SetBackLight(0);
@@ -165,6 +174,9 @@ bool CPowerManager::Hibernate()
   bool success = false;
   if (CanHibernate())
   {
+#if defined(HAVE_LIBCRYSTALHD)
+    CCrystalHD::GetInstance()->Sleep();
+#endif
     g_application.m_bRunResumeJobs = true;
     g_Keyboard.ResetState();
     success = m_instance->Hibernate();
@@ -203,6 +215,10 @@ void CPowerManager::Resume()
 #endif
   }
   g_application.ResetScreenSaver();
+#endif
+
+#if defined(HAVE_LIBCRYSTALHD)
+  CCrystalHD::GetInstance()->Wake();
 #endif
 
   // restart lirc

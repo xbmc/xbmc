@@ -22,7 +22,7 @@
 #include "GUIListItemLayout.h"
 #include "FileItem.h"
 #include "GUIControlFactory.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIListLabel.h"
 #include "GUIImage.h"
@@ -159,9 +159,9 @@ void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *grou
 void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, bool focused)
 {
   m_focused = focused;
-  g_SkinInfo.ResolveIncludes(layout);
-  g_SkinInfo.ResolveConstant(layout->Attribute("width"), m_width);
-  g_SkinInfo.ResolveConstant(layout->Attribute("height"), m_height);
+  g_SkinInfo->ResolveIncludes(layout);
+  g_SkinInfo->ResolveConstant(layout->Attribute("width"), m_width);
+  g_SkinInfo->ResolveConstant(layout->Attribute("height"), m_height);
   const char *condition = layout->Attribute("condition");
   if (condition)
     m_condition = g_infoManager.TranslateString(condition);
@@ -173,6 +173,9 @@ void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, bool focused)
     LoadControl(child, &m_group);
     child = child->NextSiblingElement("control");
   }
+  // ensure width and height are valid
+  m_width = std::max(1.0f, m_width);
+  m_height = std::max(1.0f, m_height);
 }
 
 //#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY

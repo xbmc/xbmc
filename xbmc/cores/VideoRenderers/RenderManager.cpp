@@ -30,6 +30,7 @@
 #include "Application.h"
 #include "Settings.h"
 #include "GUISettings.h"
+#include "SystemGlobals.h"
 
 #ifdef _LINUX
 #include "PlatformInclude.h"
@@ -46,7 +47,7 @@
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
 
-CXBMCRenderManager g_renderManager;
+CXBMCRenderManager& g_renderManager = g_SystemGlobals.m_renderManager;
 
 #define MAXPRESENTDELAY 0.500
 

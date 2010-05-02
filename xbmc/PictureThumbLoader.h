@@ -21,9 +21,9 @@
  */
 
 #include "StdString.h"
-#include "BackgroundInfoLoader.h"
+#include "ThumbLoader.h"
 
-class CPictureThumbLoader : public CBackgroundInfoLoader
+class CPictureThumbLoader : public CThumbLoader
 {
 public:
   CPictureThumbLoader();
@@ -31,7 +31,6 @@ public:
   virtual bool LoadItem(CFileItem* pItem);
   void SetRegenerateThumbs(bool regenerate) { m_regenerateThumbs = regenerate; };
   static void ProcessFoldersAndArchives(CFileItem *pItem);
-  static CStdString GetCachedThumb(const CFileItem &item);
 protected:
   virtual void OnLoaderFinish();
 private:

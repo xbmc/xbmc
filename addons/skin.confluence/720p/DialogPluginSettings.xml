@@ -1,0 +1,166 @@
+<window id="10140">
+	<defaultcontrol always="true">2</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>240</posx>
+		<posy>55</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>800</width>
+			<height>610</height>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<posx>80</posx>
+			<posy>10</posy>
+			<width>640</width>
+			<height>90</height>
+			<aspectratio>stretch</aspectratio>
+			<texture>GlassTitleBar.png</texture>
+		</control>
+		<control type="button">
+			<description>Close Window button</description>
+			<posx>710</posx>
+			<posy>9</posy>
+			<width>64</width>
+			<height>32</height>
+			<label>-</label>
+			<font>-</font>
+			<onclick>PreviousMenu</onclick>
+			<texturefocus>DialogCloseButton-focus.png</texturefocus>
+			<texturenofocus>DialogCloseButton.png</texturenofocus>
+			<onleft>2</onleft>
+			<onright>2</onright>
+			<onup>2</onup>
+			<ondown>2</ondown>
+			<visible>system.getbool(input.enablemouse)</visible>
+		</control>
+		<control type="label" id="20">
+			<description>header label</description>
+			<posx>20</posx>
+			<posy>18</posy>
+			<width>760</width>
+			<height>30</height>
+			<font>font13_title</font>
+			<label>-</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+		</control>
+		<control type="grouplist" id="2">
+			<description>control area</description>
+			<posx>30</posx>
+			<posy>80</posy>
+			<width>740</width>
+			<height>420</height>
+			<itemgap>-1</itemgap>
+			<onup>2</onup>
+			<ondown>2</ondown>
+			<onleft>10</onleft>
+			<onright>10</onright>
+		</control>
+		<control type="button" id="3">
+			<description>Default Button</description>
+			<height>40</height>
+			<font>font13</font>
+			<textcolor>grey2</textcolor>
+			<focusedcolor>white</focusedcolor>
+			<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
+			<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
+		</control>
+		<control type="radiobutton" id="4">
+			<description>Default RadioButton</description>
+			<height>40</height>
+			<font>font13</font>
+			<textcolor>grey2</textcolor>
+			<focusedcolor>white</focusedcolor>
+			<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
+			<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
+		</control>
+		<control type="spincontrolex" id="5">
+			<description>Default spincontrolex</description>
+			<height>40</height>
+			<textcolor>grey2</textcolor>
+			<focusedcolor>white</focusedcolor>
+			<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
+			<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
+			<font>font13</font>
+			<aligny>center</aligny>
+			<reverse>yes</reverse>
+		</control>
+		<control type="label" id="7">
+			<height>45</height>
+			<font>font13_title</font>
+			<label>-</label>
+			<textcolor>blue</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<align>left</align>
+			<aligny>center</aligny>
+		</control>
+		<control type="image" id="6">
+			<description>Default Seperator</description>
+			<height>2</height>
+			<texture>separator2.png</texture>
+		</control>
+		<control type="group" id="9001">
+			<posy>540</posy>
+			<control type="button" id="10">
+				<description>OK Button</description>
+				<posx>300</posx>
+				<posy>0</posy>
+				<width>200</width>
+				<height>40</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+				<texturefocus border="5">button-focus.png</texturefocus>
+				<font>font12_title</font>
+				<label>186</label>
+				<onleft>12</onleft>
+				<onright>11</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+			</control>
+			<control type="button" id="11">
+				<description>Cancel Button</description>
+				<posx>510</posx>
+				<posy>0</posy>
+				<width>200</width>
+				<height>40</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+				<texturefocus border="5">button-focus.png</texturefocus>
+				<font>font12_title</font>
+				<label>222</label>
+				<onleft>10</onleft>
+				<onright>12</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+			</control>
+			<control type="button" id="12">
+				<description>Defaults Button</description>
+				<posx>90</posx>
+				<posy>0</posy>
+				<width>200</width>
+				<height>40</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+				<texturefocus border="5">button-focus.png</texturefocus>
+				<font>font12_title</font>
+				<label>409</label>
+				<onleft>11</onleft>
+				<onright>10</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+			</control>
+		</control>
+	</controls>
+</window>

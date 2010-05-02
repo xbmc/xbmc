@@ -57,12 +57,15 @@ config.log
 /svn_revision.h
 
 # /addons/
-/addons/net.sf.projectm.xbmc/projectM.vis
-/addons/net.sf.rsxs.euphoria/Euphoria.xbs
-/addons/net.sf.rsxs.plasma/Plasma.xbs
-/addons/net.sf.rsxs.solarwinds/Solarwinds.xbs
-/addons/org.xbmc.addons.glspectrum/opengl_spectrum.vis
-/addons/org.xbmc.addons.waveform/Waveform.vis
+/addons/packages
+/addons/screensaver.rsxs.euphoria/Euphoria.xbs
+/addons/screensaver.rsxs.plasma/Plasma.xbs
+/addons/screensaver.rsxs.solarwinds/Solarwinds.xbs
+/addons/skin.confluence/media/Textures.xbt
+/addons/skin.pm3-hd/media/Textures.xbt
+/addons/visualization.glspectrum/opengl_spectrum.vis
+/addons/visualization.projectm/projectM.vis
+/addons/visualization.waveform/Waveform.vis
 
 # /guilib/
 /guilib/Makefile
@@ -114,13 +117,23 @@ config.log
 
 # /system/
 /system/profiles.xml
+/system/libid3tag.dll
 /system/players/paplayer/wavpack.dll
 /system/players/paplayer/libmodplug.dll
 /system/players/paplayer/StSoundLibrary.dll
+/system/players/paplayer/vorbisfile.dll
+/system/players/paplayer/vgmstream.dll
+/system/players/paplayer/NoseFart.dll
+/system/players/paplayer/AC3Codec.dll
+/system/players/paplayer/libsidplay2.dll
+/system/players/paplayer/adpcm.dll
+/system/players/dvdplayer/libmad.dll
+/system/players/dvdplayer/libdts.dll
+
 
 # /addons/
-/addons/vis.dxspectrum/*.vis
-/addons/vis.waveform/*.vis
+/addons/com.nullsoft.milkdrop.xbmc/*.vis
+/addons/org.xbmc.addons.dxspectrum/*.vis
 
 # /tools/Changelog/
 /tools/Changelog/Changelog.txt
@@ -241,6 +254,7 @@ config.log
 /xbmc/cores/dvdplayer/Codecs/libdts/config.status
 /xbmc/cores/dvdplayer/Codecs/libdts/stamp-h1
 /xbmc/cores/dvdplayer/Codecs/libdts/configure.lineno
+/xbmc/cores/dvdplayer/Codecs/libdts/vc++/libdts.lib
 
 # /xbmc/cores/dvdplayer/Codecs/libdts/autotools/
 /xbmc/cores/dvdplayer/Codecs/libdts/autotools/Makefile
@@ -339,6 +353,7 @@ config.log
 /xbmc/cores/dvdplayer/Codecs/libfaad2/configure.lineno
 /xbmc/cores/dvdplayer/Codecs/libfaad2/libtool
 /xbmc/cores/dvdplayer/Codecs/libfaad2/faad2.spec
+/xbmc/cores/dvdplayer/Codecs/libfaad2/libfaad/ReleaseDLL
 
 # /xbmc/cores/dvdplayer/Codecs/libfaad2/common/
 /xbmc/cores/dvdplayer/Codecs/libfaad2/common/Makefile
@@ -376,6 +391,7 @@ config.log
 
 # /xbmc/cores/dvdplayer/Codecs/libmad/msvc++/
 /xbmc/cores/dvdplayer/Codecs/libmad/msvc++/Makefile
+/xbmc/cores/dvdplayer/Codecs/libmad/msvc++/libmad.lib
 
 # /xbmc/cores/dvdplayer/Codecs/libmpeg2/
 /xbmc/cores/dvdplayer/Codecs/libmpeg2/config.log
@@ -415,9 +431,14 @@ config.log
 
 # /xbmc/cores/paplayer/AC3Codec/
 /xbmc/cores/paplayer/AC3Codec/Makefile
+/xbmc/cores/paplayer/AC3Codec/vc++/AC3Codec.lib
+
+# /xbmc/cores/paplayer/NSFCodec/
+/xbmc/cores/paplayer/NSFCodec/NoseFart.lib
 
 # /xbmc/cores/paplayer/ADPCMCodec/
 /xbmc/cores/paplayer/ADPCMCodec/Makefile
+/xbmc/cores/paplayer/ADPCMCodec/adpcm.lib
 
 # /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/
 /xbmc/cores/paplayer/FLACCodec/flac-1.2.1/Makefilee
@@ -578,6 +599,7 @@ config.log
 
 # /xbmc/cores/paplayer/YMCodec/StSoundLibrary/
 /xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile
+/xbmc/cores/paplayer/YMCodec/StSoundLibrary/StSoundLibrary.lib
 
 # /xbmc/cores/paplayer/ogg/
 
@@ -595,6 +617,7 @@ config.log
 /xbmc/cores/paplayer/vgmstream/win32/Release
 /xbmc/cores/paplayer/vgmstream/win32/win32.ncb
 /xbmc/cores/paplayer/vgmstream/win32/win32.suo
+/xbmc/cores/paplayer/vgmstream/win32/win32.lib
 
 # /xbmc/cores/paplayer/vorbisfile/
 /xbmc/cores/paplayer/vorbisfile/Makefile
@@ -657,6 +680,7 @@ config.log
 /xbmc/cores/paplayer/vorbisfile/ogg/libogg.spec
 /xbmc/cores/paplayer/vorbisfile/ogg/configure.lineno
 /xbmc/cores/paplayer/vorbisfile/ogg/libtool
+/xbmc/cores/paplayer/vorbisfile/ogg/win32/Static_Debug/
 
 # /xbmc/cores/paplayer/vorbisfile/ogg/doc/
 /xbmc/cores/paplayer/vorbisfile/ogg/doc/Makefile
@@ -695,6 +719,8 @@ config.log
 /xbmc/lib/libshout/Makefile
 
 /xbmc/lib/libsquish/Makefile
+/xbmc/lib/libsquish/lib/squishd.lib
+/xbmc/lib/libsquish/lib/squish.lib
 
 # /xbmc/lib/cmyth/
 /xbmc/lib/cmyth/Makefile.depend
@@ -855,6 +881,7 @@ config.log
 /xbmc/lib/libid3tag/libid3tag/libtool
 /xbmc/lib/libid3tag/libid3tag/stamp-h1
 /xbmc/lib/libid3tag/libid3tag/msvc++/Makefile
+/xbmc/lib/libid3tag/libid3tag/msvc++/libid3tag.lib
 
 /xbmc/lib/libhttpapi/Makefile
 

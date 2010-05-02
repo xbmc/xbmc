@@ -27,6 +27,7 @@
 #include "Audio/DVDAudioCodec.h"
 #include "Overlay/DVDOverlayCodec.h"
 
+#include "Video/DVDVideoCodecVDA.h"
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
 #if defined(HAVE_LIBCRYSTALHD)
@@ -126,11 +127,18 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   CDVDVideoCodec* pCodec = NULL;
   CDVDCodecOptions options;
 
+  //when support for a hardware decoder is not compiled in
+  //only print it if it's actually available on the platform
   CStdString hwSupport;
+#if defined(HAVE_LIBVDADECODER) && defined(__APPLE__)
+  hwSupport += "VDADecoder:yes ";
+#elif defined(__APPLE__)
+  hwSupport += "VDADecoder:no ";
+#endif
 #ifdef HAVE_LIBCRYSTALHD
-  hwSupport += "Crystal HD:yes ";
+  hwSupport += "CrystalHD:yes ";
 #else
-  hwSupport += "Crystal HD:no ";
+  hwSupport += "CrystalHD:no ";
 #endif
 #if defined(HAVE_LIBVDPAU) && defined(_LINUX)
   hwSupport += "VDPAU:yes ";
@@ -142,9 +150,9 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 #elif defined(_WIN32)
   hwSupport += "DXVA:no ";
 #endif
-#if defined(HAVE_LIBVA)
+#if defined(HAVE_LIBVA) && defined(_LINUX)
   hwSupport += "VAAPI:yes ";
-#else
+#elif defined(_LINUX)
   hwSupport += "VAAPI:no ";
 #endif
 
@@ -155,6 +163,13 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   {
     if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
   }
+#if defined(HAVE_LIBVDADECODER)
+  if (g_guiSettings.GetBool("videoplayer.usevda") && !hint.software && hint.codec == CODEC_ID_H264)
+  {
+    CLog::Log(LOGINFO, "Trying Apple VDA Decoder...");
+    if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
+  }
+#endif
 
 #if defined(HAVE_LIBCRYSTALHD)
   if (g_guiSettings.GetBool("videoplayer.usechd") && CCrystalHD::GetInstance()->DevicePresent() && !hint.software )

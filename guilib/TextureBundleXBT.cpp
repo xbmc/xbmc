@@ -25,7 +25,7 @@
 #include "Texture.h"
 #include "GraphicContext.h"
 #include "utils/log.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "GUISettings.h"
 #include "Util.h"
 #include "FileSystem/SpecialProtocol.h"

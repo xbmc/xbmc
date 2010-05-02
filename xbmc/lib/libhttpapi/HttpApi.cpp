@@ -9,7 +9,7 @@
 CStdString CHttpApi::WebMethodCall(CStdString &command, CStdString &parameter)
 {
   CStdString response = MethodCall(command, parameter);
-  response.Format("%s%s%s", m_pXbmcHttp->incWebHeader ? "<html>\n" : "", response.c_str(), m_pXbmcHttp->incWebFooter ? "\n</html>" : "");
+  response.Format("%s%s%s", m_pXbmcHttp->incWebHeader ? "<html>\n" : "", response.c_str(), m_pXbmcHttp->incWebFooter ? "\n</html>\n" : "");
   return response;
 }
 
@@ -29,7 +29,7 @@ CStdString CHttpApi::MethodCall(CStdString &command, CStdString &parameter)
   Sleep(0);
   CStdString response = g_application.getApplicationMessenger().GetResponse();
 
-  while (response=="[No response yet]" && cnt++<200) 
+  while (response=="[No response yet]" && cnt++<200)
   {
     response=g_application.getApplicationMessenger().GetResponse();
     CLog::Log(LOGDEBUG, "HttpApi: waiting %d", cnt);

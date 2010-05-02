@@ -263,7 +263,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\guilib\Shader.cpp" />
-    <ClCompile Include="..\..\guilib\SkinInfo.cpp" />
     <ClCompile Include="..\..\guilib\TextureBundle.cpp" />
     <ClCompile Include="..\..\guilib\TextureBundleXBT.cpp" />
     <ClCompile Include="..\..\guilib\TextureBundleXPR.cpp" />
@@ -408,7 +407,6 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">..\..\xbmc\win32\svn_rev.h;%(Outputs)</Outputs>
     </CustomBuild>
     <ClInclude Include="..\..\guilib\Shader.h" />
-    <ClInclude Include="..\..\guilib\SkinInfo.h" />
     <ClInclude Include="..\..\guilib\StdString.h" />
     <ClInclude Include="..\..\guilib\system.h" />
     <ClInclude Include="..\..\guilib\TextureBundle.h" />

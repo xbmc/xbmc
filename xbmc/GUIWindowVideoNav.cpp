@@ -272,10 +272,9 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSHOWMODE)
       {
-        g_settings.m_iMyVideoWatchMode++;
-        if (g_settings.m_iMyVideoWatchMode > VIDEO_SHOW_WATCHED)
-          g_settings.m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
+        g_settings.CycleWatchMode(m_vecItems->GetContent());
         g_settings.Save();
+
         // TODO: Can we perhaps filter this directly?  Probably not for some of the more complicated views,
         //       but for those perhaps we can just display them all, and only filter when we get a list
         //       of actual videos?
@@ -294,10 +293,10 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSHOWALL)
       {
-        if (g_settings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
-          g_settings.m_iMyVideoWatchMode = VIDEO_SHOW_UNWATCHED;
+        if (g_settings.GetWatchMode(m_vecItems->GetContent()) == VIDEO_SHOW_ALL)
+          g_settings.SetWatchMode(m_vecItems->GetContent(), VIDEO_SHOW_UNWATCHED);
         else
-          g_settings.m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
+          g_settings.SetWatchMode(m_vecItems->GetContent(), VIDEO_SHOW_ALL);
         g_settings.Save();
         // TODO: Can we perhaps filter this directly?  Probably not for some of the more complicated views,
         //       but for those perhaps we can just display them all, and only filter when we get a list
@@ -556,9 +555,10 @@ void CGUIWindowVideoNav::UpdateButtons()
 
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
 
-  SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + g_settings.m_iMyVideoWatchMode));
+  int watchMode = g_settings.GetWatchMode(m_vecItems->GetContent());
+  SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + watchMode));
 
-  SET_CONTROL_SELECTED(GetID(),CONTROL_BTNSHOWALL,g_settings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL);
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNSHOWALL, watchMode != VIDEO_SHOW_ALL);
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
@@ -1006,30 +1006,32 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
   if (items.IsPlugin())
     filterWatched = true;
 
+  int watchMode = g_settings.GetWatchMode(m_vecItems->GetContent());
   int itemsBefore = items.Size();
 
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items.Get(i);
-    if(item->HasVideoInfoTag() && node == NODE_TYPE_TITLE_TVSHOWS)
+    if(item->HasVideoInfoTag() && node == NODE_TYPE_TITLE_TVSHOWS || node == NODE_TYPE_SEASONS)
     {
-      if (g_settings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED)
+      if (watchMode == VIDEO_SHOW_UNWATCHED)
         item->GetVideoInfoTag()->m_iEpisode = item->GetPropertyInt("unwatchedepisodes");
-      if (g_settings.m_iMyVideoWatchMode == VIDEO_SHOW_WATCHED)
+      if (watchMode == VIDEO_SHOW_WATCHED)
         item->GetVideoInfoTag()->m_iEpisode = item->GetPropertyInt("watchedepisodes");
+      item->SetProperty("numepisodes", item->GetVideoInfoTag()->m_iEpisode);
     }
 
     if(filterWatched)
     {
-      if((g_settings.m_iMyVideoWatchMode==VIDEO_SHOW_WATCHED   && item->GetVideoInfoTag()->m_playCount== 0)
-      || (g_settings.m_iMyVideoWatchMode==VIDEO_SHOW_UNWATCHED && item->GetVideoInfoTag()->m_playCount > 0))
+      if((watchMode==VIDEO_SHOW_WATCHED   && item->GetVideoInfoTag()->m_playCount== 0)
+      || (watchMode==VIDEO_SHOW_UNWATCHED && item->GetVideoInfoTag()->m_playCount > 0))
       {
         items.Remove(i);
         i--;
       }
     }
   }
-  if (g_settings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL && itemsBefore != items.Size() && items.GetObjectCount() == 0)
+  if (watchMode != VIDEO_SHOW_ALL && itemsBefore != items.Size() && items.GetObjectCount() == 0)
     GoParentFolder();
 }
 
@@ -1129,9 +1131,6 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
         if (node == NODE_TYPE_SEASONS && item->m_bIsFolder)
           buttons.Add(CONTEXT_BUTTON_SET_SEASON_THUMB, 20371);
-
-        if (m_vecItems->m_strPath.Equals("plugin://video/"))
-          buttons.Add(CONTEXT_BUTTON_SET_PLUGIN_THUMB, 1044);
 
         if (item->m_strPath.Left(14).Equals("videodb://1/7/") && item->m_strPath.size() > 14 && item->m_bIsFolder) // sets
         {
@@ -1237,7 +1236,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_SET_SEASON_THUMB:
   case CONTEXT_BUTTON_SET_ACTOR_THUMB:
   case CONTEXT_BUTTON_SET_ARTIST_THUMB:
-  case CONTEXT_BUTTON_SET_PLUGIN_THUMB:
   case CONTEXT_BUTTON_SET_MOVIESET_THUMB:
     {
       // Grab the thumbnails from the web
@@ -1254,13 +1252,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         cachedThumb = m_vecItems->Get(itemNumber)->GetCachedArtistThumb();
       if (button == CONTEXT_BUTTON_SET_MOVIESET_THUMB)
         cachedThumb = m_vecItems->Get(itemNumber)->GetCachedVideoThumb();
-      if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
-      {
-        strPath = m_vecItems->Get(itemNumber)->m_strPath;
-        strPath.Replace("plugin://video/","special://home/plugins/video/");
-        CFileItem item(strPath,true);
-        cachedThumb = item.GetCachedProgramThumb();
-      }
       if (CFile::Exists(cachedThumb))
       {
         CFileItemPtr item(new CFileItem("thumb://Current", false));
@@ -1272,8 +1263,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       noneitem->SetLabel(g_localizeStrings.Get(20018));
 
       vector<CStdString> thumbs;
-      if (button != CONTEXT_BUTTON_SET_ARTIST_THUMB &&
-          button != CONTEXT_BUTTON_SET_PLUGIN_THUMB)
+      if (button != CONTEXT_BUTTON_SET_ARTIST_THUMB)
       {
         CVideoInfoTag tag;
         if (button == CONTEXT_BUTTON_SET_SEASON_THUMB)
@@ -1301,41 +1291,6 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
 
       bool local=false;
-      if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
-      {
-        if (items.Size() == 0)
-        {
-          CFileItem item2(strPath,false);
-          CUtil::AddFileToFolder(strPath,"default.py",item2.m_strPath);
-          if (CFile::Exists(item2.GetCachedProgramThumb()))
-          {
-            CFileItemPtr item(new CFileItem("thumb://Current", false));
-            item->SetThumbnailImage(item2.GetCachedProgramThumb());
-            item->SetLabel(g_localizeStrings.Get(20016));
-            items.Add(item);
-            local = true;
-          }
-        }
-        CStdString strThumb;
-        CUtil::AddFileToFolder(strPath,"folder.jpg",strThumb);
-        if (CFile::Exists(strThumb))
-        {
-          CFileItemPtr item(new CFileItem(strThumb,false));
-          item->SetThumbnailImage(strThumb);
-          item->SetLabel(g_localizeStrings.Get(20017));
-          items.Add(item);
-          local = true;
-        }
-        CUtil::AddFileToFolder(strPath,"default.tbn",strThumb);
-        if (CFile::Exists(strThumb))
-        {
-          CFileItemPtr item(new CFileItem(strThumb,false));
-          item->SetThumbnailImage(strThumb);
-          item->SetLabel(g_localizeStrings.Get(20017));
-          items.Add(item);
-          local = true;
-        }
-      }
       if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
       {
         CStdString picturePath;
@@ -1412,15 +1367,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         CFile::Cache(thumbs[number], cachedThumb);
       }
       if (result == "thumb://None")
-      {
         CTextureCache::Get().ClearCachedImage(cachedThumb, true);
-        if (button == CONTEXT_BUTTON_SET_PLUGIN_THUMB)
-        {
-          CFileItem item2(strPath,false);
-          CUtil::AddFileToFolder(strPath,"default.py",item2.m_strPath);
-          CTextureCache::Get().ClearCachedImage(item2.GetCachedProgramThumb(), true);
-        }
-      }
       else
         CFile::Cache(result,cachedThumb);
 

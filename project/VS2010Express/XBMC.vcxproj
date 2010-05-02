@@ -269,6 +269,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\AddonDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Repository.cpp" />
+    <ClCompile Include="..\..\xbmc\addons\Skin.cpp" />
+    <ClCompile Include="..\..\xbmc\GUIDialogAddonInfo.cpp" />
     <ClCompile Include="..\..\xbmc\GUIViewStateAddonBrowser.cpp" />
     <ClCompile Include="..\..\xbmc\win32\NetworkWin32.cpp" />
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -995,6 +997,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\AddonDatabase.h" />
     <ClInclude Include="..\..\xbmc\addons\Repository.h" />
+    <ClInclude Include="..\..\xbmc\addons\Skin.h" />
+    <ClInclude Include="..\..\xbmc\GUIDialogAddonInfo.h" />
     <ClInclude Include="..\..\xbmc\GUIViewStateAddonBrowser.h" />
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h" />
     <ClInclude Include="..\..\xbmc\win32\pch.h" />
@@ -1095,14 +1099,14 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamRTMP.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.h" />
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\avcodec.h" />
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\avformat.h" />
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\avio.h" />
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\common.h" />
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\decoder.h" />
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\DllAvCodec.h" />
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\DllAvFormat.h" />
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\DllPostProc.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllAvCodec.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllAvFormat.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllPostProc.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllSwScale.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include\libavutil\avconfig.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avformat.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avio.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavutil\common.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvd_types.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvdnav.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvdnav_events.h" />
@@ -1135,14 +1139,10 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\CodecFactory.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllAc3codec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllAdpcm.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllAdplug.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllASAP.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllDCACodec.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllDumb.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllGensApu.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllLibFlac.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllLibshnplay.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllMACDll.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllNosefart.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllSidplay2.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllStSound.h" />
@@ -1163,7 +1163,6 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\OGGcodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\PAPlayer.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\ReplayGain.h" />
-    <ClInclude Include="..\..\xbmc\cores\paplayer\RingHoldBuffer.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\SIDCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\SPCCodec.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\TimidityCodec.h" />

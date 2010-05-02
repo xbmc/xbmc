@@ -28,6 +28,7 @@
 #import <OpenGL/gl.h>
 
 #import "CocoaInterface.h"
+#import "DllPaths_generated.h"
 
 // hack for Cocoa_GL_ResizeWindow
 //extern "C" void SDL_SetWidthHeight(int w, int h);
@@ -491,6 +492,26 @@ const char* Cocoa_GetAppVersion()
   
   return strVersion;
 }
+
+bool Cocoa_HasVDADecoder()
+{
+  bool result = false;
+
+  if (Cocoa_GetOSVersion() >= 0x1063)
+    result = access(DLL_PATH_LIBVDADECODER, 0) == 0;
+
+  return(result);
+}
+
+int Cocoa_GetOSVersion()
+{
+  SInt32 version;
+
+  Gestalt(gestaltSystemVersion, &version);
+  
+  return(version);
+}
+
 
 NSWindow* childWindow = nil;
 NSWindow* mainWindow = nil;

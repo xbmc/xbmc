@@ -337,7 +337,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else
 #endif
-		{
+    {
       unsigned int argc = params.size();
       char ** argv = new char*[argc];
 
@@ -350,13 +350,10 @@ int CBuiltins::Execute(const CStdString& execString)
         argv[i] = (char*)params[i].c_str();
 
       AddonPtr script;
-      CURL url(params[0]);
-      if (!CAddonMgr::Get()->GetAddon(url.GetFileName(), script, ADDON_SCRIPT))
-      {
-        CLog::Log(LOGERROR, "Could not find addon: %s", url.GetFileName().c_str());
-        return -1;
-      }
-      CStdString scriptpath(script->Path()+script->LibName());
+      CStdString scriptpath(params[0]);
+      if (CAddonMgr::Get()->GetAddon(params[0], script))
+        scriptpath = CUtil::AddFileToFolder(script->Path(),script->LibName());
+
       g_pythonParser.evalFile(scriptpath.c_str(), argc, (const char**)argv);
       delete [] argv;
     }
@@ -946,14 +943,23 @@ int CBuiltins::Execute(const CStdString& execString)
       {
         CURL url;
         url.SetProtocol("addons");
-        url.SetHostName(strMask);
+        url.SetHostName("enabled");
+        url.SetFileName(strMask+"/");
         localShares.clear();
         CStdString content = (params.size() > 2) ? params[2] : "";
         content.ToLower();
         url.SetPassword(content);
+        CStdString strMask;
+        if (type == ADDON_SCRIPT)
+          strMask = ".py";
         CStdString replace;
-        if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), "", TranslateType(type, true), replace, true, true))
-          g_settings.SetSkinString(string, replace);
+        if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, TranslateType(type, true), replace, true, true, true))
+        {
+          if (replace.Mid(0,9).Equals("addons://"))
+            g_settings.SetSkinString(string, CUtil::GetFileName(replace));
+          else
+            g_settings.SetSkinString(string, replace);
+        }
       }
       else 
       {

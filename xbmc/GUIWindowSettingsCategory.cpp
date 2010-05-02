@@ -40,7 +40,7 @@
 #include "utils/LCDFactory.h"
 #endif
 #include "PlayListPlayer.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 #include "GUIAudioManager.h"
 #include "AudioContext.h"
 #include "lib/libscrobbler/lastfmscrobbler.h"
@@ -81,7 +81,6 @@
 #endif
 #include "GUIDialogAccessPoints.h"
 #include "FileSystem/Directory.h"
-#include "utils/ScraperParser.h"
 #include "utils/PVRChannels.h"
 #include "PVRManager.h"
 
@@ -373,29 +372,18 @@ void CGUIWindowSettingsCategory::CreateSettings()
         continue;
       }
     }
+    else if (pSetting->GetType() == SETTINGS_TYPE_ADDON)
+    {
+      CSettingAddon *pSettingAddon = (CSettingAddon*)pSetting;
+      CBaseSettingControl *control = GetSetting(strSetting);
+      control->SetDelayed();
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
+      FillInAddons(pControl, pSettingAddon);
+      continue;
+    }
     if (strSetting.Equals("musicplayer.visualisation"))
     {
       FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
-    }
-    else if (strSetting.Equals("musiclibrary.scraper"))
-    {
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, g_guiSettings.GetString("musiclibrary.scraper"), CONTENT_ALBUMS);
-    }
-    else if (strSetting.Equals("scrapers.moviedefault"))
-    {
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.moviedefault"), CONTENT_MOVIES);
-    }
-    else if (strSetting.Equals("scrapers.tvshowdefault"))
-    {
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.tvshowdefault"), CONTENT_TVSHOWS);
-    }
-    else if (strSetting.Equals("scrapers.musicvideodefault"))
-    {
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.musicvideodefault"), CONTENT_MUSICVIDEOS);
     }
     else if (strSetting.Equals("videooutput.aspect"))
     {
@@ -467,10 +455,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("lookandfeel.font"))
     {
       FillInSkinFonts(pSetting);
-    }
-    else if (strSetting.Equals("lookandfeel.skin"))
-    {
-      FillInSkins(pSetting);
     }
     else if (strSetting.Equals("lookandfeel.soundskin"))
     {
@@ -676,6 +660,13 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       }
     }
 #endif
+    else if (strSetting.Equals("videoscreen.screenmode"))
+    {
+      // The user may have rejected the new resolution.
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+      if (pControl && (pControl->GetValue() != g_guiSettings.GetResolution()))
+          pControl->SetValue(g_guiSettings.GetResolution());
+    }
 #if defined(__APPLE__) || defined(_WIN32)
     else if (strSetting.Equals("videoscreen.blankdisplays"))
     {
@@ -1160,7 +1151,17 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
 
   // ok, now check the various special things we need to do
-  if (strSetting.Equals("musicplayer.visualisation"))
+  if (pSettingControl->GetSetting()->GetType() == SETTINGS_TYPE_ADDON)
+  {
+    CSettingAddon *pSettingAddon = (CSettingAddon*)pSettingControl->GetSetting();
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+    FillInAddons(pControl, pSettingAddon);
+    if (pSettingAddon->m_type == ADDON_SKIN)
+    {
+      g_application.ReloadSkin();
+    }
+  }
+  else if (strSetting.Equals("musicplayer.visualisation"))
   { // new visualisation choosen...
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1193,26 +1194,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CMusicDatabase musicdatabase;
     musicdatabase.Clean();
     CUtil::DeleteMusicDatabaseDirectoryCache();
-  }
-  else if (strSetting.Equals("musiclibrary.scraper"))
-  {
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_ALBUMS);
-  }
-  else if (strSetting.Equals("scrapers.moviedefault"))
-  {
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_MOVIES); //TODO langify these
-  }
-  else if (strSetting.Equals("scrapers.tvshowdefault"))
-  {
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_TVSHOWS);
-  }
-  else if (strSetting.Equals("scrapers.musicvideodefault"))
-  {
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_MUSICVIDEOS);
   }
   else if (strSetting.Equals("videolibrary.cleanup"))
   {
@@ -1487,27 +1468,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     {
       g_guiSettings.SetString("lookandfeel.font", strSkinFontSet);
       g_application.ReloadSkin();
-    }
-  }
-  else if (strSetting.Equals("lookandfeel.skin"))
-  { // new skin choosen...
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    CStdString strSkin = pControl->GetCurrentLabel();
-    CStdString strSkinPath = g_settings.GetSkinFolder(strSkin);
-    if (CSkinInfo::Check(strSkinPath))
-    {
-      m_strErrorMessage.Empty();
-      pControl->SetItemInvalid(false);
-      if (strSkin != ".svn" && strSkin != g_guiSettings.GetString("lookandfeel.skin"))
-      {
-        g_guiSettings.SetString("lookandfeel.skin", strSkin);
-        g_application.ReloadSkin();
-      }
-    }
-    else
-    {
-      m_strErrorMessage.Format("Incompatible skin. We require skins of version %0.2f or higher", g_SkinInfo.GetMinVersion());
-      pControl->SetItemInvalid(true);
     }
   }
   else if (strSetting.Equals("lookandfeel.soundskin"))
@@ -2258,7 +2218,7 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
 
   int iSkinFontSet = 0;
 
-  CStdString strPath = g_SkinInfo.GetSkinPath("Font.xml");
+  CStdString strPath = g_SkinInfo->GetSkinPath("Font.xml");
 
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(strPath))
@@ -2313,53 +2273,6 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
     pControl->SetValue(1);
     pControl->SetEnabled(false);
   }
-}
-
-void CGUIWindowSettingsCategory::FillInSkins(CSetting *pSetting)
-{
-  CBaseSettingControl *setting = GetSetting(pSetting->GetSetting());
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(setting->GetID());
-  pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
-  pControl->Clear();
-  pControl->SetShowRange(true);
-  setting->SetDelayed();
-
-  //find skins...
-  CFileItemList items;
-  CDirectory::GetDirectory("special://xbmc/skin/", items);
-  if (!CSpecialProtocol::XBMCIsHome())
-    CDirectory::GetDirectory("special://home/skin/", items);
-
-  int iCurrentSkin = 0;
-  int iSkin = 0;
-  vector<CStdString> vecSkins;
-  for (int i = 0; i < items.Size(); ++i)
-  {
-    CFileItemPtr pItem = items[i];
-    if (pItem->m_bIsFolder)
-    {
-      if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
-      if (strcmpi(pItem->GetLabel().c_str(), "fonts") == 0) continue;
-      if (strcmpi(pItem->GetLabel().c_str(), "media") == 0) continue;
-      //   if (CSkinInfo::Check(pItem->m_strPath))
-      //   {
-      vecSkins.push_back(pItem->GetLabel());
-      //   }
-    }
-  }
-
-  sort(vecSkins.begin(), vecSkins.end(), sortstringbyname());
-  for (unsigned int i = 0; i < vecSkins.size(); ++i)
-  {
-    CStdString strSkin = vecSkins[i];
-    if (strcmpi(strSkin.c_str(), g_guiSettings.GetString("lookandfeel.skin").c_str()) == 0)
-    {
-      iCurrentSkin = iSkin;
-    }
-    pControl->AddLabel(strSkin, iSkin++);
-  }
-  pControl->SetValue(iCurrentSkin);
-  return ;
 }
 
 void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
@@ -2767,7 +2680,7 @@ void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
   vector<CStdString> vecColors;
 
   CStdString strPath;
-  CUtil::AddFileToFolder(g_SkinInfo.GetBaseDir(),"colors",strPath);
+  CUtil::AddFileToFolder(g_SkinInfo->Path(),"colors",strPath);
 
   CFileItemList items;
   CDirectory::GetDirectory(PTH_IC(strPath), items, ".xml");
@@ -2806,7 +2719,7 @@ void CGUIWindowSettingsCategory::FillInStartupWindow(CSetting *pSetting)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
-  const vector<CSkinInfo::CStartupWindow> &startupWindows = g_SkinInfo.GetStartupWindows();
+  const vector<CSkinInfo::CStartupWindow> &startupWindows = g_SkinInfo->GetStartupWindows();
 
   // TODO: How should we localize this?
   // In the long run there is no way to do it really without the skin having some
@@ -2913,12 +2826,15 @@ void CGUIWindowSettingsCategory::FillInSortMethods(CSetting *pSetting, int windo
   delete state;
 }
 
-void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected, const CONTENT_TYPE& content)
+void CGUIWindowSettingsCategory::FillInAddons(CGUISpinControlEx *pControl, CSettingAddon *pSetting)
 {
   VECADDONS addons;
   pControl->Clear();
+  CStdString strSelected = pSetting->GetData();
 
-  CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, content);
+  pSetting->m_entries.clear();
+
+  CAddonMgr::Get()->GetAddons(pSetting->m_type, addons, pSetting->m_content);
   if (addons.empty())
   {
     pControl->AddLabel(g_localizeStrings.Get(231), 0); // "None"
@@ -2926,28 +2842,18 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
     return;
   }
 
-  int j = 0;
-  int k = 0;
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
   {
-    if ((*it)->Name().Equals(strSelected))
-    {
-      if (content == CONTENT_ALBUMS) // native strContent would be albums or artists but we're using the same scraper for both
-        g_guiSettings.SetString("musiclibrary.scraper", (*it)->Name());
-      else if (content == CONTENT_MOVIES)
-        g_guiSettings.SetString("scrapers.moviedefault", (*it)->Name());
-      else if (content == CONTENT_TVSHOWS)
-        g_guiSettings.SetString("scrapers.tvshowdefault", (*it)->Name());
-      else if (content == CONTENT_MUSICVIDEOS)
-        g_guiSettings.SetString("scrapers.musicvideodefault", (*it)->Name());
-      k = j;
-    }
-    pControl->AddLabel((*it)->Name(),j++);
+    AddonPtr addon = *it;
+    pSetting->m_entries.insert(std::make_pair(addon->ID(),addon->Name()));
   }
-  if (j == 0)
-    pControl->AddLabel(g_localizeStrings.Get(231), 0); // "None"
 
-  pControl->SetValue(k);
+  unsigned i=0;
+  for (map<CStdString,CStdString>::iterator it=pSetting->m_entries.begin();
+       it != pSetting->m_entries.end();++it)
+  {
+    pControl->AddLabel(it->second, i++);
+  }
 }
 
 void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)

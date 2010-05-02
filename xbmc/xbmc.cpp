@@ -28,9 +28,9 @@
 //
 
 #include "system.h"
-#include "Application.h"
 #include "AdvancedSettings.h"
 #include "FileItem.h"
+#include "SystemGlobals.h"
 #include "PlayListPlayer.h"
 #include "utils/log.h"
 #ifdef _LINUX
@@ -44,7 +44,7 @@
 #include "common/LIRC.h"
 #endif
 
-CApplication g_application;
+CSystemGlobals g_SystemGlobals;
 
 int main(int argc, char* argv[])
 {

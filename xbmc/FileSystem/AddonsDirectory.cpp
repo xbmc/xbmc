@@ -31,7 +31,7 @@
 
 using namespace ADDON;
 
-namespace XFILE 
+namespace XFILE
 {
 
 CAddonsDirectory::CAddonsDirectory(void)
@@ -45,7 +45,9 @@ CAddonsDirectory::~CAddonsDirectory(void)
 
 bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  CURL path(strPath);
+  CStdString path1(strPath);
+  CUtil::RemoveSlashAtEnd(path1);
+  CURL path(path1);
   items.ClearProperties();
 
   VECADDONS addons;
@@ -54,6 +56,17 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   {
     CAddonMgr::Get()->GetAllAddons(addons, false);
     items.SetProperty("reponame",g_localizeStrings.Get(24062));
+  }
+  else if (path.GetHostName().Equals("repos"))
+  {
+    CAddonMgr::Get()->GetAddons(ADDON_REPOSITORY,addons,CONTENT_NONE,true);
+  }
+  else if (path.GetHostName().Equals("all"))
+  {
+    CAddonDatabase database;
+    database.Open();
+    database.GetAddons(addons);
+    items.SetProperty("reponame",g_localizeStrings.Get(24032));
   }
   else
   {
@@ -73,32 +86,59 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
   if (path.GetFileName().IsEmpty())
   {
-    for (int i=ADDON_UNKNOWN+1;i<ADDON_VIZ_LIBRARY;++i)
+    if (!path.GetHostName().Equals("repos"))
     {
-      for (unsigned int j=0;j<addons.size();++j)
+      for (int i=ADDON_UNKNOWN+1;i<ADDON_VIZ_LIBRARY;++i)
       {
-        if (addons[j]->Type() == (TYPE)i)
+        for (unsigned int j=0;j<addons.size();++j)
         {
-          CFileItemPtr item(new CFileItem(TranslateType((TYPE)i,true)));
-          item->m_strPath = CUtil::AddFileToFolder(strPath,TranslateType((TYPE)i,false));
-          item->m_bIsFolder = true;
-          items.Add(item);
-          break;
+          if (addons[j]->Type() == (TYPE)i)
+          {
+            CFileItemPtr item(new CFileItem(TranslateType((TYPE)i,true)));
+            item->m_strPath = CUtil::AddFileToFolder(strPath,TranslateType((TYPE)i,false));
+            item->m_bIsFolder = true;
+            items.Add(item);
+            break;
+          }
         }
       }
+      items.m_strPath = strPath;
+      return true;
     }
-    items.m_strPath = strPath;
-    return true;
   }
-
-  items.SetProperty("addoncategory",path.GetFileName());
-  TYPE type = TranslateType(path.GetFileName());
-  for (unsigned int j=0;j<addons.size();++j)
-    if (addons[j]->Type() != type)
-      addons.erase(addons.begin()+j--);
+  else
+  {
+    items.SetProperty("addoncategory",path.GetFileName());
+    TYPE type = TranslateType(path.GetFileName());
+    for (unsigned int j=0;j<addons.size();++j)
+      if (addons[j]->Type() != type)
+        addons.erase(addons.begin()+j--);
+  }
 
   items.m_strPath = strPath;
   GenerateListing(path, addons, items);
+  // check for available updates
+  if (path.GetHostName().Equals("enabled"))
+  {
+    CAddonDatabase database;
+    database.Open();
+    for (int i=0;i<items.Size();++i)
+    {
+      AddonPtr addon2;
+      database.GetAddon(items[i]->GetProperty("Addon.ID"),addon2);
+      if (addon2 && addon2->Version() > AddonVersion(items[i]->GetProperty("Addon.Version")))
+      {
+        items[i]->SetProperty("Addon.Status",g_localizeStrings.Get(24068));
+        items[i]->SetProperty("Addon.UpdateAvail","true");
+      }
+    }
+  }
+  if (path.GetHostName().Equals("repos"))
+  {
+    CFileItemPtr item(new CFileItem("addons://all/",true));
+    item->SetLabel(g_localizeStrings.Get(24032));
+    items.Add(item);
+  }
 
   return true;
 }
@@ -110,10 +150,18 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
   {
     AddonPtr addon = addons[i];
     path.SetFileName(addon->ID());
-    CFileItemPtr pItem(new CFileItem(path.Get(), false));
+    CStdString path2 = path.Get();
+    bool folder=false;
+    if (addon->Type() == ADDON_REPOSITORY)
+    {
+      folder = true;
+      path2 = CUtil::AddFileToFolder("addons://",addon->ID()+"/");
+    }
+    CFileItemPtr pItem(new CFileItem(path2,folder));
     pItem->SetLabel(addon->Name());
     pItem->SetLabel2(addon->Summary());
     pItem->SetThumbnailImage(addon->Icon());
+    pItem->SetProperty("fanart_image",addon->FanArt());
     CAddonDatabase::SetPropertiesFromAddon(addon,pItem);
     AddonPtr addon2;
     if (CAddonMgr::Get()->GetAddon(addon->ID(),addon2))

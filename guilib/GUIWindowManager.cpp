@@ -29,7 +29,7 @@
 #include "Util.h"
 #include "GUISettings.h"
 #include "Settings.h"
-#include "SkinInfo.h"
+#include "addons/Skin.h"
 
 using namespace std;
 
@@ -362,7 +362,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
   }
   if (iWindowID == WINDOW_START)
   { // virtual start window
-    iWindowID = g_SkinInfo.GetStartWindow();
+    iWindowID = g_SkinInfo->GetStartWindow();
   }
 
   // debug

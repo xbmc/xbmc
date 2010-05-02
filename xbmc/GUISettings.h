@@ -24,6 +24,7 @@
 #include <vector>
 #include <map>
 #include "Resolution.h"
+#include "addons/IAddon.h"
 
 class TiXmlNode;
 class TiXmlElement;
@@ -135,6 +136,7 @@ class TiXmlElement;
 #define SETTINGS_TYPE_HEX       5
 #define SETTINGS_TYPE_SEPARATOR 6
 #define SETTINGS_TYPE_PATH      7
+#define SETTINGS_TYPE_ADDON     8
 
 #define CHECKMARK_CONTROL           1
 #define SPIN_CONTROL_FLOAT          2
@@ -339,6 +341,20 @@ public:
   virtual int GetType() { return SETTINGS_TYPE_PATH; };
 };
 
+class CSettingAddon : public CSettingString
+{
+public:
+  CSettingAddon(int iOrder, const char *strSetting, int iLabel, const char *strData, const ADDON::TYPE type, const CONTENT_TYPE content);
+  virtual ~CSettingAddon() {};
+  virtual int GetType() { return SETTINGS_TYPE_ADDON; };
+  void SetData(int);
+  int GetPos();
+
+  std::map<CStdString,CStdString> m_entries;
+  const ADDON::TYPE m_type;
+  const CONTENT_TYPE m_content;
+};
+
 class CSettingSeparator : public CSetting
 {
 public:
@@ -431,6 +447,8 @@ public:
 
   void AddString(CSettingsCategory* cat, const char *strSetting, int iLabel, const char *strData, int iControlType = EDIT_CONTROL_INPUT, bool bAllowEmpty = false, int iHeadingString = -1);
   void AddPath(CSettingsCategory* cat, const char *strSetting, int iLabel, const char *strData, int iControlType = EDIT_CONTROL_INPUT, bool bAllowEmpty = false, int iHeadingString = -1);
+
+  void AddDefaultAddon(CSettingsCategory* cat, const char *strSetting, int iLabel, const char *strData, const ADDON::TYPE type, const CONTENT_TYPE content = CONTENT_NONE);
 
   const CStdString &GetString(const char *strSetting, bool bPrompt=true) const;
   void SetString(const char *strSetting, const char *strData);

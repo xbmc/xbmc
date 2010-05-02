@@ -118,6 +118,7 @@ SRCS=Application.cpp \
      Song.cpp \
      VideoDatabase.cpp \
      ViewDatabase.cpp \
+     GUIDialogAddonInfo.cpp \
      GUIDialogAddonSettings.cpp \
      GUIDialogAudioSubtitleSettings.cpp \
      GUIDialogBoxBase.cpp \

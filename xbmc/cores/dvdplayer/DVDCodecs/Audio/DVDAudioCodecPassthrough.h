@@ -44,7 +44,7 @@ public:
   virtual int GetData(BYTE** dst);
   virtual void Reset();
   virtual int GetChannels();
-  virtual int8_t *GetChannelMap() { static uint8_t map[2] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT}; return map; }
+  virtual enum PCMChannels *GetChannelMap() { static enum PCMChannels map[2] = {PCM_FRONT_LEFT, PCM_FRONT_RIGHT}; return map; }
   virtual int GetSampleRate();
   virtual int GetBitsPerSample();
   virtual bool NeedPassthrough() { return true; }

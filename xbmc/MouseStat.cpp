@@ -24,8 +24,9 @@
 #include "WindowingFactory.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "SystemGlobals.h"
 
-CMouseStat g_Mouse;
+CMouseStat& g_Mouse = g_SystemGlobals.m_Mouse;
 
 CMouseStat::CButtonState::CButtonState()
 {

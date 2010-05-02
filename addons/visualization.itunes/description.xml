@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <id>visualization.itunes</id>
+  <type>visualization</type>
+  <title>iTunes Visualization</title>
+  <library>iTunes.mvis</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>osx</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>iTunes Visualization Wrapper</summary>
+  <description>iTunes Visualization Wrapper allows you to use visualizations from your OSX iTunes install in XBMC</description>
+  <author>Team XBMC</author>
+</addoninfo>

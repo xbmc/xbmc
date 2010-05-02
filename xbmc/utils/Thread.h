@@ -62,6 +62,7 @@ public:
   DWORD WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWaitAll, unsigned int milliseconds);
   void Sleep(unsigned int milliseconds);
   bool SetPriority(const int iPriority);
+  void SetPrioritySched_RR(void);
   int GetMinPriority(void);
   int GetMaxPriority(void);
   int GetNormalPriority(void);

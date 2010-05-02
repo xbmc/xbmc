@@ -19,8 +19,8 @@
  *
  */
 
-#include "../../xbmc/Application.h"
 #include "../../xbmc/AdvancedSettings.h"
+#include "../../xbmc/SystemGlobals.h"
 #include "../../xbmc/utils/log.h"
 #include "WIN32Util.h"
 #include "shellapi.h"
@@ -31,7 +31,7 @@ typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hF
                                         CONST PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam,
                                         CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam);
 
-CApplication g_application;
+CSystemGlobals g_SystemGlobals;
 
 // Minidump creation function 
 LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp ) 

@@ -97,7 +97,7 @@ bool CScraper::LoadSettingsXML(const CStdString& strFunction, const CScraperUrl*
     return false;
 
   if (!parser.HasFunction(strFunction))
-    return false;
+    return CAddon::LoadSettings();
 
   if (!url && strFunction.Equals("GetSettings")) // entry point
     m_addonXmlDoc.Clear();
