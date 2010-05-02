@@ -1004,7 +1004,7 @@
 								<posx>88</posx>
 								<description>First Aired</description>
 								<font>MediaPreviewSummary</font>
-								<label>$INFO[ListItem.year]</label>
+								<label>$INFO[ListItem.date]</label>
 								<align>left</align>
 							</control>
 						</control>
@@ -1337,6 +1337,14 @@
 					<control type="image">
 						<include>MediaPreviewEpThumb</include>
 					</control>
+					<control type="label">
+						<posx>132</posx>
+						<posy>195</posy>
+						<width>226</width>
+						<align>center</align>
+						<label>$INFO[ListItem.Episode]. $INFO[Listitem.Title]</label>
+						<font>MediaPreviewDetailsHeader</font>
+					</control>
 					<include>MediaPreviewEpThumbOverlay</include>
 				</itemlayout>
 				<focusedlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)" width="256" height="220">
@@ -1355,6 +1363,15 @@
 					<control type="image">
 						<include>MediaPreviewEpThumb</include>
 					</control>
+					<control type="label">
+						<posx>132</posx>
+						<posy>195</posy>
+						<width>226</width>
+						<align>center</align>
+						<label>$INFO[ListItem.Episode]. $INFO[Listitem.Title]</label>
+						<font>MediaPreviewDetailsHeader</font>
+					</control>
+					
 					<include>MediaPreviewEpThumbOverlay</include>
 				</focusedlayout>
 				<itemlayout condition="Skin.HasSetting(ShowAnimMediaPreview)" width="106" height="78">
