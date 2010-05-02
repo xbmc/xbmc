@@ -433,7 +433,7 @@
 <!-- Possible View Options -->
         <control type="button" id="911">
           <description>List view button</description>
-          <visible>!Control.IsVisible(50) + !Container.Content(movies)</visible>
+          <visible>!Control.IsVisible(50) + !Container.Content(movies) + !Container.Content(Episodes)</visible>
           <label>$LOCALIZE[535]</label>
           <onclick>Container.SetViewMode(50)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -442,7 +442,7 @@
 
         <control type="button" id="912">
           <description>Info List view button</description>
-          <visible>!Control.IsVisible(56) + !Container.Content(episodes)</visible>
+          <visible>!Control.IsVisible(56)</visible>
           <label>$LOCALIZE[31711]</label>
           <onclick>Container.SetViewMode(56)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -460,7 +460,7 @@
 
         <control type="button" id="916">
           <description>Showcase view button</description>
-          <visible>!Control.IsVisible(58) + !Container.Content(movies)</visible>
+          <visible>!Control.IsVisible(58) + !Container.Content(movies) + !Container.Content(Episodes)</visible>
           <label>$LOCALIZE[31702]</label>
           <onclick>Container.SetViewMode(58)</onclick>
           <onclick>SetFocus(50)</onclick>
@@ -523,7 +523,7 @@
 
         <control type="button" id="953">
           <description>Coverflow view button</description>
-          <visible>!Control.IsVisible(55)</visible>
+          <visible>!Control.IsVisible(55) + !Container.Content(Episodes)</visible>
           <label>$LOCALIZE[31716]</label>
           <onclick>Container.SetViewMode(55)</onclick>
           <onclick>SetFocus(50)</onclick>
