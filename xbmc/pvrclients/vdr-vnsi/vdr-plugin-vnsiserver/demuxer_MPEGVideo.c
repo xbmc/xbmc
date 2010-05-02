@@ -97,6 +97,24 @@ void cParserMPEG2Video::Parse(unsigned char *data, int size, bool pusi)
 {
   uint32_t startcode = m_StartCond;
 
+  if (pusi)
+  {
+    int hlen;
+
+    hlen = ParsePESHeader(data, size);
+  #if 0
+    int i;
+    for(i = 0; i < 16; i++)
+      printf("%02x.", data[i]);
+    printf(" %d\n", hlen);
+  #endif
+    data += hlen;
+    size  -= hlen;
+
+    if(size < 1)
+      return;
+  }
+
   if (m_pictureBuffer == NULL)
   {
     m_pictureBufferSize   = 4000;
@@ -358,6 +376,5 @@ void cParserMPEG2Video::Parse_ComputeDuration(sStreamPacket *pkt)
     pkt->duration = duration;
     SendPacket(pkt);
   }
-  SendPacket(pkt);
   free(pkt->data);
 }

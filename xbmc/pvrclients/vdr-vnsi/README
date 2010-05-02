@@ -52,6 +52,12 @@ you must patch wirbelscan with the file in "patches/vdr-wirbelscan-0.0.5-pre11e-
 Please load VDR with VNSI plugin together with the modified wirbelscan plugin and you can access the
 "Search Channels" option inside "Settings->TV->General"
 
+Scanning can take up to 50 minutes dependet on signal type and signal quality.
+    * DVB-T ~ 5 min
+    * DVB-C ~ 30 min (Symbolrate=AUTO, QAM=AUTO)
+    * DVB-S/S2 ~ 50 min (depend on Satellite, Beam, Hardware)
+    * Analog ~ 5 min
+
 Note: Please notice the warning on the wirbelscan plugin homepage:
       "Development Version - kein Support. Benutzung auf eigene Verantwortung."
       "Development Version - no support. Use at your own risk."

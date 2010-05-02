@@ -23,6 +23,12 @@ required. You can download the orginal source from here "http://wirbel.htpc-foru
 The VNSI communicate with wirbelscan over VDR's plugin service interface, to add this feature
 you must patch wirbelscan with the file in "patches/vdr-wirbelscan-0.0.5-pre11e-AddServiceInterface.diff".
 
+Scanning can take up to 50 minutes dependet on signal type and signal quality.
+    * DVB-T ~ 5 min
+    * DVB-C ~ 30 min (Symbolrate=AUTO, QAM=AUTO)
+    * DVB-S/S2 ~ 50 min (depend on Satellite, Beam, Hardware)
+    * Analog ~ 5 min
+
 Note: Please notice the warning on the wirbelscan plugin homepage:
       "Development Version - kein Support. Benutzung auf eigene Verantwortung."
       "Development Version - no support. Use at your own risk."
