@@ -27,27 +27,33 @@
 #include "XBMCStreamVideo.h"
 #include "XBMCStreamAudio.h"
 #include "DShowUtil/DShowUtil.h"
+#include "utils/Win32Exception.h"
+#include "Util.h"
+#include "FileSystem/StackDirectory.h"
+#include "utils/TimeUtils.h"
+
+#include "DVDPlayer/DVDDemuxers/DVDDemux.h"
+#include "DVDPlayer/DVDDemuxers/DVDDemuxUtils.h"
+
+
+
 
 //
 // CXBMCSplitterFilter
 //
 
 CXBMCSplitterFilter::CXBMCSplitterFilter(LPUNKNOWN pUnk, HRESULT* phr)
-  :CSource(NAME("CXBMCSplitterFilter"), pUnk, __uuidof(this), phr)
-  ,m_rtStart((long)0)
-  ,m_pAudioStream(GetOwner(), this, phr)
-  ,m_pVideoStream(GetOwner(), this, phr)
-{
-  
-  m_rtStop = _I64_MAX / 2;
-    m_rtDuration = m_rtStop;
-    m_dRateSeeking = 1.0;
-	
-    m_dwSeekingCaps = AM_SEEKING_CanGetDuration		
-		| AM_SEEKING_CanGetStopPos
-		| AM_SEEKING_CanSeekForwards
-        | AM_SEEKING_CanSeekBackwards
-        | AM_SEEKING_CanSeekAbsolute;
+  :CSource(NAME("CXBMCSplitterFilter"), pUnk, __uuidof(this), phr),
+  m_pAudioStream(GetOwner(), this, phr),
+  m_pVideoStream(GetOwner(), this, phr),
+  m_rtDuration(0), m_rtStart(0), m_rtStop(0), m_rtCurrent(0)
+{	
+  m_dwSeekingCaps = AM_SEEKING_CanGetDuration | AM_SEEKING_CanGetStopPos | 
+                    AM_SEEKING_CanSeekForwards | AM_SEEKING_CanSeekBackwards | 
+                    AM_SEEKING_CanSeekAbsolute;
+  m_pDemuxer = NULL;
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllAvFormat.Load())
+    *phr = E_FAIL;
 }
 
 CXBMCSplitterFilter::~CXBMCSplitterFilter()
@@ -79,84 +85,467 @@ STDMETHODIMP CXBMCSplitterFilter::Load(LPCOLESTR lpwszFileName, const AM_MEDIA_T
   TCHAR *lpszFileName=0;
 	lpszFileName = new char[cch * 2];
 	if (!lpszFileName) {
-		NOTE("MkxFilter::Load new lpszFileName failed E_OUTOFMEMORY");
+		NOTE("CXBMCSplitterFilter::Load new lpszFileName failed E_OUTOFMEMORY");
 		return E_OUTOFMEMORY;
 	}
 	WideCharToMultiByte(GetACP(), 0, lpwszFileName, -1, lpszFileName, cch, NULL, NULL);
   CAutoLock cAutoLock(&m_cStateLock);
+  m_dllAvFormat.av_register_all();
   OpenDemux(CStdString(lpszFileName));
 
 }
 
-bool CXBMCSplitterFilter::OpenDemux(CStdString pFile)
+STDMETHODIMP CXBMCSplitterFilter::Run(REFERENCE_TIME tStart)
 {
-  m_iCurrentPts = DVD_NOPTS_VALUE;
-  AVProbeData   pd;
-  AVInputFormat* iformat = NULL;
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllAvFormat.Load())  
-  {
-    CLog::Log(LOGERROR,"CDVDDemuxFFmpeg::Open - failed to load ffmpeg libraries");
-    return false;
-  }
-  // register codecs
-  m_dllAvFormat.av_register_all();
-  if( m_dllAvFormat.av_open_input_file(&m_pFormatContext, pFile.c_str(), iformat, FFMPEG_FILE_BUFFER_SIZE, NULL) < 0 )
-  {
-    return false;
-  }
-  // we need to know if this is matroska or avi later
-  m_bMatroska = strcmp(m_pFormatContext->iformat->name, "matroska") == 0;
-  m_bAVI = strcmp(m_pFormatContext->iformat->name, "avi") == 0;
-
-
-  CLog::Log(LOGDEBUG, "%s - av_find_stream_info starting", __FUNCTION__);
-  int iErr = m_dllAvFormat.av_find_stream_info(m_pFormatContext);
-  if (iErr < 0)
-  {
-    CLog::Log(LOGWARNING,"could not find codec parameters for %s", pFile.c_str());
-    return false;
-  }
-  CLog::Log(LOGDEBUG, "%s - av_find_stream_info finished", __FUNCTION__);
-
-  m_pFormatContext->flags |= AVFMT_FLAG_NONBLOCK;
-
-  m_dllAvFormat.dump_format(m_pFormatContext, 0, pFile.c_str(), 0);
-  
-  UpdateCurrentPTS();
-  
-  if (m_pFormatContext->nb_programs)
-  {
-    //TODO
-    CLog::Log(LOGERROR, "%s - m_pFormatContext->nb_programs not coded yet", __FUNCTION__);
-  }
-  else
-  {
-    for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
-    {
-      AddStream(i);
-    }
-  }
-return true;
+  if (ThreadExists() == FALSE)
+    Create();
+  return S_OK;
 }
 
-void CXBMCSplitterFilter::AddStream(int iId)
+STDMETHODIMP CXBMCSplitterFilter::Pause()
+{
+  CAutoLock cAutoLock(this);
+  CLOG_FUNCTION
+  FILTER_STATE fs = m_State;
+
+  HRESULT hr;
+  if(FAILED(hr = CSource::Pause()))
+    return hr;
+
+  if(fs == State_Stopped)
+  {
+    Create();
+  }
+
+  return S_OK;
+}
+
+STDMETHODIMP CXBMCSplitterFilter::Stop()
+{
+	CLOG_FUNCTION
+  
+	
+
+	return CSource::Stop();
+}
+
+// ============================================================================
+// CXBMCSplitterFilter IMediaSeeking interface
+// ============================================================================
+
+HRESULT CXBMCSplitterFilter::ChangeStart()
+{
+	//m_pRunningThread->SeekToTimecode(m_rtStart, m_State == State_Stopped);
+	return S_OK;
+}
+
+HRESULT CXBMCSplitterFilter::ChangeStop()
+{
+	return S_OK;
+}
+
+HRESULT CXBMCSplitterFilter::ChangeRate()
+{
+	return S_OK;
+}
+
+HRESULT CXBMCSplitterFilter::IsFormatSupported(const GUID * pFormat)
+{
+    CheckPointer(pFormat, E_POINTER);
+    // only seeking in time (REFERENCE_TIME units) is supported
+    return *pFormat == TIME_FORMAT_MEDIA_TIME ? S_OK : S_FALSE;
+}
+
+HRESULT CXBMCSplitterFilter::QueryPreferredFormat(GUID *pFormat)
+{
+    CheckPointer(pFormat, E_POINTER);
+    *pFormat = TIME_FORMAT_MEDIA_TIME;
+    return S_OK;
+}
+
+HRESULT CXBMCSplitterFilter::SetTimeFormat(const GUID * pFormat)
+{
+    CheckPointer(pFormat, E_POINTER);
+    // nothing to set; just check that it's TIME_FORMAT_TIME
+    return *pFormat == TIME_FORMAT_MEDIA_TIME ? S_OK : E_INVALIDARG;
+}
+
+HRESULT CXBMCSplitterFilter::IsUsingTimeFormat(const GUID * pFormat)
+{
+    CheckPointer(pFormat, E_POINTER);
+    return *pFormat == TIME_FORMAT_MEDIA_TIME ? S_OK : S_FALSE;
+}
+
+HRESULT CXBMCSplitterFilter::GetTimeFormat(GUID *pFormat)
+{
+    CheckPointer(pFormat, E_POINTER);
+    *pFormat = TIME_FORMAT_MEDIA_TIME;
+    return S_OK;
+}
+
+HRESULT CXBMCSplitterFilter::GetDuration(LONGLONG *pDuration)
+{
+    CheckPointer(pDuration, E_POINTER);
+    CAutoLock lock(&m_SeekLock);
+  *pDuration = m_rtDuration;
+    
+  /*if (m_pFormatContext)
+  {
+    int64_t fmtdur = m_pFormatContext->duration;
+    dur = (REFERENCE_TIME*)(fmtdur * 10);
+  }*/
+  return S_OK;
+}
+
+HRESULT CXBMCSplitterFilter::GetStopPosition(LONGLONG *pStop)
+{
+    CheckPointer(pStop, E_POINTER);
+    CAutoLock lock(&m_SeekLock);
+    *pStop = m_rtStop;
+    return S_OK;
+}
+
+HRESULT CXBMCSplitterFilter::GetCurrentPosition(LONGLONG *pCurrent)
+{
+    // GetCurrentPosition is typically supported only in renderers and
+    // not in source filters.
+    return E_NOTIMPL;
+}
+
+HRESULT CXBMCSplitterFilter::GetCapabilities( DWORD * pCapabilities )
+{
+    CheckPointer(pCapabilities, E_POINTER);
+    *pCapabilities = m_dwSeekingCaps;
+    return S_OK;
+}
+
+HRESULT CXBMCSplitterFilter::CheckCapabilities( DWORD * pCapabilities )
+{
+    CheckPointer(pCapabilities, E_POINTER);
+
+    // make sure all requested capabilities are in our mask
+    return (~m_dwSeekingCaps & *pCapabilities) ? S_FALSE : S_OK;
+}
+
+HRESULT CXBMCSplitterFilter::ConvertTimeFormat( LONGLONG * pTarget, const GUID * pTargetFormat,
+                           LONGLONG    Source, const GUID * pSourceFormat )
+{
+    CheckPointer(pTarget, E_POINTER);
+    // format guids can be null to indicate current format
+
+    // since we only support TIME_FORMAT_MEDIA_TIME, we don't really
+    // offer any conversions.
+    if(pTargetFormat == 0 || *pTargetFormat == TIME_FORMAT_MEDIA_TIME)
+    {
+        if(pSourceFormat == 0 || *pSourceFormat == TIME_FORMAT_MEDIA_TIME)
+        {
+            *pTarget = Source;
+            return S_OK;
+        }
+    }
+
+    return E_INVALIDARG;
+}
+
+
+HRESULT CXBMCSplitterFilter::SetPositions( LONGLONG * pCurrent,  DWORD CurrentFlags
+                      , LONGLONG * pStop,  DWORD StopFlags )
+{
+    DWORD StopPosBits = StopFlags & AM_SEEKING_PositioningBitsMask;
+    DWORD StartPosBits = CurrentFlags & AM_SEEKING_PositioningBitsMask;
+
+    if(StopFlags) {
+        CheckPointer(pStop, E_POINTER);
+
+        // accept only relative, incremental, or absolute positioning
+        if(StopPosBits != StopFlags) {
+            return E_INVALIDARG;
+        }
+    }
+
+    if(CurrentFlags) {
+        CheckPointer(pCurrent, E_POINTER);
+        if(StartPosBits != AM_SEEKING_AbsolutePositioning &&
+           StartPosBits != AM_SEEKING_RelativePositioning) {
+            return E_INVALIDARG;
+        }
+    }
+
+
+    // scope for autolock
+    {
+        CAutoLock lock(&m_SeekLock);
+
+        // set start position
+        if(StartPosBits == AM_SEEKING_AbsolutePositioning)
+        {
+            m_rtStart = *pCurrent;
+        }
+        else if(StartPosBits == AM_SEEKING_RelativePositioning)
+        {
+            m_rtStart += *pCurrent;
+        }
+
+        // set stop position
+        if(StopPosBits == AM_SEEKING_AbsolutePositioning)
+        {
+            m_rtStop = *pStop;
+        }
+        else if(StopPosBits == AM_SEEKING_IncrementalPositioning)
+        {
+            m_rtStop = m_rtStart + *pStop;
+        }
+        else if(StopPosBits == AM_SEEKING_RelativePositioning)
+        {
+            m_rtStop = m_rtStop + *pStop;
+        }
+    }
+
+
+    HRESULT hr = S_OK;
+    if(SUCCEEDED(hr) && StopPosBits) {
+        hr = ChangeStop();
+    }
+    if(StartPosBits) {
+        hr = ChangeStart();
+    }
+
+    return hr;
+}
+
+
+HRESULT CXBMCSplitterFilter::GetPositions( LONGLONG * pCurrent, LONGLONG * pStop )
+{
+    if(pCurrent) {
+        *pCurrent = m_rtStart;
+    }
+    if(pStop) {
+        *pStop = m_rtStop;
+    }
+
+    return S_OK;;
+}
+
+
+HRESULT CXBMCSplitterFilter::GetAvailable( LONGLONG * pEarliest, LONGLONG * pLatest )
+{
+    if(pEarliest) {
+        *pEarliest = 0;
+    }
+    if(pLatest) {
+        CAutoLock lock(&m_SeekLock);
+        *pLatest = m_rtDuration;
+    }
+    return S_OK;
+}
+
+HRESULT CXBMCSplitterFilter::SetRate( double dRate)
+{
+    {
+        CAutoLock lock(&m_SeekLock);
+        m_dRateSeeking = dRate;
+    }
+    return ChangeRate();
+}
+
+HRESULT CXBMCSplitterFilter::GetRate( double * pdRate)
+{
+    CheckPointer(pdRate, E_POINTER);
+    CAutoLock lock(&m_SeekLock);
+    *pdRate = m_dRateSeeking;
+    return S_OK;
+}
+
+HRESULT CXBMCSplitterFilter::GetPreroll(LONGLONG *pPreroll)
+{
+    CheckPointer(pPreroll, E_POINTER);
+    *pPreroll = 0;
+    return S_OK;
+}
+
+
+bool CXBMCSplitterFilter::OpenDemux(CStdString pFile)
+{
+  CStdString strFile;
+  if (CUtil::IsStack(pFile))
+    strFile = XFILE::CStackDirectory::GetFirstStackedFile(pFile);
+  else
+    strFile = pFile;
+  //TEMPORARY
+  CSource::RemovePin(&m_pAudioStream);
+  int nTime = CTimeUtils::GetTimeMS();
+  CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, pFile, "");
+  if (!pInputStream)
+  {
+    CLog::Log(LOGERROR, "%s: Error creating stream for %s", __FUNCTION__, pFile.c_str());
+    return false;
+  }
+
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+  {
+    CLog::Log(LOGERROR, "InputStream: dvd streams not supported for thumb extraction, file: %s", strFile.c_str());
+    delete pInputStream;
+    return false;
+  }
+
+  if (!pInputStream->Open(strFile.c_str(), ""))
+  {
+    CLog::Log(LOGERROR, "InputStream: Error opening, %s", strFile.c_str());
+    if (pInputStream)
+      delete pInputStream;
+    return false;
+  }
+
+  if(m_pDemuxer)
+    SAFE_DELETE(m_pDemuxer);
+
+  try
+  {
+    m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream);
+    if(!m_pDemuxer)
+    {
+      delete pInputStream;
+      CLog::Log(LOGERROR, "%s - Error creating demuxer", __FUNCTION__);
+      return false;
+    }
+  }
+  catch(...)
+  {
+    CLog::Log(LOGERROR, "%s - Exception thrown when opening demuxer", __FUNCTION__);
+    if (m_pDemuxer)
+      delete m_pDemuxer;
+    delete pInputStream;
+    return false;
+  }
+  
+  for (int iStream=0; iStream < m_pDemuxer->GetNrOfStreams(); iStream++)
+  {
+    AddStream(iStream);
+  }
+}
+
+void CXBMCSplitterFilter::AddStream(int streamindex)
 {
   
-  CStdStringW name, label;
-  AVStream *pStream = m_pFormatContext->streams[iId];
-  if (!pStream)
+  //if unknown STREAM_NONE
+  //audio STREAM_AUDIO
+  //video STREAM_VIDEO
+  //data STREAM_DATA
+  //subtitle STREAM_SUBTITLE
+  //teletext STREAM_TELETEXT
+  if (!m_pDemuxer)
     return;
-  AVCodecContext *pCodecContext = pStream->codec;
+
+  CDemuxStream* pStream = m_pDemuxer->GetStream(streamindex);
   
-  if (pCodecContext->codec_type == CODEC_TYPE_VIDEO)
+  CDSStreamInfo hint(*pStream, true);
+  if (pStream->type == STREAM_VIDEO)
   {
-    m_pVideoStream.SetAVStream(pStream, m_pFormatContext);
+    m_pVideoStream.SetStream(hint.mtype);
+    m_pCurrentVideoStream = NULL;
+    m_pCurrentVideoStream = (void*)pStream;
   }
-  else if(pCodecContext->codec_type == CODEC_TYPE_AUDIO)
+  else if (pStream->type == STREAM_AUDIO)
   {
-    m_pAudioStream.SetAVStream(pStream, m_pFormatContext);
+    //m_pAudioStream.SetStream(strm);
+  }
+
+
+}
+
+HRESULT CXBMCSplitterFilter::OnThreadCreate()
+{ 
+  //FIXME
+  //mStream->setStartTimeAbs(mLastTime);
+  CLOG_FUNCTION
+
+    return NO_ERROR;
+}
+
+DWORD CXBMCSplitterFilter::ThreadProc()
+{
+  DWORD cmd = 0;
+
+  for(DWORD cmd = -1; ; cmd = GetRequest())
+  {
+    if(cmd == CMD_EXIT)
+    {
+      m_hThread = NULL;
+      Reply(S_OK);
+      return 0;
+    }
+		SetThreadPriority(m_hThread, m_priority = THREAD_PRIORITY_NORMAL);
+
+    m_rtStart = m_rtNewStart;
+    m_rtStop = m_rtNewStop;
+    
+
+  // if the queues are full, no need to read more
+    if (!m_pVideoStream.QueueSize() < (1024*1024*5))
+    {
+      Sleep(10);
+      //continue;
+    }
+
+
+    DemuxPacket* pPacket = NULL;
+    CDemuxStream *pStream = NULL;
+    ReadPacket(pPacket, pStream);
+    if (pPacket && !pStream)
+    {
+      /* probably a empty DsPacket, just free it and move on */
+      CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+      continue;
+    }
+    // process the DsPacket
+    ProcessPacket(pStream, pPacket);
+  }
+  return 0;
+}
+
+void CXBMCSplitterFilter::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
+{
+  CAutoLock cAutoLock(this);
+  if (pPacket)
+  {
+    if (pStream->type == STREAM_VIDEO)
+    {
+      std::auto_ptr<DsPacket> p(new DsPacket());
+      
+      //if(pPacket->dts != DVD_NOPTS_VALUE) m_CurrentVideo.dts = pPacket->dts;
+      if(pPacket->pts != DVD_NOPTS_VALUE)
+        p->rtStart = pPacket->pts;
+      else
+        p->rtStart = m_rtStart;//this->m_rtCurrent 
+      if ( p->rtStart < 0) p->rtStart = 0;
+      //p->rtStart = m_rtStart;//(pPacket->pts * 10);
+      p->rtStop = p->rtStart + (pPacket->duration * 10);
+      p->resize(pPacket->iSize);
+      memcpy(&p->at(0),pPacket->pData,pPacket->iSize);
+      
+      m_pVideoStream.QueuePacket(p);
+    }
+    //pPacket->iStreamId
+  }
+
+}
+
+bool CXBMCSplitterFilter::ReadPacket(DemuxPacket*& DsPacket, CDemuxStream*& stream)
+{
+  if(m_pDemuxer)
+    DsPacket = m_pDemuxer->Read();
+  if (DsPacket)
+  {
+    stream = m_pDemuxer->GetStream(DsPacket->iStreamId);
+    if (!stream)
+    {
+      CLog::Log(LOGERROR, "%s - Error demux DsPacket doesn't belong to a valid stream", __FUNCTION__);
+      return false;
+    }
+    return true;
   }
   
+  return false;
 }
 
 void CXBMCSplitterFilter::UpdateCurrentPTS()
@@ -172,6 +561,15 @@ void CXBMCSplitterFilter::UpdateCurrentPTS()
         m_iCurrentPts = ts;
     }
   }
+
+}
+
+void CXBMCSplitterFilter::Flush()
+{
+  if (m_pFormatContext)
+    m_dllAvFormat.av_read_frame_flush(m_pFormatContext);
+
+  m_iCurrentPts = DVD_NOPTS_VALUE;
 
 }
 

@@ -54,10 +54,10 @@ public:
     // CBasePin
   HRESULT __stdcall Notify(IBaseFilter * pSender, Quality q);
 
-  void SetAVStream(AVStream* pStream, AVFormatContext* pFmt);
+   void SetStream(CMediaType mt);
   double ConvertTimestamp(int64_t pts, int den, int num);
   void UpdateCurrentPTS();
-
+  
 protected:
   CMediaType m_MediaType;
   AVFormatContext *m_pAudioFormatCtx;
@@ -66,15 +66,8 @@ protected:
   DllAvFormat m_dllAvFormat;
   DllAvCodec  m_dllAvCodec;
   DllAvUtil   m_dllAvUtil;
-
-  AVStream* m_pStream;
   std::vector<CMediaType> m_mts;
 private:
-  void fillNextFrame(unsigned char* _buffer, int _buffersize, __int64& time_);
-  void fillNextFrameProcedural(unsigned char* _buffer, int _buffersize, __int64& time_);
-  void fillNextFrameFromStream(unsigned char* _buffer, int _buffersize, __int64& time_);
-  int processNewSamplesFromStream(unsigned char* _buffer, int _samples, __int64& time_);
-  
   void Flush();
   int mBitsPerSample;
   int mChannels;

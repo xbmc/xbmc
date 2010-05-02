@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -19,19 +20,22 @@
  *
  */
 
-#ifndef DSSTREAMSOURCESTREAMVIDEO_H_
-#define DSSTREAMSOURCESTREAMVIDEO_H_
+
 
 #include "streams.h"
-#include "Codecs/DllAvFormat.h"
-#include "Codecs/DllAvCodec.h"
+
+
 #include "DVDPlayer/DVDClock.h"
 #include "DVDPlayer/DVDDemuxers/DVDDemuxFFmpeg.h"
+
+#include "DSStreamInfo.h"
+#include "DSPacketQueue.h"
 class CXBMCSplitterFilter;
-struct AVPacket;
+
 //********************************************************************
 //
 //********************************************************************
+
 class CDSVideoStream : public CSourceStream
 {
 public:
@@ -48,37 +52,38 @@ public:
   HRESULT CheckMediaType(const CMediaType *pMediaType);
   HRESULT SetMediaType(const CMediaType *pMediaType);
   virtual HRESULT OnThreadCreate();
+  
 
     // CBasePin
   HRESULT __stdcall Notify(IBaseFilter * pSender, Quality q);
 
-  void SetAVStream(AVStream* pStream,AVFormatContext* pFmt);
-  double ConvertTimestamp(int64_t pts, int den, int num);
-  void UpdateCurrentPTS();
+  void SetStream(CMediaType mt);
+  
+  // Queueing
+
+  HANDLE GetThreadHandle() {ASSERT(m_hThread != NULL); return m_hThread;}
+  void SetThreadPriority(int nPriority) {if(m_hThread) ::SetThreadPriority(m_hThread, nPriority);}
+  //HRESULT Active();
+  //HRESULT Inactive();
+  HRESULT DeliverBeginFlush();
+  HRESULT DeliverEndFlush();
+  HRESULT DeliverNewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
+
+  int QueueCount();
+  int QueueSize();
+  HRESULT QueueEndOfStream();
+  HRESULT QueuePacket(std::auto_ptr<DsPacket> p);
 protected:
   CMediaType m_MediaType;
-  int m_nCurrentBitDepth;
-  AVFormatContext *m_pVideoFormatCtx;
-  AVCodecContext *m_pVideoCodecCtx;
-  
-  DllAvFormat m_dllAvFormat;
-  DllAvCodec  m_dllAvCodec;
-  DllAvUtil   m_dllAvUtil;
-  bool m_bMatroska;
-  bool m_bAVI;
-
-  AVPacket m_pPacket;
-  AVStream*        m_pStream;
   std::vector<CMediaType> m_mts;
 private:
-    void getSize();
-    void getSizeFromStream();
-    void getSizeProcedural();
-
-    bool fillNextFrame(unsigned char* _buffer, int _buffersize, __int64& time_);
-    bool fillNextFrameFromStream(unsigned char* _buffer, int _buffersize, __int64& time_);
-    bool fillNextFrameProcedural(unsigned char* _buffer, int _buffersize, __int64& time_);
-  void Flush();
+  REFERENCE_TIME m_rtStart;
+  CDemuxPacketQueue m_queue;
+  HRESULT m_hrDeliver;
+  bool m_fFlushing, m_fFlushed;
+  CAMEvent m_eEndFlush;
+  enum {CMD_EXIT};
+  DWORD ThreadProc();
 
     
     int mWidth;
@@ -88,5 +93,3 @@ private:
     __int64 mLastTime;
     double   m_iCurrentPts; // used for stream length estimation
 };
-
-#endif

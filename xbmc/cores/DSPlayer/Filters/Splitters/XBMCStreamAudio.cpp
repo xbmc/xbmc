@@ -44,8 +44,8 @@ const int BITS_PER_BYTE = 8;
 //--------------------------------------------------------------------
 //
 //--------------------------------------------------------------------
-CDSAudioStream::CDSAudioStream(LPUNKNOWN pUnk, CXBMCSplitterFilter *pParent, HRESULT *phr) :
-    CSourceStream(NAME("CDSAudioStream"),phr, pParent, L"DS Audio Pin")
+CDSAudioStream::CDSAudioStream(LPUNKNOWN pUnk, CXBMCSplitterFilter *pParent, HRESULT *phr) 
+: CSourceStream(NAME("CDSAudioStream"),phr, pParent, L"DS Audio Pin")
 {
     ASSERT(phr);
     
@@ -59,7 +59,6 @@ CDSAudioStream::CDSAudioStream(LPUNKNOWN pUnk, CXBMCSplitterFilter *pParent, HRE
     mSBBuffer = 0;
 
     mEOS = false;
-    m_dllAvFormat.Load(); m_dllAvCodec.Load();
 }
 
 //--------------------------------------------------------------------
@@ -69,7 +68,11 @@ CDSAudioStream::~CDSAudioStream()
 {
 }
 
-
+void CDSAudioStream::SetStream(CMediaType mt)
+{
+  
+}
+#if 0
 //We are setting the media type at the same time
 void CDSAudioStream::SetAVStream(AVStream* pStream,AVFormatContext* pFmt)
 {
@@ -126,11 +129,9 @@ void CDSAudioStream::SetAVStream(AVStream* pStream,AVFormatContext* pFmt)
 
   
 }
-
+#endif
 void CDSAudioStream::Flush()
 {
-  if (m_pAudioFormatCtx)
-    m_dllAvFormat.av_read_frame_flush(m_pAudioFormatCtx);
 
   m_iCurrentPts = DVD_NOPTS_VALUE;
 
@@ -230,6 +231,11 @@ HRESULT CDSAudioStream::SetMediaType(const CMediaType *pMediaType)
     mBytesPerSample = (mBitsPerSample/8) * mChannels;
   } 
 
+  
+  
+  int ret = 0;
+  if(ret >= 0)
+    UpdateCurrentPTS();
   return hr;
 
 } // SetMediaType
@@ -320,161 +326,41 @@ HRESULT CDSAudioStream::DecideBufferSize(IMemAllocator* pAlloc, ALLOCATOR_PROPER
     return NOERROR;
 }
 
-//********************************************************************
-//
-//********************************************************************
-//--------------------------------------------------------------------
-//
-//--------------------------------------------------------------------
-void CDSAudioStream::fillNextFrame(unsigned char* _buffer, int _buffersize, __int64& time_)
+void CDSAudioStream::UpdateCurrentPTS()
 {
-    if ( m_pStream )
-        fillNextFrameFromStream(_buffer,_buffersize,time_);
-    else
-        fillNextFrameProcedural(_buffer,_buffersize,time_);
+  m_iCurrentPts = DVD_NOPTS_VALUE;
+  for(unsigned int i = 0; i < m_pAudioFormatCtx->nb_streams; i++)
+  {
+    AVStream *stream = m_pAudioFormatCtx->streams[i];
+    if(stream && stream->cur_dts != (int64_t)AV_NOPTS_VALUE)
+    {
+      double ts = ConvertTimestamp(stream->cur_dts, stream->time_base.den, stream->time_base.num);
+      if(m_iCurrentPts == DVD_NOPTS_VALUE || m_iCurrentPts > ts )
+        m_iCurrentPts = ts;
+    }
+  }
+
 }
 
-//--------------------------------------------------------------------
-//
-//--------------------------------------------------------------------
-void CDSAudioStream::fillNextFrameFromStream(unsigned char* _buffer, int _buffersize, __int64& time_)
+double CDSAudioStream::ConvertTimestamp(int64_t pts, int den, int num)
 {
-  //FIXME
-  //ASSERT(m_pStream->getType() == NWSTREAM_TYPE_MEDIA && mStream->getSubType() == NWSTREAM_SUBTYPE_MEDIA_AUDIO);
+  if (pts == (int64_t)AV_NOPTS_VALUE)
+    return DVD_NOPTS_VALUE;
 
-    time_ = 0;
+  // do calculations in floats as they can easily overflow otherwise
+  // we don't care for having a completly exact timestamp anyway
+  double timestamp = (double)pts * num  / den;
+  double starttime = 0.0f;
 
-    while ( time_ == 0 )
-    {
-        int bytesPerSample = mChannels * (mBitsPerSample/8);
-        int samples = _buffersize/bytesPerSample;
-        ASSERT(samples > 0);
-        ASSERT(_buffersize == (samples*bytesPerSample));
-        unsigned char* buffer = _buffer;
-        __int64 time = 0;
-        bool firstIteration = true;
-        while ( samples )
-        {
-            __int64 timeAux = 0;
-            int samplesProcessed = processNewSamplesFromStream(buffer, samples, timeAux);
-            samples -= samplesProcessed;
-            ASSERT(samples >= 0);
-            buffer += samplesProcessed*bytesPerSample;
+  if (m_pAudioFormatCtx->start_time != (int64_t)AV_NOPTS_VALUE)
+    starttime = (double)m_pAudioFormatCtx->start_time / AV_TIME_BASE;
 
-            if ( firstIteration )
-            {
-                time = timeAux;
-                firstIteration = false;
-            }
-        }
-        
-        time = time + 1;
-        //mTime = mStream->getStartTimeAbs();
-        mLastTime = time;
-        if ( time >= mTime )
-            time_ = time - mTime;
-        else
-            time_ = 0;
-    }
-    time_ = time_ - 1;
-    
-    // Log time
-    /*CDisp disp = CDisp(CRefTime((REFERENCE_TIME)time_));
-    const char* str = disp;
-    LOG("CDSAudioStream time(%s)", str);*/
-}
+  if(timestamp > starttime)
+    timestamp -= starttime;
+  else if( timestamp + 0.1f > starttime )
+    timestamp = 0;
 
-//--------------------------------------------------------------------
-//
-//--------------------------------------------------------------------
-int CDSAudioStream::processNewSamplesFromStream(unsigned char* _buffer, int _samples, __int64& time_)
-{
-    int samplesProcessed = 0;
-
-    // Este trozo esta comentado para poder hacer el cambio del INWStream al INWStreamReader
-    ASSERT(false);
-    // Read a new block if needed
-    /*NWStreamBlockAudio* audioBlock = (NWStreamBlockAudio*)mStreamBlock;
-    if ( audioBlock == 0 )
-    {
-        mStreamBlock = mStream->readBlock();
-
-        if ( mStreamBlock )
-        {
-            ASSERT(mStreamBlock->getType() == NWSTREAM_TYPE_MEDIA && mStreamBlock->getSubType() == NWSTREAM_SUBTYPE_MEDIA_AUDIO);
-            audioBlock = (NWStreamBlockAudio*)mStreamBlock;
-
-            if ( !audioBlock->IsEnd() )
-            {
-                ASSERT(mBitsPerSample == audioBlock->getBitsPerSample());
-                ASSERT(mChannels == audioBlock->getChannels());
-                ASSERT(mSamplesPerSec == audioBlock->getSamplesPerSec());
-            }
-            mSBAvailableSamples = audioBlock->getSamples();
-            mSBBuffer = audioBlock->getBuffer();
-        }
-        else
-        {
-            mSBAvailableSamples = 0;
-            mSBBuffer = 0;
-        }
-    }
-    
-
-    if ( audioBlock && !audioBlock->IsEnd() )
-    {
-        // Calc time
-        int samplesOffset = audioBlock->getSamples() - mSBAvailableSamples;
-        __int64 timeOffset = ((__int64)(samplesOffset) * (__int64)(10000000)) / (__int64)(mSamplesPerSec);
-        time_ = audioBlock->getTime() + timeOffset;
-
-        
-        ASSERT(_samples > 0 && mSBAvailableSamples > 0 );
-        samplesProcessed = (_samples < mSBAvailableSamples) ? _samples : mSBAvailableSamples;
-        mSBAvailableSamples -= samplesProcessed;
-        
-        int bytesPerSample = mChannels * (mBitsPerSample/8);
-        int bytesToCopy = samplesProcessed*bytesPerSample;    
-        
-        memcpy(_buffer,mSBBuffer,bytesToCopy);
-        mSBBuffer += bytesToCopy;
-
-        if ( mSBAvailableSamples == 0 )
-        {
-            DISPOSE(mStreamBlock);
-            mStreamBlock = 0;
-            mSBAvailableSamples = 0;
-            mSBBuffer = 0;
-        }
-    }
-    else
-    {
-        samplesProcessed = _samples;
-        int bytesPerSample = mChannels * (mBitsPerSample/8);
-        int bytesToCopy = samplesProcessed*bytesPerSample;    
-        memset(_buffer,0,bytesToCopy);
-        time_ = mLastTime;
-        if ( audioBlock && audioBlock->IsEnd() )
-            mEOS = true;
-    }*/
-
-    return samplesProcessed;
-}
-
-//--------------------------------------------------------------------
-//
-//--------------------------------------------------------------------
-void CDSAudioStream::fillNextFrameProcedural(unsigned char* _buffer, int _buffersize, __int64& time_)
-{
-    //memset(_buffer,0,_buffersize);    
-    for ( int i = 0 ; i < _buffersize ; ++i )
-        _buffer[i] = rand();
-
-    // Update time
-    time_ = mTime;
-    int bytesPerSample = mChannels * (mBitsPerSample/8);
-    int samples = _buffersize / bytesPerSample;
-    mTime += ((__int64)(samples) * (__int64)(10000000)) / (__int64)(mSamplesPerSec);
+  return timestamp*DVD_TIME_BASE;
 }
 
 //********************************************************************
@@ -485,59 +371,25 @@ void CDSAudioStream::fillNextFrameProcedural(unsigned char* _buffer, int _buffer
 //--------------------------------------------------------------------
 HRESULT CDSAudioStream::FillBuffer(IMediaSample *pms)
 {
-    CheckPointer(pms,E_POINTER);
-
-    if ( !mEOS )
-    {
-        BYTE *pData = 0;
-        pms->GetPointer(&pData);
-        long lDataLen = pms->GetSize();
-
-        ZeroMemory(pData, lDataLen);
-        {
-            __int64 time = 0;
-            fillNextFrame(pData,lDataLen,time);
-
-            // Set time
-            REFERENCE_TIME timeStart = (REFERENCE_TIME)time;
-            REFERENCE_TIME timeEnd = timeStart;
-            pms->SetTime(&timeStart,&timeEnd);
-        }
-
-        pms->SetSyncPoint(TRUE);
-
-        HRESULT hr = pms->SetActualDataLength(pms->GetSize());
-        if (FAILED(hr))
-            return hr;
-    }
-    else
-    {
-        return S_FALSE;
-    }
-
-    // Set the sample's properties.
-    /*hr = pms->SetPreroll(FALSE);
-    if (FAILED(hr)) {
-        return hr;
-    }
-
-    hr = pms->SetMediaType(NULL);
-    if (FAILED(hr)) {
-        return hr;
-    }
-   
-    hr = pms->SetDiscontinuity(!m_fFirstSampleDelivered);
-    if (FAILED(hr)) {
-        return hr;
-    }
-    
-    hr = pms->SetSyncPoint(!m_fFirstSampleDelivered);
-    if (FAILED(hr)) {
-        return hr;
-    }*/
-
-
-    return NOERROR;
+  CheckPointer(pms,E_POINTER);
+  
+  CAutoLock cAutoLock(m_pFilter->pStateLock());
+  BYTE *pData = 0;
+  pms->GetPointer(&pData);
+  long lDataLen = pms->GetSize();
+  ZeroMemory(pData, lDataLen);
+#if 0 
+  if(m_dllAvFormat.av_read_frame(m_pAudioFormatCtx, &m_pPacket)<0)
+  {
+    //last frame
+  }
+  else
+  {
+    memcpy(pData,m_pPacket.data,m_pPacket.size);
+  }
+#endif
+  pms->SetSyncPoint(TRUE);
+  return NOERROR;
 }
 
 
