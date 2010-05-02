@@ -471,13 +471,15 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     unsigned int iPixels = width * height;
     unsigned int iChromaPixels = iPixels/4;
 
+    m_videobuffer.pts = DVD_NOPTS_VALUE;
+    m_videobuffer.iFlags = DVP_FLAG_ALLOCATED;
+    m_videobuffer.format = DVDVideoPicture::FMT_YUV420P;
+    m_videobuffer.color_range  = 0;
+    m_videobuffer.color_matrix = 4;
     m_videobuffer.iWidth  = width;
     m_videobuffer.iHeight = height;
     m_videobuffer.iDisplayWidth  = width;
     m_videobuffer.iDisplayHeight = height;
-    m_videobuffer.format = DVDVideoPicture::FMT_YUV420P;
-    m_videobuffer.color_range  = 0;
-    m_videobuffer.color_matrix = 4;
 
     m_videobuffer.iLineSize[0] = width;   //Y
     m_videobuffer.iLineSize[1] = width/2; //U
@@ -493,8 +495,6 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     memset(m_videobuffer.data[0], 0, iPixels);
     memset(m_videobuffer.data[1], 0, iChromaPixels);
     memset(m_videobuffer.data[2], 0, iChromaPixels);
-    m_videobuffer.pts = DVD_NOPTS_VALUE;
-    m_videobuffer.iFlags = DVP_FLAG_ALLOCATED;
 
     // pre-alloc ffmpeg swscale context.
     m_swcontext = m_dllSwScale.sws_getContext(
@@ -612,7 +612,7 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   // depth is less than the number of encoded reference frames. If queue depth
   // is greater than the number of encoded reference frames, then the top frame
   // will never change and we can just grab a ref to the frame/pts. This way
-  // we don't lockout the vdadecoder while doing the memcpy of planes out.
+  // we don't lockout the vdadecoder while doing UYVY422_to_YUV420P convert out.
   pthread_mutex_lock(&m_queue_mutex);
   yuvframe = m_display_queue->frame;
   // m_dts_queue gets popped in DisplayQueuePop
