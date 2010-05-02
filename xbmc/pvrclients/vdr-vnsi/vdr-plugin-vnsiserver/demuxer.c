@@ -278,11 +278,17 @@ cTSDemuxer::cTSDemuxer(cLiveStreamer *streamer, int id, eStreamType type, int pi
 cTSDemuxer::~cTSDemuxer()
 {
   if (m_pesParser)
+  {
     delete m_pesParser;
+    m_pesParser = NULL;
+  }
 }
 
 bool cTSDemuxer::ProcessTSPacket(unsigned char *data)
 {
+  if (!data)
+    return false;
+
   bool pusi  = TsPayloadStart(data);
   int  bytes = TS_SIZE - TsPayloadOffset(data);
 

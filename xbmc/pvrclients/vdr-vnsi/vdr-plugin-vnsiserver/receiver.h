@@ -23,6 +23,7 @@
 #define VNSIRECEIVER_H
 
 #include <linux/dvb/frontend.h>
+#include <linux/videodev2.h>
 #include <vdr/channels.h>
 #include <vdr/device.h>
 #include <vdr/receiver.h>
@@ -63,6 +64,8 @@ private:
   cxSocket         *m_Socket;                       /*!> The socket class to communicate with client */
   int               m_Frontend;                     /*!> File descriptor to access used receiving device  */
   dvb_frontend_info m_FrontendInfo;                 /*!> DVB Information about the receiving device */
+  v4l2_capability   m_vcap;
+  cString           m_DeviceString;
   time_t            m_lastInfoSendet;               /*!> Last queue status report sent */
   bool              m_streamChangeSendet;
   bool              m_streamReady;
