@@ -61,6 +61,7 @@ extern "C"
   // Mouse.
   //
   void Cocoa_HideMouse();
+  void Cocoa_HideDock();
 
   // Smart folders.
   //
