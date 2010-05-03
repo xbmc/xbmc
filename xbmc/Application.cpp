@@ -336,7 +336,6 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
 
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
-  m_bRunResumeJobs = false;
   m_bSystemScreenSaverEnable = false;
 }
 
@@ -4677,9 +4676,7 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
-  // run resume jobs if we are coming from suspend/hibernate
-  if (m_bRunResumeJobs)
-    g_powerManager.Resume();
+  g_powerManager.ProcessEvents();
 
   // Store our file state for use on close()
   UpdateFileState();

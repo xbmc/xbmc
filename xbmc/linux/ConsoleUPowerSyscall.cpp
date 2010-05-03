@@ -59,12 +59,16 @@ bool CConsoleUPowerSyscall::Powerdown()
 
 bool CConsoleUPowerSyscall::Suspend()
 {
+  CPowerSyscallWithoutEvents::Suspend();
+
   CDBusMessage message("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "Suspend");
   return message.SendSystem() != NULL;
 }
 
 bool CConsoleUPowerSyscall::Hibernate()
 {
+  CPowerSyscallWithoutEvents::Hibernate();
+
   CDBusMessage message("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "Hibernate");
   return message.SendSystem() != NULL;
 }

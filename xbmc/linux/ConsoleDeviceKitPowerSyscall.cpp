@@ -44,12 +44,16 @@ bool CConsoleDeviceKitPowerSyscall::Powerdown()
 
 bool CConsoleDeviceKitPowerSyscall::Suspend()
 {
+  CPowerSyscallWithoutEvents::Suspend();
+
   CDBusMessage message("org.freedesktop.DeviceKit.Power", "/org/freedesktop/DeviceKit/Power", "org.freedesktop.DeviceKit.Power", "Suspend");
   return message.SendSystem() != NULL;
 }
 
 bool CConsoleDeviceKitPowerSyscall::Hibernate()
 {
+  CPowerSyscallWithoutEvents::Hibernate();
+
   CDBusMessage message("org.freedesktop.DeviceKit.Power", "/org/freedesktop/DeviceKit/Power", "org.freedesktop.DeviceKit.Power", "Hibernate");
   return message.SendSystem() != NULL;
 }
