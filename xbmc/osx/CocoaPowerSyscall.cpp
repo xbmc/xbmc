@@ -65,8 +65,8 @@ bool CCocoaPowerSyscall::Powerdown()
 bool CCocoaPowerSyscall::Suspend()
 {
   CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Suspend");
-  CPowerSyscallWithoutEvents::Suspend();
-  
+  m_OnSuspend = true;
+
   //sending sleep event to system
   OSErr error = SendAppleEventToSystemProcess(kAESleep);
   if (error == noErr)
@@ -140,6 +140,25 @@ bool CCocoaPowerSyscall::CanReboot()
   return true;
 }
 
+bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
+{
+  if (m_OnSuspend)
+  {
+    callback->OnSleep();
+    m_OnSuspend = false;
+    return true;
+  }
+  else if (m_OnResume)
+  {
+    callback->OnWake();
+    Cocoa_HideDock();
+    m_OnResume = false;
+    return true;
+  }
+  else
+    return false;
+}
+
 void CCocoaPowerSyscall::CreateOSPowerCallBack(void)
 {
   // we want sleep/wake notifications
@@ -202,7 +221,6 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
       // System has awakened from sleep.
       // let XBMC know system has woke
       // TODO:
-      Cocoa_HideDock();
       ctx->m_OnResume = true;
     break;
 	}

@@ -41,10 +41,15 @@ public:
   virtual bool CanSuspend();
   virtual bool CanHibernate();
   virtual bool CanReboot();
+
+  virtual bool PumpPowerEvents(IPowerEventsCallback *callback);
 private:
           void CreateOSPowerCallBack(void);
           void DeleteOSPowerCallBack(void);
   static  void OSPowerCallBack(void *refcon, io_service_t service, natural_t msg_type, void *msg_arg);
+
+  bool m_OnResume;
+  bool m_OnSuspend;
 
   io_connect_t root_port;             // a reference to the Root Power Domain IOService
   io_object_t  notifier_object;       // notifier object, used to deregister later
