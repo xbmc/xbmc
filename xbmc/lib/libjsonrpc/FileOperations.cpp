@@ -79,14 +79,20 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
         else if (type.Equals("pictures"))
           regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
 
-        CFileItemList filtereditems;
+        CFileItemList filteredDirectories, filteredFiles;
         for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
         {
           if (regexps.size() == 0 || !CUtil::ExcludeFileOrFolder(items[i]->m_strPath, regexps))
-            filtereditems.Add(items[i]);
-        }  
+          {
+            if (items[i]->m_bIsFolder)
+              filteredDirectories.Add(items[i]);
+            else
+              filteredFiles.Add(items[i]);
+          }
+        }
 
-        HandleFileItemList(NULL, "directories", filtereditems, parameterObject, result);
+        HandleFileItemList(NULL, "directories", filteredDirectories, parameterObject, result);
+        HandleFileItemList(NULL, "files", filteredFiles, parameterObject, result);
 
         return OK;
       }
