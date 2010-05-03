@@ -24,6 +24,16 @@ public:
   virtual bool CanHibernate() = 0;
   virtual bool CanReboot()    = 0;
 
+  /*!
+   \brief Pump power related events back to xbmc.
+
+   PumpPowerEvents is called from Application Thread and the platform implementation may signal
+   power related events back to xbmc through the callback.
+
+   return true if an event occured and false if not.
+   
+   \param callback the callback to signal to
+   */
   virtual bool PumpPowerEvents(IPowerEventsCallback *callback) = 0;
 };
 
