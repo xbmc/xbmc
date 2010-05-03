@@ -51,7 +51,6 @@ public:
     {
       callback->OnSleep();
       m_OnSuspend = false;
-      m_OnResume = true;
       return true;
     }
     else if (m_OnResume)
@@ -63,7 +62,7 @@ public:
     else
       return false;
   }
-private:
+protected:
   bool m_OnResume;
   bool m_OnSuspend;
 };

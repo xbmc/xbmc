@@ -220,6 +220,7 @@ void CPowerManager::ProcessEvents()
 
 void CPowerManager::OnSleep()
 {
+  g_application.StopPlaying();
 }
 
 void CPowerManager::OnWake()

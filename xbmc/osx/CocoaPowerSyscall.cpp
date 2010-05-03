@@ -25,6 +25,7 @@ typedef unsigned char   BYTE;
 
 #include "Log.h"
 #include "SystemInfo.h"
+#include "Application.h"
 #include "CocoaPowerSyscall.h"
 #include <IOKit/pwr_mgt/IOPMLib.h>
 
@@ -192,6 +193,7 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
       //   1) selecting sleep from the Apple menu.
       //   2) closing the lid of a laptop.
       //   3) running out of battery power.
+      ctx->m_OnSuspend = true;
       IOAllowPowerChange(ctx->root_port, (long)msg_arg);
       // let XBMC know system will sleep
       // TODO:
@@ -200,6 +202,8 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
       // System has awakened from sleep.
       // let XBMC know system has woke
       // TODO:
+      Cocoa_HideDock();
+      ctx->m_OnResume = true;
     break;
 	}
 }
