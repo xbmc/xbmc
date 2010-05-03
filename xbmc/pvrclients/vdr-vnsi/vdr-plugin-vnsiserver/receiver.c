@@ -96,6 +96,7 @@ cLiveStreamer::cLiveStreamer()
   m_Frontend        = -1;
   m_NumStreams      = 0;
   m_streamReady     = false;
+  m_IsAudioOnly     = false;
   m_streamChangeSendet = false;
   m_lastInfoSendet  = time(NULL);
   memset(&m_FrontendInfo, 0, sizeof(m_FrontendInfo));
@@ -264,6 +265,15 @@ bool cLiveStreamer::StreamChannel(const cChannel *channel, int priority, cxSocke
 
         m_Pids[m_NumStreams] = m_Channel->Vpid();
         m_NumStreams++;
+      }
+      else
+      {
+        /* m_streamReady is set by the Video demuxers, to have always valid stream informations
+         * like height and width. But if no Video PID is present like for radio channels
+         * VNSI will deadlock
+         */
+        m_streamReady = true;
+        m_IsAudioOnly = true;
       }
 
       const int *APids = m_Channel->Apids();

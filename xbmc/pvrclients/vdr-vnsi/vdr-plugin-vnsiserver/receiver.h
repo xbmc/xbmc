@@ -69,6 +69,7 @@ private:
   time_t            m_lastInfoSendet;               /*!> Last queue status report sent */
   bool              m_streamChangeSendet;
   bool              m_streamReady;
+  bool              m_IsAudioOnly;
 
 protected:
   virtual void Action(void);
@@ -82,6 +83,7 @@ public:
   bool StreamChannel(const cChannel *channel, int priority, cxSocket *Socket, cResponsePacket *resp);
   void SetReady() { m_streamReady = true; }
   bool IsReady() { return m_streamReady; }
+  bool IsAudioOnly() { return m_IsAudioOnly; }
 };
 
 #endif  /* VNSIRECEIVER_H */

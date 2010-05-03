@@ -96,7 +96,10 @@ cParser::cParser(cLiveStreamer *streamer, int streamID)
   m_curPTS    = DVD_NOPTS_VALUE;
   m_curDTS    = DVD_NOPTS_VALUE;
   m_LastDTS   = DVD_NOPTS_VALUE;
-  m_startDTS  = DVD_NOPTS_VALUE;
+  if (streamer->IsAudioOnly())
+    m_startDTS  = 0;
+  else
+    m_startDTS  = DVD_NOPTS_VALUE;
   m_epochDTS  = 0;
   m_badDTS    = 0;
 }
@@ -217,7 +220,6 @@ void cParser::SendPacket(sStreamPacket *pkt, bool checkTimestamp)
       m_badDTS = 0;
     }
   }
-
   m_badDTS++;
 
   dts += m_epochDTS;
