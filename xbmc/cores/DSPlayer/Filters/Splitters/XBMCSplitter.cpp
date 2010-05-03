@@ -516,8 +516,8 @@ void CXBMCSplitterFilter::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPac
       std::auto_ptr<DsPacket> p(new DsPacket());
       
       //if(pPacket->dts != DVD_NOPTS_VALUE) m_CurrentVideo.dts = pPacket->dts;
-      if(pPacket->pts != DVD_NOPTS_VALUE)
-        p->rtStart = pPacket->pts;
+      if(pPacket->dts != DVD_NOPTS_VALUE)
+        p->rtStart = pPacket->dts * 10;
       else
         p->rtStart = m_rtStart;//this->m_rtCurrent 
       if ( p->rtStart < 0) p->rtStart = 0;

@@ -145,9 +145,7 @@ HRESULT CDSVideoStream::FillBuffer(IMediaSample *pms)
 {
 
   CheckPointer(pms,E_POINTER);
-  
-  
-  if (m_queue.size() == 0)
+  if (m_queue.size() <= 0)
     return NOERROR;
   boost::shared_ptr<DsPacket> p = m_queue.Remove();
   BYTE *pData = 0;
@@ -155,24 +153,9 @@ HRESULT CDSVideoStream::FillBuffer(IMediaSample *pms)
   //Copy byte into the samples
   hr = pms->GetPointer(&pData);
   memcpy(pData, &p->at(0), p->size());
-  //set the sample length
-  hr = pms->SetActualDataLength(p->size());
-  //if we have the time of the sample set it..
-  if (p->rtStart < 0)
-  {
-    hr = pms->SetTime(NULL,NULL);
-     hr = pms->SetPreroll(1);
-  }
-  else
-  {
-    hr = pms->SetTime(&p->rtStart, &p->rtStop);
-    hr = pms->SetPreroll(0);
-  }
-
-  hr = pms->SetMediaTime(NULL, NULL);
-  hr = pms->SetDiscontinuity(p->bDiscontinuity);
-  hr = pms->SetSyncPoint(p->bSyncPoint);
-    //pms->SetSyncPoint(TRUE);
+  //set the sample length  
+  hr = pms->SetTime(&p->rtStart, &p->rtStop);
+  hr = pms->SetSyncPoint(TRUE);
 
     return S_OK;
 }
@@ -310,9 +293,6 @@ HRESULT CDSVideoStream::QueueEndOfStream()
 
 HRESULT CDSVideoStream::QueuePacket(auto_ptr<DsPacket> p)
 {
-  if(!ThreadExists()) 
-    return S_FALSE;
-
   //while(m_queue.GetSize() > MAXPACKETSIZE*100)
     //Sleep(1);
 
