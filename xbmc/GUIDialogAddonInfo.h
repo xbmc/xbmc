@@ -33,7 +33,7 @@ public:
   CGUIDialogAddonInfo(void);
   virtual ~CGUIDialogAddonInfo(void);
   bool OnMessage(CGUIMessage& message);
-  
+
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_item; }
   virtual bool HasListItems() const { return true; }
 

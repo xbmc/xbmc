@@ -2582,7 +2582,7 @@
   <string id="24092"></string>
   <string id="24093"></string>
   <string id="24094"></string>
-  <string id="24095"></string>
+  <string id="24095">Disabled System Add-on</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>

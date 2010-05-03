@@ -144,7 +144,12 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
         if (iAction == ACTION_SHOW_INFO)
         {
           if (!m_vecItems->Get(iItem)->GetProperty("Addon.ID").IsEmpty())
-            return CGUIDialogAddonInfo::ShowForItem((*m_vecItems)[iItem]);
+          {
+            CGUIDialogAddonInfo::ShowForItem((*m_vecItems)[iItem]);
+            CAddonMgr::Get()->FindAddons();
+            Update(m_vecItems->m_strPath);
+            return true;
+          }
           return false;
         }
       }
@@ -176,7 +181,7 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
   if (pItem->m_strPath.Equals("addons://enabled/"))
     buttons.Add(CONTEXT_BUTTON_SCAN,24034);
-  
+
   TYPE type = TranslateType(pItem->GetProperty("Addon.intType"));
   AddonPtr addon;
   if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"),
@@ -257,6 +262,8 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
     }
 
     CGUIDialogAddonInfo::ShowForItem(item);
+    CAddonMgr::Get()->FindAddons();
+    Update(m_vecItems->m_strPath);
     return true;
   }
 

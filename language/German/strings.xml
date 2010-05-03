@@ -2604,9 +2604,9 @@
   <string id="24009">Skript</string>
   <string id="24010">Visualisierung</string>
 
-  <string id="24020">Erweiterung konfigurieren</string>
-  <string id="24021">Erweiterung deaktivieren</string>
-  <string id="24022">Erweiterung aktivieren</string>
+  <string id="24020">Konfigurieren</string>
+  <string id="24021">Deaktivieren</string>
+  <string id="24022">Aktivieren</string>
   <string id="24030">Diese Erweiterung kann nicht konfiguriert werden</string>
   <string id="24031">Fehler beim laden der Einstellungen</string>
 
@@ -2634,6 +2634,8 @@
   <string id="24080">Versuchen wieder zu verbinden?</string>
   <string id="24089">Erweiterung startet neu</string>
   <string id="24090">Verwaltung von Erweiterungen sperren</string>
+
+  <string id="24095">Deaktivierte Systemerweiterung</string>
 
   <string id="29800">Datenbankmodus</string>
   <string id="29801">QWERTY Tastatur</string>

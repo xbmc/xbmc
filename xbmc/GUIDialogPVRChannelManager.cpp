@@ -326,18 +326,6 @@ bool CGUIDialogPVRChannelManager::OnMessage(CGUIMessage& message)
           items.Add(current);
         }
 
-        // see if there's a local thumb for this item
-        CStdString folderThumb = pItem->GetFolderThumb();
-        if (XFILE::CFile::Exists(folderThumb))
-        { // cache it
-          if (CPicture::CreateThumbnail(folderThumb, pItem->GetCachedProgramThumb()))
-          {
-            CFileItemPtr local(new CFileItem("thumb://Local", false));
-            local->SetThumbnailImage(pItem->GetCachedProgramThumb());
-            local->SetLabel(g_localizeStrings.Get(20017));
-            items.Add(local);
-          }
-        }
         // and add a "no thumb" entry as well
         CFileItemPtr nothumb(new CFileItem("thumb://None", false));
         nothumb->SetIconImage(pItem->GetIconImage());

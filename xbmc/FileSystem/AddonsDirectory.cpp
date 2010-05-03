@@ -167,7 +167,7 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     if (CAddonMgr::Get()->GetAddon(addon->ID(),addon2))
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(305));
     else if (pItem->GetProperty("Addon.Path").Left(22).Equals("special://xbmc/addons/"))
-      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24068));
+      pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24095));
     items.Add(pItem);
   }
 }

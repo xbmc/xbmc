@@ -23,7 +23,7 @@
 #include "Addon.h"
 #include "AddonHelpers_GUI.h"
 #include "log.h"
-#include "SkinInfo.h"
+#include "Skin.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
 #include "GUIWindowManager.h"
@@ -174,7 +174,7 @@ GUIHANDLE CAddonHelpers_GUI::Window_New(void *addonData, const char *xmlFilename
   {
     /* Check to see if the XML file exists in current skin. If not use
        fallback path to find a skin for the addon */
-    strSkinPath = g_SkinInfo.GetSkinPath(xmlFilename, &res);
+    strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res);
 
     if (!XFILE::CFile::Exists(strSkinPath))
     {
@@ -182,8 +182,8 @@ GUIHANDLE CAddonHelpers_GUI::Window_New(void *addonData, const char *xmlFilename
       CStdString basePath;
       CUtil::AddFileToFolder(guiHelper->m_addon->Path(), "resources", basePath);
       CUtil::AddFileToFolder(basePath, "skins", basePath);
-      CUtil::AddFileToFolder(basePath, CUtil::GetFileName(g_SkinInfo.GetBaseDir()), basePath);
-      strSkinPath = g_SkinInfo.GetSkinPath(xmlFilename, &res, basePath);
+      CUtil::AddFileToFolder(basePath, CUtil::GetFileName(g_SkinInfo->Path()), basePath);
+      strSkinPath = g_SkinInfo->GetSkinPath(xmlFilename, &res, basePath);
       if (!XFILE::CFile::Exists(strSkinPath))
       {
         /* Finally fallback to the DefaultSkin as it didn't exist in either the
@@ -195,13 +195,16 @@ GUIHANDLE CAddonHelpers_GUI::Window_New(void *addonData, const char *xmlFilename
 
   if (forceFallback)
   {
-    CSkinInfo skinInfo;
+    //FIXME make this static method of current skin?
+    CStdString str("none");
+    AddonProps props(str, ADDON_SKIN, str);
+    CSkinInfo skinInfo(props);
     CStdString basePath;
     CUtil::AddFileToFolder(guiHelper->m_addon->Path(), "resources", basePath);
     CUtil::AddFileToFolder(basePath, "skins", basePath);
     CUtil::AddFileToFolder(basePath, defaultSkin, basePath);
 
-    skinInfo.Load(basePath);
+    skinInfo.Start(basePath);
     strSkinPath = skinInfo.GetSkinPath(xmlFilename, &res, basePath);
 
     if (!XFILE::CFile::Exists(strSkinPath))

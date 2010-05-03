@@ -21,16 +21,17 @@
 
 /* Standart includes */
 #include "Application.h"
-#include "GUIWindowManager.h"
-#include "URL.h"
-#include "LocalizeStrings.h"
-#include "utils/log.h"
-#include "GUISettings.h"
-#include "Settings.h"
 #include "FileSystem/File.h"
-#include "Picture.h"
-#include "MediaManager.h"
 #include "FileSystem/StackDirectory.h"
+#include "GUISettings.h"
+#include "GUIWindowManager.h"
+#include "LocalizeStrings.h"
+#include "MediaManager.h"
+#include "Picture.h"
+#include "Settings.h"
+#include "TextureCache.h"
+#include "utils/log.h"
+#include "URL.h"
 
 /* Dialog windows includes */
 #include "GUIDialogFileBrowser.h"
@@ -995,18 +996,6 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       items.Add(current);
     }
 
-    // see if there's a local thumb for this item
-    CStdString folderThumb = pItem->GetFolderThumb();
-    if (XFILE::CFile::Exists(folderThumb))
-    { // cache it
-      if (CPicture::CreateThumbnail(folderThumb, pItem->GetCachedProgramThumb()))
-      {
-        CFileItemPtr local(new CFileItem("thumb://Local", false));
-        local->SetThumbnailImage(pItem->GetCachedProgramThumb());
-        local->SetLabel(g_localizeStrings.Get(20017));
-        items.Add(local);
-      }
-    }
     // and add a "no thumb" entry as well
     CFileItemPtr nothumb(new CFileItem("thumb://None", false));
     nothumb->SetIconImage(pItem->GetIconImage());
