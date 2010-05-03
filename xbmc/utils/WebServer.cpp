@@ -132,12 +132,6 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   {
     if (strURL.Left(18).Equals("/xbmcCmds/xbmcHttp"))
       return HttpApi(connection);
-    else if (strURL.Left(6).Equals("/thumb"))
-    {
-      strURL = strURL.Right(strURL.length() - 7);
-      strURL = strURL.Left(strURL.length() - 4);
-      return CreateFileDownloadResponse(connection, strURL);
-    }
     else if (strURL.Left(4).Equals("/vfs"))
     {
       strURL = strURL.Right(strURL.length() - 5);
