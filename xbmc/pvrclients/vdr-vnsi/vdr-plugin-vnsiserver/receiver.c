@@ -149,9 +149,7 @@ cLiveStreamer::~cLiveStreamer()
 void cLiveStreamer::Action(void)
 {
   int readTimeouts      = 0;
-  int processErrors     = 0;
   int signalInfoCnt     = 90;
-  bool showingNoSignal  = false;
   bool recvRetry        = true;
 
   while (Running())
@@ -171,94 +169,54 @@ void cLiveStreamer::Action(void)
         used++;
       }
 
-      int processLoops = 0;
       while (size >= TS_SIZE)
       {
-        unsigned int ts_pid = TsPid(buf+used);
-        cTSDemuxer *demuxer = FindStreamDemuxer(ts_pid);
         if (!Running())
           break;
 
+        unsigned int ts_pid = TsPid(buf+used);
+        cTSDemuxer *demuxer = FindStreamDemuxer(ts_pid);
+
         if (demuxer)
-        {
-          if (!demuxer->ProcessTSPacket(buf+used))
-            processErrors++;
-        }
+          demuxer->ProcessTSPacket(buf+used);
 
         size  -= TS_SIZE;
         used  += TS_SIZE;
-        processLoops++;
       }
       Del(used);
 
-      /* Additional Information and NO_SIGNAL timers */
       signalInfoCnt++;
-      if (showingNoSignal && processErrors < processLoops/2)
-      {
-        readTimeouts = 0;
-        m_streamChangeSendet = false;
-        showingNoSignal = false;
-      }
-      else if (processErrors == 0)
-        readTimeouts = 0;
+      readTimeouts = 0;
     }
 
-
-    if ((!buf && m_Receiver->IsAttached()) || processErrors > 0)
+    if (!buf && m_Receiver->IsAttached())
     {
       cCondWait::SleepMs(18);
       readTimeouts++;
-      processErrors = 0;
-      if (readTimeouts > 180 || showingNoSignal)
+      if (readTimeouts > 180)
       {
-        if (!showingNoSignal)
-        {
-          cResponsePacket *resp = new cResponsePacket();
-          if (resp->initStream(VDR_STREAM_CHANGE, 0, 0, 0, 0))
-          {
-            resp->add_U32(1);
-            resp->add_String("MPEG2VIDEO");
-            resp->add_U32(0);
-            resp->add_U32(0);
-            resp->add_U32(720);
-            resp->add_U32(576);
-            resp->add_double(1.0);
 
-            resp->finaliseStream();
-            m_Socket->write(resp->getPtr(), resp->getLen());
-          }
-          else
-          {
-            esyslog("VNSI-Error: stream response packet init fail for NO_SIGNAL");
-          }
-          delete resp;
-          isyslog("VNSI: No data in 3 seconds, queuing no signal image %i, %i", readTimeouts, showingNoSignal);
-        }
-
+        uint8_t dummyData[1];
         sStreamPacket pkt;
         pkt.id       = 0;
-        pkt.data     = VNSIServerConfig.m_noSignalStreamData;
-        pkt.size     = VNSIServerConfig.m_noSignalStreamSize;
+        pkt.data     = dummyData;
+        pkt.size     = 0;
         pkt.duration = 0;
         pkt.dts      = DVD_NOPTS_VALUE;
         pkt.pts      = DVD_NOPTS_VALUE;
         sendStreamPacket(&pkt);
 
-        readTimeouts    = 0;
-        showingNoSignal = true;
-        recvRetry       = false;
+        readTimeouts = 0;
       }
     }
 
+    if (!Running())
+      break;
+
     if (!m_Receiver->IsAttached()) /** Double check here */
     {
-      if (!recvRetry)
-      {
-        isyslog("VNSI: returning from streamer thread, receiver is no more attached");
-        return;
-      }
-      recvRetry = false;
-      cCondWait::SleepMs(20);
+      isyslog("VNSI: returning from streamer thread, receiver is no more attached");
+      break;
     }
 
     if (time(NULL) - m_lastInfoSendet > 1)
@@ -267,7 +225,7 @@ void cLiveStreamer::Action(void)
 
       sendSignalInfo();
     }
-    else if (signalInfoCnt >= 100 && !showingNoSignal)
+    else if (signalInfoCnt >= 100)
     {
       /* Send stream information every 100 packets expect the first one is sendet
          after 10 packets */

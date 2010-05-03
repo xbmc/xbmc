@@ -90,7 +90,10 @@ cParserMPEG2Video::~cParserMPEG2Video()
     delete pkt;
   }
   if (m_pictureBuffer)
+  {
     free(m_pictureBuffer);
+    m_pictureBuffer = NULL;
+  }
 }
 
 void cParserMPEG2Video::Parse(unsigned char *data, int size, bool pusi)
@@ -129,6 +132,9 @@ void cParserMPEG2Video::Parse(unsigned char *data, int size, bool pusi)
 
   for (int i = 0; i < size; i++)
   {
+    if (!m_pictureBuffer)
+      break;
+
     m_pictureBuffer[m_pictureBufferPtr++] = data[i];
     startcode = startcode << 8 | data[i];
 

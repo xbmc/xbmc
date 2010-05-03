@@ -912,8 +912,6 @@ void CDVDPlayer::Process()
         if(channel > 0 && pStream->SelectChannel(channel))
         {
           FlushBuffers(false);
-          CloseAudioStream(true);
-          CloseVideoStream(true);
           SAFE_DELETE(m_pDemuxer);
           continue;
         }
@@ -1936,8 +1934,6 @@ void CDVDPlayer::HandleMessages()
         {
 
           FlushBuffers(false);
-          CloseAudioStream(true);
-          CloseVideoStream(true);
           SAFE_DELETE(m_pDemuxer);
         }
       }
@@ -1970,8 +1966,6 @@ void CDVDPlayer::HandleMessages()
             {
               m_ChannelEntryTimeOut = 0;
               FlushBuffers(false);
-              CloseAudioStream(true);
-              CloseVideoStream(true);
               SAFE_DELETE(m_pDemuxer);
             }
           }
