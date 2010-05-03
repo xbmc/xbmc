@@ -1584,7 +1584,7 @@
   <string id="19065">Standaard programma gids</string>
   <string id="19066">Bezig met laden van de opnameinformatie van de clients</string>
   <string id="19067">Timer reeds gezet voor dit event</string>
-  <string id="19068">Kan opnamae niet verwijderen!</string>
+  <string id="19068">Kan opname niet verwijderen!</string>
   <string id="19069">EPG</string>
   <string id="19070">EPG scan timeout</string>
   <string id="19071">EPG update timeout</string>
@@ -1713,6 +1713,24 @@
   <string id="19194">Doorgaan?</string>
   <string id="19195">Client acties</string>
   <string id="19196">PVR client specifieke acties</string>
+  <string id="19197">Opname gestart om: %s</string>
+  <string id="19198">Opname klaar om: %s</string>
+  <string id="19199">Kanaal beheer</string>
+  <string id="19200">EPG bron:</string>
+  <string id="19201">Kanaal naam:</string>
+  <string id="19202">Kanaal icoon:</string>
+  <string id="19203">Kanaal bewerken</string>
+  <string id="19204">Nieuw kanaal</string>
+  <string id="19205">Groepen beheer</string>
+  <string id="19206">Activeer EPG:</string>
+  <string id="19207">Groep:</string>
+  <string id="19208">Naam invoeren voor nieuw kanaal</string>
+  <string id="19209">XBMC intern virtueeel kanaal</string>
+  <string id="19210">Client</string>
+  <string id="19211">Verwijder kanaal</string>
+  <string id="19212">Lijst bevat veranderingen</string>
+  <string id="19213">Selecteer kanaal client</string>
+  <string id="19214">Voer een valide url in voor nieuwe kanaal</string>
 
   <string id="19499">Anders/Onbekend</string>
   <string id="19500">Film/Drama</string>
@@ -2108,7 +2126,7 @@
   <string id="20252">Glazen vullen (video's)</string>
   <string id="20253">WebDAV server (HTTP)</string>
   <string id="20254">WebDAV server (HTTPS)</string>
-  <string id="20255">Eerste login, profiel bijwerken<string>
+  <string id="20255">Eerste login, profiel bijwerken</string>
 
   <string id="20300">Web server directory (HTTP)</string>
   <string id="20301">Web server directory (HTTPS)</string>
@@ -2503,6 +2521,7 @@
   <!-- strings 24000 thru 24299 reserved for the addons framework -->
   <string id="24000">Add-on</string>
   <string id="24001">Add-ons</string>
+  <string id="24002">Add-on opties</string>
 
   <string id="24005">Plugin</string>
   <string id="24006">PVR client</string>
@@ -2510,6 +2529,7 @@
   <string id="24008">Schermbeveiliging</string>
   <string id="24009">Script</string>
   <string id="24010">Visualisatie</string>
+  <string id="24011">Add-on repo</string>
 
   <string id="24020">Add-on configureren</string>
   <string id="24021">Add-on uitschakelen</string>
@@ -2524,7 +2544,16 @@
   <string id="24051">Versie:</string>
   <string id="24052">Disclaimer:</string>
   <string id="24053">Licentie:</string>
-  <string id="24059">Wilt u deze Add-on installeren?</string>
+  <string id="24059">Wilt u deze Add-on aanzetten?</string>
+  <string id="24060">Wilt u deze Add-on uitzetten?</string>
+  <string id="24061">Er is een update voor deze Add-on!</string>
+  <string id="24062">Gebruikte Add-ons</string>
+  <string id="24063">Automatische updates</string>
+  <string id="24064">Add-on staat aan</string>
+  <string id="24065">Add-on is geupdate</string>
+  <string id="24066">Download Add-on stoppen</string>
+  <string id="24067">Bezig met downloaden van de volgende Add-ons</string>
+  <string id="24068">Uitgeschakelde systeem Add-on</string>
 
   <string id="24070">Add-on kan niet worden gebruikt</string>
   <string id="24071">Een onbekende error opgetreden</string>
@@ -2535,6 +2564,11 @@
   <string id="24089">Add-on aan het herstarten</string>
 
   <string id="24090">Add-on manager vastzetten</string>
+
+  <string id="24091">Hardware acceleratie toestaan (VDPAU)</string>
+  <string id="24092">Hardware acceleratie toestaan (VAAPI)</string>
+  <string id="24093">Hardware acceleratie toestaan (DXVA2)</string>
+  <string id="24094">Hardware acceleratie toestaan (CrystalHD)</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Bibliotheekmodus</string>
@@ -2624,7 +2658,7 @@
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
   <string id="34002">Wav</string>
-  <string id="34003">DXVA</string>
+  <string id="34003">DXVA2</string>
   <string id="34004">VAAPI</string>
 
   <string id="34100">Speaker Configuration</string>
