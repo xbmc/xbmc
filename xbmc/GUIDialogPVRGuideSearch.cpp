@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,15 +19,15 @@
  *
  */
 
-#include "Application.h"
-#include "GUIWindowManager.h"
-#include "LocalizeStrings.h"
 #include "GUIDialogPVRGuideSearch.h"
-#include "utils/PVREpg.h"
-#include "utils/PVRChannels.h"
-#include "GUISpinControlEx.h"
+#include "Application.h"
+#include "LocalizeStrings.h"
 #include "GUIEditControl.h"
 #include "GUIRadioButtonControl.h"
+#include "GUISpinControlEx.h"
+#include "GUIWindowManager.h"
+#include "utils/PVREpg.h"
+#include "utils/PVRChannels.h"
 
 using namespace std;
 
@@ -53,14 +53,10 @@ using namespace std;
 #define CONTROL_BTN_DEFAULTS      28
 
 CGUIDialogPVRGuideSearch::CGUIDialogPVRGuideSearch(void)
-    : CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_SEARCH, "DialogPVRGuideSearch.xml")
+  : CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_SEARCH, "DialogPVRGuideSearch.xml")
 {
   m_bConfirmed   = false;
   m_searchfilter = NULL;
-}
-
-CGUIDialogPVRGuideSearch::~CGUIDialogPVRGuideSearch(void)
-{
 }
 
 bool CGUIDialogPVRGuideSearch::OnMessage(CGUIMessage& message)
@@ -373,19 +369,4 @@ void CGUIDialogPVRGuideSearch::Update()
     pSpin->AddLabel(g_localizeStrings.Get(19499), EVCONTENTMASK_USERDEFINED);
     pSpin->SetValue(m_searchfilter->m_GenreType);
   }
-}
-
-bool CGUIDialogPVRGuideSearch::IsConfirmed() const
-{
-  return m_bConfirmed;
-}
-
-bool CGUIDialogPVRGuideSearch::IsCanceled() const
-{
-  return m_bCanceled;
-}
-
-void CGUIDialogPVRGuideSearch::SetFilterData(EPGSearchFilter *searchfilter)
-{
-  m_searchfilter = searchfilter;
 }

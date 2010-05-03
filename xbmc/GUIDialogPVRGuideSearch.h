@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -28,14 +28,14 @@ class CGUIDialogPVRGuideSearch : public CGUIDialog
 {
 public:
   CGUIDialogPVRGuideSearch(void);
-  virtual ~CGUIDialogPVRGuideSearch(void);
+  virtual ~CGUIDialogPVRGuideSearch(void) {}
   virtual bool OnMessage(CGUIMessage& message);
   virtual void OnWindowLoaded();
-  void SetFilterData(EPGSearchFilter *searchfilter);
-  void OnSearch();
 
-  bool IsConfirmed() const;
-  bool IsCanceled() const;
+  void SetFilterData(EPGSearchFilter *searchfilter) { m_searchfilter = searchfilter; }
+  bool IsConfirmed() const { return m_bConfirmed; }
+  bool IsCanceled() const { return m_bCanceled; }
+  void OnSearch();
 
 protected:
   void Update();

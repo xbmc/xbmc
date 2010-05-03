@@ -54,6 +54,21 @@
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
+				<visible>pvr.IsPlayingTV</visible>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<posx>40</posx>
+				<posy>18</posy>
+				<width>430</width>
+				<height>30</height>
+				<font>font12_title</font>
+				<label>$LOCALIZE[19024] - $INFO[MusicPlayer.ChannelGroup]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>pvr.IsPlayingRadio</visible>
 			</control>
 			<control type="list" id="11">
 				<posx>40</posx>
@@ -241,7 +256,7 @@
 				<align>right</align>
 				<aligny>center</aligny>
 				<label>([COLOR=blue]$INFO[Container(11).NumItems][/COLOR]) $LOCALIZE[19019] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages][/COLOR])</label>
-				<include>Window_OpenClose_Animation</include>		
+				<include>Window_OpenClose_Animation</include>
 			</control>
 		</control>
 	</controls>

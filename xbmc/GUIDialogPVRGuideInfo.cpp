@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,14 +19,14 @@
  *
  */
 
+#include "GUIDialogPVRGuideInfo.h"
 #include "Application.h"
 #include "GUIWindowManager.h"
-#include "GUIDialogPVRGuideInfo.h"
+#include "GUIDialogOK.h"
+#include "GUIDialogYesNo.h"
 #include "utils/PVREpg.h"
 #include "utils/PVRChannels.h"
 #include "utils/PVRTimers.h"
-#include "GUIDialogYesNo.h"
-#include "GUIDialogOK.h"
 
 using namespace std;
 

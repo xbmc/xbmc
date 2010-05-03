@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -27,9 +26,8 @@ class CGUIDialogPVRUpdateProgressBar : public CGUIDialog
 {
 public:
   CGUIDialogPVRUpdateProgressBar(void);
-  virtual ~CGUIDialogPVRUpdateProgressBar(void);
+  virtual ~CGUIDialogPVRUpdateProgressBar(void) {}
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
   virtual void Render();
   void SetProgress(int currentItem, int itemCount);
   void SetHeader(const CStdString& strHeader);
@@ -37,11 +35,10 @@ public:
   void UpdateState();
 
 protected:
-  CStdString m_strTitle;
-  CStdString m_strHeader;
-  CCriticalSection m_critical;
-
-  float m_fPercentDone;
-  int m_currentItem;
-  int m_itemCount;
+  CStdString        m_strTitle;
+  CStdString        m_strHeader;
+  CCriticalSection  m_critical;
+  float             m_fPercentDone;
+  int               m_currentItem;
+  int               m_itemCount;
 };

@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -39,9 +39,8 @@ protected:
   void ShowInfo(int item);
   void Clear();
   void Update();
-
   CGUIControl *GetFirstFocusableControl(int id);
 
-  CFileItemList* m_vecItems;
-  CGUIViewControl m_viewControl;
+  CFileItemList    *m_vecItems;
+  CGUIViewControl   m_viewControl;
 };

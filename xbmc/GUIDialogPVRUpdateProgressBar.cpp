@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,8 +20,8 @@
  */
 
 #include "GUIDialogPVRUpdateProgressBar.h"
-#include "GUISliderControl.h"
 #include "GUIProgressControl.h"
+#include "GUISliderControl.h"
 #include "utils/SingleLock.h"
 
 #define CONTROL_LABELHEADER       30
@@ -29,22 +29,14 @@
 #define CONTROL_PROGRESS          32
 
 CGUIDialogPVRUpdateProgressBar::CGUIDialogPVRUpdateProgressBar(void)
-    : CGUIDialog(WINDOW_DIALOG_EPG_SCAN, "DialogPVRUpdateProgressBar.xml")
+  : CGUIDialog(WINDOW_DIALOG_EPG_SCAN, "DialogPVRUpdateProgressBar.xml")
 {
   m_loadOnDemand = false;
 }
 
-CGUIDialogPVRUpdateProgressBar::~CGUIDialogPVRUpdateProgressBar(void)
-{}
-
-bool CGUIDialogPVRUpdateProgressBar::OnAction(const CAction &action)
-{
-  return CGUIDialog::OnAction(action);
-}
-
 bool CGUIDialogPVRUpdateProgressBar::OnMessage(CGUIMessage& message)
 {
-  switch ( message.GetMessage() )
+  switch (message.GetMessage())
   {
   case GUI_MSG_WINDOW_INIT:
     {
@@ -89,8 +81,9 @@ void CGUIDialogPVRUpdateProgressBar::SetProgress(int currentItem, int itemCount)
 {
   CSingleLock lock (m_critical);
 
-  m_fPercentDone=(float)((currentItem*100)/itemCount);
-  if (m_fPercentDone>100.0F) m_fPercentDone=100.0F;
+  m_fPercentDone = (float)((currentItem*100)/itemCount);
+  if (m_fPercentDone > 100.0F)
+    m_fPercentDone = 100.0F;
 }
 
 void CGUIDialogPVRUpdateProgressBar::UpdateState()
@@ -100,7 +93,7 @@ void CGUIDialogPVRUpdateProgressBar::UpdateState()
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, m_strHeader);
   SET_CONTROL_LABEL(CONTROL_LABELTITLE, m_strTitle);
 
-  if (m_fPercentDone>-1.0f)
+  if (m_fPercentDone > -1.0f)
   {
     SET_CONTROL_VISIBLE(CONTROL_PROGRESS);
     CGUIProgressControl* pProgressCtrl=(CGUIProgressControl*)GetControl(CONTROL_PROGRESS);

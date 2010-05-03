@@ -98,12 +98,12 @@ public:
    */
   bool IsPlayingTV();
 
-  /*! \brief Returns if a radio channel is playing
+  /*! \brief Returns true if a tv channel is playing
    \return true during radio playback
    */
   bool IsPlayingRadio();
 
-  /*! \brief Returns if a recording is playing over the client
+  /*! \brief Returns true if a recording is playing over the client
    \return true during recording playback
    */
   bool IsPlayingRecording();

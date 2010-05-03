@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -33,20 +33,22 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
-  void SetRadio(bool IsRadio);
+  void SetRadio(bool IsRadio) { m_bIsRadio = IsRadio; }
 
 protected:
-  CStdString m_CurrentGroupName;
-  unsigned int m_iSelectedLeft;
-  unsigned int m_iSelectedRight;
-  unsigned int m_iSelectedGroup;
-  bool m_bIsRadio;
   void Clear();
   void Update();
 
-  CFileItemList* m_channelLeftItems;
-  CFileItemList* m_channelRightItems;
-  CFileItemList* m_channelGroupItems;
+  CStdString      m_CurrentGroupName;
+  bool            m_bIsRadio;
+
+  unsigned int    m_iSelectedLeft;
+  unsigned int    m_iSelectedRight;
+  unsigned int    m_iSelectedGroup;
+
+  CFileItemList  *m_channelLeftItems;
+  CFileItemList  *m_channelRightItems;
+  CFileItemList  *m_channelGroupItems;
 
   CGUIViewControl m_viewControlLeft;
   CGUIViewControl m_viewControlRight;

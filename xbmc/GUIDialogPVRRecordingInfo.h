@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -26,7 +26,7 @@ class CGUIDialogPVRRecordingInfo : public CGUIDialog
 {
 public:
   CGUIDialogPVRRecordingInfo(void);
-  virtual ~CGUIDialogPVRRecordingInfo(void);
+  virtual ~CGUIDialogPVRRecordingInfo(void) {}
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool HasListItems() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
@@ -34,6 +34,6 @@ public:
   void SetRecording(const CFileItem *item);
 
 protected:
-  CFileItemPtr        m_recordItem;
+  CFileItemPtr m_recordItem;
 };
 

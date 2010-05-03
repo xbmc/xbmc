@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,9 +19,8 @@
  *
  */
 
-/* Standart includes */
-#include "GUIWindowManager.h"
 #include "GUIDialogPVRRecordingInfo.h"
+#include "GUIWindowManager.h"
 #include "utils/PVRRecordings.h"
 
 using namespace std;
@@ -29,12 +28,8 @@ using namespace std;
 #define CONTROL_BTN_OK  10
 
 CGUIDialogPVRRecordingInfo::CGUIDialogPVRRecordingInfo(void)
-    : CGUIDialog(WINDOW_DIALOG_PVR_RECORDING_INFO, "DialogPVRRecordingInfo.xml")
-    , m_recordItem(new CFileItem)
-{
-}
-
-CGUIDialogPVRRecordingInfo::~CGUIDialogPVRRecordingInfo(void)
+  : CGUIDialog(WINDOW_DIALOG_PVR_RECORDING_INFO, "DialogPVRRecordingInfo.xml")
+  , m_recordItem(new CFileItem)
 {
 }
 

@@ -20,12 +20,12 @@
  */
 
 #include "GUIDialogPVRChannelsOSD.h"
-#include "PVRManager.h"
 #include "Application.h"
-#include "GUIDialogPVRGuideInfo.h"
-#include "GUIDialogOK.h"
-#include "GUIWindowManager.h"
 #include "FileItem.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogOK.h"
+#include "GUIDialogPVRGuideInfo.h"
+#include "PVRManager.h"
 #include "ViewState.h"
 
 using namespace std;
@@ -55,6 +55,7 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
+      /* Close dialog immediately if now TV or radio channel is playing */
       if (!g_PVRManager.IsPlayingTV() && !g_PVRManager.IsPlayingRadio())
       {
         Close();
@@ -81,7 +82,7 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
           GotoChannel(iItem);
           return true;
         }
-        else if (iAction == ACTION_SHOW_INFO)
+        else if (iAction == ACTION_SHOW_INFO || iAction == ACTION_MOUSE_RIGHT_CLICK)
         {
           /* Show information Dialog */
           ShowInfo(iItem);

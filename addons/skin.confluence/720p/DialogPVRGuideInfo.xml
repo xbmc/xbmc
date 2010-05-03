@@ -4,7 +4,7 @@
 		<system>1</system>
 		<posx>20</posx>
 		<posy>30</posy>
-		<origin x="275" y="30">!Window.IsVisible(FullscreenVideo)</origin>
+		<origin x="275" y="30">![Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)]</origin>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>

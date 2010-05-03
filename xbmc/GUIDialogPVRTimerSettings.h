@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,9 +20,9 @@
  *
  */
 
+#include "DateTime.h"
 #include "GUIDialogSettings.h"
 #include "GUIListItem.h"
-#include "DateTime.h"
 
 class CFileItem;
 
@@ -30,7 +30,7 @@ class CGUIDialogPVRTimerSettings : public CGUIDialogSettings
 {
 public:
   CGUIDialogPVRTimerSettings(void);
-  virtual ~CGUIDialogPVRTimerSettings(void);
+  virtual ~CGUIDialogPVRTimerSettings(void) {}
   void SetTimer(CFileItem *item);
   bool GetOK() { return !m_cancelled; }
 
@@ -40,16 +40,12 @@ protected:
   virtual void OnOkay();
   virtual void OnCancel() { m_cancelled = true; }
 
-  SYSTEMTIME	  timerStartTime;
-  SYSTEMTIME	  timerEndTime;
-  CStdString	  timerStartTimeStr;
-  CStdString	  timerEndTimeStr;
-  int             m_tmp_iStartTime;
-  int             m_tmp_iStopTime;
+  SYSTEMTIME      timerStartTime;
+  SYSTEMTIME      timerEndTime;
+  CStdString      timerStartTimeStr;
+  CStdString      timerEndTimeStr;
   int             m_tmp_iFirstDay;;
-
   int             m_tmp_day;
-
 
   CFileItem      *m_timerItem;
   bool            m_cancelled;

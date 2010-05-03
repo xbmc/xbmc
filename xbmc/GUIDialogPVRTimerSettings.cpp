@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,9 +23,9 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogNumeric.h"
 #include "GUISettings.h"
+#include "LocalizeStrings.h"
 #include "PVRManager.h"
 #include "utils/PVRTimers.h"
-#include "LocalizeStrings.h"
 
 using namespace std;
 
@@ -40,19 +40,12 @@ using namespace std;
 #define CONTROL_TMR_NAME                29
 #define CONTROL_TMR_RADIO               50
 #define CONTROL_TMR_CHNAME_RADIO        51
-#define CONTROL_TMR_DIR                 52
 
 CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings(void)
-    : CGUIDialogSettings(WINDOW_DIALOG_PVR_TIMER_SETTING, "DialogPVRTimerSettings.xml")
+  : CGUIDialogSettings(WINDOW_DIALOG_PVR_TIMER_SETTING, "DialogPVRTimerSettings.xml")
 {
-  m_cancelled         = true;
-  m_tmp_day           = 11;
-  m_tmp_iStartTime    = 0;
-  m_tmp_iStopTime     = 0;
-}
-
-CGUIDialogPVRTimerSettings::~CGUIDialogPVRTimerSettings(void)
-{
+  m_cancelled = true;
+  m_tmp_day   = 11;
 }
 
 void CGUIDialogPVRTimerSettings::CreateSettings()
@@ -65,7 +58,6 @@ void CGUIDialogPVRTimerSettings::CreateSettings()
   // create our settings controls
   AddBool(CONTROL_TMR_ACTIVE, 19074, &tag->m_Active);
   AddButton(CONTROL_TMR_NAME, 19075, &tag->m_strTitle, true);
-  AddButton(CONTROL_TMR_DIR, 19076, &tag->m_strDir, true);
   AddBool(CONTROL_TMR_RADIO, 19077, &tag->m_Radio);
 
   /// Channel names
@@ -231,14 +223,6 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(SettingInfo &setting)
       UpdateSetting(CONTROL_TMR_NAME);
     }
   }
-  else if (setting.id == CONTROL_TMR_DIR)
-  {
-    /// TODO: Use Directory structure from Recordings to select right folder
-    if (CGUIDialogKeyboard::ShowAndGetInput(tag->m_strDir, g_localizeStrings.Get(19104), false))
-    {
-      UpdateSetting(CONTROL_TMR_DIR);
-    }
-  }
   else if (setting.id == CONTROL_TMR_RADIO)
   {
     cPVRChannelInfoTag* channeltag = NULL;
@@ -386,8 +370,6 @@ void CGUIDialogPVRTimerSettings::SetTimer(CFileItem *item)
   timerStartTimeStr   = m_timerItem->GetPVRTimerInfoTag()->m_StartTime.GetAsLocalizedTime("", false);
   timerEndTimeStr     = m_timerItem->GetPVRTimerInfoTag()->m_StopTime.GetAsLocalizedTime("", false);
 
-  m_tmp_iStartTime    = 0;
-  m_tmp_iStopTime     = 0;
   m_tmp_iFirstDay     = 0;
   m_tmp_day           = 11;
 }

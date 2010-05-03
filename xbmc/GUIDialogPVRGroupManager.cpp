@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,30 +20,28 @@
  */
 
 #include "GUIDialogPVRGroupManager.h"
-#include "utils/PVRChannels.h"
 #include "Application.h"
-#include "GUIDialogKeyboard.h"
-#include "GUIDialogYesNo.h"
-#include "GUIDialogOK.h"
-#include "GUIWindowManager.h"
 #include "FileItem.h"
+#include "GUIDialogKeyboard.h"
+#include "GUIDialogOK.h"
+#include "GUIDialogYesNo.h"
+#include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
+#include "utils/PVRChannels.h"
 
 using namespace std;
 
 #define CONTROL_LIST_CHANNELS_LEFT    11
 #define CONTROL_LIST_CHANNELS_RIGHT   12
 #define CONTROL_LIST_CHANNEL_GROUPS   13
-
 #define CONTROL_CURRENT_GROUP_LABEL   20
-
 #define BUTTON_NEWGROUP               26
 #define BUTTON_RENAMEGROUP            27
 #define BUTTON_DELGROUP               28
 #define BUTTON_OK                     29
 
 CGUIDialogPVRGroupManager::CGUIDialogPVRGroupManager()
-    : CGUIDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER, "DialogPVRGroupManager.xml")
+  : CGUIDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER, "DialogPVRGroupManager.xml")
 {
   m_channelLeftItems  = new CFileItemList;
   m_channelRightItems = new CFileItemList;
@@ -73,7 +71,7 @@ bool CGUIDialogPVRGroupManager::OnMessage(CGUIMessage& message)
     case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      m_iSelectedLeft = 0;
+      m_iSelectedLeft  = 0;
       m_iSelectedRight = 0;
       m_iSelectedGroup = 0;
       Update();
@@ -291,9 +289,4 @@ void CGUIDialogPVRGroupManager::Clear()
   m_channelLeftItems->Clear();
   m_channelRightItems->Clear();
   m_channelGroupItems->Clear();
-}
-
-void CGUIDialogPVRGroupManager::SetRadio(bool IsRadio)
-{
-  m_bIsRadio = IsRadio;
 }
