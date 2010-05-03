@@ -54,7 +54,7 @@
         <width>740</width>
         <height>30</height>
         <font>font16caps</font>
-        <label>$ADDON[de.tvdr.vnsi.pvr 30009]</label>
+        <label>$ADDON[pvr.vdr.vnsi 30009]</label>
         <align>left</align>
         <aligny>center</aligny>
         <textcolor>white</textcolor>
@@ -67,7 +67,7 @@
         <width>260</width>
         <height>60</height>
         <textoffsety>13</textoffsety>
-        <label>$ADDON[de.tvdr.vnsi.pvr 30010]</label>
+        <label>$ADDON[pvr.vdr.vnsi 30010]</label>
         <font>font13_title</font>
         <align>right</align>
         <aligny>center</aligny>
@@ -85,7 +85,7 @@
         <width>260</width>
         <height>60</height>
         <textoffsety>13</textoffsety>
-        <label>$ADDON[de.tvdr.vnsi.pvr 30024]</label>
+        <label>$ADDON[pvr.vdr.vnsi 30024]</label>
         <font>font13_title</font>
         <align>right</align>
         <aligny>center</aligny>
@@ -111,7 +111,7 @@
           <texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
           <texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
           <aligny>center</aligny>
-          <label>$ADDON[de.tvdr.vnsi.pvr 30011]</label>
+          <label>$ADDON[pvr.vdr.vnsi 30011]</label>
           <onright>5</onright>
           <onleft>5</onleft>
           <onup>22</onup>
@@ -128,7 +128,7 @@
           <focusedcolor>white</focusedcolor>
           <texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
           <texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
-          <label>$ADDON[de.tvdr.vnsi.pvr 30012]</label>
+          <label>$ADDON[pvr.vdr.vnsi 30012]</label>
           <onright>5</onright>
           <onleft>5</onleft>
           <onup>10</onup>
@@ -146,7 +146,7 @@
           <focusedcolor>white</focusedcolor>
           <texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
           <texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
-          <label>$ADDON[de.tvdr.vnsi.pvr 30013]</label>
+          <label>$ADDON[pvr.vdr.vnsi 30013]</label>
           <onright>5</onright>
           <onleft>5</onleft>
           <onup>11</onup>
@@ -165,7 +165,7 @@
           <focusedcolor>white</focusedcolor>
           <texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
           <texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
-          <label>$ADDON[de.tvdr.vnsi.pvr 30014]</label>
+          <label>$ADDON[pvr.vdr.vnsi 30014]</label>
           <onright>5</onright>
           <onleft>5</onleft>
           <onup>12</onup>
@@ -185,7 +185,7 @@
           <focusedcolor>white</focusedcolor>
           <texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
           <texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
-          <label>$ADDON[de.tvdr.vnsi.pvr 30015]</label>
+          <label>$ADDON[pvr.vdr.vnsi 30015]</label>
           <onright>5</onright>
           <onleft>5</onleft>
           <onup>13</onup>
@@ -206,7 +206,7 @@
           <focusedcolor>white</focusedcolor>
           <texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
           <texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
-          <label>$ADDON[de.tvdr.vnsi.pvr 30016]</label>
+          <label>$ADDON[pvr.vdr.vnsi 30016]</label>
           <onright>5</onright>
           <onleft>5</onleft>
           <onup>14</onup>
@@ -229,7 +229,7 @@
           <texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
           <texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
           <aligny>center</aligny>
-          <label>$ADDON[de.tvdr.vnsi.pvr 30017]</label>
+          <label>$ADDON[pvr.vdr.vnsi 30017]</label>
           <onright>5</onright>
           <onleft>5</onleft>
           <onup>15</onup>
@@ -253,7 +253,7 @@
           <texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
           <texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
           <aligny>center</aligny>
-          <label>$ADDON[de.tvdr.vnsi.pvr 30022]</label>
+          <label>$ADDON[pvr.vdr.vnsi 30022]</label>
           <onright>5</onright>
           <onleft>5</onleft>
           <onup>16</onup>
@@ -278,7 +278,7 @@
           <texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
           <texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
           <aligny>center</aligny>
-          <label>$ADDON[de.tvdr.vnsi.pvr 30018]</label>
+          <label>$ADDON[pvr.vdr.vnsi 30018]</label>
           <onright>5</onright>
           <onleft>5</onleft>
           <onup>17</onup>
@@ -304,7 +304,7 @@
           <texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
           <texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
           <aligny>center</aligny>
-          <label>$ADDON[de.tvdr.vnsi.pvr 30019]</label>
+          <label>$ADDON[pvr.vdr.vnsi 30019]</label>
           <onright>5</onright>
           <onleft>5</onleft>
           <onup>18</onup>
@@ -331,7 +331,7 @@
           <texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
           <texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
           <aligny>center</aligny>
-          <label>$ADDON[de.tvdr.vnsi.pvr 30020]</label>
+          <label>$ADDON[pvr.vdr.vnsi 30020]</label>
           <onright>5</onright>
           <onleft>5</onleft>
           <onup>29</onup>
@@ -359,7 +359,7 @@
           <texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
           <texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
           <aligny>center</aligny>
-          <label>$ADDON[de.tvdr.vnsi.pvr 30021]</label>
+          <label>$ADDON[pvr.vdr.vnsi 30021]</label>
           <onright>5</onright>
           <onleft>5</onleft>
           <onup>20</onup>
@@ -388,7 +388,7 @@
           <texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
           <texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
           <aligny>center</aligny>
-          <label>$ADDON[de.tvdr.vnsi.pvr 30023]</label>
+          <label>$ADDON[pvr.vdr.vnsi 30023]</label>
           <onright>5</onright>
           <onleft>5</onleft>
           <onup>21</onup>
@@ -423,7 +423,7 @@
           <width>250</width>
           <height>30</height>
           <font>font13</font>
-          <label>$ADDON[de.tvdr.vnsi.pvr 30026]</label>
+          <label>$ADDON[pvr.vdr.vnsi 30026]</label>
           <align>left</align>
           <aligny>center</aligny>
           <textcolor>grey</textcolor>
@@ -449,7 +449,7 @@
           <width>250</width>
           <height>30</height>
           <font>font13</font>
-          <label>$ADDON[de.tvdr.vnsi.pvr 30027]</label>
+          <label>$ADDON[pvr.vdr.vnsi 30027]</label>
           <align>left</align>
           <aligny>center</aligny>
           <textcolor>white</textcolor>
@@ -475,7 +475,7 @@
           <width>250</width>
           <height>30</height>
           <font>font13</font>
-          <label>$ADDON[de.tvdr.vnsi.pvr 30034]</label>
+          <label>$ADDON[pvr.vdr.vnsi 30034]</label>
           <align>left</align>
           <aligny>center</aligny>
           <textcolor>white</textcolor>
@@ -724,7 +724,7 @@
       <control type="label">
         <include>WindowTitleCommons</include>
         <posx>220</posx>
-        <label>$ADDON[de.tvdr.vnsi.pvr 30008]</label>
+        <label>$ADDON[pvr.vdr.vnsi 30008]</label>
       </control>
     </control>
     <include>WindowTitleHomeButton</include>

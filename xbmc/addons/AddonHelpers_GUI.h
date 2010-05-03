@@ -138,8 +138,6 @@ public:
 protected:
   virtual void     Update();
   virtual void     GetContextButtons(int itemNumber, CContextButtons &buttons);
-  virtual bool     LoadXML(const CStdString &strPath, const CStdString &strPathLower);
-  unsigned int     LoadAddonStrings();
   void             ClearAddonStrings();
   void             SetupShares();
 
