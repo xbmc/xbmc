@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <id>com.lonelycoder.hts.pvr</id>
+  <id>pvr.hts</id>
   <type>pvrclient</type>
   <title>Tvheadend HTSP Client</title>
   <library>XBMC_Tvheadend.pvr</library>

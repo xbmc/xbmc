@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
   <!-- uuid: unique identifier of this addon !-->
-  <id>de.team-mediaportal.tvserver.pvr</id>
+  <id>pvr.team-mediaportal.tvserver</id>
   <type>pvrclient</type>
 
   <!-- name: name of the addon !-->

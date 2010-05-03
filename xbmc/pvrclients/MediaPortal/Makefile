@@ -13,8 +13,8 @@ ADDONDIR = $(PREFIX)/share/xbmc/addons
 LIBS     = -ldl
 INCLUDES = -I. -I../../linux -I../../ -I../../../xbmc/addons/include -I../../../addons/org.xbmc.pvr.library -I../../../addons/org.xbmc.addon.library
 DEFINES += -D_LINUX -fPIC
-LIBDIR   = ../../../addons/de.team-mediaportal.tvserver.pvr
-LIB      = ../../../addons/de.team-mediaportal.tvserver.pvr/XBMC_MPTV.pvr
+LIBDIR   = ../../../addons/pvr.team-mediaportal.tvserver
+LIB      = ../../../addons/pvr.team-mediaportal.tvserver/XBMC_MPTV.pvr
 
 CC       ?= gcc
 CFLAGS   ?= -g -O2 -Wall

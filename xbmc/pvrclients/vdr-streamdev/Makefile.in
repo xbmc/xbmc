@@ -14,8 +14,8 @@ ADDONDIR = $(PREFIX)/share/xbmc/addons
 LIBS     = -ldl
 INCLUDES = -I. -I../../linux -I../../ -I ../../../xbmc/addons/include
 DEFINES += -D_LINUX -fPIC
-LIBDIR   = ../../../addons/de.tvdr.pvr
-LIB      = ../../../addons/de.tvdr.pvr/XBMC_VDR.pvr
+LIBDIR   = ../../../addons/pvr.vdr.streamdev
+LIB      = ../../../addons/pvr.vdr.streamdev/XBMC_VDR.pvr
 
 CC       ?= gcc
 CFLAGS   ?= -g -O2 -Wall

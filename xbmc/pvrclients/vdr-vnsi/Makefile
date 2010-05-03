@@ -16,8 +16,8 @@ ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
 INCLUDES +=  -I/opt/local/include
 endif
 DEFINES += -D_LINUX -fPIC -DUSE_DEMUX
-LIBDIR   = ../../../addons/de.tvdr.vnsi.pvr
-LIB      = ../../../addons/de.tvdr.vnsi.pvr/XBMC_VDR_vnsi.pvr
+LIBDIR   = ../../../addons/pvr.vdr.vnsi
+LIB      = ../../../addons/pvr.vdr.vnsi/XBMC_VDR_vnsi.pvr
 
 CC       ?= gcc
 CFLAGS   ?= -g -O2 -Wall
