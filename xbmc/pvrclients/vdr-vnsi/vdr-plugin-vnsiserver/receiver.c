@@ -382,7 +382,7 @@ inline void cLiveStreamer::Activate(bool On)
   else
   {
     LOGCONSOLE("VDR inactive, sending stream end message");
-    Cancel();
+    Cancel(1);
   }
 }
 
