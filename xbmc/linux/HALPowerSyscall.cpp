@@ -43,10 +43,12 @@ bool CHALPowerSyscall::Powerdown()
 }
 bool CHALPowerSyscall::Suspend()
 {
+  CPowerSyscallWithoutEvents::Suspend();
   return doPowerCall("Suspend");
 }
 bool CHALPowerSyscall::Hibernate()
 {
+  CPowerSyscallWithoutEvents::Hibernate();
   return doPowerCall("Hibernate");
 }
 bool CHALPowerSyscall::Reboot()

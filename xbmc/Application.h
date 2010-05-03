@@ -274,9 +274,6 @@ public:
   bool IsPresentFrame();
 
   void Minimize();
-
-  bool m_bRunResumeJobs;
-
 protected:
   void RenderScreenSaver();
   bool LoadSkin(const CStdString& skinID);

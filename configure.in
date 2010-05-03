@@ -240,31 +240,31 @@ AC_ARG_ENABLE([external-ffmpeg],
             [AS_HELP_STRING([--enable-external-ffmpeg],
             [enable use of external ffmpeg libraries (default is no) 'Linux only'])],
             [use_external_ffmpeg=$enableval],
-            [use_external_ffmpeg=no])
+            [use_external_ffmpeg=$use_external_libraries])
 
 AC_ARG_ENABLE([external-liba52],
             [AS_HELP_STRING([--enable-external-liba52],
             [enable use of external liba52 library (default is no) 'Linux only'])],
             [use_external_liba52=$enableval],
-            [use_external_liba52=no])
+            [use_external_liba52=$use_external_libraries])
 
 AC_ARG_ENABLE([external-libdts],
             [AS_HELP_STRING([--enable-external-libdts],
             [enable use of external libdts library (default is no) 'Linux only'])],
             [use_external_libdts=$enableval],
-            [use_external_libdts=no])
+            [use_external_libdts=$use_external_libraries])
 
 AC_ARG_ENABLE([external-libass],
             [AS_HELP_STRING([--enable-external-libass],
             [enable use of external libass library (default is no) 'Linux only'])],
             [use_external_libass=$enableval],
-            [use_external_libass=no])
+            [use_external_libass=$use_external_libraries])
 
 AC_ARG_ENABLE([external-python],
             [AS_HELP_STRING([--enable-external-python],
             [enable use of external python library (default is no) 'Linux only'])],
             [use_external_python=$enableval],
-            [use_external_python=no])
+            [use_external_python=$use_external_libraries])
 
 ### End of external library options
 
@@ -480,87 +480,32 @@ else
 fi
 
 # check for library basenames
+AC_DEFUN([XB_FIND_SONAME],
+[
+  AC_MSG_CHECKING([for lib$2 soname])
+  $1_SONAME=$( gcc -print-file-name=lib$2.so | \
+                while read output; do objdump -p $output | \
+                  grep "SONAME" | \
+                  sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
+  if [[ -z "$$1_SONAME" ]]; then
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([Unable to determine soname of lib$2 library])
+  else
+    AC_MSG_RESULT([$$1_SONAME])
+    AC_SUBST($1_SONAME)
+  fi
+])
+
 if test "$host_vendor" != "apple"; then
-  # libcurl
-  LIBCURL_BASENAME=$(gcc $CFLAGS -print-file-name=libcurl.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [ -z "$LIBCURL_BASENAME" ]; then
-    echo "Unable to determine basename of libcurl library"
-  fi
-
-  # libFLAC
-  LIBFLAC_BASENAME=$(gcc $CFLAGS -print-file-name=libFLAC.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBFLAC_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libFLAC library])
-  fi
-
-  # libvorbisfile
-  LIBVORBISFILE_BASENAME=$(gcc $CFLAGS -print-file-name=libvorbisfile.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBVORBISFILE_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libvorbisfile library])
-  fi
-
-  # libmodplug
-  LIBMODPLUG_BASENAME=$(gcc $CFLAGS -print-file-name=libmodplug.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBMODPLUG_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libmodplug library])
-  fi
-
-  # libfaad
-  LIBFAAD_BASENAME=$(gcc $CFLAGS -print-file-name=libfaad.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBFAAD_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libfaad library])
-  fi
-
-  # libmad
-  LIBMAD_BASENAME=$(gcc $CFLAGS -print-file-name=libmad.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBMAD_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libmad library])
-  fi
-
-  # libogg
-  LIBOGG_BASENAME=$(gcc $CFLAGS -print-file-name=libogg.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBOGG_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libogg library])
-  fi
-
-  # libvorbisenc
-  LIBVORBISENC_BASENAME=$(gcc $CFLAGS -print-file-name=libvorbisenc.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBVORBISENC_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libvorbisenc library])
-  fi
-
-  # libvorbis
-  LIBVORBIS_BASENAME=$(gcc $CFLAGS -print-file-name=libvorbis.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBVORBIS_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libvorbis library])
-  fi
+  XB_FIND_SONAME([CURL],        [curl])
+  XB_FIND_SONAME([FLAC],        [FLAC])
+  XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
+  XB_FIND_SONAME([MODPLUG],     [modplug])
+  XB_FIND_SONAME([FAAD],        [faad])
+  XB_FIND_SONAME([MAD],         [mad])
+  XB_FIND_SONAME([OGG],         [ogg])
+  XB_FIND_SONAME([VORBISENC],   [vorbisenc])
+  XB_FIND_SONAME([VORBIS],      [vorbis])
 fi
 
 # PulseAudio
@@ -635,17 +580,8 @@ else
 fi
 
 ### External libraries checks
-if test "$use_external_libraries" = "yes"; then
-  AC_MSG_NOTICE($external_libraries_enabled)
-  USE_EXTERNAL_LIBRARIES=1
-  AC_DEFINE([USE_EXTERNAL_LIBRARIES], [1], [Whether to use external libraries.])
-else
-  AC_MSG_NOTICE($external_libraries_disabled)
-  USE_EXTERNAL_LIBRARIES=0
-fi
-
 # External FFmpeg
-if test "$use_external_libraries" = "yes" || test "$use_external_ffmpeg" = "yes"; then
+if test "$use_external_ffmpeg" = "yes"; then
   AC_CHECK_LIB([avcodec],          [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([avformat],         [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([avutil],           [main],, AC_MSG_ERROR($missing_library))
@@ -694,7 +630,7 @@ else
 fi
 
 # External liba52
-if test "$use_external_libraries" = "yes" || test "$use_external_liba52" = "yes"; then
+if test "$use_external_liba52" = "yes"; then
   AC_CHECK_LIB([a52],          [main],, AC_MSG_ERROR($missing_library))
 
   AC_MSG_NOTICE($external_liba52_enabled)
@@ -706,7 +642,7 @@ else
 fi
 
 # External libdts
-if test "$use_external_libraries" = "yes" || test "$use_external_libdts" = "yes"; then
+if test "$use_external_libdts" = "yes"; then
   AC_CHECK_LIB([dts],          [main],, AC_MSG_ERROR($missing_library))
 
   AC_MSG_NOTICE($external_libdts_enabled)
@@ -718,7 +654,7 @@ else
 fi
 
 # External libass
-if test "$use_external_libraries" = "yes" || test "$use_external_libass" = "yes"; then
+if test "$use_external_libass" = "yes"; then
   # We need libass >= 0.9.7.
   AC_CHECK_LIB([ass], [ass_set_message_cb],
   [AC_CHECK_LIB([ass], [main],,)
@@ -733,18 +669,18 @@ else
 fi
 
 # External Python
-if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes"; then
+if test "$use_external_python" = "yes"; then
   AC_CHECK_LIB([python2.6], [main],
     [AC_DEFINE([HAVE_LIBPYTHON2_6], [1],
-    [Define to 1 if you have the `python2.6' library.])
+    [Define to 1 if you have the 'python2.6' library.])
     USE_PYTHON2_6=1],
   [AC_CHECK_LIB([python2.5], [main],
     [AC_DEFINE([HAVE_LIBPYTHON2_5], [1],
-    [Define to 1 if you have the `python2.5' library.])
+    [Define to 1 if you have the 'python2.5' library.])
     USE_PYTHON2_5=1],
   [AC_CHECK_LIB([python2.4], [main],
     [AC_DEFINE([HAVE_LIBPYTHON2_4], [1],
-    [Define to 1 if you have the `python2.4' library.])
+    [Define to 1 if you have the 'python2.4' library.])
     USE_PYTHON2_4=1],
   [AC_MSG_ERROR($missing_library)] )] )] )
 
@@ -796,7 +732,7 @@ fi
 # CrystalHD
 if test "$use_crystalhd" = "yes"; then
   AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h],AC_DEFINE([HAVE_LIBCRYSTALHD], [], 
-    [Define to 1 if you have the `Broadcom Crystal HD' library.]), 
+    [Define to 1 if you have the 'Broadcom Crystal HD' library.]), 
     use_crystalhd=no;AC_MSG_RESULT($crystalhd_not_found), [#define __LINUX_USER__])
 else
   AC_MSG_NOTICE($crystalhd_disabled)
@@ -806,7 +742,7 @@ fi
 if test "$host_vendor" = "apple" ; then
   if test "$use_vdadecoder" = "yes"; then
     HAVE_LIBVDADECODER=1
-    AC_DEFINE([HAVE_LIBVDADECODER], [1], [Define to 1 if you have the `VDADecoder' library.])
+    AC_DEFINE([HAVE_LIBVDADECODER], [1], [Define to 1 if you have the 'VDADecoder' library.])
     AC_MSG_NOTICE($vdadecoder_enabled)
   else
     use_vdadecoder ="no"
@@ -1145,35 +1081,30 @@ else
 fi
 
 ### External libraries messages
-if test "$use_external_libraries" = "yes"; then
-  final_message="$final_message\n  External Libraries:\tYes"
+if test "$use_external_ffmpeg" = "yes"; then
+  final_message="$final_message\n  External FFmpeg:\tYes"
 else
-  final_message="$final_message\n  External Libraries:\tNo"
-  if test "$use_external_ffmpeg" = "yes"; then
-    final_message="$final_message\n  External FFmpeg:\tYes"
-  else
-    final_message="$final_message\n  External FFmpeg:\tNo"
-  fi
-  if test "$use_external_liba52" = "yes"; then
-    final_message="$final_message\n  External liba52:\tYes"
-  else
-    final_message="$final_message\n  External liba52:\tNo"
-  fi
-  if test "$use_external_libdts" = "yes"; then
-    final_message="$final_message\n  External libdts:\tYes"
-  else
-    final_message="$final_message\n  External libdts:\tNo"
-  fi
-  if test "$use_external_libass" = "yes"; then
-    final_message="$final_message\n  External libass:\tYes"
-  else
-    final_message="$final_message\n  External libass:\tNo"
-  fi
-  if test "$use_external_python" = "yes"; then
-    final_message="$final_message\n  External Python:\tYes"
-  else
-    final_message="$final_message\n  External Python:\tNo"
-  fi
+  final_message="$final_message\n  External FFmpeg:\tNo"
+fi
+if test "$use_external_liba52" = "yes"; then
+  final_message="$final_message\n  External liba52:\tYes"
+else
+  final_message="$final_message\n  External liba52:\tNo"
+fi
+if test "$use_external_libdts" = "yes"; then
+  final_message="$final_message\n  External libdts:\tYes"
+else
+  final_message="$final_message\n  External libdts:\tNo"
+fi
+if test "$use_external_libass" = "yes"; then
+  final_message="$final_message\n  External libass:\tYes"
+else
+  final_message="$final_message\n  External libass:\tNo"
+fi
+if test "$use_external_python" = "yes"; then
+  final_message="$final_message\n  External Python:\tYes"
+else
+  final_message="$final_message\n  External Python:\tNo"
 fi
 
 OUTPUT_FILES="Makefile \
@@ -1259,7 +1190,6 @@ AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(BUILD_GOOM)
-AC_SUBST(USE_EXTERNAL_LIBRARIES)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
 AC_SUBST(USE_EXTERNAL_LIBA52)
 AC_SUBST(USE_EXTERNAL_LIBDTS)
@@ -1299,7 +1229,7 @@ if [[ $3 != "1" ]]; then
             popd
         fi
     else
-        AC_MSG_ERROR([[Submodule $1 doesn't exist]])
+        AC_MSG_ERROR([[Submodule $1 does not exist]])
     fi
 else
     AC_MSG_NOTICE([[Skipping configuration of submodule $1.]])

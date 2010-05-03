@@ -92,7 +92,6 @@ void CPowerManager::Initialize()
 #else
   m_instance = new CNullPowerSyscall();
 #endif
-
 }
 
 void CPowerManager::SetDefaults()
@@ -156,7 +155,7 @@ bool CPowerManager::Suspend()
 #if defined(HAVE_LIBCRYSTALHD)
     CCrystalHD::GetInstance()->Sleep();
 #endif
-    g_application.m_bRunResumeJobs = true;
+
 #ifdef HAS_LCD
     g_lcd->SetBackLight(0);
 #endif
@@ -177,7 +176,7 @@ bool CPowerManager::Hibernate()
 #if defined(HAVE_LIBCRYSTALHD)
     CCrystalHD::GetInstance()->Sleep();
 #endif
-    g_application.m_bRunResumeJobs = true;
+
     g_Keyboard.ResetState();
     success = m_instance->Hibernate();
   }
@@ -197,7 +196,33 @@ bool CPowerManager::Reboot()
   return success;
 }
 
-void CPowerManager::Resume()
+bool CPowerManager::CanPowerdown()
+{
+  return m_instance->CanPowerdown();
+}
+bool CPowerManager::CanSuspend()
+{
+  return m_instance->CanSuspend();
+}
+bool CPowerManager::CanHibernate()
+{
+  return m_instance->CanHibernate();
+}
+bool CPowerManager::CanReboot()
+{
+  return m_instance->CanReboot();
+}
+
+void CPowerManager::ProcessEvents()
+{
+  m_instance->PumpPowerEvents(this);
+}
+
+void CPowerManager::OnSleep()
+{
+}
+
+void CPowerManager::OnWake()
 {
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
 
@@ -238,25 +263,5 @@ void CPowerManager::Resume()
 
   g_application.UpdateLibraries();
 
-  // reset
-  g_application.m_bRunResumeJobs = false;
-
   CAnnouncementManager::Announce(System, "xbmc", "Resume");
-}
-
-bool CPowerManager::CanPowerdown()
-{
-  return m_instance->CanPowerdown();
-}
-bool CPowerManager::CanSuspend()
-{
-  return m_instance->CanSuspend();
-}
-bool CPowerManager::CanHibernate()
-{
-  return m_instance->CanHibernate();
-}
-bool CPowerManager::CanReboot()
-{
-  return m_instance->CanReboot();
 }

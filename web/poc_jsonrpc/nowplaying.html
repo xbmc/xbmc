@@ -57,10 +57,8 @@ if (players.length > 0) {
   var array = result["items"];
 
   if (activeItem >= 0) {
-   if (array[activeItem]["thumbnail"])
-     document.write('<img src="thumb/' + array[activeItem]["thumbnail"] + '.jpg"></img>"');
-    else
-      document.write('<img src="images/DefaultAlbumCover.png"></img>');
+    var imgSrc = array[activeItem]["thumbnail"] ? ('vfs/' + escape(array[activeItem]["thumbnail"])) : "images/DefaultAlbumCover.png";
+    document.write('<img src="' + imgSrc + '"></img>');
 
     document.write('<br></br>');
 

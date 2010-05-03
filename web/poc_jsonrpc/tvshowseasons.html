@@ -43,7 +43,8 @@ if (result) {
 
     document.write('<tr class="' + (i % 2 == 0 ? 'even' : 'odd') + '"><td class="cover">');
     document.write('<a href="tvshowepisodes.html?tvshowid=' + tvshowid + '&season=' + item["season"] + '">');
-    document.write('<img src="' + (item["thumbnail"] ? ("thumb/" + item["thumbnail"] + ".jpg"): "images/nocover.jpg") + '" class="cover" alt="' + item["label"] + '"></img>');
+    var imgSrc = item["thumbnail"] ? ('vfs/' + escape(item["thumbnail"])) : "images/nocover.jpg";
+    document.write('<img src="' + imgSrc + '" class="cover" alt="' + item["label"] + '"></img>');
     document.write('</a>');
     document.write('</td><td class="info">');
     document.write('<h1>' + item["label"] + '</h1>');

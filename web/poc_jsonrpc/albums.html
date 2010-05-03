@@ -43,10 +43,8 @@ var array = result["albums"];
 for (var property in array) {
   var item = array[property];
   document.write('<a href="nowplaying.html" onclick=CallPlay(' + item["albumid"] + ')>');
-  if (item["thumbnail"])
-    document.write('<img src="thumb/' + item["thumbnail"] + '.jpg" width=100 alt="' + item["album"] + '"></img>');
-  else
-    document.write('<img src="images/DefaultAlbumCover.png" width=100 alt="' + item["album"] + '"></img>');
+  var imgSrc = item["thumbnail"] ? ('vfs/' + escape(item["thumbnail"])) : "images/DefaultAlbumCover.png";
+  document.write('<img src="' + imgSrc + '" width=100 alt="' + item["album"] + '"></img>');
   document.write('</a>');
 }
 

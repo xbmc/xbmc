@@ -58,6 +58,7 @@ bool CCocoaPowerSyscall::Powerdown()
 bool CCocoaPowerSyscall::Suspend()
 {
   CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Suspend");
+  CPowerSyscallWithoutEvents::Suspend();
   
   //sending sleep event to system
   OSErr error = SendAppleEventToSystemProcess(kAESleep);

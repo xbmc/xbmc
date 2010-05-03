@@ -32,10 +32,14 @@ bool CWin32PowerSyscall::Powerdown()
 }
 bool CWin32PowerSyscall::Suspend()
 {
+  CPowerSyscallWithoutEvents::Suspend();
+
   return CWIN32Util::PowerManagement(POWERSTATE_SUSPEND);
 }
 bool CWin32PowerSyscall::Hibernate()
 {
+  CPowerSyscallWithoutEvents::Hibernate();
+
   return CWIN32Util::PowerManagement(POWERSTATE_HIBERNATE);
 }
 bool CWin32PowerSyscall::Reboot()

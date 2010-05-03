@@ -4368,10 +4368,10 @@
 		E37D5CB40D3023BB0081D327 /* osx */ = {
 			isa = PBXGroup;
 			children = (
-				83A72B920FBC8DFF00171871 /* CoreAudio.cpp */,
-				83A72B930FBC8DFF00171871 /* CoreAudio.h */,
 				F5EA04280F72EB88005C2EC5 /* SDLMain.mm */,
 				F5EA04E80F72F9CA005C2EC5 /* SDLMain.h */,
+				83A72B920FBC8DFF00171871 /* CoreAudio.cpp */,
+				83A72B930FBC8DFF00171871 /* CoreAudio.h */,
 				F5EA05C00F733812005C2EC5 /* CocoaInterface.mm */,
 				F5EA05C30F73381A005C2EC5 /* CocoaInterface.h */,
 				F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */,

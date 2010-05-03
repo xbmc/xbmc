@@ -24,7 +24,7 @@
 #ifdef __APPLE__
 #include "IPowerSyscall.h"
 
-class CCocoaPowerSyscall : public IPowerSyscall
+class CCocoaPowerSyscall : public CPowerSyscallWithoutEvents
 {
 public:
   CCocoaPowerSyscall();

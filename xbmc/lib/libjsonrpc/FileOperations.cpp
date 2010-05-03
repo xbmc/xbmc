@@ -57,9 +57,17 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
 
 JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
-  if (parameterObject.isObject() && parameterObject.isMember("type") && parameterObject.isMember("directory"))
-  {   
-    CStdString type = parameterObject.get("type", "files").asString();
+  if (parameterObject.isObject() && parameterObject.isMember("directory"))
+  {
+    CStdString type = "files";
+    if (parameterObject.isMember("type"))
+    {
+      if (parameterObject["type"].isString())
+        type = parameterObject["type"].asString();
+      else
+        return InvalidParams;
+    }
+
     type = type.ToLower();
 
     if (type.Equals("video") || type.Equals("music") || type.Equals("pictures") || type.Equals("files") || type.Equals("programs"))
@@ -79,14 +87,20 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
         else if (type.Equals("pictures"))
           regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
 
-        CFileItemList filtereditems;
+        CFileItemList filteredDirectories, filteredFiles;
         for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
         {
           if (regexps.size() == 0 || !CUtil::ExcludeFileOrFolder(items[i]->m_strPath, regexps))
-            filtereditems.Add(items[i]);
-        }  
+          {
+            if (items[i]->m_bIsFolder)
+              filteredDirectories.Add(items[i]);
+            else
+              filteredFiles.Add(items[i]);
+          }
+        }
 
-        HandleFileItemList(NULL, "directories", filtereditems, parameterObject, result);
+        HandleFileItemList(NULL, "directories", filteredDirectories, parameterObject, result);
+        HandleFileItemList(NULL, "files", filteredFiles, parameterObject, result);
 
         return OK;
       }

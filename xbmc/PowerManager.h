@@ -32,34 +32,40 @@ public:
   virtual bool Hibernate()    { return false; }
   virtual bool Reboot()       { return false; }
 
-  virtual bool CanPowerdown() { return false; }
-  virtual bool CanSuspend()   { return false; }
-  virtual bool CanHibernate() { return false; }
-  virtual bool CanReboot()    { return false; }
+  virtual bool CanPowerdown() { return true; }
+  virtual bool CanSuspend()   { return true; }
+  virtual bool CanHibernate() { return true; }
+  virtual bool CanReboot()    { return true; }
+
+  virtual bool PumpPowerEvents(IPowerEventsCallback *callback) { return false; }
 };
 
 // This class will wrap and handle PowerSyscalls.
 // It will handle and decide if syscalls are needed.
-class CPowerManager : public IPowerSyscall
+class CPowerManager : public IPowerEventsCallback
 {
 public:
   CPowerManager();
-  virtual ~CPowerManager();
+  ~CPowerManager();
 
-  virtual void Initialize();
+  void Initialize();
   void SetDefaults();
 
-  virtual bool Powerdown();
-  virtual bool Suspend();
-  virtual bool Hibernate();
-  virtual bool Reboot();
-  virtual void Resume();
+  bool Powerdown();
+  bool Suspend();
+  bool Hibernate();
+  bool Reboot();
 
-  virtual bool CanPowerdown();
-  virtual bool CanSuspend();
-  virtual bool CanHibernate();
-  virtual bool CanReboot();
+  bool CanPowerdown();
+  bool CanSuspend();
+  bool CanHibernate();
+  bool CanReboot();
+
+  void ProcessEvents();
 private:
+  void OnSleep();
+  void OnWake();
+
   IPowerSyscall *m_instance;
 };
 
