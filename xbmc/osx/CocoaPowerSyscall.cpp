@@ -26,6 +26,7 @@ typedef unsigned char   BYTE;
 #include "Log.h"
 #include "SystemInfo.h"
 #include "Application.h"
+#include "WindowingFactory.h"
 #include "CocoaPowerSyscall.h"
 #include <IOKit/pwr_mgt/IOPMLib.h>
 
@@ -151,7 +152,8 @@ bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
   else if (m_OnResume)
   {
     callback->OnWake();
-    Cocoa_HideDock();
+    if (g_Windowing.IsFullScreen())
+      Cocoa_HideDock();
     m_OnResume = false;
     return true;
   }

@@ -26,11 +26,6 @@
 #import <Carbon/Carbon.h>
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl.h>
-//hack around problem with xbmc's typedef int BOOL
-// and obj-c's typedef unsigned char BOOL
-#define BOOL XBMC_BOOL 
-#import "WindowingFactory.h"
-#undef BOOL
 
 #import "CocoaInterface.h"
 #import "DllPaths_generated.h"
@@ -418,34 +413,31 @@ void Cocoa_HideMouse()
 
 void Cocoa_HideDock()
 {
-  if (g_Windowing.IsFullScreen())
+  // Find which display we are on
+  NSOpenGLContext* context = [NSOpenGLContext currentContext];
+  if (context)
   {
-    // Find which display we are on
-    NSOpenGLContext* context = [NSOpenGLContext currentContext];
-    if (context)
+    NSView* view;
+
+    view = [context view];
+    if (view)
     {
-      NSView* view;
-
-      view = [context view];
-      if (view)
+      NSWindow* window;
+      window = [view window];
+      if (window)
       {
-        NSWindow* window;
-        window = [view window];
-        if (window)
+        NSDictionary* screenInfo = [[window screen] deviceDescription];
+        NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
+        if (kCGDirectMainDisplay == (CGDirectDisplayID)[screenID longValue])
         {
-          NSDictionary* screenInfo = [[window screen] deviceDescription];
-          NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
-          if (kCGDirectMainDisplay == (CGDirectDisplayID)[screenID longValue])
-          {
-            CStdString tmp_str;
+          CStdString tmp_str;
 
-            // keep the dock hidden using applescriptif on main screen with the dock.
-            tmp_str = "tell application \"System Events\" \n";
-            tmp_str += "keystroke \"d\" using {command down, option down} \n";
-            tmp_str += "end tell \n";
-            
-            Cocoa_DoAppleScript( tmp_str.c_str() );
-          }
+          // keep the dock hidden using applescriptif on main screen with the dock.
+          tmp_str = "tell application \"System Events\" \n";
+          tmp_str += "keystroke \"d\" using {command down, option down} \n";
+          tmp_str += "end tell \n";
+          
+          Cocoa_DoAppleScript( tmp_str.c_str() );
         }
       }
     }
