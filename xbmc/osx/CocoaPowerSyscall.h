@@ -23,11 +23,14 @@
 
 #ifdef __APPLE__
 #include "IPowerSyscall.h"
+#include <IOKit/pwr_mgt/IOPMLib.h>
+#include <IOKit/IOMessage.h>
 
 class CCocoaPowerSyscall : public CPowerSyscallWithoutEvents
 {
 public:
   CCocoaPowerSyscall();
+  ~CCocoaPowerSyscall();
 
   virtual bool Powerdown();
   virtual bool Suspend();
@@ -38,6 +41,14 @@ public:
   virtual bool CanSuspend();
   virtual bool CanHibernate();
   virtual bool CanReboot();
+private:
+          void CreateOSPowerCallBack(void);
+          void DeleteOSPowerCallBack(void);
+  static  void OSPowerCallBack(void *refcon, io_service_t service, natural_t msg_type, void *msg_arg);
+
+  io_connect_t root_port;             // a reference to the Root Power Domain IOService
+  io_object_t  notifier_object;       // notifier object, used to deregister later
+  IONotificationPortRef notify_port;  // notification port allocated by IORegisterForSystemPower
 };
 #endif
 #endif

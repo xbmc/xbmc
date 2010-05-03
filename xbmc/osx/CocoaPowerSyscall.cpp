@@ -32,6 +32,12 @@ typedef unsigned char   BYTE;
 
 CCocoaPowerSyscall::CCocoaPowerSyscall()
 {
+  CreateOSPowerCallBack();
+}
+
+CCocoaPowerSyscall::~CCocoaPowerSyscall()
+{
+  DeleteOSPowerCallBack();
 }
 
 bool CCocoaPowerSyscall::Powerdown()
@@ -131,5 +137,70 @@ bool CCocoaPowerSyscall::CanReboot()
 {
   // All Apple products can reboot
   return true;
+}
+
+void CCocoaPowerSyscall::CreateOSPowerCallBack(void)
+{
+  // we want sleep/wake notifications
+  // register to receive system sleep notifications
+  root_port = IORegisterForSystemPower(this, &notify_port, OSPowerCallBack, &notifier_object);
+  if (root_port)
+  {
+    // add the notification port to the application runloop
+    CFRunLoopAddSource(CFRunLoopGetCurrent(),
+      IONotificationPortGetRunLoopSource(notify_port), kCFRunLoopDefaultMode);
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "%s - IORegisterForSystemPower failed", __FUNCTION__);
+  }
+}
+void CCocoaPowerSyscall::DeleteOSPowerCallBack(void)
+{
+  // we no longer want sleep/wake notifications
+  // remove the sleep notification port from the application runloop
+  CFRunLoopRemoveSource( CFRunLoopGetCurrent(),
+    IONotificationPortGetRunLoopSource(notify_port), kCFRunLoopCommonModes );
+
+  // deregister for system sleep notifications
+  IODeregisterForSystemPower(&notifier_object);
+
+  // IORegisterForSystemPower implicitly opens the Root Power Domain IOService
+  // so we close it here
+  IOServiceClose(root_port);
+
+  // destroy the notification port allocated by IORegisterForSystemPower
+  IONotificationPortDestroy(notify_port);
+}
+
+void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, natural_t msg_type, void *msg_arg)
+{
+  CCocoaPowerSyscall  *ctx;
+  
+  ctx = (CCocoaPowerSyscall*)refcon;
+
+  switch (msg_type)
+  {
+    case kIOMessageCanSystemSleep:
+      // System has been idle for sleeptime and will sleep soon.
+      // we can either allow or cancel this notification.
+      // if we don't respond, OS will sleep in 30 second.
+      IOAllowPowerChange(ctx->root_port, (long)msg_arg);
+    break;
+    case kIOMessageSystemWillSleep:
+      // System demanded sleep from:
+      //   1) selecting sleep from the Apple menu.
+      //   2) closing the lid of a laptop.
+      //   3) running out of battery power.
+      IOAllowPowerChange(ctx->root_port, (long)msg_arg);
+      // let XBMC know system will sleep
+      // TODO:
+    break;
+    case kIOMessageSystemHasPoweredOn:
+      // System has awakened from sleep.
+      // let XBMC know system has woke
+      // TODO:
+    break;
+	}
 }
 #endif
