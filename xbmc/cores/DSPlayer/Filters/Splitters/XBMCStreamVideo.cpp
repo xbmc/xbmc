@@ -62,67 +62,6 @@ void CDSVideoStream::SetStream(CMediaType mt)
   m_mts.push_back(mt);
 }
 
-DWORD CDSVideoStream::ThreadProc()
-{
-  m_hrDeliver = S_OK;
-  m_fFlushing = m_fFlushed = false;
-  m_eEndFlush.Set();
-  while(1)
-  {
-    Sleep(1);
-
-    DWORD cmd;
-    /*if(CAMThread::CheckRequest(&cmd))
-    {
-      m_hThread = NULL;
-      cmd = GetRequest();
-      Reply(S_OK);
-      ASSERT(cmd == CMD_EXIT);
-      return 0;
-    }*/
-
-    int cnt = 0;
-    do
-    {
-      boost::shared_ptr<DsPacket> p;
-
-      {
-        CAutoLock cAutoLock(&m_queue);
-        if((cnt = m_queue.size()) > 0)
-          p = m_queue.Remove();
-      }
-
-      if(S_OK == m_hrDeliver && cnt > 0)
-      {
-        ASSERT(!m_fFlushing);
-
-        m_fFlushed = false;
-
-        // flushing can still start here, to release a blocked deliver call
-        Com::SmartPtr<IMediaSample> pSample;
-        HRESULT hr;
-        if(S_OK != (hr = GetDeliveryBuffer(&pSample, NULL, NULL, 0))) 
-          break;
-        
-
-        /*HRESULT hr = p.get()
-          ? DeliverPacket(p)
-          : DeliverEndOfStream();*/
-
-        m_eEndFlush.Wait(); // .. so we have to wait until it is done
-
-        if(hr != S_OK && !m_fFlushed) // and only report the error in m_hrDeliver if we didn't flush the stream
-        {
-          // CAutoLock cAutoLock(&m_csQueueLock);
-          m_hrDeliver = hr;
-          break;
-        }
-      }
-    }
-    while(--cnt > 0);
-  }
-}
-
 //--------------------------------------------------------------------
 //
 //--------------------------------------------------------------------
@@ -143,8 +82,7 @@ HRESULT CDSVideoStream::CheckMediaType(const CMediaType *pMediaType)
 //--------------------------------------------------------------------
 HRESULT CDSVideoStream::GetMediaType(int iPosition, CMediaType* pmt)
 {
-  CAutoLock cAutoLock(m_pLock);
-
+  //CAutoLock cAutoLock(m_pLock);
   if(iPosition < 0)
     return E_INVALIDARG;
   
@@ -163,7 +101,7 @@ HRESULT CDSVideoStream::GetMediaType(int iPosition, CMediaType* pmt)
 //
 HRESULT CDSVideoStream::SetMediaType(const CMediaType *pMediaType)
 {
-  CAutoLock cAutoLock(m_pFilter->pStateLock());
+  //CAutoLock cAutoLock(m_pFilter->pStateLock());
   // Pass the call up to my base class
   HRESULT hr = CSourceStream::SetMediaType(pMediaType);
 
@@ -205,28 +143,38 @@ HRESULT CDSVideoStream::SetMediaType(const CMediaType *pMediaType)
 //--------------------------------------------------------------------
 HRESULT CDSVideoStream::FillBuffer(IMediaSample *pms)
 {
-#if 0
+
   CheckPointer(pms,E_POINTER);
-  CAutoLock cAutoLock(m_pFilter->pStateLock());
-    BYTE *pData = 0;
-    pms->GetPointer(&pData);
-    long lDataLen = pms->GetSize();
-    
-    ZeroMemory(pData, lDataLen);
-        __int64 time = 0;
-        if(1)//m_dllAvFormat.av_read_frame(m_pVideoFormatCtx, &m_pPacket)<0)
-        {
-
-        //last frame
-        }
-        else
-        {
-          memcpy(pData,m_pPacket.data,m_pPacket.size);
-    }
-
-    pms->SetSyncPoint(TRUE);
-#endif
+  
+  
+  if (m_queue.size() == 0)
     return NOERROR;
+  boost::shared_ptr<DsPacket> p = m_queue.Remove();
+  BYTE *pData = 0;
+  HRESULT hr;
+  //Copy byte into the samples
+  hr = pms->GetPointer(&pData);
+  memcpy(pData, &p->at(0), p->size());
+  //set the sample length
+  hr = pms->SetActualDataLength(p->size());
+  //if we have the time of the sample set it..
+  if (p->rtStart < 0)
+  {
+    hr = pms->SetTime(NULL,NULL);
+     hr = pms->SetPreroll(1);
+  }
+  else
+  {
+    hr = pms->SetTime(&p->rtStart, &p->rtStop);
+    hr = pms->SetPreroll(0);
+  }
+
+  hr = pms->SetMediaTime(NULL, NULL);
+  hr = pms->SetDiscontinuity(p->bDiscontinuity);
+  hr = pms->SetSyncPoint(p->bSyncPoint);
+    //pms->SetSyncPoint(TRUE);
+
+    return S_OK;
 }
 
 //********************************************************************
@@ -362,10 +310,11 @@ HRESULT CDSVideoStream::QueueEndOfStream()
 
 HRESULT CDSVideoStream::QueuePacket(auto_ptr<DsPacket> p)
 {
-  if(!ThreadExists()) return S_FALSE;
+  if(!ThreadExists()) 
+    return S_FALSE;
 
-  while(m_queue.GetSize() > MAXPACKETSIZE*100)
-    Sleep(1);
+  //while(m_queue.GetSize() > MAXPACKETSIZE*100)
+    //Sleep(1);
 
   //if(S_OK != m_hrDeliver)
   //  return m_hrDeliver;

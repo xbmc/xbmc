@@ -83,7 +83,7 @@ private:
   bool m_fFlushing, m_fFlushed;
   CAMEvent m_eEndFlush;
   enum {CMD_EXIT};
-  DWORD ThreadProc();
+  
 
     
     int mWidth;

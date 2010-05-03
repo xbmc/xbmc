@@ -109,13 +109,14 @@ STDMETHODIMP CXBMCSplitterFilter::Pause()
   FILTER_STATE fs = m_State;
 
   HRESULT hr;
-  if(FAILED(hr = CSource::Pause()))
-    return hr;
+  
 
   if(fs == State_Stopped)
   {
     Create();
   }
+  if(FAILED(hr = __super::Pause()))
+    return hr;
 
   return S_OK;
 }
@@ -465,25 +466,27 @@ HRESULT CXBMCSplitterFilter::OnThreadCreate()
 DWORD CXBMCSplitterFilter::ThreadProc()
 {
   DWORD cmd = 0;
-
-  for(DWORD cmd = -1; ; cmd = GetRequest())
+  SetThreadPriority(m_hThread, m_priority = THREAD_PRIORITY_NORMAL);
+  m_rtStart = m_rtNewStart;
+    m_rtStop = m_rtNewStop;
+  while(!CheckRequest(NULL))//for(DWORD cmd = -1; ; cmd = GetRequest())
   {
-    if(cmd == CMD_EXIT)
+    
+    /*if(cmd == CMD_EXIT)
     {
       m_hThread = NULL;
       Reply(S_OK);
       return 0;
-    }
-		SetThreadPriority(m_hThread, m_priority = THREAD_PRIORITY_NORMAL);
+    }*/
+		
 
-    m_rtStart = m_rtNewStart;
-    m_rtStop = m_rtNewStop;
+    
     
 
   // if the queues are full, no need to read more
     if (!m_pVideoStream.QueueSize() < (1024*1024*5))
     {
-      Sleep(10);
+      //Sleep(10);
       //continue;
     }
 
@@ -505,7 +508,7 @@ DWORD CXBMCSplitterFilter::ThreadProc()
 
 void CXBMCSplitterFilter::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
-  CAutoLock cAutoLock(this);
+  //CAutoLock cAutoLock(this);
   if (pPacket)
   {
     if (pStream->type == STREAM_VIDEO)
@@ -524,6 +527,10 @@ void CXBMCSplitterFilter::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPac
       memcpy(&p->at(0),pPacket->pData,pPacket->iSize);
       
       m_pVideoStream.QueuePacket(p);
+    }
+    else if(pStream->type == STREAM_AUDIO)
+    {
+    //TODO
     }
     //pPacket->iStreamId
   }
