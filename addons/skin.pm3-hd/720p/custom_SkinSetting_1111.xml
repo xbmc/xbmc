@@ -883,7 +883,7 @@
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textureradioon>radiobutton-focus-2.png</textureradioon>
-					<onclick>Skin.SetFile(LyricScript_Path,.py)</onclick>
+					<onclick>Skin.SetFile(LyricScript_Path,Script)</onclick>
 					<enable>Skin.HasSetting(LyricScript_Enable)</enable>
 				</control>
 				<control type="image" id="403">
@@ -929,7 +929,7 @@
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textureradioon>radiobutton-focus-2.png</textureradioon>
-					<onclick>Skin.SetFile(WeatherScript_Path,.py)</onclick>
+					<onclick>Skin.SetFile(WeatherScript_Path,Script)</onclick>
 					<enable>Skin.HasSetting(WeatherScript_Enable)</enable>
 				</control>
 				<control type="image" id="407">
@@ -961,7 +961,7 @@
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
 					<textureradioon>radiobutton-focus-2.png</textureradioon>
-					<onclick>Skin.SetFile(SubtitleScript_Path,.py)</onclick>
+					<onclick>Skin.SetFile(SubtitleScript_Path,Script)</onclick>
 					<enable>Skin.HasSetting(SubtitleScript_Enable)</enable>
 				</control>
 				<control type="image" id="410">
