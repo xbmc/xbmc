@@ -196,59 +196,6 @@
 					<textcolor>dialogheader</textcolor>
 					<align>center</align>
 				</control>
-				<control type="radiobutton" id="201">
-					<description>Show Programs in home</description>
-					<width>950</width>
-					<height>35</height>
-					<font>font12</font>
-					<label>20082</label>
-					<onclick>Skin.ToggleSetting(ProgramsInHome)</onclick>
-					<selected>Skin.HasSetting(ProgramsInHome)</selected>
-					<textcolor>grey2</textcolor>
-					<focusedcolor>white</focusedcolor>
-					<texturefocus border="7">list-focus.png</texturefocus>
-					<texturenofocus>-</texturenofocus>
-					<textureradioon>radiobutton-focus-2.png</textureradioon>
-				</control>
-				<control type="image" id="202">
-					<width>950</width>
-					<height>2</height>
-					<texture>separator.png</texture>
-				</control>
-				<control type="radiobutton" id="203">
-					<description>Show Scan Lines in home</description>
-					<width>950</width>
-					<height>35</height>
-					<font>font12</font>
-					<label>31107</label>
-					<onclick>Skin.ToggleSetting(Remove_Scan_Lines)</onclick>
-					<selected>!Skin.HasSetting(Remove_Scan_Lines)</selected>
-					<textcolor>grey2</textcolor>
-					<focusedcolor>white</focusedcolor>
-					<texturefocus border="7">list-focus.png</texturefocus>
-					<texturenofocus>-</texturenofocus>
-					<textureradioon>radiobutton-focus-2.png</textureradioon>
-				</control>
-				<control type="radiobutton" id="204">
-					<description>Show Scan Lines in home during Media</description>
-					<width>950</width>
-					<height>35</height>
-					<font>font12</font>
-					<label>31108</label>
-					<onclick>Skin.ToggleSetting(Remove_Scan_Lines_Video)</onclick>
-					<selected>Skin.HasSetting(Remove_Scan_Lines_Video)</selected>
-					<textcolor>grey2</textcolor>
-					<focusedcolor>white</focusedcolor>
-					<texturefocus border="7">list-focus.png</texturefocus>
-					<texturenofocus>-</texturenofocus>
-					<textureradioon>radiobutton-focus-2.png</textureradioon>
-					<enable>Skin.HasSetting(Remove_Scan_Lines)</enable>
-				</control>
-				<control type="image" id="205">
-					<width>950</width>
-					<height>2</height>
-					<texture>separator.png</texture>
-				</control>
 				<control type="radiobutton" id="206">
 					<description>enable video info</description>
 					<width>950</width>
@@ -285,20 +232,6 @@
 					<label>20084</label>
 					<onclick>Skin.ToggleSetting(homepageWeatherinfo)</onclick>
 					<selected>!Skin.HasSetting(homepageWeatherinfo)</selected>
-					<textcolor>grey2</textcolor>
-					<focusedcolor>white</focusedcolor>
-					<texturefocus border="7">list-focus.png</texturefocus>
-					<texturenofocus>-</texturenofocus>
-					<textureradioon>radiobutton-focus-2.png</textureradioon>
-				</control>
-				<control type="radiobutton" id="209">
-					<description>enable System info</description>
-					<width>950</width>
-					<height>35</height>
-					<font>font12</font>
-					<label>20085</label>
-					<onclick>Skin.ToggleSetting(homepageSysteminfo)</onclick>
-					<selected>!Skin.HasSetting(homepageSysteminfo)</selected>
 					<textcolor>grey2</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
@@ -402,7 +335,6 @@
 							<onclick>-</onclick>
 							<icon>special://skin/backgrounds/programs.jpg</icon>
 							<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
-							<visible>Skin.HasSetting(ProgramsInHome)</visible>
 						</item>
 						<item id="5">
 							<label>8</label>

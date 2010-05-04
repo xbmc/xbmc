@@ -33,15 +33,6 @@
 			<width>1280</width>
 			<height>720</height>
 			<texture>Background-Home.png</texture>
-			<visible>Skin.HasSetting(Remove_Scan_Lines) + ![Player.HasVideo + Skin.HasSetting(Remove_Scan_Lines_Video)]</visible>
-		</control>
-		<control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<texture>Background-Home-2.png</texture>
-			<visible>!Skin.HasSetting(Remove_Scan_Lines) | [Player.HasVideo + Skin.HasSetting(Remove_Scan_Lines_Video)]</visible>
 		</control>
 		<!-- weather Info -->
 		<control type="group">
@@ -116,77 +107,6 @@
 				<height>30</height>
 				<width>500</width>
 				<label>$LOCALIZE[143] $INFO[Weather.Temperature]</label>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font12</font>
-				<shadowcolor>black</shadowcolor>
-			</control>
-		</control>
-		<!-- System Info -->
-		<control type="group">
-			<posx>600r</posx>
-			<posy>450</posy>
-			<visible>Container(9000).HasFocus(7) + !Skin.HasSetting(homepageSysteminfo)</visible>
-			<include>homestatsinfo</include>
-			<control type="image">
-				<description>gradient</description>
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>600</width>
-				<height>130</height>
-				<texture>gradient.png</texture>
-			</control>
-			<control type="image">
-				<description>settings image</description>
-				<posx>160r</posx>
-				<posy>0</posy>
-				<width>130</width>
-				<height>130</height>
-				<texture>homeinfo-system.png</texture>
-			</control>
-			<control type="label">
-				<description>Settings label</description>
-				<posx>170r</posx>
-				<posy>5</posy>
-				<height>30</height>
-				<width>500</width>
-				<label>[B]$LOCALIZE[10511][/B]</label>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font12</font>
-				<shadowcolor>black</shadowcolor>
-			</control>
-			<control type="label">
-				<description>IP Address label</description>
-				<posx>170r</posx>
-				<posy>37</posy>
-				<height>30</height>
-				<width>500</width>
-				<label>$LOCALIZE[150]: $INFO[Network.IPAddress]</label>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font18</font>
-				<shadowcolor>black</shadowcolor>
-			</control>
-			<control type="label">
-				<description>GPU Make Label</description>
-				<posx>170r</posx>
-				<posy>70</posy>
-				<height>30</height>
-				<width>500</width>
-				<label>$INFO[System.videoencoderinfo]</label>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font12</font>
-				<shadowcolor>black</shadowcolor>
-			</control>
-			<control type="label">
-				<description>CPU Speed Label</description>
-				<posx>170r</posx>
-				<posy>95</posy>
-				<height>30</height>
-				<width>500</width>
-				<label>$LOCALIZE[13284] $INFO[System.cpufrequency]</label>
 				<align>right</align>
 				<aligny>center</aligny>
 				<font>font12</font>
@@ -387,146 +307,174 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 		</control>
-		<control type="image">
-			<posx>70</posx>
-			<posy>170</posy>
-			<width>450</width>
-			<height>400</height>
-			<texture>Home-Menu-Back.png</texture>
+		<control type="group">
 			<include>Window_OpenClose_Home_Panel_Animation</include>
-			<visible>!Skin.HasSetting(ProgramsInHome)</visible>
-		</control>
-		<control type="image">
-			<posx>70</posx>
-			<posy>142</posy>
-			<width>450</width>
-			<height>455</height>
-			<texture>Home-Menu-Back-2.png</texture>
-			<include>Window_OpenClose_Home_Panel_Animation</include>
-			<visible>Skin.HasSetting(ProgramsInHome)</visible>
-		</control>
-		<control type="list" id="9000">
-			<posx>130</posx>
-			<posy>187</posy>
-			<width>345</width>
-			<height>720</height>
-			<onleft>20</onleft>
-			<onright>22</onright>
-			<onup>9000</onup>
-			<ondown>9000</ondown>
-			<pagecontrol>-</pagecontrol>
-			<scrolltime>0</scrolltime>
-			<include>Window_OpenClose_Home_Panel_Animation</include>
-			<animation effect="slide" end="0,-28" time="0" condition="Skin.HasSetting(ProgramsInHome)">Conditional</animation>
-			<itemlayout height="57" width="345">
-				<control type="image">
-					<posx>0</posx>
-					<posy>16</posy>
-					<width>26</width>
-					<height>26</height>
-					<texture>home-button.png</texture>
-				</control>
-				<control type="label">
-					<posx>60</posx>
-					<posy>0</posy>
-					<width>285</width>
-					<height>57</height>
-					<font>font20</font>
-					<textcolor>white</textcolor>
-					<align>left</align>
-					<aligny>center</aligny>
-					<label>[B]$INFO[ListItem.Label][/B]</label>
-				</control>
-			</itemlayout>
-			<focusedlayout height="57" width="345">
-				<control type="image">
-					<posx>0</posx>
-					<posy>16</posy>
-					<width>26</width>
-					<height>26</height>
-					<texture>home-button.png</texture>
-				</control>
-				<control type="image">
-					<posx>3</posx>
-					<posy>19</posy>
-					<width>16</width>
-					<height>17</height>
-					<texture>home-button-focus.gif</texture>
-					<visible>Control.HasFocus(9000)</visible>
-				</control>
-				<control type="label">
-					<posx>60</posx>
-					<posy>0</posy>
-					<width>285</width>
-					<height>57</height>
-					<font>font20</font>
-					<textcolor>white</textcolor>
-					<align>left</align>
-					<aligny>center</aligny>
-					<label>[B]$INFO[ListItem.Label][/B]</label>
-				</control>
-			</focusedlayout>
-			<content>
-				<item id="1">
-					<label>3</label>
-					<onclick>ActivateWindow(Videos)</onclick>
-					<icon>special://skin/backgrounds/videos.jpg</icon>
-					<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
-					<visible>Library.HasContent(Video)</visible>
-				</item>
-				<item id="1">
-					<label>3</label>
-					<onclick>ActivateWindow(VideoFiles)</onclick>
-					<icon>special://skin/backgrounds/videos.jpg</icon>
-					<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
-					<visible>!Library.HasContent(Video)</visible>
-				</item>
-				<item id="2">
-					<label>2</label>
-					<onclick>ActivateWindow(Music)</onclick>
-					<icon>special://skin/backgrounds/music.jpg</icon>
-					<thumb>$INFO[Skin.String(Home_Custom_Back_Music_Folder)]</thumb>
-					<visible>Library.HasContent(Music)</visible>
-				</item>
-				<item id="2">
-					<label>2</label>
-					<onclick>ActivateWindow(MusicFiles)</onclick>
-					<icon>special://skin/backgrounds/music.jpg</icon>
-					<thumb>$INFO[Skin.String(Home_Custom_Back_Music_Folder)]</thumb>
-					<visible>!Library.HasContent(Music)</visible>
-				</item>
-				<item id="3">
-					<label>1</label>
-					<onclick>ActivateWindow(Pictures)</onclick>
-					<icon>special://skin/backgrounds/pictures.jpg</icon>
-					<thumb>$INFO[Skin.String(Home_Custom_Back_Pictures_Folder)]</thumb>
-				</item>
-				<item id="4">
-					<label>0</label>
-					<onclick>ActivateWindow(Programs)</onclick>
-					<icon>special://skin/backgrounds/programs.jpg</icon>
-					<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
-					<visible>Skin.HasSetting(ProgramsInHome)</visible>
-				</item>
-				<item id="5">
-					<label>8</label>
-					<onclick>ActivateWindow(Weather)</onclick>
-					<icon>special://skin/backgrounds/weather.jpg</icon>
-					<thumb>$INFO[Skin.String(Home_Custom_Back_Weather_Folder)]</thumb>
-				</item>
-				<item id="6">
-					<label>247</label>
-					<onclick>ActivateWindow(Scripts)</onclick>
-					<icon>special://skin/backgrounds/scripts.jpg</icon>
-					<thumb>$INFO[Skin.String(Home_Custom_Back_Scripts_Folder)]</thumb>
-				</item>
-				<item id="7">
-					<label>5</label>
-					<onclick>ActivateWindow(Settings)</onclick>
-					<icon>special://skin/backgrounds/settings.jpg</icon>
-					<thumb>$INFO[Skin.String(Home_Custom_Back_Settings_Folder)]</thumb>
-				</item>
-			</content>
+			<control type="image">
+				<posx>70</posx>
+				<posy>170</posy>
+				<width>450</width>
+				<height>400</height>
+				<texture>Home-Menu-Back.png</texture>
+				<visible>!Skin.HasSetting(ProgramsInHome)</visible>
+			</control>
+			<control type="button" id="10">
+				<description>Up Arrow</description>
+				<posx>155</posx>
+				<posy>140</posy>
+				<width>40</width>
+				<height>30</height>
+				<texturefocus>arrow-big-up.png</texturefocus>
+				<texturenofocus>arrow-big-up.png</texturenofocus>
+				<onclick>Control.Move(9000,-1)</onclick>
+				<visible>Container(9000).HasPrevious</visible>
+				<include>VisibleFadeEffect</include>
+			</control>
+			<control type="button" id="11">
+				<description>Down Arrow</description>
+				<posx>155</posx>
+				<posy>540</posy>
+				<width>40</width>
+				<height>30</height>
+				<texturefocus>arrow-big-down.png</texturefocus>
+				<texturenofocus>arrow-big-down.png</texturenofocus>
+				<onclick>Control.Move(9000,1)</onclick>
+				<visible>Container(9000).HasNext</visible>
+				<include>VisibleFadeEffect</include>
+			</control>
+			<control type="list" id="9000">
+				<posx>115</posx>
+				<posy>180</posy>
+				<width>345</width>
+				<height>342</height>
+				<onleft>20</onleft>
+				<onright>22</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<pagecontrol>-</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="57" width="345">
+					<control type="image">
+						<posx>20</posx>
+						<posy>22</posy>
+						<width>26</width>
+						<height>26</height>
+						<texture>home-button.png</texture>
+					</control>
+					<control type="label">
+						<posx>80</posx>
+						<posy>10</posy>
+						<width>265</width>
+						<height>47</height>
+						<font>font20</font>
+						<textcolor>white</textcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>[B]$INFO[ListItem.Label][/B]</label>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>57</posy>
+						<width>330</width>
+						<height>6</height>
+						<texture>Home-Menu-Back-Divider.png</texture>
+					</control>
+				</itemlayout>
+				<focusedlayout height="57" width="345">
+					<control type="image">
+						<posx>20</posx>
+						<posy>22</posy>
+						<width>26</width>
+						<height>26</height>
+						<texture>home-button.png</texture>
+					</control>
+					<control type="image">
+						<posx>23</posx>
+						<posy>25</posy>
+						<width>16</width>
+						<height>17</height>
+						<texture>home-button-focus.gif</texture>
+						<visible>Control.HasFocus(9000) | Control.HasFocus(10) | Control.HasFocus(11)</visible>
+					</control>
+					<control type="label">
+						<posx>80</posx>
+						<posy>10</posy>
+						<width>265</width>
+						<height>47</height>
+						<font>font20</font>
+						<textcolor>white</textcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>[B]$INFO[ListItem.Label][/B]</label>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>57</posy>
+						<width>330</width>
+						<height>6</height>
+						<texture>Home-Menu-Back-Divider.png</texture>
+					</control>
+				</focusedlayout>
+				<content>
+					<item id="1">
+						<label>3</label>
+						<onclick>ActivateWindow(Videos)</onclick>
+						<icon>special://skin/backgrounds/videos.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
+						<visible>Library.HasContent(Video)</visible>
+					</item>
+					<item id="1">
+						<label>3</label>
+						<onclick>ActivateWindow(VideoFiles)</onclick>
+						<icon>special://skin/backgrounds/videos.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
+						<visible>!Library.HasContent(Video)</visible>
+					</item>
+					<item id="2">
+						<label>2</label>
+						<onclick>ActivateWindow(Music)</onclick>
+						<icon>special://skin/backgrounds/music.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Music_Folder)]</thumb>
+						<visible>Library.HasContent(Music)</visible>
+					</item>
+					<item id="2">
+						<label>2</label>
+						<onclick>ActivateWindow(MusicFiles)</onclick>
+						<icon>special://skin/backgrounds/music.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Music_Folder)]</thumb>
+						<visible>!Library.HasContent(Music)</visible>
+					</item>
+					<item id="3">
+						<label>1</label>
+						<onclick>ActivateWindow(Pictures)</onclick>
+						<icon>special://skin/backgrounds/pictures.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Pictures_Folder)]</thumb>
+					</item>
+					<item id="4">
+						<label>0</label>
+						<onclick>ActivateWindow(Programs)</onclick>
+						<icon>special://skin/backgrounds/programs.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
+					</item>
+					<item id="5">
+						<label>8</label>
+						<onclick>ActivateWindow(Weather)</onclick>
+						<icon>special://skin/backgrounds/weather.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Weather_Folder)]</thumb>
+					</item>
+					<item id="6">
+						<label>247</label>
+						<onclick>ActivateWindow(Scripts)</onclick>
+						<icon>special://skin/backgrounds/scripts.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Scripts_Folder)]</thumb>
+					</item>
+					<item id="7">
+						<label>5</label>
+						<onclick>ActivateWindow(Settings)</onclick>
+						<icon>special://skin/backgrounds/settings.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Settings_Folder)]</thumb>
+					</item>
+				</content>
+			</control>
 		</control>
 		<control type="image">
 			<posx>0</posx>
