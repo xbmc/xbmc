@@ -745,7 +745,7 @@ static void CP_XMLCALL start_element_handler(
 					import->plugin_id = NULL;
 					import->version = NULL;
 					for (i = 0; atts[i] != NULL; i += 2) {
-						if (!strcmp(atts[i], "plugin")) {
+						if (!strcmp(atts[i], "addon")) {
 							import->plugin_id
 								= parser_strdup(plcontext, atts[i+1]);
 						} else if (!strcmp(atts[i], "version")) {
@@ -828,7 +828,7 @@ static void CP_XMLCALL end_element_handler(
 	switch (plcontext->state) {
 
 		case PARSER_PLUGIN:
-			if (!strcmp(name, "plugin")) {
+			if (!strcmp(name, "addon")) {
 				
 				// Readjust memory allocated for extension points, if necessary 
 				if (plcontext->ext_points_size != plcontext->plugin->num_ext_points) {
