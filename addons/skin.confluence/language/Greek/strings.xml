@@ -6,6 +6,7 @@
   <string id="31002">Απεχθές</string>
   <string id="31003">Επιλογές λειτουργίας</string>
   <string id="31004">Απασχολημένο...</string>
+  <string id="31005">Απόκρυψη Πληροφοριών</string>
 
   <string id="31007">Επεκτάσεις</string>
 
@@ -45,7 +46,7 @@
   <string id="31058">Σύστημα αρχείων μουσικής</string>
   <string id="31059">Τρέχουσα λίστα αναπαραγωγής</string>
   <string id="31060">Αυτό το αρχείο είναι στοιβαγμένο, επιλέξτε το κομμάτι που επιθυμείτε για αναπαραγωγή.</string>
-  <string id="31061">Επιλέχθηκε</string>
+  <string id="31061">Επιλέχθηκε η τρέχουσα</string>
 
   <!-- Skin Settings labels -->
   <string id="31100"></string>
@@ -78,6 +79,11 @@
   <string id="31126">Εμφάνιση στίχων στις "Aπεικόνισεις οθόνης (OSD)"</string>
   <string id="31127">ΔΙΑΔΡΟΜΗ ΓΙΑ ΤΟ SCRIPT ΣΤΙΧΟΙ</string>
   <string id="31128">Στίχοι XBMC</string>
+  <string id="31129">Ενεργοποίηση λήψης υποτίτλων στις απεικονίσεις οθόνης (OSD) βίντεο</string>
+  <string id="31130">ΔΙΑΔΡΟΜΗ ΓΙΑ ΤΟ SUBTITLE SCRIPT</string>
+
+  <string id="31140">Aπεικόνισεις οθόνης (OSD) Μουσική</string>
+  <string id="31141">Aπεικόνισεις οθόνης (OSD) Βίντεο</string>
 
   <!-- Script labels -->
   <string id="31200">Συντομεύσεις</string>
@@ -123,6 +129,16 @@
   <string id="31327">Ανάλυση</string>
   <string id="31328">Προστέθηκε πρόσφατα</string>
   <string id="31329">[B]Εφαρμογή χρονοδιακόπτη![/B] [COLOR=grey2] - Αυτόματος τερματισμός λειτουργίας σε[/COLOR]</string>
+  <string id="31330">Πιέστε το πλήκτρο για να αναπαραχθεί[CR][CR]το διαφημιστικό ταινίας</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Παύση</string>
+  <string id="31352">Διακοπή</string>
+  <string id="31353">Προώθηση μπροστά</string>
+  <string id="31354">Προώθηση πίσω</string>
+  <string id="31355">Μενού ταινίας</string>
+  <string id="31356">Λήψη υποτίτλων</string>
+  <string id="31357"></string>
 
   <!-- Description Labels  -->
   <string id="31400">[B]ΠΡΟΣΑΡΜΟΓΗ ΡΥΘΜΙΣΕΩΝ ΕΞΑΤΟΜΙΚΕΥΣΗΣ[/B][CR][CR]Αλλαγή κελύφους · Αλλαγή χώρας και γλώσσας συστήματος · Ορισμός των γενικών επιλόγων εμφάνισης[CR]Προσαρμογή της προφύλαξης οθόνης</string>

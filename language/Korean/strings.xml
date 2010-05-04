@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 02/16/2010-->
+<!--Date of translation: 04/30/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -524,7 +524,7 @@
   <string id="630">보통</string>
   <string id="631">축소/확대</string>
   <string id="632">4:3 늘림</string>
-  <string id="633">14:9 늘림</string>
+  <string id="633">넓게 축소/확대</string>
   <string id="634">16:9 늘림</string>
   <string id="635">원래 크기</string>
   <string id="636">사용자 지정</string>
@@ -550,6 +550,7 @@
   <string id="656">재생목록 찾기</string>
   <string id="657">폴더 찾기</string>
   <string id="658">노래 정보</string>
+  <string id="659">비-선형 늘림</string>
   <string id="660">음량 증폭</string>
   <string id="661">내보내기 폴더 선택</string>
   <string id="662">이 파일은 더 이상 사용할수 없습니다.</string>
@@ -693,6 +694,7 @@
   <string id="1048">- 사용자명</string>
   <string id="1049">스크립트 설정</string>
   <string id="1050">단일</string>
+  <string id="1051">웹 주소 입력</string>
   <string id="1200">SMB 클라이언트</string>
   <string id="1202">작업그룹</string>
   <string id="1203">기본 사용자명</string>
@@ -787,6 +789,7 @@
   <string id="10018">설정 - 네트워크</string>
   <string id="10019">설정 - 모양새</string>
   <string id="10020">스크립트</string>
+  <string id="10021">웹 브라우저</string>
   <string id="10028">비디오/재생목록</string>
   <string id="10034">설정 - 프로파일</string>
   <string id="10100">예/아니오 대화창</string>
@@ -1131,7 +1134,11 @@
   <string id="13422">여기에서 슬라이드쇼 시작</string>
   <string id="13423">이 경로 기억</string>
   <string id="13424">픽셀 버퍼 객체 사용</string>
-  <string id="13425">브로드컴 크리스탈 HD</string>
+  <string id="13425">하드웨어 가속 허용 (VDPAU)</string>
+  <string id="13426">하드웨어 가속 허용 (VAAPI)</string>
+  <string id="13427">하드웨어 가속 허용 (DXVA2)</string>
+  <string id="13428">하드웨어 가속 허용 (CrystalHD)</string>
+  <string id="13429">하드웨어 가속 허용 (VDADecoder)</string>
   <string id="13500">A/V 동기 방식</string>
   <string id="13501">오디오 클럭</string>
   <string id="13502">비디오 클럭 (오디오 버림/반복)</string>
@@ -1151,7 +1158,7 @@
   <string id="13612">유니버셜 리모트</string>
   <string id="13613">멀티 리모트 (하모니)</string>
   <string id="13620">애플 리모트 오류</string>
-  <string id="13621">애플 리모트 지원을 사용할수 없습니다.</string>
+  <string id="13621">애플 리모트 지원을 사용함으로 할수 있습니다..</string>
   <string id="14000">연결재생</string>
   <string id="14001">연결재생 해제</string>
   <string id="14003">재생목록 파일 다운로드중...</string>
@@ -1589,6 +1596,7 @@
   <string id="20252">컵 채우기 (비디오)</string>
   <string id="20253">WebDAV 서버 (HTTP)</string>
   <string id="20254">WebDAV 서버 (HTTPS)</string>
+  <string id="20255">처음 로그인, 프로파일을 수정하세요</string>
   <string id="20300">웹 서버 디렉토리 (HTTP)</string>
   <string id="20301">웹 서버 디렉토리 (HTTPS)</string>
   <string id="20302">폴더에 쓸수 없음:</string>
@@ -1720,7 +1728,7 @@
   <string id="20433">미리보기 및 비디오 정보 추출</string>
   <string id="20434">세트</string>
   <string id="20435">영화세트 미리보기 설정</string>
-  <string id="20436">배우 미리보기 내보내기</string>
+  <string id="20436">배우 미리보기 내보내기?</string>
   <string id="20437">팬아트 선택</string>
   <string id="20438">로컬 팬아트</string>
   <string id="20439">팬아트 없음</string>
@@ -1799,6 +1807,7 @@
   <string id="21416">자료수집기 언어 기반의 대체 사용</string>
   <string id="21417">- 설정</string>
   <string id="21418">다국어</string>
+  <string id="21419">자료수집기 없음</string>
   <string id="21420">일치하는 값</string>
   <string id="21421">지능형 재생목록 규칙</string>
   <string id="21422">일치하는 항목</string>
@@ -1814,7 +1823,7 @@
   <string id="21432">지능형 재생목록 수정</string>
   <string id="21433">재생목록 이름</string>
   <string id="21434">찾은 항목:</string>
-  <string id="21435">- 수정</string>
+  <string id="21435">수정</string>
   <string id="21436">%i 항목</string>
   <string id="21437">새 지능형 재생목록...</string>
   <string id="21438">%c 드라이브</string>
@@ -1829,6 +1838,7 @@
   <string id="21447">오디오 언어</string>
   <string id="21448">자막 언어</string>
   <string id="21449">리모콘이 키보드 누름 보냄</string>
+  <string id="21450">- 수정</string>
   <string id="21800">파일 이름</string>
   <string id="21801">파일 경로</string>
   <string id="21802">파일 크기</string>
@@ -1941,8 +1951,7 @@
   <string id="22041">하양/빨강</string>
   <string id="22042">하양/파랑</string>
   <string id="22043">검정/하양</string>
-  <string id="23000">날씨 플러그인</string>
-  <string id="23001">- 플러그인 설정</string>
+  <string id="23049">문자다중방송 사용할수 없음</string>
   <string id="23050">문자다중방송 활성화</string>
   <string id="23051">파트 %i</string>
   <string id="23052">%i 바이트 버퍼링</string>
@@ -1951,6 +1960,53 @@
   <string id="23100">외장 플레이어 활성</string>
   <string id="23101">플레이어를 종료하려면 예를 누르세요</string>
   <string id="23104">재생이 끝났으면 예를 누르세요</string>
+  <string id="24000">추가기능</string>
+  <string id="24001">추가기능</string>
+  <string id="24002">추가기능 옵션</string>
+  <string id="24003">추가기능 정보</string>
+  <string id="24005">플러그인</string>
+  <string id="24007">자료수집기</string>
+  <string id="24008">화면보호기</string>
+  <string id="24009">스크립트</string>
+  <string id="24010">시각화</string>
+  <string id="24011">추가기능 저장소</string>
+  <string id="24020">설정</string>
+  <string id="24021">사용안함</string>
+  <string id="24022">사용함</string>
+  <string id="24023">추가기능 중지됨</string>
+  <string id="24027">날씨 서비스</string>
+  <string id="24028">Weather.com (표준)</string>
+  <string id="24030">이 추가기능은 설정할수 없음</string>
+  <string id="24031">설정 읽기 오류</string>
+  <string id="24032">모든 저장소</string>
+  <string id="24033">저장소</string>
+  <string id="24034">업데이트 확인</string>
+  <string id="24035">강제 새로고침</string>
+  <string id="24036">로그 변경</string>
+  <string id="24050">사용가능한 추가기능</string>
+  <string id="24051">버전:</string>
+  <string id="24052">권리포기</string>
+  <string id="24053">라이센스:</string>
+  <string id="24059">이 추가기능을 사용함으로 하시겠습니까?</string>
+  <string id="24060">이 추가기능을 사용안함으로 하시겠습니까?</string>
+  <string id="24061">추가기능 업데이트 사용가능!</string>
+  <string id="24062">추가기능 사용함</string>
+  <string id="24063">자동 업데이트</string>
+  <string id="24064">추가기능 사용됨</string>
+  <string id="24065">추가기능 업데이트됨</string>
+  <string id="24066">추가기능 다운로드 취소?</string>
+  <string id="24067">현재 추가기능 다운로드중</string>
+  <string id="24068">업데이트 사용가능</string>
+  <string id="24069">업데이트</string>
+  <string id="24070">추가기능을 사용할수 없음</string>
+  <string id="24071">알수없는 오류 발생함</string>
+  <string id="24072">설정이 필요함</string>
+  <string id="24073">연결할수 없음</string>
+  <string id="24074">재시작 필요함</string>
+  <string id="24075">사용안함</string>
+  <string id="24080">재연결 하시겠습니까?</string>
+  <string id="24089">추가기능 재시작</string>
+  <string id="24090">추가기능 관리자 잠금</string>
   <string id="29800">라이브러리 모드</string>
   <string id="29801">쿼티 키보드</string>
   <string id="29802">패스스루 오디오 사용중</string>
@@ -2030,7 +2086,8 @@
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
   <string id="34002">Wav</string>
-  <string id="34003">DXVA</string>
+  <string id="34003">DXVA2</string>
+  <string id="34004">VAAPI</string>
   <string id="34100">스피커 설정</string>
   <string id="34101">2.0</string>
   <string id="34102">2.1</string>

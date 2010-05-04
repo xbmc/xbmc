@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 01/15/2010-->
+<!--Date of translation: 04/20/2010-->
 <!--$Revision$-->
 <strings>
   <string id="31000">변경</string>
@@ -25,6 +25,7 @@
   <string id="31030">전체 목록</string>
   <string id="31031">사진 미리보기</string>
   <string id="31032">이미지 나열</string>
+  <string id="31033">정보</string>
   <string id="31040">지금 재생중</string>
   <string id="31042">재생중</string>
   <string id="31043">일시중지됨</string>
@@ -52,8 +53,8 @@
   <string id="31107">
   </string>
   <string id="31108">메인 메뉴 버튼 숨기기</string>
-  <string id="31109">홈 화면 배경</string>
-  <string id="31110">홈 버튼 배경 수정</string>
+  <string id="31109">미디어 배경</string>
+  <string id="31110">미디어 형식의 배경 수정</string>
   <string id="31111">숨기기</string>
   <string id="31112">옵션</string>
   <string id="31113">단일 이미지</string>
@@ -132,5 +133,6 @@
   <string id="31405">[B]네트워크 설정[/B][CR][CR]UPnP 및 HTTP 를 통한 XBMC 제어 설정 · 파일 공유 설정[CR]인터넷 접근 옵션 설정</string>
   <string id="31406">[B]시스템 설정[/B][CR][CR]화면 설정 및 조정 · 오디오 출력 설정 · 원격 제어 설정[CR]전원 절약 옵션 설정 · 디버깅 사용 · 마스터 잠금 설정</string>
   <string id="31407">[B]스킨 설정[/B][CR][CR]Confluence 스킨 설정 · 홈 메뉴 항목 추가 및 제거[CR]스킨 배경 변경</string>
+  <string id="31408">[B]추가기능 설정[/B][CR][CR]설치된 추가기능 관리 · xbmc.org 에서 추가기능 찾기 및 설치[CR]추가기능 설정 변경</string>
   <string id="31421">로그인할 XBMC 사용자 프로파일을[CR]선택하고 계속하세요</string>
 </strings>

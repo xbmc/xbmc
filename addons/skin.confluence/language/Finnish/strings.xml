@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
   <!-- Translator: Mika Pirinen -->
-  <!-- Date of translation: 14/1/2009 -->
-  <!-- Finnish strings for Confluence skin based on English strings revision 26808-->
+  <!-- Date of translation: 3/3/2010 -->
+  <!-- Finnish strings for Confluence skin based on English strings revision  28277 -->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Määritä</string>
@@ -145,13 +145,14 @@
 
   <!-- Description Labels  -->
   <string id="31400">[B]Muokkaa käyttöliittymän asetuksia[/B][CR][CR]Vaihda ulkoasua · Vaihda kieliasetuksia · Aseta tiedostolistauksen asetukset[CR]Aseta ruudunsäästäjä</string>
-  <string id="31401">[B]Muokkaa video-asetuksia[/B][CR][CR]Huolla videokirjastoa · Aseta videotoiston asetukset · Vaihda videolistauksen asetuksia[CR]Aseta tekstitysasetukset</string>
-  <string id="31402">[B]Muokkaa musiikki-asetuksia[/B][CR][CR]Huolla musiikkikirjastoa · Aseta musiikkitoiston asetukset · Vaihda musiikkilistauksen[CR]asetuksia · Aseta kappaleen lähetysasetuksia · Aseta karaoke-asetukset</string>
+  <string id="31401">[B]Muokkaa video-asetuksia[/B][CR][CR]Hallitse videokirjastoa · Aseta videotoiston asetukset · Vaihda videolistauksen asetuksia[CR]Aseta tekstitysasetukset</string>
+  <string id="31402">[B]Muokkaa musiikki-asetuksia[/B][CR][CR]Hallitse musiikkikirjastoa · Aseta musiikkitoiston asetukset · Vaihda musiikkilistauksen[CR]asetuksia · Aseta kappaleen lähetysasetuksia · Aseta karaoke-asetukset</string>
   <string id="31403">[B]Muokkaa kuva-asetuksia[/B][CR][CR]Aseta kuvalistauksen asetukset · Määritä kuvaesityksiä</string>
   <string id="31404">[B]Muokkaa sää-asetuksia[/B][CR][CR]Aseta kolme kaupunkia joista noudetaan säätiedot</string>
   <string id="31405">[B]Muokkaa verkkoasetuksia[/B][CR][CR]Aseta XBMC ohjaus UPNP:n ja HTTP:n kautta · Määritä tiedostojen jako[CR]Aseta internet asetukset</string>
   <string id="31406">[B]Muokkaa järjestelmän asetuksia[/B][CR][CR]Aseta ja kalibroi näyttö · Määritä äänilähtö · Aseta kauko-ohjaus[CR]Aseta sähkönsäästöasetukset · Ota debuggaus käyttöön · Muokkaa pääkäyttäjän lukituksia</string>
   <string id="31407">[B]Muokkaa ulkoasun asetuksia[/B][CR][CR]Aseta Confluence-ulkoasun asetukset · Lisää ja poista päävalikon kohteita[CR]Vaihda ulkoasun taustakuvia</string>
+  <string id="31408">[B]Muokkaa laajennuksia[/B][CR][CR]Hallitse asennettuja laajennuksia · Valitse ja asenna laajennuksia xbmc.org:sta[CR]Muokkaa laajennusten asetuksia</string> 
 
   <string id="31421">Valitse XBMC käyttäjäprofiili[CR]kirjautuaksesi sisään</string>
 </strings>
