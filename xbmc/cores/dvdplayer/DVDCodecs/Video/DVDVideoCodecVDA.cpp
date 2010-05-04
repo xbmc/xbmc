@@ -173,7 +173,7 @@ static void GetFrameDisplayTimeFromDictionary(
   CFDictionaryRef inFrameInfoDictionary, frame_queue *frame)
 {
   // default to DVD_NOPTS_VALUE
-  frame->time = -1.0;
+  frame->sort_time = -1.0;
   frame->dts = DVD_NOPTS_VALUE;
   frame->pts = DVD_NOPTS_VALUE;
   if (inFrameInfoDictionary == NULL)
@@ -183,7 +183,7 @@ static void GetFrameDisplayTimeFromDictionary(
   //
   value[0] = (CFNumberRef)CFDictionaryGetValue(inFrameInfoDictionary, CFSTR("VideoDisplay_TIME"));
   if (value[0])
-    CFNumberGetValue(value[0], kCFNumberDoubleType, &frame->time);
+    CFNumberGetValue(value[0], kCFNumberDoubleType, &frame->sort_time);
   value[1] = (CFNumberRef)CFDictionaryGetValue(inFrameInfoDictionary, CFSTR("VideoDisplay_DTS"));
   if (value[1])
     CFNumberGetValue(value[1], kCFNumberDoubleType, &frame->dts);
@@ -386,8 +386,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   if (g_guiSettings.GetBool("videoplayer.usevda") && !hints.software)
   {
-    int32_t width;
-    int32_t height;
+    int32_t width, height, profile, level;
     CFDataRef avcCData;
     uint8_t *extradata; // extra data for codec to use
     unsigned int extrasize; // size of extra data
@@ -395,9 +394,11 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     //
     width  = hints.width;
     height = hints.height;
+    level  = hints.level;
+    profile = hints.profile;
     extrasize = hints.extrasize;
     extradata = (uint8_t*)hints.extradata;
-
+ 
     switch (hints.codec)
     {
       case CODEC_ID_H264:
@@ -483,9 +484,10 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       status = kVDADecoderDecoderFailedErr;
     }
     CFRelease(decoderConfiguration);
-    if (status != kVDADecoderNoErr) 
+    if (status != kVDADecoderNoErr)
     {
-      CLog::Log(LOGNOTICE, "%s - VDADecoder Codec failed to open,status(%d)", __FUNCTION__, (int)status);
+      CLog::Log(LOGNOTICE, "%s - VDADecoder Codec failed to open, status(%d), profile(%d), level(%d)", 
+        __FUNCTION__, (int)status, profile, level);
       return false;
     }
 
@@ -527,6 +529,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
     m_DropPictures = false;
+    m_sort_time_offset = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
 
     return true;
   }
@@ -573,8 +576,8 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
   OSStatus status;
   uint32_t avc_flags = 0;
   CFDataRef avc_demux;
-  double time = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
-  CFDictionaryRef avc_time = MakeDictionaryWithDisplayTime(time, dts, pts);
+  double sort_time = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
+  CFDictionaryRef avc_time = MakeDictionaryWithDisplayTime(sort_time - m_sort_time_offset, dts, pts);
   //
   if (m_convert_bytestream)
   {
@@ -621,6 +624,8 @@ void CDVDVideoCodecVDA::Reset(void)
 
   while (m_queue_depth)
     DisplayQueuePop();
+
+  m_sort_time_offset = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
 }
 
 bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
@@ -723,10 +728,8 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
   newFrame->yuvframe = CVPixelBufferRetain(imageBuffer);
   GetFrameDisplayTimeFromDictionary(frameInfo, newFrame);
 
-  // if both dts and pts are borked, use decoder insert time for frame sort
-  if ((newFrame->pts == DVD_NOPTS_VALUE) && (newFrame->dts == DVD_NOPTS_VALUE))
-    newFrame->sort_time = newFrame->time;
-  else
+  // if both dts or pts are good we use those, else use decoder insert time for frame sort
+  if ((newFrame->pts != DVD_NOPTS_VALUE) || (newFrame->dts != DVD_NOPTS_VALUE))
   {
     // if pts is borked (stupid avi's), use dts for frame sort
     if (newFrame->pts == DVD_NOPTS_VALUE)
