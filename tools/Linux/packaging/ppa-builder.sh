@@ -7,6 +7,7 @@ echo "
   $ sudo apt-get install debhelper pbuilder dput subversion
 
   The following options are supported: 
+	--no-export	: Ask the script to no do an SVN export (do a copy instead)
 	--ppa=<your ppa in dput.cf>
 	-t, --tag 	: svnsrc=<dir>, version=<version> (without 'xbmc-')
 	-u		: srcdir=<dir> version=<version> revision=<rev> minor=<minor>
@@ -72,6 +73,9 @@ parse_options()
       --ppa)
         XBMCPPA=$PAR
       ;;
+      --no-export)
+        NO_EXPORT=1
+      ;;
       --help|-h)
         usage
       ;;
@@ -94,12 +98,16 @@ getrootright()
 preparesrc() 
 {
   echo "Exporting the sources at revision $REVISION ... "
-  if [[ -z $HEAD_REVISION ]]; then
-    # The revision given might not be the head one
-    svn export -r $REVISION $SVNSRC $DESTSRC 2>&1 
+  if [[ -z $NO_EXPORT ]]; then 
+    if [[ -z $HEAD_REVISION ]]; then
+      # The revision given might not be the head one
+      svn export -r $REVISION $SVNSRC $DESTSRC 2>&1 
+    else
+      svn cleanup $SVNSRC 
+      svn export $SVNSRC $DESTSRC 
+    fi
   else
-    svn cleanup $SVNSRC 
-    svn export $SVNSRC $DESTSRC 
+    cp $SVNSRC $DESTSRC -Rf
   fi
   cd $DESTSRC
   ./bootstrap

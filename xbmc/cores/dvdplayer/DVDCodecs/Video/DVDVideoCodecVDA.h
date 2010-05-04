@@ -30,8 +30,10 @@
 
 // tracks a frame in and output queue in display order
 typedef struct frame_queue {
-  double              frametime;
-  CVPixelBufferRef    frame;
+  double              dts;
+  double              pts;
+  double              sort_time;
+  CVPixelBufferRef    yuvframe;
   struct frame_queue  *nextframe;
 } frame_queue;
 
@@ -65,10 +67,10 @@ protected:
   const char        *m_pFormatName;
   bool              m_DropPictures;
 
+  double            m_sort_time_offset;
   pthread_mutex_t   m_queue_mutex;    // mutex protecting queue manipulation
   frame_queue       *m_display_queue; // display-order queue - next display frame is always at the queue head
   int32_t           m_queue_depth;    // we will try to keep the queue depth around 16+1 frames
-  std::queue<double> m_dts_queue;
   
   bool              m_convert_bytestream;
   DllAvUtil         m_dllAvUtil;

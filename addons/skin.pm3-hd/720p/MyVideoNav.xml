@@ -53,7 +53,9 @@
 				<width>640</width>
 				<itemgap>0</itemgap>
 				<orientation>horizontal</orientation>
-				<include>CodecFlaggingConditions</include>
+				<include>VideoCodecFlagging</include>
+				<include>AudioCodecFlagging</include>
+				<include>AspectCodecFlagging</include>
 				<animation effect="slide" start="0,0" end="-280,0" time="300" tween="quadratic" easing="out" condition="Control.IsVisible(500)">Conditional</animation>
 				<visible>!Control.IsVisible(56) + !Control.IsVisible(55) + !Skin.HasSetting(Hide_Video_Flags)</visible>
 			</control>
@@ -69,7 +71,9 @@
 				<width>640</width>
 				<itemgap>0</itemgap>
 				<orientation>horizontal</orientation>
-				<include>CodecFlaggingConditions</include>
+				<include>VideoCodecFlagging</include>
+				<include>AudioCodecFlagging</include>
+				<include>AspectCodecFlagging</include>
 				<visible>[Control.IsVisible(56) | Control.IsVisible(55)] + !Skin.HasSetting(Hide_Video_Flags)</visible>
 				<animation effect="slide" start="0,0" end="-235,0" time="0" condition="Control.IsVisible(55)">Conditional</animation>
 			</control>

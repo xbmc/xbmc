@@ -22,7 +22,6 @@
 #import "PlatformDefs.h"
 #import "ApplicationMessenger.h"
 #import "DarwinStorageProvider.h"
-#import "WindowingFactory.h"
 #undef BOOL
 
 // For some reaon, Apple removed setAppleMenu from the headers in 10.4,
@@ -240,16 +239,6 @@ static void setupWindowMenu(void)
     [self setupWorkingDirectory:gFinderLaunch];
 
     [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
-      selector:@selector(workspaceDidWakeNotification:)
-      name:NSWorkspaceDidWakeNotification
-      object:nil];
-      
-    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
-      selector:@selector(workspaceWillSleepNotification:)
-      name:NSWorkspaceWillSleepNotification
-      object:nil];
-      
-    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
       selector:@selector(deviceDidMountNotification:)
       name:NSWorkspaceDidMountNotification
       object:nil];
@@ -341,59 +330,6 @@ static void setupWindowMenu(void)
     gArgv[gArgc++] = arg;
     gArgv[gArgc] = NULL;
     return TRUE;
-}
-
-- (void) workspaceDidWakeNotification:(NSNotification *) note
-{
-  if (g_Windowing.IsFullScreen())
-  {
-    // Find which display we are on
-    NSOpenGLContext* context = [NSOpenGLContext currentContext];
-    if (context)
-    {
-      NSView* view;
-
-      view = [context view];
-      if (view)
-      {
-        NSWindow* window;
-        window = [view window];
-        if (window)
-        {
-          NSDictionary* screenInfo = [[window screen] deviceDescription];
-          NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
-          if (kCGDirectMainDisplay == (CGDirectDisplayID)[screenID longValue])
-          {
-            CStdString tmp_str;
-
-            // keep the dock hidden using applescriptif on main screen with the dock.
-            tmp_str = "tell application \"System Events\" \n";
-            tmp_str += "keystroke \"d\" using {command down, option down} \n";
-            tmp_str += "end tell \n";
-            
-            Cocoa_DoAppleScript( tmp_str.c_str() );
-          }
-        }
-      }
-    }
-  }
-}
-
-- (void) workspaceWillSleepNotification:(NSNotification *) note
-{
-  SDL_Event event;
-
-  // Post an media stop event to the application thread.
-  memset(&event, 0, sizeof(event));
-  event.type = SDL_USEREVENT;
-  event.user.code = TMSG_MEDIA_STOP;
-  SDL_PushEvent(&event);
-
-  // Post an suspend event to the application thread.
-  memset(&event, 0, sizeof(event));
-  event.type = SDL_USEREVENT;
-  event.user.code = TMSG_SUSPEND;
-  SDL_PushEvent(&event);
 }
 
 - (void) deviceDidMountNotification:(NSNotification *) note 

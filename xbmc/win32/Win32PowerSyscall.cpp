@@ -22,6 +22,11 @@
 #include "Win32PowerSyscall.h"
 #ifdef _WIN32
 #include "WIN32Util.h"
+
+bool CWin32PowerSyscall::m_OnResume = false;
+bool CWin32PowerSyscall::m_OnSuspend = false;
+
+
 CWin32PowerSyscall::CWin32PowerSyscall()
 {
 }
@@ -62,5 +67,23 @@ bool CWin32PowerSyscall::CanHibernate()
 bool CWin32PowerSyscall::CanReboot()
 {
   return true;
+}
+
+bool CWin32PowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
+{
+  if (m_OnSuspend)
+  {
+    callback->OnSleep();
+    m_OnSuspend = false;
+    return true;
+  }
+  else if (m_OnResume)
+  {
+    callback->OnWake();
+    m_OnResume = false;
+    return true;
+  }
+  else
+    return false;
 }
 #endif

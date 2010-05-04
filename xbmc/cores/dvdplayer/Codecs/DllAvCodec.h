@@ -100,6 +100,7 @@ public:
                                const void * const  in[6], const int  in_stride[6], int len)=0;
   virtual int av_dup_packet(AVPacket *pkt)=0;
   virtual void av_init_packet(AVPacket *pkt)=0;
+  virtual int64_t avcodec_guess_channel_layout(int nb_channels, enum CodecID codec_id, const char *fmt_name)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -171,7 +172,7 @@ public:
 
   virtual int av_dup_packet(AVPacket *pkt) { return ::av_dup_packet(pkt); }
   virtual void av_init_packet(AVPacket *pkt) { return ::av_init_packet(pkt); }
-
+  virtual int64_t avcodec_guess_channel_layout(int nb_channels, enum CodecID codec_id, const char *fmt_name) { return ::avcodec_guess_channel_layout(nb_channels, codec_id, fmt_name); }
 
   // DLL faking.
   virtual bool ResolveExports() { return true; }
@@ -208,6 +209,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
 #endif
   DEFINE_METHOD1(int, av_dup_packet, (AVPacket *p1))
   DEFINE_METHOD1(void, av_init_packet, (AVPacket *p1))
+  DEFINE_METHOD3(int64_t, avcodec_guess_channel_layout, (int p1, enum CodecID p2, const char *p3))
 
   LOAD_SYMBOLS();
 
@@ -274,6 +276,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(av_audio_convert)
     RESOLVE_METHOD(av_dup_packet)
     RESOLVE_METHOD(av_init_packet)
+    RESOLVE_METHOD(avcodec_guess_channel_layout)
   END_METHOD_RESOLVE()
 public:
     static CCriticalSection m_critSection;
