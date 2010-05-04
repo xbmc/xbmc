@@ -15,6 +15,8 @@
     <xbmc>20000</xbmc>
   </minversion>
   <summary>Visualization</summary>
+  <summary lang="nl">Visualisatie</summary>
   <description>Waveform is a simple Visualization showing 2 Waveform Graphs on the screen, One each for Left and Right channels that move to the beat of the music</description>
+  <description lang="nl">Waveform is een simpele muziekvisualisatie die 2 golfvormen op het scherm toont, respectievelijk voor het linker en rechter geluidskanaal. De golfvormen bewegen mee met de beat van de muziek.</description>
   <author>MrC</author>
 </addoninfo>
