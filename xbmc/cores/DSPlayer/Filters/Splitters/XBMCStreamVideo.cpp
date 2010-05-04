@@ -27,8 +27,14 @@
 #include "dvdmedia.h"
 #include "DShowUtil/DShowUtil.h"
 
+#pragma warning(disable: 4355)
 
-
+#ifndef MINPACKETS
+#define MINPACKETS 100      // Beliyaal: Changed the dsmin number of packets to allow Bluray playback over network
+#define MINPACKETSIZE 256*1024  // Beliyaal: Changed the dsmin packet size to allow Bluray playback over network
+#define MAXPACKETS 10000
+#define MAXPACKETSIZE 1024*1024*5
+#endif
 
 //********************************************************************
 //
@@ -58,7 +64,6 @@ CDSVideoStream::~CDSVideoStream()
 //
 void CDSVideoStream::SetStream(CMediaType mt)
 {
-  
   m_mts.push_back(mt);
 }
 
@@ -110,25 +115,17 @@ HRESULT CDSVideoStream::SetMediaType(const CMediaType *pMediaType)
     VIDEOINFOHEADER * pvi = (VIDEOINFOHEADER *) m_mt.Format();
     if (pvi == NULL)
       return E_UNEXPECTED;
-
-    switch(pvi->bmiHeader.biBitCount)
+    if (GetBitmapSubtype(&pvi->bmiHeader) != GUID_NULL)
     {
-      case 8:     // 8-bit palettized
-      case 16:    // RGB565, RGB555
-      case 24:    // RGB24
-      case 32:    // RGB32
-      // Save the current media type and bit depth
-        m_MediaType = *pMediaType;
-
-        hr = S_OK;
-        break;
-      default:
-      // We should never agree any other media types
-        ASSERT(FALSE);
-        hr = E_INVALIDARG;
-        break;
+      m_MediaType = *pMediaType;
+      hr = S_OK;
     }
-  } 
+    else
+    {
+      ASSERT(FALSE);
+        hr = E_INVALIDARG;
+    }
+  }
 
   return hr;
 
@@ -157,7 +154,7 @@ HRESULT CDSVideoStream::FillBuffer(IMediaSample *pms)
   hr = pms->SetTime(&p->rtStart, &p->rtStop);
   hr = pms->SetSyncPoint(TRUE);
 
-    return S_OK;
+  return S_OK;
 }
 
 //********************************************************************
@@ -267,7 +264,8 @@ HRESULT CDSVideoStream::DeliverEndFlush()
 HRESULT CDSVideoStream::DeliverNewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate)
 {
   //m_brs.rtLastDeliverTime = Packet::INVALID_TIME;
-  //if(m_fFlushing) return S_FALSE;
+  if(m_fFlushing) 
+    return S_FALSE;
   m_rtStart = tStart;
   if(!ThreadExists()) return S_FALSE;
   HRESULT hr = __super::DeliverNewSegment(tStart, tStop, dRate);
@@ -293,8 +291,8 @@ HRESULT CDSVideoStream::QueueEndOfStream()
 
 HRESULT CDSVideoStream::QueuePacket(auto_ptr<DsPacket> p)
 {
-  //while(m_queue.GetSize() > MAXPACKETSIZE*100)
-    //Sleep(1);
+  while(m_queue.GetSize() > MAXPACKETSIZE*100)
+    Sleep(1);
 
   //if(S_OK != m_hrDeliver)
   //  return m_hrDeliver;

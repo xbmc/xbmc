@@ -23,6 +23,7 @@
 
 #include "DVDPlayer/DVDCodecs/DVDCodecs.h"
 #include "DVDPlayer/DVDDemuxers/DVDDemux.h"
+#include "MMReg.h"
 extern "C"
 {
   #include "libavformat/avformat.h"
@@ -168,6 +169,36 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   if( right.type == STREAM_AUDIO )
   {
     const CDemuxStreamAudio *stream = static_cast<const CDemuxStreamAudio*>(&right);
+    AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
+
+    mtype.majortype = MEDIATYPE_Audio;
+    mtype.subtype = FOURCCMap(avstream->codec->codec_tag);
+    mtype.formattype = FORMAT_WaveFormatEx;
+    
+    WAVEFORMATEX *wvfmt = (WAVEFORMATEX*)mtype.AllocFormatBuffer(sizeof(WAVEFORMATEX) + extrasize);
+    //if the extrasize is of 12 its a mp3
+    if (extrasize == 12)
+    {
+      //MPEGLAYER3WAVEFORMAT *mp3fmt = (MPEGLAYER3WAVEFORMAT *)wvfmt;
+      //mp3fmt->
+      
+      //wvfmt->wFormatTag
+    }
+    wvfmt->wFormatTag = avstream->codec->codec_tag;
+    wvfmt->nChannels = avstream->codec->channels;
+    wvfmt->nSamplesPerSec= avstream->codec->sample_rate;
+    wvfmt->nAvgBytesPerSec= avstream->codec->bit_rate/8;
+    wvfmt->nBlockAlign= avstream->codec->block_align ? avstream->codec->block_align : 1;
+    wvfmt->wBitsPerSample= avstream->codec->bits_per_coded_sample;
+    wvfmt->cbSize= avstream->codec->extradata_size;
+    mtype.SetSampleSize(avstream->codec->bit_rate * 3);
+    if(avstream->codec->extradata_size)
+      memcpy(wvfmt + 1, avstream->codec->extradata, avstream->codec->extradata_size);
+    mtype.pbFormat = (PBYTE)wvfmt;
+    
+    //wvfmt->wFormatTag
+    //MPEGLAYER3WAVEFORMAT *
+    
     channels      = stream->iChannels;
     samplerate    = stream->iSampleRate;
     blockalign    = stream->iBlockAlign;
@@ -187,7 +218,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     VIDEOINFOHEADER *pvi = (VIDEOINFOHEADER*)mtype.AllocFormatBuffer(sizeof(VIDEOINFOHEADER));
   
   
-  //FIX THE FRAMERATE
+  //Still to be verified in real time but the mathematics make sense
   // 23.97 fps = 417166;
   //so fps = 10000000.0 / AvgTimePerFrame
   //or 

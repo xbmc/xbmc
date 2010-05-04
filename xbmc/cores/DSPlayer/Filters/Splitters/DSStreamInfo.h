@@ -57,6 +57,7 @@ public:
   bool stills; // there may be odd still frames in video
 
   // AUDIO
+  unsigned int formatextraaudio;
   int channels;
   int samplerate;
   int bitrate;

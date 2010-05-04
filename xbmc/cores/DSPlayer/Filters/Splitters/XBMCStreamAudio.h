@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -20,12 +21,13 @@
  */
 
 
-#ifndef DSSTREAMSOURCESTREAMAUDIO_H_
-#define DSSTREAMSOURCESTREAMAUDIO_H_
 
 #include "streams.h"
-#include "Codecs/DllAvFormat.h"
-#include "Codecs/DllAvCodec.h"
+
+#include "DVDPlayer/DVDClock.h"
+#include "DVDPlayer/DVDDemuxers/DVDDemuxFFmpeg.h"
+#include "DSStreamInfo.h"
+#include "DSPacketQueue.h"
 
 class CXBMCSplitterFilter;
 
@@ -39,7 +41,6 @@ public:
   CDSAudioStream(LPUNKNOWN pUnk, CXBMCSplitterFilter *pParent, HRESULT *phr);
   ~CDSAudioStream ();
 
-    
 // CBaseOutputPin
   HRESULT DecideBufferSize(IMemAllocator* _memAlloc, ALLOCATOR_PROPERTIES* _properties);
 
@@ -55,20 +56,26 @@ public:
   HRESULT __stdcall Notify(IBaseFilter * pSender, Quality q);
 
    void SetStream(CMediaType mt);
-  double ConvertTimestamp(int64_t pts, int den, int num);
-  void UpdateCurrentPTS();
   
+  HRESULT DeliverBeginFlush();
+  HRESULT DeliverEndFlush();
+  HRESULT DeliverNewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
+
+  int QueueCount();
+  int QueueSize();
+  HRESULT QueueEndOfStream();
+  HRESULT QueuePacket(std::auto_ptr<DsPacket> p);
 protected:
   CMediaType m_MediaType;
-  AVFormatContext *m_pAudioFormatCtx;
-  AVCodecContext *m_pAudioCodecCtx;
-
-  DllAvFormat m_dllAvFormat;
-  DllAvCodec  m_dllAvCodec;
-  DllAvUtil   m_dllAvUtil;
   std::vector<CMediaType> m_mts;
 private:
-  void Flush();
+  REFERENCE_TIME m_rtStart;
+  CDemuxPacketQueue m_queue;
+  HRESULT m_hrDeliver;
+  bool m_fFlushing, m_fFlushed;
+  CAMEvent m_eEndFlush;
+  enum {CMD_EXIT};
+  
   int mBitsPerSample;
   int mChannels;
   int mSamplesPerSec;
@@ -83,5 +90,3 @@ private:
   bool mEOS;
   double   m_iCurrentPts; // used for stream length estimation
 };
-
-#endif

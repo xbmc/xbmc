@@ -34,7 +34,7 @@ void CDemuxPacketQueue::Add(boost::shared_ptr<DsPacket> p)
 {
   CAutoLock cAutoLock(this);
 
-  if(p.get())
+  if(p)
   {
     m_size += p->GetDataSize();
     if(p->bAppendable && !p->bDiscontinuity && !p->pmt

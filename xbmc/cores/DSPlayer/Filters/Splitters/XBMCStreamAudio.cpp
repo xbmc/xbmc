@@ -70,71 +70,7 @@ CDSAudioStream::~CDSAudioStream()
 
 void CDSAudioStream::SetStream(CMediaType mt)
 {
-  
-}
-#if 0
-//We are setting the media type at the same time
-void CDSAudioStream::SetAVStream(AVStream* pStream,AVFormatContext* pFmt)
-{
-  
-  m_pStream = pStream;
-  m_pAudioFormatCtx = pFmt;
-  m_pAudioCodecCtx = m_pStream->codec;
-  AVCodec *pCodec;
-
-  pCodec = m_dllAvCodec.avcodec_find_decoder(m_pAudioCodecCtx->codec_id);
-  int resopen = m_dllAvCodec.avcodec_open(m_pAudioCodecCtx,pCodec);
-  CMediaType mt;
-  mt.InitMediaType();
-  mt.majortype = MEDIATYPE_Audio;
-  WAVEFORMATEX *wavefmt = (WAVEFORMATEX*)mt.AllocFormatBuffer(sizeof(WAVEFORMATEX));
-  if( m_pAudioCodecCtx->codec_id == CODEC_ID_MP3)
-  {
-    wavefmt->wFormatTag = WAVE_FORMAT_MPEGLAYER3;
-  }
-  else
-  {
-    ///wavefmt->wFormatTag = m_pAudioCodecCtx->codec_tag;
-  }
-  
-  wavefmt->nChannels= m_pAudioCodecCtx->channels;
-  wavefmt->nSamplesPerSec= m_pAudioCodecCtx->sample_rate;
-  wavefmt->nAvgBytesPerSec= m_pAudioCodecCtx->bit_rate/8;
-  wavefmt->nBlockAlign= m_pAudioCodecCtx->block_align ? m_pAudioCodecCtx->block_align : 1;
-  wavefmt->wBitsPerSample= m_pAudioCodecCtx->bits_per_coded_sample;
-  wavefmt->cbSize= m_pAudioCodecCtx->extradata_size;
-  //if(m_pAudioCodecCtx->extradata_size)
-  //  memcpy(wavefmt + 1, m_pAudioCodecCtx->extradata, m_pAudioCodecCtx->extradata_size);
-  
-  
-  //mt.subtype.Data1 = wavefmt->wFormatTag;
-  mt.lSampleSize = m_pAudioCodecCtx->bit_rate*3;
-  mt.bFixedSizeSamples = 1;
-  mt.bTemporalCompression = 0;
-  mt.cbFormat = 18 + wavefmt->cbSize;
-  mt.pbFormat = (PBYTE)wavefmt;
-  //mt.SetFormat((PBYTE)wavefmt, sizeof(WAVEFORMATEX));
-  mt.formattype = FORMAT_WaveFormatEx;
-  mt.subtype = MEDIASUBTYPE_MP3;
-  
-  //mt.pbFormat = wavefmt;
-  //mt.pbFormat = (PBYTE)wavefmt;
-
-  
-  
-
   m_mts.push_back(mt);
-  
-  
-
-  
-}
-#endif
-void CDSAudioStream::Flush()
-{
-
-  m_iCurrentPts = DVD_NOPTS_VALUE;
-
 }
 
 //--------------------------------------------------------------------
@@ -146,50 +82,11 @@ HRESULT CDSAudioStream::CheckMediaType(const CMediaType *pMediaType)
   const CMediaType *pMT;
   for ( std::vector<CMediaType>::iterator it = m_mts.begin(); it != m_mts.end(); it++)
   {
-    if (( (*it).majortype == MEDIATYPE_Audio) )//&&( (*it).subtype == MEDIASUBTYPE_XVID ) && ((*it).formattype == FORMAT_VideoInfo))
+    if (( (*it).majortype == MEDIATYPE_Audio) )
       return S_OK;
   }
 
   return E_INVALIDARG;
-  
-  
-  CheckPointer(pMediaType,E_POINTER);
-
-
-    // we only want fixed size video
-    //
-    if( *(pMediaType->Type()) != MEDIATYPE_Video )
-    {
-        return E_INVALIDARG;
-    }
-    if( !pMediaType->IsFixedSize( ) ) 
-    {
-        return E_INVALIDARG;
-    }
-    if( *pMediaType->Subtype( ) != MEDIASUBTYPE_RGB24 )
-    {
-        return E_INVALIDARG;
-    }
-    if( *pMediaType->FormatType( ) != FORMAT_VideoInfo )
-    {
-        return E_INVALIDARG;
-    }
-
-    // Get the format area of the media type
-    //
-    VIDEOINFOHEADER *pvi = (VIDEOINFOHEADER *) pMediaType->Format();
-
-    if (pvi == NULL)
-    {
-        return E_INVALIDARG;
-    }
-
-    if( pvi->bmiHeader.biHeight < 0 )
-    {
-        return E_INVALIDARG;
-    }
-
-    return S_OK;
 }
 
 //--------------------------------------------------------------------
@@ -229,13 +126,13 @@ HRESULT CDSAudioStream::SetMediaType(const CMediaType *pMediaType)
     mSamplesPerSec = waveFormat->nSamplesPerSec;
     mBitsPerSample = waveFormat->wBitsPerSample;
     mBytesPerSample = (mBitsPerSample/8) * mChannels;
-  } 
+  }
+  else
+  {
+    ASSERT(FALSE);
+    hr = E_INVALIDARG;
+  }
 
-  
-  
-  int ret = 0;
-  if(ret >= 0)
-    UpdateCurrentPTS();
   return hr;
 
 } // SetMediaType
@@ -326,43 +223,6 @@ HRESULT CDSAudioStream::DecideBufferSize(IMemAllocator* pAlloc, ALLOCATOR_PROPER
     return NOERROR;
 }
 
-void CDSAudioStream::UpdateCurrentPTS()
-{
-  m_iCurrentPts = DVD_NOPTS_VALUE;
-  for(unsigned int i = 0; i < m_pAudioFormatCtx->nb_streams; i++)
-  {
-    AVStream *stream = m_pAudioFormatCtx->streams[i];
-    if(stream && stream->cur_dts != (int64_t)AV_NOPTS_VALUE)
-    {
-      double ts = ConvertTimestamp(stream->cur_dts, stream->time_base.den, stream->time_base.num);
-      if(m_iCurrentPts == DVD_NOPTS_VALUE || m_iCurrentPts > ts )
-        m_iCurrentPts = ts;
-    }
-  }
-
-}
-
-double CDSAudioStream::ConvertTimestamp(int64_t pts, int den, int num)
-{
-  if (pts == (int64_t)AV_NOPTS_VALUE)
-    return DVD_NOPTS_VALUE;
-
-  // do calculations in floats as they can easily overflow otherwise
-  // we don't care for having a completly exact timestamp anyway
-  double timestamp = (double)pts * num  / den;
-  double starttime = 0.0f;
-
-  if (m_pAudioFormatCtx->start_time != (int64_t)AV_NOPTS_VALUE)
-    starttime = (double)m_pAudioFormatCtx->start_time / AV_TIME_BASE;
-
-  if(timestamp > starttime)
-    timestamp -= starttime;
-  else if( timestamp + 0.1f > starttime )
-    timestamp = 0;
-
-  return timestamp*DVD_TIME_BASE;
-}
-
 //********************************************************************
 //
 //********************************************************************
@@ -372,26 +232,86 @@ double CDSAudioStream::ConvertTimestamp(int64_t pts, int den, int num)
 HRESULT CDSAudioStream::FillBuffer(IMediaSample *pms)
 {
   CheckPointer(pms,E_POINTER);
-  
-  CAutoLock cAutoLock(m_pFilter->pStateLock());
+  if (m_queue.size() <= 0)
+    return NOERROR;
+  boost::shared_ptr<DsPacket> p = m_queue.Remove();
   BYTE *pData = 0;
-  pms->GetPointer(&pData);
-  long lDataLen = pms->GetSize();
-  ZeroMemory(pData, lDataLen);
-#if 0 
-  if(m_dllAvFormat.av_read_frame(m_pAudioFormatCtx, &m_pPacket)<0)
-  {
-    //last frame
-  }
-  else
-  {
-    memcpy(pData,m_pPacket.data,m_pPacket.size);
-  }
-#endif
-  pms->SetSyncPoint(TRUE);
-  return NOERROR;
+  HRESULT hr;
+  //Copy byte into the samples
+  hr = pms->GetPointer(&pData);
+  memcpy(pData, &p->at(0), p->size());
+  //set the sample length  
+  hr = pms->SetTime(&p->rtStart, &p->rtStop);
+  hr = pms->SetSyncPoint(TRUE);
+
+  return S_OK;
 }
 
+HRESULT CDSAudioStream::DeliverBeginFlush()
+{
+  m_eEndFlush.Reset();
+  m_fFlushed = false;
+  m_fFlushing = true;
+  m_hrDeliver = S_FALSE;
+  m_queue.RemoveAll();
+  HRESULT hr = IsConnected() ? GetConnected()->BeginFlush() : S_OK;
+  if(S_OK != hr) m_eEndFlush.Set();
+  return(hr);
+}
+
+HRESULT CDSAudioStream::DeliverEndFlush()
+{
+  if(!ThreadExists()) return S_FALSE;
+  HRESULT hr = IsConnected() ? GetConnected()->EndFlush() : S_OK;
+  m_hrDeliver = S_OK;
+  m_fFlushing = false;
+  m_fFlushed = true;
+  m_eEndFlush.Set();
+  return hr;
+}
+
+HRESULT CDSAudioStream::DeliverNewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate)
+{
+  //m_brs.rtLastDeliverTime = Packet::INVALID_TIME;
+  if(m_fFlushing) 
+    return S_FALSE;
+  m_rtStart = tStart;
+  if(!ThreadExists()) return S_FALSE;
+  HRESULT hr = __super::DeliverNewSegment(tStart, tStop, dRate);
+  //if(S_OK != hr) 
+  //  return hr;
+  //What this is doing??
+  //MakeISCRHappy();
+  return hr;
+}
+
+int CDSAudioStream::QueueCount()
+{
+  return m_queue.size();
+}
+
+int CDSAudioStream::QueueSize()
+{
+  return m_queue.GetSize();
+}
+
+HRESULT CDSAudioStream::QueueEndOfStream()
+{
+  return QueuePacket(std::auto_ptr<DsPacket>()); // NULL means EndOfStream
+}
+
+HRESULT CDSAudioStream::QueuePacket(std::auto_ptr<DsPacket> p)
+{
+  while(m_queue.GetSize() > MAXPACKETSIZE*100)
+    Sleep(1);
+
+  //if(S_OK != m_hrDeliver)
+  //  return m_hrDeliver;
+
+  m_queue.Add(p);
+
+  return S_OK;
+}
 
 //--------------------------------------------------------------------
 //

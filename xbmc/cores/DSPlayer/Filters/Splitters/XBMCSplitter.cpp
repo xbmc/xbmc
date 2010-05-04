@@ -372,8 +372,7 @@ bool CXBMCSplitterFilter::OpenDemux(CStdString pFile)
     strFile = XFILE::CStackDirectory::GetFirstStackedFile(pFile);
   else
     strFile = pFile;
-  //TEMPORARY
-  CSource::RemovePin(&m_pAudioStream);
+
   int nTime = CTimeUtils::GetTimeMS();
   CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, pFile, "");
   if (!pInputStream)
@@ -448,6 +447,9 @@ void CXBMCSplitterFilter::AddStream(int streamindex)
   }
   else if (pStream->type == STREAM_AUDIO)
   {
+    m_pAudioStream.SetStream(hint.mtype);
+    m_pCurrentAudioStream = NULL;
+    m_pCurrentAudioStream = (void*)pStream;
     //m_pAudioStream.SetStream(strm);
   }
 
@@ -530,6 +532,20 @@ void CXBMCSplitterFilter::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPac
     }
     else if(pStream->type == STREAM_AUDIO)
     {
+      std::auto_ptr<DsPacket> p(new DsPacket());
+      
+      //if(pPacket->dts != DVD_NOPTS_VALUE) m_CurrentVideo.dts = pPacket->dts;
+      if(pPacket->dts != DVD_NOPTS_VALUE)
+        p->rtStart = pPacket->dts * 10;
+      else
+        p->rtStart = m_rtStart;//this->m_rtCurrent 
+      if ( p->rtStart < 0) p->rtStart = 0;
+      //p->rtStart = m_rtStart;//(pPacket->pts * 10);
+      p->rtStop = p->rtStart + (pPacket->duration * 10);
+      p->resize(pPacket->iSize);
+      memcpy(&p->at(0),pPacket->pData,pPacket->iSize);
+      
+      m_pAudioStream.QueuePacket(p);
     //TODO
     }
     //pPacket->iStreamId
