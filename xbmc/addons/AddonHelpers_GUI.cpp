@@ -1336,6 +1336,7 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
 //            PyXBMC_AddPendingCall(Py_XBMC_Event_OnAction, inf);
 //            PulseActionEvent();
           }
+          return true;
         }
       }
     }
