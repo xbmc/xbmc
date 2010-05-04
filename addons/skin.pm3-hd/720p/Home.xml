@@ -315,7 +315,6 @@
 				<width>450</width>
 				<height>400</height>
 				<texture>Home-Menu-Back.png</texture>
-				<visible>!Skin.HasSetting(ProgramsInHome)</visible>
 			</control>
 			<control type="button" id="10">
 				<description>Up Arrow</description>
