@@ -97,6 +97,7 @@ cLiveStreamer::cLiveStreamer()
   m_NumStreams      = 0;
   m_streamReady     = false;
   m_IsAudioOnly     = false;
+  m_IsMPEGPS        = false;
   m_streamChangeSendet = false;
   m_lastInfoSendet  = time(NULL);
   memset(&m_FrontendInfo, 0, sizeof(m_FrontendInfo));
@@ -340,6 +341,13 @@ bool cLiveStreamer::StreamChannel(const cChannel *channel, int priority, cxSocke
       resp->add_U32(VDR_RET_OK);
       resp->finalise();
       m_Socket->write(resp->getPtr(), resp->getLen());
+
+#if VDRVERSNUM < 10713
+      if (m_Channel && m_Channel->IsPlug()) m_IsMPEGPS = true;
+#else
+      // TODO: rework cPvrSourceParams for use with older vdr
+      if (m_Channel && ((m_Channel->Source() >> 24) == 'V')) m_IsMPEGPS = true;
+#endif
 
       if (m_NumStreams > 0 && m_Socket)
       {

@@ -70,6 +70,7 @@ private:
   bool              m_streamChangeSendet;
   bool              m_streamReady;
   bool              m_IsAudioOnly;
+  bool              m_IsMPEGPS;
 
 protected:
   virtual void Action(void);
@@ -84,6 +85,7 @@ public:
   void SetReady() { m_streamReady = true; }
   bool IsReady() { return m_streamReady; }
   bool IsAudioOnly() { return m_IsAudioOnly; }
+  bool IsMPEGPS() { return m_IsMPEGPS; }
 };
 
 #endif  /* VNSIRECEIVER_H */

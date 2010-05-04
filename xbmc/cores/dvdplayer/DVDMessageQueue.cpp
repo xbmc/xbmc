@@ -185,8 +185,8 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
 
         if(m_iDataSize == 0)
         {
-          if(!m_bEmptied && m_owner != "teletext") // Prevent log flooding
-            CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Get - retrieved last data packet of queue", m_owner.c_str());
+//          if(!m_bEmptied && m_owner != "teletext") // Prevent log flooding
+//            CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Get - retrieved last data packet of queue", m_owner.c_str());
           m_bEmptied = true;
         }
         else
