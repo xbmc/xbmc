@@ -150,10 +150,12 @@ bool CTextureCache::IsCachedImage(const CStdString &url) const
 {
   if (0 == strncmp(url.c_str(), "special://skin/", 15)) // a skin image
     return true;
+  if (url != "-" && !CURL::IsFullPath(url))
+    return true;
   CStdString basePath(g_settings.GetThumbnailsFolder());
   if (0 == strncmp(url.c_str(), basePath.c_str(), basePath.GetLength()))
     return true;
-  return g_TextureManager.CanLoad(url);
+  return false;
 }
 
 CStdString CTextureCache::GetCachedImage(const CStdString &url)
