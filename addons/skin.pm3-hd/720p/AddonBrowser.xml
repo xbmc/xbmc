@@ -1,217 +1,86 @@
-<window id="40">
-	<defaultcontrol always="true">3</defaultcontrol>
+<window id="20">
+	<defaultcontrol always="true">50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<include>CommonBackground</include>
 		<control type="group">
-			<include>Window_OpenClose_Left_Panel_Animation</include>
-			<include>CommonNowPlaying</include>
-			<control type="grouplist" id="3">
-				<description>button area</description>
-				<posx>0</posx>
-				<posy>130</posy>
-				<width>280</width>
-				<height>440</height>
-				<itemgap>2</itemgap>
-				<onleft>60</onleft>
-				<onright>2</onright>
-				<onup>3</onup>
-				<ondown>3</ondown>
-			</control>
-		</control>
-		<control type="group">
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<include>ContentPanel</include>
-			<control type="list" id="2">
-				<posx>300</posx>
+			<include>CommonRootView</include>
+			<include>CommonListView</include>
+			<include>ThumbnailView</include>
+			<include>AllViewCommonPageControls</include>
+			<include>CommonFileCount</include>
+			<include>ScrollOffsetLabel</include>
+		</control>
+		<control type="group">
+			<include>Window_OpenClose_Left_Panel_Animation</include>
+			<include>CommonNowPlaying</include>
+			<control type="group" id="9000">
+				<posx>0</posx>
 				<posy>130</posy>
-				<width>950</width>
-				<height>510</height>
-				<onup>2</onup>
-				<ondown>2</ondown>
-				<onleft>3</onleft>
-				<onright>60</onright>
-				<pagecontrol>60</pagecontrol>
-				<scrolltime>200</scrolltime>
-				<itemlayout height="85" width="950">
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>950</width>
-						<height>80</height>
-						<aspectratio>stretch</aspectratio>
-						<texture border="5">button-nofocus.png</texture>
-					</control>
-					<control type="image">
-						<posx>5</posx>
-						<posy>2</posy>
-						<width>90</width>
-						<height>66</height>
-						<texture>$INFO[ListItem.Icon]</texture>
-					</control>
-					<control type="label">
-						<posx>110</posx>
-						<posy>5</posy>
-						<width>790</width>
-						<height>30</height>
-						<font>font13</font>
-						<textcolor>green</textcolor>
-						<selectedcolor>green</selectedcolor>
-						<shadowcolor>black</shadowcolor>
-						<align>left</align>
-						<aligny>center</aligny>
-						<label>[B]$INFO[ListItem.Property(Addon.Name)][/B] - $INFO[ListItem.Property(Addon.Version)] - [COLOR=white]([/COLOR]$LOCALIZE[305][COLOR=white])[/COLOR]</label>
-						<visible>![$INFO[ListItem.Property(Addon.Disabled)]]</visible>
-					</control>
-					<control type="label">
-						<posx>110</posx>
-						<posy>5</posy>
-						<width>790</width>
-						<height>30</height>
-						<font>font13</font>
-						<textcolor>white</textcolor>
-						<selectedcolor>green</selectedcolor>
-						<shadowcolor>black</shadowcolor>
-						<align>left</align>
-						<aligny>center</aligny>
-						<label>[B]$INFO[ListItem.Property(Addon.Name)][/B] - $INFO[ListItem.Property(Addon.Version)]</label>
-						<visible>[$INFO[ListItem.Property(Addon.Disabled)]]</visible>
-					</control>
-					<control type="label">
-						<posx>110</posx>
-						<posy>35</posy>
-						<width>790</width>
-						<height>25</height>
-						<font>font12</font>
-						<textcolor>grey2</textcolor>
-						<selectedcolor>green</selectedcolor>
-						<align>left</align>
-						<aligny>center</aligny>
-						<label>$INFO[ListItem.Property(Addon.Summary)]</label>
-					</control>
-					<control type="image">
-						<posx>910</posx>
-						<posy>30</posy>
-						<width>24</width>
-						<height>24</height>
-						<texture>radiobutton-nofocus.png</texture>
-						<visible>[$INFO[ListItem.Property(Addon.Disabled)]]</visible>
-					</control>
-					<control type="image">
-						<posx>910</posx>
-						<posy>30</posy>
-						<width>24</width>
-						<height>24</height>
-						<texture>radiobutton-focus.png</texture>
-						<visible>![$INFO[ListItem.Property(Addon.Disabled)]]</visible>
-					</control>
-				</itemlayout>
-				<focusedlayout height="85" width="950">
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>950</width>
-						<height>80</height>
-						<aspectratio>stretch</aspectratio>
-						<texture border="5">button-nofocus.png</texture>
-						<visible>!Control.HasFocus(2)</visible>
-					</control>
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>950</width>
-						<height>80</height>
-						<aspectratio>stretch</aspectratio>
-						<texture border="5">button-focus.png</texture>
-						<visible>Control.HasFocus(2)</visible>
-					</control>
-					<control type="image">
-						<posx>5</posx>
-						<posy>2</posy>
-						<width>90</width>
-						<height>66</height>
-						<texture>$INFO[ListItem.Icon]</texture>
-					</control>
-					<control type="label">
-						<posx>110</posx>
-						<posy>5</posy>
-						<width>790</width>
-						<height>30</height>
-						<font>font13</font>
-						<textcolor>green</textcolor>
-						<selectedcolor>green</selectedcolor>
-						<shadowcolor>black</shadowcolor>
-						<align>left</align>
-						<aligny>center</aligny>
-						<label>[B]$INFO[ListItem.Property(Addon.Name)][/B] - $INFO[ListItem.Property(Addon.Version)] - [COLOR=white]([/COLOR]$LOCALIZE[305][COLOR=white])[/COLOR]</label>
-						<visible>![$INFO[ListItem.Property(Addon.Disabled)]]</visible>
-					</control>
-					<control type="label">
-						<posx>110</posx>
-						<posy>5</posy>
-						<width>790</width>
-						<height>30</height>
-						<font>font13</font>
-						<textcolor>white</textcolor>
-						<selectedcolor>green</selectedcolor>
-						<shadowcolor>black</shadowcolor>
-						<align>left</align>
-						<aligny>center</aligny>
-						<label>[B]$INFO[ListItem.Property(Addon.Name)][/B] - $INFO[ListItem.Property(Addon.Version)]</label>
-						<visible>[$INFO[ListItem.Property(Addon.Disabled)]]</visible>
-					</control>
-					<control type="label">
-						<posx>110</posx>
-						<posy>35</posy>
-						<width>790</width>
-						<height>25</height>
-						<font>font12</font>
-						<textcolor>white</textcolor>
-						<selectedcolor>green</selectedcolor>
-						<align>left</align>
-						<aligny>center</aligny>
-						<label>$INFO[ListItem.Property(Addon.Summary)]</label>
-					</control>
-					<control type="image">
-						<posx>910</posx>
-						<posy>30</posy>
-						<width>24</width>
-						<height>24</height>
-						<texture>radiobutton-nofocus.png</texture>
-						<visible>[$INFO[ListItem.Property(Addon.Disabled)]]</visible>
-					</control>
-					<control type="image">
-						<posx>910</posx>
-						<posy>30</posy>
-						<width>24</width>
-						<height>24</height>
-						<texture>radiobutton-focus.png</texture>
-						<visible>![$INFO[ListItem.Property(Addon.Disabled)]]</visible>
-					</control>
-				</focusedlayout>
-			</control>
-			<control type="scrollbar" id="60">
-				<posx>1255</posx>
-				<posy>130</posy>
-				<width>20</width>
-				<height>510</height>
-				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back.png</texturesliderbackground>
-				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
-				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
-				<textureslidernib>scrollbar_nib.png</textureslidernib>
-				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
-				<onleft>2</onleft>
-				<onright>2</onright>
-				<showonepage>false</showonepage>
-				<orientation>vertical</orientation>
+				<control type="button" id="2">
+					<description>View As button</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<include>ButtonCommonValues</include>
+					<label>-</label>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>611</onup>
+					<ondown>3</ondown>
+				</control>
+				<control type="button" id="3">
+					<description>Sort by button</description>
+					<posx>0</posx>
+					<posy>45</posy>
+					<include>ButtonCommonValues</include>
+					<label>103</label>
+					<onleft>50</onleft>
+					<onright>4</onright>
+					<onup>2</onup>
+					<ondown>5</ondown>
+				</control>
+				<control type="togglebutton" id="4">
+					<description>Sort asc</description>
+					<posx>250</posx>
+					<posy>58</posy>
+					<label>-</label>
+					<onleft>3</onleft>
+					<onright>50</onright>
+					<onup>2</onup>
+					<ondown>5</ondown>
+				</control>
+				<control type="radiobutton" id="5">
+					<description>View As button</description>
+					<posx>0</posx>
+					<posy>90</posy>
+					<include>ButtonCommonValues</include>
+					<label>24063</label>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>3</onup>
+					<ondown>610</ondown>
+				</control>
+				<control type="button" id="610">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>5</onup>
+					<ondown>603</ondown>
+					<visible>false</visible>
+				</control>
+				<control type="group">
+					<posx>0</posx>
+					<posy>135</posy>
+					<include>CommonNowPlaying_Controls</include>
+				</control>
+				<control type="button" id="611">
+					<description>Fake Button to fix Player Controls Navigation</description>
+					<onup>607</onup>
+					<ondown>2</ondown>
+					<visible>false</visible>
+				</control>
 			</control>
 		</control>
-
-		<control type="button" id="10">
-			<description>Default Category Button</description>
-			<include>ButtonCommonValues</include>
-		</control>
-
 		<control type="image">
 			<posx>0</posx>
 			<posy>0</posy>
@@ -221,7 +90,21 @@
 		</control>
 		<control type="label">
 			<include>WindowTitleCommons</include>
-			<label>$LOCALIZE[9] - $LOCALIZE[24001]</label>
+			<label>$LOCALIZE[9] - $LOCALIZE[24001]$INFO[Container.Property(AddonCategory), - ]</label>
+		</control>
+		<control type="label">
+			<description>Addon Repo Paths</description>
+			<posx>50r</posx>
+			<posy>50</posy>
+			<width>1060</width>
+			<height>30</height>
+			<font>font18</font>
+			<textcolor>white</textcolor>
+			<scroll>false</scroll>
+			<align>right</align>
+			<aligny>center</aligny>
+			<label>$INFO[Container.Property(RepoName)]</label>
+			<include>Window_OpenClose_Animation</include>
 		</control>
 	</controls>
 </window>
