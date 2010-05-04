@@ -53,7 +53,6 @@ IMAGES= \
 	amt-overlay-favorite.png \
 	amt-overlay-saved.png \
 	amt-overlay-watched.png \
-	Background-Home-2.png \
 	Background-Home.png \
 	Background.png \
 	Barground2.png \
@@ -144,8 +143,6 @@ IMAGES= \
 	home-favourites-focus.gif \
 	home-favourites.png \
 	homeinfo-blank.png \
-	homeinfo-system.png \
-	Home-Menu-Back-2.png \
 	Home-Menu-Back.png \
 	home-playmedia-focus.gif \
 	home-playmedia.png \
