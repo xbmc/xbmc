@@ -123,8 +123,6 @@ using namespace ADDON;
 #define CONTROL_START_BUTTONS           -100
 #define CONTROL_START_CONTROL           -80
 
-#define PREDEFINED_SCREENSAVERS          5
-
 #define RSSEDITOR_PATH "special://home/scripts/RSS Editor/default.py"
 
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
@@ -373,7 +371,9 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingAddon *pSettingAddon = (CSettingAddon*)pSetting;
       CBaseSettingControl *control = GetSetting(strSetting);
-      control->SetDelayed();
+      const TYPE type = pSettingAddon->m_type;
+      if (type == ADDON_SKIN || type == ADDON_VIZ)
+        control->SetDelayed();
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
       FillInAddons(pControl, pSettingAddon);
       continue;
@@ -506,10 +506,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("lookandfeel.skincolors"))
     {
       FillInSkinColors(pSetting);
-    }
-    else if (strSetting.Equals("screensaver.mode"))
-    {
-      FillInScreenSavers(pSetting);
     }
     else if (strSetting.Equals("videoplayer.displayresolution") || strSetting.Equals("pictures.displayresolution"))
     {
@@ -920,18 +916,18 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("screensaver.dimlevel"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "Dim");
+      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "_virtual.dim");
     }
     else if (strSetting.Equals("screensaver.slideshowpath"))
     {
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "SlideShow");
+      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "_virtual.pic");
     }
     else if (strSetting.Equals("screensaver.slideshowshuffle"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "SlideShow" ||
-                           g_guiSettings.GetString("screensaver.mode") == "Fanart Slideshow");
+      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "_virtual.pic" ||
+                           g_guiSettings.GetString("screensaver.mode") == "_virtual.fan");
     }
     else if (strSetting.Equals("screensaver.preview")           ||
              strSetting.Equals("screensaver.usedimonpause")     ||
@@ -939,7 +935,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") != "None");
-      if (strSetting.Equals("screensaver.usedimonpause") && g_guiSettings.GetString("screensaver.mode").Equals("Dim"))
+      if (strSetting.Equals("screensaver.usedimonpause") && g_guiSettings.GetString("screensaver.mode").Equals("_virtual.dim"))
         pControl->SetEnabled(false);
     }
     else if (strSetting.Left(16).Equals("weather.areacode"))
@@ -1567,26 +1563,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("videoscreen.flickerfilter") || strSetting.Equals("videoscreen.soften"))
   { // reset display
     g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
-  }
-  else if (strSetting.Equals("screensaver.mode"))
-  {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    int iValue = pControl->GetValue();
-    CStdString strScreenSaver;
-    if (iValue == 0)
-      strScreenSaver = "None";
-    else if (iValue == 1)
-      strScreenSaver = "Dim";
-    else if (iValue == 2)
-      strScreenSaver = "Black";
-    else if (iValue == 3)
-      strScreenSaver = "SlideShow"; // PictureSlideShow
-    else if (iValue == 4)
-      strScreenSaver = "Fanart Slideshow"; //Fanart Slideshow
-    else
-      strScreenSaver = pControl->GetCurrentLabel();
-    pSettingString->SetData(strScreenSaver);
   }
   else if (strSetting.Equals("screensaver.preview"))
   {
@@ -2412,66 +2388,6 @@ void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)
   pControl->SetValue(iCurrentLang);
 }
 
-void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
-{ // Screensaver mode
-  CSettingString *pSettingString = (CSettingString*)pSetting;
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-  pControl->Clear();
-
-  pControl->AddLabel(g_localizeStrings.Get(351), 0); // Off
-  pControl->AddLabel(g_localizeStrings.Get(352), 1); // Dim
-  pControl->AddLabel(g_localizeStrings.Get(353), 2); // Black
-  pControl->AddLabel(g_localizeStrings.Get(108), 3); // PictureSlideShow
-  pControl->AddLabel(g_localizeStrings.Get(20425), 4); // Fanart Slideshow
-
-  int iCurrentScr = -1;
-  vector<CStdString> vecScr;
-  VECADDONS addons;
-
-  CAddonMgr::Get()->GetAddons(ADDON_SCREENSAVER, addons);
-  if (!addons.empty())
-  {
-    for (unsigned int i = 0; i < addons.size(); i++)
-    {
-      const AddonPtr addon = addons.at(i);
-      vecScr.push_back(addon->Name());
-    }
-  }
-
-  CStdString strDefaultScr = pSettingString->GetData();
-
-  sort(vecScr.begin(), vecScr.end(), sortstringbyname());
-  for (int i = 0; i < (int) vecScr.size(); ++i)
-  {
-    CStdString strScr = vecScr[i];
-
-    if (strcmpi(strScr.c_str(), strDefaultScr.c_str()) == 0)
-      iCurrentScr = i + PREDEFINED_SCREENSAVERS;
-
-    pControl->AddLabel(strScr, i + PREDEFINED_SCREENSAVERS);
-  }
-
-  // if we can't find the screensaver previously configured
-  // then fallback to turning the screensaver off.
-  if (iCurrentScr < 0)
-  {
-    if (strDefaultScr == "Dim")
-      iCurrentScr = 1;
-    else if (strDefaultScr == "Black")
-      iCurrentScr = 2;
-    else if (strDefaultScr == "SlideShow") // PictureSlideShow
-      iCurrentScr = 3;
-    else if (strDefaultScr == "Fanart Slideshow") // Fanart slideshow
-      iCurrentScr = 4;
-    else
-    {
-      iCurrentScr = 0;
-      pSettingString->SetData("None");
-    }
-  }
-  pControl->SetValue(iCurrentScr);
-}
-
 void CGUIWindowSettingsCategory::FillInRegions(CSetting *pSetting)
 {
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
@@ -2756,20 +2672,36 @@ void CGUIWindowSettingsCategory::FillInSortMethods(CSetting *pSetting, int windo
 
 void CGUIWindowSettingsCategory::FillInAddons(CGUISpinControlEx *pControl, CSettingAddon *pSetting)
 {
+  bool allowNone = false;
+  switch (pSetting->m_type)
+  {
+    case ADDON_SCREENSAVER:
+    case ADDON_VIZ:
+    allowNone = true;
+    break;
+    default:
+    break;
+  }
+
+  //FIXME must be better way to handle virtual addontypes, as this is horrid
   VECADDONS addons;
   pControl->Clear();
   CStdString strSelected = pSetting->GetData();
 
   pSetting->m_entries.clear();
 
-  CAddonMgr::Get()->GetAddons(pSetting->m_type, addons, pSetting->m_content);
-  if (addons.empty())
+  if (allowNone)
+    pSetting->m_entries.insert(std::make_pair("_virtual.none", g_localizeStrings.Get(231)));
+
+  if (pSetting->m_type == ADDON_SCREENSAVER)
   {
-    pControl->AddLabel(g_localizeStrings.Get(231), 0); // "None"
-    pControl->SetValue(0);
-    return;
+    pSetting->m_entries.insert(std::make_pair("_virtual.dim", g_localizeStrings.Get(352))); // Dim
+    pSetting->m_entries.insert(std::make_pair("_virtual.blk", g_localizeStrings.Get(353))); // Black
+    pSetting->m_entries.insert(std::make_pair("_virtual.pic", g_localizeStrings.Get(108))); // PictureSlideShow
+    pSetting->m_entries.insert(std::make_pair("_virtual.fan", g_localizeStrings.Get(20425))); // Fanart Slideshow
   }
 
+  CAddonMgr::Get()->GetAddons(pSetting->m_type, addons, pSetting->m_content);
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
   {
     AddonPtr addon = *it;

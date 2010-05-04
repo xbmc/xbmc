@@ -1859,9 +1859,9 @@ void CApplication::RenderScreenSaver()
 {
   bool draw = false;
   float amount = 0.0f;
-  if (m_screenSaverMode == "Dim")
+  if (m_screenSaverMode == "_virtual.dim")
     amount = 1.0f - g_guiSettings.GetInt("screensaver.dimlevel")*0.01f;
-  else if (m_screenSaverMode == "Black")
+  else if (m_screenSaverMode == "_virtual.blk")
     amount = 1.0f; // fully fade
   // special case for dim screensaver
   if (amount > 0.f)
@@ -1960,7 +1960,7 @@ void CApplication::Render()
     int nDelayTime = 0;
     // Less fps in DPMS or Black screensaver
     bool lowfps = (m_dpmsIsActive
-                   || (m_bScreenSave && (m_screenSaverMode == "Black")
+                   || (m_bScreenSave && (m_screenSaverMode == "_virtual.blk")
                        && (screenSaverFadeAmount >= 100)));
     // Whether externalplayer is playing and we're unfocused
     bool extPlayerActive = m_eCurrentPlayer >= EPC_EXTPLAYER && IsPlaying() && !m_AppFocused;
@@ -4217,7 +4217,7 @@ bool CApplication::WakeUpScreenSaver()
       if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
           (g_settings.UsingLoginScreen() || g_guiSettings.GetBool("masterlock.startuplock")) &&
           g_settings.GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-          m_screenSaverMode != "Dim" && m_screenSaverMode != "Black" && m_screenSaverMode != "Visualisation")
+          m_screenSaverMode != "_virtual.dim" && m_screenSaverMode != "_virtual.blk" && m_screenSaverMode != "_virtual.viz")
       {
         m_iScreenSaveLock = 2;
         CGUIMessage msg(GUI_MSG_CHECK_LOCK,0,0);
@@ -4234,14 +4234,14 @@ bool CApplication::WakeUpScreenSaver()
     m_iScreenSaveLock = 0;
     ResetScreenSaverTimer();
 
-    if (m_screenSaverMode == "Visualisation" || m_screenSaverMode == "Slideshow" || m_screenSaverMode == "Fanart Slideshow")
+    if (m_screenSaverMode == "_virtual.viz" || m_screenSaverMode == "_virtual.pic" || m_screenSaverMode == "_virtual.fan")
     {
       // we can just continue as usual from vis mode
       return false;
     }
-    else if (m_screenSaverMode == "Dim" || m_screenSaverMode == "Black")
+    else if (m_screenSaverMode == "_virtual.dim" || m_screenSaverMode == "_virtual.blk")
       return true;
-    else if (m_screenSaverMode != "None")
+    else if (m_screenSaverMode != "_virtual.none")
     { // we're in screensaver window
       if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
         g_windowManager.PreviousWindow();  // show the previous window
@@ -4256,7 +4256,7 @@ void CApplication::CheckScreenSaverAndDPMS()
 {
   bool maybeScreensaver =
       !m_dpmsIsActive && !m_bScreenSave
-      && g_guiSettings.GetString("screensaver.mode") != "None";
+      && g_guiSettings.GetString("screensaver.mode") != "_virtual.none";
   bool maybeDPMS =
       !m_dpmsIsActive && m_dpms->IsSupported()
       && g_guiSettings.GetInt("powermanagement.displaysoff") > 0;
@@ -4319,27 +4319,27 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   {
     // set to Dim in the case of a dialog on screen or playing video
     if (g_windowManager.HasModalDialog() || (IsPlayingVideo() && g_guiSettings.GetBool("screensaver.usedimonpause")))
-      m_screenSaverMode = "Dim";
+      m_screenSaverMode = "_virtual.dim";
     // Check if we are Playing Audio and Vis instead Screensaver!
     else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && g_guiSettings.GetString("musicplayer.visualisation") != "None")
     { // activate the visualisation
-      m_screenSaverMode = "Visualisation";
+      m_screenSaverMode = "_virtual.viz";
       g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
       return;
     }
   }
   // Picture slideshow
-  if (m_screenSaverMode == "SlideShow" || m_screenSaverMode == "Fanart Slideshow")
+  if (m_screenSaverMode == "_virtual.pic" || m_screenSaverMode == "_virtual.fan")
   {
     // reset our codec info - don't want that on screen
     g_infoManager.SetShowCodec(false);
     m_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("screensaver.slideshowpath"), true);
   }
-  else if (m_screenSaverMode == "Dim")
+  else if (m_screenSaverMode == "_virtual.dim")
     return;
-  else if (m_screenSaverMode == "Black")
+  else if (m_screenSaverMode == "_virtual.blk")
     return;
-  else if (m_screenSaverMode != "None")
+  else if (m_screenSaverMode != "_virtual.none")
     g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
 }
 

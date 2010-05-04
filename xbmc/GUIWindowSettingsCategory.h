@@ -51,7 +51,6 @@ protected:
   void FillInSoundSkins(CSetting *pSetting);
   void FillInLanguages(CSetting *pSetting);
   void FillInResolutions(CSetting *pSetting, bool playbackSetting);
-  void FillInScreenSavers(CSetting *pSetting);
   void FillInRegions(CSetting *pSetting);
   void FillInStartupWindow(CSetting *pSetting);
   void FillInViewModes(CSetting *pSetting, int windowID);
