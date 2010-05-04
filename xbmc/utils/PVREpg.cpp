@@ -307,6 +307,18 @@ cPVREpg::cPVREpg(long ChannelID)
   m_channelID       = ChannelID;
   m_Channel         = cPVRChannels::GetByChannelIDFromAll(ChannelID);
   m_bUpdateRunning  = false;
+  m_bValid          = ChannelID == -1 ? false : true;
+}
+
+bool cPVREpg::IsValid(void) const
+{
+  if (!m_bValid || m_tags.size() == 0)
+    return false;
+
+  if (m_tags[m_tags.size()-1]->m_endTime < CDateTime::GetCurrentDateTime())
+    return false;
+
+  return true;
 }
 
 cPVREPGInfoTag *cPVREpg::AddInfoTag(cPVREPGInfoTag *Tag)
@@ -1065,14 +1077,13 @@ int cPVREpgs::GetEPGAll(CFileItemList* results, bool radio)
 
   for (unsigned int i = 0; i < ch->size(); i++)
   {
-    if (ch->at(i).m_hide)
+    if (ch->at(i).m_hide || !ch->at(i).m_grabEpg)
       continue;
 
-    const cPVREpg *Epg = GetEPG(&ch->at(i), true);
-    if (!Epg->IsUpdateRunning())
+    const cPVREpg *Epg = GetEPG(&ch->at(i), false);
+    if (Epg && !Epg->IsUpdateRunning() && Epg->IsValid())
     {
       const vector<cPVREPGInfoTag*> *ch_epg = Epg->InfoTags();
-
       for (unsigned int i = 0; i < ch_epg->size(); i++)
       {
         CFileItemPtr channel(new CFileItem(*ch_epg->at(i)));
@@ -1089,11 +1100,11 @@ int cPVREpgs::GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter
 {
   for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
   {
-    if (PVRChannelsTV[i].m_hide)
+    if (PVRChannelsTV[i].m_hide || !PVRChannelsTV[i].m_grabEpg)
       continue;
 
-    const cPVREpg *Epg = GetEPG(&PVRChannelsTV[i], true);
-    if (!Epg->IsUpdateRunning())
+    const cPVREpg *Epg = GetEPG(&PVRChannelsTV[i], false);
+    if (Epg && !Epg->IsUpdateRunning() && Epg->IsValid())
     {
       const vector<cPVREPGInfoTag*> *ch_epg = Epg->InfoTags();
 
@@ -1110,11 +1121,11 @@ int cPVREpgs::GetEPGSearch(CFileItemList* results, const EPGSearchFilter &filter
 
   for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
   {
-    if (PVRChannelsRadio[i].m_hide)
+    if (PVRChannelsRadio[i].m_hide || !PVRChannelsRadio[i].m_grabEpg)
       continue;
 
-    const cPVREpg *Epg = GetEPG(&PVRChannelsRadio[i], true);
-    if (!Epg->IsUpdateRunning())
+    const cPVREpg *Epg = GetEPG(&PVRChannelsRadio[i], false);
+    if (Epg && !Epg->IsUpdateRunning() && Epg->IsValid())
     {
       const vector<cPVREPGInfoTag*> *ch_epg = Epg->InfoTags();
 
@@ -1213,8 +1224,11 @@ int cPVREpgs::GetEPGChannel(unsigned int number, CFileItemList* results, bool ra
 {
   cPVRChannels *ch = !radio ? &PVRChannelsTV : &PVRChannelsRadio;
 
+  if (!ch->at(number-1).m_grabEpg)
+    return 0;
+
   const cPVREpg *Epg = GetEPG(&ch->at(number-1), true);
-  if (Epg && !Epg->IsUpdateRunning())
+  if (Epg && !Epg->IsUpdateRunning() && Epg->IsValid())
   {
     const vector<cPVREPGInfoTag*> *ch_epg = Epg->InfoTags();
     for (unsigned int i = 0; i < ch_epg->size(); i++)
@@ -1235,11 +1249,11 @@ int cPVREpgs::GetEPGNow(CFileItemList* results, bool radio)
 
   for (unsigned int i = 0; i < ch->size(); i++)
   {
-    if (ch->at(i).m_hide || !ch->at(i).GrabEpg())
+    if (ch->at(i).m_hide || !ch->at(i).m_grabEpg)
       continue;
 
     const cPVREpg *Epg = GetEPG(&ch->at(i), true);
-    if (!Epg || Epg->IsUpdateRunning())
+    if (!Epg || Epg->IsUpdateRunning() && Epg->IsValid())
       continue;
 
     const cPVREPGInfoTag *epgnow = Epg->GetInfoTagNow();
@@ -1267,7 +1281,7 @@ int cPVREpgs::GetEPGNext(CFileItemList* results, bool radio)
       continue;
 
     const cPVREpg *Epg = GetEPG(&ch->at(i), true);
-    if (!Epg || Epg->IsUpdateRunning())
+    if (!Epg || Epg->IsUpdateRunning() && Epg->IsValid())
       continue;
 
     const cPVREPGInfoTag *epgnext = Epg->GetInfoTagNext();

@@ -81,6 +81,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float po
   m_cacheChannelItems     = preloadItems;
   m_cacheRulerItems       = preloadItems;
   m_cacheProgrammeItems   = preloadItems;
+  m_gridIndex             = NULL;
 }
 
 CGUIEPGGridContainer::~CGUIEPGGridContainer(void)
@@ -131,7 +132,7 @@ void CGUIEPGGridContainer::Render()
   float focusedPos = 0;
   CGUIListItemPtr focusedItem;
   int current = chanOffset;// - cacheBeforeChannel;
-  while (pos < end && m_channelItems.size())
+  while (pos < end && (int)m_channelItems.size())
   {
     int itemNo = CorrectOffset(current, 0);
     if (itemNo >= (int)m_channelItems.size())
@@ -652,6 +653,15 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
       for (int i = 0; i < items->Size(); i++)
         m_programmeItems.push_back(items->Get(i));
 
+      m_gridIndex = (struct GridItemsPtr **) calloc(1,m_channelItems.size()*sizeof(struct GridItemsPtr));
+      if (m_gridIndex != NULL)
+      {
+        for (unsigned int i = 0; i < m_channelItems.size(); i++)
+        {
+          m_gridIndex[i] = (struct GridItemsPtr*) calloc(1,MAXBLOCKS*sizeof(struct GridItemsPtr));
+        }
+      }
+
       UpdateLayout(true); // true to refresh all items
 
       /* Create Ruler items */
@@ -709,7 +719,7 @@ void CGUIEPGGridContainer::UpdateItems()
 
   long tick(CTimeUtils::GetTimeMS());
 
-  for (unsigned int row = 0; row < m_channelItems.size() && row < MAXCHANNELS; ++row)
+  for (unsigned int row = 0; row < m_channelItems.size(); ++row)
   {
     CDateTime gridCursor = m_gridStart; //reset cursor for new channel
     unsigned long progIdx   = m_epgItemsPtr[row].start;
@@ -1427,11 +1437,16 @@ CStdString CGUIEPGGridContainer::GetDescription() const
 
 void CGUIEPGGridContainer::Reset()
 {
+  for (unsigned int i = 0; i < m_channelItems.size(); i++)
+    free(m_gridIndex[i]);
+  free(m_gridIndex);
+
   m_wasReset = true;
   m_channelItems.clear();
   m_programmeItems.clear();
   m_rulerItems.clear();
   m_epgItemsPtr.clear();
+
   m_lastItem    = NULL;
   m_lastChannel = NULL;
 }

@@ -543,16 +543,16 @@
     </keyboard>
   </PVROSDGuide>
   <PVROSDDirector>
-    <remote>
+    <keyboard>
       <backspace>Close</backspace>
       <escape>Close</escape>
-    </remote>
+    </keyboard>
   </PVROSDDirector>
   <PVROSDCutter>
-    <remote>
+    <keyboard>
       <backspace>Close</backspace>
       <escape>Close</escape>
-    </remote>
+    </keyboard>
   </PVROSDCutter>
   <MyTVSettings>
     <keyboard>

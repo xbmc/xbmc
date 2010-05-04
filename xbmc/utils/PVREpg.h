@@ -64,10 +64,12 @@ private:
   const cPVRChannelInfoTag *m_Channel;
   std::vector<cPVREPGInfoTag*> m_tags;
   bool m_bUpdateRunning;
+  bool m_bValid;
 
 public:
   cPVREpg(long ChannelID);
   long ChannelID(void) const { return m_channelID; }
+  bool IsValid(void) const;
   const cPVRChannelInfoTag *ChannelTag(void) const { return m_Channel; }
   cPVREPGInfoTag *AddInfoTag(cPVREPGInfoTag *Tag);
   void DelInfoTag(cPVREPGInfoTag *tag);

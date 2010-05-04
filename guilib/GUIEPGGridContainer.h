@@ -26,7 +26,7 @@
 #include "GUIControl.h"
 #include "GUIListItemLayout.h"
 
-#define MAXCHANNELS 750
+#define MAXCHANNELS 20
 #define MAXBLOCKS   2304 //! !!_EIGHT_!! days of 5 minute blocks
 
 struct GridItemsPtr
@@ -192,7 +192,7 @@ private:
   CDateTime m_gridStart;
   CDateTime m_gridEnd;
 
-  GridItemsPtr m_gridIndex[MAXCHANNELS][MAXBLOCKS];
+  struct GridItemsPtr **m_gridIndex;
   GridItemsPtr *m_item;
   CGUIListItem *m_lastItem;
   CGUIListItem *m_lastChannel;

@@ -93,12 +93,12 @@ public:
    */
   void ResetEPG();
 
-  /*! \brief Returns if a TV channel is playing
+  /*! \brief Returns true if a tv channel is playing
    \return true during TV playback
    */
   bool IsPlayingTV();
 
-  /*! \brief Returns true if a tv channel is playing
+  /*! \brief Returns true if a radio channel is playing
    \return true during radio playback
    */
   bool IsPlayingRadio();
