@@ -32,12 +32,11 @@
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodecVDA.h"
 #include "Codecs/DllAvFormat.h"
+#include "Codecs/DllSwScale.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "osx/CocoaInterface.h"
-
 #include <CoreFoundation/CoreFoundation.h>
-#include <CoreVideo/CoreVideo.h>
 
 /*
  * if extradata size is greater than 7, then have a valid quicktime 
@@ -390,6 +389,9 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
   pthread_mutex_init(&m_queue_mutex, NULL);
 
   m_convert_bytestream = false;
+  m_dllAvUtil = NULL;
+  m_dllAvFormat = NULL;
+  m_dllSwScale = NULL;
   m_swcontext = NULL;
   memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
 }
@@ -435,28 +437,30 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
           {
             // video content is from x264 or from bytestream h264 (AnnexB format)
             // NAL reformating to bitstream format needed
-            if (!m_dllAvUtil.Load() || !m_dllAvFormat.Load())
+            m_dllAvUtil = new DllAvUtil;
+            m_dllAvFormat = new DllAvFormat;
+            if (!m_dllAvUtil->Load() || !m_dllAvFormat->Load())
             {
               return false;
             }
 
             ByteIOContext *pb;
-            if (m_dllAvFormat.url_open_dyn_buf(&pb) < 0)
+            if (m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
             {
               return false;
             }
 
             m_convert_bytestream = true;
             // create a valid avcC atom data from ffmpeg's extradata
-            isom_write_avcc(&m_dllAvUtil, &m_dllAvFormat, pb, extradata, extrasize);
+            isom_write_avcc(m_dllAvUtil, m_dllAvFormat, pb, extradata, extrasize);
             // unhook from ffmpeg's extradata
             extradata = NULL;
             // extract the avcC atom data into extradata then write it into avcCData for VDADecoder
-            extrasize = m_dllAvFormat.url_close_dyn_buf(pb, &extradata);
+            extrasize = m_dllAvFormat->url_close_dyn_buf(pb, &extradata);
             // CFDataCreate makes a copy of extradata contents
             avcCData = CFDataCreate(kCFAllocatorDefault, (const uint8_t*)extradata, extrasize);
             // done with the converted extradata, we MUST free using av_free
-            m_dllAvUtil.av_free(extradata);
+            m_dllAvUtil->av_free(extradata);
           }
           else
           {
@@ -479,7 +483,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     }
 
     // input stream is qualified, now we can load dlls.
-    if (!m_dllSwScale.Load())
+    if (!m_dllSwScale->Load())
     {
       CFRelease(avcCData);
       return false;
@@ -555,7 +559,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     memset(m_videobuffer.data[2], 0, iChromaPixels);
 
     // pre-alloc ffmpeg swscale context.
-    m_swcontext = m_dllSwScale.sws_getContext(
+    m_swcontext = m_dllSwScale->sws_getContext(
       m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_UYVY422, 
       m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_YUV420P, 
       SWS_FAST_BILINEAR, NULL, NULL, NULL);
@@ -584,17 +588,26 @@ void CDVDVideoCodecVDA::Dispose()
     free(m_videobuffer.data[2]);
     m_videobuffer.iFlags = 0;
   }
-  if (m_convert_bytestream)
+  if (m_dllAvUtil)
   {
-    m_dllAvUtil.Unload();
-    m_dllAvFormat.Unload();
+    delete m_dllAvUtil;
+    m_dllAvUtil = NULL;
+  }
+  if (m_dllAvFormat)
+  {
+    delete m_dllAvFormat;
+    m_dllAvFormat = NULL;
   }
   if (m_swcontext)
   {
-    m_dllSwScale.sws_freeContext(m_swcontext);
+    m_dllSwScale->sws_freeContext(m_swcontext);
     m_swcontext = NULL;
   }
-  m_dllSwScale.Unload();
+  if (m_dllSwScale)
+  {
+    delete m_dllSwScale;
+    m_dllSwScale = NULL;
+  }
 }
 
 void CDVDVideoCodecVDA::SetDropState(bool bDrop)
@@ -618,14 +631,14 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
     int demuxer_bytes;
     uint8_t *demuxer_content;
 
-    if(m_dllAvFormat.url_open_dyn_buf(&pb) < 0)
+    if(m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
     {
       return VC_ERROR;
     }
-    demuxer_bytes = avc_parse_nal_units(&m_dllAvFormat, pb, pData, iSize);
-    demuxer_bytes = m_dllAvFormat.url_close_dyn_buf(pb, &demuxer_content);
+    demuxer_bytes = avc_parse_nal_units(m_dllAvFormat, pb, pData, iSize);
+    demuxer_bytes = m_dllAvFormat->url_close_dyn_buf(pb, &demuxer_content);
     avc_demux = CFDataCreate(kCFAllocatorDefault, demuxer_content, demuxer_bytes);
-    m_dllAvUtil.av_free(demuxer_content);
+    m_dllAvUtil->av_free(demuxer_content);
   }
   else
   {
@@ -712,7 +725,7 @@ void CDVDVideoCodecVDA::UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_strid
     uint8_t  *dst[] = { picture->data[0], picture->data[1], picture->data[2], 0 };
     int dstStride[] = { picture->iLineSize[0], picture->iLineSize[1], picture->iLineSize[2], 0 };
   
-    m_dllSwScale.sws_scale(m_swcontext, src, srcStride, 0, picture->iHeight, dst, dstStride);
+    m_dllSwScale->sws_scale(m_swcontext, src, srcStride, 0, picture->iHeight, dst, dstStride);
   }
 }
 
