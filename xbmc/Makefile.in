@@ -16,6 +16,8 @@ INCLUDES+=-Ilib/libcdio/libcdio/include
 
 INCLUDES+=-I../lib/jsoncpp/jsoncpp/include
 
+INCLUDES+=-Ilib/cpluff/libcpluff
+
 SRCS=Application.cpp \
      CueDocument.cpp \
      GUISettings.cpp \
