@@ -115,7 +115,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
   CStdString strFileName;
   if (!Parent())
   {
-    strFileName = Path() + LibName();
+    strFileName = CUtil::AddFileToFolder(Path(), LibName());
   }
   else
   { //FIXME hack to load same Dll twice
@@ -207,8 +207,11 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
   /* Unload library file */
   try
   {
-    m_pDll->Destroy();
-    m_pDll->Unload();
+    if (m_pDll)
+    {
+      m_pDll->Destroy();
+      m_pDll->Unload();
+    }
   }
   catch (std::exception &e)
   {

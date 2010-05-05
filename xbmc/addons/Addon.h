@@ -173,7 +173,7 @@ private:
   bool m_hasStrings;
   bool m_checkedStrings;
 
-  void BuildLibName();
+  void BuildLibName(cp_plugin_info_t *props = NULL);
   CStdString  m_profile;
   CStdString  m_strLibName;
   bool        m_enabled;

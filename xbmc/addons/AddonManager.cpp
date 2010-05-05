@@ -102,6 +102,7 @@ CAddonMgr* CAddonMgr::Get()
   if (!m_pInstance)
   {
     m_pInstance = new CAddonMgr();
+    m_pInstance->Init();
   }
   return m_pInstance;
 }
@@ -137,8 +138,8 @@ bool CAddonMgr::Init()
 
   if (!m_cpluff->IsLoaded())
   {
-    CLog::Log(LOGERROR, "ADDONS: Fatal Error, could not load cpluff");
-    assert(false);
+    CLog::Log(LOGERROR, "ADDONS: Fatal Error, could not load libcpluff");
+    return false;
   }
 
   cp_log_severity_t log;
@@ -155,7 +156,7 @@ bool CAddonMgr::Init()
   if (status != CP_OK)
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_init() returned status: %i", status);
-    assert(false);
+    return false;
   }
 
   //TODO could separate addons into different contexts
@@ -164,29 +165,38 @@ bool CAddonMgr::Init()
   assert(m_cp_context);
   if (!CSpecialProtocol::XBMCIsHome())
   {
-    status = m_cpluff->register_pcollection(m_cp_context, _P("special://home/addons/cpluff"));
-    assert(status == CP_OK);
+    status = m_cpluff->register_pcollection(m_cp_context, _P("special://home/addons"));
   }
-  status = m_cpluff->register_pcollection(m_cp_context, _P("special://xbmc/addons/cpluff"));
-  assert(status == CP_OK);
-  status = m_cpluff->register_logger(m_cp_context, cp_logger, &CAddonMgr::m_pInstance, CP_LOG_INFO);
-  assert(status == CP_OK);
-  status = m_cpluff->scan_plugins(m_cp_context, 0);
-}
+  status = m_cpluff->register_pcollection(m_cp_context, _P("special://xbmc/addons"));
+  if (status != CP_OK)
+  {
+    CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_pcollection() returned status: %i", status);
+    return false;
+  }
 
-bool CAddonMgr::HasAddons2(const TYPE &type, const CONTENT_TYPE &content/*= CONTENT_NONE*/)
-{
-  cp_status_t status;
-  int num;
-  CStdString ext_point(TranslateType(type));
-  cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
-  if (status == CP_OK)
-    return (num > 0);
-  return false;
+  status = m_cpluff->register_logger(m_cp_context, cp_logger, &CAddonMgr::m_pInstance, CP_LOG_INFO);
+  if (status != CP_OK)
+  {
+    CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_logger() returned status: %i", status);
+    return false;
+  }
+
+  status = m_cpluff->scan_plugins(m_cp_context, 0);
+  return true;
 }
 
 bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabledOnly/*= true*/)
 {
+  if (type == ADDON_SCREENSAVER)
+  {
+    cp_status_t status;
+    int num;
+    CStdString ext_point(TranslateType(type));
+    cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
+    if (status == CP_OK)
+      return (num > 0);
+  }
+
   if (m_addons.empty())
   {
     VECADDONS add;
@@ -198,6 +208,7 @@ bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTE
 
   VECADDONS addons;
   return GetAddons(type, addons, content, enabledOnly);
+
 }
 
 bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
@@ -218,26 +229,26 @@ bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
   return !addons.empty();
 }
 
-bool CAddonMgr::GetAddons2(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content)
-{
-  cp_status_t status;
-  int num;
-  CStdString ext_point(TranslateType(type));
-  cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
-  for(int i=0; i <num; i++)
-  {
-    AddonPtr addon(AddonFactory(exts[i]));
-    if (addon)
-      addons.push_back(addon);
-  }
-  m_cpluff->release_info(m_cp_context, exts);
-  return addons.size();
-}
-
 bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabledOnly/*= true*/)
 {
   CSingleLock lock(m_critSection);
   addons.clear();
+  if (type == ADDON_SCREENSAVER)
+  {
+    cp_status_t status;
+    int num;
+    CStdString ext_point(TranslateType(type));
+    cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
+    for(int i=0; i <num; i++)
+    {
+      AddonPtr addon(AddonFactory(exts[i]));
+      if (addon)
+        addons.push_back(addon);
+    }
+    m_cpluff->release_info(m_cp_context, exts);
+    return addons.size();
+  }
+
   if (m_addons.find(type) != m_addons.end())
   {
     IVECADDONS itr = m_addons[type].begin();
@@ -259,8 +270,21 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYP
 bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly/*= true*/)
 {
   CSingleLock lock(m_critSection);
-  if (type != ADDON_UNKNOWN && m_addons.find(type) == m_addons.end())
+  if (type != ADDON_UNKNOWN
+      && type != ADDON_SCREENSAVER
+      && m_addons.find(type) == m_addons.end())
     return false;
+
+  if (type == ADDON_SCREENSAVER)
+  {
+    cp_status_t status;
+    cp_plugin_info_t *cpaddon = NULL;
+    cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
+    if (status == CP_OK && cpaddon->extensions)
+      return (addon = AddonFactory(cpaddon->extensions));
+    else
+      return false;
+  }
 
   if (m_idMap[str])
   {
@@ -288,13 +312,6 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
   }
 
   return false;
-}
-
-AddonPtr CAddonMgr::GetAddon2(const CStdString &str)
-{
-  CSingleLock lock(m_critSection);
-
-  return AddonPtr();
 }
 
 //TODO handle all 'default' cases here, not just scrapers & vizs
@@ -853,6 +870,14 @@ void CAddonMgr::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 /*
  * libcpluff interaction
  */
+
+CStdString CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
+{
+  const char *value = NULL;
+  if (base && (value = m_cpluff->lookup_cfg_value(base, path)))
+    return CStdString(value);
+  else return CStdString();
+}
 
 void CAddonMgr::CPluffFatalError(const char *msg)
 {
