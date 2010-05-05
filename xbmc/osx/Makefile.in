@@ -1,4 +1,13 @@
-INCLUDES=-I. -I.. -I../../guilib -I../linux -I../utils -I../FileSystem -I../lib/libportaudio
+abs_top_srcdir=@abs_top_srcdir@
+
+INCLUDES=-I$(abs_top_srcdir) \
+	 -I$(abs_top_srcdir)/guilib \
+	 -I$(abs_top_srcdir)/xbmc \
+	 -I$(abs_top_srcdir)/xbmc/linux \
+	 -I$(abs_top_srcdir)/xbmc/utils \
+	 -I$(abs_top_srcdir)/xbmc/FileSystem \
+	 -I$(abs_top_srcdir)/lib/libportaudio \
+	 -I$(abs_top_srcdir)/xbmc/cores/dvdplayer/Codecs/ffmpeg
 
 .SUFFIXES : .m .mm
 
