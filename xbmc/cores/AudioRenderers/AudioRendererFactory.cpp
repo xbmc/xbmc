@@ -180,7 +180,7 @@ IAudioRenderer *CAudioRendererFactory::CreateFromUri(const CStdString &soundsyst
 
 #ifdef WIN32
   if (soundsystem.Equals("wasapi"))
-    ReturnNewRenderer(CWin32WASAPI);
+    ReturnNewRenderer(CWin32WASAPI)
   else if (soundsystem.Equals("directsound"))
     ReturnNewRenderer(CWin32DirectSound);
 #endif
