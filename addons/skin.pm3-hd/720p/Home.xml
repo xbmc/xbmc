@@ -1,5 +1,5 @@
 <window id="0">
-	<defaultcontrol>9000</defaultcontrol>
+	<defaultcontrol always="true">9000</defaultcontrol>
 	<allowoverlay>no</allowoverlay>	
 	<controls>
 		<control type="videowindow">
