@@ -380,6 +380,7 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
 CDVDVideoCodecVDA::~CDVDVideoCodecVDA()
 {
   Dispose();
+  delete m_dll;
 }
 
 bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
@@ -563,7 +564,6 @@ void CDVDVideoCodecVDA::Dispose()
   }
   m_dllSwScale.Unload();
   m_dll->Unload();
-  delete m_dll;
 }
 
 void CDVDVideoCodecVDA::SetDropState(bool bDrop)
