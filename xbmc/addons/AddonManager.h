@@ -29,6 +29,12 @@
 #include <vector>
 #include <map>
 
+class DllLibCPluff;
+extern "C"
+{
+#include "lib/cpluff/libcpluff/cpluff.h"
+}
+
 namespace ADDON
 {
   typedef std::vector<AddonPtr> VECADDONS;
@@ -68,6 +74,7 @@ namespace ADDON
   {
   public:
     static CAddonMgr* Get();
+    bool Init();
     virtual ~CAddonMgr();
 
     IAddonMgrCallback* GetCallbackForType(TYPE type);
@@ -77,8 +84,11 @@ namespace ADDON
     /* Addon access */
     bool GetDefault(const TYPE &type, AddonPtr &addon, const CONTENT_TYPE &content = CONTENT_NONE);
     bool GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true);
+    AddonPtr GetAddon2(const CStdString &str);
     bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE, bool enabledOnly = true);
+    bool HasAddons2(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE);
     bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
+    bool GetAddons2(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE);
     bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
     CStdString GetString(const CStdString &id, const int number);
     
@@ -93,6 +103,21 @@ namespace ADDON
                     std::map<CStdString, AddonPtr>& unresolved);
 
     void OnJobComplete(unsigned int jobID, bool sucess, CJob* job);
+
+    /* libcpluff */
+    bool GetExtensions(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content);
+    void CPluffFatalError(const char *msg);
+    void CPluffLog(cp_log_severity_t level, const char *msg, const char *apid, void *user_data);
+    cp_context_t *m_cp_context;
+    DllLibCPluff *m_cpluff;
+
+    static void cp_fatalErrorHandler(const char *msg) {
+      CAddonMgr::Get()->CPluffFatalError(msg);
+    }
+    static void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data) {
+      CAddonMgr::Get()->CPluffLog(level, msg, apid, user_data);
+    }
+
   private:
     bool DependenciesMet(AddonPtr &addon);
     bool UpdateIfKnown(AddonPtr &addon);

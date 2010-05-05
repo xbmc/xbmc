@@ -21,6 +21,7 @@
 #include "AddonManager.h"
 #include "Addon.h"
 #include "AddonDatabase.h"
+#include "DllLibCPluff.h"
 #include "StringUtils.h"
 #include "RegExp.h"
 #include "XMLUtils.h"
@@ -31,6 +32,7 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "DownloadQueueManager.h"
+#include "AdvancedSettings.h"
 #include "log.h"
 
 #ifdef HAS_VISUALISATION
@@ -61,6 +63,28 @@ namespace ADDON
 CAddonMgr* CAddonMgr::m_pInstance = NULL;
 map<TYPE, IAddonMgrCallback*> CAddonMgr::m_managers;
 
+AddonPtr AddonFactory(const cp_extension_t *props)
+{
+  const TYPE type = TranslateType(props->ext_point_id);
+  switch (type)
+  {
+    case ADDON_PLUGIN:
+    case ADDON_SCRIPT:
+      return AddonPtr(new CAddon(props->plugin));
+    case ADDON_SCRAPER:
+      return AddonPtr(new CScraper(props->plugin));
+    case ADDON_VIZ:
+      return AddonPtr(new CVisualisation(props->plugin));
+    case ADDON_SCREENSAVER:
+      return AddonPtr(new CScreenSaver(props->plugin));
+    case ADDON_SCRAPER_LIBRARY:
+    case ADDON_VIZ_LIBRARY:
+      return AddonPtr(new CAddonLibrary(props->plugin));
+    default:
+      return AddonPtr();
+  }
+}
+
 CAddonMgr::CAddonMgr()
 {
   FindAddons();
@@ -69,6 +93,8 @@ CAddonMgr::CAddonMgr()
 
 CAddonMgr::~CAddonMgr()
 {
+  if(m_cpluff)
+    m_cpluff->destroy();
 }
 
 CAddonMgr* CAddonMgr::Get()
@@ -104,6 +130,61 @@ void CAddonMgr::UnregisterAddonMgrCallback(TYPE type)
   m_managers.erase(type);
 }
 
+bool CAddonMgr::Init()
+{
+  m_cpluff = new DllLibCPluff;
+  m_cpluff->Load();
+
+  if (!m_cpluff->IsLoaded())
+  {
+    CLog::Log(LOGERROR, "ADDONS: Fatal Error, could not load cpluff");
+    assert(false);
+  }
+
+  cp_log_severity_t log;
+  if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_SAMBA)
+    log = CP_LOG_DEBUG;
+  else if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG)
+    log = CP_LOG_INFO;
+  else
+    log = CP_LOG_WARNING;
+  m_cpluff->set_fatal_error_handler(cp_fatalErrorHandler);
+
+  cp_status_t status;
+  status = m_cpluff->init();
+  if (status != CP_OK)
+  {
+    CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_init() returned status: %i", status);
+    assert(false);
+  }
+
+  //TODO could separate addons into different contexts
+  // would allow partial unloading of addon framework
+  m_cp_context = m_cpluff->create_context(&status);
+  assert(m_cp_context);
+  if (!CSpecialProtocol::XBMCIsHome())
+  {
+    status = m_cpluff->register_pcollection(m_cp_context, _P("special://home/addons/cpluff"));
+    assert(status == CP_OK);
+  }
+  status = m_cpluff->register_pcollection(m_cp_context, _P("special://xbmc/addons/cpluff"));
+  assert(status == CP_OK);
+  status = m_cpluff->register_logger(m_cp_context, cp_logger, &CAddonMgr::m_pInstance, CP_LOG_INFO);
+  assert(status == CP_OK);
+  status = m_cpluff->scan_plugins(m_cp_context, 0);
+}
+
+bool CAddonMgr::HasAddons2(const TYPE &type, const CONTENT_TYPE &content/*= CONTENT_NONE*/)
+{
+  cp_status_t status;
+  int num;
+  CStdString ext_point(TranslateType(type));
+  cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
+  if (status == CP_OK)
+    return (num > 0);
+  return false;
+}
+
 bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabledOnly/*= true*/)
 {
   if (m_addons.empty())
@@ -135,6 +216,22 @@ bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
   if (CAddonMgr::Get()->GetAddons(ADDON_VIZ, temp, CONTENT_NONE, enabledOnly))
     addons.insert(addons.end(), temp.begin(), temp.end());
   return !addons.empty();
+}
+
+bool CAddonMgr::GetAddons2(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content)
+{
+  cp_status_t status;
+  int num;
+  CStdString ext_point(TranslateType(type));
+  cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
+  for(int i=0; i <num; i++)
+  {
+    AddonPtr addon(AddonFactory(exts[i]));
+    if (addon)
+      addons.push_back(addon);
+  }
+  m_cpluff->release_info(m_cp_context, exts);
+  return addons.size();
 }
 
 bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabledOnly/*= true*/)
@@ -191,6 +288,13 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
   }
 
   return false;
+}
+
+AddonPtr CAddonMgr::GetAddon2(const CStdString &str)
+{
+  CSingleLock lock(m_critSection);
+
+  return AddonPtr();
 }
 
 //TODO handle all 'default' cases here, not just scrapers & vizs
@@ -744,6 +848,47 @@ void CAddonMgr::OnJobComplete(unsigned int jobID, bool success, CJob* job)
     return;
 
   ((CRepositoryUpdateJob*)job)->m_repo->SetUpdated(CDateTime::GetCurrentDateTime());
+}
+
+/*
+ * libcpluff interaction
+ */
+
+void CAddonMgr::CPluffFatalError(const char *msg)
+{
+  CLog::Log(LOGERROR, "ADDONS: CPluffFatalError(%s)", msg);
+}
+
+int cp_to_clog(cp_log_severity_t lvl)
+{
+  if( lvl == CP_LOG_DEBUG )
+    return 0;
+  else if (lvl == CP_LOG_INFO)
+    return 1;
+  else if (lvl == CP_LOG_WARNING)
+    return 3;
+  else
+    return 4;
+}
+
+cp_log_severity_t clog_to_cp(int lvl)
+{
+  if (lvl >= 4)
+    return CP_LOG_ERROR;
+  else if (lvl == 3)
+    return CP_LOG_WARNING;
+  else if (lvl >= 1)
+    return CP_LOG_INFO;
+  else
+    return CP_LOG_DEBUG;
+}
+
+void CAddonMgr::CPluffLog(cp_log_severity_t level, const char *msg, const char *apid, void *user_data)
+{
+  if(!apid)
+    CLog::Log(LOGDEBUG, "ADDON: '%s'", msg);
+  else
+    CLog::Log(LOGDEBUG, "ADDON: '%s' reports '%s'", apid, msg);
 }
 
 } /* namespace ADDON */

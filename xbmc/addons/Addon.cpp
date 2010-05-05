@@ -218,10 +218,28 @@ CStdString AddonVersion::Print() const
   return CStdString(out);
 }
 
+AddonProps::AddonProps(cp_plugin_info_t *props)
+  : id(props->identifier)
+  , version(props->version)
+{}
+
 /**
  * CAddon
  *
  */
+
+CAddon::CAddon(cp_plugin_info_t *props)
+  : m_props(props)
+  , m_parent(AddonPtr())
+{
+  if (m_props.libname.IsEmpty()) BuildLibName();
+  else m_strLibName = m_props.libname;
+  BuildProfilePath();
+  CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
+  m_enabled = true;
+  m_hasStrings = false;
+  m_checkedStrings = false;
+}
 
 CAddon::CAddon(const AddonProps &props)
   : m_props(props)
@@ -528,6 +546,12 @@ const CStdString CAddon::Icon() const
  * CAddonLibrary
  *
  */
+
+CAddonLibrary::CAddonLibrary(cp_plugin_info_t *props)
+  : CAddon(props)
+  , m_addonType(SetAddonType())
+{
+}
 
 CAddonLibrary::CAddonLibrary(const AddonProps& props)
   : CAddon(props)

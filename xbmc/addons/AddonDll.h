@@ -38,6 +38,7 @@ namespace ADDON
   {
   public:
     CAddonDll(const AddonProps &props);
+    CAddonDll(cp_plugin_info_t *props);
     virtual ~CAddonDll();
     AddonPtr Clone() const;
     virtual ADDON_STATUS GetStatus();
@@ -74,6 +75,16 @@ namespace ADDON
     static const char* AddOnGetAddonDirectory(void *userData);
     static const char* AddOnGetUserDirectory(void *userData);
   };
+
+template<class TheDll, typename TheStruct, typename TheProps>
+CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(cp_plugin_info_t *props)
+  : CAddon(props)
+{
+  m_pStruct     = NULL;
+  m_initialized = false;
+  m_pDll        = NULL;
+  m_pInfo       = NULL;
+}
 
 template<class TheDll, typename TheStruct, typename TheProps>
 CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const AddonProps &props)

@@ -31,6 +31,7 @@ namespace ADDON
   {
   public:
     CScraper(const AddonProps &props) : CAddon(props) { }
+    CScraper(cp_plugin_info_t *props) : CAddon(props) { }
     virtual ~CScraper() {}
     virtual AddonPtr Clone(const AddonPtr &self) const;
 

@@ -2,6 +2,7 @@
 #define DLL_PATHS_WIN32_H_
 
 /* libraries */
+#define DLL_PATH_CPLUFF        "special://xbmc/system/cpluff.dll"
 #define DLL_PATH_IMAGELIB      "special://xbmc/system/ImageLib.dll"
 #define DLL_PATH_LIBEXIF       "special://xbmc/system/libexif.dll"
 #define DLL_PATH_LIBID3TAG     "special://xbmc/system/libid3tag.dll"
