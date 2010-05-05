@@ -141,7 +141,7 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
     {
       if (pretty)
         return g_localizeStrings.Get(166);
-      return "skin";
+      return "xbmc.gui.skin";
     }
     case ADDON::ADDON_SCRIPT_LIBRARY:
     {
@@ -170,7 +170,7 @@ const ADDON::TYPE TranslateType(const CStdString &string)
   else if (string.Equals("visualization-library")) return ADDON_VIZ_LIBRARY;
   else if (string.Equals("plugin")) return ADDON_PLUGIN;
   else if (string.Equals("script")) return ADDON_SCRIPT;
-  else if (string.Equals("skin")) return ADDON_SKIN;
+  else if (string.Equals("xbmc.gui.skin")) return ADDON_SKIN;
   else if (string.Equals("script-library")) return ADDON_SCRIPT_LIBRARY;
   else if (string.Equals("addon-repository")) return ADDON_REPOSITORY;
   else return ADDON_UNKNOWN;

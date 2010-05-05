@@ -20,6 +20,7 @@
  */
 
 #include "Skin.h"
+#include "AddonManager.h"
 #include "GUIWindowManager.h"
 #include "GUISettings.h"
 #include "FileSystem/File.h"
@@ -40,77 +41,35 @@ boost::shared_ptr<ADDON::CSkinInfo> g_SkinInfo;
 namespace ADDON
 {
 
-CSkinInfo::CSkinInfo(const ADDON::AddonProps &props)
+CSkinInfo::CSkinInfo(cp_plugin_info_t *props)
   : CAddon(props)
 {
-  SetDefaults();
+  GetDefaultResolution(props, "@defaultresolution", m_DefaultResolution, RES_PAL_4x3);
+  GetDefaultResolution(props, "@defaultresolutionwide", m_DefaultResolutionWide, RES_INVALID);
+  CLog::Log(LOGINFO, "Default 4:3 resolution directory is %s", CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolution)).c_str());
+  CLog::Log(LOGINFO, "Default 16:9 resolution directory is %s", CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolutionWide)).c_str());
+
+  CStdString str = CAddonMgr::Get()->GetExtValue(props->extensions->configuration, "@effectslowdown");
+  if (!str.IsEmpty())
+    m_effectsSlowDown = (float)atof(str.c_str());
+  else
+    m_effectsSlowDown = 1.f;
+
+  str = CAddonMgr::Get()->GetExtValue(props->extensions->configuration, "@debugging");
+  m_debugging = !strcmp(str.c_str(), "true");
+
+  m_onlyAnimateToHome = true;
+  LoadStartupWindows(props);
+  m_Version = 2.11;
 }
 
 CSkinInfo::~CSkinInfo()
 {}
 
-void CSkinInfo::SetDefaults()
-{
-  m_DefaultResolution = RES_PAL_4x3;
-  m_DefaultResolutionWide = RES_INVALID;
-  m_effectsSlowDown = 1.0f;
-  m_Version = 1.0;
-  m_debugging = false;
-  m_onlyAnimateToHome = true;
-}
-
 void CSkinInfo::Start(const CStdString& strSkinDir /* = "" */)
 {
-  CStdString dir2(strSkinDir);
-  if (dir2.IsEmpty())
-    dir2 = Path(); 
-  SetDefaults();
-
-  // Load from skin.xml
-  TiXmlDocument xmlDoc;
-  CStdString strFile = CUtil::AddFileToFolder(dir2,"skin.xml");
-  if (xmlDoc.LoadFile(strFile))
-  { // ok - get the default skin folder out of it...
-    const TiXmlNode* root = xmlDoc.RootElement();
-    if (root && root->ValueStr() == "skin")
-    {
-      GetResolution(root, "defaultresolution", m_DefaultResolution);
-      if (!GetResolution(root, "defaultwideresolution", m_DefaultResolutionWide))
-        m_DefaultResolutionWide = m_DefaultResolution;
-
-      CLog::Log(LOGINFO, "Default 4:3 resolution directory is %s", CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolution)).c_str());
-      CLog::Log(LOGINFO, "Default 16:9 resolution directory is %s", CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolutionWide)).c_str());
-
-      XMLUtils::GetDouble(root, "version", m_Version);
-      XMLUtils::GetFloat(root, "effectslowdown", m_effectsSlowDown);
-      XMLUtils::GetBoolean(root, "debugging", m_debugging);
-
-      // now load the startupwindow information
-      LoadStartupWindows(root->FirstChildElement("startupwindows"));
-    }
-    else
-      CLog::Log(LOGERROR, "%s - %s doesnt contain <skin>", __FUNCTION__, strFile.c_str());
-  }
-  // Load the skin includes
   LoadIncludes();
 }
-
-/*bool CSkinInfo::Check(const CStdString& strSkinDir)
-{
-  CSkinInfo info;
-  info.Load(strSkinDir, false);
-  if (info.GetVersion() < GetMinVersion())
-  {
-    CLog::Log(LOGERROR, "%s(%s) version is to old (%f versus %f)", __FUNCTION__, strSkinDir.c_str(), info.GetVersion(), GetMinVersion());
-    return false;
-  }
-  if (!info.HasSkinFile("Home.xml") || !info.HasSkinFile("Font.xml"))
-  {
-    CLog::Log(LOGERROR, "%s(%s) does not contain Home.xml or Font.xml", __FUNCTION__, strSkinDir.c_str());
-    return false;
-  }
-  return true;
-}*/
 
 CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, const CStdString& strBaseDir /* = "" */) const
 {
@@ -261,11 +220,10 @@ int CSkinInfo::GetStartWindow() const
   return m_startupWindows[0].m_id;
 }
 
-bool CSkinInfo::LoadStartupWindows(const TiXmlElement *startup)
+bool CSkinInfo::LoadStartupWindows(cp_plugin_info_t *props)
 {
   m_startupWindows.clear();
-  if (startup)
-  { // yay, run through and grab the startup windows
+  /*{ // yay, run through and grab the startup windows
     const TiXmlElement *window = startup->FirstChildElement("window");
     while (window && window->FirstChild())
     {
@@ -275,7 +233,7 @@ bool CSkinInfo::LoadStartupWindows(const TiXmlElement *startup)
       m_startupWindows.push_back(CStartupWindow(id + WINDOW_HOME, name));
       window = window->NextSiblingElement("window");
     }
-  }
+  }*/
 
   // ok, now see if we have any startup windows
   if (!m_startupWindows.size())
@@ -314,32 +272,41 @@ void CSkinInfo::GetSkinPaths(std::vector<CStdString> &paths) const
     paths.push_back(CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolution)));
 }
 
-bool CSkinInfo::GetResolution(const TiXmlNode *root, const char *tag, RESOLUTION &res) const
+void CSkinInfo::GetDefaultResolution(cp_plugin_info_t *props, const char *tag, RESOLUTION &res, const RESOLUTION &def) const
 {
-  CStdString strRes;
-  if (XMLUtils::GetString(root, tag, strRes))
+  //FIXME! only respects one extension per addon
+  CStdString strRes(CAddonMgr::Get()->GetExtValue(props->extensions->configuration, tag));
+  if (!strRes.empty())
   {
     strRes.ToLower();
-    if (strRes == "pal")
+    if (strRes == "pal") {
       res = RES_PAL_4x3;
-    else if (strRes == "pal16x9")
-      res = RES_PAL_16x9;
-    else if (strRes == "ntsc")
-      res = RES_NTSC_4x3;
-    else if (strRes == "ntsc16x9")
-      res = RES_NTSC_16x9;
-    else if (strRes == "720p")
-      res = RES_HDTV_720p;
-    else if (strRes == "1080i")
-      res = RES_HDTV_1080i;
-    else
-    {
-      CLog::Log(LOGERROR, "%s invalid resolution specified for <%s>, %s", __FUNCTION__, tag, strRes.c_str());
-      return false;
+      return;
     }
-    return true;
+    else if (strRes == "pal16x9") {
+      res = RES_PAL_16x9;
+      return;
+    }
+    else if (strRes == "ntsc") {
+      res = RES_NTSC_4x3;
+      return;
+    }
+    else if (strRes == "ntsc16x9") {
+      res = RES_NTSC_16x9;
+      return;
+    }
+    else if (strRes == "720p") {
+      res = RES_HDTV_720p;
+      return;
+    }
+    else if (strRes == "1080i") {
+      res = RES_HDTV_1080i;
+      return;
+    }
   }
-  return false;
+
+  CLog::Log(LOGERROR, "%s invalid resolution specified for <%s>, %s", __FUNCTION__, tag, strRes.c_str());
+  res = def;
 }
 
 int CSkinInfo::GetFirstWindow() const
