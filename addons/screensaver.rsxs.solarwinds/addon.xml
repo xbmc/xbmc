@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="screensaver.rsxs.solarwinds"
+  version="1.0.0"
+  name="Solarwinds"
+  provider-name="mogumbo, Team XBMC">
+  <requires>
+    <c-pluff version="0.1"/>
+  </requires>
+  <extension
+    point="xbmc.ui.screensaver"
+    library="Solarwinds.xbs"/>
+</addon>
