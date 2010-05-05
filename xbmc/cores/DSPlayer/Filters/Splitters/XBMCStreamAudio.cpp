@@ -161,66 +161,6 @@ HRESULT CDSAudioStream::DecideBufferSize(IMemAllocator* pAlloc, ALLOCATOR_PROPER
  if(FAILED(hr=pAlloc->SetProperties(pProperties,&actual))) 
    return hr;
  return pProperties->cBuffers>actual.cBuffers || pProperties->cbBuffer>actual.cbBuffer?E_FAIL:S_OK;
-
-    if(WAVE_FORMAT_PCM == pwfexCurrent->wFormatTag)
-    {
-        pProperties->cbBuffer = WaveBufferSize;
-    }
-    else
-    {
-        return E_FAIL;
-    }
-    /*else
-    {
-        // This filter only supports two formats: PCM and ADPCM. 
-        ASSERT(WAVE_FORMAT_ADPCM == pwfexCurrent->wFormatTag);
-
-        pProperties->cbBuffer = pwfexCurrent->nBlockAlign;
-
-        MMRESULT mmr = acmStreamSize(m_hPCMToMSADPCMConversionStream,
-                                     pwfexCurrent->nBlockAlign,
-                                     &m_dwTempPCMBufferSize,
-                                     ACM_STREAMSIZEF_DESTINATION);
-
-        // acmStreamSize() returns 0 if no error occurs.
-        if(0 != mmr)
-        {
-            return E_FAIL;
-        }
-    }*/
-
-    int nBitsPerSample = pwfexCurrent->wBitsPerSample;
-    int nSamplesPerSec = pwfexCurrent->nSamplesPerSec;
-    int nChannels = pwfexCurrent->nChannels;
-
-    pProperties->cBuffers = (nChannels * nSamplesPerSec * nBitsPerSample) / 
-                            (pProperties->cbBuffer * BITS_PER_BYTE);
-
-    // Get 1/2 second worth of buffers
-    pProperties->cBuffers /= 2;
-    if(pProperties->cBuffers < 1)
-        pProperties->cBuffers = 1 ;
-
-    // Ask the allocator to reserve us some sample memory, NOTE the function
-    // can succeed (that is return NOERROR) but still not have allocated the
-    // memory that we requested, so we must check we got whatever we wanted
-
-    ALLOCATOR_PROPERTIES Actual;
-    hr = pAlloc->SetProperties(pProperties,&Actual);
-    if(FAILED(hr))
-    {
-        ASSERT(false);
-        return hr;
-    }
-
-    // Is this allocator unsuitable
-
-    if(Actual.cbBuffer < pProperties->cbBuffer)
-    {
-        return E_FAIL;
-    }
-
-    return NOERROR;
 }
 
 //********************************************************************
@@ -239,6 +179,11 @@ HRESULT CDSAudioStream::FillBuffer(IMediaSample *pms)
   HRESULT hr;
   //Copy byte into the samples
   hr = pms->GetPointer(&pData);
+  if (FAILED(hr))
+  {
+    Sleep(1);
+    return hr;
+  }
   memcpy(pData, &p->at(0), p->size());
   //set the sample length  
   hr = pms->SetTime(&p->rtStart, &p->rtStop);

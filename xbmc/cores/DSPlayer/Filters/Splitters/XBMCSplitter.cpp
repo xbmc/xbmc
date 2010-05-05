@@ -511,6 +511,8 @@ DWORD CXBMCSplitterFilter::ThreadProc()
 void CXBMCSplitterFilter::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
   //CAutoLock cAutoLock(this);
+  
+  CAutoLock cAutoLock(&m_cStateLock);
   if (pPacket)
   {
     if (pStream->type == STREAM_VIDEO)

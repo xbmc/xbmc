@@ -23,6 +23,7 @@
 
 #include "DVDPlayer/DVDCodecs/DVDCodecs.h"
 #include "DVDPlayer/DVDDemuxers/DVDDemux.h"
+#include "DSGuidHelper.h"
 #include "MMReg.h"
 extern "C"
 {
@@ -165,24 +166,23 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     extradata = malloc(extrasize);
     memcpy(extradata, right.ExtraData, extrasize);
   }
-
+  /****************/
+  /* AUDIO STREAM */
+  /****************/
   if( right.type == STREAM_AUDIO )
   {
     const CDemuxStreamAudio *stream = static_cast<const CDemuxStreamAudio*>(&right);
     AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
 
     mtype.majortype = MEDIATYPE_Audio;
-    mtype.subtype = FOURCCMap(avstream->codec->codec_tag);
     mtype.formattype = FORMAT_WaveFormatEx;
+    mtype.subtype = FOURCCMap(avstream->codec->codec_tag);
+    
     
     WAVEFORMATEX *wvfmt = (WAVEFORMATEX*)mtype.AllocFormatBuffer(sizeof(WAVEFORMATEX) + extrasize);
     //if the extrasize is of 12 its a mp3
     if (extrasize == 12)
     {
-      //MPEGLAYER3WAVEFORMAT *mp3fmt = (MPEGLAYER3WAVEFORMAT *)wvfmt;
-      //mp3fmt->
-      
-      //wvfmt->wFormatTag
     }
     wvfmt->wFormatTag = avstream->codec->codec_tag;
     wvfmt->nChannels = avstream->codec->channels;
@@ -191,7 +191,8 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     wvfmt->nBlockAlign= avstream->codec->block_align ? avstream->codec->block_align : 1;
     wvfmt->wBitsPerSample= avstream->codec->bits_per_coded_sample;
     wvfmt->cbSize= avstream->codec->extradata_size;
-    mtype.SetSampleSize(avstream->codec->bit_rate * 3);
+    mtype.SetSampleSize(channels * (bitrate / 8));
+
     if(avstream->codec->extradata_size)
       memcpy(wvfmt + 1, avstream->codec->extradata, avstream->codec->extradata_size);
     mtype.pbFormat = (PBYTE)wvfmt;
@@ -205,6 +206,9 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     bitrate       = stream->iBitRate;
     bitspersample = stream->iBitsPerSample;
   }
+  /****************/
+  /* VIDEO STREAM */
+  /****************/
   else if(  right.type == STREAM_VIDEO )
   {
     const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(&right);
@@ -213,7 +217,8 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     mtype.formattype = FORMAT_VideoInfo;
   
     mtype.bTemporalCompression = 0;
-    mtype.bFixedSizeSamples = stream->bVFR ? 1 : 0;
+    
+    mtype.bFixedSizeSamples = stream->bVFR ? 0 : 1; //hummm is it the right value???
 
     VIDEOINFOHEADER *pvi = (VIDEOINFOHEADER*)mtype.AllocFormatBuffer(sizeof(VIDEOINFOHEADER));
   
@@ -247,7 +252,14 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   mtype.subtype.Data1 = pvi->bmiHeader.biCompression;
 
   mtype.SetFormat((PBYTE)pvi,sizeof(VIDEOINFOHEADER));
-
+  //Not sure if its really working but in case the other way dont work will try this one
+  /*const FOURCC *fccs=g_GuidHelper.getCodecFOURCCs(avstream->codec->codec_id);
+  std::vector<FOURCC> lstFourcc;
+  for (const FOURCC *fcc=fccs;*fcc;fcc++)
+  {
+    lstFourcc.push_back(*fcc);
+  }*/
+    
     fpsscale  = stream->iFpsScale;
     fpsrate   = stream->iFpsRate;
     height    = stream->iHeight;
