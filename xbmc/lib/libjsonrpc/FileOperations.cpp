@@ -90,13 +90,13 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
         CFileItemList filteredDirectories, filteredFiles;
         for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
         {
-          if (regexps.size() == 0 || !CUtil::ExcludeFileOrFolder(items[i]->m_strPath, regexps))
-          {
-            if (items[i]->m_bIsFolder)
-              filteredDirectories.Add(items[i]);
-            else
-              filteredFiles.Add(items[i]);
-          }
+          if (CUtil::ExcludeFileOrFolder(items[i]->m_strPath, regexps))
+            continue;
+
+          if (items[i]->m_bIsFolder)
+            filteredDirectories.Add(items[i]);
+          else
+            filteredFiles.Add(items[i]);
         }
 
         HandleFileItemList(NULL, "directories", filteredDirectories, parameterObject, result);
