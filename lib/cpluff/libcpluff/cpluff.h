@@ -39,7 +39,7 @@
  */
 
 #ifdef _WIN32
-#include "cpluffdef_win32.h"
+#include "win32/cpluffdef.h"
 #else
 #include "cpluffdef.h"
 #endif

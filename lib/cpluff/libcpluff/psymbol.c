@@ -33,6 +33,9 @@
 #include "defines.h"
 #include "internal.h"
 #include "util.h"
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 
 /* ------------------------------------------------------------------------
