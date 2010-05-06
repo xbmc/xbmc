@@ -143,7 +143,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 #endif
 #if defined(HAVE_LIBVDPAU) && defined(_LINUX)
   hwSupport += "VDPAU:yes ";
-#elif defined(_LINUX) && && !defined(__APPLE__)
+#elif defined(_LINUX) && !defined(__APPLE__)
   hwSupport += "VDPAU:no ";
 #endif
 #if defined(_WIN32) && defined(HAS_DX)
@@ -153,7 +153,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 #endif
 #if defined(HAVE_LIBVA) && defined(_LINUX)
   hwSupport += "VAAPI:yes ";
-#elif defined(_LINUX) && && !defined(__APPLE__)
+#elif defined(_LINUX) && !defined(__APPLE__)
   hwSupport += "VAAPI:no ";
 #endif
 
