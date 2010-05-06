@@ -183,7 +183,7 @@ bool CHDDirectory::Remove(const char* strPath)
 #ifndef _LINUX
   CStdStringW strWPath;
   g_charsetConverter.utf8ToW(strPath, strWPath, false);
-  return ::RemoveDirectoryW(strWPath) ? true : false;
+  if (::RemoveDirectoryW(strWPath) || GetLastError() == ERROR_PATH_NOT_FOUND) ? true : false;
 #else
   return ::RemoveDirectory(strPath) ? true : false;
 #endif
