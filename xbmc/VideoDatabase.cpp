@@ -7877,5 +7877,5 @@ CStdString CVideoDatabase::GetSafeFile(const CStdString &dir, const CStdString &
 {
   CStdString safeThumb(name);
   safeThumb.Replace(' ', '_');
-  return CUtil::AddFileToFolder(dir, safeThumb);
+  return CUtil::AddFileToFolder(dir, CUtil::MakeLegalFileName(safeThumb));
 }
