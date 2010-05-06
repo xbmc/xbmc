@@ -42,9 +42,9 @@ var http_request = new XMLHttpRequest();
 http_request.open( "POST", "jsonrpc", false );
 
 if (directory)
-  http_request.send('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": { "type": "music", "directory": "' + Url.decode(directory) + '", "sortmethod": "label", "sortorder": "ascending" }, "id": 1}');
+  http_request.send('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": { "media": "music", "directory": "' + Url.decode(directory) + '", "sortmethod": "label", "sortorder": "ascending" }, "id": 1}');
 else
-  http_request.send('{"jsonrpc": "2.0", "method": "Files.GetSources", "params": { "type": "music" }, "id": 1}');
+  http_request.send('{"jsonrpc": "2.0", "method": "Files.GetSources", "params": { "media": "music" }, "id": 1}');
 
 
 var the_object = JSON.parse(http_request.responseText);

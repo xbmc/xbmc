@@ -34,12 +34,12 @@ using namespace JSONRPC;
 JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   const Value param = parameterObject.isObject() ? parameterObject : Value(objectValue);
-  CStdString type = param.get("type", "null").asString();
-  type = type.ToLower();
+  CStdString media = param.get("media", "null").asString();
+  media = media.ToLower();
 
-  if (type.Equals("video") || type.Equals("music") || type.Equals("pictures") || type.Equals("files") || type.Equals("programs"))
+  if (media.Equals("video") || media.Equals("music") || media.Equals("pictures") || media.Equals("files") || media.Equals("programs"))
   {
-    VECSOURCES *sources = g_settings.GetSourcesFromType(type);
+    VECSOURCES *sources = g_settings.GetSourcesFromType(media);
     if (sources)
     {
       CFileItemList items;
@@ -59,18 +59,18 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
 {
   if (parameterObject.isObject() && parameterObject.isMember("directory"))
   {
-    CStdString type = "files";
-    if (parameterObject.isMember("type"))
+    CStdString media = "files";
+    if (parameterObject.isMember("media"))
     {
-      if (parameterObject["type"].isString())
-        type = parameterObject["type"].asString();
+      if (parameterObject["media"].isString())
+        media = parameterObject["media"].asString();
       else
         return InvalidParams;
     }
 
-    type = type.ToLower();
+    media = media.ToLower();
 
-    if (type.Equals("video") || type.Equals("music") || type.Equals("pictures") || type.Equals("files") || type.Equals("programs"))
+    if (media.Equals("video") || media.Equals("music") || media.Equals("pictures") || media.Equals("files") || media.Equals("programs"))
     {
       CDirectory directory;
       CFileItemList items;
@@ -80,11 +80,11 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
       {
         CStdStringArray regexps;
 
-        if (type.Equals("video"))
+        if (media.Equals("video"))
           regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
-        else if (type.Equals("music"))
+        else if (media.Equals("music"))
           regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
-        else if (type.Equals("pictures"))
+        else if (media.Equals("pictures"))
           regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
 
         CFileItemList filteredDirectories, filteredFiles;

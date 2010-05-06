@@ -42,9 +42,9 @@ var http_request = new XMLHttpRequest();
 http_request.open( "POST", "jsonrpc", false );
 
 if (directory)
-  http_request.send('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": { "type": "video", "directory": "' + unescape(directory) + '" }, "id": 1}');
+  http_request.send('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": { "media": "video", "directory": "' + unescape(directory) + '" }, "id": 1}');
 else
-  http_request.send('{"jsonrpc": "2.0", "method": "Files.GetSources", "params": { "type": "video" }, "id": 1}');
+  http_request.send('{"jsonrpc": "2.0", "method": "Files.GetSources", "params": { "media": "video" }, "id": 1}');
 
 
 var the_object = JSON.parse(http_request.responseText);
