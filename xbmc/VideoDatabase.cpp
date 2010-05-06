@@ -6984,7 +6984,8 @@ void CVideoDatabase::ExportToXML(const CStdString &path, bool singleFiles /* = f
       images = true;
       overwrite = false;
       actorThumbs = true;
-      CDirectory::Remove(exportRoot);
+      if (CDirectory::Exists(exportRoot))
+        CDirectory::Remove(exportRoot);
       CDirectory::Create(exportRoot);
       CDirectory::Create(actorsDir);
       CDirectory::Create(moviesDir);
