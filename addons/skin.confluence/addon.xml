@@ -9,6 +9,6 @@
   </requires>
   <extension point="xbmc.gui.skin"
     defaultresolution="720p" defaultresolutionwide="720p"
-    defaultthemename="textures.xpr" effectslowdown="0.75"
+    defaultthemename="textures.xbt" effectslowdown="0.75"
     debugging="false"/>
 </addon>
