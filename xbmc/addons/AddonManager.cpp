@@ -54,6 +54,8 @@ using namespace std;
 namespace ADDON
 {
 
+int cp_to_clog(cp_log_severity_t);
+cp_log_severity_t clog_to_cp(int);
 
 /**********************************************************
  * CAddonMgr
@@ -144,13 +146,6 @@ bool CAddonMgr::Init()
     return false;
   }
 
-  cp_log_severity_t log;
-  if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_SAMBA)
-    log = CP_LOG_DEBUG;
-  else if (g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG)
-    log = CP_LOG_INFO;
-  else
-    log = CP_LOG_WARNING;
   m_cpluff->set_fatal_error_handler(cp_fatalErrorHandler);
 
   cp_status_t status;
@@ -176,7 +171,8 @@ bool CAddonMgr::Init()
     return false;
   }
 
-  status = m_cpluff->register_logger(m_cp_context, cp_logger, &CAddonMgr::m_pInstance, log);
+  status = m_cpluff->register_logger(m_cp_context, cp_logger,
+      &CAddonMgr::m_pInstance, clog_to_cp(g_advancedSettings.m_logLevel));
   if (status != CP_OK)
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_logger() returned status: %i", status);
