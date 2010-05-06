@@ -69,7 +69,7 @@ Command CJSONRPC::m_commands[] = {
   { "AudioPlayer.GetTime",                          CAVPlayerOperations::GetTime,                        Response,     ReadData,        "Retrieve time" },
   { "AudioPlayer.GetTimeMS",                        CAVPlayerOperations::GetTimeMS,                      Response,     ReadData,        "Retrieve time in MS" },
   { "AudioPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage,                  Response,     ReadData,        "Retrieve percentage" },
-  { "AudioPlayer.SeekTime",                         CAVPlayerOperations::SeekTime,                       Response,     ControlPlayback, "Seek to a specific time. Parameter integer in MS" },
+  { "AudioPlayer.SeekTime",                         CAVPlayerOperations::SeekTime,                       Response,     ControlPlayback, "Seek to a specific time. Parameter integer in seconds" },
   { "AudioPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage,                 Response,     ControlPlayback, "Seek to a specific percentage. Parameter float or integer from 0 to 100" },
 
   { "AudioPlayer.Record",                           CAVPlayerOperations::Record,                         Response,     ControlPlayback, "" },
@@ -91,7 +91,7 @@ Command CJSONRPC::m_commands[] = {
   { "VideoPlayer.GetTime",                          CAVPlayerOperations::GetTime,                        Response,     ReadData,        "Retrieve time" },
   { "VideoPlayer.GetTimeMS",                        CAVPlayerOperations::GetTimeMS,                      Response,     ReadData,        "Retrieve time in MS" },
   { "VideoPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage,                  Response,     ReadData,        "Retrieve percentage" },
-  { "VideoPlayer.SeekTime",                         CAVPlayerOperations::SeekTime,                       Response,     ControlPlayback, "Seek to a specific time. Parameter integer in MS" },
+  { "VideoPlayer.SeekTime",                         CAVPlayerOperations::SeekTime,                       Response,     ControlPlayback, "Seek to a specific time. Parameter integer in seconds" },
   { "VideoPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage,                 Response,     ControlPlayback, "Seek to a specific percentage. Parameter float or integer from 0 to 100" },
 
 // Picture player
