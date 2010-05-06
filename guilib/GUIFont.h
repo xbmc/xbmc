@@ -33,7 +33,7 @@ class CGUIFontTTFBase;
 class CScrollInfo
 {
 public:
-  CScrollInfo(unsigned int wait = 50, float pos = 0, int speed = defaultSpeed, const CStdStringW &scrollSuffix = L" | ")
+  CScrollInfo(unsigned int wait = 50, float pos = 0, int speed = defaultSpeed, const CStdString &scrollSuffix = " | ")
   {
     initialWait = wait;
     initialPos = pos;
@@ -74,7 +74,7 @@ public:
   unsigned int characterPos;
   unsigned int initialWait;
   float initialPos;
-  CStdStringW suffix;
+  CStdString suffix;
 
   static const int defaultSpeed = 60;
 private:

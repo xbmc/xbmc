@@ -24,8 +24,8 @@
 
 using namespace std;
 
-CGUIFadeLabelControl::CGUIFadeLabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, int scrollSpeed, unsigned int timeToDelayAtEnd, bool resetOnLabelChange)
-    : CGUIControl(parentID, controlID, posX, posY, width, height), m_scrollInfo(50, labelInfo.offsetX, scrollSpeed)
+CGUIFadeLabelControl::CGUIFadeLabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, unsigned int timeToDelayAtEnd, bool resetOnLabelChange)
+    : CGUIControl(parentID, controlID, posX, posY, width, height), m_scrollInfo(50, labelInfo.offsetX, labelInfo.scrollSpeed)
     , m_textLayout(labelInfo.font, false)
 {
   m_label = labelInfo;
@@ -37,7 +37,7 @@ CGUIFadeLabelControl::CGUIFadeLabelControl(int parentID, int controlID, float po
     m_fadeAnim->ApplyAnimation();
   m_renderTime = 0;
   m_lastLabel = -1;
-  m_scrollSpeed = scrollSpeed;  // save it for later
+  m_scrollSpeed = labelInfo.scrollSpeed;  // save it for later
   m_resetOnLabelChange = resetOnLabelChange;
   m_shortText = false;
 }
@@ -108,7 +108,7 @@ void CGUIFadeLabelControl::Render()
     if (width < m_width) // append spaces for scrolling
       numSpaces += (unsigned int)((m_width - width) / spaceWidth) + 1;
     m_shortText = (width + m_label.offsetX) < m_width;
-    m_scrollInfo.suffix.assign(numSpaces, L' ');
+    m_scrollInfo.suffix.assign(numSpaces, ' ');
     if (m_resetOnLabelChange)
     {
       m_scrollInfo.Reset();
