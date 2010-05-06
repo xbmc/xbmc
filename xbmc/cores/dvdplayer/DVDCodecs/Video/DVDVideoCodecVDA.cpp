@@ -483,6 +483,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     }
 
     // input stream is qualified, now we can load dlls.
+    m_dllSwScale = new DllSwScale;
     if (!m_dllSwScale->Load())
     {
       CFRelease(avcCData);
