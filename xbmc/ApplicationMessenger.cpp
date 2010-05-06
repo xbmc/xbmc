@@ -40,6 +40,7 @@
 #include "FileItem.h"
 #include "GUIDialog.h"
 #include "WindowingFactory.h"
+#include "GUIInfoManager.h"
 
 #include "PowerManager.h"
 
@@ -602,6 +603,27 @@ case TMSG_POWERDOWN:
       }
       break;
 
+    case TMSG_GUI_INFOLABEL:
+      {
+        if (pMsg->lpVoid)
+        {
+          vector<CStdString> *infoLabels = (vector<CStdString> *)pMsg->lpVoid;
+          for (unsigned int i = 0; i < pMsg->params.size(); i++)
+            infoLabels->push_back(g_infoManager.GetLabel(g_infoManager.TranslateString(pMsg->params[i])));
+        }
+      }
+      break;
+    case TMSG_GUI_INFOBOOL:
+      {
+        if (pMsg->lpVoid)
+        {
+          vector<bool> *infoLabels = (vector<bool> *)pMsg->lpVoid;
+          for (unsigned int i = 0; i < pMsg->params.size(); i++)
+            infoLabels->push_back(g_infoManager.GetBool(g_infoManager.TranslateString(pMsg->params[i])));
+        }
+      }
+      break;
+
 #ifdef HAS_DVD_DRIVE
     case TMSG_OPTICAL_MOUNT:
       {
@@ -950,6 +972,28 @@ void CApplicationMessenger::SendAction(const CAction &action, int windowID)
   tMsg.dwParam1 = windowID;
   tMsg.lpVoid = (void*)&action;
   SendMessage(tMsg, true);
+}
+
+vector<CStdString> CApplicationMessenger::GetInfoLabels(const vector<CStdString> &properties)
+{
+  vector<CStdString> infoLabels;
+
+  ThreadMessage tMsg = {TMSG_GUI_INFOLABEL};
+  tMsg.params = properties;
+  tMsg.lpVoid = (void*)&infoLabels;
+  SendMessage(tMsg, true);
+  return infoLabels;
+}
+
+vector<bool> CApplicationMessenger::GetInfoBooleans(const vector<CStdString> &properties)
+{
+  vector<bool> infoLabels;
+
+  ThreadMessage tMsg = {TMSG_GUI_INFOBOOL};
+  tMsg.params = properties;
+  tMsg.lpVoid = (void*)&infoLabels;
+  SendMessage(tMsg, true);
+  return infoLabels;
 }
 
 void CApplicationMessenger::OpticalMount(CStdString device, bool bautorun)

@@ -70,10 +70,40 @@ JSON_STATUS CSystemOperations::Reboot(const CStdString &method, ITransportLayer 
     return FailedToExecute;
 }
 
-JSON_STATUS CSystemOperations::GetInfo(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CSystemOperations::GetInfoLabels(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!parameterObject.isArray())
     return InvalidParams;
+
+  std::vector<CStdString> info;
+
+  for (unsigned int i = 0; i < parameterObject.size(); i++)
+  {
+    if (!parameterObject[i].isString())
+      continue;
+
+    CStdString field = parameterObject[i].asString();
+    field = field.ToLower();
+
+    info.push_back(parameterObject[i].asString());
+  }
+
+  if (info.size() > 0)
+  {
+    std::vector<CStdString> infoLabels = g_application.getApplicationMessenger().GetInfoLabels(info);
+    for (unsigned int i = 0; i < info.size(); i++)
+      result[info[i].c_str()] = infoLabels[i];
+  }
+
+  return OK;
+}
+
+JSON_STATUS CSystemOperations::GetInfoBooleans(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+{
+  if (!parameterObject.isArray())
+    return InvalidParams;
+
+  std::vector<CStdString> info;
 
   bool CanControlPower = (client->GetPermissionFlags() & ControlPower) > 0;
 
@@ -85,14 +115,27 @@ JSON_STATUS CSystemOperations::GetInfo(const CStdString &method, ITransportLayer
     CStdString field = parameterObject[i].asString();
     field = field.ToLower();
 
-    if (field.Equals("canshutdown"))
-      result["CanShutdown"] = (g_powerManager.CanPowerdown() && CanControlPower);
-    else if (field.Equals("cansuspend"))
-      result["CanSuspend"] = (g_powerManager.CanSuspend() && CanControlPower);
-    else if (field.Equals("canhibernate"))
-      result["CanHibernate"] = (g_powerManager.CanHibernate() && CanControlPower);
-    else if (field.Equals("canreboot"))
-      result["CanReboot"] = (g_powerManager.CanReboot() && CanControlPower);
+    // Need to override power management of whats in infomanager since jsonrpc
+    // have a security layer aswell.
+    if (field.Equals("system.canshutdown"))
+      result[parameterObject[i].asString()] = (g_powerManager.CanPowerdown() && CanControlPower);
+    else if (field.Equals("system.canpowerdown"))
+      result[parameterObject[i].asString()] = (g_powerManager.CanPowerdown() && CanControlPower);
+    else if (field.Equals("system.cansuspend"))
+      result[parameterObject[i].asString()] = (g_powerManager.CanSuspend() && CanControlPower);
+    else if (field.Equals("system.canhibernate"))
+      result[parameterObject[i].asString()] = (g_powerManager.CanHibernate() && CanControlPower);
+    else if (field.Equals("system.canreboot"))
+      result[parameterObject[i].asString()] = (g_powerManager.CanReboot() && CanControlPower);
+    else
+      info.push_back(parameterObject[i].asString());
+  }
+
+  if (info.size() > 0)
+  {
+    std::vector<bool> infoLabels = g_application.getApplicationMessenger().GetInfoBooleans(info);
+    for (unsigned int i = 0; i < info.size(); i++)
+      result[info[i].c_str()] = Value(infoLabels[i]);
   }
 
   return OK;

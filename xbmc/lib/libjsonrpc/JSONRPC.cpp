@@ -175,7 +175,8 @@ Command CJSONRPC::m_commands[] = {
   { "System.Hibernate",                             CSystemOperations::Hibernate,                        Response,     ControlPower,    "" },
   { "System.Reboot",                                CSystemOperations::Reboot,                           Response,     ControlPower,    "" },
 
-  { "System.GetInfo",                               CSystemOperations::GetInfo,                          Response,     ReadData,        "Retrieve info about the system" },
+  { "System.GetInfoLabels",                         CSystemOperations::GetInfoLabels,                    Response,     ReadData,        "Retrieve info labels about the system" },
+  { "System.GetInfoBooleans",                       CSystemOperations::GetInfoBooleans,                  Response,     ReadData,        "Retrieve info booleans about the system" },
 
 // XBMC Operations
   { "XBMC.GetVolume",                               CXBMCOperations::GetVolume,                          Response,     ReadData,        "Retrieve the current volume" },
