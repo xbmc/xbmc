@@ -176,7 +176,7 @@ bool CAddonMgr::Init()
     return false;
   }
 
-  status = m_cpluff->register_logger(m_cp_context, cp_logger, &CAddonMgr::m_pInstance, CP_LOG_INFO);
+  status = m_cpluff->register_logger(m_cp_context, cp_logger, &CAddonMgr::m_pInstance, log);
   if (status != CP_OK)
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_logger() returned status: %i", status);
@@ -909,9 +909,9 @@ cp_log_severity_t clog_to_cp(int lvl)
 void CAddonMgr::CPluffLog(cp_log_severity_t level, const char *msg, const char *apid, void *user_data)
 {
   if(!apid)
-    CLog::Log(LOGDEBUG, "ADDON: '%s'", msg);
+    CLog::Log(cp_to_clog(level), "ADDON: cpluff: '%s'", msg);
   else
-    CLog::Log(LOGDEBUG, "ADDON: '%s' reports '%s'", apid, msg);
+    CLog::Log(cp_to_clog(level), "ADDON: cpluff: '%s' reports '%s'", apid, msg);
 }
 
 } /* namespace ADDON */
