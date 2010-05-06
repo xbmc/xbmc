@@ -244,7 +244,7 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYP
         addons.push_back(addon);
     }
     m_cpluff->release_info(m_cp_context, exts);
-    return addons.size();
+    return addons.size() > 0;
   }
 
   if (m_addons.find(type) != m_addons.end())
