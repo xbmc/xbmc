@@ -170,6 +170,19 @@ JSON_STATUS CAVPlayerOperations::SeekTime(const CStdString &method, ITransportLa
   return ACK;
 }
 
+JSON_STATUS CAVPlayerOperations::SeekPercentage(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result)
+{
+  if (!(parameterObject.isDouble() || parameterObject.isInt()))
+    return InvalidParams;
+  if (!IsCorrectPlayer(method))
+    return FailedToExecute;
+
+  float percentage = parameterObject.isDouble() ? (float)parameterObject.asDouble() : (float)parameterObject.asInt();
+
+  g_application.SeekPercentage(percentage);
+  return ACK;
+}
+
 bool CAVPlayerOperations::IsCorrectPlayer(const CStdString &method)
 {
   return (method.Left(5).Equals("audio") && g_application.IsPlayingAudio()) || (method.Left(5).Equals("video") && g_application.IsPlayingVideo());

@@ -70,6 +70,7 @@ Command CJSONRPC::m_commands[] = {
   { "AudioPlayer.GetTimeMS",                        CAVPlayerOperations::GetTimeMS,                      Response,     ReadData,        "Retrieve time in MS" },
   { "AudioPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage,                  Response,     ReadData,        "Retrieve percentage" },
   { "AudioPlayer.SeekTime",                         CAVPlayerOperations::SeekTime,                       Response,     ControlPlayback, "Seek to a specific time. Parameter integer in MS" },
+  { "AudioPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage,                 Response,     ControlPlayback, "Seek to a specific percentage. Parameter float or integer from 0 to 100" },
 
   { "AudioPlayer.Record",                           CAVPlayerOperations::Record,                         Response,     ControlPlayback, "" },
 
@@ -91,6 +92,7 @@ Command CJSONRPC::m_commands[] = {
   { "VideoPlayer.GetTimeMS",                        CAVPlayerOperations::GetTimeMS,                      Response,     ReadData,        "Retrieve time in MS" },
   { "VideoPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage,                  Response,     ReadData,        "Retrieve percentage" },
   { "VideoPlayer.SeekTime",                         CAVPlayerOperations::SeekTime,                       Response,     ControlPlayback, "Seek to a specific time. Parameter integer in MS" },
+  { "VideoPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage,                 Response,     ControlPlayback, "Seek to a specific percentage. Parameter float or integer from 0 to 100" },
 
 // Picture player
   { "PicturePlayer.PlayPause",                      CPicturePlayerOperations::PlayPause,                 Response,     ControlPlayback, "Pauses or unpause slideshow" },

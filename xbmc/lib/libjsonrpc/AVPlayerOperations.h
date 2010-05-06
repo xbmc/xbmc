@@ -47,6 +47,7 @@ namespace JSONRPC
     static JSON_STATUS GetTimeMS(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
     static JSON_STATUS GetPercentage(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
     static JSON_STATUS SeekTime(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
+    static JSON_STATUS SeekPercentage(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
   private:
     static inline bool IsCorrectPlayer(const CStdString &method);
   };
