@@ -102,7 +102,7 @@ void CAddonStatusHandler::Process()
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     if (pDialog->IsConfirmed())
-      CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, false);
+      CAddonMgr::Get().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, false);
   }
   /* Request to restart the AddOn and data structures need updated */
   else if (m_status == STATUS_NEED_RESTART)
@@ -117,7 +117,7 @@ void CAddonStatusHandler::Process()
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
-    CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
+    CAddonMgr::Get().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
   }
   /* Some required settings are missing/invalid */
   else if (m_status == STATUS_NEED_SETTINGS)
@@ -144,7 +144,7 @@ void CAddonStatusHandler::Process()
     {
       //todo doesn't dialogaddonsettings save these automatically? should do
       m_addon->SaveSettings();
-      CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
+      CAddonMgr::Get().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
     }
     else
       m_addon->LoadSettings();
@@ -152,7 +152,7 @@ void CAddonStatusHandler::Process()
   /* A unknown event has occurred */
   else if (m_status == STATUS_UNKNOWN)
   {
-    //CAddonMgr::Get()->DisableAddon(m_addon->ID());
+    //CAddonMgr::Get().DisableAddon(m_addon->ID());
     CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 

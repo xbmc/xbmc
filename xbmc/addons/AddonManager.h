@@ -110,10 +110,10 @@ namespace ADDON
     DllLibCPluff *m_cpluff;
 
     static void cp_fatalErrorHandler(const char *msg) {
-      CAddonMgr::Get()->CPluffFatalError(msg);
+      CAddonMgr::Get().CPluffFatalError(msg);
     }
     static void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data) {
-      CAddonMgr::Get()->CPluffLog(level, msg, apid, user_data);
+      CAddonMgr::Get().CPluffLog(level, msg, apid, user_data);
     }
 
   private:

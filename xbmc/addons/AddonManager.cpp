@@ -62,7 +62,6 @@ cp_log_severity_t clog_to_cp(int);
  *
  */
 
-CAddonMgr* CAddonMgr::m_pInstance = NULL;
 map<TYPE, IAddonMgrCallback*> CAddonMgr::m_managers;
 
 AddonPtr AddonFactory(const cp_extension_t *props)
@@ -168,7 +167,7 @@ bool CAddonMgr::Init()
   }
 
   status = m_cpluff->register_logger(m_cp_context, cp_logger,
-      &CAddonMgr::m_pInstance, clog_to_cp(g_advancedSettings.m_logLevel));
+      &CAddonMgr::Get(), clog_to_cp(g_advancedSettings.m_logLevel));
   if (status != CP_OK)
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_logger() returned status: %i", status);
@@ -208,17 +207,17 @@ bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTE
 bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
 {
   VECADDONS temp;
-  if (CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, temp, CONTENT_NONE, enabledOnly))
+  if (CAddonMgr::Get().GetAddons(ADDON_PLUGIN, temp, CONTENT_NONE, enabledOnly))
     addons.insert(addons.end(), temp.begin(), temp.end());
-  if (CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, temp, CONTENT_NONE, enabledOnly))
+  if (CAddonMgr::Get().GetAddons(ADDON_SCRAPER, temp, CONTENT_NONE, enabledOnly))
     addons.insert(addons.end(), temp.begin(), temp.end());
-  if (CAddonMgr::Get()->GetAddons(ADDON_SCREENSAVER, temp, CONTENT_NONE, enabledOnly))
+  if (CAddonMgr::Get().GetAddons(ADDON_SCREENSAVER, temp, CONTENT_NONE, enabledOnly))
     addons.insert(addons.end(), temp.begin(), temp.end());
-  if (CAddonMgr::Get()->GetAddons(ADDON_SCRIPT, temp, CONTENT_NONE, enabledOnly))
+  if (CAddonMgr::Get().GetAddons(ADDON_SCRIPT, temp, CONTENT_NONE, enabledOnly))
     addons.insert(addons.end(), temp.begin(), temp.end());
-  if (CAddonMgr::Get()->GetAddons(ADDON_SKIN, temp, CONTENT_NONE, enabledOnly))
+  if (CAddonMgr::Get().GetAddons(ADDON_SKIN, temp, CONTENT_NONE, enabledOnly))
     addons.insert(addons.end(), temp.begin(), temp.end());
-  if (CAddonMgr::Get()->GetAddons(ADDON_VIZ, temp, CONTENT_NONE, enabledOnly))
+  if (CAddonMgr::Get().GetAddons(ADDON_VIZ, temp, CONTENT_NONE, enabledOnly))
     addons.insert(addons.end(), temp.begin(), temp.end());
   return !addons.empty();
 }

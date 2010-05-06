@@ -1068,7 +1068,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CStdString name = g_guiSettings.GetString("weather.script");
     AddonPtr addon;
-    if (CAddonMgr::Get()->GetAddon(name, addon, ADDON_PLUGIN))
+    if (CAddonMgr::Get().GetAddon(name, addon, ADDON_PLUGIN))
     { // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
     }
@@ -2273,7 +2273,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
   vector<CStdString> vecVis;
   VECADDONS addons;
 
-  CAddonMgr::Get()->GetAddons(ADDON_VIZ, addons);
+  CAddonMgr::Get().GetAddons(ADDON_VIZ, addons);
   if (!addons.empty())
   {
     for (unsigned int i = 0; i < addons.size(); i++)
@@ -2701,7 +2701,7 @@ void CGUIWindowSettingsCategory::FillInAddons(CGUISpinControlEx *pControl, CSett
     pSetting->m_entries.insert(std::make_pair("_virtual.fan", g_localizeStrings.Get(20425))); // Fanart Slideshow
   }
 
-  CAddonMgr::Get()->GetAddons(pSetting->m_type, addons, pSetting->m_content);
+  CAddonMgr::Get().GetAddons(pSetting->m_type, addons, pSetting->m_content);
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
   {
     AddonPtr addon = *it;
@@ -2848,7 +2848,7 @@ void CGUIWindowSettingsCategory::FillInWeatherScripts(CGUISpinControlEx *pContro
   pControl->AddLabel(g_localizeStrings.Get(24028), j++);
 
   //find weather scripts....
-  CAddonMgr::Get()->GetAddons(ADDON_SCRIPT, addons);
+  CAddonMgr::Get().GetAddons(ADDON_SCRIPT, addons);
   if (!addons.empty())
   {
     for (unsigned int i = 0; i < addons.size(); i++)

@@ -477,6 +477,12 @@ bool CApplication::Create()
     return false;
   }
 
+  if (!CAddonMgr::Get().Init())
+  {
+    CLog::Log(LOGFATAL, "CApplication::Create: Unable to start CAddonMgr");
+    FatalErrorHandler(true, true, true);
+  }
+
   g_settings.LoadProfiles(PROFILES_FILE);
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
@@ -1490,7 +1496,7 @@ void CApplication::ReloadSkin()
 bool CApplication::LoadSkin(const CStdString& skinID)
 {
   AddonPtr addon;
-  if (CAddonMgr::Get()->GetAddon(skinID, addon))
+  if (CAddonMgr::Get().GetAddon(skinID, addon))
   {
     LoadSkin(boost::dynamic_pointer_cast<ADDON::CSkinInfo>(addon));
     return true;
@@ -4768,7 +4774,7 @@ void CApplication::ProcessSlow()
     g_lcd->Initialize();
   }
 #endif
-  ADDON::CAddonMgr::Get()->UpdateRepos();
+  ADDON::CAddonMgr::Get().UpdateRepos();
 }
 
 // Global Idle Time in Seconds

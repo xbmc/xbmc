@@ -325,7 +325,7 @@ void CAddon::BuildLibName(cp_plugin_info_t *props)
     {
       case ADDON_SCREENSAVER:
         {
-          CStdString temp = CAddonMgr::Get()->GetExtValue(props->extensions->configuration, "@library");
+          CStdString temp = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library");
           m_strLibName = temp;
         }
         break;

@@ -303,7 +303,7 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
       else
       {
         ADDON::AddonPtr plugin;
-        if (ADDON::CAddonMgr::Get()->GetAddon(url.GetHostName(), plugin, ADDON::ADDON_PLUGIN))
+        if (ADDON::CAddonMgr::Get().GetAddon(url.GetHostName(), plugin, ADDON::ADDON_PLUGIN))
         if (plugin->HasSettings())
           buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045); // Plugin Settings
       }

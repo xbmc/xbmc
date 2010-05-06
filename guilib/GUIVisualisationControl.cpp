@@ -29,7 +29,7 @@ void CGUIVisualisationControl::Render()
   if (!m_addon && g_application.IsPlayingAudio())
   {
     AddonPtr viz;
-    if (ADDON::CAddonMgr::Get()->GetDefault(ADDON_VIZ, viz))
+    if (ADDON::CAddonMgr::Get().GetDefault(ADDON_VIZ, viz))
       LoadAddon(viz);
   }
   else

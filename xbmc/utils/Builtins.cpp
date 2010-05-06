@@ -351,7 +351,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
       AddonPtr script;
       CStdString scriptpath(params[0]);
-      if (CAddonMgr::Get()->GetAddon(params[0], script))
+      if (CAddonMgr::Get().GetAddon(params[0], script))
         scriptpath = CUtil::AddFileToFolder(script->Path(),script->LibName());
 
       g_pythonParser.evalFile(scriptpath.c_str(), argc, (const char**)argv);
@@ -1278,7 +1278,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("addon.default.opensettings") && params.size() == 1)
   {
     AddonPtr addon;
-    if (CAddonMgr::Get()->GetDefault(TranslateType(params[0]), addon))
+    if (CAddonMgr::Get().GetDefault(TranslateType(params[0]), addon))
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)

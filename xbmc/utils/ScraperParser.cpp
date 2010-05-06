@@ -154,7 +154,7 @@ bool CScraperParser::LoadFromXML()
       while (itr != deps.end())
       {
         AddonPtr dep;
-        if (!CAddonMgr::Get()->GetAddon((*itr).first, dep, ADDON_SCRAPER_LIBRARY, false))
+        if (!CAddonMgr::Get().GetAddon((*itr).first, dep, ADDON_SCRAPER_LIBRARY, false))
         {
           itr++;
           continue;

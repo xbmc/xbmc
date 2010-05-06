@@ -49,13 +49,13 @@ CSkinInfo::CSkinInfo(cp_plugin_info_t *props)
   CLog::Log(LOGINFO, "Default 4:3 resolution directory is %s", CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolution)).c_str());
   CLog::Log(LOGINFO, "Default 16:9 resolution directory is %s", CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolutionWide)).c_str());
 
-  CStdString str = CAddonMgr::Get()->GetExtValue(props->extensions->configuration, "@effectslowdown");
+  CStdString str = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@effectslowdown");
   if (!str.IsEmpty())
     m_effectsSlowDown = (float)atof(str.c_str());
   else
     m_effectsSlowDown = 1.f;
 
-  str = CAddonMgr::Get()->GetExtValue(props->extensions->configuration, "@debugging");
+  str = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@debugging");
   m_debugging = !strcmp(str.c_str(), "true");
 
   m_onlyAnimateToHome = true;
@@ -275,7 +275,7 @@ void CSkinInfo::GetSkinPaths(std::vector<CStdString> &paths) const
 void CSkinInfo::GetDefaultResolution(cp_plugin_info_t *props, const char *tag, RESOLUTION &res, const RESOLUTION &def) const
 {
   //FIXME! only respects one extension per addon
-  CStdString strRes(CAddonMgr::Get()->GetExtValue(props->extensions->configuration, tag));
+  CStdString strRes(CAddonMgr::Get().GetExtValue(props->extensions->configuration, tag));
   if (!strRes.empty())
   {
     strRes.ToLower();
