@@ -101,14 +101,10 @@ CAddonMgr::~CAddonMgr()
     m_cpluff->destroy();
 }
 
-CAddonMgr* CAddonMgr::Get()
+CAddonMgr &CAddonMgr::Get()
 {
-  if (!m_pInstance)
-  {
-    m_pInstance = new CAddonMgr();
-    m_pInstance->Init();
-  }
-  return m_pInstance;
+  static CAddonMgr sAddonMgr;
+  return sAddonMgr;
 }
 
 IAddonMgrCallback* CAddonMgr::GetCallbackForType(TYPE type)

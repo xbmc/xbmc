@@ -73,9 +73,8 @@ namespace ADDON
   class CAddonMgr : public IJobCallback
   {
   public:
-    static CAddonMgr* Get();
+    static CAddonMgr &Get();
     bool Init();
-    virtual ~CAddonMgr();
 
     IAddonMgrCallback* GetCallbackForType(TYPE type);
     bool RegisterAddonMgrCallback(TYPE type, IAddonMgrCallback* cb);
@@ -121,8 +120,12 @@ namespace ADDON
     bool DependenciesMet(AddonPtr &addon);
     bool UpdateIfKnown(AddonPtr &addon);
 
+    // private construction, and no assignements; use the provided singleton methods
     CAddonMgr();
-    static CAddonMgr* m_pInstance;
+    CAddonMgr(const CAddonMgr&);
+    CAddonMgr const& operator=(CAddonMgr const&);
+    virtual ~CAddonMgr();
+
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     MAPADDONS m_addons;
     CStopWatch m_watch;
