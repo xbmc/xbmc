@@ -477,12 +477,6 @@ bool CApplication::Create()
     return false;
   }
 
-  if (!CAddonMgr::Get().Init())
-  {
-    CLog::Log(LOGFATAL, "CApplication::Create: Unable to start CAddonMgr");
-    FatalErrorHandler(true, true, true);
-  }
-
   g_settings.LoadProfiles(PROFILES_FILE);
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
@@ -592,6 +586,14 @@ bool CApplication::Create()
     FatalErrorHandler(true, true, true);
 
   update_emu_environ();//apply the GUI settings
+
+  // start-up Addons Framework
+  // currently bails out if either cpluff Dll is unavailable or system dir can not be scanned
+  if (!CAddonMgr::Get().Init())
+  {
+    CLog::Log(LOGFATAL, "CApplication::Create: Unable to start CAddonMgr");
+    FatalErrorHandler(true, true, true);
+  }
 
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
