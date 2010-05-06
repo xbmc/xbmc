@@ -35,7 +35,7 @@ function CallPlay(album) {
 <script type="text/javascript">
 var http_request = new XMLHttpRequest();
 http_request.open( "POST", "jsonrpc", false );
-http_request.send('{"jsonrpc": "2.0", "method": "MusicLibrary.GetAlbums", "id": 1}');
+http_request.send('{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "id": 1}');
 
 var the_object = JSON.parse(http_request.responseText);
 var result = the_object["result"];

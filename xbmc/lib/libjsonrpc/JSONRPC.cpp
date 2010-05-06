@@ -26,7 +26,7 @@
 #include "AVPlaylistOperations.h"
 #include "PlaylistOperations.h"
 #include "FileOperations.h"
-#include "MusicLibrary.h"
+#include "AudioLibrary.h"
 #include "VideoLibrary.h"
 #include "SystemOperations.h"
 #include "XBMCOperations.h"
@@ -147,11 +147,11 @@ Command CJSONRPC::m_commands[] = {
   { "Files.GetDirectory",                           CFileOperations::GetDirectory,                       Response,     ReadData,        "Retrieve the specified directory" },
 
 // Music library
-  { "MusicLibrary.GetArtists",                      CMusicLibrary::GetArtists,                           Response,     ReadData,        "Retrieve all artists" },
-  { "MusicLibrary.GetAlbums",                       CMusicLibrary::GetAlbums,                            Response,     ReadData,        "Retrieve all albums from specified artist or genre" },
-  { "MusicLibrary.GetSongs",                        CMusicLibrary::GetSongs,                             Response,     ReadData,        "Retrieve all songs from specified album, artist or genre" },
+  { "AudioLibrary.GetArtists",                      CAudioLibrary::GetArtists,                           Response,     ReadData,        "Retrieve all artists" },
+  { "AudioLibrary.GetAlbums",                       CAudioLibrary::GetAlbums,                            Response,     ReadData,        "Retrieve all albums from specified artist or genre" },
+  { "AudioLibrary.GetSongs",                        CAudioLibrary::GetSongs,                             Response,     ReadData,        "Retrieve all songs from specified album, artist or genre" },
 
-  { "MusicLibrary.ScanForContent",                  CMusicLibrary::ScanForContent,                       Response,     ScanLibrary,     "" },
+  { "AudioLibrary.ScanForContent",                  CAudioLibrary::ScanForContent,                       Response,     ScanLibrary,     "" },
 
 // Video library
   { "VideoLibrary.GetMovies",                       CVideoLibrary::GetMovies,                            Response,     ReadData,        "Retrieve all movies. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },

@@ -26,7 +26,7 @@
 
 namespace JSONRPC
 {
-  class CMusicLibrary : public CFileItemHandler
+  class CAudioLibrary : public CFileItemHandler
   {
   public:
     static JSON_STATUS GetArtists(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);

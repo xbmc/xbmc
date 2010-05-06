@@ -21,7 +21,7 @@
 
 #include "FileItemHandler.h"
 #include "PlaylistOperations.h"
-#include "MusicLibrary.h"
+#include "AudioLibrary.h"
 #include "VideoLibrary.h"
 #include "../Util.h"
 
@@ -193,7 +193,7 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
   }
 
   CPlaylistOperations::FillFileItemList(param, list);
-  CMusicLibrary::FillFileItemList(param, list);
+  CAudioLibrary::FillFileItemList(param, list);
   CVideoLibrary::FillFileItemList(param, list);
 
   return true;

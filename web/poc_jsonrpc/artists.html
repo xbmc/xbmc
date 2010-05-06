@@ -15,7 +15,7 @@ function writeArtist(artist) {
 
   var http_request = new XMLHttpRequest();
   http_request.open( "POST", "jsonrpc", false );
-  http_request.send('{"jsonrpc": "2.0", "method": "MusicLibrary.GetAlbums", "params": { "artistid": ' + artist["artistid"] + ' }, "id": 1}');
+  http_request.send('{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "artistid": ' + artist["artistid"] + ' }, "id": 1}');
 
   var the_object = JSON.parse(http_request.responseText);
   var result = the_object["result"];
@@ -55,7 +55,7 @@ function writeArtist(artist) {
 <script type="text/javascript">
 var http_request = new XMLHttpRequest();
 http_request.open( "POST", "jsonrpc", false );
-http_request.send('{"jsonrpc": "2.0", "method": "MusicLibrary.GetArtists", "id": 1}');
+http_request.send('{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "id": 1}');
 
 var the_object = JSON.parse(http_request.responseText);
 var result = the_object["result"];
