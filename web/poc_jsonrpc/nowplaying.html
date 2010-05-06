@@ -44,8 +44,10 @@ http_request.open( "POST", "jsonrpc", false );
 http_request.send('{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}');
 
 var players = JSON.parse(http_request.responseText)["result"];
-if (players.length > 0) {
-  var player = players[0];
+if (players["video"] || players["audio"]) {
+  var player = "Video";
+  if (players["audio"])
+    player = "Audio";
 
   http_request = new XMLHttpRequest();
   http_request.open( "POST", "jsonrpc", false );
