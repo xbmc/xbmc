@@ -503,7 +503,7 @@ void Xcddb::parseData(const char *buffer)
           strValue = it->second + strValue; // keyword occured before, concatenate
         else
           keywordsOrder.push_back(strKeyword);
-        
+
         keywords[strKeyword] = strValue;
       }
     }
@@ -539,9 +539,7 @@ void Xcddb::parseData(const char *buffer)
     else if (strKeyword== "DGENRE")
       m_strGenre = TrimToUTF8(strValue);
     else if (strKeyword.Left(6) == "TTITLE")
-    {
       addTitle(strKeyword + "=" + strValue);
-    }
     else if (strKeyword == "EXTD")
     {
       CStdString strExtd(strValue);
@@ -551,14 +549,8 @@ void Xcddb::parseData(const char *buffer)
         // Extract Year from extended info
         // as a fallback
         int iPos = strExtd.Find("YEAR:");
-        if (iPos > -1)
-        {
-          CStdString strYear;
-          strYear = strExtd.Mid(iPos + 6, 4);
-
-          // You never know if you really get UTF-8 strings from cddb
-          g_charsetConverter.unknownToUTF8(strYear, m_strYear);
-        }
+        if (iPos > -1) // You never know if you really get UTF-8 strings from cddb
+          g_charsetConverter.unknownToUTF8(strExtd.Mid(iPos + 6, 4), m_strYear);
       }
 
       if (m_strGenre.IsEmpty())
@@ -568,8 +560,7 @@ void Xcddb::parseData(const char *buffer)
         int iPos = strExtd.Find("ID3G:");
         if (iPos > -1)
         {
-          CStdString strGenre;
-          strGenre = strExtd.Mid(iPos + 5, 4);
+          CStdString strGenre = strExtd.Mid(iPos + 5, 4);
           strGenre.TrimLeft(' ');
           if (StringUtils::IsNaturalNumber(strGenre))
           {
@@ -580,9 +571,7 @@ void Xcddb::parseData(const char *buffer)
       }
     }
     else if (strKeyword.Left(4) == "EXTT")
-    {
       addExtended(strKeyword + "=" + strValue);
-    }
   }
 
   //writeLog("parseData Ende");
