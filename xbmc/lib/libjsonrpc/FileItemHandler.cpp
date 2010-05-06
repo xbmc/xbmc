@@ -23,6 +23,7 @@
 #include "PlaylistOperations.h"
 #include "AudioLibrary.h"
 #include "VideoLibrary.h"
+#include "FileOperations.h"
 #include "../Util.h"
 
 using namespace MUSIC_INFO;
@@ -195,6 +196,7 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
   CPlaylistOperations::FillFileItemList(param, list);
   CAudioLibrary::FillFileItemList(param, list);
   CVideoLibrary::FillFileItemList(param, list);
+  CFileOperations::FillFileItemList(param, list);
 
   return true;
 }

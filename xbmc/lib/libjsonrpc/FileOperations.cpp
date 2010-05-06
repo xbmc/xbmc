@@ -117,3 +117,65 @@ JSON_STATUS CFileOperations::Download(const CStdString &method, ITransportLayer 
 
   return transport->Download(parameterObject.asString().c_str(), &result) ? OK : BadPermission;
 }
+
+bool CFileOperations::FillFileItemList(const Value &parameterObject, CFileItemList &list)
+{
+  if (parameterObject.isObject() && parameterObject.isMember("directory"))
+  {
+    CStdString media = "files";
+    if (parameterObject.isMember("media"))
+    {
+      if (parameterObject["media"].isString())
+        media = parameterObject["media"].asString();
+      else
+        return InvalidParams;
+    }
+
+    media = media.ToLower();
+
+    if (media.Equals("video") || media.Equals("music") || media.Equals("pictures") || media.Equals("files") || media.Equals("programs"))
+    {
+      CDirectory directory;
+      CFileItemList items;
+      CStdString strPath = parameterObject["directory"].asString();
+
+      if (directory.GetDirectory(strPath, items))
+      {
+        CStdStringArray regexps;
+
+        if (media.Equals("video"))
+          regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
+        else if (media.Equals("music"))
+          regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+        else if (media.Equals("pictures"))
+          regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+
+        CFileItemList filteredDirectories;
+        for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
+        {
+          if (CUtil::ExcludeFileOrFolder(items[i]->m_strPath, regexps))
+            continue;
+
+          if (items[i]->m_bIsFolder)
+            filteredDirectories.Add(items[i]);
+          else
+            list.Add(items[i]);
+        }
+
+        if (parameterObject.isMember("recursive") && parameterObject["recursive"].isBool())
+        {
+          for (unsigned int i = 0; i < filteredDirectories.Size(); i++)
+          {
+            Value val = parameterObject;
+            val["directory"] = filteredDirectories[i]->m_strPath;
+            FillFileItemList(val, list);
+          }
+        }
+
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
