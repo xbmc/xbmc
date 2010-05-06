@@ -174,7 +174,8 @@ const BUILT_IN commands[] = {
   { "Control.Message",            true,   "Send a given message to a control within a given window" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
-  { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
+  { "SetProperty",                true,   "Sets a window property for the current focused window/dialog (key,value)" },
+  { "ClearProperty",              true,   "Clears a window property for the current focused window/dialog (key,value)" },
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
   { "Addon.Default.OpenSettings", true,   "Open a settings dialog for the default addon of the given type" },
@@ -1267,9 +1268,15 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("setproperty") && params.size() == 2)
   {
-    CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
+    CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
     if (window)
       window->SetProperty(params[0],params[1]);
+  }
+  else if (execute.Equals("clearproperty") && params.size() == 2)
+  {
+    CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
+    if (window)
+      window->SetProperty(params[0],"");
   }
   else if (execute.Equals("wakeonlan"))
   {
