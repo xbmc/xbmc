@@ -1130,7 +1130,7 @@ CP_C_API cp_plugin_info_t * cp_load_plugin_descriptor(cp_context_t *context, con
 					N_("Plug-in descriptor in %s is invalid."), path);
 				break;
 			case CP_ERR_IO:
-				cpi_errorf(context,
+				cpi_debugf(context,
 					N_("An I/O error occurred while loading a plug-in descriptor from %s."), path);
 				break;
 			case CP_ERR_RESOURCE:
