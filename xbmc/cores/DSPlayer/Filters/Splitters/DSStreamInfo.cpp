@@ -25,6 +25,7 @@
 #include "DVDPlayer/DVDDemuxers/DVDDemux.h"
 #include "DSGuidHelper.h"
 #include "MMReg.h"
+#include "dvdmedia.h"
 extern "C"
 {
   #include "libavformat/avformat.h"
@@ -213,8 +214,56 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   {
     const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(&right);
     AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
+    
     mtype.majortype = MEDIATYPE_Video;
-    mtype.formattype = FORMAT_VideoInfo;
+    /* FormatType */
+    /* VideoInfo */
+    /* VideoInfo2 */
+    /* MPEGVideo */
+    /* MPEG2Video */
+    const FOURCC *fccs=g_GuidHelper.getCodecFOURCCs(avstream->codec->codec_id);
+    
+    //Most used type
+    mtype.formattype = GUID_NULL;
+    for (const FOURCC *fcc=fccs;*fcc;fcc++)
+    {
+      if (*fcc == FOURCC_AVC1)
+      {
+        mtype.formattype = FORMAT_MPEG2Video;
+        mtype.subtype = FOURCCMap(FOURCC_AVC1);
+        //mtype.pbFormat =
+        MPEG2VIDEOINFO *mpeginfo = (MPEG2VIDEOINFO*)mtype.AllocFormatBuffer(sizeof(MPEG2VIDEOINFO));
+        mpeginfo->dwProfile = avstream->codec->profile;
+        mpeginfo->dwLevel = avstream->codec->level;
+        mpeginfo->hdr.AvgTimePerFrame = (REFERENCE_TIME)(10000000 / (stream->iFpsRate / stream->iFpsScale));
+  
+        mpeginfo->hdr.dwBitErrorRate = 0;
+        
+        mpeginfo->hdr.dwBitRate = avstream->codec->bit_rate;
+        mpeginfo->hdr.bmiHeader.biSize = sizeof(mpeginfo->hdr.bmiHeader);
+        mpeginfo->hdr.bmiHeader.biWidth= stream->iWidth;
+        mpeginfo->hdr.bmiHeader.biHeight= stream->iHeight;
+        
+        mpeginfo->hdr.bmiHeader.biBitCount= avstream->codec->bits_per_coded_sample;
+        mpeginfo->hdr.bmiHeader.biSizeImage = stream->iWidth * stream->iHeight * avstream->codec->bits_per_coded_sample / 8;
+        mpeginfo->hdr.bmiHeader.biCompression = mtype.subtype.Data1;
+        mpeginfo->hdr.bmiHeader.biPlanes = 1;
+        mpeginfo->hdr.bmiHeader.biClrUsed = 0;
+        mpeginfo->hdr.bmiHeader.biClrImportant = 0;
+        mpeginfo->hdr.bmiHeader.biYPelsPerMeter = 0;
+        mpeginfo->hdr.bmiHeader.biXPelsPerMeter = 0;
+        mtype.SetFormat((PBYTE)mpeginfo,sizeof(mpeginfo));
+        return;
+        break;
+      }
+  
+    }
+    
+    //typedef struct SPS in h264.h from ffmpeg source might have all info we need for the MPEG2VIDEOINFO
+    if (mtype.formattype == GUID_NULL)
+    {
+      mtype.formattype = FORMAT_VideoInfo;
+    }
   
     mtype.bTemporalCompression = 0;
     
@@ -253,12 +302,10 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
 
   mtype.SetFormat((PBYTE)pvi,sizeof(VIDEOINFOHEADER));
   //Not sure if its really working but in case the other way dont work will try this one
-  /*const FOURCC *fccs=g_GuidHelper.getCodecFOURCCs(avstream->codec->codec_id);
-  std::vector<FOURCC> lstFourcc;
-  for (const FOURCC *fcc=fccs;*fcc;fcc++)
-  {
-    lstFourcc.push_back(*fcc);
-  }*/
+  
+ 
+      
+  
     
     fpsscale  = stream->iFpsScale;
     fpsrate   = stream->iFpsRate;

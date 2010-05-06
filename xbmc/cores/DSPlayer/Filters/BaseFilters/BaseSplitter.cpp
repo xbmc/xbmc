@@ -1071,8 +1071,6 @@ bool CBaseSplitterFilter::IsAnyPinDrying()
           boost::shared_ptr<CBaseSplitterOutputPin> pOutPin = *itt;
           pOutPin->SetThreadPriority(THREAD_PRIORITY_BELOW_NORMAL);
         }
-        //POSITION pos = m_pOutputs.GetHeadPosition();
-        //while(pos) m_pOutputs.GetNext(pos)->SetThreadPriority(THREAD_PRIORITY_BELOW_NORMAL);
         m_priority = THREAD_PRIORITY_BELOW_NORMAL;
       }
       return(true);
@@ -1158,16 +1156,7 @@ int CBaseSplitterFilter::GetPinCount()
 CBasePin* CBaseSplitterFilter::GetPin(int n)
 {
   CAutoLock cAutoLock(this);
-/*
-  std::list<ISubPic*>::iterator pos = m_Queue.begin();
-  std::advance(pos, nSubPic);
-  if(pos != m_Queue.end())
-  {
-    rtStart = (*pos)->GetStart();
-    rtStop = (*pos)->GetStop();
-  }
 
-*/
   if(n >= 0 && n < (int)m_pOutputs.size())
   {
     list<boost::shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin();

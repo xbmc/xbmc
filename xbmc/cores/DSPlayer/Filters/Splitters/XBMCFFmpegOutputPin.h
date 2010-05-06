@@ -19,36 +19,22 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "Streams.h"
-#include <list>
-class DsPacket : public std::vector<BYTE>
+
+
+
+#include "streams.h"
+#include "../BaseFilters/BaseSplitter.h"
+
+class CXBMCSplitterFilter;
+
+//********************************************************************
+//
+//********************************************************************
+class CXBMCFFmpegOutputPin : public CBaseSplitterOutputPin
 {
 public:
-	DWORD TrackNumber;
-	BOOL bDiscontinuity, bSyncPoint, bAppendable;
-	static const REFERENCE_TIME INVALID_TIME = _I64_MIN;
-	REFERENCE_TIME rtStart, rtStop;
-	AM_MEDIA_TYPE* pmt;
-	DsPacket() {pmt = NULL; bDiscontinuity = bAppendable = FALSE;}
-	virtual ~DsPacket() {if(pmt) DeleteMediaType(pmt);}
-	virtual int GetDataSize() {return size();}
-	void SetData(const void* ptr, DWORD len) 
-  {
-    resize(len); 
-    memcpy(&this[0], ptr, len);
-  }
+  CXBMCFFmpegOutputPin(std::vector<CMediaType>& mts, LPCWSTR pName, CBaseFilter* pFilter, CCritSec* pLock, HRESULT* phr);
+
+  HRESULT CheckConnect(IPin* pPin);
 };
 
-class CDemuxPacketQueue 
-  : public CCritSec,
-    protected std::list<boost::shared_ptr<DsPacket>>
-{
-  int m_size;
-public:
-  CDemuxPacketQueue();
-  void Add(boost::shared_ptr<DsPacket> p);
-  boost::shared_ptr<DsPacket> Remove();
-  void RemoveAll();
-  int size(), GetSize();
-  
-};
