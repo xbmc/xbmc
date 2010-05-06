@@ -205,7 +205,7 @@
 #endif
 #define CP_HOST "win32"
 #define CP_SHREXT ".dll"
-#define CP_FNAMESEP_CHAR "\\" // If we switch back to special:// paths then this can be '/' instead
+#define CP_FNAMESEP_CHAR '\\' // If we switch back to special:// paths then this can be '/' instead
 #define CP_THREADS
 #endif
 #endif /*CPLUFFDEF_H_*/
