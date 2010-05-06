@@ -54,7 +54,7 @@
 
 #include "DVDStreamInfo.h"
 #include "GUISettings.h"
-#include "SystemInfo.h"
+#include "utils/SystemInfo.h"
 
 CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
 {
