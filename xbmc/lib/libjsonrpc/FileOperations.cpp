@@ -76,17 +76,26 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
       CFileItemList items;
       CStdString strPath = parameterObject["directory"].asString();
 
-      if (directory.GetDirectory(strPath, items))
+      CStdStringArray regexps;
+      CStdString extensions = "";
+      if (media.Equals("video"))
       {
-        CStdStringArray regexps;
+        regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
+        extensions = g_settings.m_videoExtensions;
+      }
+      else if (media.Equals("music"))
+      {
+        regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+        extensions = g_settings.m_musicExtensions;
+      }
+      else if (media.Equals("pictures"))
+      {
+        regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+        extensions = g_settings.m_pictureExtensions;
+      }
 
-        if (media.Equals("video"))
-          regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
-        else if (media.Equals("music"))
-          regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
-        else if (media.Equals("pictures"))
-          regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
-
+      if (directory.GetDirectory(strPath, items, extensions))
+      {
         CFileItemList filteredDirectories, filteredFiles;
         for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
         {
@@ -139,17 +148,26 @@ bool CFileOperations::FillFileItemList(const Value &parameterObject, CFileItemLi
       CFileItemList items;
       CStdString strPath = parameterObject["directory"].asString();
 
-      if (directory.GetDirectory(strPath, items))
+      CStdStringArray regexps;
+      CStdString extensions = "";
+      if (media.Equals("video"))
       {
-        CStdStringArray regexps;
+        regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
+        extensions = g_settings.m_videoExtensions;
+      }
+      else if (media.Equals("music"))
+      {
+        regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
+        extensions = g_settings.m_musicExtensions;
+      }
+      else if (media.Equals("pictures"))
+      {
+        regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
+        extensions = g_settings.m_pictureExtensions;
+      }
 
-        if (media.Equals("video"))
-          regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
-        else if (media.Equals("music"))
-          regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;
-        else if (media.Equals("pictures"))
-          regexps = g_advancedSettings.m_pictureExcludeFromListingRegExps;
-
+      if (directory.GetDirectory(strPath, items, extensions))
+      {
         CFileItemList filteredDirectories;
         for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
         {
