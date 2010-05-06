@@ -64,7 +64,7 @@ static void assert_processed_zero(cp_context_t *context) {
 #endif
 
 static void unregister_extensions(cp_context_t *context, cp_plugin_info_t *plugin) {
-	int i;
+	unsigned int i;
 	
 	for (i = 0; i < plugin->num_ext_points; i++) {
 		cp_ext_point_t *ep = plugin->ext_points + i;
@@ -106,7 +106,7 @@ CP_C_API cp_status_t cp_install_plugin(cp_context_t *context, cp_plugin_info_t *
 	cp_plugin_t *rp = NULL;
 	cp_status_t status = CP_OK;
 	cpi_plugin_event_t event;
-	int i;
+	unsigned int i;
 
 	CHECK_NOT_NULL(context);
 	CHECK_NOT_NULL(plugin);
@@ -418,7 +418,7 @@ static int resolve_plugin_prel_rec(cp_context_t *context, cp_plugin_t *plugin) {
 	cp_status_t status = CP_OK;
 	int error_reported = 0;
 	lnode_t *node = NULL;
-	int i;
+	unsigned int i;
 
 	// Check if already resolved
 	if (plugin->state >= CP_PLUGIN_RESOLVED) {
@@ -1089,7 +1089,7 @@ static void free_extension_content(cp_extension_t *extension) {
 }
 
 static void free_cfg_element_content(cp_cfg_element_t *ce) {
-	int i;
+	unsigned int i;
 
 	assert(ce != NULL);
 	free(ce->name);
@@ -1105,7 +1105,7 @@ static void free_cfg_element_content(cp_cfg_element_t *ce) {
 }
 
 CP_HIDDEN void cpi_free_plugin(cp_plugin_info_t *plugin) {
-	int i;
+	unsigned int i;
 	
 	assert(plugin != NULL);
 	free(plugin->name);
