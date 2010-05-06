@@ -96,8 +96,7 @@ CAddonMgr::CAddonMgr()
 
 CAddonMgr::~CAddonMgr()
 {
-  if(m_cpluff)
-    m_cpluff->destroy();
+  DeInit();
 }
 
 CAddonMgr &CAddonMgr::Get()
@@ -176,6 +175,13 @@ bool CAddonMgr::Init()
 
   status = m_cpluff->scan_plugins(m_cp_context, 0);
   return true;
+}
+
+void CAddonMgr::DeInit()
+{
+  if (m_cpluff)
+    m_cpluff->destroy();
+  m_cpluff = NULL;
 }
 
 bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabledOnly/*= true*/)

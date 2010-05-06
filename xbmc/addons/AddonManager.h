@@ -75,6 +75,7 @@ namespace ADDON
   public:
     static CAddonMgr &Get();
     bool Init();
+    void DeInit();
 
     IAddonMgrCallback* GetCallbackForType(TYPE type);
     bool RegisterAddonMgrCallback(TYPE type, IAddonMgrCallback* cb);
