@@ -269,11 +269,16 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
       && m_addons.find(type) == m_addons.end())
     return false;
 
-  cp_status_t status;
-  cp_plugin_info_t *cpaddon = NULL;
-  cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
-  if (status == CP_OK && cpaddon->extensions)
-    return (addon = AddonFactory(cpaddon->extensions));
+  if (type == ADDON_SCREENSAVER || type == ADDON_SKIN)
+  {
+    cp_status_t status;
+    cp_plugin_info_t *cpaddon = NULL;
+    cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
+    if (status == CP_OK && cpaddon->extensions)
+      return (addon = AddonFactory(cpaddon->extensions));
+    else
+      return false;
+  }
 
   if (m_idMap[str])
   {

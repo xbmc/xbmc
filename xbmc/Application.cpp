@@ -1496,7 +1496,7 @@ void CApplication::ReloadSkin()
 bool CApplication::LoadSkin(const CStdString& skinID)
 {
   AddonPtr addon;
-  if (CAddonMgr::Get().GetAddon(skinID, addon))
+  if (CAddonMgr::Get().GetAddon(skinID, addon, ADDON_SKIN))
   {
     LoadSkin(boost::dynamic_pointer_cast<ADDON::CSkinInfo>(addon));
     return true;
