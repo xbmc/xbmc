@@ -9,5 +9,6 @@
   </requires>
   <extension
     point="xbmc.ui.screensaver"
-    library_linux="Plasma.xbs"/>
+    library_linux="Plasma.xbs"
+    library_osx="Plasma.xbs"/>
 </addon>

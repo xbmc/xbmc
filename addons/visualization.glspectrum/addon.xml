@@ -6,5 +6,6 @@
   provider-name="Team XBMC">
   <extension
     point="xbmc.player.musicviz"
-    library_linux="opengl_spectrum.vis"/>
+    library_linux="opengl_spectrum.vis"
+    library_osx="opengl_spectrum.vis" />
 </addon>
