@@ -184,7 +184,6 @@ CLinuxRendererGL::~CLinuxRendererGL()
 
   if (m_pYUVShader)
   {
-    m_pYUVShader->Free();
     delete m_pYUVShader;
     m_pYUVShader = NULL;
   }
@@ -1064,9 +1063,6 @@ void CLinuxRendererGL::UpdateVideoFilter()
 
 void CLinuxRendererGL::LoadShaders(int field)
 {
-  int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
-  CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
-
   if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VDPAU)
   {
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
@@ -1079,6 +1075,15 @@ void CLinuxRendererGL::LoadShaders(int field)
   }
   else
   {
+    int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
+    CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
+
+    if (m_pYUVShader)
+    {
+      delete m_pYUVShader;
+      m_pYUVShader = NULL;
+    }
+
     switch(requestedMethod)
     {
       case RENDER_METHOD_AUTO:
@@ -1086,13 +1091,6 @@ void CLinuxRendererGL::LoadShaders(int field)
       // Try GLSL shaders if supported and user requested auto or GLSL.
       if (glCreateProgram)
       {
-        if (m_pYUVShader)
-        {
-          m_pYUVShader->Free();
-          delete m_pYUVShader;
-          m_pYUVShader = NULL;
-        }
-
         bool nonLinStretch = m_nonLinStretch && (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f)
                              && m_renderQuality == RQ_SINGLEPASS && m_textureTarget != GL_TEXTURE_RECTANGLE_ARB;
 
@@ -1109,7 +1107,6 @@ void CLinuxRendererGL::LoadShaders(int field)
         }
         else
         {
-          m_pYUVShader->Free();
           delete m_pYUVShader;
           m_pYUVShader = NULL;
           CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
@@ -1122,12 +1119,6 @@ void CLinuxRendererGL::LoadShaders(int field)
       {
         CLog::Log(LOGNOTICE, "GL: ARB shaders support detected");
         m_renderMethod = RENDER_ARB ;
-        if (m_pYUVShader)
-        {
-          m_pYUVShader->Free();
-          delete m_pYUVShader;
-          m_pYUVShader = NULL;
-        }
 
         // create regular progressive scan shader
         m_pYUVShader = new YUV2RGBProgressiveShaderARB(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
@@ -1141,7 +1132,6 @@ void CLinuxRendererGL::LoadShaders(int field)
         }
         else
         {
-          m_pYUVShader->Free();
           delete m_pYUVShader;
           m_pYUVShader = NULL;
           CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB ARB shader");
