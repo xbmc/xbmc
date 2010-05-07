@@ -132,8 +132,6 @@ IMAGES= \
 	icon_music.png \
 	icon_network.png \
 	icon_pics.png \
-	icon_record.png \
-	icon_schedule.png \
 	icon_system.png \
 	icon_video.png \
 	icon_weather.png \
@@ -300,7 +298,6 @@ IMAGES= \
 	sub-suspend-focus.gif \
 	sub-suspend-nofocus.png \
 	thumb-back.png \
-	tv-background.png \
 	unknown-user.png \
 	VeticalLight.png \
 	VolumeIcon-Mute.png \
