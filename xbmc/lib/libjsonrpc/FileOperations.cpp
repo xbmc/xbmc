@@ -137,7 +137,7 @@ bool CFileOperations::FillFileItemList(const Value &parameterObject, CFileItemLi
       if (parameterObject["media"].isString())
         media = parameterObject["media"].asString();
       else
-        return InvalidParams;
+        return false;
     }
 
     media = media.ToLower();
@@ -182,7 +182,7 @@ bool CFileOperations::FillFileItemList(const Value &parameterObject, CFileItemLi
 
         if (parameterObject.isMember("recursive") && parameterObject["recursive"].isBool())
         {
-          for (unsigned int i = 0; i < filteredDirectories.Size(); i++)
+          for (int i = 0; i < filteredDirectories.Size(); i++)
           {
             Value val = parameterObject;
             val["directory"] = filteredDirectories[i]->m_strPath;
