@@ -97,6 +97,7 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       // We have gone to the DVD menu, so close the OSD.
       Close();
     }
+    break;
   case GUI_MSG_WINDOW_DEINIT:  // fired when OSD is hidden
     {
       // Remove our subdialogs if visible
