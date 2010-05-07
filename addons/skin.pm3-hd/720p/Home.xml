@@ -309,163 +309,145 @@
 		</control>
 		<!-- TV Info -->
 		<control type="group">
-			<control type="group">
-				<description>NextRecordingInfo</description>
-				<posx>600r</posx>
-				<posy>140</posy>
-				<visible>Container(9000).HasFocus(8) + !PVR.IsRecording + PVR.HasTimer</visible>
-				<include>homestatsinfo</include>
-				<control type="image">
-					<description>gradient</description>
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>600</width>
-					<height>130</height>
-					<texture>gradient.png</texture>
-				</control>
-				<control type="image">
-					<description>back image</description>
-					<posx>160r</posx>
-					<posy>0</posy>
-					<width>130</width>
-					<height>130</height>
-					<texture>homeinfo-blank.png</texture>
-				</control>
-				<control type="image">
-					<description>Weather image</description>
-					<posx>150r</posx>
-					<posy>10</posy>
-					<width>110</width>
-					<height>110</height>
-					<texture>icon_schedule.png</texture>
-				</control>
-				<control type="label">
-					<description>Timer label</description>
-					<posx>170r</posx>
-					<posy>5</posy>
-					<height>30</height>
-					<width>500</width>
-					<label>[B]$LOCALIZE[19157][/B]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>NextRecordingTitle</description>
-					<posx>170r</posx>
-					<posy>37</posy>
-					<height>30</height>
-					<width>500</width>
-					<label>$INFO[PVR.NextRecordingTitle]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font18</font>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>NextRecordingChannel</description>
-					<posx>170r</posx>
-					<posy>70</posy>
-					<height>30</height>
-					<width>500</width>
-					<label>$INFO[PVR.NextRecordingChannel]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>NextRecordingDateTime</description>
-					<posx>170r</posx>
-					<posy>95</posy>
-					<height>30</height>
-					<width>500</width>
-					<label>$INFO[PVR.NextRecordingDateTime]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<shadowcolor>black</shadowcolor>
-				</control>
+			<description>NextRecordingInfo</description>
+			<posx>600r</posx>
+			<posy>450</posy>
+			<visible>Container(9000).HasFocus(8) + !PVR.IsRecording + PVR.HasTimer</visible>
+			<include>homestatsinfo</include>
+			<control type="image">
+				<description>gradient</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>600</width>
+				<height>130</height>
+				<texture>gradient.png</texture>
 			</control>
-			<control type="group">
-				<description>NowRecordingInfo</description>
-				<posx>600r</posx>
-				<posy>140</posy>
-				<visible>Container(9000).HasFocus(8) + PVR.IsRecording</visible>
-				<include>homestatsinfo</include>
-				<control type="image">
-					<description>gradient</description>
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>600</width>
-					<height>130</height>
-					<texture>gradient.png</texture>
-				</control>
-				<control type="image">
-					<description>back image</description>
-					<posx>160r</posx>
-					<posy>0</posy>
-					<width>130</width>
-					<height>130</height>
-					<texture>homeinfo-blank.png</texture>
-				</control>
-				<control type="image">
-					<description>Weather image</description>
-					<posx>150r</posx>
-					<posy>10</posy>
-					<width>110</width>
-					<height>110</height>
-					<texture>icon_record.png</texture>
-				</control>
-				<control type="label">
-					<description>Recording label</description>
-					<posx>170r</posx>
-					<posy>5</posy>
-					<height>30</height>
-					<width>500</width>
-					<label>[B]$LOCALIZE[19158][/B]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>NowRecordingTitle</description>
-					<posx>170r</posx>
-					<posy>37</posy>
-					<height>30</height>
-					<width>500</width>
-					<label>$INFO[PVR.NowRecordingTitle]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font18</font>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>NowRecordingChannel</description>
-					<posx>170r</posx>
-					<posy>70</posy>
-					<height>30</height>
-					<width>500</width>
-					<label>$INFO[PVR.NowRecordingChannel]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<shadowcolor>black</shadowcolor>
-				</control>
-				<control type="label">
-					<description>NowRecordingDateTime</description>
-					<posx>170r</posx>
-					<posy>95</posy>
-					<height>30</height>
-					<width>500</width>
-					<label>$INFO[PVR.NowRecordingDateTime]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<shadowcolor>black</shadowcolor>
-				</control>
+			<control type="image">
+				<posx>55r</posx>
+				<posy>5</posy>
+				<width>25</width>
+				<height>25</height>
+				<texture>PVR-HasTimer.png</texture>
+			</control>
+			<control type="label">
+				<description>Timer label</description>
+				<posx>60r</posx>
+				<posy>5</posy>
+				<height>30</height>
+				<width>500</width>
+				<label>[B]$LOCALIZE[19157][/B]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>dialogheader</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>NextRecordingTitle</description>
+				<posx>35r</posx>
+				<posy>37</posy>
+				<height>30</height>
+				<width>500</width>
+				<label>$INFO[PVR.NextRecordingTitle]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font18</font>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>NextRecordingChannel</description>
+				<posx>30r</posx>
+				<posy>70</posy>
+				<height>30</height>
+				<width>500</width>
+				<label>$INFO[PVR.NextRecordingChannel]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>NextRecordingDateTime</description>
+				<posx>30r</posx>
+				<posy>95</posy>
+				<height>30</height>
+				<width>500</width>
+				<label>$INFO[PVR.NextRecordingDateTime]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<shadowcolor>black</shadowcolor>
+			</control>
+		</control>
+		<control type="group">
+			<description>NowRecordingInfo</description>
+			<posx>600r</posx>
+			<posy>450</posy>
+			<visible>Container(9000).HasFocus(8) + PVR.IsRecording</visible>
+			<include>homestatsinfo</include>
+			<control type="image">
+				<description>gradient</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>600</width>
+				<height>130</height>
+				<texture>gradient.png</texture>
+			</control>
+			<control type="image">
+				<posx>56r</posx>
+				<posy>5</posy>
+				<width>35</width>
+				<height>25</height>
+				<texture>PVR-Recording.png</texture>
+			</control>
+			<control type="label">
+				<description>Recording label</description>
+				<posx>70r</posx>
+				<posy>5</posy>
+				<height>30</height>
+				<width>500</width>
+				<label>[B]$LOCALIZE[19158][/B]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>dialogheader</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>NowRecordingTitle</description>
+				<posx>30r</posx>
+				<posy>37</posy>
+				<height>30</height>
+				<width>500</width>
+				<label>$INFO[PVR.NowRecordingTitle]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font18</font>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>NowRecordingChannel</description>
+				<posx>30r</posx>
+				<posy>70</posy>
+				<height>30</height>
+				<width>500</width>
+				<label>$INFO[PVR.NowRecordingChannel]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="label">
+				<description>NowRecordingDateTime</description>
+				<posx>30r</posx>
+				<posy>95</posy>
+				<height>30</height>
+				<width>500</width>
+				<label>$INFO[PVR.NowRecordingDateTime]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<shadowcolor>black</shadowcolor>
 			</control>
 		</control>
 		<control type="group">
