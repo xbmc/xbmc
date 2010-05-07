@@ -21,12 +21,13 @@
 
 #ifdef HAS_DBUS
 #include "IPowerSyscall.h"
+#include "DBusUtil.h"
 
-class CConsoleUPowerSyscall : public CPowerSyscallWithoutEvents
+class CConsoleUPowerSyscall : public IPowerSyscall
 {
 public:
   CConsoleUPowerSyscall();
-  virtual ~CConsoleUPowerSyscall() { }
+  virtual ~CConsoleUPowerSyscall();
 
   virtual bool Powerdown();
   virtual bool Suspend();
@@ -38,6 +39,8 @@ public:
   virtual bool CanHibernate();
   virtual bool CanReboot();
 
+  virtual bool PumpPowerEvents(IPowerEventsCallback *callback);
+
   static bool HasDeviceConsoleKit();
 private:
   static bool ConsoleKitMethodCall(const char *method);
@@ -46,5 +49,8 @@ private:
   bool m_CanSuspend;
   bool m_CanHibernate;
   bool m_CanReboot;
+
+  DBusConnection *m_connection;
+  DBusError m_error;
 };
 #endif

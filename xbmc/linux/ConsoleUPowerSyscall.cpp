@@ -26,10 +26,21 @@
 #ifdef HAS_DBUS
 #include "Application.h"
 #include "LocalizeStrings.h"
-#include "DBusUtil.h"
 
 CConsoleUPowerSyscall::CConsoleUPowerSyscall()
 {
+  dbus_error_init (&m_error);
+  m_connection = dbus_bus_get(DBUS_BUS_SYSTEM, &m_error);
+
+  dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.UPower'", &m_error);
+  dbus_connection_flush(m_connection);
+  if (dbus_error_is_set(&m_error))
+  {
+    CLog::Log(LOGERROR, "UPower: Failed to attach to signal %s", m_error.message);
+    dbus_connection_unref(m_connection);
+    m_connection = NULL;
+  }
+
   m_CanPowerdown = ConsoleKitMethodCall("CanStop");
 
   // If "the name org.freedesktop.UPower was not provided by any .service files",
@@ -51,6 +62,17 @@ CConsoleUPowerSyscall::CConsoleUPowerSyscall()
   m_CanReboot    = ConsoleKitMethodCall("CanRestart");
 }
 
+CConsoleUPowerSyscall::~CConsoleUPowerSyscall()
+{
+  if (m_connection)
+  {
+    dbus_connection_unref(m_connection);
+    m_connection = NULL;
+  }
+
+  dbus_error_free (&m_error);
+}
+
 bool CConsoleUPowerSyscall::Powerdown()
 {
   CDBusMessage message("org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager", "org.freedesktop.ConsoleKit.Manager", "Stop");
@@ -59,16 +81,12 @@ bool CConsoleUPowerSyscall::Powerdown()
 
 bool CConsoleUPowerSyscall::Suspend()
 {
-  CPowerSyscallWithoutEvents::Suspend();
-
   CDBusMessage message("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "Suspend");
   return message.SendSystem() != NULL;
 }
 
 bool CConsoleUPowerSyscall::Hibernate()
 {
-  CPowerSyscallWithoutEvents::Hibernate();
-
   CDBusMessage message("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "Hibernate");
   return message.SendSystem() != NULL;
 }
@@ -128,6 +146,30 @@ bool CConsoleUPowerSyscall::HasDeviceConsoleKit()
   dbus_connection_unref(con);
 
   return hasUPower && hasConsoleKitManager;
+}
+
+bool CConsoleUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
+{
+  bool result = false;
+  if (m_connection)
+  {
+    dbus_connection_read_write(m_connection, 0);
+    DBusMessage *msg = dbus_connection_pop_message(m_connection);
+
+    if (msg)
+    {
+      result = true;
+      if (dbus_message_is_signal(msg, "org.freedesktop.UPower", "Sleeping"))
+        callback->OnSleep();
+      else if (dbus_message_is_signal(msg, "org.freedesktop.UPower", "Resuming"))
+        callback->OnWake();
+      else
+        CLog::Log(LOGDEBUG, "UPower: Recieved an unkown signal %s", dbus_message_get_member(msg));
+
+      dbus_message_unref(msg);
+    }
+  }
+  return result;
 }
 
 bool CConsoleUPowerSyscall::ConsoleKitMethodCall(const char *method)
