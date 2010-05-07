@@ -64,7 +64,7 @@ cp_log_severity_t clog_to_cp(int);
 
 map<TYPE, IAddonMgrCallback*> CAddonMgr::m_managers;
 
-AddonPtr AddonFactory(const cp_extension_t *props)
+AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
 {
   const TYPE type = TranslateType(props->ext_point_id);
   switch (type)
@@ -75,17 +75,41 @@ AddonPtr AddonFactory(const cp_extension_t *props)
     case ADDON_SCRAPER:
       return AddonPtr(new CScraper(props->plugin));
     case ADDON_VIZ:
-      return AddonPtr(new CVisualisation(props->plugin));
     case ADDON_SCREENSAVER:
-      return AddonPtr(new CScreenSaver(props->plugin));
+      { // begin temporary platform handling for Dlls
+        // ideally platforms issues will be handled by C-Pluff
+        // this is not an attempt at a solution
+        CStdString value;
+#if defined(_LINUX) && !defined(__APPLE__)
+        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux")) && value.empty())
+          break;
+#elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
+        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_wingl")) && value.empty())
+          break;
+#elif defined(_WIN32) && defined(HAS_DX)
+        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_windx")) && value.empty())
+          break;
+#elif defined(__APPLE__)
+        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_osx")) && value.empty())
+          break;
+#elif defined(_XBOX)
+        if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_xbox")) && value.empty())
+          break;
+#endif
+        if (type == ADDON_VIZ)
+          return AddonPtr(new CVisualisation(props->plugin));
+        else
+          return AddonPtr(new CScreenSaver(props->plugin));
+      }
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(props->plugin));
     case ADDON_SCRAPER_LIBRARY:
     case ADDON_VIZ_LIBRARY:
       return AddonPtr(new CAddonLibrary(props->plugin));
     default:
-      return AddonPtr();
+      break;
   }
+  return AddonPtr();
 }
 
 CAddonMgr::CAddonMgr()
@@ -240,7 +264,7 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYP
     cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
     for(int i=0; i <num; i++)
     {
-      AddonPtr addon(AddonFactory(exts[i]));
+      AddonPtr addon(Factory(exts[i]));
       if (addon)
         addons.push_back(addon);
     }
@@ -281,7 +305,7 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
     cp_plugin_info_t *cpaddon = NULL;
     cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
     if (status == CP_OK && cpaddon->extensions)
-      return (addon = AddonFactory(cpaddon->extensions));
+      return (addon = Factory(cpaddon->extensions));
     else
       return false;
   }

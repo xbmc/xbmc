@@ -120,6 +120,7 @@ namespace ADDON
   private:
     bool DependenciesMet(AddonPtr &addon);
     bool UpdateIfKnown(AddonPtr &addon);
+    AddonPtr Factory(const cp_extension_t *props);
 
     // private construction, and no assignements; use the provided singleton methods
     CAddonMgr();
