@@ -11,7 +11,7 @@
 CPlugin* g_plugin=NULL;
 char g_visName[512];
 
-#define PRESETS_DIR "special://xbmc/addons/com.nullsoft.milkdrop.xbmc/presets"
+#define PRESETS_DIR "special://xbmc/addons/visualization.milkdrop/presets"
 #define CONFIG_FILE "special://profile/visualisations/Milkdrop.conf"
 
 char m_szPresetSave[256] = "";
@@ -45,14 +45,14 @@ void SetPresetDir(const char *pack)
   if (len >= 4 && strcmpi(pack + len - 4, ".zip") == 0)
   {
     // Zip file
-    strcpy(g_plugin->m_szPresetDir, "zip://special%3A%2F%2Fxbmc%2Faddons%2Fcom.nullsoft.milkdrop.xbmc%2Fpresets%2F"); 
+    strcpy(g_plugin->m_szPresetDir, "zip://special%3A%2F%2Fxbmc%2Faddons%2Fvisualization.milkdrop%2Fpresets%2F"); 
     strcat(g_plugin->m_szPresetDir,  pack);
     strcat(g_plugin->m_szPresetDir, "/");
   }
   else if (len >= 4 && strcmpi(pack + len - 4, ".rar") == 0)
   {
     // Rar file
-    strcpy(g_plugin->m_szPresetDir, "zip://special%3A%2F%2Fxbmc%2Faddons%2Fcom.nullsoft.milkdrop.xbmc%2Fpresets%2F"); 
+    strcpy(g_plugin->m_szPresetDir, "zip://special%3A%2F%2Fxbmc%2Faddons%2Fvisualization.milkdrop%2Fpresets%2F"); 
     strcat(g_plugin->m_szPresetDir,  pack);
     strcat(g_plugin->m_szPresetDir, "/");
   }
