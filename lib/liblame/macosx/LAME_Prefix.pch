@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'LAME' target in the 'LAME' project.
+//
+
+#include <Carbon/Carbon.h>
+
+#define HAVE_CONFIG_H
