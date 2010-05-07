@@ -27,6 +27,7 @@
 #include "WindowingFactory.h"
 #include "utils/log.h"
 #include "AnnouncementManager.h"
+#include "LocalizeStrings.h"
 
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
@@ -269,4 +270,13 @@ void CPowerManager::OnWake()
   g_application.UpdateLibraries();
 
   CAnnouncementManager::Announce(System, "xbmc", "Resume");
+}
+
+void CPowerManager::OnLowBattery()
+{
+  CLog::Log(LOGNOTICE, "%s: Running low battery jobs", __FUNCTION__);
+
+  g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13050), "");
+
+  CAnnouncementManager::Announce(System, "xbmc", "LowBattery");
 }

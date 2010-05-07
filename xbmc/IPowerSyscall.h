@@ -7,6 +7,8 @@ public:
 
   virtual void OnSleep() = 0;
   virtual void OnWake() = 0;
+
+  virtual void OnLowBattery() = 0;
 };
 
 class IPowerSyscall

@@ -992,6 +992,8 @@
   <string id="13024">Joystick plugged</string>
   <string id="13025">Joystick unplugged</string>
 
+  <string id="13050">Running low on battery</string>
+
   <string id="13100">Flicker filter</string>
   <string id="13101">Let driver choose (requires restart)</string>
   <string id="13105">Vertical blank sync</string>

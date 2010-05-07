@@ -66,6 +66,8 @@ private:
   void OnSleep();
   void OnWake();
 
+  void OnLowBattery();
+
   IPowerSyscall *m_instance;
 };
 

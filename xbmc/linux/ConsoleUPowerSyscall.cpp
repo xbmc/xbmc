@@ -146,6 +146,7 @@ bool CConsoleUPowerSyscall::HasDeviceConsoleKit()
 bool CConsoleUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
 {
   bool result = false;
+
   if (m_connection)
   {
     dbus_connection_read_write(m_connection, 0);
