@@ -351,7 +351,7 @@ void CGUISettings::Initialize()
   AddBool(acd, "audiocds.usecddb", 227, true);
   AddSeparator(acd, "audiocds.sep1");
   AddPath(acd,"audiocds.recordingpath",20000,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
-  AddString(acd, "audiocds.trackformat", 13307, "[%N. ]%T - %A", EDIT_CONTROL_INPUT, false, 16016);
+  AddString(acd, "audiocds.trackpathformat", 13307, "%A - %B/[%N. ][%A - ]%T", EDIT_CONTROL_INPUT, false, 16016);
   map<int,int> encoders;
   encoders.insert(make_pair(34000,CDDARIP_ENCODER_LAME));
   encoders.insert(make_pair(34001,CDDARIP_ENCODER_VORBIS));
