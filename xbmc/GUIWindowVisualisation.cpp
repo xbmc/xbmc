@@ -142,6 +142,13 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
       return m_addon;
     }
     break;
+  case GUI_MSG_VISUALISATION_RELOAD:
+    {
+      CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
+      if (pVisControl)
+        pVisControl->FreeResources(true);
+    }
+    break;
   case GUI_MSG_VISUALISATION_ACTION:
   {
     CAction action(message.GetParam1());
