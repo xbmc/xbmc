@@ -619,45 +619,49 @@ void CDVDVideoCodecVDA::SetDropState(bool bDrop)
 int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
 {
   CCocoaAutoPool pool;
-  OSStatus status;
-  double sort_time;
-  uint32_t avc_flags = 0;
-  CFDataRef avc_demux;
-  CFDictionaryRef avc_time;
   //
-  if (m_convert_bytestream)
+  if (pData)
   {
-    // convert demuxer packet from bytestream (AnnexB) to bitstream
-    ByteIOContext *pb;
-    int demuxer_bytes;
-    uint8_t *demuxer_content;
+    OSStatus status;
+    double sort_time;
+    uint32_t avc_flags = 0;
+    CFDataRef avc_demux;
+    CFDictionaryRef avc_time;
 
-    if(m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
+    if (m_convert_bytestream)
     {
+      // convert demuxer packet from bytestream (AnnexB) to bitstream
+      ByteIOContext *pb;
+      int demuxer_bytes;
+      uint8_t *demuxer_content;
+
+      if(m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
+      {
+        return VC_ERROR;
+      }
+      demuxer_bytes = avc_parse_nal_units(m_dllAvFormat, pb, pData, iSize);
+      demuxer_bytes = m_dllAvFormat->url_close_dyn_buf(pb, &demuxer_content);
+      avc_demux = CFDataCreate(kCFAllocatorDefault, demuxer_content, demuxer_bytes);
+      m_dllAvUtil->av_free(demuxer_content);
+    }
+    else
+    {
+      avc_demux = CFDataCreate(kCFAllocatorDefault, pData, iSize);
+    }
+    sort_time = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
+    avc_time = CreateDictionaryWithDisplayTime(sort_time - m_sort_time_offset, dts, pts);
+    
+    if (m_DropPictures)
+      avc_flags = kVDADecoderDecodeFlags_DontEmitFrame;
+
+    status = m_dll->VDADecoderDecode((VDADecoder)m_vda_decoder, avc_flags, avc_demux, avc_time);
+    CFRelease(avc_time);
+    CFRelease(avc_demux);
+    if (status != kVDADecoderNoErr) 
+    {
+      CLog::Log(LOGNOTICE, "%s - VDADecoderDecode failed, status(%d)", __FUNCTION__, (int)status);
       return VC_ERROR;
     }
-    demuxer_bytes = avc_parse_nal_units(m_dllAvFormat, pb, pData, iSize);
-    demuxer_bytes = m_dllAvFormat->url_close_dyn_buf(pb, &demuxer_content);
-    avc_demux = CFDataCreate(kCFAllocatorDefault, demuxer_content, demuxer_bytes);
-    m_dllAvUtil->av_free(demuxer_content);
-  }
-  else
-  {
-    avc_demux = CFDataCreate(kCFAllocatorDefault, pData, iSize);
-  }
-  sort_time = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
-  avc_time = CreateDictionaryWithDisplayTime(sort_time - m_sort_time_offset, dts, pts);
-	
-  if (m_DropPictures)
-    avc_flags = kVDADecoderDecodeFlags_DontEmitFrame;
-
-  status = m_dll->VDADecoderDecode((VDADecoder)m_vda_decoder, avc_flags, avc_demux, avc_time);
-  CFRelease(avc_time);
-  CFRelease(avc_demux);
-  if (status != kVDADecoderNoErr) 
-  {
-    CLog::Log(LOGNOTICE, "%s - VDADecoderDecode failed, status(%d)", __FUNCTION__, (int)status);
-    return VC_ERROR;
   }
 
   // TODO: queue depth is related to the number of reference frames in encoded h.264.
@@ -761,7 +765,7 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
 
   if (imageBuffer == NULL)
   {
-    CLog::Log(LOGERROR, "%s - imageBuffer is NULL", __FUNCTION__);
+    //CLog::Log(LOGDEBUG, "%s - imageBuffer is NULL", __FUNCTION__);
     return;
   }
   if (CVPixelBufferGetPixelFormatType(imageBuffer) != kCVPixelFormatType_422YpCbCr8)
