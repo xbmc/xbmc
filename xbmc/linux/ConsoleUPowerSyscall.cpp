@@ -83,12 +83,20 @@ bool CConsoleUPowerSyscall::Powerdown()
 
 bool CConsoleUPowerSyscall::Suspend()
 {
+  // UPower 0.9.1 does not signal sleeping unless you tell that its about to sleep...
+  CDBusMessage aboutToSleepMessage("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "AboutToSleep");
+  aboutToSleepMessage.SendSystem();
+
   CDBusMessage message("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "Suspend");
   return message.SendSystem() != NULL;
 }
 
 bool CConsoleUPowerSyscall::Hibernate()
 {
+  // UPower 0.9.1 does not signal sleeping unless you tell that its about to sleep...
+  CDBusMessage aboutToSleepMessage("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "AboutToSleep");
+  aboutToSleepMessage.SendSystem();
+
   CDBusMessage message("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "Hibernate");
   return message.SendSystem() != NULL;
 }
