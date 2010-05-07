@@ -112,7 +112,7 @@ void CGUIDialogVisualisationPresetList::FrameMove()
   if (m_viz)
   {
     unsigned preset = m_viz->GetPreset();
-    if (preset != m_currentPreset)
+    if (preset != m_currentPreset && preset < (unsigned int)m_vecPresets->Size())
     {
       m_vecPresets->Get(m_currentPreset)->Select(false);
       m_currentPreset = preset;
