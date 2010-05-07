@@ -239,8 +239,7 @@ CAddon::CAddon(cp_plugin_info_t *props)
   : m_props(props)
   , m_parent(AddonPtr())
 {
-  if (m_props.type != ADDON_VIZ && m_props.type != ADDON_SCREENSAVER)
-    BuildLibName(props);
+  BuildLibName(props);
   BuildProfilePath();
   CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
   m_enabled = true;

@@ -58,6 +58,7 @@ namespace ADDON
   protected:
     void HandleException(std::exception &e, const char* context);
     bool Initialized() { return m_initialized; }
+    virtual void BuildLibName(cp_plugin_info_t *props = NULL) {}
     TheStruct* m_pStruct;
     TheProps*     m_pInfo;
 

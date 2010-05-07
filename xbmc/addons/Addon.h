@@ -153,6 +153,7 @@ protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
   CAddon(const CAddon&, const AddonPtr&);
   bool LoadUserSettings();
+  virtual void BuildLibName(cp_plugin_info_t *props = NULL);
   TiXmlDocument     m_addonXmlDoc;
   TiXmlDocument     m_userXmlDoc;
   CStdString        m_userSettingsPath;
@@ -174,7 +175,6 @@ private:
   bool m_hasStrings;
   bool m_checkedStrings;
 
-  void BuildLibName(cp_plugin_info_t *props = NULL);
   CStdString  m_profile;
   bool        m_enabled;
   CLocalizeStrings  m_strings;
