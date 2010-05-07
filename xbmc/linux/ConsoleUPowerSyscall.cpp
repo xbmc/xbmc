@@ -44,24 +44,9 @@ CConsoleUPowerSyscall::CConsoleUPowerSyscall()
   }
 
   m_CanPowerdown = ConsoleKitMethodCall("CanStop");
-
-  // If "the name org.freedesktop.UPower was not provided by any .service files",
-  // GetVariant() would return NULL, and asBoolean() would crash.
-  CVariant canSuspend = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower",    "org.freedesktop.UPower", "CanSuspend");
-
-  if ( !canSuspend.isNull() )
-    m_CanSuspend = canSuspend.asBoolean();
-  else
-    m_CanSuspend = false;
-
-  CVariant canHibernate = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower",    "org.freedesktop.UPower", "CanHibernate");
-
-  if ( !canHibernate.isNull() )
-    m_CanHibernate = canHibernate.asBoolean();
-  else
-    m_CanHibernate = false;
-
   m_CanReboot    = ConsoleKitMethodCall("CanRestart");
+
+  UpdateUPower();
 }
 
 CConsoleUPowerSyscall::~CConsoleUPowerSyscall()
@@ -173,6 +158,8 @@ bool CConsoleUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
         callback->OnSleep();
       else if (dbus_message_is_signal(msg, "org.freedesktop.UPower", "Resuming"))
         callback->OnWake();
+      else if (dbus_message_is_signal(msg, "org.freedesktop.UPower", "Changed"))
+        UpdateUPower();
       else
         CLog::Log(LOGDEBUG, "UPower: Recieved an unkown signal %s", dbus_message_get_member(msg));
 
@@ -180,6 +167,12 @@ bool CConsoleUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
     }
   }
   return result;
+}
+
+void CConsoleUPowerSyscall::UpdateUPower()
+{
+  m_CanSuspend   = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "CanSuspend").asBoolean(false);
+  m_CanHibernate = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "CanHibernate").asBoolean(false);
 }
 
 bool CConsoleUPowerSyscall::ConsoleKitMethodCall(const char *method)

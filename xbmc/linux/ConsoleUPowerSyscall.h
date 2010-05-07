@@ -44,6 +44,7 @@ public:
   static bool HasDeviceConsoleKit();
 private:
   static bool ConsoleKitMethodCall(const char *method);
+  void UpdateUPower();
 
   bool m_CanPowerdown;
   bool m_CanSuspend;
