@@ -21,6 +21,7 @@
  */
 #include "Addon.h"
 #include "DllAddon.h"
+#include "AddonManager.h"
 #include "AddonStatusHandler.h"
 #include "GUIDialogSettings.h"
 #include "Util.h"
@@ -80,6 +81,18 @@ template<class TheDll, typename TheStruct, typename TheProps>
 CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(cp_plugin_info_t *props)
   : CAddon(props)
 {
+#if defined(_LINUX) && !defined(__APPLE__)
+  m_strLibName = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library_linux");
+#elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
+  m_strLibName = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library_wingl");
+#elif defined(_WIN32) && defined(HAS_DX)
+  m_strLibName = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library_windx");
+#elif defined(__APPLE__)
+  m_strLibName = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library_osx");
+#elif defined(_XBOX)
+  m_strLibName = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library_xbox");
+#endif
+
   m_pStruct     = NULL;
   m_initialized = false;
   m_pDll        = NULL;

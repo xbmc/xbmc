@@ -156,6 +156,7 @@ protected:
   TiXmlDocument     m_addonXmlDoc;
   TiXmlDocument     m_userXmlDoc;
   CStdString        m_userSettingsPath;
+  CStdString        m_strLibName;
 
 private:
   friend class AddonMgr;
@@ -175,7 +176,6 @@ private:
 
   void BuildLibName(cp_plugin_info_t *props = NULL);
   CStdString  m_profile;
-  CStdString  m_strLibName;
   bool        m_enabled;
   CLocalizeStrings  m_strings;
 };
