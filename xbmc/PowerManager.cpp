@@ -221,6 +221,7 @@ void CPowerManager::ProcessEvents()
 void CPowerManager::OnSleep()
 {
   CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
+  CAnnouncementManager::Announce(System, "xbmc", "Sleep");
 
   g_application.StopPlaying();
 }
@@ -228,6 +229,7 @@ void CPowerManager::OnSleep()
 void CPowerManager::OnWake()
 {
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
+  CAnnouncementManager::Announce(System, "xbmc", "Wake");
 
 #ifdef HAS_SDL
   if (g_Windowing.IsFullScreen())
