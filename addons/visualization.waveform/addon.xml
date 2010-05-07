@@ -7,6 +7,6 @@
   <extension
     point="xbmc.player.musicviz"
     library_linux="Waveform.vis"
-    library_wingl="Waveform_win32.vis"
+    library_windx="Waveform_win32.vis"
     library_osx="Waveform.vis"/>
 </addon>
