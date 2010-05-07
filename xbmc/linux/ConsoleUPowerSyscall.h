@@ -51,6 +51,8 @@ private:
   bool m_CanHibernate;
   bool m_CanReboot;
 
+  bool m_lowBattery;
+
   DBusConnection *m_connection;
   DBusError m_error;
 };

@@ -31,6 +31,8 @@ CConsoleUPowerSyscall::CConsoleUPowerSyscall()
 {
   CLog::Log(LOGINFO, "Selected UPower and ConsoleKit as PowerSyscall");
 
+  m_lowBattery = false;
+
   dbus_error_init (&m_error);
   m_connection = dbus_bus_get(DBUS_BUS_SYSTEM, &m_error);
 
@@ -160,7 +162,12 @@ bool CConsoleUPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
       else if (dbus_message_is_signal(msg, "org.freedesktop.UPower", "Resuming"))
         callback->OnWake();
       else if (dbus_message_is_signal(msg, "org.freedesktop.UPower", "Changed"))
+      {
+        bool lowBattery = m_lowBattery;
         UpdateUPower();
+        if (m_lowBattery && !lowBattery)
+          callback->OnLowBattery();
+      }
       else
         CLog::Log(LOGDEBUG, "UPower: Recieved an unkown signal %s", dbus_message_get_member(msg));
 
