@@ -37,7 +37,7 @@ namespace ADDON
   class CAddonStatusHandler : private CThread
   {
     public:
-      CAddonStatusHandler(IAddon* const addon, ADDON_STATUS status, CStdString message, bool sameThread = true);
+      CAddonStatusHandler(const CStdString &addonID, ADDON_STATUS status, CStdString message, bool sameThread = true);
       ~CAddonStatusHandler();
 
       /* Thread handling */
@@ -47,7 +47,7 @@ namespace ADDON
 
     private:
       static CCriticalSection   m_critSection;
-      IAddon*                   m_addon;
+      AddonPtr                  m_addon;
       ADDON_STATUS              m_status;
       CStdString                m_message;
   };

@@ -41,10 +41,9 @@ namespace ADDON
 
 CCriticalSection CAddonStatusHandler::m_critSection;
 
-CAddonStatusHandler::CAddonStatusHandler(IAddon* addon, ADDON_STATUS status, CStdString message, bool sameThread)
-  : m_addon(addon)
+CAddonStatusHandler::CAddonStatusHandler(const CStdString &addonID, ADDON_STATUS status, CStdString message, bool sameThread)
 {
-  if (m_addon == NULL)
+  if (!CAddonMgr::Get().GetAddon(addonID, m_addon))
     return;
 
   CLog::Log(LOGINFO, "Called Add-on status handler for '%u' of clientName:%s, clientID:%s (same Thread=%s)", status, m_addon->Name().c_str(), m_addon->ID().c_str(), sameThread ? "yes" : "no");
@@ -139,8 +138,7 @@ void CAddonStatusHandler::Process()
     if (!m_addon->HasSettings())
       return;
 
-    const AddonPtr addon(m_addon);
-    if (CGUIDialogAddonSettings::ShowAndGetInput(addon))
+    if (CGUIDialogAddonSettings::ShowAndGetInput(m_addon))
     {
       //todo doesn't dialogaddonsettings save these automatically? should do
       m_addon->SaveSettings();

@@ -60,8 +60,8 @@ namespace ADDON
   {
     public:
       virtual ~IAddonMgrCallback() {};
-      virtual bool RequestRestart(const IAddon* addon, bool datachanged)=0;
-      virtual bool RequestRemoval(const IAddon* addon)=0;
+      virtual bool RequestRestart(AddonPtr addon, bool datachanged)=0;
+      virtual bool RequestRemoval(AddonPtr addon)=0;
   };
 
   /**
