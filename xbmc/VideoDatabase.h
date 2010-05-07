@@ -59,7 +59,7 @@ namespace VIDEO
 
 // these defines are based on how many columns we have and which column certain data is going to be in
 // when we do GetDetailsForMovie()
-#define VIDEODB_MAX_COLUMNS 21
+#define VIDEODB_MAX_COLUMNS 22
 #define VIDEODB_DETAILS_FILEID			1
 #define VIDEODB_DETAILS_FILE			VIDEODB_MAX_COLUMNS + 2
 #define VIDEODB_DETAILS_PATH			VIDEODB_MAX_COLUMNS + 3
@@ -115,6 +115,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_STUDIOS = 18,
   VIDEODB_ID_TRAILER = 19,
   VIDEODB_ID_FANART = 20,
+  VIDEODB_ID_COUNTRY = 21,
   VIDEODB_ID_MAX
 } VIDEODB_IDS;
 
@@ -144,7 +145,8 @@ const struct SDbTableOffsets
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strStudio) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strTrailer) },
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_fanart.m_xml) }
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_fanart.m_xml) },
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strCountry) }
 };
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
@@ -337,6 +339,7 @@ public:
 
   void GetFilePathById(int idMovie, CStdString &filePath, VIDEODB_CONTENT_TYPE iType);
   bool GetGenreById(int idGenre, CStdString& strGenre);
+  bool GetCountryById(int idCountry, CStdString& strCountry);
   bool GetSetById(int idSet, CStdString& strSet);
   int GetTvShowForEpisode(int idEpisode);
 
@@ -425,6 +428,8 @@ public:
   void GetTvShowGenresByName(const CStdString& strSearch, CFileItemList& items);
   void GetMusicVideoGenresByName(const CStdString& strSearch, CFileItemList& items);
 
+  void GetMovieCountriesByName(const CStdString& strSearch, CFileItemList& items);
+
   void GetMusicVideoAlbumsByName(const CStdString& strSearch, CFileItemList& items);
 
   void GetMovieActorsByName(const CStdString& strSearch, CFileItemList& items);
@@ -453,15 +458,16 @@ public:
 
   // general browsing
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
+  bool GetCountriesNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
   bool GetStudiosNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
+  bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
   bool GetActorsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
   bool GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
   bool GetWritersNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
-  bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1);
   bool GetSetsNav(const CStdString& strBaseDir, CFileItemList& items, int idContent=-1, const CStdString &where = "");
   bool GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idArtist);
 
-  bool GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idActor=-1, int idDirector=-1, int idStudio=-1, int idSet=-1);
+  bool GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idActor=-1, int idDirector=-1, int idStudio=-1, int idCountry=-1, int idSet=-1);
   bool GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idActor=-1, int idDirector=-1, int idStudio=-1);
   bool GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& items, int idActor=-1, int idDirector=-1, int idGenre=-1, int idYear=-1, int idShow=-1);
   bool GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idActor=-1, int idDirector=-1, int idShow=-1, int idSeason=-1);
@@ -512,8 +518,10 @@ protected:
   int AddToTable(const CStdString& table, const CStdString& firstField, const CStdString& secondField, const CStdString& value);
   int AddGenre(const CStdString& strGenre1);
   int AddActor(const CStdString& strActor, const CStdString& strThumb);
+  int AddCountry(const CStdString& strCountry);
   int AddSet(const CStdString& strSet);
   int AddStudio(const CStdString& strStudio1);
+
   int AddTvShow(const CStdString& strPath);
   int AddMusicVideo(const CStdString& strFilenameAndPath);
 
@@ -543,6 +551,8 @@ protected:
   void AddStudioToTvShow(int idTvShow, int idStudio);
   void AddStudioToMusicVideo(int idMVideo, int idStudio);
 
+  void AddCountryToMovie(int idMovie, int idCountry);
+
   void AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, std::vector<int>& vecDirectors, std::vector<int>& vecGenres, std::vector<int>& vecStudios);
 
   void DeleteStreamDetails(int idFile);
@@ -561,7 +571,7 @@ protected:
 private:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 37; };
+  virtual int GetMinVersion() const { return 38; };
   const char *GetDefaultDBName() const { return "MyVideos34.db"; };
 
   void ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName);

@@ -173,6 +173,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       break;
     case NODE_TYPE_MUSICVIDEOS_ALBUM:
     case NODE_TYPE_GENRE:
+    case NODE_TYPE_COUNTRY:
     case NODE_TYPE_STUDIO:
       {
         AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R", "%L", ""));  // Filename, Duration | Foldername, empty

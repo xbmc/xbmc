@@ -122,6 +122,14 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_genrelinkmovie_1 ON genrelinkmovie ( idGenre, idMovie)\n");
     m_pDS->exec("CREATE UNIQUE INDEX ix_genrelinkmovie_2 ON genrelinkmovie ( idMovie, idGenre)\n");
 
+    CLog::Log(LOGINFO, "create country table");
+    m_pDS->exec("CREATE TABLE country ( idCountry integer primary key, strCountry text)\n");
+
+    CLog::Log(LOGINFO, "create countrylinkmovie table");
+    m_pDS->exec("CREATE TABLE countrylinkmovie ( idCountry integer, idMovie integer)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_countrylinkmovie_1 ON countrylinkmovie ( idCountry, idMovie)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_countrylinkmovie_2 ON countrylinkmovie ( idMovie, idCountry)\n");
+
     CLog::Log(LOGINFO, "create movie table");
     CStdString columns = "CREATE TABLE movie ( idMovie integer primary key, idFile integer";
     for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
@@ -1047,6 +1055,11 @@ int CVideoDatabase::AddStudio(const CStdString& strStudio)
 }
 
 //********************************************************************************************************************************
+int CVideoDatabase::AddCountry(const CStdString& strCountry)
+{
+  return AddToTable("country", "idCountry", "strCountry", strCountry);
+}
+
 int CVideoDatabase::AddActor(const CStdString& strActor, const CStdString& strThumb)
 {
   try
@@ -1219,6 +1232,12 @@ void CVideoDatabase::AddGenreToTvShow(int idTvShow, int idGenre)
 void CVideoDatabase::AddGenreToMusicVideo(int idMVideo, int idGenre)
 {
   AddToLinkTable("genrelinkmusicvideo", "idGenre", idGenre, "idMVideo", idMVideo);
+}
+
+//****Country****
+void CVideoDatabase::AddCountryToMovie(int idMovie, int idCountry)
+{
+  AddToLinkTable("countrylinkmovie", "idCountry", idCountry, "idMovie", idMovie);
 }
 
 //********************************************************************************************************************************
@@ -1666,6 +1685,20 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
         set.Trim();
         int idSet = AddSet(set);
         AddSetToMovie(idMovie, idSet);
+      }
+    }
+
+    // add countries...
+    if (!info.m_strCountry.IsEmpty())
+    {
+      CStdStringArray countries;
+      StringUtils::SplitString(info.m_strCountry, g_advancedSettings.m_videoItemSeparator, countries);
+      for (unsigned int i = 0; i < countries.size(); i++)
+      {
+        CStdString country(countries[i]);
+        country.Trim();
+        int idCountry = AddCountry(country);
+        AddCountryToMovie(idMovie, idCountry);
       }
     }
 
@@ -2293,6 +2326,9 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
     m_pDS->exec(strSQL.c_str());
 
     strSQL=FormatSQL("delete from setlinkmovie where idMovie=%i", idMovie);
+    m_pDS->exec(strSQL.c_str());
+
+    strSQL=FormatSQL("delete from countrylinkmovie where idMovie=%i", idMovie);
     m_pDS->exec(strSQL.c_str());
 
     if (!bKeepThumb)
@@ -3689,6 +3725,21 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec("CREATE UNIQUE INDEX ix_musicvideo_file_1 on musicvideo (idMVideo, idFile)");
       m_pDS->exec("CREATE UNIQUE INDEX ix_musicvideo_file_2 on musicvideo (idFile, idMVideo)");
     }
+    if (iVersion < 38)
+    {
+      m_pDS->exec("ALTER table movie add c21 text");
+      m_pDS->exec("ALTER table episode add c21 text");
+      m_pDS->exec("ALTER table musicvideo add c21 text");
+      m_pDS->exec("ALTER table tvshow add c21 text");
+
+      CLog::Log(LOGINFO, "create country table");
+      m_pDS->exec("CREATE TABLE country ( idCountry integer primary key, strCountry text)\n");
+
+      CLog::Log(LOGINFO, "create countrylinkmovie table");
+      m_pDS->exec("CREATE TABLE countrylinkmovie ( idCountry integer, idMovie integer)\n");
+      m_pDS->exec("CREATE UNIQUE INDEX ix_countrylinkmovie_1 ON countrylinkmovie ( idCountry, idMovie)\n");
+      m_pDS->exec("CREATE UNIQUE INDEX ix_countrylinkmovie_2 ON countrylinkmovie ( idMovie, idCountry)\n");
+    }
   }
   catch (...)
   {
@@ -3845,6 +3896,11 @@ void CVideoDatabase::EraseVideoSettings()
 bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& items, int idContent)
 {
   return GetNavCommon(strBaseDir, items, "genre", idContent);
+}
+
+bool CVideoDatabase::GetCountriesNav(const CStdString& strBaseDir, CFileItemList& items, int idContent)
+{
+  return GetNavCommon(strBaseDir, items, "country", idContent);
 }
 
 bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& items, int idContent)
@@ -4725,11 +4781,13 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
   return false;
 }
 
-bool CVideoDatabase::GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idActor, int idDirector, int idStudio, int idSet)
+bool CVideoDatabase::GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idYear, int idActor, int idDirector, int idStudio, int idCountry, int idSet)
 {
   CStdString where;
   if (idGenre != -1)
     where = FormatSQL("join genrelinkmovie on genrelinkmovie.idMovie=movieview.idMovie where genrelinkmovie.idGenre=%i", idGenre);
+  else if (idCountry != -1)
+    where = FormatSQL("join countrylinkmovie on countrylinkmovie.idMovie=movieview.idMovie where countrylinkmovie.idCountry=%i", idCountry);
   else if (idStudio != -1)
     where = FormatSQL("join studiolinkmovie on studiolinkmovie.idMovie=movieview.idMovie where studiolinkmovie.idStudio=%i", idStudio);
   else if (idDirector != -1)
@@ -5247,6 +5305,32 @@ bool CVideoDatabase::GetGenreById(int idGenre, CStdString& strGenre)
   return false;
 }
 
+bool CVideoDatabase::GetCountryById(int idCountry, CStdString& strCountry)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL=FormatSQL("select country.strCountry from country where country.idCountry=%i", idCountry);
+    m_pDS->query( strSQL.c_str() );
+
+    bool bResult = false;
+    if (!m_pDS->eof())
+    {
+      strCountry  = m_pDS->fv("country.strCountry").get_asString();
+      bResult = true;
+    }
+    m_pDS->close();
+    return bResult;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strCountry.c_str());
+  }
+  return false;
+}
+
 bool CVideoDatabase::HasSets() const
 {
   try
@@ -5566,6 +5650,47 @@ void CVideoDatabase::GetMovieGenresByName(const CStdString& strSearch, CFileItem
       CFileItemPtr pItem(new CFileItem(m_pDS->fv("genre.strGenre").get_asString()));
       CStdString strDir;
       strDir.Format("%ld/", m_pDS->fv("genre.idGenre").get_asInt());
+      pItem->m_strPath="videodb://1/1/"+ strDir;
+      pItem->m_bIsFolder=true;
+      items.Add(pItem);
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strSQL.c_str());
+  }
+}
+
+void CVideoDatabase::GetMovieCountriesByName(const CStdString& strSearch, CFileItemList& items)
+{
+  CStdString strSQL;
+
+  try
+  {
+    if (NULL == m_pDB.get()) return;
+    if (NULL == m_pDS.get()) return;
+
+    if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+      strSQL=FormatSQL("select country.idCountry,country.strCountry,path.strPath from country,countrylinkmovie,movie,path,files where country.idCountry=countrylinkmovie.idCountry and countrylinkmovie.idMovie=movie.idMovie and files.idFile=movie.idFile and path.idPath=files.idPath and country.strCountry like '%%%s%%'",strSearch.c_str());
+    else
+      strSQL=FormatSQL("select distinct country.idCountry,country.strCountry from country,countrylinkmovie where countrylinkmovie.idCountry=country.idCountry and strCountry like '%%%s%%'", strSearch.c_str());
+    m_pDS->query( strSQL.c_str() );
+
+    while (!m_pDS->eof())
+    {
+      if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && !g_passwordManager.bMasterUser)
+        if (!g_passwordManager.IsDatabasePathUnlocked(CStdString(m_pDS->fv("path.strPath").get_asString()),
+                                                      g_settings.m_videoSources))
+        {
+          m_pDS->next();
+          continue;
+        }
+
+      CFileItemPtr pItem(new CFileItem(m_pDS->fv("country.strCountry").get_asString()));
+      CStdString strDir;
+      strDir.Format("%ld/", m_pDS->fv("country.idCountry").get_asInt());
       pItem->m_strPath="videodb://1/1/"+ strDir;
       pItem->m_bIsFolder=true;
       items.Add(pItem);
@@ -6624,6 +6749,10 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     sql = "delete from genrelinkmovie where idMovie in " + moviesToDelete;
     m_pDS->exec(sql.c_str());
 
+    CLog::Log(LOGDEBUG, "%s Cleaning countrylinkmovie table", __FUNCTION__);
+    sql = "delete from countrylinkmovie where idMovie in " + moviesToDelete;
+    m_pDS->exec(sql.c_str());
+
     CLog::Log(LOGDEBUG, "%s Cleaning studiolinkmovie table", __FUNCTION__);
     sql = "delete from studiolinkmovie where idMovie in " + moviesToDelete;
     m_pDS->exec(sql.c_str());
@@ -6730,6 +6859,10 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
 
     CLog::Log(LOGDEBUG, "%s Cleaning genre table", __FUNCTION__);
     sql = "delete from genre where idGenre not in (select distinct idGenre from genrelinkmovie) and idGenre not in (select distinct idGenre from genrelinktvshow) and idGenre not in (select distinct idGenre from genrelinkmusicvideo)";
+    m_pDS->exec(sql.c_str());
+
+    CLog::Log(LOGDEBUG, "%s Cleaning country table", __FUNCTION__);
+    sql = "delete from country where idCountry not in (select distinct idCountry from countrylinkmovie)";
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s Cleaning actor table of actors, directors and writers", __FUNCTION__);

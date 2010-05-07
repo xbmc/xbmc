@@ -502,6 +502,7 @@
   <string id="571">Default</string>
   <string id="572">Studio</string>
   <string id="573">Path</string>
+  <string id="574">Country</string>
 
   <string id="580">Sort direction</string>
   <string id="581">Sort method</string>
@@ -1870,6 +1871,7 @@
   <string id="20448">Could not download information</string>
   <string id="20449">Server is most likely unavailable.</string>
   <string id="20450">Would you like to continue scanning?</string>
+  <string id="20451">Countries</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

@@ -243,6 +243,8 @@
 		7CCF7F1E1069F3AE00992676 /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7F1B1069F3AE00992676 /* Builtins.cpp */; };
 		7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
 		7CCF7FCA106A0DF500992676 /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
+		7CD2C3AA11940B270009EFC1 /* DirectoryNodeCountry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2C3A811940B270009EFC1 /* DirectoryNodeCountry.cpp */; };
+		7CD2C3AB11940B270009EFC1 /* DirectoryNodeCountry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2C3A811940B270009EFC1 /* DirectoryNodeCountry.cpp */; };
 		7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
 		7CDAE9060FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
 		7CDAEA7D1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */; };
@@ -2135,6 +2137,8 @@
 		7CCF7F1C1069F3AE00992676 /* Builtins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Builtins.h; sourceTree = "<group>"; };
 		7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeUtils.cpp; sourceTree = "<group>"; };
 		7CCF7FC8106A0DF500992676 /* TimeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeUtils.h; sourceTree = "<group>"; };
+		7CD2C3A811940B270009EFC1 /* DirectoryNodeCountry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeCountry.cpp; sourceTree = "<group>"; };
+		7CD2C3A911940B270009EFC1 /* DirectoryNodeCountry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeCountry.h; sourceTree = "<group>"; };
 		7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDTSCorrection.cpp; sourceTree = "<group>"; };
 		7CDAE9040FFCA3520040B25F /* DVDTSCorrection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDTSCorrection.h; sourceTree = "<group>"; };
 		7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricstextustar.cpp; path = karaoke/karaokelyricstextustar.cpp; sourceTree = "<group>"; };
@@ -5735,6 +5739,8 @@
 		E38E175F0D25F9FA00618676 /* VideoDatabaseDirectory */ = {
 			isa = PBXGroup;
 			children = (
+				7CD2C3A811940B270009EFC1 /* DirectoryNodeCountry.cpp */,
+				7CD2C3A911940B270009EFC1 /* DirectoryNodeCountry.h */,
 				E38E17600D25F9FA00618676 /* DirectoryNode.cpp */,
 				E38E17610D25F9FA00618676 /* DirectoryNode.h */,
 				E38E17620D25F9FA00618676 /* DirectoryNodeActor.cpp */,
@@ -8184,6 +8190,7 @@
 				18E9C8EE11834DF600DF8B9F /* GUIDialogAddonInfo.cpp in Sources */,
 				F52B063B11869862004B1D66 /* Skin.cpp in Sources */,
 				F52B06BA1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */,
+				7CD2C3AB11940B270009EFC1 /* DirectoryNodeCountry.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9054,6 +9061,7 @@
 				18E9C8EF11834DF600DF8B9F /* GUIDialogAddonInfo.cpp in Sources */,
 				F52B063C11869862004B1D66 /* Skin.cpp in Sources */,
 				F52B06BB1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */,
+				7CD2C3AA11940B270009EFC1 /* DirectoryNodeCountry.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

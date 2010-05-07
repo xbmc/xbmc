@@ -161,6 +161,8 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           destPath = "videodb://1/5/";
         else if (strDestination.Equals("MovieStudios"))
           destPath = "videodb://1/6/";
+        else if (strDestination.Equals("MovieCountries"))
+          destPath = "videodb://1/7/";
         else if (strDestination.Equals("Movies"))
           destPath = "videodb://1/";
         else if (strDestination.Equals("MovieSets"))
@@ -485,22 +487,24 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         items.SetContent("musicvideos");
       else if (node == NODE_TYPE_GENRE)
         items.SetContent("genres");
-     else if (node == NODE_TYPE_ACTOR)
-     {
-       if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
-         items.SetContent("artists");
-       else
-         items.SetContent("actors");
-     }
-     else if (node == NODE_TYPE_DIRECTOR)
-       items.SetContent("directors");
-     else if (node == NODE_TYPE_STUDIO)
-       items.SetContent("studios");
-     else if (node == NODE_TYPE_YEAR)
-       items.SetContent("years");
-     else if (node == NODE_TYPE_MUSICVIDEOS_ALBUM)
-       items.SetContent("albums");
-     else
+      else if (node == NODE_TYPE_COUNTRY)
+        items.SetContent("countries");
+      else if (node == NODE_TYPE_ACTOR)
+      {
+        if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+          items.SetContent("artists");
+        else
+          items.SetContent("actors");
+      }
+      else if (node == NODE_TYPE_DIRECTOR)
+        items.SetContent("directors");
+      else if (node == NODE_TYPE_STUDIO)
+        items.SetContent("studios");
+      else if (node == NODE_TYPE_YEAR)
+        items.SetContent("years");
+      else if (node == NODE_TYPE_MUSICVIDEOS_ALBUM)
+        items.SetContent("albums");
+      else
         items.SetContent("");
     }
   }
