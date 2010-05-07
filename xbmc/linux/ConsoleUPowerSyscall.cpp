@@ -29,6 +29,8 @@
 
 CConsoleUPowerSyscall::CConsoleUPowerSyscall()
 {
+  CLog::Log(LOGINFO, "Selected UPower and ConsoleKit as PowerSyscall");
+
   dbus_error_init (&m_error);
   m_connection = dbus_bus_get(DBUS_BUS_SYSTEM, &m_error);
 
@@ -133,7 +135,7 @@ bool CConsoleUPowerSyscall::HasDeviceConsoleKit()
   dbus_error_free (&error);
 
   bool hasUPower = false;
-  CDBusMessage deviceKitMessage("org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks", "EnumerateDevices");
+  CDBusMessage deviceKitMessage("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "EnumerateDevices");
 
   deviceKitMessage.Send(con, &error);
 
