@@ -389,10 +389,10 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
   // use only format part ending at the last '/'
   strAlbumDir = g_guiSettings.GetString("audiocds.trackpathformat");
   int pos = max(strAlbumDir.ReverseFind('/'), strAlbumDir.ReverseFind('\\'));
-  if (pos != -1)
-    strAlbumDir = strAlbumDir.Left(pos);
-  else
-    strAlbumDir = "%A - %B"; // default is "<artist> - <album>"
+  if (pos < 0)
+    return ""; // no directory
+  
+  strAlbumDir = strAlbumDir.Left(pos);
 
   // replace %A with album artist name
   if (strAlbumDir.Find("%A") != -1)
