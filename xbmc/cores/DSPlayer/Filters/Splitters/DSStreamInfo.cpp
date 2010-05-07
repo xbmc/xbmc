@@ -25,7 +25,8 @@
 #include "DVDPlayer/DVDDemuxers/DVDDemux.h"
 #include "DSGuidHelper.h"
 #include "MMReg.h"
-#include "dvdmedia.h"
+
+#include "moreuuids.h"
 extern "C"
 {
   #include "libavformat/avformat.h"
@@ -177,10 +178,13 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
 
     mtype.majortype = MEDIATYPE_Audio;
     mtype.formattype = FORMAT_WaveFormatEx;
-    mtype.subtype = FOURCCMap(avstream->codec->codec_tag);
+    WAVEFORMATEX* wvfmt = (WAVEFORMATEX*)mtype.AllocFormatBuffer(sizeof(WAVEFORMATEX));
+    memset(wvfmt, 0, mtype.FormatLength());
+    //mtype.subtype = FOURCCMap(avstream->codec->codec_tag);
+    //TODO convert audio codecid into wave format ex: ac3 is WAVE_FORMAT_DOLBY_AC3 0x2000
+    mtype.subtype = MEDIASUBTYPE_WAVE_DOLBY_AC3;
     
     
-    WAVEFORMATEX *wvfmt = (WAVEFORMATEX*)mtype.AllocFormatBuffer(sizeof(WAVEFORMATEX) + extrasize);
     //if the extrasize is of 12 its a mp3
     if (extrasize == 12)
     {
@@ -188,14 +192,20 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     wvfmt->wFormatTag = avstream->codec->codec_tag;
     wvfmt->nChannels = avstream->codec->channels;
     wvfmt->nSamplesPerSec= avstream->codec->sample_rate;
-    wvfmt->nAvgBytesPerSec= avstream->codec->bit_rate/8;
-    wvfmt->nBlockAlign= avstream->codec->block_align ? avstream->codec->block_align : 1;
+    
     wvfmt->wBitsPerSample= avstream->codec->bits_per_coded_sample;
-    wvfmt->cbSize= avstream->codec->extradata_size;
+    wvfmt->nBlockAlign = (WORD)((wvfmt->nChannels * wvfmt->wBitsPerSample) / 8);// avstream->codec->block_align ? avstream->codec->block_align : 1;
+    wvfmt->nAvgBytesPerSec= wvfmt->nSamplesPerSec * wvfmt->nBlockAlign;
+    //mtype.SetSampleSize(256000)
+    if (right.ExtraSize > 0)
+    {
+      wvfmt->cbSize = right.ExtraSize;
+      memcpy(wvfmt + 1, right.ExtraData, right.ExtraSize);
+    }
     mtype.SetSampleSize(channels * (bitrate / 8));
 
-    if(avstream->codec->extradata_size)
-      memcpy(wvfmt + 1, avstream->codec->extradata, avstream->codec->extradata_size);
+    
+      
     mtype.pbFormat = (PBYTE)wvfmt;
     
     //wvfmt->wFormatTag
@@ -231,20 +241,27 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
       {
         mtype.formattype = FORMAT_MPEG2Video;
         mtype.subtype = FOURCCMap(FOURCC_AVC1);
-        //mtype.pbFormat =
-        MPEG2VIDEOINFO *mpeginfo = (MPEG2VIDEOINFO*)mtype.AllocFormatBuffer(sizeof(MPEG2VIDEOINFO));
-        mpeginfo->dwProfile = avstream->codec->profile;
-        mpeginfo->dwLevel = avstream->codec->level;
+
+
+        MPEG2VIDEOINFO *mpeginfo = (MPEG2VIDEOINFO*)mtype.AllocFormatBuffer(FIELD_OFFSET(MPEG2VIDEOINFO, dwSequenceHeader) + avstream->codec->extradata_size - 7);
+        //VideoFps = 10000000.0 / AvgTimePerFrame;
         mpeginfo->hdr.AvgTimePerFrame = (REFERENCE_TIME)(10000000 / (stream->iFpsRate / stream->iFpsScale));
-  
+        
         mpeginfo->hdr.dwBitErrorRate = 0;
         
         mpeginfo->hdr.dwBitRate = avstream->codec->bit_rate;
+        //mpeginfo->hdr.dwInterlaceFlags
+        RECT empty_tagrect = {0,0,0,0};
+        mpeginfo->hdr.rcSource = empty_tagrect;
+        mpeginfo->hdr.rcTarget = empty_tagrect;
+        
+        mpeginfo->hdr.dwPictAspectRatioX = (DWORD)stream->iWidth;
+        mpeginfo->hdr.dwPictAspectRatioY = (DWORD)stream->iHeight;
         mpeginfo->hdr.bmiHeader.biSize = sizeof(mpeginfo->hdr.bmiHeader);
         mpeginfo->hdr.bmiHeader.biWidth= stream->iWidth;
         mpeginfo->hdr.bmiHeader.biHeight= stream->iHeight;
         
-        mpeginfo->hdr.bmiHeader.biBitCount= avstream->codec->bits_per_coded_sample;
+        mpeginfo->hdr.bmiHeader.biBitCount= 24;
         mpeginfo->hdr.bmiHeader.biSizeImage = stream->iWidth * stream->iHeight * avstream->codec->bits_per_coded_sample / 8;
         mpeginfo->hdr.bmiHeader.biCompression = mtype.subtype.Data1;
         mpeginfo->hdr.bmiHeader.biPlanes = 1;
@@ -252,7 +269,27 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
         mpeginfo->hdr.bmiHeader.biClrImportant = 0;
         mpeginfo->hdr.bmiHeader.biYPelsPerMeter = 0;
         mpeginfo->hdr.bmiHeader.biXPelsPerMeter = 0;
-        mtype.SetFormat((PBYTE)mpeginfo,sizeof(mpeginfo));
+        
+        //mtype.pbFormat =
+        //from ffmpeg full info
+        //ex: 01 64 00 1f ff e1 00 19 67 64 00 1f ac 34 e4 01 40 16 ec 04 40 00 00 fa 40 00 2e e0 23 c6 0c 64 80 01 00 05 68 ee b2 c8 b0
+        //from directshow
+        //ex: 00 19 67 64 00 1f ac 34  e4 01 40 16 ec 04 40 00 00 fa 40 00 2e e0 23 c6  0c 64 80 00 05 68 ee b2 c8 b0 
+        //based on those test the extradata from ffmpeg required for the mpeginfo header is starting at index 7
+        std::vector<BYTE> extravect;
+        extravect.resize(avstream->codec->extradata_size);
+        memcpy(&extravect.at(0), avstream->codec->extradata, avstream->codec->extradata_size);
+
+        mpeginfo->dwStartTimeCode = 0;// is there any case where it wouldnt be 0?????
+        mpeginfo->dwProfile = avstream->codec->profile;
+        mpeginfo->dwLevel = avstream->codec->level;
+        mpeginfo->dwFlags = (extravect.at(4) & 3) + 1;
+        //drop before 6 and the byte 33(no clue about why i have to remove this one)
+        extravect.erase(extravect.begin() + 33);
+        extravect.erase(extravect.begin(),extravect.begin() + 6);        
+        
+        mpeginfo->cbSequenceHeader = extravect.size();
+        memcpy(mpeginfo->dwSequenceHeader, &extravect.at(0) , extravect.size());
         return;
         break;
       }

@@ -242,7 +242,6 @@ DEFINE_GUID_FOURCC(YV16)
 #define WAVE_FORMAT_IMA_DK4 0x61
 #define WAVE_FORMAT_IMA4    mmioFOURCC('i','m','a','4')
 #define WAVE_FORMAT_G726    0x45
-#define WAVE_FORMAT_FLAC    0xf1ac
 #define WAVE_FORMAT_TTA     0x77a1
 #define WAVE_FORMAT_VORBIS1  ((WORD)'O'+((WORD)'g'<<8)) // 0x674f("Og") ... Original stream compatible
 #define WAVE_FORMAT_VORBIS2  ((WORD)'P'+((WORD)'g'<<8)) // 0x6750("Pg") ... Have independent header
@@ -276,8 +275,6 @@ DEFINE_GUID_FOURCC(YV16)
 #define WAVE_FORMAT_QT_GSM  0x6761
 #define WAVE_FORMAT_COOK1   0x2004
 #define WAVE_FORMAT_COOK2   mmioFOURCC('C','O','O','K')
-#define WAVE_FORMAT_14_4    0x345F3431
-#define WAVE_FORMAT_28_8    0x385F3832
 #define WAVE_FORMAT_IMC     0x401
 #define WAVE_FORMAT_ATRAC3  0x270
 #define WAVE_FORMAT_NELLYMOSER  mmioFOURCC('N','E','L','L')
