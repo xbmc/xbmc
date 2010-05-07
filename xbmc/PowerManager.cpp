@@ -220,6 +220,8 @@ void CPowerManager::ProcessEvents()
 
 void CPowerManager::OnSleep()
 {
+  CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
+
   g_application.StopPlaying();
 }
 
