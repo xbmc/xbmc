@@ -982,16 +982,22 @@
 			<itemlayout height="170" width="190">
 				<control type="image">
 					<posx>1</posx>
-					<posy>0</posy>
+					<posy>1</posy>
 					<width>188</width>
-					<height>145</height>
-					<bordertexture border="5">button-nofocus.png</bordertexture>
-					<bordersize>5</bordersize>
+					<height>168</height>
+					<aspectratio>stretch</aspectratio>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>6</posx>
+					<posy>5</posy>
+					<width>178</width>
+					<height>135</height>
 					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>94</posx>
-					<posy>145</posy>
+					<posy>141</posy>
 					<width>178</width>
 					<height>25</height>
 					<font>font11</font>
@@ -1013,16 +1019,22 @@
 			<focusedlayout height="170" width="190">
 				<control type="image">
 					<posx>1</posx>
-					<posy>0</posy>
+					<posy>1</posy>
 					<width>188</width>
-					<height>145</height>
-					<bordertexture border="5">folder-focus.png</bordertexture>
-					<bordersize>5</bordersize>
+					<height>168</height>
+					<aspectratio>stretch</aspectratio>
+					<texture border="5">folder-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>6</posx>
+					<posy>5</posy>
+					<width>178</width>
+					<height>135</height>
 					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>94</posx>
-					<posy>145</posy>
+					<posy>141</posy>
 					<width>178</width>
 					<height>25</height>
 					<font>font11</font>
@@ -1061,17 +1073,22 @@
 			<itemlayout condition="!Container.Content(Movies)" height="255" width="316">
 				<control type="image">
 					<posx>1</posx>
-					<posy>0</posy>
+					<posy>1</posy>
 					<width>314</width>
-					<height>230</height>
-					<bordertexture border="5">button-nofocus.png</bordertexture>
-					<bordersize>5</bordersize>
+					<height>253</height>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>6</posx>
+					<posy>6</posy>
+					<width>304</width>
+					<height>220</height>
 					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>158</posx>
-					<posy>230</posy>
-					<width>314</width>
+					<posy>225</posy>
+					<width>300</width>
 					<height>25</height>
 					<font>font12</font>
 					<textcolor>grey2</textcolor>
@@ -1092,17 +1109,22 @@
 			<focusedlayout condition="!Container.Content(Movies)" height="255" width="316">
 				<control type="image">
 					<posx>1</posx>
-					<posy>0</posy>
+					<posy>1</posy>
 					<width>314</width>
-					<height>230</height>
-					<bordertexture border="5">folder-focus.png</bordertexture>
-					<bordersize>5</bordersize>
+					<height>253</height>
+					<texture border="5">folder-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>6</posx>
+					<posy>6</posy>
+					<width>304</width>
+					<height>220</height>
 					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>158</posx>
-					<posy>230</posy>
-					<width>314</width>
+					<posy>225</posy>
+					<width>300</width>
 					<height>25</height>
 					<font>font12</font>
 					<textcolor>white</textcolor>
@@ -1123,17 +1145,23 @@
 			<itemlayout condition="Container.Content(Movies)" height="255" width="158">
 				<control type="image">
 					<posx>1</posx>
-					<posy>0</posy>
-					<width>157</width>
-					<height>225</height>
-					<bordertexture border="5">button-nofocus.png</bordertexture>
-					<bordersize>5</bordersize>
+					<posy>1</posy>
+					<width>156</width>
+					<height>253</height>
 					<aspectratio>stretch</aspectratio>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>6</posx>
+					<posy>6</posy>
+					<width>146</width>
+					<height>220</height>
+					<aspectratio>keep</aspectratio>
 					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>79</posx>
-					<posy>225</posy>
+					<posy>226</posy>
 					<width>147</width>
 					<height>25</height>
 					<font>font11</font>
@@ -1155,17 +1183,23 @@
 			<focusedlayout  condition="Container.Content(Movies)" height="255" width="158">
 				<control type="image">
 					<posx>1</posx>
-					<posy>0</posy>
-					<width>157</width>
-					<height>225</height>
-					<bordertexture border="5">folder-focus.png</bordertexture>
-					<bordersize>5</bordersize>
+					<posy>1</posy>
+					<width>156</width>
+					<height>253</height>
 					<aspectratio>stretch</aspectratio>
+					<texture border="5">folder-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>6</posx>
+					<posy>6</posy>
+					<width>146</width>
+					<height>220</height>
+					<aspectratio>keep</aspectratio>
 					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>79</posx>
-					<posy>225</posy>
+					<posy>226</posy>
 					<width>147</width>
 					<height>25</height>
 					<font>font11</font>
@@ -1204,11 +1238,16 @@
 			<itemlayout height="127" width="475" condition="!Skin.HasSetting(Media_Titles_WideIcons)">
 				<control type="image">
 					<posx>1</posx>
-					<posy>0</posy>
+					<posy>1</posy>
 					<width>473</width>
-					<height>100</height>
-					<bordertexture border="5">button-nofocus.png</bordertexture>
-					<bordersize>5</bordersize>
+					<height>125</height>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>6</posx>
+					<posy>6</posy>
+					<width>463</width>
+					<height>90</height>
 					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="label">
@@ -1235,25 +1274,17 @@
 			<focusedlayout height="127" width="475" condition="!Skin.HasSetting(Media_Titles_WideIcons)">
 				<control type="image">
 					<posx>1</posx>
-					<posy>0</posy>
+					<posy>1</posy>
 					<width>473</width>
-					<height>100</height>
-					<bordertexture border="5">button-nofocus.png</bordertexture>
-					<bordersize>5</bordersize>
-					<texture background="true">$INFO[Listitem.Icon]</texture>
-					<visible>!Control.HasFocus(54)</visible>
-					<include>VisibleFadeEffect</include>
+					<height>125</height>
+					<texture border="5">folder-focus.png</texture>
 				</control>
 				<control type="image">
-					<posx>1</posx>
-					<posy>0</posy>
-					<width>473</width>
-					<height>100</height>
-					<bordertexture border="5">folder-focus.png</bordertexture>
-					<bordersize>5</bordersize>
-					<texture>$INFO[Listitem.Icon]</texture>
-					<visible>Control.HasFocus(54)</visible>
-					<include>VisibleFadeEffect</include>
+					<posx>6</posx>
+					<posy>6</posy>
+					<width>463</width>
+					<height>90</height>
+					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="image">
 					<posx>438</posx>
@@ -1279,11 +1310,16 @@
 			<itemlayout height="102" width="475" condition="Skin.HasSetting(Media_Titles_WideIcons)">
 				<control type="image">
 					<posx>1</posx>
-					<posy>0</posy>
+					<posy>1</posy>
 					<width>473</width>
 					<height>100</height>
-					<bordertexture border="5">button-nofocus.png</bordertexture>
-					<bordersize>5</bordersize>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>6</posx>
+					<posy>6</posy>
+					<width>463</width>
+					<height>90</height>
 					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="image">
@@ -1298,25 +1334,17 @@
 			<focusedlayout height="102" width="475" condition="Skin.HasSetting(Media_Titles_WideIcons)">
 				<control type="image">
 					<posx>1</posx>
-					<posy>0</posy>
+					<posy>1</posy>
 					<width>473</width>
 					<height>100</height>
-					<bordertexture border="5">button-nofocus.png</bordertexture>
-					<bordersize>5</bordersize>
-					<texture background="true">$INFO[Listitem.Icon]</texture>
-					<visible>!Control.HasFocus(54)</visible>
-					<include>VisibleFadeEffect</include>
+					<texture border="5">folder-focus.png</texture>
 				</control>
 				<control type="image">
-					<posx>1</posx>
-					<posy>0</posy>
-					<width>473</width>
-					<height>100</height>
-					<bordertexture border="5">folder-focus.png</bordertexture>
-					<bordersize>5</bordersize>
-					<texture>$INFO[Listitem.Icon]</texture>
-					<visible>Control.HasFocus(54)</visible>
-					<include>VisibleFadeEffect</include>
+					<posx>6</posx>
+					<posy>6</posy>
+					<width>463</width>
+					<height>90</height>
+					<texture background="true">$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="image">
 					<posx>438</posx>
