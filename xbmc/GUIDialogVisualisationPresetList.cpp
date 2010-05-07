@@ -38,6 +38,7 @@ CGUIDialogVisualisationPresetList::CGUIDialogVisualisationPresetList(void)
 {
   m_currentPreset = 0;
   m_vecPresets = new CFileItemList;
+  m_viz = NULL;
 }
 
 CGUIDialogVisualisationPresetList::~CGUIDialogVisualisationPresetList(void)
@@ -72,10 +73,7 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
 
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
       g_windowManager.SendMessage(msg);
-      if (msg.GetPointer())
-      {
-        SetVisualisation((CVisualisation*)msg.GetPointer());
-      }
+      SetVisualisation((CVisualisation*)msg.GetPointer());
       return true;
     }
     break;
@@ -90,11 +88,9 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_VISUALISATION_LOADED:
     {
-      if (message.GetPointer())
-      {
-        SetVisualisation((CVisualisation*)message.GetPointer());
-      }
+      SetVisualisation((CVisualisation*)message.GetPointer());
     }
+    break;
   }
   return CGUIDialog::OnMessage(message);
 }
