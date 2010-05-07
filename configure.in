@@ -745,11 +745,11 @@ if test "$host_vendor" = "apple" ; then
     AC_DEFINE([HAVE_LIBVDADECODER], [1], [Define to 1 if you have the 'VDADecoder' library.])
     AC_MSG_NOTICE($vdadecoder_enabled)
   else
-    use_vdadecoder ="no"
+    use_vdadecoder="no"
     AC_MSG_NOTICE($vdadecoder_disabled)
   fi
 else
-  use_vdadecoder ="no"
+  use_vdadecoder="no"
   AC_MSG_NOTICE($vdadecoder_disabled)
 fi
 
