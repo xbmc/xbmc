@@ -107,13 +107,8 @@ bool CTextureCache::CDDSJob::DoWork()
   if (texture.LoadFromFile(m_original))
   { // convert to DDS
     CDDSImage dds;
-    CLog::Log(LOGDEBUG, "Creating DDS version of: %s", m_original.c_str()); 
-    if (dds.Compress(texture.GetWidth(), texture.GetHeight(), texture.GetPitch(), texture.GetPixels(), 40))
-    {
-      CStdString ddsFile = CUtil::ReplaceExtension(m_original, ".dds");
-      dds.WriteFile(ddsFile);
-      return true;
-    }
+    CLog::Log(LOGDEBUG, "Creating DDS version of: %s", m_original.c_str());
+    return dds.Create(CUtil::ReplaceExtension(m_original, ".dds"), texture.GetWidth(), texture.GetHeight(), texture.GetPitch(), texture.GetPixels(), 40);
   }
   return false;
 }
