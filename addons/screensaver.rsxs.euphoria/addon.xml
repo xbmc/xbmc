@@ -9,5 +9,5 @@
   </requires>
   <extension
     point="xbmc.ui.screensaver"
-    library="Euphoria.xbs"/>
+    library_linux="Euphoria.xbs"/>
 </addon>

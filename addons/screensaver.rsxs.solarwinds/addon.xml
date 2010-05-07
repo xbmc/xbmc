@@ -9,5 +9,5 @@
   </requires>
   <extension
     point="xbmc.ui.screensaver"
-    library="Solarwinds.xbs"/>
+    library_linux="Solarwinds.xbs"/>
 </addon>

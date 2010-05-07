@@ -119,7 +119,7 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
     {
       if (pretty)
         return g_localizeStrings.Get(24010);
-      return "visualization";
+      return "xbmc.player.musicviz";
     }
     case ADDON::ADDON_VIZ_LIBRARY:
     {
@@ -166,7 +166,7 @@ const ADDON::TYPE TranslateType(const CStdString &string)
   else if (string.Equals("scraper")) return ADDON_SCRAPER;
   else if (string.Equals("scraper-library")) return ADDON_SCRAPER_LIBRARY;
   else if (string.Equals("xbmc.ui.screensaver")) return ADDON_SCREENSAVER;
-  else if (string.Equals("visualization")) return ADDON_VIZ;
+  else if (string.Equals("xbmc.player.musicviz")) return ADDON_VIZ;
   else if (string.Equals("visualization-library")) return ADDON_VIZ_LIBRARY;
   else if (string.Equals("plugin")) return ADDON_PLUGIN;
   else if (string.Equals("script")) return ADDON_SCRIPT;

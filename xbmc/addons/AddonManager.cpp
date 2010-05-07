@@ -256,7 +256,7 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYP
 {
   CSingleLock lock(m_critSection);
   addons.clear();
-  if (type == ADDON_SCREENSAVER || type == ADDON_SKIN)
+  if (type == ADDON_SCREENSAVER || type == ADDON_SKIN || type == ADDON_VIZ)
   {
     cp_status_t status;
     int num;
@@ -296,10 +296,11 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
   if (type != ADDON_UNKNOWN
       && type != ADDON_SCREENSAVER
       && type != ADDON_SKIN
+      && type != ADDON_VIZ
       && m_addons.find(type) == m_addons.end())
     return false;
 
-  if (type == ADDON_SCREENSAVER || type == ADDON_SKIN)
+  if (type == ADDON_SCREENSAVER || type == ADDON_SKIN || type == ADDON_VIZ)
   {
     cp_status_t status;
     cp_plugin_info_t *cpaddon = NULL;
