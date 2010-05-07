@@ -38,8 +38,8 @@ public:
   virtual void Render();
   virtual int GetID() const { return CGUIWindow::GetID() + m_iScreen; };
 
-  // static function as it's accessed elsewhere
-  static void FillInVisualisations(CSetting *pSetting, int iControlID);
+  // Note: Static as it's used elsewhere
+  static void FillInAddons(CSettingAddon *pSetting, int controlID);
 protected:
   virtual void OnInitWindow();
 
@@ -61,8 +61,6 @@ protected:
 
   void FillInNetworkInterfaces(CSetting *pSetting);
   void NetworkInterfaceChanged(void);
-
-  void FillInAddons(CGUISpinControlEx *pControl, CSettingAddon *pSetting);
 
   void FillInAudioDevices(CSetting* pSetting, bool Passthrough = false);
   void FillInWeatherScripts(CGUISpinControlEx *pControl, const CStdString& strSelected);

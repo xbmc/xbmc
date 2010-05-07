@@ -107,8 +107,8 @@ void CGUIDialogMusicOSD::FrameMove()
 
 void CGUIDialogMusicOSD::OnInitWindow()
 {
-  CSetting *pSetting = g_guiSettings.GetSetting("musicplayer.visualisation");
-  CGUIWindowSettingsCategory::FillInVisualisations(pSetting, CONTROL_VIS_CHOOSER);
+  CSettingAddon *pSetting = (CSettingAddon *)g_guiSettings.GetSetting("musicplayer.visualisation");
+  CGUIWindowSettingsCategory::FillInAddons(pSetting, CONTROL_VIS_CHOOSER);
 
   ResetControlStates();
   CGUIDialog::OnInitWindow();
