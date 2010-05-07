@@ -47,14 +47,14 @@ CConsoleUPowerSyscall::CConsoleUPowerSyscall()
 
   // If "the name org.freedesktop.UPower was not provided by any .service files",
   // GetVariant() would return NULL, and asBoolean() would crash.
-  CVariant canSuspend = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower",    "org.freedesktop.UPower", "can_suspend");
+  CVariant canSuspend = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower",    "org.freedesktop.UPower", "CanSuspend");
 
   if ( !canSuspend.isNull() )
     m_CanSuspend = canSuspend.asBoolean();
   else
     m_CanSuspend = false;
 
-  CVariant canHibernate = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower",    "org.freedesktop.UPower", "can_hibernate");
+  CVariant canHibernate = CDBusUtil::GetVariant("org.freedesktop.UPower", "/org/freedesktop/UPower",    "org.freedesktop.UPower", "CanHibernate");
 
   if ( !canHibernate.isNull() )
     m_CanHibernate = canHibernate.asBoolean();
