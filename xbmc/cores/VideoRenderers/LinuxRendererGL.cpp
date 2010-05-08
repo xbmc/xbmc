@@ -184,6 +184,7 @@ CLinuxRendererGL::~CLinuxRendererGL()
 
   if (m_pYUVShader)
   {
+    m_pYUVShader->Free();
     delete m_pYUVShader;
     m_pYUVShader = NULL;
   }
@@ -1080,6 +1081,7 @@ void CLinuxRendererGL::LoadShaders(int field)
 
     if (m_pYUVShader)
     {
+      m_pYUVShader->Free();
       delete m_pYUVShader;
       m_pYUVShader = NULL;
     }
@@ -1107,6 +1109,7 @@ void CLinuxRendererGL::LoadShaders(int field)
         }
         else
         {
+          m_pYUVShader->Free();
           delete m_pYUVShader;
           m_pYUVShader = NULL;
           CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
@@ -1132,6 +1135,7 @@ void CLinuxRendererGL::LoadShaders(int field)
         }
         else
         {
+          m_pYUVShader->Free();
           delete m_pYUVShader;
           m_pYUVShader = NULL;
           CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB ARB shader");
