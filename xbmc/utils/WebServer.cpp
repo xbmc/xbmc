@@ -272,7 +272,7 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
 #endif
 {
   CFile *file = (CFile *)cls;
-  if(pos != file->GetPosition())
+  if((unsigned int)pos != file->GetPosition())
     file->Seek(pos);
   unsigned res = file->Read(buf, max);
   if(res == 0)

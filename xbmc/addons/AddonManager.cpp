@@ -215,7 +215,7 @@ bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTE
     cp_status_t status;
     int num;
     CStdString ext_point(TranslateType(type));
-    cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
+    m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
     if (status == CP_OK)
       return (num > 0);
   }
