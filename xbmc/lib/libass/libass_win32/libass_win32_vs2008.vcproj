@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\..\..\lib\fontconfig_win32\lib\fontconfig.lib"
+				AdditionalDependencies="fontconfig.lib"
 				OutputFile="..\..\..\..\system\players\dvdplayer\libass.dll"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames="LIBCMTD"
@@ -142,7 +142,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="..\..\..\..\lib\fontconfig_win32\lib\fontconfig.lib"
+				AdditionalDependencies="fontconfig.lib"
 				OutputFile="..\..\..\..\system\players\dvdplayer\libass.dll"
 				LinkIncremental="1"
 				IgnoreDefaultLibraryNames="libcmt;libcmtd"
