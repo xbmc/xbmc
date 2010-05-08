@@ -45,20 +45,22 @@ CCocoaPowerSyscall::CCocoaPowerSyscall()
   m_OnSuspend = false;
   // assume on AC power at startup
   m_OnBattery = false;
+  m_HasBattery = -1;
   m_BatteryPercent = 100;
   m_SentBatteryMessage = false;
+  m_power_source = NULL;
 
-  if (!g_sysinfo.IsAppleTV())
+  if (HasBattery())
     CreateOSPowerCallBacks();
 }
 
 CCocoaPowerSyscall::~CCocoaPowerSyscall()
 {
-  if (!g_sysinfo.IsAppleTV())
+  if (HasBattery())
     DeleteOSPowerCallBacks();
 }
 
-bool CCocoaPowerSyscall::Powerdown()
+bool CCocoaPowerSyscall::Powerdown(void)
 {
   if (g_sysinfo.IsAppleTV())
   {
@@ -79,7 +81,7 @@ bool CCocoaPowerSyscall::Powerdown()
   }
 }
 
-bool CCocoaPowerSyscall::Suspend()
+bool CCocoaPowerSyscall::Suspend(void)
 {
   CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Suspend");
   m_OnSuspend = true;
@@ -93,14 +95,14 @@ bool CCocoaPowerSyscall::Suspend()
   return (error == noErr);
 }
 
-bool CCocoaPowerSyscall::Hibernate()
+bool CCocoaPowerSyscall::Hibernate(void)
 {
   CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Hibernate");
   // just in case hibernate is ever called
   return Suspend();
 }
 
-bool CCocoaPowerSyscall::Reboot()
+bool CCocoaPowerSyscall::Reboot(void)
 {
   CLog::Log(LOGDEBUG, "CCocoaPowerSyscall::Reboot");
 
@@ -121,51 +123,75 @@ bool CCocoaPowerSyscall::Reboot()
   }
 }
 
-bool CCocoaPowerSyscall::CanPowerdown()
+bool CCocoaPowerSyscall::CanPowerdown(void)
 {
   // All Apple products can power down
   return true;
 }
 
-bool CCocoaPowerSyscall::CanSuspend()
+bool CCocoaPowerSyscall::CanSuspend(void)
 {
   // Only OSX boxes can suspend, the AppleTV cannot
   bool result = true;
   
   if (g_sysinfo.IsAppleTV())
-  {
     result = false;
-  }
   else
-  {
     result =IOPMSleepEnabled();
-  }
 
   return(result);
 }
 
-bool CCocoaPowerSyscall::CanHibernate()
+bool CCocoaPowerSyscall::CanHibernate(void)
 {
   // Darwin does "sleep" which automatically handles hibernate
   // so always return false so the GUI does not show hibernate
   return false;
 }
 
-bool CCocoaPowerSyscall::CanReboot()
+bool CCocoaPowerSyscall::CanReboot(void)
 {
   // All Apple products can reboot
   return true;
 }
 
+bool CCocoaPowerSyscall::HasBattery(void)
+{
+  bool result = true;
+
+  if (m_HasBattery == -1)
+  {
+    if (g_sysinfo.IsAppleTV())
+    {
+      result = false;
+    }
+    else
+    {
+      CCocoaAutoPool autopool;
+      CFArrayRef battery_info = NULL;
+
+      if (IOPMCopyBatteryInfo(kIOMasterPortDefault, &battery_info) != kIOReturnSuccess)
+        result = false;
+      else
+        CFRelease(battery_info);
+    }
+    // cache if we have a battery or not
+    m_HasBattery = result;
+  }
+  else
+  {
+    result = m_HasBattery;
+  }
+
+  return result;
+}
+
 bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
 {
-  bool rtn = false;
-
   if (m_OnSuspend)
   {
     callback->OnSleep();
     m_OnSuspend = false;
-    rtn = true;
   }
   else if (m_OnResume)
   {
@@ -173,26 +199,24 @@ bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
     if (g_Windowing.IsFullScreen())
       Cocoa_HideDock();
     m_OnResume = false;
-    rtn = true;
   } 
-  else if (m_OnBattery && !m_SentBatteryMessage)
+  
+  if (m_HasBattery && m_OnBattery && !m_SentBatteryMessage)
   {
     if (m_BatteryPercent < 15)
     {
       callback->OnLowBattery();
       m_SentBatteryMessage = true;
     }
-    rtn = true;
   }
     
-  return(rtn);
+  return true;
 }
 
 void CCocoaPowerSyscall::CreateOSPowerCallBacks(void)
 {
   CCocoaAutoPool autopool;
-  // we want sleep/wake notifications
-  // register to receive system sleep notifications
+  // we want sleep/wake notifications, register to receive system power notifications
   m_root_port = IORegisterForSystemPower(this, &m_notify_port, OSPowerCallBack, &m_notifier_object);
   if (m_root_port)
   {
@@ -205,10 +229,15 @@ void CCocoaPowerSyscall::CreateOSPowerCallBacks(void)
     CLog::Log(LOGERROR, "%s - IORegisterForSystemPower failed", __FUNCTION__);
   }
 
-  // we want power source change notifications
-  m_power_source = IOPSNotificationCreateRunLoopSource(OSPowerSourceCallBack, this);
-  if(m_power_source)
-    CFRunLoopAddSource(CFRunLoopGetCurrent(), m_power_source, kCFRunLoopDefaultMode);
+  // if we have a battery, we want power source change notifications (on AC, on Battery, etc)
+  if (m_HasBattery)
+  {
+    m_power_source = IOPSNotificationCreateRunLoopSource(OSPowerSourceCallBack, this);
+    if (m_power_source)
+      CFRunLoopAddSource(CFRunLoopGetCurrent(), m_power_source, kCFRunLoopDefaultMode);
+    else
+      CLog::Log(LOGERROR, "%s - IOPSNotificationCreateRunLoopSource failed", __FUNCTION__);
+  }
 }
 
 void CCocoaPowerSyscall::DeleteOSPowerCallBacks(void)
@@ -218,20 +247,23 @@ void CCocoaPowerSyscall::DeleteOSPowerCallBacks(void)
   // remove the sleep notification port from the application runloop
   CFRunLoopRemoveSource( CFRunLoopGetCurrent(),
     IONotificationPortGetRunLoopSource(m_notify_port), kCFRunLoopDefaultMode );
-
   // deregister for system sleep notifications
   IODeregisterForSystemPower(&m_notifier_object);
-
   // IORegisterForSystemPower implicitly opens the Root Power Domain IOService
   // so we close it here
   IOServiceClose(m_root_port);
-
   // destroy the notification port allocated by IORegisterForSystemPower
   IONotificationPortDestroy(m_notify_port);
   
   // we no longer want power source change notifications
-  CFRunLoopRemoveSource( CFRunLoopGetCurrent(), m_power_source, kCFRunLoopDefaultMode );
-  CFRelease(m_power_source);
+  if (m_HasBattery)
+  {
+    if (m_power_source)
+    {
+      CFRunLoopRemoveSource( CFRunLoopGetCurrent(), m_power_source, kCFRunLoopDefaultMode );
+      CFRelease(m_power_source);
+    }
+  }
 }
 
 void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, natural_t msg_type, void *msg_arg)

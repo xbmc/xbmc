@@ -32,15 +32,16 @@ public:
   CCocoaPowerSyscall();
   ~CCocoaPowerSyscall();
 
-  virtual bool Powerdown();
-  virtual bool Suspend();
-  virtual bool Hibernate();
-  virtual bool Reboot();
+  virtual bool Powerdown(void);
+  virtual bool Suspend(void);
+  virtual bool Hibernate(void);
+  virtual bool Reboot(void);
 
-  virtual bool CanPowerdown();
-  virtual bool CanSuspend();
-  virtual bool CanHibernate();
-  virtual bool CanReboot();
+  virtual bool CanPowerdown(void);
+  virtual bool CanSuspend(void);
+  virtual bool CanHibernate(void);
+  virtual bool CanReboot(void);
+          bool HasBattery(void);
 
   virtual bool PumpPowerEvents(IPowerEventsCallback *callback);
 private:
@@ -54,6 +55,7 @@ private:
   bool m_OnSuspend;
   // OS Power Source
   bool m_OnBattery;
+  int  m_HasBattery;
   int  m_BatteryPercent;
   bool m_SentBatteryMessage;
 
