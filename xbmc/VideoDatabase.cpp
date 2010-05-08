@@ -3201,6 +3201,28 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const Scraper
   }
 }
 
+bool CVideoDatabase::ScraperInUse(const ADDON::ScraperPtr &scraper) const
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+    if (!scraper) return false;
+
+    CStdString sql = FormatSQL("select count(1) from path where strScraper='%s'",scraper->ID().c_str());
+    if (!m_pDS->query(sql.c_str()) || m_pDS->num_rows() == 0)
+      return false;
+    bool found = m_pDS->fv(0).get_asInt() > 0;
+    m_pDS->close();
+    return found;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, scraper->Parent()->ID().c_str());
+  }
+  return false;
+}
+
 bool CVideoDatabase::UpdateOldVersion(int iVersion)
 {
   BeginTransaction();
