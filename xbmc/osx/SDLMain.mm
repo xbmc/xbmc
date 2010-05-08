@@ -206,17 +206,18 @@ static void setupWindowMenu(void)
 // Set the working directory to the .app's parent directory
 - (void) setupWorkingDirectory:(BOOL)shouldChdir
 {
-    if (shouldChdir)
+  if (shouldChdir)
+  {
+    char parentdir[MAXPATHLEN];
+    CFURLRef url = CFBundleCopyBundleURL(CFBundleGetMainBundle());
+    CFURLRef url2 = CFURLCreateCopyDeletingLastPathComponent(0, url);
+    if (CFURLGetFileSystemRepresentation(url2, true, (UInt8 *)parentdir, MAXPATHLEN))
     {
-        char parentdir[MAXPATHLEN];
-        CFURLRef url = CFBundleCopyBundleURL(CFBundleGetMainBundle());
-        CFURLRef url2 = CFURLCreateCopyDeletingLastPathComponent(0, url);
-        if (CFURLGetFileSystemRepresentation(url2, true, (UInt8 *)parentdir, MAXPATHLEN)) {
-            assert( chdir (parentdir) == 0 );   /* chdir to the binary app's parent */
+      assert( chdir (parentdir) == 0 );   /* chdir to the binary app's parent */
 		}
 		CFRelease(url);
 		CFRelease(url2);
-	}
+  }
 
 }
 
@@ -232,9 +233,23 @@ static void setupWindowMenu(void)
 {
 }
 
+// To use Cocoa on secondary POSIX threads, your application must first detach
+// at least one NSThread object, which can immediately exit. Some info says this
+// is not required anymore, who knows ?
+- (void) kickstartMultiThreaded:(id)arg;
+{
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+  // empty
+  [pool release];
+}
+
 // Called after the internal event loop has started running.
 - (void) applicationDidFinishLaunching: (NSNotification *) note
 {
+    // enable multithreading, we should NOT have to do this but as we are mixing NSThreads/pthreads...
+    if (![NSThread isMultiThreaded])
+      [NSThread detachNewThreadSelector:@selector(kickstartMultiThreaded:) toTarget:self withObject:nil];
+
     // Set the working directory to the .app's parent directory
     [self setupWorkingDirectory:gFinderLaunch];
 
