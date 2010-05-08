@@ -163,7 +163,7 @@ bool CDDSImage::Compress(unsigned int width, unsigned int height, unsigned int p
 
   double colorMSE, alphaMSE;
   squish::ComputeMSE(brga, width, height, pitch, m_data, squish::kDxt1 | squish::kSourceBGRA, colorMSE, alphaMSE);
-  if ((!maxMSE || colorMSE) < maxMSE && alphaMSE < maxMSE)
+  if (!maxMSE || (colorMSE < maxMSE && alphaMSE < maxMSE))
     fourCC = "DXT1";
   else
   {
