@@ -61,6 +61,11 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
         m_pFormatName = "chd-mpeg2";
       break;
       case CODEC_ID_H264:
+        if (hints.extrasize < 7 || hints.extradata == NULL)
+        {
+          CLog::Log(LOGNOTICE, "%s - avcC atom too data small or missing", __FUNCTION__);
+          return false;
+        }
         m_codec_type = CRYSTALHD_CODEC_ID_H264;
         m_pFormatName = "chd-h264";
       break;

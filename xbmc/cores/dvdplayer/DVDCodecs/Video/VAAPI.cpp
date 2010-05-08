@@ -173,8 +173,12 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   {
     if(m_surfaces_free.empty())
     {
-      CLog::Log(LOGERROR, "VAAPI - unable to find free surface");
-      return -1;
+      CLog::Log(LOGERROR, "VAAPI - unable to find free surface, trying to allocate a new one");
+      if(!EnsureSurfaces(avctx, m_surfaces_count+1) || m_surfaces_free.empty())
+      {
+        CLog::Log(LOGERROR, "VAAPI - unable to find free surface");
+        return -1;
+      }
     }
     /* getbuffer call */
     wrapper = m_surfaces_free.front().get();
@@ -331,11 +335,6 @@ bool CDecoder::EnsureContext(AVCodecContext *avctx)
   if(m_refs > 0)
     CLog::Log(LOGWARNING, "VAAPI - reference frame count increasing, reiniting decoder");
 
-  if(m_context)
-    WARN(vaDestroyContext(m_display->get(), m_context))
-  m_context = NULL;
-
-  const unsigned old_surfaces_count = m_surfaces_count;
   m_refs = avctx->refs;
   if(m_refs == 0)
   {
@@ -344,24 +343,34 @@ bool CDecoder::EnsureContext(AVCodecContext *avctx)
     else
       m_refs = 2;
   }
-  m_surfaces_count = m_refs + 1 + 1;
+  return EnsureSurfaces(avctx, m_refs + 1 + 1);
+}
 
-  CLog::Log(LOGDEBUG, "VAAPI - allocating %d surfaces for given %d references", m_surfaces_count, avctx->refs);
+bool CDecoder::EnsureSurfaces(AVCodecContext *avctx, unsigned n_surfaces_count)
+{
+  CLog::Log(LOGDEBUG, "VAAPI - making sure %d surfaces are allocated for given %d references", n_surfaces_count, avctx->refs);
 
-  if (m_surfaces_count > old_surfaces_count)
-  {
-    CHECK(vaCreateSurfaces(m_display->get()
-                         , avctx->width
-                         , avctx->height
-                         , VA_RT_FORMAT_YUV420
-                         , m_surfaces_count - old_surfaces_count
-                         , &m_surfaces[old_surfaces_count]))
+  if(n_surfaces_count <= m_surfaces_count)
+    return true;
 
-    for(unsigned i = old_surfaces_count; i < m_surfaces_count; i++)
-      m_surfaces_free.push_back(CSurfacePtr(new CSurface(m_surfaces[i], m_display)));
-  }
+  const unsigned old_surfaces_count = m_surfaces_count;
+  m_surfaces_count = n_surfaces_count;
+
+  CHECK(vaCreateSurfaces(m_display->get()
+                       , avctx->width
+                       , avctx->height
+                       , VA_RT_FORMAT_YUV420
+                       , m_surfaces_count - old_surfaces_count
+                       , &m_surfaces[old_surfaces_count]))
+
+  for(unsigned i = old_surfaces_count; i < m_surfaces_count; i++)
+    m_surfaces_free.push_back(CSurfacePtr(new CSurface(m_surfaces[i], m_display)));
 
   //shared_ptr<VASurfaceID const> test = VASurfaceIDPtr(m_surfaces[0], m_display);
+
+  if(m_context)
+    WARN(vaDestroyContext(m_display->get(), m_context))
+  m_context = NULL;
 
   CHECK(vaCreateContext(m_display->get()
                       , m_config

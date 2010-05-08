@@ -209,9 +209,9 @@ IF %comp%==vs2008 (
   IF EXIST config.ini FOR /F "tokens=* DELIMS=" %%a IN ('FINDSTR/R "=" config.ini') DO SET %%a
   
   IF EXIST error.log del error.log > NUL
-  call buildskins.bat "%skinpath%"
-  call buildscripts.bat "%scriptpath%"
-  call buildplugins.bat "%pluginpath%"
+  call buildskins.bat
+  rem call buildscripts.bat "%scriptpath%"
+  rem call buildplugins.bat "%pluginpath%"
   rem reset variables
   SET skinpath=
   SET scriptpath=

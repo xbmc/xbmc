@@ -97,6 +97,7 @@ class CDecoder
   : public CDVDVideoCodecFFmpeg::IHardwareDecoder
 {
   bool EnsureContext(AVCodecContext *avctx);
+  bool EnsureSurfaces(AVCodecContext *avctx, unsigned n_surfaces_count);
 public:
   CDecoder();
  ~CDecoder();

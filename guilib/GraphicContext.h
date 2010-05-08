@@ -194,5 +194,5 @@ private:
  \ingroup graphics
  \brief
  */
-extern CGraphicContext g_graphicsContext;
+extern CGraphicContext& g_graphicsContext;
 #endif

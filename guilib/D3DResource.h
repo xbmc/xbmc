@@ -52,8 +52,15 @@ public:
 
   virtual void OnDestroyDevice();
   virtual void OnCreateDevice();
+  virtual void OnLostDevice();
+  virtual void OnResetDevice();
+
 private:
   unsigned int GetMemoryUsage(unsigned int pitch) const;
+
+  void SaveTexture();
+  void RestoreTexture();
+
   // creation parameters
   UINT      m_width;
   UINT      m_height;

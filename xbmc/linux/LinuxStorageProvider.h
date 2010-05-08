@@ -22,6 +22,7 @@
 #include "IStorageProvider.h"
 #include "HALProvider.h"
 #include "DeviceKitDisksProvider.h"
+#include "UDisksProvider.h"
 #include "PosixMountProvider.h"
 
 class CLinuxStorageProvider : public IStorageProvider
@@ -32,7 +33,9 @@ public:
     m_instance = NULL;
 
 #ifdef HAS_DBUS
-    if (CDeviceKitDisksProvider::HasDeviceKitDisks())
+    if (CUDisksProvider::HasUDisks())
+      m_instance = new CUDisksProvider();
+    else if (CDeviceKitDisksProvider::HasDeviceKitDisks())
       m_instance = new CDeviceKitDisksProvider();
 #endif
 #ifdef HAS_HAL

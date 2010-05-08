@@ -1,7 +1,5 @@
-#pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,35 +19,32 @@
  *
  */
 
-#include "GUIDialog.h"
-#include "addons/IAddon.h"
-#include "utils/Job.h"
+#ifdef HAS_DBUS
+#include "IPowerSyscall.h"
 
-class CGUIDialogAddonInfo :
-      public CGUIDialog,
-      public IJobCallback
+class CConsoleUPowerSyscall : public IPowerSyscall
 {
 public:
-  CGUIDialogAddonInfo(void);
-  virtual ~CGUIDialogAddonInfo(void);
-  bool OnMessage(CGUIMessage& message);
-  
-  virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_item; }
-  virtual bool HasListItems() const { return true; }
+  CConsoleUPowerSyscall();
+  virtual ~CConsoleUPowerSyscall() { }
 
-  void OnInstall();
-  void OnDisable();
-  void OnSettings();
+  virtual bool Powerdown();
+  virtual bool Suspend();
+  virtual bool Hibernate();
+  virtual bool Reboot();
 
-  static bool ShowForItem(const CFileItemPtr& item);
+  virtual bool CanPowerdown();
+  virtual bool CanSuspend();
+  virtual bool CanHibernate();
+  virtual bool CanReboot();
 
-  // job callback
-  void OnJobComplete(unsigned int jobID, bool success, CJob* job);
-protected:
-  void OnInitWindow();
-  CFileItemPtr m_item;
-  ADDON::AddonPtr m_addon;
-  ADDON::AddonPtr m_localAddon;
-  unsigned int m_jobid;
+  static bool HasDeviceConsoleKit();
+private:
+  static bool ConsoleKitMethodCall(const char *method);
+
+  bool m_CanPowerdown;
+  bool m_CanSuspend;
+  bool m_CanHibernate;
+  bool m_CanReboot;
 };
-
+#endif

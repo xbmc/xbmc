@@ -64,7 +64,7 @@ void CDXTexture::CreateTextureObject()
     return;
   }
 
-  m_texture.Create(m_textureWidth, m_textureHeight, 1, 0, format, D3DPOOL_MANAGED);
+  m_texture.Create(m_textureWidth, m_textureHeight, 1, g_Windowing.DefaultD3DUsage(), format, g_Windowing.DefaultD3DPool());
 }
 
 void CDXTexture::DestroyTextureObject()

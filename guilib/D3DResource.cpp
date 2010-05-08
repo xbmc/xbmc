@@ -104,7 +104,7 @@ bool CD3DTexture::GetSurfaceLevel(UINT level, LPDIRECT3DSURFACE9 *surface)
   return false;
 }
 
-void CD3DTexture::OnDestroyDevice()
+void CD3DTexture::SaveTexture()
 {
   if (m_texture)
   {
@@ -122,7 +122,18 @@ void CD3DTexture::OnDestroyDevice()
   SAFE_RELEASE(m_texture);
 }
 
-void CD3DTexture::OnCreateDevice()
+void CD3DTexture::OnDestroyDevice()
+{
+  SaveTexture();
+}
+
+void CD3DTexture::OnLostDevice()
+{
+  if (m_pool == D3DPOOL_DEFAULT)
+    SaveTexture();
+}
+
+void CD3DTexture::RestoreTexture()
 {
   // yay, we're back - make a new copy of the texture
   if (!m_texture)
@@ -139,6 +150,18 @@ void CD3DTexture::OnCreateDevice()
     m_data = NULL;
   }
 }
+
+void CD3DTexture::OnCreateDevice()
+{
+  RestoreTexture();
+}
+
+void CD3DTexture::OnResetDevice()
+{
+  if (m_pool == D3DPOOL_DEFAULT)
+    RestoreTexture();
+}
+
 
 unsigned int CD3DTexture::GetMemoryUsage(unsigned int pitch) const
 {

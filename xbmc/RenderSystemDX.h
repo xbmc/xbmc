@@ -69,6 +69,10 @@ public:
   UINT              GetCurrentAdapter() { return m_adapter; }
   int GetBackbufferCount() const { return m_D3DPP.BackBufferCount; }
 
+  bool    UseD3D9Ex()       { return m_useD3D9Ex; }
+  DWORD   DefaultD3DUsage() { return m_defaultD3DUsage; }
+  D3DPOOL DefaultD3DPool()  { return m_defaultD3DPool; }
+
   /*!
    \brief Register as a dependent of the DirectX Render System
    Resources should call this on construction if they're dependent on the Render System
@@ -110,6 +114,7 @@ protected:
   unsigned int m_screenHeight;
 
   D3DPRESENT_PARAMETERS m_D3DPP;
+  D3DDISPLAYMODEEX m_D3DDMEX;
   HWND m_hFocusWnd;
   HWND m_hDeviceWnd;
   unsigned int m_nBackBufferWidth;
@@ -119,6 +124,9 @@ protected:
   HRESULT m_nDeviceStatus;
   IDirect3DStateBlock9* m_stateBlock;
   int64_t m_systemFreq;
+  bool m_useD3D9Ex;
+  DWORD m_defaultD3DUsage;
+  D3DPOOL m_defaultD3DPool;
 
   CCriticalSection m_resourceSection;
   std::vector<ID3DResource*>  m_resources;

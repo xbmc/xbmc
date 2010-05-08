@@ -371,4 +371,4 @@ protected:
 #endif
 };
 
-extern CApplication g_application;
+extern CApplication& g_application;

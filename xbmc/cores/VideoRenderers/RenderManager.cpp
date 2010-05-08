@@ -30,6 +30,7 @@
 #include "Application.h"
 #include "Settings.h"
 #include "GUISettings.h"
+#include "SystemGlobals.h"
 
 #ifdef _LINUX
 #include "PlatformInclude.h"
@@ -49,7 +50,7 @@
 #include "../dsplayer/DSClock.h"
 #endif
 
-CXBMCRenderManager g_renderManager;
+CXBMCRenderManager& g_renderManager = g_SystemGlobals.m_renderManager;
 
 #define MAXPRESENTDELAY 0.500
 

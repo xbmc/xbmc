@@ -435,7 +435,7 @@ void CWinRenderer::UpdateVideoFilter()
       return;
     }
 
-    if(!m_HQKernelTexture.Create(256, 1, 1, 0, D3DFMT_A16B16G16R16F, D3DPOOL_MANAGED))
+    if (!m_HQKernelTexture.Create(256, 1, 1, g_Windowing.DefaultD3DUsage(), D3DFMT_A16B16G16R16F, g_Windowing.DefaultD3DPool()))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Failed to create kernel texture.");
       g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
@@ -714,9 +714,10 @@ bool CWinRenderer::CreateYV12Texture(int index)
   DeleteYV12Texture(index);
 
   SVideoBuffer &buf = m_VideoBuffers[index];
-  if (!buf.planes[0].texture.Create(m_sourceWidth    , m_sourceHeight    , 1, 0, D3DFMT_L8, D3DPOOL_MANAGED)
-  ||  !buf.planes[1].texture.Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED)
-  ||  !buf.planes[2].texture.Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED))
+
+  if ( !buf.planes[0].texture.Create(m_sourceWidth    , m_sourceHeight    , 1, g_Windowing.DefaultD3DUsage(), D3DFMT_L8, g_Windowing.DefaultD3DPool())
+    || !buf.planes[1].texture.Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, g_Windowing.DefaultD3DUsage(), D3DFMT_L8, g_Windowing.DefaultD3DPool())
+    || !buf.planes[2].texture.Create(m_sourceWidth / 2, m_sourceHeight / 2, 1, g_Windowing.DefaultD3DUsage(), D3DFMT_L8, g_Windowing.DefaultD3DPool()))
   {
     CLog::Log(LOGERROR, "Unable to create YV12 video texture %i", index);
     return false;
