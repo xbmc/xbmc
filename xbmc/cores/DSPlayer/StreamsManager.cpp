@@ -222,7 +222,7 @@ void CStreamsManager::SetAudioStream(int iStream)
     /* Disable filter */
 //standardway:
 
-    m_pGraph->Stop(); // Current position is kept by the graph
+    g_dsGraph->Stop(); // Current position is kept by the graph
 
     IPin *newAudioStreamPin = m_audioStreams[enableIndex]->pObj; // Splitter pin
     IPin *oldAudioStreamPin = m_audioStreams[disableIndex]->pObj; // Splitter pin
@@ -265,7 +265,7 @@ void CStreamsManager::SetAudioStream(int iStream)
     m_audioStreams[enableIndex]->connected = true;
 
 done:
-    m_pGraph->Play();
+    g_dsGraph->Play();
 
     if (SUCCEEDED(hr))
       CLog::Log(LOGNOTICE, "%s Successfully changed audio stream", __FUNCTION__);
@@ -499,14 +499,13 @@ void CStreamsManager::LoadStreams()
   SubtitleManager->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
 }
 
-bool CStreamsManager::InitManager(CDSGraph *DSGraph)
+bool CStreamsManager::InitManager()
 {
-  if (! DSGraph)
+  if (! g_dsGraph)
     return false;
 
   m_pSplitter = CFGLoader::Filters.Splitter.pBF;
-  m_pGraphBuilder = CDSGraph::m_pFilterGraph;
-  m_pGraph = DSGraph;
+  m_pGraphBuilder = g_dsGraph->pFilterGraph;
 
   // Create subtitle manager
   SubtitleManager.reset(new CSubtitleManager(this));
@@ -827,7 +826,7 @@ void CSubtitleManager::Initialize()
 
   m_pManager->SetStyle(&style);
 
-  if (FAILED(m_pManager->InsertPassThruFilter(CDSGraph::m_pFilterGraph)))
+  if (FAILED(m_pManager->InsertPassThruFilter(g_dsGraph->pFilterGraph)))
   {
     // No internal subs
   } 
@@ -996,7 +995,7 @@ void CSubtitleManager::SetSubtitle( int iStream )
     Com::SmartPtr<IPin> oldAudioStreamPin = NULL;
     HRESULT hr = S_OK;
 
-    m_pStreamManager->m_pGraph->Stop(); // Current position is kept by the graph
+    g_dsGraph->Stop(); // Current position is kept by the graph
     stopped = true;
     
     /* Disconnect pins */
@@ -1052,7 +1051,7 @@ void CSubtitleManager::SetSubtitle( int iStream )
 
 done:
     if (stopped)
-      m_pStreamManager->m_pGraph->Play();
+      g_dsGraph->Play();
 
     if (m_bSubtitlesVisible)
     {
@@ -1164,10 +1163,10 @@ void CSubtitleManager::DisconnectCurrentSubtitlePins( void )
         return;
       }
 
-      m_pStreamManager->m_pGraph->Stop();
+      g_dsGraph->Stop();
       m_pStreamManager->m_pGraphBuilder->Disconnect(m_subtitleStreams[i]->pObj); // Splitter's output pin
       m_pStreamManager->m_pGraphBuilder->Disconnect(pin); // Filter's input pin
-      m_pStreamManager->m_pGraph->Play();
+      g_dsGraph->Play();
     }
     m_subtitleStreams[i]->connected = false;
     m_subtitleStreams[i]->flags = 0;
@@ -1189,7 +1188,7 @@ IPin *CSubtitleManager::GetFirstSubtitlePin( void )
 {
   PIN_DIRECTION  pindir;
 
-  BeginEnumFilters(CDSGraph::m_pFilterGraph, pEF, pBF)
+  BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
   {
     BeginEnumPins(pBF, pEP, pPin)
     {

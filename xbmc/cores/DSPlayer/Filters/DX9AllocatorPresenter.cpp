@@ -80,7 +80,7 @@ static void AdjustQuad(MYD3DVERTEX<texcoords>* v, double dx, double dy)
 }
 
 template<int texcoords>
-static HRESULT TextureBlt(Com::SmartPtr<IDirect3DDevice9> pD3DDev, MYD3DVERTEX<texcoords> v[4], D3DTEXTUREFILTERTYPE filter = D3DTEXF_LINEAR)
+static HRESULT TextureBlt(IDirect3DDevice9* pD3DDev, MYD3DVERTEX<texcoords> v[4], D3DTEXTUREFILTERTYPE filter = D3DTEXF_LINEAR)
 {
   if(!pD3DDev)
     return E_POINTER;
@@ -151,7 +151,7 @@ static HRESULT TextureBlt(Com::SmartPtr<IDirect3DDevice9> pD3DDev, MYD3DVERTEX<t
     return E_FAIL;
 }
 
-static HRESULT DrawRect(Com::SmartPtr<IDirect3DDevice9> pD3DDev, MYD3DVERTEX<0> v[4])
+static HRESULT DrawRect(IDirect3DDevice9* pD3DDev, MYD3DVERTEX<0> v[4])
 {
   if(!pD3DDev)
     return E_POINTER;
@@ -222,7 +222,6 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   m_hVSyncThread = NULL;
   m_hEvtQuit = NULL;
   m_bIsFullscreen = g_dsSettings.IsD3DFullscreen();
-  //m_bIsFullscreen = (AfxGetApp()->m_pMainWnd != NULL) && (((CMainFrame*)AfxGetApp()->m_pMainWnd)->IsD3DFullScreenMode());
 
   HINSTANCE    hDll;
 
@@ -2393,6 +2392,9 @@ bool CDX9AllocatorPresenter::ResetDevice()
 {
   StopWorkerThreads();
   CStreamsManager::getSingleton()->SubtitleManager->StopThread();
+
+  // Stop playback
+  g_dsGraph->Stop();
 
   BeforeDeviceReset(); // Handle pre-reset specific renderer stuff
 

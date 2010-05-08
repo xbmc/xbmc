@@ -50,7 +50,7 @@ class CPixelShaderCompiler
   D3DXCompileShaderPtr m_pD3DXCompileShader;
   D3DXDisassembleShaderPtr m_pD3DXDisassembleShader;
 
-  Com::SmartPtr<IDirect3DDevice9> m_pD3DDev;
+  IDirect3DDevice9* m_pD3DDev;
 
 public:
   CPixelShaderCompiler(IDirect3DDevice9* pD3DDev, bool fStaySilent = false);

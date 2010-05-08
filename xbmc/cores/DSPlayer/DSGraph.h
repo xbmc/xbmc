@@ -141,9 +141,9 @@ public:
   /// @return Informations about the current video track
   CStdString GetVideoInfo();
 
-  CDSClock* m_pDsClock;
+  CDSClock* pDsClock;
+  Com::SmartPtr<IFilterGraph2> pFilterGraph;
 
-  static Com::SmartPtr<IFilterGraph2> m_pFilterGraph;
 protected:
 
   /** Unload the graph and release all the filters
@@ -224,3 +224,5 @@ private:
     bool isDVD;
   } m_VideoInfo;
 };
+
+extern CDSGraph* g_dsGraph;

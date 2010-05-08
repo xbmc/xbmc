@@ -73,7 +73,7 @@ CFGManager::CFGManager():
   m_videoPinConnected(false)
 {
   m_pUnkInner.CoCreateInstance(CLSID_FilterGraph, NULL);
-  m_pUnkInner.QueryInterface(&CDSGraph::m_pFilterGraph);
+  m_pUnkInner.QueryInterface(&g_dsGraph->pFilterGraph);
   m_pFM.CoCreateInstance(CLSID_FilterMapper2);
 }
 
@@ -96,7 +96,7 @@ HRESULT CFGManager::QueryInterface(const IID &iid, void** ppv)
   hr = m_pUnkInner->QueryInterface(iid, ppv);
   if (SUCCEEDED(hr))
     return hr;
-  BeginEnumFilters(CDSGraph::m_pFilterGraph, pEF, pBF)
+  BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
   {
     hr = pBF->QueryInterface(iid, ppv);
     if (SUCCEEDED(hr))
@@ -156,16 +156,16 @@ STDMETHODIMP CFGManager::AddFilter(IBaseFilter* pFilter, LPCWSTR pName)
 
   HRESULT hr;
 
-  if (CDSGraph::m_pFilterGraph)
+  if (g_dsGraph->pFilterGraph)
   {
-    hr = CDSGraph::m_pFilterGraph->AddFilter(pFilter, pName);
+    hr = g_dsGraph->pFilterGraph->AddFilter(pFilter, pName);
     if(FAILED(hr))
     return hr;
   }
 
   // TODO
   hr = pFilter->JoinFilterGraph(NULL, NULL);
-  hr = pFilter->JoinFilterGraph(CDSGraph::m_pFilterGraph, pName);
+  hr = pFilter->JoinFilterGraph(g_dsGraph->pFilterGraph, pName);
   
   //SAFE_RELEASE(pIFG);
   return hr;
@@ -173,29 +173,29 @@ STDMETHODIMP CFGManager::AddFilter(IBaseFilter* pFilter, LPCWSTR pName)
 
 STDMETHODIMP CFGManager::RemoveFilter(IBaseFilter* pFilter)
 {
-  if(!CDSGraph::m_pFilterGraph) 
+  if(!g_dsGraph->pFilterGraph) 
     return E_UNEXPECTED;
 
   CSingleLock CSingleLock(*this);
 
-  return CDSGraph::m_pFilterGraph->RemoveFilter(pFilter);
+  return g_dsGraph->pFilterGraph->RemoveFilter(pFilter);
 }
 
 STDMETHODIMP CFGManager::EnumFilters(IEnumFilters** ppEnum)
 {
-  if(!CDSGraph::m_pFilterGraph) 
+  if(!g_dsGraph->pFilterGraph) 
     return E_UNEXPECTED;
 
-  return CDSGraph::m_pFilterGraph->EnumFilters(ppEnum);
+  return g_dsGraph->pFilterGraph->EnumFilters(ppEnum);
 }
 
 STDMETHODIMP CFGManager::FindFilterByName(LPCWSTR pName, IBaseFilter** ppFilter)
 {
-  if(!CDSGraph::m_pFilterGraph) 
+  if(!g_dsGraph->pFilterGraph) 
     return E_UNEXPECTED;
   CSingleLock CSingleLock(*this);
 
-  return CDSGraph::m_pFilterGraph->FindFilterByName(pName, ppFilter);
+  return g_dsGraph->pFilterGraph->FindFilterByName(pName, ppFilter);
 }
 
 STDMETHODIMP CFGManager::ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MEDIA_TYPE* pmt)
@@ -243,29 +243,29 @@ STDMETHODIMP CFGManager::ConnectDirect(IPin* pPinOut, IPin* pPinIn, const AM_MED
 
 STDMETHODIMP CFGManager::Reconnect(IPin* ppin)
 {
-  if(! CDSGraph::m_pFilterGraph) 
+  if(! g_dsGraph->pFilterGraph) 
     return E_UNEXPECTED;
   CSingleLock CSingleLock(*this);
 
-  return CDSGraph::m_pFilterGraph->Reconnect(ppin);
+  return g_dsGraph->pFilterGraph->Reconnect(ppin);
 }
 
 STDMETHODIMP CFGManager::Disconnect(IPin* ppin)
 {
-  if(! CDSGraph::m_pFilterGraph) 
+  if(! g_dsGraph->pFilterGraph) 
     return E_UNEXPECTED;
   CSingleLock CSingleLock(*this);
 
-  return CDSGraph::m_pFilterGraph->Disconnect(ppin);
+  return g_dsGraph->pFilterGraph->Disconnect(ppin);
 }
 
 STDMETHODIMP CFGManager::SetDefaultSyncSource()
 {
-  if (! CDSGraph::m_pFilterGraph)
+  if (! g_dsGraph->pFilterGraph)
     return E_UNEXPECTED;
   CSingleLock CSingleLock(*this);
 
-  return CDSGraph::m_pFilterGraph->SetDefaultSyncSource();
+  return g_dsGraph->pFilterGraph->SetDefaultSyncSource();
 }
 
 // IGraphBuilder
@@ -299,7 +299,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
   {
 
     std::vector<IBaseFilter *> pBFS;
-    BeginEnumFilters(CDSGraph::m_pFilterGraph, pEF, pBF)
+    BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
     {
       if(pPinIn && DShowUtil::GetFilterFromPin(pPinIn) == pBF 
         || DShowUtil::GetFilterFromPin(pPinOut) == pBF)
@@ -331,7 +331,7 @@ STDMETHODIMP CFGManager::Connect(IPin* pPinOut, IPin* pPinIn)
 
 STDMETHODIMP CFGManager::Render(IPin* pPinOut)
 {
-  return CDSGraph::m_pFilterGraph->Render(pPinOut);
+  return g_dsGraph->pFilterGraph->Render(pPinOut);
 }
 
 HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
@@ -369,7 +369,7 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
 
   //Apparently the graph don't start with unconnected filters in the graph for wmv files
   //And its also going to be needed for error in the filters set by the user are not getting connected
-  RemoveUnconnectedFilters(CDSGraph::m_pFilterGraph);
+  RemoveUnconnectedFilters(g_dsGraph->pFilterGraph);
 
   g_dsconfig.ConfigureFilters();
 #ifdef _DSPLAYER_DEBUG
@@ -392,40 +392,40 @@ HRESULT CFGManager::GetFileInfo(CStdString* sourceInfo, CStdString* splitterInfo
 
 STDMETHODIMP CFGManager::Abort()
 {
-  if (!CDSGraph::m_pFilterGraph)
+  if (!g_dsGraph->pFilterGraph)
     return E_UNEXPECTED;
   CSingleLock CSingleLock(*this);
   
-  return CDSGraph::m_pFilterGraph->Abort();
+  return g_dsGraph->pFilterGraph->Abort();
 }
 
 STDMETHODIMP CFGManager::ShouldOperationContinue()
 {
-  if (! CDSGraph::m_pFilterGraph)
+  if (! g_dsGraph->pFilterGraph)
     return E_UNEXPECTED;
   CSingleLock CSingleLock(*this);
 
-  return CDSGraph::m_pFilterGraph->ShouldOperationContinue();
+  return g_dsGraph->pFilterGraph->ShouldOperationContinue();
 }
 
 // IFilterGraph2
 
 STDMETHODIMP CFGManager::AddSourceFilterForMoniker(IMoniker* pMoniker, IBindCtx* pCtx, LPCWSTR lpcwstrFilterName, IBaseFilter** ppFilter)
 {
-  if (! CDSGraph::m_pFilterGraph)
+  if (! g_dsGraph->pFilterGraph)
     return E_UNEXPECTED;
   CSingleLock CSingleLock(*this);
   
-  return CDSGraph::m_pFilterGraph->AddSourceFilterForMoniker(pMoniker, pCtx, lpcwstrFilterName, ppFilter);
+  return g_dsGraph->pFilterGraph->AddSourceFilterForMoniker(pMoniker, pCtx, lpcwstrFilterName, ppFilter);
 }
 
 STDMETHODIMP CFGManager::ReconnectEx(IPin* ppin, const AM_MEDIA_TYPE* pmt)
 {
-  if (!CDSGraph::m_pFilterGraph)
+  if (!g_dsGraph->pFilterGraph)
     return E_UNEXPECTED;
   CSingleLock CSingleLock(*this);
   
-  return CDSGraph::m_pFilterGraph->ReconnectEx(ppin, pmt);
+  return g_dsGraph->pFilterGraph->ReconnectEx(ppin, pmt);
 }
 
 // IGraphBuilder2
@@ -637,7 +637,7 @@ HRESULT CFGManager::AddToROT()
 
   if(SUCCEEDED(hr = GetRunningObjectTable(0, &pROT))
   && SUCCEEDED(hr = CreateItemMoniker(L"!", wsz, &pMoniker)))
-        hr = pROT->Register(ROTFLAGS_REGISTRATIONKEEPSALIVE, CDSGraph::m_pFilterGraph, pMoniker, &m_dwRegister);
+        hr = pROT->Register(ROTFLAGS_REGISTRATIONKEEPSALIVE, g_dsGraph->pFilterGraph, pMoniker, &m_dwRegister);
 
   return hr;
 }
@@ -701,7 +701,7 @@ void CFGManager::LogFilterGraph(void)
 {
   CStdString buffer;
   CLog::Log(LOGDEBUG, "Starting filters listing ...");
-  BeginEnumFilters(CDSGraph::m_pFilterGraph, pEF, pBF)
+  BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
   {
     g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), buffer);
     CLog::Log(LOGDEBUG, "%s", buffer.c_str());
@@ -892,7 +892,7 @@ HRESULT CFGManager::RecoverFromGraphError(const CFileItem& pFileItem)
     if (CFGLoader::IsUsingDXVADecoder())
     {
       // We've try to use a dxva decoder. Maybe the file wasn't dxva compliant. Fallback on default video renderer
-      CDSGraph::m_pFilterGraph->RemoveFilter(CFGLoader::Filters.Video.pBF);
+      g_dsGraph->pFilterGraph->RemoveFilter(CFGLoader::Filters.Video.pBF);
       CFGLoader::Filters.Video.pBF.FullRelease();
       CFGLoader::Filters.Video.guid = GUID_NULL;
       CFGLoader::Filters.Video.osdname = "";

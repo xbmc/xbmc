@@ -144,21 +144,20 @@ int CChaptersManager::SeekChapter(int iChapter)
 
     // Seek to the chapter.
     CLog::Log(LOGDEBUG, "%s Seeking to chapter %d", __FUNCTION__, iChapter);
-    m_pGraph->SeekInMilliSec( m_chapters[iChapter]->time );
+    g_dsGraph->SeekInMilliSec( m_chapters[iChapter]->time );
   }
   else
   {
     // Do a regular big jump.
     if (iChapter > GetChapter())
-      m_pGraph->Seek(true, true);
+      g_dsGraph->Seek(true, true);
     else
-      m_pGraph->Seek(false, true);
+      g_dsGraph->Seek(false, true);
   }
   return iChapter;
 }
 
-void CChaptersManager::InitManager(CDSGraph *Graph)
+void CChaptersManager::InitManager()
 {
-  m_pGraph = Graph;
   m_init = true;
 }

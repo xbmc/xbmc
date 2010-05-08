@@ -92,7 +92,7 @@ public:
 
 class CDX9SubPicAllocator : public ISubPicAllocatorImpl, public CCritSec
 {
-  Com::SmartPtr<IDirect3DDevice9> m_pD3DDev;
+  IDirect3DDevice9* m_pD3DDev;
   Com::SmartSize m_maxsize;
 
 

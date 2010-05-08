@@ -252,10 +252,9 @@ public:
   CStdString GetVideoCodecDisplayName() { return m_videoStream.codecname; }
   
   /** Initialize the manager
-   * @param[in] DSGraph Pointer to CDSGraph
    * @return True if the manager is initialized, false otherwise
    */
-  bool InitManager(CDSGraph *DSGraph);
+  bool InitManager();
   /** Extract stream information from AM_MEDIA_TYPE
    * @param[in] mt Media type informations
    * @param[out] s A filled SStreamInfos structure
@@ -282,8 +281,6 @@ private:
   Com::SmartPtr<IAMStreamSelect> m_pIAMStreamSelect;
   Com::SmartPtr<IFilterGraph2> m_pGraphBuilder;
   Com::SmartPtr<IBaseFilter> m_pSplitter;
-
-  CDSGraph* m_pGraph;
 
   bool m_init;
   bool m_bChangingStream;

@@ -85,10 +85,10 @@ protected:
 
   virtual HRESULT CreateFilter(CFGFilter* pFGF, IBaseFilter** ppBF);
 
-  CFile                m_File;
-  CFGLoader*           m_CfgLoader;
+  CFile m_File;
+  CFGLoader* m_CfgLoader;
 
-  CStdString           m_xbmcConfigFilePath;
+  CStdString m_xbmcConfigFilePath;
 
   // IFilterGraph
   STDMETHODIMP AddFilter(IBaseFilter* pFilter, LPCWSTR pName);

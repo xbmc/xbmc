@@ -45,9 +45,10 @@ CFileItem CDSPlayer::currentFileItem;
 CGUIDialogBoxBase *CDSPlayer::errorWindow = NULL;
 
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
-    : IPlayer(callback), CThread(), m_pDsGraph(&m_pDsClock, callback),
-      m_hReadyEvent(true), m_bSpeedChanged(false), m_callSetFileFromThread(true)
+    : IPlayer(callback), CThread(), m_hReadyEvent(true), m_bSpeedChanged(false),
+    m_callSetFileFromThread(true)
 {
+  g_dsGraph = new CDSGraph(&m_pDsClock, callback);
 }
 
 CDSPlayer::~CDSPlayer()
@@ -56,6 +57,9 @@ CDSPlayer::~CDSPlayer()
     CloseFile();
 
   StopThread();
+
+  delete g_dsGraph;
+  g_dsGraph = NULL;
 
   DShowUtil::UnloadExternalObjects();
   CLog::Log(LOGDEBUG, "%s External objects unloaded", __FUNCTION__);
@@ -83,7 +87,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
     // We're no longer waiting indefinitly if a crash occured when trying to load the file
     m_callSetFileFromThread = false;
     START_PERFORMANCE_COUNTER
-      if (FAILED(m_pDsGraph.SetFile(currentFileItem, m_PlayerOptions)))
+      if (FAILED(g_dsGraph->SetFile(currentFileItem, m_PlayerOptions)))
         PlayerState = DSPLAYER_ERROR;
     END_PERFORMANCE_COUNTER
   }
@@ -102,7 +106,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   // Starts playback
   if (PlayerState != DSPLAYER_ERROR)
   {
-    m_pDsGraph.Play();
+    g_dsGraph->Play();
     if (CFGLoader::Filters.isDVD)
       CStreamsManager::getSingleton()->LoadDVDStreams();
   }
@@ -135,7 +139,7 @@ bool CDSPlayer::CloseFile()
 
   PlayerState = DSPLAYER_CLOSING;
 
-  m_pDsGraph.CloseFile();
+  g_dsGraph->CloseFile();
   
   CLog::Log(LOGNOTICE, "%s DSPlayer is now closed", __FUNCTION__);
   
@@ -162,19 +166,19 @@ bool CDSPlayer::HasAudio() const
 void CDSPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   CSingleLock lock(m_StateSection);
-  strAudioInfo = m_pDsGraph.GetAudioInfo();
+  strAudioInfo = g_dsGraph->GetAudioInfo();
 }
 
 void CDSPlayer::GetVideoInfo(CStdString& strVideoInfo)
 {
   CSingleLock lock(m_StateSection);
-  strVideoInfo = m_pDsGraph.GetVideoInfo();
+  strVideoInfo = g_dsGraph->GetVideoInfo();
 }
 
 void CDSPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 {
   CSingleLock lock(m_StateSection);
-  strGeneralInfo = m_pDsGraph.GetGeneralInfo();
+  strGeneralInfo = g_dsGraph->GetGeneralInfo();
 }
 
 //CThread
@@ -213,7 +217,7 @@ void CDSPlayer::Process()
   if (m_callSetFileFromThread)
   {
     START_PERFORMANCE_COUNTER
-    if (FAILED(m_pDsGraph.SetFile(currentFileItem, m_PlayerOptions)))
+    if (FAILED(g_dsGraph->SetFile(currentFileItem, m_PlayerOptions)))
       PlayerState = DSPLAYER_ERROR;
     END_PERFORMANCE_COUNTER
   }
@@ -240,7 +244,7 @@ void CDSPlayer::Process()
 
     CHECK_PLAYER_STATE
 
-    m_pDsGraph.HandleGraphEvent();
+    g_dsGraph->HandleGraphEvent();
 
     CHECK_PLAYER_STATE
     
@@ -249,11 +253,11 @@ void CDSPlayer::Process()
       m_pDsClock.SetSpeed(m_currentRate * 1000);
       
     }
-    m_pDsGraph.UpdateTime();
+    g_dsGraph->UpdateTime();
 
     CHECK_PLAYER_STATE
 
-    sleepTime = m_pDsGraph.DoFFRW(m_currentRate);
+    sleepTime = g_dsGraph->DoFFRW(m_currentRate);
     if ((m_currentRate == 0 ) || ( m_currentRate == 1 ))
       sleepTime = 250;
     else
@@ -275,7 +279,7 @@ void CDSPlayer::Process()
     Sleep(sleepTime);
     CHECK_PLAYER_STATE
 
-    if (m_pDsGraph.FileReachedEnd())
+    if (g_dsGraph->FileReachedEnd())
     { 
       CLog::Log(LOGDEBUG,"%s Graph detected end of video file",__FUNCTION__);
       CloseFile();
@@ -349,14 +353,14 @@ bool CDSPlayer::OnAction(const CAction &action)
     } \
   } while(false)
 
-  if ( m_pDsGraph.IsDvd() )
+  if ( g_dsGraph->IsDvd() )
   {
     if ( action.GetID() == ACTION_SHOW_VIDEOMENU )
     {
       SendMessage(g_hWnd, WM_COMMAND, ID_DVD_MENU_ROOT,0);
       return true;
     }
-    if ( m_pDsGraph.IsInMenu() )
+    if ( g_dsGraph->IsInMenu() )
     {
       switch (action.GetID())
       {

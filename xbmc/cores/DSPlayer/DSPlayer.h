@@ -67,17 +67,17 @@ public:
   virtual bool CloseFile();
   virtual bool IsPlaying() const;
   virtual bool IsCaching() const { return false; };
-  virtual bool IsPaused() const { return m_pDsGraph.IsPaused(); };
+  virtual bool IsPaused() const { return g_dsGraph->IsPaused(); };
   virtual bool HasVideo() const;
   virtual bool HasAudio() const;
-  virtual bool HasMenu() { return m_pDsGraph.IsDvd(); };
-  bool IsInMenu() const { return m_pDsGraph.IsInMenu(); };
+  virtual bool HasMenu() { return g_dsGraph->IsDvd(); };
+  bool IsInMenu() const { return g_dsGraph->IsInMenu(); };
   virtual void Pause();
-  virtual bool CanSeek()                                        { return m_pDsGraph.CanSeek(); }
+  virtual bool CanSeek()                                        { return g_dsGraph->CanSeek(); }
   virtual void Seek(bool bPlus, bool bLargeStep);//                { m_dshowCmd.Seek(bPlus,bLargeStep);}
   virtual void SeekPercentage(float iPercent);
-  virtual float GetPercentage()                                 { return m_pDsGraph.GetPercentage(); }
-  virtual void SetVolume(long nVolume)                          { m_pDsGraph.SetVolume(nVolume); }
+  virtual float GetPercentage()                                 { return g_dsGraph->GetPercentage(); }
+  virtual void SetVolume(long nVolume)                          { g_dsGraph->SetVolume(nVolume); }
   //virtual void SetDynamicRangeCompression(long drc)             { m_pDsGraph.SetDynamicRangeCompression(drc); }
   virtual void GetAudioInfo(CStdString& strAudioInfo);
   virtual void GetVideoInfo(CStdString& strVideoInfo);
@@ -118,14 +118,14 @@ public:
   virtual CStdString GetAudioCodecName()                        { return CStreamsManager::getSingleton()->GetAudioCodecName(); }
   virtual CStdString GetVideoCodecName()                        { return CStreamsManager::getSingleton()->GetVideoCodecName(); }
 
-  virtual __int64 GetTime()                                     { CSingleLock lock(m_StateSection); return m_pDsGraph.GetTime(); }
-  virtual int GetTotalTime()                                    { CSingleLock lock(m_StateSection); return m_pDsGraph.GetTotalTime(); }
+  virtual __int64 GetTime()                                     { CSingleLock lock(m_StateSection); return g_dsGraph->GetTime(); }
+  virtual int GetTotalTime()                                    { CSingleLock lock(m_StateSection); return g_dsGraph->GetTotalTime(); }
   virtual void ToFFRW(int iSpeed);
   virtual bool OnAction(const CAction &action);
   
 //CDSPlayer
-  virtual void ProcessDsWmCommand(WPARAM wParam, LPARAM lParam) { m_pDsGraph.ProcessDsWmCommand(wParam, lParam); }
-  virtual HRESULT HandleGraphEvent()                            { return m_pDsGraph.HandleGraphEvent(); }
+  virtual void ProcessDsWmCommand(WPARAM wParam, LPARAM lParam) { g_dsGraph->ProcessDsWmCommand(wParam, lParam); }
+  virtual HRESULT HandleGraphEvent()                            { return g_dsGraph->HandleGraphEvent(); }
   virtual void HandleStart();
   virtual void Stop();
 
@@ -140,7 +140,7 @@ protected:
   virtual void Process();
   int  m_currentRate;
   bool m_bSpeedChanged;
-  CDSGraph m_pDsGraph;
+
   CDSClock m_pDsClock;
   CPlayerOptions m_PlayerOptions;
   CURL m_Filename;

@@ -31,6 +31,7 @@
 #include "IPaintCallback.h"
 #include "DShowUtil/smartlist.h"
 #include "utils/Event.h"
+#include "DSGraph.h"
 // Support ffdshow queueing.
 // This interface is used to check version of Media Player Classic.
 // {A273C7F6-25D4-46b0-B2C8-4F7FADC44E37}
@@ -107,7 +108,7 @@ public:
     {
       if (m_pD3DDev)
       {
-        _RTL_CRITICAL_SECTION *pCritSec = (_RTL_CRITICAL_SECTION *)((size_t)m_pD3DDev.m_ptr + sizeof(size_t));
+        _RTL_CRITICAL_SECTION *pCritSec = (_RTL_CRITICAL_SECTION *)((size_t)m_pD3DDev + sizeof(size_t));
 
         if (!IsBadReadPtr(pCritSec, sizeof(*pCritSec)) && !IsBadWritePtr(pCritSec, sizeof(*pCritSec))
           && !IsBadReadPtr(pCritSec->DebugInfo, sizeof(*(pCritSec->DebugInfo))) && !IsBadWritePtr(pCritSec->DebugInfo, sizeof(*(pCritSec->DebugInfo))))      
@@ -122,7 +123,7 @@ public:
     {
       if (m_pD3DDev)
       {
-        _RTL_CRITICAL_SECTION *pCritSec = (_RTL_CRITICAL_SECTION *)((size_t)m_pD3DDev.m_ptr + sizeof(size_t));
+        _RTL_CRITICAL_SECTION *pCritSec = (_RTL_CRITICAL_SECTION *)((size_t)m_pD3DDev + sizeof(size_t));
 
         if (!IsBadReadPtr(pCritSec, sizeof(*pCritSec)) && !IsBadWritePtr(pCritSec, sizeof(*pCritSec))
           && !IsBadReadPtr(pCritSec->DebugInfo, sizeof(*(pCritSec->DebugInfo))) && !IsBadWritePtr(pCritSec->DebugInfo, sizeof(*(pCritSec->DebugInfo))))      
@@ -133,7 +134,7 @@ public:
       }
     }
     CStdString m_D3DDevExError;
-    Com::SmartPtr<IDirect3DDevice9>    m_pD3DDev;
+    IDirect3DDevice9*   m_pD3DDev; // No need to store reference, we want to be able to delete the device anytime
     Com::SmartPtr<IDirect3DTexture9>    m_pVideoTexture[MAX_PICTURE_SLOTS];
     Com::SmartPtr<IDirect3DSurface9>    m_pVideoSurface[MAX_PICTURE_SLOTS];
     Com::SmartPtr<IDirect3DTexture9>    m_pOSDTexture;

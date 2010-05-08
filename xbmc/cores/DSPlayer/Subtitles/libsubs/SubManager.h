@@ -64,7 +64,7 @@ private:
   Com::SmartPtr<ISubPicAllocator> m_pAllocator;
 
   Com::SmartQIPtr<IAMStreamSelect> m_pSS; //graph filter with subtitles
-  Com::SmartPtr<IDirect3DDevice9> m_d3DDev;
+  IDirect3DDevice9* m_d3DDev;
   Com::SmartPtr<ISubStream> m_pInternalSubStream;
   ISubPicProvider* m_pSubPicProvider; // save when changing d3d device
 

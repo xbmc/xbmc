@@ -298,11 +298,11 @@ void CRenderSystemDX::DeleteDevice()
   // The problem is here. When using DSPlayer, m_pD3DDevice has still about 40 references
   // So, the device recreation fails, and everyting crash.
 
-  /*Com::SmartPtr<IDirect3DDevice9> m_pDevice = m_pD3DDevice;
-  CLog::DebugLog("D3D Device has %d references", m_pDevice.GetReferenceCount());*/  
+  Com::SmartPtr<IDirect3DDevice9> m_pDevice = m_pD3DDevice;
+  CLog::DebugLog("D3D Device has %d references", m_pDevice.GetReferenceCount());
   
   SAFE_RELEASE(m_pD3DDevice);
-  //m_pDevice.FullRelease();
+  m_pDevice.FullRelease();
 
   m_bRenderCreated = false;
 }
@@ -374,8 +374,7 @@ bool CRenderSystemDX::CreateDevice()
 
   BuildPresentParameters();
 
-  // Dirty hack. See DeleteDevice for more details
-  if (m_useD3D9Ex || ! IS_DSPLAYER)
+  if (m_useD3D9Ex)
   {
     hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx(m_adapter, devType, m_hFocusWnd,
       D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );

@@ -60,10 +60,12 @@ enum
 
 using namespace std;
 
+CDSGraph* g_dsGraph = NULL;
+
 CDSGraph::CDSGraph(CDSClock* pClock, IPlayerCallback& callback)
     : m_pGraphBuilder(NULL), m_currentRate(1), m_lAvgTimeToSeek(0),
       m_iCurrentFrameRefreshCycle(0), m_userId(0xACDCACDC),
-      m_bReachedEnd(false), m_callback(callback), m_pDsClock(pClock)
+      m_bReachedEnd(false), m_callback(callback), pDsClock(pClock)
 { 
 }
 
@@ -99,12 +101,12 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   if (FAILED(hr))
     return hr;
 
-  hr = m_pFilterGraph->QueryInterface(__uuidof(m_pMediaSeeking), (void**)&m_pMediaSeeking);
-  hr = m_pFilterGraph->QueryInterface(__uuidof(m_pMediaControl), (void**)&m_pMediaControl);
-  hr = m_pFilterGraph->QueryInterface(__uuidof(m_pMediaEvent), (void**)&m_pMediaEvent);
-  hr = m_pFilterGraph->QueryInterface(__uuidof(m_pBasicAudio), (void**)&m_pBasicAudio);
-  hr = m_pFilterGraph->QueryInterface(__uuidof(m_pBasicVideo), (void**)&m_pBasicVideo);
-  hr = m_pFilterGraph->QueryInterface(__uuidof(m_pVideoWindow), (void**)&m_pVideoWindow);
+  hr = pFilterGraph->QueryInterface(__uuidof(m_pMediaSeeking), (void**)&m_pMediaSeeking);
+  hr = pFilterGraph->QueryInterface(__uuidof(m_pMediaControl), (void**)&m_pMediaControl);
+  hr = pFilterGraph->QueryInterface(__uuidof(m_pMediaEvent), (void**)&m_pMediaEvent);
+  hr = pFilterGraph->QueryInterface(__uuidof(m_pBasicAudio), (void**)&m_pBasicAudio);
+  hr = pFilterGraph->QueryInterface(__uuidof(m_pBasicVideo), (void**)&m_pBasicVideo);
+  hr = pFilterGraph->QueryInterface(__uuidof(m_pVideoWindow), (void**)&m_pVideoWindow);
   hr = m_pMediaSeeking->SetTimeFormat(&TIME_FORMAT_MEDIA_TIME);
   m_VideoInfo.time_format = TIME_FORMAT_MEDIA_TIME;
   if (m_pVideoWindow)
@@ -121,13 +123,13 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   
   // Audio & subtitle streams
   START_PERFORMANCE_COUNTER
-  CStreamsManager::getSingleton()->InitManager(this);
+  CStreamsManager::getSingleton()->InitManager();
   CStreamsManager::getSingleton()->LoadStreams();
   END_PERFORMANCE_COUNTER
 
   // Chapters
   START_PERFORMANCE_COUNTER
-  CChaptersManager::getSingleton()->InitManager(this);
+  CChaptersManager::getSingleton()->InitManager();
   if (!CChaptersManager::getSingleton()->LoadChapters())
     CLog::Log(LOGNOTICE, "%s No chapters found!", __FUNCTION__);
   END_PERFORMANCE_COUNTER
@@ -168,7 +170,7 @@ void CDSGraph::CloseFile()
     m_bReachedEnd = false;
 
     SAFE_DELETE(m_pGraphBuilder);
-    CDSGraph::m_pFilterGraph = NULL;
+    g_dsGraph->pFilterGraph = NULL;
   } 
   else 
   {
@@ -481,7 +483,7 @@ void CDSGraph::Stop(bool rewind)
   if (! m_pGraphBuilder)
     return;
 
-  BeginEnumFilters(CDSGraph::m_pFilterGraph, pEF, pBF)
+  BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
   {
     Com::SmartQIPtr<IFileSourceFilter> pFSF;
     pFSF = Com::SmartQIPtr<IAMNetworkStatus, &IID_IAMNetworkStatus>(pBF);
@@ -626,14 +628,14 @@ HRESULT CDSGraph::UnloadGraph()
 {
   HRESULT hr = S_OK;
 
-  BeginEnumFilters(CDSGraph::m_pFilterGraph, pEM, pBF)
+  BeginEnumFilters(g_dsGraph->pFilterGraph, pEM, pBF)
   {
     CStdString filterName;
     g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), filterName);
 
     try
     {
-      hr = RemoveFilter(CDSGraph::m_pFilterGraph, pBF);
+      hr = RemoveFilter(g_dsGraph->pFilterGraph, pBF);
     }
     catch (...)
     {
@@ -1008,5 +1010,3 @@ void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
   {
   }
 }
-
-Com::SmartPtr<IFilterGraph2> CDSGraph::m_pFilterGraph = NULL;

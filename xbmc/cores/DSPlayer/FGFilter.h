@@ -27,6 +27,7 @@
 #include "streams.h"
 #include <list>
 #include "tinyXML\tinyxml.h"
+
 #define MERIT64(merit) (((UINT64)(merit))<<16)
 #define MERIT64_DO_NOT_USE MERIT64(MERIT_DO_NOT_USE)
 #define MERIT64_DO_USE MERIT64(MERIT_DO_NOT_USE+1)
@@ -125,6 +126,7 @@ public:
 };
 
 interface IDsRenderer;
+class CDSGraph;
 
 class CFGFilterVideoRenderer : public CFGFilter
 {

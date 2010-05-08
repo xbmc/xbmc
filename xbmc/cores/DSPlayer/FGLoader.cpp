@@ -81,7 +81,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
     {
       
       Filters.Source.pBF = pBFF.Detach();
-      CDSGraph::m_pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC File Source");
+      g_dsGraph->pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC File Source");
       Filters.Splitter.osdname = "XBMC File Source";
     }
     return hr;
@@ -98,7 +98,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
     {
       
       Filters.Source.pBF = pBFF.Detach();
-      CDSGraph::m_pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC File Source");
+      g_dsGraph->pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC File Source");
       Filters.Source.osdname = "XBMC File Source";
     }
   }
@@ -108,13 +108,13 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
     CXBMCAsyncStream* pXBMCStream = new CXBMCAsyncStream(pFileItem.m_strPath, &Filters.Source.pBF, &hr);
     if (SUCCEEDED(hr))
     {
-      hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC File Source");
+      hr = g_dsGraph->pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC File Source");
       if (FAILED(hr))
         return hr;
       Filters.Source.osdname = "XBMC File Source";
     }
     Filters.Splitter.pBF = DNew CMatroskaSplitterFilter(NULL, &hr);
-    hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.Splitter.pBF, L"XBMC Avi Splitter");
+    hr = g_dsGraph->pFilterGraph->AddFilter(Filters.Splitter.pBF, L"XBMC Avi Splitter");
     return hr;
   }
   #endif
@@ -125,7 +125,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
     CXBMCAsyncStream* pXBMCStream = new CXBMCAsyncStream(pFileItem.m_strPath, &Filters.Source.pBF, &hr);
     if (SUCCEEDED(hr))
     {
-      hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC Source Filter");
+      hr = g_dsGraph->pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC Source Filter");
       if (FAILED(hr))
       {
         CLog::Log(LOGERROR, "%s Failed to add xbmc source filter to the graph", __FUNCTION__);
@@ -177,7 +177,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
     hr = pUnk->QueryInterface(IID_IBaseFilter, (void**)&Filters.Source.pBF);
     if (SUCCEEDED(hr))
     {
-      hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.Source.pBF, L"URLReader");
+      hr = g_dsGraph->pFilterGraph->AddFilter(Filters.Source.pBF, L"URLReader");
       Filters.Source.osdname = "URLReader";
       CStdStringW strUrlW; g_charsetConverter.utf8ToW(pFileItem.m_strPath, strUrlW);
       //hr = pUnk->QueryInterface(IID_IFileSourceFilter,(void**) &pSourceUrl);
@@ -186,7 +186,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
 
       if(FAILED(hr))
       {
-        CDSGraph::m_pFilterGraph->RemoveFilter(Filters.Source.pBF);
+        g_dsGraph->pFilterGraph->RemoveFilter(Filters.Source.pBF);
         CLog::Log(LOGERROR, "%s Failed to add url source filter to the graph.", __FUNCTION__);
         Filters.Source.pBF = NULL;
       }
@@ -226,7 +226,7 @@ HRESULT CFGLoader::InsertSplitter(const CFileItem& pFileItem, const CStdString& 
 
   if (SUCCEEDED(hr))
   {
-    if (SUCCEEDED(hr = ConnectFilters(CDSGraph::m_pFilterGraph, Filters.Source.pBF, Filters.Splitter.pBF)))
+    if (SUCCEEDED(hr = ConnectFilters(g_dsGraph->pFilterGraph, Filters.Source.pBF, Filters.Splitter.pBF)))
       CLog::Log(LOGNOTICE, "%s Successfully connected the source to the spillter", __FUNCTION__);
     else
     {
@@ -299,7 +299,7 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
   Filters.AudioRenderer.osdname = currentName;
   Filters.AudioRenderer.guid = DShowUtil::GUIDFromCString(currentGuid);
 
-  hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.AudioRenderer.pBF, DShowUtil::AnsiToUTF16(currentName));
+  hr = g_dsGraph->pFilterGraph->AddFilter(Filters.AudioRenderer.pBF, DShowUtil::AnsiToUTF16(currentName));
 
   if (SUCCEEDED(hr))
     CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, Filters.AudioRenderer.osdname.c_str());
@@ -341,13 +341,13 @@ HRESULT CFGLoader::InsertVideoRenderer()
   }
 
   
-  hr = m_pFGF->Create(&Filters.VideoRenderer.pBF);
+  hr = m_pFGF->Create( &Filters.VideoRenderer.pBF);
   if (FAILED(hr))
   {
     CLog::Log(LOGERROR, "%s Failed to create allocator presenter (hr = %X)", __FUNCTION__, hr);
     return hr;
   }
-  hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.VideoRenderer.pBF, m_pFGF->GetName());
+  hr = g_dsGraph->pFilterGraph->AddFilter(Filters.VideoRenderer.pBF, m_pFGF->GetName());
 
   /* Query IQualProp from the renderer */
   Filters.VideoRenderer.pBF->QueryInterface(IID_IQualProp, (void **) &Filters.VideoRenderer.pQualProp);
@@ -502,7 +502,7 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
   {
     Com::SmartPtr<IBaseFilter> pBF = new CXBMCVideoDecFilter(NULL, &hr);
     Filters.Video.pBF = pBF.Detach();
-    hr = CDSGraph::m_pFilterGraph->AddFilter(Filters.Video.pBF, L"Internal MpcVideoDec");
+    hr = g_dsGraph->pFilterGraph->AddFilter(Filters.Video.pBF, L"Internal MpcVideoDec");
     Filters.Video.osdname = "Internal MpcVideoDec";
     return hr;
   }
@@ -513,7 +513,7 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
   if(SUCCEEDED(hr = filter->Create(&f.pBF)))
   {
     g_charsetConverter.wToUTF8(filter->GetName(), f.osdname);
-    if (SUCCEEDED(hr = CDSGraph::m_pFilterGraph->AddFilter(f.pBF, filter->GetName().c_str())))
+    if (SUCCEEDED(hr = g_dsGraph->pFilterGraph->AddFilter(f.pBF, filter->GetName().c_str())))
       CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, f.osdname.c_str());
     else
       CLog::Log(LOGERROR, "%s Failed to add \"%s\" to the graph", __FUNCTION__, f.osdname.c_str());

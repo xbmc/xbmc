@@ -61,7 +61,7 @@ HRESULT CDSConfig::ConfigureFilters()
 {
   HRESULT hr = S_OK;
 
-  BeginEnumFilters(CDSGraph::m_pFilterGraph, pEF, pBF)
+  BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
   {
     GetffdshowFilters(pBF);
     LoadPropertiesPage(pBF);

@@ -73,10 +73,9 @@ public:
    */
   bool LoadChapters(void);
   /** Initialize the chapter's manager
-   * @param[in] Graph Pointer to a CDSGraph instance
    * @return True if the manager is initialized, false otherwise
    */
-  void InitManager(CDSGraph *Graph);
+  void InitManager();
 
 private:
   /// Constructor
@@ -92,8 +91,6 @@ private:
   long m_currentChapter;
   /// Pointer to the IAMExtendedSeeking interface
   Com::SmartQIPtr<IAMExtendedSeeking, &IID_IAMExtendedSeeking> m_pIAMExtendedSeeking;
-  /// CDSGraph instance
-  CDSGraph *m_pGraph;
 
   /// Is the manager initialized?
   bool m_init;
