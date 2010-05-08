@@ -60,6 +60,7 @@
 #endif
 #include "playercorefactory/PlayerCoreFactory.h"
 #include "utils/FileUtils.h"
+#include "MouseStat.h"
 
 using namespace std;
 using namespace XFILE;
@@ -938,6 +939,8 @@ bool CSettings::LoadProfile(unsigned int index)
 
     CButtonTranslator::GetInstance().Load();
     g_localizeStrings.Load(strLanguagePath);
+
+    g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
 
     g_infoManager.ResetCache();
     g_infoManager.ResetLibraryBools();
