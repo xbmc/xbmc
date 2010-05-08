@@ -2390,11 +2390,11 @@ double CDX9AllocatorPresenter::GetFrameRate()
 
 bool CDX9AllocatorPresenter::ResetDevice()
 {
+  // Stop playback (seems to hang with using avisource splitter)
+  g_dsGraph->Stop();
+
   StopWorkerThreads();
   CStreamsManager::getSingleton()->SubtitleManager->StopThread();
-
-  // Stop playback
-  g_dsGraph->Stop();
 
   BeforeDeviceReset(); // Handle pre-reset specific renderer stuff
 
@@ -2846,6 +2846,9 @@ void CDX9AllocatorPresenter::OnResetDevice()
   HRESULT hr = AllocSurfaces();
 
   AfterDeviceReset(); // handle post-reset stuff
+
+  // Restart playback
+  g_dsGraph->Play(true);
 }
 
 void CDX9AllocatorPresenter::OnPaint(CRect destRect)

@@ -295,14 +295,15 @@ void CRenderSystemDX::DeleteDevice()
   for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
     (*i)->OnDestroyDevice();
 
-  // The problem is here. When using DSPlayer, m_pD3DDevice has still about 40 references
-  // So, the device recreation fails, and everyting crash.
-
+  // Dirty hack. DSPlayer needs to delete the device when a reset event occurs.
+  // But the m_pD3DDevice has still about 40 references when DeleteDevice() is called
+  // The device need to be fully released with when using CreateDeviceEx, that's the job
+  // FullRelease does. Works for now, but need to find where the references are lost.
+  // TODO: Find where m_pD3DDevice references are lost. (only for dsplayer, dvdplayer is fine)
   Com::SmartPtr<IDirect3DDevice9> m_pDevice = m_pD3DDevice;
-  CLog::DebugLog("D3D Device has %d references", m_pDevice.GetReferenceCount());
-  
-  SAFE_RELEASE(m_pD3DDevice);
   m_pDevice.FullRelease();
+
+  m_pD3DDevice = NULL;
 
   m_bRenderCreated = false;
 }

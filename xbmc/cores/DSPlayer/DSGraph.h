@@ -94,7 +94,7 @@ public:
    */
   virtual void SeekInMilliSec(double sec);
   /// Play the graph
-  virtual void Play();
+  virtual void Play(bool force = false);
   /// Pause the graph
   virtual void Pause();
   /** Stop the graph

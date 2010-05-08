@@ -1462,6 +1462,6 @@ void HookDirectXVideoDecoderService(void* pIDirectXVideoDecoderService)
 
     res = VirtualProtect(pIDirectXVideoDecoderServiceC->lpVtbl, sizeof(IDirectXVideoDecoderServiceCVtbl), flOldProtect, &flOldProtect);
 
-    g_pIDirectXVideoDecoderServiceCVtbl      = pIDirectXVideoDecoderServiceC->lpVtbl;
+    g_pIDirectXVideoDecoderServiceCVtbl  = pIDirectXVideoDecoderServiceC->lpVtbl;
   }
 }

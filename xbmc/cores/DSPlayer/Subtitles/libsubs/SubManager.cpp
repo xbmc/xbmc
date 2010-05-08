@@ -47,6 +47,7 @@ void CSubManager::StopThread()
 void CSubManager::StartThread(IDirect3DDevice9* pD3DDevice)
 {
   HRESULT hr = S_OK;
+  m_d3DDev = pD3DDevice;
   m_pAllocator->ChangeDevice(pD3DDevice);
   if (g_subPicsBufferAhead > 0)
     m_pSubPicQueue.reset(new CSubPicQueue(g_subPicsBufferAhead, g_disableAnim, m_pAllocator, &hr));

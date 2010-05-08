@@ -2348,10 +2348,33 @@ void CEVRAllocatorPresenter::BeforeDeviceReset()
   // The device is going to be recreated, free ressources
   m_bNeedNewDevice = true;
   RemoveAllSamples();
+
+  // Delete DXVA Manager
+  m_pD3DManager.FullRelease();
+  m_pMediaType = NULL;
+  m_pClock = NULL;
 }
 
 void CEVRAllocatorPresenter::AfterDeviceReset()
 {
+
+  // Init DXVA manager
+  HRESULT hr = pfDXVA2CreateDirect3DDeviceManager9(&m_nResetToken, &m_pD3DManager);
+  ASSERT(SUCCEEDED (hr));
+  
+  hr = m_pD3DManager->ResetDevice(m_pD3DDev, m_nResetToken);
+  ASSERT(SUCCEEDED(hr));
+
+  Com::SmartPtr<IDirectXVideoDecoderService> pDecoderService;
+  HANDLE hDevice;
+  if (SUCCEEDED (m_pD3DManager->OpenDeviceHandle(&hDevice)) &&
+    SUCCEEDED (m_pD3DManager->GetVideoService (hDevice, __uuidof(IDirectXVideoDecoderService), (void**)&pDecoderService)))
+  {
+    TRACE_EVR ("EVR: DXVA2 : device handle = 0x%08x", hDevice);
+    HookDirectXVideoDecoderService (pDecoderService);
+
+    m_pD3DManager->CloseDeviceHandle (hDevice);
+  }
 
   for(int i = 0; i < m_nNbDXSurface; i++)
   {
@@ -2366,8 +2389,6 @@ void CEVRAllocatorPresenter::AfterDeviceReset()
     ASSERT (SUCCEEDED (hr));
   }
 
-  // Reset DXVA Manager, and get new buffers
-  HRESULT hr = m_pD3DManager->ResetDevice(m_pD3DDev, m_nResetToken);
   m_bNeedNewDevice = false;
 
   // Not necessary, but Microsoft documentation say Presenter should send this message...

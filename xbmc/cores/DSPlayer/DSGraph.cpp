@@ -517,9 +517,9 @@ bool CDSGraph::OnMouseMove(tagPOINT pt)
   return true;
 }
 
-void CDSGraph::Play()
+void CDSGraph::Play(bool force/* = false*/)
 {
-  if (m_pMediaControl && m_State.current_filter_state != State_Running)
+  if (m_pMediaControl && (force || m_State.current_filter_state != State_Running))
     m_pMediaControl->Run();
 
   UpdateState();
@@ -639,8 +639,6 @@ HRESULT CDSGraph::UnloadGraph()
     }
     catch (...)
     {
-      throw;
-      // ffdshow dxva decoder crash here, don't know why!
       hr = E_FAIL;
     }
 
@@ -679,7 +677,7 @@ HRESULT CDSGraph::UnloadGraph()
   CFGLoader::Filters.VideoRenderer.pQualProp = NULL;
 
   if (CFGLoader::Filters.VideoRenderer.pBF)
-    CFGLoader::Filters.VideoRenderer.pBF.FullRelease();;
+    CFGLoader::Filters.VideoRenderer.pBF.FullRelease();
 
   if (CFGLoader::Filters.Audio.pBF)
     CFGLoader::Filters.Audio.pBF.FullRelease();
