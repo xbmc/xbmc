@@ -29,17 +29,33 @@ typedef unsigned char   BYTE;
 #include "WindowingFactory.h"
 #include "CocoaPowerSyscall.h"
 #include <IOKit/pwr_mgt/IOPMLib.h>
+#include <IOKit/ps/IOPowerSources.h>
+#include <IOKit/ps/IOPSKeys.h>
+
+// missing in 10.4/10.5 SDKs.
+#if (MAC_OS_X_VERSION_MAX_ALLOWED < 1060)
+#define kIOPSNotifyLowBattery   "com.apple.system.powersources.lowbattery"
+#endif
 
 #include "CocoaInterface.h"
 
 CCocoaPowerSyscall::CCocoaPowerSyscall()
 {
-  CreateOSPowerCallBack();
+  m_OnResume = false;
+  m_OnSuspend = false;
+  // assume on AC power at startup
+  m_OnBattery = false;
+  m_BatteryPercent = 100;
+  m_SentBatteryMessage = false;
+
+  if (!g_sysinfo.IsAppleTV())
+    CreateOSPowerCallBacks();
 }
 
 CCocoaPowerSyscall::~CCocoaPowerSyscall()
 {
-  DeleteOSPowerCallBack();
+  if (!g_sysinfo.IsAppleTV())
+    DeleteOSPowerCallBacks();
 }
 
 bool CCocoaPowerSyscall::Powerdown()
@@ -143,11 +159,13 @@ bool CCocoaPowerSyscall::CanReboot()
 
 bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
 {
+  bool rtn = false;
+
   if (m_OnSuspend)
   {
     callback->OnSleep();
     m_OnSuspend = false;
-    return true;
+    rtn = true;
   }
   else if (m_OnResume)
   {
@@ -155,48 +173,70 @@ bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
     if (g_Windowing.IsFullScreen())
       Cocoa_HideDock();
     m_OnResume = false;
-    return true;
+    rtn = true;
+  } 
+  else if (m_OnBattery && !m_SentBatteryMessage)
+  {
+    if (m_BatteryPercent < 15)
+    {
+      callback->OnLowBattery();
+      m_SentBatteryMessage = true;
+    }
+    rtn = true;
   }
-  else
-    return false;
+    
+  return(rtn);
 }
 
-void CCocoaPowerSyscall::CreateOSPowerCallBack(void)
+void CCocoaPowerSyscall::CreateOSPowerCallBacks(void)
 {
+  CCocoaAutoPool autopool;
   // we want sleep/wake notifications
   // register to receive system sleep notifications
-  root_port = IORegisterForSystemPower(this, &notify_port, OSPowerCallBack, &notifier_object);
-  if (root_port)
+  m_root_port = IORegisterForSystemPower(this, &m_notify_port, OSPowerCallBack, &m_notifier_object);
+  if (m_root_port)
   {
     // add the notification port to the application runloop
     CFRunLoopAddSource(CFRunLoopGetCurrent(),
-      IONotificationPortGetRunLoopSource(notify_port), kCFRunLoopDefaultMode);
+      IONotificationPortGetRunLoopSource(m_notify_port), kCFRunLoopDefaultMode);
   }
   else
   {
     CLog::Log(LOGERROR, "%s - IORegisterForSystemPower failed", __FUNCTION__);
   }
+
+  // we want power source change notifications
+  m_power_source = IOPSNotificationCreateRunLoopSource(OSPowerSourceCallBack, this);
+  if(m_power_source)
+    CFRunLoopAddSource(CFRunLoopGetCurrent(), m_power_source, kCFRunLoopDefaultMode);
 }
-void CCocoaPowerSyscall::DeleteOSPowerCallBack(void)
+
+void CCocoaPowerSyscall::DeleteOSPowerCallBacks(void)
 {
+  CCocoaAutoPool autopool;
   // we no longer want sleep/wake notifications
   // remove the sleep notification port from the application runloop
   CFRunLoopRemoveSource( CFRunLoopGetCurrent(),
-    IONotificationPortGetRunLoopSource(notify_port), kCFRunLoopCommonModes );
+    IONotificationPortGetRunLoopSource(m_notify_port), kCFRunLoopDefaultMode );
 
   // deregister for system sleep notifications
-  IODeregisterForSystemPower(&notifier_object);
+  IODeregisterForSystemPower(&m_notifier_object);
 
   // IORegisterForSystemPower implicitly opens the Root Power Domain IOService
   // so we close it here
-  IOServiceClose(root_port);
+  IOServiceClose(m_root_port);
 
   // destroy the notification port allocated by IORegisterForSystemPower
-  IONotificationPortDestroy(notify_port);
+  IONotificationPortDestroy(m_notify_port);
+  
+  // we no longer want power source change notifications
+  CFRunLoopRemoveSource( CFRunLoopGetCurrent(), m_power_source, kCFRunLoopDefaultMode );
+  CFRelease(m_power_source);
 }
 
 void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, natural_t msg_type, void *msg_arg)
 {
+  CCocoaAutoPool autopool;
   CCocoaPowerSyscall  *ctx;
   
   ctx = (CCocoaPowerSyscall*)refcon;
@@ -207,7 +247,7 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
       // System has been idle for sleeptime and will sleep soon.
       // we can either allow or cancel this notification.
       // if we don't respond, OS will sleep in 30 second.
-      IOAllowPowerChange(ctx->root_port, (long)msg_arg);
+      IOAllowPowerChange(ctx->m_root_port, (long)msg_arg);
     break;
     case kIOMessageSystemWillSleep:
       // System demanded sleep from:
@@ -215,7 +255,7 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
       //   2) closing the lid of a laptop.
       //   3) running out of battery power.
       ctx->m_OnSuspend = true;
-      IOAllowPowerChange(ctx->root_port, (long)msg_arg);
+      IOAllowPowerChange(ctx->m_root_port, (long)msg_arg);
       // let XBMC know system will sleep
       // TODO:
     break;
@@ -227,4 +267,65 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
     break;
 	}
 }
+
+static bool stringsAreEqual(CFStringRef a, CFStringRef b)
+{
+	if (a == nil || b == nil) 
+		return 0;
+	return (CFStringCompare (a, b, 0) == kCFCompareEqualTo);
+}
+
+void CCocoaPowerSyscall::OSPowerSourceCallBack(void *refcon)
+{
+  // Called whenever any power source is added, removed, or changes. 
+  // When on battery, we get called periodically as battery level changes.
+  CCocoaAutoPool autopool;
+  CCocoaPowerSyscall  *ctx = (CCocoaPowerSyscall*)refcon;
+
+  CFTypeRef power_sources_info = IOPSCopyPowerSourcesInfo();
+  CFArrayRef power_sources_list = IOPSCopyPowerSourcesList(power_sources_info);
+
+  for (int i = 0; i < CFArrayGetCount(power_sources_list); i++)
+  {
+		CFTypeRef power_source;
+		CFDictionaryRef description;
+
+		power_source = CFArrayGetValueAtIndex(power_sources_list, i);
+		description  = IOPSGetPowerSourceDescription(power_sources_info, power_source);
+
+    // skip power sources that are not present (i.e. an absent second battery in a 2-battery machine)
+    if ((CFBooleanRef)CFDictionaryGetValue(description, CFSTR(kIOPSIsPresentKey)) == kCFBooleanFalse)
+      continue;
+
+    if (stringsAreEqual((CFStringRef)CFDictionaryGetValue(description, CFSTR (kIOPSTransportTypeKey)), CFSTR (kIOPSInternalType))) 
+    {
+      CFStringRef currentState = (CFStringRef)CFDictionaryGetValue(description, CFSTR (kIOPSPowerSourceStateKey));
+
+      if (stringsAreEqual (currentState, CFSTR (kIOPSACPowerValue)))
+      {
+        ctx->m_OnBattery = false;
+        ctx->m_BatteryPercent = 100;
+        ctx->m_SentBatteryMessage = false;
+      }
+      else if (stringsAreEqual (currentState, CFSTR (kIOPSBatteryPowerValue)))
+      {
+        CFNumberRef cf_number_ref;
+        int32_t curCapacity, maxCapacity;
+
+        cf_number_ref = (CFNumberRef)CFDictionaryGetValue(description, CFSTR(kIOPSCurrentCapacityKey));
+        CFNumberGetValue(cf_number_ref, kCFNumberSInt32Type, &curCapacity);
+
+        cf_number_ref = (CFNumberRef)CFDictionaryGetValue(description, CFSTR(kIOPSMaxCapacityKey));
+        CFNumberGetValue(cf_number_ref, kCFNumberSInt32Type, &maxCapacity);
+
+        ctx->m_OnBattery = true;
+        ctx->m_BatteryPercent = (int)((double)curCapacity/(double)maxCapacity * 100);
+      }
+		} 
+  }
+
+  CFRelease(power_sources_list);
+  CFRelease(power_sources_info);
+}
+
 #endif
