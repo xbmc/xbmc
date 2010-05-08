@@ -203,7 +203,7 @@ bool CCocoaPowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
   
   if (m_HasBattery && m_OnBattery && !m_SentBatteryMessage)
   {
-    if (m_BatteryPercent < 15)
+    if (m_BatteryPercent < 10)
     {
       callback->OnLowBattery();
       m_SentBatteryMessage = true;
