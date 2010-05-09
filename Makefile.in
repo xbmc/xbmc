@@ -489,7 +489,7 @@ tools/TexturePacker/TexturePacker:
 	$(MAKE) -C tools/TexturePacker/
 
 install-bin: xbmc.bin # developement convenience target
-	sudo install -D xbmc.bin $(prefix)/share/xbmc
+	sudo install -D xbmc.bin $(DESTDIR)$(prefix)/share/xbmc
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 	# TODO: add osx install
@@ -497,53 +497,53 @@ else
 install: install-binaries install-arch install-datas install-web
 
 install-binaries: install-scripts
-	@echo "Copying XBMC binary to $(prefix)/share/xbmc/xbmc.bin"
-	@install -D xbmc.bin $(prefix)/share/xbmc/xbmc.bin
-	@install -D xbmc-xrandr $(prefix)/share/xbmc/xbmc-xrandr
+	@echo "Copying XBMC binary to $(DESTDIR)$(prefix)/share/xbmc/xbmc.bin"
+	@install -D xbmc.bin $(DESTDIR)$(prefix)/share/xbmc/xbmc.bin
+	@install -D xbmc-xrandr $(DESTDIR)$(prefix)/share/xbmc/xbmc-xrandr
 	@echo "You can run XBMC with the command 'xbmc'"
 endif
 
 install-arch:
 	@# Arch dependent files
-	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"	
+	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(DESTDIR)$(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
 
 install-scripts:
-	@install -D tools/Linux/xbmc.sh $(prefix)/bin/xbmc
-	@install -D tools/Linux/xbmc-standalone.sh $(prefix)/bin/xbmc-standalone
-	@install -D -m 0644 tools/Linux/FEH.py $(prefix)/share/xbmc/FEH.py
-	@install -D -m 0644 tools/Linux/xbmc-xsession.desktop $(prefix)/share/xsessions/XBMC.desktop
+	@install -D tools/Linux/xbmc.sh $(DESTDIR)$(prefix)/bin/xbmc
+	@install -D tools/Linux/xbmc-standalone.sh $(DESTDIR)$(prefix)/bin/xbmc-standalone
+	@install -D -m 0644 tools/Linux/FEH.py $(DESTDIR)$(prefix)/share/xbmc/FEH.py
+	@install -D -m 0644 tools/Linux/xbmc-xsession.desktop $(DESTDIR)$(prefix)/share/xsessions/XBMC.desktop
 
 install-datas: install-scripts
 	@echo "Copying support and legal files..."
 	@for FILE in `ls README.linux LICENSE.GPL *.txt`; do \
-		install -D -m 0644 "$$FILE" $(prefix)/share/xbmc/; done
+		install -D -m 0644 "$$FILE" $(DESTDIR)$(prefix)/share/xbmc/; done
 	@echo "Done!"
-	@echo "Copying system files to $(prefix)/share/xbmc"
+	@echo "Copying system files to $(DESTDIR)$(prefix)/share/xbmc"
 	@# Arch independent files
-	@find addons language media scripts sounds userdata system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find addons language media scripts sounds userdata system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib" -exec install -D -m 0644 "{}" $(DESTDIR)$(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Icons and links
-	@mkdir -p $(prefix)/share/applications $(prefix)/share/pixmaps
-	@cp -a tools/Linux/xbmc.png $(prefix)/share/pixmaps/
-	@cp -a tools/Linux/xbmc.desktop $(prefix)/share/applications/
+	@mkdir -p $(DESTDIR)$(prefix)/share/applications $(DESTDIR)$(prefix)/share/pixmaps
+	@cp -a tools/Linux/xbmc.png $(DESTDIR)$(prefix)/share/pixmaps/
+	@cp -a tools/Linux/xbmc.desktop $(DESTDIR)$(prefix)/share/applications/
 
 install-livedatas:
-	@echo "Install Live CD datas in $(prefix) ..."
-	@mkdir -p $(prefix)/bin
-	@install -D tools/XBMCLive/diskmounter $(prefix)/bin
-	@install -D tools/XBMCLive/installXBMC $(prefix)/bin
-	@install -D tools/XBMCLive/runXBMC $(prefix)/bin
-	@install -D tools/XBMCLive/setAlsaVolumes $(prefix)/bin
+	@echo "Install Live CD datas in $(DESTDIR)$(prefix) ..."
+	@mkdir -p $(DESTDIR)$(prefix)/bin
+	@install -D tools/XBMCLive/diskmounter $(DESTDIR)$(prefix)/bin
+	@install -D tools/XBMCLive/installXBMC $(DESTDIR)$(prefix)/bin
+	@install -D tools/XBMCLive/runXBMC $(DESTDIR)$(prefix)/bin
+	@install -D tools/XBMCLive/setAlsaVolumes $(DESTDIR)$(prefix)/bin
 
 install-web:
-	@mkdir -p $(prefix)/share/xbmc/web
-	@cp -r web/poc_jsonrpc/* $(prefix)/share/xbmc/web
-	@find $(prefix)/share/xbmc/web -depth -name .svn -exec rm -rf {} \;
+	@mkdir -p $(DESTDIR)$(prefix)/share/xbmc/web
+	@cp -r web/poc_jsonrpc/* $(DESTDIR)$(prefix)/share/xbmc/web
+	@find $(DESTDIR)$(prefix)/share/xbmc/web -depth -name .svn -exec rm -rf {} \;
 
 uninstall:
 	@echo "Removing XBMC..."
-	@rm -rf $(prefix)/share/xbmc $(prefix)/bin/xbmc
-	@rm -rf $(prefix)/bin/xbmc-standalone
-	@rm -rf $(prefix)/share/xsessions/XBMC.desktop
+	@rm -rf $(DESTDIR)$(prefix)/share/xbmc $(DESTDIR)$(prefix)/bin/xbmc
+	@rm -rf $(DESTDIR)$(prefix)/bin/xbmc-standalone
+	@rm -rf $(DESTDIR)$(prefix)/share/xsessions/XBMC.desktop
 	@echo "Done!"
 
 reallyclean:
