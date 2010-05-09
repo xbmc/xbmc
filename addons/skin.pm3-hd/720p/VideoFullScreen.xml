@@ -49,7 +49,7 @@
 			<include>VisibleFadeEffect</include>
 		</control>
 		<control type="group">
-			<visible>Player.ShowCodec + VideoPlayer.Content(LiveTV)</visible>
+			<visible>Player.ShowCodec + VideoPlayer.Content(LiveTV) + system.getbool(pvrplayback.signalquality)</visible>
 			<posy>165</posy>
 			<control type="image">
 				<description>media info background image</description>
