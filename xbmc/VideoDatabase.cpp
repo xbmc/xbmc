@@ -3851,7 +3851,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
       if (idContent == VIDEODB_CONTENT_MOVIES)
         strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath,files.playCount from genre join genrelinkmovie on genre.idGenre=genrelinkMovie.idGenre join movie on genrelinkMovie.idMovie = movie.idMovie join files on files.idFile=movie.idFile join path on path.idPath = files.idPath");
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
-        strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath from genre join genrelinktvshow on genre.idGenre=genrelinkTvShow.idGenre join tvshow on genrelinkTvShow.idShow = tvshow.idshow join tvshowlinkpath on tvshowlinkpath.idShow=tvshow.idShow join files on files.idPath=tvshowlinkpath.idPath join path on path.idPath = files.idPath");
+        strSQL=FormatSQL("SELECT genre.idgenre,genre.strgenre,path.strPath FROM genre JOIN genrelinktvshow ON genre.idGenre=genrelinktvshow.idGenre JOIN tvshow ON genrelinktvshow.idShow=tvshow.idShow JOIN tvshowlinkpath ON tvshowlinkpath.idShow=tvshow.idShow JOIN files ON files.idPath=tvshowlinkpath.idPath JOIN path ON path.idPath=files.idPath");
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
         strSQL=FormatSQL("select genre.idgenre,genre.strgenre,path.strPath,files.playCount from genre join genrelinkmusicvideo on genre.idGenre=genrelinkmusicvideo.idGenre join musicvideo on genrelinkmusicvideo.idMVideo = musicvideo.idmvideo join files on musicvideo.idfile=files.idfile join path on path.idpath = files.idpath");
     }
@@ -3864,7 +3864,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
         group = " group by genre.idgenre";
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
-        strSQL=FormatSQL("select distinct genre.idgenre,genre.strgenre from genre join genrelinktvshow on genre.idGenre=genrelinkTvShow.idGenre join tvshow on genrelinkTvShow.idShow = tvshow.idshow");
+        strSQL=FormatSQL("SELECT DISTINCT genre.idGenre,genre.strGenre FROM genre JOIN genrelinktvshow ON genre.idGenre=genrelinktvshow.idGenre JOIN tvshow ON genrelinktvshow.idShow=tvshow.idShow");
       else if (idContent == VIDEODB_CONTENT_MUSICVIDEOS)
       {
         strSQL=FormatSQL("select genre.idgenre,genre.strgenre,count(1),count(files.playCount) from genre join genrelinkmusicvideo on genre.idgenre=genrelinkmusicvideo.idgenre join musicvideo on genrelinkmusicvideo.idmvideo=musicvideo.idmvideo join files on files.idFile=musicvideo.idFile ");
@@ -3986,7 +3986,7 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
         strSQL += " group by studio.idstudio";
       }
       else if (idContent == VIDEODB_CONTENT_TVSHOWS)
-        strSQL=FormatSQL("select distinct studio.idstudio, studio.strstudio from studio join studiolinktvshow on studio.idStudio=studiolinkTvShow.idStudio join tvshow on studiolinkTvShow.idShow = tvshow.idshow");
+        strSQL=FormatSQL("SELECT DISTINCT studio.idStudio, studio.strStudio FROM studio JOIN studiolinktvshow ON studio.idStudio=studiolinktvshow.idStudio JOIN tvshow ON studiolinktvshow.idShow=tvshow.idShow");
     }
 
     // run query
@@ -4773,6 +4773,8 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->GetVideoInfoTag()->m_strGenre = it->second.genre;
         pItem->GetVideoInfoTag()->m_strShowTitle = showTitle;
         pItem->GetVideoInfoTag()->m_iEpisode = it->second.numEpisodes;
+        pItem->SetProperty("totalepisodes", it->second.numEpisodes);
+        pItem->SetProperty("numepisodes", it->second.numEpisodes); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", it->second.numWatched);
         pItem->SetProperty("unwatchedepisodes", it->second.numEpisodes - it->second.numWatched);
         pItem->GetVideoInfoTag()->m_playCount = (it->second.numEpisodes == it->second.numWatched) ? 1 : 0;
@@ -4805,6 +4807,8 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         int totalEpisodes = m_pDS->fv(4).get_asInt();
         int watchedEpisodes = m_pDS->fv(5).get_asInt();
         pItem->GetVideoInfoTag()->m_iEpisode = totalEpisodes;
+        pItem->SetProperty("totalepisodes", totalEpisodes);
+        pItem->SetProperty("numepisodes", totalEpisodes); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", watchedEpisodes);
         pItem->SetProperty("unwatchedepisodes", totalEpisodes - watchedEpisodes);
         pItem->GetVideoInfoTag()->m_playCount = (totalEpisodes == watchedEpisodes) ? 1 : 0;
@@ -4975,6 +4979,8 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
         pItem->m_strPath.Format("%s%ld/", strBaseDir.c_str(), idShow);
         pItem->m_dateTime.SetFromDateString(movie.m_strPremiered);
         pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
+        pItem->SetProperty("totalepisodes", movie.m_iEpisode);
+        pItem->SetProperty("numepisodes", movie.m_iEpisode); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", movie.m_playCount);
         pItem->SetProperty("unwatchedepisodes", movie.m_iEpisode - movie.m_playCount);
         pItem->GetVideoInfoTag()->m_playCount = (movie.m_iEpisode == movie.m_playCount) ? 1 : 0;
@@ -4988,7 +4994,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
               CTimeUtils::GetTimeMS() - time);
 
     CStdString order(where);
-    bool maintainOrder = (size_t)order.ToLower().Find("order by") != CStdString::npos;
+    bool maintainOrder = (size_t)order.ToLower().Find("order by") != -1;
     Stack(items, VIDEODB_CONTENT_TVSHOWS, maintainOrder);
 
     // cleanup
@@ -5044,6 +5050,8 @@ void CVideoDatabase::Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool
 
             // increment episode counts
             pItem->GetVideoInfoTag()->m_iEpisode += jItem->GetVideoInfoTag()->m_iEpisode;
+            pItem->IncrementProperty("totalepisodes", jItem->GetPropertyInt("totalepisodes"));
+            pItem->IncrementProperty("numepisodes", jItem->GetPropertyInt("numepisodes")); // will be changed later to reflect watchmode setting
             pItem->IncrementProperty("watchedepisodes", jItem->GetPropertyInt("watchedepisodes"));
             pItem->IncrementProperty("unwatchedepisodes", jItem->GetPropertyInt("unwatchedepisodes"));
 
@@ -7775,5 +7783,5 @@ CStdString CVideoDatabase::GetSafeFile(const CStdString &dir, const CStdString &
 {
   CStdString safeThumb(name);
   safeThumb.Replace(' ', '_');
-  return CUtil::AddFileToFolder(dir, safeThumb);
+  return CUtil::AddFileToFolder(dir, CUtil::MakeLegalFileName(safeThumb));
 }

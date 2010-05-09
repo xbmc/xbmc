@@ -110,7 +110,7 @@ void CGUITextureBase::AllocateOnDemand()
 {
   if (m_visible)
   { // visible, so make sure we're allocated
-    if (!IsAllocated() || (m_info.useLarge && !m_texture.size()))
+    if (!IsAllocated() || (m_isAllocated == LARGE && !m_texture.size()))
       AllocResources();
   }
   else
@@ -277,7 +277,8 @@ void CGUITextureBase::AllocResources()
   m_currentFrame = 0;
   m_currentLoop = 0;
 
-  if (m_info.useLarge)
+  bool useLarge = m_info.useLarge || !g_TextureManager.CanLoad(m_info.filename);
+  if (useLarge)
   { // we want to use the large image loader, but we first check for bundled textures
     if (!IsAllocated())
     {

@@ -139,6 +139,13 @@ int CDVDAudioCodecFFmpeg::Decode(BYTE* pData, int iSize)
                                                  , pData
                                                  , iSize);
 
+  /* some codecs will attempt to consume more data than what we gave */
+  if (iBytesUsed > iSize)
+  {
+    CLog::Log(LOGWARNING, "CDVDAudioCodecFFmpeg::Decode - decoder attempted to consume more data than given");
+    iBytesUsed = iSize;
+  }
+
   if(m_iBufferSize1 == 0 && iBytesUsed >= 0)
     m_iBuffered += iBytesUsed;
   else

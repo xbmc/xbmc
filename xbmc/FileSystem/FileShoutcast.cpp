@@ -52,7 +52,7 @@
 using namespace MUSIC_INFO;
 using namespace XFILE;
 
-const int SHOUTCASTTIMEOUT = 10;
+const int SHOUTCASTTIMEOUT = 60;
 static CRingBuffer m_ringbuf;
 
 static FileState m_fileState;
@@ -338,13 +338,12 @@ unsigned int CFileShoutcast::Read(void* lpBuf, __int64 uiBufSize)
   }
 
   int slept=0;
-  while (m_ringbuf.GetMaxReadSize() <= 0 && slept < g_advancedSettings.m_curlconnecttimeout*1000)
+  while (m_ringbuf.GetMaxReadSize() <= 0)
   {
     Sleep(10);
-    slept += 10;
+    if (slept += 10 > SHOUTCASTTIMEOUT*1000)
+      return -1;
   }
-  if (slept >= g_advancedSettings.m_curlconnecttimeout*1000)
-    return -1;
 
   int iRead = m_ringbuf.GetMaxReadSize();
   if (iRead > uiBufSize) iRead = (int)uiBufSize;

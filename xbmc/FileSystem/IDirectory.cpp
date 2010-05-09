@@ -55,7 +55,7 @@ bool IDirectory::IsAllowed(const CStdString& strFile) const
 
   strExtension.ToLower();
   strExtension += '|'; // ensures that we have a | at the end of it
-  if ((size_t)m_strFileMask.Find(strExtension) != CStdString::npos)
+  if ((size_t)m_strFileMask.Find(strExtension) != -1)
   { // it's allowed, but we should also ignore all non dvd related ifo files.
     if (strExtension.Equals(".ifo|"))
     {

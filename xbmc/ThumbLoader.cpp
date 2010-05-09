@@ -137,9 +137,17 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
       cachedThumb = strPath + "auto-" + strFileName;
       if (CFile::Exists(cachedThumb))
       {
-        pItem->SetProperty("HasAutoThumb", "1");
-        pItem->SetProperty("AutoThumbImage", cachedThumb);
-        pItem->SetThumbnailImage(cachedThumb);
+        // this is abit of a hack to avoid loading zero sized images
+        // which we know will fail. They will just display empty image
+        // we should really have some way for the texture loader to
+        // do fallbacks to default images for a failed image instead
+        struct __stat64 stat;
+        if(CFile::Stat(cachedThumb, &stat) == 0 && stat.st_size > 0)
+        {
+          pItem->SetProperty("HasAutoThumb", "1");
+          pItem->SetProperty("AutoThumbImage", cachedThumb);
+          pItem->SetThumbnailImage(cachedThumb);
+        }
       }
     }
   }

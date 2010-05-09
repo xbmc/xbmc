@@ -153,7 +153,7 @@ bool CHDDirectory::Remove(const char* strPath)
 {
   CStdString strPath1 = strPath;
   g_charsetConverter.utf8ToStringCharset(strPath1);
-  return ::RemoveDirectory(strPath1) ? true : false;
+  return (::RemoveDirectory(strPath1) || GetLastError() == ERROR_PATH_NOT_FOUND) ? true : false;
 }
 
 bool CHDDirectory::Exists(const char* strPath)

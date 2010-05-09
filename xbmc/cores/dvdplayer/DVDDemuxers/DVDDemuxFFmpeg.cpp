@@ -267,23 +267,10 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     std::string content = m_pInput->GetContent();
 
     /* check if we can get a hint from content */
-    if( content.compare("audio/aacp") == 0 )
-      iformat = m_dllAvFormat.av_find_input_format("aac");
-    else if( content.compare("audio/aac") == 0 )
-      iformat = m_dllAvFormat.av_find_input_format("aac");
-    else if( content.compare("video/x-vobsub") == 0 )
+    if     ( content.compare("video/x-vobsub") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("mpeg");
     else if( content.compare("video/x-dvd-mpeg") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("mpeg");
-    else if( content.compare("video/flv") == 0 )
-      iformat = m_dllAvFormat.av_find_input_format("flv");
-    else if( content.compare("video/x-flv") == 0 )
-      iformat = m_dllAvFormat.av_find_input_format("flv");
-
-    /* these are likely pure streams, and as such we don't */
-    /* want to try to look for streaminfo before playback */
-    if( iformat )
-      streaminfo = false;
   }
 
   if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
@@ -373,6 +360,22 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
 
       iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
+
+      if(!iformat)
+      {
+        std::string content = m_pInput->GetContent();
+
+        /* check if we can get a hint from content */
+        if( content.compare("audio/aacp") == 0 )
+          iformat = m_dllAvFormat.av_find_input_format("aac");
+        else if( content.compare("audio/aac") == 0 )
+          iformat = m_dllAvFormat.av_find_input_format("aac");
+        else if( content.compare("video/flv") == 0 )
+          iformat = m_dllAvFormat.av_find_input_format("flv");
+        else if( content.compare("video/x-flv") == 0 )
+          iformat = m_dllAvFormat.av_find_input_format("flv");
+      }
+
       if (!iformat)
       {
         // av_probe_input_format failed, re-probe the ffmpeg/ffplay method.
@@ -431,7 +434,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     if (iErr < 0)
     {
       CLog::Log(LOGWARNING,"could not find codec parameters for %s", strFile.c_str());
-      if (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3)
+      if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) || (m_pFormatContext->nb_streams == 1 && m_pFormatContext->streams[0]->codec->codec_id == CODEC_ID_AC3))
       {
         // special case, our codecs can still handle it.
       }

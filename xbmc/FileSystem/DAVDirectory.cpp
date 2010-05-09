@@ -200,7 +200,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CStdString strHeader;
   while (dav.ReadString(buffer, sizeof(buffer)))
   {
-    if (strstr(buffer, "<D:response>") != NULL)
+    if (strstr(buffer, "<D:response") != NULL)
     {
       if (strHeader.IsEmpty())
         strHeader = strResponse;
@@ -209,7 +209,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     }
     strResponse.append(buffer, strlen(buffer));
 
-    if (strstr(buffer, "</D:response>") != NULL)
+    if (strstr(buffer, "</D:response") != NULL)
     {
       TiXmlDocument davResponse;
 
@@ -255,6 +255,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           }
         }
       }
+      strResponse.clear();
     }
   }
   dav.Close();

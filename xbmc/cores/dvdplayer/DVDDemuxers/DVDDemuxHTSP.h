@@ -56,9 +56,12 @@ protected:
   void SubscriptionStop  (htsmsg_t *m);
   void SubscriptionStatus(htsmsg_t *m);
 
+  htsmsg_t* ReadStream();
+  bool      ReadStream(uint8_t* buf, int len);
+
   typedef std::vector<CDemuxStream*> TStreams;
 
-  CDVDInputStreamHTSP* m_Input;
+  CDVDInputStream*     m_Input;
   TStreams             m_Streams;
   std::string          m_Status;
   int                  m_StatusCount;

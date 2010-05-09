@@ -34,6 +34,7 @@
 #include <climits>
 
 #include "DllLibCurl.h"
+#include "SpecialProtocol.h"
 
 using namespace std;
 using namespace XFILE;
@@ -321,6 +322,7 @@ void CFileCurl::Close()
 
   m_url.Empty();
   m_referer.Empty();
+  m_cookie.Empty();
 
   /* cleanup */
   if( m_curlAliasList )
@@ -368,7 +370,18 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   g_curlInterface.easy_setopt(h, CURLOPT_MAXREDIRS, 5);
 
   // Enable cookie engine for current handle to re-use them in future requests
-  g_curlInterface.easy_setopt(h, CURLOPT_COOKIEFILE, "");
+  CStdString strCookieFile;
+  CStdString strTempPath = CSpecialProtocol::TranslatePath(g_advancedSettings.m_cachePath);
+  CUtil::AddFileToFolder(strTempPath, "cookies.dat", strCookieFile);
+
+  g_curlInterface.easy_setopt(h, CURLOPT_COOKIEFILE, strCookieFile.c_str());
+  g_curlInterface.easy_setopt(h, CURLOPT_COOKIEJAR, strCookieFile.c_str());
+
+  // Set custom cookie if requested
+  if (!m_cookie.IsEmpty())
+    g_curlInterface.easy_setopt(h, CURLOPT_COOKIE, m_cookie.c_str());
+
+  g_curlInterface.easy_setopt(h, CURLOPT_COOKIELIST, "FLUSH");
 
   // When using multiple threads you should set the CURLOPT_NOSIGNAL option to
   // TRUE for all handles. Everything will work fine except that timeouts are not
@@ -672,6 +685,10 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
         }
         else if (name.Equals("User-Agent"))
           SetUserAgent(value);
+        else if (name.Equals("Cookie"))
+          SetCookie(value);
+        else if (name.Equals("Encoding"))
+          SetContentEncoding(value);
         else
           SetRequestHeader(name, value);
       }
@@ -805,6 +822,12 @@ bool CFileCurl::Open(const CURL& url)
 
   SetCorrectHeaders(m_state);
   
+
+  // since we can't know the stream size up front if we're gzipped/deflated
+  // flag the stream with an unknown file size rather than the compressed
+  // file size.
+  if (m_contentencoding.size() > 0)
+    m_state->m_fileSize = 0;
 
   m_multisession = false;
   if(m_url.Left(5).Equals("http:") || m_url.Left(6).Equals("https:"))
