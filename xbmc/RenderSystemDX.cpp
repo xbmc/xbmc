@@ -189,9 +189,14 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
 
   BuildPresentParameters();
 
-  OnDeviceLost();
-  OnDeviceReset();
-
+  if (m_useD3D9Ex && !m_needNewDevice)
+    m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
+  else
+  {
+    OnDeviceLost();
+    OnDeviceReset();
+  }
+  
   return true;
 }
 
@@ -497,7 +502,27 @@ bool CRenderSystemDX::BeginRender()
     return false;
 
   DWORD oldStatus = m_nDeviceStatus;
-  if( FAILED( m_nDeviceStatus = m_pD3DDevice->TestCooperativeLevel() ) )
+  if (m_useD3D9Ex)
+  {
+    m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->CheckDeviceState(m_hDeviceWnd);
+    if (m_nDeviceStatus == S_PRESENT_MODE_CHANGED)
+    {
+      // Timing leads us here on occasion.
+      BuildPresentParameters();
+      m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
+    }
+    else if (m_nDeviceStatus == S_PRESENT_OCCLUDED)
+    {
+      // We're in fullscreen mode and the window is hidden. Continue rendering.
+      m_nDeviceStatus = S_OK;
+    }
+  }
+  else
+  {
+    m_nDeviceStatus = m_pD3DDevice->TestCooperativeLevel();
+  }
+
+  if( FAILED( m_nDeviceStatus ) )
   {
     // The device has been lost but cannot be reset at this time.
     // Therefore, rendering is not possible and we'll have to return
