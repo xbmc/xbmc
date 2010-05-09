@@ -104,7 +104,6 @@ HRESULT CXBMCFFmpegSplitter::CreateOutputs(IAsyncReader* pAsyncReader)
     pStream->GetStreamName(tname);
     CStdStringW tnameW = DShowUtil::AToW(tname);
     auto_ptr<CBaseSplitterOutputPin> pPinOut(DNew CXBMCFFmpegOutputPin(mts, tnameW.c_str(), this, this, &hr));
-    
     AddOutputPin((DWORD)iStream, pPinOut);
   }
 
@@ -116,37 +115,6 @@ bool CXBMCFFmpegSplitter::DemuxInit()
   if(!m_pDemuxer) 
     return(false);
 
-  // reindex if needed
-
-#if 0
-  bool fReIndex = false;
-
-  for(int i = 0; i < (int)m_pFile->m_avih.dwStreams && !fReIndex; i++)
-  {
-    if(m_pFile->m_strms[i]->cs.size() == 0 && GetOutputPin(i)) 
-      fReIndex = true;
-  }
-
-  if(fReIndex)
-  {
-    m_pFile->EmptyIndex();
-
-    m_fAbort = false;
-    m_nOpenProgress = 0;
-
-    m_rtDuration = 0;
-
-    Com::SmartAutoVectorPtr<UINT64> pSize;
-    pSize.Allocate(m_pFile->m_avih.dwStreams);
-    memset((UINT64*)pSize, 0, sizeof(UINT64)*m_pFile->m_avih.dwStreams);
-    m_pFile->Seek(0);
-        ReIndex(m_pFile->GetLength(), pSize);
-
-    if(m_fAbort) m_pFile->EmptyIndex();
-
-    m_fAbort = false;
-  }
-#endif
   m_nOpenProgress = 100;
   return(true);
 }
@@ -165,7 +133,7 @@ bool CXBMCFFmpegSplitter::DemuxLoop()
 {
   HRESULT hr = S_OK;
 
-  int nTracks = m_pDemuxer->GetNrOfStreams();//(int)m_pFile->m_strms.size();
+  int nTracks = m_pDemuxer->GetNrOfStreams();
 
   vector<BOOL> fDiscontinuity;
   fDiscontinuity.resize(nTracks);
@@ -176,7 +144,6 @@ bool CXBMCFFmpegSplitter::DemuxLoop()
     DemuxPacket* pPacket = NULL;
     CDemuxStream *pStream = NULL;
     ReadPacket(pPacket, pStream);
-    //ReadPacket(pPacket, pStream);
     if (pPacket && !pStream)
     {
       /* probably a empty DsPacket, just free it and move on */
@@ -201,100 +168,7 @@ bool CXBMCFFmpegSplitter::DemuxLoop()
 
   }
   while(SUCCEEDED(hr) && !CheckRequest(NULL));
-    
-    
 
-#if 0
-    int minTrack = nTracks;
-    UINT64 minFilePos = _I64_MAX;
-
-    for(int i = 0; i < nTracks; i++)
-    {
-      CAviFile::strm_t* s = m_pFile->m_strms[i].get();
-
-      DWORD f = m_tFrame[i];
-      if(f >= (DWORD)s->cs.size()) 
-        continue;
-
-      bool fUrgent = s->IsRawSubtitleStream();
-
-      if(fUrgent || s->cs[f].filepos < minFilePos)
-      {
-        minTrack = i;
-        minFilePos = s->cs[f].filepos;
-      }
-
-      if(fUrgent) 
-        break;
-    }
-
-    if(minTrack == nTracks)
-      break;
-
-    DWORD& f = m_tFrame[minTrack];
-
-    do
-    {
-      CAviFile::strm_t* s = m_pFile->m_strms[minTrack].get();
-
-      m_pFile->Seek(s->cs[f].filepos);
-
-      DWORD size = 0;
-
-      if(s->cs[f].fChunkHdr)
-      {
-        DWORD id = 0;
-        if(S_OK != m_pFile->Read(id) || id == 0 || minTrack != TRACKNUM(id)
-        || S_OK != m_pFile->Read(size))
-        {
-          fDiscontinuity[minTrack] = true;
-          break;
-        }
-
-        UINT64 expectedsize = -1;
-        expectedsize = f < (DWORD)s->cs.size()-1
-          ? s->cs[f+1].size - s->cs[f].size
-          : s->totalsize - s->cs[f].size;
-
-        if(expectedsize != s->GetChunkSize(size))
-        {
-          fDiscontinuity[minTrack] = true;
-          // ASSERT(0);
-          break;
-        }
-      }
-      else
-      {
-        size = s->cs[f].orgsize;
-      }
-
-      auto_ptr<Packet> p(DNew Packet());
-
-      p->TrackNumber = minTrack;
-      p->bSyncPoint = (BOOL)s->cs[f].fKeyFrame;
-      p->bDiscontinuity = fDiscontinuity[minTrack];
-      p->rtStart = s->GetRefTime(f, s->cs[f].size);
-      p->rtStop = s->GetRefTime(f+1, f+1 < (DWORD)s->cs.size() ? s->cs[f+1].size : s->totalsize);
-      
-      p->resize(size);
-      if(S_OK != (hr = m_pFile->ByteRead(&p->at(0), p->size()))) 
-        return(true); // break;
-/*
-      DbgLog((LOG_TRACE, 0, _T("%d (%d): %I64d - %I64d, %I64d - %I64d (size = %d)"), 
-        minTrack, (int)p->bSyncPoint,
-        (p->rtStart)/10000, (p->rtStop)/10000, 
-        (p->rtStart-m_rtStart)/10000, (p->rtStop-m_rtStart)/10000,
-        size));
-*/
-      hr = DeliverPacket(p);
-
-      fDiscontinuity[minTrack] = false;
-    }
-    while(0);
-
-    f++;
-  }
-#endif
   return(true);
 }
 
@@ -388,42 +262,7 @@ STDMETHODIMP CXBMCFFmpegSplitter::ConvertTimeFormat(LONGLONG* pTarget, const GUI
 {
   return E_NOTIMPL;
   CheckPointer(pTarget, E_POINTER);
-#if 0
-  const GUID& SourceFormat = pSourceFormat ? *pSourceFormat : m_timeformat;
-  const GUID& TargetFormat = pTargetFormat ? *pTargetFormat : m_timeformat;
-  
-  if(TargetFormat == SourceFormat)
-  {
-    *pTarget = Source; 
-    return S_OK;
-  }
-  else if(TargetFormat == TIME_FORMAT_FRAME && SourceFormat == TIME_FORMAT_MEDIA_TIME)
-  {
-    for(int i = 0; i < (int)m_pFile->m_strms.size(); i++)
-    {
-      CAviFile::strm_t* s = m_pFile->m_strms[i].get();
-      if(s->strh.fccType == FCC('vids'))
-      {
-        *pTarget = s->GetFrame(Source);
-        return S_OK;
-      }
-    }
-  }
-  else if(TargetFormat == TIME_FORMAT_MEDIA_TIME && SourceFormat == TIME_FORMAT_FRAME)
-  {
-    for(int i = 0; i < (int)m_pFile->m_strms.size(); i++)
-    {
-      CAviFile::strm_t* s = m_pFile->m_strms[i].get();
-      if(s->strh.fccType == FCC('vids'))
-      {
-        if(Source < 0 || Source >= s->cs.size()) return E_FAIL;
-        CAviFile::strm_t::chunk& c = s->cs[(int)Source];
-        *pTarget = s->GetRefTime((DWORD)Source, c.size);
-        return S_OK;
-      }
-    }
-  }
-#endif
+//TODO
   
   return E_FAIL;
 }

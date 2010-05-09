@@ -176,20 +176,22 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     const CDemuxStreamAudio *stream = static_cast<const CDemuxStreamAudio*>(&right);
     AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
 
-    mtype.majortype = MEDIATYPE_Audio;
-    mtype.formattype = FORMAT_WaveFormatEx;
-    WAVEFORMATEX* wvfmt = (WAVEFORMATEX*)mtype.AllocFormatBuffer(sizeof(WAVEFORMATEX));
-    memset(wvfmt, 0, mtype.FormatLength());
+    
+    
+    
     //mtype.subtype = FOURCCMap(avstream->codec->codec_tag);
     //TODO convert audio codecid into wave format ex: ac3 is WAVE_FORMAT_DOLBY_AC3 0x2000
-    mtype.subtype = MEDIASUBTYPE_WAVE_DOLBY_AC3;
     
     
-    //if the extrasize is of 12 its a mp3
-    if (extrasize == 12)
-    {
-    }
-    wvfmt->wFormatTag = avstream->codec->codec_tag;
+    
+    
+    mtype = g_GuidHelper.initAudioType(avstream->codec->codec_id);
+    
+    if (mtype.subtype == GUID_NULL)
+      mtype.subtype = FOURCCMap(avstream->codec->codec_tag);
+    WAVEFORMATEX* wvfmt = (WAVEFORMATEX*)mtype.AllocFormatBuffer(sizeof(WAVEFORMATEX)+ avstream->codec->extradata_size);
+    
+    wvfmt->wFormatTag = mtype.subtype.Data1;//avstream->codec->codec_tag;
     wvfmt->nChannels = avstream->codec->channels;
     wvfmt->nSamplesPerSec= avstream->codec->sample_rate;
     
@@ -197,16 +199,13 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     wvfmt->nBlockAlign = (WORD)((wvfmt->nChannels * wvfmt->wBitsPerSample) / 8);// avstream->codec->block_align ? avstream->codec->block_align : 1;
     wvfmt->nAvgBytesPerSec= wvfmt->nSamplesPerSec * wvfmt->nBlockAlign;
     //mtype.SetSampleSize(256000)
-    if (right.ExtraSize > 0)
+    if (avstream->codec->extradata > 0)
     {
-      wvfmt->cbSize = right.ExtraSize;
-      memcpy(wvfmt + 1, right.ExtraData, right.ExtraSize);
+      wvfmt->cbSize = avstream->codec->extradata_size;
+      memcpy(wvfmt + 1, avstream->codec->extradata, avstream->codec->extradata_size);
     }
     mtype.SetSampleSize(channels * (bitrate / 8));
 
-    
-      
-    mtype.pbFormat = (PBYTE)wvfmt;
     
     //wvfmt->wFormatTag
     //MPEGLAYER3WAVEFORMAT *
@@ -225,28 +224,22 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(&right);
     AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
     
-    mtype.majortype = MEDIATYPE_Video;
     /* FormatType */
     /* VideoInfo */
     /* VideoInfo2 */
     /* MPEGVideo */
     /* MPEG2Video */
-    const FOURCC *fccs=g_GuidHelper.getCodecFOURCCs(avstream->codec->codec_id);
+    mtype = g_GuidHelper.initVideoType(avstream->codec->codec_id);
     
     //Most used type
-    mtype.formattype = GUID_NULL;
-    for (const FOURCC *fcc=fccs;*fcc;fcc++)
+    if (1)//for (const FOURCC *fcc=fccs;*fcc;fcc++)
     {
-      if (*fcc == FOURCC_AVC1)
+      if (mtype.subtype == FOURCCMap(FOURCC_AVC1))
       {
-        mtype.formattype = FORMAT_MPEG2Video;
-        mtype.subtype = FOURCCMap(FOURCC_AVC1);
-
-
         MPEG2VIDEOINFO *mpeginfo = (MPEG2VIDEOINFO*)mtype.AllocFormatBuffer(FIELD_OFFSET(MPEG2VIDEOINFO, dwSequenceHeader) + avstream->codec->extradata_size - 7);
         //VideoFps = 10000000.0 / AvgTimePerFrame;
         mpeginfo->hdr.AvgTimePerFrame = (REFERENCE_TIME)(10000000 / (stream->iFpsRate / stream->iFpsScale));
-        
+        //ff_h264_decode_seq_parameter_set from libavcodec is actually the best function to get those info
         mpeginfo->hdr.dwBitErrorRate = 0;
         
         mpeginfo->hdr.dwBitRate = avstream->codec->bit_rate;
@@ -291,7 +284,6 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
         mpeginfo->cbSequenceHeader = extravect.size();
         memcpy(mpeginfo->dwSequenceHeader, &extravect.at(0) , extravect.size());
         return;
-        break;
       }
   
     }

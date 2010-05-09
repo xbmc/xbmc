@@ -1,15 +1,20 @@
 #pragma once
 #include "ffmpeg_mediaguids.h"
-extern "C"
+#include "DVDPlayer/Codecs/DllAvCodec.h"
+/*extern "C"
 {
 #include "libavcodec/avcodec.h"
-}
+}*/
+
+class CMediaType;
 
 class CDSGuidHelper
 {
 public:
   CDSGuidHelper(void){};
-  const FOURCC* getCodecFOURCCs(CodecID codecId);
+  CMediaType initAudioType(CodecID codecId);
+  CMediaType initVideoType(CodecID codecId);
+  
 };
 
 extern CDSGuidHelper g_GuidHelper;
