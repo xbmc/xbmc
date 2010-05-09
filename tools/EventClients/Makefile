@@ -1,7 +1,5 @@
-# Default prefix dir
-prefix=/usr/local
-installdir=$(prefix)
 WII_EXTRA_OPTS=
+CLEAN_FILES=Clients/WiiRemote/WiiRemote
 
 all: install
 
@@ -9,27 +7,26 @@ wiimote: Clients/WiiRemote/WiiRemote
 
 Clients/WiiRemote/WiiRemote:
 	cd Clients/WiiRemote && \
-	g++ CWIID_WiiRemote.cpp -lcwiid -DICON_PATH="\"$(installdir)/share/pixmaps/xbmc/\"" $(WII_EXTRA_OPTS) -o WiiRemote
+	g++ CWIID_WiiRemote.cpp -lcwiid -DICON_PATH="\"$(datarootdir)/pixmaps/xbmc/\"" $(WII_EXTRA_OPTS) -o WiiRemote
 
 j2me-remote:
 	cd Clients/J2ME\ Client
 	ant -f build.xml
 
 install: Clients/WiiRemote/WiiRemote
-	mkdir -p $(prefix)/bin
-	cp -a Clients/WiiRemote/WiiRemote $(prefix)/bin/xbmc-wiiremote
-	cp -a Clients/J2ME\ Client/j2me_remote.py $(prefix)/bin/xbmc-j2meremote
-	cp -a Clients/PS3\ BD\ Remote/ps3_remote.py $(prefix)/bin/xbmc-ps3remote
-	#cp -a Clients/PS3\ Sixaxis\ Controller/ps3d.py $(prefix)/bin/xbmc-ps3d
-	cp -a Clients/XBMC\ Send/xbmc-send.py $(prefix)/bin/xbmc-send
-	mkdir -p $(prefix)/lib/python2.5/site-packages/xbmc
-	echo 'ICON_PATH="$(installdir)/share/pixmaps/xbmc/"' > $(prefix)/lib/python2.5/site-packages/xbmc/defs.py
-	cp -a lib/python/* $(prefix)/lib/python2.5/site-packages/xbmc/
-	cp -a Clients/PS3\ BD\ Remote/ps3_remote.py $(prefix)/lib/python2.5/site-packages/xbmc/
-	mkdir -p $(prefix)/include/xbmc
-	cp -a lib/c++/* $(prefix)/include/xbmc/
-	mkdir -p $(prefix)/share/pixmaps/xbmc
-	cp -a icons/* $(prefix)/share/pixmaps/xbmc/
+	mkdir -p $(DESTDIR)$(bindir)
+	cp -a Clients/WiiRemote/WiiRemote $(DESTDIR)$(bindir)/xbmc-wiiremote
+	cp -a Clients/J2ME\ Client/j2me_remote.py $(DESTDIR)$(bindir)/xbmc-j2meremote
+	cp -a Clients/PS3\ BD\ Remote/ps3_remote.py $(DESTDIR)$(bindir)/xbmc-ps3remote
+	#cp -a Clients/PS3\ Sixaxis\ Controller/ps3d.py $(DESTDIR)$(bindir)/xbmc-ps3d
+	cp -a Clients/XBMC\ Send/xbmc-send.py $(DESTDIR)$(bindir)/xbmc-send
+	mkdir -p $(DESTDIR)$(libdir)/python2.5/site-packages/xbmc
+	echo 'ICON_PATH="$(datarootdir)/pixmaps/xbmc/"' > $(DESTDIR)$(libdir)/python2.5/site-packages/xbmc/defs.py
+	cp -a lib/python/* $(DESTDIR)$(libdir)/python2.5/site-packages/xbmc/
+	cp -a Clients/PS3\ BD\ Remote/ps3_remote.py $(DESTDIR)$(libdir)/python2.5/site-packages/xbmc/
+	mkdir -p $(DESTDIR)$(includedir)/xbmc
+	cp -a lib/c++/* $(DESTDIR)$(includedir)/xbmc/
+	mkdir -p $(DESTDIR)$(datarootdir)/pixmaps/xbmc
+	cp -a icons/* $(DESTDIR)$(datarootdir)/pixmaps/xbmc/
 
-clean:
-	rm -f Clients/WiiRemote/WiiRemote
+include ../../Makefile.include
