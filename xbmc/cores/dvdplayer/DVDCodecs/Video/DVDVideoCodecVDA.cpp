@@ -392,7 +392,6 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
   m_dllAvUtil = NULL;
   m_dllAvFormat = NULL;
   m_dllSwScale = NULL;
-  m_swcontext = NULL;
   memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
 }
 
@@ -559,12 +558,6 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     memset(m_videobuffer.data[1], 0, iChromaPixels);
     memset(m_videobuffer.data[2], 0, iChromaPixels);
 
-    // pre-alloc ffmpeg swscale context.
-    m_swcontext = m_dllSwScale->sws_getContext(
-      m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_UYVY422, 
-      m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_YUV420P, 
-      SWS_FAST_BILINEAR, NULL, NULL, NULL);
-
     m_DropPictures = false;
     m_sort_time_offset = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
 
@@ -598,11 +591,6 @@ void CDVDVideoCodecVDA::Dispose()
   {
     delete m_dllAvFormat;
     m_dllAvFormat = NULL;
-  }
-  if (m_swcontext)
-  {
-    m_dllSwScale->sws_freeContext(m_swcontext);
-    m_swcontext = NULL;
   }
   if (m_dllSwScale)
   {
@@ -722,7 +710,11 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 void CDVDVideoCodecVDA::UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_stride, DVDVideoPicture *picture)
 {
   // convert PIX_FMT_UYVY422 to PIX_FMT_YUV420P.
-  if (m_swcontext)
+  struct SwsContext *swcontext = m_dllSwScale->sws_getContext(
+    m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_UYVY422, 
+    m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_YUV420P, 
+    SWS_FAST_BILINEAR, NULL, NULL, NULL);
+  if (swcontext)
   {
     uint8_t  *src[] = { yuv422_ptr, 0, 0, 0 };
     int srcStride[] = { yuv422_stride, 0, 0, 0 };
@@ -730,7 +722,8 @@ void CDVDVideoCodecVDA::UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_strid
     uint8_t  *dst[] = { picture->data[0], picture->data[1], picture->data[2], 0 };
     int dstStride[] = { picture->iLineSize[0], picture->iLineSize[1], picture->iLineSize[2], 0 };
   
-    m_dllSwScale->sws_scale(m_swcontext, src, srcStride, 0, picture->iHeight, dst, dstStride);
+    m_dllSwScale->sws_scale(swcontext, src, srcStride, 0, picture->iHeight, dst, dstStride);
+    m_dllSwScale->sws_freeContext(swcontext);
   }
 }
 
