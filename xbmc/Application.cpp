@@ -739,8 +739,8 @@ bool CApplication::InitDirectoriesLinux()
     userHome = "/root";
 
   CStdString xbmcBinPath, xbmcPath;
-  CUtil::GetHomePath(xbmcBinPath);
-  xbmcPath = xbmcBinPath;
+  CUtil::GetHomePath(xbmcBinPath, (new CStdString)->assign("XBMC_BIN_HOME"));
+  CUtil::GetHomePath(xbmcPath);
 
   /* Check if xbmc binaries and arch independent data files are being kept in
    * separate locations. */

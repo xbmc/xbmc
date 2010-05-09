@@ -80,7 +80,7 @@ public:
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static void RunShortcut(const char* szPath);
   static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
-  static void GetHomePath(CStdString& strPath);
+  static void GetHomePath(CStdString& strPath, const CStdString& strTarget = "XBMC_HOME");
   static CStdString ReplaceExtension(const CStdString& strFile, const CStdString& strNewExtension);
   static void GetExtension(const CStdString& strFile, CStdString& strExtension);
   static bool HasSlashAtEnd(const CStdString& strFile);
