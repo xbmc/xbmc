@@ -2,8 +2,8 @@
 	<defaultcontrol always="true">11</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>400</posx>
-		<posy>55</posy>
+		<posx>780</posx>
+		<posy>20</posy>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
@@ -11,8 +11,8 @@
 			<description>background image</description>
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>800</width>
-			<height>610</height>
+			<width>500</width>
+			<height>680</height>
 			<colordiffuse>DDFFFFFF</colordiffuse>
 			<texture border="40">DialogBack.png</texture>
 		</control>
@@ -20,21 +20,21 @@
 			<description>background image</description>
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>800</width>
-			<height>610</height>
+			<width>500</width>
+			<height>680</height>
 			<texture border="40">DialogFront.png</texture>
 		</control>
 		<control type="label">
 			<description>heading label</description>
 			<posx>40</posx>
 			<posy>40</posy>
-			<width>720</width>
+			<width>420</width>
 			<height>30</height>
 			<align>center</align>
 			<aligny>center</aligny>
 			<font>font18</font>
-			<label>[UPPERCASE]$LOCALIZE[19019][/UPPERCASE] - ($INFO[Container(11).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages])</label>
-			<textcolor>white</textcolor>
+			<label>$LOCALIZE[19019]</label>
+			<textcolor>dialogheader</textcolor>
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
@@ -56,126 +56,183 @@
 		<control type="image">
 			<posx>40</posx>
 			<posy>78</posy>
-			<width>720</width>
+			<width>420</width>
 			<height>2</height>
 			<texture>separator.png</texture>
 		</control>
 		<control type="list" id="11">
 			<posx>40</posx>
 			<posy>90</posy>
-			<width>720</width>
-			<height>480</height>
-			<onleft>11</onleft>
-			<onright>71</onright>
-			<ondown>11</ondown>
+			<width>390</width>
+			<height>504</height>
+			<onleft>60</onleft>
+			<onright>60</onright>
 			<onup>11</onup>
+			<ondown>11</ondown>
+			<viewtype label="535">list</viewtype>
+			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
-			<pagecontrol>71</pagecontrol>
-			<itemlayout height="40" width="720">
-				<control type="image">
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>685</width>
-					<height>35</height>
-					<texture border="3">button-nofocus.png</texture>
-				</control>
-				<control type="image">
-					<posx>70</posx>
-					<posy>0</posy>
-					<width>35</width>
-					<height>35</height>
-					<info>ListItem.Icon</info>
-				</control>
+			<itemlayout height="56" width="390">
 				<control type="label">
-					<posx>10</posx>
-					<posy>0</posy>
-					<width>55</width>
-					<height>35</height>
-					<font>font12</font>
+					<posx>5</posx>
+					<posy>5</posy>
+					<width>40</width>
+					<height>20</height>
+					<font>font10</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<selectedcolor>white</selectedcolor>
+					<textcolor>green</textcolor>
+					<selectedcolor>green</selectedcolor>
 					<info>ListItem.ChannelNumber</info>
 				</control>
 				<control type="label">
-					<posx>110</posx>
+					<posx>50</posx>
 					<posy>0</posy>
-					<width>300</width>
-					<height>35</height>
+					<width>270</width>
+					<height>30</height>
 					<font>font12</font>
+					<textcolor>white</textcolor>
+					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<aligny>center</aligny>
-					<selectedcolor>white</selectedcolor>
-					<info>ListItem.ChannelName</info>
+					<label>$INFO[ListItem.Label]</label>
+					<visible>IsEmpty(Listitem.Icon)</visible>
 				</control>
 				<control type="label">
-					<posx>675</posx>
+					<posx>50</posx>
 					<posy>0</posy>
 					<width>330</width>
-					<height>35</height>
+					<height>30</height>
 					<font>font12</font>
-					<align>right</align>
+					<textcolor>white</textcolor>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
 					<aligny>center</aligny>
-					<selectedcolor>white</selectedcolor>
-					<info>ListItem.Title</info>
+					<label>$INFO[ListItem.Label]</label>
+					<visible>!IsEmpty(Listitem.Icon)</visible>
+				</control>
+				<control type="label">
+					<posx>50</posx>
+					<posy>30</posy>
+					<width>330</width>
+					<height>20</height>
+					<font>font11</font>
+					<textcolor>grey</textcolor>
+					<selectedcolor>grey</selectedcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Title]</label>
+					<visible>IsEmpty(Listitem.Icon)</visible>
+				</control>
+				<control type="label">
+					<posx>50</posx>
+					<posy>30</posy>
+					<width>270</width>
+					<height>20</height>
+					<font>font11</font>
+					<textcolor>grey</textcolor>
+					<selectedcolor>grey</selectedcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Title]</label>
+					<visible>!IsEmpty(Listitem.Icon)</visible>
+				</control>
+				<control type="image">
+					<posx>330</posx>
+					<posy>4</posy>
+					<width>48</width>
+					<height>48</height>
+					<texture>$INFO[ListItem.Icon]</texture>
 				</control>
 			</itemlayout>
-			<focusedlayout height="40" width="720">
+			<focusedlayout height="56" width="390">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>685</width>
-					<height>35</height>
-					<visible>Control.HasFocus(11)</visible>
-					<texture border="8">button-focus.png</texture>
-				</control>
-				<control type="image">
-					<posx>70</posx>
-					<posy>0</posy>
-					<width>35</width>
-					<height>35</height>
-					<info>ListItem.Icon</info>
+					<width>390</width>
+					<height>56</height>
+					<texture border="5">button-focus.png</texture>
+					<visible>Control.Hasfocus(11)</visible>
+					<include>VisibleFadeEffect</include>
 				</control>
 				<control type="label">
-					<posx>10</posx>
-					<posy>0</posy>
-					<width>55</width>
-					<height>35</height>
-					<font>font12</font>
+					<posx>5</posx>
+					<posy>5</posy>
+					<width>40</width>
+					<height>20</height>
+					<font>font10</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<selectedcolor>white</selectedcolor>
+					<textcolor>green</textcolor>
+					<selectedcolor>green</selectedcolor>
 					<info>ListItem.ChannelNumber</info>
 				</control>
 				<control type="label">
-					<posx>110</posx>
+					<posx>50</posx>
 					<posy>0</posy>
-					<width>300</width>
-					<height>35</height>
+					<width>270</width>
+					<height>30</height>
 					<font>font12</font>
+					<textcolor>white</textcolor>
+					<selectedcolor>green</selectedcolor>
 					<align>left</align>
 					<aligny>center</aligny>
-					<selectedcolor>white</selectedcolor>
-					<info>ListItem.ChannelName</info>
+					<label>$INFO[ListItem.Label]</label>
+					<visible>IsEmpty(Listitem.Icon)</visible>
 				</control>
 				<control type="label">
-					<posx>675</posx>
+					<posx>50</posx>
 					<posy>0</posy>
 					<width>330</width>
-					<height>35</height>
+					<height>30</height>
 					<font>font12</font>
-					<align>right</align>
+					<textcolor>white</textcolor>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
 					<aligny>center</aligny>
-					<selectedcolor>white</selectedcolor>
-					<info>ListItem.Title</info>
+					<label>$INFO[ListItem.Label]</label>
+					<visible>!IsEmpty(Listitem.Icon)</visible>
+				</control>
+				<control type="label">
+					<posx>50</posx>
+					<posy>30</posy>
+					<width>330</width>
+					<height>20</height>
+					<font>font11</font>
+					<textcolor>grey</textcolor>
+					<selectedcolor>grey</selectedcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Title]</label>
+					<visible>IsEmpty(Listitem.Icon)</visible>
+				</control>
+				<control type="label">
+					<posx>50</posx>
+					<posy>30</posy>
+					<width>270</width>
+					<height>20</height>
+					<font>font11</font>
+					<textcolor>grey</textcolor>
+					<selectedcolor>grey</selectedcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Title]</label>
+					<visible>!IsEmpty(Listitem.Icon)</visible>
+				</control>
+				<control type="image">
+					<posx>330</posx>
+					<posy>4</posy>
+					<width>48</width>
+					<height>48</height>
+					<texture>$INFO[ListItem.Icon]</texture>
 				</control>
 			</focusedlayout>
 		</control>
-		<control type="scrollbar" id="71">
-			<posx>730</posx>
+		<control type="scrollbar" id="60">
+			<posx>435</posx>
 			<posy>90</posy>
 			<width>20</width>
-			<height>475</height>
+			<height>504</height>
 			<texturesliderbackground border="2,2,2,2">scrollbar_bar_back2.png</texturesliderbackground>
 			<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
 			<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
@@ -187,6 +244,19 @@
 			<onup>71</onup>
 			<showonepage>true</showonepage>
 			<orientation>vertical</orientation>
+		</control>
+		<control type="label">
+			<description>number of files/pages in list text label</description>
+			<posx>450</posx>
+			<posy>610</posy>
+			<width>500</width>
+			<height>20</height>
+			<font>font12b</font>
+			<align>right</align>
+			<aligny>center</aligny>
+			<scroll>true</scroll>
+			<textcolor>white</textcolor>
+			<label>($INFO[Container(11).NumItems]) $LOCALIZE[19019] - $LOCALIZE[31024] ($INFO[Container(11).CurrentPage]/$INFO[Container(11).NumPages])</label>
 		</control>
 	</controls>
 </window>

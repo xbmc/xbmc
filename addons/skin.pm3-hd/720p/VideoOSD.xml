@@ -8,7 +8,7 @@
 	</coordinates>
 	<controls>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" condition="Window.IsVisible(SliderDialog)">conditional</animation>
+			<animation effect="fade" start="100" end="0" time="200" condition="Window.IsVisible(SliderDialog) | Window.IsVisible(PvrOSDChannels) | Window.IsVisible(PvrOSDGuide)">conditional</animation>
 			<control type="group">
 				<posx>80r</posx>
 				<posy>-320</posy>
