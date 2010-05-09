@@ -741,7 +741,6 @@ bool CApplication::InitDirectoriesLinux()
   CStdString xbmcBinPath, xbmcPath;
   CUtil::GetHomePath(xbmcBinPath);
   xbmcPath = xbmcBinPath;
-  setenv("XBMC_HOME", xbmcPath.c_str(), 0);
 
   /* Check if xbmc binaries and arch independent files are being kept in a
    * different location */
@@ -752,13 +751,16 @@ bool CApplication::InitDirectoriesLinux()
     xbmcPath = BIN_INSTALL_PATH;
     temp.erase(temp.size() - xbmcPath.size(), xbmcPath.size());
     xbmcPath = temp + INSTALL_PATH;
-    setenv("XBMC_HOME", xbmcPath.c_str(), 0);
     if (!CFile::Exists(xbmcPath + "/language"))
     {
       CLog::Log(LOGERROR, "Unable to find path to XBMC data files!");
       return false;
     }
   }
+
+  /* Set some environment variables */
+  setenv("XBMC_BIN_HOME", xbmcBinPath.c_str(), 0);
+  setenv("XBMC_HOME", xbmcPath.c_str(), 0);
 
   if (m_bPlatformDirectories)
   {
