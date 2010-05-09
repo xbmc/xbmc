@@ -28,6 +28,8 @@
 #include "../../Application.h"
 #include "../../Util.h"
 #include "TextureManager.h"
+#include "../ffmpeg/DllSwScale.h"
+#include "../ffmpeg/DllAvCodec.h"
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 
@@ -84,11 +86,17 @@ CLinuxRenderer::CLinuxRenderer()
 
   m_image.flags = 0;
 
+  m_dllAvUtil = new DllAvUtil;
+  m_dllAvCodec = new DllAvCodec;
+  m_dllSwScale = new DllSwScale;
 }
 
 CLinuxRenderer::~CLinuxRenderer()
 {
   UnInit();
+  delete m_dllSwScale;
+  delete m_dllAvCodec;
+  delete m_dllAvUtil;
 }
 
 //********************************************************************************************************
@@ -460,19 +468,19 @@ void CLinuxRenderer::ReleaseImage(int source, bool preserve)
   SDL_LockSurface(m_backbuffer);
 
   // transform from YUV to RGB
-  struct SwsContext *context = m_dllSwScale.sws_getContext(m_image.width, m_image.height, PIX_FMT_YUV420P, m_backbuffer->w, m_backbuffer->h, PIX_FMT_BGRA, SWS_BILINEAR, NULL, NULL, NULL);
+  struct SwsContext *context = m_dllSwScale->sws_getContext(m_image.width, m_image.height, PIX_FMT_YUV420P, m_backbuffer->w, m_backbuffer->h, PIX_FMT_BGRA, SWS_BILINEAR, NULL, NULL, NULL);
   uint8_t *src[] = { m_image.plane[0], m_image.plane[1], m_image.plane[2], 0 };
   int     srcStride[] = { m_image.stride[0], m_image.stride[1], m_image.stride[2], 0 };
   uint8_t *dst[] = { (uint8_t*)m_backbuffer->pixels, 0, 0, 0 };
   int     dstStride[] = { m_backbuffer->pitch, 0, 0, 0 };
 
-  m_dllSwScale.sws_scale(context, src, srcStride, 0, m_image.height, dst, dstStride);
+  m_dllSwScale->sws_scale(context, src, srcStride, 0, m_image.height, dst, dstStride);
 
 for (int n=0; n<720*90;n++) {
    *(((uint8_t*)m_backbuffer->pixels) + (720*10) + n) = 70;
 }
 
-  m_dllSwScale.sws_freeContext(context);
+  m_dllSwScale->sws_freeContext(context);
 
   SDL_UnlockSurface(m_backbuffer);
 
@@ -588,13 +596,13 @@ unsigned int CLinuxRenderer::PreInit()
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
 
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
+  if (!m_dllAvUtil->Load() || !m_dllAvCodec->Load() || !m_dllSwScale->Load())
         CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
 
   #if (! defined USE_EXTERNAL_FFMPEG)
-    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+    m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
   #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
-    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+    m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
   #endif
 
   return 0;
