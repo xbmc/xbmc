@@ -483,7 +483,7 @@ fi
 AC_DEFUN([XB_FIND_SONAME],
 [
   AC_MSG_CHECKING([for lib$2 soname])
-  $1_SONAME=$( gcc -print-file-name=lib$2.so | \
+  $1_SONAME=$( $CC -print-file-name=lib$2.so | \
                 while read output; do objdump -p $output | \
                   grep "SONAME" | \
                   sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
