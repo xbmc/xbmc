@@ -9,6 +9,28 @@
 		Listitem.Property(mediaTag::contentRating)
 		Listitem.Property(mediaTag::Studio)
 	-->
+	<include name="WideViewFlags">
+		<control type="group">
+			<control type="image">
+				<visible>true</visible>
+				<posx>850</posx>
+				<posy>530</posy>
+				<height>60</height>
+				<info>Listitem.Property(mediaTag::Studio)</info>
+				<aspectratio>keep</aspectratio>
+				<aligny>center</aligny>
+			</control>
+			<control type="image">
+				<visible>true</visible>
+				<posx>1030</posx>
+				<posy>610</posy>
+				<height>50</height>
+				<info>Listitem.Property(mediaTag::contentRating)</info>
+				<aspectratio>keep</aspectratio>
+				<aligny>center</aligny>
+			</control>
+		</control>
+	</include> 
  
 	<include name="InfoListFlags">
 		<control type="grouplist">

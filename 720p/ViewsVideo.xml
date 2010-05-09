@@ -1,10 +1,14 @@
 <includes>
+
+	<!-- Wide TV Shows View -->
+	
 	<include name="TV">
 		<control type="group">
 			<include>TVWideVisible</include>
 			<!--  <include>FanartOnTVProjectorScreen</include>  -->
 			<include>MediaViewBGOverlay</include>
 		</control>
+<!--
 		<control type="group">
 			<include>TVWideVisible</include>
 			<include>MediaViewFade</include>
@@ -373,7 +377,349 @@
 			</control>
 			<include>CommonSortLetters</include>
 		</control>
-	</include>
+-->
+		<control type="group">
+			<include>TVWideVisible</include>
+			<include>MediaViewFade</include>
+			<control type="group">
+				<include>MediaListSelectDelay</include>
+				<posx>600</posx>
+				<control type="group">
+					<posy>187</posy>
+					<visible>!IsEmpty(ListItem.Banner) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+					<control type="image">
+						<description>Wide icon</description>
+						<include>TVWideIconDims</include>
+						<texture>DefaultWideIcon.png</texture>
+						<info>ListItem.Banner</info>
+						<aspectratio align="left">keep</aspectratio>
+						<bordertexture border="7">ThumbBorder.png</bordertexture>
+						<bordersize>4</bordersize>
+					</control>
+					<control type="label">
+						<posy>30</posy>
+						<width>288</width>
+						<font>TitleCapsFont</font>
+						<include>NoThumbLabel</include>
+					</control>
+				</control>
+			</control>
+			<control type="list" id="57">
+				<viewtype label="Wide">list</viewtype>
+				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+				<posx>-24</posx>
+				<posy>230</posy>
+				<width>640</width>
+				<height>454</height>
+				<scrolltime>200</scrolltime>
+				<pagecontrol>61</pagecontrol>
+				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+				<onright>9009</onright>
+				<onup>56</onup>
+				<ondown>56</ondown>
+				<itemlayout height="42" width="530">
+					<control type="image">
+						<posx>0</posx>
+						<posy>-6</posy>
+						<width>679</width>
+						<height>54</height>
+						<texture>MediaItemBG.png</texture>
+					</control>
+					<control type="label">
+						<posx>60</posx>
+						<width>356</width>
+						<height>42</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+						<font>MediumSmallDefaultCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+						<visible>Container.Content(TVShows)</visible>
+					</control>
+					<control type="label">
+						<visible>Container.Content(TVShows)</visible>
+						<posx>550</posx>
+						<posy>2</posy>
+						<width>104</width>
+						<height>42</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label2]</label>
+						<font>SmallDefaultCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+					</control>
+					<control type="label">
+						<visible>Container.Content(TVShows)</visible>
+						<posx>565</posx>
+						<posy>2</posy>
+						<width>110</width>
+						<height>42</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Property(UnWatchedEpisodes)] $LOCALIZE[31139]</label>
+						<font>SmallDefaultCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+					</control>
+				</itemlayout>
+				<focusedlayout height="42" width="530">
+<!--
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>530</width>
+						<height>42</height>
+						<texture>MediaItemBG.png</texture>
+					</control>
+-->
+					<control type="image">
+						<posx>44</posx>
+						<posy>2</posy>
+						<width>530</width>
+						<height>41</height>
+						<texture aspectratio="stretch" flipx="true">InfoList_focused.png</texture>
+						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
+						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
+					</control>
+					<control type="image">
+						<visible>Container.Content(TVShows)</visible>
+						<posx>450</posx>
+						<posy>12</posy>
+						<width>124</width>
+						<height>22</height>
+						<texture border="13,0,0,0">InfoList_focused_detail.png</texture>
+						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
+						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
+					</control>
+					<control type="label">
+						<posx>60</posx>
+						<width>356</width>
+						<height>42</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+						<font>MediumSmallDefaultCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+						<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
+						<visible>Container.Content(TVShows)</visible>
+					</control>
+
+<!--
+				    <control type="label">
+						<visible>!IsEmpty(ListItem.Overlay)</visible>
+						<posx>456</posx>
+						<posy>2</posy>
+						<width>104</width>
+						<height>42</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Duration]</label>
+						<font>SmallDefaultCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+						<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
+					</control>
+					<control type="label">
+						<visible>IsEmpty(ListItem.Overlay)</visible>
+						<posx>492</posx>
+						<posy>2</posy>
+						<width>95</width>
+						<height>42</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label2]</label>
+						<font>SmallDefaultCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+						<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
+					</control>
+-->
+					<control type="group">
+						<visible>Container.Content(TVShows)</visible>
+						<control type="label">
+							<description>shadow</description>
+							<posx>61</posx>
+							<posy>2</posy>
+							<width>356</width>
+							<height>42</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<font>MediumSmallDefaultCapsFont</font>
+							<textcolor>6D000000</textcolor>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+						</control>
+						<control type="label">
+							<description>shadow</description>
+							<posx>60</posx>
+							<posy>1</posy>
+							<width>356</width>
+							<height>42</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<font>MediumSmallDefaultCapsFont</font>
+							<textcolor>25000000</textcolor>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+						</control>
+						<control type="label">
+							<posx>60</posx>
+							<width>356</width>
+							<height>42</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<font>MediumSmallDefaultCapsFont</font>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+						</control>
+					</control>
+					<control type="label">
+						<visible>Container.Content(TVShows)</visible>
+						<posx>565</posx>
+						<posy>2</posy>
+						<width>110</width>
+						<height>42</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Property(UnWatchedEpisodes)] $LOCALIZE[31139]</label>
+						<font>SmallDefaultCapsFont</font>
+						<include>MediaItemDetailFontFO</include>
+						<include>MediaListItemFade</include>
+					</control>
+					<control type="label">
+						<visible>Container.Content(TVShows)</visible>
+						<posx>550</posx>
+						<posy>2</posy>
+						<width>95</width>
+						<height>42</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label2]</label>
+						<font>SmallDefaultCapsFont</font>
+						<include>MediaListItemFade</include>
+					</control>
+				</focusedlayout>
+			</control>
+		<control type="group">
+			<posx>558</posx>
+			<include>TVWideVisible</include>
+			<include>MediaViewFade</include>
+			<control type="scrollbar" id="61">
+				<posx>3</posx>
+				<posy>225</posy>
+				<height>465</height>
+				<onup>61</onup>
+				<ondown>61</ondown>
+				<onleft>50</onleft>
+				<onright>9009</onright>
+			</control>
+		</control>
+			<control type="group">
+				<posx>592</posx>
+				<posy>237</posy>
+				<include>MediaListSelectDelay</include>
+				<control type="group">
+					<posx>430</posx>
+					<posy>75</posy>
+					<visible>Container.Content(TVShows)</visible>
+					<control type="label">
+						<description>Star Rating Label</description>
+						<posy>70</posy>
+						<posx>60</posx>
+						<width>80</width>
+						<font>MediumTitleFont</font>
+						<label>$LOCALIZE[563]:</label>
+						<align>right</align>
+						<textcolor>FFFF9900</textcolor>
+						<visible>Container.Content(TVShows)</visible>
+					</control>
+					<control type="image">
+						<description>Star Rating</description>
+						<align>left</align>
+						<info>ListItem.StarRating</info>
+						<aspectratio>keep</aspectratio>
+						<width>120</width>
+						<height>47</height>
+						<posy>59</posy>
+						<posx>67</posx>
+						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+					</control>
+					<control type="label">
+						<description>Genre Label</description>
+						<posy>100</posy>
+						<posx>60</posx>
+						<width>80</width>
+						<font>MediumTitleFont</font>
+						<label>$LOCALIZE[31131]:</label>
+						<align>right</align>
+						<textcolor>FFFF9900</textcolor>
+						<visible>Container.Content(TVShows)</visible>
+					</control>
+					<control type="label">
+						<description>Genre</description>
+						<posx>70</posx>
+						<posy>103</posy>
+						<width>180</width>
+						<label fallback="31047">$INFO[ListItem.Property(FirstGenre)]</label>
+						<align>left</align>
+						<visible>Container.Content(TVShows)</visible>
+					</control>
+					<control type="label">
+						<description>First Aired Label</description>
+						<posy>130</posy>
+						<posx>60</posx>
+						<width>100</width>
+						<font>MediumTitleFont</font>
+						<label>$LOCALIZE[31140]:</label>
+						<align>right</align>
+						<textcolor>FFFF9900</textcolor>
+						<visible>Container.Content(TVShows)</visible>
+					</control>
+					<control type="label">
+						<description>Director</description>
+						<posx>70</posx>
+						<posy>133</posy>
+						<width>180</width>
+						<label fallback="31047">$INFO[ListItem.Date]</label>
+						<align>left</align>
+						<visible>Container.Content(TVShows)</visible>
+					</control>
+					<control type="label">
+						<description>Runtime Label</description>
+						<posx>60</posx>
+						<posy>160</posy>
+						<width>80</width>
+						<font>MediumTitleFont</font>
+						<textcolor>FFFF9900</textcolor>
+						<label>$LOCALIZE[2050]:</label>
+						<align>right</align>
+						<visible>Container.Content(TVShows)</visible>
+					</control>
+					<control type="label">
+						<description>Runtime</description>
+						<posx>70</posx>
+						<posy>163</posy>
+						<width>180</width>
+						<label fallback="31047">$INFO[ListItem.Duration]</label>
+						<align>left</align>
+						<visible>Container.Content(TVShows)</visible>
+					</control>
+						<control type="group">
+						<posy>68</posy>
+						<posx>-417</posx>
+						<control type="textbox">
+						<description>Plot</description>
+						<width>365</width>
+						<height>283</height>
+						<info>ListItem.Plot</info>
+						<visible>Container.Content(TVShows)</visible>
+					</control>
+				</control>
+			</control>
+		</control>
+		<include>WideViewFlags</include>
+	</control>
+</include>
 	<!--
 	<include name="TVEpisodes">
 		<control type="group">

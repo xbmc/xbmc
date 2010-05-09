@@ -1250,13 +1250,13 @@
 	</include>
 	<!-- TV Wide -->
 	<include name="TVWideIconDims">
-		<posx>-6</posx>
-		<width>554</width>
-		<height>120</height>
+		<posx>0</posx>
+		<width>670</width>
+		<height>220</height>
 	</include>
 	<include name="TVWideIconOverlayDims">
 		<posx>3</posx>
-		<posy>11</posy>
+		<posy>55</posy>
 		<width>180</width>
 		<height>96</height>
 	</include>
