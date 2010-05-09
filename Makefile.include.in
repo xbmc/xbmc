@@ -5,6 +5,26 @@ SHELL=/bin/bash
 ARCH=@ARCH@
 abs_top_srcdir=@abs_top_srcdir@
 prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+sbindir=@sbindir@
+libexecdir=@libexecdir@
+sysconfdir=@sysconfdir@
+sharedstatedir=@sharedstatedir@
+localstatedir=@localstatedir@
+libdir=@datarootdir@
+includedir=@includedir@
+oldincludedir=@oldincludedir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+infodir=@infodir@
+localedir=@localedir@
+mandir=@mandir@
+docdir=@docdir@
+htmldir=@htmldir@
+dvidir=@dvidir@
+pdfdir=@pdfdir@
+psdir=@psdir@
 CXX=@CXX@
 CC=@CC@
 CXXFLAGS+=@CXXFLAGS@
@@ -18,7 +38,7 @@ DEFINES+= \
 	-D_REENTRANT \
 	-D_LARGEFILE64_SOURCE \
 	-D_FILE_OFFSET_BITS=64 \
-	-DINSTALL_PATH="\"@prefix@/share/xbmc\"" \
+	-DINSTALL_PATH="\"$(datarootdir)/xbmc\"" \
 	@SDL_DEFINES@ \
 	@ARCH_DEFINES@ \
 	@DEFS@ \
