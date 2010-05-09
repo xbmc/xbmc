@@ -742,11 +742,11 @@ bool CApplication::InitDirectoriesLinux()
   CUtil::GetHomePath(xbmcBinPath);
   xbmcPath = xbmcBinPath;
 
-  /* Check if xbmc binaries and arch independent files are being kept in a
-   * different location */
+  /* Check if xbmc binaries and arch independent data files are being kept in
+   * separate locations. */
   if (!CFile::Exists(xbmcPath + "/language"))
   {
-    /* Attempt to locate arch independent files */
+    /* Attempt to locate arch independent data files. */
     CStdString temp = xbmcPath;
     xbmcPath = BIN_INSTALL_PATH;
     temp.erase(temp.size() - xbmcPath.size(), xbmcPath.size());
