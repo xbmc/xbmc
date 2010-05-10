@@ -29,6 +29,9 @@ faac_not_found="== Could not find libfaac. FAAC support disabled. =="
 faac_disabled="== FAAC support manually disabled. =="
 dvdcss_enabled="== DVDCSS support enabled. =="
 dvdcss_disabled="== DVDCSS support disabled. =="
+hal_not_found="== Could not find hal. HAL support disabled. =="
+halstorage_not_found="== Could not find hal-storage. HAL support disabled. =="
+hal_disabled="== HAL support disabled. =="
 avahi_not_found="== Could not find libavahi-common or libavahi-client. Avahi support disabled. =="
 avahi_disabled="== Avahi support disabled. =="
 vdpau_not_found="== Could not find libvdpau. VDPAU support disabled. =="
@@ -198,6 +201,11 @@ AC_ARG_ENABLE([mid],
                [enable MID support (default is no)])],
             [use_mid=$enableval],
             [use_mid=no])
+AC_ARG_ENABLE([hal],
+             [AS_HELP_STRING([--disable-hal],
+                [disable HAL support (default is enabled if hal and hal-storage is found)])],
+             [use_hal=$enableval],
+             [use_hal=yes])
 AC_ARG_ENABLE([avahi],
              [AS_HELP_STRING([--disable-avahi],
                 [disable Avahi support (default is enabled if libavahi-common and libavahi-client is found)])],
@@ -468,14 +476,8 @@ else
   PKG_CHECK_MODULES([DBUS],         [dbus-1],
                     [INCLUDES+=" $DBUS_CFLAGS"; LIBS+=" $DBUS_LIBS"],
                     AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([HAL_STORAGE],  [hal-storage],
-                    [INCLUDES+=" $HAL_STORAGE_CFLAGS"; LIBS+=" $HAL_STORAGE_LIBS"], 
-                    AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([SDL],          [sdl],
                     [INCLUDES+=" $SDL_CFLAGS"; LIBS+=" $SDL_LIBS"],
-                    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([HAL],          [hal],
-                    [INCLUDES+=" $HAL_CFLAGS"; LIBS+=" $HAL_LIBS"],
                     AC_MSG_ERROR($missing_library))
 fi
 
@@ -531,6 +533,26 @@ else
       use_faac=no;AC_MSG_RESULT($faac_not_found))
   else
     AC_MSG_RESULT($faac_disabled)
+  fi
+fi
+
+# HAL
+if test "$host_vendor" = "apple" ; then
+  use_hal="no"
+  AC_MSG_RESULT($hal_disabled)
+else
+  if test "$use_hal" = "yes"; then
+    PKG_CHECK_MODULES([HAL],  [hal],
+                    [INCLUDES+=" $HAL_CFLAGS"; LIBS+=" $HAL_LIBS"],
+                    use_hal=no;AC_MSG_RESULT($hal_not_found))
+    PKG_CHECK_MODULES([HAL_STORAGE],  [hal-storage],
+                    [INCLUDES+=" $HAL_STORAGE_CFLAGS"; LIBS+=" $HAL_STORAGE_LIBS"],
+                    use_hal=no;AC_MSG_RESULT($halstorage_not_found))
+  else
+    AC_MSG_RESULT($hal_disabled)
+  fi
+  if test "$use_hal" = "yes"; then
+    AC_DEFINE([HAS_HAL], [1], [Define to 1 if you have HAL installed])
   fi
 fi
 
@@ -980,6 +1002,12 @@ if test "$use_pulse" = "yes"; then
   final_message="$final_message\n  PulseAudio:\tYes"
 else
   final_message="$final_message\n  PulseAudio:\tNo"
+fi
+
+if test "$use_hal" = "yes"; then
+  final_message="$final_message\n  HAL Support:\tYes"
+else
+  final_message="$final_message\n  HAL Support:\tNo"
 fi
 
 if test "$use_faac" = "yes"; then

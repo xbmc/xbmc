@@ -126,7 +126,6 @@
 #define HAS_AVAHI
 #endif
 #define HAS_LCD
-#define HAS_HAL
 #define HAS_DBUS
 #define HAS_DBUS_SERVER
 #define HAS_GL
