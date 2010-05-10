@@ -75,10 +75,10 @@ void CPowerManager::Initialize()
 #ifdef __APPLE__
   m_instance = new CCocoaPowerSyscall();
 #elif defined(_LINUX) && defined(HAS_DBUS)
-  if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
-    m_instance = new CConsoleDeviceKitPowerSyscall();
-  else if (CConsoleUPowerSyscall::HasDeviceConsoleKit())
+  if (CConsoleUPowerSyscall::HasDeviceConsoleKit())
     m_instance = new CConsoleUPowerSyscall();
+  else if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
+    m_instance = new CConsoleDeviceKitPowerSyscall();
 #ifdef HAS_HAL
   else
     m_instance = new CHALPowerSyscall();
