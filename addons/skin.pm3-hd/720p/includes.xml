@@ -7,7 +7,7 @@
 	<include file="Views3dCoverView.xml" />
 	<include file="ViewsAddonBrowser.xml" />
 
-	<constant name="FanartCrossfadeTime">600</constant>
+	<constant name="FanartCrossfadeTime">400</constant>
 	<constant name="IconCrossfadeTime">400</constant>
 
 	<include name="CommonBackground">
@@ -499,6 +499,22 @@
 		</control>
 	</include>
 	<include name="AllViewCommonPageControls">
+		<control type="scrollbar" id="61"> 
+			<posx>300</posx> 
+			<posy>630</posy> 
+			<width>970</width> 
+			<height>20</height> 
+			<texturesliderbackground border="2,2,2,2">scrollbar_bar_back.png</texturesliderbackground> 
+			<texturesliderbar border="16,2,16,2">scrollbar_bar-vertical.png</texturesliderbar> 
+			<texturesliderbarfocus border="16,2,16,2">scrollbar_bar_focus-vertical.png</texturesliderbarfocus> 
+			<textureslidernib>scrollbar_nib-vertical.png</textureslidernib> 
+			<textureslidernibfocus>scrollbar_nib-vertical.png</textureslidernibfocus> 
+			<onup>50</onup> 
+			<ondown>9000</ondown> 
+			<showonepage>false</showonepage> 
+			<orientation>horizontal</orientation> 
+			<visible>Control.IsVisible(57)</visible> 
+		</control>
 		<control type="scrollbar" id="60">
 			<posx>1255</posx>
 			<posy>130</posy>
