@@ -8,6 +8,10 @@ DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 # Get the SVN revision from the changelog
 SVNVERSION ?= $(shell dpkg-parsechangelog | grep '^Version:' | grep svn | sed 's/.*svn\([[:digit:]]*\).*/\1/')
 
+# Set this variable to yes for release builds to disable debugging and enable
+# optimizations.
+XBMC_RELEASE ?= no
+
 # If not set already, try to set from debian/svnrevision
 ifeq (,$(SVNVERSION))
 	SVNVERSION = $(shell cat debian/svnrevision 2>/dev/null)
@@ -15,18 +19,26 @@ endif
 
 # List of options to pass to configure. Can be overridden.
 XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
-	--build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr \
-	--enable-optimizations --enable-gl --enable-vdpau \
-	--disable-profiling --enable-joystick --enable-xrandr \
-	--enable-goom --disable-ccache --enable-pulse --enable-avahi \
-	--enable-debug
+  --build=$(DEB_BUILD_GNU_TYPE) \
+  --prefix=/usr --docdir=/usr/share/doc/xbmc \
+  --enable-gl --enable-vdpau --disable-vaapi --disable-vdadecoder \
+  --disable-profiling --enable-joystick --enable-xrandr --disable-ccache \
+  --enable-pulse --disable-mid --enable-avahi --disable-asap-codec \
+  --enable-webserver --disable-libdts --disable-liba52
+
+# Whether we're building for release or not
+ifeq (yes,$(XBMC_RELEASE))
+  XBMC_CONFIG_OPTIONS += --disable-debug --enable-optimizations
+else
+  XBMC_CONFIG_OPTIONS += --enable-debug --disable-optimizations
+endif
 
 # Ubuntu or Debian specific options
 ifeq (Ubuntu,$(shell lsb_release -is))
-  XBMC_CONFIG_OPTIONS += --enable-faac
+  XBMC_CONFIG_OPTIONS += --enable-faac --enable-crystalhd
 else
   XBMC_CONFIG_OPTIONS += --enable-external-libraries --disable-dvdcss \
-	--disable-non-free
+    --disable-non-free
 endif
 
 # Add the SVN revision if we could determine the svn revision
@@ -38,14 +50,15 @@ endif
 XBMC_CONFIG_OPTIONS += CFLAGS="$(DEB_CFLAGS)" CXXFLAGS="$(DEB_CXXFLAGS)"
 
 # Input files used for generating other files
-INPUT_FILES = debian/control.in \
+INPUT_FILES = debian/control.in
 
 %:
-	dh $@
+	dh $@ --parallel
 
 # Target for generating control files
 .PHONY: debian/var_info
 %.in: debian/var_info
+	@echo "Generating $$(echo $@ | sed 's/\.in$$//') from $@"
 	perl -p \
 	-e 's{#BUILD_DEPENDS#}{qx(sh debian/var_info BUILD_DEPENDS)}ge;' \
 	-e 's{#LIBCURL_DEPENDS#}{qx(sh debian/var_info LIBCURL_DEPENDS)}ge;' \
@@ -60,9 +73,11 @@ override_dh_auto_configure: configure
 	./configure $(XBMC_CONFIG_OPTIONS)
 
 override_dh_auto_install:
-	$(MAKE) install install-livedatas prefix=$(CURDIR)/debian/tmp/usr
+	$(MAKE) install install-livedatas DESTDIR=$(CURDIR)/debian/tmp
 	install -D -m 0644 $(CURDIR)/tools/XBMCLive/xbmc-live.conf \
 	    $(CURDIR)/debian/tmp/etc/init/xbmc-live.conf
+	$(MAKE) eventclients DESTDIR=$(CURDIR)/debian/tmp \
+		WII_EXTRA_OPTS=-DCWIID_OLD
 	find "debian/tmp/usr/share/xbmc" -regextype posix-extended \
 		-type f -iregex \
 		".*python24\.zip|.*\.so|.*\.vis|.*\.xbs|.*xbmc\.bin|.*xbmc-xrandr" | \
@@ -71,21 +86,13 @@ override_dh_auto_install:
 		install -D "$$FILE" "$$NEW_LOCATION"; \
 		rm "$$FILE"; \
 		done
-	$(MAKE) eventclients prefix=$(CURDIR)/debian/tmp/usr \
-		installdir=/usr WII_EXTRA_OPTS=-DCWIID_OLD
-	mkdir -p $(CURDIR)/debian/tmp/usr/share/applications \
-		$(CURDIR)/debian/tmp/usr/share/pixmaps
-	cp $(CURDIR)/tools/Linux/xbmc.png \
-		$(CURDIR)/debian/tmp/usr/share/pixmaps/
-	cp $(CURDIR)/tools/Linux/xbmc.desktop \
-		$(CURDIR)/debian/tmp/usr/share/applications/
 
 override_dh_install:
 	dh_install --sourcedir=$(CURDIR)/debian/tmp -XLICENCE \
-		-XLiberationSans-Regular.ttf -XLicence.txt -XLicense.txt
-	# XBMC WEB POC
-	dh_install -pxbmc-web ../../web/poc_jsonrpc \
-		usr/share/xbmc/web
+		-XLicence.txt -XLicense.txt -XLiberationSans-Regular.ttf \
+		-XDejaVuSans.ttf -XDejaVuSans-Bold.ttf
+	# Delete skins from xbmc-data package
+	rm -rf debian/xbmc-data/usr/share/xbmc/addons/skin.*
 
 override_dh_link:
 	dh_link
@@ -105,5 +112,8 @@ override_dh_makeshlibs:
 	# postinst/postrm scripts to call ldconfig
 	dh_makeshlibs -n
 
-override_dh_installdocs:
-	dh_installdocs
+override_dh_gencontrol:
+	dh_gencontrol
+	# Need to manually add dependency for libcurl
+	sed "s/^Depends:.*$$/&, $$(sh debian/var_info LIBCURL_DEPENDS)/" \
+		-i "debian/xbmc-bin/DEBIAN/control"

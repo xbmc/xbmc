@@ -1,8 +1,8 @@
-xbmc (1:9.11~svn25756.rc1~deb1-1) experimental; urgency=low
+xbmc (1:10.05~svn29959+fhs~deb1-1) unstable; urgency=low
 
   * Package XBMC for Debian. (Closes: #469397)
     (LP: #307162)
-  * Start using an epoch for use better package versioning.
+  * Start using an epoch for use of better package versioning.
   * Add Debian Multimedia team to Maintainers field.
   * Add Ouattara and myself to Uploaders field.
   * Add DM-Upload-Allowed: yes field.
@@ -10,7 +10,7 @@ xbmc (1:9.11~svn25756.rc1~deb1-1) experimental; urgency=low
   * Switch to quilt.
   * Remove unused patches.
   * Completely rewrite debian/rules to take advantage of debhelper 7 and quilt.
-  * Bump to Standards-Version 3.8.3.
+  * Bump to Standards-Version 3.8.4.
   * Changed Architecture field for arch-indep packages to 'all'.
   * Included powerpc and ppc64 for binary packages.
   * Use ${shlibs:Depends} for all binary packages.
@@ -32,7 +32,6 @@ xbmc (1:9.11~svn25756.rc1~deb1-1) experimental; urgency=low
   * Split xmbc-common into xbmc-bin for binary data and xbmc-data for
     arch-independent data. This is done to save space in the Debian archive.
   * Add Provides, Replaces, and Conflicts field in xbmc-data for xbmc-common.
-  * Placing packages into non-free because of various non-DFSG licensed code
   * being used in XBMC.
   * Add patch to change Provides field in init script to reflect script name
     for xbmc-live.
@@ -57,8 +56,9 @@ xbmc (1:9.11~svn25756.rc1~deb1-1) experimental; urgency=low
     + Create a symlink to LiberationSans-Regular.ttf.
   * Add Suggests of mesa-utils and x11-utils for use of glxinfo and xdpyinfo.
   * Convert to source format 3.0 (quilt).
+  * Support parallel builds.
 
- -- Andres Mejia <mcitadel@gmail.com>  Tue, 15 Dec 2009 19:23:53 -0500
+ -- Andres Mejia <mcitadel@gmail.com>  Sun, 09 May 2010 16:37:52 -0400
 
 xbmc (9.04.1.0.20670-jaunty1) jaunty; urgency=low
 

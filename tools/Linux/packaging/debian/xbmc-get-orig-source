@@ -6,9 +6,9 @@
 # Common variables used to ease maintenance of this script
 XBMC_TARBALL=""
 XBMC_TARBALL_CHECKSUM=""
-SVN_REVISION="25756"
-XBMC_VERSION="9.11~svn$SVN_REVISION.rc1~deb1"
-XBMC_SVN_URL="http://xbmc.svn.sourceforge.net/svnroot/xbmc/tags/Camelot_rc1"
+SVN_REVISION="29959"
+XBMC_VERSION="10.05~svn$SVN_REVISION~deb1"
+XBMC_SVN_URL="http://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk"
 
 USAGE="\n\
 This script is used to generate the orig tarball used in building\n\
@@ -37,21 +37,29 @@ make_current_tarball() {
     # We do an export from svn trunk
     svn export -r$SVN_REVISION $XBMC_SVN_URL xbmc-$XBMC_VERSION
 
-    # Remove libdvdcss
-    echo "Remove libdvdcss"
-    rm -rf xbmc-$XBMC_VERSION/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
-
-    # Remove some empty directories and its empty subdirectories
-    echo "Remove empty directories and its empty subdirectories"
-    rm -rf xbmc-$XBMC_VERSION/xbmc/cores/dvdplayer/Codecs/libDVDCSS
-    rm -rf xbmc-$XBMC_VERSION/xbmc/cores/dvdplayer/Codecs/libdvdnav
-
-    # Run bootstrap and remove cache directories
+    # Run bootstrap
     cd xbmc-$XBMC_VERSION
     ./bootstrap
-    rm -rf autom4te.cache
-    rm -rf xbmc/lib/libass/autom4te.cache
     cd ..
+
+    # Remove libdvdcss
+    echo "Removing libdvdcss"
+    rm -rf xbmc-$XBMC_VERSION/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
+
+    # Remove empty directories
+    echo "Removing empty directories"
+    find xbmc-$XBMC_VERSION -type d -empty -delete
+
+    # Remove temp files and other cruft from source tarball
+    # The find command snippet here was taken from debhelper's dh_clean command
+    echo "Removing temp files and other cruft from source tarball"
+    find xbmc-$XBMC_VERSION \( \( -type f -a \
+        \( -name '#*#' -o -name '.*~' -o -name '*~' -o -name DEADJOE \
+        -o -name '*.orig' -o -name '*.rej' -o -name '*.bak' \
+        -o -name '.*.orig' -o -name .*.rej -o -name '.SUMS' \
+        -o -name TAGS -o \( -path '*/.deps/*' -a -name '*.P' \) \
+        \) -exec rm -f "{}" \; \) -o \
+        \( -type d -a -name autom4te.cache -prune -exec rm -rf "{}" \; \) \)
 
     # Create the tarball
     echo "Create orig tarball"

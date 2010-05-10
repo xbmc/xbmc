@@ -7,6 +7,4 @@ the orig tarball used in creating XBMC packages for Debian.
 
 Also, the upstream source version is appended with '~debN' where 'N' is some
 integer. This is done to mark that the XBMC source in Debian is modified from
-upstream. Note that we do not use '~dfsgN' or something similar since there
-is currently code in XBMC that does not meet the guidelines of the open source
-definition.
+upstream.
