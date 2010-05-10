@@ -9,11 +9,17 @@
 			<visible>Control.HasFocus(50) | Control.HasFocus(100)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="image">
-				<posx>445</posx>
+				<posx>455</posx>
 				<posy>40</posy>
-				<width>390</width>
+				<width>370</width>
 				<height>400</height>
-				<colordiffuse>BBFFFFFF</colordiffuse>
+				<texture>black-back.png</texture>
+			</control>
+			<control type="image">
+				<posx>455</posx>
+				<posy>40</posy>
+				<width>370</width>
+				<height>400</height>
 				<texture>black-back.png</texture>
 			</control>
 			<control type="group">
