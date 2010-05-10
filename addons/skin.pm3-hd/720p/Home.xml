@@ -24,7 +24,7 @@
 			<imagepath background="true">$INFO[Container(9000).ListItem.Icon]</imagepath>
 			<timeperimage>7000</timeperimage>
 			<randomize>true</randomize>
-			<fadetime>1000</fadetime>
+			<fadetime>FanartCrossfadeTime</fadetime>
 			<visible>!Player.HasMedia</visible>
 		</control>
 		<control type="image">
