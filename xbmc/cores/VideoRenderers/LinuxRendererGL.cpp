@@ -38,6 +38,8 @@
 #include "VideoShaders/VideoFilterShader.h"
 #include "WindowingFactory.h"
 #include "Texture.h"
+#include "../dvdplayer/Codecs/DllSwScale.h"
+#include "../dvdplayer/Codecs/DllAvCodec.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
@@ -161,6 +163,10 @@ CLinuxRendererGL::CLinuxRendererGL()
 #endif
 
   m_pboused = false;
+
+  m_dllAvUtil = new DllAvUtil;
+  m_dllAvCodec = new DllAvCodec;
+  m_dllSwScale = new DllSwScale;
 }
 
 CLinuxRendererGL::~CLinuxRendererGL()
@@ -188,6 +194,10 @@ CLinuxRendererGL::~CLinuxRendererGL()
     delete m_pYUVShader;
     m_pYUVShader = NULL;
   }
+
+  delete m_dllSwScale;
+  delete m_dllAvCodec;
+  delete m_dllAvUtil;
 }
 
 void CLinuxRendererGL::ManageTextures()
@@ -537,15 +547,15 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
       m_rgbBuffer = new BYTE[m_rgbBufferSize];
     }
 
-    struct SwsContext *context = m_dllSwScale.sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
+    struct SwsContext *context = m_dllSwScale->sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
                                                              im->width, im->height, PIX_FMT_BGRA,
                                                              SWS_FAST_BILINEAR, NULL, NULL, NULL);
     uint8_t *src[] = { im->plane[0], im->plane[1], im->plane[2], 0 };
     int     srcStride[] = { im->stride[0], im->stride[1], im->stride[2], 0 };
     uint8_t *dst[] = { m_rgbBuffer, 0, 0, 0 };
     int     dstStride[] = { m_sourceWidth*4, 0, 0, 0 };
-    m_dllSwScale.sws_scale(context, src, srcStride, 0, im->height, dst, dstStride);
-    m_dllSwScale.sws_freeContext(context);
+    m_dllSwScale->sws_scale(context, src, srcStride, 0, im->height, dst, dstStride);
+    m_dllSwScale->sws_freeContext(context);
     SetEvent(m_eventTexturesDone[source]);
   }
   else if (IsSoftwareUpscaling()) // FIXME: s/w upscaling + RENDER_SW => broken
@@ -565,11 +575,11 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
     default: break;
     }
 
-    struct SwsContext *ctx = m_dllSwScale.sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
+    struct SwsContext *ctx = m_dllSwScale->sws_getContext(im->width, im->height, PIX_FMT_YUV420P,
                                                          m_upscalingWidth, m_upscalingHeight, PIX_FMT_YUV420P,
                                                          algorithm, NULL, NULL, NULL);
-    m_dllSwScale.sws_scale(ctx, src, srcStride, 0, im->height, dst, dstStride);
-    m_dllSwScale.sws_freeContext(ctx);
+    m_dllSwScale->sws_scale(ctx, src, srcStride, 0, im->height, dst, dstStride);
+    m_dllSwScale->sws_freeContext(ctx);
 
     im = &m_imScaled;
     im->flags = IMAGE_FLAG_READY;
@@ -914,13 +924,13 @@ unsigned int CLinuxRendererGL::PreInit()
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
 
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
+  if (!m_dllAvUtil->Load() || !m_dllAvCodec->Load() || !m_dllSwScale->Load())
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
 
   #if (! defined USE_EXTERNAL_FFMPEG)
-    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+    m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
   #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
-    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+    m_dllSwScale->sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
   #endif
 
   m_pboused = g_guiSettings.GetBool("videoplayer.usepbo");

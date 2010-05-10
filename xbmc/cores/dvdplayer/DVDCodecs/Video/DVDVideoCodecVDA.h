@@ -77,7 +77,6 @@ protected:
   DllAvFormat       *m_dllAvFormat;
 
   DllSwScale        *m_dllSwScale;
-  struct SwsContext *m_swcontext;
   DVDVideoPicture   m_videobuffer;
 };
 
