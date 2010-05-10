@@ -137,7 +137,8 @@ DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh \
         autom4te.cache config.h.in~ \
         xbmc/lib/libPython/Python/Include/pyconfig.h \
         xbmc/lib/libPython/Python/configure.lineno \
-        xbmc/lib/libPython/Python/libpython2.4.so.1.0
+        xbmc/lib/libPython/Python/libpython2.4.so.1.0 \
+        system/libcpluff-$(ARCH).so
 
 all : Makefile externals xbmc.bin xbmc-xrandr skins
 
@@ -520,7 +521,7 @@ install-datas: install-scripts
 	@echo "Done!"
 	@echo "Copying system files to $(DESTDIR)$(datarootdir)/xbmc"
 	@# Arch independent files
-	@find addons language media scripts sounds userdata system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find addons language media scripts sounds userdata system -regextype posix-extended -type f -not -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Icons and links
 	@mkdir -p $(DESTDIR)$(datarootdir)/applications $(DESTDIR)$(datarootdir)/pixmaps
 	@cp -a tools/Linux/xbmc.png $(DESTDIR)$(datarootdir)/pixmaps/
