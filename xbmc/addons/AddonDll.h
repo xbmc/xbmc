@@ -144,6 +144,20 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
     CLog::Log(LOGNOTICE, "ADDON: Loaded virtual child addon %s", strFileName.c_str());
   }
 
+  /* Check if lib being loaded exists, else check in XBMC binary location */
+  if (!CFile::Exists(strFileName))
+  {
+    CStdString temp = CSpecialProtocol::TranslatePath("special://xbmc/");
+    CStdString tempbin = CSpecialProtocol::TranslatePath("special://xbmcbin/");
+    strFileName.erase(0, temp.size());
+    strFileName = tempbin + strFileName;
+    if (!CFile::Exists(strFileName))
+    {
+      CLog::Log(LOGERROR, "ADDON: Could not locate %s", LibName().c_str());
+      return false;
+    }
+  }
+
   /* Load the Dll */
   m_pDll = new TheDll;
   m_pDll->SetFile(strFileName);
