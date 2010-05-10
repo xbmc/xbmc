@@ -1,4 +1,4 @@
-xbmc (1:10.05~svn29959+fhs~deb1-1) unstable; urgency=low
+xbmc (1:10.05~svn29978~deb1-1) unstable; urgency=low
 
   * Package XBMC for Debian. (Closes: #469397)
     (LP: #307162)

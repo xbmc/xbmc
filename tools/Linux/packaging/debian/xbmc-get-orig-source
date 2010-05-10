@@ -6,7 +6,7 @@
 # Common variables used to ease maintenance of this script
 XBMC_TARBALL=""
 XBMC_TARBALL_CHECKSUM=""
-SVN_REVISION="29959"
+SVN_REVISION="29978"
 XBMC_VERSION="10.05~svn$SVN_REVISION~deb1"
 XBMC_SVN_URL="http://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk"
 
