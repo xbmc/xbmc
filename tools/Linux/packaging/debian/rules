@@ -67,6 +67,8 @@ INPUT_FILES = debian/control.in
 
 override_dh_clean:
 	dh_clean
+	find . -name config.status -o -name config.cache -o -name config.log \
+		-exec rm -f "{}" \;
 	debian/rules $(INPUT_FILES)
 
 override_dh_auto_configure: configure
