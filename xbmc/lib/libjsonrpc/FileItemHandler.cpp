@@ -188,7 +188,6 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
   if (param["file"].isString())
   {
     CStdString file = param["file"].asString();
-    printf("adding %s\n", file.c_str());
     CFileItemPtr item = CFileItemPtr(new CFileItem(file, CUtil::HasSlashAtEnd(file)));
     list.Add(item);
   }
