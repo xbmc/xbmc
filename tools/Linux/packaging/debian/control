@@ -1,5 +1,5 @@
 Source: xbmc
-Section: non-free/video
+Section: video
 Priority: optional
 Maintainer: Andres Mejia <mcitadel@gmail.com>
 Uploaders: Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com>
@@ -12,7 +12,7 @@ Build-Depends: debhelper (>= 7.0.50), python-support, cmake,
  libmysqlclient-dev, libasound-dev, libpng12-dev | libpng-dev, libpcre3-dev,
  liblzo2-dev, libcdio-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev,
  libenca-dev, libjasper-dev, libxt-dev, libxtst-dev, libxmu-dev,
- libxinerama-dev, libcurl4-gnutls-dev | libcurl-dev, libdbus-1-dev,
+ libxinerama-dev, libcurl4-openssl-dev | libcurl-dev, libdbus-1-dev,
  libhal-storage-dev, libhal-dev, libpulse-dev, libavahi-common-dev,
  libavahi-client-dev, libxrandr-dev, libavcodec-dev, libavformat-dev,
  libavutil-dev, libpostproc-dev, libswscale-dev, liba52-dev, libdts-dev,
@@ -21,8 +21,8 @@ Build-Depends: debhelper (>= 7.0.50), python-support, cmake,
  zlib1g-dev, libmms-dev, libsmbclient-dev, libfaad-dev, libiso9660-dev,
  libssl-dev, lsb-release, libvdpau-dev | nvidia-190-libvdpau-dev |
  nvidia-185-libvdpau-dev | nvidia-180-libvdpau-dev, libmicrohttpd-dev,
- libmodplug-dev
-Standards-Version: 3.8.3
+ libmodplug-dev,
+Standards-Version: 3.8.4
 Homepage: http://xbmc.org/
 Vcs-Git: git://git.debian.org/git/collab-maint/xbmc.git
 Vcs-Browser: http://git.debian.org/?p=collab-maint/xbmc.git;a=summary
@@ -64,8 +64,8 @@ Depends: xbmc-standalone (= ${binary:Version}),
          ${python:Depends},
          python-apt,
          adduser,
-         whois,
          sudo,
+         whois,
          ${misc:Depends},
 Conflicts: kdm, gdm, xdm, wdm
 Description: XBMC Media Center (XBMC Live package)
@@ -94,10 +94,6 @@ Depends: xbmc-data (= ${binary:Version}),
          xbmc-skin-confluence (= ${binary:Version}) |
          xbmc-skin-pm3-hd (= ${binary:Version}),
          xbmc-web (= ${binary:Version}),
-         x11-common, 
-         xserver-xorg-core,
-         x11-xserver-utils,
-         xinit,
          ${misc:Depends}
 Suggests: xbmc-third-parties
 Description: XBMC Media Center (standalone program)
@@ -153,8 +149,8 @@ Description: XBMC Media Center (arch-independent data package)
  working XBMC.
 
 Package: xbmc-bin
-Architecture: i386 amd64 powerpc ppc64 
-Depends: libcurl3 (>= 7.16.2-1), ${shlibs:Depends},
+Architecture: i386 amd64 powerpc ppc64
+Depends: ${shlibs:Depends},
          ${misc:Depends}
 Provides: xbmc-common
 Replaces: xbmc-common
@@ -180,8 +176,8 @@ Description: XBMC Media Center (binary data package)
  This package contains all the binary data needed to have a working XBMC.
 
 Package: xbmc-dbg
-Architecture: i386 amd64 powerpc ppc64 
-Section: non-free/debug
+Architecture: i386 amd64 powerpc ppc64
+Section: debug
 Priority: extra
 Depends: xbmc-bin (= ${binary:Version}),
          ${misc:Depends}
@@ -233,6 +229,7 @@ Package: xbmc-skin-confluence
 Architecture: all
 Depends: xbmc-data (= ${binary:Version}),
          ttf-liberation,
+         ttf-dejavu-core,
          ${misc:Depends}
 Description: XBMC Media Center (Confluence skin)
  XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
@@ -330,7 +327,7 @@ Description: XBMC Media Center (Event Client Common package)
 
 Package: xbmc-eventclients-dev
 Architecture: all
-Section: non-free/libdevel
+Section: libdevel
 Depends: xbmc-eventclients-common (= ${binary:Version}),
          ${misc:Depends}
 Description: XBMC Media Center (Event Client Dev package)
@@ -354,7 +351,7 @@ Description: XBMC Media Center (Event Client Dev package)
  This is the Development package for XBMC Event Client.
 
 Package: xbmc-eventclients-wiiremote
-Architecture: i386 amd64 powerpc ppc64 
+Architecture: i386 amd64 powerpc ppc64
 Depends: xbmc-eventclients-common (= ${source:Version}),
          ${shlibs:Depends},
          ${misc:Depends}

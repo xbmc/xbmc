@@ -1,11 +1,11 @@
 Source: xbmc
-Section: non-free/video
+Section: video
 Priority: optional
 Maintainer: Andres Mejia <mcitadel@gmail.com>
 Uploaders: Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com>
 DM-Upload-Allowed: yes
 Build-Depends: #BUILD_DEPENDS#
-Standards-Version: 3.8.3
+Standards-Version: 3.8.4
 Homepage: http://xbmc.org/
 Vcs-Git: git://git.debian.org/git/collab-maint/xbmc.git
 Vcs-Browser: http://git.debian.org/?p=collab-maint/xbmc.git;a=summary
@@ -125,7 +125,7 @@ Description: XBMC Media Center (arch-independent data package)
 
 Package: xbmc-bin
 Architecture: i386 amd64 powerpc ppc64
-Depends: #LIBCURL_DEPENDS#, ${shlibs:Depends},
+Depends: ${shlibs:Depends},
          ${misc:Depends}
 Provides: xbmc-common
 Replaces: xbmc-common
@@ -152,7 +152,7 @@ Description: XBMC Media Center (binary data package)
 
 Package: xbmc-dbg
 Architecture: i386 amd64 powerpc ppc64
-Section: non-free/debug
+Section: debug
 Priority: extra
 Depends: xbmc-bin (= ${binary:Version}),
          ${misc:Depends}
@@ -204,6 +204,7 @@ Package: xbmc-skin-confluence
 Architecture: all
 Depends: xbmc-data (= ${binary:Version}),
          ttf-liberation,
+         ttf-dejavu-core,
          ${misc:Depends}
 Description: XBMC Media Center (Confluence skin)
  XBMC, recursive acronym for "XBMC Media Center", is an award winning free and
@@ -301,7 +302,7 @@ Description: XBMC Media Center (Event Client Common package)
 
 Package: xbmc-eventclients-dev
 Architecture: all
-Section: non-free/libdevel
+Section: libdevel
 Depends: xbmc-eventclients-common (= ${binary:Version}),
          ${misc:Depends}
 Description: XBMC Media Center (Event Client Dev package)
