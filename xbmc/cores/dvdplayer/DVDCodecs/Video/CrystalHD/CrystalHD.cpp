@@ -583,10 +583,15 @@ bool CMPCInputThread::h264_mp4toannexb_filter(BYTE* pData, int iSize, uint8_t **
   uint8_t   *buf = pData;
   uint32_t  buf_size = iSize;
   uint8_t   unit_type;
-  uint32_t  nal_size, cumul_size = 0;
+  int32_t nal_size;
+  uint32_t cumul_size = 0;
+  const uint8_t *buf_end = buf + buf_size;
 
   do
   {
+    if (buf + m_sps_pps_context.length_size > buf_end)
+      goto fail;
+
     if (m_sps_pps_context.length_size == 1)
       nal_size = buf[0];
     else if (m_sps_pps_context.length_size == 2)
@@ -596,6 +601,9 @@ bool CMPCInputThread::h264_mp4toannexb_filter(BYTE* pData, int iSize, uint8_t **
 
     buf += m_sps_pps_context.length_size;
     unit_type = *buf & 0x1f;
+
+    if (buf + nal_size > buf_end || nal_size < 0)
+      goto fail;
 
     // prepend only to the first type 5 NAL unit of an IDR picture
     if (m_sps_pps_context.first_idr && unit_type == 5)
@@ -616,6 +624,12 @@ bool CMPCInputThread::h264_mp4toannexb_filter(BYTE* pData, int iSize, uint8_t **
   } while (cumul_size < buf_size);
 
   return true;
+
+fail:
+  free(*poutbuf);
+  *poutbuf = NULL;
+  *poutbuf_size = 0;
+  return false;
 }
 
 void CMPCInputThread::ProcessH264(CMPCDecodeBuffer* pInput)
@@ -632,7 +646,7 @@ void CMPCInputThread::ProcessH264(CMPCDecodeBuffer* pInput)
     uint8_t *outbuf = NULL;
 
     h264_mp4toannexb_filter(demuxer_content, demuxer_bytes, &outbuf, &outbuf_size);
-    if (outbuf)
+    if (outbuf && (outbuf_size > 0))
     {
       annexbfiltered = true;
       demuxer_content = outbuf;
