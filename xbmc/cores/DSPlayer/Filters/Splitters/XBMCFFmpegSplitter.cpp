@@ -97,6 +97,7 @@ HRESULT CXBMCFFmpegSplitter::CreateOutputs(IAsyncReader* pAsyncReader)
   {
     CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
     CDSStreamInfo hint(*pStream, true);
+    
     CMediaType mt;
     vector<CMediaType> mts;
     mts.push_back(hint.mtype);
@@ -132,7 +133,6 @@ void CXBMCFFmpegSplitter::DemuxSeek(REFERENCE_TIME rt)
 bool CXBMCFFmpegSplitter::DemuxLoop()
 {
   HRESULT hr = S_OK;
-
   int nTracks = m_pDemuxer->GetNrOfStreams();
 
   vector<BOOL> fDiscontinuity;
@@ -162,6 +162,7 @@ bool CXBMCFFmpegSplitter::DemuxLoop()
       p->rtStart = m_rtCurrent;
     p->bSyncPoint = (pPacket->duration > 0) ? 1 : 0;
     
+    //TODO crashing with wmv
     p->rtStop = p->rtStart + ((pPacket->duration > 0) ? (pPacket->duration * 10) : 1);
     
     hr = DeliverPacket(p);

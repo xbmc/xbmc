@@ -58,11 +58,13 @@ void CDSStreamInfo::Clear()
 
   fpsscale = 0;
   fpsrate  = 0;
+  avgtimeperframe = 0;
   height   = 0;
   width    = 0;
   aspect   = 0.0;
   vfr      = false;
   stills   = false;
+  
 
   channels   = 0;
   samplerate = 0;
@@ -139,6 +141,7 @@ void CDSStreamInfo::Assign(const CDSStreamInfo& right, bool withextradata)
   // VIDEO
   fpsscale = right.fpsscale;
   fpsrate  = right.fpsrate;
+  avgtimeperframe   = right.avgtimeperframe;
   height   = right.height;
   width    = right.width;
   aspect   = right.aspect;
@@ -161,6 +164,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   mtype.InitMediaType();
   codec = right.codec;
   type = right.type;
+  RECT empty_tagrect = {0,0,0,0};
 
   if( withextradata && right.ExtraSize )
   {
@@ -175,16 +179,8 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   {
     const CDemuxStreamAudio *stream = static_cast<const CDemuxStreamAudio*>(&right);
     AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
-
-    
-    
-    
     //mtype.subtype = FOURCCMap(avstream->codec->codec_tag);
     //TODO convert audio codecid into wave format ex: ac3 is WAVE_FORMAT_DOLBY_AC3 0x2000
-    
-    
-    
-    
     mtype = g_GuidHelper.initAudioType(avstream->codec->codec_id);
     
     if (mtype.subtype == GUID_NULL)
@@ -196,20 +192,17 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     wvfmt->nSamplesPerSec= avstream->codec->sample_rate;
     
     wvfmt->wBitsPerSample= avstream->codec->bits_per_coded_sample;
+    
     wvfmt->nBlockAlign = (WORD)((wvfmt->nChannels * wvfmt->wBitsPerSample) / 8);// avstream->codec->block_align ? avstream->codec->block_align : 1;
     wvfmt->nAvgBytesPerSec= wvfmt->nSamplesPerSec * wvfmt->nBlockAlign;
-    //mtype.SetSampleSize(256000)
+    
     if (avstream->codec->extradata > 0)
     {
       wvfmt->cbSize = avstream->codec->extradata_size;
       memcpy(wvfmt + 1, avstream->codec->extradata, avstream->codec->extradata_size);
     }
-    mtype.SetSampleSize(channels * (bitrate / 8));
-
-    
-    //wvfmt->wFormatTag
-    //MPEGLAYER3WAVEFORMAT *
-    
+    //TODO Fix the sample size
+    mtype.SetSampleSize(256000);
     channels      = stream->iChannels;
     samplerate    = stream->iSampleRate;
     blockalign    = stream->iBlockAlign;
@@ -224,113 +217,118 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(&right);
     AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
     
-    /* FormatType */
-    /* VideoInfo */
+    /* FormatType status */
+    /* VideoInfo working*/
     /* VideoInfo2 */
     /* MPEGVideo */
-    /* MPEG2Video */
+    /* MPEG2Video working*/
     mtype = g_GuidHelper.initVideoType(avstream->codec->codec_id);
-    
-    //Most used type
-    if (1)//for (const FOURCC *fcc=fccs;*fcc;fcc++)
+    if (mtype.formattype == FORMAT_VideoInfo)
     {
-      if (mtype.subtype == FOURCCMap(FOURCC_AVC1))
-      {
-        MPEG2VIDEOINFO *mpeginfo = (MPEG2VIDEOINFO*)mtype.AllocFormatBuffer(FIELD_OFFSET(MPEG2VIDEOINFO, dwSequenceHeader) + avstream->codec->extradata_size - 7);
-        //VideoFps = 10000000.0 / AvgTimePerFrame;
-        mpeginfo->hdr.AvgTimePerFrame = (REFERENCE_TIME)(10000000 / (stream->iFpsRate / stream->iFpsScale));
-        //ff_h264_decode_seq_parameter_set from libavcodec is actually the best function to get those info
-        mpeginfo->hdr.dwBitErrorRate = 0;
-        
-        mpeginfo->hdr.dwBitRate = avstream->codec->bit_rate;
-        //mpeginfo->hdr.dwInterlaceFlags
-        RECT empty_tagrect = {0,0,0,0};
-        mpeginfo->hdr.rcSource = empty_tagrect;
-        mpeginfo->hdr.rcTarget = empty_tagrect;
-        
-        mpeginfo->hdr.dwPictAspectRatioX = (DWORD)stream->iWidth;
-        mpeginfo->hdr.dwPictAspectRatioY = (DWORD)stream->iHeight;
-        mpeginfo->hdr.bmiHeader.biSize = sizeof(mpeginfo->hdr.bmiHeader);
-        mpeginfo->hdr.bmiHeader.biWidth= stream->iWidth;
-        mpeginfo->hdr.bmiHeader.biHeight= stream->iHeight;
-        
-        mpeginfo->hdr.bmiHeader.biBitCount= 24;
-        mpeginfo->hdr.bmiHeader.biSizeImage = stream->iWidth * stream->iHeight * avstream->codec->bits_per_coded_sample / 8;
-        mpeginfo->hdr.bmiHeader.biCompression = mtype.subtype.Data1;
-        mpeginfo->hdr.bmiHeader.biPlanes = 1;
-        mpeginfo->hdr.bmiHeader.biClrUsed = 0;
-        mpeginfo->hdr.bmiHeader.biClrImportant = 0;
-        mpeginfo->hdr.bmiHeader.biYPelsPerMeter = 0;
-        mpeginfo->hdr.bmiHeader.biXPelsPerMeter = 0;
-        
-        //mtype.pbFormat =
-        //from ffmpeg full info
-        //ex: 01 64 00 1f ff e1 00 19 67 64 00 1f ac 34 e4 01 40 16 ec 04 40 00 00 fa 40 00 2e e0 23 c6 0c 64 80 01 00 05 68 ee b2 c8 b0
-        //from directshow
-        //ex: 00 19 67 64 00 1f ac 34  e4 01 40 16 ec 04 40 00 00 fa 40 00 2e e0 23 c6  0c 64 80 00 05 68 ee b2 c8 b0 
-        //based on those test the extradata from ffmpeg required for the mpeginfo header is starting at index 7
-        std::vector<BYTE> extravect;
-        extravect.resize(avstream->codec->extradata_size);
-        memcpy(&extravect.at(0), avstream->codec->extradata, avstream->codec->extradata_size);
+      mtype.bTemporalCompression = 0;
+      
+      mtype.bFixedSizeSamples = stream->bVFR ? 0 : 1; //hummm is it the right value???
 
-        mpeginfo->dwStartTimeCode = 0;// is there any case where it wouldnt be 0?????
-        mpeginfo->dwProfile = avstream->codec->profile;
-        mpeginfo->dwLevel = avstream->codec->level;
-        mpeginfo->dwFlags = (extravect.at(4) & 3) + 1;
-        //drop before 6 and the byte 33(no clue about why i have to remove this one)
-        extravect.erase(extravect.begin() + 33);
-        extravect.erase(extravect.begin(),extravect.begin() + 6);        
-        
-        mpeginfo->cbSequenceHeader = extravect.size();
-        memcpy(mpeginfo->dwSequenceHeader, &extravect.at(0) , extravect.size());
-        return;
-      }
-  
-    }
+      VIDEOINFOHEADER *pvi = (VIDEOINFOHEADER*)mtype.AllocFormatBuffer(sizeof(VIDEOINFOHEADER));
     
-    //typedef struct SPS in h264.h from ffmpeg source might have all info we need for the MPEG2VIDEOINFO
+    
+      //Still to be verified in real time but the mathematics make sense
+      // 23.97 fps = 417166;
+      //so fps = 10000000.0 / AvgTimePerFrame
+      //or 
+      //AvgTimePerFrame =  10000000 / fps
+      
+      pvi->AvgTimePerFrame = (REFERENCE_TIME)(10000000 / ((float)stream->iFpsRate / (float)stream->iFpsScale));
+      avgtimeperframe = pvi->AvgTimePerFrame;
+      pvi->dwBitErrorRate = 0;
+      
+      pvi->dwBitRate = avstream->codec->bit_rate;
+      pvi->rcSource = empty_tagrect;//Some codecs like wmv are setting that value to the video current value
+      pvi->rcTarget = empty_tagrect;
+      pvi->rcTarget.right = pvi->rcSource.right = stream->iWidth;
+      pvi->rcTarget.bottom = pvi->rcSource.bottom = stream->iHeight;
+      pvi->bmiHeader.biSize = sizeof(pvi->bmiHeader);
+      pvi->bmiHeader.biWidth= stream->iWidth;
+      pvi->bmiHeader.biHeight= stream->iHeight;
+      
+      pvi->bmiHeader.biBitCount= avstream->codec->bits_per_coded_sample;
+      pvi->bmiHeader.biSizeImage = stream->iWidth * stream->iHeight * avstream->codec->bits_per_coded_sample / 8;
+      pvi->bmiHeader.biCompression= stream->codec_fourcc;
+      //TOFIX The bitplanes is depending on the subtype
+      pvi->bmiHeader.biPlanes = 1;
+      pvi->bmiHeader.biClrUsed = 0;
+      pvi->bmiHeader.biClrImportant = 0;
+      pvi->bmiHeader.biYPelsPerMeter = 0;
+      pvi->bmiHeader.biXPelsPerMeter = 0;
+      
+      //This still need to be verified only tested xvid
+      mtype.subtype = MEDIATYPE_Video;
+      mtype.subtype.Data1 = pvi->bmiHeader.biCompression;
+    }
+    else if (mtype.formattype == FORMAT_MPEG2Video)
+    {
+      MPEG2VIDEOINFO *mpeginfo = (MPEG2VIDEOINFO*)mtype.AllocFormatBuffer(FIELD_OFFSET(MPEG2VIDEOINFO, dwSequenceHeader) + avstream->codec->extradata_size - 7);
+      //VideoFps = 10000000.0 / AvgTimePerFrame;
+      mpeginfo->hdr.AvgTimePerFrame = (REFERENCE_TIME)(10000000 / ((float)stream->iFpsRate / (float)stream->iFpsScale));
+      //ff_h264_decode_seq_parameter_set from libavcodec is actually the best function to get those info
+      mpeginfo->hdr.dwBitErrorRate = 0;
+      
+      mpeginfo->hdr.dwBitRate = avstream->codec->bit_rate;
+      //mpeginfo->hdr.dwInterlaceFlags
+      
+      mpeginfo->hdr.rcSource = empty_tagrect;
+      mpeginfo->hdr.rcTarget = empty_tagrect;
+      
+      mpeginfo->hdr.dwPictAspectRatioX = (DWORD)stream->iWidth;
+      mpeginfo->hdr.dwPictAspectRatioY = (DWORD)stream->iHeight;
+      mpeginfo->hdr.bmiHeader.biSize = sizeof(mpeginfo->hdr.bmiHeader);
+      mpeginfo->hdr.bmiHeader.biWidth= stream->iWidth;
+      mpeginfo->hdr.bmiHeader.biHeight= stream->iHeight;
+      
+      mpeginfo->hdr.bmiHeader.biBitCount= 24;
+      mpeginfo->hdr.bmiHeader.biSizeImage = stream->iWidth * stream->iHeight * avstream->codec->bits_per_coded_sample / 8;
+      mpeginfo->hdr.bmiHeader.biCompression = mtype.subtype.Data1;
+      mpeginfo->hdr.bmiHeader.biPlanes = 1;
+      mpeginfo->hdr.bmiHeader.biClrUsed = 0;
+      mpeginfo->hdr.bmiHeader.biClrImportant = 0;
+      mpeginfo->hdr.bmiHeader.biYPelsPerMeter = 0;
+      mpeginfo->hdr.bmiHeader.biXPelsPerMeter = 0;
+      
+      //mtype.pbFormat =
+      //from ffmpeg full info
+      //ex: 01 64 00 1f ff e1 00 19 67 64 00 1f ac 34 e4 01 40 16 ec 04 40 00 00 fa 40 00 2e e0 23 c6 0c 64 80 01 00 05 68 ee b2 c8 b0
+      //from directshow
+      //ex: 00 19 67 64 00 1f ac 34  e4 01 40 16 ec 04 40 00 00 fa 40 00 2e e0 23 c6  0c 64 80 00 05 68 ee b2 c8 b0 
+      //based on those test the extradata from ffmpeg required for the mpeginfo header is starting at index 7
+      //typedef struct SPS in h264.h from ffmpeg source might have all info we need for the MPEG2VIDEOINFO
+      std::vector<BYTE> extravect;
+      extravect.resize(avstream->codec->extradata_size);
+      memcpy(&extravect.at(0), avstream->codec->extradata, avstream->codec->extradata_size);
+
+      mpeginfo->dwStartTimeCode = 0;// is there any case where it wouldnt be 0?????
+      mpeginfo->dwProfile = avstream->codec->profile;
+      mpeginfo->dwLevel = avstream->codec->level;
+      mpeginfo->dwFlags = (extravect.at(4) & 3) + 1;
+      //drop before 6 and the byte 33(no clue about why i have to remove this one)
+      extravect.erase(extravect.begin() + 33);
+      extravect.erase(extravect.begin(),extravect.begin() + 6);      
+      
+      mpeginfo->cbSequenceHeader = extravect.size();
+      memcpy(mpeginfo->dwSequenceHeader, &extravect.at(0) , extravect.size());
+      return;
+    }
+  
+    
+    
     if (mtype.formattype == GUID_NULL)
     {
       mtype.formattype = FORMAT_VideoInfo;
     }
   
-    mtype.bTemporalCompression = 0;
     
-    mtype.bFixedSizeSamples = stream->bVFR ? 0 : 1; //hummm is it the right value???
 
-    VIDEOINFOHEADER *pvi = (VIDEOINFOHEADER*)mtype.AllocFormatBuffer(sizeof(VIDEOINFOHEADER));
   
   
-  //Still to be verified in real time but the mathematics make sense
-  // 23.97 fps = 417166;
-  //so fps = 10000000.0 / AvgTimePerFrame
-  //or 
-  //AvgTimePerFrame =  10000000 / fps 
-  pvi->AvgTimePerFrame = (REFERENCE_TIME)(10000000 / (stream->iFpsRate / stream->iFpsScale));
-  
-  pvi->dwBitErrorRate = 0;
-  
-  pvi->dwBitRate = avstream->codec->bit_rate;
-  pvi->bmiHeader.biSize = sizeof(pvi->bmiHeader);
-  pvi->bmiHeader.biWidth= stream->iWidth;
-  pvi->bmiHeader.biHeight= stream->iHeight;
-  
-  pvi->bmiHeader.biBitCount= avstream->codec->bits_per_coded_sample;
-  pvi->bmiHeader.biSizeImage = stream->iWidth * stream->iHeight * avstream->codec->bits_per_coded_sample / 8;
-  pvi->bmiHeader.biCompression= stream->codec_fourcc;
-  //TOFIX The bitplanes is depending on the subtype
-  pvi->bmiHeader.biPlanes = 1;
-  pvi->bmiHeader.biClrUsed = 0;
-  pvi->bmiHeader.biClrImportant = 0;
-  pvi->bmiHeader.biYPelsPerMeter = 0;
-  pvi->bmiHeader.biXPelsPerMeter = 0;
-  
-  //This still need to be verified only tested xvid
-  mtype.subtype = MEDIATYPE_Video;
-  mtype.subtype.Data1 = pvi->bmiHeader.biCompression;
-
-  mtype.SetFormat((PBYTE)pvi,sizeof(VIDEOINFOHEADER));
-  //Not sure if its really working but in case the other way dont work will try this one
   
  
       
