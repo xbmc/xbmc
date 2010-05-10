@@ -58,6 +58,7 @@ INPUT_FILES = debian/control.in
 # Target for generating control files
 .PHONY: debian/var_info
 %.in: debian/var_info
+	@echo "Generating $$(echo $@ | sed 's/\.in$$//') from $@"
 	perl -p \
 	-e 's{#BUILD_DEPENDS#}{qx(sh debian/var_info BUILD_DEPENDS)}ge;' \
 	-e 's{#LIBCURL_DEPENDS#}{qx(sh debian/var_info LIBCURL_DEPENDS)}ge;' \
