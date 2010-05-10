@@ -1042,7 +1042,7 @@ if ! test -n "$SVN_REV" -a "$SVN_REV" != "" ; then
   fi
   if test "$SVN_REV" = ""; then
     if test "$HAVE_GIT" = "yes"; then
-      SVN_REV=$(echo -n `sh gitrev.sh`)
+      SVN_REV=$(./gitrev.sh)
     fi
   fi
   if test "$SVN_REV" = ""; then
