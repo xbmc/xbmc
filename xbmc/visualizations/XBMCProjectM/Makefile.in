@@ -40,7 +40,10 @@ DISTCLEAN_FILES=	\
 	libprojectM/cmake_install.cmake \
 	libprojectM/config.inp \
 	libprojectM/libprojectM.pc \
-	../../../visualisations/projectM/
+	../../../addons/visualization.projectm/*.milk \
+	../../../addons/visualization.projectm/*.tga \
+	../../../addons/visualization.projectm/*.prjm
+
 
 include ../../../Makefile.include
 
