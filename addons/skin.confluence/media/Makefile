@@ -343,6 +343,6 @@ $(XBMCTEX): force
 	$(MAKE) -C ../../../tools/TexturePacker
 
 clean:
-	rm -f $(TARGET) gmon.out
+	rm -f $(TARGET)
 distclean: clean
 
