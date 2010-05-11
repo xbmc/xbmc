@@ -6,6 +6,8 @@ autoreconf -vif
 autoreconf -vif lib/cpluff
 autoreconf -vif xbmc/lib/libass
 autoreconf -vif xbmc/cores/dvdplayer/Codecs/libbdnav
+[ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss ] && \
+  autoreconf -vif xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
 
 echo "Please (re)run configure..."
 

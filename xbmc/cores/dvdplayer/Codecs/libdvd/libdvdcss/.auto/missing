@@ -1,10 +1,10 @@
 #! /bin/sh
 # Common stub for a few missing GNU programs while installing.
 
-scriptversion=2006-05-10.23
+scriptversion=2009-04-28.21; # UTC
 
-# Copyright (C) 1996, 1997, 1999, 2000, 2002, 2003, 2004, 2005, 2006
-#   Free Software Foundation, Inc.
+# Copyright (C) 1996, 1997, 1999, 2000, 2002, 2003, 2004, 2005, 2006,
+# 2008, 2009 Free Software Foundation, Inc.
 # Originally by Fran,cois Pinard <pinard@iro.umontreal.ca>, 1996.
 
 # This program is free software; you can redistribute it and/or modify
@@ -18,9 +18,7 @@ scriptversion=2006-05-10.23
 # GNU General Public License for more details.
 
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-# 02110-1301, USA.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # As a special exception to the GNU General Public License, if you
 # distribute this file as part of a program that contains a
@@ -89,6 +87,9 @@ Supported PROGRAM values:
   tar          try tar, gnutar, gtar, then tar without non-portable flags
   yacc         create \`y.tab.[ch]', if possible, from existing .[ch]
 
+Version suffixes to PROGRAM as well as the prefixes \`gnu-', \`gnu', and
+\`g' are ignored when checking the name.
+
 Send bug reports to <bug-automake@gnu.org>."
     exit $?
     ;;
@@ -106,15 +107,22 @@ Send bug reports to <bug-automake@gnu.org>."
 
 esac
 
+# normalize program name to check for.
+program=`echo "$1" | sed '
+  s/^gnu-//; t
+  s/^gnu//; t
+  s/^g//; t'`
+
 # Now exit if we have it, but it failed.  Also exit now if we
 # don't have it and --version was passed (most likely to detect
-# the program).
+# the program).  This is about non-GNU programs, so use $1 not
+# $program.
 case $1 in
-  lex|yacc)
+  lex*|yacc*)
     # Not GNU programs, they don't have --version.
     ;;
 
-  tar)
+  tar*)
     if test -n "$run"; then
        echo 1>&2 "ERROR: \`tar' requires --run"
        exit 1
@@ -138,7 +146,7 @@ esac
 
 # If it does not exist, or fails to run (possibly an outdated version),
 # try to emulate it.
-case $1 in
+case $program in
   aclocal*)
     echo 1>&2 "\
 WARNING: \`$1' is $msg.  You should only need it if
@@ -148,7 +156,7 @@ WARNING: \`$1' is $msg.  You should only need it if
     touch aclocal.m4
     ;;
 
-  autoconf)
+  autoconf*)
     echo 1>&2 "\
 WARNING: \`$1' is $msg.  You should only need it if
          you modified \`${configure_ac}'.  You might want to install the
@@ -157,7 +165,7 @@ WARNING: \`$1' is $msg.  You should only need it if
     touch configure
     ;;
 
-  autoheader)
+  autoheader*)
     echo 1>&2 "\
 WARNING: \`$1' is $msg.  You should only need it if
          you modified \`acconfig.h' or \`${configure_ac}'.  You might want
@@ -187,7 +195,7 @@ WARNING: \`$1' is $msg.  You should only need it if
 	   while read f; do touch "$f"; done
     ;;
 
-  autom4te)
+  autom4te*)
     echo 1>&2 "\
 WARNING: \`$1' is needed, but is $msg.
          You might have modified some files without having the
@@ -210,7 +218,7 @@ WARNING: \`$1' is needed, but is $msg.
     fi
     ;;
 
-  bison|yacc)
+  bison*|yacc*)
     echo 1>&2 "\
 WARNING: \`$1' $msg.  You should only need it if
          you modified a \`.y' file.  You may need the \`Bison' package
@@ -240,7 +248,7 @@ WARNING: \`$1' $msg.  You should only need it if
     fi
     ;;
 
-  lex|flex)
+  lex*|flex*)
     echo 1>&2 "\
 WARNING: \`$1' is $msg.  You should only need it if
          you modified a \`.l' file.  You may need the \`Flex' package
@@ -263,7 +271,7 @@ WARNING: \`$1' is $msg.  You should only need it if
     fi
     ;;
 
-  help2man)
+  help2man*)
     echo 1>&2 "\
 WARNING: \`$1' is $msg.  You should only need it if
 	 you modified a dependency of a manual page.  You may need the
@@ -277,11 +285,11 @@ WARNING: \`$1' is $msg.  You should only need it if
     else
 	test -z "$file" || exec >$file
 	echo ".ab help2man is required to generate this page"
-	exit 1
+	exit $?
     fi
     ;;
 
-  makeinfo)
+  makeinfo*)
     echo 1>&2 "\
 WARNING: \`$1' is $msg.  You should only need it if
          you modified a \`.texi' or \`.texinfo' file, or any other file
@@ -310,7 +318,7 @@ WARNING: \`$1' is $msg.  You should only need it if
     touch $file
     ;;
 
-  tar)
+  tar*)
     shift
 
     # We have already tried tar in the generic part.
@@ -363,5 +371,6 @@ exit 0
 # eval: (add-hook 'write-file-hooks 'time-stamp)
 # time-stamp-start: "scriptversion="
 # time-stamp-format: "%:y-%02m-%02d.%02H"
-# time-stamp-end: "$"
+# time-stamp-time-zone: "UTC"
+# time-stamp-end: "; # UTC"
 # End:
