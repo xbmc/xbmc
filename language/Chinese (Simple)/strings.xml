@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 29913 -->
+<!--Based on english strings version 29996 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -282,7 +282,7 @@
   <string id="336">帧数转换</string>
   <string id="337">音频输出</string>
   <string id="338">模拟</string>
-  <string id="339">数码</string>
+  <string id="339">光纤/同轴</string>
   <string id="340">群星</string>
   <string id="341">播放光盘</string>
   <string id="342">电影</string>
@@ -360,6 +360,7 @@
   <string id="417">显示：大图标</string>
   <string id="418">低</string>
   <string id="419">高</string>
+  <string id="420">HDMI</string>
 
   <string id="422">删除专辑信息</string>
   <string id="423">删除 CD 信息</string>
