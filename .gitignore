@@ -341,11 +341,40 @@ config.log
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/config.mak
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/config.h
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/config.status
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/Makefile.in
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/aclocal.m4
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/config.guess
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/config.h.in
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/config.sub
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/configure
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/depcomp
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/doc/Makefile.in
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/examples/Makefile.in
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/install-sh
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/ltmain.sh
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/m4/Makefile.in
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/misc/Makefile.in
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/missing
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/src/Makefile.in
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/src/vm/Makefile.in
 
 # /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/config.h
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/obj
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/config.mak
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/Makefile.in
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/aclocal.m4
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/config.guess
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/config.h.in
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/config.sub
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/configure
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/depcomp
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/install-sh
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/ltmain.sh
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/m4/Makefile.in
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/misc/Makefile.in
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/missing
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/src/Makefile.in
 
 # /xbmc/cores/dvdplayer/Codecs/libfaad2/
 /xbmc/cores/dvdplayer/Codecs/libfaad2/config.log
