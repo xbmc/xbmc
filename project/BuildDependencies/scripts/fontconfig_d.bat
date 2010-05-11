@@ -4,7 +4,7 @@ rmdir tmp /S /Q
 md tmp
 cd tmp
 
-echo Downloading fontconfig & freetype6.dll ...
+echo Downloading fontconfig and freetype6.dll ...
 echo ------------------------------------------
 %WGET% "http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/fontconfig-dev_2.8.0-2_win32.zip"
 %WGET% "http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/fontconfig_2.8.0-2_win32.zip"
