@@ -62,6 +62,12 @@
  *      2 bytes - PPS length 
  *      PPS length bytes - PPS NAL unit 
  *  }
+ 
+ how to detect the interlacing used on an existing stream:
+- progressive is signalled by setting frame_mbs_only_flag: 1 in the SPS
+- interlaced is signalled by setting frame_mbs_only_flag: 0 in the SPS and field_pic_flag: 1 on all frames
+- paff is signalled by setting frame_mbs_only_flag: 0 in the SPS and field_pic_flag: 1 on all frames that get interlaced and field_pic_flag: 0 on all frames that get progressive
+- mbaff is signalled by setting frame_mbs_only_flag: 0 and mb_adaptive_frame_field_flag: 1 in the SPS and field_pic_flag: 0 on the frames (field_pic_flag: 1 would indicate a normal interlaced frame)
 */
 
 // missing in 10.4/10.5 SDKs.
