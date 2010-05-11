@@ -30,6 +30,7 @@
 #include "EncoderLame.h"
 #include "EncoderWav.h"
 #include "EncoderVorbis.h"
+#include "EncoderFFmpeg.h"
 #include "FileSystem/CDDADirectory.h"
 #include "MusicInfoTagLoaderFactory.h"
 #include "utils/LabelFormatter.h"
