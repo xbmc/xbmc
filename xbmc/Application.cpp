@@ -2557,10 +2557,13 @@ bool CApplication::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_TOGGLE_DIGITAL_ANALOG)
   {
-    if(g_guiSettings.GetInt("audiooutput.mode")==AUDIO_DIGITAL)
-      g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG);
-    else
-      g_guiSettings.SetInt("audiooutput.mode", AUDIO_DIGITAL);
+    switch(g_guiSettings.GetInt("audiooutput.mode"))
+    {
+      case AUDIO_ANALOG: g_guiSettings.SetInt("audiooutput.mode", AUDIO_IEC958); break;
+      case AUDIO_IEC958: g_guiSettings.SetInt("audiooutput.mode", AUDIO_HDMI  ); break;
+      case AUDIO_HDMI  : g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG); break;
+    }
+
     g_application.Restart();
     if (g_windowManager.GetActiveWindow() == WINDOW_SETTINGS_SYSTEM)
     {

@@ -762,7 +762,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
              strSetting.Equals("audiooutput.mp3passthrough"))
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
+      if (pControl) pControl->SetEnabled(AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));
     }
     else if (strSetting.Equals("musicplayer.crossfade"))
     {
@@ -1017,7 +1017,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("audiooutput.custompassthrough"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL)
+      if (AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")))
       {
         if (pControl) pControl->SetEnabled(g_guiSettings.GetString("audiooutput.passthroughdevice").Equals("custom"));
       }
