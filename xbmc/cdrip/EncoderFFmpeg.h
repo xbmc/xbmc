@@ -23,9 +23,8 @@
  */
 
 #include "Encoder.h"
-#include <stdio.h>
-#include "Codecs/DllAvCodec.h"
 #include "Codecs/DllAvFormat.h"
+#include "Codecs/DllAvCodec.h"
 
 class CEncoderFFmpeg : public CEncoder
 {
@@ -45,8 +44,10 @@ private:
   AVFormatContext  *m_Format;
   AVCodecContext   *m_CodecCtx;
   AVStream         *m_Stream;
+  AVPacket          m_Pkt;
   unsigned char     m_BCBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
   static int        MuxerReadPacket(void *opaque, uint8_t *buf, int buf_size);
+  void              SetTag(const CStdString tag, const CStdString value);
 
 
   unsigned int      m_NeededFrames;
