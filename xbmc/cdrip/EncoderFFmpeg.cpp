@@ -215,6 +215,9 @@ bool CEncoderFFmpeg::Close()
 
     /* write the trailer */
     m_dllAvFormat.av_write_trailer(m_Format);
+
+    FlushStream();
+    FileClose();
   }
 
   delete[] m_Buffer;

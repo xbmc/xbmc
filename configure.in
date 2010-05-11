@@ -1328,10 +1328,11 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-muxers \
       --enable-muxer=spdif \
       --enable-muxer=adts \
+      --enable-muxer=mp3 \
       --disable-encoders \
       --enable-encoder=ac3 \
       --enable-encoder=aac \
-      --enable-libmp3lame \
+      --enable-encoder=mp3 \
       --disable-devices \
       --disable-ffplay \
       --disable-ffserver \
@@ -1361,10 +1362,11 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-muxers \
       --enable-muxer=spdif \
       --enable-muxer=adts \
+      --enable-muxer=mp3 \
       --disable-encoders \
       --enable-encoder=ac3 \
       --enable-encoder=aac \
-      --enable-libmp3lame \
+      --enable-encoder=mp3 \
       --disable-decoder=mpeg_xvmc \
       --disable-devices \
       --disable-ffplay \
