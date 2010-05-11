@@ -1748,6 +1748,9 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
+					Description="Performing Custom Build Step on $(InputName)"
+					CommandLine="copy ..\configMS.h ..\config.h"
+					Outputs="..\config.h"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
