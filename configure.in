@@ -184,6 +184,12 @@ AC_ARG_ENABLE([pulse],
             [use_pulse=$enableval],
             [use_pulse=yes])
 
+AC_ARG_ENABLE([ffmpeg_libvorbis],
+            [AS_HELP_STRING([--enable-ffmpeg-libvorbis],
+               [enable FFmpeg vorbis encoding (default is no)])],
+            [use_ffmpeg_libvorbis=$enableval],
+            [use_ffmpeg_libvorbis=no])
+
 AC_ARG_ENABLE([faac],
             [AS_HELP_STRING([--enable-faac],
                [enable FAAC support (default is yes)])],
@@ -1328,11 +1334,10 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-muxers \
       --enable-muxer=spdif \
       --enable-muxer=adts \
-      --enable-muxer=mp3 \
       --disable-encoders \
       --enable-encoder=ac3 \
       --enable-encoder=aac \
-      --enable-encoder=mp3 \
+      `if test "$use_ffmpeg_libvorbis" == "yes"; then echo --enable-libvorbis --enable-muxer=ogg; else echo --disable-libvorbis; fi` \
       --disable-devices \
       --disable-ffplay \
       --disable-ffserver \
@@ -1362,11 +1367,10 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-muxers \
       --enable-muxer=spdif \
       --enable-muxer=adts \
-      --enable-muxer=mp3 \
       --disable-encoders \
       --enable-encoder=ac3 \
       --enable-encoder=aac \
-      --enable-encoder=mp3 \
+      `if test "$use_ffmpeg_libvorbis" == "yes"; then echo --enable-libvorbis --enable-muxer=ogg; else echo --disable-libvorbis; fi` \
       --disable-decoder=mpeg_xvmc \
       --disable-devices \
       --disable-ffplay \
