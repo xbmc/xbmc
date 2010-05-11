@@ -91,8 +91,9 @@ override_dh_install:
 	dh_install --sourcedir=$(CURDIR)/debian/tmp -XLICENCE \
 		-XLicence.txt -XLicense.txt -XLiberationSans-Regular.ttf \
 		-XDejaVuSans.ttf -XDejaVuSans-Bold.ttf
-	# Delete skins from xbmc-data package
+	# Delete stuff in xbmc-data that is in other packages
 	rm -rf debian/xbmc-data/usr/share/xbmc/addons/skin.*
+	rm -rf debian/xbmc-data/usr/share/xbmc/web
 
 override_dh_link:
 	dh_link
