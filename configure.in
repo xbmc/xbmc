@@ -651,8 +651,8 @@ else
   AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1], [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])
 fi
 
-# External liba52
-if test "$use_external_liba52" = "yes"; then
+# External liba52 if deprecated a52 support is enabled
+if test "$use_liba52" = "yes" && "$use_external_liba52" = "yes"; then
   AC_CHECK_LIB([a52],          [main],, AC_MSG_ERROR($missing_library))
 
   AC_MSG_NOTICE($external_liba52_enabled)
@@ -663,8 +663,8 @@ else
   USE_EXTERNAL_LIBA52=0
 fi
 
-# External libdts
-if test "$use_external_libdts" = "yes"; then
+# External libdts if deprecated dts support enabled
+if test "$use_libdts" = "yes" && "$use_external_libdts" = "yes"; then
   AC_CHECK_LIB([dts],          [main],, AC_MSG_ERROR($missing_library))
 
   AC_MSG_NOTICE($external_libdts_enabled)
@@ -1109,15 +1109,19 @@ if test "$use_external_ffmpeg" = "yes"; then
 else
   final_message="$final_message\n  External FFmpeg:\tNo"
 fi
-if test "$use_external_liba52" = "yes"; then
-  final_message="$final_message\n  External liba52:\tYes"
-else
-  final_message="$final_message\n  External liba52:\tNo"
+if test "$use_liba52" = "yes"; then
+  if test "$use_external_liba52" = "yes"; then
+    final_message="$final_message\n  External liba52:\tYes"
+  else
+    final_message="$final_message\n  External liba52:\tNo"
+  fi
 fi
-if test "$use_external_libdts" = "yes"; then
-  final_message="$final_message\n  External libdts:\tYes"
-else
-  final_message="$final_message\n  External libdts:\tNo"
+if test "$use_libdts" = "yes"; then
+  if test "$use_external_libdts" = "yes"; then
+    final_message="$final_message\n  External libdts:\tYes"
+  else
+    final_message="$final_message\n  External libdts:\tNo"
+  fi
 fi
 if test "$use_external_libass" = "yes"; then
   final_message="$final_message\n  External libass:\tYes"
