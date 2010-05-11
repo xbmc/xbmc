@@ -25,7 +25,7 @@
   #include "config.h"
 #endif
 extern "C" {
-#if (defined USE_EXTERNAL_LIBASS)
+#if defined(_LINUX) && !defined(__APPLE__)
   #include <ass/ass.h>
 #else
   #include "../../../lib/libass/libass/ass.h"
@@ -70,7 +70,7 @@ public:
                                 , void *data)=0;
 };
 
-#if (defined USE_EXTERNAL_LIBASS)
+#if defined(_LINUX) && !defined(__APPLE__)
 
 class DllLibass : public DllDynamic, DllLibassInterface
 {

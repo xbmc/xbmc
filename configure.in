@@ -53,8 +53,6 @@ external_liba52_enabled="== Use of external liba52 enabled. =="
 external_liba52_disabled="== Use of external liba52 disabled. =="
 external_libdts_enabled="== Use of external libdts enabled. =="
 external_libdts_disabled="== Use of external libdts disabled. =="
-external_libass_enabled="== Use of external libass enabled. =="
-external_libass_disabled="== Use of external libass disabled. =="
 external_python_enabled="== Use of external python enabled. =="
 external_python_disabled="== Use of external python disabled. =="
 ffmpeg_vdpau_not_supported="== External ffmpeg doesn't support VDPAU. VDPAU support disabled. =="
@@ -268,12 +266,6 @@ AC_ARG_ENABLE([external-libdts],
             [use_external_libdts=$enableval],
             [use_external_libdts=$use_external_libraries])
 
-AC_ARG_ENABLE([external-libass],
-            [AS_HELP_STRING([--enable-external-libass],
-            [enable use of external libass library (default is no) 'Linux only'])],
-            [use_external_libass=$enableval],
-            [use_external_libass=$use_external_libraries])
-
 AC_ARG_ENABLE([external-python],
             [AS_HELP_STRING([--enable-external-python],
             [enable use of external python library (default is no) 'Linux only'])],
@@ -454,6 +446,8 @@ else
   AC_CHECK_LIB([tiff],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([rt],        [clock_gettime],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([ass], [ass_set_message_cb],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([ass], [main],, AC_MSG_ERROR($missing_library))
   
   PKG_CHECK_MODULES([ALSA],       [alsa],
                   [INCLUDES+=" $ALSA_CFLAGS"; LIBS+=" $ALSA_LIBS"],
@@ -679,21 +673,6 @@ if test "$use_libdts" = "yes" && "$use_external_libdts" = "yes"; then
 else
   AC_MSG_NOTICE($external_libdts_disabled)
   USE_EXTERNAL_LIBDTS=0
-fi
-
-# External libass
-if test "$use_external_libass" = "yes"; then
-  # We need libass >= 0.9.7.
-  AC_CHECK_LIB([ass], [ass_set_message_cb],
-  [AC_CHECK_LIB([ass], [main],,)
-  AC_MSG_NOTICE($external_libass_enabled)
-  USE_EXTERNAL_LIBASS=1
-   AC_DEFINE([USE_EXTERNAL_LIBASS], [1], [Whether to use external libass library.])],
-  [AC_MSG_WARN(== Need libass >= 0.9.7. Disabling external libass. ==)
-   USE_EXTERNAL_LIBASS=0])
-else
-  AC_MSG_NOTICE($external_libass_disabled)
-  USE_EXTERNAL_LIBASS=0
 fi
 
 # External Python
@@ -1129,11 +1108,6 @@ if test "$use_libdts" = "yes"; then
     final_message="$final_message\n  External libdts:\tNo"
   fi
 fi
-if test "$use_external_libass" = "yes"; then
-  final_message="$final_message\n  External libass:\tYes"
-else
-  final_message="$final_message\n  External libass:\tNo"
-fi
 if test "$use_external_python" = "yes"; then
   final_message="$final_message\n  External Python:\tYes"
 else
@@ -1172,7 +1146,6 @@ OUTPUT_FILES="Makefile \
              xbmc/osx/Makefile \
              guilib/Makefile \
              guilib/common/Makefile \
-             xbmc/lib/libass/xbmc/Makefile \
              xbmc/lib/libXBMS/Makefile \
              xbmc/lib/libRTV/Makefile \
              xbmc/lib/libexif/Makefile \
@@ -1203,7 +1176,8 @@ OUTPUT_FILES="Makefile \
 
 if test "$host_vendor" = "apple"; then
   OUTPUT_FILES+=" \
-                xbmc/cores/paplayer/FLACCodec/Makefile"
+                xbmc/cores/paplayer/FLACCodec/Makefile \
+                lib/libass/xbmc/Makefile"
 fi
 
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
@@ -1225,7 +1199,6 @@ AC_SUBST(USE_EXTERNAL_FFMPEG)
 AC_SUBST(USE_EXTERNAL_LIBA52)
 AC_SUBST(USE_EXTERNAL_LIBDTS)
 AC_SUBST(USE_EXTERNAL_LIBMPEG2)
-AC_SUBST(USE_EXTERNAL_LIBASS)
 AC_SUBST(USE_EXTERNAL_LIBWAVPACK)
 AC_SUBST(USE_EXTERNAL_PYTHON)
 AC_SUBST(USE_PYTHON2_6)
@@ -1532,17 +1505,12 @@ XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [
   fi
 ], [0])
 
-XB_CONFIG_MODULE([xbmc/lib/libass], [
+XB_CONFIG_MODULE([lib/libass], [
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4
-  else
-    CFLAGS="$CFLAGS -fPIC" \
-    ./configure \
-      --host=$host_alias \
-      --build=$build_alias
   fi
-], [$USE_EXTERNAL_LIBASS])
+], [0])
 
 XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[
   if test "$host_vendor" = "apple" ; then
