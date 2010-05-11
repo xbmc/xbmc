@@ -19,6 +19,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "dvdplayer/Codecs/DllAvCodec.h"
 #include "streams.h"
 enum StreamType;
 enum CodecID;
@@ -42,7 +43,7 @@ public:
   void Assign(const CDSStreamInfo &right, bool withextradata);
   void Assign(const CDemuxStream &right, bool withextradata);
 
-  CodecID codec;
+  CodecID codec_id;
   StreamType type;
   bool software;  //force software decoding
 
@@ -69,7 +70,7 @@ public:
   int identifier;
 
   // CODEC EXTRADATA
-  void*        extradata; // extra data for codec to use
+  void*        extradata; // extra data for codec_id to use
   unsigned int extrasize; // size of extra data
 
   bool operator==(const CDSStreamInfo& right)      { return Equal(right, true);}
@@ -79,5 +80,7 @@ public:
   bool operator==(const CDemuxStream& right)      { return Equal( CDSStreamInfo(right, true), true);}
   bool operator!=(const CDemuxStream& right)      { return !Equal( CDSStreamInfo(right, true), true);}
   void operator=(const CDemuxStream& right)      { Assign(right, true); }
+protected:
+  DllAvCodec  m_dllAvCodec;
 
 };

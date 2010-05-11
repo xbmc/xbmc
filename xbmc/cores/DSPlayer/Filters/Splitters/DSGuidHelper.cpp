@@ -1,6 +1,7 @@
 #include "DSGuidHelper.h"
 #include "streams.h"
 #include "moreuuids.h"
+#include "ffmpeg_mediaguids.h"
 CDSGuidHelper g_GuidHelper;
 
 CMediaType CDSGuidHelper::initAudioType(CodecID codecId)
@@ -21,10 +22,12 @@ CMediaType CDSGuidHelper::initAudioType(CodecID codecId)
   }
   else if (codecId == CODEC_ID_MP3)
   {
-    thetype.formattype = FORMAT_WaveFormatEx; 
+    thetype.formattype = FORMAT_WaveFormatEx;
   }
   else if (codecId == CODEC_ID_AAC)
   {
+    thetype.formattype = FORMAT_WaveFormatEx;
+    thetype.subtype =  MEDIASUBTYPE_AAC;// FOURCCMap(0x00ff);
   }
   else if (codecId == CODEC_ID_DTS)
   {

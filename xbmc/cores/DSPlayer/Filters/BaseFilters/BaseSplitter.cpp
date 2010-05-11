@@ -275,11 +275,11 @@ HRESULT CBaseSplitterOutputPin::DecideBufferSize(IMemAllocator* pAlloc, ALLOCATO
     pProperties->cBuffers = dsmax(pProperties->cBuffers, 2);
   }
 
-    ALLOCATOR_PROPERTIES Actual;
-    if(FAILED(hr = pAlloc->SetProperties(pProperties, &Actual))) return hr;
+  ALLOCATOR_PROPERTIES Actual;
+  if(FAILED(hr = pAlloc->SetProperties(pProperties, &Actual))) return hr;
 
-    if(Actual.cbBuffer < pProperties->cbBuffer) return E_FAIL;
-    ASSERT(Actual.cBuffers == pProperties->cBuffers);
+  if(Actual.cbBuffer < pProperties->cbBuffer) return E_FAIL;
+  ASSERT(Actual.cBuffers == pProperties->cBuffers);
 
     return NOERROR;
 }

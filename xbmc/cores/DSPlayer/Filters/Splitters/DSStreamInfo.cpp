@@ -47,7 +47,7 @@ CDSStreamInfo::~CDSStreamInfo()
 void CDSStreamInfo::Clear()
 {
   
-  codec = CODEC_ID_NONE;
+  codec_id = CODEC_ID_NONE;
   type = STREAM_NONE;
   software = false;
 
@@ -77,7 +77,7 @@ void CDSStreamInfo::Clear()
 
 bool CDSStreamInfo::Equal(const CDSStreamInfo& right, bool withextradata)
 {
-  if( codec != right.codec
+  if( codec_id != right.codec_id
   ||  type != right.type ) return false;
 
   if( withextradata )
@@ -121,7 +121,7 @@ bool CDSStreamInfo::Equal(const CDemuxStream& right, bool withextradata)
 // ASSIGNMENT
 void CDSStreamInfo::Assign(const CDSStreamInfo& right, bool withextradata)
 {
-  codec = right.codec;
+  codec_id = right.codec_id;
   type = right.type;
 
   if( extradata && extrasize ) free(extradata);
@@ -162,10 +162,10 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
 {
   Clear();
   mtype.InitMediaType();
-  codec = right.codec;
+  codec_id = right.codec;
   type = right.type;
   RECT empty_tagrect = {0,0,0,0};
-
+  m_dllAvCodec.Load();
   if( withextradata && right.ExtraSize )
   {
     extrasize = right.ExtraSize;
@@ -179,7 +179,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   {
     const CDemuxStreamAudio *stream = static_cast<const CDemuxStreamAudio*>(&right);
     AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
-    //mtype.subtype = FOURCCMap(avstream->codec->codec_tag);
+    //mtype.subtype = FOURCCMap(avstream->codec_id->codec_tag);
     //TODO convert audio codecid into wave format ex: ac3 is WAVE_FORMAT_DOLBY_AC3 0x2000
     mtype = g_GuidHelper.initAudioType(avstream->codec->codec_id);
     
@@ -187,22 +187,27 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
       mtype.subtype = FOURCCMap(avstream->codec->codec_tag);
     WAVEFORMATEX* wvfmt = (WAVEFORMATEX*)mtype.AllocFormatBuffer(sizeof(WAVEFORMATEX)+ avstream->codec->extradata_size);
     
-    wvfmt->wFormatTag = mtype.subtype.Data1;//avstream->codec->codec_tag;
+    wvfmt->wFormatTag = mtype.subtype.Data1;//avstream->codec_id->codec_tag;
     wvfmt->nChannels = avstream->codec->channels;
     wvfmt->nSamplesPerSec= avstream->codec->sample_rate;
     
     wvfmt->wBitsPerSample= avstream->codec->bits_per_coded_sample;
-    
-    wvfmt->nBlockAlign = (WORD)((wvfmt->nChannels * wvfmt->wBitsPerSample) / 8);// avstream->codec->block_align ? avstream->codec->block_align : 1;
+    if (avstream->codec->block_align > 0 )
+      wvfmt->nBlockAlign = (WORD)((wvfmt->nChannels * wvfmt->wBitsPerSample) / 8);// avstream->codec_id->block_align ? avstream->codec_id->block_align : 1;
+    else
+      wvfmt->nBlockAlign = avstream->codec->block_align;
     wvfmt->nAvgBytesPerSec= wvfmt->nSamplesPerSec * wvfmt->nBlockAlign;
+    AVCodecParserContext* pParser;
+    pParser = m_dllAvCodec.av_parser_init(avstream->codec->codec_id);
     
-    if (avstream->codec->extradata > 0)
+    if (avstream->codec->extradata_size > 0)
     {
       wvfmt->cbSize = avstream->codec->extradata_size;
       memcpy(wvfmt + 1, avstream->codec->extradata, avstream->codec->extradata_size);
     }
     //TODO Fix the sample size
-    mtype.SetSampleSize(256000);
+    if (wvfmt->wBitsPerSample == 0)
+      mtype.SetSampleSize(256000);
     channels      = stream->iChannels;
     samplerate    = stream->iSampleRate;
     blockalign    = stream->iBlockAlign;
@@ -270,6 +275,9 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
       MPEG2VIDEOINFO *mpeginfo = (MPEG2VIDEOINFO*)mtype.AllocFormatBuffer(FIELD_OFFSET(MPEG2VIDEOINFO, dwSequenceHeader) + avstream->codec->extradata_size - 7);
       //VideoFps = 10000000.0 / AvgTimePerFrame;
       mpeginfo->hdr.AvgTimePerFrame = (REFERENCE_TIME)(10000000 / ((float)stream->iFpsRate / (float)stream->iFpsScale));
+
+      //TODO Fix FLV only if audio can play if no video
+
       //ff_h264_decode_seq_parameter_set from libavcodec is actually the best function to get those info
       mpeginfo->hdr.dwBitErrorRate = 0;
       
@@ -279,6 +287,9 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
       mpeginfo->hdr.rcSource = empty_tagrect;
       mpeginfo->hdr.rcTarget = empty_tagrect;
       
+      mpeginfo->hdr.dwInterlaceFlags = 0;
+      mpeginfo->hdr.dwCopyProtectFlags = 0;
+      mpeginfo->hdr.dwControlFlags = 0;
       mpeginfo->hdr.dwPictAspectRatioX = (DWORD)stream->iWidth;
       mpeginfo->hdr.dwPictAspectRatioY = (DWORD)stream->iHeight;
       mpeginfo->hdr.bmiHeader.biSize = sizeof(mpeginfo->hdr.bmiHeader);

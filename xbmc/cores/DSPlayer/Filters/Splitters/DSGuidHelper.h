@@ -1,5 +1,5 @@
 #pragma once
-#include "ffmpeg_mediaguids.h"
+
 #include "DVDPlayer/Codecs/DllAvCodec.h"
 /*extern "C"
 {

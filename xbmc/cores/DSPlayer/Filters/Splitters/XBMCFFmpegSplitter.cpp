@@ -28,6 +28,12 @@
 #include "DVDPlayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDPlayer/DVDClock.h"
 
+//0 is off
+//1 is video only
+//2 is audio only
+#define DS_SPLITTER_ONE_PIN_TEST 0
+
+
 //
 // CXBMCFFmpegSplitter
 //
@@ -104,8 +110,20 @@ HRESULT CXBMCFFmpegSplitter::CreateOutputs(IAsyncReader* pAsyncReader)
     std::string tname;
     pStream->GetStreamName(tname);
     CStdStringW tnameW = DShowUtil::AToW(tname);
+
+#if DS_SPLITTER_ONE_PIN_TEST == 0
+    if ( pStream )
+#endif
+#if  DS_SPLITTER_ONE_PIN_TEST == 1
+    if ( pStream->type == STREAM_VIDEO)
+#endif
+#if DS_SPLITTER_ONE_PIN_TEST == 2
+    if ( pStream->type == STREAM_AUDIO)
+#endif
+    {
     auto_ptr<CBaseSplitterOutputPin> pPinOut(DNew CXBMCFFmpegOutputPin(mts, tnameW.c_str(), this, this, &hr));
     AddOutputPin((DWORD)iStream, pPinOut);
+    }
   }
 
   return m_pOutputs.size() > 0 ? S_OK : E_FAIL;
@@ -150,6 +168,8 @@ bool CXBMCFFmpegSplitter::DemuxLoop()
       CDVDDemuxUtils::FreeDemuxPacket(pPacket);
       continue;
     }
+    if (!pPacket)
+      continue;
     std::auto_ptr<Packet> p(new Packet());
     p->TrackNumber = (DWORD)pPacket->iStreamId;
     p->resize(pPacket->iSize);
@@ -164,7 +184,15 @@ bool CXBMCFFmpegSplitter::DemuxLoop()
     
     //TODO crashing with wmv
     p->rtStop = p->rtStart + ((pPacket->duration > 0) ? (pPacket->duration * 10) : 1);
-    
+#if DS_SPLITTER_ONE_PIN_TEST == 0
+    if ( pStream )
+#endif
+#if  DS_SPLITTER_ONE_PIN_TEST == 1
+    if ( pStream->type == STREAM_VIDEO)
+#endif
+#if DS_SPLITTER_ONE_PIN_TEST == 2
+    if ( pStream->type == STREAM_AUDIO)
+#endif
     hr = DeliverPacket(p);
 
   }
