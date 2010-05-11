@@ -31,6 +31,7 @@
 #include "AudioContext.h"
 #include "Settings.h"
 #include "SingleLock.h"
+#include "SystemInfo.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "CharsetConverter.h"
@@ -88,14 +89,9 @@ CWin32WASAPI::CWin32WASAPI() :
 bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bAudioPassthrough)
 {
   //First check if the version of Windows we are running on even supports WASAPI.
-  OSVERSIONINFO winVersion;
-  winVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-
-  GetVersionEx(&winVersion);
-
-  if(winVersion.dwMajorVersion < 6)
+  if (!g_sysinfo.IsVistaOrHigher())
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Version %i.%i of Windows detected.  WASAPI output requires version 6.0 (Vista) or higher.", winVersion.dwMajorVersion, winVersion.dwMinorVersion);
+    CLog::Log(LOGERROR, __FUNCTION__": WASAPI output requires Vista or higher.");
     return false;
   }
 
@@ -563,14 +559,9 @@ void CWin32WASAPI::UnRegisterAudioCallback()
 void CWin32WASAPI::EnumerateAudioSinks(AudioSinkList &vAudioSinks, bool passthrough)
 {
   //First check if the version of Windows we are running on even supports WASAPI.
-  OSVERSIONINFO winVersion;
-  winVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-
-  GetVersionEx(&winVersion);
-
-  if(winVersion.dwMajorVersion < 6)
+  if (!g_sysinfo.IsVistaOrHigher())
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__": Version %i.%i of Windows detected.  WASAPI enumeration requires version 6.0 (Vista) or higher.", winVersion.dwMajorVersion, winVersion.dwMinorVersion);
+    CLog::Log(LOGDEBUG, __FUNCTION__": WASAPI enumeration requires Vista or higher.");
     return;
   }
 
