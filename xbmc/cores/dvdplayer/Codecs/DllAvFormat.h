@@ -80,7 +80,7 @@ public:
   virtual void put_be16(ByteIOContext *s, unsigned int val)=0;
   virtual AVFormatContext *avformat_alloc_context(void)=0;
   virtual AVStream *av_new_stream(AVFormatContext *s, int id)=0;
-#if LIBAVFORMAT_VERSION_MAJOR < 53
+#if LIBAVFORMAT_VERSION_MAJOR < 52
   virtual AVOutputFormat *guess_format(const char *short_name, const char *filename, const char *mime_type)=0;
 #else
   virtual AVOutputFormat *av_guess_format(const char *short_name, const char *filename, const char *mime_type)=0;
@@ -147,7 +147,7 @@ public:
   virtual void put_be16(ByteIOContext *s, unsigned int val) { ::put_be16(s, val); }
   virtual AVFormatContext *avformat_alloc_context() { return ::avformat_alloc_context(); }
   virtual AVStream *av_new_stream(AVFormatContext *s, int id) { return ::av_new_stream(s, id); }
-#if LIBAVFORMAT_VERSION_MAJOR < 53
+#if LIBAVFORMAT_VERSION_MAJOR < 52
   virtual AVOutputFormat *guess_format(const char *short_name, const char *filename, const char *mime_type) { return ::guess_format(short_name, filename, mime_type); }
 #else
   virtual AVOutputFormat *av_guess_format(const char *short_name, const char *filename, const char *mime_type) { return ::av_guess_format(short_name, filename, mime_type); }
@@ -230,7 +230,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD3(offset_t, url_fseek, (ByteIOContext *p1, offset_t p2, int p3))
   DEFINE_METHOD0(AVFormatContext *, avformat_alloc_context)
   DEFINE_METHOD2(AVStream *, av_new_stream, (AVFormatContext *p1, int p2))
-#if LIBAVFORMAT_VERSION_MAJOR < 53
+#if LIBAVFORMAT_VERSION_MAJOR < 52
   DEFINE_METHOD3(AVOutputFormat *, guess_format, (const char *p1, const char *p2, const char *p3))
 #else
   DEFINE_METHOD3(AVOutputFormat *, av_guess_format, (const char *p1, const char *p2, const char *p3))
@@ -277,7 +277,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(put_be16)
     RESOLVE_METHOD(avformat_alloc_context)
     RESOLVE_METHOD(av_new_stream)
-#if LIBAVFORMAT_VERSION_MAJOR < 53
+#if LIBAVFORMAT_VERSION_MAJOR < 52
     RESOLVE_METHOD(guess_format)
 #else
     RESOLVE_METHOD(av_guess_format)

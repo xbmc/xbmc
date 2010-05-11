@@ -76,7 +76,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   /* get the muxer */
   AVOutputFormat *fOut = NULL;
 
-#if LIBAVFORMAT_VERSION_MAJOR < 53
+#if LIBAVFORMAT_VERSION_MAJOR < 52
   fOut = m_dllAvFormat.guess_format(muxerName.c_str(), NULL, NULL);
 #else
   fOut = m_dllAvFormat.av_guess_format(muxerName.c_str(), NULL, NULL);
