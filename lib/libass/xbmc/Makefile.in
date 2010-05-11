@@ -1,5 +1,7 @@
+abs_top_srcdir=@abs_top_srcdir@
+
 ARCH=@ARCH@
-SYSDIR=../../../../system/players/dvdplayer
+SYSDIR=$(abs_top_srcdir)/system/players/dvdplayer
 SO=libass-$(ARCH).so
 SLIB=$(SYSDIR)/$(SO)
 DIRS=..
@@ -10,7 +12,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 $(SLIB): ../libass/.libs/libass.dylib
 	$(CXX) -bundle -flat_namespace -undefined suppress -shared -fPIC \
 	-mmacosx-version-min=10.4 -o $@ ../libass/.libs/*.o
-	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	$(abs_top_srcdir)/tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 
 ../libass/.libs/libass.dylib: compile
@@ -26,4 +28,4 @@ $(SLIB): ../libass/.libs/libass.so
 	$(MAKE) -C ..
 endif
 
-include ../../../../Makefile.include
+include $(abs_top_srcdir)/Makefile.include
