@@ -267,7 +267,7 @@
 						<height>42</height>
 						<align>right</align>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Episode] $LOCALIZE[20360]</label>
+						<label>$INFO[ListItem.Property(UnWatchedEpisodes)] $LOCALIZE[20360]</label>
 						<font>SmallDefaultCapsFont</font>
 						<textcolor>Unfocused</textcolor>
 					</control>
@@ -486,7 +486,7 @@
 						<height>42</height>
 						<align>right</align>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Episode] $LOCALIZE[20360]</label>
+						<label>$INFO[ListItem.Property(UnWatchedEpisodes)] $LOCALIZE[20360]</label>
 						<font>SmallDefaultCapsFont</font>
 						<include>MediaItemDetailFontFO</include>
 						<include>MediaListItemFade</include>
