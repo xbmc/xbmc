@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="libass_dll"
 	ProjectGUID="{BA5B08FC-2ECB-4571-9F25-F8054522FC65}"
 	RootNamespace="libass_win32"
@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\..\lib\libiconv\include;..\..\..\..\lib\fontconfig_win32\include;..\..\..\..\lib\freetype\include\freetype2;..\..\..\..\lib\freetype\include;.\;..\..\..\..\lib\enca\lib"
+				AdditionalIncludeDirectories="..\..\..\..\lib\libiconv\include;..\..\..\..\lib\freetype\include\freetype2;..\..\..\..\lib\freetype\include;.\;..\..\..\..\lib\enca\lib;..\..\..\..\project\BuildDependencies\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBASS_WIN32_EXPORTS;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -67,6 +67,7 @@
 				AdditionalDependencies="fontconfig.lib"
 				OutputFile="..\..\..\..\system\players\dvdplayer\libass.dll"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\..\..\..\project\BuildDependencies\lib"
 				IgnoreDefaultLibraryNames="LIBCMTD"
 				ModuleDefinitionFile="libass.def"
 				GenerateDebugInformation="true"
@@ -125,7 +126,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\..\..\lib\libiconv\include;..\..\..\..\lib\fontconfig_win32\include;..\..\..\..\lib\freetype\include\freetype2;..\..\..\..\lib\freetype\include;.\;..\..\..\..\lib\enca\lib"
+				AdditionalIncludeDirectories="..\..\..\..\lib\libiconv\include;..\..\..\..\lib\freetype\include\freetype2;..\..\..\..\lib\freetype\include;.\;..\..\..\..\lib\enca\lib;..\..\..\..\project\BuildDependencies\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBASS_WIN32_EXPORTS;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -148,6 +149,7 @@
 				AdditionalDependencies="fontconfig.lib"
 				OutputFile="..\..\..\..\system\players\dvdplayer\libass.dll"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="..\..\..\..\project\BuildDependencies\lib"
 				IgnoreDefaultLibraryNames="libcmt;libcmtd"
 				ModuleDefinitionFile="libass.def"
 				GenerateDebugInformation="true"
