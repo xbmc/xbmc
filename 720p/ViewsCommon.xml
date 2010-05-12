@@ -320,35 +320,6 @@
 						<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
 						<visible>Container.Content(episodes)</visible>
 					</control>
-					<!--
-		    <control type="label">
-		      <visible>!IsEmpty(ListItem.Overlay)</visible>
-		      <posx>456</posx>
-		      <posy>2</posy>
-		      <width>104</width>
-		      <height>42</height>
-		      <align>left</align>
-		      <aligny>center</aligny>
-		      <label>$INFO[ListItem.Duration]</label>
-		      <font>SmallDefaultCapsFont</font>
-		      <textcolor>Unfocused</textcolor>
-		      <animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
-		    </control>
-
-		    <control type="label">
-		      <visible>IsEmpty(ListItem.Overlay)</visible>
-		      <posx>492</posx>
-		      <posy>2</posy>
-		      <width>95</width>
-		      <height>42</height>
-		      <align>left</align>
-		      <aligny>center</aligny>
-		      <label>$INFO[ListItem.Label2]</label>
-		      <font>SmallDefaultCapsFont</font>
-		      <textcolor>Unfocused</textcolor>
-		      <animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
-		    </control>
--->
 					<control type="group">
 						<visible>!Container.Content(episodes)</visible>
 						<control type="label">
@@ -540,12 +511,6 @@
 						<bordertexture border="7">ThumbBorder.png</bordertexture>
 						<bordersize>4</bordersize>
 					</control>
-					<!--
-          <control type="label">
-            <description>No Thumb label</description>
-            <include>InfoListNoThumbDims</include>
-            <include>NoThumbLabel</include>
-          </control>-->
 					<control type="group">
 						<description>Watched/Unwatched Overlay</description>
 						<visible>!Container.Content(episodes)</visible>
