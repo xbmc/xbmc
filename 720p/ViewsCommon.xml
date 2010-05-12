@@ -513,12 +513,13 @@
 					</control>
 					<control type="group">
 						<description>Watched/Unwatched Overlay</description>
-						<visible>!Container.Content(episodes)</visible>
+						<visible>!Container.Content(episodes) + !Container.Content(tvshows) + !Container.Content(seasons)</visible>
 						<posx>234</posx>
 						<posy>25</posy>
 						<include>WatchedUnwatchedOverlay</include>
 					</control>
 					<control type="group">
+						<visible>!Container.Content(episodes) + !Container.Content(tvshows) + !Container.Content(seasons)</visible>
 						<description>Watched/Unwatched Overlay</description>
 						<visible>Container.Content(episodes)</visible>
 						<posx>-63</posx>
@@ -554,11 +555,11 @@
 					</control>
 					<control type="label">
 						<description>Year</description>
-						<visible>Container.Content(movies) | Container.Content(albums)</visible>
+						<visible>Container.Content(movies) | Container.Content(albums) | Container.Content(tvshows)</visible>
 						<posy>28</posy>
 						<width>InfoListTitleWidth</width>
 						<font>SmallTitleCapsFont</font>
-						<label>$INFO[ListItem.Year]</label>
+						<label>$INFO[ListItem.year]</label>
 						<textcolor>Focused</textcolor>
 					</control>
 					<control type="label">
