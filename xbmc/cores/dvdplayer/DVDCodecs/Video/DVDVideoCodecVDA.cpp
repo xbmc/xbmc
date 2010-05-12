@@ -108,8 +108,8 @@ typedef struct OpaqueVDADecoder* VDADecoder;
 
 typedef void (*VDADecoderOutputCallback)(
   void *decompressionOutputRefCon, 
-  CFDictionaryRef frameInfo, 
-  OSStatus status, 
+  CFDictionaryRef frameInfo,
+  OSStatus status,
   uint32_t infoFlags,
   CVImageBufferRef imageBuffer);
 
@@ -416,7 +416,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     CFDataRef avcCData;
     uint8_t *extradata; // extra data for codec to use
     unsigned int extrasize; // size of extra data
-    
+
     //
     width  = hints.width;
     height = hints.height;
@@ -644,7 +644,7 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
     }
     sort_time = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
     avc_time = CreateDictionaryWithDisplayTime(sort_time - m_sort_time_offset, dts, pts);
-    
+
     if (m_DropPictures)
       avc_flags = kVDADecoderDecodeFlags_DontEmitFrame;
 
@@ -727,7 +727,7 @@ void CDVDVideoCodecVDA::UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_strid
 
     uint8_t  *dst[] = { picture->data[0], picture->data[1], picture->data[2], 0 };
     int dstStride[] = { picture->iLineSize[0], picture->iLineSize[1], picture->iLineSize[2], 0 };
-  
+
     m_dllSwScale->sws_scale(swcontext, src, srcStride, 0, picture->iHeight, dst, dstStride);
     m_dllSwScale->sws_freeContext(swcontext);
   }
