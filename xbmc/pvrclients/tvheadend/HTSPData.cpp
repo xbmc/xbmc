@@ -274,7 +274,7 @@ PVR_ERROR cHTSPData::RequestRecordingsList(PVRHANDLE handle)
 
     PVR_RECORDINGINFO tag;
     tag.index           = recording.id;
-    tag.directory       = "recordings";
+    tag.directory       = "/";
     tag.subtitle        = "";
     tag.channel_name    = "";
     tag.recording_time  = recording.start;
