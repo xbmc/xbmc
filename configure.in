@@ -1183,7 +1183,10 @@ fi
 if test "$use_external_libass" = "no"; then
   OUTPUT_FILES+=" \
                 lib/libass/xbmc/Makefile"
-  AC_DEFINE([USE_EXTERNAL_LIBASS], [1], [Whether to use external libass library.])],
+  USE_EXTERNAL_LIBASS=0
+else
+  AC_DEFINE([USE_EXTERNAL_LIBASS], [1], [Whether to use external libass library.])
+  USE_EXTERNAL_LIBASS=1
 fi
 
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
