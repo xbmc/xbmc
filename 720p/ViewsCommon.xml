@@ -1197,7 +1197,7 @@
 					</control>
 					<control type="group">
 						<description>Media Flags</description>
-						<posy>396</posy>
+						<posy>399</posy>
 						<include>PanelStreamFlags</include>
 					</control>
 				</control>
