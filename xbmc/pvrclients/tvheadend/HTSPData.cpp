@@ -247,11 +247,10 @@ SRecordings cHTSPData::GetDVREntries(bool recorded, bool scheduled)
   {
     SRecording recording = it->second;
 
-    bool future = (unsigned int)localTime <= recording.start;
+    bool recordedOrRecording   = (unsigned int)localTime >= recording.start;
+    bool scheduledOrRecording  = (unsigned int)localTime <= recording.stop;
 
-    // TODO This should depend on the backends time not frontend
-    // or XBMC should filter recordings that haven't started yet.
-    if ((future && scheduled) || (!future && recorded))
+    if ((scheduledOrRecording && scheduled) || (recordedOrRecording && recorded))
       recordings[recording.id] = recording;
   }
 
@@ -359,8 +358,8 @@ PVR_ERROR cHTSPData::RequestTimerList(PVRHANDLE handle)
     PVR_TIMERINFO tag;
     tag.index       = recording.id;
     tag.channelNum  = recording.channel;
-    tag.starttime   = recording.start + gmtOffset;
-    tag.endtime     = recording.stop + gmtOffset;
+    tag.starttime   = recording.start;
+    tag.endtime     = recording.stop;
     tag.active      = true;
     tag.recording   = (localTime > tag.starttime) && (localTime < tag.endtime);
     tag.title       = recording.title.c_str();
