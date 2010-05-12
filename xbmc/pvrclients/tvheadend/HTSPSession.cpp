@@ -530,3 +530,47 @@ bool cHTSPSession::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue, SQualit
 
   return true;
 }
+
+void cHTSPSession::ParseDVREntryAdd(htsmsg_t* msg, SRecordings &recordings)
+{
+  SRecording recording;
+
+  if(htsmsg_get_u32(msg, "id",      &recording.id)
+  || htsmsg_get_u32(msg, "channel", &recording.channel)
+  || htsmsg_get_u32(msg, "start",   &recording.start)
+  || htsmsg_get_u32(msg, "stop",    &recording.stop))
+  {
+    XBMC->Log(LOG_ERROR, "cHTSPSession::ParseDVREntryAdd - malformed message received");
+    htsmsg_print(msg);
+    return;
+  }
+
+  const char* str;
+  if((str = htsmsg_get_str(msg, "title")) == NULL)
+    recording.title = "";
+  else
+    recording.title = str;
+
+  if((str = htsmsg_get_str(msg, "description")) == NULL)
+    recording.description = "";
+  else
+    recording.description = str;
+
+  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseDVREntryAdd - id:%u title '%s'\ndescription '%s'", recording.id, recording.title.c_str(), recording.description.c_str());
+
+  recordings[recording.id] = recording;
+}
+
+void cHTSPSession::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings)
+{
+  uint32_t id;
+
+  if(htsmsg_get_u32(msg, "id", &id))
+  {
+    XBMC->Log(LOG_ERROR, "cHTSPSession::ParseDVREntryDelete - malformed message received");
+    htsmsg_print(msg);
+    return;
+  }
+
+  recordings.erase(id);
+}

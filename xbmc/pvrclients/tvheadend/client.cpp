@@ -36,7 +36,8 @@ int g_clientID                = -1;
  * and exported to the other source files.
  */
 CStdString g_szHostname       = DEFAULT_HOST;
-int g_iPort                   = DEFAULT_PORT;
+int g_iPortHTSP               = DEFAULT_HTSP_PORT;
+int g_iPortHTTP               = DEFAULT_HTTP_PORT;
 int g_iConnectTimout          = DEFAULT_TIMEOUT;
 CStdString g_szUsername       = "";
 CStdString g_szPassword       = "";
@@ -111,15 +112,23 @@ ADDON_STATUS Create(void* hdl, void* props)
   free (buffer);
 
   /* Read setting "port" from settings.xml */
-  if (!XBMC->GetSetting("port", &g_iPort))
+  if (!XBMC->GetSetting("htsp_port", &g_iPortHTSP))
   {
     /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'port' setting, falling back to '%i' as default", DEFAULT_PORT);
-    g_iPort = DEFAULT_PORT;
+    XBMC->Log(LOG_ERROR, "Couldn't get 'htsp_port' setting, falling back to '%i' as default", DEFAULT_HTSP_PORT);
+    g_iPortHTSP = DEFAULT_HTSP_PORT;
+  }
+
+  /* Read setting "port" from settings.xml */
+  if (!XBMC->GetSetting("http_port", &g_iPortHTTP))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'http_port' setting, falling back to '%i' as default", DEFAULT_HTTP_PORT);
+    g_iPortHTTP = DEFAULT_HTTP_PORT;
   }
 
   HTSPData = new cHTSPData;
-  if (!HTSPData->Open(g_szHostname, g_iPort, g_szUsername, g_szPassword, g_iConnectTimout))
+  if (!HTSPData->Open(g_szHostname, g_iPortHTSP, g_szUsername, g_szPassword, g_iConnectTimout))
   {
     m_CurStatus = STATUS_LOST_CONNECTION;
     return m_CurStatus;
@@ -183,12 +192,21 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     if (tmp_sPassword != g_szPassword)
       return STATUS_NEED_RESTART;
   }
-  else if (str == "port")
+  else if (str == "htsp_port")
   {
-    XBMC->Log(LOG_INFO, "Changed Setting 'port' from %u to %u", g_iPort, *(int*) settingValue);
-    if (g_iPort != *(int*) settingValue)
+    XBMC->Log(LOG_INFO, "Changed Setting 'port' from %u to %u", g_iPortHTSP, *(int*) settingValue);
+    if (g_iPortHTSP != *(int*) settingValue)
     {
-      g_iPort = *(int*) settingValue;
+      g_iPortHTSP = *(int*) settingValue;
+      return STATUS_NEED_RESTART;
+    }
+  }
+  else if (str == "http_port")
+  {
+    XBMC->Log(LOG_INFO, "Changed Setting 'port' from %u to %u", g_iPortHTTP, *(int*) settingValue);
+    if (g_iPortHTTP != *(int*) settingValue)
+    {
+      g_iPortHTTP = *(int*) settingValue;
       return STATUS_NEED_RESTART;
     }
   }
@@ -214,7 +232,7 @@ PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
   props->SupportChannelLogo        = false;
   props->SupportTimeShift          = false;
   props->SupportEPG                = true;
-  props->SupportRecordings         = false;
+  props->SupportRecordings         = true;
   props->SupportTimers             = false;
   props->SupportTV                 = true;
   props->SupportRadio              = false;
@@ -246,9 +264,9 @@ const char * GetConnectionString()
 {
   static CStdString ConnectionString;
   if (HTSPData)
-    ConnectionString.Format("%s:%i%s", g_szHostname.c_str(), g_iPort, HTSPData->CheckConnection() ? "" : " (Not connected!)");
+    ConnectionString.Format("%s:%i%s", g_szHostname.c_str(), g_iPortHTSP, HTSPData->CheckConnection() ? "" : " (Not connected!)");
   else
-    ConnectionString.Format("%s:%i (addon error!)", g_szHostname.c_str(), g_iPort);
+    ConnectionString.Format("%s:%i (addon error!)", g_szHostname.c_str(), g_iPortHTSP);
   return ConnectionString.c_str();
 }
 
@@ -363,6 +381,16 @@ PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
   return PVR_ERROR_SERVER_ERROR;
 }
 
+PVR_ERROR RequestRecordingsList(PVRHANDLE handle)
+{
+  return HTSPData->RequestRecordingsList(handle);
+}
+
+int GetNumRecordings(void)
+{
+  HTSPData->GetNumRecordings();
+}
+
 /** UNUSED API FUNCTIONS */
 PVR_ERROR DialogChannelScan() { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR MenuHook(const PVR_MENUHOOK &menuhook) { return PVR_ERROR_NOT_IMPLEMENTED; }
@@ -373,8 +401,6 @@ PVR_ERROR RenameChannel(unsigned int number, const char *newname) { return PVR_E
 PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR DialogChannelSettings(const PVR_CHANNEL &channelinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR DialogAddChannel(const PVR_CHANNEL &channelinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
-int GetNumRecordings(void) { return 0; }
-PVR_ERROR RequestRecordingsList(PVRHANDLE handle) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname) { return PVR_ERROR_NOT_IMPLEMENTED; }
 bool HaveCutmarks() { return false; }

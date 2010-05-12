@@ -28,12 +28,14 @@
 #include "../../../addons/org.xbmc.pvr.library/libXBMC_pvr.h"
 
 #define DEFAULT_HOST        "127.0.0.1"
-#define DEFAULT_PORT        9982
+#define DEFAULT_HTTP_PORT   9981
+#define DEFAULT_HTSP_PORT   9982
 #define DEFAULT_TIMEOUT     30000
 
 extern bool         m_bCreated;
 extern CStdString   g_szHostname;
-extern int          g_iPort;
+extern int          g_iPortHTSP;
+extern int          g_iPortHTTP;
 extern CStdString   g_szUsername;
 extern CStdString   g_szPassword;
 extern int          g_iConnectTimout;

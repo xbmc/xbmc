@@ -2,7 +2,8 @@
 <strings>
     <!-- settings labels -->
     <string id="30000">Tvheadend Hostname or IP</string>
-    <string id="30001">HTSP Port</string>
-    <string id="30002">Username</string>
-    <string id="30003">Password</string>
+    <string id="30001">HTTP Port</string>
+    <string id="30002">HTSP Port</string>
+    <string id="30003">Username</string>
+    <string id="30004">Password</string>
 </strings>

@@ -154,6 +154,28 @@ struct SEvent
   }
 };
 
+struct SRecording
+{
+  uint32_t         id;
+  uint32_t         channel;
+  uint32_t         start;
+  uint32_t         stop;
+  std::string      title;
+  std::string      description;
+  std::string      state;
+  std::string      error;
+
+  SRecording() { Clear(); }
+  void Clear()
+  {
+    id = channel = start = stop = 0;
+    title.clear();
+    description.clear();
+    state.clear();
+    error.clear();
+  }
+};
+
 struct SQueueStatus
 {
   uint32_t packets; // Number of data packets in queue.
@@ -188,6 +210,7 @@ struct SQuality
 typedef std::map<int, SChannel> SChannels;
 typedef std::map<int, STag>     STags;
 typedef std::map<int, SEvent>   SEvents;
+typedef std::map<int, SRecording>     SRecordings;
 
 
 class cHTSPSession
@@ -217,12 +240,14 @@ public:
   CStdString  GetVersion()    { return m_version; }
   unsigned    AddSequence()   { return ++m_seq; }
 
-  static bool ParseEvent        (htsmsg_t* msg, uint32_t id, SEvent &event);
-  static void ParseChannelUpdate(htsmsg_t* msg, SChannels &channels);
-  static void ParseChannelRemove(htsmsg_t* msg, SChannels &channels);
-  static void ParseTagUpdate    (htsmsg_t* msg, STags &tags);
-  static void ParseTagRemove    (htsmsg_t* msg, STags &tags);
-  static bool ParseQueueStatus  (htsmsg_t* msg, SQueueStatus &queue, SQuality &quality);
+  static bool ParseEvent         (htsmsg_t* msg, uint32_t id, SEvent &event);
+  static void ParseChannelUpdate (htsmsg_t* msg, SChannels &channels);
+  static void ParseChannelRemove (htsmsg_t* msg, SChannels &channels);
+  static void ParseTagUpdate     (htsmsg_t* msg, STags &tags);
+  static void ParseTagRemove     (htsmsg_t* msg, STags &tags);
+  static bool ParseQueueStatus   (htsmsg_t* msg, SQueueStatus &queue, SQuality &quality);
+  static void ParseDVREntryAdd   (htsmsg_t* msg, SRecordings &recordings);
+  static void ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings);
 
 private:
   SOCKET      m_fd;

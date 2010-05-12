@@ -234,6 +234,70 @@ PVR_ERROR cHTSPData::RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &c
   return PVR_ERROR_NO_ERROR;
 }
 
+SRecordings cHTSPData::GetAvailableRecordings()
+{
+  CMD_LOCK;
+  SRecordings recordings;
+
+  for(SRecordings::const_iterator it = m_recordings.begin(); it != m_recordings.end(); ++it)
+  {
+    SRecording recording = it->second;
+
+    // TODO This should depend on the backends time not frontend
+    // or XBMC should filter recordings that haven't started yet.
+    if ((unsigned int)time(0) <= recording.start)
+      continue;
+
+    recordings[recording.id] = recording;
+  }
+
+  return recordings;
+}
+
+int cHTSPData::GetNumRecordings()
+{
+  SRecordings recordings = GetAvailableRecordings();
+  return recordings.size();
+}
+
+PVR_ERROR cHTSPData::RequestRecordingsList(PVRHANDLE handle)
+{
+  SRecordings recordings = GetAvailableRecordings();
+
+  for(SRecordings::const_iterator it = recordings.begin(); it != recordings.end(); ++it)
+  {
+    SRecording recording = it->second;
+
+    PVR_RECORDINGINFO tag;
+    tag.index           = recording.id;
+    tag.directory       = "recordings";
+    tag.subtitle        = "";
+    tag.channel_name    = "";
+    tag.recording_time  = recording.start;
+    tag.duration        = recording.stop - recording.start;
+    tag.description     = recording.description.c_str();
+
+    CStdString streamURL;
+    streamURL.Format("http://%s:%i/dvrfile/%i", g_szHostname.c_str(), g_iPortHTTP, recording.id);
+
+    tag.stream_url      = streamURL.c_str();
+    tag.title           = recording.title.c_str();
+
+    {
+      CMD_LOCK;
+      SChannels::const_iterator itr = m_channels.find(recording.channel);
+      if (itr != m_channels.end())
+        tag.channel_name = itr->second.name.c_str();
+      else
+        tag.channel_name = "";
+    }
+
+    PVR->TransferRecordingEntry(handle, &tag);
+  }
+
+  return PVR_ERROR_NO_ERROR;
+}
+
 void cHTSPData::Action()
 {
   XBMC->Log(LOG_DEBUG, "cHTSPData::Action() - Starting");
@@ -265,6 +329,7 @@ void cHTSPData::Action()
       continue;
     }
 
+    CMD_LOCK;
     if     (strstr(method, "channelAdd"))
       cHTSPSession::ParseChannelUpdate(msg, m_channels);
     else if(strstr(method, "channelUpdate"))
@@ -279,6 +344,12 @@ void cHTSPData::Action()
       cHTSPSession::ParseTagRemove(msg, m_tags);
     else if(strstr(method, "initialSyncCompleted"))
       m_started.Signal();
+    else if(strstr(method, "dvrEntryAdd") || strstr(method, "dvrEntryUpdate"))
+      cHTSPSession::ParseDVREntryAdd(msg, m_recordings);
+    else if(strstr(method, "dvrEntryDelete"))
+      cHTSPSession::ParseDVREntryDelete(msg, m_recordings);
+    else
+      XBMC->Log(LOG_DEBUG, "Unmapped action recieved '%s'", method);
 
     htsmsg_destroy(msg);
   }

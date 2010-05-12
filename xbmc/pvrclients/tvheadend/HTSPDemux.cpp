@@ -50,7 +50,7 @@ bool cHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
   m_channel = channelinfo.number;
   m_tag     = channelinfo.bouquet;
 
-  if(!m_session.Connect(g_szHostname, g_iPort))
+  if(!m_session.Connect(g_szHostname, g_iPortHTSP))
     return false;
 
   if(!g_szUsername.IsEmpty())

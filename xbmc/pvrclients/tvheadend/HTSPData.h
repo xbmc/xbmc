@@ -42,8 +42,10 @@ public:
   bool GetDriveSpace(long long *total, long long *used);
   bool GetTime(time_t *localTime, int *gmtOffset);
   int GetNumChannels();
+  int GetNumRecordings();
   PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio);
   PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
+  PVR_ERROR RequestRecordingsList(PVRHANDLE handle);
 
 protected:
   virtual void Action(void);
@@ -61,6 +63,7 @@ private:
   SChannels GetChannels(STag &tag);
   STags GetTags();
   bool GetEvent(SEvent& event, uint32_t id);
+  SRecordings GetAvailableRecordings();
 
   cHTSPSession    m_session;
   cCondWait       m_started;
@@ -69,4 +72,5 @@ private:
   STags           m_tags;
   SEvents         m_events;
   SMessages       m_queue;
+  SRecordings     m_recordings;
 };
