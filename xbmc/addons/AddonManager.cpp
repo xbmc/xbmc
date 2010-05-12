@@ -301,17 +301,17 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
       && m_addons.find(type) == m_addons.end())
     return false;
 
-    cp_status_t status;
-    cp_plugin_info_t *cpaddon = NULL;
-    cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
-    if (status == CP_OK && cpaddon->extensions)
-    {
-      addon = Factory(cpaddon->extensions);
-      m_cpluff->release_info(m_cp_context, cpaddon);
-      return true;
-    }
-    if (cpaddon)
-      m_cpluff->release_info(m_cp_context, cpaddon);
+  cp_status_t status;
+  cp_plugin_info_t *cpaddon = NULL;
+  cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
+  if (status == CP_OK && cpaddon->extensions)
+  {
+    addon = Factory(cpaddon->extensions);
+    m_cpluff->release_info(m_cp_context, cpaddon);
+    return true;
+  }
+  if (cpaddon)
+    m_cpluff->release_info(m_cp_context, cpaddon);
 
   if (m_idMap[str])
   {
