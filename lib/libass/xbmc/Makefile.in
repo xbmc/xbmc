@@ -8,6 +8,7 @@ DIRS=..
 
 .PHONY: compile
 
+ifeq ($(findstring osx,$(ARCH)), osx)
 $(SLIB): ../libass/.libs/libass.dylib
 	$(CXX) -bundle -flat_namespace -undefined suppress -shared -fPIC \
 	-mmacosx-version-min=10.4 -o $@ ../libass/.libs/*.o
@@ -17,5 +18,14 @@ $(SLIB): ../libass/.libs/libass.dylib
 ../libass/.libs/libass.dylib: compile
 	export MACOSX_DEPLOYMENT_TARGET=10.4
 	$(MAKE) -C ..
+else
+$(SLIB): ../libass/.libs/libass.so
+	$(CXX) -shared -fPIC -o $(SLIB) ../libass/.libs/*.o \
+	  `cat ../../../xbmc/cores/DllLoader/exports/wrapper.def` \
+	  ../../../xbmc/cores/DllLoader/exports/wrapper.o
+
+../libass/.libs/libass.so: compile
+	$(MAKE) -C ..
+endif
 
 include $(abs_top_srcdir)/Makefile.include

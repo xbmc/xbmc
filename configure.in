@@ -272,6 +272,8 @@ AC_ARG_ENABLE([external-python],
             [use_external_python=$enableval],
             [use_external_python=$use_external_libraries])
 
+USE_EXTERNAL_LIBASS=1
+
 ### End of external library options
 
 # PCRE is a requirement
@@ -317,6 +319,7 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -L/opt/local/lib"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/mysql5/mysql"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
+  USE_EXTERNAL_LIBASS=0
 fi
 
 # Add top source directory for all builds so we can use config.h
@@ -446,8 +449,7 @@ else
   AC_CHECK_LIB([tiff],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([rt],        [clock_gettime],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([ass], [ass_set_message_cb],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([ass], [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([ass], [ass_set_message_cb],,USE_EXTERNAL_LIBASS=0)
   
   PKG_CHECK_MODULES([ALSA],       [alsa],
                   [INCLUDES+=" $ALSA_CFLAGS"; LIBS+=" $ALSA_LIBS"],
@@ -1176,8 +1178,13 @@ OUTPUT_FILES="Makefile \
 
 if test "$host_vendor" = "apple"; then
   OUTPUT_FILES+=" \
-                xbmc/cores/paplayer/FLACCodec/Makefile \
+                xbmc/cores/paplayer/FLACCodec/Makefile"
+fi
+
+if test $USE_EXTERNAL_LIBASS; then
+  OUTPUT_FILES+=" \
                 lib/libass/xbmc/Makefile"
+  AC_DEFINE([USE_EXTERNAL_LIBASS], [1], [Whether to use external libass library.])],
 fi
 
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
@@ -1197,6 +1204,7 @@ AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(BUILD_GOOM)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
 AC_SUBST(USE_EXTERNAL_LIBA52)
+AC_SUBST(USE_EXTERNAL_LIBASS)
 AC_SUBST(USE_EXTERNAL_LIBDTS)
 AC_SUBST(USE_EXTERNAL_LIBMPEG2)
 AC_SUBST(USE_EXTERNAL_LIBWAVPACK)
@@ -1509,8 +1517,13 @@ XB_CONFIG_MODULE([lib/libass], [
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4
+  else
+    CFLAGS="$CFLAGS -fPIC" \
+    ./configure \
+      --host=$host_alias \
+      --build=$build_alias
   fi
-], [0])
+], [$USE_EXTERNAL_LIBASS])
 
 XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[
   if test "$host_vendor" = "apple" ; then
