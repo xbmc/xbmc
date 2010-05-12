@@ -66,7 +66,10 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   }
 
   AVCodec *codec;
-  codec = m_dllAvCodec.avcodec_find_encoder(CODEC_ID_VORBIS);
+  codec = m_dllAvCodec.avcodec_find_encoder(
+    strcmp(fmt->name, "ogg") == 0 ? CODEC_ID_VORBIS : fmt->audio_codec
+  );
+
   if (!codec)
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Unable to find a suitable FFmpeg encoder");
@@ -82,11 +85,8 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
     return false;
   }
 
-  /* this is streamed, no file, and ignore the index */
-  m_Format->oformat           = fmt;
-  //m_Format->pb->is_streamed   = 0;
-  //m_Format->flags            |= AVFMT_NOFILE | AVFMT_FLAG_IGNIDX;
-  m_Format->bit_rate          = g_guiSettings.GetInt("audiocds.bitrate") * 1000;
+  m_Format->oformat  = fmt;
+  m_Format->bit_rate = g_guiSettings.GetInt("audiocds.bitrate") * 1000;
 
   /* setup the muxer */
   AVFormatParameters params;
@@ -117,7 +117,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   m_CodecCtx                 = m_Stream->codec;
   m_CodecCtx->codec_id       = codec->id;
   m_CodecCtx->codec_type     = CODEC_TYPE_AUDIO;
-  m_CodecCtx->bit_rate       = g_guiSettings.GetInt("audiocds.bitrate") * 1000;
+  m_CodecCtx->bit_rate       = m_Format->bit_rate;
   m_CodecCtx->sample_rate    = iInRate;
   m_CodecCtx->channels       = iInChannels;
   m_CodecCtx->channel_layout = m_dllAvCodec.avcodec_guess_channel_layout(iInChannels, codec->id, NULL);
