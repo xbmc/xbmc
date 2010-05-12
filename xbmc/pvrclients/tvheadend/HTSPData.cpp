@@ -249,7 +249,7 @@ SRecordings cHTSPData::GetAvailableRecordings()
 
     // TODO This should depend on the backends time not frontend
     // or XBMC should filter recordings that haven't started yet.
-    if (((unsigned int)localTime + (unsigned int)gmtOffset) <= recording.start)
+    if ((unsigned int)localTime <= recording.start)
       continue;
 
     recordings[recording.id] = recording;
@@ -266,6 +266,10 @@ int cHTSPData::GetNumRecordings()
 
 PVR_ERROR cHTSPData::RequestRecordingsList(PVRHANDLE handle)
 {
+  time_t localTime;
+  int gmtOffset;
+  GetTime(&localTime, &gmtOffset);
+
   SRecordings recordings = GetAvailableRecordings();
 
   for(SRecordings::const_iterator it = recordings.begin(); it != recordings.end(); ++it)
@@ -277,7 +281,7 @@ PVR_ERROR cHTSPData::RequestRecordingsList(PVRHANDLE handle)
     tag.directory       = "/";
     tag.subtitle        = "";
     tag.channel_name    = "";
-    tag.recording_time  = recording.start;
+    tag.recording_time  = recording.start + gmtOffset;
     tag.duration        = recording.stop - recording.start;
     tag.description     = recording.description.c_str();
     tag.title           = recording.title.c_str();
