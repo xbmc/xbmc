@@ -1,4 +1,4 @@
-<window id="2004">
+<window id="147">
 	<defaultcontrol>61</defaultcontrol>
 	<controls>
 		<control type="group">
@@ -31,14 +31,13 @@
 			<control type="group">
 				<animation effect="fade" delay="400" start="0" end="100" time="200">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-				<control type="label">
+				<control type="label" id="1">
 					<description>header label</description>
 					<posx>210</posx>
 					<posy>50</posy>
 					<width>1030</width>
 					<height>30</height>
 					<font>font35_title</font>
-					<label>$LOCALIZE[262]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<textcolor>white</textcolor>

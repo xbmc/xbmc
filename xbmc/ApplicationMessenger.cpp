@@ -529,10 +529,9 @@ case TMSG_POWERDOWN:
 
     case TMSG_WRITE_SCRIPT_OUTPUT:
       {
-        //send message to window 2004 (CGUIWindowScriptsInfo)
         CGUIMessage msg(GUI_MSG_USER, 0, 0);
         msg.SetLabel(pMsg->strParam);
-        CGUIWindow* pWindowScripts = g_windowManager.GetWindow(WINDOW_SCRIPTS_INFO);
+        CGUIWindow* pWindowScripts = g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
         if (pWindowScripts) pWindowScripts->OnMessage(msg);
       }
       break;

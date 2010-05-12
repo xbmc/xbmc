@@ -25,7 +25,7 @@
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
 #endif
-#include "GUIWindowScriptsInfo.h"
+#include "GUIDialogTextViewer.h"
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
@@ -166,8 +166,12 @@ bool CGUIWindowScripts::OnPlayMedia(int iItem)
 
 void CGUIWindowScripts::OnInfo()
 {
-  CGUIWindowScriptsInfo* pDlgInfo = (CGUIWindowScriptsInfo*)g_windowManager.GetWindow(WINDOW_SCRIPTS_INFO);
-  if (pDlgInfo) pDlgInfo->DoModal();
+  CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
+  if (pDlgInfo)
+  {
+    pDlgInfo->SetHeading(g_localizeStrings.Get(262));
+    pDlgInfo->DoModal();
+  }
 }
 
 void CGUIWindowScripts::FrameMove()

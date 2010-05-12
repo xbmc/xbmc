@@ -23,15 +23,18 @@
 
 #include "GUIDialog.h"
 
-class CGUIWindowScriptsInfo :
+class CGUIDialogTextViewer :
       public CGUIDialog
 {
 public:
-  CGUIWindowScriptsInfo(void);
-  virtual ~CGUIWindowScriptsInfo(void);
+  CGUIDialogTextViewer(void);
+  virtual ~CGUIDialogTextViewer(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
-  void AddText(const CStdString& strLabel);
+  void SetText(const CStdString& strInfo) { m_strInfo = strInfo; }
+  void SetHeading(const CStdString& strHeading) { m_strHeading = strHeading; }
 protected:
-  CStdString strInfo;
+  CStdString m_strInfo;
+  CStdString m_strHeading;
 };
+

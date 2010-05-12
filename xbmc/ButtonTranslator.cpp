@@ -269,7 +269,7 @@ static const ActionMapping windows[] =
         {"musicinformation"         , WINDOW_MUSIC_INFO},
         {"okdialog"                 , WINDOW_DIALOG_OK},
         {"movieinformation"         , WINDOW_VIDEO_INFO},
-        {"scriptsdebuginfo"         , WINDOW_SCRIPTS_INFO},
+        {"textviewer"               , WINDOW_DIALOG_TEXT_VIEWER},
         {"fullscreenvideo"          , WINDOW_FULLSCREEN_VIDEO},
         {"visualisation"            , WINDOW_VISUALISATION},
         {"slideshow"                , WINDOW_SLIDESHOW},

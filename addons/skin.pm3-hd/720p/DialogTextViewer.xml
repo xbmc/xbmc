@@ -1,4 +1,4 @@
-<window id="2004">
+<window id="147">
 	<defaultcontrol>61</defaultcontrol>
 	<include>dialogeffect</include>
 	<controls>
@@ -16,7 +16,7 @@
 			<height>720</height>
 			<texture border="40">DialogFront.png</texture>
 		</control>
-		<control type="label">
+		<control type="label" id="1">
 			<description>Item Title value</description>
 			<posx>40</posx>
 			<posy>45</posy>
@@ -25,7 +25,6 @@
 			<align>center</align>
 			<aligny>center</aligny>
 			<textcolor>dialogheader</textcolor>
-			<label>$LOCALIZE[262]</label>
 			<font>font18</font>
 		</control>
 		<control type="image">

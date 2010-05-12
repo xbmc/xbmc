@@ -19,33 +19,33 @@
  *
  */
 
-#include "GUIWindowScriptsInfo.h"
+#include "GUIDialogTextViewer.h"
 
-
+#define CONTROL_HEADING  1
 #define CONTROL_TEXTAREA 5
 
-CGUIWindowScriptsInfo::CGUIWindowScriptsInfo(void)
-    : CGUIDialog(WINDOW_SCRIPTS_INFO, "DialogScriptInfo.xml")
+CGUIDialogTextViewer::CGUIDialogTextViewer(void)
+    : CGUIDialog(WINDOW_DIALOG_TEXT_VIEWER, "DialogTextViewer.xml")
 {}
 
-CGUIWindowScriptsInfo::~CGUIWindowScriptsInfo(void)
+CGUIDialogTextViewer::~CGUIDialogTextViewer(void)
 {}
 
-bool CGUIWindowScriptsInfo::OnAction(const CAction &action)
+bool CGUIDialogTextViewer::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_SHOW_INFO)
   {
     // erase debug screen
-    strInfo = "";
+    m_strInfo.clear();
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_TEXTAREA);
-    msg.SetLabel(strInfo);
+    msg.SetLabel(m_strInfo);
     OnMessage(msg);
     return true;
   }
   return CGUIDialog::OnAction(action);
 }
 
-bool CGUIWindowScriptsInfo::OnMessage(CGUIMessage& message)
+bool CGUIDialogTextViewer::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
@@ -53,18 +53,21 @@ bool CGUIWindowScriptsInfo::OnMessage(CGUIMessage& message)
     {
       CGUIDialog::OnMessage(message);
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_TEXTAREA);
-      msg.SetLabel(strInfo);
+      msg.SetLabel(m_strInfo);
       msg.SetParam1(5); // 5 pages max
       OnMessage(msg);
+      CGUIMessage msg2(GUI_MSG_LABEL_SET, GetID(), CONTROL_HEADING);
+      msg2.SetLabel(m_strHeading);
+      OnMessage(msg2);
       return true;
     }
     break;
 
   case GUI_MSG_USER:
     {
-      strInfo += message.GetLabel();
+      m_strInfo += message.GetLabel();
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_TEXTAREA);
-      msg.SetLabel(strInfo);
+      msg.SetLabel(m_strInfo);
       msg.SetParam1(5); // 5 pages max
       OnMessage(msg);
     }
@@ -72,3 +75,4 @@ bool CGUIWindowScriptsInfo::OnMessage(CGUIMessage& message)
   }
   return CGUIDialog::OnMessage(message);
 }
+
