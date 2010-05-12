@@ -1395,7 +1395,7 @@
 	</include>
 	<include name="ClockBGText">
 		<info>System.Time(short)</info>
-		<textcolor>Highlighted</textcolor>
+		<textcolor>FFFF9900</textcolor>
 		<include>ClockText</include>
 		<visible>true</visible>
 	</include>
@@ -1455,7 +1455,7 @@
 		<posy>-1</posy>
 		<height>28</height>
 		<font>MediumAltDefaultFont</font>
-		<textcolor>Highlighted</textcolor>
+		<textcolor>FFFF9900</textcolor>
 		<align>right</align>
 		<aligny>center</aligny>
 	</include>

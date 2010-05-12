@@ -224,6 +224,7 @@
 						<animation effect="fade" start="30" end="30" time="0" condition="true">Conditional</animation>
 					</control>
 					<control type="label">
+						<visible>!Container.Content(Episodes)</visible>
 						<posx>550</posx>
 						<posy>2</posy>
 						<width>104</width>
@@ -235,7 +236,19 @@
 						<textcolor>Unfocused</textcolor>
 					</control>
 					<control type="label">
-						<visible>!IsEmpty(ListItem.Overlay) + [!Container.Content(TVShows) + !Container.Content(Seasons)]</visible>
+						<visible>Container.Content(Episodes)</visible>
+						<posx>550</posx>
+						<posy>2</posy>
+						<width>104</width>
+						<height>42</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Date]</label>
+						<font>SmallDefaultCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+					</control>
+					<control type="label">
+						<visible>!IsEmpty(ListItem.Overlay) + [!Container.Content(TVShows) + !Container.Content(Seasons) + !Container.Content(Episodes)]</visible>
 						<posx>550</posx>
 						<posy>2</posy>
 						<width>95</width>
@@ -254,7 +267,7 @@
 						<height>42</height>
 						<align>right</align>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Episode] $LOCALIZE[20360]</label>
+						<label>$INFO[ListItem.Property(UnWatchedEpisodes)] $LOCALIZE[20360]</label>
 						<font>SmallDefaultCapsFont</font>
 						<textcolor>Unfocused</textcolor>
 					</control>
@@ -414,7 +427,7 @@
 						<include>MediaListItemFade</include>
 					</control>
 					<control type="label">
-						<visible>!IsEmpty(ListItem.Overlay) + [!Container.Content(TVShows) + !Container.Content(Seasons)]</visible>
+						<visible>!IsEmpty(ListItem.Overlay) + [!Container.Content(TVShows) + !Container.Content(Seasons) + !Container.Content(Episodes)]</visible>
 						<posx>550</posx>
 						<posy>2</posy>
 						<width>95</width>
@@ -426,6 +439,17 @@
 						<include>MediaListItemFade</include>
 					</control>
 					<control type="label">
+						<visible>Container.Content(Episodes)</visible>
+						<posx>550</posx>
+						<posy>2</posy>
+						<width>104</width>
+						<height>42</height>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Date]</label>
+						<font>SmallDefaultCapsFont</font>
+					</control>
+					<control type="label">
 						<visible>Container.Content(TVShows) | Container.Content(Seasons)</visible>
 						<posx>550</posx>
 						<posy>2</posy>
@@ -433,12 +457,13 @@
 						<height>42</height>
 						<align>right</align>
 						<aligny>center</aligny>
-						<label>$INFO[ListItem.Episode] $LOCALIZE[20360]</label>
+						<label>$INFO[ListItem.Property(UnWatchedEpisodes)] $LOCALIZE[20360]</label>
 						<font>SmallDefaultCapsFont</font>
 						<include>MediaItemDetailFontFO</include>
 						<include>MediaListItemFade</include>
 					</control>
 					<control type="label">
+						<visible>!Container.Content(episodes)</visible>
 						<posx>550</posx>
 						<posy>2</posy>
 						<width>95</width>
@@ -502,12 +527,13 @@
 					<control type="image">
 						<description>Thumb image</description>
 						<visible>Container.Content(Episodes)</visible>
-						<posx>-392</posx>
-						<width>365</width>
-						<height>205</height>
+						<posx>-388</posx>
+						<posy>69</posy>
+						<width>370</width>
+						<height>210</height>
 						<texture>amt-blank-poster.png</texture>
 						<info>ListItem.Icon</info>
-						<aspectratio align="right" aligny="top">keep</aspectratio>
+						<aspectratio align="left" aligny="top">keep</aspectratio>
 						<bordertexture border="7">ThumbBorder.png</bordertexture>
 						<bordersize>4</bordersize>
 					</control>
@@ -518,6 +544,7 @@
 						<posy>25</posy>
 						<include>WatchedUnwatchedOverlay</include>
 					</control>
+<!--
 					<control type="group">
 						<visible>!Container.Content(episodes) + !Container.Content(tvshows) + !Container.Content(seasons)</visible>
 						<description>Watched/Unwatched Overlay</description>
@@ -526,6 +553,7 @@
 						<posy>25</posy>
 						<include>WatchedUnwatchedOverlay</include>
 					</control>
+-->
 				</control>
 				<!-- Layout for any except Episodes -->
 				<control type="group">
@@ -617,23 +645,45 @@
 					</control>
 				</control>
 				<control type="group">
+					<visible>!Container.Content(Episodes)</visible>
 					<posy>400</posy>
 					<posx>11</posx>
 					<include>InfoListFlags</include>
 				</control>
-				<!-- Layout for Episodes -->
 				<control type="group">
-					<posx>400</posx>
-					<posy>-4</posy>
 					<visible>Container.Content(Episodes)</visible>
+					<posy>408</posy>
+					<posx>13</posx>
+					<include>InfoListFlagsEpisodes</include>
+				</control>
+
+				<!-- Layout for Info List (Episodes View) -->
+				<control type="group">
 					<control type="textbox">
 						<description>Title</description>
-						<width>260</width>
+						<posx>11</posx>
+						<posy>-13</posy>
+						<width>650</width>
 						<height>60</height>
-						<font>MediumLargeTitleCapsFont</font>
-						<label>$INFO[ListItem.Title]</label>
+						<font>MediumLargeTitleFont</font>
+						<label>$INFO[Container.FirstTitle]</label>
 						<visible>Container.Content(Episodes)</visible>
 					</control>
+					<control type="textbox">
+						<posx>11</posx>
+						<posy>19</posy>
+						<description>Title</description>
+						<width>650</width>
+						<height>60</height>
+						<font>MediumLargeTitleCapsFont</font>
+						<label>[COLOR FFFF9900] $LOCALIZE[20373] $INFO[ListItem.Season], $LOCALIZE[20359] $INFO[ListItem.Episode]: [/COLOR] [COLOR FFFFFFFF]$INFO[ListItem.Title] [/COLOR]</label>
+						<visible>Container.Content(Episodes)</visible>
+					</control>
+				</control>
+				<control type="group">
+					<posx>430</posx>
+					<posy>6</posy>
+					<visible>Container.Content(Episodes)</visible>
 					<control type="label">
 						<description>Star Rating Label</description>
 						<posy>70</posy>
@@ -662,7 +712,7 @@
 						<posx>60</posx>
 						<width>80</width>
 						<font>MediumTitleFont</font>
-						<label>$LOCALIZE[2050]:</label>
+						<label>$LOCALIZE[31132]:</label>
 						<align>right</align>
 						<textcolor>FFFF9900</textcolor>
 						<visible>Container.Content(Episodes)</visible>
@@ -717,12 +767,12 @@
 						<visible>Container.Content(Episodes)</visible>
 					</control>
 					<control type="group">
-						<posy>210</posy>
-						<posx>-387</posx>
+						<posy>280</posy>
+						<posx>-417</posx>
 						<control type="textbox">
 							<description>Plot</description>
 							<width>650</width>
-							<height>175</height>
+							<height>110</height>
 							<info>ListItem.Plot</info>
 							<visible>Container.Content(Episodes)</visible>
 						</control>
