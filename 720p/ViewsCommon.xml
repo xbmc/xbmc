@@ -555,11 +555,20 @@
 					</control>
 					<control type="label">
 						<description>Year</description>
-						<visible>Container.Content(movies) | Container.Content(albums) | Container.Content(tvshows)</visible>
+						<visible>Container.Content(movies) | Container.Content(albums)</visible>
 						<posy>28</posy>
 						<width>InfoListTitleWidth</width>
 						<font>SmallTitleCapsFont</font>
 						<label>$INFO[ListItem.year]</label>
+						<textcolor>Focused</textcolor>
+					</control>
+					<control type="label">
+						<description>Year</description>
+						<visible>Container.Content(tvshows)</visible>
+						<posy>28</posy>
+						<width>InfoListTitleWidth</width>
+						<font>SmallTitleCapsFont</font>
+						<label>$INFO[ListItem.date]</label>
 						<textcolor>Focused</textcolor>
 					</control>
 					<control type="label">
