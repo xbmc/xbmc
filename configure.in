@@ -1228,6 +1228,32 @@ AC_SUBST(LIBMAD_BASENAME)
 AC_SUBST(LIBOGG_BASENAME)
 AC_SUBST(LIBVORBISENC_BASENAME)
 AC_SUBST(LIBVORBIS_BASENAME)
+
+# pushd and popd are not available in other shells besides bash, so implement
+# our own pushd/popd functions
+XB_DIRSTACK="$PWD"
+xb_pushd()
+{
+  local dirname="$1"
+  if [[ -d "$dirname" ]] && [[ -x "$dirname" ]]; then
+    cd "$dirname"
+    XB_DIRSTACK="$dirname ${XB_DIRSTACK:-$PWD}"
+    return 0
+  else
+    AC_MSG_ERROR(xb_pushd: unable to change to $dirname)
+  fi
+}
+xb_popd()
+{
+  if [[ -n "$XB_DIRSTACK" ]]; then
+    XB_DIRSTACK="${XB_DIRSTACK#* }"
+    cd "${XB_DIRSTACK%% *}"
+    return 0
+  else
+    AC_MSG_ERROR(xb_popd: unable to go back to previous directory)
+  fi
+}
+
 # Function to run the configure scripts in our submodules
 # Consists of three paramaters, the path to the submodule, the configure command
 # with appropriate arguments, and a third parameter set to 1 if we are to skip
@@ -1236,13 +1262,13 @@ AC_DEFUN([XB_CONFIG_MODULE],[
 AC_CONFIG_COMMANDS_POST([
 if [[ $3 != "1" ]]; then
     if [[ -d $1 ]]; then
-        pushd $1
+        xb_pushd $1
         $2
         if [[ $? -ne 0 ]]; then
-            popd
+            xb_popd
             AC_MSG_ERROR([[Submodule $1 failed to configure]])
         else
-            popd
+            xb_popd
         fi
     else
         AC_MSG_ERROR([[Submodule $1 does not exist]])
