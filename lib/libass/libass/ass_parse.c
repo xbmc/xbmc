@@ -232,8 +232,8 @@ static char *parse_vector_clip(ASS_Renderer *render_priv, char *p)
         if (render_priv->settings.left_margin != 0 ||
             render_priv->settings.top_margin != 0) {
             FT_Vector trans = {
-                .x = int_to_d6(render_priv->settings.left_margin),
-                .y = -int_to_d6(render_priv->settings.top_margin),
+                trans.x = int_to_d6(render_priv->settings.left_margin),
+                trans.y = -int_to_d6(render_priv->settings.top_margin),
             };
             FT_Outline_Translate(&drawing->glyph->outline, trans.x, trans.y);
         }

@@ -34,6 +34,10 @@
 
 #include "ass.h"
 
+#ifdef _WIN32
+#include "config.h"
+#endif
+
 #define MSGL_FATAL 0
 #define MSGL_ERR 1
 #define MSGL_WARN 2

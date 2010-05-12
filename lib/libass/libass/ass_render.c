@@ -329,11 +329,6 @@ static ASS_Image **
 render_glyph(ASS_Renderer *render_priv, Bitmap *bm, int dst_x, int dst_y,
              uint32_t color, uint32_t color2, int brk, ASS_Image **tail)
 {
-    // Inverse clipping in use?
-    if (render_priv->state.clip_mode)
-        return render_glyph_i(render_priv, bm, dst_x, dst_y, color, color2,
-                              brk, tail);
-
     // brk is relative to dst_x
     // color = color left of brk
     // color2 = color right of brk
@@ -341,6 +336,11 @@ render_glyph(ASS_Renderer *render_priv, Bitmap *bm, int dst_x, int dst_y,
     int clip_x0, clip_y0, clip_x1, clip_y1;
     int tmp;
     ASS_Image *img;
+
+    // Inverse clipping in use?
+    if (render_priv->state.clip_mode)
+        return render_glyph_i(render_priv, bm, dst_x, dst_y, color, color2,
+                              brk, tail);
 
     dst_x += bm->left;
     dst_y += bm->top;
@@ -801,9 +801,10 @@ static void compute_string_bbox(TextInfo *info, DBBox *bbox)
                      d6_to_double(info->glyphs[0].pos.y);
 
         for (i = 0; i < info->length; ++i) {
+            double s,e;
             if (info->glyphs[i].skip) continue;
-            double s = d6_to_double(info->glyphs[i].pos.x);
-            double e = s + d6_to_double(info->glyphs[i].advance.x);
+            s = d6_to_double(info->glyphs[i].pos.x);
+            e = s + d6_to_double(info->glyphs[i].advance.x);
             bbox->xMin = FFMIN(bbox->xMin, s);
             bbox->xMax = FFMAX(bbox->xMax, e);
         }
@@ -902,9 +903,9 @@ static void free_render_context(ASS_Renderer *render_priv)
 static void
 get_contour_cbox(FT_BBox *box, FT_Vector *points, int start, int end)
 {
+    int i;
     box->xMin = box->yMin = INT_MAX;
     box->xMax = box->yMax = INT_MIN;
-    int i;
 
     for (i = start; i < end; i++) {
         box->xMin = (points[i].x < box->xMin) ? points[i].x : box->xMin;
@@ -995,6 +996,7 @@ static void draw_opaque_box(ASS_Renderer *render_priv, uint32_t ch,
                      * render_priv->font_scale_x;
     FT_OutlineGlyph og = (FT_OutlineGlyph) glyph;
     FT_Outline *ol;
+    FT_Vector points[4];
 
     // to avoid gaps
     sx = FFMAX(64, sx);
@@ -1019,12 +1021,14 @@ static void draw_opaque_box(ASS_Renderer *render_priv, uint32_t ch,
     desc *= scale_y;
     desc += asc * (scale_y - 1.0);
 
-    FT_Vector points[4] = {
-        { .x = -sx,         .y = asc + sy },
-        { .x = adv + sx,    .y = asc + sy },
-        { .x = adv + sx,    .y = -desc - sy },
-        { .x = -sx,         .y = -desc - sy },
-    };
+    points[0].x = -sx;
+    points[0].y = asc + sy;
+    points[1].x = adv + sx;
+    points[1].y = asc + sy;
+    points[2].x = adv + sx;
+    points[2].y = -desc - sy;
+    points[3].x = -sx;
+    points[3].y = -desc - sy;
 
     FT_Outline_Done(render_priv->ftlibrary, &og->outline);
     FT_Outline_New(render_priv->ftlibrary, 4, 1, &og->outline);
@@ -1525,9 +1529,10 @@ wrap_lines_smart(ASS_Renderer *render_priv, double max_text_width)
     for (i = 0; i < text_info->length; ++i) {
         cur = text_info->glyphs + i;
         if (cur->linebreak) {
+            double height;
             while (i < text_info->length && cur->skip && cur->symbol != '\n')
                 cur = text_info->glyphs + ++i;
-            double height =
+            height =
                 text_info->lines[cur_line - 1].desc +
                 text_info->lines[cur_line].asc;
             cur_line++;

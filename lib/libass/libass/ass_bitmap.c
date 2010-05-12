@@ -469,10 +469,13 @@ int glyph_to_bitmap(ASS_Library *library, ASS_SynthPriv *priv_blur,
                     int be, double blur_radius, FT_Vector shadow_offset,
                     int border_style)
 {
+    int bord;
+    int bbord;
+    int gbord;
     blur_radius *= 2;
-    int bbord = be > 0 ? sqrt(2 * be) : 0;
-    int gbord = blur_radius > 0.0 ? blur_radius + 1 : 0;
-    int bord = FFMAX(bbord, gbord);
+    bbord = be > 0 ? sqrt(2 * be) : 0;
+    gbord = blur_radius > 0.0 ? blur_radius + 1 : 0;
+    bord = FFMAX(bbord, gbord);
     if (bord == 0 && (shadow_offset.x || shadow_offset.y))
         bord = 1;
 
