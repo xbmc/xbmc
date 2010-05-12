@@ -236,6 +236,10 @@ PVR_ERROR cHTSPData::RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &c
 
 SRecordings cHTSPData::GetAvailableRecordings()
 {
+  time_t localTime;
+  int gmtOffset;
+  GetTime(&localTime, &gmtOffset);
+
   CMD_LOCK;
   SRecordings recordings;
 
@@ -245,7 +249,7 @@ SRecordings cHTSPData::GetAvailableRecordings()
 
     // TODO This should depend on the backends time not frontend
     // or XBMC should filter recordings that haven't started yet.
-    if ((unsigned int)time(0) <= recording.start)
+    if (((unsigned int)localTime + (unsigned int)gmtOffset) <= recording.start)
       continue;
 
     recordings[recording.id] = recording;
