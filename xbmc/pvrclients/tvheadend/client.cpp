@@ -386,16 +386,25 @@ PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
 
 PVR_ERROR RequestRecordingsList(PVRHANDLE handle)
 {
+  if (!HTSPData)
+    return PVR_ERROR_SERVER_ERROR;
+
   return HTSPData->RequestRecordingsList(handle);
 }
 
 int GetNumRecordings(void)
 {
+  if (!HTSPData)
+    return PVR_ERROR_SERVER_ERROR;
+
   return HTSPData->GetNumRecordings();
 }
 
 PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo)
 {
+  if (!HTSPData)
+    return PVR_ERROR_SERVER_ERROR;
+
   return HTSPData->DeleteRecording(recinfo);
 }
 
