@@ -42,6 +42,7 @@ crystalhd_not_found="== Could not find libldil. CrystalHD support disabled. =="
 crystalhd_disabled="== CrystalHD support manually disabled. =="
 vdadecoder_enabled="== VDADecoder support enabled. =="
 vdadecoder_disabled="== VDADecoder support manually disabled. =="
+libass_using_internal="== External Libass not found, using internal. =="
 ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
 
 # External library message strings
@@ -362,6 +363,7 @@ AC_CHECK_HEADER([samplerate.h],,     AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([ass], [ass_set_message_cb],,use_external_libass="no")
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
@@ -448,7 +450,6 @@ else
   AC_CHECK_LIB([tiff],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([rt],        [clock_gettime],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([ass], [ass_set_message_cb],,use_external_libass="no")
   
   PKG_CHECK_MODULES([ALSA],       [alsa],
                   [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"],
@@ -1184,6 +1185,7 @@ if test "$use_external_libass" = "no"; then
   OUTPUT_FILES="$OUTPUT_FILES \
                 lib/libass/xbmc/Makefile"
   USE_EXTERNAL_LIBASS=0
+  AC_MSG_NOTICE($libass_using_internal)
 else
   AC_DEFINE([USE_EXTERNAL_LIBASS], [1], [Whether to use external libass library.])
   USE_EXTERNAL_LIBASS=1
