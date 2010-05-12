@@ -48,6 +48,10 @@ public:
   PVR_ERROR RequestRecordingsList(PVRHANDLE handle);
   PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo);
 
+  int GetNumTimers();
+  PVR_ERROR RequestTimerList(PVRHANDLE handle);
+  PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force);
+
 protected:
   virtual void Action(void);
 
@@ -64,7 +68,7 @@ private:
   SChannels GetChannels(STag &tag);
   STags GetTags();
   bool GetEvent(SEvent& event, uint32_t id);
-  SRecordings GetAvailableRecordings();
+  SRecordings GetDVREntries(bool recorded, bool scheduled);
 
   cHTSPSession    m_session;
   cCondWait       m_started;

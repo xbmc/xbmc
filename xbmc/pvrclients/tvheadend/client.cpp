@@ -233,7 +233,7 @@ PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
   props->SupportTimeShift          = false;
   props->SupportEPG                = true;
   props->SupportRecordings         = true;
-  props->SupportTimers             = false;
+  props->SupportTimers             = true;
   props->SupportTV                 = true;
   props->SupportRadio              = false;
   props->SupportChannelSettings    = false;
@@ -408,6 +408,33 @@ PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo)
   return HTSPData->DeleteRecording(recinfo);
 }
 
+/*******************************************/
+/** PVR Timer Functions               **/
+
+int GetNumTimers(void)
+{
+  if (!HTSPData)
+    return PVR_ERROR_SERVER_ERROR;
+
+  return HTSPData->GetNumTimers();
+}
+
+PVR_ERROR RequestTimerList(PVRHANDLE handle)
+{
+  if (!HTSPData)
+    return PVR_ERROR_SERVER_ERROR;
+
+  return HTSPData->RequestTimerList(handle);
+}
+
+PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
+{
+  if (!HTSPData)
+    return PVR_ERROR_SERVER_ERROR;
+
+  return HTSPData->DeleteTimer(timerinfo, force);
+}
+
 /** UNUSED API FUNCTIONS */
 PVR_ERROR DialogChannelScan() { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR MenuHook(const PVR_MENUHOOK &menuhook) { return PVR_ERROR_NOT_IMPLEMENTED; }
@@ -424,10 +451,7 @@ PVR_ERROR RequestCutMarksList(PVRHANDLE handle) { return PVR_ERROR_NOT_IMPLEMENT
 PVR_ERROR AddCutMark(const PVR_CUT_MARK &cutmark) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR DeleteCutMark(const PVR_CUT_MARK &cutmark) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR StartCut() { return PVR_ERROR_NOT_IMPLEMENTED; }
-int GetNumTimers(void) { return 0; }
-PVR_ERROR RequestTimerList(PVRHANDLE handle) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
-PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
 bool SwapLiveTVSecondaryStream() { return false; }

@@ -234,7 +234,7 @@ PVR_ERROR cHTSPData::RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &c
   return PVR_ERROR_NO_ERROR;
 }
 
-SRecordings cHTSPData::GetAvailableRecordings()
+SRecordings cHTSPData::GetDVREntries(bool recorded, bool scheduled)
 {
   time_t localTime;
   int gmtOffset;
@@ -247,12 +247,12 @@ SRecordings cHTSPData::GetAvailableRecordings()
   {
     SRecording recording = it->second;
 
+    bool future = (unsigned int)localTime <= recording.start;
+
     // TODO This should depend on the backends time not frontend
     // or XBMC should filter recordings that haven't started yet.
-    if ((unsigned int)localTime <= recording.start)
-      continue;
-
-    recordings[recording.id] = recording;
+    if ((future && scheduled) || (!future && recorded))
+      recordings[recording.id] = recording;
   }
 
   return recordings;
@@ -260,7 +260,7 @@ SRecordings cHTSPData::GetAvailableRecordings()
 
 int cHTSPData::GetNumRecordings()
 {
-  SRecordings recordings = GetAvailableRecordings();
+  SRecordings recordings = GetDVREntries(true, false);
   return recordings.size();
 }
 
@@ -270,7 +270,7 @@ PVR_ERROR cHTSPData::RequestRecordingsList(PVRHANDLE handle)
   int gmtOffset;
   GetTime(&localTime, &gmtOffset);
 
-  SRecordings recordings = GetAvailableRecordings();
+  SRecordings recordings = GetDVREntries(true, false);
 
   for(SRecordings::const_iterator it = recordings.begin(); it != recordings.end(); ++it)
   {
@@ -322,6 +322,67 @@ PVR_ERROR cHTSPData::DeleteRecording(const PVR_RECORDINGINFO &recinfo)
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "deleteDvrEntry");
   htsmsg_add_u32(msg, "id", recinfo.index);
+  if ((msg = ReadResult(msg)) == NULL)
+  {
+    XBMC->Log(LOG_DEBUG, "cHTSPData::DeleteRecording - Failed to get deleteDvrEntry");
+    return PVR_ERROR_SERVER_ERROR;
+  }
+
+  unsigned int success;
+  if (htsmsg_get_u32(msg, "success", &success) != 0)
+  {
+    XBMC->Log(LOG_DEBUG, "cHTSPData::DeleteRecording - Failed to parse param");
+    return PVR_ERROR_SERVER_ERROR;
+  }
+
+  return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_DELETED;
+}
+
+int cHTSPData::GetNumTimers()
+{
+  SRecordings recordings = GetDVREntries(false, true);
+  return recordings.size();
+}
+
+PVR_ERROR cHTSPData::RequestTimerList(PVRHANDLE handle)
+{
+  time_t localTime;
+  int gmtOffset;
+  GetTime(&localTime, &gmtOffset);
+
+  SRecordings recordings = GetDVREntries(false, true);
+
+  for(SRecordings::const_iterator it = recordings.begin(); it != recordings.end(); ++it)
+  {
+    SRecording recording = it->second;
+
+    PVR_TIMERINFO tag;
+    tag.index       = recording.id;
+    tag.channelNum  = recording.channel;
+    tag.starttime   = recording.start + gmtOffset;
+    tag.endtime     = recording.stop + gmtOffset;
+    tag.active      = true;
+    tag.recording   = (localTime > tag.starttime) && (localTime < tag.endtime);
+    tag.title       = recording.title.c_str();
+    tag.directory   = "/";
+    tag.priority    = 0;
+    tag.lifetime    = tag.endtime - tag.starttime;
+    tag.repeat      = false;
+    tag.repeatflags = 0;
+
+    PVR->TransferTimerEntry(handle, &tag);
+  }
+
+  return PVR_ERROR_NO_ERROR;
+}
+
+PVR_ERROR cHTSPData::DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force)
+{
+  XBMC->Log(LOG_DEBUG, "cHTSPData::DeleteRecording()");
+
+  htsmsg_t *msg = htsmsg_create_map();
+  htsmsg_add_str(msg, "method", "deleteDvrEntry");
+  htsmsg_add_u32(msg, "id", timerinfo.index);
   if ((msg = ReadResult(msg)) == NULL)
   {
     XBMC->Log(LOG_DEBUG, "cHTSPData::DeleteRecording - Failed to get deleteDvrEntry");
