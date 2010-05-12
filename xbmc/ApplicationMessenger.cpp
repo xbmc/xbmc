@@ -531,7 +531,7 @@ case TMSG_POWERDOWN:
       {
         CGUIMessage msg(GUI_MSG_USER, 0, 0);
         msg.SetLabel(pMsg->strParam);
-        CGUIWindow* pWindowScripts = g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
+        CGUIWindow* pWindowScripts = g_windowManager.GetWindow(WINDOW_SCRIPTS);
         if (pWindowScripts) pWindowScripts->OnMessage(msg);
       }
       break;

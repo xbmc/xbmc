@@ -20,6 +20,7 @@
  */
 
 #include "GUIDialogTextViewer.h"
+#include "GUIUserMessages.h"
 
 #define CONTROL_HEADING  1
 #define CONTROL_TEXTAREA 5
@@ -36,9 +37,8 @@ bool CGUIDialogTextViewer::OnAction(const CAction &action)
   if (action.GetID() == ACTION_SHOW_INFO)
   {
     // erase debug screen
-    m_strInfo.clear();
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_TEXTAREA);
-    msg.SetLabel(m_strInfo);
+    msg.SetLabel("");
     OnMessage(msg);
     return true;
   }
@@ -52,27 +52,38 @@ bool CGUIDialogTextViewer::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIDialog::OnMessage(message);
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_TEXTAREA);
-      msg.SetLabel(m_strInfo);
-      msg.SetParam1(5); // 5 pages max
-      OnMessage(msg);
-      CGUIMessage msg2(GUI_MSG_LABEL_SET, GetID(), CONTROL_HEADING);
-      msg2.SetLabel(m_strHeading);
-      OnMessage(msg2);
+      SetHeading();
+      SetText();
       return true;
     }
     break;
-
-  case GUI_MSG_USER:
+  case GUI_MSG_NOTIFY_ALL:
     {
-      m_strInfo += message.GetLabel();
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_TEXTAREA);
-      msg.SetLabel(m_strInfo);
-      msg.SetParam1(5); // 5 pages max
-      OnMessage(msg);
+      if (message.GetParam1() == GUI_MSG_UPDATE)
+      {
+        SetText();
+        SetHeading();
+        return true;
+      }
     }
+    break;
+  default:
     break;
   }
   return CGUIDialog::OnMessage(message);
+}
+
+void CGUIDialogTextViewer::SetText()
+{
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_TEXTAREA);
+  msg.SetLabel(m_strText);
+  OnMessage(msg);
+}
+
+void CGUIDialogTextViewer::SetHeading()
+{
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_HEADING);
+  msg.SetLabel(m_strHeading);
+  OnMessage(msg);
 }
 

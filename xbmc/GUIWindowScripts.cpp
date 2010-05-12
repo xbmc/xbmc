@@ -31,6 +31,7 @@
 #include "FileItem.h"
 #include "addons/AddonManager.h"
 #include "GUIDialogAddonSettings.h"
+#include "GUIUserMessages.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
 #if defined(__APPLE__)
@@ -79,6 +80,18 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
         m_vecItems->m_strPath = g_settings.GetScriptsFolder();
       return CGUIMediaWindow::OnMessage(message);
     }
+    break;
+  case GUI_MSG_USER:
+      m_debug += message.GetLabel();
+      if (m_bViewOutput)
+      {
+        CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
+        pDlgInfo->SetText(m_debug);
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, WINDOW_DIALOG_TEXT_VIEWER, 0, GUI_MSG_UPDATE);
+        g_windowManager.SendThreadMessage(msg);
+      }
+    break;
+  default:
     break;
   }
   return CGUIMediaWindow::OnMessage(message);
@@ -170,7 +183,10 @@ void CGUIWindowScripts::OnInfo()
   if (pDlgInfo)
   {
     pDlgInfo->SetHeading(g_localizeStrings.Get(262));
+    pDlgInfo->SetText(m_debug);
+    m_bViewOutput = true;
     pDlgInfo->DoModal();
+    m_bViewOutput = false;
   }
 }
 
