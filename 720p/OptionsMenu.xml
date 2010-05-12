@@ -433,7 +433,7 @@
 <!-- Possible View Options -->
         <control type="button" id="911">
           <description>List view button</description>
-          <visible>!Control.IsVisible(50) + !Container.Content(Episodes)</visible>
+          <visible>!Control.IsVisible(50) + !Container.Content(Episodes) + !Container.Content(TVShows)</visible>
           <label>$LOCALIZE[535]</label>
           <onclick>Container.SetViewMode(50)</onclick>
           <onclick>SetFocus(50)</onclick>
