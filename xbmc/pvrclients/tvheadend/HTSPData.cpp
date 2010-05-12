@@ -276,13 +276,9 @@ PVR_ERROR cHTSPData::RequestRecordingsList(PVRHANDLE handle)
     tag.recording_time  = recording.start;
     tag.duration        = recording.stop - recording.start;
     tag.description     = recording.description.c_str();
-
-    CStdString streamURL;
-    streamURL.Format("http://%s:%i/dvrfile/%i", g_szHostname.c_str(), g_iPortHTTP, recording.id);
-
-    tag.stream_url      = streamURL.c_str();
     tag.title           = recording.title.c_str();
 
+    CStdString streamURL = "http://";
     {
       CMD_LOCK;
       SChannels::const_iterator itr = m_channels.find(recording.channel);
@@ -290,7 +286,20 @@ PVR_ERROR cHTSPData::RequestRecordingsList(PVRHANDLE handle)
         tag.channel_name = itr->second.name.c_str();
       else
         tag.channel_name = "";
+
+      if (g_szUsername != "")
+      {
+        streamURL += g_szUsername;
+        if (g_szPassword != "")
+        {
+          streamURL += ":";
+          streamURL += g_szPassword;
+        }
+        streamURL += "@";
+      }
+      streamURL.Format("%s%s:%i/dvrfile/%i", streamURL.c_str(), g_szHostname.c_str(), g_iPortHTTP, recording.id);
     }
+    tag.stream_url      = streamURL.c_str();
 
     PVR->TransferRecordingEntry(handle, &tag);
   }
