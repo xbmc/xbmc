@@ -272,7 +272,7 @@ AC_ARG_ENABLE([external-python],
             [use_external_python=$enableval],
             [use_external_python=$use_external_libraries])
 
-USE_EXTERNAL_LIBASS=1
+use_external_libass="yes"
 
 ### End of external library options
 
@@ -319,7 +319,6 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -L/opt/local/lib"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/mysql5/mysql"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
-  USE_EXTERNAL_LIBASS=0
 fi
 
 # Add top source directory for all builds so we can use config.h
@@ -449,7 +448,7 @@ else
   AC_CHECK_LIB([tiff],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([rt],        [clock_gettime],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([ass], [ass_set_message_cb],,USE_EXTERNAL_LIBASS=0)
+  AC_CHECK_LIB([ass], [ass_set_message_cb],,use_external_libass="no")
   
   PKG_CHECK_MODULES([ALSA],       [alsa],
                   [INCLUDES+=" $ALSA_CFLAGS"; LIBS+=" $ALSA_LIBS"],
@@ -1181,7 +1180,7 @@ if test "$host_vendor" = "apple"; then
                 xbmc/cores/paplayer/FLACCodec/Makefile"
 fi
 
-if test $USE_EXTERNAL_LIBASS; then
+if test "$use_external_libass" = "no"; then
   OUTPUT_FILES+=" \
                 lib/libass/xbmc/Makefile"
   AC_DEFINE([USE_EXTERNAL_LIBASS], [1], [Whether to use external libass library.])],
