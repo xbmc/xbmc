@@ -1431,13 +1431,6 @@
 							<bordersize>8</bordersize>
 							<include>WallStreamPosterZoomAnim</include>
 						</control>
-						<control type="image">
-							<description>Glass Overlay</description>
-							<include>WallStreamPosterOverlayFocusDims</include>
-							<include>GlassTextureOverlay2</include>
-							<include>WallStreamPosterOverlayZoomAnim</include>
-							<visible>!IsEmpty(ListItem.Thumb)</visible>
-						</control>
 					</control>
 				</focusedlayout>
 				<!-- Music -->
@@ -1459,13 +1452,6 @@
 							<bordersize>8</bordersize>
 							<include>WallStreamAlbumCoverZoomAnim</include>
 						</control>
-						<control type="image">
-							<description>Glass Overlay</description>
-							<include>WallStreamAlbumOverlayFocusDims</include>
-							<include>GlassTextureOverlay2</include>
-							<include>WallStreamAlbumOverlayZoomAnim</include>
-							<visible>!IsEmpty(ListItem.Thumb)</visible>
-						</control>
 					</control>
 				</focusedlayout>
 				<!-- Episodes -->
@@ -1486,13 +1472,6 @@
 							<bordertexture border="14">ThumbShadow2.png</bordertexture>
 							<bordersize>8</bordersize>
 							<include>WallStreamEpThumbZoomAnim</include>
-						</control>
-						<control type="image">
-							<description>Glass Overlay</description>
-							<include>WallStreamEpThumbOverlayFocusDims</include>
-							<include>GlassTextureOverlay2</include>
-							<include>WallStreamEpThumbOverlayZoomAnim</include>
-							<visible>!IsEmpty(ListItem.Thumb)</visible>
 						</control>
 					</control>
 				</focusedlayout>
