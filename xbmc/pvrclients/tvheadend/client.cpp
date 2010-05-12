@@ -381,6 +381,9 @@ PVR_ERROR SignalQuality(PVR_SIGNALQUALITY &qualityinfo)
   return PVR_ERROR_SERVER_ERROR;
 }
 
+/*******************************************/
+/** PVR Recording Functions               **/
+
 PVR_ERROR RequestRecordingsList(PVRHANDLE handle)
 {
   return HTSPData->RequestRecordingsList(handle);
@@ -389,6 +392,11 @@ PVR_ERROR RequestRecordingsList(PVRHANDLE handle)
 int GetNumRecordings(void)
 {
   return HTSPData->GetNumRecordings();
+}
+
+PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo)
+{
+  return HTSPData->DeleteRecording(recinfo);
 }
 
 /** UNUSED API FUNCTIONS */
@@ -401,7 +409,6 @@ PVR_ERROR RenameChannel(unsigned int number, const char *newname) { return PVR_E
 PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR DialogChannelSettings(const PVR_CHANNEL &channelinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR DialogAddChannel(const PVR_CHANNEL &channelinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
-PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname) { return PVR_ERROR_NOT_IMPLEMENTED; }
 bool HaveCutmarks() { return false; }
 PVR_ERROR RequestCutMarksList(PVRHANDLE handle) { return PVR_ERROR_NOT_IMPLEMENTED; }

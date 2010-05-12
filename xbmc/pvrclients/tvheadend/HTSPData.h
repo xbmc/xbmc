@@ -46,6 +46,7 @@ public:
   PVR_ERROR RequestChannelList(PVRHANDLE handle, int radio);
   PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, const PVR_CHANNEL &channel, time_t start, time_t end);
   PVR_ERROR RequestRecordingsList(PVRHANDLE handle);
+  PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo);
 
 protected:
   virtual void Action(void);

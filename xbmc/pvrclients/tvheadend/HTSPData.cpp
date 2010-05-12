@@ -311,6 +311,29 @@ PVR_ERROR cHTSPData::RequestRecordingsList(PVRHANDLE handle)
   return PVR_ERROR_NO_ERROR;
 }
 
+PVR_ERROR cHTSPData::DeleteRecording(const PVR_RECORDINGINFO &recinfo)
+{
+  XBMC->Log(LOG_DEBUG, "cHTSPData::DeleteRecording()");
+
+  htsmsg_t *msg = htsmsg_create_map();
+  htsmsg_add_str(msg, "method", "deleteDvrEntry");
+  htsmsg_add_u32(msg, "id", recinfo.index);
+  if ((msg = ReadResult(msg)) == NULL)
+  {
+    XBMC->Log(LOG_DEBUG, "cHTSPData::DeleteRecording - Failed to get deleteDvrEntry");
+    return PVR_ERROR_SERVER_ERROR;
+  }
+
+  unsigned int success;
+  if (htsmsg_get_u32(msg, "success", &success) != 0)
+  {
+    XBMC->Log(LOG_DEBUG, "cHTSPData::DeleteRecording - Failed to parse param");
+    return PVR_ERROR_SERVER_ERROR;
+  }
+
+  return success > 0 ? PVR_ERROR_NO_ERROR : PVR_ERROR_NOT_DELETED;
+}
+
 void cHTSPData::Action()
 {
   XBMC->Log(LOG_DEBUG, "cHTSPData::Action() - Starting");
