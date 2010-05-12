@@ -1744,12 +1744,11 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="ReleaseNASM|Win32"
-				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Performing Custom Build Step on $(InputName)"
-					CommandLine="copy ..\configMS.h ..\config.h"
+					CommandLine="copy ..\configMS.h ..\config.h&#x0D;&#x0A;"
 					Outputs="..\config.h"
 				/>
 			</FileConfiguration>
