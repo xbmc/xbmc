@@ -313,6 +313,16 @@ config.log
 /xbmc/cores/dvdplayer/Codecs/libdvd/includes/dvdread/nav_types.h
 
 # /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/.auto/
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/Makefile.in
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/aclocal.m4
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/autom4te.cache/
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/config.h.in~
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/configure
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/doc/Makefile.in
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/src/Makefile.in
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/src/dvdcss/Makefile.in
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/test/Makefile.in
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/config.log
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/config.st
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/stamp-h1
@@ -321,18 +331,10 @@ config.log
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/configure.lineno
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/Makefile
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/config.status
-
-# /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/doc/
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/doc/Makefile
-
-# /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/src/
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/src/d
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/src/Makefile
-
-# /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/src/dvdcss/
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/src/dvdcss/Makefile
-
-# /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/test/
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss/test/Makefile
 
 # /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/
