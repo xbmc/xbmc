@@ -777,6 +777,7 @@ config.log
 /lib/cpluff/auxliary
 /lib/cpluff/config.h
 /lib/cpluff/config.h.in
+/lib/cpluff/config.h.in~
 /lib/cpluff/configure
 /lib/cpluff/console
 /lib/cpluff/doc*
