@@ -89,6 +89,11 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
           cddb.getDiskTitle( strAlbum );
           tag.SetAlbum(strAlbum);
 
+          // Album Artist
+          CStdString strAlbumArtist;
+          cddb.getDiskArtist(strAlbumArtist);
+          tag.SetAlbumArtist(strAlbumArtist);
+
           // Year
           SYSTEMTIME dateTime;
           dateTime.wYear = atoi(cddb.getYear().c_str());
