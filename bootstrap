@@ -6,6 +6,7 @@ autoreconf -vif
 autoreconf -vif lib/cpluff
 # we must autoreconf libass as we don't know till later if it's used.
 autoreconf -vif lib/libass
+autoreconf -vif xbmc/cores/dvdplayer/Codecs/libbdnav
 # order matters with libbdnav and friends
 [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss ] && \
   autoreconf -vif xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
