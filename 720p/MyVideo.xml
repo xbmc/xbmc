@@ -4,12 +4,12 @@
 	<controls>
 		<include>Background</include>
 		<!-- -->
+		<include>InfoList</include>
 		<include>List</include>
 		<include>TV</include>
 		<!-- <include>TVEpisodes</include> -->
 		<include>Showcase</include>
 		<include>MediaPreview</include>
-		<include>InfoList</include>
 		<include>PanelStream</include>
 		<include>Coverflow</include>
 		<include>WallStream</include>
