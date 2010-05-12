@@ -572,5 +572,7 @@ void cHTSPSession::ParseDVREntryDelete(htsmsg_t* msg, SRecordings &recordings)
     return;
   }
 
+  XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseDVREntryDelete - Recording %i was deleted", id);
+
   recordings.erase(id);
 }
