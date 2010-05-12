@@ -215,7 +215,8 @@ bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTE
     cp_status_t status;
     int num;
     CStdString ext_point(TranslateType(type));
-    m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
+    cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
+    m_cpluff->release_info(m_cp_context, exts);
     if (status == CP_OK)
       return (num > 0);
   }
@@ -304,7 +305,13 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
     cp_plugin_info_t *cpaddon = NULL;
     cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
     if (status == CP_OK && cpaddon->extensions)
-      return (addon = Factory(cpaddon->extensions));
+    {
+      addon = Factory(cpaddon->extensions);
+      m_cpluff->release_info(m_cp_context, cpaddon);
+      return true;
+    }
+    if (cpaddon)
+      m_cpluff->release_info(m_cp_context, cpaddon);
 
   if (m_idMap[str])
   {
