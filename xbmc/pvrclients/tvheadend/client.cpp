@@ -388,7 +388,7 @@ PVR_ERROR RequestRecordingsList(PVRHANDLE handle)
 
 int GetNumRecordings(void)
 {
-  HTSPData->GetNumRecordings();
+  return HTSPData->GetNumRecordings();
 }
 
 /** UNUSED API FUNCTIONS */
