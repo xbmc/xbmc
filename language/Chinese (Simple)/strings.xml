@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 29996 -->
+<!--Based on english strings version 30064 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -2156,6 +2156,7 @@
   <string id="24067">当前下载扩展功能</string>
   <string id="24068">可更新</string>
   <string id="24069">更新</string>
+  <string id="24070">更新日志</string>
 
   <string id="24070">扩展功能不可用</string>
   <string id="24071">发生未知错误</string>

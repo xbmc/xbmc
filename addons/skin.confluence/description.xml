@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
   <id>skin.confluence</id>
-  <type>skin</type>
+  <type>xbmc.gui.skin</type>
   <title>Confluence</title>
   <version>1.1.0</version>
   <platforms>
