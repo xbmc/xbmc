@@ -18,7 +18,7 @@
 //
 //  --------------------------------------------------------------------------
 //
-// Copyright © 2000, Juan Soulie <jsoulie@cplusplus.com>
+// Copyright (c) 2000, Juan Soulie <jsoulie@cplusplus.com>
 //
 // Permission to use, copy, modify, distribute and sell this software or any
 // part thereof and/or its documentation for any purpose is granted without fee
