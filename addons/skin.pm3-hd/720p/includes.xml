@@ -21,11 +21,23 @@
 	</include>
 	<include name="ContentPanel">
 		<control type="image">
+			<posx>285</posx>
+			<posy>100</posy>
+			<width>995</width>
+			<height>570</height>
+			<fadetime>FanartCrossfadeTime</fadetime>
+			<aspectratio scalediffuse="false">scale</aspectratio>
+			<texture diffuse="Fanart_Diffuse.png" background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+			<visible>![Control.IsVisible(56) | Control.IsVisible(500)]</visible>
+			<include>VisibleFadeEffect</include>
+		</control>
+		<control type="image">
 			<posx>265</posx>
 			<posy>100</posy>
 			<width>1015</width>
 			<height>580</height>
 			<texture border="50,0,0,45">Panel.png</texture>
+			<animation effect="fade" start="100" end="95" time="0" condition="!IsEmpty(ListItem.Property(Fanart_Image))">conditional</animation>
 		</control>
 	</include>
 	<include name="WindowTitleCommons">
@@ -310,12 +322,10 @@
 			<posx>10</posx>
 			<posy>450</posy>
 			<visible>Player.HasAudio</visible>
-			<visible>![Window.IsVisible(VideoLibrary) + Control.IsVisible(55)]</visible>
 			<visible>![Window.IsVisible(VideoLibrary) + Control.IsVisible(56)]</visible>
 			<visible>![Window.IsVisible(VideoLibrary) + Control.IsVisible(500)]</visible>
 			<visible>![Window.IsVisible(VideoFiles) + Control.IsVisible(500)]</visible>
 			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(500)]</visible>
-			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(55)]</visible>
 			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(56)]</visible>
 			<visible>![Window.IsVisible(MusicFiles) + Control.IsVisible(500)]</visible>
 			<include>VisibleFadeEffect</include>
@@ -399,12 +409,10 @@
 			<posx>10</posx>
 			<posy>450</posy>
 			<visible>Player.HasVideo</visible>
-			<visible>![Window.IsVisible(VideoLibrary) + Control.IsVisible(55)]</visible>
 			<visible>![Window.IsVisible(VideoLibrary) + Control.IsVisible(56)]</visible>
 			<visible>![Window.IsVisible(VideoLibrary) + Control.IsVisible(500)]</visible>
 			<visible>![Window.IsVisible(VideoFiles) + Control.IsVisible(500)]</visible>
 			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(500)]</visible>
-			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(55)]</visible>
 			<visible>![Window.IsVisible(MusicLibrary) + Control.IsVisible(56)]</visible>
 			<visible>![Window.IsVisible(MusicFiles) + Control.IsVisible(500)]</visible>
 			<include>VisibleFadeEffect</include>
@@ -563,7 +571,6 @@
 			<animation effect="slide" end="-200,0" time="0" condition="Control.IsVisible(51)">Conditional</animation>
 			<animation effect="slide" end="130,-50" time="0" condition="[Window.IsVisible(MusicFiles) | Window.IsVisible(Musiclibrary) | Window.IsVisible(MusicPlaylist)] + Control.IsVisible(59)">Conditional</animation>
 			<animation effect="slide" end="280,0" time="0" condition="Window.IsVisible(Videolibrary) + [Control.IsVisible(56) | Control.IsVisible(59)]">Conditional</animation>
-			<animation effect="slide" end="280,-80" time="0" condition="Window.IsVisible(Videolibrary) + Control.IsVisible(55)">Conditional</animation>
 			<animation effect="slide" end="130,-50" time="0" condition="Window.IsVisible(Videolibrary) + Control.IsVisible(58)">Conditional</animation>
 			<animation effect="slide" end="-130,0" time="0" condition="Window.IsVisible(Videolibrary) + Control.IsVisible(500)">Conditional</animation>
 			<animation effect="slide" end="-130,0" time="0" condition="Window.IsVisible(VideoFiles) + Control.IsVisible(500)">Conditional</animation>
