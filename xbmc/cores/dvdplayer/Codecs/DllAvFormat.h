@@ -80,11 +80,7 @@ public:
   virtual void put_be16(ByteIOContext *s, unsigned int val)=0;
   virtual AVFormatContext *avformat_alloc_context(void)=0;
   virtual AVStream *av_new_stream(AVFormatContext *s, int id)=0;
-#if LIBAVFORMAT_VERSION_MAJOR < 52
-  virtual AVOutputFormat *guess_format(const char *short_name, const char *filename, const char *mime_type)=0;
-#else
   virtual AVOutputFormat *av_guess_format(const char *short_name, const char *filename, const char *mime_type)=0;
-#endif
   virtual int av_set_parameters(AVFormatContext *s, AVFormatParameters *ap)=0;
   virtual ByteIOContext *av_alloc_put_byte(unsigned char *buffer, int buffer_size, int write_flag, void *opaque,
                                            int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
@@ -148,8 +144,8 @@ public:
   virtual void put_be16(ByteIOContext *s, unsigned int val) { ::put_be16(s, val); }
   virtual AVFormatContext *avformat_alloc_context() { return ::avformat_alloc_context(); }
   virtual AVStream *av_new_stream(AVFormatContext *s, int id) { return ::av_new_stream(s, id); }
-#if LIBAVFORMAT_VERSION_MAJOR < 52
-  virtual AVOutputFormat *guess_format(const char *short_name, const char *filename, const char *mime_type) { return ::guess_format(short_name, filename, mime_type); }
+#if LIBAVFORMAT_VERSION_INT < (52<<16 | 45<<8)
+  virtual AVOutputFormat *av_guess_format(const char *short_name, const char *filename, const char *mime_type) { return ::guess_format(short_name, filename, mime_type); }
 #else
   virtual AVOutputFormat *av_guess_format(const char *short_name, const char *filename, const char *mime_type) { return ::av_guess_format(short_name, filename, mime_type); }
 #endif
@@ -161,7 +157,11 @@ public:
   virtual int av_write_header (AVFormatContext *s) { return ::av_write_header (s); }
   virtual int av_write_trailer(AVFormatContext *s) { return ::av_write_trailer(s); }
   virtual int av_write_frame  (AVFormatContext *s, AVPacket *pkt) { return ::av_write_frame(s, pkt); }
-  virtual int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags) { return ::av_metadata_set2(key, value, flags); }
+#if LIBAVFORMAT_VERSION_INT <= (52<<16 | 31<<8)
+  virtual int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags) { return ::av_metadata_set(pm, key, value); }
+#else
+  virtual int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags) { return ::av_metadata_set2(pm, key, value, flags); }
+#endif
 
   // DLL faking.
   virtual bool ResolveExports() { return true; }
@@ -232,7 +232,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD3(offset_t, url_fseek, (ByteIOContext *p1, offset_t p2, int p3))
   DEFINE_METHOD0(AVFormatContext *, avformat_alloc_context)
   DEFINE_METHOD2(AVStream *, av_new_stream, (AVFormatContext *p1, int p2))
-#if LIBAVFORMAT_VERSION_MAJOR < 52
+#if LIBAVFORMAT_VERSION_INT < (52<<16 | 45<<8)
   DEFINE_METHOD3(AVOutputFormat *, guess_format, (const char *p1, const char *p2, const char *p3))
 #else
   DEFINE_METHOD3(AVOutputFormat *, av_guess_format, (const char *p1, const char *p2, const char *p3))
@@ -280,7 +280,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(put_be16)
     RESOLVE_METHOD(avformat_alloc_context)
     RESOLVE_METHOD(av_new_stream)
-#if LIBAVFORMAT_VERSION_MAJOR < 52
+#if LIBAVFORMAT_VERSION_INT < (52<<16 | 45<<8)
     RESOLVE_METHOD(guess_format)
 #else
     RESOLVE_METHOD(av_guess_format)
