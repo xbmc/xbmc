@@ -218,13 +218,13 @@
 						<visible>!Container.Content(TVShows) + !Container.Content(Seasons)</visible>
 						<posx>470</posx>
 						<posy>10</posy>
-						<width>16</width>
+						<width>25</width>
 						<height>25</height>
 						<info>ListItem.Overlay</info>
 						<animation effect="fade" start="30" end="30" time="0" condition="true">Conditional</animation>
 					</control>
 					<control type="label">
-						<visible>!Container.Content(Episodes)</visible>
+						<visible>!Container.Content(Episodes) + !Container.Content(TVShows)</visible>
 						<posx>550</posx>
 						<posy>2</posy>
 						<width>104</width>
@@ -450,7 +450,7 @@
 						<visible>!Container.Content(TVShows) + !Container.Content(Seasons)</visible>
 						<posx>470</posx>
 						<posy>10</posy>
-						<width>16</width>
+						<width>25</width>
 						<height>25</height>
 						<info>ListItem.Overlay</info>
 						<include>MediaListItemFade</include>
@@ -492,7 +492,7 @@
 						<include>MediaListItemFade</include>
 					</control>
 					<control type="label">
-						<visible>!Container.Content(episodes)</visible>
+						<visible>!Container.Content(Episodes) + !Container.Content(TVShows)</visible>
 						<posx>550</posx>
 						<posy>2</posy>
 						<width>95</width>
