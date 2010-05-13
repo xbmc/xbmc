@@ -272,9 +272,15 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     }
     else if (mtype.formattype == FORMAT_MPEG2Video)
     {
-      MPEG2VIDEOINFO *mpeginfo = (MPEG2VIDEOINFO*)mtype.AllocFormatBuffer(FIELD_OFFSET(MPEG2VIDEOINFO, dwSequenceHeader) + avstream->codec->extradata_size - 7);
+      MPEG2VIDEOINFO *mpeginfo = (MPEG2VIDEOINFO*)mtype.AllocFormatBuffer(FIELD_OFFSET(MPEG2VIDEOINFO, dwSequenceHeader) + avstream->codec->extradata_size);
+      //In case of matroska we do this
+      //MPEG2VIDEOINFO *mpeginfo = (MPEG2VIDEOINFO*)mtype.AllocFormatBuffer(FIELD_OFFSET(MPEG2VIDEOINFO, dwSequenceHeader) + avstream->codec->extradata_size - 7);
       //VideoFps = 10000000.0 / AvgTimePerFrame;
-      mpeginfo->hdr.AvgTimePerFrame = (REFERENCE_TIME)(10000000 / ((float)stream->iFpsRate / (float)stream->iFpsScale));
+      //(not sure about this)
+      if (avstream->codec->has_b_frames == 1)
+        mpeginfo->hdr.AvgTimePerFrame = 0;
+      else
+        mpeginfo->hdr.AvgTimePerFrame = (REFERENCE_TIME)(10000000 / ((float)stream->iFpsRate / (float)stream->iFpsScale));
 
       //TODO Fix FLV only if audio can play if no video
 
@@ -304,47 +310,34 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
       mpeginfo->hdr.bmiHeader.biClrImportant = 0;
       mpeginfo->hdr.bmiHeader.biYPelsPerMeter = 0;
       mpeginfo->hdr.bmiHeader.biXPelsPerMeter = 0;
-      
-      //mtype.pbFormat =
-      //from ffmpeg full info
-      //ex: 01 64 00 1f ff e1 00 19 67 64 00 1f ac 34 e4 01 40 16 ec 04 40 00 00 fa 40 00 2e e0 23 c6 0c 64 80 01 00 05 68 ee b2 c8 b0
-      //from directshow
-      //ex: 00 19 67 64 00 1f ac 34  e4 01 40 16 ec 04 40 00 00 fa 40 00 2e e0 23 c6  0c 64 80 00 05 68 ee b2 c8 b0 
-      //based on those test the extradata from ffmpeg required for the mpeginfo header is starting at index 7
-      //typedef struct SPS in h264.h from ffmpeg source might have all info we need for the MPEG2VIDEOINFO
-      std::vector<BYTE> extravect;
-      extravect.resize(avstream->codec->extradata_size);
-      memcpy(&extravect.at(0), avstream->codec->extradata, avstream->codec->extradata_size);
-
       mpeginfo->dwStartTimeCode = 0;// is there any case where it wouldnt be 0?????
       mpeginfo->dwProfile = avstream->codec->profile;
       mpeginfo->dwLevel = avstream->codec->level;
+      
+      //from ffmpeg full info
+      //ex: 01 64 00 1f ff e1 00 19 67 64 00 1f ac 34 e4 01 40 16 ec 04 40 00 00 fa 40 00 2e e0 23 c6 0c 64 80 01 00 05 68 ee b2 c8 b0
+      //from directshow
+      //ex:                    00 19 67 64 00 1f ac 34  e4 01 40 16 ec 04 40 00 00 fa 40 00 2e e0 23 c6  0c 64 80 00 05 68 ee b2 c8 b0 
+      //based on those test the extradata from ffmpeg required for the mpeginfo header is starting at index 7
+      //typedef struct SPS in h264.h from ffmpeg source might have all info we need for the MPEG2VIDEOINFO
+      
+      std::vector<BYTE> extravect;
+      extravect.resize(avstream->codec->extradata_size);
+      memcpy(&extravect.at(0), avstream->codec->extradata, avstream->codec->extradata_size);
       mpeginfo->dwFlags = (extravect.at(4) & 3) + 1;
-      //drop before 6 and the byte 33(no clue about why i have to remove this one)
-      extravect.erase(extravect.begin() + 33);
-      extravect.erase(extravect.begin(),extravect.begin() + 6);      
-      
-      mpeginfo->cbSequenceHeader = extravect.size();
-      memcpy(mpeginfo->dwSequenceHeader, &extravect.at(0) , extravect.size());
-      return;
-    }
-  
-    
-    
-    if (mtype.formattype == GUID_NULL)
-    {
-      mtype.formattype = FORMAT_VideoInfo;
-    }
-  
-    
+      //remove the start of the sequence not neeeded
+      extravect.erase(extravect.begin(),extravect.begin() + 6);
 
-  
-  
-  
- 
       
-  
-    
+      //mkv usualy end with 00 05 68 EE B2 C8 B0
+      //and from the test i done with 20 different samples the byte right before that is Useless
+      extravect.erase(extravect.begin() + extravect.size() - 8);
+      //drop before 6 and the byte 33(no clue about why i have to remove this one)
+      mpeginfo->cbSequenceHeader = extravect.size();
+      
+      memcpy(mpeginfo->dwSequenceHeader, &extravect.at(0) , extravect.size());
+
+    }
     fpsscale  = stream->iFpsScale;
     fpsrate   = stream->iFpsRate;
     height    = stream->iHeight;

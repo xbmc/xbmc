@@ -20,6 +20,7 @@
  *
  */
 #include "dvdplayer/Codecs/DllAvCodec.h"
+#include "dvdplayer/Codecs/DllAvFormat.h"
 #include "streams.h"
 enum StreamType;
 enum CodecID;
@@ -82,5 +83,6 @@ public:
   void operator=(const CDemuxStream& right)      { Assign(right, true); }
 protected:
   DllAvCodec  m_dllAvCodec;
+  DllAvUtil   m_dllAvUtil;
 
 };
