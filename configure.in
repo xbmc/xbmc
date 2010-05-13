@@ -509,16 +509,25 @@ if test "$host_vendor" != "apple"; then
 fi
 
 # PulseAudio
-if test "$host_vendor" = "apple" ; then
-  use_pulse="no"
-  AC_MSG_RESULT($pulse_disabled)
-else
-  if test "$use_pulse" = "yes"; then
-    AC_CHECK_LIB([pulse], [main],, 
-      use_pulse=no;AC_MSG_RESULT($pulse_not_found))
+if test "x$use_pulse" != "xno"; then
+  if test "$host_vendor" = "apple" ; then
+    if test "x$use_pulse" = "xyes"; then
+      AC_MSG_ERROR($pulse_disabled)
+    else
+      use_pulse="no"
+      AC_MSG_RESULT($pulse_disabled)
+    fi
   else
-    AC_MSG_RESULT($pulse_disabled)
+    AC_CHECK_LIB([pulse], [main],,
+                 [if test "x$use_pulse" = "xyes"; then
+                    AC_MSG_ERROR($pulse_not_found)
+                  else
+                    use_pulse=no
+                    AC_MSG_RESULT($pulse_not_found)
+                  fi])
   fi
+else
+  AC_MSG_RESULT($pulse_disabled)
 fi
 
 # FAAC
@@ -1015,7 +1024,7 @@ else
   final_message="$final_message\n  ccache:\tNo"
 fi
 
-if test "$use_pulse" = "yes"; then
+if test "x$use_pulse" != "xno"; then
   final_message="$final_message\n  PulseAudio:\tYes"
 else
   final_message="$final_message\n  PulseAudio:\tNo"
