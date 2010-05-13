@@ -335,20 +335,6 @@ GNU gettext - internationalization aids
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-SNTP Protocol C++ Implementation
-<http://www.naughter.com/sntp.html>
-
-    Copyright © 1998 - 2003 by PJ Naughter.
-        (Web: www.naughter.com, Email: pjna@naughter.com)
-
-    You are allowed to include the source code in any product (commercial,
-    shareware, freeware or otherwise) when your product is released in binary
-    form. You are allowed to modify the source code in any way you want except
-    you cannot modify the copyright details at the top of each module. If you
-    want to distribute source code with your application, then you are only
-    allowed to distribute versions released by the author. This is to maintain a
-    single distribution point for the source code.
-
 DBUSServer Class
 <http://www.azurdigitalnetworks.net/>
 
