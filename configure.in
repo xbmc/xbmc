@@ -276,9 +276,6 @@ use_external_libass="yes"
 
 ### End of external library options
 
-# PCRE is a requirement
-use_pcre="yes"
-
 # Checks for programs.
 PASSED_CXXFLAGS=$CXXFLAGS # Hack to override autoconf default values
 AC_PROG_CXX
@@ -984,12 +981,6 @@ if test "$use_goom" = "yes"; then
   final_message="$final_message\n  GOOM:\t\tYes"
 else
   final_message="$final_message\n  GOOM:\t\tNo"
-fi
-
-if test "$use_pcre" = "yes"; then
-  final_message="$final_message\n  PCRE Support:\tYes"
-else
-  final_message="$final_message\n  PCRE Support:\tNo"
 fi
 
 if test "$use_mid" = "yes"; then
