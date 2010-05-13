@@ -1386,16 +1386,10 @@
     <ClCompile Include="..\..\xbmc\GUIWindowScripts.cpp">
       <Filter>Source Files\GUI Other</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\GUIWindowScriptsInfo.cpp">
-      <Filter>Source Files\GUI Other</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\GUIWindowSlideShow.cpp">
       <Filter>Source Files\GUI Other</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\GUIWindowStartup.cpp">
-      <Filter>Source Files\GUI Other</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\GUIWindowSystemInfo.cpp">
       <Filter>Source Files\GUI Other</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\GUIWindowVisualisation.cpp">
@@ -2082,9 +2076,6 @@
     <ClCompile Include="..\..\xbmc\lib\libjsonrpc\JSONRPC.cpp">
       <Filter>libraries\libjsonrpc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libjsonrpc\MusicLibrary.cpp">
-      <Filter>libraries\libjsonrpc</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\lib\libjsonrpc\PicturePlayerOperations.cpp">
       <Filter>libraries\libjsonrpc</Filter>
     </ClCompile>
@@ -2129,6 +2120,18 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\GUIDialogAddonInfo.cpp">
       <Filter>Source Files\GUI Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\GUIDialogTextViewer.cpp">
+      <Filter>Source Files\GUI Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\lib\libjsonrpc\AudioLibrary.cpp">
+      <Filter>libraries\libjsonrpc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\GUIWindowSystemInfo.cpp">
+      <Filter>Source Files\GUI Other</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.cpp">
+      <Filter>Source Files\Filesystem\VideoDatabaseDirectory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4439,9 +4442,6 @@
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\JSONRPC.h">
       <Filter>libraries\libjsonrpc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libjsonrpc\MusicLibrary.h">
-      <Filter>libraries\libjsonrpc</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\PicturePlayerOperations.h">
       <Filter>libraries\libjsonrpc</Filter>
     </ClInclude>
@@ -4477,6 +4477,16 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\GUIDialogAddonInfo.h">
       <Filter>Source Files\GUI Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\SystemGlobals.h" />
+    <ClInclude Include="..\..\xbmc\GUIDialogTextViewer.h">
+      <Filter>Source Files\GUI Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\lib\libjsonrpc\AudioLibrary.h">
+      <Filter>libraries\libjsonrpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.h">
+      <Filter>Source Files\Filesystem\VideoDatabaseDirectory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
