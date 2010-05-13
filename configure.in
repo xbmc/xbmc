@@ -124,27 +124,27 @@ AC_ARG_ENABLE([gl],
 
 AC_ARG_ENABLE([vdpau],
             [AS_HELP_STRING([--enable-vdpau],
-               [enable VDPAU decoding (default is yes)])],
+               [enable VDPAU decoding (default is auto)])],
             [use_vdpau=$enableval],
-            [use_vdpau=yes])
+            [use_vdpau=auto])
 
 AC_ARG_ENABLE([vaapi],
             [AS_HELP_STRING([--enable-vaapi],
-               [enable VAAPI decoding (default is yes)])],
+               [enable VAAPI decoding (default is auto)])],
             [use_vaapi=$enableval],
-            [use_vaapi=yes])
+            [use_vaapi=auto])
 
 AC_ARG_ENABLE([crystalhd],
             [AS_HELP_STRING([--enable-crystalhd],
-               [enable CrystalHD decoding (default is yes)])],
+               [enable CrystalHD decoding (default is auto)])],
             [use_crystalhd=$enableval],
-            [use_crystalhd=yes])
+            [use_crystalhd=auto])
 
 AC_ARG_ENABLE([vdadecoder],
             [AS_HELP_STRING([--enable-vdadecoder],
-               [enable VDADecoder decoding (default is yes)])],
+               [enable VDADecoder decoding (default is auto)])],
             [use_vdadecoder=$enableval],
-            [use_vdadecoder=yes])
+            [use_vdadecoder=auto])
 
 AC_ARG_ENABLE([profiling],
             [AS_HELP_STRING([--enable-profiling],
@@ -170,18 +170,17 @@ AC_ARG_ENABLE([goom],
             [use_goom=$enableval],
             [use_goom=no])
 
-AC_PATH_PROG(CCACHE,ccache,none)
 AC_ARG_ENABLE([ccache],
             [AS_HELP_STRING([--enable-ccache],
-               [enable building with ccache feature (default is yes if ccache is installed)])],
+               [enable building with ccache feature (default is auto)])],
             [use_ccache=$enableval],
-            [use_ccache=yes])
+            [use_ccache=auto])
 
 AC_ARG_ENABLE([pulse],
             [AS_HELP_STRING([--enable-pulse],
-               [enable PulseAudio support (default is yes)])],
+               [enable PulseAudio support (default is auto)])],
             [use_pulse=$enableval],
-            [use_pulse=yes])
+            [use_pulse=auto])
 
 AC_ARG_ENABLE([ffmpeg_libvorbis],
             [AS_HELP_STRING([--enable-ffmpeg-libvorbis],
@@ -634,10 +633,15 @@ if test "$use_external_ffmpeg" = "yes"; then
 
   # Disable vdpau support if external libavcodec doesn't have it
   AC_CHECK_LIB([avcodec], [ff_vdpau_vc1_decode_picture],,
-    use_vdpau=no;AC_MSG_RESULT($ffmpeg_vdpau_not_supported))
+               [if test "x$use_vdpau" = "xyes"; then
+                 AC_MSG_ERROR($ffmpeg_vdpau_not_supported)
+               else
+                 use_vdpau=no
+                 AC_MSG_RESULT($ffmpeg_vdpau_not_supported)
+              fi])
 
   # Check for 'PIX_FMT_VDPAU_MPEG4' from libavutil
-  if test "$use_vdpau" = "yes"; then
+  if test "x$use_vdpau" != "xno"; then
     AC_LANG_PUSH([C++])
     AC_LINK_IFELSE([
         #include <libavutil/pixfmt.h>
@@ -711,54 +715,84 @@ else
 fi
 
 # VDPAU
-if test "$host_vendor" = "apple" ; then
-  use_vdpau="no"
-  AC_MSG_NOTICE($vdpau_disabled)
-else
-  if test "$use_vdpau" = "yes"; then
-    AC_CHECK_HEADER([vdpau/vdpau.h],AC_DEFINE([HAVE_LIBVDPAU], [], [Define to 1 if you have the 'vdpau' library (-lvdpau).]),
-      use_vdpau=no;AC_MSG_RESULT($vdpau_not_found))
+if test "x$use_vdpau" != "xno"; then
+  if test "$host_vendor" = "apple" ; then
+    if test "x$use_vdpau" = "xyes"; then
+      AC_MSG_ERROR([VDPAU not supported on this platform])
+    else
+      use_vdpau="no"
+      AC_MSG_NOTICE($vdpau_disabled)
+    fi
   else
-    AC_MSG_NOTICE($vdpau_disabled)
+    AC_CHECK_HEADER([vdpau/vdpau.h],AC_DEFINE([HAVE_LIBVDPAU], [], [Define to 1 if you have the 'vdpau' library (-lvdpau).]),
+    [if test "x$use_vdpau" = "xyes"; then 
+      AC_MSG_ERROR([$vdpau_no_found])
+    else
+      use_vdpau="no"
+      AC_MSG_RESULT($vdpau_not_found)
+    fi])
   fi
+else
+  AC_MSG_NOTICE($vdpau_disabled)
 fi
 
 # VAAPI
-if test "$host_vendor" = "apple" ; then
-  use_vaapi="no"
-  AC_MSG_NOTICE($vaapi_disabled)
-else
-  if test "$use_vaapi" = "yes"; then
-    AC_CHECK_LIB([va-glx], main,, use_vaapi=no;AC_MSG_RESULT($vaapi_not_found), -lva)
+if test "x$use_vaapi" != "xno"; then
+  if test "$host_vendor" = "apple" ; then
+    if test "x$use_vaapi" = "xyes"; then
+      AC_MSG_ERROR([VAAPI not supported on this platform])
+    else
+      use_vaapi="no"
+      AC_MSG_NOTICE($vaapi_disabled)
+    fi
   else
-    AC_MSG_NOTICE($vaapi_disabled)
+    initial_val=$use_vaapi
+    AC_CHECK_LIB([va], main,
+                 [AC_CHECK_LIB([va-glx], main,, use_vaapi=no, -lva)],
+                 [use_vaapi=no])
+    if test "x$use_vaapi" = "xno"; then
+      if test "x$initial_val" = "xyes"; then
+        AC_MSG_ERROR($vaapi_not_found)
+      else
+        AC_MSG_RESULT($vaapi_not_found)
+      fi
+    fi
   fi
-  if test "$use_vaapi" = "yes"; then
-    AC_CHECK_LIB([va], main,, use_vaapi=no;AC_MSG_RESULT($vaapi_not_found))
-  fi
+else
+  AC_MSG_NOTICE($vaapi_disabled)
 fi
 
 # CrystalHD
-if test "$use_crystalhd" = "yes"; then
+if test "x$use_crystalhd" != "xno"; then
   AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h],AC_DEFINE([HAVE_LIBCRYSTALHD], [], 
     [Define to 1 if you have the 'Broadcom Crystal HD' library.]), 
-    use_crystalhd=no;AC_MSG_RESULT($crystalhd_not_found), [#define __LINUX_USER__])
+    [if test "x$use_crystalhd" = "xyes"; then
+       AC_MSG_ERROR($crystalhd_not_found)
+     else
+       use_crystalhd=no
+       AC_MSG_RESULT($crystalhd_not_found)
+     fi],
+     [#define __LINUX_USER__])
 else
   AC_MSG_NOTICE($crystalhd_disabled)
 fi
 
 # VDADecoder
-if test "$host_vendor" = "apple" ; then
-  if test "$use_vdadecoder" = "yes"; then
+if test "x$use_vdadecoder" != "xno"; then
+  if test "$host_vendor" = "apple" ; then
+    # Erm...where the hell is the system test?
     HAVE_LIBVDADECODER=1
     AC_DEFINE([HAVE_LIBVDADECODER], [1], [Define to 1 if you have the 'VDADecoder' library.])
     AC_MSG_NOTICE($vdadecoder_enabled)
   else
-    use_vdadecoder="no"
-    AC_MSG_NOTICE($vdadecoder_disabled)
+    if test "x$use_vdadecoder" = "xyes"; then
+      AC_MSG_ERROR([VDA Decoder not supported on this platform])
+    else
+      use_vdadecoder="no"
+      AC_MSG_NOTICE($vdadecoder_disabled)
+    fi
   fi
 else
-  use_vdadecoder="no"
   AC_MSG_NOTICE($vdadecoder_disabled)
 fi
 
@@ -909,25 +943,25 @@ else
   SDL_DEFINES="-DHAS_SDL_2D"
 fi
 
-if test "$use_vdpau" = "yes"; then
+if test "x$use_vdpau" != "xno"; then
   final_message="$final_message\n  VDPAU:\tYes"
 else
   final_message="$final_message\n  VDPAU:\tNo"
 fi
 
-if test "$use_vaapi" = "yes"; then
+if test "x$use_vaapi" != "xno"; then
   final_message="$final_message\n  VAAPI:\tYes"
 else
   final_message="$final_message\n  VAAPI:\tNo"
 fi
 
-if test "$use_crystalhd" = "yes"; then
+if test "x$use_crystalhd" != "xno"; then
   final_message="$final_message\n  CrystalHD:\tYes"
 else
   final_message="$final_message\n  CrystalHD:\tNo"
 fi
 
-if test "$use_vdadecoder" = "yes"; then
+if test "x$use_vdadecoder" != "xno"; then
   final_message="$final_message\n  VDADecoder:\tYes"
 else
   final_message="$final_message\n  VDADecoder:\tNo"
@@ -971,10 +1005,15 @@ else
   INCLUDES="$INCLUDES"
 fi
 
-if test "$use_ccache" = "yes"; then
+if test "x$use_ccache" != "xno"; then
+  AC_PATH_PROG(CCACHE,ccache,none)
   if test "$ac_cv_path_CCACHE" = "none"; then
-     echo "ccache not found. Falling back to default CC"
-     final_message="$final_message\n  ccache:\tNo"
+    if test "x$use_ccache" = "xyes"; then
+      AC_MSG_ERROR([ccache not found.]);
+    else
+      AC_MSG_NOTICE([ccache not found. Falling back to default CC])
+      final_message="$final_message\n  ccache:\tNo"
+    fi
   else
     CC="$ac_cv_path_CCACHE $CC"
     CXX="$ac_cv_path_CCACHE $CXX"
@@ -1387,12 +1426,11 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-ffplay \
       --disable-ffserver \
       --disable-ffmpeg \
-      --disable-vaapi \
       --enable-shared \
       --enable-postproc \
       --enable-gpl \
-      `if test "$use_vdpau" = "yes"; then echo --enable-vdpau; else echo --disable-vdpau; fi` \
-      `if test "$use_vaapi" = "yes"; then echo --enable-vaapi; else echo --disable-vaapi; fi` \
+      `if test "x$use_vdpau" != "xno"; then echo --enable-vdpau; else echo --disable-vdpau; fi` \
+      `if test "x$use_vaapi" != "xno"; then echo --enable-vaapi; else echo --disable-vaapi; fi` \
       --enable-libfaad \
       --enable-protocol=http \
       --enable-pthreads \
