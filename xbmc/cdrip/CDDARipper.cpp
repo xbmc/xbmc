@@ -30,6 +30,7 @@
 #include "EncoderLame.h"
 #include "EncoderWav.h"
 #include "EncoderVorbis.h"
+#include "EncoderFFmpeg.h"
 #include "FileSystem/CDDADirectory.h"
 #include "MusicInfoTagLoaderFactory.h"
 #include "utils/LabelFormatter.h"
@@ -85,6 +86,7 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
   m_pEncoder->SetArtist(infoTag.GetArtist().c_str());
   m_pEncoder->SetTitle(infoTag.GetTitle().c_str());
   m_pEncoder->SetAlbum(infoTag.GetAlbum().c_str());
+  m_pEncoder->SetAlbumArtist(infoTag.GetAlbumArtist().c_str());
   m_pEncoder->SetGenre(infoTag.GetGenre().c_str());
   m_pEncoder->SetTrack(strTrack.c_str());
   m_pEncoder->SetYear(infoTag.GetYearString().c_str());

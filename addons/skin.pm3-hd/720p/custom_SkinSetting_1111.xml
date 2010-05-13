@@ -260,7 +260,7 @@
 						<imagepath background="true">$INFO[Container(9003).ListItem.Icon]</imagepath>
 						<timeperimage>6000</timeperimage>
 						<randomize>true</randomize>
-						<fadetime>500</fadetime>
+						<fadetime>FanartCrossfadeTime</fadetime>
 					</control>
 					<control type="image">
 						<posx>0</posx>

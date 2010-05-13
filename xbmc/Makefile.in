@@ -146,6 +146,7 @@ SRCS=Application.cpp \
      GUIDialogSettings.cpp \
      GUIDialogSubMenu.cpp \
      GUIDialogTeletext.cpp \
+     GUIDialogTextViewer.cpp \
      GUIDialogVideoBookmarks.cpp \
      GUIDialogVideoSettings.cpp \
      GUIDialogVisualisationPresetList.cpp \
@@ -163,7 +164,6 @@ SRCS=Application.cpp \
      GUIWindowPrograms.cpp \
      GUIWindowScreensaver.cpp \
      GUIWindowScripts.cpp \
-     GUIWindowScriptsInfo.cpp \
      GUIWindowSystemInfo.cpp \
      GUIWindowVisualisation.cpp \
      GUIWindowWeather.cpp \

@@ -76,10 +76,10 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   /* get the muxer */
   AVOutputFormat *fOut = NULL;
 
-#if LIBAVFORMAT_VERSION_MAJOR < 53
+#if LIBAVFORMAT_VERSION_MAJOR < 52
   fOut = m_dllAvFormat.guess_format(muxerName.c_str(), NULL, NULL);
 #else
-  fOut = m_dllAvFormat.av_guess_forma(muxerName.c_str(), NULL, NULL);
+  fOut = m_dllAvFormat.av_guess_format(muxerName.c_str(), NULL, NULL);
 #endif
   if (!fOut)
   {
@@ -316,8 +316,10 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupEncoder(CDVDStreamInfo &hints)
 
 bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
+  int audioMode = g_guiSettings.GetInt("audiooutput.mode");
+
   // TODO - move this stuff somewhere else
-  if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL)
+  if (AUDIO_IS_BITSTREAM(audioMode))
   {
     m_bSupportsAC3Out = g_guiSettings.GetBool("audiooutput.ac3passthrough");
     m_bSupportsDTSOut = g_guiSettings.GetBool("audiooutput.dtspassthrough");
@@ -351,6 +353,14 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   /* see if the muxer supports our codec (see spdif.c for supported formats) */
   if (!SupportsFormat(hints))
   {
+    /* HDMI can do multichannel LPCM, transcoding would just be silly */
+    if (audioMode == AUDIO_HDMI)
+    {
+      CLog::Log(LOGINFO, "CDVDAudioCodecPassthroughFFmpeg::Open - Won't transcode for HDMI");
+      Dispose();
+      return false;
+    }
+
     if (!SetupEncoder(hints) || !SupportsFormat(hints))
     {
       CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - FFmpeg SPDIF muxer does not support this codec");
@@ -360,11 +370,11 @@ bool CDVDAudioCodecPassthroughFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   }
   else
   {
-    /* aac needs to be wrapped into ATDS frames */
+    /* aac needs to be wrapped into ADTS frames */
     if (hints.codec == CODEC_ID_AAC)
       if (!SetupMuxer(hints, "adts", m_ADTS))
       {
-        CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - Unable to setup ATDS muxer");
+        CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::Open - Unable to setup ADTS muxer");
         Dispose();
         return false;
       }

@@ -436,7 +436,8 @@ void CGUISettings::Initialize()
 
   map<int,int> audiomode;
   audiomode.insert(make_pair(338,AUDIO_ANALOG));
-  audiomode.insert(make_pair(339,AUDIO_DIGITAL));
+  audiomode.insert(make_pair(339,AUDIO_IEC958));
+  audiomode.insert(make_pair(420,AUDIO_HDMI  ));
   AddInt(ao, "audiooutput.mode", 337, AUDIO_ANALOG, audiomode, SPIN_CONTROL_TEXT);
 
 /* hide this from apple users until CoreAudio has been updated to support this */

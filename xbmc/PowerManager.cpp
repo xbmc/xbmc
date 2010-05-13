@@ -62,7 +62,7 @@ CPowerManager g_powerManager;
 
 CPowerManager::CPowerManager()
 {
-  m_instance = new CNullPowerSyscall();
+  m_instance = NULL;
 }
 
 CPowerManager::~CPowerManager()
@@ -72,27 +72,23 @@ CPowerManager::~CPowerManager()
 
 void CPowerManager::Initialize()
 {
-  delete m_instance;
-
 #ifdef __APPLE__
   m_instance = new CCocoaPowerSyscall();
 #elif defined(_LINUX) && defined(HAS_DBUS)
-  if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
-    m_instance = new CConsoleDeviceKitPowerSyscall();
-  else if (CConsoleUPowerSyscall::HasDeviceConsoleKit())
+  if (CConsoleUPowerSyscall::HasDeviceConsoleKit())
     m_instance = new CConsoleUPowerSyscall();
+  else if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
+    m_instance = new CConsoleDeviceKitPowerSyscall();
 #ifdef HAS_HAL
   else
     m_instance = new CHALPowerSyscall();
-#else
-  else
-    m_instance = new CNULLPowerSyscall();
 #endif
 #elif defined(_WIN32)
   m_instance = new CWin32PowerSyscall();
-#else
-  m_instance = new CNullPowerSyscall();
 #endif
+
+  if (m_instance == NULL)
+    m_instance = new CNullPowerSyscall();
 }
 
 void CPowerManager::SetDefaults()

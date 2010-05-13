@@ -43,4 +43,5 @@ protected:
   bool m_bViewOutput;
   int m_scriptSize;
   VECSOURCES m_shares;
+  CStdString m_debug;
 };

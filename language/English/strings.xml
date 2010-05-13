@@ -281,7 +281,7 @@
   <string id="336">Framerate conversion</string>
   <string id="337">Audio output</string>
   <string id="338">Analog</string>
-  <string id="339">Digital</string>
+  <string id="339">Optical/Coax</string>
   <string id="340">Various artists</string>
   <string id="341">Play disc</string>
   <string id="342">Movies</string>
@@ -359,6 +359,7 @@
   <string id="417">View: Big icons</string>
   <string id="418">Low</string>
   <string id="419">High</string>
+  <string id="420">HDMI</string>
 
   <string id="422">Delete album info</string>
   <string id="423">Delete CD information</string>
@@ -2155,6 +2156,7 @@
   <string id="24067">Currently downloading addons</string>
   <string id="24068">Update available</string>
   <string id="24069">Update</string>
+  <string id="24070">Changelog</string>
 
   <string id="24070">Add-on can not used</string>
   <string id="24071">An unknown error has occurred</string>

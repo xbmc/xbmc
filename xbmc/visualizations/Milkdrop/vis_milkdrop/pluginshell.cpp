@@ -4,26 +4,26 @@
 Copyright 2005 Nullsoft, Inc.
 All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification, 
+Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
 
   * Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer. 
+    this list of conditions and the following disclaimer.
 
   * Redistributions in binary form must reproduce the above copyright notice,
     this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution. 
+    and/or other materials provided with the distribution.
 
-  * Neither the name of Nullsoft nor the names of its contributors may be used to 
-    endorse or promote products derived from this software without specific prior written permission. 
- 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR 
-IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND 
-FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+  * Neither the name of Nullsoft nor the names of its contributors may be used to
+    endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
-IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT 
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
@@ -31,7 +31,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*
     TO DO
     -----
-    
+
     -to do/v1.06:
         -FFT: high freq. data kinda sucks because of the 8-bit samples we get in;
             look for justin to put 16-bit vis data into wa5.
@@ -57,13 +57,13 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             -"tip" boxes in dxcontext.cpp
             -"notice" box on WM_ACTIVATEAPP?
         -desktop mode:
-            -icon context menus: 'send to', 'cut', and 'copy' links do nothing.  
+            -icon context menus: 'send to', 'cut', and 'copy' links do nothing.
                 -http://netez.com/2xExplorer/shellFAQ/bas_context.html
             -create a 2nd texture to render all icon text labels into
                 (they're the sole reason that desktop mode is slow)
             -in UpdateIconBitmaps, don't read the whole bitmap and THEN
                 realize it's a dupe; try to compare icon filename+index or somethign?
-            -DRAG AND DROP.  COMPLICATED; MANY DETAILS.  
+            -DRAG AND DROP.  COMPLICATED; MANY DETAILS.
                 -http://netez.com/2xExplorer/shellFAQ/adv_drag.html
                 -http://www.codeproject.com/shell/explorerdragdrop.asp
                 -hmm... you can't drag icons between the 2 desktops (ugh)
@@ -72,7 +72,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             -try to solve mysteries w/ShellExecuteEx() and desktop *shortcuts* (*.lnk).
             -(notice that when icons are selected, they get modulated by the
                 highlight color, when they should be blended 50% with that color.)
-    
+
     ---------------------------
     final touches:
         -Tests:
@@ -89,7 +89,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         -build in release mode to include in the ZIP
         -leave only one file open in workspace: README.TXT.
         -TEMPORARILY "ATTRIB -R" ALL FILES BEFORE ZIPPING THEM!
-        
+
     ---------------------------
     KEEP IN VIEW:
         -EMBEDWND:
@@ -100,17 +100,17 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 [justin said he'd fix in wa5, though]
             -kiv: with embedded windows of any type (plugin, playlist, etc.)
                 you can't place the winamp main wnd over them.
-            -kiv: tiny bug (IGNORE): when switching between embedwnd & 
-                no-embedding, the window gets scooted a tiny tiny bit.              
+            -kiv: tiny bug (IGNORE): when switching between embedwnd &
+                no-embedding, the window gets scooted a tiny tiny bit.
         -kiv: fake fullscreen mode w/multiple monitors: there is no way
             to keep the taskbar from popping up [potentially overtop of
             the plugin] when you click on something besides the plugin.
             To get around this, use true fullscreen mode.
         -kiv: max_fps implementation assumptions:
             -that most computers support high-precision timer
-            -that no computers [regularly] sleep for more than 1-2 ms 
+            -that no computers [regularly] sleep for more than 1-2 ms
                 when you call Sleep(1) after timeBeginPeriod(1).
-        -reminder: if vms_desktop.dll's interface needs changed, 
+        -reminder: if vms_desktop.dll's interface needs changed,
             it will have to be renamed!  (version # upgrades are ok
             as long as it won't break on an old version; if the
             new functionality is essential, rename the DLL.)
@@ -121,7 +121,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             (when taskbar is on upper or left edge of screen)
         -Radeon is the one w/super slow text probs @ 1280x1024.
             (it goes unstable after you show playlist AND helpscr; -> ~1 fps)
-        -Mark's win98 machine has hidden cursor (in all modes), 
+        -Mark's win98 machine has hidden cursor (in all modes),
             but no one else seems to have this problem.
         -links:
             -win2k-only-style desktop mode: (uses VirtualAllocEx, vs. DLL Injection)
@@ -148,20 +148,20 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define TEXT_SURFACE_REQUESTED  1
 #define TEXT_SURFACE_READY      2
 #define TEXT_SURFACE_ERROR      3
-typedef struct _HELPVERTEX 
+typedef struct _HELPVERTEX
 {
-    float x, y;      // screen position    
-    float z;         // Z-buffer depth    
+    float x, y;      // screen position
+    float z;         // Z-buffer depth
     DWORD Diffuse;   // diffuse color. also acts as filler; aligns struct to 16 bytes (good for random access/indexed prims)
     float tu, tv;    // texture coordinates for texture #0
-} HELPVERTEX, *LPHELPVERTEX; 
+} HELPVERTEX, *LPHELPVERTEX;
 #define HELP_VERTEX_FORMAT (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1)
-typedef struct _SIMPLEVERTEX 
+typedef struct _SIMPLEVERTEX
 {
-    float x, y;      // screen position    
-    float z;         // Z-buffer depth    
+    float x, y;      // screen position
+    float z;         // Z-buffer depth
     DWORD Diffuse;   // diffuse color. also acts as filler; aligns struct to 16 bytes (good for random access/indexed prims)
-} SIMPLEVERTEX, *LPSIMPLEVERTEX; 
+} SIMPLEVERTEX, *LPSIMPLEVERTEX;
 #define SIMPLE_VERTEX_FORMAT (D3DFVF_XYZ | D3DFVF_DIFFUSE)
 
 extern char g_szHelp[];
@@ -170,7 +170,7 @@ extern char g_szHelp[];
 // resides in vms_desktop.dll/lib:
 void getItemData(int x);
 
- 
+
 CPluginShell::CPluginShell()
 {
     // this should remain empty!
@@ -188,8 +188,8 @@ float     CPluginShell::GetFps()            { return m_fps;        };
 HWND      CPluginShell::GetPluginWindow()   { if (m_lpDX) return m_lpDX->GetHwnd();       else return NULL; };
 int       CPluginShell::GetWidth()          { if (m_lpDX) return m_lpDX->m_client_width;  else return 0; };
 int       CPluginShell::GetHeight()         { if (m_lpDX) return m_lpDX->m_client_height; else return 0; };
-HWND      CPluginShell::GetWinampWindow()   { return m_hWndWinamp; }; 
-HINSTANCE CPluginShell::GetInstance()       { return m_hInstance;  }; 
+HWND      CPluginShell::GetWinampWindow()   { return m_hWndWinamp; };
+HINSTANCE CPluginShell::GetInstance()       { return m_hInstance;  };
 char*     CPluginShell::GetPluginsDirPath() { return m_szPluginsDirPath;  };
 char*     CPluginShell::GetConfigIniFile()  { return m_szConfigIniFile;   };
 //int       CPluginShell::GetFontHeight(eFontIndex idx) { if (idx >= 0 && idx < NUM_BASIC_FONTS + NUM_EXTRA_FONTS) return m_fontinfo[idx].nSize; else return 0; };
@@ -307,7 +307,7 @@ int CPluginShell::InitVJStuff(RECT* pClientRect)
                 ordinal_adapter = i;
                 break;
             }
-        }       
+        }
 
         // Get current display mode for windowed-mode adapter:
         D3DDISPLAYMODE dm;
@@ -342,7 +342,7 @@ int CPluginShell::InitVJStuff(RECT* pClientRect)
         {
             SetRect(&rect, 0, 0, 384, 384);
             AdjustWindowRect(&rect, dwStyle, 0); // convert client->wnd
-            
+
             rect.right  -= rect.left;
             rect.left   = 0;
             rect.bottom -= rect.top;
@@ -353,7 +353,7 @@ int CPluginShell::InitVJStuff(RECT* pClientRect)
             rect.right  += upper_left_corner.x+32;
             rect.bottom += upper_left_corner.y+32;
         }
- 		
+
 		WNDCLASS wc;
 		memset(&wc,0,sizeof(wc));
 		wc.lpfnWndProc = VJModeWndProc;				// our window procedure
@@ -367,7 +367,7 @@ int CPluginShell::InitVJStuff(RECT* pClientRect)
          wc.hbrBackground = (HBRUSH) GetStockObject(BLACK_BRUSH);
          wc.lpszMenuName = NULL;
 
-		if (!RegisterClass(&wc)) 
+		if (!RegisterClass(&wc))
 		{
 			MessageBox(NULL,"Error registering window class for text window","MILKDROP ERROR",MB_OK|MB_SETFOREGROUND|MB_TOPMOST);
 			return false;
@@ -376,7 +376,7 @@ int CPluginShell::InitVJStuff(RECT* pClientRect)
 
 		//DWORD nThreadID;
 		//CreateThread(NULL, 0, TextWindowThread, &rect, 0, &nThreadID);
-		
+
 		// Create the text window
 		m_hTextWnd = CreateWindowEx(
 			0,
@@ -391,7 +391,7 @@ int CPluginShell::InitVJStuff(RECT* pClientRect)
 			NULL
         ); // no window creation data
 
-		if (!m_hTextWnd) 
+		if (!m_hTextWnd)
 		{
 			MessageBox(NULL,"Error creating VJ window","MILKDROP ERROR",MB_OK|MB_SETFOREGROUND|MB_TOPMOST);
 			return false;
@@ -421,11 +421,11 @@ int CPluginShell::InitVJStuff(RECT* pClientRect)
         pres_param.Windowed = TRUE;
 
         HRESULT hr;
-        if (D3D_OK != (hr = m_vjd3d8->CreateDevice(ordinal_adapter,//D3DADAPTER_DEFAULT, 
+        if (D3D_OK != (hr = m_vjd3d8->CreateDevice(ordinal_adapter,//D3DADAPTER_DEFAULT,
                                D3DDEVTYPE_HAL,
-                               m_hTextWnd, 
-                               D3DCREATE_SOFTWARE_VERTEXPROCESSING, 
-                               &pres_param, 
+                               m_hTextWnd,
+                               D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+                               &pres_param,
                                &m_vjd3d8_device)))
         {
             m_vjd3d8_device = NULL;
@@ -477,7 +477,7 @@ void CPluginShell::CleanUpVJStuff()
         if (m_hTextWnd)
 	    {
 		    //dumpmsg("Finish: destroying text window");
-		    DestroyWindow(m_hTextWnd); 
+		    DestroyWindow(m_hTextWnd);
 		    m_hTextWnd = NULL;
 		    //dumpmsg("Finish: text window destroyed");
 	    }
@@ -541,7 +541,7 @@ void CPluginShell::AllocateTextSurface()
         {
             if ((desc.Width  < 256 && w >= 256)  ||
                 (desc.Height < 256 && h >= 256)  ||
-                (desc.Width /(float)w < 0.74f) || 
+                (desc.Width /(float)w < 0.74f) ||
                 (desc.Height/(float)h < 0.74f)
                )
             {
@@ -602,7 +602,7 @@ void CPluginShell::CleanUpDX8Stuff(int final_cleanup)
     //----------------------//
 
 //    m_text.Finish();
-    
+
 //    if (!m_vjd3d8_device)   // otherwise it happens in CleanUpVJStuff()
 //        SafeRelease(m_lpDDSText);
 
@@ -610,7 +610,7 @@ void CPluginShell::CleanUpDX8Stuff(int final_cleanup)
 
     if (!m_vjd3d8_device)   // otherwise it happens in CleanUpVJStuff()
         CleanUpFonts();
-    
+
 //    if (m_screenmode == DESKTOP)
 //        CleanUpDesktopMode();
 }
@@ -647,7 +647,7 @@ void CPluginShell::OnUserResizeTextWindow()
             m_nTextWndHeight != c.bottom-c.top)
         {
             CleanUpVJStuff();
-            if (!InitVJStuff(&c)) 
+            if (!InitVJStuff(&c))
             {
                 SuggestHowToFreeSomeMem();
                 m_lpDX->m_ready = false;   // flag to exit
@@ -849,21 +849,21 @@ int CPluginShell::InitDirectX()
 {
 
 //    m_lpDX = new DXContext(m_hWndWinamp,m_hInstance,CLASSNAME,WINDOWCAPTION,CPluginShell::WindowProc,(LONG)this, m_minimize_winamp, m_szConfigIniFile);
-  m_lpDX = new DXContext(m_device, m_szConfigIniFile);  
+  m_lpDX = new DXContext(m_device, m_szConfigIniFile);
     if (!m_lpDX)
     {
 //        MessageBox(NULL, "Unable to initialize DXContext;\rprobably out of memory.", "ERROR", MB_OK|MB_SETFOREGROUND|MB_TOPMOST);
         return FALSE;
     }
 
-    if (m_lpDX->m_lastErr != S_OK) 
+    if (m_lpDX->m_lastErr != S_OK)
     {
         // warning messagebox will have already been given
         delete m_lpDX;
         return FALSE;
     }
 
-    // initialize graphics 
+    // initialize graphics
     DXCONTEXT_PARAMS params;
     StuffParams(&params);
 
@@ -916,64 +916,64 @@ int CPluginShell::PluginPreInitialize(HWND hWinampWnd, HINSTANCE hWinampInstance
     m_fix_slow_text         = 1;
 
     // initialize font settings:
-    strcpy(m_fontinfo[SIMPLE_FONT    ].szFace,        SIMPLE_FONT_DEFAULT_FACE ); 
+    strcpy(m_fontinfo[SIMPLE_FONT    ].szFace,        SIMPLE_FONT_DEFAULT_FACE );
            m_fontinfo[SIMPLE_FONT    ].nSize        = SIMPLE_FONT_DEFAULT_SIZE ;
            m_fontinfo[SIMPLE_FONT    ].bBold        = SIMPLE_FONT_DEFAULT_BOLD ;
            m_fontinfo[SIMPLE_FONT    ].bItalic      = SIMPLE_FONT_DEFAULT_ITAL ;
            m_fontinfo[SIMPLE_FONT    ].bAntiAliased = SIMPLE_FONT_DEFAULT_AA   ;
-    strcpy(m_fontinfo[DECORATIVE_FONT].szFace,        DECORATIVE_FONT_DEFAULT_FACE); 
+    strcpy(m_fontinfo[DECORATIVE_FONT].szFace,        DECORATIVE_FONT_DEFAULT_FACE);
            m_fontinfo[DECORATIVE_FONT].nSize        = DECORATIVE_FONT_DEFAULT_SIZE;
            m_fontinfo[DECORATIVE_FONT].bBold        = DECORATIVE_FONT_DEFAULT_BOLD;
            m_fontinfo[DECORATIVE_FONT].bItalic      = DECORATIVE_FONT_DEFAULT_ITAL;
            m_fontinfo[DECORATIVE_FONT].bAntiAliased = DECORATIVE_FONT_DEFAULT_AA  ;
-    strcpy(m_fontinfo[HELPSCREEN_FONT].szFace,        HELPSCREEN_FONT_DEFAULT_FACE); 
+    strcpy(m_fontinfo[HELPSCREEN_FONT].szFace,        HELPSCREEN_FONT_DEFAULT_FACE);
            m_fontinfo[HELPSCREEN_FONT].nSize        = HELPSCREEN_FONT_DEFAULT_SIZE;
            m_fontinfo[HELPSCREEN_FONT].bBold        = HELPSCREEN_FONT_DEFAULT_BOLD;
            m_fontinfo[HELPSCREEN_FONT].bItalic      = HELPSCREEN_FONT_DEFAULT_ITAL;
            m_fontinfo[HELPSCREEN_FONT].bAntiAliased = HELPSCREEN_FONT_DEFAULT_AA  ;
-    strcpy(m_fontinfo[PLAYLIST_FONT  ].szFace,        PLAYLIST_FONT_DEFAULT_FACE); 
+    strcpy(m_fontinfo[PLAYLIST_FONT  ].szFace,        PLAYLIST_FONT_DEFAULT_FACE);
            m_fontinfo[PLAYLIST_FONT  ].nSize        = PLAYLIST_FONT_DEFAULT_SIZE;
            m_fontinfo[PLAYLIST_FONT  ].bBold        = PLAYLIST_FONT_DEFAULT_BOLD;
            m_fontinfo[PLAYLIST_FONT  ].bItalic      = PLAYLIST_FONT_DEFAULT_ITAL;
            m_fontinfo[PLAYLIST_FONT  ].bAntiAliased = PLAYLIST_FONT_DEFAULT_AA  ;
 
     #if (NUM_EXTRA_FONTS >= 1)
-        strcpy(m_fontinfo[NUM_BASIC_FONTS + 0].szFace,        EXTRA_FONT_1_DEFAULT_FACE); 
+        strcpy(m_fontinfo[NUM_BASIC_FONTS + 0].szFace,        EXTRA_FONT_1_DEFAULT_FACE);
                m_fontinfo[NUM_BASIC_FONTS + 0].nSize        = EXTRA_FONT_1_DEFAULT_SIZE;
                m_fontinfo[NUM_BASIC_FONTS + 0].bBold        = EXTRA_FONT_1_DEFAULT_BOLD;
                m_fontinfo[NUM_BASIC_FONTS + 0].bItalic      = EXTRA_FONT_1_DEFAULT_ITAL;
                m_fontinfo[NUM_BASIC_FONTS + 0].bAntiAliased = EXTRA_FONT_1_DEFAULT_AA;
     #endif
     #if (NUM_EXTRA_FONTS >= 2)
-        strcpy(m_fontinfo[NUM_BASIC_FONTS + 1].szFace,        EXTRA_FONT_2_DEFAULT_FACE); 
+        strcpy(m_fontinfo[NUM_BASIC_FONTS + 1].szFace,        EXTRA_FONT_2_DEFAULT_FACE);
                m_fontinfo[NUM_BASIC_FONTS + 1].nSize        = EXTRA_FONT_2_DEFAULT_SIZE;
                m_fontinfo[NUM_BASIC_FONTS + 1].bBold        = EXTRA_FONT_2_DEFAULT_BOLD;
                m_fontinfo[NUM_BASIC_FONTS + 1].bItalic      = EXTRA_FONT_2_DEFAULT_ITAL;
                m_fontinfo[NUM_BASIC_FONTS + 1].bAntiAliased = EXTRA_FONT_2_DEFAULT_AA;
     #endif
     #if (NUM_EXTRA_FONTS >= 3)
-        strcpy(m_fontinfo[NUM_BASIC_FONTS + 2].szFace,        EXTRA_FONT_3_DEFAULT_FACE); 
+        strcpy(m_fontinfo[NUM_BASIC_FONTS + 2].szFace,        EXTRA_FONT_3_DEFAULT_FACE);
                m_fontinfo[NUM_BASIC_FONTS + 2].nSize        = EXTRA_FONT_3_DEFAULT_SIZE;
                m_fontinfo[NUM_BASIC_FONTS + 2].bBold        = EXTRA_FONT_3_DEFAULT_BOLD;
                m_fontinfo[NUM_BASIC_FONTS + 2].bItalic      = EXTRA_FONT_3_DEFAULT_ITAL;
                m_fontinfo[NUM_BASIC_FONTS + 2].bAntiAliased = EXTRA_FONT_3_DEFAULT_AA;
     #endif
     #if (NUM_EXTRA_FONTS >= 4)
-        strcpy(m_fontinfo[NUM_BASIC_FONTS + 3].szFace,        EXTRA_FONT_4_DEFAULT_FACE); 
+        strcpy(m_fontinfo[NUM_BASIC_FONTS + 3].szFace,        EXTRA_FONT_4_DEFAULT_FACE);
                m_fontinfo[NUM_BASIC_FONTS + 3].nSize        = EXTRA_FONT_4_DEFAULT_SIZE;
                m_fontinfo[NUM_BASIC_FONTS + 3].bBold        = EXTRA_FONT_4_DEFAULT_BOLD;
                m_fontinfo[NUM_BASIC_FONTS + 3].bItalic      = EXTRA_FONT_4_DEFAULT_ITAL;
                m_fontinfo[NUM_BASIC_FONTS + 3].bAntiAliased = EXTRA_FONT_4_DEFAULT_AA;
     #endif
     #if (NUM_EXTRA_FONTS >= 5)
-        strcpy(m_fontinfo[NUM_BASIC_FONTS + 4].szFace,        EXTRA_FONT_5_DEFAULT_FACE); 
+        strcpy(m_fontinfo[NUM_BASIC_FONTS + 4].szFace,        EXTRA_FONT_5_DEFAULT_FACE);
                m_fontinfo[NUM_BASIC_FONTS + 4].nSize        = EXTRA_FONT_5_DEFAULT_SIZE;
                m_fontinfo[NUM_BASIC_FONTS + 4].bBold        = EXTRA_FONT_5_DEFAULT_BOLD;
                m_fontinfo[NUM_BASIC_FONTS + 4].bItalic      = EXTRA_FONT_5_DEFAULT_ITAL;
                m_fontinfo[NUM_BASIC_FONTS + 4].bAntiAliased = EXTRA_FONT_5_DEFAULT_AA;
     #endif
 
-    m_disp_mode_fs.Width = DEFAULT_FULLSCREEN_WIDTH; 
+    m_disp_mode_fs.Width = DEFAULT_FULLSCREEN_WIDTH;
     m_disp_mode_fs.Height = DEFAULT_FULLSCREEN_HEIGHT;
     m_disp_mode_fs.Format = D3DFMT_UNKNOWN;
     m_disp_mode_fs.RefreshRate = 60;
@@ -1007,9 +1007,9 @@ int CPluginShell::PluginPreInitialize(HWND hWinampWnd, HINSTANCE hWinampInstance
 //        char *p = m_szPluginsDirPath + strlen(m_szPluginsDirPath);
 //        while (p >= m_szPluginsDirPath && *p != '\\') p--;
 //        if (++p >= m_szPluginsDirPath) *p = 0;
-		sprintf(m_szPluginsDirPath, "special://xbmc/visualisations/");
+		sprintf(m_szPluginsDirPath, "special://xbmc/addons/");
 //		sprintf(m_szPluginsDirPath, "d:\\");
-	}    
+	}
     sprintf(m_szConfigIniFile, "%s%s", m_szPluginsDirPath, INIFILE);
 
     // PRIVATE CONFIG PANEL SETTINGS
@@ -1047,7 +1047,7 @@ int CPluginShell::PluginPreInitialize(HWND hWinampWnd, HINSTANCE hWinampInstance
 //    for (i=0; i<NUM_BASIC_FONTS + NUM_EXTRA_FONTS; i++)
 //        m_font[i] = NULL;
 //    m_font_desktop = NULL;
-    
+
     // PRIVATE - DESKTOP MODE STUFF
 //    m_icon_list.clear();
 //    for (int i=0; i<MAX_ICON_TEXTURES; i++)
@@ -1098,7 +1098,7 @@ int CPluginShell::PluginPreInitialize(HWND hWinampWnd, HINSTANCE hWinampInstance
 
     //-----
 
-    m_screenmode = NOT_YET_KNOWN; 
+    m_screenmode = NOT_YET_KNOWN;
 
     OverrideDefaults();
     ReadConfig();
@@ -1115,7 +1115,7 @@ int CPluginShell::PluginPreInitialize(HWND hWinampWnd, HINSTANCE hWinampInstance
  //       m_screenmode = DESKTOP;
  //   else
  //       m_screenmode = WINDOWED;
-    
+
     MyPreInitialize();
     MyReadConfig();
 
@@ -1126,7 +1126,7 @@ int CPluginShell::PluginPreInitialize(HWND hWinampWnd, HINSTANCE hWinampInstance
 
 int CPluginShell::PluginInitialize(LPDIRECT3DDEVICE9 device, int iPosX, int iPosY, int iWidth, int iHeight, float pixelRatio)
 {
-  // note: initialize GDI before DirectX.  Also separate them because 
+  // note: initialize GDI before DirectX.  Also separate them because
   // when we change windowed<->fullscreen, or lose the device and restore it,
   // we don't want to mess with any (persistent) GDI stuff.
   m_device = device;
@@ -1142,7 +1142,7 @@ int CPluginShell::PluginInitialize(LPDIRECT3DDEVICE9 device, int iPosX, int iPos
   if (!AllocateDX8Stuff())   return FALSE;  // gives its own error messages
 
   return TRUE;
-} 
+}
 
 void CPluginShell::PluginQuit()
 {
@@ -1195,24 +1195,24 @@ void CPluginShell::ReadConfig()
 	    m_fontinfo[n].bBold   = InternalGetPrivateProfileInt("settings","bFontBold"#n  ,m_fontinfo[n].bBold  ,m_szConfigIniFile); \
 	    m_fontinfo[n].bItalic = InternalGetPrivateProfileInt("settings","bFontItalic"#n,m_fontinfo[n].bItalic,m_szConfigIniFile); \
 	    m_fontinfo[n].bAntiAliased = InternalGetPrivateProfileInt("settings","bFontAA"#n,m_fontinfo[n].bItalic,m_szConfigIniFile); \
-    } 
+    }
     READ_FONT(0);
     READ_FONT(1);
     READ_FONT(2);
     READ_FONT(3);
-    #if (NUM_EXTRA_FONTS >= 1) 
+    #if (NUM_EXTRA_FONTS >= 1)
         READ_FONT(4);
     #endif
-    #if (NUM_EXTRA_FONTS >= 2) 
+    #if (NUM_EXTRA_FONTS >= 2)
         READ_FONT(5);
     #endif
-    #if (NUM_EXTRA_FONTS >= 3) 
+    #if (NUM_EXTRA_FONTS >= 3)
         READ_FONT(6);
     #endif
-    #if (NUM_EXTRA_FONTS >= 4) 
+    #if (NUM_EXTRA_FONTS >= 4)
         READ_FONT(7);
     #endif
-    #if (NUM_EXTRA_FONTS >= 5) 
+    #if (NUM_EXTRA_FONTS >= 5)
         READ_FONT(8);
     #endif
 */
@@ -1279,27 +1279,27 @@ void CPluginShell::WriteConfig()
 	    WritePrivateProfileInt(m_fontinfo[n].bItalic,"bFontItalic"#n, m_szConfigIniFile, "settings"); \
 	    WritePrivateProfileInt(m_fontinfo[n].nSize,  "nFontSize"#n,   m_szConfigIniFile, "settings"); \
 	    WritePrivateProfileInt(m_fontinfo[n].bAntiAliased, "bFontAA"#n,m_szConfigIniFile, "settings"); \
-    } 
+    }
     WRITE_FONT(0);
     WRITE_FONT(1);
     WRITE_FONT(2);
     WRITE_FONT(3);
-    #if (NUM_EXTRA_FONTS >= 1) 
+    #if (NUM_EXTRA_FONTS >= 1)
         WRITE_FONT(4);
     #endif
-    #if (NUM_EXTRA_FONTS >= 2) 
+    #if (NUM_EXTRA_FONTS >= 2)
         WRITE_FONT(5);
     #endif
-    #if (NUM_EXTRA_FONTS >= 3) 
+    #if (NUM_EXTRA_FONTS >= 3)
         WRITE_FONT(6);
     #endif
-    #if (NUM_EXTRA_FONTS >= 4) 
+    #if (NUM_EXTRA_FONTS >= 4)
         WRITE_FONT(7);
     #endif
-    #if (NUM_EXTRA_FONTS >= 5) 
+    #if (NUM_EXTRA_FONTS >= 5)
         WRITE_FONT(8);
     #endif
-    
+
     WritePrivateProfileInt(m_start_fullscreen,"start_fullscreen",m_szConfigIniFile,"settings");
     WritePrivateProfileInt(m_start_desktop   ,"start_desktop"   ,m_szConfigIniFile,"settings");
     WritePrivateProfileInt(m_fake_fullscreen_mode,"fake_fullscreen_mode",m_szConfigIniFile,"settings");
@@ -1344,7 +1344,7 @@ void CPluginShell::WriteConfig()
 int CPluginShell::PluginRender(unsigned char *pWaveL, unsigned char *pWaveR)//, unsigned char *pSpecL, unsigned char *pSpecR)
 {
     // return FALSE here to tell Winamp to terminate the plugin
-    
+
     if (!m_lpDX || !m_lpDX->m_ready)
     {
         // note: 'm_ready' will go false when a device reset fatally fails
@@ -1358,8 +1358,8 @@ int CPluginShell::PluginRender(unsigned char *pWaveL, unsigned char *pWaveR)//, 
 //    else
 //        m_lost_focus = (GetFocus() != GetPluginWindow());
 
-//    if ((m_screenmode==WINDOWED   && m_hidden) || 
-//        //(m_screenmode==FULLSCREEN && m_lost_focus) || 
+//    if ((m_screenmode==WINDOWED   && m_hidden) ||
+//        //(m_screenmode==FULLSCREEN && m_lost_focus) ||
 //        (m_screenmode==WINDOWED   && m_resizing)
 //        )
 //    {
@@ -1441,10 +1441,10 @@ void CPluginShell::PushWindowToJustBeforeDesktop(HWND h)
 #if 0
     // if our window isn't already at the bottom of the Z order,
     // freshly send it to HWND_BOTTOM.
-    
+
     // this usually gives us the Program Manager window:
     HWND hWndBottom = GetWindow(h, GW_HWNDLAST);
-    
+
     // then, bottommost 'normal' window is usually the one just in front of it:
     if (hWndBottom == m_hWndProgMan)
         hWndBottom = GetWindow(hWndBottom, GW_HWNDPREV);
@@ -1484,7 +1484,7 @@ void CPluginShell::DrawAndDisplay(int redraw)
 	/*
     if (m_screenmode == DESKTOP || m_screenmode == FAKE_FULLSCREEN)
     {
-        // check if taskbar is above plugin window; 
+        // check if taskbar is above plugin window;
         // if so, scoot text & icons out of the way.
         //     [...should always be true for Desktop Mode,
         //         but it's like this for code simplicity.]
@@ -1523,23 +1523,23 @@ void CPluginShell::DrawAndDisplay(int redraw)
     //if (D3D_OK==m_lpDX->m_lpDevice->BeginScene())
     {
         MyRenderFn(redraw);
-          
+
         //PrepareFor2DDrawing_B(GetDevice(), GetWidth(), GetHeight());
 
         //RenderDesktop();
         //RenderBuiltInTextMsgs();
         //MyRenderUI(&m_upper_left_corner_y, &m_upper_right_corner_y, &m_lower_left_corner_y, &m_lower_right_corner_y, m_left_edge, m_right_edge);
         //RenderPlaylist();
-        
+
 //        if (!m_vjd3d8_device)
 //        {
-//            D3DXMATRIX Ortho2D;    
+//            D3DXMATRIX Ortho2D;
 //            D3DXMatrixOrthoLH(&Ortho2D, 2.0f, -2.0f, 0.0f, 1.0f);
 //            m_lpDX->m_lpDevice->SetTransform(D3DTS_PROJECTION, &Ortho2D);
 //
 //            m_text.DrawNow();
 //        }
-        
+
        // m_lpDX->m_lpDevice->EndScene();
     }
 /*
@@ -1550,7 +1550,7 @@ void CPluginShell::DrawAndDisplay(int redraw)
             m_vjd3d8_device->Clear(0, 0, D3DCLEAR_TARGET, 0xFF000000, 1.0f, 0);
         PrepareFor2DDrawing_B(m_vjd3d8_device, m_nTextWndWidth, m_nTextWndHeight);
 
-        D3DXMATRIX Ortho2D;    
+        D3DXMATRIX Ortho2D;
         D3DXMatrixOrthoLH(&Ortho2D, 2.0f, -2.0f, 0.0f, 1.0f);
         m_vjd3d8_device->SetTransform(D3DTS_PROJECTION, &Ortho2D);
 
@@ -1562,7 +1562,7 @@ void CPluginShell::DrawAndDisplay(int redraw)
     if (m_screenmode == DESKTOP)
     {
         // window is hidden after creation, until 1st frame is ready to go;
-        // now that it's ready, we show it.  
+        // now that it's ready, we show it.
         // see dxcontext::Internal_Init()'s call to SetWindowPos() for the DESKTOP case.
         if (!IsWindowVisible(GetPluginWindow()))
             ShowWindow(GetPluginWindow(), SW_SHOWNORMAL);
@@ -1597,12 +1597,12 @@ void CPluginShell::EnforceMaxFPS()
         // that will result in a maximum difference,
         // in the time for a single frame, of 0.002 seconds -
         // the assumed granularity for Sleep(1) -
-        
+
         // Using this range of acceptable fps
         // will allow us to do (sloppy) fps limiting
         // using only Sleep(1), and never the
-        // second half of it: Sleep(0) in a tight loop, 
-        // which sucks up the CPU (whereas Sleep(1) 
+        // second half of it: Sleep(0) in a tight loop,
+        // which sucks up the CPU (whereas Sleep(1)
         // leaves it idle).
 
         // The original equation:
@@ -1626,7 +1626,7 @@ void CPluginShell::EnforceMaxFPS()
                 fps_lo = max_fps / t1;
                 fps_hi = max_fps * t1;
                 // verify: now [1.0f/fps_lo - 1.0f/fps_hi] should equal 0.002 seconds.
-                // note: allowing tolerance to go beyond these values for 
+                // note: allowing tolerance to go beyond these values for
                 // fps_lo and fps_hi would gain nothing.
             }
         }
@@ -1645,7 +1645,7 @@ void CPluginShell::EnforceMaxFPS()
             do
             {
                 QueryPerformanceCounter(&t);
-                
+
                 int ticks_passed = (int)(t.QuadPart - m_prev_end_of_frame.QuadPart);
                 //int ticks_left = ticks_to_wait - ticks_passed;
 
@@ -1653,34 +1653,34 @@ void CPluginShell::EnforceMaxFPS()
                     done = 1;
                 if (ticks_passed >= ticks_to_wait_lo)
                     done = 1;
-                
+
                 if (!done)
                 {
-                    // if > 0.01s left, do Sleep(1), which will actually sleep some 
+                    // if > 0.01s left, do Sleep(1), which will actually sleep some
                     //   steady amount of up to 2 ms (depending on the OS),
                     //   and do so in a nice way (cpu meter drops; laptop battery spared).
                     // otherwise, do a few Sleep(0)'s, which just give up the timeslice,
                     //   but don't really save cpu or battery, but do pass a tiny
                     //   amount of time.
-                    
+
                     //if (ticks_left > (int)m_high_perf_timer_freq.QuadPart/500)
                     if (ticks_to_wait_hi - ticks_passed > (int)m_high_perf_timer_freq.QuadPart/100)
                         Sleep(5);
                     else if (ticks_to_wait_hi - ticks_passed > (int)m_high_perf_timer_freq.QuadPart/1000)
                         Sleep(1);
-                    else                        
-                        for (int i=0; i<10; i++) 
+                    else
+                        for (int i=0; i<10; i++)
                             Sleep(0);  // causes thread to give up its timeslice
                 }
             }
-            while (!done);            
+            while (!done);
         }
 
         m_prev_end_of_frame = t;
     }
     else
     {
-        Sleep(1000/max_fps);        
+        Sleep(1000/max_fps);
     }
 }
 
@@ -1694,7 +1694,7 @@ void CPluginShell::DoTime()
     }
 
     double new_raw_time;
-    float elapsed; 
+    float elapsed;
 
     if (m_high_perf_timer_freq.QuadPart != 0)
     {
@@ -1718,7 +1718,7 @@ void CPluginShell::DoTime()
         // get low-precision time
         // precision: usually 1 ms (MILLIsecond) for win98, and 10 ms for win2k.
         new_raw_time = (double)(GetTickCount()*0.001);
-        elapsed = (float)(new_raw_time - m_last_raw_time);    
+        elapsed = (float)(new_raw_time - m_last_raw_time);
     }
 
     m_last_raw_time = new_raw_time;
@@ -1743,9 +1743,9 @@ void CPluginShell::DoTime()
             elapsed = 1.0f / 30.0f;
 
         float old_hist_time = m_time_hist[(m_time_hist_pos - slots_to_look_back + TIME_HIST_SLOTS) % TIME_HIST_SLOTS];
-		float new_hist_time = m_time_hist[(m_time_hist_pos - 1 + TIME_HIST_SLOTS) % TIME_HIST_SLOTS] 
+		float new_hist_time = m_time_hist[(m_time_hist_pos - 1 + TIME_HIST_SLOTS) % TIME_HIST_SLOTS]
 								+ elapsed;
-        		
+
         m_time_hist[m_time_hist_pos] = new_hist_time;
         m_time_hist_pos = (m_time_hist_pos+1) % TIME_HIST_SLOTS;
 
@@ -1768,12 +1768,12 @@ void CPluginShell::DoTime()
             elapsed = 1.0f / m_fps;
 
         float old_hist_time = m_time_hist[0];
-		float new_hist_time = m_time_hist[(m_time_hist_pos - 1 + TIME_HIST_SLOTS) % TIME_HIST_SLOTS] 
+		float new_hist_time = m_time_hist[(m_time_hist_pos - 1 + TIME_HIST_SLOTS) % TIME_HIST_SLOTS]
 								+ elapsed;
 
 		m_time_hist[m_time_hist_pos] = new_hist_time;
         m_time_hist_pos = (m_time_hist_pos+1) % TIME_HIST_SLOTS;
-    
+
         if (m_frame > 0)
         {
             float new_fps = (m_frame) / (new_hist_time - old_hist_time);
@@ -1813,7 +1813,7 @@ void CPluginShell::AnalyzeNewSound(unsigned char *pWaveL, unsigned char *pWaveR)
         // simulating single frequencies from 200 to 11,025 Hz:
         //float freq = 1.0f + 11050*(GetFrame() % 100)*0.01f;
         //m_sound.fWaveform[0][i] = 10*sinf(i*freq*6.28f/44100.0f);
-        
+
         // damp the input into the FFT a bit, to reduce high-frequency noise:
         temp_wave[0][i] = 0.5f*(m_sound.fWaveform[0][i] + m_sound.fWaveform[0][old_i]);
         temp_wave[1][i] = 0.5f*(m_sound.fWaveform[1][i] + m_sound.fWaveform[1][old_i]);
@@ -1883,7 +1883,7 @@ void CPluginShell::AnalyzeNewSound(unsigned char *pWaveL, unsigned char *pWaveR)
                 OutputDebugString(buf);
 
                 // skip to next song
-                PostMessage(m_hWndWinamp,WM_COMMAND,40048,0);            
+                PostMessage(m_hWndWinamp,WM_COMMAND,40048,0);
             }
             else if (m_frame%FRAMES_PER_SONG == 5)
             {
@@ -1905,9 +1905,9 @@ void CPluginShell::AnalyzeNewSound(unsigned char *pWaveL, unsigned char *pWaveR)
     //  the average levels were: 0.326781557	0.38087377	0.199888934
     for (int ch=0; ch<2; ch++)
     {
-        m_sound.imm[ch][0] /= 0.326781557f;//0.270f;   
-        m_sound.imm[ch][1] /= 0.380873770f;//0.343f;   
-        m_sound.imm[ch][2] /= 0.199888934f;//0.295f;   
+        m_sound.imm[ch][0] /= 0.326781557f;//0.270f;
+        m_sound.imm[ch][1] /= 0.380873770f;//0.343f;
+        m_sound.imm[ch][2] /= 0.199888934f;//0.295f;
     }
 
     // do temporal blending to create attenuated and super-attenuated versions
@@ -1961,7 +1961,7 @@ void CPluginShell::PrepareFor2DDrawing_B(IDirect3DDevice9 *pDevice, int w, int h
     pDevice->SetRenderState( D3DRS_FILLMODE,  D3DFILL_SOLID );
     pDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
     pDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
-//    pDevice->SetRenderState( D3DRS_CLIPPING, TRUE ); 
+//    pDevice->SetRenderState( D3DRS_CLIPPING, TRUE );
     pDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
     pDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
     pDevice->SetRenderState( D3DRS_LOCALVIEWER, FALSE );
@@ -1972,7 +1972,7 @@ void CPluginShell::PrepareFor2DDrawing_B(IDirect3DDevice9 *pDevice, int w, int h
     pDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT);//D3DTEXF_LINEAR);
     pDevice->SetSamplerState(1, D3DSAMP_MAGFILTER, D3DTEXF_POINT);//D3DTEXF_LINEAR);
     pDevice->SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
-    pDevice->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);    
+    pDevice->SetTextureStageState(1, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_DISABLE);
     pDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE );
     pDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
     pDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT );
@@ -1986,9 +1986,9 @@ void CPluginShell::PrepareFor2DDrawing_B(IDirect3DDevice9 *pDevice, int w, int h
 
     // set up for 2D drawing:
     {
-        D3DXMATRIX Ortho2D;    
+        D3DXMATRIX Ortho2D;
         D3DXMATRIX Identity;
-    
+
         D3DXMatrixOrthoLH(&Ortho2D, w, h, 0.0f, 1.0f);
         D3DXMatrixIdentity(&Identity);
 
@@ -2031,7 +2031,7 @@ void CPluginShell::DrawDarkTranslucentBox(RECT* pr)
     {
         verts[i].x = (i%2==0) ? (float)(-w/2  + pr->left  )  :
                                 (float)(-w/2  + pr->right );
-        verts[i].y = (i/2==0) ? (float)-(-h/2 + pr->bottom)  : 
+        verts[i].y = (i/2==0) ? (float)-(-h/2 + pr->bottom)  :
                                 (float)-(-h/2 + pr->top   );
         verts[i].z = 0;
         verts[i].Diffuse = 0xFF000000;// (m_screenmode==DESKTOP) ? 0xE0000000 : 0xD0000000;
@@ -2107,7 +2107,7 @@ void CPluginShell::RenderPlaylist()
             int total_pages = (nSongs) / disp_lines;
 
             if (disp_lines<=0)
-                return; 
+                return;
 
             // apply PgUp/PgDn keypresses since last time
             m_playlist_pos -= m_playlist_pageups * disp_lines;
@@ -2119,7 +2119,7 @@ void CPluginShell::RenderPlaylist()
                 m_playlist_pos = nSongs-1;
 
             // NOTE: 'dwFlags' is used for both DDRAW and DX8
-            DWORD dwFlags   = DT_NOPREFIX | DT_SINGLELINE | DT_WORD_ELLIPSIS; 
+            DWORD dwFlags   = DT_NOPREFIX | DT_SINGLELINE | DT_WORD_ELLIPSIS;
             DWORD color;
 
             int cur_page    = (m_playlist_pos) / disp_lines;
@@ -2155,7 +2155,7 @@ void CPluginShell::RenderPlaylist()
                 m_playlist_width_pixels = 0;
 
                 int max_w = min(m_right_edge - m_left_edge, m_lpDX->m_client_width - TEXT_MARGIN*2 - PLAYLIST_INNER_MARGIN*2);
-            
+
                 for (int i=0; i<disp_lines; i++)
                 {
                     int j = new_top_idx + i;
@@ -2166,7 +2166,7 @@ void CPluginShell::RenderPlaylist()
                         //buf[240] = 0;
                         //sprintf(m_playlist[i], "%d. %s ", j+1, buf);  // leave an extra space @ end, so italicized fonts don't get clipped
 
-                        SetRect(&r, 0, 0, max_w, 1024);  
+                        SetRect(&r, 0, 0, max_w, 1024);
                         m_text.DrawText(GetFont(PLAYLIST_FONT), m_playlist[i], -1, &r, dwFlags | DT_CALCRECT, 0xFFFFFFFF);
                         int w = r.right-r.left;
                         if (w>0)
@@ -2178,7 +2178,7 @@ void CPluginShell::RenderPlaylist()
                     }
                 }
 
-                if (m_playlist_width_pixels == 0 || 
+                if (m_playlist_width_pixels == 0 ||
                     m_playlist_width_pixels > max_w)
                     m_playlist_width_pixels = max_w;
             }
@@ -2202,16 +2202,16 @@ void CPluginShell::RenderPlaylist()
             for (int i=start; i<end; i++)
             {
                 SetRect(&r, m_left_edge + PLAYLIST_INNER_MARGIN, y, m_left_edge + PLAYLIST_INNER_MARGIN + m_playlist_width_pixels, y + GetFontHeight(PLAYLIST_FONT));
-                
+
                 if (m_lpDX->GetBitDepth() == 8)
-                    color = (i==m_playlist_pos) ? 
-                        (i==now_playing ? 0xFFFFFFFF : 0xFFFFFFFF) : 
+                    color = (i==m_playlist_pos) ?
+                        (i==now_playing ? 0xFFFFFFFF : 0xFFFFFFFF) :
                         (i==now_playing ? 0xFFFFFFFF : 0xFF707070);
                 else
-                    color = (i==m_playlist_pos) ? 
-                        (i==now_playing ? PLAYLIST_COLOR_BOTH : PLAYLIST_COLOR_HILITE_TRACK) : 
+                    color = (i==m_playlist_pos) ?
+                        (i==now_playing ? PLAYLIST_COLOR_BOTH : PLAYLIST_COLOR_HILITE_TRACK) :
                         (i==now_playing ? PLAYLIST_COLOR_PLAYING_TRACK : PLAYLIST_COLOR_NORMAL);
-                
+
                 y += m_text.DrawText(GetFont(PLAYLIST_FONT), m_playlist[i-start], -1, &r, dwFlags, color);
             }
 
@@ -2225,13 +2225,13 @@ void CPluginShell::SuggestHowToFreeSomeMem()
 {
 #if 0
     // This function is called when the plugin runs out of video memory;
-    //   it lets you show a messagebox to the user so you can (intelligently) 
-    //   suggest how to free up some video memory, based on what settings 
-    //   they've chosen.  
+    //   it lets you show a messagebox to the user so you can (intelligently)
+    //   suggest how to free up some video memory, based on what settings
+    //   they've chosen.
 
     char str[1024];
 
-    if (m_lpDX->m_current_mode.multisamp != D3DMULTISAMPLE_NONE) 
+    if (m_lpDX->m_current_mode.multisamp != D3DMULTISAMPLE_NONE)
     {
         if (m_lpDX->m_current_mode.screenmode == WINDOWED)
             sprintf(str,
@@ -2258,7 +2258,7 @@ void CPluginShell::SuggestHowToFreeSomeMem()
                 "Then try running the plugin again."
             );
     }
-    else 
+    else
     if (m_lpDX->m_current_mode.screenmode == FULLSCREEN)  // true fullscreen
         sprintf(str,
             "To free up some video memory, try the following:\r"
@@ -2301,7 +2301,7 @@ void CPluginShell::SuggestHowToFreeSomeMem()
             "After making these changes, please RESTART WINAMP before trying to run\r"
             "the plugin again.\r"
         );
-    
+
     MessageBox(m_lpDX->GetHwnd(), str, "SUGGESTION", MB_OK|MB_SETFOREGROUND|MB_TOPMOST);
 #endif
 }
@@ -2330,8 +2330,8 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
     int i;
 
     #ifdef _DEBUG
-        if (uMsg != WM_MOUSEMOVE && 
-            uMsg != WM_NCHITTEST && 
+        if (uMsg != WM_MOUSEMOVE &&
+            uMsg != WM_NCHITTEST &&
             uMsg != WM_SETCURSOR &&
             uMsg != WM_COPYDATA &&
             uMsg != WM_USER)
@@ -2359,18 +2359,18 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
     case WM_USER:
         if (m_screenmode == DESKTOP)
         {
-            // this function resides in vms_desktop.dll; 
+            // this function resides in vms_desktop.dll;
             // its response will come later, via the WM_COPYDATA
             // message (See below).
             getItemData(wParam);
             return 0;
         }
         break;
-  
+
     case WM_COPYDATA:
         if (m_screenmode == DESKTOP)
         {
-            // this message is vms_desktop.dll's response to 
+            // this message is vms_desktop.dll's response to
             // our call to getItemData().
             PCOPYDATASTRUCT c = (PCOPYDATASTRUCT)lParam;
             if (c && (c->cbData % sizeof(icon_t) == 0))
@@ -2392,7 +2392,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
                     std::list<icon_t>::iterator p;
                     int start = c->dwData & 0xFFFF;
                     int len   = c->dwData >> 16;
-                    
+
                     int i = 0;
                     for (p = m_icon_list.begin(); p != m_icon_list.end() && i<start; p++)
                         i++;
@@ -2411,7 +2411,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 
                 LeaveCriticalSection(&m_desktop_cs);
             }
-            
+
             return 0;
         }
         break;
@@ -2432,10 +2432,10 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
             && m_lpDX && m_lpDX->m_ready
            )
         {
-            // unless we requested it ourselves or it's init time, 
-            // prevent the fake desktop window from moving around 
+            // unless we requested it ourselves or it's init time,
+            // prevent the fake desktop window from moving around
             // in the Z order!  (i.e., keep it on the bottom)
-            
+
             // without this code, when you click on the 'real' desktop
             // in a multimon setup, any windows that are overtop of the
             // 'fake' desktop will flash, since they'll be covered
@@ -2457,12 +2457,12 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
         //     fullscreen mode on multiple monitors; it would auto-minimize whenever the
         //     user clicked on a window in another display.
         if (wParam == 0 &&
-            m_screenmode == FULLSCREEN && 
-            m_frame > 0 && 
-            !m_exiting && 
-            m_lpDX && 
-            m_lpDX->m_ready 
-            && m_lpDX->m_lpD3D && 
+            m_screenmode == FULLSCREEN &&
+            m_frame > 0 &&
+            !m_exiting &&
+            m_lpDX &&
+            m_lpDX->m_ready
+            && m_lpDX->m_lpD3D &&
             m_lpDX->m_lpD3D->GetAdapterCount() > 1 &&
             m_hTextWnd==NULL    // important!; if text window exists on diff. monitor, DX8 knows there are multiple monitors, and we don't need to worry about the app auto-minimizing when somebody clicks on another monitor; but if there is no 2nd device (~text window), it does its auto-minimize thing.
             )
@@ -2472,12 +2472,12 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
         break;
 
     case WM_DESTROY:
-        // note: don't post quit message here if the window is being destroyed 
+        // note: don't post quit message here if the window is being destroyed
         // and re-created on a switch between windowed & FAKE fullscreen modes.
         if (!m_lpDX->TempIgnoreDestroyMessages())
         {
             // this is a final exit, and not just destroy-then-recreate-the-window.
-            // so, flag DXContext so it knows that someone else 
+            // so, flag DXContext so it knows that someone else
             // will take care of destroying the window!
             m_lpDX->OnTrulyExiting();
             PostQuitMessage(0);
@@ -2487,12 +2487,12 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 
     case WM_SIZE:
         // clear or set activity flag to reflect focus
-        if (m_lpDX && m_lpDX->m_ready && m_screenmode==WINDOWED && !m_resizing) 
+        if (m_lpDX && m_lpDX->m_ready && m_screenmode==WINDOWED && !m_resizing)
         {
             m_hidden = (SIZE_MAXHIDE==wParam || SIZE_MINIMIZED==wParam) ? TRUE : FALSE;
-            
+
             if (SIZE_MAXIMIZED==wParam || SIZE_RESTORED==wParam) // the window has been maximized or restored
-                OnUserResizeWindow();    
+                OnUserResizeWindow();
         }
         break;
 
@@ -2510,7 +2510,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
         {
             // don't let the window get too small
             MINMAXINFO* p = (MINMAXINFO*)lParam;
-            if (p->ptMinTrackSize.x < 64) 
+            if (p->ptMinTrackSize.x < 64)
                 p->ptMinTrackSize.x = 64;
             p->ptMinTrackSize.y = p->ptMinTrackSize.x*3/4;
         }
@@ -2529,7 +2529,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
                 box.right  = max(m_desktop_drag_curpos.x, m_desktop_drag_startpos.x);
                 box.top    = min(m_desktop_drag_curpos.y, m_desktop_drag_startpos.y);
                 box.bottom = max(m_desktop_drag_curpos.y, m_desktop_drag_startpos.y);
-                
+
                 std::list<icon_t>::iterator p;
                 for (p = m_icon_list.begin(); p != m_icon_list.end(); p++)
                 {
@@ -2560,10 +2560,10 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
             {
                 m_desktop_dragging = 0;
 
-                // move selected item(s) to new cursor position            
+                // move selected item(s) to new cursor position
                 int dx = LOWORD(lParam) - m_desktop_drag_startpos.x;
                 int dy = HIWORD(lParam) - m_desktop_drag_startpos.y;
-        
+
                 if (dx!=0 || dy!=0)
                 {
                     int idx=0;
@@ -2578,7 +2578,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
                         }
                         idx++;
                     }
-                }            
+                }
 
                 // repaint window manually, if winamp is paused
                 if (SendMessage(m_hWndWinamp,WM_USER,0,104) != 1)
@@ -2669,7 +2669,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
                             m_desktop_drag_curpos.x = LOWORD(lParam);
                             m_desktop_drag_curpos.y = HIWORD(lParam);
                             if (!(wParam & MK_CONTROL)) // if CTRL not held down
-                            {   
+                            {
                                 if (!p->selected)
                                 {
                                     DeselectDesktop();
@@ -2702,7 +2702,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
                 if (uMsg==WM_RBUTTONUP)// || uMsg==WM_RBUTTONDOWN)
                 {
                     // note: can't use GetMenu and TrackPopupMenu here because the hwnd param to TrackPopupMenu must belong to current application.
-                
+
                     // (before sending coords to desktop window, xform them into its client coords:)
                     POINT pt;
                     pt.x = LOWORD(lParam);
@@ -2733,16 +2733,16 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
             //return 0;
         }
         break;
-    
+
         /*
     case WM_SETFOCUS:
-        // note: this msg never comes in when embedwnd is used, but that's ok, because that's only 
+        // note: this msg never comes in when embedwnd is used, but that's ok, because that's only
         // in Windowed mode, and m_lost_focus only makes us sleep when fullscreen.
         m_lost_focus = 0;
         break;
 
     case WM_KILLFOCUS:
-        // note: this msg never comes in when embedwnd is used, but that's ok, because that's only 
+        // note: this msg never comes in when embedwnd is used, but that's ok, because that's only
         // in Windowed mode, and m_lost_focus only makes us sleep when fullscreen.
         m_lost_focus = 1;
         break;
@@ -2750,7 +2750,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 
     case WM_SETCURSOR:
         if (
-            (m_screenmode == FULLSCREEN) || 
+            (m_screenmode == FULLSCREEN) ||
             (m_screenmode == FAKE_FULLSCREEN && m_lpDX && m_lpDX->m_fake_fs_covers_all)
            )
         {
@@ -2784,12 +2784,12 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
         }
         break;
 
-    case WM_CONTEXTMENU:        
+    case WM_CONTEXTMENU:
         // launch popup context menu.  see handler for WM_COMMAND also.
         if (m_screenmode == DESKTOP)
         {
-            // note: execution should never reach this point, 
-            // because we don't pass WM_RBUTTONUP to DefWindowProc 
+            // note: execution should never reach this point,
+            // because we don't pass WM_RBUTTONUP to DefWindowProc
             // when in desktop mode!
             return 0;
         }
@@ -2802,7 +2802,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
 
     case WM_COMMAND:
         // handle clicks on items on context menu.
-        if (m_screenmode == WINDOWED) 
+        if (m_screenmode == WINDOWED)
         {
             switch( LOWORD(wParam) )
             {
@@ -2866,7 +2866,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
         if (m_screenmode==WINDOWED && m_lpDX->m_current_mode.m_skin)
             return PostMessage(m_hWndWinamp, uMsg, wParam, lParam); // force-pass to winamp; required for embedwnd
         break;
-        
+
     case WM_SYSCHAR:
         if ((wParam=='d' || wParam=='D') && m_frame > 0)
         {
@@ -2908,7 +2908,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
                         char buf[32];
 						strncpy(buf, (char*)SendMessage(m_hWndWinamp, WM_USER, m_playlist_pos, 212), 31);
                         buf[31] = 0;
-                        
+
 	                    // remove song # and period from beginning
 	                    char *p = buf;
 	                    while (*p >= '0' && *p <= '9') p++;
@@ -2973,7 +2973,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
             //    sprintf(m_szUserMessage, "shuffle is now OFF");    // shuffle was on
             //else
             //    sprintf(m_szUserMessage, "shuffle is now ON");    // shuffle was off
-    
+
             // toggle shuffle
             PostMessage(m_hWndWinamp,WM_COMMAND,40023,0);
             return 0;
@@ -2987,12 +2987,12 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
             TogglePlaylist();
             return 0;
         case 'l':
-            // note that this is actually correct; when you hit 'l' from the 
+            // note that this is actually correct; when you hit 'l' from the
             // MAIN winamp window, you get an "open files" dialog; when you hit
             // 'l' from the playlist editor, you get an "add files to playlist" dialog.
-            // (that sends IDC_PLAYLIST_ADDMP3==1032 to the playlist, which we can't 
+            // (that sends IDC_PLAYLIST_ADDMP3==1032 to the playlist, which we can't
             //  do from here.)
-            PostMessage(m_hWndWinamp,WM_COMMAND,40029,0); 
+            PostMessage(m_hWndWinamp,WM_COMMAND,40029,0);
             return 0;
         case 'L':
             PostMessage(m_hWndWinamp,WM_COMMAND,40187,0);
@@ -3002,11 +3002,11 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
             return 0;
         }
 
-        return 0;//DefWindowProc(hWnd,uMsg,wParam,lParam); 
+        return 0;//DefWindowProc(hWnd,uMsg,wParam,lParam);
         break;  // end case WM_CHAR
 
-    case WM_KEYUP: 
-        
+    case WM_KEYUP:
+
         // allow the plugin to override any keys:
         if (MyWindowProc(hWnd, uMsg, wParam, lParam) == 0)
             return 0;
@@ -3031,7 +3031,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
             case VK_ESCAPE:
                 m_show_playlist = 0;
                 return 0;
-            
+
             case VK_UP:
                 {
                     int nRepeat = lParam & 0xFFFF;
@@ -3041,7 +3041,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
                         m_playlist_pos -= nRepeat;
                 }
                 return 0;
-            
+
             case VK_DOWN:
                 {
                     int nRepeat = lParam & 0xFFFF;
@@ -3107,7 +3107,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
               }
                 // exit the program on escape
                 //m_exiting = 1;
-                //PostMessage(hWnd, WM_CLOSE, 0, 0);    
+                //PostMessage(hWnd, WM_CLOSE, 0, 0);
             }
             return 0;
 
@@ -3115,7 +3115,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
             // increase volume
             {
                 int nRepeat = lParam & 0xFFFF;
-                for (i=0; i<nRepeat*2; i++) PostMessage(m_hWndWinamp,WM_COMMAND,40058,0);   
+                for (i=0; i<nRepeat*2; i++) PostMessage(m_hWndWinamp,WM_COMMAND,40058,0);
             }
             return 0;
 
@@ -3123,7 +3123,7 @@ LRESULT CPluginShell::PluginShellWindowProc(HWND hWnd, unsigned uMsg, WPARAM wPa
             // decrease volume
             {
                 int nRepeat = lParam & 0xFFFF;
-                for (i=0; i<nRepeat*2; i++) PostMessage(m_hWndWinamp,WM_COMMAND,40059,0);   
+                for (i=0; i<nRepeat*2; i++) PostMessage(m_hWndWinamp,WM_COMMAND,40059,0);
             }
             return 0;
 
@@ -3216,9 +3216,9 @@ void CPluginShell::AlignWaves()
     #define MAX_OCTAVES 10
 
     int octaves = floorf(logf(576-nSamples)/logf(2.0f));
-    if (octaves < 4) 
+    if (octaves < 4)
         return;
-    if (octaves > MAX_OCTAVES) 
+    if (octaves > MAX_OCTAVES)
         octaves = MAX_OCTAVES;
 
     for (int ch=0; ch<2; ch++)
@@ -3231,7 +3231,7 @@ void CPluginShell::AlignWaves()
         static int   last_nonzero_weight[MAX_OCTAVES];
         int spls[MAX_OCTAVES];
         int space[MAX_OCTAVES];
-    
+
         memcpy(temp_new[0], m_sound.fWaveform[ch], sizeof(float)*576);
         memcpy(temp_old[0], &m_oldwave[ch][m_prev_align_offset[ch]], sizeof(float)*nSamples);
         spls[0] = 576;
@@ -3292,7 +3292,7 @@ void CPluginShell::AlignWaves()
             //  spls[octave] == 36
             //  (so we test 32 samples, w/4 offsets)
             int compare_samples = spls[octave]-space[octave];
-        
+
             int lowest_err_offset = -1;
             float lowest_err_amount = 0;
             for (int n=n1; n<n2; n++)
@@ -3339,7 +3339,7 @@ void CPluginShell::AlignWaves()
     m_prev_align_offset[0] = align_offset[0];
     m_prev_align_offset[1] = align_offset[1];
 
-    // finally, apply the results: modify m_sound.fWaveform[2][0..576] 
+    // finally, apply the results: modify m_sound.fWaveform[2][0..576]
     // by scooting the aligned samples so that they start at m_sound.fWaveform[2][0].
     for (int ch=0; ch<2; ch++)
         if (align_offset[ch]>0)
@@ -3367,8 +3367,8 @@ LRESULT CPluginShell::PluginShellVJModeWndProc(HWND hwnd, UINT message, WPARAM w
 {
 #if 0
     #ifdef _DEBUG
-        if (message != WM_MOUSEMOVE && 
-            message != WM_NCHITTEST && 
+        if (message != WM_MOUSEMOVE &&
+            message != WM_NCHITTEST &&
             message != WM_SETCURSOR &&
             message != WM_COPYDATA &&
             message != WM_USER)
@@ -3400,7 +3400,7 @@ LRESULT CPluginShell::PluginShellVJModeWndProc(HWND hwnd, UINT message, WPARAM w
     case WM_SYSCHAR:
         // pass keystrokes on to plugin!
         return PluginShellWindowProc(GetPluginWindow(),message,wParam,lParam);
-    
+
     case WM_ERASEBKGND:
         // Repaint window when song is paused and image needs to be repainted:
         if (SendMessage(m_hWndWinamp,WM_USER,0,104)!=1 && m_vjd3d8_device)    // WM_USER/104 return codes: 1=playing, 3=paused, other=stopped
@@ -3426,9 +3426,9 @@ LRESULT CPluginShell::PluginShellVJModeWndProc(HWND hwnd, UINT message, WPARAM w
         //     fullscreen mode on multiple monitors; it would auto-minimize whenever the
         //     user clicked on a window in another display.
         if (wParam == 1 &&
-            m_screenmode == DESKTOP && 
-            m_frame > 0 && 
-            !m_exiting 
+            m_screenmode == DESKTOP &&
+            m_frame > 0 &&
+            !m_exiting
            )
         {
             return 0;
@@ -3443,12 +3443,12 @@ LRESULT CPluginShell::PluginShellVJModeWndProc(HWND hwnd, UINT message, WPARAM w
         //     user clicked on a window in another display.
         // (NOTE: main window also handles this message this way)
         if (wParam == 0 &&
-            m_screenmode == FULLSCREEN && 
-            m_frame > 0 && 
-            !m_exiting && 
-            m_lpDX && 
-            m_lpDX->m_ready 
-            && m_lpDX->m_lpD3D && 
+            m_screenmode == FULLSCREEN &&
+            m_frame > 0 &&
+            !m_exiting &&
+            m_lpDX &&
+            m_lpDX->m_ready
+            && m_lpDX->m_lpD3D &&
             m_lpDX->m_lpD3D->GetAdapterCount() > 1
             )
         {
@@ -3460,9 +3460,9 @@ LRESULT CPluginShell::PluginShellVJModeWndProc(HWND hwnd, UINT message, WPARAM w
         /*
     case WM_ACTIVATEAPP:
         if (wParam == 1 &&
-            m_screenmode == DESKTOP && 
-            m_frame > 0 && 
-            !m_exiting && 
+            m_screenmode == DESKTOP &&
+            m_frame > 0 &&
+            !m_exiting &&
             m_vjd3d8_device
            )
         {
@@ -3479,10 +3479,10 @@ LRESULT CPluginShell::PluginShellVJModeWndProc(HWND hwnd, UINT message, WPARAM w
             && m_lpDX && m_lpDX->m_ready
            )
         {
-            // unless we requested it ourselves or it's init time, 
-            // prevent the fake desktop window from moving around 
+            // unless we requested it ourselves or it's init time,
+            // prevent the fake desktop window from moving around
             // in the Z order!  (i.e., keep it on the bottom)
-            
+
             // without this code, when you click on the 'real' desktop
             // in a multimon setup, any windows that are overtop of the
             // 'fake' desktop will flash, since they'll be covered
@@ -3502,14 +3502,14 @@ LRESULT CPluginShell::PluginShellVJModeWndProc(HWND hwnd, UINT message, WPARAM w
         // this will make the graphics window close, too.
         m_exiting = 1;
         if (GetPluginWindow())
-            PostMessage(GetPluginWindow(), WM_CLOSE, 0, 0);    
+            PostMessage(GetPluginWindow(), WM_CLOSE, 0, 0);
         break;
 
     case WM_GETMINMAXINFO:
         {
             // don't let the window get too small
             MINMAXINFO* p = (MINMAXINFO*)lParam;
-            if (p->ptMinTrackSize.x < 64) 
+            if (p->ptMinTrackSize.x < 64)
                 p->ptMinTrackSize.x = 64;
             p->ptMinTrackSize.y = p->ptMinTrackSize.x*3/4;
         }
@@ -3517,12 +3517,12 @@ LRESULT CPluginShell::PluginShellVJModeWndProc(HWND hwnd, UINT message, WPARAM w
 
     case WM_SIZE:
         // clear or set activity flag to reflect focus
-        if (m_vjd3d8_device && !m_resizing_textwnd) 
+        if (m_vjd3d8_device && !m_resizing_textwnd)
         {
             m_hidden_textwnd = (SIZE_MAXHIDE==wParam || SIZE_MINIMIZED==wParam) ? TRUE : FALSE;
-            
+
             if (SIZE_MAXIMIZED==wParam || SIZE_RESTORED==wParam) // the window has been maximized or restored
-                OnUserResizeTextWindow();    
+                OnUserResizeTextWindow();
         }
         break;
 
@@ -3532,7 +3532,7 @@ LRESULT CPluginShell::PluginShellVJModeWndProc(HWND hwnd, UINT message, WPARAM w
 
     case WM_EXITSIZEMOVE:
         if( m_vjd3d8_device )
-            OnUserResizeTextWindow();    
+            OnUserResizeTextWindow();
         m_resizing_textwnd = 0;
         break;
     }

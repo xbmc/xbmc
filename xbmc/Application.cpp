@@ -183,7 +183,7 @@
 // Dialog includes
 #include "GUIDialogMusicOSD.h"
 #include "GUIDialogVisualisationPresetList.h"
-#include "GUIWindowScriptsInfo.h"
+#include "GUIDialogTextViewer.h"
 #include "GUIDialogNetworkSetup.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogVideoSettings.h"
@@ -1121,7 +1121,7 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowMusicInfo);                // window id = 2001
   g_windowManager.Add(new CGUIDialogOK);                 // window id = 2002
   g_windowManager.Add(new CGUIWindowVideoInfo);                // window id = 2003
-  g_windowManager.Add(new CGUIWindowScriptsInfo);              // window id = 2004
+  g_windowManager.Add(new CGUIDialogTextViewer);
   g_windowManager.Add(new CGUIWindowFullScreen);         // window id = 2005
   g_windowManager.Add(new CGUIWindowVisualisation);      // window id = 2006
   g_windowManager.Add(new CGUIWindowSlideShow);          // window id = 2007
@@ -2583,10 +2583,13 @@ bool CApplication::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_TOGGLE_DIGITAL_ANALOG)
   {
-    if(g_guiSettings.GetInt("audiooutput.mode")==AUDIO_DIGITAL)
-      g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG);
-    else
-      g_guiSettings.SetInt("audiooutput.mode", AUDIO_DIGITAL);
+    switch(g_guiSettings.GetInt("audiooutput.mode"))
+    {
+      case AUDIO_ANALOG: g_guiSettings.SetInt("audiooutput.mode", AUDIO_IEC958); break;
+      case AUDIO_IEC958: g_guiSettings.SetInt("audiooutput.mode", AUDIO_HDMI  ); break;
+      case AUDIO_HDMI  : g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG); break;
+    }
+
     g_application.Restart();
     if (g_windowManager.GetActiveWindow() == WINDOW_SETTINGS_SYSTEM)
     {
@@ -3141,6 +3144,7 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_SLIDER);
 
     g_windowManager.Delete(WINDOW_DIALOG_OSD_TELETEXT);
+    g_windowManager.Delete(WINDOW_DIALOG_TEXT_VIEWER);
 
     g_windowManager.Delete(WINDOW_STARTUP_ANIM);
     g_windowManager.Delete(WINDOW_LOGIN_SCREEN);
@@ -3156,7 +3160,6 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_OSD);
     g_windowManager.Delete(WINDOW_MUSIC_OVERLAY);
     g_windowManager.Delete(WINDOW_VIDEO_OVERLAY);
-    g_windowManager.Delete(WINDOW_SCRIPTS_INFO);
     g_windowManager.Delete(WINDOW_SLIDESHOW);
 
     g_windowManager.Delete(WINDOW_HOME);

@@ -149,6 +149,7 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iCh
   CreateAndReturnOnValidInitialize(CNullDirectSound);
   /* should never get here */
   assert(false);
+  return NULL;
 }
 
 void CAudioRendererFactory::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough)

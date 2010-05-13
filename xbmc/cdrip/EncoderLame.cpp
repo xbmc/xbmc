@@ -156,6 +156,7 @@ bool CEncoderLame::Close()
   CID3Tag id3tag;
   CMusicInfoTag tag;
   tag.SetAlbum(m_strAlbum);
+  tag.SetAlbumArtist(m_strAlbumArtist);
   tag.SetArtist(m_strArtist);
   tag.SetGenre(m_strGenre);
   tag.SetTitle(m_strTitle);

@@ -1,13 +1,25 @@
-Copyright (C) 1994, 1995, 1996, 1999, 2000, 2001, 2002 Free Software
-Foundation, Inc.
+Installation Instructions
+*************************
 
-   This file is free documentation; the Free Software Foundation gives
-unlimited permission to copy, distribute and modify it.
+Copyright (C) 1994, 1995, 1996, 1999, 2000, 2001, 2002, 2004, 2005,
+2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+
+   Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.  This file is offered as-is,
+without warranty of any kind.
 
 Basic Installation
 ==================
 
-   These are generic installation instructions.
+   Briefly, the shell commands `./configure; make; make install' should
+configure, build, and install this package.  The following
+more-detailed instructions are generic; see the `README' file for
+instructions specific to this package.  Some packages provide this
+`INSTALL' file but do not implement all of the features documented
+below.  The lack of an optional feature in a given package is not
+necessarily a bug.  More recommendations for GNU packages can be found
+in *note Makefile Conventions: (standards)Makefile Conventions.
 
    The `configure' shell script attempts to guess correct values for
 various system-dependent variables used during compilation.  It uses
@@ -20,9 +32,9 @@ debugging `configure').
 
    It can also use an optional file (typically called `config.cache'
 and enabled with `--cache-file=config.cache' or simply `-C') that saves
-the results of its tests to speed up reconfiguring.  (Caching is
+the results of its tests to speed up reconfiguring.  Caching is
 disabled by default to prevent problems with accidental use of stale
-cache files.)
+cache files.
 
    If you need to do unusual things to compile the package, please try
 to figure out how `configure' could check whether to do them, and mail
@@ -32,30 +44,37 @@ some point `config.cache' contains results you don't want to keep, you
 may remove or edit it.
 
    The file `configure.ac' (or `configure.in') is used to create
-`configure' by a program called `autoconf'.  You only need
-`configure.ac' if you want to change it or regenerate `configure' using
-a newer version of `autoconf'.
+`configure' by a program called `autoconf'.  You need `configure.ac' if
+you want to change it or regenerate `configure' using a newer version
+of `autoconf'.
 
-The simplest way to compile this package is:
+   The simplest way to compile this package is:
 
   1. `cd' to the directory containing the package's source code and type
-     `./configure' to configure the package for your system.  If you're
-     using `csh' on an old version of System V, you might need to type
-     `sh ./configure' instead to prevent `csh' from trying to execute
-     `configure' itself.
+     `./configure' to configure the package for your system.
 
-     Running `configure' takes awhile.  While running, it prints some
-     messages telling which features it is checking for.
+     Running `configure' might take a while.  While running, it prints
+     some messages telling which features it is checking for.
 
   2. Type `make' to compile the package.
 
   3. Optionally, type `make check' to run any self-tests that come with
-     the package.
+     the package, generally using the just-built uninstalled binaries.
 
   4. Type `make install' to install the programs and any data files and
-     documentation.
+     documentation.  When installing into a prefix owned by root, it is
+     recommended that the package be configured and built as a regular
+     user, and only the `make install' phase executed with root
+     privileges.
 
-  5. You can remove the program binaries and object files from the
+  5. Optionally, type `make installcheck' to repeat any self-tests, but
+     this time using the binaries in their final installed location.
+     This target does not install anything.  Running this target as a
+     regular user, particularly if the prior `make install' required
+     root privileges, verifies that the installation completed
+     correctly.
+
+  6. You can remove the program binaries and object files from the
      source code directory by typing `make clean'.  To also remove the
      files that `configure' created (so you can compile the package for
      a different kind of computer), type `make distclean'.  There is
@@ -63,6 +82,16 @@ The simplest way to compile this package is:
      for the package's developers.  If you use it, you may have to get
      all sorts of other programs in order to regenerate files that came
      with the distribution.
+
+  7. Often, you can also type `make uninstall' to remove the installed
+     files again.  In practice, not all packages have tested that
+     uninstallation works correctly, even though it is required by the
+     GNU Coding Standards.
+
+  8. Some packages, particularly those that use Automake, provide `make
+     distcheck', which can by used by developers to test that all other
+     targets like `make install' and `make uninstall' work correctly.
+     This target is generally not run by end users.
 
 Compilers and Options
 =====================
@@ -75,7 +104,7 @@ for details on some of the pertinent environment variables.
 by setting variables in the command line or in the environment.  Here
 is an example:
 
-     ./configure CC=c89 CFLAGS=-O2 LIBS=-lposix
+     ./configure CC=c99 CFLAGS=-g LIBS=-lposix
 
    *Note Defining Variables::, for more details.
 
@@ -84,43 +113,88 @@ Compiling For Multiple Architectures
 
    You can compile the package for more than one kind of computer at the
 same time, by placing the object files for each architecture in their
-own directory.  To do this, you must use a version of `make' that
-supports the `VPATH' variable, such as GNU `make'.  `cd' to the
+own directory.  To do this, you can use GNU `make'.  `cd' to the
 directory where you want the object files and executables to go and run
 the `configure' script.  `configure' automatically checks for the
-source code in the directory that `configure' is in and in `..'.
+source code in the directory that `configure' is in and in `..'.  This
+is known as a "VPATH" build.
 
-   If you have to use a `make' that does not support the `VPATH'
-variable, you have to compile the package for one architecture at a
-time in the source code directory.  After you have installed the
-package for one architecture, use `make distclean' before reconfiguring
-for another architecture.
+   With a non-GNU `make', it is safer to compile the package for one
+architecture at a time in the source code directory.  After you have
+installed the package for one architecture, use `make distclean' before
+reconfiguring for another architecture.
+
+   On MacOS X 10.5 and later systems, you can create libraries and
+executables that work on multiple system types--known as "fat" or
+"universal" binaries--by specifying multiple `-arch' options to the
+compiler but only a single `-arch' option to the preprocessor.  Like
+this:
+
+     ./configure CC="gcc -arch i386 -arch x86_64 -arch ppc -arch ppc64" \
+                 CXX="g++ -arch i386 -arch x86_64 -arch ppc -arch ppc64" \
+                 CPP="gcc -E" CXXCPP="g++ -E"
+
+   This is not guaranteed to produce working output in all cases, you
+may have to build one architecture at a time and combine the results
+using the `lipo' tool if you have problems.
 
 Installation Names
 ==================
 
-   By default, `make install' will install the package's files in
-`/usr/local/bin', `/usr/local/man', etc.  You can specify an
-installation prefix other than `/usr/local' by giving `configure' the
-option `--prefix=PATH'.
+   By default, `make install' installs the package's commands under
+`/usr/local/bin', include files under `/usr/local/include', etc.  You
+can specify an installation prefix other than `/usr/local' by giving
+`configure' the option `--prefix=PREFIX', where PREFIX must be an
+absolute file name.
 
    You can specify separate installation prefixes for
 architecture-specific files and architecture-independent files.  If you
-give `configure' the option `--exec-prefix=PATH', the package will use
-PATH as the prefix for installing programs and libraries.
-Documentation and other data files will still use the regular prefix.
+pass the option `--exec-prefix=PREFIX' to `configure', the package uses
+PREFIX as the prefix for installing programs and libraries.
+Documentation and other data files still use the regular prefix.
 
    In addition, if you use an unusual directory layout you can give
-options like `--bindir=PATH' to specify different values for particular
+options like `--bindir=DIR' to specify different values for particular
 kinds of files.  Run `configure --help' for a list of the directories
-you can set and what kinds of files go in them.
+you can set and what kinds of files go in them.  In general, the
+default for these options is expressed in terms of `${prefix}', so that
+specifying just `--prefix' will affect all of the other directory
+specifications that were not explicitly provided.
+
+   The most portable way to affect installation locations is to pass the
+correct locations to `configure'; however, many packages provide one or
+both of the following shortcuts of passing variable assignments to the
+`make install' command line to change installation locations without
+having to reconfigure or recompile.
+
+   The first method involves providing an override variable for each
+affected directory.  For example, `make install
+prefix=/alternate/directory' will choose an alternate location for all
+directory configuration variables that were expressed in terms of
+`${prefix}'.  Any directories that were specified during `configure',
+but not in terms of `${prefix}', must each be overridden at install
+time for the entire installation to be relocated.  The approach of
+makefile variable overrides for each directory variable is required by
+the GNU Coding Standards, and ideally causes no recompilation.
+However, some platforms have known limitations with the semantics of
+shared libraries that end up requiring recompilation when using this
+method, particularly noticeable in packages that use GNU Libtool.
+
+   The second method involves providing the `DESTDIR' variable.  For
+example, `make install DESTDIR=/alternate/directory' will prepend
+`/alternate/directory' before all installation names.  The approach of
+`DESTDIR' overrides is not required by the GNU Coding Standards, and
+does not work on platforms that have drive letters.  On the other hand,
+it does better at avoiding recompilation issues, and works well even
+when some directory options were not specified in terms of `${prefix}'
+at `configure' time.
+
+Optional Features
+=================
 
    If the package supports it, you can cause programs to be installed
 with an extra prefix or suffix on their names by giving `configure' the
 option `--program-prefix=PREFIX' or `--program-suffix=SUFFIX'.
-
-Optional Features
-=================
 
    Some packages pay attention to `--enable-FEATURE' options to
 `configure', where FEATURE indicates an optional part of the package.
@@ -133,6 +207,45 @@ package recognizes.
 find the X include and library files automatically, but if it doesn't,
 you can use the `configure' options `--x-includes=DIR' and
 `--x-libraries=DIR' to specify their locations.
+
+   Some packages offer the ability to configure how verbose the
+execution of `make' will be.  For these packages, running `./configure
+--enable-silent-rules' sets the default to minimal output, which can be
+overridden with `make V=1'; while running `./configure
+--disable-silent-rules' sets the default to verbose, which can be
+overridden with `make V=0'.
+
+Particular systems
+==================
+
+   On HP-UX, the default C compiler is not ANSI C compatible.  If GNU
+CC is not installed, it is recommended to use the following options in
+order to use an ANSI C compiler:
+
+     ./configure CC="cc -Ae -D_XOPEN_SOURCE=500"
+
+and if that doesn't work, install pre-built binaries of GCC for HP-UX.
+
+   On OSF/1 a.k.a. Tru64, some versions of the default C compiler cannot
+parse its `<wchar.h>' header file.  The option `-nodtk' can be used as
+a workaround.  If GNU CC is not installed, it is therefore recommended
+to try
+
+     ./configure CC="cc"
+
+and if that doesn't work, try
+
+     ./configure CC="cc -nodtk"
+
+   On Solaris, don't put `/usr/ucb' early in your `PATH'.  This
+directory contains several dysfunctional programs; working variants of
+these programs are available in `/usr/bin'.  So, if you need `/usr/ucb'
+in your `PATH', put it _after_ `/usr/bin'.
+
+   On Haiku, software installed for all users goes in `/boot/common',
+not `/usr/local'.  It is recommended to use the following options:
+
+     ./configure --prefix=/boot/common
 
 Specifying the System Type
 ==========================
@@ -149,14 +262,15 @@ type, such as `sun4', or a canonical name which has the form:
 
 where SYSTEM can have one of these forms:
 
-     OS KERNEL-OS
+     OS
+     KERNEL-OS
 
    See the file `config.sub' for the possible values of each field.  If
 `config.sub' isn't included in this package, then this package doesn't
 need to know the machine type.
 
    If you are _building_ compiler tools for cross-compiling, you should
-use the `--target=TYPE' option to select the type of system they will
+use the option `--target=TYPE' to select the type of system they will
 produce code for.
 
    If you want to _use_ a cross compiler, that generates code for a
@@ -186,8 +300,13 @@ them in the `configure' command line, using `VAR=value'.  For example:
 
      ./configure CC=/usr/local2/bin/gcc
 
-will cause the specified gcc to be used as the C compiler (unless it is
+causes the specified `gcc' to be used as the C compiler (unless it is
 overridden in the site shell script).
+
+Unfortunately, this technique does not work for `CONFIG_SHELL' due to
+an Autoconf bug.  Until the bug is fixed you can use this workaround:
+
+     CONFIG_SHELL=/bin/bash /bin/bash ./configure CONFIG_SHELL=/bin/bash
 
 `configure' Invocation
 ======================
@@ -197,7 +316,14 @@ operates.
 
 `--help'
 `-h'
-     Print a summary of the options to `configure', and exit.
+     Print a summary of all of the options to `configure', and exit.
+
+`--help=short'
+`--help=recursive'
+     Print a summary of the options unique to this package's
+     `configure', and exit.  The `short' variant lists options used
+     only in the top level, while the `recursive' variant lists options
+     also present in any nested packages.
 
 `--version'
 `-V'
@@ -223,6 +349,16 @@ operates.
 `--srcdir=DIR'
      Look for the package's source code in directory DIR.  Usually
      `configure' can determine that directory automatically.
+
+`--prefix=DIR'
+     Use DIR as the installation prefix.  *note Installation Names::
+     for more details, including other options available for fine-tuning
+     the installation locations.
+
+`--no-create'
+`-n'
+     Run the configure checks, but stop before creating any output
+     files.
 
 `configure' also accepts some other, not widely useful, options.  Run
 `configure --help' for more details.

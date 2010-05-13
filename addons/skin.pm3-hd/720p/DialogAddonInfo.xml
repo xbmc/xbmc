@@ -60,8 +60,6 @@
 			<control type="group">
 				<posx>50</posx>
 				<posy>130</posy>
-				<visible>![Control.HasFocus(10) | Control.HasFocus(62)]</visible>
-				<include>VisibleFadeEffect</include>
 				<control type="label">
 					<description>Type txt</description>
 					<posx>0</posx>
@@ -302,61 +300,6 @@
 						<label>$INFO[ListItem.Property(Addon.Description)]</label>
 						<pagecontrol>61</pagecontrol>
 					</control>
-				</control>
-			</control>
-			<control type="group">
-				<posx>50</posx>
-				<posy>130</posy>
-				<include>VisibleFadeEffect</include>
-				<visible>Control.HasFocus(10) | Control.HasFocus(62)</visible>
-				<control type="label">
-					<description>Changelog txt</description>
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>300</width>
-					<height>25</height>
-					<label>$LOCALIZE[24036]</label>
-					<align>left</align>
-					<aligny>center</aligny>
-					<font>font13</font>
-					<textcolor>grey2</textcolor>
-				</control>
-				<control type="label">
-					<description>Description Page Count</description>
-					<posx>520</posx>
-					<posy>0</posy>
-					<width>300</width>
-					<height>25</height>
-					<label>$INFO[Container(403).CurrentPage, $LOCALIZE[31024] (]$INFO[Container(403).NumPages,/,)]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<textcolor>grey</textcolor>
-				</control>
-				<control type="spincontrol" id="62">
-					<description>Next page button</description>
-					<posx>530</posx>
-					<posy>0</posy>
-					<subtype>page</subtype>
-					<font>-</font>
-					<onleft>9000</onleft>
-					<onright>9000</onright>
-					<ondown>-</ondown>
-					<onup>-</onup>
-					<textcolor>white</textcolor>
-					<showonepage>true</showonepage>
-				</control>
-				<control type="textbox" id="403">
-					<description>Changelog</description>
-					<posx>10</posx>
-					<posy>30</posy>
-					<width>580</width>
-					<height>410</height>
-					<font>font12</font>
-					<align>justify</align>
-					<textcolor>white</textcolor>
-					<label>$INFO[ListItem.Property(Addon.ChangeLog)]</label>
-					<pagecontrol>62</pagecontrol>
 				</control>
 			</control>
 			<control type="group" id="9000">

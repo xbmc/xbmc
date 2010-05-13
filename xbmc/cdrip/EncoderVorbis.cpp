@@ -66,6 +66,7 @@ bool CEncoderVorbis::Init(const char* strFile, int iInChannels, int iInRate, int
   m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, (char*)"artist", (char*)m_strArtist.c_str());
   m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, (char*)"title", (char*)m_strTitle.c_str());
   m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, (char*)"album", (char*)m_strAlbum.c_str());
+  m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, (char*)"albumartist", (char*)m_strAlbumArtist.c_str());
   m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, (char*)"genre", (char*)m_strGenre.c_str());
   m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, (char*)"tracknumber", (char*)m_strTrack.c_str());
   m_VorbisDll.vorbis_comment_add_tag(&m_sVorbisComment, (char*)"date", (char*)m_strYear.c_str());

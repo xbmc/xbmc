@@ -65,7 +65,7 @@ DVDPCODECS_DIRS= \
 	xbmc/cores/dvdplayer/Codecs/libdvd \
 	xbmc/cores/dvdplayer/Codecs/libbdnav
 ifneq (@USE_EXTERNAL_LIBASS@,1)
-  DVDPCODECS_DIRS+=xbmc/lib/libass/xbmc
+  DVDPCODECS_DIRS+=lib/libass/xbmc
 endif
 
 PAPCODECS_DIRS= \
@@ -327,7 +327,7 @@ dvdpcodecs: dllloader
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libdvd
 ifneq (@USE_EXTERNAL_LIBASS@,1)
-	$(MAKE) -C xbmc/lib/libass/xbmc
+	$(MAKE) -C lib/libass/xbmc
 endif
 eventclients:
 ifeq ($(findstring osx,$(ARCH)), osx)

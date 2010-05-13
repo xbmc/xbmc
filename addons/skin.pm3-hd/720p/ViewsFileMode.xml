@@ -953,13 +953,13 @@
 				<aligny>center</aligny>
 				<label>[UPPERCASE]$INFO[ListItem.Label]$INFO[ListItem.Date, - ]$INFO[ListItem.PictureResolution, - ]$INFO[ListItem.size, - ][/UPPERCASE]</label>
 			</control>
-			<control type="largeimage">
+			<control type="image">
 				<posx>300</posx>
 				<posy>145</posy>
 				<width>970</width>
 				<height>345</height>
 				<fadetime>FanartCrossfadeTime</fadetime>
-				<info>ListItem.FilenameAndPath</info>
+				<texture background="true">$INFO[ListItem.FilenameAndPath]</texture>
 				<aspectratio>keep</aspectratio>
 			</control>
 		</control>
