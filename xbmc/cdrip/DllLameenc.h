@@ -22,7 +22,11 @@
  */
 
 #include "DynamicDll.h"
+#ifdef _WIN32
+#include <lame.h>
+#else
 #include "lame/lame.h"
+#endif
 
 class DllLameEncInterface
 {
