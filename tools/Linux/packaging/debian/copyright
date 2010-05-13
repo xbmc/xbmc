@@ -2393,41 +2393,6 @@ xbmc-xrandr.c
     TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
     OF THIS SOFTWARE.
 
-HomeSystemIcon in PM3.HD skin
-<http://www.icons-land.com/>
-
-    Copyright © Icons-Land
-
-    This is a legal agreement between you, the purchaser, and the Icons-Land. By
-    purchasing or downloading any stock icons (The Icons) from our website you
-    agree to the following:
-
-    All of The Icons remain the property of Icons-Land.
-
-    The Icons can be used royalty-free by the license for any personal or
-    commercial project including software application, documentation, computer
-    game, gui design, web design, advertising, film, video.
-    You may modify The Icons in shape, color, and/or file format and use the
-    modified icons royalty-free according to the license terms for any personal
-    or commercial product.
-
-    The license DOES NOT permit following uses:
-    a) The Icons may no be resold, sublicensed, rented, transferred or otherwise
-       made available for use or detached from a product, software application
-       or web page;
-    b) The Icons may not be placed on any electronic bulletin board or
-       downloadable format;
-    c) The Icons may not be included in any web template, including those which
-       are web based, but not limited to website designs and presentation
-       templates.
-
-    You may NOT use, or allow anyone else to use The Icons to create
-    pornographic, libelous, obscene, or defamatory material.
-
-    All icon files are provided "as is". You agree not to hold Icons-Land liable
-    for any damages that may occur due to use, or inability to use, icons or
-    image data from Icons-Land.
-
 xbmc/Crc32.cpp and xbmc/Crc32.h
 
     Copyright (C) 2005-2009 Team XBMC
