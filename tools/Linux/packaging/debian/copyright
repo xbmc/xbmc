@@ -216,9 +216,9 @@ Apple Remote Control Wrapper Classes
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
     THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-    THE SOFTWARE.
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+    IN THE SOFTWARE.
 
 Class to Display events received from the Apple Infrared Remote.
 
@@ -417,7 +417,8 @@ Goom 2k4
 
     You should have received a copy of the GNU Lesser General Public
     License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+    USA
 
 XAnalyser, frequence spectrum analyser for X Window
 <http://arvin.schnell-web.net/xanalyser/>
@@ -495,7 +496,8 @@ projectM - OpenGL based advanced music visualization program
 
     You should have received a copy of the GNU Lesser General Public
     License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+    USA
 
 GLEW - The OpenGL Extension Wrangler Library
 <http://glew.sourceforge.net/>
@@ -765,7 +767,8 @@ LAME Ain't an Mp3 Encoder
 GNU libmicrohttpd
 <http://www.gnu.org/software/libmicrohttpd/>
 
-    (C) 2006, 2007, 2008, 2009 Christian Grothoff (and other contributing authors)
+    (C) 2006, 2007, 2008, 2009 Christian Grothoff (and other contributing
+    authors)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -779,7 +782,8 @@ GNU libmicrohttpd
 
     You should have received a copy of the GNU Lesser General Public
     License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+    USA
 
 libmodplug
 <http://modplug-xmms.sourceforge.net>
@@ -802,7 +806,8 @@ libmodplug
 
     You should have received a copy of the GNU Lesser General Public
     License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+    USA
 
 Python Programming Language
 <http://www.python.org/>
@@ -1429,7 +1434,8 @@ HDHomeRun - Networked Digital Tuner
     Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public
-    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+    License along with this library.  If not, see
+    <http://www.gnu.org/licenses/>.
 
     As a special exception to the GNU Lesser General Public License,
     you may link, statically or dynamically, an application with a
