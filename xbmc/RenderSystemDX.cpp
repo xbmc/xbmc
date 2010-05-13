@@ -505,16 +505,27 @@ bool CRenderSystemDX::BeginRender()
   if (m_useD3D9Ex)
   {
     m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->CheckDeviceState(m_hDeviceWnd);
-    if (m_nDeviceStatus == S_PRESENT_MODE_CHANGED)
+
+    // handling of new D3D9 extensions return values. Others fallback to regular D3D9 handling.
+    switch(m_nDeviceStatus)
     {
+    case S_PRESENT_MODE_CHANGED:
       // Timing leads us here on occasion.
       BuildPresentParameters();
       m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
-    }
-    else if (m_nDeviceStatus == S_PRESENT_OCCLUDED)
-    {
-      // We're in fullscreen mode and the window is hidden. Continue rendering.
-      m_nDeviceStatus = S_OK;
+      break;
+    case S_PRESENT_OCCLUDED:
+      m_nDeviceStatus = D3D_OK;
+      break;
+    case D3DERR_DEVICEHUNG:
+    case D3DERR_OUTOFVIDEOMEMORY:
+      m_nDeviceStatus = D3DERR_DEVICELOST;
+      break;
+    case D3DERR_DEVICEREMOVED:
+      m_nDeviceStatus = D3DERR_DEVICELOST;
+      m_needNewDevice = true;
+      // fixme: also needs to re-enumerate and switch to another screen
+      break;
     }
   }
   else
