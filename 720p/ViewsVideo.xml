@@ -235,10 +235,6 @@
 				<control type="label">
 					<include>TVUnwatchedEpisodesDetailsNF</include>
 				</control>
-				<control type="image">
-					<include>TVUnwatchedEpisodesDetailsImage</include>
-					<include>MediaItemNFFade</include>
-				</control>
 			</itemlayout>
 			<focusedlayout condition="Container.Content(tvshows)" width="TVViewListWidth" height="42">
 				<control type="image">
@@ -275,10 +271,6 @@
 					<include>TVUnwatchedEpisodesDetailsFO</include>
 					<include>MediaListItemFade</include>
 				</control>
-				<control type="image">
-					<include>TVUnwatchedEpisodesDetailsImage</include>
-					<include>MediaListItemFade</include>
-				</control>
 			</focusedlayout>
 			<itemlayout condition="Container.Content(seasons)" width="TVViewListWidth" height="42">
 				<control type="image">
@@ -300,10 +292,6 @@
 				</control>
 				<control type="label">
 					<include>TVWatchedEpisodesDetailsNF</include>
-				</control>
-				<control type="image">
-					<include>TVWatchedEpisodesDetailsImage</include>
-					<include>MediaItemNFFade</include>
 				</control>
 			</itemlayout>
 			<focusedlayout condition="Container.Content(seasons)" width="TVViewListWidth" height="42">
@@ -354,10 +342,6 @@
 				</control>
 				<control type="label">
 					<include>TVWatchedEpisodesDetailsFO</include>
-					<include>MediaListItemFade</include>
-				</control>
-				<control type="image">
-					<include>TVWatchedEpisodesDetailsImage</include>
 					<include>MediaListItemFade</include>
 				</control>
 			</focusedlayout>
@@ -1044,7 +1028,6 @@
 	</include>
 	-->
 	<include name="MediaPreview">
-
 		<control type="group">
 			<include>MediaPreviewVisible</include>
 			<include>MediaViewFade</include>
@@ -1101,6 +1084,7 @@
 						</control>
 					</control>
 					<control type="group">
+						<visible>!Container.Content(tvshows) + !Container.Content(seasons)</visible>
 						<posx>308</posx>
 						<posy>130</posy>
 						<include>WatchedUnwatchedOverlay</include>
@@ -1326,7 +1310,7 @@
 								<posx>88</posx>
 								<description>First Aired</description>
 								<font>MediaPreviewSummary</font>
-								<label>$INFO[ListItem.year]</label>
+								<label>$INFO[ListItem.date]</label>
 								<align>left</align>
 							</control>
 						</control>
@@ -1492,7 +1476,6 @@
 				</control>
 			</control>
 		</control>
-
 		<control type="group">
 			<include>MediaPreviewVisible</include>
 			<visible>Skin.HasSetting(ShowAnimMediaPreview)</visible>
@@ -1659,6 +1642,14 @@
 					<control type="image">
 						<include>MediaPreviewEpThumb</include>
 					</control>
+					<control type="label">
+						<posx>132</posx>
+						<posy>195</posy>
+						<width>226</width>
+						<align>center</align>
+						<label>$INFO[ListItem.Episode]. $INFO[Listitem.Title]</label>
+						<font>MediaPreviewDetailsHeader</font>
+					</control>
 					<include>MediaPreviewEpThumbOverlay</include>
 				</itemlayout>
 				<focusedlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)" width="256" height="220">
@@ -1677,6 +1668,15 @@
 					<control type="image">
 						<include>MediaPreviewEpThumb</include>
 					</control>
+					<control type="label">
+						<posx>132</posx>
+						<posy>195</posy>
+						<width>226</width>
+						<align>center</align>
+						<label>$INFO[ListItem.Episode]. $INFO[Listitem.Title]</label>
+						<font>MediaPreviewDetailsHeader</font>
+					</control>
+					
 					<include>MediaPreviewEpThumbOverlay</include>
 				</focusedlayout>
 				<itemlayout condition="Skin.HasSetting(ShowAnimMediaPreview)" width="106" height="78">
@@ -1716,7 +1716,6 @@
 				<onleft>56</onleft>
 				<onright>56</onright>
 				<onup>9009</onup>
-				<!--        <ondown>Skin.ToggleSetting(HideNowPlayingMusicInfo)</ondown>-->
 				<scrolltime>200</scrolltime>
 				<viewtype label="SHOWCASE">wraplist</viewtype>
 				<pagecontrol>-</pagecontrol>
@@ -1727,13 +1726,6 @@
 					<control type="image">
 						<include>ShowcasePoster</include>
 					</control>
-					<!--
-          <control type="label">
-            <include>ShowcaseNoThumbLabelDims</include>
-            <colordiffuse>f0808080</colordiffuse>
-            <include>NoThumbLabel</include>
-          </control>
--->
 				</itemlayout>
 				<focusedlayout height="ShowcaseFocusHeight" width="200">
 					<control type="group">
@@ -1768,13 +1760,6 @@
 							<animation effect="fade" start="100" end="0" time="300" reversible="false">Unfocus</animation>
 							<include>ShowcaseFocusAnim</include>
 						</control>
-						<!--
-            <control type="label">
-              <include>ShowcaseNoThumbLabelDims</include>
-              <include>NoThumbLabel</include>
-              <include>ShowcaseFocusAnim</include>
-            </control>
--->
 						<control type="image">
 							<description>Glass overlay</description>
 							<posx>-5</posx>
@@ -1785,6 +1770,7 @@
 							<include>ShowcaseFocusPosterOverlayAnim</include>
 						</control>
 						<control type="image">
+							<visible>!Container.Content(tvshows) + !Container.Content(seasons)</visible>
 							<description>Watched/Unwatched Overlay Background</description>
 							<posx>198</posx>
 							<posy>60</posy>
@@ -1795,6 +1781,7 @@
 							<include>ShowcaseFocusPosterOverlayAnim</include>
 						</control>
 						<control type="image">
+							<visible>!Container.Content(tvshows) + !Container.Content(seasons)</visible>
 							<description>Watched/Unwatched Overlay</description>
 							<posx>206</posx>
 							<posy>64</posy>

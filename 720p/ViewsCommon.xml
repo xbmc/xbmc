@@ -333,35 +333,6 @@
 						<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
 						<visible>Container.Content(episodes)</visible>
 					</control>
-					<!--
-		    <control type="label">
-		      <visible>!IsEmpty(ListItem.Overlay)</visible>
-		      <posx>456</posx>
-		      <posy>2</posy>
-		      <width>104</width>
-		      <height>42</height>
-		      <align>left</align>
-		      <aligny>center</aligny>
-		      <label>$INFO[ListItem.Duration]</label>
-		      <font>SmallDefaultCapsFont</font>
-		      <textcolor>Unfocused</textcolor>
-		      <animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
-		    </control>
-
-		    <control type="label">
-		      <visible>IsEmpty(ListItem.Overlay)</visible>
-		      <posx>492</posx>
-		      <posy>2</posy>
-		      <width>95</width>
-		      <height>42</height>
-		      <align>left</align>
-		      <aligny>center</aligny>
-		      <label>$INFO[ListItem.Label2]</label>
-		      <font>SmallDefaultCapsFont</font>
-		      <textcolor>Unfocused</textcolor>
-		      <animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
-		    </control>
--->
 					<control type="group">
 						<visible>!Container.Content(episodes)</visible>
 						<control type="label">
@@ -566,21 +537,16 @@
 						<bordertexture border="7">ThumbBorder.png</bordertexture>
 						<bordersize>4</bordersize>
 					</control>
-					<!--
-          <control type="label">
-            <description>No Thumb label</description>
-            <include>InfoListNoThumbDims</include>
-            <include>NoThumbLabel</include>
-          </control>-->
 					<control type="group">
 						<description>Watched/Unwatched Overlay</description>
-						<visible>!Container.Content(episodes)</visible>
+						<visible>!Container.Content(episodes) + !Container.Content(tvshows) + !Container.Content(seasons)</visible>
 						<posx>234</posx>
 						<posy>25</posy>
 						<include>WatchedUnwatchedOverlay</include>
 					</control>
 <!--
 					<control type="group">
+						<visible>!Container.Content(episodes) + !Container.Content(tvshows) + !Container.Content(seasons)</visible>
 						<description>Watched/Unwatched Overlay</description>
 						<visible>Container.Content(episodes)</visible>
 						<posx>-63</posx>
@@ -621,7 +587,16 @@
 						<posy>28</posy>
 						<width>InfoListTitleWidth</width>
 						<font>SmallTitleCapsFont</font>
-						<label>$INFO[ListItem.Year]</label>
+						<label>$INFO[ListItem.year]</label>
+						<textcolor>Focused</textcolor>
+					</control>
+					<control type="label">
+						<description>Year</description>
+						<visible>Container.Content(tvshows)</visible>
+						<posy>28</posy>
+						<width>InfoListTitleWidth</width>
+						<font>SmallTitleCapsFont</font>
+						<label>$INFO[ListItem.date]</label>
 						<textcolor>Focused</textcolor>
 					</control>
 					<control type="label">
@@ -1247,7 +1222,7 @@
 					</control>
 					<control type="group">
 						<description>Media Flags</description>
-						<posy>396</posy>
+						<posy>399</posy>
 						<include>PanelStreamFlags</include>
 					</control>
 				</control>
@@ -1481,13 +1456,6 @@
 							<bordersize>8</bordersize>
 							<include>WallStreamPosterZoomAnim</include>
 						</control>
-						<control type="image">
-							<description>Glass Overlay</description>
-							<include>WallStreamPosterOverlayFocusDims</include>
-							<include>GlassTextureOverlay2</include>
-							<include>WallStreamPosterOverlayZoomAnim</include>
-							<visible>!IsEmpty(ListItem.Thumb)</visible>
-						</control>
 					</control>
 				</focusedlayout>
 				<!-- Music -->
@@ -1509,13 +1477,6 @@
 							<bordersize>8</bordersize>
 							<include>WallStreamAlbumCoverZoomAnim</include>
 						</control>
-						<control type="image">
-							<description>Glass Overlay</description>
-							<include>WallStreamAlbumOverlayFocusDims</include>
-							<include>GlassTextureOverlay2</include>
-							<include>WallStreamAlbumOverlayZoomAnim</include>
-							<visible>!IsEmpty(ListItem.Thumb)</visible>
-						</control>
 					</control>
 				</focusedlayout>
 				<!-- Episodes -->
@@ -1536,13 +1497,6 @@
 							<bordertexture border="14">ThumbShadow2.png</bordertexture>
 							<bordersize>8</bordersize>
 							<include>WallStreamEpThumbZoomAnim</include>
-						</control>
-						<control type="image">
-							<description>Glass Overlay</description>
-							<include>WallStreamEpThumbOverlayFocusDims</include>
-							<include>GlassTextureOverlay2</include>
-							<include>WallStreamEpThumbOverlayZoomAnim</include>
-							<visible>!IsEmpty(ListItem.Thumb)</visible>
 						</control>
 					</control>
 				</focusedlayout>
