@@ -126,6 +126,19 @@
 					<onclick>Skin.ToggleSetting(Hide_Video_Flags)</onclick>
 					<selected>Skin.HasSetting(Hide_Video_Flags)</selected>
 				</control>
+				<control type="radiobutton" id="115">
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>31118</label>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+					<onclick>Skin.ToggleSetting(Show_Panel_Fanart)</onclick>
+					<selected>!Skin.HasSetting(Show_Panel_Fanart)</selected>
+				</control>
 				<control type="image" id="110">
 					<width>950</width>
 					<height>2</height>
@@ -171,7 +184,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 					<onclick>Skin.ToggleSetting(Player_Show_Teletext_Button)</onclick>
 					<selected>Skin.HasSetting(Player_Show_Teletext_Button)</selected>
 				</control>

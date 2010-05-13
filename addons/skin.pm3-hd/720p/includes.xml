@@ -28,7 +28,7 @@
 			<fadetime>FanartCrossfadeTime</fadetime>
 			<aspectratio scalediffuse="false">scale</aspectratio>
 			<texture diffuse="Fanart_Diffuse.png" background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
-			<visible>![Control.IsVisible(56) | Control.IsVisible(500)]</visible>
+			<visible>![Control.IsVisible(56) | Control.IsVisible(500)] + !Skin.HasSetting(Show_Panel_Fanart)</visible>
 			<include>VisibleFadeEffect</include>
 		</control>
 		<control type="image">
