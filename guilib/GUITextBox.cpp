@@ -79,7 +79,7 @@ CGUITextBox::~CGUITextBox(void)
   m_autoScrollRepeatAnim = NULL;
 }
 
-void CGUITextBox::DoRender(unsigned int currentTime)
+void CGUITextBox::DoRender(DWORD currentTime)
 {
   m_renderTime = currentTime;
 

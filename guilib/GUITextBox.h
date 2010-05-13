@@ -48,7 +48,7 @@ public:
   virtual ~CGUITextBox(void);
   virtual CGUITextBox *Clone() const { return new CGUITextBox(*this); };
 
-  virtual void DoRender(unsigned int currentTime);
+  virtual void DoRender(DWORD currentTime);
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
 
