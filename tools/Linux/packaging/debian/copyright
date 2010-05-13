@@ -646,22 +646,6 @@ OpenDAAP
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-RingBuffer.h: Interface and implementation of CRingBuffer, an MFC ring buffer
-class.
-
-    Copyright © Larry Antram (larrya@sdust.com)
-    Copyright © 2001-2002 Stardust Software. All Rights Reserved.
-
-    This code may be used in compiled form in any way you desire
-    and may be redistributed unmodified by any means PROVIDING it
-    is not sold for profit without the authors written consent, and
-    providing that this entire notice and the authors name and all
-    copyright notices remains intact.
-
-    This file is provided "as is" with no expressed or implied
-    warranty. The author accepts no liability for any damage/loss
-    of business that this product may cause.
-
 zlib - A Massively Spiffy Yet Delicately Unobtrusive Compression Library
 <http://www.zlib.net/>
 
