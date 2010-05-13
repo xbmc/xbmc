@@ -361,6 +361,7 @@ config.log
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/src/vm/Makefile.in
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/INSTALL
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/autom4te.cache
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav/config.h.in~
 
 # /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/config.h
@@ -381,6 +382,7 @@ config.log
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/src/Makefile.in
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/INSTALL
 /xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/autom4te.cache
+/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread/config.h.in~
 
 # /xbmc/cores/dvdplayer/Codecs/libfaad2/
 /xbmc/cores/dvdplayer/Codecs/libfaad2/config.log
