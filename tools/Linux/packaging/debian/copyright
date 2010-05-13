@@ -615,17 +615,6 @@ GLEW - The OpenGL Extension Wrangler Library
     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
     MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 
-ftpparse
-<http://cr.yp.to/ftpparse.html>
-
-    Copyright © D. J. Bernstein, djb@cr.yp.to  http://cr.yp.to/ftpparse.html
-
-    There is only a disclaimer at http://cr.yp.to/ftpparse.html.
-    Here's the disclaimer.
-
-    Commercial use of ftpparse is fine, as long as you let me know what programs
-    you're using it in.
-
 OpenDAAP
 <http://www.opendaap.org/>
 
