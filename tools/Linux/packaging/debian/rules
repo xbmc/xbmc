@@ -67,6 +67,8 @@ INPUT_FILES = debian/control.in
 
 override_dh_clean:
 	dh_clean
+	find . -name config.status -o -name config.cache -o -name config.log \
+		-exec rm -f "{}" \;
 	debian/rules $(INPUT_FILES)
 
 override_dh_auto_configure: configure
@@ -78,14 +80,6 @@ override_dh_auto_install:
 	    $(CURDIR)/debian/tmp/etc/init/xbmc-live.conf
 	$(MAKE) eventclients DESTDIR=$(CURDIR)/debian/tmp \
 		WII_EXTRA_OPTS=-DCWIID_OLD
-	find "debian/tmp/usr/share/xbmc" -regextype posix-extended \
-		-type f -iregex \
-		".*python24\.zip|.*\.so|.*\.vis|.*\.xbs|.*xbmc\.bin|.*xbmc-xrandr" | \
-		while read FILE; do \
-		NEW_LOCATION="$$(echo $$FILE | sed -e 's|usr/share|usr/lib|')"; \
-		install -D "$$FILE" "$$NEW_LOCATION"; \
-		rm "$$FILE"; \
-		done
 
 override_dh_install:
 	dh_install --sourcedir=$(CURDIR)/debian/tmp -XLICENCE \
@@ -94,16 +88,6 @@ override_dh_install:
 	# Delete stuff in xbmc-data that is in other packages
 	rm -rf debian/xbmc-data/usr/share/xbmc/addons/skin.*
 	rm -rf debian/xbmc-data/usr/share/xbmc/web
-
-override_dh_link:
-	dh_link
-	find "debian/xbmc-bin/usr/lib" -regextype posix-extended -type f | \
-		while read FILE; do \
-		LINK_TARGET="$$(echo "$$FILE" | sed -e 's|debian/xbmc-bin/||')"; \
-		LINK_DESTINATION="$$(echo "$$FILE" | sed -e 's|debian/xbmc-bin/usr/lib|usr/share|')"; \
-		dh_link -pxbmc-bin "$$LINK_TARGET" "$$LINK_DESTINATION"; \
-		done
-	-[ -d debian/xbmc-data/usr/share/xbmc ] && find debian/xbmc-data/usr/share/xbmc/ -type d -empty -delete
 
 override_dh_strip:
 	dh_strip --dbg-package=xbmc-dbg

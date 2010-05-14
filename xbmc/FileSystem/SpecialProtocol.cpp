@@ -45,6 +45,11 @@ void CSpecialProtocol::SetXBMCPath(const CStdString &dir)
   SetPath("xbmc", dir);
 }
 
+void CSpecialProtocol::SetXBMCBinPath(const CStdString &dir)
+{
+  SetPath("xbmcbin", dir);
+}
+
 void CSpecialProtocol::SetHomePath(const CStdString &dir)
 {
   SetPath("home", dir);
@@ -133,6 +138,8 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
   // from here on, we have our "real" special paths
   else if (RootDir.Equals("xbmc"))
     CUtil::AddFileToFolder(GetPath("xbmc"), FileName, translatedPath);
+  else if (RootDir.Equals("xbmcbin"))
+    CUtil::AddFileToFolder(GetPath("xbmcbin"), FileName, translatedPath);
   else if (RootDir.Equals("home"))
     CUtil::AddFileToFolder(GetPath("home"), FileName, translatedPath);
   else if (RootDir.Equals("userhome"))
@@ -238,6 +245,7 @@ CStdString CSpecialProtocol::ReplaceOldPath(const CStdString &oldPath, int pathV
 void CSpecialProtocol::LogPaths()
 {
   CLog::Log(LOGNOTICE, "special://xbmc/ is mapped to: %s", GetPath("xbmc").c_str());
+  CLog::Log(LOGNOTICE, "special://xbmcbin/ is mapped to: %s", GetPath("xbmcbin").c_str());
   CLog::Log(LOGNOTICE, "special://masterprofile/ is mapped to: %s", GetPath("masterprofile").c_str());
   CLog::Log(LOGNOTICE, "special://home/ is mapped to: %s", GetPath("home").c_str());
   CLog::Log(LOGNOTICE, "special://temp/ is mapped to: %s", GetPath("temp").c_str());

@@ -129,6 +129,10 @@
 #define INSTALL_PATH    "/usr/share/xbmc"
 #endif
 
+#ifndef BIN_INSTALL_PATH
+#define BIN_INSTALL_PATH "/usr/lib/xbmc"
+#endif
+
 #define CONST   const
 #define FALSE   0
 #define TRUE    1
