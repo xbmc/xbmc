@@ -2223,6 +2223,49 @@ Enca - Extremely Naive Charset Analyser
     with this program; if not, write to the Free Software Foundation, Inc.,
     59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
 
+C-Pluff - a plug-in framework for C
+
+    Copyright 2007 Johannes Lehtinen
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included
+    in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+    C-Pluff uses data structure implementations from Kazlib library.
+
+    KazLib copyright and license
+    ----------------------------
+
+    Hash Table Data Type
+    List Abstract Data Type
+    Copyright (C) 1997 Kaz Kylheku <kaz@ashi.footprints.net>
+
+    Free Software License:
+
+    All rights are reserved by the author, with the following exceptions:
+    Permission is granted to freely reproduce and distribute this software,
+    possibly in exchange for a fee, provided that this copyright notice appears
+    intact. Permission is also granted to adapt this software to produce
+    derivative works, as long as the modified versions carry this copyright
+    notice and additional notices stating that the work has been modified.
+    This source code may be translated into executable form and incorporated
+    into proprietary software; there is no requirement for such software to
+    contain a copyright notice related to this source.
+
 Licenses:
 
 License: GPL
