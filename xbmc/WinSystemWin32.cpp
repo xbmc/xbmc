@@ -288,7 +288,7 @@ void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
 
 bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  CLog::Log(LOGDEBUG, "%s(%s) on screen %d with size %dx%d, refresh %f", __FUNCTION__, fullScreen ? "fullscreen" : "windowed", res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate);
+  CLog::Log(LOGDEBUG, "%s (%s) on screen %d with size %dx%d, refresh %f", __FUNCTION__, !fullScreen ? "windowed" : (g_guiSettings.GetBool("videoscreen.fakefullscreen") ? "windowed fullscreen" : "true fullscreen"), res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate);
   m_bFullScreen = fullScreen;
   bool forceResize = (m_nScreen != res.iScreen);
   m_nScreen = res.iScreen;
