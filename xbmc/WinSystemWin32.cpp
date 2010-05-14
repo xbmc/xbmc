@@ -486,14 +486,24 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
       DISPLAY_DEVICE ddMon;
       ZeroMemory(&ddMon, sizeof(ddMon));
       ddMon.cb = sizeof(ddMon);
+      bool foundScreen = false;
+      DWORD screen = 0;
 
-      // MS documentation is not 100% clear if there can be more than one screen per adapter. Didn't happen on my ATI and nVidia cards.
-      if (EnumDisplayDevices(ddAdapter.DeviceName, 0, &ddMon, 0) && (ddMon.StateFlags & (DISPLAY_DEVICE_ACTIVE | DISPLAY_DEVICE_ATTACHED)))
+      // Just look for the first active output, we're actually only interested in the information at the adapter level.
+      while (EnumDisplayDevices(ddAdapter.DeviceName, screen, &ddMon, 0))
       {
-        // Leftover from previous code. Did not happen in my testing (W7x86,ATI+nVidia), really needed?
-        if (!*ddMon.DeviceString)
-          lstrcpy(ddMon.DeviceString, _T("Default Monitor"));
+        if (ddMon.StateFlags & (DISPLAY_DEVICE_ACTIVE | DISPLAY_DEVICE_ATTACHED))
+        {
+          foundScreen = true;
+          break;
+        }
+        ZeroMemory(&ddMon, sizeof(ddMon));
+        ddMon.cb = sizeof(ddMon);
+        screen++;
+      }
 
+      if (foundScreen)
+      {
         CLog::Log(LOGNOTICE, "Found screen: %s on %s, adapter %d.", ddMon.DeviceString, ddAdapter.DeviceString, adapter);
 
         // get information about the display's current position and display mode
