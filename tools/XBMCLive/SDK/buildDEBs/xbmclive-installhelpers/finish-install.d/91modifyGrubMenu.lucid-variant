@@ -19,19 +19,19 @@
 #  http://www.gnu.org/copyleft/gpl.html
 
 if [ -f /target/boot/grub/grub.cfg ]; then
-	# Modify /etc/default/grub
+	# Modify /etc/default/grub on target
 
 	# Comment out defaults if not done already
-	sed -i -e 's/^GRUB_CMDLINE_LINUX_DEFAULT/#GRUB_CMDLINE_LINUX_DEFAULT/' /etc/default/grub
-	sed -i -e 's/^GRUB_GFXMODE/#GRUB_GFXMODE/' /etc/default/grub
-	sed -i -e 's/^GRUB_GFXPAYLOAD_LINUX/#GRUB_GFXPAYLOAD_LINUX/' /etc/default/grub
+	sed -i -e 's/^GRUB_CMDLINE_LINUX_DEFAULT/#GRUB_CMDLINE_LINUX_DEFAULT/' /target/etc/default/grub
+	sed -i -e 's/^GRUB_GFXMODE/#GRUB_GFXMODE/' /target/etc/default/grub
+	sed -i -e 's/^GRUB_GFXPAYLOAD_LINUX/#GRUB_GFXPAYLOAD_LINUX/' /target/etc/default/grub
 
 	# Set our own defaults
-	echo  >> /etc/default/grub
-	echo '# Defaults from XBMC Installation' >> /etc/default/grub
-	echo 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash xbmc=autostart,nodiskmount,setvolume loglevel=0 video=vesafb"' >> /etc/default/grub
-	echo 'GRUB_GFXMODE="1280x768x32;1280x720x32;1024x768x32;800x600x32;640x480x32;1280x768;1280x720;1024x768;800x600;640x480"' >> /etc/default/grub
-	echo 'GRUB_GFXPAYLOAD_LINUX=keep' >> /etc/default/grub
+	echo  >> /target/etc/default/grub
+	echo '# Defaults from XBMC Installation' >> /target/etc/default/grub
+	echo 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash xbmc=autostart,nodiskmount,setvolume loglevel=0 video=vesafb"' >> /target/etc/default/grub
+	echo 'GRUB_GFXMODE="1280x768x32;1280x720x32;1024x768x32;800x600x32;640x480x32;1280x768;1280x720;1024x768;800x600;640x480"' >> /target/etc/default/grub
+	echo 'GRUB_GFXPAYLOAD_LINUX=keep' >> /target/etc/default/grub
 
 	in-target update-grub
 fi

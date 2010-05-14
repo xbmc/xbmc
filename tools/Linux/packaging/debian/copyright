@@ -1,67 +1,69 @@
 XBMC is downloaded from http://xbmc.org/.
 SVN snapshots are generated from
-https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport.
+https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk.
 
 Main Contact: "Team-XBMC" <team at xbmc dot org>
 
-Upstream Authors: Andreas Setterlind [Gamester17]
-                  Staffan Lindberg [pike]
-                  Arne Morten Kvarving [cptspiff]
-                  Anoop Menon [d4rk]
-                  Joakim Plate [elupus]
-                  Jonathan Marshall [jmarshall]
-                  Tobias Arrskog [Topfs2]
-                  Roee Vulkan [vulkanr]
-                  Winfried Soltys [WiSo]
-                  Yuval Tal [yuvalt]
-                  John W Vanderbeck [agathorn]
-                  Trent Nelson [AlTheKiller]
-                  Andres Mejia [ceros]
-                  Gunnar Norin [blittan]
-                  Dean Ross Parry [C-Quel]
-                  Sylvain Rebaud [c0diq]
-                  Martin van Beurden [chadoe]
-                  Scott Davilla [davilla]
-                  Stephan Diederich [MaestroDD]
-                  Benjamin Bertrand [Beenje]
-                  Benjamin Dickgiesser [DonJ]
-                  [GeminiServer]
-                  Christian Granqvist [Granqvist]
-                  Dave [kraqh3d]
-                  Luigi Capriotti [l.capriotti]
-                  Sean [malloc]
-                  Kyle Hill [monkeyman]
-                  [MrC]
-                  [nad]
-                  [nuka1195]
-                  Vincent Blackwell-Price [Voinage]
-                  Robert Parris [rwparris2]
-                  Sigurdur H. Olafsson [sho]
-                  Alasdair Campbell [Alcoheca]
-                  Georgy Yunaev [oldnemesis]
-                  Chris [phi2039]
-                  Bob [bobo1on1]
-                  David Allonby [motd2k]
-                  Robert Rudd [Rudd]
-                  Eric G [Tslayer]
-                  Amund Scharning [tut-ankh-amon]
-                  Matthias Kortstiege [VDRfan]
-                  Daniel Mehrwald [AreaScout]
-                  Oumar Aziz Outtara [wattazoum]
-                  Chris Haley [CHI3f]
-                  [Jezz_X]
-                  [Smokehead]
-                  Darren [Bizzeh]
-                  Marc [Bobbin007]
-                  Richard [Butcher]
-                  Jan-Willem [Darkie]
-                  Chris Branson [forza]
-                  [Kreet]
-                  [Ysbox]
-                  Erwin Beckers [Frodo]
-                  Albert Griscti-Soler [RUNTiME]
-                  Phil Burr [d7o3g4q] (a.k.a. Duo Egaq)
-                  Mathias Mahling [chokemaniac]
+Upstream Authors:
+
+    Andreas Setterlind [Gamester17]
+    Staffan Lindberg [pike]
+    Arne Morten Kvarving [cptspiff]
+    Anoop Menon [d4rk]
+    Joakim Plate [elupus]
+    Jonathan Marshall [jmarshall]
+    Tobias Arrskog [Topfs2]
+    Roee Vulkan [vulkanr]
+    Winfried Soltys [WiSo]
+    Yuval Tal [yuvalt]
+    John W Vanderbeck [agathorn]
+    Trent Nelson [AlTheKiller]
+    Andres Mejia [ceros]
+    Gunnar Norin [blittan]
+    Dean Ross Parry [C-Quel]
+    Sylvain Rebaud [c0diq]
+    Martin van Beurden [chadoe]
+    Scott Davilla [davilla]
+    Stephan Diederich [MaestroDD]
+    Benjamin Bertrand [Beenje]
+    Benjamin Dickgiesser [DonJ]
+    [GeminiServer]
+    Christian Granqvist [Granqvist]
+    Dave [kraqh3d]
+    Luigi Capriotti [l.capriotti]
+    Sean [malloc]
+    Kyle Hill [monkeyman]
+    [MrC]
+    [nad]
+    [nuka1195]
+    Vincent Blackwell-Price [Voinage]
+    Robert Parris [rwparris2]
+    Sigurdur H. Olafsson [sho]
+    Alasdair Campbell [Alcoheca]
+    Georgy Yunaev [oldnemesis]
+    Chris [phi2039]
+    Bob [bobo1on1]
+    David Allonby [motd2k]
+    Robert Rudd [Rudd]
+    Eric G [Tslayer]
+    Amund Scharning [tut-ankh-amon]
+    Matthias Kortstiege [VDRfan]
+    Daniel Mehrwald [AreaScout]
+    Oumar Aziz Outtara [wattazoum]
+    Chris Haley [CHI3f]
+    [Jezz_X]
+    [Smokehead]
+    Darren [Bizzeh]
+    Marc [Bobbin007]
+    Richard [Butcher]
+    Jan-Willem [Darkie]
+    Chris Branson [forza]
+    [Kreet]
+    [Ysbox]
+    Erwin Beckers [Frodo]
+    Albert Griscti-Soler [RUNTiME]
+    Phil Burr [d7o3g4q] (a.k.a. Duo Egaq)
+    Mathias Mahling [chokemaniac]
 
 Credits:
 
@@ -134,7 +136,7 @@ TinyXML - simple, small, C++ XML Parser
        misrepresented as being the original software.
     3. This notice may not be removed or altered from any source distribution.
 
-CString Class
+CString Class in guilib/StdString.h
 
     Copyright © 2002 Joseph M. O'Leary
 
@@ -216,9 +218,9 @@ Apple Remote Control Wrapper Classes
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
     THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-    THE SOFTWARE.
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+    IN THE SOFTWARE.
 
 Class to Display events received from the Apple Infrared Remote.
 
@@ -335,46 +337,6 @@ GNU gettext - internationalization aids
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-SNTP Protocol C++ Implementation
-<http://www.naughter.com/sntp.html>
-
-    Copyright © 1998 - 2003 by PJ Naughter.
-        (Web: www.naughter.com, Email: pjna@naughter.com)
-
-    You are allowed to include the source code in any product (commercial,
-    shareware, freeware or otherwise) when your product is released in binary
-    form. You are allowed to modify the source code in any way you want except
-    you cannot modify the copyright details at the top of each module. If you
-    want to distribute source code with your application, then you are only
-    allowed to distribute versions released by the author. This is to maintain a
-    single distribution point for the source code.
-
-RSA Data Security, Inc. MD5 Implementation
-<http://www.rsa.com/>
-
-    Copyright © 1990, RSA Data Security, Inc. All rights reserved.
-
-    The RSA Data Security license is known to be GPL incompatible. Suggest to use
-    the public domain implementation found in dpkg and adopted by mediatomb.
-
-    License to copy and use this software is granted provided that
-    it is identified as the "RSA Data Security, Inc. MD5 Message
-    Digest Algorithm" in all material mentioning or referencing this
-    software or this function.
-
-    License is also granted to make and use derivative works
-    provided that such works are identified as "derived from the RSA
-    Data Security, Inc. MD5 Message Digest Algorithm" in all
-    material mentioning or referencing the derived work.
-
-    RSA Data Security, Inc. makes no representations concerning
-    either the merchantability of this software or the suitability
-    of this software for any particular purpose.  It is provided "as
-    is" without express or implied warranty of any kind.
-
-    These notices must be retained in any copies of any part of this
-    documentation and/or software.
-
 DBUSServer Class
 <http://www.azurdigitalnetworks.net/>
 
@@ -457,7 +419,8 @@ Goom 2k4
 
     You should have received a copy of the GNU Lesser General Public
     License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+    USA
 
 XAnalyser, frequence spectrum analyser for X Window
 <http://arvin.schnell-web.net/xanalyser/>
@@ -535,7 +498,8 @@ projectM - OpenGL based advanced music visualization program
 
     You should have received a copy of the GNU Lesser General Public
     License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+    USA
 
 GLEW - The OpenGL Extension Wrangler Library
 <http://glew.sourceforge.net/>
@@ -615,17 +579,6 @@ GLEW - The OpenGL Extension Wrangler Library
     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
     MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
 
-ftpparse
-<http://cr.yp.to/ftpparse.html>
-
-    Copyright © D. J. Bernstein, djb@cr.yp.to  http://cr.yp.to/ftpparse.html
-
-    There is only a disclaimer at http://cr.yp.to/ftpparse.html.
-    Here's the disclaimer.
-
-    Commercial use of ftpparse is fine, as long as you let me know what programs
-    you're using it in.
-
 OpenDAAP
 <http://www.opendaap.org/>
 
@@ -645,22 +598,6 @@ OpenDAAP
     You should have received a copy of the GNU General Public License along
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-RingBuffer.h: Interface and implementation of CRingBuffer, an MFC ring buffer
-class.
-
-    Copyright © Larry Antram (larrya@sdust.com)
-    Copyright © 2001-2002 Stardust Software. All Rights Reserved.
-
-    This code may be used in compiled form in any way you desire
-    and may be redistributed unmodified by any means PROVIDING it
-    is not sold for profit without the authors written consent, and
-    providing that this entire notice and the authors name and all
-    copyright notices remains intact.
-
-    This file is provided "as is" with no expressed or implied
-    warranty. The author accepts no liability for any damage/loss
-    of business that this product may cause.
 
 zlib - A Massively Spiffy Yet Delicately Unobtrusive Compression Library
 <http://www.zlib.net/>
@@ -832,7 +769,8 @@ LAME Ain't an Mp3 Encoder
 GNU libmicrohttpd
 <http://www.gnu.org/software/libmicrohttpd/>
 
-    (C) 2006, 2007, 2008, 2009 Christian Grothoff (and other contributing authors)
+    (C) 2006, 2007, 2008, 2009 Christian Grothoff (and other contributing
+    authors)
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -846,7 +784,8 @@ GNU libmicrohttpd
 
     You should have received a copy of the GNU Lesser General Public
     License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+    USA
 
 libmodplug
 <http://modplug-xmms.sourceforge.net>
@@ -869,7 +808,8 @@ libmodplug
 
     You should have received a copy of the GNU Lesser General Public
     License along with this library; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+    USA
 
 Python Programming Language
 <http://www.python.org/>
@@ -1496,7 +1436,8 @@ HDHomeRun - Networked Digital Tuner
     Lesser General Public License for more details.
 
     You should have received a copy of the GNU Lesser General Public
-    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+    License along with this library.  If not, see
+    <http://www.gnu.org/licenses/>.
 
     As a special exception to the GNU Lesser General Public License,
     you may link, statically or dynamically, an application with a
@@ -1635,122 +1576,6 @@ GNU Compact Disc Input and Control Library
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-DUMB - Dynamic Universal Music Bibliotheque
-<http://dumb.sourceforge.net/>
-
-    Copyright © 2001-2005 Ben Davis, Robert J Ohannessian and Julien Cugniere
-
-    Licence for DUMB v0.9.3
-
-     _______         ____    __         ___    ___
-    \    _  \       \    /  \  /       \   \  /   /       '   '  '
-     |  | \  \       |  |    ||         |   \/   |         .      .
-     |  |  |  |      |  |    ||         ||\  /|  |
-     |  |  |  |      |  |    ||         || \/ |  |         '  '  '
-     |  |  |  |      |  |    ||         ||    |  |         .      .
-     |  |_/  /        \  \__//          ||    |  |
-    /_______/ynamic    \____/niversal  /__\  /____\usic   /|  .  . ibliotheque
-                                                         /  \
-                                                        / .  \
-    licence.txt - Conditions for use of DUMB.          / / \  \
-                                                      | <  /   \_
-    If you do not agree to these terms, please        |  \/ /\   /
-    do not use DUMB.                                   \_  /  > /
-                                                         | \ / /
-    Information in [brackets] is provided to aid         |  ' /
-    interpretation of the licence.                        \__/
-
-    Dynamic Universal Music Bibliotheque, Version 0.9.3
-
-    Copyright (C) 2001-2005 Ben Davis, Robert J Ohannessian and Julien Cugniere
-
-    This software is provided 'as-is', without any express or implied warranty.
-    In no event shall the authors be held liable for any damages arising from
-    the use of this software.
-
-    Permission is granted to anyone to use this software for any purpose,
-    including commercial applications, and to alter it and redistribute it
-    freely, subject to the following restrictions:
-
-    1. The origin of this software must not be misrepresented; you must not
-       claim that you wrote the original software. If you use this software in a
-       product, you are requested to acknowledge its use in the product
-       documentation, along with details on where to get an unmodified version
-       of this software, but this is not a strict requirement.
-
-       [Note that the above point asks for a link to DUMB, not just a mention.
-       Googling for DUMB doesn't help much! The URL is "http://dumb.sf.net/".]
-
-       [The link was originally strictly required. This was changed for two
-       reasons. Firstly, if many projects request an acknowledgement, the list
-       of acknowledgements can become quite unmanageable. Secondly, DUMB was
-       placing a restriction on the code using it, preventing people from using
-       the GNU General Public Licence which disallows any such restrictions. See
-       http://www.gnu.org/philosophy/bsd.html for more information on this
-       subject. However, if DUMB plays a significant part in your project, we do
-       urge you to acknowledge its use.]
-
-    2. Altered source versions must be plainly marked as such, and must not be
-       misrepresented as being the original software.
-
-    3. This notice may not be removed from or altered in any source
-       distribution.
-
-    4. If you are using the Program in someone else's bedroom on any Monday at
-       3:05 pm, you are not allowed to modify the Program for ten minutes. [This
-       clause provided by Inphernic; every licence should contain at least one
-       clause, the reasoning behind which is far from obvious.]
-
-    5. Users who wish to use DUMB for the specific purpose of playing music are
-       required to feed their dog on every full moon (if deemed appropriate).
-       [This clause provided by Allefant, who couldn't remember what Inphernic's
-       clause was.]
-
-    6. No clause in this licence shall prevent this software from being depended
-       upon by a product licensed under the GNU General Public Licence. If such
-       a clause is deemed to exist, Debian, then it shall be respected in spirit
-       as far as possible and all other clauses shall continue to apply in full
-       force.
-
-    We regret that we cannot provide any warranty, not even the implied warranty
-    of merchantability or fitness for a particular purpose.
-
-    Some files generated or copied by automake, autoconf and friends are
-    available in an extra download. These fall under separate licences but are
-    all free to distribute. Please check their licences as necessary.
-
-    Licence for DUMB-XMMS v0.1
-
-    DUMB-XMMS v0.1 falls under the GNU General Public License.
-
-    Licence for DUMBOGG v0.5
-
-    DUMBOGG -- An Ogg Vorbis add-on library for DUMB.
-
-    This package is provided as giftware. You can copy it, redistribute
-    it, modify it, do whatever you please. The only restriction you have
-    on what you can do with it is claim you wrote it. You are encouraged,
-    though not required, to include the name of the library in your credits
-    page, as well as a web address allowing others to know how they can get
-    their copy of the library. This library is built on top of the libOgg,
-    libVorbis, libVorbisFile and DUMB libraries. These libraries come with
-    additional requirements and restrictions that you must follow in order
-    to legally use this software. Please read the COPYING files in the
-    Ogg Vorbis downloads, and please read DUMB's licence.txt file, for full
-    details on the requirements of those libraries.
-
-    THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS ``AS IS'' AND ANY EXPRESS
-    OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-    DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
-    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-    BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-    WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
-    OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-    ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 SNESAPU - SNES APU emulator library
 <http://www.alpha-ii.com/>
 
@@ -1842,44 +1667,6 @@ liba52 - a free ATSC A/52 stream decoder
     You should have received a copy of the GNU General Public License along
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-shnplay.h
-
-    Copyright © 2003-2005 Marc Heubeck and Holger Stenger All rights reserved.
-
-    Redistribution and use in source form, with or without modification, are
-    permitted provided that the following conditions are met:
-
-    Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-    Neither the name of the author nor the names of its contributors may be used
-    to endorse or promote products derived from this software without specific
-    prior written permission.
-
-    Redistribution and use in binary form, without modification, are permitted
-    for non-commercial purposes provided that the following conditions are met:
-
-    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-    Neither the name of the author nor the names of its contributors may be used
-    to endorse or promote products derived from this software without specific
-    prior written permission.
-
-    Redistribution and use under different conditions than the aforementioned
-    require specific prior written permission by the author.
-
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-    ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR
-    ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
-    DAMAGE.
 
 Gens APU from Gens
 <http://info.sonicretro.org/Gens/GS>
@@ -1997,33 +1784,6 @@ SID Player Music Library V2
     You should have received a copy of the GNU General Public License along
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-Monkey’s Audio Codec
-<http://www.monkeysaudio.com/>
-
-    Copyright © 2000-2002 by Matthew T. Ashland. All rights reserved.
-
-    1. The Monkey's Audio SDK and source code can be freely used to add APE
-       format playback, encoding, or tagging support to any product, free or
-       commercial. Use of the code for proprietary efforts that don't support
-       the official APE format require written consent of the author.
-
-    2. Monkey's Audio source can be included in GPL and open-source software,
-       although Monkey's Audio itself will not be subjected to external
-       licensing requirements or other viral source restrictions.
-
-    3. Code changes and improvements must be contributed back to the Monkey's
-       Audio project free from restrictions or royalties, unless exempted by
-       express written consent of the author.
-
-    4. Any source code, ideas, or libraries used must be plainly acknowledged in
-       the software using the code.
-
-    5. Although the software has been tested thoroughly, the author is in no way
-       responsible for damages due to bugs or misuse.
-
-    6. If you do not completely agree with all of the previous stipulations, you
-       must cease using this source code and remove it from your storage device.
 
 Xbox ADPCM audio codec
 <http://www.winamp.com/plugins/details/147392>
@@ -2207,44 +1967,6 @@ nuttcp - TCP/UDP network testing tool
     OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
     SUCH DAMAGE.
 
-    Portions have different copyright and license
-
-    Copyright © 1995, 1996, 1997 Kungliga Tekniska Högskolan
-    (Royal Institute of Technology, Stockholm, Sweden).
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions
-    are met:
-
-    1. Redistributions of source code must retain the above copyright
-       notice, this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    3. All advertising materials mentioning features or use of this software
-       must display the following acknowledgement:
-         This product includes software developed by the Kungliga Tekniska
-         Högskolan and its contributors.
-
-    4. Neither the name of the Institute nor the names of its contributors
-       may be used to endorse or promote products derived from this software
-       without specific prior written permission.
-
-    THIS SOFTWARE IS PROVIDED BY THE INSTITUTE AND CONTRIBUTORS ``AS IS'' AND
-    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-    ARE DISCLAIMED.  IN NO EVENT SHALL THE INSTITUTE OR CONTRIBUTORS BE LIABLE
-    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-    OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-    HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-    SUCH DAMAGE.
-
 libdvdnav and libdvdread - libraries to read DVDs and navigate DVD menus
 <http://www.mplayerhq.hu/>
 
@@ -2393,41 +2115,6 @@ xbmc-xrandr.c
     TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
     OF THIS SOFTWARE.
 
-HomeSystemIcon in PM3.HD skin
-<http://www.icons-land.com/>
-
-    Copyright © Icons-Land
-
-    This is a legal agreement between you, the purchaser, and the Icons-Land. By
-    purchasing or downloading any stock icons (The Icons) from our website you
-    agree to the following:
-
-    All of The Icons remain the property of Icons-Land.
-
-    The Icons can be used royalty-free by the license for any personal or
-    commercial project including software application, documentation, computer
-    game, gui design, web design, advertising, film, video.
-    You may modify The Icons in shape, color, and/or file format and use the
-    modified icons royalty-free according to the license terms for any personal
-    or commercial product.
-
-    The license DOES NOT permit following uses:
-    a) The Icons may no be resold, sublicensed, rented, transferred or otherwise
-       made available for use or detached from a product, software application
-       or web page;
-    b) The Icons may not be placed on any electronic bulletin board or
-       downloadable format;
-    c) The Icons may not be included in any web template, including those which
-       are web based, but not limited to website designs and presentation
-       templates.
-
-    You may NOT use, or allow anyone else to use The Icons to create
-    pornographic, libelous, obscene, or defamatory material.
-
-    All icon files are provided "as is". You agree not to hold Icons-Land liable
-    for any damages that may occur due to use, or inability to use, icons or
-    image data from Icons-Land.
-
 xbmc/Crc32.cpp and xbmc/Crc32.h
 
     Copyright (C) 2005-2009 Team XBMC
@@ -2459,6 +2146,126 @@ xbmc/Crc32.cpp and xbmc/Crc32.h
     2 of the License, or (at your option) any later version.
 
     based on implementation by Finn Yannick Jacobs
+
+guilib/AnimatedGif.cpp and guilib/AnimatedGif.h
+
+    Copyright (c) 2000, Juan Soulie <jsoulie@cplusplus.com>
+
+    Permission to use, copy, modify, distribute and sell this software or any
+    part thereof and/or its documentation for any purpose is granted without fee
+    provided that the above copyright notice and this permission notice appear
+    in all copies.
+
+    This software is provided "as is" without express or implied warranty of
+    any kind. The author shall have no liability with respect to the
+    infringement of copyrights or patents that any modification to the content
+    of this file or this file itself may incur.
+
+json-cpp - lightweight data-interchange format
+<http://jsoncpp.sourceforge.net/>
+
+    Author is Baptiste Lepilleur <blep@users.sourceforge.net>
+
+    The json-cpp library and this documentation are in Public Domain.
+
+Crystal HD
+<http://www.broadcom.com/support/crystal_hd/>
+
+    Copyright(c) 2006-2009 Broadcom Corporation.
+
+    The Crystal HD library is free software: you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation, version 2.1 of the License.
+
+    The Crystal HD library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+    You should have received a copy of the GNU Lesser General Public License
+    along with this header.  If not, see <http://www.gnu.org/licenses/>.
+
+    The Crystal HD driver is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 2 of the License.
+
+    The Crystal HD driver is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this driver.  If not, see <http://www.gnu.org/licenses/>.
+
+OpenSSH
+<http://www.openssh.org/>
+
+    Copyright (c) 1995 Tatu Ylonen <ylo@cs.hut.fi>, Espoo, Finland
+    All rights reserved.
+
+    See the section 'License: OpenSSH' for full license terms.
+
+Enca - Extremely Naive Charset Analyser
+<http://freshmeat.net/projects/enca/>
+
+    Copyright (C) 2000-2003 David Necas (Yeti) <yeti@physics.muni.cz>
+    Copyright (C) 2009 Michal Cihar <michal@cihar.com>
+
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of version 2 of the GNU General Public License as published
+    by the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+    more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+
+C-Pluff - a plug-in framework for C
+<http://www.c-pluff.org/>
+
+    Copyright 2007 Johannes Lehtinen
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included
+    in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+    OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+    C-Pluff uses data structure implementations from Kazlib library.
+
+    KazLib copyright and license
+    ----------------------------
+
+    Hash Table Data Type
+    List Abstract Data Type
+    Copyright (C) 1997 Kaz Kylheku <kaz@ashi.footprints.net>
+
+    Free Software License:
+
+    All rights are reserved by the author, with the following exceptions:
+    Permission is granted to freely reproduce and distribute this software,
+    possibly in exchange for a fee, provided that this copyright notice appears
+    intact. Permission is also granted to adapt this software to produce
+    derivative works, as long as the modified versions carry this copyright
+    notice and additional notices stating that the work has been modified.
+    This source code may be translated into executable form and incorporated
+    into proprietary software; there is no requirement for such software to
+    contain a copyright notice related to this source.
 
 Licenses:
 
@@ -3006,3 +2813,211 @@ We are required to state that
     CompuServe Incorporated."
 
 -- End of IJG License --
+
+License: OpenSSH
+
+This file is part of the OpenSSH software.
+
+The licences which components of this software fall under are as
+follows.  First, we will summarize and say that all components
+are under a BSD licence, or a licence more free than that.
+
+OpenSSH contains no GPL code.
+
+1)
+     * Copyright (c) 1995 Tatu Ylonen <ylo@cs.hut.fi>, Espoo, Finland
+     *                    All rights reserved
+     *
+     * As far as I am concerned, the code I have written for this software
+     * can be used freely for any purpose.  Any derived versions of this
+     * software must be clearly marked as such, and if the derived work is
+     * incompatible with the protocol description in the RFC file, it must be
+     * called by a name other than "ssh" or "Secure Shell".
+
+    [Tatu continues]
+     *  However, I am not implying to give any licenses to any patents or
+     * copyrights held by third parties, and the software includes parts that
+     * are not under my direct control.  As far as I know, all included
+     * source code is used in accordance with the relevant license agreements
+     * and can be used freely for any purpose (the GNU license being the most
+     * restrictive); see below for details.
+
+    [However, none of that term is relevant at this point in time.  All of
+    these restrictively licenced software components which he talks about
+    have been removed from OpenSSH, i.e.,
+
+     - RSA is no longer included, found in the OpenSSL library
+     - IDEA is no longer included, its use is deprecated
+     - DES is now external, in the OpenSSL library
+     - GMP is no longer used, and instead we call BN code from OpenSSL
+     - Zlib is now external, in a library
+     - The make-ssh-known-hosts script is no longer included
+     - TSS has been removed
+     - MD5 is now external, in the OpenSSL library
+     - RC4 support has been replaced with ARC4 support from OpenSSL
+     - Blowfish is now external, in the OpenSSL library
+
+    [The licence continues]
+
+    Note that any information and cryptographic algorithms used in this
+    software are publicly available on the Internet and at any major
+    bookstore, scientific library, and patent office worldwide.  More
+    information can be found e.g. at "http://www.cs.hut.fi/crypto".
+
+    The legal status of this program is some combination of all these
+    permissions and restrictions.  Use only at your own responsibility.
+    You will be responsible for any legal consequences yourself; I am not
+    making any claims whether possessing or using this is legal or not in
+    your country, and I am not taking any responsibility on your behalf.
+
+
+          NO WARRANTY
+
+    BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+    FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW.  EXCEPT WHEN
+    OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+    PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED
+    OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+    MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS
+    TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD THE
+    PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING,
+    REPAIR OR CORRECTION.
+
+    IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+    WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+    REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES,
+    INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING
+    OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED
+    TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY
+    YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER
+    PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGES.
+
+2)
+    The 32-bit CRC compensation attack detector in deattack.c was
+    contributed by CORE SDI S.A. under a BSD-style license.
+
+     * Cryptographic attack detector for ssh - source code
+     *
+     * Copyright (c) 1998 CORE SDI S.A., Buenos Aires, Argentina.
+     *
+     * All rights reserved. Redistribution and use in source and binary
+     * forms, with or without modification, are permitted provided that
+     * this copyright notice is retained.
+     *
+     * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED
+     * WARRANTIES ARE DISCLAIMED. IN NO EVENT SHALL CORE SDI S.A. BE
+     * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY OR
+     * CONSEQUENTIAL DAMAGES RESULTING FROM THE USE OR MISUSE OF THIS
+     * SOFTWARE.
+     *
+     * Ariel Futoransky <futo@core-sdi.com>
+     * <http://www.core-sdi.com>
+
+3)
+    ssh-keyscan was contributed by David Mazieres under a BSD-style
+    license.
+
+     * Copyright 1995, 1996 by David Mazieres <dm@lcs.mit.edu>.
+     *
+     * Modification and redistribution in source and binary forms is
+     * permitted provided that due credit is given to the author and the
+     * OpenBSD project by leaving this copyright notice intact.
+
+4)
+    The Rijndael implementation by Vincent Rijmen, Antoon Bosselaers
+    and Paulo Barreto is in the public domain and distributed
+    with the following license:
+
+     * @version 3.0 (December 2000)
+     *
+     * Optimised ANSI C code for the Rijndael cipher (now AES)
+     *
+     * @author Vincent Rijmen <vincent.rijmen@esat.kuleuven.ac.be>
+     * @author Antoon Bosselaers <antoon.bosselaers@esat.kuleuven.ac.be>
+     * @author Paulo Barreto <paulo.barreto@terra.com.br>
+     *
+     * This code is hereby placed in the public domain.
+     *
+     * THIS SOFTWARE IS PROVIDED BY THE AUTHORS ''AS IS'' AND ANY EXPRESS
+     * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+     * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+     * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHORS OR CONTRIBUTORS BE
+     * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+     * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+     * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+     * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+     * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+     * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+     * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+5)
+    One component of the ssh source code is under a 3-clause BSD license,
+    held by the University of California, since we pulled these parts from
+    original Berkeley code.
+
+     * Copyright (c) 1983, 1990, 1992, 1993, 1995
+     *      The Regents of the University of California.  All rights reserved.
+     *
+     * Redistribution and use in source and binary forms, with or without
+     * modification, are permitted provided that the following conditions
+     * are met:
+     * 1. Redistributions of source code must retain the above copyright
+     *    notice, this list of conditions and the following disclaimer.
+     * 2. Redistributions in binary form must reproduce the above copyright
+     *    notice, this list of conditions and the following disclaimer in the
+     *    documentation and/or other materials provided with the distribution.
+     * 3. Neither the name of the University nor the names of its contributors
+     *    may be used to endorse or promote products derived from this software
+     *    without specific prior written permission.
+     *
+     * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+     * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+     * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+     * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE
+     * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+     * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+     * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+     * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+     * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+     * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+     * THE POSSIBILITY OF SUCH DAMAGE.
+
+6)
+    Remaining components of the software are provided under a standard
+    2-term BSD licence with the following names as copyright holders:
+
+  Markus Friedl
+  Theo de Raadt
+  Niels Provos
+  Dug Song
+  Aaron Campbell
+  Damien Miller
+  Kevin Steves
+  Daniel Kouril
+  Wesley Griffin
+  Per Allansson
+  Nils Nordman
+  Simon Wilkinson
+
+     * Redistribution and use in source and binary forms, with or without
+     * modification, are permitted provided that the following conditions
+     * are met:
+     * 1. Redistributions of source code must retain the above copyright
+     *    notice, this list of conditions and the following disclaimer.
+     * 2. Redistributions in binary form must reproduce the above copyright
+     *    notice, this list of conditions and the following disclaimer in the
+     *    documentation and/or other materials provided with the distribution.
+     *
+     * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+     * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+     * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+     * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+     * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+     * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+     * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+     * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+     * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+     * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-- End of OpenSSH License --

@@ -1,10 +1,4 @@
 usr/bin/xbmc
-usr/share/xbmc/media
-usr/share/xbmc/sounds
-usr/share/xbmc/language
-usr/share/xbmc/userdata
-usr/share/xbmc/visualisations
-usr/share/xbmc/system
+usr/share/xbmc
 usr/share/pixmaps/xbmc.png
 usr/share/applications
-usr/share/xbmc/FEH.py
