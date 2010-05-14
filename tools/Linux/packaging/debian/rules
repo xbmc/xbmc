@@ -99,6 +99,8 @@ override_dh_makeshlibs:
 
 override_dh_gencontrol:
 	dh_gencontrol
-	# Need to manually add dependency for libcurl
+	# Need to manually add dependencies for dlopened libs.
 	sed "s/^Depends:.*$$/&, $$(sh debian/var_info LIBCURL_DEPENDS)/" \
+		-i "debian/xbmc-bin/DEBIAN/control"
+	sed "s/^Depends:.*$$/&, $$(sh debian/var_info LIBVDPAU_DEPENDS)/" \
 		-i "debian/xbmc-bin/DEBIAN/control"
