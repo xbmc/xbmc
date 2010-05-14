@@ -2168,6 +2168,34 @@ json-cpp - lightweight data-interchange format
 
     The json-cpp library and this documentation are in Public Domain.
 
+Crystal HD
+<http://www.broadcom.com/support/crystal_hd/>
+
+    Copyright(c) 2006-2009 Broadcom Corporation.
+
+    The Crystal HD library is free software: you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation, version 2.1 of the License.
+
+    The Crystal HD library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+    You should have received a copy of the GNU Lesser General Public License
+    along with this header.  If not, see <http://www.gnu.org/licenses/>.
+
+    The Crystal HD driver is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, version 2 of the License.
+
+    The Crystal HD driver is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this driver.  If not, see <http://www.gnu.org/licenses/>.
+
 Licenses:
 
 License: GPL
