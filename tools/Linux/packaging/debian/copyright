@@ -2161,6 +2161,13 @@ guilib/AnimatedGif.cpp and guilib/AnimatedGif.h
     infringement of copyrights or patents that any modification to the content
     of this file or this file itself may incur.
 
+json-cpp - lightweight data-interchange format
+<http://jsoncpp.sourceforge.net/>
+
+    Author is Baptiste Lepilleur <blep@users.sourceforge.net>
+
+    The json-cpp library and this documentation are in Public Domain.
+
 Licenses:
 
 License: GPL
