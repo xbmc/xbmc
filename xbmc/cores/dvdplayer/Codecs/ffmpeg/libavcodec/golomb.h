@@ -31,7 +31,8 @@
 #define AVCODEC_GOLOMB_H
 
 #include <stdint.h>
-#include "bitstream.h"
+#include "get_bits.h"
+#include "put_bits.h"
 
 #define INVALID_VLC           0x80000000
 
@@ -252,8 +253,12 @@ static inline int get_ur_golomb(GetBitContext *gb, int k, int limit, int esc_len
 
         return buf;
     }else{
-        buf >>= 32 - limit - esc_len;
-        LAST_SKIP_BITS(re, gb, esc_len + limit);
+        LAST_SKIP_BITS(re, gb, limit);
+        UPDATE_CACHE(re, gb);
+
+        buf = SHOW_UBITS(re, gb, esc_len);
+
+        LAST_SKIP_BITS(re, gb, esc_len);
         CLOSE_READER(re, gb);
 
         return buf + limit - 1;

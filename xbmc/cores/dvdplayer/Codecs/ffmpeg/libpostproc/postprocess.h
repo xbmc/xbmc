@@ -27,7 +27,7 @@
  *     external postprocessing API
  */
 
-#include "Codecs/ffmpeg/libavutil/avutil.h"
+#include "libavutil/avutil.h"
 
 #define LIBPOSTPROC_VERSION_MAJOR 51
 #define LIBPOSTPROC_VERSION_MINOR  2
@@ -47,6 +47,16 @@
  * Returns the LIBPOSTPROC_VERSION_INT constant.
  */
 unsigned postproc_version(void);
+
+/**
+ * Returns the libpostproc build-time configuration.
+ */
+const char * postproc_configuration(void);
+
+/**
+ * Returns the libpostproc license.
+ */
+const char * postproc_license(void);
 
 #define PP_QUALITY_MAX 6
 

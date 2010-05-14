@@ -85,6 +85,7 @@ typedef struct RV34DecContext{
     MpegEncContext s;
     int8_t *intra_types_hist;///< old block types, used for prediction
     int8_t *intra_types;     ///< block types
+    int    intra_types_stride;///< block types array stride
     const uint8_t *luma_dc_quant_i;///< luma subblock DC quantizer for intraframes
     const uint8_t *luma_dc_quant_p;///< luma subblock DC quantizer for interframes
 
@@ -123,7 +124,7 @@ typedef struct RV34DecContext{
  */
 int ff_rv34_get_start_offset(GetBitContext *gb, int blocks);
 int ff_rv34_decode_init(AVCodecContext *avctx);
-int ff_rv34_decode_frame(AVCodecContext *avctx, void *data, int *data_size, const uint8_t *buf, int buf_size);
+int ff_rv34_decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPacket *avpkt);
 int ff_rv34_decode_end(AVCodecContext *avctx);
 
 #endif /* AVCODEC_RV34_H */

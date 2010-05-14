@@ -26,10 +26,6 @@
 #ifndef AVCODEC_LIBSCHROEDINGER_H
 #define AVCODEC_LIBSCHROEDINGER_H
 
-#include "config.h"
-
-#if CONFIG_LIBSCHROEDINGER
-
 #include <schroedinger/schrobitstream.h>
 #include <schroedinger/schroframe.h>
 #include "avcodec.h"
@@ -54,8 +50,14 @@ SchroVideoFormatEnum ff_get_schro_video_format_preset (AVCodecContext *avccontex
 * Sets the Schroedinger frame format corresponding to the Schro chroma format
 * passed. Returns 0 on success, -1 on failure.
 */
-int ff_get_schro_frame_format (SchroChromaFormat schro_chroma_fmt,
-                               SchroFrameFormat  *schro_frame_fmt);
+int ff_get_schro_frame_format(SchroChromaFormat schro_chroma_fmt,
+                              SchroFrameFormat  *schro_frame_fmt);
 
-#endif /* CONFIG_LIBSCHROEDINGER */
+/**
+* Create a Schro frame based on the dimensions and frame format
+* passed. Returns a pointer to a frame on success, NULL on failure.
+*/
+SchroFrame *ff_create_schro_frame(AVCodecContext *avccontext,
+                                  SchroFrameFormat schro_frame_fmt);
+
 #endif /* AVCODEC_LIBSCHROEDINGER_H */

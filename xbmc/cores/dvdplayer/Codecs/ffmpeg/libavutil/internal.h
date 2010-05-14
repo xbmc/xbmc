@@ -40,7 +40,7 @@
 #include "timer.h"
 
 #ifndef attribute_align_arg
-#if (!defined(__ICC) || __ICC > 1100) && AV_GCC_VERSION_AT_LEAST(4,2)
+#if (!defined(__ICC) || __ICC > 1110) && AV_GCC_VERSION_AT_LEAST(4,2)
 #    define attribute_align_arg __attribute__((force_align_arg_pointer))
 #else
 #    define attribute_align_arg
@@ -56,7 +56,7 @@
 #endif
 
 #ifndef INT16_MIN
-#define INT16_MIN       (-0x7fff-1)
+#define INT16_MIN       (-0x7fff - 1)
 #endif
 
 #ifndef INT16_MAX
@@ -64,7 +64,7 @@
 #endif
 
 #ifndef INT32_MIN
-#define INT32_MIN       (-0x7fffffff-1)
+#define INT32_MIN       (-0x7fffffff - 1)
 #endif
 
 #ifndef INT32_MAX
@@ -76,7 +76,7 @@
 #endif
 
 #ifndef INT64_MIN
-#define INT64_MIN       (-0x7fffffffffffffffLL-1)
+#define INT64_MIN       (-0x7fffffffffffffffLL - 1)
 #endif
 
 #ifndef INT64_MAX
@@ -91,13 +91,12 @@
 #    define INT_BIT (CHAR_BIT * sizeof(int))
 #endif
 
-#if ( defined(__PIC__) || defined(__pic__) ) && ! defined(PIC)
-#    define PIC
+#ifndef offsetof
+#    define offsetof(T, F) ((unsigned int)((char *)&((T *)0)->F))
 #endif
 
-#ifndef offsetof
-#    define offsetof(T,F) ((unsigned int)((char *)&((T *)0)->F))
-#endif
+/* Use to export labels from asm. */
+#define LABEL_MANGLE(a) EXTERN_PREFIX #a
 
 // Use rip-relative addressing if compiling PIC code on x86-64.
 #if ARCH_X86_64 && defined(PIC)
@@ -121,20 +120,20 @@
 
 /* math */
 
-extern const uint32_t ff_inverse[256];
+extern const uint32_t ff_inverse[257];
 
 #if ARCH_X86
 #    define FASTDIV(a,b) \
     ({\
-        int ret,dmy;\
+        int ret, dmy;\
         __asm__ volatile(\
             "mull %3"\
-            :"=d"(ret),"=a"(dmy)\
-            :"1"(a),"g"(ff_inverse[b])\
+            :"=d"(ret), "=a"(dmy)\
+            :"1"(a), "g"(ff_inverse[b])\
             );\
         ret;\
     })
-#elif HAVE_ARMV6
+#elif HAVE_ARMV6 && HAVE_INLINE_ASM
 static inline av_const int FASTDIV(int a, int b)
 {
     int r, t;
@@ -145,18 +144,18 @@ static inline av_const int FASTDIV(int a, int b)
                      : "=&r"(r), "=&r"(t) : "r"(a), "r"(b), "r"(ff_inverse));
     return r;
 }
-#elif ARCH_ARM
+#elif ARCH_ARM && HAVE_INLINE_ASM
 static inline av_const int FASTDIV(int a, int b)
 {
     int r, t;
-    __asm__ volatile ("umull %1, %0, %2, %3"
-                      : "=&r"(r), "=&r"(t) : "r"(a), "r"(ff_inverse[b]));
+    __asm__ volatile("umull %1, %0, %2, %3"
+                     : "=&r"(r), "=&r"(t) : "r"(a), "r"(ff_inverse[b]));
     return r;
 }
 #elif CONFIG_FASTDIV
-#    define FASTDIV(a,b)   ((uint32_t)((((uint64_t)a)*ff_inverse[b])>>32))
+#    define FASTDIV(a,b)   ((uint32_t)((((uint64_t)a) * ff_inverse[b]) >> 32))
 #else
-#    define FASTDIV(a,b)   ((a)/(b))
+#    define FASTDIV(a,b)   ((a) / (b))
 #endif
 
 extern const uint8_t ff_sqrt_tab[256];
@@ -165,20 +164,20 @@ static inline av_const unsigned int ff_sqrt(unsigned int a)
 {
     unsigned int b;
 
-    if(a<255) return (ff_sqrt_tab[a+1]-1)>>4;
-    else if(a<(1<<12)) b= ff_sqrt_tab[a>>4 ]>>2;
+    if (a < 255) return (ff_sqrt_tab[a + 1] - 1) >> 4;
+    else if (a < (1 << 12)) b = ff_sqrt_tab[a >> 4] >> 2;
 #if !CONFIG_SMALL
-    else if(a<(1<<14)) b= ff_sqrt_tab[a>>6 ]>>1;
-    else if(a<(1<<16)) b= ff_sqrt_tab[a>>8 ]   ;
+    else if (a < (1 << 14)) b = ff_sqrt_tab[a >> 6] >> 1;
+    else if (a < (1 << 16)) b = ff_sqrt_tab[a >> 8]   ;
 #endif
-    else{
-        int s= av_log2_16bit(a>>16)>>1;
-        unsigned int c= a>>(s+2);
-        b= ff_sqrt_tab[c>>(s+8)];
-        b= FASTDIV(c,b) + (b<<s);
+    else {
+        int s = av_log2_16bit(a >> 16) >> 1;
+        unsigned int c = a >> (s + 2);
+        b = ff_sqrt_tab[c >> (s + 8)];
+        b = FASTDIV(c,b) + (b << s);
     }
 
-    return b - (a<b*b);
+    return b - (a < b * b);
 }
 
 #if ARCH_X86
@@ -191,14 +190,14 @@ static inline av_const unsigned int ff_sqrt(unsigned int a)
             );
 #else
 #define MASK_ABS(mask, level)\
-            mask= level>>31;\
-            level= (level^mask)-mask;
+            mask  = level >> 31;\
+            level = (level ^ mask) - mask;
 #endif
 
 #if HAVE_CMOV
-#define COPY3_IF_LT(x,y,a,b,c,d)\
-__asm__ volatile (\
-    "cmpl %0, %3        \n\t"\
+#define COPY3_IF_LT(x, y, a, b, c, d)\
+__asm__ volatile(\
+    "cmpl  %0, %3       \n\t"\
     "cmovl %3, %0       \n\t"\
     "cmovl %4, %1       \n\t"\
     "cmovl %5, %2       \n\t"\
@@ -206,11 +205,11 @@ __asm__ volatile (\
     : "r" (y), "r" (b), "r" (d)\
 );
 #else
-#define COPY3_IF_LT(x,y,a,b,c,d)\
-if((y)<(x)){\
-     (x)=(y);\
-     (a)=(b);\
-     (c)=(d);\
+#define COPY3_IF_LT(x, y, a, b, c, d)\
+if ((y) < (x)) {\
+    (x) = (y);\
+    (a) = (b);\
+    (c) = (d);\
 }
 #endif
 
@@ -224,11 +223,11 @@ if((y)<(x)){\
 #undef  time
 #define time time_is_forbidden_due_to_security_issues
 #undef  rand
-#define rand rand_is_forbidden_due_to_state_trashing_use_av_random
+#define rand rand_is_forbidden_due_to_state_trashing_use_av_lfg_get
 #undef  srand
-#define srand srand_is_forbidden_due_to_state_trashing_use_av_random_init
+#define srand srand_is_forbidden_due_to_state_trashing_use_av_lfg_init
 #undef  random
-#define random random_is_forbidden_due_to_state_trashing_use_av_random
+#define random random_is_forbidden_due_to_state_trashing_use_av_lfg_get
 #undef  sprintf
 #define sprintf sprintf_is_forbidden_due_to_security_issues_use_snprintf
 #undef  strcat
@@ -246,31 +245,23 @@ if((y)<(x)){\
 #define perror please_use_av_log_instead_of_perror
 #endif
 
-#define CHECKED_ALLOCZ(p, size)\
+#define FF_ALLOC_OR_GOTO(ctx, p, size, label)\
 {\
-    p= av_mallocz(size);\
-    if(p==NULL && (size)!=0){\
-        av_log(NULL, AV_LOG_ERROR, "Cannot allocate memory.");\
-        goto fail;\
+    p = av_malloc(size);\
+    if (p == NULL && (size) != 0) {\
+        av_log(ctx, AV_LOG_ERROR, "Cannot allocate memory.\n");\
+        goto label;\
     }\
 }
 
-#if defined(__ICC) || defined(__SUNPRO_C)
-    #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n)))
-    #define DECLARE_ASM_CONST(n,t,v)    const t __attribute__ ((aligned (n))) v
-#elif defined(__GNUC__)
-    #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n), visibility("hidden"))) 
-    #define DECLARE_ASM_CONST(n,t,v)    static const t v attribute_used __attribute__ ((aligned (n)))
-#elif defined(_MSC_VER)
-    #define DECLARE_ALIGNED(n,t,v)      __declspec(align(n)) t v
-    #define DECLARE_ASM_CONST(n,t,v)    __declspec(align(n)) static const t v
-#elif HAVE_INLINE_ASM
-    #error The asm code needs alignment, but we do not know how to do it for this compiler.
-#else
-    #define DECLARE_ALIGNED(n,t,v)      t v
-    #define DECLARE_ASM_CONST(n,t,v)    static const t v
-#endif
-
+#define FF_ALLOCZ_OR_GOTO(ctx, p, size, label)\
+{\
+    p = av_mallocz(size);\
+    if (p == NULL && (size) != 0) {\
+        av_log(ctx, AV_LOG_ERROR, "Cannot allocate memory.\n");\
+        goto label;\
+    }\
+}
 
 #if !HAVE_LLRINT
 static av_always_inline av_const long long llrint(double x)
@@ -278,6 +269,13 @@ static av_always_inline av_const long long llrint(double x)
     return rint(x);
 }
 #endif /* HAVE_LLRINT */
+
+#if !HAVE_LOG2
+static av_always_inline av_const double log2(double x)
+{
+    return log(x) * 1.44269504088896340736;
+}
+#endif /* HAVE_LOG2 */
 
 #if !HAVE_LRINT
 static av_always_inline av_const long int lrint(double x)

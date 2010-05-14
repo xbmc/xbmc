@@ -1,0 +1,12 @@
+prefix=
+exec_prefix=
+libdir=${pcfiledir}
+includedir=/d/dev/xbmc/xbox-branch4merge/xbmc/cores/dvdplayer/Codecs/ffmpeg
+
+Name: libavdevice
+Description: FFmpeg device handling library
+Version: 52.2.0
+Requires: libavformat = 52.44.0
+Conflicts:
+Libs: ${libdir}/libavdevice.a   -lz -lm -lws2_32
+Cflags: -I${includedir}

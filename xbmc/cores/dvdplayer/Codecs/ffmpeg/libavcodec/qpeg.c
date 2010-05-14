@@ -248,8 +248,10 @@ static void qpeg_decode_inter(const uint8_t *src, uint8_t *dst, int size,
 
 static int decode_frame(AVCodecContext *avctx,
                         void *data, int *data_size,
-                        const uint8_t *buf, int buf_size)
+                        AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     QpegContext * const a = avctx->priv_data;
     AVFrame * const p= (AVFrame*)&a->pic;
     uint8_t* outdata;
@@ -287,9 +289,12 @@ static int decode_frame(AVCodecContext *avctx,
 static av_cold int decode_init(AVCodecContext *avctx){
     QpegContext * const a = avctx->priv_data;
 
+    if (!avctx->palctrl) {
+        av_log(avctx, AV_LOG_FATAL, "Missing required palette via palctrl\n");
+        return -1;
+    }
     a->avctx = avctx;
     avctx->pix_fmt= PIX_FMT_PAL8;
-    a->pic.data[0] = NULL;
     a->refdata = av_malloc(avctx->width * avctx->height);
 
     return 0;

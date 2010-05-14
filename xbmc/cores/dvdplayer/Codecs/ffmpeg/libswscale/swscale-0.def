@@ -1,0 +1,98 @@
+EXPORTS
+    bgr8torgb8 @1
+    dither_8x8_220 @2 DATA
+    dither_8x8_32 @3 DATA
+    dither_8x8_73 @4 DATA
+    ff_M24A @5 DATA
+    ff_M24B @6 DATA
+    ff_M24C @7 DATA
+    ff_bgr2UCoeff @8 DATA
+    ff_bgr2UVOffset @9 DATA
+    ff_bgr2VCoeff @10 DATA
+    ff_bgr2YCoeff @11 DATA
+    ff_bgr2YOffset @12 DATA
+    ff_dither4 @13 DATA
+    ff_dither8 @14 DATA
+    ff_w1111 @15 DATA
+    ff_yuv2rgb_c_init_tables @16
+    ff_yuv2rgb_coeffs @17 DATA
+    ff_yuv2rgb_get_func_ptr @18
+    ff_yuv2rgb_init_mmx @19
+    interleaveBytes @20 DATA
+    palette8tobgr15 @21
+    palette8tobgr16 @22
+    palette8topacked24 @23
+    palette8topacked32 @24
+    palette8torgb15 @25
+    palette8torgb16 @26
+    planar2x @27 DATA
+    rgb15to16 @28 DATA
+    rgb15to24 @29
+    rgb15to32 @30 DATA
+    rgb15tobgr15 @31
+    rgb15tobgr16 @32
+    rgb15tobgr24 @33 DATA
+    rgb15tobgr32 @34
+    rgb16to15 @35 DATA
+    rgb16to24 @36
+    rgb16to32 @37 DATA
+    rgb16tobgr15 @38
+    rgb16tobgr16 @39
+    rgb16tobgr24 @40 DATA
+    rgb16tobgr32 @41
+    rgb24to15 @42 DATA
+    rgb24to16 @43 DATA
+    rgb24to32 @44
+    rgb24tobgr15 @45 DATA
+    rgb24tobgr16 @46 DATA
+    rgb24tobgr24 @47 DATA
+    rgb24tobgr32 @48 DATA
+    rgb24toyv12 @49 DATA
+    rgb32to15 @50 DATA
+    rgb32to16 @51 DATA
+    rgb32to24 @52
+    rgb32tobgr15 @53 DATA
+    rgb32tobgr16 @54 DATA
+    rgb32tobgr24 @55 DATA
+    rgb32tobgr32 @56 DATA
+    sws_addVec @57
+    sws_allocVec @58
+    sws_cloneVec @59
+    sws_context_class @60 DATA
+    sws_convVec @61
+    sws_dcVec @62
+    sws_format_name @63
+    sws_freeContext @64
+    sws_freeFilter @65
+    sws_freeVec @66
+    sws_getCachedContext @67
+    sws_getColorspaceDetails @68
+    sws_getConstVec @69
+    sws_getContext @70
+    sws_getDefaultFilter @71
+    sws_getGaussianVec @72
+    sws_getIdentityVec @73
+    sws_normalizeVec @74
+    sws_printVec @75
+    sws_printVec2 @76
+    sws_rgb2rgb_init @77
+    sws_scale @78
+    sws_scaleVec @79
+    sws_scale_ordered @80
+    sws_setColorspaceDetails @81
+    sws_shiftVec @82
+    sws_subVec @83
+    swscale_configuration @84
+    swscale_license @85
+    swscale_version @86
+    uyvytoyuv420 @87 DATA
+    uyvytoyuv422 @88 DATA
+    vu9_to_vu12 @89 DATA
+    yuv422ptouyvy @90 DATA
+    yuv422ptoyuy2 @91 DATA
+    yuy2toyv12 @92 DATA
+    yuyvtoyuv420 @93 DATA
+    yuyvtoyuv422 @94 DATA
+    yv12touyvy @95 DATA
+    yv12toyuy2 @96 DATA
+    yvu9_to_yuy2 @97 DATA

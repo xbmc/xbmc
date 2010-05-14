@@ -30,7 +30,7 @@
 
 #include "avcodec.h"
 #define ALT_BITSTREAM_READER_LE
-#include "bitstream.h"
+#include "get_bits.h"
 #include "bytestream.h"
 #include "dsputil.h"
 #include "aandcttab.h"
@@ -42,6 +42,7 @@ typedef struct TgqContext {
     int width,height;
     ScanTable scantable;
     int qtable[64];
+    DECLARE_ALIGNED_16(DCTELEM, block[6][64]);
 } TgqContext;
 
 static av_cold int tgq_decode_init(AVCodecContext *avctx){
@@ -140,13 +141,12 @@ static void tgq_idct_put_mb_dconly(TgqContext *s, int mb_x, int mb_y, const int8
     }
 }
 
-static void tgq_decode_mb(TgqContext *s, int mb_y, int mb_x, const int8_t **bs, const int8_t *buf_end){
+static void tgq_decode_mb(TgqContext *s, int mb_y, int mb_x, const uint8_t **bs, const uint8_t *buf_end){
     int mode;
     int i;
     int8_t dc[6];
-    DCTELEM block[6][64];
 
-    mode = bytestream_get_byte((const uint8_t**)bs);
+    mode = bytestream_get_byte(bs);
     if (mode>buf_end-*bs) {
         av_log(s->avctx, AV_LOG_ERROR, "truncated macroblock\n");
         return;
@@ -156,8 +156,8 @@ static void tgq_decode_mb(TgqContext *s, int mb_y, int mb_x, const int8_t **bs, 
         GetBitContext gb;
         init_get_bits(&gb, *bs, mode*8);
         for(i=0; i<6; i++)
-            tgq_decode_block(s, block[i], &gb);
-        tgq_idct_put_mb(s, block, mb_x, mb_y);
+            tgq_decode_block(s, s->block[i], &gb);
+        tgq_idct_put_mb(s, s->block, mb_x, mb_y);
     }else{
         if (mode==3) {
             memset(dc, (*bs)[0], 4);
@@ -190,7 +190,9 @@ static void tgq_calculate_qtable(TgqContext *s, int quant){
 
 static int tgq_decode_frame(AVCodecContext *avctx,
                             void *data, int *data_size,
-                            const uint8_t *buf, int buf_size){
+                            AVPacket *avpkt){
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     const uint8_t *buf_start = buf;
     const uint8_t *buf_end = buf + buf_size;
     TgqContext *s = avctx->priv_data;
@@ -226,7 +228,7 @@ static int tgq_decode_frame(AVCodecContext *avctx,
 
     for (y=0; y<(avctx->height+15)/16; y++)
     for (x=0; x<(avctx->width+15)/16; x++)
-        tgq_decode_mb(s, y, x, (const int8_t**)&buf, (const int8_t*)buf_end);
+        tgq_decode_mb(s, y, x, &buf, buf_end);
 
     *data_size = sizeof(AVFrame);
     *(AVFrame*)data = s->frame;

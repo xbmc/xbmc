@@ -1,0 +1,5 @@
+EXPORTS
+    avdevice_configuration @1
+    avdevice_license @2
+    avdevice_register_all @3
+    avdevice_version @4

@@ -26,6 +26,10 @@
 
 #include "avcodec.h"
 
+#define REGISTER_HWACCEL(X,x) { \
+          extern AVHWAccel x##_hwaccel; \
+          if(CONFIG_##X##_HWACCEL) av_register_hwaccel(&x##_hwaccel); }
+
 #define REGISTER_ENCODER(X,x) { \
           extern AVCodec x##_encoder; \
           if(CONFIG_##X##_ENCODER)  avcodec_register(&x##_encoder); }
@@ -49,6 +53,16 @@ void avcodec_register_all(void)
         return;
     initialized = 1;
 
+    /* hardware accelerators */
+    REGISTER_HWACCEL (H263_VAAPI, h263_vaapi);
+    REGISTER_HWACCEL (H264_DXVA2, h264_dxva2);
+    REGISTER_HWACCEL (MPEG2_VAAPI, mpeg2_vaapi);
+    REGISTER_HWACCEL (MPEG4_VAAPI, mpeg4_vaapi);
+    REGISTER_HWACCEL (VC1_DXVA2, vc1_dxva2);
+    REGISTER_HWACCEL (VC1_VAAPI, vc1_vaapi);
+    REGISTER_HWACCEL (WMV3_DXVA2, wmv3_dxva2);
+    REGISTER_HWACCEL (WMV3_VAAPI, wmv3_vaapi);
+
     /* video codecs */
     REGISTER_DECODER (AASC, aasc);
     REGISTER_DECODER (AMV, amv);
@@ -60,15 +74,18 @@ void avcodec_register_all(void)
     REGISTER_ENCDEC  (BMP, bmp);
     REGISTER_DECODER (C93, c93);
     REGISTER_DECODER (CAVS, cavs);
+    REGISTER_DECODER (CDGRAPHICS, cdgraphics);
     REGISTER_DECODER (CINEPAK, cinepak);
     REGISTER_DECODER (CLJR, cljr);
     REGISTER_DECODER (CSCD, cscd);
     REGISTER_DECODER (CYUV, cyuv);
     REGISTER_ENCDEC  (DNXHD, dnxhd);
+    REGISTER_DECODER (DPX, dpx);
     REGISTER_DECODER (DSICINVIDEO, dsicinvideo);
     REGISTER_ENCDEC  (DVVIDEO, dvvideo);
     REGISTER_DECODER (DXA, dxa);
     REGISTER_DECODER (EACMV, eacmv);
+    REGISTER_DECODER (EAMAD, eamad);
     REGISTER_DECODER (EATGQ, eatgq);
     REGISTER_DECODER (EATGV, eatgv);
     REGISTER_DECODER (EATQI, eatqi);
@@ -83,6 +100,7 @@ void avcodec_register_all(void)
     REGISTER_ENCDEC  (FLV, flv);
     REGISTER_DECODER (FOURXM, fourxm);
     REGISTER_DECODER (FRAPS, fraps);
+    REGISTER_DECODER (FRWU, frwu);
     REGISTER_ENCDEC  (GIF, gif);
     REGISTER_ENCDEC  (H261, h261);
     REGISTER_ENCDEC  (H263, h263);
@@ -109,6 +127,7 @@ void avcodec_register_all(void)
     REGISTER_ENCDEC  (MPEG1VIDEO, mpeg1video);
     REGISTER_ENCDEC  (MPEG2VIDEO, mpeg2video);
     REGISTER_ENCDEC  (MPEG4, mpeg4);
+    REGISTER_DECODER (MPEG4_VDPAU, mpeg4_vdpau);
     REGISTER_DECODER (MPEGVIDEO, mpegvideo);
     REGISTER_DECODER (MPEG_VDPAU, mpeg_vdpau);
     REGISTER_DECODER (MPEG1_VDPAU, mpeg1_vdpau);
@@ -119,17 +138,18 @@ void avcodec_register_all(void)
     REGISTER_DECODER (MSVIDEO1, msvideo1);
     REGISTER_DECODER (MSZH, mszh);
     REGISTER_DECODER (NUV, nuv);
-    REGISTER_ENCODER (PAM, pam);
-    REGISTER_ENCODER (PBM, pbm);
-    REGISTER_DECODER (PCX, pcx);
-    REGISTER_ENCODER (PGM, pgm);
-    REGISTER_ENCODER (PGMYUV, pgmyuv);
+    REGISTER_ENCDEC  (PAM, pam);
+    REGISTER_ENCDEC  (PBM, pbm);
+    REGISTER_ENCDEC  (PCX, pcx);
+    REGISTER_ENCDEC  (PGM, pgm);
+    REGISTER_ENCDEC  (PGMYUV, pgmyuv);
     REGISTER_ENCDEC  (PNG, png);
-    REGISTER_ENCODER (PPM, ppm);
+    REGISTER_ENCDEC  (PPM, ppm);
     REGISTER_DECODER (PTX, ptx);
     REGISTER_DECODER (QDRAW, qdraw);
     REGISTER_DECODER (QPEG, qpeg);
     REGISTER_ENCDEC  (QTRLE, qtrle);
+    REGISTER_DECODER (R210,  r210);
     REGISTER_ENCDEC  (RAWVIDEO, rawvideo);
     REGISTER_DECODER (RL2, rl2);
     REGISTER_ENCDEC  (ROQ, roq);
@@ -151,11 +171,14 @@ void avcodec_register_all(void)
     REGISTER_DECODER (THP, thp);
     REGISTER_DECODER (TIERTEXSEQVIDEO, tiertexseqvideo);
     REGISTER_ENCDEC  (TIFF, tiff);
+    REGISTER_DECODER (TMV, tmv);
     REGISTER_DECODER (TRUEMOTION1, truemotion1);
     REGISTER_DECODER (TRUEMOTION2, truemotion2);
     REGISTER_DECODER (TSCC, tscc);
     REGISTER_DECODER (TXD, txd);
     REGISTER_DECODER (ULTI, ulti);
+    REGISTER_ENCDEC  (V210,  v210);
+    REGISTER_DECODER (V210X, v210x);
     REGISTER_DECODER (VB, vb);
     REGISTER_DECODER (VC1, vc1);
     REGISTER_DECODER (VC1_VDPAU, vc1_vdpau);
@@ -179,10 +202,12 @@ void avcodec_register_all(void)
     REGISTER_ENCDEC  (ZMBV, zmbv);
 
     /* audio codecs */
-    REGISTER_DECODER (AAC, aac);
+    REGISTER_ENCDEC  (AAC, aac);
     REGISTER_ENCDEC  (AC3, ac3);
     REGISTER_ENCDEC  (ALAC, alac);
+    REGISTER_DECODER (ALS, als);
     REGISTER_DECODER (APE, ape);
+    REGISTER_DECODER (ATRAC1, atrac1);
     REGISTER_DECODER (ATRAC3, atrac3);
     REGISTER_DECODER (COOK, cook);
     REGISTER_DECODER (DCA, dca);
@@ -209,18 +234,21 @@ void avcodec_register_all(void)
     REGISTER_DECODER (SMACKAUD, smackaud);
     REGISTER_ENCDEC  (SONIC, sonic);
     REGISTER_ENCODER (SONIC_LS, sonic_ls);
+    REGISTER_DECODER (TRUEHD, truehd);
     REGISTER_DECODER (TRUESPEECH, truespeech);
     REGISTER_DECODER (TTA, tta);
+    REGISTER_DECODER (TWINVQ, twinvq);
     REGISTER_DECODER (VMDAUDIO, vmdaudio);
     REGISTER_ENCDEC  (VORBIS, vorbis);
     REGISTER_DECODER (WAVPACK, wavpack);
+    REGISTER_DECODER (WMAPRO, wmapro);
     REGISTER_ENCDEC  (WMAV1, wmav1);
     REGISTER_ENCDEC  (WMAV2, wmav2);
-    REGISTER_DECODER (WMAPRO, wmapro);  
     REGISTER_DECODER (WS_SND1, ws_snd1);
 
     /* PCM codecs */
     REGISTER_ENCDEC  (PCM_ALAW, pcm_alaw);
+    REGISTER_DECODER (PCM_BLURAY, pcm_bluray);
     REGISTER_DECODER (PCM_DVD, pcm_dvd);
     REGISTER_ENCDEC  (PCM_F32BE, pcm_f32be);
     REGISTER_ENCDEC  (PCM_F32LE, pcm_f32le);
@@ -284,17 +312,19 @@ void avcodec_register_all(void)
     /* subtitles */
     REGISTER_ENCDEC  (DVBSUB, dvbsub);
     REGISTER_ENCDEC  (DVDSUB, dvdsub);
-    REGISTER_DECODER (XSUB, xsub);
+    REGISTER_DECODER (PGSSUB, pgssub);
+    REGISTER_ENCDEC  (XSUB, xsub);
 
     /* external libraries */
-    REGISTER_ENCDEC  (LIBAMR_NB, libamr_nb);
-    REGISTER_ENCDEC  (LIBAMR_WB, libamr_wb);
     REGISTER_ENCDEC  (LIBDIRAC, libdirac);
     REGISTER_ENCODER (LIBFAAC, libfaac);
     REGISTER_DECODER (LIBFAAD, libfaad);
+    REGISTER_DECODER (LIBFAAD_LATM, libfaad_latm);
     REGISTER_ENCDEC  (LIBGSM, libgsm);
     REGISTER_ENCDEC  (LIBGSM_MS, libgsm_ms);
     REGISTER_ENCODER (LIBMP3LAME, libmp3lame);
+    REGISTER_ENCDEC  (LIBOPENCORE_AMRNB, libopencore_amrnb);
+    REGISTER_DECODER (LIBOPENCORE_AMRWB, libopencore_amrwb);
     REGISTER_DECODER (LIBOPENJPEG, libopenjpeg);
     REGISTER_ENCDEC  (LIBSCHROEDINGER, libschroedinger);
     REGISTER_DECODER (LIBSPEEX, libspeex);
@@ -315,6 +345,7 @@ void avcodec_register_all(void)
     REGISTER_PARSER  (H261, h261);
     REGISTER_PARSER  (H263, h263);
     REGISTER_PARSER  (H264, h264);
+    REGISTER_PARSER  (LATM, latm);
     REGISTER_PARSER  (MJPEG, mjpeg);
     REGISTER_PARSER  (MLP, mlp);
     REGISTER_PARSER  (MPEG4VIDEO, mpeg4video);
@@ -325,6 +356,7 @@ void avcodec_register_all(void)
     REGISTER_PARSER  (VP3, vp3);
 
     /* bitstream filters */
+    REGISTER_BSF     (AAC_ADTSTOASC, aac_adtstoasc);
     REGISTER_BSF     (DUMP_EXTRADATA, dump_extradata);
     REGISTER_BSF     (H264_MP4TOANNEXB, h264_mp4toannexb);
     REGISTER_BSF     (IMX_DUMP_HEADER, imx_dump_header);

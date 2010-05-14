@@ -29,11 +29,12 @@
 #include <sys/time.h>
 #include <unistd.h>
 
+#include "config.h"
 #include "dsputil.h"
+#include "libavutil/lfg.h"
 
 #undef exit
 #undef printf
-#undef random
 
 #define WIDTH 64
 #define HEIGHT 64
@@ -41,26 +42,29 @@
 uint8_t img1[WIDTH * HEIGHT];
 uint8_t img2[WIDTH * HEIGHT];
 
-void fill_random(uint8_t *tab, int size)
+static void fill_random(uint8_t *tab, int size)
 {
     int i;
+    AVLFG prng;
+
+    av_lfg_init(&prng, 1);
     for(i=0;i<size;i++) {
 #if 1
-        tab[i] = random() % 256;
+        tab[i] = av_lfg_get(&prng) % 256;
 #else
         tab[i] = i;
 #endif
     }
 }
 
-void help(void)
+static void help(void)
 {
     printf("motion-test [-h]\n"
            "test motion implementations\n");
     exit(1);
 }
 
-int64_t gettime(void)
+static int64_t gettime(void)
 {
     struct timeval tv;
     gettimeofday(&tv,NULL);
@@ -71,7 +75,7 @@ int64_t gettime(void)
 
 int dummy;
 
-void test_motion(const char *name,
+static void test_motion(const char *name,
                  me_cmp_func test_func, me_cmp_func ref_func)
 {
     int x, y, d1, d2, it;
@@ -124,7 +128,8 @@ int main(int argc, char **argv)
     AVCodecContext *ctx;
     int c;
     DSPContext cctx, mmxctx;
-    int flags[2] = { FF_MM_MMX, FF_MM_MMXEXT };
+    int flags[2] = { FF_MM_MMX, FF_MM_MMX2 };
+    int flags_size = HAVE_MMX2 ? 2 : 1;
 
     for(;;) {
         c = getopt(argc, argv, "h");
@@ -142,7 +147,7 @@ int main(int argc, char **argv)
     ctx = avcodec_alloc_context();
     ctx->dsp_mask = FF_MM_FORCE;
     dsputil_init(&cctx, ctx);
-    for (c = 0; c < 2; c++) {
+    for (c = 0; c < flags_size; c++) {
         int x;
         ctx->dsp_mask = FF_MM_FORCE | flags[c];
         dsputil_init(&mmxctx, ctx);

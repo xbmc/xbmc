@@ -29,10 +29,10 @@
 
 #include "config.h"
 
-#ifdef __MINGW32__
+#if defined(__MINGW32__) && !defined(__MINGW32CE__)
 #  include <fcntl.h>
 #  define lseek(f,p,w) _lseeki64((f), (p), (w))
-#endif
+#endif /* defined(__MINGW32__) && !defined(__MINGW32CE__) */
 
 static inline int is_dos_path(const char *path)
 {

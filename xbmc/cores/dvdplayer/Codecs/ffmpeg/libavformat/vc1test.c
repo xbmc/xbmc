@@ -33,7 +33,9 @@
 
 static int vc1t_probe(AVProbeData *p)
 {
-    if (p->buf[3] != 0xC5 && AV_RL32(&p->buf[4]) != 4)
+    if (p->buf_size < 24)
+        return 0;
+    if (p->buf[3] != 0xC5 || AV_RL32(&p->buf[4]) != 4 || AV_RL32(&p->buf[20]) != 0xC)
         return 0;
 
     return AVPROBE_SCORE_MAX/2;
@@ -44,7 +46,8 @@ static int vc1t_read_header(AVFormatContext *s,
 {
     ByteIOContext *pb = s->pb;
     AVStream *st;
-    int fps, frames;
+    int frames;
+    uint32_t fps;
 
     frames = get_le24(pb);
     if(get_byte(pb) != 0xC5 || get_le32(pb) != 4)
@@ -67,9 +70,13 @@ static int vc1t_read_header(AVFormatContext *s,
         return -1;
     url_fskip(pb, 8);
     fps = get_le32(pb);
-    if(fps == -1)
+    if(fps == 0xFFFFFFFF)
         av_set_pts_info(st, 32, 1, 1000);
     else{
+        if (!fps) {
+            av_log(s, AV_LOG_ERROR, "Zero FPS specified, defaulting to 1 FPS\n");
+            fps = 1;
+        }
         av_set_pts_info(st, 24, 1, fps);
         st->duration = frames;
     }

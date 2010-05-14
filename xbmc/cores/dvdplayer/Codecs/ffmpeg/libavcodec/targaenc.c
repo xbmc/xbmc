@@ -76,7 +76,7 @@ static int targa_encode_frame(AVCodecContext *avctx,
                               unsigned char *outbuf,
                               int buf_size, void *data){
     AVFrame *p = data;
-    int bpp, picsize, datasize;
+    int bpp, picsize, datasize = -1;
     uint8_t *out;
 
     if(avctx->width > 0xffff || avctx->height > 0xffff) {
@@ -120,7 +120,8 @@ static int targa_encode_frame(AVCodecContext *avctx,
     out = outbuf + 18;  /* skip past the header we just output */
 
     /* try RLE compression */
-    datasize = targa_encode_rle(out, picsize, p, bpp, avctx->width, avctx->height);
+    if (avctx->coder_type != FF_CODER_TYPE_RAW)
+        datasize = targa_encode_rle(out, picsize, p, bpp, avctx->width, avctx->height);
 
     /* if that worked well, mark the picture as RLE compressed */
     if(datasize >= 0)
@@ -157,6 +158,6 @@ AVCodec targa_encoder = {
     .priv_data_size = sizeof(TargaContext),
     .init = targa_encode_init,
     .encode = targa_encode_frame,
-    .pix_fmts= (enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_RGB555, PIX_FMT_GRAY8, PIX_FMT_NONE},
+    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_RGB555, PIX_FMT_GRAY8, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("Truevision Targa image"),
 };

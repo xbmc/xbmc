@@ -25,37 +25,50 @@
 #include <stdlib.h>
 #include "libavutil/avstring.h"
 #include "libavutil/bswap.h"
-#include "libavcodec/bitstream.h"
+#include "libavcodec/get_bits.h"
 #include "libavcodec/bytestream.h"
 #include "avformat.h"
 #include "oggdec.h"
+
+/**
+ * VorbisComment metadata conversion mapping.
+ * from Ogg Vorbis I format specification: comment field and header specification
+ * http://xiph.org/vorbis/doc/v-comment.html
+ */
+const AVMetadataConv ff_vorbiscomment_metadata_conv[] = {
+    { "ARTIST"     , "author" },
+    { "DATE"       , "year"   },
+    { "TRACKNUMBER", "track"  },
+    { 0 }
+};
 
 int
 vorbis_comment(AVFormatContext * as, uint8_t *buf, int size)
 {
     const uint8_t *p = buf;
     const uint8_t *end = buf + size;
-    unsigned s, n, j;
+    unsigned n, j;
+    int s;
 
     if (size < 8) /* must have vendor_length and user_comment_list_length */
         return -1;
 
     s = bytestream_get_le32(&p);
 
-    if (end - p < s)
+    if (end - p - 4 < s || s < 0)
         return -1;
 
     p += s;
 
     n = bytestream_get_le32(&p);
 
-    while (p < end && n > 0) {
+    while (end - p >= 4 && n > 0) {
         const char *t, *v;
         int tl, vl;
 
         s = bytestream_get_le32(&p);
 
-        if (end - p < s)
+        if (end - p < s || s < 0)
             break;
 
         t = p;
@@ -89,15 +102,14 @@ vorbis_comment(AVFormatContext * as, uint8_t *buf, int size)
             memcpy(ct, v, vl);
             ct[vl] = 0;
 
-            av_metadata_set(&as->metadata, tt, ct);
-
-            av_freep(&tt);
-            av_freep(&ct);
+            av_metadata_set2(&as->metadata, tt, ct,
+                                   AV_METADATA_DONT_STRDUP_KEY |
+                                   AV_METADATA_DONT_STRDUP_VAL);
         }
     }
 
     if (p != end)
-        av_log(as, AV_LOG_INFO, "%ti bytes of comment header remain\n", p-end);
+        av_log(as, AV_LOG_INFO, "%ti bytes of comment header remain\n", end-p);
     if (n > 0)
         av_log(as, AV_LOG_INFO,
                "truncated comment header, %i comments not found\n", n);

@@ -37,7 +37,7 @@
 /* XXX: we make the assumption that the soundcard accepts this format */
 /* XXX: find better solution with "preinit" method, needed also in
         other formats */
-#ifdef WORDS_BIGENDIAN
+#if HAVE_BIGENDIAN
 #define DEFAULT_CODEC_ID CODEC_ID_PCM_S16BE
 #else
 #define DEFAULT_CODEC_ID CODEC_ID_PCM_S16LE
@@ -63,8 +63,9 @@ typedef struct {
  *
  * @return 0 if OK, AVERROR_xxx on error
  */
-int ff_alsa_open(AVFormatContext *s, int mode, unsigned int *sample_rate,
-                 int channels, int *codec_id);
+int ff_alsa_open(AVFormatContext *s, snd_pcm_stream_t mode,
+                 unsigned int *sample_rate,
+                 int channels, enum CodecID *codec_id);
 
 /**
  * Closes the ALSA PCM.

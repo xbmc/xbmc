@@ -21,7 +21,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <unistd.h>
 #include "libavcodec/avcodec.h"
 #include "libavcodec/dsputil.h"
 #include "dsputil_bfin.h"
@@ -34,9 +33,9 @@ void ff_bfin_fdct (DCTELEM *block) attribute_l1_text;
 void ff_bfin_vp3_idct (DCTELEM *block);
 void ff_bfin_vp3_idct_put (uint8_t *dest, int line_size, DCTELEM *block);
 void ff_bfin_vp3_idct_add (uint8_t *dest, int line_size, DCTELEM *block);
-void ff_bfin_add_pixels_clamped (DCTELEM *block, uint8_t *dest, int line_size) attribute_l1_text;
-void ff_bfin_put_pixels_clamped (DCTELEM *block, uint8_t *dest, int line_size) attribute_l1_text;
-void ff_bfin_diff_pixels (DCTELEM *block, uint8_t *s1, uint8_t *s2, int stride)  attribute_l1_text;
+void ff_bfin_add_pixels_clamped (const DCTELEM *block, uint8_t *dest, int line_size) attribute_l1_text;
+void ff_bfin_put_pixels_clamped (const DCTELEM *block, uint8_t *dest, int line_size) attribute_l1_text;
+void ff_bfin_diff_pixels (DCTELEM *block, const uint8_t *s1, const uint8_t *s2, int stride)  attribute_l1_text;
 void ff_bfin_get_pixels  (DCTELEM *restrict block, const uint8_t *pixels, int line_size) attribute_l1_text;
 int  ff_bfin_pix_norm1  (uint8_t * pix, int line_size) attribute_l1_text;
 int  ff_bfin_z_sad8x8   (uint8_t *blk1, uint8_t *blk2, int dsz, int line_size, int h) attribute_l1_text;
@@ -242,8 +241,8 @@ void dsputil_init_bfin( DSPContext* c, AVCodecContext *avctx )
     c->sad[0]             = bfin_pix_abs16;
     c->sad[1]             = bfin_pix_abs8;
 
-    c->vsad[0]            = bfin_vsad;
-    c->vsad[4]            = bfin_vsad_intra16;
+/*     c->vsad[0]            = bfin_vsad; */
+/*     c->vsad[4]            = bfin_vsad_intra16; */
 
     /* TODO [0] 16  [1] 8 */
     c->pix_abs[0][0] = bfin_pix_abs16;
@@ -286,20 +285,23 @@ void dsputil_init_bfin( DSPContext* c, AVCodecContext *avctx )
     c->put_no_rnd_pixels_tab[1][0] = bfin_put_pixels8_nornd;
     c->put_no_rnd_pixels_tab[1][1] = bfin_put_pixels8_x2_nornd;
     c->put_no_rnd_pixels_tab[1][2] = bfin_put_pixels8_y2_nornd;
-    c->put_no_rnd_pixels_tab[1][3] = ff_bfin_put_pixels8_xy2_nornd;
+/*     c->put_no_rnd_pixels_tab[1][3] = ff_bfin_put_pixels8_xy2_nornd; */
 
     c->put_no_rnd_pixels_tab[0][0] = bfin_put_pixels16_nornd;
     c->put_no_rnd_pixels_tab[0][1] = bfin_put_pixels16_x2_nornd;
     c->put_no_rnd_pixels_tab[0][2] = bfin_put_pixels16_y2_nornd;
-    c->put_no_rnd_pixels_tab[0][3] = ff_bfin_put_pixels16_xy2_nornd;
+/*     c->put_no_rnd_pixels_tab[0][3] = ff_bfin_put_pixels16_xy2_nornd; */
 
-    c->idct_permutation_type = FF_NO_IDCT_PERM;
-    c->fdct                  = ff_bfin_fdct;
+    if (avctx->dct_algo == FF_DCT_AUTO)
+        c->fdct               = ff_bfin_fdct;
+
     if (avctx->idct_algo==FF_IDCT_VP3) {
+        c->idct_permutation_type = FF_NO_IDCT_PERM;
         c->idct               = ff_bfin_vp3_idct;
         c->idct_add           = ff_bfin_vp3_idct_add;
         c->idct_put           = ff_bfin_vp3_idct_put;
-    } else {
+    } else if (avctx->idct_algo == FF_IDCT_AUTO) {
+        c->idct_permutation_type = FF_NO_IDCT_PERM;
         c->idct               = ff_bfin_idct;
         c->idct_add           = bfin_idct_add;
         c->idct_put           = bfin_idct_put;

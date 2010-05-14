@@ -22,7 +22,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "avcodec.h"
 #include "dsputil.h"
@@ -107,6 +106,7 @@ static av_cold int iv_alloc_frames(Indeo3DecodeContext *s)
     unsigned int bufsize = luma_pixels * 2 + luma_width * 3 +
                           (chroma_pixels   + chroma_width) * 4;
 
+    av_freep(&s->buf);
     if(!(s->buf = av_malloc(bufsize)))
         return AVERROR(ENOMEM);
     s->iv_frame[0].y_w = s->iv_frame[1].y_w = luma_width;
@@ -142,9 +142,9 @@ static av_cold int iv_alloc_frames(Indeo3DecodeContext *s)
 
 static av_cold void iv_free_func(Indeo3DecodeContext *s)
 {
-    av_free(s->buf);
-    av_free(s->ModPred);
-    av_free(s->corrector_type);
+    av_freep(&s->buf);
+    av_freep(&s->ModPred);
+    av_freep(&s->corrector_type);
 }
 
 struct ustr {
@@ -576,7 +576,7 @@ static void iv_Decode_Chunk(Indeo3DecodeContext *s,
                                 lv1 = ref_lp[0];
                                 lv2 = ref_lp[1];
                                 if(lp2 == 0 && flag1 != 0) {
-#ifdef WORDS_BIGENDIAN
+#if HAVE_BIGENDIAN
                                     lv1 = lv1 & 0xFF00FF00;
                                     lv1 = (lv1 >> 8) | lv1;
                                     lv2 = lv2 & 0xFF00FF00;
@@ -975,9 +975,10 @@ static av_cold int indeo3_decode_init(AVCodecContext *avctx)
     return ret;
 }
 
-static int iv_decode_frame(Indeo3DecodeContext *s,
+static int iv_decode_frame(AVCodecContext *avctx,
                            const uint8_t *buf, int buf_size)
 {
+    Indeo3DecodeContext *s = avctx->priv_data;
     unsigned int image_width, image_height,
                  chroma_width, chroma_height;
     unsigned long flags, cb_offset, data_size,
@@ -994,8 +995,19 @@ static int iv_decode_frame(Indeo3DecodeContext *s,
     image_height = bytestream_get_le16(&buf_pos);
     image_width  = bytestream_get_le16(&buf_pos);
 
-    if(avcodec_check_dimensions(NULL, image_width, image_height))
+    if(avcodec_check_dimensions(avctx, image_width, image_height))
         return -1;
+    if (image_width != avctx->width || image_height != avctx->height) {
+        int ret;
+        avcodec_set_dimensions(avctx, image_width, image_height);
+        s->width  = avctx->width;
+        s->height = avctx->height;
+        ret = iv_alloc_frames(s);
+        if (ret < 0) {
+            s->width = s->height = 0;
+            return ret;
+        }
+    }
 
     chroma_height = ((image_height >> 2) + 3) & 0x7ffc;
     chroma_width = ((image_width >> 2) + 3) & 0x7ffc;
@@ -1062,13 +1074,15 @@ static int iv_decode_frame(Indeo3DecodeContext *s,
 
 static int indeo3_decode_frame(AVCodecContext *avctx,
                                void *data, int *data_size,
-                               const uint8_t *buf, int buf_size)
+                               AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     Indeo3DecodeContext *s=avctx->priv_data;
     uint8_t *src, *dest;
     int y;
 
-    if (iv_decode_frame(s, buf, buf_size) < 0)
+    if (iv_decode_frame(avctx, buf, buf_size) < 0)
         return -1;
 
     if(s->frame.data[0])
@@ -1131,7 +1145,7 @@ AVCodec indeo3_decoder = {
     NULL,
     indeo3_decode_end,
     indeo3_decode_frame,
-    0,
+    CODEC_CAP_DR1,
     NULL,
     .long_name = NULL_IF_CONFIG_SMALL("Intel Indeo 3"),
 };

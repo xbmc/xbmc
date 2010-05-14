@@ -74,4 +74,23 @@ AVEvalExpr * ff_parse(const char *s, const char * const *const_name,
 double ff_parse_eval(AVEvalExpr * e, const double *const_value, void *opaque);
 void ff_eval_free(AVEvalExpr * e);
 
+/**
+ * Parses the string in numstr and returns its value as a double. If
+ * the string is empty, contains only whitespaces, or does not contain
+ * an initial substring that has the expected syntax for a
+ * floating-point number, no conversion is performed. In this case,
+ * returns a value of zero and the value returned in tail is the value
+ * of numstr.
+ *
+ * @param numstr a string representing a number, may contain one of
+ * the International System number postfixes, for example 'K', 'M',
+ * 'G'. If 'i' is appended after the postfix, powers of 2 are used
+ * instead of powers of 10. The 'B' postfix multiplies the value for
+ * 8, and can be appended after another postfix or used alone. This
+ * allows using for example 'KB', 'MiB', 'G' and 'B' as postfix.
+ * @param tail if non-NULL puts here the pointer to the char next
+ * after the last parsed character
+ */
+double av_strtod(const char *numstr, char **tail);
+
 #endif /* AVCODEC_EVAL_H */

@@ -42,10 +42,8 @@ static int check_pes(uint8_t *p, uint8_t *end){
     if((*p&0xC0) == 0x40) p+=2;
     if((*p&0xF0) == 0x20){
         pes1= p[0]&p[2]&p[4]&1;
-        p+=5;
     }else if((*p&0xF0) == 0x30){
         pes1= p[0]&p[2]&p[4]&p[5]&p[7]&p[9]&1;
-        p+=10;
     }else
         pes1 = *p == 0x0F;
 
@@ -94,15 +92,16 @@ static int mpegps_probe(AVProbeData *p)
     if(vid+audio > invalid)     /* invalid VDR files nd short PES streams */
         score= AVPROBE_SCORE_MAX/4;
 
-//av_log(NULL, AV_LOG_ERROR, "%d %d %d %d %d len:%d\n", sys, priv1, pspack,vid, audio, p->buf_size);
+//av_log(NULL, AV_LOG_ERROR, "%d %d %d %d %d %d len:%d\n", sys, priv1, pspack,vid, audio, invalid, p->buf_size);
     if(sys>invalid && sys*9 <= pspack*10)
-        return AVPROBE_SCORE_MAX/2+2; // +1 for .mpg
-    if(priv1 + vid + audio > invalid && (priv1+vid+audio)*9 <= pspack*10)
-        return AVPROBE_SCORE_MAX/2+2; // +1 for .mpg
-    if((!!vid ^ !!audio) && (audio > 4 || vid > 1) && !sys && !pspack && p->buf_size>2048) /* PES stream */
-        return AVPROBE_SCORE_MAX/2+2;
+        return pspack > 2 ? AVPROBE_SCORE_MAX/2+2 : AVPROBE_SCORE_MAX/4; // +1 for .mpg
+    if(pspack > invalid && (priv1+vid+audio)*10 >= pspack*9)
+        return pspack > 2 ? AVPROBE_SCORE_MAX/2+2 : AVPROBE_SCORE_MAX/4; // +1 for .mpg
+    if((!!vid ^ !!audio) && (audio > 4 || vid > 1) && !sys && !pspack && p->buf_size>2048 && vid + audio > invalid) /* PES stream */
+        return (audio > 12 || vid > 3) ? AVPROBE_SCORE_MAX/2+2 : AVPROBE_SCORE_MAX/4;
 
     //02-Penguin.flac has sys:0 priv1:0 pspack:0 vid:0 audio:1
+    //mp3_misidentified_2.mp3 has sys:0 priv1:0 pspack:0 vid:0 audio:6
     return score;
 }
 
@@ -129,6 +128,8 @@ static int mpegps_read_header(AVFormatContext *s,
         m->header_state = m->header_state << 8 | v;
         m->sofdec++;
     } while (v == sofdec[i] && i++ < 6);
+
+    m->sofdec = (m->sofdec == 6) ? 1 : 0;
 
     /* no need to do more */
     return 0;
@@ -429,7 +430,7 @@ static int mpegps_read_packet(AVFormatContext *s,
     enum CodecID codec_id = CODEC_ID_NONE;
     enum CodecType type;
     int64_t pts, dts, dummy_pos; //dummy_pos is needed for the index building to work
-    uint8_t dvdaudio_substream_type;
+    uint8_t av_uninit(dvdaudio_substream_type);
 
  redo:
     len = mpegps_read_pes_header(s, &dummy_pos, &startcode, &pts, &dts);
@@ -463,6 +464,9 @@ static int mpegps_read_packet(AVFormatContext *s,
             type = CODEC_TYPE_AUDIO;
         } else if(es_type == STREAM_TYPE_AUDIO_AAC){
             codec_id = CODEC_ID_AAC;
+            type = CODEC_TYPE_AUDIO;
+        } else if(es_type == STREAM_TYPE_AUDIO_AAC_LATM){
+            codec_id = CODEC_ID_AAC_LATM;
             type = CODEC_TYPE_AUDIO;
         } else if(es_type == STREAM_TYPE_VIDEO_MPEG4){
             codec_id = CODEC_ID_MPEG4;
@@ -503,7 +507,7 @@ static int mpegps_read_packet(AVFormatContext *s,
         codec_id = CODEC_ID_PCM_DVD;
     } else if (startcode >= 0xb0 && startcode <= 0xbf) {
         type = CODEC_TYPE_AUDIO;
-        codec_id = CODEC_ID_MLP;
+        codec_id = CODEC_ID_TRUEHD;
     } else if (startcode >= 0xc0 && startcode <= 0xcf) {
         /* Used for both AC-3 and E-AC-3 in EVOB files */
         type = CODEC_TYPE_AUDIO;

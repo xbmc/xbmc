@@ -784,6 +784,11 @@ static av_cold int svq3_decode_init(AVCodecContext *avctx)
     unsigned char *extradata;
     unsigned int size;
 
+    if(avctx->thread_count > 1){
+        av_log(avctx, AV_LOG_ERROR, "SVQ3 does not support multithreaded decoding, patch welcome! (check latest SVN too)\n");
+        return -1;
+    }
+
     if (decode_init(avctx) < 0)
         return -1;
 
@@ -791,6 +796,7 @@ static av_cold int svq3_decode_init(AVCodecContext *avctx)
     s->flags2 = avctx->flags2;
     s->unrestricted_mv = 1;
     h->is_complex=1;
+    avctx->pix_fmt = avctx->codec->pix_fmts[0];
 
     if (!s->context_initialized) {
         s->width  = avctx->width;
@@ -819,14 +825,25 @@ static av_cold int svq3_decode_init(AVCodecContext *avctx)
         if (extradata && !memcmp(extradata, "SEQH", 4)) {
 
             GetBitContext gb;
+            int frame_size_code;
 
             size = AV_RB32(&extradata[4]);
             init_get_bits(&gb, extradata + 8, size*8);
 
             /* 'frame size code' and optional 'width, height' */
-            if (get_bits(&gb, 3) == 7) {
-                skip_bits(&gb, 12);
-                skip_bits(&gb, 12);
+            frame_size_code = get_bits(&gb, 3);
+            switch (frame_size_code) {
+                case 0: avctx->width = 160; avctx->height = 120; break;
+                case 1: avctx->width = 128; avctx->height =  96; break;
+                case 2: avctx->width = 176; avctx->height = 144; break;
+                case 3: avctx->width = 352; avctx->height = 288; break;
+                case 4: avctx->width = 704; avctx->height = 576; break;
+                case 5: avctx->width = 240; avctx->height = 180; break;
+                case 6: avctx->width = 320; avctx->height = 240; break;
+                case 7:
+                    avctx->width  = get_bits(&gb, 12);
+                    avctx->height = get_bits(&gb, 12);
+                    break;
             }
 
             h->halfpel_flag  = get_bits1(&gb);
@@ -889,8 +906,10 @@ static av_cold int svq3_decode_init(AVCodecContext *avctx)
 
 static int svq3_decode_frame(AVCodecContext *avctx,
                              void *data, int *data_size,
-                             const uint8_t *buf, int buf_size)
+                             AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     MpegEncContext *const s = avctx->priv_data;
     H264Context *const h = avctx->priv_data;
     int m, mb_type;
@@ -1029,8 +1048,6 @@ static int svq3_decode_frame(AVCodecContext *avctx,
         *(AVFrame *) data = *(AVFrame *) &s->last_picture;
     }
 
-    avctx->frame_number = s->picture_number - 1;
-
     /* Do not output the last pic after seeking. */
     if (s->last_picture_ptr || s->low_delay) {
         *data_size = sizeof(AVFrame);
@@ -1050,6 +1067,6 @@ AVCodec svq3_decoder = {
     decode_end,
     svq3_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1 | CODEC_CAP_DELAY,
-    .long_name = NULL_IF_CONFIG_SMALL("Sorenson Vector Quantizer 3"),
-    .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUVJ420P, PIX_FMT_NONE},
+    .long_name = NULL_IF_CONFIG_SMALL("Sorenson Vector Quantizer 3 / Sorenson Video 3 / SVQ3"),
+    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUVJ420P, PIX_FMT_NONE},
 };

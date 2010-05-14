@@ -1,0 +1,95 @@
+EXPORTS
+    _get_output_format @1
+    av_add_q @2
+    av_adler32_update @3
+    av_aes_crypt @4
+    av_aes_init @5
+    av_aes_size @6 DATA
+    av_base64_decode @7
+    av_base64_encode @8
+    av_bmg_get @9
+    av_crc @10
+    av_crc_get_table @11
+    av_crc_init @12
+    av_d2q @13
+    av_d2str @14
+    av_dbl2ext @15
+    av_dbl2int @16
+    av_des_crypt @17
+    av_des_init @18
+    av_div_q @19
+    av_evaluate_lls @20
+    av_ext2dbl @21
+    av_fifo_alloc @22
+    av_fifo_drain @23
+    av_fifo_free @24
+    av_fifo_generic_read @25
+    av_fifo_generic_write @26
+    av_fifo_realloc2 @27
+    av_fifo_reset @28
+    av_fifo_size @29
+    av_fifo_space @30
+    av_find_nearest_q_idx @31
+    av_flt2int @32
+    av_free @33
+    av_freep @34
+    av_gcd @35
+    av_get_bits_per_pixel @36
+    av_init_lls @37
+    av_int2dbl @38
+    av_int2flt @39
+    av_lfg_init @40
+    av_log @41
+    av_log_default_callback @42
+    av_log_get_level @43
+    av_log_level @44 DATA
+    av_log_set_callback @45
+    av_log_set_level @46
+    av_lzo1x_decode @47
+    av_malloc @48
+    av_mallocz @49
+    av_md5_final @50
+    av_md5_init @51
+    av_md5_size @52 DATA
+    av_md5_sum @53
+    av_md5_update @54
+    av_memcpy_backptr @55
+    av_mul_q @56
+    av_nearer_q @57
+    av_pix_fmt_descriptors @58 DATA
+    av_rc4_crypt @59
+    av_rc4_init @60
+    av_realloc @61
+    av_reduce @62
+    av_rescale @63
+    av_rescale_q @64
+    av_rescale_rnd @65
+    av_reverse @66 DATA
+    av_sha1_final @67
+    av_sha1_init @68
+    av_sha1_size @69 DATA
+    av_sha1_update @70
+    av_sha_final @71
+    av_sha_init @72
+    av_sha_size @73 DATA
+    av_sha_update @74
+    av_solve_lls @75
+    av_strdup @76
+    av_stristart @77
+    av_strlcat @78
+    av_strlcatf @79
+    av_strlcpy @80
+    av_strstart @81
+    av_sub_q @82
+    av_tree_destroy @83
+    av_tree_find @84
+    av_tree_insert @85
+    av_tree_node_size @86 DATA
+    av_update_lls @87
+    av_vlog @88
+    avutil_configuration @89
+    avutil_license @90
+    avutil_version @91
+    ff_log2_tab @92 DATA
+    ff_random_get_seed @93
+    ff_sqrt_tab @94 DATA

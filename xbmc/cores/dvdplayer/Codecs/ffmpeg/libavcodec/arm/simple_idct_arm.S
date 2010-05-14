@@ -56,8 +56,8 @@
 
         .text
 
-function simple_idct_ARM, export=1
-        @@ void simple_idct_ARM(int16_t *block)
+function ff_simple_idct_arm, export=1
+        @@ void simple_idct_arm(int16_t *block)
         @@ save stack for reg needed (take all of them),
         @@ R0-R3 are scratch regs, so no need to save them, but R0 contains the pointer to block
         @@ so it must not be overwritten, if it is not saved!!
@@ -66,7 +66,7 @@ function simple_idct_ARM, export=1
         stmfd sp!, {r4-r11, r14} @ R14 is also called LR
         @@ at this point, R0=block, other registers are free.
         add r14, r0, #112        @ R14=&block[8*7], better start from the last row, and decrease the value until row=0, i.e. R12=block.
-        add r12, pc, #(__constant_ptr__-.-8) @ R12=__constant_ptr__, the vector containing the constants, probably not necessary to reserve a register for it
+        adr r12, __constant_ptr__ @ R12=__constant_ptr__, the vector containing the constants, probably not necessary to reserve a register for it
         @@ add 2 temporary variables in the stack: R0 and R14
         sub sp, sp, #8          @ allow 2 local variables
         str r0, [sp, #0]        @ save block in sp[0]
@@ -458,7 +458,7 @@ __end_col_loop:
 
 
 
-__end_simple_idct_ARM:
+__end_simple_idct_arm:
         @@ restore registers to previous status!
         add sp, sp, #8 @@ the local variables!
         ldmfd sp!, {r4-r11, r15} @@ update PC with LR content.

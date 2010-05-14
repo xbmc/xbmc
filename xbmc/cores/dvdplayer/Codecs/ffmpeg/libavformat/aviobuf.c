@@ -28,6 +28,9 @@
 #define IO_BUFFER_SIZE 32768
 
 static void fill_buffer(ByteIOContext *s);
+#if LIBAVFORMAT_VERSION_MAJOR >= 53
+static int url_resetbuf(ByteIOContext *s, int flags);
+#endif
 
 int init_put_byte(ByteIOContext *s,
                   unsigned char *buffer,
@@ -104,12 +107,8 @@ void put_byte(ByteIOContext *s, int b)
 
 void put_buffer(ByteIOContext *s, const unsigned char *buf, int size)
 {
-    int len;
-
     while (size > 0) {
-        len = (s->buf_end - s->buf_ptr);
-        if (len > size)
-            len = size;
+        int len = FFMIN(s->buf_end - s->buf_ptr, size);
         memcpy(s->buf_ptr, buf, len);
         s->buf_ptr += len;
 
@@ -148,7 +147,7 @@ int64_t url_fseek(ByteIOContext *s, int64_t offset, int whence)
     }
     offset1 = offset - pos;
     if (!s->must_flush &&
-        offset1 >= 0 && offset1 < (s->buf_end - s->buffer)) {
+        offset1 >= 0 && offset1 <= (s->buf_end - s->buffer)) {
         /* can do the seek inside the buffer */
         s->buf_ptr = s->buffer + offset1;
     } else if(s->is_streamed && !s->write_flag &&
@@ -415,6 +414,10 @@ int get_buffer(ByteIOContext *s, unsigned char *buf, int size)
             size -= len;
         }
     }
+    if (size1 == size) {
+        if (url_ferror(s)) return url_ferror(s);
+        if (url_feof(s))   return AVERROR_EOF;
+    }
     return size1 - size;
 }
 
@@ -434,6 +437,10 @@ int get_partial_buffer(ByteIOContext *s, unsigned char *buf, int size)
         len = size;
     memcpy(buf, s->buf_ptr, len);
     s->buf_ptr += len;
+    if (!len) {
+        if (url_ferror(s)) return url_ferror(s);
+        if (url_feof(s))   return AVERROR_EOF;
+    }
     return len;
 }
 
@@ -579,11 +586,19 @@ int url_setbufsize(ByteIOContext *s, int buf_size)
     return 0;
 }
 
+#if LIBAVFORMAT_VERSION_MAJOR < 53
 int url_resetbuf(ByteIOContext *s, int flags)
+#else
+static int url_resetbuf(ByteIOContext *s, int flags)
+#endif
 {
+#if LIBAVFORMAT_VERSION_MAJOR < 53
     URLContext *h = s->opaque;
     if ((flags & URL_RDWR) || (h && h->flags != flags && !h->flags & URL_RDWR))
         return AVERROR(EINVAL);
+#else
+    assert(flags == URL_WRONLY || flags == URL_RDONLY);
+#endif
 
     if (flags & URL_WRONLY) {
         s->buf_end = s->buffer + s->buffer_size;

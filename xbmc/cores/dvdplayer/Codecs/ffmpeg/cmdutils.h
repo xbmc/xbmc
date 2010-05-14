@@ -40,7 +40,7 @@ extern const int program_birth_year;
 extern const int this_year;
 
 extern const char **opt_names;
-extern AVCodecContext *avctx_opts[CODEC_TYPE_NB];
+extern AVCodecContext *avcodec_opts[CODEC_TYPE_NB];
 extern AVFormatContext *avformat_opts;
 extern struct SwsContext *sws_opts;
 
@@ -49,6 +49,11 @@ extern struct SwsContext *sws_opts;
  * parsed through AVOptions.
  */
 int opt_default(const char *opt, const char *arg);
+
+/**
+ * Sets the libav* libraries log level.
+ */
+int opt_loglevel(const char *opt, const char *arg);
 
 /**
  * Parses a string and returns its corresponding value as a double.
@@ -73,8 +78,8 @@ double parse_number_or_die(const char *context, const char *numstr, int type, do
  * @param context the context of the value to be set (e.g. the
  * corresponding commandline option name)
  * @param timestr the string to be parsed
- * @param is_duration a flag which tells how to interpret \p timestr, if
- * not zero \p timestr is interpreted as a duration, otherwise as a
+ * @param is_duration a flag which tells how to interpret timestr, if
+ * not zero timestr is interpreted as a duration, otherwise as a
  * date
  *
  * @see parse_date()
@@ -126,6 +131,8 @@ void set_context_opts(void *ctx, void *opts_ctx, int flags);
 
 void print_error(const char *filename, int err);
 
+void list_fmts(void (*get_fmt_string)(char *buf, int buf_size, int fmt), int nb_fmts);
+
 /**
  * Prints the program banner to stderr. The banner contents depend on the
  * current version of the repository and of the libav* libraries used by
@@ -151,5 +158,35 @@ void show_license(void);
  * program.
  */
 void show_formats(void);
+
+/**
+ * Prints a listing containing all the codecs supported by the
+ * program.
+ */
+void show_codecs(void);
+
+/**
+ * Prints a listing containing all the filters supported by the
+ * program.
+ */
+void show_filters(void);
+
+/**
+ * Prints a listing containing all the bit stream filters supported by the
+ * program.
+ */
+void show_bsfs(void);
+
+/**
+ * Prints a listing containing all the protocols supported by the
+ * program.
+ */
+void show_protocols(void);
+
+/**
+ * Returns a positive value if reads from standard input a line
+ * starting with [yY], otherwise returns 0.
+ */
+int read_yesno(void);
 
 #endif /* FFMPEG_CMDUTILS_H */

@@ -45,7 +45,7 @@
 /* at least they don't use PDP_ENDIAN :) */
 #define BITSTREAM_WRITER_LE
 
-#include "libavcodec/bitstream.h"
+#include "libavcodec/put_bits.h"
 
 /* bitstream minipacket size */
 #define GIF_CHUNKS 100
@@ -232,9 +232,9 @@ static int gif_image_write_image(ByteIOContext *pb,
             put_bits(&p, 9, 0x101); /* end of stream */
             flush_put_bits(&p);
         }
-        if(pbBufPtr(&p) - p.buf > 0) {
-            put_byte(pb, pbBufPtr(&p) - p.buf); /* byte count of the packet */
-            put_buffer(pb, p.buf, pbBufPtr(&p) - p.buf); /* the actual buffer */
+        if(put_bits_ptr(&p) - p.buf > 0) {
+            put_byte(pb, put_bits_ptr(&p) - p.buf); /* byte count of the packet */
+            put_buffer(pb, p.buf, put_bits_ptr(&p) - p.buf); /* the actual buffer */
             p.buf_ptr = p.buf; /* dequeue the bytes off the bitstream */
         }
         left-=GIF_CHUNKS;

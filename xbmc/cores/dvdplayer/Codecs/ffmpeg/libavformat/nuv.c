@@ -86,7 +86,7 @@ static int get_codec_data(ByteIOContext *pb, AVStream *vst,
                 if (vst) {
                     vst->codec->codec_tag = get_le32(pb);
                     vst->codec->codec_id =
-                        codec_get_id(codec_bmp_tags, vst->codec->codec_tag);
+                        ff_codec_get_id(ff_codec_bmp_tags, vst->codec->codec_tag);
                     if (vst->codec->codec_tag == MKTAG('R', 'J', 'P', 'G'))
                         vst->codec->codec_id = CODEC_ID_NUV;
                 } else
@@ -98,7 +98,7 @@ static int get_codec_data(ByteIOContext *pb, AVStream *vst,
                     ast->codec->bits_per_coded_sample = get_le32(pb);
                     ast->codec->channels = get_le32(pb);
                     ast->codec->codec_id =
-                        wav_codec_get_id(ast->codec->codec_tag,
+                        ff_wav_codec_get_id(ast->codec->codec_tag,
                                          ast->codec->bits_per_coded_sample);
                     ast->need_parsing = AVSTREAM_PARSE_FULL;
                 } else
@@ -123,14 +123,14 @@ static int get_codec_data(ByteIOContext *pb, AVStream *vst,
 static int nuv_header(AVFormatContext *s, AVFormatParameters *ap) {
     NUVContext *ctx = s->priv_data;
     ByteIOContext *pb = s->pb;
-    char id_string[12], version_string[5];
+    char id_string[12];
     double aspect, fps;
     int is_mythtv, width, height, v_packs, a_packs;
     int stream_nr = 0;
     AVStream *vst = NULL, *ast = NULL;
     get_buffer(pb, id_string, 12);
     is_mythtv = !memcmp(id_string, "MythTVVideo", 12);
-    get_buffer(pb, version_string, 5);
+    url_fskip(pb, 5); // version string
     url_fskip(pb, 3); // padding
     width = get_le32(pb);
     height = get_le32(pb);
@@ -197,9 +197,10 @@ static int nuv_packet(AVFormatContext *s, AVPacket *pkt) {
     int ret, size;
     while (!url_feof(pb)) {
         int copyhdrsize = ctx->rtjpg_video ? HDRSIZE : 0;
+        uint64_t pos = url_ftell(pb);
         ret = get_buffer(pb, hdr, HDRSIZE);
-        if (ret <= 0)
-            return ret ? ret : -1;
+        if (ret < HDRSIZE)
+            return ret < 0 ? ret : AVERROR(EIO);
         frametype = hdr[0];
         size = PKTSIZE(AV_RL32(&hdr[8]));
         switch (frametype) {
@@ -217,7 +218,11 @@ static int nuv_packet(AVFormatContext *s, AVPacket *pkt) {
                 ret = av_new_packet(pkt, copyhdrsize + size);
                 if (ret < 0)
                     return ret;
-                pkt->pos = url_ftell(pb) - HDRSIZE;
+
+                // HACK: we have no idea if it is a keyframe,
+                // but if we mark none seeking will not work at all.
+                pkt->flags |= PKT_FLAG_KEY;
+                pkt->pos = pos;
                 pkt->pts = AV_RL32(&hdr[4]);
                 pkt->stream_index = ctx->v_id;
                 if(hdr[2] == 0) {
@@ -227,7 +232,13 @@ static int nuv_packet(AVFormatContext *s, AVPacket *pkt) {
                 }
                 memcpy(pkt->data, hdr, copyhdrsize);
                 ret = get_buffer(pb, pkt->data + copyhdrsize, size);
-                return ret;
+                if (ret < 0) {
+                    av_free_packet(pkt);
+                    return ret;
+                }
+                if (ret < size)
+                    av_shrink_packet(pkt, copyhdrsize + ret);
+                return 0;
             case NUV_AUDIO:
                 if (ctx->a_id < 0) {
                     av_log(s, AV_LOG_ERROR, "Audio packet in file without audio stream!\n");
@@ -235,9 +246,12 @@ static int nuv_packet(AVFormatContext *s, AVPacket *pkt) {
                     break;
                 }
                 ret = av_get_packet(pb, pkt, size);
+                pkt->flags |= PKT_FLAG_KEY;
+                pkt->pos = pos;
                 pkt->pts = AV_RL32(&hdr[4]);
                 pkt->stream_index = ctx->a_id;
-                return ret;
+                if (ret < 0) return ret;
+                return 0;
             case NUV_SEEKP:
                 // contains no data, size value is invalid
                 break;
@@ -336,4 +350,5 @@ AVInputFormat nuv_demuxer = {
     NULL,
     NULL,
     nuv_read_dts,
+    .flags = AVFMT_GENERIC_INDEX,
 };

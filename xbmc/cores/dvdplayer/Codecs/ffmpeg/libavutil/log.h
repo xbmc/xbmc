@@ -29,8 +29,7 @@
  * arbitrary struct of which the first field is a pointer to an
  * AVClass struct (e.g. AVCodecContext, AVFormatContext etc.).
  */
-typedef struct AVCLASS AVClass;
-struct AVCLASS {
+typedef struct {
     /**
      * The name of the class; usually it is the same name as the
      * context structure type to which the AVClass is associated.
@@ -39,7 +38,7 @@ struct AVCLASS {
 
     /**
      * A pointer to a function which returns the name of a context
-     * instance \p ctx associated with the class.
+     * instance ctx associated with the class.
      */
     const char* (*item_name)(void* ctx);
 
@@ -49,19 +48,10 @@ struct AVCLASS {
      * @see av_set_default_options()
      */
     const struct AVOption *option;
-};
+} AVClass;
 
 /* av_log API */
 
-#if LIBAVUTIL_VERSION_INT < (50<<16)
-#define AV_LOG_QUIET -1
-#define AV_LOG_FATAL 0
-#define AV_LOG_ERROR 0
-#define AV_LOG_WARNING 1
-#define AV_LOG_INFO 1
-#define AV_LOG_VERBOSE 1
-#define AV_LOG_DEBUG 2
-#else
 #define AV_LOG_QUIET    -8
 
 /**
@@ -95,11 +85,6 @@ struct AVCLASS {
  * Stuff which is only useful for libav* developers.
  */
 #define AV_LOG_DEBUG    48
-#endif
-
-#if LIBAVUTIL_VERSION_INT < (50<<16)
-extern int av_log_level;
-#endif
 
 /**
  * Sends the specified message to the log if the level is less than or equal

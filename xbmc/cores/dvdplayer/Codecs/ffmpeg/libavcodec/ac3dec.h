@@ -27,10 +27,9 @@
 #ifndef AVCODEC_AC3DEC_H
 #define AVCODEC_AC3DEC_H
 
-#include "libavutil/internal.h"
 #include "libavutil/lfg.h"
 #include "ac3.h"
-#include "bitstream.h"
+#include "get_bits.h"
 #include "dsputil.h"
 
 /* override ac3.h to include coupling channel */
@@ -58,6 +57,7 @@ typedef struct {
     int sample_rate;                        ///< sample frequency, in Hz
     int num_blocks;                         ///< number of audio blocks
     int channel_mode;                       ///< channel mode                           (acmod)
+    int channel_layout;                     ///< channel layout
     int lfe_on;                             ///< lfe channel in use
     int channel_map;                        ///< custom channel map
     int center_mix_level;                   ///< Center mix level index
@@ -81,9 +81,8 @@ typedef struct {
     int channel_in_cpl[AC3_MAX_CHANNELS];   ///< channel in coupling                    (chincpl)
     int phase_flags_in_use;                 ///< phase flags in use                     (phsflginu)
     int phase_flags[18];                    ///< phase flags                            (phsflg)
-    int num_cpl_subbands;                   ///< number of coupling sub bands           (ncplsubnd)
     int num_cpl_bands;                      ///< number of coupling bands               (ncplbnd)
-    uint8_t cpl_band_struct[18];            ///< coupling band structure                (cplbndstrc)
+    uint8_t cpl_band_sizes[18];             ///< number of coeffs in each coupling band
     int firstchincpl;                       ///< first channel in coupling
     int first_cpl_coords[AC3_MAX_CHANNELS]; ///< first coupling coordinates states      (firstcplcos)
     int cpl_coords[AC3_MAX_CHANNELS][18];   ///< coupling coordinates                   (cplco)
@@ -147,8 +146,8 @@ typedef struct {
 
 ///@defgroup imdct IMDCT
     int block_switch[AC3_MAX_CHANNELS];     ///< block switch flags                     (blksw)
-    MDCTContext imdct_512;                  ///< for 512 sample IMDCT
-    MDCTContext imdct_256;                  ///< for 256 sample IMDCT
+    FFTContext imdct_512;                   ///< for 512 sample IMDCT
+    FFTContext imdct_256;                   ///< for 256 sample IMDCT
 ///@}
 
 ///@defgroup opt optimization
@@ -157,9 +156,8 @@ typedef struct {
     float mul_bias;                         ///< scaling for float_to_int16 conversion
 ///@}
 
-    DECLARE_ALIGNED_16(int, fixed_coeffs[AC3_MAX_CHANNELS][AC3_MAX_COEFS]);  ///> fixed-point transform coefficients
-
 ///@defgroup arrays aligned arrays
+    DECLARE_ALIGNED_16(int,   fixed_coeffs[AC3_MAX_CHANNELS][AC3_MAX_COEFS]);       ///> fixed-point transform coefficients
     DECLARE_ALIGNED_16(float, transform_coeffs[AC3_MAX_CHANNELS][AC3_MAX_COEFS]);   ///< transform coefficients
     DECLARE_ALIGNED_16(float, delay[AC3_MAX_CHANNELS][AC3_BLOCK_SIZE]);             ///< delay - added to the next block
     DECLARE_ALIGNED_16(float, window[AC3_BLOCK_SIZE]);                              ///< window coefficients

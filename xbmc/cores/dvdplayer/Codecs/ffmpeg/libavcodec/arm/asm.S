@@ -20,28 +20,48 @@
 
 #include "config.h"
 
+#ifdef __ELF__
+#   define ELF
+#else
+#   define ELF @
+#endif
+
         .macro require8, val=1
-        .eabi_attribute 24, \val
+ELF     .eabi_attribute 24, \val
         .endm
 
         .macro preserve8, val=1
-        .eabi_attribute 25, \val
+ELF     .eabi_attribute 25, \val
         .endm
 
         .macro function name, export=0
 .if \export
-        .global \name
+        .global EXTERN_ASM\name
+EXTERN_ASM\name:
 .endif
-        .type   \name, %function
+ELF     .type   \name, %function
         .func   \name
 \name:
         .endm
 
         .macro movrel rd, val
-#if HAVE_ARMV6T2 && !CONFIG_SHARED
+#if HAVE_ARMV6T2 && !CONFIG_PIC
         movw            \rd, #:lower16:\val
         movt            \rd, #:upper16:\val
 #else
         ldr             \rd, =\val
 #endif
         .endm
+
+#if HAVE_VFP_ARGS
+        .eabi_attribute 28, 1
+#   define VFP
+#   define NOVFP @
+#else
+#   define VFP   @
+#   define NOVFP
+#endif
+
+#define GLUE(a, b) a ## b
+#define JOIN(a, b) GLUE(a, b)
+#define X(s) JOIN(EXTERN_ASM, s)

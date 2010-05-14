@@ -1,0 +1,2699 @@
+# ./configure --extra-cflags='-D_XBOX -fno-common' --cpu=pentium3 --enable-shared --enable-memalign-hack --enable-gpl --enable-w32threads --enable-postproc --enable-zlib --disable-static --disable-altivec --disable-muxers --disable-encoders --disable-indevs --disable-ipv6 --disable-debug
+!C:='C:\msys'
+ALLUSERSPROFILE='C:\Documents and Settings\All Users'
+APPDATA='C:\Documents and Settings\arnova\Application Data'
+ARCH_EXT_LIST='
+    altivec
+    amd3dnow
+    amd3dnowext
+    armv5te
+    armv6
+    armv6t2
+    armvfp
+    iwmmxt
+    mmi
+    mmx
+    mmx2
+    neon
+    ppc4xx
+    sse
+    ssse3
+    vis
+'
+ARCH_LIST='
+    alpha
+    arm
+    avr32
+    avr32_ap
+    avr32_uc
+    bfin
+    ia64
+    m68k
+    mips
+    mips64
+    parisc
+    ppc
+    ppc64
+    s390
+    sh4
+    sparc
+    sparc64
+    x86
+    x86_32
+    x86_64
+'
+BASH=/bin/sh
+BASH_ARGC=([0]="15")
+BASH_ARGV=([0]="--disable-debug" [1]="--disable-ipv6" [2]="--disable-indevs" [3]="--disable-encoders" [4]="--disable-muxers" [5]="--disable-altivec" [6]="--disable-static" [7]="--enable-zlib" [8]="--enable-postproc" [9]="--enable-w32threads" [10]="--enable-gpl" [11]="--enable-memalign-hack" [12]="--enable-shared" [13]="--cpu=pentium3" [14]="--extra-cflags=-D_XBOX -fno-common")
+BASH_LINENO=([0]="0")
+BASH_SOURCE=([0]="./configure")
+BASH_VERSINFO=([0]="3" [1]="1" [2]="0" [3]="1" [4]="release" [5]="i686-pc-msys")
+BASH_VERSION='3.1.0(1)-release'
+BGCOLOR=LightYellow
+BSF_LIST='aac_adtstoasc_bsf
+dump_extradata_bsf
+h264_mp4toannexb_bsf
+imx_dump_header_bsf
+mjpega_dump_header_bsf
+mp3_header_compress_bsf
+mp3_header_decompress_bsf
+mov2textsub_bsf
+noise_bsf
+remove_extradata_bsf
+text2movsub_bsf'
+CC_O='-o $@'
+CMDLINE_APPEND='
+    extra_cflags
+'
+CMDLINE_SELECT='
+    
+    altivec
+    amd3dnow
+    amd3dnowext
+    armv5te
+    armv6
+    armv6t2
+    armvfp
+    iwmmxt
+    mmi
+    mmx
+    mmx2
+    neon
+    ppc4xx
+    sse
+    ssse3
+    vis
+
+    
+    
+    bsfs
+    decoders
+    demuxers
+    encoders
+    filters
+    hwaccels
+    indevs
+    muxers
+    outdevs
+    parsers
+    protocols
+
+    aandct
+    avfilter
+    avfilter_lavf
+    avisynth
+    beos_netserver
+    bzlib
+    doc
+    dxva2
+    fastdiv
+    ffmpeg
+    ffplay
+    ffserver
+    fft
+    golomb
+    gpl
+    gprof
+    gray
+    hardcoded_tables
+    ipv6
+    libdc1394
+    libdirac
+    libfaac
+    libfaad
+    libfaadbin
+    libgsm
+    libmp3lame
+    libnut
+    libopencore_amrnb
+    libopencore_amrwb
+    libopenjpeg
+    libschroedinger
+    libspeex
+    libtheora
+    libvorbis
+    libx264
+    libxvid
+    lpc
+    mdct
+    memalign_hack
+    mlib
+    mpegaudio_hp
+    network
+    nonfree
+    pic
+    postproc
+    powerpc_perf
+    rdft
+    runtime_cpudetect
+    shared
+    small
+    static
+    swscale_alpha
+    vaapi
+    vdpau
+    version3
+    x11grab
+    zlib
+
+    
+    beosthreads
+    os2threads
+    pthreads
+    w32threads
+
+    cross_compile
+    debug
+    extra_warnings
+    logging
+    optimizations
+    stripping
+    yasm
+'
+CMDLINE_SET='
+    
+    bindir
+    datadir
+    incdir
+    libdir
+    mandir
+    prefix
+    shlibdir
+
+    arch
+    as
+    build_suffix
+    cc
+    cpu
+    cross_prefix
+    dep_cc
+    extra_version
+    host_cc
+    host_cflags
+    host_ldflags
+    host_libs
+    host_os
+    ld
+    logfile
+    nm
+    source_path
+    sysinclude
+    sysroot
+    target_exec
+    target_os
+    target_path
+'
+COLORFGBG='default;default'
+COLORTERM=rxvt-xpm
+COMMONPROGRAMFILES='C:\Program Files\Common Files'
+COMPONENT_LIST='
+    bsfs
+    decoders
+    demuxers
+    encoders
+    filters
+    hwaccels
+    indevs
+    muxers
+    outdevs
+    parsers
+    protocols
+'
+COMPUTERNAME=GALACTICA
+COMSPEC='C:\WINDOWS\system32\cmd.exe'
+CONFIG_EXTRA='
+    gplv3
+    lgplv3
+'
+CONFIG_LIST='
+    
+    bsfs
+    decoders
+    demuxers
+    encoders
+    filters
+    hwaccels
+    indevs
+    muxers
+    outdevs
+    parsers
+    protocols
+
+    aandct
+    avfilter
+    avfilter_lavf
+    avisynth
+    beos_netserver
+    bzlib
+    doc
+    dxva2
+    fastdiv
+    ffmpeg
+    ffplay
+    ffserver
+    fft
+    golomb
+    gpl
+    gprof
+    gray
+    hardcoded_tables
+    ipv6
+    libdc1394
+    libdirac
+    libfaac
+    libfaad
+    libfaadbin
+    libgsm
+    libmp3lame
+    libnut
+    libopencore_amrnb
+    libopencore_amrwb
+    libopenjpeg
+    libschroedinger
+    libspeex
+    libtheora
+    libvorbis
+    libx264
+    libxvid
+    lpc
+    mdct
+    memalign_hack
+    mlib
+    mpegaudio_hp
+    network
+    nonfree
+    pic
+    postproc
+    powerpc_perf
+    rdft
+    runtime_cpudetect
+    shared
+    small
+    static
+    swscale_alpha
+    vaapi
+    vdpau
+    version3
+    x11grab
+    zlib
+'
+DECODER_LIST='aasc_decoder
+amv_decoder
+asv1_decoder
+asv2_decoder
+avs_decoder
+bethsoftvid_decoder
+bfi_decoder
+bmp_decoder
+c93_decoder
+cavs_decoder
+cdgraphics_decoder
+cinepak_decoder
+cljr_decoder
+cscd_decoder
+cyuv_decoder
+dnxhd_decoder
+dpx_decoder
+dsicinvideo_decoder
+dvvideo_decoder
+dxa_decoder
+eacmv_decoder
+eamad_decoder
+eatgq_decoder
+eatgv_decoder
+eatqi_decoder
+eightbps_decoder
+eightsvx_exp_decoder
+eightsvx_fib_decoder
+escape124_decoder
+ffv1_decoder
+ffvhuff_decoder
+flashsv_decoder
+flic_decoder
+flv_decoder
+fourxm_decoder
+fraps_decoder
+frwu_decoder
+gif_decoder
+h261_decoder
+h263_decoder
+h263i_decoder
+h264_decoder
+h264_vdpau_decoder
+huffyuv_decoder
+idcin_decoder
+indeo2_decoder
+indeo3_decoder
+interplay_video_decoder
+jpegls_decoder
+kmvc_decoder
+loco_decoder
+mdec_decoder
+mimic_decoder
+mjpeg_decoder
+mjpegb_decoder
+mmvideo_decoder
+motionpixels_decoder
+mpeg_xvmc_decoder
+mpeg1video_decoder
+mpeg2video_decoder
+mpeg4_decoder
+mpeg4_vdpau_decoder
+mpegvideo_decoder
+mpeg_vdpau_decoder
+mpeg1_vdpau_decoder
+msmpeg4v1_decoder
+msmpeg4v2_decoder
+msmpeg4v3_decoder
+msrle_decoder
+msvideo1_decoder
+mszh_decoder
+nuv_decoder
+pam_decoder
+pbm_decoder
+pcx_decoder
+pgm_decoder
+pgmyuv_decoder
+png_decoder
+ppm_decoder
+ptx_decoder
+qdraw_decoder
+qpeg_decoder
+qtrle_decoder
+r210_decoder
+rawvideo_decoder
+rl2_decoder
+roq_decoder
+rpza_decoder
+rv10_decoder
+rv20_decoder
+rv30_decoder
+rv40_decoder
+sgi_decoder
+smacker_decoder
+smc_decoder
+snow_decoder
+sp5x_decoder
+sunrast_decoder
+svq1_decoder
+svq3_decoder
+targa_decoder
+theora_decoder
+thp_decoder
+tiertexseqvideo_decoder
+tiff_decoder
+tmv_decoder
+truemotion1_decoder
+truemotion2_decoder
+tscc_decoder
+txd_decoder
+ulti_decoder
+v210_decoder
+v210x_decoder
+vb_decoder
+vc1_decoder
+vc1_vdpau_decoder
+vcr1_decoder
+vmdvideo_decoder
+vmnc_decoder
+vp3_decoder
+vp5_decoder
+vp6_decoder
+vp6a_decoder
+vp6f_decoder
+vqa_decoder
+wmv1_decoder
+wmv2_decoder
+wmv3_decoder
+wmv3_vdpau_decoder
+wnv1_decoder
+xan_wc3_decoder
+xl_decoder
+zlib_decoder
+zmbv_decoder
+aac_decoder
+ac3_decoder
+alac_decoder
+als_decoder
+ape_decoder
+atrac1_decoder
+atrac3_decoder
+cook_decoder
+dca_decoder
+dsicinaudio_decoder
+eac3_decoder
+flac_decoder
+imc_decoder
+mace3_decoder
+mace6_decoder
+mlp_decoder
+mp1_decoder
+mp2_decoder
+mp3_decoder
+mp3adu_decoder
+mp3on4_decoder
+mpc7_decoder
+mpc8_decoder
+nellymoser_decoder
+qcelp_decoder
+qdm2_decoder
+ra_144_decoder
+ra_288_decoder
+shorten_decoder
+smackaud_decoder
+sonic_decoder
+truehd_decoder
+truespeech_decoder
+tta_decoder
+twinvq_decoder
+vmdaudio_decoder
+vorbis_decoder
+wavpack_decoder
+wmapro_decoder
+wmav1_decoder
+wmav2_decoder
+ws_snd1_decoder
+pcm_alaw_decoder
+pcm_bluray_decoder
+pcm_dvd_decoder
+pcm_f32be_decoder
+pcm_f32le_decoder
+pcm_f64be_decoder
+pcm_f64le_decoder
+pcm_mulaw_decoder
+pcm_s8_decoder
+pcm_s16be_decoder
+pcm_s16le_decoder
+pcm_s16le_planar_decoder
+pcm_s24be_decoder
+pcm_s24daud_decoder
+pcm_s24le_decoder
+pcm_s32be_decoder
+pcm_s32le_decoder
+pcm_u8_decoder
+pcm_u16be_decoder
+pcm_u16le_decoder
+pcm_u24be_decoder
+pcm_u24le_decoder
+pcm_u32be_decoder
+pcm_u32le_decoder
+pcm_zork_decoder
+interplay_dpcm_decoder
+roq_dpcm_decoder
+sol_dpcm_decoder
+xan_dpcm_decoder
+adpcm_4xm_decoder
+adpcm_adx_decoder
+adpcm_ct_decoder
+adpcm_ea_decoder
+adpcm_ea_maxis_xa_decoder
+adpcm_ea_r1_decoder
+adpcm_ea_r2_decoder
+adpcm_ea_r3_decoder
+adpcm_ea_xas_decoder
+adpcm_g726_decoder
+adpcm_ima_amv_decoder
+adpcm_ima_dk3_decoder
+adpcm_ima_dk4_decoder
+adpcm_ima_ea_eacs_decoder
+adpcm_ima_ea_sead_decoder
+adpcm_ima_iss_decoder
+adpcm_ima_qt_decoder
+adpcm_ima_smjpeg_decoder
+adpcm_ima_wav_decoder
+adpcm_ima_ws_decoder
+adpcm_ms_decoder
+adpcm_sbpro_2_decoder
+adpcm_sbpro_3_decoder
+adpcm_sbpro_4_decoder
+adpcm_swf_decoder
+adpcm_thp_decoder
+adpcm_xa_decoder
+adpcm_yamaha_decoder
+dvbsub_decoder
+dvdsub_decoder
+pgssub_decoder
+xsub_decoder
+libdirac_decoder
+libfaad_decoder
+libfaad_latm_decoder
+libgsm_decoder
+libgsm_ms_decoder
+libopencore_amrnb_decoder
+libopencore_amrwb_decoder
+libopenjpeg_decoder
+libschroedinger_decoder
+libspeex_decoder'
+DEMUXER_LIST='aac_demuxer
+ac3_demuxer
+aea_demuxer
+aiff_demuxer
+amr_demuxer
+apc_demuxer
+ape_demuxer
+asf_demuxer
+ass_demuxer
+au_demuxer
+avi_demuxer
+avisynth_demuxer
+avs_demuxer
+bethsoftvid_demuxer
+bfi_demuxer
+c93_demuxer
+caf_demuxer
+cavsvideo_demuxer
+cdg_demuxer
+daud_demuxer
+dirac_demuxer
+dnxhd_demuxer
+dsicin_demuxer
+dts_demuxer
+dv_demuxer
+dxa_demuxer
+ea_demuxer
+ea_cdata_demuxer
+eac3_demuxer
+ffm_demuxer
+flac_demuxer
+flic_demuxer
+flv_demuxer
+fourxm_demuxer
+gsm_demuxer
+gxf_demuxer
+h261_demuxer
+h263_demuxer
+h264_demuxer
+idcin_demuxer
+iff_demuxer
+image2_demuxer
+image2pipe_demuxer
+ingenient_demuxer
+ipmovie_demuxer
+iss_demuxer
+iv8_demuxer
+lmlm4_demuxer
+m4v_demuxer
+matroska_demuxer
+mjpeg_demuxer
+mlp_demuxer
+mm_demuxer
+mmf_demuxer
+mov_demuxer
+mp3_demuxer
+mpc_demuxer
+mpc8_demuxer
+mpegps_demuxer
+mpegts_demuxer
+mpegtsraw_demuxer
+mpegvideo_demuxer
+msnwc_tcp_demuxer
+mtv_demuxer
+mvi_demuxer
+mxf_demuxer
+nc_demuxer
+nsv_demuxer
+nut_demuxer
+nuv_demuxer
+ogg_demuxer
+oma_demuxer
+pcm_alaw_demuxer
+pcm_mulaw_demuxer
+pcm_f64be_demuxer
+pcm_f64le_demuxer
+pcm_f32be_demuxer
+pcm_f32le_demuxer
+pcm_s32be_demuxer
+pcm_s32le_demuxer
+pcm_s24be_demuxer
+pcm_s24le_demuxer
+pcm_s16be_demuxer
+pcm_s16le_demuxer
+pcm_s8_demuxer
+pcm_u32be_demuxer
+pcm_u32le_demuxer
+pcm_u24be_demuxer
+pcm_u24le_demuxer
+pcm_u16be_demuxer
+pcm_u16le_demuxer
+pcm_u8_demuxer
+pva_demuxer
+qcp_demuxer
+r3d_demuxer
+rawvideo_demuxer
+rl2_demuxer
+rm_demuxer
+roq_demuxer
+rpl_demuxer
+rtsp_demuxer
+sdp_demuxer
+segafilm_demuxer
+shorten_demuxer
+siff_demuxer
+smacker_demuxer
+sol_demuxer
+sox_demuxer
+str_demuxer
+swf_demuxer
+thp_demuxer
+tiertexseq_demuxer
+tmv_demuxer
+truehd_demuxer
+tta_demuxer
+txd_demuxer
+vc1_demuxer
+vc1t_demuxer
+vmd_demuxer
+voc_demuxer
+vqf_demuxer
+w64_demuxer
+wav_demuxer
+wc3_demuxer
+wsaud_demuxer
+wsvqa_demuxer
+wv_demuxer
+xa_demuxer
+yuv4mpegpipe_demuxer
+libnut_demuxer'
+DEPEND_CMD='$(DEPCC) $(DEPFLAGS) $< | sed -e "/^\#.*/d" -e "s,^[[:space:]]*$(*F)\\.o,$(@D)/$(*F).o," > $(@:.o=.d)'
+DEPFLAGS='$(CPPFLAGS) $(CFLAGS) -MM'
+DIRSTACK=()
+DISPLAY=:0
+DXSDK_DIR='C:\Program Files\Microsoft DirectX 9.0 SDK (Summer 2004)\'
+E1=0
+E2=1
+ENCODER_LIST='asv1_encoder
+asv2_encoder
+bmp_encoder
+dnxhd_encoder
+dvvideo_encoder
+ffv1_encoder
+ffvhuff_encoder
+flashsv_encoder
+flv_encoder
+gif_encoder
+h261_encoder
+h263_encoder
+h263p_encoder
+huffyuv_encoder
+jpegls_encoder
+ljpeg_encoder
+mjpeg_encoder
+mpeg1video_encoder
+mpeg2video_encoder
+mpeg4_encoder
+msmpeg4v1_encoder
+msmpeg4v2_encoder
+msmpeg4v3_encoder
+pam_encoder
+pbm_encoder
+pcx_encoder
+pgm_encoder
+pgmyuv_encoder
+png_encoder
+ppm_encoder
+qtrle_encoder
+rawvideo_encoder
+roq_encoder
+rv10_encoder
+rv20_encoder
+sgi_encoder
+snow_encoder
+svq1_encoder
+targa_encoder
+tiff_encoder
+v210_encoder
+wmv1_encoder
+wmv2_encoder
+zlib_encoder
+zmbv_encoder
+aac_encoder
+ac3_encoder
+alac_encoder
+flac_encoder
+mp2_encoder
+nellymoser_encoder
+sonic_encoder
+sonic_ls_encoder
+vorbis_encoder
+wmav1_encoder
+wmav2_encoder
+pcm_alaw_encoder
+pcm_f32be_encoder
+pcm_f32le_encoder
+pcm_f64be_encoder
+pcm_f64le_encoder
+pcm_mulaw_encoder
+pcm_s8_encoder
+pcm_s16be_encoder
+pcm_s16le_encoder
+pcm_s24be_encoder
+pcm_s24daud_encoder
+pcm_s24le_encoder
+pcm_s32be_encoder
+pcm_s32le_encoder
+pcm_u8_encoder
+pcm_u16be_encoder
+pcm_u16le_encoder
+pcm_u24be_encoder
+pcm_u24le_encoder
+pcm_u32be_encoder
+pcm_u32le_encoder
+pcm_zork_encoder
+roq_dpcm_encoder
+adpcm_adx_encoder
+adpcm_g726_encoder
+adpcm_ima_qt_encoder
+adpcm_ima_wav_encoder
+adpcm_ms_encoder
+adpcm_swf_encoder
+adpcm_yamaha_encoder
+dvbsub_encoder
+dvdsub_encoder
+xsub_encoder
+libdirac_encoder
+libfaac_encoder
+libgsm_encoder
+libgsm_ms_encoder
+libmp3lame_encoder
+libopencore_amrnb_encoder
+libschroedinger_encoder
+libtheora_encoder
+libvorbis_encoder
+libx264_encoder
+libxvid_encoder'
+EUID=500
+FFMPEG_CONFIGURATION='--extra-cflags='\''-D_XBOX -fno-common'\'' --cpu=pentium3 --enable-shared --enable-memalign-hack --enable-gpl --enable-w32threads --enable-postproc --enable-zlib --disable-static --disable-altivec --disable-muxers --disable-encoders --disable-indevs --disable-ipv6 --disable-debug'
+FFSERVERLDFLAGS=-Wl,-E
+FGCOLOR=Navy
+FILTER_LIST='crop_filter
+format_filter
+noformat_filter
+null_filter
+scale_filter
+slicify_filter
+vflip_filter'
+FP_NO_HOST_CHECK=NO
+FULLNAME='$(NAME)$(BUILDSUF)'
+GROUPS=()
+GS_PROG='C:\Program Files\gs\gs8.56\bin\gswin32c.exe'
+HAVE_LIST='
+    
+    altivec
+    amd3dnow
+    amd3dnowext
+    armv5te
+    armv6
+    armv6t2
+    armvfp
+    iwmmxt
+    mmi
+    mmx
+    mmx2
+    neon
+    ppc4xx
+    sse
+    ssse3
+    vis
+
+    
+    beosthreads
+    os2threads
+    pthreads
+    w32threads
+
+    alsa_asoundlib_h
+    altivec_h
+    arpa_inet_h
+    attribute_packed
+    bigendian
+    bswap
+    closesocket
+    cmov
+    conio_h
+    dcbzl
+    dev_bktr_ioctl_bt848_h
+    dev_bktr_ioctl_meteor_h
+    dev_ic_bt8xx_h
+    dev_video_meteor_ioctl_meteor_h
+    dev_video_bktr_ioctl_bt848_h
+    dlfcn_h
+    dlopen
+    dos_paths
+    ebp_available
+    ebx_available
+    fast_64bit
+    fast_cmov
+    fast_unaligned
+    fork
+    gethrtime
+    GetProcessTimes
+    getrusage
+    inet_aton
+    inline_asm
+    isatty
+    ldbrx
+    libdc1394_1
+    libdc1394_2
+    llrint
+    log2
+    loongson
+    lrint
+    lrintf
+    lzo1x_999_compress
+    machine_ioctl_bt848_h
+    machine_ioctl_meteor_h
+    malloc_h
+    memalign
+    mkstemp
+    pld
+    posix_memalign
+    round
+    roundf
+    sdl
+    sdl_video_size
+    setmode
+    socklen_t
+    soundcard_h
+    poll_h
+    sys_mman_h
+    sys_resource_h
+    sys_select_h
+    sys_soundcard_h
+    sys_videoio_h
+    ten_operands
+    termios_h
+    threads
+    truncf
+    vfp_args
+    VirtualAlloc
+    winsock2_h
+    xform_asm
+    yasm
+'
+HISTFILE=/home/arnova/.bash_history
+HOME=/home/arnova
+HOMEDRIVE=C:
+HOMEPATH='\'
+HOSTNAME=GALACTICA
+HOSTTYPE=i686
+HWACCEL_LIST='h263_vaapi_hwaccel
+h264_dxva2_hwaccel
+mpeg2_vaapi_hwaccel
+mpeg4_vaapi_hwaccel
+vc1_dxva2_hwaccel
+vc1_vaapi_hwaccel
+wmv3_dxva2_hwaccel
+wmv3_vaapi_hwaccel'
+IFS=' 	
+'
+INDEV_LIST='alsa_indev
+audio_beos_indev
+bktr_indev
+dv1394_indev
+jack_indev
+oss_indev
+v4l2_indev
+v4l_indev
+vfwcap_indev
+x11_grab_device_indev
+libdc1394_indev'
+KMP_DUPLICATE_LIB_OK=TRUE
+LANG=en
+LC_ALL=C
+LIBNAME='$(LIBPREF)$(FULLNAME)$(LIBSUF)'
+LIBPREF=lib
+LIBSUF=.a
+LIB_INSTALL_EXTRA_CMD='$(RANLIB) "$(LIBDIR)/$(LIBNAME)"'
+LOGNAME=arnova
+LOGONSERVER='\\GALACTICA'
+MACHTYPE=i686-pc-msys
+MAKE_MODE=unix
+MINGW32BGCOLOR=LightYellow
+MINGW32FGCOLOR=Navy
+MKL_SERIAL=YES
+MSYSBGCOLOR=White
+MSYSCON=rxvt.exe
+MSYSFGCOLOR=Black
+MSYSTEM=MINGW32
+MUXER_LIST='ac3_muxer
+adts_muxer
+aiff_muxer
+amr_muxer
+asf_muxer
+ass_muxer
+asf_stream_muxer
+au_muxer
+avi_muxer
+avm2_muxer
+crc_muxer
+daud_muxer
+dirac_muxer
+dnxhd_muxer
+dts_muxer
+dv_muxer
+eac3_muxer
+ffm_muxer
+flac_muxer
+flv_muxer
+framecrc_muxer
+gif_muxer
+gxf_muxer
+h261_muxer
+h263_muxer
+h264_muxer
+image2_muxer
+image2pipe_muxer
+ipod_muxer
+m4v_muxer
+matroska_muxer
+matroska_audio_muxer
+mjpeg_muxer
+mlp_muxer
+mmf_muxer
+mov_muxer
+mp2_muxer
+mp3_muxer
+mp4_muxer
+mpeg1system_muxer
+mpeg1vcd_muxer
+mpeg1video_muxer
+mpeg2dvd_muxer
+mpeg2svcd_muxer
+mpeg2video_muxer
+mpeg2vob_muxer
+mpegts_muxer
+mpjpeg_muxer
+mxf_muxer
+mxf_d10_muxer
+null_muxer
+nut_muxer
+ogg_muxer
+pcm_alaw_muxer
+pcm_mulaw_muxer
+pcm_f64be_muxer
+pcm_f64le_muxer
+pcm_f32be_muxer
+pcm_f32le_muxer
+pcm_s32be_muxer
+pcm_s32le_muxer
+pcm_s24be_muxer
+pcm_s24le_muxer
+pcm_s16be_muxer
+pcm_s16le_muxer
+pcm_s8_muxer
+pcm_u32be_muxer
+pcm_u32le_muxer
+pcm_u24be_muxer
+pcm_u24le_muxer
+pcm_u16be_muxer
+pcm_u16le_muxer
+pcm_u8_muxer
+psp_muxer
+rawvideo_muxer
+rm_muxer
+roq_muxer
+rtp_muxer
+sox_muxer
+spdif_muxer
+swf_muxer
+tg2_muxer
+tgp_muxer
+truehd_muxer
+vc1t_muxer
+voc_muxer
+wav_muxer
+yuv4mpegpipe_muxer
+libnut_muxer'
+NUMBER_OF_PROCESSORS=1
+OPTERR=1
+OPTIND=1
+OS=Windows_NT
+OSTYPE=msys
+OUTDEV_LIST='alsa_outdev
+audio_beos_outdev
+oss_outdev'
+PARSER_LIST='aac_parser
+ac3_parser
+cavsvideo_parser
+dca_parser
+dirac_parser
+dnxhd_parser
+dvbsub_parser
+dvdsub_parser
+h261_parser
+h263_parser
+h264_parser
+latm_parser
+mjpeg_parser
+mlp_parser
+mpeg4video_parser
+mpegaudio_parser
+mpegvideo_parser
+pnm_parser
+vc1_parser
+vp3_parser'
+PATH='.:/usr/local/bin:/mingw/bin:/bin:/c/Program Files/Microsoft Xbox SDK/Xbox/Bin:/c/Program Files/Gammu 1.17.0/bin:/c/WINDOWS/system32:/c/WINDOWS:/c/WINDOWS/System32/Wbem:/c/Program Files/Intel/DMIX:/c/PROGRA~1/NcFTP:/1.0/bin:/c/Program Files/TortoiseSVN/bin:/c/WINDOWS/system32/WindowsPowerShell/v1.0:/c/Program Files/SlikSvn/bin/'
+PATHEXT='.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.PSC1'
+PATHS_LIST='
+    bindir
+    datadir
+    incdir
+    libdir
+    mandir
+    prefix
+    shlibdir
+'
+PIPESTATUS=([0]="0")
+POSIXLY_CORRECT=y
+PPID=552
+PROCESSOR_ARCHITECTURE=x86
+PROCESSOR_IDENTIFIER='x86 Family 6 Model 13 Stepping 6, GenuineIntel'
+PROCESSOR_LEVEL=6
+PROCESSOR_REVISION=0d06
+PROGRAMFILES='C:\Program Files'
+PROMPT='$P$G'
+PROTOCOL_LIST='file_protocol
+gopher_protocol
+http_protocol
+pipe_protocol
+rtmp_protocol
+rtp_protocol
+tcp_protocol
+udp_protocol'
+PS4='+ '
+PWD=/d/dev/xbmc/xbox-branch4merge/xbmc/cores/dvdplayer/Codecs/ffmpeg
+SESSIONNAME=Console
+SHELL=/bin/sh
+SHELLOPTS=braceexpand:hashall:interactive-comments:posix
+SHFLAGS='-shared -Wl,-soname,$$(@F)'
+SHLVL=3
+SLIBNAME='$(SLIBPREF)$(FULLNAME)$(SLIBSUF)'
+SLIBNAME_WITH_MAJOR='$(SLIBNAME).$(LIBMAJOR)'
+SLIBNAME_WITH_VERSION='$(SLIBNAME).$(LIBVERSION)'
+SLIBPREF=lib
+SLIBSUF=.so
+SYSTEMDRIVE=C:
+SYSTEMROOT='C:\WINDOWS'
+TEMP=/tmp
+TERM=msys
+THREADS_LIST='
+    beosthreads
+    os2threads
+    pthreads
+    w32threads
+'
+TMP=/tmp
+UID=500
+USERDOMAIN=GALACTICA
+USERNAME=arnova
+USERPROFILE='C:\Documents and Settings\arnova'
+VS71COMNTOOLS='C:\Program Files\Microsoft Visual Studio .NET 2003\Common7\Tools\'
+WD='C:\msys\\bin\'
+WINDIR='C:\WINDOWS'
+WINDOWID=167838896
+XBMC_HOME='D:\dev\xbmc\linuxport'
+XDK='C:\Program Files\Microsoft Xbox SDK'
+_='# ./configure --extra-cflags='\''-D_XBOX -fno-common'\'' --cpu=pentium3 --enable-shared --enable-memalign-hack --enable-gpl --enable-w32threads --enable-postproc --enable-zlib --disable-static --disable-altivec --disable-muxers --disable-encoders --disable-indevs --disable-ipv6 --disable-debug'
+aac_adtstoasc_bsf=yes
+aac_decoder=yes
+aac_decoder_select='fft mdct'
+aac_demuxer=yes
+aac_encoder_select='fft mdct'
+aac_parser=yes
+aasc_decoder=yes
+ac3_decoder=yes
+ac3_decoder_select='fft mdct'
+ac3_demuxer=yes
+ac3_demuxer_deps=ac3_parser
+ac3_parser=yes
+action=disable
+adpcm_4xm_decoder=yes
+adpcm_adx_decoder=yes
+adpcm_ct_decoder=yes
+adpcm_ea_decoder=yes
+adpcm_ea_maxis_xa_decoder=yes
+adpcm_ea_r1_decoder=yes
+adpcm_ea_r2_decoder=yes
+adpcm_ea_r3_decoder=yes
+adpcm_ea_xas_decoder=yes
+adpcm_g726_decoder=yes
+adpcm_ima_amv_decoder=yes
+adpcm_ima_dk3_decoder=yes
+adpcm_ima_dk4_decoder=yes
+adpcm_ima_ea_eacs_decoder=yes
+adpcm_ima_ea_sead_decoder=yes
+adpcm_ima_iss_decoder=yes
+adpcm_ima_qt_decoder=yes
+adpcm_ima_smjpeg_decoder=yes
+adpcm_ima_wav_decoder=yes
+adpcm_ima_ws_decoder=yes
+adpcm_ms_decoder=yes
+adpcm_sbpro_2_decoder=yes
+adpcm_sbpro_3_decoder=yes
+adpcm_sbpro_4_decoder=yes
+adpcm_swf_decoder=yes
+adpcm_thp_decoder=yes
+adpcm_xa_decoder=yes
+adpcm_yamaha_decoder=yes
+aea_demuxer=yes
+aiff_demuxer=yes
+alac_decoder=yes
+alac_encoder_select=lpc
+als_decoder=yes
+alsa_indev_deps='alsa_asoundlib_h snd_pcm_htimestamp'
+alsa_indev_extralibs=-lasound
+alsa_outdev=yes
+alsa_outdev_deps=alsa_asoundlib_h
+alsa_outdev_extralibs=-lasound
+altivec=no
+altivec_deps=ppc
+amd3dnow=yes
+amd3dnow_deps=mmx
+amd3dnowext=yes
+amd3dnowext_deps=amd3dnow
+amr_demuxer=yes
+amv_decoder=yes
+apc_demuxer=yes
+ape_decoder=yes
+ape_demuxer=yes
+ar=ar
+arch=i686
+armv5te=yes
+armv5te_deps=arm
+armv6=yes
+armv6_deps=arm
+armv6t2=yes
+armv6t2_deps=arm
+armvfp=yes
+armvfp_deps=arm
+asf_demuxer=yes
+asf_stream_muxer_select=asf_muxer
+ass_demuxer=yes
+asv1_decoder=yes
+asv2_decoder=yes
+atrac1_decoder=yes
+atrac3_decoder=yes
+atrac3_decoder_select='fft mdct'
+au_demuxer=yes
+audio_beos_indev_deps=audio_beos
+audio_beos_indev_extralibs='-lmedia -lbe'
+audio_beos_outdev=yes
+audio_beos_outdev_deps=audio_beos
+audio_beos_outdev_extralibs='-lmedia -lbe'
+avi_demuxer=yes
+avisynth_demuxer=yes
+avisynth_demuxer_deps=avisynth
+avs_decoder=yes
+avs_demuxer=yes
+bethsoftvid_decoder=yes
+bethsoftvid_demuxer=yes
+bfi_decoder=yes
+bfi_demuxer=yes
+bindir_default='${prefix}/bin'
+bktr_indev_deps_any='dev_bktr_ioctl_bt848_h machine_ioctl_bt848_h dev_video_bktr_ioctl_bt848_h dev_ic_bt8xx_h'
+bmp_decoder=yes
+c93_decoder=yes
+c93_demuxer=yes
+caf_demuxer=yes
+cavs_decoder=yes
+cavs_decoder_select=golomb
+cavsvideo_demuxer=yes
+cavsvideo_parser=yes
+cc_default=gcc
+cc_version='"unknown"'
+cdg_demuxer=yes
+cdgraphics_decoder=yes
+cinepak_decoder=yes
+cljr_decoder=yes
+cook_decoder=yes
+cook_decoder_select='fft mdct'
+cpu=pentium3
+crop_filter=yes
+cscd_decoder=yes
+cscd_decoder_suggest=zlib
+cyuv_decoder=yes
+datadir_default='${prefix}/share/ffmpeg'
+daud_demuxer=yes
+dca_decoder=yes
+dca_decoder_select='fft mdct'
+dca_parser=yes
+debug=no
+dirac_demuxer=yes
+dirac_demuxer_deps=dirac_parser
+dirac_parser=yes
+dnxhd_decoder=yes
+dnxhd_demuxer=yes
+dnxhd_encoder_select=aandct
+dnxhd_parser=yes
+doc=yes
+doc_deps=texi2html
+dpx_decoder=yes
+dsicin_demuxer=yes
+dsicinaudio_decoder=yes
+dsicinvideo_decoder=yes
+dts_demuxer=yes
+dump_extradata_bsf=yes
+dv1394_indev_deps='dv1394 dv_demuxer'
+dv_demuxer=yes
+dvbsub_decoder=yes
+dvbsub_parser=yes
+dvdsub_decoder=yes
+dvdsub_parser=yes
+dvvideo_decoder=yes
+dxa_decoder=yes
+dxa_decoder_select=zlib
+dxa_demuxer=yes
+ea_cdata_demuxer=yes
+ea_demuxer=yes
+eac3_decoder=yes
+eac3_decoder_select=ac3_decoder
+eac3_demuxer=yes
+eacmv_decoder=yes
+eamad_decoder=yes
+eamad_decoder_select=aandct
+eatgq_decoder=yes
+eatgq_decoder_select=aandct
+eatgv_decoder=yes
+eatqi_decoder=yes
+eatqi_decoder_select=aandct
+eightbps_decoder=yes
+eightsvx_exp_decoder=yes
+eightsvx_fib_decoder=yes
+escape124_decoder=yes
+extra_cflags=' -D_XBOX -fno-common'
+fastdiv=yes
+ffm_demuxer=yes
+ffmpeg=yes
+ffplay=yes
+ffplay_deps=sdl
+ffserver=yes
+ffserver_deps='ffm_muxer rtp_protocol rtsp_demuxer'
+ffserver_extralibs='$ldl'
+ffv1_decoder=yes
+ffv1_decoder_select=golomb
+ffvhuff_decoder=yes
+file_protocol=yes
+flac_decoder=yes
+flac_decoder_select=golomb
+flac_demuxer=yes
+flac_encoder_select='golomb lpc'
+flashsv_decoder=yes
+flashsv_decoder_select=zlib
+flashsv_encoder_select=zlib
+flic_decoder=yes
+flic_demuxer=yes
+flv_decoder=yes
+flv_demuxer=yes
+flv_encoder_select=h263_encoder
+format_filter=yes
+fourxm_decoder=yes
+fourxm_demuxer=yes
+fraps_decoder=yes
+frwu_decoder=yes
+gif_decoder=yes
+gopher_protocol=yes
+gopher_protocol_deps=network
+gpl=yes
+gsm_demuxer=yes
+gxf_demuxer=yes
+h261_decoder=yes
+h261_demuxer=yes
+h261_encoder_select=aandct
+h261_parser=yes
+h263_decoder=yes
+h263_demuxer=yes
+h263_encoder_select=aandct
+h263_parser=yes
+h263_vaapi_hwaccel=yes
+h263_vaapi_hwaccel_deps=va_va_h
+h263_vaapi_hwaccel_select='vaapi h263_decoder'
+h263i_decoder=yes
+h263p_encoder_select=h263_encoder
+h264_decoder=yes
+h264_decoder_select=golomb
+h264_demuxer=yes
+h264_dxva2_hwaccel=yes
+h264_dxva2_hwaccel_deps=dxva2api_h
+h264_dxva2_hwaccel_select='dxva2 h264_decoder'
+h264_mp4toannexb_bsf=yes
+h264_parser=yes
+h264_parser_select=golomb
+h264_vaapi_hwaccel_deps=va_va_h
+h264_vaapi_hwaccel_select=vaapi
+h264_vdpau_decoder=yes
+h264_vdpau_decoder_deps='vdpau_vdpau_h vdpau_vdpau_x11_h'
+h264_vdpau_decoder_select='vdpau h264_decoder'
+host_cc_default=gcc
+host_cflags='-D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -O3 -g -Wall'
+host_libs=-lm
+host_os=mingw32_nt-5.1
+http_protocol=yes
+http_protocol_deps=network
+huffyuv_decoder=yes
+idcin_decoder=yes
+idcin_demuxer=yes
+iff_demuxer=yes
+image2_demuxer=yes
+image2pipe_demuxer=yes
+imc_decoder=yes
+imc_decoder_select='fft mdct'
+imx_dump_header_bsf=yes
+incdir_default='${prefix}/include'
+indeo2_decoder=yes
+indeo3_decoder=yes
+ingenient_demuxer=yes
+inline_asm_deps='!tms470'
+interplay_dpcm_decoder=yes
+interplay_video_decoder=yes
+ipmovie_demuxer=yes
+ipod_muxer_select=mov_muxer
+ipv6=no
+iss_demuxer=yes
+iv8_demuxer=yes
+iwmmxt=yes
+iwmmxt_deps=arm
+jack_indev_deps=jack_jack_h
+jack_indev_extralibs=-ljack
+jpegls_decoder=yes
+jpegls_decoder_select=golomb
+jpegls_encoder_select=golomb
+kmvc_decoder=yes
+l=
+latm_parser=yes
+latm_parser_deps=libfaad
+libdc1394_indev_deps=libdc1394
+libdir_default='${prefix}/lib'
+libdirac_decoder=yes
+libdirac_decoder_deps='libdirac !libschroedinger'
+libdirac_encoder_deps=libdirac
+libfaac_encoder_deps=libfaac
+libfaad_decoder=yes
+libfaad_decoder_deps=libfaad
+libfaad_latm_decoder=yes
+libfaad_latm_decoder_deps=libfaad
+libfaadbin_decoder_extralibs='$ldl'
+libgsm_decoder=yes
+libgsm_decoder_deps=libgsm
+libgsm_encoder_deps=libgsm
+libgsm_ms_decoder=yes
+libgsm_ms_decoder_deps=libgsm
+libgsm_ms_encoder_deps=libgsm
+libmp3lame_encoder_deps=libmp3lame
+libnut_demuxer=yes
+libnut_demuxer_deps=libnut
+libnut_muxer_deps=libnut
+libopencore_amrnb_decoder=yes
+libopencore_amrnb_decoder_deps=libopencore_amrnb
+libopencore_amrnb_encoder_deps=libopencore_amrnb
+libopencore_amrwb_decoder=yes
+libopencore_amrwb_decoder_deps=libopencore_amrwb
+libopenjpeg_decoder=yes
+libopenjpeg_decoder_deps=libopenjpeg
+libschroedinger_decoder=yes
+libschroedinger_decoder_deps=libschroedinger
+libschroedinger_encoder_deps=libschroedinger
+libspeex_decoder=yes
+libspeex_decoder_deps=libspeex
+libtheora_encoder_deps=libtheora
+libvorbis_encoder_deps=libvorbis
+libx264_encoder_deps=libx264
+libxvid_encoder_deps=libxvid
+ljpeg_encoder_select=aandct
+lmlm4_demuxer=yes
+ln_s='ln -sf'
+loco_decoder=yes
+loco_decoder_select=golomb
+logfile=config.err
+m4v_demuxer=yes
+mace3_decoder=yes
+mace6_decoder=yes
+mandir_default='${prefix}/share/man'
+matroska_audio_muxer_select=matroska_muxer
+matroska_demuxer=yes
+matroska_demuxer_suggest='zlib bzlib'
+mdec_decoder=yes
+memalign_hack=yes
+mimic_decoder=yes
+mjpeg_decoder=yes
+mjpeg_demuxer=yes
+mjpeg_encoder_select=aandct
+mjpeg_parser=yes
+mjpega_dump_header_bsf=yes
+mjpegb_decoder=yes
+mlp_decoder=yes
+mlp_demuxer=yes
+mlp_parser=yes
+mm_demuxer=yes
+mmf_demuxer=yes
+mmi=yes
+mmi_deps=mips
+mmvideo_decoder=yes
+mmx=yes
+mmx2=yes
+mmx2_deps=mmx
+mmx_deps=x86
+motionpixels_decoder=yes
+mov2textsub_bsf=yes
+mov_demuxer=yes
+mov_demuxer_suggest=zlib
+movie_filter_deps=avfilter_lavf
+mp1_decoder=yes
+mp2_decoder=yes
+mp3_decoder=yes
+mp3_demuxer=yes
+mp3_demuxer_deps=mpegaudio_parser
+mp3_header_compress_bsf=yes
+mp3_header_decompress_bsf=yes
+mp3adu_decoder=yes
+mp3on4_decoder=yes
+mp4_muxer_select=mov_muxer
+mpc7_decoder=yes
+mpc8_decoder=yes
+mpc8_demuxer=yes
+mpc_demuxer=yes
+mpeg1_vdpau_decoder=yes
+mpeg1_vdpau_decoder_deps='vdpau_vdpau_h vdpau_vdpau_x11_h'
+mpeg1_vdpau_decoder_select='vdpau mpeg1video_decoder'
+mpeg1video_decoder=yes
+mpeg1video_encoder_select=aandct
+mpeg2_vaapi_hwaccel=yes
+mpeg2_vaapi_hwaccel_deps=va_va_h
+mpeg2_vaapi_hwaccel_select='vaapi mpeg2video_decoder'
+mpeg2video_decoder=yes
+mpeg2video_encoder_select=aandct
+mpeg4_decoder=yes
+mpeg4_encoder_select=h263_encoder
+mpeg4_vaapi_hwaccel=yes
+mpeg4_vaapi_hwaccel_deps=va_va_h
+mpeg4_vaapi_hwaccel_select='vaapi mpeg4_decoder'
+mpeg4_vdpau_decoder=yes
+mpeg4_vdpau_decoder_deps='vdpau_vdpau_h vdpau_vdpau_x11_h vdpau_mpeg4_support'
+mpeg4_vdpau_decoder_select='vdpau mpeg4_decoder'
+mpeg4video_parser=yes
+mpeg_vdpau_decoder=yes
+mpeg_vdpau_decoder_deps='vdpau_vdpau_h vdpau_vdpau_x11_h'
+mpeg_vdpau_decoder_select='vdpau mpegvideo_decoder'
+mpeg_xvmc_decoder=yes
+mpeg_xvmc_decoder_deps=X11_extensions_XvMClib_h
+mpeg_xvmc_decoder_select=mpegvideo_decoder
+mpegaudio_hp=yes
+mpegaudio_parser=yes
+mpegps_demuxer=yes
+mpegts_demuxer=yes
+mpegtsraw_demuxer=yes
+mpegtsraw_demuxer_select=mpegts_demuxer
+mpegvideo_decoder=yes
+mpegvideo_demuxer=yes
+mpegvideo_parser=yes
+msmpeg4v1_decoder=yes
+msmpeg4v1_encoder_select=h263_encoder
+msmpeg4v2_decoder=yes
+msmpeg4v2_encoder_select=h263_encoder
+msmpeg4v3_decoder=yes
+msmpeg4v3_encoder_select=h263_encoder
+msnwc_tcp_demuxer=yes
+msrle_decoder=yes
+msvideo1_decoder=yes
+mszh_decoder=yes
+mtv_demuxer=yes
+mvi_demuxer=yes
+mxf_d10_muxer_select=mxf_muxer
+mxf_demuxer=yes
+nc_demuxer=yes
+need_memalign='altivec neon sse'
+nellymoser_decoder=yes
+nellymoser_decoder_select='fft mdct'
+nellymoser_encoder_select='fft mdct'
+neon=yes
+neon_deps=arm
+network=yes
+nm_default=nm
+noformat_filter=yes
+noise_bsf=yes
+nsv_demuxer=yes
+null_filter=yes
+nut_demuxer=yes
+nuv_decoder=yes
+nuv_demuxer=yes
+objformat=elf
+ogg_demuxer=yes
+oma_demuxer=yes
+op==
+opt=--disable-debug
+optimizations=yes
+option=debug
+optname=cpu
+optval=--disable-debug
+oss_indev_deps_any='soundcard_h sys_soundcard_h'
+oss_outdev=yes
+oss_outdev_deps_any='soundcard_h sys_soundcard_h'
+pam_decoder=yes
+pbm_decoder=yes
+pcm_alaw_decoder=yes
+pcm_alaw_demuxer=yes
+pcm_bluray_decoder=yes
+pcm_dvd_decoder=yes
+pcm_f32be_decoder=yes
+pcm_f32be_demuxer=yes
+pcm_f32le_decoder=yes
+pcm_f32le_demuxer=yes
+pcm_f64be_decoder=yes
+pcm_f64be_demuxer=yes
+pcm_f64le_decoder=yes
+pcm_f64le_demuxer=yes
+pcm_mulaw_decoder=yes
+pcm_mulaw_demuxer=yes
+pcm_s16be_decoder=yes
+pcm_s16be_demuxer=yes
+pcm_s16le_decoder=yes
+pcm_s16le_demuxer=yes
+pcm_s16le_planar_decoder=yes
+pcm_s24be_decoder=yes
+pcm_s24be_demuxer=yes
+pcm_s24daud_decoder=yes
+pcm_s24le_decoder=yes
+pcm_s24le_demuxer=yes
+pcm_s32be_decoder=yes
+pcm_s32be_demuxer=yes
+pcm_s32le_decoder=yes
+pcm_s32le_demuxer=yes
+pcm_s8_decoder=yes
+pcm_s8_demuxer=yes
+pcm_u16be_decoder=yes
+pcm_u16be_demuxer=yes
+pcm_u16le_decoder=yes
+pcm_u16le_demuxer=yes
+pcm_u24be_decoder=yes
+pcm_u24be_demuxer=yes
+pcm_u24le_decoder=yes
+pcm_u24le_demuxer=yes
+pcm_u32be_decoder=yes
+pcm_u32be_demuxer=yes
+pcm_u32le_decoder=yes
+pcm_u32le_demuxer=yes
+pcm_u8_decoder=yes
+pcm_u8_demuxer=yes
+pcm_zork_decoder=yes
+pcx_decoder=yes
+pgm_decoder=yes
+pgmyuv_decoder=yes
+pgssub_decoder=yes
+pipe_protocol=yes
+png_decoder=yes
+png_decoder_select=zlib
+png_encoder_select=zlib
+pnm_parser=yes
+postproc=yes
+ppc4xx=yes
+ppc4xx_deps=ppc
+ppm_decoder=yes
+prefix_default=/usr/local
+protocols=yes
+psp_muxer_select=mov_muxer
+ptx_decoder=yes
+pva_demuxer=yes
+qcelp_decoder=yes
+qcp_demuxer=yes
+qdm2_decoder=yes
+qdm2_decoder_select='fft mdct rdft'
+qdraw_decoder=yes
+qpeg_decoder=yes
+qtrle_decoder=yes
+r=--disable-debug
+r210_decoder=yes
+r3d_demuxer=yes
+ra_144_decoder=yes
+ra_288_decoder=yes
+ranlib=ranlib
+rawvideo_decoder=yes
+rawvideo_demuxer=yes
+remove_extradata_bsf=yes
+rl2_decoder=yes
+rl2_demuxer=yes
+rm_demuxer=yes
+roq_decoder=yes
+roq_demuxer=yes
+roq_dpcm_decoder=yes
+rpl_demuxer=yes
+rpza_decoder=yes
+rtmp_protocol=yes
+rtmp_protocol_deps=tcp_protocol
+rtp_muxer_deps='network rtp_protocol'
+rtp_protocol=yes
+rtp_protocol_deps=udp_protocol
+rtsp_demuxer=yes
+rtsp_demuxer_deps=sdp_demuxer
+rv10_decoder=yes
+rv10_encoder_select=h263_encoder
+rv20_decoder=yes
+rv20_encoder_select=h263_encoder
+rv30_decoder=yes
+rv30_decoder_select=golomb
+rv40_decoder=yes
+rv40_decoder_select=golomb
+scale_filter=yes
+sdp_demuxer=yes
+sdp_demuxer_deps='rtp_protocol mpegts_demuxer'
+segafilm_demuxer=yes
+sgi_decoder=yes
+shared=yes
+shlibdir_default='${prefix}/lib'
+shorten_decoder=yes
+shorten_decoder_select=golomb
+shorten_demuxer=yes
+siff_demuxer=yes
+slicify_filter=yes
+smackaud_decoder=yes
+smacker_decoder=yes
+smacker_demuxer=yes
+smc_decoder=yes
+snow_decoder=yes
+sol_demuxer=yes
+sol_dpcm_decoder=yes
+sonic_decoder=yes
+sonic_decoder_select=golomb
+sonic_encoder_select=golomb
+sonic_ls_encoder_select=golomb
+source_path=/d/dev/xbmc/xbox-branch4merge/xbmc/cores/dvdplayer/Codecs/ffmpeg
+source_path_used=no
+sox_demuxer=yes
+sp5x_decoder=yes
+sse=yes
+sse_deps=mmx
+ssse3=yes
+ssse3_deps=sse
+static=no
+str_demuxer=yes
+strip=strip
+stripping=yes
+sunrast_decoder=yes
+svq1_decoder=yes
+svq3_decoder=yes
+svq3_decoder_select=golomb
+svq3_decoder_suggest=zlib
+swf_demuxer=yes
+swscale_alpha=yes
+targa_decoder=yes
+target_os=mingw32_nt-5.1
+target_path=.
+tcp_protocol=yes
+tcp_protocol_deps=network
+text2movsub_bsf=yes
+tg2_muxer_select=mov_muxer
+tgp_muxer_select=mov_muxer
+theora_decoder=yes
+theora_decoder_select=vp3_decoder
+thp_decoder=yes
+thp_demuxer=yes
+tiertexseq_demuxer=yes
+tiertexseqvideo_decoder=yes
+tiff_decoder=yes
+tiff_decoder_suggest=zlib
+tiff_encoder_suggest=zlib
+tmv_decoder=yes
+tmv_demuxer=yes
+truehd_decoder=yes
+truehd_demuxer=yes
+truemotion1_decoder=yes
+truemotion2_decoder=yes
+truespeech_decoder=yes
+tscc_decoder=yes
+tscc_decoder_select=zlib
+tta_decoder=yes
+tta_demuxer=yes
+twinvq_decoder=yes
+txd_decoder=yes
+txd_demuxer=yes
+udp_protocol=yes
+udp_protocol_deps=network
+ulti_decoder=yes
+v=--disable-debug
+v210_decoder=yes
+v210x_decoder=yes
+v4l2_indev_deps_any='linux_videodev2_h sys_videoio_h'
+v4l_indev_deps=linux_videodev_h
+value=no
+var=debug
+vb_decoder=yes
+vc1_decoder=yes
+vc1_demuxer=yes
+vc1_dxva2_hwaccel=yes
+vc1_dxva2_hwaccel_deps=dxva2api_h
+vc1_dxva2_hwaccel_select='dxva2 vc1_decoder'
+vc1_parser=yes
+vc1_vaapi_hwaccel=yes
+vc1_vaapi_hwaccel_deps=va_va_h
+vc1_vaapi_hwaccel_select='vaapi vc1_decoder'
+vc1_vdpau_decoder=yes
+vc1_vdpau_decoder_deps='vdpau_vdpau_h vdpau_vdpau_x11_h'
+vc1_vdpau_decoder_select='vdpau vc1_decoder'
+vc1t_demuxer=yes
+vcr1_decoder=yes
+vflip_filter=yes
+vfwcap_indev_deps=capCreateCaptureWindow
+vfwcap_indev_extralibs=-lvfw32
+vis=yes
+vis_deps=sparc
+vmd_demuxer=yes
+vmdaudio_decoder=yes
+vmdvideo_decoder=yes
+vmnc_decoder=yes
+voc_demuxer=yes
+vorbis_decoder=yes
+vorbis_decoder_select='fft mdct'
+vorbis_encoder_select='fft mdct'
+vp3_decoder=yes
+vp3_parser=yes
+vp5_decoder=yes
+vp6_decoder=yes
+vp6a_decoder=yes
+vp6a_decoder_select=vp6_decoder
+vp6f_decoder=yes
+vp6f_decoder_select=vp6_decoder
+vqa_decoder=yes
+vqf_demuxer=yes
+w32threads=yes
+w64_demuxer=yes
+w64_demuxer_deps=wav_demuxer
+wav_demuxer=yes
+wavpack_decoder=yes
+wc3_demuxer=yes
+wmapro_decoder=yes
+wmav1_decoder=yes
+wmav1_decoder_select='fft mdct'
+wmav1_encoder_select='fft mdct'
+wmav2_decoder=yes
+wmav2_decoder_select='fft mdct'
+wmav2_encoder_select='fft mdct'
+wmv1_decoder=yes
+wmv1_encoder_select=h263_encoder
+wmv2_decoder=yes
+wmv2_encoder_select=h263_encoder
+wmv3_decoder=yes
+wmv3_decoder_select=vc1_decoder
+wmv3_dxva2_hwaccel=yes
+wmv3_dxva2_hwaccel_select=vc1_dxva2_hwaccel
+wmv3_vaapi_hwaccel=yes
+wmv3_vaapi_hwaccel_select=vc1_vaapi_hwaccel
+wmv3_vdpau_decoder=yes
+wmv3_vdpau_decoder_select=vc1_vdpau_decoder
+wnv1_decoder=yes
+ws_snd1_decoder=yes
+wsaud_demuxer=yes
+wsvqa_demuxer=yes
+wv_demuxer=yes
+x11_grab_device_indev_deps='x11grab XShmCreateImage'
+x11_grab_device_indev_extralibs='-lX11 -lXext -lXfixes'
+xa_demuxer=yes
+xan_dpcm_decoder=yes
+xan_wc3_decoder=yes
+xl_decoder=yes
+xsub_decoder=yes
+yasmexe=yasm
+yuv4mpegpipe_demuxer=yes
+zlib=yes
+zlib_decoder=yes
+zlib_decoder_select=zlib
+zlib_encoder_select=zlib
+zmbv_decoder=yes
+zmbv_decoder_select=zlib
+zmbv_encoder_select=zlib
+type mktemp
+./configure: line 551: type: mktemp: not found
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int main(void){ return 0; }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_XBOX -fno-common -march=pentium3 -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o
+check_cflags -std=c99
+check_cc -std=c99
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_XBOX -fno-common -march=pentium3 -std=c99 -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cc -D_FILE_OFFSET_BITS=64
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <stdlib.h>
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_XBOX -fno-common -march=pentium3 -std=c99 -D_FILE_OFFSET_BITS=64 -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cc -D_LARGEFILE_SOURCE
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <stdlib.h>
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_XBOX -fno-common -march=pentium3 -std=c99 -D_LARGEFILE_SOURCE -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_host_cflags -std=c99
+check_host_cc -std=c99
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -O3 -g -Wall -std=c99 -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	        int test[(int)sizeof(char*) - 7];
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1: error: size of array 'test' is negative
+check_cpp_condition stdlib.h defined(__PIC__) || defined(__pic__) || defined(PIC)
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <stdlib.h>
+    2	#if !(defined(__PIC__) || defined(__pic__) || defined(PIC))
+    3	#error "unsatisfied condition: defined(__PIC__) || defined(__pic__) || defined(PIC)"
+    4	#endif
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:3:2: error: #error "unsatisfied condition: defined(__PIC__) || defined(__pic__) || defined(PIC)"
+check_cflags -fno-common
+check_cc -fno-common
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cpp_condition _mingw.h (__MINGW32_MAJOR_VERSION > 3) || (__MINGW32_MAJOR_VERSION == 3 && __MINGW32_MINOR_VERSION >= 15)
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <_mingw.h>
+    2	#if !((__MINGW32_MAJOR_VERSION > 3) || (__MINGW32_MAJOR_VERSION == 3 && __MINGW32_MINOR_VERSION >= 15))
+    3	#error "unsatisfied condition: (__MINGW32_MAJOR_VERSION > 3) || (__MINGW32_MAJOR_VERSION == 3 && __MINGW32_MINOR_VERSION >= 15)"
+    4	#endif
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cflags -fomit-frame-pointer
+check_cc -fomit-frame-pointer
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int ff_extern;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	void foo(void) { __asm__ volatile ("" ::); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	void foo(char * restrict p);
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	struct { int x; } __attribute__((packed)) x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	unsigned int endian = 'B' << 24 | 'I' << 16 | 'G' << 8 | 'E';
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <signal.h>
+    2	static void sighandler(int sig){
+    3	    raise(SIGTERM);
+    4	}
+    5	int main(void){
+    6	    signal(SIGILL, sighandler);
+    7	    signal(SIGFPE, sighandler);
+    8	    signal(SIGSEGV, sighandler);
+    9	#ifdef SIGBUS
+   10	    signal(SIGBUS, sighandler);
+   11	#endif
+   12	    {     volatile int i=0;
+   13	    __asm__ volatile (
+   14	        "xorl %%ebp, %%ebp"
+   15	    ::: "%ebp");
+   16	    return i; }
+   17	}
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o
+check_asm ebx_available ""::"b"(0)
+check_as
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	void foo(void){ __asm__ volatile(""::"b"(0)); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_asm ebx_available "":::"%ebx"
+check_as
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	void foo(void){ __asm__ volatile("":::"%ebx"); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int main(void) {
+    2	    int x=0;
+    3	    __asm__ volatile(
+    4	        ""
+    5	        :"+&rm"(x), "+&rm"(x), "+&rm"(x), "+&rm"(x), "+&rm"(x), "+&rm"(x)
+    6	    );
+    7	    return 0;
+    8	}
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_asm ssse3 "pabsw %xmm0, %xmm0"
+check_as
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	void foo(void){ __asm__ volatile("pabsw %xmm0, %xmm0"); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_asm mmx2 "pmaxub %mm0, %mm1"
+check_as
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	void foo(void){ __asm__ volatile("pmaxub %mm0, %mm1"); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_asm bswap "bswap %%eax" ::: "%eax"
+check_as
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	void foo(void){ __asm__ volatile("bswap %%eax" ::: "%eax"); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_yasm pabsw xmm0, xmm0
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.S
+    1	pabsw xmm0, xmm0
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.S
+yasm -f win32 -DARCH_X86_32 -DPREFIX -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.S
+./configure: line 551: yasm: command not found
+check_func dlopen
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int dlopen();
+    2	int main(void){ dlopen(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.o:ffconf.XXXXX.GALACTICA.500.3268.c:(.text+0x14): undefined reference to `_dlopen'
+collect2: ld returned 1 exit status
+check_func dlopen -ldl
+check_ld -ldl
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int dlopen();
+    2	int main(void){ dlopen(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -ldl
+check_func nanosleep
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int nanosleep();
+    2	int main(void){ nanosleep(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.o:ffconf.XXXXX.GALACTICA.500.3268.c:(.text+0x14): undefined reference to `_nanosleep'
+collect2: ld returned 1 exit status
+check_func nanosleep -lrt
+check_ld -lrt
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int nanosleep();
+    2	int main(void){ nanosleep(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lrt
+c:/msys/mingw/bin/../lib/gcc/mingw32/4.2.1-sjlj/../../../../mingw32/bin/ld.exe: cannot find -lrt
+collect2: ld returned 1 exit status
+check_func fork
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int fork();
+    2	int main(void){ fork(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.o:ffconf.XXXXX.GALACTICA.500.3268.c:(.text+0x14): undefined reference to `_fork'
+collect2: ld returned 1 exit status
+check_func gethrtime
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int gethrtime();
+    2	int main(void){ gethrtime(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.o:ffconf.XXXXX.GALACTICA.500.3268.c:(.text+0x14): undefined reference to `_gethrtime'
+collect2: ld returned 1 exit status
+check_func getrusage
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int getrusage();
+    2	int main(void){ getrusage(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.o:ffconf.XXXXX.GALACTICA.500.3268.c:(.text+0x14): undefined reference to `_getrusage'
+collect2: ld returned 1 exit status
+check_func inet_aton
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int inet_aton();
+    2	int main(void){ inet_aton(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.o:ffconf.XXXXX.GALACTICA.500.3268.c:(.text+0x14): undefined reference to `_inet_aton'
+collect2: ld returned 1 exit status
+check_func isatty
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int isatty();
+    2	int main(void){ isatty(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o
+check_func memalign
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int memalign();
+    2	int main(void){ memalign(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.o:ffconf.XXXXX.GALACTICA.500.3268.c:(.text+0x14): undefined reference to `_memalign'
+collect2: ld returned 1 exit status
+check_func mkstemp
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int mkstemp();
+    2	int main(void){ mkstemp(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.o:ffconf.XXXXX.GALACTICA.500.3268.c:(.text+0x14): undefined reference to `_mkstemp'
+collect2: ld returned 1 exit status
+check_func posix_memalign
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int posix_memalign();
+    2	int main(void){ posix_memalign(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.o:ffconf.XXXXX.GALACTICA.500.3268.c:(.text+0x14): undefined reference to `_posix_memalign'
+collect2: ld returned 1 exit status
+check_func_headers io.h setmode
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	
+    2	#include <io.h>
+    3	int main(int argc, char **argv){
+    4	    return (long) setmode;
+    5	}
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o
+check_func_headers lzo/lzo1x.h lzo1x_999_compress
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	
+    2	#include <lzo/lzo1x.h>
+    3	int main(int argc, char **argv){
+    4	    return (long) lzo1x_999_compress;
+    5	}
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:2:23: error: lzo/lzo1x.h: No such file or directory
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c: In function 'main':
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:4: error: 'lzo1x_999_compress' undeclared (first use in this function)
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:4: error: (Each undeclared identifier is reported only once
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:4: error: for each function it appears in.)
+check_func_headers windows.h GetProcessTimes
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	
+    2	#include <windows.h>
+    3	int main(int argc, char **argv){
+    4	    return (long) GetProcessTimes;
+    5	}
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o
+check_func_headers windows.h VirtualAlloc
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	
+    2	#include <windows.h>
+    3	int main(int argc, char **argv){
+    4	    return (long) VirtualAlloc;
+    5	}
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o
+check_header conio.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <conio.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_header dlfcn.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <dlfcn.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_header dxva2api.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <dxva2api.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:22: error: dxva2api.h: No such file or directory
+check_header malloc.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <malloc.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_header poll.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <poll.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:18: error: poll.h: No such file or directory
+check_header sys/mman.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <sys/mman.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:22: error: sys/mman.h: No such file or directory
+check_header sys/resource.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <sys/resource.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:26: error: sys/resource.h: No such file or directory
+check_header sys/select.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <sys/select.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:24: error: sys/select.h: No such file or directory
+check_header termios.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <termios.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:21: error: termios.h: No such file or directory
+check_header vdpau/vdpau.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <vdpau/vdpau.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:25: error: vdpau/vdpau.h: No such file or directory
+check_header vdpau/vdpau_x11.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <vdpau/vdpau_x11.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:29: error: vdpau/vdpau_x11.h: No such file or directory
+check_cpp_condition vdpau/vdpau.h defined(VDP_DECODER_PROFILE_MPEG4_PART2_SP)
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <vdpau/vdpau.h>
+    2	#if !(defined(VDP_DECODER_PROFILE_MPEG4_PART2_SP))
+    3	#error "unsatisfied condition: defined(VDP_DECODER_PROFILE_MPEG4_PART2_SP)"
+    4	#endif
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:25: error: vdpau/vdpau.h: No such file or directory
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:3:2: error: #error "unsatisfied condition: defined(VDP_DECODER_PROFILE_MPEG4_PART2_SP)"
+check_header X11/extensions/XvMClib.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <X11/extensions/XvMClib.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:36: error: X11/extensions/XvMClib.h: No such file or directory
+check_lib zlib.h zlibVersion -lz
+check_header zlib.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <zlib.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_func zlibVersion
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int zlibVersion();
+    2	int main(void){ zlibVersion(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lz
+check_lib2 bzlib.h BZ2_bzlibVersion -lbz2
+check_func_headers bzlib.h BZ2_bzlibVersion
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	
+    2	#include <bzlib.h>
+    3	int main(int argc, char **argv){
+    4	    return (long) BZ2_bzlibVersion;
+    5	}
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:2:19: error: bzlib.h: No such file or directory
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c: In function 'main':
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:4: error: 'BZ2_bzlibVersion' undeclared (first use in this function)
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:4: error: (Each undeclared identifier is reported only once
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:4: error: for each function it appears in.)
+check_lib math.h sin -lm
+check_header math.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <math.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_func sin
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int sin();
+    2	int main(void){ sin(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1: warning: conflicting types for built-in function 'sin'
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lz -lm
+check_lib va/va.h vaInitialize -lva
+check_header va/va.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <va/va.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:19: error: va/va.h: No such file or directory
+check_func llrint
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int llrint();
+    2	int main(void){ llrint(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1: warning: conflicting types for built-in function 'llrint'
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lz -lm
+check_func log2
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int log2();
+    2	int main(void){ log2(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1: warning: conflicting types for built-in function 'log2'
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lz -lm
+check_func lrint
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int lrint();
+    2	int main(void){ lrint(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1: warning: conflicting types for built-in function 'lrint'
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lz -lm
+check_func lrintf
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int lrintf();
+    2	int main(void){ lrintf(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1: warning: conflicting types for built-in function 'lrintf'
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lz -lm
+check_func round
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int round();
+    2	int main(void){ round(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1: warning: conflicting types for built-in function 'round'
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lz -lm
+check_func roundf
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int roundf();
+    2	int main(void){ roundf(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1: warning: conflicting types for built-in function 'roundf'
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lz -lm
+check_func truncf
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	extern int truncf();
+    2	int main(void){ truncf(); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1: warning: conflicting types for built-in function 'truncf'
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lz -lm
+check_type sys/types.h sys/socket.h socklen_t
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	
+    2	#include <sys/types.h>
+    3	#include <sys/socket.h>
+    4	socklen_t v;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:3:24: error: sys/socket.h: No such file or directory
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:4: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'v'
+check_header arpa/inet.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <arpa/inet.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:23: error: arpa/inet.h: No such file or directory
+check_header winsock2.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <winsock2.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_func_headers winsock2.h closesocket -lws2
+check_ld -lws2
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	
+    2	#include <winsock2.h>
+    3	int main(int argc, char **argv){
+    4	    return (long) closesocket;
+    5	}
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lz -lm -lws2
+c:/msys/mingw/bin/../lib/gcc/mingw32/4.2.1-sjlj/../../../../mingw32/bin/ld.exe: cannot find -lws2
+collect2: ld returned 1 exit status
+check_func_headers winsock2.h closesocket -lws2_32
+check_ld -lws2_32
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	
+    2	#include <winsock2.h>
+    3	int main(int argc, char **argv){
+    4	    return (long) closesocket;
+    5	}
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lz -lm -lws2_32
+check_type ws2tcpip.h socklen_t
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	
+    2	#include <ws2tcpip.h>
+    3	socklen_t v;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_header linux/videodev.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <linux/videodev.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:28: error: linux/videodev.h: No such file or directory
+check_header linux/videodev2.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <linux/videodev2.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:29: error: linux/videodev2.h: No such file or directory
+check_header sys/videoio.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <sys/videoio.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:25: error: sys/videoio.h: No such file or directory
+check_func_headers windows.h vfw.h capCreateCaptureWindow -lvfw32
+check_ld -lvfw32
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	
+    2	#include <windows.h>
+    3	#include <vfw.h>
+    4	int main(int argc, char **argv){
+    5	    return (long) capCreateCaptureWindow;
+    6	}
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lz -lm -lvfw32
+check_header dev/bktr/ioctl_meteor.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <dev/bktr/ioctl_meteor.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:35: error: dev/bktr/ioctl_meteor.h: No such file or directory
+check_header machine/ioctl_meteor.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <machine/ioctl_meteor.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:34: error: machine/ioctl_meteor.h: No such file or directory
+check_header dev/video/meteor/ioctl_meteor.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <dev/video/meteor/ioctl_meteor.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:43: error: dev/video/meteor/ioctl_meteor.h: No such file or directory
+check_header dev/ic/bt8xx.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <dev/ic/bt8xx.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:26: error: dev/ic/bt8xx.h: No such file or directory
+check_header sys/soundcard.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <sys/soundcard.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:27: error: sys/soundcard.h: No such file or directory
+check_header soundcard.h
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <soundcard.h>
+    2	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:23: error: soundcard.h: No such file or directory
+check_lib2 alsa/asoundlib.h snd_pcm_htimestamp -lasound
+check_func_headers alsa/asoundlib.h snd_pcm_htimestamp
+check_ld
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	
+    2	#include <alsa/asoundlib.h>
+    3	int main(int argc, char **argv){
+    4	    return (long) snd_pcm_htimestamp;
+    5	}
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:2:28: error: alsa/asoundlib.h: No such file or directory
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c: In function 'main':
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:4: error: 'snd_pcm_htimestamp' undeclared (first use in this function)
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:4: error: (Each undeclared identifier is reported only once
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:4: error: for each function it appears in.)
+check_cpp_condition vdpau/vdpau.h defined VDP_DECODER_PROFILE_MPEG4_PART2_ASP
+check_cpp
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	#include <vdpau/vdpau.h>
+    2	#if !(defined VDP_DECODER_PROFILE_MPEG4_PART2_ASP)
+    3	#error "unsatisfied condition: defined VDP_DECODER_PROFILE_MPEG4_PART2_ASP"
+    4	#endif
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -E -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:1:25: error: vdpau/vdpau.h: No such file or directory
+C:/TEMP/ffconf.XXXXX.GALACTICA.500.3268.c:3:2: error: #error "unsatisfied condition: defined VDP_DECODER_PROFILE_MPEG4_PART2_ASP"
+Please upgrade to libvdpau >= 0.2 if you would like vdpau support.
+check_cflags -Wdeclaration-after-statement
+check_cc -Wdeclaration-after-statement
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cflags -Wall
+check_cc -Wall
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cflags -Wno-switch
+check_cc -Wno-switch
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cflags -Wdisabled-optimization
+check_cc -Wdisabled-optimization
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cflags -Wpointer-arith
+check_cc -Wpointer-arith
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cflags -Wredundant-decls
+check_cc -Wredundant-decls
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cflags -Wno-pointer-sign
+check_cc -Wno-pointer-sign
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cflags -Wcast-qual
+check_cc -Wcast-qual
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cflags -Wwrite-strings
+check_cc -Wwrite-strings
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cflags -Wtype-limits
+check_cc -Wtype-limits
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wtype-limits -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+cc1.exe: error: unrecognized command line option "-Wtype-limits"
+check_cflags -Wundef
+check_cc -Wundef
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_ldflags -Wl,--warn-common
+check_ld -Wl,--warn-common
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int main(void){ return 0; }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -Wl,--warn-common -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lz -lm
+check_ldflags -Wl,--as-needed
+check_ld -Wl,--as-needed
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int main(void){ return 0; }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -Wl,--warn-common -Wl,--as-needed -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lz -lm
+check_ldflags -Wl,-rpath-link,\$(BUILD_ROOT)/libpostproc -Wl,-rpath-link,\$(BUILD_ROOT)/libswscale -Wl,-rpath-link,\$(BUILD_ROOT)/libavfilter -Wl,-rpath-link,\$(BUILD_ROOT)/libavdevice -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil
+check_ld -Wl,-rpath-link,\$(BUILD_ROOT)/libpostproc -Wl,-rpath-link,\$(BUILD_ROOT)/libswscale -Wl,-rpath-link,\$(BUILD_ROOT)/libavfilter -Wl,-rpath-link,\$(BUILD_ROOT)/libavdevice -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int main(void){ return 0; }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -Wl,--warn-common -Wl,--as-needed -Wl,-rpath-link,\$(BUILD_ROOT)/libpostproc -Wl,-rpath-link,\$(BUILD_ROOT)/libswscale -Wl,-rpath-link,\$(BUILD_ROOT)/libavfilter -Wl,-rpath-link,\$(BUILD_ROOT)/libavdevice -Wl,-rpath-link,\$(BUILD_ROOT)/libavformat -Wl,-rpath-link,\$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,\$(BUILD_ROOT)/libavutil -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lz -lm
+check_ldflags -Wl,-Bsymbolic
+check_ld -Wl,-Bsymbolic
+check_cc
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int main(void){ return 0; }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -Wl,--warn-common -Wl,--as-needed -Wl,-rpath-link,$(BUILD_ROOT)/libpostproc -Wl,-rpath-link,$(BUILD_ROOT)/libswscale -Wl,-rpath-link,$(BUILD_ROOT)/libavfilter -Wl,-rpath-link,$(BUILD_ROOT)/libavdevice -Wl,-rpath-link,$(BUILD_ROOT)/libavformat -Wl,-rpath-link,$(BUILD_ROOT)/libavcodec -Wl,-rpath-link,$(BUILD_ROOT)/libavutil -Wl,-Bsymbolic -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.exe /tmp/ffconf.XXXXX.GALACTICA.500.3268.o -lz -lm
+check_cflags -fno-math-errno
+check_cc -fno-math-errno
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -O3 -fno-math-errno -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_cflags -fno-signed-zeros
+check_cc -fno-signed-zeros
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -O3 -fno-math-errno -fno-signed-zeros -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+cc1.exe: error: unrecognized command line option "-fno-signed-zeros"
+check_cflags -fno-tree-vectorize
+check_cc -fno-tree-vectorize
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	int x;
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -std=c99 -fno-common -fomit-frame-pointer -Wdeclaration-after-statement -Wall -Wno-switch -Wdisabled-optimization -Wpointer-arith -Wredundant-decls -Wno-pointer-sign -Wcast-qual -Wwrite-strings -Wundef -O3 -fno-math-errno -fno-tree-vectorize -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+check_asm asmalign_pot ".align 3"
+check_as
+BEGIN /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+    1	void foo(void){ __asm__ volatile(".align 3"); }
+END /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+gcc -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_XBOX -fno-common -march=pentium3 -c -o /tmp/ffconf.XXXXX.GALACTICA.500.3268.o /tmp/ffconf.XXXXX.GALACTICA.500.3268.c
+C:/TEMP/ccRgyInc.s: Assembler messages:
+C:/TEMP/ccRgyInc.s:9: Error: alignment not a power of 2

@@ -20,7 +20,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavcodec/bitstream.h"
+#include "libavcodec/put_bits.h"
 #include "avformat.h"
 #include "swf.h"
 
@@ -102,7 +102,7 @@ static void put_swf_rect(ByteIOContext *pb,
     put_bits(&p, nbits, ymax & mask);
 
     flush_put_bits(&p);
-    put_buffer(pb, buf, pbBufPtr(&p) - p.buf);
+    put_buffer(pb, buf, put_bits_ptr(&p) - p.buf);
 }
 
 static void put_swf_line_edge(PutBitContext *pb, int dx, int dy)
@@ -167,7 +167,7 @@ static void put_swf_matrix(ByteIOContext *pb,
     put_bits(&p, nbits, ty);
 
     flush_put_bits(&p);
-    put_buffer(pb, buf, pbBufPtr(&p) - p.buf);
+    put_buffer(pb, buf, put_bits_ptr(&p) - p.buf);
 }
 
 static int swf_write_header(AVFormatContext *s)
@@ -192,7 +192,9 @@ static int swf_write_header(AVFormatContext *s)
                     return -1;
                 }
                 swf->audio_enc = enc;
-                av_fifo_init(&swf->audio_fifo, AUDIO_FIFO_SIZE);
+                swf->audio_fifo= av_fifo_alloc(AUDIO_FIFO_SIZE);
+                if (!swf->audio_fifo)
+                    return AVERROR(ENOMEM);
             } else {
                 av_log(s, AV_LOG_ERROR, "SWF muxer only supports MP3\n");
                 return -1;
@@ -293,7 +295,7 @@ static int swf_write_header(AVFormatContext *s)
         put_bits(&p, 5, 0);
 
         flush_put_bits(&p);
-        put_buffer(pb, buf1, pbBufPtr(&p) - p.buf);
+        put_buffer(pb, buf1, put_bits_ptr(&p) - p.buf);
 
         put_swf_end_tag(s);
     }
@@ -349,7 +351,7 @@ static int swf_write_video(AVFormatContext *s,
             put_le16(pb, enc->width);
             put_le16(pb, enc->height);
             put_byte(pb, 0);
-            put_byte(pb,codec_get_tag(swf_codec_tags,enc->codec_id));
+            put_byte(pb,ff_codec_get_tag(swf_codec_tags,enc->codec_id));
             put_swf_end_tag(s);
 
             /* place the video object for the first time */
@@ -414,12 +416,12 @@ static int swf_write_video(AVFormatContext *s,
     swf->swf_frame_number++;
 
     /* streaming sound always should be placed just before showframe tags */
-    if (swf->audio_enc && av_fifo_size(&swf->audio_fifo)) {
-        int frame_size = av_fifo_size(&swf->audio_fifo);
+    if (swf->audio_enc && av_fifo_size(swf->audio_fifo)) {
+        int frame_size = av_fifo_size(swf->audio_fifo);
         put_swf_tag(s, TAG_STREAMBLOCK | TAG_LONG);
         put_le16(pb, swf->sound_samples);
         put_le16(pb, 0); // seek samples
-        av_fifo_generic_read(&swf->audio_fifo, frame_size, &put_buffer, pb);
+        av_fifo_generic_read(swf->audio_fifo, pb, frame_size, &put_buffer);
         put_swf_end_tag(s);
 
         /* update FIFO */
@@ -444,12 +446,12 @@ static int swf_write_audio(AVFormatContext *s,
     if (swf->swf_frame_number == 16000)
         av_log(enc, AV_LOG_INFO, "warning: Flash Player limit of 16000 frames reached\n");
 
-    if (av_fifo_size(&swf->audio_fifo) + size > AUDIO_FIFO_SIZE) {
+    if (av_fifo_size(swf->audio_fifo) + size > AUDIO_FIFO_SIZE) {
         av_log(s, AV_LOG_ERROR, "audio fifo too small to mux audio essence\n");
         return -1;
     }
 
-    av_fifo_generic_write(&swf->audio_fifo, buf, size, NULL);
+    av_fifo_generic_write(swf->audio_fifo, buf, size, NULL);
     swf->sound_samples += enc->frame_size;
 
     /* if audio only stream make sure we add swf frames */
@@ -481,7 +483,7 @@ static int swf_write_trailer(AVFormatContext *s)
         if (enc->codec_type == CODEC_TYPE_VIDEO)
             video_enc = enc;
         else
-            av_fifo_free(&swf->audio_fifo);
+            av_fifo_free(swf->audio_fifo);
     }
 
     put_swf_tag(s, TAG_END);

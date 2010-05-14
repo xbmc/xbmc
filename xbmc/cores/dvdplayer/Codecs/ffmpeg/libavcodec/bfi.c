@@ -45,9 +45,10 @@ static av_cold int bfi_decode_init(AVCodecContext * avctx)
 }
 
 static int bfi_decode_frame(AVCodecContext * avctx, void *data,
-                            int *data_size, const uint8_t * buf,
-                            int buf_size)
+                            int *data_size, AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     BFIContext *bfi = avctx->priv_data;
     uint8_t *dst = bfi->dst;
     uint8_t *src, *dst_offset, colour1, colour2;
@@ -178,5 +179,6 @@ AVCodec bfi_decoder = {
     .init = bfi_decode_init,
     .close = bfi_decode_close,
     .decode = bfi_decode_frame,
+    .capabilities = CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Brute Force & Ignorance"),
 };

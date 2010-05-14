@@ -62,7 +62,9 @@ public:
   virtual int av_audio_convert(AVAudioConvert *ctx,
                                      void * const out[6], const int out_stride[6],
                                const void * const  in[6], const int  in_stride[6], int len)=0;
-
+  virtual int av_dup_packet(AVPacket *pkt)=0;
+  virtual void av_destruct_packet_nofree(AVPacket *pkt)=0;
+  virtual void av_free_packet(AVPacket *pkt)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -128,7 +130,10 @@ public:
                                const void * const  in[6], const int  in_stride[6], int len)
           { return ::av_audio_convert(ctx, out, out_stride, in, in_stride, len); }
 
-  
+  virtual void av_packet_free(AVPacket *pkt) { ::av_free_packet(pkt); )
+  virtual void av_destruct_packet_nofree(AVPacket *pkt) { ::av_destruct_packet_nofree(pkt); }
+  virtual int av_dup_packet(AVPacket *pkt) { return ::av_dup_packet(pkt); }
+
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {
@@ -183,10 +188,13 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD6(AVAudioConvert*, av_audio_convert_alloc, (enum SampleFormat p1, int p2,
                                                            enum SampleFormat p3, int p4,
                                                            const float *p5, int p6))
-  DEFINE_METHOD1(void, av_audio_convert_free, (AVAudioConvert *p1));
+  DEFINE_METHOD1(void, av_audio_convert_free, (AVAudioConvert *p1))
   DEFINE_METHOD6(int,  av_audio_convert,      (AVAudioConvert *p1,
                                                      void * const p2[6], const int p3[6],
                                                const void * const p4[6], const int p5[6], int p6))
+  DEFINE_METHOD1(int, av_dup_packet, (AVPacket *p1))
+  DEFINE_METHOD1(void, av_destruct_packet_nofree, (AVPacket *p1))
+  DEFINE_METHOD1(void, av_free_packet,        (AVPacket *p1))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(avcodec_flush_buffers)
     RESOLVE_METHOD_RENAME(avcodec_open,avcodec_open_dont_call)
@@ -216,6 +224,9 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(av_audio_convert_alloc)
     RESOLVE_METHOD(av_audio_convert_free)
     RESOLVE_METHOD(av_audio_convert)
+    RESOLVE_METHOD(av_dup_packet)
+    RESOLVE_METHOD(av_destruct_packet_nofree)
+	RESOLVE_METHOD(av_free_packet)
   END_METHOD_RESOLVE()
 public:
     static CCriticalSection m_critSection;
@@ -283,7 +294,7 @@ public:
 
 class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
 {
-  DECLARE_DLL_WRAPPER(DllAvUtilBase, Q:\\system\\players\\dvdplayer\\avutil-49.dll)
+  DECLARE_DLL_WRAPPER(DllAvUtilBase, Q:\\system\\players\\dvdplayer\\avutil-50.dll)
 
   LOAD_SYMBOLS()
 

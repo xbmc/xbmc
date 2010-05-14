@@ -44,7 +44,7 @@ static const AVCodecTag codec_au_tags[] = {
     { CODEC_ID_PCM_F32BE, 6 },
     { CODEC_ID_PCM_F64BE, 7 },
     { CODEC_ID_PCM_ALAW, 27 },
-    { 0, 0 },
+    { CODEC_ID_NONE, 0 },
 };
 
 #if CONFIG_AU_MUXER
@@ -137,7 +137,7 @@ static int au_read_header(AVFormatContext *s,
     rate = get_be32(pb);
     channels = get_be32(pb);
 
-    codec = codec_get_id(codec_au_tags, id);
+    codec = ff_codec_get_id(codec_au_tags, id);
 
     if (size >= 24) {
         /* skip unused data */
@@ -157,18 +157,18 @@ static int au_read_header(AVFormatContext *s,
     return 0;
 }
 
-#define MAX_SIZE 4096
+#define BLOCK_SIZE 1024
 
 static int au_read_packet(AVFormatContext *s,
                           AVPacket *pkt)
 {
     int ret;
 
-    if (url_feof(s->pb))
-        return AVERROR(EIO);
-    ret= av_get_packet(s->pb, pkt, MAX_SIZE);
+    ret= av_get_packet(s->pb, pkt, BLOCK_SIZE *
+                       s->streams[0]->codec->channels *
+                       av_get_bits_per_sample(s->streams[0]->codec->codec_id) >> 3);
     if (ret < 0)
-        return AVERROR(EIO);
+        return ret;
     pkt->stream_index = 0;
 
     /* note: we need to modify the packet size here to handle the last
