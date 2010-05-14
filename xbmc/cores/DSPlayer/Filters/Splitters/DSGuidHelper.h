@@ -1,10 +1,7 @@
 #pragma once
-
+#include "streams.h"
+#include "dvdmedia.h"
 #include "DVDPlayer/Codecs/DllAvCodec.h"
-/*extern "C"
-{
-#include "libavcodec/avcodec.h"
-}*/
 
 class CMediaType;
 
@@ -14,7 +11,6 @@ public:
   CDSGuidHelper(void){};
   CMediaType initAudioType(CodecID codecId);
   CMediaType initVideoType(CodecID codecId);
-  
 };
 
 extern CDSGuidHelper g_GuidHelper;

@@ -1,5 +1,5 @@
 #include "DSGuidHelper.h"
-#include "streams.h"
+
 #include "moreuuids.h"
 #include "ffmpeg_mediaguids.h"
 CDSGuidHelper g_GuidHelper;

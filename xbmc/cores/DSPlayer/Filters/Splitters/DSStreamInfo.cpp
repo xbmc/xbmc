@@ -185,21 +185,20 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     
     if (mtype.subtype == GUID_NULL)
       mtype.subtype = FOURCCMap(avstream->codec->codec_tag);
-    WAVEFORMATEX* wvfmt = (WAVEFORMATEX*)mtype.AllocFormatBuffer(sizeof(WAVEFORMATEX)+ avstream->codec->extradata_size);
+    WAVEFORMATEX* wvfmt = (WAVEFORMATEX*)mtype.AllocFormatBuffer(sizeof(WAVEFORMATEX) + avstream->codec->extradata_size);
     
     wvfmt->wFormatTag = mtype.subtype.Data1;//avstream->codec_id->codec_tag;
     wvfmt->nChannels = avstream->codec->channels;
     wvfmt->nSamplesPerSec= avstream->codec->sample_rate;
-    
     wvfmt->wBitsPerSample= avstream->codec->bits_per_coded_sample;
+    wvfmt->cbSize = 0;
+
     if (avstream->codec->block_align > 0 )
       wvfmt->nBlockAlign = (WORD)((wvfmt->nChannels * wvfmt->wBitsPerSample) / 8);// avstream->codec_id->block_align ? avstream->codec_id->block_align : 1;
     else
       wvfmt->nBlockAlign = avstream->codec->block_align;
     wvfmt->nAvgBytesPerSec= wvfmt->nSamplesPerSec * wvfmt->nBlockAlign;
-    AVCodecParserContext* pParser;
-    pParser = m_dllAvCodec.av_parser_init(avstream->codec->codec_id);
-    
+
     if (avstream->codec->extradata_size > 0)
     {
       wvfmt->cbSize = avstream->codec->extradata_size;
@@ -208,6 +207,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     //TODO Fix the sample size
     if (wvfmt->wBitsPerSample == 0)
       mtype.SetSampleSize(256000);
+
     channels      = stream->iChannels;
     samplerate    = stream->iSampleRate;
     blockalign    = stream->iBlockAlign;
@@ -227,15 +227,20 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     /* VideoInfo2 */
     /* MPEGVideo */
     /* MPEG2Video working*/
+    
     mtype = g_GuidHelper.initVideoType(avstream->codec->codec_id);
+    //videoinfoheader2 has deinterlace flags and aspect ratio
+    //see http://msdn.microsoft.com/en-us/library/dd407326%28VS.85%29.aspx for more info
+    //Is it necessary to use it?
+    //if ((mtype.formattype == FORMAT_VideoInfo) && (avstream->codec->sample_aspect_ratio.den > 0 && avstream->codec->sample_aspect_ratio.num > 0))
+      //mtype.formattype = FORMAT_VideoInfo2;
     if (mtype.formattype == FORMAT_VideoInfo)
     {
       mtype.bTemporalCompression = 0;
       
       mtype.bFixedSizeSamples = stream->bVFR ? 0 : 1; //hummm is it the right value???
 
-      VIDEOINFOHEADER *pvi = (VIDEOINFOHEADER*)mtype.AllocFormatBuffer(sizeof(VIDEOINFOHEADER));
-    
+      VIDEOINFOHEADER *pvi = (VIDEOINFOHEADER*)mtype.ReallocFormatBuffer(ULONG(sizeof(VIDEOINFOHEADER) + extrasize));
     
       //Still to be verified in real time but the mathematics make sense
       // 23.97 fps = 417166;
