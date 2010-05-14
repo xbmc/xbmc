@@ -19,56 +19,71 @@
  *
  */
 
-#include "GUIWindowScriptsInfo.h"
+#include "GUIDialogTextViewer.h"
+#include "GUIUserMessages.h"
 
-
+#define CONTROL_HEADING  1
 #define CONTROL_TEXTAREA 5
 
-CGUIWindowScriptsInfo::CGUIWindowScriptsInfo(void)
-    : CGUIDialog(WINDOW_SCRIPTS_INFO, "DialogScriptInfo.xml")
+CGUIDialogTextViewer::CGUIDialogTextViewer(void)
+    : CGUIDialog(WINDOW_DIALOG_TEXT_VIEWER, "DialogTextViewer.xml")
 {}
 
-CGUIWindowScriptsInfo::~CGUIWindowScriptsInfo(void)
+CGUIDialogTextViewer::~CGUIDialogTextViewer(void)
 {}
 
-bool CGUIWindowScriptsInfo::OnAction(const CAction &action)
+bool CGUIDialogTextViewer::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_SHOW_INFO)
   {
     // erase debug screen
-    strInfo = "";
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_TEXTAREA);
-    msg.SetLabel(strInfo);
+    msg.SetLabel("");
     OnMessage(msg);
     return true;
   }
   return CGUIDialog::OnAction(action);
 }
 
-bool CGUIWindowScriptsInfo::OnMessage(CGUIMessage& message)
+bool CGUIDialogTextViewer::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
   {
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIDialog::OnMessage(message);
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_TEXTAREA);
-      msg.SetLabel(strInfo);
-      msg.SetParam1(5); // 5 pages max
-      OnMessage(msg);
+      SetHeading();
+      SetText();
       return true;
     }
     break;
-
-  case GUI_MSG_USER:
+  case GUI_MSG_NOTIFY_ALL:
     {
-      strInfo += message.GetLabel();
-      CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_TEXTAREA);
-      msg.SetLabel(strInfo);
-      msg.SetParam1(5); // 5 pages max
-      OnMessage(msg);
+      if (message.GetParam1() == GUI_MSG_UPDATE)
+      {
+        SetText();
+        SetHeading();
+        return true;
+      }
     }
+    break;
+  default:
     break;
   }
   return CGUIDialog::OnMessage(message);
 }
+
+void CGUIDialogTextViewer::SetText()
+{
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_TEXTAREA);
+  msg.SetLabel(m_strText);
+  OnMessage(msg);
+}
+
+void CGUIDialogTextViewer::SetHeading()
+{
+  CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_HEADING);
+  msg.SetLabel(m_strHeading);
+  OnMessage(msg);
+}
+

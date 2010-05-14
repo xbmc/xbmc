@@ -143,7 +143,7 @@ CPulseAudioDirectSound::CPulseAudioDirectSound()
 {
 }
 
-bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
 {
   m_remap.Reset();
   m_uiDataChannels = iChannels;
@@ -162,8 +162,6 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
     if (m_uiDataChannels != (unsigned int)iChannels)
       CLog::Log(LOGDEBUG, "CPulseAudioDirectSound::CPulseAudioDirectSound - Requested channels changed from %i to %i", m_uiDataChannels, iChannels);
   }
-
-  CLog::Log(LOGDEBUG,"PulseAudio: Opening Channels: %i - SampleRate: %i - SampleBit: %i - Resample %s - Codec %s - IsMusic %s - IsPassthrough %s - device: %s", iChannels, uiSamplesPerSec, uiBitsPerSample, bResample ? "true" : "false", strAudioCodec, bIsMusic ? "true" : "false", bPassthrough ? "true" : "false", device.c_str());
 
   bool bAudioOnAllSpeakers(false);
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);

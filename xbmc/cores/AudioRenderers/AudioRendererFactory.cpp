@@ -39,21 +39,53 @@
 #include "ALSADirectSound.h"
 #endif
 
-#define ReturnOnValidInitialize()          \
-{                                          \
-  if (audioSink->Initialize(pCallback, device, iChannels, channelMap, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough))  \
+#define ReturnOnValidInitialize(rendererName)    \
+{                                                \
+  if (audioSink->Initialize(pCallback, device, iChannels, channelMap, uiSamplesPerSec, uiBitsPerSample, bResample, bIsMusic, bPassthrough)) \
+  {                                              \
+    CLog::Log(LOGDEBUG, "%s::Initialize"         \
+      " - Channels: %i"                          \
+      " - SampleRate: %i"                        \
+      " - SampleBit: %i"                         \
+      " - Resample %s"                           \
+      " - IsMusic %s"                            \
+      " - IsPassthrough %s"                      \
+      " - audioDevice: %s",                      \
+      rendererName,                              \
+      iChannels,                                 \
+      uiSamplesPerSec,                           \
+      uiBitsPerSample,                           \
+      bResample ? "true" : "false",              \
+      bIsMusic ? "true" : "false",               \
+      bPassthrough ? "true" : "false",           \
+      device.c_str()                             \
+    ); \
     return audioSink;                      \
+  }                                        \
   else                                     \
   {                                        \
     audioSink->Deinitialize();             \
     delete audioSink;                      \
     audioSink = NULL;                      \
   }                                        \
-}\
+}
 
-IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
+#define CreateAndReturnOnValidInitialize(rendererClass) \
+{ \
+  audioSink = new rendererClass(); \
+  ReturnOnValidInitialize(#rendererClass); \
+}
+
+#define ReturnNewRenderer(rendererClass) \
+{ \
+  renderer = #rendererClass; \
+  return new rendererClass(); \
+}
+
+IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
 {
   IAudioRenderer* audioSink = NULL;
+  CStdString renderer;
 
   CStdString deviceString, device;
   if (bPassthrough)
@@ -75,24 +107,24 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iCh
   int iPos = deviceString.Find(":");
   if (iPos > 0)
   {
-    audioSink = CreateFromUri(deviceString.Left(iPos));
+    audioSink = CreateFromUri(deviceString.Left(iPos), renderer);
     if (audioSink)
     {
       device = deviceString.Right(deviceString.length() - iPos - 1);
-      ReturnOnValidInitialize();
+      ReturnOnValidInitialize(renderer.c_str());
 
 #ifdef _WIN32
       //If WASAPI failed try DirectSound.
       if(deviceString.Left(iPos).Equals("wasapi"))
       {
-        audioSink = CreateFromUri("directsound");
-        ReturnOnValidInitialize();
+        audioSink = CreateFromUri("directsound", renderer);
+        ReturnOnValidInitialize(renderer.c_str());
       }
 #endif
 
-      audioSink = new CNullDirectSound();
-      audioSink->Initialize(pCallback, device, iChannels, channelMap, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough);
-      return audioSink;
+      CreateAndReturnOnValidInitialize(CNullDirectSound);
+      /* should never get here */
+      assert(false);
     }
   }
   CLog::Log(LOGINFO, "AudioRendererFactory: %s not a explicit device, trying to autodetect.", device.c_str());
@@ -101,26 +133,23 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iCh
 
 /* First pass creation */
 #ifdef HAS_PULSEAUDIO
-  audioSink = new CPulseAudioDirectSound();
-  ReturnOnValidInitialize();
+  CreateAndReturnOnValidInitialize(CPulseAudioDirectSound);
 #endif
 
 /* incase none in the first pass was able to be created, fall back to os specific */
 #ifdef WIN32
-  audioSink = new CWin32DirectSound();
-  ReturnOnValidInitialize();
+  CreateAndReturnOnValidInitialize(CWin32DirectSound);
 #endif
 #ifdef __APPLE__
-  audioSink = new CCoreAudioRenderer();
-  ReturnOnValidInitialize();
+  CreateAndReturnOnValidInitialize(CCoreAudioRenderer);
 #elif defined(_LINUX)
-  audioSink = new CALSADirectSound();
-  ReturnOnValidInitialize();
+  CreateAndReturnOnValidInitialize(CALSADirectSound);
 #endif
 
-  audioSink = new CNullDirectSound();
-  audioSink->Initialize(pCallback, device, iChannels, channelMap, uiSamplesPerSec, uiBitsPerSample, bResample, strAudioCodec, bIsMusic, bPassthrough);
-  return audioSink;
+  CreateAndReturnOnValidInitialize(CNullDirectSound);
+  /* should never get here */
+  assert(false);
+  return NULL;
 }
 
 void CAudioRendererFactory::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough)
@@ -143,30 +172,30 @@ void CAudioRendererFactory::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool
 #endif
 }
 
-IAudioRenderer *CAudioRendererFactory::CreateFromUri(const CStdString &soundsystem)
+IAudioRenderer *CAudioRendererFactory::CreateFromUri(const CStdString &soundsystem, CStdString &renderer)
 {
 #ifdef HAS_PULSEAUDIO
   if (soundsystem.Equals("pulse"))
-    return new CPulseAudioDirectSound();
+    ReturnNewRenderer(CPulseAudioDirectSound);
 #endif
 
 #ifdef WIN32
   if (soundsystem.Equals("wasapi"))
-    return new CWin32WASAPI();
+    ReturnNewRenderer(CWin32WASAPI)
   else if (soundsystem.Equals("directsound"))
-    return new CWin32DirectSound();
+    ReturnNewRenderer(CWin32DirectSound);
 #endif
 
 #ifdef __APPLE__
   if (soundsystem.Equals("coreaudio"))
-    return new CCoreAudioRenderer();
+    ReturnNewRenderer(CCoreAudioRenderer);
 #elif defined(_LINUX)
   if (soundsystem.Equals("alsa"))
-    return new CALSADirectSound();
+    ReturnNewRenderer(CALSADirectSound);
 #endif
 
   if (soundsystem.Equals("null"))
-    return new CNullDirectSound();
+    ReturnNewRenderer(CNullDirectSound);
 
   return NULL;
 }

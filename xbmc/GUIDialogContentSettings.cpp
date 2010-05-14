@@ -245,12 +245,12 @@ void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
 {
   // grab all scrapers which support this content-type
   VECADDONS addons;
-  if (!CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, content))
+  if (!CAddonMgr::Get().GetAddons(ADDON_SCRAPER, addons, content))
     return;
 
   AddonPtr addon;
   CStdString defaultID;
-  if (CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, content))
+  if (CAddonMgr::Get().GetDefault(ADDON_SCRAPER, addon, content))
     defaultID = addon->ID();
 
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
@@ -363,13 +363,9 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
   if (!dialog)
     return false;
 
-  if (musicContext != CONTENT_NONE)
-  {
-    dialog->m_content = musicContext;
-  }
   if (scraper)
   {
-    dialog->m_content = scraper->Content();
+    dialog->m_content = musicContext != CONTENT_NONE ? musicContext : scraper->Content();
     dialog->m_origContent = dialog->m_content;
     dialog->m_scraper = scraper;
     // toast selected but disabled scrapers

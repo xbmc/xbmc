@@ -34,6 +34,7 @@ namespace XFILE
       long GetMovieId() const { return m_idMovie; }
       long GetYear() const { return m_idYear; }
       long GetGenreId() const { return m_idGenre; }
+      long GetCountryId() const { return m_idCountry; }
       long GetActorId() const { return m_idActor; }
       long GetAlbumId() const { return m_idAlbum; }
       long GetDirectorId() const { return m_idDirector; }
@@ -52,6 +53,7 @@ namespace XFILE
       long m_idContent;
       long m_idMovie;
       long m_idGenre;
+      long m_idCountry;
       long m_idYear;
       long m_idActor;
       long m_idDirector;

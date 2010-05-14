@@ -243,7 +243,7 @@ std::vector<CStdString> CDeviceKitDisksProvider::GetDiskUsage()
   for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
   {
     CDeviceKitDiskDevice *device = itr->second;
-    if (device->IsApproved())
+    if (device->m_isMounted)
     {
       CStdString str;
       str.Format("%s %.1f GiB", device->m_MountPath.c_str(), device->m_PartitionSizeGiB);

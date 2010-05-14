@@ -54,6 +54,7 @@
 
 #include "DVDStreamInfo.h"
 #include "GUISettings.h"
+#include "utils/SystemInfo.h"
 
 CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
 {
@@ -142,7 +143,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 #endif
 #if defined(HAVE_LIBVDPAU) && defined(_LINUX)
   hwSupport += "VDPAU:yes ";
-#elif defined(_LINUX)
+#elif defined(_LINUX) && !defined(__APPLE__)
   hwSupport += "VDPAU:no ";
 #endif
 #if defined(_WIN32) && defined(HAS_DX)
@@ -152,7 +153,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 #endif
 #if defined(HAVE_LIBVA) && defined(_LINUX)
   hwSupport += "VAAPI:yes ";
-#elif defined(_LINUX)
+#elif defined(_LINUX) && !defined(__APPLE__)
   hwSupport += "VAAPI:no ";
 #endif
 
@@ -164,10 +165,13 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
     if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
   }
 #if defined(HAVE_LIBVDADECODER)
-  if (g_guiSettings.GetBool("videoplayer.usevda") && !hint.software && hint.codec == CODEC_ID_H264)
+  if (g_sysinfo.HasVDADecoder())
   {
-    CLog::Log(LOGINFO, "Trying Apple VDA Decoder...");
-    if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
+    if (g_guiSettings.GetBool("videoplayer.usevda") && !hint.software && hint.codec == CODEC_ID_H264)
+    {
+      CLog::Log(LOGINFO, "Trying Apple VDA Decoder...");
+      if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
+    }
   }
 #endif
 

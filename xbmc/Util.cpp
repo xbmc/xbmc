@@ -661,11 +661,11 @@ void CUtil::RunShortcut(const char* szShortcutPath)
 {
 }
 
-void CUtil::GetHomePath(CStdString& strPath)
+void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 {
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
-  strPath = getenv("XBMC_HOME");
+  strPath = getenv(strTarget);
   if (strPath != NULL && !strPath.IsEmpty())
   {
 #ifdef _WIN32

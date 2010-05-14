@@ -194,9 +194,14 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
 
   BuildPresentParameters();
 
-  OnDeviceLost();
-  OnDeviceReset();
-
+  if (m_useD3D9Ex && !m_needNewDevice)
+    m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
+  else
+  {
+    OnDeviceLost();
+    OnDeviceReset();
+  }
+  
   return true;
 }
 
@@ -211,18 +216,19 @@ void CRenderSystemDX::BuildPresentParameters()
   bool useWindow = g_guiSettings.GetBool("videoscreen.fakefullscreen") || !m_bFullScreenDevice;
   m_D3DPP.Windowed           = useWindow;
   m_D3DPP.SwapEffect         = D3DSWAPEFFECT_DISCARD;
+  m_D3DPP.BackBufferCount    = 1;
 
   if(m_useD3D9Ex && (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion >= 1 || osvi.dwMajorVersion > 6))
   {
 #if D3DX_SDK_VERSION >= 42
     m_D3DPP.SwapEffect       = D3DSWAPEFFECT_FLIPEX;
+    m_D3DPP.BackBufferCount  = 2;
 #else
 #   pragma message("D3D SDK version is too old to support D3DSWAPEFFECT_FLIPEX")
     CLog::Log(LOGWARNING, "CRenderSystemDX::BuildPresentParameters - xbmc compiled with an d3d sdk not supporting D3DSWAPEFFECT_FLIPEX");
 #endif
   }
 
-  m_D3DPP.BackBufferCount    = 1;
   m_D3DPP.EnableAutoDepthStencil = TRUE;
   m_D3DPP.hDeviceWindow      = m_hDeviceWnd;
   m_D3DPP.BackBufferWidth    = m_nBackBufferWidth;
@@ -382,6 +388,7 @@ bool CRenderSystemDX::CreateDevice()
 
     if (FAILED(hr))
     {
+      CLog::Log(LOGWARNING, "CRenderSystemDX::CreateDevice - initial wanted device config failed");
       // Try a second time, may fail the first time due to back buffer count,
       // which will be corrected down to 1 by the runtime
       hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, devType, m_hFocusWnd,
@@ -512,7 +519,38 @@ bool CRenderSystemDX::BeginRender()
     return false;
 
   DWORD oldStatus = m_nDeviceStatus;
-  if( FAILED( m_nDeviceStatus = m_pD3DDevice->TestCooperativeLevel() ) )
+  if (m_useD3D9Ex)
+  {
+    m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->CheckDeviceState(m_hDeviceWnd);
+
+    // handling of new D3D9 extensions return values. Others fallback to regular D3D9 handling.
+    switch(m_nDeviceStatus)
+    {
+    case S_PRESENT_MODE_CHANGED:
+      // Timing leads us here on occasion.
+      BuildPresentParameters();
+      m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
+      break;
+    case S_PRESENT_OCCLUDED:
+      m_nDeviceStatus = D3D_OK;
+      break;
+    case D3DERR_DEVICEHUNG:
+    case D3DERR_OUTOFVIDEOMEMORY:
+      m_nDeviceStatus = D3DERR_DEVICELOST;
+      break;
+    case D3DERR_DEVICEREMOVED:
+      m_nDeviceStatus = D3DERR_DEVICELOST;
+      m_needNewDevice = true;
+      // fixme: also needs to re-enumerate and switch to another screen
+      break;
+    }
+  }
+  else
+  {
+    m_nDeviceStatus = m_pD3DDevice->TestCooperativeLevel();
+  }
+
+  if( FAILED( m_nDeviceStatus ) )
   {
     // The device has been lost but cannot be reset at this time.
     // Therefore, rendering is not possible and we'll have to return

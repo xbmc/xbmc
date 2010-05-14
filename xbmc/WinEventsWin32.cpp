@@ -34,6 +34,7 @@
 #include "KeyboardStat.h"
 #include "GUIWindowManager.h"
 #include "GUIControl.h"       // for EVENT_RESULT
+#include "Win32PowerSyscall.h"
 
 #ifdef HAS_DX
   #include "DSConfig.h"
@@ -591,51 +592,67 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         m_pEventFunc(newEvent);
       return(0);
     case WM_DEVICECHANGE:
-      PDEV_BROADCAST_HDR lpdb = (PDEV_BROADCAST_HDR)lParam;
-      switch(wParam)
       {
-        case DBT_DEVICEARRIVAL:
-           if (lpdb -> dbch_devicetype == DBT_DEVTYP_VOLUME)
-           {
-              PDEV_BROADCAST_VOLUME lpdbv = (PDEV_BROADCAST_VOLUME)lpdb;
+        PDEV_BROADCAST_HDR lpdb = (PDEV_BROADCAST_HDR)lParam;
+        switch(wParam)
+        {
+          case DBT_DEVICEARRIVAL:
+             if (lpdb -> dbch_devicetype == DBT_DEVTYP_VOLUME)
+             {
+                PDEV_BROADCAST_VOLUME lpdbv = (PDEV_BROADCAST_VOLUME)lpdb;
 
-              // Check whether a CD or DVD was inserted into a drive.
-              if (lpdbv -> dbcv_flags & DBTF_MEDIA)
-              {
-                CLog::Log(LOGDEBUG, "%s: Drive %c: Media has arrived.\n", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-                CStdString strDevice;
-                strDevice.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-                g_application.getApplicationMessenger().OpticalMount(strDevice, true);
-              }
-              else
-              {
-                // USB drive inserted
-                CWin32StorageProvider::SetEvent();
-              }
-           }
-           break;
+                // Check whether a CD or DVD was inserted into a drive.
+                if (lpdbv -> dbcv_flags & DBTF_MEDIA)
+                {
+                  CLog::Log(LOGDEBUG, "%s: Drive %c: Media has arrived.", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+                  CStdString strDevice;
+                  strDevice.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+                  g_application.getApplicationMessenger().OpticalMount(strDevice, true);
+                }
+                else
+                {
+                  // USB drive inserted
+                  CWin32StorageProvider::SetEvent();
+                }
+             }
+             break;
 
-        case DBT_DEVICEREMOVECOMPLETE:
-           if (lpdb -> dbch_devicetype == DBT_DEVTYP_VOLUME)
-           {
-              PDEV_BROADCAST_VOLUME lpdbv = (PDEV_BROADCAST_VOLUME)lpdb;
+          case DBT_DEVICEREMOVECOMPLETE:
+             if (lpdb -> dbch_devicetype == DBT_DEVTYP_VOLUME)
+             {
+                PDEV_BROADCAST_VOLUME lpdbv = (PDEV_BROADCAST_VOLUME)lpdb;
 
-              // Check whether a CD or DVD was removed from a drive.
-              if (lpdbv -> dbcv_flags & DBTF_MEDIA)
-              {
-                CLog::Log(LOGDEBUG,"%s: Drive %c: Media was removed.\n", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-                CStdString strDevice;
-                strDevice.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-                g_application.getApplicationMessenger().OpticalUnMount(strDevice);
-              }
-              else
-              {
-                // USB drive was removed
-                CWin32StorageProvider::SetEvent();
-              }
-           }
-           break;
+                // Check whether a CD or DVD was removed from a drive.
+                if (lpdbv -> dbcv_flags & DBTF_MEDIA)
+                {
+                  CLog::Log(LOGDEBUG,"%s: Drive %c: Media was removed.", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+                  CStdString strDevice;
+                  strDevice.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+                  g_application.getApplicationMessenger().OpticalUnMount(strDevice);
+                }
+                else
+                {
+                  // USB drive was removed
+                  CWin32StorageProvider::SetEvent();
+                }
+             }
+             break;
+        }
+        break;
       }
+    case WM_POWERBROADCAST:
+      if (wParam==PBT_APMSUSPEND)
+      {
+        CLog::Log(LOGDEBUG,"WM_POWERBROADCAST: PBT_APMSUSPEND event was sent");
+        CWin32PowerSyscall::SetOnSuspend();
+      }
+      else if(wParam==PBT_APMRESUMEAUTOMATIC)
+      {
+        CLog::Log(LOGDEBUG,"WM_POWERBROADCAST: PBT_APMRESUMEAUTOMATIC event was sent");
+        CWin32PowerSyscall::SetOnResume();
+      }
+      break;
+
   }
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));
 }

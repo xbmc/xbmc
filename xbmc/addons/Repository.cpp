@@ -199,7 +199,7 @@ bool CRepositoryUpdateJob::DoWork()
   for (unsigned int i=0;i<addons.size();++i)
   {
     AddonPtr addon;
-    if (CAddonMgr::Get()->GetAddon(addons[i]->ID(),addon) &&
+    if (CAddonMgr::Get().GetAddon(addons[i]->ID(),addon) &&
         addons[i]->Version() > addon->Version())
     {
       if (g_settings.m_bAddonAutoUpdate || addon->Type() >= ADDON_VIZ_LIBRARY)

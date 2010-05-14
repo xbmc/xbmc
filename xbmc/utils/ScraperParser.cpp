@@ -129,52 +129,43 @@ bool CScraperParser::LoadFromXML()
   CStdString strValue = m_pRootElement->Value();
   if (strValue == "scraper")
   {
-    CONTENT_TYPE content = TranslateContent(m_pRootElement->Attribute("content"));
     if (m_pRootElement->Attribute("cachePersistence"))
       m_persistence.SetFromTimeString(m_pRootElement->Attribute("cachePersistence"));
 
     const char* requiressettings;
     m_requiressettings = ((requiressettings = m_pRootElement->Attribute("requiressettings")) && strnicmp("true", requiressettings, 4) == 0);
 
-    // check for known content
-    if ( content == CONTENT_TVSHOWS ||
-         content == CONTENT_MOVIES ||
-         content == CONTENT_MUSICVIDEOS ||
-         content == CONTENT_ALBUMS)
+    TiXmlElement* pChildElement = m_pRootElement->FirstChildElement("CreateSearchUrl");
+    if (pChildElement)
     {
-      TiXmlElement* pChildElement = m_pRootElement->FirstChildElement("CreateSearchUrl");
-      if (pChildElement)
-      {
-        if (!(m_SearchStringEncoding = pChildElement->Attribute("SearchStringEncoding")))
-          m_SearchStringEncoding = "UTF-8";
-      }
-
-      ADDONDEPS deps = m_scraper->GetDeps();
-      ADDONDEPS::iterator itr = deps.begin();
-      while (itr != deps.end())
-      {
-        AddonPtr dep;
-        if (!CAddonMgr::Get()->GetAddon((*itr).first, dep, ADDON_SCRAPER_LIBRARY, false))
-        {
-          itr++;
-          continue;
-        }
-        CStdString strFile = CUtil::AddFileToFolder(dep->Path(), dep->LibName());
-        TiXmlDocument doc;
-        if (doc.LoadFile(strFile))
-        {
-          const TiXmlNode* node = doc.RootElement()->FirstChild();
-          while (node)
-          {
-             m_pRootElement->InsertEndChild(*node);
-             node = node->NextSibling();
-          }
-        }
-        itr++;
-      }
-
-      return true;
+      if (!(m_SearchStringEncoding = pChildElement->Attribute("SearchStringEncoding")))
+        m_SearchStringEncoding = "UTF-8";
     }
+
+    ADDONDEPS deps = m_scraper->GetDeps();
+    ADDONDEPS::iterator itr = deps.begin();
+    while (itr != deps.end())
+    {
+      AddonPtr dep;
+      if (!CAddonMgr::Get().GetAddon((*itr).first, dep, ADDON_SCRAPER_LIBRARY, false))
+      {
+        itr++;
+        continue;
+      }
+      CStdString strFile = CUtil::AddFileToFolder(dep->Path(), dep->LibName());
+      TiXmlDocument doc;
+      if (doc.LoadFile(strFile))
+      {
+        const TiXmlNode* node = doc.RootElement()->FirstChild();
+        while (node)
+        {
+           m_pRootElement->InsertEndChild(*node);
+           node = node->NextSibling();
+        }
+      }
+      itr++;
+    }
+    return true;
   }
   delete m_document;
   m_document = NULL;

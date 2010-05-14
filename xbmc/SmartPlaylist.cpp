@@ -69,6 +69,7 @@ static const translateField fields[] = { { "none", CSmartPlaylistRule::FIELD_NON
                                          { "director", CSmartPlaylistRule::FIELD_DIRECTOR, CSmartPlaylistRule::BROWSEABLE_FIELD, 20339 },
                                          { "actor", CSmartPlaylistRule::FIELD_ACTOR, CSmartPlaylistRule::BROWSEABLE_FIELD, 20337 },
                                          { "studio", CSmartPlaylistRule::FIELD_STUDIO, CSmartPlaylistRule::BROWSEABLE_FIELD, 572 },
+                                         { "country", CSmartPlaylistRule::FIELD_COUNTRY, CSmartPlaylistRule::BROWSEABLE_FIELD, 574 },
                                          { "numepisodes", CSmartPlaylistRule::FIELD_NUMEPISODES, CSmartPlaylistRule::NUMERIC_FIELD, 20360 },
                                          { "numwatched", CSmartPlaylistRule::FIELD_NUMWATCHED, CSmartPlaylistRule::NUMERIC_FIELD, 21441 },
                                          { "writers", CSmartPlaylistRule::FIELD_WRITER, CSmartPlaylistRule::BROWSEABLE_FIELD, 20417 },
@@ -284,6 +285,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_PLAYCOUNT);
     fields.push_back(FIELD_LASTPLAYED);
     fields.push_back(FIELD_GENRE);
+    fields.push_back(FIELD_COUNTRY);
     fields.push_back(FIELD_YEAR); // premiered
     fields.push_back(FIELD_DIRECTOR);
     if (!sortOrders)
@@ -494,6 +496,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
       query = "idmovie" + negate + " in (select idmovie from writerlinkmovie join actors on actors.idactor=writerlinkmovie.idwriter where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_STUDIO)
       query = "idmovie" + negate + " in (select idmovie from studiolinkmovie join studio on studio.idstudio=studiolinkmovie.idstudio where studio.strStudio" + parameter + ")";
+    else if (m_field == FIELD_COUNTRY)
+      query = "idmovie" + negate + " in (select idmovie from countrylinkmovie join country on country.idcountry=countrylinkmovie.idcountry where country.strCountry" + parameter + ")";
     else if (m_field == FIELD_HASTRAILER)
       query = negate + GetDatabaseField(m_field, strType) + "!= ''";
     else if (m_field == FIELD_LASTPLAYED && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
@@ -643,6 +647,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_MPAA) result.Format("c%02d", VIDEODB_ID_MPAA);
     else if (field == FIELD_TOP250) result.Format("c%02d", VIDEODB_ID_TOP250);
     else if (field == FIELD_STUDIO) result.Format("c%02d", VIDEODB_ID_STUDIOS);   // join required
+    else if (field == FIELD_COUNTRY) result.Format("c%02d", VIDEODB_ID_COUNTRY);    // join required
     else if (field == FIELD_HASTRAILER) result.Format("c%02d", VIDEODB_ID_TRAILER);
     else if (field == FIELD_FILENAME) result = "strFilename";
     else if (field == FIELD_PATH) result = "strPath";

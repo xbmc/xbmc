@@ -611,7 +611,7 @@ EVENT_RESULT CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMous
   {
     return g_application.OnAction(CAction(ACTION_ANALOG_SEEK_BACK, 0.5f)) ? EVENT_RESULT_HANDLED : EVENT_RESULT_UNHANDLED;
   }
-  if (event.m_id || event.m_offsetX || event.m_offsetY)
+  if (event.m_id != ACTION_MOUSE_MOVE || event.m_offsetX || event.m_offsetY)
   { // some other mouse action has occurred - bring up the OSD
 #ifdef HAS_DX
     if (g_application.GetCurrentPlayer() == PCID_DSPLAYER && g_application.m_pPlayer->IsInMenu())

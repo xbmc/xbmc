@@ -47,6 +47,7 @@ AddonPtr CScraper::Clone(const AddonPtr &self) const
 CScraper::CScraper(const CScraper &rhs, const AddonPtr &self)
   : CAddon(rhs, self)
 {
+  m_pathContent = CONTENT_NONE;
 }
 
 bool CScraper::LoadSettings()
@@ -87,7 +88,7 @@ bool CScraper::LoadUserXML(const CStdString& strSaved)
 bool CScraper::LoadSettingsXML(const CStdString& strFunction, const CScraperUrl* url)
 {
   AddonPtr addon;
-  if (!Parent() && !CAddonMgr::Get()->GetAddon(ID(), addon, ADDON_SCRAPER))
+  if (!Parent() && !CAddonMgr::Get().GetAddon(ID(), addon, ADDON_SCRAPER))
     return false;
   else if (Parent())
     addon = Parent();

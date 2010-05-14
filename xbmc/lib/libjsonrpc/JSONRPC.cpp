@@ -26,7 +26,7 @@
 #include "AVPlaylistOperations.h"
 #include "PlaylistOperations.h"
 #include "FileOperations.h"
-#include "MusicLibrary.h"
+#include "AudioLibrary.h"
 #include "VideoLibrary.h"
 #include "SystemOperations.h"
 #include "XBMCOperations.h"
@@ -69,7 +69,8 @@ Command CJSONRPC::m_commands[] = {
   { "AudioPlayer.GetTime",                          CAVPlayerOperations::GetTime,                        Response,     ReadData,        "Retrieve time" },
   { "AudioPlayer.GetTimeMS",                        CAVPlayerOperations::GetTimeMS,                      Response,     ReadData,        "Retrieve time in MS" },
   { "AudioPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage,                  Response,     ReadData,        "Retrieve percentage" },
-  { "AudioPlayer.SeekTime",                         CAVPlayerOperations::SeekTime,                       Response,     ControlPlayback, "Seek to a specific time. Parameter integer in MS" },
+  { "AudioPlayer.SeekTime",                         CAVPlayerOperations::SeekTime,                       Response,     ControlPlayback, "Seek to a specific time. Parameter integer in seconds" },
+  { "AudioPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage,                 Response,     ControlPlayback, "Seek to a specific percentage. Parameter float or integer from 0 to 100" },
 
   { "AudioPlayer.Record",                           CAVPlayerOperations::Record,                         Response,     ControlPlayback, "" },
 
@@ -90,7 +91,8 @@ Command CJSONRPC::m_commands[] = {
   { "VideoPlayer.GetTime",                          CAVPlayerOperations::GetTime,                        Response,     ReadData,        "Retrieve time" },
   { "VideoPlayer.GetTimeMS",                        CAVPlayerOperations::GetTimeMS,                      Response,     ReadData,        "Retrieve time in MS" },
   { "VideoPlayer.GetPercentage",                    CAVPlayerOperations::GetPercentage,                  Response,     ReadData,        "Retrieve percentage" },
-  { "VideoPlayer.SeekTime",                         CAVPlayerOperations::SeekTime,                       Response,     ControlPlayback, "Seek to a specific time. Parameter integer in MS" },
+  { "VideoPlayer.SeekTime",                         CAVPlayerOperations::SeekTime,                       Response,     ControlPlayback, "Seek to a specific time. Parameter integer in seconds" },
+  { "VideoPlayer.SeekPercentage",                   CAVPlayerOperations::SeekPercentage,                 Response,     ControlPlayback, "Seek to a specific percentage. Parameter float or integer from 0 to 100" },
 
 // Picture player
   { "PicturePlayer.PlayPause",                      CPicturePlayerOperations::PlayPause,                 Response,     ControlPlayback, "Pauses or unpause slideshow" },
@@ -147,11 +149,11 @@ Command CJSONRPC::m_commands[] = {
   { "Files.GetDirectory",                           CFileOperations::GetDirectory,                       Response,     ReadData,        "Retrieve the specified directory" },
 
 // Music library
-  { "MusicLibrary.GetArtists",                      CMusicLibrary::GetArtists,                           Response,     ReadData,        "Retrieve all artists" },
-  { "MusicLibrary.GetAlbums",                       CMusicLibrary::GetAlbums,                            Response,     ReadData,        "Retrieve all albums from specified artist or genre" },
-  { "MusicLibrary.GetSongs",                        CMusicLibrary::GetSongs,                             Response,     ReadData,        "Retrieve all songs from specified album, artist or genre" },
+  { "AudioLibrary.GetArtists",                      CAudioLibrary::GetArtists,                           Response,     ReadData,        "Retrieve all artists" },
+  { "AudioLibrary.GetAlbums",                       CAudioLibrary::GetAlbums,                            Response,     ReadData,        "Retrieve all albums from specified artist or genre" },
+  { "AudioLibrary.GetSongs",                        CAudioLibrary::GetSongs,                             Response,     ReadData,        "Retrieve all songs from specified album, artist or genre" },
 
-  { "MusicLibrary.ScanForContent",                  CMusicLibrary::ScanForContent,                       Response,     ScanLibrary,     "" },
+  { "AudioLibrary.ScanForContent",                  CAudioLibrary::ScanForContent,                       Response,     ScanLibrary,     "" },
 
 // Video library
   { "VideoLibrary.GetMovies",                       CVideoLibrary::GetMovies,                            Response,     ReadData,        "Retrieve all movies. Parameter example { \"fields\": [\"plot\"], \"sortmethod\": \"title\", \"sortorder\": \"ascending\", \"start\": 0, \"end\": 3}. fields, sortorder, sortmethod, start and end are optional" },
@@ -175,7 +177,8 @@ Command CJSONRPC::m_commands[] = {
   { "System.Hibernate",                             CSystemOperations::Hibernate,                        Response,     ControlPower,    "" },
   { "System.Reboot",                                CSystemOperations::Reboot,                           Response,     ControlPower,    "" },
 
-  { "System.GetInfo",                               CSystemOperations::GetInfo,                          Response,     ReadData,        "Retrieve info about the system" },
+  { "System.GetInfoLabels",                         CSystemOperations::GetInfoLabels,                    Response,     ReadData,        "Retrieve info labels about the system" },
+  { "System.GetInfoBooleans",                       CSystemOperations::GetInfoBooleans,                  Response,     ReadData,        "Retrieve info booleans about the system" },
 
 // XBMC Operations
   { "XBMC.GetVolume",                               CXBMCOperations::GetVolume,                          Response,     ReadData,        "Retrieve the current volume" },

@@ -123,6 +123,11 @@ protected:
   void addInexactListLine(int line_cnt, const char *line, int len);
   const CStdString& getInexactCommand(int select) const;
   CStdString GetCacheFile(unsigned int disc_id) const;
+  /*! \brief Trim and convert some text to UTF8
+   \param untrimmedText original text to trim and convert
+   \return a utf8 version of the trimmed text
+   */
+  CStdString TrimToUTF8(const CStdString &untrimmed);
 
   CStdString m_cddb_ip_adress;
   CStdString cCacheDir;

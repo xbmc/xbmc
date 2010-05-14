@@ -113,13 +113,13 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
     {
       if (pretty)
         return g_localizeStrings.Get(24008);
-      return "screensaver";
+      return "xbmc.ui.screensaver";
     }
     case ADDON::ADDON_VIZ:
     {
       if (pretty)
         return g_localizeStrings.Get(24010);
-      return "visualization";
+      return "xbmc.player.musicviz";
     }
     case ADDON::ADDON_VIZ_LIBRARY:
     {
@@ -141,7 +141,7 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
     {
       if (pretty)
         return g_localizeStrings.Get(166);
-      return "skin";
+      return "xbmc.gui.skin";
     }
     case ADDON::ADDON_SCRIPT_LIBRARY:
     {
@@ -165,12 +165,12 @@ const ADDON::TYPE TranslateType(const CStdString &string)
   if (string.Equals("pvrclient")) return ADDON_PVRDLL;
   else if (string.Equals("scraper")) return ADDON_SCRAPER;
   else if (string.Equals("scraper-library")) return ADDON_SCRAPER_LIBRARY;
-  else if (string.Equals("screensaver")) return ADDON_SCREENSAVER;
-  else if (string.Equals("visualization")) return ADDON_VIZ;
+  else if (string.Equals("xbmc.ui.screensaver")) return ADDON_SCREENSAVER;
+  else if (string.Equals("xbmc.player.musicviz")) return ADDON_VIZ;
   else if (string.Equals("visualization-library")) return ADDON_VIZ_LIBRARY;
   else if (string.Equals("plugin")) return ADDON_PLUGIN;
   else if (string.Equals("script")) return ADDON_SCRIPT;
-  else if (string.Equals("skin")) return ADDON_SKIN;
+  else if (string.Equals("xbmc.gui.skin")) return ADDON_SKIN;
   else if (string.Equals("script-library")) return ADDON_SCRIPT_LIBRARY;
   else if (string.Equals("addon-repository")) return ADDON_REPOSITORY;
   else return ADDON_UNKNOWN;
@@ -214,14 +214,38 @@ bool AddonVersion::operator<=(const AddonVersion &rhs) const
 CStdString AddonVersion::Print() const
 {
   CStdString out;
-  out.Format("%s %s", g_localizeStrings.Get(24051), str); // "Version: <str>"
+  out.Format("%s %s", g_localizeStrings.Get(24051), str); // "Version <str>"
   return CStdString(out);
+}
+
+AddonProps::AddonProps(cp_plugin_info_t *props)
+  : id(props->identifier)
+  , version(props->version)
+  , name(props->name)
+  , path(props->plugin_path)
+  , author(props->provider_name)
+{
+  //FIXME only considers the first registered extension for each addon
+  if (props->extensions->ext_point_id)
+    type = TranslateType(props->extensions->ext_point_id);
 }
 
 /**
  * CAddon
  *
  */
+
+CAddon::CAddon(cp_plugin_info_t *props)
+  : m_props(props)
+  , m_parent(AddonPtr())
+{
+  BuildLibName(props);
+  BuildProfilePath();
+  CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
+  m_enabled = true;
+  m_hasStrings = false;
+  m_checkedStrings = false;
+}
 
 CAddon::CAddon(const AddonProps &props)
   : m_props(props)
@@ -261,37 +285,55 @@ const AddonVersion CAddon::Version()
 
 //TODO platform/path crap should be negotiated between the addon and
 // the handler for it's type
-void CAddon::BuildLibName()
+void CAddon::BuildLibName(cp_plugin_info_t *props)
 {
-  m_strLibName = "default";
-  CStdString ext;
-  switch (m_props.type)
+  if (!props)
   {
-  case ADDON_SCRAPER:
-  case ADDON_SCRAPER_LIBRARY:
-    ext = ADDON_SCRAPER_EXT;
-    break;
-  case ADDON_SCREENSAVER:
-    ext = ADDON_SCREENSAVER_EXT;
-    break;
-  case ADDON_SKIN:
-    m_strLibName = "skin.xml";
-    return;
-  case ADDON_VIZ:
-    ext = ADDON_VIS_EXT;
-    break;
-  case ADDON_SCRIPT:
-  case ADDON_PLUGIN:
-    ext = ADDON_PYTHON_EXT;
-    break;
-  default:
-    m_strLibName.clear();
-    return;
+    m_strLibName = "default";
+    CStdString ext;
+    switch (m_props.type)
+    {
+    case ADDON_SCRAPER:
+    case ADDON_SCRAPER_LIBRARY:
+      ext = ADDON_SCRAPER_EXT;
+      break;
+    case ADDON_SCREENSAVER:
+      ext = ADDON_SCREENSAVER_EXT;
+      break;
+    case ADDON_SKIN:
+      m_strLibName = "skin.xml";
+      return;
+    case ADDON_VIZ:
+      ext = ADDON_VIS_EXT;
+      break;
+    case ADDON_SCRIPT:
+    case ADDON_PLUGIN:
+      ext = ADDON_PYTHON_EXT;
+      break;
+    default:
+      m_strLibName.clear();
+      return;
+    }
+    // extensions are returned as *.ext
+    // so remove the asterisk
+    ext.erase(0,1);
+    m_strLibName.append(ext);
   }
-  // extensions are returned as *.ext
-  // so remove the asterisk
-  ext.erase(0,1);
-  m_strLibName.append(ext);
+  else
+  {
+    switch (m_props.type)
+    {
+      case ADDON_SCREENSAVER:
+        {
+          CStdString temp = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library");
+          m_strLibName = temp;
+        }
+        break;
+      default:
+        m_strLibName.clear();
+        break;
+    }
+  }
 }
 
 /**
@@ -528,6 +570,12 @@ const CStdString CAddon::Icon() const
  * CAddonLibrary
  *
  */
+
+CAddonLibrary::CAddonLibrary(cp_plugin_info_t *props)
+  : CAddon(props)
+  , m_addonType(SetAddonType())
+{
+}
 
 CAddonLibrary::CAddonLibrary(const AddonProps& props)
   : CAddon(props)

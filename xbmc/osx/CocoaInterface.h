@@ -24,6 +24,16 @@
 #include <string>
 #include "StdString.h"
 #include <Carbon/Carbon.h>
+
+class CCocoaAutoPool
+{
+  public:
+    CCocoaAutoPool();
+    ~CCocoaAutoPool();
+  private:
+    void *m_opaque_pool;
+};
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -61,6 +71,7 @@ extern "C"
   // Mouse.
   //
   void Cocoa_HideMouse();
+  void Cocoa_HideDock();
 
   // Smart folders.
   //

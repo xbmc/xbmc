@@ -100,6 +100,7 @@ public:
                                const void * const  in[6], const int  in_stride[6], int len)=0;
   virtual int av_dup_packet(AVPacket *pkt)=0;
   virtual void av_init_packet(AVPacket *pkt)=0;
+  virtual int64_t avcodec_guess_channel_layout(int nb_channels, enum CodecID codec_id, const char *fmt_name)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -171,7 +172,7 @@ public:
 
   virtual int av_dup_packet(AVPacket *pkt) { return ::av_dup_packet(pkt); }
   virtual void av_init_packet(AVPacket *pkt) { return ::av_init_packet(pkt); }
-
+  virtual int64_t avcodec_guess_channel_layout(int nb_channels, enum CodecID codec_id, const char *fmt_name) { return ::avcodec_guess_channel_layout(nb_channels, codec_id, fmt_name); }
 
   // DLL faking.
   virtual bool ResolveExports() { return true; }
@@ -208,6 +209,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
 #endif
   DEFINE_METHOD1(int, av_dup_packet, (AVPacket *p1))
   DEFINE_METHOD1(void, av_init_packet, (AVPacket *p1))
+  DEFINE_METHOD3(int64_t, avcodec_guess_channel_layout, (int p1, enum CodecID p2, const char *p3))
 
   LOAD_SYMBOLS();
 
@@ -274,6 +276,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(av_audio_convert)
     RESOLVE_METHOD(av_dup_packet)
     RESOLVE_METHOD(av_init_packet)
+    RESOLVE_METHOD(avcodec_guess_channel_layout)
   END_METHOD_RESOLVE()
 public:
     static CCriticalSection m_critSection;
@@ -310,6 +313,7 @@ public:
   virtual void av_free(void *ptr)=0;
   virtual void av_freep(void *ptr)=0;
   virtual int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding)=0;
+  virtual int64_t av_rescale_q(int64_t a, AVRational bq, AVRational cq)=0;
   virtual const AVCRC* av_crc_get_table(AVCRCId crc_id)=0;
   virtual uint32_t av_crc(const AVCRC *ctx, uint32_t crc, const uint8_t *buffer, size_t length)=0;
 };
@@ -329,6 +333,7 @@ public:
    virtual void av_free(void *ptr) { ::av_free(ptr); }
    virtual void av_freep(void *ptr) { ::av_freep(ptr); }
    virtual int64_t av_rescale_rnd(int64_t a, int64_t b, int64_t c, enum AVRounding d) { return ::av_rescale_rnd(a, b, c, d); }
+   virtual int64_t av_rescale_q(int64_t a, AVRational bq, AVRational cq) { return ::av_rescale_q(a, bq, cq); }
    virtual const AVCRC* av_crc_get_table(AVCRCId crc_id) { return ::av_crc_get_table(crc_id); }
    virtual uint32_t av_crc(const AVCRC *ctx, uint32_t crc, const uint8_t *buffer, size_t length) { return ::av_crc(ctx, crc, buffer, length); }
 
@@ -356,6 +361,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
   DEFINE_METHOD1(void, av_free, (void *p1))
   DEFINE_METHOD1(void, av_freep, (void *p1))
   DEFINE_METHOD4(int64_t, av_rescale_rnd, (int64_t p1, int64_t p2, int64_t p3, enum AVRounding p4));
+  DEFINE_METHOD3(int64_t, av_rescale_q, (int64_t p1, AVRational p2, AVRational p3));
   DEFINE_METHOD1(const AVCRC*, av_crc_get_table, (AVCRCId p1))
   DEFINE_METHOD4(uint32_t, av_crc, (const AVCRC *p1, uint32_t p2, const uint8_t *p3, size_t p4));
 
@@ -368,6 +374,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
     RESOLVE_METHOD(av_free)
     RESOLVE_METHOD(av_freep)
     RESOLVE_METHOD(av_rescale_rnd)
+    RESOLVE_METHOD(av_rescale_q)
     RESOLVE_METHOD(av_crc_get_table)
     RESOLVE_METHOD(av_crc)
   END_METHOD_RESOLVE()

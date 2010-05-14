@@ -27,6 +27,7 @@ template <typename TheStruct, typename Props>
 class DllAddonInterface
 {
 public:
+  virtual ~DllAddonInterface() {}
   virtual void GetAddon(TheStruct* pAddon) =0;
   virtual ADDON_STATUS Create(void *cb, Props *info) =0;
   virtual void Stop() =0;

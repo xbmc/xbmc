@@ -30,6 +30,7 @@
 #include "EncoderLame.h"
 #include "EncoderWav.h"
 #include "EncoderVorbis.h"
+#include "EncoderFFmpeg.h"
 #include "FileSystem/CDDADirectory.h"
 #include "MusicInfoTagLoaderFactory.h"
 #include "utils/LabelFormatter.h"
@@ -60,7 +61,7 @@ CCDDARipper::~CCDDARipper()
   delete m_pEncoder;
 }
 
-bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile, MUSIC_INFO::CMusicInfoTag* infoTag)
+bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile, const MUSIC_INFO::CMusicInfoTag& infoTag)
 {
   m_cdReader.Init(strTrackFile);
 
@@ -78,19 +79,17 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
   }
 
   // we have to set the tags before we init the Encoder
-  if (infoTag)
-  {
-    CStdString strTrack;
-    strTrack.Format("%i", atoi(strTrackFile.substr(13, strTrackFile.size() - 13 - 5).c_str()));
+  CStdString strTrack;
+  strTrack.Format("%i", atoi(strTrackFile.substr(13, strTrackFile.size() - 13 - 5).c_str()));
 
-    m_pEncoder->SetComment("Ripped with XBMC");
-    m_pEncoder->SetArtist(infoTag->GetArtist().c_str());
-    m_pEncoder->SetTitle(infoTag->GetTitle().c_str());
-    m_pEncoder->SetAlbum(infoTag->GetAlbum().c_str());
-    m_pEncoder->SetGenre(infoTag->GetGenre().c_str());
-    m_pEncoder->SetTrack(strTrack.c_str());
-    m_pEncoder->SetYear(infoTag->GetYearString().c_str());
-  }
+  m_pEncoder->SetComment("Ripped with XBMC");
+  m_pEncoder->SetArtist(infoTag.GetArtist().c_str());
+  m_pEncoder->SetTitle(infoTag.GetTitle().c_str());
+  m_pEncoder->SetAlbum(infoTag.GetAlbum().c_str());
+  m_pEncoder->SetAlbumArtist(infoTag.GetAlbumArtist().c_str());
+  m_pEncoder->SetGenre(infoTag.GetGenre().c_str());
+  m_pEncoder->SetTrack(strTrack.c_str());
+  m_pEncoder->SetYear(infoTag.GetYearString().c_str());
 
   // init encoder
   CStdString strFile2=CUtil::MakeLegalPath(strFile);
@@ -140,7 +139,7 @@ int CCDDARipper::RipChunk(int& nPercent)
 
 // rip a single track from cd to hd
 // strFileName has to be a valid filename and the directory must exist
-bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile, MUSIC_INFO::CMusicInfoTag& infoTag)
+bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile, const MUSIC_INFO::CMusicInfoTag& infoTag)
 {
   int iPercent, iOldPercent = 0;
   bool bCancelled = false;
@@ -172,7 +171,7 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
   }
 
   // init ripper
-  if (!Init(strTrackFile, strFilename, &infoTag))
+  if (!Init(strTrackFile, strFilename, infoTag))
   {
     CLog::Log(LOGERROR, "Error: CCDDARipper::Init failed");
     return false;
@@ -236,7 +235,8 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
     CFile::Delete(strFilename);
   }
 
-  if (bCancelled) {
+  if (bCancelled)
+  {
     CLog::Log(LOGWARNING, "User Cancelled CDDA Rip");
     CFile::Delete(strFilename);
   }
@@ -247,55 +247,28 @@ bool CCDDARipper::Rip(const CStdString& strTrackFile, const CStdString& strFile,
 // rip a single track from cd
 bool CCDDARipper::RipTrack(CFileItem* pItem)
 {
-  CStdString strDirectory = g_guiSettings.GetString("audiocds.recordingpath");
-  CUtil::AddSlashAtEnd(strDirectory);
-  CFileItem ripPath(strDirectory, true);
-
-  int LegalType = LEGAL_NONE;
-  if (ripPath.IsSmb())
-    LegalType=LEGAL_WIN32_COMPAT;
-#ifdef _WIN32  
-  if (ripPath.IsHD())
-    LegalType=LEGAL_WIN32_COMPAT;
-#endif
-  
-  if (pItem->m_strPath.Find(".cdda") < 0) return false;
-  if (strDirectory.size() < 3)
+  // don't rip non cdda items
+  CStdString strExt;
+  CUtil::GetExtension(pItem->m_strPath, strExt);
+  if (strExt.CompareNoCase(".cdda") != 0) 
   {
-    // no rip path has been set, show error
-    CLog::Log(LOGERROR, "Error: CDDARipPath has not been set");
-    g_graphicsContext.Lock();
-    CGUIDialogOK::ShowAndGetInput(257, 608, 609, 0);
-    g_graphicsContext.Unlock();
+    CLog::Log(LOGDEBUG, "cddaripper: file is not a cdda track");
     return false;
   }
 
-  // if album name is set, then we use this as the directory to place the new file in.
-  if (!pItem->GetMusicInfoTag()->GetAlbum().empty())
-  {
-    strDirectory += CUtil::MakeLegalFileName(pItem->GetMusicInfoTag()->GetAlbum().c_str(), LegalType);
-    CUtil::AddSlashAtEnd(strDirectory);
-  }
+  // construct directory where the track is stored
+  CStdString strDirectory;
+  int legalType;
+  if (!CreateAlbumDir(*pItem->GetMusicInfoTag(), strDirectory, legalType))
+    return false;
 
-  // Create directory if it doesn't exist
-  CUtil::CreateDirectoryEx(strDirectory);
-
-  CStdString strFile;
-  CUtil::AddFileToFolder(strDirectory, GetTrackName(pItem, LegalType), strFile);
+  CStdString strFile = CUtil::MakeLegalPath(CUtil::AddFileToFolder(strDirectory, GetTrackName(pItem)), legalType);
 
   return Rip(pItem->m_strPath, strFile.c_str(), *pItem->GetMusicInfoTag());
 }
 
 bool CCDDARipper::RipCD()
 {
-  int iTrack = 0;
-  bool bResult = true;
-  CStdString strFile;
-  CStdString strDirectory = g_guiSettings.GetString("audiocds.recordingpath");
-  CUtil::AddSlashAtEnd(strDirectory);
-  CFileItem ripPath(strDirectory, true);
-  bool bIsFATX = !ripPath.IsSmb();
-
   // return here if cd is not a CDDA disc
   MEDIA_DETECT::CCdInfo* pInfo = g_mediaManager.GetCdInfo();
   if (pInfo == NULL && !pInfo->IsAudio(1))
@@ -304,22 +277,12 @@ bool CCDDARipper::RipCD()
     return false;
   }
 
-  if (strDirectory.size() < 3)
-  {
-    // no rip path has been set, show error
-    CLog::Log(LOGERROR, "Error: CDDARipPath has not been set");
-    g_graphicsContext.Lock();
-    CGUIDialogOK::ShowAndGetInput(257, 608, 609, 0);
-    g_graphicsContext.Unlock();
-    return false;
-  }
-
   // get cd cdda contents
   CFileItemList vecItems;
   XFILE::CCDDADirectory directory;
   directory.GetDirectory("cdda://local/", vecItems);
 
-  //  Get cddb info
+  // get cddb info
   for (int i = 0; i < vecItems.Size(); ++i)
   {
     CFileItemPtr pItem = vecItems[i];
@@ -333,62 +296,20 @@ bool CCDDARipper::RipCD()
     }
   }
 
-  // if album name from first item is set,
-  // then we use this as the directory to place the new file in.
-  CStdString strAlbumDir;
-  if (!vecItems[0]->GetMusicInfoTag()->GetAlbum().empty())
-  {
-    int LegalType=LEGAL_NONE;
-    if (ripPath.IsSmb())
-      LegalType=LEGAL_WIN32_COMPAT;
-#ifdef _WIN32
-    if (ripPath.IsHD())
-      LegalType=LEGAL_WIN32_COMPAT;
-#endif
-    strAlbumDir=CUtil::MakeLegalFileName(vecItems[0]->GetMusicInfoTag()->GetAlbum().c_str(), LegalType);
-  }
-
-    // No legal fatx directory name or no album in tag
-  if (strAlbumDir.IsEmpty())
-  {
-    // create a directory based on current date
-    SYSTEMTIME datetime;
-    CStdString strDate;
-    GetLocalTime(&datetime);
-    int iNumber = 1;
-    while (1)
-    {
-      strDate.Format("%04i-%02i-%02i-%i", datetime.wYear, datetime.wMonth, datetime.wDay, iNumber);
-      if (!CGUIDialogKeyboard::ShowAndGetInput(strDate, g_localizeStrings.Get(748), false))
-        return false;
-      if (!CFile::Exists(strDirectory + strDate))
-      {
-        strAlbumDir=strDate;
-        break;
-      }
-      iNumber++;
-    }
-  }
-
   // construct directory where the tracks are stored
-  strDirectory += strAlbumDir;
-  CUtil::AddSlashAtEnd(strDirectory);
-
-  // Create directory if it doesn't exist
-  if (!CUtil::CreateDirectoryEx(strDirectory))
-  {
-    CLog::Log(LOGERROR, "Unable to create directory '%s'", strDirectory.c_str());
+  CStdString strDirectory;
+  int legalType;
+  if (!CreateAlbumDir(*vecItems[0]->GetMusicInfoTag(), strDirectory, legalType))
     return false;
-  }
 
   // rip all tracks one by one, if one fails we quit and return false
-  for (int i = 0; i < vecItems.Size() && bResult == true; i++)
+  for (int i = 0; i < vecItems.Size(); i++)
   {
     CFileItemPtr item = vecItems[i];
-    CStdString track(GetTrackName(item.get(), bIsFATX));
+    CStdString track(GetTrackName(item.get()));
 
     // construct filename
-    CUtil::AddFileToFolder(strDirectory, track, strFile);
+    CStdString strFile = CUtil::MakeLegalPath(CUtil::AddFileToFolder(strDirectory, track), legalType);
 
     unsigned int tick = CTimeUtils::GetTimeMS();
 
@@ -397,13 +318,15 @@ bool CCDDARipper::RipCD()
       continue;
 
     // return false if Rip returned false (this means an error or the user cancelled
-    if (!Rip(item->m_strPath, strFile.c_str(), *item->GetMusicInfoTag())) return false;
+    if (!Rip(item->m_strPath, strFile.c_str(), *item->GetMusicInfoTag()))
+      return false;
 
     tick = CTimeUtils::GetTimeMS() - tick;
     CStdString strTmp;
     StringUtils::SecondsToTimeString(tick / 1000, strTmp);
-    CLog::Log(LOGINFO, "Ripping Track %d took %s", iTrack, strTmp.c_str());
+    CLog::Log(LOGINFO, "Ripping Track %d took %s", i, strTmp.c_str());
   }
+
   CLog::Log(LOGINFO, "Ripped CD succesfull");
   return true;
 }
@@ -415,7 +338,114 @@ const char* CCDDARipper::GetExtension(int iEncoder)
   return ".mp3";
 }
 
-CStdString CCDDARipper::GetTrackName(CFileItem *item, int LegalType)
+bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag, CStdString& strDirectory, int& legalType)
+{
+  strDirectory = g_guiSettings.GetString("audiocds.recordingpath");
+  CUtil::AddSlashAtEnd(strDirectory);
+
+  if (strDirectory.size() < 3)
+  {
+    // no rip path has been set, show error
+    CLog::Log(LOGERROR, "Error: CDDARipPath has not been set");
+    g_graphicsContext.Lock();
+    CGUIDialogOK::ShowAndGetInput(257, 608, 609, 0);
+    g_graphicsContext.Unlock();
+    return false;
+  }
+
+  legalType = LEGAL_NONE;
+  CFileItem ripPath(strDirectory, true);
+  if (ripPath.IsSmb())
+    legalType = LEGAL_WIN32_COMPAT;
+#ifdef _WIN32
+  if (ripPath.IsHD())
+    legalType = LEGAL_WIN32_COMPAT;
+#endif
+
+  CStdString strAlbumDir = GetAlbumDirName(infoTag);
+
+  if (!strAlbumDir.IsEmpty())
+  {
+    CUtil::AddFileToFolder(strDirectory, strAlbumDir, strDirectory);
+    CUtil::AddSlashAtEnd(strDirectory);
+  }
+
+  CUtil::MakeLegalPath(strDirectory, legalType);
+
+  // Create directory if it doesn't exist
+  if (!CUtil::CreateDirectoryEx(strDirectory))
+  {
+    CLog::Log(LOGERROR, "Unable to create directory '%s'", strDirectory.c_str());
+    return false;
+  }
+
+  return true;
+}
+
+CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag)
+{
+  CStdString strAlbumDir;
+
+  // use audiocds.trackpathformat setting to format
+  // directory name where CD tracks will be stored,
+  // use only format part ending at the last '/'
+  strAlbumDir = g_guiSettings.GetString("audiocds.trackpathformat");
+  int pos = max(strAlbumDir.ReverseFind('/'), strAlbumDir.ReverseFind('\\'));
+  if (pos < 0)
+    return ""; // no directory
+  
+  strAlbumDir = strAlbumDir.Left(pos);
+
+  // replace %A with album artist name
+  if (strAlbumDir.Find("%A") != -1)
+  {
+    CStdString strAlbumArtist = infoTag.GetAlbumArtist();
+    if (strAlbumArtist.IsEmpty())
+      strAlbumArtist = infoTag.GetArtist();
+    if (strAlbumArtist.IsEmpty())
+      strAlbumArtist = "Unknown Artist";
+    else
+      strAlbumArtist.Replace('/', '_');
+    strAlbumDir.Replace("%A", strAlbumArtist);
+  }
+
+  // replace %B with album title
+  if (strAlbumDir.Find("%B") != -1)
+  {
+    CStdString strAlbum = infoTag.GetAlbum();
+    if (strAlbum.IsEmpty()) 
+      strAlbum.Format("Unknown Album %s", CDateTime::GetCurrentDateTime().GetAsLocalizedDateTime().c_str());
+    else
+      strAlbum.Replace('/', '_');
+    strAlbumDir.Replace("%B", strAlbum);
+  }
+
+  // replace %G with genre
+  if (strAlbumDir.Find("%G") != -1)
+  {
+    CStdString strGenre = infoTag.GetGenre();
+    if (strGenre.IsEmpty())
+      strGenre = "Unknown Genre";
+    else
+      strGenre.Replace('/', '_');
+    strAlbumDir.Replace("%G", strGenre);
+  }
+
+  // replace %Y with year
+  if (strAlbumDir.Find("%Y") != -1)
+  {
+    CStdString strYear = infoTag.GetYearString();
+    if (strYear.IsEmpty())
+      strYear = "Unknown Year";
+    else
+      strYear.Replace('/', '_');
+    strAlbumDir.Replace("%Y", strYear);
+  }
+
+  return strAlbumDir;
+}
+
+CStdString CCDDARipper::GetTrackName(CFileItem *item)
 {
   // get track number from "cdda://local/01.cdda"
   int trackNumber = atoi(item->m_strPath.substr(13, item->m_strPath.size() - 13 - 5).c_str());
@@ -423,7 +453,17 @@ CStdString CCDDARipper::GetTrackName(CFileItem *item, int LegalType)
   // Format up our ripped file label
   CFileItem destItem(*item);
   destItem.SetLabel("");
-  CLabelFormatter formatter(g_guiSettings.GetString("audiocds.trackformat"), "");
+
+  // get track file name format from audiocds.trackpathformat setting,
+  // use only format part starting from the last '/'
+  CStdString strFormat = g_guiSettings.GetString("audiocds.trackpathformat");
+  int pos = max(strFormat.ReverseFind('/'), strFormat.ReverseFind('\\'));
+  if (pos != -1)
+  {
+    strFormat = strFormat.Right(strFormat.GetLength() - pos - 1);
+  }
+
+  CLabelFormatter formatter(strFormat, "");
   formatter.FormatLabel(&destItem);
 
   // grab the label to use it as our ripped filename
@@ -432,8 +472,6 @@ CStdString CCDDARipper::GetTrackName(CFileItem *item, int LegalType)
     track.Format("%s%02i", "Track-", trackNumber);
   track += GetExtension(g_guiSettings.GetInt("audiocds.encoder"));
 
-  // make sure the filename is legal
-  track = CUtil::MakeLegalFileName(track, LegalType);
   return track;
 }
 

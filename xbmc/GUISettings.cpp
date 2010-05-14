@@ -351,7 +351,7 @@ void CGUISettings::Initialize()
   AddBool(acd, "audiocds.usecddb", 227, true);
   AddSeparator(acd, "audiocds.sep1");
   AddPath(acd,"audiocds.recordingpath",20000,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
-  AddString(acd, "audiocds.trackformat", 13307, "[%N. ]%T - %A", EDIT_CONTROL_INPUT, false, 16016);
+  AddString(acd, "audiocds.trackpathformat", 13307, "%A - %B/[%N. ][%A - ]%T", EDIT_CONTROL_INPUT, false, 16016);
   map<int,int> encoders;
   encoders.insert(make_pair(34000,CDDARIP_ENCODER_LAME));
   encoders.insert(make_pair(34001,CDDARIP_ENCODER_VORBIS));
@@ -436,7 +436,8 @@ void CGUISettings::Initialize()
 
   map<int,int> audiomode;
   audiomode.insert(make_pair(338,AUDIO_ANALOG));
-  audiomode.insert(make_pair(339,AUDIO_DIGITAL));
+  audiomode.insert(make_pair(339,AUDIO_IEC958));
+  audiomode.insert(make_pair(420,AUDIO_HDMI  ));
   AddInt(ao, "audiooutput.mode", 337, AUDIO_ANALOG, audiomode, SPIN_CONTROL_TEXT);
 
 /* hide this from apple users until CoreAudio has been updated to support this */
@@ -801,7 +802,7 @@ void CGUISettings::Initialize()
 
   CSettingsCategory* ss = AddCategory(7, "screensaver", 360);
   AddInt(ss, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddString(ss, "screensaver.mode", 356, "Dim", SPIN_CONTROL_TEXT);
+  AddDefaultAddon(ss, "screensaver.mode", 356, "_virtual.dim", ADDON_SCREENSAVER);
   AddBool(ss, "screensaver.usemusicvisinstead", 13392, true);
   AddBool(ss, "screensaver.usedimonpause", 22014, true);
   AddSeparator(ss, "screensaver.sep1");

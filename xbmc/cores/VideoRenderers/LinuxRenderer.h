@@ -10,9 +10,6 @@
 #endif
 #include "BaseRenderer.h"
 
-#include "../ffmpeg/DllSwScale.h"
-#include "../ffmpeg/DllAvCodec.h"
-
 #define MAX_PLANES 3
 #define MAX_FIELDS 3
 
@@ -172,9 +169,9 @@ protected:
   // clear colour for "black" bars
   DWORD m_clearColour;
 
-  DllSwScale	m_dllSwScale;
-  DllAvCodec	m_dllAvCodec;
-  DllAvUtil	m_dllAvUtil;
+  DllAvUtil   *m_dllAvUtil;
+  DllAvCodec  *m_dllAvCodec;
+  DllSwScale  *m_dllSwScale;
 };
 
 #endif

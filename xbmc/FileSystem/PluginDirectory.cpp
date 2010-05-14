@@ -79,7 +79,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
 {
   CURL url(strPath);
 
-  if (!CAddonMgr::Get()->GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN))
+  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), m_addon, ADDON_PLUGIN))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
     return false;
@@ -299,6 +299,11 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
         dir->m_listItems->AddSortMethod(SORT_METHOD_GENRE, 515, LABEL_MASKS("%T", "%G"));
         break;
       }
+    case SORT_METHOD_COUNTRY:
+      {
+        dir->m_listItems->AddSortMethod(SORT_METHOD_COUNTRY, 574, LABEL_MASKS("%T", "%G"));
+        break;
+      }
     case SORT_METHOD_VIDEO_TITLE:
       {
         dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_TITLE, 369, LABEL_MASKS("%T", "%D"));
@@ -386,7 +391,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
     return false;
 
   AddonPtr addon;
-  if (!CAddonMgr::Get()->GetAddon(url.GetHostName(), addon, ADDON_PLUGIN))
+  if (!CAddonMgr::Get().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN))
   {
     CLog::Log(LOGERROR, "Unable to find plugin %s", url.GetHostName().c_str());
     return false;
@@ -427,7 +432,7 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 
 bool CPluginDirectory::HasPlugins(const CONTENT_TYPE &type)
 {
-  return CAddonMgr::Get()->HasAddons(ADDON_PLUGIN, type);
+  return CAddonMgr::Get().HasAddons(ADDON_PLUGIN, type);
 }
 
 bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName)

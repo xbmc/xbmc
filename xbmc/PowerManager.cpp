@@ -27,6 +27,7 @@
 #include "WindowingFactory.h"
 #include "utils/log.h"
 #include "AnnouncementManager.h"
+#include "LocalizeStrings.h"
 
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
@@ -61,7 +62,7 @@ CPowerManager g_powerManager;
 
 CPowerManager::CPowerManager()
 {
-  m_instance = new CNullPowerSyscall();
+  m_instance = NULL;
 }
 
 CPowerManager::~CPowerManager()
@@ -71,28 +72,23 @@ CPowerManager::~CPowerManager()
 
 void CPowerManager::Initialize()
 {
-  delete m_instance;
-
 #ifdef __APPLE__
   m_instance = new CCocoaPowerSyscall();
 #elif defined(_LINUX) && defined(HAS_DBUS)
-  if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
-    m_instance = new CConsoleDeviceKitPowerSyscall();
-  else if (CConsoleUPowerSyscall::HasDeviceConsoleKit())
+  if (CConsoleUPowerSyscall::HasDeviceConsoleKit())
     m_instance = new CConsoleUPowerSyscall();
+  else if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
+    m_instance = new CConsoleDeviceKitPowerSyscall();
 #ifdef HAS_HAL
   else
     m_instance = new CHALPowerSyscall();
-#else
-  else
-    m_instance = new CNULLPowerSyscall();
 #endif
 #elif defined(_WIN32)
   m_instance = new CWin32PowerSyscall();
-#else
-  m_instance = new CNullPowerSyscall();
 #endif
 
+  if (m_instance == NULL)
+    m_instance = new CNullPowerSyscall();
 }
 
 void CPowerManager::SetDefaults()
@@ -156,7 +152,7 @@ bool CPowerManager::Suspend()
 #if defined(HAVE_LIBCRYSTALHD)
     CCrystalHD::GetInstance()->Sleep();
 #endif
-    g_application.m_bRunResumeJobs = true;
+
 #ifdef HAS_LCD
     g_lcd->SetBackLight(0);
 #endif
@@ -177,7 +173,7 @@ bool CPowerManager::Hibernate()
 #if defined(HAVE_LIBCRYSTALHD)
     CCrystalHD::GetInstance()->Sleep();
 #endif
-    g_application.m_bRunResumeJobs = true;
+
     g_Keyboard.ResetState();
     success = m_instance->Hibernate();
   }
@@ -197,9 +193,40 @@ bool CPowerManager::Reboot()
   return success;
 }
 
-void CPowerManager::Resume()
+bool CPowerManager::CanPowerdown()
+{
+  return m_instance->CanPowerdown();
+}
+bool CPowerManager::CanSuspend()
+{
+  return m_instance->CanSuspend();
+}
+bool CPowerManager::CanHibernate()
+{
+  return m_instance->CanHibernate();
+}
+bool CPowerManager::CanReboot()
+{
+  return m_instance->CanReboot();
+}
+
+void CPowerManager::ProcessEvents()
+{
+  m_instance->PumpPowerEvents(this);
+}
+
+void CPowerManager::OnSleep()
+{
+  CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
+  CAnnouncementManager::Announce(System, "xbmc", "Sleep");
+
+  g_application.StopPlaying();
+}
+
+void CPowerManager::OnWake()
 {
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
+  CAnnouncementManager::Announce(System, "xbmc", "Wake");
 
 #ifdef HAS_SDL
   if (g_Windowing.IsFullScreen())
@@ -238,25 +265,14 @@ void CPowerManager::Resume()
 
   g_application.UpdateLibraries();
 
-  // reset
-  g_application.m_bRunResumeJobs = false;
-
   CAnnouncementManager::Announce(System, "xbmc", "Resume");
 }
 
-bool CPowerManager::CanPowerdown()
+void CPowerManager::OnLowBattery()
 {
-  return m_instance->CanPowerdown();
-}
-bool CPowerManager::CanSuspend()
-{
-  return m_instance->CanSuspend();
-}
-bool CPowerManager::CanHibernate()
-{
-  return m_instance->CanHibernate();
-}
-bool CPowerManager::CanReboot()
-{
-  return m_instance->CanReboot();
+  CLog::Log(LOGNOTICE, "%s: Running low battery jobs", __FUNCTION__);
+
+  g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13050), "");
+
+  CAnnouncementManager::Announce(System, "xbmc", "LowBattery");
 }

@@ -19,7 +19,7 @@
  *
  */
 
-#include "MusicLibrary.h"
+#include "AudioLibrary.h"
 #include "../MusicDatabase.h"
 #include "../FileItem.h"
 #include "../Util.h"
@@ -31,7 +31,7 @@ using namespace MUSIC_INFO;
 using namespace Json;
 using namespace JSONRPC;
 
-JSON_STATUS CMusicLibrary::GetArtists(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
@@ -54,7 +54,7 @@ JSON_STATUS CMusicLibrary::GetArtists(const CStdString &method, ITransportLayer 
   return OK;
 }
 
-JSON_STATUS CMusicLibrary::GetAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CAudioLibrary::GetAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
@@ -78,7 +78,7 @@ JSON_STATUS CMusicLibrary::GetAlbums(const CStdString &method, ITransportLayer *
   return OK;
 }
 
-JSON_STATUS CMusicLibrary::GetSongs(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CAudioLibrary::GetSongs(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   if (!(parameterObject.isObject() || parameterObject.isNull()))
     return InvalidParams;
@@ -103,13 +103,13 @@ JSON_STATUS CMusicLibrary::GetSongs(const CStdString &method, ITransportLayer *t
   return OK;
 }
 
-JSON_STATUS CMusicLibrary::ScanForContent(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CAudioLibrary::ScanForContent(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
 {
   g_application.getApplicationMessenger().ExecBuiltIn("updatelibrary(music)");
   return ACK;
 }
 
-bool CMusicLibrary::FillFileItemList(const Value &parameterObject, CFileItemList &list)
+bool CAudioLibrary::FillFileItemList(const Value &parameterObject, CFileItemList &list)
 {
   CMusicDatabase musicdatabase;
   if ((parameterObject["artistid"].isInt() || parameterObject["albumid"].isInt() || parameterObject["genreid"].isInt()) && musicdatabase.Open())

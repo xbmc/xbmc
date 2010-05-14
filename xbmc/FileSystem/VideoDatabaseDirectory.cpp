@@ -155,6 +155,13 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
     strLabel += strTemp;
   }
 
+  // get country
+  if (params.GetCountryId() != -1)
+  {
+    videodatabase.GetCountryById(params.GetCountryId(), strTemp);
+    strLabel += strTemp;
+  }
+
   // get set
   if (params.GetSetId() != -1)
   {
@@ -183,6 +190,8 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
       strLabel = g_localizeStrings.Get(344); break;
     case NODE_TYPE_GENRE: // Genres
       strLabel = g_localizeStrings.Get(135); break;
+    case NODE_TYPE_COUNTRY: // Countries
+      strLabel = g_localizeStrings.Get(20451); break;
     case NODE_TYPE_YEAR: // Year
       strLabel = g_localizeStrings.Get(562); break;
     case NODE_TYPE_DIRECTOR: // Director
@@ -244,6 +253,8 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
     return "DefaultActor.png";
   case NODE_TYPE_GENRE: // Genres
     return "DefaultGenre.png";
+  case NODE_TYPE_COUNTRY: // Countries
+    return "DefaultCountry.png";
   case NODE_TYPE_SETS: // Sets
     return "DefaultSets.png";
   case NODE_TYPE_YEAR: // Year

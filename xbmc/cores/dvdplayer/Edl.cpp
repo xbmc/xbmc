@@ -76,23 +76,23 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
    * content (obtained from http://en.wikipedia.org/wiki/Frame_rate)
    */
   float fFramesPerSecond;
-  if (fFrameRate == 59.940) // NTSC or 60i content
+  if (fFrameRate == 59.940f) // NTSC or 60i content
   {
     CLog::Log(LOGDEBUG, "%s - Adjusting frames per second from 59.940 to 29.97 assuming NTSC or 60i (interlaced)",
               __FUNCTION__);
-    fFramesPerSecond = 29.97;
+    fFramesPerSecond = 29.97f;
   }
-  else if (fFrameRate == 47.952) // 24p -> NTSC conversion
+  else if (fFrameRate == 47.952f) // 24p -> NTSC conversion
   {
     CLog::Log(LOGDEBUG, "%s - Adjusting frames per second from 47.952 to 23.976 assuming 24p -> NTSC conversion (interlaced)",
               __FUNCTION__);
-    fFramesPerSecond = 23.976;
+    fFramesPerSecond = 23.976f;
   }
   else if (iHeight == 576) // PAL. Can't used fps check of 50.0 as this is valid for 720p
   {
     CLog::Log(LOGDEBUG, "%s - Setting frames per second to 25.0 assuming PAL (interlaced)",
                __FUNCTION__);
-    fFramesPerSecond = 25.0;
+    fFramesPerSecond = 25.0f;
   }
   else if (iHeight == 1080) // Don't know of any 1080p content being broadcast so assume 1080i
   {

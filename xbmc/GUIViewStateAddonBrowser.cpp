@@ -59,7 +59,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
   m_sources.clear();
 
   VECADDONS addons;
-  CAddonMgr::Get()->GetAllAddons(addons);
+  CAddonMgr::Get().GetAllAddons(addons);
   if (addons.size())
   {
     CMediaSource share;
@@ -70,7 +70,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     m_sources.push_back(share);
   }
   addons.clear();
-  CAddonMgr::Get()->GetAddons(ADDON_REPOSITORY,addons,CONTENT_NONE,true);
+  CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons,CONTENT_NONE,true);
   if (addons.size())
   {
     CMediaSource share;

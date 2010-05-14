@@ -1,5 +1,4 @@
 #pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -21,17 +20,21 @@
  *
  */
 
-#include "GUIDialog.h"
+#include "DirectoryNode.h"
 
-class CGUIWindowScriptsInfo :
-      public CGUIDialog
+namespace XFILE
 {
-public:
-  CGUIWindowScriptsInfo(void);
-  virtual ~CGUIWindowScriptsInfo(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
-  void AddText(const CStdString& strLabel);
-protected:
-  CStdString strInfo;
-};
+  namespace VIDEODATABASEDIRECTORY
+  {
+    class CDirectoryNodeCountry : public CDirectoryNode
+    {
+    public:
+      CDirectoryNodeCountry(const CStdString& strName, CDirectoryNode* pParent);
+    protected:
+      virtual NODE_TYPE GetChildType();
+      virtual bool GetContent(CFileItemList& items);
+    };
+  }
+}
+
+

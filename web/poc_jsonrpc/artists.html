@@ -15,7 +15,7 @@ function writeArtist(artist) {
 
   var http_request = new XMLHttpRequest();
   http_request.open( "POST", "jsonrpc", false );
-  http_request.send('{"jsonrpc": "2.0", "method": "MusicLibrary.GetAlbums", "params": { "artistid": ' + artist["artistid"] + ' }, "id": 1}');
+  http_request.send('{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "artistid": ' + artist["artistid"] + ' }, "id": 1}');
 
   var the_object = JSON.parse(http_request.responseText);
   var result = the_object["result"];
@@ -24,10 +24,8 @@ function writeArtist(artist) {
   for (var property in array) {
     var item = array[property];
     document.write('<a href="nowplaying.html" onclick=CallPlay(' + item["albumid"] + ')>');
-    if (item["thumbnail"])
-      document.write('<img src="thumb/' + item["thumbnail"] + '.jpg" class="cover" alt="' + item["label"] + '"></img>');
-    else
-      document.write('<img src="images/DefaultAlbumCover.png" class="cover" alt="' + item["label"] + '"></img>');
+    var imgSrc = item["thumbnail"] ? ('vfs/' + escape(item["thumbnail"])) : "images/DefaultAlbumCover.png";
+    document.write('<img src="' + imgSrc + '" class="cover" alt="' + item["label"] + '"></img>');
     document.write('</a>');
   }
 }
@@ -57,7 +55,7 @@ function writeArtist(artist) {
 <script type="text/javascript">
 var http_request = new XMLHttpRequest();
 http_request.open( "POST", "jsonrpc", false );
-http_request.send('{"jsonrpc": "2.0", "method": "MusicLibrary.GetArtists", "id": 1}');
+http_request.send('{"jsonrpc": "2.0", "method": "AudioLibrary.GetArtists", "id": 1}');
 
 var the_object = JSON.parse(http_request.responseText);
 var result = the_object["result"];

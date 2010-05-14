@@ -516,6 +516,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     if (strTest.Equals("videoplayer.title")) ret = VIDEOPLAYER_TITLE;
     else if (strTest.Equals("videoplayer.genre")) ret = VIDEOPLAYER_GENRE;
+    else if (strTest.Equals("videoplayer.country")) ret = VIDEOPLAYER_COUNTRY;
     else if (strTest.Equals("videoplayer.originaltitle")) ret = VIDEOPLAYER_ORIGINALTITLE;
     else if (strTest.Equals("videoplayer.director")) ret = VIDEOPLAYER_DIRECTOR;
     else if (strTest.Equals("videoplayer.year")) ret = VIDEOPLAYER_YEAR;
@@ -899,6 +900,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("pictureresolution")) return LISTITEM_PICTURE_RESOLUTION;
   else if (info.Equals("picturedatetime")) return LISTITEM_PICTURE_DATETIME;
   else if (info.Equals("studio")) return LISTITEM_STUDIO;
+  else if (info.Equals("country")) return LISTITEM_COUNTRY;
   else if (info.Equals("mpaa")) return LISTITEM_MPAA;
   else if (info.Equals("cast")) return LISTITEM_CAST;
   else if (info.Equals("castandrole")) return LISTITEM_CAST_AND_ROLE;
@@ -1113,6 +1115,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case VIDEOPLAYER_TVSHOW:
   case VIDEOPLAYER_PREMIERED:
   case VIDEOPLAYER_STUDIO:
+  case VIDEOPLAYER_COUNTRY:
   case VIDEOPLAYER_MPAA:
   case VIDEOPLAYER_TOP250:
   case VIDEOPLAYER_CAST:
@@ -3111,6 +3114,8 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
 
     case VIDEOPLAYER_STUDIO:
       return m_currentFile->GetVideoInfoTag()->m_strStudio;
+    case VIDEOPLAYER_COUNTRY:
+      return m_currentFile->GetVideoInfoTag()->m_strCountry;
     case VIDEOPLAYER_MPAA:
       return m_currentFile->GetVideoInfoTag()->m_strMPAARating;
     case VIDEOPLAYER_TOP250:
@@ -3872,6 +3877,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_STUDIO:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strStudio;
+    break;
+  case LISTITEM_COUNTRY:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_strCountry;
     break;
   case LISTITEM_MPAA:
     if (item->HasVideoInfoTag())

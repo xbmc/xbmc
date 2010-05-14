@@ -29,7 +29,8 @@ namespace ADDON
 class CScreenSaver : public ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>
 {
 public:
-  CScreenSaver(const ADDON::AddonProps& props) : ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>(props) {};
+  CScreenSaver(const AddonProps &props) : ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>(props) {};
+  CScreenSaver(cp_plugin_info_t *props) : ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>(props) {};
   virtual ~CScreenSaver() {}
 
   // Things that MUST be supplied by the child classes

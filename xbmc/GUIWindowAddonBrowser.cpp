@@ -179,7 +179,7 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
   
   TYPE type = TranslateType(pItem->GetProperty("Addon.intType"));
   AddonPtr addon;
-  if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"),
+  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID"),
                                   addon, type, false))
     return;
 
@@ -201,13 +201,13 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
   {
     if (button == CONTEXT_BUTTON_SCAN)
     {
-      CAddonMgr::Get()->FindAddons();
+      CAddonMgr::Get().FindAddons();
       return true;
     }
   }
   TYPE type = TranslateType(pItem->GetProperty("Addon.intType"));
   AddonPtr addon;
-  if (!CAddonMgr::Get()->GetAddon(pItem->GetProperty("Addon.ID"),
+  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID"),
                                   addon, type, false))
     return false;
 
@@ -314,7 +314,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
                                      it != addon->GetDeps().end();++it)
             {
               AddonPtr addon2;
-              if (!CAddonMgr::Get()->GetAddon(it->first,addon2))
+              if (!CAddonMgr::Get().GetAddon(it->first,addon2))
               {
                 CAddonDatabase database;
                 database.Open();
@@ -325,7 +325,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
             if (addon->Type() >= ADDON_VIZ_LIBRARY)
               continue;
             AddonPtr addon2;
-            if (CAddonMgr::Get()->GetAddon(addon->ID(),addon2))
+            if (CAddonMgr::Get().GetAddon(addon->ID(),addon2))
             {
               g_application.m_guiDialogKaiToast.QueueNotification(
                                                   CGUIDialogKaiToast::Info,
@@ -343,7 +343,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
         }
       }
     }
-    CAddonMgr::Get()->FindAddons();
+    CAddonMgr::Get().FindAddons();
 
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
     g_windowManager.SendThreadMessage(msg);

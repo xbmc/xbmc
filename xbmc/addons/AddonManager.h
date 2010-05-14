@@ -29,6 +29,12 @@
 #include <vector>
 #include <map>
 
+class DllLibCPluff;
+extern "C"
+{
+#include "lib/cpluff/libcpluff/cpluff.h"
+}
+
 namespace ADDON
 {
   typedef std::vector<AddonPtr> VECADDONS;
@@ -54,8 +60,8 @@ namespace ADDON
   {
     public:
       virtual ~IAddonMgrCallback() {};
-      virtual bool RequestRestart(const IAddon* addon, bool datachanged)=0;
-      virtual bool RequestRemoval(const IAddon* addon)=0;
+      virtual bool RequestRestart(AddonPtr addon, bool datachanged)=0;
+      virtual bool RequestRemoval(AddonPtr addon)=0;
   };
 
   /**
@@ -67,8 +73,9 @@ namespace ADDON
   class CAddonMgr : public IJobCallback
   {
   public:
-    static CAddonMgr* Get();
-    virtual ~CAddonMgr();
+    static CAddonMgr &Get();
+    bool Init();
+    void DeInit();
 
     IAddonMgrCallback* GetCallbackForType(TYPE type);
     bool RegisterAddonMgrCallback(TYPE type, IAddonMgrCallback* cb);
@@ -77,6 +84,7 @@ namespace ADDON
     /* Addon access */
     bool GetDefault(const TYPE &type, AddonPtr &addon, const CONTENT_TYPE &content = CONTENT_NONE);
     bool GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true);
+    AddonPtr GetAddon2(const CStdString &str);
     bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE, bool enabledOnly = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
     bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
@@ -93,12 +101,33 @@ namespace ADDON
                     std::map<CStdString, AddonPtr>& unresolved);
 
     void OnJobComplete(unsigned int jobID, bool sucess, CJob* job);
+
+    /* libcpluff */
+    bool GetExtensions(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content);
+    CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
+    void CPluffFatalError(const char *msg);
+    void CPluffLog(cp_log_severity_t level, const char *msg, const char *apid, void *user_data);
+    cp_context_t *m_cp_context;
+    DllLibCPluff *m_cpluff;
+
+    static void cp_fatalErrorHandler(const char *msg) {
+      CAddonMgr::Get().CPluffFatalError(msg);
+    }
+    static void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data) {
+      CAddonMgr::Get().CPluffLog(level, msg, apid, user_data);
+    }
+
   private:
     bool DependenciesMet(AddonPtr &addon);
     bool UpdateIfKnown(AddonPtr &addon);
+    AddonPtr Factory(const cp_extension_t *props);
 
+    // private construction, and no assignements; use the provided singleton methods
     CAddonMgr();
-    static CAddonMgr* m_pInstance;
+    CAddonMgr(const CAddonMgr&);
+    CAddonMgr const& operator=(CAddonMgr const&);
+    virtual ~CAddonMgr();
+
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
     MAPADDONS m_addons;
     CStopWatch m_watch;

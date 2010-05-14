@@ -190,12 +190,7 @@ CFileItem::CFileItem(const CStdString& strPath, bool bIsFolder)
   m_bIsFolder = bIsFolder;
   // tuxbox urls cannot have a / at end
   if (m_bIsFolder && !m_strPath.IsEmpty() && !IsFileFolder() && !CUtil::IsTuxBox(m_strPath))
-  {
-#ifdef DEBUG
-    ASSERT(CUtil::HasSlashAtEnd(m_strPath));
-#endif
     CUtil::AddSlashAtEnd(m_strPath);
-  }
 }
 
 CFileItem::CFileItem(const CMediaSource& share)
@@ -1493,6 +1488,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
     break;
   case SORT_METHOD_GENRE:
     FillSortFields(SSortFileItem::ByGenre);
+    break;
+  case SORT_METHOD_COUNTRY:
+    FillSortFields(SSortFileItem::ByCountry);
     break;
   case SORT_METHOD_FILE:
     FillSortFields(SSortFileItem::ByFile);

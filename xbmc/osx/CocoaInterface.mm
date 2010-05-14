@@ -41,6 +41,16 @@ static CVDisplayLinkRef displayLink = NULL;
 
 CGDirectDisplayID Cocoa_GetDisplayIDFromScreen(NSScreen *screen);
 
+CCocoaAutoPool::CCocoaAutoPool()
+{
+  m_opaque_pool = [[NSAutoreleasePool alloc] init];
+}
+CCocoaAutoPool::~CCocoaAutoPool()
+{
+  [(NSAutoreleasePool*)m_opaque_pool release];
+}
+
+
 void* Cocoa_Create_AutoReleasePool(void)
 {
   // Original Author: Elan Feingold
@@ -411,6 +421,38 @@ void Cocoa_HideMouse()
   [NSCursor hide];
 }
 
+void Cocoa_HideDock()
+{
+  // Find which display we are on
+  NSOpenGLContext* context = [NSOpenGLContext currentContext];
+  if (context)
+  {
+    NSView* view;
+
+    view = [context view];
+    if (view)
+    {
+      NSWindow* window;
+      window = [view window];
+      if (window)
+      {
+        NSDictionary* screenInfo = [[window screen] deviceDescription];
+        NSNumber* screenID = [screenInfo objectForKey:@"NSScreenNumber"];
+        if (kCGDirectMainDisplay == (CGDirectDisplayID)[screenID longValue])
+        {
+          CStdString tmp_str;
+
+          // keep the dock hidden using applescriptif on main screen with the dock.
+          tmp_str = "tell application \"System Events\" \n";
+          tmp_str += "keystroke \"d\" using {command down, option down} \n";
+          tmp_str += "end tell \n";
+          
+          Cocoa_DoAppleScript( tmp_str.c_str() );
+        }
+      }
+    }
+  }
+}
 void Cocoa_GetSmartFolderResults(const char* strFile, void (*CallbackFunc)(void* userData, void* userData2, const char* path), void* userData, void* userData2)
 {
   NSString*     filePath = [[NSString alloc] initWithUTF8String:strFile];

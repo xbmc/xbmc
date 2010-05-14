@@ -30,6 +30,8 @@
 class CURL;
 class TiXmlElement;
 
+typedef struct cp_plugin_info_t cp_plugin_info_t;
+
 namespace ADDON
 {
 
@@ -63,6 +65,8 @@ public:
     , stars(0)
   {
   }
+
+  AddonProps(cp_plugin_info_t *props);
 
   AddonProps(const AddonPtr &addon)
     : id(addon->ID())
@@ -108,6 +112,7 @@ class CAddon : public IAddon
 {
 public:
   CAddon(const AddonProps &addonprops);
+  CAddon(cp_plugin_info_t *props);
   virtual ~CAddon() {}
   virtual AddonPtr Clone(const AddonPtr& parent) const;
 
@@ -148,9 +153,11 @@ protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
   CAddon(const CAddon&, const AddonPtr&);
   bool LoadUserSettings();
+  virtual void BuildLibName(cp_plugin_info_t *props = NULL);
   TiXmlDocument     m_addonXmlDoc;
   TiXmlDocument     m_userXmlDoc;
   CStdString        m_userSettingsPath;
+  CStdString        m_strLibName;
 
 private:
   friend class AddonMgr;
@@ -168,9 +175,7 @@ private:
   bool m_hasStrings;
   bool m_checkedStrings;
 
-  void BuildLibName();
   CStdString  m_profile;
-  CStdString  m_strLibName;
   bool        m_enabled;
   CLocalizeStrings  m_strings;
 };
@@ -179,6 +184,7 @@ class CAddonLibrary : public CAddon
 {
 public:
   CAddonLibrary(const AddonProps &props);
+  CAddonLibrary(cp_plugin_info_t *props);
 
 private:
   virtual bool IsAddonLibrary() { return true; }

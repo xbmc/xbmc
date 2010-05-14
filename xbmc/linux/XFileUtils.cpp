@@ -524,7 +524,7 @@ BOOL   RemoveDirectory(LPCTSTR lpPathName)
     CStdString strLower(lpPathName);
     strLower.MakeLower();
 
-    if (rmdir(strLower.c_str()) == 0)
+    if (rmdir(strLower.c_str()) == 0 || errno == ENOENT)
       return 1;
   }
   return 0;
