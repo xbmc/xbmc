@@ -83,6 +83,8 @@
   <string id="31115">Replace Audio Settings Button with Teletext</string>
   <string id="31116">Hide Video flag images in media views</string>
 
+  <string id="31118">Show Fanart in main panel background</string>
+
   <!-- Script Settings labels -->
   <string id="31200">Custom script options</string>
   <string id="31201"></string>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="screensaver.rsxs.plasma"
+  version="1.0.0"
+  name="Plasma"
+  provider-name="mogumbo, Team XBMC">
+  <requires>
+    <c-pluff version="0.1"/>
+  </requires>
+  <extension
+    point="xbmc.ui.screensaver"
+    library_linux="Plasma.xbs"
+    library_osx="Plasma.xbs"/>
+</addon>

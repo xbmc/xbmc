@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 29298 -->
+<!--Based on english strings version 30064 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -282,7 +282,7 @@
   <string id="336">帧数转换</string>
   <string id="337">音频输出</string>
   <string id="338">模拟</string>
-  <string id="339">数码</string>
+  <string id="339">光纤/同轴</string>
   <string id="340">群星</string>
   <string id="341">播放光盘</string>
   <string id="342">电影</string>
@@ -360,6 +360,7 @@
   <string id="417">显示：大图标</string>
   <string id="418">低</string>
   <string id="419">高</string>
+  <string id="420">HDMI</string>
 
   <string id="422">删除专辑信息</string>
   <string id="423">删除 CD 信息</string>
@@ -503,6 +504,7 @@
   <string id="571">默认</string>
   <string id="572">制作公司</string>
   <string id="573">路径</string> 
+  <string id="574">国家</string>
   
   <string id="580">排序方向</string>
   <string id="581">排序方法</string>
@@ -992,6 +994,8 @@
   <string id="13024">游戏手柄插入</string>
   <string id="13025">游戏手柄拔出</string>
 
+  <string id="13050">电池电量不足</string>
+
   <string id="13100">闪烁过滤</string>
   <string id="13101">使用驱动选择（需要重启）</string>
   <string id="13105">垂直空白同步</string>
@@ -1213,7 +1217,11 @@
   <string id="13422">开始幻灯片播放</string>
   <string id="13423">记住此目录</string>
   <string id="13424">使用象素缓冲对象</string>
-  <string id="13425">Crystal HD 硬解码</string>
+  <string id="13425">允许硬件加速（VDPAU）</string>
+  <string id="13426">允许硬件加速（VAAPI）</string>
+  <string id="13427">允许硬件加速（DXVA2）</string>
+  <string id="13428">允许硬件加速（CrystalHD）</string>
+  <string id="13429">允许硬件加速（VDADecoder）</string>
 
   <string id="13500">影音同步方式</string>
   <string id="13501">音频时钟</string>
@@ -1866,6 +1874,7 @@
   <string id="20448">无法下载信息</string>
   <string id="20449">服务器不可用。</string>
   <string id="20450">要继续扫描吗？</string>
+  <string id="20451">国家</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -2109,6 +2118,7 @@
   <string id="24000">扩展功能</string>
   <string id="24001">扩展功能</string>
   <string id="24002">扩展功能选项</string>
+  <string id="24003">扩展功能信息</string>
 
   <string id="24005">插件</string>
   <string id="24007">刮削器</string>
@@ -2117,18 +2127,23 @@
   <string id="24010">可视化效果</string>
   <string id="24011">扩展功能库</string>
 
-  <string id="24020">设置扩展功能</string>
-  <string id="24021">禁用扩展功能</string>
-  <string id="24022">启用扩展功能</string>
+  <string id="24020">设置</string>
+  <string id="24021">禁用</string>
+  <string id="24022">启用</string>
   <string id="24023">扩展功能已禁用</string>
   <string id="24027">天气服务</string>
   <string id="24028">Weather.com（标准）</string>
   <string id="24030">此扩展功能不可设置</string>
   <string id="24031">读取配置错误</string>
+  <string id="24032">全部库</string>
+  <string id="24033">库</string>
+  <string id="24034">检查更新</string>
+  <string id="24035">强制刷新</string>
+  <string id="24036">更新日志</string>
 
   <string id="24050">可用扩展功能</string>
   <string id="24051">版本：</string>
-  <string id="24052">免责声明：</string>
+  <string id="24052">免责声明</string>
   <string id="24053">许可证：</string>
   <string id="24059">要启用此扩展功能吗？</string>
   <string id="24060">要禁用此扩展功能吗？</string>
@@ -2139,21 +2154,26 @@
   <string id="24065">扩展功能已更新</string>
   <string id="24066">取消扩展功能下载？</string>
   <string id="24067">当前下载扩展功能</string>
+  <string id="24068">可更新</string>
+  <string id="24069">更新</string>
+  <string id="24070">更新日志</string>
 
   <string id="24070">扩展功能不可用</string>
   <string id="24071">发生未知错误</string>
   <string id="24072">需要先进行设置</string>
   <string id="24073">无法连接</string>
   <string id="24074">需要重新启动</string>
+  <string id="24075">禁用</string>
   <string id="24080">尝试重新连接？</string>
   <string id="24089">重新启动扩展功能</string>
 
   <string id="24090">锁定扩展功能管理器</string>
 
-  <string id="24091">允许硬件加速（VDPAU）</string>
-  <string id="24092">允许硬件加速（VAAPI）</string>
-  <string id="24093">允许硬件加速（DXVA2）</string>
-  <string id="24094">允许硬件加速（CrystalHD）</string>
+  <string id="24091"></string>
+  <string id="24092"></string>
+  <string id="24093"></string>
+  <string id="24094"></string>
+  <string id="24095"></string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">资料库模式</string>

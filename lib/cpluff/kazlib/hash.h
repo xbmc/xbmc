@@ -27,7 +27,11 @@
 #ifndef HASH_H
 #define HASH_H
 
+#ifdef _WIN32
+#include "../libcpluff/win32/cpluffdef.h"
+#else
 #include "../libcpluff/cpluffdef.h"
+#endif
 
 #include <limits.h>
 #ifdef KAZLIB_SIDEEFFECT_DEBUG

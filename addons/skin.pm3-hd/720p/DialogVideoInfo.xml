@@ -878,7 +878,9 @@
 			<width>640</width>
 			<itemgap>0</itemgap>
 			<orientation>horizontal</orientation>
-			<include>CodecFlaggingConditions</include>
+			<include>VideoCodecFlagging</include>
+			<include>AudioCodecFlagging</include>
+			<include>AspectCodecFlagging</include>
 		</control>
 		<control type="group" id="9001">
 			<control type="group" id="9000">

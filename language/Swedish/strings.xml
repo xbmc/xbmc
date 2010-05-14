@@ -1,19 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: blittan-->
-<!--Email: blittan@xbmc.org-->
-<!--Date of translation: 01/14/2010-->
+<!--Translator: Malmis-->
+<!--Email: malmis@malmis.com-->
+<!--Date of translation: 04/02/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 26748-->
+<!--Based on english strings version 28969-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
   <string id="2">Musik</string>
-  <string id="3">Videor</string>
+  <string id="3">Video</string>
   <string id="4">TV-guide</string>
   <string id="5">Inställningar</string>
   <string id="7">Filhanterare</string>
   <string id="8">Väder</string>
+  <string id="9">xbmc media center</string>
   <string id="11">Måndag</string>
   <string id="12">Tisdag</string>
   <string id="13">Onsdag</string>
@@ -124,6 +125,7 @@
   <string id="170">Justera uppdateringsfrekvens till att matcha video</string>
   <string id="171">Sträck 4:3 innehåll till 16:9</string>
   <string id="172">Utgivningsdatum</string>
+  <string id="173">Visa 4:3 filmer som</string>
   <string id="175">Sinnesstämning</string>
   <string id="176">Stilar</string>
   <string id="179">Låt</string>
@@ -276,6 +278,7 @@
   <string id="343">Justera bildfrekvens</string>
   <string id="344">Skådespelare</string>
   <string id="345">År</string>
+  <string id="346">Öka volymen vid nedmixning</string>
   <string id="350">Program</string>
   <string id="351">Av</string>
   <string id="352">Tona ned</string>
@@ -344,6 +347,8 @@
   <string id="415">Laddar ned miniatyrbild...</string>
   <string id="416">Inte tillgänglig</string>
   <string id="417">Vy: Stora ikoner</string>
+  <string id="418">Låg</string>
+  <string id="419">Hög</string>
   <string id="422">Radera albuminfo</string>
   <string id="423">Radera CD-information</string>
   <string id="424">Välj</string>
@@ -547,6 +552,7 @@
   <string id="656">Bläddra efter spellista</string>
   <string id="657">Bläddra efter mapp</string>
   <string id="658">Låtinformation</string>
+  <string id="659">Icke-linjär sträckning</string>
   <string id="660">Volymförstärkning</string>
   <string id="661">Välj exporteringsmapp</string>
   <string id="662">Denna fil är inte tillgänglig längre.</string>
@@ -690,6 +696,7 @@
   <string id="1048">- Användarnamn</string>
   <string id="1049">Skriptinställningar</string>
   <string id="1050">Singlar</string>
+  <string id="1051">Skriv in webbadress</string>
   <string id="1200">SMB-klient</string>
   <string id="1202">Arbetsgrupp</string>
   <string id="1203">Standardanvändarnamn</string>
@@ -781,6 +788,7 @@
   <string id="10018">Inställningar - Nätverk</string>
   <string id="10019">Inställningar - Utseende</string>
   <string id="10020">Skript</string>
+  <string id="10021">Webbläsare</string>
   <string id="10028">Filmer/Spellista</string>
   <string id="10034">Inställningar - Profiler</string>
   <string id="10100">Ja/Nej-dialog</string>
@@ -1123,7 +1131,11 @@
   <string id="13422">Starta bildspel här</string>
   <string id="13423">Kom ihåg för denna sökväg</string>
   <string id="13424">Använd pixelbufferobjekt</string>
-  <string id="13425">Broadcom Crystal HD</string>
+  <string id="13425">Tillåt hårdvaruacceleration (VDPAU)</string>
+  <string id="13426">Tillåt hårdvaruacceleration (VAAPI)</string>
+  <string id="13427">Tillåt hårdvaruacceleration (DXVA2)</string>
+  <string id="13428">Tillåt hårdvaruacceleration (CrystalHD)</string>
+  <string id="13429">Tillåt hårdvaruacceleration (VDADecoder)</string>
   <string id="13500">A/V-synkmetod</string>
   <string id="13501">Ljudklocka</string>
   <string id="13502">Videoklocka (tappat/dubblerat ljud)</string>
@@ -1581,6 +1593,7 @@
   <string id="20252">Fyller glasen (filmer)</string>
   <string id="20253">WebDAV-server (HTTP)</string>
   <string id="20254">WebDAV-server (HTTPS)</string>
+  <string id="20255">Första inloggningen, ändra din profil</string>
   <string id="20300">Webserver katalog (HTTP)</string>
   <string id="20301">Webserver katalog (HTTPS)</string>
   <string id="20302">Kunde inte skriva till mapp:</string>
@@ -1791,6 +1804,7 @@
   <string id="21416">Aktivera återfall baserat på skrapspråk</string>
   <string id="21417">- Inställningar</string>
   <string id="21418">Flerspråkig</string>
+  <string id="21419">Inga skrapor tillgängliga</string>
   <string id="21420">Värde att matcha</string>
   <string id="21421">Smart spellistregel</string>
   <string id="21422">Matcha objekt som</string>
@@ -1821,6 +1835,7 @@
   <string id="21447">Ljudspråk</string>
   <string id="21448">Undertextsspråk</string>
   <string id="21449">Fjärrkontroll sänder tangentbordstryckningar</string>
+  <string id="21450">- Redigera</string>
   <string id="21800">Filnamn</string>
   <string id="21801">Filsökväg</string>
   <string id="21802">Filstorlek</string>
@@ -1933,6 +1948,7 @@
   <string id="22041">vit/röd</string>
   <string id="22042">vit/blå</string>
   <string id="22043">svart/vit</string>
+  <string id="23049">Teletext ej tillgänglig</string>
   <string id="23000">Vädertillägg</string>
   <string id="23001">- Tilläggsinställningar</string>
   <string id="23050">Aktivera teletext</string>
@@ -1943,6 +1959,33 @@
   <string id="23100">Extern spelare är aktiv</string>
   <string id="23101">Klicka OK för att avsluta spelaren</string>
   <string id="23104">Klicka OK när uppspelningen har slutat</string>
+  <string id="24000">Tillägg</string>
+  <string id="24001">Tillägg</string>
+  <string id="24005">Plugin</string>
+  <string id="24007">Skrapa</string>
+  <string id="24008">Skärmsläckare</string>
+  <string id="24009">Skript</string>
+  <string id="24010">Visualisering</string>
+  <string id="24020">Konfigurera Tillägg</string>
+  <string id="24021">Avaktivera Tillägg</string>
+  <string id="24022">Aktivera Tillägg</string>
+  <string id="24023">Tillägg avaktiverat</string>
+  <string id="24027">Vädersevice</string>
+  <string id="24028">Weather.com (standard)</string>
+  <string id="24030">Detta tillägg kan ej konfigureras</string>
+  <string id="24031">Laddning av inställningar misslyckades</string>
+  <string id="24050">Tillgängliga Tillägg</string>
+  <string id="24051">Version:</string>
+  <string id="24053">Licens:</string>
+  <string id="24059">Vill du installera detta Tillägg?</string>
+  <string id="24070">Tillägget kan ej användas</string>
+  <string id="24071">Ett okänd fel har uppstått</string>
+  <string id="24072">Krav på inställningar</string>
+  <string id="24073">Kan ej ansluta</string>
+  <string id="24074">Kräver omstart</string>
+  <string id="24080">Prova återanslut?</string>
+  <string id="24089">Tillägg startar om</string>
+  <string id="24090">Lås Tilläggshanteraren</string>
   <string id="29800">Biblioteksläge</string>
   <string id="29801">QWERTY-tangentbord</string>
   <string id="29802">Ljudgenomströmning används</string>
@@ -2019,15 +2062,19 @@
   <string id="33081">Denna fil är sammanslagen, välj den del du vill spela.</string>
   <string id="33082">Sökväg till skript</string>
   <string id="33083">Aktivera egen skriptknapp</string>
-  <string id="34100">Högtalarkonfiguration</string> 
-  <string id="34101">2.0</string> 
-  <string id="34102">2.1</string> 
-  <string id="34103">3.0</string> 
-  <string id="34104">3.1</string> 
-  <string id="34105">4.0</string> 
-  <string id="34106">4.1</string> 
-  <string id="34107">5.0</string> 
-  <string id="34108">5.1</string> 
-  <string id="34109">7.0</string> 
-  <string id="34110">7.1</string> 
+  <string id="34000">Lame</string>
+  <string id="34001">Vorbis</string>
+  <string id="34002">Wav</string>
+  <string id="34003">DXVA</string>
+  <string id="34100">Högtalarkonfiguration</string>
+  <string id="34101">2.0</string>
+  <string id="34102">2.1</string>
+  <string id="34103">3.0</string>
+  <string id="34104">3.1</string>
+  <string id="34105">4.0</string>
+  <string id="34106">4.1</string>
+  <string id="34107">5.0</string>
+  <string id="34108">5.1</string>
+  <string id="34109">7.0</string>
+  <string id="34110">7.1</string>
 </strings>

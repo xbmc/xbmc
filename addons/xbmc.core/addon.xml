@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="xbmc.core" version="0.1" provider-name="Team XBMC">
+  <requires>
+    <c-pluff version="0.1"/>
+  </requires>
+</addon>

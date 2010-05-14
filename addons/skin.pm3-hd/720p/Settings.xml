@@ -1,286 +1,121 @@
 <window id="4">
-	<defaultcontrol>2</defaultcontrol>
+	<defaultcontrol>50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
 		<include>CommonBackground</include>
 		<control type="group">
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<include>ContentPanel</include>
-			<control type="group" id="8000">
+			<control type="panel" id="50">
 				<posx>300</posx>
 				<posy>130</posy>
-				<control type="group">
-					<posx>0</posx>
-					<posy>0</posy>
-					<control type="button" id="2">
-						<description>Video push button</description>
+				<width>950</width>
+				<height>512</height>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<viewtype label="21371">panel</viewtype>
+				<pagecontrol>-</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<preloaditems>2</preloaditems>
+				<itemlayout height="256" width="190">
+					<control type="image">
+						<posx>5</posx>
+						<posy>5</posy>
+						<width>180</width>
+						<height>210</height>
+						<texture>$INFO[Listitem.Icon]</texture>
+					</control>
+					<control type="label">
+						<posx>95</posx>
+						<posy>220</posy>
+						<width>180</width>
+						<height>25</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>green</selectedcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>[B]$INFO[ListItem.Label][/B]</label>
+					</control>
+				</itemlayout>
+				<focusedlayout height="256" width="190">
+					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<height>250</height>
-						<width>235</width>
-						<label>[B]$LOCALIZE[3][/B]</label>
+						<width>190</width>
+						<height>256</height>
+						<aspectratio>stretch</aspectratio>
+						<texture border="5">button-focus.png</texture>
+					</control>
+					<control type="image">
+						<posx>5</posx>
+						<posy>5</posy>
+						<width>180</width>
+						<height>210</height>
+						<texture>$INFO[Listitem.Icon]</texture>
+					</control>
+					<control type="label">
+						<posx>95</posx>
+						<posy>220</posy>
+						<width>180</width>
+						<height>25</height>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>green</selectedcolor>
 						<align>center</align>
-						<aligny>-</aligny>
-						<textcolor>grey2</textcolor>
-						<focusedcolor>white</focusedcolor>
-						<font>font22</font>
+						<aligny>center</aligny>
+						<label>[B]$INFO[ListItem.Label][/B]</label>
+					</control>
+				</focusedlayout>
+				<content>
+					<item>
+						<label>3</label>
 						<onclick>ActivateWindow(MyVideosSettings)</onclick>
-						<texturefocus border="5">button-focus.png</texturefocus>
-						<texturenofocus>-</texturenofocus>
-						<textoffsetx>0</textoffsetx>
-						<textoffsety>210</textoffsety>
-						<onleft>9000</onleft>
-						<onright>3</onright>
-						<onup>6</onup>
-						<ondown>6</ondown>
-					</control>
-					<control type="image">
-						<posx>10</posx>
-						<posy>5</posy>
-						<width>215</width>
-						<height>200</height>
-						<aspectratio>keep</aspectratio>
-						<texture>icon_video.png</texture>
-					</control>
-				</control>
-				<control type="group">
-					<posx>240</posx>
-					<posy>0</posy>
-					<control type="button" id="3">
-						<description>Music push button</description>
-						<posx>0</posx>
-						<posy>0</posy>
-						<height>250</height>
-						<width>235</width>
-						<label>[B]$LOCALIZE[2][/B]</label>
-						<align>center</align>
-						<aligny>-</aligny>
-						<textcolor>grey2</textcolor>
-						<focusedcolor>white</focusedcolor>
-						<font>font22</font>
+						<icon>icon_video.png</icon>
+					</item>
+					<item>
+						<label>2</label>
 						<onclick>ActivateWindow(MyMusicSettings)</onclick>
-						<texturefocus border="5">button-focus.png</texturefocus>
-						<texturenofocus>-</texturenofocus>
-						<textoffsetx>0</textoffsetx>
-						<textoffsety>210</textoffsety>
-						<onleft>2</onleft>
-						<onright>4</onright>
-						<onup>7</onup>
-						<ondown>7</ondown>
-					</control>
-					<control type="image">
-						<posx>10</posx>
-						<posy>5</posy>
-						<width>215</width>
-						<height>200</height>
-						<aspectratio>keep</aspectratio>
-						<texture>icon_music.png</texture>
-					</control>
-				</control>
-				<control type="group">
-					<posx>480</posx>
-					<posy>0</posy>
-					<control type="button" id="4">
-						<description>Pics push button</description>
-						<posx>0</posx>
-						<posy>0</posy>
-						<height>250</height>
-						<width>235</width>
-						<label>[B]$LOCALIZE[1][/B]</label>
-						<align>center</align>
-						<aligny>-</aligny>
-						<textcolor>grey2</textcolor>
-						<focusedcolor>white</focusedcolor>
-						<font>font22</font>
+						<icon>icon_music.png</icon>
+					</item>
+					<item>
+						<label>1</label>
 						<onclick>ActivateWindow(MyPicturesSettings)</onclick>
-						<texturefocus border="5">button-focus.png</texturefocus>
-						<texturenofocus>-</texturenofocus>
-						<textoffsetx>0</textoffsetx>
-						<textoffsety>210</textoffsety>
-						<onleft>3</onleft>
-						<onright>5</onright>
-						<onup>8</onup>
-						<ondown>8</ondown>
-					</control>
-					<control type="image">
-						<posx>10</posx>
-						<posy>5</posy>
-						<width>215</width>
-						<height>200</height>
-						<aspectratio>keep</aspectratio>
-						<texture>icon_pics.png</texture>
-					</control>
-				</control>
-				<control type="group">
-					<posx>720</posx>
-					<posy>0</posy>
-					<control type="button" id="5">
-						<description>Addons push button</description>
-						<posx>0</posx>
-						<posy>0</posy>
-						<height>250</height>
-						<width>235</width>
-						<label>[B]$LOCALIZE[24001][/B]</label>
-						<align>center</align>
-						<aligny>-</aligny>
-						<textcolor>grey2</textcolor>
-						<focusedcolor>white</focusedcolor>
-						<font>font22</font>
+						<icon>icon_pics.png</icon>
+					</item>
+					<item>
+						<label>24001</label>
 						<onclick>ActivateWindow(AddonBrowser)</onclick>
-						<texturefocus border="5">button-focus.png</texturefocus>
-						<texturenofocus>-</texturenofocus>
-						<textoffsetx>0</textoffsetx>
-						<textoffsety>210</textoffsety>
-						<onleft>4</onleft>
-						<onright>9000</onright>
-						<onup>9</onup>
-						<ondown>9</ondown>
-					</control>
-					<control type="image">
-						<posx>10</posx>
-						<posy>5</posy>
-						<width>215</width>
-						<height>200</height>
-						<aspectratio>keep</aspectratio>
-						<texture>icon_addons.png</texture>
-					</control>
-				</control>
-				<control type="group">
-					<posx>0</posx>
-					<posy>255</posy>
-					<control type="button" id="6">
-						<description>Weather push button</description>
-						<posx>0</posx>
-						<posy>0</posy>
-						<height>250</height>
-						<width>235</width>
-						<label>[B]$LOCALIZE[8][/B]</label>
-						<align>center</align>
-						<aligny>-</aligny>
-						<textcolor>grey2</textcolor>
-						<focusedcolor>white</focusedcolor>
-						<font>font22</font>
+						<icon>icon_addons.png</icon>
+					</item>
+					<item>
+						<label>13200</label>
+						<onclick>ActivateWindow(Profiles)</onclick>
+						<icon>unknown-user.png</icon>
+					</item>
+					<item>
+						<label>8</label>
 						<onclick>ActivateWindow(MyWeatherSettings)</onclick>
-						<texturefocus border="5">button-focus.png</texturefocus>
-						<texturenofocus>-</texturenofocus>
-						<textoffsetx>0</textoffsetx>
-						<textoffsety>210</textoffsety>
-						<onleft>9000</onleft>
-						<onright>7</onright>
-						<onup>2</onup>
-						<ondown>2</ondown>
-					</control>
-					<control type="image">
-						<posx>10</posx>
-						<posy>5</posy>
-						<width>215</width>
-						<height>200</height>
-						<aspectratio>keep</aspectratio>
-						<texture>icon_weather.png</texture>
-					</control>
-				</control>
-				<control type="group">
-					<posx>240</posx>
-					<posy>255</posy>
-					<control type="button" id="7">
-						<description>Network push button</description>
-						<posx>0</posx>
-						<posy>0</posy>
-						<height>250</height>
-						<width>235</width>
-						<label>[B]$LOCALIZE[705][/B]</label>
-						<align>center</align>
-						<aligny>-</aligny>
-						<textcolor>grey2</textcolor>
-						<focusedcolor>white</focusedcolor>
-						<font>font22</font>
+						<icon>icon_weather.png</icon>
+					</item>
+					<item>
+						<label>705</label>
 						<onclick>ActivateWindow(NetworkSettings)</onclick>
-						<texturefocus border="5">button-focus.png</texturefocus>
-						<texturenofocus>-</texturenofocus>
-						<textoffsetx>0</textoffsetx>
-						<textoffsety>210</textoffsety>
-						<onleft>6</onleft>
-						<onright>8</onright>
-						<onup>3</onup>
-						<ondown>3</ondown>
-					</control>
-					<control type="image">
-						<posx>10</posx>
-						<posy>5</posy>
-						<width>215</width>
-						<height>200</height>
-						<aspectratio>keep</aspectratio>
-						<texture>icon_network.png</texture>
-					</control>
-				</control>
-				<control type="group">
-					<posx>480</posx>
-					<posy>255</posy>
-					<control type="button" id="8">
-						<description>System push button</description>
-						<posx>0</posx>
-						<posy>0</posy>
-						<height>250</height>
-						<width>235</width>
-						<label>[B]$LOCALIZE[13000][/B]</label>
-						<align>center</align>
-						<aligny>-</aligny>
-						<textcolor>grey2</textcolor>
-						<focusedcolor>white</focusedcolor>
-						<font>font22</font>
+						<icon>icon_network.png</icon>
+					</item>
+					<item>
+						<label>13000</label>
 						<onclick>ActivateWindow(SystemSettings)</onclick>
-						<texturefocus border="5">button-focus.png</texturefocus>
-						<texturenofocus>-</texturenofocus>
-						<textoffsetx>0</textoffsetx>
-						<textoffsety>210</textoffsety>
-						<onleft>7</onleft>
-						<onright>9</onright>
-						<onup>4</onup>
-						<ondown>4</ondown>
-					</control>
-					<control type="image">
-						<posx>10</posx>
-						<posy>5</posy>
-						<width>215</width>
-						<height>200</height>
-						<aspectratio>keep</aspectratio>
-						<texture>icon_system.png</texture>
-					</control>
-				</control>
-				<control type="group">
-					<posx>720</posx>
-					<posy>255</posy>
-					<control type="button" id="9">
-						<description>Appearence push button</description>
-						<posx>0</posx>
-						<posy>0</posy>
-						<height>250</height>
-						<width>235</width>
-						<label>[B]$LOCALIZE[480][/B]</label>
-						<align>center</align>
-						<aligny>-</aligny>
-						<textcolor>grey2</textcolor>
-						<focusedcolor>white</focusedcolor>
-						<font>font22</font>
+						<icon>icon_system.png</icon>
+					</item>
+					<item>
+						<label>480</label>
 						<onclick>ActivateWindow(AppearanceSettings)</onclick>
-						<texturefocus border="5">button-focus.png</texturefocus>
-						<texturenofocus>-</texturenofocus>
-						<textoffsetx>0</textoffsetx>
-						<textoffsety>210</textoffsety>
-						<onleft>8</onleft>
-						<onright>9000</onright>
-						<onup>5</onup>
-						<ondown>5</ondown>
-					</control>
-					<control type="image">
-						<posx>10</posx>
-						<posy>5</posy>
-						<width>215</width>
-						<height>200</height>
-						<aspectratio>keep</aspectratio>
-						<texture>icon_appearence.png</texture>
-					</control>
-				</control>
+						<icon>icon_appearence.png</icon>
+					</item>
+				</content>
 			</control>
 		</control>
 		<control type="group">
@@ -296,58 +131,34 @@
 					<include>ButtonCommonValues</include>
 					<label>7</label>
 					<onclick>ActivateWindow(FileManager)</onclick>
-					<onleft>5</onleft>
-					<onright>2</onright>
+					<onleft>50</onleft>
+					<onright>50</onright>
 					<onup>611</onup>
-					<ondown>23</ondown>
-				</control>
-				<control type="button" id="23">
-					<description>Profiles push button</description>
-					<posx>0</posx>
-					<posy>45</posy>
-					<include>ButtonCommonValues</include>
-					<label>13200</label>
-					<onclick>ActivateWindow(Profiles)</onclick>
-					<onleft>5</onleft>
-					<onright>2</onright>
-					<onup>20</onup>
 					<ondown>21</ondown>
 				</control>
 				<control type="button" id="21">
 					<description>Skin Settings button</description>
 					<posx>0</posx>
-					<posy>90</posy>
+					<posy>45</posy>
 					<include>ButtonCommonValues</include>
 					<label>20077</label>
 					<onclick>ActivateWindow(1111)</onclick>
-					<onleft>5</onleft>
-					<onright>2</onright>
-					<onup>23</onup>
-					<ondown>22</ondown>
+					<onleft>50</onleft>
+					<onright>50</onright>
+					<onup>20</onup>
+					<ondown>610</ondown>
 					<pulseonselect>no</pulseonselect>
 					<visible>true</visible>
 				</control>
-				<control type="button" id="22">
-					<description>About XBMC button</description>
-					<posx>0</posx>
-					<posy>135</posy>
-					<include>ButtonCommonValues</include>
-					<label>482</label>
-					<onclick>ActivateWindow(1112)</onclick>
-					<onleft>5</onleft>
-					<onright>2</onright>
-					<onup>21</onup>
-					<ondown>610</ondown>
-				</control>
 				<control type="button" id="610">
 					<description>Fake Button to fix Player Controls Navigation</description>
-					<onup>22</onup>
+					<onup>21</onup>
 					<ondown>603</ondown>
 					<visible>false</visible>
 				</control>
 				<control type="group">
 					<posx>0</posx>
-					<posy>180</posy>
+					<posy>90</posy>
 					<include>CommonNowPlaying_Controls</include>
 				</control>
 				<control type="button" id="611">

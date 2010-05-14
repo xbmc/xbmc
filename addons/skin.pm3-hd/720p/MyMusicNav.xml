@@ -4,24 +4,26 @@
 	<views>50,51,59,53,56,55,500</views>
 	<controls>
 		<include>CommonBackground</include>
-		<control type="largeimage">
+		<control type="image">
 			<posx>0</posx>
 			<posy>105</posy>
 			<width>850</width>
 			<height>540</height>
+			<fadetime>FanartCrossfadeTime</fadetime>
 			<aspectratio scalediffuse="false">scale</aspectratio>
-			<texture diffuse="Fanart_Diffuse.png" fallback="special://skin/backgrounds/music.jpg">$INFO[Fanart.Image]</texture>
+			<texture background="true" diffuse="Fanart_Diffuse.png" fallback="special://skin/backgrounds/music.jpg">$INFO[Fanart.Image]</texture>
 			<visible>Control.IsVisible(55)</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 		</control>
-		<control type="largeimage">
+		<control type="image">
 			<posx>0</posx>
 			<posy>105</posy>
 			<width>850</width>
 			<height>540</height>
+			<fadetime>FanartCrossfadeTime</fadetime>
 			<aspectratio scalediffuse="false">scale</aspectratio>
-			<texture diffuse="Fanart_Diffuse.png" fallback="special://skin/backgrounds/music.jpg">$INFO[ListItem.Property(Fanart_Image)]</texture>
+			<texture background="true" diffuse="Fanart_Diffuse.png" fallback="special://skin/backgrounds/music.jpg">$INFO[ListItem.Property(Fanart_Image)]</texture>
 			<include>VisibleFadeEffect</include>
 			<fadetime>FanartCrossfadeTime</fadetime>
 			<visible>Control.IsVisible(56)</visible>

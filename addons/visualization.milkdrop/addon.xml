@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="visualization.milkdrop"
+  version="1.0.0"
+  name="MilkDrop"
+  provider-name="Team XBMC">
+  <extension
+    point="xbmc.player.musicviz"
+    library_windx="MilkDrop_win32dx.vis"/>
+</addon>

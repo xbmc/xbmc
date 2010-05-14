@@ -1,0 +1,85 @@
+#!/usr/bin/make -f
+# Uncomment this to turn on verbose mode.
+#export DHVERBOSE=1
+
+# Variables for cross compiling
+DEB_HOST_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
+	confflags += --build=$(DEB_HOST_GNU_TYPE)
+else
+	confflags += --build=$(DEB_BUILD_GNU_TYPE) --host=$(DEB_HOST_GNU_TYPE)
+endif
+
+CFLAGS = -g -Wall -Wextra
+LDFLAGS= -Wl,--as-needed
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+endif
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	./configure \
+		--prefix=/usr \
+		--mandir=/usr/share/man \
+		--with-fileio=sndfile \
+		--without-vorbis \
+		--enable-nasm \
+		--with-pic \
+		--disable-mp3x \
+		--disable-mp3rtp \
+		--disable-gtktest \
+		--enable-expopt=full \
+		CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
+
+	touch configure-stamp
+
+build: configure-stamp build-stamp
+build-stamp:
+	dh_testdir
+
+	$(MAKE)
+
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp configure-stamp
+
+	[ ! -f Makefile ] || $(MAKE) distclean
+	dh_clean confcache libmp3lame/i386/choose_table.nas.lst \
+	libmp3lame/i386/cpu_feat.nas.lst libmp3lame/i386/scalar.nas.lst
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	$(MAKE) DESTDIR=$(CURDIR)/debian/tmp install
+
+binary-indep: build install
+
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_movefiles --sourcedir=debian/tmp
+	dh_installdocs
+	dh_installman
+	dh_installchangelogs ChangeLog
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install

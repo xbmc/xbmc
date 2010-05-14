@@ -1,0 +1,181 @@
+<includes>
+	<include name="AddonInfoView">
+		<control type="list" id="58">
+			<posx>575</posx>
+			<posy>130</posy>
+			<width>675</width>
+			<height>360</height>
+			<onleft>9000</onleft>
+			<onright>60</onright>
+			<onup>58</onup>
+			<ondown>58</ondown>
+			<viewtype label="544">list</viewtype>
+			<pagecontrol>60</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="30" width="675">
+				<control type="label">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>660</width>
+					<height>30</height>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>665</posx>
+					<posy>0</posy>
+					<width>400</width>
+					<height>30</height>
+					<font>font12</font>
+					<textcolor>grey2</textcolor>
+					<selectedcolor>green</selectedcolor>
+					<align>right</align>
+					<aligny>center</aligny>
+					<info>ListItem.Label2</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="30" width="675">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>675</width>
+					<height>30</height>
+					<texture border="7">list-focus.png</texture>
+					<visible>Control.HasFocus(58)</visible>
+					<include>VisibleFadeEffect</include>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>660</width>
+					<height>30</height>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<info>ListItem.Label</info>
+				</control>
+				<control type="label">
+					<posx>665</posx>
+					<posy>0</posy>
+					<width>400</width>
+					<height>30</height>
+					<font>font12</font>
+					<textcolor>grey2</textcolor>
+					<selectedcolor>green</selectedcolor>
+					<align>right</align>
+					<aligny>center</aligny>
+					<info>ListItem.Label2</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="group">
+			<posx>300</posx>
+			<posy>130</posy>
+			<visible>Control.IsVisible(58)</visible>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>270</width>
+				<height>200</height>
+				<aspectratio>keep</aspectratio>
+				<texture>$INFO[ListItem.Icon]</texture>
+				<fadetime>IconCrossfadeTime</fadetime>
+			</control>
+			<control type="label">
+				<description>Author txt</description>
+				<posx>0</posx>
+				<posy>210</posy>
+				<width>270</width>
+				<height>25</height>
+				<label>$LOCALIZE[21863]:</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+			</control>
+			<control type="label">
+				<description>Author Value</description>
+				<posx>0</posx>
+				<posy>230</posy>
+				<width>270</width>
+				<height>25</height>
+				<label fallback="416">$INFO[ListItem.Property(Addon.Creator)]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>Version txt</description>
+				<posx>0</posx>
+				<posy>260</posy>
+				<width>270</width>
+				<height>25</height>
+				<label>$LOCALIZE[24051]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+			</control>
+			<control type="label">
+				<description>Version Value</description>
+				<posx>0</posx>
+				<posy>280</posy>
+				<width>270</width>
+				<height>25</height>
+				<label fallback="416">$INFO[ListItem.Property(Addon.Version)]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<description>Rating txt</description>
+				<posx>0</posx>
+				<posy>310</posy>
+				<width>140</width>
+				<height>25</height>
+				<label>$LOCALIZE[563]:</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+			</control>
+			<control type="image">
+				<description>Rating value</description>
+				<posx>0</posx>
+				<posy>330</posy>
+				<width>160</width>
+				<height>32</height>
+				<texture>$INFO[ListItem.Property(Addon.Rating)]</texture>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>370</posy>
+				<width>950</width>
+				<height>2</height>
+				<texture>separator.png</texture>
+			</control>
+		</control>
+		<control type="textbox">
+			<description>Description Value for Movies</description>
+			<posx>300</posx>
+			<posy>505</posy>
+			<width>950</width>
+			<height>135</height>
+			<font>font11</font>
+			<align>justify</align>
+			<textcolor>white</textcolor>
+			<pagecontrol>9999999999</pagecontrol>
+			<label>$INFO[ListItem.Property(Addon.Description)]</label>
+			<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+			<visible>Control.IsVisible(58)</visible>
+		</control>
+	</include>
+</includes>

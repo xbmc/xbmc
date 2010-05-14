@@ -1,0 +1,34 @@
+echo "Making version: "
+echo $1 
+echo $2 
+echo $3
+
+rm ./docs/*
+
+doxygen dox
+rm -rf ./tinyxml/*
+
+rm tinyxml_$1_$2_$3.zip
+rm tinyxml_$1_$2_$3.tar.gz
+
+rmdir tinyxml
+mkdir tinyxml
+
+cp readme.txt ./tinyxml
+cp changes.txt ./tinyxml
+cp Makefile ./tinyxml
+
+cp tinyxml.cpp tinyxml
+cp tinyxmlerror.cpp tinyxml
+cp tinyxmlparser.cpp tinyxml
+cp xmltest.cpp tinyxml
+
+cp tinyxml.h tinyxml
+cp tinyxml.dsp tinyxml
+
+mkdir ./tinyxml/docs
+cp ./docs/* ./tinyxml/docs
+
+tar -zcf tinyxml_$1_$2_$3.tar.gz tinyxml
+zip -r -q -9 tinyxml_$1_$2_$3.zip   tinyxml
+

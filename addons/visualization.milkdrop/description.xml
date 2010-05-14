@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
   <id>visualization.milkdrop</id>
-  <type>visualization</type>
+  <type>xbmc.player.musicviz</type>
   <title>MilkDrop</title>
   <librarywin32>MilkDrop_win32dx.vis</librarywin32>
   <version>1.0.0</version>

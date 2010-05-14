@@ -1,0 +1,91 @@
+; Lame codec
+; enable MP3 compression in Windows
+
+; Usage : right-click on this file and choose "Install" in the pop up menu
+
+[Version]
+Signature = "$CHICAGO$"
+Class = MEDIA
+
+[SourceDisksNames]
+1="Lame MP3 Install Disk",, 0001
+
+[SourceDisksFiles]
+LameACM.inf=1
+LameACM.acm=1
+lame_acm.xml=1
+
+[Installable.Drivers]
+lameacm  = 1:LameACM.acm, "msacm.lameacm", %DisplayNameWin% , , ,
+
+[DefaultInstall]
+CopyFiles  = LameACM.Copy,LameACM.Copy.Inf
+Updateinis = LameACM.Updateini
+;addreg     = LameACM.AddReg,LameACM.AddReg9x,LameACM.DoReg
+addreg     = LameACM.AddReg,LameACM.AddReg9x
+MediaType  = SOFTWARE
+
+[DefaultInstall.ntx86]
+CopyFiles  = LameACM.Copy,LameACM.Copy.Inf
+;addreg     = LameACM.AddReg,LameACM.AddRegNT,LameACM.DoReg
+addreg     = LameACM.AddReg,LameACM.AddRegNT
+MediaType  = SOFTWARE
+
+[Remove_LameMP3]
+;AddReg     = LameACM.Unregister
+DelReg     = LameACM.DelReg
+DelFiles   = LameACM.Copy,LameACM.Copy.Inf
+UpdateInis = LameACM.UpdateIni
+
+[LameACM.Copy]
+LameACM.acm
+lame_acm.xml
+
+[LameACM.Copy.Inf]
+LameACM.inf
+
+[LameACM.UpdateIni]
+system.ini, drivers32,,"msacm.lameacm=LameACM.acm"
+
+[LameACM.AddReg]
+HKLM, "Software\Microsoft\Windows NT\CurrentVersion\Drivers32","msacm.lameacm",,"LameACM.acm"
+HKLM, "Software\Microsoft\Windows NT\CurrentVersion\Drivers.desc","LameACM.acm",,%DisplayNameWin%
+
+
+[LameACM.AddReg9x]
+HKLM,SYSTEM\CurrentControlSet\Control\MediaResources\msacm\msacm.lameacm,Description,,%DisplayNameWin%
+HKLM,SYSTEM\CurrentControlSet\Control\MediaResources\msacm\msacm.lameacm,Driver,,LameACM.acm
+HKLM,SYSTEM\CurrentControlSet\Control\MediaResources\msacm\msacm.lameacm,FriendlyName,,%DisplayNameWin%
+HKLM,%UnInstallPath%,DisplayName,,%DisplayNameWin%
+HKLM,%UnInstallPath%,UninstallString,,"%10%\rundll.exe setupx.dll,InstallHinfSection Remove_LameMP3 132 %17%\%InfFile%"
+
+[LameACM.AddRegNT]
+HKLM,"SOFTWARE\Microsoft\Windows NT\CurrentVersion\drivers32","msacm.lameacm",,"LameACM.acm"
+HKLM,"SOFTWARE\Microsoft\Windows NT\CurrentVersion\drivers.desc","LameACM.acm",,%DisplayNameWin%
+HKLM,%UnInstallPath%,DisplayName,,%DisplayNameWin%
+HKLM,%UnInstallPath%,UninstallString,,"%11%\rundll32.exe setupapi,InstallHinfSection Remove_LameMP3 132 %17%\%InfFile%"
+
+;[LameACM.DoReg]
+;HKLM,Software\Microsoft\Windows\CurrentVersion\RunOnce\Setup,"Lame ACM MP3 Codec",,"%11%\regsvr32.exe /s %11%\LameCom.acm"
+
+[LameACM.DelReg]
+HKLM,"SYSTEM\CurrentControlSet\Control\MediaResources\msacm\msacm.lameacm"
+HKLM,"SOFTWARE\Microsoft\Windows NT\CurrentVersion\drivers.desc","LameACM.acm",,""
+HKLM,"SOFTWARE\Microsoft\Windows NT\CurrentVersion\drivers32","msacm.lameacm",,""
+HKLM,%UnInstallPath%
+
+;[LameACM.Unregister]
+;HKLM,"Software\Microsoft\Windows\CurrentVersion\RunOnce\Setup","Lame ACM MP3 Codec",,"%11%\regsvr32.exe /s /u %11%\LameCom.acm"
+
+[DestinationDirs]
+DefaultDestDir   = 11	; LDID_SYS
+LameACM.Copy     = 11
+LameACM.Copy.Inf = 17
+
+[Strings]
+InfFile="LameACM.inf"
+DisplayNameWin="Lame ACM MP3 Codec"
+UnInstallPath="Software\Microsoft\Windows\CurrentVersion\Uninstall\LameACM"
+MediaClassName="Media Devices"
+mfgname="Steve Lhomme"
+

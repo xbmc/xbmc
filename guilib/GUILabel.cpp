@@ -23,9 +23,9 @@
 #include "utils/CharsetConverter.h"
 #include <limits>
 
-CGUILabel::CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo, CGUILabel::OVER_FLOW overflow, int scrollSpeed)
+CGUILabel::CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo, CGUILabel::OVER_FLOW overflow)
     : m_textLayout(labelInfo.font, overflow == OVER_FLOW_WRAP, height)
-    , m_scrollInfo(50, 0, scrollSpeed)
+    , m_scrollInfo(50, 0, labelInfo.scrollSpeed, labelInfo.scrollSuffix)
     , m_maxRect(posX, posY, posX + width, posY + height)
 {
   m_selected = false;
@@ -39,11 +39,9 @@ CGUILabel::~CGUILabel(void)
 {
 }
 
-void CGUILabel::SetScrolling(bool scrolling, int scrollSpeed)
+void CGUILabel::SetScrolling(bool scrolling)
 {
   m_scrolling = scrolling;
-  if (scrollSpeed)
-    m_scrollInfo.SetSpeed(scrollSpeed);
   if (!m_scrolling)
     m_scrollInfo.Reset();
 }

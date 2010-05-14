@@ -281,7 +281,7 @@
   <string id="336">Framerate conversion</string>
   <string id="337">Audio output</string>
   <string id="338">Analog</string>
-  <string id="339">Digital</string>
+  <string id="339">Optical/Coax</string>
   <string id="340">Various artists</string>
   <string id="341">Play disc</string>
   <string id="342">Movies</string>
@@ -359,6 +359,7 @@
   <string id="417">View: Big icons</string>
   <string id="418">Low</string>
   <string id="419">High</string>
+  <string id="420">HDMI</string>
 
   <string id="422">Delete album info</string>
   <string id="423">Delete CD information</string>
@@ -502,6 +503,7 @@
   <string id="571">Default</string>
   <string id="572">Studio</string>
   <string id="573">Path</string>
+  <string id="574">Country</string>
 
   <string id="580">Sort direction</string>
   <string id="581">Sort method</string>
@@ -990,6 +992,8 @@
   <string id="13023">Successfully removed device</string>
   <string id="13024">Joystick plugged</string>
   <string id="13025">Joystick unplugged</string>
+
+  <string id="13050">Running low on battery</string>
 
   <string id="13100">Flicker filter</string>
   <string id="13101">Let driver choose (requires restart)</string>
@@ -1870,6 +1874,7 @@
   <string id="20448">Could not download information</string>
   <string id="20449">Server is most likely unavailable.</string>
   <string id="20450">Would you like to continue scanning?</string>
+  <string id="20451">Countries</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -2151,6 +2156,7 @@
   <string id="24067">Currently downloading addons</string>
   <string id="24068">Update available</string>
   <string id="24069">Update</string>
+  <string id="24070">Changelog</string>
 
   <string id="24070">Add-on can not used</string>
   <string id="24071">An unknown error has occurred</string>

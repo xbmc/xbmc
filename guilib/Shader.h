@@ -40,7 +40,7 @@ namespace Shaders {
   {
   public:
     CShader() { m_compiled = false; }
-    virtual ~CShader() { }
+    virtual ~CShader() {}
     virtual bool Compile() = 0;
     virtual void Free() = 0;
     virtual GLuint Handle() = 0;

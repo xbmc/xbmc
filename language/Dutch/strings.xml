@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 12/06/2009-->
+<!--Translator: seba-->
+<!--Email: seba.kerckhof@gmail.com-->
+<!--Date of translation: 04/28/2010-->
 <!--$Revision$-->
+<!--Based on english strings version 29626-->
 <strings>
   <string id="0">Programma's</string>
   <string id="1">Afbeeldingen</string>
@@ -152,7 +155,6 @@
   <string id="221">Netwerk is niet verbonden</string>
   <string id="222">Afbreken</string>
   <string id="224">Wisseltijd</string>
-  <string id="225">Overgangstijd tussen afbeeldingen</string>
   <string id="226">Test patronen</string>
   <string id="227">CD informatie opzoeken op internet</string>
   <string id="228">Afspeellijst willekeurig afspelen</string>
@@ -167,13 +169,6 @@
   <string id="237">Verkleinen</string>
   <string id="238">Vergroten</string>
   <string id="239">Afspeellijst wissen na afspelen</string>
-  <string id="240">DVD's automatisch afspelen</string>
-  <string id="241">VCD/SVCD automatisch afspelen</string>
-  <string id="242">Muziek CD's automatisch afspelen</string>
-  <string id="243">Xbox spellen automatisch afspelen</string>
-  <string id="244">Video's automatisch afspelen</string>
-  <string id="245">Muziek automatisch afspelen</string>
-  <string id="246">Afbeeldingen automatisch weergeven</string>
   <string id="247">Scripts</string>
   <string id="248">Taal</string>
   <string id="249">Muziek</string>
@@ -418,7 +413,6 @@
   <string id="513">Beginscherm</string>
   <string id="514">Handmatige instellingen</string>
   <string id="515">Genre</string>
-  <string id="516">Archieven met 1 bestand transparant maken</string>
   <string id="517">Laatst afgespeelde albums</string>
   <string id="518">Starten</string>
   <string id="519">Starten in..</string>
@@ -550,10 +544,7 @@
   <string id="702">Deze locatie is al eerder gescant</string>
   <string id="705">Netwerk</string>
   <string id="706">- Host</string>
-  <string id="707">- Poort</string>
   <string id="708">HTTP-proxy gebruiken</string>
-  <string id="709">HTTP Proxy Gebruikersnaam</string>
-  <string id="710">HTTP Proxy Wachtwoord</string>
   <string id="711">Internet Protocol (IP)</string>
   <string id="712">Ongeldig poortnummer. Waarde moet tussen 1 en 65535 liggen.</string>
   <string id="713">HTTP proxy</string>
@@ -607,8 +598,6 @@
   <string id="765">Cyaan</string>
   <string id="766">Reserved</string>
   <string id="767">Reserved</string>
-  <string id="768">Reserved</string>
-  <string id="769">Reserved</string>
   <string id="770">Fout %i: gedeelde map niet beschikbaar</string>
   <string id="771">- FATX beperkingen omzeilen</string>
   <string id="772">Geluidshardware</string>
@@ -629,7 +618,6 @@
   <string id="787">Verbinding uitgeschakeld</string>
   <string id="788">Verbinding uitgeschakelen succesvol.</string>
   <string id="789">Naam Draadloos Netwerk (ESSID)</string>
-  <string id="790">Op afstand</string>
   <string id="791">Activeer gebeurtenissen op afstand</string>
   <string id="792">Gebeurtenissen op afstand-poort</string>
   <string id="793">Gebeurtenissen op afstand-poortbereik</string>
@@ -996,7 +984,6 @@
   <string id="13279">Netwerk</string>
   <string id="13280">Video</string>
   <string id="13281">Hardware</string>
-  <string id="13282">_</string>
   <string id="13283">Kernelversie:</string>
   <string id="13284">CPU-snelheid:</string>
   <string id="13285">Gedetecteerde BIOS:</string>
@@ -1112,7 +1099,6 @@
   <string id="13409">Top 250</string>
   <string id="13410">Beluister het op Last.FM</string>
   <string id="13411">Minimum ventilatorsnelheid</string>
-  <string id="13412">RSS-feeds bevatten "rechts naar links" lopende tekst</string>
   <string id="13413">Download</string>
   <string id="13414">Verberg artiest die alleen op compilatie's voorkomen</string>
   <string id="13415">Render Methode</string>
@@ -1125,6 +1111,11 @@
   <string id="13422">Start diavoorstelling</string>
   <string id="13423">Herinner voor dit pad</string>
   <string id="13424">Gebruik pixel buffer objecten</string>
+  <string id="13425">Hardwarematige versnelling inschakelen (VDPAU)</string>
+  <string id="13426">Hardwarematige versnelling inschakelen (VAAPI)</string>
+  <string id="13427">Hardwarematige versnelling inschakelen (DXVA2)</string>
+  <string id="13428">Hardwarematige versnelling inschakelen (CrystalHD)</string>
+  <string id="13429">Hardwarematige versnelling inschakelen (VDADecoder)</string>
   <string id="13500">A/V sync methode</string>
   <string id="13501">Audio klok</string>
   <string id="13502">Video klok (Drop/Dupe audio)</string>
@@ -1137,7 +1128,6 @@
   <string id="13509">Echt hoog</string>
   <string id="13510">Sync playback to display</string>
   <string id="13600">Apple afstandsbediening</string>
-  <string id="13601">Mode</string>
   <string id="13602">Altijd draaiend</string>
   <string id="13603">Start ondertiteling eerder/later</string>
   <string id="13610">Uitgeschakeld</string>
@@ -1179,7 +1169,6 @@
   <string id="14034">DVD buffer</string>
   <string id="14035">- Lokaal netwerk</string>
   <string id="14036">Servers</string>
-  <string id="14037">Uiterlijk</string>
   <string id="14038">Netwerkinstellingen gewijzigd</string>
   <string id="14039">XBMC moet herstarten om de netwerkinstellingen</string>
   <string id="14040">te wijzigen. Wilt u nu herstarten?</string>
@@ -1195,7 +1184,6 @@
   <string id="14051">Tijdnotatie</string>
   <string id="14052">Datumnotatie</string>
   <string id="14053">GUI filters</string>
-  <string id="14054">Informatie van Internet halen</string>
   <string id="14055">Gebruik scannen op achtergrond</string>
   <string id="14056">Scan stoppen</string>
   <string id="14057">Niet mogelijk tijdens scannen naar media	info</string>
@@ -1244,7 +1232,6 @@
   <string id="15103">* Alle artiesten</string>
   <string id="15104">* Alle nummers</string>
   <string id="15105">* Alle genres</string>
-  <string id="15106">Plaats geselecteerde bestand onthouden bij navigeren</string>
   <string id="15107">Bufferen...</string>
   <string id="15108">Navigatiegeluiden</string>
   <string id="15109">Standaarduiterlijk</string>
@@ -1328,7 +1315,6 @@
   <string id="15310">Openen multi-pad favoriet</string>
   <string id="15311">Pad:</string>
   <string id="16000">Algemeen</string>
-  <string id="16001">Geluidsapparaten instellen...</string>
   <string id="16002">Zoeken op CDDB</string>
   <string id="16003">Speler</string>
   <string id="16004">Media van disk afspelen</string>
@@ -1400,7 +1386,6 @@
   <string id="20002">- Locatie van de DVD-speler</string>
   <string id="20003">Trainersmap</string>
   <string id="20004">Screenshotmap</string>
-  <string id="20005">Opname map</string>
   <string id="20006">Playlistmap</string>
   <string id="20007">Opnames</string>
   <string id="20008">Screenshots</string>
@@ -1572,7 +1557,6 @@
   <string id="20190">Handmatig</string>
   <string id="20191">Activeer het registreren van fouten</string>
   <string id="20192">Albuminformatie ophalen bij scan</string>
-  <string id="20193">Artiestinformatie ophalen wanneer er gescand wordt</string>
   <string id="20194">Standaard-scraper</string>
   <string id="20195">Verander scraper</string>
   <string id="20196">Exporteer muziekbibliotheek</string>
@@ -1697,7 +1681,6 @@
   <string id="20416">Eerste keer op TV</string>
   <string id="20417">Schrijver</string>
   <string id="20418">Bestands- en map-namen opschonen</string>
-  <string id="20419">Voeg dubbele afleveringen samen</string>
   <string id="20420">Nooit</string>
   <string id="20421">Alleen bij één seizoen</string>
   <string id="20422">Altijd</string>
@@ -1726,7 +1709,6 @@
   <string id="20445">Fanart</string>
   <string id="20446">Lokaal opgeslagen informatie gevonden.</string>
   <string id="20447">Negeren en verversen van internet?</string>
-
   <string id="21330">Verborgen bestanden en mappen weergeven</string>
   <string id="21331">TuxBox-client</string>
   <string id="21332">WAARSCHUWING: TuxBox is aan het opnemen.</string>
@@ -1735,14 +1717,8 @@
   <string id="21335">Weet u zeker dat u de stream wil starten?</string>
   <string id="21336">Verbinden met: %s</string>
   <string id="21337">TuxBox-apparaat</string>
-  <string id="21356">UPnP-muziek</string>
-  <string id="21357">UPnP-video</string>
-  <string id="21358">UPnP-afbeeldingen</string>
   <string id="21359">Gedeelde media toevoegen...</string>
   <string id="21360">UPnP-server inschakelen</string>
-  <string id="21361">Gedeelde muziek beheren</string>
-  <string id="21362">Gedeelde video's beheren</string>
-  <string id="21363">Gedeelde afbeeldingen beheren</string>
   <string id="21364">Gedeelde media wijzigen</string>
   <string id="21365">Gedeelde media verwijderen</string>
   <string id="21366">Ondertitelingmap</string>
@@ -1904,7 +1880,6 @@
   <string id="22000">Bibliotheek updaten bij het opstarten</string>
   <string id="22001">Bibliotheek altijd op de achtergrond updaten</string>
   <string id="22002">- DNS Suffix</string>
-  <string id="22003">Activeer Bewerk en Besluiten-lijst</string>
   <string id="22004">Eerder %2.3fs</string>
   <string id="22005">Later %2.3fs</string>
   <string id="22006">Synchroniseer ondertitel</string>
@@ -1939,8 +1914,6 @@
   <string id="22041">wit/rood</string>
   <string id="22042">wit/blau</string>
   <string id="22043">zwart/wit</string>
-  <string id="23000">Weer plugin</string>
-  <string id="23001">- Plugin instellingen</string>
   <string id="23050">Activeer Teletext</string>
   <string id="23051">Stuk %i</string>
   <string id="23052">Bufferen %i bytes</string>

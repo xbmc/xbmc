@@ -12,7 +12,9 @@
     <xbmc>20000</xbmc>
   </minversion>
   <summary>AllMusic Music Scraper</summary>
+  <summary lang="nl">AllMusic Muziek Scraper</summary>
   <description>Download Music information from www.allmusic.com</description>
+  <description lang="nl">Download muziek informatie van www.allmusic.com</description>
   <author>TEAMXBMC</author>
   <supportedcontent>
     <content>albums</content>
