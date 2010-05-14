@@ -104,7 +104,7 @@ default case, /usr/local).
 Tip: To override the location that XBMC is installed, use PREFIX=<path>.
 For example.
 
-    $ make install PREFIX=$HOME/xbmc
+    $ make install DESTDIR=$HOME/xbmc
 
 -----------------------------------------------------------------------------
 5. How to run
