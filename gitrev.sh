@@ -4,7 +4,7 @@ R=""
 MAX=50
 while [ $N -le $MAX ] && [ "x$R" = "x" ]
 do
-  R=$(git log -1 --pretty=format:%b HEAD~$N | sed -e 's/.*@\([0-9]\+\) .*/\1/')
+  R=$(git log -1 --pretty=format:%b HEAD~$N | awk '$2 ~ /@([0-9]+)$/ {sub(".*@", "", $2); print $2}')
   N=$(($N+1))
 done
 if [ "x$R" != "x" ]; then

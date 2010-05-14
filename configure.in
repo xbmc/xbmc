@@ -29,6 +29,9 @@ faac_not_found="== Could not find libfaac. FAAC support disabled. =="
 faac_disabled="== FAAC support manually disabled. =="
 dvdcss_enabled="== DVDCSS support enabled. =="
 dvdcss_disabled="== DVDCSS support disabled. =="
+hal_not_found="== Could not find hal. HAL support disabled. =="
+halstorage_not_found="== Could not find hal-storage. HAL support disabled. =="
+hal_disabled="== HAL support disabled. =="
 avahi_not_found="== Could not find libavahi-common or libavahi-client. Avahi support disabled. =="
 avahi_disabled="== Avahi support disabled. =="
 vdpau_not_found="== Could not find libvdpau. VDPAU support disabled. =="
@@ -39,6 +42,7 @@ crystalhd_not_found="== Could not find libldil. CrystalHD support disabled. =="
 crystalhd_disabled="== CrystalHD support manually disabled. =="
 vdadecoder_enabled="== VDADecoder support enabled. =="
 vdadecoder_disabled="== VDADecoder support manually disabled. =="
+libass_using_internal="== External Libass not found, using internal. =="
 ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
 
 # External library message strings
@@ -50,8 +54,6 @@ external_liba52_enabled="== Use of external liba52 enabled. =="
 external_liba52_disabled="== Use of external liba52 disabled. =="
 external_libdts_enabled="== Use of external libdts enabled. =="
 external_libdts_disabled="== Use of external libdts disabled. =="
-external_libass_enabled="== Use of external libass enabled. =="
-external_libass_disabled="== Use of external libass disabled. =="
 external_python_enabled="== Use of external python enabled. =="
 external_python_disabled="== Use of external python disabled. =="
 ffmpeg_vdpau_not_supported="== External ffmpeg doesn't support VDPAU. VDPAU support disabled. =="
@@ -122,27 +124,27 @@ AC_ARG_ENABLE([gl],
 
 AC_ARG_ENABLE([vdpau],
             [AS_HELP_STRING([--enable-vdpau],
-               [enable VDPAU decoding (default is yes)])],
+               [enable VDPAU decoding (default is auto)])],
             [use_vdpau=$enableval],
-            [use_vdpau=yes])
+            [use_vdpau=auto])
 
 AC_ARG_ENABLE([vaapi],
             [AS_HELP_STRING([--enable-vaapi],
-               [enable VAAPI decoding (default is yes)])],
+               [enable VAAPI decoding (default is auto)])],
             [use_vaapi=$enableval],
-            [use_vaapi=yes])
+            [use_vaapi=auto])
 
 AC_ARG_ENABLE([crystalhd],
             [AS_HELP_STRING([--enable-crystalhd],
-               [enable CrystalHD decoding (default is yes)])],
+               [enable CrystalHD decoding (default is auto)])],
             [use_crystalhd=$enableval],
-            [use_crystalhd=yes])
+            [use_crystalhd=auto])
 
 AC_ARG_ENABLE([vdadecoder],
             [AS_HELP_STRING([--enable-vdadecoder],
-               [enable VDADecoder decoding (default is yes)])],
+               [enable VDADecoder decoding (default is auto)])],
             [use_vdadecoder=$enableval],
-            [use_vdadecoder=yes])
+            [use_vdadecoder=auto])
 
 AC_ARG_ENABLE([profiling],
             [AS_HELP_STRING([--enable-profiling],
@@ -168,18 +170,23 @@ AC_ARG_ENABLE([goom],
             [use_goom=$enableval],
             [use_goom=no])
 
-AC_PATH_PROG(CCACHE,ccache,none)
 AC_ARG_ENABLE([ccache],
             [AS_HELP_STRING([--enable-ccache],
-               [enable building with ccache feature (default is yes if ccache is installed)])],
+               [enable building with ccache feature (default is auto)])],
             [use_ccache=$enableval],
-            [use_ccache=yes])
+            [use_ccache=auto])
 
 AC_ARG_ENABLE([pulse],
             [AS_HELP_STRING([--enable-pulse],
-               [enable PulseAudio support (default is yes)])],
+               [enable PulseAudio support (default is auto)])],
             [use_pulse=$enableval],
-            [use_pulse=yes])
+            [use_pulse=auto])
+
+AC_ARG_ENABLE([ffmpeg_libvorbis],
+            [AS_HELP_STRING([--enable-ffmpeg-libvorbis],
+               [enable FFmpeg vorbis encoding (default is no)])],
+            [use_ffmpeg_libvorbis=$enableval],
+            [use_ffmpeg_libvorbis=no])
 
 AC_ARG_ENABLE([faac],
             [AS_HELP_STRING([--enable-faac],
@@ -198,6 +205,11 @@ AC_ARG_ENABLE([mid],
                [enable MID support (default is no)])],
             [use_mid=$enableval],
             [use_mid=no])
+AC_ARG_ENABLE([hal],
+             [AS_HELP_STRING([--disable-hal],
+                [disable HAL support (default is enabled if hal and hal-storage is found)])],
+             [use_hal=$enableval],
+             [use_hal=yes])
 AC_ARG_ENABLE([avahi],
              [AS_HELP_STRING([--disable-avahi],
                 [disable Avahi support (default is enabled if libavahi-common and libavahi-client is found)])],
@@ -240,36 +252,29 @@ AC_ARG_ENABLE([external-ffmpeg],
             [AS_HELP_STRING([--enable-external-ffmpeg],
             [enable use of external ffmpeg libraries (default is no) 'Linux only'])],
             [use_external_ffmpeg=$enableval],
-            [use_external_ffmpeg=no])
+            [use_external_ffmpeg=$use_external_libraries])
 
 AC_ARG_ENABLE([external-liba52],
             [AS_HELP_STRING([--enable-external-liba52],
             [enable use of external liba52 library (default is no) 'Linux only'])],
             [use_external_liba52=$enableval],
-            [use_external_liba52=no])
+            [use_external_liba52=$use_external_libraries])
 
 AC_ARG_ENABLE([external-libdts],
             [AS_HELP_STRING([--enable-external-libdts],
             [enable use of external libdts library (default is no) 'Linux only'])],
             [use_external_libdts=$enableval],
-            [use_external_libdts=no])
-
-AC_ARG_ENABLE([external-libass],
-            [AS_HELP_STRING([--enable-external-libass],
-            [enable use of external libass library (default is no) 'Linux only'])],
-            [use_external_libass=$enableval],
-            [use_external_libass=no])
+            [use_external_libdts=$use_external_libraries])
 
 AC_ARG_ENABLE([external-python],
             [AS_HELP_STRING([--enable-external-python],
             [enable use of external python library (default is no) 'Linux only'])],
             [use_external_python=$enableval],
-            [use_external_python=no])
+            [use_external_python=$use_external_libraries])
+
+use_external_libass="yes"
 
 ### End of external library options
-
-# PCRE is a requirement
-use_pcre="yes"
 
 # Checks for programs.
 PASSED_CXXFLAGS=$CXXFLAGS # Hack to override autoconf default values
@@ -354,6 +359,7 @@ AC_CHECK_HEADER([samplerate.h],,     AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([ass], [ass_set_message_cb],,use_external_libass="no")
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
@@ -366,48 +372,48 @@ AC_CHECK_LIB([mpeg2],       [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mpeg2convert],[main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitable version of libssh]))
 PKG_CHECK_MODULES([MAD],        [mad],
-                  [INCLUDES+=" $MAD_CFLAGS"; LIBS+=" $MAD_LIBS"],
+                  [INCLUDES="$INCLUDES $MAD_CFLAGS"; LIBS="$LIBS $MAD_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
-                  [INCLUDES+=" $FONTCONFIG_CFLAGS"; LIBS+=" $FONTCONFIG_LIBS"],
+                  [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"; LIBS="$LIBS $FONTCONFIG_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FRIBIDI],    [fribidi],
-                  [INCLUDES+=" $FRIBIDI_CFLAGS"; LIBS+=" $FRIBIDI_LIBS"],
+                  [INCLUDES="$INCLUDES $FRIBIDI_CFLAGS"; LIBS="$LIBS $FRIBIDI_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([SQLITE3],    [sqlite3],
-                  [INCLUDES+=" $SQLITE3_CFLAGS"; LIBS+=" $SQLITE3_LIBS"],
+                  [INCLUDES="$INCLUDES $SQLITE3_CFLAGS"; LIBS="$LIBS $SQLITE3_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([PNG],        [libpng],
-                  [INCLUDES+=" $PNG_CFLAGS"; LIBS+=" $PNG_LIBS"],
+                  [INCLUDES="$INCLUDES $PNG_CFLAGS"; LIBS="$LIBS $PNG_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([PCRE],       [libpcre],
-                  [INCLUDES+=" $PCRE_CFLAGS"; LIBS+=" $PCRE_LIBS"]; \
+                  [INCLUDES="$INCLUDES $PCRE_CFLAGS"; LIBS="$LIBS $PCRE_LIBS"]; \
                   AC_DEFINE([HAVE_LIBPCRE],[1],["Define to 1 if libpcre is installed"]),
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([PCRECPP],    [libpcrecpp],
-                  [INCLUDES+=" $PCRECPP_CFLAGS"; LIBS+=" $PCRECPP_LIBS"]; \
+                  [INCLUDES="$INCLUDES $PCRECPP_CFLAGS"; LIBS="$LIBS $PCRECPP_LIBS"]; \
                   AC_DEFINE([HAVE_LIBPCRECPP],[1],["Define to 1 if libpcrecpp is installed"]),
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([CDIO],       [libcdio],
-                  [INCLUDES+=" $CDIO_CFLAGS"; LIBS+=" $CDIO_LIBS"],
+                  [INCLUDES="$INCLUDES $CDIO_CFLAGS"; LIBS="$LIBS $CDIO_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([SAMPLERATE], [samplerate],
-                  [INCLUDES+=" $SAMPLERATE_CFLAGS"; LIBS+=" $SAMPLERATE_LIBS"],
+                  [INCLUDES="$INCLUDES $SAMPLERATE_CFLAGS"; LIBS="$LIBS $SAMPLERATE_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([MMS],        [libmms],
-                  [INCLUDES+=" $MMS_CFLAGS"; LIBS+=" $MMS_LIBS"],
+                  [INCLUDES="$INCLUDES $MMS_CFLAGS"; LIBS="$LIBS $MMS_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FREETYPE2],  [freetype2],
-                  [INCLUDES+=" $FREETYPE2_CFLAGS"; LIBS+=" $FREETYPE2_LIBS"],
+                  [INCLUDES="$INCLUDES $FREETYPE2_CFLAGS"; LIBS="$LIBS $FREETYPE2_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([OGG],        [ogg],
-                  [INCLUDES+=" $OGG_CFLAGS"; LIBS+=" $OGG_LIBS"],
+                  [INCLUDES="$INCLUDES $OGG_CFLAGS"; LIBS="$LIBS $OGG_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([VORBIS],     [vorbis],
-                  [INCLUDES+=" $VORBIS_CFLAGS"; LIBS+=" $VORBIS_LIBS"],
+                  [INCLUDES="$INCLUDES $VORBIS_CFLAGS"; LIBS="$LIBS $VORBIS_LIBS"],
                   AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([VORBISENC],     [vorbisenc],
-                  [INCLUDES+=" $VORBISENC_CFLAGS"; LIBS+=" $VORBISENC_LIBS"],
+                  [INCLUDES="$INCLUDES $VORBISENC_CFLAGS"; LIBS="$LIBS $VORBISENC_LIBS"],
                   AC_MSG_ERROR($missing_library))
 
 # platform dependent libraries
@@ -416,13 +422,13 @@ if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([VORBISFILE],     [vorbisfile],
-                    [INCLUDES+=" $VORBISFILE_CFLAGS"; LIBS+=" $VORBISFILE_LIBS"],
+                    [INCLUDES="$INCLUDES $VORBISFILE_CFLAGS"; LIBS="$LIBS $VORBISFILE_LIBS"],
                     AC_MSG_ERROR($missing_library))
 else
   AC_CHECK_PROG(MYSQL_CONFIG, mysql_config, "yes", "no")
   if test $MYSQL_CONFIG = "yes"; then
-                  INCLUDES+=" `mysql_config --include`"
-                  LIBS+=" `mysql_config --libs`"
+                  INCLUDES="$INCLUDES `mysql_config --include`"
+                  LIBS="$LIBS `mysql_config --libs`"
   else
                   AC_MSG_ERROR($missing_program)
   fi
@@ -442,138 +448,86 @@ else
   AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR($missing_library))
   
   PKG_CHECK_MODULES([ALSA],       [alsa],
-                  [INCLUDES+=" $ALSA_CFLAGS"; LIBS+=" $ALSA_LIBS"],
+                  [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"],
                   AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([ENCA],         [enca],
-                    [INCLUDES+=" $ENCA_CFLAGS"; LIBS+=" $ENCA_LIBS"],
+                    [INCLUDES="$INCLUDES $ENCA_CFLAGS"; LIBS="$LIBS $ENCA_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([XT],           [xt],
-                    [INCLUDES+=" $XT_CFLAGS"; LIBS+=" $XT_LIBS"],
+                    [INCLUDES="$INCLUDES $XT_CFLAGS"; LIBS="$LIBS $XT_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([XTST],         [xtst],
-                    [INCLUDES+=" $XTST_CFLAGS"; LIBS+=" $XTST_LIBS"],
+                    [INCLUDES="$INCLUDES $XTST_CFLAGS"; LIBS="$LIBS $XTST_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([XEXT],         [xext],
-                    [INCLUDES+=" $XEXT_CFLAGS"; LIBS+=" $XEXT_LIBS"],
+                    [INCLUDES="$INCLUDES $XEXT_CFLAGS"; LIBS="$LIBS $XEXT_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([XMU],          [xmu],
-                    [INCLUDES+=" $XMU_CFLAGS"; LIBS+=" $XMU_LIBS"],
+                    [INCLUDES="$INCLUDES $XMU_CFLAGS"; LIBS="$LIBS $XMU_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([XINERAMA],     [xinerama],
-                    [INCLUDES+=" $XINERAMA_CFLAGS"; LIBS+=" $XINERAMA_LIBS"],
+                    [INCLUDES="$INCLUDES $XINERAMA_CFLAGS"; LIBS="$LIBS $XINERAMA_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([CURL],         [libcurl],
-                    [INCLUDES+=" $CURL_CFLAGS"; LIBS+=" $CURL_LIBS"],
+                    [INCLUDES="$INCLUDES $CURL_CFLAGS"; LIBS="$LIBS $CURL_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([DBUS],         [dbus-1],
-                    [INCLUDES+=" $DBUS_CFLAGS"; LIBS+=" $DBUS_LIBS"],
-                    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([HAL_STORAGE],  [hal-storage],
-                    [INCLUDES+=" $HAL_STORAGE_CFLAGS"; LIBS+=" $HAL_STORAGE_LIBS"], 
+                    [INCLUDES="$INCLUDES $DBUS_CFLAGS"; LIBS="$LIBS $DBUS_LIBS"],
                     AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([SDL],          [sdl],
-                    [INCLUDES+=" $SDL_CFLAGS"; LIBS+=" $SDL_LIBS"],
-                    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([HAL],          [hal],
-                    [INCLUDES+=" $HAL_CFLAGS"; LIBS+=" $HAL_LIBS"],
+                    [INCLUDES="$INCLUDES $SDL_CFLAGS"; LIBS="$LIBS $SDL_LIBS"],
                     AC_MSG_ERROR($missing_library))
 fi
 
 # check for library basenames
+AC_DEFUN([XB_FIND_SONAME],
+[
+  AC_MSG_CHECKING([for lib$2 soname])
+  $1_SONAME=$( $CC -print-file-name=lib$2.so | \
+                while read output; do objdump -p $output | \
+                  grep "SONAME" | \
+                  sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
+  if [[ -z "$$1_SONAME" ]]; then
+    AC_MSG_RESULT([no])
+    AC_MSG_ERROR([Unable to determine soname of lib$2 library])
+  else
+    AC_MSG_RESULT([$$1_SONAME])
+    AC_SUBST($1_SONAME)
+  fi
+])
+
 if test "$host_vendor" != "apple"; then
-  # libcurl
-  LIBCURL_BASENAME=$(gcc $CFLAGS -print-file-name=libcurl.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [ -z "$LIBCURL_BASENAME" ]; then
-    echo "Unable to determine basename of libcurl library"
-  fi
-
-  # libFLAC
-  LIBFLAC_BASENAME=$(gcc $CFLAGS -print-file-name=libFLAC.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBFLAC_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libFLAC library])
-  fi
-
-  # libvorbisfile
-  LIBVORBISFILE_BASENAME=$(gcc $CFLAGS -print-file-name=libvorbisfile.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBVORBISFILE_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libvorbisfile library])
-  fi
-
-  # libmodplug
-  LIBMODPLUG_BASENAME=$(gcc $CFLAGS -print-file-name=libmodplug.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBMODPLUG_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libmodplug library])
-  fi
-
-  # libfaad
-  LIBFAAD_BASENAME=$(gcc $CFLAGS -print-file-name=libfaad.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBFAAD_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libfaad library])
-  fi
-
-  # libmad
-  LIBMAD_BASENAME=$(gcc $CFLAGS -print-file-name=libmad.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBMAD_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libmad library])
-  fi
-
-  # libogg
-  LIBOGG_BASENAME=$(gcc $CFLAGS -print-file-name=libogg.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBOGG_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libogg library])
-  fi
-
-  # libvorbisenc
-  LIBVORBISENC_BASENAME=$(gcc $CFLAGS -print-file-name=libvorbisenc.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBVORBISENC_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libvorbisenc library])
-  fi
-
-  # libvorbis
-  LIBVORBIS_BASENAME=$(gcc $CFLAGS -print-file-name=libvorbis.so | \
-                     while read output; do objdump -p $output | \
-                     grep SONAME | \
-                     awk 'BEGIN { FS = " " } ; { print $2 }'; done)
-  if [[ -z "$LIBVORBIS_BASENAME" ]]; then
-    AC_MSG_ERROR([Error occurred determining basename of libvorbis library])
-  fi
+  XB_FIND_SONAME([CURL],        [curl])
+  XB_FIND_SONAME([FLAC],        [FLAC])
+  XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
+  XB_FIND_SONAME([MODPLUG],     [modplug])
+  XB_FIND_SONAME([FAAD],        [faad])
+  XB_FIND_SONAME([MAD],         [mad])
+  XB_FIND_SONAME([OGG],         [ogg])
+  XB_FIND_SONAME([VORBISENC],   [vorbisenc])
+  XB_FIND_SONAME([VORBIS],      [vorbis])
 fi
 
 # PulseAudio
-if test "$host_vendor" = "apple" ; then
-  use_pulse="no"
-  AC_MSG_RESULT($pulse_disabled)
-else
-  if test "$use_pulse" = "yes"; then
-    AC_CHECK_LIB([pulse], [main],, 
-      use_pulse=no;AC_MSG_RESULT($pulse_not_found))
+if test "x$use_pulse" != "xno"; then
+  if test "$host_vendor" = "apple" ; then
+    if test "x$use_pulse" = "xyes"; then
+      AC_MSG_ERROR($pulse_disabled)
+    else
+      use_pulse="no"
+      AC_MSG_RESULT($pulse_disabled)
+    fi
   else
-    AC_MSG_RESULT($pulse_disabled)
+    AC_CHECK_LIB([pulse], [main],,
+                 [if test "x$use_pulse" = "xyes"; then
+                    AC_MSG_ERROR($pulse_not_found)
+                  else
+                    use_pulse=no
+                    AC_MSG_RESULT($pulse_not_found)
+                  fi])
   fi
+else
+  AC_MSG_RESULT($pulse_disabled)
 fi
 
 # FAAC
@@ -586,6 +540,26 @@ else
       use_faac=no;AC_MSG_RESULT($faac_not_found))
   else
     AC_MSG_RESULT($faac_disabled)
+  fi
+fi
+
+# HAL
+if test "$host_vendor" = "apple" ; then
+  use_hal="no"
+  AC_MSG_RESULT($hal_disabled)
+else
+  if test "$use_hal" = "yes"; then
+    PKG_CHECK_MODULES([HAL],  [hal],
+                    [INCLUDES="$INCLUDES $HAL_CFLAGS"; LIBS="$LIBS $HAL_LIBS"],
+                    use_hal=no;AC_MSG_RESULT($hal_not_found))
+    PKG_CHECK_MODULES([HAL_STORAGE],  [hal-storage],
+                    [INCLUDES="$INCLUDES $HAL_STORAGE_CFLAGS"; LIBS="$LIBS $HAL_STORAGE_LIBS"],
+                    use_hal=no;AC_MSG_RESULT($halstorage_not_found))
+  else
+    AC_MSG_RESULT($hal_disabled)
+  fi
+  if test "$use_hal" = "yes"; then
+    AC_DEFINE([HAS_HAL], [1], [Define to 1 if you have HAL installed])
   fi
 fi
 
@@ -635,17 +609,8 @@ else
 fi
 
 ### External libraries checks
-if test "$use_external_libraries" = "yes"; then
-  AC_MSG_NOTICE($external_libraries_enabled)
-  USE_EXTERNAL_LIBRARIES=1
-  AC_DEFINE([USE_EXTERNAL_LIBRARIES], [1], [Whether to use external libraries.])
-else
-  AC_MSG_NOTICE($external_libraries_disabled)
-  USE_EXTERNAL_LIBRARIES=0
-fi
-
 # External FFmpeg
-if test "$use_external_libraries" = "yes" || test "$use_external_ffmpeg" = "yes"; then
+if test "$use_external_ffmpeg" = "yes"; then
   AC_CHECK_LIB([avcodec],          [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([avformat],         [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([avutil],           [main],, AC_MSG_ERROR($missing_library))
@@ -674,10 +639,15 @@ if test "$use_external_libraries" = "yes" || test "$use_external_ffmpeg" = "yes"
 
   # Disable vdpau support if external libavcodec doesn't have it
   AC_CHECK_LIB([avcodec], [ff_vdpau_vc1_decode_picture],,
-    use_vdpau=no;AC_MSG_RESULT($ffmpeg_vdpau_not_supported))
+               [if test "x$use_vdpau" = "xyes"; then
+                 AC_MSG_ERROR($ffmpeg_vdpau_not_supported)
+               else
+                 use_vdpau=no
+                 AC_MSG_RESULT($ffmpeg_vdpau_not_supported)
+              fi])
 
   # Check for 'PIX_FMT_VDPAU_MPEG4' from libavutil
-  if test "$use_vdpau" = "yes"; then
+  if test "x$use_vdpau" != "xno"; then
     AC_LANG_PUSH([C++])
     AC_LINK_IFELSE([
         #include <libavutil/pixfmt.h>
@@ -693,8 +663,8 @@ else
   AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1], [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])
 fi
 
-# External liba52
-if test "$use_external_libraries" = "yes" || test "$use_external_liba52" = "yes"; then
+# External liba52 if deprecated a52 support is enabled
+if test "$use_liba52" = "yes" && "$use_external_liba52" = "yes"; then
   AC_CHECK_LIB([a52],          [main],, AC_MSG_ERROR($missing_library))
 
   AC_MSG_NOTICE($external_liba52_enabled)
@@ -705,8 +675,8 @@ else
   USE_EXTERNAL_LIBA52=0
 fi
 
-# External libdts
-if test "$use_external_libraries" = "yes" || test "$use_external_libdts" = "yes"; then
+# External libdts if deprecated dts support enabled
+if test "$use_libdts" = "yes" && "$use_external_libdts" = "yes"; then
   AC_CHECK_LIB([dts],          [main],, AC_MSG_ERROR($missing_library))
 
   AC_MSG_NOTICE($external_libdts_enabled)
@@ -717,34 +687,19 @@ else
   USE_EXTERNAL_LIBDTS=0
 fi
 
-# External libass
-if test "$use_external_libraries" = "yes" || test "$use_external_libass" = "yes"; then
-  # We need libass >= 0.9.7.
-  AC_CHECK_LIB([ass], [ass_set_message_cb],
-  [AC_CHECK_LIB([ass], [main],,)
-  AC_MSG_NOTICE($external_libass_enabled)
-  USE_EXTERNAL_LIBASS=1
-   AC_DEFINE([USE_EXTERNAL_LIBASS], [1], [Whether to use external libass library.])],
-  [AC_MSG_WARN(== Need libass >= 0.9.7. Disabling external libass. ==)
-   USE_EXTERNAL_LIBASS=0])
-else
-  AC_MSG_NOTICE($external_libass_disabled)
-  USE_EXTERNAL_LIBASS=0
-fi
-
 # External Python
-if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes"; then
+if test "$use_external_python" = "yes"; then
   AC_CHECK_LIB([python2.6], [main],
     [AC_DEFINE([HAVE_LIBPYTHON2_6], [1],
-    [Define to 1 if you have the `python2.6' library.])
+    [Define to 1 if you have the 'python2.6' library.])
     USE_PYTHON2_6=1],
   [AC_CHECK_LIB([python2.5], [main],
     [AC_DEFINE([HAVE_LIBPYTHON2_5], [1],
-    [Define to 1 if you have the `python2.5' library.])
+    [Define to 1 if you have the 'python2.5' library.])
     USE_PYTHON2_5=1],
   [AC_CHECK_LIB([python2.4], [main],
     [AC_DEFINE([HAVE_LIBPYTHON2_4], [1],
-    [Define to 1 if you have the `python2.4' library.])
+    [Define to 1 if you have the 'python2.4' library.])
     USE_PYTHON2_4=1],
   [AC_MSG_ERROR($missing_library)] )] )] )
 
@@ -766,54 +721,84 @@ else
 fi
 
 # VDPAU
-if test "$host_vendor" = "apple" ; then
-  use_vdpau="no"
-  AC_MSG_NOTICE($vdpau_disabled)
-else
-  if test "$use_vdpau" = "yes"; then
-    AC_CHECK_HEADER([vdpau/vdpau.h],AC_DEFINE([HAVE_LIBVDPAU], [], [Define to 1 if you have the 'vdpau' library (-lvdpau).]),
-      use_vdpau=no;AC_MSG_RESULT($vdpau_not_found))
+if test "x$use_vdpau" != "xno"; then
+  if test "$host_vendor" = "apple" ; then
+    if test "x$use_vdpau" = "xyes"; then
+      AC_MSG_ERROR([VDPAU not supported on this platform])
+    else
+      use_vdpau="no"
+      AC_MSG_NOTICE($vdpau_disabled)
+    fi
   else
-    AC_MSG_NOTICE($vdpau_disabled)
+    AC_CHECK_HEADER([vdpau/vdpau.h],AC_DEFINE([HAVE_LIBVDPAU], [], [Define to 1 if you have the 'vdpau' library (-lvdpau).]),
+    [if test "x$use_vdpau" = "xyes"; then 
+      AC_MSG_ERROR([$vdpau_no_found])
+    else
+      use_vdpau="no"
+      AC_MSG_RESULT($vdpau_not_found)
+    fi])
   fi
+else
+  AC_MSG_NOTICE($vdpau_disabled)
 fi
 
 # VAAPI
-if test "$host_vendor" = "apple" ; then
-  use_vaapi="no"
-  AC_MSG_NOTICE($vaapi_disabled)
-else
-  if test "$use_vaapi" = "yes"; then
-    AC_CHECK_LIB([va-glx], main,, use_vaapi=no;AC_MSG_RESULT($vaapi_not_found), -lva)
+if test "x$use_vaapi" != "xno"; then
+  if test "$host_vendor" = "apple" ; then
+    if test "x$use_vaapi" = "xyes"; then
+      AC_MSG_ERROR([VAAPI not supported on this platform])
+    else
+      use_vaapi="no"
+      AC_MSG_NOTICE($vaapi_disabled)
+    fi
   else
-    AC_MSG_NOTICE($vaapi_disabled)
+    initial_val=$use_vaapi
+    AC_CHECK_LIB([va], main,
+                 [AC_CHECK_LIB([va-glx], main,, use_vaapi=no, -lva)],
+                 [use_vaapi=no])
+    if test "x$use_vaapi" = "xno"; then
+      if test "x$initial_val" = "xyes"; then
+        AC_MSG_ERROR($vaapi_not_found)
+      else
+        AC_MSG_RESULT($vaapi_not_found)
+      fi
+    fi
   fi
-  if test "$use_vaapi" = "yes"; then
-    AC_CHECK_LIB([va], main,, use_vaapi=no;AC_MSG_RESULT($vaapi_not_found))
-  fi
+else
+  AC_MSG_NOTICE($vaapi_disabled)
 fi
 
 # CrystalHD
-if test "$use_crystalhd" = "yes"; then
+if test "x$use_crystalhd" != "xno"; then
   AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h],AC_DEFINE([HAVE_LIBCRYSTALHD], [], 
-    [Define to 1 if you have the `Broadcom Crystal HD' library.]), 
-    use_crystalhd=no;AC_MSG_RESULT($crystalhd_not_found), [#define __LINUX_USER__])
+    [Define to 1 if you have the 'Broadcom Crystal HD' library.]), 
+    [if test "x$use_crystalhd" = "xyes"; then
+       AC_MSG_ERROR($crystalhd_not_found)
+     else
+       use_crystalhd=no
+       AC_MSG_RESULT($crystalhd_not_found)
+     fi],
+     [#define __LINUX_USER__])
 else
   AC_MSG_NOTICE($crystalhd_disabled)
 fi
 
 # VDADecoder
-if test "$host_vendor" = "apple" ; then
-  if test "$use_vdadecoder" = "yes"; then
+if test "x$use_vdadecoder" != "xno"; then
+  if test "$host_vendor" = "apple" ; then
+    # Erm...where the hell is the system test?
     HAVE_LIBVDADECODER=1
-    AC_DEFINE([HAVE_LIBVDADECODER], [1], [Define to 1 if you have the `VDADecoder' library.])
+    AC_DEFINE([HAVE_LIBVDADECODER], [1], [Define to 1 if you have the 'VDADecoder' library.])
     AC_MSG_NOTICE($vdadecoder_enabled)
   else
-    use_vdadecoder ="no"
-    AC_MSG_NOTICE($vdadecoder_disabled)
+    if test "x$use_vdadecoder" = "xyes"; then
+      AC_MSG_ERROR([VDA Decoder not supported on this platform])
+    else
+      use_vdadecoder="no"
+      AC_MSG_NOTICE($vdadecoder_disabled)
+    fi
   fi
 else
-  use_vdadecoder ="no"
   AC_MSG_NOTICE($vdadecoder_disabled)
 fi
 
@@ -964,25 +949,25 @@ else
   SDL_DEFINES="-DHAS_SDL_2D"
 fi
 
-if test "$use_vdpau" = "yes"; then
+if test "x$use_vdpau" != "xno"; then
   final_message="$final_message\n  VDPAU:\tYes"
 else
   final_message="$final_message\n  VDPAU:\tNo"
 fi
 
-if test "$use_vaapi" = "yes"; then
+if test "x$use_vaapi" != "xno"; then
   final_message="$final_message\n  VAAPI:\tYes"
 else
   final_message="$final_message\n  VAAPI:\tNo"
 fi
 
-if test "$use_crystalhd" = "yes"; then
+if test "x$use_crystalhd" != "xno"; then
   final_message="$final_message\n  CrystalHD:\tYes"
 else
   final_message="$final_message\n  CrystalHD:\tNo"
 fi
 
-if test "$use_vdadecoder" = "yes"; then
+if test "x$use_vdadecoder" != "xno"; then
   final_message="$final_message\n  VDADecoder:\tYes"
 else
   final_message="$final_message\n  VDADecoder:\tNo"
@@ -1007,12 +992,6 @@ else
   final_message="$final_message\n  GOOM:\t\tNo"
 fi
 
-if test "$use_pcre" = "yes"; then
-  final_message="$final_message\n  PCRE Support:\tYes"
-else
-  final_message="$final_message\n  PCRE Support:\tNo"
-fi
-
 if test "$use_mid" = "yes"; then
   final_message="$final_message\n  MID Support:\tYes"
   SDL_DEFINES="$SDL_DEFINES -DMID"
@@ -1026,10 +1005,15 @@ else
   INCLUDES="$INCLUDES"
 fi
 
-if test "$use_ccache" = "yes"; then
+if test "x$use_ccache" != "xno"; then
+  AC_PATH_PROG(CCACHE,ccache,none)
   if test "$ac_cv_path_CCACHE" = "none"; then
-     echo "ccache not found. Falling back to default CC"
-     final_message="$final_message\n  ccache:\tNo"
+    if test "x$use_ccache" = "xyes"; then
+      AC_MSG_ERROR([ccache not found.]);
+    else
+      AC_MSG_NOTICE([ccache not found. Falling back to default CC])
+      final_message="$final_message\n  ccache:\tNo"
+    fi
   else
     CC="$ac_cv_path_CCACHE $CC"
     CXX="$ac_cv_path_CCACHE $CXX"
@@ -1040,10 +1024,16 @@ else
   final_message="$final_message\n  ccache:\tNo"
 fi
 
-if test "$use_pulse" = "yes"; then
+if test "x$use_pulse" != "xno"; then
   final_message="$final_message\n  PulseAudio:\tYes"
 else
   final_message="$final_message\n  PulseAudio:\tNo"
+fi
+
+if test "$use_hal" = "yes"; then
+  final_message="$final_message\n  HAL Support:\tYes"
+else
+  final_message="$final_message\n  HAL Support:\tNo"
 fi
 
 if test "$use_faac" = "yes"; then
@@ -1078,7 +1068,7 @@ if ! test -n "$SVN_REV" -a "$SVN_REV" != "" ; then
   fi
   if test "$SVN_REV" = ""; then
     if test "$HAVE_GIT" = "yes"; then
-      SVN_REV=$(echo -n `sh gitrev.sh`)
+      SVN_REV=$(./gitrev.sh)
     fi
   fi
   if test "$SVN_REV" = ""; then
@@ -1140,40 +1130,35 @@ else
 fi
 
 ### External libraries messages
-if test "$use_external_libraries" = "yes"; then
-  final_message="$final_message\n  External Libraries:\tYes"
+if test "$use_external_ffmpeg" = "yes"; then
+  final_message="$final_message\n  External FFmpeg:\tYes"
 else
-  final_message="$final_message\n  External Libraries:\tNo"
-  if test "$use_external_ffmpeg" = "yes"; then
-    final_message="$final_message\n  External FFmpeg:\tYes"
-  else
-    final_message="$final_message\n  External FFmpeg:\tNo"
-  fi
+  final_message="$final_message\n  External FFmpeg:\tNo"
+fi
+if test "$use_liba52" = "yes"; then
   if test "$use_external_liba52" = "yes"; then
     final_message="$final_message\n  External liba52:\tYes"
   else
     final_message="$final_message\n  External liba52:\tNo"
   fi
+fi
+if test "$use_libdts" = "yes"; then
   if test "$use_external_libdts" = "yes"; then
     final_message="$final_message\n  External libdts:\tYes"
   else
     final_message="$final_message\n  External libdts:\tNo"
   fi
-  if test "$use_external_libass" = "yes"; then
-    final_message="$final_message\n  External libass:\tYes"
-  else
-    final_message="$final_message\n  External libass:\tNo"
-  fi
-  if test "$use_external_python" = "yes"; then
-    final_message="$final_message\n  External Python:\tYes"
-  else
-    final_message="$final_message\n  External Python:\tNo"
-  fi
+fi
+if test "$use_external_python" = "yes"; then
+  final_message="$final_message\n  External Python:\tYes"
+else
+  final_message="$final_message\n  External Python:\tNo"
 fi
 
 OUTPUT_FILES="Makefile \
              Makefile.include \
              xbmc/Makefile \
+             xbmc/cdrip/Makefile \
              xbmc/cores/Makefile \
              xbmc/cores/VideoRenderers/Makefile \
              xbmc/cores/dvdplayer/Makefile \
@@ -1199,9 +1184,9 @@ OUTPUT_FILES="Makefile \
              xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile \
              xbmc/cores/playercorefactory/Makefile \
              xbmc/karaoke/Makefile \
+             xbmc/osx/Makefile \
              guilib/Makefile \
              guilib/common/Makefile \
-             xbmc/lib/libass/xbmc/Makefile \
              xbmc/lib/libXBMS/Makefile \
              xbmc/lib/libRTV/Makefile \
              xbmc/lib/libexif/Makefile \
@@ -1231,8 +1216,18 @@ OUTPUT_FILES="Makefile \
              tools/EventClients/Clients/OSXRemote/Makefile"
 
 if test "$host_vendor" = "apple"; then
-  OUTPUT_FILES+=" \
+  OUTPUT_FILES="$OUTPUT_FILES \
                 xbmc/cores/paplayer/FLACCodec/Makefile"
+fi
+
+if test "$use_external_libass" = "no"; then
+  OUTPUT_FILES="$OUTPUT_FILES \
+                lib/libass/xbmc/Makefile"
+  USE_EXTERNAL_LIBASS=0
+  AC_MSG_NOTICE($libass_using_internal)
+else
+  AC_DEFINE([USE_EXTERNAL_LIBASS], [1], [Whether to use external libass library.])
+  USE_EXTERNAL_LIBASS=1
 fi
 
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
@@ -1240,7 +1235,7 @@ fi
 AC_CONFIG_FILES([.dummy])
 
 AC_CONFIG_FILES([${OUTPUT_FILES}])
-OUTPUT_FILES+=" \
+OUTPUT_FILES="$OUTPUT_FILES \
              .dummy"
 AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
@@ -1250,12 +1245,11 @@ AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(BUILD_GOOM)
-AC_SUBST(USE_EXTERNAL_LIBRARIES)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
 AC_SUBST(USE_EXTERNAL_LIBA52)
+AC_SUBST(USE_EXTERNAL_LIBASS)
 AC_SUBST(USE_EXTERNAL_LIBDTS)
 AC_SUBST(USE_EXTERNAL_LIBMPEG2)
-AC_SUBST(USE_EXTERNAL_LIBASS)
 AC_SUBST(USE_EXTERNAL_LIBWAVPACK)
 AC_SUBST(USE_EXTERNAL_PYTHON)
 AC_SUBST(USE_PYTHON2_6)
@@ -1273,6 +1267,32 @@ AC_SUBST(LIBMAD_BASENAME)
 AC_SUBST(LIBOGG_BASENAME)
 AC_SUBST(LIBVORBISENC_BASENAME)
 AC_SUBST(LIBVORBIS_BASENAME)
+
+# pushd and popd are not available in other shells besides bash, so implement
+# our own pushd/popd functions
+XB_DIRSTACK="$PWD"
+xb_pushd()
+{
+  local dirname="$1"
+  if [[ -d "$dirname" ]] && [[ -x "$dirname" ]]; then
+    cd "$dirname"
+    XB_DIRSTACK="$dirname ${XB_DIRSTACK:-$PWD}"
+    return 0
+  else
+    AC_MSG_ERROR(xb_pushd: unable to change to $dirname)
+  fi
+}
+xb_popd()
+{
+  if [[ -n "$XB_DIRSTACK" ]]; then
+    XB_DIRSTACK="${XB_DIRSTACK#* }"
+    cd "${XB_DIRSTACK%% *}"
+    return 0
+  else
+    AC_MSG_ERROR(xb_popd: unable to go back to previous directory)
+  fi
+}
+
 # Function to run the configure scripts in our submodules
 # Consists of three paramaters, the path to the submodule, the configure command
 # with appropriate arguments, and a third parameter set to 1 if we are to skip
@@ -1281,16 +1301,16 @@ AC_DEFUN([XB_CONFIG_MODULE],[
 AC_CONFIG_COMMANDS_POST([
 if [[ $3 != "1" ]]; then
     if [[ -d $1 ]]; then
-        pushd $1
+        xb_pushd $1
         $2
         if [[ $? -ne 0 ]]; then
-            popd
+            xb_popd
             AC_MSG_ERROR([[Submodule $1 failed to configure]])
         else
-            popd
+            xb_popd
         fi
     else
-        AC_MSG_ERROR([[Submodule $1 doesn't exist]])
+        AC_MSG_ERROR([[Submodule $1 does not exist]])
     fi
 else
     AC_MSG_NOTICE([[Skipping configuration of submodule $1.]])
@@ -1367,6 +1387,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-encoders \
       --enable-encoder=ac3 \
       --enable-encoder=aac \
+      `if test "$use_ffmpeg_libvorbis" == "yes"; then echo --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis; else echo --disable-libvorbis; fi` \
       --disable-devices \
       --disable-ffplay \
       --disable-ffserver \
@@ -1399,17 +1420,17 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-encoders \
       --enable-encoder=ac3 \
       --enable-encoder=aac \
+      `if test "$use_ffmpeg_libvorbis" == "yes"; then echo --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis; else echo --disable-libvorbis; fi` \
       --disable-decoder=mpeg_xvmc \
       --disable-devices \
       --disable-ffplay \
       --disable-ffserver \
       --disable-ffmpeg \
-      --disable-vaapi \
       --enable-shared \
       --enable-postproc \
       --enable-gpl \
-      `if test "$use_vdpau" = "yes"; then echo --enable-vdpau; else echo --disable-vdpau; fi` \
-      `if test "$use_vaapi" = "yes"; then echo --enable-vaapi; else echo --disable-vaapi; fi` \
+      `if test "x$use_vdpau" != "xno"; then echo --enable-vdpau; else echo --disable-vdpau; fi` \
+      `if test "x$use_vaapi" != "xno"; then echo --enable-vaapi; else echo --disable-vaapi; fi` \
       --enable-libfaad \
       --enable-protocol=http \
       --enable-pthreads \
@@ -1560,7 +1581,7 @@ XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [
   fi
 ], [0])
 
-XB_CONFIG_MODULE([xbmc/lib/libass], [
+XB_CONFIG_MODULE([lib/libass], [
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4
@@ -1599,7 +1620,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
   else
 set -x
     rm -f CMakeCache.txt && cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
-      -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" \
+      -DCMAKE_C_FLAGS="${CFLAGS} -fPIC -DPIC" -DCMAKE_CXX_FLAGS="${CXXFLAGS} -fPIC -DPIC" \
       -DCMAKE_INSTALL_PREFIX="${prefix}" -DCMAKE_INSTALL_LIBDIR:PATH="${libdir}" \
       -DINCLUDE_INSTALL_DIR:PATH="${includedir}" -DLIB_INSTALL_DIR:PATH="${libdir}" \
       -DSYSCONF_INSTALL_DIR:PATH="${sysconfdir}" -DSHARE_INSTALL_PREFIX:PATH="${datadir}" .
