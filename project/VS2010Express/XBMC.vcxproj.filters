@@ -4478,7 +4478,6 @@
     <ClInclude Include="..\..\xbmc\GUIDialogAddonInfo.h">
       <Filter>Source Files\GUI Dialog</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\SystemGlobals.h" />
     <ClInclude Include="..\..\xbmc\GUIDialogTextViewer.h">
       <Filter>Source Files\GUI Dialog</Filter>
     </ClInclude>
@@ -4487,6 +4486,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.h">
       <Filter>Source Files\Filesystem\VideoDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\SystemGlobals.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
