@@ -175,7 +175,7 @@ void CGUIDialogMusicScan::OnFinished()
 
   if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
   {
-    Close();
+    g_application.getApplicationMessenger().Close(this, false, false);
   }
 }
 
