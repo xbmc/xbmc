@@ -882,6 +882,7 @@ void projectM::switchPreset(std::auto_ptr<Preset> & targetPreset, PresetInputs &
 
 	// Set preset name here- event is not done because at the moment this function is oblivious to smooth/hard switches
 	renderer->setPresetName ( targetPreset->presetName() );
+        printf("projectm: preset is now %s\n", targetPreset->presetName().c_str());
 
 
 }
