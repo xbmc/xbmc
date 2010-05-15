@@ -134,7 +134,9 @@ extern "C"
                            LPDWORD lpThreadId);
   int dll_stati64(const char *path, struct _stati64 *buffer);
   int dll_stat64(const char *path, struct __stat64 *buffer);
+#ifdef _WIN32
   int dll_stat64i32(const char *path, struct _stat64i32 *buffer);
+#endif
   int dll_stat(const char *path, struct stat *buffer);
   int dll_fstat(int fd, struct stat *buffer);
   int dll_fstati64(int fd, struct _stati64 *buffer);
@@ -156,6 +158,9 @@ extern "C"
   int dll_ftrylockfile(FILE *file);
   void dll_funlockfile(FILE *file);
   int dll_fstat64(int fd, struct __stat64 *buf);
+#ifdef _WIN32
+  int dll_fstat64i32(int fd, struct _stat64i32 *buffer);
+#endif
   int dll_fstatvfs64(int fd, struct statvfs64 *buf);
   int dll_setvbuf(FILE *stream, char *buf, int type, size_t size);
   int dll_filbuf(FILE *fp);

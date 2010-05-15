@@ -101,6 +101,8 @@ Export win32_exports[] =
   { "_stat64",                    -1, (void*)dll_stat64,                    NULL },
   { "_stat64i32",                 -1, (void*)dll_stat64i32,                 NULL },
   { "_fstati64",                  -1, (void*)dll_fstati64,                  NULL },
+  { "_fstat64",                   -1, (void*)dll_fstat64,                   NULL },
+  { "_fstat64i32",                -1, (void*)dll_fstat64i32,                NULL },
   { "_telli64",                   -1, (void*)dll_telli64,                   NULL },
   { "_tell",                      -1, (void*)dll_tell,                      NULL },
   { "_fileno",                    -1, (void*)dll_fileno,                    NULL },

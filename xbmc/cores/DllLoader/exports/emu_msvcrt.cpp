@@ -1661,6 +1661,7 @@ extern "C"
     return CFile::Stat(path, buffer);
   }
 
+#ifdef _WIN32
   int dll_stat64i32(const char *path, struct _stat64i32 *buffer)
   {
     struct __stat64 a;
@@ -1671,6 +1672,7 @@ extern "C"
     }
     return -1;
   }
+#endif
 
   int dll_fstat(int fd, struct stat* buffer)
   {
@@ -1722,6 +1724,42 @@ extern "C"
     // this is what python expects
     return -1;
   }
+
+#ifdef _WIN32
+  int dll_fstat64i32(int fd, struct _stat64i32 *buffer)
+  {
+    CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
+    if (pFile != NULL)
+    {
+      CLog::Log(LOGINFO, "Stating open file");
+      if (pFile->GetLength() <= LONG_MAX)
+        buffer->st_size = (_off_t)pFile->GetLength();
+      else
+      {
+        buffer->st_size = 0;
+        CLog::Log(LOGWARNING, "WARNING: File is larger than _fstat64i32 can handle, file size will be reported as 0 bytes");
+      }
+      buffer->st_mode = _S_IFREG;
+      return 0;
+    }
+    else if (!IS_STD_DESCRIPTOR(fd))
+    {
+      CLog::Log(LOGWARNING, "msvcrt.dll: dll_fstati64 called, TODO: add 'int64 <-> long' type checking");      //warning
+      // need to use fstat and convert everything
+      struct __stat64 temp;
+      int res = _fstat64(fd, &temp);
+      if (res == 0)
+      {
+        CUtil::Stat64ToStat64i32(buffer, &temp);
+      }
+      return res;
+    }
+
+    // fstat on stdin, stdout or stderr should fail
+    // this is what python expects
+    return -1;
+  }
+#endif
 
   int dll_setmode ( int handle, int mode )
   {
