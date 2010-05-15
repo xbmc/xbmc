@@ -66,6 +66,7 @@
 #ifdef USE_THREADS
 #include "pthread.h"
 #endif
+#include "SectionLock.h"
 /*
 DLLEXPORT projectM::projectM ( int gx, int gy, int fps, int texsize, int width, int height, std::string preset_url,std::string title_fonturl, std::string title_menuurl ) :beatDetect ( 0 ),  renderer ( 0 ), settings.presetURL ( preset_url ), title_fontURL ( title_fonturl ), menu_fontURL ( menu_fontURL ), smoothFrame ( 0 ), m_presetQueuePos(0)
 {
@@ -238,11 +239,10 @@ static void *thread_callback(void *prjm)
 
 void *projectM::thread_func(void *vptr_args)
 {
+  pthread_mutex_lock( &mutex );
   while (true)
   {
-    pthread_mutex_lock( &mutex );
     pthread_cond_wait( &condition, &mutex );
-    pthread_mutex_unlock( &mutex );
     if(!running)
     {
       return NULL;
@@ -253,7 +253,8 @@ void *projectM::thread_func(void *vptr_args)
 #endif
 
 void projectM::evaluateSecondPreset()
-{	
+{
+      CSectionLock lock(&mutex);
       setupPresetInputs(&m_activePreset2->presetInputs());
       m_activePreset2->presetInputs().frame = timeKeeper->PresetFrameB();
       m_activePreset2->presetInputs().progress= timeKeeper->PresetProgressB();
@@ -304,6 +305,7 @@ DLLEXPORT void projectM::renderFrame()
 		if ( timeKeeper->PresetProgressA()>=1.0 && !timeKeeper->IsSmoothing())
 		{
  			
+                        CSectionLock lock(&mutex);
 			timeKeeper->StartSmoothing();		      
 			switchPreset(m_activePreset2, 
 				     &m_activePreset->presetInputs() == &presetInputs ? presetInputs2 : presetInputs, 
@@ -339,6 +341,7 @@ DLLEXPORT void projectM::renderFrame()
 #endif
 		
 		
+                CSectionLock lock(&mutex);
 		PresetMerger::MergePresets ( m_activePreset->presetOutputs(),m_activePreset2->presetOutputs(),timeKeeper->SmoothRatio(),presetInputs.gx, presetInputs.gy );	       
 
 	}
@@ -346,6 +349,7 @@ DLLEXPORT void projectM::renderFrame()
 	{
 		if ( timeKeeper->IsSmoothing() && timeKeeper->SmoothRatio() > 1.0 )
 		{
+                        CSectionLock lock(&mutex);
 			m_activePreset = m_activePreset2;			
 			timeKeeper->EndSmoothing();
 		}
