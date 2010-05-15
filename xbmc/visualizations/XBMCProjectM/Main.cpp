@@ -197,7 +197,8 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
 //-----------------------------------------------------------------------------
 extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
-  globalPM->pcm()->addPCM16Data(pAudioData, iAudioDataLength);
+  if (globalPM)
+    globalPM->pcm()->addPCM16Data(pAudioData, iAudioDataLength);
 }
 
 //-- Render -------------------------------------------------------------------
@@ -205,7 +206,8 @@ extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *
 //-----------------------------------------------------------------------------
 extern "C" void Render()
 {
-  globalPM->renderFrame();
+  if (globalPM)
+    globalPM->renderFrame();
 }
 
 //-- GetInfo ------------------------------------------------------------------
@@ -223,6 +225,9 @@ extern "C" void GetInfo(VIS_INFO* pInfo)
 extern "C" bool OnAction(long flags, const void *param)
 {
   bool ret = false;
+
+  if (!globalPM)
+    return false;
 
   if (flags == VIS_ACTION_LOAD_PRESET && param)
   {
@@ -267,7 +272,7 @@ extern "C" bool OnAction(long flags, const void *param)
 //-----------------------------------------------------------------------------
 extern "C" unsigned int GetPresets(char ***presets)
 {
-  g_numPresets = globalPM->getPlaylistSize();
+  g_numPresets = globalPM ? globalPM->getPlaylistSize() : 0;
   if (g_numPresets > 0)
   {
     g_presets = (char**) malloc(sizeof(char*)*g_numPresets);
@@ -290,7 +295,7 @@ extern "C" unsigned GetPreset()
   if (g_presets)
   {
     unsigned preset;
-    if(globalPM->selectedPresetIndex(preset))
+    if(globalPM && globalPM->selectedPresetIndex(preset))
       return preset;
   }
   return 0;
