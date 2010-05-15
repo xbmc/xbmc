@@ -1,152 +1,11 @@
 <includes>
 
-	<!-- Wide TV Shows View -->
+	<!-- Wide TV/Seasons TV Shows Views -->
 	
 	<include name="TV">
 		<control type="group">
 			<include>TVWideVisible</include>
-			<!--  <include>FanartOnTVProjectorScreen</include>  -->
 			<include>MediaViewBGOverlay</include>
-		</control>
-<!--
-		<control type="group">
-			<include>TVWideVisible</include>
-			<include>MediaViewFade</include>
-			<control type="group">
-				<include>MediaListSelectDelay</include>
-				<posx>70</posx>
-				<control type="group">
-					<posy>235</posy>
-					<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-					<control type="image">
-						<description>Wide icon</description>
-						<include>TVWideIconDims</include>
-						<texture>DefaultWideIcon.png</texture>
-						<info>ListItem.Banner</info>
-						<aspectratio align="left">keep</aspectratio>
-						<bordertexture border="12">ThumbShadow2.png</bordertexture>
-						<bordersize>8</bordersize>
-					</control>
-					<control type="label">
-						<posy>30</posy>
-						<width>288</width>
-						<font>TitleCapsFont</font>
-						<include>NoThumbLabel</include>
-					</control>
-					<control type="image">
-						<description>Wide icon glass overlay</description>
-						<include>TVWideIconOverlayDims</include>
-						<include>GlassTextureOverlay</include>
-						<visible>!Skin.HasTheme(lite)</visible>
-					</control>
-				</control>
-				<control type="textbox">
-					<description>Show outline</description>
-					<include>TVWidePlotDims</include>
-					<info>ListItem.Plot</info>
-					<autoscroll>Control.HasFocus(57)</autoscroll>
-				</control>
-				<control type="group">
-					<description>Genre</description>
-					<posy>530</posy>
-					<control type="label">
-						<description>Caption</description>
-						<label>$LOCALIZE[515]</label>
-						<include>MediaInfoCaption</include>
-					</control>
-					<control type="label">
-						<description>Value</description>
-						<width>TVWideInfoValueWidth</width>
-						<info>ListItem.Genre</info>
-						<font>DefaultFont</font>
-						<include>MediaInfoWideValue</include>
-					</control>
-					<control type="group">
-						<description>First Aired</description>
-						<posy>TVShowsDetailsGap</posy>
-						<control type="label">
-							<description>Caption</description>
-							<label>$LOCALIZE[20416]</label>
-							<include>MediaInfoCaption</include>
-						</control>
-						<control type="label">
-							<description>Value</description>
-							<info>ListItem.Property(originallyAvailableAt)</info>
-							<include>MediaInfoValue</include>
-						</control>
-						<control type="group">
-							<description>Rating</description>
-							<posy>TVShowsDetailsGap</posy>
-							<control type="label">
-								<description>Caption</description>
-								<label>$LOCALIZE[563]</label>
-								<include>MediaInfoCaption</include>
-							</control>
-							<control type="image">
-								<description>Star Rating</description>
-								<align>left</align>
-								<info>ListItem.StarRating</info>
-								<aspectratio>keep</aspectratio>
-								<width>100</width>
-								<height>18</height>
-								<posy>4</posy>
-								<posx>90</posx>
-								<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
-							</control>
-							<control type="group">
-								<description>Runtime</description>
-								<posy>TVShowsDetailsGap</posy>
-								<control type="label">
-									<description>Caption</description>
-									<label>$LOCALIZE[2050]</label>
-									<include>MediaInfoCaption</include>
-								</control>
-								<control type="label">
-									<description>Value</description>
-									<info>ListItem.Duration</info>
-									<include>MediaInfoValue</include>
-								</control>
-							</control>
-							<control type="group">
-								<description>Network</description>
-								<posy>60</posy>
-								<control type="label">
-									<description>Caption</description>
-									<label>$LOCALIZE[573]</label>
-									<include>MediaInfoCaption</include>
-								</control>
-								<control type="label">
-									<description>Value</description>
-									<info>ListItem.Studio</info>
-									<include>MediaInfoValue</include>
-								</control>
-								
-								<control type="image">
-									<visible>true</visible>
-									<posx>475</posx>
-									<posy>-50</posy>
-									<height>75</height>
-									<width>75</width>
-									<info>Listitem.Property(mediaTag::studio)</info>
-									<aspectratio>keep</aspectratio>
-									<align>left</align>
-								</control>
-								
-								<control type="image">
-									<visible>true</visible>
-									<posx>470</posx>
-									<posy>-120</posy>
-									<height>40</height>
-									<width>95</width>
-									<info>Listitem.Property(mediaTag::contentRating)</info>
-									<aspectratio>keep</aspectratio>
-								</control>
-								
-							</control>
-						</control>
-					</control>
-				</control>
-			</control>
 		</control>
 		<control type="group">
 			<include>TVSeasonsVisible</include>
@@ -208,167 +67,14 @@
 				</control>
 			</control>
 		</control>
-		<control type="list" id="57">
-			<viewtype label="TV">list</viewtype>
-			<posx>646</posx>
-			<posy>242</posy>
-			<width>TVViewListWidth</width>
-			<height>378</height>
-			<pagecontrol>-</pagecontrol>
-			<scrolltime>200</scrolltime>
-			<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-			<onright>9009</onright>
-			<onup>57</onup>
-			<ondown>57</ondown>
-			<include>MediaViewFade</include>
-			<include>TVSeasonsListAnim</include>
-			<itemlayout condition="Container.Content(tvshows)" width="TVViewListWidth" height="42">
-				<control type="image">
-					<include>MediaItemBG</include>
-				</control>
-				<control type="label">
-					<include>MediaItemMainInfoNF</include>
-				</control>
-				<control type="label">
-					<include>TVTotalEpisodesDetailsNF</include>
-				</control>
-				<control type="label">
-					<include>TVUnwatchedEpisodesDetailsNF</include>
-				</control>
-			</itemlayout>
-			<focusedlayout condition="Container.Content(tvshows)" width="TVViewListWidth" height="42">
-				<control type="image">
-					<include>MediaItemBG</include>
-				</control>
-				<control type="image">
-					<include>MediaItemFocusBG</include>
-				</control>
-				<control type="image">
-					<visible>!IsEmpty(ListItem.Episode)</visible>
-					<include>MediaItemDetailBG</include>
-				</control>
-				<control type="label">
-					<include>MediaItemMainInfoNF</include>
-					<include>MediaListItemFadeOut</include>
-				</control>
-				<control type="label">
-					<include>MediaItemMainInfoFO</include>
-					<include>MediaListItemFade</include>
-				</control>
-				<control type="label">
-					<include>TVTotalEpisodesDetailsNF</include>
-					<include>MediaListItemFadeOut</include>
-				</control>
-				<control type="label">
-					<include>TVTotalEpisodesDetailsFO</include>
-					<include>MediaListItemFade</include>
-				</control>
-				<control type="label">
-					<include>TVUnwatchedEpisodesDetailsNF</include>
-					<include>MediaListItemFadeOut</include>
-				</control>
-				<control type="label">
-					<include>TVUnwatchedEpisodesDetailsFO</include>
-					<include>MediaListItemFade</include>
-				</control>
-			</focusedlayout>
-			<itemlayout condition="Container.Content(seasons)" width="TVViewListWidth" height="42">
-				<control type="image">
-					<include>TVSeasonsItemBGDims</include>
-					<include>MediaItemBG</include>
-				</control>
-				<control type="label">
-					<include>MediaItemMainInfoNF</include>
-				</control>
-				<control type="label">
-					<include>TVTotalEpisodesDetailsNF</include>
-				</control>
-				<control type="label">
-					<include>TVUnwatchedEpisodesDetailsNF</include>
-				</control>
-				<control type="image">
-					<include>TVUnwatchedEpisodesDetailsImage</include>
-					<include>MediaItemNFFade</include>
-				</control>
-				<control type="label">
-					<include>TVWatchedEpisodesDetailsNF</include>
-				</control>
-			</itemlayout>
-			<focusedlayout condition="Container.Content(seasons)" width="TVViewListWidth" height="42">
-				<control type="image">
-					<include>TVSeasonsItemBGDims</include>
-					<include>MediaItemBG</include>
-				</control>
-				<control type="image">
-					<include>TVSeasonsItemFocusBGDims</include>
-					<include>MediaItemFocusBG</include>
-				</control>
-				<control type="image">
-					<visible>!IsEmpty(ListItem.Episode)</visible>
-					<include>TVSeasonsItemDetailBGDims</include>
-					<include>MediaItemDetailBG</include>
-				</control>
-				<control type="label">
-					<include>MediaItemMainInfoNF</include>
-					<include>MediaListItemFadeOut</include>
-				</control>
-				<control type="label">
-					<include>MediaItemMainInfoFO</include>
-					<include>MediaListItemFade</include>
-				</control>
-				<control type="label">
-					<include>TVTotalEpisodesDetailsNF</include>
-					<include>MediaListItemFadeOut</include>
-				</control>
-				<control type="label">
-					<include>TVTotalEpisodesDetailsFO</include>
-					<include>MediaListItemFade</include>
-				</control>
-				<control type="label">
-					<include>TVUnwatchedEpisodesDetailsNF</include>
-					<include>MediaListItemFadeOut</include>
-				</control>
-				<control type="label">
-					<include>TVUnwatchedEpisodesDetailsFO</include>
-					<include>MediaListItemFade</include>
-				</control>
-				<control type="image">
-					<include>TVUnwatchedEpisodesDetailsImage</include>
-					<include>MediaListItemFade</include>
-				</control>
-				<control type="label">
-					<include>TVWatchedEpisodesDetailsNF</include>
-					<include>MediaListItemFadeOut</include>
-				</control>
-				<control type="label">
-					<include>TVWatchedEpisodesDetailsFO</include>
-					<include>MediaListItemFade</include>
-				</control>
-			</focusedlayout>
-		</control>
 		<control type="group">
-			<include>TVWideVisible</include>
 			<include>MediaViewFade</include>
-			<control type="image">
-				<description>TV Show List overlay</description>
-				<visible>![Container(57).Position(8)] + !Skin.HasTheme(lite)</visible>
-				<posx>636</posx>
-				<posy>550</posy>
-				<width>660</width>
-				<height>100</height>
-				<texture>BlackGradient2.png</texture>
-				<aspectratio>stretch</aspectratio>
-			</control>
-			<include>CommonSortLetters</include>
-		</control>
--->
-		<control type="group">
-			<include>TVWideVisible</include>
-			<include>MediaViewFade</include>
+			<visible>Control.IsVisible(57)</visible>
 			<control type="group">
 				<include>MediaListSelectDelay</include>
 				<posx>600</posx>
 				<control type="group">
+					<include>TVWideVisible</include>
 					<posy>187</posy>
 					<visible>!IsEmpty(ListItem.Banner) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 					<control type="image">
@@ -401,7 +107,8 @@
 				<onright>9009</onright>
 				<onup>56</onup>
 				<ondown>56</ondown>
-				<itemlayout height="42" width="530">
+				<include>TVSeasonsListAnim</include>
+				<itemlayout condition="!Container.Content(seasons)" height="42" width="530">
 					<control type="image">
 						<posx>0</posx>
 						<posy>-6</posy>
@@ -433,16 +140,7 @@
 						<textcolor>Unfocused</textcolor>
 					</control>
 				</itemlayout>
-				<focusedlayout height="42" width="530">
-<!--
-					<control type="image">
-						<posx>0</posx>
-						<posy>0</posy>
-						<width>530</width>
-						<height>42</height>
-						<texture>MediaItemBG.png</texture>
-					</control>
--->
+				<focusedlayout condition="!Container.Content(seasons)" height="42" width="530">
 					<control type="image">
 						<posx>44</posx>
 						<posy>2</posy>
@@ -559,6 +257,79 @@
 						<include>MediaListItemFade</include>
 					</control>
 				</focusedlayout>
+				<itemlayout condition="Container.Content(seasons)" width="TVViewListWidth" height="42">
+					<control type="image">
+						<include>TVSeasonsItemBGDims</include>
+						<include>MediaItemBG</include>
+					</control>
+					<control type="label">
+						<include>MediaItemMainInfoNF</include>
+					</control>
+					<control type="label">
+						<include>TVTotalEpisodesDetailsNF</include>
+					</control>
+					<control type="label">
+						<include>TVUnwatchedEpisodesDetailsNF</include>
+					</control>
+					<control type="image">
+						<include>TVUnwatchedEpisodesDetailsImage</include>
+						<include>MediaItemNFFade</include>
+					</control>
+					<control type="label">
+						<include>TVWatchedEpisodesDetailsNF</include>
+					</control>
+				</itemlayout>
+				<focusedlayout condition="Container.Content(seasons)" width="TVViewListWidth" height="42">
+					<control type="image">
+						<include>TVSeasonsItemBGDims</include>
+						<include>MediaItemBG</include>
+					</control>
+					<control type="image">
+						<include>TVSeasonsItemFocusBGDims</include>
+						<include>MediaItemFocusBG</include>
+					</control>
+					<control type="image">
+						<visible>!IsEmpty(ListItem.Episode)</visible>
+						<include>TVSeasonsItemDetailBGDims</include>
+						<include>MediaItemDetailBG</include>
+					</control>
+					<control type="label">
+						<include>MediaItemMainInfoNF</include>
+						<include>MediaListItemFadeOut</include>
+					</control>
+					<control type="label">
+						<include>MediaItemMainInfoFO</include>
+						<include>MediaListItemFade</include>
+					</control>
+					<control type="label">
+						<include>TVTotalEpisodesDetailsNF</include>
+						<include>MediaListItemFadeOut</include>
+					</control>
+					<control type="label">
+						<include>TVTotalEpisodesDetailsFO</include>
+						<include>MediaListItemFade</include>
+					</control>
+					<control type="label">
+						<include>TVUnwatchedEpisodesDetailsNF</include>
+						<include>MediaListItemFadeOut</include>
+					</control>
+					<control type="label">
+						<include>TVUnwatchedEpisodesDetailsFO</include>
+						<include>MediaListItemFade</include>
+					</control>
+					<control type="image">
+						<include>TVUnwatchedEpisodesDetailsImage</include>
+						<include>MediaListItemFade</include>
+					</control>
+					<control type="label">
+						<include>TVWatchedEpisodesDetailsNF</include>
+						<include>MediaListItemFadeOut</include>
+					</control>
+					<control type="label">
+						<include>TVWatchedEpisodesDetailsFO</include>
+						<include>MediaListItemFade</include>
+					</control>
+				</focusedlayout>
 			</control>
 		<control type="group">
 			<posx>558</posx>
@@ -578,6 +349,7 @@
 				<posx>592</posx>
 				<posy>237</posy>
 				<include>MediaListSelectDelay</include>
+				<include>TVWideVisible</include>
 				<control type="group">
 					<posx>430</posx>
 					<posy>75</posy>
@@ -664,7 +436,7 @@
 						<align>left</align>
 						<visible>Container.Content(TVShows)</visible>
 					</control>
-						<control type="group">
+					<control type="group">
 						<posy>68</posy>
 						<posx>-417</posx>
 						<control type="textbox">

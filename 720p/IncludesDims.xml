@@ -1297,7 +1297,7 @@
 		<height>450</height>
 	</include>
 	<include name="TVSeasonsListAnim">
-		<animation effect="slide" end="-446,90" time="0" condition="Container.Content(seasons)">Conditional</animation>
+		<animation effect="slide" end="100,130" time="0" condition="Container.Content(seasons)">Conditional</animation>
 	</include>
 	<include name="TVSeasonsItemBGDims">
 		<!-- Empty filler -->
