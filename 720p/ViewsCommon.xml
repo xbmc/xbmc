@@ -514,7 +514,7 @@
 					<posy>-5</posy>
 					<control type="image">
 						<description>Thumb image</description>
-						<visible>!Container.Content(Episodes)</visible>
+						<visible>!Container.Content(Secondary) + !Container.Content(Episodes)</visible>
 						<posx>0</posx>
 						<width>270</width>
 						<height>366</height>
