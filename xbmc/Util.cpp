@@ -2161,6 +2161,7 @@ void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
   result->st_ctime = (time_t)(stat->st_ctime & 0xFFFFFFFF);
 }
 
+#ifdef _WIN32
 void CUtil::Stat64ToStat64i32(struct _stat64i32 *result, struct __stat64 *stat)
 {
   result->st_dev = stat->st_dev;
@@ -2192,6 +2193,7 @@ void CUtil::Stat64ToStat64i32(struct _stat64i32 *result, struct __stat64 *stat)
   result->st_ctime = stat->_st_ctime;
 #endif
 }
+#endif
 
 bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 {
