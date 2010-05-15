@@ -822,7 +822,7 @@ extern "C"
     CURL url(_P(file));
     if (url.IsLocal())
     { // Make sure the slashes are correct & translate the path
-      return opendir(CUtil::ValidatePath(file));
+      return opendir(CUtil::ValidatePath(url.Get().c_str()));
     }
 
     // locate next free directory
