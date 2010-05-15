@@ -98,6 +98,8 @@ Export win32_exports[] =
   { "fgetpos",                    -1, (void*)dll_fgetpos,                   NULL },
   { "fsetpos",                    -1, (void*)dll_fsetpos,                   NULL },
   { "_stati64",                   -1, (void*)dll_stati64,                   NULL },
+  { "_stat64",                    -1, (void*)dll_stat64,                    NULL },
+  { "_stat64i32",                 -1, (void*)dll_stat64i32,                 NULL },
   { "_fstati64",                  -1, (void*)dll_fstati64,                  NULL },
   { "_telli64",                   -1, (void*)dll_telli64,                   NULL },
   { "_tell",                      -1, (void*)dll_tell,                      NULL },

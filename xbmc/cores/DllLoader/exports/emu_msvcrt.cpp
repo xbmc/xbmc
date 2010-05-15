@@ -1661,6 +1661,16 @@ extern "C"
     return CFile::Stat(path, buffer);
   }
 
+  int dll_stat64i32(const char *path, struct _stat64i32 *buffer)
+  {
+    struct __stat64 a;
+    if(dll_stat64(path, &a) == 0)
+    {
+      CUtil::Stat64ToStat64i32(buffer, &a);
+      return 0;
+    }
+    return -1;
+  }
 
   int dll_fstat(int fd, struct stat* buffer)
   {
