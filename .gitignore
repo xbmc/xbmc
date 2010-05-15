@@ -65,9 +65,6 @@ config.log
 /addons/skin.pm3-hd/media/Textures.xbt
 /addons/visualization.glspectrum/opengl_spectrum.vis
 /addons/visualization.projectm/projectM.vis
-/addons/visualization.projectm/*.milk
-/addons/visualization.projectm/*.tga
-/addons/visualization.projectm/*.prjm
 /addons/visualization.waveform/Waveform.vis
 
 # /guilib/
