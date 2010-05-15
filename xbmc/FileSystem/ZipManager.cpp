@@ -27,6 +27,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/EndianSwap.h"
+#include "SpecialProtocol.h"
 
 
 #ifndef min
@@ -76,9 +77,9 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
   }
 
   CFile mFile;
-  if (!mFile.Open(strFile))
+  if (!mFile.Open(_P(strFile)))
   {
-    CLog::Log(LOGDEBUG,"ZipManager: unable to open file %s!",strFile.c_str());
+    CLog::Log(LOGDEBUG,"ZipManager: unable to open file %s!",_P(strFile).c_str());
     return false;
   }
 
