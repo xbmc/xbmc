@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #   Copyright (C) 2008-2009 Team XBMC http://www.xbmc.org
 #
 #   This program is free software; you can redistribute it and/or modify
