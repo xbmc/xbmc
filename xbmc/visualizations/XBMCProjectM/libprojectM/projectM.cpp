@@ -83,8 +83,7 @@ projectM::~projectM()
  #ifdef USE_THREADS
 	running = false;
 	pthread_cond_signal(&condition);
-	pthread_mutex_unlock( &mutex );
-	pthread_detach(thread);
+	pthread_join(thread, NULL);
 	pthread_cond_destroy(&condition);
 	pthread_mutex_destroy( &mutex );
 #endif
@@ -239,13 +238,13 @@ static void *thread_callback(void *prjm)
 
 void *projectM::thread_func(void *vptr_args)
 {
-  pthread_mutex_lock( &mutex );
   while (true)
   {
+    pthread_mutex_lock( &mutex );
     pthread_cond_wait( &condition, &mutex );
+    pthread_mutex_unlock( &mutex );
     if(!running)
     {
-      pthread_mutex_unlock( &mutex );
       return NULL;
     }
     evaluateSecondPreset();
@@ -330,15 +329,12 @@ DLLEXPORT void projectM::renderFrame()
 		
 #ifdef USE_THREADS
 		pthread_cond_signal(&condition);
-		pthread_mutex_unlock( &mutex );
 #endif
 		m_activePreset->evaluateFrame();
 		renderer->PerPixelMath ( &m_activePreset->presetOutputs(), &presetInputs );
 		renderer->WaveformMath ( &m_activePreset->presetOutputs(), &presetInputs, true );
 
-#ifdef USE_THREADS
-		pthread_mutex_lock( &mutex );
-#else		
+#ifndef USE_THREADS
 		evaluateSecondPreset();
 #endif
 		
@@ -459,7 +455,6 @@ void projectM::projectM_init ( int gx, int gy, int fps, int texsize, int width, 
 	      std::cerr << "failed to allocate a thread! try building with option USE_THREADS turned off" << std::endl;;
 	      exit(1);
 	    }
-	pthread_mutex_lock( &mutex );
 #endif
 
 	renderer->setPresetName ( m_activePreset->presetName() );
