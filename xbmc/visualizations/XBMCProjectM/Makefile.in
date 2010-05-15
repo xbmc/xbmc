@@ -15,18 +15,21 @@ $(SLIB): $(OBJS) libprojectM/libprojectM.dylib
 		./libprojectM/CMakeFiles/projectM.dir/*.o \
 		$(OBJS)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	$(MAKE) $(PRESETS)
 
 libprojectM/libprojectM.dylib:
 	$(MAKE) -C libprojectM
-	zip -j $(PRESETS) libprojectM/presets/*
 else
 $(SLIB): $(OBJS) libprojectM/libprojectM.so
 	$(CXX) $(CXXFLAGS) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared -o $(SLIB) $(OBJS) `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
+	$(MAKE) $(PRESETS)
 
 libprojectM/libprojectM.so: 
 	$(MAKE) -C libprojectM
-	zip -j $(PRESETS) libprojectM/presets/*
 endif
+
+$(PRESETS): libprojectM/presets/*
+	zip -j $@ libprojectM/presets/*
 
 CLEAN_FILES = \
 	libprojectM/libprojectM.so \
