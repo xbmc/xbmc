@@ -66,6 +66,11 @@ map<TYPE, IAddonMgrCallback*> CAddonMgr::m_managers;
 
 AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
 {
+  /* Check if user directories need to be created */
+  const cp_cfg_element_t *settings = GetExtElement(props->plugin->extensions->configuration, "settings");
+  if (settings)
+    CheckUserDirs(settings);
+
   const TYPE type = TranslateType(props->ext_point_id);
   switch (type)
   {
@@ -110,6 +115,37 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       break;
   }
   return AddonPtr();
+}
+
+bool CAddonMgr::CheckUserDirs(const cp_cfg_element_t *settings)
+{
+  if (!settings)
+    return false;
+
+  const cp_cfg_element_t *userdirs = GetExtElement((cp_cfg_element_t *)settings, "userdirs");
+  if (!userdirs)
+    return false;
+
+  DEQUEELEMENTS elements;
+  bool status = GetExtElementDeque(elements, (cp_cfg_element_t *)userdirs, "userdir");
+  if (!status)
+    return false;
+
+  IDEQUEELEMENTS itr = elements.begin();
+  while (itr != elements.end())
+  {
+    CStdString path = GetExtValue(*itr++, "@path");
+    if (!CFile::Exists(path))
+    {
+      if (!CUtil::CreateDirectoryEx(path))
+      {
+        CLog::Log(LOGERROR, "CAddonMgr::CheckUserDirs: Unable to create directory %s.", path.c_str());
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 CAddonMgr::CAddonMgr()
@@ -897,6 +933,35 @@ void CAddonMgr::OnJobComplete(unsigned int jobID, bool success, CJob* job)
 /*
  * libcpluff interaction
  */
+
+const cp_cfg_element_t *CAddonMgr::GetExtElement(cp_cfg_element_t *base, const char *path)
+{
+  const cp_cfg_element_t *element = NULL;
+  if (base)
+    element = m_cpluff->lookup_cfg_element(base, path);
+  return element;
+}
+
+/* Returns all duplicate elements from a base element */
+bool CAddonMgr::GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *base, const char *path)
+{
+  if (!base)
+    return false;
+
+  unsigned int i = 0;
+  while (true)
+  {
+    if (i >= base->num_children)
+      break;
+    CStdString temp = (base->children+i)->name;
+    if (!temp.compare(path))
+      elements.push_back(base->children+i);
+    i++;
+  }
+
+  if (elements.empty()) return false;
+  return true;
+}
 
 CStdString CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
 {
