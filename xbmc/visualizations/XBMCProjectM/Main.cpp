@@ -76,7 +76,7 @@ extern "C" ADDON_STATUS Create(void* hdl, void* props)
 
   strcpy(g_visName, visprops->name);
   g_configFile = string(visprops->profile) + string("/projectm.conf");
-  std::string presetsDir = "special://xbmc/addons/net.sf.projectm.xbmc/resources/presets.zip/";
+  std::string presetsDir = "zip://special%3A%2F%2Fxbmc%2Faddons%2Fvisualization%2Eprojectm%2Fresources%2Fpresets%2Ezip";
 
   g_configPM.meshX = gx;
   g_configPM.meshY = gy;
