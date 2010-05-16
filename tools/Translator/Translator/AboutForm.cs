@@ -90,7 +90,7 @@ namespace TeamXBMC.Translator
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(208, 23);
 			this.label2.TabIndex = 2;
-			this.label2.Text = "Copyright © 2006 Team XBMC";
+			this.label2.Text = "Copyright Â© 2006 Team XBMC";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.label2.UseMnemonic = false;
 			// 
