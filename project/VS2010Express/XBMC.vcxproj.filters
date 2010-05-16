@@ -3830,9 +3830,6 @@
     <ClInclude Include="..\..\xbmc\GUIWindowScripts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\GUIWindowScriptsInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\GUIWindowSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>

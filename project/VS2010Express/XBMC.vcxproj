@@ -1577,7 +1577,6 @@
     <ClInclude Include="..\..\xbmc\GUIWindowPrograms.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowScreensaver.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowScripts.h" />
-    <ClInclude Include="..\..\xbmc\GUIWindowScriptsInfo.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowSettings.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowSettingsCategory.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowSettingsProfile.h" />

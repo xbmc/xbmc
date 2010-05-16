@@ -129,8 +129,6 @@
     <ClInclude Include="..\..\libass\ass_parse.h" />
     <ClInclude Include="..\..\libass\ass_render.h" />
     <ClInclude Include="..\..\libass\ass_utils.h" />
-    <ClInclude Include="..\libass\ass_types.h" />
-    <ClInclude Include="..\libass\msvc.h" />
     <ClInclude Include="config.h" />
   </ItemGroup>
   <ItemGroup>
