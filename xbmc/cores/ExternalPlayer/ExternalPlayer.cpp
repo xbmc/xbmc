@@ -218,7 +218,7 @@ void CExternalPlayer::Process()
   CStdString strFArgs;
 #if defined(_WIN32)
   // W32 batch-file handline
-  if (m_filename.Right(4) == ".bat")
+  if (m_filename.Right(4) == ".bat" || m_filename.Right(4) == ".cmd")
   {
     // MSDN says you just need to do this, but cmd's handing of spaces and
     // quotes is soo broken it seems to work much better if you just omit
