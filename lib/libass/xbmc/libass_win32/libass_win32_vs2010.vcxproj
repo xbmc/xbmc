@@ -49,6 +49,8 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libass</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libass</TargetName>
+    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Build</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -79,9 +81,11 @@
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
     </Link>
-    <PostBuildEvent>
+    <CustomBuildStep>
       <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)"</Command>
-    </PostBuildEvent>
+      <Message>Copy Output</Message>
+      <Outputs>$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -113,9 +117,11 @@
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
     </Link>
-    <PostBuildEvent>
+    <CustomBuildStep>
       <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)"</Command>
-    </PostBuildEvent>
+      <Message>Copy Output</Message>
+      <Inputs>$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)</Inputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\libass\ass.h" />
