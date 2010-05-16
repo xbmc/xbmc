@@ -259,6 +259,7 @@ CMediaType CDSGuidHelper::initVideoType(CodecID codecId)
   }
   else if (codecId == CODEC_ID_HUFFYUV)
   {
+    thetype.formattype = FORMAT_VideoInfo;//should fix it to be able to use FORMAT_VideoInfo2
     thetype.subtype = FOURCCMap(FOURCC_HFYU);
     //static const FOURCC fccs[]={FOURCC_HFYU,FOURCC_FFVH,0};
 
@@ -279,8 +280,12 @@ CMediaType CDSGuidHelper::initVideoType(CodecID codecId)
   else if (codecId == CODEC_ID_THEORA)
   {
     thetype.subtype = FOURCCMap(FOURCC_THEO);
-    //static const FOURCC fccs[]={FOURCC_THEO,0};
 
+  }
+  else if (codecId == CODEC_ID_H263)
+  {
+    thetype.formattype = FORMAT_VideoInfo2;
+    thetype.subtype = FOURCCMap(FOURCC_H263);
   }
   else if (codecId == CODEC_ID_H264)
    {
@@ -291,9 +296,8 @@ CMediaType CDSGuidHelper::initVideoType(CodecID codecId)
    }
   else if (codecId == CODEC_ID_FLV1)
   {
+    thetype.formattype = FORMAT_VideoInfo2;
     thetype.subtype = FOURCCMap(FOURCC_FLV1);
-    //static const FOURCC fccs[]={FOURCC_FLV1,0};
-
   }
   else if (codecId == CODEC_ID_CYUV)
   {
@@ -306,6 +310,16 @@ CMediaType CDSGuidHelper::initVideoType(CodecID codecId)
     thetype.subtype = FOURCCMap(FOURCC_CLJR);
     //static const FOURCC fccs[]={FOURCC_CLJR,0};
 
+  }
+  else if (codecId == CODEC_ID_ASV2)
+  {
+    thetype.formattype = FORMAT_VideoInfo2;
+    thetype.subtype = FOURCCMap(FOURCC_ASV2);
+  }
+  else if (codecId == CODEC_ID_RV10)
+  {
+    thetype.formattype = FORMAT_VideoInfo;
+    thetype.subtype = FOURCCMap(FOURCC_RV10);
   }
   else
   {
