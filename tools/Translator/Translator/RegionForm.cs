@@ -548,14 +548,14 @@ namespace TeamXBMC.Translator
 			}
 
 			// setup abbreviation array for temp units
-			tempUnits.Add(new Unit("F", "°F"));
+			tempUnits.Add(new Unit("F", "Â°F"));
 			tempUnits.Add(new Unit("K", "K"));
-			tempUnits.Add(new Unit("C", "°C"));
-			tempUnits.Add(new Unit("Re", "°Ré"));
-			tempUnits.Add(new Unit("Ra", "°Ra"));
-			tempUnits.Add(new Unit("Ro", "°Rø"));
-			tempUnits.Add(new Unit("De", "°De"));
-			tempUnits.Add(new Unit("N", "°N"));
+			tempUnits.Add(new Unit("C", "Â°C"));
+			tempUnits.Add(new Unit("Re", "Â°RÃ©"));
+			tempUnits.Add(new Unit("Ra", "Â°Ra"));
+			tempUnits.Add(new Unit("Ro", "Â°RÃ¸"));
+			tempUnits.Add(new Unit("De", "Â°De"));
+			tempUnits.Add(new Unit("N", "Â°N"));
 
 			// fill combobox with long names
 			foreach (Unit tempUnit in tempUnits)
