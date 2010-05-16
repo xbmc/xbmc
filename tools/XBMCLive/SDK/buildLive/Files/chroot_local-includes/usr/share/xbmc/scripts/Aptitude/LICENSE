@@ -1,18 +1,27 @@
+ Aptitude script for XBMC
+ Copyright 2008 by Tobias Arrskog <topfs2@xbmc.org>
+ http://xbmc.org
 
- You may use, distribute and copy the Aptitude script for XBMC under 
- the terms outlines below:
+ This Program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2, or (at your option)
+ any later version.
 
- 1. All forms of distribution of this program or modified versions of this
-    program must contain this LICENSE.
+ This Program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
 
- 2. All the terms of the of GNU General Public License version 2, which is
-    displayed below are followed.
- 
- All icons and graphics are copyright of their respective owners. I have
- tried to ensure that all the graphics used in this program are conformant
- to their licenses. If you are the owner of any of the graphics distributed
- in this program and feel that your license has been violated please contact
- me at d4rk 'at' xbmc 'dot' org.
+ You should have received a copy of the GNU General Public License
+ along with XBMC; see the file COPYING.  If not, write to
+ the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ http://www.gnu.org/copyleft/gpl.html
+
+ All icons and graphics are copyright of their respective owners. An attempt
+ was made to ensure that all the graphics used in this program are conformant
+ to their respective license. For any concerns in regards to the use and/or
+ distribution of any icon or graphics distributed with this program, send
+ a message to team 'at' xbmc 'dot' org.
 
 -------------------------------------------------------------------------
 
