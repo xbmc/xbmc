@@ -120,7 +120,9 @@
     <CustomBuildStep>
       <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)"</Command>
       <Message>Copy Output</Message>
-      <Inputs>$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)</Inputs>
+      <Inputs>
+      </Inputs>
+      <Outputs>$(SolutionDir)..\..\system\players\dvdplayer\$(TargetFileName)</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
