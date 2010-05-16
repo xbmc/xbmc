@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 #      Copyright (C) 2008-2010 Team XBMC
 #      http://www.xbmc.org
@@ -18,7 +18,7 @@
 #  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #  http://www.gnu.org/copyleft/gpl.html
 
-function single_stacktrace()
+single_stacktrace()
 {
   find $1 -maxdepth $2 -name 'core*' -exec \
       echo "=====>  Core file: {}" 2> /dev/null >> $FILE \; -exec \
@@ -27,7 +27,7 @@ function single_stacktrace()
       rm -f {} \;
 }
 
-function print_crash_report()
+print_crash_report()
 {
   FILE="xbmc_crashlog-`date +%Y%m%d_%H%M%S`.log"
   echo "############## XBMC CRASH LOG ###############" >> $FILE
@@ -41,7 +41,7 @@ function print_crash_report()
   echo -n " Kernel: " >> $FILE
   uname -rvs >> $FILE
   echo -n " Release: " >> $FILE
-  if which lsb_release &> /dev/null; then
+  if which lsb_release > /dev/null; then
     echo >> $FILE
     lsb_release -a 2> /dev/null | sed -e 's/^/    /' >> $FILE
   else
@@ -64,7 +64,7 @@ function print_crash_report()
   echo >> $FILE
   echo "################# LOG FILE ##################" >> $FILE
   echo >> $FILE
-  if [[ -f ~/.xbmc/temp/xbmc.log ]]
+  if [ -f ~/.xbmc/temp/xbmc.log ]
   then
     cat ~/.xbmc/temp/xbmc.log >> $FILE
     echo >> $FILE
@@ -86,15 +86,15 @@ if [ $? -ne 0 ]; then
 fi
 LOOP=1
 ulimit -c unlimited
-while (( $LOOP ))
+while [ $(( $LOOP )) = "1" ]
 do
   LOOP=0
   @prefix@/lib/xbmc/xbmc.bin "$@"
   RET=$?
-  if (( $RET == 65 ))
+  if [ $(( $RET == 65 )) = "1" ]
   then # User requested to restart app
     LOOP=1
-  elif (( ($RET >= 131 && $RET <= 136) || $RET == 139 ))
+  elif [ $(( ($RET >= 131 && $RET <= 136) || $RET == 139 )) = "1" ]
   then # Crashed with core dump
     print_crash_report
   fi
