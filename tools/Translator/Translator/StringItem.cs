@@ -88,13 +88,13 @@ namespace TeamXBMC.TranslatorCore
 				text=element.SelectSingleNode("value").InnerText;
 			}
 
-			// Replace \n and \r with the visible newline char ¶ to make it editable
+			// Replace \n and \r with the visible newline char Â¶ to make it editable
 			if (Text.IndexOf("\r\n")>-1)
-				text=text.Replace("\r\n", "¶");
+				text=text.Replace("\r\n", "Â¶");
 			else if (Text.IndexOf("\n")>-1)
-				text=text.Replace("\n", "¶");
+				text=text.Replace("\n", "Â¶");
 			else if (Text.IndexOf("\r")>-1)
-				text=text.Replace("\r", "¶");
+				text=text.Replace("\r", "Â¶");
 		}
 
 		/// <summary>
@@ -105,9 +105,9 @@ namespace TeamXBMC.TranslatorCore
 			element.SetAttribute("id", Id.ToString());
 			element.InnerText=Text;
 
-			// Replace the visible newline char ¶ with \n for saving
-			if (element.InnerText.IndexOf("¶")>-1)
-				element.InnerText=element.InnerText.Replace("¶", "\n");
+			// Replace the visible newline char Â¶ with \n for saving
+			if (element.InnerText.IndexOf("Â¶")>-1)
+				element.InnerText=element.InnerText.Replace("Â¶", "\n");
 		}
 
 		#endregion

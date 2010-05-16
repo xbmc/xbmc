@@ -89,7 +89,7 @@ namespace TeamXBMC.Translator
 			this.buttonNewline.Name = "buttonNewline";
 			this.buttonNewline.Size = new System.Drawing.Size(24, 23);
 			this.buttonNewline.TabIndex = 4;
-			this.buttonNewline.Text = "¶";
+			this.buttonNewline.Text = "Â¶";
 			this.buttonNewline.Click += new System.EventHandler(this.buttonNewline_Click);
 			// 
 			// textBoxTranslated
@@ -196,14 +196,14 @@ namespace TeamXBMC.Translator
 
 				if (length==0)
 				{ // caret at a position but no text marked,
-					// just insert the ¶
-					textBoxTranslated.Text=textBoxTranslated.Text.Insert(start, "¶");
+					// just insert the Â¶
+					textBoxTranslated.Text=textBoxTranslated.Text.Insert(start, "Â¶");
 				}
 				else
 				{ // caret at a position with text marked,
-					// replace the marked text with ¶
+					// replace the marked text with Â¶
 					textBoxTranslated.Text=textBoxTranslated.Text.Remove(start, length);
-					textBoxTranslated.Text=textBoxTranslated.Text.Insert(start, "¶");
+					textBoxTranslated.Text=textBoxTranslated.Text.Insert(start, "Â¶");
 				}
 
 				// Update caret position to where we inserted the newline
