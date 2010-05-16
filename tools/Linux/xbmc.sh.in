@@ -98,8 +98,9 @@ print_crash_report()
 }
 
 python @prefix@/share/xbmc/FEH.py "$SAVED_ARGS"
-if [ $? -ne 0 ]; then
-  exit 0
+RET=$?
+if [ $RET -ne 0 ]; then
+  exit $RET
 fi
 
 # Output warning in case ulimit is unsupported by shell
