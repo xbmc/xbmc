@@ -101,8 +101,14 @@ python @prefix@/share/xbmc/FEH.py "$SAVED_ARGS"
 if [ $? -ne 0 ]; then
   exit 0
 fi
+
+# Output warning in case ulimit is unsupported by shell
+eval ulimit -c unlimited
+if [ ! $? = "0" ]; then
+  echo "xbmc: ulimit is unsupported by this shell" 1>&2
+fi
+
 LOOP=1
-ulimit -c unlimited
 while [ $(( $LOOP )) = "1" ]
 do
   LOOP=0

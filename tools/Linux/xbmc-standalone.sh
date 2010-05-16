@@ -27,7 +27,13 @@ fi
 LOOP=1
 CRASHCOUNT=0
 LASTSUCCESSFULSTART=$(date +%s)
-ulimit -c unlimited
+
+# Output warning in case ulimit is unsupported by shell
+eval ulimit -c unlimited
+if [ ! $? = "0" ]; then
+  echo "xbmc-standalone: ulimit is unsupported by this shell" 1>&2
+fi
+
 while [ $(( $LOOP )) = "1" ]
 do
   $XBMC
