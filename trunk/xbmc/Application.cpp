@@ -1,3 +1,4 @@
+
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://xbmc.org
@@ -557,9 +558,9 @@ bool CApplication::Create(HWND hWnd)
 
   uint32_t sdlFlags = 0;
 
-#ifdef HAS_SDL_OPENGL
+//#ifdef HAS_SDL_OPENGL
   sdlFlags |= SDL_INIT_VIDEO;
-#endif
+//#endif
 
 #ifdef HAS_SDL_AUDIO
   sdlFlags |= SDL_INIT_AUDIO;
