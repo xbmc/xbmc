@@ -52,9 +52,6 @@ CXBMCFFmpegSplitter::~CXBMCFFmpegSplitter()
 STDMETHODIMP CXBMCFFmpegSplitter::NonDelegatingQueryInterface(REFIID riid, void** ppv)
 {
   CheckPointer(ppv, E_POINTER);
-
-  *ppv = NULL;
-
   return 
     __super::NonDelegatingQueryInterface(riid, ppv);
 }

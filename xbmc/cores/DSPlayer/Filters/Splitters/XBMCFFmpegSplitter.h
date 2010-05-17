@@ -23,7 +23,8 @@
 
 #include "../BaseFilters/BaseSplitter.h"
 #include "XBMCFFmpegOutputPin.h"
-#include "qnetwork.h"
+#include "qnetwork.h" //ITrackInfo
+#include "ITrackInfo.h"
 #include "DSStreamInfo.h"
 #include "DVDPlayer/DVDInputStreams/DVDInputStream.h"
 #include "DVDPlayer/DVDInputStreams/DVDFactoryInputStream.h"
@@ -42,7 +43,8 @@ using namespace std;
 
 class CXBMCFFmpegOutputPin;
 [uuid("B98D13E7-55DB-4385-A33D-09FD1BA26338")]
-class CXBMCFFmpegSplitter : public CBaseSplitterFilter
+class CXBMCFFmpegSplitter : public CBaseSplitterFilter, 
+                            public ITrackInfo
 {
   Com::SmartAutoVectorPtr<DWORD> m_tFrame;
 
@@ -83,6 +85,16 @@ public:
 
   //STDMETHODIMP GetKeyFrameCount(UINT& nKFs);
   //STDMETHODIMP GetKeyFrames(const GUID* pFormat, REFERENCE_TIME* pKFs, UINT& nKFs);
+ 
+  // ITrackInfo TODO
+  STDMETHODIMP_(UINT) GetTrackCount() {return 0;}
+	STDMETHODIMP_(BOOL) GetTrackInfo(UINT aTrackIdx, struct TrackElement* pStructureToFill){return 0;}
+	STDMETHODIMP_(BOOL) GetTrackExtendedInfo(UINT aTrackIdx, void* pStructureToFill){return 0;}
+	STDMETHODIMP_(BSTR) GetTrackName(UINT aTrackIdx){return L"";}
+	STDMETHODIMP_(BSTR) GetTrackCodecID(UINT aTrackIdx){return L"";}
+	STDMETHODIMP_(BSTR) GetTrackCodecName(UINT aTrackIdx){return L"";}
+	STDMETHODIMP_(BSTR) GetTrackCodecInfoURL(UINT aTrackIdx){return L"";}
+	STDMETHODIMP_(BSTR) GetTrackCodecDownloadURL(UINT aTrackIdx){return L"";}
 };
 
 
