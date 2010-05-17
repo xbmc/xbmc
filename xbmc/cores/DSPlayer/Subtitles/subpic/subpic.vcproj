@@ -60,7 +60,7 @@
 				Name="VCLibrarianTool"
 				LinkLibraryDependencies="false"
 				AdditionalDependencies="strmbasdU.lib"
-				OutputFile="..\..\libs\$(ProjectName)DU.lib"
+				OutputFile="$(OutDir)$(ProjectName)DU.lib"
 				AdditionalLibraryDirectories="..\..\libs"
 			/>
 			<Tool
@@ -125,7 +125,7 @@
 			<Tool
 				Name="VCLibrarianTool"
 				AdditionalDependencies="strmbaseU.lib"
-				OutputFile="..\..\libs\$(ProjectName)RU.lib"
+				OutputFile="$(OutDir)$(ProjectName)U.lib"
 				AdditionalLibraryDirectories="..\..\libs"
 			/>
 			<Tool

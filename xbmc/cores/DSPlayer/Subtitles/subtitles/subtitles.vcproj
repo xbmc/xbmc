@@ -58,7 +58,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\libs\subtitlesDU.lib"
+				OutputFile="$(OutDir)subtitlesDU.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -121,7 +121,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="..\..\libs\subtitlesRU.lib"
+				OutputFile="$(OutDir)subtitlesU.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
