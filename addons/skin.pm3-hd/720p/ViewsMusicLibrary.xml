@@ -191,7 +191,7 @@
 			<align>justify</align>
 			<textcolor>white</textcolor>
 			<pagecontrol>9999999999</pagecontrol>
-			<label>$INFO[ListItem.Property(Description)]</label>
+			<label>$INFO[ListItem.Property(Artist_Description)]</label>
 			<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 			<visible>Control.IsVisible(56) + Container.Content(Artists)</visible>
 			<animation effect="fade" time="600" delay="400">Visible</animation>
