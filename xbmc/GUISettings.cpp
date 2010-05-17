@@ -356,6 +356,7 @@ void CGUISettings::Initialize()
   encoders.insert(make_pair(34000,CDDARIP_ENCODER_LAME));
   encoders.insert(make_pair(34001,CDDARIP_ENCODER_VORBIS));
   encoders.insert(make_pair(34002,CDDARIP_ENCODER_WAV));
+  encoders.insert(make_pair(34005,CDDARIP_ENCODER_FLAC));
   AddInt(acd, "audiocds.encoder", 621, CDDARIP_ENCODER_LAME, encoders, SPIN_CONTROL_TEXT);
 
   map<int,int> qualities;
@@ -365,6 +366,7 @@ void CGUISettings::Initialize()
   qualities.insert(make_pair(603,CDDARIP_QUALITY_EXTREME));
   AddInt(acd, "audiocds.quality", 622, CDDARIP_QUALITY_CBR, qualities, SPIN_CONTROL_TEXT);
   AddInt(acd, "audiocds.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
+  AddInt(acd, "audiocds.compressionlevel", 665, 5, 0, 1, 8, SPIN_CONTROL_INT_PLUS);
 
 #ifdef HAS_KARAOKE
   CSettingsCategory* kar = AddCategory(3, "karaoke", 13327);

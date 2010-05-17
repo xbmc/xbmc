@@ -6784,6 +6784,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cdrip\DllFlacEnc.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cdrip\DllLameenc.h"
 					>
 				</File>
@@ -6805,6 +6809,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cdrip\Encoder.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cdrip\EncoderFlac.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cdrip\EncoderFlac.h"
 					>
 				</File>
 				<File

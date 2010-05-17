@@ -744,13 +744,20 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("audiocds.quality"))
     { // only visible if we are doing non-WAV ripping
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiocds.encoder") != CDDARIP_ENCODER_WAV);
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiocds.encoder") != CDDARIP_ENCODER_WAV &&
+                                         g_guiSettings.GetInt("audiocds.encoder") != CDDARIP_ENCODER_FLAC);
     }
     else if (strSetting.Equals("audiocds.bitrate"))
     { // only visible if we are ripping to CBR
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled((g_guiSettings.GetInt("audiocds.encoder") != CDDARIP_ENCODER_WAV) &&
-                                           (g_guiSettings.GetInt("audiocds.quality") == CDDARIP_QUALITY_CBR));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiocds.encoder") != CDDARIP_ENCODER_WAV && 
+                                         g_guiSettings.GetInt("audiocds.encoder") != CDDARIP_ENCODER_FLAC &&
+                                         g_guiSettings.GetInt("audiocds.quality") == CDDARIP_QUALITY_CBR);
+    }
+    else if (strSetting.Equals("audiocds.compressionlevel"))
+    { // only visible if we are doing FLAC ripping
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiocds.encoder") == CDDARIP_ENCODER_FLAC);
     }
     else if (
              strSetting.Equals("audiooutput.passthroughdevice") ||
