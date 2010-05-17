@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release (OpenGL)|Win32"
-			OutputDirectory="XBMC\$(ConfigurationName)"
-			IntermediateDirectory="XBMC\$(ConfigurationName)"
+			OutputDirectory="XBMC\$(ConfigurationName)\"
+			IntermediateDirectory="XBMC\$(ConfigurationName)\objs\"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -78,7 +78,7 @@
 				IgnoreImportLibrary="false"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
 				AdditionalDependencies="SDL.lib opengl32.lib DSound.lib glew32.lib glu32.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib"
-				OutputFile="$(OutDir)\XBMC.exe"
+				OutputFile="$(OutDir)XBMC.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
@@ -118,8 +118,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug (DirectX)|Win32"
-			OutputDirectory="XBMC\$(ConfigurationName)"
-			IntermediateDirectory="XBMC\$(ConfigurationName)"
+			OutputDirectory="XBMC\$(ConfigurationName)\"
+			IntermediateDirectory="XBMC\$(ConfigurationName)\objs\"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -170,7 +170,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
 				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib"
-				OutputFile="$(OutDir)\XBMC.exe"
+				OutputFile="$(OutDir)XBMC.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
@@ -210,8 +210,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release (DirectX)|Win32"
-			OutputDirectory="XBMC\$(ConfigurationName)"
-			IntermediateDirectory="XBMC\$(ConfigurationName)"
+			OutputDirectory="XBMC\$(ConfigurationName)\"
+			IntermediateDirectory="XBMC\$(ConfigurationName)\objs\"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -270,7 +270,7 @@
 				IgnoreImportLibrary="false"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
 				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib"
-				OutputFile="$(OutDir)\XBMC.exe"
+				OutputFile="$(OutDir)XBMC.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\lib\libSDL-WIN32\lib"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
@@ -310,8 +310,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug (OpenGL)|Win32"
-			OutputDirectory="XBMC\$(ConfigurationName)"
-			IntermediateDirectory="XBMC\$(ConfigurationName)"
+			OutputDirectory="XBMC\$(ConfigurationName)\"
+			IntermediateDirectory="XBMC\$(ConfigurationName)\objs\"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -363,7 +363,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
 				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib dwmapi.lib"
-				OutputFile="$(OutDir)\XBMC.exe"
+				OutputFile="$(OutDir)XBMC.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;..\..\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
