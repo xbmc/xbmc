@@ -224,7 +224,9 @@
 
 #if HAS_GLES == 2
 #ifdef _ARMEL	// PowerVR SGX Header
-#include <GLES2/gl2extimg.h>
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+//#include <GLES2/gl2extimg.h>
 #else
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
