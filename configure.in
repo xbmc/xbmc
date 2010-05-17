@@ -764,7 +764,7 @@ fi
 
 # CrystalHD
 if test "x$use_crystalhd" != "xno"; then
-  AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h],AC_DEFINE([HAVE_LIBCRYSTALHD], [], 
+  AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h],AC_DEFINE([HAVE_LIBCRYSTALHD], [1], 
     [Define to 1 if you have the 'Broadcom Crystal HD' library.]), 
     [if test "x$use_crystalhd" = "xyes"; then
        AC_MSG_ERROR($crystalhd_not_found)
@@ -780,7 +780,6 @@ fi
 # VDADecoder
 if test "x$use_vdadecoder" != "xno"; then
   if test "$host_vendor" = "apple" ; then
-    # Erm...where the hell is the system test?
     HAVE_LIBVDADECODER=1
     AC_DEFINE([HAVE_LIBVDADECODER], [1], [Define to 1 if you have the 'VDADecoder' library.])
     AC_MSG_NOTICE($vdadecoder_enabled)
