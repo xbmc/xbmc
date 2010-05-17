@@ -3,6 +3,7 @@ INCLUDES=-I../../../../.. -I. -I../../ -I../../../../ -I../../Codecs/ffmpeg -I..
 SRCS=	DVDVideoCodecFFmpeg.cpp \
 	DVDVideoCodecLibMpeg2.cpp \
 	DVDVideoPPFFmpeg.cpp \
+	DVDVideoCodecOpenMax.cpp \
 	VDPAU.cpp \
 
 LIB=Video.a

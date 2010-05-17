@@ -27,6 +27,7 @@
 #include "Overlay/DVDOverlayCodec.h"
 
 #include "Video/DVDVideoCodecFFmpeg.h"
+#include "Video/DVDVideoCodecOpenMax.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecLiba52.h"
@@ -114,6 +115,15 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 {
   CDVDVideoCodec* pCodec = NULL;
   CDVDCodecOptions options;
+
+// force this for now.
+#if defined(HAVE_LIBOPENMAX)
+  if (hint.codec == CODEC_ID_H264)
+  {
+    CLog::Log(LOGINFO, "Trying OpenMax Decoder...");
+    if ( (pCodec = OpenCodec(new CDVDVideoCodecOpenMax(), hint, options)) ) return pCodec;
+  }
+#endif
 
   // try to decide if we want to try halfres decoding
 #if !defined(_LINUX) && !defined(_WIN32)
