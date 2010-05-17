@@ -180,16 +180,17 @@ bool CWinSystemEGL::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
     m_nWidth  = newWidth;
     m_nHeight = newHeight;
 
-    int options = SDL_OPENGL;
+//    int options = SDL_OPENGL;
+    int options = 0;
     if (m_bFullScreen)
       options |= SDL_FULLSCREEN;
     else
       options |= SDL_RESIZABLE;
 
-    if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
-    {
+    if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)));
+    //{
       RefreshEGLContext();
-    }
+    //}
   }
 
   CRenderSystemGLES::ResetRenderSystem(newWidth, newHeight, false, 0);
@@ -221,16 +222,17 @@ bool CWinSystemEGL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
 #endif
 
-  int options = SDL_OPENGL;
+//  int options = SDL_OPENGL;
+  int options = 0;
   if (m_bFullScreen)
     options |= SDL_FULLSCREEN;
   else
     options |= SDL_RESIZABLE;
 
-  if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
-  {
+  if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)));
+  //{
     RefreshEGLContext();
-  }
+  //}
 
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
   
