@@ -149,8 +149,8 @@ configure: configure.in
 
 # skin textures
 skins: tools/TexturePacker/TexturePacker force
-	 $(MAKE) -C $(CONFLUENCE_MEDIA)
-	 $(MAKE) -C $(PM3HD_MEDIA)
+#	 $(MAKE) -C $(CONFLUENCE_MEDIA)
+#	 $(MAKE) -C $(PM3HD_MEDIA)
 
 guilib/guilib.a: force
 	$(MAKE) -C guilib
