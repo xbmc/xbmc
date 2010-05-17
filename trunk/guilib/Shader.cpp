@@ -367,7 +367,7 @@ bool CGLSLShaderProgram::CompileAndLink()
     CLog::Log(LOGERROR, "GL: Error validating shader");
     glGetProgramInfoLog(m_shaderProgram, LOG_SIZE, NULL, log);
     CLog::Log(LOGERROR, "%s", log);
-    goto error;
+    //goto error;
   }
   VerifyGLState();
 
