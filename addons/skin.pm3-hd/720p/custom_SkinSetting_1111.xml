@@ -157,24 +157,6 @@
 					<texturenofocus>-</texturenofocus>
 					<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
 				</control>
-				<control type="image" id="113">
-					<width>950</width>
-					<height>2</height>
-					<texture>separator.png</texture>
-				</control>
-				<control type="radiobutton" id="114">
-					<width>950</width>
-					<height>35</height>
-					<font>font12</font>
-					<label>31205</label>
-					<textcolor>grey2</textcolor>
-					<focusedcolor>white</focusedcolor>
-					<texturefocus border="7">list-focus.png</texturefocus>
-					<texturenofocus>-</texturenofocus>
-					<textureradioon>radiobutton-focus-2.png</textureradioon>
-					<onclick>Skin.ToggleSetting(TVWindow_Show_Channels_First)</onclick>
-					<selected>!Skin.HasSetting(TVWindow_Show_Channels_First)</selected>
-				</control>
 			</control>
 			<control type="grouplist" id="9002">
 				<visible>Skin.String(SkinSettings,2)</visible>
@@ -246,20 +228,6 @@
 					<label>20084</label>
 					<onclick>Skin.ToggleSetting(homepageWeatherinfo)</onclick>
 					<selected>!Skin.HasSetting(homepageWeatherinfo)</selected>
-					<textcolor>grey2</textcolor>
-					<focusedcolor>white</focusedcolor>
-					<texturefocus border="7">list-focus.png</texturefocus>
-					<texturenofocus>-</texturenofocus>
-					<textureradioon>radiobutton-focus-2.png</textureradioon>
-				</control>
-				<control type="radiobutton" id="210">
-					<description>enable System info</description>
-					<width>950</width>
-					<height>35</height>
-					<font>font12</font>
-					<label>20085</label>
-					<onclick>Skin.ToggleSetting(homepageSysteminfo)</onclick>
-					<selected>!Skin.HasSetting(homepageSysteminfo)</selected>
 					<textcolor>grey2</textcolor>
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
