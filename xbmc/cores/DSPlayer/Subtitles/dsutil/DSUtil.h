@@ -23,20 +23,6 @@
 
 #pragma once
 
-#ifdef UNICODE
-#ifdef DEBUG
-#pragma comment(lib, "dsutilDU")
-#else
-#pragma comment(lib, "dsutilRU")
-#endif
-#else
-#ifdef DEBUG
-#pragma comment(lib, "dsutilD")
-#else
-#pragma comment(lib, "dsutilR")
-#endif
-#endif
-
 #include "NullRenderers.h"
 #include "HdmvClipInfo.h"
 #include "H264Nalu.h"
