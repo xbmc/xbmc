@@ -171,6 +171,7 @@ int wiiuse_connect(struct wiimote_t** wm, int wiimotes) {
 static int wiiuse_connect_single(struct wiimote_t* wm, char* address) {
 	struct sockaddr_l2 addr;
 
+	memset(&addr, 0, sizeof (addr));
 	if (!wm || WIIMOTE_IS_CONNECTED(wm))
 		return 0;
 
