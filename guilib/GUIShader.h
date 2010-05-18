@@ -19,38 +19,52 @@
 *
 */
 
-/*!
-\file GUIFont.h
-\brief
-*/
+#ifndef GUI_SHADER_H
+#define GUI_SHADER_H
 
-#ifndef CGUILIB_GUIFONTTTF_GLES_H
-#define CGUILIB_GUIFONTTTF_GLES_H
 #pragma once
 
+#include "Shader.h"
 
-#include "GUIFontTTF.h"
+using namespace Shaders;
 
-
-/*!
- \ingroup textures
- \brief
- */
-class CGUIFontTTFGLES : public CGUIFontTTFBase
+enum ESHADERMETHOD
 {
-public:
-  CGUIFontTTFGLES(const CStdString& strFileName);
-  virtual ~CGUIFontTTFGLES(void);
-
-  virtual void Begin();
-  virtual void End();
-
-protected:
-  virtual CBaseTexture* ReallocTexture(unsigned int& newHeight);
-  virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character *ch);
-  virtual void DeleteHardwareTexture();
-  virtual void RenderInternal(SVertex* v) {}
-
+  SM_DEFAULT = 0,
+  SM_TEXTURE = 1,
+  SM_MULTI   = 2,
+  SM_FONTS   = 3,
 };
 
-#endif
+class CGUIShader : public CGLSLShaderProgram
+{
+public:
+  CGUIShader();
+  void OnCompiledAndLinked();
+  bool OnEnabled();
+  void Free();
+
+  void Setup(ESHADERMETHOD method) { m_method = method; }
+
+  GLint GetPosLoc()   { return m_hPos;   }
+  GLint GetColLoc()   { return m_hCol;   }
+  GLint GetCord0Loc() { return m_hCord0; }
+  GLint GetCord1Loc() { return m_hCord1; }
+  
+protected:
+  GLint m_hTex0;
+  GLint m_hTex1;
+  GLint m_hMethod;
+  GLint m_hProj;
+  GLint m_hModel;
+  GLint m_hPos;
+  GLint m_hCol;
+  GLint m_hCord0;
+  GLint m_hCord1;
+
+  ESHADERMETHOD m_method;
+  GLfloat *m_proj;
+  GLfloat *m_model;
+};
+
+#endif // GUI_SHADER_H

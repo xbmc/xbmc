@@ -1941,7 +1941,7 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
 
   g_graphicsContext.Unlock();
 
-#elif defined(HAS_GL)
+#elif defined(HAS_GL) || defined(HAS_GLES)
 
   g_graphicsContext.BeginPaint();
   if (g_application.IsPlayingVideo())
@@ -1951,9 +1951,9 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
 #endif
   }
   g_application.RenderNoPresent();
-
+#ifndef HAS_GLES
   glReadBuffer(GL_BACK);
-
+#endif
   //get current viewport
   GLint viewport[4];
   glGetIntegerv(GL_VIEWPORT, viewport);
@@ -1964,8 +1964,11 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
   unsigned char* pixels = new unsigned char[stride * height];
 
   //read pixels from the backbuffer
+#if HAS_GLES == 2
+  glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)pixels);
+#else
   glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, (GLvoid*)pixels);
-
+#endif
   g_graphicsContext.EndPaint();
 
   //make a new buffer and copy the read image to it with the Y axis inverted

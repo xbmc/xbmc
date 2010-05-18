@@ -102,7 +102,11 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
           break;
 #endif
         if (type == ADDON_VIZ)
+        {
+#if defined(HAS_VISUALISATION)
           return AddonPtr(new CVisualisation(props->plugin));
+#endif
+        }
         else
           return AddonPtr(new CScreenSaver(props->plugin));
       }
@@ -887,8 +891,10 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CScraper(addonProps));
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(addonProps));
+#if defined(HAS_VISUALISATION)
     case ADDON_VIZ:
       return AddonPtr(new CVisualisation(addonProps));
+#endif
     case ADDON_SCREENSAVER:
       return AddonPtr(new CScreenSaver(addonProps));
     case ADDON_SCRAPER_LIBRARY:

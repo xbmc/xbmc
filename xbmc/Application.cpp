@@ -531,7 +531,7 @@ bool CApplication::Create()
 
   uint32_t sdlFlags = 0;
 
-#ifdef HAS_SDL_OPENGL
+#if defined(HAS_SDL_OPENGL) || (HAS_GLES == 2)
   sdlFlags |= SDL_INIT_VIDEO;
 #endif
 

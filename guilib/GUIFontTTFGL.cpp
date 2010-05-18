@@ -27,6 +27,9 @@
 #include "GraphicContext.h"
 #include "gui3d.h"
 #include "utils/log.h"
+#if HAS_GLES == 2
+#include "WindowingFactory.h"
+#endif
 
 // stuff for freetype
 #ifndef _LINUX
@@ -40,7 +43,7 @@
 
 using namespace std;
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || defined(HAS_GLES)
 
 
 CGUIFontTTFGL::CGUIFontTTFGL(const CStdString& strFileName)
@@ -82,6 +85,8 @@ void CGUIFontTTFGL::Begin()
     glEnable(GL_BLEND);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, m_nTexture);
+
+#ifdef HAS_GL
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
     glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
     glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
@@ -93,6 +98,9 @@ void CGUIFontTTFGL::Begin()
     glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     VerifyGLState();
+#else
+    g_Windowing.EnableGUIShader(SM_FONTS);
+#endif
 
     m_vertex_count = 0;
   }
@@ -108,6 +116,7 @@ void CGUIFontTTFGL::End()
   if (--m_nestedBeginCount > 0)
     return;
 
+#ifdef HAS_GL
   glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
 
   glColorPointer   (4, GL_UNSIGNED_BYTE, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, r));
@@ -118,6 +127,33 @@ void CGUIFontTTFGL::End()
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
   glDrawArrays(GL_QUADS, 0, m_vertex_count);
   glPopClientAttrib();
+#else
+  GLint posLoc  = g_Windowing.GUIShaderGetPos();
+  GLint colLoc  = g_Windowing.GUIShaderGetCol();
+  GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
+
+  glVertexAttribPointer(posLoc,  3, GL_FLOAT,         0, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, x));
+  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, 0, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, r));
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         0, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, u));
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(colLoc);
+  glEnableVertexAttribArray(tex0Loc);
+
+  // GLES2 version
+  // As using triangle strips, have to do in sets of 4.
+  // This is due to limitations of ES, in that tex/col has to be same size as ver!
+  for (int i=0; i<m_vertex_count; i+=4)
+  {
+    glDrawArrays(GL_TRIANGLE_STRIP, i, 4);
+  }
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(colLoc);
+  glDisableVertexAttribArray(tex0Loc);
+
+  g_Windowing.DisableGUIShader();
+#endif
 }
 
 CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)

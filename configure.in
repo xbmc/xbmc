@@ -42,6 +42,8 @@ crystalhd_not_found="== Could not find libldil. CrystalHD support disabled. =="
 crystalhd_disabled="== CrystalHD support manually disabled. =="
 vdadecoder_enabled="== VDADecoder support enabled. =="
 vdadecoder_disabled="== VDADecoder support manually disabled. =="
+openmax_disabled="== OpenMax support manually disabled. =="
+openmax_not_found="== Could not find libnvomx. OpenMax support disabled. =="
 libass_using_internal="== External Libass not found, using internal. =="
 ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
 
@@ -86,6 +88,10 @@ case $host in
     powerpc64-*-linux-gnu*)
        ARCH="powerpc64-linux"
        AC_SUBST(ARCH_DEFINES, "-D_POWERPC64")
+       ;;
+    arm*-*-linux-gnu*)
+       ARCH="arm"
+       AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
        ;;
     *)
        AC_MSG_ERROR(unsupported host ($host))
@@ -145,6 +151,18 @@ AC_ARG_ENABLE([vdadecoder],
                [enable VDADecoder decoding (default is auto)])],
             [use_vdadecoder=$enableval],
             [use_vdadecoder=auto])
+
+AC_ARG_ENABLE([openmax],
+            [AS_HELP_STRING([--enable-openmax],
+               [enable OpenMax decoding (default is yes)])],
+            [use_openmax=$enableval],
+            [use_openmax=yes])
+
+AC_ARG_ENABLE([tegra],
+            [AS_HELP_STRING([--enable-tegra],
+               [enable Tegra2 arm (default is no)])],
+            [use_tegra=$enableval],
+            [use_tegra=no])
 
 AC_ARG_ENABLE([profiling],
             [AS_HELP_STRING([--enable-profiling],
@@ -316,6 +334,17 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -L/opt/local/lib"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/mysql5/mysql"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
+elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
+# Compile for ARMv7a architecture, CortexA8 cpu and NEON coprocessor
+  CFLAGS="$CFLAGS -mtune=cortex-a8 -mfloat-abi=softfp -mno-apcs-stack-check"
+  CXXFLAGS="$CXXFLAGS -mtune=cortex-a8 -mfloat-abi=softfp -mno-apcs-stack-check"
+  if test "x$use_tegra" = "xyes"; then
+    CFLAGS+=" -Wa,-march=armv6 -mthumb-interwork"
+    CXXFLAGS+=" -Wa,-march=armv6 -mthumb-interwork"
+  else
+    CFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8 -mfpu=neon -mvectorize-with-neon-quad"
+    CXXFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8 -mfpu=neon -mvectorize-with-neon-quad"
+  fi
 fi
 
 # Add top source directory for all builds so we can use config.h
@@ -793,6 +822,23 @@ if test "x$use_vdadecoder" != "xno"; then
   fi
 else
   AC_MSG_NOTICE($vdadecoder_disabled)
+fi
+
+# OpenMax
+if test "$host_vendor" = "apple" ; then
+  use_openmax="no"
+  AC_MSG_NOTICE($openmax_disabled)
+else
+  if test "x$use_openmax" = "xyes"; then
+    AC_CHECK_HEADER([OpenMAX/il/OMX_Types.h],
+      AC_DEFINE([HAVE_LIBOPENMAX], [1], [Define to 1 if you have the 'OpenMax' library.]),
+      use_openmax=no;AC_MSG_RESULT($openmax_not_found))
+    if test "x$use_openmax" = "xyes"; then
+      INCLUDES="$INCLUDES -I/usr/include/OpenMAX/il"
+    fi
+  else
+    AC_MSG_NOTICE($openmax_disabled)
+  fi
 fi
 
 # platform specific bin utilities
@@ -1405,7 +1451,15 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
     sed -i "" -e "s#libavfilter_VERSION_MAJOR=0#libavfilter_VERSION_MAJOR=0.4.0#" config.mak
 
   else
+    if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
+      FFMPEG_EXTRACFLAGS="-mfloat-abi=softfp"
+      if test "x$use_tegra" != "xyes"; then
+        FFMPEG_EXTRACFLAGS+=" -mfpu=neon"
+      fi
+    fi
+  
     ./configure \
+      `expr "X$host_cpu" : 'Xarm.*' > /dev/null && echo --arch=arm --cpu=cortex-a8` \
       --disable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       `if test "$cross_compiling" = "yes"; then echo --enable-cross-compile; fi` \
@@ -1432,7 +1486,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-libfaad \
       --enable-protocol=http \
       --enable-pthreads \
-      `if test "$host_cpu" = "powerpc" || test "$host_cpu" = "powerpc64"; then echo --enable-pic; fi` \
+      `case $host_cpu in powerpc*|arm*) echo --enable-pic ;; esac` \
       --cc="$CC"
   fi
 ], [$USE_EXTERNAL_FFMPEG])
@@ -1642,6 +1696,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
 ], [$BUILD_GOOM])
 
 XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
+if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
   if test "$host_vendor" = "apple" ; then
     ./configure \
       CFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
@@ -1678,6 +1733,7 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
       --disable-lattice \
       --disable-skyrocket
   fi
+fi
 ], [0])
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [

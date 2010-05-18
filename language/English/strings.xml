@@ -1223,6 +1223,7 @@
   <string id="13427">Allow hardware acceleration (DXVA2)</string>
   <string id="13428">Allow hardware acceleration (CrystalHD)</string>
   <string id="13429">Allow hardware acceleration (VDADecoder)</string>
+  <string id="13430">Allow hardware acceleration (OpenMax)</string>
 
   <string id="13500">A/V sync method</string>
   <string id="13501">Audio clock</string>

@@ -1,7 +1,7 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-
+#ifndef __arm__
 #ifndef __APPLE__
 #if defined(__PPC__)
 #define FUNCTION(name)        \
@@ -12,6 +12,12 @@
     lwz 12,(p_##name)@l(11);  \
     mtctr 12;                 \
     bctr
+#elif defined(__arm__)
+#define FUNCTION(name)          \
+    .globl name;            \
+    .type name, %function;      \
+    name:               \
+        b (p_##name)
 #else
 #define FUNCTION(name)        \
   .globl name;                \
@@ -122,7 +128,7 @@
   FUNCTION(PyFloat_FromDouble)
   FUNCTION(PyRun_FileExFlags)
   FUNCTION(PyRun_StringFlags)
-
+#endif
 #if defined(__linux__) && defined(__ELF__)
 .section .note.GNU-stack,"",%progbits
 #endif

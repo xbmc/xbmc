@@ -603,6 +603,9 @@ void CGUISettings::Initialize()
 #ifdef HAVE_LIBVDADECODER
   AddBool(g_sysinfo.HasVDADecoder() ? vp: NULL, "videoplayer.usevda", 13429, true);
 #endif
+#ifdef HAVE_LIBOPENMAX
+  AddBool(vp, "videoplayer.useomx", 13430, true);
+#endif
 
 #ifdef HAS_GL
   AddBool(vp, "videoplayer.usepbo", 13424, true);
@@ -634,7 +637,7 @@ void CGUISettings::Initialize()
   AddBool(NULL, "videoplayer.strictbinding", 13120, false);
   AddBool(NULL, "videoplayer.vdpau_allow_xrandr", 13122, false);
 #endif
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 2	// May need changing for GLES
   AddSeparator(vp, "videoplayer.sep1.5");
   AddInt(NULL, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
   AddInt(NULL, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
