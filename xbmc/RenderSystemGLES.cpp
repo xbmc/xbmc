@@ -42,9 +42,12 @@ CRenderSystemGLES::~CRenderSystemGLES()
 {
   DestroyRenderSystem();
   CLog::Log(LOGDEBUG, "GUI Shader - Destroying Shader : %p", m_pGUIshader);
-  m_pGUIshader->Free();
-  delete m_pGUIshader;
-  m_pGUIshader = NULL;
+  for (unsigned int i = 0;i < 4;++i)
+  {
+    m_pGUIshader[i]->Free();
+    delete m_pGUIshader[i];
+    m_pGUIshader[i] = NULL;
+  }
 }
 
 bool CRenderSystemGLES::InitRenderSystem()
@@ -100,9 +103,9 @@ bool CRenderSystemGLES::ResetRenderSystem(int width, int height, bool fullScreen
   glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
   
   CalculateMaxTexturesize();
-  
-  glViewport(0, 0, width, height);
-  glScissor(0, 0, width, height);
+
+  CRect rect( 0, 0, width, height );
+  SetViewPort( rect );
 
   glEnable(GL_TEXTURE_2D); 
   glEnable(GL_SCISSOR_TEST); 
@@ -460,31 +463,39 @@ void CRenderSystemGLES::GetViewPort(CRect& viewPort)
   viewPort.y2 = viewPort.y1 + glvp[3];
 }
 
+// FIXME make me const so that I can accept temporary objects
 void CRenderSystemGLES::SetViewPort(CRect& viewPort)
 {
   if (!m_bRenderCreated)
     return;
-  
+
   glScissor((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
   glViewport((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
 }
 
 void CRenderSystemGLES::InitialiseGUIShader()
 {
-  if (!m_pGUIshader)
+  if (!m_pGUIshader[0])
   {
-    // Setup the OpenGL ES2.0 shader program for use
-    m_pGUIshader = new CGUIShader();
-    if (!m_pGUIshader->CompileAndLink())
+    for (int i = 0;i < 4;++i)
     {
-      m_pGUIshader->Free();
-      delete m_pGUIshader;
-      m_pGUIshader = NULL;
-      CLog::Log(LOGERROR, "GUI Shader - Initialise failed");
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "GUI Shader - Initialise successful : %p", m_pGUIshader);
+      char shaderName[512];
+      sprintf( shaderName, "guishader_frag%d.glsl", i );
+      //sprintf( shaderName, "guishader_frag.glsl", i );
+
+      m_pGUIshader[i] = new CGUIShader( shaderName );
+      if (!m_pGUIshader[i]->CompileAndLink())
+      {
+	m_pGUIshader[i]->Free();
+	delete m_pGUIshader[i];
+	m_pGUIshader[i] = NULL;
+	CLog::Log(LOGERROR, "GUI Shader - Initialise failed");
+      }
+
+      else
+      {
+        CLog::Log(LOGDEBUG, "GUI Shader - Initialise successful : %p", m_pGUIshader[i]);
+      }
     }
   }
   else
@@ -495,47 +506,53 @@ void CRenderSystemGLES::InitialiseGUIShader()
 
 void CRenderSystemGLES::EnableGUIShader(ESHADERMETHOD method)
 {
-  if (m_pGUIshader)
+  m_method = (int)method;
+  if (m_pGUIshader[m_method])
   {
-    m_pGUIshader->Setup(method);
-    m_pGUIshader->Enable();
+    m_pGUIshader[m_method]->Setup(method);
+    m_pGUIshader[m_method]->Enable();
+  }
+  else {
+    printf("invalid gui shader %d\n", method);
   }
 }
 
 void CRenderSystemGLES::DisableGUIShader()
 {
-  if (m_pGUIshader)
-    m_pGUIshader->Disable();
+  if (m_pGUIshader[m_method]) {
+    m_pGUIshader[m_method]->Disable();
+  }
+  m_method = 0;
 }
 
 GLint CRenderSystemGLES::GUIShaderGetPos()
 {
-  if (m_pGUIshader)
-    return m_pGUIshader->GetPosLoc();
+  if (m_pGUIshader[m_method])
+    return m_pGUIshader[m_method]->GetPosLoc();
 
   return -1;
 }
 
 GLint CRenderSystemGLES::GUIShaderGetCol()
 {
-  if (m_pGUIshader)
-    return m_pGUIshader->GetColLoc();
+  if (m_pGUIshader[m_method])
+    return m_pGUIshader[m_method]->GetColLoc();
 
   return -1;
 }
 
 GLint CRenderSystemGLES::GUIShaderGetCoord0()
 {
-  if (m_pGUIshader)
-    return m_pGUIshader->GetCord0Loc();
+  if (m_pGUIshader[m_method])
+    return m_pGUIshader[m_method]->GetCord0Loc();
 
   return -1;
 }
 
 GLint CRenderSystemGLES::GUIShaderGetCoord1()
 {
-  if (m_pGUIshader)
-    return m_pGUIshader->GetCord1Loc();
+  if (m_pGUIshader[m_method])
+    return m_pGUIshader[m_method]->GetCord1Loc();
 
   return -1;
 }

@@ -388,6 +388,8 @@ bool CWinSystemEGL::RefreshEGLContext()
     return false;
   }
 
+  eglSwapInterval(m_eglDisplay, 0);
+
   CLog::Log(LOGDEBUG, "RefreshEGLContext Succeeded! Format:A%d|R%d|G%d|B%d|BPP%d", ASIZE, RSIZE, GSIZE, BSIZE, DEPTH);
   return true;
 }
