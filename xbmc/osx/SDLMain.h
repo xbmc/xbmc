@@ -4,6 +4,10 @@
 
     Feel free to customize this file to suit your needs
 */
+/*
+  SDLMain.m and SDLMain.h are licensed under the terms of GNU Lesser General
+  Public License, version 2.
+*/
 
 #import <Cocoa/Cocoa.h>
 
