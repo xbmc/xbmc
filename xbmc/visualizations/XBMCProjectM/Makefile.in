@@ -2,7 +2,7 @@ ARCH=@ARCH@
 INCLUDES=-I. -I../../addons/include
 OBJS=Main.o
 SLIB=../../../addons/visualization.projectm/projectM.vis
-PRESETS=../../../addons/visualization.projectm/
+PRESETS=../../../addons/visualization.projectm/resources/presets.zip
 DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 CXXFLAGS=-fPIC
 DIRS=libprojectM
@@ -15,18 +15,21 @@ $(SLIB): $(OBJS) libprojectM/libprojectM.dylib
 		./libprojectM/CMakeFiles/projectM.dir/*.o \
 		$(OBJS)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
-	rsync -lptgoDv --cvs-exclude libprojectM/presets/* $(PRESETS)
+	$(MAKE) $(PRESETS)
 
 libprojectM/libprojectM.dylib:
 	$(MAKE) -C libprojectM
 else
 $(SLIB): $(OBJS) libprojectM/libprojectM.so
 	$(CXX) $(CXXFLAGS) ./libprojectM/CMakeFiles/projectM.dir/*.o -fPIC -shared -o $(SLIB) $(OBJS) `cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
-	cp -rfT libprojectM/presets $(PRESETS)
+	$(MAKE) $(PRESETS)
 
 libprojectM/libprojectM.so: 
 	$(MAKE) -C libprojectM
 endif
+
+$(PRESETS): libprojectM/presets/*
+	zip -j $@ libprojectM/presets/*
 
 CLEAN_FILES = \
 	libprojectM/libprojectM.so \
@@ -40,10 +43,6 @@ DISTCLEAN_FILES=	\
 	libprojectM/cmake_install.cmake \
 	libprojectM/config.inp \
 	libprojectM/libprojectM.pc \
-	../../../addons/visualization.projectm/*.milk \
-	../../../addons/visualization.projectm/*.tga \
-	../../../addons/visualization.projectm/*.prjm
-
+	$(PRESETS)
 
 include ../../../Makefile.include
-

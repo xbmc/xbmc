@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release (OpenGL)|Win32"
-			OutputDirectory="guilib\$(ConfigurationName)"
-			IntermediateDirectory="guilib\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)libs\guilib\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)objs\guilib\$(ConfigurationName)\"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -91,8 +91,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug (DirectX)|Win32"
-			OutputDirectory="guilib\$(ConfigurationName)"
-			IntermediateDirectory="guilib\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)libs\guilib\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)objs\guilib\$(ConfigurationName)\"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -164,8 +164,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release (DirectX)|Win32"
-			OutputDirectory="guilib\$(ConfigurationName)"
-			IntermediateDirectory="guilib\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)libs\guilib\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)objs\guilib\$(ConfigurationName)\"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"
@@ -237,8 +237,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug (OpenGL)|Win32"
-			OutputDirectory="guilib\$(ConfigurationName)"
-			IntermediateDirectory="guilib\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)libs\guilib\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)objs\guilib\$(ConfigurationName)\"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			CharacterSet="2"

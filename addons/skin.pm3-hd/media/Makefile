@@ -1,6 +1,128 @@
 TARGET=Textures.xbt
 XBMCTEX=../../../tools/TexturePacker/TexturePacker
 IMAGES= \
+	Apple\ Movie\ Trailers/G.png \
+	Apple\ Movie\ Trailers/NC-17.png \
+	Apple\ Movie\ Trailers/NR.png \
+	Apple\ Movie\ Trailers/PG-13.png \
+	Apple\ Movie\ Trailers/PG.png \
+	Apple\ Movie\ Trailers/R.png \
+	busy/busy1.png \
+	busy/busy2.png \
+	busy/busy3.png \
+	busy/busy4.png \
+	busy/busy5.png \
+	busy/busy6.png \
+	busy/busy7.png \
+	busy/busy8.png \
+	flagging/aspectratio/1.33.png \
+	flagging/aspectratio/1.66.png \
+	flagging/aspectratio/1.78.png \
+	flagging/aspectratio/1.85.png \
+	flagging/aspectratio/2.20.png \
+	flagging/aspectratio/2.35.png \
+	flagging/audio/0.png \
+	flagging/audio/1.png \
+	flagging/audio/2.png \
+	flagging/audio/6.png \
+	flagging/audio/8.png \
+	flagging/audio/aac.png \
+	flagging/audio/ac3.png \
+	flagging/audio/aif.png \
+	flagging/audio/aifc.png \
+	flagging/audio/aiff.png \
+	flagging/audio/ape.png \
+	flagging/audio/avc.png \
+	flagging/audio/cdda.png \
+	flagging/audio/dca.png \
+	flagging/audio/dolbydigital.png \
+	flagging/audio/dts.png \
+	flagging/audio/eac3.png \
+	flagging/audio/flac.png \
+	flagging/audio/mp1.png \
+	flagging/audio/mp2.png \
+	flagging/audio/mp3.png \
+	flagging/audio/ogg.png \
+	flagging/audio/truehd.png \
+	flagging/audio/wma.png \
+	flagging/audio/wmapro.png \
+	flagging/audio/wmav2.png \
+	flagging/video/1080.png \
+	flagging/video/480.png \
+	flagging/video/540.png \
+	flagging/video/720.png \
+	flagging/video/avc1.png \
+	flagging/video/bluray.png \
+	flagging/video/divx.png \
+	flagging/video/flv.png \
+	flagging/video/h264.png \
+	flagging/video/hddvd.png \
+	flagging/video/mpeg1video.png \
+	flagging/video/mpeg2video.png \
+	flagging/video/vc-1.png \
+	flagging/video/wvc1.png \
+	flagging/video/xvid.png \
+	xbmc_subtitles/flags/-.gif \
+	xbmc_subtitles/flags/.gif \
+	xbmc_subtitles/flags/ar.gif \
+	xbmc_subtitles/flags/bg.gif \
+	xbmc_subtitles/flags/bs.gif \
+	xbmc_subtitles/flags/ca.gif \
+	xbmc_subtitles/flags/cs.gif \
+	xbmc_subtitles/flags/da.gif \
+	xbmc_subtitles/flags/de.gif \
+	xbmc_subtitles/flags/el.gif \
+	xbmc_subtitles/flags/en.gif \
+	xbmc_subtitles/flags/es.gif \
+	xbmc_subtitles/flags/et.gif \
+	xbmc_subtitles/flags/fi.gif \
+	xbmc_subtitles/flags/fo.gif \
+	xbmc_subtitles/flags/fr.gif \
+	xbmc_subtitles/flags/gl.gif \
+	xbmc_subtitles/flags/he.gif \
+	xbmc_subtitles/flags/hi.gif \
+	xbmc_subtitles/flags/hr.gif \
+	xbmc_subtitles/flags/hu.gif \
+	xbmc_subtitles/flags/hy.gif \
+	xbmc_subtitles/flags/id.gif \
+	xbmc_subtitles/flags/is.gif \
+	xbmc_subtitles/flags/it.gif \
+	xbmc_subtitles/flags/ja.gif \
+	xbmc_subtitles/flags/kk.gif \
+	xbmc_subtitles/flags/ko.gif \
+	xbmc_subtitles/flags/lb.gif \
+	xbmc_subtitles/flags/lt.gif \
+	xbmc_subtitles/flags/lv.gif \
+	xbmc_subtitles/flags/mk.gif \
+	xbmc_subtitles/flags/ms.gif \
+	xbmc_subtitles/flags/nl.gif \
+	xbmc_subtitles/flags/no.gif \
+	xbmc_subtitles/flags/pb.gif \
+	xbmc_subtitles/flags/pl.gif \
+	xbmc_subtitles/flags/pt.gif \
+	xbmc_subtitles/flags/ro.gif \
+	xbmc_subtitles/flags/ru.gif \
+	xbmc_subtitles/flags/sk.gif \
+	xbmc_subtitles/flags/sl.gif \
+	xbmc_subtitles/flags/sq.gif \
+	xbmc_subtitles/flags/sr.gif \
+	xbmc_subtitles/flags/sv.gif \
+	xbmc_subtitles/flags/tr.gif \
+	xbmc_subtitles/flags/uk.gif \
+	xbmc_subtitles/flags/vi.gif \
+	xbmc_subtitles/flags/zh.gif \
+	xbmc_subtitles/ratings/0.png \
+	xbmc_subtitles/ratings/1.png \
+	xbmc_subtitles/ratings/10.png \
+	xbmc_subtitles/ratings/2.png \
+	xbmc_subtitles/ratings/3.png \
+	xbmc_subtitles/ratings/4.png \
+	xbmc_subtitles/ratings/5.png \
+	xbmc_subtitles/ratings/6.png \
+	xbmc_subtitles/ratings/7.png \
+	xbmc_subtitles/ratings/8.png \
+	xbmc_subtitles/ratings/9.png \
+	xbmc_subtitles/icon_sync.png \
 	amt-blank-poster.png \
 	amt-generic-actor.png \
 	amt-generic-genre-i.png \
@@ -279,67 +401,6 @@ IMAGES= \
 	white-reflect.png \
 	Wide_Icon_Diffuse.png \
 	xbmc-logo.png \
-	Apple\ Movie\ Trailers/G.png \
-	Apple\ Movie\ Trailers/NC-17.png \
-	Apple\ Movie\ Trailers/NR.png \
-	Apple\ Movie\ Trailers/PG-13.png \
-	Apple\ Movie\ Trailers/PG.png \
-	Apple\ Movie\ Trailers/R.png \
-	busy/busy1.png \
-	busy/busy2.png \
-	busy/busy3.png \
-	busy/busy4.png \
-	busy/busy5.png \
-	busy/busy6.png \
-	busy/busy7.png \
-	busy/busy8.png \
-	flagging/aspectratio/1.33.png \
-	flagging/aspectratio/1.66.png \
-	flagging/aspectratio/1.78.png \
-	flagging/aspectratio/1.85.png \
-	flagging/aspectratio/2.20.png \
-	flagging/aspectratio/2.35.png \
-	flagging/audio/0.png \
-	flagging/audio/1.png \
-	flagging/audio/2.png \
-	flagging/audio/6.png \
-	flagging/audio/8.png \
-	flagging/audio/aac.png \
-	flagging/audio/ac3.png \
-	flagging/audio/aif.png \
-	flagging/audio/aifc.png \
-	flagging/audio/aiff.png \
-	flagging/audio/ape.png \
-	flagging/audio/avc.png \
-	flagging/audio/cdda.png \
-	flagging/audio/dca.png \
-	flagging/audio/dolbydigital.png \
-	flagging/audio/dts.png \
-	flagging/audio/eac3.png \
-	flagging/audio/flac.png \
-	flagging/audio/mp1.png \
-	flagging/audio/mp2.png \
-	flagging/audio/mp3.png \
-	flagging/audio/ogg.png \
-	flagging/audio/truehd.png \
-	flagging/audio/wma.png \
-	flagging/audio/wmapro.png \
-	flagging/audio/wmav2.png \
-	flagging/video/1080.png \
-	flagging/video/480.png \
-	flagging/video/540.png \
-	flagging/video/720.png \
-	flagging/video/avc1.png \
-	flagging/video/bluray.png \
-	flagging/video/divx.png \
-	flagging/video/flv.png \
-	flagging/video/h264.png \
-	flagging/video/hddvd.png \
-	flagging/video/mpeg1video.png \
-	flagging/video/mpeg2video.png \
-	flagging/video/vc-1.png \
-	flagging/video/wvc1.png \
-	flagging/video/xvid.png \
 
 all: $(TARGET)
 

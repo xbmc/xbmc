@@ -531,7 +531,7 @@ bool CApplication::Create()
 
   uint32_t sdlFlags = 0;
 
-#ifdef HAS_SDL_OPENGL
+#if defined(HAS_SDL_OPENGL) || (HAS_GLES == 2)
   sdlFlags |= SDL_INIT_VIDEO;
 #endif
 
@@ -565,6 +565,8 @@ bool CApplication::Create()
   setenv("OS","OS X",true);
 #elif defined(_LINUX)
   setenv("OS","Linux",true);
+#elif defined(_WIN32)
+  SetEnvironmentVariable("OS","win32");
 #endif
 
   // Initialize core peripheral port support. Note: If these parameters

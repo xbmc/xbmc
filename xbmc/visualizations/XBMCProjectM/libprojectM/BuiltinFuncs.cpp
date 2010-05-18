@@ -147,7 +147,7 @@ int BuiltinFuncs::insert_func( Func *func ) {
   std::pair<std::map<std::string, Func*>::iterator, bool> inserteePair =
   	builtin_func_tree.insert(std::make_pair(std::string(func->getName()), func));
   
-  if (!inserteePair.second) {
+  if (!inserteePair.second && builtin_func_tree.find(func->getName()) == builtin_func_tree.end()) {
 	std::cerr << "Failed to insert builtin function \"" << func->getName() << "\" into collection! Bailing..." << std::endl;
 	abort();
 

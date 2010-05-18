@@ -92,8 +92,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release Multithreaded|Win32"
-			OutputDirectory=".\..\..\..\objs\release_mt"
-			IntermediateDirectory=".\..\..\..\objs\release_mt"
+			OutputDirectory="$(SolutionDir)libs\$(ProjectName)\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)objs\$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -391,8 +391,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug Multithreaded|Win32"
-			OutputDirectory=".\..\..\..\objs\debug_mt"
-			IntermediateDirectory=".\..\..\..\objs\debug_mt"
+			OutputDirectory="$(SolutionDir)libs\$(ProjectName)\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)objs\$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"

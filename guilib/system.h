@@ -196,6 +196,32 @@
 #include "PlatformInclude.h"
 #endif
 
+// ARM does not support certain features... disable them here!
+#ifdef _ARMEL
+#undef HAS_AVAHI
+#undef HAS_ZEROCONF
+#undef HAS_VISUALISATION
+#undef HAS_FILESYSTEM_HTSP
+#endif
+
+// EGL detected. Dont use GLX!
+#ifdef HAVE_LIBEGL
+#undef HAS_GLX
+#define HAS_EGL
+#endif
+
+// GLES2.0 detected. Dont use GL!
+#ifdef HAVE_LIBGLESV2
+#undef HAS_GL
+#define HAS_GLES 2
+#endif
+
+// GLES1.0 detected. Dont use GL!
+#ifdef HAVE_LIBGLES
+#undef HAS_GL
+#define HAS_GLES 1
+#endif
+
 #ifdef HAS_GL
 #ifdef _WIN32
 #include "GL/glew.h"
@@ -212,8 +238,15 @@
 #endif
 
 #if HAS_GLES == 2
+#ifdef _ARMEL	// PowerVR SGX Header
+// not sure about this one tg2 (arm) does not have gl2extimg.h
+//#include <GLES2/gl2extimg.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
+#else
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#endif
 #endif
 
 #define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }

@@ -483,23 +483,20 @@ CStdString CID3Tag::ParseMP3Genre(const CStdString& str) const
   while (!strTemp.IsEmpty())
   {
     // remove any leading spaces
-    int i = strTemp.find_first_not_of(" ");
-    if (i > 0) strTemp.erase(0, i);
-
-    // pull off the first character
-    char p = strTemp[0];
+    strTemp.TrimLeft();
 
     // start off looking for (something)
-    if (p == '(')
+    if (strTemp[0] == '(')
     {
       strTemp.erase(0, 1);
+      if (strTemp.empty())
+        break;
 
       // now look for ((something))
-      p = strTemp[0];
-      if (p == '(')
+      if (strTemp[0] == '(')
       {
         // remove ((something))
-        i = strTemp.find_first_of("))");
+        int i = strTemp.find_first_of(')');
         strTemp.erase(0, i + 2);
       }
     }
@@ -510,20 +507,20 @@ CStdString CID3Tag::ParseMP3Genre(const CStdString& str) const
     else
     {
       CStdString t;
-      while ((!strTemp.IsEmpty()) && (p != ')') && (p != ',') && (p != ';'))
+      int i = strTemp.find_first_of("),;");
+      if (i != std::string::npos)
       {
-        strTemp.erase(0, 1);
-        t.push_back(p);
-        p = strTemp[0];
+        t = strTemp.Left(i);
+        strTemp.erase(0, i + 1);
+      } else {
+        t = strTemp;
+        strTemp.clear();
       }
-      // loop exits when terminator is found
-      // be sure to remove the terminator
-      strTemp.erase(0, 1);
-
+      
       // remove any leading or trailing white space
       // from temp string
       t.Trim();
-      if (!t.size()) continue;
+      if (!t.length()) continue;
 
       // if the temp string is natural number try to convert it to a genre string
       if (StringUtils::IsNaturalNumber(t))

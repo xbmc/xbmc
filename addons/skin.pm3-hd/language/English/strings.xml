@@ -97,6 +97,10 @@
   <string id="31208">Show lyrics script button in Music OSD</string>
   <string id="31209">Enable quick launch script button for -</string>
 
+  <!-- Subtitles Script Extra labels -->
+  <string id="31250">XBMC Subtitles</string>
+  <string id="31251">Subtitle Source</string>
+
   <!-- AMT Script Extra labels -->
   <string id="31300">Show cast</string>
 </strings>

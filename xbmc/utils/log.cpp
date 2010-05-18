@@ -113,7 +113,10 @@ void CLog::Log(int loglevel, const char *format, ... )
 
     fwrite(strPrefix.c_str(),strPrefix.size(),1,m_file);
     fwrite(strData.c_str(),strData.size(),1,m_file);
-    fflush(m_file);
+#ifdef __arm__
+    if (g_advancedSettings.m_logLevel > LOG_LEVEL_NORMAL)
+    	fflush(m_file);//TEMP!!!
+#endif
   }
 #ifndef _LINUX
 #if defined(_DEBUG) || defined(PROFILE)
@@ -289,7 +292,7 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
 
 void LogGraphicsInfo()
 {
-#ifdef HAS_GL
+#if defined(HAS_GL) || defined(HAS_GLES)
   const GLubyte *s;
 
   s = glGetString(GL_VENDOR);

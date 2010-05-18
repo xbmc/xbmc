@@ -79,16 +79,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\vs2010\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\vs2010\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(Configuration)\vs2010\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(Configuration)\vs2010\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Win32'">$(Configuration)\vs2010\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Win32'">$(Configuration)\vs2010\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\vs2010\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\vs2010\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'">$(Configuration)\vs2010\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'">$(Configuration)\vs2010\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)libs\$(TargetName)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)objs\$(TargetName)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(SolutionDir)libs\$(TargetName)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(SolutionDir)objs\$(TargetName)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Win32'">$(SolutionDir)libs\$(TargetName)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Win32'">$(SolutionDir)objs\$(TargetName)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)libs\$(TargetName)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)objs\$(TargetName)\$(Configuration)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'">$(SolutionDir)libs\$(TargetName)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_LTCG|Win32'">$(SolutionDir)objs\$(TargetName)\$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)_win32</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Profile_FastCap|Win32'">$(ProjectName)_win32</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Profile|Win32'">$(ProjectName)_win32</TargetName>

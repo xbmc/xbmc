@@ -24,7 +24,12 @@
 #include "OverlayRenderer.h"
 #include "OverlayRendererUtil.h"
 #include "OverlayRendererGL.h"
+#ifdef HAS_GL
 #include "LinuxRendererGL.h"
+#elif HAS_GLES == 2
+#include "LinuxRendererGLES.h"
+#include "MatrixGLES.h"
+#endif
 #include "RenderManager.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
@@ -33,7 +38,12 @@
 #include "Settings.h"
 #include "MathUtils.h"
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 2
+
+#if HAS_GLES == 2
+// GLES2.0 cant do CLAMP, but can do CLAMP_TO_EDGE.
+#define GL_CLAMP	GL_CLAMP_TO_EDGE
+#endif
 
 #define USE_PREMULTIPLIED_ALPHA 1
 
@@ -47,6 +57,7 @@ static void LoadTexture(GLenum target
   int width2  = NP2(width);
   int height2 = NP2(height);
 
+#ifndef HAS_GLES
   glPixelStorei(GL_UNPACK_ALIGNMENT,1);
   if(format == GL_RGBA)
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 4);
@@ -54,6 +65,7 @@ static void LoadTexture(GLenum target
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 3);
   else
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
+#endif
 
   glTexImage2D   (target, 0, format
                 , width2, height2, 0
@@ -76,7 +88,9 @@ static void LoadTexture(GLenum target
                    , format, GL_UNSIGNED_BYTE
                    , (unsigned char*)pixels + stride - 1);
 
+#ifndef HAS_GLES
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+#endif
 
   *u = (GLfloat)width  / width2;
   *v = (GLfloat)height / height2;
@@ -269,7 +283,7 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
       vt[s].u = scale_u;
       vt[s].v = scale_v;
     }
-
+#ifdef HAS_GL
     vt[0].x *= vs->x;
     vt[0].u *= vs->u;
     vt[0].y *= vs->y;
@@ -289,7 +303,28 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
     vt[3].u *= vs->u;
     vt[3].y *= vs->y + vs->h;
     vt[3].v *= vs->v + vs->h;
+#else
+    // GLES uses triangle strips, not quads, so have to rearrange the vertex order
+    vt[0].x *= vs->x;
+    vt[0].u *= vs->u;
+    vt[0].y *= vs->y;
+    vt[0].v *= vs->v;
 
+    vt[1].x *= vs->x;
+    vt[1].u *= vs->u;
+    vt[1].y *= vs->y + vs->h;
+    vt[1].v *= vs->v + vs->h;
+
+    vt[2].x *= vs->x + vs->w;
+    vt[2].u *= vs->u + vs->w;
+    vt[2].y *= vs->y;
+    vt[2].v *= vs->v;
+
+    vt[3].x *= vs->x + vs->w;
+    vt[3].u *= vs->u + vs->w;
+    vt[3].y *= vs->y + vs->h;
+    vt[3].v *= vs->v + vs->h;
+#endif
     vs += 1;
     vt += 4;
   }
@@ -314,6 +349,7 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   glBindTexture(GL_TEXTURE_2D, m_texture);
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+#ifdef HAS_GL
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
   glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
@@ -345,6 +381,43 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glPopClientAttrib();
 
   glPopMatrix();
+#else
+  g_Windowing.EnableGUIShader(SM_FONTS);
+
+  g_matrices.MatrixMode(MM_MODELVIEW);
+  g_matrices.PushMatrix();
+  g_matrices.Translatef(state.x, state.y, 0.0);
+  g_matrices.Scalef(state.width, state.height, 1.0f);
+
+  VerifyGLState();
+  GLint posLoc  = g_Windowing.GUIShaderGetPos();
+  GLint colLoc  = g_Windowing.GUIShaderGetCol();
+  GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
+
+  glVertexAttribPointer(posLoc,  3, GL_FLOAT,         0, sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, x));
+  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, 0, sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, r));
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         0, sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, u));
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(colLoc);
+  glEnableVertexAttribArray(tex0Loc);
+
+  // GLES2 version
+  // As using triangle strips, have to do in sets of 4.
+  // This is due to limitations of ES, in that tex/col has to be same size as ver!
+  for (int i=0; i<(m_count*4); i+=4)
+  {
+    glDrawArrays(GL_TRIANGLE_STRIP, i, 4);
+  }
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(colLoc);
+  glDisableVertexAttribArray(tex0Loc);
+
+  g_Windowing.DisableGUIShader();
+
+  g_matrices.PopMatrix();
+#endif
 
   glDisable(GL_BLEND);
   glDisable(GL_TEXTURE_2D);
@@ -369,11 +442,14 @@ void COverlayTextureGL::Render(SRenderState& state)
 #else
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 #endif
+
+#if defined(HAS_GL)
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   VerifyGLState();
+#endif
 
   DRAWRECT rd;
   if(m_pos == POSITION_RELATIVE)
@@ -391,6 +467,7 @@ void COverlayTextureGL::Render(SRenderState& state)
     rd.right   = state.x + state.width;
   }
 
+#if defined(HAS_GL)
   glBegin(GL_QUADS);
   glTexCoord2f(0.0f, 0.0f);
   glVertex2f(rd.left , rd.top);
@@ -404,6 +481,51 @@ void COverlayTextureGL::Render(SRenderState& state)
   glTexCoord2f(0.0f, m_v);
   glVertex2f(rd.left , rd.bottom);
   glEnd();
+#else
+  g_Windowing.EnableGUIShader(SM_TEXTURE);
+
+  GLfloat col[4][4];
+  GLfloat ver[4][2];
+  GLfloat tex[4][2];
+  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
+
+  GLint posLoc  = g_Windowing.GUIShaderGetPos();
+  GLint colLoc  = g_Windowing.GUIShaderGetCol();
+  GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
+
+  glVertexAttribPointer(posLoc,  2, GL_FLOAT, 0, 0, ver);
+  glVertexAttribPointer(colLoc,  4, GL_FLOAT, 0, 0, col);
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(colLoc);
+  glEnableVertexAttribArray(tex0Loc);
+
+  for (int i=0; i<4; i++)
+  {
+    // Setup Colours
+    col[i][0] = col[i][1] = col[i][2] = col[i][3] = 1.0f;
+  }
+
+  // Setup vertex position values
+  ver[0][0] = ver[3][0] = rd.left;
+  ver[0][1] = ver[1][1] = rd.top;
+  ver[1][0] = ver[2][0] = rd.right;
+  ver[2][1] = ver[3][1] = rd.bottom;
+
+  // Setup texture coordinates
+  tex[0][0] = tex[0][1] = tex[1][1] = tex[3][0] = 0.0f;
+  tex[1][0] = tex[2][0] = m_u;
+  tex[2][1] = tex[3][1] = m_v;
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(colLoc);
+  glDisableVertexAttribArray(tex0Loc);
+
+  g_Windowing.DisableGUIShader();
+#endif
 
   glDisable(GL_BLEND);
   glDisable(GL_TEXTURE_2D);

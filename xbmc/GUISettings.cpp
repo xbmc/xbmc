@@ -356,6 +356,7 @@ void CGUISettings::Initialize()
   encoders.insert(make_pair(34000,CDDARIP_ENCODER_LAME));
   encoders.insert(make_pair(34001,CDDARIP_ENCODER_VORBIS));
   encoders.insert(make_pair(34002,CDDARIP_ENCODER_WAV));
+  encoders.insert(make_pair(34005,CDDARIP_ENCODER_FLAC));
   AddInt(acd, "audiocds.encoder", 621, CDDARIP_ENCODER_LAME, encoders, SPIN_CONTROL_TEXT);
 
   map<int,int> qualities;
@@ -365,6 +366,7 @@ void CGUISettings::Initialize()
   qualities.insert(make_pair(603,CDDARIP_QUALITY_EXTREME));
   AddInt(acd, "audiocds.quality", 622, CDDARIP_QUALITY_CBR, qualities, SPIN_CONTROL_TEXT);
   AddInt(acd, "audiocds.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
+  AddInt(acd, "audiocds.compressionlevel", 665, 5, 0, 1, 8, SPIN_CONTROL_INT_PLUS);
 
 #ifdef HAS_KARAOKE
   CSettingsCategory* kar = AddCategory(3, "karaoke", 13327);
@@ -601,6 +603,9 @@ void CGUISettings::Initialize()
 #ifdef HAVE_LIBVDADECODER
   AddBool(g_sysinfo.HasVDADecoder() ? vp: NULL, "videoplayer.usevda", 13429, true);
 #endif
+#ifdef HAVE_LIBOPENMAX
+  AddBool(vp, "videoplayer.useomx", 13430, true);
+#endif
 
 #ifdef HAS_GL
   AddBool(vp, "videoplayer.usepbo", 13424, true);
@@ -632,7 +637,7 @@ void CGUISettings::Initialize()
   AddBool(NULL, "videoplayer.strictbinding", 13120, false);
   AddBool(NULL, "videoplayer.vdpau_allow_xrandr", 13122, false);
 #endif
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 2	// May need changing for GLES
   AddSeparator(vp, "videoplayer.sep1.5");
   AddInt(NULL, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
   AddInt(NULL, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);

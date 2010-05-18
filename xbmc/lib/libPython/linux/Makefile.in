@@ -1,5 +1,5 @@
 ARCH=@ARCH@
-
+CC=@CC@
 SHELL=/bin/bash
 SYSDIR=../../../../system/python
 
@@ -31,7 +31,11 @@ else
 ifeq ($(ARCH), x86_64-linux)
 	PYLIBDIR=lib.linux-x86_64-2.4
 else
+ifeq ($(ARCH), arm)
+	PYLIBDIR=lib.linux-armv6tel-2.4
+else
 	PYLIBDIR=lib.linux-i686-2.4
+endif
 endif
 endif
 endif

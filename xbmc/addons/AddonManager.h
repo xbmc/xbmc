@@ -28,6 +28,7 @@
 #include "utils/Stopwatch.h"
 #include <vector>
 #include <map>
+#include <deque>
 
 class DllLibCPluff;
 extern "C"
@@ -41,6 +42,8 @@ namespace ADDON
   typedef std::vector<AddonPtr>::iterator IVECADDONS;
   typedef std::map<TYPE, VECADDONS> MAPADDONS;
   typedef std::map<TYPE, VECADDONS>::iterator IMAPADDONS;
+  typedef std::deque<cp_cfg_element_t*> DEQUEELEMENTS;
+  typedef std::deque<cp_cfg_element_t*>::iterator IDEQUEELEMENTS;
 
   const CStdString ADDON_METAFILE             = "description.xml";
   const CStdString ADDON_VIS_EXT              = "*.vis";
@@ -104,6 +107,8 @@ namespace ADDON
 
     /* libcpluff */
     bool GetExtensions(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content);
+    const cp_cfg_element_t *GetExtElement(cp_cfg_element_t *base, const char *path);
+    bool GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *base, const char *path);
     CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
     void CPluffFatalError(const char *msg);
     void CPluffLog(cp_log_severity_t level, const char *msg, const char *apid, void *user_data);
@@ -121,6 +126,7 @@ namespace ADDON
     bool DependenciesMet(AddonPtr &addon);
     bool UpdateIfKnown(AddonPtr &addon);
     AddonPtr Factory(const cp_extension_t *props);
+    bool CheckUserDirs(const cp_cfg_element_t *element);
 
     // private construction, and no assignements; use the provided singleton methods
     CAddonMgr();

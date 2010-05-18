@@ -56,6 +56,8 @@ public:
   static std::vector<CStdString> GetDiskUsage();
   static CStdString GetResInfoString();
   static int GetDesktopColorDepth();
+  static CStdString GetSpecialFolder(int csidl);
+  static CStdString CWIN32Util::GetSystemPath();
   static CStdString GetProfilePath();
   static CStdString UncToSmb(const CStdString &strPath);
   static void ExtendDllPath();

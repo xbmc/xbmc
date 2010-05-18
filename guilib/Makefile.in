@@ -72,13 +72,14 @@ SRCS=AnimatedGif.cpp \
      GUIColorManager.cpp \
      FrameBufferObject.cpp \
      Shader.cpp \
+     GUIShader.cpp \
+     MatrixGLES.cpp \
      GUIListLabel.cpp \
      GUIBorderedImage.cpp \
      GUITextLayout.cpp \
      GUIMultiSelectText.cpp \
      GUIInfoTypes.cpp \
      GUIFontTTFGL.cpp \
-     GUIFontTTFGLES.cpp \
      Texture.cpp \
      TextureGL.cpp \
      GUIControlProfiler.cpp \

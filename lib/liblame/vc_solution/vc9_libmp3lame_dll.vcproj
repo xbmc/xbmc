@@ -20,6 +20,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
+			OutputDirectory="$(SolutionDir)libs\$(ProjectName)\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)objs\$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			InheritedPropertySheets=".\vc9_lame_config.vsprops"
 			UseOfMFC="0"
@@ -96,6 +98,8 @@
 		</Configuration>
 		<Configuration
 			Name="ReleaseNASM|Win32"
+			OutputDirectory="$(SolutionDir)libs\$(ProjectName)\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)objs\$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			InheritedPropertySheets=".\vc9_lame_config.vsprops"
 			UseOfMFC="0"
@@ -172,6 +176,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
+			OutputDirectory="$(SolutionDir)libs\$(ProjectName)\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)objs\$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="2"
 			InheritedPropertySheets=".\vc9_lame_config.vsprops"
 			UseOfMFC="0"

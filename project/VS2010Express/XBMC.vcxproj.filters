@@ -2343,6 +2343,7 @@
     <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.cpp">
       <Filter>Source Files\Filesystem\VideoDatabaseDirectory</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cdrip\EncoderFlac.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -4187,9 +4188,6 @@
     <ClInclude Include="..\..\xbmc\GUIWindowScripts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\GUIWindowScriptsInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\GUIWindowSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -4949,6 +4947,8 @@
     <ClInclude Include="..\..\xbmc\SystemGlobals.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\cdrip\DllFlacEnc.h" />
+    <ClInclude Include="..\..\xbmc\cdrip\EncoderFlac.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\win32\XBMC.ico">

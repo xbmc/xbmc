@@ -580,6 +580,7 @@
   <string id="662">This file is no longer available.</string>
   <string id="663">Would you like to remove it from the library?</string>
   <string id="664">Browse for Script</string>
+  <string id="665">Compression level</string>
 
   <string id="700">Cleaning up library</string>
   <string id="701">Removing old songs from the library</string>
@@ -1222,6 +1223,7 @@
   <string id="13427">Allow hardware acceleration (DXVA2)</string>
   <string id="13428">Allow hardware acceleration (CrystalHD)</string>
   <string id="13429">Allow hardware acceleration (VDADecoder)</string>
+  <string id="13430">Allow hardware acceleration (OpenMax)</string>
 
   <string id="13500">A/V sync method</string>
   <string id="13501">Audio clock</string>
@@ -2265,6 +2267,7 @@
   <string id="34002">Wav</string>
   <string id="34003">DXVA2</string>
   <string id="34004">VAAPI</string>
+  <string id="34005">Flac</string>
 
   <string id="34100">Speaker Configuration</string>
   <string id="34101">2.0</string>

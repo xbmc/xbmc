@@ -16,8 +16,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Static_Release"
-			IntermediateDirectory=".\Static_Release"
+			OutputDirectory="$(SolutionDir)libs\$(ProjectName)\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)objs\$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -71,7 +71,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\Static_Release\ogg_static.lib"
+				OutputFile="$(OutDir)\ogg_static.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -92,8 +92,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Static_Debug"
-			IntermediateDirectory=".\Static_Debug"
+			OutputDirectory="$(SolutionDir)libs\$(ProjectName)\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)objs\$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="4"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -146,7 +146,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="Static_Debug\ogg_static_d.lib"
+				OutputFile="$(OutDir)\ogg_static_d.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
