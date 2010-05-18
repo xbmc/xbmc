@@ -48,6 +48,7 @@
       <up>Up</up>
       <down>Down</down>
       <select>Select</select>
+      <enter>FullScreen</enter> 
       <pageplus>PageUp</pageplus>
       <pageminus>PageDown</pageminus>
       <back>ParentDir</back>
@@ -140,7 +141,6 @@
       <start>OSD</start>
       <title>CodecInfo</title>
       <info>Info</info>
-      <enter>AspectRatio</enter>
       <select>AspectRatio</select>
       <teletext>XBMC.ActivateWindow(Teletext)</teletext>
       <subtitle>ShowSubtitles</subtitle>
@@ -213,7 +213,6 @@
   <ScreenCalibration>
     <remote>
       <select>NextCalibration</select>
-      <enter>NextCalibration</enter>
       <zero>ResetCalibration</zero>
       <display>NextResolution</display>
       <xbox>NextResolution</xbox>
@@ -222,7 +221,6 @@
   <GUICalibration>
     <remote>
       <select>NextCalibration</select>
-      <enter>NextCalibration</enter>
       <zero>ResetCalibration</zero>
     </remote>
   </GUICalibration>
