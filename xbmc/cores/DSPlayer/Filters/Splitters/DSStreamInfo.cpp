@@ -31,7 +31,7 @@ extern "C"
 {
   #include "libavformat/avformat.h"
 }
-#include "math.h"
+#include "DShowUtil/DShowUtil.h"
 CDSStreamInfo::CDSStreamInfo()                                                     { extradata = NULL; Clear(); }
 CDSStreamInfo::CDSStreamInfo(const CDSStreamInfo &right, bool withextradata )     { extradata = NULL; Clear(); Assign(right, withextradata); }
 CDSStreamInfo::CDSStreamInfo(const CDemuxStream &right, bool withextradata )       { extradata = NULL; Clear(); Assign(right, withextradata); }
@@ -138,7 +138,7 @@ void CDSStreamInfo::Assign(const CDSStreamInfo& right, bool withextradata)
     extrasize = 0;
     extradata = 0;
   }
-
+  PinNameW = right.PinNameW;
   // VIDEO
   fpsscale = right.fpsscale;
   fpsrate  = right.fpsrate;
@@ -166,7 +166,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   codec_id = right.codec;
   type = right.type;
   RECT empty_tagrect = {0,0,0,0};
-  m_dllAvCodec.Load();
+  m_dllAvCodec.Load(); m_dllAvFormat.Load(); m_dllAvCodec.Load();
   if( withextradata && right.ExtraSize )
   {
     extrasize = right.ExtraSize;
@@ -178,6 +178,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   /****************/
   if( right.type == STREAM_AUDIO )
   {
+    PinNameW = L"Audio";
     const CDemuxStreamAudio *stream = static_cast<const CDemuxStreamAudio*>(&right);
     AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
     
@@ -188,7 +189,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     
     WAVEFORMATEX* wvfmt = (WAVEFORMATEX*)mtype.AllocFormatBuffer(sizeof(WAVEFORMATEX) + avstream->codec->extradata_size);
     //avstream->codec_id->codec_tag could be used but not every audio codec as it defined
-    m_dllAvFormat.Load(); m_dllAvCodec.Load();
+    
     //based on mplayerww concept
     //av_codec_get_tag
     if(avstream->codec->codec_tag == MKTAG('m', 'p', '4', 'a'))
@@ -244,6 +245,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   /****************/
   else if(  right.type == STREAM_VIDEO )
   {
+    PinNameW = L"Video";
     const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(&right);
     AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
     
@@ -423,9 +425,49 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     aspect    = stream->fAspect;
     vfr       = stream->bVFR;
   }
+  /**/
   else if(  right.type == STREAM_SUBTITLE )
   {
+    PinNameW = L"Subtitle";
     const CDemuxStreamSubtitle *stream = static_cast<const CDemuxStreamSubtitle*>(&right);
+    AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
     identifier = stream->identifier;
+    mtype.majortype = MEDIATYPE_Subtitle;
+    mtype.formattype = FORMAT_SubtitleInfo;
+    
+    
+    SUBTITLEINFO* psi = (SUBTITLEINFO*)mtype.AllocFormatBuffer(sizeof(SUBTITLEINFO) + extrasize);
+    memset(psi, 0, mtype.FormatLength());
+    //av_metadata_set2(&st->metadata, "language", track->language, 0);
+    //av_metadata_set2(&st->metadata, "title", track->name, 0);
+    CStdString strTrackTitle,strTrackLanguage;
+    CStdStringW strTrackTitleW;
+    
+    if (m_dllAvFormat.av_metadata_get(avstream->metadata, "language", NULL, 0))
+    {
+      strTrackLanguage = m_dllAvFormat.av_metadata_get(avstream->metadata, "language", NULL, 0)->value;
+      
+      PinNameW.AppendFormat(L" %s",DShowUtil::AToW(strTrackLanguage).c_str());
+    }
+    
+    if (m_dllAvFormat.av_metadata_get(avstream->metadata, "title", NULL, 0))
+    {
+      strTrackTitle = m_dllAvFormat.av_metadata_get(avstream->metadata, "title", NULL, 0)->value;
+      PinNameW.AppendFormat(L" %s",DShowUtil::AToW(strTrackTitle).c_str());
+    }
+    strncpy(psi->IsoLang, strTrackLanguage.c_str(), strTrackLanguage.length()-1);
+    strTrackTitleW = DShowUtil::AToW(strTrackTitle);
+    wcsncpy(psi->TrackName, strTrackTitleW.c_str(), strTrackTitleW.length() - 1);
+    memcpy(mtype.pbFormat + (psi->dwOffset = sizeof(SUBTITLEINFO)), extradata, extrasize);
+    //mtype.subtype
+    mtype.subtype = avstream->codec->codec_id == CODEC_ID_TEXT ? MEDIASUBTYPE_UTF8 :
+                    avstream->codec->codec_id == CODEC_ID_SSA ? MEDIASUBTYPE_SSA :
+						        //CodecID == "S_TEXT/ASS" || CodecID == "S_ASS" ? MEDIASUBTYPE_ASS :
+						        //CodecID == "S_TEXT/SSF" || CodecID == "S_SSF" ? MEDIASUBTYPE_SSF :
+						        //CodecID == "S_TEXT/USF" || CodecID == "S_USF" ? MEDIASUBTYPE_USF :
+						        //CodecID == "S_VOBSUB" ? MEDIASUBTYPE_VOBSUB :
+						        MEDIASUBTYPE_NULL;
+    
+    mtype.lSampleSize = 1;
   }
 }

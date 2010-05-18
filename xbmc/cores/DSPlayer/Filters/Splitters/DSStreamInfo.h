@@ -47,6 +47,7 @@ public:
   CodecID codec_id;
   StreamType type;
   bool software;  //force software decoding
+  CStdStringW PinNameW;
 
   CMediaType mtype;
   // VIDEO
