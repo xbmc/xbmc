@@ -73,6 +73,8 @@ bool CEncoderFlac::Init(const char* strFile, int iInChannels, int iInRate, int i
       !m_dll.FLAC__metadata_object_vorbiscomment_append_comment(m_metadata[0], entry, false) ||
       !m_dll.FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&entry, "ALBUM", m_strAlbum.c_str()) ||
       !m_dll.FLAC__metadata_object_vorbiscomment_append_comment(m_metadata[0], entry, false) ||
+      !m_dll.FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&entry, "ALBUMARTIST", m_strAlbumArtist.c_str()) || 
+      !m_dll.FLAC__metadata_object_vorbiscomment_append_comment(m_metadata[0], entry, false) || 
       !m_dll.FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&entry, "TITLE", m_strTitle.c_str()) ||
       !m_dll.FLAC__metadata_object_vorbiscomment_append_comment(m_metadata[0], entry, false) ||
       !m_dll.FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&entry, "GENRE", m_strGenre.c_str()) ||
