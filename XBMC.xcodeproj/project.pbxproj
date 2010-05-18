@@ -957,6 +957,10 @@
 		F506297A0E57B9680066625A /* MultiPathFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50629780E57B9680066625A /* MultiPathFile.cpp */; };
 		F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */; };
 		F50FDC5B119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */; };
+		F50FE04A11A3410300C8B8CD /* EncoderFlac.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FE04811A3410300C8B8CD /* EncoderFlac.cpp */; };
+		F50FE04B11A3410300C8B8CD /* EncoderFlac.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FE04811A3410300C8B8CD /* EncoderFlac.cpp */; };
+		F50FE04E11A3411A00C8B8CD /* EncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FE04D11A3411A00C8B8CD /* EncoderFFmpeg.cpp */; };
+		F50FE04F11A3411B00C8B8CD /* EncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F50FE04D11A3411A00C8B8CD /* EncoderFFmpeg.cpp */; };
 		F51CEEEF0F5C5D20004F4602 /* OSXGNUReplacements.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */; };
 		F51CEF880F5C64A5004F4602 /* DVDInputStreamHTSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F51CEF860F5C64A5004F4602 /* DVDInputStreamHTSP.cpp */; };
 		F51CF2D00F6055A4004F4602 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = F51CF2CE0F6055A4004F4602 /* sha1.c */; };
@@ -3632,6 +3636,10 @@
 		F50629790E57B9680066625A /* MultiPathFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MultiPathFile.h; sourceTree = "<group>"; };
 		F50FDC58119B4B2C00C8B8CD /* GUIDialogTextViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogTextViewer.h; sourceTree = "<group>"; };
 		F50FDC59119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogTextViewer.cpp; sourceTree = "<group>"; };
+		F50FE04811A3410300C8B8CD /* EncoderFlac.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EncoderFlac.cpp; sourceTree = "<group>"; };
+		F50FE04911A3410300C8B8CD /* EncoderFlac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncoderFlac.h; sourceTree = "<group>"; };
+		F50FE04C11A3411A00C8B8CD /* EncoderFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncoderFFmpeg.h; sourceTree = "<group>"; };
+		F50FE04D11A3411A00C8B8CD /* EncoderFFmpeg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EncoderFFmpeg.cpp; sourceTree = "<group>"; };
 		F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OSXGNUReplacements.c; sourceTree = "<group>"; };
 		F51CEEF00F5C5D28004F4602 /* OSXGNUReplacements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSXGNUReplacements.h; sourceTree = "<group>"; };
 		F51CEF860F5C64A5004F4602 /* DVDInputStreamHTSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDInputStreamHTSP.cpp; path = xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreamHTSP.cpp; sourceTree = SOURCE_ROOT; };
@@ -4946,6 +4954,10 @@
 				E38E14870D25F9F900618676 /* DllVorbisEnc.h */,
 				E38E14880D25F9F900618676 /* Encoder.cpp */,
 				E38E14890D25F9F900618676 /* Encoder.h */,
+				F50FE04D11A3411A00C8B8CD /* EncoderFFmpeg.cpp */,
+				F50FE04C11A3411A00C8B8CD /* EncoderFFmpeg.h */,
+				F50FE04811A3410300C8B8CD /* EncoderFlac.cpp */,
+				F50FE04911A3410300C8B8CD /* EncoderFlac.h */,
 				E38E148A0D25F9F900618676 /* EncoderLame.cpp */,
 				E38E148B0D25F9F900618676 /* EncoderLame.h */,
 				E38E148C0D25F9F900618676 /* EncoderVorbis.cpp */,
@@ -8191,6 +8203,8 @@
 				F52B06BA1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */,
 				7CD2C3AB11940B270009EFC1 /* DirectoryNodeCountry.cpp in Sources */,
 				F50FDC5A119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */,
+				F50FE04A11A3410300C8B8CD /* EncoderFlac.cpp in Sources */,
+				F50FE04E11A3411A00C8B8CD /* EncoderFFmpeg.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9062,6 +9076,8 @@
 				F52B06BB1187CE18004B1D66 /* DVDVideoCodecVDA.cpp in Sources */,
 				7CD2C3AA11940B270009EFC1 /* DirectoryNodeCountry.cpp in Sources */,
 				F50FDC5B119B4B2C00C8B8CD /* GUIDialogTextViewer.cpp in Sources */,
+				F50FE04B11A3410300C8B8CD /* EncoderFlac.cpp in Sources */,
+				F50FE04F11A3411B00C8B8CD /* EncoderFFmpeg.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
