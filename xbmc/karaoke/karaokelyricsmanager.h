@@ -1,3 +1,6 @@
+#ifndef KARAOKELYRICSMANAGER_H
+#define KARAOKELYRICSMANAGER_H
+
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -20,9 +23,6 @@
  */
 
 // C++ Interface: karaokelyricsmanager
-
-#ifndef KARAOKELYRICSMANAGER_H
-#define KARAOKELYRICSMANAGER_H
 
 class CKaraokeLyrics;
 class CGUIDialogKaraokeSongSelectorSmall;

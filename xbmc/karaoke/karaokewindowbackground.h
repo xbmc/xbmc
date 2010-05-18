@@ -1,3 +1,6 @@
+#ifndef KARAOKEWINDOWBACKGROUND_H
+#define KARAOKEWINDOWBACKGROUND_H
+
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -20,9 +23,6 @@
  */
 
 // C++ Interface: karaokewindowbackground
-
-#ifndef KARAOKEWINDOWBACKGROUND_H
-#define KARAOKEWINDOWBACKGROUND_H
 
 #include "cores/IPlayer.h"
 

@@ -1,3 +1,6 @@
+#ifndef KARAOKELYRICS_H
+#define KARAOKELYRICS_H
+
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -20,10 +23,6 @@
  */
 
 // C++ Interface: karaokelyrics
-
-#ifndef KARAOKELYRICS_H
-#define KARAOKELYRICS_H
-
 
 // Abstract interface class for all Karaoke lyrics
 class CKaraokeLyrics

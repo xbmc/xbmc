@@ -1,3 +1,6 @@
+#ifndef KARAOKELYRICSCDG_H
+#define KARAOKELYRICSCDG_H
+
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -20,10 +23,6 @@
  */
 
 // C++ Interface: karaokelyricscdg
-
-#ifndef KARAOKELYRICSCDG_H
-#define KARAOKELYRICSCDG_H
-
 
 #include "karaokelyrics.h"
 #include "Cdg.h"

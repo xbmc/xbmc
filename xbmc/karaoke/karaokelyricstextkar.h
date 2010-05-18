@@ -1,3 +1,6 @@
+#ifndef KARAOKELYRICSTEXTKAR_H
+#define KARAOKELYRICSTEXTKAR_H
+
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -20,10 +23,6 @@
  */
 
 // C++ Interface: karaokelyricstextkar
-
-#ifndef KARAOKELYRICSTEXTKAR_H
-#define KARAOKELYRICSTEXTKAR_H
-
 
 #include "karaokelyricstext.h"
 

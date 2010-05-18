@@ -1,3 +1,10 @@
+#ifndef KARAOKELYRICSFACTORY_H
+#define KARAOKELYRICSFACTORY_H
+
+/**
+  @author Team XBMC
+*/
+
 /*
  *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
@@ -20,13 +27,6 @@
  */
 
 // C++ Interface: karaokelyricsfactory
-
-#ifndef KARAOKELYRICSFACTORY_H
-#define KARAOKELYRICSFACTORY_H
-
-/**
-  @author Team XBMC
-*/
 
 #include "karaokelyrics.h"
 
