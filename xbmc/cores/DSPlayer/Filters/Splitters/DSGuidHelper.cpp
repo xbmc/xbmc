@@ -38,7 +38,7 @@ CMediaType CDSGuidHelper::initAudioType(CodecID codecId)
   else if (codecId == CODEC_ID_AAC)
   {
     thetype.formattype = FORMAT_WaveFormatEx;
-    thetype.subtype =  MEDIASUBTYPE_AAC;// FOURCCMap(0x00ff);
+    thetype.subtype =  MEDIASUBTYPE_AAC;
   }
   else if (codecId == CODEC_ID_DTS)
   {
@@ -72,6 +72,8 @@ CMediaType CDSGuidHelper::initAudioType(CodecID codecId)
   }
   else if (codecId == CODEC_ID_FLAC)
   {
+    thetype.formattype = FORMAT_WaveFormatEx;
+    thetype.subtype =  MEDIASUBTYPE_FLAC2;
   }
   else if (codecId == CODEC_ID_MP3ADU)
   {

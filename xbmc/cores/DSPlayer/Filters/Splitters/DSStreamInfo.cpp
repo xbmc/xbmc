@@ -180,15 +180,15 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   {
     const CDemuxStreamAudio *stream = static_cast<const CDemuxStreamAudio*>(&right);
     AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
-    //mtype.subtype = FOURCCMap(avstream->codec_id->codec_tag);
-    //TODO convert audio codecid into wave format ex: ac3 is WAVE_FORMAT_DOLBY_AC3 0x2000
-    mtype = g_GuidHelper.initAudioType(avstream->codec->codec_id);
     
-    if (mtype.subtype == GUID_NULL)
-      mtype.subtype = FOURCCMap(avstream->codec->codec_tag);
+    
+    mtype = g_GuidHelper.initAudioType(avstream->codec->codec_id);
+    //Link to WAVEFORMATEX structure
+    //http://msdn.microsoft.com/en-us/library/dd390970%28VS.85%29.aspx
+    
     WAVEFORMATEX* wvfmt = (WAVEFORMATEX*)mtype.AllocFormatBuffer(sizeof(WAVEFORMATEX) + avstream->codec->extradata_size);
     //avstream->codec_id->codec_tag could be used but not every audio codec as it defined
-    m_dllAvFormat.Load();
+    m_dllAvFormat.Load(); m_dllAvCodec.Load();
     //based on mplayerww concept
     //av_codec_get_tag
     if(avstream->codec->codec_tag == MKTAG('m', 'p', '4', 'a'))
@@ -196,29 +196,42 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     if(!avstream->codec->codec_tag)
       avstream->codec->codec_tag = m_dllAvFormat.av_codec_get_tag(mp_wav_taglists, avstream->codec->codec_id);
     wvfmt->wFormatTag= avstream->codec->codec_tag;
-    //wvfmt->wFormatTag = mtype.subtype.Data1;
+
+    if (mtype.subtype == GUID_NULL)
+      mtype.subtype = FOURCCMap(avstream->codec->codec_tag);
+
     wvfmt->nChannels = avstream->codec->channels;
-    wvfmt->nSamplesPerSec= avstream->codec->sample_rate;
-    wvfmt->wBitsPerSample= avstream->codec->bits_per_coded_sample;
+    wvfmt->nSamplesPerSec = avstream->codec->sample_rate;
+    wvfmt->wBitsPerSample = avstream->codec->bits_per_coded_sample;
+    if (wvfmt->wBitsPerSample == 0)
+      wvfmt->wBitsPerSample = m_dllAvCodec.av_get_bits_per_sample_format(avstream->codec->sample_fmt);
     wvfmt->cbSize = 0;
 
-    if (avstream->codec->block_align > 0 )
+    if ( avstream->codec->block_align > 0 )
       wvfmt->nBlockAlign = avstream->codec->block_align;
     else
-      wvfmt->nBlockAlign = (WORD)((wvfmt->nChannels * wvfmt->wBitsPerSample) / 8);// avstream->codec_id->block_align ? avstream->codec_id->block_align : 1;
+    {
+
+      if ( wvfmt->wBitsPerSample == 0 )
+      {
+        CLog::Log(LOGERROR,"bits per sample is 0 this is NO GOOD");  
+      }
+      wvfmt->nBlockAlign = (WORD)((wvfmt->nChannels * wvfmt->wBitsPerSample) / 8);
+      
+    }
       
     
-    wvfmt->nAvgBytesPerSec= avstream->codec->bit_rate/8;//wvfmt->nSamplesPerSec * wvfmt->nBlockAlign;
+    wvfmt->nAvgBytesPerSec= wvfmt->nSamplesPerSec * wvfmt->nBlockAlign;
 
     wvfmt->cbSize = avstream->codec->extradata_size;
     if (avstream->codec->extradata_size > 0)
     {
-      
       memcpy(wvfmt + 1, avstream->codec->extradata, avstream->codec->extradata_size);
     }
-    //TODO Fix the sample size
-    if (wvfmt->wBitsPerSample == 0)
+    //TODO Fix the sample size 
+    if (avstream->codec->bits_per_coded_sample == 0)
       mtype.SetSampleSize(256000);
+    
 
     channels      = stream->iChannels;
     samplerate    = stream->iSampleRate;
