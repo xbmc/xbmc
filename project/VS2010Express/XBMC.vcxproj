@@ -75,24 +75,24 @@
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">XBMC\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">XBMC\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">XBMC\$(Configuration)\objs\</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">false</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">false</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">XBMC\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">XBMC\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">XBMC\$(Configuration)\objs\</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">false</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">XBMC\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">XBMC\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">XBMC\$(Configuration)\objs\</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">false</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">false</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">XBMC\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">XBMC\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">XBMC\$(Configuration)\objs\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</LinkIncremental>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">XBMC\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">XBMC\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">XBMC\$(Configuration)\objs\</IntDir>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -1768,7 +1768,7 @@
     <ClInclude Include="..\..\xbmc\cdrip\CDDAReader.h" />
     <ClInclude Include="..\..\xbmc\cdrip\CDDARipper.h" />
     <ClInclude Include="..\..\xbmc\cdrip\DllLameenc.h" />
-    <ClInclude Include="..\..\xbmc\cdrip\DllFlacEnc.h" />    
+    <ClInclude Include="..\..\xbmc\cdrip\DllFlacEnc.h" />
     <ClInclude Include="..\..\xbmc\cdrip\DllOgg.h" />
     <ClInclude Include="..\..\xbmc\cdrip\DllVorbis.h" />
     <ClInclude Include="..\..\xbmc\cdrip\DllVorbisEnc.h" />
