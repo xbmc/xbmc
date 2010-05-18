@@ -673,7 +673,7 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
     v[i].a = GET_A(color);
   }
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || defined(HAS_DX)
   v[0].u = tl;
   v[0].v = tt;
   v[0].x = x[0];
