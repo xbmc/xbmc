@@ -1,6 +1,6 @@
 /*
 * XBMC
-* 2003 by The Joker / Avalaunch team
+* Copyright (C) 2003 by The Joker / Avalaunch team
 *
 *
 * This program is free software; you can redistribute it and/or modify
