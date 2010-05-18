@@ -475,7 +475,7 @@ DYNOBJSXBMC= \
 ifeq (arm, $(ARCH))
 # Force external python2.5 for now!
 LIBS +=-lpython2.5
-#endif
+endif
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,$(ARCH)), osx)
