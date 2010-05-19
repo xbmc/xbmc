@@ -422,6 +422,47 @@ Goom 2k4
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
     USA
 
+    iTunes Visualizer Plug-In SDK files included in Goom 2k4 are under the
+    following license.
+
+    Copyright (c) 2003 Apple Computer, Inc. All rights reserved.
+
+    This Apple software is supplied to you by Apple Computer, Inc. in
+    consideration of your agreement to the following terms, and your use,
+    installation, modification or redistribution of this Apple software
+    constitutes acceptance of these terms. If you do not agree with these terms,
+    please do not use, install, modify or redistribute this Apple software.
+
+    In consideration of your agreement to abide by the following terms, and
+    subject to these terms, Apple grants you a personal, non-exclusive license,
+    under Apple's intellectual property rights in this Apple Software (the
+    "Apple Software"), to use, reproduce, modify and distribute the Apple
+    Software; provided that no license is granted herein under any patents that
+    may be infringed by your modifications, derivative works or by other works
+    in which the Apple Software may be incorporated. No names, trademarks,
+    service marks or logos of Apple Computer, Inc. may be used to endorse or
+    promote products derived from the Apple Software without specific prior
+    written permission from Apple. Except as expressly stated herein, no other
+    rights or licenses, express or implied, are granted by Apple and nothing
+    herein grants any license under any patents except claims of Apple patents
+    that cover this Apple Software as originally provided by Apple, and only to
+    the extent necessary to use and distribute this Apple Software as originally
+    provided by Apple.
+
+    The Apple Software is provided by Apple on an "AS IS" basis. APPLE MAKES NO
+    WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION THE IMPLIED
+    WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+    PURPOSE, REGARDING THE APPLE SOFTWARE OR ITS USE AND OPERATION ALONE OR IN
+    COMBINATION WITH ANY PRODUCT.
+
+    IN NO EVENT SHALL APPLE BE LIABLE FOR ANY SPECIAL, INDIRECT, INCIDENTAL OR
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) ARISING IN ANY WAY OUT OF THE USE, REPRODUCTION, MODIFICATION
+    AND/OR DISTRIBUTION OF THE APPLE SOFTWARE, HOWEVER CAUSED AND WHETHER UNDER
+    THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR
+    OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 XAnalyser, frequence spectrum analyser for X Window
 <http://arvin.schnell-web.net/xanalyser/>
 
