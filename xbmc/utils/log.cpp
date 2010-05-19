@@ -116,6 +116,8 @@ void CLog::Log(int loglevel, const char *format, ... )
 #ifdef __arm__
     if (g_advancedSettings.m_logLevel > LOG_LEVEL_NORMAL)
     	fflush(m_file);//TEMP!!!
+#else
+    fflush(m_file);
 #endif
   }
 #ifndef _LINUX
