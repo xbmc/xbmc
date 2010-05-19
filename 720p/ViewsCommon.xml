@@ -666,7 +666,7 @@
 						<width>650</width>
 						<height>60</height>
 						<font>MediumLargeTitleFont</font>
-						<label>$INFO[Container.FirstTitle]</label>
+						<label>$INFO[ListItem.TVShowTitle]</label>
 						<visible>Container.Content(Episodes)</visible>
 					</control>
 					<control type="textbox">
