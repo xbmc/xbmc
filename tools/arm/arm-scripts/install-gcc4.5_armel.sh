@@ -15,7 +15,6 @@ http://ftp.debian.org/debian/pool/main/g/gcc-4.5/libgcc1_4.5-20100321-1_armel.de
 http://ftp.debian.org/debian/pool/main/g/gcc-4.5/libgomp1_4.5-20100321-1_armel.deb \
 http://ftp.debian.org/debian/pool/main/g/gcc-4.5/libstdc++6_4.5-20100321-1_armel.deb \ 
 http://ftp.debian.org/debian/pool/main/g/gcc-4.5/libstdc++6-4.5-dev_4.5-20100321-1_armel.deb \
-http://ftp.debian.org/debian/pool/main/g/gmpc/gmpc_0.20.0-1_armel.deb \
 http://ftp.debian.org/debian/pool/main/g/gmp/libgmp10_5.0.1+dfsg-2_armel.deb \
 http://ftp.debian.org/debian/pool/main/g/gmp/libgmpxx4ldbl_5.0.1+dfsg-2_armel.deb \ 
 http://ftp.debian.org/debian/pool/main/g/gmp/libmp3_5.0.1+dfsg-2_armel.deb \
