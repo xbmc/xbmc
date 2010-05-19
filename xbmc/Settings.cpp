@@ -129,8 +129,6 @@ void CSettings::Initialize()
 
   m_watchMode["movies"] = VIDEO_SHOW_ALL;
   m_watchMode["tvshows"] = VIDEO_SHOW_ALL;
-  m_watchMode["seasons"] = VIDEO_SHOW_ALL;
-  m_watchMode["episodes"] = VIDEO_SHOW_ALL;
   m_watchMode["musicvideos"] = VIDEO_SHOW_ALL;
 
   m_iSystemTimeTotalUp = 0;
@@ -645,8 +643,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     // Read the watchmode settings for the various media views
     GetInteger(pElement, "watchmodemovies", m_watchMode["movies"], VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
     GetInteger(pElement, "watchmodetvshows", m_watchMode["tvshows"], VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
-    GetInteger(pElement, "watchmodeseasons", m_watchMode["seasons"], VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
-    GetInteger(pElement, "watchmodeepisodes", m_watchMode["episodes"], VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
     GetInteger(pElement, "watchmodemusicvideos", m_watchMode["musicvideos"], VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
 
     XMLUtils::GetBoolean(pElement, "flatten", m_bMyVideoNavFlatten);
@@ -816,8 +812,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
 
   XMLUtils::SetInt(pNode, "watchmodemovies", m_watchMode.find("movies")->second);
   XMLUtils::SetInt(pNode, "watchmodetvshows", m_watchMode.find("tvshows")->second);
-  XMLUtils::SetInt(pNode, "watchmodeseasons", m_watchMode.find("seasons")->second);
-  XMLUtils::SetInt(pNode, "watchmodeepisodes", m_watchMode.find("episodes")->second);
   XMLUtils::SetInt(pNode, "watchmodemusicvideos", m_watchMode.find("musicvideos")->second);
 
   XMLUtils::SetBoolean(pNode, "flatten", m_bMyVideoNavFlatten);
@@ -1557,9 +1551,17 @@ void CSettings::ResetSkinSettings()
   g_infoManager.ResetCache();
 }
 
+static CStdString ToWatchContent(const CStdString &content)
+{
+  if (content == "seasons" || content == "episodes")
+   return "tvshows";
+  else
+    return content;
+}
+
 int CSettings::GetWatchMode(const CStdString& content) const
 {
-  std::map<CStdString, int>::iterator it = g_settings.m_watchMode.find(content);
+  std::map<CStdString, int>::iterator it = g_settings.m_watchMode.find(ToWatchContent(content));
   if (it != g_settings.m_watchMode.end())
     return it->second;
   return VIDEO_SHOW_ALL;
@@ -1567,14 +1569,14 @@ int CSettings::GetWatchMode(const CStdString& content) const
 
 void CSettings::SetWatchMode(const CStdString& content, int value)
 {
-  std::map<CStdString, int>::iterator it = g_settings.m_watchMode.find(content);
+  std::map<CStdString, int>::iterator it = g_settings.m_watchMode.find(ToWatchContent(content));
   if (it != g_settings.m_watchMode.end())
     it->second = value;
 }
 
 void CSettings::CycleWatchMode(const CStdString& content)
 {
-  std::map<CStdString, int>::iterator it = g_settings.m_watchMode.find(content);
+  std::map<CStdString, int>::iterator it = g_settings.m_watchMode.find(ToWatchContent(content));
   if (it != g_settings.m_watchMode.end())
   {
     it->second++;
