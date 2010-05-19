@@ -357,7 +357,6 @@ elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
         # anything else, we have no clue so play it safe
         CFLAGS+=" -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"
         CXXFLAGS+=" -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"
-        FFMPEG_EXTRACFLAGS+=" -mtune=cortex-a8"
     esac
   else
     # Compile for ARMv7a architecture, CortexA8 cpu and NEON coprocessor
