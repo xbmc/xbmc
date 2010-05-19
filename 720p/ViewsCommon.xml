@@ -559,7 +559,7 @@
 				<control type="group">
 					<posx>10</posx>
 					<posy>-4</posy>
-					<visible>!Container.Content(Episodes)</visible>
+					<visible>!Container.Content(Secondary) + !Container.Content(Episodes)</visible>
 					<control type="label">
 						<description>Title</description>
 						<width>InfoListTitleWidth</width>
