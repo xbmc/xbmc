@@ -345,7 +345,7 @@ void CRenderSystemDX::OnDeviceLost()
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
   SAFE_RELEASE(m_stateBlock);
 
-  if (m_needNewDevice || IS_DSPLAYER)
+  if (m_needNewDevice || (!m_useD3D9Ex && IS_DSPLAYER))
     DeleteDevice();
   else
   {
@@ -358,7 +358,7 @@ void CRenderSystemDX::OnDeviceLost()
 void CRenderSystemDX::OnDeviceReset()
 {
   CSingleLock lock(m_resourceSection);
-  if (m_needNewDevice || IS_DSPLAYER)
+  if (m_needNewDevice || (!m_useD3D9Ex && IS_DSPLAYER))
     CreateDevice();
   else
   {

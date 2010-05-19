@@ -982,8 +982,8 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
     double Scale = double(CurrentSize) / double(MinSize);
     m_TextScale = Scale;
     m_pD3DXCreateFont( m_pD3DDev,            // D3D device
-               -24.0*Scale,               // Height
-               -11.0*Scale,                     // Width
+               (int) (-24.0*Scale),               // Height
+               (UINT) (-11.0*Scale),                     // Width
                CurrentSize < 800 ? FW_NORMAL : FW_BOLD,               // Weight
                0,                     // MipLevels, 0 = autogen mipmaps
                FALSE,                 // Italic
@@ -1372,10 +1372,10 @@ HRESULT CDX9AllocatorPresenter::TextureResizeBilinear(Com::SmartPtr<IDirect3DTex
   // make const to give compiler a chance of optimising, also float faster than double and converted to float to sent to PS anyway
   const float dx = 1.0f/(float)desc.Width;
   const float dy = 1.0f/(float)desc.Height;
-  const float tx0 = SrcRect.left;
-  const float tx1 = SrcRect.right;
-  const float ty0 = SrcRect.top;
-  const float ty1 = SrcRect.bottom;
+  const float tx0 = (float) SrcRect.left;
+  const float tx1 = (float) SrcRect.right;
+  const float ty0 = (float) SrcRect.top;
+  const float ty1 = (float) SrcRect.bottom;
 
   MYD3DVERTEX<1> v[] =
   {
@@ -1415,10 +1415,10 @@ HRESULT CDX9AllocatorPresenter::TextureResizeBicubic1pass(Com::SmartPtr<IDirect3
   // make const to give compiler a chance of optimising, also float faster than double and converted to float to sent to PS anyway
   const float dx = 1.0f/(float)desc.Width;
   const float dy = 1.0f/(float)desc.Height;
-  const float tx0 = SrcRect.left;
-  const float tx1 = SrcRect.right;
-  const float ty0 = SrcRect.top;
-  const float ty1 = SrcRect.bottom;
+  const float tx0 = (float) SrcRect.left;
+  const float tx1 = (float) SrcRect.right;
+  const float ty0 = (float) SrcRect.top;
+  const float ty1 = (float) SrcRect.bottom;
 
   MYD3DVERTEX<1> v[] =
   {
@@ -2390,9 +2390,6 @@ double CDX9AllocatorPresenter::GetFrameRate()
 
 bool CDX9AllocatorPresenter::ResetDevice()
 {
-  // Stop playback (seems to hang with using avisource splitter)
-  g_dsGraph->Stop();
-
   StopWorkerThreads();
   CStreamsManager::getSingleton()->SubtitleManager->StopThread();
 
@@ -2402,6 +2399,9 @@ bool CDX9AllocatorPresenter::ResetDevice()
 
   m_pD3DDev = NULL;
   m_pD3D = NULL;
+
+  // Stop playback (seems to hang with using avisource splitter)
+  //g_dsGraph->Stop();
 
   return true;
 }
@@ -2819,7 +2819,7 @@ void CDX9AllocatorPresenter::OnLostDevice()
 {
   // XBMC gets a Reset event. We need to cleanup our ressources
   CLog::Log(LOGDEBUG, "%s Device lost, cleaning ressources", __FUNCTION__);
-  //ResetDevice();
+  ResetDevice();
 }
 
 void CDX9AllocatorPresenter::OnDestroyDevice()
@@ -2836,7 +2836,7 @@ void CDX9AllocatorPresenter::OnCreateDevice()
 
 void CDX9AllocatorPresenter::OnResetDevice()
 {
-
+  CLog::Log(LOGDEBUG, "%s Device is back, recreating ressources", __FUNCTION__);
   m_pD3DDev = g_Windowing.Get3DDevice();
   m_pD3D = g_Windowing.Get3DObject();
 
@@ -2848,7 +2848,10 @@ void CDX9AllocatorPresenter::OnResetDevice()
   AfterDeviceReset(); // handle post-reset stuff
 
   // Restart playback
-  g_dsGraph->Play(true);
+  //g_dsGraph->Play(true);
+
+  // TODO: Doesn't work. Try to post a message to the player in order to make the playback restart
+  SendMessage(g_hWnd, WM_COMMAND, ID_PLAY_PLAY, 0);
 }
 
 void CDX9AllocatorPresenter::OnPaint(CRect destRect)

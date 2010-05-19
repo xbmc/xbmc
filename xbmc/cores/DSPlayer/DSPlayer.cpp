@@ -193,6 +193,7 @@ void CDSPlayer::OnExit()
     PlayerState = DSPLAYER_ERROR;
 
   // In case of, set the ready event
+  // Prevent a dead loop
   m_hReadyEvent.Set();
 
   if (PlayerState == DSPLAYER_CLOSING)
@@ -257,6 +258,7 @@ void CDSPlayer::Process()
 
     CHECK_PLAYER_STATE
 
+    // TODO: Rewrite the FFRW
     sleepTime = g_dsGraph->DoFFRW(m_currentRate);
     if ((m_currentRate == 0 ) || ( m_currentRate == 1 ))
       sleepTime = 250;
