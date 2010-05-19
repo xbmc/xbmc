@@ -54,8 +54,9 @@ using namespace std;
 namespace ADDON
 {
 
-int cp_to_clog(cp_log_severity_t);
-cp_log_severity_t clog_to_cp(int);
+cp_log_severity_t clog_to_cp(int lvl);
+void cp_fatalErrorHandler(const char *msg);
+void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data);
 
 /**********************************************************
  * CAddonMgr
@@ -977,11 +978,6 @@ CStdString CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
   else return CStdString();
 }
 
-void CAddonMgr::CPluffFatalError(const char *msg)
-{
-  CLog::Log(LOGERROR, "ADDONS: CPluffFatalError(%s)", msg);
-}
-
 int cp_to_clog(cp_log_severity_t lvl)
 {
   if( lvl == CP_LOG_DEBUG )
@@ -1006,7 +1002,12 @@ cp_log_severity_t clog_to_cp(int lvl)
     return CP_LOG_DEBUG;
 }
 
-void CAddonMgr::CPluffLog(cp_log_severity_t level, const char *msg, const char *apid, void *user_data)
+void cp_fatalErrorHandler(const char *msg)
+{
+  CLog::Log(LOGERROR, "ADDONS: CPluffFatalError(%s)", msg);
+}
+
+void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data)
 {
   if(!apid)
     CLog::Log(cp_to_clog(level), "ADDON: cpluff: '%s'", msg);

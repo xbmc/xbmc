@@ -93,13 +93,17 @@ namespace ADDON
     bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
     CStdString GetString(const CStdString &id, const int number);
     
+    static bool AddonFromInfoXML(const CStdString &path, AddonPtr &addon);
     static bool AddonFromInfoXML(const TiXmlElement *xmlDoc, AddonPtr &addon,
                                  const CStdString &strPath);
-    static bool AddonFromInfoXML(const CStdString &path, AddonPtr &addon);
     static bool GetTranslatedString(const TiXmlElement *xmldoc, const char *tag, CStdString& data);
     static AddonPtr AddonFromProps(AddonProps& props);
     void UpdateRepos();
     void FindAddons();
+
+    /* libcpluff */
+    CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
+  private:
     void LoadAddons(const CStdString &path, 
                     std::map<CStdString, AddonPtr>& unresolved);
 
@@ -109,20 +113,9 @@ namespace ADDON
     bool GetExtensions(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content);
     const cp_cfg_element_t *GetExtElement(cp_cfg_element_t *base, const char *path);
     bool GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *base, const char *path);
-    CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
-    void CPluffFatalError(const char *msg);
-    void CPluffLog(cp_log_severity_t level, const char *msg, const char *apid, void *user_data);
     cp_context_t *m_cp_context;
     DllLibCPluff *m_cpluff;
 
-    static void cp_fatalErrorHandler(const char *msg) {
-      CAddonMgr::Get().CPluffFatalError(msg);
-    }
-    static void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data) {
-      CAddonMgr::Get().CPluffLog(level, msg, apid, user_data);
-    }
-
-  private:
     bool DependenciesMet(AddonPtr &addon);
     bool UpdateIfKnown(AddonPtr &addon);
     AddonPtr Factory(const cp_extension_t *props);
