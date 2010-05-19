@@ -120,6 +120,7 @@ public:
   virtual bool SupportsContrast();
   virtual bool SupportsGamma();
   virtual bool SupportsMultiPassRendering();
+  virtual bool Supports(ERENDERFEATURE feature);
   virtual bool Supports(EINTERLACEMETHOD method);
   virtual bool Supports(ESCALINGMETHOD method);
 
