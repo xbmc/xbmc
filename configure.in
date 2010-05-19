@@ -341,15 +341,29 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -L/opt/local/lib/mysql5/mysql"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
 elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
-# Compile for ARMv7a architecture, CortexA8 cpu and NEON coprocessor
-  CFLAGS="$CFLAGS -mtune=cortex-a8 -mfloat-abi=softfp -mno-apcs-stack-check"
-  CXXFLAGS="$CXXFLAGS -mtune=cortex-a8 -mfloat-abi=softfp -mno-apcs-stack-check"
-  if test "x$use_tegra" = "xyes"; then
-    CFLAGS+=" -Wa,-march=armv6 -mthumb-interwork"
-    CXXFLAGS+=" -Wa,-march=armv6 -mthumb-interwork"
+  CFLAGS="$CFLAGS -mfloat-abi=softfp -mno-apcs-stack-check"
+  CXXFLAGS="$CXXFLAGS -mfloat-abi=softfp -mno-apcs-stack-check"
+  FFMPEG_EXTRACFLAGS=" -mfloat-abi=softfp"
+  if test "$use_tegra" = "yes"; then
+    GCCVERSION="`$CC -dumpversion 2>&1`"
+    case $GCCVERSION in
+      4.5.*)
+    	# Compile for ARMv7a architecture, CortexA9 cpu and vfpv3-d16 coprocessor (Tegra2)
+        CFLAGS+=" -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
+        CXXFLAGS+=" -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
+        FFMPEG_EXTRACFLAGS+=" -mtune=cortex-a9 -mfpu=vfpv3-d16n"
+        ;;
+      *)
+        # anything else, we have no clue so play it safe
+        CFLAGS+=" -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"
+        CXXFLAGS+=" -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"
+        FFMPEG_EXTRACFLAGS+=" -mtune=cortex-a8"
+    esac
   else
+    # Compile for ARMv7a architecture, CortexA8 cpu and NEON coprocessor
     CFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8 -mfpu=neon -mvectorize-with-neon-quad"
     CXXFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8 -mfpu=neon -mvectorize-with-neon-quad"
+    FFMPEG_EXTRACFLAGS+=" -mfpu=neon"
   fi
 fi
 
@@ -361,7 +375,6 @@ AC_LANG_PUSH([C++])
 AC_CHECK_HEADER([boost/shared_ptr.hpp],, AC_MSG_ERROR($missing_library))
 AC_LANG_POP([C++])
 
-# Checks for platforms libraries.
 # Checks for platforms libraries.
 if test "$use_gles" = "yes"; then
   # GLES overwrites GL if both set to yes.
@@ -842,11 +855,11 @@ if test "$host_vendor" = "apple" ; then
   use_openmax="no"
   AC_MSG_NOTICE($openmax_disabled)
 else
-  if test "x$use_openmax" = "xyes"; then
+  if test "$use_openmax" = "yes"; then
     AC_CHECK_HEADER([OpenMAX/il/OMX_Types.h],
       AC_DEFINE([HAVE_LIBOPENMAX], [1], [Define to 1 if you have the 'OpenMax' library.]),
       use_openmax=no;AC_MSG_RESULT($openmax_not_found))
-    if test "x$use_openmax" = "xyes"; then
+    if test "$use_openmax" = "yes"; then
       INCLUDES="$INCLUDES -I/usr/include/OpenMAX/il"
     fi
   else
@@ -1032,6 +1045,12 @@ if test "x$use_vdadecoder" != "xno"; then
   final_message="$final_message\n  VDADecoder:\tYes"
 else
   final_message="$final_message\n  VDADecoder:\tNo"
+fi
+
+if test "$use_openmax" != "no"; then
+  final_message="$final_message\n  OpenMax:\tYes"
+else
+  final_message="$final_message\n  OpenMax:\tNo"
 fi
 
 if test "$use_joystick" = "yes"; then
@@ -1468,15 +1487,9 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
     sed -i "" -e "s#libavfilter_VERSION_MAJOR=0#libavfilter_VERSION_MAJOR=0.4.0#" config.mak
 
   else
-    if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
-      FFMPEG_EXTRACFLAGS="-mfloat-abi=softfp"
-      if test "x$use_tegra" != "xyes"; then
-        FFMPEG_EXTRACFLAGS+=" -mfpu=neon"
-      fi
-    fi
-  
     ./configure \
       `expr "X$host_cpu" : 'Xarm.*' > /dev/null && echo --arch=arm --cpu=cortex-a8` \
+      --extra-cflags="$FFMPEG_EXTRACFLAGS" \
       --disable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       `if test "$cross_compiling" = "yes"; then echo --enable-cross-compile; fi` \
