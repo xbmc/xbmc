@@ -1,0 +1,37 @@
+[B]Version 1.2.0[/B] (not final yet)
+
+Fixed : Music library Artist fanart view didn't show description any more
+Added : support for new XBMC Subtitles script (needs version 1.6.3 of the script or higher to work right)
+Added : Skin Setting to turn off Panel Fanart (on by default)
+Changed : Merged the Episode fanart view with the movies/season/tvshow one for consistency
+Changed : the way fanart is loaded in video lib (hope I didn't break it)
+Added : fanart blended into the main content panel if a listitem has it
+Fixed : Restored the scrollbar for the horizontal views that went missing 16 months ago :\
+Updated : some image code to current way to do it
+Changed : Settings Appearance Icon (looked too much like the TV icon)
+Fixed : Don't assume that because something is in the library it has a plot in fullscreen video
+Fixed : Live TV plot text in fullscreen appeared over the top of the other info unlike other media types
+Removed: old outdated XBMC credits file
+Changed : Thumbnail Views Selected texture now takes up full size of thumbnail area (instead of hugging the image) for easier selected Identification
+Changed: Custom background chooser is now a mini home screen look so you can tell exactly what they look like as you set them
+Fixed : Use the new Addon Browser way to find scripts in skin settings
+Removed : Gamesaves window since its no longer in xbmc code
+Fixed : Text alignment issue in DialogSeekBar.xml
+Changed : Busy dialog less transperant and made the whole screen fade out of busy dialog is up too long
+Updated : Codec Flagging images to on a par with Confluence
+Changed redid a lot of the main graphics to a different look (there will be tears I'm sure but get used to it)
+Changed Changed the home menu inner workings so it can have more than just the visible items on it (it scrolls now, and has arrows in indicate there is more)
+Changed removed the option to hide Programs from home menu (will be back later)
+Changed removed the System info from the home screen (it was lame look in system info instead)
+Changed removed the option to show the scan lines in the home screen (did anyone use it anyway?)
+Changed : Version number to something real other than internal skin code number
+Changed : Filled up the description.xml with info
+Added : Icon to be used in Addon Browser
+
+[B]Version 1.1.0[/B]
+
+This is the original change of the skin to Addon Version and the version that can be found in Camelot XBMC. too many changes to list through its life cycle
+
+[B]Version 1.0.0[/B]
+
+Initial commit to the XBMC SVN
