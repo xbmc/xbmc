@@ -235,14 +235,9 @@
   </ContextMenu>
   <Scripts>
     <joystick name="WiiRemote">
-      <button id="11">XBMC.ActivateWindow(ScriptsDebugInfo)</button>
+      <button id="11">info</button>
     </joystick>
   </Scripts>
-  <ScriptsDebugInfo>
-    <joystick name="WiiRemote">
-      <button id="11">Info</button>
-    </joystick>
-  </ScriptsDebugInfo>
   <NumericInput>
     <joystick name="WiiRemote">
       <button id="7">SkipPrevious</button>

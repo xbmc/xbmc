@@ -358,14 +358,9 @@
   </FileStackingDialog>
   <Scripts>
     <joystick name="Harmony">
-      <!-- Info  	-->      <button id="31">XBMC.ActivateWindow(ScriptsDebugInfo)</button>
+      <!-- Info  	-->      <button id="31">info</button>
     </joystick>
   </Scripts>
-  <ScriptsDebugInfo>
-    <joystick name="Harmony">
-      <!-- Info  	-->      <button id="31">Info</button>      <!-- clears debug python info -->
-    </joystick>
-  </ScriptsDebugInfo>
   <NumericInput>
     <joystick name="Harmony">
       <!-- 1 		-->      <button id="11">Number1</button>

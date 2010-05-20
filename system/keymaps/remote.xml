@@ -328,14 +328,9 @@
   </FileStackingDialog>
   <Scripts>
     <remote>
-      <info>XBMC.ActivateWindow(ScriptsDebugInfo)</info>
+      <info>info</info>
     </remote>
   </Scripts>
-  <ScriptsDebugInfo>
-    <remote>
-      <info>Info</info>      <!-- clears debug python info -->
-    </remote>
-  </ScriptsDebugInfo>
   <NumericInput>
     <remote>
       <zero>Number0</zero>
