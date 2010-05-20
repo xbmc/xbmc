@@ -97,12 +97,14 @@ namespace ADDON
     static bool AddonFromInfoXML(const TiXmlElement *xmlDoc, AddonPtr &addon,
                                  const CStdString &strPath);
     static bool GetTranslatedString(const TiXmlElement *xmldoc, const char *tag, CStdString& data);
+    const char *GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(AddonProps& props);
     void UpdateRepos();
     void FindAddons();
 
     /* libcpluff */
     CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
+    const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension);
   private:
     void LoadAddons(const CStdString &path, 
                     std::map<CStdString, AddonPtr>& unresolved);

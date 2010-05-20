@@ -881,6 +881,27 @@ bool CAddonMgr::GetTranslatedString(const TiXmlElement *xmldoc, const char *tag,
   return element != NULL;
 }
 
+const char *CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const char *tag)
+{
+  if (!root)
+    return NULL;
+
+  const cp_cfg_element_t *eng = NULL;
+  for (unsigned int i = 0; i < root->num_children; i++)
+  {
+    const cp_cfg_element_t &child = root->children[i];
+    if (strcmp(tag, child.name) == 0)
+    { // see if we have a "lang" attribute
+      const char *lang = m_cpluff->lookup_cfg_value((cp_cfg_element_t*)&child, "@lang");
+      if (lang && 0 == strcmp(lang,g_langInfo.GetDVDAudioLanguage().c_str()))
+        return child.value;
+      if (!lang || 0 == strcmp(lang, "en"))
+        eng = &child;
+    }
+  }
+  return (eng) ? eng->value : NULL;
+}
+
 AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
 {
   switch (addonProps.type)
@@ -968,6 +989,18 @@ bool CAddonMgr::GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *ba
 
   if (elements.empty()) return false;
   return true;
+}
+
+const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, const char *extension)
+{
+  if (!props)
+    return NULL;
+  for (unsigned int i = 0; i < props->num_extensions; ++i)
+  {
+    if (0 == strcmp(props->extensions[i].ext_point_id, extension))
+      return &props->extensions[i];
+  }
+  return NULL;
 }
 
 CStdString CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)

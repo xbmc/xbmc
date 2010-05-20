@@ -228,6 +228,21 @@ AddonProps::AddonProps(cp_plugin_info_t *props)
   //FIXME only considers the first registered extension for each addon
   if (props->extensions->ext_point_id)
     type = TranslateType(props->extensions->ext_point_id);
+  // Grab more detail from the props...
+  const cp_extension_t *metadata = CAddonMgr::Get().GetExtension(props, "xbmc.addon.metadata");
+  if (metadata)
+  {
+    CStdString platforms = CAddonMgr::Get().GetExtValue(metadata->configuration, "platform");
+    summary = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "summary");
+    description = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "description");
+    disclaimer = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "disclaimer");
+    license = CAddonMgr::Get().GetExtValue(metadata->configuration, "license");
+    //FIXME other stuff goes here
+    //CStdString version = CAddonMgr::Get().GetExtValue(metadata->configuration, "minversion/xbmc");
+  }
+  icon = "icon.png";
+  fanart = CUtil::AddFileToFolder(path, "fanart.jpg");
+  changelog = CUtil::AddFileToFolder(path, "changelog.txt");
 }
 
 /**
