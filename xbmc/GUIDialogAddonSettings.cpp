@@ -397,9 +397,9 @@ void CGUIDialogAddonSettings::CreateControls()
     if (setting->Attribute("label") && atoi(setting->Attribute("label")) > 0)
     {
       if (m_addon->Parent())
-        label.Format("$ADDON[%s %s]", m_addon->Parent()->ID().c_str(), setting->Attribute("label"));
+        label = m_addon->Parent()->GetString(atoi(setting->Attribute("label")));
       else
-        label.Format("$ADDON[%s %s]", m_addon->ID().c_str(), setting->Attribute("label"));
+        label = m_addon->GetString(atoi(setting->Attribute("label")));
     }
     else
       label = setting->Attribute("label");
