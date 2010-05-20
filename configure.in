@@ -808,9 +808,11 @@ if test "x$use_vaapi" != "xno"; then
     fi
   else
     initial_val=$use_vaapi
-    AC_CHECK_LIB([va], main,
-      [AC_CHECK_LIB([va-glx], main,, use_vaapi=no, -lva)],
-      [use_vaapi=no])
+    AC_CHECK_LIB([va-glx], main,, use_vaapi=no, -lva)
+    if test "x$use_vaapi" != "xno"; then
+      AC_CHECK_LIB([va], main,, use_vaapi=no)
+    fi
+
     if test "x$use_vaapi" = "xno"; then
       if test "x$initial_val" = "xyes"; then
         AC_MSG_ERROR($vaapi_not_found)
