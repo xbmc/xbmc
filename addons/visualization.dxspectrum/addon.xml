@@ -2,9 +2,19 @@
 <addon
   id="visualization.dxspectrum"
   version="1.0.0"
-  name="DirextX Spectrum"
+  name="DirectX Spectrum"
   provider-name="Team XBMC">
   <extension
     point="xbmc.player.musicviz"
     library_windx="Spectrum_win32dx.vis"/>
+  <extension point="xbmc.addon.metadata">
+    <minversion app="xbmc">20000</minversion>
+    <summary>DirectX Visualization</summary>
+    <summary lang="nl">DirectX Visualisatie</summary>
+    <description>DirectX Spectrum is a Visualisation showing a rotating 3D Spectrum Analyzer rendered in DirectX that moves to the beat of the music creating a wave effect across the spectrum grid.  
+It also has settings to adjust the spectrum bar height, Its speed, and how the bars are rendered (solid, points, wire frame) and is a nice light weight, low cpu useage visualisation that looks great</description>
+    <description lang="nl">DirectX spectrum is een visualisatie van een roterende 3D spectrum analyse weergegeven met behulp van DirectX. Het beweegt mee met de beat van de muziek, waarbij een golf effect ontstaat over het spectrum raster.  
+Het bevat instellingen om de spectrum balk hoogte, de snelheid en hoe de balken worden weergegeven (vol, punten, draden) aan te passen. Deze visualisatie neemt weinig geheugen in en vergt ook niet veel van de CPU.</description>
+    <disclaimer></disclaimer>
+  </extension>
 </addon>
