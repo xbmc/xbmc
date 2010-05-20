@@ -1022,11 +1022,14 @@ bool CAddonMgr::AddonsFromInfoXML(const TiXmlElement *root, VECADDONS &addons)
   if (!root || !context)
     return false;
 
+  // each addon XML should have a UTF-8 declaration
+  TiXmlDeclaration decl("1.0", "UTF-8", "");
   const TiXmlElement *element = root->FirstChildElement("addon");
   while (element)
   {
-    // dump the XML back to text (FIXME: should we add the utf8 descriptor?)
+    // dump the XML back to text
     std::string xml;
+    xml << decl;
     xml << *element;
     cp_status_t status;
     cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor(context, xml.c_str(), xml.size(), &status);
