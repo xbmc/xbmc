@@ -151,7 +151,7 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
     {
       if (pretty)
         return g_localizeStrings.Get(24011);
-      return "addon-repository";
+      return "xbmc.addon.repository";
     }
     default:
     {
@@ -172,7 +172,7 @@ const ADDON::TYPE TranslateType(const CStdString &string)
   else if (string.Equals("script")) return ADDON_SCRIPT;
   else if (string.Equals("xbmc.gui.skin")) return ADDON_SKIN;
   else if (string.Equals("script-library")) return ADDON_SCRIPT_LIBRARY;
-  else if (string.Equals("addon-repository")) return ADDON_REPOSITORY;
+  else if (string.Equals("xbmc.addon.repository")) return ADDON_REPOSITORY;
   else return ADDON_UNKNOWN;
 }
 

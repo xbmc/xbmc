@@ -38,7 +38,6 @@ using namespace ADDON;
 AddonPtr CRepository::Clone(const AddonPtr &self) const
 {
   CRepository* result = new CRepository(*this, self);
-  result->m_name = m_name;
   result->m_info = m_info;
   result->m_checksum = m_checksum;
   result->m_datadir = m_datadir;
@@ -52,7 +51,23 @@ CRepository::CRepository(const AddonProps& props) :
 {
   m_compressed = false;
   m_zipped = false;
-  LoadFromXML(Path()+LibName());
+}
+
+CRepository::CRepository(cp_plugin_info_t *props)
+  : CAddon(props)
+{
+  m_compressed = false;
+  m_zipped = false;
+  // read in the other props that we need
+  const cp_extension_t *ext = CAddonMgr::Get().GetExtension(props, "xbmc.addon.repository");
+  if (ext)
+  {
+    m_checksum = CAddonMgr::Get().GetExtValue(ext->configuration, "checksum");
+    m_compressed = CAddonMgr::Get().GetExtValue(ext->configuration, "info@compressed").Equals("true");
+    m_info = CAddonMgr::Get().GetExtValue(ext->configuration, "info");
+    m_datadir = CAddonMgr::Get().GetExtValue(ext->configuration, "datadir");
+    m_zipped = CAddonMgr::Get().GetExtValue(ext->configuration, "datadir@zip").Equals("true");
+  }
 }
 
 CRepository::CRepository(const CRepository &rhs, const AddonPtr &self)
@@ -62,36 +77,6 @@ CRepository::CRepository(const CRepository &rhs, const AddonPtr &self)
 
 CRepository::~CRepository()
 {
-}
-
-bool CRepository::LoadFromXML(const CStdString& xml)
-{
-  CSingleLock lock(m_critSection);
-  TiXmlDocument doc;
-  doc.LoadFile(xml);
-  if (!doc.RootElement())
-    return false;
-
-  XMLUtils::GetString(doc.RootElement(),"name", m_name);
-  TiXmlElement* info = doc.RootElement()->FirstChildElement("info");
-  if (info)
-  {
-    const char* attr = info->Attribute("compressed");
-    if (attr && stricmp(attr,"true") == 0)
-      m_compressed = true;
-  }
-  XMLUtils::GetString(doc.RootElement(),"info", m_info);
-  XMLUtils::GetString(doc.RootElement(),"checksum", m_checksum);
-  XMLUtils::GetString(doc.RootElement(),"datadir", m_datadir);
-  info = doc.RootElement()->FirstChildElement("datadir");
-  if (info)
-  {
-    const char* attr = info->Attribute("zip");
-    if (attr && stricmp(attr,"true") == 0)
-      m_zipped = true;
-  }
-
-  return true;
 }
 
 CStdString CRepository::Checksum()
