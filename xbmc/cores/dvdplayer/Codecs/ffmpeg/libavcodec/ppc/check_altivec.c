@@ -22,8 +22,6 @@
  * Checks for AltiVec presence.
  */
 
-#include "config.h"
-
 #ifdef __APPLE__
 #undef _POSIX_C_SOURCE
 #include <sys/sysctl.h>
@@ -65,7 +63,7 @@ int has_altivec(void)
 
     if (err == 0) return has_vu != 0;
     return 0;
-#elif CONFIG_RUNTIME_CPUDETECT
+#elif defined(RUNTIME_CPUDETECT)
     int proc_ver;
     // Support of mfspr PVR emulation added in Linux 2.6.17.
     __asm__ volatile("mfspr %0, 287" : "=r" (proc_ver));

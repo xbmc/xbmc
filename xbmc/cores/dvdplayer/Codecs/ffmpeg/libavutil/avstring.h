@@ -56,10 +56,6 @@ int av_stristart(const char *str, const char *pfx, const char **ptr);
  * @param src source string
  * @param size size of destination buffer
  * @return the length of src
- *
- * WARNING: since the return value is the length of src, src absolutely
- * _must_ be a properly 0-terminated string, otherwise this will read beyond
- * the end of the buffer and possibly crash.
  */
 size_t av_strlcpy(char *dst, const char *src, size_t size);
 
@@ -74,10 +70,6 @@ size_t av_strlcpy(char *dst, const char *src, size_t size);
  * @param src source string
  * @param size size of destination buffer
  * @return the total length of src and dst
- *
- * WARNING: since the return value use the length of src and dst, these absolutely
- * _must_ be a properly 0-terminated strings, otherwise this will read beyond
- * the end of the buffer and possibly crash.
  */
 size_t av_strlcat(char *dst, const char *src, size_t size);
 
@@ -94,10 +86,5 @@ size_t av_strlcat(char *dst, const char *src, size_t size);
  *  if enough space had been available
  */
 size_t av_strlcatf(char *dst, size_t size, const char *fmt, ...);
-
-/**
- * Convert a number to a av_malloced string.
- */
-char *av_d2str(double d);
 
 #endif /* AVUTIL_AVSTRING_H */

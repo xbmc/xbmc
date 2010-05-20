@@ -22,8 +22,6 @@
 #ifndef AVCODEC_BFIN_MATHOPS_H
 #define AVCODEC_BFIN_MATHOPS_H
 
-#include "config.h"
-
 #if CONFIG_MPEGAUDIO_HP
 #define MULH(X,Y) ({ int xxo;                           \
     __asm__ (                                               \

@@ -188,10 +188,8 @@ static int decode_13(AVCodecContext *avctx, DxaDecContext *c, uint8_t* dst, uint
     return 0;
 }
 
-static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPacket *avpkt)
+static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, const uint8_t *buf, int buf_size)
 {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     DxaDecContext * const c = avctx->priv_data;
     uint8_t *outptr, *srcptr, *tmpptr;
     unsigned long dsize;
@@ -295,6 +293,10 @@ static av_cold int decode_init(AVCodecContext *avctx)
     c->avctx = avctx;
     avctx->pix_fmt = PIX_FMT_PAL8;
 
+    if (avcodec_check_dimensions(avctx, avctx->width, avctx->height) < 0) {
+        return -1;
+    }
+
     c->dsize = avctx->width * avctx->height * 2;
     if((c->decomp_buf = av_malloc(c->dsize)) == NULL) {
         av_log(avctx, AV_LOG_ERROR, "Can't allocate decompression buffer.\n");
@@ -326,7 +328,6 @@ AVCodec dxa_decoder = {
     NULL,
     decode_end,
     decode_frame,
-    CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Feeble Files/ScummVM DXA"),
 };
 

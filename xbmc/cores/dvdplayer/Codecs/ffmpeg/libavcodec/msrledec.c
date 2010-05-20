@@ -1,5 +1,5 @@
 /*
- * Microsoft RLE decoder
+ * Micrsoft RLE Decoder
  * Copyright (C) 2008 Konstantin Shishkov
  *
  * This file is part of FFmpeg.
@@ -21,7 +21,7 @@
 
 /**
  * @file libavcodec/msrledec.c
- * MS RLE decoder based on decoder by Mike Melanson and my own for TSCC
+ * MS RLE Decoder based on decoder by Mike Melanson and my own for TSCC
  * For more information about the MS RLE format, visit:
  *   http://www.multimedia.cx/msrle.txt
  */
@@ -134,7 +134,7 @@ static int msrle_decode_8_16_24_32(AVCodecContext *avctx, AVPicture *pic, int de
 {
     uint8_t *output, *output_end;
     const uint8_t* src = data;
-    int p1, p2, line=avctx->height - 1, pos=0, i;
+    int p1, p2, line=avctx->height, pos=0, i;
     uint16_t av_uninit(pix16);
     uint32_t av_uninit(pix32);
 
@@ -146,7 +146,7 @@ static int msrle_decode_8_16_24_32(AVCodecContext *avctx, AVPicture *pic, int de
             p2 = *src++;
             if(p2 == 0) { //End-of-line
                 output = pic->data[0] + (--line) * pic->linesize[0];
-                if (line < 0 && !(src+1 < data + srcsize && AV_RB16(src) == 1)) {
+                if (line < 0){
                     av_log(avctx, AV_LOG_ERROR, "Next line is beyond picture bounds\n");
                     return -1;
                 }
@@ -167,8 +167,7 @@ static int msrle_decode_8_16_24_32(AVCodecContext *avctx, AVPicture *pic, int de
                 continue;
             }
             // Copy data
-            if ((pic->linesize[0] > 0 && output + p2 * (depth >> 3) > output_end)
-              ||(pic->linesize[0] < 0 && output + p2 * (depth >> 3) < output_end)) {
+            if (output + p2 * (depth >> 3) > output_end) {
                 src += p2 * (depth >> 3);
                 continue;
             }
@@ -196,7 +195,7 @@ static int msrle_decode_8_16_24_32(AVCodecContext *avctx, AVPicture *pic, int de
                 }
             }
             pos += p2;
-        } else { //run of pixels
+        } else { //Run of pixels
             uint8_t pix[3]; //original pixel
             switch(depth){
             case  8: pix[0] = *src++;
@@ -212,8 +211,7 @@ static int msrle_decode_8_16_24_32(AVCodecContext *avctx, AVPicture *pic, int de
                      src += 4;
                      break;
             }
-            if ((pic->linesize[0] > 0 && output + p1 * (depth >> 3) > output_end)
-              ||(pic->linesize[0] < 0 && output + p1 * (depth >> 3) < output_end))
+            if (output + p1 * (depth >> 3) > output_end)
                 continue;
             for(i = 0; i < p1; i++) {
                 switch(depth){
@@ -235,7 +233,7 @@ static int msrle_decode_8_16_24_32(AVCodecContext *avctx, AVPicture *pic, int de
         }
     }
 
-    av_log(avctx, AV_LOG_WARNING, "MS RLE warning: no end-of-picture code\n");
+    av_log(avctx, AV_LOG_WARNING, "MS RLE warning: no End-of-picture code\n");
     return 0;
 }
 

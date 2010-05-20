@@ -26,7 +26,7 @@
  */
 
 #include "avcodec.h"
-#include "put_bits.h"
+#include "bitstream.h"
 #include "lzw.h"
 
 #define LZW_MAXBITS 12
@@ -58,8 +58,6 @@ typedef struct LZWEncodeState {
     int maxcode;             ///< Max value of code
     int output_bytes;        ///< Number of written bytes
     int last_code;           ///< Value of last output code or LZW_PREFIX_EMPTY
-    enum FF_LZW_MODES mode;  ///< TIFF or GIF
-    void (*put_bits)(PutBitContext *, int, unsigned); ///< GIF is LE while TIFF is BE
 }LZWEncodeState;
 
 
@@ -112,7 +110,7 @@ static inline int hashOffset(const int head)
 static inline void writeCode(LZWEncodeState * s, int c)
 {
     assert(0 <= c && c < 1 << s->bits);
-    s->put_bits(&s->pb, s->bits, c);
+    put_bits(&s->pb, s->bits, c);
 }
 
 
@@ -153,7 +151,7 @@ static inline void addCode(LZWEncodeState * s, uint8_t c, int hash_prefix, int h
 
     s->tabsize++;
 
-    if (s->tabsize >= (1 << s->bits) + (s->mode == FF_LZW_GIF))
+    if (s->tabsize >= 1 << s->bits)
         s->bits++;
 }
 
@@ -198,22 +196,18 @@ static int writtenBytes(LZWEncodeState *s){
  * @param outsize Size of output buffer
  * @param maxbits Maximum length of code
  */
-void ff_lzw_encode_init(LZWEncodeState *s, uint8_t *outbuf, int outsize,
-                        int maxbits, enum FF_LZW_MODES mode,
-                        void (*lzw_put_bits)(PutBitContext *, int, unsigned))
+void ff_lzw_encode_init(LZWEncodeState * s, uint8_t * outbuf, int outsize, int maxbits)
 {
     s->clear_code = 256;
     s->end_code = 257;
     s->maxbits = maxbits;
     init_put_bits(&s->pb, outbuf, outsize);
     s->bufsize = outsize;
-    assert(s->maxbits >= 9 && s->maxbits <= LZW_MAXBITS);
+    assert(9 <= s->maxbits && s->maxbits <= s->maxbits);
     s->maxcode = 1 << s->maxbits;
     s->output_bytes = 0;
     s->last_code = LZW_PREFIX_EMPTY;
     s->bits = 9;
-    s->mode = mode;
-    s->put_bits = lzw_put_bits;
 }
 
 /**
@@ -256,13 +250,12 @@ int ff_lzw_encode(LZWEncodeState * s, const uint8_t * inbuf, int insize)
  * @param s LZW state
  * @return Number of bytes written or -1 on error
  */
-int ff_lzw_encode_flush(LZWEncodeState *s,
-                        void (*lzw_flush_put_bits)(PutBitContext *))
+int ff_lzw_encode_flush(LZWEncodeState * s)
 {
     if (s->last_code != -1)
         writeCode(s, s->last_code);
     writeCode(s, s->end_code);
-    lzw_flush_put_bits(&s->pb);
+    flush_put_bits(&s->pb);
     s->last_code = -1;
 
     return writtenBytes(s);

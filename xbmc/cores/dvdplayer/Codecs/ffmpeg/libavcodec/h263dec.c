@@ -32,7 +32,6 @@
 #include "h263_parser.h"
 #include "mpeg4video_parser.h"
 #include "msmpeg4.h"
-#include "vdpau_internal.h"
 
 //#define DEBUG
 //#define PRINT_FRAME_TIME
@@ -60,14 +59,12 @@ av_cold int ff_h263_decode_init(AVCodecContext *avctx)
     switch(avctx->codec->id) {
     case CODEC_ID_H263:
         s->unrestricted_mv= 0;
-        avctx->chroma_sample_location = AVCHROMA_LOC_CENTER;
         break;
     case CODEC_ID_MPEG4:
         s->decode_mb= ff_mpeg4_decode_mb;
         s->time_increment_bits = 4; /* default value for broken headers */
         s->h263_pred = 1;
         s->low_delay = 0; //default, might be overriden in the vol header during header parsing
-        avctx->chroma_sample_location = AVCHROMA_LOC_LEFT;
         break;
     case CODEC_ID_MSMPEG4V1:
         s->h263_msmpeg4 = 1;
@@ -99,7 +96,6 @@ av_cold int ff_h263_decode_init(AVCodecContext *avctx)
         s->h263_msmpeg4 = 1;
         s->h263_pred = 1;
         s->msmpeg4_version=6;
-        avctx->chroma_sample_location = AVCHROMA_LOC_LEFT;
         break;
     case CODEC_ID_H263I:
         break;
@@ -268,8 +264,8 @@ static int decode_slice(MpegEncContext *s){
     /* try to detect the padding bug */
     if(      s->codec_id==CODEC_ID_MPEG4
        &&   (s->workaround_bugs&FF_BUG_AUTODETECT)
-       &&    get_bits_left(&s->gb) >=0
-       &&    get_bits_left(&s->gb) < 48
+       &&    s->gb.size_in_bits - get_bits_count(&s->gb) >=0
+       &&    s->gb.size_in_bits - get_bits_count(&s->gb) < 48
 //       &&   !s->resync_marker
        &&   !s->data_partitioning){
 
@@ -300,7 +296,7 @@ static int decode_slice(MpegEncContext *s){
 
     // handle formats which don't have unique end markers
     if(s->msmpeg4_version || (s->workaround_bugs&FF_BUG_NO_PADDING)){ //FIXME perhaps solve this more cleanly
-        int left= get_bits_left(&s->gb);
+        int left= s->gb.size_in_bits - get_bits_count(&s->gb);
         int max_extra=7;
 
         /* no markers in M$ crap */
@@ -325,7 +321,7 @@ static int decode_slice(MpegEncContext *s){
     }
 
     av_log(s->avctx, AV_LOG_ERROR, "slice end not reached but screenspace end (%d left %06X, score= %d)\n",
-            get_bits_left(&s->gb),
+            s->gb.size_in_bits - get_bits_count(&s->gb),
             show_bits(&s->gb, 24), s->padding_bug_score);
 
     ff_er_add_slice(s, s->resync_mb_x, s->resync_mb_y, s->mb_x, s->mb_y, (AC_END|DC_END|MV_END)&part_mask);
@@ -335,16 +331,19 @@ static int decode_slice(MpegEncContext *s){
 
 int ff_h263_decode_frame(AVCodecContext *avctx,
                              void *data, int *data_size,
-                             AVPacket *avpkt)
+                             const uint8_t *buf, int buf_size)
 {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     MpegEncContext *s = avctx->priv_data;
     int ret;
     AVFrame *pict = data;
 
 #ifdef PRINT_FRAME_TIME
 uint64_t time= rdtsc();
+#endif
+#ifdef DEBUG
+    av_log(avctx, AV_LOG_DEBUG, "*****frame %d size=%d\n", avctx->frame_number, buf_size);
+    if(buf_size>0)
+        av_log(avctx, AV_LOG_DEBUG, "bytes=%x %x %x %x\n", buf[0], buf[1], buf[2], buf[3]);
 #endif
     s->flags= avctx->flags;
     s->flags2= avctx->flags2;
@@ -622,15 +621,14 @@ retry:
     if(MPV_frame_start(s, avctx) < 0)
         return -1;
 
-    if (CONFIG_MPEG4_VDPAU_DECODER && (s->avctx->codec->capabilities & CODEC_CAP_HWACCEL_VDPAU)) {
-        ff_vdpau_mpeg4_decode_picture(s, buf, buf_size);
-        goto frame_end;
-    }
-
     if (avctx->hwaccel) {
         if (avctx->hwaccel->start_frame(avctx, buf, buf_size) < 0)
             return -1;
     }
+
+#ifdef DEBUG
+    av_log(avctx, AV_LOG_DEBUG, "qscale=%d\n", s->qscale);
+#endif
 
     ff_er_frame_start(s);
 
@@ -687,12 +685,10 @@ retry:
         }
 
         if(startcode_found){
-            av_fast_malloc(
-                &s->bitstream_buffer,
+            s->bitstream_buffer= av_fast_realloc(
+                s->bitstream_buffer,
                 &s->allocated_bitstream_buffer_size,
                 buf_size - current_pos + FF_INPUT_BUFFER_PADDING_SIZE);
-            if (!s->bitstream_buffer)
-                return AVERROR(ENOMEM);
             memcpy(s->bitstream_buffer, buf + current_pos, buf_size - current_pos);
             s->bitstream_buffer_size= buf_size - current_pos;
         }
@@ -701,7 +697,6 @@ retry:
 intrax8_decoded:
     ff_er_frame_end(s);
 
-frame_end:
     if (avctx->hwaccel) {
         if (avctx->hwaccel->end_frame(avctx) < 0)
             return -1;
@@ -721,6 +716,10 @@ assert(s->current_picture.pict_type == s->pict_type);
         *data_size = sizeof(AVFrame);
         ff_print_debug_info(s, pict);
     }
+
+    /* Return the Picture timestamp as the frame number */
+    /* we subtract 1 because it is added on utils.c     */
+    avctx->frame_number = s->picture_number - 1;
 
 #ifdef PRINT_FRAME_TIME
 av_log(avctx, AV_LOG_DEBUG, "%"PRId64"\n", rdtsc()-time);
@@ -839,22 +838,6 @@ AVCodec flv_decoder = {
     ff_h263_decode_end,
     ff_h263_decode_frame,
     CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1,
-    .long_name= NULL_IF_CONFIG_SMALL("Flash Video (FLV) / Sorenson Spark / Sorenson H.263"),
+    .long_name= NULL_IF_CONFIG_SMALL("Flash Video (FLV)"),
     .pix_fmts= ff_pixfmt_list_420,
 };
-
-#if CONFIG_MPEG4_VDPAU_DECODER
-AVCodec mpeg4_vdpau_decoder = {
-    "mpeg4_vdpau",
-    CODEC_TYPE_VIDEO,
-    CODEC_ID_MPEG4,
-    sizeof(MpegEncContext),
-    ff_h263_decode_init,
-    NULL,
-    ff_h263_decode_end,
-    ff_h263_decode_frame,
-    CODEC_CAP_DR1 | CODEC_CAP_TRUNCATED | CODEC_CAP_DELAY | CODEC_CAP_HWACCEL_VDPAU,
-    .long_name= NULL_IF_CONFIG_SMALL("MPEG-4 part 2 (VDPAU)"),
-    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_VDPAU_MPEG4, PIX_FMT_NONE},
-};
-#endif

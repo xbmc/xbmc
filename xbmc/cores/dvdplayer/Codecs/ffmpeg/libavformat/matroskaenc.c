@@ -470,29 +470,29 @@ static int mkv_write_codecprivate(AVFormatContext *s, ByteIOContext *pb, AVCodec
     } else if (codec->codec_type == CODEC_TYPE_VIDEO) {
         if (qt_id) {
             if (!codec->codec_tag)
-                codec->codec_tag = ff_codec_get_tag(codec_movvideo_tags, codec->codec_id);
+                codec->codec_tag = codec_get_tag(codec_movvideo_tags, codec->codec_id);
             if (codec->extradata_size)
                 put_buffer(dyn_cp, codec->extradata, codec->extradata_size);
         } else {
         if (!codec->codec_tag)
-            codec->codec_tag = ff_codec_get_tag(ff_codec_bmp_tags, codec->codec_id);
+            codec->codec_tag = codec_get_tag(codec_bmp_tags, codec->codec_id);
         if (!codec->codec_tag) {
             av_log(s, AV_LOG_ERROR, "No bmp codec ID found.");
             ret = -1;
         }
 
-        ff_put_bmp_header(dyn_cp, codec, ff_codec_bmp_tags, 0);
+        put_bmp_header(dyn_cp, codec, codec_bmp_tags, 0);
         }
 
     } else if (codec->codec_type == CODEC_TYPE_AUDIO) {
         if (!codec->codec_tag)
-            codec->codec_tag = ff_codec_get_tag(ff_codec_wav_tags, codec->codec_id);
+            codec->codec_tag = codec_get_tag(codec_wav_tags, codec->codec_id);
         if (!codec->codec_tag) {
             av_log(s, AV_LOG_ERROR, "No wav codec ID found.");
             ret = -1;
         }
 
-        ff_put_wav_header(dyn_cp, codec);
+        put_wav_header(dyn_cp, codec);
     }
 
     codecpriv_size = url_close_dyn_buf(dyn_cp, &codecpriv);
@@ -558,8 +558,8 @@ static int mkv_write_tracks(AVFormatContext *s)
                 put_ebml_uint(pb, MATROSKA_ID_TRACKTYPE, MATROSKA_TRACK_TYPE_VIDEO);
 
                 if (!native_id &&
-                      ff_codec_get_tag(codec_movvideo_tags, codec->codec_id) &&
-                    (!ff_codec_get_tag(ff_codec_bmp_tags,   codec->codec_id)
+                      codec_get_tag(codec_movvideo_tags, codec->codec_id) &&
+                    (!codec_get_tag(codec_bmp_tags,      codec->codec_id)
                      || codec->codec_id == CODEC_ID_SVQ1
                      || codec->codec_id == CODEC_ID_SVQ3
                      || codec->codec_id == CODEC_ID_CINEPAK))
@@ -616,50 +616,6 @@ static int mkv_write_tracks(AVFormatContext *s)
         av_set_pts_info(st, 64, 1, 1000);
     }
     end_ebml_master(pb, tracks);
-    return 0;
-}
-
-static int mkv_write_chapters(AVFormatContext *s)
-{
-    MatroskaMuxContext *mkv = s->priv_data;
-    ByteIOContext *pb = s->pb;
-    ebml_master chapters, editionentry;
-    AVRational scale = {1, 1E9};
-    int i, ret;
-
-    if (!s->nb_chapters)
-        return 0;
-
-    ret = mkv_add_seekhead_entry(mkv->main_seekhead, MATROSKA_ID_CHAPTERS, url_ftell(pb));
-    if (ret < 0) return ret;
-
-    chapters     = start_ebml_master(pb, MATROSKA_ID_CHAPTERS    , 0);
-    editionentry = start_ebml_master(pb, MATROSKA_ID_EDITIONENTRY, 0);
-    put_ebml_uint(pb, MATROSKA_ID_EDITIONFLAGDEFAULT, 1);
-    put_ebml_uint(pb, MATROSKA_ID_EDITIONFLAGHIDDEN , 0);
-    for (i = 0; i < s->nb_chapters; i++) {
-        ebml_master chapteratom, chapterdisplay;
-        AVChapter *c     = s->chapters[i];
-        AVMetadataTag *t = NULL;
-
-        chapteratom = start_ebml_master(pb, MATROSKA_ID_CHAPTERATOM, 0);
-        put_ebml_uint(pb, MATROSKA_ID_CHAPTERUID, c->id);
-        put_ebml_uint(pb, MATROSKA_ID_CHAPTERTIMESTART,
-                      av_rescale_q(c->start, c->time_base, scale));
-        put_ebml_uint(pb, MATROSKA_ID_CHAPTERTIMEEND,
-                      av_rescale_q(c->end,   c->time_base, scale));
-        put_ebml_uint(pb, MATROSKA_ID_CHAPTERFLAGHIDDEN , 0);
-        put_ebml_uint(pb, MATROSKA_ID_CHAPTERFLAGENABLED, 1);
-        if ((t = av_metadata_get(c->metadata, "title", NULL, 0))) {
-            chapterdisplay = start_ebml_master(pb, MATROSKA_ID_CHAPTERDISPLAY, 0);
-            put_ebml_string(pb, MATROSKA_ID_CHAPSTRING, t->value);
-            put_ebml_string(pb, MATROSKA_ID_CHAPLANG  , "und");
-            end_ebml_master(pb, chapterdisplay);
-        }
-        end_ebml_master(pb, chapteratom);
-    }
-    end_ebml_master(pb, editionentry);
-    end_ebml_master(pb, chapters);
     return 0;
 }
 
@@ -720,9 +676,6 @@ static int mkv_write_header(AVFormatContext *s)
     end_ebml_master(pb, segment_info);
 
     ret = mkv_write_tracks(s);
-    if (ret < 0) return ret;
-
-    ret = mkv_write_chapters(s);
     if (ret < 0) return ret;
 
     ret = mkv_add_seekhead_entry(mkv->cluster_seekhead, MATROSKA_ID_CLUSTER, url_ftell(pb));
@@ -936,7 +889,7 @@ AVOutputFormat matroska_muxer = {
     mkv_write_packet,
     mkv_write_trailer,
     .flags = AVFMT_GLOBALHEADER | AVFMT_VARIABLE_FPS,
-    .codec_tag = (const AVCodecTag* const []){ff_codec_bmp_tags, ff_codec_wav_tags, 0},
+    .codec_tag = (const AVCodecTag* const []){codec_bmp_tags, codec_wav_tags, 0},
     .subtitle_codec = CODEC_ID_TEXT,
 };
 
@@ -952,5 +905,5 @@ AVOutputFormat matroska_audio_muxer = {
     mkv_write_packet,
     mkv_write_trailer,
     .flags = AVFMT_GLOBALHEADER,
-    .codec_tag = (const AVCodecTag* const []){ff_codec_wav_tags, 0},
+    .codec_tag = (const AVCodecTag* const []){codec_wav_tags, 0},
 };

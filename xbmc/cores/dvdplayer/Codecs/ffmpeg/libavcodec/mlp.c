@@ -42,14 +42,9 @@ const uint8_t ff_mlp_huffman_tables[3][18][2] = {
 };
 
 static int crc_init = 0;
-#if CONFIG_SMALL
-#define CRC_TABLE_SIZE 257
-#else
-#define CRC_TABLE_SIZE 1024
-#endif
-static AVCRC crc_63[CRC_TABLE_SIZE];
-static AVCRC crc_1D[CRC_TABLE_SIZE];
-static AVCRC crc_2D[CRC_TABLE_SIZE];
+static AVCRC crc_63[1024];
+static AVCRC crc_1D[1024];
+static AVCRC crc_2D[1024];
 
 av_cold void ff_mlp_init_crc(void)
 {
@@ -101,8 +96,6 @@ uint8_t ff_mlp_calculate_parity(const uint8_t *buf, unsigned int buf_size)
     uint32_t scratch = 0;
     const uint8_t *buf_end = buf + buf_size;
 
-    for (; ((intptr_t) buf & 3) && buf < buf_end; buf++)
-        scratch ^= *buf;
     for (; buf < buf_end - 3; buf += 4)
         scratch ^= *((const uint32_t*)buf);
 

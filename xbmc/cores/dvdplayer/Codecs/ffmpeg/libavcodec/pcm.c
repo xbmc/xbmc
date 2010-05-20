@@ -25,7 +25,7 @@
  */
 
 #include "avcodec.h"
-#include "libavutil/common.h" /* for av_reverse */
+#include "bitstream.h" // for ff_reverse
 #include "bytestream.h"
 
 #define MAX_CHANNELS 64
@@ -194,8 +194,8 @@ static int pcm_encode_frame(AVCodecContext *avctx,
         break;
     case CODEC_ID_PCM_S24DAUD:
         for(;n>0;n--) {
-            uint32_t tmp = av_reverse[(*samples >> 8) & 0xff] +
-                           (av_reverse[*samples & 0xff] << 8);
+            uint32_t tmp = ff_reverse[(*samples >> 8) & 0xff] +
+                           (ff_reverse[*samples & 0xff] << 8);
             tmp <<= 4; // sync flags would go here
             bytestream_put_be24(&dst, tmp);
             samples++;
@@ -214,7 +214,7 @@ static int pcm_encode_frame(AVCodecContext *avctx,
             *dst++ = v - 128;
         }
         break;
-#if HAVE_BIGENDIAN
+#ifdef WORDS_BIGENDIAN
     case CODEC_ID_PCM_F64LE:
         ENCODE(int64_t, le64, samples, dst, n, 0, 0)
         break;
@@ -244,7 +244,7 @@ static int pcm_encode_frame(AVCodecContext *avctx,
     case CODEC_ID_PCM_F32LE:
     case CODEC_ID_PCM_S32LE:
     case CODEC_ID_PCM_S16LE:
-#endif /* HAVE_BIGENDIAN */
+#endif /* WORDS_BIGENDIAN */
     case CODEC_ID_PCM_U8:
         memcpy(dst, samples, n*sample_size);
         dst += n*sample_size;
@@ -323,10 +323,8 @@ static av_cold int pcm_decode_init(AVCodecContext * avctx)
 
 static int pcm_decode_frame(AVCodecContext *avctx,
                             void *data, int *data_size,
-                            AVPacket *avpkt)
+                            const uint8_t *buf, int buf_size)
 {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     PCMDecode *s = avctx->priv_data;
     int sample_size, c, n;
     short *samples;
@@ -361,11 +359,8 @@ static int pcm_decode_frame(AVCodecContext *avctx,
     n = avctx->channels * sample_size;
 
     if(n && buf_size % n){
-        if (buf_size < n) {
-            av_log(avctx, AV_LOG_ERROR, "invalid PCM packet\n");
-            return -1;
-        }else
-            buf_size -= buf_size % n;
+        av_log(avctx, AV_LOG_ERROR, "invalid PCM packet\n");
+        return -1;
     }
 
     buf_size= FFMIN(buf_size, *data_size/2);
@@ -396,8 +391,8 @@ static int pcm_decode_frame(AVCodecContext *avctx,
         for(;n>0;n--) {
           uint32_t v = bytestream_get_be24(&src);
           v >>= 4; // sync flags are here
-          *samples++ = av_reverse[(v >> 8) & 0xff] +
-                       (av_reverse[v & 0xff] << 8);
+          *samples++ = ff_reverse[(v >> 8) & 0xff] +
+                       (ff_reverse[v & 0xff] << 8);
         }
         break;
     case CODEC_ID_PCM_S16LE_PLANAR:
@@ -422,7 +417,7 @@ static int pcm_decode_frame(AVCodecContext *avctx,
         }
         samples= (short*)dstu8;
         break;
-#if HAVE_BIGENDIAN
+#ifdef WORDS_BIGENDIAN
     case CODEC_ID_PCM_F64LE:
         DECODE(int64_t, le64, src, samples, n, 0, 0)
         break;
@@ -452,7 +447,7 @@ static int pcm_decode_frame(AVCodecContext *avctx,
     case CODEC_ID_PCM_F32LE:
     case CODEC_ID_PCM_S32LE:
     case CODEC_ID_PCM_S16LE:
-#endif /* HAVE_BIGENDIAN */
+#endif /* WORDS_BIGENDIAN */
     case CODEC_ID_PCM_U8:
         memcpy(samples, src, n*sample_size);
         src += n*sample_size;
@@ -523,7 +518,7 @@ AVCodec name ## _encoder = {                    \
     pcm_encode_frame,                           \
     pcm_encode_close,                           \
     NULL,                                       \
-    .sample_fmts = (const enum SampleFormat[]){sample_fmt_,SAMPLE_FMT_NONE}, \
+    .sample_fmts = (enum SampleFormat[]){sample_fmt_,SAMPLE_FMT_NONE}, \
     .long_name = NULL_IF_CONFIG_SMALL(long_name_), \
 };
 #else
@@ -541,7 +536,7 @@ AVCodec name ## _decoder = {                    \
     NULL,                                       \
     NULL,                                       \
     pcm_decode_frame,                           \
-    .sample_fmts = (const enum SampleFormat[]){sample_fmt_,SAMPLE_FMT_NONE}, \
+    .sample_fmts = (enum SampleFormat[]){sample_fmt_,SAMPLE_FMT_NONE}, \
     .long_name = NULL_IF_CONFIG_SMALL(long_name_), \
 };
 #else

@@ -29,12 +29,25 @@
 
 
 #define MAX_DPCM (127*127)
+static unsigned char dpcmValues[MAX_DPCM];
 
 
 typedef struct
 {
     short lastSample[2];
 } ROQDPCMContext;
+
+static av_cold void roq_dpcm_table_init(void)
+{
+    int i;
+
+    /* Create a table of quick DPCM values */
+    for (i=0; i<MAX_DPCM; i++) {
+        int s= ff_sqrt(i);
+        int mid= s*s + s;
+        dpcmValues[i]= s + (i>mid);
+    }
+}
 
 static av_cold int roq_dpcm_encode_init(AVCodecContext *avctx)
 {
@@ -52,6 +65,8 @@ static av_cold int roq_dpcm_encode_init(AVCodecContext *avctx)
         av_log(avctx, AV_LOG_ERROR, "Audio must be signed 16-bit\n");
         return -1;
     }
+
+    roq_dpcm_table_init();
 
     avctx->frame_size = ROQ_FIRST_FRAME_SIZE;
 
@@ -77,10 +92,8 @@ static unsigned char dpcm_predict(short *previous, short current)
 
     if (diff >= MAX_DPCM)
         result = 127;
-    else {
-        result = ff_sqrt(diff);
-        result += diff > result*result+result;
-    }
+    else
+        result = dpcmValues[diff];
 
     /* See if this overflows */
  retry:
@@ -161,6 +174,6 @@ AVCodec roq_dpcm_encoder = {
     roq_dpcm_encode_frame,
     roq_dpcm_encode_close,
     NULL,
-    .sample_fmts = (const enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
+    .sample_fmts = (enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("id RoQ DPCM"),
 };

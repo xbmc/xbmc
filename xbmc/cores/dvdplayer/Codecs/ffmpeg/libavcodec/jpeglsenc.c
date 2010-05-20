@@ -26,7 +26,7 @@
  */
 
 #include "avcodec.h"
-#include "get_bits.h"
+#include "bitstream.h"
 #include "golomb.h"
 #include "mathops.h"
 #include "dsputil.h"
@@ -390,6 +390,6 @@ AVCodec jpegls_encoder = { //FIXME avoid MPV_* lossless JPEG should not need the
     encode_init_ls,
     encode_picture_ls,
     NULL,
-    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_RGB24, PIX_FMT_GRAY8, PIX_FMT_GRAY16, PIX_FMT_NONE},
+    .pix_fmts= (enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_RGB24, PIX_FMT_GRAY8, PIX_FMT_GRAY16, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("JPEG-LS"),
 };

@@ -21,6 +21,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "libavcodec/dsputil.h"
+
+#include "gcc_fixes.h"
+
 #include "dsputil_ppc.h"
 #include "util_altivec.h"
 /**
@@ -132,10 +135,4 @@ POWERPC_PERF_START_COUNT(altivec_fft_num, s->nbits >= 6);
     } while (nblocks != 0);
 
 POWERPC_PERF_STOP_COUNT(altivec_fft_num, s->nbits >= 6);
-}
-
-av_cold void ff_fft_init_altivec(FFTContext *s)
-{
-    s->fft_calc = ff_fft_calc_altivec;
-    s->split_radix = 0;
 }

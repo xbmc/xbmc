@@ -29,7 +29,7 @@
  * A linked-list of the inputs/outputs of the filter chain.
  */
 typedef struct AVFilterInOut {
-    char *name;
+    const char *name;
     AVFilterContext *filter;
     int pad_idx;
 
@@ -37,7 +37,7 @@ typedef struct AVFilterInOut {
 } AVFilterInOut;
 
 /**
- * Adds a graph described by a string to a graph.
+ * Add to a graph a graph described by a string.
  *
  * @param graph   the filter graph where to link the parsed graph context
  * @param filters string to be parsed

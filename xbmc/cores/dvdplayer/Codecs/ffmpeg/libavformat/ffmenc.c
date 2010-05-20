@@ -93,7 +93,8 @@ static int ffm_write_header(AVFormatContext *s)
     /* header */
     put_le32(pb, MKTAG('F', 'F', 'M', '1'));
     put_be32(pb, ffm->packet_size);
-    put_be64(pb, 0); /* current write position */
+    /* XXX: store write position in other file ? */
+    put_be64(pb, ffm->packet_size); /* current write position */
 
     put_be32(pb, s->nb_streams);
     bit_rate = 0;
@@ -154,25 +155,11 @@ static int ffm_write_header(AVFormatContext *s)
             put_be64(pb, av_dbl2int(codec->rc_buffer_aggressivity));
             put_be32(pb, codec->codec_tag);
             put_byte(pb, codec->thread_count);
-            put_be32(pb, codec->coder_type);
-            put_be32(pb, codec->me_cmp);
-            put_be32(pb, codec->partitions);
-            put_be32(pb, codec->me_subpel_quality);
-            put_be32(pb, codec->me_range);
-            put_be32(pb, codec->keyint_min);
-            put_be32(pb, codec->scenechange_threshold);
-            put_be32(pb, codec->b_frame_strategy);
-            put_be64(pb, av_dbl2int(codec->qcompress));
-            put_be64(pb, av_dbl2int(codec->qblur));
-            put_be32(pb, codec->max_qdiff);
-            put_be32(pb, codec->refs);
-            put_be32(pb, codec->directpred);
             break;
         case CODEC_TYPE_AUDIO:
             put_be32(pb, codec->sample_rate);
             put_le16(pb, codec->channels);
             put_le16(pb, codec->frame_size);
-            put_le16(pb, codec->sample_fmt);
             break;
         default:
             return -1;
@@ -236,6 +223,15 @@ static int ffm_write_trailer(AVFormatContext *s)
         flush_packet(s);
 
     put_flush_packet(pb);
+
+    if (!url_is_streamed(pb)) {
+        int64_t size;
+        /* update the write offset */
+        size = url_ftell(pb);
+        url_fseek(pb, 8, SEEK_SET);
+        put_be64(pb, size);
+        put_flush_packet(pb);
+    }
 
     return 0;
 }

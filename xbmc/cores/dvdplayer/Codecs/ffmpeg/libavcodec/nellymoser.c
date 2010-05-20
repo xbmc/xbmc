@@ -32,11 +32,12 @@
  */
 
 #include "nellymoser.h"
+#include "libavutil/random.h"
 #include "avcodec.h"
 #include "dsputil.h"
 
 #define ALT_BITSTREAM_READER_LE
-#include "get_bits.h"
+#include "bitstream.h"
 
 const float ff_nelly_dequantization_table[127] = {
  0.0000000000,

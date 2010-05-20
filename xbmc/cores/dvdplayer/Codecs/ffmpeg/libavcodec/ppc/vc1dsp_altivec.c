@@ -21,6 +21,8 @@
 
 #include "libavcodec/dsputil.h"
 
+#include "gcc_fixes.h"
+
 #include "util_altivec.h"
 
 // main steps of 8x8 transform

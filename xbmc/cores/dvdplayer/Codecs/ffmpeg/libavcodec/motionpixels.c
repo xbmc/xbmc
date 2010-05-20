@@ -20,12 +20,14 @@
  */
 
 #include "avcodec.h"
-#include "get_bits.h"
+#include "bitstream.h"
 #include "dsputil.h"
 
 #define MAX_HUFF_CODES 16
 
-#include "motionpixels_tablegen.h"
+typedef struct YuvPixel {
+    int8_t y, v, u;
+} YuvPixel;
 
 typedef struct HuffCode {
     int code;
@@ -49,18 +51,67 @@ typedef struct MotionPixelsContext {
     int bswapbuf_size;
 } MotionPixelsContext;
 
+static YuvPixel mp_rgb_yuv_table[1 << 15];
+
+static int mp_yuv_to_rgb(int y, int v, int u, int clip_rgb) {
+    static const uint8_t *cm = ff_cropTbl + MAX_NEG_CROP;
+    int r, g, b;
+
+    r = (1000 * y + 701 * v) / 1000;
+    g = (1000 * y - 357 * v - 172 * u) / 1000;
+    b = (1000 * y + 886 * u) / 1000;
+    if (clip_rgb)
+        return ((cm[r * 8] & 0xF8) << 7) | ((cm[g * 8] & 0xF8) << 2) | (cm[b * 8] >> 3);
+    if ((unsigned)r < 32 && (unsigned)g < 32 && (unsigned)b < 32)
+        return (r << 10) | (g << 5) | b;
+    return 1 << 15;
+}
+
+static void mp_set_zero_yuv(YuvPixel *p)
+{
+    int i, j;
+
+    for (i = 0; i < 31; ++i) {
+        for (j = 31; j > i; --j)
+            if (!(p[j].u | p[j].v | p[j].y))
+                p[j] = p[j - 1];
+        for (j = 0; j < 31 - i; ++j)
+            if (!(p[j].u | p[j].v | p[j].y))
+                p[j] = p[j + 1];
+    }
+}
+
+static void mp_build_rgb_yuv_table(YuvPixel *p)
+{
+    int y, v, u, i;
+
+    for (y = 0; y <= 31; ++y)
+        for (v = -31; v <= 31; ++v)
+            for (u = -31; u <= 31; ++u) {
+                i = mp_yuv_to_rgb(y, v, u, 0);
+                if (i < (1 << 15) && !(p[i].u | p[i].v | p[i].y)) {
+                    p[i].y = y;
+                    p[i].v = v;
+                    p[i].u = u;
+                }
+            }
+    for (i = 0; i < 1024; ++i)
+        mp_set_zero_yuv(p + i * 32);
+}
+
 static av_cold int mp_decode_init(AVCodecContext *avctx)
 {
     MotionPixelsContext *mp = avctx->priv_data;
 
-    motionpixels_tableinit();
+    if (!mp_rgb_yuv_table[0].u) {
+        mp_build_rgb_yuv_table(mp_rgb_yuv_table);
+    }
     mp->avctx = avctx;
     dsputil_init(&mp->dsp, avctx);
     mp->changes_map = av_mallocz(avctx->width * avctx->height);
     mp->offset_bits_len = av_log2(avctx->width * avctx->height) + 1;
     mp->vpt = av_mallocz(avctx->height * sizeof(YuvPixel));
     mp->hpt = av_mallocz(avctx->height * avctx->width / 16 * sizeof(YuvPixel));
-    avctx->pix_fmt = PIX_FMT_RGB555;
     return 0;
 }
 
@@ -230,10 +281,8 @@ static void mp_decode_frame_helper(MotionPixelsContext *mp, GetBitContext *gb)
 
 static int mp_decode_frame(AVCodecContext *avctx,
                                  void *data, int *data_size,
-                                 AVPacket *avpkt)
+                                 const uint8_t *buf, int buf_size)
 {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     MotionPixelsContext *mp = avctx->priv_data;
     GetBitContext gb;
     int i, count1, count2, sz;
@@ -246,9 +295,7 @@ static int mp_decode_frame(AVCodecContext *avctx,
     }
 
     /* le32 bitstream msb first */
-    av_fast_malloc(&mp->bswapbuf, &mp->bswapbuf_size, buf_size + FF_INPUT_BUFFER_PADDING_SIZE);
-    if (!mp->bswapbuf)
-        return AVERROR(ENOMEM);
+    mp->bswapbuf = av_fast_realloc(mp->bswapbuf, &mp->bswapbuf_size, buf_size + FF_INPUT_BUFFER_PADDING_SIZE);
     mp->dsp.bswap_buf((uint32_t *)mp->bswapbuf, (const uint32_t *)buf, buf_size / 4);
     if (buf_size & 3)
         memcpy(mp->bswapbuf + (buf_size & ~3), buf + (buf_size & ~3), buf_size & 3);

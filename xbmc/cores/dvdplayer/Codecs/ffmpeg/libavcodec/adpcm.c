@@ -19,8 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "avcodec.h"
-#include "get_bits.h"
-#include "put_bits.h"
+#include "bitstream.h"
 #include "bytestream.h"
 
 /**
@@ -86,12 +85,10 @@ static const int AdaptationTable[] = {
         768, 614, 512, 409, 307, 230, 230, 230
 };
 
-/** Divided by 4 to fit in 8-bit integers */
 static const uint8_t AdaptCoeff1[] = {
         64, 128, 0, 48, 60, 115, 98
 };
 
-/** Divided by 4 to fit in 8-bit integers */
 static const int8_t AdaptCoeff2[] = {
         0, -64, 0, 16, 0, -52, -58
 };
@@ -154,8 +151,6 @@ typedef struct ADPCMContext {
 #if CONFIG_ENCODERS
 static av_cold int adpcm_encode_init(AVCodecContext *avctx)
 {
-    uint8_t *extradata;
-    int i;
     if (avctx->channels > 2)
         return -1; /* only stereo or mono =) */
 
@@ -179,16 +174,6 @@ static av_cold int adpcm_encode_init(AVCodecContext *avctx)
         avctx->frame_size = (BLKSIZE - 7 * avctx->channels) * 2 / avctx->channels + 2; /* each 16 bits sample gives one nibble */
                                                              /* and we have 7 bytes per channel overhead */
         avctx->block_align = BLKSIZE;
-        avctx->extradata_size = 32;
-        extradata = avctx->extradata = av_malloc(avctx->extradata_size);
-        if (!extradata)
-            return AVERROR(ENOMEM);
-        bytestream_put_le16(&extradata, avctx->frame_size);
-        bytestream_put_le16(&extradata, 7); /* wNumCoef */
-        for (i = 0; i < 7; i++) {
-            bytestream_put_le16(&extradata, AdaptCoeff1[i] * 4);
-            bytestream_put_le16(&extradata, AdaptCoeff2[i] * 4);
-        }
         break;
     case CODEC_ID_ADPCM_YAMAHA:
         avctx->frame_size = BLKSIZE * avctx->channels;
@@ -205,6 +190,7 @@ static av_cold int adpcm_encode_init(AVCodecContext *avctx)
         break;
     default:
         return -1;
+        break;
     }
 
     avctx->coded_frame= avcodec_alloc_frame();
@@ -661,12 +647,15 @@ static int adpcm_encode_frame(AVCodecContext *avctx,
                     *dst++ = buf[0][i] | (buf[1][i] << 4);
             }
         } else
-            for (n *= avctx->channels; n>0; n--) {
+        for (; n>0; n--) {
+            for(i = 0; i < avctx->channels; i++) {
                 int nibble;
-                nibble  = adpcm_yamaha_compress_sample(&c->status[ 0], *samples++);
-                nibble |= adpcm_yamaha_compress_sample(&c->status[st], *samples++) << 4;
+                nibble  = adpcm_yamaha_compress_sample(&c->status[i], samples[i]);
+                nibble |= adpcm_yamaha_compress_sample(&c->status[i], samples[i+avctx->channels]) << 4;
                 *dst++ = nibble;
             }
+            samples += 2 * avctx->channels;
+        }
         break;
     default:
         return -1;
@@ -888,10 +877,8 @@ static void xa_decode(short *out, const unsigned char *in,
 
 static int adpcm_decode_frame(AVCodecContext *avctx,
                             void *data, int *data_size,
-                            AVPacket *avpkt)
+                            const uint8_t *buf, int buf_size)
 {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     ADPCMContext *c = avctx->priv_data;
     ADPCMChannelStatus *cs;
     int n, m, channel, i;
@@ -1219,11 +1206,11 @@ static int adpcm_decode_frame(AVCodecContext *avctx,
         }
         break;
     case CODEC_ID_ADPCM_EA:
-        if (buf_size < 4 || AV_RL32(src) >= ((buf_size - 12) * 2)) {
+        samples_in_chunk = AV_RL32(src);
+        if (samples_in_chunk >= ((buf_size - 12) * 2)) {
             src += buf_size;
             break;
         }
-        samples_in_chunk = AV_RL32(src);
         src += 4;
         current_left_sample   = (int16_t)bytestream_get_le16(&src);
         previous_left_sample  = (int16_t)bytestream_get_le16(&src);
@@ -1261,10 +1248,6 @@ static int adpcm_decode_frame(AVCodecContext *avctx,
                 *samples++ = (unsigned short)current_right_sample;
             }
         }
-
-        if (src - buf == buf_size - 2)
-            src += 2; // Skip terminating 0x0000
-
         break;
     case CODEC_ID_ADPCM_EA_MAXIS_XA:
         for(channel = 0; channel < avctx->channels; channel++) {
@@ -1645,7 +1628,7 @@ AVCodec name ## _encoder = {                    \
     adpcm_encode_frame,                         \
     adpcm_encode_close,                         \
     NULL,                                       \
-    .sample_fmts = (const enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE}, \
+    .sample_fmts = (enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE}, \
     .long_name = NULL_IF_CONFIG_SMALL(long_name_), \
 };
 #else

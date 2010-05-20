@@ -28,9 +28,9 @@
 #ifndef AVCODEC_MPC_H
 #define AVCODEC_MPC_H
 
-#include "libavutil/lfg.h"
+#include "libavutil/random.h"
 #include "avcodec.h"
-#include "get_bits.h"
+#include "bitstream.h"
 #include "dsputil.h"
 #include "mpegaudio.h"
 
@@ -62,7 +62,7 @@ typedef struct {
     int cur_frame, frames;
     uint8_t *bits;
     int buf_size;
-    AVLFG rnd;
+    AVRandomState rnd;
     int frames_to_skip;
     /* for synthesis */
     DECLARE_ALIGNED_16(MPA_INT, synth_buf[MPA_MAX_CHANNELS][512*2]);

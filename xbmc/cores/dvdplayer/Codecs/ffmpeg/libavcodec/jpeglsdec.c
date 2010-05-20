@@ -26,7 +26,7 @@
  */
 
 #include "avcodec.h"
-#include "get_bits.h"
+#include "bitstream.h"
 #include "golomb.h"
 #include "mathops.h"
 #include "mjpeg.h"

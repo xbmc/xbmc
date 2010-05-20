@@ -45,19 +45,19 @@
  * plugin.
  */
 
-#include <alsa/asoundlib.h>
 #include "libavformat/avformat.h"
+#include <alsa/asoundlib.h>
 
 #include "alsa-audio.h"
 
-static av_cold int audio_read_header(AVFormatContext *s1,
+av_cold static int audio_read_header(AVFormatContext *s1,
                                      AVFormatParameters *ap)
 {
     AlsaData *s = s1->priv_data;
     AVStream *st;
     int ret;
     unsigned int sample_rate;
-    enum CodecID codec_id;
+    int codec_id;
     snd_pcm_sw_params_t *sw_params;
 
     if (ap->sample_rate <= 0) {

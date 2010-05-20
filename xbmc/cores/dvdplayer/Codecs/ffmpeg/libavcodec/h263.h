@@ -36,6 +36,8 @@
 #define CONFIG_ANY_H263_ENCODER (CONFIG_H263_ENCODER    || \
                                  CONFIG_H263P_ENCODER   || \
                                  CONFIG_FLV_ENCODER     || \
+                                 CONFIG_RV10_ENCODER    || \
+                                 CONFIG_RV20_ENCODER    || \
                                  CONFIG_MPEG4_ENCODER   || \
                                  CONFIG_MSMPEG4_ENCODER || \
                                  CONFIG_WMV_ENCODER)

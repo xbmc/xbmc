@@ -32,7 +32,6 @@
 #include "tiff.h"
 #include "rle.h"
 #include "lzw.h"
-#include "put_bits.h"
 
 #define TIFF_MAX_ENTRY 32
 
@@ -92,7 +91,7 @@ static void tnput(uint8_t ** p, int n, const uint8_t * val, enum TiffTypes type,
                   int flip)
 {
     int i;
-#if HAVE_BIGENDIAN
+#ifdef WORDS_BIGENDIAN
     flip ^= ((int[]) {0, 0, 0, 1, 3, 3})[type];
 #endif
     for (i = 0; i < n * type_sizes2[type]; i++)
@@ -353,8 +352,7 @@ static int encode_frame(AVCodecContext * avctx, unsigned char *buf,
         for (i = 0; i < s->height; i++) {
             if (strip_sizes[i / s->rps] == 0) {
                 if(s->compr == TIFF_LZW){
-                    ff_lzw_encode_init(s->lzws, ptr, s->buf_size - (*s->buf - s->buf_start),
-                                       12, FF_LZW_TIFF, put_bits);
+                    ff_lzw_encode_init(s->lzws, ptr, s->buf_size - (*s->buf - s->buf_start), 12);
                 }
                 strip_offsets[i / s->rps] = ptr - buf;
             }
@@ -374,7 +372,7 @@ static int encode_frame(AVCodecContext * avctx, unsigned char *buf,
             ptr += n;
             if(s->compr == TIFF_LZW && (i==s->height-1 || i%s->rps == s->rps-1)){
                 int ret;
-                ret = ff_lzw_encode_flush(s->lzws, flush_put_bits);
+                ret = ff_lzw_encode_flush(s->lzws);
                 strip_sizes[(i / s->rps )] += ret ;
                 ptr += ret;
             }
@@ -454,7 +452,7 @@ AVCodec tiff_encoder = {
     0,
     NULL,
     .pix_fmts =
-        (const enum PixelFormat[]) {PIX_FMT_RGB24, PIX_FMT_PAL8, PIX_FMT_GRAY8,
+        (enum PixelFormat[]) {PIX_FMT_RGB24, PIX_FMT_PAL8, PIX_FMT_GRAY8,
                               PIX_FMT_MONOBLACK, PIX_FMT_MONOWHITE,
                               PIX_FMT_YUV420P, PIX_FMT_YUV422P,
                               PIX_FMT_YUV444P, PIX_FMT_YUV410P,

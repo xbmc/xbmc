@@ -30,7 +30,7 @@
 
 #include "avcodec.h"
 #define ALT_BITSTREAM_READER_LE
-#include "get_bits.h"
+#include "bitstream.h"
 #include "libavutil/lzo.h"
 
 #define EA_PREAMBLE_SIZE    8
@@ -237,10 +237,8 @@ static void cond_release_buffer(AVFrame *pic)
 
 static int tgv_decode_frame(AVCodecContext *avctx,
                             void *data, int *data_size,
-                            AVPacket *avpkt)
+                            const uint8_t *buf, int buf_size)
 {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     TgvContext *s = avctx->priv_data;
     const uint8_t *buf_end = buf + buf_size;
     int chunk_type;

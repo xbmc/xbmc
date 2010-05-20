@@ -120,7 +120,7 @@ AVCodec libgsm_encoder = {
     libgsm_init,
     libgsm_encode_frame,
     libgsm_close,
-    .sample_fmts = (const enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
+    .sample_fmts = (enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("libgsm GSM"),
 };
 
@@ -132,15 +132,13 @@ AVCodec libgsm_ms_encoder = {
     libgsm_init,
     libgsm_encode_frame,
     libgsm_close,
-    .sample_fmts = (const enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
+    .sample_fmts = (enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("libgsm GSM Microsoft variant"),
 };
 
 static int libgsm_decode_frame(AVCodecContext *avctx,
                                void *data, int *data_size,
-                               AVPacket *avpkt) {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
+                               uint8_t *buf, int buf_size) {
     *data_size = 0; /* In case of error */
     if(buf_size < avctx->block_align) return -1;
     switch(avctx->codec_id) {

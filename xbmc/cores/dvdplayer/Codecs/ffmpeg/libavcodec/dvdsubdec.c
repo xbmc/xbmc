@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 #include "avcodec.h"
-#include "get_bits.h"
+#include "bitstream.h"
 #include "colorspace.h"
 #include "dsputil.h"
 
@@ -208,7 +208,11 @@ static int decode_dvd_subtitles(DVDSubContext *ctx, AVSubtitle *sub_header,
 
     if (buf_size < 10)
         return -1;
-    memset(sub_header, 0, sizeof(*sub_header));
+    sub_header->rects = NULL;
+    sub_header->num_rects = 0;
+    sub_header->format = 0;
+    sub_header->start_display_time = 0;
+    sub_header->end_display_time = 0;
 
     if (AV_RB16(buf) == 0) {   /* HD subpicture with 4-byte offsets */
         big_offsets = 1;
@@ -222,18 +226,22 @@ static int decode_dvd_subtitles(DVDSubContext *ctx, AVSubtitle *sub_header,
 
     cmd_pos = READ_OFFSET(buf + cmd_pos);
 
-    while (cmd_pos > 0 && cmd_pos < buf_size - 2 - offset_size) {
+    while ((cmd_pos + 2 + offset_size) < buf_size) {
         date = AV_RB16(buf + cmd_pos);
         next_cmd_pos = READ_OFFSET(buf + cmd_pos + 2);
-        dprintf(NULL, "cmd_pos=0x%04x next=0x%04x date=%d\n",
-                cmd_pos, next_cmd_pos, date);
+#ifdef DEBUG
+        av_log(NULL, AV_LOG_INFO, "cmd_pos=0x%04x next=0x%04x date=%d\n",
+               cmd_pos, next_cmd_pos, date);
+#endif
         pos = cmd_pos + 2 + offset_size;
         offset1 = -1;
         offset2 = -1;
         x1 = y1 = x2 = y2 = 0;
         while (pos < buf_size) {
             cmd = buf[pos++];
-            dprintf(NULL, "cmd=%02x\n", cmd);
+#ifdef DEBUG
+            av_log(NULL, AV_LOG_INFO, "cmd=%02x\n", cmd);
+#endif
             switch(cmd) {
             case 0x00:
                 /* menu subpicture */
@@ -266,7 +274,9 @@ static int decode_dvd_subtitles(DVDSubContext *ctx, AVSubtitle *sub_header,
                 alpha[1] = buf[pos + 1] >> 4;
                 alpha[0] = buf[pos + 1] & 0x0f;
                 pos += 2;
-            dprintf(NULL, "alpha=%x%x%x%x\n", alpha[0],alpha[1],alpha[2],alpha[3]);
+#ifdef DEBUG
+            av_log(NULL, AV_LOG_INFO, "alpha=%x%x%x%x\n", alpha[0],alpha[1],alpha[2],alpha[3]);
+#endif
                 break;
             case 0x05:
             case 0x85:
@@ -278,7 +288,10 @@ static int decode_dvd_subtitles(DVDSubContext *ctx, AVSubtitle *sub_header,
                 y2 = ((buf[pos + 4] & 0x0f) << 8) | buf[pos + 5];
                 if (cmd & 0x80)
                     is_8bit = 1;
-                dprintf(NULL, "x1=%d x2=%d y1=%d y2=%d\n", x1, x2, y1, y2);
+#ifdef DEBUG
+                av_log(NULL, AV_LOG_INFO, "x1=%d x2=%d y1=%d y2=%d\n",
+                       x1, x2, y1, y2);
+#endif
                 pos += 6;
                 break;
             case 0x06:
@@ -286,7 +299,9 @@ static int decode_dvd_subtitles(DVDSubContext *ctx, AVSubtitle *sub_header,
                     goto fail;
                 offset1 = AV_RB16(buf + pos);
                 offset2 = AV_RB16(buf + pos + 2);
-                dprintf(NULL, "offset1=0x%04x offset2=0x%04x\n", offset1, offset2);
+#ifdef DEBUG
+                av_log(NULL, AV_LOG_INFO, "offset1=0x%04x offset2=0x%04x\n", offset1, offset2);
+#endif
                 pos += 4;
                 break;
             case 0x86:
@@ -294,7 +309,9 @@ static int decode_dvd_subtitles(DVDSubContext *ctx, AVSubtitle *sub_header,
                     goto fail;
                 offset1 = AV_RB32(buf + pos);
                 offset2 = AV_RB32(buf + pos + 4);
-                dprintf(NULL, "offset1=0x%04x offset2=0x%04x\n", offset1, offset2);
+#ifdef DEBUG
+                av_log(NULL, AV_LOG_INFO, "offset1=0x%04x offset2=0x%04x\n", offset1, offset2);
+#endif
                 pos += 8;
                 break;
 
@@ -317,7 +334,9 @@ static int decode_dvd_subtitles(DVDSubContext *ctx, AVSubtitle *sub_header,
             case 0xff:
                 goto the_end;
             default:
-                dprintf(NULL, "unrecognised subpicture command 0x%x\n", cmd);
+#ifdef DEBUG
+                av_log(NULL, AV_LOG_INFO, "unrecognised subpicture command 0x%x\n", cmd);
+#endif
                 goto the_end;
             }
         }
@@ -353,13 +372,14 @@ static int decode_dvd_subtitles(DVDSubContext *ctx, AVSubtitle *sub_header,
                            buf, offset1, buf_size, is_8bit);
                 decode_rle(bitmap + w, w * 2, w, h / 2,
                            buf, offset2, buf_size, is_8bit);
-                sub_header->rects[0]->pict.data[1] = av_mallocz(AVPALETTE_SIZE);
                 if (is_8bit) {
                     if (yuv_palette == 0)
                         goto fail;
+                    sub_header->rects[0]->pict.data[1] = av_malloc(256 * 4);
                     sub_header->rects[0]->nb_colors = 256;
                     yuv_a_to_rgba(yuv_palette, alpha, (uint32_t*)sub_header->rects[0]->pict.data[1], 256);
                 } else {
+                    sub_header->rects[0]->pict.data[1] = av_malloc(4 * 4);
                     sub_header->rects[0]->nb_colors = 4;
                     fill_palette(ctx, sub_header->rects[0]->pict.data[1], 0xffff00);
                 }
@@ -367,7 +387,6 @@ static int decode_dvd_subtitles(DVDSubContext *ctx, AVSubtitle *sub_header,
                 sub_header->rects[0]->y = y1;
                 sub_header->rects[0]->w = w;
                 sub_header->rects[0]->h = h;
-                sub_header->rects[0]->type = SUBTITLE_BITMAP;
                 sub_header->rects[0]->pict.linesize[0] = w;
             }
         }
@@ -490,11 +509,9 @@ static void ppm_save(const char *filename, uint8_t *bitmap, int w, int h,
 
 static int dvdsub_decode(AVCodecContext *avctx,
                          void *data, int *data_size,
-                         AVPacket *avpkt)
+                         const uint8_t *buf, int buf_size)
 {
     DVDSubContext *ctx = (DVDSubContext*) avctx->priv_data;
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     AVSubtitle *sub = (void *)data;
     int is_menu;
 
@@ -510,9 +527,9 @@ static int dvdsub_decode(AVCodecContext *avctx,
         goto no_subtitle;
 
 #if defined(DEBUG)
-    dprintf(NULL, "start=%d ms end =%d ms\n",
-            sub->start_display_time,
-            sub->end_display_time);
+    av_log(NULL, AV_LOG_INFO, "start=%d ms end =%d ms\n",
+           sub->start_display_time,
+           sub->end_display_time);
     ppm_save("/tmp/a.ppm", sub->rects[0]->pict.data[0],
              sub->rects[0]->w, sub->rects[0]->h, sub->rects[0]->pict.data[1]);
 #endif

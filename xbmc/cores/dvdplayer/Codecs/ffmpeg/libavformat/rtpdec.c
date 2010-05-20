@@ -22,7 +22,7 @@
 /* needed for gethostname() */
 #define _XOPEN_SOURCE 600
 
-#include "libavcodec/get_bits.h"
+#include "libavcodec/bitstream.h"
 #include "avformat.h"
 #include "mpegts.h"
 
@@ -30,9 +30,7 @@
 #include "network.h"
 
 #include "rtpdec.h"
-#include "rtp_asf.h"
 #include "rtp_h264.h"
-#include "rtp_vorbis.h"
 
 //#define DEBUG
 
@@ -62,10 +60,6 @@ void av_register_rtp_dynamic_payload_handlers(void)
     ff_register_dynamic_payload_handler(&mp4v_es_handler);
     ff_register_dynamic_payload_handler(&mpeg4_generic_handler);
     ff_register_dynamic_payload_handler(&ff_h264_dynamic_handler);
-    ff_register_dynamic_payload_handler(&ff_vorbis_dynamic_handler);
-
-    ff_register_dynamic_payload_handler(&ff_ms_rtp_asf_pfv_handler);
-    ff_register_dynamic_payload_handler(&ff_ms_rtp_asf_pfa_handler);
 }
 
 static int rtcp_parse_packet(RTPDemuxContext *s, const unsigned char *buf, int len)
@@ -388,6 +382,7 @@ static void finalize_packet(RTPDemuxContext *s, AVPacket *pkt, uint32_t timestam
         addend = av_rescale(s->last_rtcp_ntp_time - s->first_rtcp_ntp_time, s->st->time_base.den, (uint64_t)s->st->time_base.num << 32);
         pkt->pts = addend + delta_timestamp;
     }
+    pkt->stream_index = s->st->index;
 }
 
 /**
@@ -478,7 +473,6 @@ int rtp_parse_packet(RTPDemuxContext *s, AVPacket *pkt,
             s->read_buf_index = 0;
             return 1;
         }
-        return 0;
     } else if (s->parse_packet) {
         rv = s->parse_packet(s->ic, s->dynamic_protocol_context,
                              s->st, pkt, &timestamp, buf, len, flags);
@@ -542,12 +536,9 @@ int rtp_parse_packet(RTPDemuxContext *s, AVPacket *pkt,
             break;
         }
 
-        pkt->stream_index = st->index;
+        // now perform timestamp things....
+        finalize_packet(s, pkt, timestamp);
     }
-
-    // now perform timestamp things....
-    finalize_packet(s, pkt, timestamp);
-
     return rv;
 }
 

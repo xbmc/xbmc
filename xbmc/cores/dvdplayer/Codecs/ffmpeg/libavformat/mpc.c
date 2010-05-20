@@ -19,10 +19,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavcodec/get_bits.h"
+#include "libavcodec/bitstream.h"
 #include "avformat.h"
 #include "id3v2.h"
-#include "apetag.h"
 
 #define MPC_FRAMESIZE  1152
 #define DELAY_FRAMES   32
@@ -58,32 +57,26 @@ static int mpc_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
     MPCContext *c = s->priv_data;
     AVStream *st;
-    int t, ret;
-    int64_t pos = url_ftell(s->pb);
+    int t;
 
     t = get_le24(s->pb);
     if(t != MKTAG('M', 'P', '+', 0)){
-        uint8_t buf[ID3v2_HEADER_SIZE];
-        if (url_fseek(s->pb, pos, SEEK_SET) < 0)
-            return -1;
-        ret = get_buffer(s->pb, buf, ID3v2_HEADER_SIZE);
-        if (ret != ID3v2_HEADER_SIZE || !ff_id3v2_match(buf)) {
+        if(t != MKTAG('I', 'D', '3', 0)){
             av_log(s, AV_LOG_ERROR, "Not a Musepack file\n");
             return -1;
         }
         /* skip ID3 tags and try again */
-        t = ff_id3v2_tag_len(buf) - ID3v2_HEADER_SIZE;
+        url_fskip(s->pb, 3);
+        t  = get_byte(s->pb) << 21;
+        t |= get_byte(s->pb) << 14;
+        t |= get_byte(s->pb) <<  7;
+        t |= get_byte(s->pb);
         av_log(s, AV_LOG_DEBUG, "Skipping %d(%X) bytes of ID3 data\n", t, t);
         url_fskip(s->pb, t);
         if(get_le24(s->pb) != MKTAG('M', 'P', '+', 0)){
             av_log(s, AV_LOG_ERROR, "Not a Musepack file\n");
             return -1;
         }
-        /* read ID3 tags */
-        if (url_fseek(s->pb, pos, SEEK_SET) < 0)
-            return -1;
-        ff_id3v2_read(s);
-        get_le24(s->pb);
     }
     c->ver = get_byte(s->pb);
     if(c->ver != 0x07 && c->ver != 0x17){
@@ -117,13 +110,6 @@ static int mpc_read_header(AVFormatContext *s, AVFormatParameters *ap)
     /* scan for seekpoints */
     s->start_time = 0;
     s->duration = (int64_t)c->fcount * MPC_FRAMESIZE * AV_TIME_BASE / st->codec->sample_rate;
-
-    /* try to read APE tags */
-    if (!url_is_streamed(s->pb)) {
-        int64_t pos = url_ftell(s->pb);
-        ff_ape_parse_tag(s);
-        url_fseek(s->pb, pos, SEEK_SET);
-    }
 
     return 0;
 }

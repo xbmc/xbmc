@@ -26,7 +26,7 @@
 
 #include "avcodec.h"
 #define ALT_BITSTREAM_READER_LE
-#include "get_bits.h"
+#include "bitstream.h"
 
 
 typedef struct SeqVideoContext {
@@ -187,10 +187,8 @@ static av_cold int seqvideo_decode_init(AVCodecContext *avctx)
 
 static int seqvideo_decode_frame(AVCodecContext *avctx,
                                  void *data, int *data_size,
-                                 AVPacket *avpkt)
+                                 const uint8_t *buf, int buf_size)
 {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
 
     SeqVideoContext *seq = avctx->priv_data;
 

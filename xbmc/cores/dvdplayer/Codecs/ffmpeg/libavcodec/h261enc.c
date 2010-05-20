@@ -55,7 +55,7 @@ void ff_h261_encode_picture_header(MpegEncContext * s, int picture_number){
     align_put_bits(&s->pb);
 
     /* Update the pointer to last GOB */
-    s->ptr_lastgob = put_bits_ptr(&s->pb);
+    s->ptr_lastgob = pbBufPtr(&s->pb);
 
     put_bits(&s->pb, 20, 0x10); /* PSC */
 
@@ -256,7 +256,7 @@ void ff_h261_encode_init(MpegEncContext *s){
  */
 static void h261_encode_block(H261Context * h, DCTELEM * block, int n){
     MpegEncContext * const s = &h->s;
-    int level, run, i, j, last_index, last_non_zero, sign, slevel, code;
+    int level, run, last, i, j, last_index, last_non_zero, sign, slevel, code;
     RLTable *rl;
 
     rl = &h261_rl_tcoeff;
@@ -294,6 +294,7 @@ static void h261_encode_block(H261Context * h, DCTELEM * block, int n){
         level = block[j];
         if (level) {
             run = i - last_non_zero - 1;
+            last = (i == last_index);
             sign = 0;
             slevel = level;
             if (level < 0) {
@@ -328,7 +329,7 @@ AVCodec h261_encoder = {
     MPV_encode_init,
     MPV_encode_picture,
     MPV_encode_end,
-    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
+    .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("H.261"),
 };
 

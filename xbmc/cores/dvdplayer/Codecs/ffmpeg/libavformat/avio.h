@@ -30,7 +30,7 @@
 
 #include <stdint.h>
 
-#include "libavutil/common.h"
+#include "Codecs/ffmpeg/libavutil/common.h"
 
 /* unbuffered I/O */
 
@@ -41,7 +41,7 @@
  * version bump.
  * sizeof(URLContext) must not be used outside libav*.
  */
-typedef struct URLContext {
+struct URLContext {
 #if LIBAVFORMAT_VERSION_MAJOR >= 53
     const AVClass *av_class; ///< information for av_log(). Set by url_open().
 #endif
@@ -51,7 +51,9 @@ typedef struct URLContext {
     int max_packet_size;  /**< if non zero, the stream is packetized with this max packet size */
     void *priv_data;
     char *filename; /**< specified filename */
-} URLContext;
+};
+
+typedef struct URLContext URLContext;
 
 typedef struct URLPollEntry {
     URLContext *handle;
@@ -69,21 +71,11 @@ int url_open_protocol (URLContext **puc, struct URLProtocol *up,
                        const char *filename, int flags);
 int url_open(URLContext **h, const char *filename, int flags);
 int url_read(URLContext *h, unsigned char *buf, int size);
-int url_read_complete(URLContext *h, unsigned char *buf, int size);
 int url_write(URLContext *h, unsigned char *buf, int size);
 int64_t url_seek(URLContext *h, int64_t pos, int whence);
 int url_close(URLContext *h);
 int url_exist(const char *filename);
 int64_t url_filesize(URLContext *h);
-
-/**
- * Return the file descriptor associated with this URL. For RTP, this
- * will return only the RTP file descriptor, not the RTCP file descriptor.
- * To get both, use rtp_get_file_handles().
- *
- * @return the file descriptor associated with this URL, or <0 on error.
- */
-int url_get_file_handle(URLContext *h);
 
 /**
  * Return the maximum packet size associated to packetized file
@@ -152,7 +144,6 @@ typedef struct URLProtocol {
     int (*url_read_pause)(URLContext *h, int pause);
     int64_t (*url_read_seek)(URLContext *h, int stream_index,
                              int64_t timestamp, int flags);
-    int (*url_get_file_handle)(URLContext *h);
 } URLProtocol;
 
 #if LIBAVFORMAT_VERSION_MAJOR < 53
@@ -333,13 +324,11 @@ int url_fdopen(ByteIOContext **s, URLContext *h);
 
 /** @warning must be called before any I/O */
 int url_setbufsize(ByteIOContext *s, int buf_size);
-#if LIBAVFORMAT_VERSION_MAJOR < 53
 /** Reset the buffer for reading or writing.
  * @note Will drop any data currently in the buffer without transmitting it.
  * @param flags URL_RDONLY to set up the buffer for reading, or URL_WRONLY
  *        to set up the buffer for writing. */
 int url_resetbuf(ByteIOContext *s, int flags);
-#endif
 
 /** @note when opened as read/write, the buffers are only used for
     writing */
@@ -400,8 +389,6 @@ void init_checksum(ByteIOContext *s,
 /* udp.c */
 int udp_set_remote_url(URLContext *h, const char *uri);
 int udp_get_local_port(URLContext *h);
-#if (LIBAVFORMAT_VERSION_MAJOR <= 52)
 int udp_get_file_handle(URLContext *h);
-#endif
 
 #endif /* AVFORMAT_AVIO_H */

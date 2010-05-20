@@ -53,18 +53,18 @@ static av_cold void h261_decode_init_vlc(H261Context *h){
 
     if(!done){
         done = 1;
-        INIT_VLC_STATIC(&h261_mba_vlc, H261_MBA_VLC_BITS, 35,
+        init_vlc(&h261_mba_vlc, H261_MBA_VLC_BITS, 35,
                  h261_mba_bits, 1, 1,
-                 h261_mba_code, 1, 1, 662);
-        INIT_VLC_STATIC(&h261_mtype_vlc, H261_MTYPE_VLC_BITS, 10,
+                 h261_mba_code, 1, 1, 1);
+        init_vlc(&h261_mtype_vlc, H261_MTYPE_VLC_BITS, 10,
                  h261_mtype_bits, 1, 1,
-                 h261_mtype_code, 1, 1, 80);
-        INIT_VLC_STATIC(&h261_mv_vlc, H261_MV_VLC_BITS, 17,
+                 h261_mtype_code, 1, 1, 1);
+        init_vlc(&h261_mv_vlc, H261_MV_VLC_BITS, 17,
                  &h261_mv_tab[0][1], 2, 1,
-                 &h261_mv_tab[0][0], 2, 1, 144);
-        INIT_VLC_STATIC(&h261_cbp_vlc, H261_CBP_VLC_BITS, 63,
+                 &h261_mv_tab[0][0], 2, 1, 1);
+        init_vlc(&h261_cbp_vlc, H261_CBP_VLC_BITS, 63,
                  &h261_cbp_tab[0][1], 2, 1,
-                 &h261_cbp_tab[0][0], 2, 1, 512);
+                 &h261_cbp_tab[0][0], 2, 1, 1);
         init_rl(&h261_rl_tcoeff, ff_h261_rl_table_store);
         INIT_VLC_RL(h261_rl_tcoeff, 552);
     }
@@ -170,7 +170,7 @@ static int ff_h261_resync(H261Context *h){
         //OK, it is not where it is supposed to be ...
         s->gb= s->last_resync_gb;
         align_get_bits(&s->gb);
-        left= get_bits_left(&s->gb);
+        left= s->gb.size_in_bits - get_bits_count(&s->gb);
 
         for(;left>15+1+4+5; left-=8){
             if(show_bits(&s->gb, 15)==0){
@@ -444,7 +444,7 @@ static int h261_decode_picture_header(H261Context *h){
     int format, i;
     uint32_t startcode= 0;
 
-    for(i= get_bits_left(&s->gb); i>24; i-=1){
+    for(i= s->gb.size_in_bits - get_bits_count(&s->gb); i>24; i-=1){
         startcode = ((startcode << 1) | get_bits(&s->gb, 1)) & 0x000FFFFF;
 
         if(startcode == 0x10)
@@ -543,17 +543,17 @@ static int get_consumed_bytes(MpegEncContext *s, int buf_size){
 
 static int h261_decode_frame(AVCodecContext *avctx,
                              void *data, int *data_size,
-                             AVPacket *avpkt)
+                             const uint8_t *buf, int buf_size)
 {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     H261Context *h= avctx->priv_data;
     MpegEncContext *s = &h->s;
     int ret;
     AVFrame *pict = data;
 
-    dprintf(avctx, "*****frame %d size=%d\n", avctx->frame_number, buf_size);
-    dprintf(avctx, "bytes=%x %x %x %x\n", buf[0], buf[1], buf[2], buf[3]);
+#ifdef DEBUG
+    av_log(avctx, AV_LOG_DEBUG, "*****frame %d size=%d\n", avctx->frame_number, buf_size);
+    av_log(avctx, AV_LOG_DEBUG, "bytes=%x %x %x %x\n", buf[0], buf[1], buf[2], buf[3]);
+#endif
     s->flags= avctx->flags;
     s->flags2= avctx->flags2;
 

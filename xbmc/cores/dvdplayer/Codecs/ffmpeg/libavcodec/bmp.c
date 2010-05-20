@@ -35,10 +35,8 @@ static av_cold int bmp_decode_init(AVCodecContext *avctx){
 
 static int bmp_decode_frame(AVCodecContext *avctx,
                             void *data, int *data_size,
-                            AVPacket *avpkt)
+                            const uint8_t *buf, int buf_size)
 {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     BMPContext *s = avctx->priv_data;
     AVFrame *picture = data;
     AVFrame *p = &s->picture;
@@ -231,42 +229,21 @@ static int bmp_decode_frame(AVCodecContext *avctx,
     }
 
     if(avctx->pix_fmt == PIX_FMT_PAL8){
-        int colors = 1 << depth;
-        if(ihsize >= 36){
-            int t;
-            buf = buf0 + 46;
-            t = bytestream_get_le32(&buf);
-            if(t < 0 || t > (1 << depth)){
-                av_log(avctx, AV_LOG_ERROR, "Incorrect number of colors - %X for bitdepth %d\n", t, depth);
-            }else if(t){
-                colors = t;
-            }
-        }
         buf = buf0 + 14 + ihsize; //palette location
-        if((hsize-ihsize-14) < (colors << 2)){ // OS/2 bitmap, 3 bytes per palette entry
-            for(i = 0; i < colors; i++)
+        if((hsize-ihsize-14)>>depth < 4){ // OS/2 bitmap, 3 bytes per palette entry
+            for(i = 0; i < (1 << depth); i++)
                 ((uint32_t*)p->data[1])[i] = bytestream_get_le24(&buf);
         }else{
-            for(i = 0; i < colors; i++)
+            for(i = 0; i < (1 << depth); i++)
                 ((uint32_t*)p->data[1])[i] = bytestream_get_le32(&buf);
         }
         buf = buf0 + hsize;
     }
     if(comp == BMP_RLE4 || comp == BMP_RLE8){
-        if(height < 0){
-            p->data[0] += p->linesize[0] * (avctx->height - 1);
-            p->linesize[0] = -p->linesize[0];
-        }
         ff_msrle_decode(avctx, (AVPicture*)p, depth, buf, dsize);
-        if(height < 0){
-            p->data[0] += p->linesize[0] * (avctx->height - 1);
-            p->linesize[0] = -p->linesize[0];
-        }
     }else{
         switch(depth){
         case 1:
-        case 8:
-        case 24:
             for(i = 0; i < avctx->height; i++){
                 memcpy(ptr, buf, n);
                 buf += n;
@@ -280,6 +257,20 @@ static int bmp_decode_frame(AVCodecContext *avctx,
                     ptr[j*2+0] = (buf[j] >> 4) & 0xF;
                     ptr[j*2+1] = buf[j] & 0xF;
                 }
+                buf += n;
+                ptr += linesize;
+            }
+            break;
+        case 8:
+            for(i = 0; i < avctx->height; i++){
+                memcpy(ptr, buf, avctx->width);
+                buf += n;
+                ptr += linesize;
+            }
+            break;
+        case 24:
+            for(i = 0; i < avctx->height; i++){
+                memcpy(ptr, buf, avctx->width*(depth>>3));
                 buf += n;
                 ptr += linesize;
             }
@@ -344,6 +335,5 @@ AVCodec bmp_decoder = {
     NULL,
     bmp_decode_end,
     bmp_decode_frame,
-    CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("BMP image"),
 };

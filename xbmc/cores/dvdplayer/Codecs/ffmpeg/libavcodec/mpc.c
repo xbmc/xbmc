@@ -25,17 +25,20 @@
  * divided into 32 subbands.
  */
 
+#include "libavutil/random.h"
 #include "avcodec.h"
-#include "get_bits.h"
+#include "bitstream.h"
 #include "dsputil.h"
 #include "mpegaudio.h"
 
 #include "mpc.h"
 #include "mpcdata.h"
 
+static DECLARE_ALIGNED_16(MPA_INT, mpa_window[512]);
+
 void ff_mpc_init(void)
 {
-    ff_mpa_synth_init(ff_mpa_synth_window);
+    ff_mpa_synth_init(mpa_window);
 }
 
 /**
@@ -51,7 +54,7 @@ static void mpc_synth(MPCContext *c, int16_t *out)
         samples_ptr = samples + ch;
         for(i = 0; i < SAMPLES_PER_BAND; i++) {
             ff_mpa_synth_filter(c->synth_buf[ch], &(c->synth_buf_offset[ch]),
-                                ff_mpa_synth_window, &dither_state,
+                                mpa_window, &dither_state,
                                 samples_ptr, 2,
                                 c->sb_samples[ch][i]);
             samples_ptr += 64;

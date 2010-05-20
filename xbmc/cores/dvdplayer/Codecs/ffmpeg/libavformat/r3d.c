@@ -55,7 +55,7 @@ static int r3d_read_red1(AVFormatContext *s)
     int tmp, tmp2;
 
     if (!st)
-        return AVERROR(ENOMEM);
+        return -1;
     st->codec->codec_type = CODEC_TYPE_VIDEO;
     st->codec->codec_id = CODEC_ID_JPEG2000;
 
@@ -87,8 +87,6 @@ static int r3d_read_red1(AVFormatContext *s)
     dprintf(s, "audio channels %d\n", tmp);
     if (tmp > 0) {
         AVStream *ast = av_new_stream(s, 1);
-        if (!ast)
-            return AVERROR(ENOMEM);
         ast->codec->codec_type = CODEC_TYPE_AUDIO;
         ast->codec->codec_id = CODEC_ID_PCM_S32BE;
         ast->codec->channels = tmp;

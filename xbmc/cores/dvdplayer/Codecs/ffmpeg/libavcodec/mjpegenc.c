@@ -135,7 +135,7 @@ static void jpeg_table_header(MpegEncContext *s)
     /* huffman table */
     put_marker(p, DHT);
     flush_put_bits(p);
-    ptr = put_bits_ptr(p);
+    ptr = pbBufPtr(p);
     put_bits(p, 16, 0); /* patched later */
     size = 2;
     size += put_huffman_table(s, 0, 0, ff_mjpeg_bits_dc_luminance,
@@ -174,7 +174,7 @@ static void jpeg_put_comments(MpegEncContext *s)
     if(!(s->flags & CODEC_FLAG_BITEXACT)){
         put_marker(p, COM);
         flush_put_bits(p);
-        ptr = put_bits_ptr(p);
+        ptr = pbBufPtr(p);
         put_bits(p, 16, 0); /* patched later */
         ff_put_string(p, LIBAVCODEC_IDENT, 1);
         size = strlen(LIBAVCODEC_IDENT)+3;
@@ -186,7 +186,7 @@ static void jpeg_put_comments(MpegEncContext *s)
        ||s->avctx->pix_fmt == PIX_FMT_YUV444P){
         put_marker(p, COM);
         flush_put_bits(p);
-        ptr = put_bits_ptr(p);
+        ptr = pbBufPtr(p);
         put_bits(p, 16, 0); /* patched later */
         ff_put_string(p, "CS=ITU601", 1);
         size = strlen("CS=ITU601")+3;
@@ -211,7 +211,7 @@ void ff_mjpeg_encode_picture_header(MpegEncContext *s)
     }
 
     put_bits(&s->pb, 16, 17);
-    if(lossless && s->avctx->pix_fmt == PIX_FMT_BGRA)
+    if(lossless && s->avctx->pix_fmt == PIX_FMT_RGB32)
         put_bits(&s->pb, 8, 9); /* 9 bits/component RCT */
     else
         put_bits(&s->pb, 8, 8); /* 8 bits/component */
@@ -313,8 +313,11 @@ static void escape_FF(MpegEncContext *s, int start)
 
     if(ff_count==0) return;
 
+    /* skip put bits */
+    for(i=0; i<ff_count-3; i+=4)
+        put_bits(&s->pb, 32, 0);
+    put_bits(&s->pb, (ff_count-i)*8, 0);
     flush_put_bits(&s->pb);
-    skip_put_bytes(&s->pb, ff_count);
 
     for(i=size-1; ff_count; i--){
         int v= buf[i];
@@ -451,6 +454,6 @@ AVCodec mjpeg_encoder = {
     MPV_encode_init,
     MPV_encode_picture,
     MPV_encode_end,
-    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUVJ420P, PIX_FMT_YUVJ422P, PIX_FMT_NONE},
+    .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUVJ420P, PIX_FMT_YUVJ422P, PIX_FMT_NONE},
     .long_name= NULL_IF_CONFIG_SMALL("MJPEG (Motion JPEG)"),
 };

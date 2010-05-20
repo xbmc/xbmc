@@ -30,6 +30,7 @@
 #ifndef AVCODEC_AAC_H
 #define AVCODEC_AAC_H
 
+#include "libavutil/internal.h"
 #include "avcodec.h"
 #include "dsputil.h"
 #include "mpeg4audio.h"
@@ -46,6 +47,36 @@
 #define MAX_ELEM_ID 16
 
 #define TNS_MAX_ORDER 20
+
+enum AudioObjectType {
+    AOT_NULL,
+                               // Support?                Name
+    AOT_AAC_MAIN,              ///< Y                       Main
+    AOT_AAC_LC,                ///< Y                       Low Complexity
+    AOT_AAC_SSR,               ///< N (code in SoC repo)    Scalable Sample Rate
+    AOT_AAC_LTP,               ///< N (code in SoC repo)    Long Term Prediction
+    AOT_SBR,                   ///< N (in progress)         Spectral Band Replication
+    AOT_AAC_SCALABLE,          ///< N                       Scalable
+    AOT_TWINVQ,                ///< N                       Twin Vector Quantizer
+    AOT_CELP,                  ///< N                       Code Excited Linear Prediction
+    AOT_HVXC,                  ///< N                       Harmonic Vector eXcitation Coding
+    AOT_TTSI             = 12, ///< N                       Text-To-Speech Interface
+    AOT_MAINSYNTH,             ///< N                       Main Synthesis
+    AOT_WAVESYNTH,             ///< N                       Wavetable Synthesis
+    AOT_MIDI,                  ///< N                       General MIDI
+    AOT_SAFX,                  ///< N                       Algorithmic Synthesis and Audio Effects
+    AOT_ER_AAC_LC,             ///< N                       Error Resilient Low Complexity
+    AOT_ER_AAC_LTP       = 19, ///< N                       Error Resilient Long Term Prediction
+    AOT_ER_AAC_SCALABLE,       ///< N                       Error Resilient Scalable
+    AOT_ER_TWINVQ,             ///< N                       Error Resilient Twin Vector Quantizer
+    AOT_ER_BSAC,               ///< N                       Error Resilient Bit-Sliced Arithmetic Coding
+    AOT_ER_AAC_LD,             ///< N                       Error Resilient Low Delay
+    AOT_ER_CELP,               ///< N                       Error Resilient Code Excited Linear Prediction
+    AOT_ER_HVXC,               ///< N                       Error Resilient Harmonic Vector eXcitation Coding
+    AOT_ER_HILN,               ///< N                       Error Resilient Harmonic and Individual Lines plus Noise
+    AOT_ER_PARAM,              ///< N                       Error Resilient Parametric
+    AOT_SSC,                   ///< N                       SinuSoidal Coding
+};
 
 enum RawDataBlockType {
     TYPE_SCE,
@@ -103,17 +134,6 @@ enum CouplingPoint {
 };
 
 /**
- * Output configuration status
- */
-enum OCStatus {
-    OC_NONE,        //< Output unconfigured
-    OC_TRIAL_PCE,   //< Output configuration under trial specified by an inband PCE
-    OC_TRIAL_FRAME, //< Output configuration under trial specified by a frame header
-    OC_GLOBAL_HDR,  //< Output configuration set in a global header but not yet locked
-    OC_LOCKED,      //< Output configuration locked in place
-};
-
-/**
  * Predictor State
  */
 typedef struct {
@@ -127,12 +147,6 @@ typedef struct {
 
 #define MAX_PREDICTORS 672
 
-#define SCALE_DIV_512    36    ///< scalefactor difference that corresponds to scale difference in 512 times
-#define SCALE_ONE_POS   140    ///< scalefactor index that corresponds to scale=1.0
-#define SCALE_MAX_POS   255    ///< scalefactor index maximum value
-#define SCALE_MAX_DIFF   60    ///< maximum scalefactor difference allowed by standard
-#define SCALE_DIFF_ZERO  60    ///< codebook index corresponding to zero scalefactor indices difference
-
 /**
  * Individual Channel Stream
  */
@@ -143,7 +157,6 @@ typedef struct {
     int num_window_groups;
     uint8_t group_len[8];
     const uint16_t *swb_offset; ///< table of offsets to the lowest spectral coefficient of a scalefactor band, sfb, for a particular window
-    const uint8_t *swb_sizes;   ///< table of scalefactor band sizes for a particular window
     int num_swb;                ///< number of scalefactor window bands
     int num_windows;
     int tns_max_bands;
@@ -183,7 +196,6 @@ typedef struct {
 
 typedef struct {
     int num_pulse;
-    int start;
     int pos[4];
     int amp[4];
 } Pulse;
@@ -208,14 +220,11 @@ typedef struct {
 typedef struct {
     IndividualChannelStream ics;
     TemporalNoiseShaping tns;
-    Pulse pulse;
-    enum BandType band_type[128];             ///< band types
+    enum BandType band_type[120];             ///< band types
     int band_type_run_end[120];               ///< band type run end points
     float sf[120];                            ///< scalefactors
-    int sf_idx[128];                          ///< scalefactor indices (used by encoder)
-    uint8_t zeroes[128];                      ///< band is not coded (used by encoder)
     DECLARE_ALIGNED_16(float, coeffs[1024]);  ///< coefficients for IMDCT
-    DECLARE_ALIGNED_16(float, saved[1024]);   ///< overlap
+    DECLARE_ALIGNED_16(float, saved[512]);    ///< overlap
     DECLARE_ALIGNED_16(float, ret[1024]);     ///< PCM output
     PredictorState predictor_state[MAX_PREDICTORS];
 } SingleChannelElement;
@@ -225,9 +234,7 @@ typedef struct {
  */
 typedef struct {
     // CPE specific
-    int common_window;        ///< Set if channels share a common 'IndividualChannelStream' in bitstream.
-    int     ms_mode;          ///< Signals mid/side stereo flags coding mode (used by encoder)
-    uint8_t ms_mask[128];     ///< Set if mid/side stereo is used for each scalefactor window band
+    uint8_t ms_mask[120];     ///< Set if mid/side stereo is used for each scalefactor window band
     // shared
     SingleChannelElement ch[2];
     // CCE specific
@@ -253,8 +260,6 @@ typedef struct {
                                                    *   first index as the first 4 raw data block types
                                                    */
     ChannelElement * che[4][MAX_ELEM_ID];
-    ChannelElement * tag_che_map[4][MAX_ELEM_ID];
-    int tags_mapped;
     /** @} */
 
     /**
@@ -268,8 +273,8 @@ typedef struct {
      * @defgroup tables   Computed / set up during initialization.
      * @{
      */
-    FFTContext mdct;
-    FFTContext mdct_small;
+    MDCTContext mdct;
+    MDCTContext mdct_small;
     DSPContext dsp;
     int random_state;
     /** @} */
@@ -285,8 +290,6 @@ typedef struct {
     /** @} */
 
     DECLARE_ALIGNED(16, float, temp[128]);
-
-    enum OCStatus output_configured;
 } AACContext;
 
 #endif /* AVCODEC_AAC_H */

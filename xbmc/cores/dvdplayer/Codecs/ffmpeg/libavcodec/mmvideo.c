@@ -58,6 +58,9 @@ static av_cold int mm_decode_init(AVCodecContext *avctx)
 
     avctx->pix_fmt = PIX_FMT_PAL8;
 
+    if (avcodec_check_dimensions(avctx, avctx->width, avctx->height))
+        return -1;
+
     s->frame.reference = 1;
     if (avctx->get_buffer(avctx, &s->frame)) {
         av_log(s->avctx, AV_LOG_ERROR, "mmvideo: get_buffer() failed\n");
@@ -156,10 +159,8 @@ static void mm_decode_inter(MmContext * s, int half_horiz, int half_vert, const 
 
 static int mm_decode_frame(AVCodecContext *avctx,
                             void *data, int *data_size,
-                            AVPacket *avpkt)
+                            const uint8_t *buf, int buf_size)
 {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     MmContext *s = avctx->priv_data;
     const uint8_t *buf_end = buf+buf_size;
     int type;

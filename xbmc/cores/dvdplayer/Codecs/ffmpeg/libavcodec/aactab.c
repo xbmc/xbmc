@@ -409,7 +409,7 @@ const uint16_t ff_aac_spectral_sizes[11] = {
  * 64.0f is a special value indicating the existence of an escape code in the
  * bitstream.
  */
-static const DECLARE_ALIGNED_16(float, codebook_vector0[324]) = {
+static const float codebook_vector0[324] = {
  -1.0000000, -1.0000000, -1.0000000, -1.0000000,
  -1.0000000, -1.0000000, -1.0000000,  0.0000000,
  -1.0000000, -1.0000000, -1.0000000,  1.0000000,
@@ -493,7 +493,7 @@ static const DECLARE_ALIGNED_16(float, codebook_vector0[324]) = {
   1.0000000,  1.0000000,  1.0000000,  1.0000000,
 };
 
-static const DECLARE_ALIGNED_16(float, codebook_vector2[324]) = {
+static const float codebook_vector2[324] = {
   0.0000000,  0.0000000,  0.0000000,  0.0000000,
   0.0000000,  0.0000000,  0.0000000,  1.0000000,
   0.0000000,  0.0000000,  0.0000000,  2.5198421,
@@ -577,7 +577,7 @@ static const DECLARE_ALIGNED_16(float, codebook_vector2[324]) = {
   2.5198421,  2.5198421,  2.5198421,  2.5198421,
 };
 
-static const DECLARE_ALIGNED_16(float, codebook_vector4[162]) = {
+static const float codebook_vector4[162] = {
  -6.3496042, -6.3496042, -6.3496042, -4.3267487,
  -6.3496042, -2.5198421, -6.3496042, -1.0000000,
  -6.3496042,  0.0000000, -6.3496042,  1.0000000,
@@ -621,7 +621,7 @@ static const DECLARE_ALIGNED_16(float, codebook_vector4[162]) = {
   6.3496042,  6.3496042,
 };
 
-static const DECLARE_ALIGNED_16(float, codebook_vector6[128]) = {
+static const float codebook_vector6[128] = {
   0.0000000,  0.0000000,  0.0000000,  1.0000000,
   0.0000000,  2.5198421,  0.0000000,  4.3267487,
   0.0000000,  6.3496042,  0.0000000,  8.5498797,
@@ -656,7 +656,7 @@ static const DECLARE_ALIGNED_16(float, codebook_vector6[128]) = {
  13.3905183, 10.9027236, 13.3905183, 13.3905183,
 };
 
-static const DECLARE_ALIGNED_16(float, codebook_vector8[338]) = {
+static const float codebook_vector8[338] = {
   0.0000000,  0.0000000,  0.0000000,  1.0000000,
   0.0000000,  2.5198421,  0.0000000,  4.3267487,
   0.0000000,  6.3496042,  0.0000000,  8.5498797,
@@ -744,7 +744,7 @@ static const DECLARE_ALIGNED_16(float, codebook_vector8[338]) = {
  27.4731418, 27.4731418,
 };
 
-static const DECLARE_ALIGNED_16(float, codebook_vector10[578]) = {
+static const float codebook_vector10[578] = {
   0.0000000,  0.0000000,  0.0000000,  1.0000000,
   0.0000000,  2.5198421,  0.0000000,  4.3267487,
   0.0000000,  6.3496042,  0.0000000,  8.5498797,
@@ -898,146 +898,6 @@ const float * const ff_aac_codebook_vectors[] = {
     codebook_vector6, codebook_vector6, codebook_vector8,
     codebook_vector8, codebook_vector10,
 };
-
-/* @name swb_offsets
- * Sample offset into the window indicating the beginning of a scalefactor
- * window band
- *
- * scalefactor window band - term for scalefactor bands within a window,
- * given in Table 4.110 to Table 4.128.
- *
- * scalefactor band - a set of spectral coefficients which are scaled by one
- * scalefactor. In case of EIGHT_SHORT_SEQUENCE and grouping a scalefactor band
- * may contain several scalefactor window bands of corresponding frequency. For
- * all other window_sequences scalefactor bands and scalefactor window bands are
- * identical.
- * @{
- */
-
-static const uint16_t swb_offset_1024_96[] = {
-      0,   4,   8,  12,  16,  20,  24,  28,
-     32,  36,  40,  44,  48,  52,  56,  64,
-     72,  80,  88,  96, 108, 120, 132, 144,
-    156, 172, 188, 212, 240, 276, 320, 384,
-    448, 512, 576, 640, 704, 768, 832, 896,
-    960, 1024
-};
-
-static const uint16_t swb_offset_128_96[] = {
-    0, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 92, 128
-};
-
-static const uint16_t swb_offset_1024_64[] = {
-      0,   4,   8,  12,  16,  20,  24,  28,
-     32,  36,  40,  44,  48,  52,  56,  64,
-     72,  80,  88, 100, 112, 124, 140, 156,
-    172, 192, 216, 240, 268, 304, 344, 384,
-    424, 464, 504, 544, 584, 624, 664, 704,
-    744, 784, 824, 864, 904, 944, 984, 1024
-};
-
-static const uint16_t swb_offset_1024_48[] = {
-      0,   4,   8,  12,  16,  20,  24,  28,
-     32,  36,  40,  48,  56,  64,  72,  80,
-     88,  96, 108, 120, 132, 144, 160, 176,
-    196, 216, 240, 264, 292, 320, 352, 384,
-    416, 448, 480, 512, 544, 576, 608, 640,
-    672, 704, 736, 768, 800, 832, 864, 896,
-    928, 1024
-};
-
-static const uint16_t swb_offset_128_48[] = {
-     0,   4,   8,  12,  16,  20,  28,  36,
-    44,  56,  68,  80,  96, 112, 128
-};
-
-static const uint16_t swb_offset_1024_32[] = {
-      0,   4,   8,  12,  16,  20,  24,  28,
-     32,  36,  40,  48,  56,  64,  72,  80,
-     88,  96, 108, 120, 132, 144, 160, 176,
-    196, 216, 240, 264, 292, 320, 352, 384,
-    416, 448, 480, 512, 544, 576, 608, 640,
-    672, 704, 736, 768, 800, 832, 864, 896,
-    928, 960, 992, 1024
-};
-
-static const uint16_t swb_offset_1024_24[] = {
-      0,   4,   8,  12,  16,  20,  24,  28,
-     32,  36,  40,  44,  52,  60,  68,  76,
-     84,  92, 100, 108, 116, 124, 136, 148,
-    160, 172, 188, 204, 220, 240, 260, 284,
-    308, 336, 364, 396, 432, 468, 508, 552,
-    600, 652, 704, 768, 832, 896, 960, 1024
-};
-
-static const uint16_t swb_offset_128_24[] = {
-     0,   4,   8,  12,  16,  20,  24,  28,
-    36,  44,  52,  64,  76,  92, 108, 128
-};
-
-static const uint16_t swb_offset_1024_16[] = {
-      0,   8,  16,  24,  32,  40,  48,  56,
-     64,  72,  80,  88, 100, 112, 124, 136,
-    148, 160, 172, 184, 196, 212, 228, 244,
-    260, 280, 300, 320, 344, 368, 396, 424,
-    456, 492, 532, 572, 616, 664, 716, 772,
-    832, 896, 960, 1024
-};
-
-static const uint16_t swb_offset_128_16[] = {
-     0,   4,   8,  12,  16,  20,  24,  28,
-    32,  40,  48,  60,  72,  88, 108, 128
-};
-
-static const uint16_t swb_offset_1024_8[] = {
-      0,  12,  24,  36,  48,  60,  72,  84,
-     96, 108, 120, 132, 144, 156, 172, 188,
-    204, 220, 236, 252, 268, 288, 308, 328,
-    348, 372, 396, 420, 448, 476, 508, 544,
-    580, 620, 664, 712, 764, 820, 880, 944,
-    1024
-};
-
-static const uint16_t swb_offset_128_8[] = {
-     0,   4,   8,  12,  16,  20,  24,  28,
-    36,  44,  52,  60,  72,  88, 108, 128
-};
-
-const uint16_t * const ff_swb_offset_1024[] = {
-    swb_offset_1024_96, swb_offset_1024_96, swb_offset_1024_64,
-    swb_offset_1024_48, swb_offset_1024_48, swb_offset_1024_32,
-    swb_offset_1024_24, swb_offset_1024_24, swb_offset_1024_16,
-    swb_offset_1024_16, swb_offset_1024_16, swb_offset_1024_8,
-    swb_offset_1024_8
-};
-
-const uint16_t * const ff_swb_offset_128[] = {
-    /* The last entry on the following row is swb_offset_128_64 but is a
-       duplicate of swb_offset_128_96. */
-    swb_offset_128_96, swb_offset_128_96, swb_offset_128_96,
-    swb_offset_128_48, swb_offset_128_48, swb_offset_128_48,
-    swb_offset_128_24, swb_offset_128_24, swb_offset_128_16,
-    swb_offset_128_16, swb_offset_128_16, swb_offset_128_8,
-    swb_offset_128_8
-};
-
-// @}
-
-/* @name ff_tns_max_bands
- * The maximum number of scalefactor bands on which TNS can operate for the long
- * and short transforms respectively. The index to these tables is related to
- * the sample rate of the audio.
- * @{
- */
-const uint8_t ff_tns_max_bands_1024[] = {
-    31, 31, 34, 40, 42, 51, 46, 46, 42, 42, 42, 39, 39
-};
-
-const uint8_t ff_tns_max_bands_128[] = {
-    9, 9, 10, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14
-};
-// @}
-
 
 #if CONFIG_HARDCODED_TABLES
 

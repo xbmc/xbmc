@@ -40,7 +40,7 @@
 #include "dsputil.h"
 
 #define BITSTREAM_WRITER_LE
-#include "put_bits.h"
+#include "bitstream.h"
 
 #define POW_TABLE_SIZE (1<<11)
 #define POW_TABLE_OFFSET 3
@@ -52,9 +52,8 @@ typedef struct NellyMoserEncodeContext {
     int             bufsel;
     int             have_saved;
     DSPContext      dsp;
-    FFTContext      mdct_ctx;
+    MDCTContext     mdct_ctx;
     DECLARE_ALIGNED_16(float, mdct_out[NELLY_SAMPLES]);
-    DECLARE_ALIGNED_16(float, in_buff[NELLY_SAMPLES]);
     DECLARE_ALIGNED_16(float, buf[2][3 * NELLY_BUF_LEN]);     ///< sample buffer
     float           (*opt )[NELLY_BANDS];
     uint8_t         (*path)[NELLY_BANDS];
@@ -110,13 +109,15 @@ static const float quant_lut_mul[7] = { 0.0,  0.0,  2.0,  2.0,  5.0, 12.0,  36.6
 static const float quant_lut_add[7] = { 0.0,  0.0,  2.0,  7.0, 21.0, 56.0, 157.0 };
 static const uint8_t quant_lut_offset[8] = { 0, 0, 1, 4, 11, 32, 81, 230 };
 
-static void apply_mdct(NellyMoserEncodeContext *s)
+void apply_mdct(NellyMoserEncodeContext *s)
 {
-    memcpy(s->in_buff, s->buf[s->bufsel], NELLY_BUF_LEN * sizeof(float));
-    s->dsp.vector_fmul(s->in_buff, ff_sine_128, NELLY_BUF_LEN);
-    s->dsp.vector_fmul_reverse(s->in_buff + NELLY_BUF_LEN, s->buf[s->bufsel] + NELLY_BUF_LEN, ff_sine_128,
+    DECLARE_ALIGNED_16(float, in_buff[NELLY_SAMPLES]);
+
+    memcpy(in_buff, s->buf[s->bufsel], NELLY_BUF_LEN * sizeof(float));
+    s->dsp.vector_fmul(in_buff, ff_sine_128, NELLY_BUF_LEN);
+    s->dsp.vector_fmul_reverse(in_buff + NELLY_BUF_LEN, s->buf[s->bufsel] + NELLY_BUF_LEN, ff_sine_128,
                                NELLY_BUF_LEN);
-    ff_mdct_calc(&s->mdct_ctx, s->mdct_out, s->in_buff);
+    ff_mdct_calc(&s->mdct_ctx, s->mdct_out, in_buff);
 
     s->dsp.vector_fmul(s->buf[s->bufsel] + NELLY_BUF_LEN, ff_sine_128, NELLY_BUF_LEN);
     s->dsp.vector_fmul_reverse(s->buf[s->bufsel] + 2 * NELLY_BUF_LEN, s->buf[1 - s->bufsel], ff_sine_128,
@@ -134,17 +135,16 @@ static av_cold int encode_init(AVCodecContext *avctx)
         return -1;
     }
 
-    if (avctx->sample_rate != 8000 && avctx->sample_rate != 16000 &&
-        avctx->sample_rate != 11025 &&
+    if (avctx->sample_rate != 8000 && avctx->sample_rate != 11025 &&
         avctx->sample_rate != 22050 && avctx->sample_rate != 44100 &&
         avctx->strict_std_compliance >= FF_COMPLIANCE_NORMAL) {
-        av_log(avctx, AV_LOG_ERROR, "Nellymoser works only with 8000, 16000, 11025, 22050 and 44100 sample rate\n");
+        av_log(avctx, AV_LOG_ERROR, "Nellymoser works only with 8000, 11025, 22050 and 44100 sample rate\n");
         return -1;
     }
 
     avctx->frame_size = NELLY_SAMPLES;
     s->avctx = avctx;
-    ff_mdct_init(&s->mdct_ctx, 8, 0, 1.0);
+    ff_mdct_init(&s->mdct_ctx, 8, 0);
     dsputil_init(&s->dsp, avctx);
 
     /* Generate overlap window */

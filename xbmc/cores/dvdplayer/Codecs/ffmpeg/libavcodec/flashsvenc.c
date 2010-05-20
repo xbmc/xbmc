@@ -59,7 +59,7 @@
 #include <zlib.h>
 
 #include "avcodec.h"
-#include "put_bits.h"
+#include "bitstream.h"
 #include "bytestream.h"
 
 
@@ -105,6 +105,10 @@ static av_cold int flashsv_encode_init(AVCodecContext *avctx)
 
     if ((avctx->width > 4095) || (avctx->height > 4095)) {
         av_log(avctx, AV_LOG_ERROR, "Input dimensions too large, input must be max 4096x4096 !\n");
+        return -1;
+    }
+
+    if (avcodec_check_dimensions(avctx, avctx->width, avctx->height) < 0) {
         return -1;
     }
 
@@ -288,7 +292,7 @@ AVCodec flashsv_encoder = {
     flashsv_encode_init,
     flashsv_encode_frame,
     flashsv_encode_end,
-    .pix_fmts = (const enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_NONE},
+    .pix_fmts = (enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("Flash Screen Video"),
 };
 

@@ -1,5 +1,5 @@
 /*
- * Microsoft RLE decoder
+ * Micrsoft RLE Decoder
  * Copyright (C) 2008 Konstantin Shishkov
  *
  * This file is part of FFmpeg.
@@ -25,7 +25,7 @@
 #include "avcodec.h"
 
 /**
- * Decodes stream in MS RLE format into frame.
+ * decode stream in MS RLE format into frame
  *
  * @param avctx     codec context
  * @param pic       destination frame

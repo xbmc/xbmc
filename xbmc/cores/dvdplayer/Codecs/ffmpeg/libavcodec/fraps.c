@@ -32,7 +32,7 @@
  */
 
 #include "avcodec.h"
-#include "get_bits.h"
+#include "bitstream.h"
 #include "huffman.h"
 #include "bytestream.h"
 #include "dsputil.h"
@@ -63,6 +63,7 @@ static av_cold int decode_init(AVCodecContext *avctx)
     avctx->pix_fmt= PIX_FMT_NONE; /* set in decode_frame */
 
     s->avctx = avctx;
+    s->frame.data[0] = NULL;
     s->tmpbuf = NULL;
 
     dsputil_init(&s->dsp, avctx);
@@ -129,10 +130,8 @@ static int fraps2_decode_plane(FrapsContext *s, uint8_t *dst, int stride, int w,
  */
 static int decode_frame(AVCodecContext *avctx,
                         void *data, int *data_size,
-                        AVPacket *avpkt)
+                        const uint8_t *buf, int buf_size)
 {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     FrapsContext * const s = avctx->priv_data;
     AVFrame *frame = data;
     AVFrame * const f = (AVFrame*)&s->frame;
@@ -239,7 +238,7 @@ static int decode_frame(AVCodecContext *avctx,
             for(y=0; y<avctx->height; y++)
                 memcpy(&f->data[0][ (avctx->height-y)*f->linesize[0] ],
                        &buf[y*avctx->width*3],
-                       3*avctx->width);
+                       f->linesize[0]);
         }
         break;
 

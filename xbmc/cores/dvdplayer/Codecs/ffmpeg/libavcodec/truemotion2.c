@@ -25,7 +25,7 @@
  */
 
 #include "avcodec.h"
-#include "get_bits.h"
+#include "bitstream.h"
 #include "dsputil.h"
 
 #define TM2_ESCAPE 0x80000000
@@ -365,10 +365,10 @@ static inline int GET_TOK(TM2Context *ctx,int type) {
 
 /* recalculate last and delta values for next blocks */
 #define TM2_RECALC_BLOCK(CHR, stride, last, CD) {\
-    CD[0] = CHR[1] - last[1];\
+    CD[0] = (CHR[1] - 128) - last[1];\
     CD[1] = (int)CHR[stride + 1] - (int)CHR[1];\
-    last[0] = (int)CHR[stride + 0];\
-    last[1] = (int)CHR[stride + 1];}
+    last[0] = (int)CHR[stride + 0] - 128;\
+    last[1] = (int)CHR[stride + 1] - 128;}
 
 /* common operations - add deltas to 4x4 block of luma or 2x2 blocks of chroma */
 static inline void tm2_apply_deltas(TM2Context *ctx, int* Y, int stride, int *deltas, int *last)
@@ -396,7 +396,7 @@ static inline void tm2_high_chroma(int *data, int stride, int *last, int *CD, in
         for(i = 0; i < 2; i++){
             CD[j] += deltas[i + j * 2];
             last[i] += CD[j];
-            data[i] = last[i];
+            data[i] = last[i] + 128;
         }
         data += stride;
     }
@@ -675,8 +675,8 @@ static int tm2_decode_blocks(TM2Context *ctx, AVFrame *p)
     int bw, bh;
     int type;
     int keyframe = 1;
-    int *Y, *U, *V;
-    uint8_t *dst;
+    uint8_t *Y, *U, *V;
+    int *src;
 
     bw = ctx->avctx->width >> 2;
     bh = ctx->avctx->height >> 2;
@@ -729,23 +729,29 @@ static int tm2_decode_blocks(TM2Context *ctx, AVFrame *p)
     }
 
     /* copy data from our buffer to AVFrame */
-    Y = (ctx->cur?ctx->Y2:ctx->Y1);
-    U = (ctx->cur?ctx->U2:ctx->U1);
-    V = (ctx->cur?ctx->V2:ctx->V1);
-    dst = p->data[0];
+    Y = p->data[0];
+    src = (ctx->cur?ctx->Y2:ctx->Y1);
     for(j = 0; j < ctx->avctx->height; j++){
         for(i = 0; i < ctx->avctx->width; i++){
-            int y = Y[i], u = U[i >> 1], v = V[i >> 1];
-            dst[3*i+0] = av_clip_uint8(y + v);
-            dst[3*i+1] = av_clip_uint8(y);
-            dst[3*i+2] = av_clip_uint8(y + u);
+            Y[i] = av_clip_uint8(*src++);
         }
-        Y += ctx->avctx->width;
-        if (j & 1) {
-            U += ctx->avctx->width >> 1;
-            V += ctx->avctx->width >> 1;
+        Y += p->linesize[0];
+    }
+    U = p->data[2];
+    src = (ctx->cur?ctx->U2:ctx->U1);
+    for(j = 0; j < (ctx->avctx->height + 1) >> 1; j++){
+        for(i = 0; i < (ctx->avctx->width + 1) >> 1; i++){
+            U[i] = av_clip_uint8(*src++);
         }
-        dst += p->linesize[0];
+        U += p->linesize[2];
+    }
+    V = p->data[1];
+    src = (ctx->cur?ctx->V2:ctx->V1);
+    for(j = 0; j < (ctx->avctx->height + 1) >> 1; j++){
+        for(i = 0; i < (ctx->avctx->width + 1) >> 1; i++){
+            V[i] = av_clip_uint8(*src++);
+        }
+        V += p->linesize[1];
     }
 
     return keyframe;
@@ -757,10 +763,8 @@ static const int tm2_stream_order[TM2_NUM_STREAMS] = {
 
 static int decode_frame(AVCodecContext *avctx,
                         void *data, int *data_size,
-                        AVPacket *avpkt)
+                        const uint8_t *buf, int buf_size)
 {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     TM2Context * const l = avctx->priv_data;
     AVFrame * const p= (AVFrame*)&l->pic;
     int i, skip, t;
@@ -813,6 +817,9 @@ static av_cold int decode_init(AVCodecContext *avctx){
     TM2Context * const l = avctx->priv_data;
     int i;
 
+    if (avcodec_check_dimensions(avctx, avctx->width, avctx->height) < 0) {
+        return -1;
+    }
     if((avctx->width & 3) || (avctx->height & 3)){
         av_log(avctx, AV_LOG_ERROR, "Width and height must be multiple of 4\n");
         return -1;
@@ -820,7 +827,7 @@ static av_cold int decode_init(AVCodecContext *avctx){
 
     l->avctx = avctx;
     l->pic.data[0]=NULL;
-    avctx->pix_fmt = PIX_FMT_BGR24;
+    avctx->pix_fmt = PIX_FMT_YUV420P;
 
     dsputil_init(&l->dsp, avctx);
 
@@ -845,7 +852,6 @@ static av_cold int decode_init(AVCodecContext *avctx){
 
 static av_cold int decode_end(AVCodecContext *avctx){
     TM2Context * const l = avctx->priv_data;
-    AVFrame *pic = &l->pic;
     int i;
 
     if(l->last)
@@ -863,10 +869,6 @@ static av_cold int decode_end(AVCodecContext *avctx){
         av_free(l->U2);
         av_free(l->V2);
     }
-
-    if (pic->data[0])
-        avctx->release_buffer(avctx, pic);
-
     return 0;
 }
 

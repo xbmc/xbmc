@@ -19,10 +19,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavcodec/get_bits.h"
+#include "libavcodec/bitstream.h"
 #include "avformat.h"
-#include "id3v2.h"
-#include "id3v1.h"
 
 typedef struct {
     int totalframes, currentframe;
@@ -31,13 +29,6 @@ typedef struct {
 static int tta_probe(AVProbeData *p)
 {
     const uint8_t *d = p->buf;
-
-    if (ff_id3v2_match(d))
-        d += ff_id3v2_tag_len(d);
-
-    if (d - p->buf >= p->buf_size)
-        return 0;
-
     if (d[0] == 'T' && d[1] == 'T' && d[2] == 'A' && d[3] == '1')
         return 80;
     return 0;
@@ -48,13 +39,8 @@ static int tta_read_header(AVFormatContext *s, AVFormatParameters *ap)
     TTAContext *c = s->priv_data;
     AVStream *st;
     int i, channels, bps, samplerate, datalen, framelen;
-    uint64_t framepos, start_offset;
+    uint64_t framepos;
 
-    ff_id3v2_read(s);
-    if (!av_metadata_get(s->metadata, "", NULL, AV_METADATA_IGNORE_SUFFIX))
-        ff_id3v1_read(s);
-
-    start_offset = url_ftell(s->pb);
     if (get_le32(s->pb) != AV_RL32("TTA1"))
         return -1; // not tta file
 
@@ -107,14 +93,14 @@ static int tta_read_header(AVFormatContext *s, AVFormatParameters *ap)
     st->codec->sample_rate = samplerate;
     st->codec->bits_per_coded_sample = bps;
 
-    st->codec->extradata_size = url_ftell(s->pb) - start_offset;
+    st->codec->extradata_size = url_ftell(s->pb);
     if(st->codec->extradata_size+FF_INPUT_BUFFER_PADDING_SIZE <= (unsigned)st->codec->extradata_size){
         //this check is redundant as get_buffer should fail
         av_log(s, AV_LOG_ERROR, "extradata_size too large\n");
         return -1;
     }
     st->codec->extradata = av_mallocz(st->codec->extradata_size+FF_INPUT_BUFFER_PADDING_SIZE);
-    url_fseek(s->pb, start_offset, SEEK_SET);
+    url_fseek(s->pb, 0, SEEK_SET);
     get_buffer(s->pb, st->codec->extradata, st->codec->extradata_size);
 
     return 0;

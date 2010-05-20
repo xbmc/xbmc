@@ -32,25 +32,24 @@
  */
 
 #include "nellymoser.h"
-#include "libavutil/lfg.h"
-#include "libavutil/random_seed.h"
+#include "libavutil/random.h"
 #include "avcodec.h"
 #include "dsputil.h"
 
 #define ALT_BITSTREAM_READER_LE
-#include "get_bits.h"
+#include "bitstream.h"
 
 
 typedef struct NellyMoserDecodeContext {
     AVCodecContext* avctx;
     DECLARE_ALIGNED_16(float,float_buf[NELLY_SAMPLES]);
     float           state[128];
-    AVLFG           random_state;
+    AVRandomState   random_state;
     GetBitContext   gb;
     int             add_bias;
     float           scale_bias;
     DSPContext      dsp;
-    FFTContext      imdct_ctx;
+    MDCTContext     imdct_ctx;
     DECLARE_ALIGNED_16(float,imdct_out[NELLY_BUF_LEN * 2]);
 } NellyMoserDecodeContext;
 
@@ -103,12 +102,12 @@ static void nelly_decode_block(NellyMoserDecodeContext *s,
         aptr = audio + i * NELLY_BUF_LEN;
 
         init_get_bits(&s->gb, block, NELLY_BLOCK_LEN * 8);
-        skip_bits_long(&s->gb, NELLY_HEADER_BITS + i*NELLY_DETAIL_BITS);
+        skip_bits(&s->gb, NELLY_HEADER_BITS + i*NELLY_DETAIL_BITS);
 
         for (j = 0; j < NELLY_FILL_LEN; j++) {
             if (bits[j] <= 0) {
                 aptr[j] = M_SQRT1_2*pows[j];
-                if (av_lfg_get(&s->random_state) & 1)
+                if (av_random(&s->random_state) & 1)
                     aptr[j] *= -1.0;
             } else {
                 v = get_bits(&s->gb, bits[j]);
@@ -129,8 +128,8 @@ static av_cold int decode_init(AVCodecContext * avctx) {
     NellyMoserDecodeContext *s = avctx->priv_data;
 
     s->avctx = avctx;
-    av_lfg_init(&s->random_state, 0);
-    ff_mdct_init(&s->imdct_ctx, 8, 1, 1.0);
+    av_random_init(&s->random_state, 0);
+    ff_mdct_init(&s->imdct_ctx, 8, 1);
 
     dsputil_init(&s->dsp, avctx);
 
@@ -153,9 +152,7 @@ static av_cold int decode_init(AVCodecContext * avctx) {
 
 static int decode_tag(AVCodecContext * avctx,
                       void *data, int *data_size,
-                      AVPacket *avpkt) {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
+                      const uint8_t * buf, int buf_size) {
     NellyMoserDecodeContext *s = avctx->priv_data;
     int blocks, i;
     int16_t* samples;
@@ -170,8 +167,6 @@ static int decode_tag(AVCodecContext * avctx,
             blocks = 1; break;
         case 128:   // 11025Hz
             blocks = 2; break;
-        case 192:   // 16000Hz
-            blocks = 3; break;
         case 256:   // 22050Hz
             blocks = 4; break;
         case 512:   // 44100Hz

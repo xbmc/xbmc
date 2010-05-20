@@ -45,6 +45,8 @@ typedef struct MDECContext{
     int mb_height;
     int mb_x, mb_y;
     DECLARE_ALIGNED_16(DCTELEM, block[6][64]);
+    DECLARE_ALIGNED_8(uint16_t, intra_matrix[64]);
+    DECLARE_ALIGNED_8(int, q_intra_matrix[64]);
     uint8_t *bitstream_buffer;
     unsigned int bitstream_buffer_size;
     int block_last_index[6];
@@ -152,10 +154,8 @@ static inline void idct_put(MDECContext *a, int mb_x, int mb_y){
 
 static int decode_frame(AVCodecContext *avctx,
                         void *data, int *data_size,
-                        AVPacket *avpkt)
+                        const uint8_t *buf, int buf_size)
 {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     MDECContext * const a = avctx->priv_data;
     AVFrame *picture = data;
     AVFrame * const p= &a->picture;
@@ -172,9 +172,7 @@ static int decode_frame(AVCodecContext *avctx,
     p->pict_type= FF_I_TYPE;
     p->key_frame= 1;
 
-    av_fast_malloc(&a->bitstream_buffer, &a->bitstream_buffer_size, buf_size + FF_INPUT_BUFFER_PADDING_SIZE);
-    if (!a->bitstream_buffer)
-        return AVERROR(ENOMEM);
+    a->bitstream_buffer= av_fast_realloc(a->bitstream_buffer, &a->bitstream_buffer_size, buf_size + FF_INPUT_BUFFER_PADDING_SIZE);
     for(i=0; i<buf_size; i+=2){
         a->bitstream_buffer[i]  = buf[i+1];
         a->bitstream_buffer[i+1]= buf[i  ];

@@ -28,22 +28,24 @@ static void mpegvideo_extract_headers(AVCodecParserContext *s,
                                       const uint8_t *buf, int buf_size)
 {
     ParseContext1 *pc = s->priv_data;
-    const uint8_t *buf_end = buf + buf_size;
+    const uint8_t *buf_end;
+    const uint8_t *buf_start= buf;
     uint32_t start_code;
     int frame_rate_index, ext_type, bytes_left;
     int frame_rate_ext_n, frame_rate_ext_d;
     int picture_structure, top_field_first, repeat_first_field, progressive_frame;
     int horiz_size_ext, vert_size_ext, bit_rate_ext;
-    int did_set_size=0;
 //FIXME replace the crap with get_bits()
     s->repeat_pict = 0;
-
+    buf_end = buf + buf_size;
     while (buf < buf_end) {
         start_code= -1;
         buf= ff_find_start_code(buf, buf_end, &start_code);
         bytes_left = buf_end - buf;
         switch(start_code) {
         case PICTURE_START_CODE:
+            ff_fetch_timestamp(s, buf-buf_start-4, 1);
+
             if (bytes_left >= 2) {
                 s->pict_type = (buf[1] >> 3) & 7;
             }
@@ -52,10 +54,7 @@ static void mpegvideo_extract_headers(AVCodecParserContext *s,
             if (bytes_left >= 7) {
                 pc->width  = (buf[0] << 4) | (buf[1] >> 4);
                 pc->height = ((buf[1] & 0x0f) << 8) | buf[2];
-                if(!avctx->width || !avctx->height || !avctx->coded_width || !avctx->coded_height){
-                    avcodec_set_dimensions(avctx, pc->width, pc->height);
-                    did_set_size=1;
-                }
+                avcodec_set_dimensions(avctx, pc->width, pc->height);
                 frame_rate_index = buf[3] & 0xf;
                 pc->frame_rate.den = avctx->time_base.den = ff_frame_rate_tab[frame_rate_index].num;
                 pc->frame_rate.num = avctx->time_base.num = ff_frame_rate_tab[frame_rate_index].den;
@@ -81,8 +80,7 @@ static void mpegvideo_extract_headers(AVCodecParserContext *s,
                         pc->width  |=(horiz_size_ext << 12);
                         pc->height |=( vert_size_ext << 12);
                         avctx->bit_rate += (bit_rate_ext << 18) * 400;
-                        if(did_set_size)
-                            avcodec_set_dimensions(avctx, pc->width, pc->height);
+                        avcodec_set_dimensions(avctx, pc->width, pc->height);
                         avctx->time_base.den = pc->frame_rate.den * (frame_rate_ext_n + 1) * 2;
                         avctx->time_base.num = pc->frame_rate.num * (frame_rate_ext_d + 1);
                         avctx->codec_id = CODEC_ID_MPEG2VIDEO;
@@ -139,7 +137,7 @@ static int mpegvideo_parse(AVCodecParserContext *s,
     if(s->flags & PARSER_FLAG_COMPLETE_FRAMES){
         next= buf_size;
     }else{
-        next= ff_mpeg1_find_frame_end(pc, buf, buf_size, s);
+        next= ff_mpeg1_find_frame_end(pc, buf, buf_size);
 
         if (ff_combine_frame(pc, next, &buf, &buf_size) < 0) {
             *poutbuf = NULL;

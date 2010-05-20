@@ -107,12 +107,10 @@ static const struct {
 } channel_layout_map[] = {
     { "mono",        1,  CH_LAYOUT_MONO },
     { "stereo",      2,  CH_LAYOUT_STEREO },
-    { "4.0",         4,  CH_LAYOUT_4POINT0 },
+    { "surround",    3,  CH_LAYOUT_SURROUND },
     { "quad",        4,  CH_LAYOUT_QUAD },
     { "5.0",         5,  CH_LAYOUT_5POINT0 },
-    { "5.0",         5,  CH_LAYOUT_5POINT0_BACK },
     { "5.1",         6,  CH_LAYOUT_5POINT1 },
-    { "5.1",         6,  CH_LAYOUT_5POINT1_BACK },
     { "5.1+downmix", 8,  CH_LAYOUT_5POINT1|CH_LAYOUT_STEREO_DOWNMIX, },
     { "7.1",         8,  CH_LAYOUT_7POINT1 },
     { "7.1(wide)",   8,  CH_LAYOUT_7POINT1_WIDE },
@@ -123,6 +121,9 @@ static const struct {
 void avcodec_get_channel_layout_string(char *buf, int buf_size, int nb_channels, int64_t channel_layout)
 {
     int i;
+
+    if (channel_layout==0)
+        channel_layout = avcodec_guess_channel_layout(nb_channels, CODEC_ID_NONE, NULL);
 
     for (i=0; channel_layout_map[i].name; i++)
         if (nb_channels    == channel_layout_map[i].nb_channels &&
@@ -147,15 +148,6 @@ void avcodec_get_channel_layout_string(char *buf, int buf_size, int nb_channels,
         }
         av_strlcat(buf, ")", buf_size);
     }
-}
-
-int avcodec_channel_layout_num_channels(int64_t channel_layout)
-{
-    int count;
-    uint64_t x = channel_layout;
-    for (count = 0; x; count++)
-        x &= x-1; // unset lowest set bit
-    return count;
 }
 
 struct AVAudioConvert {

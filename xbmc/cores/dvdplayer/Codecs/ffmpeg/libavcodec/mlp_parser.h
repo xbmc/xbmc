@@ -27,7 +27,7 @@
 #ifndef AVCODEC_MLP_PARSER_H
 #define AVCODEC_MLP_PARSER_H
 
-#include "get_bits.h"
+#include "bitstream.h"
 
 typedef struct MLPHeaderInfo
 {

@@ -57,7 +57,6 @@
 
 
 typedef struct AVResampleContext{
-    const AVClass *av_class;
     FELEM *filter_bank;
     int filter_length;
     int ideal_dst_incr;

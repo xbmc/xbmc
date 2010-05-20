@@ -902,7 +902,7 @@ static void diff_bytes_mmx(uint8_t *dst, uint8_t *src1, uint8_t *src2, int w){
         dst[i+0] = src1[i+0]-src2[i+0];
 }
 
-static void sub_hfyu_median_prediction_mmx2(uint8_t *dst, const uint8_t *src1, const uint8_t *src2, int w, int *left, int *left_top){
+static void sub_hfyu_median_prediction_mmx2(uint8_t *dst, uint8_t *src1, uint8_t *src2, int w, int *left, int *left_top){
     x86_reg i=0;
     uint8_t l, lt;
 
@@ -1348,7 +1348,8 @@ static int ssd_int8_vs_int16_mmx(const int8_t *pix1, const int16_t *pix2, int si
 #endif //HAVE_SSSE3
 
 
-void ff_lpc_compute_autocorr_sse2(const int32_t *data, int len, int lag,
+/* FLAC specific */
+void ff_flac_compute_autocorr_sse2(const int32_t *data, int len, int lag,
                                    double *autoc);
 
 
@@ -1359,7 +1360,7 @@ void dsputilenc_init_mmx(DSPContext* c, AVCodecContext *avctx)
         if(dct_algo==FF_DCT_AUTO || dct_algo==FF_DCT_MMX){
             if(mm_flags & FF_MM_SSE2){
                 c->fdct = ff_fdct_sse2;
-            }else if(mm_flags & FF_MM_MMX2){
+            }else if(mm_flags & FF_MM_MMXEXT){
                 c->fdct = ff_fdct_mmx2;
             }else{
                 c->fdct = ff_fdct_mmx;
@@ -1395,7 +1396,7 @@ void dsputilenc_init_mmx(DSPContext* c, AVCodecContext *avctx)
         c->ssd_int8_vs_int16 = ssd_int8_vs_int16_mmx;
 
 
-        if (mm_flags & FF_MM_MMX2) {
+        if (mm_flags & FF_MM_MMXEXT) {
             c->sum_abs_dctelem= sum_abs_dctelem_mmx2;
             c->hadamard8_diff[0]= hadamard8_diff16_mmx2;
             c->hadamard8_diff[1]= hadamard8_diff_mmx2;
@@ -1413,9 +1414,8 @@ void dsputilenc_init_mmx(DSPContext* c, AVCodecContext *avctx)
             c->sum_abs_dctelem= sum_abs_dctelem_sse2;
             c->hadamard8_diff[0]= hadamard8_diff16_sse2;
             c->hadamard8_diff[1]= hadamard8_diff_sse2;
-#if CONFIG_LPC
-            c->lpc_compute_autocorr = ff_lpc_compute_autocorr_sse2;
-#endif
+            if (CONFIG_FLAC_ENCODER)
+                c->flac_compute_autocorr = ff_flac_compute_autocorr_sse2;
         }
 
 #if HAVE_SSSE3

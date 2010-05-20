@@ -18,6 +18,15 @@ Applications
 ffmpeg:
   ffmpeg.c                              Michael Niedermayer
 
+  Video Hooks:
+    vhook
+    vhook/watermark.c                   Marcus Engene
+    vhook/ppm.c
+    vhook/drawtext.c
+    vhook/fish.c
+    vhook/null.c
+    vhook/imlib2.c
+
 ffplay:
   ffplay.c                              Michael Niedermayer
 
@@ -28,7 +37,7 @@ Commandline utility code:
   cmdutils.c, cmdutils.h                Michael Niedermayer
 
 QuickTime faststart:
-  tools/qt-faststart.c                  Baptiste Coudurier
+  qt-faststart.c                        Mike Melanson
 
 
 Miscellaneous Areas
@@ -40,7 +49,6 @@ build system (configure,Makefiles)      Diego Biurrun, Mans Rullgard
 project server                          Diego Biurrun, Mans Rullgard
 mailinglists                            Michael Niedermayer, Baptiste Coudurier
 presets                                 Robert Swain
-metadata subsystem                      Aurelien Jacobs
 
 
 libavutil
@@ -106,7 +114,6 @@ Codecs:
   8svx.c                                Jaikrishnan Menon
   aasc.c                                Kostya Shishkov
   aac.[ch], aactab.[ch], aacdectab.h    Robert Swain
-  aacenc.* aaccoder.* aacpsy.*          Alex Converse
   ac3*                                  Justin Ruggles
   alacenc.c                             Jaikrishnan Menon
   apedec.c                              Kostya Shishkov
@@ -114,7 +121,6 @@ Codecs:
   atrac3*                               Benjamin Larsson
   bmp.c                                 Mans Rullgard, Kostya Shishkov
   cavs*                                 Stefan Gehrer
-  celp_filters.*                        Vitor Sessak
   cinepak.c                             Roberto Togni
   cljr                                  Alex Beregszaszi
   cook.c, cookdata.h                    Benjamin Larsson
@@ -126,7 +132,8 @@ Codecs:
   dv.c                                  Roman Shaposhnik
   eacmv*, eaidct*, eat*                 Peter Ross
   ffv1.c                                Michael Niedermayer
-  flac*                                 Justin Ruggles
+  flacdec.c                             Alex Beregszaszi, Justin Ruggles
+  flacenc.c                             Justin Ruggles
   flashsv*                              Benjamin Larsson
   flicvideo.c                           Mike Melanson
   g726.c                                Roman Shaposhnik
@@ -141,17 +148,15 @@ Codecs:
   interplayvideo.c                      Mike Melanson
   jpeg_ls.c                             Kostya Shishkov
   kmvc.c                                Kostya Shishkov
-  lcl*.c                                Roberto Togni, Reimar Doeffinger
+  lcl*.c                                Roberto Togni
   libgsm.c                              Michel Bardiaux
   libopenjpeg.c                         Jaikrishnan Menon
-  libspeexdec.c                         Justin Ruggles
   libx264.c                             Mans Rullgard, Jason Garrett-Glaser
   loco.c                                Kostya Shishkov
   lzo.h, lzo.c                          Reimar Doeffinger
   mdec.c                                Michael Niedermayer
   mimic.c                               Ramiro Polla
   mjpeg.c                               Michael Niedermayer
-  mlp*                                  Ramiro Polla
   mmvideo.c                             Peter Ross
   mpc*                                  Kostya Shishkov
   mpeg12.c, mpeg12data.h                Michael Niedermayer
@@ -177,7 +182,6 @@ Codecs:
   rv3*                                  Kostya Shishkov
   rv4*                                  Kostya Shishkov
   s3tc*                                 Ivo van Poorten
-  smacker.c                             Kostya Shishkov
   smc.c                                 Mike Melanson
   snow.c                                Michael Niedermayer, Loren Merritt
   sonic.c                               Alex Beregszaszi
@@ -203,7 +207,6 @@ Codecs:
   vp6                                   Aurelien Jacobs
   vqavideo.c                            Mike Melanson
   wavpack.c                             Kostya Shishkov
-  wmaprodec.c                           Sascha Sommer
   wmv2.c                                Michael Niedermayer
   wnv1.c                                Kostya Shishkov
   xan.c                                 Mike Melanson
@@ -258,41 +261,36 @@ Muxers/Demuxers:
   libnut.c                              Oded Shimon
   lmlm4.c                               Ivo van Poorten
   matroska.c                            Aurelien Jacobs
-  matroskadec.c                         Aurelien Jacobs
   matroskaenc.c                         David Conrad
-  metadata*                             Aurelien Jacobs
   mm.c                                  Peter Ross
   mov.c                                 Michael Niedermayer, Baptiste Coudurier
   movenc.c                              Michael Niedermayer, Baptiste Coudurier
   mpc.c                                 Kostya Shishkov
   mpeg.c                                Michael Niedermayer
   mpegenc.c                             Michael Niedermayer
-  mpegts*                               Baptiste Coudurier
+  mpegts*                               Mans Rullgard
   msnwc_tcp.c                           Ramiro Polla
   mtv.c                                 Reynaldo H. Verdejo Pinochet
   mxf*                                  Baptiste Coudurier
   nsvdec.c                              Francois Revol
   nut.c                                 Michael Niedermayer
   nuv.c                                 Reimar Doeffinger
-  oggdec.c, oggdec.h                    David Conrad
+  oggdec.c, oggdec.h                    Mans Rullgard
   oggenc.c                              Baptiste Coudurier
-  oggparse*.c                           David Conrad
+  oggparsevorbis.c                      Mans Rullgard
+  oggparseogm.c                         Mans Rullgard
   psxstr.c                              Mike Melanson
   pva.c                                 Ivo van Poorten
   r3d.c                                 Baptiste Coudurier
   raw.c                                 Michael Niedermayer
-  rdt.c                                 Ronald S. Bultje
   rl2.c                                 Sascha Sommer
-  rmdec.c, rmenc.c                      Ronald S. Bultje, Kostya Shishkov
-  rtmp*                                 Kostya Shishkov
+  rm.c                                  Roberto Togni
   rtp.c, rtpenc.c                       Luca Abeni
-  rtp_asf.*                             Ronald S. Bultje
   rtp_mpv.*, rtp_aac.*                  Luca Abeni
   rtsp.c                                Luca Barbato
   sdp.c                                 Luca Abeni
   segafilm.c                            Mike Melanson
   siff.c                                Kostya Shishkov
-  smacker.c                             Kostya Shishkov
   swf.c                                 Baptiste Coudurier
   tta.c                                 Alex Beregszaszi
   txd.c                                 Ivo van Poorten
@@ -311,8 +309,6 @@ Operating systems / CPU architectures
 
 Alpha                                   Mans Rullgard, Falk Hueffner
 ARM                                     Mans Rullgard
-AVR32                                   Mans Rullgard
-MIPS                                    Mans Rullgard
 BeOS                                    Francois Revol
 Mac OS X / PowerPC                      Romain Dolbeau, Guillaume Poirier
 Amiga / PowerPC                         Colin Ward
@@ -327,15 +323,10 @@ x86                                     Michael Niedermayer
 GnuPG Fingerprints of maintainers and others who have svn write access
 ======================================================================
 
-Attila Kinali                 11F0 F9A6 A1D2 11F6 C745 D10C 6520 BCDD F2DF E765
 Benoit Fouet                  B22A 4F4F 43EF 636B BB66 FCDC 0023 AE1E 2985 49C8
-Baptiste Coudurier            8D77 134D 20CC 9220 201F C5DB 0AC9 325C 5C1A BAAA
-Daniel Verkamp                78A6 07ED 782C 653E C628 B8B9 F0EB 8DD8 2F0E 21C7
 Diego Biurrun                 8227 1E31 B6D9 4994 7427 E220 9CAE D6CC 4757 FCC5
-Jaikrishnan Menon             61A1 F09F 01C9 2D45 78E1 C862 25DC 8831 AF70 D368
 Loren Merritt                 ABD9 08F4 C920 3F65 D8BE 35D7 1540 DAA7 060F 56DE
 Michael Niedermayer           9FF2 128B 147E F673 0BAD F133 611E C787 040B 0FAB
-Panagiotis Issaris            515C E262 10A8 FDCE 5481 7B9C 3AD7 D9A5 071D B3A9
 Peter Ross                    A907 E02F A6E5 0CD2 34CD 20D2 6760 79C5 AC40 DD6B
 Reimar Döffinger              C61D 16E5 9E2C D10C 8958 38A4 0899 A2B9 06D4 D9C7
 Reynaldo H. Verdejo Pinochet  6E27 CD34 170C C78E 4D4F 5F40 C18E 077F 3114 452A

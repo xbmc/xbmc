@@ -7,19 +7,24 @@
  * Copyright (c) 2007-2008 Bartlomiej Wolowiec <bartek.wolowiec@gmail.com>
  * Copyright (c) 2007 Justin Ruggles <justin.ruggles@gmail.com>
  *
+ * Portions of this code are derived from liba52
+ * http://liba52.sourceforge.net
+ * Copyright (C) 2000-2003 Michel Lespinasse <walken@zoy.org>
+ * Copyright (C) 1999-2000 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
+ *
  * This file is part of FFmpeg.
  *
  * FFmpeg is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
+ * modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * version 2 of the License, or (at your option) any later version.
  *
  * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ * General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
+ * You should have received a copy of the GNU General Public
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
@@ -189,8 +194,8 @@ static av_cold int ac3_decode_init(AVCodecContext *avctx)
 
     ac3_common_init();
     ac3_tables_init();
-    ff_mdct_init(&s->imdct_256, 8, 1, 1.0);
-    ff_mdct_init(&s->imdct_512, 9, 1, 1.0);
+    ff_mdct_init(&s->imdct_256, 8, 1);
+    ff_mdct_init(&s->imdct_512, 9, 1);
     ff_kbd_window_init(s->window, 5.0, 256);
     dsputil_init(&s->dsp, avctx);
     av_lfg_init(&s->dith_state, 0);
@@ -280,7 +285,6 @@ static int parse_frame_header(AC3DecodeContext *s)
     /* get decoding parameters from header info */
     s->bit_alloc_params.sr_code     = hdr.sr_code;
     s->channel_mode                 = hdr.channel_mode;
-    s->channel_layout               = hdr.channel_layout;
     s->lfe_on                       = hdr.lfe_on;
     s->bit_alloc_params.sr_shift    = hdr.sr_shift;
     s->sample_rate                  = hdr.sample_rate;
@@ -314,12 +318,9 @@ static int parse_frame_header(AC3DecodeContext *s)
         s->skip_syntax           = 1;
         memset(s->channel_uses_aht, 0, sizeof(s->channel_uses_aht));
         return ac3_parse_header(s);
-    } else if (CONFIG_EAC3_DECODER) {
+    } else {
         s->eac3 = 1;
         return ff_eac3_parse_header(s);
-    } else {
-        av_log(s->avctx, AV_LOG_ERROR, "E-AC-3 support not compiled in\n");
-        return -1;
     }
 }
 
@@ -412,26 +413,24 @@ static int decode_exponents(GetBitContext *gbc, int exp_strategy, int ngrps,
  */
 static void calc_transform_coeffs_cpl(AC3DecodeContext *s)
 {
-    int bin, band, ch;
+    int i, j, ch, bnd, subbnd;
 
-    bin = s->start_freq[CPL_CH];
-    for (band = 0; band < s->num_cpl_bands; band++) {
-        int band_start = bin;
-        int band_end = bin + s->cpl_band_sizes[band];
-        for (ch = 1; ch <= s->fbw_channels; ch++) {
-            if (s->channel_in_cpl[ch]) {
-                int64_t cpl_coord = s->cpl_coords[ch][band];
-                for (bin = band_start; bin < band_end; bin++) {
-                    s->fixed_coeffs[ch][bin] = ((int64_t)s->fixed_coeffs[CPL_CH][bin] *
-                                                cpl_coord) >> 23;
+    subbnd = -1;
+    i = s->start_freq[CPL_CH];
+    for(bnd=0; bnd<s->num_cpl_bands; bnd++) {
+        do {
+            subbnd++;
+            for(j=0; j<12; j++) {
+                for(ch=1; ch<=s->fbw_channels; ch++) {
+                    if(s->channel_in_cpl[ch]) {
+                        s->fixed_coeffs[ch][i] = ((int64_t)s->fixed_coeffs[CPL_CH][i] * (int64_t)s->cpl_coords[ch][bnd]) >> 23;
+                        if (ch == 2 && s->phase_flags[bnd])
+                            s->fixed_coeffs[ch][i] = -s->fixed_coeffs[ch][i];
+                    }
                 }
-                if (ch == 2 && s->phase_flags[band]) {
-                    for (bin = band_start; bin < band_end; bin++)
-                        s->fixed_coeffs[2][bin] = -s->fixed_coeffs[2][bin];
-                }
+                i++;
             }
-        }
-        bin = band_end;
+        } while(s->cpl_band_struct[subbnd]);
     }
 }
 
@@ -439,12 +438,12 @@ static void calc_transform_coeffs_cpl(AC3DecodeContext *s)
  * Grouped mantissas for 3-level 5-level and 11-level quantization
  */
 typedef struct {
-    int b1_mant[2];
-    int b2_mant[2];
-    int b4_mant;
-    int b1;
-    int b2;
-    int b4;
+    int b1_mant[3];
+    int b2_mant[3];
+    int b4_mant[2];
+    int b1ptr;
+    int b2ptr;
+    int b4ptr;
 } mant_groups;
 
 /**
@@ -453,92 +452,104 @@ typedef struct {
  */
 static void ac3_decode_transform_coeffs_ch(AC3DecodeContext *s, int ch_index, mant_groups *m)
 {
-    int start_freq = s->start_freq[ch_index];
-    int end_freq = s->end_freq[ch_index];
-    uint8_t *baps = s->bap[ch_index];
-    int8_t *exps = s->dexps[ch_index];
-    int *coeffs = s->fixed_coeffs[ch_index];
-    int dither = (ch_index == CPL_CH) || s->dither_flag[ch_index];
     GetBitContext *gbc = &s->gbc;
-    int freq;
+    int i, gcode, tbap, start, end;
+    uint8_t *exps;
+    uint8_t *bap;
+    int *coeffs;
 
-    for(freq = start_freq; freq < end_freq; freq++){
-        int bap = baps[freq];
-        int mantissa;
-        switch(bap){
+    exps = s->dexps[ch_index];
+    bap = s->bap[ch_index];
+    coeffs = s->fixed_coeffs[ch_index];
+    start = s->start_freq[ch_index];
+    end = s->end_freq[ch_index];
+
+    for (i = start; i < end; i++) {
+        tbap = bap[i];
+        switch (tbap) {
             case 0:
-                if (dither)
-                    mantissa = (av_lfg_get(&s->dith_state) & 0x7FFFFF) - 0x400000;
-                else
-                    mantissa = 0;
+                coeffs[i] = (av_lfg_get(&s->dith_state) & 0x7FFFFF) - 0x400000;
                 break;
+
             case 1:
-                if(m->b1){
-                    m->b1--;
-                    mantissa = m->b1_mant[m->b1];
+                if(m->b1ptr > 2) {
+                    gcode = get_bits(gbc, 5);
+                    m->b1_mant[0] = b1_mantissas[gcode][0];
+                    m->b1_mant[1] = b1_mantissas[gcode][1];
+                    m->b1_mant[2] = b1_mantissas[gcode][2];
+                    m->b1ptr = 0;
                 }
-                else{
-                    int bits      = get_bits(gbc, 5);
-                    mantissa      = b1_mantissas[bits][0];
-                    m->b1_mant[1] = b1_mantissas[bits][1];
-                    m->b1_mant[0] = b1_mantissas[bits][2];
-                    m->b1         = 2;
-                }
+                coeffs[i] = m->b1_mant[m->b1ptr++];
                 break;
+
             case 2:
-                if(m->b2){
-                    m->b2--;
-                    mantissa = m->b2_mant[m->b2];
+                if(m->b2ptr > 2) {
+                    gcode = get_bits(gbc, 7);
+                    m->b2_mant[0] = b2_mantissas[gcode][0];
+                    m->b2_mant[1] = b2_mantissas[gcode][1];
+                    m->b2_mant[2] = b2_mantissas[gcode][2];
+                    m->b2ptr = 0;
                 }
-                else{
-                    int bits      = get_bits(gbc, 7);
-                    mantissa      = b2_mantissas[bits][0];
-                    m->b2_mant[1] = b2_mantissas[bits][1];
-                    m->b2_mant[0] = b2_mantissas[bits][2];
-                    m->b2         = 2;
-                }
+                coeffs[i] = m->b2_mant[m->b2ptr++];
                 break;
+
             case 3:
-                mantissa = b3_mantissas[get_bits(gbc, 3)];
+                coeffs[i] = b3_mantissas[get_bits(gbc, 3)];
                 break;
+
             case 4:
-                if(m->b4){
-                    m->b4 = 0;
-                    mantissa = m->b4_mant;
+                if(m->b4ptr > 1) {
+                    gcode = get_bits(gbc, 7);
+                    m->b4_mant[0] = b4_mantissas[gcode][0];
+                    m->b4_mant[1] = b4_mantissas[gcode][1];
+                    m->b4ptr = 0;
                 }
-                else{
-                    int bits   = get_bits(gbc, 7);
-                    mantissa   = b4_mantissas[bits][0];
-                    m->b4_mant = b4_mantissas[bits][1];
-                    m->b4      = 1;
-                }
+                coeffs[i] = m->b4_mant[m->b4ptr++];
                 break;
+
             case 5:
-                mantissa = b5_mantissas[get_bits(gbc, 4)];
+                coeffs[i] = b5_mantissas[get_bits(gbc, 4)];
                 break;
-            default: /* 6 to 15 */
-                mantissa = get_bits(gbc, quantization_tab[bap]);
-                /* Shift mantissa and sign-extend it. */
-                mantissa = (mantissa << (32-quantization_tab[bap]))>>8;
+
+            default: {
+                /* asymmetric dequantization */
+                int qlevel = quantization_tab[tbap];
+                coeffs[i] = get_sbits(gbc, qlevel) << (24 - qlevel);
                 break;
+            }
         }
-        coeffs[freq] = mantissa >> exps[freq];
+        coeffs[i] >>= exps[i];
     }
 }
 
 /**
- * Remove random dithering from coupling range coefficients with zero-bit
- * mantissas for coupled channels which do not use dithering.
+ * Remove random dithering from coefficients with zero-bit mantissas
  * reference: Section 7.3.4 Dither for Zero Bit Mantissas (bap=0)
  */
 static void remove_dithering(AC3DecodeContext *s) {
     int ch, i;
+    int end=0;
+    int *coeffs;
+    uint8_t *bap;
 
     for(ch=1; ch<=s->fbw_channels; ch++) {
-        if(!s->dither_flag[ch] && s->channel_in_cpl[ch]) {
-            for(i = s->start_freq[CPL_CH]; i<s->end_freq[CPL_CH]; i++) {
-                if(!s->bap[CPL_CH][i])
-                    s->fixed_coeffs[ch][i] = 0;
+        if(!s->dither_flag[ch]) {
+            coeffs = s->fixed_coeffs[ch];
+            bap = s->bap[ch];
+            if(s->channel_in_cpl[ch])
+                end = s->start_freq[CPL_CH];
+            else
+                end = s->end_freq[ch];
+            for(i=0; i<end; i++) {
+                if(!bap[i])
+                    coeffs[i] = 0;
+            }
+            if(s->channel_in_cpl[ch]) {
+                bap = s->bap[CPL_CH];
+                for(; i<s->end_freq[CPL_CH]; i++) {
+                    if(!bap[i])
+                        coeffs[i] = 0;
+                }
             }
         }
     }
@@ -553,7 +564,7 @@ static void decode_transform_coeffs_ch(AC3DecodeContext *s, int blk, int ch,
         /* if AHT is used, mantissas for all blocks are encoded in the first
            block of the frame. */
         int bin;
-        if (!blk && CONFIG_EAC3_DECODER)
+        if (!blk)
             ff_eac3_decode_transform_coeffs_aht_ch(s, ch);
         for (bin = s->start_freq[ch]; bin < s->end_freq[ch]; bin++) {
             s->fixed_coeffs[ch][bin] = s->pre_mantissa[ch][bin][blk] >> s->dexps[ch][bin];
@@ -570,7 +581,7 @@ static void decode_transform_coeffs(AC3DecodeContext *s, int blk)
     int got_cplchan = 0;
     mant_groups m;
 
-    m.b1 = m.b2 = m.b4 = 0;
+    m.b1ptr = m.b2ptr = m.b4ptr = 3;
 
     for (ch = 1; ch <= s->channels; ch++) {
         /* transform coefficients for full-bandwidth channel */
@@ -604,6 +615,7 @@ static void do_rematrixing(AC3DecodeContext *s)
 {
     int bnd, i;
     int end, bndend;
+    int tmp0, tmp1;
 
     end = FFMIN(s->end_freq[1], s->end_freq[2]);
 
@@ -611,9 +623,10 @@ static void do_rematrixing(AC3DecodeContext *s)
         if(s->rematrixing_flags[bnd]) {
             bndend = FFMIN(end, ff_ac3_rematrix_band_tab[bnd+1]);
             for(i=ff_ac3_rematrix_band_tab[bnd]; i<bndend; i++) {
-                int tmp0 = s->fixed_coeffs[1][i];
-                s->fixed_coeffs[1][i] += s->fixed_coeffs[2][i];
-                s->fixed_coeffs[2][i]  = tmp0 - s->fixed_coeffs[2][i];
+                tmp0 = s->fixed_coeffs[1][i];
+                tmp1 = s->fixed_coeffs[2][i];
+                s->fixed_coeffs[1][i] = tmp0 + tmp1;
+                s->fixed_coeffs[2][i] = tmp0 - tmp1;
             }
         }
     }
@@ -707,10 +720,6 @@ static void ac3_upmix_delay(AC3DecodeContext *s)
 
 /**
  * Decode band structure for coupling, spectral extension, or enhanced coupling.
- * The band structure defines how many subbands are in each band.  For each
- * subband in the range, 1 means it is combined with the previous band, and 0
- * means that it starts a new band.
- *
  * @param[in] gbc bit reader context
  * @param[in] blk block number
  * @param[in] eac3 flag to indicate E-AC-3
@@ -718,33 +727,33 @@ static void ac3_upmix_delay(AC3DecodeContext *s)
  * @param[in] start_subband subband number for start of range
  * @param[in] end_subband subband number for end of range
  * @param[in] default_band_struct default band structure table
+ * @param[out] band_struct decoded band structure
+ * @param[out] num_subbands number of subbands (optionally NULL)
  * @param[out] num_bands number of bands (optionally NULL)
  * @param[out] band_sizes array containing the number of bins in each band (optionally NULL)
  */
 static void decode_band_structure(GetBitContext *gbc, int blk, int eac3,
                                   int ecpl, int start_subband, int end_subband,
                                   const uint8_t *default_band_struct,
+                                  uint8_t *band_struct, int *num_subbands,
                                   int *num_bands, uint8_t *band_sizes)
 {
     int subbnd, bnd, n_subbands, n_bands=0;
     uint8_t bnd_sz[22];
-    uint8_t coded_band_struct[22];
-    const uint8_t *band_struct;
 
     n_subbands = end_subband - start_subband;
 
     /* decode band structure from bitstream or use default */
     if (!eac3 || get_bits1(gbc)) {
         for (subbnd = 0; subbnd < n_subbands - 1; subbnd++) {
-            coded_band_struct[subbnd] = get_bits1(gbc);
+            band_struct[subbnd] = get_bits1(gbc);
         }
-        band_struct = coded_band_struct;
     } else if (!blk) {
-        band_struct = &default_band_struct[start_subband+1];
-    } else {
-        /* no change in band structure */
-        return;
+        memcpy(band_struct,
+               &default_band_struct[start_subband+1],
+               n_subbands-1);
     }
+    band_struct[n_subbands-1] = 0;
 
     /* calculate number of bands and band sizes based on band structure.
        note that the first 4 subbands in enhanced coupling span only 6 bins
@@ -764,6 +773,8 @@ static void decode_band_structure(GetBitContext *gbc, int blk, int eac3,
     }
 
     /* set optional output params */
+    if (num_subbands)
+        *num_subbands = n_subbands;
     if (num_bands)
         *num_bands = n_bands;
     if (band_sizes)
@@ -817,7 +828,7 @@ static int decode_audio_block(AC3DecodeContext *s, int blk)
     /* spectral extension strategy */
     if (s->eac3 && (!blk || get_bits1(gbc))) {
         if (get_bits1(gbc)) {
-            av_log_missing_feature(s->avctx, "Spectral extension", 1);
+            ff_log_missing_feature(s->avctx, "Spectral extension", 1);
             return -1;
         }
         /* TODO: parse spectral extension strategy info */
@@ -842,7 +853,7 @@ static int decode_audio_block(AC3DecodeContext *s, int blk)
             /* check for enhanced coupling */
             if (s->eac3 && get_bits1(gbc)) {
                 /* TODO: parse enhanced coupling strategy info */
-                av_log_missing_feature(s->avctx, "Enhanced coupling", 1);
+                ff_log_missing_feature(s->avctx, "Enhanced coupling", 1);
                 return -1;
             }
 
@@ -863,18 +874,20 @@ static int decode_audio_block(AC3DecodeContext *s, int blk)
             /* TODO: modify coupling end freq if spectral extension is used */
             cpl_start_subband = get_bits(gbc, 4);
             cpl_end_subband   = get_bits(gbc, 4) + 3;
-            if (cpl_start_subband >= cpl_end_subband) {
-                av_log(s->avctx, AV_LOG_ERROR, "invalid coupling range (%d >= %d)\n",
+            s->num_cpl_subbands = cpl_end_subband - cpl_start_subband;
+            if (s->num_cpl_subbands < 0) {
+                av_log(s->avctx, AV_LOG_ERROR, "invalid coupling range (%d > %d)\n",
                        cpl_start_subband, cpl_end_subband);
                 return -1;
             }
             s->start_freq[CPL_CH] = cpl_start_subband * 12 + 37;
             s->end_freq[CPL_CH]   = cpl_end_subband   * 12 + 37;
 
-            decode_band_structure(gbc, blk, s->eac3, 0, cpl_start_subband,
-                                  cpl_end_subband,
-                                  ff_eac3_default_cpl_band_struct,
-                                  &s->num_cpl_bands, s->cpl_band_sizes);
+           decode_band_structure(gbc, blk, s->eac3, 0,
+                                 cpl_start_subband, cpl_end_subband,
+                                 ff_eac3_default_cpl_band_struct,
+                                 s->cpl_band_struct, &s->num_cpl_subbands,
+                                 &s->num_cpl_bands, NULL);
         } else {
             /* coupling not in use */
             for (ch = 1; ch <= fbw_channels; ch++) {
@@ -940,8 +953,8 @@ static int decode_audio_block(AC3DecodeContext *s, int blk)
             for(bnd=0; bnd<s->num_rematrixing_bands; bnd++)
                 s->rematrixing_flags[bnd] = get_bits1(gbc);
         } else if (!blk) {
-            av_log(s->avctx, AV_LOG_WARNING, "Warning: new rematrixing strategy not present in block 0\n");
-            s->num_rematrixing_bands = 0;
+            av_log(s->avctx, AV_LOG_ERROR, "new rematrixing strategy must be present in block 0\n");
+            return -1;
         }
     }
 
@@ -1167,7 +1180,7 @@ static int decode_audio_block(AC3DecodeContext *s, int blk)
     for(ch=1; ch<=s->channels; ch++) {
         float gain = s->mul_bias / 4194304.0f;
         if(s->channel_mode == AC3_CHMODE_DUALMONO) {
-            gain *= s->dynamic_range[2-ch];
+            gain *= s->dynamic_range[ch-1];
         } else {
             gain *= s->dynamic_range[0];
         }
@@ -1213,15 +1226,11 @@ static int decode_audio_block(AC3DecodeContext *s, int blk)
  * Decode a single AC-3 frame.
  */
 static int ac3_decode_frame(AVCodecContext * avctx, void *data, int *data_size,
-                            AVPacket *avpkt)
+                            const uint8_t *buf, int buf_size)
 {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     AC3DecodeContext *s = avctx->priv_data;
     int16_t *out_samples = (int16_t *)data;
     int blk, ch, err;
-    const uint8_t *channel_map;
-    const float *output[AC3_MAX_CHANNELS];
 
     /* initialize the GetBitContext with the start of valid AC-3 Frame */
     if (s->input_buffer) {
@@ -1295,10 +1304,8 @@ static int ac3_decode_frame(AVCodecContext * avctx, void *data, int *data_size,
                 avctx->request_channels < s->channels) {
             s->out_channels = avctx->request_channels;
             s->output_mode  = avctx->request_channels == 1 ? AC3_CHMODE_MONO : AC3_CHMODE_STEREO;
-            s->channel_layout = ff_ac3_channel_layout_tab[s->output_mode];
         }
         avctx->channels = s->out_channels;
-        avctx->channel_layout = s->channel_layout;
 
         /* set downmixing coefficients if needed */
         if(s->channels != s->out_channels && !((s->output_mode & AC3_OUTPUT_LFEON) &&
@@ -1312,14 +1319,14 @@ static int ac3_decode_frame(AVCodecContext * avctx, void *data, int *data_size,
     }
 
     /* decode the audio blocks */
-    channel_map = ff_ac3_dec_channel_map[s->output_mode & ~AC3_OUTPUT_LFEON][s->lfe_on];
-    for (ch = 0; ch < s->out_channels; ch++)
-        output[ch] = s->output[channel_map[ch]];
     for (blk = 0; blk < s->num_blocks; blk++) {
+        const float *output[s->out_channels];
         if (!err && decode_audio_block(s, blk)) {
             av_log(avctx, AV_LOG_ERROR, "error decoding the audio block\n");
             err = 1;
         }
+        for (ch = 0; ch < s->out_channels; ch++)
+            output[ch] = s->output[ch];
         s->dsp.float_to_int16_interleave(out_samples, output, 256, s->out_channels);
         out_samples += 256 * s->out_channels;
     }
@@ -1352,7 +1359,6 @@ AVCodec ac3_decoder = {
     .long_name = NULL_IF_CONFIG_SMALL("ATSC A/52A (AC-3)"),
 };
 
-#if CONFIG_EAC3_DECODER
 AVCodec eac3_decoder = {
     .name = "eac3",
     .type = CODEC_TYPE_AUDIO,
@@ -1363,4 +1369,3 @@ AVCodec eac3_decoder = {
     .decode = ac3_decode_frame,
     .long_name = NULL_IF_CONFIG_SMALL("ATSC A/52B (AC-3, E-AC-3)"),
 };
-#endif

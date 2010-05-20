@@ -495,12 +495,11 @@ static int vp56_size_changed(AVCodecContext *avctx)
 }
 
 int vp56_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
-                      AVPacket *avpkt)
+                      const uint8_t *buf, int buf_size)
 {
-    const uint8_t *buf = avpkt->data;
     VP56Context *s = avctx->priv_data;
     AVFrame *const p = s->framep[VP56_FRAME_CURRENT];
-    int remaining_buf_size = avpkt->size;
+    int remaining_buf_size = buf_size;
     int is_alpha, av_uninit(alpha_offset);
 
     if (s->has_alpha) {
@@ -642,7 +641,7 @@ int vp56_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     *(AVFrame*)data = *p;
     *data_size = sizeof(AVFrame);
 
-    return avpkt->size;
+    return buf_size;
 }
 
 av_cold void vp56_init(AVCodecContext *avctx, int flip, int has_alpha)

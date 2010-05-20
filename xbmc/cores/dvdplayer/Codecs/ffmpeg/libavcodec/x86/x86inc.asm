@@ -20,14 +20,6 @@
 ;* 51, Inc., Foundation Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 ;*****************************************************************************
 
-%ifdef ARCH_X86_64
-    %ifidn __OUTPUT_FORMAT__,win32
-        %define WIN64
-    %else
-        %define UNIX64
-    %endif
-%endif
-
 ; FIXME: All of the 64bit asm functions that take a stride as an argument
 ; via register, assume that the high dword of that register is filled with 0.
 ; This is true in practice (since we never do any 64bit arithmetic on strides,
@@ -36,39 +28,68 @@
 ; Name of the .rodata section.
 ; Kludge: Something on OS X fails to align .rodata even given an align attribute,
 ; so use a different read-only section.
-%macro SECTION_RODATA 0-1 16
+%macro SECTION_RODATA 0
     %ifidn __OUTPUT_FORMAT__,macho64
-        SECTION .text align=%1
+        SECTION .text align=16
     %elifidn __OUTPUT_FORMAT__,macho
-        SECTION .text align=%1
+        SECTION .text align=16
         fakegot:
     %else
-        SECTION .rodata align=%1
+        SECTION .rodata align=16
     %endif
 %endmacro
 
-; PIC support macros.
-; x86_64 can't fit 64bit address literals in most instruction types,
-; so shared objects (under the assumption that they might be anywhere
-; in memory) must use an address mode that does fit.
-; So all accesses to global variables must use this macro, e.g.
+; PIC support macros. All these macros are totally harmless when PIC is
+; not defined but can ruin everything if misused in PIC mode. On x86_32, shared
+; objects cannot directly access global variables by address, they need to
+; go through the GOT (global offset table). Most OSes do not care about it
+; and let you load non-shared .so objects (Linux, Win32...). However, OS X
+; requires PIC code in its .dylib objects.
+;
+; - GLOBAL should be used as a suffix for global addressing, eg.
+;     picgetgot ebx
 ;     mov eax, [foo GLOBAL]
-; instead of
+;   instead of
 ;     mov eax, [foo]
 ;
-; x86_32 doesn't require PIC.
-; Some distros prefer shared objects to be PIC, but nothing breaks if
-; the code contains a few textrels, so we'll skip that complexity.
+; - picgetgot computes the GOT address into the given register in PIC
+;   mode, otherwise does nothing. You need to do this before using GLOBAL.
+;   Before in both execution order and compiled code order (so GLOBAL knows
+;   which register the GOT is in).
 
-%ifdef WIN64
-    %define PIC
-%elifndef ARCH_X86_64
-    %undef PIC
-%endif
-%ifdef PIC
-    %define GLOBAL wrt rip
-%else
+%ifndef PIC
     %define GLOBAL
+    %macro picgetgot 1
+    %endmacro
+%elifdef ARCH_X86_64
+    %define PIC64
+    %define GLOBAL wrt rip
+    %macro picgetgot 1
+    %endmacro
+%else
+    %define PIC32
+    %ifidn __OUTPUT_FORMAT__,macho
+        ; There is no real global offset table on OS X, but we still
+        ; need to reference our variables by offset.
+        %macro picgetgot 1
+            call %%getgot
+          %%getgot:
+            pop %1
+            add %1, $$ - %%getgot
+            %undef GLOBAL
+            %define GLOBAL + %1 - fakegot
+        %endmacro
+    %else ; elf
+        extern _GLOBAL_OFFSET_TABLE_
+        %macro picgetgot 1
+            call %%getgot
+          %%getgot:
+            pop %1
+            add %1, _GLOBAL_OFFSET_TABLE_ + $$ - %%getgot wrt ..gotpc
+            %undef GLOBAL
+            %define GLOBAL + %1 wrt ..gotoff
+        %endmacro
+    %endif
 %endif
 
 ; Macros to eliminate most code duplication between x86_32 and x86_64:
@@ -78,14 +99,14 @@
 
 ; PROLOGUE:
 ; %1 = number of arguments. loads them from stack if needed.
-; %2 = number of registers used. pushes callee-saved regs if needed.
-; %3 = number of xmm registers used. pushes callee-saved xmm regs if needed.
+; %2 = number of registers used, not including PIC. pushes callee-saved regs if needed.
+; %3 = whether global constants are used in this function. inits x86_32 PIC if needed.
 ; %4 = list of names to define to registers
 ; PROLOGUE can also be invoked by adding the same options to cglobal
 
 ; e.g.
 ; cglobal foo, 2,3,0, dst, src, tmp
-; declares a function (foo), taking two args (dst and src) and one local variable (tmp)
+; declares a function (foo), taking two args (dst and src), one local variable (tmp), and not using globals
 
 ; TODO Some functions can use some args directly from the stack. If they're the
 ; last args then you can just not declare them, but if they're in the middle
@@ -98,25 +119,12 @@
 ; Same, but if it doesn't pop anything it becomes a 2-byte ret, for athlons
 ; which are slow when a normal ret follows a branch.
 
-; registers:
-; rN and rNq are the native-size register holding function argument N
-; rNd, rNw, rNb are dword, word, and byte size
-; rNm is the original location of arg N (a register or on the stack), dword
-; rNmp is native size
-
 %macro DECLARE_REG 6
     %define r%1q %2
     %define r%1d %3
     %define r%1w %4
     %define r%1b %5
     %define r%1m %6
-    %ifid %6 ; i.e. it's a register
-        %define r%1mp %2
-    %elifdef ARCH_X86_64 ; memory
-        %define r%1mp qword %6
-    %else
-        %define r%1mp dword %6
-    %endif
     %define r%1  %2
 %endmacro
 
@@ -141,29 +149,6 @@ DECLARE_REG_SIZE dx, dl
 DECLARE_REG_SIZE si, sil
 DECLARE_REG_SIZE di, dil
 DECLARE_REG_SIZE bp, bpl
-
-; t# defines for when per-arch register allocation is more complex than just function arguments
-
-%macro DECLARE_REG_TMP 1-*
-    %assign %%i 0
-    %rep %0
-        CAT_XDEFINE t, %%i, r%1
-        %assign %%i %%i+1
-        %rotate 1
-    %endrep
-%endmacro
-
-%macro DECLARE_REG_TMP_SIZE 0-*
-    %rep %0
-        %define t%1q t%1 %+ q
-        %define t%1d t%1 %+ d
-        %define t%1w t%1 %+ w
-        %define t%1b t%1 %+ b
-        %rotate 1
-    %endrep
-%endmacro
-
-DECLARE_REG_TMP_SIZE 0,1,2,3,4,5,6,7
 
 %ifdef ARCH_X86_64
     %define gprsize 8
@@ -221,7 +206,6 @@ DECLARE_REG_TMP_SIZE 0,1,2,3,4,5,6,7
             CAT_UNDEF arg_name %+ %%i, d
             CAT_UNDEF arg_name %+ %%i, w
             CAT_UNDEF arg_name %+ %%i, b
-            CAT_UNDEF arg_name %+ %%i, m
             CAT_UNDEF arg_name, %%i
             %assign %%i %%i+1
         %endrep
@@ -233,7 +217,6 @@ DECLARE_REG_TMP_SIZE 0,1,2,3,4,5,6,7
         %xdefine %1d r %+ %%i %+ d
         %xdefine %1w r %+ %%i %+ w
         %xdefine %1b r %+ %%i %+ b
-        %xdefine %1m r %+ %%i %+ m
         CAT_XDEFINE arg_name, %%i, %1
         %assign %%i %%i+1
         %rotate 1
@@ -241,7 +224,8 @@ DECLARE_REG_TMP_SIZE 0,1,2,3,4,5,6,7
     %assign n_arg_names %%i
 %endmacro
 
-%ifdef WIN64 ; Windows x64 ;=================================================
+%ifdef ARCH_X86_64 ;==========================================================
+%ifidn __OUTPUT_FORMAT__,win32
 
 DECLARE_REG 0, rcx, ecx, cx,  cl,  ecx
 DECLARE_REG 1, rdx, edx, dx,  dl,  edx
@@ -255,75 +239,11 @@ DECLARE_REG 6, rax, eax, ax,  al,  [rsp + stack_offset + 56]
 
 %macro LOAD_IF_USED 2 ; reg_id, number_of_args
     %if %1 < %2
-        mov r%1, [rsp + stack_offset + 8 + %1*8]
+        mov r%1, [rsp + 8 + %1*8]
     %endif
 %endmacro
 
-%macro PROLOGUE 2-4+ ; #args, #regs, #xmm_regs, arg_names...
-    ASSERT %2 >= %1
-    %assign regs_used %2
-    ASSERT regs_used <= 7
-    %if %0 > 2
-        %assign xmm_regs_used %3
-    %else
-        %assign xmm_regs_used 0
-    %endif
-    ASSERT xmm_regs_used <= 16
-    %if regs_used > 4
-        push r4
-        push r5
-        %assign stack_offset stack_offset+16
-    %endif
-    %if xmm_regs_used > 6
-        sub rsp, (xmm_regs_used-6)*16+16
-        %assign stack_offset stack_offset+(xmm_regs_used-6)*16+16
-        %assign %%i xmm_regs_used
-        %rep (xmm_regs_used-6)
-            %assign %%i %%i-1
-            movdqa [rsp + (%%i-6)*16+8], xmm %+ %%i
-        %endrep
-    %endif
-    LOAD_IF_USED 4, %1
-    LOAD_IF_USED 5, %1
-    LOAD_IF_USED 6, %1
-    DEFINE_ARGS %4
-%endmacro
-
-%macro RESTORE_XMM_INTERNAL 1
-    %if xmm_regs_used > 6
-        %assign %%i xmm_regs_used
-        %rep (xmm_regs_used-6)
-            %assign %%i %%i-1
-            movdqa xmm %+ %%i, [%1 + (%%i-6)*16+8]
-        %endrep
-        add %1, (xmm_regs_used-6)*16+16
-    %endif
-%endmacro
-
-%macro RESTORE_XMM 1
-    RESTORE_XMM_INTERNAL %1
-    %assign stack_offset stack_offset-(xmm_regs_used-6)*16+16
-    %assign xmm_regs_used 0
-%endmacro
-
-%macro RET 0
-    RESTORE_XMM_INTERNAL rsp
-    %if regs_used > 4
-        pop r5
-        pop r4
-    %endif
-    ret
-%endmacro
-
-%macro REP_RET 0
-    %if regs_used > 4 || xmm_regs_used > 6
-        RET
-    %else
-        rep ret
-    %endif
-%endmacro
-
-%elifdef ARCH_X86_64 ; *nix x64 ;=============================================
+%else ;=======================================================================
 
 DECLARE_REG 0, rdi, edi, di,  dil, edi
 DECLARE_REG 1, rsi, esi, si,  sil, esi
@@ -341,9 +261,16 @@ DECLARE_REG 6, rax, eax, ax,  al,  [rsp + stack_offset + 8]
     %endif
 %endmacro
 
-%macro PROLOGUE 2-4+ ; #args, #regs, #xmm_regs, arg_names...
+%endif ; !WIN64
+
+%macro PROLOGUE 2-4+ 0 ; #args, #regs, pic, arg_names...
     ASSERT %2 >= %1
     ASSERT %2 <= 7
+    %assign stack_offset 0
+%ifidn __OUTPUT_FORMAT__,win32
+    LOAD_IF_USED 4, %1
+    LOAD_IF_USED 5, %1
+%endif
     LOAD_IF_USED 6, %1
     DEFINE_ARGS %4
 %endmacro
@@ -388,9 +315,15 @@ DECLARE_REG 6, ebp, ebp, bp, null, [esp + stack_offset + 28]
     %endif
 %endmacro
 
-%macro PROLOGUE 2-4+ ; #args, #regs, arg_names...
+%macro PROLOGUE 2-4+ 0 ; #args, #regs, pic, arg_names...
     ASSERT %2 >= %1
+    %assign stack_offset 0
     %assign regs_used %2
+    %ifdef PIC
+    %if %3
+        %assign regs_used regs_used+1
+    %endif
+    %endif
     ASSERT regs_used <= 7
     PUSH_IF_USED 3
     PUSH_IF_USED 4
@@ -403,6 +336,9 @@ DECLARE_REG 6, ebp, ebp, bp, null, [esp + stack_offset + 28]
     LOAD_IF_USED 4, %1
     LOAD_IF_USED 5, %1
     LOAD_IF_USED 6, %1
+    %if %3
+        picgetgot r%2
+    %endif
     DEFINE_ARGS %4
 %endmacro
 
@@ -438,7 +374,6 @@ DECLARE_REG 6, ebp, ebp, bp, null, [esp + stack_offset + 28]
     %ifdef PREFIX
         %xdefine %1 _ %+ %1
     %endif
-    %xdefine %1.skip_prologue %1 %+ .skip_prologue
     %ifidn __OUTPUT_FORMAT__,elf
         global %1:function hidden
     %else
@@ -447,7 +382,6 @@ DECLARE_REG 6, ebp, ebp, bp, null, [esp + stack_offset + 28]
     align function_align
     %1:
     RESET_MM_PERMUTATION ; not really needed, but makes disassembly somewhat nicer
-    %assign stack_offset 0
     %if %0 > 1
         PROLOGUE %2
     %endif
@@ -455,9 +389,11 @@ DECLARE_REG 6, ebp, ebp, bp, null, [esp + stack_offset + 28]
 
 %macro cextern 1
     %ifdef PREFIX
-        %xdefine %1 _%1
+        extern _%1
+        %define %1 _%1
+    %else
+        extern %1
     %endif
-    extern %1
 %endmacro
 
 ; This is needed for ELF, otherwise the GNU linker assumes the stack is
@@ -587,7 +523,6 @@ INIT_MMX
     %assign %%i 0
     %rep num_mmregs
     CAT_XDEFINE m, %%i, %1_m %+ %%i
-    CAT_XDEFINE n, m %+ %%i, %%i
     %assign %%i %%i+1
     %endrep
 %endmacro
@@ -599,27 +534,7 @@ INIT_MMX
     %endif
 %endmacro
 
-;Substitutions that reduce instruction size but are functionally equivalent
-%macro add 2
-    %ifnum %2
-        %if %2==128
-            sub %1, -128
-        %else
-            add %1, %2
-        %endif
-    %else
-        add %1, %2
-    %endif
-%endmacro
+; substitutions which are functionally identical but reduce code size
+%define movdqa movaps
+%define movdqu movups
 
-%macro sub 2
-    %ifnum %2
-        %if %2==128
-            add %1, -128
-        %else
-            sub %1, %2
-        %endif
-    %else
-        sub %1, %2
-    %endif
-%endmacro

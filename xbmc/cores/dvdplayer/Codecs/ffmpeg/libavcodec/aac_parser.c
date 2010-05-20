@@ -23,8 +23,10 @@
 #include "parser.h"
 #include "aac_ac3_parser.h"
 #include "aac_parser.h"
-#include "get_bits.h"
+#include "bitstream.h"
 #include "mpeg4audio.h"
+
+#define AAC_HEADER_SIZE 7
 
 int ff_aac_parse_header(GetBitContext *gbc, AACADTSHeaderInfo *hdr)
 {
@@ -44,6 +46,9 @@ int ff_aac_parse_header(GetBitContext *gbc, AACADTSHeaderInfo *hdr)
     skip_bits1(gbc);             /* private_bit */
     ch      = get_bits(gbc, 3);  /* channel_configuration */
 
+    if(!ff_mpeg4audio_channels[ch])
+        return AAC_AC3_PARSE_ERROR_CHANNEL_CFG;
+
     skip_bits1(gbc);             /* original/copy */
     skip_bits1(gbc);             /* home */
 
@@ -51,7 +56,7 @@ int ff_aac_parse_header(GetBitContext *gbc, AACADTSHeaderInfo *hdr)
     skip_bits1(gbc);             /* copyright_identification_bit */
     skip_bits1(gbc);             /* copyright_identification_start */
     size    = get_bits(gbc, 13); /* aac_frame_length */
-    if(size < AAC_ADTS_HEADER_SIZE)
+    if(size < AAC_HEADER_SIZE)
         return AAC_AC3_PARSE_ERROR_FRAME_SIZE;
 
     skip_bits(gbc, 11);          /* adts_buffer_fullness */
@@ -81,7 +86,7 @@ static int aac_sync(uint64_t state, AACAC3ParseContext *hdr_info,
     } tmp;
 
     tmp.u64 = be2me_64(state);
-    init_get_bits(&bits, tmp.u8+8-AAC_ADTS_HEADER_SIZE, AAC_ADTS_HEADER_SIZE * 8);
+    init_get_bits(&bits, tmp.u8+8-AAC_HEADER_SIZE, AAC_HEADER_SIZE * 8);
 
     if ((size = ff_aac_parse_header(&bits, &hdr)) < 0)
         return 0;
@@ -97,7 +102,7 @@ static int aac_sync(uint64_t state, AACAC3ParseContext *hdr_info,
 static av_cold int aac_parse_init(AVCodecParserContext *s1)
 {
     AACAC3ParseContext *s = s1->priv_data;
-    s->header_size = AAC_ADTS_HEADER_SIZE;
+    s->header_size = AAC_HEADER_SIZE;
     s->sync = aac_sync;
     return 0;
 }

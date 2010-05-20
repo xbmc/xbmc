@@ -24,7 +24,7 @@
 #define AVCODEC_AC3_PARSER_H
 
 #include "ac3.h"
-#include "get_bits.h"
+#include "bitstream.h"
 
 /**
  * Parses AC-3 frame header.

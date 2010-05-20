@@ -19,8 +19,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/* #define DEBUG */
-
 #include "libavcodec/imgconvert.h"
 #include "avfilter.h"
 
@@ -28,16 +26,12 @@ unsigned avfilter_version(void) {
     return LIBAVFILTER_VERSION_INT;
 }
 
-const char * avfilter_configuration(void)
+/** list of registered filters */
+struct FilterList
 {
-    return FFMPEG_CONFIGURATION;
-}
-
-const char * avfilter_license(void)
-{
-#define LICENSE_PREFIX "libavfilter license: "
-    return LICENSE_PREFIX FFMPEG_LICENSE + sizeof(LICENSE_PREFIX) - 1;
-}
+    AVFilter *filter;
+    struct FilterList *next;
+} *filters = NULL;
 
 /** helper macros to get the in/out pad on the dst/src filter */
 #define link_dpad(link)     link->dst-> input_pads[link->dstpad]
@@ -166,51 +160,21 @@ int avfilter_config_links(AVFilterContext *filter)
     return 0;
 }
 
-static void dprintf_picref(void *ctx, AVFilterPicRef *picref, int end)
-{
-    dprintf(ctx,
-            "picref[%p data[%p, %p, %p, %p] linesize[%d, %d, %d, %d] pts:%"PRId64" s:%dx%d]%s",
-            picref,
-            picref->data    [0], picref->data    [1], picref->data    [2], picref->data    [3],
-            picref->linesize[0], picref->linesize[1], picref->linesize[2], picref->linesize[3],
-            picref->pts, picref->w, picref->h,
-            end ? "\n" : "");
-}
-
-static void dprintf_link(void *ctx, AVFilterLink *link, int end)
-{
-    dprintf(ctx,
-            "link[%p s:%dx%d fmt:%-16s %-16s->%-16s]%s",
-            link, link->w, link->h,
-            avcodec_get_pix_fmt_name(link->format),
-            link->src ? link->src->filter->name : "",
-            link->dst ? link->dst->filter->name : "",
-            end ? "\n" : "");
-}
-
-#define DPRINTF_START(ctx, func) dprintf(NULL, "%-16s: ", #func)
-
-AVFilterPicRef *avfilter_get_video_buffer(AVFilterLink *link, int perms, int w, int h)
+AVFilterPicRef *avfilter_get_video_buffer(AVFilterLink *link, int perms)
 {
     AVFilterPicRef *ret = NULL;
 
-    DPRINTF_START(NULL, get_video_buffer); dprintf_link(NULL, link, 0); dprintf(NULL, " perms:%d w:%d h:%d\n", perms, w, h);
-
     if(link_dpad(link).get_video_buffer)
-        ret = link_dpad(link).get_video_buffer(link, perms, w, h);
+        ret = link_dpad(link).get_video_buffer(link, perms);
 
     if(!ret)
-        ret = avfilter_default_get_video_buffer(link, perms, w, h);
-
-    DPRINTF_START(NULL, get_video_buffer); dprintf_link(NULL, link, 0); dprintf(NULL, " returning "); dprintf_picref(NULL, ret, 1);
+        ret = avfilter_default_get_video_buffer(link, perms);
 
     return ret;
 }
 
 int avfilter_request_frame(AVFilterLink *link)
 {
-    DPRINTF_START(NULL, request_frame); dprintf_link(NULL, link, 1);
-
     if(link_spad(link).request_frame)
         return link_spad(link).request_frame(link);
     else if(link->src->inputs[0])
@@ -226,11 +190,9 @@ int avfilter_poll_frame(AVFilterLink *link)
         return link_spad(link).poll_frame(link);
 
     for (i=0; i<link->src->input_count; i++) {
-        int val;
         if(!link->src->inputs[i])
             return -1;
-        val = avfilter_poll_frame(link->src->inputs[i]);
-        min = FFMIN(min, val);
+        min = FFMIN(min, avfilter_poll_frame(link->src->inputs[i]));
     }
 
     return min;
@@ -242,8 +204,6 @@ void avfilter_start_frame(AVFilterLink *link, AVFilterPicRef *picref)
 {
     void (*start_frame)(AVFilterLink *, AVFilterPicRef *);
     AVFilterPad *dst = &link_dpad(link);
-
-    DPRINTF_START(NULL, start_frame); dprintf_link(NULL, link, 0); dprintf(NULL, " "); dprintf_picref(NULL, picref, 1);
 
     if(!(start_frame = dst->start_frame))
         start_frame = avfilter_default_start_frame;
@@ -258,10 +218,9 @@ void avfilter_start_frame(AVFilterLink *link, AVFilterPicRef *picref)
                 link_dpad(link).min_perms, link_dpad(link).rej_perms);
         */
 
-        link->cur_pic = avfilter_default_get_video_buffer(link, dst->min_perms, link->w, link->h);
+        link->cur_pic = avfilter_default_get_video_buffer(link, dst->min_perms);
         link->srcpic = picref;
         link->cur_pic->pts = link->srcpic->pts;
-        link->cur_pic->pixel_aspect = link->srcpic->pixel_aspect;
     }
     else
         link->cur_pic = picref;
@@ -287,13 +246,11 @@ void avfilter_end_frame(AVFilterLink *link)
 
 }
 
-void avfilter_draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
+void avfilter_draw_slice(AVFilterLink *link, int y, int h)
 {
     uint8_t *src[4], *dst[4];
     int i, j, hsub, vsub;
-    void (*draw_slice)(AVFilterLink *, int, int, int);
-
-    DPRINTF_START(NULL, draw_slice); dprintf_link(NULL, link, 0); dprintf(NULL, " y:%d h:%d dir:%d\n", y, h, slice_dir);
+    void (*draw_slice)(AVFilterLink *, int, int);
 
     /* copy the slice if needed for permission reasons */
     if(link->srcpic) {
@@ -325,44 +282,37 @@ void avfilter_draw_slice(AVFilterLink *link, int y, int h, int slice_dir)
 
     if(!(draw_slice = link_dpad(link).draw_slice))
         draw_slice = avfilter_default_draw_slice;
-    draw_slice(link, y, h, slice_dir);
+    draw_slice(link, y, h);
 }
-
-#define MAX_REGISTERED_AVFILTERS_NB 64
-
-static AVFilter *registered_avfilters[MAX_REGISTERED_AVFILTERS_NB + 1];
-
-static int next_registered_avfilter_idx = 0;
 
 AVFilter *avfilter_get_by_name(const char *name)
 {
-    int i;
+    struct FilterList *filt;
 
-    for (i = 0; registered_avfilters[i]; i++)
-        if (!strcmp(registered_avfilters[i]->name, name))
-            return registered_avfilters[i];
+    for(filt = filters; filt; filt = filt->next)
+        if(!strcmp(filt->filter->name, name))
+            return filt->filter;
 
     return NULL;
 }
 
-int avfilter_register(AVFilter *filter)
+void avfilter_register(AVFilter *filter)
 {
-    if (next_registered_avfilter_idx == MAX_REGISTERED_AVFILTERS_NB)
-        return -1;
+    struct FilterList *newfilt = av_malloc(sizeof(struct FilterList));
 
-    registered_avfilters[next_registered_avfilter_idx++] = filter;
-    return 0;
-}
-
-AVFilter **av_filter_next(AVFilter **filter)
-{
-    return filter ? ++filter : &registered_avfilters[0];
+    newfilt->filter = filter;
+    newfilt->next   = filters;
+    filters         = newfilt;
 }
 
 void avfilter_uninit(void)
 {
-    memset(registered_avfilters, 0, sizeof(registered_avfilters));
-    next_registered_avfilter_idx = 0;
+    struct FilterList *tmp;
+
+    for(; filters; filters = tmp) {
+        tmp = filters->next;
+        av_free(filters);
+    }
 }
 
 static int pad_count(const AVFilterPad *pads)

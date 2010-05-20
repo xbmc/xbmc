@@ -25,14 +25,10 @@
 #include <stdlib.h>
 #include "libavutil/bswap.h"
 #include "libavutil/avstring.h"
-#include "libavcodec/get_bits.h"
+#include "libavcodec/bitstream.h"
 #include "libavcodec/bytestream.h"
 #include "avformat.h"
 #include "oggdec.h"
-
-struct speex_params {
-    int final_packet_duration;
-};
 
 static int speex_header(AVFormatContext *s, int idx) {
     struct ogg *ogg = s->priv_data;
@@ -40,79 +36,20 @@ static int speex_header(AVFormatContext *s, int idx) {
     AVStream *st = s->streams[idx];
     uint8_t *p = os->buf + os->pstart;
 
-    if (os->seq > 1)
-        return 0;
+    if (os->psize < 80)
+        return 1;
 
-    if (os->seq == 0) {
-        int frames_per_packet;
-        st->codec->codec_type = CODEC_TYPE_AUDIO;
-        st->codec->codec_id = CODEC_ID_SPEEX;
+    st->codec->codec_type = CODEC_TYPE_AUDIO;
+    st->codec->codec_id = CODEC_ID_SPEEX;
 
-        st->codec->sample_rate = AV_RL32(p + 36);
-        st->codec->channels = AV_RL32(p + 48);
+    st->codec->sample_rate = AV_RL32(p + 36);
+    st->codec->channels = AV_RL32(p + 48);
+    st->codec->extradata_size = os->psize;
+    st->codec->extradata = av_malloc(st->codec->extradata_size);
+    memcpy(st->codec->extradata, p, st->codec->extradata_size);
 
-        /* We treat the whole Speex packet as a single frame everywhere Speex
-           is handled in FFmpeg.  This avoids the complexities of splitting
-           and joining individual Speex frames, which are not always
-           byte-aligned. */
-        st->codec->frame_size = AV_RL32(p + 56);
-        frames_per_packet     = AV_RL32(p + 64);
-        if (frames_per_packet)
-            st->codec->frame_size *= frames_per_packet;
-
-        st->codec->extradata_size = os->psize;
-        st->codec->extradata = av_malloc(st->codec->extradata_size
-                                         + FF_INPUT_BUFFER_PADDING_SIZE);
-        memcpy(st->codec->extradata, p, st->codec->extradata_size);
-
-        st->time_base.num = 1;
-        st->time_base.den = st->codec->sample_rate;
-    } else
-        vorbis_comment(s, p, os->psize);
-
-    return 1;
-}
-
-static int ogg_page_packets(struct ogg_stream *os)
-{
-    int i;
-    int packets = 0;
-    for (i = 0; i < os->nsegs; i++)
-        if (os->segments[i] < 255)
-            packets++;
-    return packets;
-}
-
-static int speex_packet(AVFormatContext *s, int idx)
-{
-    struct ogg *ogg = s->priv_data;
-    struct ogg_stream *os = ogg->streams + idx;
-    struct speex_params *spxp = os->private;
-    int packet_size = s->streams[idx]->codec->frame_size;
-
-    if (!spxp) {
-        spxp = av_mallocz(sizeof(*spxp));
-        os->private = spxp;
-    }
-
-    if (os->flags & OGG_FLAG_EOS && os->lastpts != AV_NOPTS_VALUE &&
-        os->granule > 0) {
-        /* first packet of final page. we have to calculate the final packet
-           duration here because it is the only place we know the next-to-last
-           granule position. */
-        spxp->final_packet_duration = os->granule - os->lastpts -
-                                      packet_size * (ogg_page_packets(os) - 1);
-    }
-
-    if (!os->lastpts && os->granule > 0)
-        /* first packet */
-        os->pduration = os->granule - packet_size * (ogg_page_packets(os) - 1);
-    else if (os->flags & OGG_FLAG_EOS && os->segp == os->nsegs &&
-             spxp->final_packet_duration)
-        /* final packet */
-        os->pduration = spxp->final_packet_duration;
-    else
-        os->pduration = packet_size;
+    st->time_base.num = 1;
+    st->time_base.den = st->codec->sample_rate;
 
     return 0;
 }
@@ -120,6 +57,5 @@ static int speex_packet(AVFormatContext *s, int idx)
 const struct ogg_codec ff_speex_codec = {
     .magic = "Speex   ",
     .magicsize = 8,
-    .header = speex_header,
-    .packet = speex_packet
+    .header = speex_header
 };

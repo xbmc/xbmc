@@ -322,7 +322,7 @@ int dv_produce_packet(DVDemuxContext *c, AVPacket *pkt,
     uint8_t *ppcm[4] = {0};
 
     if (buf_size < DV_PROFILE_BYTES ||
-        !(c->sys = ff_dv_frame_profile(c->sys, buf, buf_size)) ||
+        !(c->sys = dv_frame_profile(buf)) ||
         buf_size < c->sys->frame_size) {
           return -1;   /* Broken frame, or not enough data */
     }
@@ -336,18 +336,15 @@ int dv_produce_packet(DVDemuxContext *c, AVPacket *pkt,
        ppcm[i] = c->audio_buf[i];
     }
     dv_extract_audio(buf, ppcm, c->sys);
+    c->abytes += size;
 
     /* We work with 720p frames split in half, thus even frames have
      * channels 0,1 and odd 2,3. */
     if (c->sys->height == 720) {
-        if (buf[1] & 0x0C) {
+        if (buf[1] & 0x0C)
             c->audio_pkt[2].size = c->audio_pkt[3].size = 0;
-        } else {
+        else
             c->audio_pkt[0].size = c->audio_pkt[1].size = 0;
-            c->abytes += size;
-        }
-    } else {
-        c->abytes += size;
     }
 
     /* Now it's time to return video packet */
@@ -368,7 +365,7 @@ static int64_t dv_frame_offset(AVFormatContext *s, DVDemuxContext *c,
                               int64_t timestamp, int flags)
 {
     // FIXME: sys may be wrong if last dv_read_packet() failed (buffer is junk)
-    const DVprofile* sys = ff_dv_codec_profile(c->vst->codec);
+    const DVprofile* sys = dv_codec_profile(c->vst->codec);
     int64_t offset;
     int64_t size = url_fsize(s->pb);
     int64_t max_offset = ((size-1) / sys->frame_size) * sys->frame_size;
@@ -403,7 +400,7 @@ typedef struct RawDVContext {
 static int dv_read_header(AVFormatContext *s,
                           AVFormatParameters *ap)
 {
-    unsigned state, marker_pos = 0;
+    unsigned state;
     RawDVContext *c = s->priv_data;
 
     c->dv_demux = dv_init_demux(s);
@@ -416,13 +413,6 @@ static int dv_read_header(AVFormatContext *s,
             av_log(s, AV_LOG_ERROR, "Cannot find DV header.\n");
             return -1;
         }
-        if (state == 0x003f0700 || state == 0xff3f0700)
-            marker_pos = url_ftell(s->pb);
-        if (state == 0xff3f0701 && url_ftell(s->pb) - marker_pos == 80) {
-            url_fseek(s->pb, -163, SEEK_CUR);
-            state = get_be32(s->pb);
-            break;
-        }
         state = (state << 8) | get_byte(s->pb);
     }
     AV_WB32(c->buf, state);
@@ -431,7 +421,7 @@ static int dv_read_header(AVFormatContext *s,
         url_fseek(s->pb, -DV_PROFILE_BYTES, SEEK_CUR) < 0)
         return AVERROR(EIO);
 
-    c->dv_demux->sys = ff_dv_frame_profile(c->dv_demux->sys, c->buf, DV_PROFILE_BYTES);
+    c->dv_demux->sys = dv_frame_profile(c->buf);
     if (!c->dv_demux->sys) {
         av_log(s, AV_LOG_ERROR, "Can't determine profile of DV input stream.\n");
         return -1;
@@ -486,10 +476,8 @@ static int dv_read_close(AVFormatContext *s)
 
 static int dv_probe(AVProbeData *p)
 {
-    unsigned state, marker_pos = 0;
+    unsigned state;
     int i;
-    int matches = 0;
-    int secondary_matches = 0;
 
     if (p->buf_size < 5)
         return 0;
@@ -497,23 +485,10 @@ static int dv_probe(AVProbeData *p)
     state = AV_RB32(p->buf);
     for (i = 4; i < p->buf_size; i++) {
         if ((state & 0xffffff7f) == 0x1f07003f)
-            matches++;
-        // any section header, also with seq/chan num != 0,
-        // should appear around every 12000 bytes, at least 10 per frame
-        if ((state & 0xff07ff7f) == 0x1f07003f)
-            secondary_matches++;
-        if (state == 0x003f0700 || state == 0xff3f0700)
-            marker_pos = i;
-        if (state == 0xff3f0701 && i - marker_pos == 80)
-            matches++;
+            return AVPROBE_SCORE_MAX*3/4; // not max to avoid dv in mov to match
         state = (state << 8) | p->buf[i];
     }
 
-    if (matches && p->buf_size / matches < 1024*1024) {
-        if (matches > 4 || (secondary_matches >= 10 && p->buf_size / secondary_matches < 24000))
-            return AVPROBE_SCORE_MAX*3/4; // not max to avoid dv in mov to match
-        return AVPROBE_SCORE_MAX/4;
-    }
     return 0;
 }
 

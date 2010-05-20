@@ -36,8 +36,7 @@ static av_cold int ptx_init(AVCodecContext *avctx) {
 }
 
 static int ptx_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
-                            AVPacket *avpkt) {
-    const uint8_t *buf = avpkt->data;
+                            const uint8_t *buf, int buf_size) {
     PTXContext * const s = avctx->priv_data;
     AVFrame *picture = data;
     AVFrame * const p = &s->picture;
@@ -79,7 +78,7 @@ static int ptx_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
     stride = p->linesize[0];
 
     for (y=0; y<h; y++) {
-#if HAVE_BIGENDIAN
+#ifdef WORDS_BIGENDIAN
         unsigned int x;
         for (x=0; x<w*bytes_per_pixel; x+=bytes_per_pixel)
             AV_WN16(ptr+x, AV_RL16(buf+x));
@@ -114,7 +113,7 @@ AVCodec ptx_decoder = {
     NULL,
     ptx_end,
     ptx_decode_frame,
-    CODEC_CAP_DR1,
+    0,
     NULL,
     .long_name = NULL_IF_CONFIG_SMALL("V.Flash PTX image"),
 };

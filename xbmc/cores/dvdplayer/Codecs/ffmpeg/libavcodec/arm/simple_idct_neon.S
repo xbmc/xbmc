@@ -45,6 +45,8 @@
 #define w7 d1[2]
 #define w4c d1[3]
 
+        .fpu neon
+
         .macro idct_col4_top
         vmull.s16       q7,  d6,  w2    /* q9   = W2 * col[2] */
         vmull.s16       q8,  d6,  w6    /* q10  = W6 * col[2] */
@@ -65,19 +67,6 @@
 
         .text
         .align 6
-
-function idct_row4_pld_neon
-        pld             [r0]
-        add             r3,  r0,  r1,  lsl #2
-        pld             [r0, r1]
-        pld             [r0, r1, lsl #1]
-        pld             [r3, -r1]
-        pld             [r3]
-        pld             [r3, r1]
-        add             r3,  r3,  r1,  lsl #1
-        pld             [r3]
-        pld             [r3, r1]
-        .endfunc
 
 function idct_row4_neon
         vmov.i32        q15, #(1<<(ROW_SHIFT-1))
@@ -263,7 +252,7 @@ idct_coeff_neon:
 function ff_simple_idct_put_neon, export=1
         idct_start      r2
 
-        bl              idct_row4_pld_neon
+        bl              idct_row4_neon
         bl              idct_row4_neon
         add             r2,  r2,  #-128
         bl              idct_col4_neon
@@ -318,7 +307,7 @@ function idct_col4_add8_neon
 function ff_simple_idct_add_neon, export=1
         idct_start      r2
 
-        bl              idct_row4_pld_neon
+        bl              idct_row4_neon
         bl              idct_row4_neon
         add             r2,  r2,  #-128
         bl              idct_col4_neon

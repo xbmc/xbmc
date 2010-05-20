@@ -1,7 +1,6 @@
 /*
  * LSP routines for ACELP-based codecs
  *
- * Copyright (c) 2007 Reynaldo H. Verdejo Pinochet (QCELP decoder)
  * Copyright (c) 2008 Vladimir Voroshilov
  *
  * This file is part of FFmpeg.
@@ -45,14 +44,6 @@ void ff_acelp_reorder_lsf(int16_t* lsfq, int lsfq_min_distance, int lsfq_min, in
         lsfq_min = lsfq[i] + lsfq_min_distance;
     }
     lsfq[lp_order-1] = FFMIN(lsfq[lp_order-1], lsfq_max);//Is warning required ?
-}
-
-void ff_set_min_dist_lsf(float *lsf, double min_spacing, int size)
-{
-    int i;
-    float prev = 0.0;
-    for (i = 0; i < size; i++)
-        prev = lsf[i] = FFMAX(lsf[i], prev + min_spacing);
 }
 
 void ff_acelp_lsf2lsp(int16_t *lsp, const int16_t *lsf, int lp_order)
@@ -126,49 +117,4 @@ void ff_acelp_lp_decode(int16_t* lp_1st, int16_t* lp_2nd, const int16_t* lsp_2nd
 
     /* LSP values for second subframe (3.2.5 of G.729)*/
     ff_acelp_lsp2lpc(lp_2nd, lsp_2nd, lp_order >> 1);
-}
-
-void ff_lsp2polyf(const double *lsp, double *f, int lp_half_order)
-{
-    int i, j;
-
-    f[0] = 1.0;
-    f[1] = -2 * lsp[0];
-    lsp -= 2;
-    for(i=2; i<=lp_half_order; i++)
-    {
-        double val = -2 * lsp[2*i];
-        f[i] = val * f[i-1] + 2*f[i-2];
-        for(j=i-1; j>1; j--)
-            f[j] += f[j-1] * val + f[j-2];
-        f[1] += val;
-    }
-}
-
-void ff_acelp_lspd2lpc(const double *lsp, float *lpc, int lp_half_order)
-{
-    double pa[MAX_LP_HALF_ORDER+1], qa[MAX_LP_HALF_ORDER+1];
-    float *lpc2 = lpc + (lp_half_order << 1) - 1;
-
-    assert(lp_half_order <= MAX_LP_HALF_ORDER);
-
-    ff_lsp2polyf(lsp,     pa, lp_half_order);
-    ff_lsp2polyf(lsp + 1, qa, lp_half_order);
-
-    while (lp_half_order--) {
-        double paf = pa[lp_half_order+1] + pa[lp_half_order];
-        double qaf = qa[lp_half_order+1] - qa[lp_half_order];
-
-        lpc [ lp_half_order] = 0.5*(paf+qaf);
-        lpc2[-lp_half_order] = 0.5*(paf-qaf);
-    }
-}
-
-void ff_sort_nearly_sorted_floats(float *vals, int len)
-{
-    int i,j;
-
-    for (i = 0; i < len - 1; i++)
-        for (j = i; j >= 0 && vals[j] > vals[j+1]; j--)
-            FFSWAP(float, vals[j], vals[j+1]);
 }

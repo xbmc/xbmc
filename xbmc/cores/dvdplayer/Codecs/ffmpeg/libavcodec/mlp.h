@@ -26,43 +26,35 @@
 
 #include "avcodec.h"
 
-/** Last possible matrix channel for each codec */
-#define MAX_MATRIX_CHANNEL_MLP      5
-#define MAX_MATRIX_CHANNEL_TRUEHD   7
-/** Maximum number of channels in a valid stream.
- *  MLP   : 5.1 + 2 noise channels -> 8 channels
- *  TrueHD: 7.1                    -> 8 channels
- */
-#define MAX_CHANNELS                8
+/** Maximum number of channels that can be decoded. */
+#define MAX_CHANNELS        16
 
 /** Maximum number of matrices used in decoding; most streams have one matrix
  *  per output channel, but some rematrix a channel (usually 0) more than once.
  */
-#define MAX_MATRICES_MLP            6
-#define MAX_MATRICES_TRUEHD         8
-#define MAX_MATRICES                8
+#define MAX_MATRICES        15
 
-/** Maximum number of substreams that can be decoded.
- *  MLP's limit is 2. TrueHD supports at least up to 3.
+/** Maximum number of substreams that can be decoded. This could also be set
+ *  higher, but I haven't seen any examples with more than two.
  */
-#define MAX_SUBSTREAMS      3
+#define MAX_SUBSTREAMS      2
 
-/** which multiple of 48000 the maximum sample rate is */
-#define MAX_RATEFACTOR      4
 /** maximum sample frequency seen in files */
-#define MAX_SAMPLERATE      (MAX_RATEFACTOR * 48000)
+#define MAX_SAMPLERATE      192000
 
 /** maximum number of audio samples within one access unit */
-#define MAX_BLOCKSIZE       (40 * MAX_RATEFACTOR)
+#define MAX_BLOCKSIZE       (40 * (MAX_SAMPLERATE / 48000))
 /** next power of two greater than MAX_BLOCKSIZE */
-#define MAX_BLOCKSIZE_POW2  (64 * MAX_RATEFACTOR)
+#define MAX_BLOCKSIZE_POW2  (64 * (MAX_SAMPLERATE / 48000))
 
 /** number of allowed filters */
 #define NUM_FILTERS         2
 
-/** The maximum number of taps in IIR and FIR filters. */
-#define MAX_FIR_ORDER       8
-#define MAX_IIR_ORDER       4
+/** The maximum number of taps in either the IIR or FIR filter;
+ *  I believe MLP actually specifies the maximum order for IIR filters as four,
+ *  and that the sum of the orders of both filters must be <= 8.
+*/
+#define MAX_FILTER_ORDER    8
 
 /** Code that signals end of a stream. */
 #define END_OF_STREAM       0xd234d234
@@ -75,13 +67,13 @@ typedef struct {
     uint8_t     order; ///< number of taps in filter
     uint8_t     shift; ///< Right shift to apply to output of filter.
 
-    int32_t     state[MAX_FIR_ORDER];
+    int32_t     coeff[MAX_FILTER_ORDER];
+    int32_t     state[MAX_FILTER_ORDER];
 } FilterParams;
 
 /** sample data coding information */
 typedef struct {
     FilterParams filter_params[NUM_FILTERS];
-    int32_t     coeff[NUM_FILTERS][MAX_FIR_ORDER];
 
     int16_t     huff_offset;      ///< Offset to apply to residual values.
     int32_t     sign_huff_offset; ///< sign/rounding-corrected version of huff_offset

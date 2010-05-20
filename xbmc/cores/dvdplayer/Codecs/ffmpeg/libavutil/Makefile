@@ -15,10 +15,10 @@ HEADERS = adler32.h                                                     \
           mathematics.h                                                 \
           md5.h                                                         \
           mem.h                                                         \
-          pixdesc.h                                                     \
           pixfmt.h                                                      \
+          random.h                                                      \
           rational.h                                                    \
-          sha1.h                                                        \
+          sha1.h
 
 OBJS = adler32.o                                                        \
        aes.o                                                            \
@@ -35,19 +35,19 @@ OBJS = adler32.o                                                        \
        mathematics.o                                                    \
        md5.o                                                            \
        mem.o                                                            \
-       pixdesc.o                                                        \
-       random_seed.o                                                    \
+       random.o                                                         \
        rational.o                                                       \
        rc4.o                                                            \
-       sha.o                                                            \
+       sha1.o                                                           \
        tree.o                                                           \
        utils.o                                                          \
 
-TESTPROGS = adler32 aes base64 crc des lls md5 pca sha softfloat tree
-TESTPROGS-$(HAVE_LZO1X_999_COMPRESS) += lzo
+TESTS = $(addsuffix -test$(EXESUF), adler32 aes base64 crc des lls md5 pca random sha1 softfloat tree)
 
 DIRS = arm bfin sh4 x86
 
 include $(SUBDIR)../subdir.mak
 
-$(SUBDIR)lzo-test$(EXESUF): ELIBS = -llzo2
+$(SUBDIR)lzo-test$(EXESUF): EXTRALIBS += -llzo2
+
+CLEANFILES = lzo-test$(EXESUF)

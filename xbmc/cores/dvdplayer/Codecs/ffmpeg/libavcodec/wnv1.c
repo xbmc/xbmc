@@ -25,8 +25,7 @@
  */
 
 #include "avcodec.h"
-#include "get_bits.h"
-#include "libavutil/common.h"
+#include "bitstream.h"
 
 
 typedef struct WNV1Context{
@@ -52,17 +51,15 @@ static inline int wnv1_get_code(WNV1Context *w, int base_value)
     int v = get_vlc2(&w->gb, code_vlc.table, CODE_VLC_BITS, 1);
 
     if(v==15)
-        return av_reverse[ get_bits(&w->gb, 8 - w->shift) ];
+        return ff_reverse[ get_bits(&w->gb, 8 - w->shift) ];
     else
         return base_value + ((v - 7)<<w->shift);
 }
 
 static int decode_frame(AVCodecContext *avctx,
                         void *data, int *data_size,
-                        AVPacket *avpkt)
+                        const uint8_t *buf, int buf_size)
 {
-    const uint8_t *buf = avpkt->data;
-    int buf_size = avpkt->size;
     WNV1Context * const l = avctx->priv_data;
     AVFrame * const p= (AVFrame*)&l->pic;
     unsigned char *Y,*U,*V;
@@ -88,7 +85,7 @@ static int decode_frame(AVCodecContext *avctx,
     p->key_frame = 1;
 
     for(i=8; i<buf_size; i++)
-        rbuf[i]= av_reverse[ buf[i] ];
+        rbuf[i]= ff_reverse[ buf[i] ];
     init_get_bits(&l->gb, rbuf+8, (buf_size-8)*8);
 
     if (buf[2] >> 4 == 6)
@@ -130,26 +127,15 @@ static int decode_frame(AVCodecContext *avctx,
 
 static av_cold int decode_init(AVCodecContext *avctx){
     WNV1Context * const l = avctx->priv_data;
-    static VLC_TYPE code_table[1 << CODE_VLC_BITS][2];
 
     l->avctx = avctx;
     avctx->pix_fmt = PIX_FMT_YUV422P;
 
-    code_vlc.table = code_table;
-    code_vlc.table_allocated = 1 << CODE_VLC_BITS;
-    init_vlc(&code_vlc, CODE_VLC_BITS, 16,
-             &code_tab[0][1], 4, 2,
-             &code_tab[0][0], 4, 2, INIT_VLC_USE_NEW_STATIC);
-
-    return 0;
-}
-
-static av_cold int decode_end(AVCodecContext *avctx){
-    WNV1Context * const l = avctx->priv_data;
-    AVFrame *pic = &l->pic;
-
-    if (pic->data[0])
-        avctx->release_buffer(avctx, pic);
+    if(!code_vlc.table){
+        init_vlc(&code_vlc, CODE_VLC_BITS, 16,
+                    &code_tab[0][1], 4, 2,
+                    &code_tab[0][0], 4, 2, 1);
+    }
 
     return 0;
 }
@@ -161,7 +147,7 @@ AVCodec wnv1_decoder = {
     sizeof(WNV1Context),
     decode_init,
     NULL,
-    decode_end,
+    NULL,
     decode_frame,
     CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Winnov WNV1"),

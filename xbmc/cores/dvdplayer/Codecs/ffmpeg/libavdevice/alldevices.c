@@ -20,14 +20,20 @@
 
 #include "config.h"
 #include "libavformat/avformat.h"
+#include "avdevice.h"
 
-#define REGISTER_OUTDEV(X,x) { \
+unsigned avdevice_version(void)
+{
+    return LIBAVDEVICE_VERSION_INT;
+}
+
+#define REGISTER_MUXER(X,x) { \
           extern AVOutputFormat x##_muxer; \
-          if(CONFIG_##X##_OUTDEV)  av_register_output_format(&x##_muxer); }
-#define REGISTER_INDEV(X,x) { \
+          if(CONFIG_##X##_MUXER)   av_register_output_format(&x##_muxer); }
+#define REGISTER_DEMUXER(X,x) { \
           extern AVInputFormat x##_demuxer; \
-          if(CONFIG_##X##_INDEV)   av_register_input_format(&x##_demuxer); }
-#define REGISTER_INOUTDEV(X,x)  REGISTER_OUTDEV(X,x); REGISTER_INDEV(X,x)
+          if(CONFIG_##X##_DEMUXER) av_register_input_format(&x##_demuxer); }
+#define REGISTER_MUXDEMUX(X,x)  REGISTER_MUXER(X,x); REGISTER_DEMUXER(X,x)
 
 void avdevice_register_all(void)
 {
@@ -38,17 +44,16 @@ void avdevice_register_all(void)
     initialized = 1;
 
     /* devices */
-    REGISTER_INOUTDEV (ALSA, alsa);
-    REGISTER_INOUTDEV (AUDIO_BEOS, audio_beos);
-    REGISTER_INDEV    (BKTR, bktr);
-    REGISTER_INDEV    (DV1394, dv1394);
-    REGISTER_INDEV    (JACK, jack);
-    REGISTER_INOUTDEV (OSS, oss);
-    REGISTER_INDEV    (V4L2, v4l2);
-    REGISTER_INDEV    (V4L, v4l);
-    REGISTER_INDEV    (VFWCAP, vfwcap);
-    REGISTER_INDEV    (X11_GRAB_DEVICE, x11_grab_device);
+    REGISTER_MUXDEMUX (ALSA, alsa);
+    REGISTER_MUXDEMUX (AUDIO_BEOS, audio_beos);
+    REGISTER_DEMUXER  (BKTR, bktr);
+    REGISTER_DEMUXER  (DV1394, dv1394);
+    REGISTER_MUXDEMUX (OSS, oss);
+    REGISTER_DEMUXER  (V4L2, v4l2);
+    REGISTER_DEMUXER  (V4L, v4l);
+    REGISTER_DEMUXER  (VFWCAP, vfwcap);
+    REGISTER_DEMUXER  (X11_GRAB_DEVICE, x11_grab_device);
 
     /* external libraries */
-    REGISTER_INDEV    (LIBDC1394, libdc1394);
+    REGISTER_DEMUXER  (LIBDC1394, libdc1394);
 }

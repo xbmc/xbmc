@@ -130,7 +130,7 @@ static int tcp_read(URLContext *h, uint8_t *buf, int size)
             if (len < 0) {
                 if (ff_neterrno() != FF_NETERROR(EINTR) &&
                     ff_neterrno() != FF_NETERROR(EAGAIN))
-                    return AVERROR(ff_neterrno());
+                    return AVERROR(errno);
             } else return len;
         } else if (ret < 0) {
             return -1;
@@ -160,7 +160,7 @@ static int tcp_write(URLContext *h, uint8_t *buf, int size)
             if (len < 0) {
                 if (ff_neterrno() != FF_NETERROR(EINTR) &&
                     ff_neterrno() != FF_NETERROR(EAGAIN))
-                    return AVERROR(ff_neterrno());
+                    return AVERROR(errno);
                 continue;
             }
             size -= len;
@@ -181,12 +181,6 @@ static int tcp_close(URLContext *h)
     return 0;
 }
 
-static int tcp_get_file_handle(URLContext *h)
-{
-    TCPContext *s = h->priv_data;
-    return s->fd;
-}
-
 URLProtocol tcp_protocol = {
     "tcp",
     tcp_open,
@@ -194,5 +188,4 @@ URLProtocol tcp_protocol = {
     tcp_write,
     NULL, /* seek */
     tcp_close,
-    .url_get_file_handle = tcp_get_file_handle,
 };

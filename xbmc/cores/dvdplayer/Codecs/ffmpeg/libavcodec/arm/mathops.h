@@ -23,10 +23,7 @@
 #define AVCODEC_ARM_MATHOPS_H
 
 #include <stdint.h>
-#include "config.h"
 #include "libavutil/common.h"
-
-#if HAVE_INLINE_ASM
 
 #   define MULL MULL
 static inline av_const int MULL(int a, int b, unsigned shift)
@@ -110,7 +107,5 @@ static inline av_const int mid_pred(int a, int b, int c)
         : "r"(b), "r"(c));
     return m;
 }
-
-#endif /* HAVE_INLINE_ASM */
 
 #endif /* AVCODEC_ARM_MATHOPS_H */
