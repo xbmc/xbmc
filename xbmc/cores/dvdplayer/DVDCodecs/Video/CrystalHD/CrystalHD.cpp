@@ -25,12 +25,6 @@
   #include "system.h"
   #include "WIN32Util.h"
   #include "util.h"
-
-  // default Broadcom registy bits (setup when installing a CrystalHD card)
-  #define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
-  #define BC_REG_PRODUCT    "CrystalHD" // 70012/70015
-  #define BC_BCM_DLL        "bcmDIL.dll"
-  #define BC_REG_INST_PATH  "InstallPath"
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
@@ -1430,8 +1424,12 @@ CCrystalHD::CCrystalHD() :
 {
 
   m_dll = new DllLibCrystalHD;
-  CheckCrystalHDLibraryPath();
+#ifdef _WIN32
+  CStdString  strDll;
+  if(CWIN32Util::GetCrystalHDLibraryPath(strDll) && m_dll->SetFile(strDll) && m_dll->Load() && m_dll->IsLoaded() )
+#else
   if (m_dll->Load() && m_dll->IsLoaded() )
+#endif
   {
     uint32_t mode = BCM::DTS_PLAYBACK_MODE          |
                     BCM::DTS_LOAD_FILE_PLAY_FW      |
@@ -1514,38 +1512,6 @@ CCrystalHD* CCrystalHD::GetInstance(void)
     m_pInstance = new CCrystalHD();
   }
   return m_pInstance;
-}
-
-void CCrystalHD::CheckCrystalHDLibraryPath(void)
-{
-  // support finding library by windows registry
-#if defined _WIN32
-  HKEY hKey;
-  CStdString strRegKey;
-
-  CLog::Log(LOGDEBUG, "%s: detecting CrystalHD installation path", __MODULE_NAME__);
-  strRegKey.Format("%s\\%s", BC_REG_PATH, BC_REG_PRODUCT );
-
-  if( CWIN32Util::UtilRegOpenKeyEx( HKEY_LOCAL_MACHINE, strRegKey.c_str(), KEY_READ, &hKey ))
-  {
-    DWORD dwType;
-    char *pcPath= NULL;
-    if( CWIN32Util::UtilRegGetValue( hKey, BC_REG_INST_PATH, &dwType, &pcPath, NULL, sizeof( pcPath ) ) == ERROR_SUCCESS )
-    {
-      CStdString strDll = CUtil::AddFileToFolder(pcPath, BC_BCM_DLL);
-      CLog::Log(LOGDEBUG, "%s: got CrystalHD installation path (%s)", __MODULE_NAME__, strDll.c_str());
-      m_dll->SetFile(strDll);
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "%s: getting CrystalHD installation path faild", __MODULE_NAME__);
-    }
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "%s: CrystalHD software seems to be not installed.", __MODULE_NAME__);
-  }
-#endif
 }
 
 bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size, void *extradata)
