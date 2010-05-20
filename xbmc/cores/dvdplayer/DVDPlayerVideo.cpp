@@ -64,11 +64,10 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_iNrOfPicturesNotToSkip = 0;
 #ifdef _XBOX
   m_messageQueue.SetMaxDataSize(10 * 256 * 1024);
-  m_messageQueue.SetMaxTimeSize(4.0);
 #else
   m_messageQueue.SetMaxDataSize(8 * 1024 * 1024);
-  m_messageQueue.SetMaxTimeSize(8.0);
 #endif
+  m_messageQueue.SetMaxTimeSize(8.0);
   g_dvdPerformanceCounter.EnableVideoQueue(&m_messageQueue);
 
   m_iCurrentPts = DVD_NOPTS_VALUE;
