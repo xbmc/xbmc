@@ -3,7 +3,7 @@
 	<allowoverlay>no</allowoverlay>
 	<views>50,51,500</views>
 	<controls>
-		<include>CommonAddonsBackground</include>
+		<include>CommonSettingsBackground</include>
 		<include>CommonMediaPlayingBackground</include>
 		<control type="group">
 			<include>Window_OpenClose_Animation</include>		
