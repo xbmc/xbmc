@@ -11,7 +11,7 @@ AM_INIT_AUTOMAKE([foreign])
 AC_CANONICAL_HOST
 
 tolower(){
-    echo "$@" | tr ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz
+  echo "$@" | tr ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz
 }
 
 # General message strings
@@ -61,202 +61,209 @@ external_python_disabled="== Use of external python disabled. =="
 ffmpeg_vdpau_not_supported="== External ffmpeg doesn't support VDPAU. VDPAU support disabled. =="
 
 AC_ARG_ENABLE([debug],
-            [AS_HELP_STRING([--enable-debug],
-               [enable debugging information (default is yes)])],
-            [use_debug=$enableval],
-            [use_debug=yes])
+  [AS_HELP_STRING([--enable-debug],
+  [enable debugging information (default is yes)])],
+  [use_debug=$enableval],
+  [use_debug=yes])
 
 AC_ARG_WITH([arch],
-            [AS_HELP_STRING([--with-arch],
-               [build with given arch passing to internal ffmpeg (default is no, needed for crosscompiling)])],
-            [use_arch=$withval],
-            [use_arch=no])
+  [AS_HELP_STRING([--with-arch],
+  [build with given arch passing to internal ffmpeg (default is no, needed for crosscompiling)])],
+  [use_arch=$withval],
+  [use_arch=no])
 
 AC_ARG_WITH([cpu],
-            [AS_HELP_STRING([--with-cpu],
-               [build with given cpu passing to ffmpeg (default is no)])],
-            [use_cpu=$withval],
-            [use_cpu=no])
+  [AS_HELP_STRING([--with-cpu],
+  [build with given cpu passing to ffmpeg (default is no)])],
+  [use_cpu=$withval],
+  [use_cpu=no])
 
 AC_ARG_ENABLE([optimizations],
-            [AS_HELP_STRING([--enable-optimizations],
-               [enable optimization (default is yes)])],
-            [use_optimizations=$enableval],
-            [use_optimizations=yes])
+  [AS_HELP_STRING([--enable-optimizations],
+  [enable optimization (default is yes)])],
+  [use_optimizations=$enableval],
+  [use_optimizations=yes])
 
 AC_ARG_ENABLE([gl],
-            [AS_HELP_STRING([--enable-gl],
-               [enable OpenGL rendering (default is yes)])],
-            [use_gl=$enableval],
-            [use_gl=yes])
+  [AS_HELP_STRING([--enable-gl],
+  [enable OpenGL rendering (default is yes)])],
+  [use_gl=$enableval],
+  [use_gl=yes])
 
 AC_ARG_ENABLE([gles],
-            [AS_HELP_STRING([--enable-gles],
-               [enable OpenGLES rendering (default is no)])],
-            [use_gles=$enableval],
-            [use_gles=no])
+  [AS_HELP_STRING([--enable-gles],
+  [enable OpenGLES rendering (default is no)])],
+  [use_gles=$enableval],
+  [use_gles=no])
 
 AC_ARG_ENABLE([vdpau],
-            [AS_HELP_STRING([--enable-vdpau],
-               [enable VDPAU decoding (default is auto)])],
-            [use_vdpau=$enableval],
-            [use_vdpau=auto])
+  [AS_HELP_STRING([--enable-vdpau],
+  [enable VDPAU decoding (default is auto)])],
+  [use_vdpau=$enableval],
+  [use_vdpau=auto])
 
 AC_ARG_ENABLE([vaapi],
-            [AS_HELP_STRING([--enable-vaapi],
-               [enable VAAPI decoding (default is auto)])],
-            [use_vaapi=$enableval],
-            [use_vaapi=auto])
+  [AS_HELP_STRING([--enable-vaapi],
+  [enable VAAPI decoding (default is auto)])],
+  [use_vaapi=$enableval],
+  [use_vaapi=auto])
 
 AC_ARG_ENABLE([crystalhd],
-            [AS_HELP_STRING([--enable-crystalhd],
-               [enable CrystalHD decoding (default is auto)])],
-            [use_crystalhd=$enableval],
-            [use_crystalhd=auto])
+  [AS_HELP_STRING([--enable-crystalhd],
+  [enable CrystalHD decoding (default is auto)])],
+  [use_crystalhd=$enableval],
+  [use_crystalhd=auto])
 
 AC_ARG_ENABLE([vdadecoder],
-            [AS_HELP_STRING([--enable-vdadecoder],
-               [enable VDADecoder decoding (default is auto)])],
-            [use_vdadecoder=$enableval],
-            [use_vdadecoder=auto])
+  [AS_HELP_STRING([--enable-vdadecoder],
+  [enable VDADecoder decoding (default is auto)])],
+  [use_vdadecoder=$enableval],
+  [use_vdadecoder=auto])
 
 AC_ARG_ENABLE([openmax],
-            [AS_HELP_STRING([--enable-openmax],
-               [enable OpenMax decoding (default is yes)])],
-            [use_openmax=$enableval],
-            [use_openmax=yes])
+  [AS_HELP_STRING([--enable-openmax],
+  [enable OpenMax decoding (default is yes)])],
+  [use_openmax=$enableval],
+  [use_openmax=yes])
 
 AC_ARG_ENABLE([tegra],
-            [AS_HELP_STRING([--enable-tegra],
-               [enable Tegra2 arm (default is no)])],
-            [use_tegra=$enableval],
-            [use_tegra=no])
+  [AS_HELP_STRING([--enable-tegra],
+  [enable Tegra2 arm (default is no)])],
+  [use_tegra=$enableval],
+  [use_tegra=no])
 
 AC_ARG_ENABLE([profiling],
-            [AS_HELP_STRING([--enable-profiling],
-               [enable gprof profiling (default is no)])],
-            [use_profiling=$enableval],
-            [use_profiling=no])
+  [AS_HELP_STRING([--enable-profiling],
+  [enable gprof profiling (default is no)])],
+  [use_profiling=$enableval],
+  [use_profiling=no])
 
 AC_ARG_ENABLE([joystick],
-            [AS_HELP_STRING([--enable-joystick],
-               [enable SDL joystick support (default is yes)])],
-            [use_joystick=$enableval],
-            [use_joystick=yes])
+  [AS_HELP_STRING([--enable-joystick],
+  [enable SDL joystick support (default is yes)])],
+  [use_joystick=$enableval],
+  [use_joystick=yes])
 
 AC_ARG_ENABLE([xrandr],
-            [AS_HELP_STRING([--enable-xrandr],
-               [enable XRandR support (default is yes)])],
-            [use_xrandr=$enableval],
-            [use_xrandr=yes])
+  [AS_HELP_STRING([--enable-xrandr],
+  [enable XRandR support (default is yes)])],
+  [use_xrandr=$enableval],
+  [use_xrandr=yes])
 
 AC_ARG_ENABLE([goom],
-            [AS_HELP_STRING([--enable-goom],
-               [enable GOOM visualisation (default is no)])],
-            [use_goom=$enableval],
-            [use_goom=no])
+  [AS_HELP_STRING([--enable-goom],
+  [enable GOOM visualisation (default is no)])],
+  [use_goom=$enableval],
+  [use_goom=no])
 
 AC_ARG_ENABLE([ccache],
-            [AS_HELP_STRING([--enable-ccache],
-               [enable building with ccache feature (default is auto)])],
-            [use_ccache=$enableval],
-            [use_ccache=auto])
+  [AS_HELP_STRING([--enable-ccache],
+  [enable building with ccache feature (default is auto)])],
+  [use_ccache=$enableval],
+  [use_ccache=auto])
 
 AC_ARG_ENABLE([pulse],
-            [AS_HELP_STRING([--enable-pulse],
-               [enable PulseAudio support (default is auto)])],
-            [use_pulse=$enableval],
-            [use_pulse=auto])
+  [AS_HELP_STRING([--enable-pulse],
+  [enable PulseAudio support (default is auto)])],
+  [use_pulse=$enableval],
+  [use_pulse=auto])
 
 AC_ARG_ENABLE([ffmpeg_libvorbis],
-            [AS_HELP_STRING([--enable-ffmpeg-libvorbis],
-               [enable FFmpeg vorbis encoding (default is no)])],
-            [use_ffmpeg_libvorbis=$enableval],
-            [use_ffmpeg_libvorbis=no])
+  [AS_HELP_STRING([--enable-ffmpeg-libvorbis],
+  [enable FFmpeg vorbis encoding (default is no)])],
+  [use_ffmpeg_libvorbis=$enableval],
+  [use_ffmpeg_libvorbis=no])
 
 AC_ARG_ENABLE([faac],
-            [AS_HELP_STRING([--enable-faac],
-               [enable FAAC support (default is yes)])],
-            [use_faac=$enableval],
-            [use_faac=yes])
+  [AS_HELP_STRING([--enable-faac],
+  [enable FAAC support (default is yes)])],
+  [use_faac=$enableval],
+  [use_faac=yes])
 
 AC_ARG_ENABLE([dvdcss],
-            [AS_HELP_STRING([--enable-dvdcss],
-               [enable DVDCSS support (default is yes)])],
-            [use_dvdcss=$enableval],
-            [use_dvdcss=yes])
+  [AS_HELP_STRING([--enable-dvdcss],
+  [enable DVDCSS support (default is yes)])],
+  [use_dvdcss=$enableval],
+  [use_dvdcss=yes])
 
 AC_ARG_ENABLE([mid],
-            [AS_HELP_STRING([--enable-mid],
-               [enable MID support (default is no)])],
-            [use_mid=$enableval],
-            [use_mid=no])
+  [AS_HELP_STRING([--enable-mid],
+  [enable MID support (default is no)])],
+  [use_mid=$enableval],
+  [use_mid=no])
+
 AC_ARG_ENABLE([hal],
-             [AS_HELP_STRING([--disable-hal],
-                [disable HAL support (default is enabled if hal and hal-storage is found)])],
-             [use_hal=$enableval],
-             [use_hal=yes])
+  [AS_HELP_STRING([--disable-hal],
+  [disable HAL support (default is enabled if hal and hal-storage is found)])],
+  [use_hal=$enableval],
+  [use_hal=yes])
+
 AC_ARG_ENABLE([avahi],
-             [AS_HELP_STRING([--disable-avahi],
-                [disable Avahi support (default is enabled if libavahi-common and libavahi-client is found)])],
-             [use_avahi=$enableval],
-             [use_avahi=yes])
+  [AS_HELP_STRING([--disable-avahi],
+  [disable Avahi support (default is enabled if libavahi-common and libavahi-client is found)])],
+  [use_avahi=$enableval],
+  [use_avahi=yes])
+
 AC_ARG_ENABLE([non-free],
-              [AS_HELP_STRING([--disable-non-free],
-                [disable componentents with non-compliant licenses])],
-              [use_nonfree=$enableval],
-              [use_nonfree=yes])
+  [AS_HELP_STRING([--disable-non-free],
+  [disable componentents with non-compliant licenses])],
+  [use_nonfree=$enableval],
+  [use_nonfree=yes])
+
 AC_ARG_ENABLE([asap-codec],
-              [AS_HELP_STRING([--enable-asap-codec],
-                [enable ASAP ADPCM support])],
-              [use_asap=$enableval],
-              [use_asap=no])
+  [AS_HELP_STRING([--enable-asap-codec],
+  [enable ASAP ADPCM support])],
+  [use_asap=$enableval],
+  [use_asap=no])
+
 AC_ARG_ENABLE([webserver],
-              [AS_HELP_STRING([--disable-webserver],
-                [disable webserver])],
-              [use_webserver=$enableval],
-              [use_webserver=yes])
+  [AS_HELP_STRING([--disable-webserver],
+  [disable webserver])],
+  [use_webserver=$enableval],
+  [use_webserver=yes])
+
 AC_ARG_ENABLE([libdts],
-              [AS_HELP_STRING([--enable-libdts],
-                [enable deprecated libdts support])],
-              [use_libdts=$enableval],
-              [use_libdts=no])
+  [AS_HELP_STRING([--enable-libdts],
+  [enable deprecated libdts support])],
+  [use_libdts=$enableval],
+  [use_libdts=no])
+
 AC_ARG_ENABLE([liba52],
-              [AS_HELP_STRING([--enable-liba52],
-                [enable deprecated liba52 support])],
-              [use_liba52=$enableval],
-              [use_liba52=no])
+  [AS_HELP_STRING([--enable-liba52],
+  [enable deprecated liba52 support])],
+  [use_liba52=$enableval],
+  [use_liba52=no])
 
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
-            [AS_HELP_STRING([--enable-external-libraries],
-            [enable use of all supported external libraries (default is no) 'Linux only'])],
-            [use_external_libraries=$enableval],
-            [use_external_libraries=no])
+  [AS_HELP_STRING([--enable-external-libraries],
+  [enable use of all supported external libraries (default is no) 'Linux only'])],
+  [use_external_libraries=$enableval],
+  [use_external_libraries=no])
 
 AC_ARG_ENABLE([external-ffmpeg],
-            [AS_HELP_STRING([--enable-external-ffmpeg],
-            [enable use of external ffmpeg libraries (default is no) 'Linux only'])],
-            [use_external_ffmpeg=$enableval],
-            [use_external_ffmpeg=$use_external_libraries])
+  [AS_HELP_STRING([--enable-external-ffmpeg],
+  [enable use of external ffmpeg libraries (default is no) 'Linux only'])],
+  [use_external_ffmpeg=$enableval],
+  [use_external_ffmpeg=$use_external_libraries])
 
 AC_ARG_ENABLE([external-liba52],
-            [AS_HELP_STRING([--enable-external-liba52],
-            [enable use of external liba52 library (default is no) 'Linux only'])],
-            [use_external_liba52=$enableval],
-            [use_external_liba52=$use_external_libraries])
+  [AS_HELP_STRING([--enable-external-liba52],
+  [enable use of external liba52 library (default is no) 'Linux only'])],
+  [use_external_liba52=$enableval],
+  [use_external_liba52=$use_external_libraries])
 
 AC_ARG_ENABLE([external-libdts],
-            [AS_HELP_STRING([--enable-external-libdts],
-            [enable use of external libdts library (default is no) 'Linux only'])],
-            [use_external_libdts=$enableval],
-            [use_external_libdts=$use_external_libraries])
+  [AS_HELP_STRING([--enable-external-libdts],
+  [enable use of external libdts library (default is no) 'Linux only'])],
+  [use_external_libdts=$enableval],
+  [use_external_libdts=$use_external_libraries])
 
 AC_ARG_ENABLE([external-python],
-            [AS_HELP_STRING([--enable-external-python],
-            [enable use of external python library (default is no) 'Linux only'])],
-            [use_external_python=$enableval],
-            [use_external_python=$use_external_libraries])
+  [AS_HELP_STRING([--enable-external-python],
+  [enable use of external python library (default is no) 'Linux only'])],
+  [use_external_python=$enableval],
+  [use_external_python=$use_external_libraries])
 
 use_external_libass="yes"
 ### End of external library options
@@ -274,40 +281,40 @@ AC_PROG_MAKE_SET
 
 # host detection and setup
 case $host in
-    i*86*-linux-gnu*)
-       ARCH="i486-linux"
-       ;;
-    x86_64-*-linux-gnu*)
-       ARCH="x86_64-linux"
-       ;;
-    i386-apple-darwin*)
-       ARCH="x86-osx"
-       # define i386 or x86_64, cannot use $HOSTTYPE as it reports x86_64 on 10.6 regardless of kernel flavor
-       ARCHTYPE=`uname -m`
-       AC_SUBST([ARCHTYPE])
-       AC_SUBST(ARCH_DEFINES, "-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk")
-       ;;
-    powerpc-apple-darwin*)
-       ARCH="powerpc-osx"
-       # define ppc
-       ARCHTYPE=`arch`
-       AC_SUBST([ARCHTYPE])
-       AC_SUBST(ARCH_DEFINES, "-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk")
-       ;;
-    powerpc-*-linux-gnu*)
-       ARCH="powerpc-linux"
-       AC_SUBST(ARCH_DEFINES, "-D_POWERPC")
-       ;;
-    powerpc64-*-linux-gnu*)
-       ARCH="powerpc64-linux"
-       AC_SUBST(ARCH_DEFINES, "-D_POWERPC64")
-       ;;
-    arm*-*-linux-gnu*)
-       ARCH="arm"
-       AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
-       ;;
-    *)
-       AC_MSG_ERROR(unsupported host ($host))
+  i*86*-linux-gnu*)
+     ARCH="i486-linux"
+     ;;
+  x86_64-*-linux-gnu*)
+     ARCH="x86_64-linux"
+     ;;
+  i386-apple-darwin*)
+     ARCH="x86-osx"
+     # define i386 or x86_64, cannot use $HOSTTYPE as it reports x86_64 on 10.6 regardless of kernel flavor
+     ARCHTYPE=`uname -m`
+     AC_SUBST([ARCHTYPE])
+     AC_SUBST(ARCH_DEFINES, "-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk")
+     ;;
+  powerpc-apple-darwin*)
+     ARCH="powerpc-osx"
+     # define ppc
+     ARCHTYPE=`arch`
+     AC_SUBST([ARCHTYPE])
+     AC_SUBST(ARCH_DEFINES, "-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk")
+     ;;
+  powerpc-*-linux-gnu*)
+     ARCH="powerpc-linux"
+     AC_SUBST(ARCH_DEFINES, "-D_POWERPC")
+     ;;
+  powerpc64-*-linux-gnu*)
+     ARCH="powerpc64-linux"
+     AC_SUBST(ARCH_DEFINES, "-D_POWERPC64")
+     ;;
+  arm*-*-linux-gnu*)
+     ARCH="arm"
+     AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
+     ;;
+  *)
+     AC_MSG_ERROR(unsupported host ($host))
 esac
 AC_SUBST([ARCH])
 
@@ -349,12 +356,12 @@ elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
     SAVE_CFLAGS="$CFLAGS"
     CFLAGS="-mfpu=vfpv3-d16"
     AC_COMPILE_IFELSE(
-	[int foo;],
-	[ CFLAGS="$SAVE_CFLAGS -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
-	  CXXFLAGS="$CXXFLAGS -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
-	  FFMPEG_EXTRACFLAGS+=" -mtune=cortex-a9 -mfpu=vfpv3-d16"],
-	[ CFLAGS="$SAVE_CFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"
-	  CXXFLAGS="$CXXFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"])    
+      [int foo;],
+      [ CFLAGS="$SAVE_CFLAGS -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
+        CXXFLAGS="$CXXFLAGS -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
+        FFMPEG_EXTRACFLAGS+=" -mtune=cortex-a9 -mfpu=vfpv3-d16"],
+      [ CFLAGS="$SAVE_CFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"
+        CXXFLAGS="$CXXFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"])    
   else
     # Compile for ARMv7a architecture, CortexA8 cpu and NEON coprocessor
     CFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8 -mfpu=neon -mvectorize-with-neon-quad"
@@ -380,15 +387,15 @@ else
   if test "$use_gl" = "yes"; then
     if test "$host_vendor" = "apple" ; then
       # linking to OpenGL.framework instead of libGL, libGLU
-      AC_CHECK_LIB([GLEW],    [main],, AC_MSG_ERROR($missing_library))
+      AC_CHECK_LIB([GLEW],[main],, AC_MSG_ERROR($missing_library))
     else
-      AC_CHECK_LIB([GL],      [main],, AC_MSG_ERROR($missing_library))
-      AC_CHECK_LIB([GLEW],    [main],, AC_MSG_ERROR($missing_library))
-      AC_CHECK_LIB([GLU],     [main],, AC_MSG_ERROR($missing_library))
+      AC_CHECK_LIB([GL],  [main],, AC_MSG_ERROR($missing_library))
+      AC_CHECK_LIB([GLEW],[main],, AC_MSG_ERROR($missing_library))
+      AC_CHECK_LIB([GLU], [main],, AC_MSG_ERROR($missing_library))
     fi
   else
     AC_MSG_RESULT(== WARNING: OpenGL support is disabled. XBMC will run VERY slow. ==)
-    AC_CHECK_LIB([SDL_gfx], [main])
+    AC_CHECK_LIB([SDL_gfx],[main])
   fi
 fi
 
@@ -423,49 +430,49 @@ AC_CHECK_LIB([mpeg2],       [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mpeg2convert],[main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitable version of libssh]))
 PKG_CHECK_MODULES([MAD],        [mad],
-                  [INCLUDES="$INCLUDES $MAD_CFLAGS"; LIBS="$LIBS $MAD_LIBS"],
-                  AC_MSG_ERROR($missing_library))
+  [INCLUDES="$INCLUDES $MAD_CFLAGS"; LIBS="$LIBS $MAD_LIBS"],
+  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
-                  [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"; LIBS="$LIBS $FONTCONFIG_LIBS"],
-                  AC_MSG_ERROR($missing_library))
+  [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"; LIBS="$LIBS $FONTCONFIG_LIBS"],
+  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FRIBIDI],    [fribidi],
-                  [INCLUDES="$INCLUDES $FRIBIDI_CFLAGS"; LIBS="$LIBS $FRIBIDI_LIBS"],
-                  AC_MSG_ERROR($missing_library))
+  [INCLUDES="$INCLUDES $FRIBIDI_CFLAGS"; LIBS="$LIBS $FRIBIDI_LIBS"],
+  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([SQLITE3],    [sqlite3],
-                  [INCLUDES="$INCLUDES $SQLITE3_CFLAGS"; LIBS="$LIBS $SQLITE3_LIBS"],
-                  AC_MSG_ERROR($missing_library))
+  [INCLUDES="$INCLUDES $SQLITE3_CFLAGS"; LIBS="$LIBS $SQLITE3_LIBS"],
+  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([PNG],        [libpng],
-                  [INCLUDES="$INCLUDES $PNG_CFLAGS"; LIBS="$LIBS $PNG_LIBS"],
-                  AC_MSG_ERROR($missing_library))
+  [INCLUDES="$INCLUDES $PNG_CFLAGS"; LIBS="$LIBS $PNG_LIBS"],
+  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([PCRE],       [libpcre],
-                  [INCLUDES="$INCLUDES $PCRE_CFLAGS"; LIBS="$LIBS $PCRE_LIBS"]; \
-                  AC_DEFINE([HAVE_LIBPCRE],[1],["Define to 1 if libpcre is installed"]),
-                  AC_MSG_ERROR($missing_library))
+  [INCLUDES="$INCLUDES $PCRE_CFLAGS"; LIBS="$LIBS $PCRE_LIBS"]; \
+  AC_DEFINE([HAVE_LIBPCRE],[1],["Define to 1 if libpcre is installed"]),
+  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([PCRECPP],    [libpcrecpp],
-                  [INCLUDES="$INCLUDES $PCRECPP_CFLAGS"; LIBS="$LIBS $PCRECPP_LIBS"]; \
-                  AC_DEFINE([HAVE_LIBPCRECPP],[1],["Define to 1 if libpcrecpp is installed"]),
-                  AC_MSG_ERROR($missing_library))
+  [INCLUDES="$INCLUDES $PCRECPP_CFLAGS"; LIBS="$LIBS $PCRECPP_LIBS"]; \
+  AC_DEFINE([HAVE_LIBPCRECPP],[1],["Define to 1 if libpcrecpp is installed"]),
+  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([CDIO],       [libcdio],
-                  [INCLUDES="$INCLUDES $CDIO_CFLAGS"; LIBS="$LIBS $CDIO_LIBS"],
-                  AC_MSG_ERROR($missing_library))
+  [INCLUDES="$INCLUDES $CDIO_CFLAGS"; LIBS="$LIBS $CDIO_LIBS"],
+  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([SAMPLERATE], [samplerate],
-                  [INCLUDES="$INCLUDES $SAMPLERATE_CFLAGS"; LIBS="$LIBS $SAMPLERATE_LIBS"],
-                  AC_MSG_ERROR($missing_library))
+  [INCLUDES="$INCLUDES $SAMPLERATE_CFLAGS"; LIBS="$LIBS $SAMPLERATE_LIBS"],
+  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([MMS],        [libmms],
-                  [INCLUDES="$INCLUDES $MMS_CFLAGS"; LIBS="$LIBS $MMS_LIBS"],
-                  AC_MSG_ERROR($missing_library))
+  [INCLUDES="$INCLUDES $MMS_CFLAGS"; LIBS="$LIBS $MMS_LIBS"],
+  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FREETYPE2],  [freetype2],
-                  [INCLUDES="$INCLUDES $FREETYPE2_CFLAGS"; LIBS="$LIBS $FREETYPE2_LIBS"],
-                  AC_MSG_ERROR($missing_library))
+  [INCLUDES="$INCLUDES $FREETYPE2_CFLAGS"; LIBS="$LIBS $FREETYPE2_LIBS"],
+  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([OGG],        [ogg],
-                  [INCLUDES="$INCLUDES $OGG_CFLAGS"; LIBS="$LIBS $OGG_LIBS"],
-                  AC_MSG_ERROR($missing_library))
+  [INCLUDES="$INCLUDES $OGG_CFLAGS"; LIBS="$LIBS $OGG_LIBS"],
+  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([VORBIS],     [vorbis],
-                  [INCLUDES="$INCLUDES $VORBIS_CFLAGS"; LIBS="$LIBS $VORBIS_LIBS"],
-                  AC_MSG_ERROR($missing_library))
+  [INCLUDES="$INCLUDES $VORBIS_CFLAGS"; LIBS="$LIBS $VORBIS_LIBS"],
+  AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([VORBISENC],     [vorbisenc],
-                  [INCLUDES="$INCLUDES $VORBISENC_CFLAGS"; LIBS="$LIBS $VORBISENC_LIBS"],
-                  AC_MSG_ERROR($missing_library))
+  [INCLUDES="$INCLUDES $VORBISENC_CFLAGS"; LIBS="$LIBS $VORBISENC_LIBS"],
+  AC_MSG_ERROR($missing_library))
 
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
@@ -473,61 +480,61 @@ if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([VORBISFILE],     [vorbisfile],
-                    [INCLUDES="$INCLUDES $VORBISFILE_CFLAGS"; LIBS="$LIBS $VORBISFILE_LIBS"],
-                    AC_MSG_ERROR($missing_library))
+    [INCLUDES="$INCLUDES $VORBISFILE_CFLAGS"; LIBS="$LIBS $VORBISFILE_LIBS"],
+    AC_MSG_ERROR($missing_library))
 else
   AC_CHECK_PROG(MYSQL_CONFIG, mysql_config, "yes", "no")
   if test $MYSQL_CONFIG = "yes"; then
-                  INCLUDES="$INCLUDES `mysql_config --include`"
-                  LIBS="$LIBS `mysql_config --libs`"
+    INCLUDES="$INCLUDES `mysql_config --include`"
+    LIBS="$LIBS `mysql_config --libs`"
   else
-                  AC_MSG_ERROR($missing_program)
+    AC_MSG_ERROR($missing_program)
   fi
   # don't combine with mysqlclient check in apple section above, Linux needs
   # paths from mysql_config
-  AC_CHECK_LIB([modplug],     [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([faad],      [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([modplug],    [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([mysqlclient],[main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([faad],       [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([SDL_mixer], [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([dl],        [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([resolv],    [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([jasper],    [main],, AC_MSG_ERROR($missing_library)) # check for cximage
-  AC_CHECK_LIB([tiff],      [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([rt],        [clock_gettime],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([smbclient],  [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([SDL_mixer],  [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([dl],         [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([resolv],     [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([jasper],     [main],, AC_MSG_ERROR($missing_library)) # check for cximage
+  AC_CHECK_LIB([tiff],       [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([rt],         [clock_gettime],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([SDL_image],  [main],, AC_MSG_ERROR($missing_library))
   
-  PKG_CHECK_MODULES([ALSA],       [alsa],
-                  [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"],
-                  AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([ENCA],         [enca],
-                    [INCLUDES="$INCLUDES $ENCA_CFLAGS"; LIBS="$LIBS $ENCA_LIBS"],
-                    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([XT],           [xt],
-                    [INCLUDES="$INCLUDES $XT_CFLAGS"; LIBS="$LIBS $XT_LIBS"],
-                    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([XTST],         [xtst],
-                    [INCLUDES="$INCLUDES $XTST_CFLAGS"; LIBS="$LIBS $XTST_LIBS"],
-                    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([XEXT],         [xext],
-                    [INCLUDES="$INCLUDES $XEXT_CFLAGS"; LIBS="$LIBS $XEXT_LIBS"],
-                    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([XMU],          [xmu],
-                    [INCLUDES="$INCLUDES $XMU_CFLAGS"; LIBS="$LIBS $XMU_LIBS"],
-                    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([XINERAMA],     [xinerama],
-                    [INCLUDES="$INCLUDES $XINERAMA_CFLAGS"; LIBS="$LIBS $XINERAMA_LIBS"],
-                    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([CURL],         [libcurl],
-                    [INCLUDES="$INCLUDES $CURL_CFLAGS"; LIBS="$LIBS $CURL_LIBS"],
-                    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([DBUS],         [dbus-1],
-                    [INCLUDES="$INCLUDES $DBUS_CFLAGS"; LIBS="$LIBS $DBUS_LIBS"],
-                    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([SDL],          [sdl],
-                    [INCLUDES="$INCLUDES $SDL_CFLAGS"; LIBS="$LIBS $SDL_LIBS"],
-                    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([ALSA],  [alsa],
+    [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"],
+    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([ENCA],  [enca],
+    [INCLUDES="$INCLUDES $ENCA_CFLAGS"; LIBS="$LIBS $ENCA_LIBS"],
+    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([XT],    [xt],
+    [INCLUDES="$INCLUDES $XT_CFLAGS"; LIBS="$LIBS $XT_LIBS"],
+    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([XTST],  [xtst],
+    [INCLUDES="$INCLUDES $XTST_CFLAGS"; LIBS="$LIBS $XTST_LIBS"],
+    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([XEXT],  [xext],
+    [INCLUDES="$INCLUDES $XEXT_CFLAGS"; LIBS="$LIBS $XEXT_LIBS"],
+    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([XMU],   [xmu],
+    [INCLUDES="$INCLUDES $XMU_CFLAGS"; LIBS="$LIBS $XMU_LIBS"],
+    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([XINERAMA],[xinerama],
+    [INCLUDES="$INCLUDES $XINERAMA_CFLAGS"; LIBS="$LIBS $XINERAMA_LIBS"],
+    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([CURL],  [libcurl],
+    [INCLUDES="$INCLUDES $CURL_CFLAGS"; LIBS="$LIBS $CURL_LIBS"],
+    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([DBUS],  [dbus-1],
+    [INCLUDES="$INCLUDES $DBUS_CFLAGS"; LIBS="$LIBS $DBUS_LIBS"],
+    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([SDL],   [sdl],
+    [INCLUDES="$INCLUDES $SDL_CFLAGS"; LIBS="$LIBS $SDL_LIBS"],
+    AC_MSG_ERROR($missing_library))
 fi
 
 # check for library basenames
@@ -535,9 +542,9 @@ AC_DEFUN([XB_FIND_SONAME],
 [
   AC_MSG_CHECKING([for lib$2 soname])
   $1_SONAME=$( $CC -print-file-name=lib$2.so | \
-                while read output; do objdump -p $output | \
-                  grep "SONAME" | \
-                  sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
+    while read output; do objdump -p $output | \
+      grep "SONAME" | \
+      sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
   if [[ -z "$$1_SONAME" ]]; then
     AC_MSG_RESULT([no])
     AC_MSG_ERROR([Unable to determine soname of lib$2 library])
@@ -570,12 +577,12 @@ if test "x$use_pulse" != "xno"; then
     fi
   else
     AC_CHECK_LIB([pulse], [main],,
-                 [if test "x$use_pulse" = "xyes"; then
-                    AC_MSG_ERROR($pulse_not_found)
-                  else
-                    use_pulse=no
-                    AC_MSG_RESULT($pulse_not_found)
-                  fi])
+      [if test "x$use_pulse" = "xyes"; then
+        AC_MSG_ERROR($pulse_not_found)
+      else
+        use_pulse=no
+        AC_MSG_RESULT($pulse_not_found)
+      fi])
   fi
 else
   AC_MSG_RESULT($pulse_disabled)
@@ -600,12 +607,12 @@ if test "$host_vendor" = "apple" ; then
   AC_MSG_RESULT($hal_disabled)
 else
   if test "$use_hal" = "yes"; then
-    PKG_CHECK_MODULES([HAL],  [hal],
-                    [INCLUDES="$INCLUDES $HAL_CFLAGS"; LIBS="$LIBS $HAL_LIBS"],
-                    use_hal=no;AC_MSG_RESULT($hal_not_found))
-    PKG_CHECK_MODULES([HAL_STORAGE],  [hal-storage],
-                    [INCLUDES="$INCLUDES $HAL_STORAGE_CFLAGS"; LIBS="$LIBS $HAL_STORAGE_LIBS"],
-                    use_hal=no;AC_MSG_RESULT($halstorage_not_found))
+    PKG_CHECK_MODULES([HAL], [hal],
+      [INCLUDES="$INCLUDES $HAL_CFLAGS"; LIBS="$LIBS $HAL_LIBS"],
+      use_hal=no;AC_MSG_RESULT($hal_not_found))
+    PKG_CHECK_MODULES([HAL_STORAGE], [hal-storage],
+      [INCLUDES="$INCLUDES $HAL_STORAGE_CFLAGS"; LIBS="$LIBS $HAL_STORAGE_LIBS"],
+      use_hal=no;AC_MSG_RESULT($halstorage_not_found))
   else
     AC_MSG_RESULT($hal_disabled)
   fi
@@ -624,8 +631,8 @@ else
       use_avahi=no;AC_MSG_RESULT($avahi_not_found))
 	if test "$use_avahi" = "yes"; then
 		#either both libs or none
-    	AC_CHECK_LIB([avahi-client], [main],,
-	      use_avahi=no;AC_MSG_RESULT($avahi_not_found))
+    AC_CHECK_LIB([avahi-client], [main],,
+      use_avahi=no;AC_MSG_RESULT($avahi_not_found))
 	fi
     else
      AC_MSG_RESULT($avahi_disabled)
@@ -662,11 +669,11 @@ fi
 ### External libraries checks
 # External FFmpeg
 if test "$use_external_ffmpeg" = "yes"; then
-  AC_CHECK_LIB([avcodec],          [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([avformat],         [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([avutil],           [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([postproc],         [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([swscale],          [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([avcodec],   [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([avformat],  [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([avutil],    [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([postproc],  [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([swscale],   [main],, AC_MSG_ERROR($missing_library))
 
   # Determine whether AVPacket and relevant functions are defined in libavformat
   # or libavcodec
@@ -690,22 +697,21 @@ if test "$use_external_ffmpeg" = "yes"; then
 
   # Disable vdpau support if external libavcodec doesn't have it
   AC_CHECK_LIB([avcodec], [ff_vdpau_vc1_decode_picture],,
-               [if test "x$use_vdpau" = "xyes"; then
-                 AC_MSG_ERROR($ffmpeg_vdpau_not_supported)
-               else
-                 use_vdpau=no
-                 AC_MSG_RESULT($ffmpeg_vdpau_not_supported)
-              fi])
+    [if test "x$use_vdpau" = "xyes"; then
+      AC_MSG_ERROR($ffmpeg_vdpau_not_supported)
+    else
+      use_vdpau=no
+      AC_MSG_RESULT($ffmpeg_vdpau_not_supported)
+    fi])
 
   # Check for 'PIX_FMT_VDPAU_MPEG4' from libavutil
   if test "x$use_vdpau" != "xno"; then
     AC_LANG_PUSH([C++])
-    AC_LINK_IFELSE([
-        #include <libavutil/pixfmt.h>
-        int main() { PixelFormat format = PIX_FMT_VDPAU_MPEG4; }
-      ],
+    AC_LINK_IFELSE(
+      [ #include <libavutil/pixfmt.h>
+        int main() { PixelFormat format = PIX_FMT_VDPAU_MPEG4; }],
       [AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1],
-       [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])],)
+      [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])],)
     AC_LANG_POP([C++])
   fi
 else
@@ -775,7 +781,8 @@ if test "x$use_vdpau" != "xno"; then
       AC_MSG_NOTICE($vdpau_disabled)
     fi
   else
-    AC_CHECK_HEADER([vdpau/vdpau.h],AC_DEFINE([HAVE_LIBVDPAU], [], [Define to 1 if you have the 'vdpau' library (-lvdpau).]),
+    AC_CHECK_HEADER([vdpau/vdpau.h],AC_DEFINE([HAVE_LIBVDPAU], [],
+      [Define to 1 if you have the 'vdpau' library (-lvdpau).]),
     [if test "x$use_vdpau" = "xyes"; then 
       AC_MSG_ERROR([$vdpau_no_found])
     else
@@ -799,8 +806,8 @@ if test "x$use_vaapi" != "xno"; then
   else
     initial_val=$use_vaapi
     AC_CHECK_LIB([va], main,
-                 [AC_CHECK_LIB([va-glx], main,, use_vaapi=no, -lva)],
-                 [use_vaapi=no])
+      [AC_CHECK_LIB([va-glx], main,, use_vaapi=no, -lva)],
+      [use_vaapi=no])
     if test "x$use_vaapi" = "xno"; then
       if test "x$initial_val" = "xyes"; then
         AC_MSG_ERROR($vaapi_not_found)
@@ -817,13 +824,13 @@ fi
 if test "x$use_crystalhd" != "xno"; then
   AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h],AC_DEFINE([HAVE_LIBCRYSTALHD], [1], 
     [Define to 1 if you have the 'Broadcom Crystal HD' library.]), 
-    [if test "x$use_crystalhd" = "xyes"; then
-       AC_MSG_ERROR($crystalhd_not_found)
-     else
-       use_crystalhd=no
-       AC_MSG_RESULT($crystalhd_not_found)
-     fi],
-     [#define __LINUX_USER__])
+    [ if test "x$use_crystalhd" = "xyes"; then
+        AC_MSG_ERROR($crystalhd_not_found)
+      else
+        use_crystalhd=no
+        AC_MSG_RESULT($crystalhd_not_found)
+      fi],
+    [#define __LINUX_USER__])
 else
   AC_MSG_NOTICE($crystalhd_disabled)
 fi
@@ -1232,73 +1239,73 @@ else
 fi
 
 OUTPUT_FILES="Makefile \
-             Makefile.include \
-             xbmc/Makefile \
-             xbmc/cdrip/Makefile \
-             xbmc/cores/Makefile \
-             xbmc/cores/VideoRenderers/Makefile \
-             xbmc/cores/dvdplayer/Makefile \
-             xbmc/cores/dvdplayer/Codecs/Makefile \
-             xbmc/cores/dvdplayer/Codecs/libdvd/Makefile \
-             xbmc/cores/dvdplayer/DVDCodecs/Makefile \
-             xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile \
-             xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile \
-             xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile \
-             xbmc/cores/dvdplayer/DVDCodecs/Video/CrystalHD/Makefile \
-             xbmc/cores/dvdplayer/DVDDemuxers/Makefile \
-             xbmc/cores/dvdplayer/DVDSubtitles/Makefile \
-             xbmc/cores/AudioRenderers/Makefile \
-             xbmc/cores/paplayer/Makefile \
-             xbmc/cores/paplayer/timidity/Makefile \
-             xbmc/cores/paplayer/AC3Codec/Makefile \
-             xbmc/cores/paplayer/ADPCMCodec/Makefile \
-             xbmc/cores/paplayer/GYMCodec/Makefile \
-             xbmc/cores/paplayer/NSFCodec/Makefile \
-             xbmc/cores/paplayer/SIDCodec/Makefile \
-             xbmc/cores/paplayer/vgmstream/Makefile \
-             xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile \
-             xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile \
-             xbmc/cores/playercorefactory/Makefile \
-             xbmc/karaoke/Makefile \
-             xbmc/osx/Makefile \
-             guilib/Makefile \
-             guilib/common/Makefile \
-             xbmc/lib/libXBMS/Makefile \
-             xbmc/lib/libRTV/Makefile \
-             xbmc/lib/libexif/Makefile \
-             xbmc/lib/libXDAAP/Makefile \
-             xbmc/lib/libhdhomerun/Makefile \
-             xbmc/lib/libhttpapi/Makefile \
-             lib/jsoncpp/jsoncpp/src/lib_json/Makefile \
-             xbmc/lib/libjsonrpc/Makefile \
-             xbmc/lib/libshout/Makefile \
-             xbmc/lib/libsquish/Makefile \
-             xbmc/lib/libid3tag/Makefile \
-             xbmc/lib/cximage-6.0/Makefile \
-             xbmc/lib/libPython/linux/Makefile \
-             xbmc/lib/libUPnP/Makefile \
-             xbmc/DllPaths_generated.h \
-             xbmc/linux/Makefile \
-             xbmc/FileSystem/Makefile \
-             xbmc/screensavers/rsxs-0.9/xbmc/Makefile \
-             xbmc/visualizations/XBMCProjectM/Makefile \
-             xbmc/visualizations/Goom/Makefile \
-             xbmc/visualizations/OpenGLSpectrum/Makefile \
-             xbmc/visualizations/WaveForm/Makefile \
-             xbmc/visualizations/iTunes/Makefile \
-             xbmc/FileSystem/Makefile \
-             tools/Linux/xbmc.sh \
-             tools/TexturePacker/Makefile \
-             tools/EventClients/Clients/OSXRemote/Makefile"
+    Makefile.include \
+    xbmc/Makefile \
+    xbmc/cdrip/Makefile \
+    xbmc/cores/Makefile \
+    xbmc/cores/VideoRenderers/Makefile \
+    xbmc/cores/dvdplayer/Makefile \
+    xbmc/cores/dvdplayer/Codecs/Makefile \
+    xbmc/cores/dvdplayer/Codecs/libdvd/Makefile \
+    xbmc/cores/dvdplayer/DVDCodecs/Makefile \
+    xbmc/cores/dvdplayer/DVDCodecs/Audio/Makefile \
+    xbmc/cores/dvdplayer/DVDCodecs/Overlay/Makefile \
+    xbmc/cores/dvdplayer/DVDCodecs/Video/Makefile \
+    xbmc/cores/dvdplayer/DVDCodecs/Video/CrystalHD/Makefile \
+    xbmc/cores/dvdplayer/DVDDemuxers/Makefile \
+    xbmc/cores/dvdplayer/DVDSubtitles/Makefile \
+    xbmc/cores/AudioRenderers/Makefile \
+    xbmc/cores/paplayer/Makefile \
+    xbmc/cores/paplayer/timidity/Makefile \
+    xbmc/cores/paplayer/AC3Codec/Makefile \
+    xbmc/cores/paplayer/ADPCMCodec/Makefile \
+    xbmc/cores/paplayer/GYMCodec/Makefile \
+    xbmc/cores/paplayer/NSFCodec/Makefile \
+    xbmc/cores/paplayer/SIDCodec/Makefile \
+    xbmc/cores/paplayer/vgmstream/Makefile \
+    xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile \
+    xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile \
+    xbmc/cores/playercorefactory/Makefile \
+    xbmc/karaoke/Makefile \
+    xbmc/osx/Makefile \
+    guilib/Makefile \
+    guilib/common/Makefile \
+    xbmc/lib/libXBMS/Makefile \
+    xbmc/lib/libRTV/Makefile \
+    xbmc/lib/libexif/Makefile \
+    xbmc/lib/libXDAAP/Makefile \
+    xbmc/lib/libhdhomerun/Makefile \
+    xbmc/lib/libhttpapi/Makefile \
+    lib/jsoncpp/jsoncpp/src/lib_json/Makefile \
+    xbmc/lib/libjsonrpc/Makefile \
+    xbmc/lib/libshout/Makefile \
+    xbmc/lib/libsquish/Makefile \
+    xbmc/lib/libid3tag/Makefile \
+    xbmc/lib/cximage-6.0/Makefile \
+    xbmc/lib/libPython/linux/Makefile \
+    xbmc/lib/libUPnP/Makefile \
+    xbmc/DllPaths_generated.h \
+    xbmc/linux/Makefile \
+    xbmc/FileSystem/Makefile \
+    xbmc/screensavers/rsxs-0.9/xbmc/Makefile \
+    xbmc/visualizations/XBMCProjectM/Makefile \
+    xbmc/visualizations/Goom/Makefile \
+    xbmc/visualizations/OpenGLSpectrum/Makefile \
+    xbmc/visualizations/WaveForm/Makefile \
+    xbmc/visualizations/iTunes/Makefile \
+    xbmc/FileSystem/Makefile \
+    tools/Linux/xbmc.sh \
+    tools/TexturePacker/Makefile \
+    tools/EventClients/Clients/OSXRemote/Makefile"
 
 if test "$host_vendor" = "apple"; then
   OUTPUT_FILES="$OUTPUT_FILES \
-                xbmc/cores/paplayer/FLACCodec/Makefile"
+    xbmc/cores/paplayer/FLACCodec/Makefile"
 fi
 
 if test "$use_external_libass" = "no"; then
   OUTPUT_FILES="$OUTPUT_FILES \
-                lib/libass/xbmc/Makefile"
+    lib/libass/xbmc/Makefile"
   USE_EXTERNAL_LIBASS=0
   AC_MSG_NOTICE($libass_using_internal)
 else
@@ -1312,7 +1319,7 @@ AC_CONFIG_FILES([.dummy])
 
 AC_CONFIG_FILES([${OUTPUT_FILES}])
 OUTPUT_FILES="$OUTPUT_FILES \
-             .dummy"
+  .dummy"
 AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
 AC_SUBST(INCLUDES)
@@ -1377,16 +1384,16 @@ AC_DEFUN([XB_CONFIG_MODULE],[
 AC_CONFIG_COMMANDS_POST([
 if [[ $3 != "1" ]]; then
     if [[ -d $1 ]]; then
-        xb_pushd $1
-        $2
-        if [[ $? -ne 0 ]]; then
-            xb_popd
-            AC_MSG_ERROR([[Submodule $1 failed to configure]])
-        else
-            xb_popd
-        fi
+      xb_pushd $1
+      $2
+      if [[ $? -ne 0 ]]; then
+        xb_popd
+        AC_MSG_ERROR([[Submodule $1 failed to configure]])
+      else
+        xb_popd
+      fi
     else
-        AC_MSG_ERROR([[Submodule $1 does not exist]])
+      AC_MSG_ERROR([[Submodule $1 does not exist]])
     fi
 else
     AC_MSG_NOTICE([[Skipping configuration of submodule $1.]])
