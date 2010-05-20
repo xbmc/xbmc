@@ -1014,6 +1014,35 @@ CStdString CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
   else return CStdString();
 }
 
+bool CAddonMgr::AddonsFromInfoXML(const TiXmlElement *root, VECADDONS &addons)
+{
+  // create a context for these addons
+  cp_status_t status;
+  cp_context_t *context = m_cpluff->create_context(&status);
+  if (!root || !context)
+    return false;
+
+  const TiXmlElement *element = root->FirstChildElement("addon");
+  while (element)
+  {
+    // dump the XML back to text (FIXME: should we add the utf8 descriptor?)
+    std::string xml;
+    xml << *element;
+    cp_status_t status;
+    cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor(context, xml.c_str(), xml.size(), &status);
+    if (info)
+    {
+      AddonPtr addon = Factory(info->extensions);
+      m_cpluff->release_info(context, info);
+      // FIXME: sanity check here that the addon satisfies our requirements?
+      addons.push_back(addon);
+    }
+    element = element->NextSiblingElement("addon");
+  }
+  m_cpluff->destroy_context(context);
+  return true;
+}
+
 int cp_to_clog(cp_log_severity_t lvl)
 {
   if( lvl == CP_LOG_DEBUG )
