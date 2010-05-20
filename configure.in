@@ -399,17 +399,6 @@ else
   fi
 fi
 
-if test "$host_vendor" != "apple" ; then
-  if test "$use_webserver" = "yes"; then
-    AC_CHECK_LIB([microhttpd],  [main],, AC_MSG_ERROR($missing_library))
-  fi
-else
-  if test "$use_webserver" = "yes"; then
-    AC_DEFINE([HAVE_LIBMICROHTTPD], [1],)
-  fi
-fi
-
-
 # platform independent libraries
 AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
@@ -564,6 +553,17 @@ if test "$host_vendor" != "apple"; then
   XB_FIND_SONAME([OGG],         [ogg])
   XB_FIND_SONAME([VORBISENC],   [vorbisenc])
   XB_FIND_SONAME([VORBIS],      [vorbis])
+fi
+
+# WebServer
+if test "$host_vendor" != "apple" ; then
+  if test "$use_webserver" = "yes"; then
+    AC_CHECK_LIB([microhttpd],  [main],, AC_MSG_ERROR($missing_library))
+  fi
+else
+  if test "$use_webserver" = "yes"; then
+    AC_DEFINE([HAVE_LIBMICROHTTPD], [1],)
+  fi
 fi
 
 # PulseAudio
