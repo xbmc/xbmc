@@ -825,8 +825,8 @@ bool CDX9AllocatorPresenter::SettingsNeedResetDevice()
 void CDX9AllocatorPresenter::SetTime(REFERENCE_TIME rtNow)
 {
   __super::SetTime(rtNow);
-  if (CStreamsManager::getSingleton()->SubtitleManager)
-    CStreamsManager::getSingleton()->SubtitleManager->SetTime(rtNow);
+  if (CStreamsManager::Get()->SubtitleManager)
+    CStreamsManager::Get()->SubtitleManager->SetTime(rtNow);
 }
 
 HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
@@ -2096,15 +2096,15 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
       if (bScreenSpacePixelShaders)
       {
         Com::SmartPtr<IDirect3DSurface9> pRT;
-        hr = m_pScreenSizeTemporaryTexture[1]->GetSurfaceLevel(0, &pRT);
-        if (hr != S_OK)
-        bScreenSpacePixelShaders = false;
-        if (bScreenSpacePixelShaders)
-        {
-        hr = m_pD3DDev->SetRenderTarget(0, pRT);
+          hr = m_pScreenSizeTemporaryTexture[1]->GetSurfaceLevel(0, &pRT);
         if (hr != S_OK)
           bScreenSpacePixelShaders = false;
-        hr = m_pD3DDev->Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
+        if (bScreenSpacePixelShaders)
+        {
+          hr = m_pD3DDev->SetRenderTarget(0, pRT);
+          if (hr != S_OK)
+            bScreenSpacePixelShaders = false;
+          hr = m_pD3DDev->Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
         }
       }
 
@@ -2112,16 +2112,16 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
       {
         if(iDX9Resizer == 0 || iDX9Resizer == 1)
         {
-        D3DTEXTUREFILTERTYPE Filter = iDX9Resizer == 0 ? D3DTEXF_POINT : D3DTEXF_LINEAR;
-        hr = TextureResize(pVideoTexture, dst, Filter, rSrcVid);
+          D3DTEXTUREFILTERTYPE Filter = iDX9Resizer == 0 ? D3DTEXF_POINT : D3DTEXF_LINEAR;
+          hr = TextureResize(pVideoTexture, dst, Filter, rSrcVid);
         }
         else if(iDX9Resizer == 2)
         {
-        hr = TextureResizeBilinear(pVideoTexture, dst, rSrcVid);
+          hr = TextureResizeBilinear(pVideoTexture, dst, rSrcVid);
         }
         else if(iDX9Resizer >= 3)
         {
-        hr = TextureResizeBicubic2pass(pVideoTexture, dst, rSrcVid);
+          hr = TextureResizeBicubic2pass(pVideoTexture, dst, rSrcVid);
         }
       }
       else hr = TextureResize(pVideoTexture, dst, D3DTEXF_POINT, rSrcVid);
@@ -2134,7 +2134,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
         long stop = clock() + 333;
         long diff = stop - start;
 
-        if(diff >= 10*60*CLOCKS_PER_SEC) start = stop; // reset after 10 dsmin (ps float has its limits in both range and accuracy)
+        if(diff >= 10*60*CLOCKS_PER_SEC) start = stop; // reset after 10 min (ps float has its limits in both range and accuracy)
 
         D3DSURFACE_DESC desc;
         m_pScreenSizeTemporaryTexture[0]->GetLevelDesc(0, &desc);
@@ -2154,30 +2154,29 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
   }
   
   // Subtitle drawing
-  if (CStreamsManager::getSingleton()->SubtitleManager)
+  if (CStreamsManager::Get()->SubtitleManager)
   {
 
-    Com::SmartPtr<IDirect3DTexture9> pTexture;
-  
+    Com::SmartPtr<IDirect3DTexture9> pTexture;  
     Com::SmartRect pSrc, pDst;
 
     if (m_pScreenSize.Width() == 0) // Not init
     {
-    D3DDISPLAYMODE mode;
-    memset(&mode, 0, sizeof(D3DDISPLAYMODE));
-    if (SUCCEEDED(m_pD3DDev->GetDisplayMode(0, &mode)))
-      m_pScreenSize.SetRect(0, 0, mode.Width, mode.Height);
-    else
-      if (!GetWindowRect(g_Windowing.GetHwnd(), &m_pScreenSize))
-      m_pScreenSize.SetRect(lrint(m_VideoRect.left), lrint(m_VideoRect.top), lrint(m_VideoRect.right), lrint(m_VideoRect.bottom));
-    CLog::Log(LOGDEBUG, "%s Detected screen size : %dx%d", __FUNCTION__, m_pScreenSize.Width(), m_pScreenSize.Height());
+      D3DDISPLAYMODE mode;
+      memset(&mode, 0, sizeof(D3DDISPLAYMODE));
+      if (SUCCEEDED(m_pD3DDev->GetDisplayMode(0, &mode)))
+        m_pScreenSize.SetRect(0, 0, mode.Width, mode.Height);
+      else if (!GetWindowRect(g_Windowing.GetHwnd(), &m_pScreenSize))
+        m_pScreenSize.SetRect(lrint(m_VideoRect.left), lrint(m_VideoRect.top), lrint(m_VideoRect.right), lrint(m_VideoRect.bottom));
+
+      CLog::Log(LOGDEBUG, "%s Detected screen size : %dx%d", __FUNCTION__, m_pScreenSize.Width(), m_pScreenSize.Height());
     }
 
-    if (SUCCEEDED(CStreamsManager::getSingleton()->SubtitleManager->GetTexture(pTexture, pSrc, pDst, m_pScreenSize)))
+    if (SUCCEEDED(CStreamsManager::Get()->SubtitleManager->GetTexture(pTexture, pSrc, pDst, m_pScreenSize)))
     {
-    AlphaBlt(&pSrc, &pDst, pTexture);
+      AlphaBlt(&pSrc, &pDst, pTexture);
     }
-  }  
+  }
 
   if (g_dsSettings.m_fDisplayStats)
     DrawStats();
@@ -2391,7 +2390,8 @@ double CDX9AllocatorPresenter::GetFrameRate()
 bool CDX9AllocatorPresenter::ResetDevice()
 {
   StopWorkerThreads();
-  CStreamsManager::getSingleton()->SubtitleManager->StopThread();
+  if (CStreamsManager::Get()->SubtitleManager)
+    CStreamsManager::Get()->SubtitleManager->StopThread();
 
   BeforeDeviceReset(); // Handle pre-reset specific renderer stuff
 
@@ -2840,7 +2840,8 @@ void CDX9AllocatorPresenter::OnResetDevice()
   m_pD3DDev = g_Windowing.Get3DDevice();
   m_pD3D = g_Windowing.Get3DObject();
 
-  CStreamsManager::getSingleton()->SubtitleManager->StartThread();
+  if (CStreamsManager::Get()->SubtitleManager)
+    CStreamsManager::Get()->SubtitleManager->StartThread();
 
   // Device is back, alloc our surface
   HRESULT hr = AllocSurfaces();

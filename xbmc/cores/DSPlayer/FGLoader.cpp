@@ -420,7 +420,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
       SVideoStreamInfos s;
       s.Clear();
 
-      CStreamsManager::getSingleton()->GetStreamInfos(pMT, &s);
+      CStreamsManager::Get()->GetStreamInfos(pMT, &s);
 
       CLog::Log(LOGINFO, "Video stream fourcc : %c%c%c%c", s.fourcc >> 24 & 0xff, s.fourcc >> 16 & 0xff, s.fourcc >> 8 & 0xff, s.fourcc & 0xff);
 

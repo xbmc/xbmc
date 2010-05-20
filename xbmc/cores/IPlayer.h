@@ -162,7 +162,7 @@ public:
   virtual bool SetPlayerState(CStdString state) { return false;};
   
   virtual CStdString GetPlayingTitle() { return ""; };
-  virtual void ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)    {};
+  virtual void ProcessMessage(WPARAM wParam, LPARAM lParam) {}; // DSPlayer
   virtual void ResetRenderer()    {};
 protected:
   IPlayerCallback& m_callback;

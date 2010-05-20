@@ -123,14 +123,14 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   
   // Audio & subtitle streams
   START_PERFORMANCE_COUNTER
-  CStreamsManager::getSingleton()->InitManager();
-  CStreamsManager::getSingleton()->LoadStreams();
+  CStreamsManager::Get()->InitManager();
+  CStreamsManager::Get()->LoadStreams();
   END_PERFORMANCE_COUNTER
 
   // Chapters
   START_PERFORMANCE_COUNTER
-  CChaptersManager::getSingleton()->InitManager();
-  if (!CChaptersManager::getSingleton()->LoadChapters())
+  CChaptersManager::Get()->InitManager();
+  if (!CChaptersManager::Get()->LoadChapters())
     CLog::Log(LOGNOTICE, "%s No chapters found!", __FUNCTION__);
   END_PERFORMANCE_COUNTER
 
@@ -149,7 +149,9 @@ void CDSGraph::CloseFile()
 
   if (m_pGraphBuilder)
   {
-    if (CStreamsManager::getSingleton()->IsChangingStream())
+    // TODO: Use an Event.
+    // If the user close the file when a stream is changing, we need to wait, and not to return!
+    if (CStreamsManager::Get()->IsChangingStream())
       return;
 
     Stop(true);
@@ -737,15 +739,15 @@ void CDSGraph::SeekInMilliSec(double sec)
 void CDSGraph::Seek(bool bPlus, bool bLargeStep)
 {
   // Chapter support
-  if (bLargeStep && CChaptersManager::getSingleton()->GetChapterCount() > 1)
+  if (bLargeStep && CChaptersManager::Get()->GetChapterCount() > 1)
   {
     int chapter = 0;
     if (bPlus)
-      chapter = CChaptersManager::getSingleton()->SeekChapter(
-        CChaptersManager::getSingleton()->GetChapter() + 1);
+      chapter = CChaptersManager::Get()->SeekChapter(
+        CChaptersManager::Get()->GetChapter() + 1);
     else
-      chapter = CChaptersManager::getSingleton()->SeekChapter(
-        CChaptersManager::getSingleton()->GetChapter() - 1);
+      chapter = CChaptersManager::Get()->SeekChapter(
+        CChaptersManager::Get()->GetChapter() - 1);
 
     if (chapter >= 0)
       m_callback.OnPlayBackSeekChapter(chapter);
@@ -834,7 +836,7 @@ CStdString CDSGraph::GetGeneralInfo()
 CStdString CDSGraph::GetAudioInfo()
 {
   CStdString audioInfo;
-  CStreamsManager *c = CStreamsManager::getSingleton();
+  CStreamsManager *c = CStreamsManager::Get();
 
   audioInfo.Format("Audio Decoder: %s (%s, %d Hz, %d Channels) | Renderer: %s",
     CFGLoader::Filters.Audio.osdname,
@@ -849,7 +851,7 @@ CStdString CDSGraph::GetAudioInfo()
 CStdString CDSGraph::GetVideoInfo()
 {
   CStdString videoInfo = "";
-  CStreamsManager *c = CStreamsManager::getSingleton();
+  CStreamsManager *c = CStreamsManager::Get();
   videoInfo.Format("Video Decoder: %s (%s, %dx%d)",
     CFGLoader::Filters.Video.osdname,
     c->GetVideoCodecDisplayName(),
@@ -879,7 +881,7 @@ bool CDSGraph::CanSeek()
   return SUCCEEDED(m_pMediaSeeking->CheckCapabilities(&seekcaps));  
 }
 
-void CDSGraph::ProcessDsWmCommand(WPARAM wParam, LPARAM lParam)
+void CDSGraph::ProcessMessage(WPARAM wParam, LPARAM lParam)
 {
   
   if ( wParam == ID_DVD_MOUSE_MOVE)

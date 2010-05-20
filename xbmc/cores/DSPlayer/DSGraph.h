@@ -65,7 +65,7 @@ public:
   virtual bool CanSeek();
   //void SetDynamicRangeCompression(long drc);
 
-  virtual void ProcessDsWmCommand(WPARAM wParam, LPARAM lParam);
+  virtual void ProcessMessage(WPARAM wParam, LPARAM lParam);
   virtual HRESULT HandleGraphEvent();
   /** @return True if the file reached end, false else */
   bool FileReachedEnd(){ return m_bReachedEnd; };

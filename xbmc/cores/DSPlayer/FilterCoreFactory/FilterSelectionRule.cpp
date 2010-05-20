@@ -124,14 +124,14 @@ void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdStr
       SStreamInfos *s = NULL; 
       
       if (pStreamIndexes->iAudioStream >= 0 &&
-        (s = CStreamsManager::getSingleton()->GetAudioStreamInfos(pStreamIndexes->iAudioStream)))
+        (s = CStreamsManager::Get()->GetAudioStreamInfos(pStreamIndexes->iAudioStream)))
       {
         codec = s->codecname;
         if (CompileRegExp(m_audioCodec, regExp) && !MatchesRegExp(codec.ToLower(), regExp)) return;
       }
 
       if (pStreamIndexes->iVideoStream >= 0 &&
-        (s = CStreamsManager::getSingleton()->GetVideoStreamInfos(pStreamIndexes->iVideoStream)))
+        (s = CStreamsManager::Get()->GetVideoStreamInfos(pStreamIndexes->iVideoStream)))
       {
         codec = s->codecname;
         if (CompileRegExp(m_videoCodec, regExp) && !MatchesRegExp(codec, regExp)) return;

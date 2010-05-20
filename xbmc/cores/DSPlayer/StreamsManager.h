@@ -200,7 +200,7 @@ class CStreamsManager
 public:
   friend class CSubtitleManager;
   /// Retrieve singleton instance
-  static CStreamsManager *getSingleton();
+  static CStreamsManager *Get();
   /// Destroy singleton instance
   static void Destroy();
 

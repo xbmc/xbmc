@@ -152,8 +152,8 @@ static HRESULT STDMETHODCALLTYPE ReceiveMineI(IMemInputPinC * This, IMediaSample
   if(pSample && SUCCEEDED(pSample->GetTime(&rtStart, &rtStop)))
   {
     g_tSampleStart = rtStart;
-    if (CStreamsManager::getSingleton()->SubtitleManager)
-      CStreamsManager::getSingleton()->SubtitleManager->SetTimePerFrame(rtStop - rtStart);
+    if (CStreamsManager::Get()->SubtitleManager)
+      CStreamsManager::Get()->SubtitleManager->SetTimePerFrame(rtStop - rtStart);
   }
   return ReceiveOrg(This, pSample);
 }

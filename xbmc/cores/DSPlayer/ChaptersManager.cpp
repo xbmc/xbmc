@@ -39,7 +39,7 @@ CChaptersManager::~CChaptersManager(void)
   CLog::Log(LOGDEBUG, "%s Ressources released", __FUNCTION__);
 }
 
-CChaptersManager *CChaptersManager::getSingleton()
+CChaptersManager *CChaptersManager::Get()
 {
   return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CChaptersManager());
 }

@@ -34,7 +34,7 @@
 
 CStreamsManager *CStreamsManager::m_pSingleton = NULL;
 
-CStreamsManager *CStreamsManager::getSingleton()
+CStreamsManager *CStreamsManager::Get()
 {
   return (m_pSingleton) ? m_pSingleton : (m_pSingleton = new CStreamsManager());
 }

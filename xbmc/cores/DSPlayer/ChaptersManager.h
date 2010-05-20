@@ -45,7 +45,7 @@ class CChaptersManager
 {
 public:
   /// Retrieve singleton instance
-  static CChaptersManager *getSingleton();
+  static CChaptersManager *Get();
   /// Destroy the singleton instance
   static void Destroy();
 

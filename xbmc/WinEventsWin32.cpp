@@ -507,7 +507,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         g_Windowing.ShowOSMouse(true);
       break;
     case WM_COMMAND:
-        g_application.m_pPlayer->ProcessDsWmCommand(wParam,lParam);
+        g_application.m_pPlayer->ProcessMessage(wParam,lParam);
       break;
     case WM_MOUSEMOVE:
 #ifdef HAS_DX
@@ -515,7 +515,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       {
         if ( g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
         {
-          g_application.m_pPlayer->ProcessDsWmCommand(ID_DVD_MOUSE_MOVE,lParam);
+          g_application.m_pPlayer->ProcessMessage(ID_DVD_MOUSE_MOVE,lParam);
           return(0);
         }
       }
@@ -532,7 +532,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       {
         if ( g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
         {
-          g_application.m_pPlayer->ProcessDsWmCommand(ID_DVD_MOUSE_CLICK,lParam);
+          g_application.m_pPlayer->ProcessMessage(ID_DVD_MOUSE_CLICK,lParam);
           return(0);
         }
       }
