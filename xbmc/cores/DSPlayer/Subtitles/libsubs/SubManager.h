@@ -6,7 +6,6 @@ class CRenderedTextSubtitle;
 
 extern BOOL g_overrideUserStyles;
 extern int g_subPicsBufferAhead;
-extern bool g_pow2tex;
 extern BOOL g_disableAnim;
 
 class CSubManager: public ISubManager
@@ -57,6 +56,7 @@ private:
   STSStyle m_style;
   bool m_useDefaultStyle;
 
+  bool m_pow2tex;
   Com::SmartSize m_textureSize;
   Com::SmartSize m_lastSize;
 

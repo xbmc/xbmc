@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "SubManager.h"
 #include <d3d9.h>
 #include "..\subpic\ISubPic.h"
 #include "..\subpic\DX9SubPic.h"
@@ -6,31 +7,41 @@
 #include "..\subtitles\VobSubFile.h"
 #include "..\subtitles\RTS.h"
 #include "..\DSUtil\NullRenderers.h"
-#include "SubManager.h"
 #include "TextPassThruFilter.h"
+#include "..\ILog.h"
 
 BOOL g_overrideUserStyles;
 int g_subPicsBufferAhead(3);
-bool g_pow2tex(true);
 BOOL g_disableAnim(TRUE);
 
-CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr)
-  : m_d3DDev(d3DDev), m_iSubtitleSel(-1), m_rtNow(-1), m_lastSize(size),
-  m_textureSize(1024, 768), m_rtTimePerFrame(0), m_useDefaultStyle(true),//Set on XBMC Side
-  m_pSubPicProvider(NULL)
+CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr) :
+  m_d3DDev(d3DDev), m_iSubtitleSel(-1), m_rtNow(-1), m_lastSize(size),
+  m_textureSize(1024, 768), m_rtTimePerFrame(0), m_useDefaultStyle(true),
+  m_pSubPicProvider(NULL), m_pow2tex(true)
 {
+  if (! d3DDev)
+  {
+    hr = E_POINTER;
+    return;
+  }
 
-  //ATLTRACE("CSubManager constructor: texture size %dx%d, buffer ahead: %d, pow2tex: %d", g_textureSize.cx, g_textureSize.cy, g_subPicsBufferAhead, g_pow2tex);
-  m_pAllocator = (new CDX9SubPicAllocator(d3DDev, m_textureSize, g_pow2tex));
+  /* Test if GC can handle no power of two textures */
+  D3DCAPS9 caps;
+  d3DDev->GetDeviceCaps(&caps);
+  if ((caps.TextureCaps & D3DPTEXTURECAPS_POW2) == D3DPTEXTURECAPS_POW2)
+    m_pow2tex = true;
+  else
+    m_pow2tex = false;
+
+  g_log->Log(LOGDEBUG, "%s texture size %dx%d, buffer ahead: %d, pow2tex: %d", __FUNCTION__, m_textureSize.cx, m_textureSize.cy, g_subPicsBufferAhead, m_pow2tex);
+  m_pAllocator = (new CDX9SubPicAllocator(d3DDev, m_textureSize, m_pow2tex));
   hr = S_OK;
   if (g_subPicsBufferAhead > 0)
     m_pSubPicQueue.reset(new CSubPicQueue(g_subPicsBufferAhead, g_disableAnim, m_pAllocator, &hr));
   else
     m_pSubPicQueue.reset(new CSubPicQueueNoThread(m_pAllocator, &hr));
   if (FAILED(hr))
-  {
-    //ATLTRACE("CSubPicQueue creation error: %x", hr);
-  }
+    g_log->Log(LOGERROR, "%s SubPicQueue creation error: %x", __FUNCTION__, hr);
 }
 
 CSubManager::~CSubManager(void)
