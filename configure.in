@@ -348,6 +348,7 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -L/opt/local/lib/mysql5/mysql"
   LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
 elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
+  use_arch=arm
   CFLAGS="$CFLAGS -mfloat-abi=softfp -mno-apcs-stack-check"
   CXXFLAGS="$CXXFLAGS -mfloat-abi=softfp -mno-apcs-stack-check"
   FFMPEG_EXTRACFLAGS="-mfloat-abi=softfp"
@@ -359,9 +360,11 @@ elif expr "X$host_cpu" : 'Xarm.*' > /dev/null; then
       [int foo;],
       [ CFLAGS="$SAVE_CFLAGS -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
         CXXFLAGS="$CXXFLAGS -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
-        FFMPEG_EXTRACFLAGS+=" -mtune=cortex-a9 -mfpu=vfpv3-d16"],
+        FFMPEG_EXTRACFLAGS+=" -mtune=cortex-a9 -mfpu=vfpv3-d16"
+        use_cpu=cortex-a9],
       [ CFLAGS="$SAVE_CFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"
-        CXXFLAGS="$CXXFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"])    
+        CXXFLAGS="$CXXFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"    
+        use_cpu=cortex-a8])
   else
     # Compile for ARMv7a architecture, CortexA8 cpu and NEON coprocessor
     CFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8 -mfpu=neon -mvectorize-with-neon-quad"
@@ -1491,7 +1494,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
 
   else
     ./configure \
-      `expr "X$host_cpu" : 'Xarm.*' > /dev/null && echo --arch=arm --cpu=cortex-a8` \
       --extra-cflags="$FFMPEG_EXTRACFLAGS" \
       --disable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
