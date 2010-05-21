@@ -145,7 +145,7 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
     }
     case ADDON::ADDON_SCRIPT_LIBRARY:
     {
-      return "script-library";
+      return "xbmc.python.library";
     }
     case ADDON::ADDON_REPOSITORY:
     {
@@ -171,7 +171,7 @@ const ADDON::TYPE TranslateType(const CStdString &string)
   else if (string.Equals("plugin")) return ADDON_PLUGIN;
   else if (string.Equals("xbmc.python.script")) return ADDON_SCRIPT;
   else if (string.Equals("xbmc.gui.skin")) return ADDON_SKIN;
-  else if (string.Equals("script-library")) return ADDON_SCRIPT_LIBRARY;
+  else if (string.Equals("xbmc.python.library")) return ADDON_SCRIPT_LIBRARY;
   else if (string.Equals("xbmc.addon.repository")) return ADDON_REPOSITORY;
   else return ADDON_UNKNOWN;
 }
