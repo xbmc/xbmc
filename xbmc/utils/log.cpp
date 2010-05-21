@@ -113,12 +113,7 @@ void CLog::Log(int loglevel, const char *format, ... )
 
     fwrite(strPrefix.c_str(),strPrefix.size(),1,m_file);
     fwrite(strData.c_str(),strData.size(),1,m_file);
-#ifdef __arm__
-    if (g_advancedSettings.m_logLevel > LOG_LEVEL_NORMAL)
-    	fflush(m_file);//TEMP!!!
-#else
     fflush(m_file);
-#endif
   }
 #ifndef _LINUX
 #if defined(_DEBUG) || defined(PROFILE)
