@@ -85,7 +85,6 @@ XBPyThread::XBPyThread(XBPython *pExecuter, int id)
   m_pExecuter   = pExecuter;
   m_threadState = NULL;
   m_id          = id;
-  m_done        = false;
   m_stopping    = false;
   m_argv        = NULL;
   m_source      = NULL;
@@ -332,22 +331,16 @@ void XBPyThread::Process()
 
 void XBPyThread::OnExit()
 {
-  m_done = true;
   m_pExecuter->setDone(m_id);
 }
 
 void XBPyThread::OnException()
 {
-  m_done        = true;
   PyEval_AcquireLock();
   m_threadState = NULL;
   PyEval_ReleaseLock();
   CLog::Log(LOGERROR,"%s, abnormally terminating python thread", __FUNCTION__);
   m_pExecuter->setDone(m_id);
-}
-
-bool XBPyThread::isDone() {
-  return m_done;
 }
 
 bool XBPyThread::isStopping() {
