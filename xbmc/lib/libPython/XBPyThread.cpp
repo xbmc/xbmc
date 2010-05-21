@@ -152,17 +152,12 @@ void XBPyThread::Process()
   PyEval_AcquireLock();
 
   m_threadState = Py_NewInterpreter();
-
-  PyThreadState_Swap(NULL);
-  PyEval_ReleaseLock();
-
-  if (!m_threadState) {
+  if (!m_threadState)
+  {
+    PyEval_ReleaseLock();
     CLog::Log(LOGERROR,"Python thread: FAILED to get thread state!");
     return;
   }
-
-  PyEval_AcquireLock();
-
   // swap in my thread state
   PyThreadState_Swap(m_threadState);
 
