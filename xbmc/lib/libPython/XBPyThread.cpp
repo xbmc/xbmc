@@ -353,6 +353,9 @@ bool XBPyThread::isStopping() {
 
 void XBPyThread::stop()
 {
+  if(m_stopping)
+    return;
+
   m_stopping = true;
 
   if (m_threadState)
