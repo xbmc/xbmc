@@ -155,6 +155,7 @@ void XBPyThread::Process()
 
   // get the global lock
   PyEval_AcquireLock();
+  PyThreadState* old = PyThreadState_Swap(m_pExecuter->getMainThreadState());
 
   m_threadState = Py_NewInterpreter();
   if (!m_threadState)
@@ -164,7 +165,7 @@ void XBPyThread::Process()
     return;
   }
   // swap in my thread state
-  PyThreadState* old = PyThreadState_Swap(m_threadState);
+  PyThreadState_Swap(m_threadState);
 
   m_pExecuter->InitializeInterpreter();
 
