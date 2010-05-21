@@ -569,7 +569,7 @@ void CGUIWindowVideoNav::UpdateButtons()
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNFLATTEN, g_settings.m_bMyVideoNavFlatten);
 }
 
-/// \brief Search for genres, artists, directors, names, and plots with search string \e strSearch in the
+/// \brief Search for names, genres, artists, directors, and plots with search string \e strSearch in the
 /// \brief video databases and return the found \e items
 /// \param strSearch The search string
 /// \param items Items Found
@@ -581,108 +581,7 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   CStdString strDirector = g_localizeStrings.Get(20339); // Director
   CStdString strMovie = g_localizeStrings.Get(20338); // Movie
 
-  // get matching genres
-  m_database.GetMovieGenresByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetTvShowGenresByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetMusicVideoGenresByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetMovieActorsByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetTvShowsActorsByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetMusicVideoArtistsByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetMovieDirectorsByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetTvShowsDirectorsByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    CStdString strMovie = g_localizeStrings.Get(20339); // Director
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetMusicVideoDirectorsByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    CStdString strMovie = g_localizeStrings.Get(20339); // Director
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
+  //get matching names
   m_database.GetMoviesByName(strSearch, tempItems);
 
   if (tempItems.Size())
@@ -741,7 +640,113 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     }
     items.Append(tempItems);
   }
+  
+  // get matching genres
+  tempItems.Clear();
+  m_database.GetMovieGenresByName(strSearch, tempItems);
+  
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
 
+  tempItems.Clear();
+  m_database.GetTvShowGenresByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
+  m_database.GetMusicVideoGenresByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  //get actors/artists
+  tempItems.Clear();
+  m_database.GetMovieActorsByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
+  m_database.GetTvShowsActorsByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
+  m_database.GetMusicVideoArtistsByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  //directors
+  tempItems.Clear();
+  m_database.GetMovieDirectorsByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
+  m_database.GetTvShowsDirectorsByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    CStdString strMovie = g_localizeStrings.Get(20339); // Director
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
+  m_database.GetMusicVideoDirectorsByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    CStdString strMovie = g_localizeStrings.Get(20339); // Director
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  //plot
   tempItems.Clear();
   m_database.GetEpisodesByPlot(strSearch, tempItems);
 
