@@ -129,6 +129,7 @@
   FUNCTION(PyFloat_FromDouble)
   FUNCTION(PyRun_FileExFlags)
   FUNCTION(PyRun_StringFlags)
+  FUNCTION(PyErr_Clear)
 #endif
 #if defined(__linux__) && defined(__ELF__)
 .section .note.GNU-stack,"",%progbits

@@ -301,31 +301,21 @@ void XBPyThread::Process()
   else
     CLog::Log(LOGINFO, "Scriptresult: Success");
 
-  PyThreadState_Swap(NULL);
-  PyEval_ReleaseLock();
-
-  // when a script uses threads or timers - we have to wait for them to be over before we terminate the interpreter.
-  // so first - release the lock and allow the threads to terminate.
-
-  ::Sleep(500);
-  PyEval_AcquireLock();
-
-  PyThreadState_Swap(m_threadState);
-
-  // look waiting for the running threads to end
+  // wait for the running threads to end
+  PyErr_Clear();
   PyRun_SimpleString(
         "import threading\n"
         "import sys\n"
-        "try:\n"
-        "\tthreads = list(threading.enumerate())\n"
-        "except:\n"
-        "\tprint 'error listing threads'\n"
         "while threading.activeCount() > 1:\n"
+        "\tthreads = list(threading.enumerate())\n"
         "\tfor thread in threads:\n"
         "\t\tif thread <> threading.currentThread():\n"
         "\t\t\tprint 'waiting for thread - ' + thread.getName()\n"
         "\t\t\tthread.join(1000)\n"
         );
+
+  if (PyErr_Occurred())
+    CLog::Log(LOGERROR, "Failed to wait for python threads to end");
 
   m_pExecuter->DeInitializeInterpreter();
 

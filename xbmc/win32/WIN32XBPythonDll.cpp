@@ -258,6 +258,7 @@ extern "C"
   FUNCTION4(PyObject_Str)
   FUNCTION20(PyRun_File)
   FUNCTION16(PyRun_String)
+  FUNCTION(PyErr_Clear)
 
   // PyFloat_FromDouble(double)
   void* (__cdecl* p_PyFloat_FromDouble)(double a); \
@@ -382,6 +383,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyImport_ImportModule)) &&
       dll.ResolveExport(DLL_FUNCTION(PyObject_Str)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_File)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyErr_Clear)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_String)));
 
     return bResult;
