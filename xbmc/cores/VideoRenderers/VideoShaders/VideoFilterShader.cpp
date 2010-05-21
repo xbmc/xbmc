@@ -31,6 +31,13 @@
 using namespace Shaders;
 using namespace std;
 
+#if defined(HAS_GL)
+  #define USE1DTEXTURE
+  #define TEXTARGET GL_TEXTURE_1D
+#else
+  #define TEXTARGET GL_TEXTURE_2D
+#endif
+
 //////////////////////////////////////////////////////////////////////
 // BaseVideoFilterShader - base class for video filter shaders
 //////////////////////////////////////////////////////////////////////
@@ -106,6 +113,13 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
   else
     defines += "#define XBMC_STRETCH 0\n";
 
+  //tell shader if we're using a 1D texture
+#ifdef USE1DTEXTURE
+  defines += "#define USE1DTEXTURE 1\n";
+#else
+  defines += "#define USE1DTEXTURE 0\n";
+#endif
+
   CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using %s defines: %s", shadername.c_str(), defines.c_str());
   PixelShader()->LoadSource(shadername, defines);
 }
@@ -134,25 +148,35 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
     return;
   }
 
+  //make a kernel texture on GL_TEXTURE2 and set clamping and interpolation
+  //TEXTARGET is set to GL_TEXTURE_1D or GL_TEXTURE_2D
   glActiveTexture(GL_TEXTURE2);
-#if defined(HAS_GL)
-  glBindTexture(GL_TEXTURE_1D, m_kernelTex1);
-  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glBindTexture(TEXTARGET, m_kernelTex1);
+  glTexParameteri(TEXTARGET, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(TEXTARGET, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(TEXTARGET, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(TEXTARGET, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  //if float textures are supported, we can load the kernel as a 1d float texture
+  //if float textures are supported, we can load the kernel as a float texture
   //if not we load it as 8 bit unsigned which gets converted back to float in the shader
+  GLenum  format;
+  GLvoid* data;
   if (m_floattex)
-    glTexImage1D(GL_TEXTURE_1D, 0, m_internalformat, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, kernel.GetFloatPixels());
+  {
+    format = GL_FLOAT;
+    data   = (GLvoid*)kernel.GetFloatPixels();
+  }
   else
-    glTexImage1D(GL_TEXTURE_1D, 0, m_internalformat, kernel.GetSize(), 0, GL_RGBA, GL_UNSIGNED_BYTE, kernel.GetUint8Pixels());
-#elif HAS_GLES == 2
-  //TODO: This need fixups see orginal at 
-  // http://trac.xbmc.org/browser/branches/arm-camelot/trunk/xbmc/cores/VideoRenderers/VideoShaders/VideoFilterShader.cpp
-  //TODO: GL_RGBA16F_ARB for GLES!?
-  //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size, 1, 0, GL_RGBA, GL_FLOAT, img);
+  {
+    format = GL_UNSIGNED_BYTE;
+    data   = (GLvoid*)kernel.GetUint8Pixels();
+  }
+
+  //upload as 1D texture or as 2D texture with height of 1
+#ifdef USE1DTEXTURE
+  glTexImage1D(TEXTARGET, 0, m_internalformat, kernel.GetSize(), 0, GL_RGBA, format, data);
+#else
+  glTexImage2D(TEXTARGET, 0, m_internalformat, kernel.GetSize(), 1, 0, GL_RGBA, format, data);
 #endif
 
   glActiveTexture(GL_TEXTURE0);
@@ -164,12 +188,7 @@ bool ConvolutionFilterShader::OnEnabled()
 {
   // set shader attributes once enabled
   glActiveTexture(GL_TEXTURE2);
-#if defined(HAS_GL)
-  glBindTexture(GL_TEXTURE_1D, m_kernelTex1);
-#elif HAS_GLES == 2
-  // TODO: OpenGL/ES does not have GL_TEXTURE_1D
-  //glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
-#endif
+  glBindTexture(TEXTARGET, m_kernelTex1);
 
   glActiveTexture(GL_TEXTURE0);
   glUniform1i(m_hSourceTex, m_sourceTexUnit);

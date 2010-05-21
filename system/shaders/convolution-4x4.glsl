@@ -1,7 +1,12 @@
 uniform sampler2D img;
-uniform sampler1D kernelTex;
 uniform vec2      stepxy;
 uniform float     m_stretch;
+
+#if (USE1DTEXTURE)
+  uniform sampler1D kernelTex;
+#else
+  uniform sampler2D kernelTex;
+#endif
 
 //nvidia's half is a 16 bit float and can bring some speed improvements
 //without affecting quality
@@ -11,17 +16,22 @@ uniform float     m_stretch;
   #define half4 vec4
 #endif
 
+half4 weight(float pos)
+{
 #if (HAS_FLOAT_TEXTURE)
-half4 weight(float pos)
-{
-  return texture1D(kernelTex, pos);
-}
+  #if (USE1DTEXTURE)
+    return texture1D(kernelTex, pos);
+  #else
+    return texture2D(kernelTex, vec2(pos, 0.5));
+  #endif
 #else
-half4 weight(float pos)
-{
-  return texture1D(kernelTex, pos) * 2.0 - 1.0;
-}
+  #if (USE1DTEXTURE)
+    return texture1D(kernelTex, pos) * 2.0 - 1.0;
+  #else
+    return texture2D(kernelTex, vec2(pos, 0.5)) * 2.0 - 1.0;
+  #endif
 #endif
+}
 
 vec2 stretch(vec2 pos)
 {
