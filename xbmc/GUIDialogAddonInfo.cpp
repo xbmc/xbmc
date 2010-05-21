@@ -25,6 +25,7 @@
 #include "AddonDatabase.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "GUIDialogAddonSettings.h"
 #include "GUIDialogTextViewer.h"
 #include "GUIUserMessages.h"
@@ -105,9 +106,10 @@ void CGUIDialogAddonInfo::OnInitWindow()
               m_item->GetProperty("Addon.UpdateAvail").Equals("true"));
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, 
               m_item->GetProperty("Addon.Installed").Equals("false"));
+  CStdString xbmcPath = _P("special://xbmc/");
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_DISABLE, 
               m_item->GetProperty("Addon.Installed").Equals("true") &&
-    !m_item->GetProperty("Addon.Path").Mid(0,15).Equals("special://xbmc/"));
+    !m_item->GetProperty("Addon.Path").Mid(0,xbmcPath.size()).Equals(xbmcPath));
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, 
               m_item->GetProperty("Addon.Installed").Equals("true") &&
               m_localAddon->HasSettings());
