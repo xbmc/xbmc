@@ -20,6 +20,7 @@
  */
 
 #include "OggCallback.h"
+#include "FileItem.h"
 
 COggCallback::COggCallback(XFILE::CFile& file) : m_file(file)
 {
@@ -29,13 +30,11 @@ ov_callbacks COggCallback::Get(const CStdString& strFile)
 {
   // libvorbis requires that a non-seekable stream would always return -1 from seek actions.
   // so for network streams - tweak the seek method to a static one that always return -1.
-  bool bIsStream = false;
-  if (strFile.Left(5).ToLower() == "shout" || strFile.Left(4).ToLower() == "http")
-    bIsStream = true;
+  CFileItem item(strFile, false);
 
   ov_callbacks oggIOCallbacks;
   oggIOCallbacks.read_func=ReadCallback;
-  oggIOCallbacks.seek_func=bIsStream?NoSeekCallback:SeekCallback;
+  oggIOCallbacks.seek_func=item.IsInternetStream()?NoSeekCallback:SeekCallback;
   oggIOCallbacks.tell_func=TellCallback;
   oggIOCallbacks.close_func=CloseCallback;
 
