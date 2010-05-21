@@ -1070,7 +1070,7 @@
 			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<preloaditems>2</preloaditems>
-			<itemlayout condition="!Container.Content(Movies)" height="255" width="316">
+			<itemlayout condition="!Container.Content(Movies) + !Container.Content(Seasons)" height="255" width="316">
 				<control type="image">
 					<posx>1</posx>
 					<posy>1</posy>
@@ -1106,7 +1106,7 @@
 					<texture>$INFO[ListItem.Overlay]</texture>
 				</control>
 			</itemlayout>
-			<focusedlayout condition="!Container.Content(Movies)" height="255" width="316">
+			<focusedlayout condition="!Container.Content(Movies) + !Container.Content(Seasons)" height="255" width="316">
 				<control type="image">
 					<posx>1</posx>
 					<posy>1</posy>
@@ -1142,7 +1142,7 @@
 					<texture>$INFO[ListItem.Overlay]</texture>
 				</control>
 			</focusedlayout>
-			<itemlayout condition="Container.Content(Movies)" height="255" width="158">
+			<itemlayout condition="Container.Content(Movies) | Container.Content(Seasons)" height="255" width="158">
 				<control type="image">
 					<posx>1</posx>
 					<posy>1</posy>
@@ -1180,7 +1180,7 @@
 					<texture>$INFO[ListItem.Overlay]</texture>
 				</control>
 			</itemlayout>
-			<focusedlayout  condition="Container.Content(Movies)" height="255" width="158">
+			<focusedlayout  condition="Container.Content(Movies) | Container.Content(Seasons)" height="255" width="158">
 				<control type="image">
 					<posx>1</posx>
 					<posy>1</posy>
