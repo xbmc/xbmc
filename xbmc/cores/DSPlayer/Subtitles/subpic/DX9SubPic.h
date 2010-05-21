@@ -97,6 +97,7 @@ class CDX9SubPicAllocator : public ISubPicAllocatorImpl, public CCritSec
 
 
   bool Alloc(bool fStatic, ISubPic** ppSubPic);
+  void FreeTextures();
 
 public:
   static CCritSec ms_SurfaceQueueLock;

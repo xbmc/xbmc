@@ -188,6 +188,7 @@ private:
   bool m_fDynamicWriteOnly;
 
   virtual bool Alloc(bool fStatic, ISubPic** ppSubPic) = 0;
+  virtual void FreeTextures() = 0;
 
 protected:
   bool m_fPow2Textures;

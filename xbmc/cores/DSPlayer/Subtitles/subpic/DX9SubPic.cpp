@@ -329,7 +329,7 @@ CCritSec CDX9SubPicAllocator::ms_SurfaceQueueLock;
 
 CDX9SubPicAllocator::~CDX9SubPicAllocator()
 {
-  ClearCache();
+  FreeTextures();
 }
 
 
@@ -338,6 +338,25 @@ void CDX9SubPicAllocator::GetStats(int &_nFree, int &_nAlloc)
   CAutoLock Lock(&ms_SurfaceQueueLock);
   _nFree = m_FreeSurfaces.size();
   _nAlloc = m_AllocatedSurfaces.size();
+}
+
+void CDX9SubPicAllocator::FreeTextures()
+{
+  // Clear the allocator of any remaining subpics
+  CAutoLock Lock(&ms_SurfaceQueueLock);
+  for (std::list<CDX9SubPic *>::iterator pos = m_AllocatedSurfaces.begin(); pos != m_AllocatedSurfaces.end(); )
+  {
+    CDX9SubPic *pSubPic = *pos; pos++;
+    pSubPic->m_pAllocator = NULL;
+    delete pSubPic;
+  }
+  m_AllocatedSurfaces.clear();
+
+  for (std::list<Com::SmartPtrForList<IDirect3DSurface9>>::iterator it = m_FreeSurfaces.begin();
+    it != m_FreeSurfaces.end(); it++)
+    it->FullRelease();
+
+  m_FreeSurfaces.clear();
 }
 
 void CDX9SubPicAllocator::ClearCache()
@@ -349,7 +368,6 @@ void CDX9SubPicAllocator::ClearCache()
     {
       CDX9SubPic *pSubPic = *pos; pos++;
       pSubPic->m_pAllocator = NULL;
-      delete pSubPic;
     }
     m_AllocatedSurfaces.clear();
     m_FreeSurfaces.clear();

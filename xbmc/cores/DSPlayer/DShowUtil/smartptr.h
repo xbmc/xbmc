@@ -253,8 +253,8 @@ namespace Com
       {
         m_ptr = NULL;
         int counter = ptr->Release();
-        if (counter)
-          CLog::Log(LOGWARNING, "Com::SmartPtr: Releasing interface which has still references.");
+        /*if (counter)
+          CLog::Log(LOGWARNING, "Com::SmartPtr: Releasing interface which has still references.");*/
         while (counter != 0)
         {
           counter = ptr->Release();
