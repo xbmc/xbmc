@@ -172,7 +172,6 @@
 			<font>font11</font>
 			<align>justify</align>
 			<textcolor>white</textcolor>
-			<pagecontrol>9999999999</pagecontrol>
 			<label>$INFO[ListItem.Property(Addon.Description)]</label>
 			<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 			<visible>Control.IsVisible(58)</visible>
