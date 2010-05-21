@@ -176,8 +176,8 @@
 			<onup>9000</onup>
 			<ondown>61</ondown>
 			<usecontrolcoords>true</usecontrolcoords>
-			<control type="wraplist" id="57">
-				<visible>Container.Content(Movies) | Window.IsVisible(VideoFiles)</visible>
+			<control type="fixedlist" id="57">
+				<visible>Container.Content(Movies) | Container.Content(Seasons) | Window.IsVisible(VideoFiles)</visible>
 				<posx>-60</posx>
 				<posy>0</posy>
 				<width>1090</width>
@@ -190,6 +190,7 @@
 				<pagecontrol>61</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<focusposition>2</focusposition>
+				<movement>1</movement>
 				<orientation>horizontal</orientation>
 				<hitrect x="376" y="0" w="218" h="310" />
 				<preloaditems>4</preloaditems>
@@ -287,6 +288,20 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<label>[UPPERCASE][B]$INFO[ListItem.Genre][/B][/UPPERCASE]</label>
+				<visible>!Container.Content(Seasons)</visible>
+			</control>
+			<control type="label">
+				<posx>300</posx>
+				<posy>580</posy>
+				<width>970</width>
+				<height>35</height>
+				<font>font11</font>
+				<textcolor>grey2</textcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>[B]$LOCALIZE[20360] - $INFO[ListItem.Property(WatchedEpisodes),, $LOCALIZE[16102]]$INFO[ListItem.Property(UnWatchedEpisodes), - , $LOCALIZE[16101]][/B]</label>
+				<visible>Container.Content(Seasons)</visible>
 			</control>
 		</control>
 	</include>
