@@ -365,7 +365,7 @@ void CDVDVideoCodecOpenMax::SetDropState(bool bDrop)
   if (m_drop_pictures)
   {
     OMX_ERRORTYPE omx_err;
-    omx_err = OMX_SendCommand(m_omx_decoder, OMX_CommandFlush, m_omx_output_port, 0);
+    //omx_err = OMX_SendCommand(m_omx_decoder, OMX_CommandFlush, m_omx_output_port, 0);
   }
 }
 
@@ -447,14 +447,16 @@ int CDVDVideoCodecOpenMax::Decode(BYTE* pData, int iSize, double dts, double pts
       m_dts_queue.push(demux_packet.dts);
 
       // if m_omx_input_avaliable and/or demux_queue are now empty,
-      // wait up to 10ms for OpenMax to consume a demux packet
+      // wait up to 100ms for OpenMax to consume a demux packet
       if (m_omx_input_avaliable.empty() || m_demux_queue.empty())
-        m_input_consumed_event.WaitMSec(10);
+        m_input_consumed_event.WaitMSec(100);
     }
+    if (m_omx_input_avaliable.empty() && !m_demux_queue.empty())
+      m_input_consumed_event.WaitMSec(100);
 #if defined(OMX_DEBUG_VERBOSE)
     if (m_omx_input_avaliable.empty())
-      CLog::Log(LOGDEBUG, "%s - m_omx_input_avaliable is empty, m_demux_queue_size(%d)\n",
-        __FUNCTION__, m_demux_queue.size());
+      CLog::Log(LOGDEBUG, "%s - buffering demux, m_demux_queue_size(%d), demuxer_bytes(%d)\n",
+        __FUNCTION__, m_demux_queue.size(), demuxer_bytes);
 #endif
   }
 
@@ -496,20 +498,36 @@ bool CDVDVideoCodecOpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     bool done = omx_buffer->nFlags & OMX_BUFFERFLAG_EOS;
     if (!done && (omx_buffer->nFilledLen > 0))
     {
-      m_videobuffer.dts = m_dts_queue.front();
-      m_dts_queue.pop();
+      m_videobuffer.dts = DVD_NOPTS_VALUE;
+      m_videobuffer.pts = DVD_NOPTS_VALUE;
+      if (!m_dts_queue.empty())
+      {
+        m_videobuffer.dts = m_dts_queue.front();
+        m_dts_queue.pop();
+      }
       // nTimeStamp is in microseconds
       m_videobuffer.pts = (double)omx_buffer->nTimeStamp / 1000.0;
 
       // not sure yet about yv12 buffer layout coming from OpenMax decoder
-      int luma_pixels = m_decoded_width * m_decoded_height;
-      int chroma_pixels = luma_pixels/4;
-      uint8_t *image_buffer = omx_buffer->pBuffer;
-      memcpy(m_videobuffer.data[0], image_buffer, luma_pixels);
-      image_buffer += luma_pixels;
-      memcpy(m_videobuffer.data[1], image_buffer, chroma_pixels);
-      image_buffer += chroma_pixels;
-      memcpy(m_videobuffer.data[2], image_buffer, chroma_pixels);
+      int filled_size = (m_decoded_width * m_decoded_height) * FACTORFORMAT420;
+      if (filled_size == omx_buffer->nFilledLen)
+      {
+        int luma_pixels = m_decoded_width * m_decoded_height;
+        int chroma_pixels = luma_pixels/4;
+        uint8_t *image_buffer = omx_buffer->pBuffer;
+        memcpy(m_videobuffer.data[0], image_buffer, luma_pixels);
+        image_buffer += luma_pixels;
+        memcpy(m_videobuffer.data[1], image_buffer, chroma_pixels);
+        image_buffer += chroma_pixels;
+        memcpy(m_videobuffer.data[2], image_buffer, chroma_pixels);
+      }
+#if defined(OMX_DEBUG_VERBOSE)
+      else
+      {
+        CLog::Log(LOGWARNING, "%s - nAllocLen(%lu), nFilledLen(%lu) should be filled_size(%d)\n",
+          __FUNCTION__, omx_buffer->nAllocLen, omx_buffer->nFilledLen, filled_size);
+      }
+#endif
 
       // release the omx buffer back to OpenMax to fill.
       OMX_ERRORTYPE omx_err = OMX_FillThisBuffer(m_omx_decoder, omx_buffer);
@@ -978,6 +996,7 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::FreeOMXInputBuffers(void)
 OMX_ERRORTYPE CDVDVideoCodecOpenMax::AllocOMXOutputBuffers(void)
 {
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
+  int buffer_size;
 
   // Obtain the information about the output port.
   OMX_PARAM_PORTDEFINITIONTYPE port_format;
@@ -993,27 +1012,16 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::AllocOMXOutputBuffers(void)
     port_format.nBufferCountMin, port_format.nBufferSize);
 #endif
 
-  port_format.nBufferSize = port_format.format.video.nFrameWidth * port_format.format.video.nFrameHeight;
+  buffer_size = m_decoded_width * m_decoded_width;
   if (port_format.format.video.eColorFormat == OMX_COLOR_FormatCbYCrY)
-    port_format.nBufferSize *= FACTORFORMAT422;
+    buffer_size *= FACTORFORMAT422;
   else if (port_format.format.video.eColorFormat == OMX_COLOR_FormatYUV420Planar)
-    port_format.nBufferSize *= FACTORFORMAT420;
+    buffer_size *= FACTORFORMAT420;
  
-  // we are changing the port params (buffer sizes), so write it back (not sure about this)
-  omx_err = OMX_SetParameter(m_omx_decoder, OMX_IndexParamPortDefinition, &port_format);
-
-#if defined(OMX_DEBUG_VERBOSE)
-  CLog::Log(LOGDEBUG, 
-    "%s (2) - oport(%d), nFrameWidth(%lu), nFrameHeight(%lu), nStride(%lx), nBufferCountMin(%lu), nBufferSize(%lu)\n",
-    __FUNCTION__, m_omx_output_port, 
-    port_format.format.video.nFrameWidth, port_format.format.video.nFrameHeight,port_format.format.video.nStride,
-    port_format.nBufferCountMin, port_format.nBufferSize);
-#endif
-
   for (size_t i = 0; i < port_format.nBufferCountMin; i++)
   {
     OMX_BUFFERHEADERTYPE *buffer = NULL;
-    omx_err = OMX_AllocateBuffer(m_omx_decoder, &buffer, m_omx_output_port, NULL, port_format.nBufferSize);
+    omx_err = OMX_AllocateBuffer(m_omx_decoder, &buffer, m_omx_output_port, NULL, buffer_size);
     if (omx_err)
     {
       CLog::Log(LOGERROR, "%s - OMX_AllocateBuffer failed with omx_err(0x%x)\n", __FUNCTION__, omx_err);
@@ -1022,8 +1030,6 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::AllocOMXOutputBuffers(void)
     m_omx_output_buffers.push_back(buffer);
   }
   m_omx_output_eos = false;
-  m_decoded_width = port_format.format.video.nFrameWidth;
-  m_decoded_height = port_format.format.video.nFrameHeight;
 
   return(omx_err);
 }
