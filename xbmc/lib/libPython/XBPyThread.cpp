@@ -46,6 +46,7 @@
 #include "GUIDialogKaiToast.h"
 #include "LocalizeStrings.h"
 #include "utils/log.h"
+#include "utils/SingleLock.h"
 #include "Util.h"
 
 #include "XBPyThread.h"
@@ -146,6 +147,7 @@ void XBPyThread::OnStartup()
 void XBPyThread::Process()
 {
   CLog::Log(LOGDEBUG,"Python thread: start processing");
+  CSingleLock lock(m_pExecuter->m_critSection);
 
   char path[1024];
   char sourcedir[1024];
@@ -197,6 +199,9 @@ void XBPyThread::Process()
   CLog::Log(LOGDEBUG, "%s - Entering source directory %s", __FUNCTION__, sourcedir);
 
   xbp_chdir(sourcedir);
+
+  // when we are done initing, we can release executor
+  lock.Leave();
 
   if (m_type == 'F')
   {
