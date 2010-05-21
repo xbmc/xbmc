@@ -90,8 +90,8 @@ void CRenderSystemDX::CheckDXVersion()
   HANDLE hDevice = 0;
   if (INVALID_HANDLE_VALUE == (hDevice = CreateFile(dxtestfile, 0, 0, NULL, OPEN_EXISTING, 0, NULL )))
   {
-    CLog::Log(LOGWARNING, "%s - old DirectX runtime, you may run into display problems. Please upgrade", __FUNCTION__);
-    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, "DirectX Runtime", "Please update to latest runtime.");
+    CLog::Log(LOGWARNING, "%s - old DirectX runtime. You need DirectX 9.0c, dated August 2009 or later.", __FUNCTION__);
+    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, "DirectX Warning", "Newer version needed - See log.");
   }
   else
     CloseHandle(hDevice);
