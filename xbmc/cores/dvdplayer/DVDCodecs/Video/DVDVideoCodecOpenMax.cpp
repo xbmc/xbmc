@@ -341,7 +341,7 @@ void CDVDVideoCodecOpenMax::Dispose()
 {
   if (m_omx_decoder)
   {
-    if (m_omx_state == OMX_StateExecuting)
+    if (m_omx_state != OMX_StateLoaded)
       StopDecoder();
     m_dll->OMX_FreeHandle(m_omx_decoder);
     m_omx_decoder = NULL;
@@ -355,7 +355,10 @@ void CDVDVideoCodecOpenMax::Dispose()
     m_videobuffer.iFlags = 0;
   }
   if (m_sps_pps_context.sps_pps_data)
+  {
 		free(m_sps_pps_context.sps_pps_data);
+    m_sps_pps_context.sps_pps_data = NULL;
+  }
 }
 
 void CDVDVideoCodecOpenMax::SetDropState(bool bDrop)
@@ -364,7 +367,7 @@ void CDVDVideoCodecOpenMax::SetDropState(bool bDrop)
   
   if (m_drop_pictures)
   {
-    OMX_ERRORTYPE omx_err;
+    //OMX_ERRORTYPE omx_err;
     //omx_err = OMX_SendCommand(m_omx_decoder, OMX_CommandFlush, m_omx_output_port, 0);
   }
 }
@@ -509,7 +512,7 @@ bool CDVDVideoCodecOpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
       m_videobuffer.pts = (double)omx_buffer->nTimeStamp / 1000.0;
 
       // not sure yet about yv12 buffer layout coming from OpenMax decoder
-      int filled_size = (m_decoded_width * m_decoded_height) * FACTORFORMAT420;
+      OMX_U32 filled_size = (m_decoded_width * m_decoded_height) * FACTORFORMAT420;
       if (filled_size == omx_buffer->nFilledLen)
       {
         int luma_pixels = m_decoded_width * m_decoded_height;
@@ -524,7 +527,7 @@ bool CDVDVideoCodecOpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 #if defined(OMX_DEBUG_VERBOSE)
       else
       {
-        CLog::Log(LOGWARNING, "%s - nAllocLen(%lu), nFilledLen(%lu) should be filled_size(%d)\n",
+        CLog::Log(LOGWARNING, "%s - nAllocLen(%lu), nFilledLen(%lu) should be filled_size(%lu)\n",
           __FUNCTION__, omx_buffer->nAllocLen, omx_buffer->nFilledLen, filled_size);
       }
 #endif
