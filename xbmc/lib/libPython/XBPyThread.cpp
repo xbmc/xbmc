@@ -365,8 +365,14 @@ void XBPyThread::stop()
   if (m_threadState)
   {
     PyEval_AcquireLock();
+    PyThreadState* old = PyThreadState_Swap(m_threadState);
+    PyRun_SimpleString("import xbmc\n"
+                       "xbmc.abortRequested = True\n");
+
     m_threadState->c_tracefunc = xbTrace;
     m_threadState->use_tracing = 1;
+
+    PyThreadState_Swap(old);
     PyEval_ReleaseLock();
   }
 }

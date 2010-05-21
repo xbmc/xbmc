@@ -110,6 +110,7 @@
   FUNCTION(PyInt_AsLong)
   FUNCTION(PyFloat_AsDouble)
   FUNCTION(PyString_FromString)
+  FUNCTION(PyBool_FromLong)
   FUNCTION(PyModule_AddIntConstant)
   FUNCTION(PyObject_CallFunction)
   FUNCTION(PyObject_CallMethod)
