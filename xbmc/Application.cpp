@@ -589,6 +589,26 @@ bool CApplication::Create()
 
   update_emu_environ();//apply the GUI settings
 
+  // initialize our charset converter
+  g_charsetConverter.reset();
+
+  // Load the langinfo to have user charset <-> utf-8 conversion
+  CStdString strLanguage = g_guiSettings.GetString("locale.language");
+  strLanguage[0] = toupper(strLanguage[0]);
+
+  CStdString strLangInfoPath;
+  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
+
+  CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
+  g_langInfo.Load(strLangInfoPath);
+
+  CStdString strLanguagePath;
+  strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
+
+  CLog::Log(LOGINFO, "load language file:%s", strLanguagePath.c_str());
+  if (!g_localizeStrings.Load(strLanguagePath))
+    FatalErrorHandler(false, false, true);
+
   // start-up Addons Framework
   // currently bails out if either cpluff Dll is unavailable or system dir can not be scanned
   if (!CAddonMgr::Get().Init())
@@ -653,19 +673,6 @@ bool CApplication::Create()
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
 
-  // initialize our charset converter
-  g_charsetConverter.reset();
-
-  // Load the langinfo to have user charset <-> utf-8 conversion
-  CStdString strLanguage = g_guiSettings.GetString("locale.language");
-  strLanguage[0] = toupper(strLanguage[0]);
-
-  CStdString strLangInfoPath;
-  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
-
-  CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
-  g_langInfo.Load(strLangInfoPath);
-
   CStdString strUserSplash = "special://home/media/Splash.png";
   if (CFile::Exists(strUserSplash))
   {
@@ -678,13 +685,6 @@ bool CApplication::Create()
     m_splash = new CSplash("special://xbmc/media/Splash.png");
   }
   m_splash->Show();
-
-  CStdString strLanguagePath;
-  strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
-
-  CLog::Log(LOGINFO, "load language file:%s", strLanguagePath.c_str());
-  if (!g_localizeStrings.Load(strLanguagePath))
-    FatalErrorHandler(false, false, true);
 
   CLog::Log(LOGINFO, "load keymapping");
   if (!CButtonTranslator::GetInstance().Load())
@@ -4810,6 +4810,12 @@ void CApplication::ProcessSlow()
   }
 #endif
   ADDON::CAddonMgr::Get().UpdateRepos();
+
+#if defined(__arm__)
+  // TODO: gui rendering testing, remove later
+  printf( "FPS: %s\n", g_infoManager.GetLabel(SYSTEM_FPS).c_str() );
+#endif
+
 }
 
 // Global Idle Time in Seconds

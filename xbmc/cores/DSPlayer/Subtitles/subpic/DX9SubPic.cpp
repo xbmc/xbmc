@@ -23,6 +23,7 @@
 #include <d3d9.h>
 #include <Vmr9.h>
 #include "DX9SubPic.h"
+#include "..\ILog.h"
 
 //
 // CDX9SubPic
@@ -319,11 +320,8 @@ STDMETHODIMP CDX9SubPic::GetTexture( Com::SmartPtr<IDirect3DTexture9>& pTexture 
 
 CDX9SubPicAllocator::CDX9SubPicAllocator(IDirect3DDevice9* pD3DDev, SIZE maxsize, bool fPow2Textures) 
   : ISubPicAllocatorImpl(maxsize, true, fPow2Textures)
-  , m_pD3DDev(pD3DDev)
-  , m_maxsize(maxsize)
+  , m_pD3DDev(pD3DDev), m_maxsize(maxsize)
 {
-  m_pD3DDev = pD3DDev;
-  m_maxsize = maxsize;
 }
 
 CCritSec CDX9SubPicAllocator::ms_SurfaceQueueLock;
@@ -351,6 +349,7 @@ void CDX9SubPicAllocator::ClearCache()
     {
       CDX9SubPic *pSubPic = *pos; pos++;
       pSubPic->m_pAllocator = NULL;
+      delete pSubPic;
     }
     m_AllocatedSurfaces.clear();
     m_FreeSurfaces.clear();

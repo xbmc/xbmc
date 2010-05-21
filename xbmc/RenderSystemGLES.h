@@ -84,7 +84,9 @@ protected:
 
   CStdString m_RenderExtensions;
 
-  CGUIShader *m_pGUIshader;
+  CGUIShader *m_pGUIshader[4];  // One GUI shader for each method
+
+  int         m_method;
 };
 
 #endif // RENDER_SYSTEM_H

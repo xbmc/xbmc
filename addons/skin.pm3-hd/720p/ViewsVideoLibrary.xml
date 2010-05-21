@@ -160,7 +160,6 @@
 			<font>font11</font>
 			<align>justify</align>
 			<textcolor>white</textcolor>
-			<pagecontrol>9999999999</pagecontrol>
 			<label>$INFO[ListItem.Plot]</label>
 			<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 			<visible>Control.IsVisible(59) + Container.Content(TVShows)</visible>
@@ -176,8 +175,8 @@
 			<onup>9000</onup>
 			<ondown>61</ondown>
 			<usecontrolcoords>true</usecontrolcoords>
-			<control type="wraplist" id="57">
-				<visible>Container.Content(Movies) | Window.IsVisible(VideoFiles)</visible>
+			<control type="fixedlist" id="57">
+				<visible>Container.Content(Movies) | Container.Content(Seasons) | Window.IsVisible(VideoFiles)</visible>
 				<posx>-60</posx>
 				<posy>0</posy>
 				<width>1090</width>
@@ -190,6 +189,7 @@
 				<pagecontrol>61</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<focusposition>2</focusposition>
+				<movement>1</movement>
 				<orientation>horizontal</orientation>
 				<hitrect x="376" y="0" w="218" h="310" />
 				<preloaditems>4</preloaditems>
@@ -287,6 +287,20 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<label>[UPPERCASE][B]$INFO[ListItem.Genre][/B][/UPPERCASE]</label>
+				<visible>!Container.Content(Seasons)</visible>
+			</control>
+			<control type="label">
+				<posx>300</posx>
+				<posy>580</posy>
+				<width>970</width>
+				<height>35</height>
+				<font>font11</font>
+				<textcolor>grey2</textcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>[B]$LOCALIZE[20360] - $INFO[ListItem.Property(WatchedEpisodes),, $LOCALIZE[16102]]$INFO[ListItem.Property(UnWatchedEpisodes), - , $LOCALIZE[16101]][/B]</label>
+				<visible>Container.Content(Seasons)</visible>
 			</control>
 		</control>
 	</include>
@@ -563,7 +577,6 @@
 			<align>justify</align>
 			<textcolor>white</textcolor>
 			<shadowcolor>black</shadowcolor>
-			<pagecontrol>9999999999</pagecontrol>
 			<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 			<label>$INFO[ListItem.Plot]</label>
 			<visible>Control.IsVisible(56) + Container.Content(TVShows)</visible>
@@ -571,7 +584,7 @@
 	</include>
 	<include name="MoviesListView">
 		<control type="list" id="58">
-			<visible>Container.Content(movies)</visible>
+			<visible>Container.Content(movies) | Container.Content(Episodes)</visible>
 			<posx>575</posx>
 			<posy>130</posy>
 			<width>675</width>
@@ -649,31 +662,63 @@
 			<posx>300</posx>
 			<posy>130</posy>
 			<visible>Control.IsVisible(58)</visible>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>270</width>
-				<height>360</height>
-				<aspectratio align="center" aligny="bottom">keep</aspectratio>
-				<texture>$INFO[ListItem.Icon]</texture>
-				<fadetime>IconCrossfadeTime</fadetime>
+			<control type="group">
+				<visible>Container.Content(Movies)</visible>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>270</width>
+					<height>360</height>
+					<aspectratio align="center" aligny="bottom">keep</aspectratio>
+					<texture>$INFO[ListItem.Icon]</texture>
+					<fadetime>IconCrossfadeTime</fadetime>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>360</posy>
+					<width>270</width>
+					<height>360</height>
+					<aspectratio align="center" aligny="top">keep</aspectratio>
+					<texture flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
+					<fadetime>IconCrossfadeTime</fadetime>
+				</control>
+				<control type="image">
+					<posx>225</posx>
+					<posy>325</posy>
+					<width>35</width>
+					<height>35</height>
+					<aspectratio>keep</aspectratio>
+					<texture>$INFO[ListItem.Overlay]</texture>
+				</control>
 			</control>
-			<control type="image">
-				<posx>0</posx>
-				<posy>360</posy>
-				<width>270</width>
-				<height>360</height>
-				<aspectratio align="center" aligny="top">keep</aspectratio>
-				<texture flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
-				<fadetime>IconCrossfadeTime</fadetime>
-			</control>
-			<control type="image">
-				<posx>225</posx>
-				<posy>325</posy>
-				<width>35</width>
-				<height>35</height>
-				<aspectratio>keep</aspectratio>
-				<texture>$INFO[ListItem.Overlay]</texture>
+			<control type="group">
+				<visible>Container.Content(Episodes)</visible>
+				<control type="image">
+					<posx>0</posx>
+					<posy>50</posy>
+					<width>270</width>
+					<height>200</height>
+					<aspectratio>scale</aspectratio>
+					<texture>$INFO[ListItem.Icon]</texture>
+					<fadetime>IconCrossfadeTime</fadetime>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>250</posy>
+					<width>270</width>
+					<height>250</height>
+					<aspectratio scalediffuse="false">scale</aspectratio>
+					<texture flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
+					<fadetime>IconCrossfadeTime</fadetime>
+				</control>
+				<control type="image">
+					<posx>225</posx>
+					<posy>225</posy>
+					<width>35</width>
+					<height>35</height>
+					<aspectratio>keep</aspectratio>
+					<texture>$INFO[ListItem.Overlay]</texture>
+				</control>
 			</control>
 			<control type="image">
 				<posx>0</posx>
@@ -684,7 +729,7 @@
 			</control>
 		</control>
 		<control type="textbox">
-			<description>Description Value for Movies</description>
+			<description>Description Value for Item</description>
 			<posx>300</posx>
 			<posy>505</posy>
 			<width>950</width>
@@ -692,10 +737,9 @@
 			<font>font11</font>
 			<align>justify</align>
 			<textcolor>white</textcolor>
-			<pagecontrol>9999999999</pagecontrol>
 			<label>$INFO[ListItem.Plot]</label>
 			<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
-			<visible>Control.IsVisible(58) + Container.Content(Movies)</visible>
+			<visible>Control.IsVisible(58) + [Container.Content(Movies) | Container.Content(Episodes)]</visible>
 		</control>
 	</include>
 </includes>

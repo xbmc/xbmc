@@ -108,8 +108,8 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   }
   else
   {
-    items.SetProperty("addoncategory",path.GetFileName());
     TYPE type = TranslateType(path.GetFileName());
+    items.SetProperty("addoncategory",TranslateType(type, true));
     for (unsigned int j=0;j<addons.size();++j)
       if (addons[j]->Type() != type)
         addons.erase(addons.begin()+j--);

@@ -31,6 +31,7 @@
 #include "EncoderWav.h"
 #include "EncoderVorbis.h"
 #include "EncoderFFmpeg.h"
+#include "EncoderFlac.h"
 #include "FileSystem/CDDADirectory.h"
 #include "MusicInfoTagLoaderFactory.h"
 #include "utils/LabelFormatter.h"
@@ -72,6 +73,9 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
     break;
   case CDDARIP_ENCODER_VORBIS:
     m_pEncoder = new CEncoderVorbis();
+    break;
+  case CDDARIP_ENCODER_FLAC:
+    m_pEncoder = new CEncoderFlac();
     break;
   default:
     m_pEncoder = new CEncoderLame();
@@ -335,6 +339,7 @@ const char* CCDDARipper::GetExtension(int iEncoder)
 {
   if (iEncoder == CDDARIP_ENCODER_WAV) return ".wav";
   if (iEncoder == CDDARIP_ENCODER_VORBIS) return ".ogg";
+  if (iEncoder == CDDARIP_ENCODER_FLAC) return ".flac";
   return ".mp3";
 }
 

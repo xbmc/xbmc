@@ -146,7 +146,6 @@ public:
   void SetDropState(bool bDrop);
 
 protected:
-  void CheckCrystalHDLibraryPath(void);
 
   DllLibCrystalHD *m_dll;
   void          *m_Device;

@@ -23,6 +23,7 @@
 #if defined(HAVE_LIBOPENMAX)
 
 #include "DVDVideoCodec.h"
+#include "utils/Event.h"
 
 #include <queue>
 #include <semaphore.h>      
@@ -34,6 +35,13 @@ typedef struct omx_bitstream_ctx {
     uint8_t *sps_pps_data;
     uint32_t size;
 } omx_bitstream_ctx;
+
+typedef struct omx_demux_packet {
+  OMX_U8 *buff;
+  int size;
+  double dts;
+  double pts;
+} omx_demux_packet;
 
 class DllLibOpenMax;
 class CDVDVideoCodecOpenMax : public CDVDVideoCodec
@@ -52,11 +60,13 @@ public:
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
   
 protected:
-  bool bitstream_convert_init(uint8_t *in_extradata, int in_extrasize);
+  // bitstream to bytestream (Annex B) conversion routines.
+  bool bitstream_convert_init(void *in_extradata, int in_extrasize);
   bool bitstream_convert(BYTE* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size);
   void bitstream_alloc_and_copy( uint8_t **poutbuf, int *poutbuf_size,
     const uint8_t *sps_pps, uint32_t sps_pps_size, const uint8_t *in, uint32_t in_size);
 
+  // OpenMax Decoder Callback routines.
   static OMX_ERRORTYPE DecoderEventHandler(OMX_HANDLETYPE hComponent, OMX_PTR pAppData,
     OMX_EVENTTYPE eEvent, OMX_U32 nData1, OMX_U32 nData2, OMX_PTR pEventData);
   static OMX_ERRORTYPE DecoderEmptyBufferDone(
@@ -64,43 +74,43 @@ protected:
   static OMX_ERRORTYPE DecoderFillBufferDone(
     OMX_HANDLETYPE hComponent, OMX_PTR pAppData, OMX_BUFFERHEADERTYPE* pBufferHeader);
 
+  // OpenMax helper routines
   OMX_ERRORTYPE PrimeFillBuffers(void);
   OMX_ERRORTYPE AllocOMXInputBuffers(void);
   OMX_ERRORTYPE FreeOMXInputBuffers(void);
   OMX_ERRORTYPE AllocOMXOutputBuffers(void);
   OMX_ERRORTYPE FreeOMXOutputBuffers(void);
-  OMX_ERRORTYPE SetStateForAllComponents(OMX_STATETYPE state);
+  OMX_ERRORTYPE SetStateForComponent(OMX_STATETYPE state);
   OMX_ERRORTYPE StartDecoder(void);
   OMX_ERRORTYPE StopDecoder(void);
 
   DllLibOpenMax     *m_dll;
   OMX_HANDLETYPE    m_omx_decoder;   // openmax decoder component reference
+  DVDVideoPicture   m_videobuffer;
   const char        *m_pFormatName;
   bool              m_drop_pictures;
   int               m_decoded_width;
   int               m_decoded_height;
-  DVDVideoPicture   m_videobuffer;
 
   std::queue<double> m_dts_queue;
+  std::queue<omx_demux_packet> m_demux_queue;
 
-  // OpenMAX input buffers (demuxer packets)
-  pthread_mutex_t   m_free_input_mutex;
-  std::queue<OMX_BUFFERHEADERTYPE*> m_free_input_buffers;
-  std::vector<OMX_BUFFERHEADERTYPE*> m_input_buffers;
-  int               m_input_buffer_count;
-  int               m_input_buffer_size;
-  int               m_input_port;
-  bool              m_input_eos;
+  // OpenMax input buffers (demuxer packets)
+  pthread_mutex_t   m_omx_avaliable_mutex;
+  std::queue<OMX_BUFFERHEADERTYPE*> m_omx_input_avaliable;
+  std::vector<OMX_BUFFERHEADERTYPE*> m_omx_input_buffers;
+  bool              m_omx_input_eos;
+  int               m_omx_input_port;
+  CEvent            m_input_consumed_event;
 
-  // OpenMAX output buffers (video frames)
-  pthread_mutex_t   m_ready_output_mutex;
-  std::queue<OMX_BUFFERHEADERTYPE*> m_ready_output_buffers;
-  std::vector<OMX_BUFFERHEADERTYPE*> m_output_buffers;
-  int               m_output_buffer_count;
-  int               m_output_buffer_size;
-  int               m_output_port;
-  bool              m_output_eos;
+  // OpenMax output buffers (video frames)
+  pthread_mutex_t   m_omx_ready_mutex;
+  std::queue<OMX_BUFFERHEADERTYPE*> m_omx_output_ready;
+  std::vector<OMX_BUFFERHEADERTYPE*> m_omx_output_buffers;
+  bool              m_omx_output_eos;
+  int               m_omx_output_port;
 
+  // OpenMax state tracking
   volatile int      m_omx_state;
   sem_t             *m_omx_state_change;
   volatile bool     m_videoplayback_done;

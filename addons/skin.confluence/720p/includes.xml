@@ -154,18 +154,6 @@
 			<fadetime>1000</fadetime>
 		</control>
 	</include>
-	<include name="CommonAddonsBackground">
-		<control type="multiimage">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<imagepath fallback="special://skin/backgrounds/addons.jpg" background="true">$INFO[Skin.String(Home_Custom_Back_Addons_Folder)]</imagepath>
-			<timeperimage>10000</timeperimage>
-			<randomize>true</randomize>
-			<fadetime>1000</fadetime>
-		</control>
-	</include>
 	<include name="BehindDialogFadeOut">
 		<control type="image">
 			<posx>0</posx>

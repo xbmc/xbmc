@@ -225,7 +225,7 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
   }
 
   // Setup vertex position values
-  ver[0][3] = ver[1][3] = ver[2][3] = ver[3][3] = 0.0f;
+  // ver[0][3] = ver[1][3] = ver[2][3] = ver[3][3] = 0.0f; // FIXME, ver has only 3 elements - this is not correct
   ver[0][0] = ver[3][0] = rect.x1;
   ver[0][1] = ver[1][1] = rect.y1;
   ver[1][0] = ver[2][0] = rect.x2;

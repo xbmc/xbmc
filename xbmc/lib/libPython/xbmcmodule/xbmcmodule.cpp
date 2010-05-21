@@ -126,7 +126,7 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"s|i:xb_output",
+      (char*)"s|i",
       (char**)keywords,
       &s_line,
       &iLevel))

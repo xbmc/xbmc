@@ -37,6 +37,7 @@
 #include "Application.h"
 #include "Util.h"
 #include "win32/WIN32Util.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 
@@ -95,8 +96,8 @@ void CRenderSystemDX::CheckDXVersion()
   HANDLE hDevice = 0;
   if (INVALID_HANDLE_VALUE == (hDevice = CreateFile(dxtestfile, 0, 0, NULL, OPEN_EXISTING, 0, NULL )))
   {
-    CLog::Log(LOGWARNING, "%s - old DirectX runtime, you may run into display problems. Please upgrade", __FUNCTION__);
-    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, "DirectX Runtime", "Please update to latest runtime.");
+    CLog::Log(LOGWARNING, "%s - old DirectX runtime. You need DirectX 9.0c, dated August 2009 or later.", __FUNCTION__);
+    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, "DirectX", g_localizeStrings.Get(2101));
   }
   else
     CloseHandle(hDevice);
@@ -146,7 +147,7 @@ bool CRenderSystemDX::InitRenderSystem()
   if (caps.PixelShaderVersion < D3DPS_VERSION(2, 0)) 
   {
     CLog::Log(LOGERROR, "%s - XBMC requires a graphics card supporting Pixel Shaders 2.0", __FUNCTION__);
-    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "Graphics Card", "Requirements not met - See log");
+    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(2102), g_localizeStrings.Get(2103));
   }
 
   if (SUCCEEDED(m_pD3D->CheckDeviceFormat( D3DADAPTER_DEFAULT,

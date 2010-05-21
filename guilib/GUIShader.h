@@ -39,7 +39,7 @@ enum ESHADERMETHOD
 class CGUIShader : public CGLSLShaderProgram
 {
 public:
-  CGUIShader();
+  CGUIShader( const char *shader = 0 );
   void OnCompiledAndLinked();
   bool OnEnabled();
   void Free();

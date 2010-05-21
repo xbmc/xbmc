@@ -128,25 +128,38 @@ void CGUIFontTTFGL::End()
   glDrawArrays(GL_QUADS, 0, m_vertex_count);
   glPopClientAttrib();
 #else
+  // GLES 2.0 version. Cannot draw quads. Convert to triangles.
   GLint posLoc  = g_Windowing.GUIShaderGetPos();
   GLint colLoc  = g_Windowing.GUIShaderGetCol();
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
 
-  glVertexAttribPointer(posLoc,  3, GL_FLOAT,         0, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, x));
-  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, 0, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, r));
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         0, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, u));
+  // stack object until VBOs will be used
+  std::vector<SVertex> vecVertices( 6 * (m_vertex_count / 4) );
+  SVertex *vertices = &vecVertices[0];
+
+  for (int i=0; i<m_vertex_count; i+=4)
+  {
+    *vertices++ = m_vertex[i];
+    *vertices++ = m_vertex[i+1];
+    *vertices++ = m_vertex[i+2];
+
+    *vertices++ = m_vertex[i+1];
+    *vertices++ = m_vertex[i+3];
+    *vertices++ = m_vertex[i+2];
+  }
+
+  vertices = &vecVertices[0];
+
+  glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, x));
+  // Normalize color values. Does not affect Performance at all.
+  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, r));
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(SVertex), (char*)vertices + offsetof(SVertex, u));
 
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(colLoc);
   glEnableVertexAttribArray(tex0Loc);
 
-  // GLES2 version
-  // As using triangle strips, have to do in sets of 4.
-  // This is due to limitations of ES, in that tex/col has to be same size as ver!
-  for (int i=0; i<m_vertex_count; i+=4)
-  {
-    glDrawArrays(GL_TRIANGLE_STRIP, i, 4);
-  }
+  glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
 
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(colLoc);

@@ -50,7 +50,8 @@ if you are running a previous Xcode 3.x version. Xcode 3.x only runs on 10.5.
 3.1 Install MacPorts 1.7
 -----------------------------------------------------------------------------
 
-These build instructions depend on MacPorts 1.7.1 from xbmc-port-depends. 
+These build instructions depend on MacPorts 1.7.1 from xbmc-port-depends at 
+http://code.google.com/p/xbmc-port-depends/ .
 If you have another version of MacPorts installed, it's best to remove it and
 install this 1.7.1 version. To remove a previous install of MacPorts, enter the
 following from a terminal windows:

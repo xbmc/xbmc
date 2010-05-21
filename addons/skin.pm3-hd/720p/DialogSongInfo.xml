@@ -278,7 +278,6 @@
 			<width>480</width>
 			<height>100</height>
 			<font>font12</font>
-			<pagecontrol>999999999</pagecontrol>
 			<label fallback="161">$INFO[ListItem.Comment]</label>
 		</control>
 		<control type="button" id ="13">

@@ -54,8 +54,9 @@ using namespace std;
 namespace ADDON
 {
 
-int cp_to_clog(cp_log_severity_t);
-cp_log_severity_t clog_to_cp(int);
+cp_log_severity_t clog_to_cp(int lvl);
+void cp_fatalErrorHandler(const char *msg);
+void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data);
 
 /**********************************************************
  * CAddonMgr
@@ -115,6 +116,8 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     case ADDON_SCRAPER_LIBRARY:
     case ADDON_VIZ_LIBRARY:
       return AddonPtr(new CAddonLibrary(props->plugin));
+    case ADDON_REPOSITORY:
+      return AddonPtr(new CRepository(props->plugin));
     default:
       break;
   }
@@ -250,7 +253,7 @@ void CAddonMgr::DeInit()
 
 bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabledOnly/*= true*/)
 {
-  if (type == ADDON_SCREENSAVER || type == ADDON_SKIN || type == ADDON_VIZ)
+  if (type == ADDON_SCREENSAVER || type == ADDON_SKIN || type == ADDON_VIZ || type == ADDON_SCRIPT || type == ADDON_REPOSITORY)
   {
     cp_status_t status;
     int num;
@@ -297,7 +300,7 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYP
 {
   CSingleLock lock(m_critSection);
   addons.clear();
-  if (type == ADDON_SCREENSAVER || type == ADDON_SKIN || type == ADDON_VIZ)
+  if (type == ADDON_SCREENSAVER || type == ADDON_SKIN || type == ADDON_VIZ || type == ADDON_REPOSITORY || type == ADDON_SCRIPT)
   {
     cp_status_t status;
     int num;
@@ -338,6 +341,8 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
       && type != ADDON_SCREENSAVER
       && type != ADDON_SKIN
       && type != ADDON_VIZ
+      && type != ADDON_REPOSITORY
+      && type != ADDON_SCRIPT
       && m_addons.find(type) == m_addons.end())
     return false;
 
@@ -880,6 +885,27 @@ bool CAddonMgr::GetTranslatedString(const TiXmlElement *xmldoc, const char *tag,
   return element != NULL;
 }
 
+const char *CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const char *tag)
+{
+  if (!root)
+    return NULL;
+
+  const cp_cfg_element_t *eng = NULL;
+  for (unsigned int i = 0; i < root->num_children; i++)
+  {
+    const cp_cfg_element_t &child = root->children[i];
+    if (strcmp(tag, child.name) == 0)
+    { // see if we have a "lang" attribute
+      const char *lang = m_cpluff->lookup_cfg_value((cp_cfg_element_t*)&child, "@lang");
+      if (lang && 0 == strcmp(lang,g_langInfo.GetDVDAudioLanguage().c_str()))
+        return child.value;
+      if (!lang || 0 == strcmp(lang, "en"))
+        eng = &child;
+    }
+  }
+  return (eng) ? eng->value : NULL;
+}
+
 AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
 {
   switch (addonProps.type)
@@ -969,6 +995,18 @@ bool CAddonMgr::GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *ba
   return true;
 }
 
+const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, const char *extension)
+{
+  if (!props)
+    return NULL;
+  for (unsigned int i = 0; i < props->num_extensions; ++i)
+  {
+    if (0 == strcmp(props->extensions[i].ext_point_id, extension))
+      return &props->extensions[i];
+  }
+  return NULL;
+}
+
 CStdString CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
 {
   const char *value = NULL;
@@ -977,9 +1015,36 @@ CStdString CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
   else return CStdString();
 }
 
-void CAddonMgr::CPluffFatalError(const char *msg)
+bool CAddonMgr::AddonsFromInfoXML(const TiXmlElement *root, VECADDONS &addons)
 {
-  CLog::Log(LOGERROR, "ADDONS: CPluffFatalError(%s)", msg);
+  // create a context for these addons
+  cp_status_t status;
+  cp_context_t *context = m_cpluff->create_context(&status);
+  if (!root || !context)
+    return false;
+
+  // each addon XML should have a UTF-8 declaration
+  TiXmlDeclaration decl("1.0", "UTF-8", "");
+  const TiXmlElement *element = root->FirstChildElement("addon");
+  while (element)
+  {
+    // dump the XML back to text
+    std::string xml;
+    xml << decl;
+    xml << *element;
+    cp_status_t status;
+    cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor(context, xml.c_str(), xml.size(), &status);
+    if (info)
+    {
+      AddonPtr addon = Factory(info->extensions);
+      m_cpluff->release_info(context, info);
+      // FIXME: sanity check here that the addon satisfies our requirements?
+      addons.push_back(addon);
+    }
+    element = element->NextSiblingElement("addon");
+  }
+  m_cpluff->destroy_context(context);
+  return true;
 }
 
 int cp_to_clog(cp_log_severity_t lvl)
@@ -1006,7 +1071,12 @@ cp_log_severity_t clog_to_cp(int lvl)
     return CP_LOG_DEBUG;
 }
 
-void CAddonMgr::CPluffLog(cp_log_severity_t level, const char *msg, const char *apid, void *user_data)
+void cp_fatalErrorHandler(const char *msg)
+{
+  CLog::Log(LOGERROR, "ADDONS: CPluffFatalError(%s)", msg);
+}
+
+void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data)
 {
   if(!apid)
     CLog::Log(cp_to_clog(level), "ADDON: cpluff: '%s'", msg);

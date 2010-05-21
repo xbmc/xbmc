@@ -58,14 +58,14 @@ CGUIDialogAudioSubtitleSettings::~CGUIDialogAudioSubtitleSettings(void)
 #define AUDIO_SETTINGS_DELAY              3
 #define AUDIO_SETTINGS_STREAM             4
 #define AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS 5
-#define AUDIO_SETTINGS_DIGITAL_ANALOG 6
+#define AUDIO_SETTINGS_DIGITAL_ANALOG     6
 
 // separator 7
 #define SUBTITLE_SETTINGS_ENABLE          8
 #define SUBTITLE_SETTINGS_DELAY           9
 #define SUBTITLE_SETTINGS_STREAM          10
-#define SUBTITLE_SETTINGS_BROWSER        11
-#define AUDIO_SETTINGS_MAKE_DEFAULT      12
+#define SUBTITLE_SETTINGS_BROWSER         11
+#define AUDIO_SETTINGS_MAKE_DEFAULT       12
 
 void CGUIDialogAudioSubtitleSettings::CreateSettings()
 {
@@ -87,7 +87,7 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
 
   int settings[3] = { 338, 339, 420 }; //ANALOG, IEC958, HDMI
   m_outputmode = g_guiSettings.GetInt("audiooutput.mode");
-  AddSpin(AUDIO_SETTINGS_DIGITAL_ANALOG, 337, &m_outputmode, 2, settings);
+  AddSpin(AUDIO_SETTINGS_DIGITAL_ANALOG, 337, &m_outputmode, 3, settings);
 
   AddSeparator(7);
   m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
@@ -245,11 +245,12 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   else if (setting.id == AUDIO_SETTINGS_DIGITAL_ANALOG)
   {
     bool bitstream = false;
+
     switch(m_outputmode)
     {
-      case AUDIO_ANALOG: g_guiSettings.SetInt("audiooutput.mode", AUDIO_IEC958 ); break;
-      case AUDIO_IEC958: g_guiSettings.SetInt("audiooutput.mode", AUDIO_HDMI   ); bitstream = true; break;
-      case AUDIO_HDMI  : g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG ); bitstream = true; break;
+      case 0: g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG ); break;
+      case 1: g_guiSettings.SetInt("audiooutput.mode", AUDIO_IEC958 ); bitstream = true; break;
+      case 2: g_guiSettings.SetInt("audiooutput.mode", AUDIO_HDMI   ); bitstream = true; break;
     }
 
     EnableSettings(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, bitstream);

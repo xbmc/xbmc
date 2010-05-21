@@ -66,24 +66,32 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
   string shadername;
   string defines;
 
+#if defined(HAS_GL)
   m_floattex = glewIsSupported("GL_ARB_texture_float");
+#elif HAS_GLES == 2
+  m_floattex = false;
+#endif
 
   if (m_method == VS_SCALINGMETHOD_CUBIC ||
       m_method == VS_SCALINGMETHOD_LANCZOS2 ||
       m_method == VS_SCALINGMETHOD_LANCZOS3_FAST)
   {
     shadername = "convolution-4x4.glsl";
+#if defined(HAS_GL)
     if (m_floattex)
       m_internalformat = GL_RGBA16F_ARB;
     else
+#endif
       m_internalformat = GL_RGBA;
   }
   else if (m_method == VS_SCALINGMETHOD_LANCZOS3)
   {
     shadername = "convolution-6x6.glsl";
+#if defined(HAS_GL)
     if (m_floattex)
       m_internalformat = GL_RGB16F_ARB;
     else
+#endif
       m_internalformat = GL_RGB;
   }
 
@@ -127,6 +135,7 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
   }
 
   glActiveTexture(GL_TEXTURE2);
+#if defined(HAS_GL)
   glBindTexture(GL_TEXTURE_1D, m_kernelTex1);
   glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -139,10 +148,11 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
     glTexImage1D(GL_TEXTURE_1D, 0, m_internalformat, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, kernel.GetFloatPixels());
   else
     glTexImage1D(GL_TEXTURE_1D, 0, m_internalformat, kernel.GetSize(), 0, GL_RGBA, GL_UNSIGNED_BYTE, kernel.GetUint8Pixels());
-#if defined(HAS_GL)
 #elif HAS_GLES == 2
+  //TODO: This need fixups see orginal at 
+  // http://trac.xbmc.org/browser/branches/arm-camelot/trunk/xbmc/cores/VideoRenderers/VideoShaders/VideoFilterShader.cpp
   //TODO: GL_RGBA16F_ARB for GLES!?
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size, 1, 0, GL_RGBA, GL_FLOAT, img);
+  //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size, 1, 0, GL_RGBA, GL_FLOAT, img);
 #endif
 
   glActiveTexture(GL_TEXTURE0);
@@ -154,7 +164,12 @@ bool ConvolutionFilterShader::OnEnabled()
 {
   // set shader attributes once enabled
   glActiveTexture(GL_TEXTURE2);
+#if defined(HAS_GL)
   glBindTexture(GL_TEXTURE_1D, m_kernelTex1);
+#elif HAS_GLES == 2
+  // TODO: OpenGL/ES does not have GL_TEXTURE_1D
+  //glBindTexture(GL_TEXTURE_2D, m_kernelTex1);
+#endif
 
   glActiveTexture(GL_TEXTURE0);
   glUniform1i(m_hSourceTex, m_sourceTexUnit);

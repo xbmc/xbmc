@@ -28,7 +28,7 @@
 #include "MatrixGLES.h"
 #include "utils/log.h"
 
-CGUIShader::CGUIShader() : CGLSLShaderProgram("guishader_vert.glsl", "guishader_frag.glsl")
+CGUIShader::CGUIShader( const char *shader ) : CGLSLShaderProgram("guishader_vert.glsl", shader ? shader : "guishader_frag.glsl" )
 {
   // Initialise values
   m_hTex0   = NULL;
@@ -61,6 +61,11 @@ void CGUIShader::OnCompiledAndLinked()
   m_hCol    = glGetAttribLocation(ProgramHandle(),  "m_attrcol");
   m_hCord0  = glGetAttribLocation(ProgramHandle(),  "m_attrcord0");
   m_hCord1  = glGetAttribLocation(ProgramHandle(),  "m_attrcord1");
+
+  // it's okay to do this only one time. Textures units never change
+  glUniform1i(m_hTex0, 0);
+  glUniform1i(m_hTex1, 1);
+
 }
 
 bool CGUIShader::OnEnabled()
@@ -70,16 +75,6 @@ bool CGUIShader::OnEnabled()
   glUniform1i(m_hMethod, (int)m_method);
   glUniformMatrix4fv(m_hProj,  1, GL_FALSE, g_matrices.GetMatrix(MM_PROJECTION));
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, g_matrices.GetMatrix(MM_MODELVIEW));
-
-  if (m_method == SM_TEXTURE)
-  {
-    glUniform1i(m_hTex0, 0);
-  }
-  else if (m_method == SM_MULTI)
-  {
-    glUniform1i(m_hTex0, 0);
-    glUniform1i(m_hTex1, 1);
-  }
 
   return true;
 }
