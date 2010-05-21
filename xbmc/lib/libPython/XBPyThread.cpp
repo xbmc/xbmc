@@ -164,7 +164,7 @@ void XBPyThread::Process()
     return;
   }
   // swap in my thread state
-  PyThreadState_Swap(m_threadState);
+  PyThreadState* old = PyThreadState_Swap(m_threadState);
 
   m_pExecuter->InitializeInterpreter();
 
@@ -324,6 +324,8 @@ void XBPyThread::Process()
 
   Py_EndInterpreter(m_threadState);
   m_threadState = NULL;
+  PyThreadState_Swap(old);
+
   PyEval_ReleaseLock();
 }
 
