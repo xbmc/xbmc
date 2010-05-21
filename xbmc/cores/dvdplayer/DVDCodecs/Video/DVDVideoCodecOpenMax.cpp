@@ -356,7 +356,7 @@ void CDVDVideoCodecOpenMax::Dispose()
   }
   if (m_sps_pps_context.sps_pps_data)
   {
-		free(m_sps_pps_context.sps_pps_data);
+    free(m_sps_pps_context.sps_pps_data);
     m_sps_pps_context.sps_pps_data = NULL;
   }
 }
@@ -535,13 +535,8 @@ bool CDVDVideoCodecOpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
       // release the omx buffer back to OpenMax to fill.
       OMX_ERRORTYPE omx_err = OMX_FillThisBuffer(m_omx_decoder, omx_buffer);
 #if defined(OMX_DEBUG_VERBOSE)
-      // If we get OMX_ErrorPortUnpopulated, it's not really a problem, the component
-      // output got OMX_CommandPortDisable from OMX_EventPortSettingsChanged
-      // and is purging output omx buffers.
-      if (omx_err && omx_err != OMX_ErrorPortUnpopulated)
-      {
+      if (omx_err)
         CLog::Log(LOGDEBUG, "%s - OMX_FillThisBuffer, omx_err(0x%x)\n", __FUNCTION__, omx_err);
-      }
     }
     else
     {
