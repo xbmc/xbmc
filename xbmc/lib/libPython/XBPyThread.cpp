@@ -138,7 +138,10 @@ int XBPyThread::setArgv(unsigned int src_argc, const char **src)
   return 0;
 }
 
-void XBPyThread::OnStartup(){}
+void XBPyThread::OnStartup()
+{
+  CThread::SetName("Python Thread");
+}
 
 void XBPyThread::Process()
 {
