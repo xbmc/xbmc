@@ -749,11 +749,7 @@ bool CApplication::InitDirectoriesLinux()
   if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
   {
     /* Attempt to locate arch independent data files. */
-    CStdString temp = xbmcPath;
-    xbmcPath = BIN_INSTALL_PATH;
-    temp.erase(temp.size() - xbmcPath.size(), xbmcPath.size());
-    xbmcPath = temp + INSTALL_PATH;
-    CUtil::GetHomePath(xbmcPath);
+    xbmcPath = INSTALL_PATH;
     if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
     {
       fprintf(stderr, "Unable to find path to XBMC data files!\n");
