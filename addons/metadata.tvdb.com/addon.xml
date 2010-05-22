@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="metadata.tvdb.com"
+       name="The TVDB"
+       version="1.0.0"
+       provider-name="Team XBMC">
+  <requires>
+    <import addon="xbmc.metadata" version="1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper"
+             library="tvdb.xml"/>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <minversion>20000</minversion>
+    <summary>TV show scraper</summary>
+    <description>TheTVDB.com is a TV Scraper. The site is a massive open database that can be modified by anybody and contains full meta data for many shows in different languages.   All content and images on the site have been contributed by their users for users and have a high standard or quality.  The database schema and website are open source under the GPL</description>
+  <description lang="nl">TheTVDB.com is een TV-show Scraper. De site is een gigantische open databank die door iedereen kan aangepast en uitgebreid worden. Het bevat informatie voor vele TV-shows in verschillende talen. Alle inhoud en afbeeldingen zijn bijgedragen door en voor gebruikers met een hoge kwaliteitsnorm. Het databank schema en de website zijn vrijgegeven onder de open source GPL licentie.</description>
+  <content>tvshows</content>
+  </extension>
+</addon>

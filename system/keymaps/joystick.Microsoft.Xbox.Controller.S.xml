@@ -364,7 +364,7 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
-      <button id="3">XBMC.ActivateWindow(ScriptsDebugInfo)</button>
+      <button id="3">info</button>
     </joystick>
   </Scripts>
   <NumericInput>

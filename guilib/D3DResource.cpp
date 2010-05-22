@@ -36,6 +36,7 @@ CD3DTexture::CD3DTexture()
   m_pool = D3DPOOL_DEFAULT;
   m_texture = NULL;
   m_data = NULL;
+  m_pitch = 0;
 }
 
 CD3DTexture::~CD3DTexture()
@@ -104,7 +105,7 @@ bool CD3DTexture::GetSurfaceLevel(UINT level, LPDIRECT3DSURFACE9 *surface)
   return false;
 }
 
-void CD3DTexture::OnDestroyDevice()
+void CD3DTexture::SaveTexture()
 {
   if (m_texture)
   {
@@ -113,6 +114,7 @@ void CD3DTexture::OnDestroyDevice()
     D3DLOCKED_RECT lr;
     if (LockRect( 0, &lr, NULL, 0 ))
     {
+      m_pitch = lr.Pitch;
       unsigned int memUsage = GetMemoryUsage(lr.Pitch);
       m_data = new unsigned char[memUsage];
       memcpy(m_data, lr.pBits, memUsage);
@@ -122,7 +124,18 @@ void CD3DTexture::OnDestroyDevice()
   SAFE_RELEASE(m_texture);
 }
 
-void CD3DTexture::OnCreateDevice()
+void CD3DTexture::OnDestroyDevice()
+{
+  SaveTexture();
+}
+
+void CD3DTexture::OnLostDevice()
+{
+  if (m_pool == D3DPOOL_DEFAULT)
+    SaveTexture();
+}
+
+void CD3DTexture::RestoreTexture()
 {
   // yay, we're back - make a new copy of the texture
   if (!m_texture)
@@ -132,13 +145,39 @@ void CD3DTexture::OnCreateDevice()
     D3DLOCKED_RECT lr;
     if (m_texture && m_data && LockRect(0, &lr, NULL, 0 ))
     {
-      memcpy(lr.pBits, m_data, GetMemoryUsage(lr.Pitch));
+      if (lr.Pitch == m_pitch)
+        memcpy(lr.pBits, m_data, GetMemoryUsage(lr.Pitch));
+      else
+      {
+        UINT minpitch = ((UINT)lr.Pitch < m_pitch) ? lr.Pitch : m_pitch;
+        
+        for(UINT i = 0; i < m_height; ++i)
+        {
+          // Get pointers to the "rows" of pixels in texture
+          BYTE* pBits = (BYTE*)lr.pBits + i*lr.Pitch;
+          BYTE* pData = m_data + i*m_pitch;
+          memcpy(pBits, pData, minpitch);
+        }
+      }
       UnlockRect(0);
     }
     delete[] m_data;
     m_data = NULL;
+    m_pitch = 0;
   }
 }
+
+void CD3DTexture::OnCreateDevice()
+{
+  RestoreTexture();
+}
+
+void CD3DTexture::OnResetDevice()
+{
+  if (m_pool == D3DPOOL_DEFAULT)
+    RestoreTexture();
+}
+
 
 unsigned int CD3DTexture::GetMemoryUsage(unsigned int pitch) const
 {

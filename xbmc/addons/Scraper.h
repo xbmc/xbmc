@@ -31,6 +31,7 @@ namespace ADDON
   {
   public:
     CScraper(const AddonProps &props) : CAddon(props) { }
+    CScraper(cp_plugin_info_t *props) : CAddon(props) { }
     virtual ~CScraper() {}
     virtual AddonPtr Clone(const AddonPtr &self) const;
 
@@ -41,7 +42,6 @@ namespace ADDON
     // scraper specialization
     bool LoadUserXML(const CStdString& strXML);
     bool LoadSettingsXML(const CStdString& strFunction="GetSettings", const CScraperUrl* url=NULL);
-    bool Load(const CStdString& strSettings, const CStdString& strSaved);
     CStdString GetSettings() const;
     CStdString m_strLanguage;
     CONTENT_TYPE Content() const { return m_pathContent; }

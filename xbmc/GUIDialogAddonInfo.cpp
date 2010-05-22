@@ -24,7 +24,11 @@
 #include "addons/AddonManager.h"
 #include "AddonDatabase.h"
 #include "FileItem.h"
+#include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "GUIDialogAddonSettings.h"
+#include "GUIDialogTextViewer.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowAddonBrowser.h"
 #include "GUIWindowManager.h"
 #include "URL.h"
@@ -35,13 +39,16 @@
 #define CONTROL_BTN_DISABLE          7
 #define CONTROL_BTN_UPDATE           8
 #define CONTROL_BTN_SETTINGS         9
+#define CONTROL_BTN_CHANGELOG       10
 
 using namespace std;
 using namespace ADDON;
+using namespace XFILE;
 
 CGUIDialogAddonInfo::CGUIDialogAddonInfo(void)
     : CGUIDialog(WINDOW_DIALOG_ADDON_INFO, "DialogAddonInfo.xml")
 {
+  m_item = CFileItemPtr(new CFileItem);
 }
 
 CGUIDialogAddonInfo::~CGUIDialogAddonInfo(void)
@@ -54,28 +61,10 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
+      if (m_jobid)
+        CJobManager::GetInstance().CancelJob(m_jobid);
     }
     break;
-
-  case GUI_MSG_WINDOW_INIT:
-    {
-      CGUIDialog::OnMessage(message);
-
-      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_UPDATE, 
-                  m_item->GetProperty("Addon.UpdateAvail").Equals("true"));
-      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, 
-                  m_item->GetProperty("Addon.Installed").Equals("false"));
-      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_DISABLE, 
-                  m_item->GetProperty("Addon.Installed").Equals("true") &&
-        !m_item->GetProperty("Addon.Path").Mid(0,15).Equals("special://xbmc/"));
-      CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, 
-                  m_item->GetProperty("Addon.Installed").Equals("true") &&
-                  m_addon->HasSettings());
-
-      return true;
-    }
-    break;
-
 
   case GUI_MSG_CLICKED:
     {
@@ -97,6 +86,11 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
         OnSettings();
         return true;
       }
+      else if (iControl == CONTROL_BTN_CHANGELOG)
+      {
+        OnChangeLog();
+        return true;
+      }
     }
     break;
 default:
@@ -104,6 +98,26 @@ default:
   }
 
   return CGUIDialog::OnMessage(message);
+}
+
+void CGUIDialogAddonInfo::OnInitWindow()
+{
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_UPDATE, 
+              m_item->GetProperty("Addon.UpdateAvail").Equals("true"));
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, 
+              m_item->GetProperty("Addon.Installed").Equals("false"));
+  CStdString xbmcPath = _P("special://xbmc/");
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_DISABLE, 
+              m_item->GetProperty("Addon.Installed").Equals("true") &&
+    !m_item->GetProperty("Addon.Path").Mid(0,xbmcPath.size()).Equals(xbmcPath));
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, 
+              m_item->GetProperty("Addon.Installed").Equals("true") &&
+              m_localAddon->HasSettings());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_CHANGELOG,
+              m_addon->Type() != ADDON_REPOSITORY);
+
+  CGUIDialog::OnInitWindow();
+  m_changelog = false;
 }
 
 void CGUIDialogAddonInfo::OnInstall()
@@ -117,14 +131,39 @@ void CGUIDialogAddonInfo::OnDisable()
 {
   CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
   CFileItemList list;
-  list.Add(CFileItemPtr(new CFileItem(m_addon->Path(),true)));
-  list[0]->Select(true);
-  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""),window);
+  if (m_localAddon.get())
+  {
+    list.Add(CFileItemPtr(new CFileItem(m_localAddon->Path(),true)));
+    list[0]->Select(true);
+    CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""),window);
+  }
 }
 
 void CGUIDialogAddonInfo::OnSettings()
 {
-  CGUIDialogAddonSettings::ShowAndGetInput(m_addon);
+  CGUIDialogAddonSettings::ShowAndGetInput(m_localAddon);
+}
+
+void CGUIDialogAddonInfo::OnChangeLog()
+{
+  CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
+  pDlgInfo->SetHeading(g_localizeStrings.Get(24054)+" - "+m_addon->Name());
+  if (m_item->GetProperty("Addon.Changelog").IsEmpty())
+  {
+    pDlgInfo->SetText(g_localizeStrings.Get(13413));
+    CFileItemList items;
+    items.Add(CFileItemPtr(new CFileItem(m_addon->ChangeLog(),false)));
+    items[0]->Select(true);
+    m_jobid = CJobManager::GetInstance().AddJob(
+      new CFileOperationJob(CFileOperationJob::ActionCopy,items,
+                            "special://temp/"),this);
+  }
+  else
+    pDlgInfo->SetText(m_item->GetProperty("Addon.Changelog"));
+
+  m_changelog = true;
+  pDlgInfo->DoModal();
+  m_changelog = false;
 }
 
 bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
@@ -132,28 +171,33 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
   CGUIDialogAddonInfo* dialog = (CGUIDialogAddonInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_INFO);
   if (!dialog)
     return false;
-  dialog->m_item = CFileItemPtr(new CFileItem(*item));
+  *dialog->m_item = *item;
   CURL url(item->m_strPath);
   if (url.GetHostName().Equals("enabled"))
   {
-    CAddonMgr::Get()->GetAddon(item->GetProperty("Addon.ID"),dialog->m_addon);
+    CAddonMgr::Get().GetAddon(item->GetProperty("Addon.ID"),dialog->m_addon);
     dialog->m_item->SetProperty("Addon.Installed","true");
+    dialog->m_localAddon = dialog->m_addon;
   }
   else
   {
-    if (CAddonMgr::Get()->GetAddon(item->GetProperty("Addon.ID"),
+    if (CAddonMgr::Get().GetAddon(item->GetProperty("Addon.ID"),
                                    dialog->m_addon))
       dialog->m_item->SetProperty("Addon.Installed","true");
     else
       dialog->m_item->SetProperty("Addon.Installed","false");
+    dialog->m_localAddon = dialog->m_addon;
+
+    AddonPtr addon;
+    CAddonDatabase database;
+    database.Open();
+    if (database.GetAddon(item->GetProperty("Addon.ID"),addon))
+      dialog->m_addon = addon;
+
     if (!dialog->m_addon)
-    {
-      CAddonDatabase database;
-      database.Open();
-      database.GetAddon(item->GetProperty("Addon.ID"),dialog->m_addon);
-    }
+      return false;
   }
-  if (TranslateType(item->GetProperty("Addon.Type")) == ADDON_REPOSITORY)
+  if (TranslateType(item->GetProperty("Addon.intType")) == ADDON_REPOSITORY)
   {
     CAddonDatabase database;
     database.Open();
@@ -175,5 +219,36 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
   }
   dialog->DoModal(); 
   return true;
+}
+
+void CGUIDialogAddonInfo::OnJobComplete(unsigned int jobID, bool success,
+                                        CJob* job)
+{
+  if (!m_changelog)
+    return;
+
+  CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
+
+  m_jobid = 0;
+  if (!success)
+  {
+    pDlgInfo->SetText(g_localizeStrings.Get(195));
+  }
+  else
+  {
+    CFile file;
+    if (file.Open("special://temp/"+
+      CUtil::GetFileName(((CFileOperationJob*)job)->GetItems()[0]->m_strPath)))
+    {
+      char* temp = new char[file.GetLength()+1];
+      file.Read(temp,file.GetLength());
+      temp[file.GetLength()] = '\0';
+      m_item->SetProperty("Addon.Changelog",temp);
+      pDlgInfo->SetText(temp);
+      delete[] temp;
+    }
+  }
+  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, WINDOW_DIALOG_TEXT_VIEWER, 0, GUI_MSG_UPDATE);
+  g_windowManager.SendThreadMessage(msg);
 }
 

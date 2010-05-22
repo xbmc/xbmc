@@ -46,14 +46,14 @@ bool CXRandR::Query(bool force)
 
   m_bInit = true;
 
-  if (getenv("XBMC_HOME") == NULL)
+  if (getenv("XBMC_BIN_HOME") == NULL)
     return false;
 
   m_outputs.clear();
   m_current.clear();
 
   CStdString cmd;
-  cmd  = getenv("XBMC_HOME");
+  cmd  = getenv("XBMC_BIN_HOME");
   cmd += "/xbmc-xrandr";
 
   FILE* file = popen(cmd.c_str(),"r");
@@ -234,8 +234,8 @@ bool CXRandR::SetMode(XOutput output, XMode mode)
   m_currentOutput = outputFound.name;
   m_currentMode = modeFound.id;
   char cmd[255];
-  if (getenv("XBMC_HOME"))
-    snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --output %s --mode %s", getenv("XBMC_HOME"), outputFound.name.c_str(), modeFound.id.c_str());
+  if (getenv("XBMC_BIN_HOME"))
+    snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --output %s --mode %s", getenv("XBMC_BIN_HOME"), outputFound.name.c_str(), modeFound.id.c_str());
   else
     return false;
   CLog::Log(LOGINFO, "XRANDR: %s", cmd);
@@ -312,9 +312,9 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
     strModeLine = modeline->FirstChild()->Value();
     strModeLine.TrimLeft(" \n\t\r");
     strModeLine.TrimRight(" \n\t\r");
-    if (getenv("XBMC_HOME"))
+    if (getenv("XBMC_BIN_HOME"))
     {
-      snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --newmode \"%s\" %s > /dev/null 2>&1", getenv("XBMC_HOME"),
+      snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --newmode \"%s\" %s > /dev/null 2>&1", getenv("XBMC_BIN_HOME"),
                name.c_str(), strModeLine.c_str());
       if (system(cmd) != 0)
         CLog::Log(LOGERROR, "Unable to create modeline \"%s\"", name.c_str());
@@ -322,9 +322,9 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
 
     for (unsigned int i = 0; i < m_outputs.size(); i++)
     {
-      if (getenv("XBMC_HOME"))
+      if (getenv("XBMC_BIN_HOME"))
       {
-        snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --addmode %s \"%s\"  > /dev/null 2>&1", getenv("XBMC_HOME"),
+        snprintf(cmd, sizeof(cmd), "%s/xbmc-xrandr --addmode %s \"%s\"  > /dev/null 2>&1", getenv("XBMC_BIN_HOME"),
                  m_outputs[i].name.c_str(), name.c_str());
         if (system(cmd) != 0)
           CLog::Log(LOGERROR, "Unable to add modeline \"%s\"", name.c_str());

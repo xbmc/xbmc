@@ -5,8 +5,6 @@
 
 #include "../../../guilib/FrameBufferObject.h"
 #include "../../../guilib/Shader.h"
-#include "../dvdplayer/Codecs/DllSwScale.h"
-#include "../dvdplayer/Codecs/DllAvCodec.h"
 #include "../../settings/VideoSettings.h"
 #include "RenderFlags.h"
 #include "GraphicContext.h"
@@ -95,6 +93,10 @@ extern YUVCOEF yuv_coef_bt601;
 extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
+
+class DllAvUtil;
+class DllAvCodec;
+class DllSwScale;
 
 class CLinuxRendererGL : public CBaseRenderer
 {
@@ -255,10 +257,10 @@ protected:
   float m_clearColour;
 
   // software scale libraries (fallback if required gl version is not available)
-  DllAvUtil    m_dllAvUtil;
-  DllAvCodec   m_dllAvCodec;
-  DllSwScale   m_dllSwScale;
-  BYTE	      *m_rgbBuffer;  // if software scale is used, this will hold the result image
+  DllAvUtil   *m_dllAvUtil;
+  DllAvCodec  *m_dllAvCodec;
+  DllSwScale  *m_dllSwScale;
+  BYTE        *m_rgbBuffer;  // if software scale is used, this will hold the result image
   unsigned int m_rgbBufferSize;
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
@@ -273,7 +275,7 @@ protected:
 
 
 inline int NP2( unsigned x ) {
-#if defined(_LINUX) && !defined(__POWERPC__) && !defined(__PPC__)
+#if defined(_LINUX) && !defined(__POWERPC__) && !defined(__PPC__) && !defined(__arm__)
   // If there are any issues compiling this, just append a ' && 0'
   // to the above to make it '#if defined(_LINUX) && 0'
 

@@ -40,6 +40,9 @@
 #ifdef _WIN32
 #include "dwmapi.h"
 #endif
+#ifdef __APPLE__
+#include "osx/CocoaInterface.h"
+#endif
 
 CSysInfo g_sysinfo;
 
@@ -690,6 +693,16 @@ bool CSysInfo::IsAppleTV()
 
   if (hw_model.find("AppleTV") != std::string::npos)
     result = true;
+#endif
+  return result;
+}
+
+bool CSysInfo::HasVDADecoder()
+{
+  bool        result = false;
+
+#if defined(__APPLE__)
+  result = Cocoa_HasVDADecoder();
 #endif
   return result;
 }

@@ -46,12 +46,10 @@ for (var property in array) {
   var item = array[property];
 
   document.write('<tr class="' + (property % 2 == 0 ? "even" : "odd") + '"><td class="cover">');
-  var thumbnail = "images/DefaultVideo.png";
-  if (item["thumbnail"])
-    thumbnail = "thumb/" + item["thumbnail"] + ".jpg";
 
   document.write('<a href="nowplaying.html" onclick=CallPlay(' + item["movieid"] + ')>');
-  document.write('<img src="' + thumbnail + '" class="cover"></img>');
+  var imgSrc = item["thumbnail"] ? ('vfs/' + escape(item["thumbnail"])) : "images/DefaultVideo.png";
+  document.write('<img src="' + imgSrc + '" class="cover"></img>');
   document.write('</td><td class="info">');
   document.write('</a>');
 

@@ -132,12 +132,6 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   {
     if (strURL.Left(18).Equals("/xbmcCmds/xbmcHttp"))
       return HttpApi(connection);
-    else if (strURL.Left(6).Equals("/thumb"))
-    {
-      strURL = strURL.Right(strURL.length() - 7);
-      strURL = strURL.Left(strURL.length() - 4);
-      return CreateFileDownloadResponse(connection, strURL);
-    }
     else if (strURL.Left(4).Equals("/vfs"))
     {
       strURL = strURL.Right(strURL.length() - 5);
@@ -237,19 +231,10 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
   if (file->Open(strURL))
   {
     struct MHD_Response *response;
-    if (file->GetLength() > 0)
-    {
-      response = MHD_create_response_from_callback ( file->GetLength(),
-                                                     2048,
-                                                     &CWebServer::ContentReaderCallback, file,
-                                                     &CWebServer::ContentReaderFreeCallback);
-    }
-    else
-    {
-      //libmicrohttpd calls abort() when CWebServer::ContentReaderCallback return 0
-      delete file;
-      response = MHD_create_response_from_data(0, NULL, MHD_NO, MHD_NO);
-    }
+    response = MHD_create_response_from_callback ( file->GetLength(),
+                                                   2048,
+                                                   &CWebServer::ContentReaderCallback, file,
+                                                   &CWebServer::ContentReaderFreeCallback);
 
     CStdString ext = CUtil::GetExtension(strURL);
     ext = ext.ToLower();
@@ -287,8 +272,12 @@ int CWebServer::ContentReaderCallback(void *cls, size_t pos, char *buf, int max)
 #endif
 {
   CFile *file = (CFile *)cls;
-  file->Seek(pos);
-  return file->Read(buf, max);
+  if((unsigned int)pos != file->GetPosition())
+    file->Seek(pos);
+  unsigned res = file->Read(buf, max);
+  if(res == 0)
+    return -1;
+  return res;
 }
 
 void CWebServer::ContentReaderFreeCallback(void *cls)
@@ -452,6 +441,7 @@ const char *CWebServer::CreateMimeTypeFromExtension(const char *ext)
   else if (strcmp(ext, ".xm") == 0)    return "audio/xm";
   else if (strcmp(ext, ".xml") == 0)   return "text/xml";
   else if (strcmp(ext, ".zip") == 0)   return "application/zip";
+  else if (strcmp(ext, ".tbn") == 0)   return "image/jpeg";
   else return NULL;
 }
 

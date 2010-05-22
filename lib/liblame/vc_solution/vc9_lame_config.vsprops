@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+<VisualStudioPropertySheet
+	ProjectType="Visual C++"
+	Version="8.00"
+	Name="vc9_lame_config"
+	OutputDirectory="$(SolutionDir)..\output\$(ConfigurationName)"
+	IntermediateDirectory="$(SolutionDir)..\obj\$(ConfigurationName)\$(ProjectName)"
+	>
+	<Tool
+		Name="VCBscMakeTool"
+		OutputFile="$(IntDir)/$(ProjectName).bsc"
+	/>
+	<Tool
+		Name="VCCLCompilerTool"
+		PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATED"
+		StringPooling="true"
+		EnableFunctionLevelLinking="true"
+		AssemblerListingLocation="$(IntDir)\"
+		BrowseInformation="1"
+		WarningLevel="3"
+		DisableSpecificWarnings="4995;4996"
+	/>
+	<Tool
+		Name="VCLinkerTool"
+		LinkIncremental="1"
+		AdditionalLibraryDirectories="$(OutDir)"
+		ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
+		OptimizeReferences="2"
+	/>
+</VisualStudioPropertySheet>

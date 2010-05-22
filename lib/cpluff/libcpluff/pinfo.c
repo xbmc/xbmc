@@ -663,7 +663,7 @@ static cp_cfg_element_t * lookup_cfg_element(cp_cfg_element_t *base, const char 
 		if (end - start == 2 && !strncmp(path + start, "..", 2)) {
 			base = base->parent;
 		} else {
-			int i;
+			unsigned int i;
 			int found = 0;
 			
 			for (i = 0; !found && i < base->num_children; i++) {
@@ -707,7 +707,7 @@ CP_C_API char * cp_lookup_cfg_value(cp_cfg_element_t *base, const char *path) {
 		if (attr == NULL) {
 			return e->value;
 		} else {
-			int i;
+			unsigned int i;
 			
 			for (i = 0; i < e->num_atts; i++) {
 				if (!strcmp(attr, e->atts[2*i])) {

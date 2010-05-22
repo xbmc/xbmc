@@ -288,7 +288,7 @@ void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
 
 bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  CLog::Log(LOGDEBUG, "%s(%s) on screen %d with size %dx%d, refresh %f", __FUNCTION__, fullScreen ? "fullscreen" : "windowed", res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate);
+  CLog::Log(LOGDEBUG, "%s (%s) on screen %d with size %dx%d, refresh %f", __FUNCTION__, !fullScreen ? "windowed" : (g_guiSettings.GetBool("videoscreen.fakefullscreen") ? "windowed fullscreen" : "true fullscreen"), res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate);
   m_bFullScreen = fullScreen;
   bool forceResize = (m_nScreen != res.iScreen);
   m_nScreen = res.iScreen;
@@ -486,14 +486,30 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
       DISPLAY_DEVICE ddMon;
       ZeroMemory(&ddMon, sizeof(ddMon));
       ddMon.cb = sizeof(ddMon);
+      bool foundScreen = false;
+      DWORD screen = 0;
 
-      // MS documentation is not 100% clear if there can be more than one screen per adapter. Didn't happen on my ATI and nVidia cards.
-      if (EnumDisplayDevices(ddAdapter.DeviceName, 0, &ddMon, 0) && (ddMon.StateFlags & (DISPLAY_DEVICE_ACTIVE | DISPLAY_DEVICE_ATTACHED)))
+      // Just look for the first active output, we're actually only interested in the information at the adapter level.
+      while (EnumDisplayDevices(ddAdapter.DeviceName, screen, &ddMon, 0))
       {
-        // Leftover from previous code. Did not happen in my testing (W7x86,ATI+nVidia), really needed?
-        if (!*ddMon.DeviceString)
-          lstrcpy(ddMon.DeviceString, _T("Default Monitor"));
+        if (ddMon.StateFlags & (DISPLAY_DEVICE_ACTIVE | DISPLAY_DEVICE_ATTACHED))
+        {
+          foundScreen = true;
+          break;
+        }
+        ZeroMemory(&ddMon, sizeof(ddMon));
+        ddMon.cb = sizeof(ddMon);
+        screen++;
+      }
+      // Remoting returns no screens. Handle with a dummy screen.
+      if (!foundScreen && screen == 0)
+      {
+        lstrcpy(ddMon.DeviceString, _T("Dummy Monitor")); // safe: large static array
+        foundScreen = true;
+      }
 
+      if (foundScreen)
+      {
         CLog::Log(LOGNOTICE, "Found screen: %s on %s, adapter %d.", ddMon.DeviceString, ddAdapter.DeviceString, adapter);
 
         // get information about the display's current position and display mode
@@ -513,10 +529,7 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
         POINT pt = { dm.dmPosition.x, dm.dmPosition.y };
         hm = MonitorFromPoint(pt, MONITOR_DEFAULTTONULL);
         GetMonitorInfo(hm, &mi);
-        
-        if (ddAdapter.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE)
-          m_nPrimary = adapter;
-        
+
         MONITOR_DETAILS md;
         memset(&md, 0, sizeof(MONITOR_DETAILS));
 
@@ -535,6 +548,11 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
         md.Bpp = dm.dmBitsPerPel;
 
         m_MonitorsInfo.push_back(md);
+
+        // Careful, some adapters don't end up in the vector (mirroring, no active output, etc.)
+        if (ddAdapter.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE)
+          m_nPrimary = m_MonitorsInfo.size() -1;
+
       }
     }
     ZeroMemory(&ddAdapter, sizeof(ddAdapter));

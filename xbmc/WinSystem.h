@@ -30,7 +30,8 @@ typedef enum _WindowSystemType
   WINDOW_SYSTEM_WIN32,
   WINDOW_SYSTEM_OSX,
   WINDOW_SYSTEM_X11,
-  WINDOW_SYSTEM_SDL
+  WINDOW_SYSTEM_SDL,
+  WINDOW_SYSTEM_EGL
 } WindowSystemType;
 
 class CWinSystemBase

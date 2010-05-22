@@ -6,6 +6,7 @@
 #endif
 
 #include "timer.h"
+#include <pthread.h>
 
 #define HARD_CUT_DELAY 3
 
@@ -15,6 +16,7 @@ class TimeKeeper
 public:
 
   TimeKeeper(double presetDuration, double smoothDuration, double easterEgg);
+  ~TimeKeeper();
 
   void UpdateTimers();
 
@@ -59,7 +61,8 @@ private:
   int _presetFrameB;
 
   bool _isSmoothing;
-  
+
+  pthread_mutex_t _tk_lock;
 
 };
 #endif

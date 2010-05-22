@@ -11,13 +11,13 @@ DIRS=$(RSXS)
 
 RSXS-OBJS=$(RSXS)/src/common.o $(RSXS)/src/color.o $(RSXS)/lib/libmisc.a
 
-SOLARWINDS-OUT=$(OUTDIR)/net.sf.rsxs.solarwinds/Solarwinds.xbs
+SOLARWINDS-OUT=$(OUTDIR)/screensaver.rsxs.solarwinds/Solarwinds.xbs
 SOLARWINDS-DEP=$(RSXS)/src/solarwinds/rs-solarwinds
 
-PLASMA-OUT=$(OUTDIR)/net.sf.rsxs.plasma/Plasma.xbs
+PLASMA-OUT=$(OUTDIR)/screensaver.rsxs.plasma/Plasma.xbs
 PLASMA-DEP=$(RSXS)/src/plasma/rs-plasma
 
-EUPHORIA-OUT=$(OUTDIR)/net.sf.rsxs.euphoria/Euphoria.xbs
+EUPHORIA-OUT=$(OUTDIR)/screensaver.rsxs.euphoria/Euphoria.xbs
 EUPHORIA-DEP=$(RSXS)/src/euphoria/rs-euphoria
 
 CLEAN_FILES=$(SOLARWINDS-OUT) $(PLASMA-OUT) $(EUPHORIA-OUT)

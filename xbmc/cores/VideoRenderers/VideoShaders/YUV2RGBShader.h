@@ -1,7 +1,7 @@
 #ifndef __YUV2RGB_SHADERS_H__
 #define __YUV2RGB_SHADERS_H__
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 2
 
 #ifndef __GNUC__
 #pragma warning( push )
@@ -24,6 +24,15 @@ namespace Shaders {
     virtual void SetBlack(float black)          {};
     virtual void SetContrast(float contrast)    {};
     virtual void SetNonLinStretch(float stretch){};
+#if HAS_GLES == 2
+    virtual GLint GetVertexLoc() {};
+    virtual GLint GetYcoordLoc() {};
+    virtual GLint GetUcoordLoc() {};
+    virtual GLint GetVcoordLoc() {};
+
+    virtual void SetMatrices(GLfloat *p, GLfloat *m) {};
+    virtual void SetAlpha(GLfloat alpha)             {};
+#endif
   };
 
 
@@ -41,6 +50,16 @@ namespace Shaders {
     virtual void SetBlack(float black)           { m_black    = black; }
     virtual void SetContrast(float contrast)     { m_contrast = contrast; }
     virtual void SetNonLinStretch(float stretch) { m_stretch = stretch; }
+#if HAS_GLES == 2
+    virtual GLint GetVertexLoc() { return m_hVertex; }
+    virtual GLint GetYcoordLoc() { return m_hYcoord; }
+    virtual GLint GetUcoordLoc() { return m_hUcoord; }
+    virtual GLint GetVcoordLoc() { return m_hVcoord; }
+
+    virtual void SetMatrices(GLfloat *p, GLfloat *m) { m_proj = p; m_model = m; }
+    virtual void SetAlpha(GLfloat alpha)             { m_alpha = alpha; }
+#endif
+
   protected:
     void OnCompiledAndLinked();
     bool OnEnabled();
@@ -62,8 +81,22 @@ namespace Shaders {
     GLint m_hVTex;
     GLint m_hMatrix;
     GLint m_hStretch;
+#if HAS_GLES == 2
+    GLint m_hVertex;
+    GLint m_hYcoord;
+    GLint m_hUcoord;
+    GLint m_hVcoord;
+    GLint m_hProj;
+    GLint m_hModel;
+    GLint m_hAlpha;
+
+    GLfloat *m_proj;
+    GLfloat *m_model;
+    GLfloat  m_alpha;
+#endif
   };
 
+#if HAS_GLES != 2       // No ARB Shader when using GLES2.0
   class BaseYUV2RGBARBShader 
     : public BaseYUV2RGBShader
     , public CARBShaderProgram
@@ -100,6 +133,7 @@ namespace Shaders {
     void OnCompiledAndLinked();
     bool OnEnabled();
   };
+#endif
 
   class YUV2RGBProgressiveShader : public BaseYUV2RGBGLSLShader
   {

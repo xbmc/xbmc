@@ -127,6 +127,8 @@ public:
   static CCrystalHD* GetInstance(void);
 
   bool DevicePresent(void);
+  bool Wake(void);
+  bool Sleep(void);
 
   bool OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size, void *extradata);
   void CloseDecoder(void);
@@ -144,7 +146,6 @@ public:
   void SetDropState(bool bDrop);
 
 protected:
-  void CheckCrystalHDLibraryPath(void);
 
   DllLibCrystalHD *m_dll;
   void          *m_Device;

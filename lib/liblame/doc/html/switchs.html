@@ -1,0 +1,1133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>Full command line switch reference</TITLE>
+<META NAME="description" CONTENT="Command line switch reference">
+<META NAME="keywords" CONTENT="lame">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso_8859_1">
+<LINK REL="STYLESHEET" HREF="lame.css">
+</HEAD>
+<BODY TEXT=#000000
+        BGCOLOR=#F9FBFB LINK=#006666 VLINK=#4C4C4C
+        ALINK=#995500>
+<H1>Full command line switch reference</H1>
+<P> <font size="-1">note: Options which could exist without being documented 
+  here are considered as experimental ones. Such experimental options should usually 
+  not be used.</font> 
+<P> 
+<TABLE CELLPADDING=3 BORDER="1">
+  <TR VALIGN="TOP"> 
+    <TD ALIGN="LEFT" nowrap><b>switch</b></TD>
+    <TD ALIGN="LEFT" nowrap><b>parameter</b></TD>
+  </TR>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#a">-a</a></kbd></td>
+    <td align="LEFT" nowrap>downmix stereo file to mono</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-abr">--abr</a></kbd></td>
+    <td align="LEFT" nowrap>average bitrate encoding</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#b">-b</a></kbd></td>
+    <td align="LEFT" nowrap>bitrate (8...320)</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#Bmax">-B</a></kbd></td>
+    <td align="LEFT" nowrap>max VBR/ABR bitrate (8...320)</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-bitwidth">--bitwidth</a></kbd></td>
+    <td align="LEFT" nowrap>input bit width</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#c">-c</a></kbd></td>
+    <td align="LEFT" nowrap>copyright</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-cbr">--cbr</a></kbd></td>
+    <td align="LEFT" nowrap>enforce use of constant bitrate</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-clipdetect">--clipdetect</a></kbd></td>
+    <td align="LEFT" nowrap>clipping detection</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-comp">--comp</a></kbd></td>
+    <td align="LEFT" nowrap>choose compression ratio</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-decode">--decode</a></kbd></td>
+    <td align="LEFT" nowrap>decoding only</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-disptime">--disptime</a></kbd></td>
+    <td align="LEFT" nowrap>time between display updates</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#e">-e</a></kbd></td>
+    <td align="LEFT" nowrap>de-emphasis (<b>n</b>, 5, c)</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#f">-f</a></kbd></td>
+    <td align="LEFT" nowrap> fast mode</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#FF">-F</a></kbd></td>
+    <td align="LEFT" nowrap> strictly enforce the -b option</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-freeformat">--freeformat</a></kbd></td>
+    <td align="LEFT" nowrap> free format bitstream</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#h">-h</a></kbd></td>
+    <td align="LEFT" nowrap>high quality</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-help">--help</a></kbd></td>
+    <td align="LEFT" nowrap> help</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-highpass">--highpass</a></kbd></td>
+    <td align="LEFT" nowrap> highpass filtering frequency in kHz</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-highpass">--highpass-width</a></kbd></td>
+    <td align="LEFT" nowrap> width of highpass filtering in kHz</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-lowpass">--lowpass</a></kbd></td>
+    <td align="LEFT" nowrap> lowpass filtering frequency in kHz</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-lowpass-width">--lowpass-width</a></kbd></td>
+    <td align="LEFT" nowrap> width of lowpass filtering in kHz</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#m">-m</a></kbd></td>
+    <td align="LEFT" nowrap>stereo mode (s, <b>j</b>, f, m)</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-mp1input">--mp1input</a></kbd></td>
+    <td align="LEFT" nowrap>MPEG Layer I input file</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-mp2input">--mp2input</a></kbd></td>
+    <td align="LEFT" nowrap>MPEG Layer II input file</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-mp3input">--mp3input</a></kbd></td>
+    <td align="LEFT" nowrap>MPEG Layer III input file</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-noasm">--noasm</a></kbd></td>
+    <td align="LEFT" nowrap>disable assembly optimizations (mmx/3dnow/sse)</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-nohist">--nohist</a></kbd></td>
+    <td align="LEFT" nowrap>disable histogram display</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-noreplaygain">--noreplaygain</a></kbd></td>
+    <td align="LEFT" nowrap>disable ReplayGain analysis</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-nores">--nores</a></kbd></td>
+    <td align="LEFT" nowrap>disable bit reservoir</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-notemp">--notemp</a></kbd></td>
+    <td align="LEFT" nowrap>disable temporal masking</td>
+  </tr>
+  <TR VALIGN="TOP"> 
+    <TD ALIGN="LEFT" nowrap><kbd><a href="#o">-o</a></kbd></TD>
+    <TD ALIGN="LEFT" nowrap>non-original</TD>
+  </TR>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#p">-p</a></kbd></td>
+    <td align="LEFT" nowrap>error protection</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-preset">--preset</a></kbd></td>
+    <td align="LEFT" nowrap>use built-in preset</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-priority">--priority</a></kbd></td>
+    <td align="LEFT" nowrap>OS/2 process priority control</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#q">-q</a></kbd></td>
+    <td align="LEFT" nowrap>algorithm quality selection</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-silent">--quiet</a></kbd></td>
+    <td align="LEFT" nowrap>silent operation</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#r">-r</a></kbd></td>
+    <td align="LEFT" nowrap>input file is raw PCM</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-replaygain-accurate">--replaygain-accurate</a></kbd></td>
+    <td align="LEFT" nowrap>compute ReplayGain more accurately and find the peak sample</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-replaygain-fast">--replaygain-fast</a></kbd></td>
+    <td align="LEFT" nowrap>compute ReplayGain fast but slightly inaccurately (default)</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-resample">--resample</a></kbd></td>
+    <td align="LEFT" nowrap>output sampling frequency in kHz (encoding only)</td>
+  </tr>
+  <TR VALIGN="TOP"> 
+    <TD ALIGN="LEFT" nowrap><kbd><a href="#s">-s</a></kbd></TD>
+    <TD ALIGN="LEFT" nowrap>sampling frequency in kHz</TD>
+  </TR>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-silent">-S</a></kbd></td>
+    <td align="LEFT" nowrap>silent operation</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-scale">--scale</a></kbd></td>
+    <td align="LEFT" nowrap>scale input</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-scale-l">--scale-l</a></kbd></td>
+    <td align="LEFT" nowrap>scale input channel 0 (left)</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-scale-r">--scale-r</a></kbd></td>
+    <td align="LEFT" nowrap>scale input channel 1 (right)</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-silent">--silent</a></kbd></td>
+    <td align="LEFT" nowrap>silent operation</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-strictly-enforce-ISO">--strictly-enforce-ISO</a></kbd></td>
+    <td align="LEFT" nowrap>strict ISO compliance</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#t">-t</a></kbd></td>
+    <td align="LEFT" nowrap>disable INFO/WAV header</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#V">-V</a></kbd></td>
+    <td align="LEFT" nowrap>VBR quality setting, integer or floating point number [0,...,10[</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-vbr-new">--vbr-new</a></kbd></td>
+    <td align="LEFT" nowrap>new VBR mode</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-vbr-old">--vbr-old</a></kbd></td>
+    <td align="LEFT" nowrap>older VBR mode</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-verbose">--verbose</a></kbd></td>
+    <td align="LEFT" nowrap>verbosity</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#x">-x</a></kbd></td>
+    <td align="LEFT" nowrap>swapbytes</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#Xquant">-X</a></kbd></td>
+    <td align="LEFT" nowrap>change quality measure</td>
+  </tr>
+</TABLE>
+<BR>
+<dl> 
+  <dt><strong>* <kbd>-a</kbd><a name="a">&nbsp;&nbsp;&nbsp;&nbsp;downmix&#160;</a></strong> 
+  <dd>Mix the stereo input file to mono and encode as mono.<br>
+    The downmix is calculated as the sum of the left and right channel, attenuated 
+    by 6 dB. <br>
+    <br>
+    This option is only needed in the case of raw PCM stereo input (because LAME 
+    cannot determine the number of channels in the input file).<br>
+    To encode a stereo PCM input file as mono, use "lame -m s -a".<br>
+    <br>
+    For WAV and AIFF input files, using "-m m" will always produce a mono .mp3 
+    file from both mono and stereo input. 
+  <dt><br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+</dl>
+<dl> 
+  <dt><strong>* <kbd>--abr n</kbd><a name="-abr">&nbsp;&nbsp;&nbsp;&nbsp;average 
+    bitrate encoding</a></strong> </dt>
+</dl>
+<dl> 
+  <dd>Turns on encoding with a targeted average bitrate of n kbits, allowing to 
+    use frames of different sizes. The allowed range of n is 8-310, you can use 
+    any integer value within that range.<br>
+    <br>
+    It can be combined with the -b and -B switches like:<br>
+    lame --abr 123 -b 64 -B 192 a.wav a.mp3<br>
+    which would limit the allowed frame sizes between 64 and 192 kbits. <br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+</dl>
+<dl> 
+  <dt><strong>* <kbd>-b n</kbd><a name="b">&nbsp;&nbsp;&nbsp;&nbsp;bitrate</a></strong> 
+  </dt>
+</dl>
+<dl> 
+  <dd>For MPEG-1 (sampling frequencies of 32, 44.1 and 48 kHz)<br>
+    n = 32,40,48,56,64,80,96,112,128,160,192,224,256,320<br>
+    <br>
+    For MPEG-2 (sampling frequencies of 16, 22.05 and 24 kHz)<br>
+    n = 8,16,24,32,40,48,56,64,80,96,112,128,144,160<br>
+    <br>
+    For MPEG-2.5 (sampling frequencies of 8, 11.025 and 12 kHz)<br>
+    n = 8,16,24,32,40,48,56,64<br>
+    <br>
+    When used with variable bitrate encoding (VBR), -b specifies the minimum bitrate 
+    to be used. However, in order to avoid wasted space, the smallest frame size 
+    available will be used during silences. 
+  <dt><br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+</dl>
+<dl> 
+  <dt><strong>* <kbd>-B n</kbd><a name="Bmax">&nbsp;&nbsp;&nbsp;&nbsp;maximum 
+    VBR/ABR bitrate&nbsp;</a></strong> </dt>
+</dl>
+<dl> 
+  <dd>For MPEG-1 (sampling frequencies of 32, 44.1 and 48 kHz)<br>
+    n = 32,40,48,56,64,80,96,112,128,160,192,224,256,320<br>
+    <br>
+    For MPEG-2 (sampling frequencies of 16, 22.05 and 24 kHz)<br>
+    n = 8,16,24,32,40,48,56,64,80,96,112,128,144,160<br>
+    <br>
+    For MPEG-2.5 (sampling frequencies of 8, 11.025 and 12 kHz)<br>
+    n = 8,16,24,32,40,48,56,64<br>
+    <br>
+    Specifies the maximum allowed bitrate when using VBR/ABR <br>
+    <br>
+    The use of -B is NOT RECOMMENDED. A 128kbps CBR bitstream, because of the bit reservoir, 
+    can actually have frames which use as many bits as a 320kbps frame. VBR modes 
+    minimize the use of the bit reservoir, and thus need to allow 320kbps frames 
+    to get the same flexibility as CBR streams.<br>
+    <br>
+    <i>note: If you own an mp3 hardware player build upon a MAS 3503 chip, you 
+    must set maximum bitrate to no more than 224 kpbs.</i> <br>
+</dl>
+<dl> 
+  <dt><strong>* <kbd>--bitwidth 8/16/24/32</kbd><a name="-bitwidth">&nbsp;&nbsp;&nbsp;&nbsp;input 
+    bit width&nbsp;</a></strong> </dt>
+</dl>
+<dl> 
+  <dd> Required only for raw PCM input files. Otherwise it will be determined 
+    from the header of the input file. <br>
+</dl>
+<dl> 
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--clipdetect</kbd><a name="-clipdetect">&nbsp;&nbsp;&nbsp;&nbsp;clipping detection</a></strong> 
+  </dt>
+</dl>
+<dl> 
+  <dd>
+    Enable --replaygain-accurate and print a message whether clipping 
+    occurs and how far in dB the waveform is from full scale.<br>
+    <br>
+    This option is not usable if the MP3 decoder was <b>explicitly</b>
+    disabled in the build of LAME.<br>
+    <br>
+    See also: <a href="#-replaygain-accurate">--replaygain-accurate</a>
+  <dt><br>
+    <br>
+    <hr width="50%" noshade align="center">
+    <br>
+  <dt><strong>* <kbd>--cbr</kbd><a name="-cbr">
+    &nbsp;&nbsp;&nbsp;&nbsp;enforce use of constant bitrate</a></strong> 
+  </dt>
+</dl>
+<dl> 
+  <dd>This switch enforces the use of constant bitrate encoding. 
+  <dt><br>
+    <br>
+    <hr width="50%" noshade align="center">
+    <br>
+  <dt><strong>* <kbd>--comp</kbd><a name="-comp">&nbsp;&nbsp;&nbsp;&nbsp;choose 
+    compression ratio</a></strong> </dt>
+</dl>
+<dl> 
+  <dd>Instead of choosing bitrate, using this option, user can choose compression 
+    ratio to achieve. 
+  <dt><br>
+    <br>
+    <hr width="50%" noshade align="center">
+    <br>
+  <dt><strong>* <kbd>--decode</kbd><a name="-decode">&nbsp;&nbsp;&nbsp;&nbsp;decoding 
+    only</a></strong> </dt>
+</dl>
+<dl> 
+  <dd>Uses LAME for decoding to a WAV file. The input file can be any input type 
+    supported by encoding, including layer I,II,III (MP3) and OGG files. In case 
+    of MPEG files, LAME uses a bugfixed version of mpglib for decoding.<br>
+    <br>
+    If -t is used (disable WAV header), Lame will output raw PCM in native endian 
+    format. You can use -x to swap bytes order. <br>
+    <br>
+    This option is not usable if the MP3 decoder was <b>explicitly</b>
+    disabled in the build of LAME.
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--disptime n</kbd><a name="-disptime">&nbsp;&nbsp;&nbsp;&nbsp;time 
+    between display updates</a></strong> </dt>
+</dl>
+<dl> 
+  <dd>Set the delay in seconds between two display updates. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-e n/5/c</kbd><a name="e">&nbsp;&nbsp;&nbsp;&nbsp;de-emphasis</a></strong> 
+  </dt>
+</dl>
+<dl> 
+  <dd> <br>
+    n = (none, default)<br>
+    5 = 0/15 microseconds<br>
+    c = citt j.17<br>
+    <br>
+    All this does is set a flag in the bitstream. If you have a PCM input file 
+    where one of the above types of (obsolete) emphasis has been applied, you 
+    can set this flag in LAME. Then the mp3 decoder should de-emphasize the output 
+    during playback, although most decoders ignore this flag.<br>
+    <br>
+    A better solution would be to apply the de-emphasis with a standalone utility 
+    before encoding, and then encode without -e. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-f</kbd><a name="f">&nbsp;&nbsp;&nbsp;&nbsp;fast mode</a></strong> 
+  </dt>
+</dl>
+<dl> 
+  <dd> This switch forces the encoder to use a faster encoding mode, but with 
+    a lower quality. The behaviour is the same as the -q7 switch.<br>
+    <br>
+    Noise shaping will be disabled, but psycho acoustics will still be computed 
+    for bit allocation and pre-echo detection. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-F</kbd><a name="FF">&nbsp;&nbsp;&nbsp;strictly enforce the 
+    -b option</a></strong> </dt>
+</dl>
+<dl> 
+  <dd> This is mainly for use with hardware players that do not support low bitrate 
+    mp3.<br>
+    <br>
+    Without this option, the minimum bitrate will be ignored for passages of analog 
+    silence, ie when the music level is below the absolute threshold of human 
+    hearing (ATH). 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--freeformat</kbd><a name="-freeformat">&nbsp;&nbsp;&nbsp;&nbsp;free 
+    format bitstream</a></strong> </dt>
+</dl>
+<dl> 
+  <dd> Produces a free format bitstream. With this option, you can use -b with 
+    any bitrate higher than 8 kbps.<br>
+    <br>
+    However, even if an mp3 decoder is required to support free bitrates at least 
+    up to 320 kbps, many players are unable to deal with it.<br>
+    <br>
+    Tests have shown that the following decoders support free format:<br>
+    <br>
+    FreeAmp up to 440 kbps<br>
+    in_mpg123 up to 560 kbps<br>
+    l3dec up to 310 kbps<br>
+    LAME up to 560 kbps<br>
+    MAD up to 640 kbps<br>
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-h</kbd><a name="h">&nbsp;&nbsp;&nbsp;&nbsp;high quality</a></strong> 
+  </dt>
+</dl>
+<dl> 
+  <dd> Use some quality improvements. Encoding will be slower, but the result 
+    will be of higher quality. The behaviour is the same as the -q2 switch.<br>
+    This switch is always enabled when using VBR. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--help</kbd><a name="-help">&nbsp;&nbsp;&nbsp;&nbsp;help</a></strong> 
+  </dt>
+</dl>
+<dl> 
+  <dd> Display a list of all available options. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--highpass</kbd><a name="-highpass">&nbsp;&nbsp;&nbsp;&nbsp;highpass 
+    filtering frequency in kHz</a></strong> </dt>
+</dl>
+<dl> 
+  <dd> Set an highpass filtering frequency. Frequencies below the specified one 
+    will be cutoff. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--highpass-width</kbd><a name="-highpass-width">&nbsp;&nbsp;&nbsp;&nbsp;width 
+    of highpass filtering in kHz</a></strong> </dt>
+</dl>
+<dl> 
+  <dd> Set the width of the highpass filter. The default value is 15% of the highpass 
+    frequency. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--lowpass</kbd><a name="-lowpass">&nbsp;&nbsp;&nbsp;&nbsp;lowpass 
+    filtering frequency in kHz</a></strong></dt>
+</dl>
+<dl> 
+  <dd> Set a lowpass filtering frequency. Frequencies above the specified one 
+    will be cutoff. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--lowpass-width</kbd><a name="-lowpass-width">&nbsp;&nbsp;&nbsp;&nbsp;width 
+    of lowpass filtering in kHz</a></strong></dt>
+</dl>
+<dl> 
+  <dd> Set the width of the lowpass filter. The default value is 15% of the lowpass 
+    frequency. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-m s/<b>j/</b>f/d/m</kbd><a name="m">&nbsp;&nbsp;&nbsp;&nbsp;stereo 
+    mode</a></strong> </dt>
+</dl>
+<dl> 
+  <dd> Joint-stereo is the default mode for input files featuring two channels.. 
+    <b><i><br>
+    <br>
+    stereo</i></b> <br>
+    In this mode, the encoder makes no use of potentially existing correlations 
+    between the two input channels. It can, however, negotiate the bit demand 
+    between both channel, i.e. give one channel more bits if the other contains 
+    silence or needs less bits because of a lower complexity.<br>
+    <br>
+    <i><b>joint stereo</b></i><br>
+    In this mode, the encoder will make use of correlation between both channels. 
+    The signal will be matrixed into a sum ("mid"), computed by L+R, and difference 
+    ("side") signal, computed by L-R, and more bits are allocated to the mid channel.<br>
+    This will effectively increase the bandwidth if the signal does not have too 
+    much stereo separation, thus giving a significant gain in encoding quality. 
+    In joint stereo, the encoder can select between Left/Right and Mid/Side representation 
+    on a frame basis.<br>
+    <br>
+    Using mid/side stereo inappropriately can result in audible compression artifacts. 
+    To much switching between mid/side and regular stereo can also sound bad. 
+    To determine when to switch to mid/side stereo, LAME uses a much more sophisticated 
+    algorithm than that described in the ISO documentation, and thus is safe to 
+    use in joint stereo mode.<br>
+    <br>
+    <b><i>forced joint stereo </i></b><br>
+    This mode will force MS joint stereo on all frames. It's slightly faster than 
+    joint stereo, but it should be used only if you are sure that every frame 
+    of the input file has very little stereo separation.<br>
+    <br>
+    <b><i>dual channels </i></b><br>
+    In this mode, the 2 channels will be totally independently encoded. Each 
+    channel will have exactly half of the bitrate. This mode is designed for applications 
+    like dual languages encoding (ex: English in one channel and French in the 
+    other). Using this encoding mode for regular stereo files will result in a 
+    lower quality encoding.<br>
+    <br>
+    <b><i>mono</i></b><br>
+    The input will be encoded as a mono signal. If it was a stereo signal, it 
+    will be downsampled to mono. The downmix is calculated as the sum of the left 
+    and right channel, attenuated by 6 dB. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--mp1input</kbd><a name="-mp1input">&nbsp;&nbsp;&nbsp;&nbsp;MPEG 
+    Layer I input file</a></strong> </dt>
+</dl>
+<dl> 
+  <dd> Assume the input file is a MPEG Layer I file.<br>
+    If the filename ends in ".mp1" or &quot;.mpg&quot; LAME will assume it is 
+    a MPEG Layer I file. For stdin or Layer I files which do not end in .mp1 or .mpg 
+    you need to use this switch. 
+  <dt><br>
+  </dt>
+</dl>
+<dl> 
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--mp2input</kbd><a name="-mp2input">&nbsp;&nbsp;&nbsp;&nbsp;MPEG 
+    Layer II input file</a></strong> </dt>
+</dl>
+<dl> 
+  <dd> Assume the input file is a MPEG Layer II (ie MP2) file.<br>
+    If the filename ends in ".mp2" LAME will assume it is a MPEG Layer II file. For 
+    stdin or Layer II files which do not end in .mp2 you need to use this switch. 
+  <dt><br>
+  </dt>
+</dl>
+<dl> 
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--mp3input</kbd><a name="-mp3input">&nbsp;&nbsp;&nbsp;&nbsp;MPEG 
+    Layer III input file</a></strong> </dt>
+</dl>
+<dl> 
+  <dd> Assume the input file is a MP3 file. Useful for downsampling from one 
+    mp3 to another. As an example, it can be useful for streaming through an 
+    IceCast server.<br>
+    If the filename ends in ".mp3" LAME will assume it is an MP3 file. For stdin or 
+    MP3 files which do not end in .mp3 you need to use this switch. 
+  <dt><br>
+  </dt>
+</dl>
+<dl> 
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--noasm mmx/3dnow/sse</kbd><a name="-noasm">
+   &nbsp;&nbsp;&nbsp;&nbsp;disable assembly optimizations</a></strong> </dt>
+</dl>
+<dl> 
+  <dd>Disable specific assembly optimizations. Quality will not increase, only
+      speed will be reduced. If you have problems running Lame on a Cyrix/Via
+      processor, disabling mmx optimizations might solve your problem.
+  <dt><br>
+  </dt>
+</dl>
+<dl> 
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--nohist</kbd><a name="-nohist">&nbsp;&nbsp;&nbsp;&nbsp;disable 
+    histogram display</a></strong> </dt>
+</dl>
+<dl> 
+  <dd> By default, LAME will display a bitrate histogram while producing VBR mp3 
+    files. This will disable that feature.<br>
+    Histogram display might not be available on your release. 
+  <dt><br>
+  </dt>
+</dl>
+<dl> 
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--noreplaygain</kbd><a name="-noreplaygain">&nbsp;&nbsp;&nbsp;&nbsp;disable 
+    ReplayGain analysis</a></strong></dt>
+</dl>
+<dl> 
+  <dd> By default ReplayGain analysis is enabled. This switch disables it.<br>
+  <br>
+    See also: <a href="#-replaygain-accurate">--replaygain-accurate</a>,
+    <a href="#-replaygain-fast">--replaygain-fast</a>
+  <dt><br>
+  </dt>
+</dl>
+<dl> 
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--nores</kbd><a name="-nores">&nbsp;&nbsp;&nbsp;&nbsp;disable 
+    bit reservoir</a></strong></dt>
+</dl>
+<dl> 
+  <dd> Disable the bit reservoir. Each frame will then become independent from 
+    previous ones, but the quality will be lower. 
+  <dt><br>
+  </dt>
+</dl>
+<dl> 
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--notemp</kbd><a name="-notemp">&nbsp;&nbsp;&nbsp;&nbsp;disable 
+    temporal masking</a></strong></dt>
+</dl>
+<dl> 
+  <dd>Don't make use of the temporal masking effect. 
+  <dt><br>
+  </dt>
+</dl>
+<dl> 
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-o</kbd><a name="o">&nbsp;&nbsp;&nbsp;&nbsp;non-original</a></strong> 
+  </dt>
+</dl>
+<dl> 
+  <dd> Mark the encoded file as being a copy. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-p</kbd><a name="p">&nbsp;&nbsp;&nbsp;&nbsp;error protection</a></strong></dt>
+</dl>
+<dl> 
+  <dd> Turn on CRC error protection.<br>
+    It will add a cyclic redundancy check (CRC) code in each frame, allowing to 
+    detect transmission errors that could occur on the MP3 stream. However, it 
+    takes 16 bits per frame that would otherwise be used for encoding, and then 
+    will slightly reduce the sound quality. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--preset presetName</kbd> <a name="-preset">&nbsp;&nbsp;&nbsp;&nbsp;use 
+    built-in preset</a></strong></dt>
+</dl>
+<dd> Use one of the built-in presets (standard, fast standard, extreme, fast extreme, insane, or the abr/cbr modes).
+<br>
+<dd>   "--preset help" gives more information about the usage possibilities for these presets. 
+<dt><br>
+  <br>
+<hr width="50%" noshade align="center">
+<br>
+<dl> </dl>
+<dt><strong>* <kbd>--priority 0...4</kbd><a name="-priority">&nbsp;&nbsp;&nbsp;&nbsp;OS/2 
+  process priority control</a></strong> </dt>
+<dl> 
+  <dd> With this option, LAME will run with a different process priority under 
+    IBM OS/2.<br>
+    This will greatly improve system responsiveness, since OS/2 will have more 
+    free time to properly update the screen and poll the keyboard/mouse. It should 
+    make quite a difference overall, especially on slower machines. LAME's performance 
+    impact should be minimal.<br>
+    <br>
+  <dd><b>0 (Low priority)</b><br>
+    Priority 0 assumes "IDLE" class, with delta 0.<br>
+    LAME will have the lowest priority possible, and the encoding may be suspended 
+    very frequently by user interaction.<br>
+    <br>
+  <dd><b>1 (Medium priority)</b><br>
+    Priority 1 assumes "IDLE" class, with delta +31.<br>
+    LAME won't interfere at all with what you're doing.<br>
+    Recommended if you have a slower machine. <br>
+    <br>
+  <dd><b>2 (Regular priority)</b><br>
+    Priority 2 assumes "REGULAR" class, with delta -31.<br>
+    LAME won't interfere with your activity. It'll run just like a regular process, 
+    but will spare just a bit of idle time for the system. Recommended for most 
+    users. <br>
+    <br>
+  <dd><b>3 (High priority)</b><br>
+    Priority 3 assumes "REGULAR" class, with delta 0.<br>
+    LAME will run with a priority a bit higher than a normal process. <br>
+    Good if you're just running LAME by itself or with moderate user interaction.<br>
+    <br>
+  <dd><b>4 (Maximum priority)</b><br>
+    Priority 4 assumes "REGULAR" class, with delta +31.<br>
+    LAME will run with a very high priority, and may interfere with the machine 
+    response.<br>
+    Recommended if you only intend to run LAME by itself, or if you have a fast 
+    processor. <br>
+    <br>
+    <br>
+    Priority 1 or 2 is recommended for most users. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-q 0..9</kbd><a name="q">&nbsp;&nbsp;&nbsp;&nbsp;algorithm 
+    quality selection</a></strong></dt>
+</dl>
+<dl> 
+  <dd> Bitrate is of course the main influence on quality. The higher the bitrate, 
+    the higher the quality. But for a given bitrate, we have a choice of algorithms 
+    to determine the best scalefactors and Huffman encoding (noise shaping).<br>
+    <br>
+    -q 0: use slowest &amp; best possible version of all algorithms. -q 0 and -q 1 
+    are slow and may not produce significantly higher quality.<br>
+    <br>
+    -q 2: recommended. Same as -h.<br>
+    <br>
+    -q 5: default value. Good speed, reasonable quality.<br>
+    <br>
+    -q 7: same as -f. Very fast, ok quality. (psycho acoustics are used for pre-echo 
+    &amp; M/S, but no noise shaping is done.<br>
+    <br>
+    -q 9: disables almost all algorithms including psy-model. poor quality. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-r</kbd><a name="r">&nbsp;&nbsp;&nbsp;&nbsp;input file is 
+    raw PCM</a></strong></dt>
+</dl>
+<dl> 
+  <dd> Assume the input file is raw PCM. Sampling rate and mono/stereo/jstereo 
+    must be specified on the command line. Without -r, LAME will perform several 
+    fseek()'s on the input file looking for WAV and AIFF headers.<br>
+    Might not be available on your release. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--replaygain-accurate</kbd><a name="-replaygain-accurate">&nbsp;&nbsp;&nbsp;&nbsp;compute
+   ReplayGain more accurately and find the peak sample</a></strong></dt>
+</dl>
+<dl> 
+  <dd>
+    Enable decoding on the fly. Compute "Radio" ReplayGain on the decoded 
+    data stream. Find the peak sample of the decoded data stream and store 
+    it in the file.<br>
+    <br>    
+    ReplayGain analysis does <i>not</i> affect the content of a 
+    compressed data stream itself, it is a value stored in the header 
+    of a sound file. Information on the purpose of ReplayGain and the
+    algorithms used is available from 
+    <a href="http://www.replaygain.org/">http://www.replaygain.org/</a><br>
+    <br>
+    By default, LAME performs ReplayGain analysis on the input data 
+    (after the user-specified volume scaling). This
+    behavior might give slightly inaccurate results because the data on 
+    the output of a lossy compression/decompression sequence differs from 
+    the initial input data. When --replaygain-accurate is specified the
+    mp3 stream gets decoded on the fly and the analysis is performed on the
+    decoded data stream. Although theoretically this method gives more 
+    accurate results, it has several disadvantages:
+    <ul>
+      <li> tests have shown that the difference between the ReplayGain values 
+        computed on the input data and decoded data is usually no greater 
+        than 0.5dB, although the minimum volume difference the human ear 
+        can perceive is about 1.0dB
+      </li>
+      <li> decoding on the fly significantly slows down the encoding process
+      </li>
+    </ul>
+    The apparent advantage is that:
+    <ul>
+      <li> with --replaygain-accurate the peak sample is determined and 
+        stored in the file. The knowledge of the peak sample can be useful
+        to decoders (players) to prevent a negative effect called 'clipping'
+        that introduces distortion into sound.
+      </li>
+    </ul>    
+    <br>
+    Only the "RadioGain" ReplayGain value is computed. It is stored in the 
+    LAME tag. The analysis is  performed with the reference volume equal
+    to 89dB. Note: the reference volume has been changed from 83dB on 
+    transition from version 3.95 to 3.95.1.<br>
+    <br>
+    This option is not usable if the MP3 decoder was <b>explicitly</b>
+    disabled in the build of LAME. (Note: if LAME is compiled without the 
+    MP3 decoder, ReplayGain analysis is performed on the input data after
+    user-specified volume scaling).<br>
+    <br>
+    See also: <a href="#-replaygain-fast">--replaygain-fast</a>, 
+    <a href="#-noreplaygain">--noreplaygain</a>, <a href="#-clipdetect">--clipdetect</a>
+  <dt><br>
+  </dt>
+</dl>
+<dl> 
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--replaygain-fast</kbd><a name="-replaygain-fast">&nbsp;&nbsp;&nbsp;&nbsp;compute
+   ReplayGain fast but slightly inaccurately (default)</a></strong></dt>
+</dl>
+<dl> 
+  <dd>
+    Compute "Radio" ReplayGain on the input data stream after user-specified 
+    volume scaling and/or resampling.<br>
+    <br>    
+    ReplayGain analysis does <i>not</i> affect the content of a 
+    compressed data stream itself, it is a value stored in the header 
+    of a sound file. Information on the purpose of ReplayGain and the
+    algorithms used is available from 
+    <a href="http://www.replaygain.org/">http://www.replaygain.org/</a><br>
+    <br>
+    Only the "RadioGain" ReplayGain value is computed. It is stored in the 
+    LAME tag. The analysis is  performed with the reference volume equal
+    to 89dB. Note: the reference volume has been changed from 83dB on 
+    transition from version 3.95 to 3.95.1.<br>
+    <br>
+    This switch is enabled by default.<br>
+    <br>
+    See also: <a href="#-replaygain-accurate">--replaygain-accurate</a>, 
+    <a href="#-noreplaygain">--noreplaygain</a>
+  <dt><br>
+  </dt>
+</dl>
+<dl> 
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--resample 8/11.025/12/16/22.05/24/32/44.1/48</kbd><a name="-resample">&nbsp;&nbsp;&nbsp;&nbsp;output 
+    sampling frequency in kHz</a></strong></dt>
+</dl>
+<dl> 
+  <dd> Select output sampling frequency (for encoding only). <br>
+    If not specified, LAME will automatically resample the input when using high 
+    compression ratios. 
+  <dt><br>
+  </dt>
+</dl>
+<dl> 
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-s 8/11.025/12/16/22.05/24/32/44.1/48</kbd><a name="s">&nbsp;&nbsp;&nbsp;&nbsp;sampling 
+    frequency</a></strong> </dt>
+</dl>
+<dl> 
+  <dd> Required only for raw PCM input files. Otherwise it will be determined 
+    from the header of the input file.<br>
+    <br>
+    LAME will automatically resample the input file to one of the supported MP3 
+    samplerates if necessary. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-S / --silent / --quiet</kbd><a name="-silent">&nbsp;&nbsp;&nbsp;&nbsp;silent 
+    operation</a></strong> </dt>
+</dl>
+<dl> 
+  <dd> Don't print progress report. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--scale n</kbd><a name="-scale">&nbsp;&nbsp;&nbsp;&nbsp;scales 
+    input by n</a></strong> </dt>
+  <dt><strong>* <kbd>--scale-l n</kbd><a name="-scale-l">&nbsp;&nbsp;&nbsp;&nbsp;scales 
+    input channel 0 (left) by n</a></strong> </dt>
+  <dt><strong>* <kbd>--scale-r n</kbd><a name="-scale-r">&nbsp;&nbsp;&nbsp;&nbsp;scales 
+    input channel 1 (right) by n</a></strong> </dt>
+</dl>
+<dl> 
+  <dd>Scales input by n. This just multiplies the PCM data (after it has been 
+    converted to floating point) by n. <br>
+    <br>
+    n > 1: increase volume<br>
+    n = 1: no effect<br>
+    n < 1: reduce volume<br>
+    <br>
+    Use with care, since most MP3 decoders will truncate data which decodes to 
+    values greater than 32768. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--strictly-enforce-ISO</kbd><a name="-strictly-enforce-ISO">&nbsp;&nbsp;&nbsp;&nbsp;strict 
+    ISO compliance</a></strong> </dt>
+</dl>
+<dl> 
+  <dd> With this option, LAME will enforce the 7680 bit limitation on total frame 
+    size.<br>
+    This results in many wasted bits for high bitrate encodings but will ensure 
+    strict ISO compatibility. This compatibility might be important for hardware 
+    players. 
+</dl>
+<dl> 
+  <dd>&nbsp; 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-t</kbd><a name="t">&nbsp;&nbsp;&nbsp;&nbsp;disable INFO/WAV 
+    header </a></strong></dt>
+</dl>
+<dl> 
+  <dd> Disable writing of the INFO Tag on encoding.<br>
+    This tag in embedded in frame 0 of the MP3 file. It includes some information 
+    about the encoding options of the file, and in VBR it lets VBR aware players 
+    correctly seek and compute playing times of VBR files.<br>
+    <br>
+    When '--decode' is specified (decode to WAV), this flag will disable writing 
+    of the WAV header. The output will be raw PCM, native endian format. Use -x 
+    to swap bytes. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-V [0,...,10[</kbd><a name="V">&nbsp;&nbsp;&nbsp;&nbsp;VBR quality 
+    setting, integer or floating point number</a></strong></dt>
+</dl>
+<dl> 
+  <dd> Enable VBR (Variable BitRate) and specifies the value of VBR quality.<br>
+    default=4<br>
+    0=highest quality. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--vbr-new</kbd><a name="-vbr-new">&nbsp;&nbsp;&nbsp;&nbsp;new 
+    VBR mode</a></strong></dt>
+</dl>
+<dl> 
+  <dd> Invokes the newest VBR algorithm. During the development of version 3.90, 
+    considerable tuning was done on this algorithm, and it is now considered to 
+    be on par with the original --vbr-old. <br>
+    It has the added advantage of being very fast (over twice as fast as --vbr-old). 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--vbr-old</kbd><a name="-vbr-old">&nbsp;&nbsp;&nbsp;&nbsp;older 
+    VBR mode</a></strong></dt>
+</dl>
+<dl> 
+  <dd> Invokes the oldest, most tested VBR algorithm. It produces very good quality 
+    files, though is not very fast. This has, up through v3.89, been considered 
+    the "workhorse" VBR algorithm. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--verbose</kbd><a name="-verbose">&nbsp;&nbsp;&nbsp;&nbsp;verbosity</a></strong></dt>
+</dl>
+<dl> 
+  <dd> Print a lot of information on screen. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-x</kbd><a name="x">&nbsp;&nbsp;&nbsp;&nbsp;swapbytes</a></strong> 
+  </dt>
+</dl>
+<dl> 
+  <dd> Swap bytes in the input file or output file when using --decode.<br>
+    For sorting out little endian/big endian type problems. If your encodings 
+    sounds like static, try this first. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-X 0...7</kbd><a name="Xquant">&nbsp;&nbsp;&nbsp;&nbsp;change 
+    quality measure</a></strong> </dt>
+</dl>
+<dl> 
+  <dd> When LAME searches for a "good" quantization, it has to compare the actual 
+    one with the best one found so far. The comparison says which one is better, 
+    the best so far or the actual. The -X parameter selects between different 
+    approaches to make this decision, -X0 being the default mode:<br>
+    <br>
+    <b>-X0 </b><br>
+    The criterions are (in order of importance):<br>
+    * less distorted scalefactor bands<br>
+    * the sum of noise over the thresholds is lower<br>
+    * the total noise is lower<br>
+    <br>
+    <b>-X1</b><br>
+    The actual is better if the maximum noise over all scalefactor bands is less 
+    than the best so far .<br>
+    <br>
+    <b>-X2</b><br>
+    The actual is better if the total sum of noise is lower than the best so far.<br>
+    <br>
+    <b>-X3</b><br>
+    The actual is better if the total sum of noise is lower than the best so far 
+    and the maximum noise over all scalefactor bands is less than the best so 
+    far plus 2db.<br>
+    <br>
+    <b>-X4</b> <br>
+    Not yet documented.<br>
+    <br>
+    <b>-X5</b><br>
+    The criterions are (in order of importance):<br>
+    * the sum of noise over the thresholds is lower <br>
+    * the total sum of noise is lower<br>
+    <br>
+    <b>-X6</b> <br>
+    The criterions are (in order of importance):<br>
+    * the sum of noise over the thresholds is lower<br>
+    * the maximum noise over all scalefactor bands is lower<br>
+    * the total sum of noise is lower<br>
+    <br>
+    <b>-X7</b> <br>
+    The criterions are:<br>
+    * less distorted scalefactor bands<br>
+    or<br>
+    * the sum of noise over the thresholds is lower 
+</dl>
+</BODY>
+</HTML>

@@ -1,0 +1,17 @@
+INCLUDES=-I../.. -I. -I../ -I../linux -I../../guilib -I../cores/dvdplayer
+ifneq (@USE_EXTERNAL_FFMPEG@,1)
+  INCLUDES+=-I../cores/dvdplayer/Codecs/ffmpeg
+endif
+SRCS=CDDARipper.cpp \
+     CDDAReader.cpp \
+     Encoder.cpp \
+     EncoderFFmpeg.cpp \
+     EncoderLame.cpp \
+     EncoderVorbis.cpp \
+     EncoderWav.cpp \
+     EncoderFlac.cpp \
+
+LIB=cdrip.a
+
+include ../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

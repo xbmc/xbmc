@@ -96,6 +96,7 @@ public:
 
   bool m_bStartup;
   bool m_bLogin;
+  CCriticalSection    m_critSection;
 private:
   bool              FileExist(const char* strFile);
 
@@ -111,7 +112,6 @@ private:
   //Vector with list of threads used for running scripts
   PyList              m_vecPyList;
   PlayerCallbackList  m_vecPlayerCallbackList;
-  CCriticalSection    m_critSection;
   LibraryLoader*      m_pDll;
 
   // any global events that scripts should be using

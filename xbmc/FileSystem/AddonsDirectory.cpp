@@ -54,12 +54,12 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   // get info from repository
   if (path.GetHostName().Equals("enabled"))
   {
-    CAddonMgr::Get()->GetAllAddons(addons);
+    CAddonMgr::Get().GetAllAddons(addons);
     items.SetProperty("reponame",g_localizeStrings.Get(24062));
   }
   else if (path.GetHostName().Equals("repos"))
   {
-    CAddonMgr::Get()->GetAddons(ADDON_REPOSITORY,addons,CONTENT_NONE,true);
+    CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons,CONTENT_NONE,true);
   }
   else if (path.GetHostName().Equals("all"))
   {
@@ -71,7 +71,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   else
   {
     AddonPtr addon;
-    CAddonMgr::Get()->GetAddon(path.GetHostName(),addon);
+    CAddonMgr::Get().GetAddon(path.GetHostName(),addon);
     if (!addon)
       return false;
     CAddonDatabase database;
@@ -108,8 +108,8 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   }
   else
   {
-    items.SetProperty("addoncategory",path.GetFileName());
     TYPE type = TranslateType(path.GetFileName());
+    items.SetProperty("addoncategory",TranslateType(type, true));
     for (unsigned int j=0;j<addons.size();++j)
       if (addons[j]->Type() != type)
         addons.erase(addons.begin()+j--);
@@ -161,9 +161,10 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     pItem->SetLabel(addon->Name());
     pItem->SetLabel2(addon->Summary());
     pItem->SetThumbnailImage(addon->Icon());
+    pItem->SetProperty("fanart_image",addon->FanArt());
     CAddonDatabase::SetPropertiesFromAddon(addon,pItem);
     AddonPtr addon2;
-    if (CAddonMgr::Get()->GetAddon(addon->ID(),addon2))
+    if (CAddonMgr::Get().GetAddon(addon->ID(),addon2))
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(305));
     if (addon2 && addon2->Version() < addon->Version())
     {

@@ -236,10 +236,10 @@ CStdString CGUIInfoLabel::ReplaceAddonStrings(const CStdString &label)
     {
       CStdString left = work.Left(pos1);
       CStdString right = work.Mid(pos2 + 1);
-      int length = work.Find(" ") - (pos1 + 7);
+      int length = work.Find(" ", pos1 + 7) - (pos1 + 7);
       CStdString id = work.substr(pos1+7, length);
       int stringid = atoi(work.substr(pos1+7+id.length()+1, 5).c_str());
-      CStdString replace = CAddonMgr::Get()->GetString(id, stringid);
+      CStdString replace = CAddonMgr::Get().GetString(id, stringid);
       work = left + replace + right;
     }
     else

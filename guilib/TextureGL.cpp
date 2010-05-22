@@ -87,7 +87,6 @@ void CGLTexture::LoadToGPU()
     CLog::Log(LOGERROR, "GL: Image width %d too big to fit into single texture unit, truncating to %u", m_textureWidth, maxSize);
 #ifndef HAS_GLES
     glPixelStorei(GL_UNPACK_ROW_LENGTH, m_textureWidth);
-#endif
     m_textureWidth = maxSize;
   }
 
@@ -107,11 +106,7 @@ void CGLTexture::LoadToGPU()
     break;
   case XB_FMT_A8R8G8B8:
   default:
-#ifdef HAS_GL
     format = GL_BGRA;
-#elif HAS_GLES
-    format = GL_BGRA_EXT;
-#endif
     break;
   }
 
@@ -127,8 +122,19 @@ void CGLTexture::LoadToGPU()
       m_textureWidth, m_textureHeight, 0, GetPitch() * GetRows(), m_pixels);
   }
 
-#ifndef HAS_GLES
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+#else	// GLES version
+    m_textureWidth = maxSize;
+  }
+
+#if HAS_GLES == 1
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA_EXT, m_textureWidth, m_textureHeight, 0,
+		GL_BGRA_EXT, GL_UNSIGNED_BYTE, m_pixels);
+#elif HAS_GLES == 2
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_textureWidth, m_textureHeight, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, m_pixels);
+#endif
+
 #endif
   VerifyGLState();
 

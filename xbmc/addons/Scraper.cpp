@@ -47,6 +47,7 @@ AddonPtr CScraper::Clone(const AddonPtr &self) const
 CScraper::CScraper(const CScraper &rhs, const AddonPtr &self)
   : CAddon(rhs, self)
 {
+  m_pathContent = CONTENT_NONE;
 }
 
 bool CScraper::LoadSettings()
@@ -66,16 +67,6 @@ bool CScraper::HasSettings()
   return true;
 }
 
-bool CScraper::Load(const CStdString& strSettings, const CStdString& strSaved)
-{
-  if (!LoadSettingsXML(strSettings))
-    return false;
-  if (!LoadUserXML(strSaved))
-    return false;
-
-  return true;
-}
-
 bool CScraper::LoadUserXML(const CStdString& strSaved)
 {
   m_userXmlDoc.Clear();
@@ -87,7 +78,7 @@ bool CScraper::LoadUserXML(const CStdString& strSaved)
 bool CScraper::LoadSettingsXML(const CStdString& strFunction, const CScraperUrl* url)
 {
   AddonPtr addon;
-  if (!Parent() && !CAddonMgr::Get()->GetAddon(ID(), addon, ADDON_SCRAPER))
+  if (!Parent() && !CAddonMgr::Get().GetAddon(ID(), addon, ADDON_SCRAPER))
     return false;
   else if (Parent())
     addon = Parent();
@@ -97,7 +88,7 @@ bool CScraper::LoadSettingsXML(const CStdString& strFunction, const CScraperUrl*
     return false;
 
   if (!parser.HasFunction(strFunction))
-    return false;
+    return CAddon::LoadSettings();
 
   if (!url && strFunction.Equals("GetSettings")) // entry point
     m_addonXmlDoc.Clear();

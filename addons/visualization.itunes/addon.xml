@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="visualization.itunes"
+  version="1.0.0"
+  name="iTunes Visualizations"
+  provider-name="Team XBMC">
+  <extension
+    point="xbmc.player.musicviz"
+    library_osx="iTunes.mvis"/>
+  <extension point="xbmc.addon.metadata">
+    <minversion app="xbmc"></minversion>
+    <summary>iTunes Visualization Wrapper</summary>
+    <summary lang="nl">iTunes Visualisaties</summary>
+    <description>iTunes Visualization Wrapper allows you to use visualizations from your OSX iTunes install in XBMC</description>
+    <description lang="nl">iTunes Visualisaties kan gebruik maken van de visualisaties van jouw iTunes installatie in OSX</description>
+    <disclaimer></disclaimer>
+  </extension>
+</addon>

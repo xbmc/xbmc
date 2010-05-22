@@ -1,0 +1,210 @@
+LAME 3.xx    January 2001  Mark Taylor (http://www.mp3dev.org)
+
+
+=======================================================================
+Compile time options
+=======================================================================
+There are serveral targets which can be built from this
+source code:
+
+lame, lame.exe  The command line encoder
+
+mp3x            A GTK based graphical MP3 frame analyzer.  For debugging,
+                development, and studing MP3 frames produced by any
+                encoder.
+
+lame_enc.dll    a Windows DLL used by many GUIs which support lame.
+                (Can only be compiled by MSVC???)
+                                 
+
+lame.acm        a Windows ACM codec which can be used by 
+                many windows programs, and any directshow program.
+                See MSVC project files in ACM directory.
+                Right click on lame.inf to install.
+
+lame_enc.dshow  a Windows direct show filter for lame.  Potentially has
+                more flexability than the ACM codec, but code needs some
+                work.  See MSVC project files in dshow directory
+ 
+
+libmp3lame.a    the static encoding library used by all platforms, required
+                by all the above targets.
+
+libmp3lame.so   shared version of libmp3lame.a for *NIX platforms
+
+
+
+The following compile time options can be used.  For libmp3lame.a
+and lame_enc.dll, none are required.  On non-unix systems,
+these options must be set in config.h or in the IDE.  
+On unix systems, they are set via ./configure.  
+
+
+#define HAVE_MPGLIB   compile in mpglib's mp3 *decoding* capibility
+#define HAVE_VORBIS   compile in Vorbis decoding capibility
+                      (you need libvorbis already built)
+#define NOANALYSIS   do not compile in hooks used by the 
+                     MP3 frame analyzer.
+
+
+Options for the command line encoder:
+#define LIBSNDFILE   to use Erik de Castro Lopo's libsndfile
+                     for input.
+#define BRHIST       to allow the optional display of the VBR histogram
+
+
+
+=======================================================================
+Building the software on *NIX platforms using configure:
+=======================================================================
+Run the following commands:
+
+% ./configure
+% make 
+% make install
+
+For a complete list of options, try "./configure --help"
+Some of the more usefull options:
+
+For the encoding library:
+
+  --enable-mp3x               Build the mp3 frame analyzer, 'mp3x'
+
+  --enable-mp3rtp             Build the encode-to-RTP program, 'mp3rtp'
+                              (broken as of August 2001)
+ 
+
+For the LAME front end encoder:
+
+  --with-fileio=lame          Use lame's internal file io routines [default]
+               =sndfile       Use Erik de Castro Lopo's libsndfile 
+                              (Supports many more input formats, but no stdin possible currently)
+
+  --with-sndfile-prefix=DIR   Alternate location for libsndfile
+                              (if --with-fileio=sndfile)
+
+  --enable-brhist             Include the VBR bitrate histogram feature 
+                              (default:yes if any ncurses/termcap available)"
+
+
+Other usefull configure options:
+
+  --enable-debug              Build a debug version
+
+  --enable-expopt             Enable some more optimizations flags for
+                              the compiler, may or may not produce
+                              faster code
+
+  --prefix = PATH             default is /usr/local
+                              (LAME currently installs:
+                                /usr/local/bin/lame
+                                /usr/local/lib/libmp3lame.a
+                                /usr/local/lib/libmp3lame.so
+                                /usr/local/include/lame.h
+
+
+  --with-vorbis                Enable Ogg Vorbis decoding support
+  --with-vorbis-prefix = PATH  specify where to find Vorbis libs
+
+
+Some more advanced ways to influence the build procedure
+(experienced users only, use it at your own risk):
+
+  - If you want to use some custom defines for building (e.g. some out
+    of the file "DEFINES") use:
+
+     * bourne shell or compatible (ash, bash, zsh, ...):
+       CONFIG_DEFS="-Dmy_define" ./configure
+
+     * C shell or compatible (csh, tcsh, ...):
+       setenv CONFIG_DEFS "-Dmy_define"
+       ./configure
+
+  - If you want to use some additional options for the compiler:
+
+    * bourne shell or compatible (ash, bash, zsh, ...):
+      CFLAGS="--my_flag" ./configure
+
+    * C shell or compatible (csh, tcsh, ...):
+      setenv CFLAGS "--my_flag"
+      ./configure
+
+  Or some combination of the above.
+
+  Note:
+    If configure detects the presents of "nasm" some additional speed
+    improvements get compiled in (additional assembler code to detect
+    and use multimedia extensions of the used processor).
+
+
+=======================================================================
+Building the software on *NIX platforms without configure:
+=======================================================================
+% make -f Makefile.unix
+
+
+
+=======================================================================
+Building the software on Windows with MSVC:
+(or MSVC + 3rd party C compiler)
+=======================================================================
+There are MSVC project files, and a Makefile.MSVC included
+with the project.  For production use, be sure to compile
+a "Release" target, with the "maximum speed" compile
+option, and #define NDEBUG.   
+
+It is possible to compile the GTK frame analyzer under windows, see
+README.WINGTK
+
+Various build options can be set in configMS.h
+
+Note: project files for building lame.exe seem to be broken or not
+quite compatable with MSVC6.  The most reliable way to build lame and
+lame_enc.dll is to run the .bat script (comes with MSVC6) which sets
+up your VC environment to work from the command line, and then:
+
+copy configMS.h config.h 
+nmake -f Makefile.MSVC  comp=msvc  asm=no
+
+Project files for the dll, ACM codec and directshow filter 
+seem to be in better sahpe.  
+
+
+
+
+
+
+=======================================================================
+Building the software on Windows with free compilers:
+=======================================================================
+LAME can be compiled with various Windows MSDOS ports (all free)
+of GCC (DJGPP, Mingw32).  See README.DJGPP.  
+
+For Mingw32, you should now be able to use the Unix Makefile that
+comes with LAME.  Try: "make -f Makefile.unix UNAME=MSDOS"
+You may need to remove these lines from brhist.c:
+
+#ifdef _WIN32
+COORD Pos;
+HANDLE CH;
+CONSOLE_SCREEN_BUFFER_INFO CSBI;
+#endif
+
+Mingw32 users may also try to use the unix configure script (explained
+above), it has _untested_ support for Mingw32.
+
+Cygwin users should use the unix configure script (explained above). If
+you have problems with the configure script try:
+      CC=gcc ./configure
+Patches to enable the build of the lame_enc.dll with Cygwin and autoconf /
+automake / libtool are welcome!
+
+To use the Borland C compiler (now free!) see README.B32 and Makefile.B32.
+Borland can also compile the lame_enc.dll, but this is untested.
+
+Can DJGPP or Mingw32 produce lame_enc.dll?
+
+Various build options can be set in configMS.h
+
+
+

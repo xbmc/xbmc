@@ -42,43 +42,62 @@ var http_request = new XMLHttpRequest();
 http_request.open( "POST", "jsonrpc", false );
 
 if (directory)
-  http_request.send('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": { "type": "music", "directory": "' + Url.decode(directory) + '", "sortmethod": "label", "sortorder": "ascending" }, "id": 1}');
+  http_request.send('{"jsonrpc": "2.0", "method": "Files.GetDirectory", "params": { "media": "music", "directory": "' + unescape(directory) + '", "sort": { "method": "label", "order": "ascending" } }, "id": 1}');
 else
-  http_request.send('{"jsonrpc": "2.0", "method": "Files.GetSources", "params": { "type": "music" }, "id": 1}');
+  http_request.send('{"jsonrpc": "2.0", "method": "Files.GetSources", "params": { "media": "music" }, "id": 1}');
 
 
 var the_object = JSON.parse(http_request.responseText);
 var result = the_object["result"];
 if (result) {
-  var array;
-  if (directory)
-    array = result["directories"];
-  else
-    array = result["shares"];
+  var directories;
+  var files;
+
+  if (directory) {
+    directories = result["directories"];
+    files = result["files"];
+  } else {
+    directories = result["shares"];
+  }
 
   document.write('<table class="Files">');
-  for (var i in array) {
-    var item = array[i];
 
-    document.write('<tr class="' + (i % 2 == 0 ? "even" : "odd") + '"><td class="cover">');
-    if (item["file"].endsWith("/")) {
-      document.write('<a href="musicfiles.html?directory=' + Url.encode(item["file"]) + '">');
-      document.write('<img src="' + (item["thumbnail"] ? ("thumb/" + item["thumbnail"] + ".jpg"): "images/DefaultFolder.png") + '" class="smallcover" alt="' + item["label"] + '"></img></a>');
-    } else {
-      document.write('<img src="images/DefaultAlbumCover.png" class="smallcover" alt="' + item["label"] + '"></img>');
-    }
+  var even = 0;
 
-    document.write('<td class="info">');
+  for (var i in directories) {
+    var item = directories[i];
 
-    if (item["file"].endsWith("/")) {
-      document.write('<a href="musicfiles.html?directory=' + Url.encode(item["file"]) + '">');
-      document.write(item["label"] + '</a>');
-    } else {
-      document.write(item["label"]);
-    }
+    document.write('<tr class="' + (even % 2 == 0 ? "even" : "odd") + '"><td class="cover">');
+    even += 1;
+
+    document.write('<a href="musicfiles.html?directory=' + escape(item["file"]) + '">');
+    var imgSrc = item["thumbnail"] ? ('vfs/' + escape(item["thumbnail"])) : "images/DefaultFolder.png";
+    document.write('<img src="' + imgSrc + '" class="smallcover" alt="' + item["label"] + '"></img></a>');
+
+    document.write('</td><td class="info">');
+
+    document.write('<a href="musicfiles.html?directory=' + Url.encode(item["file"]) + '">');
+    document.write(item["label"] + "</a>");
 
     document.write('</td></tr>');
   }
+
+  for (var i in files) {
+    var item = files[i];
+
+    document.write('<tr class="' + (even % 2 == 0 ? "even" : "odd") + '"><td class="cover">');
+    even += 1;
+
+    var imgSrc = item["thumbnail"] ? ('vfs/' + escape(item["thumbnail"])) : "images/DefaultAlbumCover.png";
+    document.write('<img src="' + imgSrc + '" class="smallcover" alt="' + item["label"] + '"></img>');
+
+    document.write('</td><td class="info">');
+
+    document.write(item["label"]);
+
+    document.write('</td></tr>');
+  }
+
   document.write('</tbody></table>');
 } else {
   document.write("Error");

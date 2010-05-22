@@ -1,0 +1,237 @@
+<window id="4">
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>CommonSettingsBackground</include>
+		<include>CommonMediaPlayingBackground</include>
+		<control type="group">
+			<posx>90</posx>
+			<posy>50</posy>
+			<animation type="WindowOpen" reversible="false">
+				<effect type="zoom" start="80" end="100" center="640,360" easing="out" tween="back" time="300" />
+				<effect type="fade" start="0" end="100" time="300" />
+			</animation>
+			<animation type="WindowClose" reversible="false">
+				<effect type="zoom" start="100" end="80" center="640,360" easing="in" tween="back" time="300" />
+				<effect type="fade" start="100" end="0" time="300" />
+			</animation>			
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1100</width>
+				<height>640</height>
+				<texture border="20">DialogBack.png</texture>
+			</control>
+			<control type="image">
+				<description>LOGO</description>
+				<posx>30</posx>
+				<posy>15</posy>
+				<width>220</width>
+				<height>80</height>
+				<aspectratio>keep</aspectratio>
+				<texture>Confluence_Logo.png</texture>
+			</control>
+			<control type="list" id="9000">
+				<posx>10</posx>
+				<posy>82</posy>
+				<width>260</width>
+				<height>541</height>
+				<onleft>9000</onleft>
+				<onright>9001</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<pagecontrol>-</pagecontrol>
+				<scrolltime>300</scrolltime>
+				<itemlayout height="54" width="260">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>260</width>
+						<height>55</height>
+						<texture border="5">MenuItemNF.png</texture>
+					</control>
+					<control type="label">
+						<posx>250</posx>
+						<posy>0</posy>
+						<width>380</width>
+						<height>55</height>
+						<font>font24_title</font>
+						<textcolor>grey3</textcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</itemlayout>
+				<focusedlayout height="54" width="260">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>260</width>
+						<height>55</height>
+						<texture border="5">MenuItemFO.png</texture>
+					</control>
+					<control type="label">
+						<posx>250</posx>
+						<posy>0</posy>
+						<width>380</width>
+						<height>55</height>
+						<font>font24_title</font>
+						<textcolor>white</textcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</focusedlayout>
+				<content>
+					<item id="1">
+						<label>480</label>
+						<label2>31400</label2>
+						<onclick>ActivateWindow(AppearanceSettings)</onclick>
+						<icon>special://skin/backgrounds/appearance.jpg</icon>
+					</item>
+					<item id="2">
+						<label>157</label>
+						<label2>31401</label2>
+						<onclick>ActivateWindow(VideosSettings)</onclick>
+						<icon>special://skin/backgrounds/videos.jpg</icon>
+					</item>
+					<item id="3">
+						<label>2</label>
+						<label2>31402</label2>
+						<onclick>ActivateWindow(MusicSettings)</onclick>
+						<icon>special://skin/backgrounds/music.jpg</icon>
+					</item>
+					<item id="4">
+						<label>1</label>
+						<label2>31403</label2>
+						<onclick>ActivateWindow(PicturesSettings)</onclick>
+						<icon>special://skin/backgrounds/pictures.jpg</icon>
+					</item>
+					<item id="5">
+						<label>8</label>
+						<label2>31404</label2>
+						<onclick>ActivateWindow(WeatherSettings)</onclick>
+						<icon>special://skin/backgrounds/weather.jpg</icon>
+					</item>
+					<item id="6">
+						<label>24001</label>
+						<label2>31408</label2>
+						<onclick>ActivateWindow(AddonBrowser)</onclick>
+						<icon>special://skin/backgrounds/addons.jpg</icon>
+					</item>
+					<item id="7">
+						<label>705</label>
+						<label2>31405</label2>
+						<onclick>ActivateWindow(NetworkSettings)</onclick>
+						<icon>special://skin/backgrounds/network.jpg</icon>
+					</item>
+					<item id="8">
+						<label>13000</label>
+						<label2>31406</label2>
+						<onclick>ActivateWindow(SystemSettings)</onclick>
+						<icon>special://skin/backgrounds/system.jpg</icon>
+					</item>
+					<item id="9">
+						<label>166</label>
+						<label2>31407</label2>
+						<onclick>ActivateWindow(1111)</onclick>
+						<icon>special://skin/backgrounds/skinsetting.jpg</icon>
+					</item>
+				</content>
+			</control>
+			<control type="image">
+				<posx>268</posx>
+				<posy>10</posy>
+				<width>804</width>
+				<height>50</height>
+				<texture border="5">black-back2.png</texture>
+			</control>
+			<control type="image">
+				<posx>268</posx>
+				<posy>10</posy>
+				<width>804</width>
+				<height>70</height>
+				<aspectratio>stretch</aspectratio>
+				<texture>GlassTitleBar.png</texture>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<posx>300</posx>
+				<posy>20</posy>
+				<width>740</width>
+				<height>30</height>
+				<font>font16caps</font>
+				<label>$LOCALIZE[31000] $LOCALIZE[5]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="image">
+				<posx>270</posx>
+				<posy>60</posy>
+				<width>800</width>
+				<height>450</height>
+				<texture border="5">button-nofocus.png</texture>
+			</control>
+			<control type="image">
+				<posx>272</posx>
+				<posy>62</posy>
+				<width>796</width>
+				<height>446</height>
+				<aspectratio>stretch</aspectratio>
+				<fadetime>600</fadetime>
+				<texture background="true">$INFO[Container(9000).ListItem.Icon]</texture>
+			</control>
+			<control type="image">
+				<posx>272</posx>
+				<posy>62</posy>
+				<width>600</width>
+				<height>340</height>
+				<aspectratio>stretch</aspectratio>
+				<texture>GlassOverlay.png</texture>
+				<colordiffuse>AAFFFFFF</colordiffuse>
+			</control>
+			<control type="image">
+				<posx>268</posx>
+				<posy>510</posy>
+				<width>804</width>
+				<height>118</height>
+				<texture border="5">black-back2.png</texture>
+			</control>
+			<control type="textbox">
+				<description>Appearance Description</description>
+				<posx>300</posx>
+				<posy>520</posy>
+				<width>740</width>
+				<height>100</height>
+				<font>font12</font>
+				<label>$INFO[Container(9000).ListItem.Label2]</label>
+				<align>left</align>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+		</control>
+		<include>BehindDialogFadeOut</include>
+		<control type="group">
+			<posx>60</posx>
+			<posy>0</posy>
+			<animation effect="slide" end="-310,0" time="400" tween="quadratic" easing="out" condition="Window.Next(Home) | Window.Next(1111) | Window.Next(AddonBrowser)">WindowClose</animation>
+			<animation effect="slide" start="-310,0" time="400" tween="quadratic" easing="out" condition="Window.Previous(Home) | Window.Previous(1111) | Window.Previous(AddonBrowser)">WindowOpen</animation>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>250</width>
+				<height>35</height>
+				<texture border="0,0,32,0">header.png</texture>
+			</control>
+			<control type="label">
+				<include>WindowTitleCommons</include>
+				<posx>220</posx>
+				<label>$LOCALIZE[5]</label>
+			</control>
+		</control>
+		<include>WindowTitleHomeButton</include>
+		<include>Clock</include>
+	</controls>
+</window>

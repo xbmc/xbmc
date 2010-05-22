@@ -31,28 +31,49 @@
 #include "D3DResource.h"
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
+#include "utils/SystemInfo.h"
+#include "Application.h"
+#include "Util.h"
+#include "win32/WIN32Util.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
+
+// Dynamic loading of Direct3DCreate9Ex to keep compatibility with 2000/XP.
+typedef HRESULT (WINAPI *LPDIRECT3DCREATE9EX)( UINT SDKVersion, IDirect3D9Ex **ppD3D);
+static LPDIRECT3DCREATE9EX g_Direct3DCreate9Ex;
+static HMODULE             g_D3D9ExHandle;
+
+static bool LoadD3D9Ex()
+{
+  g_Direct3DCreate9Ex = (LPDIRECT3DCREATE9EX)GetProcAddress( GetModuleHandle("d3d9.dll"), "Direct3DCreate9Ex" );
+  if(g_Direct3DCreate9Ex == NULL)
+    return false;
+  return true;
+}
 
 CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_DIRECTX;
 
-  m_pD3D = NULL;
-  m_pD3DDevice = NULL;
-  m_hFocusWnd = NULL;
-  m_hDeviceWnd = NULL;
-  m_nBackBufferWidth = 0;
+  m_pD3D        = NULL;
+  m_pD3DDevice  = NULL;
+  m_hFocusWnd   = NULL;
+  m_hDeviceWnd  = NULL;
+  m_nBackBufferWidth  = 0;
   m_nBackBufferHeight = 0;
   m_bFullScreenDevice = 0;
-  m_bVSync = true;
-  m_nDeviceStatus = S_OK;
-  m_stateBlock = NULL;
-  m_inScene = false;
-  m_needNewDevice = false;
-  m_adapter = D3DADAPTER_DEFAULT;
-  m_screenHeight = 0;
-  m_systemFreq = CurrentHostFrequency();
+  m_bVSync          = true;
+  m_nDeviceStatus   = S_OK;
+  m_stateBlock      = NULL;
+  m_inScene         = false;
+  m_needNewDevice   = false;
+  m_adapter         = D3DADAPTER_DEFAULT;
+  m_screenHeight    = 0;
+  m_systemFreq      = CurrentHostFrequency();
+  m_useD3D9Ex       = false;
+  m_defaultD3DUsage = 0;
+  m_defaultD3DPool  = D3DPOOL_MANAGED;
 
   ZeroMemory(&m_D3DPP, sizeof(D3DPRESENT_PARAMETERS));
 }
@@ -62,18 +83,45 @@ CRenderSystemDX::~CRenderSystemDX()
   DestroyRenderSystem();
 }
 
+void CRenderSystemDX::CheckDXVersion()
+{
+  CStdString strSystemFolder = CWIN32Util::GetSystemPath();
+  CStdString dxtestfile = CUtil::AddFileToFolder(strSystemFolder, "D3DX9_42.dll");
+
+  HANDLE hDevice = 0;
+  if (INVALID_HANDLE_VALUE == (hDevice = CreateFile(dxtestfile, 0, 0, NULL, OPEN_EXISTING, 0, NULL )))
+  {
+    CLog::Log(LOGWARNING, "%s - old DirectX runtime. You need DirectX 9.0c, dated August 2009 or later.", __FUNCTION__);
+    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, "DirectX", g_localizeStrings.Get(2101));
+  }
+  else
+    CloseHandle(hDevice);
+}
+
 bool CRenderSystemDX::InitRenderSystem()
 {
   m_bVSync = true;
   m_renderCaps = 0;
   D3DADAPTER_IDENTIFIER9 AIdentifier;
 
+  CheckDXVersion();
+
+  m_useD3D9Ex = (g_sysinfo.IsVistaOrHigher() && LoadD3D9Ex());
   m_pD3D = NULL;
 
-  m_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
-  if(m_pD3D == NULL)
-    return false;
-
+  if (m_useD3D9Ex)
+  {
+    if (FAILED(g_Direct3DCreate9Ex(D3D_SDK_VERSION, (IDirect3D9Ex**) &m_pD3D)))
+      return false;
+    CLog::Log(LOGDEBUG, "%s - using D3D9Ex", __FUNCTION__);
+  }
+  else
+  {
+    m_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
+    if(m_pD3D == NULL)
+      return false;
+  }
+  
   UpdateMonitor();
 
   if(CreateDevice()==false)
@@ -82,7 +130,7 @@ bool CRenderSystemDX::InitRenderSystem()
   if(m_pD3D->GetAdapterIdentifier(m_adapter, 0, &AIdentifier) == D3D_OK)
   {
     m_RenderRenderer = (const char*)AIdentifier.Description;
-    m_RenderVendor = (const char*)AIdentifier.Driver;
+    m_RenderVendor   = (const char*)AIdentifier.Driver;
     m_RenderVersion.Format("%d.%d.%d.%04d", HIWORD(AIdentifier.DriverVersion.HighPart), LOWORD(AIdentifier.DriverVersion.HighPart),
                                             HIWORD(AIdentifier.DriverVersion.LowPart), LOWORD(AIdentifier.DriverVersion.LowPart));
   }
@@ -90,6 +138,12 @@ bool CRenderSystemDX::InitRenderSystem()
   // get our render capabilities
   D3DCAPS9 caps;
   m_pD3DDevice->GetDeviceCaps(&caps);
+
+  if (caps.PixelShaderVersion < D3DPS_VERSION(2, 0)) 
+  {
+    CLog::Log(LOGERROR, "%s - XBMC requires a graphics card supporting Pixel Shaders 2.0", __FUNCTION__);
+    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(2102), g_localizeStrings.Get(2103));
+  }
 
   if (SUCCEEDED(m_pD3D->CheckDeviceFormat( D3DADAPTER_DEFAULT,
                                            D3DDEVTYPE_HAL,
@@ -110,15 +164,27 @@ bool CRenderSystemDX::InitRenderSystem()
   }
   m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
 
+  if (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES)
+  {
+    m_defaultD3DUsage = D3DUSAGE_DYNAMIC;
+    m_defaultD3DPool  = D3DPOOL_DEFAULT;
+    CLog::Log(LOGDEBUG, "%s - using D3DCAPS2_DYNAMICTEXTURES", __FUNCTION__);
+  }
+  else
+  {
+    m_defaultD3DUsage = 0;
+    m_defaultD3DPool  = D3DPOOL_MANAGED;
+  }
+
   return true;
 }
 
 void CRenderSystemDX::SetRenderParams(unsigned int width, unsigned int height, bool fullScreen, float refreshRate)
 {
-  m_nBackBufferWidth = width;
+  m_nBackBufferWidth  = width;
   m_nBackBufferHeight = height;
   m_bFullScreenDevice = fullScreen;
-  m_refreshRate = refreshRate;
+  m_refreshRate       = refreshRate;
 }
 
 void CRenderSystemDX::SetMonitor(HMONITOR monitor)
@@ -132,7 +198,7 @@ void CRenderSystemDX::SetMonitor(HMONITOR monitor)
     HMONITOR hMonitor = m_pD3D->GetAdapterMonitor(adapter);
     if (hMonitor == monitor && adapter != m_adapter)
     {
-      m_adapter = adapter;
+      m_adapter       = adapter;
       m_needNewDevice = true;
       break;
     }
@@ -149,29 +215,52 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
 
   BuildPresentParameters();
 
-  OnDeviceLost();
-  OnDeviceReset();
-
+  if (m_useD3D9Ex && !m_needNewDevice)
+    m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
+  else
+  {
+    OnDeviceLost();
+    OnDeviceReset();
+  }
+  
   return true;
 }
 
 void CRenderSystemDX::BuildPresentParameters()
 {
+  OSVERSIONINFOEX osvi;
+  ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+  osvi.dwOSVersionInfoSize = sizeof(osvi);
+  GetVersionEx((OSVERSIONINFO *)&osvi);
+
   ZeroMemory( &m_D3DPP, sizeof(D3DPRESENT_PARAMETERS) );
   bool useWindow = g_guiSettings.GetBool("videoscreen.fakefullscreen") || !m_bFullScreenDevice;
-  m_D3DPP.Windowed					= useWindow;
-  m_D3DPP.SwapEffect				= D3DSWAPEFFECT_DISCARD;
-  m_D3DPP.BackBufferCount			= 1;
-  m_D3DPP.EnableAutoDepthStencil	= TRUE;
-  m_D3DPP.hDeviceWindow			= m_hDeviceWnd;
-  m_D3DPP.BackBufferWidth			= m_nBackBufferWidth;
-  m_D3DPP.BackBufferHeight			= m_nBackBufferHeight;
-  m_D3DPP.Flags   =   D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+  m_D3DPP.Windowed           = useWindow;
+  m_D3DPP.SwapEffect         = D3DSWAPEFFECT_DISCARD;
+  m_D3DPP.BackBufferCount    = 1;
+
+  if(m_useD3D9Ex && (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion >= 1 || osvi.dwMajorVersion > 6))
+  {
+#if D3DX_SDK_VERSION >= 42
+    m_D3DPP.SwapEffect       = D3DSWAPEFFECT_FLIPEX;
+    m_D3DPP.BackBufferCount  = 2;
+#else
+#   pragma message("D3D SDK version is too old to support D3DSWAPEFFECT_FLIPEX")
+    CLog::Log(LOGWARNING, "CRenderSystemDX::BuildPresentParameters - xbmc compiled with an d3d sdk not supporting D3DSWAPEFFECT_FLIPEX");
+#endif
+  }
+
+  m_D3DPP.EnableAutoDepthStencil = TRUE;
+  m_D3DPP.hDeviceWindow      = m_hDeviceWnd;
+  m_D3DPP.BackBufferWidth    = m_nBackBufferWidth;
+  m_D3DPP.BackBufferHeight   = m_nBackBufferHeight;
+  m_D3DPP.Flags              = D3DPRESENTFLAG_VIDEO;
   m_D3DPP.PresentationInterval = (m_bVSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
   m_D3DPP.FullScreen_RefreshRateInHz = (useWindow) ? 0 : (int)m_refreshRate;
-  m_D3DPP.BackBufferFormat = D3DFMT_X8R8G8B8;
-  m_D3DPP.MultiSampleType = D3DMULTISAMPLE_NONE;
+  m_D3DPP.BackBufferFormat   = D3DFMT_X8R8G8B8;
+  m_D3DPP.MultiSampleType    = D3DMULTISAMPLE_NONE;
   m_D3DPP.MultiSampleQuality = 0;
+
 
   // Try to create a 32-bit depth, 8-bit stencil
   if( FAILED( m_pD3D->CheckDeviceFormat( m_adapter,
@@ -199,10 +288,23 @@ void CRenderSystemDX::BuildPresentParameters()
     else
       m_D3DPP.AutoDepthStencilFormat = D3DFMT_D24X8;
   }
+
+  if (m_useD3D9Ex)
+  {
+    ZeroMemory( &m_D3DDMEX, sizeof(D3DDISPLAYMODEEX) );
+    m_D3DDMEX.Size             = sizeof(D3DDISPLAYMODEEX);
+    m_D3DDMEX.Width            = m_D3DPP.BackBufferWidth;
+    m_D3DDMEX.Height           = m_D3DPP.BackBufferHeight;
+    m_D3DDMEX.RefreshRate      = m_D3DPP.FullScreen_RefreshRateInHz;
+    m_D3DDMEX.Format           = m_D3DPP.BackBufferFormat;
+    m_D3DDMEX.ScanLineOrdering = D3DSCANLINEORDERING_PROGRESSIVE;
+  }
 }
 
 bool CRenderSystemDX::DestroyRenderSystem()
 {
+  DeleteDevice();
+
   SAFE_RELEASE(m_stateBlock);
   SAFE_RELEASE(m_pD3D);
   SAFE_RELEASE(m_pD3DDevice);
@@ -243,12 +345,16 @@ void CRenderSystemDX::OnDeviceLost()
 void CRenderSystemDX::OnDeviceReset()
 {
   CSingleLock lock(m_resourceSection);
+
   if (m_needNewDevice)
     CreateDevice();
   else
   {
     // just need a reset
-    m_nDeviceStatus = m_pD3DDevice->Reset(&m_D3DPP);
+    if (m_useD3D9Ex)
+      m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
+    else
+      m_nDeviceStatus = m_pD3DDevice->Reset(&m_D3DPP);
   }
 
   if (m_nDeviceStatus == S_OK)
@@ -288,25 +394,56 @@ bool CRenderSystemDX::CreateDevice()
 
   BuildPresentParameters();
 
-  hr = m_pD3D->CreateDevice(m_adapter, devType, m_hFocusWnd,
-    D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
-  if (FAILED(hr))
+  if (m_useD3D9Ex)
   {
-    // Try a second time, may fail the first time due to back buffer count,
-    // which will be corrected down to 1 by the runtime
-    hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
-      D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
-    if( FAILED( hr ) )
+    hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx(m_adapter, devType, m_hFocusWnd,
+      D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
+
+    if (FAILED(hr))
     {
+      CLog::Log(LOGWARNING, "CRenderSystemDX::CreateDevice - initial wanted device config failed");
+      // Try a second time, may fail the first time due to back buffer count,
+      // which will be corrected down to 1 by the runtime
+      hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, devType, m_hFocusWnd,
+        D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
+      if( FAILED( hr ) )
+      {
+        hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, devType, m_hFocusWnd,
+          D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP,  m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
+        if( FAILED( hr ) )
+        {
+          hr = ((IDirect3D9Ex*)m_pD3D)->CreateDeviceEx( m_adapter, devType, m_hFocusWnd,
+            D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP,  m_D3DPP.Windowed ? NULL : &m_D3DDMEX, (IDirect3DDevice9Ex**)&m_pD3DDevice );
+        }
+        if(FAILED( hr ) )
+          return false;
+      }
+    }
+  }
+  else
+  {
+
+    hr = m_pD3D->CreateDevice(m_adapter, devType, m_hFocusWnd,
+      D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
+
+    if (FAILED(hr))
+    {
+      // Try a second time, may fail the first time due to back buffer count,
+      // which will be corrected down to 1 by the runtime
       hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
-        D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
+        D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
       if( FAILED( hr ) )
       {
         hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
-          D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
+          D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
+        if( FAILED( hr ) )
+        {
+          hr = m_pD3D->CreateDevice( m_adapter, devType, m_hFocusWnd,
+            D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_MULTITHREADED, &m_D3DPP, &m_pD3DDevice );
+        }
+        if(FAILED( hr ) )
+          return false;
       }
-      if(FAILED( hr ) )
-        return false;
     }
   }
 
@@ -391,7 +528,38 @@ bool CRenderSystemDX::BeginRender()
     return false;
 
   DWORD oldStatus = m_nDeviceStatus;
-  if( FAILED( m_nDeviceStatus = m_pD3DDevice->TestCooperativeLevel() ) )
+  if (m_useD3D9Ex)
+  {
+    m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->CheckDeviceState(m_hDeviceWnd);
+
+    // handling of new D3D9 extensions return values. Others fallback to regular D3D9 handling.
+    switch(m_nDeviceStatus)
+    {
+    case S_PRESENT_MODE_CHANGED:
+      // Timing leads us here on occasion.
+      BuildPresentParameters();
+      m_nDeviceStatus = ((IDirect3DDevice9Ex*)m_pD3DDevice)->ResetEx(&m_D3DPP, m_D3DPP.Windowed ? NULL : &m_D3DDMEX);
+      break;
+    case S_PRESENT_OCCLUDED:
+      m_nDeviceStatus = D3D_OK;
+      break;
+    case D3DERR_DEVICEHUNG:
+    case D3DERR_OUTOFVIDEOMEMORY:
+      m_nDeviceStatus = D3DERR_DEVICELOST;
+      break;
+    case D3DERR_DEVICEREMOVED:
+      m_nDeviceStatus = D3DERR_DEVICELOST;
+      m_needNewDevice = true;
+      // fixme: also needs to re-enumerate and switch to another screen
+      break;
+    }
+  }
+  else
+  {
+    m_nDeviceStatus = m_pD3DDevice->TestCooperativeLevel();
+  }
+
+  if( FAILED( m_nDeviceStatus ) )
   {
     // The device has been lost but cannot be reset at this time.
     // Therefore, rendering is not possible and we'll have to return
@@ -656,11 +824,11 @@ void CRenderSystemDX::SetViewPort(CRect& viewPort)
 
   D3DVIEWPORT9 newviewport;
 
-  newviewport.MinZ = 0.0f;
-  newviewport.MaxZ = 1.0f;
-  newviewport.X = (DWORD)viewPort.x1;
-  newviewport.Y = (DWORD)viewPort.y1;
-  newviewport.Width = (DWORD)(viewPort.x2 - viewPort.x1);
+  newviewport.MinZ   = 0.0f;
+  newviewport.MaxZ   = 1.0f;
+  newviewport.X      = (DWORD)viewPort.x1;
+  newviewport.Y      = (DWORD)viewPort.y1;
+  newviewport.Width  = (DWORD)(viewPort.x2 - viewPort.x1);
   newviewport.Height = (DWORD)(viewPort.y2 - viewPort.y1);
   m_pD3DDevice->SetViewport(&newviewport);
 }

@@ -398,13 +398,15 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, ADDON::Scraper
     info = m_database.GetScraperForPath(item->m_strPath, settings);
   }
 
+  ADDON::ScraperPtr info2(info);
+
   if (CGUIDialogContentSettings::Show(info, settings, bScan))
   {
     if(settings.exclude || !info)
     {
       OnUnAssignContent(iItem,20375,20340,20341);
     }
-    else
+    else if (info2)
     {
       if (OnUnAssignContent(iItem,20442,20443,20444))
         bScan = true;

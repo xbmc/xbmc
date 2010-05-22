@@ -1,0 +1,624 @@
+# Makefile for LAME 3.xx -*- makefile -*-
+#
+# LAME is reported to work under:
+# Linux (i86), NetBSD 1.3.2 (StrongARM), FreeBSD (i86)
+# Compaq Alpha(OSF, Linux, Tru64 Unix), Sun Solaris, SGI IRIX,
+# OS2 Warp, Macintosh PPC, BeOS, Amiga and even VC++
+#
+
+# these variables are available on command line:
+#
+#   make UNAME=xxxxx ARCH=xxxxx   - specify a type of host
+#   make PGM=lame_exp             - specify a name of an executable file
+#
+# if you have mingw32-gcc, try:
+#   make -fMakefile.unix UNAME=MSDOS
+# or if you get the error
+# "process_begin: CreateProcess((null), copy configMS.h config.h, ...)":
+#   make -fMakefile.unix UNAME=MSDOS NOUNIXCMD=NO
+# or if you have NASM:
+#   make -fMakefile.unix UNAME=MSDOS HAVE_NASM=YES
+#
+
+ifeq ($(UNAME),MSDOS)
+  UNAME ?= UNKNOWN
+  ARCH = x86
+  NOUNIXCMD = YES
+else
+  UNAME = $(shell uname)
+  ARCH = $(shell uname -m)
+  iARCH = $(patsubst i%86,x86,$(ARCH))
+endif
+
+HAVE_NASM = NO
+HAVE_NEWER_GLIBC = NO
+
+# generic defaults. OS specific options go in versious sections below
+PGM = lame
+CC = gcc
+CC_OPTS =  -O
+CPP_OPTS = -Iinclude -Impglib -Ifrontend -Ilibmp3lame
+AR = ar
+RANLIB = ranlib
+GTK =
+GTKLIBS =
+LIBSNDFILE =
+LIBS = -lm
+MP3LIB = libmp3lame/libmp3lame.a
+MP3LIB_SHARED = libmp3lame/libmp3lame.so
+MAKEDEP = -M
+BRHIST_SWITCH =
+LIBTERMCAP =
+RM = rm -f
+
+CPP_OPTS += -DHAVE_CONFIG_H -I.
+
+##########################################################################
+# -DHAVEMPGLIB compiles the mpglib *decoding* library into libmp3lame
+##########################################################################
+CPP_OPTS += -DHAVE_MPGLIB
+
+##########################################################################
+# -DUSE_LAYER_1/2 enables Layer1 or Layer2 *decoding* abilities
+##########################################################################
+CPP_OPTS += -DUSE_LAYER_1 -DUSE_LAYER_2
+
+##########################################################################
+# -DTAKEHIRO_IEEE754_HACK enables Takehiro's IEEE hack
+##########################################################################
+ifeq ($(iARCH),x86)
+	CPP_OPTS += -DTAKEHIRO_IEEE754_HACK
+endif
+
+##########################################################################
+# Define these in the OS specific sections below to compile in code
+# for the optional VBR bitrate histogram.
+# Requires ncurses, but libtermcap also works.
+# If you have any trouble, just dont define these
+#
+# BRHIST_SWITCH = -DBRHIST -DHAVE_TERMCAP -DHAVE_{NCURSES_}TERMCAP_H
+# LIBTERMCAP = -lncurses
+# LIBTERMCAP = -ltermcap
+#
+# or, to try and simulate TERMCAP (ANSI), use:
+# BRHIST_SWITCH = -DBRHIST
+#
+##########################################################################
+
+
+##########################################################################
+# Define these in the OS specific sections below to compile in code for:
+#
+# SNDLIB = -DLIBSNDFILE   to use Erik de Castro Lopo's libsndfile
+# http://www.zip.com.au/~erikd/libsndfile/ instead of LAME's internal
+# routines.  Also set:
+#
+# LIBSNDFILE = -lsndfile
+# or
+# LIBSNDFILE = -L/location_of_libsndfile  -lsndfile
+#
+##########################################################################
+
+
+##########################################################################
+# Define these in the OS specific sections below to compile in code for
+# the GTK mp3 frame analyzer
+#
+# Requires  -DHAVE_MPGLIB
+#
+# GTK = -DHAVE_GTK `gtk-config --cflags`
+# GTKLIBS = `gtk-config --libs`
+#
+##########################################################################
+
+
+
+
+##########################################################################
+# LINUX
+##########################################################################
+ifeq ($(UNAME),Linux)
+#  The frame analyzer depends on gtk1.2. Uncomment the next 2 lines to get it
+#   GTK = -DHAVE_GTK `gtk-config --cflags`
+#   GTKLIBS = `gtk-config --libs`
+# Comment out next 2 lines if you want to remove VBR histogram capability
+   BRHIST_SWITCH = -DBRHIST -DHAVE_TERMCAP -DHAVE_TERMCAP_H
+   LIBTERMCAP = -lncurses
+#  uncomment to use LIBSNDFILE
+#   SNDLIB = -DLIBSNDFILE
+#   LIBSNDFILE=-lsndfile
+
+# suggested for gcc-2.7.x
+#  CC_OPTS =  -O3 -fomit-frame-pointer -funroll-loops -ffast-math  -finline-functions -Wall -pedantic
+#  CC_OPTS =  -O9 -fomit-frame-pointer -fno-strength-reduce -mpentiumpro -ffast-math -finline-functions -funroll-loops -Wall -malign-double -g -march=pentiumpro -mfancy-math-387 -pipe -pedantic
+
+# Suggested for GCC 4.* & machines with sse+sse2+sse3: -Os might reduce
+# the use of the instruction cache and, thus, get better performance,
+# but this should be experimented by the user. Customize at your own
+# convenience.
+#
+#CC_OPTS = -pipe -O3 \
+#	-Wall -Wextra -pedantic \
+#	-Wmissing-declarations -Wfloat-equal -Wshadow \
+#	-Wcast-qual -Wcast-align -Wdisabled-optimization \
+#	-ffast-math -ftree-vectorize -ftree-vect-loop-version \
+#	-mtune=nocona -march=nocona -mfpmath=sse -msse -msse2 -msse3 \
+#	-malign-double -maccumulate-outgoing-args
+
+#  for debugging:
+  CC_OPTS =  -UNDEBUG -O -Wall -pedantic -ggdb -DABORTFP
+
+#  for lots of debugging:
+#   CC_OPTS =  -DDEBUG -UNDEBUG  -O -Wall -pedantic -g -DABORTFP
+
+
+ifeq ($(CFG),RH)
+   GTK = -DHAVE_GTK `gtk-config --cflags`
+   GTKLIBS = `gtk-config --libs`
+  CPP_OPTS += -DFLOAT8=float -DREAL_IS_FLOAT=1 -DHAVE_ICONV -DHAVE_XMMINTRIN_H -D_ALLOW_INTERNAL_OPTIONS
+# these options for gcc-3.2 & AthlonXP
+   CC_OPTS = \
+	-pipe -O3 \
+	-Wall -W -Wmissing-declarations -Wfloat-equal \
+	-Wcast-qual -Wcast-align -Wdisabled-optimization -Wshadow \
+	-march=athlon-xp \
+	-malign-double \
+	-maccumulate-outgoing-args
+#	-Wconversion -Wunreachable-code \
+
+   HAVE_NEWER_GLIBC = YES
+   HAVE_NASM = YES
+endif
+
+ifeq ($(CFG),PFK)
+   CPP_OPTS += -DKLEMM -DKLEMM_00 -DKLEMM_01 -DKLEMM_02 -DKLEMM_03 -DKLEMM_04 -DKLEMM_05 -DKLEMM_06 -DKLEMM_07 -DKLEMM_08 -DKLEMM_09 -DKLEMM_10 -DKLEMM_11 -DKLEMM_12 -DKLEMM_13 -DKLEMM_14 -DKLEMM_15 -DKLEMM_16 -DKLEMM_17 -DKLEMM_18 -DKLEMM_19 -DKLEMM_20 -DKLEMM_21 -DKLEMM_22 -DKLEMM_23 -DKLEMM_24 -DKLEMM_25 -DKLEMM_26 -DKLEMM_27 -DKLEMM_28 -DKLEMM_29 -DKLEMM_30 -DKLEMM_31 -DKLEMM_32 -DKLEMM_33 -DKLEMM_34 -DKLEMM_35 -DKLEMM_36 -DKLEMM_37 -DKLEMM_38 -DKLEMM_39 -DKLEMM_40 -DKLEMM_41 -DKLEMM_42 -DKLEMM_43 -DKLEMM_44 -DKLEMM_45 -DKLEMM_46 -DKLEMM_47 -DKLEMM_48 -DKLEMM_49 -DKLEMM_50
+   CC_OPTS = \
+	-Wall -O9 -fomit-frame-pointer -march=pentium \
+	-finline-functions -fexpensive-optimizations \
+	-funroll-loops -funroll-all-loops -pipe -fschedule-insns2 \
+	-fstrength-reduce \
+	-malign-double -mfancy-math-387 -ffast-math
+
+   HAVE_NEWER_GLIBC = YES
+   HAVE_NASM = YES
+endif
+
+##########################################################################
+# LINUX on Digital/Compaq Alpha CPUs
+##########################################################################
+ifeq ($(ARCH),alpha)
+
+################################################################
+#### Check if 'ccc' is in our path
+####   if not, use 'gcc'
+################################################################
+ifeq ($(shell which ccc 2>/dev/null | grep -c ccc),0)
+
+# double is faster than float on Alpha
+CC_OPTS =       -O4 -pedantic -Wall -fomit-frame-pointer -ffast-math -funroll-loops \
+                -mfp-regs -fschedule-insns -fschedule-insns2 \
+                -finline-functions \
+#                -DFLOAT=double
+# add "-mcpu=21164a -Wa,-m21164a" to optimize for 21164a (ev56) CPU
+
+################################################################
+#### else, use 'ccc'
+################################################################
+else
+
+# Compaq's C Compiler
+CC = ccc
+
+################################################################
+#### set 'CC_OPTS = -arch host -tune host' to generate/tune instructions for this machine
+####     'CC_OPTS += -migrate -fast -inline speed -unroll 0' tweak to run as fast as possible :)
+####     'CC_OPTS += -w0 -pedantic -Wall' set warning and linking flags
+################################################################
+CC_OPTS = -arch host -tune host
+CC_OPTS += -migrate -fast -inline speed -unroll 0
+CC_OPTS += -w0 -pedantic -Wall
+
+
+################################################################
+#### to debug, uncomment
+################################################################
+# For Debugging
+#CC_OPTS += -g3
+
+################################################################
+#### define __DECALPHA__ (i was getting re-declaration warnings
+####   in machine.h
+################################################################
+# Define DEC Alpha
+CPP_OPTS += -D__DECALPHA__
+
+# standard Linux libm
+#LIBS	=	-lm
+# optimized libffm (free fast math library)
+#LIBS	=	-lffm
+# Compaq's fast math library
+LIBS    =       -lcpml
+endif  #  gcc or ccc?
+endif  #  alpha
+endif  #  linux
+
+
+
+##########################################################################
+# FreeBSD
+##########################################################################
+ifeq ($(UNAME),FreeBSD)
+#  remove if you do not have GTK or do not want the GTK frame analyzer
+   GTK = -DHAVE_GTK `gtk12-config --cflags`
+   GTKLIBS = `gtk12-config --libs`
+# Comment out next 2 lines if you want to remove VBR histogram capability
+   BRHIST_SWITCH = -DBRHIST -DHAVE_TERMCAP -DHAVE_TERMCAP_H
+   LIBTERMCAP = -lncurses
+
+endif
+
+
+
+##########################################################################
+# OpenBSD
+##########################################################################
+ifeq ($(UNAME),OpenBSD)
+#  remove if you do not have GTK or do not want the GTK frame analyzer
+   GTK = -DHAVE_GTK `gtk-config --cflags`
+   GTKLIBS = `gtk-config --libs`
+# Comment out next 2 lines if you want to remove VBR histogram capability
+   BRHIST_SWITCH = -DBRHIST -DHAVE_TERMCAP -DHAVE_TERMCAP_H
+   LIBTERMCAP = -lcurses
+endif
+
+
+
+
+##########################################################################
+# SunOS
+##########################################################################
+ifeq ($(UNAME),SunOS)
+   CC = cc
+   CC_OPTS = -O -xCC
+   MAKEDEP = -xM
+# for gcc, use instead:
+#   CC = gcc
+#   CC_OPTS = -O
+#   MAKEDEP = -M
+endif
+
+
+
+##########################################################################
+# SGI
+##########################################################################
+ifeq ($(UNAME),IRIX64)
+   CC = cc
+   CC_OPTS = -O3 -woff all
+
+#optonal:
+#   GTK = -DHAVE_GTK `gtk-config --cflags`
+#   GTKLIBS = `gtk-config --libs`
+#   BRHIST_SWITCH = -DBRHIST -DHAVE_TERMCAP -DHAVE_TERMCAP_H
+#   LIBTERMCAP = -lncurses
+
+endif
+ifeq ($(UNAME),IRIX)
+   CC = cc
+   CC_OPTS = -O3 -woff all
+endif
+
+
+
+##########################################################################
+# Compaq Alpha running Dec Unix (OSF)
+##########################################################################
+ifeq ($(UNAME),OSF1)
+   CC = cc
+   CC_OPTS = -fast -O3 -std -g3 -non_shared
+endif
+
+##########################################################################
+# BeOS
+##########################################################################
+ifeq ($(UNAME),BeOS)
+   CC = $(BE_C_COMPILER)
+   LIBS =
+ifeq ($(ARCH),BePC)
+   CC_OPTS = -O9 -fomit-frame-pointer -march=pentium \
+   -mcpu=pentium -ffast-math -funroll-loops \
+   -fprofile-arcs -fbranch-probabilities
+else
+   CC_OPTS = -opt all
+   MAKEDEP = -make
+endif
+endif
+
+###########################################################################
+# MOSXS (Rhapsody PPC)
+###########################################################################
+ifeq ($(UNAME),Rhapsody)
+   CC = cc
+   LIBS =
+   CC_OPTS = -O9 -ffast-math -funroll-loops -fomit-frame-pointer
+   MAKEDEP = -make
+
+endif
+##########################################################################
+# OS/2
+##########################################################################
+# Properly installed EMX runtime & development package is a prerequisite.
+# tools I used: make 3.76.1, uname 1.12, sed 2.05, PD-ksh 5.2.13
+#
+##########################################################################
+ifeq ($(UNAME),OS/2)
+   SHELL=sh
+   CC = gcc
+   CC_OPTS = -O3 -D__OS2__
+   PGM = lame.exe
+   LIBS =
+   RANLIB = touch
+
+# I use the following for slightly better performance on my Pentium-II
+# using pgcc-2.91.66:
+#   CC_OPTS = -O6 -ffast-math -funroll-loops -mpentiumpro -march=pentiumpro -D__OS2__
+# for the unfortunates with a regular pentium (using pgcc):
+# CC_OPTS = -O6 -ffast-math -funroll-loops -mpentium -march=pentium -D__OS2__
+
+# Comment out next 2 lines if you want to remove VBR histogram capability
+   BRHIST_SWITCH = -DBRHIST -DHAVE_TERMCAP -DHAVE_{NCURSES_}TERMCAP_H
+   LIBTERMCAP = -lncurses
+
+# Uncomment & inspect the 2 GTK lines to use MP3x GTK frame analyzer.
+# Properly installed XFree86/devlibs & GTK+ is a prerequisite.
+# The following works for me using Xfree86/OS2 3.3.5 and GTK+ 1.2.3:
+#   GTK = -DHAVE_GTK -IC:/XFree86/include/gtk12 -Zmt -D__ST_MT_ERRNO__ -IC:/XFree86/include/glib12 -IC:/XFree86/include
+#   GTKLIBS = -LC:/XFree86/lib -Zmtd -Zsysv-signals -Zbin-files -lgtk12 -lgdk12 -lgmodule -lglib12 -lXext -lX11 -lshm -lbsd -lsocket -lm
+endif
+
+
+
+###########################################################################
+# MSDOS/Windows
+###########################################################################
+ifeq ($(UNAME),MSDOS)
+  RM =
+  CC_OPTS = \
+       -Wall -pipe -O3 -fomit-frame-pointer -ffast-math -funroll-loops \
+       -fschedule-insns2 -fmove-all-movables -freduce-all-givs         \
+       -mcpu=pentium -march=pentium -mfancy-math-387
+  CC_OPTS += -D_cdecl=__cdecl
+  PGM = lame.exe
+endif
+
+
+
+###########################################################################
+# AmigaOS
+###########################################################################
+# Type 'Make ARCH=PPC' for PowerUP and 'Make ARCH=WOS' for WarpOS
+#
+###########################################################################
+ifeq ($(UNAME),AmigaOS)
+	CC = gcc -noixemul
+	CC_OPTS = -O3 -ffast-math -funroll-loops -m68020-60 -m68881
+	BRHIST_SWITCH = -DBRHIST
+	MAKEDEP = -MM
+	ifeq ($(ARCH),WOS)
+		CC = ppc-amigaos-gcc -warpup
+		CC_OPTS = -O3 -ffast-math -fomit-frame-pointer -funroll-loops \
+		-mmultiple -mcpu=603e
+		AR = ppc-amigaos-ar
+		RANLIB = ppc-amigaos-ranlib
+		LIBS =
+	endif
+	ifeq ($(ARCH),PPC)
+		CC = ppc-amigaos-gcc
+		CC_OPTS = -O3 -ffast-math -fomit-frame-pointer -funroll-loops \
+		-mmultiple -mcpu=603e
+		AR = ppc-amigaos-ar
+		RANLIB = ppc-amigaos-ranlib
+		LIBS =
+	endif
+endif
+
+
+# 10/99 added -D__NO_MATH_INLINES to fix a bug in *all* versions of
+# gcc 2.8+ as of 10/99.
+
+ifeq ($(HAVE_NEWER_GLIBC),YES)
+CC_SWITCHES =
+else
+CC_SWITCHES = -D__NO_MATH_INLINES  # only needed by some older glibc
+endif
+
+CC_SWITCHES += -DNDEBUG $(CC_OPTS) $(SNDLIB) $(BRHIST_SWITCH)
+frontend_sources = \
+	frontend/amiga_mpega.c \
+        frontend/brhist.c \
+	frontend/get_audio.c \
+        frontend/lametime.c \
+        frontend/parse.c \
+	frontend/portableio.c \
+	frontend/timestatus.c \
+	frontend/console.c \
+
+lib_sources = \
+	libmp3lame/bitstream.c \
+	libmp3lame/encoder.c \
+	libmp3lame/fft.c \
+	libmp3lame/gain_analysis.c \
+        libmp3lame/id3tag.c \
+        libmp3lame/lame.c \
+        libmp3lame/newmdct.c \
+	libmp3lame/psymodel.c \
+	libmp3lame/quantize.c \
+	libmp3lame/quantize_pvt.c \
+        libmp3lame/set_get.c \
+	libmp3lame/vbrquantize.c \
+	libmp3lame/reservoir.c \
+	libmp3lame/tables.c \
+	libmp3lame/takehiro.c \
+	libmp3lame/util.c \
+	libmp3lame/mpglib_interface.c \
+        libmp3lame/VbrTag.c \
+        libmp3lame/version.c \
+        libmp3lame/presets.c \
+        libmp3lame/vector/xmm_quantize_sub.c \
+        mpglib/common.c \
+        mpglib/dct64_i386.c \
+        mpglib/decode_i386.c \
+        mpglib/layer1.c \
+        mpglib/layer2.c \
+        mpglib/layer3.c \
+        mpglib/tabinit.c \
+        mpglib/interface.c
+
+
+#ifeq ($(UNAME),MSDOS)
+#  frontend_sources := $(subst /,\,$(frontend_sources))
+#  lib_sources := $(subst /,\,$(lib_sources))
+#endif
+
+frontend_obj = $(frontend_sources:.c=.o)
+lib_obj = $(lib_sources:.c=.o)
+
+DEP = $(frontend_sources:.c=.d) $(lib_sources:.c=.d )
+
+gtk_sources = frontend/gtkanal.c frontend/gpkplotting.c frontend/mp3x.c
+gtk_obj = $(gtk_sources:.c=.gtk.o)
+gtk_dep = $(gtk_sources:.c=.d)
+
+
+
+NASM = nasm
+ASFLAGS=-f elf -i libmp3lame/i386/
+
+# for people with nasmw
+ifeq ($(UNAME),MSDOS)
+ NASM = nasmw
+ ASFLAGS=-f win32 -DWIN32 -i libmp3lame/i386/
+endif
+
+%.o: %.nas
+	$(NASM) $(ASFLAGS) $< -o $@
+%.o: %.s
+	gcc -c $< -o $@
+
+
+#HAVE_NASM = YES
+
+ifeq ($(HAVE_NASM),YES)
+## have NASM
+CC_SWITCHES += -DHAVE_NASM
+lib_obj += libmp3lame/i386/cpu_feat.o
+
+## use MMX extension. you need nasm and MMX supported CPU.
+CC_SWITCHES += -DMMX_choose_table
+lib_obj += libmp3lame/i386/choose_table.o
+
+## use 3DNow! extension. you need nasm and 3DNow! supported CPU.
+lib_obj += libmp3lame/i386/fft3dn.o
+
+## use SSE extension. you need nasm and SSE supported CPU.
+lib_obj += libmp3lame/i386/fftsse.o
+
+## not yet coded
+#CC_SWITCHES += -DUSE_FFTFPU
+#lib_obj += libmp3lame/i386/fftfpu.o
+endif
+
+
+
+#
+# Makefile rules---you probably won't have to modify below this line
+#
+%.o: %.c
+	$(CC) $(CPP_OPTS) $(CC_SWITCHES) -c $< -o $@
+
+%.d: %.c
+  ifeq ($(NOUNIXCMD),YES)
+	$(CC) $(MAKEDEP)  $(CPP_OPTS) $(CC_SWITCHES)  $< > $@
+  else
+	$(SHELL) -ec '$(CC) $(MAKEDEP)  $(CPP_OPTS) $(CC_SWITCHES)  $< | sed '\''s;$*.o;& $@;g'\'' > $@'
+  endif
+
+%.gtk.o: %.c
+	$(CC) $(CPP_OPTS) $(CC_SWITCHES) $(GTK) -c $< -o $@
+
+all: frontend/$(PGM)
+
+
+$(lib_sources) $(frontend_sources) $(gtk_sources) : config.h
+
+config.h: configMS.h
+  ifeq ($(NOUNIXCMD),YES)
+	copy configMS.h config.h
+  else
+	cp configMS.h config.h
+  endif
+
+frontend/$(PGM):	frontend/main.o $(frontend_obj)  $(MP3LIB)
+	$(CC) $(CC_OPTS) -o frontend/$(PGM)  frontend/main.o $(frontend_obj) \
+        $(MP3LIB) $(LIBS) $(LIBSNDFILE) $(LIBTERMCAP)
+
+mp3x:   $(frontend_obj) $(gtk_obj) $(MP3LIB)
+	$(CC) $(CC_OPTS) -o frontend/mp3x $(frontend_obj) $(gtk_obj) \
+        $(MP3LIB) $(LIBS) $(LIBSNDFILE) $(LIBTERMCAP) $(GTKLIBS) 
+
+mp3rtp:	frontend/rtp.o frontend/mp3rtp.o  $(frontend_obj) $(MP3LIB)
+	$(CC) $(CC_OPTS) -o frontend/mp3rtp frontend/mp3rtp.o frontend/rtp.o $(frontend_obj) $(MP3LIB) \
+        $(LIBS) $(LIBSNDFILE) $(LIBTERMCAP)
+
+libmp3lame/libmp3lame.a:  $(lib_obj)
+	echo $(lib_obj)
+	$(AR) cr libmp3lame/libmp3lame.a  $(lib_obj)
+	$(RANLIB) libmp3lame/libmp3lame.a
+
+#shared library.  GNU specific?
+libmp3lame/libmp3lame.so:  $(lib_obj)
+	gcc -shared -Wl,-soname,libmp3lame/libmp3lame.so -o libmp3lame/libmp3lame.so $(lib_obj)
+
+install:  frontend/$(PGM) #libmp3lame.a
+	cp frontend/$(PGM) /usr/bin
+	#cp libmp3lame.a /usr/lib
+	#cp lame.h /usr/lib
+
+clean:
+  ifeq ($(UNAME),MSDOS)
+	-del $(subst /,\,$(frontend_obj))
+	-del $(subst /,\,$(lib_obj))
+	-del $(subst /,\,$(gtk_obj))
+	-del $(subst /,\,$(DEP))
+	-del frontend\$(PGM)
+	-del frontend\main.o
+	-del libmp3lame\libmp3lame.a
+  else
+	-$(RM) $(gtk_obj) $(frontend_obj) $(lib_obj) $(DEP) frontend/$(PGM) \
+          frontend/main.o frontend/lame libmp3lame/libmp3lame.a \
+          frontend/mp3x.o frontend/mp3x
+  endif
+
+
+tags: TAGS
+
+TAGS: ${c_sources}
+	etags -T ${c_sources}
+
+ifneq ($(MAKECMDGOALS),clean)
+  -include $(DEP)
+endif
+
+
+#
+#  testcase.mp3 is a 2926 byte file.  The first number output by
+#  wc is the number of bytes which differ between new output
+#  and 'official' results.
+#
+#  Because of compiler options and effects of roundoff, the
+#  number of bytes which are different may not be zero, but
+#  should be at most 30.
+#
+test: frontend/$(PGM)
+	frontend/$(PGM)  --nores testcase.wav testcase.new.mp3
+	cmp -l testcase.new.mp3 testcase.mp3 | wc -l

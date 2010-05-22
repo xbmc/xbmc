@@ -1,3 +1,24 @@
+/*
+ *      Copyright Â© 2006-2010 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 using System;
 using System.Drawing;
 using System.Collections;
@@ -548,14 +569,14 @@ namespace TeamXBMC.Translator
 			}
 
 			// setup abbreviation array for temp units
-			tempUnits.Add(new Unit("F", "°F"));
+			tempUnits.Add(new Unit("F", "Â°F"));
 			tempUnits.Add(new Unit("K", "K"));
-			tempUnits.Add(new Unit("C", "°C"));
-			tempUnits.Add(new Unit("Re", "°Ré"));
-			tempUnits.Add(new Unit("Ra", "°Ra"));
-			tempUnits.Add(new Unit("Ro", "°Rø"));
-			tempUnits.Add(new Unit("De", "°De"));
-			tempUnits.Add(new Unit("N", "°N"));
+			tempUnits.Add(new Unit("C", "Â°C"));
+			tempUnits.Add(new Unit("Re", "Â°RÃ©"));
+			tempUnits.Add(new Unit("Ra", "Â°Ra"));
+			tempUnits.Add(new Unit("Ro", "Â°RÃ¸"));
+			tempUnits.Add(new Unit("De", "Â°De"));
+			tempUnits.Add(new Unit("N", "Â°N"));
 
 			// fill combobox with long names
 			foreach (Unit tempUnit in tempUnits)

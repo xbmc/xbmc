@@ -5,6 +5,7 @@
 #include "PresetFrameIO.hpp"
 #include "BeatDetect.hpp"
 #include <string>
+#include <pthread.h>
 
 #ifdef USE_GLES1
 #include <GLES/gl.h>
@@ -97,7 +98,8 @@ private:
   int vh;
   bool useFBO;
   float aspect;
-  
+ 
+  pthread_mutex_t _renderer_lock;
 
 #ifdef USE_FTGL
   FTGLPixmapFont *title_font;

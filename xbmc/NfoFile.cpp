@@ -69,7 +69,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
 
   AddonPtr addon;
   ScraperPtr defaultScraper;
-  if (!CAddonMgr::Get()->GetDefault(ADDON_SCRAPER, addon, m_content))
+  if (!CAddonMgr::Get().GetDefault(ADDON_SCRAPER, addon, m_content))
     return NO_NFO;
   else
     defaultScraper = boost::dynamic_pointer_cast<CScraper>(addon);

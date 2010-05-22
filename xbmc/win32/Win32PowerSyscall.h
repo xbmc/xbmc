@@ -28,7 +28,7 @@
 #define _WIN32_POWER_SYSCALL_H_
 #include "IPowerSyscall.h"
 
-class CWin32PowerSyscall : public IPowerSyscall
+class CWin32PowerSyscall : public CPowerSyscallWithoutEvents
 {
 public:
   CWin32PowerSyscall();
@@ -42,6 +42,17 @@ public:
   virtual bool CanSuspend();
   virtual bool CanHibernate();
   virtual bool CanReboot();
+
+  virtual bool PumpPowerEvents(IPowerEventsCallback *callback);
+
+  static void SetOnResume() { m_OnResume = true; }
+  static void SetOnSuspend() { m_OnSuspend = true; }
+
+private:
+
+  static bool m_OnResume;
+  static bool m_OnSuspend;
+
 };
 #endif
 #endif

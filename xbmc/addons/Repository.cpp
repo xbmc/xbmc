@@ -38,7 +38,6 @@ using namespace ADDON;
 AddonPtr CRepository::Clone(const AddonPtr &self) const
 {
   CRepository* result = new CRepository(*this, self);
-  result->m_name = m_name;
   result->m_info = m_info;
   result->m_checksum = m_checksum;
   result->m_datadir = m_datadir;
@@ -52,7 +51,23 @@ CRepository::CRepository(const AddonProps& props) :
 {
   m_compressed = false;
   m_zipped = false;
-  LoadFromXML(Path()+LibName());
+}
+
+CRepository::CRepository(cp_plugin_info_t *props)
+  : CAddon(props)
+{
+  m_compressed = false;
+  m_zipped = false;
+  // read in the other props that we need
+  const cp_extension_t *ext = CAddonMgr::Get().GetExtension(props, "xbmc.addon.repository");
+  if (ext)
+  {
+    m_checksum = CAddonMgr::Get().GetExtValue(ext->configuration, "checksum");
+    m_compressed = CAddonMgr::Get().GetExtValue(ext->configuration, "info@compressed").Equals("true");
+    m_info = CAddonMgr::Get().GetExtValue(ext->configuration, "info");
+    m_datadir = CAddonMgr::Get().GetExtValue(ext->configuration, "datadir");
+    m_zipped = CAddonMgr::Get().GetExtValue(ext->configuration, "datadir@zip").Equals("true");
+  }
 }
 
 CRepository::CRepository(const CRepository &rhs, const AddonPtr &self)
@@ -64,51 +79,23 @@ CRepository::~CRepository()
 {
 }
 
-bool CRepository::LoadFromXML(const CStdString& xml)
-{
-  CSingleLock lock(m_critSection);
-  TiXmlDocument doc;
-  doc.LoadFile(xml);
-  if (!doc.RootElement())
-    return false;
-
-  XMLUtils::GetString(doc.RootElement(),"name", m_name);
-  TiXmlElement* info = doc.RootElement()->FirstChildElement("info");
-  if (info)
-  {
-    const char* attr = info->Attribute("compressed");
-    if (attr && stricmp(attr,"true") == 0)
-      m_compressed = true;
-  }
-  XMLUtils::GetString(doc.RootElement(),"info", m_info);
-  XMLUtils::GetString(doc.RootElement(),"checksum", m_checksum);
-  XMLUtils::GetString(doc.RootElement(),"datadir", m_datadir);
-  info = doc.RootElement()->FirstChildElement("datadir");
-  if (info)
-  {
-    const char* attr = info->Attribute("zip");
-    if (attr && stricmp(attr,"true") == 0)
-      m_zipped = true;
-  }
-
-  return true;
-}
-
 CStdString CRepository::Checksum()
 {
   CSingleLock lock(m_critSection);
   CFile file;
   file.Open(m_checksum);
   CStdString checksum;
-  char* temp = new char[file.GetLength()+1];
-  if (temp)
+  try
   {
+    char* temp = new char[(size_t)file.GetLength()+1];
     file.Read(temp,file.GetLength());
     temp[file.GetLength()] = 0;
     checksum = temp;
     delete[] temp;
   }
-
+  catch (...)
+  {
+  }
   return checksum;
 }
 
@@ -133,22 +120,23 @@ VECADDONS CRepository::Parse()
   doc.LoadFile(file);
   if (doc.RootElement())
   {
-    TiXmlElement* element = doc.RootElement()->FirstChildElement("addoninfo");
-    while (element)
+    CAddonMgr::Get().AddonsFromRepoXML(doc.RootElement(), result);
+    for (IVECADDONS i = result.begin(); i != result.end(); ++i)
     {
-      AddonPtr addon;
-      if (CAddonMgr::AddonFromInfoXML(element,addon,m_info))
+      AddonPtr addon = *i;
+      if (m_zipped)
       {
-        if (m_zipped)
-        {
-          addon->Props().path = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/"+addon->ID()+"-"+addon->Version().str+".zip");
-          addon->Props().icon = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/icon.png");
-        }
-        else
-          addon->Props().path = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/");
-        result.push_back(addon);
+        addon->Props().path = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/"+addon->ID()+"-"+addon->Version().str+".zip");
+        addon->Props().icon = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/icon.png");
+        addon->Props().changelog = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/changelog-"+addon->Version().str+".txt");
+        addon->Props().fanart = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/fanart.jpg");
       }
-      element = element->NextSiblingElement("addoninfo");
+      else
+      {
+        addon->Props().path = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/");
+        addon->Props().changelog = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/changelog.txt");
+        addon->Props().fanart = CUtil::AddFileToFolder(m_datadir,addon->ID()+"/fanart.jpg");
+      }
     }
   }
 
@@ -191,7 +179,7 @@ bool CRepositoryUpdateJob::DoWork()
   for (unsigned int i=0;i<addons.size();++i)
   {
     AddonPtr addon;
-    if (CAddonMgr::Get()->GetAddon(addons[i]->ID(),addon) &&
+    if (CAddonMgr::Get().GetAddon(addons[i]->ID(),addon) &&
         addons[i]->Version() > addon->Version())
     {
       if (g_settings.m_bAddonAutoUpdate || addon->Type() >= ADDON_VIZ_LIBRARY)

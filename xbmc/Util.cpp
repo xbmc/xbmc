@@ -661,11 +661,11 @@ void CUtil::RunShortcut(const char* szShortcutPath)
 {
 }
 
-void CUtil::GetHomePath(CStdString& strPath)
+void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 {
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
-  strPath = getenv("XBMC_HOME");
+  strPath = getenv(strTarget);
   if (strPath != NULL && !strPath.IsEmpty())
   {
 #ifdef _WIN32
@@ -1896,8 +1896,7 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
   unsigned char* outpixels = NULL;
 
 #ifdef HAS_DX
-  LPDIRECT3DSURFACE9 lpSurface = NULL;
-
+  LPDIRECT3DSURFACE9 lpSurface = NULL, lpBackbuffer = NULL;
   g_graphicsContext.Lock();
   if (g_application.IsPlayingVideo())
   {
@@ -1905,10 +1904,16 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
     g_renderManager.SetupScreenshot();
 #endif
   }
+  g_application.RenderNoPresent();
+
+  if (FAILED(g_Windowing.Get3DDevice()->CreateOffscreenPlainSurface(g_Windowing.GetWidth(), g_Windowing.GetHeight(), D3DFMT_X8R8G8B8, D3DPOOL_SYSTEMMEM, &lpSurface, NULL)))
+    return;
+
+  if (FAILED(g_Windowing.Get3DDevice()->GetRenderTarget(0, &lpBackbuffer)))
+    return;
 
   // now take screenshot
-  g_application.RenderNoPresent();
-  if (SUCCEEDED(g_Windowing.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
+  if (SUCCEEDED(g_Windowing.Get3DDevice()->GetRenderTargetData(lpBackbuffer, lpSurface)))
   {
     D3DLOCKED_RECT lr;
     D3DSURFACE_DESC desc;
@@ -1926,15 +1931,17 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
     {
       CLog::Log(LOGERROR, "%s LockRect failed", __FUNCTION__);
     }
-    lpSurface->Release();
   }
   else
   {
     CLog::Log(LOGERROR, "%s GetBackBuffer failed", __FUNCTION__);
   }
+  lpSurface->Release();
+  lpBackbuffer->Release();
+
   g_graphicsContext.Unlock();
 
-#elif defined(HAS_GL)
+#elif defined(HAS_GL) || defined(HAS_GLES)
 
   g_graphicsContext.BeginPaint();
   if (g_application.IsPlayingVideo())
@@ -1944,9 +1951,9 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
 #endif
   }
   g_application.RenderNoPresent();
-
+#ifndef HAS_GLES
   glReadBuffer(GL_BACK);
-
+#endif
   //get current viewport
   GLint viewport[4];
   glGetIntegerv(GL_VIEWPORT, viewport);
@@ -1957,8 +1964,11 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
   unsigned char* pixels = new unsigned char[stride * height];
 
   //read pixels from the backbuffer
+#if HAS_GLES == 2
+  glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)pixels);
+#else
   glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, (GLvoid*)pixels);
-
+#endif
   g_graphicsContext.EndPaint();
 
   //make a new buffer and copy the read image to it with the Y axis inverted
@@ -2153,6 +2163,40 @@ void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
   result->st_mtime = (time_t)(stat->st_mtime & 0xFFFFFFFF);
   result->st_ctime = (time_t)(stat->st_ctime & 0xFFFFFFFF);
 }
+
+#ifdef _WIN32
+void CUtil::Stat64ToStat64i32(struct _stat64i32 *result, struct __stat64 *stat)
+{
+  result->st_dev = stat->st_dev;
+  result->st_ino = stat->st_ino;
+  result->st_mode = stat->st_mode;
+  result->st_nlink = stat->st_nlink;
+  result->st_uid = stat->st_uid;
+  result->st_gid = stat->st_gid;
+  result->st_rdev = stat->st_rdev;
+#ifndef _LINUX
+  if (stat->st_size <= LONG_MAX)
+    result->st_size = (_off_t)stat->st_size;
+#else
+  if (sizeof(stat->st_size) <= sizeof(result->st_size) )
+    result->st_size = (off_t)stat->st_size;
+#endif
+  else
+  {
+    result->st_size = 0;
+    CLog::Log(LOGWARNING, "WARNING: File is larger than 32bit stat can handle, file size will be reported as 0 bytes");
+  }
+#ifndef _LINUX
+  result->st_atime = stat->st_atime;
+  result->st_mtime = stat->st_mtime;
+  result->st_ctime = stat->st_ctime;
+#else
+  result->st_atime = stat->_st_atime;
+  result->st_mtime = stat->_st_mtime;
+  result->st_ctime = stat->_st_ctime;
+#endif
+}
+#endif
 
 bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 {

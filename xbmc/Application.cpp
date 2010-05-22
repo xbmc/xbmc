@@ -24,6 +24,7 @@
 #endif
 #include "Application.h"
 #include "utils/Builtins.h"
+#include "SystemGlobals.h"
 #include "Splash.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "LangInfo.h"
@@ -182,7 +183,7 @@
 // Dialog includes
 #include "GUIDialogMusicOSD.h"
 #include "GUIDialogVisualisationPresetList.h"
-#include "GUIWindowScriptsInfo.h"
+#include "GUIDialogTextViewer.h"
 #include "GUIDialogNetworkSetup.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogVideoSettings.h"
@@ -296,6 +297,8 @@ using namespace ANNOUNCEMENT;
 
 #define MAX_FFWD_SPEED 5
 
+CApplication& g_application = g_SystemGlobals.m_application;
+
 //extern IDirectSoundRenderer* m_pAudioDecoder;
 CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressTrackingItem(new CFileItem)
 {
@@ -336,7 +339,6 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
 
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
-  m_bRunResumeJobs = false;
   m_bSystemScreenSaverEnable = false;
 }
 
@@ -534,7 +536,7 @@ bool CApplication::Create()
 
   uint32_t sdlFlags = 0;
 
-#ifdef HAS_SDL_OPENGL
+#if defined(HAS_SDL_OPENGL) || (HAS_GLES == 2)
   sdlFlags |= SDL_INIT_VIDEO;
 #endif
 
@@ -568,6 +570,8 @@ bool CApplication::Create()
   setenv("OS","OS X",true);
 #elif defined(_LINUX)
   setenv("OS","Linux",true);
+#elif defined(_WIN32)
+  SetEnvironmentVariable("OS","win32");
 #endif
 
   // Initialize core peripheral port support. Note: If these parameters
@@ -589,6 +593,34 @@ bool CApplication::Create()
     FatalErrorHandler(true, true, true);
 
   update_emu_environ();//apply the GUI settings
+
+  // initialize our charset converter
+  g_charsetConverter.reset();
+
+  // Load the langinfo to have user charset <-> utf-8 conversion
+  CStdString strLanguage = g_guiSettings.GetString("locale.language");
+  strLanguage[0] = toupper(strLanguage[0]);
+
+  CStdString strLangInfoPath;
+  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
+
+  CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
+  g_langInfo.Load(strLangInfoPath);
+
+  CStdString strLanguagePath;
+  strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
+
+  CLog::Log(LOGINFO, "load language file:%s", strLanguagePath.c_str());
+  if (!g_localizeStrings.Load(strLanguagePath))
+    FatalErrorHandler(false, false, true);
+
+  // start-up Addons Framework
+  // currently bails out if either cpluff Dll is unavailable or system dir can not be scanned
+  if (!CAddonMgr::Get().Init())
+  {
+    CLog::Log(LOGFATAL, "CApplication::Create: Unable to start CAddonMgr");
+    FatalErrorHandler(true, true, true);
+  }
 
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
@@ -646,19 +678,6 @@ bool CApplication::Create()
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
 
-  // initialize our charset converter
-  g_charsetConverter.reset();
-
-  // Load the langinfo to have user charset <-> utf-8 conversion
-  CStdString strLanguage = g_guiSettings.GetString("locale.language");
-  strLanguage[0] = toupper(strLanguage[0]);
-
-  CStdString strLangInfoPath;
-  strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
-
-  CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
-  g_langInfo.Load(strLangInfoPath);
-
   CStdString strUserSplash = "special://home/media/Splash.png";
   if (CFile::Exists(strUserSplash))
   {
@@ -671,13 +690,6 @@ bool CApplication::Create()
     m_splash = new CSplash("special://xbmc/media/Splash.png");
   }
   m_splash->Show();
-
-  CStdString strLanguagePath;
-  strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
-
-  CLog::Log(LOGINFO, "load language file:%s", strLanguagePath.c_str());
-  if (!g_localizeStrings.Load(strLanguagePath))
-    FatalErrorHandler(false, false, true);
 
   CLog::Log(LOGINFO, "load keymapping");
   if (!CButtonTranslator::GetInstance().Load())
@@ -736,14 +748,32 @@ bool CApplication::InitDirectoriesLinux()
   else
     userHome = "/root";
 
-  CStdString strHomePath;
-  CUtil::GetHomePath(strHomePath);
-  setenv("XBMC_HOME", strHomePath.c_str(), 0);
+  CStdString xbmcBinPath, xbmcPath;
+  CUtil::GetHomePath(xbmcBinPath, "XBMC_BIN_HOME");
+  xbmcPath = INSTALL_PATH;
+
+  /* Check if xbmc binaries and arch independent data files are being kept in
+   * separate locations. */
+  if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
+  {
+    /* Attempt to locate arch independent data files. */
+    CUtil::GetHomePath(xbmcPath);
+    if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
+    {
+      fprintf(stderr, "Unable to find path to XBMC data files!\n");
+      exit(1);
+    }
+  }
+
+  /* Set some environment variables */
+  setenv("XBMC_BIN_HOME", xbmcBinPath.c_str(), 0);
+  setenv("XBMC_HOME", xbmcPath.c_str(), 0);
 
   if (m_bPlatformDirectories)
   {
     // map our special drives
-    CSpecialProtocol::SetXBMCPath(strHomePath);
+    CSpecialProtocol::SetXBMCBinPath(xbmcBinPath);
+    CSpecialProtocol::SetXBMCPath(xbmcPath);
     CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
 
@@ -772,14 +802,15 @@ bool CApplication::InitDirectoriesLinux()
   }
   else
   {
-    CUtil::AddSlashAtEnd(strHomePath);
-    g_settings.m_logFolder = strHomePath;
+    CUtil::AddSlashAtEnd(xbmcPath);
+    g_settings.m_logFolder = xbmcPath;
 
-    CSpecialProtocol::SetXBMCPath(strHomePath);
-    CSpecialProtocol::SetHomePath(strHomePath);
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
+    CSpecialProtocol::SetXBMCBinPath(xbmcBinPath);
+    CSpecialProtocol::SetXBMCPath(xbmcPath);
+    CSpecialProtocol::SetHomePath(CUtil::AddFileToFolder(xbmcPath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(xbmcPath, "portable_data/userdata"));
 
-    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp");
+    CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
     CDirectory::Create("special://temp/");
 
@@ -808,15 +839,16 @@ bool CApplication::InitDirectoriesOSX()
   else
     userHome = "/root";
 
-  CStdString strHomePath;
-  CUtil::GetHomePath(strHomePath);
-  setenv("XBMC_HOME", strHomePath.c_str(), 0);
+  CStdString xbmcPath;
+  CUtil::GetHomePath(xbmcPath);
+  setenv("XBMC_HOME", xbmcPath.c_str(), 0);
 
   // OSX always runs with m_bPlatformDirectories == true
   if (m_bPlatformDirectories)
   {
     // map our special drives
-    CSpecialProtocol::SetXBMCPath(strHomePath);
+    CSpecialProtocol::SetXBMCBinPath(xbmcPath);
+    CSpecialProtocol::SetXBMCPath(xbmcPath);
     CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
 
@@ -842,7 +874,7 @@ bool CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
 #ifdef __APPLE__
-    strTempPath = strHomePath + "/scripts";
+    strTempPath = xbmcPath + "/scripts";
 #else
     strTempPath = INSTALL_PATH "/scripts";
 #endif
@@ -858,14 +890,15 @@ bool CApplication::InitDirectoriesOSX()
   }
   else
   {
-    CUtil::AddSlashAtEnd(strHomePath);
-    g_settings.m_logFolder = strHomePath;
+    CUtil::AddSlashAtEnd(xbmcPath);
+    g_settings.m_logFolder = xbmcPath;
 
-    CSpecialProtocol::SetXBMCPath(strHomePath);
-    CSpecialProtocol::SetHomePath(strHomePath);
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
+    CSpecialProtocol::SetXBMCBinPath(xbmcPath);
+    CSpecialProtocol::SetXBMCPath(xbmcPath);
+    CSpecialProtocol::SetHomePath(CUtil::AddFileToFolder(xbmcPath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(xbmcPath, "portable_data/userdata"));
 
-    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp");
+    CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
     CDirectory::Create("special://temp/");
 
@@ -882,17 +915,12 @@ bool CApplication::InitDirectoriesOSX()
 bool CApplication::InitDirectoriesWin32()
 {
 #ifdef _WIN32
-  CStdString strExecutablePath;
+  CStdString xbmcPath;
 
-  CUtil::GetHomePath(strExecutablePath);
-  SetEnvironmentVariable("XBMC_HOME", strExecutablePath.c_str());
-  CSpecialProtocol::SetXBMCPath(strExecutablePath);
-
-  // check if we already ran in platform or portable mode
-  if(XFILE::CDirectory::Exists(CWIN32Util::GetProfilePath()+"\\XBMC\\userdata\\Database"))
-    g_application.EnablePlatformDirectories(true);
-  else if(XFILE::CDirectory::Exists("special://xbmc/userdata/Database"))
-    g_application.EnablePlatformDirectories(false);
+  CUtil::GetHomePath(xbmcPath);
+  SetEnvironmentVariable("XBMC_HOME", xbmcPath.c_str());
+  CSpecialProtocol::SetXBMCBinPath(xbmcPath);
+  CSpecialProtocol::SetXBMCPath(xbmcPath);
 
   if (m_bPlatformDirectories)
   {
@@ -907,7 +935,8 @@ bool CApplication::InitDirectoriesWin32()
     CUtil::AddSlashAtEnd(g_settings.m_logFolder);
 
     // map our special drives
-    CSpecialProtocol::SetXBMCPath(strExecutablePath);
+    CSpecialProtocol::SetXBMCBinPath(xbmcPath);
+    CSpecialProtocol::SetXBMCPath(xbmcPath);
     CSpecialProtocol::SetHomePath(homePath);
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(homePath, "userdata"));
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile").c_str());
@@ -934,14 +963,16 @@ bool CApplication::InitDirectoriesWin32()
   }
   else
   {
-    g_settings.m_logFolder = strExecutablePath;
-    CUtil::AddSlashAtEnd(g_settings.m_logFolder);
-    CStdString strTempPath = CUtil::AddFileToFolder(strExecutablePath, "cache");
+    CUtil::AddSlashAtEnd(xbmcPath);
+    g_settings.m_logFolder = xbmcPath;
+
+    CSpecialProtocol::SetHomePath(CUtil::AddFileToFolder(xbmcPath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(xbmcPath, "portable_data/userdata"));
+
+    CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
     CDirectory::Create("special://temp/");
 
-    CSpecialProtocol::SetHomePath(strExecutablePath);
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strExecutablePath,"userdata"));
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile/").c_str());
   }
 
@@ -1015,8 +1046,15 @@ bool CApplication::Initialize()
 
   g_windowManager.Add(new CGUIWindowHome);                     // window id = 0
 
+  // Make sure we have at least the default skin
   if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")))
-    LoadSkin(DEFAULT_SKIN);
+  {
+    if (!LoadSkin(DEFAULT_SKIN))
+    {
+      CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", DEFAULT_SKIN);
+      FatalErrorHandler(true, true, true);
+    }
+  }
 
   g_windowManager.Add(new CGUIWindowPrograms);                 // window id = 1
   g_windowManager.Add(new CGUIWindowPictures);                 // window id = 2
@@ -1092,7 +1130,7 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowMusicInfo);                // window id = 2001
   g_windowManager.Add(new CGUIDialogOK);                 // window id = 2002
   g_windowManager.Add(new CGUIWindowVideoInfo);                // window id = 2003
-  g_windowManager.Add(new CGUIWindowScriptsInfo);              // window id = 2004
+  g_windowManager.Add(new CGUIDialogTextViewer);
   g_windowManager.Add(new CGUIWindowFullScreen);         // window id = 2005
   g_windowManager.Add(new CGUIWindowVisualisation);      // window id = 2006
   g_windowManager.Add(new CGUIWindowSlideShow);          // window id = 2007
@@ -1495,7 +1533,7 @@ void CApplication::ReloadSkin()
 bool CApplication::LoadSkin(const CStdString& skinID)
 {
   AddonPtr addon;
-  if (CAddonMgr::Get()->GetAddon(skinID, addon))
+  if (CAddonMgr::Get().GetAddon(skinID, addon, ADDON_SKIN))
   {
     LoadSkin(boost::dynamic_pointer_cast<ADDON::CSkinInfo>(addon));
     return true;
@@ -1543,7 +1581,6 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   UnloadSkin();
 
   CLog::Log(LOGINFO, "  load skin from:%s", skin->Path().c_str());
-
   g_SkinInfo = skin;
   g_SkinInfo->Start();
 
@@ -1865,9 +1902,9 @@ void CApplication::RenderScreenSaver()
 {
   bool draw = false;
   float amount = 0.0f;
-  if (m_screenSaverMode == "Dim")
+  if (m_screenSaverMode == "_virtual.dim")
     amount = 1.0f - g_guiSettings.GetInt("screensaver.dimlevel")*0.01f;
-  else if (m_screenSaverMode == "Black")
+  else if (m_screenSaverMode == "_virtual.blk")
     amount = 1.0f; // fully fade
   // special case for dim screensaver
   if (amount > 0.f)
@@ -1967,7 +2004,7 @@ void CApplication::Render()
     int nDelayTime = 0;
     // Less fps in DPMS or Black screensaver
     bool lowfps = (m_dpmsIsActive
-                   || (m_bScreenSave && (m_screenSaverMode == "Black")
+                   || (m_bScreenSave && (m_screenSaverMode == "_virtual.blk")
                        && (screenSaverFadeAmount >= 100)));
     // Whether externalplayer is playing and we're unfocused
     bool extPlayerActive = m_eCurrentPlayer >= EPC_EXTPLAYER && IsPlaying() && !m_AppFocused;
@@ -2563,10 +2600,13 @@ bool CApplication::OnAction(const CAction &action)
 
   if (action.GetID() == ACTION_TOGGLE_DIGITAL_ANALOG)
   {
-    if(g_guiSettings.GetInt("audiooutput.mode")==AUDIO_DIGITAL)
-      g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG);
-    else
-      g_guiSettings.SetInt("audiooutput.mode", AUDIO_DIGITAL);
+    switch(g_guiSettings.GetInt("audiooutput.mode"))
+    {
+      case AUDIO_ANALOG: g_guiSettings.SetInt("audiooutput.mode", AUDIO_IEC958); break;
+      case AUDIO_IEC958: g_guiSettings.SetInt("audiooutput.mode", AUDIO_HDMI  ); break;
+      case AUDIO_HDMI  : g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG); break;
+    }
+
     g_application.Restart();
     if (g_windowManager.GetActiveWindow() == WINDOW_SETTINGS_SYSTEM)
     {
@@ -3121,6 +3161,7 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_SLIDER);
 
     g_windowManager.Delete(WINDOW_DIALOG_OSD_TELETEXT);
+    g_windowManager.Delete(WINDOW_DIALOG_TEXT_VIEWER);
 
     g_windowManager.Delete(WINDOW_STARTUP_ANIM);
     g_windowManager.Delete(WINDOW_LOGIN_SCREEN);
@@ -3136,7 +3177,6 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_OSD);
     g_windowManager.Delete(WINDOW_MUSIC_OVERLAY);
     g_windowManager.Delete(WINDOW_VIDEO_OVERLAY);
-    g_windowManager.Delete(WINDOW_SCRIPTS_INFO);
     g_windowManager.Delete(WINDOW_SLIDESHOW);
 
     g_windowManager.Delete(WINDOW_HOME);
@@ -3157,6 +3197,8 @@ bool CApplication::Cleanup()
 
     g_windowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
     g_windowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);
+
+    CAddonMgr::Get().DeInit();
 
     CLog::Log(LOGNOTICE, "unload sections");
     CSectionLoader::UnloadAll();
@@ -4232,7 +4274,7 @@ bool CApplication::WakeUpScreenSaver()
       if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
           (g_settings.UsingLoginScreen() || g_guiSettings.GetBool("masterlock.startuplock")) &&
           g_settings.GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-          m_screenSaverMode != "Dim" && m_screenSaverMode != "Black" && m_screenSaverMode != "Visualisation")
+          m_screenSaverMode != "_virtual.dim" && m_screenSaverMode != "_virtual.blk" && m_screenSaverMode != "_virtual.viz")
       {
         m_iScreenSaveLock = 2;
         CGUIMessage msg(GUI_MSG_CHECK_LOCK,0,0);
@@ -4249,14 +4291,14 @@ bool CApplication::WakeUpScreenSaver()
     m_iScreenSaveLock = 0;
     ResetScreenSaverTimer();
 
-    if (m_screenSaverMode == "Visualisation" || m_screenSaverMode == "Slideshow" || m_screenSaverMode == "Fanart Slideshow")
+    if (m_screenSaverMode == "_virtual.viz" || m_screenSaverMode == "_virtual.pic" || m_screenSaverMode == "_virtual.fan")
     {
       // we can just continue as usual from vis mode
       return false;
     }
-    else if (m_screenSaverMode == "Dim" || m_screenSaverMode == "Black")
+    else if (m_screenSaverMode == "_virtual.dim" || m_screenSaverMode == "_virtual.blk")
       return true;
-    else if (m_screenSaverMode != "None")
+    else if (m_screenSaverMode != "_virtual.none")
     { // we're in screensaver window
       if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
         g_windowManager.PreviousWindow();  // show the previous window
@@ -4271,7 +4313,7 @@ void CApplication::CheckScreenSaverAndDPMS()
 {
   bool maybeScreensaver =
       !m_dpmsIsActive && !m_bScreenSave
-      && g_guiSettings.GetString("screensaver.mode") != "None";
+      && g_guiSettings.GetString("screensaver.mode") != "_virtual.none";
   bool maybeDPMS =
       !m_dpmsIsActive && m_dpms->IsSupported()
       && g_guiSettings.GetInt("powermanagement.displaysoff") > 0;
@@ -4334,27 +4376,27 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   {
     // set to Dim in the case of a dialog on screen or playing video
     if (g_windowManager.HasModalDialog() || (IsPlayingVideo() && g_guiSettings.GetBool("screensaver.usedimonpause")))
-      m_screenSaverMode = "Dim";
+      m_screenSaverMode = "_virtual.dim";
     // Check if we are Playing Audio and Vis instead Screensaver!
-    else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && g_guiSettings.GetString("musicplayer.visualisation") != "None")
+    else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && g_guiSettings.GetString("musicplayer.visualisation") != "_virtual.none")
     { // activate the visualisation
-      m_screenSaverMode = "Visualisation";
+      m_screenSaverMode = "_virtual.viz";
       g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
       return;
     }
   }
   // Picture slideshow
-  if (m_screenSaverMode == "SlideShow" || m_screenSaverMode == "Fanart Slideshow")
+  if (m_screenSaverMode == "_virtual.pic" || m_screenSaverMode == "_virtual.fan")
   {
     // reset our codec info - don't want that on screen
     g_infoManager.SetShowCodec(false);
     m_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("screensaver.slideshowpath"), true);
   }
-  else if (m_screenSaverMode == "Dim")
+  else if (m_screenSaverMode == "_virtual.dim")
     return;
-  else if (m_screenSaverMode == "Black")
+  else if (m_screenSaverMode == "_virtual.blk")
     return;
-  else if (m_screenSaverMode != "None")
+  else if (m_screenSaverMode != "_virtual.none")
     g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
 }
 
@@ -4694,9 +4736,7 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
-  // run resume jobs if we are coming from suspend/hibernate
-  if (m_bRunResumeJobs)
-    g_powerManager.Resume();
+  g_powerManager.ProcessEvents();
 
   // Store our file state for use on close()
   UpdateFileState();
@@ -4788,7 +4828,13 @@ void CApplication::ProcessSlow()
     g_lcd->Initialize();
   }
 #endif
-  ADDON::CAddonMgr::Get()->UpdateRepos();
+  ADDON::CAddonMgr::Get().UpdateRepos();
+
+#if defined(__arm__)
+  // TODO: gui rendering testing, remove later
+  printf( "FPS: %s\n", g_infoManager.GetLabel(SYSTEM_FPS).c_str() );
+#endif
+
 }
 
 // Global Idle Time in Seconds

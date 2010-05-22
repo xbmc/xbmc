@@ -27,7 +27,9 @@
 #include "Audio/DVDAudioCodec.h"
 #include "Overlay/DVDOverlayCodec.h"
 
+#include "Video/DVDVideoCodecVDA.h"
 #include "Video/DVDVideoCodecFFmpeg.h"
+#include "Video/DVDVideoCodecOpenMax.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
 #if defined(HAVE_LIBCRYSTALHD)
 #include "Video/DVDVideoCodecCrystalHD.h"
@@ -53,6 +55,7 @@
 
 #include "DVDStreamInfo.h"
 #include "GUISettings.h"
+#include "utils/SystemInfo.h"
 
 CDVDVideoCodec* CDVDFactoryCodec::OpenCodec(CDVDVideoCodec* pCodec, CDVDStreamInfo &hints, CDVDCodecOptions &options )
 {
@@ -126,15 +129,27 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   CDVDVideoCodec* pCodec = NULL;
   CDVDCodecOptions options;
 
+  //when support for a hardware decoder is not compiled in
+  //only print it if it's actually available on the platform
   CStdString hwSupport;
+#if defined(HAVE_LIBVDADECODER) && defined(__APPLE__)
+  hwSupport += "VDADecoder:yes ";
+#elif defined(__APPLE__)
+  hwSupport += "VDADecoder:no ";
+#endif
 #ifdef HAVE_LIBCRYSTALHD
-  hwSupport += "Crystal HD:yes ";
+  hwSupport += "CrystalHD:yes ";
 #else
-  hwSupport += "Crystal HD:no ";
+  hwSupport += "CrystalHD:no ";
+#endif
+#if defined(HAVE_LIBOPENMAX) && defined(_LINUX)
+  hwSupport += "OpenMax:yes ";
+#elif defined(_LINUX)
+  hwSupport += "OpenMax:no ";
 #endif
 #if defined(HAVE_LIBVDPAU) && defined(_LINUX)
   hwSupport += "VDPAU:yes ";
-#elif defined(_LINUX)
+#elif defined(_LINUX) && !defined(__APPLE__)
   hwSupport += "VDPAU:no ";
 #endif
 #if defined(_WIN32) && defined(HAS_DX)
@@ -142,9 +157,9 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 #elif defined(_WIN32)
   hwSupport += "DXVA:no ";
 #endif
-#if defined(HAVE_LIBVA)
+#if defined(HAVE_LIBVA) && defined(_LINUX)
   hwSupport += "VAAPI:yes ";
-#else
+#elif defined(_LINUX) && !defined(__APPLE__)
   hwSupport += "VAAPI:no ";
 #endif
 
@@ -155,6 +170,16 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   {
     if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
   }
+#if defined(HAVE_LIBVDADECODER)
+  if (g_sysinfo.HasVDADecoder())
+  {
+    if (g_guiSettings.GetBool("videoplayer.usevda") && !hint.software && hint.codec == CODEC_ID_H264)
+    {
+      CLog::Log(LOGINFO, "Trying Apple VDA Decoder...");
+      if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
+    }
+  }
+#endif
 
 #if defined(HAVE_LIBCRYSTALHD)
   if (g_guiSettings.GetBool("videoplayer.usechd") && CCrystalHD::GetInstance()->DevicePresent() && !hint.software )
@@ -170,6 +195,17 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
         CLog::Log(LOGINFO, "Trying Broadcom Crystal HD Decoder...");
         if ( (pCodec = OpenCodec(new CDVDVideoCodecCrystalHD(), hint, options)) ) return pCodec;
       }
+    }
+  }
+#endif
+
+#if defined(HAVE_LIBOPENMAX)
+  if (g_guiSettings.GetBool("videoplayer.useomx") && !hint.software )
+  {
+      if (hint.codec == CODEC_ID_H264 || hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_VC1)
+    {
+      CLog::Log(LOGINFO, "Trying OpenMax Decoder...");
+      if ( (pCodec = OpenCodec(new CDVDVideoCodecOpenMax(), hint, options)) ) return pCodec;
     }
   }
 #endif

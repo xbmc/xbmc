@@ -1,3 +1,24 @@
+/*
+ *      Copyright © 2006-2010 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 using System;
 using System.Drawing;
 using System.Collections;
@@ -90,7 +111,7 @@ namespace TeamXBMC.Translator
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(208, 23);
 			this.label2.TabIndex = 2;
-			this.label2.Text = "Copyright � 2006 Team XBMC";
+			this.label2.Text = "Copyright © 2006 Team XBMC";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.label2.UseMnemonic = false;
 			// 

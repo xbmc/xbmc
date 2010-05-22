@@ -44,6 +44,9 @@ CVDPAU::Desc decoder_profiles[] = {
 {"VC1_SIMPLE",   VDP_DECODER_PROFILE_VC1_SIMPLE},
 {"VC1_MAIN",     VDP_DECODER_PROFILE_VC1_MAIN},
 {"VC1_ADVANCED", VDP_DECODER_PROFILE_VC1_ADVANCED},
+#ifdef VDP_DECODER_PROFILE_MPEG4_PART2_ASP
+{"MPEG4_PART2_ASP", VDP_DECODER_PROFILE_MPEG4_PART2_ASP},
+#endif
 };
 const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(CVDPAU::Desc);
 

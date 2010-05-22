@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VisualStudioToolFile
+	Name="NASM "
+	Version="8,00"
+	>
+	<Rules>
+		<CustomBuildRule
+			Name="NASM"
+			DisplayName="NASM"
+			CommandLine="nasmw [BinFormat] [IncludeDir] [Defines] -o [OutFile] $(InputPath)"
+			Outputs="[OutFile]"
+			FileExtensions="*.nas"
+			ExecutionDescription="Assembling $(InputName)..."
+			ShowOnlyRuleProperties="false"
+			>
+			<Properties>
+				<StringProperty
+					Name="OutFile"
+					DisplayName="output file path"
+					Switch="[value]"
+					DefaultValue="$(IntDir)\$(InputName).obj"
+				/>
+				<StringProperty
+					Name="BinFormat"
+					DisplayName="Binary format"
+					Switch="-f [value]"
+					DefaultValue="win32"
+				/>
+				<StringProperty
+					Name="IncludeDir"
+					DisplayName="Additional include directories"
+					Switch="-i [value]"
+					DefaultValue="$(InputDir)"
+					Delimited="true"
+				/>
+				<StringProperty
+					Name="Defines"
+					DisplayName="Defines"
+					Switch="-D[value]"
+					DefaultValue="WIN32"
+					Delimited="true"
+					Delimiters=" ;,"
+				/>
+			</Properties>
+		</CustomBuildRule>
+	</Rules>
+</VisualStudioToolFile>

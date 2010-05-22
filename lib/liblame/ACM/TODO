@@ -1,0 +1,9 @@
+- known bug : when recording, converting, and recording a lame_close() call fail
+- allow decompression the same way as in the command-line
+- allow VBR mode
+- allow channel resampling (mono to stereo / stereo to mono)
+- allow internal resampling (difference in the format suggestion)
+- use global pointers for string
+- use the bitrate/freq tables from LAME
+
+/ add the decoding engine

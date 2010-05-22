@@ -23,9 +23,11 @@
 
 #include "GUIDialog.h"
 #include "addons/IAddon.h"
+#include "utils/Job.h"
 
 class CGUIDialogAddonInfo :
-      public CGUIDialog
+      public CGUIDialog,
+      public IJobCallback
 {
 public:
   CGUIDialogAddonInfo(void);
@@ -33,14 +35,23 @@ public:
   bool OnMessage(CGUIMessage& message);
   
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_item; }
+  virtual bool HasListItems() const { return true; }
 
   void OnInstall();
   void OnDisable();
   void OnSettings();
+  void OnChangeLog();
 
   static bool ShowForItem(const CFileItemPtr& item);
+
+  // job callback
+  void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 protected:
+  void OnInitWindow();
   CFileItemPtr m_item;
   ADDON::AddonPtr m_addon;
+  ADDON::AddonPtr m_localAddon;
+  unsigned int m_jobid;
+  bool m_changelog;
 };
 

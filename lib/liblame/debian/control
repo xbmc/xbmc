@@ -1,0 +1,51 @@
+Source: lame
+Section: sound
+Priority: optional
+Maintainer: Rogério Brito <rbrito@users.sf.net>
+Bugs: mailto:lame-dev@lists.sourceforge.net
+Homepage: http://lame.sourceforge.net/
+Build-Depends: debhelper (>= 5), libncurses5-dev, nasm [i386], libsndfile1-dev
+Standards-Version: 3.7.3
+
+Package: lame
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: open source MP3 encoder
+ Lame is a program which can be used to create compressed
+ audio files. (Lame aint MP3 encoder). These audio files
+ can be played back by popular mp3 players such as mpg123.
+ To read from stdin, use "-" for <infile>. To write to
+ stdout, use a "-" for <outfile>.
+ .
+ This package contains the frontend encoder binary.
+
+Package: libmp3lame0
+Architecture: any
+Section: libs
+Conflicts: liblame0
+Replaces: liblame0
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: shared libraries for MP3 encoding
+ Lame is a program which can be used to create compressed
+ audio files. (Lame aint MP3 encoder). These audio files
+ can be played back by popular mp3 players such as mpg123.
+ To read from stdin, use "-" for <infile>. To write to
+ stdout, use a "-" for <outfile>.
+ .
+ This package contains the dynamic library.
+
+Package: libmp3lame0-dev
+Architecture: any
+Section: libdevel
+Depends: libmp3lame0 (= ${binary:Version}), ${misc:Depends}
+Conflicts: liblame-dev
+Replaces: liblame-dev
+Description: development files for lame
+ Lame is a program which can be used to create compressed
+ audio files. (Lame aint MP3 encoder). These audio files
+ can be played back by popular mp3 players such as mpg123.
+ To read from stdin, use "-" for <infile>. To write to
+ stdout, use a "-" for <outfile>.
+ .
+ This package contains the static library and header files
+ for development with lame.

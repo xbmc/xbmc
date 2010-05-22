@@ -1386,16 +1386,10 @@
     <ClCompile Include="..\..\xbmc\GUIWindowScripts.cpp">
       <Filter>Source Files\GUI Other</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\GUIWindowScriptsInfo.cpp">
-      <Filter>Source Files\GUI Other</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\GUIWindowSlideShow.cpp">
       <Filter>Source Files\GUI Other</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\GUIWindowStartup.cpp">
-      <Filter>Source Files\GUI Other</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\GUIWindowSystemInfo.cpp">
       <Filter>Source Files\GUI Other</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\GUIWindowVisualisation.cpp">
@@ -2082,9 +2076,6 @@
     <ClCompile Include="..\..\xbmc\lib\libjsonrpc\JSONRPC.cpp">
       <Filter>libraries\libjsonrpc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libjsonrpc\MusicLibrary.cpp">
-      <Filter>libraries\libjsonrpc</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\lib\libjsonrpc\PicturePlayerOperations.cpp">
       <Filter>libraries\libjsonrpc</Filter>
     </ClCompile>
@@ -2124,6 +2115,25 @@
     <ClCompile Include="..\..\xbmc\addons\Repository.cpp">
       <Filter>Source Files\Addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\Skin.cpp">
+      <Filter>Source Files\Addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\GUIDialogAddonInfo.cpp">
+      <Filter>Source Files\GUI Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\GUIDialogTextViewer.cpp">
+      <Filter>Source Files\GUI Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\lib\libjsonrpc\AudioLibrary.cpp">
+      <Filter>libraries\libjsonrpc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\GUIWindowSystemInfo.cpp">
+      <Filter>Source Files\GUI Other</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.cpp">
+      <Filter>Source Files\Filesystem\VideoDatabaseDirectory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cdrip\EncoderFlac.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -2423,28 +2433,28 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.h">
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\avcodec.h">
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllAvCodec.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\avformat.h">
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllAvFormat.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\avio.h">
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllPostProc.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\common.h">
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllSwScale.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\decoder.h">
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include\libavutil\avconfig.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\DllAvCodec.h">
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avformat.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\DllAvFormat.h">
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavutil\common.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\ffmpeg\DllPostProc.h">
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avio.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvd_types.h">
@@ -2543,28 +2553,16 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllAdpcm.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllAdplug.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllASAP.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllDCACodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllDumb.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllGensApu.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllLibFlac.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllLibshnplay.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\DllMACDll.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DllNosefart.h">
@@ -2625,9 +2623,6 @@
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\ReplayGain.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\RingHoldBuffer.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\SIDCodec.h">
@@ -3836,9 +3831,6 @@
     <ClInclude Include="..\..\xbmc\GUIWindowScripts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\GUIWindowScriptsInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\GUIWindowSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -4448,9 +4440,6 @@
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\JSONRPC.h">
       <Filter>libraries\libjsonrpc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libjsonrpc\MusicLibrary.h">
-      <Filter>libraries\libjsonrpc</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\PicturePlayerOperations.h">
       <Filter>libraries\libjsonrpc</Filter>
     </ClInclude>
@@ -4481,6 +4470,26 @@
     <ClInclude Include="..\..\xbmc\addons\Repository.h">
       <Filter>Source Files\Addons</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\Skin.h">
+      <Filter>Source Files\Addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\GUIDialogAddonInfo.h">
+      <Filter>Source Files\GUI Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\GUIDialogTextViewer.h">
+      <Filter>Source Files\GUI Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\lib\libjsonrpc\AudioLibrary.h">
+      <Filter>libraries\libjsonrpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.h">
+      <Filter>Source Files\Filesystem\VideoDatabaseDirectory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\SystemGlobals.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cdrip\DllFlacEnc.h" />
+    <ClInclude Include="..\..\xbmc\cdrip\EncoderFlac.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\win32\XBMC.ico">

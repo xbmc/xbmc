@@ -52,8 +52,15 @@ public:
 
   virtual void OnDestroyDevice();
   virtual void OnCreateDevice();
+  virtual void OnLostDevice();
+  virtual void OnResetDevice();
+
 private:
   unsigned int GetMemoryUsage(unsigned int pitch) const;
+
+  void SaveTexture();
+  void RestoreTexture();
+
   // creation parameters
   UINT      m_width;
   UINT      m_height;
@@ -61,6 +68,7 @@ private:
   DWORD     m_usage;
   D3DFORMAT m_format;
   D3DPOOL   m_pool;
+  UINT      m_pitch;
 
   // created texture
   LPDIRECT3DTEXTURE9 m_texture;

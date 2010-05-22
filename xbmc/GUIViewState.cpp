@@ -348,7 +348,7 @@ VECSOURCES& CGUIViewState::GetSources()
     return m_sources;
 
   ADDON::VECADDONS addons;
-  ADDON::CAddonMgr::Get()->GetAddons(ADDON::ADDON_PLUGIN, addons, m_content);
+  ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_PLUGIN, addons, m_content);
 
   for (unsigned i=0; i<addons.size(); i++)
   {

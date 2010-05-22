@@ -47,6 +47,8 @@ NODE_TYPE CDirectoryNodeMoviesOverview::GetChildType()
   else if (GetName()=="6")
     return NODE_TYPE_STUDIO;
   else if (GetName()=="7")
+    return NODE_TYPE_COUNTRY;
+  else if (GetName()=="8")
     return NODE_TYPE_SETS;
 
   return NODE_TYPE_NONE;
@@ -61,6 +63,7 @@ bool CDirectoryNodeMoviesOverview::GetContent(CFileItemList& items)
   vecRoot.push_back(g_localizeStrings.Get(344));  // Actors
   vecRoot.push_back(g_localizeStrings.Get(20348));  // Directors
   vecRoot.push_back(g_localizeStrings.Get(20388));  // Studios
+  vecRoot.push_back(g_localizeStrings.Get(20451));  // Countries
   CVideoDatabase db;
   if (db.Open())
   {

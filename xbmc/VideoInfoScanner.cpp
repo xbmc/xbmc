@@ -849,42 +849,15 @@ namespace VIDEO
     if ((regexppos = reg.RegFind(strLabel.c_str())) < 0)
       return false;
 
-    char* season = reg.GetReplaceString("\\1");
-    char* episode = reg.GetReplaceString("\\2");
 
-    if (!season || !episode)
-    {
-      free(season);
-      free(episode);
+    SEpisode episode;
+    episode.strPath = item->m_strPath;
+    episode.cDate.SetValid(false);
+    if (!GetEpisodeAndSeasonFromRegExp(reg, episode))
       return false;
-    }
-
-    SEpisode myEpisode;
-    myEpisode.strPath = item->m_strPath;
-    if (strlen(season) == 0 && strlen(episode) > 0)
-    { // no season specified -> assume season 1
-      myEpisode.iSeason = 1;
-      if ((myEpisode.iEpisode = CUtil::TranslateRomanNumeral(episode)) == -1)
-        myEpisode.iEpisode = atoi(episode);
-      CLog::Log(LOGDEBUG, "VideoInfoScanner: Found episode without season %s (e%i) [%s]", strLabel.c_str(), myEpisode.iEpisode, regexp.c_str());
-    } 
-    else if (strlen(season) > 0 && strlen(episode) == 0)
-    { // no episode specification -> assume season 1
-      myEpisode.iSeason = 1;
-      if ((myEpisode.iEpisode = CUtil::TranslateRomanNumeral(season)) == -1)
-        myEpisode.iEpisode = atoi(season);
-      CLog::Log(LOGDEBUG, "VideoInfoScanner: Found episode based match with forced season 1 %s (e%i) [%s]", strLabel.c_str(), myEpisode.iEpisode, regexp.c_str());
-    }
-    else
-    { // season and episode specified
-      myEpisode.iSeason = atoi(season);
-      myEpisode.iEpisode = atoi(episode);
-      CLog::Log(LOGDEBUG, "VideoInfoScanner: Found episode based match %s (s%ie%i) [%s]", strLabel.c_str(), myEpisode.iSeason, myEpisode.iEpisode, regexp.c_str());
-    }
-    myEpisode.cDate.SetValid(false);
-    episodeList.push_back(myEpisode);
-    free(season);
-    free(episode);
+    
+    CLog::Log(LOGDEBUG, "VideoInfoScanner: Found episode match %s (s%ie%i) [%s]", strLabel.c_str(), episode.iSeason, episode.iEpisode, regexp.c_str());
+    episodeList.push_back(episode);
 
     // check the remainder of the string for any further episodes.
     CRegExp reg2;
@@ -900,15 +873,9 @@ namespace VIDEO
       if (((regexppos <= regexp2pos) && regexppos != -1) ||
          (regexppos >= 0 && regexp2pos == -1))
       {
-        season = reg.GetReplaceString("\\1");
-        episode = reg.GetReplaceString("\\2");
-        myEpisode.iSeason = atoi(season);
-        myEpisode.iEpisode = atoi(episode);
-        myEpisode.cDate.SetValid(FALSE);
-        free(season);
-        free(episode);
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new season %u, multipart episode %u", myEpisode.iSeason, myEpisode.iEpisode);
-        episodeList.push_back(myEpisode);
+        GetEpisodeAndSeasonFromRegExp(reg, episode);
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new season %u, multipart episode %u", episode.iSeason, episode.iEpisode);
+        episodeList.push_back(episode);
         free(remainder);
         remainder = reg.GetReplaceString("\\3");
         offset = 0;
@@ -916,16 +883,46 @@ namespace VIDEO
       else if (((regexp2pos < regexppos) && regexp2pos != -1) ||
                (regexp2pos >= 0 && regexppos == -1))
       {
-        episode = reg2.GetReplaceString("\\1");
-        myEpisode.iEpisode = atoi(episode);
-        free(episode);
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding multipart episode %u", myEpisode.iEpisode);
-        episodeList.push_back(myEpisode);
+        char *ep = reg2.GetReplaceString("\\1");
+        episode.iEpisode = atoi(ep);
+        free(ep);
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding multipart episode %u", episode.iEpisode);
+        episodeList.push_back(episode);
         offset += regexp2pos + reg2.GetFindLen();
       }
     }
     free(remainder);
     return true;
+  }
+
+  bool CVideoInfoScanner::GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo)
+  {
+    char* season = reg.GetReplaceString("\\1");
+    char* episode = reg.GetReplaceString("\\2");
+
+    if (season && episode)
+    {
+      if (strlen(season) == 0 && strlen(episode) > 0)
+      { // no season specified -> assume season 1
+        episodeInfo.iSeason = 1;
+        if ((episodeInfo.iEpisode = CUtil::TranslateRomanNumeral(episode)) == -1)
+          episodeInfo.iEpisode = atoi(episode);
+      } 
+      else if (strlen(season) > 0 && strlen(episode) == 0)
+      { // no episode specification -> assume season 1
+        episodeInfo.iSeason = 1;
+        if ((episodeInfo.iEpisode = CUtil::TranslateRomanNumeral(season)) == -1)
+          episodeInfo.iEpisode = atoi(season);
+      }
+      else
+      { // season and episode specified
+        episodeInfo.iSeason = atoi(season);
+        episodeInfo.iEpisode = atoi(episode);
+      }
+    }
+    free(season);
+    free(episode);
+    return (season && episode);
   }
 
   bool CVideoInfoScanner::ProcessItemByDate(CFileItemPtr item, EPISODES &episodeList, CStdString regexp)

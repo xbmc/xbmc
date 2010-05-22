@@ -40,6 +40,7 @@
 #include "FileItem.h"
 #include "GUIDialog.h"
 #include "WindowingFactory.h"
+#include "GUIInfoManager.h"
 
 #include "PowerManager.h"
 
@@ -528,10 +529,9 @@ case TMSG_POWERDOWN:
 
     case TMSG_WRITE_SCRIPT_OUTPUT:
       {
-        //send message to window 2004 (CGUIWindowScriptsInfo)
         CGUIMessage msg(GUI_MSG_USER, 0, 0);
         msg.SetLabel(pMsg->strParam);
-        CGUIWindow* pWindowScripts = g_windowManager.GetWindow(WINDOW_SCRIPTS_INFO);
+        CGUIWindow* pWindowScripts = g_windowManager.GetWindow(WINDOW_SCRIPTS);
         if (pWindowScripts) pWindowScripts->OnMessage(msg);
       }
       break;
@@ -598,6 +598,27 @@ case TMSG_POWERDOWN:
             else
               CLog::Log(LOGWARNING, "Failed to get window with ID %i to send an action to", pMsg->dwParam1);
           }
+        }
+      }
+      break;
+
+    case TMSG_GUI_INFOLABEL:
+      {
+        if (pMsg->lpVoid)
+        {
+          vector<CStdString> *infoLabels = (vector<CStdString> *)pMsg->lpVoid;
+          for (unsigned int i = 0; i < pMsg->params.size(); i++)
+            infoLabels->push_back(g_infoManager.GetLabel(g_infoManager.TranslateString(pMsg->params[i])));
+        }
+      }
+      break;
+    case TMSG_GUI_INFOBOOL:
+      {
+        if (pMsg->lpVoid)
+        {
+          vector<bool> *infoLabels = (vector<bool> *)pMsg->lpVoid;
+          for (unsigned int i = 0; i < pMsg->params.size(); i++)
+            infoLabels->push_back(g_infoManager.GetBool(g_infoManager.TranslateString(pMsg->params[i])));
         }
       }
       break;
@@ -950,6 +971,28 @@ void CApplicationMessenger::SendAction(const CAction &action, int windowID)
   tMsg.dwParam1 = windowID;
   tMsg.lpVoid = (void*)&action;
   SendMessage(tMsg, true);
+}
+
+vector<CStdString> CApplicationMessenger::GetInfoLabels(const vector<CStdString> &properties)
+{
+  vector<CStdString> infoLabels;
+
+  ThreadMessage tMsg = {TMSG_GUI_INFOLABEL};
+  tMsg.params = properties;
+  tMsg.lpVoid = (void*)&infoLabels;
+  SendMessage(tMsg, true);
+  return infoLabels;
+}
+
+vector<bool> CApplicationMessenger::GetInfoBooleans(const vector<CStdString> &properties)
+{
+  vector<bool> infoLabels;
+
+  ThreadMessage tMsg = {TMSG_GUI_INFOBOOL};
+  tMsg.params = properties;
+  tMsg.lpVoid = (void*)&infoLabels;
+  SendMessage(tMsg, true);
+  return infoLabels;
 }
 
 void CApplicationMessenger::OpticalMount(CStdString device, bool bautorun)

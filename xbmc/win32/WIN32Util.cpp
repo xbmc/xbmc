@@ -37,8 +37,25 @@
 #include "LocalizeStrings.h"
 #include "log.h"
 #include "StringUtils.h"
+#include "DllPaths_win32.h"
+#include "FileSystem/File.h"
 
-#define DLL_ENV_PATH "special://xbmc/system/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/;special://xbmc/"
+// default Broadcom registy bits (setup when installing a CrystalHD card)
+#define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
+#define BC_REG_PRODUCT    "CrystalHD" // 70012/70015
+#define BC_BCM_DLL        "bcmDIL.dll"
+#define BC_REG_INST_PATH  "InstallPath"
+
+#define DLL_ENV_PATH "special://xbmcbin/system/;" \
+                     "special://xbmcbin/system/players/dvdplayer/;" \
+                     "special://xbmcbin/system/players/paplayer/;" \
+                     "special://xbmcbin/system/python/;" \
+                     "special://xbmcbin/;" \
+                     "special://xbmc/system/;" \
+                     "special://xbmc/system/players/dvdplayer/;" \
+                     "special://xbmc/system/players/paplayer/;" \
+                     "special://xbmc/system/python/;" \
+                     "special://xbmc/"
 
 extern HWND g_hWnd;
 
@@ -451,17 +468,32 @@ int CWIN32Util::GetDesktopColorDepth()
   return (int)devmode.dmBitsPerPel;
 }
 
-CStdString CWIN32Util::GetProfilePath()
+CStdString CWIN32Util::GetSpecialFolder(int csidl)
 {
   CStdString strProfilePath;
   WCHAR szPath[MAX_PATH];
 
-  if(SUCCEEDED(SHGetFolderPathW(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath)))
+  if(SUCCEEDED(SHGetFolderPathW(NULL,csidl,NULL,0,szPath)))
   {
     g_charsetConverter.wToUTF8(szPath, strProfilePath);
     strProfilePath = UncToSmb(strProfilePath);
   }  
   else
+    strProfilePath = "";
+
+  return strProfilePath;
+}
+
+CStdString CWIN32Util::GetSystemPath()
+{
+  return GetSpecialFolder(CSIDL_SYSTEM);
+}
+
+CStdString CWIN32Util::GetProfilePath()
+{
+  CStdString strProfilePath = GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE);
+  
+  if (strProfilePath.length() == 0)
     CUtil::GetHomePath(strProfilePath);
 
   return strProfilePath;
@@ -1336,3 +1368,39 @@ bool CWIN32Util::UtilRegOpenKeyEx( const HKEY hKeyParent, const char *const pcKe
   bool bRet= ( ERROR_SUCCESS == RegOpenKeyEx(hKeyParent, pcKey, 0, rsAccessRightsTmp, hKey));
   return bRet;
 }
+
+bool CWIN32Util::GetCrystalHDLibraryPath(CStdString &strPath)
+{
+  // support finding library by windows registry
+  HKEY hKey;
+  CStdString strRegKey;
+
+  CLog::Log(LOGDEBUG, "CrystalHD: detecting CrystalHD installation path");
+  strRegKey.Format("%s\\%s", BC_REG_PATH, BC_REG_PRODUCT );
+
+  if( CWIN32Util::UtilRegOpenKeyEx( HKEY_LOCAL_MACHINE, strRegKey.c_str(), KEY_READ, &hKey ))
+  {
+    DWORD dwType;
+    char *pcPath= NULL;
+    if( CWIN32Util::UtilRegGetValue( hKey, BC_REG_INST_PATH, &dwType, &pcPath, NULL, sizeof( pcPath ) ) == ERROR_SUCCESS )
+    {
+      strPath = CUtil::AddFileToFolder(pcPath, BC_BCM_DLL);
+      CLog::Log(LOGDEBUG, "CrystalHD: got CrystalHD installation path (%s)", strPath.c_str());
+      return true;
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "CrystalHD: getting CrystalHD installation path failed");
+    }
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "CrystalHD: CrystalHD software seems to be not installed.");
+  }
+  // check for dll in system dir
+  if(XFILE::CFile::Exists(DLL_PATH_LIBCRYSTALHD))
+    return true;
+  else
+    return false;
+}
+

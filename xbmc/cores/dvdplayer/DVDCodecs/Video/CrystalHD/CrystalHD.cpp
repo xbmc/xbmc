@@ -25,12 +25,6 @@
   #include "system.h"
   #include "WIN32Util.h"
   #include "util.h"
-
-  // default Broadcom registy bits (setup when installing a CrystalHD card)
-  #define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
-  #define BC_REG_PRODUCT    "CrystalHD" // 70012/70015
-  #define BC_BCM_DLL        "bcmDIL.dll"
-  #define BC_REG_INST_PATH  "InstallPath"
 #endif
 
 #if defined(HAVE_LIBCRYSTALHD)
@@ -356,23 +350,34 @@ CMPCInputThread::CMPCInputThread(void *device, DllLibCrystalHD *dll, CRYSTALHD_C
   m_start_decoding(0)
 {
   m_PopEvent.Set();
+
 #ifdef USE_FFMPEG_ANNEXB
-  m_annexbfiltering = init_h264_mp4toannexb_filter((uint8_t*)extradata, extradata_size);
+  m_annexbfiltering = NULL;
+  // valid avcC atom data always starts with the value 1 (version)
+  if ( *(char*)extradata == 1 )
+  {
+    m_annexbfiltering = init_h264_mp4toannexb_filter((uint8_t*)extradata, extradata_size);
+  }
 #else
   m_extradata = NULL;
   m_extradata_size = 0;
-  m_nal_parser = init_parser();
-
-  if (extradata_size > 0)
+  m_nal_parser = NULL;
+  // valid avcC atom data always starts with the value 1 (version)
+  if ( *(char*)extradata == 1 )
   {
-    m_extradata_size = extradata_size;
-    m_extradata = (uint8_t*)malloc(extradata_size);
-    memcpy(m_extradata, extradata, extradata_size);
-    if (parse_codec_private(m_nal_parser, m_extradata, m_extradata_size) != 0)
+    m_nal_parser = init_parser();
+
+    if (extradata_size > 0)
     {
-      free(m_extradata);
-      m_extradata = NULL;
-      m_extradata_size = 0;
+      m_extradata_size = extradata_size;
+      m_extradata = (uint8_t*)malloc(extradata_size);
+      memcpy(m_extradata, extradata, extradata_size);
+      if (parse_codec_private(m_nal_parser, m_extradata, m_extradata_size) != 0)
+      {
+        free(m_extradata);
+        m_extradata = NULL;
+        m_extradata_size = 0;
+      }
     }
   }
 #endif
@@ -389,8 +394,8 @@ CMPCInputThread::~CMPCInputThread()
 #else
 	if (m_extradata)
 		free(m_extradata);
-
-  free_parser(m_nal_parser);
+  if (m_nal_parser)
+    free_parser(m_nal_parser);
 #endif
 }
 
@@ -416,11 +421,14 @@ void CMPCInputThread::Flush(void)
   m_PopEvent.Set();
   m_start_decoding = 0;
 #ifndef USE_FFMPEG_ANNEXB
-  // Doing a full parser reinit here, works more reliable than resetting
-  free_parser(m_nal_parser);
-  m_nal_parser = init_parser();
-	if (m_extradata_size > 0)
-		parse_codec_private(m_nal_parser, m_extradata, m_extradata_size);
+  if (m_nal_parser)
+  {
+    // Doing a full parser reinit here, works more reliable than resetting
+    free_parser(m_nal_parser);
+    m_nal_parser = init_parser();
+    if (m_extradata_size > 0)
+      parse_codec_private(m_nal_parser, m_extradata, m_extradata_size);
+  }
 #endif
 }
 
@@ -569,10 +577,15 @@ bool CMPCInputThread::h264_mp4toannexb_filter(BYTE* pData, int iSize, uint8_t **
   uint8_t   *buf = pData;
   uint32_t  buf_size = iSize;
   uint8_t   unit_type;
-  uint32_t  nal_size, cumul_size = 0;
+  int32_t nal_size;
+  uint32_t cumul_size = 0;
+  const uint8_t *buf_end = buf + buf_size;
 
   do
   {
+    if (buf + m_sps_pps_context.length_size > buf_end)
+      goto fail;
+
     if (m_sps_pps_context.length_size == 1)
       nal_size = buf[0];
     else if (m_sps_pps_context.length_size == 2)
@@ -582,6 +595,9 @@ bool CMPCInputThread::h264_mp4toannexb_filter(BYTE* pData, int iSize, uint8_t **
 
     buf += m_sps_pps_context.length_size;
     unit_type = *buf & 0x1f;
+
+    if (buf + nal_size > buf_end || nal_size < 0)
+      goto fail;
 
     // prepend only to the first type 5 NAL unit of an IDR picture
     if (m_sps_pps_context.first_idr && unit_type == 5)
@@ -602,6 +618,12 @@ bool CMPCInputThread::h264_mp4toannexb_filter(BYTE* pData, int iSize, uint8_t **
   } while (cumul_size < buf_size);
 
   return true;
+
+fail:
+  free(*poutbuf);
+  *poutbuf = NULL;
+  *poutbuf_size = 0;
+  return false;
 }
 
 void CMPCInputThread::ProcessH264(CMPCDecodeBuffer* pInput)
@@ -618,7 +640,7 @@ void CMPCInputThread::ProcessH264(CMPCDecodeBuffer* pInput)
     uint8_t *outbuf = NULL;
 
     h264_mp4toannexb_filter(demuxer_content, demuxer_bytes, &outbuf, &outbuf_size);
-    if (outbuf)
+    if (outbuf && (outbuf_size > 0))
     {
       annexbfiltered = true;
       demuxer_content = outbuf;
@@ -648,45 +670,62 @@ void CMPCInputThread::ProcessH264(CMPCDecodeBuffer* pInput)
   int64_t demuxer_pts = pInput->GetPts();
   uint8_t *demuxer_content = pInput->GetPtr();
 
-  while (bytes < demuxer_bytes)
+  if (m_nal_parser)
   {
-    uint8_t *decode_bytestream;
-    uint32_t decode_bytestream_bytes;
-    coded_picture *completed_pic = NULL;
-    
-    bytes += parse_frame(m_nal_parser, demuxer_content + bytes, demuxer_bytes - bytes, demuxer_pts,
-      &decode_bytestream, &decode_bytestream_bytes, &completed_pic);
-
-    if (completed_pic && completed_pic->sps_nal != NULL &&
-        completed_pic->sps_nal->sps.pic_width > 0 &&
-        completed_pic->sps_nal->sps.pic_height > 0)
+    while (bytes < demuxer_bytes)
     {
-      m_start_decoding = 1;
-    }
+      uint8_t *decode_bytestream;
+      uint32_t decode_bytestream_bytes;
+      coded_picture *completed_pic = NULL;
+      
+      bytes += parse_frame(m_nal_parser, demuxer_content + bytes, demuxer_bytes - bytes, demuxer_pts,
+        &decode_bytestream, &decode_bytestream_bytes, &completed_pic);
 
-    if (decode_bytestream_bytes > 0 && m_start_decoding &&
-        completed_pic->slc_nal != NULL && completed_pic->pps_nal != NULL)
+      if (completed_pic && completed_pic->sps_nal != NULL &&
+          completed_pic->sps_nal->sps.pic_width > 0 &&
+          completed_pic->sps_nal->sps.pic_height > 0)
+      {
+        m_start_decoding = 1;
+      }
+
+      if (decode_bytestream_bytes > 0 && m_start_decoding &&
+          completed_pic->slc_nal != NULL && completed_pic->pps_nal != NULL)
+      {
+        BCM::BC_STATUS ret;
+
+        do
+        {
+          ret = m_dll->DtsProcInput(m_Device, decode_bytestream, decode_bytestream_bytes, completed_pic->pts, 0);
+          if (ret == BCM::BC_STS_BUSY)
+          {
+            CLog::Log(LOGDEBUG, "%s: DtsProcInput returned BC_STS_BUSY", __MODULE_NAME__);
+            Sleep(m_SleepTime); // Buffer is full, sleep it empty
+          }
+        } while (!m_bStop && ret != BCM::BC_STS_SUCCESS);
+
+        free(decode_bytestream);
+      }
+
+      if (completed_pic)
+        free_coded_picture(completed_pic);
+
+      if (m_nal_parser->last_nal_res == 3)
+        m_dll->DtsFlushInput(m_Device, 2);
+    }
+    else
     {
       BCM::BC_STATUS ret;
 
       do
       {
-        ret = m_dll->DtsProcInput(m_Device, decode_bytestream, decode_bytestream_bytes, completed_pic->pts, 0);
+        ret = m_dll->DtsProcInput(m_Device, decode_bytestream, decode_bytestream_bytes, demuxer_pts, 0);
         if (ret == BCM::BC_STS_BUSY)
         {
           CLog::Log(LOGDEBUG, "%s: DtsProcInput returned BC_STS_BUSY", __MODULE_NAME__);
           Sleep(m_SleepTime); // Buffer is full, sleep it empty
         }
       } while (!m_bStop && ret != BCM::BC_STS_SUCCESS);
-
-      free(decode_bytestream);
     }
-
-    if (completed_pic)
-      free_coded_picture(completed_pic);
-
-    if (m_nal_parser->last_nal_res == 3)
-      m_dll->DtsFlushInput(m_Device, 2);
   }
 }
 #endif
@@ -1385,8 +1424,12 @@ CCrystalHD::CCrystalHD() :
 {
 
   m_dll = new DllLibCrystalHD;
-  CheckCrystalHDLibraryPath();
+#ifdef _WIN32
+  CStdString  strDll;
+  if(CWIN32Util::GetCrystalHDLibraryPath(strDll) && m_dll->SetFile(strDll) && m_dll->Load() && m_dll->IsLoaded() )
+#else
   if (m_dll->Load() && m_dll->IsLoaded() )
+#endif
   {
     uint32_t mode = BCM::DTS_PLAYBACK_MODE          |
                     BCM::DTS_LOAD_FILE_PLAY_FW      |
@@ -1443,6 +1486,16 @@ bool CCrystalHD::DevicePresent(void)
   return m_Device != NULL;
 }
 
+bool CCrystalHD::Wake(void)
+{
+  return true;
+}
+
+bool CCrystalHD::Sleep(void)
+{
+  return true;
+}
+
 void CCrystalHD::RemoveInstance(void)
 {
   if (m_pInstance)
@@ -1459,38 +1512,6 @@ CCrystalHD* CCrystalHD::GetInstance(void)
     m_pInstance = new CCrystalHD();
   }
   return m_pInstance;
-}
-
-void CCrystalHD::CheckCrystalHDLibraryPath(void)
-{
-  // support finding library by windows registry
-#if defined _WIN32
-  HKEY hKey;
-  CStdString strRegKey;
-
-  CLog::Log(LOGDEBUG, "%s: detecting CrystalHD installation path", __MODULE_NAME__);
-  strRegKey.Format("%s\\%s", BC_REG_PATH, BC_REG_PRODUCT );
-
-  if( CWIN32Util::UtilRegOpenKeyEx( HKEY_LOCAL_MACHINE, strRegKey.c_str(), KEY_READ, &hKey ))
-  {
-    DWORD dwType;
-    char *pcPath= NULL;
-    if( CWIN32Util::UtilRegGetValue( hKey, BC_REG_INST_PATH, &dwType, &pcPath, NULL, sizeof( pcPath ) ) == ERROR_SUCCESS )
-    {
-      CStdString strDll = CUtil::AddFileToFolder(pcPath, BC_BCM_DLL);
-      CLog::Log(LOGDEBUG, "%s: got CrystalHD installation path (%s)", __MODULE_NAME__, strDll.c_str());
-      m_dll->SetFile(strDll);
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "%s: getting CrystalHD installation path faild", __MODULE_NAME__);
-    }
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "%s: CrystalHD software seems to be not installed.", __MODULE_NAME__);
-  }
-#endif
 }
 
 bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size, void *extradata)

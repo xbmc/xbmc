@@ -65,7 +65,7 @@ DVDPCODECS_DIRS= \
 	xbmc/cores/dvdplayer/Codecs/libdvd \
 	xbmc/cores/dvdplayer/Codecs/libbdnav
 ifneq (@USE_EXTERNAL_LIBASS@,1)
-  DVDPCODECS_DIRS+=xbmc/lib/libass/xbmc
+DVDPCODECS_DIRS+=lib/libass/xbmc
 endif
 
 PAPCODECS_DIRS= \
@@ -115,8 +115,8 @@ ifneq (@BUILD_GOOM@,1)
 VIS_DIRS+=xbmc/visualizations/Goom
 endif
 
-CONFLUENCE_MEDIA=addons/org.xbmc.addons.confluence/media
-PM3HD_MEDIA=addons/org.xbmc.addons.pm3-hd/media
+CONFLUENCE_MEDIA=addons/skin.confluence/media
+PM3HD_MEDIA=addons/skin.pm3-hd/media
 
 SKIN_DIRS=\
 	$(CONFLUENCE_MEDIA) \
@@ -137,7 +137,8 @@ DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh \
         autom4te.cache config.h.in~ \
         xbmc/lib/libPython/Python/Include/pyconfig.h \
         xbmc/lib/libPython/Python/configure.lineno \
-        xbmc/lib/libPython/Python/libpython2.4.so.1.0
+        xbmc/lib/libPython/Python/libpython2.4.so.1.0 \
+        system/libcpluff-$(ARCH).so
 
 all : Makefile externals xbmc.bin xbmc-xrandr skins
 
@@ -161,7 +162,9 @@ configure: configure.in
 
 # skin textures
 skins: tools/TexturePacker/TexturePacker force
+ifneq (arm, $(ARCH))
 	 $(MAKE) -C $(CONFLUENCE_MEDIA)
+endif
 	 $(MAKE) -C $(PM3HD_MEDIA)
 
 guilib/guilib.a: force
@@ -304,6 +307,7 @@ exports:
 dllloader: exports
 	$(MAKE) xbmc/cores/DllLoader/dllloader.a
 visualizations: exports
+ifneq (arm, $(ARCH))
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
 	$(MAKE) -C xbmc/visualizations/WaveForm
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
@@ -315,8 +319,11 @@ ifeq ($(or $(findstring powerpc-linux,$(ARCH)),$(findstring powerpc64-linux,$(AR
 	$(MAKE) -C xbmc/visualizations/Goom
 endif
 endif
+endif
 screensavers: exports
+ifneq (arm, $(ARCH))
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
+endif
 libpython: dllloader
 	$(MAKE) -C xbmc/lib/libPython
 	$(MAKE) -C xbmc/lib/libPython/xbmcmodule
@@ -326,7 +333,7 @@ dvdpcodecs: dllloader
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libdvd
 ifneq (@USE_EXTERNAL_LIBASS@,1)
-	$(MAKE) -C xbmc/lib/libass/xbmc
+	$(MAKE) -C lib/libass/xbmc
 endif
 eventclients:
 ifeq ($(findstring osx,$(ARCH)), osx)
@@ -353,11 +360,11 @@ endif
 	$(MAKE) -C xbmc/cores/paplayer/SIDCodec
 ifeq (@USE_ASAP_CODEC@,1)
   ifneq ($(findstring osx,$(ARCH)), osx)
-	  $(MAKE) -C xbmc/cores/paplayer/asap asap-xbmc
+	$(MAKE) -C xbmc/cores/paplayer/asap asap-xbmc
   endif
 endif
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
-ifeq ($(or $(findstring powerpc,$(ARCH)),$(findstring x86_64-linux,$(ARCH))),)
+ifeq ($(or $(findstring powerpc,$(ARCH)),$(findstring x86_64-linux,$(ARCH)),(arm, $(ARCH))),)
 	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU
 endif
 imagelib: dllloader
@@ -417,7 +424,6 @@ OBJSXBMC=	\
 	xbmc/FileSystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
 	xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a \
 	xbmc/karaoke/karaoke.a \
-	xbmc/lib/libhts/libhts.a \
 	xbmc/lib/libPython/xbmcmodule/xbmcmodule.a \
 	xbmc/lib/libRTMP/librtmp.a \
 	xbmc/lib/libscrobbler/scrobbler.a \
@@ -431,6 +437,7 @@ OBJSXBMC=	\
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/lib/libapetag/.libs/libapetag.a \
+	lib/xbmc-dll-symbols/dll-symbols.a \
 	xbmc/settings/settings.a
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
@@ -439,13 +446,11 @@ OBJSXBMC+= \
 	xbmc/lib/UnrarXLib/UnrarXLib.a
 endif
 
-DYNOBJSXBMC= \
-	xbmc/lib/cmyth/libcmyth/libcmyth.a \
-	xbmc/lib/cmyth/librefmem/librefmem.a \
-	xbmc/linux/linux.a \
-	xbmc/utils/utils.a \
-	xbmc/cores/DllLoader/exports/util/exports_utils.a \
-	xbmc/cores/DllLoader/exports/exports.a
+ifneq (arm, $(ARCH))
+# Can't include libhts for arm due to GPLv3
+OBJSXBMC+= \
+	xbmc/lib/libhts/libhts.a
+endif
 
 # platform dependend objects
 ifeq ($(findstring osx,$(ARCH)), osx)
@@ -459,7 +464,18 @@ OBJSXBMC += \
 	xbmc/posix/posix.a
 endif
 
-OBJSXBMC += lib/xbmc-dll-symbols/dll-symbols.a
+DYNOBJSXBMC= \
+	xbmc/lib/cmyth/libcmyth/libcmyth.a \
+	xbmc/lib/cmyth/librefmem/librefmem.a \
+	xbmc/linux/linux.a \
+	xbmc/utils/utils.a \
+	xbmc/cores/DllLoader/exports/util/exports_utils.a \
+	xbmc/cores/DllLoader/exports/exports.a
+
+ifeq (arm, $(ARCH))
+# Force external python2.5 for now!
+LIBS +=-lpython2.5
+endif
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,$(ARCH)), osx)
@@ -489,7 +505,7 @@ tools/TexturePacker/TexturePacker:
 	$(MAKE) -C tools/TexturePacker/
 
 install-bin: xbmc.bin # developement convenience target
-	sudo install -D xbmc.bin $(prefix)/share/xbmc
+	sudo install -D xbmc.bin $(DESTDIR)$(libdir)/xbmc
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 	# TODO: add osx install
@@ -497,55 +513,54 @@ else
 install: install-binaries install-arch install-datas install-web
 
 install-binaries: install-scripts
-	@echo "Copying XBMC binary to $(prefix)/share/xbmc/xbmc.bin"
-	@install -D xbmc.bin $(prefix)/share/xbmc/xbmc.bin
-	@install -D xbmc-xrandr $(prefix)/share/xbmc/xbmc-xrandr
+	@echo "Copying XBMC binary to $(DESTDIR)$(libdir)/xbmc/xbmc.bin"
+	@install -D xbmc.bin $(DESTDIR)$(libdir)/xbmc/xbmc.bin
+	@install -D xbmc-xrandr $(DESTDIR)$(libdir)/xbmc/xbmc-xrandr
 	@echo "You can run XBMC with the command 'xbmc'"
 endif
 
 install-arch:
 	@# Arch dependent files
-	@find system screensavers visualisations -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"	
+	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 
 install-scripts:
-	@install -D tools/Linux/xbmc.sh $(prefix)/bin/xbmc
-	@install -D tools/Linux/xbmc-standalone.sh $(prefix)/bin/xbmc-standalone
-	@install -D -m 0644 tools/Linux/FEH.py $(prefix)/share/xbmc/FEH.py
-	@install -D -m 0644 tools/Linux/xbmc-xsession.desktop $(prefix)/share/xsessions/XBMC.desktop
+	@install -D tools/Linux/xbmc.sh $(DESTDIR)$(bindir)/xbmc
+	@install -D tools/Linux/xbmc-standalone.sh $(DESTDIR)$(bindir)/xbmc-standalone
+	@install -D -m 0644 tools/Linux/FEH.py $(DESTDIR)$(datarootdir)/xbmc/FEH.py
+	@install -D -m 0644 tools/Linux/xbmc-xsession.desktop $(DESTDIR)$(datarootdir)/xsessions/XBMC.desktop
 
 install-datas: install-scripts
 	@echo "Copying support and legal files..."
 	@for FILE in `ls README.linux LICENSE.GPL *.txt`; do \
-		install -D -m 0644 "$$FILE" $(prefix)/share/xbmc/; done
+		install -D -m 0644 "$$FILE" "$(DESTDIR)$(docdir)/$$FILE"; done
 	@echo "Done!"
-	@echo "Copying system files to $(prefix)/share/xbmc"
+	@echo "Copying system files to $(DESTDIR)$(datarootdir)/xbmc"
 	@# Arch independent files
-	@find addons language media scripts sounds userdata system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
-	@# Skins
-	@find skin -regextype posix-extended -type f -not -iregex '.*/\.svn/.*|^skin/[^/]*/media/.*[^x][^b][^t]' -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %-75.75f\r"
+	@find addons language media scripts sounds userdata system -regextype posix-extended -type f -not -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Icons and links
-	@mkdir -p $(prefix)/share/applications $(prefix)/share/pixmaps
-	@cp -a tools/Linux/xbmc.png $(prefix)/share/pixmaps/
-	@cp -a tools/Linux/xbmc.desktop $(prefix)/share/applications/
+	@mkdir -p $(DESTDIR)$(datarootdir)/applications $(DESTDIR)$(datarootdir)/pixmaps
+	@cp -a tools/Linux/xbmc.png $(DESTDIR)$(datarootdir)/pixmaps/
+	@cp -a tools/Linux/xbmc.desktop $(DESTDIR)$(datarootdir)/applications/
 
 install-livedatas:
-	@echo "Install Live CD datas in $(prefix) ..."
-	@mkdir -p $(prefix)/bin
-	@install -D tools/XBMCLive/diskmounter $(prefix)/bin
-	@install -D tools/XBMCLive/installXBMC $(prefix)/bin
-	@install -D tools/XBMCLive/runXBMC $(prefix)/bin
-	@install -D tools/XBMCLive/setAlsaVolumes $(prefix)/bin
+	@echo "Install Live CD datas in $(DESTDIR)$(prefix) ..."
+	@mkdir -p $(DESTDIR)$(bindir)
+	@install -D tools/XBMCLive/diskmounter $(DESTDIR)$(bindir)/diskmounter
+	@install -D tools/XBMCLive/installXBMC $(DESTDIR)$(bindir)/installXBMC
+	@install -D tools/XBMCLive/runXBMC $(DESTDIR)$(bindir)/runXBMC
+	@install -D tools/XBMCLive/setAlsaVolumes $(DESTDIR)$(bindir)/setAlsaVolumes
 
 install-web:
-	@mkdir -p $(prefix)/share/xbmc/web
-	@cp -r web/poc_jsonrpc/* $(prefix)/share/xbmc/web
-	@find $(prefix)/share/xbmc/web -depth -name .svn -exec rm -rf {} \;
+	@mkdir -p $(DESTDIR)$(datarootdir)/xbmc/web
+	@cp -r web/poc_jsonrpc/* $(DESTDIR)$(datarootdir)/xbmc/web
+	@find $(DESTDIR)$(datarootdir)/xbmc/web -depth -name .svn -exec rm -rf {} \;
 
 uninstall:
 	@echo "Removing XBMC..."
-	@rm -rf $(prefix)/share/xbmc $(prefix)/bin/xbmc
-	@rm -rf $(prefix)/bin/xbmc-standalone
-	@rm -rf $(prefix)/share/xsessions/XBMC.desktop
+	@rm -rf $(DESTDIR)$(libdir)/xbmc
+	@rm -rf $(DESTDIR)$(datarootdir)/xbmc $(DESTDIR)$(bindir)/xbmc
+	@rm -rf $(DESTDIR)$(bindir)/xbmc-standalone
+	@rm -rf $(DESTDIR)$(datarootdir)/xsessions/XBMC.desktop
 	@echo "Done!"
 
 reallyclean:

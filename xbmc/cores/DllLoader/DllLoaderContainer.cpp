@@ -33,7 +33,16 @@
 #include "StringUtils.h"
 #include "utils/log.h"
 
-#define ENV_PATH "special://xbmc/system/;special://xbmc/system/players/mplayer/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
+#define ENV_PATH "special://xbmcbin/system/;" \
+                 "special://xbmcbin/system/players/mplayer/;" \
+                 "special://xbmcbin/system/players/dvdplayer/;" \
+                 "special://xbmcbin/system/players/paplayer/;" \
+                 "special://xbmcbin/system/python/;" \
+                 "special://xbmc/system/;" \
+                 "special://xbmc/system/players/mplayer/;" \
+                 "special://xbmc/system/players/dvdplayer/;" \
+                 "special://xbmc/system/players/paplayer/;" \
+                 "special://xbmc/system/python/"
 
 //Define this to get loggin on all calls to load/unload of dlls
 //#define LOGALL
@@ -215,7 +224,7 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
   LibraryLoader* pLoader;
 #ifdef _LINUX
   if (strstr(sName, ".so") != NULL || strstr(sName, ".vis") != NULL || strstr(sName, ".xbs") != NULL
-      || strstr(sName, ".mvis") != NULL || strstr(sName, ".dylib") != NULL)
+      || strstr(sName, ".mvis") != NULL || strstr(sName, ".dylib") != NULL || strstr(sName, ".framework") != NULL)
     pLoader = new SoLoader(sName, bLoadSymbols);
   else
 #elif defined(_WIN32)

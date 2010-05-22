@@ -66,6 +66,7 @@
 #ifdef USE_THREADS
 #include "pthread.h"
 #endif
+#include "SectionLock.h"
 /*
 DLLEXPORT projectM::projectM ( int gx, int gy, int fps, int texsize, int width, int height, std::string preset_url,std::string title_fonturl, std::string title_menuurl ) :beatDetect ( 0 ),  renderer ( 0 ), settings.presetURL ( preset_url ), title_fontURL ( title_fonturl ), menu_fontURL ( menu_fontURL ), smoothFrame ( 0 ), m_presetQueuePos(0)
 {
@@ -83,8 +84,7 @@ projectM::~projectM()
  #ifdef USE_THREADS
 	running = false;
 	pthread_cond_signal(&condition);
-	pthread_mutex_unlock( &mutex );
-	pthread_detach(thread);
+	pthread_join(thread, NULL);
 	pthread_cond_destroy(&condition);
 	pthread_mutex_destroy( &mutex );
 #endif
@@ -245,7 +245,6 @@ void *projectM::thread_func(void *vptr_args)
     pthread_cond_wait( &condition, &mutex );
     if(!running)
     {
-      pthread_mutex_unlock( &mutex );
       return NULL;
     }
     evaluateSecondPreset();
@@ -254,7 +253,8 @@ void *projectM::thread_func(void *vptr_args)
 #endif
 
 void projectM::evaluateSecondPreset()
-{	
+{
+      CSectionLock lock(&mutex);
       setupPresetInputs(&m_activePreset2->presetInputs());
       m_activePreset2->presetInputs().frame = timeKeeper->PresetFrameB();
       m_activePreset2->presetInputs().progress= timeKeeper->PresetProgressB();
@@ -305,6 +305,7 @@ DLLEXPORT void projectM::renderFrame()
 		if ( timeKeeper->PresetProgressA()>=1.0 && !timeKeeper->IsSmoothing())
 		{
  			
+                        CSectionLock lock(&mutex);
 			timeKeeper->StartSmoothing();		      
 			switchPreset(m_activePreset2, 
 				     &m_activePreset->presetInputs() == &presetInputs ? presetInputs2 : presetInputs, 
@@ -330,19 +331,17 @@ DLLEXPORT void projectM::renderFrame()
 		
 #ifdef USE_THREADS
 		pthread_cond_signal(&condition);
-		pthread_mutex_unlock( &mutex );
 #endif
 		m_activePreset->evaluateFrame();
 		renderer->PerPixelMath ( &m_activePreset->presetOutputs(), &presetInputs );
 		renderer->WaveformMath ( &m_activePreset->presetOutputs(), &presetInputs, true );
 
-#ifdef USE_THREADS
-		pthread_mutex_lock( &mutex );
-#else		
+#ifndef USE_THREADS
 		evaluateSecondPreset();
 #endif
 		
 		
+                CSectionLock lock(&mutex);
 		PresetMerger::MergePresets ( m_activePreset->presetOutputs(),m_activePreset2->presetOutputs(),timeKeeper->SmoothRatio(),presetInputs.gx, presetInputs.gy );	       
 
 	}
@@ -350,6 +349,7 @@ DLLEXPORT void projectM::renderFrame()
 	{
 		if ( timeKeeper->IsSmoothing() && timeKeeper->SmoothRatio() > 1.0 )
 		{
+                        CSectionLock lock(&mutex);
 			m_activePreset = m_activePreset2;			
 			timeKeeper->EndSmoothing();
 		}
@@ -459,7 +459,6 @@ void projectM::projectM_init ( int gx, int gy, int fps, int texsize, int width, 
 	      std::cerr << "failed to allocate a thread! try building with option USE_THREADS turned off" << std::endl;;
 	      exit(1);
 	    }
-	pthread_mutex_lock( &mutex );
 #endif
 
 	renderer->setPresetName ( m_activePreset->presetName() );
@@ -883,6 +882,7 @@ void projectM::switchPreset(std::auto_ptr<Preset> & targetPreset, PresetInputs &
 
 	// Set preset name here- event is not done because at the moment this function is oblivious to smooth/hard switches
 	renderer->setPresetName ( targetPreset->presetName() );
+        printf("projectm: preset is now %s\n", targetPreset->presetName().c_str());
 
 
 }

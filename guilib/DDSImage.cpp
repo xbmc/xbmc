@@ -67,6 +67,8 @@ unsigned int CDDSImage::GetFormat() const
     return XB_FMT_DXT3;
   if (strncmp((const char *)&m_desc.pixelFormat.fourcc, "DXT5", 4) == 0)
     return XB_FMT_DXT5;
+  if (strncmp((const char *)&m_desc.pixelFormat.fourcc, "ARGB", 4) == 0)
+    return XB_FMT_A8R8G8B8;
   return 0;
 }
 
@@ -109,6 +111,17 @@ bool CDDSImage::ReadFile(const std::string &inputFile)
   return true;
 }
 
+bool CDDSImage::Create(const std::string &outputFile, unsigned int width, unsigned int height, unsigned int pitch, unsigned char const *brga, double maxMSE)
+{
+  if (!Compress(width, height, pitch, brga, 5))
+  { // use ARGB
+    Allocate(width, height, XB_FMT_A8R8G8B8);
+    for (unsigned int i = 0; i < height; i++)
+      memcpy(m_data + i * width * 4, brga + i * pitch, std::min(width * 4, pitch));
+  }
+  return WriteFile(outputFile);
+}
+
 bool CDDSImage::WriteFile(const std::string &outputFile) const
 {
   // open the file
@@ -127,31 +140,33 @@ bool CDDSImage::WriteFile(const std::string &outputFile) const
 
 unsigned int CDDSImage::GetStorageRequirements(unsigned int width, unsigned int height, unsigned int format) const
 {
-  unsigned int blockSize = (format == XB_FMT_DXT1) ? 8 : 16;
-  return ((width + 3) / 4) * ((height + 3) / 4) * blockSize;
+  switch (format)
+  {
+  case XB_FMT_DXT1:
+    return ((width + 3) / 4) * ((height + 3) / 4) * 8;
+  case XB_FMT_DXT3:
+  case XB_FMT_DXT5:
+    return ((width + 3) / 4) * ((height + 3) / 4) * 16;
+  case XB_FMT_A8R8G8B8:
+  default:
+    return width * height * 4;
+  }
 }
 
 bool CDDSImage::Compress(unsigned int width, unsigned int height, unsigned int pitch, unsigned char const *brga, double maxMSE)
 {
-  delete[] m_data;
-  m_data = new unsigned char[GetStorageRequirements(width, height, XB_FMT_DXT1)];
-  
   // first try DXT1, which is only 4bits/pixel
   Allocate(width, height, XB_FMT_DXT1);
-  
-  squish::CompressImage(brga, width, height, pitch, m_data, squish::kDxt1 | squish::kSourceBGRA);
-  if (maxMSE)
-  { // want to bother with other formats
-    double colorMSE, alphaMSE;
-    squish::ComputeMSE(brga, width, height, pitch, m_data, squish::kDxt1 | squish::kSourceBGRA, colorMSE, alphaMSE);
-    if (colorMSE < maxMSE && alphaMSE < maxMSE)
-    {
-      CLog::Log(LOGDEBUG, "%s - DXT1 error is: %2.2f:%2.2f", __FUNCTION__, colorMSE, alphaMSE);
-      return true;
-    }
 
-    Allocate(width, height, XB_FMT_DXT3);
-    
+  squish::CompressImage(brga, width, height, pitch, m_data, squish::kDxt1 | squish::kSourceBGRA);
+  const char *fourCC = NULL;
+
+  double colorMSE, alphaMSE;
+  squish::ComputeMSE(brga, width, height, pitch, m_data, squish::kDxt1 | squish::kSourceBGRA, colorMSE, alphaMSE);
+  if (!maxMSE || (colorMSE < maxMSE && alphaMSE < maxMSE))
+    fourCC = "DXT1";
+  else
+  {
     if (alphaMSE == 0)
     { // no alpha channel, so DXT5YCoCg is going to be the best DXT5 format
       /*        squish::CompressImage(brga, width, height, pitch, data2, squish::kDxt5 | squish::kSourceBGRA);
@@ -164,7 +179,8 @@ bool CDDSImage::Compress(unsigned int width, unsigned int height, unsigned int p
        */
     }
     if (alphaMSE > 0)
-    { // try DXT3 and DXT5 - use whichever is better (color is the same, but alpha will be different)
+    { // try DXT3 and DXT5 - use whichever is better (color is the same as DXT1, but alpha will be different)
+      Allocate(width, height, XB_FMT_DXT3);
       squish::CompressImage(brga, width, height, pitch, m_data, squish::kDxt3 | squish::kSourceBGRA);
       squish::ComputeMSE(brga, width, height, pitch, m_data, squish::kDxt3 | squish::kSourceBGRA, colorMSE, alphaMSE);
       if (colorMSE < maxMSE)
@@ -174,31 +190,25 @@ bool CDDSImage::Compress(unsigned int width, unsigned int height, unsigned int p
         squish::CompressImage(brga, width, height, pitch, data2, squish::kDxt5 | squish::kSourceBGRA);
         squish::ComputeMSE(brga, width, height, pitch, data2, squish::kDxt5 | squish::kSourceBGRA, colorMSE, dxt5MSE);
         if (alphaMSE < maxMSE && alphaMSE < dxt5MSE)
-        { // DXT3 passes and is best
-          CLog::Log(LOGDEBUG, "%s - DXT3 error is: %2.2f:%2.2f", __FUNCTION__, colorMSE, alphaMSE);          
-          return true;
-        }
+          fourCC = "DXT3";
         else if (dxt5MSE < maxMSE)
         { // DXT5 passes
-          memcpy(&m_desc.pixelFormat.fourcc, "DXT5", 4);
-          delete[] m_data;
-          m_data = data2;
-          CLog::Log(LOGDEBUG, "%s - DXT5 error is: %2.2f:%2.2f", __FUNCTION__, colorMSE, dxt5MSE);
-          return true;
+          fourCC = "DXT5";
+          std::swap(m_data, data2);
+          alphaMSE = dxt5MSE;
         }
         delete[] data2;
       }
     }
-    CLog::Log(LOGDEBUG, "%s - Failed to compress to DXT - error is: %2.2f:%2.2f", __FUNCTION__, colorMSE, alphaMSE);
-    return false;
   }
-  else
+  if (fourCC)
   {
-    double colorMSE, alphaMSE;
-    squish::ComputeMSE(brga, width, height, pitch, m_data, squish::kDxt1 | squish::kSourceBGRA, colorMSE, alphaMSE);
-    CLog::Log(LOGDEBUG, "%s - DXT1 error is: %2.2f:%2.2f", __FUNCTION__, colorMSE, alphaMSE);
-  } 
-  return true;
+    memcpy(&m_desc.pixelFormat.fourcc, fourCC, 4);
+    CLog::Log(LOGDEBUG, "%s - using %s (min error is: %2.2f:%2.2f)", __FUNCTION__, fourCC, colorMSE, alphaMSE);
+    return true;
+  }
+  CLog::Log(LOGDEBUG, "%s - no format suitable (min error is: %2.2f:%2.2f)", __FUNCTION__, colorMSE, alphaMSE);
+  return false;
 }
 
 bool CDDSImage::Decompress(unsigned char *argb, unsigned int width, unsigned int height, unsigned int pitch, unsigned char const *dxt, unsigned int format)
@@ -212,7 +222,7 @@ bool CDDSImage::Decompress(unsigned char *argb, unsigned int width, unsigned int
     squish::DecompressImage(argb, width, height, pitch, dxt, squish::kDxt3 | squish::kSourceBGRA);
   else if (format == XB_FMT_DXT5)
     squish::DecompressImage(argb, width, height, pitch, dxt, squish::kDxt5 | squish::kSourceBGRA);
- 
+
   return true;
 }
 
@@ -234,10 +244,16 @@ void CDDSImage::Allocate(unsigned int width, unsigned int height, unsigned int f
 
 const char *CDDSImage::GetFourCC(unsigned int format) const
 {
-  if (format == XB_FMT_DXT1)
+  switch (format)
+  {
+  case XB_FMT_DXT1:
     return "DXT1";
-  else if (format == XB_FMT_DXT3)
+  case XB_FMT_DXT3:
     return "DXT3";
-  else
+  case XB_FMT_DXT5:
     return "DXT5";
+  case XB_FMT_A8R8G8B8:
+  default:
+    return "ARGB";
+  }
 }

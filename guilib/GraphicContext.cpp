@@ -31,10 +31,11 @@
 #include "TextureManager.h"
 #include "MouseStat.h"
 #include "GUIWindowManager.h"
+#include "SystemGlobals.h"
 
 using namespace std;
 
-CGraphicContext g_graphicsContext;
+CGraphicContext& g_graphicsContext = g_SystemGlobals.m_graphicsContext;
 extern bool g_fullScreen;
 
 /* quick access to a skin setting, fine unless we starts clearing video settings */

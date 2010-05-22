@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 26/2/2010 -->
-<!--Finnish strings based on English strings revision 28135 -->
+<!--Date of translation: 11/3/2010 -->
+<!--Finnish strings based on English strings revision 28467 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -546,10 +546,10 @@
   <string id="625">Kaikki kappaleet</string>
   <string id="629">Näyttötapa</string>
   <string id="630">Normaali</string>
-  <string id="631">Suurennettu</string>
-  <string id="632">Venytetty 4:3</string>
-  <string id="633">Venytetty 14:9</string>
-  <string id="634">Venytetty 16:9</string>
+  <string id="631">Zoomaus</string>
+  <string id="632">Venytä kokoon 4:3</string>
+  <string id="633">Leveyden zoomaus</string>
+  <string id="634">Venytä kokoon 16:9</string>
   <string id="635">Alkuperäinen koko</string>
   <string id="636">Oma asetus</string>
   <string id="637">Tasonkorjaus</string>
@@ -574,6 +574,7 @@
   <string id="656">Valitse toistolista</string>
   <string id="657">Valitse kansio</string>
   <string id="658">Kappaleen tiedot</string>
+  <string id="659">Epälineaarinen venytys</string>
 
   <string id="660">Voimakkuuden vahvistus</string>
   <string id="661">Valitse vientikansio</string>
@@ -1188,7 +1189,7 @@
   <string id="13397">Tekstitys käytössä</string>
   <string id="13398">Pikakuvakkeet</string>
   <string id="13399">Ohita artikkelit lajiteltaessa (esim. "the")</string>
-  <string id="13400">Ristiinhäivytä albumin kappaleet</string>
+  <string id="13400">Ristiinhäivytä saman albumin kappaleet</string>
   <string id="13401">Valitse %s</string>
   <string id="13402">Näytä kappaleen paikka</string>
   <string id="13403">Poista oletussijainti</string>
@@ -1496,7 +1497,6 @@
   <string id="16304">Lanczos2</string>
   <string id="16305">Lanczos3</string>
   <string id="16306">Sinc8</string>
-
   <string id="16307">Bicubic (ohjelmallinen)</string>
   <string id="16308">Lanczos (ohjelmallinen)</string>
   <string id="16309">Sinc (ohjelmallinen)</string>
@@ -1701,7 +1701,7 @@
   <string id="20192">Nouda lisätiedot kirjastoa päivitettäessä</string>
 
   <string id="20194">Tietojen hakupaikka</string>
-  <string id="20195">Vaihda hakupaikkaa</string>
+  <string id="20195">Vaihda tietojen hakupaikka</string>
   <string id="20196">Vie musiikkikirjasto</string>
   <string id="20197">Tuo musiikkikirjasto</string>
   <string id="20198">Esittäjää ei löydy!</string>
@@ -1937,6 +1937,7 @@
   <string id="21416">Palaute pohjautuu hakupaikan kieleen</string>
   <string id="21417">- Asetukset</string>
   <string id="21418">Monikielinen</string>
+  <string id="21419">Hakupaikalle ei ole asetuksia</string>
 
   <string id="21420">Ehtoihin sopiva</string>
   <string id="21421">Älykkään toistolistan ehdot</string>
@@ -2091,20 +2092,53 @@
   <string id="22042">valkoinen/sininen</string>
   <string id="22043">musta/valkoinen</string>
 
-  <string id="23000">Sää-lisäosa</string>
-  <string id="23001">- Lisäosan asetukset</string>
-
-  <string id="23050">Teksti-tv käytössä</string>
+  <string id="23049">Teksti-tv ei ole käytettävissä</string>
+  <string id="23050">Ota Teksti-tv käyttöön</string>
   <string id="23051">Osa %i</string>
   <string id="23052">Puskuroidaan %i tavua</string>
   <string id="23053">Pysäytetään</string> 
   <string id="23054">Käynnissä</string>
- 
+
  <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">Ulkoinen toisto-ohjelma käytössä</string>
   <string id="23101">Paina OK sulkeaksesi toisto-ohjelman</string>
 
   <string id="23104">Paina OK kun toisto on loppunut</string>
+
+  <!-- strings 24000 thru 24299 reserved for the addons framework -->
+  <string id="24000">Laajennus</string>
+  <string id="24001">Laajennukset</string>
+
+  <string id="24005">Lisäosa</string>
+  <string id="24007">Tietojen hakupaikka</string>
+  <string id="24008">Näytönsäästäjä</string>
+  <string id="24009">Skriptit</string>
+  <string id="24010">Visualisointi</string>
+
+  <string id="24020">Muokkaa laajennuksen asetuksia</string>
+  <string id="24021">Poista laajennus käytöstä</string>
+  <string id="24022">Ota laajennus käyttöön</string>
+  <string id="24023">Laajennus ei ole käytössä</string>
+  <string id="24027">Sääpalvelu</string>
+  <string id="24028">Weather.com (vakio)</string>
+  <string id="24030">Tällä laajennuksella ei ole asetuksia</string>
+  <string id="24031">Virhe asetusten latauksessa</string>
+
+  <string id="24050">Käytettävät laajennukset</string>
+  <string id="24051">Versio:</string>
+  <string id="24052">Huomautus:</string>
+  <string id="24053">Lisenssi:</string>
+  <string id="24059">Haluatko asentaa tämän laajennuksen?</string>
+
+  <string id="24070">Laajennusta ei voida käyttää</string>
+  <string id="24071">Ilmeni tuntematon virhe</string>
+  <string id="24072">Asetukset vaaditaan</string>
+  <string id="24073">Ei voida yhdistää</string>
+  <string id="24074">Uudelleenkäynnistys vaaditaan</string>
+  <string id="24080">Yritetäänkö uudelleen?</string>
+  <string id="24089">Laajennus käynnistyy uudelleen</string>
+
+  <string id="24090">Lukitse laajennusten asennus</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Kirjasto tila</string>

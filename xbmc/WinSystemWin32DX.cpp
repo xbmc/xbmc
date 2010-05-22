@@ -21,10 +21,11 @@
 
 
 #include "WinSystemWin32DX.h"
+#include "SystemGlobals.h"
 
 #ifdef HAS_DX
 
-CWinSystemWin32DX g_Windowing;
+CWinSystemWin32DX& g_Windowing = g_SystemGlobals.m_Windowing;
 
 CWinSystemWin32DX::CWinSystemWin32DX()
 : CRenderSystemDX()

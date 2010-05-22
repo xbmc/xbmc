@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>Basic command line switch reference</TITLE>
+<META NAME="description" CONTENT="Command line switch reference">
+<META NAME="keywords" CONTENT="lame">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso_8859_1">
+<LINK REL="STYLESHEET" HREF="lame.css">
+</HEAD>
+<BODY TEXT=#000000
+        BGCOLOR=#F9FBFB LINK=#006666 VLINK=#4C4C4C
+        ALINK=#995500>
+<H1>Basic command line switch reference</H1>
+<br>
+Only the most usual switches are described here. However those should be sufficient 
+for the vast majority of users. 
+<P> 
+<TABLE CELLPADDING=3 BORDER="1">
+  <TR VALIGN="TOP"> 
+    <TD ALIGN="LEFT" nowrap><b>switch</b></TD>
+    <TD ALIGN="LEFT" nowrap><b>parameter</b></TD>
+  </TR>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-abr">--abr</a></kbd></td>
+    <td align="LEFT" nowrap>average bitrate encoding</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#b">-b</a></kbd></td>
+    <td align="LEFT" nowrap>bitrate (8...320)</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-decode">--decode</a></kbd></td>
+    <td align="LEFT" nowrap>decoding only</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#f">-f</a></kbd></td>
+    <td align="LEFT" nowrap> fast mode</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#h">-h</a></kbd></td>
+    <td align="LEFT" nowrap>high quality</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#-help">--help</a></kbd></td>
+    <td align="LEFT" nowrap> help</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#m">-m m</a></kbd></td>
+    <td align="LEFT" nowrap>mono mode</td>
+  </tr>
+  <tr valign="TOP"> 
+    <td align="LEFT" nowrap><kbd><a href="#V">-V</a></kbd></td>
+    <td align="LEFT" nowrap>VBR quality setting (0...9)</td>
+  </tr>
+</TABLE>
+<BR>
+<dl> 
+  <dt><strong>* <kbd>--abr n</kbd><a name="-abr">&nbsp;&nbsp;&nbsp;&nbsp;average 
+    bitrate encoding</a></strong> 
+</dl>
+<dl> 
+  <dd>Turns on encoding with a targeted average bitrate of n kbits, allowing to 
+    use frames of different sizes. The allowed range of n is 8-320, you can use 
+    any integer value within that range. 
+  <dt><br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+</dl>
+<dl> 
+  <dt><strong>* <kbd>-b n</kbd><a name="b">&nbsp;&nbsp;&nbsp;&nbsp;bitrate</a></strong> 
+  </dt>
+</dl>
+<dl> 
+  <dd>For MPEG1 (sampling frequencies of 32, 44.1 and 48 kHz)<br>
+    n = 32,40,48,56,64,80,96,112,128,160,192,224,256,320<br>
+    <br>
+    For MPEG2 (sampling frequencies of 16, 22.05 and 24 kHz)<br>
+    n = 8,16,24,32,40,48,56,64,80,96,112,128,144,160<br>
+    <br>
+    Default is 128 kbs for MPEG1 and 80 kbs for MPEG2. 
+  <dt><br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+</dl>
+<dl> 
+  <dt><strong>* <kbd>--decode</kbd><a name="-decode">&nbsp;&nbsp;&nbsp;&nbsp;decoding 
+    only</a></strong> </dt>
+</dl>
+<dl> 
+  <dd>Uses LAME for decoding to a WAV file. The input file can be any input type 
+    supported by encoding, including layer I,II,III (MP3). 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-f</kbd><a name="f">&nbsp;&nbsp;&nbsp;&nbsp;fast mode</a></strong> 
+  </dt>
+</dl>
+<dl> 
+  <dd> This switch forces the encoder to use a faster encoding mode, but with 
+    a lower quality. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-h</kbd><a name="h">&nbsp;&nbsp;&nbsp;&nbsp;high quality</a></strong> 
+  </dt>
+</dl>
+<dl> 
+  <dd> Use some quality improvements. Encoding will be slower, but the result 
+    will be of higher quality.<br>
+    This switch is always enabled when using VBR. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>--help</kbd><a name="-help">&nbsp;&nbsp;&nbsp;&nbsp;help</a></strong> 
+  </dt>
+</dl>
+<dl> 
+  <dd> Display a list of all available options. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-m m</kbd><a name="m">&nbsp;&nbsp;&nbsp;&nbsp;mono 
+    mode</a></strong> </dt>
+</dl>
+<dl> 
+  <dd>The input will be encoded as a mono signal. 
+  <dt><br>
+    <br>
+  </dt>
+  <hr width="50%" noshade align="center">
+  <br>
+  <dl> </dl>
+  <dt><strong>* <kbd>-V 0...9</kbd><a name="V">&nbsp;&nbsp;&nbsp;&nbsp;VBR quality 
+    setting</a></strong></dt>
+</dl>
+<dl> 
+  <dd> Enable VBR (Variable BitRate) and specifies the value of VBR quality.<br>
+    default=4<br>
+    0=highest quality. 
+</dl>
+</BODY>
+</HTML>

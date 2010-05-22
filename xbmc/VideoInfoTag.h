@@ -52,6 +52,7 @@ public:
   CStdString m_strDirector;
   CStdString m_strWritingCredits;
   CStdString m_strGenre;
+  CStdString m_strCountry;
   CStdString m_strTagLine;
   CStdString m_strPlotOutline;
   CStdString m_strTrailer;

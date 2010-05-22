@@ -120,7 +120,6 @@ public:
   bool IsCurrentThread() const;
   void Stop();
   void RestartApp();
-  bool LoadSkin(const CStdString& skinID);
   void UnloadSkin();
   bool LoadUserWindows();
   void ReloadSkin();
@@ -273,11 +272,9 @@ public:
   bool IsPresentFrame();
 
   void Minimize();
-
-  bool m_bRunResumeJobs;
-
 protected:
   void RenderScreenSaver();
+  bool LoadSkin(const CStdString& skinID);
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
 
   friend class CApplicationMessenger;
@@ -372,4 +369,4 @@ protected:
 #endif
 };
 
-extern CApplication g_application;
+extern CApplication& g_application;

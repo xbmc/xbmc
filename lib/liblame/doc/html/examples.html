@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="description" CONTENT="Some examples">
+   <META NAME="keywords" CONTENT="lame">
+   <META NAME="resource-type" CONTENT="document">
+   <META NAME="distribution" CONTENT="global">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.08 [en] (X11; I; Linux 2.0.36 i686) [Netscape]">
+   <TITLE>Some command line examples</TITLE>
+<LINK REL="STYLESHEET" HREF="lame.css">
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#F9FBFB" LINK="#006666" VLINK="#4C4C4C" ALINK="#995500">
+<H1><FONT FACE="Helvetica">Some command line examples</FONT></H1>
+<UL>
+  <LI> Fixed bit rate 128kbps encoding:<br>
+    <kbd>lame sample.wav sample.mp3</kbd><br>
+    <br>
+  </LI>
+  <LI> Fixed bit rate jstereo 128kbps encoding, high quality (recommended):<br>
+    <kbd>lame -h sample.wav sample.mp3</kbd><br>
+    <br>
+  </LI>
+  <LI> Average bit rate 112kbps encoding:<br>
+    <kbd>lame --abr 112 sample.wav sample.mp3</kbd><br>
+    <br>
+  </LI>
+  <LI>Fast encode, low quality (no psycho-acoustics):<br>
+    <kbd>lame -f sample.wav sample.mp3<br>
+    <br>
+    </kbd></LI>
+  <LI>Variable bitrate (use -V n to adjust quality/filesize):<br>
+    <kbd>lame -h -V 6 sample.wav sample.mp3<br>
+    <br>
+    </kbd></LI>
+  <LI>Streaming mono 22.05 kHz raw pcm, 24 kbps output:<br>
+    <kbd>cat inputfile | lame -r -m m -b 24 -s 22.05 -- > output<br>
+    <br>
+    </kbd></LI>
+  <LI>Streaming mono 44.1 kHz raw pcm, with downsampling to 22.05 kHz:<br>
+    <kbd>cat inputfile | lame -r -m m -b 24 --resample 22.05 -- > output</kbd></LI>
+</UL>
+</BODY>
+</HTML>

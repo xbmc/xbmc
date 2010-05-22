@@ -235,6 +235,7 @@ CXBTFFrame createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, double maxMS
   unsigned int format = 0;
   double colorMSE, alphaMSE;
   squish::u8* argb = (squish::u8 *)argbImage->pixels;
+#ifndef __arm__
   unsigned int compressedSize = squish::GetStorageRequirements(image->w, image->h, squish::kDxt5);
   squish::u8* compressed = new squish::u8[compressedSize];
   // first try DXT1, which is only 4bits/pixel
@@ -289,6 +290,11 @@ CXBTFFrame createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, double maxMS
   delete[] compressed;
   SDL_FreeSurface(argbImage);
   return frame;
+#else	// For ARM, dont use DXT compression!!!
+  CXBTFFrame frame = appendContent(writer, image->w, image->h, argb, image->w * image->h * 4, XB_FMT_A8R8G8B8, flags);
+  SDL_FreeSurface(argbImage);
+  return frame;
+#endif
 }
 
 void Usage()

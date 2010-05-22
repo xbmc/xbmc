@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">自动混合时间</string>
+    <string id="30001">预置切换时间</string>
+    <string id="30002">附加随机时间</string>
+    <string id="30003">启用各向异性过滤</string>
+    <string id="30004">启用硬切</string>
+    <string id="30005">硬切响度门限</string>
+    <string id="30006">硬切平均间隔</string>
+    <string id="30007">最大刷新率</string>
+    <string id="30008">启用立体声3D</string>
+    <string id="30009">预置包</string>
+</strings>

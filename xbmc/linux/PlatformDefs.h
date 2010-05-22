@@ -129,6 +129,10 @@
 #define INSTALL_PATH    "/usr/share/xbmc"
 #endif
 
+#ifndef BIN_INSTALL_PATH
+#define BIN_INSTALL_PATH "/usr/lib/xbmc"
+#endif
+
 #define CONST   const
 #define FALSE   0
 #define TRUE    1
@@ -151,7 +155,7 @@
 #define __int64   long long
 #define __uint64  unsigned long long
 
-#if defined(__x86_64__) || defined(__powerpc__) || defined(__ppc__) // should this be powerpc64 only?
+#if defined(__x86_64__) || defined(__powerpc__) || defined(__ppc__) || defined (__arm__) // should this be powerpc64 only?
 #define __stdcall
 #else /* !__x86_64__ */
 #define __stdcall   __attribute__((__stdcall__))

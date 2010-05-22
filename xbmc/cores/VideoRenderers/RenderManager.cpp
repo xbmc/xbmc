@@ -30,6 +30,7 @@
 #include "Application.h"
 #include "Settings.h"
 #include "GUISettings.h"
+#include "SystemGlobals.h"
 
 #ifdef _LINUX
 #include "PlatformInclude.h"
@@ -37,6 +38,8 @@
 
 #if defined(HAS_GL)
   #include "LinuxRendererGL.h"
+#elif HAS_GLES == 2
+  #include "LinuxRendererGLES.h"
 #elif defined(HAS_DX)
   #include "WinRenderer.h"
 #elif defined(HAS_SDL)
@@ -46,7 +49,7 @@
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
 
-CXBMCRenderManager g_renderManager;
+CXBMCRenderManager& g_renderManager = g_SystemGlobals.m_renderManager;
 
 #define MAXPRESENTDELAY 0.500
 
@@ -269,6 +272,8 @@ unsigned int CXBMCRenderManager::PreInit()
   {
 #if defined(HAS_GL)
     m_pRenderer = new CLinuxRendererGL();
+#elif HAS_GLES == 2
+    m_pRenderer = new CLinuxRendererGLES();
 #elif defined(HAS_DX)
     m_pRenderer = new CPixelShaderRenderer();
 #elif defined(HAS_SDL)

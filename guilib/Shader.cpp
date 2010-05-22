@@ -48,8 +48,12 @@ bool CShader::LoadSource(const string& filename, const string& prefix)
     CLog::Log(LOGERROR, "CYUVShaderGLSL::CYUVShaderGLSL - failed to open file %s", filename.c_str());
     return false;
   }
-
+#ifdef _ARMEL
+  CLog::Log(LOGDEBUG, "Shader - Loading shader file %s", filename.c_str());
+  m_source.assign(file.ReadFile());
+#else
   getline(file, m_source, '\0');
+#endif
   m_source.insert(0, prefix);
   return true;
 }
@@ -81,7 +85,7 @@ bool CGLSLVertexShader::Compile()
   if (params[0]!=GL_TRUE)
   {
     GLchar log[LOG_SIZE];
-    CLog::Log(LOGERROR, "GL: Error compiling shader");
+    CLog::Log(LOGERROR, "GL: Error compiling vertex shader");
     glGetShaderInfoLog(m_vertexShader, LOG_SIZE, NULL, log);
     CLog::Log(LOGERROR, "%s", log);
     m_lastLog = log;
@@ -90,7 +94,7 @@ bool CGLSLVertexShader::Compile()
   else
   {
     GLchar log[LOG_SIZE];
-    CLog::Log(LOGDEBUG, "GL: Shader compilation log:");
+    CLog::Log(LOGDEBUG, "GL: Vertex Shader compilation log:");
     glGetShaderInfoLog(m_vertexShader, LOG_SIZE, NULL, log);
     CLog::Log(LOGDEBUG, "%s", log);
     m_lastLog = log;
@@ -190,7 +194,7 @@ bool CGLSLPixelShader::Compile()
   if (params[0]!=GL_TRUE)
   {
     GLchar log[LOG_SIZE];
-    CLog::Log(LOGERROR, "GL: Error compiling shader");
+    CLog::Log(LOGERROR, "GL: Error compiling pixel shader");
     glGetShaderInfoLog(m_pixelShader, LOG_SIZE, NULL, log);
     CLog::Log(LOGERROR, "%s", log);
     m_lastLog = log;
@@ -199,7 +203,7 @@ bool CGLSLPixelShader::Compile()
   else
   {
     GLchar log[LOG_SIZE];
-    CLog::Log(LOGDEBUG, "GL: Shader compilation log:");
+    CLog::Log(LOGDEBUG, "GL: Pixel Shader compilation log:");
     glGetShaderInfoLog(m_pixelShader, LOG_SIZE, NULL, log);
     CLog::Log(LOGDEBUG, "%s", log);
     m_lastLog = log;
@@ -311,6 +315,7 @@ bool CGLSLShaderProgram::CompileAndLink()
     CLog::Log(LOGERROR, "GL: Error compiling vertex shader");
     return false;
   }
+  CLog::Log(LOGDEBUG, "GL: Vertex Shader compiled successfully");
 
   // compile pixel shader
   if (!m_pFP->Compile())
@@ -319,6 +324,7 @@ bool CGLSLShaderProgram::CompileAndLink()
     CLog::Log(LOGERROR, "GL: Error compiling fragment shader");
     return false;
   }
+  CLog::Log(LOGDEBUG, "GL: Fragment Shader compiled successfully");
 
   // create program object
   if (!(m_shaderProgram = glCreateProgram()))

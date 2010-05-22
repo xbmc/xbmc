@@ -23,7 +23,7 @@
 #include "system.h"
 #ifdef HAS_HAL
 
-class CHALPowerSyscall : public IPowerSyscall
+class CHALPowerSyscall : public CPowerSyscallWithoutEvents
 {
 public:
   CHALPowerSyscall();

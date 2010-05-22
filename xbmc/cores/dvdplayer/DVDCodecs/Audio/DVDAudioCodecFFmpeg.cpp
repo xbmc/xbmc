@@ -263,11 +263,20 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
   for(bits = 0; layout; ++bits)
     layout &= layout - 1;
 
+  /* take a copy of the channel layout */
   layout = m_pCodecContext->channel_layout;
 
+  /* if no layout was specified */
+  if (layout == 0 && m_pCodecContext->channels > 0)
+  {
+    CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg did not report a channel layout, trying to guess");
+    layout = m_dllAvCodec.avcodec_guess_channel_layout(m_pCodecContext->channels, m_pCodecContext->codec_id, NULL);
+    bits   = m_pCodecContext->channels;
+  }
+  else
   /* if there are more bits set then there are channels, clear the LFE bit to try to work around it */
   if (bits > m_pCodecContext->channels) {
-    CLog::Log(LOGINFO, "CDVDAudioCodecFFMpeg::GetChannelMap - FFmpeg only reported %d channels, but the layout contains %d, trying to fix", m_pCodecContext->channels, bits);
+    CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg only reported %d channels, but the layout contains %d, trying to fix", m_pCodecContext->channels, bits);
 
     /* if it is DTS and the real channel count is not an even number, turn off the LFE bit */
     if (m_pCodecContext->codec_id == CODEC_ID_DTS && m_pCodecContext->channels & 1)
@@ -299,7 +308,7 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
   /* if there is less channels in the map then advertised, we need to fix it */
   if (bits < m_pCodecContext->channels)
   {
-    CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg did not repot the channel layout properly, trying to guess");
+    CLog::Log(LOGINFO, "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg did not repot the channel layout properly, trying to guess (%d, %d, %d)", bits, m_pCodecContext->channels, m_pCodecContext->channel_layout);
 
     index = 0;
     switch(m_pCodecContext->codec_id)

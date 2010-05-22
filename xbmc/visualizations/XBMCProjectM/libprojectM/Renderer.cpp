@@ -8,6 +8,7 @@
 #include "TextureManager.hpp"
 #include <iostream>
 #include <cassert>
+#include "SectionLock.h"
 
 class Preset;
 
@@ -17,6 +18,14 @@ Renderer::Renderer(int width, int height, int gx, int gy, int texsize, BeatDetec
 	
 	//  this->gx=gx;
 	//  this->gy=gy;
+#ifdef _USE_THREADS
+    pthread_mutexattr_t attr;
+    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+    pthread_mutex_init(&_renderer_lock, &attr);
+    pthread_mutexattr_destroy(&attr);
+#endif
+
 	
 	this->totalframes = 1;
 	this->noSwitch = false;
@@ -104,6 +113,7 @@ Renderer::Renderer(int width, int height, int gx, int gy, int texsize, BeatDetec
 
 void Renderer::ResetTextures()
 {
+        CSectionLock lock(&_renderer_lock);
 	textureManager->Clear();
 	
 	delete(renderTarget);
@@ -117,6 +127,7 @@ void Renderer::RenderFrame(PresetOutputs *presetOutputs, PresetInputs *presetInp
 {
 	/** Save original view state */
 	// TODO: check there is sufficient room on the stack
+        CSectionLock lock(&_renderer_lock);
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glMatrixMode(GL_MODELVIEW);
@@ -259,6 +270,7 @@ void Renderer::RenderFrame(PresetOutputs *presetOutputs, PresetInputs *presetInp
 
 void Renderer::Interpolation(PresetOutputs *presetOutputs, PresetInputs *presetInputs)
 {
+        CSectionLock lock(&_renderer_lock);
 	//Texture wrapping( clamp vs. wrap)
 	if (presetOutputs->bTexWrap==0)
 	{
@@ -375,6 +387,9 @@ Renderer::~Renderer()
 //	std::cerr << "freeing title fonts finished" << std::endl;
 #endif
 //	std::cerr << "exiting destructor" << std::endl;
+#ifdef _USE_THREADS
+        pthread_mutex_destroy(&_renderer_lock);
+#endif
 }
 
 
@@ -383,6 +398,7 @@ void Renderer::PerPixelMath(PresetOutputs * presetOutputs, PresetInputs * preset
 	
 	int x, y;
 	float fZoom2, fZoom2Inv;
+        CSectionLock lock(&_renderer_lock);
 	
 	
 	for (x=0;x<this->gx;x++)
@@ -471,6 +487,7 @@ void Renderer::PerPixelMath(PresetOutputs * presetOutputs, PresetInputs * preset
 
 void Renderer::reset(int w, int h)
 {
+        CSectionLock lock(&_renderer_lock);
 	this->aspect=(float)h / (float)w;
 	this -> vw = w;
 	this -> vh = h;
@@ -532,6 +549,7 @@ void Renderer::draw_custom_waves(PresetOutputs *presetOutputs)
 	
 	int x;
 	
+        CSectionLock lock(&_renderer_lock);
 	
 	glPointSize(this->renderTarget->texsize < 512 ? 1 : this->renderTarget->texsize/512);
 	
@@ -621,6 +639,7 @@ void Renderer::draw_shapes(PresetOutputs *presetOutputs)
 {
 	
 	
+        CSectionLock lock(&_renderer_lock);
 	float radius;
 	float xval, yval;
 	float t;
@@ -831,6 +850,7 @@ void Renderer::WaveformMath(PresetOutputs *presetOutputs, PresetInputs *presetIn
 	
 	float cos_rot;
 	float sin_rot;
+        CSectionLock lock(&_renderer_lock);
 	
 	offset=presetOutputs->wave_x-.5;
 	scale=505.0/512.0;
@@ -1060,6 +1080,7 @@ void Renderer::WaveformMath(PresetOutputs *presetOutputs, PresetInputs *presetIn
 void Renderer::draw_waveform(PresetOutputs * presetOutputs)
 {
 	
+        CSectionLock lock(&_renderer_lock);
 	glMatrixMode( GL_MODELVIEW );
 	glPushMatrix();
 	glLoadIdentity();
@@ -1117,6 +1138,7 @@ void Renderer::maximize_colors(PresetOutputs *presetOutputs)
 {
 	
 	float wave_r_switch=0, wave_g_switch=0, wave_b_switch=0;
+        CSectionLock lock(&_renderer_lock);
 	//wave color brightening
 	//
 	//forces max color value to 1.0 and scales
@@ -1181,6 +1203,7 @@ void Renderer::maximize_colors(PresetOutputs *presetOutputs)
 void Renderer::darken_center()
 {
 	
+        CSectionLock lock(&_renderer_lock);
 	float unit=0.05f;
 	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1220,6 +1243,7 @@ void Renderer::modulate_opacity_by_volume(PresetOutputs *presetOutputs)
 	//calculate the opacity from 0=lower to 1=upper
 	//based on current volume
 	
+        CSectionLock lock(&_renderer_lock);
 	
 	if (presetOutputs->bModWaveAlphaByVolume==1)
 	{if (beatDetect->vol<=presetOutputs->fModWaveAlphaStart)  presetOutputs->wave_o=0.0;
@@ -1230,6 +1254,7 @@ void Renderer::modulate_opacity_by_volume(PresetOutputs *presetOutputs)
 
 void Renderer::draw_motion_vectors(PresetOutputs *presetOutputs)
 {  	
+        CSectionLock lock(&_renderer_lock);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -1289,6 +1314,7 @@ GLuint Renderer::initRenderToTexture()
 
 void Renderer::draw_borders(PresetOutputs *presetOutputs)
 {
+        CSectionLock lock(&_renderer_lock);
   	glEnableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);	 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -1351,6 +1377,7 @@ void Renderer::draw_borders(PresetOutputs *presetOutputs)
 
 void Renderer::draw_title_to_texture()
 {
+        CSectionLock lock(&_renderer_lock);
 #ifdef USE_FTGL
 	if (this->drawtitle>100)
 	{
@@ -1363,6 +1390,7 @@ void Renderer::draw_title_to_texture()
 /*
 void setUpLighting()
 {
+        CSectionLock lock(&_renderer_lock);
 	// Set up lighting.
 	float light1_ambient[4]  = { 1.0, 1.0, 1.0, 1.0 };
 	float light1_diffuse[4]  = { 1.0, 0.9, 0.9, 1.0 };
@@ -1407,6 +1435,7 @@ float title_y;
 
 void Renderer::draw_title_to_screen(bool flip)
 {
+        CSectionLock lock(&_renderer_lock);
 	
 #ifdef USE_FTGL
 	if(this->drawtitle>0)
@@ -1479,6 +1508,7 @@ void Renderer::draw_title_to_screen(bool flip)
 void Renderer::draw_title()
 {
 #ifdef USE_FTGL
+        CSectionLock lock(&_renderer_lock);
 	//glBlendFunc(GL_ONE_MINUS_DST_COLOR,GL_ZERO);
 	
 	glColor4f(1.0, 1.0, 1.0, 1.0);
@@ -1500,6 +1530,7 @@ void Renderer::draw_title()
 void Renderer::draw_preset()
 {
 #ifdef USE_FTGL
+        CSectionLock lock(&_renderer_lock);
 	//glBlendFunc(GL_ONE_MINUS_DST_COLOR,GL_ZERO);
 	
 	glColor4f(1.0, 1.0, 1.0, 1.0);
@@ -1527,6 +1558,7 @@ void Renderer::draw_help( )
 {
 	
 #ifdef USE_FTGL
+        CSectionLock lock(&_renderer_lock);
 //glBlendFunc(GL_ONE_MINUS_DST_COLOR,GL_ZERO);
 
 	glColor4f(1.0, 1.0, 1.0, 1.0);
@@ -1585,6 +1617,7 @@ void Renderer::draw_stats(PresetInputs *presetInputs)
 {
 	
 #ifdef USE_FTGL
+        CSectionLock lock(&_renderer_lock);
 	char buffer[128];
 	float offset= (this->showfps%2 ? -0.05 : 0.0);
 	// glBlendFunc(GL_ONE_MINUS_DST_COLOR,GL_ZERO);
@@ -1630,6 +1663,7 @@ void Renderer::draw_stats(PresetInputs *presetInputs)
 void Renderer::draw_fps( float realfps )
 {
 #ifdef USE_FTGL
+        CSectionLock lock(&_renderer_lock);
 	char bufferfps[20];
 	sprintf( bufferfps, "%.1f fps", realfps);
 	// glBlendFunc(GL_ONE_MINUS_DST_COLOR,GL_ZERO);
@@ -1654,6 +1688,7 @@ void Renderer::draw_fps( float realfps )
 void Renderer::render_texture_to_screen(PresetOutputs *presetOutputs)
 {
 	
+        CSectionLock lock(&_renderer_lock);
 	int flipx=1, flipy=1;
 	
 	glMatrixMode(GL_TEXTURE);
@@ -1767,6 +1802,7 @@ void Renderer::render_texture_to_screen(PresetOutputs *presetOutputs)
 void Renderer::render_texture_to_studio(PresetOutputs *presetOutputs, PresetInputs *presetInputs)
 {
   /*
+        CSectionLock lock(&_renderer_lock);
 	int x, y;
 	int flipx=1, flipy=1;
 	

@@ -376,7 +376,16 @@ bool PAPlayer::CreateStream(int num, unsigned int channels, unsigned int sampler
     m_BytesPerSecond      = (m_bitsPerSample[num] / 8)* outputSampleRate * channels;
 
     /* Open the device */
-    m_pAudioDecoder[num] = CAudioRendererFactory::Create(m_pCallback, m_channelCount[num], m_channelMap[num], m_sampleRate[num], m_bitsPerSample[num], false, codec.c_str(), true, false);
+    m_pAudioDecoder[num] = CAudioRendererFactory::Create(
+      m_pCallback         , //pCallback
+      m_channelCount [num], //iChannels
+      m_channelMap   [num], //channelMap
+      m_sampleRate   [num], //uiSamplesPerSec
+      m_bitsPerSample[num], //uiBitsPerSample
+      false               , //bResample
+      true                , //bIsMusic
+      false                 //bPassthrough
+    );
 
     if (!m_pAudioDecoder[num]) return false;
 

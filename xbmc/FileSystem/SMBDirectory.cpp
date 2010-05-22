@@ -393,14 +393,17 @@ bool CSMBDirectory::Remove(const char* strPath)
 
   int result = smbc_rmdir(strFileName.c_str());
 
-  if(result != 0)
+  if(result != 0 && errno != ENOENT)
+  {
 #ifndef _LINUX
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 #else
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
 #endif
+    return false;
+  }
 
-  return (result == 0);
+  return true;
 }
 
 bool CSMBDirectory::Exists(const char* strPath)

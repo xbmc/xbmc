@@ -27,6 +27,7 @@
  */
 #include "WinSystemWin32GL.h"
 #include "WIN32Util.h"
+#include "SystemGlobals.h"
 #include <GL/glew.h>
 
 #ifdef HAS_GL
@@ -36,7 +37,7 @@
 #pragma comment (lib,"../../xbmc/lib/libglew/glew32.lib")
 
 
-CWinSystemWin32GL g_Windowing;
+CWinSystemWin32GL& g_Windowing = g_SystemGlobals.m_Windowing;
 
 
 CWinSystemWin32GL::CWinSystemWin32GL()

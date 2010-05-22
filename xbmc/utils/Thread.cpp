@@ -325,13 +325,38 @@ bool CThread::SetPriority(const int iPriority)
   return(rtn);
 }
 
+void CThread::SetPrioritySched_RR(void)
+{
+#ifdef __APPLE__
+  // Changing to SCHED_RR is safe under OSX, you don't need elevated privileges and the
+  // OSX scheduler will monitor SCHED_RR threads and drop to SCHED_OTHER if it detects
+  // the thread running away. OSX automatically does this with the CoreAudio audio
+  // device handler thread.
+  int32_t result;
+  thread_extended_policy_data_t theFixedPolicy;
+
+  // make thread fixed, set to 'true' for a non-fixed thread
+  theFixedPolicy.timeshare = false;
+  result = thread_policy_set(pthread_mach_thread_np(ThreadId()), THREAD_EXTENDED_POLICY, 
+    (thread_policy_t)&theFixedPolicy, THREAD_EXTENDED_POLICY_COUNT);
+
+  int policy;
+  struct sched_param param;
+  result = pthread_getschedparam(ThreadId(), &policy, &param );
+  // change from default SCHED_OTHER to SCHED_RR
+  policy = SCHED_RR;
+  result = pthread_setschedparam(ThreadId(), policy, &param );
+#endif
+}
+
 int CThread::GetMinPriority(void)
 {
-#if defined(__APPLE__)
+#if 0
+//#if defined(__APPLE__)
   struct sched_param sched;
   int rtn, policy;
 
-  rtn = pthread_getschedparam(pthread_self(), &policy, &sched);
+  rtn = pthread_getschedparam(ThreadId(), &policy, &sched);
   int min = sched_get_priority_min(policy);
 
   return(min);
@@ -342,11 +367,12 @@ int CThread::GetMinPriority(void)
 
 int CThread::GetMaxPriority(void)
 {
-#if defined(__APPLE__)
+#if 0
+//#if defined(__APPLE__)
   struct sched_param sched;
   int rtn, policy;
 
-  rtn = pthread_getschedparam(pthread_self(), &policy, &sched);
+  rtn = pthread_getschedparam(ThreadId(), &policy, &sched);
   int max = sched_get_priority_max(policy);
 
   return(max);
@@ -357,11 +383,12 @@ int CThread::GetMaxPriority(void)
 
 int CThread::GetNormalPriority(void)
 {
-#if defined(__APPLE__)
+#if 0
+//#if defined(__APPLE__)
   struct sched_param sched;
   int rtn, policy;
 
-  rtn = pthread_getschedparam(pthread_self(), &policy, &sched);
+  rtn = pthread_getschedparam(ThreadId(), &policy, &sched);
   int min = sched_get_priority_min(policy);
   int max = sched_get_priority_max(policy);
 

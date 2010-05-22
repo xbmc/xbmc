@@ -1,0 +1,242 @@
+lame (3.98.3) unstable; urgency=low
+
+  * New upstream bugfix version.
+  * debian/rules:
+    + remove excessive quoting from the LDFLAGS variable.
+    + remove useless comments from the file, to make it tidier.
+    + make the detection of the cross-compilation more robust.
+    + avoid passing -O2 to CFLAGS, so that we can optimize for size.
+  * debian/control:
+    + add ${misc:Depends} to each binary package (due to debhelper).
+  * debian/copyright:
+    + update copyright years.
+    + add the © symbol, since (C) may not have legal value.
+    + update reference to a versioned LGPL.
+
+ -- Rogério Brito <rbrito@users.sf.net>  Wed, 24 Feb 2010 04:51:34 -0300
+
+lame (3.98.1) unstable; urgency=low
+
+  * New upstream version:
+    + Fix executable stacks (Thanks to Gentoo people);
+    + Fix for text relocations (Thanks to the PaX Team and Gentoo people).
+  * changes are now (mostly) committed to changelog.
+  * debian/rules: include -Wl,--as-needed for the loader at compile time.
+  * Numerous improvements thanks to Fabian Greffrath. Sincere thanks.
+
+ -- Rogério Brito <rbrito@users.sf.net>  Sat, 12 Jul 2008 09:14:54 -0300
+
+lame (3.98) unstable; urgency=low
+
+  * Preparation for the final release.
+
+ -- Rogério Brito <rbrito@users.sf.net>  Sun, 29 Jun 2008 18:29:09 -0300
+
+lame (3.98~beta8+cvs20080624) unstable; urgency=low
+
+  * Preparation for the new upstream release (lame 3.98 final).
+  * debian/control: eliminate build dependency on gtk1.2-dev.
+  * debian/rules: include -Wextra in the CFLAGS variable.
+  * debian/rules: explicitly disable some features from the build.
+
+ -- Rogério Brito <rbrito@users.sf.net>  Tue, 24 Jun 2008 15:16:22 -0300
+
+lame (3.98~beta8+cvs20080514) unstable; urgency=low
+
+  * Fixing debian packaging details.
+  * debian/rules: put detection of architectures for cross-compilation.
+  * debian/rules: included support for noopt option.
+  * debian/rules: take more care of building everything under debian/tmp.
+  * debian/control: updated to Standards-Version 3.7.3 (no changes).
+  * debian/control: put correctly Conflicts: and Replaces in libmp3lame0{,-dev}.
+  * debian/lame.docs: remove TODO and sort by name.
+  * debian/libmp3lame0-dev.docs: include TODO.
+  * debian/libmp3lame0-dev: include liblame0.so in the package.
+  * debian/watch: include watchfile.
+
+ -- Rogério Brito <rbrito@users.sf.net>  Wed, 14 May 2008 01:44:46 -0300
+
+lame (3.98~alpha1) unstable; urgency=low
+
+  * New upstream release with various improvements;
+  * Use libsndfile for input files;
+  * Remove the parts that depend on gtk-1.2;
+  * debian/rules: remove the DH_COMPAT variable;
+  * debian/control: use ${binary:Version} to be up-to-date;
+  * debian/control: use debhelper version >= 5;
+	
+ -- Rogério Brito <rbrito@users.sf.net>  Wed, 09 Jan 2008 17:12:19 -0200
+
+lame (3.98~alpha0) unstable; urgency=low
+
+  * debian/copyright: updated FSF real address;
+  * debian/rules: small fixes;
+  * doc/man/lame.1: used accented characters in troff format.
+
+ -- Rogério Brito <rbrito@users.sf.net>  Mon, 10 Oct 2005 03:33:31 -0300
+
+lame (3.97-8) unstable; urgency=low
+
+  * debian/rules: enable full optimization, now that it works with GCC 4.
+
+ -- Rogério Brito <rbrito@users.sf.net>  Mon,  5 Sep 2005 01:24:44 -0300
+
+lame (3.97-7) unstable; urgency=low
+
+  * debian/control: make libmp3lame0 provide and replace liblame0.
+
+ -- Rogério Brito <rbrito@users.sf.net>  Tue, 16 Aug 2005 04:36:46 -0300
+
+lame (3.97-6) unstable; urgency=low
+
+  * debian/control: make libmp3lame0 provide liblame0 for legacy apps;
+  * debian/control: fix typo in description of libmp3lame0-dev;
+  * debian/libmp3lame0-dev.files: don't ship shared libraries.
+
+ -- Rogério Brito <rbrito@users.sf.net>  Tue, 16 Aug 2005 04:03:42 -0300
+
+lame (3.97-5) unstable; urgency=low
+
+  * debian/control: fix use of SONAME in the package;
+  * debian/liblame0.*: renamed to libmp3lame0.* as per above;
+  * debian/liblame-dev: idem;
+  * debian/rules: incorporate some changes by Christian Marillat.
+
+ -- Rogério Brito <rbrito@users.sf.net>  Mon, 15 Aug 2005 00:47:25 -0300
+
+lame (3.97-4) unstable; urgency=low
+
+  * debian/control: exclude libsndfile0-dev as a build dependency.
+  * debian/control: include libgtk1.2-dev as a build dependency.
+  * debian/rules: s/--with-fileio=sndfile/--with-fileio=lame/, since
+    grabbing input from stdin is a very important feature.
+
+ -- Rogério Brito <rbrito@users.sf.net>  Fri,  5 Aug 2005 02:01:40 -0300
+
+lame (3.97-3) unstable; urgency=low
+
+  * doc/man/lame.1: document the --{un,}signed options.
+  * doc/man/lame.1: document the --{big,little}-endian options.
+  * debian/control: include libsndfile0-dev as a build dependency.
+  * debian/rules: s/--with-fileio=lame/--with-fileio=sndfile/ .
+	
+ -- Rogério Brito <rbrito@users.sf.net>  Wed,  3 Aug 2005 21:35:17 -0300
+
+lame (3.97-2) unstable; urgency=low
+
+  * debian/rules: use dh_installman instead of dh_installmanpages.
+  * doc/man/lame.1: escape minus signals with backslash.
+	
+ -- Rogério Brito <rbrito@users.sf.net>  Wed, 27 Jul 2005 04:58:39 -0300
+
+lame (3.97-1) unstable; urgency=low
+
+  * Preparation for the beta release of lame 3.97.
+  * Still more improvements to come.
+
+ -- Rogério Brito <rbrito@users.sf.net>  Tue, 26 Jul 2005 18:16:34 -0300
+
+lame (3.97-0.2) unstable; urgency=low
+
+  * Fixed debian/control according to the Debian Library Packaging Guide
+
+ -- Jack Bates <ms419@freezone.co.uk>  Thu, 12 May 2005 13:41:28 -0700
+
+lame (3.97-0.1) unstable; urgency=low
+
+  * Preparation for new upstream release.
+  * debian/control: modified short descriptions to be lower case.
+
+ -- Rogério Brito <rbrito@users.sf.net>  Fri, 18 Mar 2005 01:18:42 -0300
+
+lame (3.96-0.1) unstable; urgency=low
+ 
+  * Update debian packaging for lame 3.96
+ 
+ -- Geoffrey T. Dairiki <dairiki@dairiki.org>  Fri, 9 Apr 2004 10:28:12 -0700
+
+lame (3.94-0.1) unstable; urgency=low
+
+  * Update packaging for lame 3.94 alpha 14;
+  * Made progress to make the package as lintian-clean as possible:
+  * debian/copyright: removed the traces of the skeleton file;
+  * debian/rules: avoid using --host, as per warning of ./configure;
+  * debian/rules: use trick to avoind generating a library with rpath;
+  * debian/lame.docs: avoid generating duplicate html documentation;
+  * debian/control: added dependency on debhelper >= 3;
+  * still more work left, but progressing anyway (i.e., changes listed in
+    /usr/share/doc/debian-policy/upgrading-checklist.txt.gz should be
+    applied).
+
+ -- Rogério Brito <rbrito@users.sf.net>  Tue, 15 Jul 2003 19:30:42 -0300
+
+lame (3.93-0.1) unstable; urgency=low
+
+  * Prevent lame 3.93 shipping and still building a 3.92 debian package;
+  * Use --enable-nasm, as is shouldn't break compilation on non-x86;
+  * Use --enable-expopt, to get a bit more of speed.
+
+ -- Rogério Brito <rbrito@users.sf.net>  Sun, 25 Aug 2002 18:58:16 -0300
+
+lame (3.92-1) unstable; urgency=low
+
+  * New upstream release.
+  * Closes: #578135.
+
+ -- Rogério Brito <linuxsup@ig.com.br>  Sun, 28 Jul 2002 03:08:04 -0300
+
+lame (3.91-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Rogerio Brito <linuxsup@ig.com.br>  Sun, 20 Jan 2002 20:50:19 -0200
+
+lame (3.90.1-0) unstable; urgency=low
+
+  * New upstream release.
+  * debian/control: nasm is only a build-dependency on x86;
+  * debian/control: added debhelper to build-dependency list;
+  * debian/control: changed description of the binary packages;
+  * debian/rules: enabled experimental/agressive optimizations;
+  * debian/rules: effectively spread the installed files in binary packages;
+  * debian/rules: now dh_makeshlibs creates good postinst and prerm scripts;
+  * Changed the lame-dev package to liblame0-dev;
+  * Removed references to lame-extras, since it doesn't exist anymore;
+  * Added LICENCE to copyright and excluded it from the binary package;
+  * Removed INSTALL from the binary package;
+  * lame is now almost lintian clean (the only problem remaining is
+    an rpath in liblame build process).
+
+ -- Rogerio Brito <linuxsup@ig.com.br>  Fri, 28 Dec 2001 04:08:57 -0200
+
+lame (3.90-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Viral <viral@debian.org>  Tue, 21 Aug 2001 13:50:14 +0530
+
+lame (3.89-1) unstable; urgency=low
+
+  * New upstream version.
+  * Added --host=$$(dpkg-architecture -qDEB_HOST_GNU_TYPE) to configure.
+  * Added liblame0 package.
+  * Added doc-base entry.
+  * Actual ChangeLog is installed now instead of history.html
+  
+ -- Viral <viral@debian.org>  Sun, 22 Jul 2001 03:07:30 +0530
+
+lame (3.88-0) unstable; urgency=low
+
+  * Updated debian/ directory to use configure.
+
+ -- Ingo Saitz <Ingo.Saitz@stud.uni-hannover.de>  Mon, 11 Dec 2000 08:43:26 +0100
+
+lame (3.86-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Stefan Karrmann <S.Karrmann@gmx.net>  Thu, 31 Aug 2000 22:15:07 +0200
+
+Local variables:
+mode: debian-changelog
+End:

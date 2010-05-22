@@ -135,10 +135,6 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
   {
     m_TotalTime = (__int64)(m_seekInfo.GetDuration() * 1000.0f);
   }
-  if ( m_TotalTime && length )
-  {
-    m_Bitrate = (int)((length / m_seekInfo.GetDuration()) * 8);  // average bitrate
-  }
 
   // Read in some data so we can determine the sample size and so on
   // This needs to be made more intelligent - possibly use a temp output buffer
@@ -157,6 +153,11 @@ bool MP3Codec::Init(const CStdString &strFile, unsigned int filecache)
       CLog::Log(LOGERROR, "MP3Codec: Seek info unavailable for file <%s> (corrupt?)", strFile.c_str());
       goto error;
     }
+  }
+  
+  if ( m_TotalTime && (length-id3v2Size > 0) )
+  {
+    m_Bitrate = (int)(((length-id3v2Size) / m_seekInfo.GetDuration()) * 8);  // average bitrate
   }
 
   m_eof = false;

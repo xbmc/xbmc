@@ -66,6 +66,7 @@ class TiXmlElement;
 #define CDDARIP_ENCODER_LAME     0
 #define CDDARIP_ENCODER_VORBIS   1
 #define CDDARIP_ENCODER_WAV      2
+#define CDDARIP_ENCODER_FLAC     3
 
 #define CDDARIP_QUALITY_CBR      0
 #define CDDARIP_QUALITY_MEDIUM   1
@@ -73,7 +74,9 @@ class TiXmlElement;
 #define CDDARIP_QUALITY_EXTREME  3
 
 #define AUDIO_ANALOG      0
-#define AUDIO_DIGITAL      1
+#define AUDIO_IEC958      1
+#define AUDIO_HDMI        2
+#define AUDIO_IS_BITSTREAM(x) ((x) == AUDIO_IEC958 || (x) == AUDIO_HDMI)
 
 #define VIDEO_NORMAL 0
 #define VIDEO_LETTERBOX 1

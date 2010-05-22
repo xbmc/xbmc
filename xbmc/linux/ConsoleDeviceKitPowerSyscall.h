@@ -24,7 +24,7 @@
 #define _DBUS_POWER_SYSCALL_H_
 #include "IPowerSyscall.h"
 
-class CConsoleDeviceKitPowerSyscall : public IPowerSyscall
+class CConsoleDeviceKitPowerSyscall : public CPowerSyscallWithoutEvents
 {
 public:
   CConsoleDeviceKitPowerSyscall();

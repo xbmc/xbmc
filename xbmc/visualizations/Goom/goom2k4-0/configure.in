@@ -19,17 +19,13 @@ LDFLAGS="${LDFLAGS}"
 
 dnl *** check for xmms ***
 
-AM_PATH_XMMS2(0.9.5.1, HAVE_XMMS="yes", HAVE_XMMS="no")
+HAVE_XMMS="no"
 AM_CONDITIONAL(HAVE_XMMS,test "x$HAVE_XMMS" = "xyes")
 
 
 dnl *** SDL ***
 
-if test "x$HAVE_XMMS" = "xyes"; then
-  AM_PATH_SDL2(1.2.0, HAVE_SDL="yes", HAVE_SDL="no"])
-else
-  HAVE_SDL="no"
-fi
+HAVE_SDL="no"
 AM_CONDITIONAL(HAVE_SDL,test "x$HAVE_SDL" = "xyes")
 
 

@@ -126,7 +126,6 @@ namespace PYXBMC
       (float)pControl->dwHeight,
       label,
       true,
-      CScrollInfo::defaultSpeed,
       0,
       true);
 

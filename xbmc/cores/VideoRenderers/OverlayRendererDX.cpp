@@ -43,7 +43,7 @@ static bool LoadTexture(int width, int height, int stride
                       , CD3DTexture* texture)
 {
 
-  if (!texture->Create(width, height, 1, 0, format, D3DPOOL_MANAGED))
+  if (!texture->Create(width, height, 1, g_Windowing.DefaultD3DUsage(), format, g_Windowing.DefaultD3DPool()))
   {
     CLog::Log(LOGERROR, "LoadTexture - failed to allocate texture");
     return false;
@@ -149,7 +149,7 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
     return;
   }
 
-  if (!m_vertex.Create(sizeof(VERTEX) * 6 * quads.count, 0, m_fvf, D3DPOOL_MANAGED))
+  if (!m_vertex.Create(sizeof(VERTEX) * 6 * quads.count, g_Windowing.DefaultD3DUsage(), m_fvf, g_Windowing.DefaultD3DPool()))
   {
     CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
     m_texture.Release();
@@ -363,7 +363,7 @@ void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
                 , &m_texture))
     return;
 
-  if (!m_vertex.Create(sizeof(VERTEX) * 6, 0, m_fvf, D3DPOOL_MANAGED))
+  if (!m_vertex.Create(sizeof(VERTEX) * 6, g_Windowing.DefaultD3DUsage(), m_fvf, g_Windowing.DefaultD3DPool()))
   {
     CLog::Log(LOGERROR, "%s - failed to create vertex buffer", __FUNCTION__);
     m_texture.Release();

@@ -351,11 +351,12 @@ void CGUISettings::Initialize()
   AddBool(acd, "audiocds.usecddb", 227, true);
   AddSeparator(acd, "audiocds.sep1");
   AddPath(acd,"audiocds.recordingpath",20000,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
-  AddString(acd, "audiocds.trackformat", 13307, "[%N. ]%T - %A", EDIT_CONTROL_INPUT, false, 16016);
+  AddString(acd, "audiocds.trackpathformat", 13307, "%A - %B/[%N. ][%A - ]%T", EDIT_CONTROL_INPUT, false, 16016);
   map<int,int> encoders;
   encoders.insert(make_pair(34000,CDDARIP_ENCODER_LAME));
   encoders.insert(make_pair(34001,CDDARIP_ENCODER_VORBIS));
   encoders.insert(make_pair(34002,CDDARIP_ENCODER_WAV));
+  encoders.insert(make_pair(34005,CDDARIP_ENCODER_FLAC));
   AddInt(acd, "audiocds.encoder", 621, CDDARIP_ENCODER_LAME, encoders, SPIN_CONTROL_TEXT);
 
   map<int,int> qualities;
@@ -365,6 +366,7 @@ void CGUISettings::Initialize()
   qualities.insert(make_pair(603,CDDARIP_QUALITY_EXTREME));
   AddInt(acd, "audiocds.quality", 622, CDDARIP_QUALITY_CBR, qualities, SPIN_CONTROL_TEXT);
   AddInt(acd, "audiocds.bitrate", 623, 192, 128, 32, 320, SPIN_CONTROL_INT_PLUS, MASK_KBPS);
+  AddInt(acd, "audiocds.compressionlevel", 665, 5, 0, 1, 8, SPIN_CONTROL_INT_PLUS);
 
 #ifdef HAS_KARAOKE
   CSettingsCategory* kar = AddCategory(3, "karaoke", 13327);
@@ -436,7 +438,8 @@ void CGUISettings::Initialize()
 
   map<int,int> audiomode;
   audiomode.insert(make_pair(338,AUDIO_ANALOG));
-  audiomode.insert(make_pair(339,AUDIO_DIGITAL));
+  audiomode.insert(make_pair(339,AUDIO_IEC958));
+  audiomode.insert(make_pair(420,AUDIO_HDMI  ));
   AddInt(ao, "audiooutput.mode", 337, AUDIO_ANALOG, audiomode, SPIN_CONTROL_TEXT);
 
 /* hide this from apple users until CoreAudio has been updated to support this */
@@ -586,24 +589,28 @@ void CGUISettings::Initialize()
   AddInt(vp, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, renderers, SPIN_CONTROL_TEXT);
 
 #ifdef HAVE_LIBVDPAU
-  AddBool(vp, "videoplayer.usevdpau", 24091, true);
+  AddBool(vp, "videoplayer.usevdpau", 13425, true);
 #endif
-
-#ifdef HAVE_LIBCRYSTALHD
-  AddBool(CCrystalHD::GetInstance()->DevicePresent() ? vp: NULL, "videoplayer.usechd", 24094, true);
-#endif
-
-#ifdef HAS_DX
-  AddBool(g_sysinfo.IsVistaOrHigher() ? vp: NULL, "videoplayer.usedxva2", 24093, false);
-#endif
-
 #ifdef HAVE_LIBVA
-  AddBool(vp, "videoplayer.usevaapi", 24092, true);
+  AddBool(vp, "videoplayer.usevaapi", 13426, true);
+#endif
+#ifdef HAS_DX
+  AddBool(g_sysinfo.IsVistaOrHigher() ? vp: NULL, "videoplayer.usedxva2", 13427, false);
+#endif
+#ifdef HAVE_LIBCRYSTALHD
+  AddBool(CCrystalHD::GetInstance()->DevicePresent() ? vp: NULL, "videoplayer.usechd", 13428, true);
+#endif
+#ifdef HAVE_LIBVDADECODER
+  AddBool(g_sysinfo.HasVDADecoder() ? vp: NULL, "videoplayer.usevda", 13429, true);
+#endif
+#ifdef HAVE_LIBOPENMAX
+  AddBool(vp, "videoplayer.useomx", 13430, true);
 #endif
 
 #ifdef HAS_GL
   AddBool(vp, "videoplayer.usepbo", 13424, true);
 #endif
+
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(NULL, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
@@ -630,7 +637,7 @@ void CGUISettings::Initialize()
   AddBool(NULL, "videoplayer.strictbinding", 13120, false);
   AddBool(NULL, "videoplayer.vdpau_allow_xrandr", 13122, false);
 #endif
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 2	// May need changing for GLES
   AddSeparator(vp, "videoplayer.sep1.5");
   AddInt(NULL, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
   AddInt(NULL, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
@@ -784,7 +791,7 @@ void CGUISettings::Initialize()
 
   CSettingsCategory* ss = AddCategory(7, "screensaver", 360);
   AddInt(ss, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddDefaultAddon(ss, "screensaver.mode", 356, "Dim", ADDON_SCREENSAVER);
+  AddDefaultAddon(ss, "screensaver.mode", 356, "_virtual.dim", ADDON_SCREENSAVER);
   AddBool(ss, "screensaver.usemusicvisinstead", 13392, true);
   AddBool(ss, "screensaver.usedimonpause", 22014, true);
   AddSeparator(ss, "screensaver.sep1");

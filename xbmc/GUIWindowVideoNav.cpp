@@ -161,10 +161,12 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
           destPath = "videodb://1/5/";
         else if (strDestination.Equals("MovieStudios"))
           destPath = "videodb://1/6/";
+        else if (strDestination.Equals("MovieCountries"))
+          destPath = "videodb://1/7/";
+        else if (strDestination.Equals("MovieSets"))
+          destPath = "videodb://1/8/";
         else if (strDestination.Equals("Movies"))
           destPath = "videodb://1/";
-        else if (strDestination.Equals("MovieSets"))
-          destPath = "videodb://1/7/";
         else if (strDestination.Equals("TvShowGenres"))
           destPath = "videodb://2/1/";
         else if (strDestination.Equals("TvShowTitles"))
@@ -272,10 +274,9 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSHOWMODE)
       {
-        g_settings.m_iMyVideoWatchMode++;
-        if (g_settings.m_iMyVideoWatchMode > VIDEO_SHOW_WATCHED)
-          g_settings.m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
+        g_settings.CycleWatchMode(m_vecItems->GetContent());
         g_settings.Save();
+
         // TODO: Can we perhaps filter this directly?  Probably not for some of the more complicated views,
         //       but for those perhaps we can just display them all, and only filter when we get a list
         //       of actual videos?
@@ -294,10 +295,10 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTNSHOWALL)
       {
-        if (g_settings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
-          g_settings.m_iMyVideoWatchMode = VIDEO_SHOW_UNWATCHED;
+        if (g_settings.GetWatchMode(m_vecItems->GetContent()) == VIDEO_SHOW_ALL)
+          g_settings.SetWatchMode(m_vecItems->GetContent(), VIDEO_SHOW_UNWATCHED);
         else
-          g_settings.m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
+          g_settings.SetWatchMode(m_vecItems->GetContent(), VIDEO_SHOW_ALL);
         g_settings.Save();
         // TODO: Can we perhaps filter this directly?  Probably not for some of the more complicated views,
         //       but for those perhaps we can just display them all, and only filter when we get a list
@@ -486,22 +487,24 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         items.SetContent("musicvideos");
       else if (node == NODE_TYPE_GENRE)
         items.SetContent("genres");
-     else if (node == NODE_TYPE_ACTOR)
-     {
-       if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
-         items.SetContent("artists");
-       else
-         items.SetContent("actors");
-     }
-     else if (node == NODE_TYPE_DIRECTOR)
-       items.SetContent("directors");
-     else if (node == NODE_TYPE_STUDIO)
-       items.SetContent("studios");
-     else if (node == NODE_TYPE_YEAR)
-       items.SetContent("years");
-     else if (node == NODE_TYPE_MUSICVIDEOS_ALBUM)
-       items.SetContent("albums");
-     else
+      else if (node == NODE_TYPE_COUNTRY)
+        items.SetContent("countries");
+      else if (node == NODE_TYPE_ACTOR)
+      {
+        if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+          items.SetContent("artists");
+        else
+          items.SetContent("actors");
+      }
+      else if (node == NODE_TYPE_DIRECTOR)
+        items.SetContent("directors");
+      else if (node == NODE_TYPE_STUDIO)
+        items.SetContent("studios");
+      else if (node == NODE_TYPE_YEAR)
+        items.SetContent("years");
+      else if (node == NODE_TYPE_MUSICVIDEOS_ALBUM)
+        items.SetContent("albums");
+      else
         items.SetContent("");
     }
   }
@@ -556,16 +559,17 @@ void CGUIWindowVideoNav::UpdateButtons()
 
   SET_CONTROL_LABEL(CONTROL_FILTER, strLabel);
 
-  SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + g_settings.m_iMyVideoWatchMode));
+  int watchMode = g_settings.GetWatchMode(m_vecItems->GetContent());
+  SET_CONTROL_LABEL(CONTROL_BTNSHOWMODE, g_localizeStrings.Get(16100 + watchMode));
 
-  SET_CONTROL_SELECTED(GetID(),CONTROL_BTNSHOWALL,g_settings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL);
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNSHOWALL, watchMode != VIDEO_SHOW_ALL);
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNPARTYMODE, g_partyModeManager.IsEnabled());
 
   SET_CONTROL_SELECTED(GetID(),CONTROL_BTNFLATTEN, g_settings.m_bMyVideoNavFlatten);
 }
 
-/// \brief Search for genres, artists, directors, names, and plots with search string \e strSearch in the
+/// \brief Search for names, genres, artists, directors, and plots with search string \e strSearch in the
 /// \brief video databases and return the found \e items
 /// \param strSearch The search string
 /// \param items Items Found
@@ -577,108 +581,7 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
   CStdString strDirector = g_localizeStrings.Get(20339); // Director
   CStdString strMovie = g_localizeStrings.Get(20338); // Movie
 
-  // get matching genres
-  m_database.GetMovieGenresByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetTvShowGenresByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetMusicVideoGenresByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetMovieActorsByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetTvShowsActorsByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetMusicVideoArtistsByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetMovieDirectorsByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetTvShowsDirectorsByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    CStdString strMovie = g_localizeStrings.Get(20339); // Director
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
-  m_database.GetMusicVideoDirectorsByName(strSearch, tempItems);
-  if (tempItems.Size())
-  {
-    CStdString strMovie = g_localizeStrings.Get(20339); // Director
-    for (int i = 0; i < (int)tempItems.Size(); i++)
-    {
-      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
-    }
-    items.Append(tempItems);
-  }
-
-  tempItems.Clear();
+  //get matching names
   m_database.GetMoviesByName(strSearch, tempItems);
 
   if (tempItems.Size())
@@ -737,7 +640,113 @@ void CGUIWindowVideoNav::DoSearch(const CStdString& strSearch, CFileItemList& it
     }
     items.Append(tempItems);
   }
+  
+  // get matching genres
+  tempItems.Clear();
+  m_database.GetMovieGenresByName(strSearch, tempItems);
+  
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
 
+  tempItems.Clear();
+  m_database.GetTvShowGenresByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
+  m_database.GetMusicVideoGenresByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strGenre + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  //get actors/artists
+  tempItems.Clear();
+  m_database.GetMovieActorsByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
+  m_database.GetTvShowsActorsByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
+  m_database.GetMusicVideoArtistsByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strActor + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  //directors
+  tempItems.Clear();
+  m_database.GetMovieDirectorsByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20342)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
+  m_database.GetTvShowsDirectorsByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    CStdString strMovie = g_localizeStrings.Get(20339); // Director
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20343)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  tempItems.Clear();
+  m_database.GetMusicVideoDirectorsByName(strSearch, tempItems);
+  if (tempItems.Size())
+  {
+    CStdString strMovie = g_localizeStrings.Get(20339); // Director
+    for (int i = 0; i < (int)tempItems.Size(); i++)
+    {
+      tempItems[i]->SetLabel("[" + strDirector + " - "+g_localizeStrings.Get(20389)+"] " + tempItems[i]->GetLabel());
+    }
+    items.Append(tempItems);
+  }
+
+  //plot
   tempItems.Clear();
   m_database.GetEpisodesByPlot(strSearch, tempItems);
 
@@ -1006,30 +1015,32 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
   if (items.IsPlugin())
     filterWatched = true;
 
+  int watchMode = g_settings.GetWatchMode(m_vecItems->GetContent());
   int itemsBefore = items.Size();
 
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items.Get(i);
-    if(item->HasVideoInfoTag() && node == NODE_TYPE_TITLE_TVSHOWS)
+    if(item->HasVideoInfoTag() && (node == NODE_TYPE_TITLE_TVSHOWS || node == NODE_TYPE_SEASONS))
     {
-      if (g_settings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED)
+      if (watchMode == VIDEO_SHOW_UNWATCHED)
         item->GetVideoInfoTag()->m_iEpisode = item->GetPropertyInt("unwatchedepisodes");
-      if (g_settings.m_iMyVideoWatchMode == VIDEO_SHOW_WATCHED)
+      if (watchMode == VIDEO_SHOW_WATCHED)
         item->GetVideoInfoTag()->m_iEpisode = item->GetPropertyInt("watchedepisodes");
+      item->SetProperty("numepisodes", item->GetVideoInfoTag()->m_iEpisode);
     }
 
     if(filterWatched)
     {
-      if((g_settings.m_iMyVideoWatchMode==VIDEO_SHOW_WATCHED   && item->GetVideoInfoTag()->m_playCount== 0)
-      || (g_settings.m_iMyVideoWatchMode==VIDEO_SHOW_UNWATCHED && item->GetVideoInfoTag()->m_playCount > 0))
+      if((watchMode==VIDEO_SHOW_WATCHED   && item->GetVideoInfoTag()->m_playCount== 0)
+      || (watchMode==VIDEO_SHOW_UNWATCHED && item->GetVideoInfoTag()->m_playCount > 0))
       {
         items.Remove(i);
         i--;
       }
     }
   }
-  if (g_settings.m_iMyVideoWatchMode != VIDEO_SHOW_ALL && itemsBefore != items.Size() && items.GetObjectCount() == 0)
+  if (watchMode != VIDEO_SHOW_ALL && itemsBefore != items.Size() && items.GetObjectCount() == 0)
     GoParentFolder();
 }
 

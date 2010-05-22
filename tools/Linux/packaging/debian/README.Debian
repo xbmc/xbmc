@@ -6,6 +6,3 @@ build on i386, amd64, powerpc, and powerpc64 on Linux, and i386 and powerpc on
 Darwin. If you are able to build and run XBMC on other architectures and/or
 kernels, please provide patches of configure.in and any other files you may have
 modified to the Debian BTS.
-
-There is ongoing work to get XBMC to run on ARM. Please take a look at
-http://xbmc.svn.sourceforge.net/viewvc/xbmc/branches/xbmc_on_arm/.

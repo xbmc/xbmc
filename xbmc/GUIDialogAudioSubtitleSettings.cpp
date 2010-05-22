@@ -58,14 +58,14 @@ CGUIDialogAudioSubtitleSettings::~CGUIDialogAudioSubtitleSettings(void)
 #define AUDIO_SETTINGS_DELAY              3
 #define AUDIO_SETTINGS_STREAM             4
 #define AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS 5
-#define AUDIO_SETTINGS_DIGITAL_ANALOG 6
+#define AUDIO_SETTINGS_DIGITAL_ANALOG     6
 
 // separator 7
 #define SUBTITLE_SETTINGS_ENABLE          8
 #define SUBTITLE_SETTINGS_DELAY           9
 #define SUBTITLE_SETTINGS_STREAM          10
-#define SUBTITLE_SETTINGS_BROWSER        11
-#define AUDIO_SETTINGS_MAKE_DEFAULT      12
+#define SUBTITLE_SETTINGS_BROWSER         11
+#define AUDIO_SETTINGS_MAKE_DEFAULT       12
 
 void CGUIDialogAudioSubtitleSettings::CreateSettings()
 {
@@ -83,11 +83,11 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   AddAudioStreams(AUDIO_SETTINGS_STREAM);
 
   // only show stuff available in digital mode if we have digital output
-  AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_settings.m_currentVideoSettings.m_OutputToAllSpeakers, g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
+  AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_settings.m_currentVideoSettings.m_OutputToAllSpeakers, AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));
 
-  int settings[2] = { 338, 339 }; //ANALOG, DIGITAL
+  int settings[3] = { 338, 339, 420 }; //ANALOG, IEC958, HDMI
   m_outputmode = g_guiSettings.GetInt("audiooutput.mode");
-  AddSpin(AUDIO_SETTINGS_DIGITAL_ANALOG, 337, &m_outputmode, 2, settings);
+  AddSpin(AUDIO_SETTINGS_DIGITAL_ANALOG, 337, &m_outputmode, 3, settings);
 
   AddSeparator(7);
   m_subtitleVisible = g_application.m_pPlayer->GetSubtitleVisible();
@@ -227,7 +227,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
         // update the screen setting...
         g_settings.m_currentVideoSettings.m_AudioStream = -1 - m_audioStream;
         // call monkeyh1's code here...
-        //bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL) && g_settings.m_currentVideoSettings.m_OutputToAllSpeakers;
+        //bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958) && g_settings.m_currentVideoSettings.m_OutputToAllSpeakers;
         return;
       }
     }
@@ -244,12 +244,16 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   }
   else if (setting.id == AUDIO_SETTINGS_DIGITAL_ANALOG)
   {
-    if(m_outputmode == 0) // might be unneccesary (indexes match), but just for clearity
-      g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG);
-    else
-      g_guiSettings.SetInt("audiooutput.mode", AUDIO_DIGITAL);
+    bool bitstream = false;
 
-    EnableSettings(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
+    switch(m_outputmode)
+    {
+      case 0: g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG ); break;
+      case 1: g_guiSettings.SetInt("audiooutput.mode", AUDIO_IEC958 ); bitstream = true; break;
+      case 2: g_guiSettings.SetInt("audiooutput.mode", AUDIO_HDMI   ); bitstream = true; break;
+    }
+
+    EnableSettings(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, bitstream);
     g_application.Restart();
   }
   else if (setting.id == SUBTITLE_SETTINGS_ENABLE)

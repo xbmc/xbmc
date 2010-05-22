@@ -25,6 +25,7 @@
 #include "DirectoryNodeRoot.h"
 #include "DirectoryNodeOverview.h"
 #include "DirectoryNodeGenre.h"
+#include "DirectoryNodeCountry.h"
 #include "DirectoryNodeSets.h"
 #include "DirectoryNodeTitleMovies.h"
 #include "DirectoryNodeTitleTvShows.h"
@@ -115,6 +116,8 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeOverview(strName, pParent);
   case NODE_TYPE_GENRE:
     return new CDirectoryNodeGenre(strName, pParent);
+  case NODE_TYPE_COUNTRY:
+    return new CDirectoryNodeCountry(strName, pParent);
   case NODE_TYPE_SETS:
     return new CDirectoryNodeSets(strName, pParent);
   case NODE_TYPE_YEAR:
@@ -294,6 +297,8 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
           watched += item->GetPropertyInt("watchedepisodes");
           unwatched += item->GetPropertyInt("unwatchedepisodes");
         }
+        pItem->SetProperty("totalepisodes", watched + unwatched);
+        pItem->SetProperty("numepisodes", watched + unwatched); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", watched);
         pItem->SetProperty("unwatchedepisodes", unwatched);
         if (items.Size() && items[0]->GetVideoInfoTag())

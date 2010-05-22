@@ -37,16 +37,15 @@ namespace ADDON
   public:
     AddonPtr Clone(const AddonPtr &self) const;
     CRepository(const AddonProps& props);
+    CRepository(cp_plugin_info_t *props);
     virtual ~CRepository();
 
-    bool LoadFromXML(const CStdString& xml);
     CStdString Checksum();
     VECADDONS Parse();
     CDateTime LastUpdate();
     void SetUpdated(const CDateTime& time);
   private:
     CRepository(const CRepository&, const AddonPtr&);
-    CStdString m_name;
     CStdString m_info;
     CStdString m_checksum;
     CStdString m_datadir;

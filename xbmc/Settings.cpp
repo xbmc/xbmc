@@ -60,6 +60,7 @@
 #endif
 #include "playercorefactory/PlayerCoreFactory.h"
 #include "utils/FileUtils.h"
+#include "MouseStat.h"
 
 using namespace std;
 using namespace XFILE;
@@ -125,7 +126,11 @@ void CSettings::Initialize()
   iAdditionalSubtitleDirectoryChecked = 0;
   m_iMyMusicStartWindow = WINDOW_MUSIC_FILES;
   m_iVideoStartWindow = WINDOW_VIDEO_FILES;
-  m_iMyVideoWatchMode = VIDEO_SHOW_ALL;
+
+  m_watchMode["movies"] = VIDEO_SHOW_ALL;
+  m_watchMode["tvshows"] = VIDEO_SHOW_ALL;
+  m_watchMode["musicvideos"] = VIDEO_SHOW_ALL;
+
   m_iSystemTimeTotalUp = 0;
   m_HttpApiBroadcastLevel = 0;
   m_HttpApiBroadcastPort = 8278;
@@ -634,7 +639,12 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "stackvideomode", m_iMyVideoStack, STACK_NONE, STACK_NONE, STACK_SIMPLE);
 
     GetPath(pElement, "defaultlibview", m_defaultVideoLibSource);
-    GetInteger(pElement, "watchmode", m_iMyVideoWatchMode, VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
+
+    // Read the watchmode settings for the various media views
+    GetInteger(pElement, "watchmodemovies", m_watchMode["movies"], VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
+    GetInteger(pElement, "watchmodetvshows", m_watchMode["tvshows"], VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
+    GetInteger(pElement, "watchmodemusicvideos", m_watchMode["musicvideos"], VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
+
     XMLUtils::GetBoolean(pElement, "flatten", m_bMyVideoNavFlatten);
 
     TiXmlElement *pChild = pElement->FirstChildElement("playlist");
@@ -809,7 +819,10 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
 
   XMLUtils::SetPath(pNode, "defaultlibview", m_defaultVideoLibSource);
 
-  XMLUtils::SetInt(pNode, "watchmode", m_iMyVideoWatchMode);
+  XMLUtils::SetInt(pNode, "watchmodemovies", m_watchMode.find("movies")->second);
+  XMLUtils::SetInt(pNode, "watchmodetvshows", m_watchMode.find("tvshows")->second);
+  XMLUtils::SetInt(pNode, "watchmodemusicvideos", m_watchMode.find("musicvideos")->second);
+
   XMLUtils::SetBoolean(pNode, "flatten", m_bMyVideoNavFlatten);
 
   { // playlist window
@@ -939,11 +952,13 @@ bool CSettings::LoadProfile(unsigned int index)
     CButtonTranslator::GetInstance().Load();
     g_localizeStrings.Load(strLanguagePath);
 
+    g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
+
     g_infoManager.ResetCache();
     g_infoManager.ResetLibraryBools();
 
     // always reload the skin - we need it for the new language strings
-    g_application.LoadSkin(g_guiSettings.GetString("lookandfeel.skin"));
+    g_application.ReloadSkin();
 
     if (m_currentProfile != 0)
     {
@@ -1552,6 +1567,40 @@ void CSettings::ResetSkinSettings()
     it2++;
   }
   g_infoManager.ResetCache();
+}
+
+static CStdString ToWatchContent(const CStdString &content)
+{
+  if (content == "seasons" || content == "episodes")
+   return "tvshows";
+  else
+    return content;
+}
+
+int CSettings::GetWatchMode(const CStdString& content) const
+{
+  std::map<CStdString, int>::iterator it = g_settings.m_watchMode.find(ToWatchContent(content));
+  if (it != g_settings.m_watchMode.end())
+    return it->second;
+  return VIDEO_SHOW_ALL;
+}
+
+void CSettings::SetWatchMode(const CStdString& content, int value)
+{
+  std::map<CStdString, int>::iterator it = g_settings.m_watchMode.find(ToWatchContent(content));
+  if (it != g_settings.m_watchMode.end())
+    it->second = value;
+}
+
+void CSettings::CycleWatchMode(const CStdString& content)
+{
+  std::map<CStdString, int>::iterator it = g_settings.m_watchMode.find(ToWatchContent(content));
+  if (it != g_settings.m_watchMode.end())
+  {
+    it->second++;
+    if (it->second > VIDEO_SHOW_WATCHED)
+      it->second = VIDEO_SHOW_ALL;
+  }
 }
 
 void CSettings::LoadUserFolderLayout()

@@ -16,18 +16,20 @@ SET PATH=%PATH%;%CD%\..\..\Tools\XBMCTex
 rem default skins
 
 ECHO Compiling Confluence...
-cd "..\..\skin\Confluence"
+cd "..\..\addons\skin.confluence"
 CALL build.bat > NUL
 cd "%CUR_PATH%"
 ECHO Copying files...
-xcopy "..\..\skin\Confluence\BUILD\Confluence" "BUILD_WIN32\Xbmc\skin\Confluence" /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+rmdir BUILD_WIN32\Xbmc\addons\skin.confluence /S /Q
+xcopy "..\..\addons\skin.confluence\BUILD\Confluence" "BUILD_WIN32\Xbmc\addons\skin.confluence" /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
 
 ECHO Compiling PM3.HD...
-cd "..\..\skin\PM3.HD"
+cd "..\..\addons\skin.pm3-hd"
 CALL build.bat > NUL
 cd "%CUR_PATH%"
 ECHO Copying files...
-xcopy "..\..\skin\PM3.HD\BUILD\PM3.HD" "BUILD_WIN32\Xbmc\skin\PM3.HD" /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+rmdir BUILD_WIN32\Xbmc\addons\skin.pm3-hd /S /Q
+xcopy "..\..\addons\skin.pm3-hd\BUILD\PM3.HD" "BUILD_WIN32\Xbmc\addons\skin.pm3-hd" /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
 
 IF "%SKIN_PATH%" == "" GOTO DONE
 rem optional skins

@@ -47,7 +47,8 @@ bool CAddonDatabase::CreateTables()
     CLog::Log(LOGINFO, "create addon table");
     m_pDS->exec("CREATE TABLE addon (id integer primary key, type text,"
                 "name text, summary text, description text, stars integer,"
-                "path text, addonID text, icon text, version text)\n");
+                "path text, addonID text, icon text, version text, "
+                "changelog text, fanart text)\n");
 
     CLog::Log(LOGINFO, "create addon index");
     m_pDS->exec("CREATE INDEX idxAddon ON addon(addonID)");
@@ -74,6 +75,14 @@ bool CAddonDatabase::UpdateOldVersion(int version)
   {
     m_pDS->exec("alter table addon add description text");
   }
+  if (version < 3)
+  {
+    m_pDS->exec("alter table addon add changelog text");
+  }
+  if (version < 4)
+  {
+    m_pDS->exec("alter table addon add fanart text");
+  }
   return true;
 }
 
@@ -86,13 +95,15 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
     if (NULL == m_pDS.get()) return -1;
 
     CStdString sql = FormatSQL("insert into addon (id, type, name, summary,"
-                               "description,stars, path, icon, addonID,version)"
+                               "description, stars, path, icon, changelog, "
+                               "fanart, addonID, version)"
                                " values(NULL, '%s', '%s', '%s', '%s', %i,"
-                               "'%s', '%s', '%s', '%s')",
+                               "'%s', '%s', '%s', '%s', '%s','%s')",
                                TranslateType(addon->Type(),false).c_str(),
                                addon->Name().c_str(), addon->Summary().c_str(),
                                addon->Description().c_str(),addon->Stars(),
                                addon->Path().c_str(), addon->Props().icon.c_str(),
+                               addon->ChangeLog().c_str(),addon->FanArt().c_str(),
                                addon->ID().c_str(), addon->Version().str.c_str());
     m_pDS->exec(sql.c_str());
     int idAddon = (int)m_pDS->lastinsertid();
@@ -145,8 +156,10 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr& addon)
       props.name = m_pDS2->fv("name").get_asString();
       props.summary = m_pDS2->fv("summary").get_asString();
       props.description = m_pDS2->fv("description").get_asString();
+      props.changelog = m_pDS2->fv("changelog").get_asString();
       props.path = m_pDS2->fv("path").get_asString();
       props.icon = m_pDS2->fv("icon").get_asString();
+      props.fanart = m_pDS2->fv("fanart").get_asString();
       addon = CAddonMgr::AddonFromProps(props);
       return true;
     }
@@ -406,7 +419,8 @@ void CAddonDatabase::SetPropertiesFromAddon(const AddonPtr& addon,
                                            CFileItemPtr& pItem)
 {
   pItem->SetProperty("Addon.ID", addon->ID());
-  pItem->SetProperty("Addon.Type", TranslateType(addon->Type()));
+  pItem->SetProperty("Addon.Type", TranslateType(addon->Type(),true));
+  pItem->SetProperty("Addon.intType", TranslateType(addon->Type()));
   pItem->SetProperty("Addon.Name", addon->Name());
   pItem->SetProperty("Addon.Version", addon->Version().str);
   pItem->SetProperty("Addon.Summary", addon->Summary());

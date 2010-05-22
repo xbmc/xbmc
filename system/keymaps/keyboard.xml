@@ -394,14 +394,9 @@
   </FileStackingDialog>
   <Scripts>
     <keyboard>
-      <i>XBMC.ActivateWindow(ScriptsDebugInfo)</i>
+      <i>info</i>
     </keyboard>
   </Scripts>
-  <ScriptsDebugInfo>
-    <keyboard>
-      <i>Info</i>      <!-- clears debug python info -->
-    </keyboard>
-  </ScriptsDebugInfo>
   <Weather>
     <keyboard>
       <backspace>PreviousMenu</backspace>

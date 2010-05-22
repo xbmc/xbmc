@@ -83,7 +83,13 @@ extern "C" {
  * Macros
  * ----------------------------------------------------------------------*/
 
-#if defined(DLOPEN_POSIX)
+#if defined(_WIN32)
+#define DLHANDLE void *
+#define DLOPEN(name) LoadLibraryA(name)
+#define DLSYM(handle, symbol) GetProcAddress(handle, symbol)
+#define DLCLOSE(handle) CloseHandle(handle)
+#define DLERROR() "WIN32 - TODO"
+#elif defined(DLOPEN_POSIX)
 #define DLHANDLE void *
 #define DLOPEN(name) dlopen((name), RTLD_LAZY | RTLD_GLOBAL)
 #define DLSYM(handle, symbol) dlsym((handle), (symbol))

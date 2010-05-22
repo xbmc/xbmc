@@ -336,6 +336,13 @@ void SSortFileItem::ByGenre(CFileItemPtr &item)
     item->SetSortLabel(item->GetVideoInfoTag()->m_strGenre);
 }
 
+void SSortFileItem::ByCountry(CFileItemPtr &item)
+{
+  if (!item) return;
+  item->SetSortLabel(item->GetVideoInfoTag()->m_strCountry);
+}
+
+
 void SSortFileItem::ByYear(CFileItemPtr &item)
 {
   if (!item) return;
