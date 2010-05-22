@@ -1014,7 +1014,7 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::FreeOMXInputBuffers(bool wait)
     // using external buffers (OMX_UseBuffer), free our external buffers
     //  before calling OMX_FreeBuffer which frees the omx buffer.
     delete [] m_omx_input_buffers[i]->pBuffer;
-    m_omx_input_buffers[i]->pBuffer = NULL:
+    m_omx_input_buffers[i]->pBuffer = NULL;
     omx_err = OMX_FreeBuffer(m_omx_decoder, m_omx_input_port, m_omx_input_buffers[i]);
   }
   m_omx_input_buffers.clear();
