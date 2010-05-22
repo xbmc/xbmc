@@ -62,7 +62,6 @@ public:
   static void SetTempPath(const CStdString &path);
 
   static bool ComparePath(const CStdString &path1, const CStdString &path2);
-  static bool XBMCIsHome();
   static void LogPaths();
 
   static CStdString TranslatePath(const CStdString &path);

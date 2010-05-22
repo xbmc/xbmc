@@ -222,10 +222,7 @@ bool CAddonMgr::Init()
   // would allow partial unloading of addon framework
   m_cp_context = m_cpluff->create_context(&status);
   assert(m_cp_context);
-  if (!CSpecialProtocol::XBMCIsHome())
-  {
-    status = m_cpluff->register_pcollection(m_cp_context, _P("special://home/addons"));
-  }
+  status = m_cpluff->register_pcollection(m_cp_context, _P("special://home/addons"));
   status = m_cpluff->register_pcollection(m_cp_context, _P("special://xbmc/addons"));
   if (status != CP_OK)
   {
@@ -447,8 +444,7 @@ void CAddonMgr::FindAddons()
   // store any addons with unresolved deps, then recheck at the end
   map<CStdString, AddonPtr> unresolved;
 
-  if (!CSpecialProtocol::XBMCIsHome())
-    LoadAddons("special://home/addons",unresolved);
+  LoadAddons("special://home/addons",unresolved);
   LoadAddons("special://xbmc/addons",unresolved);
 
   for (map<CStdString,AddonPtr>::iterator it = unresolved.begin(); 
