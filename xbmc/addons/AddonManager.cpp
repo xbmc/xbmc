@@ -114,6 +114,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(props->plugin));
     case ADDON_SCRAPER_LIBRARY:
+    case ADDON_SCRIPT_LIBRARY:
     case ADDON_VIZ_LIBRARY:
       return AddonPtr(new CAddonLibrary(props->plugin));
     case ADDON_REPOSITORY:
