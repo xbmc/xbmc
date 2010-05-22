@@ -1035,7 +1035,7 @@ bool CAddonMgr::AddonsFromInfoXML(const TiXmlElement *root, VECADDONS &addons)
     xml << decl;
     xml << *element;
     cp_status_t status;
-    cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor(context, xml.c_str(), xml.size(), &status);
+    cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor_from_memory(context, xml.c_str(), xml.size(), &status);
     if (info)
     {
       AddonPtr addon = Factory(info->extensions);
