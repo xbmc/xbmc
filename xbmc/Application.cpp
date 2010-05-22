@@ -741,19 +741,20 @@ bool CApplication::InitDirectoriesLinux()
     userHome = "/root";
 
   CStdString xbmcBinPath, xbmcPath;
-  CUtil::GetHomePath(xbmcBinPath, (new CStdString)->assign("XBMC_BIN_HOME"));
+  CUtil::GetHomePath(xbmcBinPath, "XBMC_BIN_HOME");
   CUtil::GetHomePath(xbmcPath);
 
   /* Check if xbmc binaries and arch independent data files are being kept in
    * separate locations. */
-  if (!CFile::Exists(xbmcPath + "/language"))
+  if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
   {
     /* Attempt to locate arch independent data files. */
     CStdString temp = xbmcPath;
     xbmcPath = BIN_INSTALL_PATH;
     temp.erase(temp.size() - xbmcPath.size(), xbmcPath.size());
     xbmcPath = temp + INSTALL_PATH;
-    if (!CFile::Exists(xbmcPath + "/language"))
+    CUtil::GetHomePath(xbmcPath);
+    if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
     {
       fprintf(stderr, "Unable to find path to XBMC data files!\n");
       exit(1);
