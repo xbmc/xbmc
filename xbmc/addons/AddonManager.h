@@ -105,6 +105,7 @@ namespace ADDON
     /* libcpluff */
     CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
     const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension);
+    bool CPAddonFromInfoXML(const CStdString &path, AddonPtr &addon);
     bool AddonsFromInfoXML(const TiXmlElement *root, VECADDONS &addons);
 
   private:
