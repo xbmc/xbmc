@@ -77,9 +77,9 @@ protected:
   // OpenMax helper routines
   OMX_ERRORTYPE PrimeFillBuffers(void);
   OMX_ERRORTYPE AllocOMXInputBuffers(void);
-  OMX_ERRORTYPE FreeOMXInputBuffers(void);
+  OMX_ERRORTYPE FreeOMXInputBuffers(bool wait);
   OMX_ERRORTYPE AllocOMXOutputBuffers(void);
-  OMX_ERRORTYPE FreeOMXOutputBuffers(void);
+  OMX_ERRORTYPE FreeOMXOutputBuffers(bool wait);
   OMX_ERRORTYPE SetStateForComponent(OMX_STATETYPE state);
   OMX_ERRORTYPE StartDecoder(void);
   OMX_ERRORTYPE StopDecoder(void);
@@ -101,6 +101,7 @@ protected:
   std::vector<OMX_BUFFERHEADERTYPE*> m_omx_input_buffers;
   bool              m_omx_input_eos;
   int               m_omx_input_port;
+  //sem_t             *m_omx_flush_input;
   CEvent            m_input_consumed_event;
 
   // OpenMax output buffers (video frames)
@@ -109,6 +110,7 @@ protected:
   std::vector<OMX_BUFFERHEADERTYPE*> m_omx_output_buffers;
   bool              m_omx_output_eos;
   int               m_omx_output_port;
+  //sem_t             *m_omx_flush_output;
 
   // OpenMax state tracking
   volatile int      m_omx_state;
