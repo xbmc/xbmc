@@ -1041,7 +1041,8 @@ bool CAddonMgr::AddonsFromInfoXML(const TiXmlElement *root, VECADDONS &addons)
       AddonPtr addon = Factory(info->extensions);
       m_cpluff->release_info(context, info);
       // FIXME: sanity check here that the addon satisfies our requirements?
-      addons.push_back(addon);
+      if (addon.get())
+        addons.push_back(addon);
     }
     element = element->NextSiblingElement("addon");
   }
