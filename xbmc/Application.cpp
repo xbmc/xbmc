@@ -755,8 +755,8 @@ bool CApplication::InitDirectoriesLinux()
     xbmcPath = temp + INSTALL_PATH;
     if (!CFile::Exists(xbmcPath + "/language"))
     {
-      CLog::Log(LOGERROR, "Unable to find path to XBMC data files!");
-      return false;
+      fprintf(stderr, "Unable to find path to XBMC data files!\n");
+      exit(1);
     }
   }
 
