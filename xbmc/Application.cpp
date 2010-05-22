@@ -834,16 +834,16 @@ bool CApplication::InitDirectoriesOSX()
   else
     userHome = "/root";
 
-  CStdString strHomePath;
-  CUtil::GetHomePath(strHomePath);
-  setenv("XBMC_HOME", strHomePath.c_str(), 0);
+  CStdString xbmcPath;
+  CUtil::GetHomePath(xbmcPath);
+  setenv("XBMC_HOME", xbmcPath.c_str(), 0);
 
   // OSX always runs with m_bPlatformDirectories == true
   if (m_bPlatformDirectories)
   {
     // map our special drives
-    CSpecialProtocol::SetXBMCBinPath(strHomePath);
-    CSpecialProtocol::SetXBMCPath(strHomePath);
+    CSpecialProtocol::SetXBMCBinPath(xbmcPath);
+    CSpecialProtocol::SetXBMCPath(xbmcPath);
     CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
 
@@ -869,7 +869,7 @@ bool CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
 #ifdef __APPLE__
-    strTempPath = strHomePath + "/scripts";
+    strTempPath = xbmcPath + "/scripts";
 #else
     strTempPath = INSTALL_PATH "/scripts";
 #endif
@@ -885,15 +885,15 @@ bool CApplication::InitDirectoriesOSX()
   }
   else
   {
-    CUtil::AddSlashAtEnd(strHomePath);
-    g_settings.m_logFolder = strHomePath;
+    CUtil::AddSlashAtEnd(xbmcPath);
+    g_settings.m_logFolder = xbmcPath;
 
-    CSpecialProtocol::SetXBMCBinPath(strHomePath);
-    CSpecialProtocol::SetXBMCPath(strHomePath);
-    CSpecialProtocol::SetHomePath(CUtil::AddFileToFolder(strHomePath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "portable_data/userdata"));
+    CSpecialProtocol::SetXBMCBinPath(xbmcPath);
+    CSpecialProtocol::SetXBMCPath(xbmcPath);
+    CSpecialProtocol::SetHomePath(CUtil::AddFileToFolder(xbmcPath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(xbmcPath, "portable_data/userdata"));
 
-    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "portable_data/temp");
+    CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
     CDirectory::Create("special://temp/");
 
@@ -910,12 +910,12 @@ bool CApplication::InitDirectoriesOSX()
 bool CApplication::InitDirectoriesWin32()
 {
 #ifdef _WIN32
-  CStdString strExecutablePath;
+  CStdString xbmcPath;
 
-  CUtil::GetHomePath(strExecutablePath);
-  SetEnvironmentVariable("XBMC_HOME", strExecutablePath.c_str());
-  CSpecialProtocol::SetXBMCBinPath(strExecutablePath);
-  CSpecialProtocol::SetXBMCPath(strExecutablePath);
+  CUtil::GetHomePath(xbmcPath);
+  SetEnvironmentVariable("XBMC_HOME", xbmcPath.c_str());
+  CSpecialProtocol::SetXBMCBinPath(xbmcPath);
+  CSpecialProtocol::SetXBMCPath(xbmcPath);
 
   if (m_bPlatformDirectories)
   {
@@ -930,8 +930,8 @@ bool CApplication::InitDirectoriesWin32()
     CUtil::AddSlashAtEnd(g_settings.m_logFolder);
 
     // map our special drives
-    CSpecialProtocol::SetXBMCBinPath(strExecutablePath);
-    CSpecialProtocol::SetXBMCPath(strExecutablePath);
+    CSpecialProtocol::SetXBMCBinPath(xbmcPath);
+    CSpecialProtocol::SetXBMCPath(xbmcPath);
     CSpecialProtocol::SetHomePath(homePath);
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(homePath, "userdata"));
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile").c_str());
@@ -958,13 +958,13 @@ bool CApplication::InitDirectoriesWin32()
   }
   else
   {
-    CUtil::AddSlashAtEnd(strExecutablePath);
-    g_settings.m_logFolder = strExecutablePath;
+    CUtil::AddSlashAtEnd(xbmcPath);
+    g_settings.m_logFolder = xbmcPath;
 
-    CSpecialProtocol::SetHomePath(CUtil::AddFileToFolder(strExecutablePath, "portable_data"));
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strExecutablePath, "portable_data/userdata"));
+    CSpecialProtocol::SetHomePath(CUtil::AddFileToFolder(xbmcPath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(xbmcPath, "portable_data/userdata"));
 
-    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "portable_data/temp");
+    CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
     CDirectory::Create("special://temp/");
 
