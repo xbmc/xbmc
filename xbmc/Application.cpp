@@ -802,10 +802,10 @@ bool CApplication::InitDirectoriesLinux()
 
     CSpecialProtocol::SetXBMCBinPath(xbmcBinPath);
     CSpecialProtocol::SetXBMCPath(xbmcPath);
-    CSpecialProtocol::SetHomePath(xbmcPath);
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(xbmcPath, "userdata"));
+    CSpecialProtocol::SetHomePath(CUtil::AddFileToFolder(xbmcPath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(xbmcPath, "portable_data/userdata"));
 
-    CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "temp");
+    CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
     CDirectory::Create("special://temp/");
 
@@ -890,10 +890,10 @@ bool CApplication::InitDirectoriesOSX()
 
     CSpecialProtocol::SetXBMCBinPath(strHomePath);
     CSpecialProtocol::SetXBMCPath(strHomePath);
-    CSpecialProtocol::SetHomePath(strHomePath);
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
+    CSpecialProtocol::SetHomePath(CUtil::AddFileToFolder(strHomePath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "portable_data/userdata"));
 
-    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp");
+    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
     CDirectory::Create("special://temp/");
 
@@ -958,14 +958,16 @@ bool CApplication::InitDirectoriesWin32()
   }
   else
   {
+    CUtil::AddSlashAtEnd(strExecutablePath);
     g_settings.m_logFolder = strExecutablePath;
-    CUtil::AddSlashAtEnd(g_settings.m_logFolder);
-    CStdString strTempPath = CUtil::AddFileToFolder(strExecutablePath, "cache");
+
+    CSpecialProtocol::SetHomePath(CUtil::AddFileToFolder(strExecutablePath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strExecutablePath, "portable_data/userdata"));
+
+    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
     CDirectory::Create("special://temp/");
 
-    CSpecialProtocol::SetHomePath(strExecutablePath);
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strExecutablePath,"userdata"));
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile/").c_str());
   }
 

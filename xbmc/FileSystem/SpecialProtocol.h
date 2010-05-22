@@ -31,7 +31,7 @@
  special://home/          - a writeable version of the main XBMC folder
                              Linux: ~/.xbmc/
                              OS X:  ~/Library/Application Support/XBMC/
-                             Win32: FIXME: Currently the same as special://home/
+                             Win32: ~/Application Data/XBMC/
  special://userhome/      - a writable version of the user home directory
                              Linux, OS X: ~/.xbmc
                              Win32: home directory of user
