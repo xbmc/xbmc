@@ -33,10 +33,14 @@
 #include "DVDVideoCodecOpenMax.h"
 #include "utils/log.h"
 
-#include <OMX_Core.h>
-#include <OMX_Component.h>
-#include <OMX_Index.h>
-#include <OMX_Image.h>
+#include <OpenMAX/il/OMX_Core.h>
+#include <OpenMAX/il/OMX_Component.h>
+#include <OpenMAX/il/OMX_Index.h>
+#include <OpenMAX/il/OMX_Image.h>
+
+// EGL extension functions
+static PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;
+static PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR;
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 class DllLibOpenMaxInterface
@@ -1049,7 +1053,7 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::AllocOMXOutputBuffers(void)
     port_format.nBufferCountMin, port_format.nBufferSize);
   #endif
 
-  buffer_size = m_decoded_width * m_decoded_width;
+  buffer_size = m_decoded_width * m_decoded_height;
   if (port_format.format.video.eColorFormat == OMX_COLOR_FormatCbYCrY)
     buffer_size *= FACTORFORMAT422;
   else if (port_format.format.video.eColorFormat == OMX_COLOR_FormatYUV420Planar)
@@ -1094,6 +1098,108 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::FreeOMXOutputBuffers(bool wait)
     m_omx_output_ready.pop();
 
   return(omx_err);
+}
+
+OMX_ERRORTYPE CDVDVideoCodecOpenMax::AllocOMXOutputEGLTextures(void)
+{
+  OMX_ERRORTYPE omx_err;
+  EGLint attrib = EGL_NONE;
+  omx_egl_buffer *egl_buffer;
+
+  // Obtain the information about the output port.
+  OMX_PARAM_PORTDEFINITIONTYPE port_format;
+  OMX_INIT_STRUCTURE(port_format);
+  port_format.nPortIndex = m_omx_output_port;
+  omx_err = OMX_GetParameter(m_omx_decoder, OMX_IndexParamPortDefinition, &port_format);
+
+  #if defined(OMX_DEBUG_VERBOSE)
+  CLog::Log(LOGDEBUG, 
+    "%s (1) - oport(%d), nFrameWidth(%lu), nFrameHeight(%lu), nStride(%lx), nBufferCountMin(%lu), nBufferSize(%lu)\n",
+    __FUNCTION__, m_omx_output_port, 
+    port_format.format.video.nFrameWidth, port_format.format.video.nFrameHeight,port_format.format.video.nStride,
+    port_format.nBufferCountMin, port_format.nBufferSize);
+  #endif
+
+  glActiveTexture(GL_TEXTURE0);
+
+  for (size_t i = 0; i < port_format.nBufferCountMin; i++)
+  {
+    egl_buffer = new omx_egl_buffer;
+    memset(egl_buffer, 0, sizeof(*egl_buffer));
+    egl_buffer->width  = m_decoded_width;
+    egl_buffer->height = m_decoded_height;
+
+    glGenTextures(1, &egl_buffer->texture_id);
+    glBindTexture(GL_TEXTURE_2D, egl_buffer->texture_id);
+
+    // create space for buffer with a texture
+    glTexImage2D(
+      GL_TEXTURE_2D,      // target
+      0,                  // level
+      GL_RGBA,            // internal format
+      m_decoded_width,    // width
+      m_decoded_height,   // height
+      0,                  // border
+      GL_RGBA,            // format
+      GL_UNSIGNED_BYTE,   // type
+      NULL);              // pixels -- will be provided later
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    // create EGLImage from texture
+    egl_buffer->egl_image = eglCreateImageKHR(
+      m_egl_display,
+      m_egl_context,
+      EGL_GL_TEXTURE_2D_KHR,
+      (EGLClientBuffer)(egl_buffer->texture_id),
+      &attrib);
+    if (!egl_buffer->egl_image)
+    {
+      CLog::Log(LOGERROR, "%s - ERROR creating EglImage\n", __FUNCTION__);
+      return(OMX_ErrorUndefined);
+    }
+    egl_buffer->index = i;
+
+    // tell decoder output port that it will be using EGLImage
+    omx_err = OMX_UseEGLImage(
+      m_omx_decoder, &egl_buffer->omx_buffer, m_omx_output_port, this, egl_buffer->egl_image);
+    if (omx_err)
+    {
+      CLog::Log(LOGERROR, "%s - OMX_UseEGLImage failed with omx_err(0x%x)\n", __FUNCTION__, omx_err);
+      return(omx_err);
+    }
+    m_omx_egl_output_buffers.push_back(egl_buffer);
+
+    CLog::Log(LOGDEBUG, "%s - Texture %p Width %d Height %d\n",
+      __FUNCTION__, egl_buffer->egl_image, egl_buffer->width, egl_buffer->height);
+  }
+  m_omx_output_eos = false;
+  while (!m_omx_egl_output_ready.empty())
+    m_omx_egl_output_ready.pop();
+
+  return omx_err;
+}
+
+OMX_ERRORTYPE CDVDVideoCodecOpenMax::FreeOMXOutputEGLTextures(bool wait)
+{
+  OMX_ERRORTYPE omx_err = OMX_ErrorNone;
+  omx_egl_buffer *egl_buffer;
+
+  for (size_t i = 0; i < m_omx_egl_output_buffers.size(); i++)
+  {
+    egl_buffer = m_omx_egl_output_buffers[i];
+
+    // tell decoder output port to stop using the EGLImage
+    omx_err = OMX_FreeBuffer(m_omx_decoder, m_omx_output_port, egl_buffer->omx_buffer);
+    // destroy egl_image
+    eglDestroyImageKHR(m_egl_display, egl_buffer->egl_image);
+    // free texture
+    glDeleteTextures(1, &egl_buffer->texture_id);
+    delete egl_buffer;
+  }
+  m_omx_egl_output_buffers.clear();
+
+  return omx_err;
 }
 
 // SetStateForAllComponents

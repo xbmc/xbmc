@@ -26,8 +26,10 @@
 #include "utils/Event.h"
 
 #include <queue>
-#include <semaphore.h>      
-#include <OMX_Core.h>
+#include <semaphore.h>
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
+#include <OpenMAX/il/OMX_Core.h>
 
 typedef struct omx_bitstream_ctx {
     uint8_t  length_size;
@@ -42,6 +44,18 @@ typedef struct omx_demux_packet {
   double dts;
   double pts;
 } omx_demux_packet;
+
+
+// an omx egl video frame
+typedef struct omx_egl_buffer {
+  EGLImageKHR egl_image;
+  GLuint texture_id;
+  OMX_BUFFERHEADERTYPE *omx_buffer;
+  int width;
+  int height;
+  int index;
+} omx_egl_buffer;
+
 
 class DllLibOpenMax;
 class CDVDVideoCodecOpenMax : public CDVDVideoCodec
@@ -80,6 +94,8 @@ protected:
   OMX_ERRORTYPE FreeOMXInputBuffers(bool wait);
   OMX_ERRORTYPE AllocOMXOutputBuffers(void);
   OMX_ERRORTYPE FreeOMXOutputBuffers(bool wait);
+  OMX_ERRORTYPE AllocOMXOutputEGLTextures(void);
+  OMX_ERRORTYPE FreeOMXOutputEGLTextures(bool wait);
   OMX_ERRORTYPE SetStateForComponent(OMX_STATETYPE state);
   OMX_ERRORTYPE StartDecoder(void);
   OMX_ERRORTYPE StopDecoder(void);
@@ -111,6 +127,12 @@ protected:
   bool              m_omx_output_eos;
   int               m_omx_output_port;
   //sem_t             *m_omx_flush_output;
+
+  EGLDisplay        m_egl_display;
+  EGLContext        m_egl_context;
+  std::queue<omx_egl_buffer*> m_omx_egl_output_ready;
+  std::vector<omx_egl_buffer*> m_omx_egl_output_buffers;
+
 
   // OpenMax state tracking
   volatile int      m_omx_state;
