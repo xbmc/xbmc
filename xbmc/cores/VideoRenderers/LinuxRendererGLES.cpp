@@ -877,7 +877,7 @@ void CLinuxRendererGLES::UnInit()
   m_rgbBufferSize = 0;
 
   // YV12 textures
-  for (int i = 0; i < NUM_BUFFERS; ++i)
+  for (int i = 0; i < NUM_BUFFERS; i++)
     DeleteYV12Texture(i);
 
   // cleanup framebuffer object if it was in use
