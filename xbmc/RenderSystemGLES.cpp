@@ -44,9 +44,12 @@ CRenderSystemGLES::~CRenderSystemGLES()
   CLog::Log(LOGDEBUG, "GUI Shader - Destroying Shader : %p", m_pGUIshader);
   for (unsigned int i = 0;i < 4;++i)
   {
-    m_pGUIshader[i]->Free();
-    delete m_pGUIshader[i];
-    m_pGUIshader[i] = NULL;
+    if (m_pGUIshader[i])
+    {
+      m_pGUIshader[i]->Free();
+      delete m_pGUIshader[i];
+      m_pGUIshader[i] = NULL;
+    }
   }
 }
 
@@ -486,10 +489,10 @@ void CRenderSystemGLES::InitialiseGUIShader()
       m_pGUIshader[i] = new CGUIShader( shaderName );
       if (!m_pGUIshader[i]->CompileAndLink())
       {
-	m_pGUIshader[i]->Free();
-	delete m_pGUIshader[i];
-	m_pGUIshader[i] = NULL;
-	CLog::Log(LOGERROR, "GUI Shader - Initialise failed");
+        m_pGUIshader[i]->Free();
+        delete m_pGUIshader[i];
+        m_pGUIshader[i] = NULL;
+        CLog::Log(LOGERROR, "GUI Shader - Initialise failed");
       }
 
       else
