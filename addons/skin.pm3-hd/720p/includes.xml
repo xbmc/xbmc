@@ -52,6 +52,20 @@
 		<aligny>center</aligny>
 		<include>Window_OpenClose_Animation</include>
 	</include>
+	<include name="WindowCloseButtonCommons">
+		<width>30</width>
+		<height>30</height>
+		<label>-</label>
+		<font>-</font>
+		<onclick>PreviousMenu</onclick>
+		<texturefocus>close-windowFO.png</texturefocus>
+		<texturenofocus>close-window.png</texturenofocus>
+		<onleft>9000</onleft>
+		<onright>9000</onright>
+		<onup>9000</onup>
+		<ondown>9000</ondown>
+		<visible>system.getbool(input.enablemouse)</visible>
+	</include>
 	<include name="CommonNowPlaying_Controls">
 		<visible>[Player.HasAudio | Player.HasVideo]</visible>
 		<include>VisibleFadeEffect</include>

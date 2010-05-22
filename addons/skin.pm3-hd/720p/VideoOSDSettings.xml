@@ -40,21 +40,9 @@
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
-				<posx>731</posx>
+				<posx>730</posx>
 				<posy>35</posy>
-				<width>35</width>
-				<height>25</height>
-				<label>-</label>
-				<font>-</font>
-				<onclick>Dialog.Close(123)</onclick>
-				<onclick>Dialog.Close(124)</onclick>
-				<texturefocus>close-windowFO.png</texturefocus>
-				<texturenofocus>close-window.png</texturenofocus>
-				<onleft>5</onleft>
-				<onright>5</onright>
-				<onup>5</onup>
-				<ondown>5</ondown>
-				<visible>system.getbool(input.enablemouse)</visible>
+				<include>WindowCloseButtonCommons</include>
 			</control>
 			<control type="image">
 				<posx>40</posx>
