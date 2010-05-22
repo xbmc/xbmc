@@ -98,10 +98,7 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
   dll = DllLoaderContainer::LoadModule(libname, libpath);
 
   if (dll)
-  {
-    CLog::Log(LOGDEBUG, "LoadLibrary('%s') returning: %p", libname, (void*)dll);
     return (HMODULE)dll->GetHModule();
-  }
 
   CLog::Log(LOGERROR, "LoadLibrary('%s') failed", libname);
   return NULL;
