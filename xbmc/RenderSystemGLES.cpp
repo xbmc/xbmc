@@ -42,7 +42,7 @@ CRenderSystemGLES::~CRenderSystemGLES()
 {
   DestroyRenderSystem();
   CLog::Log(LOGDEBUG, "GUI Shader - Destroying Shader : %p", m_pGUIshader);
-  for (unsigned int i = 0;i < 4;++i)
+  for (int i = 0; i < 4; i++)
   {
     if (m_pGUIshader[i])
     {
@@ -425,8 +425,8 @@ void CRenderSystemGLES::ApplyHardwareTransform(const TransformMatrix &finalMatri
   g_matrices.PushMatrix();
   GLfloat matrix[4][4];
 
-  for(int i=0;i<3;i++)
-    for(int j=0;j<4;j++)
+  for(int i = 0; i < 3; i++)
+    for(int j = 0; j < 4; j++)
       matrix[j][i] = finalMatrix.m[i][j];
 
   matrix[0][3] = 0.0f;
@@ -480,7 +480,7 @@ void CRenderSystemGLES::InitialiseGUIShader()
 {
   if (!m_pGUIshader[0])
   {
-    for (int i = 0;i < 4;++i)
+    for (int i = 0;i < 4; i++)
     {
       char shaderName[512];
       sprintf( shaderName, "guishader_frag%d.glsl", i );
