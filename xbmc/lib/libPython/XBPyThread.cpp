@@ -334,10 +334,19 @@ void XBPyThread::Process()
   if (PyErr_Occurred())
     CLog::Log(LOGERROR, "Failed to wait for python threads to end");
 
+  PyThreadState_Swap(NULL);
+  PyEval_ReleaseLock();
+
+  { CSingleLock lock(m_pExecuter->m_critSection);
+    m_threadState = NULL;
+  }
+
+  PyEval_AcquireLock();
+  PyThreadState_Swap(state);
+
   m_pExecuter->DeInitializeInterpreter();
 
-  Py_EndInterpreter(m_threadState);
-  m_threadState = NULL;
+  Py_EndInterpreter(state);
   PyThreadState_Swap(NULL);
 
   PyEval_ReleaseLock();
@@ -350,9 +359,11 @@ void XBPyThread::OnExit()
 
 void XBPyThread::OnException()
 {
-  PyEval_AcquireLock();
-  m_threadState = NULL;
+  PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
+
+  CSingleLock lock(m_pExecuter->m_critSection);
+  m_threadState = NULL;
   CLog::Log(LOGERROR,"%s, abnormally terminating python thread", __FUNCTION__);
   m_pExecuter->setDone(m_id);
 }
