@@ -742,14 +742,14 @@ bool CApplication::InitDirectoriesLinux()
 
   CStdString xbmcBinPath, xbmcPath;
   CUtil::GetHomePath(xbmcBinPath, "XBMC_BIN_HOME");
-  CUtil::GetHomePath(xbmcPath);
+  xbmcPath = INSTALL_PATH;
 
   /* Check if xbmc binaries and arch independent data files are being kept in
    * separate locations. */
   if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
   {
     /* Attempt to locate arch independent data files. */
-    xbmcPath = INSTALL_PATH;
+    CUtil::GetHomePath(xbmcPath);
     if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
     {
       fprintf(stderr, "Unable to find path to XBMC data files!\n");
