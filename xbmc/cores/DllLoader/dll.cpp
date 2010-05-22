@@ -69,7 +69,6 @@ extern "C" HMODULE __stdcall dllLoadLibraryExtended(LPCSTR lib_file, LPCSTR sour
   /* extract path */
   getpath(libpath, lib_file);
 
-  CLog::Log(LOGDEBUG, "LoadLibraryA('%s')", libname);
   if (sourcedll)
   {
     /* also check for invalid paths wich begin with a \ */
