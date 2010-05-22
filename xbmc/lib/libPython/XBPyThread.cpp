@@ -349,6 +349,7 @@ bool XBPyThread::isStopping() {
 
 void XBPyThread::stop()
 {
+  CSingleLock lock(m_pExecuter->m_critSection);
   if(m_stopping)
     return;
 
