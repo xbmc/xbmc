@@ -42,7 +42,6 @@ namespace ADDON
     // scraper specialization
     bool LoadUserXML(const CStdString& strXML);
     bool LoadSettingsXML(const CStdString& strFunction="GetSettings", const CScraperUrl* url=NULL);
-    bool Load(const CStdString& strSettings, const CStdString& strSaved);
     CStdString GetSettings() const;
     CStdString m_strLanguage;
     CONTENT_TYPE Content() const { return m_pathContent; }

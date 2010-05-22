@@ -67,16 +67,6 @@ bool CScraper::HasSettings()
   return true;
 }
 
-bool CScraper::Load(const CStdString& strSettings, const CStdString& strSaved)
-{
-  if (!LoadSettingsXML(strSettings))
-    return false;
-  if (!LoadUserXML(strSaved))
-    return false;
-
-  return true;
-}
-
 bool CScraper::LoadUserXML(const CStdString& strSaved)
 {
   m_userXmlDoc.Clear();
