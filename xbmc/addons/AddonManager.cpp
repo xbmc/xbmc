@@ -1017,7 +1017,7 @@ CStdString CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
   else return CStdString();
 }
 
-bool CAddonMgr::CPAddonFromInfoXML(const CStdString &path, AddonPtr &addon)
+bool CAddonMgr::LoadAddonDescription(const CStdString &path, AddonPtr &addon)
 {
   cp_status_t status;
   cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor(m_cp_context, _P(path).c_str(), &status);
@@ -1030,7 +1030,7 @@ bool CAddonMgr::CPAddonFromInfoXML(const CStdString &path, AddonPtr &addon)
   return false;
 }
 
-bool CAddonMgr::AddonsFromInfoXML(const TiXmlElement *root, VECADDONS &addons)
+bool CAddonMgr::AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons)
 {
   // create a context for these addons
   cp_status_t status;

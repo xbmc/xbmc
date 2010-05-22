@@ -105,8 +105,22 @@ namespace ADDON
     /* libcpluff */
     CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
     const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension);
-    bool CPAddonFromInfoXML(const CStdString &path, AddonPtr &addon);
-    bool AddonsFromInfoXML(const TiXmlElement *root, VECADDONS &addons);
+
+    /*! \brief Load the addon in the given path
+     This loads the addon using c-pluff which parses the addon descriptor file.
+     \param path folder that contains the addon.
+     \param addon [out] returned addon.
+     \return true if addon is set, false otherwise.
+     */
+    bool LoadAddonDescription(const CStdString &path, AddonPtr &addon);
+
+    /*! \brief Parse a repository XML file for addons and load their descriptors
+     A repository XML is essentially a concatenated list of addon descriptors.
+     \param root Root element of an XML document.
+     \param addons [out] returned list of addons.
+     \return true if the repository XML file is parsed, false otherwise.
+     */
+    bool AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons);
 
   private:
     void LoadAddons(const CStdString &path, 

@@ -306,7 +306,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
                                                CUtil::GetFileName(strFolder));
           }
           AddonPtr addon;
-          if (CAddonMgr::Get().CPAddonFromInfoXML(strFolder, addon))
+          if (CAddonMgr::Get().LoadAddonDescription(strFolder, addon))
           {
             CStdString strFolder2;
             CUtil::GetDirectory(strFolder,strFolder2);
