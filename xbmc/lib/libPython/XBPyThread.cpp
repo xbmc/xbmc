@@ -146,7 +146,6 @@ void XBPyThread::OnStartup()
 void XBPyThread::Process()
 {
   CLog::Log(LOGDEBUG,"Python thread: start processing");
-  CSingleLock lock(m_pExecuter->m_critSection);
 
   char path[1024];
   char sourcedir[1024];
@@ -154,17 +153,15 @@ void XBPyThread::Process()
 
   // get the global lock
   PyEval_AcquireLock();
-  PyThreadState* old = PyThreadState_Swap(m_pExecuter->getMainThreadState());
-
-  m_threadState = Py_NewInterpreter();
-  if (!m_threadState)
+  PyThreadState* state = Py_NewInterpreter();
+  if (!state)
   {
     PyEval_ReleaseLock();
     CLog::Log(LOGERROR,"Python thread: FAILED to get thread state!");
     return;
   }
   // swap in my thread state
-  PyThreadState_Swap(m_threadState);
+  PyThreadState_Swap(state);
 
   m_pExecuter->InitializeInterpreter();
 
@@ -198,32 +195,49 @@ void XBPyThread::Process()
 
   CLog::Log(LOGDEBUG, "%s - Entering source directory %s", __FUNCTION__, sourcedir);
 
+  PyObject* module = PyImport_AddModule((char*)"__main__");
+  PyObject* moduleDict = PyModule_GetDict(module);
+
+  // when we are done initing we store thread state so we can be aborted
+  PyThreadState_Swap(NULL);
+  PyEval_ReleaseLock();
+
+  // we need to check if we was asked to abort before we had inited
+  bool stopping = false;
+  { CSingleLock lock(m_pExecuter->m_critSection);
+    m_threadState = state;
+    stopping = m_stopping;
+  }
+
+  PyEval_AcquireLock();
+  PyThreadState_Swap(state);
+
   xbp_chdir(sourcedir);
 
-  // when we are done initing, we can release executor
-  lock.Leave();
-
-  if (m_type == 'F')
+  if (!stopping)
   {
-    // run script from file
-    FILE *fp = fopen_utf8(_P(m_source).c_str(), "r");
-    if (fp)
+    if (m_type == 'F')
     {
-      PyObject* module = PyImport_AddModule((char*)"__main__");
-      PyObject* moduleDict = PyModule_GetDict(module);
-      PyRun_File(fp, _P(m_source).c_str(), m_Py_file_input, moduleDict, moduleDict);
-      fclose(fp);
+      // run script from file
+      FILE *fp = fopen_utf8(_P(m_source).c_str(), "r");
+      if (fp)
+      {
+        PyObject *f = PyString_FromString(_P(m_source).c_str());
+        PyDict_SetItemString(moduleDict, "__file__", f);
+        Py_DECREF(f);
+        PyRun_File(fp, _P(m_source).c_str(), m_Py_file_input, moduleDict, moduleDict);
+        fclose(fp);
+      }
+      else
+        CLog::Log(LOGERROR, "%s not found!", m_source);
     }
     else
-      CLog::Log(LOGERROR, "%s not found!", m_source);
+    {
+      //run script
+      PyRun_String(m_source, m_Py_file_input, moduleDict, moduleDict);
+    }
   }
-  else
-  {
-    //run script
-    PyObject* module = PyImport_AddModule((char*)"__main__");
-    PyObject* moduleDict = PyModule_GetDict(module);
-    PyRun_String(m_source, m_Py_file_input, moduleDict, moduleDict);
-  }
+
   if (PyErr_Occurred())
   {
     PyObject* exc_type;
@@ -324,7 +338,7 @@ void XBPyThread::Process()
 
   Py_EndInterpreter(m_threadState);
   m_threadState = NULL;
-  PyThreadState_Swap(old);
+  PyThreadState_Swap(NULL);
 
   PyEval_ReleaseLock();
 }
