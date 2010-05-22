@@ -269,10 +269,10 @@ bool CDVDVideoCodecOpenMax::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     }
     m_omx_input_port = port_param.nStartPortNumber;
     m_omx_output_port = m_omx_input_port + 1;
-#if defined(OMX_DEBUG_VERBOSE)
+    #if defined(OMX_DEBUG_VERBOSE)
     CLog::Log(LOGDEBUG, "%s - decoder_component(0x%p), input_port(0x%x), output_port(0x%x)\n", 
       __FUNCTION__, m_omx_decoder, m_omx_input_port, m_omx_output_port);
-#endif
+    #endif
 
     // TODO: Set role for the component because components could have multiple roles.
 
@@ -440,10 +440,10 @@ int CDVDVideoCodecOpenMax::Decode(BYTE* pData, int iSize, double dts, double pts
       omx_buffer->pAppPrivate = this;
       omx_buffer->nInputPortIndex = m_omx_input_port;
 
-#if defined(OMX_DEBUG_EMPTYBUFFERDONE)
+      #if defined(OMX_DEBUG_EMPTYBUFFERDONE)
       CLog::Log(LOGDEBUG, "%s - feeding decoder, omx_buffer->pBuffer(0x%p), demuxer_bytes(%d)\n",
         __FUNCTION__, omx_buffer->pBuffer, demuxer_bytes);
-#endif
+      #endif
       // Give this omx_buffer to OpenMax to be decoded.
       omx_err = OMX_EmptyThisBuffer(m_omx_decoder, omx_buffer);
       if (omx_err)
@@ -462,11 +462,11 @@ int CDVDVideoCodecOpenMax::Decode(BYTE* pData, int iSize, double dts, double pts
     if (m_omx_input_avaliable.empty() && !m_demux_queue.empty())
       m_input_consumed_event.WaitMSec(100);
 
-#if defined(OMX_DEBUG_VERBOSE)
+    #if defined(OMX_DEBUG_VERBOSE)
     if (m_omx_input_avaliable.empty())
       CLog::Log(LOGDEBUG, "%s - buffering demux, m_demux_queue_size(%d), demuxer_bytes(%d)\n",
         __FUNCTION__, m_demux_queue.size(), demuxer_bytes);
-#endif
+    #endif
   }
 
   if (m_omx_output_ready.empty())
@@ -530,25 +530,25 @@ bool CDVDVideoCodecOpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
         image_buffer += chroma_pixels;
         memcpy(m_videobuffer.data[2], image_buffer, chroma_pixels);
       }
-#if defined(OMX_DEBUG_VERBOSE)
+      #if defined(OMX_DEBUG_VERBOSE)
       else
       {
-        CLog::Log(LOGWARNING, "%s - nAllocLen(%lu), nFilledLen(%lu) should be filled_size(%lu)\n",
+        CLog::Log(LOGDEBUG, "%s - nAllocLen(%lu), nFilledLen(%lu) should be filled_size(%lu)\n",
           __FUNCTION__, omx_buffer->nAllocLen, omx_buffer->nFilledLen, filled_size);
       }
-#endif
+      #endif
 
       // release the omx buffer back to OpenMax to fill.
       OMX_ERRORTYPE omx_err = OMX_FillThisBuffer(m_omx_decoder, omx_buffer);
-#if defined(OMX_DEBUG_VERBOSE)
       if (omx_err)
-        CLog::Log(LOGDEBUG, "%s - OMX_FillThisBuffer, omx_err(0x%x)\n", __FUNCTION__, omx_err);
+        CLog::Log(LOGERROR, "%s - OMX_FillThisBuffer, omx_err(0x%x)\n", __FUNCTION__, omx_err);
     }
+    #if defined(OMX_DEBUG_VERBOSE)
     else
     {
       CLog::Log(LOGDEBUG, "%s - called but m_omx_output_ready is empty\n", __FUNCTION__);
-#endif
     }
+    #endif
   }
 
   // copy out our current video buffer and update it's flags.
@@ -726,10 +726,10 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::DecoderEventHandler(
   CDVDVideoCodecOpenMax *ctx = (CDVDVideoCodecOpenMax*)pAppData;
 
 /*
-#if defined(OMX_DEBUG_VERBOSE)
+  #if defined(OMX_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s - hComponent(0x%p), eEvent(0x%x), nData1(0x%lx), nData2(0x%lx), pEventData(0x%p)\n",
     __FUNCTION__, hComponent, eEvent, nData1, nData2, pEventData);
-#endif
+  #endif
 */
 
   switch (eEvent)
@@ -740,7 +740,7 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::DecoderEventHandler(
         case OMX_CommandStateSet:
           ctx->m_omx_state = (int)nData2;
           sem_post(ctx->m_omx_state_change);
-#if defined(OMX_DEBUG_EVENTHANDLER)
+          #if defined(OMX_DEBUG_EVENTHANDLER)
           switch (ctx->m_omx_state)
           {
             case OMX_StateInvalid:
@@ -762,7 +762,7 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::DecoderEventHandler(
               CLog::Log(LOGDEBUG, "%s - OMX_StateWaitForResources\n", __FUNCTION__);
               break;
           }
-#endif
+          #endif
         break;
         case OMX_CommandFlush:
           /*
@@ -785,14 +785,16 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::DecoderEventHandler(
           else
           */
           {
+            #if defined(OMX_DEBUG_EVENTHANDLER)
             CLog::Log(LOGDEBUG, "%s - OMX_CommandFlush, nData2(0x%lx)\n",__FUNCTION__, nData2);
+            #endif
           }
         break;
         case OMX_CommandPortDisable:
-#if defined(OMX_DEBUG_EVENTHANDLER)
+          #if defined(OMX_DEBUG_EVENTHANDLER)
           CLog::Log(LOGDEBUG, "%s - OMX_CommandPortDisable, nData1(0x%lx), nData2(0x%lx)\n",
             __FUNCTION__, nData1, nData2);
-#endif
+          #endif
           if (ctx->m_omx_output_port == (int)nData2)
           {
             // Got OMX_CommandPortDisable event, alloc new buffers for the output port.
@@ -801,10 +803,10 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::DecoderEventHandler(
           }
         break;
         case OMX_CommandPortEnable:
-#if defined(OMX_DEBUG_EVENTHANDLER)
+          #if defined(OMX_DEBUG_EVENTHANDLER)
           CLog::Log(LOGDEBUG, "%s - OMX_CommandPortEnable, nData1(0x%lx), nData2(0x%lx)\n",
             __FUNCTION__, nData1, nData2);
-#endif
+          #endif
           if (ctx->m_omx_output_port == (int)nData2)
           {
             // Got OMX_CommandPortEnable event.
@@ -812,33 +814,33 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::DecoderEventHandler(
             ctx->PrimeFillBuffers();
           }
         break;
-#if defined(OMX_DEBUG_EVENTHANDLER)
+        #if defined(OMX_DEBUG_EVENTHANDLER)
         case OMX_CommandMarkBuffer:
           CLog::Log(LOGDEBUG, "%s - OMX_CommandMarkBuffer, nData1(0x%lx), nData2(0x%lx)\n",
             __FUNCTION__, nData1, nData2);
         break;
-#endif
+        #endif
       }
     break;
     case OMX_EventBufferFlag:
       if (ctx->m_omx_decoder == hComponent && (nData2 & OMX_BUFFERFLAG_EOS)) {
-#if defined(OMX_DEBUG_EVENTHANDLER)
+        #if defined(OMX_DEBUG_EVENTHANDLER)
         if(ctx->m_omx_input_port  == (int)nData1)
             CLog::Log(LOGDEBUG, "%s - OMX_EventBufferFlag(input)\n" , __FUNCTION__);
-#endif
+        #endif
         if(ctx->m_omx_output_port == (int)nData1)
         {
             ctx->m_videoplayback_done = true;
-#if defined(OMX_DEBUG_EVENTHANDLER)
+            #if defined(OMX_DEBUG_EVENTHANDLER)
             CLog::Log(LOGDEBUG, "%s - OMX_EventBufferFlag(output)\n", __FUNCTION__);
-#endif
+            #endif
         }
       }
     break;
     case OMX_EventPortSettingsChanged:
-#if defined(OMX_DEBUG_EVENTHANDLER)
-        CLog::Log(LOGDEBUG, "%s - OMX_EventPortSettingsChanged(output)\n", __FUNCTION__);
-#endif
+      #if defined(OMX_DEBUG_EVENTHANDLER)
+      CLog::Log(LOGDEBUG, "%s - OMX_EventPortSettingsChanged(output)\n", __FUNCTION__);
+      #endif
       // not sure nData2 is the input/output ports in this call, docs don't say
       if (ctx->m_omx_output_port == (int)nData2)
       {
@@ -849,14 +851,14 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::DecoderEventHandler(
         omx_err = OMX_SendCommand(ctx->m_omx_decoder, OMX_CommandPortDisable, ctx->m_omx_output_port, NULL);
       }
     break;
-#if defined(OMX_DEBUG_EVENTHANDLER)
+    #if defined(OMX_DEBUG_EVENTHANDLER)
     case OMX_EventMark:
       CLog::Log(LOGDEBUG, "%s - OMX_EventMark\n", __FUNCTION__);
     break;
     case OMX_EventResourcesAcquired:
       CLog::Log(LOGDEBUG, "%s - OMX_EventResourcesAcquired\n", __FUNCTION__);
     break;
-#endif
+    #endif
     case OMX_EventError:
       switch((OMX_S32)nData1)
       {
@@ -920,10 +922,10 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::DecoderFillBufferDone(
   OMX_PTR pAppData,
   OMX_BUFFERHEADERTYPE* pBufferHeader)
 {
-#if defined(OMX_DEBUG_FILLBUFFERDONE)
+  #if defined(OMX_DEBUG_FILLBUFFERDONE)
   CLog::Log(LOGDEBUG, "%s - buffer_size(%lu), timestamp(%f)\n",
     __FUNCTION__, pBufferHeader->nFilledLen, (double)pBufferHeader->nTimeStamp / 1000.0);
-#endif
+  #endif
   CDVDVideoCodecOpenMax *ctx = (CDVDVideoCodecOpenMax*)pAppData;
 
   // queue output omx buffer to ready list.
@@ -968,10 +970,10 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::AllocOMXInputBuffers(void)
   port_format.nPortIndex = m_omx_input_port;
   OMX_GetParameter(m_omx_decoder, OMX_IndexParamPortDefinition, &port_format);
 
-#if defined(OMX_DEBUG_VERBOSE)
+  #if defined(OMX_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s - iport(%d), nBufferCountMin(%lu), nBufferSize(%lu)\n", 
     __FUNCTION__, m_omx_input_port, port_format.nBufferCountMin, port_format.nBufferSize);
-#endif
+  #endif
   for (size_t i = 0; i < port_format.nBufferCountMin; i++)
   {
     OMX_BUFFERHEADERTYPE *buffer = NULL;
@@ -1039,13 +1041,13 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::AllocOMXOutputBuffers(void)
   port_format.nPortIndex = m_omx_output_port;
   omx_err = OMX_GetParameter(m_omx_decoder, OMX_IndexParamPortDefinition, &port_format);
 
-#if defined(OMX_DEBUG_VERBOSE)
+  #if defined(OMX_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, 
     "%s (1) - oport(%d), nFrameWidth(%lu), nFrameHeight(%lu), nStride(%lx), nBufferCountMin(%lu), nBufferSize(%lu)\n",
     __FUNCTION__, m_omx_output_port, 
     port_format.format.video.nFrameWidth, port_format.format.video.nFrameHeight,port_format.format.video.nStride,
     port_format.nBufferCountMin, port_format.nBufferSize);
-#endif
+  #endif
 
   buffer_size = m_decoded_width * m_decoded_width;
   if (port_format.format.video.eColorFormat == OMX_COLOR_FormatCbYCrY)
