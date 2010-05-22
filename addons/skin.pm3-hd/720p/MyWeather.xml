@@ -259,7 +259,7 @@
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$LOCALIZE[393] :</label>
+					<label>$LOCALIZE[419] :</label>
 					<textcolor>grey2</textcolor>
 					<visible>Weather.IsFetched</visible>
 				</control>
@@ -282,7 +282,7 @@
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$LOCALIZE[391] :</label>
+					<label>$LOCALIZE[418] :</label>
 					<textcolor>grey2</textcolor>
 					<visible>Weather.IsFetched</visible>
 				</control>
@@ -358,7 +358,7 @@
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$LOCALIZE[393] :</label>
+					<label>$LOCALIZE[419] :</label>
 					<textcolor>grey2</textcolor>
 					<visible>Weather.IsFetched</visible>
 				</control>
@@ -381,7 +381,7 @@
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$LOCALIZE[391] :</label>
+					<label>$LOCALIZE[418] :</label>
 					<textcolor>grey2</textcolor>
 					<visible>Weather.IsFetched</visible>
 				</control>
@@ -457,7 +457,7 @@
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$LOCALIZE[393] :</label>
+					<label>$LOCALIZE[419] :</label>
 					<textcolor>grey2</textcolor>
 					<visible>Weather.IsFetched</visible>
 				</control>
@@ -480,7 +480,7 @@
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$LOCALIZE[391] :</label>
+					<label>$LOCALIZE[418] :</label>
 					<textcolor>grey2</textcolor>
 					<visible>Weather.IsFetched</visible>
 				</control>
@@ -556,7 +556,7 @@
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$LOCALIZE[393] :</label>
+					<label>$LOCALIZE[419] :</label>
 					<textcolor>grey2</textcolor>
 					<visible>Weather.IsFetched</visible>
 				</control>
@@ -579,7 +579,7 @@
 					<font>font12</font>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$LOCALIZE[391] :</label>
+					<label>$LOCALIZE[418] :</label>
 					<textcolor>grey2</textcolor>
 					<visible>Weather.IsFetched</visible>
 				</control>

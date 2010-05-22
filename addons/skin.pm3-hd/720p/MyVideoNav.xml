@@ -12,7 +12,8 @@
 			<fadetime>FanartCrossfadeTime</fadetime>
 			<aspectratio scalediffuse="false">scale</aspectratio>
 			<texture background="true" diffuse="Fanart_Diffuse.png" fallback="special://skin/backgrounds/videos.jpg">$INFO[Fanart.Image]</texture>
-			<visible>[Control.IsVisible(55) + !substring(Container.FolderPath,videodb://5/)] | [Control.IsVisible(56) + Container.Content(Seasons)]</visible>
+			<visible>Control.IsVisible(56)</visible>
+			<visible>[Container.Content(Episodes) + !stringcompare(Container.FolderPath,videodb://5/)] | Container.Content(Seasons)</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 		</control>
@@ -26,7 +27,8 @@
 			<texture background="true" diffuse="Fanart_Diffuse.png" fallback="special://skin/backgrounds/videos.jpg">$INFO[ListItem.Property(Fanart_Image)]</texture>
 			<include>VisibleFadeEffect</include>
 			<fadetime>FanartCrossfadeTime</fadetime>
-			<visible>[Control.IsVisible(55) + substring(Container.FolderPath,videodb://5/)] | [Control.IsVisible(56) + !Container.Content(Seasons)]</visible>
+			<visible>Control.IsVisible(56)</visible>
+			<visible>[Container.Content(Episodes) + stringcompare(Container.FolderPath,videodb://5/)] | !Container.Content(Seasons)</visible>
 			<include>Window_OpenClose_Animation</include>
 		</control>
 		<include>3d_CoverView</include> <!-- view id = 500 -->
@@ -34,16 +36,15 @@
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<control type="group">
 				<animation effect="slide" start="0,0" end="970,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin) + Control.IsVisible(500)">Conditional</animation>
-				<animation effect="slide" start="0,0" end="560,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin) + [Control.IsVisible(55) | Control.IsVisible(56)]">Conditional</animation>
+				<animation effect="slide" start="0,0" end="560,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin) + Control.IsVisible(56)">Conditional</animation>
 				<animation effect="slide" start="0,0" end="970,0" time="0" condition="Skin.HasSetting(Animate_Skin) + Control.IsVisible(500)">Conditional</animation>
-				<animation effect="slide" start="0,0" end="560,0" time="0" condition="Skin.HasSetting(Animate_Skin) + [Control.IsVisible(55) | Control.IsVisible(56)]">Conditional</animation>
+				<animation effect="slide" start="0,0" end="560,0" time="0" condition="Skin.HasSetting(Animate_Skin) + Control.IsVisible(56)">Conditional</animation>
 				<include>ContentPanel</include>
 				<include>CommonRootView</include> <!-- view id = 50 -->
 				<include>CommonListView</include> <!-- view id = 51 -->
 				<include>MoviesListView</include> <!-- view id = 58 --> 
 				<include>TVShowListView</include> <!-- view id = 59 -->
 				<include>MovieDVDView</include> <!-- view id = 57 -->
-				<include>EpisodeFanartView</include> <!-- view id = 55 -->
 				<include>MovieFanartView</include> <!-- view id = 56 -->
 				<include>VideoThumbnailView</include> <!-- view id = 53 -->
 				<include>WideIconView</include> <!-- view id = 54 -->
@@ -59,7 +60,7 @@
 				<include>AudioCodecFlagging</include>
 				<include>AspectCodecFlagging</include>
 				<animation effect="slide" start="0,0" end="-280,0" time="300" tween="quadratic" easing="out" condition="Control.IsVisible(500)">Conditional</animation>
-				<visible>!Control.IsVisible(56) + !Control.IsVisible(55) + !Skin.HasSetting(Hide_Video_Flags)</visible>
+				<visible>!Control.IsVisible(56) + !Skin.HasSetting(Hide_Video_Flags)</visible>
 			</control>
 			<include>AllViewCommonPageControls</include>
 			<include>CommonFileCount</include>
@@ -76,11 +77,9 @@
 				<include>VideoCodecFlagging</include>
 				<include>AudioCodecFlagging</include>
 				<include>AspectCodecFlagging</include>
-				<visible>[Control.IsVisible(56) | Control.IsVisible(55)] + !Skin.HasSetting(Hide_Video_Flags)</visible>
-				<animation effect="slide" start="0,0" end="-235,0" time="0" condition="Control.IsVisible(55)">Conditional</animation>
+				<visible>Control.IsVisible(56) + !Skin.HasSetting(Hide_Video_Flags)</visible>
 			</control>
 			<include>Window_OpenClose_Animation</include>
-			<include>EpisodeFanartView_Extras</include>
 			<include>MovieFanartView_Extras</include>
 		</control>
 		<control type="group">
@@ -89,15 +88,15 @@
 			<control type="group" id="9000">
 				<posx>0</posx>
 				<posy>130</posy>
-				<animation effect="slide" start="0,0" end="-275,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin) + [[Control.IsVisible(55) | Control.IsVisible(56) | Control.IsVisible(500)] + !ControlGroup(9000).HasFocus]">Conditional</animation>
-				<animation effect="slide" start="0,0" end="-275,0" time="0" condition="Skin.HasSetting(Animate_Skin) + [[Control.IsVisible(55) | Control.IsVisible(56) | Control.IsVisible(500)] + !ControlGroup(9000).HasFocus]">Conditional</animation>
+				<animation effect="slide" start="0,0" end="-275,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin) + [[Control.IsVisible(56) | Control.IsVisible(500)] + !ControlGroup(9000).HasFocus]">Conditional</animation>
+				<animation effect="slide" start="0,0" end="-275,0" time="0" condition="Skin.HasSetting(Animate_Skin) + [[Control.IsVisible(56) | Control.IsVisible(500)] + !ControlGroup(9000).HasFocus]">Conditional</animation>
 				<control type="image">
 					<posx>0</posx>
 					<posy>-30</posy>
 					<width>320</width>
 					<height>580</height>
 					<texture border="0,0,50,45">Panel2.png</texture>
-					<visible>Control.IsVisible(55) | Control.IsVisible(56) | Control.IsVisible(500)</visible>
+					<visible>Control.IsVisible(56) | Control.IsVisible(500)</visible>
 					<include>VisibleFadeEffect</include>
 				</control>
 				<control type="button" id="2">

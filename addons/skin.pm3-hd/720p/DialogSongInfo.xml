@@ -35,6 +35,12 @@
 			<label>$LOCALIZE[658]</label>
 			<textcolor>dialogheader</textcolor>
 		</control>
+		<control type="button">
+			<description>Close Window button</description>
+			<posx>830</posx>
+			<posy>35</posy>
+			<include>WindowCloseButtonCommons</include>
+		</control>
 		<control type="image">
 			<posx>40</posx>
 			<posy>79</posy>
@@ -278,7 +284,6 @@
 			<width>480</width>
 			<height>100</height>
 			<font>font12</font>
-			<pagecontrol>999999999</pagecontrol>
 			<label fallback="161">$INFO[ListItem.Comment]</label>
 		</control>
 		<control type="button" id ="13">

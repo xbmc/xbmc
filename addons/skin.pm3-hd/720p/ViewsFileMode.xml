@@ -92,7 +92,7 @@
 	</include>
 	<include name="CommonListView">
 		<control type="list" id="51">
-			<visible>![Container.Content(TVShows) + !Window.IsVisible(VideoFiles)]</visible>
+			<visible>![Container.Content(TVShows) + !Window.IsVisible(VideoFiles)] + !Container.Content(Episodes)</visible>
 			<posx>300</posx>
 			<posy>130</posy>
 			<width>540</width>
@@ -197,7 +197,7 @@
 		<control type="group">
 			<posx>870</posx>
 			<posy>130</posy>
-			<visible>Control.IsVisible(51) + !Container.Content(Episodes)</visible>
+			<visible>Control.IsVisible(51)</visible>
 			<control type="image">
 				<posx>0</posx>
 				<posy>0</posy>
@@ -215,49 +215,6 @@
 				<aspectratio>keep</aspectratio>
 				<texture>$INFO[ListItem.Overlay]</texture>
 			</control>
-		</control>
-		<control type="group">
-			<posx>875</posx>
-			<posy>130</posy>
-			<visible>Control.IsVisible(51) + Container.Content(Episodes)</visible>
-			<control type="image">
-				<posx>0</posx>
-				<posy>0</posy>
-				<width>395</width>
-				<height>230</height>
-				<aspectratio>keep</aspectratio>
-				<texture>$INFO[ListItem.Icon]</texture>
-				<fadetime>IconCrossfadeTime</fadetime>
-			</control>
-			<control type="image">
-				<posx>350</posx>
-				<posy>190</posy>
-				<width>50</width>
-				<height>50</height>
-				<aspectratio>keep</aspectratio>
-				<texture>$INFO[ListItem.Overlay]</texture>
-			</control>
-			<control type="image">
-				<posx>0</posx>
-				<posy>250</posy>
-				<width>395</width>
-				<height>2</height>
-				<texture>separator.png</texture>
-			</control>
-		</control>
-		<control type="textbox">
-			<description>Description for Episodes</description>
-			<posx>875</posx>
-			<posy>390</posy>
-			<width>395</width>
-			<height>245</height>
-			<font>font11</font>
-			<align>justify</align>
-			<textcolor>white</textcolor>
-			<pagecontrol>9999999999</pagecontrol>
-			<label>$INFO[ListItem.Plot]</label>
-			<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
-			<visible>Control.IsVisible(51) + Container.Content(Episodes)</visible>
 		</control>
 	</include>
 	<include name="SongInfoListView">
@@ -1070,7 +1027,7 @@
 			<pagecontrol>60</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<preloaditems>2</preloaditems>
-			<itemlayout condition="!Container.Content(Movies)" height="255" width="316">
+			<itemlayout condition="!Container.Content(Movies) + !Container.Content(Seasons)" height="255" width="316">
 				<control type="image">
 					<posx>1</posx>
 					<posy>1</posy>
@@ -1106,7 +1063,7 @@
 					<texture>$INFO[ListItem.Overlay]</texture>
 				</control>
 			</itemlayout>
-			<focusedlayout condition="!Container.Content(Movies)" height="255" width="316">
+			<focusedlayout condition="!Container.Content(Movies) + !Container.Content(Seasons)" height="255" width="316">
 				<control type="image">
 					<posx>1</posx>
 					<posy>1</posy>
@@ -1142,7 +1099,7 @@
 					<texture>$INFO[ListItem.Overlay]</texture>
 				</control>
 			</focusedlayout>
-			<itemlayout condition="Container.Content(Movies)" height="255" width="158">
+			<itemlayout condition="Container.Content(Movies) | Container.Content(Seasons)" height="255" width="158">
 				<control type="image">
 					<posx>1</posx>
 					<posy>1</posy>
@@ -1180,7 +1137,7 @@
 					<texture>$INFO[ListItem.Overlay]</texture>
 				</control>
 			</itemlayout>
-			<focusedlayout  condition="Container.Content(Movies)" height="255" width="158">
+			<focusedlayout  condition="Container.Content(Movies) | Container.Content(Seasons)" height="255" width="158">
 				<control type="image">
 					<posx>1</posx>
 					<posy>1</posy>
