@@ -5,6 +5,7 @@
 		<control type="group">
 			<include>Window_OpenClose_Right_Panel_Animation</include>
 			<include>ContentPanel</include>
+			<!-- Start General Skin Settings -->
 			<control type="grouplist" id="9001">
 				<visible>Skin.String(SkinSettings,1)</visible>
 				<posx>300</posx>
@@ -189,6 +190,8 @@
 					<selected>Skin.HasSetting(Player_Show_Teletext_Button)</selected>
 				</control>
 			</control>
+			<!-- End General Skin Settings -->
+			<!-- Start Home Page Skin Settings -->
 			<control type="grouplist" id="9002">
 				<visible>Skin.String(SkinSettings,2)</visible>
 				<posx>300</posx>
@@ -251,7 +254,101 @@
 					<texturenofocus>-</texturenofocus>
 					<textureradioon>radiobutton-focus-2.png</textureradioon>
 				</control>
+				<control type="label" id="210">
+					<width>950</width>
+					<height>45</height>
+					<font>font18</font>
+					<label>31119</label>
+					<textcolor>dialogheader</textcolor>
+					<align>center</align>
+				</control>
+				<control type="radiobutton" id="211">
+					<description>Hide Video Button Toggle</description>
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>$LOCALIZE[31120] - $LOCALIZE[3]</label>
+					<onclick>Skin.ToggleSetting(homepageHideVideoButton)</onclick>
+					<selected>Skin.HasSetting(homepageHideVideoButton)</selected>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+				</control>
+				<control type="radiobutton" id="212">
+					<description>Hide Music Button Toggle</description>
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>$LOCALIZE[31120] - $LOCALIZE[2]</label>
+					<onclick>Skin.ToggleSetting(homepageHideMusicButton)</onclick>
+					<selected>Skin.HasSetting(homepageHideMusicButton)</selected>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+				</control>
+				<control type="radiobutton" id="213">
+					<description>Hide Picture Button Toggle</description>
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>$LOCALIZE[31120] - $LOCALIZE[1]</label>
+					<onclick>Skin.ToggleSetting(homepageHidePictureButton)</onclick>
+					<selected>Skin.HasSetting(homepageHidePictureButton)</selected>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+				</control>
+				<control type="radiobutton" id="214">
+					<description>Hide Program Button Toggle</description>
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>$LOCALIZE[31120] - $LOCALIZE[0]</label>
+					<onclick>Skin.ToggleSetting(homepageHideProgramButton)</onclick>
+					<selected>Skin.HasSetting(homepageHideProgramButton)</selected>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+				</control>
+				<control type="radiobutton" id="215">
+					<description>Hide Weather Button Toggle</description>
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>$LOCALIZE[31120] - $LOCALIZE[8]</label>
+					<onclick>Skin.ToggleSetting(homepageHideWeatherButton)</onclick>
+					<selected>Skin.HasSetting(homepageHideWeatherButton)</selected>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+				</control>
+				<control type="radiobutton" id="216">
+					<description>Hide Script Button Toggle</description>
+					<width>950</width>
+					<height>35</height>
+					<font>font12</font>
+					<label>$LOCALIZE[31120] - $LOCALIZE[247]</label>
+					<onclick>Skin.ToggleSetting(homepageHideScriptButton)</onclick>
+					<selected>Skin.HasSetting(homepageHideScriptButton)</selected>
+					<textcolor>grey2</textcolor>
+					<focusedcolor>white</focusedcolor>
+					<texturefocus border="7">list-focus.png</texturefocus>
+					<texturenofocus>-</texturenofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
+				</control>
 			</control>
+			<!-- End Home Page Skin Settings -->
+			<!-- Start Custom Backgrounds Skin Settings -->
 			<control type="group">
 				<visible>Skin.String(SkinSettings,3)</visible>
 				<control type="image">
@@ -406,36 +503,42 @@
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/videos.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
+								<visible>!Skin.HasSetting(homepageHideVideoButton)</visible>
 							</item>
 							<item id="2">
 								<label>2</label>
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/music.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Music_Folder)]</thumb>
+								<visible>!Skin.HasSetting(homepageHideMusicButton)</visible>
 							</item>
 							<item id="3">
 								<label>1</label>
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/pictures.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Pictures_Folder)]</thumb>
+								<visible>!Skin.HasSetting(homepageHidePictureButton)</visible>
 							</item>
 							<item id="4">
 								<label>0</label>
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/programs.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
+								<visible>!Skin.HasSetting(homepageHideProgramButton)</visible>
 							</item>
 							<item id="5">
 								<label>8</label>
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/weather.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Weather_Folder)]</thumb>
+								<visible>!Skin.HasSetting(homepageHideWeatherButton)</visible>
 							</item>
 							<item id="6">
 								<label>247</label>
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/scripts.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Scripts_Folder)]</thumb>
+								<visible>!Skin.HasSetting(homepageHideScriptButton)</visible>
 							</item>
 							<item id="7">
 								<label>5</label>
@@ -904,6 +1007,8 @@
 					</control>
 				</control>
 			</control>
+			<!-- End Custom Backgrounds Skin Settings -->
+			<!-- Start Custom Script Skin Settings -->
 			<control type="grouplist" id="9004">
 				<visible>Skin.String(SkinSettings,4)</visible>
 				<posx>300</posx>
@@ -1035,6 +1140,7 @@
 					<texture>separator.png</texture>
 				</control>
 			</control>
+			<!-- END Custom Script Skin Settings -->
 		</control>
 		<control type="group">
 			<include>Window_OpenClose_Left_Panel_Animation</include>
