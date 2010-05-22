@@ -427,6 +427,8 @@ void CWinRenderer::UpdateVideoFilter()
       return;
     }
 
+    CLog::Log(LOGDEBUG, __FUNCTION__": Loading shader %s", effectString.c_str());
+
     if(!LoadEffect(m_YUV2RGBHQScalerEffect, effectString))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
