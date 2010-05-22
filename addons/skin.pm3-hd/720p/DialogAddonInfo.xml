@@ -391,8 +391,8 @@
 					<align>center</align>
 					<texturenofocus border="5">button-nofocus.png</texturenofocus>
 					<texturefocus border="5">button-focus2.png</texturefocus>
-					<onleft>62</onleft>
-					<onright>62</onright>
+					<onleft>60</onleft>
+					<onright>60</onright>
 					<onup>8</onup>
 					<ondown>6</ondown>
 				</control>
