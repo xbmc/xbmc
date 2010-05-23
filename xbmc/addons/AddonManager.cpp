@@ -341,7 +341,7 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
   {
     addon = Factory(cpaddon->extensions);
     m_cpluff->release_info(m_cp_context, cpaddon);
-    return true;
+    return NULL != addon.get();
   }
   if (cpaddon)
     m_cpluff->release_info(m_cp_context, cpaddon);
@@ -567,6 +567,7 @@ ADDONDEPS CAddonMgr::GetDeps(const CStdString &id)
       result.insert(make_pair(CStdString(info->imports[i].plugin_id),
                               make_pair(AddonVersion(info->version),
                                         AddonVersion(info->version))));
+    m_cpluff->release_info(m_cp_context, info);
   }
 
   return result;
