@@ -4355,7 +4355,13 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   {
     // reset our codec info - don't want that on screen
     g_infoManager.SetShowCodec(false);
-    m_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("screensaver.slideshowpath"), true);
+    CStdString path = g_guiSettings.GetString("screensaver.slideshowpath");
+    if (path.IsEmpty())
+    {
+      path = "special://profile/thumbnails/Video/Fanart";
+      CLog::Log(LOGERROR,"No slideshow screensaver path set, defaulting to the available video fanart");
+    }
+    m_applicationMessenger.PictureSlideShow(path, true);
   }
   else if (m_screenSaverMode == "_virtual.dim")
     return;
