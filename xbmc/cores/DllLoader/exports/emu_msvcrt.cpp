@@ -1442,6 +1442,12 @@ extern "C"
     return strlen(tmp);
   }
 
+  int dll_fscanf(FILE* stream, const char* format, ...)
+  {
+    CLog::Log(LOGERROR, "%s is not implemented",  __FUNCTION__);
+    return -1;
+  }
+
   int dll_fprintf(FILE* stream, const char* format, ...)
   {
     int res;

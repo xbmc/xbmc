@@ -108,7 +108,7 @@ Export win32_exports[] =
   { "_fileno",                    -1, (void*)dll_fileno,                    NULL },
   { "ferror",                     -1, (void*)dll_ferror,                    NULL },
   { "freopen",                    -1, (void*)dll_freopen,                   (void*)track_freopen},
-  { "fscanf",                     -1, (void*)fscanf,                        NULL },
+  { "fscanf",                     -1, (void*)dll_fscanf,                    NULL },
   { "ungetc",                     -1, (void*)dll_ungetc,                    NULL },
   { "_fdopen",                    -1, (void*)dll_fdopen,                    NULL },
   { "clearerr",                   -1, (void*)dll_clearerr,                  NULL },
