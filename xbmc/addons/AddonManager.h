@@ -104,6 +104,7 @@ namespace ADDON
 
     /* libcpluff */
     CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
+    std::vector<CStdString> GetExtValues(cp_cfg_element_t *base, const char *path);
     const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension);
 
     /*! \brief Load the addon in the given path
@@ -121,7 +122,7 @@ namespace ADDON
      \return true if the repository XML file is parsed, false otherwise.
      */
     bool AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons);
-
+    ADDONDEPS GetDeps(const CStdString& id);
   private:
     void LoadAddons(const CStdString &path, 
                     std::map<CStdString, AddonPtr>& unresolved);

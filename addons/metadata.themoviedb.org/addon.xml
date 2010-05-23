@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="metadata.themoviedb.org"
+       name="The MovieDB"
+       version="1.0.0"
+       provider-name="Team XBMC">
+  <requires>
+    <import addon="xbmc.metadata" version="1.0"/>
+    <import addon="metadata.common.themoviedb.org" version="1.0"/>
+    <import addon="metadata.common.dtrailer.com" version="1.0"/>
+  </requires>
+  <extension point="xbmc.metadata.scraper"
+             library="tmdb.xml"/>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <minversion>20000</minversion>
+    <summary>TMDB Movie Scraper</summary>
+    <summary lang="nl">TMDB Film Scraper</summary>
+    <description>themoviedb.org is a free and open movie database. It's completely user driven by people like you. TMDb is currently used by millions of people every month and with their and powerful API, it is also used by many popular media centers like XBMC to retrieve Movie Metadata, Posters and Fanart to enrich the users experience</description>
+    <description lang="nl">themoviedb.org is een vrije en open film databank. Het wordt compleet aangedreven door gebruikers zoals jezelf. TMDb wordt momenteel maandelijks gebruikt door miljoenen mensen. Hun krachtige API maakt het voor mediaspelers zoals XBMC mogelijk om voor een film bijkomende informatie, posters en fanarts op te halen.</description>
+    <supportedcontent>
+      <content>movies</content>
+    </supportedcontent>
+  </extension>
+</addon>

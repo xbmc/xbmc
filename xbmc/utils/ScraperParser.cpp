@@ -21,10 +21,6 @@
 
 #include "ScraperParser.h"
 
-#ifdef _LINUX
-#include "system.h"
-#endif
-
 #include "addons/AddonManager.h"
 #include "RegExp.h"
 #include "HTMLUtil.h"
@@ -127,6 +123,7 @@ bool CScraperParser::LoadFromXML()
 
   m_pRootElement = m_document->RootElement();
   CStdString strValue = m_pRootElement->Value();
+  bool result=false;
   if (strValue == "scraper")
   {
     if (m_pRootElement->Attribute("cachePersistence"))
@@ -146,12 +143,14 @@ bool CScraperParser::LoadFromXML()
     ADDONDEPS::iterator itr = deps.begin();
     while (itr != deps.end())
     {
-      AddonPtr dep;
-      if (!CAddonMgr::Get().GetAddon((*itr).first, dep, ADDON_SCRAPER_LIBRARY, false))
+      if (itr->first.Equals("xbmc.metadata"))
       {
-        itr++;
+        ++itr;
         continue;
-      }
+      }  
+      AddonPtr dep;
+      if (!CAddonMgr::Get().GetAddon((*itr).first, dep))
+        break;
       CStdString strFile = CUtil::AddFileToFolder(dep->Path(), dep->LibName());
       TiXmlDocument doc;
       if (doc.LoadFile(strFile))
@@ -165,8 +164,12 @@ bool CScraperParser::LoadFromXML()
       }
       itr++;
     }
-    return true;
+    result = true;
   }
+
+  if (result)
+    return true;
+
   delete m_document;
   m_document = NULL;
   m_pRootElement = NULL;

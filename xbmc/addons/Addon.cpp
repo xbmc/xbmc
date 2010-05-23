@@ -30,10 +30,12 @@
 #include "../osx/OSXGNUReplacements.h"
 #endif
 #include "log.h"
+#include <vector>
 #include <string.h>
 
 using XFILE::CDirectory;
 using XFILE::CFile;
+using namespace std;
 
 namespace ADDON
 {
@@ -107,7 +109,7 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
     }
     case ADDON::ADDON_SCRAPER_LIBRARY:
     {
-      return "scraper-library";
+      return "xbmc.metadata.scraper.library";
     }
     case ADDON::ADDON_SCREENSAVER:
     {
@@ -164,7 +166,7 @@ const ADDON::TYPE TranslateType(const CStdString &string)
 {
   if (string.Equals("pvrclient")) return ADDON_PVRDLL;
   else if (string.Equals("xbmc.metadata.scraper")) return ADDON_SCRAPER;
-  else if (string.Equals("scraper-library")) return ADDON_SCRAPER_LIBRARY;
+  else if (string.Equals("xbmc.metadata.scraper.library")) return ADDON_SCRAPER_LIBRARY;
   else if (string.Equals("xbmc.ui.screensaver")) return ADDON_SCREENSAVER;
   else if (string.Equals("xbmc.player.musicviz")) return ADDON_VIZ;
   else if (string.Equals("visualization-library")) return ADDON_VIZ_LIBRARY;
@@ -237,8 +239,9 @@ AddonProps::AddonProps(cp_plugin_info_t *props)
     description = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "description");
     disclaimer = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "disclaimer");
     license = CAddonMgr::Get().GetExtValue(metadata->configuration, "license");
-    // FIXME this needs to grab all siblings...
-    contents.insert(TranslateContent(CAddonMgr::Get().GetExtValue(metadata->configuration, "content")));
+    vector<CStdString> content = CAddonMgr::Get().GetExtValues(metadata->configuration,"supportedcontent");
+    for (unsigned int i=0;i<content.size();++i)
+      contents.insert(TranslateContent(content[i]));
     //FIXME other stuff goes here
     //CStdString version = CAddonMgr::Get().GetExtValue(metadata->configuration, "minversion/xbmc");
   }
@@ -343,6 +346,7 @@ void CAddon::BuildLibName(cp_plugin_info_t *props)
       case ADDON_SCREENSAVER:
       case ADDON_SCRIPT:
       case ADDON_SCRAPER:
+      case ADDON_SCRAPER_LIBRARY:
         {
           CStdString temp = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library");
           m_strLibName = temp;
@@ -559,12 +563,12 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& value, const
 
   // Setting not found, add it
   TiXmlElement nodeSetting("setting");
-  nodeSetting.SetAttribute("id", std::string(key.c_str())); //FIXME otherwise attribute value isn't updated
+  nodeSetting.SetAttribute("id", string(key.c_str())); //FIXME otherwise attribute value isn't updated
   if (!type.empty())
-    nodeSetting.SetAttribute("type", std::string(type.c_str()));
+    nodeSetting.SetAttribute("type", string(type.c_str()));
   else
     nodeSetting.SetAttribute("type", "text");
-  nodeSetting.SetAttribute("value", std::string(value.c_str()));
+  nodeSetting.SetAttribute("value", string(value.c_str()));
   m_userXmlDoc.RootElement()->InsertEndChild(nodeSetting);
 }
 
@@ -583,6 +587,11 @@ const CStdString CAddon::Icon() const
   if (CURL::IsFullPath(m_props.icon))
     return m_props.icon;
   return CUtil::AddFileToFolder(m_props.path, m_props.icon);
+}
+
+ADDONDEPS CAddon::GetDeps()
+{
+  return CAddonMgr::Get().GetDeps(ID());
 }
 
 /**

@@ -147,7 +147,7 @@ public:
   const int Stars() const { return m_props.stars; }
   const CStdString Disclaimer() const { return m_props.disclaimer; }
   bool Supports(const CONTENT_TYPE &content) const { return (m_props.contents.count(content) == 1); }
-  ADDONDEPS& GetDeps() { return m_props.dependencies; }
+  ADDONDEPS GetDeps();
 
 protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
