@@ -7,6 +7,7 @@
     <import addon="xbmc.metadata" version="1.0"/>
   </requires>
   <extension point="xbmc.metadata.scraper"
+             language="multi"
              library="tvdb.xml"/>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
