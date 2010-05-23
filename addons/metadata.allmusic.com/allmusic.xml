@@ -1,34 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scraper framework="1.1" date="2009-09-30" language="en">
-	<GetSettings dest="3">
-		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;htbfanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression/>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Grab artist thumbs from Allmusic.com&quot; type=&quot;bool&quot; id=&quot;allmusicartistthumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
- 				<expression></expression>
- 			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Grab album thumbs from Allmusic.com&quot; type=&quot;bool&quot; id=&quot;allmusicalbumthumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Grab artist thumbs from Last.fm&quot; type=&quot;bool&quot; id=&quot;lastfmartistthumbs&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Grab album thumbs from Last.fm&quot; type=&quot;bool&quot; id=&quot;lastfmalbumthumbs&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
-			</RegExp>
-<!--			<RegExp input="$$1" output="&lt;setting label=&quot;Grab artist thumbs from Discogs&quot; type=&quot;bool&quot; id=&quot;discogsartistthumbs&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;setting label=&quot;Grab album thumbs from Discogs&quot; type=&quot;bool&quot; id=&quot;discogsalbumthumbs&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
-			</RegExp> -->
-			<RegExp input="$$1" output="&lt;setting label=&quot;Grab artist thumbs from HTBackdrops&quot; type=&quot;bool&quot; id=&quot;htbthumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
-			</RegExp>
-			<expression noclean="1"/>
-		</RegExp>
-	</GetSettings>
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="http://www.\1" dest="3">
 			<expression>(allmusic.com/cg/.*)</expression>
