@@ -352,7 +352,7 @@ bool CDVDVideoCodecOpenMax::Open(CDVDStreamInfo &hints, CDVDCodecOptions &option
     memset(m_videobuffer.data[2], 0, chroma_pixels);
 
     m_is_open = true;
-    m_drop_pictures = false;
+    m_drop_state = false;
     m_videoplayback_done = false;
     
     // crank it up.
@@ -397,12 +397,31 @@ void CDVDVideoCodecOpenMax::Dispose()
 
 void CDVDVideoCodecOpenMax::SetDropState(bool bDrop)
 {
-  m_drop_pictures = bDrop;
-  
-  if (m_drop_pictures)
+  m_drop_state = bDrop;
+
+  if (m_drop_state)
   {
-    //OMX_ERRORTYPE omx_err;
-    //omx_err = OMX_SendCommand(m_omx_decoder, OMX_CommandFlush, m_omx_output_port, 0);
+    OMX_ERRORTYPE omx_err;
+
+    // blow all but the last ready video frame
+    pthread_mutex_lock(&m_omx_ready_mutex);
+    while (m_omx_output_ready.size() > 1)
+    {
+      m_dts_queue.pop();
+      OMX_BUFFERHEADERTYPE *omx_buffer = m_omx_output_ready.front();
+      m_omx_output_ready.pop();
+      // return the omx buffer back to OpenMax to fill.
+      omx_err = OMX_FillThisBuffer(m_omx_decoder, omx_buffer);
+      if (omx_err)
+        CLog::Log(LOGERROR, "%s::%s - OMX_FillThisBuffer, omx_err(0x%x)\n",
+          OMXCLASSNAME, __func__, omx_err);
+    }
+    pthread_mutex_unlock(&m_omx_ready_mutex);
+
+    #if defined(OMX_DEBUG_VERBOSE)
+    CLog::Log(LOGDEBUG, "%s::%s - m_drop_state(%d)\n",
+      OMXCLASSNAME, __func__, m_drop_state);
+    #endif
   }
 }
 
@@ -502,16 +521,6 @@ int CDVDVideoCodecOpenMax::Decode(BYTE* pData, int iSize, double dts, double pts
     #endif
   }
 
-/*
-  if (m_drop_pictures && (m_omx_output_ready.size() > 1))
-  {
-    pthread_mutex_lock(&m_omx_ready_mutex);
-    m_dts_queue.pop();
-    m_omx_output_ready.pop();
-    pthread_mutex_unlock(&m_omx_ready_mutex);
-  }
-*/
-
   if (m_omx_output_ready.empty())
     return VC_BUFFER;
 
@@ -526,17 +535,15 @@ void CDVDVideoCodecOpenMax::Reset(void)
   // only reset OpenMax decoder if it's running
   if (m_omx_decoder_state == OMX_StateExecuting)
   {
-    StopDecoder();
-    while (!m_omx_input_avaliable.empty())
-      m_omx_input_avaliable.pop();
-    while (!m_omx_output_ready.empty())
-      m_omx_output_ready.pop();
-    while (!m_demux_queue.empty())
-      m_demux_queue.pop();
-    while (!m_dts_queue.empty())
-      m_dts_queue.pop();
-    
-    StartDecoder();
+    OMX_ERRORTYPE omx_err;
+
+    omx_err = StopDecoder();
+    // Alloc OpenMax input buffers.
+    omx_err = AllocOMXInputBuffers();
+    // Alloc OpenMax output buffers.
+    omx_err = AllocOMXOutputBuffers();
+
+    omx_err = StartDecoder();
   }
 }
 
@@ -550,11 +557,10 @@ bool CDVDVideoCodecOpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
     m_omx_output_ready.pop();
     pthread_mutex_unlock(&m_omx_ready_mutex);
 
-    bool done = omx_buffer->nFlags & OMX_BUFFERFLAG_EOS;
-    if (!done && (omx_buffer->nFilledLen > 0))
+    m_videobuffer.dts = DVD_NOPTS_VALUE;
+    m_videobuffer.pts = DVD_NOPTS_VALUE;
+    if (omx_buffer->nFilledLen > 0)
     {
-      m_videobuffer.dts = DVD_NOPTS_VALUE;
-      m_videobuffer.pts = DVD_NOPTS_VALUE;
       if (!m_dts_queue.empty())
       {
         m_videobuffer.dts = m_dts_queue.front();
@@ -584,25 +590,29 @@ bool CDVDVideoCodecOpenMax::GetPicture(DVDVideoPicture* pDvdVideoPicture)
           OMXCLASSNAME, __func__, omx_buffer->nAllocLen, omx_buffer->nFilledLen, filled_size);
       }
       #endif
-
-      // release the omx buffer back to OpenMax to fill.
+    }
+    bool done = omx_buffer->nFlags & OMX_BUFFERFLAG_EOS;
+    if (!done)
+    {
+      // return the omx buffer back to OpenMax to fill.
       OMX_ERRORTYPE omx_err = OMX_FillThisBuffer(m_omx_decoder, omx_buffer);
       if (omx_err)
         CLog::Log(LOGERROR, "%s::%s - OMX_FillThisBuffer, omx_err(0x%x)\n",
           OMXCLASSNAME, __func__, omx_err);
     }
-    #if defined(OMX_DEBUG_VERBOSE)
-    else
-    {
-      CLog::Log(LOGDEBUG, "%s::%s - called but m_omx_output_ready is empty\n",
-        OMXCLASSNAME, __func__);
-    }
-    #endif
   }
+  #if defined(OMX_DEBUG_VERBOSE)
+  else
+  {
+    CLog::Log(LOGDEBUG, "%s::%s - called but m_omx_output_ready is empty\n",
+      OMXCLASSNAME, __func__);
+  }
+  #endif
 
   // copy out our current video buffer and update it's flags.
   *pDvdVideoPicture = m_videobuffer;
-  pDvdVideoPicture->iFlags |= m_drop_pictures ? DVP_FLAG_DROPPED : 0;
+  pDvdVideoPicture->iFlags  = DVP_FLAG_ALLOCATED;
+  pDvdVideoPicture->iFlags |= m_drop_state ? DVP_FLAG_DROPPED : 0;
 
   return VC_PICTURE | VC_BUFFER;
 }
@@ -971,11 +981,12 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::DecoderEmptyBufferDone(
   OMX_BUFFERHEADERTYPE* pBuffer)
 {
   CDVDVideoCodecOpenMax *ctx = (CDVDVideoCodecOpenMax*)pAppData;
-
+/*
   #if defined(OMX_DEBUG_EMPTYBUFFERDONE)
   CLog::Log(LOGDEBUG, "%s::%s - buffer_size(%lu), timestamp(%f)\n",
     OMXCLASSNAME, __func__, pBuffer->nFilledLen, (double)pBuffer->nTimeStamp / 1000.0);
   #endif
+*/
   // queue free input buffer to avaliable list.
   pthread_mutex_lock(&ctx->m_omx_avaliable_mutex);
   ctx->m_omx_input_avaliable.push(pBuffer);
@@ -1010,8 +1021,11 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::PrimeFillBuffers(void)
   OMX_ERRORTYPE omx_err = OMX_ErrorNone;
   OMX_BUFFERHEADERTYPE *buffer;
 
+  #if defined(OMX_DEBUG_VERBOSE)
+  CLog::Log(LOGDEBUG, "%s::%s\n", OMXCLASSNAME, __func__);
+  #endif
   // tell OpenMax to start filling output buffers
-  for(size_t i = 0; i < m_omx_output_buffers.size(); i++)
+  for (size_t i = 0; i < m_omx_output_buffers.size(); i++)
   {
     buffer = m_omx_output_buffers[i];
     // always set the port index.
@@ -1288,9 +1302,9 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::WaitForState(OMX_STATETYPE state)
     clock_gettime(CLOCK_REALTIME, &timeout);
     timeout.tv_sec += 1;
     sem_timedwait(m_omx_decoder_state_change, &timeout);
-    if(errno == ETIMEDOUT)
+    if (errno == ETIMEDOUT)
       tries++;
-    else if (tries > 5)
+    if (tries > 5)
       return OMX_ErrorUndefined;
 
     omx_error = OMX_GetState(m_omx_decoder, &test_state);
@@ -1326,6 +1340,7 @@ OMX_ERRORTYPE CDVDVideoCodecOpenMax::StartDecoder(void)
   #if defined(OMX_DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG, "%s::%s\n", OMXCLASSNAME, __func__);
   #endif
+
   // transition decoder component to IDLE state
   omx_err = SetStateForComponent(OMX_StateIdle);
   if (omx_err)

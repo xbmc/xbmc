@@ -118,7 +118,7 @@ protected:
   OMX_HANDLETYPE    m_omx_decoder;   // openmax decoder component reference
   DVDVideoPicture   m_videobuffer;
   const char        *m_pFormatName;
-  bool              m_drop_pictures;
+  bool              m_drop_state;
   int               m_decoded_width;
   int               m_decoded_height;
 
