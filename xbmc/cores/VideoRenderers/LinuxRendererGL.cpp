@@ -2513,7 +2513,12 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
   {
     if ((glewIsSupported("GL_EXT_framebuffer_object") && (m_renderMethod & RENDER_GLSL)) ||
         (m_renderMethod & RENDER_VDPAU) || (m_renderMethod & RENDER_VAAPI))
-      return true;
+    {
+      //lanczos3 is only allowed through advancedsettings.xml because it's very slow
+      if ((g_advancedSettings.m_videoAllowLanczos3 && method == VS_SCALINGMETHOD_LANCZOS3) ||
+          method != VS_SCALINGMETHOD_LANCZOS3)
+        return true;
+    }
   }
  
   if (g_advancedSettings.m_videoHighQualityScaling != SOFTWARE_UPSCALING_DISABLED)
