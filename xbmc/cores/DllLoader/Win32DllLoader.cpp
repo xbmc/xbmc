@@ -125,6 +125,7 @@ Export win32_exports[] =
 
   // libdvdnav + python need this (due to us using dll_putenv() to put stuff only?)
   { "getenv",                     -1, (void*)dll_getenv,                    NULL },
+  { "_environ",                   -1, (void*)&dll__environ,                 NULL },
 
   { NULL,                          -1, NULL,                                NULL }
 };

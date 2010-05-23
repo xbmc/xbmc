@@ -169,6 +169,8 @@ extern "C"
 #ifdef _LINUX
   int * __cdecl dll_errno(void);
 #endif
+
+  extern char **dll__environ;
 }
 
 

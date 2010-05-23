@@ -98,7 +98,9 @@ struct _env
 };
 
 #define EMU_MAX_ENVIRONMENT_ITEMS 50
-char *dll__environ[EMU_MAX_ENVIRONMENT_ITEMS + 1];
+static char *dll__environ_imp[EMU_MAX_ENVIRONMENT_ITEMS + 1];
+extern "C" char **dll__environ = dll__environ_imp;
+
 CRITICAL_SECTION dll_cs_environ;
 
 #define dll_environ    (*dll___p__environ())   /* pointer to environment table */
