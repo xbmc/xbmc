@@ -106,12 +106,12 @@ void CGUIDialogAddonInfo::OnInitWindow()
               m_item->GetProperty("Addon.UpdateAvail").Equals("true"));
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, 
               m_item->GetProperty("Addon.Installed").Equals("false"));
-  CStdString xbmcPath = _P("special://xbmc/");
+  CStdString xbmcPath = _P("special://xbmc/addons");
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_DISABLE, 
               m_item->GetProperty("Addon.Installed").Equals("true") &&
-    !m_item->GetProperty("Addon.Path").Mid(0,xbmcPath.size()).Equals(xbmcPath));
+              m_localAddon && !m_localAddon->Path().Mid(0,xbmcPath.size()).Equals(xbmcPath));
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, 
-              m_item->GetProperty("Addon.Installed").Equals("true") &&
+              m_localAddon &&
               m_localAddon->HasSettings());
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_CHANGELOG,
               m_addon->Type() != ADDON_REPOSITORY);
