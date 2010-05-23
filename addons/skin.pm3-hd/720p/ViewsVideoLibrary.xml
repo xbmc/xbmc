@@ -191,7 +191,6 @@
 				<focusposition>2</focusposition>
 				<movement>1</movement>
 				<orientation>horizontal</orientation>
-				<hitrect x="376" y="0" w="218" h="310" />
 				<preloaditems>4</preloaditems>
 				<itemlayout height="310" width="218">
 					<control type="image">
