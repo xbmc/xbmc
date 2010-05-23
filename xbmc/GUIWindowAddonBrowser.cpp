@@ -306,14 +306,21 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
                                                CUtil::GetFileName(strFolder));
           }
           AddonPtr addon;
+          bool update=false;
           if (CAddonMgr::Get().LoadAddonDescription(strFolder, addon))
           {
             CStdString strFolder2;
             CUtil::GetDirectory(strFolder,strFolder2);
-            for (ADDONDEPS::iterator it  = addon->GetDeps().begin();
-                                     it != addon->GetDeps().end();++it)
+            AddonPtr addon2;
+            update = CAddonMgr::Get().GetAddon(addon->ID(),addon2);
+            CAddonMgr::Get().FindAddons();
+            CAddonMgr::Get().GetAddon(addon->ID(),addon);
+            ADDONDEPS deps = addon->GetDeps();
+            for (ADDONDEPS::iterator it  = deps.begin();
+                                     it != deps.end();++it)
             {
-              AddonPtr addon2;
+              if (it->first.Equals("xbmc.metadata"))
+                continue;
               if (!CAddonMgr::Get().GetAddon(it->first,addon2))
               {
                 CAddonDatabase database;
@@ -324,8 +331,7 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
             }
             if (addon->Type() >= ADDON_VIZ_LIBRARY)
               continue;
-            AddonPtr addon2;
-            if (CAddonMgr::Get().GetAddon(addon->ID(),addon2))
+            if (update)
             {
               g_application.m_guiDialogKaiToast.QueueNotification(
                                                   CGUIDialogKaiToast::Info,
