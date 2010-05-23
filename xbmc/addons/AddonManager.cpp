@@ -336,8 +336,7 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
   CSingleLock lock(m_critSection);
 
   cp_status_t status;
-  cp_plugin_info_t *cpaddon = NULL;
-  cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
+  cp_plugin_info_t *cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
   if (status == CP_OK && cpaddon->extensions)
   {
     addon = Factory(cpaddon->extensions);
