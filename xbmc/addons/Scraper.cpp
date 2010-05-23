@@ -46,6 +46,7 @@ CScraper::CScraper(cp_plugin_info_t *props) :
   if (ext)
   {
     m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "language");
+    m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"requiressettings").Equals("true");
   }
 }
 
