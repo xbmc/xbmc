@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--Translator: Kristján Bjarni Guðmundsson-->
 <!--Email: kristjanbjarni@gmail.com-->
-<!--Date of translation: 2009-12-02-->
+<!--Date of translation: 2010-05-20-->
 <!--$Revision$-->
-<!--Based on english strings version 24928-->
+<!--Based on english strings version 30213-->
 <strings>
   <string id="31000">Þögn</string>
   <string id="31001">Vinnsla í gangi...</string>
@@ -39,8 +39,8 @@
   <string id="31029">DVD listi</string>
   <string id="31030">Aðdáendamyndir</string>
   <string id="31031">Heildarlisti</string>
-  <string id="31032">Plötuumslagsýn</string>
-  <string id="31033">Ljósmynda smámyndir</string>
+  <string id="31032">Plötuumslag</string>
+  <string id="31033">Ljósmyndasmámyndir</string>
   <string id="31034">Breiðar táknmyndir</string>
 
   <string id="31040">Núverandi kvikmynd[CR]Áðdáenda mynd[CR][CR]Smelltu til að breyta</string>
@@ -82,11 +82,13 @@
   <string id="31109">Bakgrunnar heimasvæðis</string>
   <string id="31110">hnappur - Sérsniðnir bakgrunnar</string>
   <string id="31111">Alltaf sýna tónlistarupplýsingar með lagatextum</string>
-  <string id="31112">Sýna myndatitle í sýninni "Breiðar táknmyndir"</string>
+  <string id="31112">Sýna myndatitla í sýninni "Breiðar táknmyndir"</string>
   <string id="31113">Einföld mynd</string>
   <string id="31114">Margföld mynd</string>
   <string id="31115">Skipta út hljóðstillingahnappi fyrir textavarp</string>
   <string id="31116">Fela myndbandatáknmynd í myndefnissýn</string>
+
+  <string id="31118">Sýna aðdáendamyndir í bakgrunni aðalmyndar</string>
 
   <!-- Script Settings labels -->
   <string id="31200">Stillingar fyrir sérsniðna skriftu</string>
@@ -99,6 +101,10 @@
   <string id="31207">Sýna niðurhalshnapp fyrir skjátexta á skjá</string>
   <string id="31208">Sýna hnapp fyrir lagatexta á myndbandaskjá</string>
   <string id="31209">Virkja skriftu flýtiræsihnapp fyrir -</string>
+
+  <!-- Subtitles Script Extra labels -->
+  <string id="31250">XBMC þýðingartextar</string>
+  <string id="31251">Uppruni þýðingartexta</string>
 
   <!-- AMT Script Extra labels -->
   <string id="31300">Sýna leikara</string>
