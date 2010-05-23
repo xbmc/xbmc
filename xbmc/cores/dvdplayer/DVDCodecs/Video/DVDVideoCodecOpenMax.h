@@ -74,6 +74,18 @@ public:
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
   
 protected:
+  enum OMX_CLIENT_STATE {
+      DEAD,
+      LOADED,
+      LOADED_TO_IDLE,
+      IDLE_TO_EXECUTING,
+      EXECUTING,
+      EXECUTING_TO_IDLE,
+      IDLE_TO_LOADED,
+      RECONFIGURING,
+      ERROR
+  };
+
   // bitstream to bytestream (Annex B) conversion routines.
   bool bitstream_convert_init(void *in_extradata, int in_extrasize);
   bool bitstream_convert(BYTE* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size);
@@ -96,11 +108,13 @@ protected:
   OMX_ERRORTYPE FreeOMXOutputBuffers(bool wait);
   OMX_ERRORTYPE AllocOMXOutputEGLTextures(void);
   OMX_ERRORTYPE FreeOMXOutputEGLTextures(bool wait);
+  OMX_ERRORTYPE WaitForState(OMX_STATETYPE state);
   OMX_ERRORTYPE SetStateForComponent(OMX_STATETYPE state);
   OMX_ERRORTYPE StartDecoder(void);
   OMX_ERRORTYPE StopDecoder(void);
 
   DllLibOpenMax     *m_dll;
+  bool              m_is_open;
   OMX_HANDLETYPE    m_omx_decoder;   // openmax decoder component reference
   DVDVideoPicture   m_videobuffer;
   const char        *m_pFormatName;
@@ -135,8 +149,9 @@ protected:
 
 
   // OpenMax state tracking
-  volatile int      m_omx_state;
-  sem_t             *m_omx_state_change;
+  OMX_CLIENT_STATE  m_omx_client_state;
+  volatile int      m_omx_decoder_state;
+  sem_t             *m_omx_decoder_state_change;
   volatile bool     m_videoplayback_done;
   
   // bitstream to bytestream convertion (Annex B)
