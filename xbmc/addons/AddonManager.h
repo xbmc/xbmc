@@ -93,9 +93,7 @@ namespace ADDON
     bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
     CStdString GetString(const CStdString &id, const int number);
     
-    static bool AddonFromInfoXML(const CStdString &path, AddonPtr &addon);
-    static bool AddonFromInfoXML(const TiXmlElement *xmlDoc, AddonPtr &addon,
-                                 const CStdString &strPath);
+    bool AddonFromFolder(const CStdString& strFolder, AddonPtr& addon);
     static bool GetTranslatedString(const TiXmlElement *xmldoc, const char *tag, CStdString& data);
     const char *GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(AddonProps& props);
@@ -136,8 +134,6 @@ namespace ADDON
     cp_context_t *m_cp_context;
     DllLibCPluff *m_cpluff;
 
-    bool DependenciesMet(AddonPtr &addon);
-    bool UpdateIfKnown(AddonPtr &addon);
     AddonPtr Factory(const cp_extension_t *props);
     bool CheckUserDirs(const cp_cfg_element_t *element);
 
