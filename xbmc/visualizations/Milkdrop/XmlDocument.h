@@ -1,3 +1,6 @@
+#if !defined(AFX_XMLDOCUMENT_H__D68461F7_E0CE_4FA0_B1C9_0541610164E9__INCLUDED_)
+#define AFX_XMLDOCUMENT_H__D68461F7_E0CE_4FA0_B1C9_0541610164E9__INCLUDED_
+
 /*
  *      Copyright (C) 2004-2010 Team XBMC
  *      http://www.xbmc.org
@@ -22,9 +25,6 @@
 // XmlDocument.h: interface for the CXmlDocument class.
 //
 //////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_XMLDOCUMENT_H__D68461F7_E0CE_4FA0_B1C9_0541610164E9__INCLUDED_)
-#define AFX_XMLDOCUMENT_H__D68461F7_E0CE_4FA0_B1C9_0541610164E9__INCLUDED_
 
 #if _MSC_VER > 1000
 #pragma once
