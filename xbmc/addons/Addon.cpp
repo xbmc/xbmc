@@ -85,6 +85,7 @@ const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*
 const CONTENT_TYPE TranslateContent(const CStdString &string)
 {
   if (string.Equals("albums")) return CONTENT_ALBUMS;
+  else if (string.Equals("music")) return CONTENT_ALBUMS;
   else if (string.Equals("artists")) return CONTENT_ARTISTS;
   else if (string.Equals("movies")) return CONTENT_MOVIES;
   else if (string.Equals("tvshows")) return CONTENT_TVSHOWS;
