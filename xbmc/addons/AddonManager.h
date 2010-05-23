@@ -99,6 +99,7 @@ namespace ADDON
     static AddonPtr AddonFromProps(AddonProps& props);
     void UpdateRepos();
     void FindAddons();
+    void RemoveAddon(const CStdString& ID);
 
     /* libcpluff */
     CStdString GetExtValue(cp_cfg_element_t *base, const char *path);

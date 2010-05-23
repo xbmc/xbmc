@@ -53,6 +53,7 @@ public:
   virtual void release_symbol(cp_context_t *ctx, const void *ptr) =0;
   virtual cp_plugin_info_t *load_plugin_descriptor(cp_context_t *ctx, const char *path, cp_status_t *status) =0;
   virtual cp_plugin_info_t *load_plugin_descriptor_from_memory(cp_context_t *ctx, const char *buffer, unsigned int buffer_len, cp_status_t *status) =0;
+  virtual cp_status_t uninstall_plugin(cp_context_t *ctx, const char *id)=0;
 };
 
 class DllLibCPluff : public DllDynamic, DllLibCPluffInterface
@@ -85,6 +86,7 @@ class DllLibCPluff : public DllDynamic, DllLibCPluffInterface
   DEFINE_METHOD2(void,                release_symbol,           (cp_context_t *p1, const void *p2))
   DEFINE_METHOD3(cp_plugin_info_t*,   load_plugin_descriptor,   (cp_context_t *p1, const char *p2, cp_status_t *p3))
   DEFINE_METHOD4(cp_plugin_info_t*,   load_plugin_descriptor_from_memory, (cp_context_t *p1, const char *p2, unsigned int p3, cp_status_t *p4))
+  DEFINE_METHOD2(cp_status_t,         uninstall_plugin,         (cp_context_t *p1, const char *p2))
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(cp_get_version, get_version)
@@ -110,5 +112,6 @@ class DllLibCPluff : public DllDynamic, DllLibCPluffInterface
     RESOLVE_METHOD_RENAME(cp_release_symbol, release_symbol)
     RESOLVE_METHOD_RENAME(cp_load_plugin_descriptor, load_plugin_descriptor)
     RESOLVE_METHOD_RENAME(cp_load_plugin_descriptor_from_memory, load_plugin_descriptor_from_memory)
+    RESOLVE_METHOD_RENAME(cp_uninstall_plugin, uninstall_plugin)
   END_METHOD_RESOLVE()
 };

@@ -406,6 +406,12 @@ void CAddonMgr::FindAddons()
     m_cpluff->scan_plugins(m_cp_context, 0);
 }
 
+void CAddonMgr::RemoveAddon(const CStdString& ID)
+{
+  if (m_cpluff && m_cp_context)
+    m_cpluff->uninstall_plugin(m_cp_context,ID.c_str());
+}
+
 bool CAddonMgr::GetTranslatedString(const TiXmlElement *xmldoc, const char *tag, CStdString& data)
 {
   const TiXmlElement *element = xmldoc->FirstChildElement(tag);

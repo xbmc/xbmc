@@ -137,6 +137,7 @@ void CGUIDialogAddonInfo::OnDisable()
     list[0]->Select(true);
     CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""),window);
   }
+  CAddonMgr::Get().RemoveAddon(m_localAddon->ID());
 }
 
 void CGUIDialogAddonInfo::OnSettings()
