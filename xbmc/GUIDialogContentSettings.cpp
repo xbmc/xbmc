@@ -295,7 +295,7 @@ void CGUIDialogContentSettings::FillListControl()
   int selectedIndex = 0;
   m_vecItems->Clear();
 
-  if (m_scrapers.size() == 0)
+  if (m_scrapers.size() == 0 || m_scrapers.find(m_content) == m_scrapers.end())
     return;
 
   for (IVECADDONS iter=m_scrapers.find(m_content)->second.begin();iter!=m_scrapers.find(m_content)->second.end();++iter)
