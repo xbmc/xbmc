@@ -439,11 +439,14 @@ bool CAddon::LoadSettings()
   return LoadUserSettings();
 }
 
-bool CAddon::LoadUserSettings()
+bool CAddon::LoadUserSettings(bool create)
 {
   // Load the user saved settings. If it does not exist, create it
   if (!m_userXmlDoc.LoadFile(m_userSettingsPath))
   {
+    if (!create)
+      return false;
+
     TiXmlDocument doc;
     TiXmlDeclaration decl("1.0", "UTF-8", "yes");
     doc.InsertEndChild(decl);
@@ -453,6 +456,7 @@ bool CAddon::LoadUserSettings()
 
     m_userXmlDoc = doc;
   }
+
   return true;
 }
 

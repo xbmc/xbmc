@@ -34,6 +34,7 @@
 #include "Album.h"
 #include "Artist.h"
 #include "GUISettings.h"
+#include "LangInfo.h"
 #include "utils/log.h"
 
 #include <vector>
@@ -121,34 +122,40 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
   if (selected)
     vecScrapers.push_back(selected);
 
-  /*if (g_guiSettings.GetBool("scrapers.langfallback"))
+  if (g_guiSettings.GetBool("scrapers.langfallback"))
   {
+    VECADDONS addons;
+    CAddonMgr::Get().GetAddons(ADDON_SCRAPER,addons);
     for (unsigned i=0;i<addons.size();++i)
     {
       // skip selected and default scraper
-      if (addons[i]->UUID().Equals(selected->Parent()) || addons[i]->UUID().Equals(defaultScraper->UUID()))
+      if (addons[i]->ID().Equals(selected->ID()) || 
+          addons[i]->ID().Equals(defaultScraper->ID()))
         continue;
+      
+      ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addons[i]);
 
-      (CScraperParser parser2;
-      parser2.Load(addons[i]);
-      CONTENT_TYPE content = parser2.GetContent();
-
-        // skip if scraper requires settings and there's nothing set yet
-        if (parser2.RequiresSettings() && info2.settings.GetSettings().IsEmpty())
-          continue;
-
-        // skip if scraper requires settings and there's nothing set yet
-        if (parser2.RequiresSettings() && info2.settings.GetSettings().IsEmpty())
+      // skip if scraper requires settings and there's nothing set yet
+      if (scraper->RequiresSettings() && !scraper->LoadUserSettings(false))
           continue;
 
         // skip wrong content type
-        if (info.strContent != info2.strContent && (info.strContent.Equals("movies") || info.strContent.Equals("tvshows") || info.strContent.Equals("musicvideos")))
+        if (!scraper->Supports(m_content) &&
+           (m_content == CONTENT_MOVIES  ||
+            m_content == CONTENT_TVSHOWS ||
+            m_content == CONTENT_MUSICVIDEOS))
           continue;
 
       // add same language, multi-language and music scrapers
-      // TODO addons language handling
+      if (scraper->Language().Equals(g_langInfo.GetDVDSubtitleLanguage()) ||
+          scraper->Language().Equals("multi") ||
+          scraper->Supports(CONTENT_ARTISTS) ||
+          scraper->Supports(CONTENT_ALBUMS))
+      {
+        vecScrapers.push_back(scraper);
+      }
     }
-  }*/
+  }
 
   // add default scraper
   if ((selected && selected->Parent() != defaultScraper) || !selected) 

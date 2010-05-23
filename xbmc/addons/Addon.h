@@ -119,6 +119,7 @@ public:
   // settings & language
   virtual bool HasSettings();
   virtual bool LoadSettings();
+  bool LoadUserSettings(bool create=true);
   virtual void SaveSettings();
   virtual void SaveFromDefault();
   virtual void UpdateSetting(const CStdString& key, const CStdString& value, const CStdString &type = "");
@@ -152,7 +153,6 @@ public:
 protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
   CAddon(const CAddon&, const AddonPtr&);
-  bool LoadUserSettings();
   virtual void BuildLibName(cp_plugin_info_t *props = NULL);
   TiXmlDocument     m_addonXmlDoc;
   TiXmlDocument     m_userXmlDoc;
