@@ -245,6 +245,12 @@ IMAGES= \
 	lastfm-love-focus.png \
 	lastfm-love-nofocus.png \
 	list-focus.png \
+	HeaderControlBackFO.png \
+	HeaderControlBackNF.png \
+	HeaderControlHomeFO.png \
+	HeaderControlHomeNF.png \
+	HeaderControlUpOneLevelFO.png \
+	HeaderControlUpOneLevelNF.png \
 	NoCover_1.png \
 	NoCover_2.png \
 	osd-panel-top.png \
