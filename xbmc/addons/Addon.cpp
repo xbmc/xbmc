@@ -226,6 +226,7 @@ AddonProps::AddonProps(cp_plugin_info_t *props)
   , name(props->name)
   , path(props->plugin_path)
   , author(props->provider_name)
+  , stars(0)
 {
   //FIXME only considers the first registered extension for each addon
   if (props->extensions->ext_point_id)
