@@ -367,16 +367,10 @@ void CAddon::BuildLibName(cp_plugin_info_t *props)
 bool CAddon::LoadStrings()
 {
   // Path where the language strings reside
-  CStdString chosen = m_props.path;
-  CStdString fallback = m_props.path;
-  CUtil::AddFileToFolder(chosen, "resources", chosen);
-  CUtil::AddFileToFolder(fallback, "resources", fallback);
-  CUtil::AddFileToFolder(chosen, "language", chosen);
-  CUtil::AddFileToFolder(fallback, "language", fallback);
-  CUtil::AddFileToFolder(chosen, g_guiSettings.GetString("locale.language"), chosen);
-  CUtil::AddFileToFolder(fallback, "English", fallback);
-  CUtil::AddFileToFolder(chosen, "strings.xml", chosen);
-  CUtil::AddFileToFolder(fallback, "strings.xml", fallback);
+  CStdString chosenPath;
+  chosenPath.Format("resources/language/%s/strings.xml", g_guiSettings.GetString("locale.language").c_str());
+  CStdString chosen = CUtil::AddFileToFolder(m_props.path, chosenPath);
+  CStdString fallback = CUtil::AddFileToFolder(m_props.path, "resources/language/English/strings.xml");
 
   m_hasStrings = m_strings.Load(chosen, fallback);
   return m_checkedStrings = true;
@@ -565,12 +559,12 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& value, const
 
   // Setting not found, add it
   TiXmlElement nodeSetting("setting");
-  nodeSetting.SetAttribute("id", string(key.c_str())); //FIXME otherwise attribute value isn't updated
+  nodeSetting.SetAttribute("id", key.c_str()); //FIXME otherwise attribute value isn't updated
   if (!type.empty())
-    nodeSetting.SetAttribute("type", string(type.c_str()));
+    nodeSetting.SetAttribute("type", type.c_str());
   else
     nodeSetting.SetAttribute("type", "text");
-  nodeSetting.SetAttribute("value", string(value.c_str()));
+  nodeSetting.SetAttribute("value", value.c_str());
   m_userXmlDoc.RootElement()->InsertEndChild(nodeSetting);
 }
 
