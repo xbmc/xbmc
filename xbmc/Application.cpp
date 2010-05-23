@@ -3803,8 +3803,6 @@ void CApplication::OnPlayBackEnded()
     CLibrefmScrobbler::GetInstance()->SubmitQueue();
   }
 
-  CLog::Log(LOGDEBUG, "%s - Playback has finished", __FUNCTION__);
-
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
 }
@@ -3828,8 +3826,6 @@ void CApplication::OnPlayBackStarted()
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackStarted");
 
-  CLog::Log(LOGDEBUG, "%s - Playback has started", __FUNCTION__);
-
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
 }
@@ -3849,8 +3845,6 @@ void CApplication::OnQueueNextItem()
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "QueueNextItem");
-
-  CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
   if(IsPlayingAudio())
   {
@@ -3884,8 +3878,6 @@ void CApplication::OnPlayBackStopped()
   CLastfmScrobbler::GetInstance()->SubmitQueue();
   CLibrefmScrobbler::GetInstance()->SubmitQueue();
 
-  CLog::Log(LOGDEBUG, "%s - Playback was stopped", __FUNCTION__);
-
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
   g_windowManager.SendThreadMessage(msg);
 }
@@ -3903,8 +3895,6 @@ void CApplication::OnPlayBackPaused()
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackPaused");
-
-  CLog::Log(LOGDEBUG, "%s - Playback was paused", __FUNCTION__);
 }
 
 void CApplication::OnPlayBackResumed()
@@ -3920,8 +3910,6 @@ void CApplication::OnPlayBackResumed()
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackResumed");
-
-  CLog::Log(LOGDEBUG, "%s - Playback was resumed", __FUNCTION__);
 }
 
 void CApplication::OnPlayBackSpeedChanged(int iSpeed)
@@ -3941,8 +3929,6 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged");
-
-  CLog::Log(LOGDEBUG, "%s - Playback speed changed", __FUNCTION__);
 }
 
 void CApplication::OnPlayBackSeek(int iTime)
@@ -3962,8 +3948,6 @@ void CApplication::OnPlayBackSeek(int iTime)
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek");
-
-  CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
 }
 
 void CApplication::OnPlayBackSeekChapter(int iChapter)
@@ -3983,8 +3967,6 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeekChapter");
-
-  CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
 }
 
 bool CApplication::IsPlaying() const
