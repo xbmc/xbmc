@@ -158,7 +158,6 @@ bool CAddonMgr::CheckUserDirs(const cp_cfg_element_t *settings)
 
 CAddonMgr::CAddonMgr()
 {
-  FindAddons();
   m_watch.StartZero();
 }
 
@@ -238,7 +237,7 @@ bool CAddonMgr::Init()
     return false;
   }
 
-  status = m_cpluff->scan_plugins(m_cp_context, 0);
+  FindAddons();
   return true;
 }
 
@@ -459,6 +458,8 @@ void CAddonMgr::FindAddons()
       }
     }
   }
+  if (m_cpluff && m_cp_context)
+    m_cpluff->scan_plugins(m_cp_context, 0);
 }
 
 void CAddonMgr::LoadAddons(const CStdString &path, 
