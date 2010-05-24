@@ -501,7 +501,7 @@ else
 	$(MAKE) -C tools/XBMCTex/
 endif
 
-tools/TexturePacker/TexturePacker:
+tools/TexturePacker/TexturePacker: guilib/guilib.a xbmc/lib/libsquish/libsquish-@ARCH@.a
 	$(MAKE) -C tools/TexturePacker/
 
 install-bin: xbmc.bin # developement convenience target
