@@ -33,10 +33,10 @@
 #include "DVDVideoCodecOpenMax.h"
 #include "utils/log.h"
 
-#include <OpenMAX/il/OMX_Core.h>
-#include <OpenMAX/il/OMX_Component.h>
-#include <OpenMAX/il/OMX_Index.h>
-#include <OpenMAX/il/OMX_Image.h>
+#include <OMX_Core.h>
+#include <OMX_Component.h>
+#include <OMX_Index.h>
+#include <OMX_Image.h>
 
 #define OMXCLASSNAME "CDVDVideoCodecOpenMax"
 // EGL extension functions

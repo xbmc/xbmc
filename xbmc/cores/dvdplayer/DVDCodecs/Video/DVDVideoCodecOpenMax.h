@@ -29,7 +29,7 @@
 #include <semaphore.h>
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
-#include <OpenMAX/il/OMX_Core.h>
+#include <OMX_Core.h>
 
 typedef struct omx_bitstream_ctx {
     uint8_t  length_size;
