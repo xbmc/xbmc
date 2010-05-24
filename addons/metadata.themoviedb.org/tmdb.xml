@@ -46,6 +46,9 @@
 			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5+">
 				<expression>&lt;rating&gt;([^&lt;]*)&lt;/rating&gt;</expression>
 			</RegExp>
+			<RegExp input="$$1" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="5+">
+				<expression>&lt;tagline&gt;([^&lt;]*)&lt;/tagline&gt;</expression>
+			</RegExp>
 			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="5+">
 				<expression>&lt;certification&gt;([^&lt;]*)&lt;/certification&gt;</expression>
 			</RegExp>
