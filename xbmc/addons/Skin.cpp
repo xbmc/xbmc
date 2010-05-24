@@ -22,7 +22,7 @@
 #include "Skin.h"
 #include "AddonManager.h"
 #include "GUIWindowManager.h"
-#include "GUISettings.h"
+#include "SystemGlobals.h"
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "Key.h"
