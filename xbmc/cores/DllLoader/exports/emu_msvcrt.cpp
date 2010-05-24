@@ -2115,6 +2115,16 @@ extern "C"
     return (long)d;
   }
 #endif
+
+  // this needs to be wrapped, since dll's have their own file
+  // descriptor list, but we always use app's list with our wrappers
+  int __cdecl dll_open_osfhandle(intptr_t _OSFileHandle, int _Flags)
+  {
+#ifdef _WIN32
+    return _open_osfhandle(_OSFileHandle, _Flags);
+#else
+    return -1;
+#endif
+  }
+
 }
-
-
