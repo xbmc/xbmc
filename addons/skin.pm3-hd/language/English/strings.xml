@@ -5,9 +5,6 @@
   <string id="31002">Up One Level</string>
   <string id="31003">Previous Window</string>
   <string id="31004">Home</string>
-  <string id="31002">Live TV</string>
-  <string id="31003">Timer</string>
-  <string id="31004"></string>
   <string id="31005"></string>
   <string id="31006"></string>
   <string id="31007"></string>
@@ -109,4 +106,8 @@
 
   <!-- AMT Script Extra labels -->
   <string id="31300">Show cast</string>
+
+  <!-- PVR Labels -->
+  <string id="31400">Live TV</string>
+  <string id="31401">Timer</string>
 </strings>
