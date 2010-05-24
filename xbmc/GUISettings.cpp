@@ -44,6 +44,7 @@
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
 #include "utils/PCMRemap.h"
 #include "GUIFont.h" // for FONT_STYLE_* definitions
+#include "SystemGlobals.h"
 
 using namespace std;
 using namespace ADDON;
@@ -62,7 +63,7 @@ using namespace ADDON;
 #define TEXT_OFF  351
 #define TEXT_NONE 231
 
-class CGUISettings g_guiSettings;
+CGUISettings& g_guiSettings = g_SystemGlobals.m_guiSettings;
 
 #ifdef _LINUX
 #define DEFAULT_VISUALISATION "opengl_spectrum.vis"

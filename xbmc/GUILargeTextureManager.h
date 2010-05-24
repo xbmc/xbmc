@@ -146,6 +146,6 @@ private:
   CCriticalSection m_listSection;
 };
 
-extern CGUILargeTextureManager g_largeTextureManager;
+extern CGUILargeTextureManager& g_largeTextureManager;
 
 
