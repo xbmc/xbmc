@@ -108,7 +108,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(TargetFileName) &gt; ..\PC\python_nt.h"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
@@ -126,7 +126,7 @@
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
-				CommandLine="$(TargetDir)$(TargetFileName) &gt; $(ProjectDir)..\PC\pythonnt_rc_d.h"
+				CommandLine="$(TargetDir)$(TargetFileName) &gt; $(ProjectDir)..\PC\pythonnt_rc_d.h&#x0D;&#x0A;"
 				Outputs="$(ProjectDir)..\PC\pythonnt_rc_d.h"
 			/>
 			<Tool
@@ -203,7 +203,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(TargetFileName) &gt; ..\PC\python_nt_d.h"
+				CommandLine=""
 			/>
 		</Configuration>
 	</Configurations>
