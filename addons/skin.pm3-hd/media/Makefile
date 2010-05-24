@@ -235,7 +235,6 @@ IMAGES= \
 	genre-k-special.png \
 	genre-l-unknown.png \
 	gradient.png \
-	guide.png \
 	Header.png \
 	home-button-focus.gif \
 	home-button.png \
@@ -257,7 +256,6 @@ IMAGES= \
 	icon_system.png \
 	icon_video.png \
 	icon_weather.png \
-	keyboard-btn-space-focus2.png \
 	lastfm-hate-focus.png \
 	lastfm-hate-nofocus.png \
 	lastfm-love-focus.png \
@@ -319,7 +317,6 @@ IMAGES= \
 	osd_slider_nibNF.png \
 	osd_SubtitleFO.png \
 	osd_SubtitleNF.png \
-	OverlayRecording.png \
 	OverlayHasTrainer.png \
 	OverlayHD.png \
 	OverlayLocked.png \
@@ -367,9 +364,6 @@ IMAGES= \
 	ProgressBuffer.png \
 	ProgressFront.png \
 	ProgressFront2.png \
-	ProgressGreen.png \
-	ProgressRed.png \
-	ProgressYellow.png \
 	radiobutton-focus-2.png \
 	radiobutton-focus.png \
 	radiobutton-nofocus.png \
