@@ -106,5 +106,6 @@
 			<label>$INFO[Container.Property(RepoName)]</label>
 			<include>Window_OpenClose_Animation</include>
 		</control>
+		<include>WindowTitleButtonsMedia</include>
 	</controls>
 </window>

@@ -178,5 +178,6 @@
 			<include>WindowTitleCommons</include>
 			<label>$LOCALIZE[9] - $LOCALIZE[10034]</label>
 		</control>
+		<include>WindowTitleButtons</include>
 	</controls>
 </window>

@@ -91,7 +91,7 @@
 						<icon>icon_addons.png</icon>
 					</item>
 					<item>
-						<label>31002</label>
+						<label>31400</label>
 						<onclick>ActivateWindow(MyTVSettings)</onclick>
 						<icon>icon_tv.png</icon>
 					</item>
@@ -185,5 +185,6 @@
 			<include>WindowTitleCommons</include>
 			<label>$LOCALIZE[9] - $LOCALIZE[5]</label>
 		</control>
+		<include>WindowTitleButtons</include>
 	</controls>
 </window>

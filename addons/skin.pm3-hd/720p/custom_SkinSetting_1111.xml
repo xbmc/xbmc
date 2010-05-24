@@ -520,7 +520,7 @@
 								<visible>!Skin.HasSetting(homepageHideVideoButton)</visible>
 							</item>
 							<item id="8">
-								<label>31002</label>
+								<label>31400</label>
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/tv.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_TV_Folder)]</thumb>
