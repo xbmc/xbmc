@@ -5,8 +5,8 @@
 /* Noise define constantes taken from MAME                 */
 /*                                                         */
 /* This source is a part of Gens project                   */
-/* Written by Stéphane Dallongeville (gens@consolemul.com) */
-/* Copyright (c) 2002 by Stéphane Dallongeville            */
+/* Written by StÃ©phane Dallongeville (gens@consolemul.com) */
+/* Copyright (c) 2002 by StÃ©phane Dallongeville            */
 /*                                                         */
 /***********************************************************/
 
