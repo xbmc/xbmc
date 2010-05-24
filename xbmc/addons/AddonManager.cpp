@@ -249,16 +249,10 @@ void CAddonMgr::DeInit()
 
 bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabledOnly/*= true*/)
 {
-  cp_status_t status;
-  int num;
-  CStdString ext_point(TranslateType(type));
-  cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
-  m_cpluff->release_info(m_cp_context, exts);
-  if (status != CP_OK || num <= 0)
-    return false;
-
-  // FIXME: Support content checking
-  return true;
+  // TODO: This isn't particularly efficient as we create an addon type for each addon using the Factory, just so
+  //       we can check addon dependencies in the addon constructor.
+  VECADDONS addons;
+  return GetAddons(type, addons, content, enabledOnly);
 }
 
 bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
