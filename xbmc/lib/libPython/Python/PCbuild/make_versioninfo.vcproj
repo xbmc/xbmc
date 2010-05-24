@@ -30,8 +30,8 @@
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
-				CommandLine=".\make_versioninfo.exe &gt;..\PC\pythonnt_rc.h&#x0D;&#x0A;"
-				Outputs="..\PC\pythonnt_rc.h"
+				CommandLine="$(TargetDir)$(TargetFileName) &gt; $(ProjectDir)..\PC\pythonnt_rc.h&#x0D;&#x0A;"
+				Outputs="$(ProjectDir)..\PC\pythonnt_rc.h"
 			/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"
@@ -126,8 +126,8 @@
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
-				CommandLine=".\make_versioninfo_d.exe &gt;..\PC\pythonnt_rc_d.h&#x0D;&#x0A;"
-				Outputs="..\PC\pythonnt_rc_d.h"
+				CommandLine="$(TargetDir)$(TargetFileName) &gt; $(ProjectDir)..\PC\pythonnt_rc_d.h"
+				Outputs="$(ProjectDir)..\PC\pythonnt_rc_d.h"
 			/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"

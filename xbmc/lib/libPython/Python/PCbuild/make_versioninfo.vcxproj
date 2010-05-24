@@ -54,12 +54,13 @@
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">make_versioninfo_d</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">make_versioninfo</TargetName>
+    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Link</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Link</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <CustomBuildStep>
-      <Command>.\make_versioninfo.exe &gt;..\PC\pythonnt_rc.h
-</Command>
-      <Outputs>..\PC\pythonnt_rc.h;%(Outputs)</Outputs>
+      <Command>$(TargetDir)$(TargetFileName) &gt; $(ProjectDir)..\PC\pythonnt_rc.h</Command>
+      <Outputs>$(ProjectDir)..\PC\pythonnt_rc.h</Outputs>
     </CustomBuildStep>
     <Midl>
       <TypeLibraryName>.\./make_versioninfo.tlb</TypeLibraryName>
@@ -108,9 +109,8 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <CustomBuildStep>
-      <Command>.\make_versioninfo_d.exe &gt;..\PC\pythonnt_rc_d.h
-</Command>
-      <Outputs>..\PC\pythonnt_rc_d.h;%(Outputs)</Outputs>
+      <Command>$(TargetDir)$(TargetFileName) &gt; $(ProjectDir)..\PC\pythonnt_rc_d.h</Command>
+      <Outputs>$(ProjectDir)..\PC\pythonnt_rc_d.h</Outputs>
     </CustomBuildStep>
     <Midl>
       <TypeLibraryName>.\./make_versioninfo.tlb</TypeLibraryName>
