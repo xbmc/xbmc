@@ -145,9 +145,7 @@ namespace ADDON
     virtual ~CAddonMgr();
 
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
-    MAPADDONS m_addons;
     CStopWatch m_watch;
-    std::map<CStdString, AddonPtr> m_idMap;
     CCriticalSection m_critSection;
   };
 

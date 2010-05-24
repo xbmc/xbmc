@@ -249,29 +249,16 @@ void CAddonMgr::DeInit()
 
 bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabledOnly/*= true*/)
 {
-  if (type == ADDON_SCREENSAVER || type == ADDON_SKIN || type == ADDON_VIZ || type == ADDON_SCRIPT || type == ADDON_REPOSITORY || type == ADDON_SCRAPER)
-  {
-    cp_status_t status;
-    int num;
-    CStdString ext_point(TranslateType(type));
-    cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
-    m_cpluff->release_info(m_cp_context, exts);
-    if (status == CP_OK)
-      return (num > 0);
-  }
+  cp_status_t status;
+  int num;
+  CStdString ext_point(TranslateType(type));
+  cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
+  m_cpluff->release_info(m_cp_context, exts);
+  if (status != CP_OK || num <= 0)
+    return false;
 
-  if (m_addons.empty())
-  {
-    VECADDONS add;
-    GetAllAddons(add,false);
-  }
-
-  if (content == CONTENT_NONE)
-    return (m_addons.find(type) != m_addons.end());
-
-  VECADDONS addons;
-  return GetAddons(type, addons, content, enabledOnly);
-
+  // FIXME: Support content checking
+  return true;
 }
 
 bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
@@ -296,38 +283,18 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYP
 {
   CSingleLock lock(m_critSection);
   addons.clear();
-  if (type == ADDON_SCREENSAVER || type == ADDON_SKIN || type == ADDON_VIZ || type == ADDON_REPOSITORY || type == ADDON_SCRIPT || type == ADDON_SCRAPER)
+  cp_status_t status;
+  int num;
+  CStdString ext_point(TranslateType(type));
+  cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
+  for(int i=0; i <num; i++)
   {
-    cp_status_t status;
-    int num;
-    CStdString ext_point(TranslateType(type));
-    cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
-    for(int i=0; i <num; i++)
-    {
-      AddonPtr addon(Factory(exts[i]));
-      if (addon && (content == CONTENT_NONE || addon->Supports(content)))
-        addons.push_back(addon);
-    }
-    m_cpluff->release_info(m_cp_context, exts);
-    return addons.size() > 0;
+    AddonPtr addon(Factory(exts[i]));
+    if (addon && (content == CONTENT_NONE || addon->Supports(content)))
+      addons.push_back(addon);
   }
-
-  if (m_addons.find(type) != m_addons.end())
-  {
-    IVECADDONS itr = m_addons[type].begin();
-    while (itr != m_addons[type].end())
-    { // filter out what we're not looking for
-      if ((enabledOnly && !(*itr)->Enabled())
-        || (content != CONTENT_NONE && !(*itr)->Supports(content)))
-      {
-        ++itr;
-        continue;
-      }
-      addons.push_back(*itr);
-      ++itr;
-    }
-  }
-  return !addons.empty();
+  m_cpluff->release_info(m_cp_context, exts);
+  return addons.size() > 0;
 }
 
 bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly/*= true*/)
@@ -391,8 +358,8 @@ bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon, const CONTENT_TYPE
 
 CStdString CAddonMgr::GetString(const CStdString &id, const int number)
 {
-  AddonPtr addon = m_idMap[id];
-  if (addon)
+  AddonPtr addon;
+  if (GetAddon(id, addon))
     return addon->GetString(number);
 
   return "";
