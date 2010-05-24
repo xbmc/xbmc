@@ -31,15 +31,15 @@
 CGUIShader::CGUIShader( const char *shader ) : CGLSLShaderProgram("guishader_vert.glsl", shader ? shader : "guishader_frag.glsl" )
 {
   // Initialise values
-  m_hTex0   = NULL;
-  m_hTex1   = NULL;
-  m_hMethod = NULL;
-  m_hProj   = NULL;
-  m_hModel  = NULL;
-  m_hPos    = NULL;
-  m_hCol    = NULL;
-  m_hCord0  = NULL;
-  m_hCord1  = NULL;
+  m_hTex0   = 0;
+  m_hTex1   = 0;
+  m_hMethod = 0;
+  m_hProj   = 0;
+  m_hModel  = 0;
+  m_hPos    = 0;
+  m_hCol    = 0;
+  m_hCord0  = 0;
+  m_hCord1  = 0;
 
   m_method = SM_DEFAULT;
   m_proj   = NULL;
