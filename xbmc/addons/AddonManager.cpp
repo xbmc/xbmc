@@ -77,6 +77,10 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
   {
     case ADDON_PLUGIN:
     case ADDON_SCRIPT:
+    case ADDON_SCRIPT_LIBRARY:
+    case ADDON_SCRIPT_LYRICS:
+    case ADDON_SCRIPT_WEATHER:
+    case ADDON_SCRIPT_SUBTITLES:
       return AddonPtr(new CAddon(props->plugin));
     case ADDON_SCRAPER:
       return AddonPtr(new CScraper(props->plugin));
@@ -420,6 +424,10 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
   {
     case ADDON_PLUGIN:
     case ADDON_SCRIPT:
+    case ADDON_SCRIPT_LIBRARY:
+    case ADDON_SCRIPT_LYRICS:
+    case ADDON_SCRIPT_WEATHER:
+    case ADDON_SCRIPT_SUBTITLES:
       return AddonPtr(new CAddon(addonProps));
     case ADDON_SCRAPER:
       return AddonPtr(new CScraper(addonProps));

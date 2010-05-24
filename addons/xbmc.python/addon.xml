@@ -4,4 +4,8 @@
     <import addon="xbmc.core" version="0.1"/>
   </requires>
   <extension-point id="script" schema="script.xsd"/>
+  <extension-point id="subtitles" schema="script.xsd"/>
+  <extension-point id="lyrics" schema="script.xsd"/>
+  <extension-point id="weather" schema="script.xsd"/>
+  <extension-point id="library" schema="script.xsd"/>
 </addon>
