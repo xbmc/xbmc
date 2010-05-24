@@ -45,145 +45,93 @@ namespace ADDON
  *
  */
 
+typedef struct
+{
+  const char*  name;
+  CONTENT_TYPE type;
+  int          pretty;
+} ContentMapping;
+
+static const ContentMapping content[] =
+  {{"unknown",       CONTENT_NONE,          231 },
+   {"albums",        CONTENT_ALBUMS,        132 },
+   {"music",         CONTENT_ALBUMS,        132 },
+   {"artists",       CONTENT_ARTISTS,       133 },
+   {"movies",        CONTENT_MOVIES,      20342 },
+   {"tvshows",       CONTENT_TVSHOWS,     20343 },
+   {"episodes",      CONTENT_EPISODES,    20360 },
+   {"musicvideos",   CONTENT_MUSICVIDEOS, 20389 },
+   {"audio",         CONTENT_AUDIO,           0 },
+   {"image",         CONTENT_IMAGE,           0 },
+   {"program",       CONTENT_PROGRAM,         0 },
+   {"video",         CONTENT_VIDEO,           0 },
+   {"weather",       CONTENT_WEATHER,         0 },
+   {"subtitles",     CONTENT_SUBTITLES,       0 },
+   {"lyrics",        CONTENT_LYRICS,          0 },
+   {"recentlyadded", CONTENT_RECENTLY_ADDED,  0 }};
+
+typedef struct
+{
+  const char* name;
+  TYPE        type;
+  int         pretty;
+} TypeMapping;
+
+static const TypeMapping types[] =
+  {{"unknown",                       ADDON_UNKNOWN,            0 },
+   {"xbmc.metadata.scraper",         ADDON_SCRAPER,        24007 },
+   {"xbmc.metadata.scraper.library", ADDON_SCRAPER_LIBRARY,    0 },
+   {"xbmc.ui.screensaver",           ADDON_SCREENSAVER,    24008 },
+   {"xbmc.player.musicviz",          ADDON_VIZ,            24010 },
+   {"visualization-library",         ADDON_VIZ_LIBRARY,        0 },
+   {"plugin",                        ADDON_PLUGIN,         24005 },
+   {"xbmc.python.script",            ADDON_SCRIPT,         24009 },
+   {"xbmc.gui.skin",                 ADDON_SKIN,             166 },
+   {"xbmc.addon.repository",         ADDON_REPOSITORY,     24011 },
+   {"pvrclient",                     ADDON_PVRDLL,             0 }};
+
 const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*/)
 {
-  switch (type)
+  for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
   {
-  case CONTENT_ALBUMS:
-      if (pretty) return g_localizeStrings.Get(132);
-      return "albums";
-  case CONTENT_ARTISTS:
-      if (pretty) return g_localizeStrings.Get(133);
-      return "artists";
-  case CONTENT_MOVIES:
-      if (pretty) return g_localizeStrings.Get(20342);
-      return "movies";
-  case CONTENT_TVSHOWS:
-      if (pretty) return g_localizeStrings.Get(20343);
-      return "tvshows";
-  case CONTENT_MUSICVIDEOS:
-      if (pretty) return g_localizeStrings.Get(20389);
-      return "musicvideos";
-  case CONTENT_EPISODES:
-      if (pretty) return g_localizeStrings.Get(20360);
-      return "episodes";
-  case CONTENT_AUDIO:
-      return "audio";
-  case CONTENT_IMAGE:
-      return "image";
-  case CONTENT_PROGRAM:
-      return "program";
-  case CONTENT_VIDEO:
-      return "video";
-  case CONTENT_WEATHER:
-    return "weather";
-  case CONTENT_SUBTITLES:
-    return "subtitles";
-  case CONTENT_LYRICS:
-    return "lyrics";
-  case CONTENT_RECENTLYADDED:
-    return "recentlyadded";
-  case CONTENT_NONE:
-  default:
-      if (pretty) return g_localizeStrings.Get(231);
-      return "";
+    const ContentMapping &map = content[index];
+    if (type == map.type)
+      return (pretty && map.pretty) ? g_localizeStrings.Get(map.pretty) : map.name;
   }
+  return "";
 }
 
 const CONTENT_TYPE TranslateContent(const CStdString &string)
 {
-  if (string.Equals("albums")) return CONTENT_ALBUMS;
-  else if (string.Equals("music")) return CONTENT_ALBUMS;
-  else if (string.Equals("artists")) return CONTENT_ARTISTS;
-  else if (string.Equals("movies")) return CONTENT_MOVIES;
-  else if (string.Equals("tvshows")) return CONTENT_TVSHOWS;
-  else if (string.Equals("episodes")) return CONTENT_EPISODES;
-  else if (string.Equals("musicvideos")) return CONTENT_MUSICVIDEOS;
-  else if (string.Equals("audio")) return CONTENT_AUDIO;
-  else if (string.Equals("image")) return CONTENT_IMAGE;
-  else if (string.Equals("program")) return CONTENT_PROGRAM;
-  else if (string.Equals("video")) return CONTENT_VIDEO;
-  else if (string.Equals("weather")) return CONTENT_WEATHER;
-  else if (string.Equals("subtitles")) return CONTENT_SUBTITLES;
-  else if (string.Equals("lyrics")) return CONTENT_LYRICS;
-  else if (string.Equals("recentlyadded")) return CONTENT_RECENTLYADDED;
-  else return CONTENT_NONE;
+  for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
+  {
+    const ContentMapping &map = content[index];
+    if (string.Equals(map.name))
+      return map.type;
+  }
+  return CONTENT_NONE;
 }
 
 const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
-  switch (type)
+  for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
   {
-    case ADDON::ADDON_SCRAPER:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(24007);
-      return "xbmc.metadata.scraper";
-    }
-    case ADDON::ADDON_SCRAPER_LIBRARY:
-    {
-      return "xbmc.metadata.scraper.library";
-    }
-    case ADDON::ADDON_SCREENSAVER:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(24008);
-      return "xbmc.ui.screensaver";
-    }
-    case ADDON::ADDON_VIZ:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(24010);
-      return "xbmc.player.musicviz";
-    }
-    case ADDON::ADDON_VIZ_LIBRARY:
-    {
-      return "visualization-library";
-    }
-    case ADDON::ADDON_PLUGIN:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(24005);
-      return "plugin";
-    }
-    case ADDON::ADDON_SCRIPT:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(24009);
-      return "xbmc.python.script";
-    }
-    case ADDON::ADDON_SKIN:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(166);
-      return "xbmc.gui.skin";
-    }
-    case ADDON::ADDON_REPOSITORY:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(24011);
-      return "xbmc.addon.repository";
-    }
-    default:
-    {
-      return "";
-    }
+    const TypeMapping &map = types[index];
+    if (type == map.type)
+      return (pretty && map.pretty) ? g_localizeStrings.Get(map.pretty) : map.name;
   }
+  return "";
 }
 
-const ADDON::TYPE TranslateType(const CStdString &string)
+const TYPE TranslateType(const CStdString &string)
 {
-  if (string.Equals("pvrclient")) return ADDON_PVRDLL;
-  else if (string.Equals("xbmc.metadata.scraper")) return ADDON_SCRAPER;
-  else if (string.Equals("xbmc.metadata.scraper.library")) return ADDON_SCRAPER_LIBRARY;
-  else if (string.Equals("xbmc.ui.screensaver")) return ADDON_SCREENSAVER;
-  else if (string.Equals("xbmc.player.musicviz")) return ADDON_VIZ;
-  else if (string.Equals("visualization-library")) return ADDON_VIZ_LIBRARY;
-  else if (string.Equals("plugin")) return ADDON_PLUGIN;
-  else if (string.Equals("xbmc.python.script")) return ADDON_SCRIPT;
-  else if (string.Equals("xbmc.gui.skin")) return ADDON_SKIN;
-  else if (string.Equals("xbmc.addon.repository")) return ADDON_REPOSITORY;
-  else return ADDON_UNKNOWN;
+  for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
+  {
+    const TypeMapping &map = types[index];
+    if (string.Equals(map.name))
+      return map.type;
+  }
+  return ADDON_UNKNOWN;
 }
 
 /**
