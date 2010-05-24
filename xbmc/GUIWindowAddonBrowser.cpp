@@ -325,8 +325,8 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
               {
                 CAddonDatabase database;
                 database.Open();
-                database.GetAddon(it->first,addon2);
-                AddJob(addon2->Path());
+                if (database.GetAddon(it->first,addon2))
+                  AddJob(addon2->Path());
               }
             }
             if (addon->Type() >= ADDON_VIZ_LIBRARY)
