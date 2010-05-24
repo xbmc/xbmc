@@ -2786,7 +2786,7 @@ void CGUIWindowSettingsCategory::FillInWeatherScripts(CGUISpinControlEx *pContro
   pControl->AddLabel(g_localizeStrings.Get(24028), j++);
 
   //find weather scripts....
-  CAddonMgr::Get().GetAddons(ADDON_SCRIPT, addons);
+  CAddonMgr::Get().GetAddons(ADDON_SCRIPT, addons, CONTENT_WEATHER);
   if (!addons.empty())
   {
     for (unsigned int i = 0; i < addons.size(); i++)

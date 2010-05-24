@@ -75,6 +75,14 @@ const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*
       return "program";
   case CONTENT_VIDEO:
       return "video";
+  case CONTENT_WEATHER:
+    return "weather";
+  case CONTENT_SUBTITLES:
+    return "subtitles";
+  case CONTENT_LYRICS:
+    return "lyrics";
+  case CONTENT_RECENTLYADDED:
+    return "recentlyadded";
   case CONTENT_NONE:
   default:
       if (pretty) return g_localizeStrings.Get(231);
@@ -95,6 +103,10 @@ const CONTENT_TYPE TranslateContent(const CStdString &string)
   else if (string.Equals("image")) return CONTENT_IMAGE;
   else if (string.Equals("program")) return CONTENT_PROGRAM;
   else if (string.Equals("video")) return CONTENT_VIDEO;
+  else if (string.Equals("weather")) return CONTENT_WEATHER;
+  else if (string.Equals("subtitles")) return CONTENT_SUBTITLES;
+  else if (string.Equals("lyrics")) return CONTENT_LYRICS;
+  else if (string.Equals("recentlyadded")) return CONTENT_RECENTLYADDED;
   else return CONTENT_NONE;
 }
 
