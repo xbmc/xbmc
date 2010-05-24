@@ -507,7 +507,7 @@ CStdString CID3Tag::ParseMP3Genre(const CStdString& str) const
     else
     {
       CStdString t;
-      int i = strTemp.find_first_of("),;");
+      unsigned int i = strTemp.find_first_of("),;");
       if (i != std::string::npos)
       {
         t = strTemp.Left(i);
