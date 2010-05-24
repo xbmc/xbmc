@@ -111,7 +111,6 @@ int CAddonDatabase::AddAddon(const AddonPtr& addon,
       content += ","+TranslateContent(*it);
     }
     content.erase(0,1);
-    
 
     CStdString sql = FormatSQL("insert into addon (id, type, name, summary,"
                                "description, stars, path, icon, changelog, "
