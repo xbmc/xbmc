@@ -80,7 +80,7 @@ static const TypeMapping types[] =
    {"xbmc.ui.screensaver",           ADDON_SCREENSAVER,    24008 },
    {"xbmc.player.musicviz",          ADDON_VIZ,            24010 },
    {"visualization-library",         ADDON_VIZ_LIBRARY,        0 },
-   {"plugin",                        ADDON_PLUGIN,         24005 },
+   {"xbmc.python.plugin",            ADDON_PLUGIN,         24005 },
    {"xbmc.python.script",            ADDON_SCRIPT,         24009 },
    {"xbmc.python.weather",           ADDON_SCRIPT_WEATHER,   24027 },
    {"xbmc.python.subtitles",         ADDON_SCRIPT_SUBTITLES, 24012 },
@@ -318,6 +318,7 @@ void CAddon::BuildLibName(cp_plugin_info_t *props)
       case ADDON_SCRIPT_SUBTITLES:
       case ADDON_SCRAPER:
       case ADDON_SCRAPER_LIBRARY:
+      case ADDON_PLUGIN:
         {
           CStdString temp = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library");
           m_strLibName = temp;
