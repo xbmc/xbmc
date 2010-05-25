@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE schema PUBLIC "-//W3C//DTD XMLSCHEMA 200102//EN" "http://www.w3.org/2001/XMLSchema.dtd">
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-	<xs:element name="extension">
-		<xs:complexType>
-			<xs:attribute name="point" type="xs:string" use="required"/>
-			<xs:attribute name="id" type="simpleIdentifier"/>
-			<xs:attribute name="name" type="xs:string"/>
-      <xs:element name="supportedcontent" type="xs:string"/>
-      <xs:element name="platforms" type="xs:string"/>
-      <xs:element name="summary" type="translatedString" use="required"/>
-      <xs:element name="description" type="translatedString"/>
-      <xs:element name="disclaimer" type="translatedString"/>
-      <xs:element name="license" type="xs:string"/>
-		</xs:complexType>
-	</xs:element>
-	<xs:simpleType name="simpleIdentifier">
-		<xs:restriction base="xs:string">
-			<xs:pattern value="[^.]+"/>
-		</xs:restriction>
-	</xs:simpleType>
+  <xs:element name="extension">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="summary" type="translatedString" minOccurs="1" maxOccurs="unbounded"/>
+        <xs:element name="description" type="translatedString" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="disclaimer" type="translatedString" minOccurs="0"/>
+        <xs:element name="license" type="xs:string"/>
+        <xs:element name="platform" type="xs:string" minOccurs="0"/>
+        <xs:element name="supportedcontent" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="point" type="xs:string" use="required"/>
+      <xs:attribute name="id" type="simpleIdentifier"/>
+      <xs:attribute name="name" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="simpleIdentifier">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[^.]+"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:complexType name="translatedString">
     <xs:simpleContent>
       <xs:extension base="xs:string">
