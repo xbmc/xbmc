@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="xbmc.addon" version="1.0" provider-name="Team XBMC">
+  <requires>
+    <import addon="xbmc.core" version="0.1"/>
+  </requires>
+  <extension-point id="metadata" schema="metadata.xsd"/>
+  <extension-point id="repository" schema="repository.xsd"/>
+</addon>
