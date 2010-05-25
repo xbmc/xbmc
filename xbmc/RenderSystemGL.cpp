@@ -173,7 +173,7 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height, bool fullScreen, 
 
     //some sanity checks
     GLenum error = glGetError();
-    if (glGetError() != GL_NO_ERROR)
+    if (error != GL_NO_ERROR)
     {
       CLog::Log(LOGERROR, "ResetRenderSystem() GL_MAX_TEXTURE_IMAGE_UNITS_ARB returned error %i", (int)error);
       maxtex = 3;
