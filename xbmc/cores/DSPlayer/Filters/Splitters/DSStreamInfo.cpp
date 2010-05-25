@@ -248,8 +248,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     PinNameW = L"Video";
     const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(&right);
     AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
-    
-
+  
     /* FormatType status */
     /* VideoInfo working*/
     /* VideoInfo2 */
@@ -351,11 +350,71 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
       pvi->dwInterlaceFlags = 0;
       pvi->dwCopyProtectFlags = 0;
       pvi->dwControlFlags = 0;
-      
-
     }
     else if (mtype.formattype == FORMAT_MPEG2Video)
     {
+      BITMAPINFOHEADER *bih;
+    bih = (BITMAPINFOHEADER*)calloc(sizeof(BITMAPINFOHEADER) + avstream->codec->extradata_size,1);
+    if(!avstream->codec->codec_tag)
+      avstream->codec->codec_tag = m_dllAvFormat.av_codec_get_tag(mp_bmp_taglists, avstream->codec->codec_id);
+    mtype.subtype = FOURCCMap(avstream->codec->codec_tag);
+    bih->biSize= sizeof(BITMAPINFOHEADER) + avstream->codec->extradata_size;
+    bih->biWidth= avstream->codec->width;
+    bih->biHeight= avstream->codec->height;
+    bih->biBitCount= 24;
+    bih->biSizeImage = bih->biWidth * bih->biHeight * bih->biBitCount/8;
+    bih->biSizeImage = m_dllAvCodec.avpicture_get_size(PIX_FMT_RGB24, avstream->codec->width, avstream->codec->height);//stream->iWidth * stream->iHeight * avstream->codec->bits_per_coded_sample / 8;
+    bih->biCompression= mtype.subtype.Data1;
+    bih->biPlanes = 1;
+    ULONG cbFormat = FIELD_OFFSET(MPEG2VIDEOINFO, dwSequenceHeader) + avstream->codec->extradata_size - 7;
+    //MPEG2VIDEOINFO *try_mp2vi = (MPEG2VIDEOINFO *) new BYTE[cbFormat];
+    MPEG2VIDEOINFO *try_mp2vi = (MPEG2VIDEOINFO*)mtype.AllocFormatBuffer(cbFormat);//FIELD_OFFSET(MPEG2VIDEOINFO, dwSequenceHeader) + avstream->codec->extradata_size);
+        //m_vinfo = (BYTE *) try_mp2vi;
+
+        memset(try_mp2vi, 0, cbFormat);
+        try_mp2vi->hdr.rcSource.left = try_mp2vi->hdr.rcSource.top = 0;
+        try_mp2vi->hdr.rcSource.right = bih->biWidth;
+        try_mp2vi->hdr.rcSource.bottom = bih->biHeight;
+        try_mp2vi->hdr.rcTarget = try_mp2vi->hdr.rcSource;
+        try_mp2vi->hdr.dwPictAspectRatioX = bih->biWidth;
+        try_mp2vi->hdr.dwPictAspectRatioY = bih->biHeight;
+        memcpy(&try_mp2vi->hdr.bmiHeader, bih, sizeof(BITMAPINFOHEADER));
+        try_mp2vi->hdr.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+        try_mp2vi->hdr.bmiHeader.biCompression = FOURCCMap(avstream->codec->codec_tag).Data1;
+        try_mp2vi->hdr.AvgTimePerFrame = (REFERENCE_TIME)(10000000 / ((float)stream->iFpsRate / (float)stream->iFpsScale));;
+
+        /* From MPC-HC */
+        if (avstream->codec->extradata_size > 0)
+        {
+            BYTE *extradata = (BYTE *) bih + sizeof(BITMAPINFOHEADER);
+            memcpy((void*)extradata, avstream->codec->extradata, avstream->codec->extradata_size);
+            try_mp2vi->dwProfile = extradata[1];
+            try_mp2vi->dwLevel = extradata[3];
+            try_mp2vi->dwFlags = (extradata[4] & 3) + 1;
+
+            try_mp2vi->cbSequenceHeader = 0;
+
+            BYTE* src = (BYTE *) extradata + 5;
+            BYTE* dst = (BYTE *) try_mp2vi->dwSequenceHeader;
+
+            BYTE* src_end = (BYTE *) extradata + avstream->codec->extradata_size;
+            BYTE* dst_end = (BYTE *) try_mp2vi->dwSequenceHeader + avstream->codec->extradata_size;
+
+            for (int i = 0; i < 2; i++)
+            {
+                for (int n = *src++ & 0x1f; n > 0; n--)
+                {
+                    int len = ((src[0] << 8) | src[1]) + 2;
+                    if(src + len > src_end || dst + len > dst_end) { ASSERT(0); break; }
+                    memcpy(dst, src, len);
+                    src += len;
+                    dst += len;
+                    try_mp2vi->cbSequenceHeader += len;
+                }
+            }
+            
+        }
+#if 0
       MPEG2VIDEOINFO *mpeginfo = (MPEG2VIDEOINFO*)mtype.AllocFormatBuffer(FIELD_OFFSET(MPEG2VIDEOINFO, dwSequenceHeader) + avstream->codec->extradata_size);
 
       //(not sure about this but fixed the sample i tried)
@@ -394,6 +453,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
       mpeginfo->dwProfile = avstream->codec->profile;
       mpeginfo->dwLevel = avstream->codec->level;
       
+
       //from ffmpeg full info
       //ex: 01 64 00 1f ff e1 00 19 67 64 00 1f ac 34 e4 01 40 16 ec 04 40 00 00 fa 40 00 2e e0 23 c6 0c 64 80 01 00 05 68 ee b2 c8 b0
       //from directshow
@@ -417,7 +477,9 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
       
       memcpy(mpeginfo->dwSequenceHeader, &extravect.at(0) , extravect.size());
 
+#endif   
     }
+    
     fpsscale  = stream->iFpsScale;
     fpsrate   = stream->iFpsRate;
     height    = stream->iHeight;
@@ -457,15 +519,12 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     }
     strncpy(psi->IsoLang, strTrackLanguage.c_str(), strTrackLanguage.length()-1);
     strTrackTitleW = DShowUtil::AToW(strTrackTitle);
-    wcsncpy(psi->TrackName, strTrackTitleW.c_str(), strTrackTitleW.length() - 1);
+    if (strTrackTitleW.length() > 0)
+      wcsncpy(psi->TrackName, strTrackTitleW.c_str(), strTrackTitleW.length() - 1);
     memcpy(mtype.pbFormat + (psi->dwOffset = sizeof(SUBTITLEINFO)), extradata, extrasize);
-    //mtype.subtype
+    
     mtype.subtype = avstream->codec->codec_id == CODEC_ID_TEXT ? MEDIASUBTYPE_UTF8 :
                     avstream->codec->codec_id == CODEC_ID_SSA ? MEDIASUBTYPE_SSA :
-						        //CodecID == "S_TEXT/ASS" || CodecID == "S_ASS" ? MEDIASUBTYPE_ASS :
-						        //CodecID == "S_TEXT/SSF" || CodecID == "S_SSF" ? MEDIASUBTYPE_SSF :
-						        //CodecID == "S_TEXT/USF" || CodecID == "S_USF" ? MEDIASUBTYPE_USF :
-						        //CodecID == "S_VOBSUB" ? MEDIASUBTYPE_VOBSUB :
 						        MEDIASUBTYPE_NULL;
     
     mtype.lSampleSize = 1;

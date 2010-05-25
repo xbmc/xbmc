@@ -12,16 +12,7 @@ CMediaType CDSGuidHelper::initAudioType(CodecID codecId)
   thetype.formattype = FORMAT_WaveFormatEx;//default value
   thetype.subtype = GUID_NULL;//If not set the subtype will be set with //FOURCCMap(avstream->codec->codec_tag);
 
-  switch (codecId)
-  {
-    case CODEC_ID_AAC:
-    
 
-      break;
-    
-    case CODEC_ID_AC3:
-      break;
-  }
   if (codecId == CODEC_ID_AC3)
   {
     thetype.formattype = FORMAT_WaveFormatEx;
@@ -678,4 +669,76 @@ AVRational a0={0,1}, a1={1,0};
     *dst_den = a1.den;
 
     return den==0;
+}
+
+DWORD avc_quant(BYTE *src, BYTE *dst, int len)
+{
+    //Stolen from libavcodec h264.c
+    BYTE *p = src, *d = dst;
+    int cnt;
+    cnt = *(p+5) & 0x1f; // Number of sps
+    if(src[0] != 0x01 || cnt > 1) {
+      memcpy(dst, src, len);
+      return len;
+    }
+    p += 6;
+    //cnt > 1 not supported?
+    cnt = AV_RB16(p) + 2;
+    memcpy(d, p, cnt);
+    d+=cnt;
+    p+=cnt;
+    //assume pps cnt == 1 too
+    p++;
+    cnt = AV_RB16(p) + 2;
+    memcpy(d, p, cnt);
+    return d + cnt - dst;
+
+}
+
+BYTE *CDSGuidHelper::ConvertVIHtoMPEG2VI(VIDEOINFOHEADER *vih, int *size)
+{
+  int extra = 0;
+    BYTE *extradata;
+    BYTE nalu_length_field_size;
+    if(vih->bmiHeader.biSize > sizeof(BITMAPINFOHEADER)) 
+    {
+      extra = vih->bmiHeader.biSize-sizeof(BITMAPINFOHEADER);
+    }
+    MPEG2VIDEOINFO *mp2vi;
+    mp2vi = (MPEG2VIDEOINFO *)malloc(sizeof(MPEG2VIDEOINFO)+extra-4); 
+    memset(mp2vi, 0, sizeof(MPEG2VIDEOINFO));
+    mp2vi->hdr.rcSource = vih->rcSource;
+    mp2vi->hdr.rcTarget = vih->rcTarget;
+    mp2vi->hdr.dwBitRate = vih->dwBitRate;
+    mp2vi->hdr.dwBitErrorRate = vih->dwBitErrorRate;
+    mp2vi->hdr.AvgTimePerFrame = vih->AvgTimePerFrame;
+    mp2vi->hdr.dwPictAspectRatioX = vih->bmiHeader.biWidth;
+    mp2vi->hdr.dwPictAspectRatioY = vih->bmiHeader.biHeight;
+    memcpy(&mp2vi->hdr.bmiHeader, &vih->bmiHeader, sizeof(BITMAPINFOHEADER));
+    mp2vi->hdr.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    if(extra) 
+    {
+      
+      if(FOURCCMap(FOURCC_AVC1).Data1 == vih->bmiHeader.biCompression)//is_avc(vih->bmiHeader.biCompression) && !is_mpegts_format) 
+      {
+        extradata=(BYTE*)(&vih->bmiHeader + 1);
+        nalu_length_field_size=(*(extradata + 4 ) & 0x3) + 1;
+
+        mp2vi->dwProfile = *(extradata+1);
+        mp2vi->dwLevel = *(extradata+3);
+        mp2vi->dwFlags = nalu_length_field_size; //What does this mean?
+        mp2vi->cbSequenceHeader = avc_quant(
+                          (BYTE *)(&vih->bmiHeader) + sizeof(BITMAPINFOHEADER),
+                          (BYTE *)(&mp2vi->dwSequenceHeader[0]), extra);
+      }
+      else
+      {
+        mp2vi->cbSequenceHeader = extra;
+        memcpy(&mp2vi->dwSequenceHeader[0],
+               (BYTE *)(&vih->bmiHeader) + sizeof(BITMAPINFOHEADER), extra);
+      }
+    }
+    // The '4' is from the allocated space of dwSequenceHeader
+    *size = sizeof(MPEG2VIDEOINFO) + mp2vi->cbSequenceHeader - 4;
+    return (BYTE *)mp2vi;
 }

@@ -60,9 +60,12 @@ protected:
   bool DemuxLoop();
   bool ReadPacket(DemuxPacket*& DsPacket, CDemuxStream*& stream);
 public:
+  DECLARE_IUNKNOWN;
+
   CXBMCFFmpegSplitter(LPUNKNOWN pUnk, HRESULT* phr);
   virtual ~CXBMCFFmpegSplitter();
-  DECLARE_IUNKNOWN;
+  
+
   STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
   // IMediaSeeking

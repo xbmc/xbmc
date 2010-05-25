@@ -21,7 +21,7 @@
 
 #include <mmreg.h>
 #include "XBMCFFmpegSplitter.h"
-
+#include <list>
 
 #include "DVDPlayer/DVDDemuxers/DVDDemux.h"
 #include "DVDPlayer/DVDDemuxers/DVDDemuxUtils.h"
@@ -33,7 +33,6 @@
 //2 is audio only
 #define DS_SPLITTER_ONE_PIN_TEST 0
 
-
 //
 // CXBMCFFmpegSplitter
 //
@@ -44,6 +43,7 @@ CXBMCFFmpegSplitter::CXBMCFFmpegSplitter(LPUNKNOWN pUnk, HRESULT* phr)
 {
   m_pDemuxer = NULL;
   m_pInputStream = NULL;
+
 }
 
 CXBMCFFmpegSplitter::~CXBMCFFmpegSplitter()
