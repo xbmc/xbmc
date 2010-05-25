@@ -1,7 +1,7 @@
 <window id="20">
 	<defaultcontrol always="true">50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
-	<views>50,51,500</views>
+	<views>50,51,503</views>
 	<controls>
 		<include>CommonSettingsBackground</include>
 		<include>CommonMediaPlayingBackground</include>
@@ -32,7 +32,7 @@
 				<height>725</height>
 				<texture border="0.5.0.0">ContentPanel4.png</texture>
 				<include>VisibleFadeEffect</include>
-				<visible>Control.IsVisible(500)</visible>
+				<visible>Control.IsVisible(503)</visible>
 			</control>
 			<control type="group">
 				<include>VisibleFadeEffect</include>
@@ -77,7 +77,7 @@
 			<include>Window_OpenClose_Animation</include>		
 			<include>CommonRootView</include> <!-- view id = 50 -->
 			<include>FullWidthList</include> <!-- view id = 51 -->
-			<include>AddonInfoListView1</include> <!-- view id = 500 -->
+			<include>AddonInfoListView1</include> <!-- view id = 503 -->
 		</control>
 		<include>CommonPageCount</include>
 		<include>BehindDialogFadeOut</include>
