@@ -167,14 +167,30 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height, bool fullScreen, 
   glLoadIdentity();
   if (glewIsSupported("GL_ARB_multitexture"))
   {
-    glActiveTextureARB(GL_TEXTURE1);
-    glLoadIdentity();
+    glGetError(); //clear error flags
+    GLint maxtex;
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS_ARB, &maxtex);
 
-    glActiveTextureARB(GL_TEXTURE2);
-    glLoadIdentity();
+    //some sanity checks
+    GLenum error = glGetError();
+    if (glGetError() != GL_NO_ERROR)
+    {
+      CLog::Log(LOGERROR, "ResetRenderSystem() GL_MAX_TEXTURE_IMAGE_UNITS_ARB returned error %i", (int)error);
+      maxtex = 3;
+    }
+    else if (maxtex < 1 || maxtex > 32)
+    {
+      CLog::Log(LOGERROR, "ResetRenderSystem() GL_MAX_TEXTURE_IMAGE_UNITS_ARB returned invalid value %i", (int)maxtex);
+      maxtex = 3;
+    }
 
+    //reset texture matrix for all textures
+    for (GLint i = 0; i < maxtex; i++)
+    {
+      glActiveTextureARB(GL_TEXTURE0 + i);
+      glLoadIdentity();
+    }
     glActiveTextureARB(GL_TEXTURE0);
-    glLoadIdentity();
   }
 
   glMatrixMode(GL_PROJECTION);
