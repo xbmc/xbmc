@@ -82,17 +82,18 @@ void CDsSettings::LoadConfig()
   TiXmlElement *pElement = pRootElement->FirstChildElement("videorenderers");
   if (pElement)
   {
+    // TODO: Rename and document those options. Don't need the VMR9 prefix as these applied to EVR too
     GetBoolean(pElement, "VMR9AlterativeVSync", m_RenderSettings.fVMR9AlterativeVSync, false);
     GetInteger(pElement, "VMR9VSyncOffset", m_RenderSettings.iVMR9VSyncOffset, 0, 0 , 100);
-    GetBoolean(pElement, "VMR9VSyncAccurate", m_RenderSettings.iVMR9VSyncAccurate, false);
-    GetBoolean(pElement, "VMR9VSync", m_RenderSettings.iVMR9VSync, false);
+    GetBoolean(pElement, "VMR9VSyncAccurate", m_RenderSettings.iVMR9VSyncAccurate, true);
+    GetBoolean(pElement, "VMR9VSync", m_RenderSettings.iVMR9VSync, true);
     GetBoolean(pElement, "VMRDisableDesktopComposition", m_RenderSettings.iVMRDisableDesktopComposition, false);
-    GetBoolean(pElement, "VMRFlushGPUBeforeVSync", m_RenderSettings.iVMRFlushGPUBeforeVSync, false);
+    GetBoolean(pElement, "VMRFlushGPUBeforeVSync", m_RenderSettings.iVMRFlushGPUBeforeVSync, true);
     GetBoolean(pElement, "VMRFlushGPUAfterPresent", m_RenderSettings.iVMRFlushGPUAfterPresent, false);
     GetBoolean(pElement, "VMRFlushGPUWait", m_RenderSettings.iVMRFlushGPUWait, false);
     GetBoolean(pElement, "SynchronizeVideo", m_RenderSettings.bSynchronizeVideo, false);
     GetBoolean(pElement, "SynchronizeDisplay", m_RenderSettings.bSynchronizeDisplay, false);
-    GetBoolean(pElement, "SynchronizeNearest", m_RenderSettings.bSynchronizeNearest, false);
+    GetBoolean(pElement, "SynchronizeNearest", m_RenderSettings.bSynchronizeNearest, true);
     GetInteger(pElement, "LineDelta", m_RenderSettings.iLineDelta, 0, 0, 100);
     GetInteger(pElement, "ColumnDelta", m_RenderSettings.iColumnDelta, 0, 0, 100);
     GetDouble(pElement, "CycleDelta", m_RenderSettings.fCycleDelta, 0, 0, 100);
