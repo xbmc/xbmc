@@ -27,6 +27,7 @@
 #include "GUIDialogAddonSettings.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
+#include "GUIDialogSelect.h"
 #include "GUIEditControl.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
@@ -487,3 +488,28 @@ bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)
   return true;
 }
 
+bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CONTENT_TYPE content, CStdString &addonID)
+{
+  CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (type == ADDON_UNKNOWN || !dialog)
+    return false;
+
+  ADDON::VECADDONS addons;
+  CAddonMgr::Get().GetAddons(type, addons, content);
+  dialog->SetHeading(TranslateType(type, true));
+  dialog->Reset();
+  CFileItemList items;
+  CFileItemPtr none(new CFileItem("", false));
+  none->SetLabel(g_localizeStrings.Get(231)); // "None"
+  items.Add(none);
+  for (ADDON::IVECADDONS i = addons.begin(); i != addons.end(); ++i)
+    items.Add(CAddonsDirectory::FileItemFromAddon(*i, ""));
+  dialog->SetItems(&items);
+  dialog->DoModal();
+  if (dialog->GetSelectedLabel() >= 0)
+  {
+    addonID = dialog->GetSelectedItem().m_strPath;
+    return true;
+  }
+  return false;
+}
