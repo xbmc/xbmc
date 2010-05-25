@@ -30,6 +30,6 @@ namespace ssf
   public:
     Exception(LPCTSTR fmt, ...);
     
-    CStdString ToString() {return m_msg;}
+    CStdString ToString() const {return m_msg;}
   };
 }

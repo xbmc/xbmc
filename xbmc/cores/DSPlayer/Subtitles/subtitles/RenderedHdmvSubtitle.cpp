@@ -22,15 +22,33 @@
 
 
 #include "stdafx.h"
+#include "HdmvSub.h"
+#include "DVBSub.h"
 #include "RenderedHdmvSubtitle.h"
 
-CRenderedHdmvSubtitle::CRenderedHdmvSubtitle(CCritSec* pLock)
+CRenderedHdmvSubtitle::CRenderedHdmvSubtitle(CCritSec* pLock, SUBTITLE_TYPE nType)
            : ISubPicProviderImpl(pLock)
 {
+  switch (nType)
+  {
+  case ST_DVB :
+    m_pSub = DNew CDVBSub();
+    m_name = "DVB Embedded Subtitle";
+    break;
+  case ST_HDMV :
+    m_pSub = DNew CHdmvSub();
+    m_name = "HDMV Embedded Subtitle";
+    break;
+  default :
+    ASSERT (FALSE);
+    m_pSub = NULL;
+  }
+  m_rtStart = 0;
 }
 
 CRenderedHdmvSubtitle::~CRenderedHdmvSubtitle(void)
 {
+  delete m_pSub;
 }
 
 
@@ -48,23 +66,28 @@ STDMETHODIMP CRenderedHdmvSubtitle::NonDelegatingQueryInterface(REFIID riid, voi
 
 // ISubPicProvider
 
-STDMETHODIMP_(__w64 int) CRenderedHdmvSubtitle::GetStartPosition(REFERENCE_TIME rt, double fps)
+STDMETHODIMP_(int) CRenderedHdmvSubtitle::GetStartPosition(REFERENCE_TIME rt, double fps)
 {
   CAutoLock cAutoLock(&m_csCritSec);
-  return  m_HdmvSub.GetStartPosition(rt - m_rtStart, fps);
+  return	m_pSub->GetStartPosition(rt - m_rtStart, fps);
+}
+
+STDMETHODIMP_(int) CRenderedHdmvSubtitle::GetNext(int pos)
+{
+  CAutoLock cAutoLock(&m_csCritSec);
+  return m_pSub->GetNext (pos);
 }
 
 STDMETHODIMP_(REFERENCE_TIME) CRenderedHdmvSubtitle::GetStart(int pos, double fps)
 {
   CAutoLock cAutoLock(&m_csCritSec);
-  return m_HdmvSub.GetStart(pos) + m_rtStart;
+  return m_pSub->GetStart(pos) + m_rtStart;
 }
 
 STDMETHODIMP_(REFERENCE_TIME) CRenderedHdmvSubtitle::GetStop(int pos, double fps)
 {
   CAutoLock cAutoLock(&m_csCritSec);
-//  return(10000i64 * TranslateSegmentEnd((int)pos-1, fps));
-  return m_HdmvSub.GetStop(pos) + m_rtStart;
+  return m_pSub->GetStop(pos) + m_rtStart;
 }
 
 STDMETHODIMP_(bool) CRenderedHdmvSubtitle::IsAnimated(int pos)
@@ -75,7 +98,7 @@ STDMETHODIMP_(bool) CRenderedHdmvSubtitle::IsAnimated(int pos)
 STDMETHODIMP CRenderedHdmvSubtitle::Render(SubPicDesc& spd, REFERENCE_TIME rt, double fps, RECT& bbox)
 {
   CAutoLock cAutoLock(&m_csCritSec);
-  m_HdmvSub.Render (spd, rt - m_rtStart, bbox);
+  m_pSub->Render (spd, rt - m_rtStart, bbox);
 
   return S_OK;
 }
@@ -83,7 +106,8 @@ STDMETHODIMP CRenderedHdmvSubtitle::Render(SubPicDesc& spd, REFERENCE_TIME rt, d
 STDMETHODIMP CRenderedHdmvSubtitle::GetTextureSize (int pos, SIZE& MaxTextureSize, SIZE& VideoSize, POINT& VideoTopLeft)
 { 
   CAutoLock cAutoLock(&m_csCritSec);
-  return m_HdmvSub.GetTextureSize(pos, MaxTextureSize, VideoSize, VideoTopLeft); 
+  HRESULT hr = m_pSub->GetTextureSize(pos, MaxTextureSize, VideoSize, VideoTopLeft); 
+  return hr;
 };
 
 // IPersist
@@ -97,7 +121,7 @@ STDMETHODIMP CRenderedHdmvSubtitle::GetClassID(CLSID* pClassID)
 
 STDMETHODIMP_(int) CRenderedHdmvSubtitle::GetStreamCount()
 {
-  return (0);
+  return (1);
 }
 
 STDMETHODIMP CRenderedHdmvSubtitle::GetStreamInfo(int iStream, WCHAR** ppName, LCID* pLCID)
@@ -140,7 +164,7 @@ HRESULT CRenderedHdmvSubtitle::ParseSample (IMediaSample* pSample)
   CAutoLock cAutoLock(&m_csCritSec);
   HRESULT    hr;
 
-  hr = m_HdmvSub.ParseSample (pSample);
+  hr = m_pSub->ParseSample (pSample);
   return hr;
 }
 
@@ -148,14 +172,8 @@ HRESULT CRenderedHdmvSubtitle::NewSegment(REFERENCE_TIME tStart, REFERENCE_TIME 
 {
   CAutoLock cAutoLock(&m_csCritSec);
 
-  m_HdmvSub.Reset();
+  m_pSub->Reset();
   m_rtStart = tStart;
   return S_OK;
 }
 
-int CRenderedHdmvSubtitle::GetNext( int pos )
-{
-  CAutoLock cAutoLock(&m_csCritSec);
-   return m_HdmvSub.GetNext (pos);
-
-}

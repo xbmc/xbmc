@@ -401,6 +401,7 @@ HRESULT ISubPicQueueImpl::RenderTo(ISubPic* pSubPic, REFERENCE_TIME rtStart, REF
   if(!pSubPic)
     return hr;
 
+  // TODO: Use a Com::SmartPtr ?
   ISubPicProvider* pSubPicProvider;
   if(FAILED(GetSubPicProvider(&pSubPicProvider)) || !pSubPicProvider)
     return hr;
@@ -444,7 +445,7 @@ CSubPicQueue::CSubPicQueue(int nMaxSubPic, BOOL bDisableAnim, ISubPicAllocator* 
     {if(phr) *phr = E_INVALIDARG; return;}
 
   m_fBreakBuffering = false;
-  for(int i = 0; i < EVENT_COUNT; i++) 
+  for(ptrdiff_t i = 0; i < EVENT_COUNT; i++) 
     m_ThreadEvents[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
   CAMThread::Create();
 }
@@ -454,7 +455,7 @@ CSubPicQueue::~CSubPicQueue()
   m_fBreakBuffering = true;
   SetEvent(m_ThreadEvents[EVENT_EXIT]);
   CAMThread::Close();
-  for(int i = 0; i < EVENT_COUNT; i++) 
+  for(ptrdiff_t i = 0; i < EVENT_COUNT; i++) 
     CloseHandle(m_ThreadEvents[i]);
 }
 
@@ -520,9 +521,7 @@ STDMETHODIMP_(bool) CSubPicQueue::LookupSubPic(REFERENCE_TIME rtNow, Com::SmartP
       if (Diff < rtBestStop)
       {
         rtBestStop = Diff;
-#if DSubPicTraceLevel > 0
-        TRACE(L"   %f->%f", double(Diff) / 10000000.0, double(rtStop) / 10000000.0);
-#endif
+//				TRACE("   %f->%f", double(Diff) / 10000000.0, double(rtStop) / 10000000.0);
         ppSubPic = pSubPic;
       }
 #if DSubPicTraceLevel > 2
@@ -1165,7 +1164,7 @@ void ISubPicAllocatorPresenterImpl::Transform(Com::SmartRect r, Vector v[4])
   Vector center(r.CenterPoint().x, r.CenterPoint().y, 0);
   int l = (int)(Vector(r.Size().cx, r.Size().cy, 0).Length()*1.5f)+1;
 
-  for(int i = 0; i < 4; i++)
+  for(ptrdiff_t i = 0; i < 4; i++)
   {
     v[i] = m_xform << (v[i] - center);
     v[i].z = v[i].z / l + 0.5f;

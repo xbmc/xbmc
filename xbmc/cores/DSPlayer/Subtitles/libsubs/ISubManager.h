@@ -8,8 +8,8 @@
 
 struct SSubStyle 
 {
-  COLORREF color;
-  BYTE alpha;
+  COLORREF colors[4];
+  BYTE alpha[4];
   double fontSize;
   int fontWeight;
   bool fItalic;
@@ -20,6 +20,31 @@ struct SSubStyle
   double outlineWidthX;
   double outlineWidthY;
   wchar_t* fontName;
+
+  SSubStyle()
+  {
+    SetDefault();
+  }
+
+  void SetDefault()
+  {
+    borderStyle = 0;
+    outlineWidthX = outlineWidthY = 2;
+    shadowDepthX = shadowDepthY = 3;
+    colors[0] = 0x00ffffff;
+    colors[1] = 0x0000ffff;
+    colors[2] = 0x00000000;
+    colors[3] = 0x00000000;
+    alpha[0] = 0x00;
+    alpha[1] = 0x00;
+    alpha[2] = 0x00;
+    alpha[3] = 0x80;
+    charSet = DEFAULT_CHARSET;
+    fontName = NULL;
+    fontSize = 18;
+    fontWeight = FW_BOLD;
+    fItalic = false;
+  }
 };
 
 // subtitles clsid

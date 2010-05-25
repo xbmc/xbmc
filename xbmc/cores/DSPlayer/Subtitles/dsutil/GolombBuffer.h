@@ -43,7 +43,8 @@ public:
   void      Reset(BYTE* pNewBuffer, int nNewSize);
 
   void      SetSize(int nValue) { m_nSize = nValue; };
-  int        GetSize()      { return m_nSize; };
+  int       GetSize()      { return m_nSize; };
+  int       RemainingSize() const { return m_nSize - m_nBitPos; };
   bool      IsEOF()        { return m_nBitPos >= m_nSize; };
   INT64      GetPos();
   BYTE*      GetBufferPos()    { return m_pBuffer + m_nBitPos; };

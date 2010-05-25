@@ -74,6 +74,7 @@
       <ObjectFileName>$(OutDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(OutDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
       <XMLDocumentationFileName>$(OutDir)</XMLDocumentationFileName>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
@@ -85,7 +86,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>true</BufferSecurityCheck>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <DebugInformationFormat>
       </DebugInformationFormat>
@@ -117,13 +118,17 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
     <ClCompile>
       <XMLDocumentationFileName>$(OutDir)</XMLDocumentationFileName>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="..\atltypes.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BaseSub.cpp" />
     <ClCompile Include="CCDecoder.cpp" />
+    <ClCompile Include="CompositionObject.cpp" />
+    <ClCompile Include="DVBSub.cpp" />
     <ClCompile Include="GFN.cpp" />
     <ClCompile Include="HdmvSub.cpp" />
     <ClCompile Include="Rasterizer.cpp">
@@ -160,7 +165,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="atlwfile.h" />
+    <ClInclude Include="BaseSub.h" />
     <ClInclude Include="CCDecoder.h" />
+    <ClInclude Include="CompositionObject.h" />
+    <ClInclude Include="DVBSub.h" />
     <ClInclude Include="GFN.h" />
     <ClInclude Include="HdmvSub.h" />
     <ClInclude Include="ntddcdvd.h" />

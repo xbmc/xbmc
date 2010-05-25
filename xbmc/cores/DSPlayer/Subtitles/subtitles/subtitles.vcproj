@@ -46,6 +46,7 @@
 				AdditionalIncludeDirectories="..\..\..\..\;&quot;..\..\..\..\..\lib\libSDL-WIN32\include&quot;;..\..\..\..\..\guilib;..\..\..\..\win32;..\..\include;..\..\baseclasses;..\..\..\..\lib\boost;..\..\DshowUtil/;..\..\"
 				PreprocessorDefinitions="WIN32;_DEBUG;"
 				RuntimeLibrary="1"
+				EnableEnhancedInstructionSet="2"
 				UsePrecompiledHeader="2"
 				DisableSpecificWarnings="4996"
 			/>
@@ -109,7 +110,7 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="true"
-				EnableEnhancedInstructionSet="1"
+				EnableEnhancedInstructionSet="2"
 				UsePrecompiledHeader="2"
 				DebugInformationFormat="0"
 				DisableSpecificWarnings="4244"
@@ -156,7 +157,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\BaseSub.cpp"
+				>
+			</File>
+			<File
 				RelativePath="CCDecoder.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CompositionObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DVBSub.cpp"
 				>
 			</File>
 			<File
@@ -301,7 +314,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\BaseSub.h"
+				>
+			</File>
+			<File
 				RelativePath="CCDecoder.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CompositionObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DVBSub.h"
 				>
 			</File>
 			<File

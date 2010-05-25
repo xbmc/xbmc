@@ -62,7 +62,7 @@ public:
   Vector Refract2(Vector& n, float nFrom, float nTo, float* nOut = NULL);
 
   Vector operator - ();
-  float& operator [] (int i);
+  float& operator [] (size_t i);
 
   float operator | (Vector& v); // dot
   Vector operator % (Vector& v); // cross

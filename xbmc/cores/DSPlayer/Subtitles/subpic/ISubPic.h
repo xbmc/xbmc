@@ -43,8 +43,8 @@ struct SubPicDesc
 // ISubPic
 //
 
-[uuid("449E11F3-52D1-4a27-AA61-E2733AC92CC0")]
-interface ISubPic : public IUnknown
+interface __declspec(uuid("449E11F3-52D1-4a27-AA61-E2733AC92CC0"))
+ISubPic : public IUnknown
 {
   STDMETHOD_(void*, GetObject) () PURE;
 
@@ -162,8 +162,8 @@ public:
 // ISubPicAllocator
 //
 
-[uuid("CF7C3C23-6392-4a42-9E72-0736CFF793CB")]
-interface ISubPicAllocator : public IUnknown
+interface __declspec(uuid("CF7C3C23-6392-4a42-9E72-0736CFF793CB"))
+ISubPicAllocator : public IUnknown
 {
   STDMETHOD (SetCurSize) (SIZE size /*[in]*/) PURE;
   STDMETHOD (SetCurVidRect) (RECT curvidrect) PURE;
@@ -214,13 +214,13 @@ public:
 // ISubPicProvider
 //
 
-[uuid("D62B9A1A-879A-42db-AB04-88AA8F243CFD")]
-interface ISubPicProvider : public IUnknown
+interface __declspec(uuid("D62B9A1A-879A-42db-AB04-88AA8F243CFD"))
+ISubPicProvider : public IUnknown
 {
   STDMETHOD (Lock) () PURE;
   STDMETHOD (Unlock) () PURE;
 
-  STDMETHOD_(__w64 int, GetStartPosition) (REFERENCE_TIME rt, double fps) PURE;
+  STDMETHOD_(int, GetStartPosition) (REFERENCE_TIME rt, double fps) PURE;
   STDMETHOD_(int, GetNext) (int pos) PURE;
   STDMETHOD_(REFERENCE_TIME, GetStart) (int pos, double fps) PURE;
   STDMETHOD_(REFERENCE_TIME, GetStop) (int pos, double fps) PURE;
@@ -248,7 +248,7 @@ public:
   STDMETHODIMP Lock();
   STDMETHODIMP Unlock();
 
-  STDMETHODIMP_(__w64 int) GetStartPosition(REFERENCE_TIME rt, double fps) = 0;
+  STDMETHODIMP_(int) GetStartPosition(REFERENCE_TIME rt, double fps) = 0;
   STDMETHODIMP_(int) GetNext(int pos) = 0;
   STDMETHODIMP_(REFERENCE_TIME) GetStart(int pos, double fps) = 0;
   STDMETHODIMP_(REFERENCE_TIME) GetStop(int pos, double fps) = 0;
@@ -261,8 +261,8 @@ public:
 // ISubPicQueue
 //
 
-[uuid("C8334466-CD1E-4ad1-9D2D-8EE8519BD180")]
-interface ISubPicQueue : public IUnknown
+interface __declspec(uuid("C8334466-CD1E-4ad1-9D2D-8EE8519BD180"))
+ISubPicQueue : public IUnknown
 {
   STDMETHOD (SetSubPicProvider) (ISubPicProvider* pSubPicProvider /*[in]*/) PURE;
   STDMETHOD (GetSubPicProvider) (ISubPicProvider** pSubPicProvider /*[out]*/) PURE;
@@ -375,8 +375,8 @@ public:
 // ISubPicAllocatorPresenter
 //
 
-[uuid("CF75B1F0-535C-4074-8869-B15F177F944E")]
-interface ISubPicAllocatorPresenter : public IUnknown
+interface __declspec(uuid("CF75B1F0-535C-4074-8869-B15F177F944E"))
+ISubPicAllocatorPresenter : public IUnknown
 {
   STDMETHOD (CreateRenderer) (IUnknown** ppRenderer) PURE;
 
@@ -398,8 +398,8 @@ interface ISubPicAllocatorPresenter : public IUnknown
   STDMETHOD (SetPixelShader) (LPCSTR pSrcData, LPCSTR pTarget) PURE;
 };
 
-[uuid("767AEBA8-A084-488a-89C8-F6B74E53A90F")]
-interface ISubPicAllocatorPresenter2 : public ISubPicAllocatorPresenter
+interface __declspec(uuid("767AEBA8-A084-488a-89C8-F6B74E53A90F"))
+ISubPicAllocatorPresenter2 : public ISubPicAllocatorPresenter
 {
   STDMETHOD (SetPixelShader2) (LPCSTR pSrcData, LPCSTR pTarget, bool bScreenSpace) PURE;
 };
@@ -469,8 +469,8 @@ public:
 // ISubStream
 //
 
-[uuid("DE11E2FB-02D3-45e4-A174-6B7CE2783BDB")]
-interface ISubStream : public IPersist
+interface __declspec(uuid("DE11E2FB-02D3-45e4-A174-6B7CE2783BDB"))
+ISubStream : public IPersist
 {
   STDMETHOD_(int, GetStreamCount) () PURE;
   STDMETHOD (GetStreamInfo) (int i, WCHAR** ppName, LCID* pLCID) PURE;

@@ -115,8 +115,8 @@ public:
   STDMETHODIMP SetMaxTextureSize(SIZE MaxTextureSize);
 };
 
-[uuid("CD6D2AA5-20D3-4ebe-A8A9-34D3B00CC253")]
-interface ISubRenderCallback : public IUnknown
+interface __declspec(uuid("CD6D2AA5-20D3-4ebe-A8A9-34D3B00CC253"))
+ISubRenderCallback : public IUnknown
 {
   // NULL means release current device, textures and other resources
   STDMETHOD(SetDevice)(IDirect3DDevice9 *dev) = 0;
@@ -128,8 +128,8 @@ interface ISubRenderCallback : public IUnknown
     int width, int height) = 0;
 };
 
-[uuid("E602585E-C05A-4828-AC69-AF92997F2E0C")]
-interface ISubRenderCallback2 : public ISubRenderCallback
+interface __declspec(uuid("E602585E-C05A-4828-AC69-AF92997F2E0C"))
+ISubRenderCallback2 : public ISubRenderCallback
 {
   STDMETHOD(RenderEx)(REFERENCE_TIME rtStart, REFERENCE_TIME rtStop,
     REFERENCE_TIME AvgTimePerFrame,
@@ -137,8 +137,8 @@ interface ISubRenderCallback2 : public ISubRenderCallback
     int width, int height) = 0;
 };
 
-[uuid("9CC7F9F7-3ED1-493c-AF65-527EA1D9947F")]
-interface ISubRender : public IUnknown
+interface __declspec(uuid("9CC7F9F7-3ED1-493c-AF65-527EA1D9947F"))
+ISubRender : public IUnknown
 {
   STDMETHOD(SetCallback)(ISubRenderCallback *cb) = 0;
 };

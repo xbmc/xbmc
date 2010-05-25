@@ -44,6 +44,9 @@ class CWord : public Rasterizer
 
   void Transform(Com::SmartPoint org);
 
+  void Transform_C( Com::SmartPoint &org );
+  void Transform_SSE2( Com::SmartPoint &org );
+
   bool CreateOpaqueBox();
 
 protected:
@@ -130,9 +133,15 @@ public:
 
   void Compact();
 
+#ifdef _VSMOD // patch m006. moveable vector clip
+  Com::SmartRect PaintShadow(SubPicDesc& spd, Com::SmartRect& clipRect, BYTE* pAlphaMask, Com::SmartPoint p, Com::SmartPoint org, int time, int alpha, MOD_MOVEVC& mod_vc, REFERENCE_TIME rt);
+  Com::SmartRect PaintOutline(SubPicDesc& spd, Com::SmartRect& clipRect, BYTE* pAlphaMask, Com::SmartPoint p, Com::SmartPoint org, int time, int alpha, MOD_MOVEVC& mod_vc, REFERENCE_TIME rt);
+  Com::SmartRect PaintBody(SubPicDesc& spd, Com::SmartRect& clipRect, BYTE* pAlphaMask, Com::SmartPoint p, Com::SmartPoint org, int time, int alpha, MOD_MOVEVC& mod_vc, REFERENCE_TIME rt);
+#else
   Com::SmartRect PaintShadow(SubPicDesc& spd, Com::SmartRect& clipRect, BYTE* pAlphaMask, Com::SmartPoint p, Com::SmartPoint org, int time, int alpha);
   Com::SmartRect PaintOutline(SubPicDesc& spd, Com::SmartRect& clipRect, BYTE* pAlphaMask, Com::SmartPoint p, Com::SmartPoint org, int time, int alpha);
   Com::SmartRect PaintBody(SubPicDesc& spd, Com::SmartRect& clipRect, BYTE* pAlphaMask, Com::SmartPoint p, Com::SmartPoint org, int time, int alpha);
+#endif
 };
 
 enum eftype
@@ -142,15 +151,22 @@ enum eftype
   EF_FADE,    // {\fade(a1=param[0], a2=param[1], a3=param[2], t1=t[0], t2=t[1], t3=t[2], t4=t[3])} or {\fad(t1=t[1], t2=t[2])
   EF_BANNER,    // Banner;delay=param[0][;lefttoright=param[1];fadeawaywidth=param[2]]
   EF_SCROLL,    // Scroll up/down=param[3];top=param[0];bottom=param[1];delay=param[2][;fadeawayheight=param[4]]
+#ifdef _VSMOD // patch m006. moveable vector clip
+  EF_VECTCLP
+#endif
 };
 
-#define EF_NUMBEROFEFFECTS 5
+#ifdef _VSMOD // patch m006. moveable vector clip
+  #define EF_NUMBEROFEFFECTS 6
+#else
+  #define EF_NUMBEROFEFFECTS 5
+#endif
 
 class Effect
 {
 public:
   enum eftype type;
-  int param[8];
+  int param[9];
   int t[4];
 };
 
@@ -206,8 +222,8 @@ public:
   Com::SmartRect AllocRect(CSubtitle* s, int segment, int entry, int layer, int collisions);
 };
 
-[uuid("537DCACA-2812-4a4f-B2C6-1A34C17ADEB0")]
-class CRenderedTextSubtitle : public CSimpleTextSubtitle, public ISubPicProviderImpl, public ISubStream
+class __declspec(uuid("537DCACA-2812-4a4f-B2C6-1A34C17ADEB0"))
+CRenderedTextSubtitle : public CSimpleTextSubtitle, public ISubPicProviderImpl, public ISubStream
 {
   std::map<int, CSubtitle*> m_subtitleCache;
 
@@ -256,7 +272,7 @@ public:
   STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
   // ISubPicProvider
-  STDMETHODIMP_(__w64 int) GetStartPosition(REFERENCE_TIME rt, double fps);
+  STDMETHODIMP_(int) GetStartPosition(REFERENCE_TIME rt, double fps);
   STDMETHODIMP_(int) GetNext(int pos);
   STDMETHODIMP_(REFERENCE_TIME) GetStart(int pos, double fps);
   STDMETHODIMP_(REFERENCE_TIME) GetStop(int pos, double fps);

@@ -27,18 +27,19 @@
 #include "..\SubPic\ISubPic.h"
 #include "HdmvSub.h"
 
-[uuid("FCA68599-C83E-4ea5-94A3-C2E1B0E326B9")]
-class CRenderedHdmvSubtitle : public ISubPicProviderImpl, public ISubStream
+
+class __declspec(uuid("FCA68599-C83E-4ea5-94A3-C2E1B0E326B9"))
+CRenderedHdmvSubtitle : public ISubPicProviderImpl, public ISubStream
 {
 public:
-  CRenderedHdmvSubtitle(CCritSec* pLock);
+  CRenderedHdmvSubtitle(CCritSec* pLock, SUBTITLE_TYPE nType);
   ~CRenderedHdmvSubtitle(void);
 
   DECLARE_IUNKNOWN
     STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
   // ISubPicProvider
-  STDMETHODIMP_(__w64 int) GetStartPosition(REFERENCE_TIME rt, double fps);
+  STDMETHODIMP_(int) GetStartPosition(REFERENCE_TIME rt, double fps);
   STDMETHODIMP_(int) GetNext(int pos);
   STDMETHODIMP_(REFERENCE_TIME) GetStart(int pos, double fps);
   STDMETHODIMP_(REFERENCE_TIME) GetStop(int pos, double fps);
@@ -64,6 +65,6 @@ private :
   LCID      m_lcid;
   REFERENCE_TIME  m_rtStart;
 
-  CHdmvSub    m_HdmvSub;
+  CBaseSub*		m_pSub;
   CCritSec    m_csCritSec;
 };

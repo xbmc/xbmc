@@ -776,15 +776,11 @@ void CSubtitleManager::Initialize()
 
   m_pManager.reset(pManager, std::bind2nd(std::ptr_fun(DeleteSubtitleManager), m_dll));
 
-  SSubStyle style;
+  SSubStyle style; //auto default on constructor
 
-  /*memset(style.colors, 0, sizeof(style.colors));
-  memset(style.alpha, 0, sizeof(style.alpha));*/
-  
   // Build style based on XBMC settings
-  //subtitles.style subtitles.color subtitles.height subtitles.font subtitles.charset
-  style.color = color[g_guiSettings.GetInt("subtitles.color")];
-  style.alpha = g_guiSettings.GetInt("subtitles.alpha");
+  style.colors[0] = color[g_guiSettings.GetInt("subtitles.color")];
+  style.alpha[0] = g_guiSettings.GetInt("subtitles.alpha");
 
   g_graphicsContext.SetScalingResolution(RES_PAL_4x3, true);
   style.fontSize = (float) (g_guiSettings.GetInt("subtitles.height")) * 27.1 / 72.0;
@@ -827,8 +823,9 @@ void CSubtitleManager::Initialize()
 
   if (FAILED(m_pManager->InsertPassThruFilter(g_dsGraph->pFilterGraph)))
   {
-    // No internal subs
-  } 
+    // No internal subs. May have some externals!
+  }
+  
   m_pManager->SetEnable(true);
 }
 

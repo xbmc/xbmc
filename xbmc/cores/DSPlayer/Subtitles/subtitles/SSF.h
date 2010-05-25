@@ -29,8 +29,8 @@
 
 namespace ssf
 {
-  [uuid("E0593632-0AB7-47CA-8BE1-E9D2A6A4825E")]
-  class CRenderer : public ISubPicProviderImpl, public ISubStream
+	class __declspec(uuid("E0593632-0AB7-47CA-8BE1-E9D2A6A4825E"))
+CRenderer : public ISubPicProviderImpl, public ISubStream
   {
     CStdString m_fn, m_name;
     std::auto_ptr<SubtitleFile> m_file;

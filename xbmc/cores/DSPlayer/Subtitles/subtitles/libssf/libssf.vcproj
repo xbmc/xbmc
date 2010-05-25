@@ -48,6 +48,7 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
+				EnableEnhancedInstructionSet="2"
 				UsePrecompiledHeader="2"
 			/>
 			<Tool
@@ -110,7 +111,7 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="true"
-				EnableEnhancedInstructionSet="1"
+				EnableEnhancedInstructionSet="2"
 				UsePrecompiledHeader="2"
 				DebugInformationFormat="0"
 				DisableSpecificWarnings="4244"

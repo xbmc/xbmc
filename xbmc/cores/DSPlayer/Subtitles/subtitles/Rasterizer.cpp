@@ -35,6 +35,11 @@
   #define _IMPL_MIN _MIN
  #endif
 
+int Rasterizer::getOverlayWidth()
+{
+	return mOverlayWidth*8;
+}
+
 Rasterizer::Rasterizer() : mpPathTypes(NULL), mpPathPoints(NULL), mPathPoints(0), mpOverlayBuffer(NULL)
 {
   mOverlayWidth = mOverlayHeight = 0;
@@ -59,7 +64,8 @@ void Rasterizer::_TrashPath()
 
 void Rasterizer::_TrashOverlay()
 {
-  delete [] mpOverlayBuffer;
+  if (mpOverlayBuffer)
+    _aligned_free(mpOverlayBuffer);
   mpOverlayBuffer = NULL;
 }
 
@@ -319,7 +325,7 @@ bool Rasterizer::PartialEndPath(HDC hdc, long dx, long dy)
 
     if(pNewTypes && pNewPoints && nPoints == GetPath(hdc, pPoints, pTypes, nPoints))
     {
-      for(int i = 0; i < nPoints; ++i)
+      for(ptrdiff_t i = 0; i < nPoints; ++i)
       {
         mpPathPoints[mPathPoints + i].x = pPoints[i].x + dx;
         mpPathPoints[mPathPoints + i].y = pPoints[i].y + dy;
@@ -346,8 +352,8 @@ bool Rasterizer::PartialEndPath(HDC hdc, long dx, long dy)
 
 bool Rasterizer::ScanConvert()
 {
-  int lastmoveto = -1;
-  int i;
+  size_t lastmoveto = -1;
+  size_t i;
 
   // Drop any outlines we may have.
 
@@ -364,15 +370,15 @@ bool Rasterizer::ScanConvert()
     return 0;
   }
 
-  int minx = INT_MAX;
-  int miny = INT_MAX;
-  int maxx = INT_MIN;
-  int maxy = INT_MIN;
+  ptrdiff_t minx = INT_MAX;
+  ptrdiff_t miny = INT_MAX;
+  ptrdiff_t maxx = INT_MIN;
+  ptrdiff_t maxy = INT_MIN;
 
   for(i=0; i<mPathPoints; ++i)
   {
-    int ix = mpPathPoints[i].x;
-    int iy = mpPathPoints[i].y;
+    ptrdiff_t ix = mpPathPoints[i].x;
+    ptrdiff_t iy = mpPathPoints[i].y;
 
     if(ix < minx) minx = ix;
     if(ix > maxx) maxx = ix;
@@ -413,8 +419,8 @@ bool Rasterizer::ScanConvert()
 
   // Initialize scanline list.
 
-  mpScanBuffer = DNew unsigned int[mHeight];
-  memset(mpScanBuffer, 0, mHeight*sizeof(unsigned int));
+  mpScanBuffer = DNew size_t[mHeight];
+  memset(mpScanBuffer, 0, mHeight*sizeof(size_t));
 
   // Scan convert the outline.  Yuck, Bezier curves....
 
@@ -483,7 +489,7 @@ bool Rasterizer::ScanConvert()
 
     // Detangle scanline into edge heap.
 
-    for(unsigned ptr = (unsigned)(mpScanBuffer[y]&0xffffffff); ptr; ptr = mpEdgeBuffer[ptr].next)
+    for(size_t ptr = (mpScanBuffer[y]&size_t(-1)); ptr; ptr = mpEdgeBuffer[ptr].next)
     {
       heap.push_back(mpEdgeBuffer[ptr].posandflag);
     }
@@ -500,11 +506,11 @@ bool Rasterizer::ScanConvert()
     std::vector<int>::iterator itX1 = heap.begin();
     std::vector<int>::iterator itX2 = heap.end(); // begin() + heap.size();
 
-    int x1, x2;
+    size_t x1, x2;
 
     for(; itX1 != itX2; ++itX1)
     {
-      int x = *itX1;
+      size_t x = *itX1;
 
       if(!count) 
         x1 = (x>>1);
@@ -659,7 +665,7 @@ bool Rasterizer::CreateWidenedRegion(int rx, int ry)
   {
     // Do a half circle.
     // _OverlapRegion mirrors this so both halves are done.
-    for(int y = -ry; y <= ry; ++y)
+    for(ptrdiff_t y = -ry; y <= ry; ++y)
     {
       int x = (int)(0.5 + sqrt(float(ry*ry - y*y)) * float(rx)/float(ry));
 
@@ -696,7 +702,7 @@ bool Rasterizer::Rasterize(int xsub, int ysub, int fBlur, double fGaussianBlur)
   ysub &= 7;
 
   int width = mWidth + xsub;
-  int height = mHeight + ysub;
+  int height = mHeight;// + ysub
 
   mOffsetX = mPathOffsetX - xsub;
   mOffsetY = mPathOffsetY - ysub;
@@ -725,30 +731,34 @@ bool Rasterizer::Rasterize(int xsub, int ysub, int fBlur, double fGaussianBlur)
   }
 
   mOverlayWidth = ((width+7)>>3) + 1;
-  mOverlayHeight = ((height+7)>>3) + 1;
+  // fixed image height
+  mOverlayHeight=((height+14)>>3) + 1;
 
-  mpOverlayBuffer = DNew byte[2 * mOverlayWidth * mOverlayHeight];
+  mpOverlayBuffer = (byte*)_aligned_malloc(2 * mOverlayWidth * mOverlayHeight, 16);
   memset(mpOverlayBuffer, 0, 2 * mOverlayWidth * mOverlayHeight);
 
   // Are we doing a border?
 
   tSpanBuffer* pOutline[2] = {&mOutline, &mWideOutline};
 
-  for(int i = countof(pOutline)-1; i >= 0; i--)
+  for(ptrdiff_t i = countof(pOutline)-1; i >= 0; i--)
   {
     tSpanBuffer::iterator it = pOutline[i]->begin();
     tSpanBuffer::iterator itEnd = pOutline[i]->end();
 
     for(; it!=itEnd; ++it)
     {
-      int y = (int)(((*it).first >> 32) - 0x40000000 + ysub);
-      int x1 = (int)(((*it).first & 0xffffffff) - 0x40000000 + xsub);
-      int x2 = (int)(((*it).second & 0xffffffff) - 0x40000000 + xsub);
+      unsigned __int64 f = (*it).first;
+      size_t y = (f >> 32) - 0x40000000 + ysub;
+      size_t x1 = (f & 0xffffffff) - 0x40000000 + xsub;
+
+      unsigned __int64 s = (*it).second;
+      size_t x2 = (s & 0xffffffff) - 0x40000000 + xsub;
 
       if(x2 > x1)
       {
-        int first = x1>>3;
-        int last = (x2-1)>>3;
+        size_t first = x1>>3;
+        size_t last = (x2-1)>>3;
         byte* dst = mpOverlayBuffer + 2*(mOverlayWidth*(y>>3) + first) + i;
 
         if(first == last)
@@ -776,7 +786,7 @@ bool Rasterizer::Rasterize(int xsub, int ysub, int fBlur, double fGaussianBlur)
     GaussianKernel filter(fGaussianBlur);
     if (mOverlayWidth >= filter.width && mOverlayHeight >= filter.width)
     {
-      int pitch = mOverlayWidth*2;
+      size_t pitch = mOverlayWidth*2;
 
       byte *tmp = DNew byte[pitch*mOverlayHeight];
       if(!tmp) return(false);
@@ -808,12 +818,12 @@ bool Rasterizer::Rasterize(int xsub, int ysub, int fBlur, double fGaussianBlur)
       int border = !mWideOutline.empty() ? 1 : 0;
 
       // This could be done in a separated way and win some speed
-      for(int j = 1; j < mOverlayHeight-1; j++)
+      for(ptrdiff_t j = 1; j < mOverlayHeight-1; j++)
       {
         byte* src = tmp + pitch*j + 2 + border;
         byte* dst = mpOverlayBuffer + pitch*j + 2 + border;
 
-        for(int i = 1; i < mOverlayWidth-1; i++, src+=2, dst+=2)
+        for(ptrdiff_t i = 1; i < mOverlayWidth-1; i++, src+=2, dst+=2)
         {
           *dst = (src[-2-pitch] + (src[-pitch]<<1) + src[+2-pitch]
             + (src[-2]<<1) + (src[0]<<2) + (src[+2]<<1)
@@ -832,11 +842,11 @@ bool Rasterizer::Rasterize(int xsub, int ysub, int fBlur, double fGaussianBlur)
 
 static __forceinline void pixmix(DWORD *dst, DWORD color, DWORD alpha)
 {
-  int a = (((alpha)*(color>>24))>>6)&0xff;
-  // Make sure both a and ia are in range 1..256 for the >>8 operations below to be correct
-  int ia = 256-a;
+  DWORD a = (((alpha)*(color>>24))>>6)&0xff;
+  DWORD ia = 256-a;
   a+=1;
 
+  DWORD tmp = (((((*dst>>8)&0x00ff0000)*ia)&0xff000000)>>24)&0xFF;
   *dst = ((((*dst&0x00ff00ff)*ia + (color&0x00ff00ff)*a)&0xff00ff00)>>8)
       | ((((*dst&0x0000ff00)*ia + (color&0x0000ff00)*a)&0x00ff0000)>>8)
       | ((((*dst>>8)&0x00ff0000)*ia)&0xff000000);
@@ -844,8 +854,8 @@ static __forceinline void pixmix(DWORD *dst, DWORD color, DWORD alpha)
 
 static __forceinline void pixmix2(DWORD *dst, DWORD color, DWORD shapealpha, DWORD clipalpha)
 {
-  int a = (((shapealpha)*(clipalpha)*(color>>24))>>12)&0xff;
-  int ia = 256-a;
+  DWORD a = (((shapealpha)*(clipalpha)*(color>>24))>>12)&0xff;
+  DWORD ia = 256-a;
   a+=1;
 
   *dst = ((((*dst&0x00ff00ff)*ia + (color&0x00ff00ff)*a)&0xff00ff00)>>8)
@@ -877,7 +887,7 @@ static __forceinline void pixmix_sse2(DWORD* dst, DWORD color, DWORD alpha)
 
 static __forceinline void pixmix2_sse2(DWORD* dst, DWORD color, DWORD shapealpha, DWORD clipalpha)
 {
-  int alpha = (((shapealpha)*(clipalpha)*(color>>24))>>12)&0xff;
+  DWORD alpha = (((shapealpha)*(clipalpha)*(color>>24))>>12)&0xff;
   color &= 0xffffff;
 
   __m128i zero = _mm_setzero_si128();
@@ -899,13 +909,26 @@ static __forceinline void pixmix2_sse2(DWORD* dst, DWORD color, DWORD shapealpha
 // Calculate a - b clamping to 0 instead of underflowing
 static __forceinline DWORD safe_subtract(DWORD a, DWORD b)
 {
+#ifndef _WIN64
   __m64 ap = _mm_cvtsi32_si64(a);
   __m64 bp = _mm_cvtsi32_si64(b);
   __m64 rp = _mm_subs_pu16(ap, bp);
   DWORD r = (DWORD)_mm_cvtsi64_si32(rp);
   _mm_empty();
   return r;
-  //return (b > a) ? 0 : a - b;
+#else
+  // For whatever reason Microsoft's x64 compiler doesn't support MMX intrinsics 
+  return (b > a) ? 0 : a - b;
+#endif
+}
+
+static __forceinline DWORD safe_subtract_sse2(DWORD a, DWORD b)
+{
+  __m128i ap = _mm_cvtsi32_si128(a);
+  __m128i bp = _mm_cvtsi32_si128(b);
+  __m128i rp = _mm_subs_epu16(ap, bp);
+
+  return (DWORD)_mm_cvtsi128_si32(rp);
 }
 
 // For CPUID usage in Rasterizer::Draw
@@ -913,6 +936,795 @@ static __forceinline DWORD safe_subtract(DWORD a, DWORD b)
 
 static const __int64 _00ff00ff00ff00ff = 0x00ff00ff00ff00ffi64;
 
+// some helper procedures (Draw is so big)
+void Rasterizer::Draw_noAlpha_spFF_Body_0(RasterizerNfo& rnfo)
+{
+  int h = rnfo.h;
+  int color = rnfo.color;
+
+  byte* s = rnfo.s;
+  DWORD* dst = rnfo.dst;
+  // The <<6 is due to pixmix expecting the alpha parameter to be
+  // the multiplication of two 6-bit unsigned numbers but we
+  // only have one here. (No alpha mask.)
+  while(h--)
+  {
+    for(int wt=0; wt<rnfo.w; ++wt)
+      pixmix(&dst[wt], color, s[wt*2]);
+    s += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_noAlpha_spFF_noBody_0(RasterizerNfo& rnfo)
+{
+  int h = rnfo.h;
+  int color = rnfo.color;
+
+  byte* src = rnfo.src;
+  DWORD* dst = rnfo.dst;
+  // src contains two different bitmaps, interlaced per pixel.
+  // The first stored is the fill, the second is the widened
+  // fill region created by CreateWidenedRegion().
+  // Since we're drawing only the border, we must otain that
+  // by subtracting the fill from the widened region. The
+  // subtraction must be saturating since the widened region
+  // pixel value can be smaller than the fill value.
+  // This happens when blur edges is used.
+  while(h--)
+  {
+    for(int wt=0; wt<rnfo.w; ++wt)
+      pixmix(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]));
+    src += 2*rnfo.overlayp;
+
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_noAlpha_sp_Body_0(RasterizerNfo& rnfo)
+{
+  int h = rnfo.h;
+  int color = rnfo.color;
+  
+
+  byte* s = rnfo.s;
+  DWORD* dst = rnfo.dst;
+  // xo is the offset (usually negative) we have moved into the image
+  // So if we have passed the switchpoint (?) switch to another colour
+  // (So switchpts stores both colours *and* coordinates?)
+  int gran = min(rnfo.sw[3]+1-rnfo.xo,rnfo.w);
+  int color2 = rnfo.sw[2];
+  while(h--)
+  {
+    for(int wt=0; wt<gran; ++wt)
+      pixmix(&dst[wt], color, s[wt*2]);
+    for(int wt=gran; wt<rnfo.w; ++wt)
+      pixmix(&dst[wt], color2, s[wt*2]);
+    s += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_noAlpha_sp_noBody_0(RasterizerNfo& rnfo)
+{
+  int h = rnfo.h;
+  int color = rnfo.color;
+  
+  byte* src = rnfo.src;
+  DWORD* dst = rnfo.dst;
+
+  int gran = min(rnfo.sw[3]+1-rnfo.xo,rnfo.w);
+  int color2 = rnfo.sw[2];
+  while(h--)
+  {
+    for(int wt=0; wt<gran; ++wt)
+      pixmix(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]));
+    for(int wt=gran; wt<rnfo.w; ++wt)
+      pixmix(&dst[wt], color2, safe_subtract(src[wt*2+1], src[wt*2]));
+    src += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Alpha_spFF_Body_0(RasterizerNfo& rnfo)
+{
+#ifdef _VSMOD // patch m006. moveable vector clip
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+#else
+  byte* am = rnfo.am;
+#endif
+  int h = rnfo.h;
+  int color = rnfo.color;
+
+  byte* s = rnfo.s;
+  DWORD* dst = rnfo.dst;
+  // Both s and am contain 6-bit bitmaps of two different
+  // alpha masks; s is the subtitle shape and am is the
+  // clipping mask.
+  // Multiplying them together yields a 12-bit number.
+  // I think some imprecision is introduced here??
+  while(h--)
+  {
+    for(int wt=0; wt<rnfo.w; ++wt)
+#ifdef _VSMOD // patch m006. moveable vector clip
+      pixmix2(&dst[wt], color, s[wt*2], mod_vc.GetAlphaValue(wt,h));
+#else
+      pixmix2(&dst[wt], color, s[wt*2], am[wt]);
+    am += rnfo.spdw;
+#endif
+    s += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Alpha_spFF_noBody_0(RasterizerNfo& rnfo)
+{
+#ifdef _VSMOD // patch m006. moveable vector clip
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+#else
+  byte* am = rnfo.am;
+#endif
+  int h = rnfo.h;
+  int color = rnfo.color;
+
+  byte* src = rnfo.src;
+  DWORD* dst = rnfo.dst;
+
+  int gran = min(rnfo.sw[3]+1-rnfo.xo,rnfo.w);
+  int color2 = rnfo.sw[2];
+  while(h--)
+  {
+#ifdef _VSMOD // patch m006. moveable vector clip
+    for(int wt=0; wt<gran; ++wt)
+      pixmix2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]), mod_vc.GetAlphaValue(wt,h));
+    for(int wt=gran; wt<rnfo.w; ++wt)
+      pixmix2(&dst[wt], color2, safe_subtract(src[wt*2+1], src[wt*2]), mod_vc.GetAlphaValue(wt,h));
+#else
+    for(int wt=0; wt<gran; ++wt)
+      pixmix2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]), am[wt]);
+    for(int wt=gran; wt<rnfo.w; ++wt)
+      pixmix2(&dst[wt], color2, safe_subtract(src[wt*2+1], src[wt*2]), am[wt]);
+    am += rnfo.spdw;
+#endif
+    src += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Alpha_sp_Body_0(RasterizerNfo& rnfo)
+{
+#ifdef _VSMOD // patch m006. moveable vector clip
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+#else
+  byte* am = rnfo.am;
+#endif
+  int h = rnfo.h;
+  int color = rnfo.color;
+  
+
+  byte* s = rnfo.s;
+  DWORD* dst = rnfo.dst;
+  while(h--)
+  {
+    for(int wt=0; wt<rnfo.w; ++wt)
+    {
+#ifdef _VSMOD // patch m006. moveable vector clip
+      pixmix2(&dst[wt], color, s[wt*2], mod_vc.GetAlphaValue(wt,h));
+    }
+#else
+      pixmix2(&dst[wt], color, s[wt*2], am[wt]);
+    }
+    am += rnfo.spdw;
+#endif
+    s += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Alpha_sp_noBody_0(RasterizerNfo& rnfo)
+{
+#ifdef _VSMOD // patch m006. moveable vector clip
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+#else
+  byte* am = rnfo.am;
+#endif
+  int h = rnfo.h;
+  int color = rnfo.color;
+  
+
+  byte* src = rnfo.src;
+  DWORD* dst = rnfo.dst;
+  int gran = min(rnfo.sw[3]+1-rnfo.xo,rnfo.w);
+  int color2 = rnfo.sw[2];
+  while(h--)
+  {
+#ifdef _VSMOD // patch m006. moveable vector clip
+    for(int wt=0; wt<gran; ++wt)
+      pixmix2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]), mod_vc.GetAlphaValue(wt,h));
+    for(int wt=gran; wt<rnfo.w; ++wt)
+      pixmix2(&dst[wt], color2, safe_subtract(src[wt*2+1], src[wt*2]), mod_vc.GetAlphaValue(wt,h));
+#else
+    for(int wt=0; wt<gran; ++wt)
+      pixmix2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]), am[wt]);
+    for(int wt=gran; wt<rnfo.w; ++wt)
+      pixmix2(&dst[wt], color2, safe_subtract(src[wt*2+1], src[wt*2]), am[wt]);
+    am += rnfo.spdw;
+#endif
+    src += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}//Draw_Alpha_sp_noBody_0(w,h,xo,spd.w,color,spd.pitch,dst,src,sw,am);
+
+// == SSE2 func ==
+void Rasterizer::Draw_noAlpha_spFF_Body_sse2(RasterizerNfo& rnfo)
+{
+  int h = rnfo.h;
+  int color = rnfo.color;
+
+  const DWORD* sw = rnfo.sw;
+  byte* s = rnfo.s;
+  DWORD* dst = rnfo.dst;
+  // The <<6 is due to pixmix expecting the alpha parameter to be
+  // the multiplication of two 6-bit unsigned numbers but we
+  // only have one here. (No alpha mask.)
+  while(h--)
+  {
+    for(int wt=0; wt<rnfo.w; ++wt)
+      pixmix_sse2(&dst[wt], color, s[wt*2]);
+    s += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}//Draw_noAlpha_spFF_Body_sse2(w,h,color,spd.pitch,dst,s);
+
+void Rasterizer::Draw_noAlpha_spFF_noBody_sse2(RasterizerNfo& rnfo)
+{
+  int h = rnfo.h;
+  int color = rnfo.color;
+
+  const DWORD* sw = rnfo.sw;
+  byte* src = rnfo.src;
+  DWORD* dst = rnfo.dst;
+  // src contains two different bitmaps, interlaced per pixel.
+  // The first stored is the fill, the second is the widened
+  // fill region created by CreateWidenedRegion().
+  // Since we're drawing only the border, we must otain that
+  // by subtracting the fill from the widened region. The
+  // subtraction must be saturating since the widened region
+  // pixel value can be smaller than the fill value.
+  // This happens when blur edges is used.
+  while(h--)
+  {
+    for(int wt=0; wt<rnfo.w; ++wt)
+      pixmix_sse2(&dst[wt], color, safe_subtract_sse2(src[wt*2+1], src[wt*2]));
+    src += 2*rnfo.overlayp;
+
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}//Draw_noAlpha_spFF_noBody_sse2(w,h,color,spd.pitch,dst,src);
+
+void Rasterizer::Draw_noAlpha_sp_Body_sse2(RasterizerNfo& rnfo)
+{
+  int h = rnfo.h;
+
+  int color = rnfo.color;
+  
+  byte* s = rnfo.s;
+  DWORD* dst = rnfo.dst;
+  // xo is the offset (usually negative) we have moved into the image
+  // So if we have passed the switchpoint (?) switch to another colour
+  // (So switchpts stores both colours *and* coordinates?)
+  int gran = min(rnfo.sw[3]+1-rnfo.xo,rnfo.w);
+  int color2 = rnfo.sw[2];
+  while(h--)
+  {
+    for(int wt=0; wt<gran; ++wt)
+      pixmix_sse2(&dst[wt], color, s[wt*2]);
+    for(int wt=gran; wt<rnfo.w; ++wt)
+      pixmix_sse2(&dst[wt], color2, s[wt*2]);
+    s += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_noAlpha_sp_noBody_sse2(RasterizerNfo& rnfo)
+{
+  int h = rnfo.h;
+  int color = rnfo.color;
+  
+
+  byte* src = rnfo.src;
+  DWORD* dst = rnfo.dst;
+  int gran = min(rnfo.sw[3]+1-rnfo.xo,rnfo.w);
+  int color2 = rnfo.sw[2];
+  while(h--)
+  {
+    for(int wt=0; wt<gran; ++wt)
+      pixmix_sse2(&dst[wt], color, safe_subtract_sse2(src[wt*2+1], src[wt*2]));
+    for(int wt=gran; wt<rnfo.w; ++wt)
+      pixmix_sse2(&dst[wt], color2, safe_subtract_sse2(src[wt*2+1], src[wt*2]));
+    src += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Alpha_spFF_Body_sse2(RasterizerNfo& rnfo)
+{
+#ifdef _VSMOD // patch m006. moveable vector clip
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+#else
+  byte* am = rnfo.am;
+#endif
+  int h = rnfo.h;
+  int color = rnfo.color;
+
+  byte* s = rnfo.s;
+  DWORD* dst = rnfo.dst;
+  // Both s and am contain 6-bit bitmaps of two different
+  // alpha masks; s is the subtitle shape and am is the
+  // clipping mask.
+  // Multiplying them together yields a 12-bit number.
+  // I think some imprecision is introduced here??
+  while(h--)
+  {
+    for(int wt=0; wt<rnfo.w; ++wt)
+#ifdef _VSMOD // patch m006. moveable vector clip
+      pixmix2_sse2(&dst[wt], color, s[wt*2], mod_vc.GetAlphaValue(wt,h));
+#else
+      pixmix2_sse2(&dst[wt], color, s[wt*2], am[wt]);
+    am += rnfo.spdw;
+#endif
+    s += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Alpha_spFF_noBody_sse2(RasterizerNfo& rnfo)
+{
+#ifdef _VSMOD // patch m006. moveable vector clip
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+#else
+  byte* am = rnfo.am;
+#endif
+  int h = rnfo.h;
+  int color = rnfo.color;
+
+  byte* src = rnfo.src;
+  DWORD* dst = rnfo.dst;
+
+  while(h--)
+  {
+    for(int wt=0; wt<rnfo.w; ++wt)
+#ifdef _VSMOD // patch m006. moveable vector clip
+      pixmix2_sse2(&dst[wt], color, safe_subtract_sse2(src[wt*2+1], src[wt*2]), mod_vc.GetAlphaValue(wt,h));
+#else
+      pixmix2_sse2(&dst[wt], color, safe_subtract_sse2(src[wt*2+1], src[wt*2]), am[wt]);
+    am += rnfo.spdw;
+#endif
+    src += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Alpha_sp_Body_sse2(RasterizerNfo& rnfo)
+{
+#ifdef _VSMOD // patch m006. moveable vector clip
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+#else
+  byte* am = rnfo.am;
+#endif
+  int h = rnfo.h;
+  int color = rnfo.color;
+  
+
+  byte* s = rnfo.s;
+  DWORD* dst = rnfo.dst;
+
+  int gran = min(rnfo.sw[3]+1-rnfo.xo,rnfo.w);
+  int color2 = rnfo.sw[2];
+  while(h--)
+  {
+#ifdef _VSMOD // patch m006. moveable vector clip
+    for(int wt=0; wt<gran; ++wt)
+      pixmix2_sse2(&dst[wt], color, s[wt*2], mod_vc.GetAlphaValue(wt,h));
+    for(int wt=gran; wt<rnfo.w; ++wt)
+      pixmix2_sse2(&dst[wt], color2, s[wt*2], mod_vc.GetAlphaValue(wt,h));
+#else
+    for(int wt=0; wt<gran; ++wt)
+      pixmix2_sse2(&dst[wt], color, s[wt*2], am[wt]);
+    for(int wt=gran; wt<rnfo.w; ++wt)
+      pixmix2_sse2(&dst[wt], color2, s[wt*2], am[wt]);
+    am += rnfo.spdw;
+#endif
+    s += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Alpha_sp_noBody_sse2(RasterizerNfo& rnfo)
+{
+#ifdef _VSMOD // patch m006. moveable vector clip
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+#else
+  byte* am = rnfo.am;
+#endif
+  int h = rnfo.h;
+  
+  DWORD color = rnfo.color;
+
+  byte* src = rnfo.src;
+  DWORD* dst = rnfo.dst;
+
+  int gran = min(rnfo.sw[3]+1-rnfo.xo,rnfo.w);
+  int color2 = rnfo.sw[2];
+  while(h--)
+  {
+#ifdef _VSMOD // patch m006. moveable vector clip
+    for(int wt=0; wt<gran; ++wt)
+      pixmix2_sse2(&dst[wt], color, safe_subtract_sse2(src[wt*2+1], src[wt*2]), mod_vc.GetAlphaValue(wt,h));
+    for(int wt=gran; wt<rnfo.w; ++wt)
+      pixmix2_sse2(&dst[wt], color, safe_subtract_sse2(src[wt*2+1], src[wt*2]), mod_vc.GetAlphaValue(wt,h));
+#else
+    for(int wt=0; wt<gran; ++wt)
+      pixmix2_sse2(&dst[wt], color, safe_subtract_sse2(src[wt*2+1], src[wt*2]), am[wt]);
+    for(int wt=gran; wt<rnfo.w; ++wt)
+      pixmix2_sse2(&dst[wt], color, safe_subtract_sse2(src[wt*2+1], src[wt*2]), am[wt]);
+    am += rnfo.spdw;
+#endif
+    src += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+#ifdef _VSMOD // patch m004. gradient colors
+void Rasterizer::Draw_Grad_noAlpha_spFF_Body_0(RasterizerNfo& rnfo)
+{
+  double hfull = (double)rnfo.h;
+  byte* s = rnfo.s;
+  DWORD* dst = rnfo.dst;
+  MOD_GRADIENT mod_grad = rnfo.mod_grad;
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+
+  int typ = rnfo.typ;
+  int h = rnfo.h;
+  int w = rnfo.w;
+  while(h--)
+  {
+    for(int wt=0; wt<w; ++wt)
+      pixmix(&dst[wt], mod_grad.getmixcolor(wt,h,typ), s[wt*2]);
+    s += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}//Draw_noAlpha_spFF_Body_0(w,h,color,spd.pitch,dst,s);
+
+void Rasterizer::Draw_Grad_noAlpha_spFF_noBody_0(RasterizerNfo& rnfo)
+{
+  double hfull = (double)rnfo.h;
+  byte* src = rnfo.src;
+  DWORD* dst = rnfo.dst;
+  MOD_GRADIENT mod_grad = rnfo.mod_grad;
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+
+  int typ = rnfo.typ;
+  int h = rnfo.h;
+  int w = rnfo.w;
+  while(h--)
+  {
+    for(int wt=0; wt<w; ++wt)
+      pixmix(&dst[wt], mod_grad.getmixcolor(wt,h,typ), safe_subtract(src[wt*2+1], src[wt*2]));
+    src += 2*rnfo.overlayp;
+
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Grad_noAlpha_sp_Body_0(RasterizerNfo& rnfo)
+{
+  double hfull = (double)rnfo.h;
+  MOD_GRADIENT mod_grad = rnfo.mod_grad;
+
+  byte* s = rnfo.s;
+  DWORD* dst = rnfo.dst;
+
+  int h = rnfo.h;
+  int w = rnfo.w;
+  
+  int gran = max(rnfo.sw[3]+1-rnfo.xo,0);
+  while(h--)
+  {
+    for(int wt=0; wt<gran; ++wt)
+      pixmix(&dst[wt], mod_grad.getmixcolor(wt,h,0), s[wt*2]);
+    for(int wt=gran; wt<w; ++wt)
+      pixmix(&dst[wt], mod_grad.getmixcolor(wt,h,1), s[wt*2]);
+    s += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Grad_noAlpha_sp_noBody_0(RasterizerNfo& rnfo)
+{
+  double hfull = (double)rnfo.h;
+  MOD_GRADIENT mod_grad = rnfo.mod_grad;
+
+  byte* src = rnfo.src;
+  DWORD* dst = rnfo.dst;
+
+  int h = rnfo.h;
+  int w = rnfo.w;
+  
+  int gran = min(rnfo.sw[3]+1-rnfo.xo,rnfo.w);
+  while(h--)
+  {
+    for(int wt=0; wt<gran; ++wt)
+      pixmix(&dst[wt], mod_grad.getmixcolor(wt,h,0), safe_subtract(src[wt*2+1], src[wt*2]));
+    for(int wt=gran; wt<w; ++wt)
+      pixmix(&dst[wt], mod_grad.getmixcolor(wt,h,1), safe_subtract(src[wt*2+1], src[wt*2]));
+    src += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Grad_Alpha_spFF_Body_0(RasterizerNfo& rnfo)
+{
+  double hfull = (double)rnfo.h;
+  byte* s = rnfo.s;
+  DWORD* dst = rnfo.dst;
+  MOD_GRADIENT mod_grad = rnfo.mod_grad;
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+
+  int typ = rnfo.typ;
+  int h = rnfo.h;
+  int w = rnfo.w;
+  while(h--)
+  {
+    for(int wt=0; wt<w; ++wt)
+      pixmix2(&dst[wt], mod_grad.getmixcolor(wt,h,typ), s[wt*2], mod_vc.GetAlphaValue(wt,h));
+    s += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Grad_Alpha_spFF_noBody_0(RasterizerNfo& rnfo)
+{
+  double hfull = (double)rnfo.h;
+  byte* src = rnfo.src;
+  DWORD* dst = rnfo.dst;
+  MOD_GRADIENT mod_grad = rnfo.mod_grad;
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+
+  int typ = rnfo.typ;
+  int h = rnfo.h;
+  int w = rnfo.w;
+  while(h--)
+  {
+    for(int wt=0; wt<w; ++wt)
+      pixmix2(&dst[wt], mod_grad.getmixcolor(wt,h,typ), safe_subtract(src[wt*2+1], src[wt*2]), mod_vc.GetAlphaValue(wt,h));
+    src += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Grad_Alpha_sp_Body_0(RasterizerNfo& rnfo)
+{
+  double hfull = (double)rnfo.h;
+  MOD_GRADIENT mod_grad = rnfo.mod_grad;
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+
+  int gran = min(rnfo.sw[3]+1-rnfo.xo,rnfo.w);
+  byte* s = rnfo.s;
+  DWORD* dst = rnfo.dst;
+
+  int h = rnfo.h;
+  int w = rnfo.w;
+  
+  while(h--)
+  {
+    for(int wt=0; wt<gran; ++wt)
+      pixmix2(&dst[wt], mod_grad.getmixcolor(wt,h,0), s[wt*2], mod_vc.GetAlphaValue(wt,h));
+    for(int wt=gran; wt<w; ++wt)
+      pixmix2(&dst[wt], mod_grad.getmixcolor(wt,h,1), s[wt*2], mod_vc.GetAlphaValue(wt,h));
+    s += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Grad_Alpha_sp_noBody_0(RasterizerNfo& rnfo)
+{
+  double hfull = (double)rnfo.h;
+  MOD_GRADIENT mod_grad = rnfo.mod_grad;
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+
+  int gran = min(rnfo.sw[3]+1-rnfo.xo,rnfo.w);
+  byte* src = rnfo.src;
+  DWORD* dst = rnfo.dst;
+
+  int h = rnfo.h;
+  int w = rnfo.w;
+  
+  while(h--)
+  {
+    for(int wt=0; wt<gran; ++wt)
+      pixmix2(&dst[wt], mod_grad.getmixcolor(wt,h,0), safe_subtract(src[wt*2+1], src[wt*2]), mod_vc.GetAlphaValue(wt,h));
+    for(int wt=gran; wt<w; ++wt)
+      pixmix2(&dst[wt], mod_grad.getmixcolor(wt,h,1), safe_subtract(src[wt*2+1], src[wt*2]), mod_vc.GetAlphaValue(wt,h));
+    src += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+// == SSE2 func ==
+void Rasterizer::Draw_Grad_noAlpha_spFF_Body_sse2(RasterizerNfo& rnfo)
+{
+  double hfull = (double)rnfo.h;
+  MOD_GRADIENT mod_grad = rnfo.mod_grad;
+  int typ = rnfo.typ;
+
+  byte* s = rnfo.s;
+  DWORD* dst = rnfo.dst;
+
+  int h = rnfo.h;
+  int w = rnfo.w;
+  while(h--)
+  {
+    for(int wt=0; wt<w; ++wt)
+      pixmix_sse2(&dst[wt], mod_grad.getmixcolor(wt,h,typ), s[wt*2]);
+    s += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Grad_noAlpha_spFF_noBody_sse2(RasterizerNfo& rnfo)
+{
+  double hfull = (double)rnfo.h;
+  MOD_GRADIENT mod_grad = rnfo.mod_grad;
+  int typ = rnfo.typ;
+    
+  byte* src = rnfo.src;
+  DWORD* dst = rnfo.dst;
+
+  int h = rnfo.h;
+  int w = rnfo.w;
+  while(h--)
+  {
+    for(int wt=0; wt<w; ++wt)
+      pixmix_sse2(&dst[wt], mod_grad.getmixcolor(wt,h,typ), safe_subtract_sse2(src[wt*2+1], src[wt*2]));
+    src += 2*rnfo.overlayp;
+
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Grad_noAlpha_sp_Body_sse2(RasterizerNfo& rnfo)
+{
+  double hfull = (double)rnfo.h;
+  MOD_GRADIENT mod_grad = rnfo.mod_grad;
+
+  byte* s = rnfo.s;
+  DWORD* dst = rnfo.dst;
+
+  int h = rnfo.h;
+  int w = rnfo.w;
+  int gran = min(rnfo.sw[3]+1-rnfo.xo,rnfo.w);
+  while(h--)
+  {
+    for(int wt=0; wt<gran; ++wt)
+      pixmix_sse2(&dst[wt], mod_grad.getmixcolor(wt,h,0), s[wt*2]);
+    for(int wt=gran; wt<w; ++wt)
+      pixmix_sse2(&dst[wt], mod_grad.getmixcolor(wt,h,1), s[wt*2]);
+    s += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Grad_noAlpha_sp_noBody_sse2(RasterizerNfo& rnfo)
+{
+  double hfull = (double)rnfo.h;
+  MOD_GRADIENT mod_grad = rnfo.mod_grad;
+
+  byte* src = rnfo.src;
+  DWORD* dst = rnfo.dst;
+
+  int h = rnfo.h;
+  int w = rnfo.w;
+  int gran = min(rnfo.sw[3]+1-rnfo.xo,rnfo.w);
+  while(h--)
+  {
+    for(int wt=0; wt<gran; ++wt)
+      pixmix_sse2(&dst[wt], mod_grad.getmixcolor(wt,h,0), safe_subtract_sse2(src[wt*2+1], src[wt*2]));
+    for(int wt=gran; wt<w; ++wt)
+      pixmix_sse2(&dst[wt], mod_grad.getmixcolor(wt,h,1), safe_subtract_sse2(src[wt*2+1], src[wt*2]));
+    src += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Grad_Alpha_spFF_Body_sse2(RasterizerNfo& rnfo)
+//(int w, int h, int overlayp, int typ, MOD_GRADIENT& mod_grad, int pitch, DWORD* dst, const byte* s, MOD_MOVEVC& mod_vc)
+{
+  double hfull = (double)rnfo.h;
+  byte* s = rnfo.s;
+  DWORD* dst = rnfo.dst;
+  MOD_GRADIENT mod_grad = rnfo.mod_grad;
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+
+  int typ = rnfo.typ;
+  int h = rnfo.h;
+  int w = rnfo.w;
+  while(h--)
+  {
+    for(int wt=0; wt<w; ++wt)
+      pixmix2_sse2(&dst[wt], mod_grad.getmixcolor(wt,h,typ), s[wt*2], mod_vc.GetAlphaValue(wt,h));
+    s += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Grad_Alpha_spFF_noBody_sse2(RasterizerNfo& rnfo)
+//(int w, int h, int overlayp, int typ, MOD_GRADIENT& mod_grad, int pitch, DWORD* dst, const byte* src, MOD_MOVEVC& mod_vc)
+{
+  double hfull = (double)rnfo.h;
+  byte* src = rnfo.src;
+  DWORD* dst = rnfo.dst;
+  MOD_GRADIENT mod_grad = rnfo.mod_grad;
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+
+  int typ = rnfo.typ;
+  int h = rnfo.h;
+  int w = rnfo.w;
+  while(h--)
+  {
+    for(int wt=0; wt<w; ++wt)
+      pixmix2_sse2(&dst[wt], mod_grad.getmixcolor(wt,h,typ), safe_subtract_sse2(src[wt*2+1], src[wt*2]), mod_vc.GetAlphaValue(wt,h));
+    src += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Grad_Alpha_sp_Body_sse2(RasterizerNfo& rnfo)
+{
+  double hfull = (double)rnfo.h;
+  MOD_GRADIENT mod_grad = rnfo.mod_grad;
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+
+  byte* s = rnfo.s;
+  DWORD* dst = rnfo.dst;
+
+  int h = rnfo.h;
+  int w = rnfo.w;
+  int gran = min(rnfo.sw[3]+1-rnfo.xo,rnfo.w);
+  while(h--)
+  {
+    for(int wt=0; wt<gran; ++wt)
+      pixmix2_sse2(&dst[wt], mod_grad.getmixcolor(wt,h,0), s[wt*2], mod_vc.GetAlphaValue(wt,h));
+    for(int wt=gran; wt<w; ++wt)
+      pixmix2_sse2(&dst[wt], mod_grad.getmixcolor(wt,h,1), s[wt*2], mod_vc.GetAlphaValue(wt,h));
+    s += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+
+void Rasterizer::Draw_Grad_Alpha_sp_noBody_sse2(RasterizerNfo& rnfo)
+{
+  double hfull = (double)rnfo.h;
+  MOD_GRADIENT mod_grad = rnfo.mod_grad;
+  MOD_MOVEVC mod_vc = rnfo.mod_vc;
+
+  byte* src = rnfo.src;
+  DWORD* dst = rnfo.dst;
+
+  int h = rnfo.h;
+  int w = rnfo.w;
+  int gran = min(rnfo.sw[3]+1-rnfo.xo,rnfo.w);
+  while(h--)
+  {
+    for(int wt=0; wt<gran; ++wt)
+      pixmix2_sse2(&dst[wt], mod_grad.getmixcolor(wt,h,0), safe_subtract_sse2(src[wt*2+1], src[wt*2]), mod_vc.GetAlphaValue(wt,h));
+    for(int wt=gran; wt<w; ++wt)
+      pixmix2_sse2(&dst[wt], mod_grad.getmixcolor(wt,h,1), safe_subtract_sse2(src[wt*2+1], src[wt*2]), mod_vc.GetAlphaValue(wt,h));
+    src += 2*rnfo.overlayp;
+    dst = (DWORD*)((char *)dst + rnfo.pitch);
+  }
+}
+#endif
 // Render a subpicture onto a surface.
 // spd is the surface to render on.
 // clipRect is a rectangular clip region to render inside.
@@ -922,13 +1734,17 @@ static const __int64 _00ff00ff00ff00ff = 0x00ff00ff00ff00ffi64;
 //    switchpts[i*2] contains a colour and switchpts[i*2+1] contains the coordinate to use that colour from
 // fBody tells whether to render the body of the subs.
 // fBorder tells whether to render the border of the subs.
-Com::SmartRect Rasterizer::Draw(SubPicDesc& spd, Com::SmartRect& clipRect, byte* pAlphaMask, int xsub, int ysub, const long* switchpts, bool fBody, bool fBorder)
+#ifdef _VSMOD // patch m004. gradient colors
+Com::SmartRect Rasterizer::Draw(SubPicDesc& spd, Com::SmartRect& clipRect, byte* pAlphaMask, int xsub, int ysub, 
+             const DWORD* switchpts, bool fBody, bool fBorder, int typ, MOD_GRADIENT& mod_grad, MOD_MOVEVC& mod_vc)
+#else
+Com::SmartRect Rasterizer::Draw(SubPicDesc& spd, Com::SmartRect& clipRect, byte* pAlphaMask, int xsub, int ysub, 
+             const DWORD* switchpts, bool fBody, bool fBorder)
+#endif
 {
   Com::SmartRect bbox(0, 0, 0, 0);
 
   if(!switchpts || !fBody && !fBorder) return(bbox);
-
-  // clip
 
   // Limit drawn area to intersection of rendering surface and rectangular clip area
   Com::SmartRect r(0, 0, spd.w, spd.h);
@@ -955,196 +1771,237 @@ Com::SmartRect Rasterizer::Draw(SubPicDesc& spd, Com::SmartRect& clipRect, byte*
   bbox.SetRect(x, y, x+w, y+h);
   bbox &= Com::SmartRect(0, 0, spd.w, spd.h);
 
-  // draw
+  // CPUID from VDub
+  bool fSSE2 = !!(g_cpuid.m_flags & CCpuID::sse2);
+  
+#ifdef _VSMOD // patch m006. moveable vector clip
+  mod_vc.hfull = h;
+  mod_vc.curpos = Com::SmartPoint(x,y);
+  mod_vc.alphamask = pAlphaMask + spd.w * y + x;
+#endif
 
+  // fill rasterize info
+  RasterizerNfo rnfo;
+  // Grab the first colour
+  rnfo.color = switchpts[0];
+  // How would this differ from src?
+  rnfo.dst = (DWORD*)((char *)spd.bits + (spd.pitch * y)) + x;
+  rnfo.sw = switchpts;
+
+  rnfo.w = w;
+  rnfo.h = h;
+  rnfo.xo = xo;
+  rnfo.yo = yo;
+  rnfo.overlayp = mOverlayWidth;
+  rnfo.pitch = spd.pitch;
+  rnfo.spdw = spd.w;
   // The alpha bitmap of the subtitles?
-  const byte* src = mpOverlayBuffer + 2*(mOverlayWidth * yo + xo);
+  rnfo.src = mpOverlayBuffer + 2*(mOverlayWidth * yo + xo);
   // s points to what the "body" to use is
   // If we're rendering body fill and border, src+1 points to the array of
   // widened regions which contain both border and fill in one.
-  const byte* s = fBorder ? (src+1) : src;
+  rnfo.s = fBorder ? (rnfo.src+1) : rnfo.src;
+#ifdef _VSMOD // patch m006. moveable vector clip
+  rnfo.mod_vc = mod_vc;
+  rnfo.mod_grad = mod_grad;
+  rnfo.mod_grad.width = mOverlayWidth;
+  rnfo.mod_grad.height = mOverlayHeight;
+  rnfo.mod_grad.xoffset = xo;
+  rnfo.mod_grad.yoffset = yo;
+  rnfo.typ = typ;
+#else
   // The complex "vector clip mask" I think.
-  const byte* am = pAlphaMask + spd.w * y + x;
-  // How would this differ from src?
-  unsigned long* dst = (unsigned long *)((char *)spd.bits + spd.pitch * y) + x;
-
-  // Grab the first colour
-  unsigned long color = switchpts[0];
-
-  // CPUID from VDub
-  bool fSSE2 = !!(g_cpuid.m_flags & CCpuID::sse2);
-
+  rnfo.am = pAlphaMask + spd.w * y + x;
+#endif
   // Every remaining line in the bitmap to be rendered...
-  while(h--)
+  // Basic case of no complex clipping mask
+#ifdef _VSMOD // patch m004. gradient colors
+  if(((typ==0)&&((mod_grad.mode[0]==0)&&(mod_grad.mode[1]==0)))||(mod_grad.mode[typ]==0))
+  // No gradient
+#endif
+  if(!pAlphaMask)
   {
-    // Basic case of no complex clipping mask
+    // If the first colour switching coordinate is at "infinite" we're
+    // never switching and can use some simpler code.
+    // ??? Is this optimisation really worth the extra readability issues it adds?
+    if(switchpts[1] == 0xFFFFFFFF)
+    {
+      // fBody is true if we're rendering a fill or a shadow.
+      if(fBody)
+      {
+        if(fSSE2)
+        { Draw_noAlpha_spFF_Body_sse2(rnfo); }
+        else
+        { Draw_noAlpha_spFF_Body_0(rnfo); }
+      }
+      // Not painting body, ie. painting border without fill in it
+      else
+      {
+        if(fSSE2)
+        { Draw_noAlpha_spFF_noBody_sse2(rnfo); }
+        else
+        { Draw_noAlpha_spFF_noBody_0(rnfo); }
+      }
+    }
+    // not (switchpts[1] == 0xFFFFFFFF)
+    else
+    {
+      // switchpts plays an important rule here
+      //const long *sw = switchpts;
+
+      if(fBody)
+      {
+        if(fSSE2)
+        { Draw_noAlpha_sp_Body_sse2(rnfo); }
+        else
+        { Draw_noAlpha_sp_Body_0(rnfo); }
+      }
+      // Not body
+      else
+      {
+        if(fSSE2)
+        { Draw_noAlpha_sp_noBody_sse2(rnfo); }
+        else
+        { Draw_noAlpha_sp_noBody_0(rnfo); }
+      }
+    }
+  }
+  // Here we *do* have an alpha mask
+  else
+  {
+    if(switchpts[1] == 0xFFFFFFFF)
+    {
+      if(fBody)
+      {
+        if(fSSE2)
+        { Draw_Alpha_spFF_Body_sse2(rnfo); }
+        else
+        { Draw_Alpha_spFF_Body_0(rnfo); }
+      }
+      else
+      {
+        if(fSSE2)
+        { Draw_Alpha_spFF_noBody_sse2(rnfo); }
+        else
+        { Draw_Alpha_spFF_noBody_0(rnfo); }
+      }
+    }
+    else
+    {
+      //const long *sw = switchpts;
+
+      if(fBody)
+      {
+        if(fSSE2)
+        { Draw_Alpha_sp_Body_sse2(rnfo); }
+        else
+        { Draw_Alpha_sp_Body_0(rnfo); }
+      }
+      else
+      {
+        if(fSSE2)
+        { Draw_Alpha_sp_noBody_sse2(rnfo); }
+        else
+        { Draw_Alpha_sp_noBody_0(rnfo); }
+      }
+    }
+  }
+#ifdef _VSMOD // patch m004. gradient colors
+  else
+  {
     if(!pAlphaMask)
     {
       // If the first colour switching coordinate is at "infinite" we're
       // never switching and can use some simpler code.
       // ??? Is this optimisation really worth the extra readability issues it adds?
-      if(switchpts[1] == 0xffffffff)
+      if(switchpts[1] == 0xFFFFFFFF)
       {
         // fBody is true if we're rendering a fill or a shadow.
         if(fBody)
         {
-          // Run over every pixel, overlaying the subtitles with the fill colour
           if(fSSE2)
-            for(int wt=0; wt<w; ++wt)
-              // The <<6 is due to pixmix expecting the alpha parameter to be
-              // the multiplication of two 6-bit unsigned numbers but we
-              // only have one here. (No alpha mask.)
-              pixmix_sse2(&dst[wt], color, s[wt*2]);
+          { Draw_Grad_noAlpha_spFF_Body_sse2(rnfo); }
           else
-            for(int wt=0; wt<w; ++wt)
-              pixmix(&dst[wt], color, s[wt*2]);
+          { Draw_Grad_noAlpha_spFF_Body_0(rnfo); }
         }
         // Not painting body, ie. painting border without fill in it
         else
         {
           if(fSSE2)
-            for(int wt=0; wt<w; ++wt)
-              // src contains two different bitmaps, interlaced per pixel.
-              // The first stored is the fill, the second is the widened
-              // fill region created by CreateWidenedRegion().
-              // Since we're drawing only the border, we must otain that
-              // by subtracting the fill from the widened region. The
-              // subtraction must be saturating since the widened region
-              // pixel value can be smaller than the fill value.
-              // This happens when blur edges is used.
-              pixmix_sse2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]));
+          { Draw_Grad_noAlpha_spFF_noBody_sse2(rnfo); }
           else
-            for(int wt=0; wt<w; ++wt)
-              pixmix(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]));
+          { Draw_Grad_noAlpha_spFF_noBody_0(rnfo); }
         }
       }
-      // not (switchpts[1] == 0xffffffff)
+      // not (switchpts[1] == 0xFFFFFFFF)
       else
       {
         // switchpts plays an important rule here
-        const long *sw = switchpts;
+        //const long *sw = switchpts;
 
         if(fBody)
         {
-          if(fSSE2) 
-          for(int wt=0; wt<w; ++wt)
-          {
-            // xo is the offset (usually negative) we have moved into the image
-            // So if we have passed the switchpoint (?) switch to another colour
-            // (So switchpts stores both colours *and* coordinates?)
-            if(wt+xo >= sw[1]) {while(wt+xo >= sw[1]) sw += 2; color = sw[-2];}
-            pixmix_sse2(&dst[wt], color, s[wt*2]);
-          }
+          if(fSSE2)
+          { Draw_Grad_noAlpha_sp_Body_sse2(rnfo); }
           else
-          for(int wt=0; wt<w; ++wt)
-          {
-            if(wt+xo >= sw[1]) {while(wt+xo >= sw[1]) sw += 2; color = sw[-2];}
-            pixmix(&dst[wt], color, s[wt*2]);
-          }
+          { Draw_Grad_noAlpha_sp_Body_0(rnfo); }
         }
         // Not body
         else
         {
-          if(fSSE2) 
-          for(int wt=0; wt<w; ++wt)
-          {
-            if(wt+xo >= sw[1]) {while(wt+xo >= sw[1]) sw += 2; color = sw[-2];} 
-            pixmix_sse2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]));
-          }
+          if(fSSE2)
+          { Draw_Grad_noAlpha_sp_noBody_sse2(rnfo); }
           else
-          for(int wt=0; wt<w; ++wt)
-          {
-            if(wt+xo >= sw[1]) {while(wt+xo >= sw[1]) sw += 2; color = sw[-2];} 
-            pixmix(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]));
-          }
+          { Draw_Grad_noAlpha_sp_noBody_0(rnfo); }
         }
       }
     }
     // Here we *do* have an alpha mask
     else
     {
-      if(switchpts[1] == 0xffffffff)
+      if(switchpts[1] == 0xFFFFFFFF)
       {
         if(fBody)
         {
           if(fSSE2)
-            for(int wt=0; wt<w; ++wt)
-              // Both s and am contain 6-bit bitmaps of two different
-              // alpha masks; s is the subtitle shape and am is the
-              // clipping mask.
-              // Multiplying them together yields a 12-bit number.
-              // I think some imprecision is introduced here??
-              pixmix2_sse2(&dst[wt], color, s[wt*2], am[wt]);
+          { Draw_Grad_Alpha_spFF_Body_sse2(rnfo); }
           else
-            for(int wt=0; wt<w; ++wt)
-              pixmix2(&dst[wt], color, s[wt*2], am[wt]);
+          { Draw_Grad_Alpha_spFF_Body_0(rnfo); }
         }
         else
         {
           if(fSSE2)
-            for(int wt=0; wt<w; ++wt)
-              pixmix2_sse2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]), am[wt]);
+          { Draw_Grad_Alpha_spFF_noBody_sse2(rnfo); }
           else
-            for(int wt=0; wt<w; ++wt)
-              pixmix2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]), am[wt]);
+          { Draw_Grad_Alpha_spFF_noBody_0(rnfo); }
         }
       }
       else
       {
-        const long *sw = switchpts;
+        //const long *sw = switchpts;
 
         if(fBody)
         {
-          if(fSSE2) 
-          for(int wt=0; wt<w; ++wt)
-          {
-            if(wt+xo >= sw[1]) {
-              while(wt+xo >= sw[1])
-                sw += 2; color = sw[-2];
-            }
-            pixmix2_sse2(&dst[wt], color, s[wt*2], am[wt]);
-          }
+          if(fSSE2)
+          { Draw_Grad_Alpha_sp_Body_sse2(rnfo); }
           else
-          for(int wt=0; wt<w; ++wt)
-          {
-            if(wt+xo >= sw[1]) {
-              while(wt+xo >= sw[1])
-                sw += 2; color = sw[-2];
-            }
-            pixmix2(&dst[wt], color, s[wt*2], am[wt]);
-          }
+          { Draw_Grad_Alpha_sp_Body_0(rnfo); }
         }
         else
         {
-          if(fSSE2) 
-          for(int wt=0; wt<w; ++wt)
-          {
-            if(wt+xo >= sw[1]) {
-              while(wt+xo >= sw[1])
-                sw += 2; color = sw[-2];
-            }
-            pixmix2_sse2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]), am[wt]);
-          }
+          if(fSSE2)
+          { Draw_Grad_Alpha_sp_noBody_sse2(rnfo); }
           else
-          for(int wt=0; wt<w; ++wt)
-          {
-            if(wt+xo >= sw[1]) {
-              while(wt+xo >= sw[1])
-                sw += 2; color = sw[-2];
-            }
-            pixmix2(&dst[wt], color, safe_subtract(src[wt*2+1], src[wt*2]), am[wt]);
-          }
+          { Draw_Grad_Alpha_sp_noBody_0(rnfo); }
         }
       }
     }
-
-    // Step to next scanline
-    src += 2*mOverlayWidth;
-    s += 2*mOverlayWidth;
-    am += spd.w;
-    dst = (unsigned long *)((char *)dst + spd.pitch);
   }
 
+  // patch m010. png background
+  //if(typ==0) rnfo.mod_grad.b_images[1].freeImage();
+  //rnfo.mod_grad.b_images[typ].freeImage();
+#endif
   // Remember to EMMS!
   // Rendering fails in funny ways if we don't do this.
   _mm_empty();
@@ -1153,10 +2010,9 @@ Com::SmartRect Rasterizer::Draw(SubPicDesc& spd, Com::SmartRect& clipRect, byte*
 }
 
 
+#if 0
 void Rasterizer::FillSolidRect(SubPicDesc& spd, int x, int y, int nWidth, int nHeight, DWORD lColor)
 {
-  bool fSSE2 = !!(g_cpuid.m_flags & CCpuID::sse2);
-
   // Warning : lColor is AARRGGBB (same format as DirectX D3DCOLOR_ARGB)
   for (int wy=y; wy<y+nHeight; wy++)
   {
@@ -1164,4 +2020,92 @@ void Rasterizer::FillSolidRect(SubPicDesc& spd, int x, int y, int nWidth, int nH
 
     memsetd(dst, lColor, nWidth*4);
   }
+}
+#else
+void Rasterizer::FillSolidRect(SubPicDesc& spd, int x, int y, int nWidth, int nHeight, DWORD lColor)
+{
+  bool fSSE2 = !!(g_cpuid.m_flags & CCpuID::sse2);
+
+  if(fSSE2)
+  {
+    for (int wy=y; wy<y+nHeight; wy++)
+    {
+      DWORD* dst = (DWORD*)((BYTE*)spd.bits + spd.pitch * wy) + x;
+      for(int wt=0; wt<nWidth; ++wt)
+        pixmix_sse2(&dst[wt], lColor, 0x40);  // 0x40 because >> 6 in pixmix (to preserve tranparency)
+    }
+  }
+  else
+  {
+    for (int wy=y; wy<y+nHeight; wy++)
+    {
+      DWORD* dst = (DWORD*)((BYTE*)spd.bits + spd.pitch * wy) + x;
+      for(int wt=0; wt<nWidth; ++wt)
+        pixmix(&dst[wt], lColor, 0x40);
+    }
+  }
+}
+#endif
+
+#ifdef _VSMOD // patch m006. movable vector clip
+MOD_MOVEVC::MOD_MOVEVC()
+{
+  clear();
+}
+
+void MOD_MOVEVC::clear()
+{
+  enable = false;
+  size = Com::SmartSize(0,0);
+  pos = Com::SmartPoint(0,0);
+  //  canvas = CSize(0,0);
+  spd = Com::SmartSize(0,0);
+  curpos = Com::SmartPoint(0,0);
+  hfull = 0;
+  alphamask = NULL;
+}
+
+byte MOD_MOVEVC::GetAlphaValue(int wx,int wy)
+{
+  byte alpham;
+  if(!enable)
+  {
+    // return 0xFF;
+    return alphamask[wx+((hfull-wy)*spd.cx)];
+  }
+  if ((wx-pos.x)<-curpos.x+1) alpham=0;
+  else if ((wx-pos.x)>spd.cx-1) alpham=0;//canvas.cx
+  else if ((hfull-wy-pos.y)<-curpos.y+1) alpham=0;
+  else if ((hfull-wy-pos.y)>spd.cy-1) alpham=0;
+  else alpham=alphamask[wx-pos.x - pos.y*spd.cx+((hfull-wy)*spd.cx)];
+
+  return alpham;
+}
+#endif
+
+RasterizerNfo::RasterizerNfo()
+{
+	/*
+	w = 0;
+	h = 0;
+	spdw = 0;
+	overlayp = 0;
+	typ = 0;
+	pitch = 0;
+	color = 0;
+
+	xo = 0;
+
+	sw = NULL;
+	s = NULL;
+	src = NULL;
+	dst = NULL;
+
+#ifdef _VSMOD
+	mod_grad.clear();
+	mod_vc.clear();
+#else
+	am = NULL;
+#endif
+	*/
 }

@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include "Rasterizer.h"
+#include "BaseSub.h"
 
 class CGolombBuffer;
 
-class CHdmvSub
+class CHdmvSub : public CBaseSub
 {
 public:
 
@@ -66,76 +66,24 @@ public:
     BYTE    bReserved : 8;
   };
 
-  struct HDMV_PALETTE
-  {
-    BYTE    entry_id;
-    BYTE    Y;
-    BYTE    Cr;
-    BYTE    Cb;
-    BYTE    T;
-  };
-
-  class CompositionObject : Rasterizer
-  {
-  public :
-    SHORT        m_object_id_ref;
-    BYTE        m_window_id_ref;
-    bool        m_object_cropped_flag;
-    bool        m_forced_on_flag;
-    BYTE        m_version_number;
-
-    SHORT        m_horizontal_position;
-    SHORT        m_vertical_position;
-    SHORT        m_width;
-    SHORT        m_height;
-
-    SHORT        m_cropping_horizontal_position;
-    SHORT        m_cropping_vertical_position;
-    SHORT        m_cropping_width;
-    SHORT        m_cropping_height;
-
-    REFERENCE_TIME    m_rtStart;
-    REFERENCE_TIME    m_rtStop;
-
-    CompositionObject();
-    ~CompositionObject();
-
-    void        SetRLEData(BYTE* pBuffer, int nSize, int nTotalSize);
-    void        AppendRLEData(BYTE* pBuffer, int nSize);
-    int          GetRLEDataSize()  { return m_nRLEDataSize; };
-    bool        IsRLEComplete() { return m_nRLEPos >= m_nRLEDataSize; };
-    void        Render(SubPicDesc& spd);
-    void        WriteSeg (SubPicDesc& spd, SHORT nX, SHORT nY, SHORT nCount, SHORT nPaletteIndex);
-    void        SetPalette (int nNbEntry, HDMV_PALETTE* pPalette, bool bIsHD);
-    bool        HavePalette() { return m_nColorNumber>0; };
-
-  private :
-    CHdmvSub*  m_pSub;
-    BYTE*    m_pRLEData;
-    int      m_nRLEDataSize;
-    int      m_nRLEPos;
-    int      m_nColorNumber;
-    DWORD    m_Colors[256];
-  };
-
   CHdmvSub();
   ~CHdmvSub();
 
   HRESULT      ParseSample (IMediaSample* pSample);
 
-  int        GetActiveObjects()  { return (int)m_pObjects.size(); };
 
-  __w64 int    GetStartPosition(REFERENCE_TIME rt, double fps);
+  int    GetStartPosition(REFERENCE_TIME rt, double fps);
   int    GetNext(int pos) { return ((pos >=  m_pObjects.size()) ? NULL : ++pos); };
 
-  REFERENCE_TIME  GetStart(int nPos)  
+
+  virtual REFERENCE_TIME	GetStart(int nPos)	
   {
     std::list<CompositionObject*>::iterator it = m_pObjects.begin();
     std::advance(it, nPos);
     CompositionObject*  pObject = *it;
     return pObject!=NULL ? pObject->m_rtStart : INVALID_TIME; 
   };
-  REFERENCE_TIME  GetStop(int nPos)  
+  virtual REFERENCE_TIME  GetStop(int nPos)  
   { 
     std::list<CompositionObject*>::iterator it = m_pObjects.begin();
     std::advance(it, nPos);
@@ -144,12 +92,12 @@ public:
   };
 
   void      Render(SubPicDesc& spd, REFERENCE_TIME rt, RECT& bbox);
-  HRESULT      GetTextureSize (int pos, SIZE& MaxTextureSize, SIZE& VideoSize, POINT& VideoTopLeft);
+  HRESULT   GetTextureSize (int pos, SIZE& MaxTextureSize, SIZE& VideoSize, POINT& VideoTopLeft);
   void      Reset();
 
 private :
 
-  HDMV_SEGMENT_TYPE        m_nCurSegment;
+  HDMV_SEGMENT_TYPE  m_nCurSegment;
   BYTE*              m_pSegBuffer;
   int                m_nTotalSegBuffer;
   int                m_nSegBufferPos;
@@ -166,7 +114,7 @@ private :
   int                m_nColorNumber;
 
 
-  int          ParsePresentationSegment(CGolombBuffer* pGBuffer);
+  int         ParsePresentationSegment(CGolombBuffer* pGBuffer);
   void        ParsePalette(CGolombBuffer* pGBuffer, USHORT nSize);
   void        ParseObject(CGolombBuffer* pGBuffer, USHORT nUnitSize);
 

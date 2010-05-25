@@ -126,20 +126,26 @@ namespace ssf
 
   // ISubPicProvider
 
-  STDMETHODIMP_(__w64 int) CRenderer::GetStartPosition(REFERENCE_TIME rt, double fps)
+  STDMETHODIMP_(int) CRenderer::GetStartPosition(REFERENCE_TIME rt, double fps)
   {
     size_t k;
     return m_file.get() && m_file->m_segments.Lookup((float)rt/10000000, k) ? ++k : NULL;
   }
 
-  STDMETHODIMP_(REFERENCE_TIME) CRenderer::GetStart(int pos, double fps)
+  STDMETHODIMP_(int) CRenderer::GetNext(int pos)
+  {
+    size_t k = (size_t)pos;
+    return m_file.get() && m_file->m_segments.GetSegment(k) ? (++k) : NULL;
+  }
+
+	STDMETHODIMP_(REFERENCE_TIME) CRenderer::GetStart(int pos, double fps)
   {
     size_t k = (size_t)pos-1;
     const SubtitleFile::Segment* s = m_file.get() ? m_file->m_segments.GetSegment(k) : NULL;
     return s ? (REFERENCE_TIME)(s->m_start*10000000) : 0;
   }
 
-  STDMETHODIMP_(REFERENCE_TIME) CRenderer::GetStop(int pos, double fps)
+	STDMETHODIMP_(REFERENCE_TIME) CRenderer::GetStop(int pos, double fps)
   {
     CheckPointer(m_file.get(), 0);
 
@@ -148,7 +154,7 @@ namespace ssf
     return s ? (REFERENCE_TIME)(s->m_stop*10000000) : 0;
   }
 
-  STDMETHODIMP_(bool) CRenderer::IsAnimated(int pos)
+	STDMETHODIMP_(bool) CRenderer::IsAnimated(int pos)
   {
     return true;
   }
@@ -232,11 +238,5 @@ namespace ssf
     CAutoLock csAutoLock(m_pLock);
 
     return !m_fn.IsEmpty() && Open(m_fn, m_name) ? S_OK : E_FAIL;
-  }
-
-  int CRenderer::GetNext( int pos )
-  {
-    size_t k = pos;
-     return m_file.get() && m_file->m_segments.GetSegment(k) ? (++k) : NULL;
   }
 }

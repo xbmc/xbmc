@@ -64,8 +64,8 @@ void SeparableFilterX(unsigned char *src, unsigned char *dst, int width, int hei
 template<ptrdiff_t PixelDist>
 void SeparableFilterY(unsigned char *src, unsigned char *dst, int width, int height, ptrdiff_t stride, int *kernel, int kernel_size, int divisor)
 {
-#pragma omp parallel for
   width *= PixelDist;
+#pragma omp parallel for
   for (int  x = 0; x < width; x+=PixelDist) {
     unsigned char *in = src + x;
     unsigned char *out = dst + x;

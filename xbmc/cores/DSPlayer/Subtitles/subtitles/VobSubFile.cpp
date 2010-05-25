@@ -696,7 +696,11 @@ static int PASCAL MyProcessDataProc(unsigned char* Addr, int Size)
 
 bool CVobSubFile::ReadRar(CStdString fn)
 {
+#ifdef _WIN64
+	HMODULE h = LoadLibrary(_T("unrar64.dll"));
+#else
   HMODULE h = LoadLibrary(_T("unrar.dll"));
+#endif
   if(!h) return(false);
 
   RAROpenArchiveEx OpenArchiveEx = (RAROpenArchiveEx)GetProcAddress(h, "RAROpenArchiveEx");

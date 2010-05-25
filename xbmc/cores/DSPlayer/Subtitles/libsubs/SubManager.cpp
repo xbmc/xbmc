@@ -76,8 +76,8 @@ void CSubManager::SetStyle(SSubStyle* style)
   m_style.fontSize = style->fontSize;
   m_style.fontWeight = style->fontWeight;
   m_style.fItalic = style->fItalic;
-  m_style.colors[0] = style->color;
-  m_style.alpha[0] = style->alpha;
+  memcpy(m_style.colors, style->colors, sizeof(COLORREF) * 4);
+  memcpy(m_style.alpha, style->alpha, sizeof(BYTE) * 4);
   m_style.borderStyle = style->borderStyle;
   m_style.shadowDepthX = style->shadowDepthX;
   m_style.shadowDepthY = style->shadowDepthY;

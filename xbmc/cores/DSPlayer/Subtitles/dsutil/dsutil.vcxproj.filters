@@ -103,13 +103,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="a_yuv2rgb.asm">
+    <CustomBuild Include="convert_a.asm">
       <Filter>Source Files</Filter>
     </CustomBuild>
     <CustomBuild Include="a_yuvtable.asm">
       <Filter>Source Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="convert_a.asm">
+    <CustomBuild Include="a_yuv2rgb.asm">
       <Filter>Source Files</Filter>
     </CustomBuild>
   </ItemGroup>

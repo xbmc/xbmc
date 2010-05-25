@@ -46,6 +46,7 @@
 				AdditionalIncludeDirectories="..\..\..\..\;..\..\..\..\..\guilib;..\..\..\..\win32;..\..\include;..\..\baseclasses;..\..\..\..\lib\boost;..\..\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;"
 				RuntimeLibrary="1"
+				EnableEnhancedInstructionSet="2"
 				UsePrecompiledHeader="2"
 				DisableSpecificWarnings="4996"
 			/>
@@ -112,7 +113,7 @@
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="true"
-				EnableEnhancedInstructionSet="1"
+				EnableEnhancedInstructionSet="2"
 				UsePrecompiledHeader="2"
 				DebugInformationFormat="0"
 				DisableSpecificWarnings="4244"
