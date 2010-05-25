@@ -37,8 +37,8 @@ static int  rowdata[] = {10, -1, 0, 1, 2, 3, 11, 12, 13, 14, 4, 5, 6,
 			 7, 8, 9};
 /* FIXME: do real TM */
 /* must be mapped as a music note in the captioning font */ 
-static char specialchar[] = {'®','°','½','¿','T','¢','£','¶','à',
-			     TRANSP_SPACE,'è','â','ê','î','ô','û'};
+static char specialchar[] = {'Â®','Â°','Â½','Â¿','T','Â¢','Â£','Â¶','Ã ',
+			     TRANSP_SPACE,'Ã¨','Ã¢','Ãª','Ã®','Ã´','Ã»'};
 
 /* character translation table - EIA 608 codes are not all the same as ASCII */
 static char chartbl[128];
@@ -92,16 +92,16 @@ static void build_char_table(void)
   for (i = 0; i < 128; i++)
     chartbl[i] = (char) i;
   /* now the special codes */
-  chartbl[0x2a] = 'á';
-  chartbl[0x5c] = 'é';
-  chartbl[0x5e] = 'í';
-  chartbl[0x5f] = 'ó';
-  chartbl[0x60] = 'ú';
-  chartbl[0x7b] = 'ç';
-  chartbl[0x7c] = '÷';
-  chartbl[0x7d] = 'Ñ';
-  chartbl[0x7e] = 'ñ';
-  chartbl[0x7f] = '¤';    /* FIXME: this should be a solid block */
+  chartbl[0x2a] = 'Ã¡';
+  chartbl[0x5c] = 'Ã©';
+  chartbl[0x5e] = 'Ã­';
+  chartbl[0x5f] = 'Ã³';
+  chartbl[0x60] = 'Ãº';
+  chartbl[0x7b] = 'Ã§';
+  chartbl[0x7c] = 'Ã·';
+  chartbl[0x7d] = 'Ã‘';
+  chartbl[0x7e] = 'Ã±';
+  chartbl[0x7f] = 'Â¤';    /* FIXME: this should be a solid block */
 }
 
 /*
