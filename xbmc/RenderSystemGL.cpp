@@ -161,6 +161,22 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height, bool fullScreen, 
   glEnable(GL_TEXTURE_2D);
   glEnable(GL_SCISSOR_TEST);
 
+  //ati doesn't init the texture matrix correctly
+  //so we have to do it ourselves
+  glMatrixMode(GL_TEXTURE);
+  glLoadIdentity();
+  if (glewIsSupported("GL_ARB_multitexture"))
+  {
+    glActiveTextureARB(GL_TEXTURE1);
+    glLoadIdentity();
+
+    glActiveTextureARB(GL_TEXTURE2);
+    glLoadIdentity();
+
+    glActiveTextureARB(GL_TEXTURE0);
+    glLoadIdentity();
+  }
+
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
