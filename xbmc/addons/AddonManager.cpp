@@ -261,19 +261,14 @@ bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTE
 
 bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
 {
-  VECADDONS temp;
-  if (CAddonMgr::Get().GetAddons(ADDON_PLUGIN, temp, CONTENT_NONE, enabledOnly))
-    addons.insert(addons.end(), temp.begin(), temp.end());
-  if (CAddonMgr::Get().GetAddons(ADDON_SCRAPER, temp, CONTENT_NONE, enabledOnly))
-    addons.insert(addons.end(), temp.begin(), temp.end());
-  if (CAddonMgr::Get().GetAddons(ADDON_SCREENSAVER, temp, CONTENT_NONE, enabledOnly))
-    addons.insert(addons.end(), temp.begin(), temp.end());
-  if (CAddonMgr::Get().GetAddons(ADDON_SCRIPT, temp, CONTENT_NONE, enabledOnly))
-    addons.insert(addons.end(), temp.begin(), temp.end());
-  if (CAddonMgr::Get().GetAddons(ADDON_SKIN, temp, CONTENT_NONE, enabledOnly))
-    addons.insert(addons.end(), temp.begin(), temp.end());
-  if (CAddonMgr::Get().GetAddons(ADDON_VIZ, temp, CONTENT_NONE, enabledOnly))
-    addons.insert(addons.end(), temp.begin(), temp.end());
+  for (int i = ADDON_UNKNOWN+1; i < ADDON_VIZ_LIBRARY; ++i)
+  {
+    if (ADDON_REPOSITORY == (TYPE)i)
+      continue;
+    VECADDONS temp;
+    if (CAddonMgr::Get().GetAddons((TYPE)i, temp, CONTENT_NONE, enabledOnly))
+      addons.insert(addons.end(), temp.begin(), temp.end());
+  }
   return !addons.empty();
 }
 
