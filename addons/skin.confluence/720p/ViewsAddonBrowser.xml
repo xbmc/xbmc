@@ -257,7 +257,7 @@
 						<width>600</width>
 						<height>190</height>
 						<font>font12</font>
-						<align>justify</align>
+						<align>-</align>
 						<textcolor>white</textcolor>
 						<label>$INFO[ListItem.Property(Addon.Description)]</label>
 						<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
