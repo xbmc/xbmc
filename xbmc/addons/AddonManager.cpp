@@ -362,7 +362,7 @@ void CAddonMgr::FindAddons()
 {
   CSingleLock lock(m_critSection);
   if (m_cpluff && m_cp_context)
-    m_cpluff->scan_plugins(m_cp_context, 0);
+    m_cpluff->scan_plugins(m_cp_context, CP_SP_UPGRADE);
 }
 
 void CAddonMgr::RemoveAddon(const CStdString& ID)
