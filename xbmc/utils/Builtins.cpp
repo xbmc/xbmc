@@ -355,7 +355,7 @@ int CBuiltins::Execute(const CStdString& execString)
       AddonPtr script;
       CStdString scriptpath(params[0]);
       if (CAddonMgr::Get().GetAddon(params[0], script))
-        scriptpath = CUtil::AddFileToFolder(script->Path(),script->LibName());
+        scriptpath = script->LibPath();
 
       g_pythonParser.evalFile(scriptpath.c_str(), argc, (const char**)argv);
       delete [] argv;

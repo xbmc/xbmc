@@ -91,7 +91,7 @@ namespace ADDON
     virtual const CStdString Description() const =0;
     virtual const CStdString Path() const =0;
     virtual const CStdString Profile() const =0;
-    virtual const CStdString LibName() const =0;
+    virtual const CStdString LibPath() const =0;
     virtual const CStdString ChangeLog() const =0;
     virtual const CStdString FanArt() const =0;
     virtual const CStdString Author() const =0;

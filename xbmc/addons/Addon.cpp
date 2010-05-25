@@ -250,7 +250,7 @@ CAddon::CAddon(const CAddon &rhs, const AddonPtr &parent)
   m_userXmlDoc  = rhs.m_userXmlDoc;
   BuildProfilePath();
   CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
-  m_strLibName  = rhs.LibName();
+  m_strLibName  = rhs.m_strLibName;
   m_enabled = rhs.Enabled();
   m_hasStrings  = false;
   m_checkedStrings  = false;
@@ -553,6 +553,11 @@ const CStdString CAddon::Icon() const
   if (CURL::IsFullPath(m_props.icon))
     return m_props.icon;
   return CUtil::AddFileToFolder(m_props.path, m_props.icon);
+}
+
+const CStdString CAddon::LibPath() const
+{
+  return CUtil::AddFileToFolder(m_props.path, m_strLibName);
 }
 
 ADDONDEPS CAddon::GetDeps()

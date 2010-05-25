@@ -129,17 +129,17 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
   CStdString strFileName;
   if (!Parent())
   {
-    strFileName = CUtil::AddFileToFolder(Path(), LibName());
+    strFileName = LibPath();
   }
   else
   { //FIXME hack to load same Dll twice
-    CStdString extension = CUtil::GetExtension(LibName());
-    strFileName = "special://temp/" + LibName();
+    CStdString extension = CUtil::GetExtension(m_strLibName);
+    strFileName = "special://temp/" + m_strLibName;
     CUtil::RemoveExtension(strFileName);
     strFileName += "-" + ID() + extension;
 
     if (!CFile::Exists(strFileName))
-      CFile::Cache(Path() + LibName(), strFileName);
+      CFile::Cache(LibPath(), strFileName);
 
     CLog::Log(LOGNOTICE, "ADDON: Loaded virtual child addon %s", strFileName.c_str());
   }
@@ -153,7 +153,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
     strFileName = tempbin + strFileName;
     if (!CFile::Exists(strFileName))
     {
-      CLog::Log(LOGERROR, "ADDON: Could not locate %s", LibName().c_str());
+      CLog::Log(LOGERROR, "ADDON: Could not locate %s", m_strLibName.c_str());
       return false;
     }
   }
