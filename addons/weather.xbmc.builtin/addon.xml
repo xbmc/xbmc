@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.xbmc.builtin"
+<addon id="weather.xbmc.builtin"
        name="Weather.com (standard)"
        version="1.0.0"
        provider-name="Team XBMC">
