@@ -986,6 +986,8 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
       m_framerate = 24.0;
     break;
     case BCM::vdecRESOLUTION_720p23_976:
+      // some 720p/25 will be identifed as this, enable tracking.
+      m_framerate_tracking = true;
       m_framerate = 24.0 * 1000.0 / 1001.0;
     break;
     case BCM::vdecRESOLUTION_720p0:
