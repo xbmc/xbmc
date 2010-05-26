@@ -167,7 +167,9 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height, bool fullScreen, 
   glLoadIdentity();
   if (glewIsSupported("GL_ARB_multitexture"))
   {
-    glGetError(); //clear error flags
+    //clear error flags
+    while (glGetError() != GL_NO_ERROR);
+
     GLint maxtex;
     glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS_ARB, &maxtex);
 
@@ -484,7 +486,8 @@ void CRenderSystemGL::RestoreHardwareTransform()
 void CRenderSystemGL::CalculateMaxTexturesize()
 {
   GLint width = 256;
-  glGetError(); // reset any previous GL errors
+  // reset any previous GL errors
+  while (glGetError() != GL_NO_ERROR);
 
   // max out at 2^(8+8)
   for (int i = 0 ; i<8 ; i++)
