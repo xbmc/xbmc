@@ -70,11 +70,6 @@ void CSpecialProtocol::SetTempPath(const CStdString &dir)
   SetPath("temp", dir);
 }
 
-bool CSpecialProtocol::XBMCIsHome()
-{
-  return TranslatePath("special://xbmc") == TranslatePath("special://home");
-}
-
 bool CSpecialProtocol::ComparePath(const CStdString &path1, const CStdString &path2)
 {
   return TranslatePath(path1) == TranslatePath(path2);

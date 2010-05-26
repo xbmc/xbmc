@@ -47,6 +47,7 @@ typedef struct stEmuFileObject
   FILE    file_emu;
   XFILE::CFile*  file_xbmc;
   CMutex *file_lock;
+  unsigned mode;
 } EmuFileObject;
 
 class CEmuFileWrapper

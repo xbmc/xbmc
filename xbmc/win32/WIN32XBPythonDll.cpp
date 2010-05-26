@@ -211,6 +211,7 @@ extern "C"
   FUNCTION4(PyInt_AsLong)
   FUNCTION4(PyFloat_AsDouble)
   FUNCTION4(PyString_FromString)
+  FUNCTION4(PyBool_FromLong)
   FUNCTION12(PyModule_AddIntConstant)
 
   //void* (__cdecl* p_va_PyObject_CallFunction)(void* a, void* b, ...);
@@ -257,6 +258,7 @@ extern "C"
   FUNCTION4(PyObject_Str)
   FUNCTION20(PyRun_File)
   FUNCTION16(PyRun_String)
+  FUNCTION(PyErr_Clear)
 
   // PyFloat_FromDouble(double)
   void* (__cdecl* p_PyFloat_FromDouble)(double a); \
@@ -336,6 +338,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyInt_AsLong)) &&
       dll.ResolveExport(DLL_FUNCTION(PyFloat_AsDouble)) &&
       dll.ResolveExport(DLL_FUNCTION(PyString_FromString)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyBool_FromLong)) &&
       dll.ResolveExport(DLL_FUNCTION(PyModule_AddIntConstant)) &&
       dll.ResolveExport(DLL_VA_FUNCTION(PyObject_CallFunction)) &&
       dll.ResolveExport(DLL_FUNCTION(PyDict_SetItemString)) &&
@@ -380,6 +383,7 @@ extern "C"
       dll.ResolveExport(DLL_FUNCTION(PyImport_ImportModule)) &&
       dll.ResolveExport(DLL_FUNCTION(PyObject_Str)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_File)) &&
+      dll.ResolveExport(DLL_FUNCTION(PyErr_Clear)) &&
       dll.ResolveExport(DLL_FUNCTION(PyRun_String)));
 
     return bResult;

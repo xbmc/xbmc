@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 05/01/2010-->
+<!--Date of translation: 05/29/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 29711-->
+<!--Based on english strings version 30382-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -125,7 +125,6 @@
   <string id="168">Ενεργοποίηση συγχρονισμού ώρας από το Internet</string>
   <string id="169">Ανάλυση</string>
   <string id="170">Προσαρμογή του ρυθμού ανανέωσης</string>
-  <string id="171">Μεταβολή λόγου 4:3 σε 16:9</string>
   <string id="172">Ημερομηνία κυκλοφορίας</string>
   <string id="173">Προβολή των βίντεο με αναλογία 4:3 ως</string>
   <string id="175">Διάθεση</string>
@@ -273,7 +272,7 @@
   <string id="336">Μετατροπή δειγματοληψίας</string>
   <string id="337">Έξοδος ήχου</string>
   <string id="338">Αναλογική</string>
-  <string id="339">Ψηφιακή</string>
+  <string id="339">Οπτική/Coax</string>
   <string id="340">Διάφοροι καλλιτέχνες</string>
   <string id="341">Έναρξη DVD</string>
   <string id="342">Ταινίες</string>
@@ -351,6 +350,7 @@
   <string id="417">Προβολή: Εικόνες</string>
   <string id="418">Χαμηλή</string>
   <string id="419">Υψηλή</string>
+  <string id="420">HDMI</string>
   <string id="422">Διαγραφή πληροφοριών άλμπουμ</string>
   <string id="423">Διαγραφή πληροφοριών CD</string>
   <string id="424">Επιλογή</string>
@@ -489,6 +489,7 @@
   <string id="571">Προεπιλεγμένη</string>
   <string id="572">Εταιρεία (studio)</string>
   <string id="573">Διαδρομή</string>
+  <string id="574">Χώρα</string>
   <string id="580">Σειρά ταξινόμησης</string>
   <string id="581">Κριτήρια ταξινόμησης</string>
   <string id="582">Λειτουργία προβολής</string>
@@ -560,6 +561,7 @@
   <string id="662">Αυτό το αρχείο δεν είναι πλέον διαθέσιμο.</string>
   <string id="663">Να αφαιρεθεί από τη συλλογή;</string>
   <string id="664">Αναζήτηση Script</string>
+  <string id="665">Επίπεδο συμπίεσης</string>
   <string id="700">Εκκαθάριση συλλογής</string>
   <string id="701">Απομάκρυνση παλαιών τραγουδιών από τη συλλογή</string>
   <string id="702">Η διαδρομή έχει σαρωθεί προηγούμενος</string>
@@ -771,6 +773,9 @@
   <string id="1450">Σε κατάσταση ύπνωσης κατά την αναμονή</string>
   <string id="2050">Εκτέλεση</string>
   <string id="2100">Αποτυχία script! : %s</string>
+  <string id="2101">Απαιτείται νεώτερη έκδοση - Δείτε το αρχείο καταγραφής</string>
+  <string id="2102">Κάρτα γραφικών</string>
+  <string id="2103">Δεν ικανοποιούνται οι απαιτήσεις  - Δείτε το αρχείο καταγραφής</string>
   <string id="4501">Ενεργοποίηση LCD/VFD</string>
   <string id="10000">Αρχική τοποθεσία</string>
   <string id="10001">Εφαρμογές</string>
@@ -929,6 +934,7 @@
   <string id="13023">Η συσκευή αφαιρέθηκε επιτυχώς</string>
   <string id="13024">Συνδέθηκε χειριστήριο</string>
   <string id="13025">Αποσυνδέθηκε χειριστήριο</string>
+  <string id="13050">Έχει αποφορτιστεί η μπαταρία</string>
   <string id="13100">Φίλτρο Flicker (τρεμόπαιγμα οθόνης)</string>
   <string id="13101">Αφήστε τον οδηγό να επιλέξει (απαιτεί επανεκκίνηση)</string>
   <string id="13105">Κατακόρυφος χρονισμός</string>
@@ -1143,6 +1149,7 @@
   <string id="13427">Αποδοχή επιτάχυνσης υλικού (DXVA2)</string>
   <string id="13428">Αποδοχή επιτάχυνσης υλικού (CrystalHD)</string>
   <string id="13429">Αποδοχή επιτάχυνσης υλικού (VDADecoder)</string>
+  <string id="13430">Αποδοχή επιτάχυνσης υλικού (OpenMax)</string>
   <string id="13500">Μέθοδος συγχρονισμού A/V</string>
   <string id="13501">Χρονισμός ήχου</string>
   <string id="13502">Χρονισµός βίντεο (εις βάρος του ήχου)</string>
@@ -1747,6 +1754,7 @@
   <string id="20448">Αδυναμία λήψης πληροφοριών </string>
   <string id="20449">Ίσως ο διακομιστής να είναι πλέον μη διαθέσιμος.</string>
   <string id="20450">Επιθυμείτε, να συνεχίσετε  την αναζήτηση;</string>
+  <string id="20451">Χώρες</string>
   <string id="21330">Προβολή κρυφών αρχείων και φακέλων</string>
   <string id="21331">Πελάτης TuxBox</string>
   <string id="21332">ΠΡΟΣΟΧΗ: Η συσκευή TuxBox βρίσκεται σε κατάσταση εγγραφής!</string>
@@ -1991,6 +1999,7 @@
   <string id="24051">Έκδοση:</string>
   <string id="24052">Αποποίηση ευθυνών</string>
   <string id="24053">Άδεια χρήσης:</string>
+  <string id="24054">Αρχείο καταγραφής αλλαγών</string>
   <string id="24059">Επιθυμητέ να ενεργοποιηθεί αυτό το πρόσθετο;</string>
   <string id="24060">Επιθυμητέ να απενεργοποιηθεί αυτό το πρόσθετο;</string>
   <string id="24061">Διαθέσιμη ενημέρωση πρόσθετου!</string>
@@ -2092,6 +2101,7 @@
   <string id="34002">Wav</string>
   <string id="34003">DXVA2</string>
   <string id="34004">VAAPI</string>
+  <string id="34005">Flac</string>
   <string id="34100">Διάταξη ηχείων</string>
   <string id="34101">2.0</string>
   <string id="34102">2.1</string>

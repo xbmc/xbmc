@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--Translator: Kristján Bjarni Guðmundsson-->
 <!--Email: kristjanbjarni@gmail.com-->
-<!--Date of translation: 2010-03-10-->
+<!--Date of translation: 2010-05-20-->
 <!--$Revision$-->
-<!--Based on english strings version 28277-->
+<!--Based on english strings version 29568-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Breyta -</string>
@@ -30,6 +30,7 @@
   <string id="31030">Heildarlisti</string>
   <string id="31031">Smámyndir</string>
   <string id="31032">Myndafletting</string>
+  <string id="31033">Upplýsingar</string>
 
   <!-- Extra labels -->
   <string id="31040">Í spilun</string>

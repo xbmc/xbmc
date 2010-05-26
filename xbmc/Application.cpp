@@ -741,22 +741,19 @@ bool CApplication::InitDirectoriesLinux()
     userHome = "/root";
 
   CStdString xbmcBinPath, xbmcPath;
-  CUtil::GetHomePath(xbmcBinPath, (new CStdString)->assign("XBMC_BIN_HOME"));
-  CUtil::GetHomePath(xbmcPath);
+  CUtil::GetHomePath(xbmcBinPath, "XBMC_BIN_HOME");
+  xbmcPath = INSTALL_PATH;
 
   /* Check if xbmc binaries and arch independent data files are being kept in
    * separate locations. */
-  if (!CFile::Exists(xbmcPath + "/language"))
+  if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
   {
     /* Attempt to locate arch independent data files. */
-    CStdString temp = xbmcPath;
-    xbmcPath = BIN_INSTALL_PATH;
-    temp.erase(temp.size() - xbmcPath.size(), xbmcPath.size());
-    xbmcPath = temp + INSTALL_PATH;
-    if (!CFile::Exists(xbmcPath + "/language"))
+    CUtil::GetHomePath(xbmcPath);
+    if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
     {
-      CLog::Log(LOGERROR, "Unable to find path to XBMC data files!");
-      return false;
+      fprintf(stderr, "Unable to find path to XBMC data files!\n");
+      exit(1);
     }
   }
 
@@ -778,16 +775,7 @@ bool CApplication::InitDirectoriesLinux()
     CUtil::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
 
-    CDirectory::Create("special://home/");
-    CDirectory::Create("special://temp/");
-    CDirectory::Create("special://home/skin");
-    CDirectory::Create("special://home/addons");
-    CDirectory::Create("special://home/addons/packages");
-    CDirectory::Create("special://home/media");
-    CDirectory::Create("special://home/sounds");
-    CDirectory::Create("special://home/system");
-
-    CDirectory::Create("special://masterprofile");
+    CreateUserDirs();
 
     // copy required files
     //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
@@ -802,12 +790,12 @@ bool CApplication::InitDirectoriesLinux()
 
     CSpecialProtocol::SetXBMCBinPath(xbmcBinPath);
     CSpecialProtocol::SetXBMCPath(xbmcPath);
-    CSpecialProtocol::SetHomePath(xbmcPath);
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(xbmcPath, "userdata"));
+    CSpecialProtocol::SetHomePath(CUtil::AddFileToFolder(xbmcPath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(xbmcPath, "portable_data/userdata"));
 
-    CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "temp");
+    CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
-    CDirectory::Create("special://temp/");
+    CreateUserDirs();
 
     CUtil::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
@@ -834,16 +822,16 @@ bool CApplication::InitDirectoriesOSX()
   else
     userHome = "/root";
 
-  CStdString strHomePath;
-  CUtil::GetHomePath(strHomePath);
-  setenv("XBMC_HOME", strHomePath.c_str(), 0);
+  CStdString xbmcPath;
+  CUtil::GetHomePath(xbmcPath);
+  setenv("XBMC_HOME", xbmcPath.c_str(), 0);
 
   // OSX always runs with m_bPlatformDirectories == true
   if (m_bPlatformDirectories)
   {
     // map our special drives
-    CSpecialProtocol::SetXBMCBinPath(strHomePath);
-    CSpecialProtocol::SetXBMCPath(strHomePath);
+    CSpecialProtocol::SetXBMCBinPath(xbmcPath);
+    CSpecialProtocol::SetXBMCPath(xbmcPath);
     CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
 
@@ -861,21 +849,13 @@ bool CApplication::InitDirectoriesOSX()
     CUtil::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
 
-    CDirectory::Create("special://home/");
-    CDirectory::Create("special://temp/");
-    CDirectory::Create("special://home/skin");
-    CDirectory::Create("special://home/addons");
-    CDirectory::Create("special://home/media");
-    CDirectory::Create("special://home/sounds");
-    CDirectory::Create("special://home/system");
+    CreateUserDirs();
 #ifdef __APPLE__
-    strTempPath = strHomePath + "/scripts";
+    strTempPath = xbmcPath + "/scripts";
 #else
     strTempPath = INSTALL_PATH "/scripts";
 #endif
     symlink( strTempPath.c_str(),  _P("special://home/scripts/Common Scripts").c_str() );
-
-    CDirectory::Create("special://masterprofile/");
 
     // copy required files
     //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml"); // Eventual FIXME.
@@ -885,17 +865,16 @@ bool CApplication::InitDirectoriesOSX()
   }
   else
   {
-    CUtil::AddSlashAtEnd(strHomePath);
-    g_settings.m_logFolder = strHomePath;
+    CUtil::AddSlashAtEnd(xbmcPath);
+    g_settings.m_logFolder = xbmcPath;
 
-    CSpecialProtocol::SetXBMCBinPath(strHomePath);
-    CSpecialProtocol::SetXBMCPath(strHomePath);
-    CSpecialProtocol::SetHomePath(strHomePath);
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
+    CSpecialProtocol::SetXBMCBinPath(xbmcPath);
+    CSpecialProtocol::SetXBMCPath(xbmcPath);
+    CSpecialProtocol::SetHomePath(CUtil::AddFileToFolder(xbmcPath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(xbmcPath, "portable_data/userdata"));
 
-    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp");
+    CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
-    CDirectory::Create("special://temp/");
 
     CUtil::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
@@ -910,12 +889,12 @@ bool CApplication::InitDirectoriesOSX()
 bool CApplication::InitDirectoriesWin32()
 {
 #ifdef _WIN32
-  CStdString strExecutablePath;
+  CStdString xbmcPath;
 
-  CUtil::GetHomePath(strExecutablePath);
-  SetEnvironmentVariable("XBMC_HOME", strExecutablePath.c_str());
-  CSpecialProtocol::SetXBMCBinPath(strExecutablePath);
-  CSpecialProtocol::SetXBMCPath(strExecutablePath);
+  CUtil::GetHomePath(xbmcPath);
+  SetEnvironmentVariable("XBMC_HOME", xbmcPath.c_str());
+  CSpecialProtocol::SetXBMCBinPath(xbmcPath);
+  CSpecialProtocol::SetXBMCPath(xbmcPath);
 
   if (m_bPlatformDirectories)
   {
@@ -930,20 +909,15 @@ bool CApplication::InitDirectoriesWin32()
     CUtil::AddSlashAtEnd(g_settings.m_logFolder);
 
     // map our special drives
-    CSpecialProtocol::SetXBMCBinPath(strExecutablePath);
-    CSpecialProtocol::SetXBMCPath(strExecutablePath);
+    CSpecialProtocol::SetXBMCBinPath(xbmcPath);
+    CSpecialProtocol::SetXBMCPath(xbmcPath);
     CSpecialProtocol::SetHomePath(homePath);
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(homePath, "userdata"));
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile").c_str());
 
-    CDirectory::Create("special://home/");
-    CDirectory::Create("special://home/skin");
-    CDirectory::Create("special://home/addons");
-    CDirectory::Create("special://home/media");
-    CDirectory::Create("special://home/sounds");
-    CDirectory::Create("special://home/system");
-
-    CDirectory::Create("special://masterprofile");
+    CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(homePath,"cache"));
+    
+    CreateUserDirs();
 
     // copy required files
     //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
@@ -951,21 +925,20 @@ bool CApplication::InitDirectoriesWin32()
     CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
-
-    // create user/app data/XBMC/cache
-    CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(homePath,"cache"));
-    CDirectory::Create("special://temp");
   }
   else
   {
-    g_settings.m_logFolder = strExecutablePath;
-    CUtil::AddSlashAtEnd(g_settings.m_logFolder);
-    CStdString strTempPath = CUtil::AddFileToFolder(strExecutablePath, "cache");
-    CSpecialProtocol::SetTempPath(strTempPath);
-    CDirectory::Create("special://temp/");
+    CUtil::AddSlashAtEnd(xbmcPath);
+    g_settings.m_logFolder = xbmcPath;
 
-    CSpecialProtocol::SetHomePath(strExecutablePath);
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strExecutablePath,"userdata"));
+    CSpecialProtocol::SetHomePath(CUtil::AddFileToFolder(xbmcPath, "portable_data"));
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(xbmcPath, "portable_data/userdata"));
+
+    CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
+    CSpecialProtocol::SetTempPath(strTempPath);
+
+    CreateUserDirs();
+
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile/").c_str());
   }
 
@@ -989,6 +962,19 @@ bool CApplication::InitDirectoriesWin32()
 #else
   return false;
 #endif
+}
+
+void CApplication::CreateUserDirs()
+{
+  CDirectory::Create("special://home/");
+  CDirectory::Create("special://home/skin");
+  CDirectory::Create("special://home/addons");
+  CDirectory::Create("special://home/addons/packages");
+  CDirectory::Create("special://home/media");
+  CDirectory::Create("special://home/sounds");
+  CDirectory::Create("special://home/system");
+  CDirectory::Create("special://masterprofile/");
+  CDirectory::Create("special://temp/");
 }
 
 bool CApplication::Initialize()
@@ -3804,8 +3790,6 @@ void CApplication::OnPlayBackEnded()
     CLibrefmScrobbler::GetInstance()->SubmitQueue();
   }
 
-  CLog::Log(LOGDEBUG, "%s - Playback has finished", __FUNCTION__);
-
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
 }
@@ -3829,8 +3813,6 @@ void CApplication::OnPlayBackStarted()
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackStarted");
 
-  CLog::Log(LOGDEBUG, "%s - Playback has started", __FUNCTION__);
-
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
 }
@@ -3850,8 +3832,6 @@ void CApplication::OnQueueNextItem()
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "QueueNextItem");
-
-  CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
   if(IsPlayingAudio())
   {
@@ -3885,8 +3865,6 @@ void CApplication::OnPlayBackStopped()
   CLastfmScrobbler::GetInstance()->SubmitQueue();
   CLibrefmScrobbler::GetInstance()->SubmitQueue();
 
-  CLog::Log(LOGDEBUG, "%s - Playback was stopped", __FUNCTION__);
-
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
   g_windowManager.SendThreadMessage(msg);
 }
@@ -3904,8 +3882,6 @@ void CApplication::OnPlayBackPaused()
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackPaused");
-
-  CLog::Log(LOGDEBUG, "%s - Playback was paused", __FUNCTION__);
 }
 
 void CApplication::OnPlayBackResumed()
@@ -3921,8 +3897,6 @@ void CApplication::OnPlayBackResumed()
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackResumed");
-
-  CLog::Log(LOGDEBUG, "%s - Playback was resumed", __FUNCTION__);
 }
 
 void CApplication::OnPlayBackSpeedChanged(int iSpeed)
@@ -3942,8 +3916,6 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged");
-
-  CLog::Log(LOGDEBUG, "%s - Playback speed changed", __FUNCTION__);
 }
 
 void CApplication::OnPlayBackSeek(int iTime)
@@ -3963,8 +3935,6 @@ void CApplication::OnPlayBackSeek(int iTime)
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek");
-
-  CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
 }
 
 void CApplication::OnPlayBackSeekChapter(int iChapter)
@@ -3984,8 +3954,6 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeekChapter");
-
-  CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
 }
 
 bool CApplication::IsPlaying() const
@@ -4374,7 +4342,13 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   {
     // reset our codec info - don't want that on screen
     g_infoManager.SetShowCodec(false);
-    m_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("screensaver.slideshowpath"), true);
+    CStdString path = g_guiSettings.GetString("screensaver.slideshowpath");
+    if (path.IsEmpty())
+    {
+      path = "special://profile/thumbnails/Video/Fanart";
+      CLog::Log(LOGERROR,"No slideshow screensaver path set, defaulting to the available video fanart");
+    }
+    m_applicationMessenger.PictureSlideShow(path, true);
   }
   else if (m_screenSaverMode == "_virtual.dim")
     return;

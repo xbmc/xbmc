@@ -50,7 +50,6 @@ public:
   int evalFile(const char*);
   int evalString(const char*);
   int setArgv(const unsigned int, const char **);
-  bool isDone();
   bool isStopping();
   void stop();
 
@@ -62,7 +61,6 @@ protected:
   char *m_source;
   char **m_argv;
   unsigned int  m_argc;
-  bool m_done;
   bool m_stopping;
   int  m_id;
 

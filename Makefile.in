@@ -116,11 +116,9 @@ VIS_DIRS+=xbmc/visualizations/Goom
 endif
 
 CONFLUENCE_MEDIA=addons/skin.confluence/media
-PM3HD_MEDIA=addons/skin.pm3-hd/media
 
 SKIN_DIRS=\
-	$(CONFLUENCE_MEDIA) \
-	$(PM3HD_MEDIA)
+	$(CONFLUENCE_MEDIA)
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
 	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(SKIN_DIRS)
@@ -165,7 +163,6 @@ skins: tools/TexturePacker/TexturePacker force
 ifneq (arm, $(ARCH))
 	 $(MAKE) -C $(CONFLUENCE_MEDIA)
 endif
-	 $(MAKE) -C $(PM3HD_MEDIA)
 
 guilib/guilib.a: force
 	$(MAKE) -C guilib
@@ -501,7 +498,7 @@ else
 	$(MAKE) -C tools/XBMCTex/
 endif
 
-tools/TexturePacker/TexturePacker:
+tools/TexturePacker/TexturePacker: guilib/guilib.a xbmc/lib/libsquish/libsquish-@ARCH@.a
 	$(MAKE) -C tools/TexturePacker/
 
 install-bin: xbmc.bin # developement convenience target

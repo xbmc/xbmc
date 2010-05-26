@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
+# Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "guilib", "guilib.vcxproj", "{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B} = {78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}
@@ -121,6 +121,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cpluff", "..\..\lib\cpluff\libcpluff\win32\cpluff.vcxproj", "{88968763-3D6B-48A8-B495-CC8C187FAC02}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmp3lame_dll", "..\..\lib\liblame\vc_solution\vc10_libmp3lame_dll.vcxproj", "{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "python_make_versioninfo", "..\..\xbmc\lib\libPython\Python\PCbuild\make_versioninfo.vcxproj", "{FC7EBFE5-233C-4608-A4D9-5EF512BA96BF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pythoncore_dll", "..\..\xbmc\lib\libPython\Python\PCbuild\pythoncore.vcxproj", "{9E417A6D-50DE-4969-8542-F58EA1163376}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -590,6 +594,22 @@ Global
 		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Release (DirectX)|Win32.Build.0 = ReleaseNASM|Win32
 		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Release (OpenGL)|Win32.ActiveCfg = ReleaseNASM|Win32
 		{92BD50AA-04D6-4FBF-ACE1-468FAF6778F2}.Release (OpenGL)|Win32.Build.0 = ReleaseNASM|Win32
+		{FC7EBFE5-233C-4608-A4D9-5EF512BA96BF}.Debug (DirectX)|Win32.ActiveCfg = Release|Win32
+		{FC7EBFE5-233C-4608-A4D9-5EF512BA96BF}.Debug (DirectX)|Win32.Build.0 = Release|Win32
+		{FC7EBFE5-233C-4608-A4D9-5EF512BA96BF}.Debug (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{FC7EBFE5-233C-4608-A4D9-5EF512BA96BF}.Debug (OpenGL)|Win32.Build.0 = Release|Win32
+		{FC7EBFE5-233C-4608-A4D9-5EF512BA96BF}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{FC7EBFE5-233C-4608-A4D9-5EF512BA96BF}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{FC7EBFE5-233C-4608-A4D9-5EF512BA96BF}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{FC7EBFE5-233C-4608-A4D9-5EF512BA96BF}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{9E417A6D-50DE-4969-8542-F58EA1163376}.Debug (DirectX)|Win32.ActiveCfg = Release|Win32
+		{9E417A6D-50DE-4969-8542-F58EA1163376}.Debug (DirectX)|Win32.Build.0 = Release|Win32
+		{9E417A6D-50DE-4969-8542-F58EA1163376}.Debug (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{9E417A6D-50DE-4969-8542-F58EA1163376}.Debug (OpenGL)|Win32.Build.0 = Release|Win32
+		{9E417A6D-50DE-4969-8542-F58EA1163376}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{9E417A6D-50DE-4969-8542-F58EA1163376}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{9E417A6D-50DE-4969-8542-F58EA1163376}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{9E417A6D-50DE-4969-8542-F58EA1163376}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

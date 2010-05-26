@@ -40,11 +40,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\.\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\x86-temp-release\make_versioninfo\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)libs\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)objs\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\.\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\x86-temp-debug\make_versioninfo\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)libs\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)objs\$(ProjectName)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -54,12 +54,13 @@
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">make_versioninfo_d</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">make_versioninfo</TargetName>
+    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Link</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Link</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <CustomBuildStep>
-      <Command>.\make_versioninfo.exe &gt;..\PC\pythonnt_rc.h
-</Command>
-      <Outputs>..\PC\pythonnt_rc.h;%(Outputs)</Outputs>
+      <Command>$(TargetDir)$(TargetFileName) &gt; $(ProjectDir)..\PC\pythonnt_rc.h</Command>
+      <Outputs>$(ProjectDir)..\PC\pythonnt_rc.h</Outputs>
     </CustomBuildStep>
     <Midl>
       <TypeLibraryName>.\./make_versioninfo.tlb</TypeLibraryName>
@@ -76,10 +77,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\x86-temp-release\make_versioninfo/make_versioninfo.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\x86-temp-release\make_versioninfo/</AssemblerListingLocation>
-      <ObjectFileName>.\x86-temp-release\make_versioninfo/</ObjectFileName>
-      <ProgramDataBaseFileName>.\x86-temp-release\make_versioninfo/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(IntDir)make_versioninfo.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -91,10 +92,10 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>.\./make_versioninfo.exe</OutputFile>
+      <OutputFile>$(OutDir)make_versioninfo.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\./make_versioninfo.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)make_versioninfo.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <BaseAddress>0x1d000000</BaseAddress>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -103,14 +104,14 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>$(TargetFileName) &gt; ..\PC\python_nt.h</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <CustomBuildStep>
-      <Command>.\make_versioninfo_d.exe &gt;..\PC\pythonnt_rc_d.h
-</Command>
-      <Outputs>..\PC\pythonnt_rc_d.h;%(Outputs)</Outputs>
+      <Command>$(TargetDir)$(TargetFileName) &gt; $(ProjectDir)..\PC\pythonnt_rc_d.h</Command>
+      <Outputs>$(ProjectDir)..\PC\pythonnt_rc_d.h</Outputs>
     </CustomBuildStep>
     <Midl>
       <TypeLibraryName>.\./make_versioninfo.tlb</TypeLibraryName>
@@ -124,10 +125,10 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\x86-temp-debug\make_versioninfo/make_versioninfo.pch</PrecompiledHeaderOutputFile>
-      <AssemblerListingLocation>.\x86-temp-debug\make_versioninfo/</AssemblerListingLocation>
-      <ObjectFileName>.\x86-temp-debug\make_versioninfo/</ObjectFileName>
-      <ProgramDataBaseFileName>.\x86-temp-debug\make_versioninfo/</ProgramDataBaseFileName>
+      <PrecompiledHeaderOutputFile>$(IntDir)make_versioninfo.pch</PrecompiledHeaderOutputFile>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -141,10 +142,10 @@
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>./make_versioninfo_d.exe</OutputFile>
+      <OutputFile>$(OutDir)make_versioninfo_d.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\./make_versioninfo_d.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)make_versioninfo_d.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <BaseAddress>0x1d000000</BaseAddress>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -153,7 +154,8 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>$(TargetFileName) &gt; ..\PC\python_nt_d.h</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

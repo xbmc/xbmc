@@ -46,6 +46,7 @@
 #include "GUIDialogKaiToast.h"
 #include "LocalizeStrings.h"
 #include "utils/log.h"
+#include "utils/SingleLock.h"
 #include "Util.h"
 
 #include "XBPyThread.h"
@@ -84,7 +85,6 @@ XBPyThread::XBPyThread(XBPython *pExecuter, int id)
   m_pExecuter   = pExecuter;
   m_threadState = NULL;
   m_id          = id;
-  m_done        = false;
   m_stopping    = false;
   m_argv        = NULL;
   m_source      = NULL;
@@ -138,7 +138,10 @@ int XBPyThread::setArgv(unsigned int src_argc, const char **src)
   return 0;
 }
 
-void XBPyThread::OnStartup(){}
+void XBPyThread::OnStartup()
+{
+  CThread::SetName("Python Thread");
+}
 
 void XBPyThread::Process()
 {
@@ -150,21 +153,15 @@ void XBPyThread::Process()
 
   // get the global lock
   PyEval_AcquireLock();
-
-  m_threadState = Py_NewInterpreter();
-
-  PyThreadState_Swap(NULL);
-  PyEval_ReleaseLock();
-
-  if (!m_threadState) {
+  PyThreadState* state = Py_NewInterpreter();
+  if (!state)
+  {
+    PyEval_ReleaseLock();
     CLog::Log(LOGERROR,"Python thread: FAILED to get thread state!");
     return;
   }
-
-  PyEval_AcquireLock();
-
   // swap in my thread state
-  PyThreadState_Swap(m_threadState);
+  PyThreadState_Swap(state);
 
   m_pExecuter->InitializeInterpreter();
 
@@ -198,29 +195,49 @@ void XBPyThread::Process()
 
   CLog::Log(LOGDEBUG, "%s - Entering source directory %s", __FUNCTION__, sourcedir);
 
+  PyObject* module = PyImport_AddModule((char*)"__main__");
+  PyObject* moduleDict = PyModule_GetDict(module);
+
+  // when we are done initing we store thread state so we can be aborted
+  PyThreadState_Swap(NULL);
+  PyEval_ReleaseLock();
+
+  // we need to check if we was asked to abort before we had inited
+  bool stopping = false;
+  { CSingleLock lock(m_pExecuter->m_critSection);
+    m_threadState = state;
+    stopping = m_stopping;
+  }
+
+  PyEval_AcquireLock();
+  PyThreadState_Swap(state);
+
   xbp_chdir(sourcedir);
 
-  if (m_type == 'F')
+  if (!stopping)
   {
-    // run script from file
-    FILE *fp = fopen_utf8(_P(m_source).c_str(), "r");
-    if (fp)
+    if (m_type == 'F')
     {
-      PyObject* module = PyImport_AddModule((char*)"__main__");
-      PyObject* moduleDict = PyModule_GetDict(module);
-      PyRun_File(fp, _P(m_source).c_str(), m_Py_file_input, moduleDict, moduleDict);
-      fclose(fp);
+      // run script from file
+      FILE *fp = fopen_utf8(_P(m_source).c_str(), "r");
+      if (fp)
+      {
+        PyObject *f = PyString_FromString(_P(m_source).c_str());
+        PyDict_SetItemString(moduleDict, "__file__", f);
+        Py_DECREF(f);
+        PyRun_File(fp, _P(m_source).c_str(), m_Py_file_input, moduleDict, moduleDict);
+        fclose(fp);
+      }
+      else
+        CLog::Log(LOGERROR, "%s not found!", m_source);
     }
     else
-      CLog::Log(LOGERROR, "%s not found!", m_source);
+    {
+      //run script
+      PyRun_String(m_source, m_Py_file_input, moduleDict, moduleDict);
+    }
   }
-  else
-  {
-    //run script
-    PyObject* module = PyImport_AddModule((char*)"__main__");
-    PyObject* moduleDict = PyModule_GetDict(module);
-    PyRun_String(m_source, m_Py_file_input, moduleDict, moduleDict);
-  }
+
   if (PyErr_Occurred())
   {
     PyObject* exc_type;
@@ -301,57 +318,54 @@ void XBPyThread::Process()
   else
     CLog::Log(LOGINFO, "Scriptresult: Success");
 
-  PyThreadState_Swap(NULL);
-  PyEval_ReleaseLock();
-
-  // when a script uses threads or timers - we have to wait for them to be over before we terminate the interpreter.
-  // so first - release the lock and allow the threads to terminate.
-
-  ::Sleep(500);
-  PyEval_AcquireLock();
-
-  PyThreadState_Swap(m_threadState);
-
-  // look waiting for the running threads to end
+  // wait for the running threads to end
+  PyErr_Clear();
   PyRun_SimpleString(
         "import threading\n"
         "import sys\n"
-        "try:\n"
-        "\tthreads = list(threading.enumerate())\n"
-        "except:\n"
-        "\tprint 'error listing threads'\n"
         "while threading.activeCount() > 1:\n"
+        "\tthreads = list(threading.enumerate())\n"
         "\tfor thread in threads:\n"
         "\t\tif thread <> threading.currentThread():\n"
         "\t\t\tprint 'waiting for thread - ' + thread.getName()\n"
         "\t\t\tthread.join(1000)\n"
         );
 
+  if (PyErr_Occurred())
+    CLog::Log(LOGERROR, "Failed to wait for python threads to end");
+
+  PyThreadState_Swap(NULL);
+  PyEval_ReleaseLock();
+
+  { CSingleLock lock(m_pExecuter->m_critSection);
+    m_threadState = NULL;
+  }
+
+  PyEval_AcquireLock();
+  PyThreadState_Swap(state);
+
   m_pExecuter->DeInitializeInterpreter();
 
-  Py_EndInterpreter(m_threadState);
-  m_threadState = NULL;
+  Py_EndInterpreter(state);
+  PyThreadState_Swap(NULL);
+
   PyEval_ReleaseLock();
 }
 
 void XBPyThread::OnExit()
 {
-  m_done = true;
   m_pExecuter->setDone(m_id);
 }
 
 void XBPyThread::OnException()
 {
-  m_done        = true;
-  PyEval_AcquireLock();
-  m_threadState = NULL;
+  PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
+
+  CSingleLock lock(m_pExecuter->m_critSection);
+  m_threadState = NULL;
   CLog::Log(LOGERROR,"%s, abnormally terminating python thread", __FUNCTION__);
   m_pExecuter->setDone(m_id);
-}
-
-bool XBPyThread::isDone() {
-  return m_done;
 }
 
 bool XBPyThread::isStopping() {
@@ -360,13 +374,23 @@ bool XBPyThread::isStopping() {
 
 void XBPyThread::stop()
 {
+  CSingleLock lock(m_pExecuter->m_critSection);
+  if(m_stopping)
+    return;
+
   m_stopping = true;
 
   if (m_threadState)
   {
     PyEval_AcquireLock();
+    PyThreadState* old = PyThreadState_Swap(m_threadState);
+    PyRun_SimpleString("import xbmc\n"
+                       "xbmc.abortRequested = True\n");
+
     m_threadState->c_tracefunc = xbTrace;
     m_threadState->use_tracing = 1;
+
+    PyThreadState_Swap(old);
     PyEval_ReleaseLock();
   }
 }

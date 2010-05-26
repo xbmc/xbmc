@@ -66,7 +66,7 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 
 extern "C"
 {
-  static char xbp_cw_dir[MAX_PATH] = "";
+  static __declspec(thread) char xbp_cw_dir[MAX_PATH] = "";
 
   char* xbp_getcwd(char *buf, int size)
   {

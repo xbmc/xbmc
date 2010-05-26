@@ -24,13 +24,14 @@
 #include "GUIAudioManager.h"
 #include "Settings.h"
 #include "GUISettings.h"
+#include "SystemGlobals.h"
 #ifdef _WIN32
 #include "WINDirectSound.h"
 #endif
 extern HWND g_hWnd;
 
 
-CAudioContext g_audioContext;
+CAudioContext& g_audioContext = g_SystemGlobals.m_audioContext;
 
 #ifdef _WIN32
 static GUID g_digitaldevice;

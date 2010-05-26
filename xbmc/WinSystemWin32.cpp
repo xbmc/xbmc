@@ -501,6 +501,12 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
         ddMon.cb = sizeof(ddMon);
         screen++;
       }
+      // Remoting returns no screens. Handle with a dummy screen.
+      if (!foundScreen && screen == 0)
+      {
+        lstrcpy(ddMon.DeviceString, _T("Dummy Monitor")); // safe: large static array
+        foundScreen = true;
+      }
 
       if (foundScreen)
       {

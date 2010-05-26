@@ -1674,7 +1674,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(WeatherScript_Path,Script)</onclick>
+							<onclick>Skin.SetAddon(WeatherScript_Path,xbmc.python.weather)</onclick>
 							<visible>Skin.HasSetting(WeatherScript_Enable)</visible>
 						</control>
 
@@ -1711,7 +1711,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(LyricScript_Path,Script)</onclick>
+							<onclick>Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</onclick>
 							<visible>Skin.HasSetting(LyricScript_Enable)</visible>
 						</control>
 
@@ -1748,7 +1748,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(SubtitleScript_Path,Script)</onclick>
+							<onclick>Skin.SetAddon(SubtitleScript_Path,xbmc.python.subtitles)</onclick>
 							<visible>Skin.HasSetting(SubtitleDownload_Enable)</visible>
 						</control>
 					</control>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Translators: Many -->
-<!-- Based on English rev 25636 -->
+<!-- Based on English rev 30316 -->
 <strings>
   <string id="31000">Endre dine</string>
   <string id="31001">Elsk</string>
@@ -22,6 +22,7 @@
   <string id="31030">Full liste</string>
   <string id="31031">Bildeminiatyrer</string>
   <string id="31032">Bildeinnpakking</string>
+  <string id="31033">Informasjon</string>
   <string id="31040">Nå spilles</string>
   <string id="31042">SPILLER</string>
   <string id="31043">PAUSE</string>
@@ -37,14 +38,16 @@
   <string id="31058">Systemmusikkfiler</string>
   <string id="31059">Nåværende spilleliste</string>
   <string id="31060">Denne fil er stablet, velg den delen du vil spille.</string>
+  <string id="31061">Valgt nå</string>
   <string id="31101">Alternativer for hovedskjerm</string>
   <string id="31102">Bakgrunn</string>
   <string id="31103">Vis "Pause" under bildefremvisning</string>
+  <string id="31104">Spill trailere i et vindu[COLOR=grey3](Kun videoinformasjonsdialog)[/COLOR]</string>
   <string id="31105">Vis medietitler i bakgrunnsskanneren</string>
   <string id="31106">Øvrige alternativer</string>
   <string id="31108">Inaktive hovedmenyknapper</string>
-  <string id="31109">Hovedskjermsbakgrunner</string>
-  <string id="31110">Endre bakgrunn for hovedskjermknapp</string>
+  <string id="31109">Mediebakgrunner</string>
+  <string id="31110">Endre bakgrunn for medietype</string>
   <string id="31111">Skjul</string>
   <string id="31112">Alternativer</string>
   <string id="31113">Enkeltbilde</string>
@@ -63,6 +66,10 @@
   <string id="31126">Aktiver sangtekster i musikk-OSD</string>
   <string id="31127">STI TIL SANGTEKSTSKRIPT</string>
   <string id="31128">XBMC sangtekster</string>
+  <string id="31129">Aktiver nedlasting av undertekster i Video OSD</string> 
+  <string id="31130">STI TIL SKRIPT FOR UNDERTEKSTER</string> 
+  <string id="31140">Musikk OSD</string> 
+  <string id="31141">Video OSD</string>
   <string id="31200">Hurtigsti</string>
   <string id="31201">Kategorier</string>
   <string id="31202">Vis rolleliste</string>
@@ -84,7 +91,7 @@
   <string id="31308">Filmdetaljer</string>
   <string id="31309">Brukt minne:</string>
   <string id="31310">Spornummer</string>
-  <string id="31311">FANART BILDE[CR][CR]IKKE TILGJENGELIG[CR][CR]KLIKK PÅ KNAPPEN FOR Å OPPGI</string>
+  <string id="31311">Fanart-bilde[CR][CR]ikke tilgjengelig[CR][CR]Klikk på knappen for å oppgi</string>
   <string id="31312">Nåværende skraper</string>
   <string id="31313">Velg en skraper</string>
   <string id="31314">Alternativer for innholdsskraper</string>
@@ -103,7 +110,17 @@
   <string id="31326">Laget</string>
   <string id="31327">Oppløsning</string>
   <string id="31328">Nylig lagt til</string>
-  <string id="31329">[B]TIDSINNSTILLING SATT![/B] [COLOR=grey2] - AUTO AVSLUTNING OM[/COLOR]</string>
+  <string id="31329">[B]Tidsinnstilling satt![/B] [COLOR=grey2] - Autoavslutning om[/COLOR]</string>
+  <string id="31330">Klikk for å spille[CR][CR]filmtrailer</string> 
+  
+  <!-- Video and Music OSD Labels  --> 
+  <string id="31351">Pause</string> 
+  <string id="31352">Stopp</string> 
+  <string id="31353">Spol framover</string> 
+  <string id="31354">Spol bakover</string> 
+  <string id="31355">Filmmeny</string> 
+  <string id="31356">Hent undertekster</string> 
+  <string id="31357"></string> 
   <string id="31400">[B]ENDRE DINE UTSEENDEINNSTILLINGER:[/B][CR][CR]Kalibrer GUI · Endre skinnet · Oppgi skjermsparer · Endre dine regionale innstillinger · Oppgi globale visningsalternativer</string>
   <string id="31401">[B]ENDRE DINE GRAFIKKINNSTILLINGER:[/B][CR][CR]Håndter ditt filmbibliotek · Filmavspillingskvalitet og rendring · Konfigurer skrifttype for undertekster · Oppgi filmautogjenopptaging</string>
   <string id="31402">[B]ENDRE DINE MUSIKKINNSTILLINGER:[/B][CR][CR] Velg visualisering · Håndter ditt musikkbibliotek · Oppgi din Last.FM konto · Endre karaokeskrifttype og -innstillinger</string>
@@ -112,6 +129,6 @@
   <string id="31405">[B]ENDRE DINE NETTVERKSINNSTILLINGER:[/B][CR][CR]Aktiver XBMC sin interne webserver · Oppgi Sambainnstillinger · Aktiver/konfigurer UPnP-server og -klient · Konfigurer hendelsesserveren</string>
   <string id="31406">[B]ENDRE DINE SYSTEMINNSTILLINGER:[/B][CR][CR]Endre standarden for strømsparingsmodus · Konfigurer videomaskinvare · Still inn din lydmaskinvare · Konfigurer hovedbrukerens passord- og systemlåser</string>
   <string id="31407">[B]ENDRE SKINNINNSTILLINGER:[/B][CR][CR]Legge til og ta bort hovedmenyknapper · Endre bakgrunner for hver seksjon · Skape sti til skript i hele skinnet</string>
-  <string id="31420">[B][COLOR=white]XBMC har ikke oppdaget en disk.[/COLOR][/B][CR][CR]Vennligst sett i en disk i din leser og prøv igjen eller avbryt</string>
+  <string id="31408">[B]KONFIGURER TILLEGG[/B][CR][CR]Håndter installerte tillegg · Let etter og installer tillegg fra xbmc.org[CR]Endre tilleggsinnstillinger</string> 
   <string id="31421">Velg din XBMC brukerprofil[CR]for å logge inn og fortsette</string>
 </strings>

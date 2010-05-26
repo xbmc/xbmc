@@ -119,6 +119,7 @@ public:
   // settings & language
   virtual bool HasSettings();
   virtual bool LoadSettings();
+  bool LoadUserSettings(bool create=true);
   virtual void SaveSettings();
   virtual void SaveFromDefault();
   virtual void UpdateSetting(const CStdString& key, const CStdString& value, const CStdString &type = "");
@@ -139,7 +140,7 @@ public:
   const CStdString Description() const { return m_props.description; }
   const CStdString Path() const { return m_props.path; }
   const CStdString Profile() const { return m_profile; }
-  const CStdString LibName() const { return m_strLibName; }
+  const CStdString LibPath() const;
   const CStdString Author() const { return m_props.author; }
   const CStdString ChangeLog() const { return m_props.changelog; }
   const CStdString FanArt() const { return m_props.fanart; }
@@ -147,12 +148,11 @@ public:
   const int Stars() const { return m_props.stars; }
   const CStdString Disclaimer() const { return m_props.disclaimer; }
   bool Supports(const CONTENT_TYPE &content) const { return (m_props.contents.count(content) == 1); }
-  ADDONDEPS& GetDeps() { return m_props.dependencies; }
+  ADDONDEPS GetDeps();
 
 protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
   CAddon(const CAddon&, const AddonPtr&);
-  bool LoadUserSettings();
   virtual void BuildLibName(cp_plugin_info_t *props = NULL);
   TiXmlDocument     m_addonXmlDoc;
   TiXmlDocument     m_userXmlDoc;

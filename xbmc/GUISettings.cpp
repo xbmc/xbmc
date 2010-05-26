@@ -44,6 +44,7 @@
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
 #include "utils/PCMRemap.h"
 #include "GUIFont.h" // for FONT_STYLE_* definitions
+#include "SystemGlobals.h"
 
 using namespace std;
 using namespace ADDON;
@@ -62,7 +63,7 @@ using namespace ADDON;
 #define TEXT_OFF  351
 #define TEXT_NONE 231
 
-class CGUISettings g_guiSettings;
+CGUISettings& g_guiSettings = g_SystemGlobals.m_guiSettings;
 
 #ifdef _LINUX
 #define DEFAULT_VISUALISATION "opengl_spectrum.vis"
@@ -290,7 +291,8 @@ void CGUISettings::Initialize()
   AddString(wea, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
   AddString(wea, "weather.areacode3", 14021, "JAXX0085 - Tokyo, Japan", BUTTON_CONTROL_STANDARD);
   AddSeparator(wea, "weather.sep1");
-  AddString(wea, "weather.script", 24027, "", SPIN_CONTROL_TEXT, true);
+  AddDefaultAddon(wea, "weather.script", 24027, DEFAULT_WEATHER_ADDON, ADDON_SCRIPT_WEATHER);
+  AddString(wea, "weather.scriptsettings", 21417, "", BUTTON_CONTROL_STANDARD, true);
 
   // My Music Settings
   AddGroup(3, 2);
@@ -299,7 +301,7 @@ void CGUISettings::Initialize()
   AddBool(ml, "musiclibrary.showcompilationartists", 13414, true);
   AddSeparator(ml,"musiclibrary.sep1");
   AddBool(ml,"musiclibrary.downloadinfo", 20192, false);
-  AddDefaultAddon(ml, "musiclibrary.scraper", 20194, "allmusic.xml", ADDON_SCRAPER, CONTENT_ALBUMS);
+  AddDefaultAddon(ml, "musiclibrary.scraper", 20194, "metadata.allmusic.com", ADDON_SCRAPER, CONTENT_ALBUMS);
   AddBool(ml, "musiclibrary.updateonstartup", 22000, false);
   AddBool(NULL, "musiclibrary.backgroundupdate", 22001, false);
   AddSeparator(ml,"musiclibrary.sep2");
@@ -689,9 +691,9 @@ void CGUISettings::Initialize()
   AddBool(NULL, "postprocessing.dering", 311, false);
 
   CSettingsCategory* scp = AddCategory(5, "scrapers", 21412);
-  AddDefaultAddon(scp, "scrapers.moviedefault", 21413, "tmdb.xml", ADDON_SCRAPER, CONTENT_MOVIES);
-  AddDefaultAddon(scp, "scrapers.tvshowdefault", 21414, "tvdb.xml", ADDON_SCRAPER, CONTENT_TVSHOWS);
-  AddDefaultAddon(scp, "scrapers.musicvideodefault", 21415, "mtv.xml", ADDON_SCRAPER, CONTENT_MUSICVIDEOS);
+  AddDefaultAddon(scp, "scrapers.moviedefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER, CONTENT_MOVIES);
+  AddDefaultAddon(scp, "scrapers.tvshowdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER, CONTENT_TVSHOWS);
+  AddDefaultAddon(scp, "scrapers.musicvideodefault", 21415, "metadata.mtv.com", ADDON_SCRAPER, CONTENT_MUSICVIDEOS);
   AddSeparator(scp,"scrapers.sep2");
   AddBool(scp, "scrapers.langfallback", 21416, false);
 #ifdef HAS_DX

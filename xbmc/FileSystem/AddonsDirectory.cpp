@@ -110,9 +110,54 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   {
     TYPE type = TranslateType(path.GetFileName());
     items.SetProperty("addoncategory",TranslateType(type, true));
+    items.m_strPath = strPath;
+
+    // add content types
+    if (type == ADDON_SCRAPER && path.GetOptions().IsEmpty())
+    {
+      for (int i=CONTENT_MOVIES;i<CONTENT_ARTISTS;++i)
+      {
+        for (unsigned int j=0;j<addons.size();++j)
+        {
+          if (addons[j]->Supports((CONTENT_TYPE)i))
+          {
+            CURL url2(path);
+            CStdString label;
+            if ((CONTENT_TYPE)i == CONTENT_ALBUMS)
+            {
+              url2.SetOptions("?content=music");
+              label = g_localizeStrings.Get(2);
+            }
+            else
+            {
+              url2.SetOptions("?content="+TranslateContent((CONTENT_TYPE)i));
+              label = TranslateContent((CONTENT_TYPE)i,true);
+            }
+            CFileItemPtr item(new CFileItem(url2.Get(),true));
+            item->SetLabel(label);
+            item->SetLabelPreformated(true);
+            items.Add(item);
+            break;
+          }
+        }
+      }
+      return true;
+    }
+    CONTENT_TYPE content;
+    if (type  == ADDON_SCRAPER)
+    {
+      CStdStringArray array;
+      StringUtils::SplitString(path.GetOptions(),"=",array);
+      content = TranslateContent(array[1]);
+    }
     for (unsigned int j=0;j<addons.size();++j)
+    {
       if (addons[j]->Type() != type)
         addons.erase(addons.begin()+j--);
+      else if (type == ADDON_SCRAPER && 
+          !addons[j]->Supports(content))
+        addons.erase(addons.begin()+j--);
+    }
   }
 
   items.m_strPath = strPath;
@@ -149,20 +194,8 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
   for (unsigned i=0; i < addons.size(); i++)
   {
     AddonPtr addon = addons[i];
-    path.SetFileName(addon->ID());
-    CStdString path2 = path.Get();
-    bool folder=false;
-    if (addon->Type() == ADDON_REPOSITORY)
-    {
-      folder = true;
-      path2 = CUtil::AddFileToFolder("addons://",addon->ID()+"/");
-    }
-    CFileItemPtr pItem(new CFileItem(path2,folder));
-    pItem->SetLabel(addon->Name());
-    pItem->SetLabel2(addon->Summary());
-    pItem->SetThumbnailImage(addon->Icon());
-    pItem->SetProperty("fanart_image",addon->FanArt());
-    CAddonDatabase::SetPropertiesFromAddon(addon,pItem);
+    CFileItemPtr pItem = (addon->Type() == ADDON_REPOSITORY) ? FileItemFromAddon(addon, "addons://", true)
+                                                             : FileItemFromAddon(addon, path.Get(), false);
     AddonPtr addon2;
     if (CAddonMgr::Get().GetAddon(addon->ID(),addon2))
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(305));
@@ -173,6 +206,27 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     }
     items.Add(pItem);
   }
+}
+
+CFileItemPtr CAddonsDirectory::FileItemFromAddon(AddonPtr &addon, const CStdString &basePath, bool folder)
+{
+  if (!addon)
+    return CFileItemPtr();
+
+  // TODO: This can probably be done more efficiently
+  CURL url(basePath);
+  url.SetFileName(addon->ID());
+  CStdString path(url.Get());
+  if (folder)
+    CUtil::AddSlashAtEnd(path);
+
+  CFileItemPtr item(new CFileItem(path, folder));
+  item->SetLabel(addon->Name());
+  item->SetLabel2(addon->Summary());
+  item->SetThumbnailImage(addon->Icon());
+  item->SetProperty("fanart_image", addon->FanArt());
+  CAddonDatabase::SetPropertiesFromAddon(addon, item);
+  return item;
 }
 
 }

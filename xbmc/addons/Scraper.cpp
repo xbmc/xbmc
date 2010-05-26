@@ -39,6 +39,17 @@ namespace ADDON
 
 class CAddon;
 
+CScraper::CScraper(cp_plugin_info_t *props) :
+  CAddon(props)
+{
+  const cp_extension_t *ext = CAddonMgr::Get().GetExtension(props, "xbmc.metadata.scraper");
+  if (ext)
+  {
+    m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "language");
+    m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"requiressettings").Equals("true");
+  }
+}
+
 AddonPtr CScraper::Clone(const AddonPtr &self) const
 {
   return AddonPtr(new CScraper(*this, self));
@@ -63,16 +74,6 @@ bool CScraper::HasSettings()
 {
   if (!m_userXmlDoc.RootElement())
     return LoadSettingsXML();
-
-  return true;
-}
-
-bool CScraper::Load(const CStdString& strSettings, const CStdString& strSaved)
-{
-  if (!LoadSettingsXML(strSettings))
-    return false;
-  if (!LoadUserXML(strSaved))
-    return false;
 
   return true;
 }

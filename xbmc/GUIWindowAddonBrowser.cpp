@@ -27,6 +27,7 @@
 #include "GUIDialogAddonSettings.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
+#include "GUIDialogSelect.h"
 #include "GUIEditControl.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
@@ -306,26 +307,32 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
                                                CUtil::GetFileName(strFolder));
           }
           AddonPtr addon;
-          if (CAddonMgr::AddonFromInfoXML(strFolder,addon))
+          bool update=false;
+          if (CAddonMgr::Get().LoadAddonDescription(strFolder, addon))
           {
             CStdString strFolder2;
             CUtil::GetDirectory(strFolder,strFolder2);
-            for (ADDONDEPS::iterator it  = addon->GetDeps().begin();
-                                     it != addon->GetDeps().end();++it)
+            AddonPtr addon2;
+            update = CAddonMgr::Get().GetAddon(addon->ID(),addon2);
+            CAddonMgr::Get().FindAddons();
+            CAddonMgr::Get().GetAddon(addon->ID(),addon);
+            ADDONDEPS deps = addon->GetDeps();
+            for (ADDONDEPS::iterator it  = deps.begin();
+                                     it != deps.end();++it)
             {
-              AddonPtr addon2;
+              if (it->first.Equals("xbmc.metadata"))
+                continue;
               if (!CAddonMgr::Get().GetAddon(it->first,addon2))
               {
                 CAddonDatabase database;
                 database.Open();
-                database.GetAddon(it->first,addon2);
-                AddJob(addon2->Path());
+                if (database.GetAddon(it->first,addon2))
+                  AddJob(addon2->Path());
               }
             }
             if (addon->Type() >= ADDON_VIZ_LIBRARY)
               continue;
-            AddonPtr addon2;
-            if (CAddonMgr::Get().GetAddon(addon->ID(),addon2))
+            if (update)
             {
               g_application.m_guiDialogKaiToast.QueueNotification(
                                                   CGUIDialogKaiToast::Info,
@@ -481,3 +488,28 @@ bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)
   return true;
 }
 
+bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CONTENT_TYPE content, CStdString &addonID)
+{
+  CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  if (type == ADDON_UNKNOWN || !dialog)
+    return false;
+
+  ADDON::VECADDONS addons;
+  CAddonMgr::Get().GetAddons(type, addons, content);
+  dialog->SetHeading(TranslateType(type, true));
+  dialog->Reset();
+  CFileItemList items;
+  CFileItemPtr none(new CFileItem("", false));
+  none->SetLabel(g_localizeStrings.Get(231)); // "None"
+  items.Add(none);
+  for (ADDON::IVECADDONS i = addons.begin(); i != addons.end(); ++i)
+    items.Add(CAddonsDirectory::FileItemFromAddon(*i, ""));
+  dialog->SetItems(&items);
+  dialog->DoModal();
+  if (dialog->GetSelectedLabel() >= 0)
+  {
+    addonID = dialog->GetSelectedItem().m_strPath;
+    return true;
+  }
+  return false;
+}

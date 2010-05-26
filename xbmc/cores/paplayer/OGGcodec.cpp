@@ -21,6 +21,7 @@
 
 #include "OGGcodec.h"
 #include "OggTag.h"
+#include "FileItem.h"
 #include "Util.h"
 #include "utils/log.h"
 
@@ -70,6 +71,8 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
     CUtil::RemoveSlashAtEnd(strFile); // we want the filename
   }
 
+  CFileItem item(strFile, false);
+
   //  Open the file to play
   if (!m_file.Open(strFile, READ_CACHED))
   {
@@ -109,9 +112,12 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   m_SampleRate = pInfo->rate;
   m_Channels = pInfo->channels;
   m_BitsPerSample = 16;
-  m_TotalTime = (__int64)m_dll.ov_time_total(&m_VorbisFile, m_CurrentStream)*1000;
+  if (item.IsInternetStream())
+    m_TotalTime = -1;
+  else
+    m_TotalTime = (__int64)m_dll.ov_time_total(&m_VorbisFile, m_CurrentStream)*1000;
   m_Bitrate = pInfo->bitrate_nominal;
-  if (m_Bitrate == 0)
+  if (m_Bitrate == 0 && m_TotalTime > 0 && !item.IsInternetStream())
     m_Bitrate = (int)(m_file.GetLength()*8 / (m_TotalTime / 1000));
 
   if (m_SampleRate==0 || m_Channels==0 || m_BitsPerSample==0 || m_TotalTime==0)

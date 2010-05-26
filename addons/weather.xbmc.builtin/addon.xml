@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="weather.xbmc.builtin"
+       name="Weather.com (standard)"
+       version="1.0.0"
+       provider-name="Team XBMC">
+  <extension point="xbmc.python.weather" library=""/>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <summary>Current weather conditions.</summary>
+    <description>This is the default weather source.[CR][CR]It provides current weather conditions and a four day outlook.</description>
+  </extension>
+</addon>

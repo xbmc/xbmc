@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 30064 -->
+<!--Based on english strings version 30365 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -581,6 +581,7 @@
   <string id="662">此文件已不可用</string>
   <string id="663">要从资料库移除吗？</string>
   <string id="664">浏览脚本</string>
+  <string id="665">压缩级别</string>
 
   <string id="700">清理资料库</string>
   <string id="701">清除资料库中的旧歌曲</string>
@@ -819,6 +820,9 @@
   <string id="2050">影片长度</string>
 
   <string id="2100">脚本错误！：%s</string>
+  <string id="2101">需要新版本 - 详见日志</string>
+  <string id="2102">显卡</string>
+  <string id="2103">条件不满足 - 详见日志</string>
 
   <string id="4501">启用 LCD/VFD</string>
 
@@ -1222,6 +1226,7 @@
   <string id="13427">允许硬件加速（DXVA2）</string>
   <string id="13428">允许硬件加速（CrystalHD）</string>
   <string id="13429">允许硬件加速（VDADecoder）</string>
+  <string id="13430">允许硬件加速（OpenMax）</string>
 
   <string id="13500">影音同步方式</string>
   <string id="13501">音频时钟</string>
@@ -2145,6 +2150,7 @@
   <string id="24051">版本：</string>
   <string id="24052">免责声明</string>
   <string id="24053">许可证：</string>
+  <string id="24054">更新日志</string>
   <string id="24059">要启用此扩展功能吗？</string>
   <string id="24060">要禁用此扩展功能吗？</string>
   <string id="24061">扩展功能有可用更新！</string>
@@ -2156,7 +2162,6 @@
   <string id="24067">当前下载扩展功能</string>
   <string id="24068">可更新</string>
   <string id="24069">更新</string>
-  <string id="24070">更新日志</string>
 
   <string id="24070">扩展功能不可用</string>
   <string id="24071">发生未知错误</string>
@@ -2265,6 +2270,7 @@
   <string id="34002">Wav</string>
   <string id="34003">DXVA2</string>
   <string id="34004">VAAPI</string>
+  <string id="34005">Flac</string>
 
   <string id="34100">扬声器设置</string>
   <string id="34101">2.0</string>

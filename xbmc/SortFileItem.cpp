@@ -429,16 +429,16 @@ void SSortFileItem::ByEpisodeNum(CFileItemPtr &item)
   // theoretical problem: if a show has > 128 specials and two of these are placed
   // after each other they will sort backwards. if a show has > 2^8-1 seasons
   // or if a season has > 2^16-1 episodes strange things will happen (overflow)
-  unsigned int num;
+  uint64_t num;
   if (tag->m_iSpecialSortEpisode > 0)
-    num = (tag->m_iSpecialSortSeason<<24)+(tag->m_iSpecialSortEpisode<<8)-(128-tag->m_iEpisode);
+    num = ((uint64_t)tag->m_iSpecialSortSeason<<32)+(tag->m_iSpecialSortEpisode<<16)-(2<<15 - tag->m_iEpisode);
   else
-    num = (tag->m_iSeason<<24)+(tag->m_iEpisode<<8);
+    num = ((uint64_t)tag->m_iSeason<<32)+(tag->m_iEpisode<<16);
 
   // check filename as there can be duplicates now
   CURL file(tag->m_strFileNameAndPath);
   CStdString label;
-  label.Format("%u %s", num, file.GetFileName().c_str());
+  label.Format("%"PRIu64" %s", num, file.GetFileName().c_str());
   item->SetSortLabel(label);
 }
 

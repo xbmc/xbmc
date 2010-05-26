@@ -31,7 +31,7 @@
  special://home/          - a writeable version of the main XBMC folder
                              Linux: ~/.xbmc/
                              OS X:  ~/Library/Application Support/XBMC/
-                             Win32: FIXME: Currently the same as special://home/
+                             Win32: ~/Application Data/XBMC/
  special://userhome/      - a writable version of the user home directory
                              Linux, OS X: ~/.xbmc
                              Win32: home directory of user
@@ -62,7 +62,6 @@ public:
   static void SetTempPath(const CStdString &path);
 
   static bool ComparePath(const CStdString &path1, const CStdString &path2);
-  static bool XBMCIsHome();
   static void LogPaths();
 
   static CStdString TranslatePath(const CStdString &path);

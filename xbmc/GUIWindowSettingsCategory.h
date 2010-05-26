@@ -69,7 +69,6 @@ protected:
 #ifdef HAS_DX
   void FillInDirectShowAudioRenderers(CSetting* pSetting);
 #endif
-  void FillInWeatherScripts(CGUISpinControlEx *pControl, const CStdString& strSelected);
 
   virtual void SetupControls();
   void CreateSettings();

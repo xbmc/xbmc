@@ -30,10 +30,12 @@
 #include "../osx/OSXGNUReplacements.h"
 #endif
 #include "log.h"
+#include <vector>
 #include <string.h>
 
 using XFILE::CDirectory;
 using XFILE::CFile;
+using namespace std;
 
 namespace ADDON
 {
@@ -43,137 +45,103 @@ namespace ADDON
  *
  */
 
+typedef struct
+{
+  const char*  name;
+  CONTENT_TYPE type;
+  int          pretty;
+} ContentMapping;
+
+static const ContentMapping content[] =
+  {{"unknown",       CONTENT_NONE,          231 },
+   {"albums",        CONTENT_ALBUMS,        132 },
+   {"music",         CONTENT_ALBUMS,        132 },
+   {"artists",       CONTENT_ARTISTS,       133 },
+   {"movies",        CONTENT_MOVIES,      20342 },
+   {"tvshows",       CONTENT_TVSHOWS,     20343 },
+   {"episodes",      CONTENT_EPISODES,    20360 },
+   {"musicvideos",   CONTENT_MUSICVIDEOS, 20389 },
+   {"audio",         CONTENT_AUDIO,           0 },
+   {"image",         CONTENT_IMAGE,           0 },
+   {"program",       CONTENT_PROGRAM,         0 },
+   {"video",         CONTENT_VIDEO,           0 }};
+
+typedef struct
+{
+  const char* name;
+  TYPE        type;
+  int         pretty;
+} TypeMapping;
+
+static const TypeMapping types[] =
+  {{"unknown",                       ADDON_UNKNOWN,            0 },
+   {"xbmc.metadata.scraper",         ADDON_SCRAPER,        24007 },
+   {"xbmc.metadata.scraper.library", ADDON_SCRAPER_LIBRARY,    0 },
+   {"xbmc.ui.screensaver",           ADDON_SCREENSAVER,    24008 },
+   {"xbmc.player.musicviz",          ADDON_VIZ,            24010 },
+   {"visualization-library",         ADDON_VIZ_LIBRARY,        0 },
+   {"xbmc.python.plugin",            ADDON_PLUGIN,         24005 },
+   {"xbmc.python.script",            ADDON_SCRIPT,         24009 },
+   {"xbmc.python.weather",           ADDON_SCRIPT_WEATHER,   24027 },
+   {"xbmc.python.subtitles",         ADDON_SCRIPT_SUBTITLES, 24012 },
+   {"xbmc.python.lyrics",            ADDON_SCRIPT_LYRICS,    24013 },
+   {"xbmc.python.library",           ADDON_SCRIPT_LIBRARY,   24014 },
+   {"xbmc.gui.skin",                 ADDON_SKIN,             166 },
+   {"xbmc.addon.repository",         ADDON_REPOSITORY,     24011 },
+   {"pvrclient",                     ADDON_PVRDLL,             0 }};
+
 const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*/)
 {
-  switch (type)
+  for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
   {
-  case CONTENT_ALBUMS:
-      if (pretty) return g_localizeStrings.Get(132);
-      return "albums";
-  case CONTENT_ARTISTS:
-      if (pretty) return g_localizeStrings.Get(133);
-      return "artists";
-  case CONTENT_MOVIES:
-      if (pretty) return g_localizeStrings.Get(20342);
-      return "movies";
-  case CONTENT_TVSHOWS:
-      if (pretty) return g_localizeStrings.Get(20343);
-      return "tvshows";
-  case CONTENT_MUSICVIDEOS:
-      if (pretty) return g_localizeStrings.Get(20389);
-      return "musicvideos";
-  case CONTENT_EPISODES:
-      if (pretty) return g_localizeStrings.Get(20360);
-      return "episodes";
-  case CONTENT_AUDIO:
-      return "audio";
-  case CONTENT_IMAGE:
-      return "image";
-  case CONTENT_PROGRAM:
-      return "program";
-  case CONTENT_VIDEO:
-      return "video";
-  case CONTENT_NONE:
-  default:
-      if (pretty) return g_localizeStrings.Get(231);
-      return "";
+    const ContentMapping &map = content[index];
+    if (type == map.type)
+    {
+      if (pretty && map.pretty)
+        return g_localizeStrings.Get(map.pretty);
+      else
+        return map.name;
+    }
   }
+  return "";
 }
 
 const CONTENT_TYPE TranslateContent(const CStdString &string)
 {
-  if (string.Equals("albums")) return CONTENT_ALBUMS;
-  else if (string.Equals("artists")) return CONTENT_ARTISTS;
-  else if (string.Equals("movies")) return CONTENT_MOVIES;
-  else if (string.Equals("tvshows")) return CONTENT_TVSHOWS;
-  else if (string.Equals("episodes")) return CONTENT_EPISODES;
-  else if (string.Equals("musicvideos")) return CONTENT_MUSICVIDEOS;
-  else if (string.Equals("audio")) return CONTENT_AUDIO;
-  else if (string.Equals("image")) return CONTENT_IMAGE;
-  else if (string.Equals("program")) return CONTENT_PROGRAM;
-  else if (string.Equals("video")) return CONTENT_VIDEO;
-  else return CONTENT_NONE;
+  for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
+  {
+    const ContentMapping &map = content[index];
+    if (string.Equals(map.name))
+      return map.type;
+  }
+  return CONTENT_NONE;
 }
 
 const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
-  switch (type)
+  for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
   {
-    case ADDON::ADDON_SCRAPER:
+    const TypeMapping &map = types[index];
+    if (type == map.type)
     {
-      if (pretty)
-        return g_localizeStrings.Get(24007);
-      return "scraper";
-    }
-    case ADDON::ADDON_SCRAPER_LIBRARY:
-    {
-      return "scraper-library";
-    }
-    case ADDON::ADDON_SCREENSAVER:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(24008);
-      return "xbmc.ui.screensaver";
-    }
-    case ADDON::ADDON_VIZ:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(24010);
-      return "xbmc.player.musicviz";
-    }
-    case ADDON::ADDON_VIZ_LIBRARY:
-    {
-      return "visualization-library";
-    }
-    case ADDON::ADDON_PLUGIN:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(24005);
-      return "plugin";
-    }
-    case ADDON::ADDON_SCRIPT:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(24009);
-      return "xbmc.python.script";
-    }
-    case ADDON::ADDON_SKIN:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(166);
-      return "xbmc.gui.skin";
-    }
-    case ADDON::ADDON_SCRIPT_LIBRARY:
-    {
-      return "xbmc.python.library";
-    }
-    case ADDON::ADDON_REPOSITORY:
-    {
-      if (pretty)
-        return g_localizeStrings.Get(24011);
-      return "xbmc.addon.repository";
-    }
-    default:
-    {
-      return "";
+      if (pretty && map.pretty)
+        return g_localizeStrings.Get(map.pretty);
+      else
+        return map.name;
     }
   }
+  return "";
 }
 
-const ADDON::TYPE TranslateType(const CStdString &string)
+const TYPE TranslateType(const CStdString &string)
 {
-  if (string.Equals("pvrclient")) return ADDON_PVRDLL;
-  else if (string.Equals("scraper")) return ADDON_SCRAPER;
-  else if (string.Equals("scraper-library")) return ADDON_SCRAPER_LIBRARY;
-  else if (string.Equals("xbmc.ui.screensaver")) return ADDON_SCREENSAVER;
-  else if (string.Equals("xbmc.player.musicviz")) return ADDON_VIZ;
-  else if (string.Equals("visualization-library")) return ADDON_VIZ_LIBRARY;
-  else if (string.Equals("plugin")) return ADDON_PLUGIN;
-  else if (string.Equals("xbmc.python.script")) return ADDON_SCRIPT;
-  else if (string.Equals("xbmc.gui.skin")) return ADDON_SKIN;
-  else if (string.Equals("xbmc.python.library")) return ADDON_SCRIPT_LIBRARY;
-  else if (string.Equals("xbmc.addon.repository")) return ADDON_REPOSITORY;
-  else return ADDON_UNKNOWN;
+  for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
+  {
+    const TypeMapping &map = types[index];
+    if (string.Equals(map.name))
+      return map.type;
+  }
+  return ADDON_UNKNOWN;
 }
 
 /**
@@ -224,6 +192,7 @@ AddonProps::AddonProps(cp_plugin_info_t *props)
   , name(props->name)
   , path(props->plugin_path)
   , author(props->provider_name)
+  , stars(0)
 {
   //FIXME only considers the first registered extension for each addon
   if (props->extensions->ext_point_id)
@@ -237,6 +206,9 @@ AddonProps::AddonProps(cp_plugin_info_t *props)
     description = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "description");
     disclaimer = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "disclaimer");
     license = CAddonMgr::Get().GetExtValue(metadata->configuration, "license");
+    vector<CStdString> content = CAddonMgr::Get().GetExtValues(metadata->configuration,"supportedcontent");
+    for (unsigned int i=0;i<content.size();++i)
+      contents.insert(TranslateContent(content[i]));
     //FIXME other stuff goes here
     //CStdString version = CAddonMgr::Get().GetExtValue(metadata->configuration, "minversion/xbmc");
   }
@@ -282,7 +254,7 @@ CAddon::CAddon(const CAddon &rhs, const AddonPtr &parent)
   m_userXmlDoc  = rhs.m_userXmlDoc;
   BuildProfilePath();
   CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
-  m_strLibName  = rhs.LibName();
+  m_strLibName  = rhs.m_strLibName;
   m_enabled = rhs.Enabled();
   m_hasStrings  = false;
   m_checkedStrings  = false;
@@ -322,6 +294,10 @@ void CAddon::BuildLibName(cp_plugin_info_t *props)
       ext = ADDON_VIS_EXT;
       break;
     case ADDON_SCRIPT:
+    case ADDON_SCRIPT_LIBRARY:
+    case ADDON_SCRIPT_LYRICS:
+    case ADDON_SCRIPT_WEATHER:
+    case ADDON_SCRIPT_SUBTITLES:
     case ADDON_PLUGIN:
       ext = ADDON_PYTHON_EXT;
       break;
@@ -340,6 +316,13 @@ void CAddon::BuildLibName(cp_plugin_info_t *props)
     {
       case ADDON_SCREENSAVER:
       case ADDON_SCRIPT:
+      case ADDON_SCRIPT_LIBRARY:
+      case ADDON_SCRIPT_LYRICS:
+      case ADDON_SCRIPT_WEATHER:
+      case ADDON_SCRIPT_SUBTITLES:
+      case ADDON_SCRAPER:
+      case ADDON_SCRAPER_LIBRARY:
+      case ADDON_PLUGIN:
         {
           CStdString temp = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library");
           m_strLibName = temp;
@@ -358,16 +341,10 @@ void CAddon::BuildLibName(cp_plugin_info_t *props)
 bool CAddon::LoadStrings()
 {
   // Path where the language strings reside
-  CStdString chosen = m_props.path;
-  CStdString fallback = m_props.path;
-  CUtil::AddFileToFolder(chosen, "resources", chosen);
-  CUtil::AddFileToFolder(fallback, "resources", fallback);
-  CUtil::AddFileToFolder(chosen, "language", chosen);
-  CUtil::AddFileToFolder(fallback, "language", fallback);
-  CUtil::AddFileToFolder(chosen, g_guiSettings.GetString("locale.language"), chosen);
-  CUtil::AddFileToFolder(fallback, "English", fallback);
-  CUtil::AddFileToFolder(chosen, "strings.xml", chosen);
-  CUtil::AddFileToFolder(fallback, "strings.xml", fallback);
+  CStdString chosenPath;
+  chosenPath.Format("resources/language/%s/strings.xml", g_guiSettings.GetString("locale.language").c_str());
+  CStdString chosen = CUtil::AddFileToFolder(m_props.path, chosenPath);
+  CStdString fallback = CUtil::AddFileToFolder(m_props.path, "resources/language/English/strings.xml");
 
   m_hasStrings = m_strings.Load(chosen, fallback);
   return m_checkedStrings = true;
@@ -393,9 +370,7 @@ CStdString CAddon::GetString(uint32_t id)
  */
 bool CAddon::HasSettings()
 {
-  CStdString addonFileName = m_props.path;
-  CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
-  CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
+  CStdString addonFileName = CUtil::AddFileToFolder(m_props.path, "resources/settings.xml");
 
   // Load the settings file to verify it's valid
   TiXmlDocument xmlDoc;
@@ -412,9 +387,7 @@ bool CAddon::HasSettings()
 
 bool CAddon::LoadSettings()
 {
-  CStdString addonFileName = m_props.path;
-  CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
-  CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
+  CStdString addonFileName = CUtil::AddFileToFolder(m_props.path, "resources/settings.xml");
 
   if (!m_addonXmlDoc.LoadFile(addonFileName))
   {
@@ -432,11 +405,14 @@ bool CAddon::LoadSettings()
   return LoadUserSettings();
 }
 
-bool CAddon::LoadUserSettings()
+bool CAddon::LoadUserSettings(bool create)
 {
   // Load the user saved settings. If it does not exist, create it
   if (!m_userXmlDoc.LoadFile(m_userSettingsPath))
   {
+    if (!create)
+      return false;
+
     TiXmlDocument doc;
     TiXmlDeclaration decl("1.0", "UTF-8", "yes");
     doc.InsertEndChild(decl);
@@ -446,6 +422,7 @@ bool CAddon::LoadUserSettings()
 
     m_userXmlDoc = doc;
   }
+
   return true;
 }
 
@@ -556,12 +533,12 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& value, const
 
   // Setting not found, add it
   TiXmlElement nodeSetting("setting");
-  nodeSetting.SetAttribute("id", std::string(key.c_str())); //FIXME otherwise attribute value isn't updated
+  nodeSetting.SetAttribute("id", key.c_str()); //FIXME otherwise attribute value isn't updated
   if (!type.empty())
-    nodeSetting.SetAttribute("type", std::string(type.c_str()));
+    nodeSetting.SetAttribute("type", type.c_str());
   else
     nodeSetting.SetAttribute("type", "text");
-  nodeSetting.SetAttribute("value", std::string(value.c_str()));
+  nodeSetting.SetAttribute("value", value.c_str());
   m_userXmlDoc.RootElement()->InsertEndChild(nodeSetting);
 }
 
@@ -580,6 +557,16 @@ const CStdString CAddon::Icon() const
   if (CURL::IsFullPath(m_props.icon))
     return m_props.icon;
   return CUtil::AddFileToFolder(m_props.path, m_props.icon);
+}
+
+const CStdString CAddon::LibPath() const
+{
+  return CUtil::AddFileToFolder(m_props.path, m_strLibName);
+}
+
+ADDONDEPS CAddon::GetDeps()
+{
+  return CAddonMgr::Get().GetDeps(ID());
 }
 
 /**
@@ -605,8 +592,6 @@ TYPE CAddonLibrary::SetAddonType()
     return ADDON_SCRAPER;
   else if (Type() == ADDON_VIZ_LIBRARY)
     return ADDON_VIZ;
-  else if (Type() == ADDON_SCRIPT_LIBRARY)
-    return ADDON_SCRIPT;
   else
     return ADDON_UNKNOWN;
 }

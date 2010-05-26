@@ -25,6 +25,7 @@
 #include "AddonDatabase.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "GUIDialogAddonSettings.h"
 #include "GUIDialogTextViewer.h"
 #include "GUIUserMessages.h"
@@ -105,11 +106,12 @@ void CGUIDialogAddonInfo::OnInitWindow()
               m_item->GetProperty("Addon.UpdateAvail").Equals("true"));
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, 
               m_item->GetProperty("Addon.Installed").Equals("false"));
+  CStdString xbmcPath = _P("special://xbmc/addons");
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_DISABLE, 
               m_item->GetProperty("Addon.Installed").Equals("true") &&
-    !m_item->GetProperty("Addon.Path").Mid(0,15).Equals("special://xbmc/"));
+              m_localAddon && !m_localAddon->Path().Mid(0,xbmcPath.size()).Equals(xbmcPath));
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_SETTINGS, 
-              m_item->GetProperty("Addon.Installed").Equals("true") &&
+              m_localAddon &&
               m_localAddon->HasSettings());
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_CHANGELOG,
               m_addon->Type() != ADDON_REPOSITORY);
@@ -120,9 +122,15 @@ void CGUIDialogAddonInfo::OnInitWindow()
 
 void CGUIDialogAddonInfo::OnInstall()
 {
-  CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
-  pair<CFileOperationJob*,unsigned int> job = window->AddJob(m_addon->Path());
-  window->RegisterJob(m_addon->ID(),job.first,job.second);
+  AddonPtr addon;
+  CAddonDatabase database;
+  database.Open();
+  if (database.GetAddon(m_addon->ID(),addon))
+  {
+    CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
+    pair<CFileOperationJob*,unsigned int> job = window->AddJob(addon->Path());
+    window->RegisterJob(m_addon->ID(),job.first,job.second);
+  }
 }
 
 void CGUIDialogAddonInfo::OnDisable()
@@ -135,6 +143,7 @@ void CGUIDialogAddonInfo::OnDisable()
     list[0]->Select(true);
     CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""),window);
   }
+  CAddonMgr::Get().RemoveAddon(m_localAddon->ID());
 }
 
 void CGUIDialogAddonInfo::OnSettings()
@@ -238,7 +247,7 @@ void CGUIDialogAddonInfo::OnJobComplete(unsigned int jobID, bool success,
     if (file.Open("special://temp/"+
       CUtil::GetFileName(((CFileOperationJob*)job)->GetItems()[0]->m_strPath)))
     {
-      char* temp = new char[file.GetLength()+1];
+      char* temp = new char[(size_t)file.GetLength()+1];
       file.Read(temp,file.GetLength());
       temp[file.GetLength()] = '\0';
       m_item->SetProperty("Addon.Changelog",temp);

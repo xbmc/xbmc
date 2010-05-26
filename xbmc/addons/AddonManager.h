@@ -93,20 +93,35 @@ namespace ADDON
     bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
     CStdString GetString(const CStdString &id, const int number);
     
-    static bool AddonFromInfoXML(const CStdString &path, AddonPtr &addon);
-    static bool AddonFromInfoXML(const TiXmlElement *xmlDoc, AddonPtr &addon,
-                                 const CStdString &strPath);
+    bool AddonFromFolder(const CStdString& strFolder, AddonPtr& addon);
     static bool GetTranslatedString(const TiXmlElement *xmldoc, const char *tag, CStdString& data);
     const char *GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(AddonProps& props);
     void UpdateRepos();
     void FindAddons();
+    void RemoveAddon(const CStdString& ID);
 
     /* libcpluff */
     CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
+    std::vector<CStdString> GetExtValues(cp_cfg_element_t *base, const char *path);
     const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension);
-    bool AddonsFromInfoXML(const TiXmlElement *root, VECADDONS &addons);
 
+    /*! \brief Load the addon in the given path
+     This loads the addon using c-pluff which parses the addon descriptor file.
+     \param path folder that contains the addon.
+     \param addon [out] returned addon.
+     \return true if addon is set, false otherwise.
+     */
+    bool LoadAddonDescription(const CStdString &path, AddonPtr &addon);
+
+    /*! \brief Parse a repository XML file for addons and load their descriptors
+     A repository XML is essentially a concatenated list of addon descriptors.
+     \param root Root element of an XML document.
+     \param addons [out] returned list of addons.
+     \return true if the repository XML file is parsed, false otherwise.
+     */
+    bool AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons);
+    ADDONDEPS GetDeps(const CStdString& id);
   private:
     void LoadAddons(const CStdString &path, 
                     std::map<CStdString, AddonPtr>& unresolved);
@@ -120,8 +135,6 @@ namespace ADDON
     cp_context_t *m_cp_context;
     DllLibCPluff *m_cpluff;
 
-    bool DependenciesMet(AddonPtr &addon);
-    bool UpdateIfKnown(AddonPtr &addon);
     AddonPtr Factory(const cp_extension_t *props);
     bool CheckUserDirs(const cp_cfg_element_t *element);
 
@@ -132,9 +145,7 @@ namespace ADDON
     virtual ~CAddonMgr();
 
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
-    MAPADDONS m_addons;
     CStopWatch m_watch;
-    std::map<CStdString, AddonPtr> m_idMap;
     CCriticalSection m_critSection;
   };
 

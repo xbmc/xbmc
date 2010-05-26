@@ -98,7 +98,9 @@ struct _env
 };
 
 #define EMU_MAX_ENVIRONMENT_ITEMS 50
-char *dll__environ[EMU_MAX_ENVIRONMENT_ITEMS + 1];
+static char *dll__environ_imp[EMU_MAX_ENVIRONMENT_ITEMS + 1];
+extern "C" char **dll__environ = dll__environ_imp;
+
 CRITICAL_SECTION dll_cs_environ;
 
 #define dll_environ    (*dll___p__environ())   /* pointer to environment table */
@@ -164,6 +166,20 @@ extern "C" void __stdcall update_emu_environ()
     dll_putenv( "HTTP_PROXY=" );
     dll_putenv( "HTTPS_PROXY=" );
   }
+}
+
+static int convert_fmode(const char* mode)
+{
+  int iMode = O_BINARY;
+  if (strstr(mode, "r+"))
+    iMode |= O_RDWR;
+  else if (strchr(mode, 'r'))
+    iMode |= _O_RDONLY;
+  if (strstr(mode, "w+"))
+    iMode |= O_RDWR | _O_TRUNC;
+  else if (strchr(mode, 'w'))
+    iMode |= _O_WRONLY  | O_CREAT;
+  return iMode;
 }
 
 extern "C"
@@ -346,14 +362,16 @@ extern "C"
 
   FILE* dll_fdopen(int fd, const char* mode)
   {
-    if (g_emuFileWrapper.DescriptorIsEmulatedFile(fd))
+    EmuFileObject* o = g_emuFileWrapper.GetFileObjectByDescriptor(fd);
+    if (o)
     {
-      not_implement("msvcrt.dll incomplete function _fdopen(...) called\n");
-      // file is probably already open here ???
-      // the only correct thing todo is to close and reopn the file ???
-      // for now, just return its stream
-      FILE* stream = g_emuFileWrapper.GetStreamByDescriptor(fd);
-      return stream;
+      if(!o->used)
+        return NULL;
+
+      int nmode = convert_fmode(mode);
+      if( (o->mode & nmode) != nmode)
+        CLog::Log(LOGWARNING, "dll_fdopen - mode 0x%x differs from fd mode 0x%x", nmode, o->mode);
+      return &o->file_emu;
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
@@ -416,6 +434,7 @@ extern "C"
         delete pFile;
         return -1;
       }
+      object->mode = iMode;
       return g_emuFileWrapper.GetDescriptorByStream(&object->file_emu);
     }
     delete pFile;
@@ -1066,17 +1085,7 @@ extern "C"
       return fopen(filename, mode);
     }
 #endif
-    int iMode = O_BINARY;
-    if (strstr(mode, "r+"))
-      iMode |= O_RDWR;
-    else if (strchr(mode, 'r'))
-      iMode |= _O_RDONLY;
-    if (strstr(mode, "w+"))
-      iMode |= O_RDWR | _O_TRUNC;
-    else if (strchr(mode, 'w'))
-      iMode |= _O_WRONLY  | O_CREAT;
-
-    int fd = dll_open(filename, iMode);
+    int fd = dll_open(filename, convert_fmode(mode));
     if (fd >= 0)
     {
       file = g_emuFileWrapper.GetStreamByDescriptor(fd);;
@@ -1440,6 +1449,12 @@ extern "C"
     OutputDebugString("\n");
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return strlen(tmp);
+  }
+
+  int dll_fscanf(FILE* stream, const char* format, ...)
+  {
+    CLog::Log(LOGERROR, "%s is not implemented",  __FUNCTION__);
+    return -1;
   }
 
   int dll_fprintf(FILE* stream, const char* format, ...)
@@ -2100,6 +2115,16 @@ extern "C"
     return (long)d;
   }
 #endif
+
+  // this needs to be wrapped, since dll's have their own file
+  // descriptor list, but we always use app's list with our wrappers
+  int __cdecl dll_open_osfhandle(intptr_t _OSFileHandle, int _Flags)
+  {
+#ifdef _WIN32
+    return _open_osfhandle(_OSFileHandle, _Flags);
+#else
+    return -1;
+#endif
+  }
+
 }
-
-

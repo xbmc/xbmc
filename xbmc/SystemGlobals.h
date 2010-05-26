@@ -26,10 +26,15 @@
 #include "GraphicContext.h"
 #include "MouseStat.h"
 #include "Application.h"
+#include "GUILargeTextureManager.h"
+#include "AudioContext.h"
+#include "GUISettings.h"
 
 struct CSystemGlobals
 {
   // Classes that must be initialized/destructed in a specific order because of dependencies.
+
+  CGUISettings m_guiSettings;
 
 #if defined(_WIN32) && defined(HAS_GL)
   CWinSystemWin32GL  m_Windowing;
@@ -47,7 +52,9 @@ struct CSystemGlobals
   CWinSystemX11GL    m_Windowing;
 #endif
 
+  CGUILargeTextureManager m_largeTextureManager;
   CXBMCRenderManager m_renderManager;
+  CAudioContext      m_audioContext;
   CGraphicContext    m_graphicsContext;
   CMouseStat         m_Mouse;
   CApplication       m_application;

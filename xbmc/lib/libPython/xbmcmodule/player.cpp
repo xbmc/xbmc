@@ -59,7 +59,11 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"|i", &playerCore)) return NULL;
 
     self->iPlayList = PLAYLIST_MUSIC;
+
+    Py_BEGIN_ALLOW_THREADS
     self->pPlayer = new CPythonPlayer();
+    Py_END_ALLOW_THREADS
+
     self->pPlayer->SetCallback((PyObject*)self);
     self->playerCore = EPC_NONE;
 
@@ -75,7 +79,12 @@ namespace PYXBMC
 
   void Player_Dealloc(Player* self)
   {
-    if (self->pPlayer) delete self->pPlayer;
+    self->pPlayer->SetCallback(NULL);
+
+    Py_BEGIN_ALLOW_THREADS
+    self->pPlayer->Release();
+    Py_END_ALLOW_THREADS
+
     self->pPlayer = NULL;
     self->ob_type->tp_free((PyObject*)self);
   }

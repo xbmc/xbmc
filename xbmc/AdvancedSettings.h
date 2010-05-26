@@ -106,6 +106,7 @@ class CAdvancedSettings
     int   m_videoHighQualityScalingMethod;
     bool  m_videoVDPAUScaling;
     float m_videoNonLinStretchRatio;
+    bool  m_videoAllowLanczos3;
 
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;

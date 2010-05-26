@@ -38,6 +38,7 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowVideoBase.h"
+#include "GUIWindowAddonBrowser.h"
 #include "addons/Addon.h" // for TranslateType, TranslateContent
 #include "addons/AddonManager.h"
 #include "LastFmManager.h"
@@ -142,6 +143,7 @@ const BUILT_IN commands[] = {
   { "Skin.SetImage",              true,   "Prompts and sets a skin image" },
   { "Skin.SetLargeImage",         true,   "Prompts and sets a large skin images" },
   { "Skin.SetFile",               true,   "Prompts and sets a file" },
+  { "Skin.SetAddon",              true,   "Prompts and set an addon" },
   { "Skin.SetBool",               true,   "Sets a skin setting on" },
   { "Skin.Reset",                 true,   "Resets a skin setting to default" },
   { "Skin.ResetSettings",         false,  "Resets all skin settings" },
@@ -353,7 +355,7 @@ int CBuiltins::Execute(const CStdString& execString)
       AddonPtr script;
       CStdString scriptpath(params[0]);
       if (CAddonMgr::Get().GetAddon(params[0], script))
-        scriptpath = CUtil::AddFileToFolder(script->Path(),script->LibName());
+        scriptpath = script->LibPath();
 
       g_pythonParser.evalFile(scriptpath.c_str(), argc, (const char**)argv);
       delete [] argv;
@@ -987,6 +989,18 @@ int CBuiltins::Execute(const CStdString& execString)
         g_settings.SetSkinString(string, value);
     }
     g_settings.Save();
+  }
+  else if (execute.Equals("skin.setaddon") && params.size() > 1)
+  {
+    int string = g_settings.TranslateSkinString(params[0]);
+    ADDON::TYPE type = TranslateType(params[1]);
+    CONTENT_TYPE content = (params.size() > 2) ? TranslateContent(params[2]) : CONTENT_NONE;
+    CStdString result;
+    if (CGUIWindowAddonBrowser::SelectAddonID(type, content, result))
+    {
+      g_settings.SetSkinString(string, result);
+      g_settings.Save();
+    }
   }
   else if (execute.Equals("dialog.close") && params.size())
   {

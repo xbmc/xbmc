@@ -161,6 +161,38 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height, bool fullScreen, 
   glEnable(GL_TEXTURE_2D);
   glEnable(GL_SCISSOR_TEST);
 
+  //ati doesn't init the texture matrix correctly
+  //so we have to do it ourselves
+  glMatrixMode(GL_TEXTURE);
+  glLoadIdentity();
+  if (glewIsSupported("GL_ARB_multitexture"))
+  {
+    glGetError(); //clear error flags
+    GLint maxtex;
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS_ARB, &maxtex);
+
+    //some sanity checks
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR)
+    {
+      CLog::Log(LOGERROR, "ResetRenderSystem() GL_MAX_TEXTURE_IMAGE_UNITS_ARB returned error %i", (int)error);
+      maxtex = 3;
+    }
+    else if (maxtex < 1 || maxtex > 32)
+    {
+      CLog::Log(LOGERROR, "ResetRenderSystem() GL_MAX_TEXTURE_IMAGE_UNITS_ARB returned invalid value %i", (int)maxtex);
+      maxtex = 3;
+    }
+
+    //reset texture matrix for all textures
+    for (GLint i = 0; i < maxtex; i++)
+    {
+      glActiveTextureARB(GL_TEXTURE0 + i);
+      glLoadIdentity();
+    }
+    glActiveTextureARB(GL_TEXTURE0);
+  }
+
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 

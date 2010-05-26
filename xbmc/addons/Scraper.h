@@ -31,7 +31,7 @@ namespace ADDON
   {
   public:
     CScraper(const AddonProps &props) : CAddon(props) { }
-    CScraper(cp_plugin_info_t *props) : CAddon(props) { }
+    CScraper(cp_plugin_info_t *props);
     virtual ~CScraper() {}
     virtual AddonPtr Clone(const AddonPtr &self) const;
 
@@ -42,17 +42,20 @@ namespace ADDON
     // scraper specialization
     bool LoadUserXML(const CStdString& strXML);
     bool LoadSettingsXML(const CStdString& strFunction="GetSettings", const CScraperUrl* url=NULL);
-    bool Load(const CStdString& strSettings, const CStdString& strSaved);
     CStdString GetSettings() const;
     CStdString m_strLanguage;
     CONTENT_TYPE Content() const { return m_pathContent; }
-    const CStdString Framework() const { return m_framework; }
+    const CStdString& Framework() const { return m_framework; }
+    const CStdString& Language() const { return m_language; }
+    bool RequiresSettings() const { return m_requiressettings; }
     CONTENT_TYPE m_pathContent;
 
   private:
     CScraper(const CScraper&, const AddonPtr&);
     bool m_hasSettings;
     CStdString m_framework;
+    CStdString m_language;
+    bool m_requiressettings;
   };
 
 }; /* namespace ADDON */
