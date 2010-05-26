@@ -48,7 +48,7 @@
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "WIN32Util.h"
 #endif
 
@@ -81,12 +81,7 @@ CDetectDVDMedia::~CDetectDVDMedia()
 void CDetectDVDMedia::OnStartup()
 {
   // SetPriority( THREAD_PRIORITY_LOWEST );
-#ifdef _WIN32PC
-  // unfortunately win32 has still 0.72
-  CLog::Log(LOGDEBUG, "Compiled with libcdio Version 0.72");
-#else
   CLog::Log(LOGDEBUG, "Compiled with libcdio Version 0.%d", LIBCDIO_VERSION_NUM);
-#endif
 }
 
 void CDetectDVDMedia::Process()
@@ -137,11 +132,8 @@ VOID CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_OPEN:
         {
           // Send Message to GUI that disc been ejected
-#ifdef _WIN32PC
+#ifdef _WIN32
           SetNewDVDShareUrl(m_cdio->GetDeviceFileName()+4, false, g_localizeStrings.Get(502));
-#else
-          SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(502));
-          m_isoReader.Reset();
 #endif
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
           g_windowManager.SendThreadMessage( msg );
@@ -154,11 +146,8 @@ VOID CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_NOT_READY:
         {
           // drive is not ready (closing, opening)
-#ifdef _WIN32PC
+#ifdef _WIN32
           SetNewDVDShareUrl(m_cdio->GetDeviceFileName()+4, false, g_localizeStrings.Get(503));
-#else
-          m_isoReader.Reset();
-          SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(503));
 #endif
           m_DriveState = DRIVE_NOT_READY;
           // DVD-ROM in undefined state
@@ -180,11 +169,8 @@ VOID CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_CLOSED_NO_MEDIA:
         {
           // nothing in there...
-#ifdef _WIN32PC
+#ifdef _WIN32
           SetNewDVDShareUrl(m_cdio->GetDeviceFileName()+4, false, g_localizeStrings.Get(504));
-#else
-          m_isoReader.Reset();
-          SetNewDVDShareUrl("D:\\", false, g_localizeStrings.Get(504));
 #endif
           m_DriveState = DRIVE_CLOSED_NO_MEDIA;
           // Send Message to GUI that disc has changed
@@ -258,7 +244,7 @@ void CDetectDVDMedia::DetectMediaType()
             m_pCdInfo->GetAudioTrackCount(),
             m_pCdInfo->GetDataTrackCount() );
 
-#ifdef _WIN32PC
+#ifdef _WIN32
   if(m_pCdInfo->IsAudio(1))
   {
     strNewUrl = "cdda://local/";
@@ -266,39 +252,8 @@ void CDetectDVDMedia::DetectMediaType()
   }
   else
     strNewUrl = m_cdio->GetDeviceFileName()+4;
-#else
-  // Detect ISO9660(mode1/mode2), CDDA filesystem or UDF
-  if (m_pCdInfo->IsISOHFS(1) || m_pCdInfo->IsIso9660(1) || m_pCdInfo->IsIso9660Interactive(1))
-  {
-    strNewUrl = "iso9660://";
-    m_isoReader.Scan();
-  }
-  else
-  {
-    if (m_pCdInfo->IsUDF(1) || m_pCdInfo->IsUDFX(1))
-      strNewUrl = "D:\\";
-    else if (m_pCdInfo->IsAudio(1))
-    {
-      strNewUrl = "cdda://local/";
-      bCDDA = true;
-    }
-    else
-      strNewUrl = "D:\\";
-  }
-
-  if (m_pCdInfo->IsISOUDF(1))
-  {
-    if (!g_advancedSettings.m_detectAsUdf)
-    {
-      strNewUrl = "iso9660://";
-      m_isoReader.Scan();
-    }
-    else
-    {
-      strNewUrl = "D:\\";
-    }
-  }
 #endif
+
   CLog::Log(LOGINFO, "Using protocol %s", strNewUrl.c_str());
 
   if (m_pCdInfo->IsValidFs())
@@ -450,7 +405,7 @@ DWORD CDetectDVDMedia::GetTrayState()
 
 #endif // USING_CDIO78
 #endif // _LINUX
-#if defined(_WIN32PC)
+#if defined(_WIN32)
 
   char* dvdDevice = m_cdio->GetDeviceFileName();
   if (strlen(dvdDevice) == 0)
