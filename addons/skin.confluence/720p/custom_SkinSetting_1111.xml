@@ -1674,7 +1674,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(WeatherScript_Path,xbmc.python.weather)</onclick>
+							<onclick>Skin.SetAddon(WeatherScript_Path,xbmc.python.script)</onclick>
 							<visible>Skin.HasSetting(WeatherScript_Enable)</visible>
 						</control>
 
