@@ -285,7 +285,7 @@ protected:
   bool m_bAbortRequest;
 
   std::string m_filename; // holds the actual filename
-  std::string m_content;  // hold a hint to what content file contains (mime type)
+  std::string m_mimetype;  // hold a hint to what content file contains (mime type)
   ECacheState m_caching;
   CFileItem   m_item;
 

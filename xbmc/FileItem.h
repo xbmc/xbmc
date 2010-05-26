@@ -241,10 +241,10 @@ public:
   virtual bool LoadMusicTag();
 
   /* returns the content type of this item if known. will lookup for http streams */
-  const CStdString& GetContentType() const;
+  const CStdString& GetMimeType() const;
 
-  /* sets the contenttype if known beforehand */
-  void SetContentType(const CStdString& content) { m_contenttype = content; } ;
+  /* sets the mime-type if known beforehand */
+  void SetMimeType(const CStdString& mimetype) { m_mimetype = mimetype; } ;
 
   /* general extra info about the contents of the item, not for display */
   void SetExtraInfo(const CStdString& info) { m_extrainfo = info; };
@@ -277,7 +277,7 @@ private:
   bool m_bIsParentFolder;
   bool m_bCanQueue;
   bool m_bLabelPreformated;
-  CStdString m_contenttype;
+  CStdString m_mimetype;
   CStdString m_extrainfo;
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;

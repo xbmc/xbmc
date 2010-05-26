@@ -227,9 +227,9 @@ public:
                                         bool                          with_count,
                                         const PLT_HttpRequestContext* context = NULL,
                                         CUPnPServer*                  upnp_server = NULL);
-    static const char* GetContentTypeFromExtension(const char* extension, const PLT_HttpRequestContext* context = NULL);
-    static NPT_String  GetContentType(const CFileItem& item, const PLT_HttpRequestContext* context = NULL);
-    static NPT_String  GetContentType(const char* filename, const PLT_HttpRequestContext* context = NULL);
+    static const char* GetMimeTypeFromExtension(const char* extension, const PLT_HttpRequestContext* context = NULL);
+    static NPT_String  GetMimeType(const CFileItem& item, const PLT_HttpRequestContext* context = NULL);
+    static NPT_String  GetMimeType(const char* filename, const PLT_HttpRequestContext* context = NULL);
     static const CStdString& CorrectAllItemsSortHack(const CStdString &item);
 
 private:
@@ -265,10 +265,10 @@ public:
 NPT_UInt32 CUPnPServer::m_MaxReturnedItems = 0;
 
 /*----------------------------------------------------------------------
-|   CUPnPServer::GetContentType
+|   CUPnPServer::GetMimeType
 +---------------------------------------------------------------------*/
 NPT_String
-CUPnPServer::GetContentType(const char* filename,
+CUPnPServer::GetMimeType(const char* filename,
                             const PLT_HttpRequestContext* context /* = NULL */)
 {
     NPT_String ext = CUtil::GetExtension(filename).c_str();
@@ -279,10 +279,10 @@ CUPnPServer::GetContentType(const char* filename,
 }
 
 /*----------------------------------------------------------------------
-|   CUPnPServer::GetContentType
+|   CUPnPServer::GetMimeType
 +---------------------------------------------------------------------*/
 NPT_String
-CUPnPServer::GetContentType(const CFileItem& item,
+CUPnPServer::GetMimeType(const CFileItem& item,
                             const PLT_HttpRequestContext* context /* = NULL */)
 {
     NPT_String ext = CUtil::GetExtension(item.m_strPath).c_str();
@@ -294,38 +294,38 @@ CUPnPServer::GetContentType(const CFileItem& item,
     ext.TrimLeft('.');
     ext = ext.ToLowercase();
 
-    NPT_String content;
+    NPT_String mime;
 
-    /* We always use Platinum content type first
-       as it is defined to map extension to DLNA compliant content type
+    /* We always use Platinum mime type first
+       as it is defined to map extension to DLNA compliant mime type
        or custom according to context (who asked for it) */
     if (!ext.IsEmpty()) {
-        content = PLT_MediaObject::GetMimeTypeFromExtension(ext, context);
-        if (content == "application/octet-stream") content = "";
+        mime = PLT_MediaObject::GetMimeTypeFromExtension(ext, context);
+        if (mime == "application/octet-stream") mime = "";
     }
 
     /* if Platinum couldn't map it, default to XBMC mapping */
-    if (content.IsEmpty()) {
-        NPT_String content = item.GetContentType().c_str();
-        if (content == "application/octet-stream") content = "";
+    if (mime.IsEmpty()) {
+        NPT_String mime = item.GetMimeType().c_str();
+        if (mime == "application/octet-stream") mime = "";
     }
 
-    /* fallback to generic content type if not found */
-    if (content.IsEmpty()) {
+    /* fallback to generic mime type if not found */
+    if (mime.IsEmpty()) {
         if (item.IsVideo() || item.IsVideoDb() )
-            content = "video/" + ext;
+            mime = "video/" + ext;
         else if (item.IsAudio() || item.IsMusicDb() )
-            content = "audio/" + ext;
+            mime = "audio/" + ext;
         else if (item.IsPicture() )
-            content = "image/" + ext;
+            mime = "image/" + ext;
     }
 
     /* nothing we can figure out */
-    if (content.IsEmpty()) {
-        content = "application/octet-stream";
+    if (mime.IsEmpty()) {
+        mime = "application/octet-stream";
     }
 
-    return content;
+    return mime;
 }
 
 /*----------------------------------------------------------------------
@@ -355,8 +355,8 @@ CUPnPServer::GetProtocolInfo(const CFileItem&              item,
     }
 
     /* we need a valid extension to retrieve the mimetype for the protocol info */
-    NPT_String content = GetContentType(item, context);
-    proto += ":*:" + content + ":" + PLT_MediaObject::GetDlnaExtension(content, context);
+    NPT_String mime = GetMimeType(item, context);
+    proto += ":*:" + mime + ":" + PLT_MediaObject::GetDlnaExtension(mime, context);
     return proto;
 }
 
@@ -1473,7 +1473,7 @@ CUPnPRenderer::ProcessHttpRequest(NPT_HttpRequest&              request,
             }
             NPT_InputStreamReference stream;
             file.GetInputStream(stream);
-            entity->SetContentType(CUPnPServer::GetContentType(filepath));
+            entity->SetContentType(CUPnPServer::GetMimeType(filepath));
             entity->SetInputStream(stream, true);
 
             return NPT_SUCCESS;
@@ -1725,7 +1725,7 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
         }
 
         if (res && res->m_ProtocolInfo.IsValid()) {
-            item.SetContentType((const char*)res->m_ProtocolInfo.GetContentType());
+            item.SetMimeType((const char*)res->m_ProtocolInfo.GetContentType());
         }
 
         item.m_dateTime.SetFromDateString((const char*)object->m_Date);

@@ -527,7 +527,7 @@ void CFileCurl::SetCorrectHeaders(CReadState* state)
 {
   CHttpHeader& h = state->m_httpheader;
   /* workaround for shoutcast server wich doesn't set content type on standard mp3 */
-  if( h.GetContentType().IsEmpty() )
+  if( h.GetMimeType().IsEmpty() )
   {
     if( !h.GetValue("icy-notice1").IsEmpty()
     || !h.GetValue("icy-name").IsEmpty()
@@ -536,7 +536,7 @@ void CFileCurl::SetCorrectHeaders(CReadState* state)
   }
 
   /* hack for google video */
-  if ( h.GetContentType().Equals("text/html")
+  if ( h.GetMimeType().Equals("text/html")
   &&  !h.GetValue("Content-Disposition").IsEmpty() )
   {
     CStdString strValue = h.GetValue("Content-Disposition");
@@ -1353,7 +1353,7 @@ bool CFileCurl::GetHttpHeader(const CURL &url, CHttpHeader &headers)
   }
 }
 
-bool CFileCurl::GetContent(const CURL &url, CStdString &content, CStdString useragent)
+bool CFileCurl::GetMimeType(const CURL &url, CStdString &content, CStdString useragent)
 {
    CFileCurl file;
    if (!useragent.IsEmpty())
@@ -1361,7 +1361,7 @@ bool CFileCurl::GetContent(const CURL &url, CStdString &content, CStdString user
 
    if( file.Stat(url, NULL) == 0 )
    {
-     content = file.GetContent();
+     content = file.GetMimeType();
      return true;
    }
 

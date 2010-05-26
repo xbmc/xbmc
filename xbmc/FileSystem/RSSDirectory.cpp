@@ -120,7 +120,7 @@ static void ParseItemMRSS(CFileItem* item, TiXmlElement* item_child, const CStdS
     if (type)
     {
       CStdString strType(type);
-      item->SetContentType(strType);
+      item->SetMimeType(strType);
       if (url && item->m_strPath.IsEmpty() &&
         (strType.Left(6).Equals("video/") ||
          strType.Left(6).Equals("audio/")
@@ -276,7 +276,7 @@ static void ParseItemRSS(CFileItem* item, TiXmlElement* item_child, const CStdSt
     const char * content_type = item_child->Attribute("type");
     if (content_type)
     {
-      item->SetContentType(content_type);
+      item->SetMimeType(content_type);
       CStdString strContentType(content_type);
       if (url && item->m_strPath.IsEmpty() &&
         (strContentType.Left(6).Equals("video/") ||
@@ -314,7 +314,7 @@ static void ParseItemVoddler(CFileItem* item, TiXmlElement* element, const CStdS
     if(item->m_strPath.IsEmpty())
     {
       item->m_strPath = text;
-      item->SetContentType(type);
+      item->SetMimeType(type);
     }
   }
   else if(name == "year")
@@ -343,7 +343,7 @@ static void ParseItemBoxee(CFileItem* item, TiXmlElement* element, const CStdStr
   else if(name == "user_agent")
     item->SetProperty("boxee:user_agent", text);
   else if(name == "content_type")
-    item->SetContentType(text);
+    item->SetMimeType(text);
   else if(name == "runtime")
     vtag->m_strRuntime = text;
   else if(name == "episode")
