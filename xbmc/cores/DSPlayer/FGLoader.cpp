@@ -313,6 +313,7 @@ HRESULT CFGLoader::InsertVideoRenderer()
 {
   HRESULT hr = S_OK;
   
+  // TODO: Use a listbox instead of a checkbox on the GUI. Simpler and easier
   if (g_sysinfo.IsVistaOrHigher())
   {
     if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))

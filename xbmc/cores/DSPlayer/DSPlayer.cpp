@@ -50,9 +50,6 @@ CDSPlayer::CDSPlayer(IPlayerCallback& callback)
     m_callSetFileFromThread(true)
 {
   g_dsGraph = new CDSGraph(&m_pDsClock, callback);
-
-  // Load our config file
-  g_dsSettings.LoadConfig();
 }
 
 CDSPlayer::~CDSPlayer()

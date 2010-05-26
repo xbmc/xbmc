@@ -151,13 +151,13 @@ void CGUIDialogVideoSettings::CreateSettings()
     entries.push_back(make_pair(DS_BILINEAR_2_75     , 35009));
     entries.push_back(make_pair(DS_BILINEAR_2_100    , 35010));
     
-    AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, &g_dsSettings.iDX9Resizer, entries);
+    AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int *) &g_dsSettings.pRendererSettings->resizer, entries);
     entries.clear();
     entries.push_back(make_pair(DS_STATS_NONE  , 35011));
     entries.push_back(make_pair(DS_STATS_1          , 35012));
     entries.push_back(make_pair(DS_STATS_2        , 35013));
     entries.push_back(make_pair(DS_STATS_3     , 35014));
-    AddSpin(VIDEO_SETTINGS_DS_STATS, 35015, &g_dsSettings.m_fDisplayStats, entries);
+    AddSpin(VIDEO_SETTINGS_DS_STATS, 35015, (int *) &g_dsSettings.pRendererSettings->displayStats, entries);
   }
 
 #endif

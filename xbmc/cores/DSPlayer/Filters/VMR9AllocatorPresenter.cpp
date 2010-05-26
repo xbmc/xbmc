@@ -403,7 +403,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
 
     //AppSettings& s = AfxGetAppSettings();
 
-    if(g_dsSettings.fVMR9MixerMode)
+    if(((CVMR9RendererSettings *)g_dsSettings.pRendererSettings)->mixerMode)
     {
       if(FAILED(hr = pConfig->SetNumberOfStreams(1)))
         break;

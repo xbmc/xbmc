@@ -276,7 +276,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   m_DetectedScanlineTimePrim = 0;
   m_DetectedRefreshRate = 0;
 
-  if (g_dsSettings.m_RenderSettings.iVMRDisableDesktopComposition)
+  if (g_dsSettings.pRendererSettings->disableDesktopComposition)
   {
     m_bDesktopCompositionDisabled = true;
     if (m_pDwmEnableComposition)
@@ -572,8 +572,6 @@ void CDX9AllocatorPresenter::VSyncThread()
   timeGetDevCaps(&tc, sizeof(TIMECAPS));
   dwResolution = dsmin(dsmax(tc.wPeriodMin, 0), tc.wPeriodMax);
   dwUser    = timeBeginPeriod(dwResolution);
-  //CMPlayerCApp *pApp = (CMPlayerCApp*)AfxGetApp();
-  CDsSettings s = g_dsSettings;
 
   while (!bQuit)
   {
@@ -587,7 +585,7 @@ void CDX9AllocatorPresenter::VSyncThread()
     case WAIT_TIMEOUT :
       {
         // Do our stuff
-        if (m_pD3DDev && g_dsSettings.m_RenderSettings.iVMR9VSync)
+        if (m_pD3DDev && g_dsSettings.pRendererSettings->vSync)
         {
 
           int VSyncPos = GetVBlackPos();
@@ -777,7 +775,7 @@ bool CDX9AllocatorPresenter::SettingsNeedResetDevice()
 {
   //TODO TI-BEN
   /*CDsSettings s = g_dsSettings;
-  CMPlayerCApp::Settings::CRendererSettingsEVR & New = g_dsSettings.m_RenderSettings;
+  CMPlayerCApp::Settings::CRendererSettingsEVR & New = g_dsSettings.pRendererSettings->
   CMPlayerCApp::Settings::CRendererSettingsEVR & Current = m_LastRendererSettings;
 
   bool bRet = false;
@@ -843,7 +841,7 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
   m_PresentWaitTimeMin = 3000000000;
   m_PresentWaitTimeMax = 0;
 
-  m_LastRendererSettings = g_dsSettings.m_RenderSettings;
+  //m_LastRendererSettings = g_dsSettings.pRendererSettings->
 
   m_VBlankEndPresent = -100000;
   m_VBlankStartMeasureTime = 0;
@@ -898,8 +896,8 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
 
   m_bCompositionEnabled = bCompositionEnabled != 0;
 
-  m_bAlternativeVSync = g_dsSettings.m_RenderSettings.fVMR9AlterativeVSync;
-  m_bHighColorResolution = g_dsSettings.m_RenderSettings.iEVRHighColorResolution && m_bIsEVR;
+  m_bAlternativeVSync = g_dsSettings.pRendererSettings->alterativeVSync;
+  m_bHighColorResolution = m_bIsEVR && ((CEVRRendererSettings *)g_dsSettings.pRendererSettings)->highColorResolution;
 
   if(FAILED(hr))
   {
@@ -1018,8 +1016,6 @@ HRESULT CDX9AllocatorPresenter::AllocSurfaces(D3DFORMAT Format)
   CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
 
-  CDsSettings s = g_dsSettings;
-
   for(int i = 0; i < m_nNbDXSurface+2; i++)
   {
     m_pVideoTexture[i] = NULL;
@@ -1032,9 +1028,9 @@ HRESULT CDX9AllocatorPresenter::AllocSurfaces(D3DFORMAT Format)
   m_SurfaceType = Format;
 
   HRESULT hr;
-  if(g_dsSettings.iAPSurfaceUsage == VIDRNDT_AP_TEXTURE2D || g_dsSettings.iAPSurfaceUsage == VIDRNDT_AP_TEXTURE3D)
+  if(g_dsSettings.pRendererSettings->apSurfaceUsage == VIDRNDT_AP_TEXTURE2D || g_dsSettings.pRendererSettings->apSurfaceUsage == VIDRNDT_AP_TEXTURE3D)
   {
-    int nTexturesNeeded = g_dsSettings.iAPSurfaceUsage == VIDRNDT_AP_TEXTURE3D ? m_nNbDXSurface+2 : 1;
+    int nTexturesNeeded = g_dsSettings.pRendererSettings->apSurfaceUsage == VIDRNDT_AP_TEXTURE3D ? m_nNbDXSurface+2 : 1;
 
     for(int i = 0; i < nTexturesNeeded; i++)
     {
@@ -1048,7 +1044,7 @@ HRESULT CDX9AllocatorPresenter::AllocSurfaces(D3DFORMAT Format)
         return hr;
     }
 
-    if(g_dsSettings.iAPSurfaceUsage == VIDRNDT_AP_TEXTURE2D)
+    if(g_dsSettings.pRendererSettings->apSurfaceUsage == VIDRNDT_AP_TEXTURE2D)
     {
       for(int i = 0; i < m_nNbDXSurface+2; i++)
       {
@@ -1900,7 +1896,6 @@ bool CDX9AllocatorPresenter::WaitForVBlankRange(int &_RasterStart, int _RasterSi
 
 int CDX9AllocatorPresenter::GetVBlackPos()
 {
-  CDsSettings s = g_dsSettings;
   BOOL bCompositionEnabled = m_bCompositionEnabled;
 
   int WaitRange = dsmax(m_ScreenSize.cy / 40, 5);
@@ -1908,7 +1903,7 @@ int CDX9AllocatorPresenter::GetVBlackPos()
   {
     if (m_bAlternativeVSync)
     {
-      return s.m_RenderSettings.iVMR9VSyncOffset;
+      return g_dsSettings.pRendererSettings->vSyncOffset;
     }
     else
     {
@@ -1927,8 +1922,7 @@ int CDX9AllocatorPresenter::GetVBlackPos()
 
 bool CDX9AllocatorPresenter::WaitForVBlank(bool &_Waited, bool &_bTakenLock)
 {
-  CDsSettings s = g_dsSettings;
-  if (!s.m_RenderSettings.iVMR9VSync)
+  if (!g_dsSettings.pRendererSettings->vSync)
   {
     _Waited = true;
     m_VBlankWaitTime = 0;
@@ -1952,14 +1946,14 @@ bool CDX9AllocatorPresenter::WaitForVBlank(bool &_Waited, bool &_bTakenLock)
     }
     else
     {
-      _Waited = WaitForVBlankRange(WaitFor, 0, false, s.m_RenderSettings.iVMR9VSyncAccurate, true, _bTakenLock);
+      _Waited = WaitForVBlankRange(WaitFor, 0, false, g_dsSettings.pRendererSettings->vSyncAccurate, true, _bTakenLock);
       return true;
     }
   }
   else
   {
     // Instead we wait for VBlack after the present, this seems to fix the stuttering problem. It's also possible to fix by removing the Sleep above, but that isn't an option.
-    WaitForVBlankRange(WaitFor, 0, false, s.m_RenderSettings.iVMR9VSyncAccurate, true, _bTakenLock);
+    WaitForVBlankRange(WaitFor, 0, false, g_dsSettings.pRendererSettings->vSyncAccurate, true, _bTakenLock);
 
     return false;
   }
@@ -2076,7 +2070,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
       Vector dst[4];
       Transform(rDstVid, dst);
 
-      DWORD iDX9Resizer = g_dsSettings.iDX9Resizer;
+      DWORD iDX9Resizer = g_dsSettings.pRendererSettings->resizer;
 
       float A = 0;
 
@@ -2178,12 +2172,12 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
     }
   }
 
-  if (g_dsSettings.m_fDisplayStats)
+  if (g_dsSettings.pRendererSettings->displayStats)
     DrawStats();
 
   BOOL bCompositionEnabled = m_bCompositionEnabled;
 
-  bool bDoVSyncInPresent = (!bCompositionEnabled && !m_bAlternativeVSync) || !g_dsSettings.m_RenderSettings.iVMR9VSync;
+  bool bDoVSyncInPresent = (!bCompositionEnabled && !m_bAlternativeVSync) || !g_dsSettings.pRendererSettings->vSync;
 
   LONGLONG PresentWaitTime = 0;
 
@@ -2193,7 +2187,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
   if (pEventQuery)
     pEventQuery->Issue(D3DISSUE_END);
 
-  if (g_dsSettings.m_RenderSettings.iVMRFlushGPUBeforeVSync && pEventQuery)
+  if (g_dsSettings.pRendererSettings->flushGPUBeforeVSync && pEventQuery)
   {
     LONGLONG llPerf = CTimeUtils::GetPerfCounter();
     BOOL Data;
@@ -2201,13 +2195,13 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
     LONGLONG FlushStartTime = CTimeUtils::GetPerfCounter();
     while(S_FALSE == pEventQuery->GetData( &Data, sizeof(Data), D3DGETDATA_FLUSH ))
     {
-      if (!g_dsSettings.m_RenderSettings.iVMRFlushGPUWait)
+      if (!g_dsSettings.pRendererSettings->flushGPUWait)
         break;
       Sleep(1);
       if (CTimeUtils::GetPerfCounter() - FlushStartTime > 500000)
         break; // timeout after 50 ms
     }
-    if (g_dsSettings.m_RenderSettings.iVMRFlushGPUWait)
+    if (g_dsSettings.pRendererSettings->flushGPUWait)
       m_WaitForGPUTime = CTimeUtils::GetPerfCounter() - llPerf;
     else
       m_WaitForGPUTime = 0;
@@ -2260,12 +2254,12 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
 
     BOOL Data;
 
-    if (g_dsSettings.m_RenderSettings.iVMRFlushGPUAfterPresent && pEventQuery)
+    if (g_dsSettings.pRendererSettings->iVMRFlushGPUAfterPresent && pEventQuery)
     {
       LONGLONG FlushStartTime = CTimeUtils::GetPerfCounter();
       while (S_FALSE == pEventQuery->GetData( &Data, sizeof(Data), D3DGETDATA_FLUSH ))
       {
-        if (!g_dsSettings.m_RenderSettings.iVMRFlushGPUWait)
+        if (!g_dsSettings.pRendererSettings->iVMRFlushGPUWait)
           break;
         if (CTimeUtils::GetPerfCounter() - FlushStartTime > 500000)
           break; // timeout after 50 ms
@@ -2338,14 +2332,15 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
       fResetDevice = true;
   }
 
-  if(g_dsSettings.fResetDevice)
+  // TODO: Usefull ?
+  /*if(g_dsSettings.fResetDevice)
   {
     D3DDEVICE_CREATION_PARAMETERS Parameters;
     if(SUCCEEDED(m_pD3DDev->GetCreationParameters(&Parameters)) && m_pD3D->GetAdapterMonitor(Parameters.AdapterOrdinal) != m_pD3D->GetAdapterMonitor(GetAdapter(m_pD3D)))
     {
       fResetDevice = true;
     }
-  }
+  }*/
 
   if(fResetDevice)
   {
@@ -2449,7 +2444,7 @@ void CDX9AllocatorPresenter::DrawText(const RECT &rc, const CStdString &strText,
 void CDX9AllocatorPresenter::DrawStats()
 { 
   int bDetailedStats = 2;
-  switch (g_dsSettings.m_fDisplayStats)
+  switch (g_dsSettings.pRendererSettings->displayStats)
   {
   case 1: bDetailedStats = 2; break;
   case 2: bDetailedStats = 1; break;
@@ -2489,40 +2484,41 @@ void CDX9AllocatorPresenter::DrawStats()
       else
         strText += "VMR9 ";
 
-      if (g_dsSettings.fD3DFullscreen)
+      if (g_dsSettings.pRendererSettings->d3dFullscreen)
         strText += "FS ";
-      if (g_dsSettings.m_RenderSettings.iVMR9FullscreenGUISupport)
+      if (g_dsSettings.pRendererSettings->fullscreenGUISupport)
         strText += "FSGui ";
 
-      if (g_dsSettings.m_RenderSettings.iVMRDisableDesktopComposition)
+      if (g_dsSettings.pRendererSettings->disableDesktopComposition)
         strText += "DisDC ";
 
-      if (g_dsSettings.m_RenderSettings.iVMRFlushGPUBeforeVSync)
+      if (g_dsSettings.pRendererSettings->flushGPUBeforeVSync)
         strText += "GPUFlushBV ";
-      if (g_dsSettings.m_RenderSettings.iVMRFlushGPUAfterPresent)
+      if (g_dsSettings.pRendererSettings->flushGPUAfterPresent)
         strText += "GPUFlushAP ";
 
-      if (g_dsSettings.m_RenderSettings.iVMRFlushGPUWait)
+      if (g_dsSettings.pRendererSettings->flushGPUWait)
         strText += "GPUFlushWt ";
 
-      if (g_dsSettings.m_RenderSettings.iVMR9VSync)
+      if (g_dsSettings.pRendererSettings->vSync)
         strText += "VS ";
-      if (g_dsSettings.m_RenderSettings.fVMR9AlterativeVSync)
+      if (g_dsSettings.pRendererSettings->alterativeVSync)
         strText += "AltVS ";
-      if (g_dsSettings.m_RenderSettings.iVMR9VSyncAccurate)
+      if (g_dsSettings.pRendererSettings->vSyncAccurate)
         strText += "AccVS ";
-      if (g_dsSettings.m_RenderSettings.iVMR9VSyncOffset)
-        strText.AppendFormat("VSOfst(%d)", g_dsSettings.m_RenderSettings.iVMR9VSyncOffset);
+      if (g_dsSettings.pRendererSettings->vSyncOffset)
+        strText.AppendFormat("VSOfst(%d)", g_dsSettings.pRendererSettings->vSyncOffset);
 
       if (m_bIsEVR)
       {
-        if (g_dsSettings.m_RenderSettings.iEVRHighColorResolution)
+        CEVRRendererSettings *pSettings = (CEVRRendererSettings *) g_dsSettings.pRendererSettings;
+        if (pSettings->highColorResolution)
           strText += "10bit ";
-        if (g_dsSettings.m_RenderSettings.iEVREnableFrameTimeCorrection)
+        if (pSettings->enableFrameTimeCorrection)
           strText += "FTC ";
-        if (g_dsSettings.m_RenderSettings.iEVROutputRange == 0)
+        if (pSettings->outputRange == 0)
           strText += "0-255 ";
-        else if (g_dsSettings.m_RenderSettings.iEVROutputRange == 1)
+        else if (pSettings->outputRange == 1)
           strText += "16-235 ";
       }
 
@@ -2608,7 +2604,7 @@ void CDX9AllocatorPresenter::DrawStats()
 
     BOOL bCompositionEnabled = m_bCompositionEnabled;
 
-    bool bDoVSyncInPresent = (!bCompositionEnabled && !m_bAlternativeVSync) || !g_dsSettings.m_RenderSettings.iVMR9VSync;
+    bool bDoVSyncInPresent = (!bCompositionEnabled && !m_bAlternativeVSync) || !g_dsSettings.pRendererSettings->vSync;
 
     if (bDetailedStats > 1 && bDoVSyncInPresent)
     {

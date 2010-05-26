@@ -461,7 +461,7 @@ bool CRenderSystemDX::CreateDevice()
   }
   
   // SetDialogBoxMode is not supported for D3DSWAPEFFECT_FLIPEX swap effect
-  if (!m_useD3D9Ex && g_dsSettings.m_RenderSettings.iVMR9FullscreenGUISupport && m_bFullScreenDevice)
+  if (!m_useD3D9Ex && g_dsSettings.pRendererSettings->fullscreenGUISupport && m_bFullScreenDevice)
     hr = m_pD3DDevice->SetDialogBoxMode(TRUE); //To be able to show a com dialog over a fullscreen video playing we need this
 
   D3DDISPLAYMODE mode;

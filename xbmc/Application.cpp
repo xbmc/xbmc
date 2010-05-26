@@ -238,6 +238,9 @@
 #ifdef _WIN32
 #include <shlobj.h>
 #include "win32util.h"
+#ifdef HAS_DX
+#include "cores/DSPlayer/Filters/RendererSettings.h"
+#endif
 #endif
 #ifdef HAS_XRANDR
 #include "XRandR.h"
@@ -588,6 +591,11 @@ bool CApplication::Create()
     FatalErrorHandler(true, true, true);
 
   update_emu_environ();//apply the GUI settings
+
+#ifdef HAS_DX // DSPlayer
+  g_dsSettings.Initialize();
+  g_dsSettings.LoadConfig();
+#endif
 
   // initialize our charset converter
   g_charsetConverter.reset();

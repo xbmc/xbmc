@@ -45,7 +45,7 @@ public:
   virtual STDMETHODIMP support_ffdshow(void) = 0;
 };
 
-#define VMRBITMAP_UPDATE            0x80000000
+#define VMRBITMAP_UPDATE        0x80000000
 #define MAX_PICTURE_SLOTS      (60+2)        // Last 2 for pixels shader!
 
 #define NB_JITTER          126
@@ -91,7 +91,7 @@ public:
     bool  m_bIsFullscreen;
     bool  m_bNeedCheckSample;
     DWORD  m_MainThreadId;
-    CDsSettings::CRendererSettingsEVR m_LastRendererSettings;
+    //CDsSettings::CRendererSettingsEVR m_LastRendererSettings;
 
     HRESULT (__stdcall * m_pDwmIsCompositionEnabled)(__out BOOL* pfEnabled);
     HRESULT (__stdcall * m_pDwmEnableComposition)(UINT uCompositionAction);

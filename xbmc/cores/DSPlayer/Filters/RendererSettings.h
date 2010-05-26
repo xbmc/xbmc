@@ -22,10 +22,8 @@
 #pragma once
 #ifndef RENDERERSETTINGS_H
 #define RENDERERSETTINGS_H
-#include "cores/DSPlayer/DShowUtil/DSGeometry.h"
 
-#include <vector>
-enum
+enum AP_SURFACE_USAGE
 {
   VIDRNDT_AP_SURFACE,
   VIDRNDT_AP_TEXTURE2D,
@@ -50,242 +48,124 @@ enum DS_STATS
   DS_STATS_3 = 1
 };
 
-typedef struct
+enum EVR_OUTPUT_RANGE
 {
-  bool fValid;
-  Com::SmartSize size;
-  int bpp, freq;
-  DWORD dmDisplayFlags;
-} dispmode;
+  OUTPUT_RANGE_0_255 = 0,
+  OUTPUT_RANGE_16_235
+};
 
-typedef struct
-{
-  bool bEnabled;
-  dispmode dmFullscreenRes24Hz;
-  dispmode dmFullscreenRes25Hz;
-  dispmode dmFullscreenRes30Hz;
-  dispmode dmFullscreenResOther;
-  bool bApplyDefault;
-  dispmode dmFullscreenRes23d976Hz;
-  dispmode dmFullscreenRes29d97Hz;
-}  AChFR;
-
-
-class TiXmlElement;
-
-class CDsSettings
+class CRendererSettings
 {
 public:
-  bool    m_fTearingTest;
-  int     m_fDisplayStats;
-  bool    m_bResetStats; // Set to reset the presentation statistics
-  CStdString    m_strVersion;
+  CRendererSettings()
+  {
+    SetDefault();
+  }
+  virtual void SetDefault()
+  {
+    apSurfaceUsage = VIDRNDT_AP_TEXTURE3D; // Fixed setting
+    resizer = DS_BILINEAR; // On GUI
+    displayStats = DS_STATS_NONE; // On GUI
+    vSyncOffset = 0;
+    vSyncAccurate = true;
+    //TODO: Check if the flag is correctly set when creating the D3D Device
+    fullscreenGUISupport = true;
+    alterativeVSync = false;
+    vSync = true;
+    disableDesktopComposition = false;
+
+    flushGPUBeforeVSync = true; //Flush GPU before VSync
+    flushGPUAfterPresent = false; //Flush GPU after Present
+    flushGPUWait = false; //Wait for flushes
+
+    d3dFullscreen = true;
+  }
+
+public:
+  DS_STATS displayStats;
+  bool alterativeVSync;
+  int vSyncOffset;
+  bool vSyncAccurate;
+  bool fullscreenGUISupport; // TODO: Not sure if it's really needed
+  bool vSync;
+  bool disableDesktopComposition;
+  bool flushGPUBeforeVSync;
+  bool flushGPUAfterPresent;
+  bool flushGPUWait;
+  AP_SURFACE_USAGE apSurfaceUsage;
+  DS_RESIZERS resizer;
+  bool d3dFullscreen;
+};
+
+class CEVRRendererSettings: public CRendererSettings
+{
+public:
+  CEVRRendererSettings()
+  {
+    SetDefault();
+  }
+  void SetDefault()
+  {
+    CRendererSettings::SetDefault();
+
+    highColorResolution = false;
+    enableFrameTimeCorrection = false;
+    outputRange = OUTPUT_RANGE_0_255;
+    buffers = 4;
+  }
+
+public:
+  bool highColorResolution;
+  bool enableFrameTimeCorrection;
+  EVR_OUTPUT_RANGE outputRange;
+  int buffers;
+};
+
+class CVMR9RendererSettings: public CRendererSettings
+{
+public:
+  CVMR9RendererSettings()
+  {
+    SetDefault();
+  }
+  void SetDefault()
+  {
+    CRendererSettings::SetDefault();
+
+    mixerMode = true;
+  };
+
+public:
+  bool mixerMode;
+};
+
+class CDSSettings
+{
+public:
   CStdString    m_strD3DX9Version;
-  CStdString    m_AudioRendererDisplayName_CL;
   HINSTANCE     m_hD3DX9Dll;
   int           m_nDXSdkRelease;
-  bool fResetDevice;
+  CStdStringW   D3D9RenderDevice;
 
-    class CRendererSettingsShared
-    {
-    public:
-      CRendererSettingsShared()
-      {
-        SetDefault();
-      }
-      bool fVMR9AlterativeVSync;
-      int  iVMR9VSyncOffset;
-      bool iVMR9VSyncAccurate;
-      bool iVMR9FullscreenGUISupport;
-      bool iVMR9VSync;
-      bool iVMRDisableDesktopComposition;
-      bool iVMRFlushGPUBeforeVSync;
-      bool iVMRFlushGPUAfterPresent;
-      bool iVMRFlushGPUWait;
+  CRendererSettings *pRendererSettings;
 
-      // SyncRenderer settings Still dont know if this renderer will be added
-      bool bSynchronizeVideo;
-      bool bSynchronizeDisplay;
-      bool bSynchronizeNearest;
-      int iLineDelta;
-      int iColumnDelta;
-      float fCycleDelta;
-      float fTargetSyncOffset;
-      float fControlLimit;
-
-      void SetDefault();
-      void SetOptimal();
-    };
-    class CRendererSettingsEVR : public CRendererSettingsShared
-    {
-    public:
-      bool iEVRHighColorResolution;
-      bool iEVREnableFrameTimeCorrection;
-      int iEVROutputRange;
-      int iEvrBuffers;
-
-      CRendererSettingsEVR()
-      {
-        SetDefault();
-      }
-      void SetDefault()
-      {
-        CRendererSettingsShared::SetDefault();
-
-        iEVRHighColorResolution = false;
-        iEVREnableFrameTimeCorrection = false;
-        iEVROutputRange = 0;
-        iEvrBuffers = 4; // Needed because painting and rendering are not in the same thread
-      }
-      void SetOptimal()
-      {
-        CRendererSettingsShared::SetOptimal();
-        iEVRHighColorResolution = false;
-      }
-    };
-
-    CRendererSettingsEVR m_RenderSettings;
-
-  int iDSVideoRendererType;
-  int iRMVideoRendererType;
-  int iQTVideoRendererType;
-  int iAPSurfaceUsage;
-//    bool fVMRSyncFix;
-  int iDX9Resizer;
-  bool fVMR9MixerMode;
-  bool fVMR9MixerYUV;
-
-  int nVolume;
-  int nBalance;
-  bool fMute;
-  int nLoops;
-  bool fLoopForever;
-  bool fRewind;
-  int iZoomLevel;
-  // int iVideoRendererType; 
-  CStdStringW AudioRendererDisplayName;
-  bool fAutoloadAudio;
-  bool fAutoloadSubtitles;
-  bool fBlockVSFilter;
-  bool fEnableWorkerThreadForOpening;
-  bool fReportFailedPins;
-
-  CStdStringW f_hmonitor;
-  bool fAssociatedWithIcons;
-  CStdStringW f_lastOpenDir;
-
-  bool fAllowMultipleInst;
-  int iTitleBarTextStyle;
-  bool fTitleBarTextTitle;
-  int iOnTop;
-  bool fTrayIcon;
-  bool fRememberZoomLevel;
-  bool fShowBarsWhenFullScreen;
-  int nShowBarsWhenFullScreenTimeOut;
-  AChFR AutoChangeFullscrRes;
-  bool fExitFullScreenAtTheEnd;
-  bool fRestoreResAfterExit;
-  bool fRememberWindowPos;
-  bool fRememberWindowSize;
-  bool fSnapToDesktopEdges;
-  Com::SmartRect rcLastWindowPos;
-  UINT lastWindowType;
-  Com::SmartSize AspectRatio;
-  bool fKeepHistory;
-
-  CStdString sDVDPath;
-  bool fUseDVDPath;
-  LCID idMenuLang, idAudioLang, idSubtitlesLang;
-  bool fAutoSpeakerConf;
-
-  bool fOverridePlacement;
-  int nHorPos, nVerPos;
-  int nSPCSize;
-  int nSPCMaxRes;
-  int nSubDelayInterval;
-  bool fSPCPow2Tex;
-  bool fSPCAllowAnimationWhenBuffering;
-  bool fEnableSubtitles;
-  bool fUseDefaultSubtitlesStyle;
-
-  bool fDisableXPToolbars;
-  bool fUseWMASFReader;
-  int nJumpDistS;
-  int nJumpDistM;
-  int nJumpDistL;
-  bool fLimitWindowProportions;
-  bool fNotifyMSN;
-  bool fNotifyGTSdll;
-
-  bool fEnableAudioSwitcher;
-  bool fDownSampleTo441;
-  bool fAudioTimeShift;
-  int tAudioTimeShift;
-  bool fCustomChannelMapping;
-  DWORD pSpeakerToChannelMap[18][18];
-  bool fAudioNormalize;
-  bool fAudioNormalizeRecover;
-  float AudioBoost;
-
-  bool fIntRealMedia;
-  int iQuickTimeRenderer;
-  float RealMediaQuickTimeFPS;
-
-  std::vector<CStdString> m_pnspresets;
-  HACCEL hAccel;
-
-  bool fWinLirc;
-  CStdString WinLircAddr;
-  bool fGlobalMedia;
-
-  bool      fD3DFullscreen;
-  bool      fMonitorAutoRefreshRate;
-  bool      fLastFullScreen;
-  bool      fEnableEDLEditor;
-  float      dBrightness;
-  float      dContrast;
-  float      dHue;
-  float      dSaturation;
-  CStdString      strShaderList;
-  CStdString      strShaderListScreenSpace;
-  bool      m_bToggleShader;
-  bool      m_bToggleShaderScreenSpace;
-
-  bool      fRememberDVDPos;
-  bool      fRememberFilePos;
-  bool      fShowOSD;
-  int        iLanguage;
-
-
-  HWND      hMasterWnd;
-//TODO
-  bool      IsD3DFullscreen() {return false;};
+  //TODO
+  bool  IsD3DFullscreen() {return false;};
 
 public:
-  CDsSettings(void);
-  virtual ~CDsSettings(void);
-  void SetDefault();
+  CDSSettings(void);
+  virtual ~CDSSettings(void);
+  void Initialize();
 
   void LoadConfig();
 
   HINSTANCE GetD3X9Dll();
   int GetDXSdkRelease() { return m_nDXSdkRelease; };
-  bool m_fPreventMinimize;
-  bool m_fUseWin7TaskBar;
-  bool m_fExitAfterPlayback;
-  bool m_fNextInDirAfterPlayback;
-  bool m_fDontUseSearchInFolder;
-  int  nOSD_Size;
-  CStdString m_OSD_Font;
-  CStdStringW m_subtitlesLanguageOrder;
-  CStdStringW m_audiosLanguageOrder;
 
-  int fnChannels;
-
-  CStdStringW D3D9RenderDevice;
+private:
+  bool m_isEVR;
 };
-
-extern class CDsSettings g_dsSettings;
+extern class CDSSettings g_dsSettings;
 extern bool g_bNoDuration;
 extern bool g_bExternalSubtitleTime;
 
