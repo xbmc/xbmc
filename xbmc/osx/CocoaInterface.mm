@@ -537,19 +537,56 @@ const char* Cocoa_GetAppVersion()
 
 bool Cocoa_HasVDADecoder()
 {
-  bool result = false;
+  static int result = -1;
 
-  if (Cocoa_GetOSVersion() >= 0x1063)
-    result = access(DLL_PATH_LIBVDADECODER, 0) == 0;
+  if (result == -1)
+  {
+    if (Cocoa_GetOSVersion() >= 0x1063)
+      result = access(DLL_PATH_LIBVDADECODER, 0) == 0;
+    else
+      result = false;
+  }
+
+  return(result);
+}
+
+bool Cocoa_GPUForDisplayIsNvidiaPureVideo3()
+{
+  static int result = -1;
+  
+  if (result == -1)
+  {
+    std::string str;
+    const char *cstr;
+    CGDirectDisplayID display_id;
+
+    display_id = (CGDirectDisplayID)Cocoa_GL_GetCurrentDisplayID();
+
+    io_registry_entry_t dspPort = CGDisplayIOServicePort(display_id);
+
+    CFDataRef model;
+    model = (CFDataRef)IORegistryEntrySearchCFProperty(dspPort, kIOServicePlane, CFSTR("model"),
+      kCFAllocatorDefault,kIORegistryIterateRecursively | kIORegistryIterateParents);
+
+    cstr = (const char*)CFDataGetBytePtr(model);
+    if (std::string(cstr).find("NVIDIA GeForce 9400") != std::string::npos)
+      result = true;
+    else
+      result = false;
+
+    if (model)
+      CFRelease(model);
+  }
 
   return(result);
 }
 
 int Cocoa_GetOSVersion()
 {
-  SInt32 version;
+  static SInt32 version = -1;
 
-  Gestalt(gestaltSystemVersion, &version);
+  if (version == -1)
+    Gestalt(gestaltSystemVersion, &version);
   
   return(version);
 }

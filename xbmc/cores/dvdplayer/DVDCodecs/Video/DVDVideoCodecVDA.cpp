@@ -417,6 +417,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     CFDataRef avcCData;
     uint8_t *extradata; // extra data for codec to use
     unsigned int extrasize; // size of extra data
+    bool cannot_handle_this_width;
 
     //
     width  = hints.width;
@@ -426,6 +427,34 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     extrasize = hints.extrasize;
     extradata = (uint8_t*)hints.extradata;
  
+    if (Cocoa_GPUForDisplayIsNvidiaPureVideo3())
+    {
+      // known hardware limitation of purevideo 3. (the Nvidia 9400 is a purevideo 3 chip) 
+      // from nvidia's linux vdpau README: All current third generation PureVideo hardware
+      // (G98, MCP77, MCP78, MCP79, MCP7A) cannot decode H.264 for the following horizontal resolutions: 
+      // 769-784, 849-864, 929-944, 1009–1024, 1793–1808, 1873–1888, 1953–1968 and 2033-2048 pixel.
+      cannot_handle_this_width = false;
+      if (width >= 769 && width <= 784)
+        cannot_handle_this_width = true;
+      if (width >= 849 && width <= 864)
+        cannot_handle_this_width = true;
+      if (width >= 1009 && width <= 1024)
+        cannot_handle_this_width = true;
+      if (width >= 1793 && width <= 1808)
+        cannot_handle_this_width = true;
+      if (width >= 1873 && width <= 1888)
+        cannot_handle_this_width = true;
+      if (width >= 1953 && width <= 1968)
+        cannot_handle_this_width = true;
+      if (width >= 2033 && width <= 2048)
+        cannot_handle_this_width = true;
+      if (cannot_handle_this_width)
+      {
+        CLog::Log(LOGNOTICE, "%s - Nvidia 9400 GPU hardware limitation, cannot decode a width of %d", __FUNCTION__, width);
+        return false;
+      }
+    }
+
     switch (hints.codec)
     {
       case CODEC_ID_H264:
