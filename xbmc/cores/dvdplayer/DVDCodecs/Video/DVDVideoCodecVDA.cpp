@@ -417,7 +417,6 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     CFDataRef avcCData;
     uint8_t *extradata; // extra data for codec to use
     unsigned int extrasize; // size of extra data
-    bool cannot_handle_this_width;
 
     //
     width  = hints.width;
@@ -433,7 +432,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       // from nvidia's linux vdpau README: All current third generation PureVideo hardware
       // (G98, MCP77, MCP78, MCP79, MCP7A) cannot decode H.264 for the following horizontal resolutions: 
       // 769-784, 849-864, 929-944, 1009–1024, 1793–1808, 1873–1888, 1953–1968 and 2033-2048 pixel.
-      cannot_handle_this_width = false;
+      bool cannot_handle_this_width = false;
       if (width >= 769 && width <= 784)
         cannot_handle_this_width = true;
       if (width >= 849 && width <= 864)
