@@ -22,6 +22,7 @@
 #include "DSPlayer.h"
 #include "dshowutil/dshowutil.h" // unload loaded filters
 #include "DShowUtil/smartptr.h"
+#include "Filters/RendererSettings.h"
 
 #include "winsystemwin32.h" //Important needed to get the right hwnd
 #include "utils/GUIInfoManager.h"
@@ -49,6 +50,9 @@ CDSPlayer::CDSPlayer(IPlayerCallback& callback)
     m_callSetFileFromThread(true)
 {
   g_dsGraph = new CDSGraph(&m_pDsClock, callback);
+
+  // Load our config file
+  g_dsSettings.LoadConfig();
 }
 
 CDSPlayer::~CDSPlayer()

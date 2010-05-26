@@ -30,11 +30,13 @@
 using namespace XFILE;
 CDsSettings::CDsSettings(void)
 {
-  LoadConfig();
+  m_hD3DX9Dll = NULL;
 }
 
 CDsSettings::~CDsSettings(void)
 {
+  if (m_hD3DX9Dll)
+    FreeLibrary(m_hD3DX9Dll);
 }
 
 void CDsSettings::SetDefault()
@@ -54,12 +56,11 @@ void CDsSettings::LoadConfig()
 {
   SetDefault();
 
-  CStdString strDsConfigFile = "special://masterprofile/dsconfig.xml";
-  bool bExists = CFile::Exists(strDsConfigFile);
-  
-  if (!bExists)
+  CStdString strDsConfigFile = g_settings.GetUserDataItem("dsconfig.xml");
+  if (!CFile::Exists(strDsConfigFile))
   {
-    CUtil::AddFileToFolder("special://masterprofile", "dsconfig.xml");
+    CLog::Log(LOGNOTICE, "No dsconfig.xml to load (%s)", strDsConfigFile.c_str());
+    return;
   }
   
   // load the xml file
@@ -67,70 +68,51 @@ void CDsSettings::LoadConfig()
 
   if (!xmlDoc.LoadFile(strDsConfigFile))
   {
-    CLog::Log(LOGERROR, "%s, Line %d\n%s", strDsConfigFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", strDsConfigFile.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return;
   }
 
   TiXmlElement *pRootElement = xmlDoc.RootElement();
-  if (strcmpi(pRootElement->Value(), "dsplayersettings") != 0)
+  if (pRootElement && (strcmpi(pRootElement->Value(), "dsplayersettings") != 0))
   {
-    CLog::Log(LOGERROR, "%s\nDoesn't contain <dsplayersettings>", strDsConfigFile.c_str());
+    CLog::Log(LOGERROR, "Error loading %s, no <dsplayersettings> node", strDsConfigFile.c_str());
     return;
   }
 
   // video renderer settings
   TiXmlElement *pElement = pRootElement->FirstChildElement("videorenderers");
-  if (pElement)
-  {
-    // TODO: Rename and document those options. Don't need the VMR9 prefix as these applied to EVR too
-    GetBoolean(pElement, "VMR9AlterativeVSync", m_RenderSettings.fVMR9AlterativeVSync, false);
-    GetInteger(pElement, "VMR9VSyncOffset", m_RenderSettings.iVMR9VSyncOffset, 0, 0 , 100);
-    GetBoolean(pElement, "VMR9VSyncAccurate", m_RenderSettings.iVMR9VSyncAccurate, true);
-    GetBoolean(pElement, "VMR9VSync", m_RenderSettings.iVMR9VSync, true);
-    GetBoolean(pElement, "VMRDisableDesktopComposition", m_RenderSettings.iVMRDisableDesktopComposition, false);
-    GetBoolean(pElement, "VMRFlushGPUBeforeVSync", m_RenderSettings.iVMRFlushGPUBeforeVSync, true);
-    GetBoolean(pElement, "VMRFlushGPUAfterPresent", m_RenderSettings.iVMRFlushGPUAfterPresent, false);
-    GetBoolean(pElement, "VMRFlushGPUWait", m_RenderSettings.iVMRFlushGPUWait, false);
-    GetBoolean(pElement, "SynchronizeVideo", m_RenderSettings.bSynchronizeVideo, false);
-    GetBoolean(pElement, "SynchronizeDisplay", m_RenderSettings.bSynchronizeDisplay, false);
-    GetBoolean(pElement, "SynchronizeNearest", m_RenderSettings.bSynchronizeNearest, true);
-    GetInteger(pElement, "LineDelta", m_RenderSettings.iLineDelta, 0, 0, 100);
-    GetInteger(pElement, "ColumnDelta", m_RenderSettings.iColumnDelta, 0, 0, 100);
-    GetDouble(pElement, "CycleDelta", m_RenderSettings.fCycleDelta, 0, 0, 100);
-    GetDouble(pElement, "TargetSyncOffset", m_RenderSettings.fTargetSyncOffset, 0, 0, 100);
-    GetDouble(pElement, "ControlLimit", m_RenderSettings.fControlLimit, 0, 0, 100);
-    
-    //GetInteger(pElement, "DX9Resizer", iDX9Resizer, 3, 0, 5); Set in GUI
-
-    GetInteger(pElement, "EVRBuffers", m_RenderSettings.iEvrBuffers, 4, 4, 60);
-  }
-}
-
-
-void CDsSettings::GetBoolean(const TiXmlElement* pRootElement, const char *tagName, bool& iValue, const bool iDefault)
-{
-  if (XMLUtils::GetBoolean(pRootElement, tagName, iValue))
+  if (! pElement)
     return;
-  // default
-  iValue = iDefault;
+
+  // TODO: Rename and document those options. Don't need the VMR9 prefix as these applied to EVR too
+
+  // Default values are set by SetDefault. We don't need a default parameter in GetXXX.
+  // If XMLUtils::GetXXX fails, the value is not modified
+
+  // VSync
+  XMLUtils::GetBoolean(pElement, "VMR9VSync", m_RenderSettings.iVMR9VSync);
+  XMLUtils::GetBoolean(pElement, "VMR9AlterativeVSync", m_RenderSettings.fVMR9AlterativeVSync);
+  XMLUtils::GetBoolean(pElement, "VMR9VSyncAccurate", m_RenderSettings.iVMR9VSyncAccurate);
+  XMLUtils::GetBoolean(pElement, "VMRFlushGPUBeforeVSync", m_RenderSettings.iVMRFlushGPUBeforeVSync);
+  XMLUtils::GetBoolean(pElement, "VMRFlushGPUWait", m_RenderSettings.iVMRFlushGPUWait);
+  XMLUtils::GetBoolean(pElement, "VMRFlushGPUAfterPresent", m_RenderSettings.iVMRFlushGPUAfterPresent);
+  XMLUtils::GetInt(pElement, "VMR9VSyncOffset", m_RenderSettings.iVMR9VSyncOffset, 0, 100);
+  
+  // Misc
+  XMLUtils::GetBoolean(pElement, "VMRDisableDesktopComposition", m_RenderSettings.iVMRDisableDesktopComposition);  
+  XMLUtils::GetBoolean(pElement, "SynchronizeVideo", m_RenderSettings.bSynchronizeVideo);
+  XMLUtils::GetBoolean(pElement, "SynchronizeDisplay", m_RenderSettings.bSynchronizeDisplay);
+  XMLUtils::GetBoolean(pElement, "SynchronizeNearest", m_RenderSettings.bSynchronizeNearest);
+  XMLUtils::GetInt(pElement, "LineDelta", m_RenderSettings.iLineDelta, 0, 100);
+  XMLUtils::GetInt(pElement, "ColumnDelta", m_RenderSettings.iColumnDelta, 0, 100);
+  XMLUtils::GetFloat(pElement, "CycleDelta", m_RenderSettings.fCycleDelta, 0, 100);
+  XMLUtils::GetFloat(pElement, "TargetSyncOffset", m_RenderSettings.fTargetSyncOffset, 0, 100);
+  XMLUtils::GetFloat(pElement, "ControlLimit", m_RenderSettings.fControlLimit, 0, 100);
+
+  // EVR
+  XMLUtils::GetInt(pElement, "EVRBuffers", m_RenderSettings.iEvrBuffers, 4, 60);
 }
 
-
-void CDsSettings::GetInteger(const TiXmlElement* pRootElement, const char *tagName, int& iValue, const int iDefault, const int iMin, const int iMax)
-{
-  if (XMLUtils::GetInt(pRootElement, tagName, iValue, iMin, iMax))
-    return;
-  // default
-  iValue = iDefault;
-}
-
-void CDsSettings::GetDouble(const TiXmlElement* pRootElement, const char *tagName, double& fValue, const double fDefault, const double fMin, const double fMax)
-{
-  if (XMLUtils::GetDouble(pRootElement, tagName, fValue))
-    return;
-  // default
-  fValue = fDefault;
-}
 void CDsSettings::CRendererSettingsShared::SetDefault()
 {
   fVMR9AlterativeVSync = false; // Alternative VSync
@@ -151,9 +133,9 @@ void CDsSettings::CRendererSettingsShared::SetDefault()
 
   iLineDelta = 0;
   iColumnDelta = 0;
-  fCycleDelta = 0.0012; //Frequency adjustement
-  fTargetSyncOffset = 12.0; //Target sync offset
-  fControlLimit = 2.0; //control limits + - ms
+  fCycleDelta = 0.0012f; //Frequency adjustement
+  fTargetSyncOffset = 12.0f; //Target sync offset
+  fControlLimit = 2.0f; //control limits + - ms
 }
 
 void CDsSettings::CRendererSettingsShared::SetOptimal()
@@ -170,9 +152,9 @@ void CDsSettings::CRendererSettingsShared::SetOptimal()
   bSynchronizeNearest = true;
   iLineDelta = 0;
   iColumnDelta = 0;
-  fCycleDelta = 0.0012;
-  fTargetSyncOffset = 12.0;
-  fControlLimit = 2.0;
+  fCycleDelta = 0.0012f;
+  fTargetSyncOffset = 12.0f;
+  fControlLimit = 2.0f;
 }
 HINSTANCE CDsSettings::GetD3X9Dll()
 {
@@ -188,16 +170,16 @@ if (m_hD3DX9Dll == NULL)
       min_ver = 42;      
     } else {
       if(D3DX_SDK_VERSION > 33) {
-  // versions between 34 and 41 have no known compatibility issues
-  min_ver = 34;
+        // versions between 34 and 41 have no known compatibility issues
+        min_ver = 34;
       }  else {    
-  // The minimum version that supports the functionality required by MPC is 24
-  min_ver = 24;
+        // The minimum version that supports the functionality required by MPC is 24
+        min_ver = 24;
   
-  if(D3DX_SDK_VERSION == 33) {
-    // The April 2007 SDK (v33) should not be used (crash sometimes during shader compilation)
-    max_ver = 32;    
-  }  
+        if(D3DX_SDK_VERSION == 33) {
+          // The April 2007 SDK (v33) should not be used (crash sometimes during shader compilation)
+          max_ver = 32;    
+        }
       }
     }
     
@@ -208,8 +190,8 @@ if (m_hD3DX9Dll == NULL)
       m_hD3DX9Dll = LoadLibrary (m_strD3DX9Version);
       if (m_hD3DX9Dll) 
       {
-  m_nDXSdkRelease = i;
-  break;
+        m_nDXSdkRelease = i;
+        break;
       }
     }
   }

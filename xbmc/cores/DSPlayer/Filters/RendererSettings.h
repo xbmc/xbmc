@@ -109,9 +109,9 @@ public:
       bool bSynchronizeNearest;
       int iLineDelta;
       int iColumnDelta;
-      double fCycleDelta;
-      double fTargetSyncOffset;
-      double fControlLimit;
+      float fCycleDelta;
+      float fTargetSyncOffset;
+      float fControlLimit;
 
       void SetDefault();
       void SetOptimal();
@@ -259,7 +259,7 @@ public:
 
   HWND      hMasterWnd;
 //TODO
-  bool      IsD3DFullscreen(){return false;};
+  bool      IsD3DFullscreen() {return false;};
 
 public:
   CDsSettings(void);
@@ -267,12 +267,9 @@ public:
   void SetDefault();
 
   void LoadConfig();
-  void GetBoolean(const TiXmlElement* pRootElement, const char *tagName, bool& iValue, const bool iDefault);
-  void GetInteger(const TiXmlElement* pRootElement, const char *tagName, int& fValue, const int fDefault, const int fMin, const int fMax);
-  void GetDouble(const TiXmlElement* pRootElement, const char *tagName, double& fValue, const double fDefault, const double fMin, const double fMax);
-  //void UpdateData(bool fSave);
-  HINSTANCE          GetD3X9Dll();
-  int              GetDXSdkRelease() { return m_nDXSdkRelease; };
+
+  HINSTANCE GetD3X9Dll();
+  int GetDXSdkRelease() { return m_nDXSdkRelease; };
   bool m_fPreventMinimize;
   bool m_fUseWin7TaskBar;
   bool m_fExitAfterPlayback;
@@ -287,6 +284,7 @@ public:
 
   CStdStringW D3D9RenderDevice;
 };
+
 extern class CDsSettings g_dsSettings;
 extern bool g_bNoDuration;
 extern bool g_bExternalSubtitleTime;
