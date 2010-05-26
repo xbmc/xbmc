@@ -67,8 +67,11 @@ map<TYPE, IAddonMgrCallback*> CAddonMgr::m_managers;
 
 AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
 {
+  if (!PlatformSupportsAddon(props->plugin))
+    return AddonPtr();
+
   /* Check if user directories need to be created */
-  const cp_cfg_element_t *settings = GetExtElement(props->plugin->extensions->configuration, "settings");
+  const cp_cfg_element_t *settings = GetExtElement(props->configuration, "settings");
   if (settings)
     CheckUserDirs(settings);
 
@@ -296,9 +299,9 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
 
   cp_status_t status;
   cp_plugin_info_t *cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
-  if (status == CP_OK && cpaddon->extensions)
+  if (status == CP_OK && cpaddon)
   {
-    addon = Factory(cpaddon->extensions);
+    addon = GetAddonFromDescriptor(cpaddon);
     m_cpluff->release_info(m_cp_context, cpaddon);
     return NULL != addon.get();
   }
@@ -476,6 +479,35 @@ void CAddonMgr::OnJobComplete(unsigned int jobID, bool success, CJob* job)
  * libcpluff interaction
  */
 
+bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
+{
+  if (!plugin || !plugin->num_extensions)
+    return false;
+  const cp_extension_t *metadata = GetExtension(plugin, "xbmc.addon.metadata");
+  if (metadata)
+  {
+    CStdString platformString = CAddonMgr::Get().GetExtValue(metadata->configuration, "platform");
+    vector<CStdString> platforms;
+    StringUtils::SplitString(platformString, " ", platforms);
+    for (unsigned int i = 0; i < platforms.size(); ++i)
+    {
+      if (platforms[i] == "all")
+        return true;
+#if defined(_LINUX) && !defined(__APPLE__)
+      if (platforms[i] == "linux")
+#elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
+      if (platforms[i] == "wingl")
+#elif defined(_WIN32) && defined(HAS_DX)
+      if (platforms[i] == "windx")
+#elif defined(__APPLE__)
+      if (platforms[i] == "osx")
+#endif
+        return true;
+    }
+  }
+  return false;
+}
+
 const cp_cfg_element_t *CAddonMgr::GetExtElement(cp_cfg_element_t *base, const char *path)
 {
   const cp_cfg_element_t *element = NULL;
@@ -505,7 +537,7 @@ bool CAddonMgr::GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *ba
   return true;
 }
 
-const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, const char *extension)
+const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, const char *extension) const
 {
   if (!props)
     return NULL;
@@ -553,13 +585,33 @@ vector<CStdString> CAddonMgr::GetExtValues(cp_cfg_element_t *base, const char *p
   return result;
 }
 
+AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info)
+{
+  if (!info || !info->extensions)
+    return AddonPtr();
+
+  // FIXME: If we want to support multiple extension points per addon, we'll need to extend this to not just take
+  //        the first extension point (eg use the TYPE information we pass in)
+
+  // grab a relevant extension point, ignoring our xbmc.addon.metadata extension point
+  for (unsigned int i = 0; i < info->num_ext_points; ++i)
+  {
+    if (0 != strcmp("xbmc.addon.metadata", info->extensions[i].ext_point_id))
+    { // note that Factory takes care of whether or not we have platform support
+      return Factory(&info->extensions[i]);
+    }
+  }
+  return AddonPtr();
+}
+
+// FIXME: This function may not be required
 bool CAddonMgr::LoadAddonDescription(const CStdString &path, AddonPtr &addon)
 {
   cp_status_t status;
   cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor(m_cp_context, _P(path).c_str(), &status);
   if (info)
   {
-    addon = Factory(info->extensions);
+    addon = GetAddonFromDescriptor(info);
     m_cpluff->release_info(m_cp_context, info);
     return NULL != addon.get();
   }
@@ -587,11 +639,10 @@ bool CAddonMgr::AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons)
     cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor_from_memory(context, xml.c_str(), xml.size(), &status);
     if (info)
     {
-      AddonPtr addon = Factory(info->extensions);
-      m_cpluff->release_info(context, info);
-      // FIXME: sanity check here that the addon satisfies our requirements?
+      AddonPtr addon = GetAddonFromDescriptor(info);
       if (addon.get())
         addons.push_back(addon);
+      m_cpluff->release_info(context, info);
     }
     element = element->NextSiblingElement("addon");
   }

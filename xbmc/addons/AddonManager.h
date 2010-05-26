@@ -104,7 +104,7 @@ namespace ADDON
     /* libcpluff */
     CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
     std::vector<CStdString> GetExtValues(cp_cfg_element_t *base, const char *path);
-    const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension);
+    const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension) const;
 
     /*! \brief Load the addon in the given path
      This loads the addon using c-pluff which parses the addon descriptor file.
@@ -134,6 +134,19 @@ namespace ADDON
     bool GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *base, const char *path);
     cp_context_t *m_cp_context;
     DllLibCPluff *m_cpluff;
+
+    /*! \brief Fetch a (single) addon from a plugin descriptor.
+     Assumes that there is a single (non-trivial) extension point per addon.
+     \param info the plugin descriptor
+     \return an AddonPtr based on the descriptor.  May be NULL if no suitable extension point is found.
+     */
+    AddonPtr GetAddonFromDescriptor(const cp_plugin_info_t *info);
+
+    /*! \brief Check whether this addon is supported on the current platform
+     \param info the plugin descriptor
+     \return true if the addon is supported, false otherwise.
+     */
+    bool PlatformSupportsAddon(const cp_plugin_info_t *info) const;
 
     AddonPtr Factory(const cp_extension_t *props);
     bool CheckUserDirs(const cp_cfg_element_t *element);
