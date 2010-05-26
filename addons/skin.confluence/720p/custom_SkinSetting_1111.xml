@@ -1429,7 +1429,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(HomeScriptButton1_Path,Script)</onclick>
+							<onclick>Skin.SetAddon(HomeScriptButton1_Path,xbmc.python.script)</onclick>
 							<visible>Skin.HasSetting(HomeScriptButton1)</visible>
 						</control>
 
@@ -1468,7 +1468,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(HomeScriptButton2_Path,Script)</onclick>
+							<onclick>Skin.SetAddon(HomeScriptButton2_Path,xbmc.python.script)</onclick>
 							<visible>Skin.HasSetting(HomeScriptButton2)</visible>
 						</control>
 
@@ -1507,7 +1507,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(HomeScriptButton3_Path,Script)</onclick>
+							<onclick>Skin.SetAddon(HomeScriptButton3_Path,xbmc.python.script)</onclick>
 							<visible>Skin.HasSetting(HomeScriptButton3)</visible>
 						</control>
 
@@ -1546,7 +1546,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(HomeScriptButton4_Path,Script)</onclick>
+							<onclick>Skin.SetAddon(HomeScriptButton4_Path,xbmc.python.script)</onclick>
 							<visible>Skin.HasSetting(HomeScriptButton4)</visible>
 						</control>
 
@@ -1585,7 +1585,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(HomeScriptButton5_Path,Script)</onclick>
+							<onclick>Skin.SetAddon(HomeScriptButton5_Path,xbmc.python.script)</onclick>
 							<visible>Skin.HasSetting(HomeScriptButton5)</visible>
 						</control>
 
@@ -1624,7 +1624,7 @@
 							<focusedcolor>white</focusedcolor>
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetFile(HomeScriptButton6_Path,Script)</onclick>
+							<onclick>Skin.SetAddon(HomeScriptButton6_Path,xbmc.python.script)</onclick>
 							<visible>Skin.HasSetting(HomeScriptButton6)</visible>
 						</control>
 
