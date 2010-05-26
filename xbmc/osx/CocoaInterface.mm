@@ -552,31 +552,28 @@ bool Cocoa_HasVDADecoder()
 
 bool Cocoa_GPUForDisplayIsNvidiaPureVideo3()
 {
-  static int result = -1;
+  bool result;
   
-  if (result == -1)
-  {
-    std::string str;
-    const char *cstr;
-    CGDirectDisplayID display_id;
+  std::string str;
+  const char *cstr;
+  CGDirectDisplayID display_id;
 
-    display_id = (CGDirectDisplayID)Cocoa_GL_GetCurrentDisplayID();
+  display_id = (CGDirectDisplayID)Cocoa_GL_GetCurrentDisplayID();
 
-    io_registry_entry_t dspPort = CGDisplayIOServicePort(display_id);
+  io_registry_entry_t dspPort = CGDisplayIOServicePort(display_id);
 
-    CFDataRef model;
-    model = (CFDataRef)IORegistryEntrySearchCFProperty(dspPort, kIOServicePlane, CFSTR("model"),
-      kCFAllocatorDefault,kIORegistryIterateRecursively | kIORegistryIterateParents);
+  CFDataRef model;
+  model = (CFDataRef)IORegistryEntrySearchCFProperty(dspPort, kIOServicePlane, CFSTR("model"),
+    kCFAllocatorDefault,kIORegistryIterateRecursively | kIORegistryIterateParents);
 
-    cstr = (const char*)CFDataGetBytePtr(model);
-    if (std::string(cstr).find("NVIDIA GeForce 9400") != std::string::npos)
-      result = true;
-    else
-      result = false;
+  cstr = (const char*)CFDataGetBytePtr(model);
+  if (std::string(cstr).find("NVIDIA GeForce 9400") != std::string::npos)
+    result = true;
+  else
+    result = false;
 
-    if (model)
-      CFRelease(model);
-  }
+  if (model)
+    CFRelease(model);
 
   return(result);
 }
