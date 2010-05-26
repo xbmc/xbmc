@@ -916,7 +916,7 @@ bool CApplication::InitDirectoriesWin32()
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile").c_str());
 
     CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(homePath,"cache"));
-    
+
     CreateUserDirs();
 
     // copy required files
@@ -967,7 +967,6 @@ bool CApplication::InitDirectoriesWin32()
 void CApplication::CreateUserDirs()
 {
   CDirectory::Create("special://home/");
-  CDirectory::Create("special://home/skin");
   CDirectory::Create("special://home/addons");
   CDirectory::Create("special://home/addons/packages");
   CDirectory::Create("special://home/media");
@@ -3521,7 +3520,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_nextPlaylistItem = -1;
     m_currentStackPosition = 0;
     m_currentStack->Clear();
-   
+
     if (item.IsVideo())
       CUtil::ClearSubtitles();
   }
