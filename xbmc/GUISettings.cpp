@@ -66,12 +66,12 @@ using namespace ADDON;
 CGUISettings& g_guiSettings = g_SystemGlobals.m_guiSettings;
 
 #ifdef _LINUX
-#define DEFAULT_VISUALISATION "opengl_spectrum.vis"
+#define DEFAULT_VISUALISATION "visualization.glspectrum"
 #elif defined(_WIN32)
 #ifdef HAS_DX
-#define DEFAULT_VISUALISATION "MilkDrop_win32dx.vis"
+#define DEFAULT_VISUALISATION "visualization.milkrop"
 #else
-#define DEFAULT_VISUALISATION "opengl_spectrum_win32.vis"
+#define DEFAULT_VISUALISATION "visualization.glspectrum"
 #endif
 #endif
 
