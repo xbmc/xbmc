@@ -466,6 +466,8 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
   if (metadata)
   {
     CStdString platformString = CAddonMgr::Get().GetExtValue(metadata->configuration, "platform");
+    if (platformString.IsEmpty())
+      return true; // no platform string, assume <platform>all</platform>
     vector<CStdString> platforms;
     StringUtils::SplitString(platformString, " ", platforms);
     for (unsigned int i = 0; i < platforms.size(); ++i)
@@ -573,7 +575,7 @@ AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info)
   //        the first extension point (eg use the TYPE information we pass in)
 
   // grab a relevant extension point, ignoring our xbmc.addon.metadata extension point
-  for (unsigned int i = 0; i < info->num_ext_points; ++i)
+  for (unsigned int i = 0; i < info->num_extensions; ++i)
   {
     if (0 != strcmp("xbmc.addon.metadata", info->extensions[i].ext_point_id))
     { // note that Factory takes care of whether or not we have platform support
