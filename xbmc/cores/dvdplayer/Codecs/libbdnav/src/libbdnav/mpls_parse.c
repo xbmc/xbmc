@@ -1,5 +1,5 @@
 /*
- * This file is part of libbdnav, a Blu-ray navigation library
+ * This file is part of libbluray
  * Copyright (C) 2009-2010  John Stebbins
  *
  * This program is free software; you can redistribute it and/or
