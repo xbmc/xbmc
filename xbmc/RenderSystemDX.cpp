@@ -33,7 +33,9 @@
 #include "AdvancedSettings.h"
 #include "SystemInfo.h"
 #include "VideoRenderers/RenderManager.h"
+#ifdef HAS_DS_PLAYER
 #include "Filters\RendererSettings.h"
+#endif
 #include "Application.h"
 #include "Util.h"
 #include "win32/WIN32Util.h"
@@ -41,8 +43,10 @@
 
 using namespace std;
 
+#ifdef HAS_DS_PLAYER
 // DSPlayer needs to recreate the D3DDevice when the device is lost.
 #define IS_DSPLAYER ( (g_renderManager.GetRendererType() == RENDERER_DSHOW_VMR9) || (g_renderManager.GetRendererType() == RENDERER_DSHOW_EVR) )
+#endif
 
 // Dynamic loading of Direct3DCreate9Ex to keep compatibility with 2000/XP.
 typedef HRESULT (WINAPI *LPDIRECT3DCREATE9EX)( UINT SDKVersion, IDirect3D9Ex **ppD3D);
@@ -327,6 +331,7 @@ void CRenderSystemDX::DeleteDevice()
   for (vector<ID3DResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
     (*i)->OnDestroyDevice();
 
+#ifdef HAS_DS_PLAYER
   // Dirty hack. DSPlayer needs to delete the device when a reset event occurs.
   // But the m_pD3DDevice has still about 40 references when DeleteDevice() is called
   // The device need to be fully released with when using CreateDeviceEx, that's the job
@@ -336,6 +341,9 @@ void CRenderSystemDX::DeleteDevice()
   m_pDevice.FullRelease();
 
   m_pD3DDevice = NULL;
+#else
+  SAFE_RELEASE(m_pD3DDevice)
+#endif
 
   m_bRenderCreated = false;
 }
@@ -346,7 +354,11 @@ void CRenderSystemDX::OnDeviceLost()
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
   SAFE_RELEASE(m_stateBlock);
 
+#ifdef HAS_DS_PLAYER
   if (m_needNewDevice || (!m_useD3D9Ex && IS_DSPLAYER))
+#else
+  if (m_needNewDevice)
+#endif
     DeleteDevice();
   else
   {
@@ -359,7 +371,12 @@ void CRenderSystemDX::OnDeviceLost()
 void CRenderSystemDX::OnDeviceReset()
 {
   CSingleLock lock(m_resourceSection);
+
+#ifdef HAS_DS_PLAYER
   if (m_needNewDevice || (!m_useD3D9Ex && IS_DSPLAYER))
+#else
+  if (m_needNewDevice)
+#endif
     CreateDevice();
   else
   {
@@ -460,9 +477,11 @@ bool CRenderSystemDX::CreateDevice()
     }
   }
   
+#ifdef HAS_DS_PLAYER
   // SetDialogBoxMode is not supported for D3DSWAPEFFECT_FLIPEX swap effect
   if (!m_useD3D9Ex && g_dsSettings.pRendererSettings->fullscreenGUISupport && m_bFullScreenDevice)
     hr = m_pD3DDevice->SetDialogBoxMode(TRUE); //To be able to show a com dialog over a fullscreen video playing we need this
+#endif
 
   D3DDISPLAYMODE mode;
   if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))

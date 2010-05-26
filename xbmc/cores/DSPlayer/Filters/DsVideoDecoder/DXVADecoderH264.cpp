@@ -22,6 +22,7 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
 
 #include "dshowutil/dshowutil.h"
 #include "DXVADecoderH264.h"
@@ -394,3 +395,5 @@ int CDXVADecoderH264::FindOldestFrame()
 
 	return nPos;
 }
+
+#endif

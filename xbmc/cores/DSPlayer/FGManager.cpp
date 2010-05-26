@@ -22,6 +22,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include "FGManager.h"
 
 #include <mpconfig.h> //IMixerConfig
@@ -980,3 +982,5 @@ HRESULT CFGManager::RecoverFromGraphError(const CFileItem& pFileItem)
 
   return S_OK;
 }
+
+#endif

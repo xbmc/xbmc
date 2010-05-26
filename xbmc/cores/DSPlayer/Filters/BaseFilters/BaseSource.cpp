@@ -19,6 +19,7 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
 
 #include "BaseSource.h"
 
@@ -186,4 +187,6 @@ STDMETHODIMP CBaseStream::Notify(IBaseFilter* pSender, Quality q)
 {
 	return E_NOTIMPL;
 }
+#endif
+
 #endif

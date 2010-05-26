@@ -21,6 +21,9 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
+#ifdef HAS_DS_PLAYER
+
 #include "DShowUtil/DShowUtil.h"
 #include "AllocatorCommon.h"
 #include "VMR9AllocatorPresenter.h"
@@ -214,3 +217,5 @@ const char *GetD3DFormatStr(D3DFORMAT Format)
   }
   return "Unknown";
 }
+
+#endif

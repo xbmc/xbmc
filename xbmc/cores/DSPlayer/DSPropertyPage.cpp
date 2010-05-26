@@ -25,6 +25,8 @@
   *
   */
 
+#ifdef HAS_DS_PLAYER
+
 #include "DSPropertyPage.h"
 #include "Utils/log.h"
 #include "DShowUtil/DShowUtil.h"
@@ -236,3 +238,6 @@ void CDSPropertyPage::Process()
 void CDSPropertyPage::OnExit()
 {
 }
+
+
+#endif

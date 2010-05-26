@@ -48,7 +48,7 @@
 
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
 #include "../dsplayer/DSClock.h"
 #endif
 
@@ -103,7 +103,9 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_presentsource = 0;
   m_presentmethod = VS_INTERLACEMETHOD_NONE;
   m_bReconfigured = false;
+#ifdef HAS_DS_PLAYER
   m_pRendererType = RENDERER_UNINIT;
+#endif
 }
 
 CXBMCRenderManager::~CXBMCRenderManager()
@@ -263,7 +265,11 @@ void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   m_presentevent.Set();
 }
 
+#ifdef HAS_DS_PLAYER
 unsigned int CXBMCRenderManager::PreInit(RENDERERTYPE rendtype)
+#else
+unsigned int CXBMCRenderManager::PreInit()
+#endif
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
@@ -273,7 +279,9 @@ unsigned int CXBMCRenderManager::PreInit(RENDERERTYPE rendtype)
   m_bIsStarted = false;
   m_bPauseDrawing = false;
   m_pRenderer = NULL;
+#ifdef HAS_DS_PLAYER
   m_pRendererType = RENDERER_NORMAL;
+#endif
   if (!m_pRenderer)
   {
 #if defined(HAS_GL)
@@ -281,6 +289,7 @@ unsigned int CXBMCRenderManager::PreInit(RENDERERTYPE rendtype)
 #elif HAS_GLES == 2
     m_pRenderer = new CLinuxRendererGLES();
 #elif defined(HAS_DX)
+#ifdef HAS_DS_PLAYER
     if (rendtype == RENDERER_NORMAL)
       m_pRenderer = new CPixelShaderRenderer();
     else if (rendtype == RENDERER_DSHOW_VMR9)
@@ -293,6 +302,9 @@ unsigned int CXBMCRenderManager::PreInit(RENDERERTYPE rendtype)
       m_pRenderer = new CDsPixelShaderRenderer(true);
       m_pRendererType = rendtype;
     }
+#else
+    m_pRenderer = new CPixelShaderRenderer();
+#endif
 #elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();
 #endif
@@ -447,8 +459,12 @@ void CXBMCRenderManager::Present()
 
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo())
-      if (m_pRendererType == RENDERER_NORMAL)
+#ifdef HAS_DS_PLAYER
+    if (m_pRendererType == RENDERER_NORMAL)
       WaitPresentTime(m_presenttime);
+#else
+    WaitPresentTime(m_presenttime);
+#endif
 
   m_presentevent.Set();
 }

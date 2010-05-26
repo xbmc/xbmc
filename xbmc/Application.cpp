@@ -238,7 +238,7 @@
 #ifdef _WIN32
 #include <shlobj.h>
 #include "win32util.h"
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
 #include "cores/DSPlayer/Filters/RendererSettings.h"
 #endif
 #endif
@@ -592,7 +592,7 @@ bool CApplication::Create()
 
   update_emu_environ();//apply the GUI settings
 
-#ifdef HAS_DX // DSPlayer
+#ifdef HAS_DS_PLAYER // DSPlayer
   g_dsSettings.Initialize();
   g_dsSettings.LoadConfig();
 #endif

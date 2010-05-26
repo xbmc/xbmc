@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include "URL.h"
 #include "FilterSelectionRule.h"
 #include "VideoInfoTag.h"
@@ -175,3 +177,5 @@ void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdStr
     vecCores.push_back(m_filterName);
   }
 }
+
+#endif

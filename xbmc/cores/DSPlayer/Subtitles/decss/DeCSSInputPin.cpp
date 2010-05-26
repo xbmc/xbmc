@@ -21,6 +21,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
+#ifdef HAS_DS_PLAYER
  
 #include <streams.h>
 #include "strmif.h"
@@ -350,3 +352,5 @@ STDMETHODIMP CDeCSSInputPin::QuerySupported(REFGUID PropSet, ULONG Id, ULONG* pT
 
 	return S_OK;
 }
+
+#endif

@@ -19,6 +19,7 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
 
 #include "BaseSplitterFile.h"
 #include "DShowUtil/DShowUtil.h"
@@ -242,3 +243,4 @@ HRESULT CBaseSplitterFile::HasMoreData(__int64 len, DWORD ms)
 	return S_OK;
 }
 
+#endif

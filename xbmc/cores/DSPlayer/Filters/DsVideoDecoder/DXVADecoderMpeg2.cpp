@@ -22,6 +22,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include "DXVADecoderMpeg2.h"
 #include "XBMCVideoDecFilter.h"
 
@@ -235,3 +237,5 @@ int CDXVADecoderMpeg2::FindOldestFrame()
 
 	return nPos;
 }
+
+#endif

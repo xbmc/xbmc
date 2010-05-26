@@ -22,6 +22,7 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
 
 #include "DXVADecoderVC1.h"
 #include "XBMCVideoDecFilter.h"
@@ -324,3 +325,5 @@ HRESULT CDXVADecoderVC1::DisplayStatus()
 
 	return hr;
 }
+
+#endif

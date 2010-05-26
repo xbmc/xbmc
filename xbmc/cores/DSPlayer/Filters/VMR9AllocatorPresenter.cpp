@@ -22,6 +22,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 
 #include "VMR9AllocatorPresenter.h"
 #include "IPinHook.h"
@@ -764,3 +766,5 @@ void CVMR9AllocatorPresenter::AfterDeviceReset()
   m_RenderLock.Unlock();
   this->Unlock();
 }
+
+#endif

@@ -20,6 +20,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include "DSTemplate.h"
 #include "DShowUtil.h"
 #include "regkey.h"
@@ -1395,3 +1397,5 @@ namespace Com
 
 
 };
+
+#endif

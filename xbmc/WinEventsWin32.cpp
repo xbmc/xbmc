@@ -36,7 +36,7 @@
 #include "GUIControl.h"       // for EVENT_RESULT
 #include "Win32PowerSyscall.h"
 
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
   #include "DSConfig.h"
 #endif
 #ifdef _WIN32
@@ -510,7 +510,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         g_application.m_pPlayer->ProcessMessage(wParam,lParam);
       break;
     case WM_MOUSEMOVE:
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
       if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
       {
         if ( g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
@@ -527,7 +527,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       m_pEventFunc(newEvent);
       return(0);
     case WM_LBUTTONDOWN:
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
       if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
       {
         if ( g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())

@@ -19,6 +19,7 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
 
 #include <mmreg.h>
 #include "AviFile.h"
@@ -790,3 +791,4 @@ HRESULT CAviSplitterOutputPin::CheckConnect(IPin* pPin)
   return __super::CheckConnect(pPin);
 }
 
+#endif

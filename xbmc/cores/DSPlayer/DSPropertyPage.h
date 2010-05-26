@@ -20,6 +20,11 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
+#ifndef HAS_DS_PLAYER
+#error DSPlayer's header file included without HAS_DS_PLAYER defined
+#endif
+
 #include "streams.h"
 #include "utils/Thread.h"
 #include "DShowUtil/smartptr.h"

@@ -22,6 +22,7 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
 
 #include "VideoDecOutputPin.h"
 #include "VideoDecDXVAAllocator.h"
@@ -141,3 +142,5 @@ STDMETHODIMP CVideoDecOutputPin::GetCreateVideoAcceleratorData(const GUID *pGuid
 
 	return hr;
 }
+
+#endif

@@ -22,6 +22,7 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
 
 #include "XBMCVideoDecFilter.h"
 #include <math.h>
@@ -2269,3 +2270,5 @@ HRESULT CXBMCVideoDecFilter::CreateDXVA1Decoder(IAMVideoAccelerator*  pAMVideoAc
 
   return S_OK;
 }
+
+#endif

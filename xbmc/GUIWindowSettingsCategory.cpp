@@ -91,7 +91,9 @@
 #ifdef _WIN32
 #include "WIN32Util.h"
 #include "cores/AudioRenderers/AudioRendererFactory.h"
+#ifdef HAS_DS_PLAYER
 #include "WinDirectshowEnumerator.h"
+#endif
 #include "GUIDialogSelect.h"
 #endif
 #include <map>
@@ -127,7 +129,7 @@ using namespace ADDON;
 
 #define RSSEDITOR_PATH "special://home/scripts/RSS Editor/default.py"
 
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
 int CALLBACK EnumFontCallback(ENUMLOGFONTEX *lpelfe, NEWTEXTMETRICEX *lpntme, DWORD FontType, LPARAM lParam)
 {
   if (! lParam)
@@ -439,7 +441,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
       control->SetDelayed();
     }
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
     else if (strSetting.Equals("subtitles.border"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -482,7 +484,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInSubtitleFonts(pSetting);
     }
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
     else if (strSetting.Equals("subtitles.ds.font"))
     {
       CSettingString *pSettingString = (CSettingString*)pSetting;
@@ -611,10 +613,12 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInAudioDevices(pSetting);
     }
+#ifdef HAS_DS_PLAYER
     else if (strSetting.Equals("dsplayer.audiorenderer"))
     {
       FillInDirectShowAudioRenderers(pSetting);
     }
+#endif
     else if (strSetting.Equals("audiooutput.passthroughdevice"))
     {
       FillInAudioDevices(pSetting,true);
@@ -1123,7 +1127,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_weatherManager.Refresh();
     }
   }
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
   else if (strSetting.Equals("subtitles.ds.font"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
@@ -1387,13 +1391,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_guiSettings.SetString("audiooutput.audiodevice", pControl->GetCurrentLabel());
 #endif
   }
+#ifdef HAS_DS_PLAYER
   else if (strSetting.Equals("dsplayer.audiorenderer"))
   {
-#ifdef HAS_DX
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     g_guiSettings.SetString("dsplayer.audiorenderer", pControl->GetCurrentLabel());
-#endif
   }
+#endif
 #if defined(_LINUX)
   else if (strSetting.Equals("audiooutput.passthroughdevice"))
   {
@@ -1671,7 +1675,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   { // reset display
     g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
   }
-#if defined(HAS_DX)
+#ifdef HAS_DS_PLAYER
   else if (strSetting.Equals("dsplayer.ffdshowstablecodec"))
   {
     CGUIDialogYesNo *dialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -2900,7 +2904,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
     pControl->SetValue(selectedValue);
 #endif
 }
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
 void CGUIWindowSettingsCategory::FillInDirectShowAudioRenderers(CSetting* pSetting)
 {
   //in case dsplayer didnt do it yet

@@ -22,6 +22,10 @@
 #pragma once
 class CRect;
 
+#ifndef HAS_DS_PLAYER
+#error DSPlayer's header file included without HAS_DS_PLAYER defined
+#endif
+
 class IPaintCallback
 {
 public:

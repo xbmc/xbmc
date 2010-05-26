@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include <dshow.h>
 #ifndef MEDIATYPE_NULL
 #include <initguid.h>
@@ -381,3 +383,5 @@ void CorrectMediaType(AM_MEDIA_TYPE* pmt)
 
   CopyMediaType(pmt, &mt);
 }
+
+#endif

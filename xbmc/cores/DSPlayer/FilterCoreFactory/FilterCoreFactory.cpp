@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include "FilterCoreFactory.h"
 
 HRESULT CFilterCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear )
@@ -197,3 +199,5 @@ CFGFilterFile* CFilterCoreFactory::GetFilterFromName( const CStdString& filter, 
 }
 std::vector<CGlobalFilterSelectionRule *> CFilterCoreFactory::m_selecRules;
 std::vector<CFGFilterFile *> CFilterCoreFactory::m_Filters;
+
+#endif

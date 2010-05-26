@@ -22,6 +22,7 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
 
 #include "dshowutil/dshowutil.h"
 #include <dxva2api.h>
@@ -769,3 +770,5 @@ BYTE CDXVADecoder::GetConfigIntraResidUnsigned()
 	}
 	return 0;
 }
+
+#endif

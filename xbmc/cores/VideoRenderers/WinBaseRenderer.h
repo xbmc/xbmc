@@ -21,7 +21,7 @@
  *
  */
 
-#if !defined(_LINUX) && !defined(HAS_GL)
+#if !defined(_LINUX) && !defined(HAS_GL) && defined(HAS_DS_PLAYER)
 
 
 #include "GraphicContext.h"
@@ -79,5 +79,3 @@ public:
 #else
 #include "LinuxRenderer.h"
 #endif
-
-

@@ -22,7 +22,7 @@
  *
  */
 
-
+#ifdef HAS_DS_PLAYER
 
 #include "EVRAllocatorPresenter.h"
 #include <Mferror.h>
@@ -2752,3 +2752,5 @@ void CEVRAllocatorPresenter::FlushSamplesInternal()
   m_bLastSampleOffsetValid  = false;
   m_bSignaledStarvation = false;
 }
+
+#endif

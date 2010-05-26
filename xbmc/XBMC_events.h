@@ -231,6 +231,7 @@ typedef union XBMC_Event {
   XBMC_AppCommandEvent appcommand;
 } XBMC_Event;
 
+#ifdef HAS_DS_PLAYER
 /* DSPlayer command */
 #define ID_PLAY_PLAY                    887
 #define ID_PLAY_PAUSE                   888
@@ -265,6 +266,7 @@ typedef union XBMC_Event {
 #define ID_DVD_MENU_ANGLE               1011
 #define ID_DVD_MOUSE_MOVE               1012
 #define ID_DVD_MOUSE_CLICK              1013
+#endif
 
 
 #endif /* _XBMC_events_h */

@@ -1,3 +1,5 @@
+#ifdef HAS_DS_PLAYER
+
 #include "MediaTypeEx.h"
 
 #include <mmreg.h>
@@ -664,3 +666,5 @@ CStdString CMediaTypeEx::GetSubtitleCodecName(const GUID& subtype)
   }
 }
 */
+
+#endif

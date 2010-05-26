@@ -46,7 +46,7 @@ protected:
   void CheckNetworkSettings();
   void FillInSubtitleHeights(CSetting *pSetting);
   void FillInSubtitleFonts(CSetting *pSetting);
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
   void FillInDSSubtitleFonts( CSetting * pSetting );
 #endif
   void FillInCharSets(CSetting *pSetting);
@@ -66,7 +66,7 @@ protected:
   void NetworkInterfaceChanged(void);
 
   void FillInAudioDevices(CSetting* pSetting, bool Passthrough = false);
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
   void FillInDirectShowAudioRenderers(CSetting* pSetting);
 #endif
 

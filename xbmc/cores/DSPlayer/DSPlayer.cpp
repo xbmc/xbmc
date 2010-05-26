@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include "DSPlayer.h"
 #include "dshowutil/dshowutil.h" // unload loaded filters
 #include "DShowUtil/smartptr.h"
@@ -459,3 +461,5 @@ bool CDSPlayer::OnAction(const CAction &action)
   // return false to inform the caller we didn't handle the message
   return false;
 }
+
+#endif

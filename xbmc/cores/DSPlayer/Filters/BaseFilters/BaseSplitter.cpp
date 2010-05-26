@@ -19,6 +19,7 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
 
 #include "DShowUtil/DShowUtil.h"
 #include <initguid.h>
@@ -1527,3 +1528,5 @@ STDMETHODIMP_(DWORD) CBaseSplitterFilter::GetPriority()
 {
     return m_priority;
 }
+
+#endif

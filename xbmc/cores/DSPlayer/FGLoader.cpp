@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include "FGLoader.h"
 #include "DSPlayer.h"
 #include "streamsmanager.h"
@@ -550,3 +552,5 @@ bool CFGLoader::LoadFilterCoreFactorySettings( const CStdString& fileStr, bool c
 
 bool                      CFGLoader::m_UsingDXVADecoder = false;
 SFilters                  CFGLoader::Filters;
+
+#endif

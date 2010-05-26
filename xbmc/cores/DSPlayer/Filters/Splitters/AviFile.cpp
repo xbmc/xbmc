@@ -1,3 +1,5 @@
+#ifdef HAS_DS_PLAYER
+
 #include "AviFile.h"
 
 //
@@ -604,3 +606,5 @@ bool CAviFile::strm_t::IsRawSubtitleStream()
 {
   return strh.fccType == FCC('txts') && cs.size() == 1;
 }
+
+#endif

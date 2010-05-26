@@ -19,7 +19,7 @@
  *
  */
  
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
 
 #include "WinDsRenderer.h"
 #include "Util.h"

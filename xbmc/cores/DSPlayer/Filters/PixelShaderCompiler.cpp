@@ -22,6 +22,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include "RendererSettings.h"
 #include "PixelShaderCompiler.h"
 #include "Log.h"
@@ -107,3 +109,5 @@ HRESULT CPixelShaderCompiler::CompileShader(
 
   return S_OK;
 }
+
+#endif

@@ -19,6 +19,7 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
 
 #include "BaseSplitterFileEx.h"
 #include <mmreg.h>
@@ -1660,3 +1661,5 @@ To see working buffer in debugger, look :
 	- m_pos			 for current read position
 
 */
+
+#endif

@@ -22,6 +22,11 @@
 #pragma once
 #ifndef _DSTEMPLATE_H
 #define _DSTEMPLATE_H
+
+#ifndef HAS_DS_PLAYER
+#error DSPlayer's header file included without HAS_DS_PLAYER defined
+#endif
+
 #include <map>
 #include "streams.h"
 

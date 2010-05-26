@@ -29,6 +29,10 @@
 #include "settings/VideoSettings.h"
 #include "WinBaseRenderer.h"
 
+#ifndef HAS_DS_PLAYER
+#include "D3DResource.h"
+#endif
+
 //#define MP_DIRECTRENDERING
 
 #ifdef MP_DIRECTRENDERING
@@ -102,7 +106,11 @@ struct YUVRANGE
 extern YUVRANGE yuv_range_lim;
 extern YUVRANGE yuv_range_full;
 
+#ifdef HAS_DS_PLAYER
 class CWinRenderer : public CWinBaseRenderer
+#else
+class CWinRenderer : public CBaseRenderer
+#endif
 {
 public:
   CWinRenderer();

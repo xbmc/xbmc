@@ -19,7 +19,8 @@
  *
  */
 
-#include "pch.h"
+#ifdef HAS_DS_PLAYER
+
 #include "ChaptersManager.h"
 
 CChaptersManager *CChaptersManager::m_pSingleton = NULL;
@@ -161,3 +162,4 @@ void CChaptersManager::InitManager()
 {
   m_init = true;
 }
+#endif

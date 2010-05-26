@@ -19,6 +19,7 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
 
 #include "FLVSplitter.h"
 //#include "../../../DSUtil/DSUtil.h"
@@ -702,5 +703,4 @@ CFLVSourceFilter::CFLVSourceFilter(LPUNKNOWN pUnk, HRESULT* phr)
 	m_pInput.release();
 }
 
-
-
+#endif

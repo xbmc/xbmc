@@ -19,7 +19,8 @@
  *
  */
 
-#include "pch.h"
+#ifdef HAS_DS_PLAYER
+
 #include "StreamsManager.h"
 #include "SpecialProtocol.h"
 #include "DVDSubtitles\DVDFactorySubtitle.h"
@@ -1352,3 +1353,5 @@ void CSubtitleManager::DeleteSubtitleManager( ISubManager * pManager, DllLibSubs
 {
   dll.DeleteSubtitleManager(pManager);
 }
+
+#endif

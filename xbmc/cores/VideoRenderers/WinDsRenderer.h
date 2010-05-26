@@ -21,7 +21,11 @@
  *
  */
 
-#if !defined(_LINUX) && !defined(HAS_GL)
+#ifndef HAS_DS_PLAYER
+#error DSPlayer's header file included without HAS_DS_PLAYER defined
+#endif
+
+#if !defined(_LINUX) && !defined(HAS_GL) && defined(HAS_DS_PLAYER)
 
 #include "WinBaseRenderer.h"
 #include "../dsplayer/dshowutil/smartptr.h"
@@ -98,5 +102,3 @@ protected:
 #else
 #include "LinuxRenderer.h"
 #endif
-
-

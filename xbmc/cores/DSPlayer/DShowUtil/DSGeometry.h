@@ -22,6 +22,7 @@
  */
 #ifndef _GEOMETRYHELPER_H
 #define _GEOMETRYHELPER_H
+
 #include "WindowsX.h"
 namespace Com
 {

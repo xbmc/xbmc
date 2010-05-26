@@ -27,8 +27,10 @@
   #include "LinuxRendererGLES.h"
 #elif defined(HAS_DX)
   #include "WinRenderer.h"
+#ifdef HAS_DS_PLAYER
   #include "WinDsRenderer.h"
   #include "../Dsplayer/IPaintCallback.h"  
+#endif
 #elif defined(HAS_SDL)
   #include "LinuxRenderer.h"
 #endif
@@ -80,7 +82,7 @@ public:
     if (m_pRenderer)
       m_pRenderer->ReleaseImage(source, preserve);
   }
-#if defined(HAS_DX)
+#if defined(HAS_DS_PLAYER)
   inline void RegisterDsCallback(IPaintCallback *callback)
   {
     CSharedLock lock(m_sharedSection);
@@ -104,7 +106,11 @@ public:
   }
 
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
+#ifdef HAS_DS_PLAYER
   unsigned int PreInit(RENDERERTYPE rendtype = RENDERER_NORMAL);
+#else
+  unsigned int PreInit();
+#endif
   void UnInit();
 
 #ifdef HAS_DX
@@ -161,7 +167,10 @@ public:
       return RES_INVALID;
   }
 
+#ifdef HAS_DS_PLAYER
   RENDERERTYPE GetRendererType() { return m_pRendererType; }
+#endif
+
   float GetMaximumFPS();
   inline bool Paused() { return m_bPauseDrawing; };
   inline bool IsStarted() { return m_bIsStarted;}
@@ -205,7 +214,11 @@ public:
 #elif HAS_GLES == 2
   CLinuxRendererGLES *m_pRenderer;
 #elif defined(HAS_DX)
+#ifdef HAS_DS_PLAYER
   CWinBaseRenderer *m_pRenderer;
+#else
+  CWinRenderer *m_pRenderer;
+#endif
 #elif defined(HAS_SDL)
   CLinuxRenderer *m_pRenderer;
 #elif defined(HAS_XBOX_D3D)
@@ -234,7 +247,9 @@ protected:
   
   int m_rendermethod;
 
+#ifdef HAS_DS_PLAYER
   RENDERERTYPE m_pRendererType;
+#endif
 
   enum EPRESENTSTEP
   {

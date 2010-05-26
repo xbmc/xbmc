@@ -52,7 +52,7 @@ class TiXmlElement;
 #define SUBTITLE_COLOR_START  0
 #define SUBTITLE_COLOR_END    7
 
-#ifdef _WIN32
+#ifdef HAS_DS_PLAYER
 // DSPlayer subtitles
 #define SUBTITLE_BORDER_OUTLINE 0
 #define SUBTITLE_BORDER_OPAQUE 1

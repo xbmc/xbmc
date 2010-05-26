@@ -22,6 +22,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include "FGFilter.h"
 #include "dshowutil/dshowutil.h"
 
@@ -662,3 +664,5 @@ int CFGFilterList::filter_cmp(const void* a, const void* b)
 
   return 0;
 }
+
+#endif

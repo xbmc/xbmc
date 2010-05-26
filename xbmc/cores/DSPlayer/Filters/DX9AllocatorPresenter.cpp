@@ -22,6 +22,7 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
 
 #include "DX9AllocatorPresenter.h"
 #include <initguid.h>
@@ -2862,3 +2863,5 @@ void CDX9AllocatorPresenter::OnPaint(CRect destRect)
   //Need to be true for vsync
   Paint(true);
 }
+
+#endif

@@ -19,6 +19,7 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
 
 #include <mmintrin.h>
 #include "BaseVideoFilter.h"
@@ -754,3 +755,5 @@ HRESULT CBaseVideoOutputPin::CheckMediaType(const CMediaType* mtOut)
 
 	return __super::CheckMediaType(mtOut);
 }
+
+#endif

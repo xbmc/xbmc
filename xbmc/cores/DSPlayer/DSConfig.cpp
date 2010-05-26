@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include "dsconfig.h"
 #include "Utils/log.h"
 #include "DShowUtil/DShowUtil.h"
@@ -177,3 +179,5 @@ bool CDSConfig::LoadffdshowSubtitles(CStdString filePath)
   
   return false;
 }
+
+#endif

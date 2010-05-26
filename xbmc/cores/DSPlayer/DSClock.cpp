@@ -18,6 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#ifdef HAS_DS_PLAYER
 
 #include "DSClock.h"
 #include "VideoReferenceClock.h"
@@ -219,3 +220,5 @@ int CDSClock::UpdateFramerate(double fps)
 }
 
 CDSClock g_DsClock;
+
+#endif

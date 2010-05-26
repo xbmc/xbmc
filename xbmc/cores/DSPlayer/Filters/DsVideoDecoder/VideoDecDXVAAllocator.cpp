@@ -22,7 +22,7 @@
  *
  */
 
-
+#ifdef HAS_DS_PLAYER
 
 #include "Mferror.h"
 #include "Evr.h"
@@ -234,3 +234,4 @@ void CVideoDecDXVAAllocator::Free()
 	m_nSurfaceArrayCount = 0;
 }
 
+#endif

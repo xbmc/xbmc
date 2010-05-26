@@ -19,8 +19,7 @@
  *
  */
 
-
-
+#ifdef HAS_DS_PLAYER
 
 #include <streams.h>
 
@@ -152,3 +151,5 @@ STDMETHODIMP_(LPCTSTR) CXBMCFileStream::GetFileName()
 {
 	return m_strCurrentFile.c_str();//m_nCurPart != -1 ? m_strFiles[m_nCurPart] : m_strFiles[0];
 }
+
+#endif

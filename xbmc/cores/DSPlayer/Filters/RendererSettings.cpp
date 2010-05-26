@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include "RendererSettings.h"
 #include "file.h"
 #include "log.h"
@@ -175,3 +177,5 @@ if (m_hD3DX9Dll == NULL)
 CDSSettings g_dsSettings;
 bool g_bNoDuration = false;
 bool g_bExternalSubtitleTime = false;
+
+#endif

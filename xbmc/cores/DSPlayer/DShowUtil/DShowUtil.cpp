@@ -22,6 +22,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include <Vfw.h>
 #include "DShowUtil.h"
 #include "moreuuids.h"
@@ -2577,3 +2579,5 @@ TsearchInterfaceInGraph::~TsearchInterfaceInGraph()
    hThread = NULL;
   }
 }
+
+#endif

@@ -37,7 +37,7 @@
 #include "addons/Skin.h"
 
 using namespace std;
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
 #include "cores/DSPlayer/DSConfig.h"
 #include "cores/DSPlayer/Filters/RendererSettings.h"
 #include "DShowUtil/DShowUtil.h"
@@ -110,7 +110,7 @@ void CGUIDialogVideoSettings::CreateSettings()
 
     AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_settings.m_currentVideoSettings.m_InterlaceMethod, entries);
   }
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
   if ( g_application.GetCurrentPlayer() == PCID_DVDPLAYER )
 #endif
   {
@@ -140,7 +140,7 @@ void CGUIDialogVideoSettings::CreateSettings()
 
     AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&g_settings.m_currentVideoSettings.m_ScalingMethod, entries);
   }
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
   else if ( g_application.GetCurrentPlayer() == PCID_DSPLAYER )
   {
     vector<pair<int, int> > entries;
@@ -153,10 +153,10 @@ void CGUIDialogVideoSettings::CreateSettings()
     
     AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int *) &g_dsSettings.pRendererSettings->resizer, entries);
     entries.clear();
-    entries.push_back(make_pair(DS_STATS_NONE  , 35011));
-    entries.push_back(make_pair(DS_STATS_1          , 35012));
-    entries.push_back(make_pair(DS_STATS_2        , 35013));
-    entries.push_back(make_pair(DS_STATS_3     , 35014));
+    entries.push_back(make_pair(DS_STATS_NONE, 35011));
+    entries.push_back(make_pair(DS_STATS_1, 35012));
+    entries.push_back(make_pair(DS_STATS_2, 35013));
+    entries.push_back(make_pair(DS_STATS_3, 35014));
     AddSpin(VIDEO_SETTINGS_DS_STATS, 35015, (int *) &g_dsSettings.pRendererSettings->displayStats, entries);
   }
 
@@ -176,7 +176,7 @@ void CGUIDialogVideoSettings::CreateSettings()
     AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_settings.m_currentVideoSettings.m_Contrast, 0, 1, 100, FormatInteger);
   if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
     AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_settings.m_currentVideoSettings.m_Gamma, 0, 1, 100, FormatInteger);
-#ifdef HAS_DX
+#ifdef HAS_DS_PLAYER
   if ((g_renderManager.GetRendererType() == RENDERER_DSHOW_VMR9) || g_renderManager.GetRendererType() == RENDERER_DSHOW_EVR )
   {
 
@@ -256,6 +256,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
       g_settings.Save();
     }
   }
+#ifdef HAS_DS_PLAYER
   else if ( (setting.id & VIDEO_SETTINGS_DS_FILTERS) == VIDEO_SETTINGS_DS_FILTERS)
   {
     int filterId = setting.id - VIDEO_SETTINGS_DS_FILTERS;
@@ -265,6 +266,7 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
     //Showing the property page for this filter
     g_dsconfig.ShowPropertyPage(pBF);    
   }
+#endif
 }
 
 CStdString CGUIDialogVideoSettings::FormatInteger(float value, float minimum)

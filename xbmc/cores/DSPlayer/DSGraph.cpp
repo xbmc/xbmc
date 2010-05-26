@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include "DSGraph.h"
 #include "DSPlayer.h"
 #include "winsystemwin32.h" //Important needed to get the right hwnd
@@ -1010,3 +1012,5 @@ void CDSGraph::ProcessMessage(WPARAM wParam, LPARAM lParam)
   {
   }
 }
+
+#endif

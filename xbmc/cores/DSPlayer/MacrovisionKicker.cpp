@@ -21,6 +21,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include "MacrovisionKicker.h"
 #include "streams.h"
 #include "dvdmedia.h"
@@ -95,3 +97,5 @@ STDMETHODIMP CMacrovisionKicker::QuerySupported(REFGUID PropSet, ULONG Id, ULONG
 
   return E_UNEXPECTED;
 }
+
+#endif

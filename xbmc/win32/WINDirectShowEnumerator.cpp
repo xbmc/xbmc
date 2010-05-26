@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include "system.h"
 #include "WINDirectShowEnumerator.h"
 #include "SingleLock.h"
@@ -114,3 +116,5 @@ void CDirectShowEnumerator::ForceStableCodecs()
   ffReg.setValue("zmbv",DWORD(1)); ffReg.setValue("ulti",DWORD(1)); ffReg.setValue("vixl",DWORD(1));
   ffReg.setValue("aasc",DWORD(1));
 }
+
+#endif

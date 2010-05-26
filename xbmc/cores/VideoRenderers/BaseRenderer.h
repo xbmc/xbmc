@@ -50,6 +50,7 @@ enum ERENDERFEATURE
   RENDERFEATURE_NONLINSTRETCH
 };
 
+#ifdef HAS_DS_PLAYER
 typedef enum _RENDERERTYPE
 {
   RENDERER_UNINIT = 0,
@@ -57,6 +58,7 @@ typedef enum _RENDERERTYPE
   RENDERER_DSHOW_VMR9  = 2,
   RENDERER_DSHOW_EVR  = 3
 } RENDERERTYPE;
+#endif
 
 class CBaseRenderer
 {
