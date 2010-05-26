@@ -244,7 +244,7 @@ public:
   const CStdString& GetContentType() const;
 
   /* sets the contenttype if known beforehand */
-  void              SetContentType(const CStdString& content) { m_contenttype = content; } ;
+  void SetContentType(const CStdString& content) { m_contenttype = content; } ;
 
   /* general extra info about the contents of the item, not for display */
   void SetExtraInfo(const CStdString& info) { m_extrainfo = info; };
