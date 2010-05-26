@@ -516,7 +516,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID, VMR9A
 
   if (m_nVMR9Surfaces && m_nVMR9Surfaces != *lpNumBuffers)
     m_nVMR9Surfaces = *lpNumBuffers;
-  *lpNumBuffers = (unsigned int) dsmin(nOriginal, *lpNumBuffers);
+  *lpNumBuffers = (unsigned int) dsmin((unsigned int) (nOriginal), *lpNumBuffers);
   m_iVMR9Surface = 0;
 
   return hr;
@@ -651,7 +651,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
     // If framerate not set by Video Decoder choose 23.97...
     if (m_rtTimePerFrame == 0) m_rtTimePerFrame = 417166;
 
-    m_fps = 10000000.0 / m_rtTimePerFrame;
+    m_fps = (float) (10000000.0 / m_rtTimePerFrame);
     if (!g_renderManager.IsConfigured())
     {
       g_renderManager.Configure(m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_fps,
