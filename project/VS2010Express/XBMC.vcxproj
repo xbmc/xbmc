@@ -1842,14 +1842,6 @@
       <Project>{3a575cf0-45b3-41cc-85e2-9f9ce8c56b38}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\..\xbmc\lib\libPython\Python\PCbuild\pythoncore.vcxproj">
-      <Project>{9e417a6d-50de-4969-8542-f58ea1163376}</Project>
-      <Private>true</Private>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-    </ProjectReference>
     <ProjectReference Include="..\..\xbmc\lib\libRTV\libRTV.vcxproj">
       <Project>{dd4818ae-7e35-40b7-a6a0-0ff83aa1c916}</Project>
       <Private>true</Private>
