@@ -87,14 +87,11 @@ namespace ADDON
     /* Addon access */
     bool GetDefault(const TYPE &type, AddonPtr &addon, const CONTENT_TYPE &content = CONTENT_NONE);
     bool GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true);
-    AddonPtr GetAddon2(const CStdString &str);
     bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE, bool enabledOnly = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
     bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
     CStdString GetString(const CStdString &id, const int number);
-    
-    bool AddonFromFolder(const CStdString& strFolder, AddonPtr& addon);
-    static bool GetTranslatedString(const TiXmlElement *xmldoc, const char *tag, CStdString& data);
+
     const char *GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(AddonProps& props);
     void UpdateRepos();

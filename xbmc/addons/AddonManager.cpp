@@ -374,27 +374,6 @@ void CAddonMgr::RemoveAddon(const CStdString& ID)
     m_cpluff->uninstall_plugin(m_cp_context,ID.c_str());
 }
 
-bool CAddonMgr::GetTranslatedString(const TiXmlElement *xmldoc, const char *tag, CStdString& data)
-{
-  const TiXmlElement *element = xmldoc->FirstChildElement(tag);
-  const TiXmlElement *enelement = NULL;
-  while (element)
-  {
-    const char* lang = element->Attribute("lang");
-    if (lang && strcmp(lang,g_langInfo.GetDVDAudioLanguage().c_str()) == 0)
-      break;
-    if (!lang || strcmp(lang,"en") == 0)
-      enelement = element;
-    element = element->NextSiblingElement(tag);
-  }
-  if (!element)
-    element = enelement;
-  if (element)
-    data = element->GetText();
-
-  return element != NULL;
-}
-
 const char *CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const char *tag)
 {
   if (!root)
