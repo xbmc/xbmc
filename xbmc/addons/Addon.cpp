@@ -201,16 +201,14 @@ AddonProps::AddonProps(cp_plugin_info_t *props)
   const cp_extension_t *metadata = CAddonMgr::Get().GetExtension(props, "xbmc.addon.metadata");
   if (metadata)
   {
-    CStdString platforms = CAddonMgr::Get().GetExtValue(metadata->configuration, "platform");
     summary = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "summary");
     description = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "description");
     disclaimer = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "disclaimer");
     license = CAddonMgr::Get().GetExtValue(metadata->configuration, "license");
-    vector<CStdString> content = CAddonMgr::Get().GetExtValues(metadata->configuration,"supportedcontent");
+    vector<CStdString> content;
+    CAddonMgr::Get().GetExtList(metadata->configuration,"supportedcontent", content);
     for (unsigned int i=0;i<content.size();++i)
       contents.insert(TranslateContent(content[i]));
-    //FIXME other stuff goes here
-    //CStdString version = CAddonMgr::Get().GetExtValue(metadata->configuration, "minversion/xbmc");
   }
   icon = "icon.png";
   fanart = CUtil::AddFileToFolder(path, "fanart.jpg");

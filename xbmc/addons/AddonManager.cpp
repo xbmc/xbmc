@@ -463,13 +463,12 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
   if (!plugin || !plugin->num_extensions)
     return false;
   const cp_extension_t *metadata = GetExtension(plugin, "xbmc.addon.metadata");
-  if (metadata)
+  if (!metadata)
+    return false;
+  
+  vector<CStdString> platforms;
+  if (CAddonMgr::Get().GetExtList(metadata->configuration, "platform", platforms))
   {
-    CStdString platformString = CAddonMgr::Get().GetExtValue(metadata->configuration, "platform");
-    if (platformString.IsEmpty())
-      return true; // no platform string, assume <platform>all</platform>
-    vector<CStdString> platforms;
-    StringUtils::SplitString(platformString, " ", platforms);
     for (unsigned int i = 0; i < platforms.size(); ++i)
     {
       if (platforms[i] == "all")
@@ -485,8 +484,9 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
 #endif
         return true;
     }
+    return false; // no <platform> works for us
   }
-  return false;
+  return true; // assume no <platform> is equivalent to <platform>all</platform>
 }
 
 const cp_cfg_element_t *CAddonMgr::GetExtElement(cp_cfg_element_t *base, const char *path)
@@ -556,14 +556,15 @@ CStdString CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
   else return CStdString();
 }
 
-vector<CStdString> CAddonMgr::GetExtValues(cp_cfg_element_t *base, const char *path)
+bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<CStdString> &result) const
 {
-  vector<CStdString> result;
-  cp_cfg_element_t *parent = m_cpluff->lookup_cfg_element(base,path);
-  for (unsigned int i=0;parent && i<parent->num_children;++i)
-    result.push_back(parent->children[i].value); 
-
-  return result;
+  if (!base || !path)
+    return false;
+  CStdString all = m_cpluff->lookup_cfg_value(base, path);
+  if (all.IsEmpty())
+    return false;
+  StringUtils::SplitString(all, " ", result);
+  return true;
 }
 
 AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info)

@@ -100,7 +100,16 @@ namespace ADDON
 
     /* libcpluff */
     CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
-    std::vector<CStdString> GetExtValues(cp_cfg_element_t *base, const char *path);
+
+    /*! \brief Retrieve a list of strings from a given configuration element
+     Assumes the configuration element or attribute contains a whitespace separated list of values (eg xs:list schema).
+     \param base the base configuration element.
+     \param path the path to the configuration element or attribute from the base element.
+     \param result [out] returned list of strings.
+     \return true if the configuration element is present and the list of strings is non-empty
+     */
+    bool GetExtList(cp_cfg_element_t *base, const char *path, std::vector<CStdString> &result) const;
+
     const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension) const;
 
     /*! \brief Load the addon in the given path
