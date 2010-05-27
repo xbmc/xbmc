@@ -48,9 +48,6 @@
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
-#ifdef _WIN32
-#include "WIN32Util.h"
-#endif
 
 using namespace XFILE;
 using namespace MEDIA_DETECT;
@@ -132,9 +129,6 @@ VOID CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_OPEN:
         {
           // Send Message to GUI that disc been ejected
-#ifdef _WIN32
-          SetNewDVDShareUrl(m_cdio->GetDeviceFileName()+4, false, g_localizeStrings.Get(502));
-#endif
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
           g_windowManager.SendThreadMessage( msg );
           waitLock.Leave();
@@ -146,9 +140,6 @@ VOID CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_NOT_READY:
         {
           // drive is not ready (closing, opening)
-#ifdef _WIN32
-          SetNewDVDShareUrl(m_cdio->GetDeviceFileName()+4, false, g_localizeStrings.Get(503));
-#endif
           m_DriveState = DRIVE_NOT_READY;
           // DVD-ROM in undefined state
           // better delete old CD Information
@@ -169,9 +160,6 @@ VOID CDetectDVDMedia::UpdateDvdrom()
       case DRIVE_CLOSED_NO_MEDIA:
         {
           // nothing in there...
-#ifdef _WIN32
-          SetNewDVDShareUrl(m_cdio->GetDeviceFileName()+4, false, g_localizeStrings.Get(504));
-#endif
           m_DriveState = DRIVE_CLOSED_NO_MEDIA;
           // Send Message to GUI that disc has changed
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
@@ -243,17 +231,6 @@ void CDetectDVDMedia::DetectMediaType()
             m_pCdInfo->GetTrackCount(),
             m_pCdInfo->GetAudioTrackCount(),
             m_pCdInfo->GetDataTrackCount() );
-
-#ifdef _WIN32
-  if(m_pCdInfo->IsAudio(1))
-  {
-    strNewUrl = "cdda://local/";
-    bCDDA = true;
-  }
-  else
-    strNewUrl = m_cdio->GetDeviceFileName()+4;
-#endif
-
   CLog::Log(LOGINFO, "Using protocol %s", strNewUrl.c_str());
 
   if (m_pCdInfo->IsValidFs())
@@ -405,40 +382,6 @@ DWORD CDetectDVDMedia::GetTrayState()
 
 #endif // USING_CDIO78
 #endif // _LINUX
-#if defined(_WIN32)
-
-  char* dvdDevice = m_cdio->GetDeviceFileName();
-  if (strlen(dvdDevice) == 0)
-    return DRIVE_NOT_READY;
-
-  m_dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
-  CdIo_t* cdio = m_cdio->cdio_open(dvdDevice, DRIVER_UNKNOWN);
-  if (cdio)
-  {
-    int status = CWIN32Util::GetDriveStatus(m_cdio->GetDeviceFileName());
-
-    switch(status)
-    {
-    case -1: // error
-      m_dwTrayState = DRIVE_NOT_READY;
-      break;
-    case 0: // no media
-      m_dwTrayState = TRAY_CLOSED_NO_MEDIA;
-      break;
-    case 1: // tray open
-      m_dwTrayState = TRAY_OPEN;
-      break;
-    case 2: // media accessible
-      m_dwTrayState = TRAY_CLOSED_MEDIA_PRESENT;
-      break;
-    }
-    m_cdio->cdio_destroy(cdio);
-  }
-  else
-    return DRIVE_NOT_READY;
-
-#endif
-
 
   if (m_dwTrayState == TRAY_CLOSED_MEDIA_PRESENT)
   {
