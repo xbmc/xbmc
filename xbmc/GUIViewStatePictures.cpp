@@ -33,8 +33,9 @@
 #include "Key.h"
 
 using namespace XFILE;
+using namespace ADDON;
 
-CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& items) : CGUIViewState(items, CONTENT_IMAGE)
+CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& items) : CGUIViewState(items, CPluginSource::IMAGE)
 {
   if (items.IsVirtualDirectoryRoot())
   {

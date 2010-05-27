@@ -279,12 +279,12 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share1);
     }
     // add the plugins dir as needed
-    if (ADDON::CAddonMgr::Get().HasAddons(ADDON::ADDON_PLUGIN, CONTENT_AUDIO))
+    /*if (ADDON::CAddonMgr::Get().HasAddons(ADDON::ADDON_PLUGIN, CONTENT_AUDIO))
     {
       share1.strPath = "plugin://music/";
       share1.strName = g_localizeStrings.Get(1038); // Music Plugins
       extraShares.push_back(share1);
-    }
+    }*/
  }
   else if (m_type == "video")
   { // add the music playlist location
@@ -319,12 +319,12 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     extraShares.push_back(share1);
 
     // add the plugins dir as needed
-    if (ADDON::CAddonMgr::Get().HasAddons(ADDON::ADDON_PLUGIN, CONTENT_VIDEO))
+    /*if (ADDON::CAddonMgr::Get().HasAddons(ADDON::ADDON_PLUGIN, CONTENT_VIDEO))
     {
       share1.strPath = "plugin://video/";
       share1.strName = g_localizeStrings.Get(1037); // Video Plugins
       extraShares.push_back(share1);
-    }
+    }*/
   }
   else if (m_type == "pictures")
   {
@@ -350,23 +350,23 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     extraShares.push_back(share1);
 
     // add the plugins dir as needed
-    if (ADDON::CAddonMgr::Get().HasAddons(ADDON::ADDON_PLUGIN, CONTENT_IMAGE))
+    /*if (ADDON::CAddonMgr::Get().HasAddons(ADDON::ADDON_PLUGIN, CONTENT_IMAGE))
     {
       share1.strPath = "plugin://pictures/";
       share1.strName = g_localizeStrings.Get(1039); // Picture Plugins
       extraShares.push_back(share1);
-    }
+    }*/
   }
   else if (m_type == "programs")
   {
-    if (ADDON::CAddonMgr::Get().HasAddons(ADDON::ADDON_PLUGIN, CONTENT_PROGRAM))
+    /*if (ADDON::CAddonMgr::Get().HasAddons(ADDON::ADDON_PLUGIN, CONTENT_PROGRAM))
     {
       CMediaSource share2;
       share2.strPath = "plugin://programs/";
       share2.strName = g_localizeStrings.Get(1043); // Program Plugins
       share2.m_ignore = true;
       extraShares.push_back(share2);
-    }
+    }*/
   }
   if (CGUIDialogFileBrowser::ShowAndGetSource(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
   {

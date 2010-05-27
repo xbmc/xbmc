@@ -46,6 +46,7 @@
 //#ifdef HAS_SCRAPERS
 #include "Scraper.h"
 //#endif
+#include "PluginSource.h"
 #include "Repository.h"
 #include "Skin.h"
 
@@ -57,6 +58,8 @@ namespace ADDON
 cp_log_severity_t clog_to_cp(int lvl);
 void cp_fatalErrorHandler(const char *msg);
 void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void *user_data);
+const std::set<CPluginSource::Content> GetPluginContent(const cp_cfg_element_t*);
+bool GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *base, const char *path);
 
 /**********************************************************
  * CAddonMgr
@@ -79,6 +82,13 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
   switch (type)
   {
     case ADDON_PLUGIN:
+      {
+        std::set<CPluginSource::Content> provides;
+        const cp_cfg_element_t *cfg = GetExtElement(props->configuration, "provides");
+        if (cfg)
+          return AddonPtr(new CPluginSource(props->plugin, GetPluginContent(cfg)));
+      }
+      break;
     case ADDON_SCRIPT:
     case ADDON_SCRIPT_LIBRARY:
     case ADDON_SCRIPT_LYRICS:
@@ -400,6 +410,7 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
   switch (addonProps.type)
   {
     case ADDON_PLUGIN:
+      return AddonPtr(new CPluginSource(addonProps));
     case ADDON_SCRIPT:
     case ADDON_SCRIPT_LIBRARY:
     case ADDON_SCRIPT_LYRICS:
@@ -498,7 +509,7 @@ const cp_cfg_element_t *CAddonMgr::GetExtElement(cp_cfg_element_t *base, const c
 }
 
 /* Returns all duplicate elements from a base element */
-bool CAddonMgr::GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *base, const char *path)
+bool GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *base, const char *path)
 {
   if (!base)
     return false;
@@ -667,6 +678,26 @@ void cp_logger(cp_log_severity_t level, const char *msg, const char *apid, void 
     CLog::Log(cp_to_clog(level), "ADDON: cpluff: '%s'", msg);
   else
     CLog::Log(cp_to_clog(level), "ADDON: cpluff: '%s' reports '%s'", apid, msg);
+}
+
+const std::set<CPluginSource::Content> GetPluginContent(const cp_cfg_element_t *types)
+{
+  std::set<CPluginSource::Content> provides;
+  DEQUEELEMENTS elements;
+  if (GetExtElementDeque(elements, (cp_cfg_element_t *)types, "content"))
+  {
+    IDEQUEELEMENTS itr = elements.begin();
+    while (itr != elements.end())
+    {
+      CPluginSource::Content type = CPluginSource::Translate(CAddonMgr::Get().GetExtValue(*itr++, "@type"));
+      if (type != CPluginSource::UNKNOWN)
+        provides.insert(type);
+    }
+  }
+  if (provides.empty())
+    CLog::Log(LOGERROR, "ADDON: Plugin did not specify any content types, will ignore");
+
+  return provides;
 }
 
 } /* namespace ADDON */

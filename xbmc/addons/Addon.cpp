@@ -60,11 +60,7 @@ static const ContentMapping content[] =
    {"movies",        CONTENT_MOVIES,      20342 },
    {"tvshows",       CONTENT_TVSHOWS,     20343 },
    {"episodes",      CONTENT_EPISODES,    20360 },
-   {"musicvideos",   CONTENT_MUSICVIDEOS, 20389 },
-   {"audio",         CONTENT_AUDIO,           0 },
-   {"image",         CONTENT_IMAGE,           0 },
-   {"program",       CONTENT_PROGRAM,         0 },
-   {"video",         CONTENT_VIDEO,           0 }};
+   {"musicvideos",   CONTENT_MUSICVIDEOS, 20389 }};
 
 typedef struct
 {
@@ -80,7 +76,7 @@ static const TypeMapping types[] =
    {"xbmc.ui.screensaver",           ADDON_SCREENSAVER,    24008 },
    {"xbmc.player.musicviz",          ADDON_VIZ,            24010 },
    {"visualization-library",         ADDON_VIZ_LIBRARY,        0 },
-   {"xbmc.python.plugin",            ADDON_PLUGIN,         24005 },
+   {"xbmc.python.pluginsource",      ADDON_PLUGIN,         24005 },
    {"xbmc.python.script",            ADDON_SCRIPT,         24009 },
    {"xbmc.python.weather",           ADDON_SCRIPT_WEATHER,   24027 },
    {"xbmc.python.subtitles",         ADDON_SCRIPT_SUBTITLES, 24012 },

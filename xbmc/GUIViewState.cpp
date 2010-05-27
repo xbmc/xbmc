@@ -128,7 +128,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   return new CGUIViewStateGeneral(items);
 }
 
-CGUIViewState::CGUIViewState(const CFileItemList& items, const CONTENT_TYPE& content/*=CONTENT_NONE*/) : m_items(items)
+CGUIViewState::CGUIViewState(const CFileItemList& items, const CPluginSource::Content& content/*=CONTENT_NONE*/) : m_items(items)
 {
   m_currentViewAsControl=0;
   m_currentSortMethod=0;
@@ -344,25 +344,26 @@ VECSOURCES& CGUIViewState::GetSources()
   // more consolidation could happen here for all content types
   // - playlists, autoconfig network shares, whatnot
 
-  if (m_content == CONTENT_NONE)
-    return m_sources;
-
-  ADDON::VECADDONS addons;
-  ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_PLUGIN, addons, m_content);
+  VECADDONS addons;
+  ADDON::CAddonMgr::Get().GetAddons(ADDON_PLUGIN, addons);
 
   for (unsigned i=0; i<addons.size(); i++)
   {
+    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addons[i]);
+    if (!plugin || !plugin->Provides(m_content))
+      continue;
+
     // format for sources's path is
     // eg. pictures://UUID
-    CMediaSource plugin;
+    CMediaSource source;
     CURL path;
     path.SetProtocol("plugin");
-    path.SetHostName(addons[i]->ID());
-    plugin.strPath = path.Get();
-    plugin.strName = addons[i]->Name();
-    plugin.m_strThumbnailImage = addons[i]->Icon(); //FIXME cache by UUID
-    plugin.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
-    m_sources.push_back(plugin);
+    path.SetHostName(plugin->ID());
+    source.strPath = path.Get();
+    source.strName = plugin->Name();
+    source.m_strThumbnailImage = plugin->Icon(); //FIXME cache by UUID
+    source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
+    m_sources.push_back(source);
   }
   return m_sources;
 }

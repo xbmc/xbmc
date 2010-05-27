@@ -35,10 +35,6 @@ typedef enum
   CONTENT_ALBUMS,
   CONTENT_ARTISTS,
   CONTENT_NONE,
-  CONTENT_AUDIO,
-  CONTENT_IMAGE,
-  CONTENT_PROGRAM,
-  CONTENT_VIDEO
 } CONTENT_TYPE;
 
 namespace ADDON
@@ -68,6 +64,8 @@ namespace ADDON
   typedef boost::shared_ptr<CVisualisation> VizPtr;
   class CSkinInfo;
   typedef boost::shared_ptr<CSkinInfo> SkinPtr;
+  class CPluginSource;
+  typedef boost::shared_ptr<CPluginSource> PluginPtr;
 
   class CAddonMgr;
   class AddonVersion;
