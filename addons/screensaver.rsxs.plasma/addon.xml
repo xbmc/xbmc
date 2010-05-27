@@ -12,10 +12,10 @@
     library_linux="Plasma.xbs"
     library_osx="Plasma.xbs"/>
   <extension point="xbmc.addon.metadata">
-    <minversion app="xbmc"></minversion>
     <summary>OpenGL Screensaver</summary>
     <description>Probably the second most psychedelic screensaver in existence. Just try to picture all those colors moving around.</description>
     <description lang="nl">Een heel erg psychedelische screensaver.</description>
     <disclaimer></disclaimer>
+    <platform>linux osx</platform>
   </extension>
 </addon>

@@ -8,9 +8,9 @@
     point="xbmc.player.musicviz"
     library_windx="MilkDrop_win32dx.vis"/>
   <extension point="xbmc.addon.metadata">
-    <minversion app="xbmc">28000</minversion>
     <summary>DirectX Visualization</summary>
     <description>MilkDrop was originally a music visualizer "plug-in" to the Winamp music player. As you listen to your music, MilkDrop takes you flying through the actual soundwaves you're hearing, and uses beat detection to trigger myriad psychedelic effects, creating a rich visual journey through sound.</description>
     <disclaimer></disclaimer>
+    <platform>windx</platform>
   </extension>
 </addon>

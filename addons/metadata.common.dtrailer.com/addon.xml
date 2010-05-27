@@ -9,11 +9,10 @@
   <extension point="xbmc.metadata.scraper.library"
              library="dtrailer.xml"/>
   <extension point="xbmc.addon.metadata">
-    <platform>all</platform>
-    <minversion>20000</minversion>
     <summary>DTrailer Scraper Library</summary>
     <summary lang="nl">DTralier Scraper Collectie</summary>
     <description>Download trailers from www.themoviedb.org</description>
     <description lang="nl">Download trailers van www.themoviedb.org</description>
+    <platform>all</platform>
   </extension>
 </addon>

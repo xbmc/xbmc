@@ -9,9 +9,8 @@
   <extension point="xbmc.metadata.scraper.library"
              library="htbackdrops.xml"/>
   <extension point="xbmc.addon.metadata">
-    <platform>all</platform>
-    <minversion>20000</minversion>
     <summary>HTBackdrops Scraper Library</summary>
     <description>some description</description>
+    <platform>all</platform>
   </extension>
 </addon>

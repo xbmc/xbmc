@@ -5,8 +5,8 @@
        provider-name="Team XBMC">
   <extension point="xbmc.python.weather" library=""/>
   <extension point="xbmc.addon.metadata">
-    <platform>all</platform>
     <summary>Current weather conditions.</summary>
     <description>This is the default weather source.[CR][CR]It provides current weather conditions and a four day outlook.</description>
+    <platform>all</platform>
   </extension>
 </addon>

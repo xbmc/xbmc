@@ -8,11 +8,11 @@
     point="xbmc.player.musicviz"
     library_osx="iTunes.mvis"/>
   <extension point="xbmc.addon.metadata">
-    <minversion app="xbmc"></minversion>
     <summary>iTunes Visualization Wrapper</summary>
     <summary lang="nl">iTunes Visualisaties</summary>
     <description>iTunes Visualization Wrapper allows you to use visualizations from your OSX iTunes install in XBMC</description>
     <description lang="nl">iTunes Visualisaties kan gebruik maken van de visualisaties van jouw iTunes installatie in OSX</description>
     <disclaimer></disclaimer>
+    <platform>osx</platform>
   </extension>
 </addon>
