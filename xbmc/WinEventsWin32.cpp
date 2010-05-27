@@ -445,16 +445,11 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       switch (GET_APPCOMMAND_LPARAM(lParam))
       {
         case APPCOMMAND_MEDIA_PLAY:
+        case APPCOMMAND_MEDIA_PLAY_PAUSE:
           newEvent.appcommand.action = ACTION_PLAYER_PLAY;
           break;
         case APPCOMMAND_MEDIA_PAUSE:
           newEvent.appcommand.action = ACTION_PAUSE;
-          break;
-        case APPCOMMAND_MEDIA_PLAY_PAUSE:
-          if (g_application.IsPaused())
-            newEvent.appcommand.action = ACTION_PLAYER_PLAY;
-          else
-            newEvent.appcommand.action = ACTION_PAUSE;
           break;
         case APPCOMMAND_BROWSER_BACKWARD:
           newEvent.appcommand.action = ACTION_PARENT_DIR;
