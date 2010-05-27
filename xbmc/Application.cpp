@@ -715,8 +715,7 @@ bool CApplication::InitDirectoriesLinux()
    special://home/          => [read-write] user's directory that will override special://xbmc/ system-wide
                                installations like skins, screensavers, etc.
                                ($HOME/.xbmc)
-                               NOTE: XBMC will look in both special://xbmc/skin and special://xbmc/skin for skins.
-                                     Same applies to screensavers, sounds, etc.
+                               NOTE: XBMC will look in both special://xbmc/addons and special://home/addons for addons.
    special://masterprofile/ => [read-write] userdata of master profile. It will by default be
                                mapped to special://home/userdata ($HOME/.xbmc/userdata)
    special://profile/       => [read-write] current profile's userdata directory.

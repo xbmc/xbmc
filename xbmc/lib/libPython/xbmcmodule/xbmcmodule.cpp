@@ -429,7 +429,7 @@ namespace PYXBMC
   PyDoc_STRVAR(getSkinDir__doc__,
     "getSkinDir() -- Returns the active skin directory as a string.\n"
     "\n"
-    "*Note, This is not the full path like 'special://home/skin/MediaCenter', but only 'MediaCenter'.\n"
+    "*Note, This is not the full path like 'special://home/addons/MediaCenter', but only 'MediaCenter'.\n"
     "\n"
     "example:\n"
     "  - skindir = xbmc.getSkinDir()\n");
