@@ -1233,7 +1233,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         // If we got here something is wrong
         if (++retry > g_advancedSettings.m_curlretries)
         {
-          CLog::Log(LOGDEBUG, "%s: Reconnect failed!", __FUNCTION__);
+          CLog::Log(LOGWARNING, "%s: Reconnect failed!", __FUNCTION__);
           // Reset the rest of the variables like we would in Disconnect()
           m_filePos = 0;
           m_fileSize = 0;
