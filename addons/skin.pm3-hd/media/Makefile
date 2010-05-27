@@ -241,7 +241,6 @@ IMAGES= \
 	home-favourites-focus.gif \
 	home-favourites.png \
 	Home-Menu-Back-Divider.png \
-	Home-Menu-Back-3.png \
 	Home-Menu-Back.png \
 	home-playmedia-focus.gif \
 	home-playmedia.png \
