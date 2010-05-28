@@ -80,6 +80,11 @@ CThread::CThread()
 
 CThread::CThread(IRunnable* pRunnable)
 {
+#ifdef __APPLE__
+  // Initialize thread local storage and local thread pointer.
+  pthread_once(&keyOnce, MakeTlsKeys);
+#endif
+
   m_bStop = false;
 
   m_bAutoDelete = false;
