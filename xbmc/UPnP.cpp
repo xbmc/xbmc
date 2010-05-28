@@ -285,12 +285,17 @@ NPT_String
 CUPnPServer::GetMimeType(const CFileItem& item,
                             const PLT_HttpRequestContext* context /* = NULL */)
 {
-    NPT_String ext = CUtil::GetExtension(item.m_strPath).c_str();
+    CStdString path = item.m_strPath;
     if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty()) {
-        ext = CUtil::GetExtension(item.GetVideoInfoTag()->m_strFileNameAndPath);
+        path = item.GetVideoInfoTag()->m_strFileNameAndPath;
     } else if (item.HasMusicInfoTag() && !item.GetMusicInfoTag()->GetURL().IsEmpty()) {
-        ext = CUtil::GetExtension(item.GetMusicInfoTag()->GetURL());
+        path = item.GetMusicInfoTag()->GetURL();
     }
+
+    if(path.Left(5).Equals("stack://"))
+      return "audio/x-mpegurl";
+
+    NPT_String ext = CUtil::GetExtension(path).c_str();
     ext.TrimLeft('.');
     ext = ext.ToLowercase();
 
