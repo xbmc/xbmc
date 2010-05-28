@@ -99,7 +99,8 @@ struct _env
 
 #define EMU_MAX_ENVIRONMENT_ITEMS 50
 static char *dll__environ_imp[EMU_MAX_ENVIRONMENT_ITEMS + 1];
-extern "C" char **dll__environ = dll__environ_imp;
+extern "C" char **dll__environ;
+char **dll__environ = dll__environ_imp;
 
 CRITICAL_SECTION dll_cs_environ;
 
