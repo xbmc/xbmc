@@ -517,6 +517,7 @@ bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool 
     params.push_back("addons://repos/");
     params.push_back("return");
     g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
+    return false;
   }
   if (dialog->GetSelectedLabel() >= 0)
   {
