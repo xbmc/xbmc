@@ -209,10 +209,9 @@ CSettingPath::CSettingPath(int iOrder, const char *strSetting, int iLabel, const
 {
 }
 
-CSettingAddon::CSettingAddon(int iOrder, const char *strSetting, int iLabel, const char *strData, const TYPE type, const CONTENT_TYPE content)
+CSettingAddon::CSettingAddon(int iOrder, const char *strSetting, int iLabel, const char *strData, const TYPE type)
   : CSettingString(iOrder, strSetting, iLabel, strData, SPIN_CONTROL_TEXT, false, -1)
   , m_type(type)
-  , m_content(content)
 {
   m_entries.insert(std::make_pair(strData, "Default"));
 }
@@ -1025,10 +1024,10 @@ void CGUISettings::AddPath(CSettingsCategory* cat, const char *strSetting, int i
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }
 
-void CGUISettings::AddDefaultAddon(CSettingsCategory* cat, const char *strSetting, int iLabel, const char *strData, const TYPE type, const CONTENT_TYPE content/*=CONTENT_NONE*/)
+void CGUISettings::AddDefaultAddon(CSettingsCategory* cat, const char *strSetting, int iLabel, const char *strData, const TYPE type)
 {
   int iOrder = cat?++cat->m_entries:0;
-  CSettingAddon* pSetting = new CSettingAddon(iOrder, CStdString(strSetting).ToLower(), iLabel, strData, type, content);
+  CSettingAddon* pSetting = new CSettingAddon(iOrder, CStdString(strSetting).ToLower(), iLabel, strData, type);
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }
