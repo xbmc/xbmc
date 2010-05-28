@@ -23,13 +23,6 @@
 #if defined(HAVE_LIBOPENMAX)
 
 #include "DVDVideoCodec.h"
-#include "utils/Event.h"
-
-#include <queue>
-#include <semaphore.h>
-#include <EGL/egl.h>
-#include <EGL/eglext.h>
-#include <OMX_Core.h>
 
 typedef struct omx_bitstream_ctx {
     uint8_t  length_size;
@@ -38,26 +31,7 @@ typedef struct omx_bitstream_ctx {
     uint32_t size;
 } omx_bitstream_ctx;
 
-typedef struct omx_demux_packet {
-  OMX_U8 *buff;
-  int size;
-  double dts;
-  double pts;
-} omx_demux_packet;
-
-
-// an omx egl video frame
-typedef struct omx_egl_buffer {
-  EGLImageKHR egl_image;
-  GLuint texture_id;
-  OMX_BUFFERHEADERTYPE *omx_buffer;
-  int width;
-  int height;
-  int index;
-} omx_egl_buffer;
-
-
-class DllLibOpenMax;
+class COpenMax;
 class CDVDVideoCodecOpenMax : public CDVDVideoCodec
 {
 public:
@@ -74,86 +48,16 @@ public:
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
   
 protected:
-  enum OMX_CLIENT_STATE {
-      DEAD,
-      LOADED,
-      LOADED_TO_IDLE,
-      IDLE_TO_EXECUTING,
-      EXECUTING,
-      EXECUTING_TO_IDLE,
-      IDLE_TO_LOADED,
-      RECONFIGURING,
-      ERROR
-  };
-
   // bitstream to bytestream (Annex B) conversion routines.
   bool bitstream_convert_init(void *in_extradata, int in_extrasize);
   bool bitstream_convert(BYTE* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size);
   void bitstream_alloc_and_copy( uint8_t **poutbuf, int *poutbuf_size,
     const uint8_t *sps_pps, uint32_t sps_pps_size, const uint8_t *in, uint32_t in_size);
 
-  // OpenMax Decoder Callback routines.
-  static OMX_ERRORTYPE DecoderEventHandler(OMX_HANDLETYPE hComponent, OMX_PTR pAppData,
-    OMX_EVENTTYPE eEvent, OMX_U32 nData1, OMX_U32 nData2, OMX_PTR pEventData);
-  static OMX_ERRORTYPE DecoderEmptyBufferDone(
-    OMX_HANDLETYPE hComponent, OMX_PTR pAppData, OMX_BUFFERHEADERTYPE* pBuffer);
-  static OMX_ERRORTYPE DecoderFillBufferDone(
-    OMX_HANDLETYPE hComponent, OMX_PTR pAppData, OMX_BUFFERHEADERTYPE* pBufferHeader);
-
-  // OpenMax helper routines
-  OMX_ERRORTYPE PrimeFillBuffers(void);
-  OMX_ERRORTYPE AllocOMXInputBuffers(void);
-  OMX_ERRORTYPE FreeOMXInputBuffers(bool wait);
-  OMX_ERRORTYPE AllocOMXOutputBuffers(void);
-  OMX_ERRORTYPE FreeOMXOutputBuffers(bool wait);
-  OMX_ERRORTYPE AllocOMXOutputEGLTextures(void);
-  OMX_ERRORTYPE FreeOMXOutputEGLTextures(bool wait);
-  OMX_ERRORTYPE WaitForState(OMX_STATETYPE state);
-  OMX_ERRORTYPE SetStateForComponent(OMX_STATETYPE state);
-  OMX_ERRORTYPE StartDecoder(void);
-  OMX_ERRORTYPE StopDecoder(void);
-
-  DllLibOpenMax     *m_dll;
-  bool              m_is_open;
-  OMX_HANDLETYPE    m_omx_decoder;   // openmax decoder component reference
-  DVDVideoPicture   m_videobuffer;
   const char        *m_pFormatName;
-  bool              m_drop_state;
-  int               m_decoded_width;
-  int               m_decoded_height;
+  COpenMax          *m_omx_decoder;
+  DVDVideoPicture   m_videobuffer;
 
-  std::queue<double> m_dts_queue;
-  std::queue<omx_demux_packet> m_demux_queue;
-
-  // OpenMax input buffers (demuxer packets)
-  pthread_mutex_t   m_omx_avaliable_mutex;
-  std::queue<OMX_BUFFERHEADERTYPE*> m_omx_input_avaliable;
-  std::vector<OMX_BUFFERHEADERTYPE*> m_omx_input_buffers;
-  bool              m_omx_input_eos;
-  int               m_omx_input_port;
-  //sem_t             *m_omx_flush_input;
-  CEvent            m_input_consumed_event;
-
-  // OpenMax output buffers (video frames)
-  pthread_mutex_t   m_omx_ready_mutex;
-  std::queue<OMX_BUFFERHEADERTYPE*> m_omx_output_ready;
-  std::vector<OMX_BUFFERHEADERTYPE*> m_omx_output_buffers;
-  bool              m_omx_output_eos;
-  int               m_omx_output_port;
-  //sem_t             *m_omx_flush_output;
-
-  EGLDisplay        m_egl_display;
-  EGLContext        m_egl_context;
-  std::queue<omx_egl_buffer*> m_omx_egl_output_ready;
-  std::vector<omx_egl_buffer*> m_omx_egl_output_buffers;
-
-
-  // OpenMax state tracking
-  OMX_CLIENT_STATE  m_omx_client_state;
-  volatile int      m_omx_decoder_state;
-  sem_t             *m_omx_decoder_state_change;
-  volatile bool     m_videoplayback_done;
-  
   // bitstream to bytestream convertion (Annex B)
   uint32_t          m_sps_pps_size;
   omx_bitstream_ctx m_sps_pps_context;
