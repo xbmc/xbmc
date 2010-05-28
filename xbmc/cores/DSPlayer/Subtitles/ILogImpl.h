@@ -21,6 +21,10 @@
  *
  */
 
+#ifndef HAS_DS_PLAYER
+#error DSPlayer's header file included without HAS_DS_PLAYER defined
+#endif
+
 #include "ILog.h"
 
 class ILogImpl: public ILog

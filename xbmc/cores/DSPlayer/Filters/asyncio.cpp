@@ -27,6 +27,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------------------------
 
+#ifdef HAS_DS_PLAYER
 
 #include <streams.h>
 #include "asyncio.h"
@@ -726,4 +727,4 @@ CAsyncIo::Alignment(LONG *pAlignment)
     return S_OK;
 }
 
-
+#endif

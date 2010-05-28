@@ -20,6 +20,11 @@
  */
 
 #pragma once
+
+#ifndef HAS_DS_PLAYER
+#error DSPlayer's header file included without HAS_DS_PLAYER defined
+#endif
+
 #include "streams.h"
 #include "DShowUtil/DSGeometry.h"
 

@@ -19,8 +19,7 @@
  *
  */
 
-
-
+#ifdef HAS_DS_PLAYER
 
 #include <streams.h>
 
@@ -120,3 +119,5 @@ CXBMCASyncReader::CXBMCASyncReader(CXBMCAsyncStream *pStream, CMediaType *pmt, H
   m_mt.majortype = MEDIATYPE_Stream;
   m_mt.subtype = MEDIASUBTYPE_NULL;
 }
+
+#endif

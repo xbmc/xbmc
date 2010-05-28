@@ -21,6 +21,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
+#ifdef HAS_DS_PLAYER
  
 #include "cspinfo.h"
 #include <vector>
@@ -1053,3 +1055,5 @@ bool TcspInfos::TsortFc::operator ()(const TcspInfo* &csp1,const TcspInfo* &csp2
 //  ok=true;
 // return ok?csp:FF_CSP_NULL;
 //}
+
+#endif

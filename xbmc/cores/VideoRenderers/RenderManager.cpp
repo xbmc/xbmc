@@ -292,16 +292,10 @@ unsigned int CXBMCRenderManager::PreInit()
 #ifdef HAS_DS_PLAYER
     if (rendtype == RENDERER_NORMAL)
       m_pRenderer = new CPixelShaderRenderer();
-    else if (rendtype == RENDERER_DSHOW_VMR9)
-    {
-      m_pRenderer = new CDsPixelShaderRenderer(false);
-      m_pRendererType = rendtype;
-    }
-    else if (rendtype == RENDERER_DSHOW_EVR)
-    {
-      m_pRenderer = new CDsPixelShaderRenderer(true);
-      m_pRendererType = rendtype;
-    }
+    else
+      m_pRenderer = new CDsPixelShaderRenderer(rendtype == RENDERER_DSHOW_EVR ? true : false);
+
+    m_pRendererType = rendtype;
 #else
     m_pRenderer = new CPixelShaderRenderer();
 #endif

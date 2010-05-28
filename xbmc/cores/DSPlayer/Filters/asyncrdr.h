@@ -31,6 +31,9 @@
 #ifndef __ASYNCRDR_H__
 #define __ASYNCRDR_H__
 
+#ifndef HAS_DS_PLAYER
+#error DSPlayer's header file included without HAS_DS_PLAYER defined
+#endif
 
 //
 // AsyncRdr

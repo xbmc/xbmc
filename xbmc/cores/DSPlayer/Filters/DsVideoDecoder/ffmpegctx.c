@@ -22,6 +22,7 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
 
 #define HAVE_AV_CONFIG_H
 #define H264_MERGE_TESTING
@@ -784,5 +785,7 @@ void DummyX64Link ()
 {
   toupper('X');
 }
+
+#endif
 
 #endif

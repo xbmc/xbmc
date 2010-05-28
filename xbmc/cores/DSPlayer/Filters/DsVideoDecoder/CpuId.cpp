@@ -22,7 +22,7 @@
  *
  */
 
-
+#ifdef HAS_DS_PLAYER
 
 #include "intrin_fixed.h"
 #include "CpuId.h"
@@ -202,3 +202,5 @@ int CCpuId::GetProcessorNumber()
 
 	return SystemInfo.dwNumberOfProcessors;
 }
+
+#endif

@@ -22,6 +22,9 @@
 // SysError.cpp: implementation of the SysError class.
 //
 //////////////////////////////////////////////////////////////////////
+
+#ifdef HAS_DS_PLAYER
+
 #ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC
 #endif //_DEBUG
@@ -92,3 +95,5 @@ string SysError::errorDesc(int code)
   //return string(lpMsgBuf);
 #endif
 }
+
+#endif

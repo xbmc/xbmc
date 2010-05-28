@@ -29,6 +29,7 @@
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 //------------------------------------------------------------------------------
 
+#ifdef HAS_DS_PLAYER
 
 #include <streams.h>
 #include "asyncio.h"
@@ -429,5 +430,4 @@ CBasePin * CAsyncReader::GetPin(int n)
     }
 }
 
-
-
+#endif

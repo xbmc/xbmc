@@ -27,9 +27,10 @@
 #include "RenderFlags.h"
 #include "BaseRenderer.h"
 #include "settings/VideoSettings.h"
-#include "WinBaseRenderer.h"
 
-#ifndef HAS_DS_PLAYER
+#ifdef HAS_DS_PLAYER
+#include "WinBaseRenderer.h"
+#else
 #include "D3DResource.h"
 #endif
 

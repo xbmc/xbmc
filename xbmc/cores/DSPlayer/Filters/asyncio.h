@@ -30,6 +30,11 @@
 
 #ifndef __ASYNCIO_H__
 #define __ASYNCIO_H__
+
+#ifndef HAS_DS_PLAYER
+#error DSPlayer's header file included without HAS_DS_PLAYER defined
+#endif
+
 #include "CriticalSection.h"
 #include "Streams.h"
 //

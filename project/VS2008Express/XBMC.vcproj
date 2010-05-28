@@ -2678,62 +2678,6 @@
 					</Filter>
 				</Filter>
 				<Filter
-					Name="Interfaces"
-					>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DllLibSubs.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\ILog.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.h"
-						>
-					</File>
-					<Filter
-						Name="ffdshow"
-						>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\ffdshow_constants.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffDecoder.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowBase.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDec.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecAudio.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecVideo.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowEnc.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowParamsEnum.h"
-							>
-						</File>
-					</Filter>
-				</Filter>
-				<Filter
 					Name="FilterCoreFactory"
 					>
 					<File
@@ -2856,6 +2800,62 @@
 						RelativePath="..\..\xbmc\win32\WINDirectShowEnumerator.h"
 						>
 					</File>
+				</Filter>
+				<Filter
+					Name="Interfaces"
+					>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\DllLibSubs.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.h"
+						>
+					</File>
+					<Filter
+						Name="ffdshow"
+						>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\ffdshow_constants.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffDecoder.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowBase.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDec.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecAudio.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowDecVideo.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowEnc.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\IffdshowParamsEnum.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\subtitles\TextFile.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 		</Filter>

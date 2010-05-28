@@ -21,6 +21,10 @@
  *
  */
 
+#ifndef HAS_DS_PLAYER
+#error DSPlayer's header file included without HAS_DS_PLAYER defined
+#endif
+
 #if !defined(_LINUX) && !defined(HAS_GL) && defined(HAS_DS_PLAYER)
 
 

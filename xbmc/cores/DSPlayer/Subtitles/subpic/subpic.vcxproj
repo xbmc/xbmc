@@ -120,6 +120,8 @@
     <ClCompile>
       <XMLDocumentationFileName>$(OutDir)</XMLDocumentationFileName>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <PreprocessorDefinitions>
+      </PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

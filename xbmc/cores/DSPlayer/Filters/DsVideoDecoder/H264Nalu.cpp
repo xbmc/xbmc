@@ -22,6 +22,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include "H264Nalu.h"
 
 #ifndef min
@@ -102,3 +104,5 @@ bool CH264Nalu::ReadNext()
 
 	return true;
 }
+
+#endif

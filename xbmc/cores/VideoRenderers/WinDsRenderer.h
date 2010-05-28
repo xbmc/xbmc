@@ -33,6 +33,7 @@
 
 class CBaseTexture;
 class IPaintCallback;
+
 class CWinDsRenderer : public CWinBaseRenderer
 {
 public:

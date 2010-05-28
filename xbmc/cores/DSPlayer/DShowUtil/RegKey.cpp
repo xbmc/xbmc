@@ -23,6 +23,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#ifdef HAS_DS_PLAYER
+
 #ifdef _DEBUG
 #define _CRTDBG_MAP_ALLOC
 #endif //_DEBUG
@@ -283,3 +285,5 @@ bool RegKey::hasValue(const CStdString& name) const throw(SysError)
   }
   return b; 
 }
+
+#endif

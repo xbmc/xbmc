@@ -19,6 +19,8 @@
  *
  */
 
+#ifdef HAS_DS_PLAYER
+
 #include "log.h"
 #include "ILogImpl.h"
 #include "StdString.h"
@@ -34,3 +36,5 @@ void ILogImpl::Log(int loglevel, const char *format, ...)
   
   CLog::Log(loglevel, msg.c_str());
 }
+
+#endif

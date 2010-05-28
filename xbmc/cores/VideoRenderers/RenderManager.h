@@ -26,11 +26,11 @@
 #elif HAS_GLES == 2
   #include "LinuxRendererGLES.h"
 #elif defined(HAS_DX)
-  #include "WinRenderer.h"
-#ifdef HAS_DS_PLAYER
+ #include "WinRenderer.h"
+ #ifdef HAS_DS_PLAYER
   #include "WinDsRenderer.h"
-  #include "../Dsplayer/IPaintCallback.h"  
-#endif
+  #include "../Dsplayer/IPaintCallback.h"
+ #endif
 #elif defined(HAS_SDL)
   #include "LinuxRenderer.h"
 #endif
@@ -44,7 +44,10 @@
 namespace DXVA { class CProcessor; }
 namespace VAAPI { class CSurfaceHolder; }
 class CVDPAU;
-class IPaintCallback;
+
+#ifdef HAS_DS_PLAYER
+  class IPaintCallback;
+#endif
 
 class CXBMCRenderManager
 {
@@ -82,7 +85,7 @@ public:
     if (m_pRenderer)
       m_pRenderer->ReleaseImage(source, preserve);
   }
-#if defined(HAS_DS_PLAYER)
+#ifdef HAS_DS_PLAYER
   inline void RegisterDsCallback(IPaintCallback *callback)
   {
     CSharedLock lock(m_sharedSection);
@@ -223,7 +226,6 @@ public:
   CLinuxRenderer *m_pRenderer;
 #elif defined(HAS_XBOX_D3D)
   CXBoxRenderer *m_pRenderer;
-
 #endif
 
   void Present();

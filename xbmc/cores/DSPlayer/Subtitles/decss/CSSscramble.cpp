@@ -1,3 +1,5 @@
+#ifdef HAS_DS_PLAYER
+
 #ifndef countof
 #define countof(array) (sizeof(array)/sizeof(array[0]))
 #endif
@@ -243,3 +245,5 @@ unsigned char g_PlayerKeys[][6] =
 };
 
 int g_nPlayerKeys = countof(g_PlayerKeys);
+
+#endif

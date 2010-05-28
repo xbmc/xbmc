@@ -47,5 +47,8 @@
     <ClInclude Include="TextPassThruFilter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\ILog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

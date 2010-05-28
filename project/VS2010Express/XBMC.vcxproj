@@ -1339,7 +1339,6 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileReader.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\XBMCFileSource.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\DllLibSubs.h" />
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\ILog.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Subtitles\ILogImpl.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\ffdshow_constants.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\IffDecoder.h" />
