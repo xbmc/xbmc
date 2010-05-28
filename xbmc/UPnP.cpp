@@ -292,7 +292,7 @@ CUPnPServer::GetMimeType(const CFileItem& item,
         path = item.GetMusicInfoTag()->GetURL();
     }
 
-    if(path.Left(5).Equals("stack://"))
+    if(path.Left(8).Equals("stack://"))
       return "audio/x-mpegurl";
 
     NPT_String ext = CUtil::GetExtension(path).c_str();
