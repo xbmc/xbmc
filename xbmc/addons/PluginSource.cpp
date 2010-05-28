@@ -21,13 +21,25 @@
 #include "PluginSource.h"
 #include "AddonManager.h"
 
+using namespace std;
+
 namespace ADDON
 {
 
-CPluginSource::CPluginSource(const cp_extension_t *ext, const std::set<CPluginSource::Content> &provides)
+CPluginSource::CPluginSource(const cp_extension_t *ext)
   : CAddon(ext)
-  , m_providedContent(provides)
 {
+  if (ext)
+  {
+    vector<CStdString> provides;
+    CAddonMgr::Get().GetExtList(ext->configuration, "provides", provides);
+    for (unsigned int i = 0; i < provides.size(); i++)
+    {
+      Content content = Translate(provides[i]);
+      if (content != UNKNOWN)
+        m_providedContent.insert(content);
+    }
+  }
 }
 
 CPluginSource::Content CPluginSource::Translate(const CStdString &content)

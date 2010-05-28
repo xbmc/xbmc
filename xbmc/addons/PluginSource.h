@@ -31,15 +31,15 @@ public:
 
   enum Content { UNKNOWN, AUDIO, IMAGE, EXECUTABLE, VIDEO };
 
-  CPluginSource(const cp_extension_t *ext, const std::set<CPluginSource::Content>&);
+  CPluginSource(const cp_extension_t *ext);
   CPluginSource(const AddonProps &props) : CAddon(props) {}
   virtual ~CPluginSource() {}
   bool Provides(const Content& content) {
     return content == UNKNOWN ? false : m_providedContent.count(content) > 0; }
-  static Content Translate(const CStdString &content);
 
 private:
   std::set<Content> m_providedContent;
+  static Content Translate(const CStdString &content);
 };
 
 } /*namespace ADDON*/
