@@ -50,7 +50,7 @@ public:
   void SetSelected(int iSelected);
   void SetUseDetails(bool useDetails);
 protected:
-  virtual CGUIControl *CGUIDialogSelect::GetFirstFocusableControl(int id);
+  virtual CGUIControl *GetFirstFocusableControl(int id);
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
 
