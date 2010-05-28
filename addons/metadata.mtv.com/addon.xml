@@ -6,7 +6,7 @@
   <requires>
     <import addon="xbmc.metadata" version="1.0"/>
   </requires>
-  <extension point="xbmc.metadata.scraper"
+  <extension point="xbmc.metadata.scraper.musivideos"
              language="en"
              library="mtv.xml"/>
   <extension point="xbmc.addon.metadata">
@@ -19,6 +19,5 @@
     <description lang="se">Ladda ner musikvideo information från MTV.</description>
     <description lang="nl">Download Muziekvideo informatie</description>
     <platform>all</platform>
-    <supportedcontent>musicvideos</supportedcontent>
   </extension>
 </addon>
