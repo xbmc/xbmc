@@ -112,52 +112,11 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     items.SetProperty("addoncategory",TranslateType(type, true));
     items.m_strPath = strPath;
 
-    // add content types
-    // FIXME: Categorisation of addons may need improving
-/*    if (type == ADDON_SCRAPER && path.GetOptions().IsEmpty())
-    {
-      for (int i=CONTENT_MOVIES;i<CONTENT_ARTISTS;++i)
-      {
-        for (unsigned int j=0;j<addons.size();++j)
-        {
-          if (addons[j]->Supports((CONTENT_TYPE)i))
-          {
-            CURL url2(path);
-            CStdString label;
-            if ((CONTENT_TYPE)i == CONTENT_ALBUMS)
-            {
-              url2.SetOptions("?content=music");
-              label = g_localizeStrings.Get(2);
-            }
-            else
-            {
-              url2.SetOptions("?content="+TranslateContent((CONTENT_TYPE)i));
-              label = TranslateContent((CONTENT_TYPE)i,true);
-            }
-            CFileItemPtr item(new CFileItem(url2.Get(),true));
-            item->SetLabel(label);
-            item->SetLabelPreformated(true);
-            items.Add(item);
-            break;
-          }
-        }
-      }
-      return true;
-    }
-    CONTENT_TYPE content;
-    if (type  == ADDON_SCRAPER)
-    {
-      CStdStringArray array;
-      StringUtils::SplitString(path.GetOptions(),"=",array);
-      content = TranslateContent(array[1]);
-    }*/
+    // FIXME: Categorisation of addons needs adding here
     for (unsigned int j=0;j<addons.size();++j)
     {
       if (addons[j]->Type() != type)
         addons.erase(addons.begin()+j--);
- /*     else if (type == ADDON_SCRAPER && 
-          !addons[j]->Supports(content))
-        addons.erase(addons.begin()+j--);*/
     }
   }
 

@@ -37,11 +37,8 @@ namespace ADDON
 {
 
 // utils
-const CStdString    TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
-const CONTENT_TYPE  TranslateContent(const CStdString &string);
 const CStdString    TranslateType(const TYPE &type, bool pretty=false);
 const TYPE          TranslateType(const CStdString &string);
-const TYPE          ScraperTypeFromContent(const CONTENT_TYPE &content);
 
 class AddonVersion
 {
@@ -103,7 +100,6 @@ public:
   CStdString disclaimer;
   CStdString changelog;
   CStdString fanart;
-  std::set<CONTENT_TYPE> contents;
   ADDONDEPS dependencies;
   int        stars;
 };
@@ -149,7 +145,6 @@ public:
   const CStdString Icon() const;
   const int Stars() const { return m_props.stars; }
   const CStdString Disclaimer() const { return m_props.disclaimer; }
-  bool Supports(const CONTENT_TYPE &content) const { return (m_props.contents.count(content) == 1); }
   ADDONDEPS GetDeps();
 
 protected:

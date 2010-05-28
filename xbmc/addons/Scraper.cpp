@@ -37,6 +37,68 @@ using std::stringstream;
 namespace ADDON
 {
 
+typedef struct
+{
+  const char*  name;
+  CONTENT_TYPE type;
+  int          pretty;
+} ContentMapping;
+
+static const ContentMapping content[] =
+  {{"unknown",       CONTENT_NONE,          231 },
+   {"albums",        CONTENT_ALBUMS,        132 },
+   {"music",         CONTENT_ALBUMS,        132 },
+   {"artists",       CONTENT_ARTISTS,       133 },
+   {"movies",        CONTENT_MOVIES,      20342 },
+   {"tvshows",       CONTENT_TVSHOWS,     20343 },
+   {"musicvideos",   CONTENT_MUSICVIDEOS, 20389 }};
+
+const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*/)
+{
+  for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
+  {
+    const ContentMapping &map = content[index];
+    if (type == map.type)
+    {
+      if (pretty && map.pretty)
+        return g_localizeStrings.Get(map.pretty);
+      else
+        return map.name;
+    }
+  }
+  return "";
+}
+
+const CONTENT_TYPE TranslateContent(const CStdString &string)
+{
+  for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
+  {
+    const ContentMapping &map = content[index];
+    if (string.Equals(map.name))
+      return map.type;
+  }
+  return CONTENT_NONE;
+}
+
+const TYPE ScraperTypeFromContent(const CONTENT_TYPE &content)
+{
+  switch (content)
+  {
+  case CONTENT_ALBUMS:
+    return ADDON_SCRAPER_ALBUMS;
+  case CONTENT_ARTISTS:
+    return ADDON_SCRAPER_ARTISTS;
+  case CONTENT_MOVIES:
+    return ADDON_SCRAPER_MOVIES;
+  case CONTENT_MUSICVIDEOS:
+    return ADDON_SCRAPER_MUSICVIDEOS;
+  case CONTENT_TVSHOWS:
+    return ADDON_SCRAPER_TVSHOWS;
+  default:
+    return ADDON_UNKNOWN;
+  }
+}
+
 class CAddon;
 
 CScraper::CScraper(const cp_extension_t *ext) :
@@ -46,18 +108,6 @@ CScraper::CScraper(const cp_extension_t *ext) :
   {
     m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "language");
     m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"requiressettings").Equals("true");
-    CStdString type = ext->ext_point_id;
-    if (type == "xbmc.metadata.scraper.albums" || type == "xbmc.metadata.scraper.artists")
-    { // FIXME: leave these split?
-      Props().contents.insert(CONTENT_ALBUMS);
-      Props().contents.insert(CONTENT_ARTISTS);
-    }
-    else if (type == "xbmc.metadata.scraper.movies")
-      Props().contents.insert(CONTENT_MOVIES);
-    else if (type == "xbmc.metadata.scraper.musicvideos")
-      Props().contents.insert(CONTENT_MUSICVIDEOS);
-    else if (type == "xbmc.metadata.scraper.tvshows")
-      Props().contents.insert(CONTENT_TVSHOWS);
   }
 }
 
@@ -70,6 +120,18 @@ CScraper::CScraper(const CScraper &rhs, const AddonPtr &self)
   : CAddon(rhs, self)
 {
   m_pathContent = CONTENT_NONE;
+}
+
+bool CScraper::Supports(const CONTENT_TYPE &content) const
+{
+  const TYPE contentType = ScraperTypeFromContent(content);
+  if (Type() == contentType)
+    return true;
+  // FIXME: Special-casing music
+  if ((content == CONTENT_ALBUMS || content == CONTENT_ARTISTS) && 
+      (Type() == ADDON_SCRAPER_ALBUMS || Type() == ADDON_SCRAPER_ARTISTS))
+    return true;
+  return false;
 }
 
 bool CScraper::LoadSettings()

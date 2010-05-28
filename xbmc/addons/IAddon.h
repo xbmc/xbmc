@@ -26,17 +26,6 @@
 
 class TiXmlElement;
 
-typedef enum
-{
-  CONTENT_MOVIES,
-  CONTENT_TVSHOWS,
-  CONTENT_MUSICVIDEOS,
-  CONTENT_EPISODES,
-  CONTENT_ALBUMS,
-  CONTENT_ARTISTS,
-  CONTENT_NONE,
-} CONTENT_TYPE;
-
 namespace ADDON
 {
   typedef enum
@@ -100,7 +89,6 @@ namespace ADDON
     virtual const CStdString Icon() const =0;
     virtual const int  Stars() const =0;
     virtual const CStdString Disclaimer() const =0;
-    virtual bool Supports(const CONTENT_TYPE &content) const =0;
     virtual bool HasSettings() =0;
     virtual bool LoadSettings() =0;
     virtual void SaveSettings() =0;

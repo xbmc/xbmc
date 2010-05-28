@@ -119,7 +119,8 @@ void CGUIDialogContentSettings::SetupPage()
     if (m_scraper && m_scraper->Enabled())
     {
       m_bShowScanSettings = true;
-      if (m_scraper->Supports(m_content) && m_scraper->HasSettings())
+      ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(m_scraper);
+      if (scraper && scraper->Supports(m_content) && scraper->HasSettings())
         CONTROL_ENABLE(CONTROL_SCRAPER_SETTINGS);
     }
     else

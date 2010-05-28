@@ -135,7 +135,6 @@ namespace ADDON
     void OnJobComplete(unsigned int jobID, bool sucess, CJob* job);
 
     /* libcpluff */
-    bool GetExtensions(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content);
     const cp_cfg_element_t *GetExtElement(cp_cfg_element_t *base, const char *path);
     cp_context_t *m_cp_context;
     DllLibCPluff *m_cpluff;

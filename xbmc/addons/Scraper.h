@@ -22,14 +22,29 @@
 #include "addons/Addon.h"
 #include "utils/ScraperUrl.h"
 
+typedef enum
+{
+  CONTENT_MOVIES,
+  CONTENT_TVSHOWS,
+  CONTENT_MUSICVIDEOS,
+  CONTENT_ALBUMS,
+  CONTENT_ARTISTS,
+  CONTENT_NONE,
+} CONTENT_TYPE;
+
 namespace ADDON
 {
   class CScraper;
   typedef boost::shared_ptr<CScraper> ScraperPtr;
 
+  const CStdString   TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
+  const CONTENT_TYPE TranslateContent(const CStdString &string);
+  const TYPE         ScraperTypeFromContent(const CONTENT_TYPE &content);
+
   class CScraper : public CAddon
   {
   public:
+
     CScraper(const AddonProps &props) : CAddon(props) { }
     CScraper(const cp_extension_t *ext);
     virtual ~CScraper() {}
@@ -49,6 +64,8 @@ namespace ADDON
     const CStdString& Language() const { return m_language; }
     bool RequiresSettings() const { return m_requiressettings; }
     CONTENT_TYPE m_pathContent;
+
+    bool Supports(const CONTENT_TYPE &content) const;
 
   private:
     CScraper(const CScraper&, const AddonPtr&);

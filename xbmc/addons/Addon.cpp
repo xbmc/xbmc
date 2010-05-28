@@ -47,23 +47,6 @@ namespace ADDON
 
 typedef struct
 {
-  const char*  name;
-  CONTENT_TYPE type;
-  int          pretty;
-} ContentMapping;
-
-static const ContentMapping content[] =
-  {{"unknown",       CONTENT_NONE,          231 },
-   {"albums",        CONTENT_ALBUMS,        132 },
-   {"music",         CONTENT_ALBUMS,        132 },
-   {"artists",       CONTENT_ARTISTS,       133 },
-   {"movies",        CONTENT_MOVIES,      20342 },
-   {"tvshows",       CONTENT_TVSHOWS,     20343 },
-   {"episodes",      CONTENT_EPISODES,    20360 },
-   {"musicvideos",   CONTENT_MUSICVIDEOS, 20389 }};
-
-typedef struct
-{
   const char* name;
   TYPE        type;
   int         pretty;
@@ -90,33 +73,6 @@ static const TypeMapping types[] =
    {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011 },
    {"pvrclient",                         ADDON_PVRDLL,                  0 }};
 
-const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*/)
-{
-  for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
-  {
-    const ContentMapping &map = content[index];
-    if (type == map.type)
-    {
-      if (pretty && map.pretty)
-        return g_localizeStrings.Get(map.pretty);
-      else
-        return map.name;
-    }
-  }
-  return "";
-}
-
-const CONTENT_TYPE TranslateContent(const CStdString &string)
-{
-  for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
-  {
-    const ContentMapping &map = content[index];
-    if (string.Equals(map.name))
-      return map.type;
-  }
-  return CONTENT_NONE;
-}
-
 const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
   for (unsigned int index=0; index < sizeof(types)/sizeof(types[0]); ++index)
@@ -142,25 +98,6 @@ const TYPE TranslateType(const CStdString &string)
       return map.type;
   }
   return ADDON_UNKNOWN;
-}
-
-const TYPE ScraperTypeFromContent(const CONTENT_TYPE &content)
-{
-  switch (content)
-  {
-  case CONTENT_ALBUMS:
-    return ADDON_SCRAPER_ALBUMS;
-  case CONTENT_ARTISTS:
-    return ADDON_SCRAPER_ARTISTS;
-  case CONTENT_MOVIES:
-    return ADDON_SCRAPER_MOVIES;
-  case CONTENT_MUSICVIDEOS:
-    return ADDON_SCRAPER_MUSICVIDEOS;
-  case CONTENT_TVSHOWS:
-    return ADDON_SCRAPER_TVSHOWS;
-  default:
-    return ADDON_UNKNOWN;
-  }
 }
 
 /**
