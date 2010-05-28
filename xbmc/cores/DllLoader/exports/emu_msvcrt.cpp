@@ -125,10 +125,10 @@ extern "C" void __stdcall init_emu_environ()
   dll_putenv("OS=xbox");
 #elif defined(_WIN32)
   dll_putenv("OS=win32");
+#elif defined(__APPLE__)
+  dll_putenv("OS=darwin");
 #elif defined(_LINUX)
   dll_putenv("OS=linux");
-#elif defined(_APPLE)
-  dll_putenv("OS=osx");
 #else
   dll_putenv("OS=unknown");
 #endif
