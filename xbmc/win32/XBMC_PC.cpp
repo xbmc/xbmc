@@ -182,7 +182,13 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   WSAStartup(MAKEWORD(2,2), &wd);
 
   // Create and run the app
-  g_application.Create();
+  if(!g_application.Create())
+  {
+    CStdString errorMsg;
+    errorMsg.Format("CApplication::Create() failed - check log file and that it is writable");
+    MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR);
+    return 0;
+  }
 
 #ifndef _DEBUG
   // we don't want to see the "no disc in drive" windows message box
