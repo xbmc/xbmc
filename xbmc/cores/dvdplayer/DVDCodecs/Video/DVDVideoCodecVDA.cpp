@@ -432,25 +432,16 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       // from nvidia's linux vdpau README: All current third generation PureVideo hardware
       // (G98, MCP77, MCP78, MCP79, MCP7A) cannot decode H.264 for the following horizontal resolutions: 
       // 769-784, 849-864, 929-944, 1009–1024, 1793–1808, 1873–1888, 1953–1968 and 2033-2048 pixel.
-      bool cannot_handle_this_width = false;
-      if (width >= 769 && width <= 784)
-        cannot_handle_this_width = true;
-      if (width >= 849 && width <= 864)
-        cannot_handle_this_width = true;
-      if (width >= 1009 && width <= 1024)
-        cannot_handle_this_width = true;
-      if (width >= 1793 && width <= 1808)
-        cannot_handle_this_width = true;
-      if (width >= 1873 && width <= 1888)
-        cannot_handle_this_width = true;
-      if (width >= 1953 && width <= 1968)
-        cannot_handle_this_width = true;
-      if (width >= 2033 && width <= 2048)
-        cannot_handle_this_width = true;
-      if (cannot_handle_this_width)
+      // This relates to the following macroblock sizes.
+      int macroblocksize[] = {49, 54, 59, 64, 113, 118, 123, 128};
+      for (size_t i = 0; i < sizeof(macroblocksize)/sizeof(macroblocksize[0]); i++)
       {
-        CLog::Log(LOGNOTICE, "%s - Nvidia 9400 GPU hardware limitation, cannot decode a width of %d", __FUNCTION__, width);
-        return false;
+        if (((width + 15) / 16) == macroblocksize[i])
+        {
+          CLog::Log(LOGNOTICE, "%s - Nvidia 9400 GPU hardware limitation, cannot decode a width of %d",
+            __FUNCTION__, width);
+          return false;
+        }
       }
     }
 
