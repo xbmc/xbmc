@@ -741,8 +741,11 @@ bool CApplication::InitDirectoriesLinux()
 
   CStdString xbmcBinPath, xbmcPath;
   CUtil::GetHomePath(xbmcBinPath, "XBMC_BIN_HOME");
-  xbmcPath = INSTALL_PATH;
+  xbmcPath = getenv("XBMC_HOME");
 
+  if (xbmcPath.IsEmpty())
+  {
+    xbmcPath = INSTALL_PATH;
   /* Check if xbmc binaries and arch independent data files are being kept in
    * separate locations. */
   if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
@@ -754,6 +757,7 @@ bool CApplication::InitDirectoriesLinux()
       fprintf(stderr, "Unable to find path to XBMC data files!\n");
       exit(1);
     }
+  }
   }
 
   /* Set some environment variables */
