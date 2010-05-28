@@ -30,7 +30,7 @@
 #include "GUISettings.h"
 #include "GUIImage.h"
 #include "LocalizeStrings.h"
-#include "AddonManager.h"
+#include "addons/AddonManager.h"
 
 CBaseSettingControl::CBaseSettingControl(int id, CSetting *pSetting)
 {
