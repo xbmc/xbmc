@@ -540,6 +540,8 @@ CUPnPServer::BuildObject(const CFileItem&              item,
             if(CFile::Stat((const char*)file_path, &info) >= 0 && info.st_size >= 0)
               resource.m_Size = info.st_size;
         }
+        if(resource.m_Size == 0)
+          resource.m_Size = (NPT_LargeSize)-1;
 
         // set date
         if (item.m_dateTime.IsValid()) {
