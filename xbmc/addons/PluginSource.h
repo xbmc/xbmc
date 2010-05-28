@@ -37,7 +37,7 @@ public:
   CPluginSource(const AddonProps &props) : CAddon(props) {}
   virtual ~CPluginSource() {}
   bool Provides(const Content& content) {
-    return content == UNKNOWN ? false : m_providedContent.count(content); }
+    return content == UNKNOWN ? false : m_providedContent.count(content) > 0; }
   static Content Translate(const CStdString &content);
 
 private:
