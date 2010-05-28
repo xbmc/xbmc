@@ -222,7 +222,6 @@
 						<width>35</width>
 						<height>35</height>
 						<info>ListItem.Overlay</info>
-						<animation effect="fade" start="30" end="30" time="0" condition="true">Conditional</animation>
 					</control>
 					<control type="label">
 						<visible>!Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(movies)</visible>

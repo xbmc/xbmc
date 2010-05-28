@@ -1235,8 +1235,8 @@
 	<include name="WtchUnwtchOverlayDims">
 		<posx>7</posx>
 		<posy>4</posy>
-		<width>23</width>
-		<height>23</height>
+		<width>35</width>
+		<height>35</height>
 	</include>
 	<include name="MediaItemDetailInfoDims">
 		<posx>436</posx>
