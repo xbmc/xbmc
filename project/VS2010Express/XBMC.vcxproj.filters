@@ -2136,6 +2136,9 @@
     <ClCompile Include="..\..\xbmc\cdrip\EncoderFlac.cpp">
       <Filter>libraries\cdrip</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\PluginSource.cpp">
+      <Filter>Source Files\Addons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -4495,6 +4498,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cdrip\DllFlacEnc.h">
       <Filter>cores\paplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\PluginSource.h">
+      <Filter>Source Files\Addons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
