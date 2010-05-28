@@ -42,7 +42,15 @@
 // EGL extension functions
 static PFNEGLCREATEIMAGEKHRPROC eglCreateImageKHR;
 static PFNEGLDESTROYIMAGEKHRPROC eglDestroyImageKHR;
-
+#define GETEXTENSION(type, ext) \
+do \
+{ \
+    ext = (type) eglGetProcAddress(#ext); \
+    if (!ext) \
+    { \
+        CLog::Log(LOGERROR, "%s::%s - ERROR getting proc addr of " #ext "\n", OMXCLASSNAME, __func__);
+    } \
+} while (0);
 ////////////////////////////////////////////////////////////////////////////////////////////
 class DllLibOpenMaxInterface
 {
@@ -122,6 +130,9 @@ CDVDVideoCodecOpenMax::CDVDVideoCodecOpenMax() : CDVDVideoCodec()
   m_dll = new DllLibOpenMax;
   m_dll->Load();
   m_is_open = false;
+
+  //GETEXTENSION(PFNEGLCREATEIMAGEKHRPROC,  eglCreateImageKHR);
+  //GETEXTENSION(PFNEGLDESTROYIMAGEKHRPROC, eglDestroyImageKHR);
 
   m_omx_decoder = NULL;
   m_pFormatName = "omx-xxxx";
