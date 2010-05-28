@@ -24,8 +24,8 @@
 namespace ADDON
 {
 
-CPluginSource::CPluginSource(cp_plugin_info_t *props, const std::set<CPluginSource::Content> &provides)
-  : CAddon(props)
+CPluginSource::CPluginSource(const cp_extension_t *ext, const std::set<CPluginSource::Content> &provides)
+  : CAddon(ext)
   , m_providedContent(provides)
 {
 }

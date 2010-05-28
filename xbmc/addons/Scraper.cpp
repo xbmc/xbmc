@@ -39,14 +39,25 @@ namespace ADDON
 
 class CAddon;
 
-CScraper::CScraper(cp_plugin_info_t *props) :
-  CAddon(props)
+CScraper::CScraper(const cp_extension_t *ext) :
+  CAddon(ext)
 {
-  const cp_extension_t *ext = CAddonMgr::Get().GetExtension(props, "xbmc.metadata.scraper");
   if (ext)
   {
     m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "language");
     m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"requiressettings").Equals("true");
+    CStdString type = ext->ext_point_id;
+    if (type == "xbmc.metadata.scraper.albums" || type == "xbmc.metadata.scraper.artists")
+    { // FIXME: leave these split?
+      Props().contents.insert(CONTENT_ALBUMS);
+      Props().contents.insert(CONTENT_ARTISTS);
+    }
+    else if (type == "xbmc.metadata.scraper.movies")
+      Props().contents.insert(CONTENT_MOVIES);
+    else if (type == "xbmc.metadata.scraper.musicvideos")
+      Props().contents.insert(CONTENT_MUSICVIDEOS);
+    else if (type == "xbmc.metadata.scraper.tvshows")
+      Props().contents.insert(CONTENT_TVSHOWS);
   }
 }
 

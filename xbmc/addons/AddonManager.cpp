@@ -86,7 +86,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         std::set<CPluginSource::Content> provides;
         const cp_cfg_element_t *cfg = GetExtElement(props->configuration, "provides");
         if (cfg)
-          return AddonPtr(new CPluginSource(props->plugin, GetPluginContent(cfg)));
+          return AddonPtr(new CPluginSource(props, GetPluginContent(cfg)));
       }
       break;
     case ADDON_SCRIPT:
@@ -94,14 +94,14 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     case ADDON_SCRIPT_LYRICS:
     case ADDON_SCRIPT_WEATHER:
     case ADDON_SCRIPT_SUBTITLES:
-      return AddonPtr(new CAddon(props->plugin));
+      return AddonPtr(new CAddon(props));
     case ADDON_SCRAPER_ALBUMS:
     case ADDON_SCRAPER_ARTISTS:
     case ADDON_SCRAPER_MOVIES:
     case ADDON_SCRAPER_MUSICVIDEOS:
     case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
-      return AddonPtr(new CScraper(props->plugin));
+      return AddonPtr(new CScraper(props));
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
       { // begin temporary platform handling for Dlls
@@ -127,18 +127,18 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         if (type == ADDON_VIZ)
         {
 #if defined(HAS_VISUALISATION)
-          return AddonPtr(new CVisualisation(props->plugin));
+          return AddonPtr(new CVisualisation(props));
 #endif
         }
         else
-          return AddonPtr(new CScreenSaver(props->plugin));
+          return AddonPtr(new CScreenSaver(props));
       }
     case ADDON_SKIN:
-      return AddonPtr(new CSkinInfo(props->plugin));
+      return AddonPtr(new CSkinInfo(props));
     case ADDON_VIZ_LIBRARY:
-      return AddonPtr(new CAddonLibrary(props->plugin));
+      return AddonPtr(new CAddonLibrary(props));
     case ADDON_REPOSITORY:
-      return AddonPtr(new CRepository(props->plugin));
+      return AddonPtr(new CRepository(props));
     default:
       break;
   }
@@ -326,7 +326,7 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
 }
 
 //TODO handle all 'default' cases here, not just scrapers & vizs
-bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon, const CONTENT_TYPE &content)
+bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon)
 {
   CStdString setting;
   switch (type)

@@ -22,8 +22,6 @@
 
 #include "Addon.h"
 
-typedef struct cp_plugin_info_t cp_plugin_info_t;
-
 namespace ADDON
 {
 
@@ -33,7 +31,7 @@ public:
 
   enum Content { UNKNOWN, AUDIO, IMAGE, EXECUTABLE, VIDEO };
 
-  CPluginSource(cp_plugin_info_t *props, const std::set<CPluginSource::Content>&);
+  CPluginSource(const cp_extension_t *ext, const std::set<CPluginSource::Content>&);
   CPluginSource(const AddonProps &props) : CAddon(props) {}
   virtual ~CPluginSource() {}
   bool Provides(const Content& content) {
