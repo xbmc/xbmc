@@ -61,7 +61,7 @@ CNfoFile::~CNfoFile()
 CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr& info, int episode)
 {
   m_info = info; // assume we can use these settings
-  m_content = info->Content();
+  m_type = ScraperTypeFromContent(info->Content());
   if (FAILED(Load(strPath)))
     return NO_NFO;
 
@@ -70,27 +70,27 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
 
   AddonPtr addon;
   ScraperPtr defaultScraper;
-  if (!CAddonMgr::Get().GetDefault(ScraperTypeFromContent(m_content), addon))
+  if (!CAddonMgr::Get().GetDefault(m_type, addon))
     return NO_NFO;
   else
     defaultScraper = boost::dynamic_pointer_cast<CScraper>(addon);
 
-  if (m_content == CONTENT_ALBUMS)
+  if (m_type == ADDON_SCRAPER_ALBUMS)
   {
     CAlbum album;
     bNfo = GetDetails(album);
   }
-  else if (m_content == CONTENT_ARTISTS)
+  else if (m_type == ADDON_SCRAPER_ARTISTS)
   {
     CArtist artist;
     bNfo = GetDetails(artist);
   }
-  else if (m_content == CONTENT_TVSHOWS || m_content == CONTENT_MOVIES || m_content == CONTENT_MUSICVIDEOS)
+  else if (m_type == ADDON_SCRAPER_TVSHOWS || m_type == ADDON_SCRAPER_MOVIES || m_type == ADDON_SCRAPER_MUSICVIDEOS)
   {
     // first check if it's an XML file with the info we need
     CVideoInfoTag details;
     bNfo = GetDetails(details);
-    if (episode > -1 && bNfo && m_content == CONTENT_TVSHOWS)
+    if (episode > -1 && bNfo && m_type == ADDON_SCRAPER_TVSHOWS)
     {
       int infos=0;
       while (m_headofdoc && details.m_iEpisode != episode)
@@ -125,7 +125,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
   if (g_guiSettings.GetBool("scrapers.langfallback"))
   {
     VECADDONS addons;
-    CAddonMgr::Get().GetAddons(ScraperTypeFromContent(m_content),addons);
+    CAddonMgr::Get().GetAddons(m_type,addons);
     for (unsigned i=0;i<addons.size();++i)
     {
       // skip selected and default scraper
@@ -222,8 +222,9 @@ int CNfoFile::Scrape(const ScraperPtr& scraper, const CStdString& strURL /* = ""
   CScraperParser parser;
   if (!parser.Load(scraper))
     return 0;
-  if (!scraper->Supports(m_content) &&
-      !(m_content == CONTENT_ARTISTS && scraper->Content() == CONTENT_ALBUMS))
+  if (scraper->Type() != m_type &&
+      // FIXME: Artists != Albums anymore?
+      !(m_type == ADDON_SCRAPER_ARTISTS && scraper->Type() == ADDON_SCRAPER_ALBUMS))
       // artists are scraped by album content scrapers
   {
     return 1;
