@@ -343,6 +343,7 @@
 				<ondown>61</ondown>
 				<onleft>50</onleft>
 				<onright>9009</onright>
+   			    <showonepage>true</showonepage>
 			</control>
 		</control>
 			<control type="group">

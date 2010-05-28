@@ -156,6 +156,7 @@
 				<posx>28</posx>
 				<posy>179</posy>
 				<height>380</height>
+   			    <showonepage>true</showonepage>
 			</control>
 		</control>
 		<control type="group">
@@ -505,6 +506,7 @@
 				<ondown>61</ondown>
 				<onleft>50</onleft>
 				<onright>9009</onright>
+     			<showonepage>true</showonepage>
 			</control>
 		</control>
 		<control type="group">
