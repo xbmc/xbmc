@@ -498,6 +498,7 @@ bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID)
   CAddonMgr::Get().GetAddons(type, addons);
   dialog->SetHeading(TranslateType(type, true));
   dialog->Reset();
+  dialog->SetUseDetails(true);
   CFileItemList items;
   CFileItemPtr none(new CFileItem("", false));
   none->SetLabel(g_localizeStrings.Get(231)); // "None"

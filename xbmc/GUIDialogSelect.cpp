@@ -28,11 +28,13 @@
 #define CONTROL_LIST          3
 #define CONTROL_NUMBEROFFILES 2
 #define CONTROL_BUTTON        5
+#define CONTROL_DETAILS       6
 
 CGUIDialogSelect::CGUIDialogSelect(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_SELECT, "DialogSelect.xml")
 {
   m_bButtonEnabled = false;
+  m_useDetails = false;
   m_vecListInternal = new CFileItemList;
   m_selectedItem = new CFileItem;
   m_vecList = m_vecListInternal;
@@ -51,6 +53,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       CGUIDialog::OnMessage(message);
+      m_viewControl.Reset();
       Reset();
       return true;
     }
@@ -61,23 +64,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
       m_bButtonPressed = false;
       CGUIDialog::OnMessage(message);
       m_iSelected = -1;
-      CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_vecList);
-      g_windowManager.SendMessage(msg);
 
-      CStdString items;
-      items.Format("%i %s", m_vecList->Size(), g_localizeStrings.Get(127).c_str());
-      SET_CONTROL_LABEL(CONTROL_NUMBEROFFILES, items);
-
-      if (m_bButtonEnabled)
-      {
-        CGUIMessage msg2(GUI_MSG_VISIBLE, GetID(), CONTROL_BUTTON);
-        g_windowManager.SendMessage(msg2);
-      }
-      else
-      {
-        CGUIMessage msg2(GUI_MSG_HIDDEN, GetID(), CONTROL_BUTTON);
-        g_windowManager.SendMessage(msg2);
-      }
       return true;
     }
     break;
@@ -86,14 +73,12 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (CONTROL_LIST == iControl)
+      if (m_viewControl.HasControl(CONTROL_LIST))
       {
         int iAction = message.GetParam1();
         if (ACTION_SELECT_ITEM == iAction || ACTION_MOUSE_LEFT_CLICK == iAction)
         {
-          CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
-          g_windowManager.SendMessage(msg);
-          m_iSelected = msg.GetParam1();
+          m_iSelected = m_viewControl.GetSelectedItem();
           if(m_iSelected >= 0 && m_iSelected < (int)m_vecList->Size())
           {
             *m_selectedItem = *m_vecList->Get(m_iSelected);
@@ -111,6 +96,15 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
       }
     }
     break;
+  case GUI_MSG_SETFOCUS:
+    {
+      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
+      {
+        m_viewControl.SetFocused();
+        return true;
+      }
+    }
+    break;
   }
 
   return CGUIDialog::OnMessage(message);
@@ -119,6 +113,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
 void CGUIDialogSelect::Reset()
 {
   m_bButtonEnabled = false;
+  m_useDetails = false;
   m_vecListInternal->Clear();
   m_vecList = m_vecListInternal;
 }
@@ -192,3 +187,45 @@ void CGUIDialogSelect::SetSelected(int iSelected)
   m_iSelected = iSelected;
 }
 
+void CGUIDialogSelect::SetUseDetails(bool useDetails)
+{
+  m_useDetails = useDetails;
+}
+
+CGUIControl *CGUIDialogSelect::GetFirstFocusableControl(int id)
+{
+  if (m_viewControl.HasControl(id))
+    id = m_viewControl.GetCurrentControl();
+  return CGUIDialogBoxBase::GetFirstFocusableControl(id);
+}
+
+void CGUIDialogSelect::OnWindowLoaded()
+{
+  CGUIDialogBoxBase::OnWindowLoaded();
+  m_viewControl.Reset();
+  m_viewControl.SetParentWindow(GetID());
+  m_viewControl.AddView(GetControl(CONTROL_LIST));
+  m_viewControl.AddView(GetControl(CONTROL_DETAILS));
+}
+
+void CGUIDialogSelect::OnInitWindow()
+{
+  m_viewControl.SetItems(*m_vecList);
+  m_viewControl.SetCurrentView(m_useDetails ? CONTROL_DETAILS : CONTROL_LIST);
+
+  CStdString items;
+  items.Format("%i %s", m_vecList->Size(), g_localizeStrings.Get(127).c_str());
+  SET_CONTROL_LABEL(CONTROL_NUMBEROFFILES, items);
+
+  if (m_bButtonEnabled)
+  {
+    CGUIMessage msg2(GUI_MSG_VISIBLE, GetID(), CONTROL_BUTTON);
+    g_windowManager.SendMessage(msg2);
+  }
+  else
+  {
+    CGUIMessage msg2(GUI_MSG_HIDDEN, GetID(), CONTROL_BUTTON);
+    g_windowManager.SendMessage(msg2);
+  }
+  CGUIDialogBoxBase::OnInitWindow();
+}
