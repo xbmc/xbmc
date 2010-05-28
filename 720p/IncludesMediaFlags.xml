@@ -33,17 +33,21 @@
 	</include> 
  
 	<include name="InfoListFlags">
+
+		<control type="image">
+			<posy>-335</posy>
+			<posx>0</posx>
+			<height>37</height>
+			<width min="1" max="95">auto</width>
+			<info>Listitem.Property(mediaTag::contentRating)</info>
+			<align>right</align>
+			<aspectratio>keep</aspectratio>
+			<aligny>bottom</aligny>
+		</control>
+
 		<control type="grouplist">
 			<orientation>horizontal</orientation>
 			<itemgap>20</itemgap>
-			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::contentRating))</visible>
-				<height>40</height>
-				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::contentRating)</info>
-				<aspectratio>keep</aspectratio>
-				<aligny>center</aligny>
-			</control>
  
 			<control type="image">
 				<visible>!IsEmpty(Listitem.Property(mediaTag::videoResolution))</visible>
@@ -62,22 +66,32 @@
 			</control>
  
 			<control type="image">
+				<visible>!IsEmpty(Listitem.Property(mediaTag::videoCodec))</visible>
+				<height>40</height>
+				<width min="1" max="95">auto</width>
+				<info>Listitem.Property(mediaTag::videoCodec)</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+
+			<control type="image">
 				<visible>!IsEmpty(Listitem.Property(mediaTag::audioChannels))</visible>
 				<height>40</height>
 				<width min="1" max="95">auto</width>
 				<info>Listitem.Property(mediaTag::audioChannels)</info>
 				<aspectratio>keep</aspectratio>
 			</control>
- 
-			<control type="image">
-				<animation effect="slide" start="0,0" end="0,-27.5" time="0" condition="TRUE">Conditional</animation>
-				<visible>!IsEmpty(Listitem.Property(mediaTag::studio))</visible>
-				<height>90</height>
-				<width min="1" max="95">auto</width>
-				<info>Listitem.Property(mediaTag::studio)</info>
-				<aspectratio>keep</aspectratio>
-			</control>
 		</control>
+
+		<control type="image">
+			<visible>!IsEmpty(Listitem.Property(mediaTag::studio))</visible>
+			<posx>500</posx>
+			<posy>-35</posy>
+			<height>90</height>
+			<width min="1" max="95">auto</width>
+			<info>Listitem.Property(mediaTag::studio)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+
 	</include> 
 	<include name="InfoListFlagsEpisodes">
 		<control type="grouplist">
