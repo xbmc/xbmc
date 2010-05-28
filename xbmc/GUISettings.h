@@ -341,10 +341,7 @@ public:
   CSettingAddon(int iOrder, const char *strSetting, int iLabel, const char *strData, const ADDON::TYPE type);
   virtual ~CSettingAddon() {};
   virtual int GetType() { return SETTINGS_TYPE_ADDON; };
-  void SetData(int);
-  int GetPos();
 
-  std::map<CStdString,CStdString> m_entries;
   const ADDON::TYPE m_type;
 };
 
