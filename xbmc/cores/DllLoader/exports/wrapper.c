@@ -86,6 +86,7 @@ void dll_rewind(FILE* stream);
 int dll_fgetpos(FILE* stream, fpos_t* pos);
 int dll_fgetpos64(FILE *stream, fpos64_t *pos);
 int dll_fsetpos(FILE* stream, const fpos_t* pos);
+int dll_fsetpos64(FILE* stream, const fpos64_t* pos);
 DIR* dll_opendir(const char* name);
 struct dirent* dll_readdir(DIR* dirp);
 int dll_closedir(DIR* dirp);
@@ -284,6 +285,11 @@ int __wrap_fgetpos64(FILE *stream, fpos64_t *pos)
 int __wrap_fsetpos(FILE *stream, fpos_t *pos)
 {
   return dll_fsetpos(stream, pos);
+}
+
+int __wrap_fsetpos64(FILE *stream, fpos64_t *pos)
+{
+  return dll_fsetpos64(stream, pos);
 }
 
 DIR * __wrap_opendir(const char *name)

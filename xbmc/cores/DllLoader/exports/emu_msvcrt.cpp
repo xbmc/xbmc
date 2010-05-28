@@ -1504,7 +1504,7 @@ extern "C"
     return EINVAL;
   }
 
-  int dll_fsetpos(FILE* stream, const fpos_t* pos)
+  int dll_fsetpos64(FILE* stream, const fpos64_t* pos)
   {
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
@@ -1521,6 +1521,29 @@ extern "C"
       {
         return EINVAL;
       }
+    }
+    else if (!IS_STD_STREAM(stream))
+    {
+      // it might be something else than a file, or the file is not emulated
+      // let the operating system handle it
+      return fsetpos64(stream, pos);
+    }
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
+    return EINVAL;
+  }
+
+  int dll_fsetpos(FILE* stream, const fpos_t* pos)
+  {
+    int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
+    if (fd >= 0)
+    {
+      fpos64_t tmpPos;
+#if !defined(_LINUX) || defined(__APPLE__)
+      tmpPos= *pos;
+#else
+      tmpPos.__pos = (off64_t)(pos->__pos);
+#endif
+      return dll_fsetpos64(stream, &tmpPos);
     }
     else if (!IS_STD_STREAM(stream))
     {

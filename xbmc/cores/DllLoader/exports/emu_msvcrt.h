@@ -124,6 +124,7 @@ extern "C"
   int dll_fgetpos(FILE* stream, fpos_t* pos);
   int dll_fgetpos64(FILE *stream, fpos64_t *pos);
   int dll_fsetpos(FILE* stream, const fpos_t* pos);
+  int dll_fsetpos64(FILE* stream, const fpos64_t* pos);
   int dll_fileno(FILE* stream);
   void dll_rewind(FILE* stream);
   void dll_clearerr(FILE* stream);
