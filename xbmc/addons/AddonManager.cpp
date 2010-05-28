@@ -95,7 +95,12 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
     case ADDON_SCRIPT_WEATHER:
     case ADDON_SCRIPT_SUBTITLES:
       return AddonPtr(new CAddon(props->plugin));
-    case ADDON_SCRAPER:
+    case ADDON_SCRAPER_ALBUMS:
+    case ADDON_SCRAPER_ARTISTS:
+    case ADDON_SCRAPER_MOVIES:
+    case ADDON_SCRAPER_MUSICVIDEOS:
+    case ADDON_SCRAPER_TVSHOWS:
+    case ADDON_SCRAPER_LIBRARY:
       return AddonPtr(new CScraper(props->plugin));
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
@@ -130,7 +135,6 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       }
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(props->plugin));
-    case ADDON_SCRAPER_LIBRARY:
     case ADDON_VIZ_LIBRARY:
       return AddonPtr(new CAddonLibrary(props->plugin));
     case ADDON_REPOSITORY:
@@ -324,40 +328,28 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
 //TODO handle all 'default' cases here, not just scrapers & vizs
 bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon, const CONTENT_TYPE &content)
 {
-  if (type != ADDON_SCRAPER && type != ADDON_VIZ)
-    return false;
-
   CStdString setting;
-  if (type == ADDON_VIZ)
-    setting = g_guiSettings.GetString("musicplayer.visualisation");
-  else
+  switch (type)
   {
-    switch (content)
-    {
-    case CONTENT_MOVIES:
-      {
-        setting = g_guiSettings.GetString("scrapers.moviedefault");
-        break;
-      }
-    case CONTENT_TVSHOWS:
-      {
-        setting = g_guiSettings.GetString("scrapers.tvshowdefault");
-        break;
-      }
-    case CONTENT_MUSICVIDEOS:
-      {
-        setting = g_guiSettings.GetString("scrapers.musicvideodefault");
-        break;
-      }
-    case CONTENT_ALBUMS:
-    case CONTENT_ARTISTS:
-      {
-        setting = g_guiSettings.GetString("musiclibrary.scraper");
-        break;
-      }
-    default:
-      return false;
-    }
+  case ADDON_VIZ:
+    setting = g_guiSettings.GetString("musicplayer.visualisation");
+    break;
+  case ADDON_SCRAPER_ALBUMS:
+  case ADDON_SCRAPER_ARTISTS:
+    // FIXME: Split these up?
+    setting = g_guiSettings.GetString("musiclibrary.scraper");
+    break;
+  case ADDON_SCRAPER_MOVIES:
+    setting = g_guiSettings.GetString("scrapers.moviedefault");
+    break;
+  case ADDON_SCRAPER_MUSICVIDEOS:
+    setting = g_guiSettings.GetString("scrapers.musicvideodefault");
+    break;
+  case ADDON_SCRAPER_TVSHOWS:
+    setting = g_guiSettings.GetString("scrapers.tvshowdefault");
+    break;
+  default:
+    return false;
   }
   return GetAddon(setting, addon, type);
 }
@@ -417,7 +409,12 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
     case ADDON_SCRIPT_WEATHER:
     case ADDON_SCRIPT_SUBTITLES:
       return AddonPtr(new CAddon(addonProps));
-    case ADDON_SCRAPER:
+    case ADDON_SCRAPER_ALBUMS:
+    case ADDON_SCRAPER_ARTISTS:
+    case ADDON_SCRAPER_MOVIES:
+    case ADDON_SCRAPER_MUSICVIDEOS:
+    case ADDON_SCRAPER_TVSHOWS:
+    case ADDON_SCRAPER_LIBRARY:
       return AddonPtr(new CScraper(addonProps));
     case ADDON_SKIN:
       return AddonPtr(new CSkinInfo(addonProps));
@@ -427,7 +424,6 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
 #endif
     case ADDON_SCREENSAVER:
       return AddonPtr(new CScreenSaver(addonProps));
-    case ADDON_SCRAPER_LIBRARY:
     case ADDON_VIZ_LIBRARY:
       return AddonPtr(new CAddonLibrary(addonProps));
     case ADDON_REPOSITORY:

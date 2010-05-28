@@ -113,7 +113,8 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     items.m_strPath = strPath;
 
     // add content types
-    if (type == ADDON_SCRAPER && path.GetOptions().IsEmpty())
+    // FIXME: Categorisation of addons may need improving
+/*    if (type == ADDON_SCRAPER && path.GetOptions().IsEmpty())
     {
       for (int i=CONTENT_MOVIES;i<CONTENT_ARTISTS;++i)
       {
@@ -149,14 +150,14 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
       CStdStringArray array;
       StringUtils::SplitString(path.GetOptions(),"=",array);
       content = TranslateContent(array[1]);
-    }
+    }*/
     for (unsigned int j=0;j<addons.size();++j)
     {
       if (addons[j]->Type() != type)
         addons.erase(addons.begin()+j--);
-      else if (type == ADDON_SCRAPER && 
+ /*     else if (type == ADDON_SCRAPER && 
           !addons[j]->Supports(content))
-        addons.erase(addons.begin()+j--);
+        addons.erase(addons.begin()+j--);*/
     }
   }
 

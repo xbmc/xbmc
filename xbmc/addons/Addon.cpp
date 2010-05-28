@@ -70,21 +70,25 @@ typedef struct
 } TypeMapping;
 
 static const TypeMapping types[] =
-  {{"unknown",                       ADDON_UNKNOWN,            0 },
-   {"xbmc.metadata.scraper",         ADDON_SCRAPER,        24007 },
-   {"xbmc.metadata.scraper.library", ADDON_SCRAPER_LIBRARY,    0 },
-   {"xbmc.ui.screensaver",           ADDON_SCREENSAVER,    24008 },
-   {"xbmc.player.musicviz",          ADDON_VIZ,            24010 },
-   {"visualization-library",         ADDON_VIZ_LIBRARY,        0 },
-   {"xbmc.python.pluginsource",      ADDON_PLUGIN,         24005 },
-   {"xbmc.python.script",            ADDON_SCRIPT,         24009 },
-   {"xbmc.python.weather",           ADDON_SCRIPT_WEATHER,   24027 },
-   {"xbmc.python.subtitles",         ADDON_SCRIPT_SUBTITLES, 24012 },
-   {"xbmc.python.lyrics",            ADDON_SCRIPT_LYRICS,    24013 },
-   {"xbmc.python.library",           ADDON_SCRIPT_LIBRARY,   24014 },
-   {"xbmc.gui.skin",                 ADDON_SKIN,             166 },
-   {"xbmc.addon.repository",         ADDON_REPOSITORY,     24011 },
-   {"pvrclient",                     ADDON_PVRDLL,             0 }};
+  {{"unknown",                           ADDON_UNKNOWN,                 0 },
+   {"xbmc.metadata.scraper.albums",      ADDON_SCRAPER_ALBUMS,      24007 },
+   {"xbmc.metadata.scraper.artists",     ADDON_SCRAPER_ARTISTS,     24007 },
+   {"xbmc.metadata.scraper.movies",      ADDON_SCRAPER_MOVIES,      24007 },
+   {"xbmc.metadata.scraper.musicvideos", ADDON_SCRAPER_MUSICVIDEOS, 24007 },
+   {"xbmc.metadata.scraper.tvshows",     ADDON_SCRAPER_TVSHOWS,     24007 },
+   {"xbmc.metadata.scraper.library",     ADDON_SCRAPER_LIBRARY,         0 },
+   {"xbmc.ui.screensaver",               ADDON_SCREENSAVER,         24008 },
+   {"xbmc.player.musicviz",              ADDON_VIZ,                 24010 },
+   {"visualization-library",             ADDON_VIZ_LIBRARY,             0 },
+   {"xbmc.python.pluginsource",          ADDON_PLUGIN,              24005 },
+   {"xbmc.python.script",                ADDON_SCRIPT,              24009 },
+   {"xbmc.python.weather",               ADDON_SCRIPT_WEATHER,      24027 },
+   {"xbmc.python.subtitles",             ADDON_SCRIPT_SUBTITLES,    24012 },
+   {"xbmc.python.lyrics",                ADDON_SCRIPT_LYRICS,       24013 },
+   {"xbmc.python.library",               ADDON_SCRIPT_LIBRARY,      24014 },
+   {"xbmc.gui.skin",                     ADDON_SKIN,                  166 },
+   {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011 },
+   {"pvrclient",                         ADDON_PVRDLL,                  0 }};
 
 const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*/)
 {
@@ -138,6 +142,25 @@ const TYPE TranslateType(const CStdString &string)
       return map.type;
   }
   return ADDON_UNKNOWN;
+}
+
+const TYPE ScraperTypeFromContent(const CONTENT_TYPE &content)
+{
+  switch (content)
+  {
+  case CONTENT_ALBUMS:
+    return ADDON_SCRAPER_ALBUMS;
+  case CONTENT_ARTISTS:
+    return ADDON_SCRAPER_ARTISTS;
+  case CONTENT_MOVIES:
+    return ADDON_SCRAPER_MOVIES;
+  case CONTENT_MUSICVIDEOS:
+    return ADDON_SCRAPER_MUSICVIDEOS;
+  case CONTENT_TVSHOWS:
+    return ADDON_SCRAPER_TVSHOWS;
+  default:
+    return ADDON_UNKNOWN;
+  }
 }
 
 /**
@@ -274,7 +297,11 @@ void CAddon::BuildLibName(cp_plugin_info_t *props)
     CStdString ext;
     switch (m_props.type)
     {
-    case ADDON_SCRAPER:
+    case ADDON_SCRAPER_ALBUMS:
+    case ADDON_SCRAPER_ARTISTS:
+    case ADDON_SCRAPER_MOVIES:
+    case ADDON_SCRAPER_MUSICVIDEOS:
+    case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
       ext = ADDON_SCRAPER_EXT;
       break;
@@ -314,7 +341,11 @@ void CAddon::BuildLibName(cp_plugin_info_t *props)
       case ADDON_SCRIPT_LYRICS:
       case ADDON_SCRIPT_WEATHER:
       case ADDON_SCRIPT_SUBTITLES:
-      case ADDON_SCRAPER:
+      case ADDON_SCRAPER_ALBUMS:
+      case ADDON_SCRAPER_ARTISTS:
+      case ADDON_SCRAPER_MOVIES:
+      case ADDON_SCRAPER_MUSICVIDEOS:
+      case ADDON_SCRAPER_TVSHOWS:
       case ADDON_SCRAPER_LIBRARY:
       case ADDON_PLUGIN:
         {
@@ -582,9 +613,7 @@ CAddonLibrary::CAddonLibrary(const AddonProps& props)
 
 TYPE CAddonLibrary::SetAddonType()
 {
-  if (Type() == ADDON_SCRAPER_LIBRARY)
-    return ADDON_SCRAPER;
-  else if (Type() == ADDON_VIZ_LIBRARY)
+  if (Type() == ADDON_VIZ_LIBRARY)
     return ADDON_VIZ;
   else
     return ADDON_UNKNOWN;

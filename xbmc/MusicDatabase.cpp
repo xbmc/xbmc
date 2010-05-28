@@ -4097,7 +4097,8 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::Scraper
       else
       { // use default scraper for this content type
         ADDON::AddonPtr defaultScraper;
-        if (ADDON::CAddonMgr::Get().GetDefault(ADDON::ADDON_SCRAPER, defaultScraper, content))
+        // FIXME: Content is none, so what content type should we be using?  This works currently as we only have one default music scraper
+        if (ADDON::CAddonMgr::Get().GetDefault(ADDON::ADDON_SCRAPER_ALBUMS, defaultScraper))
         {
           info = boost::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone(defaultScraper));
           if (info)
@@ -4112,7 +4113,8 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::Scraper
     if (!info)
     { // use default music scraper instead
       ADDON::AddonPtr addon;
-      if(ADDON::CAddonMgr::Get().GetDefault(ADDON::ADDON_SCRAPER, addon, CONTENT_ALBUMS))
+        // FIXME: Content is none, so what content type should we be using?  This works currently as we only have one default music scraper
+      if(ADDON::CAddonMgr::Get().GetDefault(ADDON::ADDON_SCRAPER_ALBUMS, addon))
       {
         info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
         return (info);

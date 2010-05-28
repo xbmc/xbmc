@@ -70,7 +70,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
 
   AddonPtr addon;
   ScraperPtr defaultScraper;
-  if (!CAddonMgr::Get().GetDefault(ADDON_SCRAPER, addon, m_content))
+  if (!CAddonMgr::Get().GetDefault(ScraperTypeFromContent(m_content), addon))
     return NO_NFO;
   else
     defaultScraper = boost::dynamic_pointer_cast<CScraper>(addon);
@@ -125,7 +125,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
   if (g_guiSettings.GetBool("scrapers.langfallback"))
   {
     VECADDONS addons;
-    CAddonMgr::Get().GetAddons(ADDON_SCRAPER,addons);
+    CAddonMgr::Get().GetAddons(ScraperTypeFromContent(m_content),addons);
     for (unsigned i=0;i<addons.size();++i)
     {
       // skip selected and default scraper

@@ -245,12 +245,13 @@ void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
 {
   // grab all scrapers which support this content-type
   VECADDONS addons;
-  if (!CAddonMgr::Get().GetAddons(ADDON_SCRAPER, addons, content))
+  TYPE type = ScraperTypeFromContent(content);
+  if (!CAddonMgr::Get().GetAddons(type, addons))
     return;
 
   AddonPtr addon;
   CStdString defaultID;
-  if (CAddonMgr::Get().GetDefault(ADDON_SCRAPER, addon, content))
+  if (CAddonMgr::Get().GetDefault(type, addon))
     defaultID = addon->ID();
 
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
