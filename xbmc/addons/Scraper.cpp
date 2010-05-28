@@ -89,7 +89,7 @@ bool CScraper::LoadUserXML(const CStdString& strSaved)
 bool CScraper::LoadSettingsXML(const CStdString& strFunction, const CScraperUrl* url)
 {
   AddonPtr addon;
-  if (!Parent() && !CAddonMgr::Get().GetAddon(ID(), addon, ADDON_SCRAPER))
+  if (!Parent() && !CAddonMgr::Get().GetAddon(ID(), addon))
     return false;
   else if (Parent())
     addon = Parent();
