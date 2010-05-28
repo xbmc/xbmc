@@ -52,9 +52,10 @@ public:
   /*! \brief Popup a selection dialog with a list of addons of the given type
    \param type the type of addon wanted
    \param addonID [out] the addon ID of the selected item
+   \param showNone whether there should be a "None" item in the list (defaults to false)
    \return true if an addon was selected, false if an error occurred or if the selection process was cancelled
    */
-  static bool SelectAddonID(ADDON::TYPE type, CStdString &addonID);
+  static bool SelectAddonID(ADDON::TYPE type, CStdString &addonID, bool showNone = false);
 protected:
   void UnRegisterJob(CFileOperationJob* job);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);

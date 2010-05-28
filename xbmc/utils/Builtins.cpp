@@ -995,7 +995,7 @@ int CBuiltins::Execute(const CStdString& execString)
     int string = g_settings.TranslateSkinString(params[0]);
     ADDON::TYPE type = TranslateType(params[1]);
     CStdString result;
-    if (CGUIWindowAddonBrowser::SelectAddonID(type, result))
+    if (CGUIWindowAddonBrowser::SelectAddonID(type, result, true))
     {
       g_settings.SetSkinString(string, result);
       g_settings.Save();
