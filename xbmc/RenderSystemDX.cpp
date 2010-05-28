@@ -106,7 +106,7 @@ bool CRenderSystemDX::InitRenderSystem()
 
   CheckDXVersion();
 
-  m_useD3D9Ex = (g_sysinfo.IsVistaOrHigher() && LoadD3D9Ex());
+  m_useD3D9Ex = (g_advancedSettings.m_AllowD3D9Ex && g_sysinfo.IsVistaOrHigher() && LoadD3D9Ex());
   m_pD3D = NULL;
 
   if (m_useD3D9Ex)
@@ -164,7 +164,7 @@ bool CRenderSystemDX::InitRenderSystem()
   }
   m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
 
-  if (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES)
+  if (g_advancedSettings.m_AllowDynamicTextures && (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES))
   {
     m_defaultD3DUsage = D3DUSAGE_DYNAMIC;
     m_defaultD3DPool  = D3DPOOL_DEFAULT;

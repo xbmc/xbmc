@@ -233,6 +233,8 @@ class CAdvancedSettings
     int m_iSkipLoopFilter;
     float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
 
+    bool m_AllowD3D9Ex;
+    bool m_AllowDynamicTextures;
     float m_sleepBeforeFlip; ///< if greather than zero, XBMC waits for raster to be this amount through the frame prior to calling the flip
     bool m_bVirtualShares;
 
