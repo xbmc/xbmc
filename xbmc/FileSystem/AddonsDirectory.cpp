@@ -59,7 +59,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   }
   else if (path.GetHostName().Equals("repos"))
   {
-    CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons,CONTENT_NONE,true);
+    CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons,true);
   }
   else if (path.GetHostName().Equals("all"))
   {

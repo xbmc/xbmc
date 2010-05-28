@@ -268,12 +268,12 @@ void CAddonMgr::DeInit()
   m_cpluff = NULL;
 }
 
-bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabledOnly/*= true*/)
+bool CAddonMgr::HasAddons(const TYPE &type, bool enabledOnly/*= true*/)
 {
   // TODO: This isn't particularly efficient as we create an addon type for each addon using the Factory, just so
   //       we can check addon dependencies in the addon constructor.
   VECADDONS addons;
-  return GetAddons(type, addons, content, enabledOnly);
+  return GetAddons(type, addons, enabledOnly);
 }
 
 bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
@@ -283,13 +283,13 @@ bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
     if (ADDON_REPOSITORY == (TYPE)i)
       continue;
     VECADDONS temp;
-    if (CAddonMgr::Get().GetAddons((TYPE)i, temp, CONTENT_NONE, enabledOnly))
+    if (CAddonMgr::Get().GetAddons((TYPE)i, temp, enabledOnly))
       addons.insert(addons.end(), temp.begin(), temp.end());
   }
   return !addons.empty();
 }
 
-bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content/*= CONTENT_NONE*/, bool enabledOnly/*= true*/)
+bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabledOnly/*= true*/)
 {
   CSingleLock lock(m_critSection);
   addons.clear();
@@ -300,7 +300,7 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYP
   for(int i=0; i <num; i++)
   {
     AddonPtr addon(Factory(exts[i]));
-    if (addon && (content == CONTENT_NONE || addon->Supports(content)))
+    if (addon)
       addons.push_back(addon);
   }
   m_cpluff->release_info(m_cp_context, exts);

@@ -67,7 +67,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.m_strThumbnailImage = "DefaultHardDisk.png";
     m_sources.push_back(share);
   }
-  if (CAddonMgr::Get().HasAddons(ADDON_REPOSITORY,CONTENT_NONE,true))
+  if (CAddonMgr::Get().HasAddons(ADDON_REPOSITORY,true))
   {
     CMediaSource share;
     share.strPath = "addons://repos/";

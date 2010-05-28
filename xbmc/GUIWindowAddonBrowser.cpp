@@ -488,14 +488,14 @@ bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)
   return true;
 }
 
-bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CONTENT_TYPE content, CStdString &addonID)
+bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID)
 {
   CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (type == ADDON_UNKNOWN || !dialog)
     return false;
 
   ADDON::VECADDONS addons;
-  CAddonMgr::Get().GetAddons(type, addons, content);
+  CAddonMgr::Get().GetAddons(type, addons);
   dialog->SetHeading(TranslateType(type, true));
   dialog->Reset();
   CFileItemList items;

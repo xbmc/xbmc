@@ -49,13 +49,12 @@ public:
 
   static std::pair<CFileOperationJob*,unsigned int> AddJob(const CStdString& path);
 
-  /*! \brief Popup a selection dialog with a list of addons satisfying content and type
+  /*! \brief Popup a selection dialog with a list of addons of the given type
    \param type the type of addon wanted
-   \param content the content of the addon - if set to CONTENT_NONE all addons will be retrieved
    \param addonID [out] the addon ID of the selected item
    \return true if an addon was selected, false if an error occurred or if the selection process was cancelled
    */
-  static bool SelectAddonID(ADDON::TYPE type, CONTENT_TYPE content, CStdString &addonID);
+  static bool SelectAddonID(ADDON::TYPE type, CStdString &addonID);
 protected:
   void UnRegisterJob(CFileOperationJob* job);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);

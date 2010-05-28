@@ -2632,7 +2632,7 @@ void CGUIWindowSettingsCategory::FillInAddons(CSettingAddon *pSetting, int contr
     pSetting->m_entries.insert(std::make_pair("_virtual.fan", g_localizeStrings.Get(20425))); // Fanart Slideshow
   }
 
-  CAddonMgr::Get().GetAddons(pSetting->m_type, addons, pSetting->m_content);
+  CAddonMgr::Get().GetAddons(pSetting->m_type, addons);
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
   {
     AddonPtr addon = *it;
