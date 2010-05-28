@@ -499,6 +499,7 @@ bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID)
   dialog->SetHeading(TranslateType(type, true));
   dialog->Reset();
   dialog->SetUseDetails(true);
+  dialog->EnableButton(true, 21452);
   CFileItemList items;
   CFileItemPtr none(new CFileItem("", false));
   none->SetLabel(g_localizeStrings.Get(231)); // "None"
@@ -507,6 +508,13 @@ bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID)
     items.Add(CAddonsDirectory::FileItemFromAddon(*i, ""));
   dialog->SetItems(&items);
   dialog->DoModal();
+  if (dialog->IsButtonPressed())
+  { // switch to the addons browser.
+    vector<CStdString> params;
+    params.push_back("addons://repos/");
+    params.push_back("return");
+    g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
+  }
   if (dialog->GetSelectedLabel() >= 0)
   {
     addonID = dialog->GetSelectedItem().m_strPath;
