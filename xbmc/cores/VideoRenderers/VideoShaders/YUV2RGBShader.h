@@ -46,10 +46,10 @@ namespace Shaders {
     virtual void SetContrast(float contrast)    {};
     virtual void SetNonLinStretch(float stretch){};
 #if HAS_GLES == 2
-    virtual GLint GetVertexLoc() {};
-    virtual GLint GetYcoordLoc() {};
-    virtual GLint GetUcoordLoc() {};
-    virtual GLint GetVcoordLoc() {};
+    virtual GLint GetVertexLoc() { return 0; };
+    virtual GLint GetYcoordLoc() { return 0; };
+    virtual GLint GetUcoordLoc() { return 0; };
+    virtual GLint GetVcoordLoc() { return 0; };
 
     virtual void SetMatrices(GLfloat *p, GLfloat *m) {};
     virtual void SetAlpha(GLfloat alpha)             {};
