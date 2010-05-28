@@ -139,13 +139,6 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
       if (scraper->RequiresSettings() && !scraper->LoadUserSettings(false))
           continue;
 
-        // skip wrong content type
-        if (!scraper->Supports(m_content) &&
-           (m_content == CONTENT_MOVIES  ||
-            m_content == CONTENT_TVSHOWS ||
-            m_content == CONTENT_MUSICVIDEOS))
-          continue;
-
       // add same language, multi-language and music scrapers
       if (scraper->Language().Equals(g_langInfo.GetDVDSubtitleLanguage()) ||
           scraper->Language().Equals("multi") ||
