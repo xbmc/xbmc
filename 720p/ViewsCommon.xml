@@ -174,8 +174,8 @@
 			<control type="list" id="56">
 				<viewtype label="InfoList">list</viewtype>
 				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-				<posx>-24</posx>
-				<posy>230</posy>
+				<posx>-34</posx>
+				<posy>235</posy>
 				<width>640</width>
 				<height>454</height>
 				<scrolltime>200</scrolltime>
@@ -205,7 +205,7 @@
 					</control>
 					<control type="label">
 						<posx>60</posx>
-						<width>356</width>
+						<width>376</width>
 						<height>42</height>
 						<align>left</align>
 						<aligny>center</aligny>
@@ -216,15 +216,15 @@
 					</control>
 					<control type="image">
 						<visible>!Container.Content(TVShows) + !Container.Content(Seasons)</visible>
-						<posx>470</posx>
-						<posy>10</posy>
-						<width>25</width>
-						<height>25</height>
+						<posx>455</posx>
+						<posy>5</posy>
+						<width>35</width>
+						<height>35</height>
 						<info>ListItem.Overlay</info>
 						<animation effect="fade" start="30" end="30" time="0" condition="true">Conditional</animation>
 					</control>
 					<control type="label">
-						<visible>!Container.Content(Episodes) + !Container.Content(TVShows)</visible>
+						<visible>!Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(movies)</visible>
 						<posx>550</posx>
 						<posy>2</posy>
 						<width>104</width>
@@ -249,7 +249,7 @@
 					</control>
 					<control type="label">
 						<visible>!IsEmpty(ListItem.Overlay) + [!Container.Content(TVShows) + !Container.Content(Seasons) + !Container.Content(Episodes)]</visible>
-						<posx>550</posx>
+						<posx>580</posx>
 						<posy>2</posy>
 						<width>95</width>
 						<height>42</height>
@@ -281,9 +281,9 @@
 						<texture>MediaItemBG.png</texture>
 					</control>
 					<control type="image">
-						<posx>44</posx>
+						<posx>35</posx>
 						<posy>2</posy>
-						<width>530</width>
+						<width>565</width>
 						<height>41</height>
 						<texture aspectratio="stretch" flipx="true">InfoList_focused.png</texture>
 						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
@@ -291,9 +291,9 @@
 					</control>
 					<control type="image">
 						<visible>!IsEmpty(ListItem.Label2) | Container.Content(Movies)</visible>
-						<posx>458</posx>
+						<posx>500</posx>
 						<posy>12</posy>
-						<width>116</width>
+						<width>100</width>
 						<height>22</height>
 						<texture border="13,0,0,0">InfoList_focused_detail.png</texture>
 						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
@@ -339,13 +339,14 @@
 							<description>shadow</description>
 							<posx>61</posx>
 							<posy>2</posy>
-							<width>356</width>
+							<width>376</width>
 							<height>42</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
 							<font>MediumSmallDefaultCapsFont</font>
 							<textcolor>6D000000</textcolor>
+							<scroll>true</scroll>
 							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
 							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
 						</control>
@@ -353,24 +354,26 @@
 							<description>shadow</description>
 							<posx>60</posx>
 							<posy>1</posy>
-							<width>356</width>
+							<width>376</width>
 							<height>42</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
 							<font>MediumSmallDefaultCapsFont</font>
 							<textcolor>25000000</textcolor>
+							<scroll>true</scroll>
 							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
 							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
 						</control>
 						<control type="label">
 							<posx>60</posx>
-							<width>356</width>
+							<width>376</width>
 							<height>42</height>
 							<align>left</align>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Label]</label>
 							<font>MediumSmallDefaultCapsFont</font>
+							<scroll>true</scroll>
 							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
 							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
 						</control>
@@ -388,6 +391,7 @@
 							<label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
 							<font>MediumSmallDefaultCapsFont</font>
 							<textcolor>6D000000</textcolor>
+							<scroll>true</scroll>
 							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
 							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
 						</control>
@@ -402,6 +406,7 @@
 							<label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
 							<font>MediumSmallDefaultCapsFont</font>
 							<textcolor>25000000</textcolor>
+							<scroll>true</scroll>
 							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
 							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
 						</control>
@@ -413,22 +418,23 @@
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
 							<font>MediumSmallDefaultCapsFont</font>
+							<scroll>true</scroll>
 							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
 							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
 						</control>
 					</control>
 					<control type="image">
 						<visible>!Container.Content(TVShows) + !Container.Content(Seasons)</visible>
-						<posx>470</posx>
-						<posy>10</posy>
-						<width>25</width>
-						<height>25</height>
+						<posx>455</posx>
+						<posy>5</posy>
+						<width>35</width>
+						<height>35</height>
 						<info>ListItem.Overlay</info>
 						<include>MediaListItemFade</include>
 					</control>
 					<control type="label">
 						<visible>!IsEmpty(ListItem.Overlay) + [!Container.Content(TVShows) + !Container.Content(Seasons) + !Container.Content(Episodes)]</visible>
-						<posx>550</posx>
+						<posx>580</posx>
 						<posy>2</posy>
 						<width>95</width>
 						<height>42</height>
@@ -463,7 +469,7 @@
 						<include>MediaListItemFade</include>
 					</control>
 					<control type="label">
-						<visible>!Container.Content(Episodes) + !Container.Content(TVShows)</visible>
+						<visible>!Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(movies)</visible>
 						<posx>550</posx>
 						<posy>2</posy>
 						<width>95</width>
@@ -511,12 +517,12 @@
 				<control type="group">
 					<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 					<posx>400</posx>
-					<posy>-5</posy>
+					<posy>0</posy>
 					<control type="image">
 						<description>Thumb image</description>
 						<visible>!Container.Content(Secondary) + !Container.Content(Episodes)</visible>
-						<posx>0</posx>
-						<width>270</width>
+						<posx>38</posx>
+						<width>230</width>
 						<height>366</height>
 						<texture>amt-blank-poster.png</texture>
 						<info>ListItem.Icon</info>
@@ -537,6 +543,7 @@
 						<bordertexture border="7">ThumbBorder.png</bordertexture>
 						<bordersize>4</bordersize>
 					</control>
+<!--
 					<control type="group">
 						<description>Watched/Unwatched Overlay</description>
 						<visible>!Container.Content(episodes) + !Container.Content(tvshows) + !Container.Content(seasons)</visible>
@@ -544,7 +551,7 @@
 						<posy>25</posy>
 						<include>WatchedUnwatchedOverlay</include>
 					</control>
-<!--
+
 					<control type="group">
 						<visible>!Container.Content(episodes) + !Container.Content(tvshows) + !Container.Content(seasons)</visible>
 						<description>Watched/Unwatched Overlay</description>
@@ -586,12 +593,12 @@
 						<visible>Container.Content(movies) | Container.Content(albums)</visible>
 						<posy>28</posy>
 						<width>InfoListTitleWidth</width>
-						<font>SmallTitleCapsFont</font>
+						<font>MediumLargeTitleCapsFont</font>
 						<label>$INFO[ListItem.year]</label>
 						<textcolor>Focused</textcolor>
 					</control>
 					<control type="label">
-						<description>Year</description>
+						<description>Date</description>
 						<visible>Container.Content(tvshows)</visible>
 						<posy>28</posy>
 						<width>InfoListTitleWidth</width>
@@ -613,19 +620,31 @@
 						<align>left</align>
 						<info>ListItem.StarRating</info>
 						<aspectratio>keep</aspectratio>
-						<width>120</width>
+						<width>110</width>
 						<height>47</height>
-						<posy>50</posy>
-						<posx>-2</posx>
-						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+						<posy>19</posy>
+						<posx>56</posx>
+						<animation effect="slide" end="30,-6" time="0" condition="Container.Content(tvshows)">Conditional</animation>
 					</control>
+<!--
+					<control type="textbox">
+						<description>TagLine</description>
+						<textcolor>FFFF9900</textcolor>
+						<posy>115</posy>
+						<height>25</height>
+						<width>InfoListTitleWidth</width>
+						<info>ListItem.Tagline</info>
+						<visible>Container.Content(movies)</visible>
+					</control>
+-->
 					<control type="group">
-						<posy>95</posy>
+						<posy>116</posy>
 						<control type="textbox">
 							<description>Plot</description>
-							<width>InfoListTitleWidth</width>
-							<height>261</height>
-							<info>ListItem.Plot</info>
+							<width>400</width>
+							<height>260</height>
+							<label>[COLOR=FFFF9900]$INFO[ListItem.tagline][/COLOR][CR]$INFO[ListItem.Plot]</label>
+							<animation effect="slide" end="0,-23" time="0" condition="!Container.Content(movies)">Conditional</animation>
 							<visible>![Container.Content(seasons) | Container.Content(albums) | Container.Content(artists)]</visible>
 						</control>
 						<control type="textbox">
