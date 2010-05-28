@@ -5516,6 +5516,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\addons\PluginSource.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\PluginSource.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\addons\Repository.cpp"
 					>
 				</File>
