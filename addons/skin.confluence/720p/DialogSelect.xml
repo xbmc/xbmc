@@ -56,7 +56,7 @@
 		<control type="list" id="3">
 			<posx>20</posx>
 			<posy>60</posy>
-			<width>570</width>
+			<width>550</width>
 			<height>520</height>
 			<onup>3</onup>
 			<ondown>3</ondown>
@@ -64,18 +64,19 @@
 			<onright>61</onright>
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
-			<itemlayout height="40" width="570">
+			<animation effect="slide" start="0,0" end="10,0" time="0" condition="!Control.IsVisible(60)">Conditional</animation>
+			<itemlayout height="40" width="550">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>570</width>
+					<width>550</width>
 					<height>41</height>
 					<texture border="0,2,0,2">MenuItemNF.png</texture>
 				</control>
 				<control type="label">
 					<posx>20</posx>
 					<posy>0</posy>
-					<width>530</width>
+					<width>510</width>
 					<height>40</height>
 					<font>font13</font>
 					<textcolor>grey2</textcolor>
@@ -85,11 +86,11 @@
 					<label>$INFO[ListItem.Label]</label>
 				</control>
 			</itemlayout>
-			<focusedlayout height="40" width="570">
+			<focusedlayout height="40" width="550">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>570</width>
+					<width>550</width>
 					<height>41</height>
 					<texture border="0,2,0,2">MenuItemNF.png</texture>
 					<visible>!Control.HasFocus(3)</visible>
@@ -98,7 +99,7 @@
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>570</width>
+					<width>550</width>
 					<height>41</height>
 					<texture border="0,2,0,2">MenuItemFO.png</texture>
 					<visible>Control.HasFocus(3)</visible>
@@ -107,7 +108,7 @@
 				<control type="label">
 					<posx>20</posx>
 					<posy>0</posy>
-					<width>530</width>
+					<width>510</width>
 					<height>40</height>
 					<font>font13</font>
 					<textcolor>white</textcolor>
@@ -129,6 +130,7 @@
 			<onright>61</onright>
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
+			<animation effect="slide" start="0,0" end="10,0" time="0" condition="!Control.IsVisible(60)">Conditional</animation>
 			<itemlayout height="40" width="550">
 				<control type="image">
 					<posx>0</posx>
@@ -226,7 +228,7 @@
 			<onright>3</onright>
 			<ondown>61</ondown>
 			<onup>61</onup>
-			<showonepage>true</showonepage>
+			<showonepage>false</showonepage>
 			<orientation>vertical</orientation>
 		</control>
 		<control type="label">
@@ -241,6 +243,21 @@
 			<scroll>true</scroll>
 			<textcolor>grey</textcolor>
 			<label>([COLOR=blue]$INFO[Container(3).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(3).CurrentPage]/$INFO[Container(3).NumPages][/COLOR])</label>
+			<visible>Control.IsVisible(3)</visible>
+		</control>
+		<control type="label">
+			<description>number of files/pages in list text label</description>
+			<posx>580</posx>
+			<posy>592</posy>
+			<width>300</width>
+			<height>35</height>
+			<font>font12</font>
+			<align>right</align>
+			<aligny>center</aligny>
+			<scroll>true</scroll>
+			<textcolor>grey</textcolor>
+			<label>([COLOR=blue]$INFO[Container(6).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(6).CurrentPage]/$INFO[Container(6).NumPages][/COLOR])</label>
+			<visible>Control.IsVisible(6)</visible>
 		</control>
 		<control type="button" id="5">
 			<description>Manual button</description>
