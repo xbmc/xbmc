@@ -472,9 +472,8 @@ PLT_FileMediaServer::BuildSafeResourceUri(const NPT_HttpUrl& base_uri,
 
     NPT_String uri_path = uri.GetPath();
     if (!uri_path.EndsWith("/")) uri_path += "/";
-    NPT_String resource = NPT_Uri::PercentEncode(file_path, " !\"<>\\^`{|}?#[]:/", true);
-    // WMP hack: it sometimes invalidly url decodes the path before the get, so keep track of number of decodes
-    uri_path += NPT_Uri::PercentEncode("%/" + resource, "", true);
+    // WMP hack: just prefix with %25/ so we know if something url decodes again
+    uri_path += "%25/" + NPT_Uri::PercentEncode(file_path, " !\"<>\\^`{|}?#[]:/", true);
     uri.SetPath(uri_path);
 
     // 360 hack: force inclusion of port in case it's 80
@@ -504,7 +503,6 @@ PLT_FileMediaServer::ExtractResourcePath(const NPT_HttpUrl& url, NPT_String& fil
         file_path.Erase(0, 2);
         NPT_LOG_FINE("Client is urldecoding our resource paths");
     }
-    file_path = NPT_Uri::PercentDecode(file_path);
 
     return NPT_SUCCESS;
 }
