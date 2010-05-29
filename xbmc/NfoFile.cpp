@@ -222,10 +222,7 @@ int CNfoFile::Scrape(const ScraperPtr& scraper, const CStdString& strURL /* = ""
   CScraperParser parser;
   if (!parser.Load(scraper))
     return 0;
-  if (scraper->Type() != m_type &&
-      // FIXME: Artists != Albums anymore?
-      !(m_type == ADDON_SCRAPER_ARTISTS && scraper->Type() == ADDON_SCRAPER_ALBUMS))
-      // artists are scraped by album content scrapers
+  if (scraper->Type() != m_type)
   {
     return 1;
   }

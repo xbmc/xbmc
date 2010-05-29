@@ -1711,8 +1711,8 @@
   <string id="20190">Custom</string>
   <string id="20191">Enable debug logging</string>
   <string id="20192">Download additional information during updates</string>
-
-  <string id="20194">Default service for music information</string>
+  <string id="20193">Default service for album information</string>
+  <string id="20194">Default service for artist information</string>
   <string id="20195">Change scraper</string>
   <string id="20196">Export music library</string>
   <string id="20197">Import music library</string>

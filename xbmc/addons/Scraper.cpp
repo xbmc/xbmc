@@ -109,6 +109,27 @@ CScraper::CScraper(const cp_extension_t *ext) :
     m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "language");
     m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"requiressettings").Equals("true");
   }
+  switch (Type())
+  {
+    case ADDON_SCRAPER_ALBUMS:
+      m_pathContent = CONTENT_ALBUMS;
+      break;
+    case ADDON_SCRAPER_ARTISTS:
+      m_pathContent = CONTENT_ARTISTS;
+      break;
+    case ADDON_SCRAPER_MOVIES:
+      m_pathContent = CONTENT_MOVIES;
+      break;
+    case ADDON_SCRAPER_MUSICVIDEOS:
+      m_pathContent = CONTENT_MUSICVIDEOS;
+      break;
+    case ADDON_SCRAPER_TVSHOWS:
+      m_pathContent = CONTENT_TVSHOWS;
+      break;
+    default:
+      m_pathContent = CONTENT_NONE;
+      break;
+  }
 }
 
 AddonPtr CScraper::Clone(const AddonPtr &self) const
@@ -119,19 +140,12 @@ AddonPtr CScraper::Clone(const AddonPtr &self) const
 CScraper::CScraper(const CScraper &rhs, const AddonPtr &self)
   : CAddon(rhs, self)
 {
-  m_pathContent = CONTENT_NONE;
+  m_pathContent = rhs.m_pathContent;
 }
 
 bool CScraper::Supports(const CONTENT_TYPE &content) const
 {
-  const TYPE contentType = ScraperTypeFromContent(content);
-  if (Type() == contentType)
-    return true;
-  // FIXME: Special-casing music
-  if ((content == CONTENT_ALBUMS || content == CONTENT_ARTISTS) && 
-      (Type() == ADDON_SCRAPER_ALBUMS || Type() == ADDON_SCRAPER_ARTISTS))
-    return true;
-  return false;
+  return Type() == ScraperTypeFromContent(content);
 }
 
 bool CScraper::LoadSettings()

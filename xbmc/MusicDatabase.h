@@ -189,7 +189,7 @@ public:
 
   bool SetSongRating(const CStdString &filePath, char rating);
   bool SetScraperForPath(const CStdString& strPath, const ADDON::ScraperPtr& info);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& info);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& info, const ADDON::TYPE &type);
 
   /*! \brief Check whether a given scraper is in use.
    \param scraper the scraper to check for.
