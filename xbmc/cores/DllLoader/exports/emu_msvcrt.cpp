@@ -1526,7 +1526,11 @@ extern "C"
     {
       // it might be something else than a file, or the file is not emulated
       // let the operating system handle it
+#if !defined(_LINUX) || defined(__APPLE__)
+      return fsetpos(stream, pos);
+#else
       return fsetpos64(stream, pos);
+#endif
     }
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return EINVAL;
