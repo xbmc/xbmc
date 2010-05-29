@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.dxspectrum"
   version="1.0.0"
@@ -10,10 +10,13 @@
   <extension point="xbmc.addon.metadata">
     <summary>DirectX Visualization</summary>
     <summary lang="nl">DirectX Visualisatie</summary>
+    <summary lang="zh">DirectX可视化效果</summary>
     <description>DirectX Spectrum is a Visualisation showing a rotating 3D Spectrum Analyzer rendered in DirectX that moves to the beat of the music creating a wave effect across the spectrum grid.  
 It also has settings to adjust the spectrum bar height, Its speed, and how the bars are rendered (solid, points, wire frame) and is a nice light weight, low cpu useage visualisation that looks great</description>
     <description lang="nl">DirectX spectrum is een visualisatie van een roterende 3D spectrum analyse weergegeven met behulp van DirectX. Het beweegt mee met de beat van de muziek, waarbij een golf effect ontstaat over het spectrum raster.  
 Het bevat instellingen om de spectrum balk hoogte, de snelheid en hoe de balken worden weergegeven (vol, punten, draden) aan te passen. Deze visualisatie neemt weinig geheugen in en vergt ook niet veel van de CPU.</description>
+    <description lang="zh">DirectX spectrum可视化效果是DirectX渲染的一个旋转的三维频谱分析仪，频谱矩阵随着音乐节拍而象波浪起伏。
+你还可以设置频谱棒的高度、变换速度、以及呈现效果（固体、点、框架）。这是一个不错的轻量级，低CPU使用率的可视化效果。</description>
     <disclaimer></disclaimer>
     <platform>windx</platform>
   </extension>
