@@ -1262,14 +1262,17 @@ CUPnPServer::ServeFile(NPT_HttpRequest&              request,
 
         NPT_String output;
         output.Reserve(file_path.GetLength()*2);
+        output += "#EXTM3U\r\n";
 
         NPT_List<NPT_String>::Iterator url = files.GetFirstItem();
         for (;url;url++) {
+            output += "#EXTINF:-1," + CUtil::GetFileName((const char*)*url);
+            output += "\r\n";
             output += PLT_FileMediaServer::BuildSafeResourceUri(
                           m_FileBaseUri,
                           context.GetLocalAddress().GetIpAddress().ToString(),
                           *url);
-            output += "\n\r";
+            output += "\r\n";
         }
 
         PLT_HttpHelper::SetContentType(response, "audio/x-mpegurl");
