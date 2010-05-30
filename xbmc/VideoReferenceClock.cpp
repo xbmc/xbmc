@@ -677,7 +677,7 @@ bool CVideoReferenceClock::SetupD3D()
     if (m_RefreshRate == 23 || m_RefreshRate == 29 || m_RefreshRate == 59)
       m_RefreshRate++;
 
-    if (g_Windowing.Interlaced())
+    if (m_Interlaced)
     {
       m_RefreshRate *= 2;
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: display is interlaced");
@@ -992,11 +992,13 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   if (DisplayMode.RefreshRate == 0)
     DisplayMode.RefreshRate = 60;
 
-  if (m_PrevRefreshRate != DisplayMode.RefreshRate  || m_Width != DisplayMode.Width || m_Height != DisplayMode.Height || Forced)
+  if (m_PrevRefreshRate != DisplayMode.RefreshRate || m_Width != DisplayMode.Width || m_Height != DisplayMode.Height ||
+      m_Interlaced != g_Windowing.Interlaced() || Forced )
   {
     m_PrevRefreshRate = DisplayMode.RefreshRate;
     m_Width = DisplayMode.Width;
     m_Height = DisplayMode.Height;
+    m_Interlaced = g_Windowing.Interlaced();
     return true;
   }
 
