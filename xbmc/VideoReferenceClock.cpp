@@ -606,7 +606,7 @@ bool CVideoReferenceClock::SetupD3D()
     return false;
   }
 
-  if (DevCaps.Caps != D3DCAPS_READ_SCANLINE)
+  if ((DevCaps.Caps & D3DCAPS_READ_SCANLINE) != D3DCAPS_READ_SCANLINE)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Hardware does not support GetRasterStatus");
     return false;
