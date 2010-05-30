@@ -58,7 +58,7 @@
 					<onright>702</onright>
 					<onup>600</onup>
 					<ondown>600</ondown>
-					<onclick>Addon.Default.OpenSettings(visualization)</onclick>
+					<onclick>Addon.Default.OpenSettings(xbmc.player.musicviz)</onclick>
 				</control>
 				<control type="button" id="702">
 					<posx>150</posx>
