@@ -64,7 +64,7 @@
 			<onright>61</onright>
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
-			<animation effect="slide" start="0,0" end="10,0" time="0" condition="!Control.IsVisible(60)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="10,0" time="0" condition="!Control.IsVisible(61)">Conditional</animation>
 			<itemlayout height="40" width="550">
 				<control type="image">
 					<posx>0</posx>
@@ -130,7 +130,7 @@
 			<onright>61</onright>
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
-			<animation effect="slide" start="0,0" end="10,0" time="0" condition="!Control.IsVisible(60)">Conditional</animation>
+			<animation effect="slide" start="0,0" end="10,0" time="0" condition="!Control.IsVisible(61)">Conditional</animation>
 			<itemlayout height="40" width="550">
 				<control type="image">
 					<posx>0</posx>
