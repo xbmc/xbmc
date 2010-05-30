@@ -15,7 +15,7 @@
     effectslowdown="0.75"
     debugging="false"/>
   <extension point="xbmc.addon.metadata">
-    <summary>Confluence skin by Jezz_X</summary>
+    <summary>Confluence skin by Jezz_X. (XBMC's default skin)</summary>
     <summary lang="nl">Confluence skin door Jezz_X</summary>
     <summary lang="zh">Jezz_X开发的Confluence皮肤</summary>
     <description>Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use.</description>
