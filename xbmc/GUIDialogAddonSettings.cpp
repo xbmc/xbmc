@@ -295,6 +295,35 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             g_application.getApplicationMessenger().ExecBuiltIn(action);
           }
         }
+        else if (strcmp(type, "date") == 0)
+        {
+          CDateTime date;
+          if (!value.IsEmpty())
+            date.SetFromDBDate(value);
+          SYSTEMTIME timedate;
+          date.GetAsSystemTime(timedate);
+          if(CGUIDialogNumeric::ShowAndGetDate(timedate, label))
+          {
+            date = timedate;
+            value = date.GetAsDBDate();
+            ((CGUIButtonControl*) control)->SetLabel2(value);
+          }
+        }
+        else if (strcmp(type, "time") == 0)
+        {
+          SYSTEMTIME timedate;
+          if (!value.IsEmpty())
+          {
+            // assumes HH:MM
+            timedate.wHour = atoi(value.Left(2));
+            timedate.wMinute = atoi(value.Right(2));
+          }
+          if (CGUIDialogNumeric::ShowAndGetTime(timedate, label))
+          {
+            value.Format("%02d:%02d", timedate.wHour, timedate.wMinute);
+            ((CGUIButtonControl*) control)->SetLabel2(value);
+          }
+        }
         m_buttonValues[id] = value;
         break;
       }
@@ -419,7 +448,8 @@ void CGUIDialogAddonSettings::CreateControls()
         strcmpi(type, "number") == 0 ||strcmpi(type, "video") == 0 ||
         strcmpi(type, "audio") == 0 || strcmpi(type, "image") == 0 ||
         strcmpi(type, "folder") == 0 || strcmpi(type, "executable") == 0 ||
-        strcmpi(type, "files") == 0 || strcmpi(type, "action") == 0)
+        strcmpi(type, "files") == 0 || strcmpi(type, "action") == 0 ||
+        strcmpi(type, "date") == 0 || strcmpi(type, "time") == 0)
       {
         pControl = new CGUIButtonControl(*pOriginalButton);
         if (!pControl) return;
