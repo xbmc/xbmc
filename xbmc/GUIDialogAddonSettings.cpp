@@ -328,10 +328,7 @@ void CGUIDialogAddonSettings::SaveSettings(void)
       switch (control->GetControlType())
       {
         case CGUIControl::GUICONTROL_BUTTON:
-          if (strcmpi(type, "folder") == 0)
-            value.Format("%s", ((CGUIButtonControl*) control)->GetLabel2().c_str());	  
-          else  
-            value = m_buttonValues[id];
+          value = m_buttonValues[id];
           break;
         case CGUIControl::GUICONTROL_RADIO:
           value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
@@ -702,9 +699,11 @@ void CGUIDialogAddonSettings::SetDefaults()
       {
         case CGUIControl::GUICONTROL_BUTTON:
           if (setting->Attribute("default") && setting->Attribute("id"))
-            ((CGUIButtonControl*) control)->SetLabel2(setting->Attribute("default"));
-          else
-            ((CGUIButtonControl*) control)->SetLabel2("");
+          {
+            CStdString value = setting->Attribute("default");
+            m_buttonValues[setting->Attribute("id")] = value;
+            ((CGUIButtonControl*) control)->SetLabel2(value);
+          }
           break;
         case CGUIControl::GUICONTROL_RADIO:
           if (setting->Attribute("default"))
