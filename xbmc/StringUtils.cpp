@@ -269,7 +269,7 @@ CStdString StringUtils::SizeToString(int64_t size)
 {
   CStdString strLabel;
   const char prefixes[] = {' ','k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'};
-  int i = 0;
+  unsigned int i = 0;
   double s = size;
   if (s > 1000)
   {
