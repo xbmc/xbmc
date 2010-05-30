@@ -488,6 +488,13 @@ bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)
   return true;
 }
 
+CFileItemPtr GetFileItem(const CStdString &path, int label)
+{
+  CFileItemPtr item(new CFileItem(path, false));
+  item->SetLabel(g_localizeStrings.Get(label));
+  return item;
+}
+
 bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool showNone)
 {
   CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -502,10 +509,17 @@ bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool 
   dialog->EnableButton(true, 21452);
   CFileItemList items;
   if (showNone)
+    items.Add(GetFileItem("", 231));
+  // add some built in options...
+  if (type == ADDON_VIZ)
+    items.Add(GetFileItem("_virtual.none", 231));
+  if (type == ADDON_SCREENSAVER)
   {
-    CFileItemPtr none(new CFileItem("", false));
-    none->SetLabel(g_localizeStrings.Get(231)); // "None"
-    items.Add(none);
+    items.Add(GetFileItem("_virtual.none", 231));
+    items.Add(GetFileItem("_virtual.dim", 352));
+    items.Add(GetFileItem("_virtual.blk", 353));
+    items.Add(GetFileItem("_virtual.pic", 108));
+    items.Add(GetFileItem("_virtual.fan", 20425));
   }
   for (ADDON::IVECADDONS i = addons.begin(); i != addons.end(); ++i)
     items.Add(CAddonsDirectory::FileItemFromAddon(*i, ""));
