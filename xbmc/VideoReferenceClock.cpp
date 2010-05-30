@@ -986,6 +986,14 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   if (DisplayMode.RefreshRate == 0)
     DisplayMode.RefreshRate = 60;
 
+  if (g_Windowing.Interlaced())
+  {
+    if (DisplayMode.RefreshRate == 23 || DisplayMode.RefreshRate == 29 || DisplayMode.RefreshRate == 59)
+      DisplayMode.RefreshRate = (int) ((float)(DisplayMode.RefreshRate + 1) / 1.001f * 2.0f);
+    else
+      DisplayMode.RefreshRate *= 2;
+  }
+
   if (m_PrevRefreshRate != DisplayMode.RefreshRate  || m_Width != DisplayMode.Width || m_Height != DisplayMode.Height || Forced)
   {
     m_PrevRefreshRate = DisplayMode.RefreshRate;

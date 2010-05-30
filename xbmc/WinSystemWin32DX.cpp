@@ -70,6 +70,7 @@ bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, boo
 {
   CWinSystemWin32::SetFullScreen(fullScreen, res, blankOtherDisplays);
   SetMonitor(GetMonitor(res.iScreen).hMonitor);
+  CRenderSystemDX::m_interlaced = ((res.dwFlags & D3DPRESENTFLAG_INTERLACED) != 0);
   CRenderSystemDX::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
 
   return true;
