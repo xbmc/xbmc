@@ -418,9 +418,6 @@ void CGUIDialogAddonSettings::CreateControls()
   // set our dialog heading
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, m_strHeading);
 
-  // Create our base path, used for type "fileenum" settings
-  CStdString basepath(m_addon->Path());
-
   CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_CONTROL;
   const TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
@@ -530,17 +527,22 @@ void CGUIDialogAddonSettings::CreateControls()
         if (!pControl) return;
         ((CGUISpinControlEx *)pControl)->SetText(label);
 
-        //find Folders...
+        // Create our base path, used for type "fileenum" settings
+        // replace $PROFILE with the profile path of the plugin/script
+        if (values.Find("$PROFILE") >=0)
+          values.Replace("$PROFILE", m_addon->Profile());
+        else
+          values = CUtil::AddFileToFolder(m_addon->Path(), values);
+
+        // fetch directory
         CFileItemList items;
-        CStdString enumpath;
-        CUtil::AddFileToFolder(basepath, values, enumpath);
         CStdString mask;
         if (setting->Attribute("mask"))
           mask = setting->Attribute("mask");
         if (!mask.IsEmpty())
-          CDirectory::GetDirectory(enumpath, items, mask);
+          CDirectory::GetDirectory(values, items, mask);
         else
-          CDirectory::GetDirectory(enumpath, items);
+          CDirectory::GetDirectory(values, items);
 
         int iItem = 0;
         for (int i = 0; i < items.Size(); ++i)
