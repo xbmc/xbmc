@@ -62,7 +62,7 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   m_hDeviceWnd  = NULL;
   m_nBackBufferWidth  = 0;
   m_nBackBufferHeight = 0;
-  m_bFullScreenDevice = 0;
+  m_bFullScreenDevice = false;
   m_bVSync          = true;
   m_nDeviceStatus   = S_OK;
   m_stateBlock      = NULL;
