@@ -273,9 +273,10 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         }
         else if (strcmpi(type, "action") == 0)
         {
-          if (setting->Attribute("default"))
+          CStdString action = setting->Attribute("action");
+          if (!action.IsEmpty())
           {
-            CStdString action = setting->Attribute("default");
+            // replace $CWD with the url of plugin/script
             action.Replace("$CWD", m_addon->Path());
             if (option)
               bCloseDialog = (strcmpi(option, "close") == 0);
