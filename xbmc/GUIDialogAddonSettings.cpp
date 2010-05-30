@@ -535,6 +535,7 @@ void CGUIDialogAddonSettings::CreateControls()
         pControl = new CGUISpinControlEx(*pOriginalSpin);
         if (!pControl) return;
         ((CGUISpinControlEx *)pControl)->SetText(label);
+        ((CGUISpinControlEx *)pControl)->SetFloatValue(1.0f);
 
         // Create our base path, used for type "fileenum" settings
         // replace $PROFILE with the profile path of the plugin/script
@@ -679,7 +680,10 @@ bool CGUIDialogAddonSettings::GetCondition(const CStdString &condition, const in
         value = ((CGUIRadioButtonControl*) control2)->IsSelected() ? "true" : "false";
         break;
       case CGUIControl::GUICONTROL_SPINEX:
-        value.Format("%i", ((CGUISpinControlEx*) control2)->GetValue());
+        if (((CGUISpinControlEx*) control2)->GetFloatValue() > 0.0f)
+          value = ((CGUISpinControlEx*) control2)->GetLabel();
+        else
+          value.Format("%i", ((CGUISpinControlEx*) control2)->GetValue());
         break;
       default:
         break;
