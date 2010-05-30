@@ -448,14 +448,21 @@ CStdString CAddon::GetSetting(const CStdString& key) const
   if (m_addonXmlDoc.RootElement())
   {
     // Try to find the setting in the addon and return its default value
-    const TiXmlElement* setting = m_addonXmlDoc.RootElement()->FirstChildElement("setting");
-    while (setting)
+    const TiXmlElement* category = m_addonXmlDoc.RootElement()->FirstChildElement("category");
+    if (!category)
+      category = m_addonXmlDoc.RootElement();
+    while (category)
     {
-      const char *id = setting->Attribute("id");
-      if (id && strcmpi(id, key) == 0 && setting->Attribute("default"))
-        return setting->Attribute("default");
+      const TiXmlElement *setting = category->FirstChildElement("setting");
+      while (setting)
+      {
+        const char *id = setting->Attribute("id");
+        if (id && strcmpi(id, key) == 0 && setting->Attribute("default"))
+          return setting->Attribute("default");
 
-      setting = setting->NextSiblingElement("setting");
+        setting = setting->NextSiblingElement("setting");
+      }
+      category = category->NextSiblingElement("category");
     }
   }
 

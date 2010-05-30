@@ -49,30 +49,45 @@ using namespace std;
 using namespace ADDON;
 using XFILE::CDirectory;
 
-#define CONTROL_AREA                    2
+#define CONTROL_SETTINGS_AREA           2
 #define CONTROL_DEFAULT_BUTTON          3
 #define CONTROL_DEFAULT_RADIOBUTTON     4
 #define CONTROL_DEFAULT_SPIN            5
 #define CONTROL_DEFAULT_SEPARATOR       6
 #define CONTROL_DEFAULT_LABEL_SEPARATOR 7
 #define CONTROL_DEFAULT_SLIDER          8
+#define CONTROL_SECTION_AREA            9
+#define CONTROL_DEFAULT_SECTION_BUTTON  13
+
 #define ID_BUTTON_OK                    10
 #define ID_BUTTON_CANCEL                11
 #define ID_BUTTON_DEFAULT               12
 #define CONTROL_HEADING_LABEL           20
-#define CONTROL_START_CONTROL           100
+
+#define CONTROL_START_SETTING           100
+#define CONTROL_START_SECTION           200
 
 CGUIDialogAddonSettings::CGUIDialogAddonSettings()
    : CGUIDialogBoxBase(WINDOW_DIALOG_ADDON_SETTINGS, "DialogAddonSettings.xml")
-{}
+{
+  m_currentSection = 0;
+  m_totalSections = 1;
+}
 
 CGUIDialogAddonSettings::~CGUIDialogAddonSettings(void)
-{}
+{
+}
 
 bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
+    case GUI_MSG_WINDOW_DEINIT:
+    {
+      FreeControls();
+      FreeSections();
+    }
+    break;
     case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -95,13 +110,28 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
       }
     }
     break;
+    case GUI_MSG_FOCUSED:
+    {
+      CGUIDialogBoxBase::OnMessage(message);
+      int focusedControl = GetFocusedControlID();
+      if (focusedControl >= CONTROL_START_SECTION && focusedControl < (int)(CONTROL_START_SECTION + m_totalSections) &&
+          focusedControl - CONTROL_START_SECTION != m_currentSection)
+      { // changing section
+        UpdateFromControls();
+        m_currentSection = focusedControl - CONTROL_START_SECTION;
+        CreateControls();
+      }
+      return true;
+    }
   }
   return CGUIDialogBoxBase::OnMessage(message);
 }
 
 void CGUIDialogAddonSettings::OnInitWindow()
 {
-  FreeControls();
+  m_currentSection = 0;
+  m_totalSections = 1;
+  CreateSections();
   CreateControls();
   CGUIDialogBoxBase::OnInitWindow();
 }
@@ -148,10 +178,10 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon)
 
 bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
 {
-  int controlId = CONTROL_START_CONTROL;
+  int controlId = CONTROL_START_SETTING;
   bool bCloseDialog = false;
 
-  const TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
+  const TiXmlElement *setting = GetFirstSetting();
   while (setting)
   {
     if (controlId == iControl)
@@ -337,52 +367,72 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
   return bCloseDialog;
 }
 
-// Go over all the settings and set their values according to the values of the GUI components
-void CGUIDialogAddonSettings::SaveSettings(void)
+void CGUIDialogAddonSettings::UpdateFromControls()
 {
-  // Retrieve all the values from the GUI components and put them in the model
-  int controlId = CONTROL_START_CONTROL;
-  TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
+  int controlID = CONTROL_START_SETTING;
+  const TiXmlElement *setting = GetFirstSetting();
   while (setting)
   {
-    CStdString id;
-    if (setting->Attribute("id"))
-      id = setting->Attribute("id");
+    CStdString id = setting->Attribute("id");
     const char *type = setting->Attribute("type");
-    const CGUIControl* control = GetControl(controlId);
+    const CGUIControl* control = GetControl(controlID++);
 
-    CStdString value;
-    switch (control->GetControlType())
+    if (control)
     {
-      case CGUIControl::GUICONTROL_BUTTON:
-        value = m_buttonValues[id];
-        break;
-      case CGUIControl::GUICONTROL_RADIO:
-        value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
-        break;
-      case CGUIControl::GUICONTROL_SPINEX:
-        if (strcmpi(type, "fileenum") == 0 || strcmpi(type, "labelenum") == 0)
-          value = ((CGUISpinControlEx*) control)->GetLabel();
-        else
-          value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
-        break;
-      case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
-        value.Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
-        break;
-      default:
-        break;
+      CStdString value;
+      switch (control->GetControlType())
+      {
+        case CGUIControl::GUICONTROL_BUTTON:
+          value = m_buttonValues[id];
+          break;
+        case CGUIControl::GUICONTROL_RADIO:
+          value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
+          break;
+        case CGUIControl::GUICONTROL_SPINEX:
+          if (strcmpi(type, "fileenum") == 0 || strcmpi(type, "labelenum") == 0)
+            value = ((CGUISpinControlEx*) control)->GetLabel();
+          else
+            value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
+          break;
+        case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
+          value.Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
+          break;
+        default:
+          break;
+      }
+      m_settings[id] = value;
     }
-    m_addon->UpdateSetting(id, value, type);
+
     setting = setting->NextSiblingElement("setting");
-    controlId++;
   }
+}
+
+void CGUIDialogAddonSettings::SaveSettings(void)
+{
+  UpdateFromControls();
+
+  for (map<CStdString, CStdString>::iterator i = m_settings.begin(); i != m_settings.end(); ++i)
+    m_addon->UpdateSetting(i->first, i->second);
+
   m_addon->SaveSettings();
+}
+
+void CGUIDialogAddonSettings::FreeSections()
+{
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_SETTINGS_AREA);
+  if (group)
+  {
+    group->FreeResources();
+    group->ClearAll();
+  }
+  m_settings.clear();
+  m_buttonValues.clear();
 }
 
 void CGUIDialogAddonSettings::FreeControls()
 {
   // clear the category group
-  CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(CONTROL_AREA);
+  CGUIControlGroupList *control = (CGUIControlGroupList *)GetControl(CONTROL_SETTINGS_AREA);
   if (control)
   {
     control->FreeResources();
@@ -390,8 +440,57 @@ void CGUIDialogAddonSettings::FreeControls()
   }
 }
 
+void CGUIDialogAddonSettings::CreateSections()
+{
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_SECTION_AREA);
+  CGUIButtonControl *originalButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_SECTION_BUTTON);
+  if (!m_addon)
+    return;
+
+  // clear the category group
+  FreeSections();
+
+  // grab our categories
+  const TiXmlElement *category = m_addon->GetSettingsXML()->FirstChildElement("category");
+  if (!category) // add a default one...
+    category = m_addon->GetSettingsXML();
+ 
+  int buttonID = CONTROL_START_SECTION;
+  while (category)
+  { // add a category
+    CGUIButtonControl *button = originalButton ? originalButton->Clone() : NULL;
+
+    CStdString label = GetString(category->Attribute("label"));
+    if (label.IsEmpty())
+      label = g_localizeStrings.Get(128);
+
+    // add the category button
+    if (button && group)
+    {
+      button->SetID(buttonID++);
+      button->SetLabel(label);
+      button->SetVisible(true);
+      group->AddControl(button);
+    }
+
+    // grab a local copy of all the settings in this category
+    const TiXmlElement *setting = category->FirstChildElement("setting");
+    while (setting)
+    {
+      const char *id = setting->Attribute("id");
+      if (id)
+        m_settings[id] = m_addon->GetSetting(id);
+      setting = setting->NextSiblingElement("setting");
+    }
+    category = category->NextSiblingElement("category");
+  }
+  m_totalSections = buttonID - CONTROL_START_SECTION;
+}
+
 void CGUIDialogAddonSettings::CreateControls()
 {
+  FreeControls();
+
   CGUISpinControlEx *pOriginalSpin = (CGUISpinControlEx*)GetControl(CONTROL_DEFAULT_SPIN);
   CGUIRadioButtonControl *pOriginalRadioButton = (CGUIRadioButtonControl *)GetControl(CONTROL_DEFAULT_RADIOBUTTON);
   CGUIButtonControl *pOriginalButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_BUTTON);
@@ -411,7 +510,7 @@ void CGUIDialogAddonSettings::CreateControls()
   pOriginalSlider->SetVisible(false);
 
   // clear the category group
-  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_AREA);
+  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_SETTINGS_AREA);
   if (!group)
     return;
 
@@ -419,8 +518,8 @@ void CGUIDialogAddonSettings::CreateControls()
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, m_strHeading);
 
   CGUIControl* pControl = NULL;
-  int controlId = CONTROL_START_CONTROL;
-  const TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
+  int controlId = CONTROL_START_SETTING;
+  const TiXmlElement *setting = GetFirstSetting();
   while (setting)
   {
     const char *type = setting->Attribute("type");
@@ -456,7 +555,7 @@ void CGUIDialogAddonSettings::CreateControls()
         ((CGUIButtonControl *)pControl)->SetLabel(label);
         if (id)
         {
-          CStdString value = m_addon->GetSetting(id);
+          CStdString value = m_settings[id];
           m_buttonValues[id] = value;
           // get any option to test for hidden
           const char *option = setting->Attribute("option");
@@ -477,7 +576,7 @@ void CGUIDialogAddonSettings::CreateControls()
         pControl = new CGUIRadioButtonControl(*pOriginalRadioButton);
         if (!pControl) return;
         ((CGUIRadioButtonControl *)pControl)->SetLabel(label);
-        ((CGUIRadioButtonControl *)pControl)->SetSelected(m_addon->GetSetting(id) == "true");
+        ((CGUIRadioButtonControl *)pControl)->SetSelected(m_settings[id] == "true");
       }
       else if (strcmpi(type, "enum") == 0 || strcmpi(type, "labelenum") == 0)
       {
@@ -523,10 +622,10 @@ void CGUIDialogAddonSettings::CreateControls()
         }
         if (strcmpi(type, "labelenum") == 0)
         { // need to run through all our settings and find the one that matches
-          ((CGUISpinControlEx*) pControl)->SetValueFromLabel(m_addon->GetSetting(id));
+          ((CGUISpinControlEx*) pControl)->SetValueFromLabel(m_settings[id]);
         }
         else
-          ((CGUISpinControlEx*) pControl)->SetValue(atoi(m_addon->GetSetting(id)));
+          ((CGUISpinControlEx*) pControl)->SetValue(atoi(m_settings[id]));
 
       }
       else if (strcmpi(type, "fileenum") == 0)
@@ -560,7 +659,7 @@ void CGUIDialogAddonSettings::CreateControls()
           if ((mask.Equals("/") && pItem->m_bIsFolder) || !pItem->m_bIsFolder)
           {
             ((CGUISpinControlEx *)pControl)->AddLabel(pItem->GetLabel(), iItem);
-            if (pItem->GetLabel().Equals(m_addon->GetSetting(id)))
+            if (pItem->GetLabel().Equals(m_settings[id]))
               ((CGUISpinControlEx *)pControl)->SetValue(iItem);
             iItem++;
           }
@@ -592,7 +691,7 @@ void CGUIDialogAddonSettings::CreateControls()
         ((CGUISettingsSliderControl *)pControl)->SetType(SPIN_CONTROL_TYPE_FLOAT);
         ((CGUISettingsSliderControl *)pControl)->SetFloatRange(fMin, fMax);
         ((CGUISettingsSliderControl *)pControl)->SetFloatInterval(fInc);
-        ((CGUISettingsSliderControl *)pControl)->SetFloatValue((float)atof(m_addon->GetSetting(id)));
+        ((CGUISettingsSliderControl *)pControl)->SetFloatValue((float)atof(m_settings[id]));
       }
       else if (strcmpi(type, "lsep") == 0)
       {
@@ -623,8 +722,8 @@ void CGUIDialogAddonSettings::CreateControls()
 // Go over all the settings and set their enabled condition according to the values of the enabled attribute
 void CGUIDialogAddonSettings::EnableControls()
 {
-  int controlId = CONTROL_START_CONTROL;
-  const TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
+  int controlId = CONTROL_START_SETTING;
+  const TiXmlElement *setting = GetFirstSetting();
   while (setting)
   {
     const CGUIControl* control = GetControl(controlId);
@@ -761,58 +860,75 @@ void CGUIDialogAddonSettings::SetDefaults()
   if(!m_addon)
     return;
 
-  int controlId = CONTROL_START_CONTROL;
-  const TiXmlElement *setting = m_addon->GetSettingsXML()->FirstChildElement("setting");
-  while (setting)
+  const TiXmlElement *category = m_addon->GetSettingsXML()->FirstChildElement("category");
+  if (!category) // add a default one...
+    category = m_addon->GetSettingsXML();
+
+  while (category)
   {
-    const CGUIControl* control = GetControl(controlId);
-    if (control)
+    const TiXmlElement *setting = category->FirstChildElement("setting");
+    while (setting)
     {
-      CStdString value;
-      switch (control->GetControlType())
+      const char *id = setting->Attribute("id");
+      const char *type = setting->Attribute("type");
+      const char *value = setting->Attribute("default");
+      if (id)
       {
-        case CGUIControl::GUICONTROL_BUTTON:
-          if (setting->Attribute("default") && setting->Attribute("id"))
-          {
-            CStdString value = setting->Attribute("default");
-            m_buttonValues[setting->Attribute("id")] = value;
-            ((CGUIButtonControl*) control)->SetLabel2(value);
-          }
-          break;
-        case CGUIControl::GUICONTROL_RADIO:
-          if (setting->Attribute("default"))
-            ((CGUIRadioButtonControl*) control)->SetSelected(strcmpi(setting->Attribute("default"), "true") == 0);
-          else
-            ((CGUIRadioButtonControl*) control)->SetSelected(false);
-          break;
-        case CGUIControl::GUICONTROL_SPINEX:
-          {
-            if (setting->Attribute("default"))
-            {
-              if (strcmpi(setting->Attribute("type"), "fileenum") == 0 || strcmpi(setting->Attribute("type"), "labelenum") == 0)
-              { // need to run through all our settings and find the one that matches
-                  ((CGUISpinControlEx*) control)->SetValueFromLabel(setting->Attribute("default"));
-              }
-              else
-                ((CGUISpinControlEx*) control)->SetValue(atoi(setting->Attribute("default")));
-            }
-            else
-              ((CGUISpinControlEx*) control)->SetValue(0);
-          }
-          break;
-        case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
-          if (setting->Attribute("default"))
-            ((CGUISettingsSliderControl *)control)->SetFloatValue((float)atof(setting->Attribute("default")));
-          else
-            ((CGUISettingsSliderControl *)control)->SetFloatValue(0.0f);
-          break;
-        default:
-          break;
+        if (value)
+          m_settings[id] = value;
+        else if (0 == strcmpi(type, "bool"))
+          m_settings[id] = "false";
+        else if (0 == strcmpi(type, "slider") || 0 == strcmpi(type, "enum"))
+          m_settings[id] = "0";
+        else
+          m_settings[id] = "";
       }
+      setting = setting->NextSiblingElement("setting");
     }
-    setting = setting->NextSiblingElement("setting");
-    controlId++;
+    category = category->NextSiblingElement("category");
   }
-  EnableControls();
+  CreateControls();
 }
 
+const TiXmlElement *CGUIDialogAddonSettings::GetFirstSetting() const
+{
+  const TiXmlElement *category = m_addon->GetSettingsXML()->FirstChildElement("category");
+  if (!category)
+    category = m_addon->GetSettingsXML();
+  for (unsigned int i = 0; i < m_currentSection && category; i++)
+    category = category->NextSiblingElement("category");
+  if (category)
+    return category->FirstChildElement("setting");
+  return NULL;
+}
+
+void CGUIDialogAddonSettings::Render()
+{
+  // update status of current section button
+  bool alphaFaded = false;
+  CGUIControl *control = GetFirstFocusableControl(CONTROL_START_SECTION + m_currentSection);
+  if (control && !control->HasFocus())
+  {
+    if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+    {
+      control->SetFocus(true);
+      ((CGUIButtonControl *)control)->SetAlpha(0x80);
+      alphaFaded = true;
+    }
+    else if (control->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON)
+    {
+      control->SetFocus(true);
+      ((CGUIButtonControl *)control)->SetSelected(true);
+      alphaFaded = true;
+    }
+  }
+  CGUIDialogBoxBase::Render();
+  if (alphaFaded && m_bRunning) // dialog may close during Render()
+  {
+    control->SetFocus(false);
+    if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
+      ((CGUIButtonControl *)control)->SetAlpha(0xFF);
+    else
+      ((CGUIButtonControl *)control)->SetSelected(false);
+  }
+}
