@@ -35,6 +35,7 @@ protected:
   virtual void OnInitWindow();
 
 private:
+  CStdString GetString(const char *value) const;
   void CreateControls();
   void FreeControls();
   void EnableControls();

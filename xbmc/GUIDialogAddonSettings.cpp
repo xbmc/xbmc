@@ -162,6 +162,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         const char *option = setting->Attribute("option");
         const char *source = setting->Attribute("source");
         CStdString value = m_buttonValues[id];
+        CStdString label = GetString(setting->Attribute("label"));
 
         if (strcmp(type, "text") == 0)
         {
@@ -176,7 +177,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
           if (bEncoded)
             CUtil::URLDecode(value);
 
-          if (CGUIDialogKeyboard::ShowAndGetInput(value, ((CGUIButtonControl*) control)->GetLabel(), true, bHidden))
+          if (CGUIDialogKeyboard::ShowAndGetInput(value, label, true, bHidden))
           {
             // if hidden hide input
             if (bHidden)
@@ -191,11 +192,11 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               CUtil::URLEncode(value);
           }
         }
-        else if (strcmp(type, "number") == 0 && CGUIDialogNumeric::ShowAndGetNumber(value, ((CGUIButtonControl*) control)->GetLabel()))
+        else if (strcmp(type, "number") == 0 && CGUIDialogNumeric::ShowAndGetNumber(value, label))
         {
           ((CGUIButtonControl*) control)->SetLabel2(value);
         }
-        else if (strcmp(type, "ipaddress") == 0 && CGUIDialogNumeric::ShowAndGetIPAddress(value, ((CGUIButtonControl*) control)->GetLabel()))
+        else if (strcmp(type, "ipaddress") == 0 && CGUIDialogNumeric::ShowAndGetIPAddress(value, label))
         {
           ((CGUIButtonControl*) control)->SetLabel2(value);
         }
@@ -228,12 +229,12 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             if (option)
               bWriteOnly = (strcmpi(option, "writeable") == 0);
 
-            if (CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, ((CGUIButtonControl*) control)->GetLabel(), value, bWriteOnly))
+            if (CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, label, value, bWriteOnly))
               ((CGUIButtonControl*) control)->SetLabel2(value);
           }
           else if (strcmpi(type, "image") == 0)
           {
-            if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, ((CGUIButtonControl*) control)->GetLabel(), value))
+            if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, label, value))
               ((CGUIButtonControl*) control)->SetLabel2(value);
           }
           else
@@ -278,7 +279,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
               bUseFileDirectories = find(options.begin(), options.end(), "treatasfolder") != options.end();
             }
 
-            if (CGUIDialogFileBrowser::ShowAndGetFile(*shares, strMask, ((CGUIButtonControl*) control)->GetLabel(), value))
+            if (CGUIDialogFileBrowser::ShowAndGetFile(*shares, strMask, label, value))
               ((CGUIButtonControl*) control)->SetLabel2(value);
           }
         }
@@ -408,16 +409,7 @@ void CGUIDialogAddonSettings::CreateControls()
     CStdString entries;
     if (setting->Attribute("entries"))
       entries = setting->Attribute("entries");
-    CStdString label;
-    if (setting->Attribute("label") && atoi(setting->Attribute("label")) > 0)
-    {
-      if (m_addon->Parent())
-        label = m_addon->Parent()->GetString(atoi(setting->Attribute("label")));
-      else
-        label = m_addon->GetString(atoi(setting->Attribute("label")));
-    }
-    else
-      label = setting->Attribute("label");
+    CStdString label = GetString(setting->Attribute("label"));
 
     bool bSort=false;
     const char *sort = setting->Attribute("sort");
@@ -675,6 +667,21 @@ bool CGUIDialogAddonSettings::TranslateSingleString(const CStdString &strConditi
     return true;
   }
   return false;
+}
+
+CStdString CGUIDialogAddonSettings::GetString(const char *value) const
+{
+  if (!value)
+    return "";
+  int id = atoi(value);
+  if (id > 0)
+  {
+    if (m_addon->Parent())
+      return m_addon->Parent()->GetString(id);
+    else
+      return m_addon->GetString(id);
+  }
+  return value;
 }
 
 // Go over all the settings and set their default values
