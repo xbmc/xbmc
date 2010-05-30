@@ -241,7 +241,18 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             // set the proper mask
             CStdString strMask;
             if (setting->Attribute("mask"))
+            {
               strMask = setting->Attribute("mask");
+              // convert mask qualifiers
+              strMask.Replace("$AUDIO", g_settings.m_musicExtensions);
+              strMask.Replace("$VIDEO", g_settings.m_videoExtensions);
+              strMask.Replace("$IMAGE", g_settings.m_pictureExtensions);
+#if defined(_WIN32_WINNT)
+              strMask.Replace("$EXECUTABLE", ".exe|.bat|.cmd|.py");
+#else
+              strMask.Replace("$EXECUTABLE", "");
+#endif
+            }
             else
             {
               if (strcmpi(type, "video") == 0)
