@@ -391,6 +391,7 @@ typedef struct AVIndexEntry {
 #define AV_DISPOSITION_COMMENT   0x0008
 #define AV_DISPOSITION_LYRICS    0x0010
 #define AV_DISPOSITION_KARAOKE   0x0020
+#define AV_DISPOSITION_FORCED    0x0040
 
 /**
  * Stream structure.
