@@ -78,19 +78,18 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
       int iControl = message.GetSenderId();
       bool bCloseDialog = false;
 
-      if (iControl == ID_BUTTON_OK)
-      {
-        SaveSettings();
-        Close();
-        return true;
-      }
-      else if (iControl == ID_BUTTON_DEFAULT)
+      if (iControl == ID_BUTTON_DEFAULT)
         SetDefaults();
-      else
+      else if (iControl != ID_BUTTON_OK)
         bCloseDialog = ShowVirtualKeyboard(iControl);
 
-      if (iControl == ID_BUTTON_CANCEL || bCloseDialog)
+      if (iControl == ID_BUTTON_OK || iControl == ID_BUTTON_CANCEL || bCloseDialog)
       {
+        if (iControl == ID_BUTTON_OK || bCloseDialog)
+        {
+          m_bConfirmed = true;
+          SaveSettings();
+        }
         Close();
         return true;
       }
