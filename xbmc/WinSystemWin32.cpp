@@ -288,7 +288,7 @@ void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
 
 bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  CLog::Log(LOGDEBUG, "%s (%s) on screen %d with size %dx%d, refresh %f", __FUNCTION__, !fullScreen ? "windowed" : (g_guiSettings.GetBool("videoscreen.fakefullscreen") ? "windowed fullscreen" : "true fullscreen"), res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate);
+  CLog::Log(LOGDEBUG, "%s (%s) on screen %d with size %dx%d, refresh %f%s", __FUNCTION__, !fullScreen ? "windowed" : (g_guiSettings.GetBool("videoscreen.fakefullscreen") ? "windowed fullscreen" : "true fullscreen"), res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate, (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
   m_bFullScreen = fullScreen;
   bool forceResize = (m_nScreen != res.iScreen);
   m_nScreen = res.iScreen;
@@ -297,7 +297,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   m_bBlankOtherDisplay = blankOtherDisplays;
 
   if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
-    ChangeRefreshRate(m_nScreen, res.fRefreshRate);
+    ChangeResolution(m_nScreen, res);
 
   ResizeInternal(forceResize);
 
@@ -368,21 +368,45 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
   return true;
 }
 
-bool CWinSystemWin32::ChangeRefreshRate(int screen, float refresh)
+bool CWinSystemWin32::ChangeResolution(int screen, RESOLUTION_INFO res)
 {
   const MONITOR_DETAILS &details = GetMonitor(screen);
 
-  // grab the mode we want
   DEVMODE sDevMode;
   ZeroMemory(&sDevMode, sizeof(DEVMODE));
   sDevMode.dmSize = sizeof(DEVMODE);
-  EnumDisplaySettings(details.DeviceName, ENUM_CURRENT_SETTINGS, &sDevMode);
-  // update the display frequency
-  sDevMode.dmDisplayFrequency = (int)refresh;
-  sDevMode.dmFields |= DM_DISPLAYFREQUENCY;
 
-  return (DISP_CHANGE_SUCCESSFUL == ChangeDisplaySettingsEx(details.DeviceName, &sDevMode, NULL, 0, NULL));
+  // If we can't read the current resolution or any detail of the resolution is different than res
+  if (!EnumDisplaySettings(details.DeviceName, ENUM_CURRENT_SETTINGS, &sDevMode) ||
+      sDevMode.dmPelsWidth != res.iWidth || sDevMode.dmPelsHeight != res.iHeight ||
+      sDevMode.dmDisplayFrequency != (int)res.fRefreshRate ||
+      ((sDevMode.dmDisplayFlags & DM_INTERLACED) && !(res.dwFlags & D3DPRESENTFLAG_INTERLACED)) || 
+      (!(sDevMode.dmDisplayFlags & DM_INTERLACED) && (res.dwFlags & D3DPRESENTFLAG_INTERLACED)) )
+  {
+    ZeroMemory(&sDevMode, sizeof(DEVMODE));
+    sDevMode.dmSize = sizeof(DEVMODE);
+    sDevMode.dmDriverExtra = 0;
+    sDevMode.dmPelsWidth = res.iWidth;
+    sDevMode.dmPelsHeight = res.iHeight;
+    sDevMode.dmDisplayFrequency = (int)res.fRefreshRate;
+    sDevMode.dmDisplayFlags = (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? DM_INTERLACED : 0;
+    sDevMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY | DM_DISPLAYFLAGS;
+
+    LONG rc = ChangeDisplaySettingsEx(details.DeviceName, &sDevMode, NULL, 0, NULL);
+    if (rc != DISP_CHANGE_SUCCESSFUL)
+    {
+      CLog::Log(LOGERROR, "%s: error, code %d", __FUNCTION__, rc);
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+  }
+  // nothing to do, return success
+  return true;
 }
+
 
 void CWinSystemWin32::UpdateResolutions()
 {

@@ -162,7 +162,7 @@ public:
   pCloseGestureInfoHandle PtrCloseGestureInfoHandle;
 
 protected:
-  bool ChangeRefreshRate(int screen, float refresh);
+  bool ChangeResolution(int screen, RESOLUTION_INFO res);
   virtual bool ResizeInternal(bool forceRefresh = false);
   virtual bool UpdateResolutionsInternal();
   virtual bool CreateBlankWindows();
