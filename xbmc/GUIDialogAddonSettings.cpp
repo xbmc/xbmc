@@ -27,6 +27,7 @@
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogOK.h"
 #include "GUIControlGroupList.h"
+#include "GUISettingsSliderControl.h"
 #include "Util.h"
 #include "StringUtils.h"
 #include "MediaManager.h"
@@ -53,6 +54,7 @@ using XFILE::CDirectory;
 #define CONTROL_DEFAULT_SPIN            5
 #define CONTROL_DEFAULT_SEPARATOR       6
 #define CONTROL_DEFAULT_LABEL_SEPARATOR 7
+#define CONTROL_DEFAULT_SLIDER          8
 #define ID_BUTTON_OK                    10
 #define ID_BUTTON_CANCEL                11
 #define ID_BUTTON_DEFAULT               12
@@ -368,6 +370,9 @@ void CGUIDialogAddonSettings::SaveSettings(void)
           else
             value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
           break;
+        case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
+          value.Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
+          break;
         default:
           break;
       }
@@ -397,8 +402,10 @@ void CGUIDialogAddonSettings::CreateControls()
   CGUIButtonControl *pOriginalButton = (CGUIButtonControl *)GetControl(CONTROL_DEFAULT_BUTTON);
   CGUIImage *pOriginalImage = (CGUIImage *)GetControl(CONTROL_DEFAULT_SEPARATOR);
   CGUILabelControl *pOriginalLabel = (CGUILabelControl *)GetControl(CONTROL_DEFAULT_LABEL_SEPARATOR);
+  CGUISettingsSliderControl *pOriginalSlider = (CGUISettingsSliderControl *)GetControl(CONTROL_DEFAULT_SLIDER);
 
-  if (!m_addon || !pOriginalSpin || !pOriginalRadioButton || !pOriginalButton || !pOriginalImage)
+  if (!m_addon || !pOriginalSpin || !pOriginalRadioButton || !pOriginalButton || !pOriginalImage
+               || !pOriginalSlider)
     return;
 
   pOriginalSpin->SetVisible(false);
@@ -407,6 +414,7 @@ void CGUIDialogAddonSettings::CreateControls()
   pOriginalImage->SetVisible(false);
   if (pOriginalLabel)
     pOriginalLabel->SetVisible(false);
+  pOriginalSlider->SetVisible(false);
 
   // clear the category group
   CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_AREA);
@@ -552,6 +560,34 @@ void CGUIDialogAddonSettings::CreateControls()
             iItem++;
           }
         }
+      }
+      else if (strcmpi(type, "slider") == 0)
+      {
+        pControl = new CGUISettingsSliderControl(*pOriginalSlider);
+        if (!pControl) return;
+        ((CGUISettingsSliderControl *)pControl)->SetText(label);
+
+        float fMin = 0.0f;
+        float fMax = 100.0f;
+        float fInc = 1.0f;
+        vector<CStdString> range;
+        StringUtils::SplitString(setting->Attribute("range"), ",", range);
+        if (range.size() > 1)
+        {
+          fMin = (float)atof(range[0]);
+          if (range.size() > 2)
+          {
+            fMax = (float)atof(range[2]);
+            fInc = (float)atof(range[1]);
+          }
+          else
+            fMax = (float)atof(range[1]);
+        }
+
+        ((CGUISettingsSliderControl *)pControl)->SetType(SPIN_CONTROL_TYPE_FLOAT);
+        ((CGUISettingsSliderControl *)pControl)->SetFloatRange(fMin, fMax);
+        ((CGUISettingsSliderControl *)pControl)->SetFloatInterval(fInc);
+        ((CGUISettingsSliderControl *)pControl)->SetFloatValue((float)atof(m_addon->GetSetting(id)));
       }
       else if (strcmpi(type, "lsep") == 0 && pOriginalLabel)
       {
@@ -755,6 +791,12 @@ void CGUIDialogAddonSettings::SetDefaults()
             else
               ((CGUISpinControlEx*) control)->SetValue(0);
           }
+          break;
+        case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
+          if (setting->Attribute("default"))
+            ((CGUISettingsSliderControl *)control)->SetFloatValue((float)atof(setting->Attribute("default")));
+          else
+            ((CGUISettingsSliderControl *)control)->SetFloatValue(0.0f);
           break;
         default:
           break;

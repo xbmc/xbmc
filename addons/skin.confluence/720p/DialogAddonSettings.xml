@@ -109,6 +109,15 @@
 			<height>2</height>
 			<texture>separator2.png</texture>
 		</control>
+		<control type="sliderex" id="8">
+			<description>Default Slider</description>
+			<height>40</height>
+			<font>font13</font>
+			<textcolor>grey2</textcolor>
+			<focusedcolor>white</focusedcolor>
+			<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
+			<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
+		</control>
 		<control type="scrollbar" id="30">
 			<posx>760</posx>
 			<posy>80</posy>
