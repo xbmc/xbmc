@@ -349,35 +349,30 @@ void CGUIDialogAddonSettings::SaveSettings(void)
     if (setting->Attribute("id"))
       id = setting->Attribute("id");
     const char *type = setting->Attribute("type");
+    const CGUIControl* control = GetControl(controlId);
 
-    // skip type "lsep", it is not a required control
-    if (strcmpi(type, "lsep") != 0)
+    CStdString value;
+    switch (control->GetControlType())
     {
-      const CGUIControl* control = GetControl(controlId);
-
-      CStdString value;
-      switch (control->GetControlType())
-      {
-        case CGUIControl::GUICONTROL_BUTTON:
-          value = m_buttonValues[id];
-          break;
-        case CGUIControl::GUICONTROL_RADIO:
-          value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
-          break;
-        case CGUIControl::GUICONTROL_SPINEX:
-          if (strcmpi(type, "fileenum") == 0 || strcmpi(type, "labelenum") == 0)
-            value = ((CGUISpinControlEx*) control)->GetLabel();
-          else
-            value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
-          break;
-        case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
-          value.Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
-          break;
-        default:
-          break;
-      }
-      m_addon->UpdateSetting(id, value, type);
+      case CGUIControl::GUICONTROL_BUTTON:
+        value = m_buttonValues[id];
+        break;
+      case CGUIControl::GUICONTROL_RADIO:
+        value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
+        break;
+      case CGUIControl::GUICONTROL_SPINEX:
+        if (strcmpi(type, "fileenum") == 0 || strcmpi(type, "labelenum") == 0)
+          value = ((CGUISpinControlEx*) control)->GetLabel();
+        else
+          value.Format("%i", ((CGUISpinControlEx*) control)->GetValue());
+        break;
+      case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
+        value.Format("%f", ((CGUISettingsSliderControl *)control)->GetFloatValue());
+        break;
+      default:
+        break;
     }
+    m_addon->UpdateSetting(id, value, type);
     setting = setting->NextSiblingElement("setting");
     controlId++;
   }
@@ -405,15 +400,14 @@ void CGUIDialogAddonSettings::CreateControls()
   CGUISettingsSliderControl *pOriginalSlider = (CGUISettingsSliderControl *)GetControl(CONTROL_DEFAULT_SLIDER);
 
   if (!m_addon || !pOriginalSpin || !pOriginalRadioButton || !pOriginalButton || !pOriginalImage
-               || !pOriginalSlider)
+               || !pOriginalLabel || !pOriginalSlider)
     return;
 
   pOriginalSpin->SetVisible(false);
   pOriginalRadioButton->SetVisible(false);
   pOriginalButton->SetVisible(false);
   pOriginalImage->SetVisible(false);
-  if (pOriginalLabel)
-    pOriginalLabel->SetVisible(false);
+  pOriginalLabel->SetVisible(false);
   pOriginalSlider->SetVisible(false);
 
   // clear the category group
@@ -589,13 +583,13 @@ void CGUIDialogAddonSettings::CreateControls()
         ((CGUISettingsSliderControl *)pControl)->SetFloatInterval(fInc);
         ((CGUISettingsSliderControl *)pControl)->SetFloatValue((float)atof(m_addon->GetSetting(id)));
       }
-      else if (strcmpi(type, "lsep") == 0 && pOriginalLabel)
+      else if (strcmpi(type, "lsep") == 0)
       {
         pControl = new CGUILabelControl(*pOriginalLabel);
         if (pControl)
           ((CGUILabelControl *)pControl)->SetLabel(label);
       }
-      else if ((strcmpi(type, "sep") == 0 || strcmpi(type, "lsep") == 0) && pOriginalImage)
+      else if (strcmpi(type, "sep") == 0)
         pControl = new CGUIImage(*pOriginalImage);
     }
 
