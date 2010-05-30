@@ -297,7 +297,7 @@ void CRenderSystemDX::BuildPresentParameters()
     m_D3DDMEX.Height           = m_D3DPP.BackBufferHeight;
     m_D3DDMEX.RefreshRate      = m_D3DPP.FullScreen_RefreshRateInHz;
     m_D3DDMEX.Format           = m_D3DPP.BackBufferFormat;
-    m_D3DDMEX.ScanLineOrdering = D3DSCANLINEORDERING_PROGRESSIVE;
+    m_D3DDMEX.ScanLineOrdering = m_interlaced ? D3DSCANLINEORDERING_INTERLACED : D3DSCANLINEORDERING_PROGRESSIVE;
   }
 }
 

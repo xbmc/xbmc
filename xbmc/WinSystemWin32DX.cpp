@@ -47,6 +47,7 @@ bool CWinSystemWin32DX::CreateNewWindow(CStdString name, bool fullScreen, RESOLU
 
   SetFocusWnd(m_hWnd);
   SetDeviceWnd(m_hWnd);
+  CRenderSystemDX::m_interlaced = ((res.dwFlags & D3DPRESENTFLAG_INTERLACED) != 0);
   SetRenderParams(m_nWidth, m_nHeight, fullScreen, res.fRefreshRate);
   SetMonitor(GetMonitor(res.iScreen).hMonitor);
 
