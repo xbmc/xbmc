@@ -4232,7 +4232,7 @@ bool CApplication::WakeUpScreenSaver()
       if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
           (g_settings.UsingLoginScreen() || g_guiSettings.GetBool("masterlock.startuplock")) &&
           g_settings.GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-          m_screenSaverMode != "screensaver.xbmc.builtin.dim" && m_screenSaverMode != "screensaver.xbmc.builtin.black" && m_screenSaverMode != "_virtual.viz")
+          m_screenSaverMode != "screensaver.xbmc.builtin.dim" && m_screenSaverMode != "screensaver.xbmc.builtin.black" && m_screenSaverMode != "visualization")
       {
         m_iScreenSaveLock = 2;
         CGUIMessage msg(GUI_MSG_CHECK_LOCK,0,0);
@@ -4249,7 +4249,7 @@ bool CApplication::WakeUpScreenSaver()
     m_iScreenSaveLock = 0;
     ResetScreenSaverTimer();
 
-    if (m_screenSaverMode == "_virtual.viz" || m_screenSaverMode == "screensaver.xbmc.builtin.slideshow")
+    if (m_screenSaverMode == "visualization" || m_screenSaverMode == "screensaver.xbmc.builtin.slideshow")
     {
       // we can just continue as usual from vis mode
       return false;
@@ -4338,7 +4338,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     // Check if we are Playing Audio and Vis instead Screensaver!
     else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && !g_guiSettings.GetString("musicplayer.visualisation").IsEmpty())
     { // activate the visualisation
-      m_screenSaverMode = "_virtual.viz";
+      m_screenSaverMode = "visualization";
       g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
       return;
     }
