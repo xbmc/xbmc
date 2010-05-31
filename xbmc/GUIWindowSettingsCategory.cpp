@@ -915,7 +915,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
              strSetting.Equals("screensaver.usemusicvisinstead"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") != "_virtual.none");
+      pControl->SetEnabled(!g_guiSettings.GetString("screensaver.mode").IsEmpty());
       if (strSetting.Equals("screensaver.usedimonpause") && g_guiSettings.GetString("screensaver.mode").Equals("screensaver.xbmc.builtin.dim"))
         pControl->SetEnabled(false);
     }
@@ -1058,7 +1058,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   { // prompt for the addon
     CSettingAddon *setting = (CSettingAddon *)pSettingControl->GetSetting();
     CStdString addonID;
-    if (CGUIWindowAddonBrowser::SelectAddonID(setting->m_type, addonID))
+    if (CGUIWindowAddonBrowser::SelectAddonID(setting->m_type, addonID, setting->m_type == ADDON_SCREENSAVER || setting->m_type == ADDON_VIZ))
       setting->SetData(addonID);
     else
       return;

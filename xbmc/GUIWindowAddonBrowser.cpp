@@ -510,9 +510,6 @@ bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool 
   CFileItemList items;
   if (showNone)
     items.Add(GetFileItem("", 231));
-  // add some built in options...
-  if (type == ADDON_VIZ || type == ADDON_SCREENSAVER)
-    items.Add(GetFileItem("_virtual.none", 231));
   for (ADDON::IVECADDONS i = addons.begin(); i != addons.end(); ++i)
     items.Add(CAddonsDirectory::FileItemFromAddon(*i, ""));
   dialog->SetItems(&items);

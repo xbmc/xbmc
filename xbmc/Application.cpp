@@ -4256,7 +4256,7 @@ bool CApplication::WakeUpScreenSaver()
     }
     else if (m_screenSaverMode == "screensaver.xbmc.builtin.dim" || m_screenSaverMode == "screensaver.xbmc.builtin.black")
       return true;
-    else if (m_screenSaverMode != "_virtual.none")
+    else if (!m_screenSaverMode.IsEmpty())
     { // we're in screensaver window
       if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
         g_windowManager.PreviousWindow();  // show the previous window
@@ -4271,7 +4271,7 @@ void CApplication::CheckScreenSaverAndDPMS()
 {
   bool maybeScreensaver =
       !m_dpmsIsActive && !m_bScreenSave
-      && g_guiSettings.GetString("screensaver.mode") != "_virtual.none";
+      && !g_guiSettings.GetString("screensaver.mode").IsEmpty();
   bool maybeDPMS =
       !m_dpmsIsActive && m_dpms->IsSupported()
       && g_guiSettings.GetInt("powermanagement.displaysoff") > 0;
@@ -4336,7 +4336,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     if (g_windowManager.HasModalDialog() || (IsPlayingVideo() && g_guiSettings.GetBool("screensaver.usedimonpause")))
       m_screenSaverMode = "screensaver.xbmc.builtin.dim";
     // Check if we are Playing Audio and Vis instead Screensaver!
-    else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && g_guiSettings.GetString("musicplayer.visualisation") != "_virtual.none")
+    else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && !g_guiSettings.GetString("musicplayer.visualisation").IsEmpty())
     { // activate the visualisation
       m_screenSaverMode = "_virtual.viz";
       g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
@@ -4366,7 +4366,7 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     return;
   else if (m_screenSaverMode == "screensaver.xbmc.builtin.black")
     return;
-  else if (m_screenSaverMode != "_virtual.none")
+  else if (!m_screenSaverMode.IsEmpty())
     g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
 }
 
