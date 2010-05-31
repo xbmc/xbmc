@@ -23,7 +23,7 @@
 
 #if defined(HAVE_LIBCRYSTALHD)
 
-#include "CrystalHD/CrystalHD.h"
+#include "CrystalHD.h"
 #include "DVDVideoCodec.h"
 
 class CDVDVideoCodecCrystalHD : public CDVDVideoCodec
