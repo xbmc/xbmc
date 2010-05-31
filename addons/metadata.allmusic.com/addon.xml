@@ -16,7 +16,7 @@
              language="en"
              library="allmusic.xml"/>
   <extension point="xbmc.addon.metadata">
-    <summary>AllMusic Scraper</summary>
+    <summary>Fetch Music metadata from AllMusic.com</summary>
     <description>Use AllMusic.com to fill your libray metadata information.
 The allmusic website was created in 1995 as a place for music fans to indulge their passion.
 The AMG editorial staff, along with hundreds of expert contributors (all music fanatics in their own right), has made allmusic the most comprehensive music reference source on the planet. They are all dedicated to creating and maintaining the knowledgeable, spirited content that music lovers and industry professionals have come to expect from AMG.

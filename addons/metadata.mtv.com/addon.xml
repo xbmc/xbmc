@@ -10,7 +10,7 @@
              language="en"
              library="mtv.xml"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">MTV Music Video Scraper</summary>
+    <summary lang="en">Fetch Music Video metadata from MTV</summary>
     <summary lang="kr">MTV 뮤직 비디오 스크래퍼</summary>
     <summary lang="se">MTV Musikvideoskrapa</summary>
     <summary lang="nl">MTV muziekvideo Scraper</summary>

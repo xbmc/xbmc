@@ -8,7 +8,7 @@
     point="xbmc.player.musicviz"
     library_windx="Spectrum_win32dx.vis"/>
   <extension point="xbmc.addon.metadata">
-    <summary>DirectX Visualization</summary>
+    <summary>Visualisation showing a rotating 3D Spectrum Analyzer</summary>
     <summary lang="nl">DirectX Visualisatie</summary>
     <summary lang="zh">DirectX可视化效果</summary>
     <description>DirectX Spectrum is a Visualisation showing a rotating 3D Spectrum Analyzer rendered in DirectX that moves to the beat of the music creating a wave effect across the spectrum grid.  

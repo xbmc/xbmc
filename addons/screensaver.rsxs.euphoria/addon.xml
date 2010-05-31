@@ -12,7 +12,7 @@
     library_linux="Euphoria.xbs"
     library_osx="Euphoria.xbs"/>
   <extension point="xbmc.addon.metadata">
-    <summary>OpenGL Screensaver</summary>
+    <summary>About as psychedelic as screensavers get</summary>
     <description>This is about as psychedelic as screensavers get. mogumbo thought his Plasma saver was at the top of the scale, but this one is even more nauseating. You'd better find one of those air sickness bags before you stare at this one for too long.</description>
     <description lang="nl">Ongetwijfeld de meest psychedelische screensaver. mogumbo dacht dat zijn Plasma screensaver al bovenaan deze lijst stond, maar deze is zelf nog meer misselijkmakend.</description>
     <disclaimer></disclaimer>

@@ -10,7 +10,7 @@
     library_windx="Waveform_win32.vis"
     library_osx="Waveform.vis"/>
   <extension point="xbmc.addon.metadata">
-    <summary>Visualization</summary>
+    <summary>Visualization showing 2 Waveform Graphs on the screen</summary>
     <summary lang="nl">Visualisatie</summary>
     <summary lang="zh">可视化效果</summary>
     <description>Waveform is a simple Visualization showing 2 Waveform Graphs on the screen, One each for Left and Right channels that move to the beat of the music</description>
