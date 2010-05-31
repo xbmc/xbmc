@@ -22,6 +22,7 @@
 #include "../../../dvdplayer/Codecs/DllAvCodec.h"
 #include "../../../dvdplayer/Codecs/DllAvFormat.h"
 #include "streams.h"
+#include "dvdmedia.h"
 enum StreamType;
 enum CodecID;
 
@@ -32,8 +33,8 @@ class CDSStreamInfo
 {
 public:
   CDSStreamInfo();
-  CDSStreamInfo(const CDSStreamInfo &right, bool withextradata = true);
-  CDSStreamInfo(const CDemuxStream &right, bool withextradata = true);
+  CDSStreamInfo(const CDSStreamInfo &right, bool withextradata = true, const char *containerFormat = "");
+  CDSStreamInfo(const CDemuxStream &right, bool withextradata = true, const char *containerFormat = "");
 
   ~CDSStreamInfo();
 
@@ -41,19 +42,25 @@ public:
   bool Equal(const CDSStreamInfo &right, bool withextradata);
   bool Equal(const CDemuxStream &right, bool withextradata);
 
-  void Assign(const CDSStreamInfo &right, bool withextradata);
-  void Assign(const CDemuxStream &right, bool withextradata);
+  void Assign(const CDSStreamInfo &right, bool withextradata, const char *containerFormat);
+  void Assign(const CDemuxStream &right, bool withextradata, const char *containerFormat);
 
   CodecID codec_id;
   StreamType type;
   bool software;  //force software decoding
   CStdStringW PinNameW;
+  CStdString ContainerFormat;
 
   CMediaType mtype;
+
   // VIDEO
   int fpsscale; // scale of 1000 and a rate of 29970 will result in 29.97 fps
   int fpsrate;
-  REFERENCE_TIME avgtimeperframe;
+  REFERENCE_TIME m_avgtimeperframe;
+  BITMAPINFOHEADER *m_bih;
+  BYTE *m_vinfo;
+  VIDEOINFOHEADER m_vi;
+  VIDEOINFOHEADER2 m_vi2;
   int height; // height of the stream reported by the demuxer
   int width; // width of the stream reported by the demuxer
   float aspect; // display aspect as reported by demuxer
@@ -75,13 +82,15 @@ public:
   void*        extradata; // extra data for codec_id to use
   unsigned int extrasize; // size of extra data
 
+  bool m_bIsmpegts;
+
   bool operator==(const CDSStreamInfo& right)      { return Equal(right, true);}
   bool operator!=(const CDSStreamInfo& right)      { return !Equal(right, true);}
-  void operator=(const CDSStreamInfo& right)       { Assign(right, true); }
+  void operator=(const CDSStreamInfo& right)       { Assign(right, true, ""); }
 
   bool operator==(const CDemuxStream& right)      { return Equal( CDSStreamInfo(right, true), true);}
   bool operator!=(const CDemuxStream& right)      { return !Equal( CDSStreamInfo(right, true), true);}
-  void operator=(const CDemuxStream& right)      { Assign(right, true); }
+  void operator=(const CDemuxStream& right)      { Assign(right, true, ""); }
 protected:
   DllAvCodec  m_dllAvCodec;
   DllAvFormat   m_dllAvFormat;

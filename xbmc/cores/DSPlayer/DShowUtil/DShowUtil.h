@@ -24,7 +24,7 @@
  *
  */
 
-#include <dshow.h>
+#include <streams.h>
 
 #include <strsafe.h>
 #include <assert.h>
@@ -60,7 +60,7 @@
 #endif
 
 #include "DshowCommon.h"
-
+#include "Mpeg2Def.h"
 #ifndef dsmax
 #define dsmax(a,b)            (((a) > (b)) ? (a) : (b))
 #endif
@@ -155,6 +155,7 @@ typedef struct
 class  DShowUtil
 {
 public:
+  static const wchar_t *StreamTypeToName(PES_STREAM_TYPE _Type);
   static bool GuidVectItterCompare(std::list<GUID>::iterator it, std::vector<GUID>::const_reference vect);
   static bool GuidItteratorIsNull(std::list<GUID>::iterator it);
   static bool GuidVectIsNull(std::vector<GUID>::const_reference vect);

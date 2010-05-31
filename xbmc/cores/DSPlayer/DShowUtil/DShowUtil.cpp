@@ -36,10 +36,37 @@
 #include "log.h"
 
 #include "oaidl.H"
+#include "mpeg2def.h"
 //_beginthreadex
 #include <process.h>
 #pragma comment(lib, "comsuppw.lib")
 #include "smartptr.h"
+const wchar_t *DShowUtil::StreamTypeToName(PES_STREAM_TYPE _Type)
+{
+  switch (_Type)
+	{
+	case VIDEO_STREAM_MPEG1: return L"MPEG-1";
+	case VIDEO_STREAM_MPEG2: return L"MPEG-2";
+	case AUDIO_STREAM_MPEG1: return L"MPEG-1";
+	case AUDIO_STREAM_MPEG2: return L"MPEG-2";
+	case VIDEO_STREAM_H264: return L"H264";
+	case AUDIO_STREAM_LPCM: return L"LPCM";
+	case AUDIO_STREAM_AC3: return L"Dolby Digital";
+	case AUDIO_STREAM_DTS: return L"DTS";
+	case AUDIO_STREAM_AC3_TRUE_HD: return L"Dolby TrueHD";
+	case AUDIO_STREAM_AC3_PLUS: return L"Dolby Digital Plus";
+	case AUDIO_STREAM_DTS_HD: return L"DTS-HD High Resolution Audio";
+	case AUDIO_STREAM_DTS_HD_MASTER_AUDIO: return L"DTS-HD Master Audio";
+	case PRESENTATION_GRAPHICS_STREAM: return L"Presentation Graphics Stream";
+	case INTERACTIVE_GRAPHICS_STREAM: return L"Interactive Graphics Stream";
+	case SUBTITLE_STREAM: return L"Subtitle";
+	case SECONDARY_AUDIO_AC3_PLUS: return L"Secondary Dolby Digital Plus";
+	case SECONDARY_AUDIO_DTS_HD: return L"Secondary DTS-HD High Resolution Audio";
+	case VIDEO_STREAM_VC1: return L"VC-1";
+	}
+	return NULL;
+
+}
 
 bool DShowUtil::GuidVectItterCompare(std::list<GUID>::iterator it, std::vector<GUID>::const_reference vect)
 {
@@ -2463,7 +2490,7 @@ void DumpBuffer(BYTE* pBuffer, int nSize)
   CLog::Log(LOGNOTICE,"%s,%s",__FUNCTION__,strMsg);
 }
 
-CStdString ReftimeToString(const REFERENCE_TIME& rtVal)
+CStdString DShowUtil::ReftimeToString(const REFERENCE_TIME& rtVal)
 {
   CStdString    strTemp;
   

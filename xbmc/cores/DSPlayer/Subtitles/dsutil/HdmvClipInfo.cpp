@@ -100,7 +100,7 @@ HRESULT CHdmvClipInfo::ReadProgramInfo()
       // == StreamCodingInfo
       dwPos  = SetFilePointer(m_hFile, 0, NULL, FILE_CURRENT) + 1;
       dwPos += ReadByte();  // length
-      m_Streams[iStream].m_Type  = (ElementaryStreamTypes)ReadByte();
+      m_Streams[iStream].m_Type  = (PES_STREAM_TYPE)ReadByte();
       
       switch (m_Streams[iStream].m_Type)
       {
@@ -255,7 +255,7 @@ LPCTSTR CHdmvClipInfo::Stream::Format()
 }
 
 
-HRESULT CHdmvClipInfo::ReadPlaylist(LPCTSTR strPath, LPCTSTR strFile, REFERENCE_TIME& rtDuration, std::list<CStdString>& Playlist)
+HRESULT CHdmvClipInfo::ReadPlaylist(LPCTSTR strFile, REFERENCE_TIME& rtDuration, std::list<CStdString>& Playlist)
 {
   DWORD        dwPos;
   DWORD        dwTemp;
@@ -264,7 +264,8 @@ HRESULT CHdmvClipInfo::ReadPlaylist(LPCTSTR strPath, LPCTSTR strFile, REFERENCE_
   BYTE        Buff[100];
   CStdString        strTemp;
 
-  strTemp.Format(_T("%sPLAYLIST\\%s"), strPath, strFile);
+  //strTemp.Format(_T("%sPLAYLIST\\%s"), strPath, strFile);
+  strTemp.Format(_T("%s"),strFile);
   m_hFile   = CreateFile(strTemp, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, 
     OPEN_EXISTING, FILE_ATTRIBUTE_READONLY|FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 
@@ -292,7 +293,8 @@ HRESULT CHdmvClipInfo::ReadPlaylist(LPCTSTR strPath, LPCTSTR strFile, REFERENCE_
       SetFilePointer(m_hFile, dwPos, NULL, FILE_BEGIN);
       dwPos = dwPos + ReadShort() + 2;
       ReadBuffer(Buff, 5);
-      strTemp.Format(_T("%sSTREAM\\%c%c%c%c%c.M2TS"), strPath, Buff[0], Buff[1], Buff[2], Buff[3], Buff[4]);
+      //TODO FIX THIS
+      //strTemp.Format(_T("%sSTREAM\\%c%c%c%c%c.M2TS"), strPath, Buff[0], Buff[1], Buff[2], Buff[3], Buff[4]);
       Playlist.push_back(strTemp);
 
       ReadBuffer(Buff, 4);
@@ -343,7 +345,10 @@ HRESULT CHdmvClipInfo::FindMainMovie(LPCTSTR strFolder, CStdString& strPlaylistF
       Playlist.clear();
       
       // Main movie shouldn't have duplicate M2TS filename...
-      if (ReadPlaylist(strPath, fd.cFileName, rtCurrent, Playlist) == S_OK && rtCurrent > rtMax)
+      CStdString newpath;
+      newpath = strPath;
+      newpath.AppendFormat(_T("\\%s"),fd.cFileName);
+      if (ReadPlaylist(newpath, rtCurrent, Playlist) == S_OK && rtCurrent > rtMax)
       {
         rtMax      = rtCurrent;
 

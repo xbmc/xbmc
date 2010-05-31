@@ -24,6 +24,7 @@
 #include "XBMCFFmpegOutputPin.h"
 
 #include "moreuuids.h"
+#include "streams.h"
 #include "dvdmedia.h"
 #include "DShowUtil/DShowUtil.h"
 

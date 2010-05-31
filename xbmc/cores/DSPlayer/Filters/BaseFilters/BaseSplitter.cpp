@@ -240,8 +240,7 @@ STDMETHODIMP CBaseSplitterOutputPin::NonDelegatingQueryInterface(REFIID riid, vo
 {
   CheckPointer(ppv, E_POINTER);
 
-  return 
-//    riid == __uuidof(IMediaSeeking) ? m_pFilter->QueryInterface(riid, ppv) : 
+  return
     QI(IMediaSeeking)
     QI(IPropertyBag)
     QI(IPropertyBag2)
@@ -767,11 +766,15 @@ CBaseSplitterOutputPin* CBaseSplitterFilter::GetOutputPin(DWORD TrackNum)
 {
   CAutoLock cAutoLock(&m_csPinMap);
 
-  CBaseSplitterOutputPin* pPin;
+  CBaseSplitterOutputPin* pPin = NULL;
   //m_pPinMap.Lookup(TrackNum, pPin);
-  map<DWORD, CBaseSplitterOutputPin*>::iterator it;
-  it = m_pPinMap.find(TrackNum);
-  pPin = it->second;
+  if (m_pPinMap.count(TrackNum)>0)
+  {
+    pPin = m_pPinMap.find(TrackNum)->second;
+  }
+  //map<DWORD, CBaseSplitterOutputPin*>::iterator it;
+  //it = m_pPinMap.find(TrackNum);
+  //pPin = it->second;
   /*for (map<DWORD, CBaseSplitterOutputPin*>::iterator it = m_pPinMap.begin(); it != m_pPinMap.end(); it++)
   {
     if (*it->first == TrackNum)

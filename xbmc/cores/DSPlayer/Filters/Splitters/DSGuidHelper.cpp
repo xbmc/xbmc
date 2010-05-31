@@ -1,7 +1,8 @@
 #include "DSGuidHelper.h"
-
+#include "windows.h"
 #include "moreuuids.h"
 #include "ffmpeg_mediaguids.h"
+
 CDSGuidHelper g_GuidHelper;
 
 CMediaType CDSGuidHelper::initAudioType(CodecID codecId)
@@ -12,15 +13,14 @@ CMediaType CDSGuidHelper::initAudioType(CodecID codecId)
   thetype.formattype = FORMAT_WaveFormatEx;//default value
   thetype.subtype = GUID_NULL;//If not set the subtype will be set with //FOURCCMap(avstream->codec->codec_tag);
 
-
   if (codecId == CODEC_ID_AC3)
   {
     thetype.formattype = FORMAT_WaveFormatEx;
-    thetype.subtype = MEDIASUBTYPE_WAVE_DOLBY_AC3;
+    thetype.subtype = MEDIASUBTYPE_DOLBY_AC3;
   }
   else if (codecId == CODEC_ID_MP2)
   {
-  
+
   }
   else if (codecId == CODEC_ID_MP3)
   {
@@ -33,6 +33,7 @@ CMediaType CDSGuidHelper::initAudioType(CodecID codecId)
   }
   else if (codecId == CODEC_ID_DTS)
   {
+    thetype.subtype = MEDIASUBTYPE_DTS;
   }
   else if (codecId == CODEC_ID_VORBIS)
   {
@@ -64,7 +65,7 @@ CMediaType CDSGuidHelper::initAudioType(CodecID codecId)
   else if (codecId == CODEC_ID_FLAC)
   {
     thetype.formattype = FORMAT_WaveFormatEx;
-    thetype.subtype =  MEDIASUBTYPE_FLAC2;
+    //thetype.subtype =  MEDIASUBTYPE_FLAC2;
   }
   else if (codecId == CODEC_ID_MP3ADU)
   {
@@ -161,6 +162,8 @@ CMediaType CDSGuidHelper::initAudioType(CodecID codecId)
   }
   else if (codecId == CODEC_ID_TRUEHD)
   {
+    thetype.formattype = FORMAT_WaveFormatEx;
+    thetype.subtype = MEDIASUBTYPE_DOLBY_AC3;
   }
   else if (codecId == CODEC_ID_MP4ALS)
   {
@@ -168,12 +171,12 @@ CMediaType CDSGuidHelper::initAudioType(CodecID codecId)
   else if (codecId == CODEC_ID_ATRAC1)
   {
   }
-  else if (codecId == CODEC_ID_BINKAUDIO_RDFT)
+  /*else if (codecId == CODEC_ID_BINKAUDIO_RDFT)
   {
   }
   else if (codecId == CODEC_ID_BINKAUDIO_DCT)
   {
-  }
+  } */
   return thetype;
 }
 
@@ -198,9 +201,9 @@ CMediaType CDSGuidHelper::initVideoType(CodecID codecId)
   else if (codecId == CODEC_ID_AMV)
   {
   }
-  else if (codecId == CODEC_ID_ANM)
+/*  else if (codecId == CODEC_ID_ANM)
   {
-  }
+  } */
   else if (codecId == CODEC_ID_ASV1)
   {
     thetype.formattype = FORMAT_VideoInfo2;
@@ -222,9 +225,9 @@ CMediaType CDSGuidHelper::initVideoType(CodecID codecId)
   else if (codecId == CODEC_ID_BFI)
   {
   }
-  else if (codecId == CODEC_ID_BINKVIDEO)
+/*  else if (codecId == CODEC_ID_BINKVIDEO)
   {
-  }
+  } */
   else if (codecId == CODEC_ID_BMP)
   {
   }
@@ -237,9 +240,9 @@ CMediaType CDSGuidHelper::initVideoType(CodecID codecId)
   {
     thetype.subtype = FOURCCMap(FOURCC_CAVS);
   }
-  else if (codecId == CODEC_ID_CDGRAPHICS)
+/*  else if (codecId == CODEC_ID_CDGRAPHICS)
   {
-  }
+  } */
   else if (codecId == CODEC_ID_CINEPAK)
   {
   }
@@ -329,12 +332,12 @@ CMediaType CDSGuidHelper::initVideoType(CodecID codecId)
   else if (codecId == CODEC_ID_IDCIN)//id Quake II CIN video
   {
   }
-  else if (codecId == CODEC_ID_IFF_BYTERUN1)
+/*  else if (codecId == CODEC_ID_IFF_BYTERUN1)
   {
   }
   else if (codecId == CODEC_ID_IFF_ILBM)
   {
-  }
+  } */
   else if (codecId == CODEC_ID_INDEO2)
   {
   }
@@ -350,9 +353,9 @@ CMediaType CDSGuidHelper::initVideoType(CodecID codecId)
   else if (codecId == CODEC_ID_JPEGLS)
   {
   }
-  else if (codecId == CODEC_ID_KGV1)
+/*  else if (codecId == CODEC_ID_KGV1)
   {
-  }
+  } */
   else if (codecId == CODEC_ID_KMVC)
   {
   }
@@ -387,6 +390,8 @@ CMediaType CDSGuidHelper::initVideoType(CodecID codecId)
   }
   else if (codecId == CODEC_ID_MPEG1VIDEO)
   {
+    thetype.formattype = FORMAT_MPEGVideo;
+    thetype.subtype = MEDIASUBTYPE_MPEG1Payload;
   }
   else if (codecId == CODEC_ID_MPEG2VIDEO)
   {
@@ -455,10 +460,10 @@ CMediaType CDSGuidHelper::initVideoType(CodecID codecId)
   else if (codecId == CODEC_ID_QTRLE)
   {
   }
-  else if (codecId == CODEC_ID_R210)
+/*  else if (codecId == CODEC_ID_R210)
   {
 
-  }
+  } */
   else if (codecId == CODEC_ID_RAWVIDEO)
   {
   }
@@ -558,6 +563,8 @@ CMediaType CDSGuidHelper::initVideoType(CodecID codecId)
   }
   else if (codecId == CODEC_ID_VC1)
   {
+    thetype.formattype = FORMAT_VideoInfo2;
+    thetype.subtype = MEDIASUBTYPE_WVC1;
   }
   else if (codecId == CODEC_ID_VCR1)
   {
@@ -663,7 +670,7 @@ AVRational a0={0,1}, a1={1,0};
         nom= den;
         den= next_den;
     }
-    assert(lavc_gcd(a1.num, a1.den) == 1U);
+    ASSERT(lavc_gcd(a1.num, a1.den) == 1U);
 
     *dst_nom = sign ? -a1.num : a1.num;
     *dst_den = a1.den;
@@ -671,41 +678,67 @@ AVRational a0={0,1}, a1={1,0};
     return den==0;
 }
 
-DWORD avc_quant(BYTE *src, BYTE *dst, int len)
+DWORD avc_quant(BYTE *src, BYTE *dst, int extralen)
 {
-    //Stolen from libavcodec h264.c
-    BYTE *p = src, *d = dst;
-    int cnt;
-    cnt = *(p+5) & 0x1f; // Number of sps
-    if(src[0] != 0x01 || cnt > 1) {
+  DWORD cb = 0;
+  BYTE* src_end = (BYTE *) src + extralen;
+  BYTE* dst_end = (BYTE *) dst + extralen;
+  src += 5;
+  for (int i = 0; i < 2; i++)
+  {
+    for (int n = *(src++) & 0x1f; n > 0; n--)
+    {
+      unsigned len = (((unsigned)src[0] << 8) | src[1]) + 2;
+      if(src + len > src_end || dst + len > dst_end) { ASSERT(0); break; }
       memcpy(dst, src, len);
-      return len;
+      src += len;
+      dst += len;
+      cb += len;
     }
-    p += 6;
-    //cnt > 1 not supported?
-    cnt = AV_RB16(p) + 2;
-    memcpy(d, p, cnt);
-    d+=cnt;
-    p+=cnt;
-    //assume pps cnt == 1 too
-    p++;
-    cnt = AV_RB16(p) + 2;
-    memcpy(d, p, cnt);
-    return d + cnt - dst;
-
+  }
+  return cb;
 }
 
-BYTE *CDSGuidHelper::ConvertVIHtoMPEG2VI(VIDEOINFOHEADER *vih, int *size)
+VIDEOINFOHEADER *CDSGuidHelper::CreateVIH(const CDemuxStreamVideo *stream, AVStream* avstream)
 {
-  int extra = 0;
+  VIDEOINFOHEADER *pvi = (VIDEOINFOHEADER*)CoTaskMemAlloc(ULONG(sizeof(VIDEOINFOHEADER) + avstream->codec->extradata_size));
+
+  pvi->AvgTimePerFrame = (REFERENCE_TIME)(10000000 / ((float)stream->iFpsRate / (float)stream->iFpsScale));;
+  pvi->dwBitErrorRate = 0;
+  pvi->dwBitRate = avstream->codec->bit_rate;
+  RECT empty_tagrect = {0,0,0,0};
+  pvi->rcSource = empty_tagrect;//Some codecs like wmv are setting that value to the video current value
+  pvi->rcTarget = empty_tagrect;
+  pvi->rcTarget.right = pvi->rcSource.right = stream->iWidth;
+  pvi->rcTarget.bottom = pvi->rcSource.bottom = stream->iHeight;
+  pvi->bmiHeader.biSize = ULONG(sizeof(BITMAPINFOHEADER) + avstream->codec->extradata_size);
+ 
+  memcpy((BYTE*)&pvi->bmiHeader + sizeof(BITMAPINFOHEADER), avstream->codec->extradata, avstream->codec->extradata_size);
+  pvi->bmiHeader.biWidth= stream->iWidth;
+  pvi->bmiHeader.biHeight= stream->iHeight;
+ 
+  pvi->bmiHeader.biBitCount= avstream->codec->bits_per_coded_sample;
+  pvi->bmiHeader.biSizeImage = stream->iWidth * stream->iHeight * avstream->codec->bits_per_coded_sample / 8;
+  pvi->bmiHeader.biCompression= FOURCCMap(avstream->codec->codec_tag).Data1;
+  //TOFIX The bitplanes is depending on the subtype
+  pvi->bmiHeader.biPlanes = 1;
+  pvi->bmiHeader.biClrUsed = 0;
+  pvi->bmiHeader.biClrImportant = 0;
+  pvi->bmiHeader.biYPelsPerMeter = 0;
+  pvi->bmiHeader.biXPelsPerMeter = 0;
+  return pvi;
+}
+
+BYTE *CDSGuidHelper::ConvertVIHtoMPEG2VI(VIDEOINFOHEADER *vih, ULONG *size, bool is_mpegts_format)
+{
+    int extra = 0;
     BYTE *extradata;
-    BYTE nalu_length_field_size;
     if(vih->bmiHeader.biSize > sizeof(BITMAPINFOHEADER)) 
     {
       extra = vih->bmiHeader.biSize-sizeof(BITMAPINFOHEADER);
     }
     MPEG2VIDEOINFO *mp2vi;
-    mp2vi = (MPEG2VIDEOINFO *)malloc(sizeof(MPEG2VIDEOINFO)+extra-4); 
+    mp2vi = (MPEG2VIDEOINFO *)CoTaskMemAlloc(sizeof(MPEG2VIDEOINFO)+extra-4); 
     memset(mp2vi, 0, sizeof(MPEG2VIDEOINFO));
     mp2vi->hdr.rcSource = vih->rcSource;
     mp2vi->hdr.rcTarget = vih->rcTarget;
@@ -718,24 +751,42 @@ BYTE *CDSGuidHelper::ConvertVIHtoMPEG2VI(VIDEOINFOHEADER *vih, int *size)
     mp2vi->hdr.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
     if(extra) 
     {
-      
-      if(FOURCCMap(FOURCC_AVC1).Data1 == vih->bmiHeader.biCompression)//is_avc(vih->bmiHeader.biCompression) && !is_mpegts_format) 
+      if(FOURCCMap(FOURCC_avc1).Data1 == vih->bmiHeader.biCompression && !is_mpegts_format) 
       {
-        extradata=(BYTE*)(&vih->bmiHeader + 1);
-        nalu_length_field_size=(*(extradata + 4 ) & 0x3) + 1;
+        extradata = (BYTE*)&vih->bmiHeader + sizeof(BITMAPINFOHEADER);
 
-        mp2vi->dwProfile = *(extradata+1);
-        mp2vi->dwLevel = *(extradata+3);
-        mp2vi->dwFlags = nalu_length_field_size; //What does this mean?
-        mp2vi->cbSequenceHeader = avc_quant(
-                          (BYTE *)(&vih->bmiHeader) + sizeof(BITMAPINFOHEADER),
+        mp2vi->dwProfile = extradata[1];
+        mp2vi->dwLevel = extradata[3];
+        mp2vi->dwFlags = (extradata[4] & 3 + 1);
+        mp2vi->cbSequenceHeader = avc_quant(extradata,
                           (BYTE *)(&mp2vi->dwSequenceHeader[0]), extra);
       }
       else
       {
+#if 0 // This way is far from being working correctly
         mp2vi->cbSequenceHeader = extra;
-        memcpy(&mp2vi->dwSequenceHeader[0],
-               (BYTE *)(&vih->bmiHeader) + sizeof(BITMAPINFOHEADER), extra);
+        memcpy(&mp2vi->dwSequenceHeader[0], (BYTE *)(&vih->bmiHeader) + sizeof(BITMAPINFOHEADER), extra);
+#else
+        std::vector<BYTE> extravect;
+        extravect.resize(extra);
+        memcpy(&extravect.at(0), (BYTE *)(&vih->bmiHeader) + sizeof(BITMAPINFOHEADER), extra);
+        //at the end of the sequence we need to change 00 00 00 01 to 00 05
+
+        extravect.erase(extravect.end() - 9,extravect.end() - 5);//This is erasing 00 00 00 01
+        extravect.insert(extravect.end()-5,(BYTE)0x00);extravect.insert(extravect.end()-5,(BYTE)0x05);
+        extravect.erase(extravect.begin(),extravect.begin()+10);//10 first byte are wrong
+        extravect.insert(extravect.begin(),(BYTE)0x00);//Always starting with 0
+        //The next one is a guest based on 4 different sample
+        BYTE newbytepos2 = (extravect.size() + 1 - 9);
+        extravect.insert(extravect.begin()+1,newbytepos2);
+        mp2vi->cbSequenceHeader = extravect.size();
+        memcpy(&mp2vi->dwSequenceHeader[0], &extravect.at(0), extravect.size());
+        //this could be somewhere else
+        mp2vi->hdr.AvgTimePerFrame = mp2vi->hdr.AvgTimePerFrame * 2;
+        mp2vi->hdr.bmiHeader.biPlanes = 0;
+
+#endif
+
       }
     }
     // The '4' is from the allocated space of dwSequenceHeader

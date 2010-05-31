@@ -1,10 +1,12 @@
 #pragma once
 #include "streams.h"
 #include "dvdmedia.h"
+#include "DVDPlayer/DVDDemuxers/DVDDemux.h"
 #include "DVDPlayer/Codecs/DllAvCodec.h"
 extern "C"
 {
   #include "libavformat/riff.h"
+  #include "libavformat/avformat.h"
 }
 #define AV_RB16(x)  ((((const uint8_t*)(x))[0] << 8) | ((const uint8_t*)(x))[1])
 const AVCodecTag ff2_codec_wav_tags[] = {
@@ -135,7 +137,8 @@ const AVCodecTag ff2_codec_bmp_tags[] = {
     //{ CODEC_ID_H264,         MKTAG('h', '2', '6', '4') },
     //{ CODEC_ID_H264,         MKTAG('X', '2', '6', '4') },
     //{ CODEC_ID_H264,         MKTAG('x', '2', '6', '4') },
-    { CODEC_ID_H264,         MKTAG('a', 'v', 'c', '1') },
+    //{ CODEC_ID_H264,         MKTAG('a', 'v', 'c', '1') },
+    { CODEC_ID_H264,         MKTAG('A', 'V', 'C', '1') },
     //{ CODEC_ID_H264,         MKTAG('V', 'S', 'S', 'H') },
     { CODEC_ID_H263,         MKTAG('H', '2', '6', '3') },
     { CODEC_ID_H263,         MKTAG('X', '2', '6', '3') },
@@ -364,7 +367,8 @@ public:
   CMediaType initVideoType(CodecID codecId);
   int64_t lavc_gcd(int64_t a, int64_t b);
   int math_reduce(int *dst_nom, int *dst_den, int64_t nom, int64_t den, int64_t max);
-  BYTE *ConvertVIHtoMPEG2VI(VIDEOINFOHEADER *vih, int *size);
+  VIDEOINFOHEADER *CreateVIH(const CDemuxStreamVideo *stream, AVStream *avstream);
+  BYTE *ConvertVIHtoMPEG2VI(VIDEOINFOHEADER *vih, ULONG *size, bool is_mpegts_format);
 };
 
 extern CDSGuidHelper g_GuidHelper;

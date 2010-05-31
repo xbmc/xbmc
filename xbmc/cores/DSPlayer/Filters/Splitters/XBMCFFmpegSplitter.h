@@ -44,7 +44,8 @@ using namespace std;
 class CXBMCFFmpegOutputPin;
 [uuid("B98D13E7-55DB-4385-A33D-09FD1BA26338")]
 class CXBMCFFmpegSplitter : public CBaseSplitterFilter, 
-                            public ITrackInfo
+                            public ITrackInfo/*,
+                            public IAMExtendedSeeking*/
 {
   Com::SmartAutoVectorPtr<DWORD> m_tFrame;
 

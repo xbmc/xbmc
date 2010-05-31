@@ -23,18 +23,21 @@
 
 #include "DVDPlayer/DVDCodecs/DVDCodecs.h"
 #include "DVDPlayer/DVDDemuxers/DVDDemux.h"
+#include "DVDPlayer/DVDDemuxers/DVDDemuxFFmpeg.h"
 #include "DSGuidHelper.h"
 #include "MMReg.h"
-
 #include "moreuuids.h"
+
 extern "C"
 {
   #include "libavformat/avformat.h"
 }
+
+typedef CMediaType (WINAPI *funcGetMpeg2Header)(LPCOLESTR pszFileName);
 #include "DShowUtil/DShowUtil.h"
 CDSStreamInfo::CDSStreamInfo()                                                     { extradata = NULL; Clear(); }
-CDSStreamInfo::CDSStreamInfo(const CDSStreamInfo &right, bool withextradata )     { extradata = NULL; Clear(); Assign(right, withextradata); }
-CDSStreamInfo::CDSStreamInfo(const CDemuxStream &right, bool withextradata )       { extradata = NULL; Clear(); Assign(right, withextradata); }
+CDSStreamInfo::CDSStreamInfo(const CDSStreamInfo &right, bool withextradata, const char *containerFormat)     { extradata = NULL; Clear(); Assign(right, withextradata, containerFormat); }
+CDSStreamInfo::CDSStreamInfo(const CDemuxStream &right, bool withextradata, const char *containerFormat)       { extradata = NULL; Clear(); Assign(right, withextradata, containerFormat); }
 
 CDSStreamInfo::~CDSStreamInfo()
 {
@@ -59,7 +62,7 @@ void CDSStreamInfo::Clear()
 
   fpsscale = 0;
   fpsrate  = 0;
-  avgtimeperframe = 0;
+  m_avgtimeperframe = 0;
   height   = 0;
   width    = 0;
   aspect   = 0.0;
@@ -114,14 +117,15 @@ bool CDSStreamInfo::Equal(const CDSStreamInfo& right, bool withextradata)
 bool CDSStreamInfo::Equal(const CDemuxStream& right, bool withextradata)
 {
   CDSStreamInfo info;
-  info.Assign(right, withextradata);
+  info.Assign(right, withextradata, "");
   return Equal(info, withextradata);
 }
 
 
 // ASSIGNMENT
-void CDSStreamInfo::Assign(const CDSStreamInfo& right, bool withextradata)
+void CDSStreamInfo::Assign(const CDSStreamInfo& right, bool withextradata, const char* containerFormat)
 {
+  ContainerFormat = CStdString(containerFormat);
   codec_id = right.codec_id;
   type = right.type;
 
@@ -142,7 +146,7 @@ void CDSStreamInfo::Assign(const CDSStreamInfo& right, bool withextradata)
   // VIDEO
   fpsscale = right.fpsscale;
   fpsrate  = right.fpsrate;
-  avgtimeperframe   = right.avgtimeperframe;
+  m_avgtimeperframe   = right.m_avgtimeperframe;
   height   = right.height;
   width    = right.width;
   aspect   = right.aspect;
@@ -159,9 +163,10 @@ void CDSStreamInfo::Assign(const CDSStreamInfo& right, bool withextradata)
   identifier = right.identifier;
 }
 
-void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
+void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const char* containerFormat)
 {
   Clear();
+  ContainerFormat = CStdString(containerFormat);
   mtype.InitMediaType();
   codec_id = right.codec;
   type = right.type;
@@ -245,7 +250,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
   /****************/
   else if(  right.type == STREAM_VIDEO )
   {
-    PinNameW = L"Video";
+      PinNameW = L"Video";
     const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(&right);
     AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
   
@@ -254,13 +259,13 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     /* VideoInfo2 */
     /* MPEGVideo */
     /* MPEG2Video working*/
-    
+
     mtype = g_GuidHelper.initVideoType(avstream->codec->codec_id);
     //get the average time perframe in 100nanosec unit
     //Still to be verified in real time but the mathematics make sense
     // 23.97 fps = 417166;
     //AvgTimePerFrame =  10000000 / fps
-    avgtimeperframe = (REFERENCE_TIME)(10000000 / ((float)stream->iFpsRate / (float)stream->iFpsScale));
+    m_avgtimeperframe = (REFERENCE_TIME)(10000000 / ((float)stream->iFpsRate / (float)stream->iFpsScale));
 
     //videoinfoheader2 has deinterlace flags and aspect ratio
     //see http://msdn.microsoft.com/en-us/library/dd407326%28VS.85%29.aspx for more info
@@ -270,28 +275,26 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     if (mtype.formattype == FORMAT_VideoInfo)
     {
       mtype.bTemporalCompression = 0;
-      
+
       mtype.bFixedSizeSamples = stream->bVFR ? 0 : 1; //hummm is it the right value???
 
       VIDEOINFOHEADER *pvi = (VIDEOINFOHEADER*)mtype.ReallocFormatBuffer(ULONG(sizeof(VIDEOINFOHEADER) + extrasize));
-    
-      
-      
-      pvi->AvgTimePerFrame = avgtimeperframe;
+
+      pvi->AvgTimePerFrame = m_avgtimeperframe;
       pvi->dwBitErrorRate = 0;
-      
+
       pvi->dwBitRate = avstream->codec->bit_rate;
       pvi->rcSource = empty_tagrect;//Some codecs like wmv are setting that value to the video current value
       pvi->rcTarget = empty_tagrect;
       pvi->rcTarget.right = pvi->rcSource.right = stream->iWidth;
       pvi->rcTarget.bottom = pvi->rcSource.bottom = stream->iHeight;
-      pvi->bmiHeader.biSize = ULONG(sizeof(BITMAPINFOHEADER) + extrasize);
+      pvi->bmiHeader.biSize = sizeof(pvi->bmiHeader);
       int testsize = mtype.cbFormat - sizeof(VIDEOINFOHEADER);//This should be the size of the extrasize
       memcpy((BYTE*)mtype.pbFormat + sizeof(VIDEOINFOHEADER), extradata, extrasize);
 
       pvi->bmiHeader.biWidth= stream->iWidth;
       pvi->bmiHeader.biHeight= stream->iHeight;
-      
+
       pvi->bmiHeader.biBitCount= avstream->codec->bits_per_coded_sample;
       pvi->bmiHeader.biSizeImage = stream->iWidth * stream->iHeight * avstream->codec->bits_per_coded_sample / 8;
       pvi->bmiHeader.biCompression= mtype.subtype.Data1;
@@ -305,123 +308,113 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     else if (mtype.formattype == FORMAT_VideoInfo2)
     {
       mtype.bTemporalCompression = 0;
-      
+
       mtype.bFixedSizeSamples = stream->bVFR ? 0 : 1; //hummm is it the right value???
 
-      VIDEOINFOHEADER2 *pvi = (VIDEOINFOHEADER2*)mtype.ReallocFormatBuffer(ULONG(sizeof(VIDEOINFOHEADER2) + extrasize));
-    
-      
-      
-      pvi->AvgTimePerFrame = avgtimeperframe;
+      VIDEOINFOHEADER2 *pvi = (VIDEOINFOHEADER2*)mtype.ReallocFormatBuffer(ULONG(sizeof(VIDEOINFOHEADER2) + extrasize + 1));
+
+      pvi->AvgTimePerFrame = m_avgtimeperframe;
       pvi->dwBitErrorRate = 0;
-      
+
       pvi->dwBitRate = avstream->codec->bit_rate;
       pvi->rcSource = empty_tagrect;//Some codecs like wmv are setting that value to the video current value
       pvi->rcTarget = empty_tagrect;
       pvi->rcTarget.right = pvi->rcSource.right = stream->iWidth;
       pvi->rcTarget.bottom = pvi->rcSource.bottom = stream->iHeight;
-      pvi->bmiHeader.biSize = ULONG(sizeof(BITMAPINFOHEADER) + extrasize);
+      pvi->bmiHeader.biSize = sizeof(pvi->bmiHeader);
       int testsize = mtype.cbFormat - sizeof(VIDEOINFOHEADER2);//This should be the size of the extrasize
-      memcpy((BYTE*)mtype.pbFormat + sizeof(VIDEOINFOHEADER2), extradata, extrasize);
+      // The first byte after the infoheader has to be 0
+			*((BYTE*)mtype.pbFormat + sizeof(VIDEOINFOHEADER2)) = 0;
+			// after that, the extradata
+			memcpy((BYTE*)mtype.pbFormat + sizeof(VIDEOINFOHEADER2) + 1, extradata, extrasize);
 
       pvi->bmiHeader.biWidth= stream->iWidth;
       pvi->bmiHeader.biHeight= stream->iHeight;
-      
-      
+
+
       //FIXME only the codecs using huffyuv table are giving a number of bits so need to parse the number of byte from the pix_fmt
       //the more common used bits per pixel is 24
-      pvi->bmiHeader.biBitCount= 24;
+      pvi->bmiHeader.biBitCount = 24;
       pvi->bmiHeader.biSizeImage = m_dllAvCodec.avpicture_get_size(PIX_FMT_RGB24, avstream->codec->width, avstream->codec->height);//stream->iWidth * stream->iHeight * avstream->codec->bits_per_coded_sample / 8;
       pvi->bmiHeader.biCompression= mtype.subtype.Data1;
-      pvi->bmiHeader.biPlanes = 1;
+      pvi->bmiHeader.biPlanes = 0;
       pvi->bmiHeader.biClrUsed = 0;
       pvi->bmiHeader.biClrImportant = 0;
       pvi->bmiHeader.biYPelsPerMeter = 0;
       pvi->bmiHeader.biXPelsPerMeter = 0;
-      AVRational display_aspect_ratio;
-
-
-      g_GuidHelper.math_reduce(&display_aspect_ratio.num, &display_aspect_ratio.den,
-                  avstream->codec->width*avstream->sample_aspect_ratio.num,
-                  avstream->codec->height*avstream->sample_aspect_ratio.den,
-                  1024*1024);
-      pvi->dwPictAspectRatioX = display_aspect_ratio.num;
-      pvi->dwPictAspectRatioY = display_aspect_ratio.den;
+      pvi->dwPictAspectRatioX = (DWORD)stream->iWidth;
+      pvi->dwPictAspectRatioY = (DWORD)stream->iHeight;
       pvi->dwInterlaceFlags = 0;
       pvi->dwCopyProtectFlags = 0;
       pvi->dwControlFlags = 0;
+			pvi->dwReserved2 = 0;
+
+
     }
+		else if (mtype.formattype == FORMAT_MPEGVideo)
+		{
+			MPEG1VIDEOINFO *mpeginfo = (MPEG1VIDEOINFO*)mtype.AllocFormatBuffer(FIELD_OFFSET(MPEG2VIDEOINFO, dwSequenceHeader) + avstream->codec->extradata_size);
+
+      mpeginfo->hdr.AvgTimePerFrame = m_avgtimeperframe;
+
+      mpeginfo->hdr.dwBitErrorRate = 0;
+      mpeginfo->hdr.dwBitRate = avstream->codec->bit_rate;
+
+      mpeginfo->hdr.rcSource = empty_tagrect;
+      mpeginfo->hdr.rcTarget = empty_tagrect;
+      mpeginfo->hdr.rcTarget.right = mpeginfo->hdr.rcSource.right = stream->iWidth;
+      mpeginfo->hdr.rcTarget.bottom = mpeginfo->hdr.rcSource.bottom = stream->iHeight;
+
+      mpeginfo->hdr.bmiHeader.biSize = sizeof(mpeginfo->hdr.bmiHeader);
+      mpeginfo->hdr.bmiHeader.biWidth= stream->iWidth;
+      mpeginfo->hdr.bmiHeader.biHeight= stream->iHeight;
+
+      mpeginfo->hdr.bmiHeader.biBitCount = 24;
+      mpeginfo->hdr.bmiHeader.biSizeImage = stream->iWidth * stream->iHeight * avstream->codec->bits_per_coded_sample / 8;
+      mpeginfo->hdr.bmiHeader.biCompression = mtype.subtype.Data1;
+      mpeginfo->hdr.bmiHeader.biPlanes = 1;
+      mpeginfo->hdr.bmiHeader.biClrUsed = 0;
+      mpeginfo->hdr.bmiHeader.biClrImportant = 0;
+      mpeginfo->hdr.bmiHeader.biYPelsPerMeter = 0;
+      mpeginfo->hdr.bmiHeader.biXPelsPerMeter = 0;
+      mpeginfo->dwStartTimeCode = 0;// is there any case where it wouldnt be 0?????
+
+			mpeginfo->cbSequenceHeader = extrasize;
+			memcpy((BYTE*)mpeginfo->bSequenceHeader, extradata, extrasize);
+		}
     else if (mtype.formattype == FORMAT_MPEG2Video)
     {
-      BITMAPINFOHEADER *bih;
-    bih = (BITMAPINFOHEADER*)calloc(sizeof(BITMAPINFOHEADER) + avstream->codec->extradata_size,1);
-    if(!avstream->codec->codec_tag)
-      avstream->codec->codec_tag = m_dllAvFormat.av_codec_get_tag(mp_bmp_taglists, avstream->codec->codec_id);
-    mtype.subtype = FOURCCMap(avstream->codec->codec_tag);
-    bih->biSize= sizeof(BITMAPINFOHEADER) + avstream->codec->extradata_size;
-    bih->biWidth= avstream->codec->width;
-    bih->biHeight= avstream->codec->height;
-    bih->biBitCount= 24;
-    bih->biSizeImage = bih->biWidth * bih->biHeight * bih->biBitCount/8;
-    bih->biSizeImage = m_dllAvCodec.avpicture_get_size(PIX_FMT_RGB24, avstream->codec->width, avstream->codec->height);//stream->iWidth * stream->iHeight * avstream->codec->bits_per_coded_sample / 8;
-    bih->biCompression= mtype.subtype.Data1;
-    bih->biPlanes = 1;
-    ULONG cbFormat = FIELD_OFFSET(MPEG2VIDEOINFO, dwSequenceHeader) + avstream->codec->extradata_size - 7;
-    //MPEG2VIDEOINFO *try_mp2vi = (MPEG2VIDEOINFO *) new BYTE[cbFormat];
-    MPEG2VIDEOINFO *try_mp2vi = (MPEG2VIDEOINFO*)mtype.AllocFormatBuffer(cbFormat);//FIELD_OFFSET(MPEG2VIDEOINFO, dwSequenceHeader) + avstream->codec->extradata_size);
-        //m_vinfo = (BYTE *) try_mp2vi;
-
-        memset(try_mp2vi, 0, cbFormat);
-        try_mp2vi->hdr.rcSource.left = try_mp2vi->hdr.rcSource.top = 0;
-        try_mp2vi->hdr.rcSource.right = bih->biWidth;
-        try_mp2vi->hdr.rcSource.bottom = bih->biHeight;
-        try_mp2vi->hdr.rcTarget = try_mp2vi->hdr.rcSource;
-        try_mp2vi->hdr.dwPictAspectRatioX = bih->biWidth;
-        try_mp2vi->hdr.dwPictAspectRatioY = bih->biHeight;
-        memcpy(&try_mp2vi->hdr.bmiHeader, bih, sizeof(BITMAPINFOHEADER));
-        try_mp2vi->hdr.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-        try_mp2vi->hdr.bmiHeader.biCompression = FOURCCMap(avstream->codec->codec_tag).Data1;
-        try_mp2vi->hdr.AvgTimePerFrame = (REFERENCE_TIME)(10000000 / ((float)stream->iFpsRate / (float)stream->iFpsScale));;
-
-        /* From MPC-HC */
-        if (avstream->codec->extradata_size > 0)
-        {
-            BYTE *extradata = (BYTE *) bih + sizeof(BITMAPINFOHEADER);
-            memcpy((void*)extradata, avstream->codec->extradata, avstream->codec->extradata_size);
-            try_mp2vi->dwProfile = extradata[1];
-            try_mp2vi->dwLevel = extradata[3];
-            try_mp2vi->dwFlags = (extradata[4] & 3) + 1;
-
-            try_mp2vi->cbSequenceHeader = 0;
-
-            BYTE* src = (BYTE *) extradata + 5;
-            BYTE* dst = (BYTE *) try_mp2vi->dwSequenceHeader;
-
-            BYTE* src_end = (BYTE *) extradata + avstream->codec->extradata_size;
-            BYTE* dst_end = (BYTE *) try_mp2vi->dwSequenceHeader + avstream->codec->extradata_size;
-
-            for (int i = 0; i < 2; i++)
-            {
-                for (int n = *src++ & 0x1f; n > 0; n--)
-                {
-                    int len = ((src[0] << 8) | src[1]) + 2;
-                    if(src + len > src_end || dst + len > dst_end) { ASSERT(0); break; }
-                    memcpy(dst, src, len);
-                    src += len;
-                    dst += len;
-                    try_mp2vi->cbSequenceHeader += len;
-                }
-            }
-            
-        }
+      //avstream->codec->codec_tag = m_dllAvFormat.av_codec_get_tag(mp_bmp_taglists, avstream->codec->codec_id);
+      mtype.subtype = FOURCCMap(m_dllAvFormat.av_codec_get_tag(mp_bmp_taglists, avstream->codec->codec_id));
+      VIDEOINFOHEADER* vih = g_GuidHelper.CreateVIH(stream, avstream);
+      vih->bmiHeader.biCompression = mtype.subtype.Data1;
+      mtype.pbFormat = g_GuidHelper.ConvertVIHtoMPEG2VI(vih, &mtype.cbFormat, (ContainerFormat == "mpegts"));
+      if (ContainerFormat == "mpegts")
+      {
+        MPEG2VIDEOINFO *mp2type = (MPEG2VIDEOINFO*)mtype.pbFormat;
+        mp2type->dwFlags = 4;
+        mp2type->dwLevel = avstream->codec->level;
+        mp2type->dwProfile = avstream->codec->profile;
+        
+      }
+      //LPCOLESTR fname(L"H:\\Downloads\\Videosamples\\NotWorking\\TEST_7.1_DTS-HD_HR.m2ts");
+      
+      //HMODULE hDs = LoadLibrary("XBMCFFmpegParser.dll");
+      //funcGetMpeg2Header funcGetmpg2 = (funcGetMpeg2Header) GetProcAddress(hDs, "GetMpeg2MediaType");
+      //CMediaType mtt = funcGetmpg2(fname);
+      //mtype.Set(mtt);
+      
+      // Free the vih again
+      CoTaskMemFree(vih);
+}
 #if 0
       MPEG2VIDEOINFO *mpeginfo = (MPEG2VIDEOINFO*)mtype.AllocFormatBuffer(FIELD_OFFSET(MPEG2VIDEOINFO, dwSequenceHeader) + avstream->codec->extradata_size);
 
       //(not sure about this but fixed the sample i tried)
       if (avstream->codec->has_b_frames == 1)
-        mpeginfo->hdr.AvgTimePerFrame = 0;
+        mpeginfo->hdr.m_avgtimeperframe = 0;
       else
-        mpeginfo->hdr.AvgTimePerFrame = avgtimeperframe;
+        mpeginfo->hdr.m_avgtimeperframe = m_avgtimeperframe;
       
       //ff_h264_decode_seq_parameter_set from libavcodec is actually contain the SPS & PTS needed to fill the dwsequenceheader
       mpeginfo->hdr.dwBitErrorRate = 0;
@@ -478,7 +471,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
       memcpy(mpeginfo->dwSequenceHeader, &extravect.at(0) , extravect.size());
 
 #endif   
-    }
+    
     
     fpsscale  = stream->iFpsScale;
     fpsrate   = stream->iFpsRate;

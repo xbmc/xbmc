@@ -28,10 +28,11 @@
 #include "DVDPlayer/DVDClock.h"
 #include "DSClock.h"
 
+
 //0 is off
 //1 is video only
 //2 is audio only
-#define DS_SPLITTER_ONE_PIN_TEST 0
+#define DS_SPLITTER_ONE_PIN_TEST 1
 
 //
 // CXBMCFFmpegSplitter
@@ -63,6 +64,7 @@ HRESULT CXBMCFFmpegSplitter::CreateOutputs(IAsyncReader* pAsyncReader)
 
   HRESULT hr = E_FAIL;
   m_filenameA = DShowUtil::WToA(CStdStringW(m_fn));
+  
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, m_filenameA, "");
   if (!m_pInputStream)
   {
@@ -90,16 +92,18 @@ HRESULT CXBMCFFmpegSplitter::CreateOutputs(IAsyncReader* pAsyncReader)
     delete m_pInputStream;
     return E_FAIL;
   }
-
+  
   m_rtNewStart = m_rtCurrent = 0;
   m_rtNewStop = m_rtStop = m_rtDuration = (DVD_MSEC_TO_TIME(m_pDemuxer->GetStreamLength()) * 10);//directshow basetime is 100 nanosec
-  //m_rtNewStop = m_rtStop = m_rtDuration = m_pFile->GetTotalTime();
-
   bool fHasIndex = false;
+  const CDVDDemuxFFmpeg *pDemuxer = static_cast<const CDVDDemuxFFmpeg*>(m_pDemuxer);
+
+  const char *containerFormat = pDemuxer->m_pFormatContext->iformat->name;
   for (int iStream=0; iStream < m_pDemuxer->GetNrOfStreams(); iStream++)
   {
     CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
-    CDSStreamInfo hint(*pStream, true);
+    
+    CDSStreamInfo hint(*pStream, true, containerFormat);
     
     CMediaType mt;
     vector<CMediaType> mts;
@@ -119,8 +123,8 @@ HRESULT CXBMCFFmpegSplitter::CreateOutputs(IAsyncReader* pAsyncReader)
     if ( pStream->type == STREAM_AUDIO)
 #endif
     {
-    auto_ptr<CBaseSplitterOutputPin> pPinOut(DNew CXBMCFFmpegOutputPin(mts, hint.PinNameW.c_str(), this, this, &hr));
-    AddOutputPin((DWORD)iStream, pPinOut);
+      auto_ptr<CBaseSplitterOutputPin> pPinOut(DNew CXBMCFFmpegOutputPin(mts, hint.PinNameW.c_str(), this, this, &hr));
+      AddOutputPin((DWORD)iStream, pPinOut);
     }
   }
 

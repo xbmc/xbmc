@@ -198,13 +198,6 @@ typedef struct _DVD_ASF {
   UCHAR  Reserved1 : 7;
 } DVD_ASF, *PDVD_ASF;
 
-typedef struct _DVD_REGION {
-  UCHAR  CopySystem;
-  UCHAR  RegionData;
-  UCHAR  SystemRegion;
-  UCHAR  ResetCount;
-} DVD_REGION, *PDVD_REGION;
-
 #ifdef __cplusplus
 }
 #endif
