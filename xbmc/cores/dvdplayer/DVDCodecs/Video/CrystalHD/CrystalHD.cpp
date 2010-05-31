@@ -1355,10 +1355,13 @@ bool CMPCOutputThread::GetDecoderOutput(void)
       }
     break;
 
+    case BCM::BC_STS_TIMEOUT:
+    break;
+
     default:
       if (ret > 26)
         CLog::Log(LOGDEBUG, "%s: DtsProcOutput returned %d.", __MODULE_NAME__, ret);
-          else
+      else
         CLog::Log(LOGDEBUG, "%s: DtsProcOutput returned %s.", __MODULE_NAME__, g_DtsStatusText[ret]);
     break;
   }
@@ -1620,7 +1623,6 @@ void CCrystalHD::CloseDecoder(void)
 
   if (m_Device)
   {
-    m_dll->DtsFlushRxCapture(m_Device, TRUE);
     m_dll->DtsStopDecoder(m_Device);
     m_dll->DtsCloseDecoder(m_Device);
   }
