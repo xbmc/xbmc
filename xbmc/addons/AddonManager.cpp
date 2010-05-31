@@ -101,6 +101,10 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         // ideally platforms issues will be handled by C-Pluff
         // this is not an attempt at a solution
         CStdString value;
+        if (type == ADDON_SCREENSAVER && 0 == strnicmp(props->plugin->identifier, "screensaver.xbmc.builtin.", 25))
+        { // built in screensaver
+          return AddonPtr(new CAddon(props));
+        }
 #if defined(_LINUX) && !defined(__APPLE__)
         if ((value = GetExtValue(props->plugin->extensions->configuration, "@library_linux")) && value.empty())
           break;

@@ -761,14 +761,12 @@ void CGUISettings::Initialize()
 
   CSettingsCategory* ss = AddCategory(7, "screensaver", 360);
   AddInt(ss, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddDefaultAddon(ss, "screensaver.mode", 356, "_virtual.dim", ADDON_SCREENSAVER);
+  AddDefaultAddon(ss, "screensaver.mode", 356, "screensaver.xbmc.builtin.dim", ADDON_SCREENSAVER);
+  AddString(ss, "screensaver.settings", 21417, "", BUTTON_CONTROL_STANDARD);
+  AddString(ss, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(ss, "screensaver.sep1");
   AddBool(ss, "screensaver.usemusicvisinstead", 13392, true);
   AddBool(ss, "screensaver.usedimonpause", 22014, true);
-  AddSeparator(ss, "screensaver.sep1");
-  AddInt(ss, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddPath(ss, "screensaver.slideshowpath", 774, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddSeparator(ss, "screensaver.sep2");
-  AddString(ss, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(7, "window", 0);
   AddInt(NULL, "window.width",  0, 720, 10, 1, INT_MAX, SPIN_CONTROL_INT);

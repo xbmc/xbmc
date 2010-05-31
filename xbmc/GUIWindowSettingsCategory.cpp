@@ -901,29 +901,22 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       //   CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       //   if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.font").Right(4) == ".ttf");
     }
-    else if (strSetting.Equals("screensaver.dimlevel"))
+    else if (strSetting.Equals("screensaver.settings"))
     {
-      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "_virtual.dim");
-    }
-    else if (strSetting.Equals("screensaver.slideshowpath"))
-    {
-      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "_virtual.pic");
-    }
-    else if (strSetting.Equals("screensaver.slideshowshuffle"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "_virtual.pic" ||
-                           g_guiSettings.GetString("screensaver.mode") == "_virtual.fan");
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      AddonPtr addon;
+      if (CAddonMgr::Get().GetAddon(g_guiSettings.GetString("screensaver.mode"), addon, ADDON_SCREENSAVER))
+        pControl->SetEnabled(addon->HasSettings());
+      else
+        pControl->SetEnabled(false);
     }
     else if (strSetting.Equals("screensaver.preview")           ||
              strSetting.Equals("screensaver.usedimonpause")     ||
              strSetting.Equals("screensaver.usemusicvisinstead"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") != "None");
-      if (strSetting.Equals("screensaver.usedimonpause") && g_guiSettings.GetString("screensaver.mode").Equals("_virtual.dim"))
+      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") != "_virtual.none");
+      if (strSetting.Equals("screensaver.usedimonpause") && g_guiSettings.GetString("screensaver.mode").Equals("screensaver.xbmc.builtin.dim"))
         pControl->SetEnabled(false);
     }
     else if (strSetting.Left(16).Equals("weather.areacode"))
@@ -1564,14 +1557,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     g_application.ActivateScreenSaver(true);
   }
-  else if (strSetting.Equals("screensaver.slideshowpath"))
+  else if (strSetting.Equals("screensaver.settings"))
   {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
-    CStdString path = pSettingString->GetData();
-    VECSOURCES shares = g_settings.m_pictureSources;
-    g_mediaManager.GetLocalDrives(shares);
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
-      pSettingString->SetData(path);
+    AddonPtr addon;
+    if (CAddonMgr::Get().GetAddon(g_guiSettings.GetString("screensaver.mode"), addon, ADDON_SCREENSAVER))
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
   else if (strSetting.Equals("debug.screenshotpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("subtitles.custompath"))
   {
