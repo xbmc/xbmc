@@ -1,8 +1,8 @@
 <window id="10140">
-	<defaultcontrol always="true">2</defaultcontrol>
+	<defaultcontrol always="true">9</defaultcontrol>
 	<coordinates>
 		<system>1</system>
-		<posx>240</posx>
+		<posx>160</posx>
 		<posy>55</posy>
 	</coordinates>
 	<include>dialogeffect</include>
@@ -11,21 +11,58 @@
 			<description>background image</description>
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>800</width>
+			<width>960</width>
 			<height>610</height>
 			<texture border="40">DialogBack.png</texture>
 		</control>
 		<control type="image">
-			<posx>80</posx>
+			<description>LOGO</description>
+			<posx>30</posx>
+			<posy>15</posy>
+			<width>220</width>
+			<height>80</height>
+			<aspectratio>keep</aspectratio>
+			<texture>Confluence_Logo.png</texture>
+		</control>
+		<control type="image">
+			<posx>268</posx>
 			<posy>10</posy>
-			<width>640</width>
-			<height>90</height>
+			<width>650</width>
+			<height>588</height>
+			<texture border="5">black-back2.png</texture>
+		</control>
+		<control type="image">
+			<description>separator image</description>
+			<posx>268</posx>
+			<posy>538</posy>
+			<width>650</width>
+			<height>1</height>
+			<texture>separator2.png</texture>
+		</control>
+		<control type="image">
+			<posx>268</posx>
+			<posy>10</posy>
+			<width>634</width>
+			<height>70</height>
 			<aspectratio>stretch</aspectratio>
 			<texture>GlassTitleBar.png</texture>
 		</control>
+		<control type="label" id="20">
+			<description>header label</description>
+			<posx>300</posx>
+			<posy>20</posy>
+			<width>640</width>
+			<height>30</height>
+			<font>font16caps</font>
+			<label>-</label>
+			<align>left</align>
+			<aligny>center</aligny>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+		</control>
 		<control type="button">
 			<description>Close Window button</description>
-			<posx>710</posx>
+			<posx>850</posx>
 			<posy>9</posy>
 			<width>64</width>
 			<height>32</height>
@@ -40,31 +77,115 @@
 			<ondown>2</ondown>
 			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
-		<control type="label" id="20">
-			<description>header label</description>
-			<posx>20</posx>
-			<posy>18</posy>
-			<width>760</width>
-			<height>30</height>
-			<font>font13_title</font>
-			<label>-</label>
-			<align>center</align>
-			<aligny>center</aligny>
-			<textcolor>white</textcolor>
-			<shadowcolor>black</shadowcolor>
+		<control type="grouplist" id="9">
+			<description>button area</description>
+			<posx>10</posx>
+			<posy>90</posy>
+			<width>258</width>
+			<height>481</height>
+			<itemgap>-1</itemgap>
+			<onleft>30</onleft>
+			<onright>2</onright>
+			<onup>9</onup>
+			<ondown>9</ondown>
 		</control>
 		<control type="grouplist" id="2">
 			<description>control area</description>
-			<posx>30</posx>
-			<posy>80</posy>
-			<width>730</width>
-			<height>420</height>
+			<posx>280</posx>
+			<posy>70</posy>
+			<width>630</width>
+			<height>460</height>
 			<itemgap>-1</itemgap>
 			<pagecontrol>30</pagecontrol>
-			<onup>2</onup>
-			<ondown>2</ondown>
-			<onleft>30</onleft>
+			<onup>9001</onup>
+			<ondown>9001</ondown>
+			<onleft>9</onleft>
 			<onright>30</onright>
+		</control>
+		<control type="scrollbar" id="30">
+			<posx>920</posx>
+			<posy>70</posy>
+			<width>25</width>
+			<height>470</height>
+			<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+			<texturesliderbar border="2,16,2,16">ScrollBarV_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="2,16,2,16">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>ScrollBarNib.png</textureslidernib>
+			<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+			<onleft>2</onleft>
+			<onright>9</onright>
+			<showonepage>false</showonepage>
+			<orientation>vertical</orientation>
+		</control>
+		<control type="group" id="9001">
+			<posy>545</posy>
+			<posx>280</posx>
+			<control type="button" id="10">
+				<description>OK Button</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>200</width>
+				<height>40</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+				<texturefocus border="5">button-focus.png</texturefocus>
+				<font>font12_title</font>
+				<label>186</label>
+				<onleft>12</onleft>
+				<onright>11</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+			</control>
+			<control type="button" id="11">
+				<description>Cancel Button</description>
+				<posx>210</posx>
+				<posy>0</posy>
+				<width>200</width>
+				<height>40</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+				<texturefocus border="5">button-focus.png</texturefocus>
+				<font>font12_title</font>
+				<label>222</label>
+				<onleft>10</onleft>
+				<onright>12</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+			</control>
+			<control type="button" id="12">
+				<description>Defaults Button</description>
+				<posx>420</posx>
+				<posy>0</posy>
+				<width>200</width>
+				<height>40</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+				<texturefocus border="5">button-focus.png</texturefocus>
+				<font>font12_title</font>
+				<label>409</label>
+				<onleft>11</onleft>
+				<onright>10</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+			</control>
+		</control>
+
+		<control type="button" id="13">
+			<description>Default Category Button</description>
+			<height>60</height>
+			<width>258</width>
+			<textoffsetx>20</textoffsetx>
+			<align>right</align>
+			<aligny>center</aligny>
+			<font>font13_title</font>
+			<textcolor>grey2</textcolor>
+			<focusedcolor>white</focusedcolor>
+			<texturefocus border="5">MenuItemFO.png</texturefocus>
+			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+			<pulseonselect>false</pulseonselect>
 		</control>
 		<control type="button" id="3">
 			<description>Default Button</description>
@@ -117,75 +238,6 @@
 			<focusedcolor>white</focusedcolor>
 			<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
 			<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
-		</control>
-		<control type="scrollbar" id="30">
-			<posx>760</posx>
-			<posy>80</posy>
-			<width>25</width>
-			<height>430</height>
-			<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
-			<texturesliderbar border="2,16,2,16">ScrollBarV_bar.png</texturesliderbar>
-			<texturesliderbarfocus border="2,16,2,16">ScrollBarV_bar_focus.png</texturesliderbarfocus>
-			<textureslidernib>ScrollBarNib.png</textureslidernib>
-			<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-			<onleft>2</onleft>
-			<onright>10</onright>
-			<showonepage>false</showonepage>
-			<orientation>vertical</orientation>
-		</control>
-		<control type="group" id="9001">
-			<posy>540</posy>
-			<control type="button" id="10">
-				<description>OK Button</description>
-				<posx>300</posx>
-				<posy>0</posy>
-				<width>200</width>
-				<height>40</height>
-				<align>center</align>
-				<aligny>center</aligny>
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-				<texturefocus border="5">button-focus.png</texturefocus>
-				<font>font12_title</font>
-				<label>186</label>
-				<onleft>12</onleft>
-				<onright>11</onright>
-				<onup>2</onup>
-				<ondown>2</ondown>
-			</control>
-			<control type="button" id="11">
-				<description>Cancel Button</description>
-				<posx>510</posx>
-				<posy>0</posy>
-				<width>200</width>
-				<height>40</height>
-				<align>center</align>
-				<aligny>center</aligny>
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-				<texturefocus border="5">button-focus.png</texturefocus>
-				<font>font12_title</font>
-				<label>222</label>
-				<onleft>10</onleft>
-				<onright>12</onright>
-				<onup>2</onup>
-				<ondown>2</ondown>
-			</control>
-			<control type="button" id="12">
-				<description>Defaults Button</description>
-				<posx>90</posx>
-				<posy>0</posy>
-				<width>200</width>
-				<height>40</height>
-				<align>center</align>
-				<aligny>center</aligny>
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-				<texturefocus border="5">button-focus.png</texturefocus>
-				<font>font12_title</font>
-				<label>409</label>
-				<onleft>11</onleft>
-				<onright>10</onright>
-				<onup>2</onup>
-				<ondown>2</ondown>
-			</control>
 		</control>
 	</controls>
 </window>
