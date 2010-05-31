@@ -533,7 +533,8 @@ void CGUIDialogAddonSettings::CreateControls()
     CStdString entries;
     if (setting->Attribute("entries"))
       entries = setting->Attribute("entries");
-    CStdString label = GetString(setting->Attribute("label"));
+    const char *subsetting = setting->Attribute("subsetting");
+    CStdString label = GetString(setting->Attribute("label"), subsetting && 0 == strcmpi(subsetting, "true"));
 
     bool bSort=false;
     const char *sort = setting->Attribute("sort");
@@ -839,19 +840,20 @@ bool CGUIDialogAddonSettings::TranslateSingleString(const CStdString &strConditi
   return false;
 }
 
-CStdString CGUIDialogAddonSettings::GetString(const char *value) const
+CStdString CGUIDialogAddonSettings::GetString(const char *value, bool subSetting) const
 {
   if (!value)
     return "";
   int id = atoi(value);
+  CStdString prefix(subSetting ? "- " : "");
   if (id > 0)
   {
     if (m_addon->Parent())
-      return m_addon->Parent()->GetString(id);
+      return prefix + m_addon->Parent()->GetString(id);
     else
-      return m_addon->GetString(id);
+      return prefix + m_addon->GetString(id);
   }
-  return value;
+  return prefix + value;
 }
 
 // Go over all the settings and set their default values

@@ -36,7 +36,12 @@ protected:
   virtual void OnInitWindow();
 
 private:
-  CStdString GetString(const char *value) const;
+  /*! \brief return a (localized) addon string.
+   \param value either a character string (which is used directly) or a number to lookup in the addons strings.xml
+   \param subsetting whether the character string should be prefixed by "- ", defaults to false
+   \return the localized addon string
+   */
+  CStdString GetString(const char *value, bool subSetting = false) const;
   void CreateSections();
   void FreeSections();
   void CreateControls();
