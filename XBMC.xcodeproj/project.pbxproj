@@ -247,6 +247,10 @@
 		7CCF7FCA106A0DF500992676 /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
 		7CD2C3AA11940B270009EFC1 /* DirectoryNodeCountry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2C3A811940B270009EFC1 /* DirectoryNodeCountry.cpp */; };
 		7CD2C3AB11940B270009EFC1 /* DirectoryNodeCountry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2C3A811940B270009EFC1 /* DirectoryNodeCountry.cpp */; };
+		7CD2CD0111B38B000009EFC1 /* PythonAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2CCFE11B38B000009EFC1 /* PythonAddon.cpp */; };
+		7CD2CD0211B38B000009EFC1 /* xbmcaddonmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2CD0011B38B000009EFC1 /* xbmcaddonmodule.cpp */; };
+		7CD2CD0311B38B000009EFC1 /* PythonAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2CCFE11B38B000009EFC1 /* PythonAddon.cpp */; };
+		7CD2CD0411B38B000009EFC1 /* xbmcaddonmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2CD0011B38B000009EFC1 /* xbmcaddonmodule.cpp */; };
 		7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
 		7CDAE9060FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
 		7CDAEA7D1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */; };
@@ -2147,6 +2151,9 @@
 		7CCF7FC8106A0DF500992676 /* TimeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeUtils.h; sourceTree = "<group>"; };
 		7CD2C3A811940B270009EFC1 /* DirectoryNodeCountry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeCountry.cpp; sourceTree = "<group>"; };
 		7CD2C3A911940B270009EFC1 /* DirectoryNodeCountry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeCountry.h; sourceTree = "<group>"; };
+		7CD2CCFE11B38B000009EFC1 /* PythonAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PythonAddon.cpp; sourceTree = "<group>"; };
+		7CD2CCFF11B38B000009EFC1 /* PythonAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PythonAddon.h; sourceTree = "<group>"; };
+		7CD2CD0011B38B000009EFC1 /* xbmcaddonmodule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xbmcaddonmodule.cpp; sourceTree = "<group>"; };
 		7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDTSCorrection.cpp; sourceTree = "<group>"; };
 		7CDAE9040FFCA3520040B25F /* DVDTSCorrection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDTSCorrection.h; sourceTree = "<group>"; };
 		7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricstextustar.cpp; path = karaoke/karaokelyricstextustar.cpp; sourceTree = "<group>"; };
@@ -5905,6 +5912,9 @@
 		E38E19DA0D25F9FB00618676 /* xbmcmodule */ = {
 			isa = PBXGroup;
 			children = (
+				7CD2CCFE11B38B000009EFC1 /* PythonAddon.cpp */,
+				7CD2CCFF11B38B000009EFC1 /* PythonAddon.h */,
+				7CD2CD0011B38B000009EFC1 /* xbmcaddonmodule.cpp */,
 				C80425701158A0DE00D158A6 /* controlslider.cpp */,
 				E354EF030D99EDC900B55311 /* controlradiobutton.cpp */,
 				E38E257E0D263CE000618676 /* action.cpp */,
@@ -8210,6 +8220,8 @@
 				F50FE04A11A3410300C8B8CD /* EncoderFlac.cpp in Sources */,
 				F50FE04E11A3411A00C8B8CD /* EncoderFFmpeg.cpp in Sources */,
 				183FDF8A11AF0B0500B81E9C /* PluginSource.cpp in Sources */,
+				7CD2CD0311B38B000009EFC1 /* PythonAddon.cpp in Sources */,
+				7CD2CD0411B38B000009EFC1 /* xbmcaddonmodule.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9084,6 +9096,8 @@
 				F50FE04B11A3410300C8B8CD /* EncoderFlac.cpp in Sources */,
 				F50FE04F11A3411B00C8B8CD /* EncoderFFmpeg.cpp in Sources */,
 				183FDF8B11AF0B0500B81E9C /* PluginSource.cpp in Sources */,
+				7CD2CD0111B38B000009EFC1 /* PythonAddon.cpp in Sources */,
+				7CD2CD0211B38B000009EFC1 /* xbmcaddonmodule.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
