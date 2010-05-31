@@ -488,13 +488,6 @@ bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)
   return true;
 }
 
-CFileItemPtr GetFileItem(const CStdString &path, int label)
-{
-  CFileItemPtr item(new CFileItem(path, false));
-  item->SetLabel(g_localizeStrings.Get(label));
-  return item;
-}
-
 bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool showNone)
 {
   CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
@@ -509,7 +502,11 @@ bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool 
   dialog->EnableButton(true, 21452);
   CFileItemList items;
   if (showNone)
-    items.Add(GetFileItem("", 231));
+  {
+    CFileItemPtr item(new CFileItem("", false));
+    item->SetLabel(g_localizeStrings.Get(231));
+    items.Add(item);
+  }
   for (ADDON::IVECADDONS i = addons.begin(); i != addons.end(); ++i)
     items.Add(CAddonsDirectory::FileItemFromAddon(*i, ""));
   dialog->SetItems(&items);
