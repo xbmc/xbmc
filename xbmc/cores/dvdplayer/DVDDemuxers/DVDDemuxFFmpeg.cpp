@@ -580,7 +580,10 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   double timestamp = (double)pts * num  / den;
   double starttime = 0.0f;
 
-  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
+  // for dvd's we need the original time
+  if(m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+    starttime = static_cast<CDVDInputStreamNavigator*>(m_pInput)->GetTimeStampCorrection() / DVD_TIME_BASE;
+  else if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
     starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
 
   if(timestamp > starttime)
