@@ -5,8 +5,8 @@
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
-    <summary>Built-in black screensaver</summary>
-    <description>Simple black screen screensaver.</description>
+    <summary>Screensaver that turns your screen Black</summary>
+    <description>Black is a Simple screensaver that will turn your Screen Black.</description>
     <platform>all</platform>
   </extension>
 </addon>

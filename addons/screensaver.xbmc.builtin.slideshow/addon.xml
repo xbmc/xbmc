@@ -5,8 +5,8 @@
        provider-name="Team XBMC">
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
-    <summary>Slideshow screensaver</summary>
-    <description>Can be configured to show music or video fanart, or a folder of images</description>
+    <summary>Screensaver that displays a image slideshow</summary>
+    <description>The Slideshow screensaver will show you a slide show of images using various transition effects. It can be configured to show your libraries music or video fanart, or a custom folder of images</description>
     <platform>all</platform>
   </extension>
 </addon>
