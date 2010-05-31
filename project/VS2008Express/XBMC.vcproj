@@ -6327,6 +6327,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\PythonAddon.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\PythonAddon.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\PythonPlayer.cpp"
 						>
 					</File>
@@ -6368,6 +6376,10 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\winxmldialog.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\xbmcaddonmodule.cpp"
 						>
 					</File>
 					<File
