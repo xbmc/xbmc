@@ -164,8 +164,10 @@ void CButtonSettingControl::Update()
   if (m_pSetting->GetType() == SETTINGS_TYPE_ADDON)
   {
     ADDON::AddonPtr addon;
-    if (ADDON::CAddonMgr::Get().GetAddon(((CSettingAddon *)m_pSetting)->GetData(), addon))
+    if (ADDON::CAddonMgr::Get().GetAddon(strText, addon))
       strText = addon->Name();
+    if (strText.IsEmpty())
+      strText = g_localizeStrings.Get(231); // None
   }
   else if (m_pSetting->GetControlType() == BUTTON_CONTROL_PATH_INPUT)
   {
