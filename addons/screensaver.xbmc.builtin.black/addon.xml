@@ -6,7 +6,7 @@
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
     <summary>Screensaver that turns your screen Black</summary>
-    <description>Black is a Simple screensaver that will turn your Screen Black.</description>
+    <description>Black is a simple screensaver that will turn your screen black.</description>
     <platform>all</platform>
   </extension>
 </addon>
