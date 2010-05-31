@@ -447,6 +447,9 @@ void CGUIDialogAddonSettings::CreateSections()
   if (!m_addon)
     return;
 
+  if (originalButton)
+    originalButton->SetVisible(false);
+
   // clear the category group
   FreeSections();
 
