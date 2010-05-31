@@ -270,7 +270,7 @@ CStdString StringUtils::SizeToString(int64_t size)
   CStdString strLabel;
   const char prefixes[] = {' ','k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'};
   unsigned int i = 0;
-  double s = size;
+  double s = (double)size;
   if (s > 1000)
   {
     while (i < sizeof(prefixes)/sizeof(prefixes[0]) && s > 100.0)
