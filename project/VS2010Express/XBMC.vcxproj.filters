@@ -2139,6 +2139,12 @@
     <ClCompile Include="..\..\xbmc\addons\PluginSource.cpp">
       <Filter>Source Files\Addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\lib\libPython\xbmcmodule\PythonAddon.cpp">
+      <Filter>libraries\libPython\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\lib\libPython\xbmcmodule\xbmcaddonmodule.cpp">
+      <Filter>libraries\libPython\xbmcmodule</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -4501,6 +4507,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\PluginSource.h">
       <Filter>Source Files\Addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\lib\libPython\xbmcmodule\PythonAddon.h">
+      <Filter>libraries\libPython\xbmcmodule</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
