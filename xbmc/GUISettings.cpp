@@ -39,7 +39,7 @@
 #include "tinyXML/tinyxml.h"
 #include "WindowingFactory.h"
 #include "PowerManager.h"
-#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
+#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #include "utils/PCMRemap.h"
 #include "GUIFont.h" // for FONT_STYLE_* definitions
 #include "SystemGlobals.h"

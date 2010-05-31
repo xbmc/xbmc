@@ -103,7 +103,7 @@
 #include "WindowingFactory.h"
 
 #if defined(HAVE_LIBCRYSTALHD)
-#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
+#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif
 
 using namespace std;

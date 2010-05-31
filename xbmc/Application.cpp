@@ -136,7 +136,7 @@
 #include "lib/libjsonrpc/TCPServer.h"
 #endif
 #if defined(HAVE_LIBCRYSTALHD)
-#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
+#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif
 #include "utils/AnnouncementManager.h"
 

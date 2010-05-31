@@ -29,11 +29,6 @@
 
 #if defined(HAVE_LIBCRYSTALHD)
 #include "CrystalHD.h"
-extern "C"
-{
-  #include "cpb.h"
-  #include "h264_parser.h"
-}
 
 #include "DVDClock.h"
 #include "DynamicDll.h"
