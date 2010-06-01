@@ -853,12 +853,6 @@ bool CApplication::InitDirectoriesOSX()
     g_settings.m_logFolder = strTempPath;
 
     CreateUserDirs();
-#ifdef __APPLE__
-    strTempPath = xbmcPath + "/scripts";
-#else
-    strTempPath = INSTALL_PATH "/scripts";
-#endif
-    symlink( strTempPath.c_str(),  _P("special://home/scripts/Common Scripts").c_str() );
 
     // copy required files
     //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml"); // Eventual FIXME.
