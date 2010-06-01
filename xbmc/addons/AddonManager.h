@@ -86,10 +86,10 @@ namespace ADDON
 
     /* Addon access */
     bool GetDefault(const TYPE &type, AddonPtr &addon);
-    bool GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true);
-    bool HasAddons(const TYPE &type, bool enabledOnly = true);
+    bool GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabled = true);
+    bool HasAddons(const TYPE &type, bool enabled = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
-    bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
+    bool GetAllAddons(VECADDONS &addons, bool enabled = true);
     CStdString GetString(const CStdString &id, const int number);
 
     const char *GetTranslatedString(const cp_cfg_element_t *root, const char *tag);

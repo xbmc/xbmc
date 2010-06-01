@@ -265,56 +265,60 @@ void CAddonMgr::DeInit()
   m_cpluff = NULL;
 }
 
-bool CAddonMgr::HasAddons(const TYPE &type, bool enabledOnly/*= true*/)
+bool CAddonMgr::HasAddons(const TYPE &type, bool enabled /*= true*/)
 {
   // TODO: This isn't particularly efficient as we create an addon type for each addon using the Factory, just so
   //       we can check addon dependencies in the addon constructor.
   VECADDONS addons;
-  return GetAddons(type, addons, enabledOnly);
+  return GetAddons(type, addons, enabled);
 }
 
-bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
+bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/)
 {
   for (int i = ADDON_UNKNOWN+1; i < ADDON_VIZ_LIBRARY; ++i)
   {
     if (ADDON_REPOSITORY == (TYPE)i)
       continue;
     VECADDONS temp;
-    if (CAddonMgr::Get().GetAddons((TYPE)i, temp, enabledOnly))
+    if (CAddonMgr::Get().GetAddons((TYPE)i, temp, enabled))
       addons.insert(addons.end(), temp.begin(), temp.end());
   }
   return !addons.empty();
 }
 
-bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabledOnly/*= true*/)
+bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* = true */)
 {
   CSingleLock lock(m_critSection);
   addons.clear();
   cp_status_t status;
   int num;
+  CAddonDatabase db;
+  if (!db.Open()) return false;
   CStdString ext_point(TranslateType(type));
   cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
   for(int i=0; i <num; i++)
   {
     AddonPtr addon(Factory(exts[i]));
-    if (addon)
+    if (addon && db.IsAddonDisabled(addon->ID()) != enabled)
       addons.push_back(addon);
   }
   m_cpluff->release_info(m_cp_context, exts);
   return addons.size() > 0;
 }
 
-bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabledOnly/*= true*/)
+bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type/*=ADDON_UNKNOWN*/, bool enabled/*= true*/)
 {
   CSingleLock lock(m_critSection);
 
+  CAddonDatabase db;
+  if (!db.Open()) return false;
   cp_status_t status;
   cp_plugin_info_t *cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
   if (status == CP_OK && cpaddon)
   {
     addon = GetAddonFromDescriptor(cpaddon);
     m_cpluff->release_info(m_cp_context, cpaddon);
-    return NULL != addon.get();
+    return NULL != addon.get() && db.IsAddonDisabled(addon->ID()) != enabled;
   }
   if (cpaddon)
     m_cpluff->release_info(m_cp_context, cpaddon);

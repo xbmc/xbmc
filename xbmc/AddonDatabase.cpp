@@ -61,6 +61,10 @@ bool CAddonDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create addonlinkrepo table");
     m_pDS->exec("CREATE TABLE addonlinkrepo (idRepo integer, idAddon integer)\n");
+
+    CLog::Log(LOGINFO, "create disabled table");
+    m_pDS->exec("CREATE TABLE disabled (id integer primary key, addonID text)\n");
+    m_pDS->exec("CREATE INDEX idxDisabled ON disabled(addonID)");
   }
   catch (...)
   {
@@ -102,6 +106,11 @@ bool CAddonDatabase::UpdateOldVersion(int version)
     m_pDS->exec("INSERT INTO addonnew select id,type,name,summary,description,stars,path,addonID,icon,version,changelog,fanart,author from addon");
     m_pDS->exec("DROP TABLE addon");
     m_pDS->exec("ALTER TABLE addonnew RENAME TO addon");
+  }
+  if (version < 8)
+  {
+    m_pDS->exec("CREATE TABLE disabled (id integer primary key, addonID text)\n");
+    m_pDS->exec("CREATE INDEX idxDisabled ON disabled(addonID)");
   }
   return true;
 }
@@ -451,4 +460,77 @@ void CAddonDatabase::SetPropertiesFromAddon(const AddonPtr& addon,
   pItem->SetProperty("Addon.Disclaimer", addon->Disclaimer());
   pItem->SetProperty("Addon.Rating", addon->Stars());
   pItem->SetProperty("Addon.Path", addon->Path());
+}
+
+bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = true */)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    if (disable)
+    {
+      CStdString sql = FormatSQL("select id from disabled where addonID='%s'", addonID.c_str());
+      m_pDS->query(sql.c_str());
+      if (m_pDS->eof()) // not found
+      {
+        m_pDS->close();
+        sql = FormatSQL("insert into disabled(id, addonID) values(NULL, '%s')", addonID.c_str());
+        m_pDS->exec(sql);
+        return true;
+      }
+      return false; // already disabled or failed query
+    }
+    else
+    {
+      CStdString sql = FormatSQL("delete from disabled where addonID='%s'", addonID.c_str());
+      m_pDS->exec(sql);
+    }
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon '%s'", __FUNCTION__, addonID.c_str());
+  }
+  return false;
+}
+
+bool CAddonDatabase::IsAddonDisabled(const CStdString &addonID)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString sql = FormatSQL("select id from disabled where addonID='%s'", addonID.c_str());
+    m_pDS->query(sql.c_str());
+    bool ret = !m_pDS->eof(); // in the disabled table -> disabled
+    m_pDS->close();
+    return ret;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonID.c_str());
+  }
+  return false;
+}
+
+bool CAddonDatabase::HasDisabledAddons()
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    m_pDS->query("select count(id) from disabled");
+    bool ret = !m_pDS->eof() && m_pDS->fv(0).get_asInt() > 0; // have rows -> have disabled addons
+    m_pDS->close();
+    return ret;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
 }
