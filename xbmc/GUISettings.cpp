@@ -541,13 +541,6 @@ void CGUISettings::Initialize()
   map<int, int> renderers;
   renderers.insert(make_pair(13416, RENDER_METHOD_AUTO));
 
-#ifdef HAS_XBOX_D3D
-  renderers.insert(make_pair(13355, RENDER_LQ_RGB_SHADER));
-  renderers.insert(make_pair(13356, RENDER_OVERLAYS));
-  renderers.insert(make_pair(13357, RENDER_HQ_RGB_SHADER));
-  renderers.insert(make_pair(21397, RENDER_HQ_RGB_SHADERV2));
-#endif
-
 #ifdef HAS_DX
   // 13611 == Standard w/o CrystalHD but still using shaders so not really software
   renderers.insert(make_pair(13611, RENDER_METHOD_SOFTWARE)); 
