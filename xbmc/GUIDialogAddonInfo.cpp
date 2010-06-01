@@ -20,7 +20,7 @@
  */
 
 #include "GUIDialogAddonInfo.h"
-
+#include "GUIDialogYesNo.h"
 #include "addons/AddonManager.h"
 #include "AddonDatabase.h"
 #include "FileItem.h"
@@ -77,9 +77,12 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_INSTALL && m_localAddon)
       {
-        OnUninstall();
-        Close();
-        return true;
+        if (CGUIDialogYesNo::ShowAndGetInput(24037, 750, 0, 0))
+        {
+          OnUninstall();
+          Close();
+          return true;
+        }
       }
       else if (iControl == CONTROL_BTN_ENABLE)
       {
