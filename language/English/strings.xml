@@ -649,7 +649,7 @@
   <!-- strings 768 and 769 reserved for more subtitle colors -->
 
   <string id="770">Error %i: share not available</string>
-  <string id="771">- Auto FATX limiter</string>
+  <string id="771"></string>
   <string id="772">Audio output</string>
   <string id="773">Seeking</string>
   <string id="774">Slideshow folder</string>
@@ -1095,20 +1095,20 @@
 
   <string id="13283">Operating system:</string>
   <string id="13284">CPU speed:</string>
-  <string id="13285">Detected BIOS:</string>
+  <string id="13285"></string>
   <string id="13286">Video encoder:</string>
   <string id="13287">Screen resolution:</string>
-  <string id="13288">Xbox version:</string>
-  <string id="13289">Xbox serial number:</string>
-  <string id="13290">Xbox manufacturer:</string>
-  <string id="13291">Modchip:</string>
+  <string id="13288"></string>
+  <string id="13289"></string>
+  <string id="13290"></string>
+  <string id="13291"></string>
   <string id="13292">A/V cable:</string>
-  <string id="13293">Video &amp; XBE region:</string>
+  <string id="13293"></string>
   <string id="13294">DVD region:</string>
   <string id="13295">Internet:</string>
   <string id="13296">Connected</string>
   <string id="13297">Not connected. Check network settings.</string>
-  <string id="13298">Xbox Live key:</string>
+  <string id="13298"></string>
   <string id="13299">Target temperature</string>
   <string id="13300">Fan speed</string>
   <string id="13301">Auto temperature control</string>
@@ -1147,8 +1147,8 @@
   <string id="13334">Edit label</string>
   <string id="13335">Make default</string>
   <string id="13336">Remove button</string>
-  <string id="13338">Front LED</string>
-  <string id="13339">Front LED colour</string>
+  <string id="13338"></string>
+  <string id="13339"></string>
   <string id="13340">Leave as is</string>
   <string id="13341">Green</string>
   <string id="13342">Orange</string>
@@ -1488,11 +1488,11 @@
   <string id="16103">Mark as watched</string>
   <string id="16104">Mark as unwatched</string>
   <string id="16105">Edit title</string>
-  <string id="16106">Use NTSC-M &amp; NTSC-J</string>
-  <string id="16107">Use only NTSC-M</string>
-  <string id="16108">Use only NTSC-J</string>
-  <string id="16109">Use only PAL-60</string>
-  <string id="16110">For 60hz games</string>
+  <string id="16106"></string>
+  <string id="16107"></string>
+  <string id="16108"></string>
+  <string id="16109"></string>
+  <string id="16110"></string>
 
   <string id="16200">Operation was aborted</string>
   <string id="16201">Copy failed</string>
@@ -1705,8 +1705,8 @@
   <string id="20184">Rotate pictures using EXIF information</string>
   <string id="20185">Use poster view styles for TV shows</string>
   <string id="20186">Please wait</string>
-  <string id="20187">Backing up EEPROM</string>
-  <string id="20188">Backing up BIOS</string>
+  <string id="20187"></string>
+  <string id="20188"></string>
   <string id="20189">Enable auto scrolling for plot &amp; review</string>
   <string id="20190">Custom</string>
   <string id="20191">Enable debug logging</string>
@@ -1743,15 +1743,15 @@
   <string id="20312">Dim LCD on paused</string>
   <string id="20313">Switch LED back on if paused</string>
   <string id="20314">Videos - Library</string>
-  <string id="20315">Game saves</string>
+  <string id="20315"></string>
   <string id="20316">Sort by: ID</string>
-  <string id="20317">Download saves</string>
-  <string id="20318">Save game installed On HDD</string>
-  <string id="20319">Failed to download game save</string>
-  <string id="20320">Select game save to download and install</string>
-  <string id="20321">No online save found for specified game</string>
-  <string id="20322">Go to game save</string>
-  <string id="20323">Game saves</string>
+  <string id="20317"></string>
+  <string id="20318"></string>
+  <string id="20319"></string>
+  <string id="20320"></string>
+  <string id="20321"></string>
+  <string id="20322"></string>
+  <string id="20323"></string>
   <string id="20324">Play part...</string>
   <string id="20325">Calibration reset</string>
   <string id="20326">This will reset the calibration values for %s</string>
@@ -2192,7 +2192,7 @@
   <string id="29801">QWERTY keyboard</string>
   <string id="29802">Passthrough Audio in use</string>
 
-  <string id="29999">Apply flicker filter setting to games</string>
+  <string id="29999"></string>
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
