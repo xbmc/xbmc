@@ -52,9 +52,9 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
 
   VECADDONS addons;
   // get info from repository
-  if (path.GetHostName().Equals("enabled"))
+  if (path.GetHostName().Equals("enabled") || path.GetHostName().Equals("disabled"))
   {
-    CAddonMgr::Get().GetAllAddons(addons);
+    CAddonMgr::Get().GetAllAddons(addons, path.GetHostName().Equals("enabled"));
     items.SetProperty("reponame",g_localizeStrings.Get(24062));
   }
   else if (path.GetHostName().Equals("repos"))
