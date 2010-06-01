@@ -1888,7 +1888,7 @@ void CApplication::RenderScreenSaver()
   float amount = 1.0f;
   AddonPtr addon;
   if (CAddonMgr::Get().GetAddon(m_screenSaverMode, addon) && addon->LoadSettings())
-    amount = 1.0f - 0.01f * atof(addon->GetSetting("level"));
+    amount = 1.0f - 0.01f * (float)atof(addon->GetSetting("level"));
 
   // special case for dim screensaver
   bool draw = false;
