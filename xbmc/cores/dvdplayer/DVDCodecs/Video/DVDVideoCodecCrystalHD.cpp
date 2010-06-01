@@ -38,7 +38,6 @@
 
 CDVDVideoCodecCrystalHD::CDVDVideoCodecCrystalHD() :
   m_Device(NULL),
-  m_DecodeStarted(false),
   m_DropPictures(false),
   m_Duration(0.0),
   m_pFormatName(""),
@@ -105,7 +104,6 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
     // default duration to 23.976 fps, have to guess something.
     m_Duration = (DVD_TIME_BASE / (24.0 * 1000.0/1001.0));
     m_DropPictures = false;
-    m_DecodeStarted = false;
 
     CLog::Log(LOGINFO, "%s: Opened Broadcom Crystal HD Codec", __MODULE_NAME__);
     return true;
@@ -133,7 +131,13 @@ void CDVDVideoCodecCrystalHD::Dispose(void)
 
 int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double pts)
 {
-  int ret = 0;
+  if (!pData)
+  {
+    if (m_Device->GetReadyCount())
+      return VC_PICTURE;
+    else
+      return VC_BUFFER;
+  }
 
   // We are running a picture queue, picture frames are allocated
   // in CrystalHD class if needed, then passed up. Need to return
@@ -142,98 +146,53 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
   // each picture frame.
   m_Device->BusyListFlush();
 
-  // If NULL is passed, DVDPlayer wants to process any queued picture frames.
-  if (!pData)
+  if (pData)
   {
-    // Always return VC_PICTURE if we have one ready.
-    if (m_Device->GetReadyCount() > 0)
-      ret |= VC_PICTURE;
+    int demuxer_bytes = iSize;
+    uint8_t *demuxer_content = pData;
+    bool bitstream_convered  = false;
 
-    // Returning VC_BUFFER only breaks out of DVDPlayerVideo's picture process loop
-    // which it then grabs another demuxer packet and calls this routine again.
-    // We only do this if the ready picture count drops to below 4 or
-    // risk draining vqueue which then will cause DVDPlayer thrashing. 
-    if ((m_Device->GetInputCount() < 2) && (m_Device->GetReadyCount() < 6))
-      ret |= VC_BUFFER;
-
-    // if no picture ready and input is full, we must wait
-    if(!(ret & VC_PICTURE) && !(ret & VC_BUFFER))
-      m_Device->WaitInput(100);
-      
-    return ret;
-  }
-
-  int demuxer_bytes = iSize;
-  uint8_t *demuxer_content = pData;
-  bool bitstream_convered  = false;
-
-  if (m_convert_bitstream)
-  {
-    // convert demuxer packet from bitstream to bytestream (AnnexB)
-    int bytestream_size = 0;
-    uint8_t *bytestream_buff = NULL;
-
-    bitstream_convert(demuxer_content, demuxer_bytes, &bytestream_buff, &bytestream_size);
-    if (bytestream_buff && (bytestream_size > 0))
+    if (m_convert_bitstream)
     {
-      bitstream_convered = true;
-      demuxer_bytes = bytestream_size;
-      demuxer_content = bytestream_buff;
+      // convert demuxer packet from bitstream to bytestream (AnnexB)
+      int bytestream_size = 0;
+      uint8_t *bytestream_buff = NULL;
+
+      bitstream_convert(demuxer_content, demuxer_bytes, &bytestream_buff, &bytestream_size);
+      if (bytestream_buff && (bytestream_size > 0))
+      {
+        bitstream_convered = true;
+        demuxer_bytes = bytestream_size;
+        demuxer_content = bytestream_buff;
+      }
     }
-  }
-  // Handle Input, add demuxer packet to input queue, we must accept it or
-  // it will be discarded as DVDPlayerVideo has no concept of "try again".
-  if ( !m_Device->AddInput(demuxer_content, demuxer_bytes, dts, pts) )
-  {
-    // Deep crap error, this should never happen unless we run away pulling demuxer pkts.
-    CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
-    Sleep(10);
-  }
-
-  if (bitstream_convered)
-    free(demuxer_content);
-
-#if 1
-  // Fake a decoding delay of 1/2 the frame duration, this helps keep DVDPlayerVideo from
-  // draining the demuxer queue. DVDPlayerVideo expects one picture frame for each demuxer
-  // packet so we sleep a little here to give the decoder a chance to output a frame.
-  if (!m_DropPictures)
-  {
-    if (m_Duration > 0.0)
-      Sleep((DWORD)(m_Duration/2000.0));
-    else
-      Sleep(20);
-  }
-#endif
-
-  // Handle Output, we delay passing back VC_PICTURE on startup until we have a few
-  // decoded picture frames as DVDPlayerVideo might discard picture frames when it
-  // tries to sync with audio.
-  if (m_DecodeStarted)
-  {
-    if (m_Device->GetReadyCount() > 0)
-      ret |= VC_PICTURE;
-    if (m_Device->GetInputCount() < 2 && (m_Device->GetReadyCount() < 4))
-      ret |= VC_BUFFER;
-  }
-  else
-  {
-    if (m_Device->GetReadyCount() > 4)
+    // Handle Input, add demuxer packet to input queue, we must accept it or
+    // it will be discarded as DVDPlayerVideo has no concept of "try again".
+    if ( !m_Device->AddInput(demuxer_content, demuxer_bytes, dts, pts) )
     {
-      m_DecodeStarted = true;
-      ret |= VC_PICTURE;
+      // Deep crap error, this should never happen unless we run away pulling demuxer pkts.
+      CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
+      Sleep(10);
     }
-    if (m_Device->GetInputCount() < 2)
-      ret |= VC_BUFFER;
+
+    if (bitstream_convered)
+      free(demuxer_content);
   }
 
-  return ret;
+  int rtn = 0;
+  // TODO: queue depth is related to the number of reference frames in encoded h.264.
+  // so we need to buffer until we get N ref frames + 1.
+  if (m_Device->GetReadyCount() > 8)
+    return VC_PICTURE;
+  
+  if (m_Device->GetReadyCount())
+    rtn = VC_PICTURE;
+
+  return rtn | VC_BUFFER;
 }
 
 void CDVDVideoCodecCrystalHD::Reset(void)
 {
-  // Decoder flush, reset started flag and dump all input and output.
-  m_DecodeStarted = false;
   m_Device->Reset();
 }
 

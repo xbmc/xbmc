@@ -134,12 +134,9 @@ public:
   void CloseDecoder(void);
   void Reset(void);
 
-  bool WaitInput(unsigned int msec);
   bool AddInput(unsigned char *pData, size_t size, double dts, double pts);
 
-  int  GetInputCount(void);
   int  GetReadyCount(void);
-  void ReadyListPop(void);
   void BusyListFlush(void);
 
   bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
@@ -156,9 +153,9 @@ protected:
   unsigned int  m_field;
   unsigned int  m_width;
   unsigned int  m_height;
+  double        m_last_pts;
 
   std::deque<CHD_TIMESTAMP> m_timestamps;
-  CMPCInputThread *m_pInputThread;
   CMPCOutputThread *m_pOutputThread;
   CSyncPtrQueue<CPictureBuffer> m_BusyList;
 

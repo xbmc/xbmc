@@ -175,50 +175,6 @@ static double pts_itod(int64_t pts)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-class CMPCDecodeBuffer
-{
-public:
-  CMPCDecodeBuffer(size_t size);
-  CMPCDecodeBuffer(unsigned char* pBuffer, size_t size);
-  virtual ~CMPCDecodeBuffer();
-  size_t GetSize();
-  unsigned char* GetPtr();
-  void SetPts(uint64_t pts);
-  uint64_t GetPts();
-protected:
-  size_t m_Size;
-  unsigned char* m_pBuffer;
-  uint64_t m_Pts;
-};
-
-////////////////////////////////////////////////////////////////////////////////////////////
-class CMPCInputThread : public CThread
-{
-public:
-  CMPCInputThread(void *device, DllLibCrystalHD *dll);
-  virtual ~CMPCInputThread();
-
-  bool                AddInput(unsigned char* pData, size_t size, uint64_t pts);
-  bool                WaitInput(unsigned int msec) { return m_PopEvent.WaitMSec(msec); }
-  void                Flush(void);
-  unsigned int        GetInputCount(void);
-
-protected:
-  CMPCDecodeBuffer*   AllocBuffer(size_t size);
-  void                FreeBuffer(CMPCDecodeBuffer* pBuffer);
-  CMPCDecodeBuffer*   GetNext(void);
-  void                Process(void);
-
-  CSyncPtrQueue<CMPCDecodeBuffer> m_InputList;
-  CEvent              m_InputEvent;
-  CEvent              m_PopEvent;
-
-  DllLibCrystalHD     *m_dll;
-  void                *m_Device;
-  int                 m_SleepTime;
-};
-
-////////////////////////////////////////////////////////////////////////////////////////////
 class CMPCOutputThread : public CThread
 {
 public:
@@ -226,9 +182,10 @@ public:
   virtual ~CMPCOutputThread();
 
   unsigned int        GetReadyCount(void);
+  unsigned int        GetFreeCount(void);
   CPictureBuffer*     ReadyListPop(void);
   void                FreeListPush(CPictureBuffer* pBuffer);
-  void                Flush(void);
+  bool                WaitOutput(unsigned int msec);
 
 protected:
   void                DoFrameRateTracking(double timestamp);
@@ -261,142 +218,6 @@ protected:
   CPictureBuffer      *m_interlace_buf;
   CEvent              m_ReadyEvent;
 };
-
-////////////////////////////////////////////////////////////////////////////////////////////
-#if defined(__APPLE__)
-#pragma mark -
-#endif
-CMPCDecodeBuffer::CMPCDecodeBuffer(size_t size) :
-m_Size(size)
-{
-  m_pBuffer = (unsigned char*)_aligned_malloc(size, 16);
-}
-
-CMPCDecodeBuffer::~CMPCDecodeBuffer()
-{
-  _aligned_free(m_pBuffer);
-}
-
-size_t CMPCDecodeBuffer::GetSize(void)
-{
-  return m_Size;
-}
-
-unsigned char* CMPCDecodeBuffer::GetPtr(void)
-{
-  return m_pBuffer;
-}
-
-void CMPCDecodeBuffer::SetPts(uint64_t pts)
-{
-  m_Pts = pts;
-}
-
-uint64_t CMPCDecodeBuffer::GetPts(void)
-{
-  return m_Pts;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////
-#if defined(__APPLE__)
-#pragma mark -
-#endif
-CMPCInputThread::CMPCInputThread(void *device, DllLibCrystalHD *dll) :
-  CThread(),
-  m_dll(dll),
-  m_Device(device),
-  m_SleepTime(1)
-{
-  m_PopEvent.Set();
-}
-
-CMPCInputThread::~CMPCInputThread()
-{
-  while (m_InputList.Count())
-    delete m_InputList.Pop();
-}
-
-bool CMPCInputThread::AddInput(unsigned char* pData, size_t size, uint64_t pts)
-{
-  if (m_InputList.Count() > 1024)
-    return false;
-
-  CMPCDecodeBuffer* pBuffer = AllocBuffer(size);
-  fast_memcpy(pBuffer->GetPtr(), pData, size);
-  pBuffer->SetPts(pts);
-  m_InputList.Push(pBuffer);
-  m_InputEvent.Set();
-
-  return true;
-}
-
-void CMPCInputThread::Flush(void)
-{
-  while (m_InputList.Count())
-    delete m_InputList.Pop();
-
-  m_PopEvent.Set();
-}
-
-unsigned int CMPCInputThread::GetInputCount(void)
-{
-  return m_InputList.Count();
-}
-
-CMPCDecodeBuffer* CMPCInputThread::AllocBuffer(size_t size)
-{
-  return new CMPCDecodeBuffer(size);
-}
-
-void CMPCInputThread::FreeBuffer(CMPCDecodeBuffer* pBuffer)
-{
-  delete pBuffer;
-}
-
-CMPCDecodeBuffer* CMPCInputThread::GetNext(void)
-{
-  CMPCDecodeBuffer* buf = m_InputList.Pop();
-  m_PopEvent.Set();
-  return buf;
-}
-
-void CMPCInputThread::Process(void)
-{
-  CLog::Log(LOGDEBUG, "%s: Input Thread Started...", __MODULE_NAME__);
-  CMPCDecodeBuffer* pInput = NULL;
-  while (!m_bStop)
-  {
-    if (!pInput)
-      pInput = GetNext();
-
-    if (pInput)
-    {
-      BCM::BC_STATUS ret;
-      int demuxer_bytes = pInput->GetSize();
-      int64_t demuxer_pts = pInput->GetPts();
-      uint8_t *demuxer_content = pInput->GetPtr();
-
-      do
-      {
-        ret = m_dll->DtsProcInput(m_Device, demuxer_content, demuxer_bytes, demuxer_pts, 0);
-        if (ret == BCM::BC_STS_BUSY)
-        {
-          CLog::Log(LOGDEBUG, "%s: DtsProcInput returned BC_STS_BUSY", __MODULE_NAME__);
-          Sleep(m_SleepTime); // Buffer is full, sleep it empty
-        }
-      } while (!m_bStop && ret != BCM::BC_STS_SUCCESS);
-
-      delete pInput;
-      pInput = NULL;
-    }
-    else
-    {
-      m_InputEvent.WaitMSec(m_SleepTime);
-    }
-  }
-
-  CLog::Log(LOGDEBUG, "%s: Input Thread Stopped...", __MODULE_NAME__);
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 #if defined(__APPLE__)
@@ -481,6 +302,11 @@ unsigned int CMPCOutputThread::GetReadyCount(void)
   return m_ReadyList.Count();
 }
 
+unsigned int CMPCOutputThread::GetFreeCount(void)
+{
+  return m_FreeList.Count();
+}
+
 CPictureBuffer* CMPCOutputThread::ReadyListPop(void)
 {
   CPictureBuffer *pBuffer = m_ReadyList.Pop();
@@ -492,12 +318,9 @@ void CMPCOutputThread::FreeListPush(CPictureBuffer* pBuffer)
   m_FreeList.Push(pBuffer);
 }
 
-void CMPCOutputThread::Flush(void)
+bool CMPCOutputThread::WaitOutput(unsigned int msec)
 {
-  while(m_ReadyList.Count())
-  {
-    m_FreeList.Push( m_ReadyList.Pop() );
-  }
+  return m_ReadyEvent.WaitMSec(msec);
 }
 
 void CMPCOutputThread::DoFrameRateTracking(double timestamp)
@@ -927,6 +750,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           }
 
           m_ReadyList.Push(pBuffer);
+          m_ReadyEvent.Set();                                                                                                                                                                                                       
           got_picture = true;
         }
         else
@@ -964,6 +788,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           m_interlace_buf = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
         }
         m_OutputTimeout = 2000;
+        m_ReadyEvent.Set();                                                                                                                                                                                                       
       }
     break;
 
@@ -977,7 +802,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         CLog::Log(LOGDEBUG, "%s: DtsProcOutput returned %s.", __MODULE_NAME__, g_DtsStatusText[ret]);
     break;
   }
-
+  
   return got_picture;
 }
 
@@ -1036,7 +861,6 @@ CCrystalHD::CCrystalHD() :
   m_Device(NULL),
   m_IsConfigured(false),
   m_drop_state(false),
-  m_pInputThread(NULL),
   m_pOutputThread(NULL)
 {
 
@@ -1197,9 +1021,6 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
       break;
     }
 
-    m_pInputThread = new CMPCInputThread(m_Device, m_dll);
-    m_pInputThread->Create();
-
     m_pOutputThread = new CMPCOutputThread(m_Device, m_dll);
     m_pOutputThread->Create();
 
@@ -1214,12 +1035,6 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
 
 void CCrystalHD::CloseDecoder(void)
 {
-  if (m_pInputThread)
-  {
-    m_pInputThread->StopThread();
-    delete m_pInputThread;
-    m_pInputThread = NULL;
-  }
   if (m_pOutputThread)
   {
     while(m_BusyList.Count())
@@ -1244,8 +1059,9 @@ void CCrystalHD::Reset(void)
 {
   // Calling for non-error flush, flush all 
   m_dll->DtsFlushInput(m_Device, 2);
-  m_pInputThread->Flush();
-  m_pOutputThread->Flush();
+
+  while ( m_pOutputThread->GetReadyCount())
+    m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
 
   while( m_BusyList.Count())
     m_pOutputThread->FreeListPush( m_BusyList.Pop() );
@@ -1255,36 +1071,37 @@ void CCrystalHD::Reset(void)
   CLog::Log(LOGDEBUG, "%s: codec flushed", __MODULE_NAME__);
 }
 
-bool CCrystalHD::WaitInput(unsigned int msec)
-{
-  if(m_pInputThread)
-    return m_pInputThread->WaitInput(msec);
-  else
-    return true;
-}
-
 bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double pts)
 {
-  if (m_pInputThread)
+  if (pData)
   {
-    CHD_TIMESTAMP timestamp;
-    
-    timestamp.dts = dts;
-    timestamp.pts = pts;
-    m_timestamps.push_back(timestamp);
+    BCM::BC_STATUS ret;
 
-    return m_pInputThread->AddInput(pData, size, pts_dtoi(timestamp.pts) );
+    do
+    {
+      ret = m_dll->DtsProcInput(m_Device, pData, size, pts_dtoi(pts), 0);
+      if (ret == BCM::BC_STS_SUCCESS)
+      {
+        CHD_TIMESTAMP timestamp;
+
+        m_last_pts = pts;
+        timestamp.dts = dts;
+        timestamp.pts = pts;
+        m_timestamps.push_back(timestamp);
+      }
+      else if (ret == BCM::BC_STS_BUSY)
+      {
+        CLog::Log(LOGDEBUG, "%s: DtsProcInput returned BC_STS_BUSY", __MODULE_NAME__);
+        ::Sleep(1); // Buffer is full, sleep it empty
+      }
+    } while (ret != BCM::BC_STS_SUCCESS);
+
+    bool wait_state;
+    if (!m_drop_state)
+      wait_state = m_pOutputThread->WaitOutput(10);
   }
-  else
-    return false;
-}
 
-int CCrystalHD::GetInputCount(void)
-{
-  if (m_pInputThread)
-    return m_pInputThread->GetInputCount();
-  else
-    return 0;
+  return true;
 }
 
 int CCrystalHD::GetReadyCount(void)
@@ -1305,19 +1122,12 @@ void CCrystalHD::BusyListFlush(void)
   }
 }
 
-void CCrystalHD::ReadyListPop(void)
-{
-  if (m_pOutputThread)
-  {
-    // leave one around, DVDPlayer expects it
-    if ( m_pOutputThread->GetReadyCount() )
-      m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
-  }
-}
-
 bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 {
   CPictureBuffer* pBuffer = m_pOutputThread->ReadyListPop();
+
+  if (!pBuffer)
+    return false;
 
   if (pBuffer->m_timestamp == 0)
   {
@@ -1386,6 +1196,9 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   pDvdVideoPicture->iFlags |= m_drop_state ? DVP_FLAG_DROPPED : 0;
   pDvdVideoPicture->format = pBuffer->m_format;
 
+  while( m_BusyList.Count())
+    m_pOutputThread->FreeListPush( m_BusyList.Pop() );
+
   m_BusyList.Push(pBuffer);
   return true;
 }
@@ -1395,14 +1208,9 @@ void CCrystalHD::SetDropState(bool bDrop)
   if (m_drop_state != bDrop)
   {
     m_drop_state = bDrop;
-    CLog::Log(LOGDEBUG, "%s: SetDropState... %d", __MODULE_NAME__, m_drop_state);
+    CLog::Log(LOGDEBUG, "%s: SetDropState... %d, , GetFreeCount(%d), GetReadyCount(%d), BusyListCount(%d)", __MODULE_NAME__, 
+      m_drop_state, m_pOutputThread->GetFreeCount(), m_pOutputThread->GetReadyCount(), m_BusyList.Count());
   }
-/*
-  if (m_drop_state)
-    m_dll->DtsSetSkipPictureMode(m_Device, 1);
-  else
-    m_dll->DtsSetSkipPictureMode(m_Device, 0);
-*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

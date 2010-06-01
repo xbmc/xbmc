@@ -43,7 +43,6 @@ public:
 
 protected:
   CCrystalHD      *m_Device;
-  bool            m_DecodeStarted;
   bool            m_DropPictures;
   double          m_Duration;
   const char      *m_pFormatName;
