@@ -48,11 +48,11 @@ protected:
 
 private:
   unsigned        m_subs;
-  bool            m_startup;
   cHTSPSession    m_session;
   int             m_channel;
   int             m_tag;
   int             m_StatusCount;
+  int             m_SkipIFrame;
   CStdString      m_Status;
   PVR_STREAMPROPS m_Streams;
   SChannels       m_channels;

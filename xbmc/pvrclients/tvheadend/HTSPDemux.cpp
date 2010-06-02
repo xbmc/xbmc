@@ -32,10 +32,10 @@ extern "C" {
 
 cHTSPDemux::cHTSPDemux()
   : m_subs(0)
-  , m_startup(false)
   , m_channel(0)
   , m_tag(0)
   , m_StatusCount(0)
+  , m_SkipIFrame(0)
 {
   m_Streams.nstreams = 0;
 }
@@ -62,19 +62,22 @@ bool cHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
     return false;
 
   m_StatusCount = 0;
+  m_SkipIFrame = 0;
 
-  while(m_Streams.nstreams == 0 && m_StatusCount == 0)
+  while(m_Streams.nstreams == 0 && m_StatusCount == 0 )
   {
     DemuxPacket* pkg = Read();
     if(!pkg)
+    {
+      Close();
       return false;
+    }
     PVR->FreeDemuxPacket(pkg);
   }
 
-  m_startup = true;
   return true;
 }
-int videoid = 0;
+
 void cHTSPDemux::Close()
 {
   m_session.Close();
@@ -100,6 +103,7 @@ bool cHTSPDemux::GetStreamProperties(PVR_STREAMPROPS* props)
 
 void cHTSPDemux::Abort()
 {
+  m_Streams.nstreams = 0;
   m_session.Abort();
 }
 
@@ -114,7 +118,14 @@ DemuxPacket* cHTSPDemux::Read()
       break;
 
     if     (strcmp("subscriptionStart",  method) == 0)
+    {
       SubscriptionStart(msg);
+      m_SkipIFrame      = 0;
+      DemuxPacket* pkt  = PVR->AllocateDemuxPacket(0);
+      pkt->iStreamId    = DMX_SPECIALID_STREAMCHANGE;
+      htsmsg_destroy(msg);
+      return pkt;
+    }
     else if(strcmp("subscriptionStop",   method) == 0)
       SubscriptionStop (msg);
     else if(strcmp("subscriptionStatus", method) == 0)
@@ -123,10 +134,30 @@ DemuxPacket* cHTSPDemux::Read()
       cHTSPSession::ParseQueueStatus(msg, m_QueueStatus, m_Quality);
     else if(strcmp("muxpkt"            , method) == 0)
     {
-      uint32_t    index, duration;
+      uint32_t    index, duration, frametype;
       const void* bin;
       size_t      binlen;
       int64_t     ts;
+      char        frametypechar[1];
+
+      htsmsg_get_u32(msg, "frametype", &frametype);
+      frametypechar[0] = static_cast<char>( frametype );
+      XBMC->Log(LOG_DEBUG, "cHTSPDemux::Read - Frame type %c", frametypechar[0]);
+
+      // Not the best solution - need to find how to pause video player for longer time.
+      // This way video player could get enough audio packets in buffer to play without audio discontinuity
+
+      // Jumpy video error on channel change is fixed if first I-frame is not send to demuxer on MPEG2 stream
+      // Problem exists on some HD H264 stream, but it can help if 2 I-frames are skipped :D
+      // SD H264 stream not tested
+      if (m_SkipIFrame == 0 && frametypechar[0]=='I')
+      {
+        m_SkipIFrame++;
+        XBMC->Log(LOG_DEBUG, "cHTSPDemux::Read - I-frame");
+        htsmsg_destroy(msg);
+        DemuxPacket* pkt  = PVR->AllocateDemuxPacket(0);
+        return pkt;
+      }
 
       if(htsmsg_get_u32(msg, "stream" , &index)  ||
          htsmsg_get_bin(msg, "payload", &bin, &binlen))
@@ -170,7 +201,8 @@ DemuxPacket* cHTSPDemux::Read()
   if(msg)
   {
     htsmsg_destroy(msg);
-    return PVR->AllocateDemuxPacket(0);
+    DemuxPacket* pkt  = PVR->AllocateDemuxPacket(0);
+    return pkt;
   }
   return NULL;
 }
@@ -179,23 +211,29 @@ bool cHTSPDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
   XBMC->Log(LOG_DEBUG, "cHTSPDemux::SetChannel - changing to channel %d", channelinfo.number);
 
-  if(!m_session.SendUnsubscribe(m_subs))
+  if (!m_session.SendUnsubscribe(m_subs))
     XBMC->Log(LOG_ERROR, "cHTSPDemux::SetChannel - failed to unsubscribe from previous channel");
 
-  if(!m_session.SendSubscribe(m_subs+1, channelinfo.number))
+  if (!m_session.SendSubscribe(m_subs+1, channelinfo.number))
+    XBMC->Log(LOG_ERROR, "cHTSPDemux::SetChannel - failed to set channel");
+  else
   {
-    if(m_session.SendSubscribe(m_subs, m_channel))
-      XBMC->Log(LOG_ERROR, "cHTSPDemux::SetChannel - failed to set channel");
-    else
-      XBMC->Log(LOG_ERROR, "cHTSPDemux::SetChannel - failed to set channel and restore old channel");
-
-    return false;
+    m_channel           = channelinfo.number;
+    m_subs              = m_subs+1;
+    m_Streams.nstreams  = 0;
+    m_StatusCount       = 0;
+    while (m_Streams.nstreams == 0 && m_StatusCount == 0)
+    {
+      DemuxPacket* pkg = Read();
+      if (!pkg)
+      {
+        return false;
+      }
+      PVR->FreeDemuxPacket(pkg);
+    }
+    return true;
   }
-
-  m_channel = channelinfo.number;
-  m_subs    = m_subs+1;
-  m_startup = true;
-  return true;
+  return false;
 }
 
 bool cHTSPDemux::GetSignalStatus(PVR_SIGNALQUALITY &qualityinfo)
@@ -220,7 +258,6 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
 {
   htsmsg_t       *streams;
   htsmsg_field_t *f;
-
   if((streams = htsmsg_get_list(m, "streams")) == NULL)
   {
     XBMC->Log(LOG_ERROR, "cHTSPDemux::SubscriptionStart - malformed message");
@@ -235,17 +272,31 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
     const char* type;
     htsmsg_t* sub;
 
-    if(f->hmf_type != HMF_MAP)
+    if (f->hmf_type != HMF_MAP)
       continue;
+
     sub = &f->hmf_msg;
 
-    if((type = htsmsg_get_str(sub, "type")) == NULL)
+    if ((type = htsmsg_get_str(sub, "type")) == NULL)
       continue;
 
-    if(htsmsg_get_u32(sub, "index", &index))
+    if (htsmsg_get_u32(sub, "index", &index))
       continue;
 
-    XBMC->Log(LOG_DEBUG, "cHTSPDemux::SubscriptionStart - id: %d, type: %s", index, type);
+    const char *language = htsmsg_get_str(sub, "language");
+    XBMC->Log(LOG_DEBUG, "cHTSPDemux::SubscriptionStart - id: %d, type: %s, language: %s", index, type, language);
+
+    m_Streams.stream[m_Streams.nstreams].fpsscale         = 0;
+    m_Streams.stream[m_Streams.nstreams].fpsrate          = 0;
+    m_Streams.stream[m_Streams.nstreams].height           = 0;
+    m_Streams.stream[m_Streams.nstreams].width            = 0;
+    m_Streams.stream[m_Streams.nstreams].aspect           = 0.0;
+
+    m_Streams.stream[m_Streams.nstreams].channels         = 0;
+    m_Streams.stream[m_Streams.nstreams].samplerate       = 0;
+    m_Streams.stream[m_Streams.nstreams].blockalign       = 0;
+    m_Streams.stream[m_Streams.nstreams].bitrate          = 0;
+    m_Streams.stream[m_Streams.nstreams].bits_per_sample  = 0;
 
     if(!strcmp(type, "AC3"))
     {
@@ -253,10 +304,20 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       m_Streams.stream[m_Streams.nstreams].physid     = index;
       m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_AUDIO;
       m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_AC3;
-      m_Streams.stream[m_Streams.nstreams].language[0]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[1]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[2]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      if (language == NULL)
+      {
+        m_Streams.stream[m_Streams.nstreams].language[0]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[1]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[2]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      }
+      else
+      {
+        m_Streams.stream[m_Streams.nstreams].language[0]= language[0];
+        m_Streams.stream[m_Streams.nstreams].language[1]= language[1];
+        m_Streams.stream[m_Streams.nstreams].language[2]= language[2];
+        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      }
       m_Streams.stream[m_Streams.nstreams].identifier = -1;
       m_Streams.nstreams++;
     }
@@ -266,10 +327,20 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       m_Streams.stream[m_Streams.nstreams].physid     = index;
       m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_AUDIO;
       m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_MP2;
-      m_Streams.stream[m_Streams.nstreams].language[0]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[1]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[2]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      if (language == NULL)
+      {
+        m_Streams.stream[m_Streams.nstreams].language[0]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[1]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[2]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      }
+      else
+      {
+        m_Streams.stream[m_Streams.nstreams].language[0]= language[0];
+        m_Streams.stream[m_Streams.nstreams].language[1]= language[1];
+        m_Streams.stream[m_Streams.nstreams].language[2]= language[2];
+        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      }
       m_Streams.stream[m_Streams.nstreams].identifier = -1;
       m_Streams.nstreams++;
     }
@@ -279,17 +350,26 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       m_Streams.stream[m_Streams.nstreams].physid     = index;
       m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_AUDIO;
       m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_AAC;
-      m_Streams.stream[m_Streams.nstreams].language[0]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[1]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[2]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      if (language == NULL)
+      {
+        m_Streams.stream[m_Streams.nstreams].language[0]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[1]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[2]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      }
+      else
+      {
+        m_Streams.stream[m_Streams.nstreams].language[0]= language[0];
+        m_Streams.stream[m_Streams.nstreams].language[1]= language[1];
+        m_Streams.stream[m_Streams.nstreams].language[2]= language[2];
+        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      }
       m_Streams.stream[m_Streams.nstreams].identifier = -1;
       m_Streams.nstreams++;
     }
     else if(!strcmp(type, "MPEG2VIDEO"))
     {
       m_Streams.stream[m_Streams.nstreams].id         = m_Streams.nstreams;
-      videoid = index;
       m_Streams.stream[m_Streams.nstreams].physid     = index;
       m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_VIDEO;
       m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_MPEG2VIDEO;
@@ -323,10 +403,20 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       m_Streams.stream[m_Streams.nstreams].physid     = index;
       m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_SUBTITLE;
       m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_DVB_SUBTITLE;
-      m_Streams.stream[m_Streams.nstreams].language[0]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[1]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[2]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      if (language == NULL)
+      {
+        m_Streams.stream[m_Streams.nstreams].language[0]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[1]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[2]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      }
+      else
+      {
+        m_Streams.stream[m_Streams.nstreams].language[0]= language[0];
+        m_Streams.stream[m_Streams.nstreams].language[1]= language[1];
+        m_Streams.stream[m_Streams.nstreams].language[2]= language[2];
+        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      }
       m_Streams.stream[m_Streams.nstreams].identifier = (composition_id & 0xffff) | ((ancillary_id & 0xffff) << 16);
       m_Streams.nstreams++;
     }
@@ -336,10 +426,20 @@ void cHTSPDemux::SubscriptionStart (htsmsg_t *m)
       m_Streams.stream[m_Streams.nstreams].physid     = index;
       m_Streams.stream[m_Streams.nstreams].codec_type = CODEC_TYPE_SUBTITLE;
       m_Streams.stream[m_Streams.nstreams].codec_id   = CODEC_ID_TEXT;
-      m_Streams.stream[m_Streams.nstreams].language[0]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[1]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[2]= 0;
-      m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      if (language == NULL)
+      {
+        m_Streams.stream[m_Streams.nstreams].language[0]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[1]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[2]= 0;
+        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      }
+      else
+      {
+        m_Streams.stream[m_Streams.nstreams].language[0]= language[0];
+        m_Streams.stream[m_Streams.nstreams].language[1]= language[1];
+        m_Streams.stream[m_Streams.nstreams].language[2]= language[2];
+        m_Streams.stream[m_Streams.nstreams].language[3]= 0;
+      }
       m_Streams.stream[m_Streams.nstreams].identifier = -1;
       m_Streams.nstreams++;
     }
@@ -391,7 +491,6 @@ htsmsg_t* cHTSPDemux::ReadStream()
 
   /* after anything has started reading, *
    * we can guarantee a new stream       */
-  m_startup = false;
 
   while((msg = m_session.ReadMessage(1000)))
   {
