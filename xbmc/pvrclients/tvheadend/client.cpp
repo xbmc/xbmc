@@ -235,7 +235,7 @@ PVR_ERROR GetProperties(PVR_SERVERPROPS* props)
   props->SupportRecordings         = true;
   props->SupportTimers             = true;
   props->SupportTV                 = true;
-  props->SupportRadio              = false;
+  props->SupportRadio              = true;
   props->SupportChannelSettings    = false;
   props->SupportDirector           = false;
   props->SupportBouquets           = false;

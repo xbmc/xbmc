@@ -161,9 +161,6 @@ PVR_ERROR cHTSPData::RequestChannelList(PVRHANDLE handle, int radio)
   if (!CheckConnection())
     return PVR_ERROR_SERVER_ERROR;
 
-  if (radio)
-    return PVR_ERROR_NO_ERROR;
-
   SChannels channels = GetChannels();
   for(SChannels::iterator it = channels.begin(); it != channels.end(); ++it)
   {
@@ -175,11 +172,15 @@ PVR_ERROR cHTSPData::RequestChannelList(PVRHANDLE handle, int radio)
     tag.number        = channel.id;
     tag.name          = channel.name.c_str();
     tag.callsign      = channel.name.c_str();
+    tag.radio         = channel.radio;
     tag.input_format  = "";
     tag.stream_url    = "";
     tag.bouquet       = 0;
 
-    PVR->TransferChannelEntry(handle, &tag);
+    if(radio == tag.radio)
+    {
+      PVR->TransferChannelEntry(handle, &tag);
+    }
   }
 
   return PVR_ERROR_NO_ERROR;

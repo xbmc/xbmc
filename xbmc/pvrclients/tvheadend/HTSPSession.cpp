@@ -415,7 +415,26 @@ void cHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
     }
   }
 
+  htsmsg_t *services;
+  
+  if((services = htsmsg_get_list(msg, "services")))
+  {
+    htsmsg_field_t *f;
+    HTSMSG_FOREACH(f, services)
+    {
+      if(f->hmf_type != HMF_MAP)
+        continue;
 
+      htsmsg_t *service = &f->hmf_msg;
+      const char *service_type = htsmsg_get_str(service, "type");
+
+      if(service_type != NULL)
+      {
+        channel.radio = !strcmp(service_type, "Radio");
+      }
+    }
+  }
+  
   XBMC->Log(LOG_DEBUG, "cHTSPSession::ParseChannelUpdate - id:%u, name:'%s', icon:'%s', event:%u"
                     , id, name ? name : "(null)", icon ? icon : "(null)", event);
 }
