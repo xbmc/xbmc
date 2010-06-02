@@ -45,6 +45,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "TextureCache.h"
+#include "GUIWindowAddonBrowser.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -3292,6 +3293,26 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec("CREATE TABLE countrylinkmovie ( idCountry integer, idMovie integer)\n");
       m_pDS->exec("CREATE UNIQUE INDEX ix_countrylinkmovie_1 ON countrylinkmovie ( idCountry, idMovie)\n");
       m_pDS->exec("CREATE UNIQUE INDEX ix_countrylinkmovie_2 ON countrylinkmovie ( idMovie, idCountry)\n");
+    }
+    if (iVersion < 39)
+    { // update for old scrapers
+      m_pDS->query("select idPath,strScraper from path");
+      set<CStdString> scrapers;
+      while (!m_pDS->eof())
+      {
+        // translate the addon
+        CStdString scraperID = ADDON::UpdateVideoScraper(m_pDS->fv(1).get_asString());
+        if (!scraperID.IsEmpty())
+        {
+          scrapers.insert(scraperID);
+          CStdString update = FormatSQL("update path set strScraper='%s' where idPath=%i", scraperID.c_str(), m_pDS->fv(0).get_asInt());
+          m_pDS2->exec(update);
+        }
+        m_pDS->next();
+      }
+      m_pDS->close();
+      // ensure these scrapers are installed
+      CGUIWindowAddonBrowser::InstallAddonsFromXBMCRepo(scrapers);
     }
   }
   catch (...)
