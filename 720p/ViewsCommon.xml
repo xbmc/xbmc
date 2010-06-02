@@ -217,7 +217,7 @@
 					</control>
 					<control type="image">
 						<visible>!Container.Content(TVShows) + !Container.Content(Seasons)</visible>
-						<posx>455</posx>
+						<posx>435</posx>
 						<posy>5</posy>
 						<width>35</width>
 						<height>35</height>
@@ -290,7 +290,7 @@
 						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
 					</control>
 					<control type="image">
-						<visible>!IsEmpty(ListItem.Label2) | Container.Content(Movies)</visible>
+						<visible>!IsEmpty(ListItem.Label2) | Container.Content(Movies) | Container.Content(Seasons)</visible>
 						<posx>500</posx>
 						<posy>12</posy>
 						<width>100</width>
@@ -300,10 +300,20 @@
 						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
 					</control>
 					<control type="image">
-						<visible>Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Episodes)</visible>
+						<visible>Container.Content(TVShows) | Container.Content(Seasons)</visible>
 						<posx>450</posx>
 						<posy>12</posy>
 						<width>124</width>
+						<height>22</height>
+						<texture border="13,0,0,0">InfoList_focused_detail.png</texture>
+						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
+						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
+					</control>
+					<control type="image">
+						<visible>Container.Content(episodes)</visible>
+						<posx>475</posx>
+						<posy>12</posy>
+						<width>114</width>
 						<height>22</height>
 						<texture border="13,0,0,0">InfoList_focused_detail.png</texture>
 						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
@@ -425,7 +435,7 @@
 					</control>
 					<control type="image">
 						<visible>!Container.Content(TVShows) + !Container.Content(Seasons)</visible>
-						<posx>455</posx>
+						<posx>435</posx>
 						<posy>5</posy>
 						<width>35</width>
 						<height>35</height>
@@ -625,7 +635,7 @@
 						<height>47</height>
 						<posy>19</posy>
 						<posx>56</posx>
-						<animation effect="slide" end="30,-6" time="0" condition="Container.Content(tvshows)">Conditional</animation>
+						<animation effect="slide" end="-57,20" time="0" condition="Container.Content(tvshows)">Conditional</animation>
 					</control>
 <!--
 					<control type="textbox">
@@ -646,7 +656,7 @@
 							<height>260</height>
 							<label>[COLOR=FFFF9900]$INFO[ListItem.tagline][/COLOR][CR]$INFO[ListItem.Plot]</label>
 							<animation effect="slide" end="0,-23" time="0" condition="!Container.Content(movies)">Conditional</animation>
-							<visible>![Container.Content(seasons) | Container.Content(albums) | Container.Content(artists)]</visible>
+							<visible>![Container.Content(seasons) | Container.Content(albums) | Container.Content(artists) | Container.Content(tvshows)]</visible>
 						</control>
 						<control type="textbox">
 							<description>Plot</description>
@@ -654,6 +664,14 @@
 							<height>317</height>
 							<info>ListItem.plotoutline</info>
 							<visible>Container.Content(seasons)</visible>
+						</control>
+						<control type="textbox">
+							<description>Plot</description>
+							<posy>-35</posy>
+							<width>InfoListTitleWidth</width>
+							<height>347</height>
+							<info>ListItem.plot</info>
+							<visible>Container.Content(tvshows)</visible>
 						</control>
 						<control type="textbox">
 							<description>Album review</description>

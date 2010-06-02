@@ -43,6 +43,19 @@
 			<align>right</align>
 			<aspectratio>keep</aspectratio>
 			<aligny>bottom</aligny>
+			<visible>!Container.Content(tvshows)</visible>
+		</control>
+
+		<control type="image">
+			<posy>-70</posy>
+			<posx>450</posx>
+			<height>60</height>
+			<width min="1" max="95">auto</width>
+			<info>Listitem.Property(mediaTag::contentRating)</info>
+			<align>right</align>
+			<aspectratio>keep</aspectratio>
+			<aligny>bottom</aligny>
+			<visible>Container.Content(tvshows)</visible>
 		</control>
 
 		<control type="grouplist">
@@ -83,11 +96,21 @@
 		</control>
 
 		<control type="image">
-			<visible>!IsEmpty(Listitem.Property(mediaTag::studio))</visible>
+			<visible>!IsEmpty(Listitem.Property(mediaTag::studio)) + !Container.Content(tvshows)</visible>
 			<posx>500</posx>
 			<posy>-35</posy>
 			<height>90</height>
 			<width min="1" max="95">auto</width>
+			<info>Listitem.Property(mediaTag::studio)</info>
+			<aspectratio>keep</aspectratio>
+		</control>
+
+		<control type="image">
+			<visible>!IsEmpty(Listitem.Property(mediaTag::studio)) + Container.Content(tvshows)</visible>
+			<posx>565</posx>
+			<posy>-70</posy>
+			<height>60</height>
+			<width min="1" max="135">auto</width>
 			<info>Listitem.Property(mediaTag::studio)</info>
 			<aspectratio>keep</aspectratio>
 		</control>
