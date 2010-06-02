@@ -129,11 +129,11 @@ typedef struct
 
 static const TypeMapping types[] =
   {{"unknown",                           ADDON_UNKNOWN,                 0 },
-   {"xbmc.metadata.scraper.albums",      ADDON_SCRAPER_ALBUMS,      24007 },
-   {"xbmc.metadata.scraper.artists",     ADDON_SCRAPER_ARTISTS,     24007 },
+   {"xbmc.metadata.scraper.albums",      ADDON_SCRAPER_ALBUMS,      24016 },
+   {"xbmc.metadata.scraper.artists",     ADDON_SCRAPER_ARTISTS,     24017 },
    {"xbmc.metadata.scraper.movies",      ADDON_SCRAPER_MOVIES,      24007 },
-   {"xbmc.metadata.scraper.musicvideos", ADDON_SCRAPER_MUSICVIDEOS, 24007 },
-   {"xbmc.metadata.scraper.tvshows",     ADDON_SCRAPER_TVSHOWS,     24007 },
+   {"xbmc.metadata.scraper.musicvideos", ADDON_SCRAPER_MUSICVIDEOS, 24015 },
+   {"xbmc.metadata.scraper.tvshows",     ADDON_SCRAPER_TVSHOWS,     24014 },
    {"xbmc.metadata.scraper.library",     ADDON_SCRAPER_LIBRARY,         0 },
    {"xbmc.ui.screensaver",               ADDON_SCREENSAVER,         24008 },
    {"xbmc.player.musicviz",              ADDON_VIZ,                 24010 },
