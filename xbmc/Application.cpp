@@ -4564,6 +4564,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         g_windowManager.PreviousWindow();
       }
 
+      if (IsEnableTestMode()) g_application.getApplicationMessenger().Quit();
       return true;
     }
     break;
