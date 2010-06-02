@@ -115,7 +115,7 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
       CGUIDialogBoxBase::OnMessage(message);
       int focusedControl = GetFocusedControlID();
       if (focusedControl >= CONTROL_START_SECTION && focusedControl < (int)(CONTROL_START_SECTION + m_totalSections) &&
-          focusedControl - CONTROL_START_SECTION != m_currentSection)
+          focusedControl - CONTROL_START_SECTION != (int)m_currentSection)
       { // changing section
         UpdateFromControls();
         m_currentSection = focusedControl - CONTROL_START_SECTION;
