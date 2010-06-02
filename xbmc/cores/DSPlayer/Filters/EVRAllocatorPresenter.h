@@ -166,6 +166,7 @@
     // D3D Reset
     void BeforeDeviceReset();
     void AfterDeviceReset();
+
     virtual void  OnVBlankFinished(bool fAll, LONGLONG PerformanceCounter);
 
     double      m_ModeratedTime;

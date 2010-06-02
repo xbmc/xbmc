@@ -668,20 +668,6 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
 
-  Com::SmartPtr<IDirect3DTexture9> pTexture;
-  lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
-
-  if(pTexture)
-  {
-    m_pVideoSurface[m_nCurSurface] = lpPresInfo->lpSurf;
-    if(m_pVideoTexture[m_nCurSurface]) 
-      m_pVideoTexture[m_nCurSurface] = pTexture;
-  }
-  else
-  {
-    m_pD3DDev->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE);
-  }
-
   if(lpPresInfo->rtEnd > lpPresInfo->rtStart)
   {
     __super::SetTime(g_tSegmentStart + g_tSampleStart);
@@ -694,7 +680,23 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   {
     m_AspectRatio.SetSize(arx, ary);
     SendMessage(g_hWnd,WM_COMMAND, ID_DS_SET_WINDOW_POS,0);
-    //AfxGetApp()->m_pMainWnd->PostMessage(WM_REARRANGERENDERLESS);
+  }
+
+  if (! m_bPendingResetDevice)
+  {
+    Com::SmartPtr<IDirect3DTexture9> pTexture;
+    lpPresInfo->lpSurf->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
+
+    if(pTexture)
+    {
+      m_pVideoSurface[m_nCurSurface] = lpPresInfo->lpSurf;
+      if(m_pVideoTexture[m_nCurSurface]) 
+        m_pVideoTexture[m_nCurSurface] = pTexture;
+    }
+    else
+    {
+      m_pD3DDev->StretchRect(lpPresInfo->lpSurf, NULL, m_pVideoSurface[m_nCurSurface], NULL, D3DTEXF_NONE);
+    }
   }
 
   //From the new frame the rendermanager will call the dx9allocator paint function
@@ -745,15 +747,18 @@ STDMETHODIMP CVMR9AllocatorPresenter::GetBorderColor(COLORREF* lpClr)
 
 void CVMR9AllocatorPresenter::BeforeDeviceReset()
 {
-  // The device is going to be recreated, free ressources
+  // Pause playback
+  SendMessage(g_hWnd, WM_COMMAND, ID_PLAY_PAUSE, 0);
+
   this->Lock();
   m_RenderLock.Lock();
-  m_bNeedNewDevice = true;
-  //DeleteSurfaces();
+
+  __super::BeforeDeviceReset();
 }
 
 void CVMR9AllocatorPresenter::AfterDeviceReset()
 {
+  __super::AfterDeviceReset();
 
   HRESULT hr;
   HMONITOR hMonitor = m_pD3D->GetAdapterMonitor(GetAdapter(m_pD3D));
@@ -761,10 +766,12 @@ void CVMR9AllocatorPresenter::AfterDeviceReset()
   if (SUCCEEDED(hr))
   {
     CLog::Log(LOGDEBUG,"%s Changed d3d device",__FUNCTION__);
-    m_bNeedNewDevice = false;
   }
   m_RenderLock.Unlock();
   this->Unlock();
+
+  // Restart playback
+  SendMessage(g_hWnd, WM_COMMAND, ID_PLAY_PLAY, 0);
 }
 
 #endif

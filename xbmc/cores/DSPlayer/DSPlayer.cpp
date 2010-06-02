@@ -66,6 +66,8 @@ CDSPlayer::~CDSPlayer()
 
   DShowUtil::UnloadExternalObjects();
   CLog::Log(LOGDEBUG, "%s External objects unloaded", __FUNCTION__);
+
+  CLog::Log(LOGNOTICE, "%s DSPlayer is now closed", __FUNCTION__);
 }
 
 bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
@@ -144,7 +146,7 @@ bool CDSPlayer::CloseFile()
 
   g_dsGraph->CloseFile();
   
-  CLog::Log(LOGNOTICE, "%s DSPlayer is now closed", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s File closed", __FUNCTION__);
   
   PlayerState = DSPLAYER_CLOSED;
 

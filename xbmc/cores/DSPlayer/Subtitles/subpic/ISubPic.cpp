@@ -401,8 +401,7 @@ HRESULT ISubPicQueueImpl::RenderTo(ISubPic* pSubPic, REFERENCE_TIME rtStart, REF
   if(!pSubPic)
     return hr;
 
-  // TODO: Use a Com::SmartPtr ?
-  ISubPicProvider* pSubPicProvider;
+  Com::SmartPtr<ISubPicProvider> pSubPicProvider; // FIXME: May crash
   if(FAILED(GetSubPicProvider(&pSubPicProvider)) || !pSubPicProvider)
     return hr;
 
@@ -1010,6 +1009,7 @@ ISubPicAllocatorPresenterImpl::ISubPicAllocatorPresenterImpl(HWND hWnd, HRESULT&
   , m_VideoRect(0, 0, 0, 0), m_WindowRect(0, 0, 0, 0)
   , m_fps(25.0)
   , m_rtSubtitleDelay(0)
+  , m_bPendingResetDevice(false)
 {
   CStdString _pError;
   _pError = "";

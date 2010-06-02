@@ -425,6 +425,8 @@ protected:
   Com::SmartPtr<ISubPicAllocator> m_pAllocator;
   Com::SmartPtr<ISubPicQueue> m_pSubPicQueue;
 
+  bool m_bPendingResetDevice;
+
   void AlphaBltSubPic(Com::SmartSize size, SubPicDesc* pTarget = NULL);
 
   XForm m_xform;

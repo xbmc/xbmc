@@ -198,8 +198,6 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   , m_rtTimePerFrame(0)
   , m_bInterlaced(0)
   , m_nUsedBuffer(0)
-  , m_bNeedPendingResetDevice(0)
-  , m_bPendingResetDevice(0)
   , m_OrderedPaint(0)
   , m_bCorrectedFrameTime(0)
   , m_FrameTimeCorrection(0)
@@ -908,7 +906,6 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
   }
 
   //
-  m_bNeedNewDevice = false;
   m_filter = D3DTEXF_NONE;
   //testing here
   
@@ -920,59 +917,8 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
   && (m_caps.StretchRectFilterCaps&D3DPTFILTERCAPS_MAGFLINEAR))
     m_filter = D3DTEXF_LINEAR;
 
-  //
-
   m_bicubicA = 0;
 
-  //
-#if 0
-  Com::SmartPtr<ISubPicProvider> pSubPicProvider;
-  if(m_pSubPicQueue) m_pSubPicQueue->GetSubPicProvider(&pSubPicProvider);
-
-  Com::SmartSize size;
-  
-  switch(g_dsSettings.nSPCMaxRes)
-  {
-  case 0: default: size = m_ScreenSize; break;
-  case 1: size.SetSize(1024, 768); break;
-  case 2: size.SetSize(800, 600); break;
-  case 3: size.SetSize(640, 480); break;
-  case 4: size.SetSize(512, 384); break;
-  case 5: size.SetSize(384, 288); break;
-  case 6: size.SetSize(2560, 1600); break;
-  case 7: size.SetSize(1920, 1080); break;
-  case 8: size.SetSize(1320, 900); break;
-  case 9: size.SetSize(1280, 720); break;
-  }
-
-  if(m_pAllocator)
-  {
-    m_pAllocator->ChangeDevice(m_pD3DDev);
-  }
-  else
-  {
-    m_pAllocator = DNew CDX9SubPicAllocator(m_pD3DDev, size, g_dsSettings.fSPCPow2Tex);
-    if(!m_pAllocator)
-    {
-      _Error += L"CDX9SubPicAllocator failed\n";
-
-      return E_FAIL;
-    }
-  }
-
-  hr = S_OK;
-  m_pSubPicQueue = g_dsSettings.nSPCSize > 0 
-    ? (ISubPicQueue*)DNew CSubPicQueue(g_dsSettings.nSPCSize, !g_dsSettings.fSPCAllowAnimationWhenBuffering, m_pAllocator, &hr)
-    : (ISubPicQueue*)DNew CSubPicQueueNoThread(m_pAllocator, &hr);
-  if(!m_pSubPicQueue || FAILED(hr))
-  {
-    _Error += L"m_pSubPicQueue failed\n";
-
-    return E_FAIL;
-  }
-
-  if(pSubPicProvider) m_pSubPicQueue->SetSubPicProvider(pSubPicProvider);
-#endif
   m_pFont = NULL;
   if (m_pD3DXCreateFont)
   {
@@ -993,7 +939,6 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
                L"Lucida Console",              // pFaceName
                &m_pFont);              // ppFont
   }
-
 
   m_pSprite = NULL;
 
@@ -1680,6 +1625,10 @@ void CDX9AllocatorPresenter::CalculateJitter(LONGLONG PerfCounter)
 
 bool CDX9AllocatorPresenter::GetVBlank(int &_ScanLine, int &_bInVBlank, bool _bMeasureTime)
 {
+
+  if (m_bPendingResetDevice)
+    return false;
+
   LONGLONG llPerf;
   if (_bMeasureTime)
     llPerf = CTimeUtils::GetPerfCounter();
@@ -1985,10 +1934,9 @@ void CDX9AllocatorPresenter::UpdateAlphaBitmap()
 
 STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
 {
-
   CAutoSetEvent event(&m_drawingIsDone);
-  
-  if (!g_renderManager.IsStarted() || m_bNeedNewDevice)
+
+  if (!g_renderManager.IsStarted() || m_bPendingResetDevice)
     return false;
 
   LONGLONG StartPaint = CTimeUtils::GetPerfCounter();
@@ -2309,58 +2257,6 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
   if (bTakenLock)
     UnlockD3DDevice();
 
-  bool fResetDevice = m_bPendingResetDevice;
-
-  if(hr == D3DERR_DEVICELOST && m_pD3DDev->TestCooperativeLevel() == D3DERR_DEVICENOTRESET
-    || hr == S_PRESENT_MODE_CHANGED)
-  {
-    fResetDevice = true;
-  }
-
-  if (SettingsNeedResetDevice())
-    fResetDevice = true;
-
-  bCompositionEnabled = false;
-  if (m_pDwmIsCompositionEnabled)
-    m_pDwmIsCompositionEnabled(&bCompositionEnabled);
-  if ((bCompositionEnabled != 0) != m_bCompositionEnabled)
-  {
-    if (m_bIsFullscreen)
-    {
-      m_bCompositionEnabled = (bCompositionEnabled != 0);
-    }
-    else
-      fResetDevice = true;
-  }
-
-  // TODO: Usefull ?
-  /*if(g_dsSettings.fResetDevice)
-  {
-    D3DDEVICE_CREATION_PARAMETERS Parameters;
-    if(SUCCEEDED(m_pD3DDev->GetCreationParameters(&Parameters)) && m_pD3D->GetAdapterMonitor(Parameters.AdapterOrdinal) != m_pD3D->GetAdapterMonitor(GetAdapter(m_pD3D)))
-    {
-      fResetDevice = true;
-    }
-  }*/
-
-  if(fResetDevice)
-  {
-    if (m_bNeedPendingResetDevice)
-    {
-      m_bPendingResetDevice = true;
-    }
-    else
-    {
-      if (m_MainThreadId && m_MainThreadId == GetCurrentThreadId())
-      {
-        m_bPendingResetDevice = false;
-        ResetDevice();
-      }
-      else
-        m_bPendingResetDevice = true;
-    }
-  }
-
   if (m_OrderedPaint)
     --m_OrderedPaint;
 
@@ -2381,25 +2277,6 @@ double CDX9AllocatorPresenter::GetFrameRate()
     return m_DetectedFrameRate;
 
   return 10000000.0 / m_rtTimePerFrame;
-}
-
-bool CDX9AllocatorPresenter::ResetDevice()
-{
-  StopWorkerThreads();
-  if (CStreamsManager::Get()->SubtitleManager)
-    CStreamsManager::Get()->SubtitleManager->StopThread();
-
-  BeforeDeviceReset(); // Handle pre-reset specific renderer stuff
-
-  DeleteSurfaces();
-
-  m_pD3DDev = NULL;
-  m_pD3D = NULL;
-
-  // Stop playback (seems to hang with using avisource splitter)
-  //g_dsGraph->Stop();
-
-  return true;
 }
 
 void CDX9AllocatorPresenter::DrawText(const RECT &rc, const CStdString &strText, int _Priority)
@@ -2812,18 +2689,45 @@ STDMETHODIMP CDX9AllocatorPresenter::GetDIB(BYTE* lpDib, DWORD* size)
   return S_OK;
 }
 
+void CDX9AllocatorPresenter::BeforeDeviceReset()
+{
+  m_bPendingResetDevice = true;
+
+  StopWorkerThreads();
+  if (CStreamsManager::Get()->SubtitleManager)
+    CStreamsManager::Get()->SubtitleManager->StopThread();
+
+  DeleteSurfaces();
+
+  m_pD3DDev = NULL;
+  m_pD3D = NULL;
+}
+
+void CDX9AllocatorPresenter::AfterDeviceReset()
+{
+  m_pD3DDev = g_Windowing.Get3DDevice();
+  m_pD3D = g_Windowing.Get3DObject();
+
+  AllocSurfaces();
+
+  if (CStreamsManager::Get()->SubtitleManager)
+    CStreamsManager::Get()->SubtitleManager->StartThread();
+
+  m_bPendingResetDevice = false;
+}
+
 void CDX9AllocatorPresenter::OnLostDevice()
 {
   // XBMC gets a Reset event. We need to cleanup our ressources
   CLog::Log(LOGDEBUG, "%s Device lost, cleaning ressources", __FUNCTION__);
-  ResetDevice();
+  BeforeDeviceReset();
 }
 
 void CDX9AllocatorPresenter::OnDestroyDevice()
 {
   // The device is going to be destroyed. Cleanup!
   CLog::Log(LOGDEBUG, "%s Device destroyed, cleaning ressources", __FUNCTION__);
-  ResetDevice();
+  BeforeDeviceReset();
 }
 
 void CDX9AllocatorPresenter::OnCreateDevice()
@@ -2834,22 +2738,7 @@ void CDX9AllocatorPresenter::OnCreateDevice()
 void CDX9AllocatorPresenter::OnResetDevice()
 {
   CLog::Log(LOGDEBUG, "%s Device is back, recreating ressources", __FUNCTION__);
-  m_pD3DDev = g_Windowing.Get3DDevice();
-  m_pD3D = g_Windowing.Get3DObject();
-
-  if (CStreamsManager::Get()->SubtitleManager)
-    CStreamsManager::Get()->SubtitleManager->StartThread();
-
-  // Device is back, alloc our surface
-  HRESULT hr = AllocSurfaces();
-
-  AfterDeviceReset(); // handle post-reset stuff
-
-  // Restart playback
-  //g_dsGraph->Play(true);
-
-  // TODO: Doesn't work. Try to post a message to the player in order to make the playback restart
-  SendMessage(g_hWnd, WM_COMMAND, ID_PLAY_PLAY, 0);
+  AfterDeviceReset();
 }
 
 void CDX9AllocatorPresenter::OnPaint(CRect destRect)

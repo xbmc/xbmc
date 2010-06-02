@@ -32,6 +32,8 @@
 #include "DShowUtil/smartlist.h"
 #include "Utils/TimeUtils.h"
 #include "Application.h"
+#include "WindowingFactory.h"
+
 #if (_DEBUG || 0)    // Set to 1 to activate EVR traces
   #define TRACE_EVR    CLog::DebugLog
 #else
@@ -315,8 +317,6 @@ CEVRAllocatorPresenter::CEVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdStrin
   m_ModeratedTime = 0;
   m_ModeratedTimeLast = -1;
   m_ModeratedClockLast = -1;
-
-  m_bNeedPendingResetDevice = true;
 
   if (FAILED (hr)) 
   {
@@ -894,7 +894,7 @@ HRESULT CEVRAllocatorPresenter::CreateProposedOutputType(IMFMediaType* pMixerTyp
   CheckHR (pMixerType->GetRepresentation  (FORMAT_MFVideoFormat, (void**)&pAMMedia));
   
   VideoFormat = (MFVIDEOFORMAT*)pAMMedia->pbFormat;
-  hr = pfMFCreateVideoMediaType  (VideoFormat, &m_pMediaType);
+  hr = pfMFCreateVideoMediaType(VideoFormat, &m_pMediaType);
 
   if (0)
   {
@@ -1073,7 +1073,7 @@ HRESULT CEVRAllocatorPresenter::RenegotiateMediaType()
     {
         pMixerType   = NULL;
         pType     = NULL;
-    m_pMediaType = NULL;
+        m_pMediaType = NULL;
 
         // Step 1. Get the next media type supported by mixer.
         hr = m_pMixer->GetOutputAvailableType(0, iTypeIndex++, &pMixerType);
@@ -1993,44 +1993,13 @@ void CEVRAllocatorPresenter::RenderThread()
         RenegotiateMediaType();
         m_bPendingRenegotiate = false;
       }
-      if (m_bPendingResetDevice)
-      {
-        m_bPendingResetDevice = false;
-        CAutoLock lock(this);
-        CAutoLock lock2(&m_ImageProcessingLock);
-        CAutoLock cRenderLock(&m_RenderLock);
-        
-        RemoveAllSamples();
 
-        CDX9AllocatorPresenter::ResetDevice();
-
-        for(int i = 0; i < m_nNbDXSurface; i++)
-        {
-          Com::SmartPtr<IMFSample>    pMFSample;
-          HRESULT hr = pfMFCreateVideoSampleFromSurface (m_pVideoSurface[i], &pMFSample);
-
-          if (SUCCEEDED (hr))
-          {
-            pMFSample->SetUINT32 (GUID_SURFACE_INDEX, i);
-            m_FreeSamples.InsertBack(pMFSample);
-          }
-          ASSERT (SUCCEEDED (hr));
-        }
-
-      }
-      // Discard timer events if playback stop
-//      if ((dwObject == WAIT_OBJECT_0 + 3) && (m_nRenderState != Started)) continue;
-
-//      TRACE_EVR ("EVR: RenderThread ==>> Waiting buffer\n");
-      
-//      if (WaitForMultipleObjects (countof(hEvtsBuff), hEvtsBuff, FALSE, INFINITE) == WAIT_OBJECT_0+2)
       {
         Com::SmartPtr<IMFSample>    pMFSample;
         LONGLONG  llPerf = CTimeUtils::GetPerfCounter();
         int nSamplesLeft = 0;
         if (SUCCEEDED (GetScheduledSample(&pMFSample, nSamplesLeft)))
         { 
-//          pMFSample->GetUINT32 (GUID_SURFACE_INDEX, (UINT32*)&m_nCurSurface);
           m_pCurrentDisplaydSample = pMFSample;
 
           bool bValidSampleTime = true;
@@ -2340,40 +2309,28 @@ void CEVRAllocatorPresenter::RenderThread()
 
 void CEVRAllocatorPresenter::BeforeDeviceReset()
 {
+  // Pause playback
+  SendMessage(g_hWnd, WM_COMMAND, ID_PLAY_PAUSE, 0);
+
   this->Lock();
   m_ImageProcessingLock.Lock();
   m_RenderLock.Lock();
 
   // The device is going to be recreated, free ressources
-  m_bNeedNewDevice = true;
   RemoveAllSamples();
-
-  // Delete DXVA Manager
-  m_pD3DManager.FullRelease();
-  m_pMediaType = NULL;
-  m_pClock = NULL;
+  __super::BeforeDeviceReset();
 }
 
 void CEVRAllocatorPresenter::AfterDeviceReset()
 {
+  __super::AfterDeviceReset();
 
-  // Init DXVA manager
-  HRESULT hr = pfDXVA2CreateDirect3DDeviceManager9(&m_nResetToken, &m_pD3DManager);
-  ASSERT(SUCCEEDED (hr));
-  
-  hr = m_pD3DManager->ResetDevice(m_pD3DDev, m_nResetToken);
+  HRESULT hr = m_pD3DManager->ResetDevice(m_pD3DDev, m_nResetToken);
   ASSERT(SUCCEEDED(hr));
 
-  Com::SmartPtr<IDirectXVideoDecoderService> pDecoderService;
-  HANDLE hDevice;
-  if (SUCCEEDED (m_pD3DManager->OpenDeviceHandle(&hDevice)) &&
-    SUCCEEDED (m_pD3DManager->GetVideoService (hDevice, __uuidof(IDirectXVideoDecoderService), (void**)&pDecoderService)))
-  {
-    TRACE_EVR ("EVR: DXVA2 : device handle = 0x%08x", hDevice);
-    HookDirectXVideoDecoderService (pDecoderService);
-
-    m_pD3DManager->CloseDeviceHandle (hDevice);
-  }
+  // Not necessary, but Microsoft documentation say Presenter should send this message...
+  if (m_pSink)
+    m_pSink->Notify (EC_DISPLAY_CHANGED, 0, 0);
 
   for(int i = 0; i < m_nNbDXSurface; i++)
   {
@@ -2388,15 +2345,12 @@ void CEVRAllocatorPresenter::AfterDeviceReset()
     ASSERT (SUCCEEDED (hr));
   }
 
-  m_bNeedNewDevice = false;
-
-  // Not necessary, but Microsoft documentation say Presenter should send this message...
-  if (m_pSink)
-    m_pSink->Notify (EC_DISPLAY_CHANGED, 0, 0);
-
   m_RenderLock.Unlock();
   m_ImageProcessingLock.Unlock();
   this->Unlock();
+
+  // Restart playback
+  SendMessage(g_hWnd, WM_COMMAND, ID_PLAY_PLAY, 0);
 }
 
 

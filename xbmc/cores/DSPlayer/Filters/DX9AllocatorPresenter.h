@@ -89,12 +89,12 @@ public:
     bool  m_bHighColorResolution;
     bool  m_bCompositionEnabled;
     bool  m_bIsEVR;
-    int    m_OrderedPaint;
-    int    m_VSyncMode;
+    int   m_OrderedPaint;
+    int   m_VSyncMode;
     bool  m_bDesktopCompositionDisabled;
     bool  m_bIsFullscreen;
     bool  m_bNeedCheckSample;
-    DWORD  m_MainThreadId;
+    DWORD m_MainThreadId;
     //CDsSettings::CRendererSettingsEVR m_LastRendererSettings;
 
     HRESULT (__stdcall * m_pDwmIsCompositionEnabled)(__out BOOL* pfEnabled);
@@ -243,9 +243,8 @@ public:
     HRESULT        AlphaBlt(RECT* pSrc, RECT* pDst, Com::SmartPtr<IDirect3DTexture9> pTexture);
 
     // D3D Reset
-    virtual void BeforeDeviceReset() {};
-    virtual void AfterDeviceReset() {};
-    virtual bool ResetDevice();
+    virtual void BeforeDeviceReset();
+    virtual void AfterDeviceReset();
 
     double GetFrameTime();
     double GetFrameRate();
@@ -268,10 +267,7 @@ public:
     int            m_nVMR9Surfaces;          // Total number of DX Surfaces
     int            m_iVMR9Surface;
     int            m_nCurSurface;          // Surface currently displayed
-    long          m_nUsedBuffer;
-    bool          m_bNeedPendingResetDevice;
-    bool          m_bPendingResetDevice;
-    bool          m_bNeedNewDevice;
+    long           m_nUsedBuffer;
 
     double          m_fAvrFps;            // Estimate the real FPS
     double          m_fJitterStdDev;        // Estimate the Jitter std dev
