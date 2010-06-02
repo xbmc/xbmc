@@ -184,6 +184,8 @@ void CDSGraph::CloseFile()
 
 void CDSGraph::UpdateTime()
 {
+  CSingleLock lock(m_ObjectLock);
+
   if (!m_pMediaSeeking)
     return;
   LONGLONG Position;
@@ -212,14 +214,11 @@ void CDSGraph::UpdateTime()
 
   //On dvd playback the current time is received in the handlegraphevent
   if ( m_VideoInfo.isDVD )
-    return;
+    return; 
 
- 
-  
   if (( m_State.time_total != 0 && m_State.time >= m_State.time_total ))
     m_bReachedEnd = true;
 
-  
 }
 
 void CDSGraph::UpdateDvdState()
@@ -282,6 +281,8 @@ void CDSGraph::UpdateWindowPosition()
 
 void CDSGraph::UpdateState()
 {
+  CSingleLock lock(m_ObjectLock);
+
   HRESULT hr = S_OK;
   if (CDSPlayer::PlayerState == DSPLAYER_CLOSING || CDSPlayer::PlayerState == DSPLAYER_CLOSED)
     return;
@@ -460,12 +461,16 @@ HRESULT CDSGraph::HandleGraphEvent()
 //USER ACTIONS
 void CDSGraph::SetVolume(long nVolume)
 {
+  CSingleLock lock(m_UserActionLock);
+
   if (m_pBasicAudio)
     m_pBasicAudio->put_Volume(nVolume);
 }
 
 void CDSGraph::Stop(bool rewind)
 {
+  CSingleLock lock(m_UserActionLock);
+
   LONGLONG pos = 0;  
   
   if (rewind && m_pMediaSeeking)
@@ -514,6 +519,8 @@ bool CDSGraph::OnMouseClick(tagPOINT pt)
 
 bool CDSGraph::OnMouseMove(tagPOINT pt)
 {
+  CSingleLock lock(m_UserActionLock);
+
   HRESULT hr;
   hr = CFGLoader::Filters.DVD.dvdControl->SelectAtPosition(pt);
   if (SUCCEEDED(hr))
@@ -523,6 +530,7 @@ bool CDSGraph::OnMouseMove(tagPOINT pt)
 
 void CDSGraph::Play(bool force/* = false*/)
 {
+  CSingleLock lock(m_UserActionLock);
   if (m_pMediaControl && (force || m_State.current_filter_state != State_Running))
     m_pMediaControl->Run();
 
@@ -531,6 +539,7 @@ void CDSGraph::Play(bool force/* = false*/)
 
 void CDSGraph::Pause()
 {
+  CSingleLock lock(m_UserActionLock);
   if (CDSPlayer::PlayerState == DSPLAYER_PAUSED)
   {
     if (m_State.current_filter_state != State_Running)
@@ -885,7 +894,6 @@ bool CDSGraph::CanSeek()
 
 void CDSGraph::ProcessMessage(WPARAM wParam, LPARAM lParam)
 {
-  
   if ( wParam == ID_DVD_MOUSE_MOVE)
   {
     //TODO make the xbmc gui stay hidden when moving mouse over menu

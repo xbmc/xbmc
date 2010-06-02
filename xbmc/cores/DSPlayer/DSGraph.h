@@ -173,14 +173,13 @@ private:
 
   DWORD_PTR m_userId;
   CCriticalSection m_ObjectLock;
+  CCriticalSection m_UserActionLock;
+
   CStdString m_pStrCurrentFrameRate;
   int m_iCurrentFrameRefreshCycle;
 
   IPlayerCallback& m_callback;
 
-  friend class CTextPassThruInputPin;
-  friend class CTextPassThruFilter;
-  CCritSec m_SubLock;
   struct SPlayerState
   {
     SPlayerState()
