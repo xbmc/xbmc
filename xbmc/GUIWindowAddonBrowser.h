@@ -56,6 +56,17 @@ public:
    \return true if an addon was selected, false if an error occurred or if the selection process was cancelled
    */
   static bool SelectAddonID(ADDON::TYPE type, CStdString &addonID, bool showNone = false);
+
+  /*! \brief Install an addon if it is available in a repository
+   \param addonID the addon ID of the item to install
+   */
+  static void InstallAddon(const CStdString &addonID);
+
+  /*! \brief Install a set of addons from the official repository (if needed)
+   \param addonIDs a set of addon IDs to install
+   */
+  static void InstallAddonsFromXBMCRepo(const std::set<CStdString> &addonIDs);
+
 protected:
   void UnRegisterJob(CFileOperationJob* job);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);

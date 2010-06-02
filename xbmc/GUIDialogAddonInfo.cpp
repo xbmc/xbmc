@@ -137,15 +137,7 @@ void CGUIDialogAddonInfo::UpdateControls()
 
 void CGUIDialogAddonInfo::OnInstall()
 {
-  AddonPtr addon;
-  CAddonDatabase database;
-  database.Open();
-  if (database.GetAddon(m_addon->ID(),addon))
-  {
-    CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
-    pair<CFileOperationJob*,unsigned int> job = window->AddJob(addon->Path());
-    window->RegisterJob(m_addon->ID(),job.first,job.second);
-  }
+  CGUIWindowAddonBrowser::InstallAddon(m_addon->ID());
 }
 
 void CGUIDialogAddonInfo::OnUninstall()

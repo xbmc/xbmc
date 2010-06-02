@@ -526,3 +526,43 @@ bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool 
   }
   return false;
 }
+
+void CGUIWindowAddonBrowser::InstallAddon(const CStdString &addonID)
+{
+  // check whether we already have the addon installed
+  AddonPtr addon;
+  if (CAddonMgr::Get().GetAddon(addonID, addon))
+    return;
+
+  // check whether we have it available in a repository
+  CAddonDatabase database;
+  database.Open();
+  if (database.GetAddon(addonID, addon))
+  {
+    CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
+    if (!window)
+      return;
+    pair<CFileOperationJob*,unsigned int> job = window->AddJob(addon->Path());
+    window->RegisterJob(addonID, job.first, job.second);
+  }
+}
+
+void CGUIWindowAddonBrowser::InstallAddonsFromXBMCRepo(const set<CStdString> &addonIDs)
+{
+  // first check we have the main repository updated...
+  AddonPtr addon;
+  if (CAddonMgr::Get().GetAddon("repository.xbmc.org", addon))
+  {
+    VECADDONS addons;
+    CAddonDatabase database;
+    database.Open();
+    if (!database.GetRepository(addon->ID(), addons))
+    {
+      RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addon);
+      addons = CRepositoryUpdateJob::GrabAddons(repo, false);
+    }
+  }
+  // now install the addons
+  for (set<CStdString>::const_iterator i = addonIDs.begin(); i != addonIDs.end(); ++i)
+    InstallAddon(*i);
+}
