@@ -1220,7 +1220,6 @@
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererUtil.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\RenderManager.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\WinRenderer.h" />
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\XBoxRenderer.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\VideoFilterShader.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\YUV2RGBShader.h" />

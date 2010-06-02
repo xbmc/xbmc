@@ -2741,9 +2741,6 @@
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\WinRenderer.h">
       <Filter>cores\VideoRenderers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\XBoxRenderer.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.h">
       <Filter>cores\VideoRenderers\Shaders</Filter>
     </ClInclude>
