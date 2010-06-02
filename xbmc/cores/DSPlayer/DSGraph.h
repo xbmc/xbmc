@@ -173,7 +173,6 @@ private:
 
   DWORD_PTR m_userId;
   CCriticalSection m_ObjectLock;
-  CCriticalSection m_UserActionLock;
 
   CStdString m_pStrCurrentFrameRate;
   int m_iCurrentFrameRefreshCycle;
