@@ -289,12 +289,12 @@ bool cCmdControl::process_Login() /* OPCODE 1 */
 
   if (protocolVersion != VNSIProtocolVersion)
   {
-    esyslog("VNSI-Error: Client '%s' have a not allowed protocol version '%lu', terminating client", clientName, protocolVersion);
+    esyslog("VNSI-Error: Client '%s' have a not allowed protocol version '%u', terminating client", clientName, protocolVersion);
     delete clientName;
     return false;
   }
 
-  isyslog("VNSI: Welcome client '%s' with protocol version '%lu'", clientName, protocolVersion);
+  isyslog("VNSI: Welcome client '%s' with protocol version '%u'", clientName, protocolVersion);
 
   if (netLog)
     m_req->getClient()->EnableNetLog(true, clientName);
@@ -547,7 +547,6 @@ bool cCmdControl::processCHANNELS_GroupList() /* OPCODE 62 */
   int countInGroup = 0;
   int index        = 0;
   const cChannel* group = NULL;
-  cCharSetConv toUTF8;
   for (cChannel *channel = Channels.First(); channel; channel = Channels.Next(channel))
   {
     if (channel->GroupSep())
@@ -556,7 +555,7 @@ bool cCmdControl::processCHANNELS_GroupList() /* OPCODE 62 */
       {
         m_resp->add_U32(index);
         m_resp->add_U32(countInGroup);
-        m_resp->add_String(toUTF8.Convert(group->Name()));
+        m_resp->add_String(m_toUTF8.Convert(group->Name()));
       }
       group = channel;
       countInGroup = 0;
@@ -597,7 +596,6 @@ bool cCmdControl::processCHANNELS_GetChannels() /* OPCODE 63 */
 
   int groupIndex = 0;
   const cChannel* group = NULL;
-  cCharSetConv toUTF8;
   for (cChannel *channel = Channels.First(); channel; channel = Channels.Next(channel))
   {
     if (channel->GroupSep())
@@ -620,7 +618,7 @@ bool cCmdControl::processCHANNELS_GetChannels() /* OPCODE 63 */
         continue;
 
       m_resp->add_U32(channel->Number());
-      m_resp->add_String(toUTF8.Convert(channel->Name()));
+      m_resp->add_String(m_toUTF8.Convert(channel->Name()));
       m_resp->add_U32(channel->Sid());
       m_resp->add_U32(groupIndex);
       m_resp->add_U32(channel->Ca());
@@ -655,7 +653,6 @@ bool cCmdControl::processTIMER_Get() /* OPCODE 81 */
 {
   uint32_t number = m_req->extract_U32();
 
-  cCharSetConv toUTF8;
   int numTimers = Timers.Count();
   if (numTimers > 0)
   {
@@ -675,7 +672,7 @@ bool cCmdControl::processTIMER_Get() /* OPCODE 81 */
       m_resp->add_U32(timer->StopTime());
       m_resp->add_U32(timer->Day());
       m_resp->add_U32(timer->WeekDays());
-      m_resp->add_String(toUTF8.Convert(timer->File()));
+      m_resp->add_String(m_toUTF8.Convert(timer->File()));
     }
     else
       m_resp->add_U32(VDR_RET_DATAUNKNOWN);
@@ -690,7 +687,6 @@ bool cCmdControl::processTIMER_Get() /* OPCODE 81 */
 
 bool cCmdControl::processTIMER_GetList() /* OPCODE 82 */
 {
-  cCharSetConv toUTF8;
   cTimer *timer;
   int numTimers = Timers.Count();
 
@@ -713,7 +709,7 @@ bool cCmdControl::processTIMER_GetList() /* OPCODE 82 */
     m_resp->add_U32(timer->StopTime());
     m_resp->add_U32(timer->Day());
     m_resp->add_U32(timer->WeekDays());
-    m_resp->add_String(toUTF8.Convert(timer->File()));
+    m_resp->add_String(m_toUTF8.Convert(timer->File()));
   }
 
   m_resp->finalise();
@@ -782,7 +778,7 @@ bool cCmdControl::processTIMER_Delete() /* OPCODE 84 */
   uint32_t number = m_req->extract_U32();
   bool     force  = m_req->extract_U32();
 
-  if (number <= 0 || number > Timers.Count())
+  if (number <= 0 || number > (uint32_t)Timers.Count())
   {
     esyslog("VNSI-Error: Unable to delete timer - invalid timer identifier");
     m_resp->add_U32(VDR_RET_DATAINVALID);
@@ -841,7 +837,7 @@ bool cCmdControl::processTIMER_Update() /* OPCODE 85 */
   cTimer *timer = Timers.Get(index - 1);
   if (!timer)
   {
-    esyslog("VNSI-Error: Timer \"%lu\" not defined", index);
+    esyslog("VNSI-Error: Timer \"%u\" not defined", index);
     m_resp->add_U32(VDR_RET_DATAUNKNOWN);
     m_resp->finalise();
     m_req->getClient()->GetSocket()->write(m_resp->getPtr(), m_resp->getLen());
@@ -936,7 +932,6 @@ bool cCmdControl::processRECORDINGS_GetCount() /* OPCODE 101 */
 
 bool cCmdControl::processRECORDINGS_GetList() /* OPCODE 102 */
 {
-  cCharSetConv toUTF8;
   cRecordings Recordings;
   Recordings.Load();
 
@@ -975,21 +970,26 @@ bool cCmdControl::processRECORDINGS_GetList() /* OPCODE 102 */
     m_resp->add_U32(recordingDuration);
     m_resp->add_U32(recording->priority);
     m_resp->add_U32(recording->lifetime);
-    m_resp->add_String(recording->Info()->ChannelName() ? toUTF8.Convert(recording->Info()->ChannelName()) : "");
-    if (!isempty(recording->Info()->Title()))
-      m_resp->add_String(toUTF8.Convert(recording->Info()->Title()));
-    else
-      m_resp->add_String("");
+    m_resp->add_String(recording->Info()->ChannelName() ? m_toUTF8.Convert(recording->Info()->ChannelName()) : "");
+    const char* fullname = recording->Name();
+    const char* recname = strrchr(fullname, '~');
+    if(recname != NULL) {
+      recname++;
+      m_resp->add_String(m_toUTF8.Convert(recname));
+    }
+    else {
+      m_resp->add_String(m_toUTF8.Convert(recording->Info()->Title()));
+    }
     if (!isempty(recording->Info()->ShortText()))
-      m_resp->add_String(toUTF8.Convert(recording->Info()->ShortText()));
+      m_resp->add_String(m_toUTF8.Convert(recording->Info()->ShortText()));
     else
       m_resp->add_String("");
     if (!isempty(recording->Info()->Description()))
-      m_resp->add_String(toUTF8.Convert(recording->Info()->Description()));
+      m_resp->add_String(m_toUTF8.Convert(recording->Info()->Description()));
     else
       m_resp->add_String("");
 
-    m_resp->add_String(toUTF8.Convert(recording->FileName()));
+    m_resp->add_String(m_toUTF8.Convert(recording->FileName()));
   }
 
   m_resp->finalise();
@@ -999,7 +999,6 @@ bool cCmdControl::processRECORDINGS_GetList() /* OPCODE 102 */
 
 bool cCmdControl::processRECORDINGS_GetInfo() /* OPCODE 103 */
 {
-  cCharSetConv toUTF8;
   const char *fileName  = m_req->extract_String();
 
   cRecordings Recordings;
@@ -1038,17 +1037,17 @@ bool cCmdControl::processRECORDINGS_GetInfo() /* OPCODE 103 */
   m_resp->add_U32(recordingDuration);
   m_resp->add_U32(recording->priority);
   m_resp->add_U32(recording->lifetime);
-  m_resp->add_String(recording->Info()->ChannelName() ? toUTF8.Convert(recording->Info()->ChannelName()) : "");
+  m_resp->add_String(recording->Info()->ChannelName() ? m_toUTF8.Convert(recording->Info()->ChannelName()) : "");
   if (!isempty(recording->Info()->Title()))
-    m_resp->add_String(toUTF8.Convert(recording->Info()->Title()));
+    m_resp->add_String(m_toUTF8.Convert(recording->Info()->Title()));
   else
     m_resp->add_String("");
   if (!isempty(recording->Info()->ShortText()))
-    m_resp->add_String(toUTF8.Convert(recording->Info()->ShortText()));
+    m_resp->add_String(m_toUTF8.Convert(recording->Info()->ShortText()));
   else
     m_resp->add_String("");
   if (!isempty(recording->Info()->Description()))
-    m_resp->add_String(toUTF8.Convert(recording->Info()->Description()));
+    m_resp->add_String(m_toUTF8.Convert(recording->Info()->Description()));
   else
     m_resp->add_String("");
 
@@ -1362,7 +1361,6 @@ bool cCmdControl::processEPG_GetForChannel() /* OPCODE 120 */
   const char* thisEventTitle;
   const char* thisEventSubTitle;
   const char* thisEventDescription;
-  cCharSetConv toUTF8;
 
   for (const cEvent* event = Schedule->Events()->First(); event; event = Schedule->Events()->Next(event))
   {
@@ -1402,9 +1400,9 @@ bool cCmdControl::processEPG_GetForChannel() /* OPCODE 120 */
     m_resp->add_U32(thisEventContent);
     m_resp->add_U32(thisEventRating);
 
-    m_resp->add_String(toUTF8.Convert(thisEventTitle));
-    m_resp->add_String(toUTF8.Convert(thisEventSubTitle));
-    m_resp->add_String(toUTF8.Convert(thisEventDescription));
+    m_resp->add_String(m_toUTF8.Convert(thisEventTitle));
+    m_resp->add_String(m_toUTF8.Convert(thisEventSubTitle));
+    m_resp->add_String(m_toUTF8.Convert(thisEventDescription));
 
     atLeastOneEvent = true;
   }

@@ -103,6 +103,7 @@ private:
   RequestPacketQueue  m_req_queue;
   cResponsePacket    *m_resp;
   cCondWait           m_Wait;
+  cCharSetConv        m_toUTF8;
 };
 
 
