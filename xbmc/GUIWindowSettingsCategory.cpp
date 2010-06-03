@@ -483,7 +483,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
 #endif
     else if (strSetting.Equals("videoscreen.screenmode"))
     {
-      FillInResolutions(pSetting, false);
+      FillInResolutions(pSetting);
     }
     else if (strSetting.Equals("lookandfeel.skintheme"))
     {
@@ -495,7 +495,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("videoplayer.displayresolution") || strSetting.Equals("pictures.displayresolution"))
     {
-      FillInResolutions(pSetting, true);
+      FillInResolutions(pSetting);
     }
     else if (strSetting.Equals("videoplayer.highqualityupscaling"))
     {
