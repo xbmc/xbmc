@@ -696,9 +696,6 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\ChaptersManager.cpp">
       <Filter>cores\dsplayer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSClock.cpp">
-      <Filter>cores\dsplayer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSConfig.cpp">
       <Filter>cores\dsplayer</Filter>
     </ClCompile>
@@ -2940,9 +2937,6 @@
       <Filter>cores\PlayerCoreFactory</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\ChaptersManager.h">
-      <Filter>cores\dsplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSClock.h">
       <Filter>cores\dsplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSConfig.h">

@@ -48,9 +48,6 @@
 
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
-#ifdef HAS_DS_PLAYER
-#include "../dsplayer/DSClock.h"
-#endif
 
 CXBMCRenderManager& g_renderManager = g_SystemGlobals.m_renderManager;
 
@@ -117,7 +114,7 @@ CXBMCRenderManager::~CXBMCRenderManager()
 /* These is based on CurrentHostCounter() */
 double CXBMCRenderManager::GetPresentTime()
 {
-  return CDVDClock::GetAbsoluteClock() / DVD_TIME_BASE;
+  return CDVDClock::GetAbsoluteClock() / CDVDClock::GetTimeBase();
 }
 
 static double wrap(double x, double minimum, double maximum)
@@ -139,7 +136,7 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
   if(fps <= 0)
   {
     /* smooth video not enabled */
-    CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
+    CDVDClock::WaitAbsoluteClock(presenttime * CDVDClock::GetTimeBase());
     return;
   }
 
@@ -147,7 +144,7 @@ void CXBMCRenderManager::WaitPresentTime(double presenttime)
 
   presenttime     += m_presentcorr * frametime;
 
-  double clock     = CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE) / DVD_TIME_BASE;
+  double clock     = CDVDClock::WaitAbsoluteClock(presenttime * CDVDClock::GetTimeBase()) / CDVDClock::GetTimeBase();
   double target    = 0.5;
   double error     = ( clock - presenttime ) / frametime - target;
 

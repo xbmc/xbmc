@@ -30,7 +30,7 @@
 #include "SingleLock.h"
 #include "StdString.h"
 #include "DSGraph.h"
-#include "DSClock.h"
+#include "DVDClock.h"
 
 #include "StreamsManager.h"
 #include "ChaptersManager.h"
@@ -145,7 +145,7 @@ protected:
   int  m_currentRate;
   bool m_bSpeedChanged;
 
-  CDSClock m_pDsClock;
+  CDVDClock m_pClock;
   CPlayerOptions m_PlayerOptions;
   CURL m_Filename;
   CEvent m_hReadyEvent;

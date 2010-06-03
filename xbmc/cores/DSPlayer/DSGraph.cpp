@@ -64,10 +64,10 @@ using namespace std;
 
 CDSGraph* g_dsGraph = NULL;
 
-CDSGraph::CDSGraph(CDSClock* pClock, IPlayerCallback& callback)
+CDSGraph::CDSGraph(CDVDClock* pClock, IPlayerCallback& callback)
     : m_pGraphBuilder(NULL), m_currentRate(1), m_lAvgTimeToSeek(0),
       m_iCurrentFrameRefreshCycle(0), m_userId(0xACDCACDC),
-      m_bReachedEnd(false), m_callback(callback), pDsClock(pClock)
+      m_bReachedEnd(false), m_callback(callback), m_pClock(pClock)
 { 
 }
 
@@ -585,7 +585,7 @@ int CDSGraph::DoFFRW(int currentRate)
   stepInMsec += GetTime();
 
   //the ajustement is to get an estimate of the time beetween each seek
-  startTimer = CDSClock::GetAbsoluteClock();
+  startTimer = CDVDClock::GetAbsoluteClock();
 
   stepInMsec += m_lAvgTimeToSeek;
 
@@ -628,7 +628,7 @@ int CDSGraph::DoFFRW(int currentRate)
     UpdateState(); // We need to know the new state
   }
 
-  m_lAvgTimeToSeek = (__int64) DS_TIME_TO_MSEC((CDSClock::GetAbsoluteClock() - startTimer));
+  m_lAvgTimeToSeek = (__int64) DS_TIME_TO_MSEC((CDVDClock::GetAbsoluteClock() - startTimer));
   if ( m_lAvgTimeToSeek <= 0 )
     m_lAvgTimeToSeek = 50;
 

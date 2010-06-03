@@ -28,6 +28,7 @@
 
 int64_t CDVDClock::m_systemOffset;
 int64_t CDVDClock::m_systemFrequency;
+int64_t CDVDClock::m_timeBase = DVD_TIME_BASE;
 CCriticalSection CDVDClock::m_systemsection;
 
 CDVDClock::CDVDClock()
@@ -49,7 +50,7 @@ CDVDClock::CDVDClock()
 CDVDClock::~CDVDClock()
 {}
 
-// Returns the current absolute clock in units of DVD_TIME_BASE (usually microseconds).
+// Returns the current absolute clock in units of timeBase (usually microseconds).
 double CDVDClock::GetAbsoluteClock()
 {
   CSingleLock lock(m_systemsection);
@@ -71,7 +72,7 @@ double CDVDClock::GetAbsoluteClock()
   old = current;
 #endif
 
-  return DVD_TIME_BASE * (double)current / m_systemFrequency;
+  return m_timeBase * (double)current / m_systemFrequency;
 }
 
 double CDVDClock::WaitAbsoluteClock(double target)
@@ -90,11 +91,11 @@ double CDVDClock::WaitAbsoluteClock(double target)
 
   lock.Leave();
 
-  systemtarget = (int64_t)(target / DVD_TIME_BASE * (double)freq);
+  systemtarget = (int64_t)(target / m_timeBase * (double)freq);
   systemtarget += offset;
   systemtarget = g_VideoReferenceClock.Wait(systemtarget);
   systemtarget -= offset;
-  return (double)systemtarget / freq * DVD_TIME_BASE;
+  return (double)systemtarget / freq * m_timeBase;
 }
 
 double CDVDClock::GetClock()
@@ -117,7 +118,7 @@ double CDVDClock::GetClock()
     current = g_VideoReferenceClock.GetTime();
 
   current -= m_startClock;
-  return DVD_TIME_BASE * (double)current / m_systemUsed + m_iDisc;
+  return m_timeBase * (double)current / m_systemUsed + m_iDisc;
 }
 
 void CDVDClock::SetSpeed(int iSpeed)
@@ -159,7 +160,7 @@ void CDVDClock::Discontinuity(ClockDiscontinuityType type, double currentPts, do
   case CLOCK_DISC_NORMAL:
     {
       m_startClock = g_VideoReferenceClock.GetTime();
-      m_startClock += (int64_t)(delay * m_systemUsed / DVD_TIME_BASE);
+      m_startClock += (int64_t)(delay * m_systemUsed / m_timeBase);
       m_iDisc = currentPts;
       m_bReset = false;
       break;

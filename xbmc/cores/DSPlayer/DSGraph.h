@@ -32,7 +32,7 @@
 #include <initguid.h>
 #include <dvdmedia.h>
 #include "util.h"
-#include "DSClock.h"
+#include "DVDClock.h"
 #include "dsconfig.h"
 #include "fgmanager.h"
 #include "DShowUtil/DShowUtil.h"
@@ -59,7 +59,7 @@ class CFGManager;
 class CDSGraph
 {
 public:
-  CDSGraph(CDSClock* pClock, IPlayerCallback& callback);
+  CDSGraph(CDVDClock* pClock, IPlayerCallback& callback);
   virtual ~CDSGraph();
 
   /** Determine if the graph can seek
@@ -145,7 +145,7 @@ public:
   /// @return Informations about the current video track
   CStdString GetVideoInfo();
 
-  CDSClock* pDsClock;
+  CDVDClock* m_pClock;
   Com::SmartPtr<IFilterGraph2> pFilterGraph;
 
 protected:

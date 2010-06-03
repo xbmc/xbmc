@@ -39,6 +39,18 @@
 #define DVD_PLAYSPEED_NORMAL      1000
 #define DVD_PLAYSPEED_FF_2X       2000
 
+#ifdef HAS_DS_PLAYER
+  //Time base from directshow is a 100 nanosec unit
+  #define DS_TIME_BASE 1E7
+
+  #define DS_TIME_TO_SEC(x)     ((double)(x * 1E-7))
+  #define DS_TIME_TO_MSEC(x)    ((double)(x * 1E-4))
+  #define SEC_TO_DS_TIME(x)     ((__int64)(x * DS_TIME_BASE))
+  //MSEC_TO_DS_TIME is the one used to convert from directshow to the one rendermanager is using
+  #define MSEC_TO_DS_TIME(x)    ((__int64)(x * 1E4))
+  #define SEC_TO_MSEC(x)        ((double)(x * 1E3))
+#endif
+
 enum ClockDiscontinuityType
 {
   CLOCK_DISC_FULL,  // pts is starting form 0 again
@@ -72,6 +84,10 @@ public:
   static double GetAbsoluteClock();
   static double GetFrequency() { return (double)m_systemFrequency ; }
   static double WaitAbsoluteClock(double target);
+
+  // Allow a different time base (DirectShow for example use a 100 ns time base)
+  static void SetTimeBase(int64_t timeBase) { m_timeBase = timeBase; }
+  static int64_t GetTimeBase() { return m_timeBase; }
 protected:
   CSharedSection m_critSection;
   int64_t m_systemUsed;
@@ -82,6 +98,7 @@ protected:
 
   static int64_t m_systemFrequency;
   static int64_t m_systemOffset;
+  static int64_t m_timeBase;
   static CCriticalSection m_systemsection;
 
   double           m_maxspeedadjust;

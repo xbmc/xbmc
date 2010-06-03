@@ -51,7 +51,10 @@ CDSPlayer::CDSPlayer(IPlayerCallback& callback)
     : IPlayer(callback), CThread(), m_hReadyEvent(true), m_bSpeedChanged(false),
     m_callSetFileFromThread(true)
 {
-  g_dsGraph = new CDSGraph(&m_pDsClock, callback);
+  // Change DVD Clock, time base
+  CDVDClock::SetTimeBase((int64_t) DS_TIME_BASE);
+
+  g_dsGraph = new CDSGraph(&m_pClock, callback);
 }
 
 CDSPlayer::~CDSPlayer()
@@ -68,6 +71,9 @@ CDSPlayer::~CDSPlayer()
   CLog::Log(LOGDEBUG, "%s External objects unloaded", __FUNCTION__);
 
   CLog::Log(LOGNOTICE, "%s DSPlayer is now closed", __FUNCTION__);
+
+  // Restore DVD Player time base clock
+  CDVDClock::SetTimeBase(DVD_TIME_BASE);
 }
 
 bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
@@ -233,19 +239,19 @@ void CDSPlayer::Process()
   if (PlayerState == DSPLAYER_ERROR)
     return;
 
+  HandleStart();
+  
   HRESULT hr = S_OK;
-  bool pStartPosDone = false;
-  int sleepTime;
+  int sleepTime = 0;
 
   while (PlayerState != DSPLAYER_CLOSING && PlayerState != DSPLAYER_CLOSED)
   {
     CHECK_PLAYER_STATE
 
-    //The graph need to be started to handle those stuff
-    if (!pStartPosDone)
+    if (m_bSpeedChanged)
     {
-      HandleStart();
-      pStartPosDone = true;
+      m_pClock.SetSpeed(m_currentRate * 1000);
+      m_bSpeedChanged = false;
     }
 
     CHECK_PLAYER_STATE
@@ -253,12 +259,7 @@ void CDSPlayer::Process()
     g_dsGraph->HandleGraphEvent();
 
     CHECK_PLAYER_STATE
-    
-    if (m_bSpeedChanged)
-    {
-      m_pDsClock.SetSpeed(m_currentRate * 1000);
-      
-    }
+
     g_dsGraph->UpdateTime();
 
     CHECK_PLAYER_STATE
@@ -314,17 +315,15 @@ void CDSPlayer::Pause()
     m_callback.OnPlayBackPaused();
   }
 
-  SendMessage(g_hWnd,WM_COMMAND, ID_PLAY_PAUSE,0);
+  SendMessage(g_hWnd, WM_COMMAND, ID_PLAY_PAUSE, 0);
 }
 void CDSPlayer::ToFFRW(int iSpeed)
 {
-  m_bSpeedChanged = true;
   if (iSpeed != 1)
     g_infoManager.SetDisplayAfterSeek();
-  m_currentRate = iSpeed;
-  if (iSpeed == 1)
-    SendMessage(g_hWnd,WM_COMMAND, ID_PLAY_PLAY,0);
 
+  m_currentRate = iSpeed;
+  m_bSpeedChanged = true;
 }
 
 void CDSPlayer::Seek(bool bPlus, bool bLargeStep)

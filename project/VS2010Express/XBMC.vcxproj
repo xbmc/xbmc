@@ -500,7 +500,6 @@
     <ClCompile Include="..\..\xbmc\cores\playercorefactory\PlayerCoreFactory.cpp" />
     <ClCompile Include="..\..\xbmc\cores\playercorefactory\PlayerSelectionRule.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\ChaptersManager.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSClock.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSConfig.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSGraph.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DSPlayer.cpp" />
@@ -1291,7 +1290,6 @@
     <ClInclude Include="..\..\xbmc\cores\playercorefactory\PlayerCoreFactory.h" />
     <ClInclude Include="..\..\xbmc\cores\playercorefactory\PlayerSelectionRule.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\ChaptersManager.h" />
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSClock.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSConfig.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSGraph.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSPlayer.h" />
