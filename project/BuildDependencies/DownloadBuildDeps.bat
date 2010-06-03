@@ -4,8 +4,13 @@ SETLOCAL
 
 SET CUR_PATH=%CD%
 SET XBMC_PATH=%CD%\..\..
-SET DL_PATH=%CD%\downloads
 SET TMP_PATH=%CD%\scripts\tmp
+
+IF $%1$ == $$ (
+  SET DL_PATH="%CD%\downloads"
+) ELSE (
+  SET DL_PATH="%1"
+)
 
 SET WGET=%CUR_PATH%\bin\wget
 SET ZIP=%CUR_PATH%\..\Win32BuildSetup\tools\7z\7za
