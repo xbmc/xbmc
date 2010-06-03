@@ -21,8 +21,6 @@
 
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
-#elif defined(_WIN32)
-#include "system.h"
 #endif
 
 #if defined(HAVE_LIBVDADECODER)
