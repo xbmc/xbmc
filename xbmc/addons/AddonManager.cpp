@@ -67,8 +67,11 @@ map<TYPE, IAddonMgrCallback*> CAddonMgr::m_managers;
 
 AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
 {
+  if (!PlatformSupportsAddon(props->plugin))
+    return AddonPtr();
+
   /* Check if user directories need to be created */
-  const cp_cfg_element_t *settings = GetExtElement(props->plugin->extensions->configuration, "settings");
+  const cp_cfg_element_t *settings = GetExtElement(props->configuration, "settings");
   if (settings)
     CheckUserDirs(settings);
 
@@ -77,6 +80,10 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
   {
     case ADDON_PLUGIN:
     case ADDON_SCRIPT:
+    case ADDON_SCRIPT_LIBRARY:
+    case ADDON_SCRIPT_LYRICS:
+    case ADDON_SCRIPT_WEATHER:
+    case ADDON_SCRIPT_SUBTITLES:
       return AddonPtr(new CAddon(props->plugin));
     case ADDON_SCRAPER:
       return AddonPtr(new CScraper(props->plugin));
@@ -257,19 +264,14 @@ bool CAddonMgr::HasAddons(const TYPE &type, const CONTENT_TYPE &content/*= CONTE
 
 bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabledOnly/*= true*/)
 {
-  VECADDONS temp;
-  if (CAddonMgr::Get().GetAddons(ADDON_PLUGIN, temp, CONTENT_NONE, enabledOnly))
-    addons.insert(addons.end(), temp.begin(), temp.end());
-  if (CAddonMgr::Get().GetAddons(ADDON_SCRAPER, temp, CONTENT_NONE, enabledOnly))
-    addons.insert(addons.end(), temp.begin(), temp.end());
-  if (CAddonMgr::Get().GetAddons(ADDON_SCREENSAVER, temp, CONTENT_NONE, enabledOnly))
-    addons.insert(addons.end(), temp.begin(), temp.end());
-  if (CAddonMgr::Get().GetAddons(ADDON_SCRIPT, temp, CONTENT_NONE, enabledOnly))
-    addons.insert(addons.end(), temp.begin(), temp.end());
-  if (CAddonMgr::Get().GetAddons(ADDON_SKIN, temp, CONTENT_NONE, enabledOnly))
-    addons.insert(addons.end(), temp.begin(), temp.end());
-  if (CAddonMgr::Get().GetAddons(ADDON_VIZ, temp, CONTENT_NONE, enabledOnly))
-    addons.insert(addons.end(), temp.begin(), temp.end());
+  for (int i = ADDON_UNKNOWN+1; i < ADDON_VIZ_LIBRARY; ++i)
+  {
+    if (ADDON_REPOSITORY == (TYPE)i)
+      continue;
+    VECADDONS temp;
+    if (CAddonMgr::Get().GetAddons((TYPE)i, temp, CONTENT_NONE, enabledOnly))
+      addons.insert(addons.end(), temp.begin(), temp.end());
+  }
   return !addons.empty();
 }
 
@@ -297,9 +299,9 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
 
   cp_status_t status;
   cp_plugin_info_t *cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
-  if (status == CP_OK && cpaddon->extensions)
+  if (status == CP_OK && cpaddon)
   {
-    addon = Factory(cpaddon->extensions);
+    addon = GetAddonFromDescriptor(cpaddon);
     m_cpluff->release_info(m_cp_context, cpaddon);
     return NULL != addon.get();
   }
@@ -363,34 +365,13 @@ void CAddonMgr::FindAddons()
 {
   CSingleLock lock(m_critSection);
   if (m_cpluff && m_cp_context)
-    m_cpluff->scan_plugins(m_cp_context, 0);
+    m_cpluff->scan_plugins(m_cp_context, CP_SP_UPGRADE);
 }
 
 void CAddonMgr::RemoveAddon(const CStdString& ID)
 {
   if (m_cpluff && m_cp_context)
     m_cpluff->uninstall_plugin(m_cp_context,ID.c_str());
-}
-
-bool CAddonMgr::GetTranslatedString(const TiXmlElement *xmldoc, const char *tag, CStdString& data)
-{
-  const TiXmlElement *element = xmldoc->FirstChildElement(tag);
-  const TiXmlElement *enelement = NULL;
-  while (element)
-  {
-    const char* lang = element->Attribute("lang");
-    if (lang && strcmp(lang,g_langInfo.GetDVDAudioLanguage().c_str()) == 0)
-      break;
-    if (!lang || strcmp(lang,"en") == 0)
-      enelement = element;
-    element = element->NextSiblingElement(tag);
-  }
-  if (!element)
-    element = enelement;
-  if (element)
-    data = element->GetText();
-
-  return element != NULL;
 }
 
 const char *CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const char *tag)
@@ -420,6 +401,10 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
   {
     case ADDON_PLUGIN:
     case ADDON_SCRIPT:
+    case ADDON_SCRIPT_LIBRARY:
+    case ADDON_SCRIPT_LYRICS:
+    case ADDON_SCRIPT_WEATHER:
+    case ADDON_SCRIPT_SUBTITLES:
       return AddonPtr(new CAddon(addonProps));
     case ADDON_SCRAPER:
       return AddonPtr(new CScraper(addonProps));
@@ -473,6 +458,37 @@ void CAddonMgr::OnJobComplete(unsigned int jobID, bool success, CJob* job)
  * libcpluff interaction
  */
 
+bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
+{
+  if (!plugin || !plugin->num_extensions)
+    return false;
+  const cp_extension_t *metadata = GetExtension(plugin, "xbmc.addon.metadata");
+  if (!metadata)
+    return false;
+  
+  vector<CStdString> platforms;
+  if (CAddonMgr::Get().GetExtList(metadata->configuration, "platform", platforms))
+  {
+    for (unsigned int i = 0; i < platforms.size(); ++i)
+    {
+      if (platforms[i] == "all")
+        return true;
+#if defined(_LINUX) && !defined(__APPLE__)
+      if (platforms[i] == "linux")
+#elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
+      if (platforms[i] == "wingl")
+#elif defined(_WIN32) && defined(HAS_DX)
+      if (platforms[i] == "windx")
+#elif defined(__APPLE__)
+      if (platforms[i] == "osx")
+#endif
+        return true;
+    }
+    return false; // no <platform> works for us
+  }
+  return true; // assume no <platform> is equivalent to <platform>all</platform>
+}
+
 const cp_cfg_element_t *CAddonMgr::GetExtElement(cp_cfg_element_t *base, const char *path)
 {
   const cp_cfg_element_t *element = NULL;
@@ -502,7 +518,7 @@ bool CAddonMgr::GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *ba
   return true;
 }
 
-const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, const char *extension)
+const cp_extension_t *CAddonMgr::GetExtension(const cp_plugin_info_t *props, const char *extension) const
 {
   if (!props)
     return NULL;
@@ -540,23 +556,44 @@ CStdString CAddonMgr::GetExtValue(cp_cfg_element_t *base, const char *path)
   else return CStdString();
 }
 
-vector<CStdString> CAddonMgr::GetExtValues(cp_cfg_element_t *base, const char *path)
+bool CAddonMgr::GetExtList(cp_cfg_element_t *base, const char *path, vector<CStdString> &result) const
 {
-  vector<CStdString> result;
-  cp_cfg_element_t *parent = m_cpluff->lookup_cfg_element(base,path);
-  for (unsigned int i=0;parent && i<parent->num_children;++i)
-    result.push_back(parent->children[i].value); 
-
-  return result;
+  if (!base || !path)
+    return false;
+  CStdString all = m_cpluff->lookup_cfg_value(base, path);
+  if (all.IsEmpty())
+    return false;
+  StringUtils::SplitString(all, " ", result);
+  return true;
 }
 
+AddonPtr CAddonMgr::GetAddonFromDescriptor(const cp_plugin_info_t *info)
+{
+  if (!info || !info->extensions)
+    return AddonPtr();
+
+  // FIXME: If we want to support multiple extension points per addon, we'll need to extend this to not just take
+  //        the first extension point (eg use the TYPE information we pass in)
+
+  // grab a relevant extension point, ignoring our xbmc.addon.metadata extension point
+  for (unsigned int i = 0; i < info->num_extensions; ++i)
+  {
+    if (0 != strcmp("xbmc.addon.metadata", info->extensions[i].ext_point_id))
+    { // note that Factory takes care of whether or not we have platform support
+      return Factory(&info->extensions[i]);
+    }
+  }
+  return AddonPtr();
+}
+
+// FIXME: This function may not be required
 bool CAddonMgr::LoadAddonDescription(const CStdString &path, AddonPtr &addon)
 {
   cp_status_t status;
   cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor(m_cp_context, _P(path).c_str(), &status);
   if (info)
   {
-    addon = Factory(info->extensions);
+    addon = GetAddonFromDescriptor(info);
     m_cpluff->release_info(m_cp_context, info);
     return NULL != addon.get();
   }
@@ -584,11 +621,10 @@ bool CAddonMgr::AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons)
     cp_plugin_info_t *info = m_cpluff->load_plugin_descriptor_from_memory(context, xml.c_str(), xml.size(), &status);
     if (info)
     {
-      AddonPtr addon = Factory(info->extensions);
-      m_cpluff->release_info(context, info);
-      // FIXME: sanity check here that the addon satisfies our requirements?
+      AddonPtr addon = GetAddonFromDescriptor(info);
       if (addon.get())
         addons.push_back(addon);
+      m_cpluff->release_info(context, info);
     }
     element = element->NextSiblingElement("addon");
   }

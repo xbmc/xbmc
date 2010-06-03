@@ -244,7 +244,7 @@
 						<width>580</width>
 						<height>160</height>
 						<font>font12</font>
-						<align>justify</align>
+						<align>-</align>
 						<textcolor>white</textcolor>
 						<label>$INFO[ListItem.Property(Addon.Description)]</label>
 						<pagecontrol>60</pagecontrol>
@@ -283,7 +283,7 @@
 						<width>580</width>
 						<height>40</height>
 						<font>font12</font>
-						<align>justify</align>
+						<align>-</align>
 						<textcolor>white</textcolor>
 						<label>$INFO[ListItem.Property(Addon.Disclaimer)]</label>
 						<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
@@ -310,7 +310,7 @@
 						<width>580</width>
 						<height>250</height>
 						<font>font12</font>
-						<align>justify</align>
+						<align>-</align>
 						<textcolor>white</textcolor>
 						<label>$INFO[ListItem.Property(Addon.Description)]</label>
 						<pagecontrol>61</pagecontrol>

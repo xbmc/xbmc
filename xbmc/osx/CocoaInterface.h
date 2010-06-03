@@ -81,6 +81,7 @@ extern "C"
   //
   const char* Cocoa_GetAppVersion();
   bool Cocoa_HasVDADecoder();
+  bool Cocoa_GPUForDisplayIsNvidiaPureVideo3();
   int Cocoa_GetOSVersion();
 
   

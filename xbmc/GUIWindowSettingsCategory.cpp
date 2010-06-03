@@ -586,11 +586,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13509), RESAMPLE_REALLYHIGH);
       pControl->SetValue(pSettingInt->GetData());
     }
-    else if (strSetting.Equals("weather.script"))
-    {
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInWeatherScripts(pControl, g_guiSettings.GetString("weather.script"));
-    }
     else if (strSetting.Equals("pvrmenu.defaultguideview"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -973,14 +968,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetLabel2(CWeather::GetAreaCity(pSetting->GetData()));
     }
-    else if (strSetting.Equals("weather.script"))
-    {
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-      if (pControl->GetCurrentLabel().Equals(g_localizeStrings.Get(13611)))
-        g_guiSettings.SetString("weather.script", "");
-      else
-        g_guiSettings.SetString("weather.script", pControl->GetCurrentLabel());
-    }
     else if (strSetting.Equals("musicfiles.trackformat"))
     {
       if (m_strOldTrackFormat != g_guiSettings.GetString("musicfiles.trackformat"))
@@ -1042,10 +1029,13 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("weather.scriptsettings"))
     {
-      //// Create our base path
-      //CStdString basepath = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.script");
-      //CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      //if (pControl) pControl->SetEnabled(!g_guiSettings.GetString("weather.script").IsEmpty() && CScriptSettings::SettingsExist(basepath));
+      AddonPtr addon;
+      if (CAddonMgr::Get().GetAddon(g_guiSettings.GetString("weather.script"), addon, ADDON_SCRIPT_WEATHER))
+      {
+        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+        if (pControl)
+          pControl->SetEnabled(addon->HasSettings());
+      }
     }
     else if (!strSetting.Equals("pvrmanager.enabled")
              && !strSetting.Equals("pvrmanager.resetdb")
@@ -1092,8 +1082,10 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       strSearch.Replace(" ", "+");
       CStdString strResult = ((CSettingString *)pSettingControl->GetSetting())->GetData();
       if (g_weatherManager.GetSearchResults(strSearch, strResult))
+      {
         ((CSettingString *)pSettingControl->GetSetting())->SetData(strResult);
-      g_weatherManager.Refresh();
+        g_weatherManager.Refresh();
+      }
     }
   }
   else if (strSetting.Equals("weather.script"))
@@ -1104,11 +1096,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   {
     CStdString name = g_guiSettings.GetString("weather.script");
     AddonPtr addon;
-    if (CAddonMgr::Get().GetAddon(name, addon, ADDON_PLUGIN))
+    if (CAddonMgr::Get().GetAddon(name, addon, ADDON_SCRIPT_WEATHER))
     { // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
+      g_weatherManager.Refresh();
     }
-    g_weatherManager.Refresh();
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
     CBuiltins::Execute("RunScript("RSSEDITOR_PATH")");
@@ -1157,6 +1149,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     {
       g_application.ReloadSkin();
     }
+	  else if (pSettingAddon->m_type == ADDON_SCRIPT_WEATHER)
+    {
+      g_weatherManager.Refresh();
+ 	  }
   }
   else if (strSetting.Equals("musicplayer.visualisation"))
   { // new visualisation choosen...
@@ -2846,37 +2842,6 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   else
     pControl->SetValue(selectedValue);
 #endif
-}
-
-void CGUIWindowSettingsCategory::FillInWeatherScripts(CGUISpinControlEx *pControl, const CStdString& strSelected)
-{
-  VECADDONS addons;
-  int j=0;
-  int k=0;
-  pControl->Clear();
-  // add our disable option
-  pControl->AddLabel(g_localizeStrings.Get(24028), j++);
-
-  //find weather scripts....
-  CAddonMgr::Get().GetAddons(ADDON_SCRIPT, addons, CONTENT_WEATHER);
-  if (!addons.empty())
-  {
-    for (unsigned int i = 0; i < addons.size(); i++)
-    {
-      AddonPtr addon = addons.at(i);
-      // create the full path to the plugin
-      CStdString strFileName = addon->Path() + addon->LibName();
-      if (XFILE::CFile::Exists(strFileName))
-      {
-        // is this the users choice
-        if (addon->Name().Equals(strSelected))
-          k = j;
-        // we want to use the plugins folder as name
-        pControl->AddLabel(addon->Name(), j++);
-      }
-    }
-  }
-  pControl->SetValue(k);
 }
 
 void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)

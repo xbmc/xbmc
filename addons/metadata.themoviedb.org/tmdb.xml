@@ -26,8 +26,8 @@
 	</GetTMDBId>
 	<GetSearchResults dest="8">
 		<RegExp input="$$3" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;id&gt;\2&lt;/id&gt;&lt;url cache=&quot;tmdb-\2.xml&quot;&gt;http://api.themoviedb.org/2.1/Movie.getInfo/en/xml/57983e31fb435df4df77afb854740ea9/\2&lt;/url&gt;&lt;/entity&gt;" dest="3">
-				<expression repeat="yes">&lt;movie&gt;.*?&lt;name&gt;([^&lt;]*)&lt;/name&gt;.*?&lt;id&gt;([^&lt;]*)&lt;/id&gt;.*?&lt;/movie&gt;</expression>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;id&gt;\2&lt;/id&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url cache=&quot;tmdb-\2.xml&quot;&gt;http://api.themoviedb.org/2.1/Movie.getInfo/en/xml/57983e31fb435df4df77afb854740ea9/\2&lt;/url&gt;&lt;/entity&gt;" dest="3">
+				<expression repeat="yes">&lt;movie&gt;.*?&lt;name&gt;([^&lt;]*)&lt;/name&gt;.*?&lt;id&gt;([^&lt;]*)&lt;/id&gt;.*?&lt;released&gt;([0-9]+)-.*?&lt;/movie&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
@@ -45,6 +45,9 @@
 			</RegExp>
 			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5+">
 				<expression>&lt;rating&gt;([^&lt;]*)&lt;/rating&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="5+">
+				<expression>&lt;tagline&gt;([^&lt;]*)&lt;/tagline&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="5+">
 				<expression>&lt;certification&gt;([^&lt;]*)&lt;/certification&gt;</expression>
@@ -73,8 +76,8 @@
 			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="5+">
 				<expression repeat="yes">&lt;person.*?name=&quot;([^&quot;]*)&quot; character=&quot;([^&quot;]*)&quot; job=&quot;Actor&quot;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;thumb&gt;http://\4\5&lt;/thumb&gt;&lt;/actor&gt;" dest="5+">
-				<expression repeat="yes">&lt;person.*?name=&quot;([^&quot;]*)&quot; character=&quot;([^&quot;]*)&quot; job=&quot;Actor&quot; id=&quot;([0-9]+)&quot; thumb=&quot;http://(.*?)_thumb([^&quot;]*)&quot;</expression>
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;thumb&gt;http://\4-original\5&lt;/thumb&gt;&lt;/actor&gt;" dest="5+">
+				<expression repeat="yes">&lt;person.*?name=&quot;([^&quot;]*)&quot; character=&quot;([^&quot;]*)&quot; job=&quot;Actor&quot; id=&quot;([0-9]+)&quot; thumb=&quot;http://(.*?)-thumb([^&quot;]*)&quot;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;url cache=&quot;tmdb-$$2.xml&quot; function=&quot;GetTMDBThumbsById&quot;&gt;$$3&lt;/url&gt;" dest="5+">
 				<expression/>

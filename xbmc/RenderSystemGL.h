@@ -60,6 +60,8 @@ public:
 
   virtual void GetGLSLVersion(int& major, int& minor);
 
+  virtual void ResetGLErrors();
+
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
   virtual bool PresentRenderImpl() = 0;

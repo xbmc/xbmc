@@ -168,6 +168,20 @@ extern "C" void __stdcall update_emu_environ()
   }
 }
 
+static int convert_fmode(const char* mode)
+{
+  int iMode = O_BINARY;
+  if (strstr(mode, "r+"))
+    iMode |= O_RDWR;
+  else if (strchr(mode, 'r'))
+    iMode |= _O_RDONLY;
+  if (strstr(mode, "w+"))
+    iMode |= O_RDWR | _O_TRUNC;
+  else if (strchr(mode, 'w'))
+    iMode |= _O_WRONLY  | O_CREAT;
+  return iMode;
+}
+
 extern "C"
 {
   void dll_sleep(unsigned long imSec)
@@ -348,14 +362,16 @@ extern "C"
 
   FILE* dll_fdopen(int fd, const char* mode)
   {
-    if (g_emuFileWrapper.DescriptorIsEmulatedFile(fd))
+    EmuFileObject* o = g_emuFileWrapper.GetFileObjectByDescriptor(fd);
+    if (o)
     {
-      not_implement("msvcrt.dll incomplete function _fdopen(...) called\n");
-      // file is probably already open here ???
-      // the only correct thing todo is to close and reopn the file ???
-      // for now, just return its stream
-      FILE* stream = g_emuFileWrapper.GetStreamByDescriptor(fd);
-      return stream;
+      if(!o->used)
+        return NULL;
+
+      int nmode = convert_fmode(mode);
+      if( (o->mode & nmode) != nmode)
+        CLog::Log(LOGWARNING, "dll_fdopen - mode 0x%x differs from fd mode 0x%x", nmode, o->mode);
+      return &o->file_emu;
     }
     else if (!IS_STD_DESCRIPTOR(fd))
     {
@@ -418,6 +434,7 @@ extern "C"
         delete pFile;
         return -1;
       }
+      object->mode = iMode;
       return g_emuFileWrapper.GetDescriptorByStream(&object->file_emu);
     }
     delete pFile;
@@ -1068,17 +1085,7 @@ extern "C"
       return fopen(filename, mode);
     }
 #endif
-    int iMode = O_BINARY;
-    if (strstr(mode, "r+"))
-      iMode |= O_RDWR;
-    else if (strchr(mode, 'r'))
-      iMode |= _O_RDONLY;
-    if (strstr(mode, "w+"))
-      iMode |= O_RDWR | _O_TRUNC;
-    else if (strchr(mode, 'w'))
-      iMode |= _O_WRONLY  | O_CREAT;
-
-    int fd = dll_open(filename, iMode);
+    int fd = dll_open(filename, convert_fmode(mode));
     if (fd >= 0)
     {
       file = g_emuFileWrapper.GetStreamByDescriptor(fd);;
@@ -2108,6 +2115,16 @@ extern "C"
     return (long)d;
   }
 #endif
+
+  // this needs to be wrapped, since dll's have their own file
+  // descriptor list, but we always use app's list with our wrappers
+  int __cdecl dll_open_osfhandle(intptr_t _OSFileHandle, int _Flags)
+  {
+#ifdef _WIN32
+    return _open_osfhandle(_OSFileHandle, _Flags);
+#else
+    return -1;
+#endif
+  }
+
 }
-
-

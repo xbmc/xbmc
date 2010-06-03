@@ -791,16 +791,7 @@ bool CApplication::InitDirectoriesLinux()
     CUtil::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
 
-    CDirectory::Create("special://home/");
-    CDirectory::Create("special://temp/");
-    CDirectory::Create("special://home/skin");
-    CDirectory::Create("special://home/addons");
-    CDirectory::Create("special://home/addons/packages");
-    CDirectory::Create("special://home/media");
-    CDirectory::Create("special://home/sounds");
-    CDirectory::Create("special://home/system");
-
-    CDirectory::Create("special://masterprofile");
+    CreateUserDirs();
 
     // copy required files
     //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
@@ -820,7 +811,7 @@ bool CApplication::InitDirectoriesLinux()
 
     CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
-    CDirectory::Create("special://temp/");
+    CreateUserDirs();
 
     CUtil::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
@@ -874,21 +865,13 @@ bool CApplication::InitDirectoriesOSX()
     CUtil::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
 
-    CDirectory::Create("special://home/");
-    CDirectory::Create("special://temp/");
-    CDirectory::Create("special://home/skin");
-    CDirectory::Create("special://home/addons");
-    CDirectory::Create("special://home/media");
-    CDirectory::Create("special://home/sounds");
-    CDirectory::Create("special://home/system");
+    CreateUserDirs();
 #ifdef __APPLE__
     strTempPath = xbmcPath + "/scripts";
 #else
     strTempPath = INSTALL_PATH "/scripts";
 #endif
     symlink( strTempPath.c_str(),  _P("special://home/scripts/Common Scripts").c_str() );
-
-    CDirectory::Create("special://masterprofile/");
 
     // copy required files
     //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml"); // Eventual FIXME.
@@ -908,7 +891,6 @@ bool CApplication::InitDirectoriesOSX()
 
     CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
-    CDirectory::Create("special://temp/");
 
     CUtil::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
@@ -949,14 +931,9 @@ bool CApplication::InitDirectoriesWin32()
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(homePath, "userdata"));
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile").c_str());
 
-    CDirectory::Create("special://home/");
-    CDirectory::Create("special://home/skin");
-    CDirectory::Create("special://home/addons");
-    CDirectory::Create("special://home/media");
-    CDirectory::Create("special://home/sounds");
-    CDirectory::Create("special://home/system");
+    CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(homePath,"cache"));
 
-    CDirectory::Create("special://masterprofile");
+    CreateUserDirs();
 
     // copy required files
     //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
@@ -964,10 +941,6 @@ bool CApplication::InitDirectoriesWin32()
     CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
-
-    // create user/app data/XBMC/cache
-    CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(homePath,"cache"));
-    CDirectory::Create("special://temp");
   }
   else
   {
@@ -979,7 +952,8 @@ bool CApplication::InitDirectoriesWin32()
 
     CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
-    CDirectory::Create("special://temp/");
+
+    CreateUserDirs();
 
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile/").c_str());
   }
@@ -1004,6 +978,18 @@ bool CApplication::InitDirectoriesWin32()
 #else
   return false;
 #endif
+}
+
+void CApplication::CreateUserDirs()
+{
+  CDirectory::Create("special://home/");
+  CDirectory::Create("special://home/addons");
+  CDirectory::Create("special://home/addons/packages");
+  CDirectory::Create("special://home/media");
+  CDirectory::Create("special://home/sounds");
+  CDirectory::Create("special://home/system");
+  CDirectory::Create("special://masterprofile/");
+  CDirectory::Create("special://temp/");
 }
 
 bool CApplication::Initialize()

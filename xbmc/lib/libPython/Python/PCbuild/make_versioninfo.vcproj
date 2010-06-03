@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\."
-			IntermediateDirectory=".\x86-temp-release\make_versioninfo"
+			OutputDirectory="$(SolutionDir)libs\$(ProjectName)\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)objs\$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -30,8 +30,8 @@
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
-				CommandLine=".\make_versioninfo.exe &gt;..\PC\pythonnt_rc.h&#x0D;&#x0A;"
-				Outputs="..\PC\pythonnt_rc.h"
+				CommandLine="$(TargetDir)$(TargetFileName) &gt; $(ProjectDir)..\PC\pythonnt_rc.h&#x0D;&#x0A;"
+				Outputs="$(ProjectDir)..\PC\pythonnt_rc.h"
 			/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"
@@ -54,10 +54,10 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\x86-temp-release\make_versioninfo/make_versioninfo.pch"
-				AssemblerListingLocation=".\x86-temp-release\make_versioninfo/"
-				ObjectFile=".\x86-temp-release\make_versioninfo/"
-				ProgramDataBaseFileName=".\x86-temp-release\make_versioninfo/"
+				PrecompiledHeaderFile="$(IntDir)make_versioninfo.pch"
+				AssemblerListingLocation="$(IntDir)"
+				ObjectFile="$(IntDir)"
+				ProgramDataBaseFileName="$(IntDir)"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -77,11 +77,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbccp32.lib"
-				OutputFile=".\./make_versioninfo.exe"
+				OutputFile="$(OutDir)make_versioninfo.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\./make_versioninfo.pdb"
+				ProgramDatabaseFile="$(OutDir)make_versioninfo.pdb"
 				SubSystem="1"
 				BaseAddress="0x1d000000"
 				RandomizedBaseAddress="1"
@@ -108,13 +108,13 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(TargetFileName) &gt; ..\PC\python_nt.h"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\."
-			IntermediateDirectory=".\x86-temp-debug\make_versioninfo"
+			OutputDirectory="$(SolutionDir)libs\$(ProjectName)\$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)objs\$(ProjectName)\$(ConfigurationName)\"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -126,8 +126,8 @@
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
-				CommandLine=".\make_versioninfo_d.exe &gt;..\PC\pythonnt_rc_d.h&#x0D;&#x0A;"
-				Outputs="..\PC\pythonnt_rc_d.h"
+				CommandLine="$(TargetDir)$(TargetFileName) &gt; $(ProjectDir)..\PC\pythonnt_rc_d.h&#x0D;&#x0A;"
+				Outputs="$(ProjectDir)..\PC\pythonnt_rc_d.h"
 			/>
 			<Tool
 				Name="VCXMLDataGeneratorTool"
@@ -147,10 +147,10 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_USE_32BIT_TIME_T"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\x86-temp-debug\make_versioninfo/make_versioninfo.pch"
-				AssemblerListingLocation=".\x86-temp-debug\make_versioninfo/"
-				ObjectFile=".\x86-temp-debug\make_versioninfo/"
-				ProgramDataBaseFileName=".\x86-temp-debug\make_versioninfo/"
+				PrecompiledHeaderFile="$(IntDir)make_versioninfo.pch"
+				AssemblerListingLocation="$(IntDir)"
+				ObjectFile="$(IntDir)"
+				ProgramDataBaseFileName="$(IntDir)"
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
@@ -172,11 +172,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbccp32.lib"
-				OutputFile="./make_versioninfo_d.exe"
+				OutputFile="$(OutDir)make_versioninfo_d.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\./make_versioninfo_d.pdb"
+				ProgramDatabaseFile="$(OutDir)make_versioninfo_d.pdb"
 				SubSystem="1"
 				BaseAddress="0x1d000000"
 				RandomizedBaseAddress="1"
@@ -203,7 +203,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="$(TargetFileName) &gt; ..\PC\python_nt_d.h"
+				CommandLine=""
 			/>
 		</Configuration>
 	</Configurations>

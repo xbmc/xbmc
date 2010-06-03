@@ -12,10 +12,10 @@
     library_linux="Solarwinds.xbs"
     library_osx="Solarwinds.xbs"/>
   <extension point="xbmc.addon.metadata">
-    <minversion app="xbmc">20000</minversion>
     <summary>OpenGL Screensaver</summary>
     <description>This is a very mesmerizing particle effects saver. You'll find that you can achieve an amazing number of different patterns.</description>
     <description lang="nl">Dit is een zeer fascinerende screensaver. Je kunt ongeloofelijk veel verschillende patronen bekomen.</description>
     <disclaimer></disclaimer>
+    <platform>linux osx</platform>
   </extension>
 </addon>

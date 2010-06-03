@@ -129,11 +129,9 @@ LIBADDON_DIRS=\
 	lib/libXBMC_pvr \
 
 CONFLUENCE_MEDIA=addons/skin.confluence/media
-PM3HD_MEDIA=addons/skin.pm3-hd/media
 
 SKIN_DIRS=\
-	$(CONFLUENCE_MEDIA) \
-	$(PM3HD_MEDIA)
+	$(CONFLUENCE_MEDIA)
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
 	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(PVR_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS)
@@ -178,7 +176,6 @@ skins: tools/TexturePacker/TexturePacker force
 ifneq (arm, $(ARCH))
 	 $(MAKE) -C $(CONFLUENCE_MEDIA)
 endif
-	 $(MAKE) -C $(PM3HD_MEDIA)
 
 guilib/guilib.a: force
 	$(MAKE) -C guilib

@@ -50,7 +50,7 @@ namespace XFILE
       virtual void Close();
       virtual bool ReadString(char *szLine, int iLineLength)     { return m_state->ReadString(szLine, iLineLength); }
       virtual unsigned int Read(void* lpBuf, int64_t uiBufSize)  { return m_state->Read(lpBuf, uiBufSize); }
-      virtual CStdString GetContent()                            { return m_state->m_httpheader.GetContentType(); }
+      virtual CStdString GetMimeType()                           { return m_state->m_httpheader.GetMimeType(); }
 
       bool Post(const CStdString& strURL, const CStdString& strPostData, CStdString& strHTML);
       bool Get(const CStdString& strURL, CStdString& strHTML);
@@ -70,7 +70,7 @@ namespace XFILE
       void SetPostData(CStdString postdata)                      { m_postdata = postdata; }
       void SetReferer(CStdString referer)                        { m_referer = referer; }
       void SetCookie(CStdString cookie)                          { m_cookie = cookie; }
-      void SetContentType(CStdString contenttype)                { SetRequestHeader("Content-Type", m_contenttype); }
+      void SetMimeType(CStdString mimetype)                      { SetRequestHeader("Content-Type", m_mimetype); }
       void SetRequestHeader(CStdString header, CStdString value);
       void SetRequestHeader(CStdString header, long value);
 
@@ -81,7 +81,7 @@ namespace XFILE
 
       /* static function that will get content type of a file */
       static bool GetHttpHeader(const CURL &url, CHttpHeader &headers);
-      static bool GetContent(const CURL &url, CStdString &content, CStdString useragent="");
+      static bool GetMimeType(const CURL &url, CStdString &content, CStdString useragent="");
 
       class CReadState
       {
@@ -140,7 +140,7 @@ namespace XFILE
       CStdString      m_postdata;
       CStdString      m_referer;
       CStdString      m_cookie;
-      CStdString      m_contenttype;
+      CStdString      m_mimetype;
       CStdString      m_username;
       CStdString      m_password;
       CStdString      m_httpauth;

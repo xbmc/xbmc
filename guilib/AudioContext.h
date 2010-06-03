@@ -73,4 +73,4 @@ protected:
   bool                         m_bAC3EncoderActive;
 };
 
-extern CAudioContext g_audioContext;
+extern CAudioContext& g_audioContext;

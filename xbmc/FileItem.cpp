@@ -478,7 +478,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_iHasLock = item.m_iHasLock;
   m_iBadPwdCount = item.m_iBadPwdCount;
   m_bCanQueue=item.m_bCanQueue;
-  m_contenttype = item.m_contenttype;
+  m_mimetype = item.m_mimetype;
   m_extrainfo = item.m_extrainfo;
   m_specialSort = item.m_specialSort;
   return *this;
@@ -510,7 +510,7 @@ void CFileItem::Reset()
   m_iBadPwdCount = 0;
   m_iHasLock = 0;
   m_bCanQueue=true;
-  m_contenttype = "";
+  m_mimetype = "";
   delete m_musicInfoTag;
   m_musicInfoTag=NULL;
   delete m_videoInfoTag;
@@ -554,7 +554,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar << m_iBadPwdCount;
 
     ar << m_bCanQueue;
-    ar << m_contenttype;
+    ar << m_mimetype;
     ar << m_extrainfo;
     ar << m_specialSort;
 
@@ -602,7 +602,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_iBadPwdCount;
 
     ar >> m_bCanQueue;
-    ar >> m_contenttype;
+    ar >> m_mimetype;
     ar >> m_extrainfo;
     ar >> temp;
     m_specialSort = (SPECIAL_SORT)temp;
@@ -659,17 +659,17 @@ bool CFileItem::IsVideo() const
   if (HasMusicInfoTag()) return false;
   if (HasPictureInfoTag()) return false;
 
-  /* check preset content type */
-  if( m_contenttype.Left(6).Equals("video/") )
+  /* check preset mime type */
+  if( m_mimetype.Left(6).Equals("video/") )
     return true;
 
   if (IsHDHomeRun() || IsTuxBox() || CUtil::IsDVD(m_strPath))
     return true;
 
   CStdString extension;
-  if( m_contenttype.Left(12).Equals("application/") )
+  if( m_mimetype.Left(12).Equals("application/") )
   { /* check for some standard types */
-    extension = m_contenttype.Mid(12);
+    extension = m_mimetype.Mid(12);
     if( extension.Equals("ogg")
      || extension.Equals("mp4")
      || extension.Equals("mxf") )
@@ -722,14 +722,14 @@ bool CFileItem::IsAudio() const
   if (!m_bIsFolder && IsShoutCast()) return true;
   if (!m_bIsFolder && IsLastFM()) return true;
 
-  /* check preset content type */
-  if( m_contenttype.Left(6).Equals("audio/") )
+  /* check preset mime type */
+  if( m_mimetype.Left(6).Equals("audio/") )
     return true;
 
   CStdString extension;
-  if( m_contenttype.Left(12).Equals("application/") )
+  if( m_mimetype.Left(12).Equals("application/") )
   { /* check for some standard types */
-    extension = m_contenttype.Mid(12);
+    extension = m_mimetype.Mid(12);
     if( extension.Equals("ogg")
      || extension.Equals("mp4")
      || extension.Equals("mxf") )
@@ -762,7 +762,7 @@ bool CFileItem::IsPicture() const
   if (HasMusicInfoTag()) return false;
   if (HasVideoInfoTag()) return false;
 
-  if( m_contenttype.Left(6).Equals("image/") )
+  if( m_mimetype.Left(6).Equals("image/") )
     return true;
 
   CStdString extension;
@@ -920,7 +920,7 @@ bool CFileItem::IsRSS() const
 {
   return m_strPath.Left(6).Equals("rss://", false)
       || CUtil::GetExtension(m_strPath).Equals(".rss", false)
-      || GetContentType() == "application/rss+xml";
+      || GetMimeType() == "application/rss+xml";
 }
 
 bool CFileItem::IsStack() const
@@ -1272,12 +1272,12 @@ bool CFileItem::IsParentFolder() const
   return m_bIsParentFolder;
 }
 
-const CStdString& CFileItem::GetContentType() const
+const CStdString& CFileItem::GetMimeType() const
 {
-  if( m_contenttype.IsEmpty() )
+  if( m_mimetype.IsEmpty() )
   {
     // discard const qualifyier
-    CStdString& m_ref = (CStdString&)m_contenttype;
+    CStdString& m_ref = (CStdString&)m_mimetype;
 
     if( m_bIsFolder )
       m_ref = "x-directory/normal";
@@ -1285,16 +1285,16 @@ const CStdString& CFileItem::GetContentType() const
           || m_strPath.Left(7).Equals("http://")
           || m_strPath.Left(8).Equals("https://"))
     {
-      CFileCurl::GetContent(GetAsUrl(), m_ref);
+      CFileCurl::GetMimeType(GetAsUrl(), m_ref);
 
-      // try to get content type again but with an NSPlayer User-Agent
-      // in order for server to provide correct content-type.  Allows us
+      // try to get mime-type again but with an NSPlayer User-Agent
+      // in order for server to provide correct mime-type.  Allows us
       // to properly detect an MMS stream
       if (m_ref.Left(11).Equals("video/x-ms-"))
-        CFileCurl::GetContent(GetAsUrl(), m_ref, "NSPlayer/11.00.6001.7000");
+        CFileCurl::GetMimeType(GetAsUrl(), m_ref, "NSPlayer/11.00.6001.7000");
 
-      // make sure there are no options set in content type
-      // content type can look like "video/x-ms-asf ; charset=utf8"
+      // make sure there are no options set in mime-type
+      // mime-type can look like "video/x-ms-asf ; charset=utf8"
       int i = m_ref.Find(';');
       if(i>=0)
         m_ref.Delete(i,m_ref.length()-i);
@@ -1306,14 +1306,14 @@ const CStdString& CFileItem::GetContentType() const
       m_ref = "application/octet-stream";
   }
 
-  // change protocol to mms for the following content-type.  Allows us to create proper FileMMS.
-  if( m_contenttype.Left(32).Equals("application/vnd.ms.wms-hdr.asfv1") || m_contenttype.Left(24).Equals("application/x-mms-framed") )
+  // change protocol to mms for the following mome-type.  Allows us to create proper FileMMS.
+  if( m_mimetype.Left(32).Equals("application/vnd.ms.wms-hdr.asfv1") || m_mimetype.Left(24).Equals("application/x-mms-framed") )
   {
     CStdString& m_path = (CStdString&)m_strPath;
     m_path.Replace("http:", "mms:");
   }
 
-  return m_contenttype;
+  return m_mimetype;
 }
 
 bool CFileItem::IsSamePath(const CFileItem *item) const

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 30365 -->
+<!--Based on english strings version 30542 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1952,7 +1952,6 @@
   <string id="21417">- 设置</string>
   <string id="21418">多语言</string>
   <string id="21419">没有选定刮削器</string>
-
   <string id="21420">等于</string>
   <string id="21421">智能播放列表规则</string>
   <string id="21422">符合条件的歌曲在</string>
@@ -1984,6 +1983,7 @@
   <string id="21448">字幕语言</string>
   <string id="21449">摇控器发送键盘按键</string>
   <string id="21450">- 编辑</string>
+  <string id="21451">需要访问互联网。</string>
 
   <string id="21800">文件名称</string>
   <string id="21801">文件路径</string>
@@ -2131,6 +2131,9 @@
   <string id="24009">脚本</string>
   <string id="24010">可视化效果</string>
   <string id="24011">扩展功能库</string>
+  <string id="24012">字幕服务</string>
+  <string id="24013">歌词服务</string>
+  <string id="24014">脚本库</string>
 
   <string id="24020">设置</string>
   <string id="24021">禁用</string>

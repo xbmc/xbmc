@@ -140,7 +140,7 @@ public:
   const CStdString Description() const { return m_props.description; }
   const CStdString Path() const { return m_props.path; }
   const CStdString Profile() const { return m_profile; }
-  const CStdString LibName() const { return m_strLibName; }
+  const CStdString LibPath() const;
   const CStdString Author() const { return m_props.author; }
   const CStdString ChangeLog() const { return m_props.changelog; }
   const CStdString FanArt() const { return m_props.fanart; }

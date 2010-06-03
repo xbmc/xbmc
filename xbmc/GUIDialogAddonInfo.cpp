@@ -122,9 +122,15 @@ void CGUIDialogAddonInfo::OnInitWindow()
 
 void CGUIDialogAddonInfo::OnInstall()
 {
-  CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
-  pair<CFileOperationJob*,unsigned int> job = window->AddJob(m_addon->Path());
-  window->RegisterJob(m_addon->ID(),job.first,job.second);
+  AddonPtr addon;
+  CAddonDatabase database;
+  database.Open();
+  if (database.GetAddon(m_addon->ID(),addon))
+  {
+    CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
+    pair<CFileOperationJob*,unsigned int> job = window->AddJob(addon->Path());
+    window->RegisterJob(m_addon->ID(),job.first,job.second);
+  }
 }
 
 void CGUIDialogAddonInfo::OnDisable()

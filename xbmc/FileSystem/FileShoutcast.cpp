@@ -297,7 +297,7 @@ bool CFileShoutcast::Open(const CURL& url)
   }
 
   /* store content type of stream */
-  m_contenttype = rip_manager_get_content_type();
+  m_mimetype = rip_manager_get_content_type();
 
   //CHANGED CODE: Don't reset timer anymore.
 
@@ -439,7 +439,7 @@ bool CFileShoutcast::GetMusicInfoTag(CMusicInfoTag& tag)
 
 CStdString CFileShoutcast::GetContent()
 {
-  switch (m_contenttype)
+  switch (m_mimetype)
   {
     case CONTENT_TYPE_MP3:
       return "audio/mpeg";

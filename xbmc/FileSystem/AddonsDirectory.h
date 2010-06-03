@@ -24,6 +24,7 @@
 #include "addons/AddonManager.h"
 
 class CURL;
+typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
 namespace XFILE 
 {
@@ -42,5 +43,6 @@ namespace XFILE
     virtual bool Exists(const char* strPath) { return true; }
 
     static void GenerateListing(CURL &path, ADDON::VECADDONS& addons, CFileItemList &items);
+    static CFileItemPtr FileItemFromAddon(ADDON::AddonPtr &addon, const CStdString &basePath, bool folder = false);
   };
 }

@@ -318,7 +318,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
     m_PlayerOptions = options;
     m_item     = file;
-    m_content  = file.GetContentType();
+    m_mimetype  = file.GetMimeType();
     m_filename = file.m_strPath;
 
     m_ready.Reset();
@@ -424,7 +424,7 @@ bool CDVDPlayer::OpenInputStream()
     m_filename = g_mediaManager.TranslateDevicePath("");
   }
 
-  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_content);
+  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_mimetype);
   if(m_pInputStream == NULL)
   {
     CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - unable to create input stream for [%s]", m_filename.c_str());
@@ -433,7 +433,7 @@ bool CDVDPlayer::OpenInputStream()
   else
     m_pInputStream->SetFileItem(m_item);
 
-  if (!m_pInputStream->Open(m_filename.c_str(), m_content))
+  if (!m_pInputStream->Open(m_filename.c_str(), m_mimetype))
   {
     CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - error opening [%s]", m_filename.c_str());
     return false;

@@ -43,30 +43,30 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
 
   if( item.IsInternetStream() )
   {
-    CStdString strContentType = item.GetContentType();
-    strContentType.MakeLower();
+    CStdString strMimeType = item.GetMimeType();
+    strMimeType.MakeLower();
 
-    if (strContentType == "video/x-ms-asf"
-    || strContentType == "video/x-ms-asx"
-    || strContentType == "video/x-ms-wmv"
-    || strContentType == "video/x-ms-wma"
-    || strContentType == "video/x-ms-wfs"
-    || strContentType == "video/x-ms-wvx"
-    || strContentType == "video/x-ms-wax")
+    if (strMimeType == "video/x-ms-asf"
+    || strMimeType == "video/x-ms-asx"
+    || strMimeType == "video/x-ms-wmv"
+    || strMimeType == "video/x-ms-wma"
+    || strMimeType == "video/x-ms-wfs"
+    || strMimeType == "video/x-ms-wvx"
+    || strMimeType == "video/x-ms-wax")
       return new CPlayListASX();
 
-    if (strContentType == "audio/x-pn-realaudio")
+    if (strMimeType == "audio/x-pn-realaudio")
       return new CPlayListRAM();
 
-    if (strContentType == "audio/x-scpls"
-    || strContentType == "playlist"
-    || strContentType == "text/html")
+    if (strMimeType == "audio/x-scpls"
+    || strMimeType == "playlist"
+    || strMimeType == "text/html")
       return new CPlayListPLS();
 
-    if (strContentType == "audio/x-mpegurl")
+    if (strMimeType == "audio/x-mpegurl")
       return new CPlayListM3U();
 
-    if (strContentType == "application/vnd.ms-wpl")
+    if (strMimeType == "application/vnd.ms-wpl")
       return new CPlayListWPL();
   }
 

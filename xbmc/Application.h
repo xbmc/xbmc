@@ -349,6 +349,7 @@ protected:
   bool InitDirectoriesLinux();
   bool InitDirectoriesOSX();
   bool InitDirectoriesWin32();
+  void CreateUserDirs();
 
   CApplicationMessenger m_applicationMessenger;
 #if defined(HAS_LINUX_NETWORK)

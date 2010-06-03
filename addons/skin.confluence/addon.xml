@@ -15,13 +15,12 @@
     effectslowdown="0.75"
     debugging="false"/>
   <extension point="xbmc.addon.metadata">
-    <platform>all</platform>
-    <minversion app="xbmc">28000</minversion>
     <summary>Confluence skin by Jezz_X</summary>
     <summary lang="nl">Confluence skin door Jezz_X</summary>
     <description>Confluence is the default skin for XBMC 9.11 and above. It is a combination of concepts from many popular skins, and attempts to embrace and integrate their good ideas into a skin that should be easy for first time XBMC users to understand and use.</description>
     <description lang="nl">Confluence is de standaard skin voor XBMC 9.11 en hoger. Het combineert de concepten van andere populaire skins, waarbij het tracht hun goede ideëen te integreren in een skin die gemakkelijk in gebruik is.</description>
     <disclaimer>Confluence is the default skin for XBMC, removing it may cause issues</disclaimer>
     <disclaimer lang="nl">Confluence is de standaard XMBC skin, het verwijderen van Confluence kan leiden tot problemen.</disclaimer>
+    <platform>all</platform>
   </extension>
 </addon>

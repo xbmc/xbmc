@@ -58,9 +58,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
 {
   m_sources.clear();
 
-  VECADDONS addons;
-  CAddonMgr::Get().GetAllAddons(addons);
-  if (addons.size())
+  // we always have some enabled addons
   {
     CMediaSource share;
     share.strPath = "addons://enabled/";
@@ -69,9 +67,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.m_strThumbnailImage = "DefaultHardDisk.png";
     m_sources.push_back(share);
   }
-  addons.clear();
-  CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons,CONTENT_NONE,true);
-  if (addons.size())
+  if (CAddonMgr::Get().HasAddons(ADDON_REPOSITORY,CONTENT_NONE,true))
   {
     CMediaSource share;
     share.strPath = "addons://repos/";

@@ -38,11 +38,7 @@ typedef enum
   CONTENT_AUDIO,
   CONTENT_IMAGE,
   CONTENT_PROGRAM,
-  CONTENT_VIDEO,
-  CONTENT_SUBTITLES,
-  CONTENT_WEATHER,
-  CONTENT_LYRICS,
-  CONTENT_RECENTLY_ADDED
+  CONTENT_VIDEO
 } CONTENT_TYPE;
 
 namespace ADDON
@@ -54,12 +50,16 @@ namespace ADDON
     ADDON_SKIN,
     ADDON_PVRDLL,
     ADDON_SCRIPT,
+    ADDON_SCRIPT_WEATHER,
+    ADDON_SCRIPT_SUBTITLES,
+    ADDON_SCRIPT_LYRICS,
     ADDON_SCRAPER,
     ADDON_SCREENSAVER,
     ADDON_PLUGIN,
     ADDON_REPOSITORY,
     ADDON_VIZ_LIBRARY, // add noninstallable after this and installable before
-    ADDON_SCRAPER_LIBRARY
+    ADDON_SCRAPER_LIBRARY,
+    ADDON_SCRIPT_LIBRARY
   } TYPE;
 
   class IAddon;
@@ -91,7 +91,7 @@ namespace ADDON
     virtual const CStdString Description() const =0;
     virtual const CStdString Path() const =0;
     virtual const CStdString Profile() const =0;
-    virtual const CStdString LibName() const =0;
+    virtual const CStdString LibPath() const =0;
     virtual const CStdString ChangeLog() const =0;
     virtual const CStdString FanArt() const =0;
     virtual const CStdString Author() const =0;

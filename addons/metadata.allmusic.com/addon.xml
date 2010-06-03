@@ -13,8 +13,6 @@
              language="en"
              library="allmusic.xml"/>
   <extension point="xbmc.addon.metadata">
-    <platform>all</platform>
-    <minversion>20000</minversion>
     <summary>AllMusic Scraper</summary>
     <description>Use AllMusic.com to fill your libray metadata information.
 The allmusic website was created in 1995 as a place for music fans to indulge their passion.
@@ -24,9 +22,7 @@ All genres and styles of music are covered here, ranging from the most commercia
   De AllMusic website is ontstaan in 1995 als webstek voor echte muziekfans.
 The AMG redactie, samen met honderden bijdragende experen (allen muziekfans in hun eigen gebied), hebben van allmusic het meest complete muziek naslagwerk gemaakt op deze planeet.
 Alle genres en stijlen worden gedekt, gaande van de meest commerciele tot de meest alternatieve. We bekritiseren albums en artiesten in hun eigen genre, van opera tot garagerock tot traditionele country. Dit maakt dat fans van elke muziekstijl bij ons terecht kunnen voor de laatste informatie rond hun favoriete artiesten of om nieuwe muziek te leren ontdekken.</description>
-    <supportedcontent>
-      <content>albums</content>
-      <content>artists</content>
-    </supportedcontent>
+    <platform>all</platform>
+    <supportedcontent>albums artists</supportedcontent>
   </extension>
 </addon>
