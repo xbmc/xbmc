@@ -99,7 +99,8 @@ struct _env
 
 #define EMU_MAX_ENVIRONMENT_ITEMS 50
 static char *dll__environ_imp[EMU_MAX_ENVIRONMENT_ITEMS + 1];
-extern "C" char **dll__environ = dll__environ_imp;
+extern "C" char **dll__environ;
+char **dll__environ = dll__environ_imp;
 
 CRITICAL_SECTION dll_cs_environ;
 
@@ -125,10 +126,10 @@ extern "C" void __stdcall init_emu_environ()
   dll_putenv("OS=xbox");
 #elif defined(_WIN32)
   dll_putenv("OS=win32");
+#elif defined(__APPLE__)
+  dll_putenv("OS=darwin");
 #elif defined(_LINUX)
   dll_putenv("OS=linux");
-#elif defined(_APPLE)
-  dll_putenv("OS=osx");
 #else
   dll_putenv("OS=unknown");
 #endif
@@ -1503,7 +1504,7 @@ extern "C"
     return EINVAL;
   }
 
-  int dll_fsetpos(FILE* stream, const fpos_t* pos)
+  int dll_fsetpos64(FILE* stream, const fpos64_t* pos)
   {
     int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
     if (fd >= 0)
@@ -1520,6 +1521,33 @@ extern "C"
       {
         return EINVAL;
       }
+    }
+    else if (!IS_STD_STREAM(stream))
+    {
+      // it might be something else than a file, or the file is not emulated
+      // let the operating system handle it
+#if !defined(_LINUX) || defined(__APPLE__)
+      return fsetpos(stream, pos);
+#else
+      return fsetpos64(stream, pos);
+#endif
+    }
+    CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
+    return EINVAL;
+  }
+
+  int dll_fsetpos(FILE* stream, const fpos_t* pos)
+  {
+    int fd = g_emuFileWrapper.GetDescriptorByStream(stream);
+    if (fd >= 0)
+    {
+      fpos64_t tmpPos;
+#if !defined(_LINUX) || defined(__APPLE__)
+      tmpPos= *pos;
+#else
+      tmpPos.__pos = (off64_t)(pos->__pos);
+#endif
+      return dll_fsetpos64(stream, &tmpPos);
     }
     else if (!IS_STD_STREAM(stream))
     {

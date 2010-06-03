@@ -189,7 +189,7 @@ public:
 
   bool SetSongRating(const CStdString &filePath, char rating);
   bool SetScraperForPath(const CStdString& strPath, const ADDON::ScraperPtr& info);
-  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& info);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::ScraperPtr& info, const ADDON::TYPE &type);
 
   /*! \brief Check whether a given scraper is in use.
    \param scraper the scraper to check for.
@@ -214,7 +214,7 @@ protected:
   std::map<CStdString, CAlbumCache> m_albumCache;
 
   virtual bool CreateTables();
-  virtual int GetMinVersion() const { return 14; };
+  virtual int GetMinVersion() const { return 15; };
   const char *GetDefaultDBName() const { return "MyMusic7"; };
 
   int AddAlbum(const CStdString& strAlbum1, int idArtist, const CStdString &extraArtists, const CStdString &strArtist1, int idThumb, int idGenre, const CStdString &extraGenres, int year);

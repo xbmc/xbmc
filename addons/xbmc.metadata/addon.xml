@@ -3,6 +3,10 @@
   <requires>
     <import addon="xbmc.core" version="0.1"/>
   </requires>
-  <extension-point id="scraper" schema="scraper.xsd"/>
+  <extension-point id="scraper.albums" schema="scraper.xsd"/>
+  <extension-point id="scraper.artists" schema="scraper.xsd"/>
+  <extension-point id="scraper.movies" schema="scraper.xsd"/>
+  <extension-point id="scraper.musicvideos" schema="scraper.xsd"/>
+  <extension-point id="scraper.tvshows" schema="scraper.xsd"/>
   <extension-point id="scraper.library" schema="scraper.xsd"/>
 </addon>

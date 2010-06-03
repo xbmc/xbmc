@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="screensaver.xbmc.builtin.dim"
+       name="Dim"
+       version="1.0.0"
+       provider-name="Team XBMC">
+  <extension point="xbmc.ui.screensaver" library=""/>
+  <extension point="xbmc.addon.metadata">
+    <summary>Screensaver that Dims your screen</summary>
+    <description>The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
+    <platform>all</platform>
+  </extension>
+</addon>

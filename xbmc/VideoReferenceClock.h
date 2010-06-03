@@ -127,6 +127,7 @@ class CVideoReferenceClock : public CThread
 
     unsigned int  m_Width;
     unsigned int  m_Height;
+    bool          m_Interlaced;
 
 #elif defined(__APPLE__)
     bool SetupCocoa();

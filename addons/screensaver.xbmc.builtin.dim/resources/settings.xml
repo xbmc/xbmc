@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings>
+  <setting label="30000" type="slider" id="level" range="20,1,100" default="20"/>
+</settings>

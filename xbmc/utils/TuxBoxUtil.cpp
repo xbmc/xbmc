@@ -400,7 +400,7 @@ bool CTuxBoxUtil::ParseChannelsEnigma2(TiXmlElement *root, CFileItemList &items,
           pbItem->m_bIsFolder = false;
           pbItem->SetLabel(strItemName);
           pbItem->m_strPath = "http://"+url.GetHostName()+":8001/"+strItemPath;
-          pbItem->SetContentType("video/mpeg2");
+          pbItem->SetMimeType("video/mpeg2");
           items.Add(pbItem);
           CLog::Log(LOGDEBUG, "%s - Name:    %s", __FUNCTION__,strItemName.c_str());
           CLog::Log(LOGDEBUG, "%s - Adress:  %s", __FUNCTION__,pbItem->m_strPath.c_str());
@@ -599,7 +599,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       items.SetLabel(items.GetLabel()); // VIDEOPLAYER_DIRECTOR: service_name (Program Name)
       items.SetLabel2(sCurSrvData.current_event_description); // current_event_description (Film Name)
       items.m_bIsFolder = false;
-      items.SetContentType("video/x-ms-asf");
+      items.SetMimeType("video/x-ms-asf");
 
       return true;
     }

@@ -41,7 +41,9 @@
 #define HAVE_SYS_STAT_H 1
 #define HAVE_SYS_TYPES_H 1
 /* #undef HAVE_UNISTD_H */
+#ifndef PACKAGE
 #define PACKAGE "libdvdread"
+#endif
 #ifndef PACKAGE_BUGREPORT
 #define PACKAGE_BUGREPORT ""
 #endif
@@ -58,7 +60,9 @@
 #define PACKAGE_VERSION ""
 #endif
 #define STDC_HEADERS 1
+#ifndef VERSION
 #define VERSION "1.2.6"
+#endif
 /* #undef WORDS_BIGENDIAN */
 /* #undef __DARWIN__ */
 /* #undef const */

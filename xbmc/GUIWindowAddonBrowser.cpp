@@ -178,10 +178,8 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
   if (pItem->m_strPath.Equals("addons://enabled/"))
     buttons.Add(CONTEXT_BUTTON_SCAN,24034);
   
-  TYPE type = TranslateType(pItem->GetProperty("Addon.intType"));
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID"),
-                                  addon, type, false))
+  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID"), addon))
     return;
 
   if (addon->Type() == ADDON_REPOSITORY)
@@ -206,10 +204,8 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
       return true;
     }
   }
-  TYPE type = TranslateType(pItem->GetProperty("Addon.intType"));
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID"),
-                                  addon, type, false))
+  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID"), addon))
     return false;
 
   if (button == CONTEXT_BUTTON_SETTINGS)
@@ -488,28 +484,81 @@ bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)
   return true;
 }
 
-bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CONTENT_TYPE content, CStdString &addonID)
+bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool showNone)
 {
   CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (type == ADDON_UNKNOWN || !dialog)
     return false;
 
   ADDON::VECADDONS addons;
-  CAddonMgr::Get().GetAddons(type, addons, content);
+  CAddonMgr::Get().GetAddons(type, addons);
   dialog->SetHeading(TranslateType(type, true));
   dialog->Reset();
+  dialog->SetUseDetails(true);
+  dialog->EnableButton(true, 21452);
   CFileItemList items;
-  CFileItemPtr none(new CFileItem("", false));
-  none->SetLabel(g_localizeStrings.Get(231)); // "None"
-  items.Add(none);
+  if (showNone)
+  {
+    CFileItemPtr item(new CFileItem("", false));
+    item->SetLabel(g_localizeStrings.Get(231));
+    items.Add(item);
+  }
   for (ADDON::IVECADDONS i = addons.begin(); i != addons.end(); ++i)
     items.Add(CAddonsDirectory::FileItemFromAddon(*i, ""));
   dialog->SetItems(&items);
   dialog->DoModal();
+  if (dialog->IsButtonPressed())
+  { // switch to the addons browser.
+    vector<CStdString> params;
+    params.push_back("addons://repos/");
+    params.push_back("return");
+    g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
+    return false;
+  }
   if (dialog->GetSelectedLabel() >= 0)
   {
     addonID = dialog->GetSelectedItem().m_strPath;
     return true;
   }
   return false;
+}
+
+void CGUIWindowAddonBrowser::InstallAddon(const CStdString &addonID)
+{
+  // check whether we already have the addon installed
+  AddonPtr addon;
+  if (CAddonMgr::Get().GetAddon(addonID, addon))
+    return;
+
+  // check whether we have it available in a repository
+  CAddonDatabase database;
+  database.Open();
+  if (database.GetAddon(addonID, addon))
+  {
+    CGUIWindowAddonBrowser* window = (CGUIWindowAddonBrowser*)g_windowManager.GetWindow(WINDOW_ADDON_BROWSER);
+    if (!window)
+      return;
+    pair<CFileOperationJob*,unsigned int> job = window->AddJob(addon->Path());
+    window->RegisterJob(addonID, job.first, job.second);
+  }
+}
+
+void CGUIWindowAddonBrowser::InstallAddonsFromXBMCRepo(const set<CStdString> &addonIDs)
+{
+  // first check we have the main repository updated...
+  AddonPtr addon;
+  if (CAddonMgr::Get().GetAddon("repository.xbmc.org", addon))
+  {
+    VECADDONS addons;
+    CAddonDatabase database;
+    database.Open();
+    if (!database.GetRepository(addon->ID(), addons))
+    {
+      RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addon);
+      addons = CRepositoryUpdateJob::GrabAddons(repo, false);
+    }
+  }
+  // now install the addons
+  for (set<CStdString>::const_iterator i = addonIDs.begin(); i != addonIDs.end(); ++i)
+    InstallAddon(*i);
 }

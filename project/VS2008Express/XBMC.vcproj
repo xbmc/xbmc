@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -904,6 +904,14 @@
 						Name="Video"
 						>
 						<File
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DllLibMpeg2.h"
 							>
 						</File>
@@ -951,142 +959,6 @@
 							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.h"
 							>
 						</File>
-						<Filter
-							Name="CrystlHD"
-							>
-							<File
-								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\bits_reader.h"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\cpb.c"
-								>
-								<FileConfiguration
-									Name="Release (OpenGL)|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										CompileAs="2"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Debug (DirectX)|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										CompileAs="2"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release (DirectX)|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										CompileAs="2"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Debug (OpenGL)|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										CompileAs="2"
-									/>
-								</FileConfiguration>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\cpb.h"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\CrystalHD.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\CrystalHD.h"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\h264_parser.c"
-								>
-								<FileConfiguration
-									Name="Release (OpenGL)|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										CompileAs="2"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Debug (DirectX)|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										CompileAs="2"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release (DirectX)|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										CompileAs="2"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Debug (OpenGL)|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										CompileAs="2"
-									/>
-								</FileConfiguration>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\h264_parser.h"
-								>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\nal.c"
-								>
-								<FileConfiguration
-									Name="Release (OpenGL)|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										CompileAs="2"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Debug (DirectX)|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										CompileAs="2"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release (DirectX)|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										CompileAs="2"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Debug (OpenGL)|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										CompileAs="2"
-									/>
-								</FileConfiguration>
-							</File>
-							<File
-								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\nal.h"
-								>
-							</File>
-						</Filter>
 					</Filter>
 					<Filter
 						Name="Overlay"
@@ -2151,10 +2023,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderer.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\VideoRenderers\XBoxRenderer.h"
 					>
 				</File>
 				<Filter
@@ -6126,6 +5994,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\addons\PluginSource.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\PluginSource.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\addons\Repository.cpp"
 					>
 				</File>
@@ -6897,14 +6773,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\language.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\language.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\listitem.cpp"
 						>
 					</File>
@@ -6929,19 +6797,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\PythonAddon.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\PythonAddon.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\PythonPlayer.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\PythonPlayer.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\PythonSettings.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\PythonSettings.h"
 						>
 					</File>
 					<File
@@ -6970,6 +6838,10 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\winxmldialog.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\lib\libPython\xbmcmodule\xbmcaddonmodule.cpp"
 						>
 					</File>
 					<File

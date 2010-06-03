@@ -30,9 +30,7 @@
 #include "utils/PasswordManager.h"
 #include "SMBDirectory.h"
 #include "Util.h"
-#ifndef _WIN32PC
 #include <libsmbclient.h>
-#endif
 #include "../utils/Network.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"

@@ -645,7 +645,7 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
   item.m_strPath  = url.Get();
   item.m_strTitle = tag->m_strTitle;
   item.SetThumbnailImage(channel.icon);
-  item.SetContentType("video/X-htsp");
+  item.SetMimeType("video/X-htsp");
   item.SetCachedVideoThumb();
   return true;
 }

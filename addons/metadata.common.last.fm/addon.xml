@@ -9,11 +9,10 @@
   <extension point="xbmc.metadata.scraper.library"
              library="lastfm.xml"/>
   <extension point="xbmc.addon.metadata">
-    <platform>all</platform>
-    <minversion>20000</minversion>
     <summary>LastFM Scraper Library</summary>
     <summary lang="nl">LastFM Scraper Collectie</summary>
     <description>Download Music information</description>
     <description lang="nl">Download muziek informatie</description>
+    <platform>all</platform>
   </extension>
 </addon>

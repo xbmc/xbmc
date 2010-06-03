@@ -162,7 +162,7 @@ void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdStr
   
   //if (CompileRegExp(m_protocols, regExp) && !MatchesRegExp(url.GetProtocol(), regExp)) return;
   
-  if (CompileRegExp(m_mimeTypes, regExp) && !MatchesRegExp(item.GetContentType(), regExp)) return;
+  if (CompileRegExp(m_mimeTypes, regExp) && !MatchesRegExp(item.GetMimeType(), regExp)) return;
 
   if (CompileRegExp(m_fileName, regExp) && !MatchesRegExp(item.m_strPath, regExp)) return;
 

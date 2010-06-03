@@ -26,21 +26,6 @@
 
 class TiXmlElement;
 
-typedef enum
-{
-  CONTENT_MOVIES,
-  CONTENT_TVSHOWS,
-  CONTENT_MUSICVIDEOS,
-  CONTENT_EPISODES,
-  CONTENT_ALBUMS,
-  CONTENT_ARTISTS,
-  CONTENT_NONE,
-  CONTENT_AUDIO,
-  CONTENT_IMAGE,
-  CONTENT_PROGRAM,
-  CONTENT_VIDEO
-} CONTENT_TYPE;
-
 namespace ADDON
 {
   typedef enum
@@ -53,7 +38,11 @@ namespace ADDON
     ADDON_SCRIPT_WEATHER,
     ADDON_SCRIPT_SUBTITLES,
     ADDON_SCRIPT_LYRICS,
-    ADDON_SCRAPER,
+    ADDON_SCRAPER_ALBUMS,
+    ADDON_SCRAPER_ARTISTS,
+    ADDON_SCRAPER_MOVIES,
+    ADDON_SCRAPER_MUSICVIDEOS,
+    ADDON_SCRAPER_TVSHOWS,
     ADDON_SCREENSAVER,
     ADDON_PLUGIN,
     ADDON_REPOSITORY,
@@ -68,6 +57,8 @@ namespace ADDON
   typedef boost::shared_ptr<CVisualisation> VizPtr;
   class CSkinInfo;
   typedef boost::shared_ptr<CSkinInfo> SkinPtr;
+  class CPluginSource;
+  typedef boost::shared_ptr<CPluginSource> PluginPtr;
 
   class CAddonMgr;
   class AddonVersion;
@@ -98,7 +89,6 @@ namespace ADDON
     virtual const CStdString Icon() const =0;
     virtual const int  Stars() const =0;
     virtual const CStdString Disclaimer() const =0;
-    virtual bool Supports(const CONTENT_TYPE &content) const =0;
     virtual bool HasSettings() =0;
     virtual bool LoadSettings() =0;
     virtual void SaveSettings() =0;

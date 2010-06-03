@@ -23,11 +23,12 @@
 
 #include "GUIViewState.h"
 
+using namespace ADDON;
 
 class CGUIViewStateWindowVideo : public CGUIViewState
 {
 public:
-  CGUIViewStateWindowVideo(const CFileItemList& items) : CGUIViewState(items, CONTENT_VIDEO) {}
+  CGUIViewStateWindowVideo(const CFileItemList& items) : CGUIViewState(items, CPluginSource::VIDEO) {}
 
 protected:
   virtual CStdString GetLockType();

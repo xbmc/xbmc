@@ -408,7 +408,9 @@ void CGUIWindowPictures::OnShowPictureRecursive(const CStdString& strPath)
     // stop any video
     if (g_application.IsPlayingVideo())
       g_application.StopPlaying();
-    pSlideShow->AddFromPath(strPath, true);
+    pSlideShow->AddFromPath(strPath, true,
+                            m_guiState->GetSortMethod(),
+                            m_guiState->GetSortOrder());
     if (pSlideShow->NumSlides())
       g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
   }
@@ -418,7 +420,10 @@ void CGUIWindowPictures::OnSlideShowRecursive(const CStdString &strPicture)
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (pSlideShow)
-    pSlideShow->RunSlideShow(strPicture, true, g_guiSettings.GetBool("slideshow.shuffle"));
+    pSlideShow->RunSlideShow(strPicture, true,
+                             g_guiSettings.GetBool("slideshow.shuffle"),false,
+                             m_guiState->GetSortMethod(),
+                             m_guiState->GetSortOrder());
 }
 
 void CGUIWindowPictures::OnSlideShowRecursive()
@@ -436,7 +441,9 @@ void CGUIWindowPictures::OnSlideShow(const CStdString &strPicture)
 {
   CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
   if (pSlideShow)
-    pSlideShow->RunSlideShow(strPicture);
+    pSlideShow->RunSlideShow(strPicture, false ,false, false,
+                             m_guiState->GetSortMethod(),
+                             m_guiState->GetSortOrder());
 }
 
 void CGUIWindowPictures::OnRegenerateThumbs()

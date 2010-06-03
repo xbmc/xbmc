@@ -171,7 +171,7 @@ bool CEncoderFlac::Close()
 FLAC__StreamEncoderWriteStatus CEncoderFlac::write_callback(const FLAC__StreamEncoder *encoder, const FLAC__byte buffer[], size_t bytes, unsigned samples, unsigned current_frame, void *client_data)
 {
   CEncoderFlac *pThis = (CEncoderFlac *)client_data;
-  if (pThis->FileWrite(buffer, bytes) != bytes)
+  if (pThis->FileWrite(buffer, bytes) != (int)bytes)
     return FLAC__STREAM_ENCODER_WRITE_STATUS_FATAL_ERROR;
   return FLAC__STREAM_ENCODER_WRITE_STATUS_OK;
 }

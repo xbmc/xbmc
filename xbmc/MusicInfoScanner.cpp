@@ -808,7 +808,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
 
   // find album info
   ADDON::ScraperPtr info;
-  if (!m_musicDatabase.GetScraperForPath(strPath,info))
+  if (!m_musicDatabase.GetScraperForPath(strPath, info, ADDON::ADDON_SCRAPER_ALBUMS))
   {
     m_musicDatabase.Close();
     return false;
@@ -856,7 +856,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
       CLog::Log(LOGERROR,"Unable to find an url in nfo file: %s", strNfo.c_str());
   }
 
-  if (!scraper.CheckValidOrFallback(g_guiSettings.GetString("musiclibrary.scraper")))
+  if (!scraper.CheckValidOrFallback(g_guiSettings.GetString("musiclibrary.albumscraper")))
   { // the current scraper is invalid, as is the default - bail
     CLog::Log(LOGERROR, "%s - current and default scrapers are invalid.  Pick another one", __FUNCTION__);
     return false;
@@ -893,8 +893,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
           pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
           pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
           pDlg->Reset();
-          pDlg->EnableButton(true);
-          pDlg->SetButtonLabel(413); // manual
+          pDlg->EnableButton(true, 413); // manual
         }
 
         for (int i = 0; i < scraper.GetAlbumCount(); ++i)
@@ -1036,7 +1035,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
 
   // find artist info
   ADDON::ScraperPtr info;
-  if (!m_musicDatabase.GetScraperForPath(strPath,info))
+  if (!m_musicDatabase.GetScraperForPath(strPath, info, ADDON::ADDON_SCRAPER_ARTISTS))
   {
     m_musicDatabase.Close();
     return false;
@@ -1110,8 +1109,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
         {
           pDlg->SetHeading(g_localizeStrings.Get(21890));
           pDlg->Reset();
-          pDlg->EnableButton(true);
-          pDlg->SetButtonLabel(413); // manual
+          pDlg->EnableButton(true, 413); // manual
 
           for (int i = 0; i < scraper.GetArtistCount(); ++i)
           {

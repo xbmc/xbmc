@@ -178,6 +178,8 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     {
       return codec;
     }
+    delete codec;
+
     codec = new WAVCodec();
     if (codec->Init(strFile, filecache))
     {

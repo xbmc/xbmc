@@ -267,23 +267,23 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     pItem->m_strPath = (const char*) resource.m_Uri;
 
                     // set metadata
-                    if (resource.m_Size > 0) {
+                    if (resource.m_Size != (NPT_LargeSize)-1) {
                         pItem->m_dwSize  = resource.m_Size;
                     }
 
                     // set a general content type
                     CStdString type = (const char*)(*entry)->m_ObjectClass.type.Left(21);
                     if (type.Equals("object.item.videoitem"))
-                        pItem->SetContentType("video/octet-stream");
+                        pItem->SetMimeType("video/octet-stream");
                     else if(type.Equals("object.item.audioitem"))
-                        pItem->SetContentType("audio/octet-stream");
+                        pItem->SetMimeType("audio/octet-stream");
                     else if(type.Equals("object.item.imageitem"))
-                        pItem->SetContentType("image/octet-stream");
+                        pItem->SetMimeType("image/octet-stream");
 
                     // look for content type in protocol info
                     if (resource.m_ProtocolInfo.IsValid()) {
                         if (resource.m_ProtocolInfo.GetContentType().Compare("application/octet-stream") != 0) {
-                            pItem->SetContentType((const char*)resource.m_ProtocolInfo.GetContentType());
+                            pItem->SetMimeType((const char*)resource.m_ProtocolInfo.GetContentType());
                         }
                     } else {
                         CLog::Log(LOGERROR, "CUPnPDirectory::GetDirectory - invalid protocol info '%s'",

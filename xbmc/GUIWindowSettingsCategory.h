@@ -38,8 +38,6 @@ public:
   virtual void Render();
   virtual int GetID() const { return CGUIWindow::GetID() + m_iScreen; };
 
-  // Note: Static as it's used elsewhere
-  static void FillInAddons(CSettingAddon *pSetting, int controlID);
 protected:
   virtual void OnInitWindow();
 

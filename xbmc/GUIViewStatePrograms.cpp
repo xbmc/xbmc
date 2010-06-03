@@ -32,8 +32,9 @@
 #include "Key.h"
 
 using namespace XFILE;
+using namespace ADDON;
 
-CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items, CONTENT_PROGRAM)
+CGUIViewStateWindowPrograms::CGUIViewStateWindowPrograms(const CFileItemList& items) : CGUIViewState(items, CPluginSource::EXECUTABLE)
 {
   if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
     AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%K", "%I", "%L", ""));  // Titel, Size | Foldername, empty

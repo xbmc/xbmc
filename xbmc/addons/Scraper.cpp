@@ -37,16 +37,98 @@ using std::stringstream;
 namespace ADDON
 {
 
+typedef struct
+{
+  const char*  name;
+  CONTENT_TYPE type;
+  int          pretty;
+} ContentMapping;
+
+static const ContentMapping content[] =
+  {{"unknown",       CONTENT_NONE,          231 },
+   {"albums",        CONTENT_ALBUMS,        132 },
+   {"music",         CONTENT_ALBUMS,        132 },
+   {"artists",       CONTENT_ARTISTS,       133 },
+   {"movies",        CONTENT_MOVIES,      20342 },
+   {"tvshows",       CONTENT_TVSHOWS,     20343 },
+   {"musicvideos",   CONTENT_MUSICVIDEOS, 20389 }};
+
+const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*/)
+{
+  for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
+  {
+    const ContentMapping &map = content[index];
+    if (type == map.type)
+    {
+      if (pretty && map.pretty)
+        return g_localizeStrings.Get(map.pretty);
+      else
+        return map.name;
+    }
+  }
+  return "";
+}
+
+const CONTENT_TYPE TranslateContent(const CStdString &string)
+{
+  for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
+  {
+    const ContentMapping &map = content[index];
+    if (string.Equals(map.name))
+      return map.type;
+  }
+  return CONTENT_NONE;
+}
+
+const TYPE ScraperTypeFromContent(const CONTENT_TYPE &content)
+{
+  switch (content)
+  {
+  case CONTENT_ALBUMS:
+    return ADDON_SCRAPER_ALBUMS;
+  case CONTENT_ARTISTS:
+    return ADDON_SCRAPER_ARTISTS;
+  case CONTENT_MOVIES:
+    return ADDON_SCRAPER_MOVIES;
+  case CONTENT_MUSICVIDEOS:
+    return ADDON_SCRAPER_MUSICVIDEOS;
+  case CONTENT_TVSHOWS:
+    return ADDON_SCRAPER_TVSHOWS;
+  default:
+    return ADDON_UNKNOWN;
+  }
+}
+
 class CAddon;
 
-CScraper::CScraper(cp_plugin_info_t *props) :
-  CAddon(props)
+CScraper::CScraper(const cp_extension_t *ext) :
+  CAddon(ext)
 {
-  const cp_extension_t *ext = CAddonMgr::Get().GetExtension(props, "xbmc.metadata.scraper");
   if (ext)
   {
     m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "language");
     m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"requiressettings").Equals("true");
+  }
+  switch (Type())
+  {
+    case ADDON_SCRAPER_ALBUMS:
+      m_pathContent = CONTENT_ALBUMS;
+      break;
+    case ADDON_SCRAPER_ARTISTS:
+      m_pathContent = CONTENT_ARTISTS;
+      break;
+    case ADDON_SCRAPER_MOVIES:
+      m_pathContent = CONTENT_MOVIES;
+      break;
+    case ADDON_SCRAPER_MUSICVIDEOS:
+      m_pathContent = CONTENT_MUSICVIDEOS;
+      break;
+    case ADDON_SCRAPER_TVSHOWS:
+      m_pathContent = CONTENT_TVSHOWS;
+      break;
+    default:
+      m_pathContent = CONTENT_NONE;
+      break;
   }
 }
 
@@ -58,7 +140,12 @@ AddonPtr CScraper::Clone(const AddonPtr &self) const
 CScraper::CScraper(const CScraper &rhs, const AddonPtr &self)
   : CAddon(rhs, self)
 {
-  m_pathContent = CONTENT_NONE;
+  m_pathContent = rhs.m_pathContent;
+}
+
+bool CScraper::Supports(const CONTENT_TYPE &content) const
+{
+  return Type() == ScraperTypeFromContent(content);
 }
 
 bool CScraper::LoadSettings()
@@ -89,7 +176,7 @@ bool CScraper::LoadUserXML(const CStdString& strSaved)
 bool CScraper::LoadSettingsXML(const CStdString& strFunction, const CScraperUrl* url)
 {
   AddonPtr addon;
-  if (!Parent() && !CAddonMgr::Get().GetAddon(ID(), addon, ADDON_SCRAPER))
+  if (!Parent() && !CAddonMgr::Get().GetAddon(ID(), addon))
     return false;
   else if (Parent())
     addon = Parent();

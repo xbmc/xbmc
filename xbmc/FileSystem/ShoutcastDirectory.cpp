@@ -137,7 +137,7 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
 
     /* content type is known before hand, should save later lookup */
     /* wonder if we could combine the contentype of the playlist and of the real stream */
-    pItem->SetContentType("audio/x-scpls");
+    pItem->SetMimeType("audio/x-scpls");
 
     pItem->m_strPath = url.Get();
 

@@ -38,7 +38,8 @@ public:
   virtual bool HasListItems() const { return true; }
 
   void OnInstall();
-  void OnDisable();
+  void OnUninstall();
+  void OnEnable(bool enable);
   void OnSettings();
   void OnChangeLog();
 
@@ -48,6 +49,14 @@ public:
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 protected:
   void OnInitWindow();
+
+  /*! \brief Set the item to display addon info on.
+   \param item to display
+   \return true if we can display information, false otherwise
+   */
+  bool SetItem(const CFileItemPtr &item);
+  void UpdateControls();
+
   CFileItemPtr m_item;
   ADDON::AddonPtr m_addon;
   ADDON::AddonPtr m_localAddon;

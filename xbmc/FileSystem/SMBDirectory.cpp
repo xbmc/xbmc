@@ -47,9 +47,7 @@
 #include "utils/SingleLock.h"
 #include "utils/PasswordManager.h"
 
-#ifndef _WIN32PC
 #include <libsmbclient.h>
-#endif
 
 #ifdef __APPLE__
 #define XBMC_SMB_MOUNT_PATH "Library/Application Support/XBMC/Mounts/"

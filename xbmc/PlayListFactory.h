@@ -34,5 +34,6 @@ namespace PLAYLIST
     static CPlayList* Create(const CStdString& filename);
     static CPlayList* Create(const CFileItem& item);
     static bool IsPlaylist(const CStdString& filename);
+    static bool IsPlaylist(const CFileItem& item);
   };
 }

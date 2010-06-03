@@ -8,5 +8,5 @@
   <extension-point id="lyrics" schema="script.xsd"/>
   <extension-point id="weather" schema="script.xsd"/>
   <extension-point id="library" schema="script.xsd"/>
-  <extension-point id="plugin" schema="script.xsd"/>
+  <extension-point id="plugin" schema="pluginsource.xsd"/>
 </addon>

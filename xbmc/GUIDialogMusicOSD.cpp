@@ -20,16 +20,16 @@
  */
 
 #include "GUIDialogMusicOSD.h"
-#include "GUIWindowSettingsCategory.h"
 #include "Application.h"
 #include "GUIWindowManager.h"
 #include "MouseStat.h"
 #include "GUIUserMessages.h"
 #include "Settings.h"
+#include "GUISettings.h"
+#include "GUIWindowAddonBrowser.h"
 
 #define CONTROL_VIS_BUTTON       500
 #define CONTROL_LOCK_BUTTON      501
-#define CONTROL_VIS_CHOOSER      503
 
 using ADDON::CVisualisation;
 
@@ -50,28 +50,15 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
   case GUI_MSG_CLICKED:
     {
       unsigned int iControl = message.GetSenderId();
-      if (iControl == CONTROL_VIS_CHOOSER)
+      if (iControl == CONTROL_VIS_BUTTON)
       {
-        CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
-        OnMessage(msg);
-        CSettingAddon *pSetting = (CSettingAddon *)g_guiSettings.GetSetting("musicplayer.visualisation");
-        if (pSetting)
+        CStdString addonID;
+        if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_VIZ, addonID))
         {
-          pSetting->SetData(msg.GetParam1());
+          g_guiSettings.SetString("musicplayer.visualisation", addonID);
           g_settings.Save();
+          g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
         }
-        g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
-        // hide the control and reset focus
-        SET_CONTROL_HIDDEN(CONTROL_VIS_CHOOSER);
-        SET_CONTROL_FOCUS(CONTROL_VIS_BUTTON, 0);
-        return true;
-      }
-      else if (iControl == CONTROL_VIS_BUTTON)
-      {
-        SET_CONTROL_VISIBLE(CONTROL_VIS_CHOOSER);
-        SET_CONTROL_FOCUS(CONTROL_VIS_CHOOSER, 0);
-        // fire off an event that we've pressed this button...
-        OnAction(CAction(ACTION_SELECT_ITEM));
       }
       else if (iControl == CONTROL_LOCK_BUTTON)
       {
@@ -110,9 +97,6 @@ void CGUIDialogMusicOSD::FrameMove()
 
 void CGUIDialogMusicOSD::OnInitWindow()
 {
-  CSettingAddon *pSetting = (CSettingAddon *)g_guiSettings.GetSetting("musicplayer.visualisation");
-  CGUIWindowSettingsCategory::FillInAddons(pSetting, CONTROL_VIS_CHOOSER);
-
   ResetControlStates();
   CGUIDialog::OnInitWindow();
 }

@@ -40,31 +40,85 @@ using namespace std;
 namespace ADDON
 {
 
+// BACKWARDCOMPATIBILITY: These can be removed post-Dharma
+typedef struct
+{
+  const char* old;
+  const char* id;
+} ScraperUpdate;
+
+static const ScraperUpdate music[] =
+    {{"allmusic_merlin_lastfm.xml", "metadata.merlin.pl"},
+    {"daum.xml",                   "metadata.music.daum.net"},
+    {"israel-music.xml",           "metadata.he.israel-music.co.il"},
+    {"freebase.xml",               "metadata.freebase.com"},
+    {"1ting.xml",                  "metadata.1ting.com"},
+    {"allmusic.xml",               "metadata.allmusic.com"},
+    {"lastfm.xml",                 "metadata.last.fm"}};
+
+static const ScraperUpdate videos[] =
+   {{"7176.xml",                   "metadata.7176.com"},
+    {"amazonuk.xml",               "metadata.amazon.co.uk"},
+    {"amazonus.xml",               "metadata.amazon.com"},
+    {"asiandb.xml",                "metadata.asiandb.com"},
+    {"cine-passion.xml",           "metadata.cine-passion.fr"},
+    {"cinefacts.xml",              "metadata.cinefacts.de"},
+    {"daum-tv.xml",                "metadata.tv.daum.net"},
+    {"daum.xml",                   "metadata.movie.daum.net"},
+    {"fdbpl.xml",                  "metadata.fdb.pl"},
+    {"filmaffinity.xml",           "metadata.filmaffinity.com"},
+    {"filmbasen.xml",              "metadata.filmbasen.dagbladet.no"},
+    {"filmdelta.xml",              "metadata.filmdelta.se"},
+    {"filmstarts.xml",             "metadata.filmstarts.de"},
+    {"filmweb.xml",                "metadata.filmweb.pl"},
+    {"getlib.xml",                 "metadata.getlib.com"},
+    {"imdb.xml",                   "metadata.imdb.com"},
+    {"kino-de.xml",                "metadata.kino.de"},
+    {"KinoPoisk.xml",              "metadata.kinopoisk.ru"},
+    {"M1905.xml",                  "metadata.m1905.com"},
+    {"moviemaze.xml",              "metadata.moviemaze.de"},
+    {"moviemeter.xml",             "metadata.moviemeter.nl"},
+    {"movieplayer-it-film.xml",    "metadata.movieplayer.it"},
+    {"movieplayer-it-tv.xml",      "metadata.tv.movieplayer.it"},
+    {"mtime.xml",                  "metadata.mtime.com"},
+    {"mtv.xml",                    "metadata.mtv.com"},
+    {"myMovies.xml",               "metadata.mymovies.it"},
+    {"mymoviesdk.xml",             "metadata.mymovies.dk"},
+    {"naver.xml",                  "metadata.movie.naver.com"},
+    {"ofdb.xml",                   "metadata.ofdb.de"},
+    {"ptgate.xml",                 "metadata.ptgate.pt"},
+    {"rottentomatoes.xml",         "metadata.rottentomatoes.com"},
+    {"sratim.xml",                 "metadata.sratim.co.il"},
+    {"tmdb.xml",                   "metadata.themoviedb.org"},
+    {"tvdb.xml",                   "metadata.tvdb.com"},
+    {"videobuster.xml",            "metadata.videobuster.de"},
+    {"worldart.xml",               "metadata.worldart.ru"},
+    {"yahoomusic.xml",             "metadata.yahoomusic.com"}};
+
+const CStdString UpdateVideoScraper(const CStdString &old)
+{
+  for (unsigned int index=0; index < sizeof(videos)/sizeof(videos[0]); ++index)
+  {
+    if (old == videos[index].old)
+      return videos[index].id;
+  }
+  return "";
+}
+
+const CStdString UpdateMusicScraper(const CStdString &old)
+{
+  for (unsigned int index=0; index < sizeof(music)/sizeof(music[0]); ++index)
+  {
+    if (old == music[index].old)
+      return music[index].id;
+  }
+  return "";
+}
+
 /**
  * helper functions 
  *
  */
-
-typedef struct
-{
-  const char*  name;
-  CONTENT_TYPE type;
-  int          pretty;
-} ContentMapping;
-
-static const ContentMapping content[] =
-  {{"unknown",       CONTENT_NONE,          231 },
-   {"albums",        CONTENT_ALBUMS,        132 },
-   {"music",         CONTENT_ALBUMS,        132 },
-   {"artists",       CONTENT_ARTISTS,       133 },
-   {"movies",        CONTENT_MOVIES,      20342 },
-   {"tvshows",       CONTENT_TVSHOWS,     20343 },
-   {"episodes",      CONTENT_EPISODES,    20360 },
-   {"musicvideos",   CONTENT_MUSICVIDEOS, 20389 },
-   {"audio",         CONTENT_AUDIO,           0 },
-   {"image",         CONTENT_IMAGE,           0 },
-   {"program",       CONTENT_PROGRAM,         0 },
-   {"video",         CONTENT_VIDEO,           0 }};
 
 typedef struct
 {
@@ -74,48 +128,25 @@ typedef struct
 } TypeMapping;
 
 static const TypeMapping types[] =
-  {{"unknown",                       ADDON_UNKNOWN,            0 },
-   {"xbmc.metadata.scraper",         ADDON_SCRAPER,        24007 },
-   {"xbmc.metadata.scraper.library", ADDON_SCRAPER_LIBRARY,    0 },
-   {"xbmc.ui.screensaver",           ADDON_SCREENSAVER,    24008 },
-   {"xbmc.player.musicviz",          ADDON_VIZ,            24010 },
-   {"visualization-library",         ADDON_VIZ_LIBRARY,        0 },
-   {"xbmc.python.plugin",            ADDON_PLUGIN,         24005 },
-   {"xbmc.python.script",            ADDON_SCRIPT,         24009 },
-   {"xbmc.python.weather",           ADDON_SCRIPT_WEATHER,   24027 },
-   {"xbmc.python.subtitles",         ADDON_SCRIPT_SUBTITLES, 24012 },
-   {"xbmc.python.lyrics",            ADDON_SCRIPT_LYRICS,    24013 },
-   {"xbmc.python.library",           ADDON_SCRIPT_LIBRARY,   24014 },
-   {"xbmc.gui.skin",                 ADDON_SKIN,             166 },
-   {"xbmc.addon.repository",         ADDON_REPOSITORY,     24011 },
-   {"pvrclient",                     ADDON_PVRDLL,             0 }};
-
-const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*/)
-{
-  for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
-  {
-    const ContentMapping &map = content[index];
-    if (type == map.type)
-    {
-      if (pretty && map.pretty)
-        return g_localizeStrings.Get(map.pretty);
-      else
-        return map.name;
-    }
-  }
-  return "";
-}
-
-const CONTENT_TYPE TranslateContent(const CStdString &string)
-{
-  for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
-  {
-    const ContentMapping &map = content[index];
-    if (string.Equals(map.name))
-      return map.type;
-  }
-  return CONTENT_NONE;
-}
+  {{"unknown",                           ADDON_UNKNOWN,                 0 },
+   {"xbmc.metadata.scraper.albums",      ADDON_SCRAPER_ALBUMS,      24016 },
+   {"xbmc.metadata.scraper.artists",     ADDON_SCRAPER_ARTISTS,     24017 },
+   {"xbmc.metadata.scraper.movies",      ADDON_SCRAPER_MOVIES,      24007 },
+   {"xbmc.metadata.scraper.musicvideos", ADDON_SCRAPER_MUSICVIDEOS, 24015 },
+   {"xbmc.metadata.scraper.tvshows",     ADDON_SCRAPER_TVSHOWS,     24014 },
+   {"xbmc.metadata.scraper.library",     ADDON_SCRAPER_LIBRARY,         0 },
+   {"xbmc.ui.screensaver",               ADDON_SCREENSAVER,         24008 },
+   {"xbmc.player.musicviz",              ADDON_VIZ,                 24010 },
+   {"visualization-library",             ADDON_VIZ_LIBRARY,             0 },
+   {"xbmc.python.pluginsource",          ADDON_PLUGIN,              24005 },
+   {"xbmc.python.script",                ADDON_SCRIPT,              24009 },
+   {"xbmc.python.weather",               ADDON_SCRIPT_WEATHER,      24027 },
+   {"xbmc.python.subtitles",             ADDON_SCRIPT_SUBTITLES,    24012 },
+   {"xbmc.python.lyrics",                ADDON_SCRIPT_LYRICS,       24013 },
+   {"xbmc.python.library",               ADDON_SCRIPT_LIBRARY,      24014 },
+   {"xbmc.gui.skin",                     ADDON_SKIN,                  166 },
+   {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011 },
+   {"pvrclient",                         ADDON_PVRDLL,                  0 }};
 
 const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
@@ -201,16 +232,10 @@ AddonProps::AddonProps(cp_plugin_info_t *props)
   const cp_extension_t *metadata = CAddonMgr::Get().GetExtension(props, "xbmc.addon.metadata");
   if (metadata)
   {
-    CStdString platforms = CAddonMgr::Get().GetExtValue(metadata->configuration, "platform");
     summary = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "summary");
     description = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "description");
     disclaimer = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "disclaimer");
     license = CAddonMgr::Get().GetExtValue(metadata->configuration, "license");
-    vector<CStdString> content = CAddonMgr::Get().GetExtValues(metadata->configuration,"supportedcontent");
-    for (unsigned int i=0;i<content.size();++i)
-      contents.insert(TranslateContent(content[i]));
-    //FIXME other stuff goes here
-    //CStdString version = CAddonMgr::Get().GetExtValue(metadata->configuration, "minversion/xbmc");
   }
   icon = "icon.png";
   fanart = CUtil::AddFileToFolder(path, "fanart.jpg");
@@ -222,11 +247,11 @@ AddonProps::AddonProps(cp_plugin_info_t *props)
  *
  */
 
-CAddon::CAddon(cp_plugin_info_t *props)
-  : m_props(props)
+CAddon::CAddon(const cp_extension_t *ext)
+  : m_props(ext->plugin)
   , m_parent(AddonPtr())
 {
-  BuildLibName(props);
+  BuildLibName(ext);
   BuildProfilePath();
   CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
   m_enabled = true;
@@ -272,15 +297,19 @@ const AddonVersion CAddon::Version()
 
 //TODO platform/path crap should be negotiated between the addon and
 // the handler for it's type
-void CAddon::BuildLibName(cp_plugin_info_t *props)
+void CAddon::BuildLibName(const cp_extension_t *extension)
 {
-  if (!props)
+  if (!extension)
   {
     m_strLibName = "default";
     CStdString ext;
     switch (m_props.type)
     {
-    case ADDON_SCRAPER:
+    case ADDON_SCRAPER_ALBUMS:
+    case ADDON_SCRAPER_ARTISTS:
+    case ADDON_SCRAPER_MOVIES:
+    case ADDON_SCRAPER_MUSICVIDEOS:
+    case ADDON_SCRAPER_TVSHOWS:
     case ADDON_SCRAPER_LIBRARY:
       ext = ADDON_SCRAPER_EXT;
       break;
@@ -320,11 +349,15 @@ void CAddon::BuildLibName(cp_plugin_info_t *props)
       case ADDON_SCRIPT_LYRICS:
       case ADDON_SCRIPT_WEATHER:
       case ADDON_SCRIPT_SUBTITLES:
-      case ADDON_SCRAPER:
+      case ADDON_SCRAPER_ALBUMS:
+      case ADDON_SCRAPER_ARTISTS:
+      case ADDON_SCRAPER_MOVIES:
+      case ADDON_SCRAPER_MUSICVIDEOS:
+      case ADDON_SCRAPER_TVSHOWS:
       case ADDON_SCRAPER_LIBRARY:
       case ADDON_PLUGIN:
         {
-          CStdString temp = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library");
+          CStdString temp = CAddonMgr::Get().GetExtValue(extension->configuration, "@library");
           m_strLibName = temp;
         }
         break;
@@ -490,14 +523,21 @@ CStdString CAddon::GetSetting(const CStdString& key) const
   if (m_addonXmlDoc.RootElement())
   {
     // Try to find the setting in the addon and return its default value
-    const TiXmlElement* setting = m_addonXmlDoc.RootElement()->FirstChildElement("setting");
-    while (setting)
+    const TiXmlElement* category = m_addonXmlDoc.RootElement()->FirstChildElement("category");
+    if (!category)
+      category = m_addonXmlDoc.RootElement();
+    while (category)
     {
-      const char *id = setting->Attribute("id");
-      if (id && strcmpi(id, key) == 0 && setting->Attribute("default"))
-        return setting->Attribute("default");
+      const TiXmlElement *setting = category->FirstChildElement("setting");
+      while (setting)
+      {
+        const char *id = setting->Attribute("id");
+        if (id && strcmpi(id, key) == 0 && setting->Attribute("default"))
+          return setting->Attribute("default");
 
-      setting = setting->NextSiblingElement("setting");
+        setting = setting->NextSiblingElement("setting");
+      }
+      category = category->NextSiblingElement("category");
     }
   }
 
@@ -574,8 +614,8 @@ ADDONDEPS CAddon::GetDeps()
  *
  */
 
-CAddonLibrary::CAddonLibrary(cp_plugin_info_t *props)
-  : CAddon(props)
+CAddonLibrary::CAddonLibrary(const cp_extension_t *ext)
+  : CAddon(ext)
   , m_addonType(SetAddonType())
 {
 }
@@ -588,9 +628,7 @@ CAddonLibrary::CAddonLibrary(const AddonProps& props)
 
 TYPE CAddonLibrary::SetAddonType()
 {
-  if (Type() == ADDON_SCRAPER_LIBRARY)
-    return ADDON_SCRAPER;
-  else if (Type() == ADDON_VIZ_LIBRARY)
+  if (Type() == ADDON_VIZ_LIBRARY)
     return ADDON_VIZ;
   else
     return ADDON_UNKNOWN;

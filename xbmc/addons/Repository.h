@@ -37,7 +37,7 @@ namespace ADDON
   public:
     AddonPtr Clone(const AddonPtr &self) const;
     CRepository(const AddonProps& props);
-    CRepository(cp_plugin_info_t *props);
+    CRepository(const cp_extension_t *props);
     virtual ~CRepository();
 
     CStdString Checksum();

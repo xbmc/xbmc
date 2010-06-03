@@ -22,9 +22,6 @@
     <Filter Include="cores\dvdplayer\DVDCodecs\Video">
       <UniqueIdentifier>{8d116431-5e95-43cf-bf3c-7eb1022a612f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="cores\dvdplayer\DVDCodecs\Video\CrystlHD">
-      <UniqueIdentifier>{ac865601-ae71-41e6-8282-de88eacea06e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="cores\dvdplayer\DVDCodecs\Overlay">
       <UniqueIdentifier>{41b128f3-3b37-4066-aeaf-a6fb7b828575}</UniqueIdentifier>
     </Filter>
@@ -392,18 +389,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\cpb.c">
-      <Filter>cores\dvdplayer\DVDCodecs\Video\CrystlHD</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\CrystalHD.cpp">
-      <Filter>cores\dvdplayer\DVDCodecs\Video\CrystlHD</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\h264_parser.c">
-      <Filter>cores\dvdplayer\DVDCodecs\Video\CrystlHD</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\nal.c">
-      <Filter>cores\dvdplayer\DVDCodecs\Video\CrystlHD</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecCC.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
@@ -2109,9 +2094,6 @@
     <ClCompile Include="..\..\xbmc\lib\libPython\xbmcmodule\keyboard.cpp">
       <Filter>libraries\libPython\xbmcmodule</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libPython\xbmcmodule\language.cpp">
-      <Filter>libraries\libPython\xbmcmodule</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\lib\libPython\xbmcmodule\listitem.cpp">
       <Filter>libraries\libPython\xbmcmodule</Filter>
     </ClCompile>
@@ -2122,9 +2104,6 @@
       <Filter>libraries\libPython\xbmcmodule</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\lib\libPython\xbmcmodule\PythonPlayer.cpp">
-      <Filter>libraries\libPython\xbmcmodule</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libPython\xbmcmodule\PythonSettings.cpp">
       <Filter>libraries\libPython\xbmcmodule</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\lib\libPython\xbmcmodule\pyutil.cpp">
@@ -2346,6 +2325,18 @@
     <ClCompile Include="..\..\xbmc\cdrip\EncoderFlac.cpp">
       <Filter>libraries\cdrip</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\PluginSource.cpp">
+      <Filter>Source Files\Addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\lib\libPython\xbmcmodule\PythonAddon.cpp">
+      <Filter>libraries\libPython\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\lib\libPython\xbmcmodule\xbmcaddonmodule.cpp">
+      <Filter>libraries\libPython\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.cpp">
+      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -2542,21 +2533,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DXVA.h">
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\bits_reader.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Video\CrystlHD</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\cpb.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Video\CrystlHD</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\CrystalHD.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Video\CrystlHD</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\h264_parser.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Video\CrystlHD</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD\nal.h">
-      <Filter>cores\dvdplayer\DVDCodecs\Video\CrystlHD</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlay.h">
       <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
@@ -2922,9 +2898,6 @@
       <Filter>cores\VideoRenderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\WinRenderer.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\XBoxRenderer.h">
       <Filter>cores\VideoRenderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\ConvolutionKernels.h">
@@ -4433,9 +4406,6 @@
     <ClInclude Include="..\..\xbmc\lib\libPython\xbmcmodule\keyboard.h">
       <Filter>libraries\libPython\xbmcmodule</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libPython\xbmcmodule\language.h">
-      <Filter>libraries\libPython\xbmcmodule</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\lib\libPython\xbmcmodule\listitem.h">
       <Filter>libraries\libPython\xbmcmodule</Filter>
     </ClInclude>
@@ -4446,9 +4416,6 @@
       <Filter>libraries\libPython\xbmcmodule</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\lib\libPython\xbmcmodule\PythonPlayer.h">
-      <Filter>libraries\libPython\xbmcmodule</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libPython\xbmcmodule\PythonSettings.h">
       <Filter>libraries\libPython\xbmcmodule</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\lib\libPython\xbmcmodule\pyutil.h">
@@ -4903,6 +4870,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cdrip\DllFlacEnc.h">
       <Filter>cores\paplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\PluginSource.h">
+      <Filter>Source Files\Addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\lib\libPython\xbmcmodule\PythonAddon.h">
+      <Filter>libraries\libPython\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.h">
+      <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

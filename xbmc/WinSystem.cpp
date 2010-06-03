@@ -47,7 +47,7 @@ bool CWinSystemBase::InitWindowSystem()
   return true;
 }
 
-void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate)
+void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate, uint32_t dwFlags)
 {
   newRes.Overscan.left = 0;
   newRes.Overscan.top = 0;
@@ -56,13 +56,14 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen
   newRes.iScreen = screen;
   newRes.bFullScreen = true;
   newRes.iSubtitles = (int)(0.965 * height);
+  newRes.dwFlags = dwFlags;
   newRes.fRefreshRate = refreshRate;
   newRes.fPixelRatio = 1.0f;
   newRes.iWidth = width;
   newRes.iHeight = height;
   newRes.strMode.Format("%dx%d", width, height);
   if (refreshRate > 1)
-    newRes.strMode.Format("%s @ %.2f - Full Screen", newRes.strMode, refreshRate);
+    newRes.strMode.Format("%s @ %.2f%s - Full Screen", newRes.strMode, refreshRate, dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
   if (screen > 0)
     newRes.strMode.Format("%s #%d", newRes.strMode, screen + 1);
 }

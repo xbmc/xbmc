@@ -454,7 +454,7 @@ PLT_MediaItemResource::PLT_MediaItemResource()
     m_Uri             = "";
     m_ProtocolInfo    = PLT_ProtocolInfo();
     m_Duration        = (NPT_UInt32)-1;
-    m_Size            = (NPT_Size)-1;
+    m_Size            = (NPT_LargeSize)-1;
     m_Protection      = "";
     m_Bitrate         = (NPT_UInt32)-1;
     m_BitsPerSample   = (NPT_UInt32)-1;
@@ -847,7 +847,7 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
                     didl += "\"";
                 }
 
-                if (mask & PLT_FILTER_MASK_RES_SIZE && m_Resources[i].m_Size != (NPT_Size)-1) {
+                if (mask & PLT_FILTER_MASK_RES_SIZE && m_Resources[i].m_Size != (NPT_LargeSize)-1) {
                     didl += " size=\"";
                     didl += NPT_String::FromIntegerU(m_Resources[i].m_Size);
                     didl += "\"";
