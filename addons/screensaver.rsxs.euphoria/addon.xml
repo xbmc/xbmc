@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="screensaver.rsxs.euphoria"
+  version="1.0.0"
+  name="Euphoria"
+  provider-name="mogumbo, Team XBMC">
+  <requires>
+    <c-pluff version="0.1"/>
+  </requires>
+  <extension
+    point="xbmc.ui.screensaver"
+    library_linux="Euphoria.xbs"
+    library_osx="Euphoria.xbs"/>
+</addon>

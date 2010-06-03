@@ -472,111 +472,108 @@ void Xcddb::parseData(const char *buffer)
 {
   //writeLog("parseData Start");
 
+  std::map<CStdString, CStdString> keywords;
+  std::list<CStdString> keywordsOrder; // remember order of keywords as it appears in data received from CDDB
+
+  // Collect all the keywords and put them in map. 
+  // Multiple occurrences of the same keyword indicate that 
+  // the data contained on those lines should be concatenated
   char *line;
   const char trenner[3] = {'\n', '\r', '\0'};
-  line = strtok((char*)buffer, trenner);
-  int line_cnt = 0;
+  line = strtok((char*)buffer, trenner); // skip first line
   while ((line = strtok(0, trenner)))
   {
+    // Lines that begin with # are comments, should be ignored
     if (line[0] != '#')
     {
-      if (0 == strncmp(line, "DTITLE", 6))
+      char *s = strstr(line, "=");
+      if (s != NULL)
       {
-        // DTITLE=Modern Talking / Album: Victory (The 11th Album)
-        unsigned int len = (unsigned int)strlen(line) - 6;
-        bool found = false;
-        unsigned int i = 5;
-        for (;i < len;i++)
-        {
-          if ((i + 2) <= len && line[i] == ' ' && line[i + 1] == '/' && line[i + 2] == ' ')
-          {
-            // Jep found
-            found = true;
-            break;
-          }
-        }
-        if (found)
-        {
-          CStdString strLine = (char*)(line + 7);
-          CStdString strDisk_artist = strLine.Left(i - 7);
-          CStdString strDisk_title = (char*)(line + i + 3);
+        CStdString strKeyword(line, s - line);
+        strKeyword.TrimRight(" ");
 
-          // You never know if you really get UTF-8 strings from cddb
-          g_charsetConverter.unknownToUTF8(strDisk_artist, m_strDisk_artist);
+        CStdString strValue(s+1);
+        strValue.Replace("\\n", "\n"); 
+        strValue.Replace("\\t", "\t"); 
+        strValue.Replace("\\\\", "\\"); 
+        g_charsetConverter.unknownToUTF8(strValue);
 
-          // You never know if you really get UTF-8 strings from cddb
-          g_charsetConverter.unknownToUTF8(strDisk_title, m_strDisk_title);
-        }
+        std::map<CStdString, CStdString>::const_iterator it = keywords.find(strKeyword);
+        if (it != keywords.end())
+          strValue = it->second + strValue; // keyword occured before, concatenate
         else
-        {
-          CStdString strDisk_title = (char*)(line + 7);
-          // You never know if you really get UTF-8 strings from cddb
-          g_charsetConverter.unknownToUTF8(strDisk_title, m_strDisk_title);
-        }
-      }
-      else if (0 == strncmp(line, "DYEAR", 5))
-      {
-        CStdString strYear = (char*)(line + 5);
-        strYear.TrimLeft("= ");
-        // You never know if you really get UTF-8 strings from cddb
-        g_charsetConverter.unknownToUTF8(strYear, m_strYear);
-      }
-      else if (0 == strncmp(line, "DGENRE", 6))
-      {
-        CStdString strGenre = (char*)(line + 6);
-        strGenre.TrimLeft("= ");
+          keywordsOrder.push_back(strKeyword);
 
-        // You never know if you really get UTF-8 strings from cddb
-        g_charsetConverter.unknownToUTF8(strGenre, m_strGenre);
-      }
-      else if (0 == strncmp(line, "TTITLE", 6))
-      {
-        addTitle(line);
-      }
-      else if (0 == strncmp(line, "EXTD", 4))
-      {
-        CStdString strExtd((char*)(line + 4));
-
-        if (m_strYear.IsEmpty())
-        {
-          // Extract Year from extended info
-          // as a fallback
-          int iPos = strExtd.Find("YEAR:");
-          if (iPos > -1)
-          {
-            CStdString strYear;
-            strYear = strExtd.Mid(iPos + 6, 4);
-
-            // You never know if you really get UTF-8 strings from cddb
-            g_charsetConverter.unknownToUTF8(strYear, m_strYear);
-          }
-        }
-
-        if (m_strGenre.IsEmpty())
-        {
-          // Extract ID3 Genre
-          // as a fallback
-          int iPos = strExtd.Find("ID3G:");
-          if (iPos > -1)
-          {
-            CStdString strGenre;
-            strGenre = strExtd.Mid(iPos + 5, 4);
-            strGenre.TrimLeft(' ');
-            if (StringUtils::IsNaturalNumber(strGenre))
-            {
-              CID3Tag tag;
-              m_strGenre=tag.ParseMP3Genre(strGenre);
-            }
-          }
-        }
-      }
-      else if (0 == strncmp(line, "EXTT", 4))
-      {
-        addExtended(line);
+        keywords[strKeyword] = strValue;
       }
     }
-    line_cnt++;
   }
+
+  // parse keywords 
+  for (std::list<CStdString>::const_iterator it = keywordsOrder.begin(); it != keywordsOrder.end(); ++it)
+  {
+    CStdString strKeyword = *it;
+    CStdString strValue = keywords[strKeyword];
+
+    if (strKeyword == "DTITLE")
+    {
+      // DTITLE may contain artist and disc title, separated with " / ",
+      // for example: DTITLE=Modern Talking / Album: Victory (The 11th Album)
+      bool found = false;
+      for (int i = 0; i < strValue.GetLength() - 2; i++)
+      {
+        if (strValue[i] == ' ' && strValue[i + 1] == '/' && strValue[i + 2] == ' ')
+        {
+          m_strDisk_artist = TrimToUTF8(strValue.Left(i));
+          m_strDisk_title = TrimToUTF8(strValue.Mid(i+3));
+          found = true;
+          break;
+        }
+      }
+
+      if (!found)
+        m_strDisk_title = TrimToUTF8(strValue);
+    }
+    else if (strKeyword == "DYEAR")
+      m_strYear = TrimToUTF8(strValue);
+    else if (strKeyword== "DGENRE")
+      m_strGenre = TrimToUTF8(strValue);
+    else if (strKeyword.Left(6) == "TTITLE")
+      addTitle(strKeyword + "=" + strValue);
+    else if (strKeyword == "EXTD")
+    {
+      CStdString strExtd(strValue);
+
+      if (m_strYear.IsEmpty())
+      {
+        // Extract Year from extended info
+        // as a fallback
+        int iPos = strExtd.Find("YEAR:");
+        if (iPos > -1) // You never know if you really get UTF-8 strings from cddb
+          g_charsetConverter.unknownToUTF8(strExtd.Mid(iPos + 6, 4), m_strYear);
+      }
+
+      if (m_strGenre.IsEmpty())
+      {
+        // Extract ID3 Genre
+        // as a fallback
+        int iPos = strExtd.Find("ID3G:");
+        if (iPos > -1)
+        {
+          CStdString strGenre = strExtd.Mid(iPos + 5, 4);
+          strGenre.TrimLeft(' ');
+          if (StringUtils::IsNaturalNumber(strGenre))
+          {
+            CID3Tag tag;
+            m_strGenre=tag.ParseMP3Genre(strGenre);
+          }
+        }
+      }
+    }
+    else if (strKeyword.Left(4) == "EXTT")
+      addExtended(strKeyword + "=" + strValue);
+  }
+
   //writeLog("parseData Ende");
 }
 
@@ -1065,6 +1062,15 @@ CStdString Xcddb::GetCacheFile(unsigned int disc_id) const
   CStdString strFileName;
   strFileName.Format("%x.cddb", disc_id);
   return CUtil::AddFileToFolder(cCacheDir, strFileName);
+}
+
+CStdString Xcddb::TrimToUTF8(const CStdString &untrimmedText)
+{
+  CStdString text(untrimmedText);
+  text.Trim();
+  // You never know if you really get UTF-8 strings from cddb
+  g_charsetConverter.unknownToUTF8(text);
+  return text;
 }
 
 #endif

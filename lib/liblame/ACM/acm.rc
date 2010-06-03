@@ -1,0 +1,219 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Französisch (Frankreich) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
+#ifdef _WIN32
+LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 0,9,1,0
+ PRODUCTVERSION 0,9,1,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x3L
+ FILESUBTYPE 0x8L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "This is an ACM driver for Win32 using Lame to encode\0"
+            VALUE "CompanyName", "http://www.mp3dev.org/\0"
+            VALUE "FileDescription", "Lame MP3 codec engine\0"
+            VALUE "FileVersion", "0.9.2\0"
+            VALUE "InternalName", "lameACM\0"
+            VALUE "LegalCopyright", "Copyright © 2002 Steve Lhomme, Copyright © 2002-2007 The LAME Project\0"
+            VALUE "LegalTrademarks", "LGPL (see gnu.org)\0"
+            VALUE "OriginalFilename", "lameACM.acm\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "Lame MP3 codec\0"
+            VALUE "ProductVersion", "0.9.2\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON                ICON    DISCARDABLE     "lame.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CONFIG DIALOGEX 0, 0, 231, 204
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Lame MP3 codec : About"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,65,183,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,125,183,50,14
+    GROUPBOX        "Encoding",IDC_STATIC,7,7,142,166
+    GROUPBOX        "Decoding",IDC_STATIC_DECODING,154,7,70,113,WS_DISABLED
+    GROUPBOX        "Bits",IDC_STATIC,16,121,124,42
+    CONTROL         "Copyright",IDC_CHECK_COPYRIGHT,"Button",BS_AUTOCHECKBOX | 
+                    BS_FLAT | WS_GROUP | WS_TABSTOP,23,132,45,10
+    CONTROL         "Checksum",IDC_CHECK_CHECKSUM,"Button",BS_AUTOCHECKBOX | 
+                    BS_FLAT | WS_GROUP | WS_TABSTOP,84,132,49,10
+    CONTROL         "Original",IDC_CHECK_ORIGINAL,"Button",BS_AUTOCHECKBOX | 
+                    BS_FLAT | WS_GROUP | WS_TABSTOP,23,148,39,10
+    CONTROL         "Private",IDC_CHECK_PRIVATE,"Button",BS_AUTOCHECKBOX | 
+                    BS_FLAT | WS_GROUP | WS_TABSTOP,84,148,38,10
+    COMBOBOX        IDC_COMBO_ENC_STEREO,70,21,60,53,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_GROUP | WS_TABSTOP
+    LTEXT           "Stereo mode",IDC_STATIC,23,24,41,8
+    CONTROL         "Smart Encode",IDC_CHECK_ENC_SMART,"Button",
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_GROUP | WS_TABSTOP,49,39,
+                    61,10
+    ICON            IDI_ICON,IDC_STATIC_ENC_ICON,179,129,20,20
+    CTEXT           "v0.0.0 - 0.00",IDC_STATIC_CONFIG_VERSION,168,155,43,17
+    CONTROL         "Average BitRate",IDC_CHECK_ENC_ABR,"Button",
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_GROUP | WS_TABSTOP,49,53,
+                    68,10
+    LTEXT           "Min",IDC_STATIC_AVERAGE_MIN,19,67,12,8
+    LTEXT           "Max",IDC_STATIC_AVERAGE_MAX,17,79,14,8
+    LTEXT           "Step",IDC_STATIC_AVERAGE_STEP,15,91,16,8
+    LTEXT           "test",IDC_STATIC_AVERAGE_SAMPLE,19,105,12,8
+    CONTROL         "Slider2",IDC_SLIDER_AVERAGE_MIN,"msctls_trackbar32",
+                    TBS_AUTOTICKS | TBS_BOTH | TBS_NOTICKS | WS_GROUP | 
+                    WS_TABSTOP,33,67,92,11
+    CONTROL         "Slider3",IDC_SLIDER_AVERAGE_MAX,"msctls_trackbar32",
+                    TBS_AUTOTICKS | TBS_BOTH | TBS_NOTICKS | WS_GROUP | 
+                    WS_TABSTOP,33,79,92,11
+    CONTROL         "Slider1",IDC_SLIDER_AVERAGE_STEP,"msctls_trackbar32",
+                    TBS_AUTOTICKS | TBS_BOTH | TBS_NOTICKS | WS_GROUP | 
+                    WS_TABSTOP,33,91,92,11
+    CONTROL         "Slider4",IDC_SLIDER_AVERAGE_SAMPLE,"msctls_trackbar32",
+                    WS_TABSTOP,33,104,92,12
+    CTEXT           "000",IDC_STATIC_AVERAGE_SAMPLE_VALUE,125,105,15,9,0,
+                    WS_EX_STATICEDGE
+    CTEXT           "000",IDC_STATIC_AVERAGE_STEP_VALUE,125,92,15,9,0,
+                    WS_EX_STATICEDGE
+    CTEXT           "000",IDC_STATIC_AVERAGE_MAX_VALUE,125,80,15,9,0,
+                    WS_EX_STATICEDGE
+    CTEXT           "000",IDC_STATIC_AVERAGE_MIN_VALUE,125,67,15,9,0,
+                    WS_EX_STATICEDGE
+END
+
+IDD_ABOUT DIALOG DISCARDABLE  0, 0, 187, 77
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Lame MP3 codec : About"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,130,56,50,14
+    LTEXT           "Steve Lhomme + LAME developers",IDC_STATIC,7,33,112,8
+    LTEXT           "LGPL license",IDC_STATIC,7,20,43,8
+    ICON            IDI_ICON,IDC_STATIC,145,16,20,20
+    LTEXT           "Static",IDC_STATIC_ABOUT_TITLE,7,7,173,8
+    LTEXT           "http://www.mp3dev.org/",IDC_STATIC_ABOUT_URL,7,47,80,8
+    LTEXT           "icon : Lucas Granito",IDC_STATIC,7,61,64,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_CONFIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 224
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 197
+    END
+
+    IDD_ABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 70
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // Französisch (Frankreich) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

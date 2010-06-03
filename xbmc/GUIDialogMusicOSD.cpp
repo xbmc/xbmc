@@ -25,6 +25,7 @@
 #include "GUIWindowManager.h"
 #include "MouseStat.h"
 #include "GUIUserMessages.h"
+#include "Settings.h"
 
 #define CONTROL_VIS_BUTTON       500
 #define CONTROL_LOCK_BUTTON      501
@@ -53,11 +54,13 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
       {
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
         OnMessage(msg);
-        CStdString strLabel = msg.GetLabel();
-        if (msg.GetParam1() == 0)
-          g_guiSettings.SetString("musicplayer.visualisation", "None");
-        else
-          g_guiSettings.SetString("musicplayer.visualisation", strLabel);
+        CSettingAddon *pSetting = (CSettingAddon *)g_guiSettings.GetSetting("musicplayer.visualisation");
+        if (pSetting)
+        {
+          pSetting->SetData(msg.GetParam1());
+          g_settings.Save();
+        }
+        g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
         // hide the control and reset focus
         SET_CONTROL_HIDDEN(CONTROL_VIS_CHOOSER);
         SET_CONTROL_FOCUS(CONTROL_VIS_BUTTON, 0);
@@ -107,8 +110,8 @@ void CGUIDialogMusicOSD::FrameMove()
 
 void CGUIDialogMusicOSD::OnInitWindow()
 {
-  CSetting *pSetting = g_guiSettings.GetSetting("musicplayer.visualisation");
-  CGUIWindowSettingsCategory::FillInVisualisations(pSetting, CONTROL_VIS_CHOOSER);
+  CSettingAddon *pSetting = (CSettingAddon *)g_guiSettings.GetSetting("musicplayer.visualisation");
+  CGUIWindowSettingsCategory::FillInAddons(pSetting, CONTROL_VIS_CHOOSER);
 
   ResetControlStates();
   CGUIDialog::OnInitWindow();

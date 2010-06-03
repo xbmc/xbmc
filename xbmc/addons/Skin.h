@@ -45,7 +45,9 @@ public:
     CStdString m_name;
   };
 
-  CSkinInfo(const ADDON::AddonProps &props);
+  //FIXME remove this, kept for current repo handling
+  CSkinInfo(const ADDON::AddonProps &props) : CAddon(props) {}
+  CSkinInfo(cp_plugin_info_t *props);
   virtual ~CSkinInfo();
 
   /*! \brief Load information regarding the skin from the given skin directory
@@ -106,17 +108,16 @@ protected:
    */
   CStdString GetDirFromRes(RESOLUTION res) const;
 
-  /*! \brief grab a resolution tag from an XML node
-   \param node XML node to look for the given tag
+  /*! \brief grab a resolution tag from a skin's configuration data
+   \param props passed addoninfo structure to check for resolution
    \param tag name of the tag to look for
    \param res resolution to return
-   \return true if we find a valid XML node containing a valid resolution, false otherwise
+   \return true if we find a valid resolution, false otherwise
    */
-  bool GetResolution(const TiXmlNode *node, const char *tag, RESOLUTION &res) const;
+  void GetDefaultResolution(cp_plugin_info_t *props, const char *tag, RESOLUTION &res, const RESOLUTION &def) const;
 
-  void SetDefaults();
   void LoadIncludes();
-  bool LoadStartupWindows(const TiXmlElement *startup);
+  bool LoadStartupWindows(cp_plugin_info_t *startup);
   bool IsWide(RESOLUTION res) const;
 
   RESOLUTION m_DefaultResolution; // default resolution for the skin in 4:3 modes

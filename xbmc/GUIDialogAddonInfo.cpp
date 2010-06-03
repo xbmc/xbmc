@@ -175,7 +175,7 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
   CURL url(item->m_strPath);
   if (url.GetHostName().Equals("enabled"))
   {
-    CAddonMgr::Get()->GetAddon(item->GetProperty("Addon.ID"),dialog->m_addon);
+    CAddonMgr::Get().GetAddon(item->GetProperty("Addon.ID"),dialog->m_addon);
     if (dialog->m_item->GetProperty("Addon.Path").Left(22).Equals("special://xbmc/addons/") &&
         !dialog->m_addon->Enabled())
       dialog->m_item->SetProperty("Addon.Installed","false");
@@ -185,7 +185,7 @@ bool CGUIDialogAddonInfo::ShowForItem(const CFileItemPtr& item)
   }
   else
   {
-    if (CAddonMgr::Get()->GetAddon(item->GetProperty("Addon.ID"),
+    if (CAddonMgr::Get().GetAddon(item->GetProperty("Addon.ID"),
                                    dialog->m_addon))
       dialog->m_item->SetProperty("Addon.Installed","true");
     else

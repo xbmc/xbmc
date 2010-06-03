@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--Date of translation: 19/02/2010-->
-<!--Based on english strings version 27853-->
+<!--Date of translation: 08/03/2010-->
+<!--Based on english strings version 28467-->
 <!--$Revision$-->
 <strings>
   <string id="0">Forrit</string>
@@ -547,7 +547,7 @@
   <string id="630">Venjulegt</string>
   <string id="631">Þysja</string>
   <string id="632">Teygja 4:3</string>
-  <string id="633">Teygja 14:9</string>
+  <string id="633">Þysja breiðmynd</string>
   <string id="634">Teygja 16:9</string>
   <string id="635">Upprunaleg stærð</string>
   <string id="636">Sérsnið</string>
@@ -573,6 +573,7 @@
   <string id="656">Finna lagalista</string>
   <string id="657">Finna möppu</string>
   <string id="658">Lagaupplýsingar</string>
+  <string id="659">Ólínuleg teygja</string>
 
   <string id="660">Mögnun Hljóðstyrks</string>
   <string id="661">Veldu möppu til að vista í</string>
@@ -782,7 +783,7 @@
 
   <string id="1300">Sérsniðið hljóðtæki</string>
   <string id="1301">Sérsniðið gegnumstreymitæki</string>
-  
+
   <string id="1396">Fjúka</string>
   <string id="1397">og</string>
   <string id="1398">Frost</string>
@@ -897,7 +898,7 @@
   <string id="12021">Byrja frá byrjun</string>
   <string id="12022">Áfram frá %s</string>
   <string id="12023">Staðfesti núverandi svindl...</string>
-  
+
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -1851,7 +1852,7 @@ fyrir þessa myndskreytingu</string>
   <string id="20433">Ná í smámyndir og myndbandaupplýsingar</string>
   <string id="20434">Hópar</string>
   <string id="20435">Setja táknmynd myndasafns</string>
-  <string id="20436">Flytja út leikaramyndir</string>
+  <string id="20436">Flytja út leikaramyndir?</string>
   <string id="20437">Velja aðdáendamyndir</string>
   <string id="20438">Staðbundnar aðdáendamyndir</string>
   <string id="20439">Engar aðdáendamyndir</string>
@@ -1880,7 +1881,7 @@ fyrir þessa myndskreytingu</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
 
   <string id="21359">Bæta við samnýtingu...</string>
-  <string id="21360">Virkja UPnP þjón</string>
+  <string id="21360">Deila myndböndum og tónlist í gegnum UPnP</string>
 
   <string id="21364">Breyta samnýtingu</string>
   <string id="21365">Fjarlægja samnýtingu</string>
@@ -1937,6 +1938,7 @@ fyrir þessa myndskreytingu</string>
   <string id="21416">Virkja varasköfu út frá tungumáli</string>
   <string id="21417">- Stillingar</string>
   <string id="21418">Fjöltungumál</string>
+  <string id="21419">Engar sköfur skilgreindar</string>
 
   <string id="21420">Gildi til að para</string>
   <string id="21421">Snjöll spilunarlistaregla</string>
@@ -1950,10 +1952,10 @@ fyrir þessa myndskreytingu</string>
   <string id="21429">Raða eftir</string>
   <string id="21430">hækkandi</string>
   <string id="21431">lækkandi</string>
-  <string id="21432">Breyta snjall spilunarlista</string>
+  <string id="21432">Breyta snjöllum spilunarlista</string>
   <string id="21433">Nafn spilunarlista</string>
   <string id="21434">Finna hluti sem</string>
-  <string id="21435">- Breyta</string>
+  <string id="21435">Breyta</string>
   <string id="21436">%i hlutir</string>
   <string id="21437">Nýr snjall spilunarlisti...</string>
   <string id="21438">%c Drif</string>
@@ -1968,11 +1970,12 @@ fyrir þessa myndskreytingu</string>
   <string id="21447">Tungumál hljóðefnis</string>
   <string id="21448">Tungumál þýðingartexta</string>
   <string id="21449">Fjarstýring sendir lyklaborðsáslætti</string>
+  <string id="21450">- Breyta</string>
 
   <string id="21800">Skráarnafn</string>
-  <string id="21801">Skráarslóð</string>
+  <string id="21801">Skáarslóð</string>
   <string id="21802">Skráarstærð</string>
-  <string id="21803">Skráartími</string>
+  <string id="21803">Skráardagsetning</string>
   <string id="21804">Númer skyggnu</string>
   <string id="21805">Upplausn</string>
   <string id="21806">Athugasemd</string>
@@ -2090,10 +2093,8 @@ fyrir þessa myndskreytingu</string>
   <string id="22042">hvítt/blátt</string>
   <string id="22043">svart/hvítt</string>
 
-  <string id="23000">Veður viðbót</string>
-  <string id="23001">- Stillingar viðbótar</string>
-
-  <string id="23050">Virkja Textavarp</string>
+  <string id="23049">Textavarp ekki tiltækt</string>
+  <string id="23050">Virkja textavarp</string>
   <string id="23051">Partur %i</string>
   <string id="23052">Hleð inn %i bætum</string>
   <string id="23053">Stöðva</string>
@@ -2105,10 +2106,45 @@ fyrir þessa myndskreytingu</string>
 
   <string id="23104">Smelltu á Í lagi þegar spilun er lokið</string>
 
+  <!-- strings 24000 thru 24299 reserved for the addons framework -->
+  <string id="24000">Viðbót</string>
+  <string id="24001">Viðbætur</string>
+
+  <string id="24005">Tengiforrit</string>
+  <string id="24007">Skafa</string>
+  <string id="24008">Skjávari</string>
+  <string id="24009">Skrifta</string>
+  <string id="24010">Myndskreyting</string>
+
+  <string id="24020">Stilla viðbætur</string>
+  <string id="24021">Gera viðbót óvirka</string>
+  <string id="24022">Virkja viðbót</string>
+  <string id="24023">Viðbót óvirk</string>
+  <string id="24027">Veðurþjónsusta</string>
+  <string id="24028">Weather.com (sjálfgefið)</string>
+  <string id="24030">Ekki ert hægt að stilla þessa viðbót</string>
+  <string id="24031">Villa við að hlaða inn stillingum</string>
+
+  <string id="24050">Tiltækar viðbætur</string>
+  <string id="24051">Útgáfa:</string>
+  <string id="24052">Skilmálar:</string>
+  <string id="24053">Notkunarskilmálar:</string>
+  <string id="24059">Viltu setja inn þessa viðbót?</string>
+
+  <string id="24070">Ekki er hægt að nota viðbót</string>
+  <string id="24071">Óþekkt villa kom upp</string>
+  <string id="24072">Nauðsynlegt er að setja stillingar</string>
+  <string id="24073">Gat ekki tengst</string>
+  <string id="24074">Þarfnast endurræsingar</string>
+  <string id="24080">Reyna að tengjast aftur?</string>
+  <string id="24089">Endurræsingar viðbóta</string>
+
+  <string id="24090">Læsa viðbótarstjóra</string>
+
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Safnhamur</string>
   <string id="29801">QWERTY Lyklaborð</string>
-  <string id="29802">Gegnumúttshljóð í notkun</string>
+  <string id="29802">Gegnumúttakshljóð í notkun</string>
 
   <string id="29999">Sjálfvirk flöktsía á leiki</string>
 
@@ -2179,7 +2215,7 @@ fyrir þessa myndskreytingu</string>
   <string id="33072">Skoða upplýsingaskrá</string>
   <string id="33073">Skoða breytingaannál</string>
   <string id="33074">Þessi útgáfa af %s þarfnast</string>
-  <string id="33075">XBMC útgáfu af %s eða hærri til að keyra.</string>
+  <string id="33075">XBMC útgáfu %s eða hærri til að keyra.</string>
   <string id="33076">Vinsamlega uppfærðu XBMC.</string>
   <string id="33077">Engin gögn fundust!</string>
   <string id="33078">Næsta síða</string>

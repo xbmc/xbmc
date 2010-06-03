@@ -12,7 +12,9 @@
     <xbmc>20000</xbmc>
   </minversion>
   <summary>LastFM Scraper Library</summary>
+  <summary lang="nl">LastFM Scraper Collectie</summary>
   <description>Download Music information</description>
+  <description lang="nl">Download muziek informatie</description>
   <author>TEAMXBMC</author>
   <supportedcontent>
     <content>albums</content>

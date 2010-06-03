@@ -121,10 +121,10 @@ void CGUILabelControl::SetLabel(const string &strLabel)
     m_iCursorPos = strLabel.size();
 }
 
-void CGUILabelControl::SetWidthControl(float minWidth, bool bScroll, int scrollSpeed)
+void CGUILabelControl::SetWidthControl(float minWidth, bool bScroll)
 {
   m_minWidth = minWidth;
-  m_label.SetScrolling(bScroll, scrollSpeed);
+  m_label.SetScrolling(bScroll);
 }
 
 void CGUILabelControl::SetAlignment(uint32_t align)

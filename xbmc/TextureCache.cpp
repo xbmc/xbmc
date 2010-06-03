@@ -107,13 +107,8 @@ bool CTextureCache::CDDSJob::DoWork()
   if (texture.LoadFromFile(m_original))
   { // convert to DDS
     CDDSImage dds;
-    CLog::Log(LOGDEBUG, "Creating DDS version of: %s", m_original.c_str()); 
-    if (dds.Compress(texture.GetWidth(), texture.GetHeight(), texture.GetPitch(), texture.GetPixels(), 40))
-    {
-      CStdString ddsFile = CUtil::ReplaceExtension(m_original, ".dds");
-      dds.WriteFile(ddsFile);
-      return true;
-    }
+    CLog::Log(LOGDEBUG, "Creating DDS version of: %s", m_original.c_str());
+    return dds.Create(CUtil::ReplaceExtension(m_original, ".dds"), texture.GetWidth(), texture.GetHeight(), texture.GetPitch(), texture.GetPixels(), 40);
   }
   return false;
 }
@@ -150,10 +145,12 @@ bool CTextureCache::IsCachedImage(const CStdString &url) const
 {
   if (0 == strncmp(url.c_str(), "special://skin/", 15)) // a skin image
     return true;
+  if (url != "-" && !CURL::IsFullPath(url))
+    return true;
   CStdString basePath(g_settings.GetThumbnailsFolder());
   if (0 == strncmp(url.c_str(), basePath.c_str(), basePath.GetLength()))
     return true;
-  return g_TextureManager.CanLoad(url);
+  return false;
 }
 
 CStdString CTextureCache::GetCachedImage(const CStdString &url)

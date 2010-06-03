@@ -2,6 +2,7 @@
 #define DLL_PATHS_WIN32_H_
 
 /* libraries */
+#define DLL_PATH_CPLUFF        "special://xbmc/system/cpluff.dll"
 #define DLL_PATH_IMAGELIB      "special://xbmc/system/ImageLib.dll"
 #define DLL_PATH_LIBEXIF       "special://xbmc/system/libexif.dll"
 #define DLL_PATH_LIBID3TAG     "special://xbmc/system/libid3tag.dll"
@@ -21,7 +22,6 @@
 #define DLL_PATH_GYM_CODEC     "special://xbmc/system/players/paplayer/gensapu.dll"
 #define DLL_PATH_MAD_CODEC     "special://xbmc/system/players/dvdplayer/libmad.dll"
 #define DLL_PATH_MID_CODEC     "special://xbmc/system/players/paplayer/timidity.dll"
-#define DLL_PATH_MODULE_CODEC  "special://xbmc/system/players/paplayer/dumb.dll"
 #define DLL_PATH_NSF_CODEC     "special://xbmc/system/players/paplayer/nosefart.dll"
 #define DLL_PATH_OGG_CODEC     "special://xbmc/system/players/paplayer/vorbisfile.dll"
 #define DLL_PATH_SID_CODEC     "special://xbmc/system/players/paplayer/libsidplay2.dll"

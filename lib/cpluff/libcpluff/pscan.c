@@ -269,13 +269,13 @@ CP_C_API cp_status_t cp_scan_plugins(cp_context_t *context, int flags) {
 	// Report error
 	switch (status) {
 		case CP_OK:
-			cpi_debug(context, N_("Plug-in scan has completed successfully."));
+			cpi_info(context, N_("Plug-in scan has completed successfully."));
 			break;
 		case CP_ERR_RESOURCE:
 			cpi_error(context, N_("Could not scan plug-ins due to insufficient system resources."));
 			break;
 		default:
-			cpi_error(context, N_("Could not scan plug-ins."));
+			cpi_warn(context, N_("Not all directories were successfully scanned."));
 			break;
 	}
 	cpi_unlock_context(context);

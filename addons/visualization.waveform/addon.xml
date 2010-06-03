@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="visualization.waveform"
+  version="1.0.0"
+  name="Waveform"
+  provider-name="MrC">
+  <extension
+    point="xbmc.player.musicviz"
+    library_linux="Waveform.vis"
+    library_windx="Waveform_win32.vis"
+    library_osx="Waveform.vis"/>
+</addon>

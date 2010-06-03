@@ -21,6 +21,7 @@
  */
 #include "Addon.h"
 #include "DllAddon.h"
+#include "AddonManager.h"
 #include "AddonStatusHandler.h"
 #include "GUIDialogSettings.h"
 #include "Util.h"
@@ -39,6 +40,7 @@ namespace ADDON
   {
   public:
     CAddonDll(const AddonProps &props);
+    CAddonDll(cp_plugin_info_t *props);
     virtual ~CAddonDll();
     AddonPtr Clone() const;
     virtual ADDON_STATUS GetStatus();
@@ -57,6 +59,7 @@ namespace ADDON
   protected:
     void HandleException(std::exception &e, const char* context);
     bool Initialized() { return m_initialized; }
+    virtual void BuildLibName(cp_plugin_info_t *props = NULL) {}
     TheStruct* m_pStruct;
     TheProps*     m_pInfo;
     CAddonHelpers* m_pHelpers;
@@ -76,6 +79,28 @@ namespace ADDON
     static const char* AddOnGetAddonDirectory(void *userData);
     static const char* AddOnGetUserDirectory(void *userData);
   };
+
+template<class TheDll, typename TheStruct, typename TheProps>
+CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(cp_plugin_info_t *props)
+  : CAddon(props)
+{
+#if defined(_LINUX) && !defined(__APPLE__)
+  m_strLibName = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library_linux");
+#elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
+  m_strLibName = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library_wingl");
+#elif defined(_WIN32) && defined(HAS_DX)
+  m_strLibName = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library_windx");
+#elif defined(__APPLE__)
+  m_strLibName = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library_osx");
+#elif defined(_XBOX)
+  m_strLibName = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library_xbox");
+#endif
+
+  m_pStruct     = NULL;
+  m_initialized = false;
+  m_pDll        = NULL;
+  m_pInfo       = NULL;
+}
 
 template<class TheDll, typename TheStruct, typename TheProps>
 CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const AddonProps &props)
@@ -107,7 +132,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
   CStdString strFileName;
   if (!Parent())
   {
-    strFileName = Path() + LibName();
+    strFileName = CUtil::AddFileToFolder(Path(), LibName());
   }
   else
   { //FIXME hack to load same Dll twice
@@ -130,7 +155,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadDll()
   {
     delete m_pDll;
     m_pDll = NULL;
-    new CAddonStatusHandler(this, STATUS_UNKNOWN, "Can't load Dll", false);
+    new CAddonStatusHandler(ID(), STATUS_UNKNOWN, "Can't load Dll", false);
     return false;
   }
   m_pStruct = (TheStruct*)malloc(sizeof(TheStruct));
@@ -172,12 +197,12 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
       if (TransferSettings() == STATUS_OK)
         m_initialized = true;
       else
-        new CAddonStatusHandler(this, status, "", false);
+        new CAddonStatusHandler(ID(), status, "", false);
     }
     else
     { // Addon failed initialization
       CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
-      new CAddonStatusHandler(this, status, "", false);
+      new CAddonStatusHandler(ID(), status, "", false);
     }
   }
 
@@ -205,8 +230,11 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
   /* Unload library file */
   try
   {
-    m_pDll->Destroy();
-    m_pDll->Unload();
+    if (m_pDll)
+    {
+      m_pDll->Destroy();
+      m_pDll->Unload();
+    }
   }
   catch (std::exception &e)
   {
@@ -404,7 +432,7 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
 
   if (restart || reportStatus != STATUS_OK)
   {
-    new CAddonStatusHandler(this, restart ? STATUS_NEED_RESTART : reportStatus, "", true);
+    new CAddonStatusHandler(ID(), restart ? STATUS_NEED_RESTART : reportStatus, "", true);
   }
 
   return STATUS_OK;

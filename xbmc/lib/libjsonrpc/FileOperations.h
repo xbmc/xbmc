@@ -32,5 +32,7 @@ namespace JSONRPC
     static JSON_STATUS GetRootDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
     static JSON_STATUS GetDirectory(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
     static JSON_STATUS Download(const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value &parameterObject, Json::Value &result);
+
+    static bool FillFileItemList(const Json::Value &parameterObject, CFileItemList &list);
   };
 }

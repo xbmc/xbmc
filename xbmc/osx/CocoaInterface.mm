@@ -41,6 +41,16 @@ static CVDisplayLinkRef displayLink = NULL;
 
 CGDirectDisplayID Cocoa_GetDisplayIDFromScreen(NSScreen *screen);
 
+CCocoaAutoPool::CCocoaAutoPool()
+{
+  m_opaque_pool = [[NSAutoreleasePool alloc] init];
+}
+CCocoaAutoPool::~CCocoaAutoPool()
+{
+  [(NSAutoreleasePool*)m_opaque_pool release];
+}
+
+
 void* Cocoa_Create_AutoReleasePool(void)
 {
   // Original Author: Elan Feingold

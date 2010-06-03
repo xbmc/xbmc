@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="visualization.dxspectrum"
+  version="1.0.0"
+  name="DirextX Spectrum"
+  provider-name="Team XBMC">
+  <extension
+    point="xbmc.player.musicviz"
+    library_windx="Spectrum_win32dx.vis"/>
+</addon>

@@ -40,9 +40,9 @@ namespace Shaders {
   {
   public:
     CShader() { m_compiled = false; }
-    virtual ~CShader() { }
+    virtual ~CShader() { Free(); }
     virtual bool Compile() = 0;
-    virtual void Free() = 0;
+    virtual void Free() {}
     virtual GLuint Handle() = 0;
     virtual void SetSource(const string& src) { m_source = src; }
     virtual bool LoadSource(const string& filename, const string& prefix = "");
@@ -64,7 +64,7 @@ namespace Shaders {
   {
   public:
     CVertexShader() { m_vertexShader = 0; }
-    virtual ~CVertexShader() { Free(); }
+    virtual ~CVertexShader() {}
     virtual void Free() {}
     virtual GLuint Handle() { return m_vertexShader; }
 
@@ -96,7 +96,7 @@ namespace Shaders {
   {
   public:
     CPixelShader() { m_pixelShader = 0; }
-    virtual ~CPixelShader() { Free(); }
+    virtual ~CPixelShader() {}
     virtual void Free() {}
     virtual GLuint Handle() { return m_pixelShader; }
 

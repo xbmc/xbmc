@@ -41,6 +41,8 @@ public:
     offsetX = offsetY = 0;
     width = 0;
     angle = 0;
+    scrollSpeed = 0;
+    scrollSuffix = " | ";
   };
   void UpdateColors()
   {
@@ -62,6 +64,8 @@ public:
   float width;
   float angle;
   CGUIFont *font;
+  int scrollSpeed; 
+  CStdString scrollSuffix;
 };
 
 /*!
@@ -84,7 +88,7 @@ public:
                    OVER_FLOW_SCROLL,
                    OVER_FLOW_WRAP };
   
-  CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo, OVER_FLOW overflow = OVER_FLOW_TRUNCATE, int scrollSpeed = 0);
+  CGUILabel(float posX, float posY, float width, float height, const CLabelInfo& labelInfo, OVER_FLOW overflow = OVER_FLOW_TRUNCATE);
   virtual ~CGUILabel(void);
 
   /*! \brief Render the label on screen
@@ -128,10 +132,9 @@ public:
   
   /*! \brief Set whether or not this label control should scroll
    \param scrolling true if this label should scroll.
-   \param scrollSpeed speed (in pixels per second) at which the label should scroll
    */
-  void SetScrolling(bool scrolling, int scrollSpeed = 0);
-  
+  void SetScrolling(bool scrolling);
+
   /*! \brief Set this label invalid.  Forces an update of the control
    */
   void SetInvalid();

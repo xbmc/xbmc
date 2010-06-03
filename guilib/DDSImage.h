@@ -38,17 +38,17 @@ public:
   unsigned char *GetData() const;
 
   bool ReadFile(const std::string &file);
-  bool WriteFile(const std::string &file) const;
 
-  /*! \brief Compress an ARGB buffer into a DXT1/3/5 image
+  /*! \brief Create a DDS image file from the given an ARGB buffer
+   \param file name of the file to write
    \param width width of the pixel buffer
    \param height height of the pixel buffer
    \param pitch pitch of the pixel buffer
    \param argb pixel buffer
    \param maxMSE maximum mean square error to allow, ignored if 0 (the default)
-   \return true on successful compression within the given maxMSE, false otherwise
+   \return true on successful image creation, false otherwise
    */
-  bool Compress(unsigned int width, unsigned int height, unsigned int pitch, unsigned char const *argb, double maxMSE = 0);
+  bool Create(const std::string &file, unsigned int width, unsigned int height, unsigned int pitch, unsigned char const *argb, double maxMSE = 0);
   
   /*! \brief Decompress a DXT1/3/5 image to the given buffer
    Assumes the buffer has been allocated to at least width*height*4
@@ -65,7 +65,18 @@ public:
 private:
   void Allocate(unsigned int width, unsigned int height, unsigned int format);
   const char *GetFourCC(unsigned int format) const;
-  
+  bool WriteFile(const std::string &file) const;
+
+  /*! \brief Compress an ARGB buffer into a DXT1/3/5 image
+   \param width width of the pixel buffer
+   \param height height of the pixel buffer
+   \param pitch pitch of the pixel buffer
+   \param argb pixel buffer
+   \param maxMSE maximum mean square error to allow, ignored if 0 (the default)
+   \return true on successful compression within the given maxMSE, false otherwise
+   */
+  bool Compress(unsigned int width, unsigned int height, unsigned int pitch, unsigned char const *argb, double maxMSE = 0);
+
   unsigned int GetStorageRequirements(unsigned int width, unsigned int height, unsigned int format) const;
   enum {
     ddsd_caps        = 0x00000001,

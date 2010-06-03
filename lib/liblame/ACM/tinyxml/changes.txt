@@ -1,0 +1,81 @@
+Changes in version 1.0.1:
+- Fixed comment tags which were outputing as '<?--' instead of 
+  the correct '<!--'.
+- Implemented the Next and Prev methods of the TiXmlAttribute class.
+- Renamed 'LastAttribtute' to 'LastAttribute'
+- Fixed bad pointer to 'isspace' that could occur while parsing text.
+- Errors finding beginning and end of tags no longer throw it into an
+  infinite loop. (Hopefully.)
+
+Changes in version 1.0.2
+- Minor documentation fixes.
+
+Changes in version 1.0.3
+- After nodes are added to a document, they return a pointer
+  to the new node instead of a bool for success.
+- Elements can be constructed with a value, which is the
+  element name. Every element must have a value or it will be
+  invalid, but the code changes to enforce this are not fully
+  in place.
+
+Changes in version 1.1.0
+- Added the	TiXmlAttributeSet class to pull the attributes into
+  a seperate container.
+- Moved the doubly liked list out of XmlBase. Now XmlBase only
+  requires the Print() function and defines some utility functions.
+- Moved errors into a seperate file. (With the idea of internationalization
+  to the other latin-1 languages.)
+- Added the "NodeType"
+- Fixed white space parsing in text to conform with the standard. 
+  Basically, all white space becomes just one space.
+- Added the TiXmlDeclaration class to read xml declarations.
+
+Changes in version 1.2.0
+- Removed the factory. The factory was not really in the spirit 
+  of small and simple, confused the code, and was of limited value.
+- Added FirstChildElement and NextSiblingElement, because they
+  are such common functions.
+- Re-wrote the example to test and demonstrate more functionality.
+
+Changes in version 1.2.1
+- Fixed a bug where comments couldn't be inside elements.
+- Loading now clears out existing XML rather than appending.
+- Added the "Clear" method on a node to delete all its children.
+
+Changes in version 1.2.2
+- Fixed TiXmlAttribute::Previous actually returning "next." Thanks
+  to Rickard Troedsson for the bug fix.
+
+Changes in version 1.2.3
+- Added the TIXML prefix to the error strings to resolve conflicts
+  with #defines in OS headers. Thanks to Steve Lhomme.
+- Fixed a delete buf that should be a delete [] buf. 
+  Thanks to Ephi Sinowitz.
+
+Changes in version 1.2.4
+- ReplaceChild() was almost guarenteed to fail. Should be fixed,
+  thanks to Joe Smith. Joe also pointed out that the Print() functions
+  should take stream references: I agree, and would like to overload
+  the Print() method to take either format, but I don't want to do 
+  this in a dot release.
+- Some compilers seem to need an extra <ctype.h> include. Thanks
+  to Steve Lhomme for that.
+
+Changes in version 2.0.0
+- Made the ToXXX() casts safe if 'this' is null. 
+  When "LoadFile" is called with a filename, the value will correctly get set.
+  Thanks to Brian Yoder.
+- Fixed bug where isalpha() and isalnum() would get called with a negative value for 
+  high ascii numbers. Thanks to Alesky Aksenov.
+- Fixed some errors codes that were not getting set.
+- Made methods "const" that were not.
+- Added a switch to enable or disable the ignoring of white space. ( TiXmlDocument::SetIgnoreWhiteSpace() )
+- Greater standardization and code re-use in the parser.
+- Added a stream out operator.
+- Added a stream in operator.
+- Entity support.
+
+TODO
+CDATA.
+Support for "generic entity" #xxx thing.
+

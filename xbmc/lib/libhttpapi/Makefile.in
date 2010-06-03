@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../ -I../../ -I../../../ -I../../utils -I../../FileSystem -I../../linux -I../../cores -I../../../guilib
+INCLUDES=-I. -I../ -I../../ -I../../../ -I../../utils -I../../FileSystem -I../../linux -I../../cores -I../../../guilib -I../../../lib/cpluff/
 
 SRCS=HttpApi.cpp XBMChttp.cpp
 

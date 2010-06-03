@@ -1,4 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: Malmis-->
+<!--Email: malmis@malmis.com-->
+<!--Date of translation: 04/29/2010-->
+<!--$Revision$-->
 <strings>
   <string id="31000">Ändra din</string>
   <string id="31001">Älska</string>
@@ -20,6 +25,7 @@
   <string id="31030">Full lista</string>
   <string id="31031">Bildminiatyrer</string>
   <string id="31032">Bildsvep</string>
+  <string id="31033">Info</string>
   <string id="31040">Nu spelas</string>
   <string id="31042">SPELAR</string>
   <string id="31043">PAUSAD</string>
@@ -105,6 +111,14 @@
   <string id="31328">Nyligen tillagda</string>
   <string id="31329">[B]Timer satt![/B] [COLOR=grey2] - Automatisk avstängning av systemet om[/COLOR]</string>
   <string id="31330">Klicka på knappen för att[CR][CR]spela filmtrailer</string>
+  <string id="31351">Paus</string>
+  <string id="31352">Stopp</string>
+  <string id="31353">Spola framåt</string>
+  <string id="31354">Spola bakåt</string>
+  <string id="31355">Filmmeny</string>
+  <string id="31356">Ladda ner undertexter</string>
+  <string id="31357">
+  </string>
   <string id="31400">[B]KONFIGURERA UTSEENDEINSTÄLLNINGAR[/B][CR][CR]Ändra skalet · Ange språk och region · Ange fillistningsalternativ[CR]Ange en skärmsläckare</string>
   <string id="31401">[B]KONFIGURERA GRAFIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt filmbibliotek · Ange filmuppspelningsalternativ · Ändra videoförteckningsalternativ[CR]Konfigurera undertextfonter</string>
   <string id="31402">[B]KONFIGURERA MUSIKINSTÄLLNINGAR[/B][CR][CR]Hantera ditt musikbibliotek · Ange musikuppspelningsalternativ · Ändra musiklistningsalternativ[CR]Ange låtinskickning · Ange karaokealternativ</string>
@@ -113,12 +127,6 @@
   <string id="31405">[B]KONFIGURERA NÄTVERKSINSTÄLLNINGAR[/B][CR][CR]Ange kontroll av XBMC via UPnP och HTTP · Konfigurera fildelning[CR]Konfigurera internetaccessalternativ</string>
   <string id="31406">[B]KONFIGURERA SYSTEMINSTÄLLNINGAR[/B][CR][CR]Ange och kalibrera bildskärmar · Konfigurera ljudutgång · Ställa in fjärrkontroller[CR]Ange energisparalternativ · Aktivera debuggningen · Konfigurera huvudkod och lås</string>
   <string id="31407">[B]KONFIGURERA SKALINSTÄLLNINGAR[/B][CR][CR]Ställa in Confluence-skalet · Lägga till och ta bort hemsidans menyknappar[CR]Ändra skalets bakgrunder</string>
+  <string id="31408">[B]KONFIGURERA TILLÄGG[/B][CR][CR]Hantera installerade Tillägg - Visa och installera Tillägg från xbmc.com[CR]Ändra inställningar för tillägg</string>
   <string id="31421">Välj din XBMC användarprofil[CR]för att logga in  och fortsätta</string>
-  <string id="31351">Paus</string>
-  <string id="31352">Stopp</string>
-  <string id="31353">Spola framåt</string>
-  <string id="31354">Spola bakåt</string>
-  <string id="31355">Filmmeny</string>
-  <string id="31356">Ladda ner undertexter</string>
-  <string id="31357"></string>
 </strings>

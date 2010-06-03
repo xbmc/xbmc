@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 26/02/2010-->
-<!--Based on English strings revision 28135-->
+<!--Date of translation: 16/04/2010-->
+<!--Based on English strings revision 29298-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -135,7 +135,7 @@
   <string id="171"></string>
 
   <string id="172">Çıkış tarihi</string>
-  <string id="173">Display 4:3 videos as</string>
+  <string id="173">4:3 videoları görüntüleme biçimi</string>
 
   <string id="175">Nitelik</string>
   <string id="176">Stiller</string>
@@ -550,9 +550,9 @@
   <string id="629">Görünüm modu</string>
   <string id="630">Normal</string>
   <string id="631">Yakınlaştır</string>
-  <string id="632">Görüntüyü Oranla: 4:3</string>
-  <string id="633">Görüntüyü Oranla: 14:9</string>
-  <string id="634">Görüntüyü Oranla: 16:9</string>
+  <string id="632">4:3'e genişlet</string>
+  <string id="633">Geniş yakınlaştırma</string>
+  <string id="634">16:9'a genişlet</string>
   <string id="635">Orijinal Boyut</string>
   <string id="636">Özel</string>
   <string id="637">Replay gain</string>
@@ -577,6 +577,7 @@
   <string id="656">Çalma listesine gözat</string>
   <string id="657">Klasöre gözat</string>
   <string id="658">Şarkı bilgisi</string>
+  <string id="659">Doğrusal olmayan genişletme</string>
 
   <string id="660">Ses yükseltici</string>
   <string id="661">Dışa aktarma dizinini seç</string>
@@ -735,6 +736,7 @@
   <string id="1048">- Kullanıcı adı</string>
   <string id="1049">Betik ayarları</string>
   <string id="1050">Tek Parçalık Albümler</string>
+  <string id="1051">İnternet adresini girin</string>
 
   <string id="1200">SMB istemcisi</string>
   <string id="1202">Çalışma grubu</string>
@@ -844,6 +846,7 @@
   <string id="10018">Ayarlar - Ağ Bağlantısı</string>
   <string id="10019">Ayarlar - Görünüm</string>
   <string id="10020">Betikler</string>
+  <string id="10021">Web Tarayıcısı</string>
 
   <string id="10028">Videolar/Çalma Listesi</string>
   <string id="10034">Ayarlar - Profiller</string>
@@ -919,9 +922,9 @@
   <string id="12326">Parola girin</string>
   <string id="12327">Yönetici şifresini girin</string>
   <string id="12328">Açma şifresini girin</string>
-  <string id="12329">veya çıkmak için "c"' ye basın</string>
-  <string id="12330">Joystick tuş kombinasyonunun girin ve "start"' a basın</string>
-  <string id="12331">"Start"' a basın veya çıkmak için "Back"' e basın</string>
+  <string id="12329">veya çıkmak için C'ye basın</string>
+  <string id="12330">Joystick tuş kombinasyonunun girin ve Start'a basın</string>
+  <string id="12331">Start'a basın veya çıkmak için Back'e basın</string>
   <string id="12332">Kilidi ayarla</string>
   <string id="12333">Kilidi aç</string>
   <string id="12334">Kilidi sıfırla</string>
@@ -1180,7 +1183,7 @@
   <string id="13386">Zamana göre ara</string>
   <string id="13387">Parça isim kalıbı - sağ</string>
   <string id="13388">Önayar</string>
-  <string id="13389">Bu görsel öğenin önayarları yok</string>
+  <string id="13389">Bu görsel öğenin kullanılabilir önayarları yok</string>
   <string id="13390">Bu görsel öğenin kullanılabilir ayarları yok</string>
   <string id="13391">Çıkart/Tak</string>
   <string id="13392">Eğer müzik çalıyorsa görsel öğe kullan</string>
@@ -1597,7 +1600,7 @@
   <string id="20085">Sistem bilgisini göster</string>
   <string id="20086">Kullanılabilir disk alanını göster C: E: F:</string>
   <string id="20087">Kullanılabilir disk alanını göster E: F: G:</string>
-  <string id="20088">Hava Durumu</string>
+  <string id="20088">Hava Durumu bilgisi</string>
   <string id="20089">Boş disk alanı</string>
   <string id="20090">Mevcut bir paylaşım adı girin</string>
   <string id="20091">Kilit kodu</string>
@@ -1716,6 +1719,7 @@
   <string id="20252">Bardaklar dolduruluyor (videolar)</string>
   <string id="20253">WebDAV sunucu (HTTP)</string>
   <string id="20254">WebDAV sunucu (HTTPS)</string>
+  <string id="20255">İlk oturum açılışı, profilinizi düzenleyin</string>
 
   <string id="20300">Web sunucu dizini (HTTP)</string>
   <string id="20301">Web sunucu dizini (HTTPS)</string>
@@ -1939,6 +1943,7 @@
   <string id="21416">Scraper diline dayalı başvurmayı etkinleştir</string>
   <string id="21417">- Ayarlar</string>
   <string id="21418">Çok dilli</string>
+  <string id="21419">Scraper mevcut değil</string>
 
   <string id="21420">Değer eşleşmelidir</string>
   <string id="21421">Akıllı çalma listesi talimatı</string>
@@ -2093,9 +2098,7 @@
   <string id="22042">beyaz/mavi</string>
   <string id="22043">siyah/beyaz</string>
 
-  <string id="23000">Hava Durumu eklentisi</string>
-  <string id="23001">- Eklenti ayarları</string>
-
+  <string id="23049">Teletext mevcut değil</string>
   <string id="23050">Teletext'i Etkinleştir</string>
   <string id="23051">Bölüm %i</string>
   <string id="23052">%i bayt arabelleğe alındı</string>
@@ -2107,6 +2110,56 @@
   <string id="23101">Oynatıcıyı sonlandırmak için Tamam'a basın</string>
 
   <string id="23104">Oynatma bitince Tamam'a basın</string>
+
+  <!-- strings 24000 thru 24299 reserved for the addons framework -->
+  <string id="24000">Eklenti</string>
+  <string id="24001">Eklentiler</string>
+  <string id="24002">Eklenti seçenekleri</string>
+
+  <string id="24005">Eklenti</string>
+  <string id="24007">Scraper</string>
+  <string id="24008">Ekran koruyucu</string>
+  <string id="24009">Betik</string>
+  <string id="24010">Görsel öğe</string>
+  <string id="24011">Eklenti deposu</string>
+
+  <string id="24020">Eklentiyi yapılandır</string>
+  <string id="24021">Eklentiyi devre dışı bırak</string>
+  <string id="24022">Eklentiyi etkinleştir</string>
+  <string id="24023">Eklenti devre dışı</string>
+  <string id="24027">Hava Durumu hizmeti</string>
+  <string id="24028">Weather.com (standart)</string>
+  <string id="24030">Bu eklenti yapılandırılamaz</string>
+  <string id="24031">Ayarlar yüklenirken hata oluştu</string>
+
+  <string id="24050">Kullanılabilir Eklentiler</string>
+  <string id="24051">Sürüm:</string>
+  <string id="24052">Yasal Uyarı:</string>
+  <string id="24053">Lisans:</string>
+  <string id="24059">Bu eklentiyi etkinleştirmek ister misiniz?</string>
+  <string id="24060">Bu eklentiyi devre dışı bırakmak ister misiniz?</string>
+  <string id="24061">Kullanılabilir eklenti güncelleştirmesi!</string>
+  <string id="24062">Etkin Eklentiler</string>
+  <string id="24063">Otomatik güncelleştir</string>
+  <string id="24064">Eklenti etkin</string>
+  <string id="24065">Eklenti güncelleştirildi</string>
+  <string id="24066">Karşıdan yüklenen eklenti iptal edilsin mi?</string>
+  <string id="24067">Şu anda karşıdan yüklenen eklentiler</string>
+
+  <string id="24070">Eklenti kullanılamaz</string>
+  <string id="24071">Bilinmeyen bir hata oluştu</string>
+  <string id="24072">Ayarlar gerekli</string>
+  <string id="24073">Bağlanılamadı</string>
+  <string id="24074">Yeniden başlatmak gerekiyor</string>
+  <string id="24080">Yeniden bağlanılsın mı?</string>
+  <string id="24089">Add-on restarts</string>
+
+  <string id="24090">Eklenti yöneticisini kilitle</string>
+
+  <string id="24091">Donanım hızlandırmasına izin ver (VDPAU)</string>
+  <string id="24092">Donanım hızlandırmasına izin ver (VAAPI)</string>
+  <string id="24093">Donanım hızlandırmasına izin ver (DXVA2)</string>
+  <string id="24094">Donanım hızlandırmasına izin ver (CrystalHD)</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Kitaplık Modu</string>
@@ -2196,7 +2249,8 @@
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
   <string id="34002">Wav</string>
-  <string id="34003">DXVA</string>
+  <string id="34003">DXVA2</string>
+  <string id="34004">VAAPI</string>
 
   <string id="34100">Hoparlör Yapılandırma</string>
   <string id="34101">2.0</string>

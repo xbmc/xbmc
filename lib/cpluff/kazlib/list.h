@@ -27,7 +27,11 @@
 #ifndef LIST_H
 #define LIST_H
 
+#ifdef _WIN32
+#include "../libcpluff/win32/cpluffdef.h"
+#else
 #include "../libcpluff/cpluffdef.h"
+#endif
 
 #include <limits.h>
 

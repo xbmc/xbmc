@@ -119,6 +119,11 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     }
     iLabel = 515;
   }
+  else if (m_rule.m_field == CSmartPlaylistRule::FIELD_COUNTRY)
+  {
+    videodatabase.GetCountriesNav("videodb://2/1/",items,type);
+    iLabel = 574;
+  }
   else if (m_rule.m_field == CSmartPlaylistRule::FIELD_ARTIST || m_rule.m_field == CSmartPlaylistRule::FIELD_ALBUMARTIST)
   {
     if (m_type.Equals("songs") || m_type.Equals("mixed") || m_type.Equals("albums"))

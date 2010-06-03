@@ -184,7 +184,6 @@ CLinuxRendererGL::~CLinuxRendererGL()
 
   if (m_pYUVShader)
   {
-    m_pYUVShader->Free();
     delete m_pYUVShader;
     m_pYUVShader = NULL;
   }
@@ -1064,10 +1063,6 @@ void CLinuxRendererGL::UpdateVideoFilter()
 
 void CLinuxRendererGL::LoadShaders(int field)
 {
-  int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
-  CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
-  bool err = false;
-
   if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VDPAU)
   {
     CLog::Log(LOGNOTICE, "GL: Using VDPAU render method");
@@ -1079,96 +1074,79 @@ void CLinuxRendererGL::LoadShaders(int field)
     m_renderMethod = RENDER_VAAPI;
   }
   else
-  /*
-    Try GLSL shaders if they're supported and if the user has
-    requested for it. (settings -> video -> player -> rendermethod)
-   */
-  if (glCreateProgram // TODO: proper check
-      && (requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_GLSL))
   {
+    int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
+    CLog::Log(LOGDEBUG, "GL: Requested render method: %d", requestedMethod);
+
     if (m_pYUVShader)
     {
-      m_pYUVShader->Free();
       delete m_pYUVShader;
       m_pYUVShader = NULL;
     }
 
-    bool nonLinStretch = m_nonLinStretch && (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f)
-                         && m_renderQuality == RQ_SINGLEPASS && m_textureTarget != GL_TEXTURE_RECTANGLE_ARB;
-
-    // create regular progressive scan shader
-    m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, nonLinStretch);
-
-    CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
-
-    if (m_pYUVShader && m_pYUVShader->CompileAndLink())
+    switch(requestedMethod)
     {
-      m_renderMethod = RENDER_GLSL;
-      UpdateVideoFilter();
-    }
-    else
-    {
-      m_pYUVShader->Free();
-      delete m_pYUVShader;
-      m_pYUVShader = NULL;
-      err = true;
-      CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
-    }
-  }
+      case RENDER_METHOD_AUTO:
+      case RENDER_METHOD_GLSL:
+      // Try GLSL shaders if supported and user requested auto or GLSL.
+      if (glCreateProgram)
+      {
+        bool nonLinStretch = m_nonLinStretch && (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f)
+                             && m_renderQuality == RQ_SINGLEPASS && m_textureTarget != GL_TEXTURE_RECTANGLE_ARB;
 
-  /*
-    Try ARB shaders if the extension is supported AND either:
-      1) user requested it
-      2) or GLSL shaders failed and user selected AUTO
-   */
-  else if (glewIsSupported("GL_ARB_fragment_program")
-           && ((requestedMethod==RENDER_METHOD_AUTO || requestedMethod==RENDER_METHOD_ARB)
-           || err))
-  {
-    err = false;
-    CLog::Log(LOGNOTICE, "GL: ARB shaders support detected");
-    m_renderMethod = RENDER_ARB ;
-    if (m_pYUVShader)
-    {
-      m_pYUVShader->Free();
-      delete m_pYUVShader;
-      m_pYUVShader = NULL;
+        // create regular progressive scan shader
+        m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, nonLinStretch);
+
+        CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
+
+        if (m_pYUVShader && m_pYUVShader->CompileAndLink())
+        {
+          m_renderMethod = RENDER_GLSL;
+          UpdateVideoFilter();
+          break;
+        }
+        else
+        {
+          delete m_pYUVShader;
+          m_pYUVShader = NULL;
+          CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB GLSL shader");
+          // drop through and try ARB
+        }
+      }
+      case RENDER_METHOD_ARB:
+      // Try ARB shaders if supported and user requested it or GLSL shaders failed.
+      if (glewIsSupported("GL_ARB_fragment_program"))
+      {
+        CLog::Log(LOGNOTICE, "GL: ARB shaders support detected");
+        m_renderMethod = RENDER_ARB ;
+
+        // create regular progressive scan shader
+        m_pYUVShader = new YUV2RGBProgressiveShaderARB(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
+        CLog::Log(LOGNOTICE, "GL: Selecting Single Pass ARB YUV2RGB shader");
+
+        if (m_pYUVShader && m_pYUVShader->CompileAndLink())
+        {
+          m_renderMethod = RENDER_ARB;
+          UpdateVideoFilter();
+          break;
+        }
+        else
+        {
+          delete m_pYUVShader;
+          m_pYUVShader = NULL;
+          CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB ARB shader");
+          // drop through and use SW
+        }
+      }
+      case RENDER_METHOD_SOFTWARE:
+      default:
+      // Use software YUV 2 RGB conversion if user requested it or GLSL and/or ARB shaders failed
+      {
+        m_renderMethod = RENDER_SW ;
+        CLog::Log(LOGNOTICE, "GL: Shaders support not present, falling back to SW mode");
+        break;
+      }
     }
-
-    // create regular progressive scan shader
-    m_pYUVShader = new YUV2RGBProgressiveShaderARB(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
-    CLog::Log(LOGNOTICE, "GL: Selecting Single Pass ARB YUV2RGB shader");
-
-    if (m_pYUVShader && m_pYUVShader->CompileAndLink())
-    {
-      m_renderMethod = RENDER_ARB;
-      UpdateVideoFilter();
-    }
-    else
-    {
-      m_pYUVShader->Free();
-      delete m_pYUVShader;
-      m_pYUVShader = NULL;
-      err = true;
-      CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB ARB shader");
-    }
-  }
-
-  /*
-    Fall back to software YUV 2 RGB conversion if
-      1) user requested it
-      2) or GLSL and/or ARB shaders failed
-   */
-  else
-  {
-    m_renderMethod = RENDER_SW ;
-    CLog::Log(LOGNOTICE, "GL: Shaders support not present, falling back to SW mode");
-  }
-
-  if (err==true)
-  {
-    CLog::Log(LOGERROR, "GL: Falling back to Software YUV2RGB");
-    m_renderMethod = RENDER_SW;
   }
 
   // determine whether GPU supports NPOT textures

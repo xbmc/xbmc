@@ -36,6 +36,7 @@ void CVideoInfoTag::Reset()
   m_strDirector = "";
   m_strWritingCredits = "";
   m_strGenre = "";
+  m_strCountry = "";
   m_strTagLine = "";
   m_strPlotOutline = "";
   m_strPlot = "";
@@ -153,6 +154,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetString(movie, "id", m_strIMDBNumber);
   XMLUtils::SetAdditiveString(movie, "genre",
                           g_advancedSettings.m_videoItemSeparator, m_strGenre);
+  XMLUtils::SetAdditiveString(movie, "country",
+                          g_advancedSettings.m_videoItemSeparator, m_strCountry);
   XMLUtils::SetAdditiveString(movie, "set",
                           g_advancedSettings.m_videoItemSeparator, m_strSet);
   XMLUtils::SetAdditiveString(movie, "credits",
@@ -248,6 +251,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_strDirector;
     ar << m_strWritingCredits;
     ar << m_strGenre;
+    ar << m_strCountry;
     ar << m_strTagLine;
     ar << m_strPlotOutline;
     ar << m_strPlot;
@@ -305,6 +309,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_strDirector;
     ar >> m_strWritingCredits;
     ar >> m_strGenre;
+    ar >> m_strCountry;
     ar >> m_strTagLine;
     ar >> m_strPlotOutline;
     ar >> m_strPlot;
@@ -435,6 +440,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   }
 
   XMLUtils::GetAdditiveString(movie,"genre",g_advancedSettings.m_videoItemSeparator,m_strGenre);
+  XMLUtils::GetAdditiveString(movie,"country",g_advancedSettings.m_videoItemSeparator,m_strCountry);
   XMLUtils::GetAdditiveString(movie,"credits",g_advancedSettings.m_videoItemSeparator,m_strWritingCredits);
   XMLUtils::GetAdditiveString(movie,"director",g_advancedSettings.m_videoItemSeparator,m_strDirector);
   XMLUtils::GetAdditiveString(movie,"showlink",g_advancedSettings.m_videoItemSeparator,m_strShowLink);
@@ -595,6 +601,21 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
         m_strGenre += g_advancedSettings.m_videoItemSeparator+strTemp;
     }
     genre = genre->NextSiblingElement("Genre");
+  }
+  // countries
+  node = movie->FirstChild("Countries");
+  const TiXmlNode *country = node ? node->FirstChildElement("Country") : NULL;
+  while (country)
+  {
+    if (country && country->FirstChild())
+    {
+      strTemp = country->FirstChild()->Value();
+      if (m_strCountry.IsEmpty())
+        m_strCountry = strTemp;
+      else
+        m_strCountry += g_advancedSettings.m_videoItemSeparator+strTemp;
+    }
+    country = country->NextSibling("Countries");
   }
   // MyMovies categories to genres
   if (g_advancedSettings.m_bVideoLibraryMyMoviesCategoriesToGenres)
