@@ -296,7 +296,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   m_nHeight = res.iHeight;
   m_bBlankOtherDisplay = blankOtherDisplays;
 
-  if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
+  if (fullScreen && g_guiSettings.GetBool("videoscreen.fakefullscreen"))
     ChangeResolution(m_nScreen, res);
 
   ResizeInternal(forceResize);
