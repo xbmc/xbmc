@@ -34,14 +34,6 @@ CGUIDialogTextViewer::~CGUIDialogTextViewer(void)
 
 bool CGUIDialogTextViewer::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_SHOW_INFO)
-  {
-    // erase debug screen
-    CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_TEXTAREA);
-    msg.SetLabel("");
-    OnMessage(msg);
-    return true;
-  }
   return CGUIDialog::OnAction(action);
 }
 
