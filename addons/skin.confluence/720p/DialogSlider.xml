@@ -1,19 +1,19 @@
 <window id="145">
 	<defaultcontrol>11</defaultcontrol>
-	<animation effect="slide" start="0,80" end="0,0" time="100">WindowOpen</animation>
-	<animation effect="slide" start="0,0" end="0,80" time="100">WindowClose</animation>
+	<animation effect="slide" start="0,-80" end="0,0" time="100">WindowOpen</animation>
+	<animation effect="slide" start="0,0" end="0,-80" time="100">WindowClose</animation>
 	<coordinates>
 		<system>1</system>
 		<posx>405</posx>
-		<posy>650</posy>
+		<posy>0</posy>
 	</coordinates>
 	<controls>
 		<control type="image">
 			<posx>0</posx>
-			<posy>0</posy>
+			<posy>-10</posy>
 			<width>460</width>
 			<height>80</height>
-			<texture border="20,20,20,2">InfoMessagePanel.png</texture>
+			<texture flipy="true" border="20,2,20,20">InfoMessagePanel.png</texture>
 		</control>
 		<control type="label" id="10">
 			<description>Dialog header</description>

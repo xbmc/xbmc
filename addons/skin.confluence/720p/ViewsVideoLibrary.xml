@@ -914,15 +914,6 @@
 					<texture background="true" flipy="true" diffuse="diffuse_mirror2.png">$INFO[ListItem.Icon]</texture>
 				</control>
 				<control type="image">
-					<posx>8</posx>
-					<posy>12</posy>
-					<width>200</width>
-					<height>100</height>
-					<aspectratio>stretch</aspectratio>
-					<texture>GlassOverlay.png</texture>
-					<colordiffuse>AAFFFFFF</colordiffuse>
-				</control>
-				<control type="image">
 					<posx>560</posx>
 					<posy>90</posy>
 					<width>40</width>

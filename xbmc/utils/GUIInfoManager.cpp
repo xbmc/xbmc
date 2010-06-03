@@ -1129,7 +1129,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     CUtil::RemoveExtension(strLabel);
     break;
   case WEATHER_PLUGIN:
-    strLabel = g_guiSettings.GetString("weather.plugin");
+    strLabel = g_guiSettings.GetString("weather.script");
     break;
   case SYSTEM_DATE:
     strLabel = GetDate();

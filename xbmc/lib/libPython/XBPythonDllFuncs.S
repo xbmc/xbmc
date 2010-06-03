@@ -110,6 +110,7 @@
   FUNCTION(PyInt_AsLong)
   FUNCTION(PyFloat_AsDouble)
   FUNCTION(PyString_FromString)
+  FUNCTION(PyBool_FromLong)
   FUNCTION(PyModule_AddIntConstant)
   FUNCTION(PyObject_CallFunction)
   FUNCTION(PyObject_CallMethod)
@@ -128,6 +129,7 @@
   FUNCTION(PyFloat_FromDouble)
   FUNCTION(PyRun_FileExFlags)
   FUNCTION(PyRun_StringFlags)
+  FUNCTION(PyErr_Clear)
 #endif
 #if defined(__linux__) && defined(__ELF__)
 .section .note.GNU-stack,"",%progbits

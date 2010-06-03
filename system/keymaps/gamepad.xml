@@ -311,14 +311,9 @@
   </ContextMenu>
   <Scripts>
     <gamepad>
-      <black>XBMC.ActivateWindow(ScriptsDebugInfo)</black>
+      <black>info</black>
     </gamepad>
   </Scripts>
-  <ScriptsDebugInfo>
-    <gamepad>
-      <white>Info</white>      <!-- clears debug python info -->
-    </gamepad>
-  </ScriptsDebugInfo>
   <NumericInput>
     <gamepad>
       <B>BackSpace</B>

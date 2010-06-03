@@ -1080,6 +1080,25 @@ CP_C_API int cp_is_logged(cp_context_t *ctx, cp_log_severity_t severity) CP_GCC_
 CP_C_API cp_plugin_info_t * cp_load_plugin_descriptor(cp_context_t *ctx, const char *path, cp_status_t *status) CP_GCC_NONNULL(1, 2);
 
 /**
+ * Loads a plug-in descriptor from the specified block of memory and returns
+ * information about the plug-in. The plug-in descriptor
+ * is validated during loading. Possible loading errors are reported via the
+ * specified plug-in context. The plug-in is not installed to the context.
+ * If operation fails or the descriptor
+ * is invalid then NULL is returned. The caller must release the returned
+ * information by calling ::cp_release_plugin_info when it does not
+ * need the information anymore.
+ * The returned plug-in information must not be modified.
+ * 
+ * @param ctx the plug-in context
+ * @param buffer the buffer containing the plug-in descriptor.
+ * @param buffer_len the length of the buffer.
+ * @param status a pointer to the location where status code is to be stored, or NULL
+ * @return pointer to the information structure or NULL if error occurs
+ */
+CP_C_API cp_plugin_info_t * cp_load_plugin_descriptor_from_memory(cp_context_t *context, const char *buffer, unsigned int buffer_len, cp_status_t *error) CP_GCC_NONNULL(1, 2);
+
+/**
  * Installs the plug-in described by the specified plug-in information
  * structure to the specified plug-in context. The plug-in information
  * must have been loaded using ::cp_load_plugin_descriptor with the same

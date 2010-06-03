@@ -819,6 +819,9 @@
   <string id="2050">Runtime</string>
 
   <string id="2100">Script failed! : %s</string>
+  <string id="2101">Newer version needed - See log</string>
+  <string id="2102">Graphics Card</string>
+  <string id="2103">Requirements not met - See log</string>
 
   <string id="4501">Enable LCD/VFD</string>
 
@@ -2562,6 +2565,7 @@
   <string id="24051">Version:</string>
   <string id="24052">Disclaimer</string>
   <string id="24053">License:</string>
+  <string id="24054">Changelog</string>
   <string id="24059">Would you like to enable this Add-on?</string>
   <string id="24060">Would you like to disable this Add-on?</string>
   <string id="24061">Addon-on update available!</string>
@@ -2573,7 +2577,6 @@
   <string id="24067">Currently downloading addons</string>
   <string id="24068">Update available</string>
   <string id="24069">Update</string>
-  <string id="24070">Changelog</string>
 
   <string id="24070">Add-on can not used</string>
   <string id="24071">An unknown error has occurred</string>

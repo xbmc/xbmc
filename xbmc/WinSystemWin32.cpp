@@ -523,10 +523,7 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
         POINT pt = { dm.dmPosition.x, dm.dmPosition.y };
         hm = MonitorFromPoint(pt, MONITOR_DEFAULTTONULL);
         GetMonitorInfo(hm, &mi);
-        
-        if (ddAdapter.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE)
-          m_nPrimary = adapter;
-        
+
         MONITOR_DETAILS md;
         memset(&md, 0, sizeof(MONITOR_DETAILS));
 
@@ -545,6 +542,11 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
         md.Bpp = dm.dmBitsPerPel;
 
         m_MonitorsInfo.push_back(md);
+
+        // Careful, some adapters don't end up in the vector (mirroring, no active output, etc.)
+        if (ddAdapter.StateFlags & DISPLAY_DEVICE_PRIMARY_DEVICE)
+          m_nPrimary = m_MonitorsInfo.size() -1;
+
       }
     }
     ZeroMemory(&ddAdapter, sizeof(ddAdapter));

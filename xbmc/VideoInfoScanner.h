@@ -27,6 +27,7 @@
 #include "DateTime.h"
 
 class CIMDB;
+class CRegExp;
 
 namespace VIDEO
 {
@@ -121,6 +122,13 @@ namespace VIDEO
      \return >0 on success, <0 on failure, and 0 on no info found
      */
     int FindVideo(const CStdString &videoName, const ADDON::ScraperPtr &scraper, CScraperUrl &url, CGUIDialogProgress *progress);
+
+    /*! \brief Extract episode and season numbers from a processed regexp
+     \param reg Regular expression object with at least 2 matches
+     \param episodeInfo Episode information to fill in.
+     \return true on success (2 matches), false on failure (fewer than 2 matches)
+     */
+    bool GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo);
 
     virtual void Run();
     int CountFiles(const CStdString& strPath);

@@ -9,4 +9,13 @@
     library_linux="Waveform.vis"
     library_windx="Waveform_win32.vis"
     library_osx="Waveform.vis"/>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <minversion app="xbmc">20000</minversion>
+    <summary>Visualization</summary>
+    <summary lang="nl">Visualisatie</summary>
+    <description>Waveform is a simple Visualization showing 2 Waveform Graphs on the screen, One each for Left and Right channels that move to the beat of the music</description>
+    <description lang="nl">Waveform is een simpele muziekvisualisatie die 2 golfvormen op het scherm toont, respectievelijk voor het linker en rechter geluidskanaal. De golfvormen bewegen mee met de beat van de muziek.</description>
+    <disclaimer></disclaimer>
+  </extension>
 </addon>

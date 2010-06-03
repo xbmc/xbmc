@@ -37,6 +37,14 @@
 #include "LocalizeStrings.h"
 #include "log.h"
 #include "StringUtils.h"
+#include "DllPaths_win32.h"
+#include "FileSystem/File.h"
+
+// default Broadcom registy bits (setup when installing a CrystalHD card)
+#define BC_REG_PATH       "Software\\Broadcom\\MediaPC"
+#define BC_REG_PRODUCT    "CrystalHD" // 70012/70015
+#define BC_BCM_DLL        "bcmDIL.dll"
+#define BC_REG_INST_PATH  "InstallPath"
 
 #define DLL_ENV_PATH "special://xbmcbin/system/;" \
                      "special://xbmcbin/system/players/dvdplayer/;" \
@@ -1360,3 +1368,39 @@ bool CWIN32Util::UtilRegOpenKeyEx( const HKEY hKeyParent, const char *const pcKe
   bool bRet= ( ERROR_SUCCESS == RegOpenKeyEx(hKeyParent, pcKey, 0, rsAccessRightsTmp, hKey));
   return bRet;
 }
+
+bool CWIN32Util::GetCrystalHDLibraryPath(CStdString &strPath)
+{
+  // support finding library by windows registry
+  HKEY hKey;
+  CStdString strRegKey;
+
+  CLog::Log(LOGDEBUG, "CrystalHD: detecting CrystalHD installation path");
+  strRegKey.Format("%s\\%s", BC_REG_PATH, BC_REG_PRODUCT );
+
+  if( CWIN32Util::UtilRegOpenKeyEx( HKEY_LOCAL_MACHINE, strRegKey.c_str(), KEY_READ, &hKey ))
+  {
+    DWORD dwType;
+    char *pcPath= NULL;
+    if( CWIN32Util::UtilRegGetValue( hKey, BC_REG_INST_PATH, &dwType, &pcPath, NULL, sizeof( pcPath ) ) == ERROR_SUCCESS )
+    {
+      strPath = CUtil::AddFileToFolder(pcPath, BC_BCM_DLL);
+      CLog::Log(LOGDEBUG, "CrystalHD: got CrystalHD installation path (%s)", strPath.c_str());
+      return true;
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "CrystalHD: getting CrystalHD installation path failed");
+    }
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "CrystalHD: CrystalHD software seems to be not installed.");
+  }
+  // check for dll in system dir
+  if(XFILE::CFile::Exists(DLL_PATH_LIBCRYSTALHD))
+    return true;
+  else
+    return false;
+}
+

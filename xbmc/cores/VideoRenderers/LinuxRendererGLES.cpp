@@ -1556,6 +1556,29 @@ bool CLinuxRendererGLES::SupportsMultiPassRendering()
   return false;
 }
 
+bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
+{
+  if(feature == RENDERFEATURE_BRIGHTNESS)
+    return false;
+  
+  if(feature == RENDERFEATURE_CONTRAST)
+    return false;
+
+  if(feature == RENDERFEATURE_GAMMA)
+    return false;
+  
+  if(feature == RENDERFEATURE_NOISE)
+    return false;
+
+  if(feature == RENDERFEATURE_SHARPNESS)
+    return false;
+
+  if (feature == RENDERFEATURE_NONLINSTRETCH)
+    return false;
+
+  return false;
+}
+
 bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
 {
   return false;

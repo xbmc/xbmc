@@ -115,7 +115,7 @@ bool CScraperParser::Load(const AddonPtr& scraper)
 
   m_scraper = scraper;
 
-  return Load(m_scraper->Path() + m_scraper->LibName());
+  return Load(CUtil::AddFileToFolder(m_scraper->Path(),m_scraper->LibName()));
 }
 
 bool CScraperParser::LoadFromXML()
