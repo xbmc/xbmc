@@ -37,3 +37,4 @@ del exclude.txt
 
 copy *.xml "BUILD\Confluence\"
 copy *.txt "BUILD\Confluence\"
+copy icon.png "BUILD\Confluence\"
