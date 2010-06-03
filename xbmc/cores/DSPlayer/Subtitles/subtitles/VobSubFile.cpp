@@ -668,6 +668,7 @@ bool CVobSubFile::ReadSub(CStdString fn)
   //m_sub.SetLength(f.GetLength());
   m_sub.seekp(0); m_sub.seekg(0);
   m_sub.str("");
+  m_sub.clear();
 
   int len = 0;
   BYTE buff[2048];

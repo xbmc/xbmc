@@ -1115,7 +1115,6 @@ int CSubtitleManager::AddSubtitle(const CStdString& subFilePath)
   
   CStdStringW unicodePath; g_charsetConverter.utf8ToW(s->path, unicodePath);
 
-  CLog::Log(LOGNOTICE, "%s Loading subtitle file \"%s\"", __FUNCTION__, s->path.c_str());
   if (SUCCEEDED(m_pManager->LoadExternalSubtitle(unicodePath.c_str(), &pSubStream)))
   {
     s->substream = pSubStream;
@@ -1129,6 +1128,7 @@ int CSubtitleManager::AddSubtitle(const CStdString& subFilePath)
     }
     m_subtitleStreams.push_back(s.release());
 
+    CLog::Log(LOGNOTICE, "%s Successfully loaded subtitle file \"%s\"", __FUNCTION__, s->path.c_str());
     return m_subtitleStreams.size() - 1;
   }
 
