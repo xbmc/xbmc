@@ -250,7 +250,7 @@ DllLoader::DllLoader(const char *sDll, bool bTrack, bool bSystemDll, bool bLoadS
   if (m_bSystemDll)
     hModule = (HMODULE)this;
 
-  if (stricmp(sDll, "special://xbmc/system/python/python24.dll")==0 ||
+  if (stricmp(sDll, "special://xbmcbin/system/python/python24.dll")==0 ||
       strstr(sDll, ".pyd") != NULL)
   {
     m_bLoadSymbols=true;

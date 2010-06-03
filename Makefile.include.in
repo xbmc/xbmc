@@ -12,7 +12,7 @@ libexecdir=@libexecdir@
 sysconfdir=@sysconfdir@
 sharedstatedir=@sharedstatedir@
 localstatedir=@localstatedir@
-libdir=@datarootdir@
+libdir=@libdir@
 includedir=@includedir@
 oldincludedir=@oldincludedir@
 datarootdir=@datarootdir@
@@ -38,6 +38,7 @@ DEFINES+= \
 	-D_REENTRANT \
 	-D_LARGEFILE64_SOURCE \
 	-D_FILE_OFFSET_BITS=64 \
+	-DBIN_INSTALL_PATH="\"$(libdir)/xbmc\"" \
 	-DINSTALL_PATH="\"$(datarootdir)/xbmc\"" \
 	@SDL_DEFINES@ \
 	@ARCH_DEFINES@ \

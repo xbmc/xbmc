@@ -57,6 +57,24 @@ case "$1" in
          mkpasswd,"
         fi
         printf "$XBMC_LIVE_DEPENDS"
+        ;;
+    LIBVDPAU_DEPENDS)
+        LIBVDPAU_DEPENDS=""
+        if [ -r /var/lib/dpkg/info/libvdpau*.shlibs ]; then
+          LIBVDPAU_DEPENDS=$(cat /var/lib/dpkg/info/libvdpau*.shlibs | \
+          grep 'libvdpau ' | \
+          sed 's/^[^[:space:]]\+\?[[:space:]]\+\?[^[:space:]]\+\?[[:space:]]\+\?\(.*\)$/\1/')
+        elif [ -r /var/lib/dpkg/info/nvidia-185-libvdpau.shlibs ]; then
+          LIBVDPAU_DEPENDS=$(cat /var/lib/dpkg/info/nvidia-185-libvdpau.shlibs | \
+          grep 'libvdpau ' | \
+          sed 's/^[^[:space:]]\+\?[[:space:]]\+\?[^[:space:]]\+\?[[:space:]]\+\?\(.*\)$/\1/')
+        fi
+        if [ -z $LIBVDPAU_DEPENDS ]; then
+          echo "Error in getting shlibs information for libvdpau."
+          exit 1
+        fi
+        printf "$LIBVDPAU_DEPENDS"
+        ;;
 esac
 
 exit 0

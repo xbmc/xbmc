@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
   <id>visualization.dxspectrum</id>
-  <type>visualization</type>
+  <type>xbmc.player.musicviz</type>
   <title>DirectX Spectrum</title>
   <librarywin32>Spectrum_win32dx.vis</librarywin32>
   <version>1.0.0</version>

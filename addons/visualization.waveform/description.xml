@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
   <id>visualization.waveform</id>
-  <type>visualization</type>
+  <type>xbmc.player.musicviz</type>
   <title>Waveform</title>
   <library>Waveform.vis</library>
   <librarywin32>Waveform_win32.vis</librarywin32>

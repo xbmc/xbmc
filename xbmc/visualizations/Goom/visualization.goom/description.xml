@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <id>visualization.goom</id>
+  <type>visualization</type>
+  <title>Goom</title>
+  <library>Goom.vis</library>
+  <librarywin32>Goom_win32.vis</librarywin32>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>windows</platform>
+    <platform>linux</platform>
+  </platforms>
+  <minversion>
+    <xbmc>28344</xbmc>
+  </minversion>
+  <summary>Visualization</summary>
+  <description>Goom visual effects generator</description>
+  <author>TEAMXBMC</author>
+</addoninfo>

@@ -662,11 +662,11 @@ void CUtil::RunShortcut(const char* szShortcutPath)
 {
 }
 
-void CUtil::GetHomePath(CStdString& strPath)
+void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 {
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
-  strPath = getenv("XBMC_HOME");
+  strPath = getenv(strTarget);
   if (strPath != NULL && !strPath.IsEmpty())
   {
 #ifdef _WIN32
@@ -2174,6 +2174,40 @@ void CUtil::Stat64ToStat(struct stat *result, struct __stat64 *stat)
   result->st_mtime = (time_t)(stat->st_mtime & 0xFFFFFFFF);
   result->st_ctime = (time_t)(stat->st_ctime & 0xFFFFFFFF);
 }
+
+#ifdef _WIN32
+void CUtil::Stat64ToStat64i32(struct _stat64i32 *result, struct __stat64 *stat)
+{
+  result->st_dev = stat->st_dev;
+  result->st_ino = stat->st_ino;
+  result->st_mode = stat->st_mode;
+  result->st_nlink = stat->st_nlink;
+  result->st_uid = stat->st_uid;
+  result->st_gid = stat->st_gid;
+  result->st_rdev = stat->st_rdev;
+#ifndef _LINUX
+  if (stat->st_size <= LONG_MAX)
+    result->st_size = (_off_t)stat->st_size;
+#else
+  if (sizeof(stat->st_size) <= sizeof(result->st_size) )
+    result->st_size = (off_t)stat->st_size;
+#endif
+  else
+  {
+    result->st_size = 0;
+    CLog::Log(LOGWARNING, "WARNING: File is larger than 32bit stat can handle, file size will be reported as 0 bytes");
+  }
+#ifndef _LINUX
+  result->st_atime = stat->st_atime;
+  result->st_mtime = stat->st_mtime;
+  result->st_ctime = stat->st_ctime;
+#else
+  result->st_atime = stat->_st_atime;
+  result->st_mtime = stat->_st_mtime;
+  result->st_ctime = stat->_st_ctime;
+#endif
+}
+#endif
 
 bool CUtil::CreateDirectoryEx(const CStdString& strPath)
 {

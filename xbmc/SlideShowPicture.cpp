@@ -614,7 +614,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   };
   static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 
-  VERTEX vertex[4];
+  VERTEX vertex[5];
 
   for (int i = 0; i < 4; i++)
   {
@@ -623,10 +623,13 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
     vertex[i].tv = 0;
     vertex[i].col = color;
   }
+
   vertex[1].tu = 1.0f;
   vertex[2].tu = 1.0f;
   vertex[2].tv = 1.0f;
   vertex[3].tv = 1.0f;
+  
+  vertex[4] = vertex[0]; // Not used when pTexture != NULL
 
   // Set state to render the image
   if (pTexture)
@@ -634,6 +637,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
     pTexture->LoadToGPU();
     g_Windowing.Get3DDevice()->SetTexture( 0, pTexture->GetTextureObject() );
   }
+
   g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
   g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
   g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
@@ -657,8 +661,12 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   g_Windowing.Get3DDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
   g_Windowing.Get3DDevice()->SetFVF( FVF_VERTEX );
   // Render the image
-  g_Windowing.Get3DDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX) );
-  if (pTexture) g_Windowing.Get3DDevice()->SetTexture(0, NULL);
+  if (pTexture)
+  {
+    g_Windowing.Get3DDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX) );
+    g_Windowing.Get3DDevice()->SetTexture(0, NULL);
+  } else
+    g_Windowing.Get3DDevice()->DrawPrimitiveUP( D3DPT_LINESTRIP, 4, vertex, sizeof(VERTEX) );
 
 #elif defined(HAS_GL)
   g_graphicsContext.BeginPaint();

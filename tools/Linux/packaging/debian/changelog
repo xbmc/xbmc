@@ -1,4 +1,4 @@
-xbmc (1:10.05~svn29978~deb1-1) unstable; urgency=low
+xbmc (1:10.05~svn29980+fhs~deb1-1) unstable; urgency=low
 
   * Package XBMC for Debian. (Closes: #469397)
     (LP: #307162)
@@ -56,6 +56,7 @@ xbmc (1:10.05~svn29978~deb1-1) unstable; urgency=low
     + Create a symlink to LiberationSans-Regular.ttf.
   * Add Suggests of mesa-utils and x11-utils for use of glxinfo and xdpyinfo.
   * Convert to source format 3.0 (quilt).
+  * Take advantage of FHS compliance support in XBMC.
   * Support parallel builds.
 
  -- Andres Mejia <mcitadel@gmail.com>  Sun, 09 May 2010 16:37:52 -0400

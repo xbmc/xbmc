@@ -754,14 +754,35 @@ bool CApplication::InitDirectoriesLinux()
   else
     userHome = "/root";
 
-  CStdString strHomePath;
-  CUtil::GetHomePath(strHomePath);
-  setenv("XBMC_HOME", strHomePath.c_str(), 0);
+  CStdString xbmcBinPath, xbmcPath;
+  CUtil::GetHomePath(xbmcBinPath, (new CStdString)->assign("XBMC_BIN_HOME"));
+  CUtil::GetHomePath(xbmcPath);
+
+  /* Check if xbmc binaries and arch independent data files are being kept in
+   * separate locations. */
+  if (!CFile::Exists(xbmcPath + "/language"))
+  {
+    /* Attempt to locate arch independent data files. */
+    CStdString temp = xbmcPath;
+    xbmcPath = BIN_INSTALL_PATH;
+    temp.erase(temp.size() - xbmcPath.size(), xbmcPath.size());
+    xbmcPath = temp + INSTALL_PATH;
+    if (!CFile::Exists(xbmcPath + "/language"))
+    {
+      CLog::Log(LOGERROR, "Unable to find path to XBMC data files!");
+      return false;
+    }
+  }
+
+  /* Set some environment variables */
+  setenv("XBMC_BIN_HOME", xbmcBinPath.c_str(), 0);
+  setenv("XBMC_HOME", xbmcPath.c_str(), 0);
 
   if (m_bPlatformDirectories)
   {
     // map our special drives
-    CSpecialProtocol::SetXBMCPath(strHomePath);
+    CSpecialProtocol::SetXBMCBinPath(xbmcBinPath);
+    CSpecialProtocol::SetXBMCPath(xbmcPath);
     CSpecialProtocol::SetHomePath(userHome + "/.xbmc");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/.xbmc/userdata");
 
@@ -790,14 +811,15 @@ bool CApplication::InitDirectoriesLinux()
   }
   else
   {
-    CUtil::AddSlashAtEnd(strHomePath);
-    g_settings.m_logFolder = strHomePath;
+    CUtil::AddSlashAtEnd(xbmcPath);
+    g_settings.m_logFolder = xbmcPath;
 
-    CSpecialProtocol::SetXBMCPath(strHomePath);
-    CSpecialProtocol::SetHomePath(strHomePath);
-    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
+    CSpecialProtocol::SetXBMCBinPath(xbmcBinPath);
+    CSpecialProtocol::SetXBMCPath(xbmcPath);
+    CSpecialProtocol::SetHomePath(xbmcPath);
+    CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(xbmcPath, "userdata"));
 
-    CStdString strTempPath = CUtil::AddFileToFolder(strHomePath, "temp");
+    CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "temp");
     CSpecialProtocol::SetTempPath(strTempPath);
     CDirectory::Create("special://temp/");
 
@@ -834,6 +856,7 @@ bool CApplication::InitDirectoriesOSX()
   if (m_bPlatformDirectories)
   {
     // map our special drives
+    CSpecialProtocol::SetXBMCBinPath(strHomePath);
     CSpecialProtocol::SetXBMCPath(strHomePath);
     CSpecialProtocol::SetHomePath(userHome + "/Library/Application Support/XBMC");
     CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Application Support/XBMC/userdata");
@@ -879,6 +902,7 @@ bool CApplication::InitDirectoriesOSX()
     CUtil::AddSlashAtEnd(strHomePath);
     g_settings.m_logFolder = strHomePath;
 
+    CSpecialProtocol::SetXBMCBinPath(strHomePath);
     CSpecialProtocol::SetXBMCPath(strHomePath);
     CSpecialProtocol::SetHomePath(strHomePath);
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(strHomePath, "userdata"));
@@ -904,6 +928,7 @@ bool CApplication::InitDirectoriesWin32()
 
   CUtil::GetHomePath(strExecutablePath);
   SetEnvironmentVariable("XBMC_HOME", strExecutablePath.c_str());
+  CSpecialProtocol::SetXBMCBinPath(strExecutablePath);
   CSpecialProtocol::SetXBMCPath(strExecutablePath);
 
   if (m_bPlatformDirectories)
@@ -919,6 +944,7 @@ bool CApplication::InitDirectoriesWin32()
     CUtil::AddSlashAtEnd(g_settings.m_logFolder);
 
     // map our special drives
+    CSpecialProtocol::SetXBMCBinPath(strExecutablePath);
     CSpecialProtocol::SetXBMCPath(strExecutablePath);
     CSpecialProtocol::SetHomePath(homePath);
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(homePath, "userdata"));

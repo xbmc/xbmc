@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="visualization.goom"
+  version="1.0.0"
+  name="Goom"
+  provider-name="Team XBMC">
+  <extension
+    point="xbmc.player.musicviz"
+    library_linux="Goom.vis" />
+</addon>

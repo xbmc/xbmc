@@ -20,10 +20,10 @@ install: Clients/WiiRemote/WiiRemote
 	cp -a Clients/PS3\ BD\ Remote/ps3_remote.py $(DESTDIR)$(bindir)/xbmc-ps3remote
 	#cp -a Clients/PS3\ Sixaxis\ Controller/ps3d.py $(DESTDIR)$(bindir)/xbmc-ps3d
 	cp -a Clients/XBMC\ Send/xbmc-send.py $(DESTDIR)$(bindir)/xbmc-send
-	mkdir -p $(DESTDIR)$(prefix)/lib/python2.5/site-packages/xbmc
-	echo 'ICON_PATH="$(datarootdir)/pixmaps/xbmc/"' > $(DESTDIR)$(prefix)/lib/python2.5/site-packages/xbmc/defs.py
-	cp -a lib/python/* $(DESTDIR)$(prefix)/lib/python2.5/site-packages/xbmc/
-	cp -a Clients/PS3\ BD\ Remote/ps3_remote.py $(DESTDIR)$(prefix)/lib/python2.5/site-packages/xbmc/
+	mkdir -p $(DESTDIR)$(libdir)/python2.5/site-packages/xbmc
+	echo 'ICON_PATH="$(datarootdir)/pixmaps/xbmc/"' > $(DESTDIR)$(libdir)/python2.5/site-packages/xbmc/defs.py
+	cp -a lib/python/* $(DESTDIR)$(libdir)/python2.5/site-packages/xbmc/
+	cp -a Clients/PS3\ BD\ Remote/ps3_remote.py $(DESTDIR)$(libdir)/python2.5/site-packages/xbmc/
 	mkdir -p $(DESTDIR)$(includedir)/xbmc
 	cp -a lib/c++/* $(DESTDIR)$(includedir)/xbmc/
 	mkdir -p $(DESTDIR)$(datarootdir)/pixmaps/xbmc
