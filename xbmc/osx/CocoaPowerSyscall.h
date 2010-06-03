@@ -32,28 +32,37 @@ public:
   CCocoaPowerSyscall();
   ~CCocoaPowerSyscall();
 
-  virtual bool Powerdown();
-  virtual bool Suspend();
-  virtual bool Hibernate();
-  virtual bool Reboot();
+  virtual bool Powerdown(void);
+  virtual bool Suspend(void);
+  virtual bool Hibernate(void);
+  virtual bool Reboot(void);
 
-  virtual bool CanPowerdown();
-  virtual bool CanSuspend();
-  virtual bool CanHibernate();
-  virtual bool CanReboot();
+  virtual bool CanPowerdown(void);
+  virtual bool CanSuspend(void);
+  virtual bool CanHibernate(void);
+  virtual bool CanReboot(void);
+          bool HasBattery(void);
 
   virtual bool PumpPowerEvents(IPowerEventsCallback *callback);
 private:
-          void CreateOSPowerCallBack(void);
-          void DeleteOSPowerCallBack(void);
+          void CreateOSPowerCallBacks(void);
+          void DeleteOSPowerCallBacks(void);
   static  void OSPowerCallBack(void *refcon, io_service_t service, natural_t msg_type, void *msg_arg);
+  static  void OSPowerSourceCallBack(void *refcon);
 
+  // OS Power
   bool m_OnResume;
   bool m_OnSuspend;
+  // OS Power Source
+  bool m_OnBattery;
+  int  m_HasBattery;
+  int  m_BatteryPercent;
+  bool m_SentBatteryMessage;
 
-  io_connect_t root_port;             // a reference to the Root Power Domain IOService
-  io_object_t  notifier_object;       // notifier object, used to deregister later
-  IONotificationPortRef notify_port;  // notification port allocated by IORegisterForSystemPower
+  io_connect_t m_root_port;             // a reference to the Root Power Domain IOService
+  io_object_t  m_notifier_object;       // notifier object, used to deregister later
+  IONotificationPortRef m_notify_port;  // notification port allocated by IORegisterForSystemPower
+  CFRunLoopSourceRef m_power_source;
 };
 #endif
 #endif

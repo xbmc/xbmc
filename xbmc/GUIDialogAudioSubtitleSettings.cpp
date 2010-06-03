@@ -83,9 +83,9 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   AddAudioStreams(AUDIO_SETTINGS_STREAM);
 
   // only show stuff available in digital mode if we have digital output
-  AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_settings.m_currentVideoSettings.m_OutputToAllSpeakers, g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
+  AddBool(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, 252, &g_settings.m_currentVideoSettings.m_OutputToAllSpeakers, AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));
 
-  int settings[2] = { 338, 339 }; //ANALOG, DIGITAL
+  int settings[3] = { 338, 339, 420 }; //ANALOG, IEC958, HDMI
   m_outputmode = g_guiSettings.GetInt("audiooutput.mode");
   AddSpin(AUDIO_SETTINGS_DIGITAL_ANALOG, 337, &m_outputmode, 2, settings);
 
@@ -227,7 +227,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
         // update the screen setting...
         g_settings.m_currentVideoSettings.m_AudioStream = -1 - m_audioStream;
         // call monkeyh1's code here...
-        //bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL) && g_settings.m_currentVideoSettings.m_OutputToAllSpeakers;
+        //bool bAudioOnAllSpeakers = (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_IEC958) && g_settings.m_currentVideoSettings.m_OutputToAllSpeakers;
         return;
       }
     }
@@ -244,12 +244,15 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   }
   else if (setting.id == AUDIO_SETTINGS_DIGITAL_ANALOG)
   {
-    if(m_outputmode == 0) // might be unneccesary (indexes match), but just for clearity
-      g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG);
-    else
-      g_guiSettings.SetInt("audiooutput.mode", AUDIO_DIGITAL);
+    bool bitstream = false;
+    switch(m_outputmode)
+    {
+      case AUDIO_ANALOG: g_guiSettings.SetInt("audiooutput.mode", AUDIO_IEC958 ); break;
+      case AUDIO_IEC958: g_guiSettings.SetInt("audiooutput.mode", AUDIO_HDMI   ); bitstream = true; break;
+      case AUDIO_HDMI  : g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG ); bitstream = true; break;
+    }
 
-    EnableSettings(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
+    EnableSettings(AUDIO_SETTINGS_OUTPUT_TO_ALL_SPEAKERS, bitstream);
     g_application.Restart();
   }
   else if (setting.id == SUBTITLE_SETTINGS_ENABLE)

@@ -392,7 +392,6 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
   m_dllAvUtil = NULL;
   m_dllAvFormat = NULL;
   m_dllSwScale = NULL;
-  m_swcontext = NULL;
   memset(&m_videobuffer, 0, sizeof(DVDVideoPicture));
 }
 
@@ -559,12 +558,6 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     memset(m_videobuffer.data[1], 0, iChromaPixels);
     memset(m_videobuffer.data[2], 0, iChromaPixels);
 
-    // pre-alloc ffmpeg swscale context.
-    m_swcontext = m_dllSwScale->sws_getContext(
-      m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_UYVY422, 
-      m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_YUV420P, 
-      SWS_FAST_BILINEAR, NULL, NULL, NULL);
-
     m_DropPictures = false;
     m_sort_time_offset = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
 
@@ -599,11 +592,6 @@ void CDVDVideoCodecVDA::Dispose()
     delete m_dllAvFormat;
     m_dllAvFormat = NULL;
   }
-  if (m_swcontext)
-  {
-    m_dllSwScale->sws_freeContext(m_swcontext);
-    m_swcontext = NULL;
-  }
   if (m_dllSwScale)
   {
     delete m_dllSwScale;
@@ -619,45 +607,49 @@ void CDVDVideoCodecVDA::SetDropState(bool bDrop)
 int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
 {
   CCocoaAutoPool pool;
-  OSStatus status;
-  double sort_time;
-  uint32_t avc_flags = 0;
-  CFDataRef avc_demux;
-  CFDictionaryRef avc_time;
   //
-  if (m_convert_bytestream)
+  if (pData)
   {
-    // convert demuxer packet from bytestream (AnnexB) to bitstream
-    ByteIOContext *pb;
-    int demuxer_bytes;
-    uint8_t *demuxer_content;
+    OSStatus status;
+    double sort_time;
+    uint32_t avc_flags = 0;
+    CFDataRef avc_demux;
+    CFDictionaryRef avc_time;
 
-    if(m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
+    if (m_convert_bytestream)
     {
+      // convert demuxer packet from bytestream (AnnexB) to bitstream
+      ByteIOContext *pb;
+      int demuxer_bytes;
+      uint8_t *demuxer_content;
+
+      if(m_dllAvFormat->url_open_dyn_buf(&pb) < 0)
+      {
+        return VC_ERROR;
+      }
+      demuxer_bytes = avc_parse_nal_units(m_dllAvFormat, pb, pData, iSize);
+      demuxer_bytes = m_dllAvFormat->url_close_dyn_buf(pb, &demuxer_content);
+      avc_demux = CFDataCreate(kCFAllocatorDefault, demuxer_content, demuxer_bytes);
+      m_dllAvUtil->av_free(demuxer_content);
+    }
+    else
+    {
+      avc_demux = CFDataCreate(kCFAllocatorDefault, pData, iSize);
+    }
+    sort_time = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
+    avc_time = CreateDictionaryWithDisplayTime(sort_time - m_sort_time_offset, dts, pts);
+    
+    if (m_DropPictures)
+      avc_flags = kVDADecoderDecodeFlags_DontEmitFrame;
+
+    status = m_dll->VDADecoderDecode((VDADecoder)m_vda_decoder, avc_flags, avc_demux, avc_time);
+    CFRelease(avc_time);
+    CFRelease(avc_demux);
+    if (status != kVDADecoderNoErr) 
+    {
+      CLog::Log(LOGNOTICE, "%s - VDADecoderDecode failed, status(%d)", __FUNCTION__, (int)status);
       return VC_ERROR;
     }
-    demuxer_bytes = avc_parse_nal_units(m_dllAvFormat, pb, pData, iSize);
-    demuxer_bytes = m_dllAvFormat->url_close_dyn_buf(pb, &demuxer_content);
-    avc_demux = CFDataCreate(kCFAllocatorDefault, demuxer_content, demuxer_bytes);
-    m_dllAvUtil->av_free(demuxer_content);
-  }
-  else
-  {
-    avc_demux = CFDataCreate(kCFAllocatorDefault, pData, iSize);
-  }
-  sort_time = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
-  avc_time = CreateDictionaryWithDisplayTime(sort_time - m_sort_time_offset, dts, pts);
-	
-  if (m_DropPictures)
-    avc_flags = kVDADecoderDecodeFlags_DontEmitFrame;
-
-  status = m_dll->VDADecoderDecode((VDADecoder)m_vda_decoder, avc_flags, avc_demux, avc_time);
-  CFRelease(avc_time);
-  CFRelease(avc_demux);
-  if (status != kVDADecoderNoErr) 
-  {
-    CLog::Log(LOGNOTICE, "%s - VDADecoderDecode failed, status(%d)", __FUNCTION__, (int)status);
-    return VC_ERROR;
   }
 
   // TODO: queue depth is related to the number of reference frames in encoded h.264.
@@ -718,7 +710,11 @@ bool CDVDVideoCodecVDA::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 void CDVDVideoCodecVDA::UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_stride, DVDVideoPicture *picture)
 {
   // convert PIX_FMT_UYVY422 to PIX_FMT_YUV420P.
-  if (m_swcontext)
+  struct SwsContext *swcontext = m_dllSwScale->sws_getContext(
+    m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_UYVY422, 
+    m_videobuffer.iWidth, m_videobuffer.iHeight, PIX_FMT_YUV420P, 
+    SWS_FAST_BILINEAR, NULL, NULL, NULL);
+  if (swcontext)
   {
     uint8_t  *src[] = { yuv422_ptr, 0, 0, 0 };
     int srcStride[] = { yuv422_stride, 0, 0, 0 };
@@ -726,7 +722,8 @@ void CDVDVideoCodecVDA::UYVY422_to_YUV420P(uint8_t *yuv422_ptr, int yuv422_strid
     uint8_t  *dst[] = { picture->data[0], picture->data[1], picture->data[2], 0 };
     int dstStride[] = { picture->iLineSize[0], picture->iLineSize[1], picture->iLineSize[2], 0 };
   
-    m_dllSwScale->sws_scale(m_swcontext, src, srcStride, 0, picture->iHeight, dst, dstStride);
+    m_dllSwScale->sws_scale(swcontext, src, srcStride, 0, picture->iHeight, dst, dstStride);
+    m_dllSwScale->sws_freeContext(swcontext);
   }
 }
 
@@ -761,7 +758,7 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
 
   if (imageBuffer == NULL)
   {
-    CLog::Log(LOGERROR, "%s - imageBuffer is NULL", __FUNCTION__);
+    //CLog::Log(LOGDEBUG, "%s - imageBuffer is NULL", __FUNCTION__);
     return;
   }
   if (CVPixelBufferGetPixelFormatType(imageBuffer) != kCVPixelFormatType_422YpCbCr8)

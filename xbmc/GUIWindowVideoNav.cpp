@@ -1016,7 +1016,7 @@ void CGUIWindowVideoNav::OnPrepareFileItems(CFileItemList &items)
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr item = items.Get(i);
-    if(item->HasVideoInfoTag() && node == NODE_TYPE_TITLE_TVSHOWS || node == NODE_TYPE_SEASONS)
+    if(item->HasVideoInfoTag() && (node == NODE_TYPE_TITLE_TVSHOWS || node == NODE_TYPE_SEASONS))
     {
       if (watchMode == VIDEO_SHOW_UNWATCHED)
         item->GetVideoInfoTag()->m_iEpisode = item->GetPropertyInt("unwatchedepisodes");

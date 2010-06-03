@@ -29,6 +29,9 @@ faac_not_found="== Could not find libfaac. FAAC support disabled. =="
 faac_disabled="== FAAC support manually disabled. =="
 dvdcss_enabled="== DVDCSS support enabled. =="
 dvdcss_disabled="== DVDCSS support disabled. =="
+hal_not_found="== Could not find hal. HAL support disabled. =="
+halstorage_not_found="== Could not find hal-storage. HAL support disabled. =="
+hal_disabled="== HAL support disabled. =="
 avahi_not_found="== Could not find libavahi-common or libavahi-client. Avahi support disabled. =="
 avahi_disabled="== Avahi support disabled. =="
 vdpau_not_found="== Could not find libvdpau. VDPAU support disabled. =="
@@ -198,6 +201,11 @@ AC_ARG_ENABLE([mid],
                [enable MID support (default is no)])],
             [use_mid=$enableval],
             [use_mid=no])
+AC_ARG_ENABLE([hal],
+             [AS_HELP_STRING([--disable-hal],
+                [disable HAL support (default is enabled if hal and hal-storage is found)])],
+             [use_hal=$enableval],
+             [use_hal=yes])
 AC_ARG_ENABLE([avahi],
              [AS_HELP_STRING([--disable-avahi],
                 [disable Avahi support (default is enabled if libavahi-common and libavahi-client is found)])],
@@ -468,14 +476,8 @@ else
   PKG_CHECK_MODULES([DBUS],         [dbus-1],
                     [INCLUDES+=" $DBUS_CFLAGS"; LIBS+=" $DBUS_LIBS"],
                     AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([HAL_STORAGE],  [hal-storage],
-                    [INCLUDES+=" $HAL_STORAGE_CFLAGS"; LIBS+=" $HAL_STORAGE_LIBS"], 
-                    AC_MSG_ERROR($missing_library))
   PKG_CHECK_MODULES([SDL],          [sdl],
                     [INCLUDES+=" $SDL_CFLAGS"; LIBS+=" $SDL_LIBS"],
-                    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([HAL],          [hal],
-                    [INCLUDES+=" $HAL_CFLAGS"; LIBS+=" $HAL_LIBS"],
                     AC_MSG_ERROR($missing_library))
 fi
 
@@ -483,7 +485,7 @@ fi
 AC_DEFUN([XB_FIND_SONAME],
 [
   AC_MSG_CHECKING([for lib$2 soname])
-  $1_SONAME=$( gcc -print-file-name=lib$2.so | \
+  $1_SONAME=$( $CC -print-file-name=lib$2.so | \
                 while read output; do objdump -p $output | \
                   grep "SONAME" | \
                   sed -e 's/ \+SONAME \+//'; done 2> /dev/null )
@@ -531,6 +533,26 @@ else
       use_faac=no;AC_MSG_RESULT($faac_not_found))
   else
     AC_MSG_RESULT($faac_disabled)
+  fi
+fi
+
+# HAL
+if test "$host_vendor" = "apple" ; then
+  use_hal="no"
+  AC_MSG_RESULT($hal_disabled)
+else
+  if test "$use_hal" = "yes"; then
+    PKG_CHECK_MODULES([HAL],  [hal],
+                    [INCLUDES+=" $HAL_CFLAGS"; LIBS+=" $HAL_LIBS"],
+                    use_hal=no;AC_MSG_RESULT($hal_not_found))
+    PKG_CHECK_MODULES([HAL_STORAGE],  [hal-storage],
+                    [INCLUDES+=" $HAL_STORAGE_CFLAGS"; LIBS+=" $HAL_STORAGE_LIBS"],
+                    use_hal=no;AC_MSG_RESULT($halstorage_not_found))
+  else
+    AC_MSG_RESULT($hal_disabled)
+  fi
+  if test "$use_hal" = "yes"; then
+    AC_DEFINE([HAS_HAL], [1], [Define to 1 if you have HAL installed])
   fi
 fi
 
@@ -745,11 +767,11 @@ if test "$host_vendor" = "apple" ; then
     AC_DEFINE([HAVE_LIBVDADECODER], [1], [Define to 1 if you have the 'VDADecoder' library.])
     AC_MSG_NOTICE($vdadecoder_enabled)
   else
-    use_vdadecoder ="no"
+    use_vdadecoder="no"
     AC_MSG_NOTICE($vdadecoder_disabled)
   fi
 else
-  use_vdadecoder ="no"
+  use_vdadecoder="no"
   AC_MSG_NOTICE($vdadecoder_disabled)
 fi
 
@@ -987,6 +1009,12 @@ else
   final_message="$final_message\n  PulseAudio:\tNo"
 fi
 
+if test "$use_hal" = "yes"; then
+  final_message="$final_message\n  HAL Support:\tYes"
+else
+  final_message="$final_message\n  HAL Support:\tNo"
+fi
+
 if test "$use_faac" = "yes"; then
   final_message="$final_message\n  FAAC:\t\tYes"
 else
@@ -1019,7 +1047,7 @@ if ! test -n "$SVN_REV" -a "$SVN_REV" != "" ; then
   fi
   if test "$SVN_REV" = ""; then
     if test "$HAVE_GIT" = "yes"; then
-      SVN_REV=$(echo -n `sh gitrev.sh`)
+      SVN_REV=$(./gitrev.sh)
     fi
   fi
   if test "$SVN_REV" = ""; then
@@ -1539,7 +1567,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
   else
 set -x
     rm -f CMakeCache.txt && cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
-      -DCMAKE_C_FLAGS="${CFLAGS}" -DCMAKE_CXX_FLAGS="${CXXFLAGS}" \
+      -DCMAKE_C_FLAGS="${CFLAGS} -fPIC -DPIC" -DCMAKE_CXX_FLAGS="${CXXFLAGS} -fPIC -DPIC" \
       -DCMAKE_INSTALL_PREFIX="${prefix}" -DCMAKE_INSTALL_LIBDIR:PATH="${libdir}" \
       -DINCLUDE_INSTALL_DIR:PATH="${includedir}" -DLIB_INSTALL_DIR:PATH="${libdir}" \
       -DSYSCONF_INSTALL_DIR:PATH="${sysconfdir}" -DSHARE_INSTALL_PREFIX:PATH="${datadir}" .

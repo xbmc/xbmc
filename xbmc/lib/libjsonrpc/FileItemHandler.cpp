@@ -188,7 +188,6 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
   if (param["file"].isString())
   {
     CStdString file = param["file"].asString();
-    printf("adding %s\n", file.c_str());
     CFileItemPtr item = CFileItemPtr(new CFileItem(file, CUtil::HasSlashAtEnd(file)));
     list.Add(item);
   }
@@ -201,7 +200,7 @@ bool CFileItemHandler::FillFileItemList(const Value &parameterObject, CFileItemL
   return true;
 }
 
-bool CFileItemHandler::ParseSortMethods(const CStdString &method, const CStdString &order, SORT_METHOD &sortmethod, SORT_ORDER &sortorder)
+bool CFileItemHandler::ParseSortMethods(const CStdString &method, const bool &ignorethe, const CStdString &order, SORT_METHOD &sortmethod, SORT_ORDER &sortorder)
 {
   if (order.Equals("ascending"))
     sortorder = SORT_ORDER_ASC;
@@ -213,9 +212,7 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const CStdStri
   if (method.Equals("none"))
     sortmethod = SORT_METHOD_NONE;
   else if (method.Equals("label"))
-    sortmethod = SORT_METHOD_LABEL;
-  else if (method.Equals("labelignorethe"))
-    sortmethod = SORT_METHOD_LABEL_IGNORE_THE;
+    sortmethod = ignorethe ? SORT_METHOD_LABEL : SORT_METHOD_LABEL_IGNORE_THE;
   else if (method.Equals("date"))
     sortmethod = SORT_METHOD_DATE;
   else if (method.Equals("size"))
@@ -229,17 +226,11 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const CStdStri
   else if (method.Equals("duration"))
     sortmethod = SORT_METHOD_DURATION;
   else if (method.Equals("title"))
-    sortmethod = SORT_METHOD_TITLE;
-  else if (method.Equals("titleignorethe"))
-    sortmethod = SORT_METHOD_TITLE_IGNORE_THE;
+    sortmethod = ignorethe ? SORT_METHOD_TITLE_IGNORE_THE : SORT_METHOD_TITLE;
   else if (method.Equals("artist"))
-    sortmethod = SORT_METHOD_ARTIST;
-  else if (method.Equals("artistignorethe"))
-    sortmethod = SORT_METHOD_ARTIST_IGNORE_THE;
+    sortmethod = ignorethe ? SORT_METHOD_ARTIST_IGNORE_THE : SORT_METHOD_ARTIST;
   else if (method.Equals("album"))
-    sortmethod = SORT_METHOD_ALBUM;
-  else if (method.Equals("albumignorethe"))
-    sortmethod = SORT_METHOD_ALBUM_IGNORE_THE;
+    sortmethod = ignorethe ? SORT_METHOD_ALBUM_IGNORE_THE : SORT_METHOD_ALBUM;
   else if (method.Equals("genre"))
     sortmethod = SORT_METHOD_GENRE;
   else if (method.Equals("year"))
@@ -255,9 +246,7 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const CStdStri
   else if (method.Equals("title"))
     sortmethod = SORT_METHOD_VIDEO_TITLE;
   else if (method.Equals("sorttitle"))
-    sortmethod = SORT_METHOD_VIDEO_SORT_TITLE;
-  else if (method.Equals("sorttitleignorethe"))
-    sortmethod = SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE;
+    sortmethod = ignorethe ? SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE : SORT_METHOD_VIDEO_SORT_TITLE;
   else if (method.Equals("productioncode"))
     sortmethod = SORT_METHOD_PRODUCTIONCODE;
   else if (method.Equals("songrating"))
@@ -267,9 +256,7 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const CStdStri
   else if (method.Equals("videoruntime"))
     sortmethod = SORT_METHOD_VIDEO_RUNTIME;
   else if (method.Equals("studio"))
-    sortmethod = SORT_METHOD_STUDIO;
-  else if (method.Equals("studioignorethe"))
-    sortmethod = SORT_METHOD_STUDIO_IGNORE_THE;
+    sortmethod = ignorethe ? SORT_METHOD_STUDIO_IGNORE_THE : SORT_METHOD_STUDIO;
   else if (method.Equals("fullpath"))
     sortmethod = SORT_METHOD_FULLPATH;
   else if (method.Equals("unsorted"))
@@ -284,17 +271,21 @@ bool CFileItemHandler::ParseSortMethods(const CStdString &method, const CStdStri
 
 void CFileItemHandler::Sort(CFileItemList &items, const Value &parameterObject)
 {
-  if (parameterObject.isMember("sortmethod") || parameterObject.isMember("sortorder"))
+  Value sort = parameterObject["sort"];
+
+  if (sort.isObject())
   {
-    CStdString method = parameterObject.get("sortmethod", "none").asString();
-    CStdString order  = parameterObject.get("sortorder",  "ascending").asString();
+    CStdString method = sort["method"].isString() ? sort["method"].asString() : "none";
+    CStdString order  = sort["order"].isString() ? sort["order"].asString() : "ascending";
+    bool ignorethe    = sort["ignorethe"].isBool() ? sort["ignorethe"].asBool() : false;
+
     method = method.ToLower();
     order  = order.ToLower();
 
-    SORT_METHOD sortmethod;
-    SORT_ORDER sortorder;
+    SORT_METHOD sortmethod = SORT_METHOD_NONE;
+    SORT_ORDER  sortorder  = SORT_ORDER_ASC;
 
-    if (ParseSortMethods(method, order, sortmethod, sortorder))
+    if (ParseSortMethods(method, ignorethe, order, sortmethod, sortorder))
       items.Sort(sortmethod, sortorder);
   }
 }

@@ -406,7 +406,13 @@ public:
    */
   ADDON::ScraperPtr GetScraperForPath(const CStdString& strPath, VIDEO::SScanSettings& settings, bool& foundDirectly);
   CONTENT_TYPE GetContentForPath(const CStdString& strPath);
-
+  
+  /*! \brief Check whether a given scraper is in use.
+   \param scraper the scraper to check for.
+   \return true if the scraper is in use, false otherwise.
+   */
+  bool ScraperInUse(const ADDON::ScraperPtr &scraper) const;
+  
   // scanning hashes and paths scanned
   bool SetPathHash(const CStdString &path, const CStdString &hash);
   bool GetPathHash(const CStdString &path, CStdString &hash);
