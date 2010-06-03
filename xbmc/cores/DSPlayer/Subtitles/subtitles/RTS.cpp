@@ -44,7 +44,7 @@ CMyFont::CMyFont(STSStyle& style)
   LOGFONT lf;
   memset(&lf, 0, sizeof(lf));
   lf <<= style;
-  //lf.lfHeight = (LONG)(style.fontSize + 0.5);
+  lf.lfHeight = (LONG)(style.fontSize + 0.5);
   lf.lfOutPrecision = OUT_TT_PRECIS;
   lf.lfClipPrecision = CLIP_DEFAULT_PRECIS;
   lf.lfQuality = ANTIALIASED_QUALITY;
