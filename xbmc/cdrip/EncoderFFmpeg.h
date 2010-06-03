@@ -1,0 +1,61 @@
+#ifndef _ENCODERFFMPEG_H
+#define _ENCODERFFMPEG_H
+
+/*
+ *      Copyright (C) 2005-2008 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
+#include "Encoder.h"
+#include "Codecs/DllAvFormat.h"
+#include "Codecs/DllAvCodec.h"
+
+class CEncoderFFmpeg : public CEncoder
+{
+public:
+  CEncoderFFmpeg();
+  virtual ~CEncoderFFmpeg() {}
+  bool Init(const char* strFile, int iInChannels, int iInRate, int iInBits);
+  int Encode(int nNumBytesRead, uint8_t* pbtStream);
+  bool Close();
+  void AddTag(int key, const char* value);
+
+private:
+  DllAvCodec  m_dllAvCodec;
+  DllAvUtil   m_dllAvUtil;
+  DllAvFormat m_dllAvFormat;
+
+  AVFormatContext  *m_Format;
+  AVCodecContext   *m_CodecCtx;
+  AVStream         *m_Stream;
+  AVPacket          m_Pkt;
+  unsigned char     m_BCBuffer[AVCODEC_MAX_AUDIO_FRAME_SIZE];
+  static int        MuxerReadPacket(void *opaque, uint8_t *buf, int buf_size);
+  void              SetTag(const CStdString tag, const CStdString value);
+
+
+  unsigned int      m_NeededFrames;
+  unsigned int      m_NeededBytes;
+  uint8_t          *m_Buffer;
+  unsigned int      m_BufferSize;
+
+  bool WriteFrame();
+};
+
+#endif // _ENCODERFFMPEG_H

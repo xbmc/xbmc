@@ -646,22 +646,6 @@ OpenDAAP
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-RingBuffer.h: Interface and implementation of CRingBuffer, an MFC ring buffer
-class.
-
-    Copyright © Larry Antram (larrya@sdust.com)
-    Copyright © 2001-2002 Stardust Software. All Rights Reserved.
-
-    This code may be used in compiled form in any way you desire
-    and may be redistributed unmodified by any means PROVIDING it
-    is not sold for profit without the authors written consent, and
-    providing that this entire notice and the authors name and all
-    copyright notices remains intact.
-
-    This file is provided "as is" with no expressed or implied
-    warranty. The author accepts no liability for any damage/loss
-    of business that this product may cause.
-
 zlib - A Massively Spiffy Yet Delicately Unobtrusive Compression Library
 <http://www.zlib.net/>
 
@@ -1635,122 +1619,6 @@ GNU Compact Disc Input and Control Library
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-DUMB - Dynamic Universal Music Bibliotheque
-<http://dumb.sourceforge.net/>
-
-    Copyright © 2001-2005 Ben Davis, Robert J Ohannessian and Julien Cugniere
-
-    Licence for DUMB v0.9.3
-
-     _______         ____    __         ___    ___
-    \    _  \       \    /  \  /       \   \  /   /       '   '  '
-     |  | \  \       |  |    ||         |   \/   |         .      .
-     |  |  |  |      |  |    ||         ||\  /|  |
-     |  |  |  |      |  |    ||         || \/ |  |         '  '  '
-     |  |  |  |      |  |    ||         ||    |  |         .      .
-     |  |_/  /        \  \__//          ||    |  |
-    /_______/ynamic    \____/niversal  /__\  /____\usic   /|  .  . ibliotheque
-                                                         /  \
-                                                        / .  \
-    licence.txt - Conditions for use of DUMB.          / / \  \
-                                                      | <  /   \_
-    If you do not agree to these terms, please        |  \/ /\   /
-    do not use DUMB.                                   \_  /  > /
-                                                         | \ / /
-    Information in [brackets] is provided to aid         |  ' /
-    interpretation of the licence.                        \__/
-
-    Dynamic Universal Music Bibliotheque, Version 0.9.3
-
-    Copyright (C) 2001-2005 Ben Davis, Robert J Ohannessian and Julien Cugniere
-
-    This software is provided 'as-is', without any express or implied warranty.
-    In no event shall the authors be held liable for any damages arising from
-    the use of this software.
-
-    Permission is granted to anyone to use this software for any purpose,
-    including commercial applications, and to alter it and redistribute it
-    freely, subject to the following restrictions:
-
-    1. The origin of this software must not be misrepresented; you must not
-       claim that you wrote the original software. If you use this software in a
-       product, you are requested to acknowledge its use in the product
-       documentation, along with details on where to get an unmodified version
-       of this software, but this is not a strict requirement.
-
-       [Note that the above point asks for a link to DUMB, not just a mention.
-       Googling for DUMB doesn't help much! The URL is "http://dumb.sf.net/".]
-
-       [The link was originally strictly required. This was changed for two
-       reasons. Firstly, if many projects request an acknowledgement, the list
-       of acknowledgements can become quite unmanageable. Secondly, DUMB was
-       placing a restriction on the code using it, preventing people from using
-       the GNU General Public Licence which disallows any such restrictions. See
-       http://www.gnu.org/philosophy/bsd.html for more information on this
-       subject. However, if DUMB plays a significant part in your project, we do
-       urge you to acknowledge its use.]
-
-    2. Altered source versions must be plainly marked as such, and must not be
-       misrepresented as being the original software.
-
-    3. This notice may not be removed from or altered in any source
-       distribution.
-
-    4. If you are using the Program in someone else's bedroom on any Monday at
-       3:05 pm, you are not allowed to modify the Program for ten minutes. [This
-       clause provided by Inphernic; every licence should contain at least one
-       clause, the reasoning behind which is far from obvious.]
-
-    5. Users who wish to use DUMB for the specific purpose of playing music are
-       required to feed their dog on every full moon (if deemed appropriate).
-       [This clause provided by Allefant, who couldn't remember what Inphernic's
-       clause was.]
-
-    6. No clause in this licence shall prevent this software from being depended
-       upon by a product licensed under the GNU General Public Licence. If such
-       a clause is deemed to exist, Debian, then it shall be respected in spirit
-       as far as possible and all other clauses shall continue to apply in full
-       force.
-
-    We regret that we cannot provide any warranty, not even the implied warranty
-    of merchantability or fitness for a particular purpose.
-
-    Some files generated or copied by automake, autoconf and friends are
-    available in an extra download. These fall under separate licences but are
-    all free to distribute. Please check their licences as necessary.
-
-    Licence for DUMB-XMMS v0.1
-
-    DUMB-XMMS v0.1 falls under the GNU General Public License.
-
-    Licence for DUMBOGG v0.5
-
-    DUMBOGG -- An Ogg Vorbis add-on library for DUMB.
-
-    This package is provided as giftware. You can copy it, redistribute
-    it, modify it, do whatever you please. The only restriction you have
-    on what you can do with it is claim you wrote it. You are encouraged,
-    though not required, to include the name of the library in your credits
-    page, as well as a web address allowing others to know how they can get
-    their copy of the library. This library is built on top of the libOgg,
-    libVorbis, libVorbisFile and DUMB libraries. These libraries come with
-    additional requirements and restrictions that you must follow in order
-    to legally use this software. Please read the COPYING files in the
-    Ogg Vorbis downloads, and please read DUMB's licence.txt file, for full
-    details on the requirements of those libraries.
-
-    THIS SOFTWARE IS PROVIDED BY THE CONTRIBUTORS ``AS IS'' AND ANY EXPRESS
-    OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-    DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
-    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-    BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-    WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
-    OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-    ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 SNESAPU - SNES APU emulator library
 <http://www.alpha-ii.com/>
 
@@ -1842,44 +1710,6 @@ liba52 - a free ATSC A/52 stream decoder
     You should have received a copy of the GNU General Public License along
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-shnplay.h
-
-    Copyright © 2003-2005 Marc Heubeck and Holger Stenger All rights reserved.
-
-    Redistribution and use in source form, with or without modification, are
-    permitted provided that the following conditions are met:
-
-    Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
-    Neither the name of the author nor the names of its contributors may be used
-    to endorse or promote products derived from this software without specific
-    prior written permission.
-
-    Redistribution and use in binary form, without modification, are permitted
-    for non-commercial purposes provided that the following conditions are met:
-
-    Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
-    Neither the name of the author nor the names of its contributors may be used
-    to endorse or promote products derived from this software without specific
-    prior written permission.
-
-    Redistribution and use under different conditions than the aforementioned
-    require specific prior written permission by the author.
-
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-    ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR
-    ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-    SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
-    DAMAGE.
 
 Gens APU from Gens
 <http://info.sonicretro.org/Gens/GS>
@@ -1997,33 +1827,6 @@ SID Player Music Library V2
     You should have received a copy of the GNU General Public License along
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-Monkey’s Audio Codec
-<http://www.monkeysaudio.com/>
-
-    Copyright © 2000-2002 by Matthew T. Ashland. All rights reserved.
-
-    1. The Monkey's Audio SDK and source code can be freely used to add APE
-       format playback, encoding, or tagging support to any product, free or
-       commercial. Use of the code for proprietary efforts that don't support
-       the official APE format require written consent of the author.
-
-    2. Monkey's Audio source can be included in GPL and open-source software,
-       although Monkey's Audio itself will not be subjected to external
-       licensing requirements or other viral source restrictions.
-
-    3. Code changes and improvements must be contributed back to the Monkey's
-       Audio project free from restrictions or royalties, unless exempted by
-       express written consent of the author.
-
-    4. Any source code, ideas, or libraries used must be plainly acknowledged in
-       the software using the code.
-
-    5. Although the software has been tested thoroughly, the author is in no way
-       responsible for damages due to bugs or misuse.
-
-    6. If you do not completely agree with all of the previous stipulations, you
-       must cease using this source code and remove it from your storage device.
 
 Xbox ADPCM audio codec
 <http://www.winamp.com/plugins/details/147392>
@@ -2207,44 +2010,6 @@ nuttcp - TCP/UDP network testing tool
     OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
     SUCH DAMAGE.
 
-    Portions have different copyright and license
-
-    Copyright © 1995, 1996, 1997 Kungliga Tekniska Högskolan
-    (Royal Institute of Technology, Stockholm, Sweden).
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions
-    are met:
-
-    1. Redistributions of source code must retain the above copyright
-       notice, this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    3. All advertising materials mentioning features or use of this software
-       must display the following acknowledgement:
-         This product includes software developed by the Kungliga Tekniska
-         Högskolan and its contributors.
-
-    4. Neither the name of the Institute nor the names of its contributors
-       may be used to endorse or promote products derived from this software
-       without specific prior written permission.
-
-    THIS SOFTWARE IS PROVIDED BY THE INSTITUTE AND CONTRIBUTORS ``AS IS'' AND
-    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-    ARE DISCLAIMED.  IN NO EVENT SHALL THE INSTITUTE OR CONTRIBUTORS BE LIABLE
-    FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-    DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-    OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-    HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-    LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-    OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-    SUCH DAMAGE.
-
 libdvdnav and libdvdread - libraries to read DVDs and navigate DVD menus
 <http://www.mplayerhq.hu/>
 
@@ -2392,41 +2157,6 @@ xbmc-xrandr.c
     DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
     TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
     OF THIS SOFTWARE.
-
-HomeSystemIcon in PM3.HD skin
-<http://www.icons-land.com/>
-
-    Copyright © Icons-Land
-
-    This is a legal agreement between you, the purchaser, and the Icons-Land. By
-    purchasing or downloading any stock icons (The Icons) from our website you
-    agree to the following:
-
-    All of The Icons remain the property of Icons-Land.
-
-    The Icons can be used royalty-free by the license for any personal or
-    commercial project including software application, documentation, computer
-    game, gui design, web design, advertising, film, video.
-    You may modify The Icons in shape, color, and/or file format and use the
-    modified icons royalty-free according to the license terms for any personal
-    or commercial product.
-
-    The license DOES NOT permit following uses:
-    a) The Icons may no be resold, sublicensed, rented, transferred or otherwise
-       made available for use or detached from a product, software application
-       or web page;
-    b) The Icons may not be placed on any electronic bulletin board or
-       downloadable format;
-    c) The Icons may not be included in any web template, including those which
-       are web based, but not limited to website designs and presentation
-       templates.
-
-    You may NOT use, or allow anyone else to use The Icons to create
-    pornographic, libelous, obscene, or defamatory material.
-
-    All icon files are provided "as is". You agree not to hold Icons-Land liable
-    for any damages that may occur due to use, or inability to use, icons or
-    image data from Icons-Land.
 
 xbmc/Crc32.cpp and xbmc/Crc32.h
 

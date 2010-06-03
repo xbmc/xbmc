@@ -40,6 +40,7 @@ public:
   void OnInstall();
   void OnDisable();
   void OnSettings();
+  void OnChangeLog();
 
   static bool ShowForItem(const CFileItemPtr& item);
 
@@ -51,5 +52,6 @@ protected:
   ADDON::AddonPtr m_addon;
   ADDON::AddonPtr m_localAddon;
   unsigned int m_jobid;
+  bool m_changelog;
 };
 

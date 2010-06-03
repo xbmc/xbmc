@@ -45,13 +45,14 @@ public:
   virtual int Encode(int nNumBytesRead, uint8_t* pbtStream) = 0;
   virtual bool Close() = 0;
 
-  void SetComment(const char* str) { m_strComment = str; }
-  void SetArtist(const char* str) { m_strArtist = str; }
-  void SetTitle(const char* str) { m_strTitle = str; }
-  void SetAlbum(const char* str) { m_strAlbum = str; }
-  void SetGenre(const char* str) { m_strGenre = str; }
-  void SetTrack(const char* str) { m_strTrack = str; }
-  void SetYear(const char* str) { m_strYear = str; }
+  void SetComment(const CStdString& str) { m_strComment = str; }
+  void SetArtist(const CStdString& str) { m_strArtist = str; }
+  void SetTitle(const CStdString& str) { m_strTitle = str; }
+  void SetAlbum(const CStdString& str) { m_strAlbum = str; }
+  void SetAlbumArtist(const CStdString& str) { m_strAlbumArtist = str; }
+  void SetGenre(const CStdString& str) { m_strGenre = str; }
+  void SetTrack(const CStdString& str) { m_strTrack = str; }
+  void SetYear(const CStdString& str) { m_strYear = str; }
 
 protected:
   bool FileCreate(const char* filename);
@@ -64,6 +65,7 @@ protected:
   // tag info
   CStdString m_strComment;
   CStdString m_strArtist;
+  CStdString m_strAlbumArtist;
   CStdString m_strTitle;
   CStdString m_strAlbum;
   CStdString m_strGenre;

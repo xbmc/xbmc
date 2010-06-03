@@ -362,7 +362,7 @@
 #define WINDOW_DIALOG_KARAOKE_SELECTOR    10144
 #define WINDOW_DIALOG_SLIDER              10145
 #define WINDOW_DIALOG_ADDON_INFO          10146
-#define WINDOW_DIALOG_EPG_SCAN            10147
+#define WINDOW_DIALOG_TEXT_VIEWER         10147
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501
@@ -384,13 +384,13 @@
 #define WINDOW_DIALOG_PVR_OSD_DIRECTOR    10611
 #define WINDOW_DIALOG_PVR_OSD_CUTTER      10612
 #define WINDOW_DIALOG_OSD_TELETEXT        10613
+#define WINDOW_DIALOG_EPG_SCAN            10614
 
 //#define WINDOW_VIRTUAL_KEYBOARD           11000
 #define WINDOW_DIALOG_SELECT              12000
 #define WINDOW_MUSIC_INFO                 12001
 #define WINDOW_DIALOG_OK                  12002
 #define WINDOW_VIDEO_INFO                 12003
-#define WINDOW_SCRIPTS_INFO               12004
 #define WINDOW_FULLSCREEN_VIDEO           12005
 #define WINDOW_VISUALISATION              12006
 #define WINDOW_SLIDESHOW                  12007

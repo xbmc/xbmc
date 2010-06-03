@@ -270,8 +270,12 @@
     <ClCompile Include="..\..\xbmc\AddonDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Repository.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Skin.cpp" />
+    <ClCompile Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.cpp" />
     <ClCompile Include="..\..\xbmc\GUIDialogAddonInfo.cpp" />
+    <ClCompile Include="..\..\xbmc\GUIDialogTextViewer.cpp" />
     <ClCompile Include="..\..\xbmc\GUIViewStateAddonBrowser.cpp" />
+    <ClCompile Include="..\..\xbmc\GUIWindowSystemInfo.cpp" />
+    <ClCompile Include="..\..\xbmc\lib\libjsonrpc\AudioLibrary.cpp" />
     <ClCompile Include="..\..\xbmc\win32\NetworkWin32.cpp" />
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Create</PrecompiledHeader>
@@ -720,10 +724,8 @@
     <ClCompile Include="..\..\xbmc\GUIWindowPrograms.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowScreensaver.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowScripts.cpp" />
-    <ClCompile Include="..\..\xbmc\GUIWindowScriptsInfo.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowSlideShow.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowStartup.cpp" />
-    <ClCompile Include="..\..\xbmc\GUIWindowSystemInfo.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowVisualisation.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowWeather.cpp" />
     <ClCompile Include="..\..\xbmc\SlideShowPicture.cpp" />
@@ -982,7 +984,6 @@
     <ClCompile Include="..\..\xbmc\lib\libjsonrpc\FileItemHandler.cpp" />
     <ClCompile Include="..\..\xbmc\lib\libjsonrpc\FileOperations.cpp" />
     <ClCompile Include="..\..\xbmc\lib\libjsonrpc\JSONRPC.cpp" />
-    <ClCompile Include="..\..\xbmc\lib\libjsonrpc\MusicLibrary.cpp" />
     <ClCompile Include="..\..\xbmc\lib\libjsonrpc\PicturePlayerOperations.cpp" />
     <ClCompile Include="..\..\xbmc\lib\libjsonrpc\PlayerOperations.cpp" />
     <ClCompile Include="..\..\xbmc\lib\libjsonrpc\PlaylistOperations.cpp" />
@@ -998,8 +999,12 @@
     <ClInclude Include="..\..\xbmc\AddonDatabase.h" />
     <ClInclude Include="..\..\xbmc\addons\Repository.h" />
     <ClInclude Include="..\..\xbmc\addons\Skin.h" />
+    <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeCountry.h" />
     <ClInclude Include="..\..\xbmc\GUIDialogAddonInfo.h" />
+    <ClInclude Include="..\..\xbmc\GUIDialogTextViewer.h" />
     <ClInclude Include="..\..\xbmc\GUIViewStateAddonBrowser.h" />
+    <ClInclude Include="..\..\xbmc\lib\libjsonrpc\AudioLibrary.h" />
+    <ClInclude Include="..\..\xbmc\SystemGlobals.h" />
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h" />
     <ClInclude Include="..\..\xbmc\win32\pch.h" />
     <ClInclude Include="..\..\xbmc\win32\PlatformDefs.h" />
@@ -1769,7 +1774,6 @@
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\IClient.h" />
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\ITransportLayer.h" />
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\JSONRPC.h" />
-    <ClInclude Include="..\..\xbmc\lib\libjsonrpc\MusicLibrary.h" />
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\PicturePlayerOperations.h" />
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\PlayerOperations.h" />
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\PlaylistOperations.h" />

@@ -157,6 +157,7 @@ SRCS=Application.cpp \
      GUIDialogPVRTimerSettings.cpp \
      GUIDialogPVRUpdateProgressBar.cpp \
      GUIDialogTeletext.cpp \
+     GUIDialogTextViewer.cpp \
      GUIDialogVideoBookmarks.cpp \
      GUIDialogVideoSettings.cpp \
      GUIDialogVisualisationPresetList.cpp \
@@ -174,7 +175,6 @@ SRCS=Application.cpp \
      GUIWindowPrograms.cpp \
      GUIWindowScreensaver.cpp \
      GUIWindowScripts.cpp \
-     GUIWindowScriptsInfo.cpp \
      GUIWindowSystemInfo.cpp \
      GUIViewStateTV.cpp \
      GUIWindowTV.cpp \
