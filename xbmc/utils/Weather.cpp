@@ -614,8 +614,7 @@ bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResu
   if (pDlgProgress)
     pDlgProgress->Close();
 
-  pDlgSelect->EnableButton(TRUE);
-  pDlgSelect->SetButtonLabel(222); //'Cancel' button returns to weather settings
+  pDlgSelect->EnableButton(true, 222); //'Cancel' button returns to weather settings
   pDlgSelect->DoModal();
 
   if (pDlgSelect->GetSelectedLabel() < 0)

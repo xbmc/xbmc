@@ -48,7 +48,7 @@ void CGUIViewControl::Reset()
 
 void CGUIViewControl::AddView(const CGUIControl *control)
 {
-  if (!control) return;
+  if (!control || !control->IsContainer()) return;
   m_allViews.push_back((CGUIControl *)control);
 }
 

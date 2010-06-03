@@ -285,12 +285,17 @@ NPT_String
 CUPnPServer::GetMimeType(const CFileItem& item,
                             const PLT_HttpRequestContext* context /* = NULL */)
 {
-    NPT_String ext = CUtil::GetExtension(item.m_strPath).c_str();
+    CStdString path = item.m_strPath;
     if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty()) {
-        ext = CUtil::GetExtension(item.GetVideoInfoTag()->m_strFileNameAndPath);
+        path = item.GetVideoInfoTag()->m_strFileNameAndPath;
     } else if (item.HasMusicInfoTag() && !item.GetMusicInfoTag()->GetURL().IsEmpty()) {
-        ext = CUtil::GetExtension(item.GetMusicInfoTag()->GetURL());
+        path = item.GetMusicInfoTag()->GetURL();
     }
+
+    if(path.Left(8).Equals("stack://"))
+      return "audio/x-mpegurl";
+
+    NPT_String ext = CUtil::GetExtension(path).c_str();
     ext.TrimLeft('.');
     ext = ext.ToLowercase();
 
@@ -540,6 +545,8 @@ CUPnPServer::BuildObject(const CFileItem&              item,
             if(CFile::Stat((const char*)file_path, &info) >= 0 && info.st_size >= 0)
               resource.m_Size = info.st_size;
         }
+        if(resource.m_Size == 0)
+          resource.m_Size = (NPT_LargeSize)-1;
 
         // set date
         if (item.m_dateTime.IsValid()) {
@@ -1255,19 +1262,29 @@ CUPnPServer::ServeFile(NPT_HttpRequest&              request,
 
         NPT_String output;
         output.Reserve(file_path.GetLength()*2);
+        output += "#EXTM3U\r\n";
 
         NPT_List<NPT_String>::Iterator url = files.GetFirstItem();
         for (;url;url++) {
+            output += "#EXTINF:-1," + CUtil::GetFileName((const char*)*url);
+            output += "\r\n";
             output += PLT_FileMediaServer::BuildSafeResourceUri(
                           m_FileBaseUri,
                           context.GetLocalAddress().GetIpAddress().ToString(),
                           *url);
-            output += "\n\r";
+            output += "\r\n";
         }
 
         PLT_HttpHelper::SetContentType(response, "audio/x-mpegurl");
         PLT_HttpHelper::SetBody(response, (const char*)output, output.GetLength());
+        response.GetHeaders().SetHeader("Content-Disposition", "inline; filename=\"stack.m3u\"");
         return NPT_SUCCESS;
+    }
+
+    if(CUtil::IsURL((const char*)file_path))
+    {
+      CStdString disp = "inline; filename=\"" + CUtil::GetFileName((const char*)file_path) + "\"";
+      response.GetHeaders().SetHeader("Content-Disposition", disp.c_str());
     }
 
     return PLT_MediaConnect::ServeFile(request,

@@ -74,17 +74,17 @@ public:
   void SetWindowResolution(int width, int height);
 
 protected:
-  void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate);
+  void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate, uint32_t dwFlags = 0);
 
-  WindowSystemType m_eWindowSystem;
-  int m_nWidth;
-  int m_nHeight;
-  int m_nTop;
-  int m_nLeft;
-  bool m_bWindowCreated;
-  bool m_bFullScreen;
-  int m_nScreen;
-  bool m_bBlankOtherDisplay;
+  WindowSystemType  m_eWindowSystem;
+  int               m_nWidth;
+  int               m_nHeight;
+  int               m_nTop;
+  int               m_nLeft;
+  bool              m_bWindowCreated;
+  bool              m_bFullScreen;
+  int               m_nScreen;
+  bool              m_bBlankOtherDisplay;
 };
 
 

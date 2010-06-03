@@ -41,7 +41,7 @@ public:
     offsetX = offsetY = 0;
     width = 0;
     angle = 0;
-    scrollSpeed = 0;
+    scrollSpeed = CScrollInfo::defaultSpeed;
     scrollSuffix = " | ";
   };
   void UpdateColors()

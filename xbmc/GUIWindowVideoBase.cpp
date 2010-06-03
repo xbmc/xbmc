@@ -563,8 +563,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
           pDlgSelect->Reset();
           for (unsigned int i = 0; i < movielist.size(); ++i)
             pDlgSelect->Add(movielist[i].strTitle);
-          pDlgSelect->EnableButton(true);
-          pDlgSelect->SetButtonLabel(413); // manual
+          pDlgSelect->EnableButton(true, 413); // manual
           pDlgSelect->DoModal();
 
           // and wait till user selects one
@@ -1719,8 +1718,7 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     if (!CDirectory::GetDirectory("videodb://1/1/", items))
       return;
     pSelect->SetItems(&items);
-    pSelect->EnableButton(true);
-    pSelect->SetButtonLabel(531); // New Genre
+    pSelect->EnableButton(true, 531); // New Genre
     pSelect->DoModal();
     CStdString strGenre;
     int iSelected = pSelect->GetSelectedLabel();

@@ -86,11 +86,11 @@ namespace ADDON
     void UnregisterAddonMgrCallback(TYPE type);
 
     /* Addon access */
-    bool GetDefault(const TYPE &type, AddonPtr &addon, const CONTENT_TYPE &content = CONTENT_NONE);
-    bool GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true);
-    bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE, bool enabledOnly = true);
-    bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
-    bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
+    bool GetDefault(const TYPE &type, AddonPtr &addon);
+    bool GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabled = true);
+    bool HasAddons(const TYPE &type, bool enabled = true);
+    bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
+    bool GetAllAddons(VECADDONS &addons, bool enabled = true);
     CStdString GetString(const CStdString &id, const int number);
 
     const char *GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
@@ -136,9 +136,7 @@ namespace ADDON
     void OnJobComplete(unsigned int jobID, bool sucess, CJob* job);
 
     /* libcpluff */
-    bool GetExtensions(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content);
     const cp_cfg_element_t *GetExtElement(cp_cfg_element_t *base, const char *path);
-    bool GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *base, const char *path);
     cp_context_t *m_cp_context;
     DllLibCPluff *m_cpluff;
 

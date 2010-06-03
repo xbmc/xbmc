@@ -54,7 +54,7 @@ namespace ADDON
   {
   public:
     CVisualisation(const ADDON::AddonProps &props) : CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(props) {}
-    CVisualisation(cp_plugin_info_t *props) : CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(props) {}
+    CVisualisation(const cp_extension_t *ext) : CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(ext) {}
     virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
     virtual void OnAudioData(const unsigned char* pAudioData, int iAudioDataLength);
     bool Create(int x, int y, int w, int h);

@@ -2866,6 +2866,8 @@ CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT form
     return time.GetAsLocalizedTime(use12hourclock ? "h" : "HH", false);
   case TIME_FORMAT_HH_MM:
     return time.GetAsLocalizedTime(use12hourclock ? "h:mm" : "HH:mm", false);
+  case TIME_FORMAT_HH_MM_XX:
+      return time.GetAsLocalizedTime(use12hourclock ? "h:mm xx" : "HH:mm", false);      
   case TIME_FORMAT_HH_MM_SS:
     return time.GetAsLocalizedTime("", true);
   default:

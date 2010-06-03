@@ -37,11 +37,9 @@
 #include "SystemInfo.h"
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
-#include "addons/Visualisation.h"
-#include "addons/AddonManager.h"
 #include "WindowingFactory.h"
 #include "PowerManager.h"
-#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
+#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #include "utils/PCMRemap.h"
 #include "GUIFont.h" // for FONT_STYLE_* definitions
 #include "SystemGlobals.h"
@@ -212,39 +210,10 @@ CSettingPath::CSettingPath(int iOrder, const char *strSetting, int iLabel, const
 {
 }
 
-CSettingAddon::CSettingAddon(int iOrder, const char *strSetting, int iLabel, const char *strData, const TYPE type, const CONTENT_TYPE content)
-  : CSettingString(iOrder, strSetting, iLabel, strData, SPIN_CONTROL_TEXT, false, -1)
+CSettingAddon::CSettingAddon(int iOrder, const char *strSetting, int iLabel, const char *strData, const TYPE type)
+  : CSettingString(iOrder, strSetting, iLabel, strData, BUTTON_CONTROL_STANDARD, false, -1)
   , m_type(type)
-  , m_content(content)
 {
-  m_entries.insert(std::make_pair(strData, "Default"));
-}
-
-void CSettingAddon::SetData(int pos)
-{
-  if (pos < 0 || (unsigned)pos >= m_entries.size())
-    return;
-
-  unsigned i=0;
-  for (map<CStdString,CStdString>::iterator it=m_entries.begin(); it != m_entries.end(); ++it,i++)
-  {
-    if ((unsigned)pos == i)
-    {
-      CSettingString::SetData(it->first);
-      return;
-    }
-  }
-}
-
-int CSettingAddon::GetPos()
-{
-  unsigned i=0;
-  for (map<CStdString,CStdString>::iterator it=m_entries.begin(); it != m_entries.end(); ++it,i++)
-  {
-    if (it->first == GetData())
-      return i;
-  }
-  return 0;
 }
 
 void CSettingsGroup::GetCategories(vecSettingsCategory &vecCategories)
@@ -304,7 +273,8 @@ void CGUISettings::Initialize()
   AddBool(ml, "musiclibrary.showcompilationartists", 13414, true);
   AddSeparator(ml,"musiclibrary.sep1");
   AddBool(ml,"musiclibrary.downloadinfo", 20192, false);
-  AddDefaultAddon(ml, "musiclibrary.scraper", 20194, "metadata.allmusic.com", ADDON_SCRAPER, CONTENT_ALBUMS);
+  AddDefaultAddon(ml, "musiclibrary.albumscraper", 20193, "metadata.allmusic.com", ADDON_SCRAPER_ALBUMS);
+  AddDefaultAddon(ml, "musiclibrary.artistscraper", 20194, "metadata.allmusic.com", ADDON_SCRAPER_ARTISTS);
   AddBool(ml, "musiclibrary.updateonstartup", 22000, false);
   AddBool(NULL, "musiclibrary.backgroundupdate", 22001, false);
   AddSeparator(ml,"musiclibrary.sep2");
@@ -574,13 +544,6 @@ void CGUISettings::Initialize()
   map<int, int> renderers;
   renderers.insert(make_pair(13416, RENDER_METHOD_AUTO));
 
-#ifdef HAS_XBOX_D3D
-  renderers.insert(make_pair(13355, RENDER_LQ_RGB_SHADER));
-  renderers.insert(make_pair(13356, RENDER_OVERLAYS));
-  renderers.insert(make_pair(13357, RENDER_HQ_RGB_SHADER));
-  renderers.insert(make_pair(21397, RENDER_HQ_RGB_SHADERV2));
-#endif
-
 #ifdef HAS_DX
   // 13611 == Standard w/o CrystalHD but still using shaders so not really software
   renderers.insert(make_pair(13611, RENDER_METHOD_SOFTWARE));
@@ -685,9 +648,9 @@ void CGUISettings::Initialize()
   AddBool(NULL, "postprocessing.dering", 311, false);
 
   CSettingsCategory* scp = AddCategory(5, "scrapers", 21412);
-  AddDefaultAddon(scp, "scrapers.moviedefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER, CONTENT_MOVIES);
-  AddDefaultAddon(scp, "scrapers.tvshowdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER, CONTENT_TVSHOWS);
-  AddDefaultAddon(scp, "scrapers.musicvideodefault", 21415, "metadata.mtv.com", ADDON_SCRAPER, CONTENT_MUSICVIDEOS);
+  AddDefaultAddon(scp, "scrapers.moviedefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER_MOVIES);
+  AddDefaultAddon(scp, "scrapers.tvshowdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER_TVSHOWS);
+  AddDefaultAddon(scp, "scrapers.musicvideodefault", 21415, "metadata.mtv.com", ADDON_SCRAPER_MUSICVIDEOS);
   AddSeparator(scp,"scrapers.sep2");
   AddBool(scp, "scrapers.langfallback", 21416, false);
 
@@ -794,14 +757,12 @@ void CGUISettings::Initialize()
 
   CSettingsCategory* ss = AddCategory(7, "screensaver", 360);
   AddInt(ss, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddDefaultAddon(ss, "screensaver.mode", 356, "_virtual.dim", ADDON_SCREENSAVER);
+  AddDefaultAddon(ss, "screensaver.mode", 356, "screensaver.xbmc.builtin.dim", ADDON_SCREENSAVER);
+  AddString(ss, "screensaver.settings", 21417, "", BUTTON_CONTROL_STANDARD);
+  AddString(ss, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(ss, "screensaver.sep1");
   AddBool(ss, "screensaver.usemusicvisinstead", 13392, true);
   AddBool(ss, "screensaver.usedimonpause", 22014, true);
-  AddSeparator(ss, "screensaver.sep1");
-  AddInt(ss, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
-  AddPath(ss, "screensaver.slideshowpath", 774, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddSeparator(ss, "screensaver.sep2");
-  AddString(ss, "screensaver.preview", 1000, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(7, "window", 0);
   AddInt(NULL, "window.width",  0, 720, 10, 1, INT_MAX, SPIN_CONTROL_INT);
@@ -1071,10 +1032,10 @@ void CGUISettings::AddPath(CSettingsCategory* cat, const char *strSetting, int i
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }
 
-void CGUISettings::AddDefaultAddon(CSettingsCategory* cat, const char *strSetting, int iLabel, const char *strData, const TYPE type, const CONTENT_TYPE content/*=CONTENT_NONE*/)
+void CGUISettings::AddDefaultAddon(CSettingsCategory* cat, const char *strSetting, int iLabel, const char *strData, const TYPE type)
 {
   int iOrder = cat?++cat->m_entries:0;
-  CSettingAddon* pSetting = new CSettingAddon(iOrder, CStdString(strSetting).ToLower(), iLabel, strData, type, content);
+  CSettingAddon* pSetting = new CSettingAddon(iOrder, CStdString(strSetting).ToLower(), iLabel, strData, type);
   if (!pSetting) return ;
   settingsMap.insert(pair<CStdString, CSetting*>(CStdString(strSetting).ToLower(), pSetting));
 }

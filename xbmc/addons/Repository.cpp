@@ -53,13 +53,12 @@ CRepository::CRepository(const AddonProps& props) :
   m_zipped = false;
 }
 
-CRepository::CRepository(cp_plugin_info_t *props)
-  : CAddon(props)
+CRepository::CRepository(const cp_extension_t *ext)
+  : CAddon(ext)
 {
   m_compressed = false;
   m_zipped = false;
   // read in the other props that we need
-  const cp_extension_t *ext = CAddonMgr::Get().GetExtension(props, "xbmc.addon.repository");
   if (ext)
   {
     m_checksum = CAddonMgr::Get().GetExtValue(ext->configuration, "checksum");

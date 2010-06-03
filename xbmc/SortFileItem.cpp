@@ -439,7 +439,7 @@ void SSortFileItem::ByEpisodeNum(CFileItemPtr &item)
   // or if a season has > 2^16-1 episodes strange things will happen (overflow)
   uint64_t num;
   if (tag->m_iSpecialSortEpisode > 0)
-    num = ((uint64_t)tag->m_iSpecialSortSeason<<32)+(tag->m_iSpecialSortEpisode<<16)-(2<<15 - tag->m_iEpisode);
+    num = ((uint64_t)tag->m_iSpecialSortSeason<<32)+(tag->m_iSpecialSortEpisode<<16)-((2<<15) - tag->m_iEpisode);
   else
     num = ((uint64_t)tag->m_iSeason<<32)+(tag->m_iEpisode<<16);
 

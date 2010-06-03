@@ -836,7 +836,7 @@ bool CFileItem::IsSmartPlayList() const
 
 bool CFileItem::IsPlayList() const
 {
-  return CPlayListFactory::IsPlaylist(m_strPath);
+  return CPlayListFactory::IsPlaylist(*this);
 }
 
 bool CFileItem::IsPythonScript() const

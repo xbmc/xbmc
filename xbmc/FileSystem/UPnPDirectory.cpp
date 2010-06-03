@@ -267,7 +267,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
                     pItem->m_strPath = (const char*) resource.m_Uri;
 
                     // set metadata
-                    if (resource.m_Size > 0) {
+                    if (resource.m_Size != (NPT_LargeSize)-1) {
                         pItem->m_dwSize  = resource.m_Size;
                     }
 

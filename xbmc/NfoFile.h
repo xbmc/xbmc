@@ -82,7 +82,7 @@ private:
   char* m_headofdoc;
   int m_size;
   ADDON::ScraperPtr m_info;
-  CONTENT_TYPE m_content;
+  ADDON::TYPE       m_type;
   bool DoScrape(CScraperParser& parser, const CScraperUrl* pURL=NULL, const CStdString& strFunction="NfoUrl");
 };
 

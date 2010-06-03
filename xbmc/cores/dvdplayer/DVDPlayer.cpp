@@ -624,18 +624,6 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
 
   if(packet)
   {
-
-    // correct for timestamp errors, maybe should be inside demuxer
-    if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-    {
-      CDVDInputStreamNavigator *pInput = static_cast<CDVDInputStreamNavigator*>(m_pInputStream);
-
-      if (packet->dts != DVD_NOPTS_VALUE)
-        packet->dts -= pInput->GetTimeStampCorrection();
-      if (packet->pts != DVD_NOPTS_VALUE)
-        packet->pts -= pInput->GetTimeStampCorrection();
-    }
-
     // this groupId stuff is getting a bit messy, need to find a better way
     // currently it is used to determine if a menu overlay is associated with a picture
     // for dvd's we use as a group id, the current cell and the current title

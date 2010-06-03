@@ -30,13 +30,23 @@ public:
   virtual ~CGUIDialogAddonSettings(void);
   virtual bool OnMessage(CGUIMessage& message);
   static bool ShowAndGetInput(const ADDON::AddonPtr &addon);
+  virtual void Render();
 
 protected:
   virtual void OnInitWindow();
 
 private:
+  /*! \brief return a (localized) addon string.
+   \param value either a character string (which is used directly) or a number to lookup in the addons strings.xml
+   \param subsetting whether the character string should be prefixed by "- ", defaults to false
+   \return the localized addon string
+   */
+  CStdString GetString(const char *value, bool subSetting = false) const;
+  void CreateSections();
+  void FreeSections();
   void CreateControls();
   void FreeControls();
+  void UpdateFromControls();
   void EnableControls();
   void SetDefaults();
   bool GetCondition(const CStdString &condition, const int controlId);
@@ -44,9 +54,17 @@ private:
   void SaveSettings(void);
   bool ShowVirtualKeyboard(int iControl);
   bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
+
+  const TiXmlElement *GetFirstSetting() const;
+
   ADDON::AddonPtr m_addon;
   CStdString m_strHeading;
   std::map<CStdString,CStdString> m_buttonValues;
   bool m_changed;
+
+  unsigned int m_currentSection;
+  unsigned int m_totalSections;
+
+  std::map<CStdString,CStdString> m_settings; // local storage of values
 };
 

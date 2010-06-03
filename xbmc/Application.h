@@ -271,6 +271,16 @@ public:
     return m_bEnableLegacyRes;
   }
 
+  void SetEnableTestMode(bool value)
+  {
+    m_bTestMode = value;
+  }
+
+  bool IsEnableTestMode()
+  {
+    return m_bTestMode;
+  }
+
   bool IsPresentFrame();
 
   void Minimize();
@@ -319,6 +329,7 @@ protected:
 
   bool m_bStandalone;
   bool m_bEnableLegacyRes;
+  bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
 
 #ifdef HAS_SDL

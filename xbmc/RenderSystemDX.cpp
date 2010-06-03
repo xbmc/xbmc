@@ -62,7 +62,7 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   m_hDeviceWnd  = NULL;
   m_nBackBufferWidth  = 0;
   m_nBackBufferHeight = 0;
-  m_bFullScreenDevice = 0;
+  m_bFullScreenDevice = false;
   m_bVSync          = true;
   m_nDeviceStatus   = S_OK;
   m_stateBlock      = NULL;
@@ -106,7 +106,7 @@ bool CRenderSystemDX::InitRenderSystem()
 
   CheckDXVersion();
 
-  m_useD3D9Ex = (g_sysinfo.IsVistaOrHigher() && LoadD3D9Ex());
+  m_useD3D9Ex = (g_advancedSettings.m_AllowD3D9Ex && g_sysinfo.IsVistaOrHigher() && LoadD3D9Ex());
   m_pD3D = NULL;
 
   if (m_useD3D9Ex)
@@ -164,7 +164,7 @@ bool CRenderSystemDX::InitRenderSystem()
   }
   m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
 
-  if (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES)
+  if (g_advancedSettings.m_AllowDynamicTextures && (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES))
   {
     m_defaultD3DUsage = D3DUSAGE_DYNAMIC;
     m_defaultD3DPool  = D3DPOOL_DEFAULT;
@@ -297,7 +297,7 @@ void CRenderSystemDX::BuildPresentParameters()
     m_D3DDMEX.Height           = m_D3DPP.BackBufferHeight;
     m_D3DDMEX.RefreshRate      = m_D3DPP.FullScreen_RefreshRateInHz;
     m_D3DDMEX.Format           = m_D3DPP.BackBufferFormat;
-    m_D3DDMEX.ScanLineOrdering = D3DSCANLINEORDERING_PROGRESSIVE;
+    m_D3DDMEX.ScanLineOrdering = m_interlaced ? D3DSCANLINEORDERING_INTERLACED : D3DSCANLINEORDERING_PROGRESSIVE;
   }
 }
 

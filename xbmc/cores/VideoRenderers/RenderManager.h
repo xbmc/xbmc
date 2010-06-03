@@ -188,9 +188,6 @@ public:
   CWinRenderer *m_pRenderer;
 #elif defined(HAS_SDL)
   CLinuxRenderer *m_pRenderer;
-#elif defined(HAS_XBOX_D3D)
-  CXBoxRenderer *m_pRenderer;
-
 #endif
 
   void Present();

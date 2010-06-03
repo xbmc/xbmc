@@ -417,8 +417,8 @@ CStdString CSysInfo::GetKernelVersion()
 bool CSysInfo::HasInternet()
 {
   if (m_info.internetState != CSysData::UNKNOWN)
-    return m_info.internetState;
-  return (m_info.internetState = CSysInfoJob::GetInternetState()) != CSysData::UNKNOWN;
+    return m_info.internetState == CSysData::CONNECTED;
+  return (m_info.internetState = CSysInfoJob::GetInternetState()) == CSysData::CONNECTED;
 }
 
 CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)

@@ -26,16 +26,21 @@
 
 struct MONITOR_DETAILS
 {
-  int ScreenWidth;
-  int ScreenHeight;
-  RECT MonitorRC;
-  int RefreshRate;
-  int Bpp;
-  HMONITOR hMonitor;
-  char MonitorName[128];
-  char CardName[128];
-  char DeviceName[128];
-  int ScreenNumber; // XBMC POV, not Windows. Windows primary is XBMC #0, then each secondary is +1.
+  // Windows desktop info
+  int       ScreenWidth;
+  int       ScreenHeight;
+  int       RefreshRate;
+  int       Bpp;
+  bool      Interlaced;
+
+  // Current position & size
+  RECT      MonitorRC;
+
+  HMONITOR  hMonitor;
+  char      MonitorName[128];
+  char      CardName[128];
+  char      DeviceName[128];
+  int       ScreenNumber; // XBMC POV, not Windows. Windows primary is XBMC #0, then each secondary is +1.
 };
 
 #ifndef WM_GESTURE
@@ -157,7 +162,7 @@ public:
   pCloseGestureInfoHandle PtrCloseGestureInfoHandle;
 
 protected:
-  bool ChangeRefreshRate(int screen, float refresh);
+  bool ChangeResolution(int screen, RESOLUTION_INFO res);
   virtual bool ResizeInternal(bool forceRefresh = false);
   virtual bool UpdateResolutionsInternal();
   virtual bool CreateBlankWindows();

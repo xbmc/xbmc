@@ -58,6 +58,9 @@ int modify_ldt(int func, void *ptr, unsigned long bytecount);
 #include <machine/segments.h>
 #include <machine/sysarch.h>
 #endif
+#if defined(__APPLE__)
+#include <i386/user_ldt.h>
+#endif
 
 #ifdef __svr4__
 #include <sys/segment.h>
@@ -238,11 +241,11 @@ ldt_fs_t* Setup_LDT_Keeper(void)
 
         LDT_EntryToBytes( d, &array );
 #ifdef USE_LDT_AA
-        ret = i386_set_ldt(LDT_AUTO_ALLOC, (union descriptor *)d, 1);
+        ret = i386_set_ldt(LDT_AUTO_ALLOC, (const union ldt_entry *)d, 1);
         array.entry_number = ret;
         fs_ldt = ret;
 #else
-        ret = i386_set_ldt(array.entry_number, (union descriptor *)d, 1);
+        ret = i386_set_ldt(array.entry_number, (const union ldt_entry *)d, 1);
 #endif
         if (ret < 0)
         {

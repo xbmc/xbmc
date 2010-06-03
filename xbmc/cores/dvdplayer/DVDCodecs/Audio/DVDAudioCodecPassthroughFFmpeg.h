@@ -101,6 +101,7 @@ private:
   unsigned int m_NeededUsed;
   unsigned int m_Needed;
   bool         m_LostSync;
+  int          m_SampleRate;
 
   unsigned int (CDVDAudioCodecPassthroughFFmpeg::*m_pSyncFrame)(BYTE* pData, unsigned int iSize, unsigned int *fSize);
   unsigned int SyncAC3(BYTE* pData, unsigned int iSize, unsigned int *fSize);

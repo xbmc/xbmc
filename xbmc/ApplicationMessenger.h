@@ -129,7 +129,7 @@ public:
 
   void PlayFile(const CFileItem &item, bool bRestart = false); // thread safe version of g_application.PlayFile()
   void PictureShow(std::string filename);
-  void PictureSlideShow(std::string pathname, bool bScreensaver = false);
+  void PictureSlideShow(std::string pathname, bool bScreensaver = false, bool addTBN = false);
   void Shutdown();
   void Powerdown();
   void Quit();

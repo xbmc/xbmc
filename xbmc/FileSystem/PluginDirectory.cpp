@@ -429,11 +429,6 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
   return false;
 }
 
-bool CPluginDirectory::HasPlugins(const CONTENT_TYPE &type)
-{
-  return CAddonMgr::Get().HasAddons(ADDON_PLUGIN, type);
-}
-
 bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName)
 {
   const unsigned int timeBeforeProgressBar = 1500;

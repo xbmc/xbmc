@@ -606,7 +606,7 @@ bool CVideoReferenceClock::SetupD3D()
     return false;
   }
 
-  if (DevCaps.Caps != D3DCAPS_READ_SCANLINE)
+  if ((DevCaps.Caps & D3DCAPS_READ_SCANLINE) != D3DCAPS_READ_SCANLINE)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: Hardware does not support GetRasterStatus");
     return false;
@@ -676,6 +676,12 @@ bool CVideoReferenceClock::SetupD3D()
     m_RefreshRate = m_PrevRefreshRate;
     if (m_RefreshRate == 23 || m_RefreshRate == 29 || m_RefreshRate == 59)
       m_RefreshRate++;
+
+    if (m_Interlaced)
+    {
+      m_RefreshRate *= 2;
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: display is interlaced");
+    }
 
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: detected refreshrate: %i hertz, assuming %i hertz", m_PrevRefreshRate, (int)m_RefreshRate);
   }
@@ -986,11 +992,13 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   if (DisplayMode.RefreshRate == 0)
     DisplayMode.RefreshRate = 60;
 
-  if (m_PrevRefreshRate != DisplayMode.RefreshRate  || m_Width != DisplayMode.Width || m_Height != DisplayMode.Height || Forced)
+  if (m_PrevRefreshRate != DisplayMode.RefreshRate || m_Width != DisplayMode.Width || m_Height != DisplayMode.Height ||
+      m_Interlaced != g_Windowing.Interlaced() || Forced )
   {
     m_PrevRefreshRate = DisplayMode.RefreshRate;
     m_Width = DisplayMode.Width;
     m_Height = DisplayMode.Height;
+    m_Interlaced = g_Windowing.Interlaced();
     return true;
   }
 

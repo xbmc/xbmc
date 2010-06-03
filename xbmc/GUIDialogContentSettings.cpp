@@ -119,7 +119,8 @@ void CGUIDialogContentSettings::SetupPage()
     if (m_scraper && m_scraper->Enabled())
     {
       m_bShowScanSettings = true;
-      if (m_scraper->Supports(m_content) && m_scraper->HasSettings())
+      ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(m_scraper);
+      if (scraper && scraper->Supports(m_content) && scraper->HasSettings())
         CONTROL_ENABLE(CONTROL_SCRAPER_SETTINGS);
     }
     else
@@ -245,12 +246,13 @@ void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
 {
   // grab all scrapers which support this content-type
   VECADDONS addons;
-  if (!CAddonMgr::Get().GetAddons(ADDON_SCRAPER, addons, content))
+  TYPE type = ScraperTypeFromContent(content);
+  if (!CAddonMgr::Get().GetAddons(type, addons))
     return;
 
   AddonPtr addon;
   CStdString defaultID;
-  if (CAddonMgr::Get().GetDefault(ADDON_SCRAPER, addon, content))
+  if (CAddonMgr::Get().GetDefault(type, addon))
     defaultID = addon->ID();
 
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)

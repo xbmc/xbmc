@@ -101,6 +101,31 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
 
 }
 
+bool CPlayListFactory::IsPlaylist(const CFileItem& item)
+{
+  CStdString strMimeType = item.GetMimeType();
+  strMimeType.ToLower();
+
+/* These are abit uncertain 
+  if(strMimeType == "video/x-ms-asf"
+  || strMimeType == "video/x-ms-asx"
+  || strMimeType == "video/x-ms-wmv"
+  || strMimeType == "video/x-ms-wma"
+  || strMimeType == "video/x-ms-wfs"
+  || strMimeType == "video/x-ms-wvx"
+  || strMimeType == "video/x-ms-wax"
+  || strMimeType == "video/x-ms-asf")
+    return true;
+*/
+
+  if(strMimeType == "audio/x-pn-realaudio"
+  || strMimeType == "playlist"
+  || strMimeType == "audio/x-mpegurl")
+    return true;
+
+  return IsPlaylist(item.m_strPath);
+}
+
 bool CPlayListFactory::IsPlaylist(const CStdString& filename)
 {
   CStdString extension = CUtil::GetExtension(filename);

@@ -58,7 +58,7 @@
 					<onright>702</onright>
 					<onup>600</onup>
 					<ondown>600</ondown>
-					<onclick>Addon.Default.OpenSettings(visualization)</onclick>
+					<onclick>Addon.Default.OpenSettings(xbmc.player.musicviz)</onclick>
 				</control>
 				<control type="button" id="702">
 					<posx>150</posx>
@@ -439,20 +439,6 @@
 				</control>
 			</control>
 			<include>Clock</include>
-		</control>
-		<control type="selectbutton" id="503">
-			<posx>440</posx>
-			<posy>100</posy>
-			<width>400</width>
-			<height>100</height>
-			<font>font13caps</font>
-			<description>Visualisation Select Button</description>
-			<texturebg border="20">OverlayDialogBackground.png</texturebg>
-			<onleft>503</onleft>
-			<onright>503</onright>
-			<onup>500</onup>
-			<ondown>500</ondown>
-			<include>VisibleFadeEffect</include>
 		</control>
 	</controls>
 </window>

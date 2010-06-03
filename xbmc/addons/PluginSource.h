@@ -1,7 +1,5 @@
-#pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2010 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,41 +18,28 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#pragma once
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
-#if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_6)
-    #include <python2.6/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_5)
-    #include <python2.5/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_4)
-    #include <python2.4/Python.h>
-  #else
-    #error "Could not determine version of Python to use."
-  #endif
-#else
-  #include "lib/libPython/Python/Include/Python.h"
-#endif
+#include "Addon.h"
 
-#include "addons/IAddon.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-namespace PYXBMC
+namespace ADDON
 {
-  typedef struct {
-    PyObject_HEAD
-    ADDON::AddonPtr pAddon;
-  } Settings;
 
-  extern PyTypeObject Settings_Type;
-  void initSettings_Type();
-}
+class CPluginSource : public CAddon
+{
+public:
 
-#ifdef __cplusplus
-}
-#endif
+  enum Content { UNKNOWN, AUDIO, IMAGE, EXECUTABLE, VIDEO };
+
+  CPluginSource(const cp_extension_t *ext);
+  CPluginSource(const AddonProps &props) : CAddon(props) {}
+  virtual ~CPluginSource() {}
+  bool Provides(const Content& content) {
+    return content == UNKNOWN ? false : m_providedContent.count(content) > 0; }
+
+private:
+  std::set<Content> m_providedContent;
+  static Content Translate(const CStdString &content);
+};
+
+} /*namespace ADDON*/

@@ -31,15 +31,16 @@ class CURL;
 class TiXmlElement;
 
 typedef struct cp_plugin_info_t cp_plugin_info_t;
+typedef struct cp_extension_t cp_extension_t;
 
 namespace ADDON
 {
 
 // utils
-const CStdString    TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
-const CONTENT_TYPE  TranslateContent(const CStdString &string);
 const CStdString    TranslateType(const TYPE &type, bool pretty=false);
 const TYPE          TranslateType(const CStdString &string);
+const CStdString    UpdateVideoScraper(const CStdString &scraper);
+const CStdString    UpdateMusicScraper(const CStdString &scraper);
 
 class AddonVersion
 {
@@ -101,7 +102,6 @@ public:
   CStdString disclaimer;
   CStdString changelog;
   CStdString fanart;
-  std::set<CONTENT_TYPE> contents;
   ADDONDEPS dependencies;
   int        stars;
 };
@@ -112,7 +112,7 @@ class CAddon : public IAddon
 {
 public:
   CAddon(const AddonProps &addonprops);
-  CAddon(cp_plugin_info_t *props);
+  CAddon(const cp_extension_t *ext);
   virtual ~CAddon() {}
   virtual AddonPtr Clone(const AddonPtr& parent) const;
 
@@ -147,13 +147,12 @@ public:
   const CStdString Icon() const;
   const int Stars() const { return m_props.stars; }
   const CStdString Disclaimer() const { return m_props.disclaimer; }
-  bool Supports(const CONTENT_TYPE &content) const { return (m_props.contents.count(content) == 1); }
   ADDONDEPS GetDeps();
 
 protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
   CAddon(const CAddon&, const AddonPtr&);
-  virtual void BuildLibName(cp_plugin_info_t *props = NULL);
+  virtual void BuildLibName(const cp_extension_t *ext = NULL);
   TiXmlDocument     m_addonXmlDoc;
   TiXmlDocument     m_userXmlDoc;
   CStdString        m_userSettingsPath;
@@ -184,7 +183,7 @@ class CAddonLibrary : public CAddon
 {
 public:
   CAddonLibrary(const AddonProps &props);
-  CAddonLibrary(cp_plugin_info_t *props);
+  CAddonLibrary(const cp_extension_t *ext);
 
 private:
   virtual bool IsAddonLibrary() { return true; }

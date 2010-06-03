@@ -51,6 +51,7 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogAddonSettings.h"
+#include "GUIWindowAddonBrowser.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
@@ -105,7 +106,7 @@
 #include "WindowingFactory.h"
 
 #if defined(HAVE_LIBCRYSTALHD)
-#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
+#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif
 
 using namespace std;
@@ -369,16 +370,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->SetValue(pSettingInt->GetData());
         continue;
       }
-    }
-    else if (pSetting->GetType() == SETTINGS_TYPE_ADDON)
-    {
-      CSettingAddon *pSettingAddon = (CSettingAddon*)pSetting;
-      CBaseSettingControl *control = GetSetting(strSetting);
-      const TYPE type = pSettingAddon->m_type;
-      if (type == ADDON_SKIN || type == ADDON_VIZ)
-        control->SetDelayed();
-      FillInAddons(pSettingAddon, control->GetID());
-      continue;
     }
     if (strSetting.Equals("videooutput.aspect"))
     {
@@ -937,29 +928,22 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       //   CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       //   if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.font").Right(4) == ".ttf");
     }
-    else if (strSetting.Equals("screensaver.dimlevel"))
+    else if (strSetting.Equals("screensaver.settings"))
     {
-      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "_virtual.dim");
-    }
-    else if (strSetting.Equals("screensaver.slideshowpath"))
-    {
-      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "_virtual.pic");
-    }
-    else if (strSetting.Equals("screensaver.slideshowshuffle"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") == "_virtual.pic" ||
-                           g_guiSettings.GetString("screensaver.mode") == "_virtual.fan");
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      AddonPtr addon;
+      if (CAddonMgr::Get().GetAddon(g_guiSettings.GetString("screensaver.mode"), addon, ADDON_SCREENSAVER))
+        pControl->SetEnabled(addon->HasSettings());
+      else
+        pControl->SetEnabled(false);
     }
     else if (strSetting.Equals("screensaver.preview")           ||
              strSetting.Equals("screensaver.usedimonpause")     ||
              strSetting.Equals("screensaver.usemusicvisinstead"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetEnabled(g_guiSettings.GetString("screensaver.mode") != "None");
-      if (strSetting.Equals("screensaver.usedimonpause") && g_guiSettings.GetString("screensaver.mode").Equals("_virtual.dim"))
+      pControl->SetEnabled(!g_guiSettings.GetString("screensaver.mode").IsEmpty());
+      if (strSetting.Equals("screensaver.usedimonpause") && g_guiSettings.GetString("screensaver.mode").Equals("screensaver.xbmc.builtin.dim"))
         pControl->SetEnabled(false);
     }
     else if (strSetting.Left(16).Equals("weather.areacode"))
@@ -1104,6 +1088,15 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
     CBuiltins::Execute("RunScript("RSSEDITOR_PATH")");
+  else if (pSettingControl->GetSetting()->GetType() == SETTINGS_TYPE_ADDON)
+  { // prompt for the addon
+    CSettingAddon *setting = (CSettingAddon *)pSettingControl->GetSetting();
+    CStdString addonID;
+    if (CGUIWindowAddonBrowser::SelectAddonID(setting->m_type, addonID, setting->m_type == ADDON_SCREENSAVER || setting->m_type == ADDON_VIZ))
+      setting->SetData(addonID);
+    else
+      return;
+  }
 
   // if OnClick() returns false, the setting hasn't changed or doesn't
   // require immediate update
@@ -1144,7 +1137,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   if (pSettingControl->GetSetting()->GetType() == SETTINGS_TYPE_ADDON)
   {
     CSettingAddon *pSettingAddon = (CSettingAddon*)pSettingControl->GetSetting();
-    FillInAddons(pSettingAddon, GetSetting(strSetting)->GetID());
     if (pSettingAddon->m_type == ADDON_SKIN)
     {
       g_application.ReloadSkin();
@@ -1599,14 +1591,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     g_application.ActivateScreenSaver(true);
   }
-  else if (strSetting.Equals("screensaver.slideshowpath"))
+  else if (strSetting.Equals("screensaver.settings"))
   {
-    CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
-    CStdString path = pSettingString->GetData();
-    VECSOURCES shares = g_settings.m_pictureSources;
-    g_mediaManager.GetLocalDrives(shares);
-    if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
-      pSettingString->SetData(path);
+    AddonPtr addon;
+    if (CAddonMgr::Get().GetAddon(g_guiSettings.GetString("screensaver.mode"), addon, ADDON_SCREENSAVER))
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
   else if (strSetting.Equals("debug.screenshotpath") || strSetting.Equals("audiocds.recordingpath") || strSetting.Equals("subtitles.custompath") || strSetting.Equals("pvrmenu.iconpath"))
   {
@@ -2667,59 +2656,6 @@ void CGUIWindowSettingsCategory::FillInSortMethods(CSetting *pSetting, int windo
   }
   pControl->SetValue(pSettingInt->GetData());
   delete state;
-}
-
-void CGUIWindowSettingsCategory::FillInAddons(CSettingAddon *pSetting, int controlID)
-{
-  // note: this function is static as it's called from elsewhere in the app, so we send messages
-  //       via the window manager
-  int windowID = g_windowManager.GetActiveWindow();
-
-  bool allowNone = false;
-  switch (pSetting->m_type)
-  {
-    case ADDON_SCREENSAVER:
-    case ADDON_VIZ:
-    allowNone = true;
-    break;
-    default:
-    break;
-  }
-
-  //FIXME must be better way to handle virtual addontypes, as this is horrid
-  VECADDONS addons;
-  g_windowManager.SendMessage(GUI_MSG_LABEL_RESET, windowID, controlID);
-  CStdString strSelected = pSetting->GetData();
-
-  pSetting->m_entries.clear();
-
-  if (allowNone)
-    pSetting->m_entries.insert(std::make_pair("_virtual.none", g_localizeStrings.Get(231)));
-
-  if (pSetting->m_type == ADDON_SCREENSAVER)
-  {
-    pSetting->m_entries.insert(std::make_pair("_virtual.dim", g_localizeStrings.Get(352))); // Dim
-    pSetting->m_entries.insert(std::make_pair("_virtual.blk", g_localizeStrings.Get(353))); // Black
-    pSetting->m_entries.insert(std::make_pair("_virtual.pic", g_localizeStrings.Get(108))); // PictureSlideShow
-    pSetting->m_entries.insert(std::make_pair("_virtual.fan", g_localizeStrings.Get(20425))); // Fanart Slideshow
-  }
-
-  CAddonMgr::Get().GetAddons(pSetting->m_type, addons, pSetting->m_content);
-  for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
-  {
-    AddonPtr addon = *it;
-    pSetting->m_entries.insert(std::make_pair(addon->ID(),addon->Name()));
-  }
-
-  unsigned i=0;
-  for (map<CStdString,CStdString>::iterator it=pSetting->m_entries.begin();
-       it != pSetting->m_entries.end();++it)
-  {
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, windowID, controlID, i++);
-    msg.SetLabel(it->second);
-    g_windowManager.SendMessage(msg);
-  }
-  g_windowManager.SendMessage(GUI_MSG_ITEM_SELECT, windowID, controlID, pSetting->GetPos());
 }
 
 void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)

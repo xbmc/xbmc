@@ -472,7 +472,8 @@ PLT_FileMediaServer::BuildSafeResourceUri(const NPT_HttpUrl& base_uri,
 
     NPT_String uri_path = uri.GetPath();
     if (!uri_path.EndsWith("/")) uri_path += "/";
-    uri_path += NPT_Uri::PercentEncode(file_path, " !\"<>\\^`{|}?#[]:/", true);
+    // WMP hack: just prefix with %25/ so we know if something url decodes again
+    uri_path += "%25/" + NPT_Uri::PercentEncode(file_path, " !\"<>\\^`{|}?#[]:/", true);
     uri.SetPath(uri_path);
 
     // 360 hack: force inclusion of port in case it's 80
@@ -488,14 +489,22 @@ PLT_FileMediaServer::ExtractResourcePath(const NPT_HttpUrl& url, NPT_String& fil
     // Extract uri path from url
     NPT_String uri_path = url.GetPath();
     if (uri_path.StartsWith(m_FileBaseUri.GetPath(), true)) {
-        file_path = NPT_Uri::PercentDecode(uri_path.SubString(m_FileBaseUri.GetPath().GetLength()));
-        return NPT_SUCCESS;
+        file_path = uri_path.SubString(m_FileBaseUri.GetPath().GetLength());
     } else if (uri_path.StartsWith(m_AlbumArtBaseUri.GetPath(), true)) {
-        file_path = NPT_Uri::PercentDecode(uri_path.SubString(m_AlbumArtBaseUri.GetPath().GetLength()));
-        return NPT_SUCCESS;
+        file_path = uri_path.SubString(m_AlbumArtBaseUri.GetPath().GetLength());
+    } else
+        return NPT_FAILURE;
+
+    // Detect if server is url decoding paths invalidly
+    if(file_path.Left(4) == "%25/") {
+        file_path = NPT_Uri::PercentDecode(file_path);
+        file_path.Erase(0, 2);
+    } else if(file_path.Left(2) == "%/") {
+        file_path.Erase(0, 2);
+        NPT_LOG_FINE("Client is urldecoding our resource paths");
     }
 
-    return NPT_FAILURE;
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------

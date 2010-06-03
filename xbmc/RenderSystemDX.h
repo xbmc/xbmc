@@ -70,6 +70,8 @@ public:
   DWORD   DefaultD3DUsage() { return m_defaultD3DUsage; }
   D3DPOOL DefaultD3DPool()  { return m_defaultD3DPool; }
 
+  bool    Interlaced()      { return m_interlaced; }
+
   /*!
    \brief Register as a dependent of the DirectX Render System
    Resources should call this on construction if they're dependent on the Render System
@@ -103,33 +105,34 @@ protected:
   virtual void UpdateMonitor() {};
   void CheckDXVersion();
 
-  LPDIRECT3D9 m_pD3D;
+  LPDIRECT3D9                 m_pD3D;
 
   // our adapter could change as we go
-  bool m_needNewDevice;
-  unsigned int m_adapter;
-  LPDIRECT3DDEVICE9 m_pD3DDevice;
-  unsigned int m_screenHeight;
+  bool                        m_needNewDevice;
+  unsigned int                m_adapter;
+  LPDIRECT3DDEVICE9           m_pD3DDevice;
+  unsigned int                m_screenHeight;
 
-  D3DPRESENT_PARAMETERS m_D3DPP;
-  D3DDISPLAYMODEEX m_D3DDMEX;
-  HWND m_hFocusWnd;
-  HWND m_hDeviceWnd;
-  unsigned int m_nBackBufferWidth;
-  unsigned int m_nBackBufferHeight;
-  bool m_bFullScreenDevice;
-  float m_refreshRate;
-  HRESULT m_nDeviceStatus;
-  IDirect3DStateBlock9* m_stateBlock;
-  int64_t m_systemFreq;
-  bool m_useD3D9Ex;
-  DWORD m_defaultD3DUsage;
-  D3DPOOL m_defaultD3DPool;
+  D3DPRESENT_PARAMETERS       m_D3DPP;
+  D3DDISPLAYMODEEX            m_D3DDMEX;
+  HWND                        m_hFocusWnd;
+  HWND                        m_hDeviceWnd;
+  unsigned int                m_nBackBufferWidth;
+  unsigned int                m_nBackBufferHeight;
+  bool                        m_bFullScreenDevice;
+  float                       m_refreshRate;
+  bool                        m_interlaced;
+  HRESULT                     m_nDeviceStatus;
+  IDirect3DStateBlock9*       m_stateBlock;
+  int64_t                     m_systemFreq;
+  bool                        m_useD3D9Ex;
+  DWORD                       m_defaultD3DUsage;
+  D3DPOOL                     m_defaultD3DPool;
 
-  CCriticalSection m_resourceSection;
+  CCriticalSection            m_resourceSection;
   std::vector<ID3DResource*>  m_resources;
 
-  bool m_inScene; ///< True if we're in a BeginScene()/EndScene() block
+  bool                        m_inScene; ///< True if we're in a BeginScene()/EndScene() block
 };
 
 #endif // RENDER_SYSTEM_DX
