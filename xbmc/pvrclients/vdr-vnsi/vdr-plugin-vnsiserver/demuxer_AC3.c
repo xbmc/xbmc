@@ -95,6 +95,16 @@ const uint16_t AC3FrameSizeTable[38][3] = {
     { 1280, 1394, 1920 },
 };
 
+const uint8_t EAC3Blocks[4] = {
+  1, 2, 3, 6
+};
+
+typedef enum {
+  EAC3_FRAME_TYPE_INDEPENDENT = 0,
+  EAC3_FRAME_TYPE_DEPENDENT,
+  EAC3_FRAME_TYPE_AC3_CONVERT,
+  EAC3_FRAME_TYPE_RESERVED
+} EAC3FrameType;
 
 cParserAC3::cParserAC3(cTSDemuxer *demuxer, cLiveStreamer *streamer, int streamID)
  : cParser(streamer, streamID)
@@ -268,8 +278,37 @@ int cParserAC3::FindHeaders(uint8_t **poutbuf, int *poutbuf_size,
       }
       else
       {
-        LOGCONSOLE("Detected EAC3 stream, not implemented yet");
-        return -1;
+        /* Enhanced AC-3 */
+        int frametype = bs.readBits(2);
+        if (frametype == EAC3_FRAME_TYPE_RESERVED)
+          return -1;
+
+        int substreamid = bs.readBits(3);
+
+        int framesize = (bs.readBits(11) + 1) << 1;
+        if (framesize < AC3_HEADER_SIZE)
+          return -1;
+
+        int numBlocks = 6;
+        int sr_code = bs.readBits(2);
+        if (sr_code == 3)
+        {
+          int sr_code2 = bs.readBits(2);
+          if (sr_code2 == 3)
+            return -1;
+          m_SampleRate = AC3SampleRateTable[sr_code2] / 2;
+        }
+        else
+        {
+          numBlocks = EAC3Blocks[bs.readBits(2)];
+          m_SampleRate = AC3SampleRateTable[sr_code];
+        }
+
+        int channelMode = bs.readBits(3);
+        int lfeon = bs.readBits(1);
+
+        m_BitRate  = (uint32_t)(8.0 * framesize * m_SampleRate / (numBlocks * 256.0));
+        m_Channels = AC3ChannelsTable[channelMode] + lfeon;
       }
       m_HeaderFound = true;
     }

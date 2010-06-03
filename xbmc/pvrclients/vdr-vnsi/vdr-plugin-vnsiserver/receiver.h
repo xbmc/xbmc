@@ -37,12 +37,14 @@ class cChannel;
 class cLiveReceiver;
 class cTSDemuxer;
 class cResponsePacket;
+class cLivePatFilter;
 
 class cLiveStreamer : public cThread
                     , public cRingBufferLinear
 {
 private:
   friend class cParser;
+  friend class cLivePatFilter;
 
   cDevice *GetDevice(const cChannel *Channel, int Priority);
   void Detach(void);
@@ -57,20 +59,21 @@ private:
   const cChannel   *m_Channel;                      /*!> Channel to stream */
   cDevice          *m_Device;                       /*!> The receiving device the channel depents to */
   cLiveReceiver    *m_Receiver;                     /*!> Our stream transceiver */
+  cLivePatFilter   *m_PatFilter;                    /*!> Filter processor to get changed pid's */
   int               m_Priority;                     /*!> The priority over other streamers */
   int               m_Pids[MAXRECEIVEPIDS + 1];     /*!> PID for cReceiver also as extra array */
   cTSDemuxer       *m_Streams[MAXRECEIVEPIDS + 1];  /*!> Stream information data (partly filled, rest is done by cLiveReceiver */
   int               m_NumStreams;                   /*!> Number of streams selected */
   cxSocket         *m_Socket;                       /*!> The socket class to communicate with client */
   int               m_Frontend;                     /*!> File descriptor to access used receiving device  */
-  dvb_frontend_info m_FrontendInfo;                 /*!> DVB Information about the receiving device */
-  v4l2_capability   m_vcap;
-  cString           m_DeviceString;
+  dvb_frontend_info m_FrontendInfo;                 /*!> DVB Information about the receiving device (DVB only) */
+  v4l2_capability   m_vcap;                         /*!> PVR Information about the receiving device (pvrinput only) */
+  cString           m_DeviceString;                 /*!> The name of the receiving device */
   time_t            m_lastInfoSendet;               /*!> Last queue status report sent */
-  bool              m_streamChangeSendet;
-  bool              m_streamReady;
-  bool              m_IsAudioOnly;
-  bool              m_IsMPEGPS;
+  bool              m_streamChangeSendet;           /*!> Is false until the stream change message is sendet (no packets are sendet until this is set) */
+  bool              m_streamReady;                  /*!> Set by the video demuxer after we got video information */
+  bool              m_IsAudioOnly;                  /*!> Set to true if streams contains only audio */
+  bool              m_IsMPEGPS;                     /*!> TS Stream contains MPEG PS data like from pvrinput */
 
 protected:
   virtual void Action(void);
@@ -86,6 +89,7 @@ public:
   bool IsReady() { return m_streamReady; }
   bool IsAudioOnly() { return m_IsAudioOnly; }
   bool IsMPEGPS() { return m_IsMPEGPS; }
+  int HaveStreamDemuxer(int Pid, eStreamType streamType);
 };
 
 #endif  /* VNSIRECEIVER_H */

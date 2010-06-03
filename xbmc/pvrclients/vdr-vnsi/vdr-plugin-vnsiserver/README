@@ -15,6 +15,13 @@ See the file COPYING for more information.
 Description:
 
 
+VNSI support also dynamic PID switching of the received DVB-TS stream. Further it detect and demuxing several
+not by VDR implemented Audio Streams, this are:
+- Enhanced AC3 (not tested)
+- Advanced Audio Coding (AAC) (not tested)
+- DTS (demuxer not finished now, and does not work)
+
+
 CHANNEL SCANNING
 ----------------
 For channel scan's a modified version of the wirbelscan plugin (Version dev-0.0.5-pre11e) is

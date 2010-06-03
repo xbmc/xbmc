@@ -56,9 +56,10 @@ LIBS =
 
 ### The object files (add further files here):
 
-OBJS = $(PLUGIN).o bitstream.o cmdcontrol.o connection.o config.o cxsocket.o demuxer.o demuxer_AC3.o \
-	demuxer_h264.o demuxer_MPEGAudio.o demuxer_MPEGVideo.o demuxer_Subtitle.o demuxer_Teletext.o \
-	receiver.o recplayer.o requestpacket.o responsepacket.o server.o suspend.o tools.o
+OBJS = $(PLUGIN).o bitstream.o cmdcontrol.o connection.o config.o cxsocket.o demuxer.o demuxer_AAC.o \
+	demuxer_AC3.o demuxer_DTS.o demuxer_h264.o demuxer_MPEGAudio.o demuxer_MPEGVideo.o \
+	demuxer_Subtitle.o demuxer_Teletext.o receiver.o recplayer.o requestpacket.o responsepacket.o \
+	server.o suspend.o tools.o
 
 ### The main target:
 

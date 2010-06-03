@@ -165,9 +165,12 @@ enum eStreamContent
 
 enum eStreamType
 {
+  stNone,
   stAC3,
   stMPEG2AUDIO,
+  stEAC3,
   stAAC,
+  stDTS,
   stMPEG2VIDEO,
   stH264,
   stDVBSUB,

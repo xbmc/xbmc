@@ -26,7 +26,9 @@
 #include "config.h"
 #include "receiver.h"
 #include "demuxer.h"
+#include "demuxer_AAC.h"
 #include "demuxer_AC3.h"
+#include "demuxer_DTS.h"
 #include "demuxer_h264.h"
 #include "demuxer_MPEGAudio.h"
 #include "demuxer_MPEGVideo.h"
@@ -264,7 +266,13 @@ cTSDemuxer::cTSDemuxer(cLiveStreamer *streamer, int id, eStreamType type, int pi
     m_pesParser = new cParserH264(this, m_Streamer, m_streamID);
   else if (m_streamType == stMPEG2AUDIO)
     m_pesParser = new cParserMPEG2Audio(this, m_Streamer, m_streamID);
+  else if (m_streamType == stAAC)
+    m_pesParser = new cParserAAC(this, m_Streamer, m_streamID);
   else if (m_streamType == stAC3)
+    m_pesParser = new cParserAC3(this, m_Streamer, m_streamID);
+  else if (m_streamType == stDTS)
+    m_pesParser = new cParserDTS(this, m_Streamer, m_streamID);
+  else if (m_streamType == stEAC3)
     m_pesParser = new cParserAC3(this, m_Streamer, m_streamID);
   else if (m_streamType == stTELETEXT)
     m_pesParser = new cParserTeletext(this, m_Streamer, m_streamID);
