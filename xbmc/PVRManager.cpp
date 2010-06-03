@@ -115,7 +115,7 @@ void CPVRManager::Start()
   m_bChannelScanRunning     = false;
 
   /* Discover, load and create chosen Client add-on's. */
-  CAddonMgr::Get()->RegisterAddonMgrCallback(ADDON_PVRDLL, this);
+  CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
   if (!LoadClients())
   {
     CLog::Log(LOGERROR, "PVR: couldn't load any clients");
@@ -154,7 +154,7 @@ bool CPVRManager::LoadClients()
 {
   /* Get all PVR Add on's */
   VECADDONS addons;
-  if (!CAddonMgr::Get()->GetAddons(ADDON_PVRDLL, addons, CONTENT_NONE, true))
+  if (!CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
     return false;
 
   m_database.Open();
@@ -298,7 +298,7 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
  *
  * Restart a client driver
  ********************************************************************/
-bool CPVRManager::RequestRestart(const IAddon* addon, bool datachanged)
+bool CPVRManager::RequestRestart(AddonPtr addon, bool datachanged)
 {
   if (!addon)
     return false;
@@ -327,7 +327,7 @@ bool CPVRManager::RequestRestart(const IAddon* addon, bool datachanged)
  *
  * Unload a client driver
  ********************************************************************/
-bool CPVRManager::RequestRemoval(const IAddon* addon)
+bool CPVRManager::RequestRemoval(AddonPtr addon)
 {
   if (!addon)
     return false;

@@ -59,8 +59,8 @@ public:
 
   /*! \name Addon related functions
    */
-  bool RequestRestart(const ADDON::IAddon* addon, bool datachanged);
-  bool RequestRemoval(const ADDON::IAddon* addon);
+  bool RequestRestart(ADDON::AddonPtr addon, bool datachanged);
+  bool RequestRemoval(ADDON::AddonPtr addon);
   void OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
 
   /*! \name GUIInfoManager functions
