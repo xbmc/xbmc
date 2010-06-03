@@ -275,8 +275,8 @@ typedef struct
 
 
 /* mp4util.c */
-int32_t mp4ff_read_data(mp4ff_t *f, int8_t *data, uint32_t size);
-int32_t mp4ff_write_data(mp4ff_t *f, int8_t *data, uint32_t size);
+int32_t mp4ff_read_data(mp4ff_t *f, uint8_t *data, uint32_t size);
+int32_t mp4ff_write_data(mp4ff_t *f, uint8_t *data, uint32_t size);
 uint64_t mp4ff_read_int64(mp4ff_t *f);
 uint32_t mp4ff_read_int32(mp4ff_t *f);
 uint32_t mp4ff_read_int24(mp4ff_t *f);
