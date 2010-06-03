@@ -2245,7 +2245,7 @@ void CGUIWindowSettingsCategory::FillInCharSets(CSetting *pSetting)
   pControl->SetValue(iCurrentCharset);
 }
 
-void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool playbackSetting)
+void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting)
 {
   CSettingString *pSettingString = (CSettingString*)pSetting;
   CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
