@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 30542 -->
+<!--Based on english strings version 30768 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -650,7 +650,7 @@
   <!-- strings 768 and 769 reserved for more subtitle colors -->
 
   <string id="770">错误 %i：不能共享</string>
-  <string id="771">- FTP 服务器限定工作在 FATX 格式</string>
+  <string id="771"></string>
   <string id="772">音频输出</string>
   <string id="773">搜索中</string>
   <string id="774">幻灯图片目录</string>
@@ -683,7 +683,7 @@
   <string id="851">有效端口范围是 1-65535</string>
   <string id="852">有效端口范围是 1024-65535</string>
 
-  <string id="1000">屏幕保护预览</string>
+  <string id="1000">- 预览</string>
   <string id="1001">无法连接</string>
   <string id="1002">XBMC 无法连接到该网上邻居！</string>
   <string id="1003">这可能是由于网络没有连接。</string>
@@ -811,6 +811,7 @@
   <string id="1417">悬浮物</string>
   <string id="1418">雷雨</string>
   <string id="1419">雷阵雨</string>
+  <string id="1420">中等</string>
  
   <!-- strings through to 1450 reserved for weather translation -->
 
@@ -1095,20 +1096,20 @@
 
   <string id="13283">操作系统：</string>
   <string id="13284">CPU 速度：</string>
-  <string id="13285">BIOS 型号：</string>
+  <string id="13285"></string>
   <string id="13286">视频芯片：</string>
   <string id="13287">屏幕分辨率：</string>
-  <string id="13288">Xbox 版本：</string>
-  <string id="13289">Xbox 序列号：</string>
-  <string id="13290">Xbox 生产商：</string>
-  <string id="13291">改机芯片：</string>
+  <string id="13288"></string>
+  <string id="13289"></string>
+  <string id="13290"></string>
+  <string id="13291"></string>
   <string id="13292">A/V 线：</string>
-  <string id="13293">视频&amp;游戏区域：</string>
+  <string id="13293"></string>
   <string id="13294">DVD 区域：</string>
   <string id="13295">互联网：</string>
   <string id="13296">已经连接到互联网</string>
   <string id="13297">无法联网，请检查网络设置！</string>
-  <string id="13298">XBLIVE 钥匙：</string>
+  <string id="13298"></string>
   <string id="13299">目标温度</string>
   <string id="13300">风扇转速</string>
   <string id="13301">自动控温</string>
@@ -1147,8 +1148,8 @@
   <string id="13334">编辑标签</string>
   <string id="13335">设为默认</string>
   <string id="13336">移除按键</string>
-  <string id="13338">面板 LED</string>
-  <string id="13339">面板 LED 颜色</string>
+  <string id="13338"></string>
+  <string id="13339"></string>
   <string id="13340">默认</string>
   <string id="13341">绿色</string>
   <string id="13342">橙色</string>
@@ -1488,11 +1489,11 @@
   <string id="16103">标记为已观看</string>
   <string id="16104">标记为未观看</string>
   <string id="16105">编辑标题</string>
-  <string id="16106">使用 NTSC-M 和 NTSC-J 制式</string>
-  <string id="16107">只使用 NTSC-M 制式</string>
-  <string id="16108">只使用 NTSC-J 制式</string>
-  <string id="16109">只使用 PAL-60 制式</string>
-  <string id="16110">60hz 游戏设置</string>
+  <string id="16106"></string>
+  <string id="16107"></string>
+  <string id="16108"></string>
+  <string id="16109"></string>
+  <string id="16110"></string>
 
   <string id="16200">操作被中断</string>
   <string id="16201">复制文件失败</string>
@@ -1705,14 +1706,14 @@
   <string id="20184">根据 EXIF 信息旋转图片</string>
   <string id="20185">使用海报模式显示剧集</string>
   <string id="20186">请稍候...</string>
-  <string id="20187">备份 EEPROM</string>
-  <string id="20188">备份 BIOS</string>
+  <string id="20187"></string>
+  <string id="20188"></string>
   <string id="20189">启用剧情和评论自动滚动</string>
   <string id="20190">自定义</string>
   <string id="20191">显示除错信息</string>
   <string id="20192">资料库更新时下载附加信息</string>
-
-  <string id="20194">默认音乐信息服务</string>
+  <string id="20193">默认专辑信息服务</string>
+  <string id="20194">默认艺人信息服务</string>
   <string id="20195">改变刮削器</string>
   <string id="20196">导出音乐资料库</string>
   <string id="20197">导入音乐资料库</string>
@@ -1743,15 +1744,15 @@
   <string id="20312">暂停时关闭 LCD 背光</string>
   <string id="20313">暂停时打开 LED</string>
   <string id="20314">视频 - 资料库</string>
-  <string id="20315">游戏存档</string>
+  <string id="20315"></string>
   <string id="20316">排序：标签</string>
-  <string id="20317">下载存档</string>
-  <string id="20318">把游戏存档存放在硬盘上</string>
-  <string id="20319">下载游戏存档失败！</string>
-  <string id="20320">选择需要下载和安装的游戏存档</string>
-  <string id="20321">没有当前游戏所对应的存档文件</string>
-  <string id="20322">切换到游戏存档</string>
-  <string id="20323">游戏存档</string>
+  <string id="20317"></string>
+  <string id="20318"></string>
+  <string id="20319"></string>
+  <string id="20320"></string>
+  <string id="20321"></string>
+  <string id="20322"></string>
+  <string id="20323"></string>
   <string id="20324">分段播放...</string>
   <string id="20325">重新校准</string>
   <string id="20326">这个操作会重新校准%s的配置</string>
@@ -1984,6 +1985,7 @@
   <string id="21449">摇控器发送键盘按键</string>
   <string id="21450">- 编辑</string>
   <string id="21451">需要访问互联网。</string>
+  <string id="21452">获取更多</string>
 
   <string id="21800">文件名称</string>
   <string id="21801">文件路径</string>
@@ -2126,20 +2128,23 @@
   <string id="24003">扩展功能信息</string>
 
   <string id="24005">插件</string>
-  <string id="24007">刮削器</string>
+  <string id="24007">电影资料</string>
   <string id="24008">屏幕保护</string>
   <string id="24009">脚本</string>
   <string id="24010">可视化效果</string>
   <string id="24011">扩展功能库</string>
-  <string id="24012">字幕服务</string>
-  <string id="24013">歌词服务</string>
-  <string id="24014">脚本库</string>
+  <string id="24012">字幕</string>
+  <string id="24013">歌词</string>
+  <string id="24014">电视资料</string>
+  <string id="24015">音乐电视资料</string>
+  <string id="24016">专辑资料</string>
+  <string id="24017">艺人资料</string>
 
   <string id="24020">设置</string>
   <string id="24021">禁用</string>
   <string id="24022">启用</string>
   <string id="24023">扩展功能已禁用</string>
-  <string id="24027">天气服务</string>
+  <string id="24027">天气</string>
   <string id="24028">Weather.com（标准）</string>
   <string id="24030">此扩展功能不可设置</string>
   <string id="24031">读取配置错误</string>
@@ -2148,6 +2153,9 @@
   <string id="24034">检查更新</string>
   <string id="24035">强制刷新</string>
   <string id="24036">更新日志</string>
+  <string id="24037">卸载</string>
+  <string id="24038">安装</string>
+  <string id="24039">禁用扩展功能</string>
 
   <string id="24050">可用扩展功能</string>
   <string id="24051">版本：</string>
@@ -2188,7 +2196,7 @@
   <string id="29801">QWERTY 键盘</string>
   <string id="29802">音频直通输出启用中</string>
 
-  <string id="29999">自动开启游戏抗闪烁过滤</string>
+  <string id="29999"></string>
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
