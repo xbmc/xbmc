@@ -41,7 +41,7 @@ static const char *urlcontext_to_name(void *ptr)
 }
 static const AVOption options[] = {{NULL}};
 static const AVClass urlcontext_class =
-        { "URLContext", urlcontext_to_name, options };
+        { "URLContext", urlcontext_to_name, options, LIBAVUTIL_VERSION_INT };
 /*@}*/
 #endif
 
@@ -184,7 +184,7 @@ int url_read_complete(URLContext *h, unsigned char *buf, int size)
     return len;
 }
 
-int url_write(URLContext *h, unsigned char *buf, int size)
+int url_write(URLContext *h, const unsigned char *buf, int size)
 {
     int ret;
     if (!(h->flags & (URL_WRONLY | URL_RDWR)))
@@ -201,7 +201,7 @@ int64_t url_seek(URLContext *h, int64_t pos, int whence)
     int64_t ret;
 
     if (!h->prot->url_seek)
-        return AVERROR(EPIPE);
+        return AVERROR(ENOSYS);
     ret = h->prot->url_seek(h, pos, whence & ~AVSEEK_FORCE);
     return ret;
 }

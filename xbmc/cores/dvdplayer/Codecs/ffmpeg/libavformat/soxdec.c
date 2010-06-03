@@ -24,7 +24,7 @@
 
 /**
  * SoX native format demuxer
- * @file libavformat/soxdec.c
+ * @file
  * @author Daniel Verkamp
  * @sa http://wiki.multimedia.cx/index.php?title=SoX_native_intermediate_format
  */
@@ -53,7 +53,7 @@ static int sox_read_header(AVFormatContext *s,
     if (!st)
         return AVERROR(ENOMEM);
 
-    st->codec->codec_type = CODEC_TYPE_AUDIO;
+    st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
 
     if (get_le32(pb) == SOX_TAG) {
         st->codec->codec_id = CODEC_ID_PCM_S32LE;

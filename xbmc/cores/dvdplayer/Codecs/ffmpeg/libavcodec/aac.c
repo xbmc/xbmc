@@ -21,7 +21,7 @@
  */
 
 /**
- * @file libavcodec/aac.c
+ * @file
  * AAC decoder
  * @author Oded Shimon  ( ods15 ods15 dyndns org )
  * @author Maxim Gavrilov ( maxim.gavrilov gmail com )
@@ -127,8 +127,8 @@ static ChannelElement *get_che(AACContext *ac, int type, int elem_id)
         }
     case 6:
         /* Some streams incorrectly code 5.1 audio as SCE[0] CPE[0] CPE[1] SCE[1]
-           instead of SCE[0] CPE[0] CPE[0] LFE[0]. If we seem to have
-           encountered such a stream, transfer the LFE[0] element to SCE[1] */
+           instead of SCE[0] CPE[0] CPE[1] LFE[0]. If we seem to have
+           encountered such a stream, transfer the LFE[0] element to the SCE[1]'s mapping */
         if (ac->tags_mapped == tags_per_config[ac->m4ac.chan_config] - 1 && (type == TYPE_LFE || type == TYPE_SCE)) {
             ac->tags_mapped++;
             return ac->tag_che_map[type][elem_id] = ac->che[TYPE_LFE][0];
@@ -1892,15 +1892,12 @@ static void spectral_to_sample(AACContext *ac)
                     apply_channel_coupling(ac, che, type, i, BETWEEN_TNS_AND_IMDCT, apply_dependent_coupling);
                 if (type != TYPE_CCE || che->coup.coupling_point == AFTER_IMDCT) {
                     imdct_and_windowing(ac, &che->ch[0], imdct_bias);
-                    if (ac->m4ac.sbr > 0) {
-                        ff_sbr_dequant(ac, &che->sbr, type == TYPE_CPE ? TYPE_CPE : TYPE_SCE);
-                        ff_sbr_apply(ac, &che->sbr, 0, che->ch[0].ret, che->ch[0].ret);
+                    if (type == TYPE_CPE) {
+                        imdct_and_windowing(ac, &che->ch[1], imdct_bias);
                     }
-                }
-                if (type == TYPE_CPE) {
-                    imdct_and_windowing(ac, &che->ch[1], imdct_bias);
-                    if (ac->m4ac.sbr > 0)
-                        ff_sbr_apply(ac, &che->sbr, 1, che->ch[1].ret, che->ch[1].ret);
+                    if (ac->m4ac.sbr > 0) {
+                        ff_sbr_apply(ac, &che->sbr, type, che->ch[0].ret, che->ch[1].ret);
+                    }
                 }
                 if (type <= TYPE_CCE)
                     apply_channel_coupling(ac, che, type, i, AFTER_IMDCT, apply_independent_coupling);
@@ -1957,6 +1954,7 @@ static int aac_decode_frame(AVCodecContext *avccontext, void *data,
     int err, elem_id, data_size_tmp;
     int buf_consumed;
     int samples = 1024, multiplier;
+    int buf_offset;
 
     init_get_bits(&gb, buf, buf_size * 8);
 
@@ -2068,7 +2066,11 @@ static int aac_decode_frame(AVCodecContext *avccontext, void *data,
         ac->output_configured = OC_LOCKED;
 
     buf_consumed = (get_bits_count(&gb) + 7) >> 3;
-    return buf_size > buf_consumed ? buf_consumed : buf_size;
+    for (buf_offset = buf_consumed; buf_offset < buf_size; buf_offset++)
+        if (buf[buf_offset])
+            break;
+
+    return buf_size > buf_offset ? buf_consumed : buf_size;
 }
 
 static av_cold int aac_decode_close(AVCodecContext *avccontext)
@@ -2091,7 +2093,7 @@ static av_cold int aac_decode_close(AVCodecContext *avccontext)
 
 AVCodec aac_decoder = {
     "aac",
-    CODEC_TYPE_AUDIO,
+    AVMEDIA_TYPE_AUDIO,
     CODEC_ID_AAC,
     sizeof(AACContext),
     aac_decode_init,

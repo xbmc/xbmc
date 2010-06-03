@@ -77,10 +77,10 @@ static int msnwc_tcp_read_header(AVFormatContext *ctx, AVFormatParameters *ap)
 
     st = av_new_stream(ctx, 0);
     if(!st)
-        return AVERROR_NOMEM;
+        return AVERROR(ENOMEM);
 
     codec = st->codec;
-    codec->codec_type = CODEC_TYPE_VIDEO;
+    codec->codec_type = AVMEDIA_TYPE_VIDEO;
     codec->codec_id = CODEC_ID_MIMIC;
     codec->codec_tag = MKTAG('M', 'L', '2', '0');
 
@@ -125,7 +125,7 @@ static int msnwc_tcp_read_packet(AVFormatContext *ctx, AVPacket *pkt)
     /* Some aMsn generated videos (or was it Mercury Messenger?) don't set
      * this bit and rely on the codec to get keyframe information */
     if(keyframe&1)
-        pkt->flags |= PKT_FLAG_KEY;
+        pkt->flags |= AV_PKT_FLAG_KEY;
 
     return HEADER_SIZE + size;
 }

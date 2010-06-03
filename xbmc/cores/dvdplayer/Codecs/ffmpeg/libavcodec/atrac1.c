@@ -21,7 +21,7 @@
  */
 
 /**
- * @file libavcodec/atrac1.c
+ * @file
  * Atrac 1 compatible decoder.
  * This decoder handles raw ATRAC1 data and probably SDDS data.
  */
@@ -305,20 +305,15 @@ static int atrac1_decode_frame(AVCodecContext *avctx, void *data,
         at1_subband_synthesis(q, su, q->out_samples[ch]);
     }
 
-    /* round, convert to 16bit and interleave */
+    /* interleave; FIXME, should create/use a DSP function */
     if (q->channels == 1) {
         /* mono */
-        q->dsp.vector_clipf(samples, q->out_samples[0], -32700.0 / (1 << 15),
-                            32700.0 / (1 << 15), AT1_SU_SAMPLES);
+        memcpy(samples, q->out_samples[0], AT1_SU_SAMPLES * 4);
     } else {
         /* stereo */
         for (i = 0; i < AT1_SU_SAMPLES; i++) {
-            samples[i * 2]     = av_clipf(q->out_samples[0][i],
-                                          -32700.0 / (1 << 15),
-                                           32700.0 / (1 << 15));
-            samples[i * 2 + 1] = av_clipf(q->out_samples[1][i],
-                                          -32700.0 / (1 << 15),
-                                           32700.0 / (1 << 15));
+            samples[i * 2]     = q->out_samples[0][i];
+            samples[i * 2 + 1] = q->out_samples[1][i];
         }
     }
 
@@ -372,7 +367,7 @@ static av_cold int atrac1_decode_end(AVCodecContext * avctx) {
 
 AVCodec atrac1_decoder = {
     .name = "atrac1",
-    .type = CODEC_TYPE_AUDIO,
+    .type = AVMEDIA_TYPE_AUDIO,
     .id = CODEC_ID_ATRAC1,
     .priv_data_size = sizeof(AT1Ctx),
     .init = atrac1_decode_init,

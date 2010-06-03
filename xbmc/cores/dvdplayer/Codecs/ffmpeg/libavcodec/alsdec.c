@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/alsdec.c
+ * @file
  * MPEG-4 ALS decoder
  * @author Thilo Borgmann <thilo.borgmann _at_ googlemail.com>
  */
@@ -1622,7 +1622,7 @@ static av_cold void flush(AVCodecContext *avctx)
 
 AVCodec als_decoder = {
     "als",
-    CODEC_TYPE_AUDIO,
+    AVMEDIA_TYPE_AUDIO,
     CODEC_ID_MP4ALS,
     sizeof(ALSDecContext),
     decode_init,

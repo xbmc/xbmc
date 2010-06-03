@@ -19,7 +19,7 @@
  */
 
 /**
- * @file libavfilter/vf_scale.c
+ * @file
  * scale video filter
  */
 
@@ -36,6 +36,7 @@ typedef struct {
      *  -1 = keep original aspect
      */
     int w, h;
+    unsigned int flags;         ///sws flags
 
     int hsub, vsub;             ///< chroma subsampling
     int slice_y;                ///< top of current output slice
@@ -45,9 +46,14 @@ typedef struct {
 static av_cold int init(AVFilterContext *ctx, const char *args, void *opaque)
 {
     ScaleContext *scale = ctx->priv;
+    const char *p;
 
-    if (args)
+    scale->flags = SWS_BILINEAR;
+    if (args){
         sscanf(args, "%d:%d", &scale->w, &scale->h);
+        p= strstr(args,"flags=");
+        if(p) scale->flags= strtoul(p+6, NULL, 0);
+    }
 
     /* sanity check params */
     if (scale->w <  -1 || scale->h <  -1) {
@@ -122,14 +128,16 @@ static int config_props(AVFilterLink *outlink)
     outlink->h = h;
 
     /* TODO: make algorithm configurable */
-    scale->sws = sws_getContext(inlink ->w, inlink ->h, inlink ->format,
-                                outlink->w, outlink->h, outlink->format,
-                                SWS_BILINEAR, NULL, NULL, NULL);
-
-    av_log(ctx, AV_LOG_INFO, "w:%d h:%d fmt:%s\n",
-           outlink->w, outlink->h, av_pix_fmt_descriptors[outlink->format].name);
+    av_log(ctx, AV_LOG_INFO, "w:%d h:%d fmt:%s -> w:%d h:%d fmt:%s flags:0x%0x\n",
+           inlink ->w, inlink ->h, av_pix_fmt_descriptors[ inlink->format].name,
+           outlink->w, outlink->h, av_pix_fmt_descriptors[outlink->format].name,
+           scale->flags);
 
     scale->input_is_pal = av_pix_fmt_descriptors[inlink->format].flags & PIX_FMT_PAL;
+
+    scale->sws = sws_getContext(inlink ->w, inlink ->h, inlink ->format,
+                                outlink->w, outlink->h, outlink->format,
+                                scale->flags, NULL, NULL, NULL);
 
     return !scale->sws;
 }
@@ -146,6 +154,9 @@ static void start_frame(AVFilterLink *link, AVFilterPicRef *picref)
     outpicref = avfilter_get_video_buffer(outlink, AV_PERM_WRITE, outlink->w, outlink->h);
     outpicref->pts = picref->pts;
     outpicref->pos = picref->pos;
+    outpicref->interlaced           = picref->interlaced;
+    outpicref->top_field_first      = picref->top_field_first;
+
     outlink->outpic = outpicref;
 
     av_reduce(&outpicref->pixel_aspect.num, &outpicref->pixel_aspect.den,
@@ -197,13 +208,13 @@ AVFilter avfilter_vf_scale = {
     .priv_size = sizeof(ScaleContext),
 
     .inputs    = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = CODEC_TYPE_VIDEO,
+                                    .type             = AVMEDIA_TYPE_VIDEO,
                                     .start_frame      = start_frame,
                                     .draw_slice       = draw_slice,
                                     .min_perms        = AV_PERM_READ, },
                                   { .name = NULL}},
     .outputs   = (AVFilterPad[]) {{ .name             = "default",
-                                    .type             = CODEC_TYPE_VIDEO,
+                                    .type             = AVMEDIA_TYPE_VIDEO,
                                     .config_props     = config_props, },
                                   { .name = NULL}},
 };

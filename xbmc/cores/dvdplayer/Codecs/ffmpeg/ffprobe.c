@@ -34,6 +34,7 @@ const int program_birth_year = 2007;
 static int do_show_format  = 0;
 static int do_show_streams = 0;
 
+static int convert_tags                 = 0;
 static int show_value_unit              = 0;
 static int use_value_prefix             = 0;
 static int use_byte_value_binary_prefix = 0;
@@ -100,14 +101,14 @@ static char *time_value_string(char *buf, int buf_size, int64_t val, const AVRat
     return buf;
 }
 
-static const char *codec_type_string(enum CodecType codec_type)
+static const char *media_type_string(enum AVMediaType media_type)
 {
-    switch (codec_type) {
-    case CODEC_TYPE_VIDEO:        return "video";
-    case CODEC_TYPE_AUDIO:        return "audio";
-    case CODEC_TYPE_DATA:         return "data";
-    case CODEC_TYPE_SUBTITLE:     return "subtitle";
-    case CODEC_TYPE_ATTACHMENT:   return "attachment";
+    switch (media_type) {
+    case AVMEDIA_TYPE_VIDEO:      return "video";
+    case AVMEDIA_TYPE_AUDIO:      return "audio";
+    case AVMEDIA_TYPE_DATA:       return "data";
+    case AVMEDIA_TYPE_SUBTITLE:   return "subtitle";
+    case AVMEDIA_TYPE_ATTACHMENT: return "attachment";
     default:                      return "unknown";
     }
 }
@@ -118,8 +119,8 @@ static void show_stream(AVFormatContext *fmt_ctx, int stream_idx)
     AVCodecContext *dec_ctx;
     AVCodec *dec;
     char val_str[128];
-    AVMetadataTag *tag;
-    char a, b, c, d;
+    AVMetadataTag *tag = NULL;
+    AVRational display_aspect_ratio;
 
     printf("[STREAM]\n");
 
@@ -133,35 +134,34 @@ static void show_stream(AVFormatContext *fmt_ctx, int stream_idx)
             printf("codec_name=unknown\n");
         }
 
-        printf("codec_type=%s\n",         codec_type_string(dec_ctx->codec_type));
+        printf("codec_type=%s\n",         media_type_string(dec_ctx->codec_type));
         printf("codec_time_base=%d/%d\n", dec_ctx->time_base.num, dec_ctx->time_base.den);
 
         /* print AVI/FourCC tag */
-        a = dec_ctx->codec_tag     & 0xff;
-        b = dec_ctx->codec_tag>>8  & 0xff;
-        c = dec_ctx->codec_tag>>16 & 0xff;
-        d = dec_ctx->codec_tag>>24 & 0xff;
-        printf("codec_tag_string=");
-        if (isprint(a)) printf("%c", a); else printf("[%d]", a);
-        if (isprint(b)) printf("%c", b); else printf("[%d]", b);
-        if (isprint(c)) printf("%c", c); else printf("[%d]", c);
-        if (isprint(d)) printf("%c", d); else printf("[%d]", d);
-        printf("\ncodec_tag=0x%04x\n", dec_ctx->codec_tag);
+        av_get_codec_tag_string(val_str, sizeof(val_str), dec_ctx->codec_tag);
+        printf("codec_tag_string=%s\n", val_str);
+        printf("codec_tag=0x%04x\n", dec_ctx->codec_tag);
 
         switch (dec_ctx->codec_type) {
-        case CODEC_TYPE_VIDEO:
+        case AVMEDIA_TYPE_VIDEO:
             printf("width=%d\n",                   dec_ctx->width);
             printf("height=%d\n",                  dec_ctx->height);
             printf("has_b_frames=%d\n",            dec_ctx->has_b_frames);
-            printf("sample_aspect_ratio=%d:%d\n",  dec_ctx->sample_aspect_ratio.num,
-                                                   dec_ctx->sample_aspect_ratio.den);
-            printf("display_aspect_ratio=%d:%d\n", dec_ctx->sample_aspect_ratio.num,
-                                                   dec_ctx->sample_aspect_ratio.den);
+            if (dec_ctx->sample_aspect_ratio.num) {
+                printf("sample_aspect_ratio=%d:%d\n", dec_ctx->sample_aspect_ratio.num,
+                                                      dec_ctx->sample_aspect_ratio.den);
+                av_reduce(&display_aspect_ratio.num, &display_aspect_ratio.den,
+                          dec_ctx->width  * dec_ctx->sample_aspect_ratio.num,
+                          dec_ctx->height * dec_ctx->sample_aspect_ratio.den,
+                          1024*1024);
+                printf("display_aspect_ratio=%d:%d\n", display_aspect_ratio.num,
+                                                       display_aspect_ratio.den);
+            }
             printf("pix_fmt=%s\n",                 dec_ctx->pix_fmt != PIX_FMT_NONE ?
                    av_pix_fmt_descriptors[dec_ctx->pix_fmt].name : "unknown");
             break;
 
-        case CODEC_TYPE_AUDIO:
+        case AVMEDIA_TYPE_AUDIO:
             printf("sample_rate=%s\n",             value_string(val_str, sizeof(val_str),
                                                                 dec_ctx->sample_rate,
                                                                 unit_hertz_str));
@@ -184,6 +184,8 @@ static void show_stream(AVFormatContext *fmt_ctx, int stream_idx)
                                                   &stream->time_base));
     printf("duration=%s\n",     time_value_string(val_str, sizeof(val_str), stream->duration,
                                                   &stream->time_base));
+    if (stream->nb_frames)
+        printf("nb_frames=%"PRId64"\n",    stream->nb_frames);
 
     while ((tag = av_metadata_get(stream->metadata, "", tag, AV_METADATA_IGNORE_SUFFIX)))
         printf("TAG:%s=%s\n", tag->key, tag->value);
@@ -211,6 +213,8 @@ static void show_format(AVFormatContext *fmt_ctx)
     printf("bit_rate=%s\n",         value_string(val_str, sizeof(val_str), fmt_ctx->bit_rate,
                                                  unit_bit_per_second_str));
 
+    if (convert_tags)
+        av_metadata_conv(fmt_ctx, NULL, fmt_ctx->iformat->metadata_conv);
     while ((tag = av_metadata_get(fmt_ctx->metadata, "", tag, AV_METADATA_IGNORE_SUFFIX)))
         printf("TAG:%s=%s\n", tag->key, tag->value);
 
@@ -319,6 +323,7 @@ static void opt_pretty(void)
 
 static const OptionDef options[] = {
 #include "cmdutils_common_opts.h"
+    { "convert_tags", OPT_BOOL, {(void*)&convert_tags}, "convert tag names to the FFmpeg generic tag names" },
     { "f", HAS_ARG, {(void*)opt_format}, "force format", "format" },
     { "unit", OPT_BOOL, {(void*)&show_value_unit}, "show unit of the displayed values" },
     { "prefix", OPT_BOOL, {(void*)&use_value_prefix}, "use SI prefixes for the displayed values" },

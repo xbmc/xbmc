@@ -21,7 +21,7 @@
  */
 
 /**
- * @file libavdevice/alsa-audio-dec.c
+ * @file
  * ALSA input and output: input
  * @author Luca Abeni ( lucabe72 email it )
  * @author Benoit Fouet ( benoit fouet free fr )
@@ -111,7 +111,7 @@ static av_cold int audio_read_header(AVFormatContext *s1,
     }
 
     /* take real parameters */
-    st->codec->codec_type  = CODEC_TYPE_AUDIO;
+    st->codec->codec_type  = AVMEDIA_TYPE_AUDIO;
     st->codec->codec_id    = codec_id;
     st->codec->sample_rate = sample_rate;
     st->codec->channels    = ap->channels;

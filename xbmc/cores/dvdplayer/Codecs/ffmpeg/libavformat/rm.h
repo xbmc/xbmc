@@ -23,9 +23,11 @@
 #define AVFORMAT_RM_H
 
 #include "avformat.h"
+#include "internal.h"
 
 extern const char * const ff_rm_metadata[4];
 extern const unsigned char ff_sipr_subpk_size[4];
+extern const AVCodecTag ff_rm_codec_tags[];
 
 typedef struct RMStream RMStream;
 
@@ -85,7 +87,7 @@ int ff_rm_parse_packet (AVFormatContext *s, ByteIOContext *pb,
  * @param st stream that this packet belongs to
  * @param rst Real-specific stream information
  * @param pkt location to store the packet data
- * @returns the number of samples left for subsequent calls to this same
+ * @return the number of samples left for subsequent calls to this same
  *          function, or 0 if all samples have been retrieved.
  */
 int ff_rm_retrieve_cache (AVFormatContext *s, ByteIOContext *pb,

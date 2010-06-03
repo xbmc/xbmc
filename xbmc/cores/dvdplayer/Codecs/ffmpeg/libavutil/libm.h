@@ -17,7 +17,7 @@
  */
 
 /**
- * @file libavutil/libm.h
+ * @file
  * Replacements for frequently missing libm functions
  */
 
@@ -41,6 +41,11 @@
 #if !HAVE_LLRINT
 #undef llrint
 #define llrint(x) ((long long)rint(x))
+#endif /* HAVE_LLRINT */
+
+#if !HAVE_LLRINTF
+#undef llrintf
+#define llrintf(x) ((long long)rint(x))
 #endif /* HAVE_LLRINT */
 
 #if !HAVE_LOG2

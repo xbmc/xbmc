@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavformat/vc1test.c
+ * @file
  * VC1 test bitstream file demuxer
  * by Konstantin Shishkov
  * Format specified in SMPTE standard 421 Annex L
@@ -58,7 +58,7 @@ static int vc1t_read_header(AVFormatContext *s,
     if (!st)
         return -1;
 
-    st->codec->codec_type = CODEC_TYPE_VIDEO;
+    st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
     st->codec->codec_id = CODEC_ID_WMV3;
 
     st->codec->extradata = av_malloc(VC1_EXTRADATA_SIZE);
@@ -103,7 +103,7 @@ static int vc1t_read_packet(AVFormatContext *s,
         return AVERROR(EIO);
     if(s->streams[0]->time_base.den == 1000)
         pkt->pts = pts;
-    pkt->flags |= keyframe ? PKT_FLAG_KEY : 0;
+    pkt->flags |= keyframe ? AV_PKT_FLAG_KEY : 0;
     pkt->pos -= 8;
 
     return pkt->size;

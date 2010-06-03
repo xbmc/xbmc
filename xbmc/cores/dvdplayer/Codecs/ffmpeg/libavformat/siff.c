@@ -74,7 +74,7 @@ static int create_audio_stream(AVFormatContext *s, SIFFContext *c)
     ast = av_new_stream(s, 0);
     if (!ast)
         return -1;
-    ast->codec->codec_type      = CODEC_TYPE_AUDIO;
+    ast->codec->codec_type      = AVMEDIA_TYPE_AUDIO;
     ast->codec->codec_id        = CODEC_ID_PCM_U8;
     ast->codec->channels        = 1;
     ast->codec->bits_per_coded_sample = c->bits;
@@ -118,7 +118,7 @@ static int siff_parse_vbv1(AVFormatContext *s, SIFFContext *c, ByteIOContext *pb
     st = av_new_stream(s, 0);
     if (!st)
         return -1;
-    st->codec->codec_type = CODEC_TYPE_VIDEO;
+    st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
     st->codec->codec_id   = CODEC_ID_VB;
     st->codec->codec_tag  = MKTAG('V', 'B', 'V', '1');
     st->codec->width      = width;
@@ -216,7 +216,7 @@ static int siff_read_packet(AVFormatContext *s, AVPacket *pkt)
             c->curstrm = 0;
         }
         if(!c->cur_frame || c->curstrm)
-            pkt->flags |= PKT_FLAG_KEY;
+            pkt->flags |= AV_PKT_FLAG_KEY;
         if (c->curstrm == -1)
             c->cur_frame++;
     }else{

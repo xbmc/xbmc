@@ -214,14 +214,14 @@ static int dv_extract_audio_info(DVDemuxContext* c, uint8_t* frame)
            if (!c->ast[i])
                break;
            av_set_pts_info(c->ast[i], 64, 1, 30000);
-           c->ast[i]->codec->codec_type = CODEC_TYPE_AUDIO;
+           c->ast[i]->codec->codec_type = AVMEDIA_TYPE_AUDIO;
            c->ast[i]->codec->codec_id   = CODEC_ID_PCM_S16LE;
 
            av_init_packet(&c->audio_pkt[i]);
            c->audio_pkt[i].size         = 0;
            c->audio_pkt[i].data         = c->audio_buf[i];
            c->audio_pkt[i].stream_index = c->ast[i]->index;
-           c->audio_pkt[i].flags       |= PKT_FLAG_KEY;
+           c->audio_pkt[i].flags       |= AV_PKT_FLAG_KEY;
        }
        c->ast[i]->codec->sample_rate = dv_audio_frequency[freq];
        c->ast[i]->codec->channels    = 2;
@@ -290,7 +290,7 @@ DVDemuxContext* dv_init_demux(AVFormatContext *s)
     c->frames = 0;
     c->abytes = 0;
 
-    c->vst->codec->codec_type = CODEC_TYPE_VIDEO;
+    c->vst->codec->codec_type = AVMEDIA_TYPE_VIDEO;
     c->vst->codec->codec_id   = CODEC_ID_DVVIDEO;
     c->vst->codec->bit_rate   = 25000000;
     c->vst->start_time        = 0;
@@ -355,7 +355,7 @@ int dv_produce_packet(DVDemuxContext *c, AVPacket *pkt,
     av_init_packet(pkt);
     pkt->data         = buf;
     pkt->size         = size;
-    pkt->flags       |= PKT_FLAG_KEY;
+    pkt->flags       |= AV_PKT_FLAG_KEY;
     pkt->stream_index = c->vst->id;
     pkt->pts          = c->frames;
 
@@ -375,7 +375,7 @@ static int64_t dv_frame_offset(AVFormatContext *s, DVDemuxContext *c,
 
     offset = sys->frame_size * timestamp;
 
-    if (offset > max_offset) offset = max_offset;
+    if (size >= 0 && offset > max_offset) offset = max_offset;
     else if (offset < 0) offset = 0;
 
     return offset;

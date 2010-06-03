@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavformat/idcin.c
+ * @file
  * id Quake II CIN file demuxer by Mike Melanson (melanson@pcisys.net)
  * For more information about the id CIN format, visit:
  *   http://www.csse.monash.edu.au/~timf/
@@ -160,7 +160,7 @@ static int idcin_read_header(AVFormatContext *s,
         return AVERROR(ENOMEM);
     av_set_pts_info(st, 33, 1, IDCIN_FPS);
     idcin->video_stream_index = st->index;
-    st->codec->codec_type = CODEC_TYPE_VIDEO;
+    st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
     st->codec->codec_id = CODEC_ID_IDCIN;
     st->codec->codec_tag = 0;  /* no fourcc */
     st->codec->width = width;
@@ -183,7 +183,7 @@ static int idcin_read_header(AVFormatContext *s,
             return AVERROR(ENOMEM);
         av_set_pts_info(st, 33, 1, IDCIN_FPS);
         idcin->audio_stream_index = st->index;
-        st->codec->codec_type = CODEC_TYPE_AUDIO;
+        st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
         st->codec->codec_tag = 1;
         st->codec->channels = channels;
         st->codec->sample_rate = sample_rate;

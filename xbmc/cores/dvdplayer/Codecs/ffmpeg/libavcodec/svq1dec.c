@@ -26,7 +26,7 @@
  */
 
 /**
- * @file libavcodec/svq1.c
+ * @file
  * Sorenson Vector Quantizer #1 (SVQ1) video codec.
  * For more information of the SVQ1 algorithm, visit:
  *   http://www.pcisys.net/~melanson/codecs/
@@ -828,7 +828,7 @@ static av_cold int svq1_decode_end(AVCodecContext *avctx)
 
 AVCodec svq1_decoder = {
     "svq1",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_SVQ1,
     sizeof(MpegEncContext),
     svq1_decode_init,

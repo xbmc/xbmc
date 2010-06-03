@@ -21,6 +21,7 @@
 
 #include "libavutil/intreadwrite.h"
 #include "voc.h"
+#include "internal.h"
 
 
 static int voc_probe(AVProbeData *p)
@@ -54,7 +55,7 @@ static int voc_read_header(AVFormatContext *s, AVFormatParameters *ap)
     st = av_new_stream(s, 0);
     if (!st)
         return AVERROR(ENOMEM);
-    st->codec->codec_type = CODEC_TYPE_AUDIO;
+    st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
 
     voc->remaining_size = 0;
     return 0;

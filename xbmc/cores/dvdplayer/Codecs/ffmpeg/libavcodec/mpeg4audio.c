@@ -88,10 +88,13 @@ int ff_mpeg4audio_get_config(MPEG4AudioConfig *c, const uint8_t *buf, int buf_si
     if (c->chan_config < FF_ARRAY_ELEMS(ff_mpeg4audio_channels))
         c->channels = ff_mpeg4audio_channels[c->chan_config];
     c->sbr = -1;
+    c->ps  = -1;
     if (c->object_type == AOT_SBR || (c->object_type == AOT_PS &&
         // check for W6132 Annex YYYY draft MP3onMP4
         !(show_bits(&gb, 3) & 0x03 && !(show_bits(&gb, 9) & 0x3F)))) {
-        c->ext_object_type = c->object_type;
+        if (c->object_type == AOT_PS)
+            c->ps = 1;
+        c->ext_object_type = AOT_SBR;
         c->sbr = 1;
         c->ext_sample_rate = get_sample_rate(&gb, &c->ext_sampling_index);
         c->object_type = get_object_type(&gb);
@@ -115,13 +118,14 @@ int ff_mpeg4audio_get_config(MPEG4AudioConfig *c, const uint8_t *buf, int buf_si
     }
 
     if (c->ext_object_type != AOT_SBR) {
-        int bits_left = buf_size*8 - get_bits_count(&gb);
-        for (; bits_left > 15; bits_left--) {
+        while (get_bits_left(&gb) > 15) {
             if (show_bits(&gb, 11) == 0x2b7) { // sync extension
                 get_bits(&gb, 11);
                 c->ext_object_type = get_object_type(&gb);
                 if (c->ext_object_type == AOT_SBR && (c->sbr = get_bits1(&gb)) == 1)
                     c->ext_sample_rate = get_sample_rate(&gb, &c->ext_sampling_index);
+                if (get_bits_left(&gb) > 11 && get_bits(&gb, 11) == 0x548)
+                    c->ps = get_bits1(&gb);
                 break;
             } else
                 get_bits1(&gb); // skip 1 bit

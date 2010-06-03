@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavformat/xa.c
+ * @file
  * Maxis XA File Demuxer
  * by Robert Marston (rmarston@gmail.com)
  * for more information on the XA audio format see
@@ -74,7 +74,7 @@ static int xa_read_header(AVFormatContext *s,
     if (!st)
         return AVERROR(ENOMEM);
 
-    st->codec->codec_type   = CODEC_TYPE_AUDIO;
+    st->codec->codec_type   = AVMEDIA_TYPE_AUDIO;
     st->codec->codec_id     = CODEC_ID_ADPCM_EA_MAXIS_XA;
     url_fskip(pb, 4);       /* Skip the XA ID */
     xa->out_size            =  get_le32(pb);

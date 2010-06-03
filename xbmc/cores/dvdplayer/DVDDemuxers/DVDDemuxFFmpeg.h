@@ -138,7 +138,6 @@ protected:
   int      m_speed;
   unsigned m_program;
   DWORD    m_timeout;
-  unsigned char m_buffer[FFMPEG_FILE_BUFFER_SIZE + AVPROBE_PADDING_SIZE];
 
   CDVDInputStream* m_pInput;
 };

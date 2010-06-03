@@ -39,11 +39,14 @@ void avfilter_register_all(void)
     REGISTER_FILTER (FORMAT,      format,      vf);
     REGISTER_FILTER (NOFORMAT,    noformat,    vf);
     REGISTER_FILTER (NULL,        null,        vf);
+    REGISTER_FILTER (PAD,         pad,         vf);
     REGISTER_FILTER (PIXELASPECT, pixelaspect, vf);
     REGISTER_FILTER (SCALE,       scale,       vf);
     REGISTER_FILTER (SLICIFY,     slicify,     vf);
+    REGISTER_FILTER (UNSHARP,     unsharp,     vf);
     REGISTER_FILTER (VFLIP,       vflip,       vf);
 
+    REGISTER_FILTER (BUFFER,      buffer,      vsrc);
     REGISTER_FILTER (NULLSRC,     nullsrc,     vsrc);
 
     REGISTER_FILTER (NULLSINK,    nullsink,    vsink);

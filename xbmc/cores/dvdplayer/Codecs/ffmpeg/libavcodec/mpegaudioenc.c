@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/mpegaudio.c
+ * @file
  * The simplest mpeg audio layer 2 encoder.
  */
 
@@ -790,7 +790,7 @@ static av_cold int MPA_encode_close(AVCodecContext *avctx)
 
 AVCodec mp2_encoder = {
     "mp2",
-    CODEC_TYPE_AUDIO,
+    AVMEDIA_TYPE_AUDIO,
     CODEC_ID_MP2,
     sizeof(MpegAudioContext),
     MPA_encode_init,
@@ -798,6 +798,7 @@ AVCodec mp2_encoder = {
     MPA_encode_close,
     NULL,
     .sample_fmts = (const enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
+    .supported_samplerates= (const int[]){44100, 48000,  32000, 22050, 24000, 16000, 0},
     .long_name = NULL_IF_CONFIG_SMALL("MP2 (MPEG audio layer 2)"),
 };
 

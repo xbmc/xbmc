@@ -83,7 +83,7 @@ static int amr_handle_packet(AVFormatContext *ctx,
     /* Everything except the codec mode request byte should be output. */
     if (av_new_packet(pkt, len - 1)) {
         av_log(ctx, AV_LOG_ERROR, "Out of memory\n");
-        return AVERROR_NOMEM;
+        return AVERROR(ENOMEM);
     }
     pkt->stream_index = st->index;
     ptr = pkt->data;
@@ -142,6 +142,15 @@ static int amr_parse_sdp_line(AVFormatContext *s, int st_index,
         while (*p && *p == ' ') p++; /* strip trailing spaces */
 
         while (ff_rtsp_next_attr_and_value(&p, attr, sizeof(attr), value, sizeof(value))) {
+            /* Some AMR SDP configurations contain "octet-align", without
+             * the trailing =1. Therefore, if the value is empty,
+             * interpret it as "1".
+             */
+            if (!strcmp(value, "")) {
+                av_log(s, AV_LOG_WARNING, "AMR fmtp attribute %s had "
+                                          "nonstandard empty value\n", attr);
+                strcpy(value, "1");
+            }
             if (!strcmp(attr, "octet-align"))
                 octet_align = atoi(value);
             else if (!strcmp(attr, "crc"))
@@ -161,7 +170,7 @@ static int amr_parse_sdp_line(AVFormatContext *s, int st_index,
 
 RTPDynamicProtocolHandler ff_amr_nb_dynamic_handler = {
     .enc_name         = "AMR",
-    .codec_type       = CODEC_TYPE_AUDIO,
+    .codec_type       = AVMEDIA_TYPE_AUDIO,
     .codec_id         = CODEC_ID_AMR_NB,
     .parse_sdp_a_line = amr_parse_sdp_line,
     .parse_packet     = amr_handle_packet,
@@ -169,7 +178,7 @@ RTPDynamicProtocolHandler ff_amr_nb_dynamic_handler = {
 
 RTPDynamicProtocolHandler ff_amr_wb_dynamic_handler = {
     .enc_name         = "AMR-WB",
-    .codec_type       = CODEC_TYPE_AUDIO,
+    .codec_type       = AVMEDIA_TYPE_AUDIO,
     .codec_id         = CODEC_ID_AMR_WB,
     .parse_sdp_a_line = amr_parse_sdp_line,
     .parse_packet     = amr_handle_packet,

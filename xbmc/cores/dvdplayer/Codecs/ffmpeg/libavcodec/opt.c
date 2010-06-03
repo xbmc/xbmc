@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/opt.c
+ * @file
  * AVOptions
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
@@ -147,7 +147,6 @@ int av_set_string3(void *obj, const char *name, const char *val, int alloc, cons
             char buf[256];
             int cmd=0;
             double d;
-            const char *error = NULL;
 
             if(*val == '+' || *val == '-')
                 cmd= *(val++);
@@ -156,8 +155,7 @@ int av_set_string3(void *obj, const char *name, const char *val, int alloc, cons
                 buf[i]= val[i];
             buf[i]=0;
 
-            d = ff_eval2(buf, const_values, const_names, NULL, NULL, NULL, NULL, NULL, &error);
-            if(isnan(d)) {
+            {
                 const AVOption *o_named= av_find_opt(obj, buf, o->unit, 0, 0);
                 if(o_named && o_named->type == FF_OPT_TYPE_CONST)
                     d= o_named->default_val;
@@ -167,9 +165,11 @@ int av_set_string3(void *obj, const char *name, const char *val, int alloc, cons
                 else if(!strcmp(buf, "none"   )) d= 0;
                 else if(!strcmp(buf, "all"    )) d= ~0;
                 else {
-                    if (error)
-                        av_log(obj, AV_LOG_ERROR, "Unable to parse option value \"%s\": %s\n", val, error);
-                    return AVERROR(EINVAL);
+                    int res = ff_parse_and_eval_expr(&d, buf, const_names, const_values, NULL, NULL, NULL, NULL, NULL, 0, obj);
+                    if (res < 0) {
+                        av_log(obj, AV_LOG_ERROR, "Unable to parse option value \"%s\"\n", val);
+                        return res;
+                    }
                 }
             }
             if(o->type == FF_OPT_TYPE_FLAGS){

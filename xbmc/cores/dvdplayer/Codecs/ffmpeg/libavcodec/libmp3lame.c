@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/libmp3lame.c
+ * @file
  * Interface to libmp3lame for mp3 encoding.
  */
 
@@ -81,8 +81,8 @@ err:
     return -1;
 }
 
-static const int sSampleRates[3] = {
-    44100, 48000,  32000
+static const int sSampleRates[] = {
+    44100, 48000,  32000, 22050, 24000, 16000, 11025, 12000, 8000, 0
 };
 
 static const int sBitRates[2][3][15] = {
@@ -216,7 +216,7 @@ static av_cold int MP3lame_encode_close(AVCodecContext *avctx)
 
 AVCodec libmp3lame_encoder = {
     "libmp3lame",
-    CODEC_TYPE_AUDIO,
+    AVMEDIA_TYPE_AUDIO,
     CODEC_ID_MP3,
     sizeof(Mp3AudioContext),
     MP3lame_encode_init,
@@ -224,5 +224,6 @@ AVCodec libmp3lame_encoder = {
     MP3lame_encode_close,
     .capabilities= CODEC_CAP_DELAY,
     .sample_fmts = (const enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
+    .supported_samplerates= sSampleRates,
     .long_name= NULL_IF_CONFIG_SMALL("libmp3lame MP3 (MPEG audio layer 3)"),
 };

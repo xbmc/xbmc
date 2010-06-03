@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavformat/udp.c
+ * @file
  * UDP protocol
  */
 
@@ -437,8 +437,11 @@ static int udp_read(URLContext *h, uint8_t *buf, int size)
         tv.tv_sec = 0;
         tv.tv_usec = 100 * 1000;
         ret = select(s->udp_fd + 1, &rfds, NULL, NULL, &tv);
-        if (ret < 0)
+        if (ret < 0) {
+            if (ff_neterrno() == FF_NETERROR(EINTR))
+                continue;
             return AVERROR(EIO);
+        }
         if (!(ret > 0 && FD_ISSET(s->udp_fd, &rfds)))
             continue;
         len = recv(s->udp_fd, buf, size, 0);
@@ -453,7 +456,7 @@ static int udp_read(URLContext *h, uint8_t *buf, int size)
     return len;
 }
 
-static int udp_write(URLContext *h, uint8_t *buf, int size)
+static int udp_write(URLContext *h, const uint8_t *buf, int size)
 {
     UDPContext *s = h->priv_data;
     int ret;

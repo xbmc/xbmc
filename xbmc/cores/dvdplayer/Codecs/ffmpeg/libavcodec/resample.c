@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/resample.c
+ * @file
  * samplerate conversion for both audio and video
  */
 
@@ -36,7 +36,7 @@ static const char *context_to_name(void *ptr)
 }
 
 static const AVOption options[] = {{NULL}};
-static const AVClass audioresample_context_class = { "ReSampleContext", context_to_name, options };
+static const AVClass audioresample_context_class = { "ReSampleContext", context_to_name, options, LIBAVUTIL_VERSION_INT };
 
 struct ReSampleContext {
     struct AVResampleContext *resample_context;

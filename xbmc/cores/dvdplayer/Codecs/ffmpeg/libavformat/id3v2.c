@@ -127,7 +127,7 @@ static void read_ttag(AVFormatContext *s, int taglen, const char *key)
         break;
 
     case 3:  /* UTF-8 */
-        len = FFMIN(taglen, dstlen - 1);
+        len = FFMIN(taglen, dstlen);
         get_buffer(s->pb, dst, len);
         dst[len] = 0;
         break;
@@ -150,7 +150,7 @@ static void read_ttag(AVFormatContext *s, int taglen, const char *key)
         val = dst;
 
     if (val)
-        av_metadata_set(&s->metadata, key, val);
+        av_metadata_set2(&s->metadata, key, val, 0);
 }
 
 void ff_id3v2_parse(AVFormatContext *s, int len, uint8_t version, uint8_t flags)

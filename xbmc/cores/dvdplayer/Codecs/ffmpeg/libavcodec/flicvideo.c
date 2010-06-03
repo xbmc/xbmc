@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/flicvideo.c
+ * @file
  * Autodesk Animator FLI/FLC Video Decoder
  * by Mike Melanson (melanson@pcisys.net)
  * for more information on the .fli/.flc file format and all of its many
@@ -739,7 +739,7 @@ static av_cold int flic_decode_end(AVCodecContext *avctx)
 
 AVCodec flic_decoder = {
     "flic",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_FLIC,
     sizeof(FlicDecodeContext),
     flic_decode_init,

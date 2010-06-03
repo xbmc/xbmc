@@ -20,7 +20,7 @@
  */
 
 /**
-* @file libavcodec/libschroedingerdec.c
+* @file
 * Dirac decoder support via libschroedinger-1.0 libraries. More details about
 * the Schroedinger project can be found at http://www.diracvideo.org/.
 * The library implements Dirac Specification Version 2.2.
@@ -347,7 +347,7 @@ static void libschroedinger_flush(AVCodecContext *avccontext)
 
 AVCodec libschroedinger_decoder = {
     "libschroedinger",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_DIRAC,
     sizeof(FfmpegSchroDecoderParams),
     libschroedinger_decode_init,

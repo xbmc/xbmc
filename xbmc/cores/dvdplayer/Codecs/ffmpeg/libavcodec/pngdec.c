@@ -489,6 +489,8 @@ static int decode_frame(AVCodecContext *avctx,
                     avctx->pix_fmt = PIX_FMT_MONOBLACK;
                 } else if (s->color_type == PNG_COLOR_TYPE_PALETTE) {
                     avctx->pix_fmt = PIX_FMT_PAL8;
+                } else if (s->color_type == PNG_COLOR_TYPE_GRAY_ALPHA) {
+                    avctx->pix_fmt = PIX_FMT_Y400A;
                 } else {
                     goto fail;
                 }
@@ -599,7 +601,7 @@ static int decode_frame(AVCodecContext *avctx,
  exit_loop:
      /* handle p-frames only if a predecessor frame is available */
      if(s->last_picture->data[0] != NULL) {
-         if(!(avpkt->flags & PKT_FLAG_KEY)) {
+         if(!(avpkt->flags & AV_PKT_FLAG_KEY)) {
             int i, j;
             uint8_t *pd = s->current_picture->data[0];
             uint8_t *pd_last = s->last_picture->data[0];
@@ -656,7 +658,7 @@ static av_cold int png_dec_end(AVCodecContext *avctx)
 
 AVCodec png_decoder = {
     "png",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_PNG,
     sizeof(PNGDecContext),
     png_dec_init,
