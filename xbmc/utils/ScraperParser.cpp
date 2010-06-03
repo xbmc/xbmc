@@ -21,10 +21,6 @@
 
 #include "ScraperParser.h"
 
-#ifdef _LINUX
-#include "system.h"
-#endif
-
 #include "addons/AddonManager.h"
 #include "RegExp.h"
 #include "HTMLUtil.h"
@@ -47,7 +43,6 @@ CScraperParser::CScraperParser()
 {
   m_pRootElement = NULL;
   m_document = NULL;
-  m_requiressettings = false;
   m_SearchStringEncoding = "UTF-8";
 }
 
@@ -85,7 +80,6 @@ void CScraperParser::Clear()
   delete m_document;
 
   m_document = NULL;
-  m_requiressettings = false;
   m_strFile.Empty();
 }
 
@@ -127,13 +121,11 @@ bool CScraperParser::LoadFromXML()
 
   m_pRootElement = m_document->RootElement();
   CStdString strValue = m_pRootElement->Value();
+  bool result=false;
   if (strValue == "scraper")
   {
     if (m_pRootElement->Attribute("cachePersistence"))
       m_persistence.SetFromTimeString(m_pRootElement->Attribute("cachePersistence"));
-
-    const char* requiressettings;
-    m_requiressettings = ((requiressettings = m_pRootElement->Attribute("requiressettings")) && strnicmp("true", requiressettings, 4) == 0);
 
     TiXmlElement* pChildElement = m_pRootElement->FirstChildElement("CreateSearchUrl");
     if (pChildElement)
@@ -146,12 +138,14 @@ bool CScraperParser::LoadFromXML()
     ADDONDEPS::iterator itr = deps.begin();
     while (itr != deps.end())
     {
-      AddonPtr dep;
-      if (!CAddonMgr::Get().GetAddon((*itr).first, dep, ADDON_SCRAPER_LIBRARY, false))
+      if (itr->first.Equals("xbmc.metadata"))
       {
-        itr++;
+        ++itr;
         continue;
-      }
+      }  
+      AddonPtr dep;
+      if (!CAddonMgr::Get().GetAddon((*itr).first, dep))
+        break;
       CStdString strFile = CUtil::AddFileToFolder(dep->Path(), dep->LibName());
       TiXmlDocument doc;
       if (doc.LoadFile(strFile))
@@ -165,8 +159,12 @@ bool CScraperParser::LoadFromXML()
       }
       itr++;
     }
-    return true;
+    result = true;
   }
+
+  if (result)
+    return true;
+
   delete m_document;
   m_document = NULL;
   m_pRootElement = NULL;

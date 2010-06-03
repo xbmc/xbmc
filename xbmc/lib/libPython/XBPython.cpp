@@ -139,6 +139,7 @@ XBPython::~XBPython()
 // message all registered callbacks that xbmc stopped playing
 void XBPython::OnPlayBackEnded()
 {
+  CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
     PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
@@ -153,6 +154,7 @@ void XBPython::OnPlayBackEnded()
 // message all registered callbacks that we started playing
 void XBPython::OnPlayBackStarted()
 {
+  CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
     PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
@@ -167,6 +169,7 @@ void XBPython::OnPlayBackStarted()
 // message all registered callbacks that we paused playing
 void XBPython::OnPlayBackPaused()
 {
+  CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
     PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
@@ -181,6 +184,7 @@ void XBPython::OnPlayBackPaused()
 // message all registered callbacks that we resumed playing
 void XBPython::OnPlayBackResumed()
 {
+  CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
     PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
@@ -195,6 +199,7 @@ void XBPython::OnPlayBackResumed()
 // message all registered callbacks that user stopped playing
 void XBPython::OnPlayBackStopped()
 {
+  CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
     PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
@@ -208,11 +213,13 @@ void XBPython::OnPlayBackStopped()
 
 void XBPython::RegisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 {
+  CSingleLock lock(m_critSection);
   m_vecPlayerCallbackList.push_back(pCallback);
 }
 
 void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 {
+  CSingleLock lock(m_critSection);
   PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
   while (it != m_vecPlayerCallbackList.end())
   {

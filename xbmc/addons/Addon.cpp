@@ -30,10 +30,12 @@
 #include "../osx/OSXGNUReplacements.h"
 #endif
 #include "log.h"
+#include <vector>
 #include <string.h>
 
 using XFILE::CDirectory;
 using XFILE::CFile;
+using namespace std;
 
 namespace ADDON
 {
@@ -73,6 +75,14 @@ const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*
       return "program";
   case CONTENT_VIDEO:
       return "video";
+  case CONTENT_WEATHER:
+    return "weather";
+  case CONTENT_SUBTITLES:
+    return "subtitles";
+  case CONTENT_LYRICS:
+    return "lyrics";
+  case CONTENT_RECENTLYADDED:
+    return "recentlyadded";
   case CONTENT_NONE:
   default:
       if (pretty) return g_localizeStrings.Get(231);
@@ -83,6 +93,7 @@ const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*
 const CONTENT_TYPE TranslateContent(const CStdString &string)
 {
   if (string.Equals("albums")) return CONTENT_ALBUMS;
+  else if (string.Equals("music")) return CONTENT_ALBUMS;
   else if (string.Equals("artists")) return CONTENT_ARTISTS;
   else if (string.Equals("movies")) return CONTENT_MOVIES;
   else if (string.Equals("tvshows")) return CONTENT_TVSHOWS;
@@ -92,6 +103,10 @@ const CONTENT_TYPE TranslateContent(const CStdString &string)
   else if (string.Equals("image")) return CONTENT_IMAGE;
   else if (string.Equals("program")) return CONTENT_PROGRAM;
   else if (string.Equals("video")) return CONTENT_VIDEO;
+  else if (string.Equals("weather")) return CONTENT_WEATHER;
+  else if (string.Equals("subtitles")) return CONTENT_SUBTITLES;
+  else if (string.Equals("lyrics")) return CONTENT_LYRICS;
+  else if (string.Equals("recentlyadded")) return CONTENT_RECENTLYADDED;
   else return CONTENT_NONE;
 }
 
@@ -107,7 +122,7 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
     }
     case ADDON::ADDON_SCRAPER_LIBRARY:
     {
-      return "scraper-library";
+      return "xbmc.metadata.scraper.library";
     }
     case ADDON::ADDON_SCREENSAVER:
     {
@@ -149,10 +164,6 @@ const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
         return g_localizeStrings.Get(166);
       return "xbmc.gui.skin";
     }
-    case ADDON::ADDON_SCRIPT_LIBRARY:
-    {
-      return "xbmc.python.library";
-    }
     case ADDON::ADDON_REPOSITORY:
     {
       if (pretty)
@@ -170,14 +181,13 @@ const ADDON::TYPE TranslateType(const CStdString &string)
 {
   if (string.Equals("pvrclient")) return ADDON_PVRDLL;
   else if (string.Equals("xbmc.metadata.scraper")) return ADDON_SCRAPER;
-  else if (string.Equals("scraper-library")) return ADDON_SCRAPER_LIBRARY;
+  else if (string.Equals("xbmc.metadata.scraper.library")) return ADDON_SCRAPER_LIBRARY;
   else if (string.Equals("xbmc.ui.screensaver")) return ADDON_SCREENSAVER;
   else if (string.Equals("xbmc.player.musicviz")) return ADDON_VIZ;
   else if (string.Equals("visualization-library")) return ADDON_VIZ_LIBRARY;
   else if (string.Equals("plugin")) return ADDON_PLUGIN;
   else if (string.Equals("xbmc.python.script")) return ADDON_SCRIPT;
   else if (string.Equals("xbmc.gui.skin")) return ADDON_SKIN;
-  else if (string.Equals("xbmc.python.library")) return ADDON_SCRIPT_LIBRARY;
   else if (string.Equals("xbmc.addon.repository")) return ADDON_REPOSITORY;
   else return ADDON_UNKNOWN;
 }
@@ -230,6 +240,7 @@ AddonProps::AddonProps(cp_plugin_info_t *props)
   , name(props->name)
   , path(props->plugin_path)
   , author(props->provider_name)
+  , stars(0)
 {
   //FIXME only considers the first registered extension for each addon
   if (props->extensions->ext_point_id)
@@ -243,8 +254,9 @@ AddonProps::AddonProps(cp_plugin_info_t *props)
     description = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "description");
     disclaimer = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "disclaimer");
     license = CAddonMgr::Get().GetExtValue(metadata->configuration, "license");
-    // FIXME this needs to grab all siblings...
-    contents.insert(TranslateContent(CAddonMgr::Get().GetExtValue(metadata->configuration, "content")));
+    vector<CStdString> content = CAddonMgr::Get().GetExtValues(metadata->configuration,"supportedcontent");
+    for (unsigned int i=0;i<content.size();++i)
+      contents.insert(TranslateContent(content[i]));
     //FIXME other stuff goes here
     //CStdString version = CAddonMgr::Get().GetExtValue(metadata->configuration, "minversion/xbmc");
   }
@@ -349,6 +361,7 @@ void CAddon::BuildLibName(cp_plugin_info_t *props)
       case ADDON_SCREENSAVER:
       case ADDON_SCRIPT:
       case ADDON_SCRAPER:
+      case ADDON_SCRAPER_LIBRARY:
         {
           CStdString temp = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@library");
           m_strLibName = temp;
@@ -367,16 +380,10 @@ void CAddon::BuildLibName(cp_plugin_info_t *props)
 bool CAddon::LoadStrings()
 {
   // Path where the language strings reside
-  CStdString chosen = m_props.path;
-  CStdString fallback = m_props.path;
-  CUtil::AddFileToFolder(chosen, "resources", chosen);
-  CUtil::AddFileToFolder(fallback, "resources", fallback);
-  CUtil::AddFileToFolder(chosen, "language", chosen);
-  CUtil::AddFileToFolder(fallback, "language", fallback);
-  CUtil::AddFileToFolder(chosen, g_guiSettings.GetString("locale.language"), chosen);
-  CUtil::AddFileToFolder(fallback, "English", fallback);
-  CUtil::AddFileToFolder(chosen, "strings.xml", chosen);
-  CUtil::AddFileToFolder(fallback, "strings.xml", fallback);
+  CStdString chosenPath;
+  chosenPath.Format("resources/language/%s/strings.xml", g_guiSettings.GetString("locale.language").c_str());
+  CStdString chosen = CUtil::AddFileToFolder(m_props.path, chosenPath);
+  CStdString fallback = CUtil::AddFileToFolder(m_props.path, "resources/language/English/strings.xml");
 
   m_hasStrings = m_strings.Load(chosen, fallback);
   return m_checkedStrings = true;
@@ -402,9 +409,7 @@ CStdString CAddon::GetString(uint32_t id)
  */
 bool CAddon::HasSettings()
 {
-  CStdString addonFileName = m_props.path;
-  CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
-  CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
+  CStdString addonFileName = CUtil::AddFileToFolder(m_props.path, "resources/settings.xml");
 
   // Load the settings file to verify it's valid
   TiXmlDocument xmlDoc;
@@ -421,9 +426,7 @@ bool CAddon::HasSettings()
 
 bool CAddon::LoadSettings()
 {
-  CStdString addonFileName = m_props.path;
-  CUtil::AddFileToFolder(addonFileName, "resources", addonFileName);
-  CUtil::AddFileToFolder(addonFileName, "settings.xml", addonFileName);
+  CStdString addonFileName = CUtil::AddFileToFolder(m_props.path, "resources/settings.xml");
 
   if (!m_addonXmlDoc.LoadFile(addonFileName))
   {
@@ -441,11 +444,14 @@ bool CAddon::LoadSettings()
   return LoadUserSettings();
 }
 
-bool CAddon::LoadUserSettings()
+bool CAddon::LoadUserSettings(bool create)
 {
   // Load the user saved settings. If it does not exist, create it
   if (!m_userXmlDoc.LoadFile(m_userSettingsPath))
   {
+    if (!create)
+      return false;
+
     TiXmlDocument doc;
     TiXmlDeclaration decl("1.0", "UTF-8", "yes");
     doc.InsertEndChild(decl);
@@ -455,6 +461,7 @@ bool CAddon::LoadUserSettings()
 
     m_userXmlDoc = doc;
   }
+
   return true;
 }
 
@@ -565,12 +572,12 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& value, const
 
   // Setting not found, add it
   TiXmlElement nodeSetting("setting");
-  nodeSetting.SetAttribute("id", std::string(key.c_str())); //FIXME otherwise attribute value isn't updated
+  nodeSetting.SetAttribute("id", key.c_str()); //FIXME otherwise attribute value isn't updated
   if (!type.empty())
-    nodeSetting.SetAttribute("type", std::string(type.c_str()));
+    nodeSetting.SetAttribute("type", type.c_str());
   else
     nodeSetting.SetAttribute("type", "text");
-  nodeSetting.SetAttribute("value", std::string(value.c_str()));
+  nodeSetting.SetAttribute("value", value.c_str());
   m_userXmlDoc.RootElement()->InsertEndChild(nodeSetting);
 }
 
@@ -589,6 +596,11 @@ const CStdString CAddon::Icon() const
   if (CURL::IsFullPath(m_props.icon))
     return m_props.icon;
   return CUtil::AddFileToFolder(m_props.path, m_props.icon);
+}
+
+ADDONDEPS CAddon::GetDeps()
+{
+  return CAddonMgr::Get().GetDeps(ID());
 }
 
 /**
@@ -614,8 +626,6 @@ TYPE CAddonLibrary::SetAddonType()
     return ADDON_SCRAPER;
   else if (Type() == ADDON_VIZ_LIBRARY)
     return ADDON_VIZ;
-  else if (Type() == ADDON_SCRIPT_LIBRARY)
-    return ADDON_SCRIPT;
   else
     return ADDON_UNKNOWN;
 }

@@ -38,7 +38,11 @@ typedef enum
   CONTENT_AUDIO,
   CONTENT_IMAGE,
   CONTENT_PROGRAM,
-  CONTENT_VIDEO
+  CONTENT_VIDEO,
+  CONTENT_SUBTITLES,
+  CONTENT_WEATHER,
+  CONTENT_LYRICS,
+  CONTENT_RECENTLY_ADDED
 } CONTENT_TYPE;
 
 namespace ADDON
@@ -55,8 +59,7 @@ namespace ADDON
     ADDON_PLUGIN,
     ADDON_REPOSITORY,
     ADDON_VIZ_LIBRARY, // add noninstallable after this and installable before
-    ADDON_SCRAPER_LIBRARY,
-    ADDON_SCRIPT_LIBRARY,
+    ADDON_SCRAPER_LIBRARY
   } TYPE;
 
   class IAddon;
@@ -104,7 +107,7 @@ namespace ADDON
     virtual CStdString GetSetting(const CStdString& key) const =0;
     virtual TiXmlElement* GetSettingsXML() =0;
     virtual CStdString GetString(uint32_t id) =0;
-    virtual ADDONDEPS& GetDeps() =0;
+    virtual ADDONDEPS GetDeps() =0;
 
   private:
     friend class CAddonMgr;

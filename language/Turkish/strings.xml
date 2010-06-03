@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 16/04/2010-->
-<!--Based on English strings revision 29298-->
+<!--Date of translation: 23/05/2010-->
+<!--Based on English strings revision 30365-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -287,7 +287,7 @@
   <string id="336">Çerçeve hızı çeviricisi</string>
   <string id="337">Ses çıkışı</string>
   <string id="338">Analog</string>
-  <string id="339">Dijital</string>
+  <string id="339">Optik/Koaksiyel</string>
   <string id="340">Çeşitli sanatçılar</string>
   <string id="341">Diski oynat</string>
   <string id="342">Filmler</string>
@@ -365,6 +365,7 @@
   <string id="417">Görünüm: Büyük simgeler</string>
   <string id="418">Düşük</string>
   <string id="419">Yüksek</string>
+  <string id="420">HDMI</string>
 
   <string id="422">Albüm bilgisini sil</string>
   <string id="423">CD bilgisini sil</string>
@@ -508,6 +509,7 @@
   <string id="571">Varsayılan</string>
   <string id="572">Stüdyo</string>
   <string id="573">Yol</string>
+  <string id="574">Ülke</string>
 
   <string id="580">Sıralama yönü</string>
   <string id="581">Sıralama yöntemi</string>
@@ -584,6 +586,7 @@
   <string id="662">Bu dosya artık mevcut değil.</string>
   <string id="663">Kitaplıktan kaldırmak ister misiniz?</string>
   <string id="664">Betiklere gözat</string>
+  <string id="665">Sıkıştırma düzeyi</string>
 
   <string id="700">Kitaplık temizleniyor</string>
   <string id="701">Eski şarkılar kitaplıktan kaldırılıyor</string>
@@ -822,6 +825,9 @@
   <string id="2050">Süre</string>
 
   <string id="2100">Betik başarısız! : %s</string>
+  <string id="2101">Yeni bir sürümü gerekli - Günlüğe bakın</string>
+  <string id="2102">Grafik Kartı</string>
+  <string id="2103">Gereksinimler karşılanmıyor - Günlüğe bakın</string>
 
   <string id="4501">LCD/VFD'yi etkinleştir</string>
 
@@ -989,6 +995,8 @@
   <string id="13013">Yeniden Başlat</string>
   <string id="13014">Simge Durumuna</string>
   <string id="13015">Güç düğmesi eylemi</string>
+
+  <string id="13050">Düşük pil ile çalışıyor</string>
 
   <string id="13020">Başka bir oturum mu etkin, ssh üzerinden olabilir mi?</string>
   <string id="13021">Çıkarılabilir sabit disk bağlandı</string>
@@ -1219,7 +1227,12 @@
   <string id="13422">Slayt gösterisine buradan başla</string>
   <string id="13423">Bu yolu hatırla</string>
   <string id="13424">Piksel tampon nesnelerini kullan</string>
-  <string id="13425">Broadcom Crystal HD</string>
+  <string id="13425">Donanım hızlandırmasına izin ver (VDPAU)</string>
+  <string id="13426">Donanım hızlandırmasına izin ver (VAAPI)</string>
+  <string id="13427">Donanım hızlandırmasına izin ver (DXVA2)</string>
+  <string id="13428">Donanım hızlandırmasına izin ver (CrystalHD)</string>
+  <string id="13429">Donanım hızlandırmasına izin ver (VDADecoder)</string>
+  <string id="13430">Donanım hızlandırmasına izin ver (OpenMax)</string>
 
   <string id="13500">Ses/Video senkron biçimi</string>
   <string id="13501">Ses saati</string>
@@ -1872,6 +1885,7 @@
   <string id="20448">Bilgi indirilemiyor</string>
   <string id="20449">Sunucu büyük olasılıkla kullanılamaz.</string>
   <string id="20450">Taramaya devam etmek istiyor musunuz?</string>
+  <string id="20451">Ülkeler</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Gizli dosya ve dizinleri göster</string>
@@ -2115,6 +2129,7 @@
   <string id="24000">Eklenti</string>
   <string id="24001">Eklentiler</string>
   <string id="24002">Eklenti seçenekleri</string>
+  <string id="24003">Eklenti Bilgisi</string>
 
   <string id="24005">Eklenti</string>
   <string id="24007">Scraper</string>
@@ -2123,19 +2138,25 @@
   <string id="24010">Görsel öğe</string>
   <string id="24011">Eklenti deposu</string>
 
-  <string id="24020">Eklentiyi yapılandır</string>
-  <string id="24021">Eklentiyi devre dışı bırak</string>
-  <string id="24022">Eklentiyi etkinleştir</string>
+  <string id="24020">Yapılandır</string>
+  <string id="24021">Devre dışı bırak</string>
+  <string id="24022">Etkinleştir</string>
   <string id="24023">Eklenti devre dışı</string>
   <string id="24027">Hava Durumu hizmeti</string>
   <string id="24028">Weather.com (standart)</string>
   <string id="24030">Bu eklenti yapılandırılamaz</string>
   <string id="24031">Ayarlar yüklenirken hata oluştu</string>
+  <string id="24032">Tüm depolar</string>
+  <string id="24033">Depolar</string>
+  <string id="24034">Güncelleştirmeleri denetle</string>
+  <string id="24035">Yenileme işlemini zorla</string>
+  <string id="24036">Değişim günlüğü</string>
 
   <string id="24050">Kullanılabilir Eklentiler</string>
   <string id="24051">Sürüm:</string>
-  <string id="24052">Yasal Uyarı:</string>
+  <string id="24052">Yasal Uyarı</string>
   <string id="24053">Lisans:</string>
+  <string id="24054">Değişim günlüğü</string>
   <string id="24059">Bu eklentiyi etkinleştirmek ister misiniz?</string>
   <string id="24060">Bu eklentiyi devre dışı bırakmak ister misiniz?</string>
   <string id="24061">Kullanılabilir eklenti güncelleştirmesi!</string>
@@ -2145,21 +2166,25 @@
   <string id="24065">Eklenti güncelleştirildi</string>
   <string id="24066">Karşıdan yüklenen eklenti iptal edilsin mi?</string>
   <string id="24067">Şu anda karşıdan yüklenen eklentiler</string>
+  <string id="24068">Güncelleştirme var</string>
+  <string id="24069">Güncelleştir</string>
 
   <string id="24070">Eklenti kullanılamaz</string>
   <string id="24071">Bilinmeyen bir hata oluştu</string>
   <string id="24072">Ayarlar gerekli</string>
   <string id="24073">Bağlanılamadı</string>
   <string id="24074">Yeniden başlatmak gerekiyor</string>
+  <string id="24075">Devre dışı bırak</string>
   <string id="24080">Yeniden bağlanılsın mı?</string>
-  <string id="24089">Add-on restarts</string>
+  <string id="24089">Eklenti yeniden başlatmaları</string>
 
   <string id="24090">Eklenti yöneticisini kilitle</string>
 
-  <string id="24091">Donanım hızlandırmasına izin ver (VDPAU)</string>
-  <string id="24092">Donanım hızlandırmasına izin ver (VAAPI)</string>
-  <string id="24093">Donanım hızlandırmasına izin ver (DXVA2)</string>
-  <string id="24094">Donanım hızlandırmasına izin ver (CrystalHD)</string>
+  <string id="24091"></string>
+  <string id="24092"></string>
+  <string id="24093"></string>
+  <string id="24094"></string>
+  <string id="24095"></string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Kitaplık Modu</string>
@@ -2251,6 +2276,7 @@
   <string id="34002">Wav</string>
   <string id="34003">DXVA2</string>
   <string id="34004">VAAPI</string>
+  <string id="34005">Flac</string>
 
   <string id="34100">Hoparlör Yapılandırma</string>
   <string id="34101">2.0</string>

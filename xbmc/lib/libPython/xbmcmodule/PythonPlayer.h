@@ -50,7 +50,6 @@ class CPythonPlayer : public IPlayerCallback
 {
 public:
   CPythonPlayer();
-  virtual ~CPythonPlayer(void);
   void    SetCallback(PyObject *object);
   void    OnPlayBackEnded();
   void    OnPlayBackStarted();
@@ -59,6 +58,11 @@ public:
   void    OnPlayBackStopped();
   void    OnQueueNextItem() {}; // unimplemented
 
+  void    Acquire();
+  void    Release();
+
+  PyObject* m_callback;
 protected:
-  PyObject*   pCallback;
+  virtual ~CPythonPlayer(void);
+  long   m_refs;
 };

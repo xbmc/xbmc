@@ -98,7 +98,9 @@ struct _env
 };
 
 #define EMU_MAX_ENVIRONMENT_ITEMS 50
-char *dll__environ[EMU_MAX_ENVIRONMENT_ITEMS + 1];
+static char *dll__environ_imp[EMU_MAX_ENVIRONMENT_ITEMS + 1];
+extern "C" char **dll__environ = dll__environ_imp;
+
 CRITICAL_SECTION dll_cs_environ;
 
 #define dll_environ    (*dll___p__environ())   /* pointer to environment table */
@@ -1440,6 +1442,12 @@ extern "C"
     OutputDebugString("\n");
     CLog::Log(LOGERROR, "%s emulated function failed",  __FUNCTION__);
     return strlen(tmp);
+  }
+
+  int dll_fscanf(FILE* stream, const char* format, ...)
+  {
+    CLog::Log(LOGERROR, "%s is not implemented",  __FUNCTION__);
+    return -1;
   }
 
   int dll_fprintf(FILE* stream, const char* format, ...)

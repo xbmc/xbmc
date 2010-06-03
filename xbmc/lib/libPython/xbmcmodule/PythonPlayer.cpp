@@ -25,9 +25,64 @@
 
 using namespace PYXBMC;
 
+struct SPyEvent
+{
+  SPyEvent(CPythonPlayer* player
+         , const char*    function)
+  {
+    m_player   = player;
+    m_player->Acquire();
+    m_function = function;
+  }
+
+  ~SPyEvent()
+  {
+    m_player->Release();
+  }
+
+  const char*    m_function;
+  CPythonPlayer* m_player;
+};
+
+/*
+ * called from python library!
+ */
+static int SPyEvent_Function(void* e)
+{
+  SPyEvent* object = (SPyEvent*)e;
+  PyObject* ret    = NULL;
+
+  if(object->m_player->m_callback)
+    ret = PyObject_CallMethod(object->m_player->m_callback, (char*)object->m_function, NULL);
+
+  if(ret)
+  {
+    Py_DECREF(ret);
+  }
+
+  Py_BEGIN_ALLOW_THREADS
+  delete object;
+  Py_END_ALLOW_THREADS
+  return 0;
+
+}
+
 CPythonPlayer::CPythonPlayer()
 {
-  pCallback = NULL;
+  m_callback = NULL;
+  m_refs     = 1;
+  g_pythonParser.RegisterPythonPlayerCallBack(this);
+}
+
+void CPythonPlayer::Release()
+{
+  if(InterlockedDecrement(&m_refs) == 0)
+    delete this;
+}
+
+void CPythonPlayer::Acquire()
+{
+  InterlockedIncrement(&m_refs);
 }
 
 CPythonPlayer::~CPythonPlayer(void)
@@ -37,97 +92,36 @@ CPythonPlayer::~CPythonPlayer(void)
 
 void CPythonPlayer::OnPlayBackStarted()
 {
-  // aquire lock?
-  Py_INCREF(pCallback);
-  PyXBMC_AddPendingCall(Py_XBMC_Event_OnPlayBackStarted, pCallback);
+  PyXBMC_AddPendingCall(SPyEvent_Function, new SPyEvent(this, "onPlayBackStarted"));
   g_pythonParser.PulseGlobalEvent();
 }
 
 void CPythonPlayer::OnPlayBackEnded()
 {
-  // aquire lock?
-  Py_INCREF(pCallback);
-  PyXBMC_AddPendingCall(Py_XBMC_Event_OnPlayBackEnded, pCallback);
+  PyXBMC_AddPendingCall(SPyEvent_Function, new SPyEvent(this, "onPlayBackEnded"));
   g_pythonParser.PulseGlobalEvent();
 }
 
 void CPythonPlayer::OnPlayBackStopped()
 {
-  // aquire lock?
-  Py_INCREF(pCallback);
-  PyXBMC_AddPendingCall(Py_XBMC_Event_OnPlayBackStopped, pCallback);
+  PyXBMC_AddPendingCall(SPyEvent_Function, new SPyEvent(this, "onPlayBackStopped"));
   g_pythonParser.PulseGlobalEvent();
 }
 
 void CPythonPlayer::OnPlayBackPaused()
 {
-  // aquire lock?
-  Py_INCREF(pCallback);
-  PyXBMC_AddPendingCall(Py_XBMC_Event_OnPlayBackPaused, pCallback);
+  PyXBMC_AddPendingCall(SPyEvent_Function, new SPyEvent(this, "onPlayBackPaused"));
   g_pythonParser.PulseGlobalEvent();
 }
 
 void CPythonPlayer::OnPlayBackResumed()
 {
-  // aquire lock?
-  Py_INCREF(pCallback);
-  PyXBMC_AddPendingCall(Py_XBMC_Event_OnPlayBackResumed, pCallback);
+  PyXBMC_AddPendingCall(SPyEvent_Function, new SPyEvent(this, "onPlayBackResumed"));
   g_pythonParser.PulseGlobalEvent();
 }
 
 void CPythonPlayer::SetCallback(PyObject *object)
 {
-  pCallback = object;
-  g_pythonParser.RegisterPythonPlayerCallBack(this);
+  /* python lock should be held */
+  m_callback = object;
 }
-
-/*
- * called from python library!
- */
-int Py_XBMC_Event_OnPlayBackStarted(void* playerObject)
-{
-  if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, (char*)"onPlayBackStarted", NULL);
-  Py_DECREF((PyObject*)playerObject);
-  return 0;
-}
-
-/*
- * called from python library!
- */
-int Py_XBMC_Event_OnPlayBackEnded(void* playerObject)
-{
-  if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, (char*)"onPlayBackEnded", NULL);
-  Py_DECREF((PyObject*)playerObject);
-  return 0;
-}
-
-/*
- * called from python library!
- */
-int Py_XBMC_Event_OnPlayBackStopped(void* playerObject)
-{
-  if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, (char*)"onPlayBackStopped", NULL );
-  Py_DECREF((PyObject*)playerObject);
-  return 0;
-}
-
-/*
- * called from python library!
- */
-int Py_XBMC_Event_OnPlayBackPaused(void* playerObject)
-{
-  if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, (char*)"onPlayBackPaused", NULL );
-  Py_DECREF((PyObject*)playerObject);
-  return 0;
-}
-
-/*
- * called from python library!
- */
-int Py_XBMC_Event_OnPlayBackResumed(void* playerObject)
-{
-  if (playerObject != NULL) PyObject_CallMethod((PyObject*)playerObject, (char*)"onPlayBackResumed", NULL );
-  Py_DECREF((PyObject*)playerObject);
-  return 0;
-}
-

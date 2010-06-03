@@ -48,7 +48,6 @@ public:
   const CStdString GetSearchStringEncoding() { return m_SearchStringEncoding; }
   const CStdString Parse(const CStdString& strTag);
   bool HasFunction(const CStdString& strTag);
-  bool RequiresSettings() { return m_requiressettings; }
 
   CStdString m_param[MAX_SCRAPER_BUFFERS];
   void ClearCache();
@@ -71,7 +70,6 @@ private:
 
   const char* m_SearchStringEncoding;
   CDateTimeSpan m_persistence;
-  bool m_requiressettings;
 
   CStdString m_strFile;
 };

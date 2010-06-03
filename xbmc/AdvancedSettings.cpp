@@ -89,6 +89,7 @@ void CAdvancedSettings::Initialize()
   m_videoHighQualityScalingMethod = VS_SCALINGMETHOD_BICUBIC_SOFTWARE;
   m_videoVDPAUScaling = false;
   m_videoNonLinStretchRatio = 0.5f;
+  m_videoAllowLanczos3 = false;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -406,6 +407,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement,"highqualityscalingmethod",m_videoHighQualityScalingMethod);
     XMLUtils::GetBoolean(pElement,"vdpauscaling",m_videoVDPAUScaling);
     XMLUtils::GetFloat(pElement, "nonlinearstretchratio", m_videoNonLinStretchRatio, 0.01f, 1.0f);
+    XMLUtils::GetBoolean(pElement,"allowlanczos3",m_videoAllowLanczos3);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");

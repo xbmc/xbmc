@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 04/30/2010-->
+<!--Date of translation: 05/12/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -269,7 +269,7 @@
   <string id="336">프레임레이트 변환</string>
   <string id="337">오디오 출력</string>
   <string id="338">아날로그</string>
-  <string id="339">디지털</string>
+  <string id="339">광학/동축</string>
   <string id="340">여러 아티스트</string>
   <string id="341">디스크 재생</string>
   <string id="342">영화</string>
@@ -485,6 +485,7 @@
   <string id="571">기본</string>
   <string id="572">스튜디오</string>
   <string id="573">경로</string>
+  <string id="574">국가</string>
   <string id="580">정렬 방향</string>
   <string id="581">정렬 방법</string>
   <string id="582">보기 모드</string>
@@ -925,6 +926,7 @@
   <string id="13023">정상적으로 장치 제거됨</string>
   <string id="13024">조이스틱 연결됨</string>
   <string id="13025">조이스틱 연결해제됨</string>
+  <string id="13050">낮은 배터리에서 실행중</string>
   <string id="13100">깜박임 필터</string>
   <string id="13101">드라이버 선택 허용 (재시작 필요)</string>
   <string id="13105">수직동기</string>
@@ -997,7 +999,7 @@
   <string id="13253">이동 취소</string>
   <string id="13270">하드웨어:</string>
   <string id="13271">CPU 사용량:</string>
-  <string id="13274">연결됨, 그러나 DNS 사용할수 없습니다.</string>
+  <string id="13274">연결됨, 그러나 DNS 를 사용할수 없습니다.</string>
   <string id="13275">하드디스크</string>
   <string id="13276">DVD-롬</string>
   <string id="13277">저장장치</string>
@@ -1743,6 +1745,7 @@
   <string id="20448">정보를 다운로드할수 없음</string>
   <string id="20449">서버를 전혀 사용할수 없는것 같습니다.</string>
   <string id="20450">검색을 계속 하시겠습니까?</string>
+  <string id="20451">국가</string>
   <string id="21330">숨김 파일 및 디렉토리 보이기</string>
   <string id="21331">TuxBox 클라이언트</string>
   <string id="21332">경고: 대상 TuxBox 장치가 녹음-모드 입니다!</string>

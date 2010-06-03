@@ -427,6 +427,8 @@ void CWinRenderer::UpdateVideoFilter()
       return;
     }
 
+    CLog::Log(LOGDEBUG, __FUNCTION__": Loading shader %s", effectString.c_str());
+
     if(!LoadEffect(m_YUV2RGBHQScalerEffect, effectString))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
@@ -777,8 +779,11 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
     || method == VS_SCALINGMETHOD_CUBIC
     || method == VS_SCALINGMETHOD_LANCZOS2
     || method == VS_SCALINGMETHOD_LANCZOS3_FAST
-    || method == VS_SCALINGMETHOD_LANCZOS3
     || method == VS_SCALINGMETHOD_AUTO)
+      return true;
+
+    //lanczos3 is only allowed through advancedsettings.xml because it's very slow
+    if (g_advancedSettings.m_videoAllowLanczos3 && method == VS_SCALINGMETHOD_LANCZOS3)
       return true;
   }
   else if(method == VS_SCALINGMETHOD_LINEAR)

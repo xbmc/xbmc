@@ -21,6 +21,7 @@
 
 #include "system.h"
 #include "GUIUserMessages.h"
+#include "GUIDialogOK.h"
 #include "GUIWindowWeather.h"
 #include "GUIImage.h"
 #include "utils/Weather.h"
@@ -30,6 +31,7 @@
 #include "lib/libPython/XBPython.h"
 #include "LangInfo.h"
 #include "utils/log.h"
+#include "utils/SystemInfo.h"
 #include "Settings.h"
 #include "addons/AddonManager.h"
 
@@ -71,10 +73,6 @@ CGUIWindowWeather::CGUIWindowWeather(void)
     : CGUIWindow(WINDOW_WEATHER, "MyWeather.xml")
 {
   m_iCurWeather = 0;
-#ifdef _USE_ZIP_
-
-
-#endif
 }
 
 CGUIWindowWeather::~CGUIWindowWeather(void)
@@ -142,6 +140,18 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       else
         CallScript();
     }
+    break;
+  case GUI_MSG_WINDOW_INIT:
+    {
+      if (!g_sysinfo.HasInternet())
+      {
+        CGUIDialogOK::ShowAndGetInput(8,21451,20022,20022);
+        g_windowManager.PreviousWindow();
+        return true;
+      }
+    }
+    break;
+  default:
     break;
   }
 

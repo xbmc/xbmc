@@ -120,16 +120,7 @@ VECADDONS CRepository::Parse()
   doc.LoadFile(file);
   if (doc.RootElement())
   {
-    CAddonMgr::Get().AddonsFromInfoXML(doc.RootElement(), result);
-    // FIXME no need for this once everything is c-pluff'd
-    TiXmlElement* element = doc.RootElement()->FirstChildElement("addoninfo");
-    while (element)
-    {
-      AddonPtr addon;
-      if (CAddonMgr::Get().AddonFromInfoXML(element, addon, m_info))
-        result.push_back(addon);
-      element = element->NextSiblingElement("addoninfo");
-    }
+    CAddonMgr::Get().AddonsFromRepoXML(doc.RootElement(), result);
     for (IVECADDONS i = result.begin(); i != result.end(); ++i)
     {
       AddonPtr addon = *i;

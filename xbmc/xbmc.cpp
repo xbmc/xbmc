@@ -135,7 +135,7 @@ int main(int argc, char* argv[])
         g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
         g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
       }
-      else if (argv[i][0] != '-')
+      else if (strlen(argv[i]) != 0 && argv[i][0] != '-')
       {
         CFileItemPtr pItem(new CFileItem(argv[i]));
         pItem->m_strPath = argv[i];

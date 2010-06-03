@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="30000">디비디 순서 사용</string>
+    <string id="30001">절대 순서 사용(하나의 시즌)</string>
+    <string id="30002">팬아트 사용</string>
+    <string id="30003">포스트 우선</string>
+    <string id="30004">언어</string>
+</strings>

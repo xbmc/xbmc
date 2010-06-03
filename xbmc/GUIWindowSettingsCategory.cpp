@@ -2262,8 +2262,7 @@ void CGUIWindowSettingsCategory::FillInSoundSkins(CSetting *pSetting)
   //find skins...
   CFileItemList items;
   CDirectory::GetDirectory("special://xbmc/sounds/", items);
-  if (!CSpecialProtocol::XBMCIsHome())
-    CDirectory::GetDirectory("special://home/sounds/", items);
+  CDirectory::GetDirectory("special://home/sounds/", items);
 
   int iCurrentSoundSkin = 0;
   int iSoundSkin = 0;
@@ -2859,7 +2858,7 @@ void CGUIWindowSettingsCategory::FillInWeatherScripts(CGUISpinControlEx *pContro
   pControl->AddLabel(g_localizeStrings.Get(24028), j++);
 
   //find weather scripts....
-  CAddonMgr::Get().GetAddons(ADDON_SCRIPT, addons);
+  CAddonMgr::Get().GetAddons(ADDON_SCRIPT, addons, CONTENT_WEATHER);
   if (!addons.empty())
   {
     for (unsigned int i = 0; i < addons.size(); i++)

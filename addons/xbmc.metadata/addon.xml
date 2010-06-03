@@ -4,4 +4,5 @@
     <import addon="xbmc.core" version="0.1"/>
   </requires>
   <extension-point id="scraper" schema="scraper.xsd"/>
+  <extension-point id="scraper.library" schema="scraper.xsd"/>
 </addon>
