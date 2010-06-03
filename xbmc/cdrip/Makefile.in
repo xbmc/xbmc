@@ -9,6 +9,7 @@ SRCS=CDDARipper.cpp \
      EncoderLame.cpp \
      EncoderVorbis.cpp \
      EncoderWav.cpp \
+     EncoderFlac.cpp \
 
 LIB=cdrip.a
 

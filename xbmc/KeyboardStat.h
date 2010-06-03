@@ -3,6 +3,27 @@
 
 #pragma once
 
+/*
+ *      Copyright (C) 2007-2010 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 //
 // C++ Interface: CKeyboard
 //
@@ -16,11 +37,7 @@
 // The mapping must be specified by an xml configuration that should be able to access everything available,
 // but this allows for double/redundant or ambiguous mapping definition, e.g.
 // ASCII/unicode could be derived from scancodes, virtual keys, modifiers and/or other ASCII/unicode.
-//
-// Author: Team XBMC <>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
+
 #include "XBMC_events.h"
 #include "system.h" // for DWORD
 

@@ -96,18 +96,18 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\..\..\objs\release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\..\..\..\objs\release\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Multithreaded|Win32'">.\..\..\..\objs\win32\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Multithreaded|Win32'">.\..\..\..\objs\release_mt\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Singlethreaded|Win32'">.\..\..\..\objs\release_st\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Singlethreaded|Win32'">.\..\..\..\objs\release_st\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\..\..\objs\debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\..\..\..\objs\debug\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Singlethreaded|Win32'">.\..\..\..\objs\debug_st\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Singlethreaded|Win32'">.\..\..\..\objs\debug_st\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Multithreaded|Win32'">.\..\..\..\objs\win32\vc2010\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Multithreaded|Win32'">.\..\..\..\objs\debug_mt\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)libs\$(TargetName)\$(ConfigurationName)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)objs\$(TargetName)\$(ConfigurationName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Multithreaded|Win32'">$(SolutionDir)libs\$(TargetName)\$(ConfigurationName)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Multithreaded|Win32'">$(SolutionDir)objs\$(TargetName)\$(ConfigurationName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Singlethreaded|Win32'">$(SolutionDir)libs\$(TargetName)\$(ConfigurationName)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release Singlethreaded|Win32'">$(SolutionDir)objs\$(TargetName)\$(ConfigurationName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)libs\$(TargetName)\$(ConfigurationName)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)objs\$(TargetName)\$(ConfigurationName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Singlethreaded|Win32'">$(SolutionDir)libs\$(TargetName)\$(ConfigurationName)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Singlethreaded|Win32'">$(SolutionDir)objs\$(TargetName)\$(ConfigurationName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Multithreaded|Win32'">$(SolutionDir)libs\$(TargetName)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Multithreaded|Win32'">$(SolutionDir)objs\$(TargetName)\$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug Multithreaded|Win32'">$(ProjectName)239MT_D</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release Multithreaded|Win32'">$(ProjectName)239MT</TargetName>
   </PropertyGroup>

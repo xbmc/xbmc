@@ -1731,7 +1731,6 @@ extern "C"
     CFile* pFile = g_emuFileWrapper.GetFileXbmcByDescriptor(fd);
     if (pFile != NULL)
     {
-      CLog::Log(LOGINFO, "Stating open file");
       if (pFile->GetLength() <= LONG_MAX)
         buffer->st_size = (_off_t)pFile->GetLength();
       else

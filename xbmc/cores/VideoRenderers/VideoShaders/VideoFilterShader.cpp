@@ -26,7 +26,7 @@
 #include <string>
 #include <math.h>
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 2
 
 using namespace Shaders;
 using namespace std;
@@ -139,6 +139,11 @@ void ConvolutionFilterShader::OnCompiledAndLinked()
     glTexImage1D(GL_TEXTURE_1D, 0, m_internalformat, kernel.GetSize(), 0, GL_RGBA, GL_FLOAT, kernel.GetFloatPixels());
   else
     glTexImage1D(GL_TEXTURE_1D, 0, m_internalformat, kernel.GetSize(), 0, GL_RGBA, GL_UNSIGNED_BYTE, kernel.GetUint8Pixels());
+#if defined(HAS_GL)
+#elif HAS_GLES == 2
+  //TODO: GL_RGBA16F_ARB for GLES!?
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size, 1, 0, GL_RGBA, GL_FLOAT, img);
+#endif
 
   glActiveTexture(GL_TEXTURE0);
 

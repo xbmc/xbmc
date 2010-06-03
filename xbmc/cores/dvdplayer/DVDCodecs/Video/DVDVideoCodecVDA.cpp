@@ -404,6 +404,7 @@ CDVDVideoCodecVDA::CDVDVideoCodecVDA() : CDVDVideoCodec()
 CDVDVideoCodecVDA::~CDVDVideoCodecVDA()
 {
   Dispose();
+  pthread_mutex_destroy(&m_queue_mutex);
   //delete m_dll;
 }
 

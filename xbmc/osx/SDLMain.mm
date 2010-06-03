@@ -5,8 +5,8 @@
     Feel free to customize this file to suit your needs
 */
 /*
-  SDLMain.m and SDLMain.h are licensed under the terms of GNU Lesser General
-  Public License, version 2.
+  SDLMain.m and SDLMain.h carry neither a copyright or license. They are in the
+  public domain.
 */
 
 #import "SDL/SDL.h"

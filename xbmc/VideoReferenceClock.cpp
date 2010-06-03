@@ -30,7 +30,7 @@
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
   #include <sstream>
   #include <X11/extensions/Xrandr.h>
-  #define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate"
+  #define NVSETTINGSCMD "nvidia-settings -nt -q RefreshRate3"
 #elif defined(__APPLE__)
   #include <QuartzCore/CVDisplayLink.h>
   #include "CocoaInterface.h"

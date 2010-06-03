@@ -29,7 +29,7 @@
 #include <string>
 #include <sstream>
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 2
 
 using namespace Shaders;
 using namespace std;
@@ -147,6 +147,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, bool str
   m_hVTex    = -1;
   m_hStretch = -1;
 
+#ifdef HAS_GL
   if(rect)
     m_defines += "#define XBMC_texture_rectangle 1\n";
   else
@@ -164,10 +165,30 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags, bool str
     m_defines += "#define XBMC_STRETCH 0\n";
 
   VertexShader()->LoadSource("yuv2rgb_vertex.glsl", m_defines);
+#elif HAS_GLES == 2
+  m_hVertex = -1;
+  m_hYcoord = -1;
+  m_hUcoord = -1;
+  m_hVcoord = -1;
+  m_hProj   = -1;
+  m_hModel  = -1;
+  m_hAlpha  = -1;
+
+  VertexShader()->LoadSource("yuv2rgb_vertex_gles.glsl", m_defines);
+#endif
 }
 
 void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
 {
+#if HAS_GLES == 2
+  m_hVertex = glGetAttribLocation(ProgramHandle(),  "m_attrpos");
+  m_hYcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordY");
+  m_hUcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordU");
+  m_hVcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordV");
+  m_hProj   = glGetUniformLocation(ProgramHandle(), "m_proj");
+  m_hModel  = glGetUniformLocation(ProgramHandle(), "m_model");
+  m_hAlpha  = glGetUniformLocation(ProgramHandle(), "m_alpha");
+#endif
   m_hYTex    = glGetUniformLocation(ProgramHandle(), "m_sampY");
   m_hUTex    = glGetUniformLocation(ProgramHandle(), "m_sampU");
   m_hVTex    = glGetUniformLocation(ProgramHandle(), "m_sampV");
@@ -188,6 +209,11 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
   CalculateYUVMatrix(matrix, m_flags, m_black, m_contrast);
 
   glUniformMatrix4fv(m_hMatrix, 1, GL_FALSE, (GLfloat*)matrix);
+#if HAS_GLES == 2
+  glUniformMatrix4fv(m_hProj,  1, GL_FALSE, m_proj);
+  glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
+  glUniform1i(m_hAlpha, m_alpha);
+#endif
   VerifyGLState();
   return true;
 }
@@ -195,7 +221,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
 //////////////////////////////////////////////////////////////////////
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
-
+#if HAS_GLES != 2	// No ARB Shader when using GLES2.0
 BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags)
 {
   m_width         = 1;
@@ -208,7 +234,7 @@ BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags)
   m_hUTex  = -1;
   m_hVTex  = -1;
 }
-
+#endif
 
 //////////////////////////////////////////////////////////////////////
 // YUV2RGBProgressiveShader - YUV2RGB with no deinterlacing
@@ -218,7 +244,11 @@ BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags)
 YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags, bool stretch)
   : BaseYUV2RGBGLSLShader(rect, flags, stretch)
 {
+#ifdef HAS_GL
   PixelShader()->LoadSource("yuv2rgb_basic.glsl", m_defines);
+#elif HAS_GLES == 2
+  PixelShader()->LoadSource("yuv2rgb_basic_gles.glsl", m_defines);
+#endif
 }
 
 
@@ -232,7 +262,11 @@ YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags)
   m_hStepX = -1;
   m_hStepY = -1;
   m_hField = -1;
+#ifdef HAS_GL
   PixelShader()->LoadSource("yuv2rgb_bob.glsl", m_defines);
+#elif HAS_GLES == 2
+  PixelShader()->LoadSource("yuv2rgb_bob_gles.glsl", m_defines);
+#endif
 }
 
 void YUV2RGBBobShader::OnCompiledAndLinked()
@@ -259,7 +293,7 @@ bool YUV2RGBBobShader::OnEnabled()
 //////////////////////////////////////////////////////////////////////
 // YUV2RGBProgressiveShaderARB - YUV2RGB with no deinterlacing
 //////////////////////////////////////////////////////////////////////
-
+#if HAS_GLES != 2	// No ARB Shader when using GLES2.0
 YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned flags)
   : BaseYUV2RGBARBShader(flags)
 {
@@ -289,5 +323,5 @@ bool YUV2RGBProgressiveShaderARB::OnEnabled()
                                , matrix[3][i]);
   return true;
 }
-
+#endif
 #endif // HAS_GL

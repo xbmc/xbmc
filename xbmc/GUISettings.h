@@ -66,6 +66,7 @@ class TiXmlElement;
 #define CDDARIP_ENCODER_LAME     0
 #define CDDARIP_ENCODER_VORBIS   1
 #define CDDARIP_ENCODER_WAV      2
+#define CDDARIP_ENCODER_FLAC     3
 
 #define CDDARIP_QUALITY_CBR      0
 #define CDDARIP_QUALITY_MEDIUM   1

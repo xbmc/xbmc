@@ -9,6 +9,7 @@ SRCS=	DVDVideoCodecFFmpeg.cpp \
 	VDPAU.cpp \
 	VAAPI.cpp \
 	DVDVideoCodecVDA.cpp \
+	DVDVideoCodecOpenMax.cpp \
 	DVDVideoCodecCrystalHD.cpp \
 
 LIB=Video.a

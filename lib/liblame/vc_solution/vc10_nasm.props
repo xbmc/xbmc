@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup
+    Condition="'$(NASMBeforeTargets)' == '' and '$(NASMAfterTargets)' == '' and '$(ConfigurationType)' != 'Makefile'">
+    <NASMBeforeTargets>Midl</NASMBeforeTargets>
+    <NASMAfterTargets>CustomBuild</NASMAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NASMDependsOn
+      Condition="'$(ConfigurationType)' != 'Makefile'">_SelectedFiles;$(NASMDependsOn)</NASMDependsOn>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <NASM>
+      <IncludePaths>%(RootDir)%(Directory)</IncludePaths>
+      <Defines>WIN32</Defines>
+      <ObjectFile>$(IntDir)%(Filename).obj</ObjectFile>
+      <BinFormat>win32</BinFormat>
+      <CommandLineTemplate>nasmw [ObjectFile] [BinFormat] -Xvc [IncludePaths] [Defines] [UnDefines] [AdditionalOptions] [Inputs]</CommandLineTemplate>
+      <Outputs>%(ObjectFile)</Outputs>
+      <ExecutionDescription>Assembling %(Filename)%(Extension)</ExecutionDescription>
+      <ShowOnlyRuleProperties>false</ShowOnlyRuleProperties>
+    </NASM>
+  </ItemDefinitionGroup>
+</Project>

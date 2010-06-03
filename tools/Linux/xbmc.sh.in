@@ -1,15 +1,50 @@
-#!/bin/bash
+#!/bin/sh
 
-function single_stacktrace()
+#      Copyright (C) 2008-2010 Team XBMC
+#      http://www.xbmc.org
+#
+#  This Program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2, or (at your option)
+#  any later version.
+#
+#  This Program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with XBMC; see the file COPYING.  If not, write to
+#  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+#  http://www.gnu.org/copyleft/gpl.html
+
+SAVED_ARGS="$@"
+LIBDIR="@prefix@/lib"
+
+# Check for some options used by this script
+while [ "$#" -gt "0" ]
+do
+    case "$1" in
+        --setlibdir)
+            LIBDIR="$2"
+            shift; shift
+            ;;
+        *)
+            shift
+            ;;
+    esac
+done
+
+single_stacktrace()
 {
   find $1 -maxdepth $2 -name 'core*' -exec \
       echo "=====>  Core file: {}" 2> /dev/null >> $FILE \; -exec \
       echo "        ========================================= " 2> /dev/null >> $FILE \; -exec \
-      gdb @prefix@/lib/xbmc/xbmc.bin --core={} --batch -ex "thread apply all bt" 2> /dev/null >> $FILE \; -exec \
+      gdb "$LIBDIR/xbmc/xbmc.bin" --core={} --batch -ex "thread apply all bt" 2> /dev/null >> $FILE \; -exec \
       rm -f {} \;
 }
 
-function print_crash_report()
+print_crash_report()
 {
   FILE="xbmc_crashlog-`date +%Y%m%d_%H%M%S`.log"
   echo "############## XBMC CRASH LOG ###############" >> $FILE
@@ -23,7 +58,7 @@ function print_crash_report()
   echo -n " Kernel: " >> $FILE
   uname -rvs >> $FILE
   echo -n " Release: " >> $FILE
-  if which lsb_release &> /dev/null; then
+  if which lsb_release > /dev/null; then
     echo >> $FILE
     lsb_release -a 2> /dev/null | sed -e 's/^/    /' >> $FILE
   else
@@ -37,7 +72,7 @@ function print_crash_report()
   if [ $XBMC_HOME ]; then
     BASEDIR=$XBMC_HOME
   else
-    BASEDIR=@prefix@/lib/xbmc/
+    BASEDIR="$LIBDIR/xbmc/"
   fi
   single_stacktrace $BASEDIR 5
   # find in user xbmc dir
@@ -46,7 +81,7 @@ function print_crash_report()
   echo >> $FILE
   echo "################# LOG FILE ##################" >> $FILE
   echo >> $FILE
-  if [[ -f ~/.xbmc/temp/xbmc.log ]]
+  if [ -f ~/.xbmc/temp/xbmc.log ]
   then
     cat ~/.xbmc/temp/xbmc.log >> $FILE
     echo >> $FILE
@@ -62,25 +97,31 @@ function print_crash_report()
   echo "Crash report available at $PWD/$FILE"
 }
 
-python @prefix@/share/xbmc/FEH.py "$@"
-if [ $? -ne 0 ]; then
-  exit 0
+python @prefix@/share/xbmc/FEH.py "$SAVED_ARGS"
+RET=$?
+if [ $RET -ne 0 ]; then
+  exit $RET
 fi
+
+# Output warning in case ulimit is unsupported by shell
+eval ulimit -c unlimited
+if [ ! $? = "0" ]; then
+  echo "xbmc: ulimit is unsupported by this shell" 1>&2
+fi
+
 LOOP=1
-ulimit -c unlimited
-while (( $LOOP ))
+while [ $(( $LOOP )) = "1" ]
 do
   LOOP=0
-  @prefix@/lib/xbmc/xbmc.bin "$@"
+  "$LIBDIR/xbmc/xbmc.bin" "$SAVED_ARGS"
   RET=$?
-  if (( $RET == 65 ))
+  if [ $(( $RET == 65 )) = "1" ]
   then # User requested to restart app
     LOOP=1
-  elif (( ($RET >= 131 && $RET <= 136) || $RET == 139 ))
+  elif [ $(( ($RET >= 131 && $RET <= 136) || $RET == 139 )) = "1" ]
   then # Crashed with core dump
     print_crash_report
   fi
 done
 
 exit $RET
-

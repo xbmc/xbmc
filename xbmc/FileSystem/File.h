@@ -138,6 +138,9 @@ public:
   void Close();
 
   int64_t GetLength();
+#ifdef _ARMEL
+  char*   ReadFile();
+#endif
 private:
   CFileStreamBuffer m_buffer;
   IFile*            m_file;

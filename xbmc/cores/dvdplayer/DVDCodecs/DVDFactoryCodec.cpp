@@ -29,6 +29,7 @@
 
 #include "Video/DVDVideoCodecVDA.h"
 #include "Video/DVDVideoCodecFFmpeg.h"
+#include "Video/DVDVideoCodecOpenMax.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
 #if defined(HAVE_LIBCRYSTALHD)
 #include "Video/DVDVideoCodecCrystalHD.h"
@@ -189,6 +190,17 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
         CLog::Log(LOGINFO, "Trying Broadcom Crystal HD Decoder...");
         if ( (pCodec = OpenCodec(new CDVDVideoCodecCrystalHD(), hint, options)) ) return pCodec;
       }
+    }
+  }
+#endif
+
+#if defined(HAVE_LIBOPENMAX)
+  if (g_guiSettings.GetBool("videoplayer.useomx") && !hint.software )
+  {
+      if (hint.codec == CODEC_ID_H264 || hint.codec == CODEC_ID_MPEG2VIDEO || hint.codec == CODEC_ID_VC1)
+    {
+      CLog::Log(LOGINFO, "Trying OpenMax Decoder...");
+      if ( (pCodec = OpenCodec(new CDVDVideoCodecOpenMax(), hint, options)) ) return pCodec;
     }
   }
 #endif

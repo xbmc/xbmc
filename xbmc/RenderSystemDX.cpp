@@ -32,6 +32,9 @@
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
 #include "utils/SystemInfo.h"
+#include "Application.h"
+#include "Util.h"
+#include "win32/WIN32Util.h"
 
 using namespace std;
 
@@ -79,19 +82,35 @@ CRenderSystemDX::~CRenderSystemDX()
   DestroyRenderSystem();
 }
 
+void CRenderSystemDX::CheckDXVersion()
+{
+  CStdString strSystemFolder = CWIN32Util::GetSystemPath();
+  CStdString dxtestfile = CUtil::AddFileToFolder(strSystemFolder, "D3DX9_42.dll");
+
+  HANDLE hDevice = 0;
+  if (INVALID_HANDLE_VALUE == (hDevice = CreateFile(dxtestfile, 0, 0, NULL, OPEN_EXISTING, 0, NULL )))
+  {
+    CLog::Log(LOGWARNING, "%s - old DirectX runtime, you may run into display problems. Please upgrade", __FUNCTION__);
+    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, "DirectX Runtime", "Please update to latest runtime.");
+  }
+  else
+    CloseHandle(hDevice);
+}
+
 bool CRenderSystemDX::InitRenderSystem()
 {
   m_bVSync = true;
   m_renderCaps = 0;
   D3DADAPTER_IDENTIFIER9 AIdentifier;
 
+  CheckDXVersion();
+
   m_useD3D9Ex = (g_sysinfo.IsVistaOrHigher() && LoadD3D9Ex());
   m_pD3D = NULL;
 
   if (m_useD3D9Ex)
   {
-    HRESULT hr;
-    if (FAILED(hr=g_Direct3DCreate9Ex(D3D_SDK_VERSION, (IDirect3D9Ex**) &m_pD3D)))
+    if (FAILED(g_Direct3DCreate9Ex(D3D_SDK_VERSION, (IDirect3D9Ex**) &m_pD3D)))
       return false;
     CLog::Log(LOGDEBUG, "%s - using D3D9Ex", __FUNCTION__);
   }
@@ -118,6 +137,12 @@ bool CRenderSystemDX::InitRenderSystem()
   // get our render capabilities
   D3DCAPS9 caps;
   m_pD3DDevice->GetDeviceCaps(&caps);
+
+  if (caps.PixelShaderVersion < D3DPS_VERSION(2, 0)) 
+  {
+    CLog::Log(LOGERROR, "%s - XBMC requires a graphics card supporting Pixel Shaders 2.0", __FUNCTION__);
+    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "Graphics Card", "Requirements not met - See log");
+  }
 
   if (SUCCEEDED(m_pD3D->CheckDeviceFormat( D3DADAPTER_DEFAULT,
                                            D3DDEVTYPE_HAL,

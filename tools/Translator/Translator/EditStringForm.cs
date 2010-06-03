@@ -1,3 +1,24 @@
+/*
+ *      Copyright Â© 2006-2010 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 using System;
 using System.Drawing;
 using System.ComponentModel;
@@ -89,7 +110,7 @@ namespace TeamXBMC.Translator
 			this.buttonNewline.Name = "buttonNewline";
 			this.buttonNewline.Size = new System.Drawing.Size(24, 23);
 			this.buttonNewline.TabIndex = 4;
-			this.buttonNewline.Text = "¶";
+			this.buttonNewline.Text = "Â¶";
 			this.buttonNewline.Click += new System.EventHandler(this.buttonNewline_Click);
 			// 
 			// textBoxTranslated
@@ -196,14 +217,14 @@ namespace TeamXBMC.Translator
 
 				if (length==0)
 				{ // caret at a position but no text marked,
-					// just insert the ¶
-					textBoxTranslated.Text=textBoxTranslated.Text.Insert(start, "¶");
+					// just insert the Â¶
+					textBoxTranslated.Text=textBoxTranslated.Text.Insert(start, "Â¶");
 				}
 				else
 				{ // caret at a position with text marked,
-					// replace the marked text with ¶
+					// replace the marked text with Â¶
 					textBoxTranslated.Text=textBoxTranslated.Text.Remove(start, length);
-					textBoxTranslated.Text=textBoxTranslated.Text.Insert(start, "¶");
+					textBoxTranslated.Text=textBoxTranslated.Text.Insert(start, "Â¶");
 				}
 
 				// Update caret position to where we inserted the newline

@@ -38,6 +38,8 @@
 
 #if defined(HAS_GL)
   #include "LinuxRendererGL.h"
+#elif HAS_GLES == 2
+  #include "LinuxRendererGLES.h"
 #elif defined(HAS_DX)
   #include "WinRenderer.h"
 #elif defined(HAS_SDL)
@@ -270,6 +272,8 @@ unsigned int CXBMCRenderManager::PreInit()
   {
 #if defined(HAS_GL)
     m_pRenderer = new CLinuxRendererGL();
+#elif HAS_GLES == 2
+    m_pRenderer = new CLinuxRendererGLES();
 #elif defined(HAS_DX)
     m_pRenderer = new CPixelShaderRenderer();
 #elif defined(HAS_SDL)

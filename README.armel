@@ -1,0 +1,274 @@
+TOC
+1. Introduction
+2. Using Scratchbox
+	2.1 Automatic Installation
+	2.2 Manual Installation
+	2.3 Installation Continued for both Automatic and Manual Methods
+	2.4 Setup Scratchbox
+3. Getting the source code
+4. Installing the required ARMEL packages
+5. Obtaining the SGX files
+6. How to compile
+	6.1 Configure & Make
+	6.2 Install
+7. How to run
+	7.1 Obtaining the Packages
+	7.2 Installing the Files
+	7.3 Running XBMC
+8. Troubleshooting
+
+
+-----------------------------------------------------------------------------
+1. Introduction
+-----------------------------------------------------------------------------
+
+This is a port of XBMC for use on ARM Architecture.
+As this is not an official version of XBMC, in-depth testing on various setups has not been done. USE WITH CAUTION!
+For the purpose of this port, the following Hardware and Software was used.
+Software: Scratchbox (cross-compiler) on a Linux (Ubuntu) machine.
+Hardware: BeagleBoard (ARM Cortex-A8 with IMG POWERVR SGX).
+The source code is based on XBMC for Linux - version 9.11 (Camelot).
+
+All lines that are prefixed with the '$' character are commands that need to be typed into a standard linux terminal
+All lines that are prefixed with the '>' character are commands that need to be typed into scratchbox
+All lines that are prefixed with the '#' character are commands that need to be typed into a terminal on the beagleboard
+
+
+-----------------------------------------------------------------------------
+2. Using Scratchbox
+-----------------------------------------------------------------------------
+
+First, you need scratch box, along with some other packages.
+The easiest way is to do the following automatic installation.
+If you dont succeed, or want to do it manually, follow the next step instead.
+
+	-----------------------------------------------------------------------------
+	2.1 Automatic Installation:
+	-----------------------------------------------------------------------------
+
+		$ sudo gedit /etc/apt/sources.list
+		
+	Add this to the end of the file, then save and exit gedit:
+		deb http://scratchbox.org/debian stable main
+		deb http://scratchbox.org/debian legacy main
+		
+	Now enter the following command:
+		$ sudo apt-get install scratchbox-core scratchbox-libs scratchbox-devkit-cputransp scratchbox-devkit-git scratchbox-devkit-mtd scratchbox-devkit-perl scratchbox-devkit-doctools scratchbox-toolchain-arm-linux-cs2007q3-51sb3 scratchbox-toolchain-host-gcc scratchbox-devkit-debian
+
+	-----------------------------------------------------------------------------
+	2.2 Manual Installation:
+	-----------------------------------------------------------------------------
+
+	Go to the following website:
+		http://www.scratchbox.org/download/files/sbox-releases/stable/tarball/
+	and download the following files (Unless specified, choose latest version):
+	- core
+	- libs
+	- cputransp
+	- doctools
+	- git
+	- mtd
+	- perl
+	- toolchain (cs2007q3-51sb3)
+	- host-gcc
+	- debian
+
+	To install
+		$ cd /
+		$ sudo tar xvf /<location of files>/scratchbox-core.tar.gz
+
+	Repeat for all the downloaded files.
+
+	-----------------------------------------------------------------------------
+	2.3 Installation Continued for both Automatic and Manual Methods:
+	-----------------------------------------------------------------------------
+
+	Now, a few changes needs to me made in order for it to work correctly:
+		$ sudo gedit /etc/sysctl.conf
+		
+	Change/Add these variables:
+		vm.mmap_min_addr = 4096
+        vm.vdso_enabled = 0
+	Save and Close.
+
+	Add yourself to scratchbox:
+		$ sb-adduser <username>
+		
+	Make sure it worked by doing the following command, and see if sbox is listed.
+		$ groups
+
+	If it isnt listed, restart and try again. If it still isnt listed, then do the following:
+		$ usermod -a -G sbox <username>
+		
+	It should now list (possibly after another logout)
+	Now you have access to scratchbox.
+	
+	-----------------------------------------------------------------------------
+	2.4 Setup Scratchbox:
+	-----------------------------------------------------------------------------
+	
+	Before setting up your target, you need a rootstrap. Obtain the latest rootstrap from:
+		http://linux.onarm.com/download/images/generic-X/
+	You want to download the file 'beagleboard-<date>-rootstrap.tar.gz'.
+
+	Do this every time you want to access scratchbox:
+		$ /scratchbox/login
+	
+	Time to setup your target:
+		> sb-menu
+	
+	A GUI will appear for the setup procedure.
+	    - Choose Setup
+	    - Create a NEW target, give it any name
+	    - Select the compiler you downloaded (arm-linux-cs2007q3-51sb3)
+	    - Select all development kits listed by highlighting each one and pressing enter, then Done and enter
+	    - Select CPU transparency (qemu-arm-cvs-m)
+	    - Yes to rootstrap. Locate the previously downloaded rootstrap to install.
+	    - Yes to install files
+	    - Only select DEVKIT and ETC. Remove all other files in list, then continue
+	    - And finally Yes to selecting target.
+
+	Now scratchbox is setup
+
+	
+-----------------------------------------------------------------------------
+3. Getting the source code
+-----------------------------------------------------------------------------
+
+   $ sudo apt-get install subversion
+   $ cd /scratchbox/users/<username>/home/<username>/
+   $ svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/xbmc_on_arm
+
+   
+-----------------------------------------------------------------------------
+4. Installing the required ARMEL packages
+-----------------------------------------------------------------------------
+
+There is a simple shell script that downloads a list of packages that are required and installs them into scratchbox.
+
+  > cd tools/arm/arm-scripts/
+  > ./install-pkgs.sh
+  
+Please check the output files for any possible errors that may have occured.
+
+Note. You will need the headers and shared object files for EGL and GLESv2 to continue.
+
+
+-----------------------------------------------------------------------------
+5. Obtaining the SGX files
+-----------------------------------------------------------------------------
+
+In order to continue, you will need the SGX SDK from TI's website.
+Once you have installed said SDK on a standard Linux machine, copy the neccessary .h and .so files to the appropriate directories in scratchbox:
+e.g /scratchbox/users/<username>/targets/<target_name>/usr/include/EGL/egl.h
+These files will also need to be transferred over to the board eventually.
+NOTE: XBMC has only been tested with the following versions of the OMAP35x Graphics SDK:
+3.00.00.05, 3.00.00.06, 3.00.00.08, 3.00.00.09
+
+
+-----------------------------------------------------------------------------
+6. How to compile
+-----------------------------------------------------------------------------
+
+To create the XBMC executable manually perform these following steps:
+
+	-----------------------------------------------------------------------------
+	6.1 Configure & Make:
+	-----------------------------------------------------------------------------
+	
+        $ ./bootstrap
+	    > ./configure --enable-gles
+
+    This will configure XBMC inside scratchbox ready for compilation on ARM.
+    Because the default is to build for OpenGL, we require the --enable-gles flag to be set for OpenGL ES 2.0.
+    (Note: No OpenGL ES 1.x available)
+	Now, build with the following:
+	
+		> make
+	
+	-----------------------------------------------------------------------------
+	6.2 Install:
+	-----------------------------------------------------------------------------
+
+	There is no need to do 'make install' as we dont want it installed into scratchbox.
+	There is also the slight problem of the fact that scratchbox's 'find' command is outdated and wont execute xbmc's 'make install' correctly.
+	Instead, use the provided shell script:
+		> cd /tools/arm/arm-scripts/
+		> ./create-xbmcfile.sh
+		
+	This will create a tar file tools/arm/arm-scripts/xbmc.tar.bz2 containing the xbmc files, ready for you to transfer to the board.
+
+
+-----------------------------------------------------------------------------
+7. How to run
+-----------------------------------------------------------------------------
+
+It is assumed you have a beagleboard with all the neccessary hardware installed.
+(e.g keyboard, mouse, and ethernet adapter)
+It is also assumed that you have it setup with either Angstrom or Ubuntu.
+
+	-----------------------------------------------------------------------------
+	7.1 Obtaining the Packages:
+	-----------------------------------------------------------------------------
+
+	For Ubuntu: See README.linux for list of packages to install.
+	The known packages not to work are: libfaac-dev (use libfaad-dev instead)
+	If planning on not extracting the pkgs file, a few additional packages are required to be installed.
+	These are python and liblzo2
+
+	For Angstrom:
+		# opkg update
+		# opkg install subversion make g++ gcc gawk pmount libtool automake gperf unzip bison libsdl-1.2-dev libsdl-image-1.2-dev libsdl-gfx-dev libsdl-mixer-1.2-dev libfribidi-dev liblzo-dev libfreetype-dev libsqlite3-dev libasound2 python-sqlite3 libcurl4 xineramaproto-dev libxinerama-dev libxrandr-dev libxrender-dev libmad-dev libogg-dev libvorbis-dev libmysqlclient-dev libpcre-dev libdbus-glib-1-dev hal-dev libjasper-dev libfontconfig-dev boost-dev libfaac-dev libxt-dev libxmu-dev libpng-dev libjpeg-dev libsamplerate0-dev
+	
+	Unfortunately this will only install the packages that are available through opkg. There will be further packages that need to be installed.
+	Either use the method mentioned below, or selectively find and install packages, mentioned at the bottom of this README.
+
+	Alternatively, do the following:
+	First make sure you have done section 4. then do the following:
+		> cd xbmc_on_arm/arm-scripts/
+		> ./create-pkgsfile.sh
+
+	This will create a tar file xbmc_on_arm/arm-scripts/pkgs.tar.bz2 containing the packages, ready for you to transfer to the board.
+
+	-----------------------------------------------------------------------------
+	7.2 Installing the Files:
+	-----------------------------------------------------------------------------
+
+	Transfer the file(s), armel-pkgs.tar.bz2 (if using alternative method mentioned above) and xbmc.tar.bz2 to the beagleboard.
+	Do the following to extract them:
+		# tar xjf armel-pkgs.tar.bz2 -C /
+		# tar xjf xbmc.tar.bz2 -C /usr/
+
+	After this initial setup, during development, you should only need to replace /usr/share/xbmc/xbmc.bin with the newly created binary.
+	
+	-----------------------------------------------------------------------------
+	7.3 Running XBMC:
+	-----------------------------------------------------------------------------
+
+	Now, run XBMC by executing the binary:
+		# /usr/share/xbmc/xbmc.bin
+		
+	Run the binary and not the script as the script will fail.
+	
+	
+-----------------------------------------------------------------------------
+8. Troubleshooting
+-----------------------------------------------------------------------------
+	
+If it fails to run correctly, there are a few things to try out.
+First, is there any helpful output on the terminal?
+Check the log file, usually located ~/.xbmc/temp/xbmc.log
+It may have failed because of a missing package.
+If so, you will need to download the appropriate armel package from packages.debian.org,
+Extract the files with the command: dpkg-deb -x packagename.deb /path/to/extract/to
+Then tarball the extracted files: tar cjf pkg.tar.bz2 /path/to/extracted/files
+Then transfer them to the board, and extract: tar xjf pkg.tar.bz2
+This is because the .deb files cannot be extracted in Angstrom.
+
+If this is not the case, try various different parameters for xbmc.bin such as:
+xbmc.bin --standalone
+xbmc.bin -p
+xbmc.bin -fs
+Or build with debug for a more in-depth xbmc.log file by ommitting the line --disable-debug on configure.
+
+Feel free to contact me on mcgeagh@xbmc.org

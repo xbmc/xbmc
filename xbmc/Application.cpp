@@ -547,7 +547,7 @@ bool CApplication::Create()
 
   uint32_t sdlFlags = 0;
 
-#ifdef HAS_SDL_OPENGL
+#if defined(HAS_SDL_OPENGL) || (HAS_GLES == 2)
   sdlFlags |= SDL_INIT_VIDEO;
 #endif
 
@@ -581,6 +581,8 @@ bool CApplication::Create()
   setenv("OS","OS X",true);
 #elif defined(_LINUX)
   setenv("OS","Linux",true);
+#elif defined(_WIN32)
+  SetEnvironmentVariable("OS","win32");
 #endif
 
   // Initialize core peripheral port support. Note: If these parameters
@@ -4873,6 +4875,12 @@ void CApplication::ProcessSlow()
   }
 #endif
   ADDON::CAddonMgr::Get().UpdateRepos();
+
+#if defined(__arm__)
+  // TODO: gui rendering testing, remove later
+  printf( "FPS: %s\n", g_infoManager.GetLabel(SYSTEM_FPS).c_str() );
+#endif
+
 }
 
 // Global Idle Time in Seconds

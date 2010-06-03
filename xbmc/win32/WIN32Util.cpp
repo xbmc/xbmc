@@ -460,17 +460,32 @@ int CWIN32Util::GetDesktopColorDepth()
   return (int)devmode.dmBitsPerPel;
 }
 
-CStdString CWIN32Util::GetProfilePath()
+CStdString CWIN32Util::GetSpecialFolder(int csidl)
 {
   CStdString strProfilePath;
   WCHAR szPath[MAX_PATH];
 
-  if(SUCCEEDED(SHGetFolderPathW(NULL,CSIDL_APPDATA|CSIDL_FLAG_CREATE,NULL,0,szPath)))
+  if(SUCCEEDED(SHGetFolderPathW(NULL,csidl,NULL,0,szPath)))
   {
     g_charsetConverter.wToUTF8(szPath, strProfilePath);
     strProfilePath = UncToSmb(strProfilePath);
   }  
   else
+    strProfilePath = "";
+
+  return strProfilePath;
+}
+
+CStdString CWIN32Util::GetSystemPath()
+{
+  return GetSpecialFolder(CSIDL_SYSTEM);
+}
+
+CStdString CWIN32Util::GetProfilePath()
+{
+  CStdString strProfilePath = GetSpecialFolder(CSIDL_APPDATA|CSIDL_FLAG_CREATE);
+  
+  if (strProfilePath.length() == 0)
     CUtil::GetHomePath(strProfilePath);
 
   return strProfilePath;

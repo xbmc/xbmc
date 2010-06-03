@@ -23,6 +23,8 @@
 
 #if defined (HAS_GL)
   #include "LinuxRendererGL.h"
+#elif HAS_GLES == 2
+  #include "LinuxRendererGLES.h"
 #elif defined(HAS_DX)
   #include "WinRenderer.h"
 #elif defined(HAS_SDL)
@@ -180,6 +182,8 @@ public:
 
 #ifdef HAS_GL
   CLinuxRendererGL *m_pRenderer;
+#elif HAS_GLES == 2
+  CLinuxRendererGLES *m_pRenderer;
 #elif defined(HAS_DX)
   CWinRenderer *m_pRenderer;
 #elif defined(HAS_SDL)
