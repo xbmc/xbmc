@@ -43,11 +43,10 @@
   //Time base from directshow is a 100 nanosec unit
   #define DS_TIME_BASE 1E7
 
-  #define DS_TIME_TO_SEC(x)     ((double)(x * 1E-7))
-  #define DS_TIME_TO_MSEC(x)    ((double)(x * 1E-4))
+  #define DS_TIME_TO_SEC(x)     ((double)(x / DS_TIME_BASE))
+  #define DS_TIME_TO_MSEC(x)    ((double)(x * 1000 / DS_TIME_BASE))
   #define SEC_TO_DS_TIME(x)     ((__int64)(x * DS_TIME_BASE))
-  //MSEC_TO_DS_TIME is the one used to convert from directshow to the one rendermanager is using
-  #define MSEC_TO_DS_TIME(x)    ((__int64)(x * 1E4))
+  #define MSEC_TO_DS_TIME(x)    ((__int64)(x * DS_TIME_BASE / 1000))
   #define SEC_TO_MSEC(x)        ((double)(x * 1E3))
 #endif
 

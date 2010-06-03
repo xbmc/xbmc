@@ -49,10 +49,11 @@ CGUIDialogBoxBase *CDSPlayer::errorWindow = NULL;
 
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
     : IPlayer(callback), CThread(), m_hReadyEvent(true), m_bSpeedChanged(false),
-    m_callSetFileFromThread(true)
+    m_callSetFileFromThread(true), m_bDoNotUseDSFF(false)
 {
   // Change DVD Clock, time base
   CDVDClock::SetTimeBase((int64_t) DS_TIME_BASE);
+  m_pClock.GetClock(); // Reset the clock
 
   g_dsGraph = new CDSGraph(&m_pClock, callback);
 }
@@ -173,7 +174,6 @@ bool CDSPlayer::HasAudio() const
   return true;
 }
 
-//TO DO EVERY INFO FOR THE GUI
 void CDSPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   CSingleLock lock(m_StateSection);
@@ -217,14 +217,15 @@ void CDSPlayer::OnExit()
 
 void CDSPlayer::HandleStart()
 {
-  if (m_PlayerOptions.starttime>0)
-    SendMessage(g_hWnd,WM_COMMAND, ID_SEEK_TO ,((LPARAM)m_PlayerOptions.starttime * 1000 ));
+  if (m_PlayerOptions.starttime > 0)
+    SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_TO, ((LPARAM) m_PlayerOptions.starttime * 1000));
 }
 
 void CDSPlayer::Process()
 {
 
-#define CHECK_PLAYER_STATE if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED) break;
+#define CHECK_PLAYER_STATE if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED) \
+  break;
 
   if (m_callSetFileFromThread)
   {
@@ -242,7 +243,6 @@ void CDSPlayer::Process()
   HandleStart();
   
   HRESULT hr = S_OK;
-  int sleepTime = 0;
 
   while (PlayerState != DSPLAYER_CLOSING && PlayerState != DSPLAYER_CLOSED)
   {
@@ -251,7 +251,36 @@ void CDSPlayer::Process()
     if (m_bSpeedChanged)
     {
       m_pClock.SetSpeed(m_currentRate * 1000);
+      m_clockStart = m_pClock.GetClock();
       m_bSpeedChanged = false;
+
+      if (m_currentRate == 1)
+        g_dsGraph->Play();
+      else if (((m_currentRate < 1) || (m_bDoNotUseDSFF && (m_currentRate > 1)))
+        && (!g_dsGraph->IsPaused()))
+        g_dsGraph->Pause(); // Pause only if not using SetRate
+
+      // Fast forward. DirectShow does all the hard work for us.
+      if (m_currentRate >= 1)
+      {
+        HRESULT hr = S_OK;
+        Com::SmartQIPtr<IMediaSeeking> pSeeking = g_dsGraph->pFilterGraph;
+        if (pSeeking)
+        {
+          if (m_currentRate == 1)
+            pSeeking->SetRate(m_currentRate);
+          else if (!m_bDoNotUseDSFF)
+          {
+            HRESULT hr = pSeeking->SetRate(m_currentRate);
+            if (FAILED(hr))
+            {
+              m_bDoNotUseDSFF = true;
+              pSeeking->SetRate(1);
+              m_bSpeedChanged = true;
+            }
+          }
+        }
+      }
     }
 
     CHECK_PLAYER_STATE
@@ -264,14 +293,32 @@ void CDSPlayer::Process()
 
     CHECK_PLAYER_STATE
 
-    // TODO: Rewrite the FFRW
-    sleepTime = g_dsGraph->DoFFRW(m_currentRate);
-    if ((m_currentRate == 0 ) || ( m_currentRate == 1 ))
-      sleepTime = 250;
-    else
+    // Handle Rewind
+    if ((m_currentRate < 1) || ( m_bDoNotUseDSFF && (m_currentRate > 1)))
     {
-      //This way the time it wasted to seek we remove it from the sleep time
-      sleepTime = 250 - sleepTime;
+      double clock = m_pClock.GetClock() - m_clockStart; // Time elapsed since the rate change
+      //CLog::Log(LOGDEBUG, "Seeking time : %f", DS_TIME_TO_MSEC(clock));
+
+      // New position
+      uint64_t newPos = g_dsGraph->GetTime() + (uint64_t) clock;
+      //CLog::Log(LOGDEBUG, "New position : %f", DS_TIME_TO_SEC(newPos));
+
+      // Check boundaries
+      if (newPos <= 0)
+      {
+        newPos = 0;
+        m_currentRate = 1;
+        m_callback.OnPlayBackSpeedChanged(1);
+        m_bSpeedChanged = true;
+      } else if (newPos >= g_dsGraph->GetTotalTime())
+      {
+        CloseFile();
+        break;
+      }
+
+      g_dsGraph->Seek(newPos);
+
+      m_clockStart = m_pClock.GetClock();
     }
 
     CHECK_PLAYER_STATE
@@ -284,7 +331,7 @@ void CDSPlayer::Process()
     }
     //Handle fastforward stuff
    
-    Sleep(sleepTime);
+    Sleep(250);
     CHECK_PLAYER_STATE
 
     if (g_dsGraph->FileReachedEnd())
@@ -351,14 +398,6 @@ void CDSPlayer::SeekPercentage(float iPercent)
 
 bool CDSPlayer::OnAction(const CAction &action)
 {
-#define THREAD_ACTION(action) \
-  do { \
-    if(GetCurrentThreadId() != CThread::ThreadId()) { \
-      m_messenger.Put(new CDVDMsgType<CAction>(CDVDMsg::GENERAL_GUI_ACTION, action)); \
-      return true; \
-    } \
-  } while(false)
-
   if ( g_dsGraph->IsDvd() )
   {
     if ( action.GetID() == ACTION_SHOW_VIDEOMENU )

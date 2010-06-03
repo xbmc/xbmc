@@ -65,9 +65,8 @@ using namespace std;
 CDSGraph* g_dsGraph = NULL;
 
 CDSGraph::CDSGraph(CDVDClock* pClock, IPlayerCallback& callback)
-    : m_pGraphBuilder(NULL), m_currentRate(1), m_lAvgTimeToSeek(0),
-      m_iCurrentFrameRefreshCycle(0), m_userId(0xACDCACDC),
-      m_bReachedEnd(false), m_callback(callback), m_pClock(pClock)
+    : m_pGraphBuilder(NULL), m_iCurrentFrameRefreshCycle(0),
+    m_userId(0xACDCACDC), m_bReachedEnd(false), m_callback(callback)
 { 
 }
 
@@ -139,8 +138,6 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   SetVolume(g_settings.m_nVolumeLevel);
   
   CDSPlayer::PlayerState = DSPLAYER_LOADED;
-
-  m_currentRate = 1;
   return hr;
 }
 
@@ -167,8 +164,6 @@ void CDSGraph::CloseFile()
 
     m_VideoInfo.Clear();
     m_State.Clear();
-
-    m_currentRate = 1;
     
     m_userId = 0xACDCACDC;
     m_bReachedEnd = false;
@@ -189,15 +184,13 @@ void CDSGraph::UpdateTime()
   if (!m_pMediaSeeking)
     return;
   LONGLONG Position;
+
   if(SUCCEEDED(m_pMediaSeeking->GetPositions(&Position, NULL)))
-  {
-    m_State.time = DS_TIME_TO_MSEC(Position);//double(Position) / TIME_FORMAT_TO_MS;
-  }
+    m_State.time = Position;
+
   if (m_State.time_total == 0)
-  {
     //we dont have the duration of the video yet so try to request it
     UpdateTotalTime();
-  }
 
   if ((CFGLoader::Filters.VideoRenderer.pQualProp) && m_iCurrentFrameRefreshCycle <= 0)
   {
@@ -241,7 +234,7 @@ void CDSGraph::UpdateTotalTime()
     if(SUCCEEDED(CFGLoader::Filters.DVD.dvdInfo->GetTotalTitleTime(&tcDur, &ulFlags)))
     {
       rtDur = DShowUtil::HMSF2RT(tcDur);
-      m_State.time_total = DS_TIME_TO_MSEC(rtDur);
+      m_State.time_total = rtDur;
     }
   }
   else
@@ -249,18 +242,8 @@ void CDSGraph::UpdateTotalTime()
     if (! m_pMediaSeeking)
       return;
 
-    hr = m_pMediaSeeking->GetTimeFormatA(&m_VideoInfo.time_format);
-
-    if(m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME)
-    {
-      if(SUCCEEDED(m_pMediaSeeking->GetDuration(&Duration)))
-        m_State.time_total = DS_TIME_TO_MSEC(Duration);
-    }
-    else
-    {
-      if(SUCCEEDED(m_pMediaSeeking->GetDuration(&Duration)))
-        m_State.time_total = (double) Duration;
-    }
+    if(SUCCEEDED(m_pMediaSeeking->GetDuration(&Duration)))
+      m_State.time_total = Duration;
   }
 }
 
@@ -291,7 +274,6 @@ void CDSGraph::UpdateState()
   if ( hr == VFW_S_CANT_CUE )
   {
     CDSPlayer::PlayerState = DSPLAYER_PAUSED;
-    m_currentRate = 0;
     return;
   }
 
@@ -360,17 +342,8 @@ HRESULT CDSGraph::HandleGraphEvent()
         : evParam2 == DVD_TC_FLAG_30fps ? 30.0
         : evParam2 == DVD_TC_FLAG_DropFrame ? 29.97
         : 25.0;
-        
-        // DOne in UpdateDvdState
-        /* REFERENCE_TIME rtDur = 0;
-        DVD_HMSF_TIMECODE tcDur;
-        ULONG ulFlags;
-        if(SUCCEEDED(m_pDvdInfo2->GetTotalTitleTime(&tcDur, &ulFlags)))
-          rtDur = DShowUtil::HMSF2RT(tcDur, fps);
-        m_State.time_total = (double)rtDur / 10000;*/
 
-        REFERENCE_TIME rtNow = DShowUtil::HMSF2RT(*((DVD_HMSF_TIMECODE*)&evParam1), fps);
-        m_State.time = rtNow / 10000.f;
+        m_State.time = DShowUtil::HMSF2RT(*((DVD_HMSF_TIMECODE*)&evParam1), fps);;
 
         break;
         }
@@ -542,8 +515,6 @@ void CDSGraph::Pause()
   {
     if (m_State.current_filter_state != State_Running)
       m_pMediaControl->Run();
-    
-    m_currentRate = 1;
   }
   else
   {
@@ -554,85 +525,11 @@ void CDSGraph::Pause()
         do 
         {
           m_pMediaControl->GetState(100, (OAFilterState *)&m_State.current_filter_state);
-        } while (m_State.current_filter_state != State_Paused);        
-        
-        m_currentRate = 0;
+        } while (m_State.current_filter_state != State_Paused);
       }
   }
 
   UpdateState();
-}
-
-int CDSGraph::DoFFRW(int currentRate)
-{
-  if ( currentRate == 1 || currentRate == 0 )
-    return 250;
-
-  //TIME_FORMAT_MEDIA_TIME is using Reference time (100-nanosecond units).
-  //1 sec = 1 000 000 000 nanoseconds
-  //so 1 units of TIME_FORMAT_MEDIA_TIME is 0,0000001 sec or 0,0001 millisec
-  //If playback speed is at 32x we will try to make it the closest to 32sec per sec
-
-  __int64 stepInMsec = (( currentRate * 1000) / 4 );
-  double startTimer = 0;
-  if (currentRate != m_currentRate)
-  {
-    m_currentRate = currentRate;
-    m_lAvgTimeToSeek = 0;
-  }
-
-  //Get the target in TIME_FORMAT_MEDIA_TIME
-  stepInMsec += GetTime();
-
-  //the ajustement is to get an estimate of the time beetween each seek
-  startTimer = CDVDClock::GetAbsoluteClock();
-
-  stepInMsec += m_lAvgTimeToSeek;
-
-  if (m_VideoInfo.isDVD)
-  {
-
-  }
-  else
-  {
-    if (!m_pMediaSeeking)
-      return 250;
-
-    HRESULT hr = S_OK;
-    __int64 earliest = 0, latest = 0;
-    double msec_earliest = 0;
-    m_pMediaSeeking->GetAvailable(&earliest,&latest);
-
-    msec_earliest = DS_TIME_TO_MSEC(earliest);
-    //if target is under the lowest position possible in the media just make it play from start
-    if (stepInMsec < msec_earliest)
-    {
-      //setting speed at 1x
-      m_currentRate = 1;
-      //Seeking to earliest position in the video
-      SeekInMilliSec(msec_earliest);
-      //Set the new status of the position
-      m_State.time = msec_earliest;
-      //start the video since we stopped the playback after this seek
-      m_pMediaControl->Run();
-      UpdateState();
-      return 250;
-    }
-
-    //seek to where we should be
-    SeekInMilliSec((double) stepInMsec);
-    //stop when ready is currently make the graph wait for a frame to present before starting back again
-    m_pMediaControl->StopWhenReady();
-
-    UpdateTime();
-    UpdateState(); // We need to know the new state
-  }
-
-  m_lAvgTimeToSeek = (__int64) DS_TIME_TO_MSEC((CDVDClock::GetAbsoluteClock() - startTimer));
-  if ( m_lAvgTimeToSeek <= 0 )
-    m_lAvgTimeToSeek = 50;
-
-  return (int) m_lAvgTimeToSeek; // Should never be over 250 / 300 ms, cast is fine
 }
 
 HRESULT CDSGraph::UnloadGraph()
@@ -717,34 +614,30 @@ bool CDSGraph::IsInMenu() const
 {
   return m_DvdState.isInMenu;
 }
-void CDSGraph::SeekInMilliSec(double sec)
+void CDSGraph::SeekInMilliSec(double position)
 {
-  LONGLONG seekrequest = 0;
+  Seek(MSEC_TO_DS_TIME(position));
+}
 
+void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePositioning*/)
+{
   if ( !m_pMediaSeeking )
     return;
 
-  if( m_VideoInfo.time_format == TIME_FORMAT_MEDIA_TIME )
-    seekrequest = ( LONGLONG )( MSEC_TO_DS_TIME(sec) );
-  else
-    seekrequest = (LONGLONG) sec;
-
-  if ( seekrequest < 0 )
-    seekrequest = 0;
-
   if (!m_VideoInfo.isDVD)
   {
-    m_pMediaSeeking->SetPositions(&seekrequest, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
+    m_pMediaSeeking->SetPositions((LONGLONG *) &position, flags, NULL, AM_SEEKING_NoPositioning);
   }
   else
   {
     if (!CFGLoader::Filters.DVD.dvdControl)
       return;
-    seekrequest = seekrequest * 10000;
-    DVD_HMSF_TIMECODE tc = DShowUtil::RT2HMSF(seekrequest);
-    CFGLoader::Filters.DVD.dvdControl->PlayAtTime(&tc, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+
+    DVD_HMSF_TIMECODE tc = DShowUtil::RT2HMSF(position);
+    CFGLoader::Filters.DVD.dvdControl->PlayAtTime(&tc, DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
   }
 }
+
 void CDSGraph::Seek(bool bPlus, bool bLargeStep)
 {
   // Chapter support
@@ -767,15 +660,14 @@ void CDSGraph::Seek(bool bPlus, bool bLargeStep)
   if (!m_pMediaSeeking || !m_pMediaControl)
     return;
 
-  __int64 seek;
-  if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
+  int64_t seek = 0;
+  if (g_advancedSettings.m_videoUseTimeSeeking && DS_TIME_TO_SEC(GetTotalTime()) > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
   {
     if (bLargeStep)
       seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
     else
       seek = bPlus ? g_advancedSettings.m_videoTimeSeekForward : g_advancedSettings.m_videoTimeSeekBackward;
-    seek *= 1000;
-    seek += GetTime();
+    seek = GetTime() + SEC_TO_DS_TIME(seek);
   }
   else
   {
@@ -784,39 +676,34 @@ void CDSGraph::Seek(bool bPlus, bool bLargeStep)
       percent = (float) (bPlus ? g_advancedSettings.m_videoPercentSeekForwardBig : g_advancedSettings.m_videoPercentSeekBackwardBig);
     else
       percent = (float) (bPlus ? g_advancedSettings.m_videoPercentSeekForward : g_advancedSettings.m_videoPercentSeekBackward);
-    seek = (__int64)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
+    seek = GetTotalTime() * (int64_t) ((GetPercentage() + percent) / 100);
   }
 
   UpdateTime();
-  SeekInMilliSec((double) seek);
+  Seek(seek);
+  UpdateTime();
 }
 
-// return time in ms
-__int64 CDSGraph::GetTime()
+// return time in DS_TIME_BASE unit
+uint64_t CDSGraph::GetTime()
 {
-  return llrint(m_State.time);
+  return m_State.time;
 }
 
-// return length in msec
-__int64 CDSGraph::GetTotalTimeInMsec()
+// return length in DS_TIME_BASE unit
+uint64_t CDSGraph::GetTotalTime()
 {
-  return llrint(m_State.time_total);
-}
-
-int CDSGraph::GetTotalTime()
-{
-
-  return (int)(GetTotalTimeInMsec() / 1000);
+  return m_State.time_total;
 }
 
 float CDSGraph::GetPercentage()
 {
-  __int64 iTotalTime = GetTotalTimeInMsec();
+  uint64_t iTotalTime = GetTotalTime();
 
   if (!iTotalTime)
     return 0.0f;
 
-  return GetTime() * 100 / (float)iTotalTime;
+  return (GetTime() * 100.0f / (float) iTotalTime);
 }
 
 CStdString CDSGraph::GetGeneralInfo()

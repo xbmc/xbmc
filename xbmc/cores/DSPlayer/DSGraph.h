@@ -81,22 +81,21 @@ public:
   bool IsInMenu() const;
   bool OnMouseMove(tagPOINT pt);
   bool OnMouseClick(tagPOINT pt);
-  /** @return Current play speed */
-  virtual int GetPlaySpeed() { return (m_currentRate * 1000); };
 
-  /** Perform a Fast Forward
-   * @param[in] currentSpeed Fast Forward speed
-   */
-  virtual int DoFFRW(int currentRate);
   /** Performs a Seek
    * @param[in] bPlus If true, performs a positive seek. If false, performs a negative seek
    * @param[in] bLargeStep If true, performs a large seek
    */
   virtual void Seek(bool bPlus, bool bLargeStep);
   /** Performs a Seek
-   * @param[in] sec Time to seek (in millisecond)
+   * @param[in] position Time to seek (in millisecond)
    */
-  virtual void SeekInMilliSec(double sec);
+  virtual void SeekInMilliSec(double position);
+  /** Performs a Seek
+   * @param[in] position Where to seek (DS_TIME_BASE unit)
+   * @param[in] flags DirectShow IMediaSeeking::SetPositions flags
+   */
+  virtual void Seek(uint64_t position, uint32_t flags = AM_SEEKING_AbsolutePositioning);
   /// Play the graph
   virtual void Play(bool force = false);
   /// Pause the graph
@@ -115,12 +114,10 @@ public:
   virtual void UpdateWindowPosition();
   /// Update current player state
   virtual void UpdateState();
-  /// @return Current playing time
-  virtual __int64 GetTime();
-  /// @return Total playing time in second (media length)
-  virtual int GetTotalTime();
-  /// @return Total playing time in millisecond (media length)
-  __int64 GetTotalTimeInMsec();
+  /// @return Current playing time in DS_TIME_BASE unit
+  virtual uint64_t GetTime();
+  /// @return Total playing time in DS_TIME_BASE unit (media length)
+  virtual uint64_t GetTotalTime();
   /// @return Current position in percent
   virtual float GetPercentage();
 
@@ -145,7 +142,6 @@ public:
   /// @return Informations about the current video track
   CStdString GetVideoInfo();
 
-  CDVDClock* m_pClock;
   Com::SmartPtr<IFilterGraph2> pFilterGraph;
 
 protected:
@@ -168,8 +164,6 @@ private:
   DVD_STATUS	                          m_pDvdStatus;
   std::vector<DvdTitle*>                m_pDvdTitles;
   bool m_bReachedEnd;
-  int m_currentRate;
-  LONGLONG m_lAvgTimeToSeek;
 
   DWORD_PTR m_userId;
   CCriticalSection m_ObjectLock;
@@ -188,13 +182,13 @@ private:
 
     void Clear()
     {
-      time = 0.f;
-      time_total = 0.f;
+      time = 0;
+      time_total = 0;
       player_state = "";
       current_filter_state = State_Stopped;
     }
-    double time;              // current playback time in millisec
-    double time_total;        // total playback time in millisec
+    uint64_t time;              // current playback time in millisec
+    uint64_t time_total;        // total playback time in millisec
     FILTER_STATE current_filter_state;
 
     std::string player_state;  // full player state

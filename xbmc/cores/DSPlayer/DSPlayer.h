@@ -71,18 +71,17 @@ public:
   virtual bool CloseFile();
   virtual bool IsPlaying() const;
   virtual bool IsCaching() const { return false; };
-  virtual bool IsPaused() const { return g_dsGraph->IsPaused(); };
+  virtual bool IsPaused() const { return (m_currentRate == 0) && g_dsGraph->IsPaused(); };
   virtual bool HasVideo() const;
   virtual bool HasAudio() const;
   virtual bool HasMenu() { return g_dsGraph->IsDvd(); };
   bool IsInMenu() const { return g_dsGraph->IsInMenu(); };
   virtual void Pause();
   virtual bool CanSeek()                                        { return g_dsGraph->CanSeek(); }
-  virtual void Seek(bool bPlus, bool bLargeStep);//                { m_dshowCmd.Seek(bPlus,bLargeStep);}
+  virtual void Seek(bool bPlus, bool bLargeStep);
   virtual void SeekPercentage(float iPercent);
   virtual float GetPercentage()                                 { return g_dsGraph->GetPercentage(); }
   virtual void SetVolume(long nVolume)                          { g_dsGraph->SetVolume(nVolume); }
-  //virtual void SetDynamicRangeCompression(long drc)             { m_pDsGraph.SetDynamicRangeCompression(drc); }
   virtual void GetAudioInfo(CStdString& strAudioInfo);
   virtual void GetVideoInfo(CStdString& strVideoInfo);
   virtual void GetGeneralInfo(CStdString& strGeneralInfo);
@@ -122,8 +121,8 @@ public:
   virtual CStdString GetAudioCodecName() { return CStreamsManager::Get()->GetAudioCodecName(); }
   virtual CStdString GetVideoCodecName() { return CStreamsManager::Get()->GetVideoCodecName(); }
 
-  virtual __int64 GetTime() { CSingleLock lock(m_StateSection); return g_dsGraph->GetTime(); }
-  virtual int GetTotalTime() { CSingleLock lock(m_StateSection); return g_dsGraph->GetTotalTime(); }
+  virtual __int64 GetTime() { CSingleLock lock(m_StateSection); return llrint(DS_TIME_TO_MSEC(g_dsGraph->GetTime())); }
+  virtual int GetTotalTime() { CSingleLock lock(m_StateSection); return lrint(DS_TIME_TO_SEC(g_dsGraph->GetTotalTime())); }
   virtual void ToFFRW(int iSpeed);
   virtual bool OnAction(const CAction &action);
   
@@ -142,8 +141,11 @@ protected:
   virtual void OnStartup();
   virtual void OnExit();
   virtual void Process();
+  
   int  m_currentRate;
   bool m_bSpeedChanged;
+  bool m_bDoNotUseDSFF;
+  double m_clockStart;
 
   CDVDClock m_pClock;
   CPlayerOptions m_PlayerOptions;

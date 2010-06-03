@@ -613,6 +613,7 @@ STDMETHODIMP CEVRAllocatorPresenter::OnClockPause(MFTIME hnsSystemTime)
   TRACE_EVR ("EVR: OnClockPause  hnsSystemTime = %I64d\n", hnsSystemTime);
   if (!m_bSignaledStarvation)
     m_nRenderState    = Paused;
+
   m_ModeratedTimeLast = -1;
   m_ModeratedClockLast = -1;
   return S_OK;
@@ -2066,7 +2067,7 @@ void CEVRAllocatorPresenter::RenderThread()
                 m_pCurrentDisplaydSampleQueue.push(m_pCurrentDisplaydSample);
 
                g_application.NewFrame();
-               { m_drawingIsDone.WaitMSec(100); m_drawingIsDone.Reset(); }
+               { m_drawingIsDone.WaitMSec(300); m_drawingIsDone.Reset(); }
 
             }
             else
@@ -2199,7 +2200,7 @@ void CEVRAllocatorPresenter::RenderThread()
                   m_pCurrentDisplaydSampleQueue.push(m_pCurrentDisplaydSample);
 
                 g_application.NewFrame();
-                { m_drawingIsDone.WaitMSec(100); m_drawingIsDone.Reset(); } // Wait until the drawing is done
+                { m_drawingIsDone.WaitMSec(300); m_drawingIsDone.Reset(); } // Wait until the drawing is done
                 
                 NextSleepTime = 0;
                 m_pcFramesDrawn++;
