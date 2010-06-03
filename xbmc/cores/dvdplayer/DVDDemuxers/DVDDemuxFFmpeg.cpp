@@ -28,10 +28,6 @@
 #endif
 #ifdef _LINUX
 #include "stdint.h"
-#else
-#ifndef INT64_C
-#define INT64_C __int64
-#endif
 #endif
 #include "DVDDemuxFFmpeg.h"
 #include "DVDInputStreams/DVDInputStream.h"
