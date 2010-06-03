@@ -1154,9 +1154,9 @@
 		F5A1C8F70F6B06CF00A96ABD /* DVDVideoCodecFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */; };
 		F5A1C8F80F6B06CF00A96ABD /* DVDVideoCodecLibMpeg2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E153F0D25F9F900618676 /* DVDVideoCodecLibMpeg2.cpp */; };
 		F5A1C8F90F6B06CF00A96ABD /* DVDVideoPPFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15410D25F9F900618676 /* DVDVideoPPFFmpeg.cpp */; };
-		F5A1C8FA0F6B06CF00A96ABD /* DVDDemux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15490D25F9F900618676 /* DVDDemux.cpp */; settings = {COMPILER_FLAGS = "-D__STDC_CONSTANT_MACROS"; }; };
-		F5A1C8FB0F6B06CF00A96ABD /* DVDDemuxShoutcast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E154D0D25F9F900618676 /* DVDDemuxShoutcast.cpp */; settings = {COMPILER_FLAGS = "-D__STDC_CONSTANT_MACROS"; }; };
-		F5A1C8FC0F6B06CF00A96ABD /* DVDDemuxUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E154F0D25F9F900618676 /* DVDDemuxUtils.cpp */; settings = {COMPILER_FLAGS = "-D__STDC_CONSTANT_MACROS"; }; };
+		F5A1C8FA0F6B06CF00A96ABD /* DVDDemux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15490D25F9F900618676 /* DVDDemux.cpp */; };
+		F5A1C8FB0F6B06CF00A96ABD /* DVDDemuxShoutcast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E154D0D25F9F900618676 /* DVDDemuxShoutcast.cpp */; };
+		F5A1C8FC0F6B06CF00A96ABD /* DVDDemuxUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E154F0D25F9F900618676 /* DVDDemuxUtils.cpp */; };
 		F5A1C8FD0F6B06CF00A96ABD /* DVDDemuxSPU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15550D25F9FA00618676 /* DVDDemuxSPU.cpp */; };
 		F5A1C8FE0F6B06CF00A96ABD /* DVDFactoryInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E15590D25F9FA00618676 /* DVDFactoryInputStream.cpp */; };
 		F5A1C8FF0F6B06CF00A96ABD /* DVDInputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E155B0D25F9FA00618676 /* DVDInputStream.cpp */; };
@@ -1624,8 +1624,8 @@
 		F5A1CB160F6B06CF00A96ABD /* xbmcguimodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E259A0D263CE000618676 /* xbmcguimodule.cpp */; };
 		F5A1CB170F6B06CF00A96ABD /* xbmcmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E259B0D263CE000618676 /* xbmcmodule.cpp */; };
 		F5A1CB180F6B06CF00A96ABD /* xbmcplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E259C0D263CE000618676 /* xbmcplugin.cpp */; };
-		F5A1CB190F6B06CF00A96ABD /* DVDFactoryDemuxer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25BF0D263DC100618676 /* DVDFactoryDemuxer.cpp */; settings = {COMPILER_FLAGS = "-D__STDC_CONSTANT_MACROS"; }; };
-		F5A1CB1A0F6B06CF00A96ABD /* DVDDemuxFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25C20D263DE200618676 /* DVDDemuxFFmpeg.cpp */; settings = {COMPILER_FLAGS = "-D__STDC_CONSTANT_MACROS"; }; };
+		F5A1CB190F6B06CF00A96ABD /* DVDFactoryDemuxer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25BF0D263DC100618676 /* DVDFactoryDemuxer.cpp */; };
+		F5A1CB1A0F6B06CF00A96ABD /* DVDDemuxFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25C20D263DE200618676 /* DVDDemuxFFmpeg.cpp */; };
 		F5A1CB1B0F6B06CF00A96ABD /* dlgcache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A478090D29029A00F3C3A6 /* dlgcache.cpp */; };
 		F5A1CB1C0F6B06CF00A96ABD /* GUIMultiSelectText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A478150D29030100F3C3A6 /* GUIMultiSelectText.cpp */; };
 		F5A1CB1D0F6B06CF00A96ABD /* GUIDialogAccessPoints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3A478190D29032C00F3C3A6 /* GUIDialogAccessPoints.cpp */; };
@@ -9175,6 +9175,7 @@
 					_FILE_DEFINED,
 					"_FILE_OFFSET_BITS=64",
 					_LARGEFILE64_SOURCE,
+					__STDC_CONSTANT_MACROS,
 					HAS_SDL_JOYSTICK,
 					HAVE_CONFIG_H,
 					HAS_SPC_CODEC,
@@ -9418,6 +9419,7 @@
 					_FILE_DEFINED,
 					"_FILE_OFFSET_BITS=64",
 					_LARGEFILE64_SOURCE,
+					__STDC_CONSTANT_MACROS,
 					HAS_SDL_JOYSTICK,
 					HAVE_CONFIG_H,
 					HAS_SPC_CODEC,
