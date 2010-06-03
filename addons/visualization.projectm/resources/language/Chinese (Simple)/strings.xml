@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">渲染质量</string>
+    <string id="30001">低</string>
+    <string id="30002">中</string>
+    <string id="30003">高</string>
+    <string id="30004">最大</string>
+    <string id="30005">随机播放模式</string>
+    <string id="30006">平滑预置时间</string>
+    <string id="30007">预置时间</string>
+    <string id="30008">节拍灵敏度</string>
+</strings>

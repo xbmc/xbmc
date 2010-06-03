@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Translator: Mika Pirinen -->
+<!--Date of translation: 3/3/2010 -->
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Kuvanlaatu</string>
+    <string id="30001">Matala</string>
+    <string id="30002">Keski</string>
+    <string id="30003">Korkea</string>
+    <string id="30004">Maksimi</string>
+    <string id="30005">Sekoitustila</string>
+    <string id="30006">Pehmeä esiasetettu kesto</string>
+    <string id="30007">Esiasetettu kesto</string>
+    <string id="30008">Rytmiherkkyys</string>
+</strings>
