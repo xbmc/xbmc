@@ -615,13 +615,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       }
     }
 #endif
-    else if (strSetting.Equals("videoscreen.screenmode"))
-    {
-      // The user may have rejected the new resolution.
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-      if (pControl && (pControl->GetValue() != g_guiSettings.GetResolution()))
-          pControl->SetValue(g_guiSettings.GetResolution());
-    }
     else if (strSetting.Equals("videoscreen.fakefullscreen"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1458,6 +1451,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     {
       g_guiSettings.SetResolution(lastRes);
       g_graphicsContext.SetVideoResolution(lastRes);
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+      pControl->SetValue(g_guiSettings.GetResolution());
     }
   }
   else if (strSetting.Equals("videoscreen.vsync"))
