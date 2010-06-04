@@ -46,13 +46,9 @@
 
 using namespace std;
 
-DIRECTSHOW_RENDERER CFGLoader::m_CurrentRenderer = DIRECTSHOW_RENDERER_UNDEF;
-
 CFGLoader::CFGLoader():
   m_pFGF(NULL)
 {
-  Filters.Clear();
-  m_UsingDXVADecoder = false;
 }
 
 CFGLoader::~CFGLoader()
@@ -124,16 +120,16 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
   if (CUtil::IsInArchive(pFileItem.m_strPath))
   {
     CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.m_strPath.c_str());
-    CXBMCAsyncStream* pXBMCStream = new CXBMCAsyncStream(pFileItem.m_strPath, &Filters.Source.pBF, &hr);
+    CXBMCAsyncStream* pXBMCStream = new CXBMCAsyncStream(pFileItem.m_strPath, &CGraphFilters::Get()->Source.pBF, &hr);
     if (SUCCEEDED(hr))
     {
-      hr = g_dsGraph->pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC Source Filter");
+      hr = g_dsGraph->pFilterGraph->AddFilter(CGraphFilters::Get()->Source.pBF, L"XBMC Source Filter");
       if (FAILED(hr))
       {
         CLog::Log(LOGERROR, "%s Failed to add xbmc source filter to the graph", __FUNCTION__);
         return hr;
       }
-      Filters.Source.osdname = "XBMC File Source";
+      CGraphFilters::Get()->Source.osdname = "XBMC File Source";
       CLog::Log(LOGNOTICE, "%s Successfully added xbmc source filter to the graph", __FUNCTION__);
     }
     return hr;
@@ -141,28 +137,28 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
   /* DVD NAVIGATOR */
   if (pFileItem.IsDVDFile())
   {
-    hr = InsertFilter(filterName, Filters.Splitter);
+    hr = InsertFilter(filterName, CGraphFilters::Get()->Splitter);
     if (SUCCEEDED(hr))
     {
-      if(!((Filters.DVD.dvdControl = Filters.Splitter.pBF) && (Filters.DVD.dvdInfo = Filters.Splitter.pBF)))
+      if(!((CGraphFilters::Get()->DVD.dvdControl = CGraphFilters::Get()->Splitter.pBF) && (CGraphFilters::Get()->DVD.dvdInfo = CGraphFilters::Get()->Splitter.pBF)))
       {
-        Filters.DVD.Clear();
+        CGraphFilters::Get()->DVD.Clear();
         return E_NOINTERFACE;
       }
     }
 
-    Filters.isDVD = true;
+    CGraphFilters::Get()->SetIsDVD(true);
     CStdString dirA;
     CStdStringW dirW;
     CUtil::GetDirectory(pFileItem.m_strPath, dirA);
     g_charsetConverter.utf8ToW(dirA, dirW);
 
-    hr = Filters.DVD.dvdControl->SetDVDDirectory(dirW.c_str());
+    hr = CGraphFilters::Get()->DVD.dvdControl->SetDVDDirectory(dirW.c_str());
     if (FAILED(hr))
       CLog::Log(LOGERROR, "%s Failed loading dvd directory.", __FUNCTION__);
 
-    Filters.DVD.dvdControl->SetOption(DVD_ResetOnStop, FALSE);
-    Filters.DVD.dvdControl->SetOption(DVD_HMSF_TimeCodeEvents, TRUE);
+    CGraphFilters::Get()->DVD.dvdControl->SetOption(DVD_ResetOnStop, FALSE);
+    CGraphFilters::Get()->DVD.dvdControl->SetOption(DVD_HMSF_TimeCodeEvents, TRUE);
     
     return hr;
   }
@@ -176,11 +172,11 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
     Com::SmartPtr<IUnknown> pUnk = NULL;
 
     pUnk.CoCreateInstance(CLSID_URLReader, NULL);
-    hr = pUnk->QueryInterface(IID_IBaseFilter, (void**)&Filters.Source.pBF);
+    hr = pUnk->QueryInterface(IID_IBaseFilter, (void**)&CGraphFilters::Get()->Source.pBF);
     if (SUCCEEDED(hr))
     {
-      hr = g_dsGraph->pFilterGraph->AddFilter(Filters.Source.pBF, L"URLReader");
-      Filters.Source.osdname = "URLReader";
+      hr = g_dsGraph->pFilterGraph->AddFilter(CGraphFilters::Get()->Source.pBF, L"URLReader");
+      CGraphFilters::Get()->Source.osdname = "URLReader";
       CStdStringW strUrlW; g_charsetConverter.utf8ToW(pFileItem.m_strPath, strUrlW);
       //hr = pUnk->QueryInterface(IID_IFileSourceFilter,(void**) &pSourceUrl);
       if (pSourceUrl = pUnk)
@@ -188,9 +184,9 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
 
       if(FAILED(hr))
       {
-        g_dsGraph->pFilterGraph->RemoveFilter(Filters.Source.pBF);
+        g_dsGraph->pFilterGraph->RemoveFilter(CGraphFilters::Get()->Source.pBF);
         CLog::Log(LOGERROR, "%s Failed to add url source filter to the graph.", __FUNCTION__);
-        Filters.Source.pBF = NULL;
+        CGraphFilters::Get()->Source.pBF = NULL;
       }
       else
       {
@@ -200,7 +196,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
     }    
   }
 /* This is also adding the splitter with the insert filter function */
-  if (SUCCEEDED(hr = InsertFilter(filterName, Filters.Splitter)))
+  if (SUCCEEDED(hr = InsertFilter(filterName, CGraphFilters::Get()->Splitter)))
   {
     CStdString pWinFilePath = pFileItem.m_strPath;
     if ( (pWinFilePath.Left(6)).Equals("smb://", false) )
@@ -208,7 +204,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
   
     pWinFilePath.Replace("/", "\\");
 
-    Com::SmartQIPtr<IFileSourceFilter> pFS = Filters.Splitter.pBF;
+    Com::SmartQIPtr<IFileSourceFilter> pFS = CGraphFilters::Get()->Splitter.pBF;
     
     CStdStringW strFileW;  
     g_charsetConverter.utf8ToW(pWinFilePath, strFileW);
@@ -224,11 +220,11 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
 }
 HRESULT CFGLoader::InsertSplitter(const CFileItem& pFileItem, const CStdString& filterName)
 {
-  HRESULT hr = InsertFilter(filterName, Filters.Splitter);
+  HRESULT hr = InsertFilter(filterName, CGraphFilters::Get()->Splitter);
 
   if (SUCCEEDED(hr))
   {
-    if (SUCCEEDED(hr = ConnectFilters(g_dsGraph->pFilterGraph, Filters.Source.pBF, Filters.Splitter.pBF)))
+    if (SUCCEEDED(hr = ConnectFilters(g_dsGraph->pFilterGraph, CGraphFilters::Get()->Source.pBF, CGraphFilters::Get()->Splitter.pBF)))
       CLog::Log(LOGNOTICE, "%s Successfully connected the source to the spillter", __FUNCTION__);
     else
     {
@@ -261,7 +257,7 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
 
   if (! filterName.empty())
   {
-    if (SUCCEEDED(InsertFilter(filterName, Filters.AudioRenderer)))
+    if (SUCCEEDED(InsertFilter(filterName, CGraphFilters::Get()->AudioRenderer)))
       return S_OK;
     else
       CLog::Log(LOGERROR, "%s Failed to insert custom audio renderer, fallback to default one", __FUNCTION__);
@@ -289,7 +285,7 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
   }
 
   pFGF = new CFGFilterRegistry(DShowUtil::GUIDFromCString(currentGuid));
-  hr = pFGF->Create(&Filters.AudioRenderer.pBF);
+  hr = pFGF->Create(&CGraphFilters::Get()->AudioRenderer.pBF);
   delete pFGF;
 
   if (FAILED(hr))
@@ -298,15 +294,15 @@ HRESULT CFGLoader::InsertAudioRenderer(const CStdString& filterName)
     return hr;
   }
 
-  Filters.AudioRenderer.osdname = currentName;
-  Filters.AudioRenderer.guid = DShowUtil::GUIDFromCString(currentGuid);
+  CGraphFilters::Get()->AudioRenderer.osdname = currentName;
+  CGraphFilters::Get()->AudioRenderer.guid = DShowUtil::GUIDFromCString(currentGuid);
 
-  hr = g_dsGraph->pFilterGraph->AddFilter(Filters.AudioRenderer.pBF, DShowUtil::AnsiToUTF16(currentName));
+  hr = g_dsGraph->pFilterGraph->AddFilter(CGraphFilters::Get()->AudioRenderer.pBF, DShowUtil::AnsiToUTF16(currentName));
 
   if (SUCCEEDED(hr))
-    CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, Filters.AudioRenderer.osdname.c_str());
+    CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, CGraphFilters::Get()->AudioRenderer.osdname.c_str());
   else
-    CLog::Log(LOGNOTICE, "%s Failed to add \"%s\" to the graph (result: %X)", __FUNCTION__, Filters.AudioRenderer.osdname.c_str(), hr);
+    CLog::Log(LOGNOTICE, "%s Failed to add \"%s\" to the graph (result: %X)", __FUNCTION__, CGraphFilters::Get()->AudioRenderer.osdname.c_str(), hr);
 
   return hr;
 }
@@ -319,45 +315,45 @@ HRESULT CFGLoader::InsertVideoRenderer()
   if (g_sysinfo.IsVistaOrHigher())
   {
     if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
-      m_CurrentRenderer = DIRECTSHOW_RENDERER_VMR9;
+      CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_VMR9);
     else 
-      m_CurrentRenderer = DIRECTSHOW_RENDERER_EVR;
+      CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_EVR);
   }
   else
   {
     if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
-      m_CurrentRenderer = DIRECTSHOW_RENDERER_EVR;
+      CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_EVR);
     else 
-      m_CurrentRenderer = DIRECTSHOW_RENDERER_VMR9;
+      CGraphFilters::Get()->SetCurrentRenderer(DIRECTSHOW_RENDERER_VMR9);
   }    
 
   // Renderers
-  if (m_CurrentRenderer == DIRECTSHOW_RENDERER_EVR)
+  if (CGraphFilters::Get()->GetCurrentRenderer() == DIRECTSHOW_RENDERER_EVR)
   {
     m_pFGF = new CFGFilterVideoRenderer(CLSID_EVRAllocatorPresenter, L"Xbmc EVR");
-    Filters.VideoRenderer.osdname = _T("Enhanced Video Renderer");
+    CGraphFilters::Get()->VideoRenderer.osdname = _T("Enhanced Video Renderer");
   }
   else
   {
     m_pFGF = new CFGFilterVideoRenderer(CLSID_VMR9AllocatorPresenter, L"Xbmc VMR9");
-    Filters.VideoRenderer.osdname = _T("VMR9 (Renderless)");
+    CGraphFilters::Get()->VideoRenderer.osdname = _T("VMR9 (Renderless)");
   }
 
   
-  hr = m_pFGF->Create( &Filters.VideoRenderer.pBF);
+  hr = m_pFGF->Create( &CGraphFilters::Get()->VideoRenderer.pBF);
   if (FAILED(hr))
   {
     CLog::Log(LOGERROR, "%s Failed to create allocator presenter (hr = %X)", __FUNCTION__, hr);
     return hr;
   }
-  hr = g_dsGraph->pFilterGraph->AddFilter(Filters.VideoRenderer.pBF, m_pFGF->GetName());
+  hr = g_dsGraph->pFilterGraph->AddFilter(CGraphFilters::Get()->VideoRenderer.pBF, m_pFGF->GetName());
 
   /* Query IQualProp from the renderer */
-  Filters.VideoRenderer.pBF->QueryInterface(IID_IQualProp, (void **) &Filters.VideoRenderer.pQualProp);
+  CGraphFilters::Get()->VideoRenderer.pBF->QueryInterface(IID_IQualProp, (void **) &CGraphFilters::Get()->VideoRenderer.pQualProp);
 
   if (SUCCEEDED(hr))
   {
-    CLog::Log(LOGDEBUG, "%s Allocator presenter successfully added to the graph (Renderer: %s)",  __FUNCTION__, Filters.VideoRenderer.osdname.c_str());
+    CLog::Log(LOGDEBUG, "%s Allocator presenter successfully added to the graph (Renderer: %s)",  __FUNCTION__, CGraphFilters::Get()->VideoRenderer.osdname.c_str());
   } else {
     CLog::Log(LOGERROR, "%s Failed to add allocator presenter to the graph (hr = %X)", __FUNCTION__, hr);
   }
@@ -394,7 +390,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   
   CHECK_HR_RETURN(InsertSourceFilter(pFileItem, filter),"Failed to insert source filter")
 
-  if (! Filters.Splitter.pBF)
+  if (! CGraphFilters::Get()->Splitter.pBF)
   {
     if ( FAILED(CFilterCoreFactory::GetSplitterFilter(pFileItem, filter)) )
       return E_FAIL;
@@ -408,7 +404,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   /* Ok, the splitter is added to the graph. We need to detect the video stream codec in order to choose
   if we use or not the dxva filter */
 
-  Com::SmartPtr<IBaseFilter> pBF = Filters.Splitter.pBF;
+  Com::SmartPtr<IBaseFilter> pBF = CGraphFilters::Get()->Splitter.pBF;
   bool fourccfinded = false;
   BeginEnumPins(pBF, pEP, pPin)
   {
@@ -433,7 +429,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
       // the case for others decoders
       if (s.fourcc == 'H264' || s.fourcc == 'AVC1' || s.fourcc == 'WVC1'
         || s.fourcc == 'WMV3' || s.fourcc == 'WMVA' || s.fourcc == 'CCV1')
-        m_UsingDXVADecoder = true;
+        CGraphFilters::Get()->SetIsUsingDXVADecoder(true);
 
       if (s.fourcc == 'CCV1')
       {
@@ -447,7 +443,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   EndEnumPins
 
   std::vector<CStdString> extras;
-  if (FAILED(CFilterCoreFactory::GetExtraFilters(pFileItem, extras, m_UsingDXVADecoder)))
+  if (FAILED(CFilterCoreFactory::GetExtraFilters(pFileItem, extras, CGraphFilters::Get()->IsUsingDXVADecoder())))
   {
     //Dont want the loading to fail for an error there
     CLog::Log(LOGERROR,"Failed loading extras filters in dxfilterconfig.xml");
@@ -459,23 +455,23 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   {
     SFilterInfos f;
     if (SUCCEEDED(InsertFilter(extras[i], f)))
-      Filters.Extras.push_back(f);
+      CGraphFilters::Get()->Extras.push_back(f);
 
   }
   extras.clear();
 
-  if ( FAILED(CFilterCoreFactory::GetVideoFilter(pFileItem, filter, m_UsingDXVADecoder)))
+  if ( FAILED(CFilterCoreFactory::GetVideoFilter(pFileItem, filter, CGraphFilters::Get()->IsUsingDXVADecoder())))
     return E_FAIL;
 
-  if ( FAILED(InsertFilter(filter, Filters.Video)))
+  if ( FAILED(InsertFilter(filter, CGraphFilters::Get()->Video)))
   {
     return E_FAIL;
   }
 
-  if ( FAILED(CFilterCoreFactory::GetAudioFilter(pFileItem, filter, m_UsingDXVADecoder)))
+  if ( FAILED(CFilterCoreFactory::GetAudioFilter(pFileItem, filter, CGraphFilters::Get()->IsUsingDXVADecoder())))
     return E_FAIL;
 
-  if ( FAILED(InsertFilter(filter, Filters.Audio)))
+  if ( FAILED(InsertFilter(filter, CGraphFilters::Get()->Audio)))
   {
     return E_FAIL;
   }
@@ -563,8 +559,5 @@ bool CFGLoader::LoadFilterCoreFactorySettings( const CStdString& fileStr, ESetti
   return ( (type == MEDIAS) ? SUCCEEDED(CFilterCoreFactory::LoadMediasConfiguration(filterCoreFactoryXML.RootElement()))
                             : SUCCEEDED(CFilterCoreFactory::LoadFiltersConfiguration(filterCoreFactoryXML.RootElement())) );
 }
-
-bool                      CFGLoader::m_UsingDXVADecoder = false;
-SFilters                  CFGLoader::Filters;
 
 #endif

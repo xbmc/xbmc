@@ -81,14 +81,14 @@ void CChaptersManager::UpdateChapters()
 
 bool CChaptersManager::LoadChapters()
 {
-  if (! CFGLoader::Filters.Splitter.pBF)
+  if (! CGraphFilters::Get()->Splitter.pBF)
     return false;
 
-  CStdString splitterName = CFGLoader::Filters.Splitter.osdname;
+  CStdString splitterName = CGraphFilters::Get()->Splitter.osdname;
 
   CLog::Log(LOGDEBUG, "%s Looking for chapters in \"%s\"", __FUNCTION__, splitterName.c_str());
 
-  m_pIAMExtendedSeeking = CFGLoader::Filters.Splitter.pBF;
+  m_pIAMExtendedSeeking = CGraphFilters::Get()->Splitter.pBF;
   if (m_pIAMExtendedSeeking)
   {
     long chaptersCount = -1;

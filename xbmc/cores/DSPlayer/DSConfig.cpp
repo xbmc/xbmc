@@ -77,8 +77,8 @@ HRESULT CDSConfig::ConfigureFilters()
 
 bool CDSConfig::LoadPropertiesPage(IBaseFilter *pBF)
 {
-  if ((pBF == CFGLoader::Filters.AudioRenderer.pBF && CFGLoader::Filters.AudioRenderer.guid != CLSID_ReClock)
-    || pBF == CFGLoader::Filters.VideoRenderer.pBF )
+  if ((pBF == CGraphFilters::Get()->AudioRenderer.pBF && CGraphFilters::Get()->AudioRenderer.guid != CLSID_ReClock)
+    || pBF == CGraphFilters::Get()->VideoRenderer.pBF )
     return false;
 
   Com::SmartQIPtr<ISpecifyPropertyPages> pProp = pBF;

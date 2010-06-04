@@ -120,7 +120,7 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   //TODO Ti-Ben
   //with the vmr9 we need to add AM_DVD_SWDEC_PREFER  AM_DVD_VMR9_ONLY on the ivmr9config prefs
 
-  m_VideoInfo.isDVD = CFGLoader::Filters.isDVD;
+  m_VideoInfo.isDVD = CGraphFilters::Get()->IsDVD();
   
   // Audio & subtitle streams
   START_PERFORMANCE_COUNTER
@@ -192,15 +192,12 @@ void CDSGraph::UpdateTime()
     //we dont have the duration of the video yet so try to request it
     UpdateTotalTime();
 
-  if ((CFGLoader::Filters.VideoRenderer.pQualProp) && m_iCurrentFrameRefreshCycle <= 0)
+  if ((CGraphFilters::Get()->VideoRenderer.pQualProp) && m_iCurrentFrameRefreshCycle <= 0)
   {
     //this is too slow if we are doing it on every UpdateTime
     int avgRate;
-    CFGLoader::Filters.VideoRenderer.pQualProp->get_AvgFrameRate(&avgRate);
-    if (CFGLoader::GetCurrentRenderer() == DIRECTSHOW_RENDERER_EVR)
-      m_pStrCurrentFrameRate = "";//Dont need to waste the space on the osd
-    else
-      m_pStrCurrentFrameRate.Format(" | Real FPS: %4.2f", (float) avgRate / 100);
+    CGraphFilters::Get()->VideoRenderer.pQualProp->get_AvgFrameRate(&avgRate);
+    m_pStrCurrentFrameRate.Format(" | Real FPS: %4.2f", (float) avgRate / 100);
     m_iCurrentFrameRefreshCycle = 5;
   }
   m_iCurrentFrameRefreshCycle--;
@@ -225,13 +222,13 @@ void CDSGraph::UpdateTotalTime()
 
   if (m_VideoInfo.isDVD)
   {
-    if (!CFGLoader::Filters.DVD.dvdInfo)
+    if (!CGraphFilters::Get()->DVD.dvdInfo)
       return;
 
     REFERENCE_TIME rtDur = 0;
     DVD_HMSF_TIMECODE tcDur;
     ULONG ulFlags;
-    if(SUCCEEDED(CFGLoader::Filters.DVD.dvdInfo->GetTotalTitleTime(&tcDur, &ulFlags)))
+    if(SUCCEEDED(CGraphFilters::Get()->DVD.dvdInfo->GetTotalTitleTime(&tcDur, &ulFlags)))
     {
       rtDur = DShowUtil::HMSF2RT(tcDur);
       m_State.time_total = rtDur;
@@ -361,20 +358,20 @@ HRESULT CDSGraph::HandleGraphEvent()
           {
           case DVD_DOMAIN_FirstPlay:
             
-            if (CFGLoader::Filters.DVD.dvdInfo && SUCCEEDED (CFGLoader::Filters.DVD.dvdInfo->GetDiscID (NULL, &m_pDvdStatus.DvdGuid)))
+            if (CGraphFilters::Get()->DVD.dvdInfo && SUCCEEDED (CGraphFilters::Get()->DVD.dvdInfo->GetDiscID (NULL, &m_pDvdStatus.DvdGuid)))
             {
               if (m_pDvdStatus.DvdTitleId != 0)
               {
                 //s.NewDvd (llDVDGuid);
                 // Set command line position
-                CFGLoader::Filters.DVD.dvdControl->PlayTitle(m_pDvdStatus.DvdTitleId, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+                CGraphFilters::Get()->DVD.dvdControl->PlayTitle(m_pDvdStatus.DvdTitleId, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
                 if (m_pDvdStatus.DvdChapterId > 1)
-                  CFGLoader::Filters.DVD.dvdControl->PlayChapterInTitle(m_pDvdStatus.DvdTitleId, m_pDvdStatus.DvdChapterId, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+                  CGraphFilters::Get()->DVD.dvdControl->PlayChapterInTitle(m_pDvdStatus.DvdTitleId, m_pDvdStatus.DvdChapterId, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
                 else
                 {
                   // Trick : skip trailers with somes DVDs
-                  CFGLoader::Filters.DVD.dvdControl->Resume(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
-                  CFGLoader::Filters.DVD.dvdControl->PlayAtTime(&m_pDvdStatus.DvdTimecode, DVD_CMD_FLAG_Flush, NULL);
+                  CGraphFilters::Get()->DVD.dvdControl->Resume(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+                  CGraphFilters::Get()->DVD.dvdControl->PlayAtTime(&m_pDvdStatus.DvdTimecode, DVD_CMD_FLAG_Flush, NULL);
                 }
 
                 //m_iDVDTitle	  = s.lDVDTitle;
@@ -493,7 +490,7 @@ bool CDSGraph::OnMouseMove(tagPOINT pt)
   CSingleLock lock(m_ObjectLock);
 
   HRESULT hr;
-  hr = CFGLoader::Filters.DVD.dvdControl->SelectAtPosition(pt);
+  hr = CGraphFilters::Get()->DVD.dvdControl->SelectAtPosition(pt);
   if (SUCCEEDED(hr))
     return true;
   return true;
@@ -559,7 +556,7 @@ HRESULT CDSGraph::UnloadGraph()
   }
   EndEnumFilters
 
-  CFGLoader::Filters.DVD.Clear();
+  CGraphFilters::Get()->DVD.Clear();
   m_pMediaControl.Release();
   m_pMediaEvent.Release();
   m_pMediaSeeking.Release();
@@ -573,33 +570,7 @@ HRESULT CDSGraph::UnloadGraph()
   /* Release config interfaces */
   g_dsconfig.ClearConfig();
 
-  if (CFGLoader::Filters.Source.pBF)
-    CFGLoader::Filters.Source.pBF.FullRelease();
-
-  if (CFGLoader::Filters.Splitter.pBF)
-    CFGLoader::Filters.Splitter.pBF.FullRelease();
-
-  if (CFGLoader::Filters.AudioRenderer.pBF)
-    CFGLoader::Filters.AudioRenderer.pBF.FullRelease();
-
-  CFGLoader::Filters.VideoRenderer.pQualProp = NULL;
-
-  if (CFGLoader::Filters.VideoRenderer.pBF)
-    CFGLoader::Filters.VideoRenderer.pBF.FullRelease();
-
-  if (CFGLoader::Filters.Audio.pBF)
-    CFGLoader::Filters.Audio.pBF.FullRelease();
-  
-  if (CFGLoader::Filters.Video.pBF)
-    CFGLoader::Filters.Video.pBF.FullRelease();
-  
-  while (! CFGLoader::Filters.Extras.empty())
-  {
-    if (CFGLoader::Filters.Extras.back().pBF)
-      CFGLoader::Filters.Extras.back().pBF.FullRelease();
-
-    CFGLoader::Filters.Extras.pop_back();
-  }
+  CGraphFilters::Destroy();
 
   CLog::Log(LOGDEBUG, "%s ... done!", __FUNCTION__);
 
@@ -630,11 +601,11 @@ void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePos
   }
   else
   {
-    if (!CFGLoader::Filters.DVD.dvdControl)
+    if (!CGraphFilters::Get()->DVD.dvdControl)
       return;
 
     DVD_HMSF_TIMECODE tc = DShowUtil::RT2HMSF(position);
-    CFGLoader::Filters.DVD.dvdControl->PlayAtTime(&tc, DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
+    CGraphFilters::Get()->DVD.dvdControl->PlayAtTime(&tc, DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
   }
 }
 
@@ -710,21 +681,21 @@ CStdString CDSGraph::GetGeneralInfo()
 {
   CStdString generalInfo = "";
 
-  if (! CFGLoader::Filters.Source.osdname.empty() )
-    generalInfo = "Source Filter: " + CFGLoader::Filters.Source.osdname;
+  if (! CGraphFilters::Get()->Source.osdname.empty() )
+    generalInfo = "Source Filter: " + CGraphFilters::Get()->Source.osdname;
 
-  if (! CFGLoader::Filters.Splitter.osdname.empty())
+  if (! CGraphFilters::Get()->Splitter.osdname.empty())
   {
     if (generalInfo.empty())
-      generalInfo = "Splitter: " + CFGLoader::Filters.Splitter.osdname;
+      generalInfo = "Splitter: " + CGraphFilters::Get()->Splitter.osdname;
     else
-      generalInfo += " | Splitter: " + CFGLoader::Filters.Splitter.osdname;
+      generalInfo += " | Splitter: " + CGraphFilters::Get()->Splitter.osdname;
   }
 
   if (generalInfo.empty())
-    generalInfo = "Video renderer: " + CFGLoader::Filters.VideoRenderer.osdname;
+    generalInfo = "Video renderer: " + CGraphFilters::Get()->VideoRenderer.osdname;
   else
-    generalInfo += " | Video renderer: " + CFGLoader::Filters.VideoRenderer.osdname;
+    generalInfo += " | Video renderer: " + CGraphFilters::Get()->VideoRenderer.osdname;
 
   return generalInfo;
 }
@@ -735,11 +706,11 @@ CStdString CDSGraph::GetAudioInfo()
   CStreamsManager *c = CStreamsManager::Get();
 
   audioInfo.Format("Audio Decoder: %s (%s, %d Hz, %d Channels) | Renderer: %s",
-    CFGLoader::Filters.Audio.osdname,
+    CGraphFilters::Get()->Audio.osdname,
     c->GetAudioCodecDisplayName(),
     c->GetSampleRate(),
     c->GetChannels(),
-    CFGLoader::Filters.AudioRenderer.osdname);
+    CGraphFilters::Get()->AudioRenderer.osdname);
     
   return audioInfo;
 }
@@ -749,7 +720,7 @@ CStdString CDSGraph::GetVideoInfo()
   CStdString videoInfo = "";
   CStreamsManager *c = CStreamsManager::Get();
   videoInfo.Format("Video Decoder: %s (%s, %dx%d)",
-    CFGLoader::Filters.Video.osdname,
+    CGraphFilters::Get()->Video.osdname,
     c->GetVideoCodecDisplayName(),
     c->GetPictureWidth(),
     c->GetPictureHeight());
@@ -795,8 +766,8 @@ void CDSGraph::ProcessMessage(WPARAM wParam, LPARAM lParam)
     /*CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
     g_windowManager.SendMessage(msg);*/
     /**** End of ugly hack ***/
-    if (SUCCEEDED(CFGLoader::Filters.DVD.dvdInfo->GetButtonAtPosition(pt,&pButtonIndex)))
-      CFGLoader::Filters.DVD.dvdControl->SelectButton(pButtonIndex);
+    if (SUCCEEDED(CGraphFilters::Get()->DVD.dvdInfo->GetButtonAtPosition(pt,&pButtonIndex)))
+      CGraphFilters::Get()->DVD.dvdControl->SelectButton(pButtonIndex);
     
   }
   else if ( wParam == ID_DVD_MOUSE_CLICK)
@@ -805,8 +776,8 @@ void CDSGraph::ProcessMessage(WPARAM wParam, LPARAM lParam)
     pt.x = GET_X_LPARAM(lParam);
     pt.y = GET_Y_LPARAM(lParam);
     ULONG pButtonIndex;
-    if (SUCCEEDED(CFGLoader::Filters.DVD.dvdInfo->GetButtonAtPosition(pt, &pButtonIndex)))
-      CFGLoader::Filters.DVD.dvdControl->SelectAndActivateButton(pButtonIndex);
+    if (SUCCEEDED(CGraphFilters::Get()->DVD.dvdInfo->GetButtonAtPosition(pt, &pButtonIndex)))
+      CGraphFilters::Get()->DVD.dvdControl->SelectAndActivateButton(pButtonIndex);
   }
   else if ( wParam == ID_DS_SET_WINDOW_POS)
   {
@@ -859,41 +830,41 @@ void CDSGraph::ProcessMessage(WPARAM wParam, LPARAM lParam)
 /*DVD COMMANDS*/
   if ( wParam == ID_DVD_NAV_UP )
   {
-    CFGLoader::Filters.DVD.dvdControl->SelectRelativeButton(DVD_Relative_Upper);
+    CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Upper);
   }
   else if ( wParam == ID_DVD_NAV_DOWN )
   {
-    CFGLoader::Filters.DVD.dvdControl->SelectRelativeButton(DVD_Relative_Lower);
+    CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Lower);
   }
   else if ( wParam == ID_DVD_NAV_LEFT )
   {
-    CFGLoader::Filters.DVD.dvdControl->SelectRelativeButton(DVD_Relative_Left);
+    CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Left);
   }
   else if ( wParam == ID_DVD_NAV_RIGHT )
   {
-    CFGLoader::Filters.DVD.dvdControl->SelectRelativeButton(DVD_Relative_Right);
+    CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Right);
   }
   else if ( wParam == ID_DVD_MENU_ROOT )
   {
     CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
     g_windowManager.SendMessage(msg);
-    CFGLoader::Filters.DVD.dvdControl->ShowMenu(DVD_MENU_Root , DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+    CGraphFilters::Get()->DVD.dvdControl->ShowMenu(DVD_MENU_Root , DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
   }
   else if ( wParam == ID_DVD_MENU_EXIT )
   {
-    CFGLoader::Filters.DVD.dvdControl->Resume(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+    CGraphFilters::Get()->DVD.dvdControl->Resume(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
   }
   else if ( wParam == ID_DVD_MENU_BACK )
   {
-    CFGLoader::Filters.DVD.dvdControl->ReturnFromSubmenu(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+    CGraphFilters::Get()->DVD.dvdControl->ReturnFromSubmenu(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
   }
   else if ( wParam == ID_DVD_MENU_SELECT )
   {
-    CFGLoader::Filters.DVD.dvdControl->ActivateButton();
+    CGraphFilters::Get()->DVD.dvdControl->ActivateButton();
   }
   else if ( wParam == ID_DVD_MENU_TITLE )
   {
-    CFGLoader::Filters.DVD.dvdControl->ShowMenu(DVD_MENU_Title, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+    CGraphFilters::Get()->DVD.dvdControl->ShowMenu(DVD_MENU_Title, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
   }
   else if ( wParam == ID_DVD_MENU_SUBTITLE )
   {

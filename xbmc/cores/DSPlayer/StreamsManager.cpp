@@ -109,7 +109,7 @@ void CStreamsManager::SetAudioStream(int iStream)
   if (! m_init)
     return;
 
-  if (CFGLoader::Filters.isDVD)
+  if (CGraphFilters::Get()->IsDVD())
     return; // currently not implemented
 
   CSingleLock lock(m_lock);
@@ -380,7 +380,7 @@ void CStreamsManager::LoadStreams()
     bool audioPinAlreadyConnected = false;//, subtitlePinAlreadyConnected = FALSE;
 
     // If we're playing a DVD, the bottom method doesn't work
-    if (CFGLoader::Filters.isDVD)
+    if (CGraphFilters::Get()->IsDVD())
     { // The playback need to be started in order to get informations
       return;
     }
@@ -505,7 +505,7 @@ bool CStreamsManager::InitManager()
   if (! g_dsGraph)
     return false;
 
-  m_pSplitter = CFGLoader::Filters.Splitter.pBF;
+  m_pSplitter = CGraphFilters::Get()->Splitter.pBF;
   m_pGraphBuilder = g_dsGraph->pFilterGraph;
 
   // Create subtitle manager
@@ -926,7 +926,7 @@ void CSubtitleManager::GetSubtitleName( int iStream, CStdString &strStreamName )
 
 void CSubtitleManager::SetSubtitle( int iStream )
 {
-  if (CFGLoader::Filters.isDVD)
+  if (CGraphFilters::Get()->IsDVD())
     return; // currently not implemented
 
   CSingleLock lock(m_pStreamManager->m_lock);
@@ -1215,8 +1215,8 @@ CStdString CStreamsManager::ISOToLanguage( CStdString code )
 
 void CStreamsManager::LoadDVDStreams()
 {
-  Com::SmartPtr<IDvdInfo2> pDvdI = CFGLoader::Filters.DVD.dvdInfo;
-  Com::SmartPtr<IDvdControl2> pDvdC = CFGLoader::Filters.DVD.dvdControl;
+  Com::SmartPtr<IDvdInfo2> pDvdI = CGraphFilters::Get()->DVD.dvdInfo;
+  Com::SmartPtr<IDvdControl2> pDvdC = CGraphFilters::Get()->DVD.dvdControl;
 
   DVD_VideoAttributes vid;
   // First, video
@@ -1249,7 +1249,7 @@ void CStreamsManager::UpdateDVDStream()
 
   // Second, audio
   unsigned long nbrStreams = 0, currentStream = 0;
-  HRESULT hr = CFGLoader::Filters.DVD.dvdInfo->GetCurrentAudio(&nbrStreams, &currentStream);
+  HRESULT hr = CGraphFilters::Get()->DVD.dvdInfo->GetCurrentAudio(&nbrStreams, &currentStream);
   if (FAILED(hr))
     return;
 
@@ -1260,7 +1260,7 @@ void CStreamsManager::UpdateDVDStream()
   {
     std::auto_ptr<SAudioStreamInfos> s(new SAudioStreamInfos());
     DVD_AudioAttributes audio;
-    hr = CFGLoader::Filters.DVD.dvdInfo->GetAudioAttributes(i, &audio);
+    hr = CGraphFilters::Get()->DVD.dvdInfo->GetAudioAttributes(i, &audio);
 
     s->channels = audio.bNumberOfChannels;
     s->samplerate = audio.dwFrequency;
@@ -1307,14 +1307,14 @@ void CStreamsManager::UpdateDVDStream()
   }
 
   BOOL isDisabled = false;
-  hr = CFGLoader::Filters.DVD.dvdInfo->GetCurrentSubpicture(&nbrStreams, &currentStream, &isDisabled);
+  hr = CGraphFilters::Get()->DVD.dvdInfo->GetCurrentSubpicture(&nbrStreams, &currentStream, &isDisabled);
   if (FAILED(hr))
     return;
 
   for (unsigned int i = 0; i < nbrStreams; i++)
   {
     DVD_SubpictureAttributes subpic;
-    hr = CFGLoader::Filters.DVD.dvdInfo->GetSubpictureAttributes(i, &subpic);
+    hr = CGraphFilters::Get()->DVD.dvdInfo->GetSubpictureAttributes(i, &subpic);
     if (subpic.Type != DVD_SPType_Language)
       continue;
 

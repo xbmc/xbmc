@@ -358,10 +358,10 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
   END_PERFORMANCE_COUNTER
 
   START_PERFORMANCE_COUNTER
-  hr = ConnectFilter(CFGLoader::Filters.Splitter.pBF , NULL);
+  hr = ConnectFilter(CGraphFilters::Get()->Splitter.pBF , NULL);
   //In some case its going to failed because the source filter is not the splitter
   if (hr == S_FALSE)
-    hr = ConnectFilter(CFGLoader::Filters.Source.pBF , NULL);
+    hr = ConnectFilter(CGraphFilters::Get()->Source.pBF , NULL);
   END_PERFORMANCE_COUNTER
   if (hr != S_OK)
   {
@@ -379,17 +379,6 @@ HRESULT CFGManager::RenderFileXbmc(const CFileItem& pFileItem)
 #endif
 
   return hr;  
-}
-
-HRESULT CFGManager::GetFileInfo(CStdString* sourceInfo, CStdString* splitterInfo, CStdString* audioInfo,
-                                CStdString* videoInfo, CStdString* audioRenderer)
-{
-  *sourceInfo = CFGLoader::Filters.Source.osdname;
-  *splitterInfo = CFGLoader::Filters.Splitter.osdname;
-  *audioInfo = CFGLoader::Filters.Audio.osdname;
-  *videoInfo = CFGLoader::Filters.Video.osdname;
-  *audioRenderer = CFGLoader::Filters.AudioRenderer.osdname;
-  return S_OK;
 }
 
 STDMETHODIMP CFGManager::Abort()
@@ -469,7 +458,7 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
 
   /* Only the video pin and one audio pin can be connected
   if the filter is the splitter */
-  if (pBF == CFGLoader::Filters.Splitter.pBF
+  if (pBF == CGraphFilters::Get()->Splitter.pBF
     && m_audioPinConnected
     && m_videoPinConnected)
     return S_OK;
@@ -486,13 +475,13 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
       }
       EndEnumMediaTypes(pMediaType)
 
-      if (pBF == CFGLoader::Filters.Splitter.pBF && (mediaType == MEDIATYPE_Video) 
+      if (pBF == CGraphFilters::Get()->Splitter.pBF && (mediaType == MEDIATYPE_Video) 
           && m_videoPinConnected)
         continue;                               // A video pin is already connected, continue !
-      else if (pBF == CFGLoader::Filters.Splitter.pBF && (mediaType == MEDIATYPE_Audio)
+      else if (pBF == CGraphFilters::Get()->Splitter.pBF && (mediaType == MEDIATYPE_Audio)
           && m_audioPinConnected)
         continue;                               // An audio pin is already connected, continue !
-      else if (pBF == CFGLoader::Filters.Splitter.pBF && mediaType == MEDIATYPE_Subtitle)
+      else if (pBF == CGraphFilters::Get()->Splitter.pBF && mediaType == MEDIATYPE_Subtitle)
         continue;                               // We don't connect subtitle pin yet, continue !*/
 
       m_streampath.Append(pBF, pPin);
@@ -517,10 +506,10 @@ HRESULT CFGManager::ConnectFilter(IBaseFilter* pBF, IPin* pPinIn)
 
       m_streampath.pop_back();
 
-      if (pBF == CFGLoader::Filters.Splitter.pBF && (mediaType == MEDIATYPE_Video) 
+      if (pBF == CGraphFilters::Get()->Splitter.pBF && (mediaType == MEDIATYPE_Video) 
           && SUCCEEDED(hr))
         m_videoPinConnected = true;
-      else if (pBF == CFGLoader::Filters.Splitter.pBF && (mediaType == MEDIATYPE_Audio)
+      else if (pBF == CGraphFilters::Get()->Splitter.pBF && (mediaType == MEDIATYPE_Audio)
           && SUCCEEDED(hr))
         m_audioPinConnected = true;
 
@@ -839,7 +828,7 @@ void CFGManager::UpdateRegistry()
 
 HRESULT CFGManager::RecoverFromGraphError(const CFileItem& pFileItem)
 {
-  Com::SmartPtr<IBaseFilter> pBF = CFGLoader::Filters.Splitter.pBF;
+  Com::SmartPtr<IBaseFilter> pBF = CGraphFilters::Get()->Splitter.pBF;
   int nVideoPin = 0, nAudioPin = 0;
   int nConnectedVideoPin = 0, nConnectedAudioPin = 0;
   bool videoError = false, audioError = false;
@@ -891,24 +880,23 @@ HRESULT CFGManager::RecoverFromGraphError(const CFileItem& pFileItem)
   }
   if (videoError)
   {
-    if (CFGLoader::IsUsingDXVADecoder())
+    if (CGraphFilters::Get()->IsUsingDXVADecoder())
     {
       // We've try to use a dxva decoder. Maybe the file wasn't dxva compliant. Fallback on default video renderer
-      g_dsGraph->pFilterGraph->RemoveFilter(CFGLoader::Filters.Video.pBF);
-      CFGLoader::Filters.Video.pBF.FullRelease();
-      CFGLoader::Filters.Video.guid = GUID_NULL;
-      CFGLoader::Filters.Video.osdname = "";
+      g_dsGraph->pFilterGraph->RemoveFilter(CGraphFilters::Get()->Video.pBF);
+      CGraphFilters::Get()->Video.pBF.FullRelease();
+      CGraphFilters::Get()->Video.Clear();
 
       CStdString filter = "";
       if ( SUCCEEDED(CFilterCoreFactory::GetVideoFilter(pFileItem, filter, false)))
       {
-        if (SUCCEEDED(m_CfgLoader->InsertFilter(filter, CFGLoader::Filters.Video)))
+        if (SUCCEEDED(m_CfgLoader->InsertFilter(filter, CGraphFilters::Get()->Video)))
         {
           /* Default filter is in the graph, connect it */
-          hr = ConnectFilter(CFGLoader::Filters.Splitter.pBF , NULL);
+          hr = ConnectFilter(CGraphFilters::Get()->Splitter.pBF , NULL);
           if (SUCCEEDED(hr))
           {
-            CLog::Log(LOGNOTICE, "%s Rendering fails when using DXVA renderer. \"%s\" renderer used instead.", __FUNCTION__, CFGLoader::Filters.Video.osdname.c_str());
+            CLog::Log(LOGNOTICE, "%s Rendering fails when using DXVA renderer. \"%s\" renderer used instead.", __FUNCTION__, CGraphFilters::Get()->Video.osdname.c_str());
             videoError = false;
           }
         }
@@ -919,7 +907,7 @@ HRESULT CFGManager::RecoverFromGraphError(const CFileItem& pFileItem)
     {
       //Video renderer cant be changed so we have to force the connection from 
       //the splitter to the video renderer and nothing else
-      IBaseFilter *pBFS = CFGLoader::Filters.Splitter.pBF;
+      IBaseFilter *pBFS = CGraphFilters::Get()->Splitter.pBF;
 
       BeginEnumPins(pBFS, pEP, pPin)
       {
@@ -941,11 +929,11 @@ HRESULT CFGManager::RecoverFromGraphError(const CFileItem& pFileItem)
 
     if (!videoError)
     {
-      IBaseFilter *pBFV = CFGLoader::Filters.VideoRenderer.pBF;
+      IBaseFilter *pBFV = CGraphFilters::Get()->VideoRenderer.pBF;
       Com::SmartPtr<IPin> pPinV = DShowUtil::GetFirstPin(pBFV, PINDIR_INPUT);
       if (DShowUtil::IsPinConnected(pPinV))
       {
-        CLog::Log(LOGINFO, "The video filters encountered an error so dsplayer changed the filters currently used.");
+        CLog::Log(LOGINFO, "%s There were some errors in your rendering chain. Filters have been changed.", __FUNCTION__);
       }
       else
         videoError = true;

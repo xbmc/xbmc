@@ -119,7 +119,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   if (PlayerState != DSPLAYER_ERROR)
   {
     g_dsGraph->Play();
-    if (CFGLoader::Filters.isDVD)
+    if (CGraphFilters::Get()->IsDVD())
       CStreamsManager::Get()->LoadDVDStreams();
   }
 
@@ -326,7 +326,7 @@ void CDSPlayer::Process()
     if (m_currentRate == 1)
     {
       CChaptersManager::Get()->UpdateChapters();
-      if (CFGLoader::Filters.isDVD)
+      if (CGraphFilters::Get()->IsDVD())
         CStreamsManager::Get()->UpdateDVDStream();
     }
     //Handle fastforward stuff

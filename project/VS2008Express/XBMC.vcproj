@@ -2210,6 +2210,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\GraphFilters.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\GraphFilters.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\DSPlayer\StreamsManager.cpp"
 					>
 				</File>

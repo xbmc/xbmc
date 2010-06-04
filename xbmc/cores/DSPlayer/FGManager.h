@@ -146,7 +146,6 @@ public:
   HRESULT AddToROT();
   HRESULT RemoveFromROT();
   HRESULT RenderFileXbmc(const CFileItem& pFileItem);
-  HRESULT GetFileInfo(CStdString* sourceInfo,CStdString* splitterInfo,CStdString* audioInfo,CStdString* videoInfo,CStdString* audioRenderer);
 
   HRESULT QueryInterface(REFIID iid , void** ppv);
 
