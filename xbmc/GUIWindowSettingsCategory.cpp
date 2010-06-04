@@ -622,6 +622,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl && (pControl->GetValue() != g_guiSettings.GetResolution()))
           pControl->SetValue(g_guiSettings.GetResolution());
     }
+    else if (strSetting.Equals("videoscreen.fakefullscreen"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl)
+        pControl->SetEnabled(g_settings.m_ResInfo[g_guiSettings.GetResolution()].bFullScreen);
+    }
 #if defined(__APPLE__) || defined(_WIN32)
     else if (strSetting.Equals("videoscreen.blankdisplays"))
     {
