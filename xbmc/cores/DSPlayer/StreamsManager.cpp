@@ -1126,9 +1126,9 @@ int CSubtitleManager::AddSubtitle(const CStdString& subFilePath)
       s->displayname += " [External]";
       CoTaskMemFree(title);
     }
-    m_subtitleStreams.push_back(s.release());
 
     CLog::Log(LOGNOTICE, "%s Successfully loaded subtitle file \"%s\"", __FUNCTION__, s->path.c_str());
+    m_subtitleStreams.push_back(s.release());
     return m_subtitleStreams.size() - 1;
   }
 
