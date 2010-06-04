@@ -150,7 +150,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
   {
     int demuxer_bytes = iSize;
     uint8_t *demuxer_content = pData;
-    bool bitstream_convered  = false;
+    bool free_demuxer_content  = false;
 
     if (m_convert_bitstream)
     {
@@ -161,7 +161,8 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
       bitstream_convert(demuxer_content, demuxer_bytes, &bytestream_buff, &bytestream_size);
       if (bytestream_buff && (bytestream_size > 0))
       {
-        bitstream_convered = true;
+        if (bytestream_buff != demuxer_content)
+          free_demuxer_content = true;
         demuxer_bytes = bytestream_size;
         demuxer_content = bytestream_buff;
       }
@@ -175,7 +176,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
       Sleep(10);
     }
 
-    if (bitstream_convered)
+    if (free_demuxer_content)
       free(demuxer_content);
   }
 
