@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/ulti.c
+ * @file
  * IBM Ultimotion Video Decoder.
  */
 
@@ -406,7 +406,7 @@ static int ulti_decode_frame(AVCodecContext *avctx,
 
 AVCodec ulti_decoder = {
     "ultimotion",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_ULTI,
     sizeof(UltimotionDecodeContext),
     ulti_decode_init,

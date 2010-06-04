@@ -536,7 +536,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
 #endif
     else if (strSetting.Equals("videoscreen.screenmode"))
     {
-      FillInResolutions(pSetting, false);
+      FillInResolutions(pSetting);
     }
     else if (strSetting.Equals("lookandfeel.skintheme"))
     {
@@ -548,7 +548,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("videoplayer.displayresolution") || strSetting.Equals("pictures.displayresolution"))
     {
-      FillInResolutions(pSetting, true);
+      FillInResolutions(pSetting);
     }
     else if (strSetting.Equals("videoplayer.highqualityupscaling"))
     {
@@ -674,12 +674,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       }
     }
 #endif
-    else if (strSetting.Equals("videoscreen.screenmode"))
+    else if (strSetting.Equals("videoscreen.fakefullscreen"))
     {
-      // The user may have rejected the new resolution.
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-      if (pControl && (pControl->GetValue() != g_guiSettings.GetResolution()))
-          pControl->SetValue(g_guiSettings.GetResolution());
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl)
+        pControl->SetEnabled(g_settings.m_ResInfo[g_guiSettings.GetResolution()].bFullScreen);
     }
 #if defined(__APPLE__) || defined(_WIN32)
     else if (strSetting.Equals("videoscreen.blankdisplays"))
@@ -1564,6 +1563,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     {
       g_guiSettings.SetResolution(lastRes);
       g_graphicsContext.SetVideoResolution(lastRes);
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+      pControl->SetValue(g_guiSettings.GetResolution());
     }
   }
   else if (strSetting.Equals("videoscreen.vsync"))
@@ -2376,7 +2377,7 @@ void CGUIWindowSettingsCategory::FillInCharSets(CSetting *pSetting)
   pControl->SetValue(iCurrentCharset);
 }
 
-void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool playbackSetting)
+void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting)
 {
   CSettingString *pSettingString = (CSettingString*)pSetting;
   CBaseSettingControl *control = GetSetting(pSetting->GetSetting());

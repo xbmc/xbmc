@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/vb.c
+ * @file
  * VB Video decoder
  */
 
@@ -289,7 +289,7 @@ static av_cold int decode_end(AVCodecContext *avctx)
 
 AVCodec vb_decoder = {
     "vb",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_VB,
     sizeof(VBDecContext),
     decode_init,

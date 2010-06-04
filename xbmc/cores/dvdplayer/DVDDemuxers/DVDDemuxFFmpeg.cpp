@@ -28,8 +28,6 @@
 #endif
 #ifdef _LINUX
 #include "stdint.h"
-#else
-#define INT64_C __int64
 #endif
 #include "DVDDemuxFFmpeg.h"
 #include "DVDInputStreams/DVDInputStream.h"
@@ -290,7 +288,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   else
   {
     m_timeout = 0;
-    m_ioContext = m_dllAvFormat.av_alloc_put_byte(m_buffer, FFMPEG_FILE_BUFFER_SIZE, 0, m_pInput, dvd_file_read, NULL, dvd_file_seek);
+    unsigned char* buffer = (unsigned char*)m_dllAvUtil.av_malloc(FFMPEG_FILE_BUFFER_SIZE);
+    m_ioContext = m_dllAvFormat.av_alloc_put_byte(buffer, FFMPEG_FILE_BUFFER_SIZE, 0, m_pInput, dvd_file_read, NULL, dvd_file_seek);
     m_ioContext->max_packet_size = FFMPEG_FILE_BUFFER_SIZE;
 
     if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -483,6 +482,8 @@ void CDVDDemuxFFmpeg::Dispose()
         m_ioContext = m_pFormatContext->pb;
       }
       m_dllAvFormat.av_close_input_stream(m_pFormatContext);
+      if (m_ioContext->buffer)
+        m_dllAvUtil.av_free(m_ioContext->buffer);
       m_dllAvUtil.av_free(m_ioContext);
     }
     else

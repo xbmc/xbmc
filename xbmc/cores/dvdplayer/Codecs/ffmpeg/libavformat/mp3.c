@@ -140,7 +140,7 @@ static int mp3_read_header(AVFormatContext *s,
     if (!st)
         return AVERROR(ENOMEM);
 
-    st->codec->codec_type = CODEC_TYPE_AUDIO;
+    st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
     st->codec->codec_id = CODEC_ID_MP3;
     st->need_parsing = AVSTREAM_PARSE_FULL;
     st->start_time = 0;
@@ -360,6 +360,7 @@ AVOutputFormat mp3_muxer = {
     mp3_write_header,
     mp3_write_packet,
     mp3_write_trailer,
+    AVFMT_NOTIMESTAMPS,
     .metadata_conv = ff_id3v2_metadata_conv,
 };
 #endif

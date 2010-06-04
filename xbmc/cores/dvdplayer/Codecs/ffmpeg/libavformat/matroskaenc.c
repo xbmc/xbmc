@@ -475,7 +475,7 @@ static int mkv_write_codecprivate(AVFormatContext *s, ByteIOContext *pb, AVCodec
             ret = ff_isom_write_avcc(dyn_cp, codec->extradata, codec->extradata_size);
         else if (codec->extradata_size)
             put_buffer(dyn_cp, codec->extradata, codec->extradata_size);
-    } else if (codec->codec_type == CODEC_TYPE_VIDEO) {
+    } else if (codec->codec_type == AVMEDIA_TYPE_VIDEO) {
         if (qt_id) {
             if (!codec->codec_tag)
                 codec->codec_tag = ff_codec_get_tag(codec_movvideo_tags, codec->codec_id);
@@ -492,13 +492,15 @@ static int mkv_write_codecprivate(AVFormatContext *s, ByteIOContext *pb, AVCodec
             ff_put_bmp_header(dyn_cp, codec, ff_codec_bmp_tags, 0);
         }
 
-    } else if (codec->codec_type == CODEC_TYPE_AUDIO) {
-        if (!codec->codec_tag)
-            codec->codec_tag = ff_codec_get_tag(ff_codec_wav_tags, codec->codec_id);
-        if (!codec->codec_tag) {
+    } else if (codec->codec_type == AVMEDIA_TYPE_AUDIO) {
+        unsigned int tag;
+        tag = ff_codec_get_tag(ff_codec_wav_tags, codec->codec_id);
+        if (!tag) {
             av_log(s, AV_LOG_ERROR, "No wav codec ID found.\n");
             ret = -1;
         }
+        if (!codec->codec_tag)
+            codec->codec_tag = tag;
 
         ff_put_wav_header(dyn_cp, codec);
     }
@@ -542,7 +544,6 @@ static int mkv_write_tracks(AVFormatContext *s)
         put_ebml_uint (pb, MATROSKA_ID_TRACKNUMBER     , i + 1);
         put_ebml_uint (pb, MATROSKA_ID_TRACKUID        , i + 1);
         put_ebml_uint (pb, MATROSKA_ID_TRACKFLAGLACING , 0);    // no lacing (yet)
-        put_ebml_float(pb, MATROSKA_ID_TRACKTIMECODESCALE, 1.0);
 
         if ((tag = av_metadata_get(st->metadata, "title", NULL, 0)))
             put_ebml_string(pb, MATROSKA_ID_TRACKNAME, tag->value);
@@ -563,8 +564,9 @@ static int mkv_write_tracks(AVFormatContext *s)
         }
 
         switch (codec->codec_type) {
-            case CODEC_TYPE_VIDEO:
+            case AVMEDIA_TYPE_VIDEO:
                 put_ebml_uint(pb, MATROSKA_ID_TRACKTYPE, MATROSKA_TRACK_TYPE_VIDEO);
+                put_ebml_uint(pb, MATROSKA_ID_TRACKDEFAULTDURATION, av_q2d(codec->time_base)*1E9);
 
                 if (!native_id &&
                       ff_codec_get_tag(codec_movvideo_tags, codec->codec_id) &&
@@ -594,7 +596,7 @@ static int mkv_write_tracks(AVFormatContext *s)
                 end_ebml_master(pb, subinfo);
                 break;
 
-            case CODEC_TYPE_AUDIO:
+            case AVMEDIA_TYPE_AUDIO:
                 put_ebml_uint(pb, MATROSKA_ID_TRACKTYPE, MATROSKA_TRACK_TYPE_AUDIO);
 
                 if (!native_id)
@@ -611,7 +613,7 @@ static int mkv_write_tracks(AVFormatContext *s)
                 end_ebml_master(pb, subinfo);
                 break;
 
-            case CODEC_TYPE_SUBTITLE:
+            case AVMEDIA_TYPE_SUBTITLE:
                 put_ebml_uint(pb, MATROSKA_ID_TRACKTYPE, MATROSKA_TRACK_TYPE_SUBTITLE);
                 break;
             default:
@@ -864,7 +866,7 @@ static int mkv_write_packet(AVFormatContext *s, AVPacket *pkt)
     MatroskaMuxContext *mkv = s->priv_data;
     ByteIOContext *pb = s->pb;
     AVCodecContext *codec = s->streams[pkt->stream_index]->codec;
-    int keyframe = !!(pkt->flags & PKT_FLAG_KEY);
+    int keyframe = !!(pkt->flags & AV_PKT_FLAG_KEY);
     int duration = pkt->duration;
     int ret;
     int64_t ts = mkv->tracks[pkt->stream_index].write_dts ? pkt->dts : pkt->pts;
@@ -891,7 +893,7 @@ static int mkv_write_packet(AVFormatContext *s, AVPacket *pkt)
         av_md5_update(mkv->md5_ctx, pkt->data, FFMIN(200, pkt->size));
     }
 
-    if (codec->codec_type != CODEC_TYPE_SUBTITLE) {
+    if (codec->codec_type != AVMEDIA_TYPE_SUBTITLE) {
         mkv_write_block(s, pb, MATROSKA_ID_SIMPLEBLOCK, pkt, keyframe << 7);
     } else if (codec->codec_id == CODEC_ID_SSA) {
         duration = mkv_write_ass_blocks(s, pb, pkt);
@@ -903,13 +905,13 @@ static int mkv_write_packet(AVFormatContext *s, AVPacket *pkt)
         end_ebml_master(pb, blockgroup);
     }
 
-    if (codec->codec_type == CODEC_TYPE_VIDEO && keyframe) {
+    if (codec->codec_type == AVMEDIA_TYPE_VIDEO && keyframe) {
         ret = mkv_add_cuepoint(mkv->cues, pkt->stream_index, ts, mkv->cluster_pos);
         if (ret < 0) return ret;
     }
 
     // start a new cluster every 5 MB or 5 sec, or 32k / 1 sec for streaming
-    if (url_is_streamed(s->pb) && (url_ftell(pb) > 32*1024 || ts > mkv->cluster_pts + 1000)
+    if ((url_is_streamed(s->pb) && (url_ftell(pb) > 32*1024 || ts > mkv->cluster_pts + 1000))
         ||  url_ftell(pb) > mkv->cluster_pos + 5*1024*1024 || ts > mkv->cluster_pts + 5000) {
         av_log(s, AV_LOG_DEBUG, "Starting new cluster at offset %" PRIu64
                " bytes, pts %" PRIu64 "\n", url_ftell(pb), ts);

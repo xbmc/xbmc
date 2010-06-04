@@ -11,20 +11,20 @@
   <string id="31007">Plugins</string>
 
   <string id="31020">Aggiunti di recente</string>
-  <string id="31021">Files- Video</string>
+  <string id="31021">Files - Video</string>
   <string id="31022">Files - Musica</string>
   <string id="31023">In Riproduzione</string>
   <string id="31024">Pagina</string>
   <string id="31025">Oggetti</string>
   <string id="31026">Opzioni Varie</string>
-  <string id="31027">Posizione</string>
+  <string id="31027">Località</string>
  
   <!-- View Type labels -->
-  <string id="31028">Adatta Poster</string>
+  <string id="31028">Poster</string>
   <string id="31029">Fanart</string>
-  <string id="31030">Lista completa</string>
+  <string id="31030">Lista estesa</string>
   <string id="31031">Miniature immagini</string>
-  <string id="31032">Adatta Immagini</string>
+  <string id="31032">Immagine</string>
   <string id="31033">Informazioni</string>
 
   <!-- Extra labels -->
@@ -44,9 +44,9 @@
   <string id="31055">Apri playlist</string>
   <string id="31056">Salva playlist</string>
   <string id="31057">Chiudi playlist</string>
-  <string id="31058">File sonori di sistema</string>
+  <string id="31058">Suoni di sistema</string>
   <string id="31059">Playlist Corrente </string>
-  <string id="31060">Questo file è stato accoppiato, scegli la parte da cui vuoi iniziare.</string>
+  <string id="31060">Questo file è stato accorpato, scegli la parte da cui vuoi iniziare.</string>
   <string id="31061">Correntemente Selezionato</string>
   
   <!-- Skin Settings labels -->
@@ -55,7 +55,7 @@
   <string id="31102">Sfondo</string>
   <string id="31103">Mostra "In pausa" durante la visualizzazione delle immagini</string>
   <string id="31104">Riproduci i trailer in finestra [COLOR=grey3](Solo nel pannello informazioni video)[/COLOR]</string>
-  <string id="31105">Mostra i titoli dei media durante la scansione in secondo piano</string>
+  <string id="31105">Mostra i titoli dei files durante la scansione in secondo piano</string>
   <string id="31106">Opzioni Varie</string>
   <string id="31107"></string>
   <string id="31108">Nascondi i bottoni del menù principale</string>
@@ -77,9 +77,9 @@
   <string id="31124">Mostra nello Sfondo il nome del Video "In Riproduzione" </string>
   <string id="31125">Mostra nello Sfondo Visualizzazioni il nome del file "In Riproduzione"</string>
 
-  <string id="31126">Abilita Testo nell'OSD della Musica</string>
-  <string id="31127">PERCORSO PER LO SCRIPT DEI TESTI</string>
-  <string id="31128">XBMC Testi</string>
+  <string id="31126">Abilita il Testo delle canzoni nell'OSD della Musica</string>
+  <string id="31127">PERCORSO PER LO SCRIPT DEI TESTI DELLE CANZONI</string>
+  <string id="31128">XBMC Testi Canzoni</string>
   <string id="31129">Abilita il Download dei Sottotitoli nell'OSD Video</string>
   <string id="31130">PERCORSO DELLO SCRIPT DEI SOTTOTITOLI</string>
 

@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/tiertexseqv.c
+ * @file
  * Tiertex Limited SEQ video decoder
  */
 
@@ -221,7 +221,7 @@ static av_cold int seqvideo_decode_end(AVCodecContext *avctx)
 
 AVCodec tiertexseqvideo_decoder = {
     "tiertexseqvideo",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_TIERTEXSEQVIDEO,
     sizeof(SeqVideoContext),
     seqvideo_decode_init,

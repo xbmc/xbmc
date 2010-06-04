@@ -21,7 +21,7 @@
  */
 
 /**
- * @file libavcodec/aacsbr.c
+ * @file
  * AAC Spectral Band Replication decoding functions
  * @author Robert Swain ( rob opendot cl )
  */
@@ -174,7 +174,7 @@ static void sbr_make_f_tablelim(SpectralBandReplication *sbr)
                                                1.18509277094158210129f,   //2^(0.49/2)
                                                1.11987160404675912501f }; //2^(0.49/3)
         const float lim_bands_per_octave_warped = bands_warped[sbr->bs_limiter_bands - 1];
-        int16_t patch_borders[5];
+        int16_t patch_borders[7];
         uint16_t *in = sbr->f_tablelim + 1, *out = sbr->f_tablelim;
 
         patch_borders[0] = sbr->kx[1];
@@ -519,6 +519,15 @@ static int sbr_hf_calc_npatches(AACContext *ac, SpectralBandReplication *sbr)
             odd = (sb + sbr->k[0]) & 1;
         }
 
+        // Requirements (14496-3 sp04 p205) sets the maximum number of patches to 5.
+        // After this check the final number of patches can still be six which is
+        // illegal however the Coding Technologies decoder check stream has a final
+        // count of 6 patches
+        if (sbr->num_patches > 5) {
+            av_log(ac->avccontext, AV_LOG_ERROR, "Too many patches: %d\n", sbr->num_patches);
+            return -1;
+        }
+
         sbr->patch_num_subbands[sbr->num_patches]  = FFMAX(sb - usb, 0);
         sbr->patch_start_subband[sbr->num_patches] = sbr->k[0] - odd - sbr->patch_num_subbands[sbr->num_patches];
 
@@ -535,13 +544,6 @@ static int sbr_hf_calc_npatches(AACContext *ac, SpectralBandReplication *sbr)
 
     if (sbr->patch_num_subbands[sbr->num_patches-1] < 3 && sbr->num_patches > 1)
         sbr->num_patches--;
-
-    // Requirements (14496-3 sp04 p205) sets the maximum number of patches to 5
-    // However the Coding Technologies decoder check uses 6 patches
-    if (sbr->num_patches > 6) {
-        av_log(ac->avccontext, AV_LOG_ERROR, "Too many patches: %d\n", sbr->num_patches);
-        return -1;
-    }
 
     return 0;
 }
@@ -718,6 +720,13 @@ static int read_sbr_grid(AACContext *ac, SpectralBandReplication *sbr,
         return -1;
     }
 
+    for (i = 1; i <= ch_data->bs_num_env; i++) {
+        if (ch_data->t_env[i-1] > ch_data->t_env[i]) {
+            av_log(ac->avccontext, AV_LOG_ERROR, "Non monotone time borders\n");
+            return -1;
+        }
+    }
+
     ch_data->bs_num_noise = (ch_data->bs_num_env > 1) + 1;
 
     ch_data->t_q[0]                     = ch_data->t_env[0];
@@ -892,18 +901,24 @@ static void read_sbr_noise(SpectralBandReplication *sbr, GetBitContext *gb,
 
 static void read_sbr_extension(AACContext *ac, SpectralBandReplication *sbr,
                                GetBitContext *gb,
-                          int bs_extension_id, int *num_bits_left)
+                               int bs_extension_id, int *num_bits_left)
 {
 //TODO - implement ps_data for parametric stereo parsing
     switch (bs_extension_id) {
     case EXTENSION_ID_PS:
+        if (!ac->m4ac.ps) {
+            av_log(ac->avccontext, AV_LOG_ERROR, "Parametric Stereo signaled to be not-present but was found in the bitstream.\n");
+            skip_bits_long(gb, *num_bits_left); // bs_fill_bits
+            *num_bits_left = 0;
+        } else {
 #if 0
-        *num_bits_left -= ff_ps_data(gb, ps);
+            *num_bits_left -= ff_ps_data(gb, ps);
 #else
-        av_log_missing_feature(ac->avccontext, "Parametric Stereo is", 0);
-        skip_bits_long(gb, *num_bits_left); // bs_fill_bits
-        *num_bits_left = 0;
+            av_log_missing_feature(ac->avccontext, "Parametric Stereo is", 0);
+            skip_bits_long(gb, *num_bits_left); // bs_fill_bits
+            *num_bits_left = 0;
 #endif
+        }
         break;
     default:
         av_log_missing_feature(ac->avccontext, "Reserved SBR extensions are", 1);
@@ -1703,43 +1718,49 @@ static void sbr_hf_assemble(float Y[2][38][64][2], const float X_high[64][40][2]
     ch_data->f_indexsine  = indexsine;
 }
 
-void ff_sbr_dequant(AACContext *ac, SpectralBandReplication *sbr, int id_aac)
+void ff_sbr_apply(AACContext *ac, SpectralBandReplication *sbr, int id_aac,
+                  float* L, float* R)
 {
+    int downsampled = ac->m4ac.ext_sample_rate < sbr->sample_rate;
+    int ch;
+    int nch = (id_aac == TYPE_CPE) ? 2 : 1;
+
     if (sbr->start) {
         sbr_dequant(sbr, id_aac);
     }
-}
+    for (ch = 0; ch < nch; ch++) {
+        /* decode channel */
+        sbr_qmf_analysis(&ac->dsp, &sbr->rdft, ch ? R : L, sbr->data[ch].analysis_filterbank_samples,
+                         (float*)sbr->qmf_filter_scratch,
+                         sbr->data[ch].W, 1/(-1024 * ac->sf_scale));
+        sbr_lf_gen(ac, sbr, sbr->X_low, sbr->data[ch].W);
+        if (sbr->start) {
+            sbr_hf_inverse_filter(sbr->alpha0, sbr->alpha1, sbr->X_low, sbr->k[0]);
+            sbr_chirp(sbr, &sbr->data[ch]);
+            sbr_hf_gen(ac, sbr, sbr->X_high, sbr->X_low, sbr->alpha0, sbr->alpha1,
+                       sbr->data[ch].bw_array, sbr->data[ch].t_env,
+                       sbr->data[ch].bs_num_env);
 
-void ff_sbr_apply(AACContext *ac, SpectralBandReplication *sbr, int ch,
-                  const float* in, float* out)
-{
-    int downsampled = ac->m4ac.ext_sample_rate < sbr->sample_rate;
+            // hf_adj
+            sbr_mapping(ac, sbr, &sbr->data[ch], sbr->data[ch].e_a);
+            sbr_env_estimate(sbr->e_curr, sbr->X_high, sbr, &sbr->data[ch]);
+            sbr_gain_calc(ac, sbr, &sbr->data[ch], sbr->data[ch].e_a);
+            sbr_hf_assemble(sbr->data[ch].Y, sbr->X_high, sbr, &sbr->data[ch],
+                            sbr->data[ch].e_a);
+        }
 
-    /* decode channel */
-    sbr_qmf_analysis(&ac->dsp, &sbr->rdft, in, sbr->data[ch].analysis_filterbank_samples,
-                     (float*)sbr->qmf_filter_scratch,
-                     sbr->data[ch].W, 1/(-1024 * ac->sf_scale));
-    sbr_lf_gen(ac, sbr, sbr->X_low, sbr->data[ch].W);
-    if (sbr->start) {
-        sbr_hf_inverse_filter(sbr->alpha0, sbr->alpha1, sbr->X_low, sbr->k[0]);
-        sbr_chirp(sbr, &sbr->data[ch]);
-        sbr_hf_gen(ac, sbr, sbr->X_high, sbr->X_low, sbr->alpha0, sbr->alpha1,
-                   sbr->data[ch].bw_array, sbr->data[ch].t_env,
-                   sbr->data[ch].bs_num_env);
-
-        // hf_adj
-        sbr_mapping(ac, sbr, &sbr->data[ch], sbr->data[ch].e_a);
-        sbr_env_estimate(sbr->e_curr, sbr->X_high, sbr, &sbr->data[ch]);
-        sbr_gain_calc(ac, sbr, &sbr->data[ch], sbr->data[ch].e_a);
-        sbr_hf_assemble(sbr->data[ch].Y, sbr->X_high, sbr, &sbr->data[ch],
-                        sbr->data[ch].e_a);
+        /* synthesis */
+        sbr_x_gen(sbr, sbr->X[ch], sbr->X_low, sbr->data[ch].Y, ch);
     }
-
-    /* synthesis */
-    sbr_x_gen(sbr, sbr->X, sbr->X_low, sbr->data[ch].Y, ch);
-    sbr_qmf_synthesis(&ac->dsp, &sbr->mdct, out, sbr->X, sbr->qmf_filter_scratch,
-                      sbr->data[ch].synthesis_filterbank_samples,
-                      &sbr->data[ch].synthesis_filterbank_samples_offset,
+    sbr_qmf_synthesis(&ac->dsp, &sbr->mdct, L, sbr->X[0], sbr->qmf_filter_scratch,
+                      sbr->data[0].synthesis_filterbank_samples,
+                      &sbr->data[0].synthesis_filterbank_samples_offset,
                       downsampled,
                       ac->add_bias, -1024 * ac->sf_scale);
+    if (nch == 2)
+        sbr_qmf_synthesis(&ac->dsp, &sbr->mdct, R, sbr->X[1], sbr->qmf_filter_scratch,
+                          sbr->data[1].synthesis_filterbank_samples,
+                          &sbr->data[1].synthesis_filterbank_samples_offset,
+                          downsampled,
+                          ac->add_bias, -1024 * ac->sf_scale);
 }

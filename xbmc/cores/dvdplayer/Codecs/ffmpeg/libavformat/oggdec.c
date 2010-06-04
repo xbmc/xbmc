@@ -362,6 +362,9 @@ ogg_packet (AVFormatContext * s, int *str, int *dstart, int *dsize, int64_t *fpo
             idx, os->psize, os->pstart);
 #endif
 
+    if (os->granule == -1)
+        av_log(s, AV_LOG_WARNING, "Page at %lld is missing granule\n", os->page_pos);
+
     ogg->curidx = idx;
     os->incomplete = 0;
 
@@ -431,7 +434,7 @@ static int
 ogg_get_length (AVFormatContext * s)
 {
     struct ogg *ogg = s->priv_data;
-    int idx = -1, i;
+    int i;
     int64_t size, end;
 
     if(url_is_streamed(s->pb))
@@ -451,18 +454,14 @@ ogg_get_length (AVFormatContext * s)
 
     while (!ogg_read_page (s, &i)){
         if (ogg->streams[i].granule != -1 && ogg->streams[i].granule != 0 &&
-            ogg->streams[i].codec)
-            idx = i;
+            ogg->streams[i].codec) {
+            s->streams[i]->duration =
+                ogg_gptopts (s, i, ogg->streams[i].granule, NULL);
+            if (s->streams[i]->start_time != AV_NOPTS_VALUE)
+                s->streams[i]->duration -= s->streams[i]->start_time;
+        }
     }
 
-    if (idx != -1){
-        s->streams[idx]->duration =
-            ogg_gptopts (s, idx, ogg->streams[idx].granule, NULL);
-        if (s->streams[idx]->start_time != AV_NOPTS_VALUE)
-            s->streams[idx]->duration -= s->streams[idx]->start_time;
-    }
-
-    ogg->size = size;
     ogg_restore (s, 0);
 
     return 0;
@@ -516,8 +515,7 @@ static int64_t ogg_calc_pts(AVFormatContext *s, int idx, int64_t *dts)
             else
                 os->lastpts = ogg_gptopts(s, idx, os->granule, &os->lastdts);
             os->granule = -1LL;
-        } else
-            av_log(s, AV_LOG_WARNING, "Packet is missing granule\n");
+        }
     }
     return pts;
 }
@@ -544,7 +542,7 @@ retry:
     // pflags might not be set until after this
     pts = ogg_calc_pts(s, idx, &dts);
 
-    if (os->keyframe_seek && !(os->pflags & PKT_FLAG_KEY))
+    if (os->keyframe_seek && !(os->pflags & AV_PKT_FLAG_KEY))
         goto retry;
     os->keyframe_seek = 0;
 
@@ -594,7 +592,7 @@ ogg_read_timestamp (AVFormatContext * s, int stream_index, int64_t * pos_arg,
     while (url_ftell(bc) < pos_limit && !ogg_packet(s, &i, NULL, NULL, pos_arg)) {
         if (i == stream_index) {
             pts = ogg_calc_pts(s, i, NULL);
-            if (os->keyframe_seek && !(os->pflags & PKT_FLAG_KEY))
+            if (os->keyframe_seek && !(os->pflags & AV_PKT_FLAG_KEY))
                 pts = AV_NOPTS_VALUE;
         }
         if (pts != AV_NOPTS_VALUE)
@@ -612,7 +610,7 @@ static int ogg_read_seek(AVFormatContext *s, int stream_index, int64_t timestamp
 
     // Try seeking to a keyframe first. If this fails (very possible),
     // av_seek_frame will fall back to ignoring keyframes
-    if (s->streams[stream_index]->codec->codec_type == CODEC_TYPE_VIDEO
+    if (s->streams[stream_index]->codec->codec_type == AVMEDIA_TYPE_VIDEO
         && !(flags & AVSEEK_FLAG_ANY))
         os->keyframe_seek = 1;
 
@@ -644,4 +642,5 @@ AVInputFormat ogg_demuxer = {
     ogg_read_timestamp,
     .extensions = "ogg",
     .metadata_conv = ff_vorbiscomment_metadata_conv,
+    .flags = AVFMT_GENERIC_INDEX,
 };

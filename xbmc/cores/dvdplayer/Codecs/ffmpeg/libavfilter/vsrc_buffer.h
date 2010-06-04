@@ -1,6 +1,6 @@
 /*
- * RTP Vorbis Protocol (RFC 5215)
- * Copyright (c) 2009 Colin McQuillan
+ * Memory buffer source filter
+ * Copyright (c) 2008 Vitor Sessak
  *
  * This file is part of FFmpeg.
  *
@@ -19,27 +19,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVFORMAT_RTPDEC_VORBIS_H
-#define AVFORMAT_RTPDEC_VORBIS_H
+int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame,
+                             int64_t pts, AVRational pixel_aspect);
 
-#include "libavcodec/avcodec.h"
-#include "rtpdec.h"
-
-/**
- * Handle a Vorbis-specific FMTP parameter
- *
- * @param codec The context of the codec
- * @param ctx Private Vorbis RTP context
- * @param attr Format-specific parameter name
- * @param value Format-specific paremeter value
- */
-int
-ff_vorbis_parse_fmtp_config(AVCodecContext * codec,
-                            void *ctx, char *attr, char *value);
-
-/**
- * Vorbis RTP callbacks.
- */
-extern RTPDynamicProtocolHandler ff_vorbis_dynamic_handler;
-
-#endif /* AVFORMAT_RTPDEC_VORBIS_H */

@@ -38,6 +38,7 @@ DEFINES+= \
 	-D_REENTRANT \
 	-D_LARGEFILE64_SOURCE \
 	-D_FILE_OFFSET_BITS=64 \
+	-D__STDC_CONSTANT_MACROS \
 	-DBIN_INSTALL_PATH="\"$(libdir)/xbmc\"" \
 	-DINSTALL_PATH="\"$(datarootdir)/xbmc\"" \
 	@SDL_DEFINES@ \

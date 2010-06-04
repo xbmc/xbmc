@@ -23,7 +23,7 @@
  */
 
 /**
- * @file libavcodec/qdm2.c
+ * @file
  * QDM2 decoder
  * @author Ewald Snel, Benjamin Larsson, Alex Beregszaszi, Roberto Togni
  * The decoder is not perfect yet, there are still some distortions
@@ -1974,7 +1974,7 @@ static int qdm2_decode_frame(AVCodecContext *avctx,
 AVCodec qdm2_decoder =
 {
     .name = "qdm2",
-    .type = CODEC_TYPE_AUDIO,
+    .type = AVMEDIA_TYPE_AUDIO,
     .id = CODEC_ID_QDM2,
     .priv_data_size = sizeof(QDM2Context),
     .init = qdm2_decode_init,

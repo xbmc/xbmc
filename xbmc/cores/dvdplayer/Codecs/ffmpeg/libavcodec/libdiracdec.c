@@ -21,7 +21,7 @@
  */
 
 /**
-* @file libavcodec/libdiracdec.c
+* @file
 * Dirac decoder support via libdirac library; more details about the Dirac
 * project can be found at http://dirac.sourceforge.net/.
 * The libdirac_decoder library implements Dirac specification version 2.2
@@ -195,7 +195,7 @@ static void libdirac_flush(AVCodecContext *avccontext)
 
 AVCodec libdirac_decoder = {
     "libdirac",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_DIRAC,
     sizeof(FfmpegDiracDecoderParams),
     libdirac_decode_init,

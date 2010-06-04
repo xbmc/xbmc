@@ -136,7 +136,7 @@ static uint64_t find_any_startcode(ByteIOContext *bc, int64_t pos){
  * Find the given startcode.
  * @param code the startcode
  * @param pos the start position of the search, or -1 if the current position
- * @returns the position of the startcode or -1 if not found
+ * @return the position of the startcode or -1 if not found
  */
 static int64_t find_startcode(ByteIOContext *bc, uint64_t code, int64_t pos){
     for(;;){
@@ -315,26 +315,29 @@ static int decode_stream_header(NUTContext *nut){
     switch(class)
     {
         case 0:
-            st->codec->codec_type = CODEC_TYPE_VIDEO;
-            st->codec->codec_id = ff_codec_get_id(ff_codec_bmp_tags, tmp);
+            st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
+            st->codec->codec_id = av_codec_get_id(
+                (const AVCodecTag * const []) { ff_codec_bmp_tags, ff_nut_video_tags, 0 },
+                tmp);
             break;
         case 1:
-            st->codec->codec_type = CODEC_TYPE_AUDIO;
+            st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
             st->codec->codec_id = ff_codec_get_id(ff_codec_wav_tags, tmp);
             break;
         case 2:
-            st->codec->codec_type = CODEC_TYPE_SUBTITLE;
+            st->codec->codec_type = AVMEDIA_TYPE_SUBTITLE;
             st->codec->codec_id = ff_codec_get_id(ff_nut_subtitle_tags, tmp);
             break;
         case 3:
-            st->codec->codec_type = CODEC_TYPE_DATA;
+            st->codec->codec_type = AVMEDIA_TYPE_DATA;
             break;
         default:
             av_log(s, AV_LOG_ERROR, "unknown stream class (%d)\n", class);
             return -1;
     }
     if(class<3 && st->codec->codec_id == CODEC_ID_NONE)
-        av_log(s, AV_LOG_ERROR, "Unknown codec?!\n");
+        av_log(s, AV_LOG_ERROR, "Unknown codec tag '0x%04x' for stream number %d\n",
+               (unsigned int)tmp, stream_id);
 
     GET_V(stc->time_base_id    , tmp < nut->time_base_count);
     GET_V(stc->msb_pts_shift   , tmp < 16);
@@ -349,7 +352,7 @@ static int decode_stream_header(NUTContext *nut){
         get_buffer(bc, st->codec->extradata, st->codec->extradata_size);
     }
 
-    if (st->codec->codec_type == CODEC_TYPE_VIDEO){
+    if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO){
         GET_V(st->codec->width , tmp > 0)
         GET_V(st->codec->height, tmp > 0)
         st->sample_aspect_ratio.num= ff_get_v(bc);
@@ -359,7 +362,7 @@ static int decode_stream_header(NUTContext *nut){
             return -1;
         }
         ff_get_v(bc); /* csp type */
-    }else if (st->codec->codec_type == CODEC_TYPE_AUDIO){
+    }else if (st->codec->codec_type == AVMEDIA_TYPE_AUDIO){
         GET_V(st->codec->sample_rate , tmp > 0)
         ff_get_v(bc); // samplerate_den
         GET_V(st->codec->channels, tmp > 0)
@@ -452,7 +455,7 @@ static int decode_info_header(NUTContext *nut){
             else                      metadata= &s->metadata;
             if(metadata && strcasecmp(name,"Uses")
                && strcasecmp(name,"Depends") && strcasecmp(name,"Replaces"))
-                av_metadata_set(metadata, name, str_value);
+                av_metadata_set2(metadata, name, str_value, 0);
         }
     }
 
@@ -754,7 +757,7 @@ static int decode_frame(NUTContext *nut, AVPacket *pkt, int frame_code){
 
     pkt->stream_index = stream_id;
     if (stc->last_flags & FLAG_KEY)
-        pkt->flags |= PKT_FLAG_KEY;
+        pkt->flags |= AV_PKT_FLAG_KEY;
     pkt->pts = pts;
 
     return 0;
@@ -859,7 +862,8 @@ static int read_seek(AVFormatContext *s, int stream_index, int64_t pts, int flag
         pos2= st->index_entries[index].pos;
         ts  = st->index_entries[index].timestamp;
     }else{
-        av_tree_find(nut->syncpoints, &dummy, ff_nut_sp_pts_cmp, next_node);
+        av_tree_find(nut->syncpoints, &dummy, (void *) ff_nut_sp_pts_cmp,
+                     (void **) next_node);
         av_log(s, AV_LOG_DEBUG, "%"PRIu64"-%"PRIu64" %"PRId64"-%"PRId64"\n", next_node[0]->pos, next_node[1]->pos,
                                                     next_node[0]->ts , next_node[1]->ts);
         pos= av_gen_search(s, -1, dummy.ts, next_node[0]->pos, next_node[1]->pos, next_node[1]->pos,
@@ -868,7 +872,8 @@ static int read_seek(AVFormatContext *s, int stream_index, int64_t pts, int flag
         if(!(flags & AVSEEK_FLAG_BACKWARD)){
             dummy.pos= pos+16;
             next_node[1]= &nopts_sp;
-            av_tree_find(nut->syncpoints, &dummy, ff_nut_sp_pos_cmp, next_node);
+            av_tree_find(nut->syncpoints, &dummy, (void *) ff_nut_sp_pos_cmp,
+                         (void **) next_node);
             pos2= av_gen_search(s, -2, dummy.pos, next_node[0]->pos     , next_node[1]->pos, next_node[1]->pos,
                                                 next_node[0]->back_ptr, next_node[1]->back_ptr, flags, &ts, nut_read_timestamp);
             if(pos2>=0)
@@ -876,7 +881,8 @@ static int read_seek(AVFormatContext *s, int stream_index, int64_t pts, int flag
             //FIXME dir but I think it does not matter
         }
         dummy.pos= pos;
-        sp= av_tree_find(nut->syncpoints, &dummy, ff_nut_sp_pos_cmp, NULL);
+        sp= av_tree_find(nut->syncpoints, &dummy, (void *) ff_nut_sp_pos_cmp,
+                         NULL);
 
         assert(sp);
         pos2= sp->back_ptr  - 15;
@@ -920,5 +926,6 @@ AVInputFormat nut_demuxer = {
     read_seek,
     .extensions = "nut",
     .metadata_conv = ff_nut_metadata_conv,
+    .codec_tag = (const AVCodecTag * const []) { ff_codec_bmp_tags, ff_nut_video_tags, ff_codec_wav_tags, ff_nut_subtitle_tags, 0 },
 };
 #endif

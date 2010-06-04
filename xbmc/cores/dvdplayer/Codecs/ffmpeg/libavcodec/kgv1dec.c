@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/kgv1dec.c
+ * @file
  * Kega Game Video decoder
  */
 
@@ -165,7 +165,7 @@ static av_cold int decode_end(AVCodecContext *avctx)
 
 AVCodec kgv1_decoder = {
     "kgv1",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_KGV1,
     sizeof(KgvContext),
     decode_init,

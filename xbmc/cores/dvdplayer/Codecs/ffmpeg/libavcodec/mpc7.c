@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/mpc7.c Musepack SV7 decoder
+ * @file
  * MPEG Audio Layer 1/2 -like codec with frames of 1152 samples
  * divided into 32 subbands.
  */
@@ -290,7 +290,7 @@ static void mpc7_decode_flush(AVCodecContext *avctx)
 
 AVCodec mpc7_decoder = {
     "mpc7",
-    CODEC_TYPE_AUDIO,
+    AVMEDIA_TYPE_AUDIO,
     CODEC_ID_MUSEPACK7,
     sizeof(MPCContext),
     mpc7_decode_init,

@@ -76,7 +76,7 @@ static int vqf_read_header(AVFormatContext *s, AVFormatParameters *ap)
 
     header_size = get_be32(s->pb);
 
-    st->codec->codec_type = CODEC_TYPE_AUDIO;
+    st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
     st->codec->codec_id   = CODEC_ID_TWINVQ;
     st->start_time = 0;
 
@@ -189,6 +189,7 @@ static int vqf_read_header(AVFormatContext *s, AVFormatParameters *ap)
         return -1;
     }
     c->frame_bit_len = st->codec->bit_rate*size/st->codec->sample_rate;
+    av_set_pts_info(st, 64, 1, st->codec->sample_rate);
 
     return 0;
 }

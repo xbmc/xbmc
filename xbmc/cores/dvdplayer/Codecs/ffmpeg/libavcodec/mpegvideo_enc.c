@@ -23,7 +23,7 @@
  */
 
 /**
- * @file libavcodec/mpegvideo_enc.c
+ * @file
  * The simplest mpeg encoder (well, it was the simplest!).
  */
 
@@ -197,7 +197,7 @@ static void copy_picture_attributes(MpegEncContext *s, AVFrame *dst, AVFrame *sr
                 memcpy(dst->motion_val[i], src->motion_val[i], 2*stride*height*sizeof(int16_t));
             }
             if(src->ref_index[i] && src->ref_index[i] != dst->ref_index[i]){
-                memcpy(dst->ref_index[i], src->ref_index[i], s->b8_stride*2*s->mb_height*sizeof(int8_t));
+                memcpy(dst->ref_index[i], src->ref_index[i], s->mb_stride*4*s->mb_height*sizeof(int8_t));
             }
         }
     }
@@ -851,14 +851,18 @@ static int load_input_picture(MpegEncContext *s, AVFrame *pic_arg){
             pic->data[i]= pic_arg->data[i];
             pic->linesize[i]= pic_arg->linesize[i];
         }
-        ff_alloc_picture(s, (Picture*)pic, 1);
+        if(ff_alloc_picture(s, (Picture*)pic, 1) < 0){
+            return -1;
+        }
     }else{
         i= ff_find_unused_picture(s, 0);
 
         pic= (AVFrame*)&s->picture[i];
         pic->reference= 3;
 
-        ff_alloc_picture(s, (Picture*)pic, 0);
+        if(ff_alloc_picture(s, (Picture*)pic, 0) < 0){
+            return -1;
+        }
 
         if(   pic->data[0] + INPLACE_OFFSET == pic_arg->data[0]
            && pic->data[1] + INPLACE_OFFSET == pic_arg->data[1]
@@ -1048,7 +1052,7 @@ static int estimate_best_b_count(MpegEncContext *s){
     return best_b_count;
 }
 
-static void select_input_picture(MpegEncContext *s){
+static int select_input_picture(MpegEncContext *s){
     int i;
 
     for(i=1; i<MAX_PICTURE_COUNT; i++)
@@ -1184,7 +1188,9 @@ no_output_pic:
             Picture *pic= &s->picture[i];
 
             pic->reference              = s->reordered_input_picture[0]->reference;
-            ff_alloc_picture(s, pic, 0);
+            if(ff_alloc_picture(s, pic, 0) < 0){
+                return -1;
+            }
 
             /* mark us unused / free shared pic */
             if(s->reordered_input_picture[0]->type == FF_BUFFER_TYPE_INTERNAL)
@@ -1214,6 +1220,7 @@ no_output_pic:
     }else{
        memset(&s->new_picture, 0, sizeof(Picture));
     }
+    return 0;
 }
 
 int MPV_encode_picture(AVCodecContext *avctx,
@@ -1238,7 +1245,9 @@ int MPV_encode_picture(AVCodecContext *avctx,
     if(load_input_picture(s, pic_arg) < 0)
         return -1;
 
-    select_input_picture(s);
+    if(select_input_picture(s) < 0){
+        return -1;
+    }
 
     /* output? */
     if(s->new_picture.data[0]){
@@ -3762,7 +3771,7 @@ int dct_quantize_c(MpegEncContext *s,
 
 AVCodec h263_encoder = {
     "h263",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_H263,
     sizeof(MpegEncContext),
     MPV_encode_init,
@@ -3774,7 +3783,7 @@ AVCodec h263_encoder = {
 
 AVCodec h263p_encoder = {
     "h263p",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_H263P,
     sizeof(MpegEncContext),
     MPV_encode_init,
@@ -3786,7 +3795,7 @@ AVCodec h263p_encoder = {
 
 AVCodec msmpeg4v1_encoder = {
     "msmpeg4v1",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_MSMPEG4V1,
     sizeof(MpegEncContext),
     MPV_encode_init,
@@ -3798,7 +3807,7 @@ AVCodec msmpeg4v1_encoder = {
 
 AVCodec msmpeg4v2_encoder = {
     "msmpeg4v2",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_MSMPEG4V2,
     sizeof(MpegEncContext),
     MPV_encode_init,
@@ -3810,7 +3819,7 @@ AVCodec msmpeg4v2_encoder = {
 
 AVCodec msmpeg4v3_encoder = {
     "msmpeg4",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_MSMPEG4V3,
     sizeof(MpegEncContext),
     MPV_encode_init,
@@ -3822,7 +3831,7 @@ AVCodec msmpeg4v3_encoder = {
 
 AVCodec wmv1_encoder = {
     "wmv1",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_WMV1,
     sizeof(MpegEncContext),
     MPV_encode_init,

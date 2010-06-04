@@ -21,7 +21,7 @@
  */
 
 /**
- * @file libavcodec/utils.c
+ * @file
  * utils.
  */
 
@@ -100,6 +100,11 @@ void register_avcodec(AVCodec *codec)
     avcodec_register(codec);
 }
 #endif
+
+unsigned avcodec_get_edge_width(void)
+{
+    return EDGE_WIDTH;
+}
 
 void avcodec_set_dimensions(AVCodecContext *s, int width, int height){
     s->coded_width = width;
@@ -219,7 +224,7 @@ int avcodec_check_dimensions(void *av_log_ctx, unsigned int w, unsigned int h){
         return 0;
 
     av_log(av_log_ctx, AV_LOG_ERROR, "picture size invalid (%ux%u)\n", w, h);
-    return -1;
+    return AVERROR(EINVAL);
 }
 
 int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
@@ -318,7 +323,7 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
             if(buf->base[i]==NULL) return -1;
             memset(buf->base[i], 128, size[i]);
 
-            // no edge if EDEG EMU or not planar YUV
+            // no edge if EDGE EMU or not planar YUV
             if((s->flags&CODEC_FLAG_EMU_EDGE) || !size[2])
                 buf->data[i] = buf->base[i];
             else
@@ -497,7 +502,7 @@ int attribute_align_arg avcodec_open(AVCodecContext *avctx, AVCodec *codec)
     }
 
     avctx->codec = codec;
-    if ((avctx->codec_type == CODEC_TYPE_UNKNOWN || avctx->codec_type == codec->type) &&
+    if ((avctx->codec_type == AVMEDIA_TYPE_UNKNOWN || avctx->codec_type == codec->type) &&
         avctx->codec_id == CODEC_ID_NONE) {
         avctx->codec_type = codec->type;
         avctx->codec_id   = codec->id;
@@ -704,8 +709,9 @@ av_cold int avcodec_close(AVCodecContext *avctx)
     if (avctx->codec && avctx->codec->close)
         avctx->codec->close(avctx);
     avcodec_default_free_buffers(avctx);
+    avctx->coded_frame = NULL;
     av_freep(&avctx->priv_data);
-    if(avctx->codec->encode)
+    if(avctx->codec && avctx->codec->encode)
         av_freep(&avctx->extradata);
     avctx->codec = NULL;
     entangled_thread_counter--;
@@ -719,14 +725,18 @@ av_cold int avcodec_close(AVCodecContext *avctx)
 
 AVCodec *avcodec_find_encoder(enum CodecID id)
 {
-    AVCodec *p;
+    AVCodec *p, *experimental=NULL;
     p = first_avcodec;
     while (p) {
-        if (p->encode != NULL && p->id == id)
-            return p;
+        if (p->encode != NULL && p->id == id) {
+            if (p->capabilities & CODEC_CAP_EXPERIMENTAL && !experimental) {
+                experimental = p;
+            } else
+                return p;
+        }
         p = p->next;
     }
-    return NULL;
+    return experimental;
 }
 
 AVCodec *avcodec_find_encoder_by_name(const char *name)
@@ -775,27 +785,36 @@ static int get_bit_rate(AVCodecContext *ctx)
     int bits_per_sample;
 
     switch(ctx->codec_type) {
-    case CODEC_TYPE_VIDEO:
+    case AVMEDIA_TYPE_VIDEO:
+    case AVMEDIA_TYPE_DATA:
+    case AVMEDIA_TYPE_SUBTITLE:
+    case AVMEDIA_TYPE_ATTACHMENT:
         bit_rate = ctx->bit_rate;
         break;
-    case CODEC_TYPE_AUDIO:
+    case AVMEDIA_TYPE_AUDIO:
         bits_per_sample = av_get_bits_per_sample(ctx->codec_id);
         bit_rate = bits_per_sample ? ctx->sample_rate * ctx->channels * bits_per_sample : ctx->bit_rate;
-        break;
-    case CODEC_TYPE_DATA:
-        bit_rate = ctx->bit_rate;
-        break;
-    case CODEC_TYPE_SUBTITLE:
-        bit_rate = ctx->bit_rate;
-        break;
-    case CODEC_TYPE_ATTACHMENT:
-        bit_rate = ctx->bit_rate;
         break;
     default:
         bit_rate = 0;
         break;
     }
     return bit_rate;
+}
+
+size_t av_get_codec_tag_string(char *buf, size_t buf_size, unsigned int codec_tag)
+{
+    int i, len, ret = 0;
+
+    for (i = 0; i < 4; i++) {
+        len = snprintf(buf, buf_size,
+                       isprint(codec_tag&0xFF) ? "%c" : "[%d]", codec_tag&0xFF);
+        buf      += len;
+        buf_size  = buf_size > len ? buf_size - len : 0;
+        ret      += len;
+        codec_tag>>=8;
+    }
+    return ret;
 }
 
 void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode)
@@ -821,22 +840,14 @@ void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode)
         codec_name = enc->codec_name;
     } else {
         /* output avi tags */
-        if(   isprint(enc->codec_tag&0xFF) && isprint((enc->codec_tag>>8)&0xFF)
-           && isprint((enc->codec_tag>>16)&0xFF) && isprint((enc->codec_tag>>24)&0xFF)){
-            snprintf(buf1, sizeof(buf1), "%c%c%c%c / 0x%04X",
-                     enc->codec_tag & 0xff,
-                     (enc->codec_tag >> 8) & 0xff,
-                     (enc->codec_tag >> 16) & 0xff,
-                     (enc->codec_tag >> 24) & 0xff,
-                      enc->codec_tag);
-        } else {
-            snprintf(buf1, sizeof(buf1), "0x%04x", enc->codec_tag);
-        }
+        char tag_buf[32];
+        av_get_codec_tag_string(tag_buf, sizeof(tag_buf), enc->codec_tag);
+        snprintf(buf1, sizeof(buf1), "%s / 0x%04X", tag_buf, enc->codec_tag);
         codec_name = buf1;
     }
 
     switch(enc->codec_type) {
-    case CODEC_TYPE_VIDEO:
+    case AVMEDIA_TYPE_VIDEO:
         snprintf(buf, buf_size,
                  "Video: %s%s",
                  codec_name, enc->mb_decision ? " (hq)" : "");
@@ -871,7 +882,7 @@ void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode)
                      ", q=%d-%d", enc->qmin, enc->qmax);
         }
         break;
-    case CODEC_TYPE_AUDIO:
+    case AVMEDIA_TYPE_AUDIO:
         snprintf(buf, buf_size,
                  "Audio: %s",
                  codec_name);
@@ -886,13 +897,13 @@ void avcodec_string(char *buf, int buf_size, AVCodecContext *enc, int encode)
                      ", %s", avcodec_get_sample_fmt_name(enc->sample_fmt));
         }
         break;
-    case CODEC_TYPE_DATA:
+    case AVMEDIA_TYPE_DATA:
         snprintf(buf, buf_size, "Data: %s", codec_name);
         break;
-    case CODEC_TYPE_SUBTITLE:
+    case AVMEDIA_TYPE_SUBTITLE:
         snprintf(buf, buf_size, "Subtitle: %s", codec_name);
         break;
-    case CODEC_TYPE_ATTACHMENT:
+    case AVMEDIA_TYPE_ATTACHMENT:
         snprintf(buf, buf_size, "Attachment: %s", codec_name);
         break;
     default:
@@ -1293,4 +1304,12 @@ int av_lockmgr_register(int (*cb)(void **mutex, enum AVLockOp op))
             return -1;
     }
     return 0;
+}
+
+unsigned int ff_toupper4(unsigned int x)
+{
+    return     toupper( x     &0xFF)
+            + (toupper((x>>8 )&0xFF)<<8 )
+            + (toupper((x>>16)&0xFF)<<16)
+            + (toupper((x>>24)&0xFF)<<24);
 }

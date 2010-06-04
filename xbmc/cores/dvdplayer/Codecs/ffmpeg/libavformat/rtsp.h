@@ -26,6 +26,7 @@
 #include "rtspcodes.h"
 #include "rtpdec.h"
 #include "network.h"
+#include "httpauth.h"
 
 /**
  * Network layer over which RTP/etc packet data will be transported.
@@ -51,7 +52,7 @@ enum RTSPTransport {
 #define RTSP_DEFAULT_PORT   554
 #define RTSP_MAX_TRANSPORTS 8
 #define RTSP_TCP_MAX_PACKET_SIZE 1472
-#define RTSP_DEFAULT_NB_AUDIO_CHANNELS 2
+#define RTSP_DEFAULT_NB_AUDIO_CHANNELS 1
 #define RTSP_DEFAULT_AUDIO_SAMPLERATE 44100
 #define RTSP_RTP_PORT_MIN 5000
 #define RTSP_RTP_PORT_MAX 10000
@@ -232,8 +233,11 @@ typedef struct RTSPState {
      * of RTSPMessageHeader->real_challenge */
     enum RTSPServerType server_type;
 
-    /** base64-encoded authorization lines (username:password) */
-    char *auth_b64;
+    /** plaintext authorization line (username:password) */
+    char auth[128];
+
+    /** authentication state */
+    HTTPAuthState auth_state;
 
     /** The last reply of the server to a RTSP command */
     char last_reply[2048]; /* XXX: allocate ? */
@@ -318,7 +322,8 @@ typedef struct RTSPStream {
     //@}
 } RTSPStream;
 
-void ff_rtsp_parse_line(RTSPMessageHeader *reply, const char *buf);
+void ff_rtsp_parse_line(RTSPMessageHeader *reply, const char *buf,
+                        HTTPAuthState *auth_state);
 
 #if LIBAVFORMAT_VERSION_INT < (53 << 16)
 extern int rtsp_default_protocols;
@@ -330,13 +335,16 @@ extern int rtsp_rtp_port_max;
  * Send a command to the RTSP server without waiting for the reply.
  *
  * @param s RTSP (de)muxer context
- * @param cmd the full first line of the request
+ * @param method the method for the request
+ * @param url the target url for the request
+ * @param headers extra header lines to include in the request
  * @param send_content if non-null, the data to send as request body content
  * @param send_content_length the length of the send_content data, or 0 if
  *                            send_content is null
  */
 void ff_rtsp_send_cmd_with_content_async(AVFormatContext *s,
-                                         const char *cmd,
+                                         const char *method, const char *url,
+                                         const char *headers,
                                          const unsigned char *send_content,
                                          int send_content_length);
 /**
@@ -344,13 +352,16 @@ void ff_rtsp_send_cmd_with_content_async(AVFormatContext *s,
  *
  * @see rtsp_send_cmd_with_content_async
  */
-void ff_rtsp_send_cmd_async(AVFormatContext *s, const char *cmd);
+void ff_rtsp_send_cmd_async(AVFormatContext *s, const char *method,
+                            const char *url, const char *headers);
 
 /**
  * Send a command to the RTSP server and wait for the reply.
  *
  * @param s RTSP (de)muxer context
- * @param cmd the full first line of the request
+ * @param method the method for the request
+ * @param url the target url for the request
+ * @param headers extra header lines to include in the request
  * @param reply pointer where the RTSP message header will be stored
  * @param content_ptr pointer where the RTSP message body, if any, will
  *                    be stored (length is in reply)
@@ -359,7 +370,8 @@ void ff_rtsp_send_cmd_async(AVFormatContext *s, const char *cmd);
  *                            send_content is null
  */
 void ff_rtsp_send_cmd_with_content(AVFormatContext *s,
-                                   const char *cmd,
+                                   const char *method, const char *url,
+                                   const char *headers,
                                    RTSPMessageHeader *reply,
                                    unsigned char **content_ptr,
                                    const unsigned char *send_content,
@@ -370,7 +382,8 @@ void ff_rtsp_send_cmd_with_content(AVFormatContext *s,
  *
  * @see rtsp_send_cmd_with_content
  */
-void ff_rtsp_send_cmd(AVFormatContext *s, const char *cmd,
+void ff_rtsp_send_cmd(AVFormatContext *s, const char *method,
+                      const char *url, const char *headers,
                       RTSPMessageHeader *reply, unsigned char **content_ptr);
 
 /**
@@ -391,7 +404,7 @@ void ff_rtsp_send_cmd(AVFormatContext *s, const char *cmd,
  *                   has been fully parsed. If no more data is available
  *                   without parsing a reply, it will return an error.
  *
- * @returns 1 if a data packets is ready to be received, -1 on error,
+ * @return 1 if a data packets is ready to be received, -1 on error,
  *          and 0 on success.
  */
 int ff_rtsp_read_reply(AVFormatContext *s, RTSPMessageHeader *reply,
@@ -409,7 +422,7 @@ void ff_rtsp_skip_packet(AVFormatContext *s);
  *
  * @param s RTSP (de)muxer context
  *
- * @returns 0 on success, < 0 on error. Cleans up all allocations done
+ * @return 0 on success, < 0 on error. Cleans up all allocations done
  *          within the function on error.
  */
 int ff_rtsp_connect(AVFormatContext *s);

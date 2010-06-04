@@ -14,7 +14,6 @@ configure to activate them. In this case, FFmpeg's license changes to GPL v2+.
 Specifically, the GPL parts of FFmpeg are
 
 - libpostproc
-- some x86 optimizations in libswscale
 - optional x86 optimizations in the files
   libavcodec/x86/h264_deblock_sse2.asm
   libavcodec/x86/h264_idct_sse2.asm
@@ -47,3 +46,7 @@ version needs to be upgraded by passing --enable-version3 to configure.
 The nonfree external library libfaac can be hooked up in FFmpeg. You need to
 pass --enable-nonfree to configure to enable it. Employ this option with care
 as FFmpeg then becomes nonfree and unredistributable.
+
+The libvpx external library has a license that is (L)GPL incompatible. If you
+combine it with FFmpeg the resulting binaries are unredistributable. Thus you
+need to pass --enable-nonfree to configure to enable it.

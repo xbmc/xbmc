@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 05/29/2010-->
+<!--Date of translation: 06/03/2010-->
 <!--$Revision$-->
-<!--Based on english strings version 30382-->
+<!--Based on english strings version 30777-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -321,9 +321,9 @@
   <string id="388">τις πρώτες πρωινές ώρες</string>
   <string id="389">Μπόρα</string>
   <string id="390">Σύντομες ελαφρές χιονοπτώσεις</string>
-  <string id="391">Ελχ.</string>
-  <string id="392">Μέσ.</string>
-  <string id="393">Μέγ.</string>
+  <string id="391">Ελάχιστη</string>
+  <string id="392">Μέση</string>
+  <string id="393">Μέγιστη</string>
   <string id="394">Ομίχλη</string>
   <string id="395">Καταχνιά</string>
   <string id="396">Επιλογή τοποθεσίας</string>
@@ -622,7 +622,6 @@
   <string id="766">Ανοικτό γκρι</string>
   <string id="767">Γκρι</string>
   <string id="770">Σφάλμα %i: ο κοινόχρηστος πόρος δεν είναι διαθέσιμος</string>
-  <string id="771">- Αυτόματο όριο Fatx</string>
   <string id="772">Έξοδος ήχου</string>
   <string id="773">Αναζήτηση</string>
   <string id="774">Φάκελος παρουσίασης διαφανειών</string>
@@ -652,7 +651,7 @@
   <string id="850">Εισαγωγή μη έγκυρου εύρους τιμών θύρας</string>
   <string id="851">Το έγκυρο εύρος τιμών θύρας είναι 1-65535</string>
   <string id="852">Το έγκυρο εύρος τιμών θύρας είναι 1024-65535</string>
-  <string id="1000">Επισκόπηση προφύλαξης οθόνης</string>
+  <string id="1000">- Προεπισκόπηση</string>
   <string id="1001">Αδυναμία σύνδεσης</string>
   <string id="1002">Το ΧΒMC είναι ανίκανο να συνδεθεί στο δίκτυο.</string>
   <string id="1003">Αυτό μπορεί να συμβαίνει διότι το δίκτυο δεν είναι συνδεμένο.</string>
@@ -770,6 +769,7 @@
   <string id="1417">Κόκκοι</string>
   <string id="1418">Καταιγίδες (με κεραυνούς) </string>
   <string id="1419">Μπόρες (με κεραυνούς)</string>
+  <string id="1420">Μέση</string>
   <string id="1450">Σε κατάσταση ύπνωσης κατά την αναμονή</string>
   <string id="2050">Εκτέλεση</string>
   <string id="2100">Αποτυχία script! : %s</string>
@@ -1017,20 +1017,13 @@
   <string id="13281">Υλικό</string>
   <string id="13283">Λειτουργικό σύστημα</string>
   <string id="13284">Ταχύτητα CPU</string>
-  <string id="13285">Εντοπισμένο BIOS</string>
   <string id="13286">Βίντεο κωδικοποιητής</string>
   <string id="13287">Ανάλυση οθόνης</string>
-  <string id="13288">Έκδοση Xbox</string>
-  <string id="13289">Σειριακός αριθμός Xbox</string>
-  <string id="13290">Κατασκευαστής Xbox</string>
-  <string id="13291">Τσιπάκι</string>
   <string id="13292">Καλώδιο A/V</string>
-  <string id="13293">Περιοχή βίντεο &amp; XBE</string>
   <string id="13294">Περιοχή DVD</string>
   <string id="13295">Internet</string>
   <string id="13296">Συνδέθηκε</string>
   <string id="13297">Δε συνδέθηκε. Ελέγξτε τις ρυθμίσεις δικτύου.</string>
-  <string id="13298">Κλειδί Xbox Live:</string>
   <string id="13299">Θερμοκρασία στόχος</string>
   <string id="13300">Ταχύτητα ανεμιστήρα</string>
   <string id="13301">Αυτόματος έλεγχος θερμοκρασίας</string>
@@ -1069,8 +1062,6 @@
   <string id="13334">Επεξεργασία ετικέτας</string>
   <string id="13335">Εξ' ορισμού επιλογή</string>
   <string id="13336">Απαλοιφή πλήκτρου</string>
-  <string id="13338">Εμπρόσθια λυχνία</string>
-  <string id="13339">Χρώμα εμπρόσθιας λυχνίας</string>
   <string id="13340">Παραμένει ως έχει</string>
   <string id="13341">Πράσινο</string>
   <string id="13342">Πορτοκαλί</string>
@@ -1387,11 +1378,6 @@
   <string id="16103">Σημείωση ως παιγμένα</string>
   <string id="16104">Σημείωση ως μη παιγμένα</string>
   <string id="16105">Επεξεργασία τίτλου</string>
-  <string id="16106">Χρήση NTSC-M &amp; NTSC-J</string>
-  <string id="16107">Χρήση μόνο NTSC-M</string>
-  <string id="16108">Χρήση μόνο NTSC-J</string>
-  <string id="16109">Χρήση μόνο PAL-60</string>
-  <string id="16110">Για παιχνίδια με 60hz</string>
   <string id="16200">Η διαδικασία ακυρώθηκε</string>
   <string id="16201">Η αντιγραφή απέτυχε</string>
   <string id="16202">Απέτυχε η αντιγραφή τουλάχιστον ενός αρχείου</string>
@@ -1590,13 +1576,12 @@
   <string id="20184">Περιστροφή εικόνων που χρησιμοποιούν τις πληροφορίες EXIF</string>
   <string id="20185">Χρήση όψης αφίσας για τις τηλεοπτικές σειρές</string>
   <string id="20186">Απασχολημένο</string>
-  <string id="20187">Επανάκτηση EEPROM</string>
-  <string id="20188">Επανάκτηση BIOS</string>
   <string id="20189">Ενεργοποίηση αυτόματης κύλισης στην επισκόπηση πλοκής &amp; κριτικής</string>
   <string id="20190">Προσαρμογή</string>
   <string id="20191">Ενεργοποίηση καταγραφής αποσφαλμάτωσης</string>
   <string id="20192">Λήψη πρόσθετων πληροφοριών κατά τις ενημερώσεις συλλογής</string>
-  <string id="20194">Προκαθορισμένη υπηρεσία πληροφοριών μουσικής</string>
+  <string id="20193">Προκαθορισμένη υπηρεσία πληροφοριών άλμπουμ</string>
+  <string id="20194">Προκαθορισμένη υπηρεσία πληροφοριών καλλιτέχνη</string>
   <string id="20195">Αλλαγή καταγραφέα</string>
   <string id="20196">Εξαγωγή μουσικής συλλογής</string>
   <string id="20197">Εισαγωγή μουσικής συλλογής</string>
@@ -1622,15 +1607,7 @@
   <string id="20312">Dim LCD σε παύση</string>
   <string id="20313">Αλλαγή οπίσθιας λυχνίας σε παύση</string>
   <string id="20314">Βίντεο - Συλλογή</string>
-  <string id="20315">Αποθηκευμένα παιχνίδια</string>
   <string id="20316">Ταξ. κατά: ID</string>
-  <string id="20317">Λήψη αποθηκευμένων</string>
-  <string id="20318">Το αποθηκευμένο παιχνίδι εγκαταστάθηκε στον δίσκο</string>
-  <string id="20319">Αποτυχία λήψης του αποθηκευμένου παιχνιδιού</string>
-  <string id="20320">Επιλέξτε το αποθηκευμένο παιχνίδι για λήψη και εγκατάσταση</string>
-  <string id="20321">Δεν βρέθηκε αποθηκευμένο αρχείο για το συγκεκριμένο παιχνίδι</string>
-  <string id="20322">Μετάβαση στο αποθηκευμένο παιχνίδι</string>
-  <string id="20323">Αποθηκευμένα παιχνίδια</string>
   <string id="20324">Αναπαραγωγή κομματιού...</string>
   <string id="20325">Επαναφορά βαθμονόμησης</string>
   <string id="20326">Επαναφορά των τιμών βαθμονόμησης για %s</string>
@@ -1851,6 +1828,8 @@
   <string id="21448">Γλώσσα υποτίτλων</string>
   <string id="21449">Το τηλεχειριστήριο στέλνει εντολές πληκτρολογίου </string>
   <string id="21450">- Επεξεργασία</string>
+  <string id="21451">Απαιτείται σύνδεση στο Internet.</string>
+  <string id="21452">Λήψη περισσότερων</string>
   <string id="21800">Όνομα αρχείου</string>
   <string id="21801">Διαδρομή αρχείου</string>
   <string id="21802">Μέγεθος αρχείου</string>
@@ -1977,16 +1956,22 @@
   <string id="24002">Ρυθμίσεις πρόσθετου</string>
   <string id="24003">Πληροφορίες πρόσθετου</string>
   <string id="24005">Επέκταση</string>
-  <string id="24007">Καταγραφέας</string>
+  <string id="24007">Πληροφορίες ταινίας</string>
   <string id="24008">Προφύλαξη οθόνης</string>
   <string id="24009">Script</string>
   <string id="24010">Απεικόνιση</string>
   <string id="24011">Φύλαξη πρόσθετου</string>
+  <string id="24012">Υπότιτλοι</string>
+  <string id="24013">Στίχοι</string>
+  <string id="24014">Πληροφορίες τηλεόρασης</string>
+  <string id="24015">Πληροφορίες μουσικού βίντεο</string>
+  <string id="24016">Πληροφορίες άλμπουμ </string>
+  <string id="24017">Πληροφορίες καλλιτέχνη</string>
   <string id="24020">Ρύθμιση</string>
   <string id="24021">Απενεργοποίηση</string>
   <string id="24022">Ενεργοποίηση</string>
   <string id="24023">Απενεργοποιημένο πρόσθετο</string>
-  <string id="24027">Υπηρεσία καιρού</string>
+  <string id="24027">Καιρός</string>
   <string id="24028">Weather.com (βασική)</string>
   <string id="24030">Δεν είναι δυνατή η ρύθμιση αυτού του πρόσθετου</string>
   <string id="24031">Σφάλμα στη λήψη ρυθμίσεων</string>
@@ -1995,6 +1980,9 @@
   <string id="24034">Έλεγχος για ενημερώσεις</string>
   <string id="24035">Αναγκασμένη ανανέωση</string>
   <string id="24036">Καταγραφή αλλαγών</string>
+  <string id="24037">Κατάργηση εγκατάστασης</string>
+  <string id="24038">Εγκατάσταση</string>
+  <string id="24039">Απενεργοποιημένα πρόσθετα</string>
   <string id="24050">Διαθέσιμα πρόσθετα</string>
   <string id="24051">Έκδοση:</string>
   <string id="24052">Αποποίηση ευθυνών</string>
@@ -2023,7 +2011,6 @@
   <string id="29800">Λειτουργία συλλογής</string>
   <string id="29801">Διάταξη πληκτρολογίου QWERTY</string>
   <string id="29802">Σε λειτουργία η διέλευση ήχου</string>
-  <string id="29999">Εφαρμογή ρυθμίσεων φίλτρου Flicker</string>
   <string id="30011">Αναζήτηση διάρκειας</string>
   <string id="33001">Ποιότητα διαφημιστικού</string>
   <string id="33002">Ροή πολυμέσων</string>

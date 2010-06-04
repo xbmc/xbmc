@@ -3758,7 +3758,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       }
       if (item->HasVideoInfoTag())
       {
-        duration = item->GetVideoInfoTag()->m_strRuntime;
+        if (item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() > 0)
+          duration.Format("%i", item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration());
+        else
+          duration = item->GetVideoInfoTag()->m_strRuntime;
       }
 
       return duration;

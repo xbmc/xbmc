@@ -21,7 +21,7 @@
  */
 
 /**
- * @file libavcodec/mpeg12.c
+ * @file
  * MPEG-1/2 decoder
  */
 
@@ -1760,6 +1760,7 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
         if(s->current_picture.motion_val[0] && !s->encoding){ //note motion_val is normally NULL unless we want to extract the MVs
             const int wrap = s->b8_stride;
             int xy = s->mb_x*2 + s->mb_y*2*wrap;
+            int b8_xy= 4*(s->mb_x + s->mb_y*s->mb_stride);
             int motion_x, motion_y, dir, i;
 
             for(i=0; i<2; i++){
@@ -1778,11 +1779,12 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
                     s->current_picture.motion_val[dir][xy    ][1] = motion_y;
                     s->current_picture.motion_val[dir][xy + 1][0] = motion_x;
                     s->current_picture.motion_val[dir][xy + 1][1] = motion_y;
-                    s->current_picture.ref_index [dir][xy    ]=
-                    s->current_picture.ref_index [dir][xy + 1]= s->field_select[dir][i];
+                    s->current_picture.ref_index [dir][b8_xy    ]=
+                    s->current_picture.ref_index [dir][b8_xy + 1]= s->field_select[dir][i];
                     assert(s->field_select[dir][i]==0 || s->field_select[dir][i]==1);
                 }
                 xy += wrap;
+                b8_xy +=2;
             }
         }
 
@@ -2500,7 +2502,7 @@ static int mpeg_decode_end(AVCodecContext *avctx)
 
 AVCodec mpeg1video_decoder = {
     "mpeg1video",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_MPEG1VIDEO,
     sizeof(Mpeg1Context),
     mpeg_decode_init,
@@ -2514,7 +2516,7 @@ AVCodec mpeg1video_decoder = {
 
 AVCodec mpeg2video_decoder = {
     "mpeg2video",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_MPEG2VIDEO,
     sizeof(Mpeg1Context),
     mpeg_decode_init,
@@ -2529,7 +2531,7 @@ AVCodec mpeg2video_decoder = {
 //legacy decoder
 AVCodec mpegvideo_decoder = {
     "mpegvideo",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_MPEG2VIDEO,
     sizeof(Mpeg1Context),
     mpeg_decode_init,
@@ -2560,7 +2562,7 @@ static av_cold int mpeg_mc_decode_init(AVCodecContext *avctx){
 
 AVCodec mpeg_xvmc_decoder = {
     "mpegvideo_xvmc",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_MPEG2VIDEO_XVMC,
     sizeof(Mpeg1Context),
     mpeg_mc_decode_init,
@@ -2577,7 +2579,7 @@ AVCodec mpeg_xvmc_decoder = {
 #if CONFIG_MPEG_VDPAU_DECODER
 AVCodec mpeg_vdpau_decoder = {
     "mpegvideo_vdpau",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_MPEG2VIDEO,
     sizeof(Mpeg1Context),
     mpeg_decode_init,
@@ -2593,7 +2595,7 @@ AVCodec mpeg_vdpau_decoder = {
 #if CONFIG_MPEG1_VDPAU_DECODER
 AVCodec mpeg1_vdpau_decoder = {
     "mpeg1video_vdpau",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_MPEG1VIDEO,
     sizeof(Mpeg1Context),
     mpeg_decode_init,

@@ -113,7 +113,7 @@ avs_read_video_packet(AVFormatContext * s, AVPacket * pkt,
     pkt->size = ret + palette_size;
     pkt->stream_index = avs->st_video->index;
     if (sub_type == 0)
-        pkt->flags |= PKT_FLAG_KEY;
+        pkt->flags |= AV_PKT_FLAG_KEY;
 
     return 0;
 }
@@ -134,7 +134,7 @@ static int avs_read_audio_packet(AVFormatContext * s, AVPacket * pkt)
         return ret;
 
     pkt->stream_index = avs->st_audio->index;
-    pkt->flags |= PKT_FLAG_KEY;
+    pkt->flags |= AV_PKT_FLAG_KEY;
 
     return size;
 }
@@ -178,7 +178,7 @@ static int avs_read_packet(AVFormatContext * s, AVPacket * pkt)
                     avs->st_video = av_new_stream(s, AVS_VIDEO);
                     if (avs->st_video == NULL)
                         return AVERROR(ENOMEM);
-                    avs->st_video->codec->codec_type = CODEC_TYPE_VIDEO;
+                    avs->st_video->codec->codec_type = AVMEDIA_TYPE_VIDEO;
                     avs->st_video->codec->codec_id = CODEC_ID_AVS;
                     avs->st_video->codec->width = avs->width;
                     avs->st_video->codec->height = avs->height;
@@ -195,7 +195,7 @@ static int avs_read_packet(AVFormatContext * s, AVPacket * pkt)
                     avs->st_audio = av_new_stream(s, AVS_AUDIO);
                     if (avs->st_audio == NULL)
                         return AVERROR(ENOMEM);
-                    avs->st_audio->codec->codec_type = CODEC_TYPE_AUDIO;
+                    avs->st_audio->codec->codec_type = AVMEDIA_TYPE_AUDIO;
                 }
                 avs->remaining_audio_size = size - 4;
                 size = avs_read_audio_packet(s, pkt);

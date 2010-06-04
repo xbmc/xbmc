@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/zmbv.c
+ * @file
  * Zip Motion Blocks Video decoder
  */
 
@@ -434,6 +434,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPac
         }
         if(c->bw == 0 || c->bh == 0) {
             av_log(avctx, AV_LOG_ERROR, "Unsupported block size %ix%i\n", c->bw, c->bh);
+            return -1;
         }
         if(c->comp != 0 && c->comp != 1) {
             av_log(avctx, AV_LOG_ERROR, "Unsupported compression type %i\n", c->comp);
@@ -654,7 +655,7 @@ static av_cold int decode_end(AVCodecContext *avctx)
 
 AVCodec zmbv_decoder = {
     "zmbv",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_ZMBV,
     sizeof(ZmbvContext),
     decode_init,

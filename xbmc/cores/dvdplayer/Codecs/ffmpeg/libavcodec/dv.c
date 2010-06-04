@@ -34,7 +34,7 @@
  */
 
 /**
- * @file libavcodec/dv.c
+ * @file
  * DV codec.
  */
 #define ALT_BITSTREAM_READER
@@ -44,6 +44,7 @@
 #include "put_bits.h"
 #include "simple_idct.h"
 #include "dvdata.h"
+#include "dv_tablegen.h"
 
 //#undef NDEBUG
 //#include <assert.h>
@@ -64,21 +65,8 @@ typedef struct DVVideoContext {
 
 #define TEX_VLC_BITS 9
 
-#if CONFIG_SMALL
-#define DV_VLC_MAP_RUN_SIZE 15
-#define DV_VLC_MAP_LEV_SIZE 23
-#else
-#define DV_VLC_MAP_RUN_SIZE  64
-#define DV_VLC_MAP_LEV_SIZE 512 //FIXME sign was removed so this should be /2 but needs check
-#endif
-
 /* XXX: also include quantization */
 static RL_VLC_ELEM dv_rl_vlc[1184];
-/* VLC encoding lookup table */
-static struct dv_vlc_pair {
-   uint32_t vlc;
-   uint8_t  size;
-} dv_vlc_map[DV_VLC_MAP_RUN_SIZE][DV_VLC_MAP_LEV_SIZE];
 
 static inline int dv_work_pool_size(const DVprofile *d)
 {
@@ -238,7 +226,7 @@ static int dv_init_dynamic_tables(const DVprofile *d)
         } else {
             iweight1 = &dv_iweight_1080_y[0];
             iweight2 = &dv_iweight_1080_c[0];
-            }
+        }
         if (DV_PROFILE_IS_HD(d)) {
             for (c = 0; c < 4; c++) {
                 for (s = 0; s < 16; s++) {
@@ -256,12 +244,12 @@ static int dv_init_dynamic_tables(const DVprofile *d)
                         for (; i < dv_quant_areas[c]; i++) {
                             *factor1   = iweight1[i] << (dv_quant_shifts[s][c] + 1);
                             *factor2++ = (*factor1++) << 1;
-        }
-    }
+                        }
+                    }
+                }
             }
         }
     }
-}
 
     return 0;
 }
@@ -325,47 +313,7 @@ static av_cold int dvvideo_init(AVCodecContext *avctx)
         }
         free_vlc(&dv_vlc);
 
-        for (i = 0; i < NB_DV_VLC - 1; i++) {
-           if (dv_vlc_run[i] >= DV_VLC_MAP_RUN_SIZE)
-               continue;
-#if CONFIG_SMALL
-           if (dv_vlc_level[i] >= DV_VLC_MAP_LEV_SIZE)
-               continue;
-#endif
-
-           if (dv_vlc_map[dv_vlc_run[i]][dv_vlc_level[i]].size != 0)
-               continue;
-
-           dv_vlc_map[dv_vlc_run[i]][dv_vlc_level[i]].vlc  =
-               dv_vlc_bits[i] << (!!dv_vlc_level[i]);
-           dv_vlc_map[dv_vlc_run[i]][dv_vlc_level[i]].size =
-               dv_vlc_len[i] + (!!dv_vlc_level[i]);
-        }
-        for (i = 0; i < DV_VLC_MAP_RUN_SIZE; i++) {
-#if CONFIG_SMALL
-           for (j = 1; j < DV_VLC_MAP_LEV_SIZE; j++) {
-              if (dv_vlc_map[i][j].size == 0) {
-                  dv_vlc_map[i][j].vlc = dv_vlc_map[0][j].vlc |
-                            (dv_vlc_map[i-1][0].vlc << (dv_vlc_map[0][j].size));
-                  dv_vlc_map[i][j].size = dv_vlc_map[i-1][0].size +
-                                          dv_vlc_map[0][j].size;
-              }
-           }
-#else
-           for (j = 1; j < DV_VLC_MAP_LEV_SIZE/2; j++) {
-              if (dv_vlc_map[i][j].size == 0) {
-                  dv_vlc_map[i][j].vlc = dv_vlc_map[0][j].vlc |
-                            (dv_vlc_map[i-1][0].vlc << (dv_vlc_map[0][j].size));
-                  dv_vlc_map[i][j].size = dv_vlc_map[i-1][0].size +
-                                          dv_vlc_map[0][j].size;
-              }
-              dv_vlc_map[i][((uint16_t)(-j))&0x1ff].vlc =
-                                            dv_vlc_map[i][j].vlc | 1;
-              dv_vlc_map[i][((uint16_t)(-j))&0x1ff].size =
-                                            dv_vlc_map[i][j].size;
-           }
-#endif
-        }
+        dv_vlc_map_tableinit();
     }
 
     /* Generic DSP setup */
@@ -1334,7 +1282,7 @@ static int dvvideo_close(AVCodecContext *c)
 #if CONFIG_DVVIDEO_ENCODER
 AVCodec dvvideo_encoder = {
     "dvvideo",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_DVVIDEO,
     sizeof(DVVideoContext),
     dvvideo_init_encoder,
@@ -1347,7 +1295,7 @@ AVCodec dvvideo_encoder = {
 #if CONFIG_DVVIDEO_DECODER
 AVCodec dvvideo_decoder = {
     "dvvideo",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_DVVIDEO,
     sizeof(DVVideoContext),
     dvvideo_init,

@@ -27,6 +27,8 @@
 #endif
 #include "network.h"
 #include "rtsp.h"
+#include "internal.h"
+#include <libavutil/intreadwrite.h>
 
 static int rtsp_write_record(AVFormatContext *s)
 {
@@ -35,11 +37,9 @@ static int rtsp_write_record(AVFormatContext *s)
     char cmd[1024];
 
     snprintf(cmd, sizeof(cmd),
-             "RECORD %s RTSP/1.0\r\n"
              "Range: npt=%0.3f-\r\n",
-             rt->control_uri,
              (double) 0);
-    ff_rtsp_send_cmd(s, cmd, reply, NULL);
+    ff_rtsp_send_cmd(s, "RECORD", rt->control_uri, cmd, reply, NULL);
     if (reply->status_code != RTSP_STATUS_OK)
         return -1;
     rt->state = RTSP_STATE_STREAMING;
@@ -63,6 +63,40 @@ static int rtsp_write_header(AVFormatContext *s)
     return 0;
 }
 
+static int tcp_write_packet(AVFormatContext *s, RTSPStream *rtsp_st)
+{
+    RTSPState *rt = s->priv_data;
+    AVFormatContext *rtpctx = rtsp_st->transport_priv;
+    uint8_t *buf, *ptr;
+    int size;
+    uint8_t interleave_header[4];
+
+    size = url_close_dyn_buf(rtpctx->pb, &buf);
+    ptr = buf;
+    while (size > 4) {
+        uint32_t packet_len = AV_RB32(ptr);
+        int id;
+        ptr += 4;
+        size -= 4;
+        if (packet_len > size || packet_len < 2)
+            break;
+        if (ptr[1] >= 200 && ptr[1] <= 204)
+            id = rtsp_st->interleaved_max; /* RTCP */
+        else
+            id = rtsp_st->interleaved_min; /* RTP */
+        interleave_header[0] = '$';
+        interleave_header[1] = id;
+        AV_WB16(interleave_header + 2, packet_len);
+        url_write(rt->rtsp_hd, interleave_header, 4);
+        url_write(rt->rtsp_hd, ptr, packet_len);
+        ptr += packet_len;
+        size -= packet_len;
+    }
+    av_free(buf);
+    url_open_dyn_packet_buf(&rtpctx->pb, RTSP_TCP_MAX_PACKET_SIZE);
+    return 0;
+}
+
 static int rtsp_write_packet(AVFormatContext *s, AVPacket *pkt)
 {
     RTSPState *rt = s->priv_data;
@@ -71,7 +105,6 @@ static int rtsp_write_packet(AVFormatContext *s, AVPacket *pkt)
     int n, tcp_fd;
     struct timeval tv;
     AVFormatContext *rtpctx;
-    AVPacket local_pkt;
     int ret;
 
     tcp_fd = url_get_file_handle(rt->rtsp_hd);
@@ -107,22 +140,21 @@ static int rtsp_write_packet(AVFormatContext *s, AVPacket *pkt)
     rtsp_st = rt->rtsp_streams[pkt->stream_index];
     rtpctx = rtsp_st->transport_priv;
 
-    /* Use a local packet for writing to the chained muxer, otherwise
-     * the internal stream_index = 0 becomes visible to the muxer user. */
-    local_pkt = *pkt;
-    local_pkt.stream_index = 0;
-    return av_write_frame(rtpctx, &local_pkt);
+    ret = ff_write_chained(rtpctx, 0, pkt, s);
+    /* ff_write_chained does all the RTP packetization. If using TCP as
+     * transport, rtpctx->pb is only a dyn_packet_buf that queues up the
+     * packets, so we need to send them out on the TCP connection separately.
+     */
+    if (!ret && rt->lower_transport == RTSP_LOWER_TRANSPORT_TCP)
+        ret = tcp_write_packet(s, rtsp_st);
+    return ret;
 }
 
 static int rtsp_write_close(AVFormatContext *s)
 {
     RTSPState *rt = s->priv_data;
-    char cmd[1024];
 
-    snprintf(cmd, sizeof(cmd),
-             "TEARDOWN %s RTSP/1.0\r\n",
-             rt->control_uri);
-    ff_rtsp_send_cmd_async(s, cmd);
+    ff_rtsp_send_cmd_async(s, "TEARDOWN", rt->control_uri, NULL);
 
     ff_rtsp_close_streams(s);
     url_close(rt->rtsp_hd);
@@ -136,8 +168,8 @@ AVOutputFormat rtsp_muxer = {
     NULL,
     NULL,
     sizeof(RTSPState),
-    CODEC_ID_PCM_MULAW,
-    CODEC_ID_NONE,
+    CODEC_ID_AAC,
+    CODEC_ID_MPEG4,
     rtsp_write_header,
     rtsp_write_packet,
     rtsp_write_close,

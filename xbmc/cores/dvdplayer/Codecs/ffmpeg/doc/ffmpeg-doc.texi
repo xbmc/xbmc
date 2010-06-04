@@ -7,8 +7,8 @@
 @sp 3
 @end titlepage
 
-
-@chapter Introduction
+@chapter Description
+@c man begin DESCRIPTION
 
 FFmpeg is a very fast video and audio converter. It can also grab from
 a live audio/video source.
@@ -21,9 +21,38 @@ bitrate you want.
 FFmpeg can also convert from any sample rate to any other, and resize
 video on the fly with a high quality polyphase filter.
 
-@chapter Quick Start
+As a general rule, options are applied to the next specified
+file. Therefore, order is important, and you can have the same
+option on the command line multiple times. Each occurrence is
+then applied to the next input or output file.
 
+* To set the video bitrate of the output file to 64kbit/s:
+@example
+ffmpeg -i input.avi -b 64k output.avi
+@end example
+
+* To force the frame rate of the output file to 24 fps:
+@example
+ffmpeg -i input.avi -r 24 output.avi
+@end example
+
+* To force the frame rate of the input file (valid for raw formats only)
+to 1 fps and the frame rate of the output file to 24 fps:
+@example
+ffmpeg -r 1 -i input.m2v -r 24 output.avi
+@end example
+
+The format option may be needed for raw input files.
+
+By default, FFmpeg tries to convert as losslessly as possible: It
+uses the same audio and video parameters for the outputs as the one
+specified for the inputs.
+
+@c man end DESCRIPTION
+
+@chapter Examples
 @c man begin EXAMPLES
+
 @section Video and Audio grabbing
 
 FFmpeg can grab video and audio from devices given that you specify the input
@@ -192,34 +221,6 @@ The generic syntax is:
 ffmpeg [[infile options][@option{-i} @var{infile}]]... @{[outfile options] @var{outfile}@}...
 @c man end
 @end example
-@c man begin DESCRIPTION
-As a general rule, options are applied to the next specified
-file. Therefore, order is important, and you can have the same
-option on the command line multiple times. Each occurrence is
-then applied to the next input or output file.
-
-* To set the video bitrate of the output file to 64kbit/s:
-@example
-ffmpeg -i input.avi -b 64k output.avi
-@end example
-
-* To force the frame rate of the output file to 24 fps:
-@example
-ffmpeg -i input.avi -r 24 output.avi
-@end example
-
-* To force the frame rate of the input file (valid for raw formats only)
-to 1 fps and the frame rate of the output file to 24 fps:
-@example
-ffmpeg -r 1 -i input.m2v -r 24 output.avi
-@end example
-
-The format option may be needed for raw input files.
-
-By default, FFmpeg tries to convert as losslessly as possible: It
-uses the same audio and video parameters for the outputs as the one
-specified for the inputs.
-@c man end
 
 @c man begin OPTIONS
 
@@ -757,8 +758,15 @@ Repeatedly loop output for formats that support looping such as animated GIF
 @item -threads @var{count}
 Thread count.
 @item -vsync @var{parameter}
-Video sync method. Video will be stretched/squeezed to match the timestamps,
-it is done by duplicating and dropping frames. With -map you can select from
+Video sync method.
+0   Each frame is passed with its timestamp from the demuxer to the muxer
+1   Frames will be duplicated and dropped to achieve exactly the requested
+    constant framerate.
+2   Frames are passed through with their timestamp or dropped so as to prevent
+    2 frames from having the same timestamp
+-1  Chooses between 1 and 2 depending on muxer capabilities. This is the default method.
+
+With -map you can select from
 which stream the timestamps should be taken. You can leave either video or
 audio unchanged and sync the remaining stream(s) to the unchanged one.
 @item -async @var{samples_per_second}
@@ -799,9 +807,9 @@ preset options identifies the preset file to use according to the
 following rules:
 
 First ffmpeg searches for a file named @var{arg}.ffpreset in the
-directories @file{$HOME/.ffmpeg}, and in the datadir defined at
-configuration time (usually @file{PREFIX/share/ffmpeg}) in that
-order. For example, if the argument is @code{libx264-max}, it will
+directories @file{$FFMPEG_DATADIR} (if set), and @file{$HOME/.ffmpeg}, and in
+the datadir defined at configuration time (usually @file{PREFIX/share/ffmpeg})
+in that order. For example, if the argument is @code{libx264-max}, it will
 search for the file @file{libx264-max.ffpreset}.
 
 If no such file is found, then ffmpeg will search for a file named
@@ -909,9 +917,11 @@ FFserver (see the FFserver documentation). When FFmpeg will be a
 video player it will also be used for streaming :-)
 
 @chapter Tips
+@c man begin TIPS
 
 @itemize
-@item For streaming at very low bitrate application, use a low frame rate
+@item
+For streaming at very low bitrate application, use a low frame rate
 and a small GOP size. This is especially true for RealVideo where
 the Linux player does not seem to be very fast, so it can miss
 frames. An example is:
@@ -920,30 +930,36 @@ frames. An example is:
 ffmpeg -g 3 -r 3 -t 10 -b 50k -s qcif -f rv10 /tmp/b.rm
 @end example
 
-@item  The parameter 'q' which is displayed while encoding is the current
+@item
+The parameter 'q' which is displayed while encoding is the current
 quantizer. The value 1 indicates that a very good quality could
 be achieved. The value 31 indicates the worst quality. If q=31 appears
 too often, it means that the encoder cannot compress enough to meet
 your bitrate. You must either increase the bitrate, decrease the
 frame rate or decrease the frame size.
 
-@item If your computer is not fast enough, you can speed up the
+@item
+If your computer is not fast enough, you can speed up the
 compression at the expense of the compression ratio. You can use
 '-me zero' to speed up motion estimation, and '-intra' to disable
 motion estimation completely (you have only I-frames, which means it
 is about as good as JPEG compression).
 
-@item To have very low audio bitrates, reduce the sampling frequency
+@item
+To have very low audio bitrates, reduce the sampling frequency
 (down to 22050 Hz for MPEG audio, 22050 or 11025 for AC-3).
 
-@item To have a constant quality (but a variable bitrate), use the option
+@item
+To have a constant quality (but a variable bitrate), use the option
 '-qscale n' when 'n' is between 1 (excellent quality) and 31 (worst
 quality).
 
-@item When converting video files, you can use the '-sameq' option which
+@item
+When converting video files, you can use the '-sameq' option which
 uses the same quality factor in the encoder as in the decoder.
 It allows almost lossless encoding.
 
 @end itemize
+@c man end TIPS
 
 @bye

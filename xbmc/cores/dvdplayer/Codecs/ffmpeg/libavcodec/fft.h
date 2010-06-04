@@ -207,6 +207,8 @@ struct RDFTContext {
 int ff_rdft_init(RDFTContext *s, int nbits, enum RDFTransformType trans);
 void ff_rdft_end(RDFTContext *s);
 
+void ff_rdft_init_arm(RDFTContext *s);
+
 static av_always_inline void ff_rdft_calc(RDFTContext *s, FFTSample *data)
 {
     s->rdft_calc(s, data);
@@ -217,18 +219,21 @@ static av_always_inline void ff_rdft_calc(RDFTContext *s, FFTSample *data)
 struct DCTContext {
     int nbits;
     int inverse;
-    FFTSample *data;
     RDFTContext rdft;
     const float *costab;
     FFTSample *csc2;
+    void (*dct_calc)(struct DCTContext *s, FFTSample *data);
 };
 
 /**
- * Sets up (Inverse)DCT.
- * @param nbits           log2 of the length of the input array
- * @param inverse         >0 forward transform, <0 inverse transform
+ * Sets up DCT.
+ * @param nbits           size of the input array:
+ *                        (1 << nbits)     for DCT-II, DCT-III and DST-I
+ *                        (1 << nbits) + 1 for DCT-I
+ *
+ * @note the first element of the input of DST-I is ignored
  */
-int  ff_dct_init(DCTContext *s, int nbits, int inverse);
+int  ff_dct_init(DCTContext *s, int nbits, enum DCTTransformType type);
 void ff_dct_calc(DCTContext *s, FFTSample *data);
 void ff_dct_end (DCTContext *s);
 

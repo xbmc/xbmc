@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-15" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
 <strings>
   <string id="0">Programma's</string>
@@ -649,7 +649,7 @@
   <!-- strings 768 and 769 reserved for more subtitle colors -->
 
   <string id="770">Fout %i: gedeelde map niet beschikbaar</string>
-  <string id="771">- FATX beperkingen omzeilen</string>
+  <string id="771"></string>
   <string id="772">Geluidshardware</string>
   <string id="773">Uitpakken</string>
   <string id="774">Map schermbeveiliging door diavoorstelling</string>
@@ -682,7 +682,7 @@
   <string id="851">Geldig poort bereik is 1-65535</string>
   <string id="852">Geldig poort bereik is 1024-65535</string>
 
-  <string id="1000">Test schermbeveiliging</string>
+  <string id="1000">- Test</string>
   <string id="1001">Verbinden niet mogelijk</string>
   <string id="1002">XBMC kon niet verbinden met de netwerk locatie.</string>
   <string id="1003">Dit kan veroorzaakt worden doordat het netwerk niet verbonden is.</string>
@@ -810,6 +810,7 @@
   <string id="1417">Korrels</string>
   <string id="1418">T-Storms</string>
   <string id="1419">T-Showers</string>
+  <string id="1420">Matig</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 
@@ -1095,20 +1096,20 @@
 
   <string id="13283">Kernelversie:</string>
   <string id="13284">CPU-snelheid:</string>
-  <string id="13285">Gedetecteerde BIOS:</string>
+  <string id="13285"></string>
   <string id="13286">Video Encoder:</string>
   <string id="13287">Schermresolutie:</string>
-  <string id="13288">Xbox versie:</string>
-  <string id="13289">Xbox serienummer:</string>
-  <string id="13290">Xbox fabrikant:</string>
-  <string id="13291">Modchip:</string>
+  <string id="13288"></string>
+  <string id="13289"></string>
+  <string id="13290"></string>
+  <string id="13291"></string>
   <string id="13292">A/V Kabel:</string>
-  <string id="13293">Video &amp; XBE regio:</string>
+  <string id="13293"></string>
   <string id="13294">DVD regio:</string>
   <string id="13295">Internet:</string>
   <string id="13296">XBMC is verbonden</string>
   <string id="13297">XBMC is niet verbonden. Controleer netwerkinstellingen.</string>
-  <string id="13298">XBLIVE sleutel:</string>
+  <string id="13298"></string>
   <string id="13299">- Doeltemperatuur</string>
   <string id="13300">- Ventilatorsnelheid</string>
   <string id="13301">Automatische ventilatorsnelheid</string>
@@ -1147,8 +1148,8 @@
   <string id="13334">Label aanpassen</string>
   <string id="13335">Maak standaard</string>
   <string id="13336">Verwijder Knop</string>
-  <string id="13338">LED voorzijde</string>
-  <string id="13339">Kleur LED voorzijde</string>
+  <string id="13338"></string>
+  <string id="13339"></string>
   <string id="13340">Onveranderd laten</string>
   <string id="13341">Groen</string>
   <string id="13342">Oranje</string>
@@ -1488,11 +1489,11 @@
   <string id="16103">Markeren als bekeken</string>
   <string id="16104">Markeren als niet-bekeken</string>
   <string id="16105">Titel aanpassen</string>
-  <string id="16106">Gebruik NTSC-M &amp; NTSC-J</string>
-  <string id="16107">Gebruik alleen NTSC-M</string>
-  <string id="16108">Gebruik alleen NTSC-J</string>
-  <string id="16109">Gebruik alleen PAL-60</string>
-  <string id="16110">Voor 60Hz spellen</string>
+  <string id="16106"></string>
+  <string id="16107"></string>
+  <string id="16108"></string>
+  <string id="16109"></string>
+  <string id="16110"></string>
 
   <string id="16200">Actie is afgebroken</string>
   <string id="16201">Kopiëren mislukt</string>
@@ -1705,14 +1706,14 @@
   <string id="20184">Draaien m.b.v. EXIF-informatie</string>
   <string id="20185">Gebruik Poster-stijl voor TV-serie</string>
   <string id="20186">Even geduld</string>
-  <string id="20187">Bezig met het backuppen van het EEPROM</string>
-  <string id="20188">Bezig met het backuppen van het BIOS</string>
+  <string id="20187"></string>
+  <string id="20188"></string>
   <string id="20189">Plot en review automatisch scrollen</string>
   <string id="20190">Handmatig</string>
   <string id="20191">Activeer het registreren van fouten</string>
   <string id="20192">Albuminformatie ophalen bij scan</string>
-
-  <string id="20194">Standaard-scraper</string>
+  <string id="20193">Standaard scraper voor album informatie</string>
+  <string id="20194">Standaard scraper voor artiesten informatie</string>
   <string id="20195">Verander scraper</string>
   <string id="20196">Exporteer muziekbibliotheek</string>
   <string id="20197">Importeer muziekbibliotheek</string>
@@ -1743,15 +1744,15 @@
   <string id="20312">LCD dimmen tijdens pauze</string>
   <string id="20313">LED aan tijdens pauze</string>
   <string id="20314">Video's - Bibliotheek</string>
-  <string id="20315">Savegames</string>
+  <string id="20315"></string>
   <string id="20316">Sorteer op: ID</string>
-  <string id="20317">Savegames downloaden</string>
-  <string id="20318">Savegame opgeslagen op hardeschijf</string>
-  <string id="20319">Savegame downloaden mislukt</string>
-  <string id="20320">Selecteer een savegame om te downloaden in installeren</string>
-  <string id="20321">Geen savegame gevonden voor dit spel</string>
-  <string id="20322">Savegames weergeven</string>
-  <string id="20323">Savegames</string>
+  <string id="20317"></string>
+  <string id="20318"></string>
+  <string id="20319"></string>
+  <string id="20320"></string>
+  <string id="20321"></string>
+  <string id="20322"></string>
+  <string id="20323"></string>
   <string id="20324">Afspelen deel...</string>
   <string id="20325">Kalibratie herstellen</string>
   <string id="20326">Dit herstelt de standaard waardes voor %s</string>
@@ -1952,7 +1953,6 @@
   <string id="21417">- Scraper instellingen</string>
   <string id="21418">Meertalig</string>
   <string id="21419">Geen scrapers beschikbaar</string>
-
   <string id="21420">Waarde gelijk aan</string>
   <string id="21421">Intelligente afspeellijst regel</string>
   <string id="21422">Nummers zijn gelijk wanneer</string>
@@ -1984,6 +1984,8 @@
   <string id="21448">Taal ondertiteling</string>
   <string id="21449">Afstandsbediening stuurt toetsenbord toetsen</string>
   <string id="21450">- Edit</string>
+  <string id="21451">Internet connectie benodigd.</string>
+  <string id="21452">Meer ophalen</string>
 
   <string id="21800">Bestandsnaam</string>
   <string id="21801">Pad</string>
@@ -2087,7 +2089,7 @@
   <string id="22020">Gids</string>
   <string id="22021">Toegestane afwijking in beeldverhouding (%)</string>
   <string id="22022">Voeg video bestanden in lijsten</string>
-  <string id="22023">DirectX vendor:</string>
+  <string id="22023">DirectX verkoper:</string>
   <string id="22024">Direct3D versie</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
@@ -2126,25 +2128,34 @@
   <string id="24003">Add-on informatie</string>
 
   <string id="24005">Plugin</string>
-  <string id="24007">Scraper</string>
+  <string id="24007">Film informatie</string>
   <string id="24008">Schermbeveiliging</string>
   <string id="24009">Script</string>
   <string id="24010">Visualisatie</string>
   <string id="24011">Add-on repo</string>
+  <string id="24012">Subtitel scraper</string>
+  <string id="24013">Lyrics scraper</string>
+  <string id="24014">TV informatie</string>
+  <string id="24015">Muziek video informatie</string>
+  <string id="24016">Album informatie</string>
+  <string id="24017">Artiest informatie</string>
 
   <string id="24020">Configureren</string>
   <string id="24021">Uitschakelen</string>
   <string id="24022">Inschakelen</string>
   <string id="24023">Add-on uitgeschakeld</string>
-  <string id="24027">Weer services</string>
+  <string id="24027">Weer</string>
   <string id="24028">Weather.com (standaard)</string>
   <string id="24030">Deze Add-on kan niet worden geconfigureerd</string>
-  <string id="24031">Error bij het laden van de instellingen </string>
+  <string id="24031">Fout bij het laden van de instellingen </string>
   <string id="24032">Alle repos</string>
   <string id="24033">Repositories</string>
   <string id="24034">Controleren op updates</string>
   <string id="24035">Verversen</string>
   <string id="24036">Veranderingen log</string>
+  <string id="24037">Deinstalleren</string>
+  <string id="24038">Installeren</string>
+  <string id="24039">Uitgeschakelde addons</string>
 
   <string id="24050">Beschikbare Add-ons</string>
   <string id="24051">Versie:</string>
@@ -2185,7 +2196,7 @@
   <string id="29801">QWERTY-indeling toetsenbord</string>
   <string id="29802">Passthrough Audio in gebruik</string>
 
-  <string id="29999">Flikkerfilter toepassen op spellen</string>
+  <string id="29999"></string>
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
@@ -2210,13 +2221,13 @@
   <string id="33017">Herstart plugin om deze in te schakelen</string>
   <string id="33018">Vannacht</string>
   <string id="33019">Morgennacht</string>
-  <string id="33020">Condition</string>
-  <string id="33021">Precipitation</string>
+  <string id="33020">Voorwaarde</string>
+  <string id="33021">Precipitatie</string>
   <string id="33022">Precip</string>
-  <string id="33023">Humid</string>
-  <string id="33024">Feels</string>
-  <string id="33025">Observed</string>
-  <string id="33026">Departure from normal</string>
+  <string id="33023">Vochtigheid</string>
+  <string id="33024">Voelt</string>
+  <string id="33025">Waargenomen</string>
+  <string id="33026">Vertrek van normaal</string>
   <string id="33027">Zonsopgang</string>
   <string id="33028">Zonsondergang</string>
   <string id="33029">Details</string>
@@ -2225,8 +2236,8 @@
   <string id="33032">Vertaal tekst</string>
   <string id="33033">Map list %s categorie</string>
   <string id="33034">36 Uur</string>
-  <string id="33035">Maps</string>
-  <string id="33036">Hourly</string>
+  <string id="33035">Kaarten</string>
+  <string id="33036">Elk uur</string>
   <string id="33037">Weekend</string>
   <string id="33038">%s dag</string>
   <string id="33049">Alarm</string>

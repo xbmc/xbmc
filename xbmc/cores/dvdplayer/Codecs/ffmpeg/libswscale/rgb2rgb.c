@@ -8,22 +8,19 @@
  *
  * This file is part of FFmpeg.
  *
- * FFmpeg is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * FFmpeg is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
  * FFmpeg is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with FFmpeg; if not, write to the Free Software
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *
- * The C code (not assembly, MMX, ...) of this file can be used
- * under the LGPL license.
  */
 #include <inttypes.h>
 #include "config.h"
@@ -101,7 +98,7 @@ void (*yuyvtoyuv422)(uint8_t *ydst, uint8_t *udst, uint8_t *vdst, const uint8_t 
                      long lumStride, long chromStride, long srcStride);
 
 
-#if ARCH_X86 && CONFIG_GPL
+#if ARCH_X86
 DECLARE_ASM_CONST(8, uint64_t, mmx_null)     = 0x0000000000000000ULL;
 DECLARE_ASM_CONST(8, uint64_t, mmx_one)      = 0xFFFFFFFFFFFFFFFFULL;
 DECLARE_ASM_CONST(8, uint64_t, mask32b)      = 0x000000FF000000FFULL;
@@ -162,7 +159,7 @@ DECLARE_ASM_CONST(8, uint64_t, blue_15mask)  = 0x0000001f0000001fULL;
 #define RENAME(a) a ## _C
 #include "rgb2rgb_template.c"
 
-#if ARCH_X86 && CONFIG_GPL
+#if ARCH_X86
 
 //MMX versions
 #undef RENAME
@@ -198,7 +195,7 @@ DECLARE_ASM_CONST(8, uint64_t, blue_15mask)  = 0x0000001f0000001fULL;
 
 void sws_rgb2rgb_init(int flags)
 {
-#if (HAVE_MMX2 || HAVE_AMD3DNOW || HAVE_MMX)  && CONFIG_GPL
+#if HAVE_MMX2 || HAVE_AMD3DNOW || HAVE_MMX
     if (flags & SWS_CPU_CAPS_MMX2)
         rgb2rgb_init_MMX2();
     else if (flags & SWS_CPU_CAPS_3DNOW)
@@ -210,31 +207,15 @@ void sws_rgb2rgb_init(int flags)
         rgb2rgb_init_C();
 }
 
-/**
- * Convert the palette to the same packet 32-bit format as the palette
- */
+#if LIBSWSCALE_VERSION_MAJOR < 1
 void palette8topacked32(const uint8_t *src, uint8_t *dst, long num_pixels, const uint8_t *palette)
 {
-    long i;
-
-    for (i=0; i<num_pixels; i++)
-        ((uint32_t *) dst)[i] = ((const uint32_t *) palette)[src[i]];
+    sws_convertPalette8ToPacked32(src, dst, num_pixels, palette);
 }
 
-/**
- * Palette format: ABCD -> dst format: ABC
- */
 void palette8topacked24(const uint8_t *src, uint8_t *dst, long num_pixels, const uint8_t *palette)
 {
-    long i;
-
-    for (i=0; i<num_pixels; i++) {
-        //FIXME slow?
-        dst[0]= palette[src[i]*4+0];
-        dst[1]= palette[src[i]*4+1];
-        dst[2]= palette[src[i]*4+2];
-        dst+= 3;
-    }
+    sws_convertPalette8ToPacked24(src, dst, num_pixels, palette);
 }
 
 /**
@@ -252,22 +233,7 @@ void palette8tobgr16(const uint8_t *src, uint8_t *dst, long num_pixels, const ui
     for (i=0; i<num_pixels; i++)
         ((uint16_t *)dst)[i] = bswap_16(((const uint16_t *)palette)[src[i]]);
 }
-
-/**
- * Palette is assumed to contain BGR15, see rgb32to15 to convert the palette.
- */
-void palette8torgb15(const uint8_t *src, uint8_t *dst, long num_pixels, const uint8_t *palette)
-{
-    long i;
-    for (i=0; i<num_pixels; i++)
-        ((uint16_t *)dst)[i] = ((const uint16_t *)palette)[src[i]];
-}
-void palette8tobgr15(const uint8_t *src, uint8_t *dst, long num_pixels, const uint8_t *palette)
-{
-    long i;
-    for (i=0; i<num_pixels; i++)
-        ((uint16_t *)dst)[i] = bswap_16(((const uint16_t *)palette)[src[i]]);
-}
+#endif
 
 void rgb32to24(const uint8_t *src, uint8_t *dst, long src_size)
 {

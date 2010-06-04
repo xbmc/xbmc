@@ -139,6 +139,11 @@ static int au_read_header(AVFormatContext *s,
 
     codec = ff_codec_get_id(codec_au_tags, id);
 
+    if (!av_get_bits_per_sample(codec)) {
+        av_log_ask_for_sample(s, "could not determine bits per sample\n");
+        return AVERROR_INVALIDDATA;
+    }
+
     if (size >= 24) {
         /* skip unused data */
         url_fseek(pb, size - 24, SEEK_CUR);
@@ -148,7 +153,7 @@ static int au_read_header(AVFormatContext *s,
     st = av_new_stream(s, 0);
     if (!st)
         return -1;
-    st->codec->codec_type = CODEC_TYPE_AUDIO;
+    st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
     st->codec->codec_tag = id;
     st->codec->codec_id = codec;
     st->codec->channels = channels;

@@ -19,7 +19,7 @@
  */
 
 /**
- * @file libavutil/attributes.h
+ * @file
  * Macro definitions for various function/variable attributes
  */
 
@@ -96,12 +96,26 @@
 #endif
 #endif
 
+#ifndef av_alias
+#if (!defined(__ICC) || __ICC > 1110) && AV_GCC_VERSION_AT_LEAST(3,3)
+#   define av_alias __attribute__((may_alias))
+#else
+#   define av_alias
+#endif
+#endif
+
 #ifndef av_uninit
 #if defined(__GNUC__) && !defined(__ICC)
 #    define av_uninit(x) x=x
 #else
 #    define av_uninit(x) x
 #endif
+#endif
+
+#ifdef __GNUC__
+#    define av_builtin_constant_p __builtin_constant_p
+#else
+#    define av_builtin_constant_p(x) 0
 #endif
 
 #endif /* AVUTIL_ATTRIBUTES_H */

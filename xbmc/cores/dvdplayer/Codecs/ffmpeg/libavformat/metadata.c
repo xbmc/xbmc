@@ -55,6 +55,8 @@ int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int fl
         m=*pm= av_mallocz(sizeof(*m));
 
     if(tag){
+        if (flags & AV_METADATA_DONT_OVERWRITE)
+            return 0;
         av_free(tag->value);
         av_free(tag->key);
         *tag= m->elems[--m->count];
@@ -131,7 +133,7 @@ void metadata_conv(AVMetadata **pm, const AVMetadataConv *d_conv,
                         break;
                     }
         }
-        av_metadata_set(&dst, key, mtag->value);
+        av_metadata_set2(&dst, key, mtag->value, 0);
     }
     av_metadata_free(pm);
     *pm = dst;

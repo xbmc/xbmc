@@ -21,7 +21,7 @@
  */
 
 /**
- * @file libavcodec/ivi_common.h
+ * @file
  * This file contains structures and macros shared by both Indeo4 and
  * Indeo5 decoders.
  */
@@ -68,6 +68,14 @@ extern VLC ff_ivi_blk_vlc_tabs[8]; ///< static block Huffman tables
 
 
 /**
+ *  Common scan patterns (defined in ivi_common.c)
+ */
+extern const uint8_t ff_ivi_vertical_scan_8x8[64];
+extern const uint8_t ff_ivi_horizontal_scan_8x8[64];
+extern const uint8_t ff_ivi_direct_scan_4x4[16];
+
+
+/**
  *  run-value (RLE) table descriptor
  */
 typedef struct {
@@ -89,7 +97,7 @@ typedef struct {
     uint32_t    buf_offs; ///< address in the output buffer for this mb
     uint8_t     type;     ///< macroblock type: 0 - INTRA, 1 - INTER
     uint8_t     cbp;      ///< coded block pattern
-    uint8_t     q_delta;  ///< quant delta
+    int8_t      q_delta;  ///< quant delta
     int8_t      mv_x;     ///< motion vector (x component)
     int8_t      mv_y;     ///< motion vector (y component)
 } IVIMbInfo;
@@ -138,8 +146,6 @@ typedef struct {
 
     IVIHuffTab      blk_vlc;        ///< vlc table for decoding block data
 
-    uint16_t        *dequant_intra; ///< ptr to dequant tables for intra blocks
-    uint16_t        *dequant_inter; ///< ptr dequant tables for inter blocks
     int             num_corr;       ///< number of correction entries
     uint8_t         corr[61*2];     ///< rvmap correction pairs
     int             rvmap_sel;      ///< rvmap table selector

@@ -44,6 +44,9 @@
 #ifndef M_SQRT1_2
 #define M_SQRT1_2      0.70710678118654752440  /* 1/sqrt(2) */
 #endif
+#ifndef M_SQRT2
+#define M_SQRT2        1.41421356237309504880  /* sqrt(2) */
+#endif
 #ifndef NAN
 #define NAN            (0.0/0.0)
 #endif
@@ -87,7 +90,7 @@ int64_t av_rescale_q(int64_t a, AVRational bq, AVRational cq) av_const;
  * Compares 2 timestamps each in its own timebases.
  * The result of the function is undefined if one of the timestamps
  * is outside the int64_t range when represented in the others timebase.
- * @returns -1 if ts_a is before ts_b, 1 if ts_a is after ts_b or 0 if they represent the same position
+ * @return -1 if ts_a is before ts_b, 1 if ts_a is after ts_b or 0 if they represent the same position
  */
 int av_compare_ts(int64_t ts_a, AVRational tb_a, int64_t ts_b, AVRational tb_b);
 

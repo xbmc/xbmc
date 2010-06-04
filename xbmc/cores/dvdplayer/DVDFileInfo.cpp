@@ -393,6 +393,7 @@ bool CDVDFileInfo::DemuxerToStreamDetails(CDVDDemux *pDemux, CStreamDetails &det
       if (p->m_fAspect == 0.0f)
         p->m_fAspect = (float)p->m_iWidth / p->m_iHeight;
       pDemux->GetStreamCodecName(iStream, p->m_strCodec);
+      p->m_iDuration = pDemux->GetStreamLength() / 1000 / 60;
       details.AddStream(p);
       retVal = true;
     }

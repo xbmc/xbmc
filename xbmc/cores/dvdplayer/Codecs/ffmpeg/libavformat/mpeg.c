@@ -76,16 +76,20 @@ static int mpegps_probe(AVProbeData *p)
     for(i=0; i<p->buf_size; i++){
         code = (code<<8) + p->buf[i];
         if ((code & 0xffffff00) == 0x100) {
+            int len= p->buf[i+1] << 8 | p->buf[i+2];
             int pes= check_pes(p->buf+i, p->buf+p->buf_size);
 
             if(code == SYSTEM_HEADER_START_CODE) sys++;
-            else if(code == PRIVATE_STREAM_1)    priv1++;
             else if(code == PACK_START_CODE)     pspack++;
             else if((code & 0xf0) == VIDEO_ID &&  pes) vid++;
-            else if((code & 0xe0) == AUDIO_ID &&  pes) audio++;
+            // skip pes payload to avoid start code emulation for private
+            // and audio streams
+            else if((code & 0xe0) == AUDIO_ID &&  pes) {audio++; i+=len;}
+            else if(code == PRIVATE_STREAM_1  &&  pes) {priv1++; i+=len;}
 
             else if((code & 0xf0) == VIDEO_ID && !pes) invalid++;
             else if((code & 0xe0) == AUDIO_ID && !pes) invalid++;
+            else if(code == PRIVATE_STREAM_1  && !pes) invalid++;
         }
     }
 
@@ -433,7 +437,7 @@ static int mpegps_read_packet(AVFormatContext *s,
     AVStream *st;
     int len, startcode, i, es_type;
     enum CodecID codec_id = CODEC_ID_NONE;
-    enum CodecType type;
+    enum AVMediaType type;
     int64_t pts, dts, dummy_pos; //dummy_pos is needed for the index building to work
     uint8_t av_uninit(dvdaudio_substream_type);
 
@@ -459,29 +463,29 @@ static int mpegps_read_packet(AVFormatContext *s,
     if(es_type > 0 && es_type != STREAM_TYPE_PRIVATE_DATA){
         if(es_type == STREAM_TYPE_VIDEO_MPEG1){
             codec_id = CODEC_ID_MPEG2VIDEO;
-            type = CODEC_TYPE_VIDEO;
+            type = AVMEDIA_TYPE_VIDEO;
         } else if(es_type == STREAM_TYPE_VIDEO_MPEG2){
             codec_id = CODEC_ID_MPEG2VIDEO;
-            type = CODEC_TYPE_VIDEO;
+            type = AVMEDIA_TYPE_VIDEO;
         } else if(es_type == STREAM_TYPE_AUDIO_MPEG1 ||
                   es_type == STREAM_TYPE_AUDIO_MPEG2){
             codec_id = CODEC_ID_MP3;
-            type = CODEC_TYPE_AUDIO;
+            type = AVMEDIA_TYPE_AUDIO;
         } else if(es_type == STREAM_TYPE_AUDIO_AAC){
             codec_id = CODEC_ID_AAC;
-            type = CODEC_TYPE_AUDIO;
+            type = AVMEDIA_TYPE_AUDIO;
         } else if(es_type == STREAM_TYPE_AUDIO_AAC_LATM){
             codec_id = CODEC_ID_AAC_LATM;
             type = CODEC_TYPE_AUDIO;
         } else if(es_type == STREAM_TYPE_VIDEO_MPEG4){
             codec_id = CODEC_ID_MPEG4;
-            type = CODEC_TYPE_VIDEO;
+            type = AVMEDIA_TYPE_VIDEO;
         } else if(es_type == STREAM_TYPE_VIDEO_H264){
             codec_id = CODEC_ID_H264;
-            type = CODEC_TYPE_VIDEO;
+            type = AVMEDIA_TYPE_VIDEO;
         } else if(es_type == STREAM_TYPE_AUDIO_AC3){
             codec_id = CODEC_ID_AC3;
-            type = CODEC_TYPE_AUDIO;
+            type = AVMEDIA_TYPE_AUDIO;
         } else {
             goto skip;
         }
@@ -494,38 +498,38 @@ static int mpegps_read_packet(AVFormatContext *s,
             codec_id = CODEC_ID_CAVS;
         else
             codec_id = CODEC_ID_PROBE;
-        type = CODEC_TYPE_VIDEO;
+        type = AVMEDIA_TYPE_VIDEO;
     } else if (startcode >= 0x1c0 && startcode <= 0x1df) {
-        type = CODEC_TYPE_AUDIO;
+        type = AVMEDIA_TYPE_AUDIO;
         codec_id = m->sofdec > 0 ? CODEC_ID_ADPCM_ADX : CODEC_ID_MP2;
     } else if (startcode >= 0x80 && startcode <= 0x87) {
-        type = CODEC_TYPE_AUDIO;
+        type = AVMEDIA_TYPE_AUDIO;
         codec_id = CODEC_ID_AC3;
     } else if (  ( startcode >= 0x88 && startcode <= 0x8f)
                ||( startcode >= 0x98 && startcode <= 0x9f)) {
         /* 0x90 - 0x97 is reserved for SDDS in DVD specs */
-        type = CODEC_TYPE_AUDIO;
+        type = AVMEDIA_TYPE_AUDIO;
         codec_id = CODEC_ID_DTS;
     } else if (startcode >= 0xa0 && startcode <= 0xaf) {
-        type = CODEC_TYPE_AUDIO;
+        type = AVMEDIA_TYPE_AUDIO;
         /* 16 bit form will be handled as CODEC_ID_PCM_S16BE */
         codec_id = CODEC_ID_PCM_DVD;
     } else if (startcode >= 0xb0 && startcode <= 0xbf) {
-        type = CODEC_TYPE_AUDIO;
+        type = AVMEDIA_TYPE_AUDIO;
         codec_id = CODEC_ID_TRUEHD;
     } else if (startcode >= 0xc0 && startcode <= 0xcf) {
         /* Used for both AC-3 and E-AC-3 in EVOB files */
-        type = CODEC_TYPE_AUDIO;
+        type = AVMEDIA_TYPE_AUDIO;
         codec_id = CODEC_ID_AC3;
     } else if (startcode >= 0x20 && startcode <= 0x3f) {
-        type = CODEC_TYPE_SUBTITLE;
+        type = AVMEDIA_TYPE_SUBTITLE;
         codec_id = CODEC_ID_DVD_SUBTITLE;
     } else if (startcode >= 0xfd55 && startcode <= 0xfd5f) {
-        type = CODEC_TYPE_VIDEO;
+        type = AVMEDIA_TYPE_VIDEO;
         codec_id = CODEC_ID_VC1;
     } else if (startcode == 0x1bd) {
         // check dvd audio substream type
-        type = CODEC_TYPE_AUDIO;
+        type = AVMEDIA_TYPE_AUDIO;
         switch(dvdaudio_substream_type & 0xe0) {
         case 0xa0:  codec_id = CODEC_ID_PCM_DVD;
                     break;

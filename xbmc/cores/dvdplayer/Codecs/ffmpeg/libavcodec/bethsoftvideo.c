@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/bethsoftvideo.c
+ * @file
  * @brief Bethesda Softworks VID Video Decoder
  * @author Nicholas Tung [ntung (at. ntung com] (2007-03)
  * @sa http://wiki.multimedia.cx/index.php?title=Bethsoft_VID
@@ -132,7 +132,7 @@ static av_cold int bethsoftvid_decode_end(AVCodecContext *avctx)
 
 AVCodec bethsoftvid_decoder = {
     .name = "bethsoftvid",
-    .type = CODEC_TYPE_VIDEO,
+    .type = AVMEDIA_TYPE_VIDEO,
     .id = CODEC_ID_BETHSOFTVID,
     .priv_data_size = sizeof(BethsoftvidContext),
     .init = bethsoftvid_decode_init,

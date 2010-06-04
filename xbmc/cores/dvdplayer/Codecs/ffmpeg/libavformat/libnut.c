@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavformat/libnut.c
+ * @file
  * NUT demuxing and muxing via libnut.
  * @author Oded Shimon <ods15@ods15.dyndns.org>
  */
@@ -77,14 +77,14 @@ static int nut_write_header(AVFormatContext * avf) {
         int fourcc = 0;
         int num, denom, ssize;
 
-        s[i].type = codec->codec_type == CODEC_TYPE_VIDEO ? NUT_VIDEO_CLASS : NUT_AUDIO_CLASS;
+        s[i].type = codec->codec_type == AVMEDIA_TYPE_VIDEO ? NUT_VIDEO_CLASS : NUT_AUDIO_CLASS;
 
         if (codec->codec_tag) fourcc = codec->codec_tag;
         else fourcc = ff_codec_get_tag(nut_tags, codec->codec_id);
 
         if (!fourcc) {
-            if (codec->codec_type == CODEC_TYPE_VIDEO) fourcc = ff_codec_get_tag(ff_codec_bmp_tags, codec->codec_id);
-            if (codec->codec_type == CODEC_TYPE_AUDIO) fourcc = ff_codec_get_tag(ff_codec_wav_tags, codec->codec_id);
+            if (codec->codec_type == AVMEDIA_TYPE_VIDEO) fourcc = ff_codec_get_tag(ff_codec_bmp_tags, codec->codec_id);
+            if (codec->codec_type == AVMEDIA_TYPE_AUDIO) fourcc = ff_codec_get_tag(ff_codec_wav_tags, codec->codec_id);
         }
 
         s[i].fourcc_len = 4;
@@ -102,7 +102,7 @@ static int nut_write_header(AVFormatContext * avf) {
         s[i].codec_specific_len = codec->extradata_size;
         s[i].codec_specific = codec->extradata;
 
-        if (codec->codec_type == CODEC_TYPE_VIDEO) {
+        if (codec->codec_type == AVMEDIA_TYPE_VIDEO) {
             s[i].width = codec->width;
             s[i].height = codec->height;
             s[i].sample_width = 0;
@@ -128,7 +128,7 @@ static int nut_write_packet(AVFormatContext * avf, AVPacket * pkt) {
     p.len = pkt->size;
     p.stream = pkt->stream_index;
     p.pts = pkt->pts;
-    p.flags = pkt->flags & PKT_FLAG_KEY ? NUT_FLAG_KEY : 0;
+    p.flags = pkt->flags & AV_PKT_FLAG_KEY ? NUT_FLAG_KEY : 0;
     p.next_pts = 0;
 
     nut_write_frame_reorder(priv->nut, &p, pkt->data);
@@ -234,14 +234,14 @@ static int nut_read_header(AVFormatContext * avf, AVFormatParameters * ap) {
 
         switch(s[i].type) {
         case NUT_AUDIO_CLASS:
-            st->codec->codec_type = CODEC_TYPE_AUDIO;
+            st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
             if (st->codec->codec_id == CODEC_ID_NONE) st->codec->codec_id = ff_codec_get_id(ff_codec_wav_tags, st->codec->codec_tag);
 
             st->codec->channels = s[i].channel_count;
             st->codec->sample_rate = s[i].samplerate_num / s[i].samplerate_denom;
             break;
         case NUT_VIDEO_CLASS:
-            st->codec->codec_type = CODEC_TYPE_VIDEO;
+            st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
             if (st->codec->codec_id == CODEC_ID_NONE) st->codec->codec_id = ff_codec_get_id(ff_codec_bmp_tags, st->codec->codec_tag);
 
             st->codec->width = s[i].width;
@@ -269,7 +269,7 @@ static int nut_read_packet(AVFormatContext * avf, AVPacket * pkt) {
         return -1;
     }
 
-    if (pd.flags & NUT_FLAG_KEY) pkt->flags |= PKT_FLAG_KEY;
+    if (pd.flags & NUT_FLAG_KEY) pkt->flags |= AV_PKT_FLAG_KEY;
     pkt->pts = pd.pts;
     pkt->stream_index = pd.stream;
     pkt->pos = url_ftell(avf->pb);

@@ -21,7 +21,7 @@
  */
 
 /**
- * @file libavcodec/h263dec.c
+ * @file
  * H.263 decoder.
  */
 
@@ -428,7 +428,9 @@ retry:
     if(s->xvid_build==-1 && s->divx_version==-1 && s->lavc_build==-1){
         if(s->stream_codec_tag == AV_RL32("XVID") ||
            s->codec_tag == AV_RL32("XVID") || s->codec_tag == AV_RL32("XVIX") ||
-           s->codec_tag == AV_RL32("RMP4"))
+           s->codec_tag == AV_RL32("RMP4") ||
+           s->codec_tag == AV_RL32("SIPP")
+           )
             s->xvid_build= 0;
 #if 0
         if(s->codec_tag == AV_RL32("DIVX") && s->vo_type==0 && s->vol_control_parameters==1
@@ -727,7 +729,7 @@ av_log(avctx, AV_LOG_DEBUG, "%"PRId64"\n", rdtsc()-time);
 
 AVCodec h263_decoder = {
     "h263",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_H263,
     sizeof(MpegEncContext),
     ff_h263_decode_init,

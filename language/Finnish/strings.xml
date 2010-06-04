@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 21/5/2010 -->
-<!--Finnish strings based on English strings revision 30365 -->
+<!--Date of translation: 3/6/2010 -->
+<!--Finnish strings based on English strings revision 30768 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -129,7 +129,7 @@
   <string id="168"></string>
   <string id="169">Näytön resoluutio</string>
   <string id="170">Säädä näytön päivitysnopeus elokuvaan sopivaksi</string>
-
+  <string id="171"></string>
 
   <string id="172">Julkaistu</string>
   <string id="173">4:3 videoiden näyttömuoto</string>
@@ -193,7 +193,13 @@
   <string id="237">Pienennys</string>
   <string id="238">Suurennus</string>
   <string id="239">Tyhjennä toistolista lopuksi</string>
-
+  <string id="240">DVD-levyjen automaattinen käynnistys</string>
+  <string id="241">VCD-/SVCD-levyjen automaattinen käynnistys</string>
+  <string id="242">CD-levyjen automaattinen käynnistys</string>
+  <string id="243">Xbox-levyjen automaattinen käynnistys</string>
+  <string id="244">Toista videot automaattisesti</string>
+  <string id="245">Toista musiikki automaattisesti</string>
+  <string id="246">Toista kuvat automaattisesti</string>
   <string id="247">Skriptit</string>
   <string id="248">Kieli</string>
   <string id="249">Musiikki</string>
@@ -235,7 +241,7 @@
   <string id="286">Jälkikäsittely</string>
   <string id="287">Tekstitys</string>
   <string id="288">Kirjasin</string>
-  <string id="289">Koko</string>
+  <string id="289">- Koko</string>
   <string id="290">Dynamiikan kutistus</string>
   <string id="291">Video</string>
   <string id="292">Ääni</string>
@@ -540,7 +546,7 @@
   <string id="610">Siirrä kappale kiintolevylle</string>
   <string id="611">Anna numero</string>
 
-  <string id="620">Musiikki-CD:t</string>
+  <string id="620">Ääni-CD-levyt</string>
   <string id="621">Enkooderi</string>
   <string id="622">Laatu</string>
   <string id="623">Bittinopeus</string>
@@ -617,9 +623,9 @@
   <string id="732">Tallenna ja ota käyttöön</string>
   <string id="733">- Salasana</string>
   <string id="734">Ei salasanaa</string>
-  <string id="735">Merkistö</string>
-  <string id="736">Tyyli</string>
-  <string id="737">Väri</string>
+  <string id="735">- Merkistö</string>
+  <string id="736">- Tyyli</string>
+  <string id="737">- Väri</string>
   <string id="738">Normaali</string>
   <string id="739">Lihavoitu</string>
   <string id="740">Kursivoitu</string>
@@ -649,7 +655,7 @@
   <string id="765">Sinivihreä</string>
   <string id="766">Vaaleanharmaa</string>
   <string id="767">Harmaa</string>
- <!-- strings 768 and 769 reserved for more subtitle colors -->
+  <!-- strings 768 and 769 reserved for more subtitle colors -->
 
   <string id="770">Virhe %i: sijaintia ei ole saatavilla</string>
   <string id="771">Automaattinen FATX-rajoitus</string>
@@ -657,9 +663,9 @@
   <string id="773">Haku</string>
   <string id="774">Kuvaesityskansio</string>
   <string id="775">Verkkoliitäntä</string>
-  <string id="776">Langattoman verkon nimi (ESSID)</string>
-  <string id="777">Langattoman verkon salasana</string>
-  <string id="778">Langattoman verkon suojaus</string>
+  <string id="776">- Langattoman verkon nimi (ESSID)</string>
+  <string id="777">- Langattoman verkon salasana</string>
+  <string id="778">- Langattoman verkon suojaus</string>
   <string id="779">Tallenna ja ota asetukset käyttöön</string>
   <string id="780">Ei salausta</string>
   <string id="781">WEP</string>
@@ -685,7 +691,7 @@
   <string id="851">Sallittu portin alue on 1-65535</string>
   <string id="852">Sallittu portin alue on 1024-65535</string>
 
-  <string id="1000">Näytönsäästäjän esikatselu</string>
+  <string id="1000">- Esikatselu</string>
   <string id="1001">Ei saada yhteyttä</string>
   <string id="1002">XBMC ei saanut yhteyttä verkko-osoitteeseen.</string>
   <string id="1003">Saattaa olla, ettei verkkoyhteyttä ole.</string>
@@ -803,7 +809,7 @@
   <string id="1407">lähiaikana</string>
   <string id="1408">jäätä</string>
   <string id="1409">jääkiteitä</string>
-  <string id="1410">tyyntä</string>
+  <string id="1410">Tyyntä</string>
   <string id="1411">sekä</string>
   <string id="1412">tuulista</string>
   <string id="1413">tihkusadetta</string>
@@ -813,7 +819,8 @@
   <string id="1417">rakeita</string>
   <string id="1418">ukkosmyrskyjä</string>
   <string id="1419">ukkoskuuroja</string>
-
+  <string id="1420">keskimääräinen</string>
+  <string id="1421">erittäin korkea</string>
   <!-- strings through to 1450 reserved for weather translation -->
 
   <string id="1450">Toimettomana näytön sammutus</string>
@@ -1116,7 +1123,7 @@
   <string id="13300">Tuulettimen pyörintänopeus</string>
   <string id="13301">Automaattinen lämmönhallinta</string>
   <string id="13302">Tuulettimen pyörintänopeuden säätö</string>
-  <string id="13303">Kirjasin</string>
+  <string id="13303">- Kirjasin</string>
   <string id="13304">Käännä kaksisuuntainen merkistö</string>
   <string id="13305">RSS-uutispalvelu käytössä</string>
   <string id="13306">Näytä ylemmän kansion kohteet</string>
@@ -1212,7 +1219,7 @@
   <string id="13410">Aloita Last.fm:n kuuntelu</string>
   <string id="13411">Tuulettimen vähimmäisnopeus</string>
 
-  <string id="13413">Ladataan</string>
+  <string id="13413">Ladataan...</string>
   <string id="13414">Sisällytä vain kokoelmilla olevat esittäjät</string>
   <string id="13415">Renderöintimenetelmä</string>
   <string id="13416">Automaattinen tunnistus</string>
@@ -1281,14 +1288,14 @@
   <string id="14023">Ei TV:tä</string>
   <string id="14024">Lähin suuri paikkakunta</string>
   <string id="14025">Video-/Musiikki-/DVD-välimuisti: Kiintolevy</string>
-  <string id="14026">Videovälimuisti: DVD-ROM</string>
-  <string id="14027">Videovälimuisti: Lähiverkko</string>
-  <string id="14028">Videovälimuisti: Internet</string>
-  <string id="14030">Musiikkivälimuisti: DVD-ROM</string>
-  <string id="14031">Musiikkivälimuisti: Lähiverkko</string>
-  <string id="14032">Musiikkivälimuisti: Internet</string>
-  <string id="14034">DVD-välimuisti: DVD-ROM</string>
-  <string id="14035">DVD-välimuisti: Lähiverkko</string>
+  <string id="14026">Videovälimuisti - DVD-ROM</string>
+  <string id="14027">Videovälimuisti - Lähiverkko</string>
+  <string id="14028">Videovälimuisti - Internet</string>
+  <string id="14030">Musiikkivälimuisti - DVD-ROM</string>
+  <string id="14031">Musiikkivälimuisti - Lähiverkko</string>
+  <string id="14032">Musiikkivälimuisti - Internet</string>
+  <string id="14034">DVD-välimuisti - DVD-ROM</string>
+  <string id="14035">DVD-välimuisti - Lähiverkko</string>
   <string id="14036">Palvelut</string>
 
   <string id="14038">Verkkoasetuksia muutettu</string>
@@ -1330,7 +1337,7 @@
   <string id="14075">Kesäaika käytössä</string>
   <string id="14076">Lisää suosikkeihin</string>
   <string id="14077">Poista suosikeista</string>
-  <string id="14078">Väritys</string>
+  <string id="14078">- Värisävy</string>
   <string id="14079">Aikavyöhyke maa</string>
   <string id="14080">Aikavyöhyke</string>
   <string id="14081">Tiedostolistat</string>
@@ -1339,7 +1346,7 @@
   <string id="14084">Lisää valitut kappaleet toistolistalle</string>
   <string id="14085">Toista ääni-CD-levyt automaattisesti</string>
   <string id="14086">Toisto</string>
-  <string id="14087">DVD:t</string>
+  <string id="14087">DVD-levyt</string>
   <string id="14088">Toista DVD-levyt automaattisesti</string>
   <string id="14089">Tekstityksissä käytettävä kirjasin</string>
   <string id="14090">Kansallisuus</string>
@@ -1366,7 +1373,7 @@
   <string id="15107">Siirretään puskurimuistiin...</string>
   <string id="15108">Valikkoäänet</string>
   <string id="15109">Oletus</string>
-  <string id="15111">Teema</string>
+  <string id="15111">- Teema</string>
   <string id="15112">Oletusteema</string>
 
   <string id="15200">Last.fm</string>
@@ -1559,7 +1566,7 @@
 
   <!-- string id's 20027 thru 20034 are reserved for temperaturestrings  (LocalizeStrings.cpp)-->
 
-  <string id="20037">Yhteenveto</string>
+  <string id="20037">Lyhyesti</string>
   <string id="20038">Lukitse musiikki</string>
   <string id="20039">Lukitse videot</string>
   <string id="20040">Lukitse kuvat</string>
@@ -1714,8 +1721,8 @@
   <string id="20190">Mukautus</string>
   <string id="20191">Suorituslokin tallennus (debug log)</string>
   <string id="20192">Nouda lisätiedot kirjastoa päivitettäessä</string>
-
-  <string id="20194">Tietojen hakupaikka</string>
+  <string id="20193">Albumitietojen hakupaikka</string>
+  <string id="20194">Esittäjätietojen hakupaikka</string> 
   <string id="20195">Vaihda tietojen hakupaikka</string>
   <string id="20196">Vie musiikkikirjasto</string>
   <string id="20197">Tuo musiikkikirjasto</string>
@@ -1955,7 +1962,6 @@
   <string id="21417">- Asetukset</string>
   <string id="21418">Monikielinen</string>
   <string id="21419">Hakupaikalle ei ole asetuksia</string>
-
   <string id="21420">Ehtoihin sopiva</string>
   <string id="21421">Älykkään toistolistan ehdot</string>
   <string id="21422">Sopivat kohteet</string>
@@ -1987,6 +1993,8 @@
   <string id="21448">Tekstityskieli</string>
   <string id="21449">Kauko-ohjain lähettää näppäimistön painallukset</string>
   <string id="21450">Muokkaa</string>
+  <string id="21451">Internet-yhteys vaaditaan.</string>
+  <string id="21452">Nouda lisää</string>
 
   <string id="21800">Tiedoston nimi</string>
   <string id="21801">Tiedoston polku</string>
@@ -2026,7 +2034,7 @@
   <string id="21860">Lisäkategoriat</string>
   <string id="21861">Avainsanat</string>
   <string id="21862">Kuvan sisältö</string>
-  <string id="21863">Omistaja</string>
+  <string id="21863">Tehnyt</string>
   <string id="21864">Lyhyt esittely</string>
   <string id="21865">Erityisohjeet</string>
   <string id="21866">Kategoria</string>
@@ -2129,41 +2137,51 @@
   <string id="24003">Tietoja laajennuksesta</string>
 
   <string id="24005">Lisäosa</string>
-  <string id="24007">Tietojen hakupaikka</string>
+  <string id="24007">Elokuvan tiedot</string>
   <string id="24008">Näytönsäästäjä</string>
   <string id="24009">Skriptit</string>
   <string id="24010">Visualisointi</string>
   <string id="24011">Laajennusten ohjelmavarasto</string>
+  <string id="24012">Tekstitykset</string>
+  <string id="24013">Sanoitukset</string>
+  <string id="24014">Kirjasto skripti</string>
+  <string id="24014">TV-ohjelma tiedot</string>
+  <string id="24015">Musiikkivideo tiedot</string> 
+  <string id="24016">Albumi tiedot</string>
+  <string id="24017">Esittäjä tiedot</string>
 
   <string id="24020">Asetukset</string>
   <string id="24021">Poista käytöstä</string>
   <string id="24022">Ota käyttöön</string>
   <string id="24023">Laajennus ei ole käytössä</string>
-  <string id="24027">Sääpalvelu</string>
-  <string id="24028">Weather.com (vakio)</string>
+  <string id="24027">Sää</string>
+  <string id="24028">Weather.com (oletus)</string>
   <string id="24030">Tällä laajennuksella ei ole asetuksia</string>
   <string id="24031">Virhe asetusten latauksessa</string>
   <string id="24032">Kaikki ohjelmavarastot</string>
   <string id="24033">Ohjelmavarastot</string>
   <string id="24034">Tarkista päivitykset</string>
   <string id="24035">Pakota virkistys</string>
-  <string id="24036">Muutokset</string>
+  <string id="24036">Muutoshistoria</string>
+  <string id="24037">Poista</string>
+  <string id="24038">Asenna</string>
+  <string id="24039">Käytöstä poistetut laajennukset</string>
 
   <string id="24050">Saatavilla olevat laajennukset</string>
   <string id="24051">Versio:</string>
   <string id="24052">Huomautus:</string>
   <string id="24053">Lisenssi:</string>
-  <string id="24054">Muutokset</string>
+  <string id="24054">Muutoshistoria</string>
   <string id="24059">Haluatko ottaa käyttöön tämän laajennuksen?</string>
   <string id="24060">Haluatko poistaa tämän laajennuksen käytöstä?</string>
   <string id="24061">Laajennuksen päivitys saatavilla!</string>
   <string id="24062">Käytössä olevat laajennukset</string>
   <string id="24063">Automaattinen päivitys</string>
-  <string id="24064">Laajennus käytössä</string>
-  <string id="24065">Laajennus päivitetty</string>
+  <string id="24064">Laajennus on käytössä</string>
+  <string id="24065">Laajennus on päivitetty</string>
   <string id="24066">Keskeytetäänkö laajennuksen lataus?</string>
   <string id="24067">Latauksessa olevat laajennukset</string>
-  <string id="24068">Päivitys saatavilla</string>
+  <string id="24068">Päivitys on saatavilla</string>
   <string id="24069">Päivitä</string>
 
   <string id="24070">Laajennusta ei voida käyttää</string>

@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/bfi.c
+ * @file
  * @brief Brute Force & Ignorance (.bfi) video decoder
  * @author Sisir Koppaka ( sisir.koppaka at gmail dot com )
  * @sa http://wiki.multimedia.cx/index.php?title=BFI
@@ -173,7 +173,7 @@ static av_cold int bfi_decode_close(AVCodecContext * avctx)
 
 AVCodec bfi_decoder = {
     .name = "bfi",
-    .type = CODEC_TYPE_VIDEO,
+    .type = AVMEDIA_TYPE_VIDEO,
     .id = CODEC_ID_BFI,
     .priv_data_size = sizeof(BFIContext),
     .init = bfi_decode_init,

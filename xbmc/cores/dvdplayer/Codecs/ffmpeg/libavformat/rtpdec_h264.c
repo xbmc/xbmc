@@ -20,7 +20,7 @@
  */
 
 /**
-* @file libavformat/rtpdec_h264.c
+* @file
  * @brief H.264 / RTP Code (RFC3984)
  * @author Ryan Martell <rdm4@martellventures.com>
  *
@@ -411,7 +411,7 @@ This is the structure for expanding on the dynamic rtp protocols (makes everythi
 */
 RTPDynamicProtocolHandler ff_h264_dynamic_handler = {
     .enc_name         = "H264",
-    .codec_type       = CODEC_TYPE_VIDEO,
+    .codec_type       = AVMEDIA_TYPE_VIDEO,
     .codec_id         = CODEC_ID_H264,
     .parse_sdp_a_line = parse_h264_sdp_line,
     .open             = h264_new_context,

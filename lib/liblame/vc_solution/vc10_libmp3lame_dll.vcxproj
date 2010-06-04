@@ -68,7 +68,6 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libmp3lame</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='ReleaseNASM|Win32'">libmp3lame</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libmp3lame</TargetName>
-    <ExecutablePath Condition="'$(Configuration)|$(Platform)'=='ReleaseNASM|Win32'">$(SolutionDir)..\..\tools\win32buildtools\;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>

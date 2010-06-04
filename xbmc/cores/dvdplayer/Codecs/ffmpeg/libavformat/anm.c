@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavformat/anm.c
+ * @file
  * Deluxe Paint Animation demuxer
  */
 
@@ -100,7 +100,7 @@ static int read_header(AVFormatContext *s,
     st = av_new_stream(s, 0);
     if (!st)
         return AVERROR(ENOMEM);
-    st->codec->codec_type = CODEC_TYPE_VIDEO;
+    st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
     st->codec->codec_id   = CODEC_ID_ANM;
     st->codec->codec_tag  = 0; /* no fourcc */
     st->codec->width      = get_le16(pb);
@@ -219,7 +219,7 @@ repeat:
     if (pkt->size < 0)
         return pkt->size;
     if (p->base_record + anm->record == 0)
-        pkt->flags |= PKT_FLAG_KEY;
+        pkt->flags |= AV_PKT_FLAG_KEY;
 
     anm->record++;
     return 0;
