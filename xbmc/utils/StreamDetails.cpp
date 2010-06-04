@@ -41,6 +41,7 @@ void CStreamDetailVideo::Serialize(CArchive& ar)
     ar << m_fAspect;
     ar << m_iHeight;
     ar << m_iWidth;
+    ar << m_iDuration;
   }
   else
   {
@@ -48,6 +49,7 @@ void CStreamDetailVideo::Serialize(CArchive& ar)
     ar >> m_fAspect;
     ar >> m_iHeight;
     ar >> m_iWidth;
+    ar >> m_iDuration;
   }
 }
 
@@ -309,6 +311,15 @@ int CStreamDetails::GetVideoHeight(int idx) const
   CStreamDetailVideo *item = (CStreamDetailVideo *)GetNthStream(CStreamDetail::VIDEO, idx);
   if (item)
     return item->m_iHeight;
+  else
+    return 0;
+}
+
+int CStreamDetails::GetVideoDuration(int idx) const
+{
+  CStreamDetailVideo *item = (CStreamDetailVideo *)GetNthStream(CStreamDetail::VIDEO, idx);
+  if (item)
+    return item->m_iDuration;
   else
     return 0;
 }
