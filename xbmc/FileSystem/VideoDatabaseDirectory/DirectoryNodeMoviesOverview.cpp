@@ -47,9 +47,9 @@ NODE_TYPE CDirectoryNodeMoviesOverview::GetChildType()
   else if (GetName()=="6")
     return NODE_TYPE_STUDIO;
   else if (GetName()=="7")
-    return NODE_TYPE_COUNTRY;
-  else if (GetName()=="8")
     return NODE_TYPE_SETS;
+  else if (GetName()=="8")
+    return NODE_TYPE_COUNTRY;
 
   return NODE_TYPE_NONE;
 }
