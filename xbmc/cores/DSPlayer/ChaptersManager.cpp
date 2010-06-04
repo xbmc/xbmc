@@ -115,7 +115,7 @@ bool CChaptersManager::LoadChapters()
 
       m_pIAMExtendedSeeking->GetMarkerTime(i, &infos->time);
 
-      infos->time *= 1000; // To ms      
+      infos->time *= 1000; // To ms
       CLog::Log(LOGNOTICE, "%s Chapter \"%s\" found. Start time: %f", __FUNCTION__, infos->name.c_str(), infos->time);
       m_chapters.insert( std::pair<long, SChapterInfos *>(i, infos) );
     }

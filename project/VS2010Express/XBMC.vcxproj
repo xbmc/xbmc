@@ -1907,8 +1907,9 @@
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\XBMCOperations.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\system\players\dsplayer\filtersconfig.xml" />
+    <None Include="..\..\system\players\dsplayer\mediasconfig.xml" />
     <None Include="..\..\xbmc\win32\XBMC.ico" />
-    <None Include="..\..\system\players\dsplayer\dsfilterconfig.xml" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc" />

@@ -23,16 +23,34 @@
 
 #include "FilterCoreFactory.h"
 
-HRESULT CFilterCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear )
+HRESULT CFilterCoreFactory::LoadMediasConfiguration(TiXmlElement* pConfig )
 {
-  if (clear)
+  if (!pConfig || strcmpi(pConfig->Value(), "mediasconfig") != 0)
   {
-    Destroy();
+    CLog::Log(LOGERROR, "Error loading medias configuration, no <mediasconfig> node");
+    return E_FAIL;
   }
 
-  if (!pConfig || strcmpi(pConfig->Value(), "dsfilterconfig") != 0)
+  /* Parse selection rules */
+  TiXmlElement *pRules = pConfig->FirstChildElement("rules");
+  if (pRules)
   {
-    CLog::Log(LOGERROR, "Error loading configuration, no <dsfilterconfig> node");
+    TiXmlElement *pRule = pRules->FirstChildElement("rule");
+    while (pRule)
+    {
+      m_selecRules.push_back(new CGlobalFilterSelectionRule(pRule));
+      pRule = pRule->NextSiblingElement("rule");
+    }
+  }
+
+  return S_OK;
+}
+
+HRESULT CFilterCoreFactory::LoadFiltersConfiguration(TiXmlElement* pConfig )
+{
+  if (!pConfig || strcmpi(pConfig->Value(), "filtersconfig") != 0)
+  {
+    CLog::Log(LOGERROR, "Error loading filters configuration, no <filtersconfig> node");
     return E_FAIL;
   }
 
@@ -46,18 +64,6 @@ HRESULT CFilterCoreFactory::LoadConfiguration(TiXmlElement* pConfig, bool clear 
     {
       m_Filters.push_back(new CFGFilterFile(pFilter));
       pFilter = pFilter->NextSiblingElement("filter");
-    }
-  }
-
-  /* Parse selection rules */
-  TiXmlElement *pRules = pConfig->FirstChildElement("rules");
-  if (pRules)
-  {
-    TiXmlElement *pRule = pRules->FirstChildElement("rule");
-    while (pRule)
-    {
-      m_selecRules.push_back(new CGlobalFilterSelectionRule(pRule));
-      pRule = pRule->NextSiblingElement("rule");
     }
   }
 

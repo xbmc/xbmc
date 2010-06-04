@@ -1,8 +1,8 @@
-<dsfilterconfig>
-  <filters>    
+<filtersconfig>
+  <filters>
     <!-- You dont need a path if your filter is registered -->
 
-<!--**************Video Decoders**********************-->
+    <!-- Video decoders -->
     <filter name="mpcvideodec" type="videodec">
       <path>MPCVideoDec.ax</path>
       <guid>{008BAC12-FBAF-497B-9670-BC6F6FBAE2C4}</guid>
@@ -14,10 +14,9 @@
     </filter>
     <filter name="ffdvideodxvadec" type="videodec">
       <guid>{0B0EFF97-C750-462C-9488-B10E7D87F1A6}</guid>
-      <osdname>ffdshow Dxva Decoder</osdname>
+      <osdname>ffdshow DXVA Decoder</osdname>
     </filter>
-	<filter name="coreavcvideodec" type="videodec">
-      <path>CoreAVCDecoder.ax</path>
+    <filter name="coreavcvideodec" type="videodec">
       <guid>{09571A4B-F1FE-4C60-9760-DE6D310C7C31}</guid>
       <osdname>CoreAVC Video Decoder</osdname>
     </filter>
@@ -25,7 +24,6 @@
       <guid>{BEF49ADB-9EC1-4AF2-8E50-90F226CC4843}</guid>
       <osdname>CyberLink Video Decoder</osdname>
     </filter>
-    <!-- The wmvideodecoder is a dmo filter-->
     <filter name="wmvideodecoder" type="videodec">
       <guid>{82D353DF-90BD-4382-8BC2-3F6192B76E34}</guid>
       <osdname>WMVideo Decoder</osdname>
@@ -37,16 +35,16 @@
       <guid>{39F498AF-1A09-4275-B193-673B0BA3D478}</guid>
       <osdname>mpeg2 Video Decoder</osdname>
     </filter>
-    <filter name="ffdshow_dxva" type="videodec">
-      <guid>{0B0EFF97-C750-462C-9488-B10E7D87F1A6}</guid>
-      <osdname>FFDShow DXVA Decoder</osdname>
-    </filter>
     <filter name="realvideodec" type="videodec">
       <guid>{238D0F23-5DC9-45A6-9BE2-666160C324DD}</guid>
       <osdname>RealAlternative Video Decoder</osdname>
     </filter>
-<!--**********End Video Decoders**********************-->
-<!--**************Audio Decoders**********************-->
+    <filter name="broadcomvideodecoder" type="videodec">
+      <guid>{2DE1D17E-46B1-42A8-9AEC-E20E80D9B1A9}</guid>
+      <osdname>Broadcom VideoDecoder</osdname>
+    </filter>
+    
+    <!-- Audio decoders -->
     <filter name="mpaaudiodec" type="audiodec">
       <path>MpaDecFilter.ax</path>
       <guid>{3D446B6F-71DE-4437-BE15-8CE47174340F}</guid>
@@ -56,21 +54,11 @@
       <guid>{0F40E1E5-4F79-4988-B1A9-CC98794E6B55}</guid>
       <osdname>ffdshow audio decoder</osdname>
     </filter>
-    <!-- a dmo filter need a guid that indicate in which category he is locate0d-->
-    <!-- guid_category_DMO is the category of this current  -->
     <filter name="wmaudiodecoder" type="audiodec">
       <guid>{2EEB4ADF-4578-4D10-BCA7-BB955F56320A}</guid>
       <osdname>WMAudio Decoder</osdname>
       <isdmo>true</isdmo>
       <guid_category_dmo>{57f2db8b-e6bb-4513-9d43-dcd2a6593125}</guid_category_dmo>
-    </filter>
-    <filter name="broadcomvideodecoder" type="videodec">
-      <guid>{2DE1D17E-46B1-42A8-9AEC-E20E80D9B1A9}</guid>
-      <osdname>Broadcom VideoDecoder</osdname>
-    </filter>
-    <filter name="haali" type="source">
-      <guid>{55DA30FC-F16B-49FC-BAA5-AE59FC65F82D}</guid>
-      <osdname>Haali Media Splitter</osdname>
     </filter>
     <filter name="realaudiodec" type="audiodec">
       <guid>{941A4793-A705-4312-8DFC-C11CA05F397E}</guid>
@@ -84,7 +72,7 @@
       <alwaysload>1</alwaysload>
     </filter>
   
-<!--*******************Extra**************************-->
+    <!-- Extra filters -->
     <filter name="dcgraphiceq" type="extra">
       <path>DCGraphicEQ.ax</path>
       <guid>{E4DCD60C-F449-4C78-895B-1FE9F85C7EDD}</guid>
@@ -94,8 +82,8 @@
       <guid>{A753A1EC-973E-4718-AF8E-A3F554D45C44}</guid>
       <osdname>AC3Filter</osdname>
     </filter>
-<!--******************End Extra***********************-->
-<!--*******************Sources************************-->
+
+    <!-- Source filters -->
     <filter name="dvdnavigator" type="source">
       <guid>{9B8C4620-2C1A-11D0-8493-00A02438AD48}</guid>
       <osdname>DVD Navigator</osdname>
@@ -138,14 +126,16 @@
       <guid>{765035B3-5944-4A94-806B-20EE3415F26F}</guid>
       <osdname>RealAlternative Source</osdname>
     </filter>
-	<filter name="tsfilesource" type="source">
-	  <!--<path>TSFileSource.ax</path>-->
+    <filter name="tsfilesource" type="source">
       <guid>{4F8BF30C-3BEB-43A3-8BF2-10096FD28CF2}</guid>
       <osdname>TS File Source</osdname>
     </filter>
-	
-    <!--***************End Sources Filters****************-->
-    <!--*******************Splitters**********************-->
+    <filter name="haali" type="source">
+      <guid>{55DA30FC-F16B-49FC-BAA5-AE59FC65F82D}</guid>
+      <osdname>Haali Media Splitter</osdname>
+    </filter>
+    
+    <!-- Splitters -->
     <filter name="avisplitter" type="splitter">
       <path>AviSplitter.ax</path>
       <guid>{9736D831-9D6C-4E72-B6E7-560EF9181001}</guid>
@@ -180,101 +170,9 @@
       <guid>{E21BE468-5C18-43EB-B0CC-DB93A847D769}</guid>
       <osdname>RealAlternative Splitter</osdname>
     </filter>
-	<filter name="mpeg2demultiplexer" type="splitter">
+    <filter name="mpeg2demultiplexer" type="splitter">
       <guid>{AFB6C280-2C41-11D3-8A60-0000F81E0E4A}</guid>
       <osdname>MPEG-2 Demultiplexer</osdname>
     </filter>
-    <!--***************End Splitters**********************-->
   </filters>
-  
-  <rules>
-    <!-- DVD RULES -->
-    <!-- Iso still return a crash on this filter. -->
-	  <rule filetypes="iso">
-	    <source filter="tsfilesource" />
-	    <splitter filter="mpeg2demultiplexer" />
-      <video filter="ffdvideodec" />
-      <audio filter="ffdaudiodec" />
-    </rule>
-    <!-- If you want to play a dvd select the file /dvdfolder/VIDEO_TS/VIDEO_TS.ifo -->
-    <rule filetypes="ifo">
-      <source filter="dvdnavigator" />
-      <splitter filter="dvdnavigator" />
-      <video filter="mpeg2videodec" />
-      <audio filter="mpaaudiodec" />
-    </rule>
-    <!-- END DVD RULES -->
-    <rule filetypes="avi|divx">
-      <source filter="avisource" />
-      <splitter filter="avisplitter" />
-      <video filter="mpcvideodec" />
-      <audio filter="ffdaudiodec" />
-    </rule>
-    <rule filetypes="ogm">
-      <source filter="oggsource" />
-      <splitter filter="oggsplitter" />
-      <video filter="mpcvideodec" />
-      <audio filter="ffdaudiodec" />
-    </rule>  
-      <rule filetypes="flv">
-      <source filter="flvsource" />
-      <splitter filter="flvsplitter" />
-      <video filter="mpcvideodec" />
-      <audio filter="ffdaudiodec" />
-    </rule>
-    <rule filetypes="mp4">
-      <source filter="mp4source" />
-      <splitter filter="mp4splitter" />
-      <video>
-        <video dxva="true" filter="mpcvideodec" />
-        <video filter="mpcvideodec" />
-      </video>
-      <audio filter="ffdaudiodec" />
-    </rule>
-    <rule filetypes="mov|m4v">
-      <source filter="mp4source" />
-      <splitter filter="mp4splitter" />
-      <video filter="ffdvideodec" />
-      <audio filter="ffdaudiodec" />
-    </rule>
-    <rule filetypes="m2v">
-      <source filter="mpegsource" />
-      <splitter filter="mpegsplitter" />
-      <video filter="mpeg2videodec" />
-      <audio filter="ffdaudiodec" />
-    </rule>
-    <rule filetypes="ts|mpeg|mpg|m2ts">
-      <source filter="mpegsource" />
-      <splitter filter="mpegsplitter" />
-      <video filter="ffdvideodec" />
-      <audio filter="ffdaudiodec" />
-    </rule>
-    <rule filetypes="mkv">
-      <source filter="mkvsource" />
-      <splitter filter="mkvsplitter" />
-      <video>
-        <video dxva="true" filter="mpcvideodec" />
-        <video filter="mpcvideodec" />
-      </video>
-      <audio filter="ffdaudiodec" />
-      <!--<extra>
-        <extra filter="ac3filter" />
-        <extra filter="dcgraphiceq" />
-      </extra>-->
-    </rule>
-    <rule filetypes="wmv">
-      <source filter="wmasfreader" />
-      <splitter filter="wmasfreader" />
-      <video filter="wmvideodecoder" />
-      <audio filter="wmaudiodecoder" />
-    </rule>
-    
-    <!-- You need Real Alternative in order to read real media files -->
-    <rule filetypes="rmvb">
-      <source filter="realsource" />
-      <splitter filter="realsplitter" />
-      <video filter="realvideodec" />
-      <audio filter="realaudiodec" />
-    </rule>
-  </rules>
-</dsfilterconfig>
+</filtersconfig>

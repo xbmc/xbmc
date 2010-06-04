@@ -36,7 +36,9 @@ class CFilterCoreFactory
 public:
   static std::vector<CFGFilterFile *> m_Filters;
 
-  static HRESULT LoadConfiguration(TiXmlElement* pConfig, bool clear);
+  static HRESULT LoadFiltersConfiguration(TiXmlElement* pConfig);
+  static HRESULT LoadMediasConfiguration(TiXmlElement* pConfig);
+
   static HRESULT GetSourceFilter(const CFileItem& pFileItem, CStdString& filter);
   static HRESULT GetSplitterFilter(const CFileItem& pFileItem, CStdString& filter);
   static HRESULT GetAudioRendererFilter(const CFileItem& pFileItem, CStdString& filter, SVideoStreamIndexes *pStreamIndexes = NULL);
@@ -67,7 +69,7 @@ public:
       m_selecRules.pop_back();
     }
 
-    CLog::Log(LOGDEBUG, "%s Ressources released", __FUNCTION__);
+    // CLog::Log(LOGDEBUG, "%s Ressources released", __FUNCTION__);
   }
 
 private:

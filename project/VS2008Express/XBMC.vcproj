@@ -2541,10 +2541,6 @@
 					Name="FilterCoreFactory"
 					>
 					<File
-						RelativePath="..\..\system\players\dsplayer\dsfilterconfig.xml"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\DSTemplate.cpp"
 						>
 					</File>
@@ -2561,6 +2557,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\system\players\dsplayer\filtersconfig.xml"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\FilterSelectionRule.cpp"
 						>
 					</File>
@@ -2570,6 +2570,10 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\FilterCoreFactory\GlobalFilterSelectionRule.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\system\players\dsplayer\mediasconfig.xml"
 						>
 					</File>
 				</Filter>

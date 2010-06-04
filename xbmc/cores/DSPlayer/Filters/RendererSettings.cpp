@@ -70,10 +70,10 @@ CDSSettings::~CDSSettings(void)
 
 void CDSSettings::LoadConfig()
 {
-  CStdString strDsConfigFile = g_settings.GetUserDataItem("dsrenderersettings.xml");
+  CStdString strDsConfigFile = g_settings.GetUserDataItem("dsplayer/renderersettings.xml");
   if (!CFile::Exists(strDsConfigFile))
   {
-    CLog::Log(LOGNOTICE, "No dsrenderersettings.xml to load (%s)", strDsConfigFile.c_str());
+    CLog::Log(LOGNOTICE, "No renderersettings.xml to load (%s)", strDsConfigFile.c_str());
     return;
   }
   
@@ -87,9 +87,9 @@ void CDSSettings::LoadConfig()
   }
 
   TiXmlElement *pRootElement = xmlDoc.RootElement();
-  if (pRootElement && (strcmpi(pRootElement->Value(), "dsrenderersettings") != 0))
+  if (pRootElement && (strcmpi(pRootElement->Value(), "renderersettings") != 0))
   {
-    CLog::Log(LOGERROR, "Error loading %s, no <dsrenderersettings> node", strDsConfigFile.c_str());
+    CLog::Log(LOGERROR, "Error loading %s, no <renderersettings> node", strDsConfigFile.c_str());
     return;
   }
 

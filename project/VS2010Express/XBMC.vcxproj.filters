@@ -4879,7 +4879,10 @@
     <None Include="..\..\xbmc\win32\XBMC.ico">
       <Filter>win32</Filter>
     </None>
-    <None Include="..\..\system\players\dsplayer\dsfilterconfig.xml">
+    <None Include="..\..\system\players\dsplayer\filtersconfig.xml">
+      <Filter>cores\dsplayer\FilterCoreFactory</Filter>
+    </None>
+    <None Include="..\..\system\players\dsplayer\mediasconfig.xml">
       <Filter>cores\dsplayer\FilterCoreFactory</Filter>
     </None>
   </ItemGroup>

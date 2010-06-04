@@ -48,7 +48,7 @@ public:
     delete m_pExtras;
     delete m_pAudioRenderer;
 
-    CLog::Log(LOGDEBUG, "%s Ressources released", __FUNCTION__);
+    //CLog::Log(LOGDEBUG, "%s Ressources released", __FUNCTION__); Log Spam
   }
 
   bool Match (const CFileItem& pFileItem)

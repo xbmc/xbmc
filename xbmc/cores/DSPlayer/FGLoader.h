@@ -123,6 +123,12 @@ struct SFilters
   }
 };
 
+enum ESettingsType
+{
+  MEDIAS,
+  FILTERS
+};
+
 class CFGLoader : public CCriticalSection
 {
 public:
@@ -132,7 +138,8 @@ public:
   static SFilters Filters;
 
   HRESULT    LoadConfig();
-  bool       LoadFilterCoreFactorySettings(const CStdString& item, bool clear);
+  bool       LoadFilterCoreFactorySettings(const CStdString& item, ESettingsType type, bool clear);
+
   HRESULT    LoadFilterRules(const CFileItem& pFileItem);
   HRESULT    InsertSourceFilter(const CFileItem& pFileItem, const CStdString& filterName);
   HRESULT    InsertSplitter(const CFileItem& pFileItem, const CStdString& filterName);

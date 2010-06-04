@@ -487,8 +487,16 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
 
 HRESULT CFGLoader::LoadConfig()
 {
-  LoadFilterCoreFactorySettings(g_settings.GetUserDataItem("dsfilterconfig.xml"), true);
-  LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/dsfilterconfig.xml", false);
+  // Two steps
+
+  // First, filters
+  LoadFilterCoreFactorySettings(g_settings.GetUserDataItem("dsplayer/filtersconfig.xml"), FILTERS, true);
+  LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/filtersconfig.xml", FILTERS, false);
+
+  // Second, medias rules
+
+  LoadFilterCoreFactorySettings(g_settings.GetUserDataItem("dsplayer/mediasconfig.xml"), MEDIAS, false);
+  LoadFilterCoreFactorySettings("special://xbmc/system/players/dsplayer/mediasconfig.xml", MEDIAS, false);
 
   return S_OK;
 }
@@ -531,9 +539,14 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
   return hr;
 }
 
-bool CFGLoader::LoadFilterCoreFactorySettings( const CStdString& fileStr, bool clear )
+bool CFGLoader::LoadFilterCoreFactorySettings( const CStdString& fileStr, ESettingsType type, bool clear )
 {
-  CLog::Log(LOGNOTICE, "Loading filter core factory settings from %s.", fileStr.c_str());
+  if (clear)
+  {
+    CFilterCoreFactory::Destroy();
+  }
+
+  CLog::Log(LOGNOTICE, "Loading filter core factory settings from %s (%s configuration).", fileStr.c_str(), (type == MEDIAS) ? "medias" : "filters");
   if (!XFILE::CFile::Exists(fileStr))
   { // tell the user it doesn't exist
     CLog::Log(LOGNOTICE, "%s does not exist. Skipping.", fileStr.c_str());
@@ -547,7 +560,8 @@ bool CFGLoader::LoadFilterCoreFactorySettings( const CStdString& fileStr, bool c
     return false;
   }
 
-  return (SUCCEEDED(CFilterCoreFactory::LoadConfiguration(filterCoreFactoryXML.RootElement(), clear)));
+  return ( (type == MEDIAS) ? SUCCEEDED(CFilterCoreFactory::LoadMediasConfiguration(filterCoreFactoryXML.RootElement()))
+                            : SUCCEEDED(CFilterCoreFactory::LoadFiltersConfiguration(filterCoreFactoryXML.RootElement())) );
 }
 
 bool                      CFGLoader::m_UsingDXVADecoder = false;
