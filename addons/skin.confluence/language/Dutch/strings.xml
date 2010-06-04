@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-15" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <!-- Misc labels -->
   <string id="31000">Verander</string>
@@ -88,7 +88,7 @@
 
   <!-- Script labels -->
   <string id="31200">Snelkoppeling</string>
-  <string id="31201">Categorieën</string>
+  <string id="31201">CategorieÃ«n</string>
   <string id="31202">Laat cast zien</string>
   <string id="31203">Kies uw nummer</string>
   <string id="31204">Sectie links</string>
@@ -154,4 +154,3 @@
 
   <string id="31421">Selecteer uw XBMC gebruikers profiel[CR]om in te loggen</string>
 </strings>
-
