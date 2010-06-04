@@ -271,21 +271,18 @@ CStdString StringUtils::SizeToString(int64_t size)
   const char prefixes[] = {' ','k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'};
   unsigned int i = 0;
   double s = (double)size;
-  if (s > 1000)
+  while (i < sizeof(prefixes)/sizeof(prefixes[0]) && s >= 1000.0)
   {
-    while (i < sizeof(prefixes)/sizeof(prefixes[0]) && s > 100.0)
-    {
-      s /= 1024.0;
-      i++;
-    }
+    s /= 1024.0;
+    i++;
   }
 
   if (!i)
-    strLabel.Format("%3.0lf %cB ", s, prefixes[i]);
-  else if (s > 10.0)
-    strLabel.Format("%02.1lf %cB", s, prefixes[i]);
+    strLabel.Format("%.0lf %cB ", s, prefixes[i]);
+  else if (s >= 100.0)
+    strLabel.Format("%.1lf %cB", s, prefixes[i]);
   else
-    strLabel.Format("%01.2lf %cB", s, prefixes[i]);
+    strLabel.Format("%.2lf %cB", s, prefixes[i]);
 
   return strLabel;
 }
