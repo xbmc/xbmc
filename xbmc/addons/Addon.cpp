@@ -146,7 +146,7 @@ static const TypeMapping types[] =
    {"xbmc.python.library",               ADDON_SCRIPT_LIBRARY,      24014 },
    {"xbmc.gui.skin",                     ADDON_SKIN,                  166 },
    {"xbmc.addon.repository",             ADDON_REPOSITORY,          24011 },
-   {"pvrclient",                         ADDON_PVRDLL,                  0 }};
+   {"xbmc.pvrclient",                    ADDON_PVRDLL,              24018 }};
 
 const CStdString TranslateType(const ADDON::TYPE &type, bool pretty/*=false*/)
 {
@@ -322,6 +322,9 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
     case ADDON_VIZ:
       ext = ADDON_VIS_EXT;
       break;
+    case ADDON_PVRDLL:
+      ext = ADDON_PVRDLL_EXT;
+      break;
     case ADDON_SCRIPT:
     case ADDON_SCRIPT_LIBRARY:
     case ADDON_SCRIPT_LYRICS:
@@ -355,6 +358,7 @@ void CAddon::BuildLibName(const cp_extension_t *extension)
       case ADDON_SCRAPER_MUSICVIDEOS:
       case ADDON_SCRAPER_TVSHOWS:
       case ADDON_SCRAPER_LIBRARY:
+      case ADDON_PVRDLL:
       case ADDON_PLUGIN:
         {
           CStdString temp = CAddonMgr::Get().GetExtValue(extension->configuration, "@library");

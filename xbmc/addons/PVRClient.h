@@ -40,6 +40,7 @@ class CPVRClient : public ADDON::CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>
 {
 public:
   CPVRClient(const ADDON::AddonProps& props);
+  CPVRClient(const cp_extension_t *ext);
   ~CPVRClient();
 
   bool Create(long clientID, IPVRClientCallback *pvrCB);

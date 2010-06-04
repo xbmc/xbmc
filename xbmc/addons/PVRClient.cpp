@@ -49,7 +49,14 @@
 using namespace std;
 using namespace ADDON;
 
-CPVRClient::CPVRClient(const ADDON::AddonProps& props) : ADDON::CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>(props)
+CPVRClient::CPVRClient(const ADDON::AddonProps& props) : CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>(props)
+                              , m_ReadyToUse(false)
+                              , m_hostName("unknown")
+                              , m_iTimeCorrection(0)
+{
+}
+
+CPVRClient::CPVRClient(const cp_extension_t *ext) : CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>(ext)
                               , m_ReadyToUse(false)
                               , m_hostName("unknown")
                               , m_iTimeCorrection(0)

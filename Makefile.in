@@ -538,7 +538,7 @@ endif
 
 install-arch:
 	@# Arch dependent files
-	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.pvr|.*\.vis|.*\.xbs" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.pvr|.*\.vis|.*\.xbs" -exec install -D "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 
 install-scripts:
 	@install -D tools/Linux/xbmc.sh $(DESTDIR)$(bindir)/xbmc

@@ -43,6 +43,10 @@
 #include "DllScreenSaver.h"
 #include "ScreenSaver.h"
 #endif
+#ifdef HAS_PVRCLIENTS
+#include "DllPVRClient.h"
+#include "PVRClient.h"
+#endif
 //#ifdef HAS_SCRAPERS
 #include "Scraper.h"
 //#endif
@@ -97,6 +101,7 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       return AddonPtr(new CScraper(props));
     case ADDON_VIZ:
     case ADDON_SCREENSAVER:
+    case ADDON_PVRDLL:
       { // begin temporary platform handling for Dlls
         // ideally platforms issues will be handled by C-Pluff
         // this is not an attempt at a solution
@@ -125,6 +130,12 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
         {
 #if defined(HAS_VISUALISATION)
           return AddonPtr(new CVisualisation(props));
+#endif
+        }
+        else if (type == ADDON_PVRDLL)
+        {
+#ifdef HAS_PVRCLIENTS
+          return AddonPtr(new CPVRClient(props));
 #endif
         }
         else
@@ -428,6 +439,8 @@ AddonPtr CAddonMgr::AddonFromProps(AddonProps& addonProps)
       return AddonPtr(new CScreenSaver(addonProps));
     case ADDON_VIZ_LIBRARY:
       return AddonPtr(new CAddonLibrary(addonProps));
+    case ADDON_PVRDLL:
+      return AddonPtr(new CPVRClient(addonProps));
     case ADDON_REPOSITORY:
       return AddonPtr(new CRepository(addonProps));
     default:
