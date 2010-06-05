@@ -115,7 +115,7 @@ DLLEXPORT void projectM::projectM_resetTextures()
 
 
 DLLEXPORT  projectM::projectM ( std::string config_file, int flags) :
-		beatDetect ( 0 ), renderer ( 0 ),  _pcm(0), m_presetPos(0), m_flags(flags)
+		beatDetect ( 0 ), renderer ( 0 ), m_presetPos(0),  _pcm(0), m_flags(flags)
 {
 	readConfig ( config_file );	
 	projectM_reset();
@@ -953,7 +953,7 @@ void projectM::insertPresetURL(unsigned int index, const std::string & presetURL
 {
 	bool atEndPosition = false;
 	
-	int newSelectedIndex;
+	int newSelectedIndex = index;
 	
 	
 	if (*m_presetPos == m_presetChooser->end()) // Case: preset not selected
