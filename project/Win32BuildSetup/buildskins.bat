@@ -4,7 +4,7 @@ rem Copyright (C) 2005-2008 Team XBMC
 rem http://xbmc.org
 
 rem Script by chadoe
-rem This script builds the Confluence and PM3.HD skins and all skins in the optinal directory provided and copy the builds to BUILD_WIN32 for further packaging
+rem This script builds the Confluence and all skins in the optinal directory provided and copy the builds to BUILD_WIN32 for further packaging
 
 SET SKIN_PATH="%1"
 SET CUR_PATH=%CD%
@@ -19,9 +19,6 @@ ECHO Compiling Confluence...
 cd "..\..\addons\skin.confluence"
 CALL build.bat > NUL
 cd "%CUR_PATH%"
-ECHO Copying files...
-rmdir BUILD_WIN32\Xbmc\addons\skin.confluence /S /Q
-xcopy "..\..\addons\skin.confluence\BUILD\Confluence" "BUILD_WIN32\Xbmc\addons\skin.confluence" /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
 
 IF "%SKIN_PATH%" == "" GOTO DONE
 rem optional skins
