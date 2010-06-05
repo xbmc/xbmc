@@ -133,7 +133,13 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
 {
   if (!pData)
   {
-    if (m_Device->GetReadyCount())
+    // if pData is nil, we are in dvdplayervideo's special loop
+    // where it checks for more picture frames, you must pass
+    // VC_BUFFER to get it to break out of this loop.
+    int ready_cnt = m_Device->GetReadyCount();
+    if (ready_cnt == 1)
+      return VC_PICTURE | VC_BUFFER;
+    if (ready_cnt > 1)
       return VC_PICTURE;
     else
       return VC_BUFFER;
@@ -180,8 +186,8 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
       free(demuxer_content);
   }
 
-  // if we have more than one frame ready, just return VC_PICTURE so dvdplayervideo will
-  // drain them before sending another demuxer packet.
+  // if we have more than one frame ready, just return VC_PICTURE so 
+  // dvdplayervideo will loop and drain them before sending another demuxer packet.
   if (m_Device->GetReadyCount() > 1)
     return VC_PICTURE;
   
