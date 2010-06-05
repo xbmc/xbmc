@@ -65,7 +65,7 @@
 				<expression noclean="1">&lt;overview&gt;([^&lt;]*)&lt;/overview&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;overview&gt;\1&lt;/overview&gt;" dest="5+">
-				<expression noclearn="1">&lt;overview&gt;([^&lt;]*)&lt;/overview&gt;</expression>
+				<expression noclean="1">&lt;overview&gt;([^&lt;]*)&lt;/overview&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
 				<expression noclean="1" repeat="yes">&lt;person.*?name=&quot;([^&quot;]*)&quot; character=&quot;&quot; job=&quot;Director&quot;</expression>
