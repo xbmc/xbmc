@@ -431,18 +431,18 @@ void CStreamDetails::DetermineBestStreams(void)
 
 const float VIDEOASPECT_EPSILON = 0.025f;
 
-CStdString CStreamDetails::VideoWidthToResolutionDescription(int iWidth)
+CStdString CStreamDetails::VideoDimsToResolutionDescription(int iWidth, int iHeight)
 {
-  if (iWidth == 0)
+  if (iWidth == 0 || iHeight == 0)
     return "";
 
-  else if (iWidth < 721)
+  else if (iWidth <= 720 && iHeight <= 480)
     return "480";
   // 960x540
-  else if (iWidth < 961)
+  else if (iWidth <= 960 && iHeight <= 540)
     return "540";
   // 1280x720
-  else if (iWidth < 1281)
+  else if (iWidth <= 1280 && iHeight <= 720)
     return "720";
   // 1920x1080
   else

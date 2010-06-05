@@ -91,7 +91,7 @@ public:
   ~CStreamDetails() { Reset(); };
   CStreamDetails& operator=(const CStreamDetails &that);
 
-  static CStdString VideoWidthToResolutionDescription(int iWidth);
+  static CStdString VideoDimsToResolutionDescription(int iWidth, int iHeight);
   static CStdString VideoAspectToAspectDescription(float fAspect);
 
   bool HasItems(void) const { return m_vecItems.size() > 0; };

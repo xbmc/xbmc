@@ -180,12 +180,12 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
       free(demuxer_content);
   }
 
-  int rtn = 0;
-  // TODO: queue depth is related to the number of reference frames in encoded h.264.
-  // so we need to buffer until we get N ref frames + 1.
-  if (m_Device->GetReadyCount() > 8)
+  // if we have more than one frame ready, just return VC_PICTURE so dvdplayervideo will
+  // drain them before sending another demuxer packet.
+  if (m_Device->GetReadyCount() > 1)
     return VC_PICTURE;
   
+  int rtn = 0;
   if (m_Device->GetReadyCount())
     rtn = VC_PICTURE;
 
