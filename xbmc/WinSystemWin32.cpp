@@ -493,7 +493,8 @@ void CWinSystemWin32::UpdateResolutions()
 void CWinSystemWin32::AddResolution(const RESOLUTION_INFO &res)
 {
   for (unsigned int i = 0; i < g_settings.m_ResInfo.size(); i++)
-    if (g_settings.m_ResInfo[i].iWidth       == res.iWidth &&
+    if (g_settings.m_ResInfo[i].iScreen      == res.iScreen &&
+        g_settings.m_ResInfo[i].iWidth       == res.iWidth &&
         g_settings.m_ResInfo[i].iHeight      == res.iHeight &&
         g_settings.m_ResInfo[i].fRefreshRate == res.fRefreshRate &&
         g_settings.m_ResInfo[i].dwFlags      == res.dwFlags)
