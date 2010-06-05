@@ -146,33 +146,17 @@ public:
     Com::SmartPtr<ID3DXLine>      m_pLine;
     Com::SmartPtr<ID3DXFont>      m_pFont;
     Com::SmartPtr<ID3DXSprite>    m_pSprite;
-    class CExternalPixelShader
-    {
-    public:
-      Com::SmartPtr<IDirect3DPixelShader9> m_pPixelShader;
-      CStdStringA m_SourceData;
-      CStdStringA m_SourceTarget;
-      HRESULT Compile(CPixelShaderCompiler *pCompiler)
-      {
-        HRESULT hr = pCompiler->CompileShader(m_SourceData, "main", m_SourceTarget, 0, &m_pPixelShader);
-        if(FAILED(hr)) 
-          return hr;
 
-        return S_OK;
-      }
-    };
-    std::vector<CExternalPixelShader>  m_pPixelShaders;//CAtlList
-    std::vector<CExternalPixelShader>  m_pPixelShadersScreenSpace;//CAtlList
-    Com::SmartPtr<IDirect3DPixelShader9>    m_pResizerPixelShader[4]; // bl, bc1, bc2_1, bc2_2
-    Com::SmartPtr<IDirect3DTexture9>    m_pScreenSizeTemporaryTexture[2];
-    D3DFORMAT            m_SurfaceType;
-    D3DFORMAT            m_BackbufferType;
-    D3DFORMAT            m_DisplayType;
+    //std::vector<CExternalPixelShader>  m_pPixelShaders;
+    //std::vector<CExternalPixelShader>  m_pPixelShadersScreenSpace;
+    Com::SmartPtr<IDirect3DPixelShader9>  m_pResizerPixelShader[4]; // bl, bc1, bc2_1, bc2_2
+    Com::SmartPtr<IDirect3DTexture9>  m_pScreenSizeTemporaryTexture[2];
+    D3DFORMAT                 m_SurfaceType;
+    D3DFORMAT                 m_BackbufferType;
+    D3DFORMAT                 m_DisplayType;
     D3DTEXTUREFILTERTYPE      m_filter;
-    D3DCAPS9        m_caps;
-    
+    D3DCAPS9                  m_caps;
     std::auto_ptr<CPixelShaderCompiler> m_pPSC;
-    
 
     bool SettingsNeedResetDevice();
 

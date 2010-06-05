@@ -29,6 +29,7 @@
 #include "GuiSettings.h"
 #include "XMLUtils.h"
 #include "utils/SystemInfo.h"
+#include "PixelShaderList.h"
 
 using namespace XFILE;
 CDSSettings::CDSSettings(void)
@@ -57,13 +58,14 @@ void CDSSettings::Initialize()
     pRendererSettings = new CEVRRendererSettings();
   else
     pRendererSettings = new CVMR9RendererSettings();
+
+  // Create the pixel shader list
+  pixelShaderList.reset(new CPixelShaderList());
+  pixelShaderList->Load();
 }
 
 CDSSettings::~CDSSettings(void)
 {
-  delete pRendererSettings;
-  pRendererSettings = NULL;
-
   if (m_hD3DX9Dll)
     FreeLibrary(m_hD3DX9Dll);
 }

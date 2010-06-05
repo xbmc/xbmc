@@ -35,9 +35,12 @@
 #include "WindowingFactory.h"
 #include "application.h"
 #include "FileSystem/File.h"
+#include "PixelShaderList.h"
+
 #ifndef TRACE
 #define TRACE(x)
 #endif
+
 CCritSec g_ffdshowReceive;
 bool queue_ffdshow_support = false;
 
@@ -87,11 +90,7 @@ static HRESULT TextureBlt(IDirect3DDevice9* pD3DDev, MYD3DVERTEX<texcoords> v[4]
     return E_POINTER;
 
   DWORD FVF = 0;
-  if ((texcoords > 0) && (texcoords < 9 ))
-    FVF = texcoords * D3DFVF_TEX1;
-  else 
-    return E_FAIL;
-  /*switch(texcoords)
+  switch(texcoords)
   {
     case 1: FVF = D3DFVF_TEX1; break;
     case 2: FVF = D3DFVF_TEX2; break;
@@ -102,7 +101,7 @@ static HRESULT TextureBlt(IDirect3DDevice9* pD3DDev, MYD3DVERTEX<texcoords> v[4]
     case 7: FVF = D3DFVF_TEX7; break;
     case 8: FVF = D3DFVF_TEX8; break;
     default: return E_FAIL;
-  }*/
+  }
 
   HRESULT hr;
 
@@ -146,10 +145,10 @@ static HRESULT TextureBlt(IDirect3DDevice9* pD3DDev, MYD3DVERTEX<texcoords> v[4]
     }
 
     return S_OK;
-    }
+  }
   while(0);
 
-    return E_FAIL;
+  return E_FAIL;
 }
 
 static HRESULT DrawRect(IDirect3DDevice9* pD3DDev, MYD3DVERTEX<0> v[4])
@@ -215,6 +214,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
     g_renderManager.PreInit(RENDERER_DSHOW_EVR);
   else
     g_renderManager.PreInit(RENDERER_DSHOW_VMR9);
+
   g_renderManager.RegisterDsCallback(this);
   m_MainThreadId = 0;
   m_bNeedCheckSample = true;
@@ -288,6 +288,8 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
 
   hr = CreateDevice(_Error);
 
+  m_pPSC.reset(new CPixelShaderCompiler(m_pD3DDev, false));
+
   memset (m_pllJitter, 0, sizeof(m_pllJitter));
   memset (m_pllSyncOffset, 0, sizeof(m_pllSyncOffset));
   m_nNextJitter    = 0;
@@ -314,8 +316,9 @@ CDX9AllocatorPresenter::~CDX9AllocatorPresenter()
   StopWorkerThreads();
   m_pFont    = NULL;
   m_pLine    = NULL;
-  //m_pD3DDev  = NULL;
-  //m_pD3D = NULL;
+  m_pD3DDev  = NULL;
+  m_pD3D = NULL;
+
   if (m_hDWMAPI)
   {
     FreeLibrary(m_hDWMAPI);
@@ -1153,7 +1156,6 @@ HRESULT CDX9AllocatorPresenter::InitResizers(float bicubicA, bool bNeedScreenSiz
   LPCSTR pEntries[] = {"main_bilinear", "main_bicubic1pass", "main_bicubic2pass_pass1", "main_bicubic2pass_pass2"};
 
   ASSERT(countof(pEntries) == countof(m_pResizerPixelShader));
-  m_pPSC = std::auto_ptr<CPixelShaderCompiler>(new CPixelShaderCompiler(m_pD3DDev,false));
   for(int i = 0; i < countof(pEntries); i++)
   {
     CStdString ErrorMessage;
@@ -1971,7 +1973,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
     {
       Com::SmartPtr<IDirect3DTexture9> pVideoTexture = m_pVideoTexture[m_nCurSurface];
     
-      if(m_pVideoTexture[m_nNbDXSurface] && m_pVideoTexture[m_nNbDXSurface+1] && !m_pPixelShaders.empty())
+      if(m_pVideoTexture[m_nNbDXSurface] && m_pVideoTexture[m_nNbDXSurface+1] && !g_dsSettings.pixelShaderList->GetActivatedPixelShaders().empty())
       {
         static __int64 counter = 0;
         static long start = clock();
@@ -1979,7 +1981,8 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
         long stop = clock();
         long diff = stop - start;
 
-        if(diff >= 10*60*CLOCKS_PER_SEC) start = stop; // reset after 10 min (ps float has its limits in both range and accuracy)
+        if (diff >= 10*60*CLOCKS_PER_SEC)
+          start = stop; // reset after 10 min (ps float has its limits in both range and accuracy)
 
         int src = m_nCurSurface, dst = m_nNbDXSurface;
 
@@ -1996,17 +1999,24 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
         Com::SmartPtr<IDirect3DSurface9> pRT;
         hr = m_pD3DDev->GetRenderTarget(0, &pRT);
         
-        for (std::vector<CExternalPixelShader>::iterator it; it != m_pPixelShaders.end(); it++)
+        PixelShaderVector& psVec = g_dsSettings.pixelShaderList->GetActivatedPixelShaders();
+
+        for (PixelShaderVector::iterator it = psVec.begin();
+          it != psVec.end(); it++)
         {
           pVideoTexture = m_pVideoTexture[dst];
 
           hr = m_pD3DDev->SetRenderTarget(0, m_pVideoSurface[dst]);
-          CExternalPixelShader &Shader = *it;
-          if (!Shader.m_pPixelShader)
-            Shader.Compile(m_pPSC.get());
-          hr = m_pD3DDev->SetPixelShader(Shader.m_pPixelShader);
+          CExternalPixelShader *Shader = *it;
+
+          if (!Shader->m_pPixelShader)
+            Shader->Compile(m_pPSC.get());
+
+          hr = m_pD3DDev->SetPixelShader(Shader->m_pPixelShader);
+
           TextureCopy(m_pVideoTexture[src]);
-          src  = dst;
+          
+          src = dst;
           if(++dst >= m_nNbDXSurface+2) 
             dst = m_nNbDXSurface;
         }

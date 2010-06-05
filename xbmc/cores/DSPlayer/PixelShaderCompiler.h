@@ -66,6 +66,6 @@ public:
         LPCSTR pProfile,
         DWORD Flags,
         IDirect3DPixelShader9** ppPixelShader,
-    CStdString* disasm = NULL,
-    CStdString* errmsg = NULL);
+        CStdString* disasm = NULL,
+        CStdString* errmsg = NULL);
 };

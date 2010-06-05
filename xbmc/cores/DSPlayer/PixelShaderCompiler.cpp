@@ -24,7 +24,7 @@
 
 #ifdef HAS_DS_PLAYER
 
-#include "RendererSettings.h"
+#include "Filters\RendererSettings.h"
 #include "PixelShaderCompiler.h"
 #include "Log.h"
 
@@ -65,8 +65,8 @@ HRESULT CPixelShaderCompiler::CompileShader(
     LPCSTR pProfile,
     DWORD Flags,
     IDirect3DPixelShader9** ppPixelShader,
-  CStdString* disasm,
-  CStdString* errmsg)
+    CStdString* disasm,
+    CStdString* errmsg)
 {
   if(!m_pD3DXCompileShader || !m_pD3DXDisassembleShader)
     return E_FAIL;

@@ -2296,14 +2296,6 @@
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\PixelShaderCompiler.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\PixelShaderCompiler.h"
-							>
-						</File>
-						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\RendererSettings.cpp"
 							>
 						</File>
@@ -2728,6 +2720,34 @@
 							>
 						</File>
 					</Filter>
+				</Filter>
+				<Filter
+					Name="Shaders"
+					>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\ExternalPixelShader.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\ExternalPixelShader.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\PixelShaderList.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\DSPlayer\PixelShaderList.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 		</Filter>

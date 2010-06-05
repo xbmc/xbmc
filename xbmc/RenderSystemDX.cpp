@@ -259,7 +259,11 @@ void CRenderSystemDX::BuildPresentParameters()
 #endif
   }
 
+#ifdef HAS_DS_PLAYER
+  m_D3DPP.EnableAutoDepthStencil = FALSE;
+#elif
   m_D3DPP.EnableAutoDepthStencil = TRUE;
+#endif
   m_D3DPP.hDeviceWindow      = m_hDeviceWnd;
   m_D3DPP.BackBufferWidth    = m_nBackBufferWidth;
   m_D3DPP.BackBufferHeight   = m_nBackBufferHeight;

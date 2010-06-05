@@ -226,6 +226,9 @@
     <Filter Include="cores\dsplayer\Filters\Video Renderers">
       <UniqueIdentifier>{b17ca670-8077-41e8-b9a5-3afa8f5bdec8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="cores\dsplayer\Shaders">
+      <UniqueIdentifier>{2c2a6373-d215-49ab-b084-4ffe26aefd30}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\NetworkWin32.cpp">
@@ -730,9 +733,6 @@
       <Filter>cores\dsplayer\Filters\Video Renderers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\EVRAllocatorPresenter.cpp">
-      <Filter>cores\dsplayer\Filters\Video Renderers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\PixelShaderCompiler.cpp">
       <Filter>cores\dsplayer\Filters\Video Renderers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\RendererSettings.cpp">
@@ -2337,6 +2337,15 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\GraphFilters.cpp">
       <Filter>cores\dsplayer</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\ExternalPixelShader.cpp">
+      <Filter>cores\dsplayer\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PixelShaderList.cpp">
+      <Filter>cores\dsplayer\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.cpp">
+      <Filter>cores\dsplayer\Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -2979,9 +2988,6 @@
       <Filter>cores\dsplayer\Filters\Video Renderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\IPaintCallback.h">
-      <Filter>cores\dsplayer\Filters\Video Renderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\PixelShaderCompiler.h">
       <Filter>cores\dsplayer\Filters\Video Renderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\RendererSettings.h">
@@ -4879,6 +4885,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\GraphFilters.h">
       <Filter>cores\dsplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\ExternalPixelShader.h">
+      <Filter>cores\dsplayer\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderList.h">
+      <Filter>cores\dsplayer\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.h">
+      <Filter>cores\dsplayer\Shaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

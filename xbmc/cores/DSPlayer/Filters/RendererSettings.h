@@ -27,6 +27,8 @@
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
 
+class CPixelShaderList;
+
 enum AP_SURFACE_USAGE
 {
   VIDRNDT_AP_SURFACE,
@@ -151,7 +153,8 @@ public:
   int           m_nDXSdkRelease;
   CStdStringW   D3D9RenderDevice;
 
-  CRendererSettings *pRendererSettings;
+  CRendererSettings* pRendererSettings;
+  std::auto_ptr<CPixelShaderList> pixelShaderList;
 
   //TODO
   bool  IsD3DFullscreen() {return false;};
