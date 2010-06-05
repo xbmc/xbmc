@@ -352,6 +352,7 @@ DLLEXPORT void projectM::renderFrame()
 		{
                         CSectionLock lock(&mutex);
 			m_activePreset = m_activePreset2;			
+			switchPreset(m_activePreset2, presetInputs2, presetOutputs2);
 			timeKeeper->EndSmoothing();
 		}
 	
