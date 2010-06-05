@@ -36,6 +36,7 @@ public:
   bool Load();
   CExternalPixelShader(TiXmlElement* xml);
   bool IsValid() const { return m_valid; }
+  bool IsEnabled() const { return m_enabled; }
 
   Com::SmartPtr<IDirect3DPixelShader9> m_pPixelShader;
 private:
@@ -45,4 +46,5 @@ private:
   CStdString m_name;
   int m_id;
   bool m_valid;
+  bool m_enabled;
 };

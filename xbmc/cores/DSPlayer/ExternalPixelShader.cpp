@@ -50,7 +50,7 @@ HRESULT CExternalPixelShader::Compile(CPixelShaderCompiler *pCompiler)
 }
 
 CExternalPixelShader::CExternalPixelShader(TiXmlElement* xml)
-  : m_id(-1), m_valid(false)
+  : m_id(-1), m_valid(false), m_enabled(false)
 {
   m_name = xml->Attribute("name");
   xml->Attribute("id", & m_id);
@@ -60,6 +60,8 @@ CExternalPixelShader::CExternalPixelShader(TiXmlElement* xml)
 
   if (! XMLUtils::GetString(xml, "profile", m_SourceTarget))
     return;
+
+  XMLUtils::GetBoolean(xml, "enabled", m_enabled);
 
   if (! XFILE::CFile::Exists(m_SourceFile))
   {
@@ -82,7 +84,7 @@ CExternalPixelShader::CExternalPixelShader(TiXmlElement* xml)
     && !m_SourceTarget.Equals("ps_2_b") && !m_SourceTarget.Equals("ps_3_0") )
     return;
 
-  CLog::Log(LOGINFO, "Loaded pixel shader \"%s\", id %d (%s)", m_name.c_str(), m_id, m_SourceFile.c_str());
+  CLog::Log(LOGINFO, "Loaded pixel shader \"%s\", id %d, %s (%s)", m_name.c_str(), m_id, m_enabled ? "enabled" : "disabled", m_SourceFile.c_str());
   m_valid = true;
 }
 

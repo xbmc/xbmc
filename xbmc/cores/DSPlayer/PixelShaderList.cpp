@@ -78,7 +78,20 @@ bool CPixelShaderList::LoadXMLFile(const CStdString& xmlFile)
 
     shaders = shaders->NextSiblingElement("shader");
   }
+
+  UpdateActivatedList();
   return true;
+}
+
+void CPixelShaderList::UpdateActivatedList()
+{
+  m_activatedPixelShaders.clear();
+  for (PixelShaderVector::iterator it = m_pixelShaders.begin();
+    it != m_pixelShaders.end(); ++it)
+  {
+    if ( (*it)->IsEnabled())
+      m_activatedPixelShaders.push_back( *it );
+  }
 }
 
 #endif

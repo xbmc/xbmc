@@ -1696,6 +1696,9 @@ LONGLONG CEVRAllocatorPresenter::GetClockTime(LONGLONG PerformanceCounter)
 {
   LONGLONG      llClockTime;
   MFTIME        nsCurrentTime;
+  if (! m_pClock)
+    return 0;
+
   m_pClock->GetCorrelatedTime(0, &llClockTime, &nsCurrentTime);
   DWORD Characteristics = 0;
   m_pClock->GetClockCharacteristics(&Characteristics);

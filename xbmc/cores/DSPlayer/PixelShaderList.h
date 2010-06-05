@@ -33,7 +33,9 @@ class CPixelShaderList
 {
 public:
   ~CPixelShaderList();
+
   void Load();
+  void UpdateActivatedList();
 
   PixelShaderVector& GetPixelShaders() { return m_pixelShaders; }
   PixelShaderVector& GetActivatedPixelShaders() { return m_activatedPixelShaders; }
