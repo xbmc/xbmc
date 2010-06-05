@@ -255,15 +255,19 @@ void *projectM::thread_func(void *vptr_args)
 
 void projectM::evaluateSecondPreset()
 {
-      CSectionLock lock(&mutex);
-      setupPresetInputs(&m_activePreset2->presetInputs());
-      m_activePreset2->presetInputs().frame = timeKeeper->PresetFrameB();
-      m_activePreset2->presetInputs().progress= timeKeeper->PresetProgressB();
-      
-      assert ( m_activePreset2.get() );
-      m_activePreset2->evaluateFrame();
-      renderer->PerPixelMath ( &m_activePreset2->presetOutputs(), &presetInputs2 );
-      renderer->WaveformMath ( &m_activePreset2->presetOutputs(), &presetInputs2, true );  
+      Preset* p = m_activePreset2.get();
+      if (p)
+      {
+        setupPresetInputs(&p->presetInputs());
+        p->presetInputs().frame = timeKeeper->PresetFrameB();
+        p->presetInputs().progress= timeKeeper->PresetProgressB();
+        
+        p->evaluateFrame();
+        renderer->PerPixelMath ( &p->presetOutputs(), &presetInputs2 );
+        renderer->WaveformMath ( &p->presetOutputs(), &presetInputs2, true );  
+      }
+      else
+        printf("projectm: %s - preset was NULL\n", __FUNCTION__);
 }
 
 void projectM::setupPresetInputs(PresetInputs *inputs)
