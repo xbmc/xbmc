@@ -871,29 +871,7 @@ CCrystalHD::CCrystalHD() :
 #else
   if (m_dll->Load() && m_dll->IsLoaded() )
 #endif
-  {
-    uint32_t mode = BCM::DTS_PLAYBACK_MODE          |
-                    BCM::DTS_LOAD_FILE_PLAY_FW      |
-#ifdef USE_CHD_SINGLE_THREADED_API
-                    BCM::DTS_SINGLE_THREADED_MODE   |
-#endif
-                    BCM::DTS_PLAYBACK_DROP_RPT_MODE |
-                    DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
-
-    BCM::BC_STATUS res= m_dll->DtsDeviceOpen(&m_Device, mode);
-    if (res != BCM::BC_STS_SUCCESS)
-    {
-      m_Device = NULL;
-      if( res == BCM::BC_STS_DEC_EXIST_OPEN )
-        CLog::Log(LOGERROR, "%s: device owned by another application", __MODULE_NAME__);
-      else
-        CLog::Log(LOGERROR, "%s: device open failed", __MODULE_NAME__);
-    }
-    else
-    {
-      CLog::Log(LOGINFO, "%s: device opened", __MODULE_NAME__);
-    }
-  }
+    OpenDevice();
 
   // delete dll if device open fails, minimizes ram footprint
   if (!m_Device)
@@ -911,11 +889,7 @@ CCrystalHD::~CCrystalHD()
     CloseDecoder();
 
   if (m_Device)
-  {
-    m_dll->DtsDeviceClose(m_Device);
-    m_Device = NULL;
-  }
-  CLog::Log(LOGINFO, "%s: device closed", __MODULE_NAME__);
+    CloseDevice();
 
   if (m_dll)
     delete m_dll;
@@ -953,6 +927,40 @@ CCrystalHD* CCrystalHD::GetInstance(void)
     m_pInstance = new CCrystalHD();
   }
   return m_pInstance;
+}
+
+void CCrystalHD::OpenDevice()
+{
+  uint32_t mode = BCM::DTS_PLAYBACK_MODE          |
+                  BCM::DTS_LOAD_FILE_PLAY_FW      |
+#ifdef USE_CHD_SINGLE_THREADED_API
+                  BCM::DTS_SINGLE_THREADED_MODE   |
+#endif
+                  BCM::DTS_PLAYBACK_DROP_RPT_MODE |
+                  DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
+
+  BCM::BC_STATUS res= m_dll->DtsDeviceOpen(&m_Device, mode);
+  if (res != BCM::BC_STS_SUCCESS)
+  {
+    m_Device = NULL;
+    if( res == BCM::BC_STS_DEC_EXIST_OPEN )
+      CLog::Log(LOGERROR, "%s: device owned by another application", __MODULE_NAME__);
+    else
+      CLog::Log(LOGERROR, "%s: device open failed", __MODULE_NAME__);
+  }
+  else
+  {
+    CLog::Log(LOGINFO, "%s: device opened", __MODULE_NAME__);
+  }
+}
+void CCrystalHD::CloseDevice()
+{
+  if (m_Device)
+  {
+    m_dll->DtsDeviceClose(m_Device);
+    m_Device = NULL;
+    CLog::Log(LOGINFO, "%s: device closed", __MODULE_NAME__);
+  }
 }
 
 bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size, void *extradata)
@@ -1058,12 +1066,14 @@ void CCrystalHD::CloseDecoder(void)
 void CCrystalHD::Reset(void)
 {
   // Calling for non-error flush, flush all 
-  m_dll->DtsFlushInput(m_Device, 2);
+  m_dll->DtsFlushInput(m_Device, 1);
 
-  while ( m_pOutputThread->GetReadyCount())
+  m_dll->DtsFlushRxCapture(m_Device, true);
+
+  while (m_pOutputThread->GetReadyCount())
     m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
 
-  while( m_BusyList.Count())
+  while (m_BusyList.Count())
     m_pOutputThread->FreeListPush( m_BusyList.Pop() );
 
   m_timestamps.clear();
@@ -1208,11 +1218,10 @@ void CCrystalHD::SetDropState(bool bDrop)
   if (m_drop_state != bDrop)
   {
     m_drop_state = bDrop;
-    /*
+  }
+  if (m_drop_state)
     CLog::Log(LOGDEBUG, "%s: SetDropState... %d, , GetFreeCount(%d), GetReadyCount(%d), BusyListCount(%d)", __MODULE_NAME__, 
       m_drop_state, m_pOutputThread->GetFreeCount(), m_pOutputThread->GetReadyCount(), m_BusyList.Count());
-    */
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

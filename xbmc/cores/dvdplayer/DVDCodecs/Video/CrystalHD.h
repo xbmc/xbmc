@@ -130,6 +130,9 @@ public:
   bool Wake(void);
   bool Sleep(void);
 
+  void OpenDevice();
+  void CloseDevice();
+
   bool OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size, void *extradata);
   void CloseDecoder(void);
   void Reset(void);
