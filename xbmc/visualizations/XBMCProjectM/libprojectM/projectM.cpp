@@ -245,6 +245,7 @@ void *projectM::thread_func(void *vptr_args)
     pthread_cond_wait( &condition, &mutex );
     if(!running)
     {
+      pthread_mutex_unlock( &mutex );
       return NULL;
     }
     evaluateSecondPreset();
