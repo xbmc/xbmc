@@ -953,6 +953,7 @@ void CCrystalHD::OpenDevice()
     CLog::Log(LOGINFO, "%s: device opened", __MODULE_NAME__);
   }
 }
+
 void CCrystalHD::CloseDevice()
 {
   if (m_Device)
@@ -1055,6 +1056,7 @@ void CCrystalHD::CloseDecoder(void)
 
   if (m_Device)
   {
+    m_dll->DtsFlushRxCapture(m_Device, true); 
     m_dll->DtsStopDecoder(m_Device);
     m_dll->DtsCloseDecoder(m_Device);
   }
@@ -1067,7 +1069,6 @@ void CCrystalHD::Reset(void)
 {
   // Calling for non-error flush, flush all 
   m_dll->DtsFlushInput(m_Device, 1);
-
   m_dll->DtsFlushRxCapture(m_Device, true);
 
   while (m_pOutputThread->GetReadyCount())
