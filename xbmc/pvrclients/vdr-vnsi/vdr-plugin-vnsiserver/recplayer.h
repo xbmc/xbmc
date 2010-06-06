@@ -29,6 +29,7 @@
 
 #include <stdio.h>
 #include <vdr/recording.h>
+#include <vdr/tools.h>
 
 #include "config.h"
 
@@ -49,21 +50,26 @@ public:
   unsigned long getBlock(unsigned char* buffer, uint64_t position, unsigned long amount);
   bool openFile(int index);
   uint64_t getLastPosition();
-  cRecording* getCurrentRecording();
   void scan();
   uint64_t positionFromFrameNumber(uint32_t frameNumber);
   uint32_t frameNumberFromPosition(uint64_t position);
   bool getNextIFrame(uint32_t frameNumber, uint32_t direction, uint64_t* rfilePosition, uint32_t* rframeNumber, uint32_t* rframeLength);
 
 private:
-  cRecording *m_recording;
+  void cleanup();
+  char* fileNameFromIndex(int index);
+  void checkBufferSize(int s);
+
+  char        m_fileName[512];
   cIndexFile *m_indexFile;
   FILE       *m_file;
   int         m_fileOpen;
-  cSegment   *m_segments[1000];
+  cVector<cSegment*> m_segments;
   uint64_t    m_totalLength;
   uint64_t    m_lastPosition;
   uint32_t    m_totalFrames;
+  char       *m_recordingFilename;
+  bool        m_pesrecording;
 };
 
 #endif

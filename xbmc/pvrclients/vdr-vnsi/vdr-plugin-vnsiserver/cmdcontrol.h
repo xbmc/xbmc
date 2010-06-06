@@ -99,11 +99,15 @@ private:
 
   virtual void Action(void);
 
+  void checkSendBufferSize(uint32_t s);
+
   cRequestPacket     *m_req;
   RequestPacketQueue  m_req_queue;
   cResponsePacket    *m_resp;
   cCondWait           m_Wait;
   cCharSetConv        m_toUTF8;
+  uint8_t            *m_sendBuffer;
+  uint32_t            m_sendBufferSize;
 };
 
 

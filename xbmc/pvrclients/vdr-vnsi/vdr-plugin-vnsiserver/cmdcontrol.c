@@ -41,6 +41,8 @@ cCmdControl::cCmdControl()
   m_resp                  = NULL;
   m_processSCAN_Response  = NULL;
   m_processSCAN_Socket    = NULL;
+  m_sendBufferSize        = 8192;
+  m_sendBuffer            = (uint8_t*)malloc(m_sendBufferSize);
 
   Start();
 }
@@ -49,6 +51,7 @@ cCmdControl::~cCmdControl()
 {
   Cancel(1);
   m_Wait.Signal();
+  free(m_sendBuffer);
 }
 
 bool cCmdControl::recvRequest(cRequestPacket* newRequest)
@@ -429,8 +432,8 @@ bool cCmdControl::processRecStream_GetBlock() /* OPCODE 42 */
 
 //  LOGCONSOLE("getblock pos = %llu length = %lu", position, amount);
 
-  uint8_t sendBuffer[amount];
-  uint32_t amountReceived = m_req->getClient()->m_RecPlayer->getBlock(&sendBuffer[0], position, amount);
+  checkSendBufferSize(amount);
+  uint32_t amountReceived = m_req->getClient()->m_RecPlayer->getBlock(m_sendBuffer, position, amount);
 
   if (!amountReceived)
   {
@@ -439,7 +442,7 @@ bool cCmdControl::processRecStream_GetBlock() /* OPCODE 42 */
   }
   else
   {
-    m_resp->copyin(sendBuffer, amountReceived);
+    m_resp->copyin(m_sendBuffer, amountReceived);
   }
 
   m_resp->finalise();
@@ -1675,4 +1678,10 @@ void cCmdControl::processSCAN_SetStatus(int status)
   resp->finalise();
   m_processSCAN_Socket->write(resp->getPtr(), resp->getLen());
   delete resp;
+}
+
+void cCmdControl::checkSendBufferSize(uint32_t s) {
+  if(s <= m_sendBufferSize) return;
+  m_sendBuffer = (uint8_t*)realloc(m_sendBuffer, s);
+  m_sendBufferSize = s;
 }

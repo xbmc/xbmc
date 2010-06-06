@@ -638,7 +638,7 @@ PVR_ERROR cVNSIData::GetRecordingsList(PVRHANDLE handle)
   }
   else
   {
-    bool haveCheckedLocalAccess = false;
+    bool haveCheckedLocalAccess = true /*false*/;
     m_RecordsPaths.clear();
 
     cRequestPacket vrp;

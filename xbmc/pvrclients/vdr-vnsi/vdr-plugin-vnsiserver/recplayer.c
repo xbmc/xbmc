@@ -32,55 +32,53 @@
 cRecPlayer::cRecPlayer(cRecording* rec)
 {
   m_file          = NULL;
-  m_fileOpen      = 0;
+  m_fileOpen      = -1;
   m_lastPosition  = 0;
-  m_recording     = rec;
-  for(int i = 1; i < 1000; i++) m_segments[i] = NULL;
+  m_recordingFilename = strdup(rec->FileName());
 
   // FIXME find out max file path / name lengths
 #if VDRVERSNUM < 10703
-  m_indexFile = new cIndexFile(m_recording->FileName(), false);
+  m_pesrecording = false;
+  m_indexFile = new cIndexFile(m_recordingFilename, false);
 #else
-  m_indexFile = new cIndexFile(m_recording->FileName(), false,  m_recording->IsPesRecording());
+  m_pesrecording = rec->IsPesRecording();
+  m_indexFile = new cIndexFile(m_recordingFilename, false, m_pesrecording);
 #endif
   esyslog("VNSI-Error: Failed to create indexfile!");
 
   scan();
 }
 
+void cRecPlayer::cleanup() {
+  for(int i = 0; i != m_segments.Size(); i++) {
+    delete m_segments[i];
+  }
+  m_segments.Clear();
+}
+
 void cRecPlayer::scan()
 {
   if (m_file) fclose(m_file);
   m_totalLength = 0;
-  m_fileOpen    = 0;
+  m_fileOpen    = -1;
   m_totalFrames = 0;
 
-  int i = 1;
-  while(m_segments[i++]) delete m_segments[i];
+  cleanup();
 
-  char fileName[2048];
-#if VDRVERSNUM < 10703
-  for(i = 1; i < 255; i++)//maximum is 255 files instead of 1000, according to VDR HISTORY file...
+  for(int i = 0; i < 65535; i++) // i think we only need one possible loop
   {
-    snprintf(fileName, 2047, "%s/%03i.vdr", m_recording->FileName(), i);
-#else
-  for(i = 1; i < 65535; i++)
-  {
-    if (m_recording->IsPesRecording())
-      snprintf(fileName, 2047, "%s/%03i.vdr", m_recording->FileName(), i);
-    else
-      snprintf(fileName, 2047, "%s/%05i.ts", m_recording->FileName(), i);
-#endif
-    LOGCONSOLE("FILENAME: %s", fileName);
-    m_file = fopen(fileName, "r");
+    fileNameFromIndex(i);
+    LOGCONSOLE("FILENAME: %s", m_fileName);
+    m_file = fopen(m_fileName, "r");
     if (!m_file) break;
 
-    m_segments[i]         = new cSegment();
-    m_segments[i]->start  = m_totalLength;
+    cSegment* s = new cSegment();
+    s->start = m_totalLength;
     fseek(m_file, 0, SEEK_END);
-    m_totalLength        += ftell(m_file);
-    m_totalFrames         = m_indexFile->Last();
-    m_segments[i]->end    = m_totalLength;
+    m_totalLength += ftell(m_file);
+    m_totalFrames = m_indexFile->Last();
+    s->end = m_totalLength;
+    m_segments.Append(s);
     LOGCONSOLE("File %i found, totalLength now %llu, numFrames = %lu", i, m_totalLength, m_totalFrames);
     fclose(m_file);
   }
@@ -91,31 +89,31 @@ void cRecPlayer::scan()
 cRecPlayer::~cRecPlayer()
 {
   LOGCONSOLE("destructor");
-  int i = 1;
-  while(m_segments[i++]) delete m_segments[i];
+  cleanup();
   if (m_file) fclose(m_file);
+  free(m_recordingFilename);
 }
 
+char* cRecPlayer::fileNameFromIndex(int index) {
+  if (m_pesrecording)
+    snprintf(m_fileName, sizeof(m_fileName), "%s/%03i.vdr", m_recordingFilename, index+1);
+  else
+    snprintf(m_fileName, sizeof(m_fileName), "%s/%05i.ts", m_recordingFilename, index+1);
+
+  return m_fileName;
+}
 bool cRecPlayer::openFile(int index)
 {
   if (m_file) fclose(m_file);
 
-  char fileName[2048];
-#if VDRVERSNUM < 10703
-  snprintf(fileName, 2047, "%s/%03i.vdr", m_recording->FileName(), index);
-#else
-  if (m_recording->IsPesRecording())
-    snprintf(fileName, 2047, "%s/%03i.vdr", m_recording->FileName(), index);
-  else
-    snprintf(fileName, 2047, "%s/%05i.ts", m_recording->FileName(), index);
-#endif
-  LOGCONSOLE("openFile called for index %i string:%s", index, fileName);
+  fileNameFromIndex(index);
+  LOGCONSOLE("openFile called for index %i string:%s", index, m_fileName);
 
-  m_file = fopen(fileName, "r");
+  m_file = fopen(m_fileName, "r");
   if (!m_file)
   {
     LOGCONSOLE("file failed to open");
-    m_fileOpen = 0;
+    m_fileOpen = -1;
     return false;
   }
   m_fileOpen = index;
@@ -154,7 +152,7 @@ unsigned long cRecPlayer::getBlock(unsigned char* buffer, uint64_t position, uns
 
   // work out what block position is in
   int segmentNumber;
-  for(segmentNumber = 1; segmentNumber < 1000; segmentNumber++)
+  for(segmentNumber = 0; segmentNumber < m_segments.Size(); segmentNumber++)
   {
     if ((position >= m_segments[segmentNumber]->start) && (position < m_segments[segmentNumber]->end)) break;
     // position is in this block
@@ -189,7 +187,7 @@ unsigned long cRecPlayer::getBlock(unsigned char* buffer, uint64_t position, uns
 
     filePosition = currentPosition - m_segments[segmentNumber]->start;
     fseek(m_file, filePosition, SEEK_SET);
-    if (fread(&buffer[got], getFromThisSegment, 1, m_file) != 1) return 0; // umm, big problem.
+    fread(&buffer[got], getFromThisSegment, 1, m_file);
 
     // Tell linux not to bother keeping the data in the FS cache
     posix_fadvise(m_file->_fileno, filePosition, getFromThisSegment, POSIX_FADV_DONTNEED);
@@ -208,10 +206,10 @@ uint64_t cRecPlayer::getLastPosition()
   return m_lastPosition;
 }
 
-cRecording* cRecPlayer::getCurrentRecording()
+/*cRecording* cRecPlayer::getCurrentRecording()
 {
-  return m_recording;
-}
+  return NULL;
+}*/
 
 uint64_t cRecPlayer::positionFromFrameNumber(uint32_t frameNumber)
 {
@@ -234,7 +232,8 @@ uint64_t cRecPlayer::positionFromFrameNumber(uint32_t frameNumber)
   }
 
 //  LOGCONSOLE("FN: %u FO: %i", retFileNumber, retFileOffset);
-  if (!m_segments[retFileNumber]) return 0;
+  if (retFileNumber >= m_segments.Size()) return 0;
+//  if (!m_segments[retFileNumber]) return 0;
   uint64_t position = m_segments[retFileNumber]->start + retFileOffset;
 //  LOGCONSOLE("Pos: %llu", position);
 
@@ -252,7 +251,7 @@ uint32_t cRecPlayer::frameNumberFromPosition(uint64_t position)
   }
 
   unsigned char segmentNumber;
-  for(segmentNumber = 1; segmentNumber < 255; segmentNumber++)
+  for(segmentNumber = 0; segmentNumber < m_segments.Size(); segmentNumber++)
   {
     if ((position >= m_segments[segmentNumber]->start) && (position < m_segments[segmentNumber]->end)) break;
     // position is in this block

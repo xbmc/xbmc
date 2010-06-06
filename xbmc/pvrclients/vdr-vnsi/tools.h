@@ -32,9 +32,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
+#if !defined(__WINDOWS__)
+#include <sys/stat.h>
+#endif
 
 #ifdef __APPLE__
-#include <sys/stat.h>
 #include <osx/OSXGNUReplacements.h>
 #endif
 
