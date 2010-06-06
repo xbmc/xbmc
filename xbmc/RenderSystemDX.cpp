@@ -428,12 +428,12 @@ bool CRenderSystemDX::CreateDevice()
   if ((caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0)
   { // we're allowed NPOT textures
     m_renderCaps |= RENDER_CAPS_NPOT;
-    if ((m_renderCaps & RENDER_CAPS_DXT) != 0)
+    if (((m_renderCaps & RENDER_CAPS_DXT) != 0) && ((caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL) == 0))
       m_renderCaps |= RENDER_CAPS_DXT_NPOT;
   }
-  if ((caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL) != 0)
+  else if ((caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL) != 0)
   { // we're allowed _some_ NPOT textures (namely non-DXT and only with D3DTADDRESS_CLAMP and no wrapping)
-    m_renderCaps &= ~RENDER_CAPS_DXT_NPOT;
+    m_renderCaps |= RENDER_CAPS_NPOT;
   }
 
   m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
