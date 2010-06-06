@@ -42,7 +42,7 @@ public:
   virtual const char* GetName(void) { return (const char*)m_pFormatName; }
 
 protected:
-  CCrystalHD      *m_Device;
+  CCrystalHD      *m_Codec;
   bool            m_DropPictures;
   double          m_Duration;
   const char      *m_pFormatName;
