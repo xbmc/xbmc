@@ -101,7 +101,6 @@ void CRenderSystemDX::CheckDXVersion()
 bool CRenderSystemDX::InitRenderSystem()
 {
   m_bVSync = true;
-  m_renderCaps = 0;
 
   CheckDXVersion();
 
@@ -416,6 +415,8 @@ bool CRenderSystemDX::CreateDevice()
     g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(2102), g_localizeStrings.Get(2103));
   }
 
+  m_renderCaps = 0;
+
   if (SUCCEEDED(m_pD3D->CheckDeviceFormat( m_adapter,
                                            D3DDEVTYPE_HAL,
                                            D3DFMT_X8R8G8B8,
@@ -427,12 +428,14 @@ bool CRenderSystemDX::CreateDevice()
   if ((caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0)
   { // we're allowed NPOT textures
     m_renderCaps |= RENDER_CAPS_NPOT;
-    m_renderCaps |= RENDER_CAPS_DXT_NPOT;
+    if ((m_renderCaps & RENDER_CAPS_DXT) != 0)
+      m_renderCaps |= RENDER_CAPS_DXT_NPOT;
   }
-  else if ((caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL))
+  if ((caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL) != 0)
   { // we're allowed _some_ NPOT textures (namely non-DXT and only with D3DTADDRESS_CLAMP and no wrapping)
-    m_renderCaps |= RENDER_CAPS_NPOT;
+    m_renderCaps &= ~RENDER_CAPS_DXT_NPOT;
   }
+
   m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
 
   if (g_advancedSettings.m_AllowDynamicTextures && (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES))
