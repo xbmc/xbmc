@@ -19,9 +19,11 @@
  *
  */
 
-#include "HTSPDemux.h"
+#define __STDC_CONSTANT_MACROS
+#include <stdint.h>
 #include <limits.h>
 #include <libavcodec/avcodec.h> // For codec id's
+#include "HTSPDemux.h"
 
 extern "C" {
 #include "libhts/net.h"

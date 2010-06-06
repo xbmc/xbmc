@@ -21,7 +21,6 @@
 
 #include "VNSIRecording.h"
 #include <limits.h>
-#include <libavcodec/avcodec.h> // For codec id's
 #include "tools.h"
 #include "responsepacket.h"
 #include "requestpacket.h"
