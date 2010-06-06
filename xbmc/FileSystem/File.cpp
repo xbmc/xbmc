@@ -124,20 +124,16 @@ char* get() { return p; }
 };
 
 // This *looks* like a copy function, therefor the name "Cache" is misleading
-bool CFile::Cache(const CStdString& strFileName1, const CStdString& strDest, XFILE::IFileCallback* pCallback, void* pContext)
+bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFILE::IFileCallback* pCallback, void* pContext)
 {
   CFile file;
   CAsyncFileCallback* helper = NULL;
 
   // special case for zips - ignore caching
-  CStdString strFileName(strFileName1);
+  CURL url(strFileName);
   if (CUtil::IsInZIP(strFileName))
-  {
-    CURL url(strFileName);
     url.SetOptions("?cache=no");
-    strFileName = url.Get();
-  }
-  if (file.Open(strFileName, READ_TRUNCATED))
+  if (file.Open(url.Get(), READ_TRUNCATED))
   {
     if (file.GetLength() <= 0)
     {
