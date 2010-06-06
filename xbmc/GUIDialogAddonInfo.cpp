@@ -215,6 +215,7 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
   *m_item = *item;
 
   // grab the local addon, if it's available
+  m_addon.reset();
   if (CAddonMgr::Get().GetAddon(item->GetProperty("Addon.ID"), m_addon)) // sets m_addon if installed regardless of enabled state
     m_item->SetProperty("Addon.Enabled", "true");
   else
