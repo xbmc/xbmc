@@ -1339,13 +1339,12 @@ HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, 
 
     if(p && FAILED(hr = p(clsid, iid, ppv)))
     {
-      CLog::Log(LOGINFO, "%s DllGetClassObject fails for IID %s. Trying IClassFactory instead (hr = 0x%X)", __FUNCTION__, CStringFromGUID(iid).c_str(), hr);
       Com::SmartPtr<IClassFactory> pCF;
       if(SUCCEEDED(hr = p(clsid, __uuidof(IClassFactory), (void**)&pCF)))
       {
         hr = pCF->CreateInstance(NULL, iid, ppv);
         if (FAILED(hr))
-          CLog::Log(LOGERROR, "%s CreateInstance on IClassFactory failed! (hr : 0x%X). If you use ffdshow, please check if XBMC is in the white list!", __FUNCTION__, hr);
+          CLog::Log(LOGERROR, "%s CreateInstance on IClassFactory failed! (hr : 0x%X). If you use ffdshow, please check that XBMC is on the white list!", __FUNCTION__, hr);
       }
     }
   }
