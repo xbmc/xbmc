@@ -393,7 +393,12 @@ void SSortFileItem::ByMovieRating(CFileItemPtr &item)
 void SSortFileItem::ByMovieRuntime(CFileItemPtr &item)
 {
   if (!item) return;
-  item->SetSortLabel(item->GetVideoInfoTag()->m_strRuntime);
+  CStdString label;
+  if (item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() > 0)
+    label.Format("%i %s", item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration(), item->GetLabel().c_str());
+  else
+    label.Format("%s %s", item->GetVideoInfoTag()->m_strRuntime, item->GetLabel().c_str());
+  item->SetSortLabel(label);
 }
 
 void SSortFileItem::ByMPAARating(CFileItemPtr &item)
