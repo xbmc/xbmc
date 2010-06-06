@@ -1085,8 +1085,6 @@ void CCrystalHD::Reset(void)
   while (m_BusyList.Count())
     m_pOutputThread->FreeListPush( m_BusyList.Pop() );
 
-  m_timestamps.clear();
-
   CLog::Log(LOGDEBUG, "%s: codec flushed", __MODULE_NAME__);
 }
 
@@ -1101,12 +1099,7 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
       ret = m_dll->DtsProcInput(m_device, pData, size, pts_dtoi(pts), 0);
       if (ret == BCM::BC_STS_SUCCESS)
       {
-        CHD_TIMESTAMP timestamp;
-
         m_last_pts = pts;
-        timestamp.dts = dts;
-        timestamp.pts = pts;
-        m_timestamps.push_back(timestamp);
       }
       else if (ret == BCM::BC_STS_BUSY)
       {
@@ -1148,32 +1141,14 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   if (!pBuffer)
     return false;
 
-  if (pBuffer->m_timestamp == 0)
-  {
-    // All timestamps that we pass to hardware have a value != 0
-    // so this a picture frame came from a demxer packet with more than one
-    // picture frames encoded inside. Set DVD_NOPTS_VALUE both dts/pts and
-    // let DVDPlayerVideo sort it out.
-    pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
-    pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
-  }
-  else
-  {
-    if (!m_timestamps.empty())
-    {
-      CHD_TIMESTAMP timestamp;
-      
-      timestamp = m_timestamps.front();
-      m_timestamps.pop_front();
-      pDvdVideoPicture->dts = timestamp.dts;
-      pDvdVideoPicture->pts = pts_itod(pBuffer->m_timestamp);
-    }
-    else
-    {
-      pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
-      pDvdVideoPicture->pts = pts_itod(pBuffer->m_timestamp);
-    }
-  }
+  // default both dts/pts to DVD_NOPTS_VALUE, if crystalhd drops a frame,
+  // we can't tell so we can not track dts through the decoder or with
+  // and external queue. pts will get set from m_timestamp.
+  pDvdVideoPicture->dts = DVD_NOPTS_VALUE;
+  pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
+
+  if (pBuffer->m_timestamp != 0)
+    pDvdVideoPicture->pts = pts_itod(pBuffer->m_timestamp);
 
   pDvdVideoPicture->iWidth = pBuffer->m_width;
   pDvdVideoPicture->iHeight = pBuffer->m_height;
