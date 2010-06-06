@@ -185,7 +185,7 @@
 			</control>
 		</control>
 		<control type="group">
-			<posx>470</posx>
+			<posx>520</posx>
 			<posy>0</posy>
 			<visible>!IsEmpty(Container.Property(AddonCategory))</visible>
 			<include>VisibleFadeEffect</include>
@@ -198,9 +198,12 @@
 				<height>35</height>
 				<texture border="0,0,32,0">header.png</texture>
 			</control>
-			<control type="label">
+			<control type="fadelabel">
+				<width>200</width>
 				<include>WindowTitleCommons</include>
-				<posx>270</posx>
+				<posx>70</posx>
+				<scrollout>false</scrollout>
+				<pauseatend>2000</pauseatend>
 				<label>$INFO[Container.Property(AddonCategory)]</label>
 			</control>
 		</control>
@@ -218,10 +221,12 @@
 				<height>35</height>
 				<texture border="0,0,32,0">header.png</texture>
 			</control>
-			<control type="label">
+			<control type="fadelabel">
 				<width>250</width>
 				<include>WindowTitleCommons</include>
-				<posx>320</posx>
+				<posx>70</posx>
+				<scrollout>false</scrollout>
+				<pauseatend>2000</pauseatend>
 				<label>$INFO[Container.Property(RepoName)]</label>
 			</control>
 		</control>
