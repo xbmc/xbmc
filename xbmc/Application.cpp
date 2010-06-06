@@ -1807,9 +1807,17 @@ void CApplication::RenderNoPresent()
 //  int vsync_mode = g_videoConfig.GetVSyncMode();
   int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
 
-  if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && vsync_mode == VSYNC_VIDEO)
+  if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && vsync_mode == VSYNC_VIDEO
+#ifdef HAS_DS_PLAYER
+    && !g_dsSettings.pRendererSettings->vSync
+#endif
+    )
     g_Windowing.SetVSync(true);
-  else if (vsync_mode == VSYNC_ALWAYS)
+  else if (vsync_mode == VSYNC_ALWAYS
+#ifdef HAS_DS_PLAYER
+    && !g_dsSettings.pRendererSettings->vSync
+#endif
+    )
     g_Windowing.SetVSync(true);
   else if (vsync_mode != VSYNC_DRIVER)
     g_Windowing.SetVSync(false);
