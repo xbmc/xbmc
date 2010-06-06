@@ -750,7 +750,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           }
 
           m_ReadyList.Push(pBuffer);
-          m_ready_event.Set();                                                                                                                                                                                                       
+          m_ready_event.Set();
           got_picture = true;
         }
         else
@@ -762,9 +762,6 @@ bool CMPCOutputThread::GetDecoderOutput(void)
       }
 
       m_dll->DtsReleaseOutputBuffs(m_device, NULL, FALSE);
-    break;
-
-    case BCM::BC_STS_NO_DATA:
     break;
 
     case BCM::BC_STS_FMT_CHANGE:
@@ -788,8 +785,14 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           m_interlace_buf = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
         }
         m_timeout = 2000;
-        m_ready_event.Set();                                                                                                                                                                                                       
+        m_ready_event.Set();
       }
+    break;
+
+    case BCM::BC_STS_IO_USER_ABORT:
+    break;
+
+    case BCM::BC_STS_NO_DATA:
     break;
 
     case BCM::BC_STS_TIMEOUT:
@@ -1113,7 +1116,7 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
     } while (ret != BCM::BC_STS_SUCCESS);
 
     bool wait_state;
-    if (!m_drop_state)
+    if (!m_pOutputThread->GetReadyCount())
       wait_state = m_pOutputThread->WaitOutput(10);
   }
 
