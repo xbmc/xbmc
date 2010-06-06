@@ -1056,7 +1056,7 @@ void CCrystalHD::CloseDecoder(void)
 
   if (m_Device)
   {
-    m_dll->DtsFlushRxCapture(m_Device, true); 
+    m_dll->DtsFlushRxCapture(m_Device, true);
     m_dll->DtsStopDecoder(m_Device);
     m_dll->DtsCloseDecoder(m_Device);
   }
