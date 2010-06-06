@@ -46,7 +46,7 @@ protected:
   bool            m_DropPictures;
   double          m_Duration;
   const char      *m_pFormatName;
-  CRYSTALHD_CODEC_TYPE m_codec_type;
+  CRYSTALHD_CODEC_TYPE m_CodecType;
 
   // bitstream to bytestream (Annex B) conversion support.
   bool bitstream_convert_init(void *in_extradata, int in_extrasize);

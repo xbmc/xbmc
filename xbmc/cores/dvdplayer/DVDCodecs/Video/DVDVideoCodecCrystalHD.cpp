@@ -59,7 +59,7 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
     switch (hints.codec)
     {
       case CODEC_ID_MPEG2VIDEO:
-        m_codec_type = CRYSTALHD_CODEC_ID_MPEG2;
+        m_CodecType = CRYSTALHD_CODEC_ID_MPEG2;
         m_pFormatName = "chd-mpeg2";
       break;
       case CODEC_ID_H264:
@@ -72,15 +72,15 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
         if ( *(char*)hints.extradata == 1 )
           m_convert_bitstream = bitstream_convert_init(hints.extradata, hints.extrasize);
 
-        m_codec_type = CRYSTALHD_CODEC_ID_H264;
+        m_CodecType = CRYSTALHD_CODEC_ID_H264;
         m_pFormatName = "chd-h264";
       break;
       case CODEC_ID_VC1:
-        m_codec_type = CRYSTALHD_CODEC_ID_VC1;
+        m_CodecType = CRYSTALHD_CODEC_ID_VC1;
         m_pFormatName = "chd-vc1";
       break;
       case CODEC_ID_WMV3:
-        m_codec_type = CRYSTALHD_CODEC_ID_WMV3;
+        m_CodecType = CRYSTALHD_CODEC_ID_WMV3;
         m_pFormatName = "chd-wmv3";
       break;
       default:
@@ -95,7 +95,7 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
       return false;
     }
 
-    if (m_Codec && !m_Codec->OpenDecoder(m_codec_type, hints.extrasize, hints.extradata))
+    if (m_Codec && !m_Codec->OpenDecoder(m_CodecType, hints.extrasize, hints.extradata))
     {
       CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Codec", __MODULE_NAME__);
       return false;
