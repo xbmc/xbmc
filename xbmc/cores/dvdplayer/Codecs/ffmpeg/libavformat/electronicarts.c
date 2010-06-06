@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavformat/electronicarts.c
+ * @file
  * Electronic Arts Multimedia file demuxer (WVE/UV2/etc.)
  * by Robin Kay (komadori at gekkou.co.uk)
  */
@@ -414,7 +414,7 @@ static int ea_read_header(AVFormatContext *s,
         if (!st)
             return AVERROR(ENOMEM);
         ea->video_stream_index = st->index;
-        st->codec->codec_type = CODEC_TYPE_VIDEO;
+        st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
         st->codec->codec_id = ea->video_codec;
         st->codec->codec_tag = 0;  /* no fourcc */
         st->codec->time_base = ea->time_base;
@@ -428,7 +428,7 @@ static int ea_read_header(AVFormatContext *s,
         if (!st)
             return AVERROR(ENOMEM);
         av_set_pts_info(st, 33, 1, ea->sample_rate);
-        st->codec->codec_type = CODEC_TYPE_AUDIO;
+        st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
         st->codec->codec_id = ea->audio_codec;
         st->codec->codec_tag = 0;  /* no tag */
         st->codec->channels = ea->num_channels;
@@ -520,7 +520,7 @@ static int ea_read_packet(AVFormatContext *s,
         case pQGT_TAG:
         case TGQs_TAG:
         case MADk_TAG:
-            key = PKT_FLAG_KEY;
+            key = AV_PKT_FLAG_KEY;
         case MVIf_TAG:
         case fVGT_TAG:
         case MADm_TAG:
@@ -537,7 +537,7 @@ static int ea_read_packet(AVFormatContext *s,
         case MV0K_TAG:
         case MPCh_TAG:
         case pIQT_TAG:
-            key = PKT_FLAG_KEY;
+            key = AV_PKT_FLAG_KEY;
         case MV0F_TAG:
 get_video_packet:
             ret = av_get_packet(pb, pkt, chunk_size);

@@ -46,7 +46,7 @@ single_stacktrace()
 
 print_crash_report()
 {
-  FILE="xbmc_crashlog-`date +%Y%m%d_%H%M%S`.log"
+  FILE="$HOME/xbmc_crashlog-`date +%Y%m%d_%H%M%S`.log"
   echo "############## XBMC CRASH LOG ###############" >> $FILE
   echo >> $FILE
   echo "################ SYSTEM INFO ################" >> $FILE

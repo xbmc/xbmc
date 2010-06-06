@@ -20,14 +20,14 @@
  */
 
 /**
- * @file libavformat/caf.h
+ * @file
  * CAF common code
  */
 
 #ifndef AVFORMAT_CAF_H
 #define AVFORMAT_CAF_H
 
-#include "riff.h"
+#include "internal.h"
 
 extern const AVCodecTag ff_codec_caf_tags[];
 

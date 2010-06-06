@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/eatgv.c
+ * @file
  * Electronic Arts TGV Video Decoder
  * by Peter Ross (pross@xvid.org)
  *
@@ -288,11 +288,11 @@ static int tgv_decode_frame(AVCodecContext *avctx,
         /* allocate additional 12 bytes to accomodate av_memcpy_backptr() OUTBUF_PADDED optimisation */
         s->frame.data[0] = av_malloc(s->width*s->height + 12);
         if (!s->frame.data[0])
-            return AVERROR_NOMEM;
+            return AVERROR(ENOMEM);
         s->frame.data[1] = av_malloc(AVPALETTE_SIZE);
         if (!s->frame.data[1]) {
             av_freep(&s->frame.data[0]);
-            return AVERROR_NOMEM;
+            return AVERROR(ENOMEM);
         }
     }
     memcpy(s->frame.data[1], s->palette, AVPALETTE_SIZE);
@@ -335,7 +335,7 @@ static av_cold int tgv_decode_end(AVCodecContext *avctx)
 
 AVCodec eatgv_decoder = {
     "eatgv",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_TGV,
     sizeof(TgvContext),
     tgv_decode_init,

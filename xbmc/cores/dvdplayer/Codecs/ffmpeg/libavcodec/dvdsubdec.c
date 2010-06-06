@@ -565,7 +565,7 @@ static int dvdsub_init(AVCodecContext *avctx)
 
 AVCodec dvdsub_decoder = {
     "dvdsub",
-    CODEC_TYPE_SUBTITLE,
+    AVMEDIA_TYPE_SUBTITLE,
     CODEC_ID_DVD_SUBTITLE,
     sizeof(DVDSubContext),
     dvdsub_init,

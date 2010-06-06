@@ -22,7 +22,7 @@
 #define SWSCALE_SWSCALE_H
 
 /**
- * @file libswscale/swscale.h
+ * @file
  * @brief
  *     external api for the swscale stuff
  */
@@ -30,7 +30,7 @@
 #include "libavutil/avutil.h"
 
 #define LIBSWSCALE_VERSION_MAJOR 0
-#define LIBSWSCALE_VERSION_MINOR 10
+#define LIBSWSCALE_VERSION_MINOR 11
 #define LIBSWSCALE_VERSION_MICRO 0
 
 #define LIBSWSCALE_VERSION_INT  AV_VERSION_INT(LIBSWSCALE_VERSION_MAJOR, \
@@ -194,6 +194,7 @@ struct SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat
  */
 int sws_scale(struct SwsContext *context, const uint8_t* const srcSlice[], const int srcStride[],
               int srcSliceY, int srcSliceH, uint8_t* const dst[], const int dstStride[]);
+
 #if LIBSWSCALE_VERSION_MAJOR < 1
 /**
  * @deprecated Use sws_scale() instead.
@@ -301,5 +302,30 @@ struct SwsContext *sws_getCachedContext(struct SwsContext *context,
                                         int dstW, int dstH, enum PixelFormat dstFormat,
                                         int flags, SwsFilter *srcFilter,
                                         SwsFilter *dstFilter, const double *param);
+
+/**
+ * Converts an 8bit paletted frame into a frame with a color depth of 32-bits.
+ *
+ * The output frame will have the same packed format as the palette.
+ *
+ * @param src        source frame buffer
+ * @param dst        destination frame buffer
+ * @param num_pixels number of pixels to convert
+ * @param palette    array with [256] entries, which must match color arrangement (RGB or BGR) of src
+ */
+void sws_convertPalette8ToPacked32(const uint8_t *src, uint8_t *dst, long num_pixels, const uint8_t *palette);
+
+/**
+ * Converts an 8bit paletted frame into a frame with a color depth of 24 bits.
+ *
+ * With the palette format "ABCD", the destination frame ends up with the format "ABC".
+ *
+ * @param src        source frame buffer
+ * @param dst        destination frame buffer
+ * @param num_pixels number of pixels to convert
+ * @param palette    array with [256] entries, which must match color arrangement (RGB or BGR) of src
+ */
+void sws_convertPalette8ToPacked24(const uint8_t *src, uint8_t *dst, long num_pixels, const uint8_t *palette);
+
 
 #endif /* SWSCALE_SWSCALE_H */

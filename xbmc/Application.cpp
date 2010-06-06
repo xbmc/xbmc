@@ -2167,7 +2167,7 @@ void CApplication::RenderMemoryStatus()
               g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", (int)(stat.dwAvailPhys/1024), (int)(stat.dwTotalPhys/1024),
+    info.Format("FreeMem %"PRIu64"/%"PRIu64" Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
               g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
 #endif
 

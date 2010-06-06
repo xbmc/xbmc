@@ -224,7 +224,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
         av_log(avctx, AV_LOG_DEBUG, "Packet type: %s\n", "G.729D @ 6.4kbit/s");
     } else {
         av_log(avctx, AV_LOG_ERROR, "Packet size %d is unknown.\n", buf_size);
-        return (AVERROR_NOFMT);
+        return AVERROR_INVALIDDATA;
     }
 
     for (i=0; i < buf_size; i++)
@@ -315,7 +315,7 @@ static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 AVCodec g729_decoder =
 {
     "g729",
-    CODEC_TYPE_AUDIO,
+    AVMEDIA_TYPE_AUDIO,
     CODEC_ID_G729,
     sizeof(G729Context),
     decoder_init,

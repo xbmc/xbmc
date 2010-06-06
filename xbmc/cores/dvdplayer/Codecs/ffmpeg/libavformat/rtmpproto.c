@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavformat/rtmpproto.c
+ * @file
  * RTMP protocol
  */
 
@@ -752,7 +752,7 @@ static int get_packet(URLContext *s, int for_header)
                 data_size = bytestream_get_be24(&next);
                 p=next;
                 cts = bytestream_get_be24(&next);
-                cts |= bytestream_get_byte(&next);
+                cts |= bytestream_get_byte(&next) << 24;
                 if (pts==0)
                     pts=cts;
                 ts += cts - pts;
@@ -922,7 +922,7 @@ static int rtmp_read(URLContext *s, uint8_t *buf, int size)
     return orig_size;
 }
 
-static int rtmp_write(URLContext *h, uint8_t *buf, int size)
+static int rtmp_write(URLContext *h, const uint8_t *buf, int size)
 {
     RTMPContext *rt = h->priv_data;
     int size_temp = size;

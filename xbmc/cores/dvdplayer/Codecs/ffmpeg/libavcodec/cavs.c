@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/cavs.c
+ * @file
  * Chinese AVS video (AVS1-P2, JiZhun profile) decoder
  * @author Stefan Gehrer <stefan.gehrer@gmx.de>
  */
@@ -572,7 +572,7 @@ void ff_cavs_init_mb(AVSContext *h) {
 /**
  * save predictors for later macroblocks and increase
  * macroblock address
- * @returns 0 if end of frame is reached, 1 otherwise
+ * @return 0 if end of frame is reached, 1 otherwise
  */
 int ff_cavs_next_mb(AVSContext *h) {
     int i;

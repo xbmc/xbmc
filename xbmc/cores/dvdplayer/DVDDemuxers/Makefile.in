@@ -2,7 +2,6 @@ INCLUDES=-I../../../.. -I. -I.. -I../.. -I../../../ -I../../../utils -I../../../
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
   INCLUDES+=-I../Codecs/ffmpeg
 endif
-CXXFLAGS+=-D__STDC_CONSTANT_MACROS \
 
 SRCS=	DVDDemux.cpp \
 	DVDDemuxFFmpeg.cpp \

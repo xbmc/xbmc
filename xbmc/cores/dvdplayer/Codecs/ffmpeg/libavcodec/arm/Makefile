@@ -1,3 +1,8 @@
+OBJS-$(CONFIG_DCA_DECODER)             += arm/dcadsp_init_arm.o         \
+
+OBJS-$(CONFIG_VP5_DECODER)             += arm/vp56dsp_init_arm.o
+OBJS-$(CONFIG_VP6_DECODER)             += arm/vp56dsp_init_arm.o
+
 OBJS-$(CONFIG_H264DSP)                 += arm/h264dsp_init_arm.o        \
                                           arm/h264pred_init_arm.o       \
 
@@ -27,14 +32,23 @@ NEON-OBJS-$(CONFIG_FFT)                += arm/fft_neon.o                \
 
 NEON-OBJS-$(CONFIG_MDCT)               += arm/mdct_neon.o               \
 
+NEON-OBJS-$(CONFIG_RDFT)               += arm/rdft_neon.o               \
+
 NEON-OBJS-$(CONFIG_H264DSP)            += arm/h264dsp_neon.o            \
                                           arm/h264idct_neon.o           \
                                           arm/h264pred_neon.o           \
 
+NEON-OBJS-$(CONFIG_DCA_DECODER)        += arm/dcadsp_neon.o             \
+                                          arm/synth_filter_neon.o       \
+
 NEON-OBJS-$(CONFIG_VP3_DECODER)        += arm/vp3dsp_neon.o
+
+NEON-OBJS-$(CONFIG_VP5_DECODER)        += arm/vp56dsp_neon.o
+NEON-OBJS-$(CONFIG_VP6_DECODER)        += arm/vp56dsp_neon.o
 
 OBJS-$(HAVE_NEON)                      += arm/dsputil_init_neon.o       \
                                           arm/dsputil_neon.o            \
                                           arm/int_neon.o                \
+                                          arm/mpegvideo_neon.o          \
                                           arm/simple_idct_neon.o        \
                                           $(NEON-OBJS-yes)

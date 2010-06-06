@@ -54,6 +54,7 @@ public:
 
   int m_iWidth;
   int m_iHeight;
+  int m_iDuration;
   float m_fAspect;
   CStdString m_strCodec;
 };
@@ -90,7 +91,7 @@ public:
   ~CStreamDetails() { Reset(); };
   CStreamDetails& operator=(const CStreamDetails &that);
 
-  static CStdString VideoWidthToResolutionDescription(int iWidth);
+  static CStdString VideoDimsToResolutionDescription(int iWidth, int iHeight);
   static CStdString VideoAspectToAspectDescription(float fAspect);
 
   bool HasItems(void) const { return m_vecItems.size() > 0; };
@@ -104,6 +105,7 @@ public:
   float GetVideoAspect(int idx = 0) const;
   int GetVideoWidth(int idx = 0) const;
   int GetVideoHeight(int idx = 0) const;
+  int GetVideoDuration(int idx = 0) const;
 
   CStdString GetAudioCodec(int idx = 0) const;
   CStdString GetAudioLanguage(int idx = 0) const;

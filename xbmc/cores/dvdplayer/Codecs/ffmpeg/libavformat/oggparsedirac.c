@@ -39,7 +39,7 @@ static int dirac_header(AVFormatContext *s, int idx)
     if (ff_dirac_parse_sequence_header(st->codec, &gb, &source) < 0)
         return -1;
 
-    st->codec->codec_type = CODEC_TYPE_VIDEO;
+    st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
     st->codec->codec_id = CODEC_ID_DIRAC;
     // dirac in ogg always stores timestamps as though the video were interlaced
     st->time_base = (AVRational){st->codec->time_base.num, 2*st->codec->time_base.den};
@@ -59,7 +59,7 @@ static uint64_t dirac_gptopts(AVFormatContext *s, int idx, uint64_t granule,
     int64_t  pts   = dts + ((gp >> 9) & 0x1fff);
 
     if (!dist)
-        os->pflags |= PKT_FLAG_KEY;
+        os->pflags |= AV_PKT_FLAG_KEY;
 
     if (dts_out)
         *dts_out = dts;
@@ -77,7 +77,7 @@ static int old_dirac_header(AVFormatContext *s, int idx)
     if (buf[0] != 'K')
         return 0;
 
-    st->codec->codec_type = CODEC_TYPE_VIDEO;
+    st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
     st->codec->codec_id = CODEC_ID_DIRAC;
     st->time_base.den = AV_RB32(buf+8);
     st->time_base.num = AV_RB32(buf+12);
@@ -93,7 +93,7 @@ static uint64_t old_dirac_gptopts(AVFormatContext *s, int idx, uint64_t gp,
     uint64_t pframe = gp & 0x3fffffff;
 
     if (!pframe)
-        os->pflags |= PKT_FLAG_KEY;
+        os->pflags |= AV_PKT_FLAG_KEY;
 
     return iframe + pframe;
 }

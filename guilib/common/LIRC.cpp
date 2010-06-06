@@ -128,6 +128,8 @@ void CRemoteControl::Initialize()
   addr.sun_family = AF_UNIX;
   strcpy(addr.sun_path, m_deviceName.c_str());
 
+  CLog::Log(LOGINFO, "LIRC %s: using: %s", __FUNCTION__, addr.sun_path);
+
   // Open the socket from which we will receive the remote commands
   if ((m_fd = socket(AF_UNIX, SOCK_STREAM, 0)) != -1)
   {
@@ -157,7 +159,7 @@ void CRemoteControl::Initialize()
                   if ((m_inotify_wd = inotify_add_watch(m_inotify_fd, m_deviceName.c_str(), IN_DELETE_SELF)) != -1)
                   {
                     m_bInitialized = true;
-                    CLog::Log(LOGINFO, "LIRC %s: sucessfully started on: %s", __FUNCTION__, addr.sun_path);
+                    CLog::Log(LOGINFO, "LIRC %s: sucessfully started", __FUNCTION__);
                   }
                   else
                     CLog::Log(LOGDEBUG, "LIRC: Failed to initialize Inotify. LIRC device will not be monitored.");

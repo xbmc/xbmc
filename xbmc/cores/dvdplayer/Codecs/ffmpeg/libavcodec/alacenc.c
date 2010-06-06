@@ -20,7 +20,6 @@
  */
 
 #include "avcodec.h"
-#include "get_bits.h"
 #include "put_bits.h"
 #include "dsputil.h"
 #include "lpc.h"
@@ -521,12 +520,13 @@ static av_cold int alac_encode_close(AVCodecContext *avctx)
 
 AVCodec alac_encoder = {
     "alac",
-    CODEC_TYPE_AUDIO,
+    AVMEDIA_TYPE_AUDIO,
     CODEC_ID_ALAC,
     sizeof(AlacEncodeContext),
     alac_encode_init,
     alac_encode_frame,
     alac_encode_close,
     .capabilities = CODEC_CAP_SMALL_LAST_FRAME,
+    .sample_fmts = (const enum SampleFormat[]){ SAMPLE_FMT_S16, SAMPLE_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("ALAC (Apple Lossless Audio Codec)"),
 };

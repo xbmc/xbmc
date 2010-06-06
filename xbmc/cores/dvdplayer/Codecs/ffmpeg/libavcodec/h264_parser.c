@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/h264_parser.c
+ * @file
  * H.264 / AVC / MPEG4 part10 parser.
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
@@ -245,6 +245,14 @@ static int h264_parse(AVCodecParserContext *s,
     ParseContext *pc = &h->s.parse_context;
     int next;
 
+    if (!h->got_first) {
+        h->got_first = 1;
+        if (avctx->extradata_size) {
+            h->s.avctx = avctx;
+            ff_h264_decode_extradata(h);
+        }
+    }
+
     if(s->flags & PARSER_FLAG_COMPLETE_FRAMES){
         next= buf_size;
     }else{
@@ -271,6 +279,9 @@ static int h264_parse(AVCodecParserContext *s,
             s->dts_sync_point    = INT_MIN;
             s->dts_ref_dts_delta = INT_MIN;
             s->pts_dts_delta     = INT_MIN;
+        }
+        if (s->flags & PARSER_FLAG_ONCE) {
+            s->flags &= PARSER_FLAG_COMPLETE_FRAMES;
         }
     }
 

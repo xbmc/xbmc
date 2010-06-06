@@ -490,47 +490,46 @@ static int parse_section_header(SectionHeader *h,
 
 typedef struct {
     uint32_t stream_type;
-    enum CodecType codec_type;
+    enum AVMediaType codec_type;
     enum CodecID codec_id;
 } StreamType;
 
 static const StreamType ISO_types[] = {
-    { 0x01, CODEC_TYPE_VIDEO, CODEC_ID_MPEG2VIDEO },
-    { 0x02, CODEC_TYPE_VIDEO, CODEC_ID_MPEG2VIDEO },
-    { 0x03, CODEC_TYPE_AUDIO,        CODEC_ID_MP3 },
-    { 0x04, CODEC_TYPE_AUDIO,        CODEC_ID_MP3 },
-    { 0x0f, CODEC_TYPE_AUDIO,        CODEC_ID_AAC },
-    { 0x10, CODEC_TYPE_VIDEO,      CODEC_ID_MPEG4 },
-    { 0x11, CODEC_TYPE_AUDIO,   CODEC_ID_AAC_LATM }, /* LATM syntax */
-    { 0x1b, CODEC_TYPE_VIDEO,       CODEC_ID_H264 },
-    { 0xd1, CODEC_TYPE_VIDEO,      CODEC_ID_DIRAC },
-    { 0xea, CODEC_TYPE_VIDEO,        CODEC_ID_VC1 },
+    { 0x01, AVMEDIA_TYPE_VIDEO, CODEC_ID_MPEG2VIDEO },
+    { 0x02, AVMEDIA_TYPE_VIDEO, CODEC_ID_MPEG2VIDEO },
+    { 0x03, AVMEDIA_TYPE_AUDIO,        CODEC_ID_MP3 },
+    { 0x04, AVMEDIA_TYPE_AUDIO,        CODEC_ID_MP3 },
+    { 0x0f, AVMEDIA_TYPE_AUDIO,        CODEC_ID_AAC },
+    { 0x10, AVMEDIA_TYPE_VIDEO,      CODEC_ID_MPEG4 },
+    { 0x11, AVMEDIA_TYPE_AUDIO,        CODEC_ID_AAC }, /* LATM syntax */
+    { 0x1b, AVMEDIA_TYPE_VIDEO,       CODEC_ID_H264 },
+    { 0xd1, AVMEDIA_TYPE_VIDEO,      CODEC_ID_DIRAC },
+    { 0xea, AVMEDIA_TYPE_VIDEO,        CODEC_ID_VC1 },
     { 0 },
 };
 
 static const StreamType HDMV_types[] = {
-    { 0x80, CODEC_TYPE_AUDIO, CODEC_ID_PCM_BLURAY },
-    { 0x81, CODEC_TYPE_AUDIO, CODEC_ID_AC3 },
-    { 0x82, CODEC_TYPE_AUDIO, CODEC_ID_DTS },
-    { 0x83, CODEC_TYPE_AUDIO,  CODEC_ID_TRUEHD },
-    { 0x84, CODEC_TYPE_AUDIO,    CODEC_ID_EAC3 },
+    { 0x80, AVMEDIA_TYPE_AUDIO, CODEC_ID_PCM_BLURAY },
+    { 0x81, AVMEDIA_TYPE_AUDIO, CODEC_ID_AC3 },
+    { 0x82, AVMEDIA_TYPE_AUDIO, CODEC_ID_DTS },
+    { 0x83, AVMEDIA_TYPE_AUDIO, CODEC_ID_TRUEHD },
+    { 0x84, AVMEDIA_TYPE_AUDIO, CODEC_ID_EAC3 },
     { 0x85, CODEC_TYPE_AUDIO,     CODEC_ID_DTS }, /* DTS HD */
     { 0x86, CODEC_TYPE_AUDIO,     CODEC_ID_DTS }, /* DTS HD MASTER*/
-    { 0x84, CODEC_TYPE_AUDIO, CODEC_ID_EAC3 },
-    { 0x90, CODEC_TYPE_SUBTITLE, CODEC_ID_HDMV_PGS_SUBTITLE },
+    { 0x90, AVMEDIA_TYPE_SUBTITLE, CODEC_ID_HDMV_PGS_SUBTITLE },
     { 0 },
 };
 
 /* ATSC ? */
 static const StreamType MISC_types[] = {
-    { 0x81, CODEC_TYPE_AUDIO,   CODEC_ID_AC3 },
-    { 0x8a, CODEC_TYPE_AUDIO,   CODEC_ID_DTS },
+    { 0x81, AVMEDIA_TYPE_AUDIO,   CODEC_ID_AC3 },
+    { 0x8a, AVMEDIA_TYPE_AUDIO,   CODEC_ID_DTS },
     { 0 },
 };
 
 static const StreamType REGD_types[] = {
-    { MKTAG('d','r','a','c'), CODEC_TYPE_VIDEO, CODEC_ID_DIRAC },
-    { MKTAG('A','C','-','3'), CODEC_TYPE_AUDIO,   CODEC_ID_AC3 },
+    { MKTAG('d','r','a','c'), AVMEDIA_TYPE_VIDEO, CODEC_ID_DIRAC },
+    { MKTAG('A','C','-','3'), AVMEDIA_TYPE_AUDIO,   CODEC_ID_AC3 },
     { MKTAG('D','T','S','1'), CODEC_TYPE_AUDIO,   CODEC_ID_DTS },
     { MKTAG('D','T','S','2'), CODEC_TYPE_AUDIO,   CODEC_ID_DTS },
     { MKTAG('D','T','S','3'), CODEC_TYPE_AUDIO,   CODEC_ID_DTS },
@@ -540,11 +539,11 @@ static const StreamType REGD_types[] = {
 
 /* descriptor present */
 static const StreamType DESC_types[] = {
-    { 0x6a, CODEC_TYPE_AUDIO,             CODEC_ID_AC3 }, /* AC-3 descriptor */
-    { 0x7a, CODEC_TYPE_AUDIO,            CODEC_ID_EAC3 }, /* E-AC-3 descriptor */
-    { 0x7b, CODEC_TYPE_AUDIO,             CODEC_ID_DTS },
-    { 0x56, CODEC_TYPE_SUBTITLE, CODEC_ID_DVB_TELETEXT },
-    { 0x59, CODEC_TYPE_SUBTITLE, CODEC_ID_DVB_SUBTITLE }, /* subtitling descriptor */
+    { 0x6a, AVMEDIA_TYPE_AUDIO,             CODEC_ID_AC3 }, /* AC-3 descriptor */
+    { 0x7a, AVMEDIA_TYPE_AUDIO,            CODEC_ID_EAC3 }, /* E-AC-3 descriptor */
+    { 0x7b, AVMEDIA_TYPE_AUDIO,             CODEC_ID_DTS },
+    { 0x56, AVMEDIA_TYPE_SUBTITLE, CODEC_ID_DVB_TELETEXT },
+    { 0x59, AVMEDIA_TYPE_SUBTITLE, CODEC_ID_DVB_SUBTITLE }, /* subtitling descriptor */
     { 0 },
 };
 
@@ -565,7 +564,7 @@ static int mpegts_set_stream_info(AVStream *st, PESContext *pes,
 {
     av_set_pts_info(st, 33, 1, 90000);
     st->priv_data = pes;
-    st->codec->codec_type = CODEC_TYPE_DATA;
+    st->codec->codec_type = AVMEDIA_TYPE_DATA;
     st->codec->codec_id   = CODEC_ID_NONE;
     st->need_parsing = AVSTREAM_PARSE_FULL;
     pes->st = st;
@@ -599,12 +598,15 @@ static int mpegts_set_stream_info(AVStream *st, PESContext *pes,
 
             av_set_pts_info(sub_st, 33, 1, 90000);
             sub_st->priv_data = sub_pes;
-            sub_st->codec->codec_type = CODEC_TYPE_AUDIO;
+            sub_st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
             sub_st->codec->codec_id   = CODEC_ID_AC3;
             sub_st->need_parsing = AVSTREAM_PARSE_FULL;
             sub_pes->sub_st = pes->sub_st = sub_st;
         }
     }
+    if (pes->stream_type == 0x11)
+        av_log(pes->stream, AV_LOG_WARNING,
+               "AAC LATM not currently supported, patch welcome\n");
     if (st->codec->codec_id == CODEC_ID_NONE)
         mpegts_find_stream_type(st, pes->stream_type, MISC_types);
 
@@ -815,6 +817,16 @@ static int mpegts_push_data(MpegTSFilter *filter,
                 pes->data_index += buf_size;
             }
             buf_size = 0;
+            /* emit complete packets with known packet size
+             * decreases demuxer delay for infrequent packets like subtitles from
+             * a couple of seconds to milliseconds for properly muxed files.
+             * total_size is the number of bytes following pes_packet_length
+             * in the pes header, i.e. not counting the first 6 bytes */
+            if (pes->total_size < MAX_PES_PAYLOAD &&
+                pes->pes_header_size + pes->data_index == pes->total_size + 6) {
+                ts->stop_parse = 1;
+                new_pes_packet(pes, ts->pkt);
+            }
             break;
         case MPEGTS_SKIP:
             buf_size = 0;
@@ -971,7 +983,7 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
                 language[1] = get8(&p, desc_end);
                 language[2] = get8(&p, desc_end);
                 language[3] = 0;
-                av_metadata_set(&st->metadata, "language", language);
+                av_metadata_set2(&st->metadata, "language", language, 0);
                 break;
             case 0x59: /* subtitling descriptor */
                 language[0] = get8(&p, desc_end);
@@ -982,14 +994,14 @@ static void pmt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
                 comp_page = get16(&p, desc_end);
                 anc_page = get16(&p, desc_end);
                 st->codec->sub_id = (anc_page << 16) | comp_page;
-                av_metadata_set(&st->metadata, "language", language);
+                av_metadata_set2(&st->metadata, "language", language, 0);
                 break;
             case 0x0a: /* ISO 639 language descriptor */
                 language[0] = get8(&p, desc_end);
                 language[1] = get8(&p, desc_end);
                 language[2] = get8(&p, desc_end);
                 language[3] = 0;
-                av_metadata_set(&st->metadata, "language", language);
+                av_metadata_set2(&st->metadata, "language", language, 0);
                 break;
             case 0x05: /* registration descriptor */
                 st->codec->codec_tag = bytestream_get_le32(&p);
@@ -1124,8 +1136,8 @@ static void sdt_cb(MpegTSFilter *filter, const uint8_t *section, int section_len
                 if (name) {
                     AVProgram *program = av_new_program(ts->stream, sid);
                     if(program) {
-                        av_metadata_set(&program->metadata, "name", name);
-                        av_metadata_set(&program->metadata, "provider_name", provider_name);
+                        av_metadata_set2(&program->metadata, "name", name, 0);
+                        av_metadata_set2(&program->metadata, "provider_name", provider_name, 0);
                     }
                 }
                 av_free(name);
@@ -1450,7 +1462,7 @@ static int mpegts_read_header(AVFormatContext *s,
         if (!st)
             goto fail;
         av_set_pts_info(st, 60, 1, 27000000);
-        st->codec->codec_type = CODEC_TYPE_DATA;
+        st->codec->codec_type = AVMEDIA_TYPE_DATA;
         st->codec->codec_id = CODEC_ID_MPEG2TS;
 
         /* we iterate until we find two PCRs to estimate the bitrate */

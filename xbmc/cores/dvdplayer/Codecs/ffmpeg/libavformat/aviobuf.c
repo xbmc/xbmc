@@ -130,6 +130,8 @@ int64_t url_fseek(ByteIOContext *s, int64_t offset, int whence)
 {
     int64_t offset1;
     int64_t pos;
+    int force = whence & AVSEEK_FORCE;
+    whence &= ~AVSEEK_FORCE;
 
     if(!s)
         return AVERROR(EINVAL);
@@ -151,15 +153,14 @@ int64_t url_fseek(ByteIOContext *s, int64_t offset, int whence)
         /* can do the seek inside the buffer */
         s->buf_ptr = s->buffer + offset1;
     } else if(s->is_streamed && !s->write_flag && offset1 >= 0 &&
-              (   offset1 < (s->buf_end - s->buffer) + (1<<16)
-               || (whence & AVSEEK_FORCE))){
+              (whence != SEEK_END || force)) {
         while(s->pos < offset && !s->eof_reached)
             fill_buffer(s);
         if (s->eof_reached)
             return AVERROR_EOF;
         s->buf_ptr = s->buf_end + offset - s->pos;
     } else {
-        int64_t res = AVERROR(EPIPE);
+        int64_t res;
 
 #if CONFIG_MUXERS || CONFIG_NETWORK
         if (s->write_flag) {
@@ -167,7 +168,9 @@ int64_t url_fseek(ByteIOContext *s, int64_t offset, int whence)
             s->must_flush = 1;
         }
 #endif /* CONFIG_MUXERS || CONFIG_NETWORK */
-        if (!s->seek || (res = s->seek(s->opaque, offset, SEEK_SET)) < 0)
+        if (!s->seek)
+            return AVERROR(EPIPE);
+        if ((res = s->seek(s->opaque, offset, SEEK_SET)) < 0)
             return res;
         if (!s->write_flag)
             s->buf_end = s->buffer;
@@ -196,7 +199,7 @@ int64_t url_fsize(ByteIOContext *s)
         return AVERROR(EINVAL);
 
     if (!s->seek)
-        return AVERROR(EPIPE);
+        return AVERROR(ENOSYS);
     size = s->seek(s->opaque, 0, AVSEEK_SIZE);
     if(size<0){
         if ((size = s->seek(s->opaque, -1, SEEK_END)) < 0)
@@ -294,6 +297,7 @@ static void fill_buffer(ByteIOContext *s)
 {
     uint8_t *dst= !s->max_packet_size && s->buf_end - s->buffer < s->buffer_size ? s->buf_ptr : s->buffer;
     int len= s->buffer_size - (dst - s->buffer);
+    int max_buffer_size = s->max_packet_size ? s->max_packet_size : IO_BUFFER_SIZE;
 
     assert(s->buf_ptr == s->buf_end);
 
@@ -305,6 +309,14 @@ static void fill_buffer(ByteIOContext *s)
         if(s->buf_end > s->checksum_ptr)
             s->checksum= s->update_checksum(s->checksum, s->checksum_ptr, s->buf_end - s->checksum_ptr);
         s->checksum_ptr= s->buffer;
+    }
+
+    /* make buffer smaller in case it ended up large after probing */
+    if (s->buffer_size > max_buffer_size) {
+        url_setbufsize(s, max_buffer_size);
+
+        s->checksum_ptr = dst = s->buffer;
+        len = s->buffer_size;
     }
 
     if(s->read_packet)
@@ -610,6 +622,42 @@ static int url_resetbuf(ByteIOContext *s, int flags)
     return 0;
 }
 
+int ff_rewind_with_probe_data(ByteIOContext *s, unsigned char *buf, int buf_size)
+{
+    int64_t buffer_start;
+    int buffer_size;
+    int overlap, new_size;
+
+    if (s->write_flag)
+        return AVERROR(EINVAL);
+
+    buffer_size = s->buf_end - s->buffer;
+
+    /* the buffers must touch or overlap */
+    if ((buffer_start = s->pos - buffer_size) > buf_size)
+        return AVERROR(EINVAL);
+
+    overlap = buf_size - buffer_start;
+    new_size = buf_size + buffer_size - overlap;
+
+    if (new_size > buf_size) {
+        if (!(buf = av_realloc(buf, new_size)))
+            return AVERROR(ENOMEM);
+
+        memcpy(buf + buf_size, s->buffer + overlap, buffer_size - overlap);
+        buf_size = new_size;
+    }
+
+    av_free(s->buffer);
+    s->buf_ptr = s->buffer = buf;
+    s->pos = s->buffer_size = buf_size;
+    s->buf_end = s->buf_ptr + buf_size;
+    s->eof_reached = 0;
+    s->must_flush = 0;
+
+    return 0;
+}
+
 int url_fopen(ByteIOContext **s, const char *filename, int flags)
 {
     URLContext *h;
@@ -697,8 +745,13 @@ int64_t av_url_read_fseek(ByteIOContext *s, int stream_index,
         return AVERROR(ENOSYS);
     ret = s->read_seek(h, stream_index, timestamp, flags);
     if(ret >= 0) {
+        int64_t pos;
         s->buf_ptr = s->buf_end; // Flush buffer
-        s->pos = s->seek(h, 0, SEEK_CUR);
+        pos = s->seek(h, 0, SEEK_CUR);
+        if (pos >= 0)
+            s->pos = pos;
+        else if (pos != AVERROR(ENOSYS))
+            ret = pos;
     }
     return ret;
 }

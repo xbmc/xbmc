@@ -19,7 +19,7 @@
  */
 
 /**
- * @file libavcodec/roqvideodec.c
+ * @file
  * id RoQ Video Decoder by Dr. Tim Ferguson
  * For more information about the id RoQ format, visit:
  *   http://www.csse.monash.edu.au/~timf/
@@ -212,7 +212,7 @@ static av_cold int roq_decode_end(AVCodecContext *avctx)
 
 AVCodec roq_decoder = {
     "roqvideo",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_ROQ,
     sizeof(RoqContext),
     roq_decode_init,

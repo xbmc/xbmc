@@ -339,7 +339,7 @@ static int nsv_parse_NSVf_header(AVFormatContext *s, AVFormatParameters *ap)
                 break;
             *p++ = '\0';
             PRINT(("NSV NSVf INFO: %s='%s'\n", token, value));
-            av_metadata_set(&s->metadata, token, value);
+            av_metadata_set2(&s->metadata, token, value, 0);
         }
         av_free(strings);
     }
@@ -456,7 +456,7 @@ static int nsv_parse_NSVs_header(AVFormatContext *s, AVFormatParameters *ap)
             if (!nst)
                 goto fail;
             st->priv_data = nst;
-            st->codec->codec_type = CODEC_TYPE_VIDEO;
+            st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
             st->codec->codec_tag = vtag;
             st->codec->codec_id = ff_codec_get_id(nsv_codec_video_tags, vtag);
             st->codec->width = vwidth;
@@ -487,7 +487,7 @@ static int nsv_parse_NSVs_header(AVFormatContext *s, AVFormatParameters *ap)
             if (!nst)
                 goto fail;
             st->priv_data = nst;
-            st->codec->codec_type = CODEC_TYPE_AUDIO;
+            st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
             st->codec->codec_tag = atag;
             st->codec->codec_id = ff_codec_get_id(nsv_codec_audio_tags, atag);
 
@@ -620,7 +620,7 @@ null_chunk_retry:
         av_get_packet(pb, pkt, vsize);
         pkt->stream_index = st[NSV_ST_VIDEO]->index;//NSV_ST_VIDEO;
         pkt->dts = nst->frame_offset;
-        pkt->flags |= nsv->state == NSV_HAS_READ_NSVS ? PKT_FLAG_KEY : 0; /* keyframe only likely on a sync frame */
+        pkt->flags |= nsv->state == NSV_HAS_READ_NSVS ? AV_PKT_FLAG_KEY : 0; /* keyframe only likely on a sync frame */
 /*
         for (i = 0; i < MIN(8, vsize); i++)
             PRINT(("NSV video: [%d] = %02x\n", i, pkt->data[i]));
@@ -660,7 +660,7 @@ null_chunk_retry:
         }
         av_get_packet(pb, pkt, asize);
         pkt->stream_index = st[NSV_ST_AUDIO]->index;//NSV_ST_AUDIO;
-        pkt->flags |= nsv->state == NSV_HAS_READ_NSVS ? PKT_FLAG_KEY : 0; /* keyframe only likely on a sync frame */
+        pkt->flags |= nsv->state == NSV_HAS_READ_NSVS ? AV_PKT_FLAG_KEY : 0; /* keyframe only likely on a sync frame */
         if( nsv->state == NSV_HAS_READ_NSVS && st[NSV_ST_VIDEO] ) {
             /* on a nsvs frame we have new information on a/v sync */
             pkt->dts = (((NSVStream*)st[NSV_ST_VIDEO]->priv_data)->frame_offset-1);

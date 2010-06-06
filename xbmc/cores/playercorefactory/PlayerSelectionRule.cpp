@@ -130,7 +130,7 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vec
     if (CompileRegExp(m_videoCodec, regExp) && !MatchesRegExp(streamDetails.GetVideoCodec(), regExp)) return;
 
     if (CompileRegExp(m_videoResolution, regExp) &&
-        !MatchesRegExp(CStreamDetails::VideoWidthToResolutionDescription(streamDetails.GetVideoWidth()), regExp)) return;
+        !MatchesRegExp(CStreamDetails::VideoDimsToResolutionDescription(streamDetails.GetVideoWidth(), streamDetails.GetVideoHeight()), regExp)) return;
 
     if (CompileRegExp(m_videoAspect, regExp) &&
         !MatchesRegExp(CStreamDetails::VideoAspectToAspectDescription(streamDetails.GetVideoAspect()),  regExp)) return;

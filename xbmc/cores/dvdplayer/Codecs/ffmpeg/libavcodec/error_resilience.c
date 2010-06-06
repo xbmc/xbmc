@@ -21,7 +21,7 @@
  */
 
 /**
- * @file libavcodec/error_resilience.c
+ * @file
  * Error resilience / concealment.
  */
 
@@ -31,6 +31,7 @@
 #include "dsputil.h"
 #include "mpegvideo.h"
 #include "h264.h"
+#include "rectangle.h"
 
 /*
  * H264 redefines mb_intra so it is not mistakely used (its uninitialized in h264)
@@ -486,7 +487,7 @@ int score_sum=0;
                             sum_x+= mv_predictor[j][0];
                             sum_y+= mv_predictor[j][1];
                             sum_r+= ref[j];
-                            if(j && ref[j] != ref[j-1] && s->codec_id == CODEC_ID_H264)
+                            if(j && ref[j] != ref[j-1])
                                 goto skip_mean_and_median;
                         }
 
@@ -549,7 +550,7 @@ skip_mean_and_median:
                         s->current_picture.motion_val[0][mot_index][0]= s->mv[0][0][0]= mv_predictor[j][0];
                         s->current_picture.motion_val[0][mot_index][1]= s->mv[0][0][1]= mv_predictor[j][1];
 
-                        if(ref[j]<0 && s->codec_id == CODEC_ID_H264) //predictor intra or otherwise not available
+                        if(ref[j]<0) //predictor intra or otherwise not available
                             continue;
 
                         decode_mb(s, ref[j]);
@@ -627,6 +628,12 @@ static int is_intra_more_likely(MpegEncContext *s){
         const int error= s->error_status_table[mb_xy];
         if(!((error&DC_ERROR) && (error&MV_ERROR)))
             undamaged_count++;
+    }
+
+    if(s->codec_id == CODEC_ID_H264){
+        H264Context *h= (void*)s;
+        if(h->ref_count[0] <= 0 || !h->ref_list[0][0].data[0])
+            return 1;
     }
 
     if(undamaged_count < 5) return 0; //almost all MBs damaged -> use temporal prediction
@@ -767,7 +774,6 @@ void ff_er_frame_end(MpegEncContext *s){
         pic->motion_subsample_log2= 3;
         s->current_picture= *s->current_picture_ptr;
     }
-    pic->ref_index[0]= av_realloc(pic->ref_index[0], s->mb_stride * s->mb_height * 4 * sizeof(uint8_t));
 
     if(s->avctx->debug&FF_DEBUG_ER){
         for(mb_y=0; mb_y<s->mb_height; mb_y++){

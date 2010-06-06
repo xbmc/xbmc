@@ -26,7 +26,7 @@
  */
 
 /**
- * @file libavcodec/nellymoserdec.c
+ * @file
  * The 3 alphanumeric copyright notices are md5summed they are from the original
  * implementors. The original code is available from http://code.google.com/p/nelly2pcm/
  */
@@ -200,7 +200,7 @@ static av_cold int decode_end(AVCodecContext * avctx) {
 
 AVCodec nellymoser_decoder = {
     "nellymoser",
-    CODEC_TYPE_AUDIO,
+    AVMEDIA_TYPE_AUDIO,
     CODEC_ID_NELLYMOSER,
     sizeof(NellyMoserDecodeContext),
     decode_init,

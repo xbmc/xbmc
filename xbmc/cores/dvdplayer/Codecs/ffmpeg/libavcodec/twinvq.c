@@ -850,9 +850,6 @@ static int twin_decode_frame(AVCodecContext * avctx, void *data,
         return buf_size;
     }
 
-    tctx->dsp.vector_clipf(out, out, -32700./(1<<15), 32700./(1<<15),
-                           avctx->channels * mtab->size);
-
     *data_size = mtab->size*avctx->channels*4;
 
     return buf_size;
@@ -1119,7 +1116,7 @@ static av_cold int twin_decode_close(AVCodecContext *avctx)
 AVCodec twinvq_decoder =
 {
     "twinvq",
-    CODEC_TYPE_AUDIO,
+    AVMEDIA_TYPE_AUDIO,
     CODEC_ID_TWINVQ,
     sizeof(TwinContext),
     twin_decode_init,

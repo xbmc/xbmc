@@ -24,7 +24,7 @@
 #include "unary.h"
 
 /**
- * @file libavcodec/wavpack.c
+ * @file
  * WavPack lossless audio decoder
  */
 
@@ -1020,7 +1020,7 @@ static int wavpack_decode_frame(AVCodecContext *avctx,
 
 AVCodec wavpack_decoder = {
     "wavpack",
-    CODEC_TYPE_AUDIO,
+    AVMEDIA_TYPE_AUDIO,
     CODEC_ID_WAVPACK,
     sizeof(WavpackContext),
     wavpack_decode_init,

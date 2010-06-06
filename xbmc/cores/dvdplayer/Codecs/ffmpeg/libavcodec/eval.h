@@ -1,6 +1,4 @@
 /*
- * simple arithmetic expression evaluator
- *
  * Copyright (c) 2002 Michael Niedermayer <michaelni@gmx.at>
  *
  * This file is part of FFmpeg.
@@ -21,58 +19,75 @@
  */
 
 /**
- * @file libavcodec/eval.h
- * eval header.
+ * @file
+ * simple arithmetic expression evaluator
  */
 
 #ifndef AVCODEC_EVAL_H
 #define AVCODEC_EVAL_H
 
+typedef struct AVExpr AVExpr;
+
 /**
  * Parses and evaluates an expression.
- * Note, this is significantly slower than ff_parse_eval()
+ * Note, this is significantly slower than ff_eval_expr().
+ *
+ * @param res a pointer to a double where is put the result value of
+ * the expression, or NAN in case of error
  * @param s expression as a zero terminated string for example "1+2^3+5*5+sin(2/3)"
- * @param func1 NULL terminated array of function pointers for functions which take 1 argument
- * @param func2 NULL terminated array of function pointers for functions which take 2 arguments
- * @param const_name NULL terminated array of zero terminated strings of constant identifers for example {"PI", "E", 0}
- * @param func1_name NULL terminated array of zero terminated strings of func1 identifers
- * @param func2_name NULL terminated array of zero terminated strings of func2 identifers
- * @param error pointer to a char* which is set to an error message if something goes wrong
- * @param const_value a zero terminated array of values for the identifers from const_name
- * @param opaque a pointer which will be passed to all functions from func1 and func2
- * @return the value of the expression
+ * @param const_names NULL terminated array of zero terminated strings of constant identifers for example {"PI", "E", 0}
+ * @param const_values a zero terminated array of values for the identifers from const_names
+ * @param func1_names NULL terminated array of zero terminated strings of funcs1 identifers
+ * @param funcs1 NULL terminated array of function pointers for functions which take 1 argument
+ * @param func2_names NULL terminated array of zero terminated strings of funcs2 identifers
+ * @param funcs2 NULL terminated array of function pointers for functions which take 2 arguments
+ * @param opaque a pointer which will be passed to all functions from funcs1 and funcs2
+ * @param log_ctx parent logging context
+ * @return 0 in case of success, a negative value corresponding to an
+ * AVERROR code otherwise
  */
-double ff_eval2(const char *s, const double *const_value, const char * const *const_name,
-               double (**func1)(void *, double), const char **func1_name,
-               double (**func2)(void *, double, double), const char **func2_name,
-               void *opaque, const char **error);
-
-typedef struct ff_expr_s AVEvalExpr;
+int ff_parse_and_eval_expr(double *res, const char *s,
+                           const char * const *const_names, const double *const_values,
+                           const char * const *func1_names, double (* const *funcs1)(void *, double),
+                           const char * const *func2_names, double (* const *funcs2)(void *, double, double),
+                           void *opaque, int log_offset, void *log_ctx);
 
 /**
- * Parses a expression.
+ * Parses an expression.
+ *
+ * @param expr a pointer where is put an AVExpr containing the parsed
+ * value in case of successfull parsing, or NULL otherwise.
+ * The pointed to AVExpr must be freed with ff_free_expr() by the user
+ * when it is not needed anymore.
  * @param s expression as a zero terminated string for example "1+2^3+5*5+sin(2/3)"
- * @param func1 NULL terminated array of function pointers for functions which take 1 argument
- * @param func2 NULL terminated array of function pointers for functions which take 2 arguments
- * @param const_name NULL terminated array of zero terminated strings of constant identifers for example {"PI", "E", 0}
- * @param func1_name NULL terminated array of zero terminated strings of func1 identifers
- * @param func2_name NULL terminated array of zero terminated strings of func2 identifers
- * @param error pointer to a char* which is set to an error message if something goes wrong
- * @return AVEvalExpr which must be freed with ff_eval_free by the user when it is not needed anymore
- *         NULL if anything went wrong
+ * @param const_names NULL terminated array of zero terminated strings of constant identifers for example {"PI", "E", 0}
+ * @param func1_names NULL terminated array of zero terminated strings of funcs1 identifers
+ * @param funcs1 NULL terminated array of function pointers for functions which take 1 argument
+ * @param func2_names NULL terminated array of zero terminated strings of funcs2 identifers
+ * @param funcs2 NULL terminated array of function pointers for functions which take 2 arguments
+ * @param log_ctx parent logging context
+ * @return 0 in case of success, a negative value corresponding to an
+ * AVERROR code otherwise
  */
-AVEvalExpr * ff_parse(const char *s, const char * const *const_name,
-               double (**func1)(void *, double), const char **func1_name,
-               double (**func2)(void *, double, double), const char **func2_name,
-               const char **error);
+int ff_parse_expr(AVExpr **expr, const char *s,
+                  const char * const *const_names,
+                  const char * const *func1_names, double (* const *funcs1)(void *, double),
+                  const char * const *func2_names, double (* const *funcs2)(void *, double, double),
+                  int log_offset, void *log_ctx);
+
 /**
  * Evaluates a previously parsed expression.
- * @param const_value a zero terminated array of values for the identifers from ff_parse const_name
- * @param opaque a pointer which will be passed to all functions from func1 and func2
+ *
+ * @param const_values a zero terminated array of values for the identifers from ff_parse() const_names
+ * @param opaque a pointer which will be passed to all functions from funcs1 and funcs2
  * @return the value of the expression
  */
-double ff_parse_eval(AVEvalExpr * e, const double *const_value, void *opaque);
-void ff_eval_free(AVEvalExpr * e);
+double ff_eval_expr(AVExpr *e, const double *const_values, void *opaque);
+
+/**
+ * Frees a parsed expression previously created with ff_parse_expr().
+ */
+void ff_free_expr(AVExpr *e);
 
 /**
  * Parses the string in numstr and returns its value as a double. If

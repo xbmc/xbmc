@@ -2362,7 +2362,7 @@
   <string id="21412">Scrapers</string>
   <string id="21413">Default movie scraper</string>
   <string id="21414">Default tvshow scraper</string>
-  <string id="21415">Default musicvideo scraper</string>
+  <string id="21415">Default music video scraper</string>
   <string id="21416">Enable fallback based on scraper language</string>
   <string id="21417">- Settings</string>
   <string id="21418">Multilingual</string>
@@ -2550,7 +2550,7 @@
   <string id="24012">Subtitles</string>
   <string id="24013">Lyrics</string>
   <string id="24014">TV information</string>
-  <string id="24015">Musicvideo information</string>
+  <string id="24015">Music video information</string>
   <string id="24016">Album information</string>
   <string id="24017">Artist information</string>
   <string id="24018">PVR clients</string>

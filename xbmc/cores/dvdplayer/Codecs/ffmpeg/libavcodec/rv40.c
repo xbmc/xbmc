@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/rv40.c
+ * @file
  * RV40 decoder
  */
 
@@ -668,7 +668,7 @@ static av_cold int rv40_decode_init(AVCodecContext *avctx)
 
 AVCodec rv40_decoder = {
     "rv40",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_RV40,
     sizeof(RV34DecContext),
     rv40_decode_init,

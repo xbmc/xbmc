@@ -3525,6 +3525,17 @@ int CDVDPlayer::GetPictureWidth()
   return 0;
 }
 
+int CDVDPlayer::GetPictureHeight()
+{
+  if (m_pDemuxer && (m_CurrentVideo.id != -1))
+  {
+    CDemuxStreamVideo* stream = static_cast<CDemuxStreamVideo*>(m_pDemuxer->GetStream(m_CurrentVideo.id));
+    if (stream)
+      return stream->iHeight;
+  }
+  return 0;
+}
+
 bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
 {
   if (m_pDemuxer)

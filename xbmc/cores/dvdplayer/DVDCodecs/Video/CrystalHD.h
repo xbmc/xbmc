@@ -130,6 +130,9 @@ public:
   bool Wake(void);
   bool Sleep(void);
 
+  void OpenDevice();
+  void CloseDevice();
+
   bool OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size, void *extradata);
   void CloseDecoder(void);
   void Reset(void);
@@ -145,11 +148,11 @@ public:
 protected:
 
   DllLibCrystalHD *m_dll;
-  void          *m_Device;
+  void          *m_device;
 
-  bool          m_IsConfigured;
+  bool          m_decoder_open;
   bool          m_drop_state;
-  unsigned int  m_OutputTimeout;
+  unsigned int  m_timeout;
   unsigned int  m_field;
   unsigned int  m_width;
   unsigned int  m_height;

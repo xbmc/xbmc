@@ -22,7 +22,7 @@
  */
 
 /**
- * @file libavcodec/mdec.c
+ * @file
  * Sony PlayStation MDEC (Motion DECoder)
  * This is very similar to intra-only MPEG-1.
  */
@@ -250,7 +250,7 @@ static av_cold int decode_end(AVCodecContext *avctx){
 
 AVCodec mdec_decoder = {
     "mdec",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_MDEC,
     sizeof(MDECContext),
     decode_init,
