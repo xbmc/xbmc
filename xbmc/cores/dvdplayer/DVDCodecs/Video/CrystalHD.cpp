@@ -1056,7 +1056,12 @@ void CCrystalHD::CloseDecoder(void)
 
   if (m_device)
   {
-    m_dll->DtsFlushRxCapture(m_device, true);
+    // DtsFlushRxCapture must release internal queues when
+    // calling DtsStopDecoder/DtsCloseDecoder or the next
+    // DtsStartCapture will fail. This is a driver/lib bug
+    // with new chd driver. The existing driver ignores the
+    // bDiscardOnly arg.
+    m_dll->DtsFlushRxCapture(m_device, false);
     m_dll->DtsStopDecoder(m_device);
     m_dll->DtsCloseDecoder(m_device);
   }
@@ -1067,9 +1072,9 @@ void CCrystalHD::CloseDecoder(void)
 
 void CCrystalHD::Reset(void)
 {
-  // Calling for non-error flush, flush all 
-  m_dll->DtsFlushInput(m_device, 1);
-  m_dll->DtsFlushRxCapture(m_device, true);
+  // Calling for non-error flush, Flushes all the decoder
+  //  buffers, input, decoded and to be decoded. 
+  m_dll->DtsFlushInput(m_device, 2);
 
   while (m_pOutputThread->GetReadyCount())
     m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
