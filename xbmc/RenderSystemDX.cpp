@@ -145,7 +145,7 @@ bool CRenderSystemDX::InitRenderSystem()
     g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(2102), g_localizeStrings.Get(2103));
   }
 
-  if (SUCCEEDED(m_pD3D->CheckDeviceFormat( D3DADAPTER_DEFAULT,
+  if (SUCCEEDED(m_pD3D->CheckDeviceFormat( m_adapter,
                                            D3DDEVTYPE_HAL,
                                            D3DFMT_X8R8G8B8,
                                            0,
