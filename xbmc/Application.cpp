@@ -1827,8 +1827,6 @@ void CApplication::RenderNoPresent()
 
     ResetScreenSaver();
   }
-  else
-    g_graphicsContext.Clear();
 
   g_windowManager.Render();
 

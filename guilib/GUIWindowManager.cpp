@@ -489,7 +489,11 @@ void CGUIWindowManager::Render()
   CSingleLock lock(g_graphicsContext);
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
+  {
+    if (pWindow->NeedsClearBackground())
+      g_graphicsContext.Clear();
     pWindow->Render();
+  }
 
   // we render the dialogs based on their render order.
   vector<CGUIWindow *> renderList = m_activeDialogs;
