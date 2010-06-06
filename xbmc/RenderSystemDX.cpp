@@ -102,7 +102,6 @@ bool CRenderSystemDX::InitRenderSystem()
 {
   m_bVSync = true;
   m_renderCaps = 0;
-  D3DADAPTER_IDENTIFIER9 AIdentifier;
 
   CheckDXVersion();
 
@@ -126,55 +125,6 @@ bool CRenderSystemDX::InitRenderSystem()
 
   if(CreateDevice()==false)
     return false;
-
-  if(m_pD3D->GetAdapterIdentifier(m_adapter, 0, &AIdentifier) == D3D_OK)
-  {
-    m_RenderRenderer = (const char*)AIdentifier.Description;
-    m_RenderVendor   = (const char*)AIdentifier.Driver;
-    m_RenderVersion.Format("%d.%d.%d.%04d", HIWORD(AIdentifier.DriverVersion.HighPart), LOWORD(AIdentifier.DriverVersion.HighPart),
-                                            HIWORD(AIdentifier.DriverVersion.LowPart), LOWORD(AIdentifier.DriverVersion.LowPart));
-  }
-
-  // get our render capabilities
-  D3DCAPS9 caps;
-  m_pD3DDevice->GetDeviceCaps(&caps);
-
-  if (caps.PixelShaderVersion < D3DPS_VERSION(2, 0)) 
-  {
-    CLog::Log(LOGERROR, "%s - XBMC requires a graphics card supporting Pixel Shaders 2.0", __FUNCTION__);
-    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(2102), g_localizeStrings.Get(2103));
-  }
-
-  if (SUCCEEDED(m_pD3D->CheckDeviceFormat( m_adapter,
-                                           D3DDEVTYPE_HAL,
-                                           D3DFMT_X8R8G8B8,
-                                           0,
-                                           D3DRTYPE_TEXTURE,
-                                           D3DFMT_DXT5 )))
-    m_renderCaps |= RENDER_CAPS_DXT;
-
-  if ((caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0)
-  { // we're allowed NPOT textures
-    m_renderCaps |= RENDER_CAPS_NPOT;
-    m_renderCaps |= RENDER_CAPS_DXT_NPOT;
-  }
-  else if ((caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL))
-  { // we're allowed _some_ NPOT textures (namely non-DXT and only with D3DTADDRESS_CLAMP and no wrapping)
-    m_renderCaps |= RENDER_CAPS_NPOT;
-  }
-  m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
-
-  if (g_advancedSettings.m_AllowDynamicTextures && (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES))
-  {
-    m_defaultD3DUsage = D3DUSAGE_DYNAMIC;
-    m_defaultD3DPool  = D3DPOOL_DEFAULT;
-    CLog::Log(LOGDEBUG, "%s - using D3DCAPS2_DYNAMICTEXTURES", __FUNCTION__);
-  }
-  else
-  {
-    m_defaultD3DUsage = 0;
-    m_defaultD3DPool  = D3DPOOL_MANAGED;
-  }
 
   return true;
 }
@@ -447,6 +397,56 @@ bool CRenderSystemDX::CreateDevice()
     }
   }
 
+  D3DADAPTER_IDENTIFIER9 AIdentifier;
+  if(m_pD3D->GetAdapterIdentifier(m_adapter, 0, &AIdentifier) == D3D_OK)
+  {
+    m_RenderRenderer = (const char*)AIdentifier.Description;
+    m_RenderVendor   = (const char*)AIdentifier.Driver;
+    m_RenderVersion.Format("%d.%d.%d.%04d", HIWORD(AIdentifier.DriverVersion.HighPart), LOWORD(AIdentifier.DriverVersion.HighPart),
+                                            HIWORD(AIdentifier.DriverVersion.LowPart), LOWORD(AIdentifier.DriverVersion.LowPart));
+  }
+
+  // get our render capabilities
+  D3DCAPS9 caps;
+  m_pD3DDevice->GetDeviceCaps(&caps);
+
+  if (caps.PixelShaderVersion < D3DPS_VERSION(2, 0)) 
+  {
+    CLog::Log(LOGERROR, "%s - XBMC requires a graphics card supporting Pixel Shaders 2.0", __FUNCTION__);
+    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(2102), g_localizeStrings.Get(2103));
+  }
+
+  if (SUCCEEDED(m_pD3D->CheckDeviceFormat( m_adapter,
+                                           D3DDEVTYPE_HAL,
+                                           D3DFMT_X8R8G8B8,
+                                           0,
+                                           D3DRTYPE_TEXTURE,
+                                           D3DFMT_DXT5 )))
+    m_renderCaps |= RENDER_CAPS_DXT;
+
+  if ((caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0)
+  { // we're allowed NPOT textures
+    m_renderCaps |= RENDER_CAPS_NPOT;
+    m_renderCaps |= RENDER_CAPS_DXT_NPOT;
+  }
+  else if ((caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL))
+  { // we're allowed _some_ NPOT textures (namely non-DXT and only with D3DTADDRESS_CLAMP and no wrapping)
+    m_renderCaps |= RENDER_CAPS_NPOT;
+  }
+  m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
+
+  if (g_advancedSettings.m_AllowDynamicTextures && (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES))
+  {
+    m_defaultD3DUsage = D3DUSAGE_DYNAMIC;
+    m_defaultD3DPool  = D3DPOOL_DEFAULT;
+    CLog::Log(LOGDEBUG, "%s - using D3DCAPS2_DYNAMICTEXTURES", __FUNCTION__);
+  }
+  else
+  {
+    m_defaultD3DUsage = 0;
+    m_defaultD3DPool  = D3DPOOL_MANAGED;
+  }
+
   D3DDISPLAYMODE mode;
   if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))
     m_screenHeight = mode.Height;
@@ -457,7 +457,6 @@ bool CRenderSystemDX::CreateDevice()
   m_pD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
 
   m_bRenderCreated = true;
-
   m_needNewDevice = false;
 
   // tell any shared objects about our resurrection
