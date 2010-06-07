@@ -307,7 +307,7 @@ void CGUIWindowFileManager::OnSort(int iList)
   for (int i = 0; i < m_vecItems[iList]->Size(); i++)
   {
     CFileItemPtr pItem = m_vecItems[iList]->Get(i);
-    if (pItem->m_bIsFolder && !pItem->m_dwSize)
+    if (pItem->m_bIsFolder && !pItem->m_dwSize || pItem->m_strPath.Equals("add")) 
       pItem->SetLabel2("");
     else
       pItem->SetFileSizeLabel();
