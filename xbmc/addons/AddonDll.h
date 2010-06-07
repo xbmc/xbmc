@@ -82,17 +82,20 @@ template<class TheDll, typename TheStruct, typename TheProps>
 CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
   : CAddon(ext)
 {
+  if (ext)
+  {
 #if defined(_LINUX) && !defined(__APPLE__)
-  m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux");
+    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux");
 #elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
-  m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_wingl");
+    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_wingl");
 #elif defined(_WIN32) && defined(HAS_DX)
-  m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_windx");
+    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_windx");
 #elif defined(__APPLE__)
-  m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_osx");
+    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_osx");
 #elif defined(_XBOX)
-  m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_xbox");
+    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_xbox");
 #endif
+  }
 
   m_pStruct     = NULL;
   m_initialized = false;
