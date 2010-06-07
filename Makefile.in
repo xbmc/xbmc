@@ -467,7 +467,7 @@ DYNOBJSXBMC= \
 
 ifeq (arm, $(ARCH))
 # Force external python2.5 for now!
-LIBS +=-lpython2.5
+LIBS +=-lpython2.6
 endif
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
