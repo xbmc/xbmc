@@ -1181,7 +1181,7 @@ void CGUISettings::SaveXML(TiXmlNode *pRootNode)
   {
     // don't save advanced settings
     CStdString first = (*it).first;
-    if ((*it).second->IsAdvanced())
+    if ((*it).second->IsAdvanced() || (*it).second->GetType() == SETTINGS_TYPE_SEPARATOR)
       continue;
 
     CStdStringArray strSplit;
