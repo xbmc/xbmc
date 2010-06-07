@@ -35,6 +35,7 @@
 #include "GUIWindowManager.h"
 #include "GUIControl.h"       // for EVENT_RESULT
 #include "Win32PowerSyscall.h"
+#include "Shlobj.h"
 
 #ifdef _WIN32
 
@@ -54,6 +55,18 @@ int XBMC_TranslateUNICODE = 1;
 PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
 int CWinEventsWin32::m_lastGesturePosX = 0;
 int CWinEventsWin32::m_lastGesturePosY = 0;
+
+// register to receive SD card events (insert/remove)
+// seen at http://www.codeproject.com/Messages/2897423/Re-No-message-triggered-on-SD-card-insertion-remov.aspx
+#define WM_MEDIA_CHANGE (WM_USER + 666)
+SHChangeNotifyEntry shcne;
+
+struct SHNOTIFYSTRUCT
+{
+  ITEMIDLIST *dwItem1;
+  ITEMIDLIST *dwItem2;
+};
+//
 
 void DIB_InitOSKeymap()
 {
@@ -296,6 +309,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG)(((LPCREATESTRUCT)lParam)->lpCreateParams));
     DIB_InitOSKeymap();
     g_uQueryCancelAutoPlay = RegisterWindowMessage(TEXT("QueryCancelAutoPlay"));
+    shcne.pidl = NULL;
+    shcne.fRecursive = TRUE;
+    SHChangeNotifyRegister(hWnd, SHCNE_DISKEVENTS, SHCNE_MEDIAREMOVED | SHCNE_MEDIAINSERTED, WM_MEDIA_CHANGE, 1, &shcne);
     return 0;
   }
 
@@ -560,6 +576,26 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       if (newEvent.resize.w * newEvent.resize.h)
         m_pEventFunc(newEvent);
       return(0);
+    case WM_MEDIA_CHANGE:
+      {
+        SHNOTIFYSTRUCT *shns = (SHNOTIFYSTRUCT *)wParam;
+        char buffer[MAX_PATH+1];
+
+        switch(lParam)
+        {
+          case SHCNE_MEDIAINSERTED:        // media inserted event
+            SHGetPathFromIDList(shns->dwItem1, buffer);
+            CLog::Log(LOGDEBUG, "%s: Drive %s Media has arrived.", __FUNCTION__, buffer);
+            CWin32StorageProvider::SetEvent();
+          break;
+
+          case SHCNE_MEDIAREMOVED:        // media removed event
+            SHGetPathFromIDList(shns->dwItem1, buffer);
+            CLog::Log(LOGDEBUG,"%s: Drive %s Media was removed.", __FUNCTION__, buffer);
+            CWin32StorageProvider::SetEvent();
+          break;
+        }
+      }
     case WM_DEVICECHANGE:
       {
         PDEV_BROADCAST_HDR lpdb = (PDEV_BROADCAST_HDR)lParam;
