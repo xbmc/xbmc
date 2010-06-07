@@ -2121,7 +2121,7 @@
 
   <string id="23104">Click OK when playback has ended</string>
 
-  <!-- strings 24000 thru 24299 reserved for the addons framework -->
+  <!-- strings 24000 thru 24299 reserved for the Add-ons framework -->
   <string id="24000">Add-on</string>
   <string id="24001">Add-ons</string>
   <string id="24002">Add-on options</string>
@@ -2148,8 +2148,8 @@
   <string id="24028">Weather.com (standard)</string>
   <string id="24030">This Add-on can not be configured</string>
   <string id="24031">Error loading settings</string>
-  <string id="24032">All repositories</string>
-  <string id="24033">Repositories</string>
+  <string id="24032">All Add-ons</string>
+  <string id="24033">Get Add-ons</string>
   <string id="24034">Check for updates</string>
   <string id="24035">Force refresh</string>
   <string id="24036">Change log</string>
@@ -2170,7 +2170,7 @@
   <string id="24064">Add-on enabled</string>
   <string id="24065">Add-on updated</string>
   <string id="24066">Cancel Add-on download?</string>
-  <string id="24067">Currently downloading addons</string>
+  <string id="24067">Currently downloading Add-ons</string>
   <string id="24068">Update available</string>
   <string id="24069">Update</string>
 
