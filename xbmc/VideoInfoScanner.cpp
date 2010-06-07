@@ -1048,6 +1048,7 @@ namespace VIDEO
     {
       lResult = m_database.SetDetailsForMusicVideo(pItem->m_strPath, movieDetails);
     }
+    m_database.Close();
     return lResult;
   }
 
@@ -1133,7 +1134,6 @@ namespace VIDEO
 
     if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
       FetchActorThumbs(movieDetails.m_cast, strDirectory);
-    m_database.Close();
     return lResult;
   }
 
