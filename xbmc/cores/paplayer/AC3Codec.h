@@ -24,7 +24,7 @@
 #include "CachingCodec.h"
 #include "DllAc3codec.h"
 
-#ifdef HAS_AC3_CODEC
+#ifdef USE_LIBA52_DECODER
 
 class AC3Codec : public CachingCodec
 {

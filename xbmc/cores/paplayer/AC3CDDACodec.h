@@ -23,7 +23,7 @@
 
 #include "AC3Codec.h"
 
-#ifdef HAS_AC3_CODEC
+#ifdef USE_LIBA52_DECODER
 class AC3CDDACodec : public AC3Codec
 {
 public:

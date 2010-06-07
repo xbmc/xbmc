@@ -34,7 +34,7 @@ extern "C" {
 #include "DynamicDll.h"
 #include "utils/log.h"
 
-#ifdef HAS_DTS_CODEC
+#ifdef USE_LIBDTS_DECODER
 #ifndef _LINUX
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int16 uint16_t;
@@ -123,4 +123,4 @@ class DllDCACodec : public DllDynamic, DllDCACodecInterface
 
 #endif /* (defined USE_EXTERNAL_LIBDTS) */
 
-#endif /* HAS_DTS_CODEC */
+#endif /* USE_LIBDTS_DECODER */
