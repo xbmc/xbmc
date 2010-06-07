@@ -20,7 +20,9 @@
  */
 
 #include "system.h"
+#if defined(HAS_GL)
 #include "GUITextureGL.h"
+#endif
 #include "Texture.h"
 #include "utils/log.h"
 
