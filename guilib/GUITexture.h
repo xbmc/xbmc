@@ -130,8 +130,8 @@ protected:
   // functions that our implementation classes handle
   virtual void Allocate() {}; ///< called after our textures have been allocated
   virtual void Free() {};     ///< called after our textures have been freed
-  virtual void Begin() {};
-  virtual void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, color_t color, int orientation)=0;
+  virtual void Begin(color_t color) {};
+  virtual void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation)=0;
   virtual void End() {};
 
   bool m_visible;
