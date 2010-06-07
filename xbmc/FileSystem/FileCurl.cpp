@@ -1275,8 +1275,7 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         FD_ZERO(&fdexcep);
 
         // get file descriptors from the transfers
-        if (CURLM_OK != g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd) || maxfd == -1)
-          return false;
+        g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd);
 
         long timeout = 0;
         if (CURLM_OK != g_curlInterface.multi_timeout(m_multiHandle, &timeout) || timeout == -1)
