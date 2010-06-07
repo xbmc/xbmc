@@ -498,7 +498,7 @@ tools/TexturePacker/TexturePacker: guilib/guilib.a xbmc/lib/libsquish/libsquish-
 	$(MAKE) -C tools/TexturePacker/
 
 install-bin: xbmc.bin # developement convenience target
-	sudo install -D xbmc.bin $(DESTDIR)$(libdir)/xbmc
+	install -D xbmc.bin $(DESTDIR)$(libdir)/xbmc
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 	# TODO: add osx install
