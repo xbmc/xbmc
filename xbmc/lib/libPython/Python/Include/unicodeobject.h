@@ -147,7 +147,7 @@ typedef PY_UNICODE_TYPE Py_UNICODE;
 # define PyUnicode_AsRawUnicodeEscapeString PyUnicodeUCS2_AsRawUnicodeEscapeString
 # define PyUnicode_AsUTF16String PyUnicodeUCS2_AsUTF16String
 # define PyUnicode_AsUTF8String PyUnicodeUCS2_AsUTF8String
-# define PyUnicode_AsUnicode PyUnicodeUCS2_AsUnicode
+//# define PyUnicode_AsUnicode PyUnicodeUCS2_AsUnicode
 # define PyUnicode_AsUnicodeEscapeString PyUnicodeUCS2_AsUnicodeEscapeString
 # define PyUnicode_AsWideChar PyUnicodeUCS2_AsWideChar
 # define PyUnicode_Compare PyUnicodeUCS2_Compare
