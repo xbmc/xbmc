@@ -479,7 +479,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     pItem->SetLabelPreformated(true);
     m_vecItems[iList]->Add(pItem);
   }
-  else if (g_guiSettings.GetBool("filelists.showparentdiritems"))
+  else if (items.IsEmpty() || g_guiSettings.GetBool("filelists.showparentdiritems"))
   {
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->m_strPath = strParentPath;
