@@ -251,6 +251,8 @@
 		7CD2CD0211B38B000009EFC1 /* xbmcaddonmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2CD0011B38B000009EFC1 /* xbmcaddonmodule.cpp */; };
 		7CD2CD0311B38B000009EFC1 /* PythonAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2CCFE11B38B000009EFC1 /* PythonAddon.cpp */; };
 		7CD2CD0411B38B000009EFC1 /* xbmcaddonmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD2CD0011B38B000009EFC1 /* xbmcaddonmodule.cpp */; };
+		7CD9742911BC6EAA00649E31 /* GUITextureGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD9742711BC6EAA00649E31 /* GUITextureGLES.cpp */; };
+		7CD9742A11BC6EAA00649E31 /* GUITextureGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CD9742711BC6EAA00649E31 /* GUITextureGLES.cpp */; };
 		7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
 		7CDAE9060FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
 		7CDAEA7D1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */; };
@@ -2147,6 +2149,8 @@
 		7CD2CCFE11B38B000009EFC1 /* PythonAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PythonAddon.cpp; sourceTree = "<group>"; };
 		7CD2CCFF11B38B000009EFC1 /* PythonAddon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PythonAddon.h; sourceTree = "<group>"; };
 		7CD2CD0011B38B000009EFC1 /* xbmcaddonmodule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xbmcaddonmodule.cpp; sourceTree = "<group>"; };
+		7CD9742711BC6EAA00649E31 /* GUITextureGLES.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUITextureGLES.cpp; sourceTree = "<group>"; };
+		7CD9742811BC6EAA00649E31 /* GUITextureGLES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUITextureGLES.h; sourceTree = "<group>"; };
 		7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDTSCorrection.cpp; sourceTree = "<group>"; };
 		7CDAE9040FFCA3520040B25F /* DVDTSCorrection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDTSCorrection.h; sourceTree = "<group>"; };
 		7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricstextustar.cpp; path = karaoke/karaokelyricstextustar.cpp; sourceTree = "<group>"; };
@@ -4131,6 +4135,8 @@
 				7C779D9F104A4B2E00F444C4 /* GUITextureD3D.h */,
 				F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */,
 				F56A08E30F4D3C2E003F9F87 /* GUITextureGL.h */,
+				7CD9742711BC6EAA00649E31 /* GUITextureGLES.cpp */,
+				7CD9742811BC6EAA00649E31 /* GUITextureGLES.h */,
 				7C779DA0104A4B2E00F444C4 /* Texture.cpp */,
 				7C779DA1104A4B2E00F444C4 /* Texture.h */,
 				7C779DA2104A4B2E00F444C4 /* TextureDX.cpp */,
@@ -8170,6 +8176,7 @@
 				183FDF8A11AF0B0500B81E9C /* PluginSource.cpp in Sources */,
 				7CD2CD0311B38B000009EFC1 /* PythonAddon.cpp in Sources */,
 				7CD2CD0411B38B000009EFC1 /* xbmcaddonmodule.cpp in Sources */,
+				7CD9742A11BC6EAA00649E31 /* GUITextureGLES.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9044,6 +9051,7 @@
 				183FDF8B11AF0B0500B81E9C /* PluginSource.cpp in Sources */,
 				7CD2CD0111B38B000009EFC1 /* PythonAddon.cpp in Sources */,
 				7CD2CD0211B38B000009EFC1 /* xbmcaddonmodule.cpp in Sources */,
+				7CD9742911BC6EAA00649E31 /* GUITextureGLES.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
