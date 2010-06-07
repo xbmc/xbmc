@@ -3341,6 +3341,9 @@ void CApplication::Stop()
     }
 #endif
 
+    g_Windowing.DestroyRenderSystem();
+    g_Windowing.DestroyWindowSystem();
+
     CLog::Log(LOGNOTICE, "stopped");
   }
   catch (...)
