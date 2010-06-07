@@ -91,30 +91,8 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       {
         if (strDestination.Equals("$ROOT") || strDestination.Equals("Root"))
           destPath = "";
-        else if (strDestination.Equals("Enabled"))
-          destPath = "addons://enabled/";
-        else if (strDestination.Equals("Available"))
-          destPath = "addons://all/";
-        else if (strDestination.Equals("Scrapers"))
-          destPath = "addons://enabled/scraper";
-        else if (strDestination.Equals("Screensavers"))
-          destPath = "addons://enabled/screensaver";
-        else if (strDestination.Equals("Plugins"))
-          destPath = "addons://enabled/plugin";
-        else if (strDestination.Equals("Visualizations"))
-          destPath = "addons://enabled/visualization";
-        else if (strDestination.Equals("Scripts"))
-          destPath = "addons://enabled/script";
-        else if (strDestination.Equals("AvailableScrapers"))
-          destPath = "addons://all/scraper";
-        else if (strDestination.Equals("AvailableScreensavers"))
-          destPath = "addons://all/screensaver";
-        else if (strDestination.Equals("AvailablePlugins"))
-          destPath = "addons://all/plugin";
-        else if (strDestination.Equals("AvailableVisualizations"))
-          destPath = "addons://all/visualization";
-        else if (strDestination.Equals("AvailableScripts"))
-          destPath = "addons://all/script";
+        else if (strDestination.Left(9).Equals("addons://"))
+          destPath = strDestination;
         else
         {
           CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());
@@ -510,7 +488,7 @@ bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool 
   if (dialog->IsButtonPressed())
   { // switch to the addons browser.
     vector<CStdString> params;
-    params.push_back("addons://repos/");
+    params.push_back("addons://all/"+TranslateType(type,false)+"/");
     params.push_back("return");
     g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
     return false;
