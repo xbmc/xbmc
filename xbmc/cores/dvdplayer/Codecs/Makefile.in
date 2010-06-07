@@ -10,10 +10,10 @@ DIRS=
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
   DIRS+=ffmpeg
 endif
-ifneq (@USE_EXTERNAL_LIBA52@,1)
+ifeq (@USE_INTERNAL_LIBA52@,1)
   DIRS+=liba52
 endif
-ifneq (@USE_EXTERNAL_LIBDTS@,1)
+ifeq (@USE_INTERNAL_LIBDTS@,1)
   DIRS+=libdts
 endif
 
@@ -25,11 +25,11 @@ ifneq (@USE_EXTERNAL_FFMPEG@,1)
 	postproc-51-$(ARCH).so \
 	swscale-0.6.1-$(ARCH).so
 endif
-ifneq (@USE_EXTERNAL_LIBA52@,1)
+ifeq (@USE_INTERNAL_LIBA52@,1)
   LIBS+=liba52-$(ARCH).so \
 	libao-$(ARCH).so
 endif
-ifneq (@USE_EXTERNAL_LIBDTS@,1)
+ifeq (@USE_INTERNAL_LIBDTS@,1)
   LIBS+=libdts-$(ARCH).so
 endif
 
