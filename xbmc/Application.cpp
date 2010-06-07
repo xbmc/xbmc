@@ -3343,8 +3343,10 @@ void CApplication::Stop()
     }
 #endif
 
+#if !defined(_LINUX)
     g_Windowing.DestroyRenderSystem();
     g_Windowing.DestroyWindowSystem();
+#endif
 
     CLog::Log(LOGNOTICE, "stopped");
   }
