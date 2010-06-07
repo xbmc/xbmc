@@ -94,7 +94,7 @@ print_crash_report()
   echo "############### END LOG FILE ################" >> $FILE
   echo >> $FILE
   echo "############ END XBMC CRASH LOG #############" >> $FILE
-  echo "Crash report available at $PWD/$FILE"
+  echo "Crash report available at $FILE"
 }
 
 python @prefix@/share/xbmc/FEH.py "$SAVED_ARGS"
