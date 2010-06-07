@@ -67,7 +67,7 @@ CGUISettings& g_guiSettings = g_SystemGlobals.m_guiSettings;
 #define DEFAULT_VISUALISATION "visualization.glspectrum"
 #elif defined(_WIN32)
 #ifdef HAS_DX
-#define DEFAULT_VISUALISATION "visualization.milkrop"
+#define DEFAULT_VISUALISATION "visualization.milkdrop"
 #else
 #define DEFAULT_VISUALISATION "visualization.glspectrum"
 #endif
