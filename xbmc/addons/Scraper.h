@@ -44,7 +44,6 @@ namespace ADDON
   class CScraper : public CAddon
   {
   public:
-
     CScraper(const AddonProps &props) : CAddon(props) { }
     CScraper(const cp_extension_t *ext);
     virtual ~CScraper() {}
