@@ -137,6 +137,15 @@ namespace VIDEO
     void SetScraperInfo(const ADDON::ScraperPtr& info) { m_info = info; };
 
   protected:
+    /*! \brief Download an image file and apply the image to a folder if necessary
+     \param url URL of the image.
+     \param destination File to save the image as
+     \param asThumb whether we need to download as a thumbnail or as a full image. Defaults to true
+     \param progress progressbar to update - defaults to NULL
+     \param directory directory that this thumbnail should be applied to. Defaults to empty
+     */
+    void DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb = true, CGUIDialogProgress *dialog = NULL, const CStdString &directory = "");
+
     IVideoInfoScannerObserver* m_pObserver;
     int m_currentItem;
     int m_itemCount;

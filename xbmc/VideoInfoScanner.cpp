@@ -1058,8 +1058,8 @@ namespace VIDEO
     // get & save fanart image
     if (!pItem->CacheLocalFanart() || bRefresh)
     {
-      if (!movieDetails.m_fanart.m_xml.IsEmpty() && !movieDetails.m_fanart.DownloadImage(pItem->GetCachedFanart()))
-        CLog::Log(LOGERROR, "VideoInfoScanner: Failed to download fanart %s to %s", movieDetails.m_fanart.GetImageURL().c_str(), pItem->GetCachedFanart().c_str());
+      if (movieDetails.m_fanart.GetNumFanarts())
+        DownloadImage(movieDetails.m_fanart.GetImageURL(), pItem->GetCachedFanart(), false, pDialog);
     }
 
     CStdString strUserThumb = pItem->GetUserVideoThumb();
@@ -1081,36 +1081,7 @@ namespace VIDEO
       strThumb = item.GetCachedEpisodeThumb();
     }
 
-    CStdString strImage = movieDetails.m_strPictureURL.GetFirstThumb().m_url;
-    if (strImage.size() > 0 && (strUserThumb.IsEmpty() || bRefresh))
-    {
-      if (pDialog)
-      {
-        pDialog->SetLine(2, 415);
-        pDialog->Progress();
-      }
-
-      try
-      {
-        if (strImage.Find("http://") < 0 &&
-            strImage.Find("/") < 0 &&
-            strImage.Find("\\") < 0)
-        {
-          CStdString strPath;
-          CUtil::GetDirectory(pItem->m_strPath, strPath);
-          strImage = CUtil::AddFileToFolder(strPath, strImage);
-        }
-        CPicture::CreateThumbnail(strImage, strThumb);
-      }
-      catch (...)
-      {
-        CLog::Log(LOGERROR, "VideoInfoScanner: Could not make imdb thumb from %s", strImage.c_str());
-        CFile::Delete(strThumb);
-      }
-    }
-    else
-      CPicture::CacheThumb(strUserThumb, strThumb);
-
+    // figure out the directory path
     CStdString strCheck=pItem->m_strPath;
     CStdString strDirectory;
     if (pItem->IsStack())
@@ -1129,12 +1100,47 @@ namespace VIDEO
       if (CUtil::GetFileName(strCheck).size() == 3 && CUtil::GetFileName(strCheck).Left(2).Equals("cd"))
         CUtil::GetDirectory(strCheck, strDirectory);
     }
-    if (bApplyToDir && !strThumb.IsEmpty())
-      ApplyIMDBThumbToFolder(strDirectory, strThumb);
+
+    CStdString strImage = CScraperUrl::GetThumbURL(movieDetails.m_strPictureURL.GetFirstThumb());
+    if (strImage.size() > 0 && (strUserThumb.IsEmpty() || bRefresh))
+    {
+      if (strImage.Find("http://") < 0 &&
+          strImage.Find("/") < 0 &&
+          strImage.Find("\\") < 0)
+      {
+        CStdString strPath;
+        CUtil::GetDirectory(pItem->m_strPath, strPath);
+        strImage = CUtil::AddFileToFolder(strPath, strImage);
+      }
+      DownloadImage(strImage, strThumb, true, pDialog, bApplyToDir ? strDirectory : "");
+    }
+    else
+      CPicture::CacheThumb(strUserThumb, strThumb);
 
     if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
       FetchActorThumbs(movieDetails.m_cast, strDirectory);
     return lResult;
+  }
+
+  void CVideoInfoScanner::DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb /*= true */, CGUIDialogProgress *progress /*= NULL */, const CStdString &directory /*= "" */)
+  {
+    if (progress)
+    {
+      progress->SetLine(2, 415);
+      progress->Progress();
+    }
+    bool result = false;
+    if (asThumb)
+      result = CPicture::CreateThumbnail(url, destination);
+    else
+      result = CPicture::CacheFanart(url, destination);
+    if (!result)
+    {
+      CFile::Delete(destination);
+      return;
+    }
+    if (!directory.IsEmpty())
+      ApplyIMDBThumbToFolder(directory, destination);
   }
 
   bool CVideoInfoScanner::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress /* = NULL */)
@@ -1470,7 +1476,7 @@ namespace VIDEO
           }
         }
         if (bDownload)
-          CScraperUrl::DownloadThumbnail(items[i]->GetCachedSeasonThumb(), movie.m_strPictureURL.GetSeasonThumb(items[i]->GetVideoInfoTag()->m_iSeason));
+          DownloadImage(CScraperUrl::GetThumbURL(movie.m_strPictureURL.GetSeasonThumb(items[i]->GetVideoInfoTag()->m_iSeason)), items[i]->GetCachedSeasonThumb());
       }
     }
   }
@@ -1491,7 +1497,7 @@ namespace VIDEO
         if (CFile::Exists(strLocal))
           CPicture::CreateThumbnail(strLocal, strThumb);
         else if (!actors[i].thumbUrl.GetFirstThumb().m_url.IsEmpty())
-          CScraperUrl::DownloadThumbnail(strThumb, actors[i].thumbUrl.GetFirstThumb());
+          DownloadImage(CScraperUrl::GetThumbURL(actors[i].thumbUrl.GetFirstThumb()), strThumb);
       }
     }
   }
