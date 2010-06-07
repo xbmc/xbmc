@@ -2,16 +2,16 @@
 
 set -e
 
-autoreconf -vif
-autoreconf -vif lib/cpluff
-# we must autoreconf libass as we don't know till later if it's used.
-autoreconf -vif lib/libass
-autoreconf -vif xbmc/cores/dvdplayer/Codecs/libbdnav
+autoreconf -vif --exclude gnu-configize
+autoreconf -vif --exclude gnu-configize lib/cpluff
+# w must autoreconf libass as we don't know till later if it's used.
+autoreconf -vif --exclude gnu-configize lib/libass
+autoreconf -vif --exclude gnu-configize xbmc/cores/dvdplayer/Codecs/libbdnav
 # order matters with libbdnav and friends
 [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss ] && \
-  autoreconf -vif xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
-autoreconf -vif xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread
-autoreconf -vif xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav
+  autoreconf -vif --exclude gnu-configize xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
+autoreconf -vif --exclude gnu-configize xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread
+autoreconf -vif --exclude gnu-configize xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav
 
 echo "Please (re)run configure..."
 
