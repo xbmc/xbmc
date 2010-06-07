@@ -430,9 +430,9 @@ namespace VIDEO
       }
       else if (ret < 0)
         return false;
-      
+
       pURL = NULL;
-    } 
+    }
 
     if(pDlgProgress)
       pDlgProgress->ShowProgressBar(false);
@@ -623,11 +623,11 @@ namespace VIDEO
 
     if (m_pObserver && !url.strTitle.IsEmpty())
       m_pObserver->OnSetTitle(url.strTitle);
-    
+
     GetIMDBDetails(pItem.get(), url, info2, bDirNames, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
     return 1;
   }
-  
+
   int CVideoInfoScanner::RetreiveInfoForMusicVideo(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
   {
     if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() || pItem->IsPlayList())
@@ -668,14 +668,14 @@ namespace VIDEO
       url = *pURL;
     else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
       return retVal;
-    
+
     if (m_pObserver && !url.strTitle.IsEmpty())
       m_pObserver->OnSetTitle(url.strTitle);
-    
+
     GetIMDBDetails(pItem.get(), url, info2, bDirNames, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
     return 1;
   }
-  
+
   // This function is run by another thread
   void CVideoInfoScanner::Run()
   {
@@ -855,7 +855,7 @@ namespace VIDEO
     episode.cDate.SetValid(false);
     if (!GetEpisodeAndSeasonFromRegExp(reg, episode))
       return false;
-    
+
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Found episode match %s (s%ie%i) [%s]", strLabel.c_str(), episode.iSeason, episode.iEpisode, regexp.c_str());
     episodeList.push_back(episode);
 
@@ -907,7 +907,7 @@ namespace VIDEO
         episodeInfo.iSeason = 1;
         if ((episodeInfo.iEpisode = CUtil::TranslateRomanNumeral(episode)) == -1)
           episodeInfo.iEpisode = atoi(episode);
-      } 
+      }
       else if (strlen(season) > 0 && strlen(episode) == 0)
       { // no episode specification -> assume season 1
         episodeInfo.iSeason = 1;
