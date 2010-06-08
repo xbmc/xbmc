@@ -297,7 +297,7 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   m_bBlankOtherDisplay = blankOtherDisplays;
 
   if (fullScreen && g_guiSettings.GetBool("videoscreen.fakefullscreen"))
-    ChangeResolution(m_nScreen, res);
+    ChangeResolution(res);
 
   ResizeInternal(forceResize);
 
@@ -368,9 +368,9 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
   return true;
 }
 
-bool CWinSystemWin32::ChangeResolution(int screen, RESOLUTION_INFO res)
+bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res)
 {
-  const MONITOR_DETAILS &details = GetMonitor(screen);
+  const MONITOR_DETAILS &details = GetMonitor(res.iScreen);
 
   DEVMODE sDevMode;
   ZeroMemory(&sDevMode, sizeof(DEVMODE));
