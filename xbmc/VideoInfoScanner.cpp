@@ -1048,6 +1048,10 @@ namespace VIDEO
     {
       lResult = m_database.SetDetailsForMusicVideo(pItem->m_strPath, movieDetails);
     }
+
+    if (g_advancedSettings.m_bVideoLibraryImportWatchedState)
+      m_database.SetPlayCount(*pItem, movieDetails.m_playCount, movieDetails.m_lastPlayed);
+
     m_database.Close();
     return lResult;
   }
