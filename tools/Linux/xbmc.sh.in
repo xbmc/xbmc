@@ -19,7 +19,9 @@
 #  http://www.gnu.org/copyleft/gpl.html
 
 SAVED_ARGS="$@"
-LIBDIR="@prefix@/lib"
+prefix="@prefix@"
+exec_prefix="@exec_prefix@"
+LIBDIR="@libdir@"
 
 # Check for some options used by this script
 while [ "$#" -gt "0" ]
@@ -97,7 +99,7 @@ print_crash_report()
   echo "Crash report available at $FILE"
 }
 
-python @prefix@/share/xbmc/FEH.py "$SAVED_ARGS"
+python @datadir@/xbmc/FEH.py "$SAVED_ARGS"
 RET=$?
 if [ $RET -ne 0 ]; then
   exit $RET
