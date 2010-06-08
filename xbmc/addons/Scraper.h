@@ -49,8 +49,6 @@ namespace ADDON
     virtual ~CScraper() {}
     virtual AddonPtr Clone(const AddonPtr &self) const;
 
-    virtual bool LoadSettings();
-
     /*! \brief Set the scraper settings for a particular path from an XML string
      Loads the default and user settings (if not already loaded) and, if the given XML string is non-empty,
      overrides the user settings with the XML.
@@ -69,8 +67,6 @@ namespace ADDON
      */
     CStdString GetPathSettings();
 
-    // scraper specialization
-    bool LoadSettingsXML(const CStdString& strFunction="GetSettings", const CScraperUrl* url=NULL);
     CONTENT_TYPE Content() const { return m_pathContent; }
     const CStdString& Framework() const { return m_framework; }
     const CStdString& Language() const { return m_language; }

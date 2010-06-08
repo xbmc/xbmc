@@ -91,7 +91,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     }
     if (iControl == CONTROL_SCRAPER_SETTINGS)
     {
-      m_bNeedSave = CGUIDialogAddonSettings::ShowAndGetInput(m_scraper);
+      m_bNeedSave = CGUIDialogAddonSettings::ShowAndGetInput(m_scraper, false);
       return m_bNeedSave;
     }
   }
