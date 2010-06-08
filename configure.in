@@ -60,6 +60,10 @@ external_libdts_disabled="== Use of external libdts disabled. =="
 external_python_enabled="== Use of external python enabled. =="
 external_python_disabled="== Use of external python disabled. =="
 ffmpeg_vdpau_not_supported="== External ffmpeg doesn't support VDPAU. VDPAU support disabled. =="
+dashes="------------------------"
+final_message="\n  XBMC Configuration:"
+final_message="\n$dashes$final_message\n$dashes"
+
 
 AC_ARG_ENABLE([debug],
   [AS_HELP_STRING([--enable-debug],
@@ -325,6 +329,37 @@ case $host in
      AC_MSG_ERROR(unsupported host ($host))
 esac
 AC_SUBST([ARCH])
+if test "$use_debug" = "yes"; then
+  final_message="$final_message\n  Debugging:\tYes"
+  if test "$use_profiling" = "yes"; then
+    final_message="$final_message\n  Profiling:\tYes"
+    DEBUG_FLAGS="-g -pg -D_DEBUG -Wall"
+  else
+    final_message="$final_message\n  Profiling:\tNo"
+    DEBUG_FLAGS="-g -D_DEBUG -Wall"
+  fi
+else
+  final_message="$final_message\n  Debugging:\tNo"
+  if test "$use_profiling" = "yes"; then
+    final_message="$final_message\n  Profiling:\tYes"
+    DEBUG_FLAGS="-pg -DNDEBUG=1"
+  else
+    final_message="$final_message\n  Profiling:\tNo"
+    DEBUG_FLAGS="-DNDEBUG=1"
+  fi
+fi
+
+CFLAGS="$CFLAGS $DEBUG_FLAGS"
+CXXFLAGS="$CXXFLAGS $DEBUG_FLAGS"
+
+if test "$use_optimizations" = "yes"; then
+  final_message="$final_message\n  Optimization:\tYes"
+  CXXFLAGS="$CXXFLAGS -O2"
+  CFLAGS="$CFLAGS -O2"
+else
+  final_message="$final_message\n  Optimization:\tNo"
+fi
+
 
 # platform specific flags
 if test "$host_vendor" = "apple" ; then
@@ -1001,30 +1036,6 @@ AC_CHECK_FUNCS([atexit dup2 fdatasync floor fs_stat_dev ftime ftruncate getcwd g
 AC_CHECK_SIZEOF([int])
 AC_CHECK_SIZEOF([size_t])
 
-dashes="------------------------"
-final_message="\n  XBMC Configuration:"
-final_message="\n$dashes$final_message\n$dashes"
-
-if test "$use_debug" = "yes"; then
-  final_message="$final_message\n  Debugging:\tYes"
-  if test "$use_profiling" = "yes"; then
-    final_message="$final_message\n  Profiling:\tYes"
-    DEBUG_FLAGS="-g -pg -D_DEBUG -Wall"
-  else
-    final_message="$final_message\n  Profiling:\tNo"
-    DEBUG_FLAGS="-g -D_DEBUG -Wall"
-  fi
-else
-  final_message="$final_message\n  Debugging:\tNo"
-  if test "$use_profiling" = "yes"; then
-    final_message="$final_message\n  Profiling:\tYes"
-    DEBUG_FLAGS="-pg -DNDEBUG=1"
-  else
-    final_message="$final_message\n  Profiling:\tNo"
-    DEBUG_FLAGS="-DNDEBUG=1"
-  fi
-fi
-
 if test "$cross_compiling" = "yes"; then
   final_message="$final_message\n  Crosscomp.:\tYes"
 else
@@ -1033,14 +1044,6 @@ fi
 
 final_message="$final_message\n  target ARCH:\t$use_arch"
 final_message="$final_message\n  target CPU:\t$use_cpu"
-
-if test "$use_optimizations" = "yes"; then
-  final_message="$final_message\n  Optimization:\tYes"
-  CXXFLAGS="$CXXFLAGS -O2"
-  CFLAGS="$CFLAGS -O2"
-else
-  final_message="$final_message\n  Optimization:\tNo"
-fi
 
 if test "$use_gles" = "yes"; then
   final_message="$final_message\n  OpenGLES:\tYes"
@@ -1368,7 +1371,6 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
 AC_SUBST(INCLUDES)
 AC_SUBST(LDFLAGS)
-AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(BUILD_GOOM)
