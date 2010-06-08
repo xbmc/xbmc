@@ -513,7 +513,7 @@ CStdString CAddon::GetSetting(const CStdString& key)
   return "";
 }
 
-void CAddon::UpdateSetting(const CStdString& key, const CStdString& value, const CStdString& type/* = "" */)
+void CAddon::UpdateSetting(const CStdString& key, const CStdString& value)
 {
   if (key.empty()) return;
 
@@ -527,12 +527,8 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& value, const
   while (setting)
   {
     const char *id = setting->Attribute("id");
-    const char *storedtype = setting->Attribute("type");
     if (id && strcmpi(id, key) == 0)
     {
-      if (!type.empty() && storedtype && strcmpi(storedtype, type) != 0)
-        setting->SetAttribute("type", type.c_str());
-
       setting->SetAttribute("value", value.c_str());
       return;
     }
@@ -541,11 +537,7 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& value, const
 
   // Setting not found, add it
   TiXmlElement nodeSetting("setting");
-  nodeSetting.SetAttribute("id", key.c_str()); //FIXME otherwise attribute value isn't updated
-  if (!type.empty())
-    nodeSetting.SetAttribute("type", type.c_str());
-  else
-    nodeSetting.SetAttribute("type", "text");
+  nodeSetting.SetAttribute("id", key.c_str());
   nodeSetting.SetAttribute("value", value.c_str());
   m_userXmlDoc.RootElement()->InsertEndChild(nodeSetting);
 }

@@ -90,7 +90,7 @@ namespace ADDON
     virtual const CStdString Disclaimer() const =0;
     virtual bool HasSettings() =0;
     virtual void SaveSettings() =0;
-    virtual void UpdateSetting(const CStdString& key, const CStdString& value, const CStdString &type = "") =0;
+    virtual void UpdateSetting(const CStdString& key, const CStdString& value) =0;
     virtual CStdString GetSetting(const CStdString& key) =0;
     virtual TiXmlElement* GetSettingsXML() =0;
     virtual CStdString GetString(uint32_t id) =0;

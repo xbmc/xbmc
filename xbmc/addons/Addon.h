@@ -122,8 +122,22 @@ public:
    \sa LoadSettings, LoadUserSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
    */
   virtual void SaveSettings();
-  virtual void UpdateSetting(const CStdString& key, const CStdString& value, const CStdString &type = "");
+
+  /*! \brief Update a user-configured setting with a new value
+   \param key the id of the setting to update
+   \param value the value that the setting should take
+   \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
+   */
+  void UpdateSetting(const CStdString& key, const CStdString& value);
+
+  /*! \brief Retrieve a particular settings value
+   If a previously configured user setting is available, we return it's value, else we return the default (if available)
+   \param key the id of the setting to retrieve
+   \return the current value of the setting, or the default if the setting has yet to be configured.
+   \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
+   */
   virtual CStdString GetSetting(const CStdString& key);
+
   TiXmlElement* GetSettingsXML();
   virtual CStdString GetString(uint32_t id);
 
