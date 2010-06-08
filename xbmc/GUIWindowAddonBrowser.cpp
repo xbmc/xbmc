@@ -501,11 +501,11 @@ bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool 
   return false;
 }
 
-void CGUIWindowAddonBrowser::InstallAddon(const CStdString &addonID)
+void CGUIWindowAddonBrowser::InstallAddon(const CStdString &addonID, bool force /*= false*/)
 {
   // check whether we already have the addon installed
   AddonPtr addon;
-  if (CAddonMgr::Get().GetAddon(addonID, addon))
+  if (!force && CAddonMgr::Get().GetAddon(addonID, addon))
     return;
 
   // check whether we have it available in a repository

@@ -37,6 +37,7 @@ public:
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_item; }
   virtual bool HasListItems() const { return true; }
 
+  void OnUpdate();
   void OnInstall();
   void OnUninstall();
   void OnEnable(bool enable);
