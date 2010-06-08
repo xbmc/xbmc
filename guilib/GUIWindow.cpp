@@ -65,6 +65,7 @@ CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
   m_animationsEnabled = true;
   m_manualRunActions = false;
   m_exclusiveMouseControl = 0;
+  m_clearBackground = true;
 }
 
 CGUIWindow::~CGUIWindow(void)

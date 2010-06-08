@@ -37,12 +37,6 @@ public:
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_item; }
   virtual bool HasListItems() const { return true; }
 
-  void OnInstall();
-  void OnUninstall();
-  void OnEnable(bool enable);
-  void OnSettings();
-  void OnChangeLog();
-
   static bool ShowForItem(const CFileItemPtr& item);
 
   // job callback
@@ -57,10 +51,16 @@ protected:
   bool SetItem(const CFileItemPtr &item);
   void UpdateControls();
 
+  void OnUpdate();
+  void OnInstall();
+  void OnUninstall();
+  void OnEnable(bool enable);
+  void OnSettings();
+  void OnChangeLog();
+
   CFileItemPtr m_item;
   ADDON::AddonPtr m_addon;
   ADDON::AddonPtr m_localAddon;
   unsigned int m_jobid;
   bool m_changelog;
 };
-

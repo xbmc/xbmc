@@ -35,7 +35,7 @@ extern "C" {
 #include "DynamicDll.h"
 #include "utils/log.h"
 
-#ifdef HAS_AC3_CODEC
+#ifdef USE_LIBA52_DECODER
 #ifndef _LINUX
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int8 uint8_t;
@@ -136,4 +136,4 @@ class DllAc3Codec : public DllDynamic, DllAc3CodecInterface
 
 #endif /* (defined USE_EXTERNAL_LIBA52) */
 
-#endif /* HAS_AC3_CODEC */
+#endif /* USE_LIBA52_DECODER */

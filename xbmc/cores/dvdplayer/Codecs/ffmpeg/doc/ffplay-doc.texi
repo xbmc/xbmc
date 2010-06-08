@@ -8,9 +8,9 @@
 @end titlepage
 
 
-@chapter Introduction
-
+@chapter Description
 @c man begin DESCRIPTION
+
 FFplay is a very simple and portable media player using the FFmpeg
 libraries and the SDL library. It is mostly used as a testbed for the
 various FFmpeg APIs.
@@ -148,11 +148,11 @@ Seek to percentage in file corresponding to fraction of width.
 @settitle FFplay media player
 
 @c man begin SEEALSO
-ffmpeg(1), ffserver(1) and the HTML documentation of @file{ffmpeg}.
+ffmpeg(1), ffprobe(1), ffserver(1) and the FFmpeg HTML documentation
 @c man end
 
-@c man begin AUTHOR
-Fabrice Bellard
+@c man begin AUTHORS
+The FFmpeg developers
 @c man end
 
 @end ignore

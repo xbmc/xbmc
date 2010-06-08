@@ -29,7 +29,12 @@ public:
   CGUIDialogAddonSettings(void);
   virtual ~CGUIDialogAddonSettings(void);
   virtual bool OnMessage(CGUIMessage& message);
-  static bool ShowAndGetInput(const ADDON::AddonPtr &addon);
+  /*! \brief Show the addon settings dialog, allowing the user to configure an addon
+   \param addon the addon to configure
+   \param saveToDisk whether the changes should be saved to disk or just made local to the addon.  Defaults to true
+   \return true if settings were changed and the dialog confirmed, false otherwise.
+   */
+  static bool ShowAndGetInput(const ADDON::AddonPtr &addon, bool saveToDisk = true);
   virtual void Render();
 
 protected:
@@ -61,6 +66,7 @@ private:
   CStdString m_strHeading;
   std::map<CStdString,CStdString> m_buttonValues;
   bool m_changed;
+  bool m_saveToDisk; // whether the addon settings should be saved to disk or just stored locally in the addon
 
   unsigned int m_currentSection;
   unsigned int m_totalSections;

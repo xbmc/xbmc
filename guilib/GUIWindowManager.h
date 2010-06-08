@@ -67,7 +67,7 @@ public:
   // currently focused window(s).  Returns true only if the message is handled.
   bool OnAction(const CAction &action);
 
-  /*! \brief Rendering of the current window
+  /*! \brief Rendering of the current window and any dialogs
    Render is called every frame to draw the current window and any dialogs.
    It should only be called from the application thread.
    */

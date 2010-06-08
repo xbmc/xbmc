@@ -236,7 +236,7 @@ library:
 @item VC-1 test bitstream       @tab X @tab X
 @item WAV                       @tab X @tab X
 @item WavPack                   @tab   @tab X
-@item WebM                      @tab   @tab X
+@item WebM                      @tab X @tab X
 @item Wing Commander III movie  @tab   @tab X
     @tab Multimedia format used in Origin's Wing Commander III computer game.
 @item Westwood Studios audio    @tab   @tab X
@@ -439,8 +439,8 @@ following image formats are supported:
     @tab fourcc: VP50
 @item On2 VP6                @tab     @tab  X
     @tab fourcc: VP60,VP61,VP62
-@item VP8                    @tab     @tab  X
-    @tab fourcc: VP80, decoding supported through external library libvpx
+@item VP8                    @tab  X  @tab  X
+    @tab fourcc: VP80, de/encoding supported through external library libvpx
 @item planar RGB             @tab     @tab  X
     @tab fourcc: 8BPS
 @item Q-team QPEG            @tab     @tab  X

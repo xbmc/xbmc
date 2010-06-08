@@ -435,7 +435,7 @@ void CGUIBaseContainer::OnJumpLetter(char letter)
   for (unsigned int i = (offset + 1) % m_items.size(); i != offset; i = (i+1) % m_items.size())
   {
     CGUIListItemPtr item = m_items[i];
-    if (0 == strnicmp(item->GetSortLabel().c_str(), m_match.c_str(), m_match.size()))
+    if (0 == strnicmp(item->GetLabel().c_str(), m_match.c_str(), m_match.size()))
     {
       SelectItem(i);
       return;

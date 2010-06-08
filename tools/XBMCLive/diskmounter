@@ -3,7 +3,7 @@
 # This utility searches for available HFS+, NTFS and FAT32 partitions, creates
 # mount points for them and mounts the partitions
 #
-# (c)2008 Luigi Capriotti <l.capriotti@tiscali.it> for use in LiveXBMCV2
+# (c)2008 Luigi Capriotti <l.capriotti@xbmc.org> for use in XBMCLive
 # Base on "diskmount" by Dennis Kaarsemaker <dennis@ubuntu-nl.org>
 #
 # This program is free software; you can redistribute it and/or
@@ -48,14 +48,15 @@ for drive in $drivesntfs; do
     if [[ ! `grep $drive /etc/fstab` && ! `pmount | grep $drive` && ! `mount | grep $drive` ]]; then
         if [ -e /sys/block/${drive%?}/removable ]; then
             if [ "$(cat /sys/block/${drive%?}/removable)" = "0" ]; then
-		if [ ! -d /media/$drive ] ; then
-	                mkdir /media/$drive
+		uuid=`blkid /dev/$drive | awk 'BEGIN{RS="UUID="}/-/{gsub(/ .*/,"");print}' | sed s/'"'/''/g`
+		if [ ! -d /media/$uuid ] ; then
+	                mkdir /media/$uuid
 		fi
-                mount -t ntfs -o rw,$OPTIONS /dev/$drive /media/$drive
+                mount -t ntfs -o rw,$OPTIONS /dev/$drive /media/$uuid
 
                 donesomething='y'
                 if [[ $VERBOSE == 'y' ]]; then
-                    echo "Mounted /dev/$drive as '/media/$drive' (read-only)"
+                    echo "Mounted /dev/$drive as '/media/$uuid' (read-only)"
                 fi
             else
                 if [[ $VERBOSE == 'y' ]]; then
@@ -72,16 +73,18 @@ done
 
 for drive in $drivesfat; do
     if [[ ! `grep $drive /etc/fstab` && ! `pmount | grep $drive` && ! `mount | grep $drive` ]]; then
+	uuid=`blkid /dev/$drive | awk 'BEGIN{RS="UUID="}/-/{gsub(/ .*/,"");print}' | sed s/'"'/''/g`
         if [ -e /sys/block/${drive%?}/removable ]; then
             if [ "$(cat /sys/block/${drive%?}/removable)" = "0" ]; then
-		if [ ! -d /media/$drive ]; then
-	                mkdir /media/$drive
+		uuid=`blkid /dev/$drive | awk 'BEGIN{RS="UUID="}/-/{gsub(/ .*/,"");print}' | sed s/'"'/''/g`
+		if [ ! -d /media/$uuid ] ; then
+	                mkdir /media/$uuid
 		fi
-                mount -t vfat -o rw,$OPTIONS /dev/$drive /media/$drive
+                mount -t vfat -o rw,$OPTIONS /dev/$drive /media/$uuid
 
                 donesomething='y'
                 if [[ $VERBOSE == 'y' ]]; then
-                    echo "Mounted /dev/$drive as '/media/$drive' (read-only)"
+                    echo "Mounted /dev/$drive as '/media/$uuid' (read-only)"
                 fi
             else
                 if [[ $VERBOSE == 'y' ]]; then
@@ -101,14 +104,15 @@ for drive in $driveshfs; do
     if [[ ! `grep $drive /etc/fstab` && ! `pmount | grep $drive` && ! `mount | grep $drive` ]]; then
         if [ -e /sys/block/${drive%?}/removable ]; then
             if [ "$(cat /sys/block/${drive%?}/removable)" = "0" ]; then
-		if [ ! -d /media/$drive ]; then
-	                mkdir /media/$drive
+		uuid=`blkid /dev/$drive | awk 'BEGIN{RS="UUID="}/-/{gsub(/ .*/,"");print}' | sed s/'"'/''/g`
+		if [ ! -d /media/$uuid ] ; then
+	                mkdir /media/$uuid
 		fi
-                mount -t hfsplus -o rw,$MACOPTIONS /dev/$drive /media/$drive
+                mount -t hfsplus -o rw,$MACOPTIONS /dev/$drive /media/$uuid
 
                 donesomething='y'
                 if [[ $VERBOSE == 'y' ]]; then
-                    echo "Mounted /dev/$drive as '/media/$drive' (read-only)"
+                    echo "Mounted /dev/$drive as '/media/$uuid' (read-only)"
                 fi
             else
                 if [[ $VERBOSE == 'y' ]]; then
@@ -127,14 +131,15 @@ for drive in $drivesext; do
     if [[ ! `grep $drive /etc/fstab` && ! `pmount | grep $drive` && ! `mount | grep $drive` ]]; then
         if [ -e /sys/block/${drive%?}/removable ]; then
             if [ "$(cat /sys/block/${drive%?}/removable)" = "0" ]; then
-		if [ ! -d /media/$drive ]; then
-	                mkdir /media/$drive
+		uuid=`blkid /dev/$drive | awk 'BEGIN{RS="UUID="}/-/{gsub(/ .*/,"");print}' | sed s/'"'/''/g`
+		if [ ! -d /media/$uuid ] ; then
+	                mkdir /media/$uuid
 		fi
-                mount -o rw,$EXTOPTIONS /dev/$drive /media/$drive
+                mount -o rw,$EXTOPTIONS /dev/$drive /media/$uuid
 
                 donesomething='y'
                 if [[ $VERBOSE == 'y' ]]; then
-                    echo "Mounted /dev/$drive as '/media/$drive' (read-only)"
+                    echo "Mounted /dev/$drive as '/media/$uuid' (read-only)"
                 fi
             else
                 if [[ $VERBOSE == 'y' ]]; then

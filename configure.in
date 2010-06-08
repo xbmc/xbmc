@@ -730,6 +730,8 @@ if test "$use_liba52" = "yes" && "$use_external_liba52" = "yes"; then
   AC_MSG_NOTICE($external_liba52_enabled)
   USE_EXTERNAL_LIBA52=1
   AC_DEFINE([USE_EXTERNAL_LIBA52], [1], [Whether to use external liba52 library.])
+  USE_INTERNAL_LIBA52=0
+  SKIP_CONFIG_LIBA52=1
 else
   AC_MSG_NOTICE($external_liba52_disabled)
   USE_EXTERNAL_LIBA52=0
@@ -742,6 +744,8 @@ if test "$use_libdts" = "yes" && "$use_external_libdts" = "yes"; then
   AC_MSG_NOTICE($external_libdts_enabled)
   USE_EXTERNAL_LIBDTS=1
   AC_DEFINE([USE_EXTERNAL_LIBDTS], [1], [Whether to use external libdts library.])
+  USE_INTERNAL_LIBDTS=0
+  SKIP_CONFIG_LIBDTS=1
 else
   AC_MSG_NOTICE($external_libdts_disabled)
   USE_EXTERNAL_LIBDTS=0
@@ -1204,16 +1208,28 @@ fi
 if test "$use_libdts" = "yes"; then
   USE_LIBDTS_DECODER=1
   AC_DEFINE([USE_LIBDTS_DECODER], [1], [Define to 1 to enable deprecated libdts support])
+  if ! test "$USE_EXTERNAL_LIBDTS" = "1"; then
+    USE_INTERNAL_LIBDTS=1
+    SKIP_CONFIG_LIBDTS=0
+  fi
   final_message="$final_message\n  Deprecated libdts:\tYes"
 else
+  USE_INTERNAL_LIBDTS=0
+  SKIP_CONFIG_LIBDTS=1
   final_message="$final_message\n  Deprecated libdts:\tNo"
 fi
 
 if test "$use_liba52" = "yes"; then
   USE_LIBA52_DECODER=1
   AC_DEFINE([USE_LIBA52_DECODER], [1], [Define to 1 to enable deprecated liba52 support])
+  if ! test "$USE_EXTERNAL_LIBA52" = "1"; then
+    USE_INTERNAL_LIBA52=1
+    SKIP_CONFIG_LIBA52=0
+  fi
   final_message="$final_message\n  Deprecated liba52:\tYes"
 else
+  USE_INTERNAL_LIBA52=0
+  SKIP_CONFIG_LIBA52=1
   final_message="$final_message\n  Deprecated liba52:\tNo"
 fi
 
@@ -1334,8 +1350,10 @@ AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(BUILD_GOOM)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
 AC_SUBST(USE_EXTERNAL_LIBA52)
+AC_SUBST(USE_INTERNAL_LIBA52)
 AC_SUBST(USE_EXTERNAL_LIBASS)
 AC_SUBST(USE_EXTERNAL_LIBDTS)
+AC_SUBST(USE_INTERNAL_LIBDTS)
 AC_SUBST(USE_EXTERNAL_LIBMPEG2)
 AC_SUBST(USE_EXTERNAL_LIBWAVPACK)
 AC_SUBST(USE_EXTERNAL_PYTHON)
@@ -1546,7 +1564,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
       --disable-win \
       CFLAGS="-fPIC"
   fi
-], [$USE_EXTERNAL_LIBDTS])
+], [$SKIP_CONFIG_LIBDTS])
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss], [
   if test "$host_vendor" = "apple" ; then
@@ -1649,7 +1667,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
       --disable-al-audio \
       CFLAGS=-fPIC
   fi
-], [$USE_EXTERNAL_LIBA52])
+], [$SKIP_CONFIG_LIBA52])
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [
   if test "$host_vendor" = "apple" ; then

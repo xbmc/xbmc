@@ -140,6 +140,7 @@ public:
   virtual CStdString GetAudioCodecName(){ return "";}
   virtual CStdString GetVideoCodecName(){ return "";}
   virtual int GetPictureWidth(){ return 0;}
+  virtual int GetPictureHeight(){ return 0;}
   virtual bool GetStreamDetails(CStreamDetails &details){ return false;}
   virtual void ToFFRW(int iSpeed = 0){};
   // Skip to next track/item inside the current media (if supported).

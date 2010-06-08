@@ -69,18 +69,21 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-      if (iControl == CONTROL_BTN_UPDATE || (iControl == CONTROL_BTN_INSTALL && !m_localAddon))
+      if (iControl == CONTROL_BTN_UPDATE)
       {
-        OnInstall();
-        Close();
+        OnUpdate();
         return true;
       }
-      else if (iControl == CONTROL_BTN_INSTALL && m_localAddon)
+      if (iControl == CONTROL_BTN_INSTALL)
       {
-        if (CGUIDialogYesNo::ShowAndGetInput(24037, 750, 0, 0))
+        if (!m_localAddon)
+        {
+          OnInstall();
+          return true;
+        }
+        else if (CGUIDialogYesNo::ShowAndGetInput(24037, 750, 0, 0))
         {
           OnUninstall();
-          Close();
           return true;
         }
       }
@@ -135,9 +138,16 @@ void CGUIDialogAddonInfo::UpdateControls()
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_CHANGELOG, m_addon->Type() != ADDON_REPOSITORY);
 }
 
+void CGUIDialogAddonInfo::OnUpdate()
+{
+  CGUIWindowAddonBrowser::InstallAddon(m_addon->ID(), true); // force install
+  Close();
+}
+
 void CGUIDialogAddonInfo::OnInstall()
 {
   CGUIWindowAddonBrowser::InstallAddon(m_addon->ID());
+  Close();
 }
 
 void CGUIDialogAddonInfo::OnUninstall()
@@ -156,6 +166,7 @@ void CGUIDialogAddonInfo::OnUninstall()
   list[0]->Select(true);
   CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete,list,""),window);
   CAddonMgr::Get().RemoveAddon(m_localAddon->ID());
+  Close();
 }
 
 void CGUIDialogAddonInfo::OnEnable(bool enable)
@@ -215,6 +226,7 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
   *m_item = *item;
 
   // grab the local addon, if it's available
+  m_addon.reset();
   if (CAddonMgr::Get().GetAddon(item->GetProperty("Addon.ID"), m_addon)) // sets m_addon if installed regardless of enabled state
     m_item->SetProperty("Addon.Enabled", "true");
   else
@@ -282,4 +294,3 @@ void CGUIDialogAddonInfo::OnJobComplete(unsigned int jobID, bool success,
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, WINDOW_DIALOG_TEXT_VIEWER, 0, GUI_MSG_UPDATE);
   g_windowManager.SendThreadMessage(msg);
 }
-

@@ -138,7 +138,8 @@ void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdStr
         codec = s->codecname;
         if (CompileRegExp(m_videoCodec, regExp) && !MatchesRegExp(codec, regExp)) return;
         if (CompileRegExp(m_videoResolution, regExp) &&
-          !MatchesRegExp(CStreamDetails::VideoWidthToResolutionDescription(((SVideoStreamInfos *)s)->width), regExp)) return;
+          !MatchesRegExp(CStreamDetails::VideoDimsToResolutionDescription(((SVideoStreamInfos *)s)->width,
+          ((SVideoStreamInfos *)s)->height), regExp)) return;
       }
     } else {
 
@@ -149,7 +150,8 @@ void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdStr
       if (CompileRegExp(m_videoCodec, regExp) && !MatchesRegExp(streamDetails.GetVideoCodec(), regExp)) return;
 
       if (CompileRegExp(m_videoResolution, regExp) &&
-          !MatchesRegExp(CStreamDetails::VideoWidthToResolutionDescription(streamDetails.GetVideoWidth()), regExp)) return;
+          !MatchesRegExp(CStreamDetails::VideoDimsToResolutionDescription(streamDetails.GetVideoWidth(),
+          streamDetails.GetVideoHeight()), regExp)) return;
     }
 
     if (item.GetVideoInfoTag()->HasStreamDetails() && CompileRegExp(m_videoAspect, regExp) &&

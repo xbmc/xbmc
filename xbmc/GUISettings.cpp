@@ -67,7 +67,7 @@ CGUISettings& g_guiSettings = g_SystemGlobals.m_guiSettings;
 #define DEFAULT_VISUALISATION "visualization.glspectrum"
 #elif defined(_WIN32)
 #ifdef HAS_DX
-#define DEFAULT_VISUALISATION "visualization.milkrop"
+#define DEFAULT_VISUALISATION "visualization.milkdrop"
 #else
 #define DEFAULT_VISUALISATION "visualization.glspectrum"
 #endif
@@ -1173,23 +1173,20 @@ void CGUISettings::LoadFromXML(TiXmlElement *pRootElement, mapIter &it, bool adv
     if (pChild)
     {
       const TiXmlElement *pGrandChild = pChild->FirstChildElement(strSplit[1].c_str());
-      if (pGrandChild && pGrandChild->FirstChild())
+      if (pGrandChild)
       {
-        CStdString strValue = pGrandChild->FirstChild()->Value();
-        if (strValue.size() )
-        {
-          if (strValue != "-")
-          { // update our item
-            if ((*it).second->GetType() == SETTINGS_TYPE_PATH)
-            { // check our path
-              int pathVersion = 0;
-              pGrandChild->Attribute("pathversion", &pathVersion);
-              strValue = CSpecialProtocol::ReplaceOldPath(strValue, pathVersion);
-            }
-            (*it).second->FromString(strValue);
-            if (advanced)
-              (*it).second->SetAdvanced();
+        CStdString strValue = pGrandChild->FirstChild() ? pGrandChild->FirstChild()->Value() : "";
+        if (strValue != "-")
+        { // update our item
+          if ((*it).second->GetType() == SETTINGS_TYPE_PATH)
+          { // check our path
+            int pathVersion = 0;
+            pGrandChild->Attribute("pathversion", &pathVersion);
+            strValue = CSpecialProtocol::ReplaceOldPath(strValue, pathVersion);
           }
+          (*it).second->FromString(strValue);
+          if (advanced)
+            (*it).second->SetAdvanced();
         }
       }
     }
@@ -1202,7 +1199,7 @@ void CGUISettings::SaveXML(TiXmlNode *pRootNode)
   {
     // don't save advanced settings
     CStdString first = (*it).first;
-    if ((*it).second->IsAdvanced())
+    if ((*it).second->IsAdvanced() || (*it).second->GetType() == SETTINGS_TYPE_SEPARATOR)
       continue;
 
     CStdStringArray strSplit;

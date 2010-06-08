@@ -136,7 +136,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
       ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addons[i]);
 
       // skip if scraper requires settings and there's nothing set yet
-      if (scraper->RequiresSettings() && !scraper->LoadUserSettings(false))
+      if (scraper->RequiresSettings() && !scraper->HasUserSettings())
           continue;
 
       // add same language, multi-language and music scrapers
@@ -151,7 +151,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
   }
 
   // add default scraper
-  if ((selected && selected->Parent() != defaultScraper) || !selected) 
+  if ((selected && selected->ID() != defaultScraper->ID()) || !selected)
     vecScrapers.push_back(defaultScraper);
 
   // search ..

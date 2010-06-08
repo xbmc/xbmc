@@ -32,7 +32,7 @@ CGUITextureGLES::CGUITextureGLES(float posX, float posY, float width, float heig
 {
 }
 
-void CGUITextureGLES::Begin()
+void CGUITextureGLES::Begin(color_t color)
 {
   CBaseTexture* texture = m_texture.m_textures[m_currentFrame];
   glActiveTexture(GL_TEXTURE0);
@@ -77,6 +77,15 @@ void CGUITextureGLES::Begin()
     glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, 0, m_tex1);
     glEnableVertexAttribArray(tex1Loc);
   }
+
+  // Setup Colors
+  for (int i = 0; i < 4; i++)
+  {
+    m_col[i][0] = (GLubyte)GET_R(color);
+    m_col[i][1] = (GLubyte)GET_G(color);
+    m_col[i][2] = (GLubyte)GET_B(color);
+    m_col[i][3] = (GLubyte)GET_A(color);
+  }
 }
 
 void CGUITextureGLES::End()
@@ -96,22 +105,16 @@ void CGUITextureGLES::End()
   g_Windowing.DisableGUIShader();
 }
 
-void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)
+void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, int orientation)
 {
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
 
+  // Setup vertex position values
   for (int i=0; i<4; i++)
   {
-    // Setup vertex position values
     m_vert[i][0] = x[i];
     m_vert[i][1] = y[i];
     m_vert[i][2] = z[i];
-
-    // Setup Colours
-    m_col[i][0] = (GLubyte)GET_R(color);
-    m_col[i][1] = (GLubyte)GET_G(color);
-    m_col[i][2] = (GLubyte)GET_B(color);
-    m_col[i][3] = (GLubyte)GET_A(color);
   }
 
   // Setup texture coordinates

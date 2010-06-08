@@ -69,16 +69,6 @@ public:
 
   AddonProps(cp_plugin_info_t *props);
 
-  AddonProps(const AddonPtr &addon)
-    : id(addon->ID())
-    , type(addon->Type())
-    , version(addon->Version().str)
-    , stars(0)
-  { 
-    if (addon->Parent())
-      parent = addon->Parent()->ID();
-  }
-
   bool operator==(const AddonProps &rhs)
   { 
     return    (*this).id == rhs.id
@@ -116,14 +106,38 @@ public:
   virtual ~CAddon() {}
   virtual AddonPtr Clone(const AddonPtr& parent) const;
 
-  // settings & language
-  virtual bool HasSettings();
-  virtual bool LoadSettings();
-  bool LoadUserSettings(bool create=true);
+  /*! \brief Check whether the this addon can be configured or not
+   \return true if the addon has settings, false otherwise
+   \sa LoadSettings, LoadUserSettings, SaveSettings, HasUserSettings, GetSetting, UpdateSetting
+   */
+  bool HasSettings();
+
+  /*! \brief Check whether the user has configured this addon or not
+   \return true if previously saved settings are found, false otherwise
+   \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, GetSetting, UpdateSetting
+   */
+  bool HasUserSettings();
+
+  /*! \brief Save any user configured settings
+   \sa LoadSettings, LoadUserSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
+   */
   virtual void SaveSettings();
-  virtual void SaveFromDefault();
-  virtual void UpdateSetting(const CStdString& key, const CStdString& value, const CStdString &type = "");
-  virtual CStdString GetSetting(const CStdString& key) const;
+
+  /*! \brief Update a user-configured setting with a new value
+   \param key the id of the setting to update
+   \param value the value that the setting should take
+   \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
+   */
+  void UpdateSetting(const CStdString& key, const CStdString& value);
+
+  /*! \brief Retrieve a particular settings value
+   If a previously configured user setting is available, we return it's value, else we return the default (if available)
+   \param key the id of the setting to retrieve
+   \return the current value of the setting, or the default if the setting has yet to be configured.
+   \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
+   */
+  virtual CStdString GetSetting(const CStdString& key);
+
   TiXmlElement* GetSettingsXML();
   virtual CStdString GetString(uint32_t id);
 
@@ -132,7 +146,6 @@ public:
   AddonProps Props() const { return m_props; }
   AddonProps& Props() { return m_props; }
   const CStdString ID() const { return m_props.id; }
-  const AddonPtr Parent() const { return m_parent; }
   const CStdString Name() const { return m_props.name; }
   bool Enabled() const { return m_enabled; }
   const AddonVersion Version();
@@ -152,16 +165,31 @@ public:
 protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
   CAddon(const CAddon&, const AddonPtr&);
+  const AddonPtr Parent() const { return m_parent; }
   virtual void BuildLibName(const cp_extension_t *ext = NULL);
+
+  /*! \brief Load the default settings and override these with any previously configured user settings
+   \return true if settings exist, false otherwise
+   \sa LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
+   */
+  virtual bool LoadSettings();
+
+  /*! \brief Load the user settings
+   \return true if user settings exist, false otherwise
+   \sa LoadSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
+   */
+  bool LoadUserSettings();
+
   TiXmlDocument     m_addonXmlDoc;
   TiXmlDocument     m_userXmlDoc;
-  CStdString        m_userSettingsPath;
   CStdString        m_strLibName;
+  bool              m_settingsLoaded;
 
 private:
   friend class AddonMgr;
   AddonProps m_props;
   const AddonPtr    m_parent;
+  CStdString        m_userSettingsPath;
   void BuildProfilePath();
 
   virtual bool IsAddonLibrary() { return false; }

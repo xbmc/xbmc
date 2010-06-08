@@ -307,7 +307,7 @@ void CGUIWindowFileManager::OnSort(int iList)
   for (int i = 0; i < m_vecItems[iList]->Size(); i++)
   {
     CFileItemPtr pItem = m_vecItems[iList]->Get(i);
-    if (pItem->m_bIsFolder && !pItem->m_dwSize)
+    if (pItem->m_bIsFolder && !pItem->m_dwSize || pItem->m_strPath.Equals("add")) 
       pItem->SetLabel2("");
     else
       pItem->SetFileSizeLabel();
@@ -479,7 +479,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     pItem->SetLabelPreformated(true);
     m_vecItems[iList]->Add(pItem);
   }
-  else if (g_guiSettings.GetBool("filelists.showparentdiritems"))
+  else if (items.IsEmpty() || g_guiSettings.GetBool("filelists.showparentdiritems"))
   {
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->m_strPath = strParentPath;

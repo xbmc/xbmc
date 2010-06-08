@@ -294,7 +294,7 @@ char *ff_http_auth_create_response(HTTPAuthState *state, const char *auth,
         return NULL;
 
     if (state->auth_type == HTTP_AUTH_BASIC) {
-        int auth_b64_len = (strlen(auth) + 2) / 3 * 4 + 1;
+        int auth_b64_len = AV_BASE64_SIZE(strlen(auth));
         int len = auth_b64_len + 30;
         char *ptr;
         authstr = av_malloc(len);
@@ -303,7 +303,7 @@ char *ff_http_auth_create_response(HTTPAuthState *state, const char *auth,
         snprintf(authstr, len, "Authorization: Basic ");
         ptr = authstr + strlen(authstr);
         av_base64_encode(ptr, auth_b64_len, auth, strlen(auth));
-        av_strlcat(ptr, "\r\n", len);
+        av_strlcat(ptr, "\r\n", len - (ptr - authstr));
     } else if (state->auth_type == HTTP_AUTH_DIGEST) {
         char *username = av_strdup(auth), *password;
 

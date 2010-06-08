@@ -59,8 +59,9 @@ public:
 
   /*! \brief Install an addon if it is available in a repository
    \param addonID the addon ID of the item to install
+   \param force whether to force the install even if the addon is already installed (eg for updating). Defaults to false.
    */
-  static void InstallAddon(const CStdString &addonID);
+  static void InstallAddon(const CStdString &addonID, bool force = false);
 
   /*! \brief Install a set of addons from the official repository (if needed)
    \param addonIDs a set of addon IDs to install

@@ -37,7 +37,7 @@
 #define __MODULE_NAME__ "DVDVideoCodecCrystalHD"
 
 CDVDVideoCodecCrystalHD::CDVDVideoCodecCrystalHD() :
-  m_Device(NULL),
+  m_Codec(NULL),
   m_DropPictures(false),
   m_Duration(0.0),
   m_pFormatName(""),
@@ -59,7 +59,7 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
     switch (hints.codec)
     {
       case CODEC_ID_MPEG2VIDEO:
-        m_codec_type = CRYSTALHD_CODEC_ID_MPEG2;
+        m_CodecType = CRYSTALHD_CODEC_ID_MPEG2;
         m_pFormatName = "chd-mpeg2";
       break;
       case CODEC_ID_H264:
@@ -72,15 +72,15 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
         if ( *(char*)hints.extradata == 1 )
           m_convert_bitstream = bitstream_convert_init(hints.extradata, hints.extrasize);
 
-        m_codec_type = CRYSTALHD_CODEC_ID_H264;
+        m_CodecType = CRYSTALHD_CODEC_ID_H264;
         m_pFormatName = "chd-h264";
       break;
       case CODEC_ID_VC1:
-        m_codec_type = CRYSTALHD_CODEC_ID_VC1;
+        m_CodecType = CRYSTALHD_CODEC_ID_VC1;
         m_pFormatName = "chd-vc1";
       break;
       case CODEC_ID_WMV3:
-        m_codec_type = CRYSTALHD_CODEC_ID_WMV3;
+        m_CodecType = CRYSTALHD_CODEC_ID_WMV3;
         m_pFormatName = "chd-wmv3";
       break;
       default:
@@ -88,14 +88,14 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
       break;
     }
 
-    m_Device = CCrystalHD::GetInstance();
-    if (!m_Device)
+    m_Codec = CCrystalHD::GetInstance();
+    if (!m_Codec)
     {
       CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Codec", __MODULE_NAME__);
       return false;
     }
 
-    if (m_Device && !m_Device->OpenDecoder(m_codec_type, hints.extrasize, hints.extradata))
+    if (m_Codec && !m_Codec->OpenDecoder(m_CodecType, hints.extrasize, hints.extradata))
     {
       CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD Codec", __MODULE_NAME__);
       return false;
@@ -114,10 +114,10 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
 
 void CDVDVideoCodecCrystalHD::Dispose(void)
 {
-  if (m_Device)
+  if (m_Codec)
   {
-    m_Device->CloseDecoder();
-    m_Device = NULL;
+    m_Codec->CloseDecoder();
+    m_Codec = NULL;
   }
   if (m_convert_bitstream)
   {
@@ -133,7 +133,13 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
 {
   if (!pData)
   {
-    if (m_Device->GetReadyCount())
+    // if pData is nil, we are in dvdplayervideo's special loop
+    // where it checks for more picture frames, you must pass
+    // VC_BUFFER to get it to break out of this loop.
+    int ready_cnt = m_Codec->GetReadyCount();
+    if (ready_cnt == 1)
+      return VC_PICTURE | VC_BUFFER;
+    if (ready_cnt > 2)
       return VC_PICTURE;
     else
       return VC_BUFFER;
@@ -144,7 +150,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
   // them back to CrystalHD class for re-queuing. This way we keep
   // the memory alloc/free to a minimum and don't churn memory for
   // each picture frame.
-  m_Device->BusyListFlush();
+  m_Codec->BusyListFlush();
 
   if (pData)
   {
@@ -169,7 +175,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
     }
     // Handle Input, add demuxer packet to input queue, we must accept it or
     // it will be discarded as DVDPlayerVideo has no concept of "try again".
-    if ( !m_Device->AddInput(demuxer_content, demuxer_bytes, dts, pts) )
+    if ( !m_Codec->AddInput(demuxer_content, demuxer_bytes, dts, pts) )
     {
       // Deep crap error, this should never happen unless we run away pulling demuxer pkts.
       CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full.", __MODULE_NAME__);
@@ -180,13 +186,13 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
       free(demuxer_content);
   }
 
-  int rtn = 0;
-  // TODO: queue depth is related to the number of reference frames in encoded h.264.
-  // so we need to buffer until we get N ref frames + 1.
-  if (m_Device->GetReadyCount() > 8)
+  // if we have more than one frame ready, just return VC_PICTURE so 
+  // dvdplayervideo will loop and drain them before sending another demuxer packet.
+  if (m_Codec->GetReadyCount() > 2)
     return VC_PICTURE;
   
-  if (m_Device->GetReadyCount())
+  int rtn = 0;
+  if (m_Codec->GetReadyCount())
     rtn = VC_PICTURE;
 
   return rtn | VC_BUFFER;
@@ -194,23 +200,22 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE *pData, int iSize, double dts, double p
 
 void CDVDVideoCodecCrystalHD::Reset(void)
 {
-  m_Device->Reset();
+  m_Codec->Reset();
 }
 
 bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
   bool  ret;
   
-  ret = m_Device->GetPicture(pDvdVideoPicture);
+  ret = m_Codec->GetPicture(pDvdVideoPicture);
   m_Duration = pDvdVideoPicture->iDuration;
-  pDvdVideoPicture->iDuration = 0;
   return ret;
 }
 
 void CDVDVideoCodecCrystalHD::SetDropState(bool bDrop)
 {
   m_DropPictures = bDrop;
-  m_Device->SetDropState(m_DropPictures);
+  m_Codec->SetDropState(m_DropPictures);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

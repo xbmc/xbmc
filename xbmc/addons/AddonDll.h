@@ -45,10 +45,7 @@ namespace ADDON
     virtual ADDON_STATUS GetStatus();
 
     // addon settings
-    virtual bool HasSettings();
-    virtual bool LoadSettings();
     virtual void SaveSettings();
-    virtual void SaveFromDefault();
     virtual CStdString GetSetting(const CStdString& key);
 
     bool Create();
@@ -59,6 +56,7 @@ namespace ADDON
     void HandleException(std::exception &e, const char* context);
     bool Initialized() { return m_initialized; }
     virtual void BuildLibName(const cp_extension_t *ext = NULL) {}
+    virtual bool LoadSettings();
     TheStruct* m_pStruct;
     TheProps*     m_pInfo;
 
@@ -82,17 +80,20 @@ template<class TheDll, typename TheStruct, typename TheProps>
 CAddonDll<TheDll, TheStruct, TheProps>::CAddonDll(const cp_extension_t *ext)
   : CAddon(ext)
 {
+  if (ext)
+  {
 #if defined(_LINUX) && !defined(__APPLE__)
-  m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux");
+    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_linux");
 #elif defined(_WIN32) && defined(HAS_SDL_OPENGL)
-  m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_wingl");
+    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_wingl");
 #elif defined(_WIN32) && defined(HAS_DX)
-  m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_windx");
+    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_windx");
 #elif defined(__APPLE__)
-  m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_osx");
+    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_osx");
 #elif defined(_XBOX)
-  m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_xbox");
+    m_strLibName = CAddonMgr::Get().GetExtValue(ext->configuration, "@library_xbox");
 #endif
+  }
 
   m_pStruct     = NULL;
   m_initialized = false;
@@ -268,25 +269,11 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::GetStatus()
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
-bool CAddonDll<TheDll, TheStruct, TheProps>::HasSettings()
-{
-  if (!LoadDll())
-    return false;
-
-  try
-  {
-    return m_pDll->HasSettings();
-  }
-  catch (std::exception &e)
-  {
-    HandleException(e, "m_pDll->HasSettings()");
-    return false;
-  }
-}
-
-template<class TheDll, typename TheStruct, typename TheProps>
 bool CAddonDll<TheDll, TheStruct, TheProps>::LoadSettings()
 {
+  if (m_settingsLoaded)
+    return true;
+
   if (!LoadDll())
     return false;
 
@@ -321,6 +308,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadSettings()
   else
     return CAddon::LoadSettings();
 
+  m_settingsLoaded = true;
   return CAddon::LoadUserSettings();
 }
 
@@ -369,14 +357,6 @@ void CAddonDll<TheDll, TheStruct, TheProps>::SaveSettings()
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
-void CAddonDll<TheDll, TheStruct, TheProps>::SaveFromDefault()
-{
-  CAddon::SaveFromDefault();
-  if (m_initialized)
-    TransferSettings();
-}
-
-template<class TheDll, typename TheStruct, typename TheProps>
 CStdString CAddonDll<TheDll, TheStruct, TheProps>::GetSetting(const CStdString& key)
 {
   return CAddon::GetSetting(key);
@@ -390,47 +370,55 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
 
   CLog::Log(LOGDEBUG, "Calling TransferSettings for: %s", Name().c_str());
 
-  LoadUserSettings();
+  LoadSettings();
 
-  TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
-  while (setting)
+  const TiXmlElement *category = m_addonXmlDoc.RootElement() ? m_addonXmlDoc.RootElement()->FirstChildElement("category") : NULL;
+  if (!category)
+    category = m_addonXmlDoc.RootElement(); // no categories
+
+  while (category)
   {
-    ADDON_STATUS status = STATUS_OK;
-    const char *id = setting->Attribute("id");
-    const char *type = setting->Attribute("type");
-
-    if (type)
+    const TiXmlElement *setting = category->FirstChildElement("setting");
+    while (setting)
     {
-      if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
-        strcmpi(type, "folder") == 0 || strcmpi(type, "action") == 0 ||
-        strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
-        strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
-        strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
-      {
-        status = m_pDll->SetSetting(id, (const char*) GetSetting(id).c_str());
-      }
-      else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
-        strcmpi(type, "labelenum") == 0)
-      {
-        int tmp = atoi(GetSetting(id));
-        status = m_pDll->SetSetting(id, (int*) &tmp);
-      }
-      else if (strcmpi(type, "bool") == 0)
-      {
-        bool tmp = (GetSetting(id) == "true") ? true : false;
-        status = m_pDll->SetSetting(id, (bool*) &tmp);
-      }
-      else
-      {
-        CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type, Name().c_str());
-      }
+      ADDON_STATUS status = STATUS_OK;
+      const char *id = setting->Attribute("id");
+      const char *type = setting->Attribute("type");
 
-      if (status == STATUS_NEED_RESTART)
-        restart = true;
-      else if (status != STATUS_OK)
-        reportStatus = status;
+      if (type)
+      {
+        if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
+          strcmpi(type, "folder") == 0 || strcmpi(type, "action") == 0 ||
+          strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
+          strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
+          strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
+        {
+          status = m_pDll->SetSetting(id, (const char*) GetSetting(id).c_str());
+        }
+        else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
+          strcmpi(type, "labelenum") == 0)
+        {
+          int tmp = atoi(GetSetting(id));
+          status = m_pDll->SetSetting(id, (int*) &tmp);
+        }
+        else if (strcmpi(type, "bool") == 0)
+        {
+          bool tmp = (GetSetting(id) == "true") ? true : false;
+          status = m_pDll->SetSetting(id, (bool*) &tmp);
+        }
+        else
+        {
+          CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type, Name().c_str());
+        }
+
+        if (status == STATUS_NEED_RESTART)
+          restart = true;
+        else if (status != STATUS_OK)
+          reportStatus = status;
+      }
+      setting = setting->NextSiblingElement("setting");
     }
-    setting = setting->NextSiblingElement("setting");
+    category = category->NextSiblingElement("category");
   }
 
   if (restart || reportStatus != STATUS_OK)

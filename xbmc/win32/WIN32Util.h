@@ -71,7 +71,7 @@ public:
   static bool HasReqGLVersion();
 #endif
   static BOOL IsCurrentUserLocalAdministrator();
-  static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType=ALL_DRIVES);
+  static void GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType=ALL_DRIVES, bool bonlywithmedia=false);
   static bool IsAudioCD(const CStdString& strPath);
   static CStdString GetDiskLabel(const CStdString& strPath);
 
