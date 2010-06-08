@@ -216,7 +216,11 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.BackBufferWidth    = m_nBackBufferWidth;
   m_D3DPP.BackBufferHeight   = m_nBackBufferHeight;
   m_D3DPP.Flags              = D3DPRESENTFLAG_VIDEO;
+#ifdef HAS_DS_PLAYER
+  m_D3DPP.PresentationInterval = (m_bVSync || g_dsSettings.pRendererSettings->vSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+#else
   m_D3DPP.PresentationInterval = (m_bVSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+#endif
   m_D3DPP.FullScreen_RefreshRateInHz = (useWindow) ? 0 : (int)m_refreshRate;
   m_D3DPP.BackBufferFormat   = D3DFMT_X8R8G8B8;
   m_D3DPP.MultiSampleType    = D3DMULTISAMPLE_NONE;

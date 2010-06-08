@@ -1819,12 +1819,17 @@ void CApplication::RenderNoPresent()
 #endif
     )
     g_Windowing.SetVSync(true);
-  else if (vsync_mode == VSYNC_ALWAYS
+  else if (vsync_mode == VSYNC_ALWAYS)
 #ifdef HAS_DS_PLAYER
-    && !g_dsSettings.pRendererSettings->vSync
-#endif
-    )
+  {
+    if (IsPlaying() && g_dsSettings.pRendererSettings->vSync)
+      g_Windowing.SetVSync(false); // Disable XBMC vsync and use DSplayer one
+    else
+      g_Windowing.SetVSync(true);
+  }
+#else
     g_Windowing.SetVSync(true);
+#endif
   else if (vsync_mode != VSYNC_DRIVER)
     g_Windowing.SetVSync(false);
 
