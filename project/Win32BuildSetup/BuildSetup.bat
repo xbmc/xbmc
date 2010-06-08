@@ -147,7 +147,7 @@ IF %comp%==vs2008 (
 
 :MAKE_BUILD_EXE
   ECHO Copying files...
-  rmdir BUILD_WIN32 /S /Q
+  IF EXIST BUILD_WIN32 rmdir BUILD_WIN32 /S /Q
   md BUILD_WIN32\Xbmc
 
   Echo .svn>exclude.txt
