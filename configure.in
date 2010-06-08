@@ -279,7 +279,7 @@ AC_ARG_ENABLE([external-python],
 
 use_external_libass="yes"
 ### End of external library options
-DEFAULT_COMPILE_FLAGS="-fPIC -DPIC -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
+DEFAULT_COMPILE_FLAGS="-fPIC -DPIC -D_REENTRANT"
 if test "x$host_vendor" = "xapple"; then
   DEFAULT_COMPILE_FLAGS="$DEFAULT_COMPILE_FLAGS -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4"
 else
