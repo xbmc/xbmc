@@ -271,6 +271,9 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::GetStatus()
 template<class TheDll, typename TheStruct, typename TheProps>
 bool CAddonDll<TheDll, TheStruct, TheProps>::LoadSettings()
 {
+  if (m_settingsLoaded)
+    return true;
+
   if (!LoadDll())
     return false;
 
@@ -305,6 +308,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadSettings()
   else
     return CAddon::LoadSettings();
 
+  m_settingsLoaded = true;
   return CAddon::LoadUserSettings();
 }
 
@@ -366,47 +370,55 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::TransferSettings()
 
   CLog::Log(LOGDEBUG, "Calling TransferSettings for: %s", Name().c_str());
 
-  LoadUserSettings();
+  LoadSettings();
 
-  TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
-  while (setting)
+  const TiXmlElement *category = m_addonXmlDoc.RootElement() ? m_addonXmlDoc.RootElement()->FirstChildElement("category") : NULL;
+  if (!category)
+    category = m_addonXmlDoc.RootElement(); // no categories
+
+  while (category)
   {
-    ADDON_STATUS status = STATUS_OK;
-    const char *id = setting->Attribute("id");
-    const char *type = setting->Attribute("type");
-
-    if (type)
+    const TiXmlElement *setting = category->FirstChildElement("setting");
+    while (setting)
     {
-      if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
-        strcmpi(type, "folder") == 0 || strcmpi(type, "action") == 0 ||
-        strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
-        strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
-        strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
-      {
-        status = m_pDll->SetSetting(id, (const char*) GetSetting(id).c_str());
-      }
-      else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
-        strcmpi(type, "labelenum") == 0)
-      {
-        int tmp = atoi(GetSetting(id));
-        status = m_pDll->SetSetting(id, (int*) &tmp);
-      }
-      else if (strcmpi(type, "bool") == 0)
-      {
-        bool tmp = (GetSetting(id) == "true") ? true : false;
-        status = m_pDll->SetSetting(id, (bool*) &tmp);
-      }
-      else
-      {
-        CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type, Name().c_str());
-      }
+      ADDON_STATUS status = STATUS_OK;
+      const char *id = setting->Attribute("id");
+      const char *type = setting->Attribute("type");
 
-      if (status == STATUS_NEED_RESTART)
-        restart = true;
-      else if (status != STATUS_OK)
-        reportStatus = status;
+      if (type)
+      {
+        if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
+          strcmpi(type, "folder") == 0 || strcmpi(type, "action") == 0 ||
+          strcmpi(type, "music") == 0 || strcmpi(type, "pictures") == 0 ||
+          strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
+          strcmpi(type, "files") == 0 || strcmpi(type, "fileenum") == 0)
+        {
+          status = m_pDll->SetSetting(id, (const char*) GetSetting(id).c_str());
+        }
+        else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
+          strcmpi(type, "labelenum") == 0)
+        {
+          int tmp = atoi(GetSetting(id));
+          status = m_pDll->SetSetting(id, (int*) &tmp);
+        }
+        else if (strcmpi(type, "bool") == 0)
+        {
+          bool tmp = (GetSetting(id) == "true") ? true : false;
+          status = m_pDll->SetSetting(id, (bool*) &tmp);
+        }
+        else
+        {
+          CLog::Log(LOGERROR, "Unknown setting type '%s' for %s", type, Name().c_str());
+        }
+
+        if (status == STATUS_NEED_RESTART)
+          restart = true;
+        else if (status != STATUS_OK)
+          reportStatus = status;
+      }
+      setting = setting->NextSiblingElement("setting");
     }
-    setting = setting->NextSiblingElement("setting");
+    category = category->NextSiblingElement("category");
   }
 
   if (restart || reportStatus != STATUS_OK)

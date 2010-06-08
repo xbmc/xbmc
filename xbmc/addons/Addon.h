@@ -183,12 +183,12 @@ protected:
   TiXmlDocument     m_addonXmlDoc;
   TiXmlDocument     m_userXmlDoc;
   CStdString        m_strLibName;
+  bool              m_settingsLoaded;
 
 private:
   friend class AddonMgr;
   AddonProps m_props;
   const AddonPtr    m_parent;
-  bool              m_settingsLoaded;
   CStdString        m_userSettingsPath;
   void BuildProfilePath();
 
