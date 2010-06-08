@@ -46,6 +46,7 @@ openmax_disabled="== OpenMax support manually disabled. =="
 openmax_not_found="== Could not find libnvomx. OpenMax support disabled. =="
 libass_using_internal="== External Libass not found, using internal. =="
 ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
+libvpx_not_found="== Could not find libvpx. WebM support disabled. =="
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -669,6 +670,10 @@ else
   fi
 fi
 
+# WebM
+AC_CHECK_LIB([vpx], [main],use_vpx=yes,
+use_vpx=no;AC_MSG_RESULT($vpx_not_found))
+
 ### External libraries checks
 # External FFmpeg
 if test "$use_external_ffmpeg" = "yes"; then
@@ -721,6 +726,12 @@ else
   AC_MSG_NOTICE($external_ffmpeg_disabled)
   USE_EXTERNAL_FFMPEG=0
   AC_DEFINE([PIX_FMT_VDPAU_MPEG4_IN_AVUTIL], [1], [Whether AVUtil defines PIX_FMT_VDPAU_MPEG4.])
+fi
+
+if test "$use_vpx" = "yes"; then
+  USE_VPX=1
+else
+  USE_VPX=0
 fi
 
 # External liba52 if deprecated a52 support is enabled
@@ -1205,6 +1216,12 @@ else
   final_message="$final_message\n  Webserver:\tNo"
 fi
 
+if test "$use_vpx" = "yes"; then
+  final_message="$final_message\n  WebM support:\tYes"
+else
+  final_message="$final_message\n  WebM support:\tNo"
+fi
+
 if test "$use_libdts" = "yes"; then
   USE_LIBDTS_DECODER=1
   AC_DEFINE([USE_LIBDTS_DECODER], [1], [Define to 1 to enable deprecated libdts support])
@@ -1363,6 +1380,7 @@ AC_SUBST(USE_PYTHON2_4)
 AC_SUBST(OUTPUT_FILES)
 AC_SUBST(HAVE_XBMC_NONFREE)
 AC_SUBST(USE_ASAP_CODEC)
+AC_SUBST(USE_VPX)
 AC_SUBST(LIBCURL_BASENAME)
 AC_SUBST(LIBFLAC_BASENAME)
 AC_SUBST(LIBVORBISFILE_BASENAME)
@@ -1499,6 +1517,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-ffmpeg \
       --enable-shared \
       --disable-decoder=mpeg_xvmc \
+      `if test "$use_vpx" = "yes"; then echo --enable-libvpx; fi` \
       --enable-postproc \
       --enable-gpl \
       --enable-protocol=http \
@@ -1528,6 +1547,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-encoder=aac \
       `if test "$use_ffmpeg_libvorbis" == "yes"; then echo --enable-libvorbis --enable-muxer=ogg --enable-encoder=libvorbis; else echo --disable-libvorbis; fi` \
       --disable-decoder=mpeg_xvmc \
+      `if test "$use_vpx" = "yes"; then echo --enable-libvpx; fi` \
       --disable-devices \
       --disable-ffplay \
       --disable-ffserver \

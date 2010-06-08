@@ -50,6 +50,10 @@ else
 endif
 endif
 
+VPXLIB=
+ifeq (@USE_VPX@,1)
+VPXLIB+=-lvpx
+endif
 
 .PHONY: $(DIRS) codecs
 
@@ -69,7 +73,7 @@ $(SYSDIR)/avutil-50-$(ARCH).so: ffmpeg/libavutil/libavutil.dylib
 	chmod +x $@
 
 $(SYSDIR)/avcodec-52-$(ARCH).so: ffmpeg/libavcodec/libavcodec.dylib
-	$(CC) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
+	$(CC) $(VPXLIB) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
 		ffmpeg/libavcodec/*.o \
 		ffmpeg/libavcodec/$(ARCH_DIR)/*.o
 	$(WRAPPER_OSX) $@;mv output.so $@
@@ -153,7 +157,7 @@ $(SYSDIR)/avutil-50-$(ARCH).so: ffmpeg/libavutil/libavutil.so
 		ffmpeg/libavutil/*.o `cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/avcodec-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavcodec/libavcodec.so
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ -Wl,-Bsymbolic \
+	$(CC) $(VPXLIB) -o $@ $(LDFLAGS) --soname,$@ -Wl,-Bsymbolic \
 		ffmpeg/libavcodec/*.o ffmpeg/libavcodec/$(ARCH_DIR)/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 

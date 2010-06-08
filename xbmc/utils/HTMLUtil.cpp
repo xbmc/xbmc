@@ -100,7 +100,7 @@ void CHTMLUtil::getAttributeOfTag(const CStdString& strTagAndValue, const CStdSt
   }
 }
 
-void CHTMLUtil::ConvertAndRemoveTags(CStdString& strHTML)
+void CHTMLUtil::RemoveTags(CStdString& strHTML)
 {
   int iNested = 0;
   CStdString strReturn = "";
@@ -117,8 +117,14 @@ void CHTMLUtil::ConvertAndRemoveTags(CStdString& strHTML)
     }
   }
 
+  strHTML = strReturn;
+}
+
+void CHTMLUtil::ConvertAndRemoveTags(CStdString& strHTML)
+{
+  RemoveTags(strHTML);
   CStdString strText;
-  ConvertHTMLToAnsi(strReturn, strText);
+  ConvertHTMLToAnsi(strHTML, strText);
   strHTML = strText;
 }
 
