@@ -235,6 +235,13 @@ AC_ARG_ENABLE([liba52],
   [use_liba52=$enableval],
   [use_liba52=no])
 
+AC_ARG_WITH([lirc-device],
+  [AS_HELP_STRING([--with-lirc-device=file],
+  [specify the default LIRC device (default is /dev/lircd)])],
+  [lirc_device=$withval],
+  [lirc_device=/dev/lircd])
+AC_DEFINE_UNQUOTED([LIRC_DEVICE], ["$lirc_device"], [Default LIRC device])
+
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
   [AS_HELP_STRING([--enable-external-libraries],

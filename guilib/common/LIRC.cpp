@@ -33,8 +33,6 @@
 #include "FileSystem/File.h"
 #include "utils/TimeUtils.h"
 
-#define LIRC_DEVICE "/dev/lircd"
-
 CRemoteControl g_RemoteControl;
 
 CRemoteControl::CRemoteControl()
