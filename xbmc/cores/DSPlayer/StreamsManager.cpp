@@ -712,10 +712,11 @@ void CStreamsManager::FormatStreamName( SStreamInfos& s )
   // First, if lcid isn't 0, try GetLocalInfo
   if (s.lcid)
   {
-    CStdString name; int len = 0;
-    if (len = GetLocaleInfo(s.lcid, LOCALE_SLANGUAGE, name.GetBuffer(64), 64))
+    CStdStringW _name; int len = 0;
+    if (len = GetLocaleInfoW(s.lcid, LOCALE_SLANGUAGE, _name.GetBuffer(64), 64))
     {
-      name.resize(len - 1); //get rid of last \0
+      _name.resize(len - 1); //get rid of last \0
+      CStdString name; g_charsetConverter.wToUTF8(_name, name);
       if (s.type == SUBTITLE && !((SSubtitleStreamInfos&)s).trackname.empty())
         s.displayname.Format("%s (%s)", name, ((SSubtitleStreamInfos&)s).trackname);
       else
@@ -727,10 +728,12 @@ void CStreamsManager::FormatStreamName( SStreamInfos& s )
   {
     SSubtitleStreamInfos& c = ((SSubtitleStreamInfos&)s);
     CStdString name = ISOToLanguage(c.isolang);
-    if (! c.trackname.empty())
+    if (!name.empty() && !c.trackname.empty())
       c.displayname.Format("%s (%s)", name, ((SSubtitleStreamInfos&)s).trackname);
+    else if (! c.trackname.empty())
+      c.displayname = c.trackname;
     else
-      c.displayname = name;
+      c.displayname = "Unknown";
   }
 }
 
