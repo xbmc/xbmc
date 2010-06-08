@@ -2,20 +2,15 @@
 ECHO ----------------------------------------
 echo Creating Confluence Build Folder
 rmdir ..\..\project\Win32BuildSetup\BUILD_WIN32\Xbmc\addons\skin.confluence\ /S /Q
-md ..\..\project\Win32BuildSetup\BUILD_WIN32\Xbmc\addons\skin.confluence\
+md ..\..\project\Win32BuildSetup\BUILD_WIN32\Xbmc\addons\skin.confluence\media\
 
 Echo .svn>exclude.txt
 Echo Thumbs.db>>exclude.txt
 Echo Desktop.ini>>exclude.txt
 Echo dsstdfx.bin>>exclude.txt
 Echo BUILD>>exclude.txt
+Echo media>>exclude.txt
 Echo exclude.txt>>exclude.txt
-
-ECHO Building Skin Directory...
-xcopy "..\skin.confluence" "..\..\project\Win32BuildSetup\BUILD_WIN32\Xbmc\addons\skin.confluence" /E /Q /I /Y /EXCLUDE:exclude.txt
-
-rmdir ..\..\project\Win32BuildSetup\BUILD_WIN32\Xbmc\addons\skin.confluence\media /S /Q
-md ..\..\project\Win32BuildSetup\BUILD_WIN32\Xbmc\addons\skin.confluence\media
 
 ECHO ----------------------------------------
 ECHO Creating XBT File...
@@ -23,5 +18,7 @@ START /B /WAIT ..\..\Tools\TexturePacker\TexturePacker -input media -output ..\.
 
 ECHO ----------------------------------------
 ECHO XBT Texture Files Created...
+ECHO Building Skin Directory...
+xcopy "..\skin.confluence" "..\..\project\Win32BuildSetup\BUILD_WIN32\Xbmc\addons\skin.confluence" /E /Q /I /Y /EXCLUDE:exclude.txt
 
 del exclude.txt
