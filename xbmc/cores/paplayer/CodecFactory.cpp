@@ -168,6 +168,13 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
       return codec;
     }
     delete codec;
+#else
+    codec = new DVDPlayerCodec(CODEC_ID_DTS);
+    if (codec->Init(strFile, filecache))
+    {
+      return codec;
+    }
+    delete codec;
 #endif
 #ifdef USE_LIBA52_DECODER
     codec = new AC3Codec();
@@ -176,9 +183,8 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
       return codec;
     }
     delete codec;
-#endif
-#if (!defined(USE_LIBDTS_DECODER) || !defined(USE_LIBA52_DECODER)) && !defined(WIN32)
-    codec = new DVDPlayerCodec();
+#else
+    codec = new DVDPlayerCodec(CODEC_ID_AC3);
     if (codec->Init(strFile, filecache))
     {
       return codec;
@@ -213,6 +219,13 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
       return codec;
     }
     delete codec;
+#else
+    codec = new DVDPlayerCodec(CODEC_ID_DTS);
+    if (codec->Init(strFile, filecache))
+    {
+      return codec;
+    }
+    delete codec;
 #endif
 #ifdef HAS_AC3_CDDA_CODEC
     codec = new AC3CDDACodec();
@@ -221,9 +234,8 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
       return codec;
     }
     delete codec;
-#endif
-#if (!defined(USE_LIBDTS_DECODER) || !defined(HAS_AC3_CDDA_CODEC)) && !defined(WIN32)
-    codec = new DVDPlayerCodec();
+#else
+    codec = new DVDPlayerCodec(CODEC_ID_AC3);
     if (codec->Init(strFile, filecache))
     {
       return codec;
