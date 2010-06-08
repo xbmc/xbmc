@@ -29,7 +29,7 @@
 #endif
 #include <vector>
 #ifndef _LINUX
-
+#include <libavcodec/avcodec.h>
 enum CodecID;
 #else
 extern "C" {
@@ -39,8 +39,6 @@ extern "C" {
   #elif (defined HAVE_FFMPEG_AVCODEC_H)
     #include <ffmpeg/avcodec.h>
   #endif
-#else
-  #include "libavcodec/avcodec.h"
 #endif
 }
 #endif
