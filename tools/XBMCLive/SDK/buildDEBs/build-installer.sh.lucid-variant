@@ -40,7 +40,7 @@ if ! ls live-installer*.deb > /dev/null 2>&1 ; then
 		echo "Needed package (1) not found, exiting..."
 		exit 1
 	fi
-	tar xvf $latestPackage
+	tar xf $latestPackage
 
 	# Patch to remove unhandled waypoint
 	sed -i -e '/final_apt_preferences/s/^waypoint/#waypoint/' live-installer*/debian/live-installer.postinst
