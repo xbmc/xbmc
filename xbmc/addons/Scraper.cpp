@@ -157,10 +157,11 @@ bool CScraper::SetPathSettings(CONTENT_TYPE content, const CStdString& xml)
   if (xml.IsEmpty())
     return true;
 
-  m_userXmlDoc.Clear();
-  m_userXmlDoc.Parse(xml.c_str());
+  TiXmlDocument doc;
+  if (doc.Parse(xml.c_str()))
+    m_userSettingsLoaded = SettingsFromXML(doc);
 
-  return m_userXmlDoc.RootElement()?true:false;
+  return m_userSettingsLoaded;
 }
 
 CStdString CScraper::GetPathSettings()
@@ -168,20 +169,11 @@ CStdString CScraper::GetPathSettings()
   if (!LoadSettings())
     return "";
 
-  // construct our full settings structure by ensuring we have all of them updated
-  const TiXmlElement *setting = m_addonXmlDoc.RootElement()->FirstChildElement("setting");
-  while (setting)
-  {
-    CStdString id;
-    if (setting->Attribute("id"))
-      id = setting->Attribute("id");
-    UpdateSetting(id, GetSetting(id));
-    setting = setting->NextSiblingElement("setting");
-  }
-
   stringstream stream;
-  if (m_userXmlDoc.RootElement())
-    stream << *m_userXmlDoc.RootElement();
+  TiXmlDocument doc;
+  SettingsToXML(doc);
+  if (doc.RootElement())
+    stream << *doc.RootElement();
 
   return stream.str();
 }

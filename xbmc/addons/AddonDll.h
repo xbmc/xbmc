@@ -304,6 +304,7 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::LoadSettings()
        DllSetting& setting = vSet[i];
        m_addonXmlDoc.RootElement()->InsertEndChild(MakeSetting(setting));
     }
+    CAddon::SettingsFromXML(m_addonXmlDoc, true);
   }
   else
     return CAddon::LoadSettings();

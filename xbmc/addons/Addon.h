@@ -180,10 +180,24 @@ protected:
    */
   bool LoadUserSettings();
 
+  /*! \brief Parse settings from an XML document
+   \param doc XML document to parse for settings
+   \param loadDefaults if true, the default attribute is used and settings are reset prior to parsing, else the value attribute is used.
+   \return true if settings are loaded, false otherwise
+   \sa SettingsToXML
+   */
+  bool SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults = false);
+
+  /*! \brief Parse settings into an XML document
+   \param doc XML document to receive the settings
+   \sa SettingsFromXML
+   */
+  void SettingsToXML(TiXmlDocument &doc) const;
+
   TiXmlDocument     m_addonXmlDoc;
-  TiXmlDocument     m_userXmlDoc;
   CStdString        m_strLibName;
   bool              m_settingsLoaded;
+  bool              m_userSettingsLoaded;
 
 private:
   friend class AddonMgr;
@@ -205,6 +219,7 @@ private:
   CStdString  m_profile;
   bool        m_enabled;
   CLocalizeStrings  m_strings;
+  std::map<CStdString, CStdString> m_settings;
 };
 
 class CAddonLibrary : public CAddon
