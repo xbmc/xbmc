@@ -1864,7 +1864,7 @@ XB_CONFIG_MODULE([lib/libmicrohttpd], [
 
 XB_CONFIG_MODULE([lib/cpluff], [
   if test "$host_vendor" = "apple" ; then
-    ./configure --disable-nls --with-libiconv-prefix=/opt/local --with-libintl-prefix=/opt/local --without-readline CFLAGS="$CFLAGS"
+    ./configure --disable-nls --with-libiconv-prefix=/opt/local --with-libintl-prefix=/opt/local --without-readline CFLAGS="$CFLAGS" LDFLAGS="$LDFLAGS"
   else
     ./configure --disable-nls \
       --host=$host_alias \
