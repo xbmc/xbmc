@@ -1483,7 +1483,7 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
       --without-cxx \
       --enable-shared \
       --without-pymalloc \
-      --prefix=`pwd`/../linux/python-lib CFLAGS=-fPIC &&
+      --prefix=`pwd`/../linux/python-lib CFLAGS="$CFLAGS" &&
     sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
     sed -i -e "s/define _POSIX_C_SOURCE 200112L/undef _POSIX_C_SOURCE/" pyconfig.h &&
     sed -i -e "s/define _XOPEN_SOURCE 600/undef _XOPEN_SOURCE/" pyconfig.h &&
@@ -1541,7 +1541,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
 
   else
     ./configure \
-      --extra-cflags="$FFMPEG_EXTRACFLAGS" \
+      --extra-cflags="$CFLAGS $FFMPEG_EXTRACFLAGS" \
       --disable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       `if test "$cross_compiling" = "yes"; then echo --enable-cross-compile; fi` \
@@ -1591,7 +1591,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
       --disable-solaris-audio \
       --disable-al-audio \
       --disable-win \
-      CFLAGS="-fPIC"
+      CFLAGS="$CFLAGS"
   fi
 ], [$SKIP_CONFIG_LIBDTS])
 
@@ -1604,6 +1604,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss], [
       --with-pic
   else
     ./configure \
+      CFLAGS="$CFLAGS" \
       --host=$host_alias \
       --build=$build_alias \
       --disable-doc \
@@ -1624,7 +1625,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   else
     ./configure2 \
-      --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src" \
+      --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../libdvdcss/src" \
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
       --host=$host_alias \
       --build=$build_alias \
@@ -1651,7 +1652,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav], [
       --cc="$CC"
   else
     ./configure2 \
-      --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../includes" \
+      --extra-cflags="$CFLAGS $DVDREAD_CFLAGS -I`pwd`/../includes" \
       --extra-ldflags="-L`pwd`/../libdvdread/obj" \
       --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
       --host=$host_alias \
@@ -1694,7 +1695,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
       --disable-solaris-audio \
       --disable-win \
       --disable-al-audio \
-      CFLAGS=-fPIC
+      CFLAGS="$CFLAGS"
   fi
 ], [$SKIP_CONFIG_LIBA52])
 
@@ -1721,7 +1722,7 @@ XB_CONFIG_MODULE([lib/libass], [
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4
   else
-    CFLAGS="$CFLAGS -fPIC" \
+    CFLAGS="$CFLAGS" \
     ./configure \
       --host=$host_alias \
       --build=$build_alias
@@ -1738,9 +1739,8 @@ XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[
       --with-pic
   else
     ./configure \
-      CPPFLAGS="$CPPFLAGS" \
-      CFLAGS="$CFLAGS -fPIC" \ 
-      CXXFLAGS="$CXXFLAGS -fPIC" \
+      CFLAGS="$CFLAGS" \ 
+      CXXFLAGS="$CXXFLAGS" \
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
       --host=$host_alias \
       --build=$build_alias \
@@ -1755,7 +1755,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
   else
 set -x
     rm -f CMakeCache.txt && cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
-      -DCMAKE_C_FLAGS:STRING="${CFLAGS} -fPIC -DPIC  -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64" -DCMAKE_CXX_FLAGS:STRING="${CXXFLAGS} -fPIC -DPIC -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64" \
+      -DCMAKE_C_FLAGS:STRING="${CFLAGS}" -DCMAKE_CXX_FLAGS:STRING="${CXXFLAGS}" \
       -DCMAKE_INSTALL_PREFIX="${prefix}" -DCMAKE_INSTALL_LIBDIR:PATH="${libdir}" \
       -DINCLUDE_INSTALL_DIR:PATH="${includedir}" -DLIB_INSTALL_DIR:PATH="${libdir}" \
       -DSYSCONF_INSTALL_DIR:PATH="${sysconfdir}" -DSHARE_INSTALL_PREFIX:PATH="${datadir}" .
@@ -1766,9 +1766,8 @@ set +x
 XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
   if test "$host_vendor" != "apple" ; then
     ./configure  \
-        CPPFLAGS="$CPPFLAGS" \
-        CFLAGS="$CFLAGS -fPIC" \ 
-        CXXFLAGS="$CXXFLAGS -fPIC" \
+        CFLAGS="$CFLAGS" \ 
+        CXXFLAGS="$CXXFLAGS" \
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
       --host=$host_alias \
       --build=$build_alias \
@@ -1799,9 +1798,8 @@ if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
       --disable-skyrocket
   else
     ./configure \
-      CPPFLAGS="$CPPFLAGS" \
-      CFLAGS="$CFLAGS -fPIC" \ 
-      CXXFLAGS="$CXXFLAGS -fPIC" \
+      CFLAGS="$CFLAGS" \ 
+      CXXFLAGS="$CXXFLAGS" \
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
       --host=$host_alias \
       --build=$build_alias \
@@ -1825,7 +1823,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [
   else
     ./configure --without-openssl \
       --host=$host_alias \
-      --build=$build_alias
+      --build=$build_alias CFLAGS="$CFLAGS"
   fi
 ], [0])
 
@@ -1836,7 +1834,7 @@ XB_CONFIG_MODULE([xbmc/lib/libapetag], [
   else
     ./configure \
       --host=$host_alias \
-      --build=$build_alias
+      --build=$build_alias CFLAGS="$CFLAGS"
   fi
 ], [0])
 
@@ -1866,7 +1864,7 @@ XB_CONFIG_MODULE([lib/cpluff], [
   else
     ./configure --disable-nls \
       --host=$host_alias \
-      --build=$build_alias
+      --build=$build_alias CFLAGS="$CFLAGS"
   fi
 ], [0])
 
