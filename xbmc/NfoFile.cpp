@@ -136,7 +136,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
       ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addons[i]);
 
       // skip if scraper requires settings and there's nothing set yet
-      if (scraper->RequiresSettings() && !scraper->LoadUserSettings(false))
+      if (scraper->RequiresSettings() && !scraper->HasUserSettings())
           continue;
 
       // add same language, multi-language and music scrapers

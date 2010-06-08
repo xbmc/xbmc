@@ -49,8 +49,6 @@ namespace ADDON
     virtual ~CScraper() {}
     virtual AddonPtr Clone(const AddonPtr &self) const;
 
-    // from CAddon
-    virtual bool HasSettings();
     virtual bool LoadSettings();
 
     /*! \brief Set the scraper settings for a particular path from an XML string

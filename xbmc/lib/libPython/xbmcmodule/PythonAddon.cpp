@@ -69,10 +69,6 @@ namespace PYXBMC
       PyErr_SetString(PyExc_Exception, "Could not get AddonPtr!");
       return NULL;
     }
-    if (self->pAddon->HasSettings())
-    {
-      self->pAddon->LoadSettings();
-    }
 
     return (PyObject*)self;
   }

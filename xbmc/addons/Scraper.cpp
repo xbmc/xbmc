@@ -157,14 +157,6 @@ bool CScraper::LoadSettings()
     return LoadSettingsXML();
 }
 
-bool CScraper::HasSettings()
-{
-  if (!m_userXmlDoc.RootElement())
-    return LoadSettingsXML();
-
-  return true;
-}
-
 bool CScraper::SetPathSettings(CONTENT_TYPE content, const CStdString& xml)
 {
   m_pathContent = content;

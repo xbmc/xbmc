@@ -4321,7 +4321,6 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   m_screenSaver.reset();
   if (!CAddonMgr::Get().GetAddon(g_guiSettings.GetString("screensaver.mode"), m_screenSaver))
     m_screenSaver.reset(new CScreenSaver(""));
-  m_screenSaver->LoadSettings();
 
 #ifdef HAS_LCD
   // turn off lcd backlight if requested
@@ -4338,7 +4337,6 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     {
       if (!CAddonMgr::Get().GetAddon("screensaver.xbmc.builtin.dim", m_screenSaver))
         m_screenSaver.reset(new CScreenSaver(""));
-      m_screenSaver->LoadSettings();
     }
     // Check if we are Playing Audio and Vis instead Screensaver!
     else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && !g_guiSettings.GetString("musicplayer.visualisation").IsEmpty())

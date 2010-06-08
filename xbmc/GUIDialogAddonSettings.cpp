@@ -156,17 +156,10 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon)
     heading.Format("$LOCALIZE[10004] - %s", addon->Name().c_str()); // "Settings - AddonName"
     pDialog->m_strHeading = heading;
 
-    if (addon->LoadSettings())
-    {
-      pDialog->m_changed = false;
-      pDialog->m_addon = addon;
-      pDialog->DoModal();
-      ret = true;
-    }
-    else
-    { // couldn't load settings, inform user
-      CGUIDialogOK::ShowAndGetInput(24000,0,24030,24031);
-    }
+    pDialog->m_changed = false;
+    pDialog->m_addon = addon;
+    pDialog->DoModal();
+    ret = true;
   }
   else
   { // addon does not support settings, inform user

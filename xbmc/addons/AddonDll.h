@@ -45,8 +45,6 @@ namespace ADDON
     virtual ADDON_STATUS GetStatus();
 
     // addon settings
-    virtual bool HasSettings();
-    virtual bool LoadSettings();
     virtual void SaveSettings();
     virtual CStdString GetSetting(const CStdString& key);
 
@@ -58,6 +56,7 @@ namespace ADDON
     void HandleException(std::exception &e, const char* context);
     bool Initialized() { return m_initialized; }
     virtual void BuildLibName(const cp_extension_t *ext = NULL) {}
+    virtual bool LoadSettings();
     TheStruct* m_pStruct;
     TheProps*     m_pInfo;
 
@@ -267,23 +266,6 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, TheProps>::GetStatus()
     HandleException(e, "m_pDll->GetStatus()");
   }
   return STATUS_UNKNOWN;
-}
-
-template<class TheDll, typename TheStruct, typename TheProps>
-bool CAddonDll<TheDll, TheStruct, TheProps>::HasSettings()
-{
-  if (!LoadDll())
-    return false;
-
-  try
-  {
-    return m_pDll->HasSettings();
-  }
-  catch (std::exception &e)
-  {
-    HandleException(e, "m_pDll->HasSettings()");
-    return false;
-  }
 }
 
 template<class TheDll, typename TheStruct, typename TheProps>
