@@ -186,13 +186,12 @@ void CRenderSystemDX::BuildPresentParameters()
   bool useWindow = g_guiSettings.GetBool("videoscreen.fakefullscreen") || !m_bFullScreenDevice;
   m_D3DPP.Windowed           = useWindow;
   m_D3DPP.SwapEffect         = D3DSWAPEFFECT_DISCARD;
-  m_D3DPP.BackBufferCount    = 1;
+  m_D3DPP.BackBufferCount    = 2;
 
   if(m_useD3D9Ex && (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion >= 1 || osvi.dwMajorVersion > 6))
   {
 #if D3DX_SDK_VERSION >= 42
     m_D3DPP.SwapEffect       = D3DSWAPEFFECT_FLIPEX;
-    m_D3DPP.BackBufferCount  = 2;
 #else
 #   pragma message("D3D SDK version is too old to support D3DSWAPEFFECT_FLIPEX")
     CLog::Log(LOGWARNING, "CRenderSystemDX::BuildPresentParameters - xbmc compiled with an d3d sdk not supporting D3DSWAPEFFECT_FLIPEX");
