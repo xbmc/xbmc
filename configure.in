@@ -280,6 +280,11 @@ AC_ARG_ENABLE([external-python],
 use_external_libass="yes"
 ### End of external library options
 DEFAULT_COMPILE_FLAGS="-fPIC -DPIC -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
+if test "x$host_vendor" = "xapple"; then
+  DEFAULT_COMPILE_FLAGS="$DEFAULT_COMPILE_FLAGS -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4"
+else
+  DEFAULT_COMPILE_FLAGS="$DEFAULT_COMPILE_FLAGS -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64"
+fi
 # Checks for programs.
 PASSED_CXXFLAGS=$CXXFLAGS # Hack to override autoconf default values
 AC_PROG_CXX
@@ -1461,7 +1466,7 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
       --with-suffix=.exe \
       LDFLAGS="-L/opt/local/lib" \
       OPT="-Wno-deprecated-declarations -I/opt/local/include" \
-      MACOSX_DEPLOYMENT_TARGET=10.4 &&
+      MACOSX_DEPLOYMENT_TARGET=10.4 CFLAGS="$CFLAGS" &&
     sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h && 
     sed -i bak -e "s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/" pyconfig.h &&
     sed -i bak -e "s/define HAVE_FTELLO 1/undef HAVE_FTELLO/" pyconfig.h &&
@@ -1493,7 +1498,7 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
 
 XB_CONFIG_MODULE([xbmc/cores/paplayer/FLACCodec/flac-1.2.1], [
   if test "$host_vendor" = "apple" ; then
-    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \    
+    CFLAGS="$CFLAGS -fno-common" \ 
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 -C \
       --with-pic \
       --disable-asm-optimizations \
@@ -1509,7 +1514,7 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/FLACCodec/flac-1.2.1], [
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
     ./configure \
-      --extra-cflags="-w -D_DARWIN_C_SOURCE -Dattribute_deprecated= -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
+      --extra-cflags="$CFLAGS -w -D_DARWIN_C_SOURCE -Dattribute_deprecated=" \
       --disable-amd3dnow \
       --disable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
@@ -1576,7 +1581,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
   if test "$host_vendor" = "apple" ; then
-    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    CFLAGS="$CFLAGS -fno-common"
     LDFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure \
       --disable-oss \
@@ -1598,7 +1603,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdts], [
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss], [
   if test "$host_vendor" = "apple" ; then
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
-    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    CFLAGS="$CFLAGS -fno-common" \
       --disable-doc \
       --enable-static \
       --with-pic
@@ -1616,7 +1621,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss], [
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
   if test "$host_vendor" = "apple" ; then
     ./configure2 MACOSX_DEPLOYMENT_TARGET=10.4 \
-      --extra-cflags="$DVDREAD_CFLAGS -D__DARWIN__ -fPIC -DPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I`pwd`/../libdvdcss/src" \
+      --extra-cflags="$CFLAGS -fno-common $DVDREAD_CFLAGS -D__DARWIN__ -I`pwd`/../libdvdcss/src" \
       --enable-static \
       --disable-shared \
       --cc="$CC" &&
@@ -1644,7 +1649,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread], [
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav], [
   if test "$host_vendor" = "apple" ; then
     ./configure2 MACOSX_DEPLOYMENT_TARGET=10.4 \
-      --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I`pwd`/../includes" \
+      --extra-cflags="$CFLAGS -fno-common $DVDREAD_CFLAGS -I`pwd`/../includes" \
       --extra-ldflags="-L`pwd`/../libdvdread/obj" \
       --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
       --enable-static \
@@ -1665,7 +1670,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav], [
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libfaad2], [
   if test "$host_vendor" = "apple" ; then
-    CFLAGS="-O3 -fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    CFLAGS="$CFLAGS -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
       --with-pic
   else
@@ -1675,7 +1680,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libfaad2], [
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
   if test "$host_vendor" = "apple" ; then
-    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    CFLAGS="$CFLAGS -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
       --with-pic \
       --disable-static \
@@ -1701,7 +1706,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/liba52], [
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [
   if test "$host_vendor" = "apple" ; then
-    CFLAGS="-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    CFLAGS="$CFLAGS -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
       --with-pic
   else
@@ -1712,14 +1717,14 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [
 XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [
   if test "$host_vendor" = "apple" ; then
     export MACOSX_DEPLOYMENT_TARGET=10.4
-    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    CFLAGS="$CFLAGS -fno-common" \
     ./configure
   fi
 ], [0])
 
 XB_CONFIG_MODULE([lib/libass], [
   if test "$host_vendor" = "apple" ; then
-    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+    CFLAGS="$CFLAGS -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4
   else
     CFLAGS="$CFLAGS" \
@@ -1731,8 +1736,7 @@ XB_CONFIG_MODULE([lib/libass], [
 
 XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[
   if test "$host_vendor" = "apple" ; then
-    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
-    CPPFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
+    CFLAGS="$CFLAGS -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
       --disable-static \
       --disable-debugging \
@@ -1751,7 +1755,7 @@ XB_CONFIG_MODULE([xbmc/lib/libid3tag/libid3tag],[
 
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
   if test "$host_vendor" = "apple" ; then
-    rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_C_FLAGS:STRING="-fno-common" -D CMAKE_CXX_FLAGS:STRING="-fno-common" -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
+    rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_C_FLAGS:STRING="${CFLAGS} -fno-common" -D CMAKE_CXX_FLAGS:STRING="${CXXFLAGS} -fno-common" -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
   else
 set -x
     rm -f CMakeCache.txt && cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
@@ -1781,8 +1785,8 @@ XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
 if expr "X$host_cpu" : 'Xarm.*' > /dev/null; then :; else
   if test "$host_vendor" = "apple" ; then
     ./configure \
-      CFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
-      CXXFLAGS="-fPIC -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      CFLAGS="$CFLAGS" \
+      CXXFLAGS="$CXXFLAGS" \
       LDFLAGS="-L/opt/local/lib" \
       LIBS="-lz" \
       --x-includes=/usr/X11/include --x-libraries=/usr/X11/lib \
@@ -1819,7 +1823,7 @@ fi
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [
   if test "$host_vendor" = "apple" ; then
-    ./configure --with-ssl-dir=/opt/local/include
+    ./configure --with-ssl-dir=/opt/local/include CFLAGS="$CFLAGS"
   else
     ./configure --without-openssl \
       --host=$host_alias \
@@ -1829,7 +1833,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libbdnav/], [
 
 XB_CONFIG_MODULE([xbmc/lib/libapetag], [
   if test "$host_vendor" = "apple" ; then
-    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
+    CFLAGS="$CFLAGS -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --disable-shared
   else
     ./configure \
@@ -1840,8 +1844,8 @@ XB_CONFIG_MODULE([xbmc/lib/libapetag], [
 
 XB_CONFIG_MODULE([lib/libmodplug], [
   if test "$host_vendor" = "apple" ; then
-    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
-    CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
+    CFLAGS="$CFLAGS -fno-common" \
+    CXXFLAGS="$CXXFLAGS -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --disable-shared --enable-static
   else
     true
@@ -1850,8 +1854,8 @@ XB_CONFIG_MODULE([lib/libmodplug], [
 
 XB_CONFIG_MODULE([lib/libmicrohttpd], [
   if test "$host_vendor" = "apple" ; then
-    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
-    CXXFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
+    CFLAGS="$CFLAGS -fno-common" \
+    CXXFLAGS="$CXXFLAGS -fno-common" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic --disable-shared --enable-static
   else
     true
@@ -1860,7 +1864,7 @@ XB_CONFIG_MODULE([lib/libmicrohttpd], [
 
 XB_CONFIG_MODULE([lib/cpluff], [
   if test "$host_vendor" = "apple" ; then
-    ./configure --disable-nls --with-libiconv-prefix=/opt/local --with-libintl-prefix=/opt/local --without-readline
+    ./configure --disable-nls --with-libiconv-prefix=/opt/local --with-libintl-prefix=/opt/local --without-readline CFLAGS="$CFLAGS"
   else
     ./configure --disable-nls \
       --host=$host_alias \
