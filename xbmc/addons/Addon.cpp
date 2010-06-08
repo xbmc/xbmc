@@ -248,7 +248,7 @@ AddonProps::AddonProps(cp_plugin_info_t *props)
  */
 
 CAddon::CAddon(const cp_extension_t *ext)
-  : m_props(ext->plugin)
+  : m_props(ext ? ext->plugin : NULL)
   , m_parent(AddonPtr())
 {
   BuildLibName(ext);
