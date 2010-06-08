@@ -110,6 +110,10 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
       if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_OSD_TELETEXT);
       if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+#ifdef HAS_DS_PLAYER
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_SHADER_LIST);
+      if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
+#endif
     }
     break;
   }

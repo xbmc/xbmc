@@ -26,8 +26,11 @@
 
 #include "ExternalPixelShader.h"
 #include "PixelShaderCompiler.h"
+#include "SingleLock.h"
 
 typedef std::vector<CExternalPixelShader *> PixelShaderVector;
+
+class CCriticalSection;
 
 class CPixelShaderList
 {
@@ -37,12 +40,24 @@ public:
   void Load();
   void UpdateActivatedList();
 
+  void MoveUp(uint32_t index);
+  void MoveDown(uint32_t index);
+
+  void Sort();
+  void SaveXML();
+
+  // Not thread safe
   PixelShaderVector& GetPixelShaders() { return m_pixelShaders; }
-  PixelShaderVector& GetActivatedPixelShaders() { return m_activatedPixelShaders; }
+  // Thread safe
+  PixelShaderVector GetActivatedPixelShaders() { CSingleLock lock(m_accessLock); return m_activatedPixelShaders; }
 
 private:
   PixelShaderVector m_activatedPixelShaders;
   PixelShaderVector m_pixelShaders;
+  CCriticalSection m_accessLock;
 
   bool LoadXMLFile(const CStdString& xmlFile);
 };
+
+bool HasSameIndex(uint32_t index, CExternalPixelShader* p2);
+bool HasSameID(uint32_t id, CExternalPixelShader* p2);

@@ -4182,6 +4182,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\GUIDialogShaderList.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\GUIDialogShaderList.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIDialogSlider.cpp"
 					>
 				</File>

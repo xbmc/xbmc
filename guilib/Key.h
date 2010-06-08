@@ -360,6 +360,9 @@
 #define WINDOW_DIALOG_SLIDER              10145
 #define WINDOW_DIALOG_ADDON_INFO          10146
 #define WINDOW_DIALOG_TEXT_VIEWER         10147
+#ifdef HAS_DS_PLAYER
+#define WINDOW_DIALOG_SHADER_LIST         10148
+#endif
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501

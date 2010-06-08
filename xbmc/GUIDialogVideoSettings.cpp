@@ -72,8 +72,11 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 #define VIDEO_SETTING_VDPAU_SHARPNESS     20
 
 #define VIDEO_SETTINGS_NONLIN_STRETCH     21
+#ifdef HAS_DS_PLAYER
 #define VIDEO_SETTINGS_DS_STATS           22
+#define VIDEO_SETTINGS_SHADERS            23
 #define VIDEO_SETTINGS_DS_FILTERS         0x20
+#endif
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
@@ -152,14 +155,16 @@ void CGUIDialogVideoSettings::CreateSettings()
     entries.push_back(make_pair(DS_BILINEAR_2_100    , 35010));
     
     AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int *) &g_dsSettings.pRendererSettings->resizer, entries);
+
     entries.clear();
     entries.push_back(make_pair(DS_STATS_NONE, 35011));
     entries.push_back(make_pair(DS_STATS_1, 35012));
     entries.push_back(make_pair(DS_STATS_2, 35013));
     entries.push_back(make_pair(DS_STATS_3, 35014));
     AddSpin(VIDEO_SETTINGS_DS_STATS, 35015, (int *) &g_dsSettings.pRendererSettings->displayStats, entries);
-  }
 
+    AddButton(VIDEO_SETTINGS_SHADERS, 35016);
+  }
 #endif
   AddBool(VIDEO_SETTINGS_CROP, 644, &g_settings.m_currentVideoSettings.m_Crop);
   {
@@ -177,7 +182,7 @@ void CGUIDialogVideoSettings::CreateSettings()
   if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
     AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_settings.m_currentVideoSettings.m_Gamma, 0, 1, 100, FormatInteger);
 #ifdef HAS_DS_PLAYER
-  if ((g_renderManager.GetRendererType() == RENDERER_DSHOW_VMR9) || g_renderManager.GetRendererType() == RENDERER_DSHOW_EVR )
+  if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
   {
 
     int size = g_dsconfig.GetFiltersWithPropertyPages().size();
@@ -265,6 +270,10 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
     HRESULT hr = S_OK;
     //Showing the property page for this filter
     g_dsconfig.ShowPropertyPage(pBF);    
+  }
+  else if (setting.id == VIDEO_SETTINGS_SHADERS)
+  {
+    g_windowManager.ActivateWindow(WINDOW_DIALOG_SHADER_LIST);
   }
 #endif
 }

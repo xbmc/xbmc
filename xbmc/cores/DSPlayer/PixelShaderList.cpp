@@ -24,10 +24,15 @@
 #include "PixelShaderList.h"
 #include "Settings.h"
 #include "FileSystem\File.h"
+#include "FileSystem\Directory.h"
 #include "XMLUtils.h"
+#include "SingleLock.h"
+#include "Util.h"
 
 CPixelShaderList::~CPixelShaderList()
 {
+  CSingleLock lock(m_accessLock);
+
   m_activatedPixelShaders.clear();
   
   for (PixelShaderVector::iterator it = m_pixelShaders.begin();
@@ -38,10 +43,42 @@ CPixelShaderList::~CPixelShaderList()
   m_pixelShaders.clear();
 }
 
+void CPixelShaderList::SaveXML()
+{
+  CStdString userDataDSPlayer = CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "dsplayer");
+  if (! XFILE::CDirectory::Exists(userDataDSPlayer))
+  {
+    if (! XFILE::CDirectory::Create(userDataDSPlayer))
+    {
+      CLog::Log(LOGERROR, "%s Failed to create userdata folder (%s). Pixel shaders settings won't be saved.", __FUNCTION__, userDataDSPlayer.c_str());
+      return;
+    }
+  }
+
+  CStdString xmlFile = CUtil::AddFileToFolder(userDataDSPlayer, "shaders.xml");
+  if (XFILE::CFile::Exists(xmlFile))
+    XFILE::CFile::Delete(xmlFile);
+
+  TiXmlDocument xmlDoc;
+  TiXmlNode* pRoot = xmlDoc.InsertEndChild( TiXmlElement("shaders") );
+
+  for (PixelShaderVector::iterator it = m_pixelShaders.begin();
+    it != m_pixelShaders.end(); ++it)
+  {
+    CExternalPixelShader * ps = (*it);
+    pRoot->InsertEndChild( ps->ToXML() );
+  }
+
+  if (!xmlDoc.SaveFile(xmlFile))
+    CLog::Log(LOGERROR, "%s Failed to save shaders.xml file", __FUNCTION__);
+}
+
 void CPixelShaderList::Load()
 {
   LoadXMLFile(g_settings.GetUserDataItem("dsplayer/shaders.xml"));
   LoadXMLFile("special://xbmc/system/players/dsplayer/shaders/shaders.xml");
+
+  UpdateActivatedList();
 }
 
 bool CPixelShaderList::LoadXMLFile(const CStdString& xmlFile)
@@ -70,28 +107,95 @@ bool CPixelShaderList::LoadXMLFile(const CStdString& xmlFile)
   TiXmlElement* shaders = rootElement->FirstChildElement("shader");
   while (shaders)
   {
-    CExternalPixelShader *shader = new CExternalPixelShader(shaders);
+    std::auto_ptr<CExternalPixelShader> shader(new CExternalPixelShader(shaders));
     if (shader->IsValid())
-      m_pixelShaders.push_back(shader);
-    else
-      delete shader;
+    {
+      if (std::find_if(m_pixelShaders.begin(), m_pixelShaders.end(), std::bind1st(std::ptr_fun(HasSameID),
+        shader->GetId())) != m_pixelShaders.end())
+      {
+        shaders = shaders->NextSiblingElement("shader");
+        continue;
+      }
+      if (std::find_if(m_pixelShaders.begin(), m_pixelShaders.end(), std::bind1st(std::ptr_fun(HasSameIndex),
+        shader->GetIndex())) != m_pixelShaders.end())
+        CLog::Log(LOGERROR, "%s A pixel shader with the index %d already exists", __FUNCTION__, shader->GetIndex());
+      else
+      {
+        CLog::Log(LOGINFO, "Loaded pixel shader \"%s\", id %d, %s", shader->GetName().c_str(),
+          shader->GetId(), shader->IsEnabled() ? "enabled" : "disabled");
+        m_pixelShaders.push_back(shader.release());
+      }
+    }
 
     shaders = shaders->NextSiblingElement("shader");
   }
 
-  UpdateActivatedList();
   return true;
 }
 
 void CPixelShaderList::UpdateActivatedList()
 {
+  Sort();
+  CSingleLock lock(m_accessLock);
+
   m_activatedPixelShaders.clear();
   for (PixelShaderVector::iterator it = m_pixelShaders.begin();
     it != m_pixelShaders.end(); ++it)
   {
-    if ( (*it)->IsEnabled())
+    if ( (*it)->IsEnabled() )
       m_activatedPixelShaders.push_back( *it );
   }
+}
+
+void CPixelShaderList::MoveUp(uint32_t index)
+{
+  if (index > m_pixelShaders.size() || index < 1)
+    return;
+
+  // Swap
+  {
+    CSingleLock lock(m_accessLock);
+    m_pixelShaders[index]->SetIndex(index - 1);
+    m_pixelShaders[index - 1]->SetIndex(index);
+  }
+
+  Sort();
+}
+
+void CPixelShaderList::MoveDown(uint32_t index)
+{
+  if (index > m_pixelShaders.size() - 1)
+    return;
+
+  // Swap
+  {
+    CSingleLock lock(m_accessLock);
+    m_pixelShaders[index]->SetIndex(index + 1);
+    m_pixelShaders[index + 1]->SetIndex(index);
+  }
+
+  Sort();
+}
+
+void CPixelShaderList::Sort()
+{
+  {
+    CSingleLock lock(m_accessLock);
+    std::sort(m_pixelShaders.begin(), m_pixelShaders.end(), SortPixelShader);
+
+    for (uint32_t i = 0; i < m_pixelShaders.size(); i++)
+      m_pixelShaders[i]->SetIndex(i);
+  }
+}
+
+bool HasSameIndex(uint32_t index, CExternalPixelShader* p2)
+{
+  return index == p2->GetIndex();
+}
+
+bool HasSameID(uint32_t id, CExternalPixelShader* p2)
+{
+  return id == p2->GetId();
 }
 
 #endif

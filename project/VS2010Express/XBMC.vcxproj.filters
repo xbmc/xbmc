@@ -2346,6 +2346,9 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.cpp">
       <Filter>cores\dsplayer\Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\GUIDialogShaderList.cpp">
+      <Filter>Source Files\GUI Dialog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -4894,6 +4897,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.h">
       <Filter>cores\dsplayer\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\GUIDialogShaderList.h">
+      <Filter>Source Files\GUI Dialog</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

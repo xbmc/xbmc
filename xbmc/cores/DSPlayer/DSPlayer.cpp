@@ -40,6 +40,7 @@
 #include "GUIDialogBusy.h"
 #include "WindowingFactory.h"
 #include "GUIDialogOK.h"
+#include "PixelShaderList.h"
 
 using namespace std;
 
@@ -67,6 +68,9 @@ CDSPlayer::~CDSPlayer()
 
   delete g_dsGraph;
   g_dsGraph = NULL;
+
+  // Save Shader settings
+  g_dsSettings.pixelShaderList->SaveXML();
 
   DShowUtil::UnloadExternalObjects();
   CLog::Log(LOGDEBUG, "%s External objects unloaded", __FUNCTION__);

@@ -36,7 +36,16 @@ public:
   bool Load();
   CExternalPixelShader(TiXmlElement* xml);
   bool IsValid() const { return m_valid; }
+  CStdString GetName() const { return m_name; }
+  int GetId() const { return m_id; }
+
+  uint32_t GetIndex() const { return m_index; }
+  void SetIndex(const uint32_t index) { m_index = index; }
+
   bool IsEnabled() const { return m_enabled; }
+  void SetEnabled(const bool enabled) { m_enabled = enabled; }
+
+  TiXmlElement ToXML();
 
   Com::SmartPtr<IDirect3DPixelShader9> m_pPixelShader;
 private:
@@ -47,4 +56,7 @@ private:
   int m_id;
   bool m_valid;
   bool m_enabled;
+  uint32_t m_index;
 };
+
+bool SortPixelShader(CExternalPixelShader* p1, CExternalPixelShader* p2);

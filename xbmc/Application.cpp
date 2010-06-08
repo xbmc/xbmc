@@ -217,6 +217,9 @@
 #ifdef HAS_LINUX_NETWORK
 #include "GUIDialogAccessPoints.h"
 #endif
+#ifdef HAS_DS_PLAYER
+#include "GUIDialogShaderList.h"
+#endif
 #include "GUIDialogFullScreenInfo.h"
 #include "GUIDialogTeletext.h"
 #include "GUIDialogSlider.h"
@@ -1089,6 +1092,9 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIDialogAddonSettings);      // window id = 140
 #ifdef HAS_LINUX_NETWORK
   g_windowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
+#endif
+#ifdef HAS_DS_PLAYER
+  g_windowManager.Add(new CGUIDialogShaderList);
 #endif
 
   g_windowManager.Add(new CGUIDialogLockSettings); // window id = 131
