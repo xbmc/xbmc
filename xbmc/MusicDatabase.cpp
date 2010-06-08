@@ -3910,7 +3910,7 @@ bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const ADDON::S
 
     // insert new settings
     strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s','%s')",
-      strPath.c_str(), scraper->ID().c_str(), ADDON::TranslateContent(scraper->Content()).c_str(), scraper->GetSettings().c_str());
+      strPath.c_str(), scraper->ID().c_str(), ADDON::TranslateContent(scraper->Content()).c_str(), scraper->GetPathSettings().c_str());
     m_pDS->exec(strSQL.c_str());
 
     return true;
@@ -3978,8 +3978,7 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::Scraper
         }
 
         // store this path's settings
-        info->m_pathContent = content;
-        info->LoadUserXML(m_pDS->fv("content.strSettings").get_asString());
+        info->SetPathSettings(content, m_pDS->fv("content.strSettings").get_asString());
       }
       else
       { // use default scraper of the requested type
@@ -3987,10 +3986,6 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::Scraper
         if (ADDON::CAddonMgr::Get().GetDefault(type, defaultScraper))
         {
           info = boost::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone(defaultScraper));
-          if (info)
-          {
-            info->m_pathContent = (boost::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper))->Content();
-          }
         }
       }
     }

@@ -398,7 +398,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
       settings.exclude = false;
       settings.noupdate = dialog->m_bNoUpdate;
       bRunScan = dialog->m_bRunScan;
-      scraper->m_pathContent = content;
+      scraper->SetPathSettings(content, "");
 
       if (content == CONTENT_TVSHOWS)
       {

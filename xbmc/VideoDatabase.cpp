@@ -3192,7 +3192,7 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const Scraper
     else
     {
       CStdString content = TranslateContent(scraper->Content());
-      strSQL=FormatSQL("update path set strContent='%s', strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s', noUpdate=%i, exclude=0 where idPath=%i", content.c_str(), scraper->ID().c_str(),settings.recurse,settings.parent_name,scraper->GetSettings().c_str(),settings.noupdate, idPath);
+      strSQL=FormatSQL("update path set strContent='%s', strScraper='%s', scanRecursive=%i, useFolderNames=%i, strSettings='%s', noUpdate=%i, exclude=0 where idPath=%i", content.c_str(), scraper->ID().c_str(),settings.recurse,settings.parent_name,scraper->GetPathSettings().c_str(),settings.noupdate, idPath);
     }
     m_pDS->exec(strSQL.c_str());
   }
@@ -5113,8 +5113,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScanSet
           return ScraperPtr();
 
         // store this path's content & settings
-        scraper->m_pathContent = content;
-        scraper->LoadUserXML(m_pDS->fv("path.strSettings").get_asString());
+        scraper->SetPathSettings(content, m_pDS->fv("path.strSettings").get_asString());
         settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
         settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
         settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
@@ -5153,8 +5152,7 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScanSet
               CAddonMgr::Get().GetAddon(m_pDS->fv("path.strScraper").get_asString(), addon))
           {
             scraper = boost::dynamic_pointer_cast<CScraper>(addon->Clone(addon));
-            scraper->m_pathContent = content;
-            scraper->LoadUserXML(m_pDS->fv("path.strSettings").get_asString());
+            scraper->SetPathSettings(content, m_pDS->fv("path.strSettings").get_asString());
             settings.parent_name = m_pDS->fv("path.useFolderNames").get_asBool();
             settings.recurse = m_pDS->fv("path.scanRecursive").get_asInt();
             settings.noupdate = m_pDS->fv("path.noUpdate").get_asBool();
@@ -7220,7 +7218,8 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
             {
               SScanSettings settings;
               ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addon);
-              scraper->m_pathContent = TranslateContent(content);
+              // FIXME: scraper settings are not exported?
+              scraper->SetPathSettings(TranslateContent(content), "");
               XMLUtils::GetInt(path,"scanrecursive",settings.recurse);
               XMLUtils::GetBoolean(path,"usefoldernames",settings.parent_name);
               SetScraperForPath(strPath,scraper,settings);

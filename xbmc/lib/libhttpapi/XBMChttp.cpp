@@ -2248,7 +2248,6 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
   ScraperPtr info = boost::dynamic_pointer_cast<CScraper>(addon);
   if (!info)
     return -1;
-  info->m_pathContent = CONTENT_ALBUMS;
 
   CMusicInfoScraper scraper(info); 
 
