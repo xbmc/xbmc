@@ -111,7 +111,6 @@ public:
   virtual bool LoadSettings();
   bool LoadUserSettings(bool create=true);
   virtual void SaveSettings();
-  virtual void SaveFromDefault();
   virtual void UpdateSetting(const CStdString& key, const CStdString& value, const CStdString &type = "");
   virtual CStdString GetSetting(const CStdString& key) const;
   TiXmlElement* GetSettingsXML();

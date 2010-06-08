@@ -48,7 +48,6 @@ namespace ADDON
     virtual bool HasSettings();
     virtual bool LoadSettings();
     virtual void SaveSettings();
-    virtual void SaveFromDefault();
     virtual CStdString GetSetting(const CStdString& key);
 
     bool Create();
@@ -367,14 +366,6 @@ void CAddonDll<TheDll, TheStruct, TheProps>::SaveSettings()
 {
   // must save first, as TransferSettings() reloads saved settings!
   CAddon::SaveSettings();
-  if (m_initialized)
-    TransferSettings();
-}
-
-template<class TheDll, typename TheStruct, typename TheProps>
-void CAddonDll<TheDll, TheStruct, TheProps>::SaveFromDefault()
-{
-  CAddon::SaveFromDefault();
   if (m_initialized)
     TransferSettings();
 }

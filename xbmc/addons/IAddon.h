@@ -91,7 +91,6 @@ namespace ADDON
     virtual bool HasSettings() =0;
     virtual bool LoadSettings() =0;
     virtual void SaveSettings() =0;
-    virtual void SaveFromDefault() =0;
     virtual void UpdateSetting(const CStdString& key, const CStdString& value, const CStdString &type = "") =0;
     virtual CStdString GetSetting(const CStdString& key) const =0;
     virtual TiXmlElement* GetSettingsXML() =0;

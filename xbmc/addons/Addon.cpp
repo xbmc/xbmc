@@ -477,33 +477,6 @@ void CAddon::SaveSettings(void)
   m_userXmlDoc.SaveFile(m_userSettingsPath);
 }
 
-void CAddon::SaveFromDefault()
-{
-  if (!GetSettingsXML())
-  { // no settings found
-    return;
-  }
-
-  const TiXmlElement *setting = GetSettingsXML()->FirstChildElement("setting");
-  while (setting)
-  {
-    CStdString id;
-    if (setting->Attribute("id"))
-      id = setting->Attribute("id");
-    CStdString type;
-    if (setting->Attribute("type"))
-      type = setting->Attribute("type");
-    CStdString value;
-    if (setting->Attribute("default"))
-      value = setting->Attribute("default");
-    UpdateSetting(id, type, value);
-    setting = setting->NextSiblingElement("setting");
-  }
-
-  // now save to file
-  SaveSettings();
-}
-
 CStdString CAddon::GetSetting(const CStdString& key) const
 {
   if (m_userXmlDoc.RootElement())
