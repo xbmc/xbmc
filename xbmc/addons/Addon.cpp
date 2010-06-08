@@ -422,7 +422,8 @@ bool CAddon::LoadSettings()
 
   if (!m_addonXmlDoc.LoadFile(addonFileName))
   {
-    CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", addonFileName.c_str(), m_addonXmlDoc.ErrorRow(), m_addonXmlDoc.ErrorDesc());
+    if (CFile::Exists(addonFileName))
+      CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", addonFileName.c_str(), m_addonXmlDoc.ErrorRow(), m_addonXmlDoc.ErrorDesc());
     return false;
   }
 
