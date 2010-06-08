@@ -850,12 +850,7 @@ CStdString CGUIDialogAddonSettings::GetString(const char *value, bool subSetting
   int id = atoi(value);
   CStdString prefix(subSetting ? "- " : "");
   if (id > 0)
-  {
-    if (m_addon->Parent())
-      return prefix + m_addon->Parent()->GetString(id);
-    else
-      return prefix + m_addon->GetString(id);
-  }
+    return prefix + m_addon->GetString(id);
   return prefix + value;
 }
 

@@ -108,10 +108,7 @@ namespace PYXBMC
     };
 
     CStdStringW label;
-    if (self->pAddon->Parent())
-      g_charsetConverter.utf8ToW(self->pAddon->Parent()->GetString(id), label);
-    else
-      g_charsetConverter.utf8ToW(self->pAddon->GetString(id), label);
+    g_charsetConverter.utf8ToW(self->pAddon->GetString(id), label);
 
     return Py_BuildValue((char*)"u", label.c_str());
   }

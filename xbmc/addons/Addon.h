@@ -69,16 +69,6 @@ public:
 
   AddonProps(cp_plugin_info_t *props);
 
-  AddonProps(const AddonPtr &addon)
-    : id(addon->ID())
-    , type(addon->Type())
-    , version(addon->Version().str)
-    , stars(0)
-  { 
-    if (addon->Parent())
-      parent = addon->Parent()->ID();
-  }
-
   bool operator==(const AddonProps &rhs)
   { 
     return    (*this).id == rhs.id
@@ -132,7 +122,6 @@ public:
   AddonProps Props() const { return m_props; }
   AddonProps& Props() { return m_props; }
   const CStdString ID() const { return m_props.id; }
-  const AddonPtr Parent() const { return m_parent; }
   const CStdString Name() const { return m_props.name; }
   bool Enabled() const { return m_enabled; }
   const AddonVersion Version();
@@ -152,6 +141,7 @@ public:
 protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
   CAddon(const CAddon&, const AddonPtr&);
+  const AddonPtr Parent() const { return m_parent; }
   virtual void BuildLibName(const cp_extension_t *ext = NULL);
   TiXmlDocument     m_addonXmlDoc;
   TiXmlDocument     m_userXmlDoc;

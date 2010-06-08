@@ -74,7 +74,6 @@ namespace ADDON
     virtual AddonProps Props() const =0;
     virtual AddonProps& Props() =0;
     virtual const CStdString ID() const =0;
-    virtual const AddonPtr Parent() const =0;
     virtual const CStdString Name() const =0;
     virtual bool Enabled() const =0;
     virtual const AddonVersion Version() =0;
@@ -98,6 +97,9 @@ namespace ADDON
     virtual TiXmlElement* GetSettingsXML() =0;
     virtual CStdString GetString(uint32_t id) =0;
     virtual ADDONDEPS GetDeps() =0;
+
+  protected:
+    virtual const AddonPtr Parent() const =0;
 
   private:
     friend class CAddonMgr;

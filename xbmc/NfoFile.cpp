@@ -151,7 +151,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
   }
 
   // add default scraper
-  if ((selected && selected->Parent() != defaultScraper) || !selected) 
+  if ((selected && selected->ID() != defaultScraper->ID()) || !selected)
     vecScrapers.push_back(defaultScraper);
 
   // search ..
