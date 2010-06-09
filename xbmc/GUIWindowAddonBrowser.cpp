@@ -462,11 +462,11 @@ bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)
   return true;
 }
 
-bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool showNone)
+int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool showNone)
 {
   CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (type == ADDON_UNKNOWN || !dialog)
-    return false;
+    return 0;
 
   ADDON::VECADDONS addons;
   CAddonMgr::Get().GetAddons(type, addons);
@@ -491,14 +491,14 @@ bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool 
     params.push_back("addons://all/"+TranslateType(type,false)+"/");
     params.push_back("return");
     g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
-    return false;
+    return 2;
   }
   if (dialog->GetSelectedLabel() >= 0)
   {
     addonID = dialog->GetSelectedItem().m_strPath;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
 void CGUIWindowAddonBrowser::InstallAddon(const CStdString &addonID, bool force /*= false*/)

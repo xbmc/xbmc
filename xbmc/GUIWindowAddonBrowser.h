@@ -53,9 +53,9 @@ public:
    \param type the type of addon wanted
    \param addonID [out] the addon ID of the selected item
    \param showNone whether there should be a "None" item in the list (defaults to false)
-   \return true if an addon was selected, false if an error occurred or if the selection process was cancelled
+   \return 1 if an addon was selected, 2 if "Get More" was chosen, or 0 if an error occurred or if the selection process was cancelled
    */
-  static bool SelectAddonID(ADDON::TYPE type, CStdString &addonID, bool showNone = false);
+  static int SelectAddonID(ADDON::TYPE type, CStdString &addonID, bool showNone = false);
 
   /*! \brief Install an addon if it is available in a repository
    \param addonID the addon ID of the item to install
