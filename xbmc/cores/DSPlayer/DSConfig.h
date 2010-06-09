@@ -25,9 +25,6 @@
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
 
-#include "Filters/IffDecoder.h"
-#include "Filters/IffdshowBase.h"
-#include "Filters/IffdshowDecVideo.h"
 #include "DSPropertyPage.h"
 #include "DSGraph.h"
 #include "DShowUtil/smartptr.h"
@@ -73,23 +70,12 @@ public:
    * @param[in] pBF Filter whose showing property page
    */
   void ShowPropertyPage(IBaseFilter *pBF);
-  
-  bool LoadffdshowSubtitles(CStdString filePath);
-  /// Pointer to a IffDecoder interface
-  IffDecoder*         pIffdshowDecoder;
 protected:
   /**
    * If the filter expose a property page, add it to m_pPropertiesFilters
    * @param[in] pBF The filter to test
    * @return True if the filter expose a property page, false else*/
   bool LoadPropertiesPage(IBaseFilter *pBF);
-  /**
-   * Load configuration from FFDShow
-   * @param[in] pBF Try to load the configuration from this filter
-   * @return True if the filter is FFDShow, false else
-   */
-  bool GetffdshowFilters(IBaseFilter* pBF);
-  
 private:
   void CreatePropertiesXml();
   CCriticalSection m_pLock;

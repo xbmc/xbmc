@@ -22,17 +22,9 @@
 #ifdef HAS_DS_PLAYER
 
 #include "dsconfig.h"
-#include "Utils/log.h"
 #include "DShowUtil/DShowUtil.h"
 #include "CharsetConverter.h"
-#include "Filters/ffdshow_constants.h"
-//Required for the gui buttons
 #include "XMLUtils.h"
-#include "FileSystem/SpecialProtocol.h"
-
-#include "GuiSettings.h"
-#include "FGLoader.h"
-#include "Filters/VMR9AllocatorPresenter.h"
 
 #include "DShowUtil/smartptr.h"
 
@@ -42,7 +34,6 @@ class CDSConfig g_dsconfig;
 
 CDSConfig::CDSConfig(void)
 {
-  pIffdshowDecoder = NULL;
   m_pStrDXVA = "";
 }
 
@@ -56,7 +47,6 @@ void CDSConfig::ClearConfig()
     CFile::Delete("special://temp//dslang.xml");
 
   m_pStrDXVA = "";
-  pIffdshowDecoder = NULL;
   m_pPropertiesFilters.clear();
 }
 HRESULT CDSConfig::ConfigureFilters()
@@ -65,7 +55,6 @@ HRESULT CDSConfig::ConfigureFilters()
 
   BeginEnumFilters(g_dsGraph->pFilterGraph, pEF, pBF)
   {
-    GetffdshowFilters(pBF);
     LoadPropertiesPage(pBF);
 
   }
@@ -87,13 +76,8 @@ bool CDSConfig::LoadPropertiesPage(IBaseFilter *pBF)
   {
     pProp->GetPages(&pPages);
     if (pPages.cElems > 0)
-    {
       m_pPropertiesFilters.push_back(pBF);
-    
-      CStdString filterName;
-      g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), filterName);
-      CLog::Log(LOGNOTICE, "%s \"%s\" expose ISpecifyPropertyPages", __FUNCTION__, filterName.c_str());
-    }
+
     CoTaskMemFree(pPages.pElems);
     return true;
     
@@ -157,27 +141,6 @@ void CDSConfig::SetDXVAGuid( const GUID& dxvaguid )
     m_pStrDXVA = "";
   else
     m_pStrDXVA.Format("%s",DShowUtil::GetDXVAMode(&dxvaguid));
-}
-
-bool CDSConfig::GetffdshowFilters(IBaseFilter* pBF)
-{
-  HRESULT hr;
-
-  if (!pIffdshowDecoder)
-    hr = pBF->QueryInterface(IID_IffDecoder, (void **) &pIffdshowDecoder );
-  
-  return true;
-}
-
-bool CDSConfig::LoadffdshowSubtitles(CStdString filePath)
-{
-  if (pIffdshowDecoder)
-  {
-    if (SUCCEEDED(pIffdshowDecoder->compat_putParamStr(IDFF_subFilename, filePath.c_str())))
-      return true;
-  }
-  
-  return false;
 }
 
 #endif
