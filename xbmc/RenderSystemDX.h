@@ -45,7 +45,6 @@ public:
   virtual bool EndRender();
   virtual bool PresentRender();
   virtual bool ClearBuffers(color_t color);
-  virtual bool ClearBuffers(float r, float g, float b, float a);
   virtual bool IsExtSupported(const char* extension);
 
   virtual void SetVSync(bool vsync);
