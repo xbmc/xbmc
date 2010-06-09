@@ -128,7 +128,7 @@
 						<visible>Container.Content(TVShows)</visible>
 					</control>
 					<control type="label">
-						<visible>Container.Content(TVShows)</visible>
+						<visible>Container.Content(TVShows) + !IsEmpty(ListItem.Property(UnWatchedEpisodes))</visible>
 						<posx>565</posx>
 						<posy>2</posy>
 						<width>110</width>
@@ -244,7 +244,7 @@
 						</control>
 					</control>
 					<control type="label">
-						<visible>Container.Content(TVShows)</visible>
+						<visible>Container.Content(TVShows) + IsEmpty(ListItem.Property(zeroepisodecount))</visible>
 						<posx>565</posx>
 						<posy>2</posy>
 						<width>110</width>
