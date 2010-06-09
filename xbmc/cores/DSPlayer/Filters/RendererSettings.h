@@ -27,6 +27,8 @@
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
 
+#include "..\Subtitles\libsubs\ISubManager.h"
+
 class CPixelShaderList;
 
 enum AP_SURFACE_USAGE
@@ -101,6 +103,8 @@ public:
   AP_SURFACE_USAGE apSurfaceUsage;
   DS_RESIZERS resizer;
   bool d3dFullscreen;
+
+  SSubSettings subtitlesSettings;
 };
 
 class CEVRRendererSettings: public CRendererSettings

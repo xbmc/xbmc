@@ -11,33 +11,33 @@
 #include "..\ILog.h"
 
 BOOL g_overrideUserStyles;
-int g_subPicsBufferAhead(3);
-BOOL g_disableAnim(TRUE);
 
-CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr) :
+CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, SSubSettings* settings, HRESULT& hr) :
   m_d3DDev(d3DDev), m_iSubtitleSel(-1), m_rtNow(-1), m_lastSize(size),
-  m_textureSize(1024, 768), m_rtTimePerFrame(0), m_useDefaultStyle(true),
-  m_pSubPicProvider(NULL), m_pow2tex(true)
+  m_rtTimePerFrame(0), m_useDefaultStyle(true), m_pSubPicProvider(NULL)
 {
-  if (! d3DDev)
+  if (! d3DDev || !settings)
   {
     hr = E_POINTER;
     return;
   }
 
-  /* Test if GC can handle no power of two textures */
-  D3DCAPS9 caps;
-  d3DDev->GetDeviceCaps(&caps);
-  if ((caps.TextureCaps & D3DPTEXTURECAPS_POW2) == D3DPTEXTURECAPS_POW2)
-    m_pow2tex = true;
-  else
-    m_pow2tex = false;
+  memcpy(&m_settings, settings, sizeof(m_settings));
 
-  g_log->Log(LOGDEBUG, "%s texture size %dx%d, buffer ahead: %d, pow2tex: %d", __FUNCTION__, m_textureSize.cx, m_textureSize.cy, g_subPicsBufferAhead, m_pow2tex);
-  m_pAllocator = (new CDX9SubPicAllocator(d3DDev, m_textureSize, m_pow2tex));
+  if (! m_settings.forcePowerOfTwoTextures)
+  {
+    // Test if GC can handle no power of two textures
+    D3DCAPS9 caps;
+    d3DDev->GetDeviceCaps(&caps);
+    if ((caps.TextureCaps & D3DPTEXTURECAPS_POW2) == D3DPTEXTURECAPS_POW2)
+      m_settings.forcePowerOfTwoTextures = true;
+  }
+
+  g_log->Log(LOGDEBUG, "%s texture size %dx%d, buffer ahead: %d, pow2tex: %d", __FUNCTION__, m_settings.textureSize.cx, m_settings.textureSize.cy, m_settings.bufferAhead, m_settings.forcePowerOfTwoTextures);
+  m_pAllocator = (new CDX9SubPicAllocator(d3DDev, m_settings.textureSize, m_settings.forcePowerOfTwoTextures));
   hr = S_OK;
-  if (g_subPicsBufferAhead > 0)
-    m_pSubPicQueue.reset(new CSubPicQueue(g_subPicsBufferAhead, g_disableAnim, m_pAllocator, &hr));
+  if (m_settings.bufferAhead > 0)
+    m_pSubPicQueue.reset(new CSubPicQueue(m_settings.bufferAhead, m_settings.disableAnimations, m_pAllocator, &hr));
   else
     m_pSubPicQueue.reset(new CSubPicQueueNoThread(m_pAllocator, &hr));
   if (FAILED(hr))
@@ -60,8 +60,8 @@ void CSubManager::StartThread(IDirect3DDevice9* pD3DDevice)
   HRESULT hr = S_OK;
   m_d3DDev = pD3DDevice;
   m_pAllocator->ChangeDevice(pD3DDevice);
-  if (g_subPicsBufferAhead > 0)
-    m_pSubPicQueue.reset(new CSubPicQueue(g_subPicsBufferAhead, g_disableAnim, m_pAllocator, &hr));
+  if (m_settings.bufferAhead > 0)
+    m_pSubPicQueue.reset(new CSubPicQueue(m_settings.bufferAhead, m_settings.disableAnimations, m_pAllocator, &hr));
   else
     m_pSubPicQueue.reset(new CSubPicQueueNoThread(m_pAllocator, &hr));
 
@@ -352,10 +352,10 @@ HRESULT CSubManager::SetSubPicProviderToInternal()
 
 void CSubManager::SetTextureSize( Com::SmartSize& pSize )
 {
-  m_textureSize = pSize;
+  m_settings.textureSize = pSize;
   if (m_pAllocator)
   {
-    m_pAllocator->SetMaxTextureSize(m_textureSize);
+    m_pAllocator->SetMaxTextureSize(m_settings.textureSize);
     m_pSubPicQueue->Invalidate(m_rtNow + 1000000);
   }
 }

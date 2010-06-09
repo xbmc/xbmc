@@ -1,8 +1,4 @@
 #pragma once
-#include "DShowUtil/smartptr.h"
-#include "DShowUtil/DSGeometry.h"
-#include "../subpic/ISubPic.h"
-#include "../subtitles/STS.h"
 
 #include "initguid.h"
 
@@ -47,9 +43,39 @@ struct SSubStyle
   }
 };
 
+struct SSubSettings
+{
+public:
+  bool forcePowerOfTwoTextures;
+  bool disableAnimations;
+  uint32_t bufferAhead;
+  SIZE textureSize;
+
+  SSubSettings()
+  {
+    forcePowerOfTwoTextures = false;
+    disableAnimations = true;
+    bufferAhead = 3;
+    textureSize.cx = 1024;
+    textureSize.cy = 768;
+  }
+};
+
 // subtitles clsid
 DEFINE_GUID(RENDERED_TEXT_SUBTITLE, 0x537DCACA, 0x2812, 0x4a4f, 0xB2, 0xC6, 0x1A, 0x34, 0xC1, 0x7A, 0xDE, 0xB0);
 DEFINE_GUID(VOBFILE_SUBTITLE, 0x998D4C9A, 0x460F, 0x4de6, 0xBD, 0xCD, 0x35, 0xAB, 0x24, 0xF9, 0x4A, 0xDF);
+
+interface ISubStream;
+struct SSubStyle;
+namespace Com {
+  class SmartRect;
+  class SmartSize;
+  template<class T> class SmartPtr;
+}
+interface IDirect3DDevice9;
+interface IDirect3DTexture9;
+interface IGraphBuilder;
+typedef LONGLONG REFERENCE_TIME;
 
 class ISubManager
 {

@@ -1,17 +1,17 @@
 #pragma once
 
 #include "ISubManager.h"
+#include "../subpic/ISubPic.h"
+#include "../subtitles/STS.h"
 
 class CRenderedTextSubtitle;
 
 extern BOOL g_overrideUserStyles;
-extern int g_subPicsBufferAhead;
-extern BOOL g_disableAnim;
 
 class CSubManager: public ISubManager
 {
 public:
-  CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr);
+  CSubManager(IDirect3DDevice9* d3DDev, SIZE size, SSubSettings* settings, HRESULT& hr);
   ~CSubManager(void);
 
   void SetEnable(bool enable);
@@ -56,8 +56,7 @@ private:
   STSStyle m_style;
   bool m_useDefaultStyle;
 
-  bool m_pow2tex;
-  Com::SmartSize m_textureSize;
+  SSubSettings m_settings;
   Com::SmartSize m_lastSize;
 
   boost::shared_ptr<ISubPicQueue> m_pSubPicQueue;

@@ -38,7 +38,7 @@
 #include "log.h"
 #include "CharsetConverter.h"
 #include "RegExp.h"
-#include "Subtitles/libsubs/ISubManager.h"
+#include "Subtitles/subpic/ISubPic.h"
 #include "Subtitles/DllLibSubs.h"
 #include "Subtitles/ILogImpl.h"
 

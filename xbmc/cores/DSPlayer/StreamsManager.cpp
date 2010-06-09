@@ -32,6 +32,7 @@
 #include "WindowingFactory.h"
 #include "LangInfo.h"
 #include "GUISettings.h"
+#include "Filters\RendererSettings.h"
 
 CStreamsManager *CStreamsManager::m_pSingleton = NULL;
 
@@ -773,7 +774,7 @@ void CSubtitleManager::Initialize()
   // Log manager for the DLL
   m_Log.reset(new ILogImpl());
 
-  m_dll.CreateSubtitleManager(g_Windowing.Get3DDevice(), s, m_Log.get(), &pManager);
+  m_dll.CreateSubtitleManager(g_Windowing.Get3DDevice(), s, m_Log.get(), &g_dsSettings.pRendererSettings->subtitlesSettings, &pManager);
 
   if (!pManager)
     return;

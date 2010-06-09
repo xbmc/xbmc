@@ -131,6 +131,21 @@ void CDSSettings::LoadConfig()
       XMLUtils::GetBoolean(pElement, "MixerMode", pSettings->mixerMode);
     }
   }
+
+  // Subtitles
+  pElement = pRootElement->FirstChildElement("subtitlessettings");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "ForcePowerOfTwoTextures", pRendererSettings->subtitlesSettings.forcePowerOfTwoTextures);
+    XMLUtils::GetUInt(pElement, "BufferAhead", pRendererSettings->subtitlesSettings.bufferAhead);
+    XMLUtils::GetBoolean(pElement, "DisableAnimations", pRendererSettings->subtitlesSettings.disableAnimations);
+    pElement = pElement->FirstChildElement("TextureSize");
+    if (pElement)
+    {
+      XMLUtils::GetUInt(pElement, "width", (uint32_t&) pRendererSettings->subtitlesSettings.textureSize.cx);
+      XMLUtils::GetUInt(pElement, "height", (uint32_t&) pRendererSettings->subtitlesSettings.textureSize.cy);
+    }
+  }
 }
 
 HINSTANCE CDSSettings::GetD3X9Dll()

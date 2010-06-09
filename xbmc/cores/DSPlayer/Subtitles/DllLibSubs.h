@@ -39,7 +39,7 @@ class DllLibSubsInterface
 {
 public:
   virtual ~DllLibSubsInterface() {}
-  virtual bool CreateSubtitleManager(IDirect3DDevice9* d3DDev, SIZE size, ILog* logger, ISubManager ** pManager) = 0;
+  virtual bool CreateSubtitleManager(IDirect3DDevice9* d3DDev, SIZE size, ILog* logger, SSubSettings* settings, ISubManager** pManager) = 0;
   virtual bool DeleteSubtitleManager(ISubManager * pManager) = 0;
 };
 
@@ -51,12 +51,14 @@ class DllLibSubs : public DllDynamic, DllLibSubsInterface
   
   /** @brief Create the Subtitle Manager from libsubs.dll
    * @param[in] p1 Pointer to the Direct3D9 Device
-   * @param[in] p2 ?
-   * @param[out] p3 Receive a pointer to ISubManager
+   * @param[in] p2 Size of the current rendering area
+   * @param[in] p3 Pointer to a ILog interface for loging inside the library
+   * @param[in] p4 Pointer to a SSubSettings struct
+   * @param[out] p5 Receive a pointer to ISubManager
    * @return A HRESULT code
    * @remark The ISubManager interface _MUST_ be released by calling DeleteSubtitleManager. Don't use delete on it
    */
-  DEFINE_METHOD4(bool, CreateSubtitleManager, (IDirect3DDevice9 * p1, SIZE p2, ILog* p3, ISubManager ** p4)) ///< Caller take ownership of ISubManager
+  DEFINE_METHOD5(bool, CreateSubtitleManager, (IDirect3DDevice9 * p1, SIZE p2, ILog* p3, SSubSettings* p4, ISubManager ** p5)) ///< Caller take ownership of ISubManager
   /** @brief Delete the subtitle manager
    * @param[in] p1 Pointer to ISubManager allocated by CreateSubtitleManager
    * @return A HRESULT code
