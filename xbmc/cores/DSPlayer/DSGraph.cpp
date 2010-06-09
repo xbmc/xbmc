@@ -34,6 +34,7 @@
 #include "URL.h"
 #include "AdvancedSettings.h"
 #include "StreamsManager.h"
+#include "GUIInfoManager.h"
 #include <streams.h>
 
 
@@ -607,6 +608,8 @@ void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePos
     DVD_HMSF_TIMECODE tc = DShowUtil::RT2HMSF(position);
     CGraphFilters::Get()->DVD.dvdControl->PlayAtTime(&tc, DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
   }
+
+  g_infoManager.SetDisplayAfterSeek();
 }
 
 void CDSGraph::Seek(bool bPlus, bool bLargeStep)

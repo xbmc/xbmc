@@ -506,4 +506,11 @@ bool CDSPlayer::OnAction(const CAction &action)
   return false;
 }
 
+// Time is in millisecond
+void CDSPlayer::SeekTime(__int64 iTime)
+{
+  g_dsGraph->SeekInMilliSec(iTime);
+  m_callback.OnPlayBackSeek((int)iTime);
+}
+
 #endif

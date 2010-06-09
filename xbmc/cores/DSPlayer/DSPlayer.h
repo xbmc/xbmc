@@ -121,6 +121,7 @@ public:
   virtual CStdString GetAudioCodecName() { return CStreamsManager::Get()->GetAudioCodecName(); }
   virtual CStdString GetVideoCodecName() { return CStreamsManager::Get()->GetVideoCodecName(); }
 
+  virtual void SeekTime(__int64 iTime = 0);
   virtual __int64 GetTime() { CSingleLock lock(m_StateSection); return llrint(DS_TIME_TO_MSEC(g_dsGraph->GetTime())); }
   virtual int GetTotalTime() { CSingleLock lock(m_StateSection); return lrint(DS_TIME_TO_SEC(g_dsGraph->GetTotalTime())); }
   virtual void ToFFRW(int iSpeed);
