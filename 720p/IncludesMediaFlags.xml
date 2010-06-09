@@ -13,19 +13,19 @@
 		<control type="group">
 			<control type="image">
 				<visible>true</visible>
-				<posx>850</posx>
+				<posx>820</posx>
 				<posy>530</posy>
 				<height>60</height>
-				<info>Listitem.Property(mediaTag::Studio)</info>
+				<info>Listitem.Property(mediaTag::contentRating)</info>
 				<aspectratio>keep</aspectratio>
 				<aligny>center</aligny>
 			</control>
 			<control type="image">
 				<visible>true</visible>
-				<posx>1030</posx>
-				<posy>610</posy>
-				<height>50</height>
-				<info>Listitem.Property(mediaTag::contentRating)</info>
+				<posx>930</posx>
+				<posy>530</posy>
+				<height>60</height>
+				<info>Listitem.Property(mediaTag::Studio)</info>
 				<aspectratio>keep</aspectratio>
 				<aligny>center</aligny>
 			</control>
