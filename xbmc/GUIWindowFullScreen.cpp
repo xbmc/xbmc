@@ -469,6 +469,8 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 void CGUIWindowFullScreen::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
+  // override the clear colour - we must never clear fullscreen
+  m_clearBackground = 0;
 
   CGUIProgressControl* pProgress = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
   if(pProgress)

@@ -510,9 +510,9 @@ float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
   return 0.0f;
 }
 
-void CGraphicContext::Clear()
+void CGraphicContext::Clear(color_t color)
 {
-  g_Windowing.ClearBuffers(0);
+  g_Windowing.ClearBuffers(color);
 }
 
 void CGraphicContext::CaptureStateBlock()
