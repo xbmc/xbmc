@@ -131,34 +131,45 @@
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<animation effect="slide" start="0,0" end="10,0" time="0" condition="!Control.IsVisible(61)">Conditional</animation>
-			<itemlayout height="40" width="550">
+			<itemlayout height="80" width="550">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>550</width>
-					<height>41</height>
+					<height>81</height>
 					<texture border="0,2,0,2">MenuItemNF.png</texture>
 				</control>
 				<control type="image">
 					<posx>0</posx>
 					<posy>2</posy>
-					<width>40</width>
-					<height>36</height>
+					<width>120</width>
+					<height>76</height>
 					<texture>$INFO[Listitem.Icon]</texture>
 					<bordertexture border="3">black-back2.png</bordertexture>
 					<bordersize>2</bordersize>
 				</control>
 				<control type="label">
-					<posx>45</posx>
+					<posx>130</posx>
 					<posy>0</posy>
-					<width>485</width>
-					<height>40</height>
+					<width>410</width>
+					<height>30</height>
 					<font>font13</font>
-					<textcolor>grey2</textcolor>
+					<textcolor>grey</textcolor>
 					<selectedcolor>selected</selectedcolor>
 					<align>left</align>
 					<aligny>center</aligny>
-					<label>$INFO[ListItem.Label]</label>
+					<label>[B]$INFO[ListItem.Label][/B]</label>
+				</control>
+				<control type="textbox">
+					<posx>130</posx>
+					<posy>30</posy>
+					<width>410</width>
+					<height>50</height>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<selectedcolor>selected</selectedcolor>
+					<align>left</align>
+					<label>$INFO[ListItem.Label2]</label>
 				</control>
 			</itemlayout>
 			<focusedlayout height="80" width="550">
