@@ -5314,6 +5314,14 @@
 						RelativePath="..\..\xbmc\RenderSystemGL.h"
 						>
 					</File>
+					<File
+						RelativePath="..\..\xbmc\RenderSystemGLES.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\RenderSystemGLES.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
