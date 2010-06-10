@@ -23,7 +23,7 @@
 
 #include <vector>
 
-#define DIFFRINGSIZE 100
+#define DIFFRINGSIZE 120
 
 class CPullupCorrection
 {

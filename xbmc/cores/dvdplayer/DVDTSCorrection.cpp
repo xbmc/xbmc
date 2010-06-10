@@ -142,8 +142,8 @@ void CPullupCorrection::GetPattern(std::vector<double>& pattern)
     }
   }
 
-  //we check for patterns to the length of DIFFRINGSIZE / 3
-  for (int i = 1; i <= DIFFRINGSIZE / 3; i++)
+  //we check for patterns to the length of DIFFRINGSIZE / 2
+  for (int i = 1; i <= DIFFRINGSIZE / 2; i++)
   {
     bool hasmatch = true;
     for (int j = 1; j <= DIFFRINGSIZE / i; j++)
