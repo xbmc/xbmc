@@ -84,7 +84,7 @@ $(SLIB): $(PYWRAP) ../Python/libpython2.4.a $(PYO) ../../../../tools/Mach5/wrapp
 	@../Python/python.exe -O ../Python/Lib/py_compile.py $<
 
 $(PYWRAP): $(PYWRAP:.o=.c)
-	 $(CC) -fPIC -o $@ -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -c $<
+	 $(CC) $(CFLAGS) -fPIC -o $@ -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -c $<
 
 else
 all: $(SLIB)
@@ -128,7 +128,7 @@ $(ZIP): $(PYC) $(PYO)
 		../Python/Lib/py_compile.py $<
 
 $(PYWRAP): $(PYWRAP:.o=.c)
-	 $(CC) -fPIC -o $@ -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -c $<
+	 $(CC) $(CFLAGS) -fPIC -o $@ -D_FILE_DEFINED -D_REENTRANT -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 -c $<
 
 $(PYWRAPDEF): $(PYWRAPDEF:.def=.c)
 	LD_OPTS=$$(for func in $$(grep PYTHON_WRAP wrapper_python.c | \
