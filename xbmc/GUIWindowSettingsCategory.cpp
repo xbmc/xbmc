@@ -955,7 +955,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       AddonPtr addon;
-      CAddonPtr::Get().GetAddon("script.rss.editor",addon);
+      CAddonMgr::Get().GetAddon("script.rss.editor",addon);
       pControl->SetEnabled(addon && g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
     else if (strSetting.Equals("videoplayer.synctype"))
