@@ -215,6 +215,8 @@ void CMusicInfoScraper::FindArtistinfo()
   }
 
   parser.m_param[0] = strHTML;
+  parser.m_param[1] = m_strArtist;
+  CUtil::URLEncode(parser.m_param[1]);
   CStdString strXML = parser.Parse("GetArtistSearchResults");
   CLog::Log(LOGDEBUG,"scraper: GetArtistSearchResults returns %s",strXML.c_str());
   if (strXML.IsEmpty())
