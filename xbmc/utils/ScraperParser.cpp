@@ -479,9 +479,10 @@ char* CScraperParser::RemoveWhiteSpace(const char *string2)
   if (!string2) return (char*)"";
   char* string = (char*)string2;
   size_t pos = strlen(string)-1;
-  while ((string[pos] == ' ' || string[pos] == '\n') && string[pos] && pos)
+  while ((string[pos] == ' ' || string[pos] == '\n') || string[pos] == '\t' 
+       && string[pos] && pos)
     string[pos--] = '\0';
-  while ((*string == ' ' || *string == '\n') && *string != '\0')
+  while ((*string == ' ' || *string == '\n' || *string == '\t') && *string != '\0')
     string++;
   return string;
 }
