@@ -146,31 +146,42 @@ void CPullupCorrection::GetPattern(std::vector<double>& pattern)
     }
   }
 
+  bool checkexisting = m_pattern.size() > 0;
+
   //we check for patterns to the length of DIFFRINGSIZE / 2
   for (int i = 1; i <= m_ringfill / 2; i++)
   {
+    //check the existing pattern length first
+    int length = checkexisting ? m_pattern.size() : i;
+
     bool hasmatch = true;
-    for (int j = 1; j <= m_ringfill / i; j++)
+    for (int j = 1; j <= m_ringfill / length; j++)
     {
-      int nrdiffs = i;
+      int nrdiffs = length;
       //we want to check the full buffer to see if the pattern repeats
       //but we can't go beyond the buffer
-      if (j * i + i > m_ringfill)
-        nrdiffs = m_ringfill - j * i;
+      if (j * length + length > m_ringfill)
+        nrdiffs = m_ringfill - j * length;
 
       if (nrdiffs < 1)  //if the buffersize can be cleanly divided by i we're done here
         break;
 
-      if (!MatchDifftype(difftypesbuff, difftypesbuff + j * i, nrdiffs))
+      if (!MatchDifftype(difftypesbuff, difftypesbuff + j * length, nrdiffs))
       {
         hasmatch = false;
         break;
       }
     }
 
+    if (checkexisting)
+    {
+      checkexisting = false;
+      i--;
+    }
+
     if (hasmatch)
     {
-      BuildPattern(pattern, i);
+      BuildPattern(pattern, length);
       break;
     }
   }
