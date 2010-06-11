@@ -1038,6 +1038,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
 
     m_drop_state = false;
     m_decoder_open = true;
+    m_duration = (DVD_TIME_BASE / (24.0 * 1000.0/1001.0));
 
     CLog::Log(LOGDEBUG, "%s: codec opened", __MODULE_NAME__);
   } while(false);
@@ -1108,9 +1109,15 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
       }
     } while (ret != BCM::BC_STS_SUCCESS);
 
+    if (m_drop_state)
+    {
+      if (m_pOutputThread->GetReadyCount() > 1)
+        m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
+    }
+
     bool wait_state;
     if (!m_pOutputThread->GetReadyCount())
-      wait_state = m_pOutputThread->WaitOutput(10);
+      wait_state = m_pOutputThread->WaitOutput(m_duration/4000);
   }
 
   return true;
@@ -1128,8 +1135,7 @@ void CCrystalHD::BusyListFlush(void)
 {
   if (m_pOutputThread)
   {
-    // leave one around, DVDPlayer expects it
-    while( m_BusyList.Count() > 1)
+    while ( m_BusyList.Count())
       m_pOutputThread->FreeListPush( m_BusyList.Pop() );
   }
 }
@@ -1180,7 +1186,8 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   }
 
   pDvdVideoPicture->iRepeatPicture = 0;
-  pDvdVideoPicture->iDuration = (DVD_TIME_BASE / pBuffer->m_framerate);
+  m_duration = DVD_TIME_BASE / pBuffer->m_framerate;
+  pDvdVideoPicture->iDuration = m_duration;
   pDvdVideoPicture->color_range = pBuffer->m_color_range;
   pDvdVideoPicture->color_matrix = pBuffer->m_color_matrix;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
