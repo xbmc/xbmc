@@ -1393,7 +1393,7 @@ void CGUIWindowVideoBase::OnDeleteItem(CFileItemPtr item)
   CFileUtils::DeleteItem(item);
 }
 
-void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool mark)
+void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
 {
   // dont allow update while scanning
   CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
@@ -1409,11 +1409,18 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool mark)
     CFileItemList items;
     if (item->m_bIsFolder)
     {
-      CVideoDatabaseDirectory dir;
       CStdString strPath = item->m_strPath;
-      if (dir.GetDirectoryChildType(item->m_strPath) == NODE_TYPE_SEASONS)
-        strPath += "-1/";
-      dir.GetDirectory(strPath,items);
+      if (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES)
+      {
+        CDirectory::GetDirectory(strPath, items);
+      }
+      else
+      {
+        CVideoDatabaseDirectory dir;
+        if (dir.GetDirectoryChildType(item->m_strPath) == NODE_TYPE_SEASONS)
+          strPath += "-1/";
+        dir.GetDirectory(strPath,items);
+      }
     }
     else
       items.Add(item);
@@ -1424,12 +1431,12 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool mark)
       if (pItem->IsVideoDb())
       {
         if (pItem->HasVideoInfoTag() &&
-            (( mark && pItem->GetVideoInfoTag()->m_playCount) ||
-             (!mark && !(pItem->GetVideoInfoTag()->m_playCount))))
+            (( bMark && pItem->GetVideoInfoTag()->m_playCount) ||
+             (!bMark && !(pItem->GetVideoInfoTag()->m_playCount))))
           continue;
       }
 
-      database.SetPlayCount(*pItem, mark ? 1 : 0);
+      database.SetPlayCount(*pItem, bMark ? 1 : 0);
     }
     
     database.Close(); 
