@@ -573,7 +573,7 @@ void CGUISettings::Initialize()
 #endif
 
 #ifdef HAS_GL
-  AddBool(vp, "videoplayer.usepbo", 13424, true);
+  AddBool(NULL, "videoplayer.usepbo", 13424, true);
 #endif
 
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
