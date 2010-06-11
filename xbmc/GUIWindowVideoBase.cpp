@@ -1417,7 +1417,7 @@ void CGUIWindowVideoBase::MarkWatched(const CFileItemPtr &item, bool bMark)
       else
       {
         CVideoDatabaseDirectory dir;
-        if (dir.GetDirectoryChildType(item->m_strPath) == NODE_TYPE_SEASONS)
+        if (dir.GetDirectoryChildType(strPath) == NODE_TYPE_SEASONS)
           strPath += "-1/";
         dir.GetDirectory(strPath,items);
       }
