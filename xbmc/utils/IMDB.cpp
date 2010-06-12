@@ -438,21 +438,6 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails)
   return true;
 }
 
-bool CIMDB::LoadXML(const CStdString& strXMLFile, CVideoInfoTag &movieDetails, bool bDownload /* = true */)
-{
-  TiXmlDocument doc;
-
-  movieDetails.Reset();
-  if (doc.LoadFile(strXMLFile) && ParseDetails(doc, movieDetails))
-  { // excellent!
-    return true;
-  }
-  if (!bDownload)
-    return true;
-
-  return false;
-}
-
 void CIMDB::RemoveAllAfter(char* szMovie, const char* szSearch)
 {
   char* pPtr = strstr(szMovie, szSearch);

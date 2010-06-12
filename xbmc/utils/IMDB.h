@@ -58,8 +58,6 @@ public:
   CIMDB();
   virtual ~CIMDB();
 
-  bool LoadXML(const CStdString& strXMLFile, CVideoInfoTag &movieDetails, bool bDownload = true);
-
   // threaded lookup functions
   // returns -1 if we had an error
   int FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);

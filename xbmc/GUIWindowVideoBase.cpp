@@ -1635,14 +1635,12 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
     CStackDirectory stack;
     strXml = stack.GetFirstStackedFile(pItem->m_strPath) + ".xml";
   }
-  CStdString strCache = CUtil::AddFileToFolder("special://temp/", CUtil::MakeLegalFileName(CUtil::GetFileName(strXml)));
   if (CFile::Exists(strXml))
   {
     bGotXml = true;
     CLog::Log(LOGDEBUG,"%s: found matching xml file:[%s]", __FUNCTION__, strXml.c_str());
-    CFile::Cache(strXml, strCache);
-    CIMDB imdb;
-    if (!imdb.LoadXML(strCache, movie, false))
+    TiXmlDocument doc;
+    if (!doc.LoadFile(strXml) || !movie.Load(doc.RootElement()))
     {
       CLog::Log(LOGERROR,"%s: Could not parse info in file:[%s]", __FUNCTION__, strXml.c_str());
       bGotXml = false;
