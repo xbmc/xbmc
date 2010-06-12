@@ -213,13 +213,14 @@ namespace VIDEO
      the episodes. INFO_ADDED then indicates we've added one or more episodes.
      \param episodes the episode list for the show.
      \param files the episode files to process.
+     \param scraper scraper to use for finding online info
      \param idShow the database id of the show.
      \param strShowTitle the title of the show.
      \param pDlgProcess progress dialog to update during processing.  Defaults to NULL.
      \return INFO_ERROR on failure, INFO_CANCELLED on cancellation,
      INFO_NOT_FOUND if an episode isn't found, or INFO_ADDED if all episodes are added.
      */
-    INFO_RET OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
+    INFO_RET OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, const ADDON::ScraperPtr &scraper, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
 
     void EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList);
     bool ProcessItemNormal(CFileItemPtr item, EPISODES& episodeList, CStdString regexp);
