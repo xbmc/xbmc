@@ -110,7 +110,7 @@ namespace VIDEO
     static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
     CNfoFile::NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, ADDON::ScraperPtr& scraper, CScraperUrl& scrUrl);
-    CIMDB m_IMDB;
+
     /*! \brief Fetch thumbs for seasons for a given show
      Fetches and caches local season thumbs of the form season##.tbn and season-all.tbn for the current show,
      and downloads online thumbs if they don't exist.

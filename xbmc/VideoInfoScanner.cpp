@@ -414,8 +414,6 @@ namespace VIDEO
 
   INFO_RET CVideoInfoScanner::RetreiveInfoForTvShow(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
   {
-    m_IMDB.SetScraperInfo(info2);
-
     IMDB_EPISODELIST episodes;
     EPISODES files;
     long idTvShow = -1;
@@ -452,7 +450,8 @@ namespace VIDEO
           pDlgProgress->SetLine(2, 20354);
           pDlgProgress->Progress();
         }
-        if (!m_IMDB.GetEpisodeList(url, episodes))
+        CIMDB imdb(info2);
+        if (!imdb.GetEpisodeList(url, episodes))
         {
           if (pDlgProgress)
             pDlgProgress->Close();
@@ -534,7 +533,8 @@ namespace VIDEO
         CScraperUrl url;
         url.ParseEpisodeGuide(details.m_strEpisodeGuide);
         EnumerateSeriesFolder(pItem.get(), files);
-        if (!m_IMDB.GetEpisodeList(url, episodes))
+        CIMDB imdb(info2);
+        if (!imdb.GetEpisodeList(url, episodes))
           return INFO_NOT_FOUND;
       }
       if (OnProcessSeriesFolder(episodes, files, info2, lResult, details.m_strTitle, pDlgProgress))
@@ -1174,7 +1174,8 @@ namespace VIDEO
 
       if (bFound)
       {
-        if (!m_IMDB.GetEpisodeDetails(guide->cScraperUrl, episodeDetails, pDlgProgress))
+        CIMDB imdb(scraper);
+        if (!imdb.GetEpisodeDetails(guide->cScraperUrl, episodeDetails, pDlgProgress))
         {
           m_database.Close();
           return INFO_NOT_FOUND; // TODO: should we just skip to the next episode?
@@ -1310,10 +1311,10 @@ namespace VIDEO
   long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ScraperPtr& scraper, bool bUseDirNames, CGUIDialogProgress* pDialog /* = NULL */, bool bCombined, bool bRefresh)
   {
     CVideoInfoTag movieDetails;
-    m_IMDB.SetScraperInfo(scraper);
     movieDetails.m_strFileNameAndPath = pItem->m_strPath;
 
-    if ( m_IMDB.GetDetails(url, movieDetails, pDialog) )
+    CIMDB imdb(scraper);
+    if ( imdb.GetDetails(url, movieDetails, pDialog) )
     {
       if (bCombined)
         m_nfoReader.GetDetails(movieDetails);
@@ -1557,8 +1558,8 @@ namespace VIDEO
   int CVideoInfoScanner::FindVideo(const CStdString &videoName, const ScraperPtr &scraper, CScraperUrl &url, CGUIDialogProgress *progress)
   {
     IMDB_MOVIELIST movielist;
-    m_IMDB.SetScraperInfo(scraper);
-    int returncode = m_IMDB.FindMovie(videoName, movielist, progress);
+    CIMDB imdb(scraper);
+    int returncode = imdb.FindMovie(videoName, movielist, progress);
     if (returncode == -1 || (returncode == 0 && !DownloadFailed(progress)))
     {
       m_bStop = true;

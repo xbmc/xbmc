@@ -55,7 +55,7 @@ typedef std::vector<IMDB_EPISODE> IMDB_EPISODELIST;
 class CIMDB : public CThread
 {
 public:
-  CIMDB();
+  CIMDB(const ADDON::ScraperPtr &scraper);
   virtual ~CIMDB();
 
   // threaded lookup functions
@@ -64,9 +64,6 @@ public:
   bool GetDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
   bool GetEpisodeDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
   bool GetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
-
-  void SetScraperInfo(const ADDON::ScraperPtr& scraper) { m_info = scraper; }
-  const ADDON::ScraperPtr GetScraperInfo() const { return m_info; }
 
   static void ShowErrorDialog(const TiXmlElement* element);
 protected:
