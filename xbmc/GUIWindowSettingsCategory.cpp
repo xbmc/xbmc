@@ -128,8 +128,6 @@ using namespace ADDON;
 #define CONTROL_START_BUTTONS           -100
 #define CONTROL_START_CONTROL           -80
 
-#define RSSEDITOR_PATH "special://home/scripts/RSS Editor/default.py"
-
 #ifdef HAS_DS_PLAYER
 int CALLBACK EnumFontCallback(ENUMLOGFONTEX *lpelfe, NEWTEXTMETRICEX *lpntme, DWORD FontType, LPARAM lParam)
 {
@@ -1015,7 +1013,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("lookandfeel.rssedit"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      pControl->SetEnabled(XFILE::CFile::Exists(RSSEDITOR_PATH) && g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
+      AddonPtr addon;
+      CAddonMgr::Get().GetAddon("script.rss.editor",addon);
+      pControl->SetEnabled(addon && g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
     else if (strSetting.Equals("videoplayer.synctype"))
     {
@@ -1157,12 +1157,12 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
 #endif
   else if (strSetting.Equals("lookandfeel.rssedit"))
-    CBuiltins::Execute("RunScript("RSSEDITOR_PATH")");
+    CBuiltins::Execute("RunScript(script.rss.editor)");
   else if (pSettingControl->GetSetting()->GetType() == SETTINGS_TYPE_ADDON)
   { // prompt for the addon
     CSettingAddon *setting = (CSettingAddon *)pSettingControl->GetSetting();
     CStdString addonID;
-    if (CGUIWindowAddonBrowser::SelectAddonID(setting->m_type, addonID, setting->m_type == ADDON_SCREENSAVER || setting->m_type == ADDON_VIZ))
+    if (CGUIWindowAddonBrowser::SelectAddonID(setting->m_type, addonID, setting->m_type == ADDON_SCREENSAVER || setting->m_type == ADDON_VIZ) == 1)
       setting->SetData(addonID);
     else
       return;

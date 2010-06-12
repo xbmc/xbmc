@@ -258,6 +258,7 @@ CAddon::CAddon(const cp_extension_t *ext)
   m_hasStrings = false;
   m_checkedStrings = false;
   m_settingsLoaded = false;
+  m_userSettingsLoaded = false;
 }
 
 CAddon::CAddon(const AddonProps &props)
@@ -272,15 +273,17 @@ CAddon::CAddon(const AddonProps &props)
   m_hasStrings = false;
   m_checkedStrings = false;
   m_settingsLoaded = false;
+  m_userSettingsLoaded = false;
 }
 
 CAddon::CAddon(const CAddon &rhs, const AddonPtr &parent)
   : m_props(rhs.Props())
   , m_parent(parent)
 {
-  m_userXmlDoc  = rhs.m_userXmlDoc;
+  m_settings  = rhs.m_settings;
   m_addonXmlDoc = rhs.m_addonXmlDoc;
   m_settingsLoaded = rhs.m_settingsLoaded;
+  m_userSettingsLoaded = rhs.m_userSettingsLoaded;
   BuildProfilePath();
   CUtil::AddFileToFolder(Profile(), "settings.xml", m_userSettingsPath);
   m_strLibName  = rhs.m_strLibName;
@@ -419,7 +422,8 @@ bool CAddon::LoadSettings()
 
   if (!m_addonXmlDoc.LoadFile(addonFileName))
   {
-    CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", addonFileName.c_str(), m_addonXmlDoc.ErrorRow(), m_addonXmlDoc.ErrorDesc());
+    if (CFile::Exists(addonFileName))
+      CLog::Log(LOGERROR, "Unable to load: %s, Line %d\n%s", addonFileName.c_str(), m_addonXmlDoc.ErrorRow(), m_addonXmlDoc.ErrorDesc());
     return false;
   }
 
@@ -430,6 +434,7 @@ bool CAddon::LoadSettings()
     CLog::Log(LOGERROR, "Error loading Settings %s: cannot find root element 'settings'", addonFileName.c_str());
     return false;
   }
+  SettingsFromXML(m_addonXmlDoc, true);
   LoadUserSettings();
   m_settingsLoaded = true;
   return true;
@@ -440,17 +445,21 @@ bool CAddon::HasUserSettings()
   if (!LoadSettings())
     return false;
 
-  return NULL != m_userXmlDoc.RootElement();
+  return m_userSettingsLoaded;
 }
 
 bool CAddon::LoadUserSettings()
 {
-  return m_userXmlDoc.LoadFile(m_userSettingsPath);
+  m_userSettingsLoaded = false;
+  TiXmlDocument doc;
+  if (doc.LoadFile(m_userSettingsPath))
+    m_userSettingsLoaded = SettingsFromXML(doc);
+  return m_userSettingsLoaded;
 }
 
 void CAddon::SaveSettings(void)
 {
-  if (!m_userXmlDoc.RootElement())
+  if (!m_userSettingsLoaded)
     return; // no settings to save
 
   // break down the path into directories
@@ -466,7 +475,10 @@ void CAddon::SaveSettings(void)
   if (!CDirectory::Exists(strAddon))
     CDirectory::Create(strAddon);
 
-  m_userXmlDoc.SaveFile(m_userSettingsPath);
+  // create the XML file
+  TiXmlDocument doc;
+  SettingsToXML(doc);
+  doc.SaveFile(m_userSettingsPath);
 }
 
 CStdString CAddon::GetSetting(const CStdString& key)
@@ -474,72 +486,62 @@ CStdString CAddon::GetSetting(const CStdString& key)
   if (!LoadSettings())
     return ""; // no settings available
 
-  if (m_userXmlDoc.RootElement())
-  {
-    // Try to find the setting and return its value
-    const TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
-    while (setting)
-    {
-      const char *id = setting->Attribute("id");
-      if (id && strcmpi(id, key) == 0)
-        return setting->Attribute("value");
-
-      setting = setting->NextSiblingElement("setting");
-    }
-  }
-
-  if (m_addonXmlDoc.RootElement())
-  {
-    // Try to find the setting in the addon and return its default value
-    const TiXmlElement* category = m_addonXmlDoc.RootElement()->FirstChildElement("category");
-    if (!category)
-      category = m_addonXmlDoc.RootElement();
-    while (category)
-    {
-      const TiXmlElement *setting = category->FirstChildElement("setting");
-      while (setting)
-      {
-        const char *id = setting->Attribute("id");
-        if (id && strcmpi(id, key) == 0 && setting->Attribute("default"))
-          return setting->Attribute("default");
-
-        setting = setting->NextSiblingElement("setting");
-      }
-      category = category->NextSiblingElement("category");
-    }
-  }
-
-  // Otherwise return empty string
+  map<CStdString, CStdString>::const_iterator i = m_settings.find(key);
+  if (i != m_settings.end())
+    return i->second;
   return "";
 }
 
 void CAddon::UpdateSetting(const CStdString& key, const CStdString& value)
 {
   if (key.empty()) return;
+  m_settings[key] = value;
+}
 
-  // Try to find the setting and change its value
-  if (!m_userXmlDoc.RootElement())
+bool CAddon::SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults /*=false */)
+{
+  if (!doc.RootElement())
+    return false;
+
+  if (loadDefaults)
+    m_settings.clear();
+
+  const TiXmlElement* category = doc.RootElement()->FirstChildElement("category");
+  if (!category)
+    category = doc.RootElement();
+
+  bool foundSetting = false;
+  while (category)
   {
-    TiXmlElement node("settings");
-    m_userXmlDoc.InsertEndChild(node);
-  }
-  TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
-  while (setting)
-  {
-    const char *id = setting->Attribute("id");
-    if (id && strcmpi(id, key) == 0)
+    const TiXmlElement *setting = category->FirstChildElement("setting");
+    while (setting)
     {
-      setting->SetAttribute("value", value.c_str());
-      return;
+      const char *id = setting->Attribute("id");
+      const char *value = setting->Attribute(loadDefaults ? "default" : "value");
+      if (id && value)
+      {
+        m_settings[id] = value;
+        foundSetting = true;
+      }
+      setting = setting->NextSiblingElement("setting");
     }
-    setting = setting->NextSiblingElement("setting");
+    category = category->NextSiblingElement("category");
   }
+  return foundSetting;
+}
 
-  // Setting not found, add it
-  TiXmlElement nodeSetting("setting");
-  nodeSetting.SetAttribute("id", key.c_str());
-  nodeSetting.SetAttribute("value", value.c_str());
-  m_userXmlDoc.RootElement()->InsertEndChild(nodeSetting);
+void CAddon::SettingsToXML(TiXmlDocument &doc) const
+{
+  TiXmlElement node("settings");
+  doc.InsertEndChild(node);
+  for (map<CStdString, CStdString>::const_iterator i = m_settings.begin(); i != m_settings.end(); ++i)
+  {
+    TiXmlElement nodeSetting("setting");
+    nodeSetting.SetAttribute("id", i->first.c_str());
+    nodeSetting.SetAttribute("value", i->second.c_str());
+    doc.RootElement()->InsertEndChild(nodeSetting);
+  }
+  doc.SaveFile(m_userSettingsPath);
 }
 
 TiXmlElement* CAddon::GetSettingsXML()

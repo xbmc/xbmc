@@ -24,7 +24,8 @@
 #include "DVDClock.h"
 #include "utils/log.h"
 
-#define MAXERR 0.01
+#define MAXERR    0.01
+#define MINDIFFS 48
 
 using namespace std;
 
@@ -43,13 +44,16 @@ void CPullupCorrection::Flush()
   m_pattern.clear();
   m_haspattern = false;
   m_patternlength = 0;
+  m_leadin = 0;
 }
 
 void CPullupCorrection::Add(double pts)
 {
   //can't get a diff with just one pts
-  if (m_prevpts == DVD_NOPTS_VALUE)
+  //also ignore the first 3 timestamps because they often break the pattern
+  if (m_prevpts == DVD_NOPTS_VALUE || m_leadin <= 3)
   {
+    m_leadin++;
     m_prevpts = pts;
     return;
   }
@@ -61,12 +65,12 @@ void CPullupCorrection::Add(double pts)
   //save the pts
   m_prevpts = pts;
 
-  //only search for patterns in a full ringbuffer
+  //only search for patterns if we have at least 48 diffs
   m_ringfill++;
-  if (m_ringfill < DIFFRINGSIZE)
+  if (m_ringfill < MINDIFFS)
     return;
-
-  m_ringfill = DIFFRINGSIZE;
+  else if (m_ringfill > DIFFRINGSIZE)
+    m_ringfill = DIFFRINGSIZE;
 
   //get the current pattern in the ringbuffer
   vector<double> pattern;
@@ -130,7 +134,7 @@ void CPullupCorrection::GetPattern(std::vector<double>& pattern)
   GetDifftypes(difftypes);
 
   //mark each diff with what difftype it is
-  for (int i = 0; i < DIFFRINGSIZE; i++)
+  for (int i = 0; i < m_ringfill; i++)
   {
     for (unsigned int j = 0; j < difftypes.size(); j++)
     {
@@ -142,31 +146,42 @@ void CPullupCorrection::GetPattern(std::vector<double>& pattern)
     }
   }
 
-  //we check for patterns to the length of DIFFRINGSIZE / 3
-  for (int i = 1; i <= DIFFRINGSIZE / 3; i++)
+  bool checkexisting = m_pattern.size() > 0;
+
+  //we check for patterns to the length of DIFFRINGSIZE / 2
+  for (int i = 1; i <= m_ringfill / 2; i++)
   {
+    //check the existing pattern length first
+    int length = checkexisting ? m_pattern.size() : i;
+
     bool hasmatch = true;
-    for (int j = 1; j <= DIFFRINGSIZE / i; j++)
+    for (int j = 1; j <= m_ringfill / length; j++)
     {
-      int nrdiffs = i;
+      int nrdiffs = length;
       //we want to check the full buffer to see if the pattern repeats
       //but we can't go beyond the buffer
-      if (j * i + i > DIFFRINGSIZE)
-        nrdiffs = DIFFRINGSIZE - j * i;
+      if (j * length + length > m_ringfill)
+        nrdiffs = m_ringfill - j * length;
 
       if (nrdiffs < 1)  //if the buffersize can be cleanly divided by i we're done here
         break;
 
-      if (!MatchDifftype(difftypesbuff, difftypesbuff + j * i, nrdiffs))
+      if (!MatchDifftype(difftypesbuff, difftypesbuff + j * length, nrdiffs))
       {
         hasmatch = false;
         break;
       }
     }
 
+    if (checkexisting)
+    {
+      checkexisting = false;
+      i--;
+    }
+
     if (hasmatch)
     {
-      BuildPattern(pattern, i);
+      BuildPattern(pattern, length);
       break;
     }
   }
@@ -175,7 +190,7 @@ void CPullupCorrection::GetPattern(std::vector<double>& pattern)
 //calculate the different types of diffs we have
 void CPullupCorrection::GetDifftypes(vector<double>& difftypes)
 {
-  for (int i = 0; i < DIFFRINGSIZE; i++)
+  for (int i = 0; i < m_ringfill; i++)
   {
     bool hasmatch = false;
     for (unsigned int j = 0; j < difftypes.size(); j++)
@@ -199,11 +214,11 @@ void CPullupCorrection::BuildPattern(std::vector<double>& pattern, int patternle
   for (int i = 0; i < patternlength; i++)
   {
     double avgdiff = 0.0;
-    for (int j = 0; j < DIFFRINGSIZE / patternlength; j++)
+    for (int j = 0; j < m_ringfill / patternlength; j++)
     {
       avgdiff += GetDiff(j * patternlength + i);
     }
-    avgdiff /= DIFFRINGSIZE / patternlength;
+    avgdiff /= m_ringfill / patternlength;
     pattern.push_back(avgdiff);
   }
 }

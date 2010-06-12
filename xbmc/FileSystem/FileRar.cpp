@@ -227,6 +227,7 @@ bool CFileRar::Exists(const CURL& url)
 
 int CFileRar::Stat(const CURL& url, struct __stat64* buffer)
 {
+  memset(buffer, 0, sizeof(struct __stat64));
   if (Open(url))
   {
     buffer->st_size = GetLength();

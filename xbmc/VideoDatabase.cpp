@@ -551,6 +551,11 @@ int CVideoDatabase::AddFile(const CStdString& strFileNameAndPath)
   return -1;
 }
 
+int CVideoDatabase::AddFile(const CFileItem& item)
+{
+  return AddFile(item.m_strPath);
+}
+
 bool CVideoDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
 {
   try
@@ -3385,8 +3390,12 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
 void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CStdString &date)
 {
   int id = GetFileId(item);
+  
   if (id < 0)
-    return;  // not in db
+  { // no files found - we have to add one
+    id = AddFile(item);
+    if (id < 0) return;
+  }
 
   // and mark as watched
   try

@@ -317,7 +317,7 @@ bool CScraperUrl::ParseEpisodeGuide(CStdString strUrls)
 
 CStdString CScraperUrl::GetThumbURL(const CScraperUrl::SUrlEntry &entry)
 {
-  if (!entry.m_spoof.IsEmpty())
+  if (entry.m_spoof.IsEmpty())
     return entry.m_url;
   CStdString spoof = entry.m_spoof;
   CUtil::URLEncode(spoof);

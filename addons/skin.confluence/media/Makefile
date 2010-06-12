@@ -55,6 +55,8 @@ IMAGES= \
 	ContentPanel2.png \
 	ContentPanel4.png \
 	DefaultActor.png \
+	DefaultAddon.png \
+	DefaultAddonNone.png \
 	DefaultAddSource.png \
 	DefaultAlbumCover.png \
 	DefaultArtist.png \

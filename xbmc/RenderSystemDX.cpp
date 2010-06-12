@@ -686,7 +686,7 @@ bool CRenderSystemDX::EndRender()
 
 bool CRenderSystemDX::ClearBuffers(color_t color)
 {
-   HRESULT hr;
+  HRESULT hr;
 
   if (!m_bRenderCreated)
     return false;
@@ -701,16 +701,6 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
     return false;
 
   return true;
-}
-
-bool CRenderSystemDX::ClearBuffers(float r, float g, float b, float a)
-{
-  if (!m_bRenderCreated)
-    return false;
-
-  D3DXCOLOR color(r, g, b, a);
-
-  return ClearBuffers((DWORD)color);
 }
 
 bool CRenderSystemDX::IsExtSupported(const char* extension)

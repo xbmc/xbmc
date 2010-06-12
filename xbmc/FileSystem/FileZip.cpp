@@ -273,6 +273,7 @@ int CFileZip::Stat(const CURL& url, struct __stat64* buffer)
   if (!g_ZipManager.GetZipEntry(url.Get(),mZipItem))
     return -1;
 
+  memset(buffer, 0, sizeof(struct __stat64));
   buffer->st_gid = 0;
   buffer->st_atime = buffer->st_ctime = mZipItem.mod_time;
   buffer->st_size = mZipItem.usize;

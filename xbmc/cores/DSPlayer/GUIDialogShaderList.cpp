@@ -132,7 +132,7 @@ void CGUIDialogShaderList::UpdateControls()
   CGUIListGroup * pControl = NULL;
   
   uint16_t index = 0;
-  int left, right, up, down;
+  int right, up, down;
 
 #define NEXT_RADIOBUTTON  (down + 100)
 #define PREVIOUS_RADIOBUTTON  (up + 100)

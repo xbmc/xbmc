@@ -40,7 +40,6 @@ public:
   virtual void FrameMove();
   virtual void Render();
   virtual void OnWindowLoaded();
-  virtual bool NeedsClearBackground() const { return false; }; // never clear the background in fullscreen
   void ChangetheTimeCode(int remote);
 
   virtual void OnSliderChange(void *data, CGUISliderControl *slider);

@@ -80,7 +80,7 @@ int CSAPFile::Stat(const CURL& url, struct __stat64* buffer)
   {
     if(buffer)
     {
-      memset(buffer, 0, sizeof(*buffer));
+      memset(buffer, 0, sizeof(struct __stat64));
       buffer->st_mode = _S_IFDIR;
     }
     return true;

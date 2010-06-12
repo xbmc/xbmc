@@ -38,7 +38,7 @@ IFile::~IFile()
 
 int IFile::Stat(struct __stat64* buffer)
 {
-  memset(buffer, 0, sizeof (buffer));
+  memset(buffer, 0, sizeof(struct __stat64));
   errno = ENOENT;
   return -1;
 }

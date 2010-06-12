@@ -69,7 +69,6 @@ public:
   virtual bool EndRender() = 0;
   virtual bool PresentRender() = 0;
   virtual bool ClearBuffers(color_t color) = 0;
-  virtual bool ClearBuffers(float r, float g, float b, float a) = 0;
   virtual bool IsExtSupported(const char* extension) = 0;
 
   virtual void SetVSync(bool vsync) = 0;

@@ -995,7 +995,7 @@ int CBuiltins::Execute(const CStdString& execString)
     int string = g_settings.TranslateSkinString(params[0]);
     ADDON::TYPE type = TranslateType(params[1]);
     CStdString result;
-    if (CGUIWindowAddonBrowser::SelectAddonID(type, result, true))
+    if (CGUIWindowAddonBrowser::SelectAddonID(type, result, true) == 1)
     {
       g_settings.SetSkinString(string, result);
       g_settings.Save();
@@ -1298,8 +1298,13 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("addon.default.opensettings") && params.size() == 1)
   {
     AddonPtr addon;
-    if (CAddonMgr::Get().GetDefault(TranslateType(params[0]), addon))
+    ADDON::TYPE type = TranslateType(params[0]);
+    if (CAddonMgr::Get().GetDefault(type, addon))
+    {
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
+      if (type == ADDON_VIZ)
+        g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
+    }
   }
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   else if (execute.Equals("lirc.stop"))

@@ -13,7 +13,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	$(CXX) $(CFLAGS) -bundle -flat_namespace -undefined suppress -shared -fPIC -o $@ $(OBJS)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 else
-	$(CXX) $(CXXFLAGS) -shared -o $@ $(OBJS) \
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(OBJS) \
 		`cat ../../cores/DllLoader/exports/wrapper.def` ../../cores/DllLoader/exports/wrapper.o
 endif
 
