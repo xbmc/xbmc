@@ -576,6 +576,10 @@ bool CIMDB::GetEpisodeDetails(const CScraperUrl &url, CVideoInfoTag &movieDetail
   m_url = url;
   m_movieDetails = movieDetails;
 
+  // load our scraper xml
+  if (!m_parser.Load(m_info))
+    return false;
+
   // fill in the defaults
   movieDetails.Reset();
   if (pProgress)
