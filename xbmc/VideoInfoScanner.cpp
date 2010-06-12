@@ -233,31 +233,36 @@ namespace VIDEO
       if (m_pObserver)
         m_pObserver->OnStateChanged(FETCHING_MOVIE_INFO);
 
-      CDirectory::GetDirectory(strDirectory, items, g_settings.m_videoExtensions);
-      items.m_strPath = strDirectory;
-      items.Stack();
-      int numFilesInFolder = GetPathHash(items, hash);
-
-      if (!m_database.GetPathHash(strDirectory, dbHash) || dbHash != hash)
-      { // path has changed - rescan
-        if (dbHash.IsEmpty())
-          CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning dir '%s' as not in the database", strDirectory.c_str());
-        else
-          CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '%s' due to change", strDirectory.c_str());
-      }
-      else
-      {
+      CStdString fastHash = GetFastHash(strDirectory);
+      if (m_database.GetPathHash(strDirectory, dbHash) && fastHash == dbHash)
+      { // fast hashes match - no need to process anything
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", strDirectory.c_str());
-        m_currentItem += numFilesInFolder;
-
-        // notify our observer of our progress
-        if (m_pObserver)
-        {
-          if (m_itemCount>0)
-            m_pObserver->OnSetProgress(m_currentItem, m_itemCount);
-          m_pObserver->OnDirectoryScanned(strDirectory);
-        }
+        hash = fastHash;
         bSkip = true;
+      }
+      if (!bSkip)
+      { // need to fetch the folder
+        CDirectory::GetDirectory(strDirectory, items, g_settings.m_videoExtensions);
+        items.Stack();
+        // compute hash
+        GetPathHash(items, hash);
+        if (hash != dbHash)
+        {
+          if (dbHash.IsEmpty())
+            CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning dir '%s' as not in the database", strDirectory.c_str());
+          else
+            CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '%s' due to change", strDirectory.c_str());
+        }
+        else
+        { // they're the same
+          CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", strDirectory.c_str());
+          bSkip = true;
+          if (m_pObserver)
+            m_pObserver->OnDirectoryScanned(strDirectory);
+        }
+        // update the hash to a fast hash if needed
+        if (CanFastHash(items) && !fastHash.IsEmpty())
+          hash = fastHash;
       }
     }
     else if (content == CONTENT_TVSHOWS && !settings.noupdate)
@@ -337,6 +342,10 @@ namespace VIDEO
         m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Not adding item to library as no info was found :(");
       }
+    }
+    else if (hash != dbHash && content == CONTENT_MOVIES)
+    { // update the hash either way - we may have changed the hash to a fast version
+      m_database.SetPathHash(strDirectory, hash);
     }
 
     if (m_pObserver)
@@ -1429,6 +1438,34 @@ namespace VIDEO
     }
     md5state.getDigest(hash);
     return count;
+  }
+
+  bool CVideoInfoScanner::CanFastHash(const CFileItemList &items) const
+  {
+    // TODO: Probably should account for excluded folders here (eg samples), though that then
+    //       introduces possible problems if the user then changes the exclude regexps and
+    //       expects excluded folders that are inside a fast-hashed folder to then be picked
+    //       up. The chances that the user has a folder which contains only excluded folders
+    //       where some of those folders should be scanned recursively is pretty small.
+    return items.GetFolderCount() == 0;
+  }
+
+  CStdString CVideoInfoScanner::GetFastHash(const CStdString &directory) const
+  {
+    struct __stat64 buffer;
+    if (XFILE::CFile::Stat(directory, &buffer) == 0)
+    {
+      int64_t time = buffer.st_mtime;
+      if (!time)
+        time = buffer.st_ctime;
+      if (time)
+      {
+        CStdString hash;
+        hash.Format("fast%"PRId64, time);
+        return hash;
+      }
+    }
+    return "";
   }
 
   void CVideoInfoScanner::FetchSeasonThumbs(int idTvShow, const CStdString &folderToCheck, bool download, bool overwrite)
