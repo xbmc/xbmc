@@ -86,10 +86,6 @@ namespace VIDEO
     void Stop();
     void SetObserver(IVideoInfoScannerObserver* pObserver);
 
-    void EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList);
-    bool ProcessItemNormal(CFileItemPtr item, EPISODES& episodeList, CStdString regexp);
-    bool ProcessItemByDate(CFileItemPtr item, EPISODES& eipsodeList, CStdString regexp);
-
     /*! \brief Add an item to the database.
      \param pItem item to add to the database.
      \param content content type of the item.
@@ -98,47 +94,6 @@ namespace VIDEO
      \return database id of the added item, or -1 on failure.
      */
     long AddMovie(CFileItem *pItem, const CONTENT_TYPE &content, CVideoInfoTag &movieDetails, int idShow = -1);
-
-    /*! \brief Add an item to the database and retrieve any artwork associated with it.
-     \param pItem item to add to the database.
-     \param content content type of the item.
-     \param movieDetails tag information to be added - may be modified.
-     \param idShow database id of the tvshow if we're adding an episode, -1 indicates it's not an episode.
-     \param bApplyToDir whether we should apply any thumbs to a folder.  Defaults to false.
-     \param bRefresh whether we're refreshing information so should refetch artwork.  Defaults to false.
-     \param pDialog progress dialog to update during processing.  Ddefaults to NULL.
-     \return database id of the added item, or -1 on failure. 
-     */
-    long AddMovieAndGetThumb(CFileItem *pItem, const CONTENT_TYPE &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir=false, bool bRefresh=false, CGUIDialogProgress* pDialog = NULL);
-
-    /*! \brief Process a series folder, filling in episode details and adding them to the database.
-     TODO: Ideally we would return INFO_HAVE_ALREADY if we don't have to update any episodes
-           and we should return INFO_NOT_FOUND only if no information is found for any of
-           the episodes. INFO_ADDED then indicates we've added one or more episodes.
-     \param episodes the episode list for the show.
-     \param files the episode files to process.
-     \param idShow the database id of the show.
-     \param strShowTitle the title of the show.
-     \param pDlgProcess progress dialog to update during processing.  Defaults to NULL.
-     \return INFO_ERROR on failure, INFO_CANCELLED on cancellation,
-             INFO_NOT_FOUND if an episode isn't found, or INFO_ADDED if all episodes are added.
-     */
-    INFO_RET OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
-
-    static CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false);
-
-    /*! \brief Retrieve detailed information for an item from an online source and add it to the database.
-     TODO: sort out some better return codes.
-     \param pItem item to retrieve online details for.
-     \param url URL to use to retrieve online details.
-     \param scraper Scraper that handles parsing the online data.
-     \param bUseDirNames whether we are using directory names to lookup the information.  Defaults to false.
-     \param pDialog progress dialog to update and check for cancellation during processing.  Ddefaults to NULL.
-     \param bCombined whether the online information should supplement or replace the current information.  Defaults to false.
-     \param bRefresh whether we're refreshing information so should refetch artwork etc.  Defaults to false.
-     \return database id of the added item, or -1 on error, cancellation, or no details found.
-     */
-    long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::ScraperPtr &scraper, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool bCombined=false, bool bRefresh=false);
 
     /*! \brief Retrieve information for a list of items and add them to the database.
      \param items list of items to retrieve info for.
@@ -190,6 +145,31 @@ namespace VIDEO
      */
     int FindVideo(const CStdString &videoName, const ADDON::ScraperPtr &scraper, CScraperUrl &url, CGUIDialogProgress *progress);
 
+    /*! \brief Retrieve detailed information for an item from an online source and add it to the database.
+     TODO: sort out some better return codes.
+     \param pItem item to retrieve online details for.
+     \param url URL to use to retrieve online details.
+     \param scraper Scraper that handles parsing the online data.
+     \param bUseDirNames whether we are using directory names to lookup the information.  Defaults to false.
+     \param pDialog progress dialog to update and check for cancellation during processing.  Ddefaults to NULL.
+     \param bCombined whether the online information should supplement or replace the current information.  Defaults to false.
+     \param bRefresh whether we're refreshing information so should refetch artwork etc.  Defaults to false.
+     \return database id of the added item, or -1 on error, cancellation, or no details found.
+     */
+    long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::ScraperPtr &scraper, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool bCombined=false, bool bRefresh=false);
+
+    /*! \brief Add an item to the database and retrieve any artwork associated with it.
+     \param pItem item to add to the database.
+     \param content content type of the item.
+     \param movieDetails tag information to be added - may be modified.
+     \param idShow database id of the tvshow if we're adding an episode, -1 indicates it's not an episode.
+     \param bApplyToDir whether we should apply any thumbs to a folder.  Defaults to false.
+     \param bRefresh whether we're refreshing information so should refetch artwork.  Defaults to false.
+     \param pDialog progress dialog to update during processing.  Ddefaults to NULL.
+     \return database id of the added item, or -1 on failure. 
+     */
+    long AddMovieAndGetThumb(CFileItem *pItem, const CONTENT_TYPE &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir=false, bool bRefresh=false, CGUIDialogProgress* pDialog = NULL);
+
     /*! \brief Extract episode and season numbers from a processed regexp
      \param reg Regular expression object with at least 2 matches
      \param episodeInfo Episode information to fill in.
@@ -222,7 +202,6 @@ namespace VIDEO
 
     void SetScraperInfo(const ADDON::ScraperPtr& info) { m_info = info; };
 
-  protected:
     /*! \brief Download an image file and apply the image to a folder if necessary
      \param url URL of the image.
      \param destination File to save the image as
@@ -231,6 +210,26 @@ namespace VIDEO
      \param directory directory that this thumbnail should be applied to. Defaults to empty
      */
     void DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb = true, CGUIDialogProgress *dialog = NULL, const CStdString &directory = "");
+
+    /*! \brief Process a series folder, filling in episode details and adding them to the database.
+     TODO: Ideally we would return INFO_HAVE_ALREADY if we don't have to update any episodes
+     and we should return INFO_NOT_FOUND only if no information is found for any of
+     the episodes. INFO_ADDED then indicates we've added one or more episodes.
+     \param episodes the episode list for the show.
+     \param files the episode files to process.
+     \param idShow the database id of the show.
+     \param strShowTitle the title of the show.
+     \param pDlgProcess progress dialog to update during processing.  Defaults to NULL.
+     \return INFO_ERROR on failure, INFO_CANCELLED on cancellation,
+     INFO_NOT_FOUND if an episode isn't found, or INFO_ADDED if all episodes are added.
+     */
+    INFO_RET OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
+
+    void EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList);
+    bool ProcessItemNormal(CFileItemPtr item, EPISODES& episodeList, CStdString regexp);
+    bool ProcessItemByDate(CFileItemPtr item, EPISODES& eipsodeList, CStdString regexp);
+
+    CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false) const;
 
     IVideoInfoScannerObserver* m_pObserver;
     int m_currentItem;
