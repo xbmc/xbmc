@@ -36,25 +36,34 @@ CDSSettings::CDSSettings(void)
 {
   m_hD3DX9Dll = NULL;
   pRendererSettings = NULL;
+  isEVR = false;
+
+  m_pDwmIsCompositionEnabled = NULL;
+  m_pDwmEnableComposition = NULL;
+  m_hDWMAPI = LoadLibrary("dwmapi.dll");
+  if (m_hDWMAPI)
+  {
+    (FARPROC &)m_pDwmIsCompositionEnabled = GetProcAddress(m_hDWMAPI, "DwmIsCompositionEnabled");
+    (FARPROC &)m_pDwmEnableComposition = GetProcAddress(m_hDWMAPI, "DwmEnableComposition");
+  }
 }
 
 void CDSSettings::Initialize()
 {
   // TODO: Use a listbox instead of a checkbox on the GUI. Simpler and easier
-  m_isEVR = false;
   if (g_sysinfo.IsVistaOrHigher())
   {
     if (!g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
-      m_isEVR = true;
+      isEVR = true;
   }
   else
   {
     if (g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer"))
-      m_isEVR = true;
+      isEVR = true;
   }
 
   // Create the settings
-  if (m_isEVR)
+  if (isEVR)
     pRendererSettings = new CEVRRendererSettings();
   else
     pRendererSettings = new CVMR9RendererSettings();
@@ -68,6 +77,9 @@ CDSSettings::~CDSSettings(void)
 {
   if (m_hD3DX9Dll)
     FreeLibrary(m_hD3DX9Dll);
+
+  if (m_hDWMAPI)
+    FreeLibrary(m_hDWMAPI);
 }
 
 void CDSSettings::LoadConfig()
@@ -116,10 +128,10 @@ void CDSSettings::LoadConfig()
     XMLUtils::GetBoolean(pElement, "DisableDesktopComposition", pRendererSettings->disableDesktopComposition);
   }
 
-  pElement = pRootElement->FirstChildElement((m_isEVR) ? "evrsettings" : "vmr9settings");
+  pElement = pRootElement->FirstChildElement((isEVR) ? "evrsettings" : "vmr9settings");
   if (pElement)
   {
-    if (m_isEVR)
+    if (isEVR)
     {
       CEVRRendererSettings *pSettings = (CEVRRendererSettings *) pRendererSettings;
       XMLUtils::GetBoolean(pElement, "HighColorResolution", pSettings->highColorResolution);

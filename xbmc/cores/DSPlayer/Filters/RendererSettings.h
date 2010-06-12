@@ -173,8 +173,11 @@ public:
   HINSTANCE GetD3X9Dll();
   int GetDXSdkRelease() { return m_nDXSdkRelease; };
 
-private:
-  bool m_isEVR;
+  HRESULT (__stdcall * m_pDwmIsCompositionEnabled)(__out BOOL* pfEnabled);
+  HRESULT (__stdcall * m_pDwmEnableComposition)(UINT uCompositionAction);
+  HMODULE m_hDWMAPI;
+
+  bool isEVR;
 };
 extern class CDSSettings g_dsSettings;
 extern bool g_bNoDuration;

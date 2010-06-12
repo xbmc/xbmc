@@ -50,7 +50,14 @@ bool queue_ffdshow_support = false;
 
 #pragma pack(push, 1)
 template<int texcoords>
-struct MYD3DVERTEX {float x, y, z, rhw; struct {float u, v;} t[texcoords];};
+struct MYD3DVERTEX
+{
+  float x, y, z, rhw;
+  struct
+  {
+    float u, v;
+  } t[texcoords];
+};
 template<>
 struct MYD3DVERTEX<0> 
 {
@@ -156,30 +163,27 @@ static HRESULT DrawRect(IDirect3DDevice9* pD3DDev, MYD3DVERTEX<0> v[4])
   if(!pD3DDev)
     return E_POINTER;
 
-  do
-  {
-    HRESULT hr = pD3DDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-    hr = pD3DDev->SetRenderState(D3DRS_LIGHTING, FALSE);
-    hr = pD3DDev->SetRenderState(D3DRS_ZENABLE, FALSE);
-    hr = pD3DDev->SetRenderState(D3DRS_STENCILENABLE, FALSE);
-    hr = pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    hr = pD3DDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA); 
-    hr = pD3DDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA); 
-    //D3DRS_COLORVERTEX 
-    hr = pD3DDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-    hr = pD3DDev->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
+  HRESULT hr = pD3DDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+  hr = pD3DDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+  hr = pD3DDev->SetRenderState(D3DRS_ZENABLE, FALSE);
+  hr = pD3DDev->SetRenderState(D3DRS_STENCILENABLE, FALSE);
+  hr = pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+  hr = pD3DDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA); 
+  hr = pD3DDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA); 
+  //D3DRS_COLORVERTEX 
+  hr = pD3DDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+  hr = pD3DDev->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
 
-    hr = pD3DDev->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED);
-    hr = pD3DDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX0 | D3DFVF_DIFFUSE);
+  hr = pD3DDev->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA | D3DCOLORWRITEENABLE_BLUE |
+    D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_RED);
+  hr = pD3DDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX0 | D3DFVF_DIFFUSE);
 
-    MYD3DVERTEX<0> tmp = v[2]; v[2] = v[3]; v[3] = tmp;
-    hr = pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, v, sizeof(v[0]));  
+  MYD3DVERTEX<0> tmp = v[2];
+  v[2] = v[3];
+  v[3] = tmp;
+  hr = pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, v, sizeof(v[0]));  
 
-    return S_OK;
-    }
-  while(0);
-
-    return E_FAIL;
+  return S_OK;
 }
 
 // CDX9AllocatorPresenter
@@ -195,7 +199,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   , m_iVMR9Surface(0)
   , m_nCurSurface(0)
   , m_rtTimePerFrame(0)
-  , m_bInterlaced(0)
+  , m_bInterlaced(false)
   , m_nUsedBuffer(0)
   , m_OrderedPaint(0)
   , m_bCorrectedFrameTime(0)
@@ -247,15 +251,6 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
     _Error += L"No D3DX9 dll found. To enable stats, shaders and complex resizers, please make sure to install the latest DirectX End-User Runtime.\n";
   }
 
-  m_pDwmIsCompositionEnabled = NULL;
-  m_pDwmEnableComposition = NULL;
-  m_hDWMAPI = LoadLibrary("dwmapi.dll");
-  if (m_hDWMAPI)
-  {
-    (FARPROC &)m_pDwmIsCompositionEnabled = GetProcAddress(m_hDWMAPI, "DwmIsCompositionEnabled");
-    (FARPROC &)m_pDwmEnableComposition = GetProcAddress(m_hDWMAPI, "DwmEnableComposition");
-  }
-
   m_hD3D9 = LoadLibrary("d3d9.dll");
 
   m_DetectedFrameRate = 0.0;
@@ -278,8 +273,8 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   if (g_dsSettings.pRendererSettings->disableDesktopComposition)
   {
     m_bDesktopCompositionDisabled = true;
-    if (m_pDwmEnableComposition)
-      m_pDwmEnableComposition(0);
+    if (g_dsSettings.m_pDwmEnableComposition)
+      g_dsSettings.m_pDwmEnableComposition(0);
   }
   else
   {
@@ -309,8 +304,8 @@ CDX9AllocatorPresenter::~CDX9AllocatorPresenter()
   if (m_bDesktopCompositionDisabled)
   {
     m_bDesktopCompositionDisabled = false;
-    if (m_pDwmEnableComposition)
-      m_pDwmEnableComposition(1);
+    if (g_dsSettings.m_pDwmEnableComposition)
+      g_dsSettings.m_pDwmEnableComposition(1);
   }
 
   StopWorkerThreads();
@@ -319,11 +314,6 @@ CDX9AllocatorPresenter::~CDX9AllocatorPresenter()
   m_pD3DDev  = NULL;
   m_pD3D = NULL;
 
-  if (m_hDWMAPI)
-  {
-    FreeLibrary(m_hDWMAPI);
-    m_hDWMAPI = NULL;
-  }
   if (m_hD3D9)
   {
     FreeLibrary(m_hD3D9);
@@ -555,21 +545,12 @@ public:
 
 void CDX9AllocatorPresenter::VSyncThread()
 {
-  //HANDLE        hAvrt;
   HANDLE        hEvts[]    = { m_hEvtQuit};
   bool        bQuit    = false;
   TIMECAPS      tc;
   DWORD        dwResolution;
   DWORD        dwUser = 0;
   DWORD        dwTaskIndex  = 0;
-
-  // Tell Vista Multimedia Class Scheduler we are a playback thretad (increase priority)
-//  if (pfAvSetMmThreadCharacteristicsW)  
-//    hAvrt = pfAvSetMmThreadCharacteristicsW (L"Playback", &dwTaskIndex);
-//  if (pfAvSetMmThreadPriority)      
-//    pfAvSetMmThreadPriority (hAvrt, AVRT_PRIORITY_HIGH /*AVRT_PRIORITY_CRITICAL*/);
-
-//  Sleep(2000);  // Remove ugly patch : create a 2s delay on opening files with Win7!
 
   timeGetDevCaps(&tc, sizeof(TIMECAPS));
   dwResolution = dsmin(dsmax(tc.wPeriodMin, 0), tc.wPeriodMax);
@@ -726,6 +707,7 @@ void CDX9AllocatorPresenter::VSyncThread()
 
 DWORD WINAPI CDX9AllocatorPresenter::VSyncThreadStatic(LPVOID lpParam)
 {
+  //SetThreadName((DWORD)-1, "CDX9Presenter::VSyncThread");
   CDX9AllocatorPresenter*    pThis = (CDX9AllocatorPresenter*) lpParam;
   pThis->VSyncThread();
   return 0;
@@ -893,8 +875,8 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
     ZeroMemory(&pp, sizeof(pp));
 
   BOOL bCompositionEnabled = false;
-  if (m_pDwmIsCompositionEnabled)
-    m_pDwmIsCompositionEnabled(&bCompositionEnabled);
+  if (g_dsSettings.m_pDwmIsCompositionEnabled)
+    g_dsSettings.m_pDwmIsCompositionEnabled(&bCompositionEnabled);
 
   m_bCompositionEnabled = bCompositionEnabled != 0;
 
@@ -1776,7 +1758,7 @@ bool CDX9AllocatorPresenter::WaitForVBlankRange(int &_RasterStart, int _RasterSi
     ScanLineDiffLock += m_ScreenSize.cy;
   int LastLineDiffLock = ScanLineDiffLock;
 
-  LONGLONG llPerfLock;
+  LONGLONG llPerfLock = 0;
 
   while (1)
   {
@@ -1966,6 +1948,12 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
 
   Com::SmartRect rSrcPri(Com::SmartPoint(0, 0), m_WindowRect.Size());
   Com::SmartRect rDstPri(m_WindowRect);
+
+  Com::SmartPtr<IDirect3DSurface9> pBackBuffer;
+  m_pD3DDev->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
+
+  m_pD3DDev->SetRenderTarget(0, pBackBuffer);
+  hr = m_pD3DDev->Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
 
   if(g_renderManager.IsConfigured())//!rDstVid.IsRectEmpty())
   {

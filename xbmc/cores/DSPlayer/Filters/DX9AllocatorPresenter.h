@@ -97,11 +97,6 @@ public:
     DWORD m_MainThreadId;
     //CDsSettings::CRendererSettingsEVR m_LastRendererSettings;
 
-    HRESULT (__stdcall * m_pDwmIsCompositionEnabled)(__out BOOL* pfEnabled);
-    HRESULT (__stdcall * m_pDwmEnableComposition)(UINT uCompositionAction);
-
-    HMODULE m_hDWMAPI;
-
     HMODULE m_hD3D9;
 
     CCritSec          m_RenderLock;
