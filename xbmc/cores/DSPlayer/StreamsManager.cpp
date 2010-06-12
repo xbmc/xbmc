@@ -774,7 +774,7 @@ void CSubtitleManager::Initialize()
   // Log manager for the DLL
   m_Log.reset(new ILogImpl());
 
-  m_dll.CreateSubtitleManager(g_Windowing.Get3DDevice(), s, m_Log.get(), &g_dsSettings.pRendererSettings->subtitlesSettings, &pManager);
+  m_dll.CreateSubtitleManager(g_Windowing.Get3DDevice(), s, m_Log.get(), g_dsSettings.pRendererSettings->subtitlesSettings, &pManager);
 
   if (!pManager)
     return;

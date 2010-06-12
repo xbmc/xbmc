@@ -46,9 +46,9 @@ BOOL LoadSubtitles(IDirect3DDevice9* d3DDev, SIZE size, const wchar_t* fn, IGrap
 
 ILog* g_log = NULL;
 
-bool CreateSubtitleManager(IDirect3DDevice9* d3DDev, SIZE size, ILog* logger, SSubSettings* settings, ISubManager** pManager)
+bool CreateSubtitleManager(IDirect3DDevice9* d3DDev, SIZE size, ILog* logger, SSubSettings settings, ISubManager** pManager)
 {
-  if (! pManager || !d3DDev || !logger || !settings)
+  if (! pManager || !d3DDev || !logger)
     return false;
 
   *pManager = NULL;
@@ -60,6 +60,7 @@ bool CreateSubtitleManager(IDirect3DDevice9* d3DDev, SIZE size, ILog* logger, SS
   {
     delete *pManager;
     *pManager = NULL;
+    logger->Log(LOGERROR, "Failed to create subtitles manager (hr: %X)", hr);
     return false;
   }
 

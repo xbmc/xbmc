@@ -11,7 +11,7 @@ extern BOOL g_overrideUserStyles;
 class CSubManager: public ISubManager
 {
 public:
-  CSubManager(IDirect3DDevice9* d3DDev, SIZE size, SSubSettings* settings, HRESULT& hr);
+  CSubManager(IDirect3DDevice9* d3DDev, SIZE size, SSubSettings settings, HRESULT& hr);
   ~CSubManager(void);
 
   void SetEnable(bool enable);

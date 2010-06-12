@@ -12,17 +12,22 @@
 
 BOOL g_overrideUserStyles;
 
-CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, SSubSettings* settings, HRESULT& hr) :
+CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, SSubSettings settings, HRESULT& hr) :
   m_d3DDev(d3DDev), m_iSubtitleSel(-1), m_rtNow(-1), m_lastSize(size),
   m_rtTimePerFrame(0), m_useDefaultStyle(true), m_pSubPicProvider(NULL)
 {
-  if (! d3DDev || !settings)
+  if (! d3DDev)
   {
     hr = E_POINTER;
     return;
   }
 
-  memcpy(&m_settings, settings, sizeof(m_settings));
+  //memcpy(&m_settings, settings, sizeof(m_settings));
+  /*m_settings.bufferAhead = settings.bufferAhead;
+  m_settings.disableAnimations = settings.disableAnimations;
+  m_settings.forcePowerOfTwoTextures = settings.forcePowerOfTwoTextures;
+  m_settings.textureSize = settings.textureSize;*/
+  m_settings = settings;
 
   if (! m_settings.forcePowerOfTwoTextures)
   {
@@ -30,7 +35,10 @@ CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, SSubSettings* sett
     D3DCAPS9 caps;
     d3DDev->GetDeviceCaps(&caps);
     if ((caps.TextureCaps & D3DPTEXTURECAPS_POW2) == D3DPTEXTURECAPS_POW2)
+    {
       m_settings.forcePowerOfTwoTextures = true;
+      g_log->Log(LOGNOTICE, "%s Forced usage of power of two textures.", __FUNCTION__);
+    }
   }
 
   g_log->Log(LOGDEBUG, "%s texture size %dx%d, buffer ahead: %d, pow2tex: %d", __FUNCTION__, m_settings.textureSize.cx, m_settings.textureSize.cy, m_settings.bufferAhead, m_settings.forcePowerOfTwoTextures);
