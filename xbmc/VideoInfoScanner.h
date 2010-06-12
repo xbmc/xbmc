@@ -76,7 +76,7 @@ namespace VIDEO
                   INFO_ADDED,
                   INFO_SCAN_AGAIN };
 
-  class CVideoInfoScanner : CThread, public IRunnable
+  class CVideoInfoScanner : CThread
   {
   public:
     CVideoInfoScanner();
@@ -177,11 +177,9 @@ namespace VIDEO
      */
     bool GetEpisodeAndSeasonFromRegExp(CRegExp &reg, SEpisode &episodeInfo);
 
-    virtual void Run();
-    int CountFiles(const CStdString& strPath);
     void FetchActorThumbs(const std::vector<SActorInfo>& actors, const CStdString& strPath);
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
-    
+
     /*! \brief Retrieve a "fast" hash of the given directory (if available)
      Performs a stat() on the directory, and uses modified time to create a "fast"
      hash of the folder. If no modified time is available, the create time is used,
@@ -199,8 +197,6 @@ namespace VIDEO
      \return true if this directory listing can be fast hashed, false otherwise
      */
     bool CanFastHash(const CFileItemList &items) const;
-
-    void SetScraperInfo(const ADDON::ScraperPtr& info) { m_info = info; };
 
     /*! \brief Download an image file and apply the image to a folder if necessary
      \param url URL of the image.
@@ -240,7 +236,6 @@ namespace VIDEO
     bool m_bClean;
     CStdString m_strStartDir;
     CVideoDatabase m_database;
-    ADDON::ScraperPtr m_info;
     std::set<CStdString> m_pathsToScan;
     std::set<CStdString> m_pathsToCount;
     std::vector<int> m_pathsToClean;

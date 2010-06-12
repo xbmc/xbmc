@@ -83,11 +83,7 @@ namespace VIDEO
       m_currentItem = 0;
       m_itemCount = -1;
 
-      // Create the thread to count all files to be scanned
       SetPriority(GetMinPriority());
-      CThread fileCountReader(this);
-      if (m_pObserver)
-        fileCountReader.Create();
 
       // Database operations should not be canceled
       // using Interupt() while scanning as it could
@@ -119,8 +115,6 @@ namespace VIDEO
           m_database.Compress(false);
         }
       }
-
-      fileCountReader.StopThread();
 
       m_database.Close();
 
@@ -646,42 +640,6 @@ namespace VIDEO
     // TODO: This is not strictly correct as we could fail to download information here or error, or be cancelled
     GetIMDBDetails(pItem.get(), url, info2, bDirNames, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
     return INFO_ADDED;
-  }
-
-  // This function is run by another thread
-  void CVideoInfoScanner::Run()
-  {
-    int count = 0;
-    while (!m_bStop && m_pathsToCount.size())
-      count+=CountFiles(*m_pathsToCount.begin());
-    m_itemCount = count;
-  }
-
-  // Recurse through all folders we scan and count files
-  int CVideoInfoScanner::CountFiles(const CStdString& strPath)
-  {
-    int count=0;
-    // load subfolder
-    CFileItemList items;
-    CLog::Log(LOGDEBUG, "%s - processing dir: %s", __FUNCTION__, strPath.c_str());
-    CDirectory::GetDirectory(strPath, items, g_settings.m_videoExtensions, true);
-    if (m_info->Content() == CONTENT_MOVIES)
-      items.Stack();
-
-    for (int i=0; i<items.Size(); ++i)
-    {
-      CFileItemPtr pItem=items[i];
-
-      if (m_bStop)
-        return 0;
-
-      if (pItem->m_bIsFolder)
-        count+=CountFiles(pItem->m_strPath);
-      else if (pItem->IsVideo() && !pItem->IsPlayList() && !pItem->IsNFO())
-        count++;
-    }
-    CLog::Log(LOGDEBUG, "%s - finished processing dir: %s", __FUNCTION__, strPath.c_str());
-    return count;
   }
 
   void CVideoInfoScanner::EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList)
