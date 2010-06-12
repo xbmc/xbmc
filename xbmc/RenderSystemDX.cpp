@@ -195,7 +195,10 @@ void CRenderSystemDX::BuildPresentParameters()
   bool useWindow = g_guiSettings.GetBool("videoscreen.fakefullscreen") || !m_bFullScreenDevice;
   m_D3DPP.Windowed           = useWindow;
   m_D3DPP.SwapEffect         = D3DSWAPEFFECT_DISCARD;
-  m_D3DPP.BackBufferCount    = 2;
+  if (useWindow)
+    m_D3DPP.BackBufferCount    = 1;
+  else
+    m_D3DPP.BackBufferCount    = 3;
 
   if(m_useD3D9Ex && (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion >= 1 || osvi.dwMajorVersion > 6))
   {
@@ -217,12 +220,34 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.BackBufferHeight   = m_nBackBufferHeight;
   m_D3DPP.Flags              = D3DPRESENTFLAG_VIDEO;
 #ifdef HAS_DS_PLAYER
-  m_D3DPP.PresentationInterval = (m_bVSync || g_dsSettings.pRendererSettings->vSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+  BOOL bCompositionEnabled = false;
+  if (g_dsSettings.m_pDwmIsCompositionEnabled)
+    g_dsSettings.m_pDwmIsCompositionEnabled(&bCompositionEnabled);
+
+  bool bHighColorResolution = g_dsSettings.isEVR && ((CEVRRendererSettings *)g_dsSettings.pRendererSettings)->highColorResolution;
+  if (g_dsSettings.pRendererSettings->fullscreenGUISupport && !bHighColorResolution)
+    m_D3DPP.Flags |= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+  if (useWindow)
+  {
+    m_D3DPP.SwapEffect = D3DSWAPEFFECT_COPY;
+    m_D3DPP.PresentationInterval = (bCompositionEnabled || g_dsSettings.pRendererSettings->alterativeVSync) ? D3DPRESENT_INTERVAL_IMMEDIATE : D3DPRESENT_INTERVAL_ONE;
+  }
+  else
+  {
+    m_D3DPP.SwapEffect = D3DSWAPEFFECT_DISCARD;
+    m_D3DPP.PresentationInterval = (m_bVSync || g_dsSettings.pRendererSettings->vSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
+  }
 #else
   m_D3DPP.PresentationInterval = (m_bVSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
 #endif
   m_D3DPP.FullScreen_RefreshRateInHz = (useWindow) ? 0 : (int)m_refreshRate;
+#ifdef HAS_DS_PLAYER
   m_D3DPP.BackBufferFormat   = D3DFMT_X8R8G8B8;
+  if (bHighColorResolution)
+    m_D3DPP.BackBufferFormat = D3DFMT_A2R10G10B10;
+#else
+  m_D3DPP.BackBufferFormat   = D3DFMT_X8R8G8B8;
+#endif
   m_D3DPP.MultiSampleType    = D3DMULTISAMPLE_NONE;
   m_D3DPP.MultiSampleQuality = 0;
 
