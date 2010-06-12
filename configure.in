@@ -309,14 +309,12 @@ case $host in
      # define i386 or x86_64, cannot use $HOSTTYPE as it reports x86_64 on 10.6 regardless of kernel flavor
      ARCHTYPE=`uname -m`
      AC_SUBST([ARCHTYPE])
-     AC_SUBST(ARCH_DEFINES, "-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk")
      ;;
   powerpc-apple-darwin*)
      ARCH="powerpc-osx"
      # define ppc
      ARCHTYPE=`arch`
      AC_SUBST([ARCHTYPE])
-     AC_SUBST(ARCH_DEFINES, "-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk")
      ;;
   powerpc-*-linux-gnu*)
      ARCH="powerpc-linux"

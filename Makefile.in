@@ -371,16 +371,18 @@ imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
 
 codecs: papcodecs dvdpcodecs
+ifeq ($(findstring osx,$(ARCH)), osx)
+libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-$(ARCH).so system/players/paplayer/libmodplug-$(ARCH).so
+else
 libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-$(ARCH).so
+endif
 externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
-	codecs libs python visualizations screensavers eventclients \
-	xbmc/lib/libsquish/libsquish-@ARCH@.a \
-	skins \
+	codecs libs python visualizations screensavers eventclients skins \
 	xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs/libbdnav.a \
+	xbmc/lib/libsquish/libsquish-@ARCH@.a \
 	xbmc/lib/libapetag/.libs/libapetag.a \
-	system/players/paplayer/libmodplug-$(ARCH).so \
 	xbmc/lib/cmyth/libcmyth/libcmyth.a \
 	xbmc/lib/cmyth/librefmem/librefmem.a \
 	xbmc/lib/libRTMP/librtmp.a \
@@ -389,8 +391,8 @@ xcode_depends: \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libjsonrpc/libjsonrpc.a \
-	lib/jsoncpp/jsoncpp/src/lib_json/libjsoncpp.a \
 	xbmc/lib/libhttpapi/libhttpapi.a \
+	lib/jsoncpp/jsoncpp/src/lib_json/libjsoncpp.a \
 	lib/libmicrohttpd/src/daemon/.libs/libmicrohttpd.a
 
 # platform independend objects
@@ -478,7 +480,7 @@ endif
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(CXXFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
+	$(CXX) $(LDFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
 else
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o xbmc.bin -Wl,--whole-archive $(DYNOBJSXBMC) -Wl,--no-whole-archive $(OBJSXBMC) $(LIBS) -rdynamic
 endif
