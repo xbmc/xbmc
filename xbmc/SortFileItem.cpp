@@ -431,8 +431,8 @@ void SSortFileItem::ByEpisodeNum(CFileItemPtr &item)
   // we include specials 'episode' numbers to get proper
   // sorting of multiple specials in a row. each
   // of these are given their particular ranges to semi-ensure uniqueness.
-  // theoretical problem: if a show has > 128 specials and two of these are placed
-  // after each other they will sort backwards. if a show has > 2^8-1 seasons
+  // theoretical problem: if a show has > 2^15 specials and two of these are placed
+  // after each other they will sort backwards. if a show has > 2^32-1 seasons
   // or if a season has > 2^16-1 episodes strange things will happen (overflow)
   uint64_t num;
   if (tag->m_iSpecialSortEpisode > 0)
