@@ -252,7 +252,7 @@ namespace VIDEO
           if (dbHash.IsEmpty())
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning dir '%s' as not in the database", strDirectory.c_str());
           else
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '%s' due to change", strDirectory.c_str());
+            CLog::Log(LOGDEBUG, "VideoInfoScanner: Rescanning dir '%s' due to change (%s != %s)", strDirectory.c_str(), dbHash.c_str(), hash.c_str());
         }
         else
         { // they're the same
@@ -295,8 +295,6 @@ namespace VIDEO
       }
     }
 
-    CLog::Log(LOGDEBUG,"VideoInfoScanner: Hash[%s,%s]:DB=[%s],Computed=[%s]", TranslateContent(content).c_str(), strDirectory.c_str(), dbHash.c_str(), hash.c_str());
-
     if (!bSkip)
     {
       if (RetrieveVideoInfo(items, settings.parent_name_root,content))
@@ -305,12 +303,13 @@ namespace VIDEO
         {
           m_database.SetPathHash(strDirectory, hash);
           m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
+          CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding information from dir %s", strDirectory.c_str());
         }
       }
       else
       {
         m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found, so not updating library");
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found in dir %s", strDirectory.c_str());
       }
     }
     else if (hash != dbHash && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
@@ -320,7 +319,6 @@ namespace VIDEO
 
     if (m_pObserver)
       m_pObserver->OnDirectoryScanned(strDirectory);
-    CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished dir: %s", strDirectory.c_str());
 
     for (int i = 0; i < items.Size(); ++i)
     {
