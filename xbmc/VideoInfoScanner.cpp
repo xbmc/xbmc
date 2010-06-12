@@ -531,9 +531,7 @@ namespace VIDEO
     // handle .nfo files
     if (!ignoreNfo)
       result = CheckForNFOFile(pItem.get(), bDirNames, info2, scrUrl);
-    if (result == CNfoFile::ERROR_NFO)
-      return 0;
-    if (result != CNfoFile::NO_NFO)
+    if (result != CNfoFile::NO_NFO && result != CNfoFile::ERROR_NFO)
     { // check for preconfigured scraper; if found, overwrite with interpreted scraper (from Nfofile)
       // but keep current scan settings
       SScanSettings settings;
@@ -609,8 +607,6 @@ namespace VIDEO
     // handle .nfo files
     if (!ignoreNfo)
       result = CheckForNFOFile(pItem.get(), bDirNames, info2, scrUrl);
-    if (result == CNfoFile::ERROR_NFO)
-      return 0;
     if (result == CNfoFile::FULL_NFO)
     {
       pItem->GetVideoInfoTag()->Reset();
@@ -656,8 +652,6 @@ namespace VIDEO
     // handle .nfo files
     if (!ignoreNfo)
       result = CheckForNFOFile(pItem.get(), bDirNames, info2, scrUrl);
-    if (result == CNfoFile::ERROR_NFO)
-      return 0;
     if (result == CNfoFile::FULL_NFO)
     {
       pItem->GetVideoInfoTag()->Reset();
