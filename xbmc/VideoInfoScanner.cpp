@@ -340,7 +340,7 @@ namespace VIDEO
       else
       {
         m_pathsToClean.push_back(m_database.GetPathId(strDirectory));
-        CLog::Log(LOGDEBUG, "VideoInfoScanner: Not adding item to library as no info was found :(");
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: No (new) information was found, so not updating library");
       }
     }
     else if (hash != dbHash && content == CONTENT_MOVIES)
