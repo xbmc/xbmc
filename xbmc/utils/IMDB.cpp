@@ -465,30 +465,24 @@ void CIMDB::Process()
   if (m_state == FIND_MOVIE)
   {
     if (!(m_found=FindMovie(m_strMovie, m_movieList)))
-    {
-      // retry without replacing '.' and '-' if searching for a tvshow
-      if (m_info->Content() == CONTENT_TVSHOWS)
-        CLog::Log(LOGERROR, "%s: Error looking up tvshow %s", __FUNCTION__, m_strMovie.c_str());
-      else
-        CLog::Log(LOGERROR, "%s: Error looking up movie %s", __FUNCTION__, m_strMovie.c_str());
-    }
+      CLog::Log(LOGERROR, "%s: Error looking up item %s", __FUNCTION__, m_strMovie.c_str());
     m_state = DO_NOTHING;
     return;
   }
   else if (m_state == GET_DETAILS)
   {
     if (!GetDetails(m_url, m_movieDetails))
-      CLog::Log(LOGERROR, "%s: Error getting movie details from %s", __FUNCTION__,m_url.m_url[0].m_url.c_str());
+      CLog::Log(LOGERROR, "%s: Error getting details from %s", __FUNCTION__,m_url.m_url[0].m_url.c_str());
   }
   else if (m_state == GET_EPISODE_DETAILS)
   {
     if (!GetEpisodeDetails(m_url, m_movieDetails))
-      CLog::Log(LOGERROR, "%s: Error getting movie details from %s", __FUNCTION__, m_url.m_url[0].m_url.c_str());
+      CLog::Log(LOGERROR, "%s: Error getting episode details from %s", __FUNCTION__, m_url.m_url[0].m_url.c_str());
   }
   else if (m_state == GET_EPISODE_LIST)
   {
     if (!GetEpisodeList(m_url, m_episode))
-      CLog::Log(LOGERROR, "%s: Error getting episode details from %s", __FUNCTION__, m_url.m_url[0].m_url.c_str());
+      CLog::Log(LOGERROR, "%s: Error getting episode list from %s", __FUNCTION__, m_url.m_url[0].m_url.c_str());
   }
   m_found = 1;
   m_state = DO_NOTHING;
