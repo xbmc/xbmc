@@ -71,6 +71,7 @@ HRESULT CPixelShaderCompiler::CompileShader(
   if(!m_pD3DXCompileShader || !m_pD3DXDisassembleShader)
     return E_FAIL;
 
+  CSingleLock lock(m_deviceLock);
   HRESULT hr;
 
   Com::SmartPtr<ID3DXBuffer> pShader, pDisAsm, pErrorMsgs;

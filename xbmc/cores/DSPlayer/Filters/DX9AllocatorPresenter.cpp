@@ -2697,6 +2697,7 @@ void CDX9AllocatorPresenter::BeforeDeviceReset()
 
   DeleteSurfaces();
 
+  m_pPSC->SetD3DDevice(NULL);
   m_pD3DDev = NULL;
   m_pD3D = NULL;
 }
@@ -2705,6 +2706,7 @@ void CDX9AllocatorPresenter::AfterDeviceReset()
 {
   m_pD3DDev = g_Windowing.Get3DDevice();
   m_pD3D = g_Windowing.Get3DObject();
+  m_pPSC->SetD3DDevice(m_pD3DDev);
 
   AllocSurfaces();
 

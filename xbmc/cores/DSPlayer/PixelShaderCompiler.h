@@ -30,6 +30,8 @@
 
 #include <d3dx9shader.h>
 #include "DShowUtil/SmartPtr.h"
+#include "CriticalSection.h"
+#include "SingleLock.h"
 
 class CPixelShaderCompiler
 {
@@ -55,9 +57,15 @@ class CPixelShaderCompiler
   D3DXDisassembleShaderPtr m_pD3DXDisassembleShader;
 
   IDirect3DDevice9* m_pD3DDev;
+  CCriticalSection m_deviceLock;
 
 public:
   CPixelShaderCompiler(IDirect3DDevice9* pD3DDev, bool fStaySilent = false);
+  void SetD3DDevice(IDirect3DDevice9* pD3DDev)
+  {
+    CSingleLock lock(m_deviceLock);
+    m_pD3DDev = pD3DDev;
+  }
   virtual ~CPixelShaderCompiler();
 
   HRESULT CompileShader(

@@ -375,7 +375,7 @@ void CVMR9AllocatorPresenter::DeleteSurfaces()
 
 STDMETHODIMP CVMR9AllocatorPresenter::CreateRenderer(IUnknown** ppRenderer)
 {
-    CheckPointer(ppRenderer, E_POINTER);
+  CheckPointer(ppRenderer, E_POINTER);
 
   *ppRenderer = NULL;
 
@@ -574,10 +574,10 @@ STDMETHODIMP CVMR9AllocatorPresenter::AdviseNotify(IVMRSurfaceAllocatorNotify9* 
 
 STDMETHODIMP CVMR9AllocatorPresenter::StartPresenting(DWORD_PTR dwUserID)
 {
-    CAutoLock cAutoLock(this);
+  CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
 
-    ASSERT(m_pD3DDev);
+  ASSERT(m_pD3DDev);
 
   return m_pD3DDev ? S_OK : E_FAIL;
 }
