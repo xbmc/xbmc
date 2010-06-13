@@ -92,7 +92,7 @@ namespace VIDEO
      \param idShow database id of the tvshow if we're adding an episode.  Defaults to -1.
      \return database id of the added item, or -1 on failure.
      */
-    long AddMovie(CFileItem *pItem, const CONTENT_TYPE &content, int idShow = -1);
+    long AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, int idShow = -1);
 
     /*! \brief Retrieve information for a list of items and add them to the database.
      \param items list of items to retrieve info for.
@@ -106,7 +106,7 @@ namespace VIDEO
      */
     bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, CONTENT_TYPE content, bool useLocal = true, CScraperUrl *pURL = NULL, bool fetchEpisodes = true, CGUIDialogProgress* pDlgProgress = NULL);
 
-    static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
+    static void ApplyThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
     CNfoFile::NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, ADDON::ScraperPtr& scraper, CScraperUrl& scrUrl);
 

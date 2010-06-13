@@ -489,7 +489,7 @@ namespace VIDEO
       if (m_pObserver)
         m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
-      long lResult = AddMovie(pItem.get(), info2->Content());
+      long lResult = AddVideo(pItem.get(), info2->Content());
       if (lResult < 0)
         return INFO_ERROR;
       GetArtwork(pItem.get(), info2->Content(), bDirNames, fetchEpisodes, pDlgProgress);
@@ -515,7 +515,7 @@ namespace VIDEO
     long lResult=-1;
     if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
     {
-      if ((lResult = AddMovie(pItem.get(), info2->Content())) < 0)
+      if ((lResult = AddVideo(pItem.get(), info2->Content())) < 0)
         return INFO_ERROR;
       GetArtwork(pItem.get(), info2->Content(), false, useLocal);
     }
@@ -565,7 +565,7 @@ namespace VIDEO
       if (m_pObserver)
         m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
-      if (AddMovie(pItem.get(), info2->Content()) < 0)
+      if (AddVideo(pItem.get(), info2->Content()) < 0)
         return INFO_ERROR;
       GetArtwork(pItem.get(), info2->Content(), bDirNames, true, pDlgProgress);
       return INFO_ADDED;
@@ -585,7 +585,7 @@ namespace VIDEO
 
     if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
     {
-      if (AddMovie(pItem.get(), info2->Content()) < 0)
+      if (AddVideo(pItem.get(), info2->Content()) < 0)
         return INFO_ERROR;
       GetArtwork(pItem.get(), info2->Content(), bDirNames, useLocal);
       return INFO_ADDED;
@@ -617,7 +617,7 @@ namespace VIDEO
       if (m_pObserver)
         m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
-      if (AddMovie(pItem.get(), info2->Content()) < 0)
+      if (AddVideo(pItem.get(), info2->Content()) < 0)
         return INFO_ERROR;
       GetArtwork(pItem.get(), info2->Content(), bDirNames, true, pDlgProgress);
       return INFO_ADDED;
@@ -637,7 +637,7 @@ namespace VIDEO
 
     if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
     {
-      if (AddMovie(pItem.get(), info2->Content()) < 0)
+      if (AddVideo(pItem.get(), info2->Content()) < 0)
         return INFO_ERROR;
       GetArtwork(pItem.get(), info2->Content(), bDirNames, useLocal);
       return INFO_ADDED;
@@ -920,7 +920,7 @@ namespace VIDEO
     return bMatched;
   }
 
-  long CVideoInfoScanner::AddMovie(CFileItem *pItem, const CONTENT_TYPE &content, int idShow)
+  long CVideoInfoScanner::AddVideo(CFileItem *pItem, const CONTENT_TYPE &content, int idShow)
   {
     // ensure our database is open (this can get called via other classes)
     if (!m_database.Open())
@@ -1067,7 +1067,7 @@ namespace VIDEO
       return;
     }
     if (!directory.IsEmpty())
-      ApplyIMDBThumbToFolder(directory, destination);
+      ApplyThumbToFolder(directory, destination);
   }
 
   INFO_RET CVideoInfoScanner::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, const ADDON::ScraperPtr &scraper, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress /* = NULL */)
@@ -1124,7 +1124,7 @@ namespace VIDEO
           strTitle.Format("%s - %ix%i - %s", strShowTitle.c_str(), item.GetVideoInfoTag()->m_iSeason, item.GetVideoInfoTag()->m_iEpisode, item.GetVideoInfoTag()->m_strTitle.c_str());
           m_pObserver->OnSetTitle(strTitle);
         }
-        if (AddMovie(&item, CONTENT_TVSHOWS, idShow) < 0)
+        if (AddVideo(&item, CONTENT_TVSHOWS, idShow) < 0)
           return INFO_ERROR;
         GetArtwork(&item, CONTENT_TVSHOWS);
         continue;
@@ -1173,7 +1173,7 @@ namespace VIDEO
           strTitle.Format("%s - %ix%i - %s", strShowTitle.c_str(), item.GetVideoInfoTag()->m_iSeason, item.GetVideoInfoTag()->m_iEpisode, item.GetVideoInfoTag()->m_strTitle.c_str());
           m_pObserver->OnSetTitle(strTitle);
         }
-        if (AddMovie(&item, CONTENT_TVSHOWS, idShow) < 0)
+        if (AddVideo(&item, CONTENT_TVSHOWS, idShow) < 0)
           return INFO_ERROR;
         GetArtwork(&item, CONTENT_TVSHOWS);
       }
@@ -1317,7 +1317,7 @@ namespace VIDEO
     return false; // no info found, or cancelled
   }
 
-  void CVideoInfoScanner::ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb)
+  void CVideoInfoScanner::ApplyThumbToFolder(const CStdString &folder, const CStdString &imdbThumb)
   {
     // copy icon to folder also;
     if (CFile::Exists(imdbThumb))
