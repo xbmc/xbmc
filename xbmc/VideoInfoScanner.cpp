@@ -398,10 +398,8 @@ namespace VIDEO
         FoundSomeInfo = false;
         break;
       }
-      if (ret == INFO_ADDED || ret == INFO_HAVE_ALREADY || ret == INFO_SCAN_AGAIN)
+      if (ret == INFO_ADDED || ret == INFO_HAVE_ALREADY)
         FoundSomeInfo = true;
-      if (ret == INFO_SCAN_AGAIN)
-        i--; // WTF?
 
       pURL = NULL;
     }
@@ -462,7 +460,12 @@ namespace VIDEO
       if (!fetchEpisodes && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
         FetchSeasonThumbs(lResult);
       if (fetchEpisodes)
-        return INFO_SCAN_AGAIN; // WTF?
+      {
+        INFO_RET ret = RetrieveInfoForEpisodes(pItem, lResult, info2, pDlgProgress);
+        if (ret == INFO_ADDED)
+          m_database.SetPathHash(pItem->m_strPath, pItem->GetProperty("hash"));
+        return ret;
+      }
       return INFO_ADDED;
     }
     if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
