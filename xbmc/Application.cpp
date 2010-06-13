@@ -4139,7 +4139,7 @@ bool CApplication::ToggleDPMS(bool manual)
     }
     else
     {
-      if (m_dpms->EnablePowerSaving(m_dpms->GetSupportedModes()[0]));
+      if (m_dpms->EnablePowerSaving(m_dpms->GetSupportedModes()[0]))
       {
         m_dpmsIsActive = true;
         m_dpmsIsManual = manual;
