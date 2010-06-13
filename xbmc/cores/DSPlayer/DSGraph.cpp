@@ -64,15 +64,18 @@ enum
 using namespace std;
 
 CDSGraph* g_dsGraph = NULL;
+int32_t CDSGraph::m_threadID = 0;
 
 CDSGraph::CDSGraph(CDVDClock* pClock, IPlayerCallback& callback)
     : m_pGraphBuilder(NULL), m_iCurrentFrameRefreshCycle(0),
     m_userId(0xACDCACDC), m_bReachedEnd(false), m_callback(callback)
-{ 
+{
+  m_threadID = 0;
 }
 
 CDSGraph::~CDSGraph()
 {
+  m_threadID = 0;
 }
 
 //This is also creating the Graph
@@ -122,19 +125,16 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
   //with the vmr9 we need to add AM_DVD_SWDEC_PREFER  AM_DVD_VMR9_ONLY on the ivmr9config prefs
 
   m_VideoInfo.isDVD = CGraphFilters::Get()->IsDVD();
+  m_threadID = GetCurrentThreadId();
   
   // Audio & subtitle streams
-  START_PERFORMANCE_COUNTER
   CStreamsManager::Get()->InitManager();
   CStreamsManager::Get()->LoadStreams();
-  END_PERFORMANCE_COUNTER
 
   // Chapters
-  START_PERFORMANCE_COUNTER
   CChaptersManager::Get()->InitManager();
   if (!CChaptersManager::Get()->LoadChapters())
     CLog::Log(LOGNOTICE, "%s No chapters found!", __FUNCTION__);
-  END_PERFORMANCE_COUNTER
 
   SetVolume(g_settings.m_nVolumeLevel);
   
@@ -144,7 +144,6 @@ HRESULT CDSGraph::SetFile(const CFileItem& file, const CPlayerOptions &options)
 
 void CDSGraph::CloseFile()
 {
-  CSingleLock lock(m_ObjectLock);
   HRESULT hr;
 
   if (m_pGraphBuilder)
@@ -156,6 +155,7 @@ void CDSGraph::CloseFile()
 
     Stop(true);
 
+    CSingleLock lock(m_ObjectLock);
     hr = m_pGraphBuilder->RemoveFromROT();
 
     CStreamsManager::Destroy();
@@ -438,9 +438,17 @@ void CDSGraph::SetVolume(long nVolume)
 
 void CDSGraph::Stop(bool rewind)
 {
+  if (m_threadID != GetCurrentThreadId())
+  {
+    CEvent stopDone;
+    CDSGraph::PostMessage(ID_PLAY_STOP, (int32_t) &stopDone);
+    stopDone.Wait();
+    return;
+  }
+
   CSingleLock lock(m_ObjectLock);
 
-  LONGLONG pos = 0;  
+  LONGLONG pos = 0;
   
   if (rewind && m_pMediaSeeking)
     m_pMediaSeeking->SetPositions(&pos, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
@@ -499,6 +507,14 @@ bool CDSGraph::OnMouseMove(tagPOINT pt)
 
 void CDSGraph::Play(bool force/* = false*/)
 {
+  if (m_threadID != GetCurrentThreadId())
+  {
+    CEvent playEvent;
+    PostMessage(ID_PLAY_PLAY, (int32_t) &playEvent);
+    playEvent.Wait();
+    return;
+  }
+
   CSingleLock lock(m_ObjectLock);
   if (m_pMediaControl && (force || m_State.current_filter_state != State_Running))
     m_pMediaControl->Run();
@@ -508,6 +524,14 @@ void CDSGraph::Play(bool force/* = false*/)
 
 void CDSGraph::Pause()
 {
+  if (m_threadID != GetCurrentThreadId())
+  {
+    CEvent pauseEvent;
+    PostMessage(ID_PLAY_PAUSE, (int32_t) &pauseEvent);
+    pauseEvent.Wait();
+    return;
+  }
+
   CSingleLock lock(m_ObjectLock);
   if (CDSPlayer::PlayerState == DSPLAYER_PAUSED)
   {
@@ -534,14 +558,14 @@ HRESULT CDSGraph::UnloadGraph()
 {
   HRESULT hr = S_OK;
 
-  BeginEnumFilters(g_dsGraph->pFilterGraph, pEM, pBF)
+  BeginEnumFilters(pFilterGraph, pEM, pBF)
   {
     CStdString filterName;
     g_charsetConverter.wToUTF8(DShowUtil::GetFilterName(pBF), filterName);
 
     try
     {
-      hr = RemoveFilter(g_dsGraph->pFilterGraph, pBF);
+      hr = RemoveFilter(pFilterGraph, pBF);
     }
     catch (...)
     {
@@ -562,7 +586,7 @@ HRESULT CDSGraph::UnloadGraph()
   m_pMediaEvent.Release();
   m_pMediaSeeking.Release();
   m_pVideoWindow.Release();
-  m_pBasicAudio.Release();  
+  m_pBasicAudio.Release();
 
   /* delete filters */
 
@@ -593,6 +617,12 @@ void CDSGraph::SeekInMilliSec(double position)
 
 void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePositioning*/)
 {
+  if (m_threadID != GetCurrentThreadId())
+  {
+    PostMessage(ID_SEEK_TO, DS_TIME_TO_MSEC(position));
+    return;
+  }
+
   if ( !m_pMediaSeeking )
     return;
 
@@ -751,132 +781,144 @@ bool CDSGraph::CanSeek()
   return SUCCEEDED(m_pMediaSeeking->CheckCapabilities(&seekcaps));  
 }
 
-void CDSGraph::ProcessMessage(WPARAM wParam, LPARAM lParam)
+void CDSGraph::ProcessThreadMessages()
 {
-  if ( wParam == ID_DVD_MOUSE_MOVE)
+  MSG msg;
+  if (PeekMessage(&msg, (HWND) -1, 0, 0, PM_REMOVE) &&
+    msg.message == WM_GRAPHMESSAGE)
   {
-    //TODO make the xbmc gui stay hidden when moving mouse over menu
-    POINT pt;
-    pt.x = GET_X_LPARAM(lParam);
-    pt.y = GET_Y_LPARAM(lParam);
-    ULONG pButtonIndex;
-    /**** Didnt found really where dvdplayer are doing it exactly so here it is *****/
-    XBMC_Event newEvent;
-    newEvent.type = XBMC_MOUSEMOTION;
-    newEvent.motion.x = (uint16_t) pt.x;
-    newEvent.motion.y = (uint16_t) pt.y;
-    g_application.OnEvent(newEvent);
-    /*CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
-    g_windowManager.SendMessage(msg);*/
-    /**** End of ugly hack ***/
-    if (SUCCEEDED(CGraphFilters::Get()->DVD.dvdInfo->GetButtonAtPosition(pt,&pButtonIndex)))
-      CGraphFilters::Get()->DVD.dvdControl->SelectButton(pButtonIndex);
-    
-  }
-  else if ( wParam == ID_DVD_MOUSE_CLICK)
-  {
-    POINT pt;
-    pt.x = GET_X_LPARAM(lParam);
-    pt.y = GET_Y_LPARAM(lParam);
-    ULONG pButtonIndex;
-    if (SUCCEEDED(CGraphFilters::Get()->DVD.dvdInfo->GetButtonAtPosition(pt, &pButtonIndex)))
-      CGraphFilters::Get()->DVD.dvdControl->SelectAndActivateButton(pButtonIndex);
-  }
-  else if ( wParam == ID_DS_SET_WINDOW_POS)
-  {
-    UpdateWindowPosition();
-  }
-  else if ( wParam == ID_PLAY_PLAY )
-  {
-    Play();
-  }
-  else if ( wParam == ID_SEEK_TO )
-  {
-    SeekInMilliSec((LPARAM)lParam);
-  }
-  else if ( wParam == ID_SEEK_FORWARDSMALL )
-  {
-    Seek(true, false);
-    CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDSMALL",__FUNCTION__);
-  }
-  else if ( wParam == ID_SEEK_FORWARDLARGE )
-  {
-    Seek(true, true);
-    CLog::Log(LOGDEBUG,"%s ID_SEEK_FORWARDLARGE",__FUNCTION__);
-  }
-  else if ( wParam == ID_SEEK_BACKWARDSMALL )
-  {
-    Seek(false,false);
-    CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDSMALL",__FUNCTION__);
-  }
-  else if ( wParam == ID_SEEK_BACKWARDLARGE )
-  {
-    Seek(false,true);
-    CLog::Log(LOGDEBUG,"%s ID_SEEK_BACKWARDLARGE",__FUNCTION__);
-  }
-  else if ( wParam == ID_PLAY_PAUSE )
-  {
-    Pause();
-    CLog::Log(LOGDEBUG,"%s ID_PLAY_PAUSE",__FUNCTION__);
-  }
-  else if ( wParam == ID_PLAY_STOP )
-  {
-    Stop(true);
-    CLog::Log(LOGDEBUG,"%s ID_PLAY_STOP",__FUNCTION__);
-  }
-  else if ( wParam == ID_STOP_DSPLAYER )
-  {
-    Stop(true);
-    CLog::Log(LOGDEBUG,"%s ID_STOP_DSPLAYER",__FUNCTION__);
-  }
+    if ( msg.wParam == ID_DS_SET_WINDOW_POS)
+    {
+      UpdateWindowPosition();
+    }
+    else if ( msg.wParam == ID_PLAY_PLAY )
+    {
+      Play();
+      if (msg.lParam)
+      {
+        CEvent *event = reinterpret_cast<CEvent *>(msg.lParam);
+        event->Set();
+      }
+    }
+    else if ( msg.wParam == ID_SEEK_TO )
+    {
+      SeekInMilliSec( msg.lParam );
+    }
+    else if ( msg.wParam == ID_SEEK_FORWARDSMALL )
+    {
+      Seek(true, false);
+    }
+    else if ( msg.wParam == ID_SEEK_FORWARDLARGE )
+    {
+      Seek(true, true);
+    }
+    else if ( msg.wParam == ID_SEEK_BACKWARDSMALL )
+    {
+      Seek(false, false);
+    }
+    else if ( msg.wParam == ID_SEEK_BACKWARDLARGE )
+    {
+      Seek(false, true);
+    }
+    else if ( msg.wParam == ID_PLAY_PAUSE )
+    {
+      Pause();
+      if (msg.lParam)
+      {
+        CEvent *event = reinterpret_cast<CEvent *>(msg.lParam);
+        event->Set();
+      }
+    }
+    else if ( msg.wParam == ID_PLAY_STOP )
+    {
+      Stop(true);
+      if (msg.lParam)
+      {
+        CEvent *event = reinterpret_cast<CEvent *>(msg.lParam);
+        event->Set();
+      }
+    }
+    else if ( msg.wParam == ID_STOP_DSPLAYER )
+    {
+      Stop(true);
+    }
 
-/*DVD COMMANDS*/
-  if ( wParam == ID_DVD_NAV_UP )
-  {
-    CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Upper);
-  }
-  else if ( wParam == ID_DVD_NAV_DOWN )
-  {
-    CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Lower);
-  }
-  else if ( wParam == ID_DVD_NAV_LEFT )
-  {
-    CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Left);
-  }
-  else if ( wParam == ID_DVD_NAV_RIGHT )
-  {
-    CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Right);
-  }
-  else if ( wParam == ID_DVD_MENU_ROOT )
-  {
-    CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
-    g_windowManager.SendMessage(msg);
-    CGraphFilters::Get()->DVD.dvdControl->ShowMenu(DVD_MENU_Root , DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
-  }
-  else if ( wParam == ID_DVD_MENU_EXIT )
-  {
-    CGraphFilters::Get()->DVD.dvdControl->Resume(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
-  }
-  else if ( wParam == ID_DVD_MENU_BACK )
-  {
-    CGraphFilters::Get()->DVD.dvdControl->ReturnFromSubmenu(DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
-  }
-  else if ( wParam == ID_DVD_MENU_SELECT )
-  {
-    CGraphFilters::Get()->DVD.dvdControl->ActivateButton();
-  }
-  else if ( wParam == ID_DVD_MENU_TITLE )
-  {
-    CGraphFilters::Get()->DVD.dvdControl->ShowMenu(DVD_MENU_Title, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
-  }
-  else if ( wParam == ID_DVD_MENU_SUBTITLE )
-  {
-  }
-  else if ( wParam == ID_DVD_MENU_AUDIO )
-  {
-  }
-  else if ( wParam == ID_DVD_MENU_ANGLE )
-  {
+    /*DVD COMMANDS*/
+    if ( msg.wParam == ID_DVD_MOUSE_MOVE)
+    {
+      //TODO make the xbmc gui stay hidden when moving mouse over menu
+      POINT pt;
+      pt.x = GET_X_LPARAM(msg.lParam);
+      pt.y = GET_Y_LPARAM(msg.lParam);
+      ULONG pButtonIndex;
+      /**** Didnt found really where dvdplayer are doing it exactly so here it is *****/
+      XBMC_Event newEvent;
+      newEvent.type = XBMC_MOUSEMOTION;
+      newEvent.motion.x = (uint16_t) pt.x;
+      newEvent.motion.y = (uint16_t) pt.y;
+      g_application.OnEvent(newEvent);
+      /*CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
+      g_windowManager.SendMessage(msg);*/
+      /**** End of ugly hack ***/
+      if (SUCCEEDED(CGraphFilters::Get()->DVD.dvdInfo->GetButtonAtPosition(pt, &pButtonIndex)))
+        CGraphFilters::Get()->DVD.dvdControl->SelectButton(pButtonIndex);
+    }
+    else if ( msg.wParam == ID_DVD_MOUSE_CLICK)
+    {
+      POINT pt;
+      pt.x = GET_X_LPARAM(msg.lParam);
+      pt.y = GET_Y_LPARAM(msg.lParam);
+      ULONG pButtonIndex;
+      if (SUCCEEDED(CGraphFilters::Get()->DVD.dvdInfo->GetButtonAtPosition(pt, &pButtonIndex)))
+        CGraphFilters::Get()->DVD.dvdControl->SelectAndActivateButton(pButtonIndex);
+    }
+    else if ( msg.wParam == ID_DVD_NAV_UP )
+    {
+      CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Upper);
+    }
+    else if ( msg.wParam == ID_DVD_NAV_DOWN )
+    {
+      CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Lower);
+    }
+    else if ( msg.wParam == ID_DVD_NAV_LEFT )
+    {
+      CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Left);
+    }
+    else if ( msg.wParam == ID_DVD_NAV_RIGHT )
+    {
+      CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Right);
+    }
+    else if ( msg.wParam == ID_DVD_MENU_ROOT )
+    {
+      CGUIMessage _msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
+      g_windowManager.SendMessage(_msg);
+      CGraphFilters::Get()->DVD.dvdControl->ShowMenu(DVD_MENU_Root , DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
+    }
+    else if ( msg.wParam == ID_DVD_MENU_EXIT )
+    {
+      CGraphFilters::Get()->DVD.dvdControl->Resume(DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
+    }
+    else if ( msg.wParam == ID_DVD_MENU_BACK )
+    {
+      CGraphFilters::Get()->DVD.dvdControl->ReturnFromSubmenu(DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
+    }
+    else if ( msg.wParam == ID_DVD_MENU_SELECT )
+    {
+      CGraphFilters::Get()->DVD.dvdControl->ActivateButton();
+    }
+    else if ( msg.wParam == ID_DVD_MENU_TITLE )
+    {
+      CGraphFilters::Get()->DVD.dvdControl->ShowMenu(DVD_MENU_Title, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
+    }
+    else if ( msg.wParam == ID_DVD_MENU_SUBTITLE )
+    {
+    }
+    else if ( msg.wParam == ID_DVD_MENU_AUDIO )
+    {
+    }
+    else if ( msg.wParam == ID_DVD_MENU_ANGLE )
+    {
+    }
   }
 }
 

@@ -50,7 +50,7 @@ CGUIDialogBoxBase *CDSPlayer::errorWindow = NULL;
 
 CDSPlayer::CDSPlayer(IPlayerCallback& callback)
     : IPlayer(callback), CThread(), m_hReadyEvent(true), m_bSpeedChanged(false),
-    m_callSetFileFromThread(true), m_bDoNotUseDSFF(false)
+    m_bDoNotUseDSFF(false)
 {
   // Change DVD Clock, time base
   CDVDClock::SetTimeBase((int64_t) DS_TIME_BASE);
@@ -94,19 +94,6 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   m_currentRate = 1;
   
   m_hReadyEvent.Reset();
-
-  if ( g_Windowing.IsFullScreen() && !g_guiSettings.GetBool("videoscreen.fakefullscreen") &&  (
-    (g_sysinfo.IsVistaOrHigher() && g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer")) ||
-    (!g_sysinfo.IsVistaOrHigher() && !g_guiSettings.GetBool("dsplayer.forcenondefaultrenderer")) ) ) // The test was broken, it doesn't work on Win7 either
-  {
-    // Using VMR in true fullscreen. Calling SetFile() in Process makes XBMC freeze
-    // We're no longer waiting indefinitly if a crash occured when trying to load the file
-    m_callSetFileFromThread = false;
-    START_PERFORMANCE_COUNTER
-      if (FAILED(g_dsGraph->SetFile(currentFileItem, m_PlayerOptions)))
-        PlayerState = DSPLAYER_ERROR;
-    END_PERFORMANCE_COUNTER
-  }
   Create();
 
   /* Show busy dialog while SetFile() not returned */
@@ -122,7 +109,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   // Starts playback
   if (PlayerState != DSPLAYER_ERROR)
   {
-    g_dsGraph->Play();
+    g_dsGraph->PostMessage(ID_PLAY_PLAY);
     if (CGraphFilters::Get()->IsDVD())
       CStreamsManager::Get()->LoadDVDStreams();
   }
@@ -222,22 +209,19 @@ void CDSPlayer::OnExit()
 void CDSPlayer::HandleStart()
 {
   if (m_PlayerOptions.starttime > 0)
-    SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_TO, ((LPARAM) m_PlayerOptions.starttime * 1000));
+    CDSGraph::PostMessage(ID_SEEK_TO, (int32_t) m_PlayerOptions.starttime * 1000);
 }
 
 void CDSPlayer::Process()
 {
 
-#define CHECK_PLAYER_STATE if (PlayerState == DSPLAYER_CLOSING || PlayerState == DSPLAYER_CLOSED) \
+#define CHECK_PLAYER_STATE if (PlayerState == DSPLAYER_CLOSED) \
   break;
 
-  if (m_callSetFileFromThread)
-  {
-    START_PERFORMANCE_COUNTER
-    if (FAILED(g_dsGraph->SetFile(currentFileItem, m_PlayerOptions)))
-      PlayerState = DSPLAYER_ERROR;
-    END_PERFORMANCE_COUNTER
-  }
+  START_PERFORMANCE_COUNTER
+  if (FAILED(g_dsGraph->SetFile(currentFileItem, m_PlayerOptions)))
+    PlayerState = DSPLAYER_ERROR;
+  END_PERFORMANCE_COUNTER
 
   m_hReadyEvent.Set(); // Start playback
 
@@ -248,9 +232,16 @@ void CDSPlayer::Process()
   
   HRESULT hr = S_OK;
 
-  while (PlayerState != DSPLAYER_CLOSING && PlayerState != DSPLAYER_CLOSED)
+  // Create the messages queue
+  MSG msg;
+  PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_NOREMOVE);
+
+  while (!m_bStop && PlayerState != DSPLAYER_CLOSED)
   {
     CHECK_PLAYER_STATE
+
+    // Process thread message
+    g_dsGraph->ProcessThreadMessages();
 
     if (m_bSpeedChanged)
     {
@@ -349,7 +340,7 @@ void CDSPlayer::Process()
 
 void CDSPlayer::Stop()
 {
-  SendMessage(g_hWnd,WM_COMMAND, ID_STOP_DSPLAYER,0);
+  g_dsGraph->Stop(true);
 }
 
 void CDSPlayer::Pause()
@@ -365,8 +356,7 @@ void CDSPlayer::Pause()
     m_currentRate = 0;
     m_callback.OnPlayBackPaused();
   }
-
-  SendMessage(g_hWnd, WM_COMMAND, ID_PLAY_PAUSE, 0);
+  g_dsGraph->Pause();
 }
 void CDSPlayer::ToFFRW(int iSpeed)
 {
@@ -382,22 +372,22 @@ void CDSPlayer::Seek(bool bPlus, bool bLargeStep)
   if (bPlus)
   {
     if (!bLargeStep)
-      SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_FORWARDSMALL, 0);
+      CDSGraph::PostMessage(ID_SEEK_FORWARDSMALL);
     else
-      SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_FORWARDLARGE, 0);
+      CDSGraph::PostMessage(ID_SEEK_FORWARDLARGE);
   }
   else
   {
     if (!bLargeStep)
-      SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_BACKWARDSMALL, 0);
+      CDSGraph::PostMessage(ID_SEEK_BACKWARDSMALL);
     else
-      SendMessage(g_hWnd, WM_COMMAND, ID_SEEK_BACKWARDLARGE, 0);
+      CDSGraph::PostMessage(ID_SEEK_BACKWARDLARGE);
   }
 }
 
 void CDSPlayer::SeekPercentage(float iPercent)
 {
-  SendMessage(g_hWnd,WM_COMMAND, ID_SEEK_PERCENT,(LPARAM)iPercent);
+  CDSGraph::PostMessage(ID_SEEK_PERCENT);
 }
 
 bool CDSPlayer::OnAction(const CAction &action)
@@ -406,7 +396,7 @@ bool CDSPlayer::OnAction(const CAction &action)
   {
     if ( action.GetID() == ACTION_SHOW_VIDEOMENU )
     {
-      SendMessage(g_hWnd, WM_COMMAND, ID_DVD_MENU_ROOT,0);
+      CDSGraph::PostMessage(ID_DVD_MENU_ROOT);
       return true;
     }
     if ( g_dsGraph->IsInMenu() )
@@ -414,19 +404,19 @@ bool CDSPlayer::OnAction(const CAction &action)
       switch (action.GetID())
       {
         case ACTION_PREVIOUS_MENU:
-          SendMessage(g_hWnd, WM_COMMAND, ID_DVD_MENU_BACK,0);
+          CDSGraph::PostMessage(ID_DVD_MENU_BACK);
         break;
         case ACTION_MOVE_LEFT:
-          SendMessage(g_hWnd, WM_COMMAND, ID_DVD_NAV_LEFT,0);
+          CDSGraph::PostMessage(ID_DVD_NAV_LEFT);
         break;
         case ACTION_MOVE_RIGHT:
-          SendMessage(g_hWnd, WM_COMMAND, ID_DVD_NAV_RIGHT,0);
+          CDSGraph::PostMessage(ID_DVD_NAV_RIGHT);
         break;
         case ACTION_MOVE_UP:
-          SendMessage(g_hWnd, WM_COMMAND, ID_DVD_NAV_UP,0);
+          CDSGraph::PostMessage(ID_DVD_NAV_UP);
         break;
         case ACTION_MOVE_DOWN:
-          SendMessage(g_hWnd, WM_COMMAND, ID_DVD_NAV_DOWN,0);
+          CDSGraph::PostMessage(ID_DVD_NAV_DOWN);
         break;
         /*case ACTION_MOUSE_MOVE:
         case ACTION_MOUSE_LEFT_CLICK:
@@ -450,7 +440,7 @@ bool CDSPlayer::OnAction(const CAction &action)
       case ACTION_SELECT_ITEM:
         {
           // show button pushed overlay
-          SendMessage(g_hWnd, WM_COMMAND, ID_DVD_MENU_SELECT,0);
+          CDSGraph::PostMessage(ID_DVD_MENU_SELECT);
         }
         break;
       case REMOTE_0:
@@ -509,8 +499,8 @@ bool CDSPlayer::OnAction(const CAction &action)
 // Time is in millisecond
 void CDSPlayer::SeekTime(__int64 iTime)
 {
-  g_dsGraph->SeekInMilliSec(iTime);
-  m_callback.OnPlayBackSeek((int)iTime);
+  CDSGraph::PostMessage(ID_SEEK_TO, (int32_t) iTime);
+  m_callback.OnPlayBackSeek((int) iTime);
 }
 
 #endif

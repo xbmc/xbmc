@@ -2316,7 +2316,7 @@ void CEVRAllocatorPresenter::RenderThread()
 void CEVRAllocatorPresenter::BeforeDeviceReset()
 {
   // Pause playback
-  SendMessage(g_hWnd, WM_COMMAND, ID_PLAY_PAUSE, 0);
+  g_dsGraph->Pause();
 
   this->Lock();
   m_ImageProcessingLock.Lock();
@@ -2356,7 +2356,7 @@ void CEVRAllocatorPresenter::AfterDeviceReset()
   this->Unlock();
 
   // Restart playback
-  SendMessage(g_hWnd, WM_COMMAND, ID_PLAY_PLAY, 0);
+  g_dsGraph->Play();
 }
 
 

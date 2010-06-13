@@ -36,12 +36,14 @@
 #include "dsconfig.h"
 #include "fgmanager.h"
 #include "DShowUtil/DShowUtil.h"
+#include "winsystemwin32.h"
 #include "cores/IPlayer.h"
 #include "File.h"
 
 using namespace XFILE;
 
 #define WM_GRAPHEVENT  WM_USER + 13
+#define WM_GRAPHMESSAGE  WM_USER + 5
 
 /** Video state mode */
 enum VideoStateMode { MOVIE_NOTOPENED = 0x00,
@@ -62,6 +64,12 @@ public:
   CDSGraph(CDVDClock* pClock, IPlayerCallback& callback);
   virtual ~CDSGraph();
 
+  static void PostMessage(int32_t id, int32_t param = 0)
+  {
+    PostThreadMessage(m_threadID, WM_GRAPHMESSAGE, id, param);
+  }
+  void ProcessThreadMessages();
+
   /** Determine if the graph can seek
    * @return True is the graph can seek, false else
    * @remarks If True, it means that the graph can seek forward, backward and absolute
@@ -69,7 +77,6 @@ public:
   virtual bool CanSeek();
   //void SetDynamicRangeCompression(long drc);
 
-  virtual void ProcessMessage(WPARAM wParam, LPARAM lParam);
   virtual HRESULT HandleGraphEvent();
   /** @return True if the file reached end, false else */
   bool FileReachedEnd(){ return m_bReachedEnd; };
@@ -164,6 +171,7 @@ private:
   DVD_STATUS	                          m_pDvdStatus;
   std::vector<DvdTitle*>                m_pDvdTitles;
   bool m_bReachedEnd;
+  static int32_t m_threadID;
 
   DWORD_PTR m_userId;
   CCriticalSection m_ObjectLock;

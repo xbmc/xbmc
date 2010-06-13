@@ -224,7 +224,8 @@ void CStreamsManager::SetAudioStream(int iStream)
     /* Disable filter */
 //standardway:
 
-    g_dsGraph->Stop(); // Current position is kept by the graph
+    // Stop the graph
+    g_dsGraph->Stop();
 
     IPin *newAudioStreamPin = m_audioStreams[enableIndex]->pObj; // Splitter pin
     IPin *oldAudioStreamPin = m_audioStreams[disableIndex]->pObj; // Splitter pin

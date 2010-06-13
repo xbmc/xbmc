@@ -127,8 +127,7 @@ public:
   virtual void ToFFRW(int iSpeed);
   virtual bool OnAction(const CAction &action);
   
-//CDSPlayer
-  virtual void ProcessMessage(WPARAM wParam, LPARAM lParam) { g_dsGraph->ProcessMessage(wParam, lParam); }
+  //CDSPlayer
   virtual HRESULT HandleGraphEvent() { return g_dsGraph->HandleGraphEvent(); }
   virtual void HandleStart();
   virtual void Stop();
@@ -152,6 +151,4 @@ protected:
   CPlayerOptions m_PlayerOptions;
   CURL m_Filename;
   CEvent m_hReadyEvent;
-private:
-  bool m_callSetFileFromThread;
 };
