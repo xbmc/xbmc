@@ -1080,7 +1080,6 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         {
           m_streams[iId]->codec = CODEC_ID_MPEG2VIDEO;
           m_streams[iId]->codec_fourcc = MKTAG('M','P','2','V');
-          m_streams[iId]->iPhysicalId = pStream->id & 0xF0;
           CLog::Log(LOGERROR, "%s - CODEC_ID_PROBE detected, forcing CODEC_ID_MPEG2VIDEO", __FUNCTION__);
         }
       }
