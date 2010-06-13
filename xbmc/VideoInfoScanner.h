@@ -99,13 +99,13 @@ namespace VIDEO
      \param items list of items to retrieve info for.
      \param bDirNames whether we should use folder or file names for lookups.
      \param content type of content to retrieve.
-     \param bRefresh whether we are refreshing the information.  Defaults to false.
+     \param useLocal should local data (.nfo and art) be used. Defaults to true.
      \param pURL an optional URL to use to retrieve online info.  Defaults to NULL.
+     \param fetchEpisodes whether we are fetching episodes with shows. Defaults to true.
      \param pDlgProgress progress dialog to update and check for cancellation during processing.  Defaults to NULL.
-     \param ignoreNfo should nfo files be ignored.  Defaults to false.
      \return true if we successfully found information for some items, false otherwise
      */
-    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, CONTENT_TYPE content, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL, bool ignoreNfo=false);
+    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, CONTENT_TYPE content, bool useLocal = true, CScraperUrl *pURL = NULL, bool fetchEpisodes = true, CGUIDialogProgress* pDlgProgress = NULL);
 
     static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
@@ -124,7 +124,7 @@ namespace VIDEO
     virtual void Process();
     bool DoScan(const CStdString& strDirectory);
 
-    INFO_RET RetreiveInfoForTvShow(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo);
+    INFO_RET RetreiveInfoForTvShow(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress);
     INFO_RET RetreiveInfoForMovie(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress);
     INFO_RET RetreiveInfoForMusicVideo(CFileItemPtr pItem, bool bDirNames, ADDON::ScraperPtr &scraper, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress);
 

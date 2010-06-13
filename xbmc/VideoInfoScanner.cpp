@@ -334,11 +334,11 @@ namespace VIDEO
     return !m_bStop;
   }
 
-  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, CONTENT_TYPE content, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
+  bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, CONTENT_TYPE content, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress)
   {
     if (pDlgProgress)
     {
-      if (items.Size() > 1 || (items[0]->m_bIsFolder && !bRefresh))
+      if (items.Size() > 1 || (items[0]->m_bIsFolder && fetchEpisodes))
       {
         pDlgProgress->ShowProgressBar(true);
         pDlgProgress->SetPercentage(0);
@@ -383,11 +383,11 @@ namespace VIDEO
       }
       INFO_RET ret = INFO_CANCELLED;
       if (info2->Content() == CONTENT_TVSHOWS)
-        ret = RetreiveInfoForTvShow(pItem, bDirNames, info2, bRefresh, pURL, pDlgProgress, ignoreNfo);
+        ret = RetreiveInfoForTvShow(pItem, bDirNames, info2, useLocal, pURL, fetchEpisodes, pDlgProgress);
       else if (info2->Content() == CONTENT_MOVIES)
-        ret = RetreiveInfoForMovie(pItem, bDirNames, info2, !ignoreNfo, pURL, pDlgProgress);
+        ret = RetreiveInfoForMovie(pItem, bDirNames, info2, useLocal, pURL, pDlgProgress);
       else if (info2->Content() == CONTENT_MUSICVIDEOS)
-        ret = RetreiveInfoForMusicVideo(pItem, bDirNames, info2, !ignoreNfo, pURL, pDlgProgress);
+        ret = RetreiveInfoForMusicVideo(pItem, bDirNames, info2, useLocal, pURL, pDlgProgress);
       else
       {
         CLog::Log(LOGERROR, "VideoInfoScanner: Unknown content type %d (%s)", info2->Content(), pItem->m_strPath.c_str());
@@ -412,7 +412,7 @@ namespace VIDEO
     return FoundSomeInfo;
   }
 
-  INFO_RET CVideoInfoScanner::RetreiveInfoForTvShow(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
+  INFO_RET CVideoInfoScanner::RetreiveInfoForTvShow(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress)
   {
     IMDB_EPISODELIST episodes;
     EPISODES files;
@@ -425,7 +425,7 @@ namespace VIDEO
       CUtil::GetDirectory(pItem->m_strPath,strPath);
       idTvShow = m_database.GetTvShowId(strPath);
     }
-    if (idTvShow > -1 && (!bRefresh || !pItem->m_bIsFolder))
+    if (idTvShow > -1 && (fetchEpisodes || !pItem->m_bIsFolder))
     {
       // fetch episode guide
       CVideoInfoTag showDetails;
@@ -486,7 +486,7 @@ namespace VIDEO
     CNfoFile::NFOResult result=CNfoFile::NO_NFO;
     CScraperUrl scrUrl;
     // handle .nfo files
-    if (!ignoreNfo)
+    if (useLocal)
       result = CheckForNFOFile(pItem.get(), bDirNames, info2, scrUrl);
     if (result != CNfoFile::NO_NFO && result != CNfoFile::ERROR_NFO)
     { // check for preconfigured scraper; if found, overwrite with interpreted scraper (from Nfofile)
@@ -505,10 +505,10 @@ namespace VIDEO
       long lResult = AddMovie(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag());
       if (lResult < 0)
         return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, !bRefresh, pDlgProgress);
-      if (bRefresh && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
+      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, fetchEpisodes, pDlgProgress);
+      if (!fetchEpisodes && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
         FetchSeasonThumbs(lResult);
-      if (!bRefresh)
+      if (fetchEpisodes)
         return INFO_SCAN_AGAIN; // WTF?
       return INFO_ADDED;
     }
@@ -530,9 +530,9 @@ namespace VIDEO
     {
       if ((lResult = AddMovie(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag())) < 0)
         return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), false, !ignoreNfo);
+      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), false, useLocal);
     }
-    if (!bRefresh)
+    if (fetchEpisodes)
     {
       // fetch episode guide
       CVideoInfoTag details;
