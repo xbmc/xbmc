@@ -7149,7 +7149,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
       {
         info.Load(movie);
         CFileItem item(info);
-        scanner.AddMovie(&item,CONTENT_MOVIES,info);
+        scanner.AddMovie(&item,CONTENT_MOVIES);
         SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
         CStdString file(GetSafeFile(moviesDir, info.m_strTitle));
         CFile::Cache(file + ".tbn", item.GetCachedVideoThumb());
@@ -7162,7 +7162,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
       {
         info.Load(movie);
         CFileItem item(info);
-        scanner.AddMovie(&item,CONTENT_MUSICVIDEOS,info);
+        scanner.AddMovie(&item,CONTENT_MUSICVIDEOS);
         SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
         CStdString file(GetSafeFile(musicvideosDir, info.m_strArtist + "." + info.m_strTitle));
         CFile::Cache(file + ".tbn", item.GetCachedVideoThumb());
@@ -7176,7 +7176,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         CUtil::AddSlashAtEnd(info.m_strPath);
         DeleteTvShow(info.m_strPath);
         CFileItem item(info);
-        int showID = scanner.AddMovie(&item,CONTENT_TVSHOWS,info);
+        int showID = scanner.AddMovie(&item,CONTENT_TVSHOWS);
         current++;
         CStdString showDir(GetSafeFile(tvshowsDir, info.m_strTitle));
         CFile::Cache(CUtil::AddFileToFolder(showDir, "folder.jpg"), item.GetCachedVideoThumb());
@@ -7191,7 +7191,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
           CVideoInfoTag info;
           info.Load(episode);
           CFileItem item(info);
-          scanner.AddMovie(&item,CONTENT_TVSHOWS,info,showID);
+          scanner.AddMovie(&item,CONTENT_TVSHOWS,showID);
           SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
           CStdString file;
           file.Format("s%02ie%02i.tbn", info.m_iSeason, info.m_iEpisode);

@@ -89,11 +89,10 @@ namespace VIDEO
     /*! \brief Add an item to the database.
      \param pItem item to add to the database.
      \param content content type of the item.
-     \param movieDetails tag information to be added - may be modified.
      \param idShow database id of the tvshow if we're adding an episode.  Defaults to -1.
      \return database id of the added item, or -1 on failure.
      */
-    long AddMovie(CFileItem *pItem, const CONTENT_TYPE &content, CVideoInfoTag &movieDetails, int idShow = -1);
+    long AddMovie(CFileItem *pItem, const CONTENT_TYPE &content, int idShow = -1);
 
     /*! \brief Retrieve information for a list of items and add them to the database.
      \param items list of items to retrieve info for.
@@ -159,12 +158,11 @@ namespace VIDEO
     /*! \brief Retrieve any artwork associated with an item
      \param pItem item to add to the database.
      \param content content type of the item.
-     \param movieDetails tag information to be added - may be modified.
      \param bApplyToDir whether we should apply any thumbs to a folder.  Defaults to false.
      \param useLocal whether we should use local thumbs. Defaults to true.
      \param pDialog progress dialog to update during processing. Defaults to NULL.
      */
-    void GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, CVideoInfoTag &movieDetails, bool bApplyToDir=false, bool useLocal=true, CGUIDialogProgress* pDialog = NULL);
+    void GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir=false, bool useLocal=true, CGUIDialogProgress* pDialog = NULL);
 
     /*! \brief Extract episode and season numbers from a processed regexp
      \param reg Regular expression object with at least 2 matches
