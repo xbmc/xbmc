@@ -305,6 +305,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_bScreenSave = false;
   m_dpms = NULL;
   m_dpmsIsActive = false;
+  m_dpmsIsManual = false;
   m_iScreenSaveLock = 0;
   m_bInitializing = true;
   m_eForcedNextPlayer = EPC_NONE;
@@ -1964,6 +1965,8 @@ void CApplication::NewFrame()
 
 void CApplication::Render()
 {
+  if (m_dpmsIsActive)
+    return;
   if (!m_AppActive && !m_bStop && (!IsPlayingVideo() || IsPaused()))
   {
     Sleep(1);
@@ -4195,6 +4198,29 @@ void CApplication::ResetScreenSaverTimer()
   m_screenSaverTimer.StartZero();
 }
 
+bool CApplication::ToggleDPMS(bool manual)
+{
+  if (manual || (m_dpmsIsManual == manual))
+  {
+    if (m_dpmsIsActive)
+    {
+      m_dpmsIsActive = false;
+      m_dpmsIsManual = false;
+      return m_dpms->DisablePowerSaving();
+    }
+    else
+    {
+      if (m_dpms->EnablePowerSaving(m_dpms->GetSupportedModes()[0]));
+      {
+        m_dpmsIsActive = true;
+        m_dpmsIsManual = manual;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 bool CApplication::WakeUpScreenSaverAndDPMS()
 {
 
@@ -4207,10 +4233,11 @@ bool CApplication::WakeUpScreenSaverAndDPMS()
   // First reset DPMS, if active
   if (m_dpmsIsActive)
   {
+    if (m_dpmsIsManual)
+      return false;
     // TODO: if screensaver lock is specified but screensaver is not active
     // (DPMS came first), activate screensaver now.
-    m_dpms->DisablePowerSaving();
-    m_dpmsIsActive = false;
+    ToggleDPMS(false);
     ResetScreenSaverTimer();
     return !m_bScreenSave || WakeUpScreenSaver();
   }
@@ -4299,8 +4326,7 @@ void CApplication::CheckScreenSaverAndDPMS()
   if (maybeDPMS
       && elapsed > g_guiSettings.GetInt("powermanagement.displaysoff") * 60)
   {
-    m_dpms->EnablePowerSaving(m_dpms->GetSupportedModes()[0]);
-    m_dpmsIsActive = true;
+    ToggleDPMS(false);
     WakeUpScreenSaver();
   }
   else if (maybeScreensaver

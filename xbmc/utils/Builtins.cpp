@@ -181,6 +181,7 @@ const BUILT_IN commands[] = {
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
   { "Addon.Default.OpenSettings", true,   "Open a settings dialog for the default addon of the given type" },
+  { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
   { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
@@ -1305,6 +1306,10 @@ int CBuiltins::Execute(const CStdString& execString)
       if (type == ADDON_VIZ)
         g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
     }
+  }
+  else if (execute.Equals("toggledpms"))
+  {
+    g_application.ToggleDPMS(true);
   }
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   else if (execute.Equals("lirc.stop"))
