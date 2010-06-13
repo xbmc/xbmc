@@ -416,8 +416,6 @@ namespace VIDEO
 
   INFO_RET CVideoInfoScanner::RetreiveInfoForTvShow(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress)
   {
-    IMDB_EPISODELIST episodes;
-    EPISODES files;
     long idTvShow = -1;
     if (pItem->m_bIsFolder)
       idTvShow = m_database.GetTvShowId(pItem->m_strPath);
@@ -429,39 +427,7 @@ namespace VIDEO
     }
     if (idTvShow > -1 && (fetchEpisodes || !pItem->m_bIsFolder))
     {
-      // fetch episode guide
-      CVideoInfoTag showDetails;
-      m_database.GetTvShowInfo(pItem->m_strPath, showDetails, idTvShow);
-      EnumerateSeriesFolder(pItem.get(), files);
-      if (files.size() == 0) // no update or no files
-        return INFO_NOT_NEEDED;
-
-      //convert m_strEpisodeGuide in url.m_scrURL
-      if (!showDetails.m_strEpisodeGuide.IsEmpty()) // assume local-only series if no episode guide url
-      {
-        CScraperUrl url;
-        url.ParseEpisodeGuide(showDetails.m_strEpisodeGuide);
-        if (pDlgProgress)
-        {
-          if (pItem->m_bIsFolder)
-            pDlgProgress->SetHeading(20353);
-          else
-            pDlgProgress->SetHeading(20361);
-          pDlgProgress->SetLine(0, pItem->GetLabel());
-          pDlgProgress->SetLine(1, showDetails.m_strTitle);
-          pDlgProgress->SetLine(2, 20354);
-          pDlgProgress->Progress();
-        }
-        CIMDB imdb(info2);
-        if (!imdb.GetEpisodeList(url, episodes))
-          return INFO_ERROR;
-      }
-      if (m_bStop || (pDlgProgress && pDlgProgress->IsCanceled()))
-        return INFO_CANCELLED;
-      if (m_pObserver)
-        m_pObserver->OnDirectoryChanged(pItem->m_strPath);
-
-      INFO_RET ret = OnProcessSeriesFolder(episodes, files, info2, idTvShow, showDetails.m_strTitle, pDlgProgress);
+      INFO_RET ret = RetrieveInfoForEpisodes(pItem, idTvShow, info2, pDlgProgress);
       if (ret == INFO_ADDED)
         m_database.SetPathHash(pItem->m_strPath, pItem->GetProperty("hash"));
       return ret;
@@ -521,19 +487,8 @@ namespace VIDEO
     }
     if (fetchEpisodes)
     {
-      // fetch episode guide
-      CVideoInfoTag details;
-      m_database.GetTvShowInfo(pItem->m_strPath, details, lResult);
-      if (!details.m_strEpisodeGuide.IsEmpty()) // assume local-only series if no episode guide url
-      {
-        CScraperUrl url;
-        url.ParseEpisodeGuide(details.m_strEpisodeGuide);
-        EnumerateSeriesFolder(pItem.get(), files);
-        CIMDB imdb(info2);
-        if (!imdb.GetEpisodeList(url, episodes))
-          return INFO_NOT_FOUND;
-      }
-      if (OnProcessSeriesFolder(episodes, files, info2, lResult, details.m_strTitle, pDlgProgress))
+      INFO_RET ret = RetrieveInfoForEpisodes(pItem, lResult, info2, pDlgProgress);
+      if (ret == INFO_ADDED)
         m_database.SetPathHash(pItem->m_strPath, pItem->GetProperty("hash"));
     }
     else
@@ -644,6 +599,48 @@ namespace VIDEO
     }
     // TODO: This is not strictly correct as we could fail to download information here or error, or be cancelled
     return INFO_NOT_FOUND;
+  }
+
+  INFO_RET CVideoInfoScanner::RetrieveInfoForEpisodes(CFileItemPtr item, long showID, const ADDON::ScraperPtr &scraper, CGUIDialogProgress *progress)
+  {
+    IMDB_EPISODELIST episodes;
+    EPISODES files;
+    // fetch episode guide
+    CVideoInfoTag details;
+    m_database.GetTvShowInfo(item->m_strPath, details, showID);
+    if (!details.m_strEpisodeGuide.IsEmpty()) // assume local-only series if no episode guide url
+    {
+      CScraperUrl url;
+      url.ParseEpisodeGuide(details.m_strEpisodeGuide);
+
+      EnumerateSeriesFolder(item.get(), files);
+      if (files.size() == 0) // no update or no files
+        return INFO_NOT_NEEDED;
+
+      if (progress)
+      {
+        if (item->m_bIsFolder)
+          progress->SetHeading(20353);
+        else
+          progress->SetHeading(20361);
+        progress->SetLine(0, item->GetLabel());
+        progress->SetLine(1, details.m_strTitle);
+        progress->SetLine(2, 20354);
+        progress->Progress();
+      }
+
+      CIMDB imdb(scraper);
+      if (!imdb.GetEpisodeList(url, episodes))
+        return INFO_NOT_FOUND;
+    }
+
+    if (m_bStop || (progress && progress->IsCanceled()))
+      return INFO_CANCELLED;
+
+    if (m_pObserver)
+      m_pObserver->OnDirectoryChanged(item->m_strPath);
+
+    return OnProcessSeriesFolder(episodes, files, scraper, showID, details.m_strTitle, progress);
   }
 
   void CVideoInfoScanner::EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList)
