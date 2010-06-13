@@ -158,17 +158,15 @@ namespace VIDEO
      */
     long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::ScraperPtr &scraper, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool bCombined=false, bool bRefresh=false);
 
-    /*! \brief Add an item to the database and retrieve any artwork associated with it.
+    /*! \brief Retrieve any artwork associated with an item
      \param pItem item to add to the database.
      \param content content type of the item.
      \param movieDetails tag information to be added - may be modified.
-     \param idShow database id of the tvshow if we're adding an episode, -1 indicates it's not an episode.
      \param bApplyToDir whether we should apply any thumbs to a folder.  Defaults to false.
      \param bRefresh whether we're refreshing information so should refetch artwork.  Defaults to false.
      \param pDialog progress dialog to update during processing.  Ddefaults to NULL.
-     \return database id of the added item, or -1 on failure. 
      */
-    long AddMovieAndGetThumb(CFileItem *pItem, const CONTENT_TYPE &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir=false, bool bRefresh=false, CGUIDialogProgress* pDialog = NULL);
+    void GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, CVideoInfoTag &movieDetails, bool bApplyToDir=false, bool bRefresh=false, CGUIDialogProgress* pDialog = NULL);
 
     /*! \brief Extract episode and season numbers from a processed regexp
      \param reg Regular expression object with at least 2 matches
