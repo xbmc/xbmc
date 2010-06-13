@@ -289,7 +289,7 @@ void CDSPlayer::Process()
     CHECK_PLAYER_STATE
 
     // Handle Rewind
-    if ((m_currentRate < 1) || ( m_bDoNotUseDSFF && (m_currentRate > 1)))
+    if ((m_currentRate < 0) || ( m_bDoNotUseDSFF && (m_currentRate > 1)))
     {
       double clock = m_pClock.GetClock() - m_clockStart; // Time elapsed since the rate change
       //CLog::Log(LOGDEBUG, "Seeking time : %f", DS_TIME_TO_MSEC(clock));
