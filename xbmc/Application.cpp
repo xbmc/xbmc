@@ -4104,55 +4104,57 @@ void CApplication::UpdateFileState()
     m_progressTrackingItem->Reset();
   }
   else
-  if (IsPlayingVideo() || IsPlayingAudio())
   {
-    if (m_progressTrackingItem->m_strPath == "")
+    if (IsPlayingVideo() || IsPlayingAudio())
     {
-      // Init some stuff
-      *m_progressTrackingItem = CurrentFileItem();
-      m_progressTrackingPlayCountUpdate = false;
-    }
-
-    if ((m_progressTrackingItem->IsAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
-        GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
-        (m_progressTrackingItem->IsVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
-        GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
-    {
-      m_progressTrackingPlayCountUpdate = true;
-    }
-
-    if (m_progressTrackingItem->IsVideo())
-    {
-      if ((m_progressTrackingItem->IsDVDImage() ||
-           m_progressTrackingItem->IsDVDFile()    ) &&
-          m_pPlayer->GetTotalTime() > 15*60)
-
+      if (m_progressTrackingItem->m_strPath == "")
       {
-        m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.Reset();
-        m_pPlayer->GetStreamDetails(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails);
+        // Init some stuff
+        *m_progressTrackingItem = CurrentFileItem();
+        m_progressTrackingPlayCountUpdate = false;
       }
-      // Update bookmark for save
-      m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
-      m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
-      m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
 
-      if (g_advancedSettings.m_videoIgnoreAtEnd > 0 &&
-          GetTotalTime() - GetTime() < g_advancedSettings.m_videoIgnoreAtEnd)
+      if ((m_progressTrackingItem->IsAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
+          GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
+          (m_progressTrackingItem->IsVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
+          GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
       {
-        // Delete the bookmark
-        m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
+        m_progressTrackingPlayCountUpdate = true;
       }
-      else
-      if (GetTime() > g_advancedSettings.m_videoIgnoreAtStart)
+
+      if (m_progressTrackingItem->IsVideo())
       {
-        // Update the bookmark
-        m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
-        m_progressTrackingVideoResumeBookmark.totalTimeInSeconds = GetTotalTime();
-      }
-      else
-      {
-        // Do nothing
-        m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
+        if ((m_progressTrackingItem->IsDVDImage() ||
+             m_progressTrackingItem->IsDVDFile()    ) &&
+            m_pPlayer->GetTotalTime() > 15*60)
+
+        {
+          m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.Reset();
+          m_pPlayer->GetStreamDetails(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails);
+        }
+        // Update bookmark for save
+        m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+        m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
+        m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
+
+        if (g_advancedSettings.m_videoIgnoreAtEnd > 0 &&
+            GetTotalTime() - GetTime() < g_advancedSettings.m_videoIgnoreAtEnd)
+        {
+          // Delete the bookmark
+          m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
+        }
+        else
+        if (GetTime() > g_advancedSettings.m_videoIgnoreAtStart)
+        {
+          // Update the bookmark
+          m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
+          m_progressTrackingVideoResumeBookmark.totalTimeInSeconds = GetTotalTime();
+        }
+        else
+        {
+          // Do nothing
+          m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
+        }
       }
     }
   }
