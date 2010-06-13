@@ -353,7 +353,6 @@ namespace VIDEO
     // needed to ensure the movie count etc is cached
     for (int i=LIBRARY_HAS_VIDEO;i<LIBRARY_HAS_MUSICVIDEOS+1;++i)
       g_infoManager.GetBool(i);
-    //m_database.BeginTransaction();
 
     bool FoundSomeInfo = false;
     for (int i = 0; i < (int)items.Size(); ++i)
@@ -391,10 +390,14 @@ namespace VIDEO
       else
       {
         CLog::Log(LOGERROR, "VideoInfoScanner: Unknown content type %d (%s)", info2->Content(), pItem->m_strPath.c_str());
-        return false;
+        FoundSomeInfo = false;
+        break;
       }
       if (ret == INFO_CANCELLED || ret == INFO_ERROR)
-        return false;
+      {
+        FoundSomeInfo = false;
+        break;
+      }
       if (ret == INFO_ADDED || ret == INFO_HAVE_ALREADY || ret == INFO_SCAN_AGAIN)
         FoundSomeInfo = true;
       if (ret == INFO_SCAN_AGAIN)
@@ -406,7 +409,6 @@ namespace VIDEO
     if(pDlgProgress)
       pDlgProgress->ShowProgressBar(false);
 
-    //m_database.CommitTransaction();
     g_infoManager.ResetPersistentCache();
     m_database.Close();
     return FoundSomeInfo;
@@ -452,22 +454,10 @@ namespace VIDEO
         }
         CIMDB imdb(info2);
         if (!imdb.GetEpisodeList(url, episodes))
-        {
-          if (pDlgProgress)
-            pDlgProgress->Close();
-          //m_database.RollbackTransaction();
-          m_database.Close();
           return INFO_ERROR;
-        }
       }
       if (m_bStop || (pDlgProgress && pDlgProgress->IsCanceled()))
-      {
-        if (pDlgProgress)
-          pDlgProgress->Close();
-        //m_database.RollbackTransaction();
-        m_database.Close();
         return INFO_CANCELLED;
-      }
       if (m_pObserver)
         m_pObserver->OnDirectoryChanged(pItem->m_strPath);
 
@@ -478,10 +468,7 @@ namespace VIDEO
     }
 
     if (ProgressCancelled(pDlgProgress, pItem->m_bIsFolder ? 20353 : 20361, pItem->GetLabel()))
-    {
-      m_database.Close();
       return INFO_CANCELLED;
-    }
 
     CNfoFile::NFOResult result=CNfoFile::NO_NFO;
     CScraperUrl scrUrl;
@@ -561,10 +548,7 @@ namespace VIDEO
       return INFO_NOT_NEEDED;
 
     if (ProgressCancelled(pDlgProgress, 198, pItem->GetLabel()))
-    {
-      m_database.Close();
       return INFO_CANCELLED;
-    }
 
     if (m_database.HasMovieInfo(pItem->m_strPath))
       return INFO_HAVE_ALREADY;
@@ -616,10 +600,7 @@ namespace VIDEO
       return INFO_NOT_NEEDED;
 
     if (ProgressCancelled(pDlgProgress, 20394, pItem->GetLabel()))
-    {
-      m_database.Close();
       return INFO_CANCELLED;
-    }
 
     if (m_database.HasMusicVideoInfo(pItem->m_strPath))
       return INFO_HAVE_ALREADY;
@@ -1100,7 +1081,6 @@ namespace VIDEO
 
     int iMax = files.size();
     int iCurr = 1;
-    m_database.Open();
     for (EPISODES::iterator file = files.begin(); file != files.end(); ++file)
     {
       m_nfoReader.Close();
@@ -1117,13 +1097,7 @@ namespace VIDEO
         m_pObserver->OnSetCurrentProgress(iCurr++, iMax);
       }
       if ((pDlgProgress && pDlgProgress->IsCanceled()) || m_bStop)
-      {
-        if (pDlgProgress)
-          pDlgProgress->Close();
-        //m_database.RollbackTransaction();
-        m_database.Close();
         return INFO_CANCELLED;
-      }
 
       CVideoInfoTag episodeDetails;
       if (m_database.GetEpisodeId(file->strPath, file->iEpisode, file->iSeason) > -1)
@@ -1188,10 +1162,7 @@ namespace VIDEO
       {
         CIMDB imdb(scraper);
         if (!imdb.GetEpisodeDetails(guide->cScraperUrl, episodeDetails, pDlgProgress))
-        {
-          m_database.Close();
           return INFO_NOT_FOUND; // TODO: should we just skip to the next episode?
-        }
         episodeDetails.m_iSeason = guide->key.first;
         episodeDetails.m_iEpisode = guide->key.second;
         if (m_pObserver)
@@ -1209,7 +1180,6 @@ namespace VIDEO
     }
     if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
       FetchSeasonThumbs(idShow);
-    m_database.Close();
     return INFO_ADDED;
   }
 
@@ -1560,11 +1530,7 @@ namespace VIDEO
       progress->SetLine(0, line1);
       progress->SetLine(2, "");
       progress->Progress();
-      if (progress->IsCanceled())
-      {
-        progress->Close();
-        return true;
-      }
+      return progress->IsCanceled();
     }
     return m_bStop;
   }
