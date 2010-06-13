@@ -145,18 +145,16 @@ namespace VIDEO
      */
     int FindVideo(const CStdString &videoName, const ADDON::ScraperPtr &scraper, CScraperUrl &url, CGUIDialogProgress *progress);
 
-    /*! \brief Retrieve detailed information for an item from an online source and add it to the database.
+    /*! \brief Retrieve detailed information for an item from an online source, optionally supplemented with local data
      TODO: sort out some better return codes.
      \param pItem item to retrieve online details for.
      \param url URL to use to retrieve online details.
      \param scraper Scraper that handles parsing the online data.
-     \param bUseDirNames whether we are using directory names to lookup the information.  Defaults to false.
-     \param pDialog progress dialog to update and check for cancellation during processing.  Ddefaults to NULL.
-     \param bCombined whether the online information should supplement or replace the current information.  Defaults to false.
-     \param bRefresh whether we're refreshing information so should refetch artwork etc.  Defaults to false.
-     \return database id of the added item, or -1 on error, cancellation, or no details found.
+     \param nfoFile if set, we override the online data with the locally supplied data. Defaults to NULL.
+     \param pDialog progress dialog to update and check for cancellation during processing. Defaults to NULL.
+     \return true if information is found, false if an error occurred, the lookup was cancelled, or no information was found.
      */
-    long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::ScraperPtr &scraper, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool bCombined=false, bool bRefresh=false);
+    bool GetDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::ScraperPtr &scraper, CNfoFile *nfoFile=NULL, CGUIDialogProgress* pDialog=NULL);
 
     /*! \brief Retrieve any artwork associated with an item
      \param pItem item to add to the database.

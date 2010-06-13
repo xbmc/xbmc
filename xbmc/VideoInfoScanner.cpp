@@ -525,7 +525,13 @@ namespace VIDEO
     if (m_pObserver && !url.strTitle.IsEmpty())
       m_pObserver->OnSetTitle(url.strTitle);
 
-    long lResult=GetIMDBDetails(pItem.get(), url, info2, false, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
+    long lResult=-1;
+    if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
+    {
+      if ((lResult = AddMovie(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag())) < 0)
+        return INFO_ERROR;
+      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), false, ignoreNfo);
+    }
     if (!bRefresh)
     {
       // fetch episode guide
@@ -593,9 +599,15 @@ namespace VIDEO
     if (m_pObserver && !url.strTitle.IsEmpty())
       m_pObserver->OnSetTitle(url.strTitle);
 
+    if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
+    {
+      if (AddMovie(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag()) < 0)
+        return INFO_ERROR;
+      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, ignoreNfo);
+      return INFO_ADDED;
+    }
     // TODO: This is not strictly correct as we could fail to download information here or error, or be cancelled
-    GetIMDBDetails(pItem.get(), url, info2, bDirNames, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
-    return INFO_ADDED;
+    return INFO_NOT_FOUND;
   }
 
   INFO_RET CVideoInfoScanner::RetreiveInfoForMusicVideo(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
@@ -642,9 +654,15 @@ namespace VIDEO
     if (m_pObserver && !url.strTitle.IsEmpty())
       m_pObserver->OnSetTitle(url.strTitle);
 
+    if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
+    {
+      if (AddMovie(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag()) < 0)
+        return INFO_ERROR;
+      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, ignoreNfo);
+      return INFO_ADDED;
+    }
     // TODO: This is not strictly correct as we could fail to download information here or error, or be cancelled
-    GetIMDBDetails(pItem.get(), url, info2, bDirNames, pDlgProgress, result == CNfoFile::COMBINED_NFO, ignoreNfo);
-    return INFO_ADDED;
+    return INFO_NOT_FOUND;
   }
 
   void CVideoInfoScanner::EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList)
@@ -1313,7 +1331,7 @@ namespace VIDEO
     return nfoFile;
   }
 
-  long CVideoInfoScanner::GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ScraperPtr& scraper, bool bUseDirNames, CGUIDialogProgress* pDialog /* = NULL */, bool bCombined, bool bRefresh)
+  bool CVideoInfoScanner::GetDetails(CFileItem *pItem, CScraperUrl &url, const ScraperPtr& scraper, CNfoFile *nfoFile, CGUIDialogProgress* pDialog /* = NULL */)
   {
     CVideoInfoTag movieDetails;
     movieDetails.m_strFileNameAndPath = pItem->m_strPath;
@@ -1321,8 +1339,8 @@ namespace VIDEO
     CIMDB imdb(scraper);
     if ( imdb.GetDetails(url, movieDetails, pDialog) )
     {
-      if (bCombined)
-        m_nfoReader.GetDetails(movieDetails);
+      if (nfoFile)
+        nfoFile->GetDetails(movieDetails);
 
       if (m_pObserver && url.strTitle.IsEmpty())
         m_pObserver->OnSetTitle(movieDetails.m_strTitle);
@@ -1333,12 +1351,10 @@ namespace VIDEO
         pDialog->Progress();
       }
 
-      long id = AddMovie(pItem, scraper->Content(), movieDetails);
-      if (id >= 0)
-        GetArtwork(pItem, scraper->Content(), movieDetails, bUseDirNames, bRefresh);
-      return id;
+      *pItem->GetVideoInfoTag() = movieDetails;
+      return true;
     }
-    return -1; // no info found, or cancelled
+    return false; // no info found, or cancelled
   }
 
   void CVideoInfoScanner::ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb)
