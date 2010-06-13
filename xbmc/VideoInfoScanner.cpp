@@ -385,9 +385,9 @@ namespace VIDEO
       if (info2->Content() == CONTENT_TVSHOWS)
         ret = RetreiveInfoForTvShow(pItem, bDirNames, info2, bRefresh, pURL, pDlgProgress, ignoreNfo);
       else if (info2->Content() == CONTENT_MOVIES)
-        ret = RetreiveInfoForMovie(pItem, bDirNames, info2, bRefresh, pURL, pDlgProgress, ignoreNfo);
+        ret = RetreiveInfoForMovie(pItem, bDirNames, info2, !ignoreNfo, pURL, pDlgProgress);
       else if (info2->Content() == CONTENT_MUSICVIDEOS)
-        ret = RetreiveInfoForMusicVideo(pItem, bDirNames, info2, bRefresh, pURL, pDlgProgress, ignoreNfo);
+        ret = RetreiveInfoForMusicVideo(pItem, bDirNames, info2, !ignoreNfo, pURL, pDlgProgress);
       else
       {
         CLog::Log(LOGERROR, "VideoInfoScanner: Unknown content type %d (%s)", info2->Content(), pItem->m_strPath.c_str());
@@ -555,7 +555,7 @@ namespace VIDEO
     return INFO_ADDED;
   }
 
-  INFO_RET CVideoInfoScanner::RetreiveInfoForMovie(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
+  INFO_RET CVideoInfoScanner::RetreiveInfoForMovie(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
   {
     if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() || pItem->IsPlayList())
       return INFO_NOT_NEEDED;
@@ -572,7 +572,7 @@ namespace VIDEO
     CNfoFile::NFOResult result=CNfoFile::NO_NFO;
     CScraperUrl scrUrl;
     // handle .nfo files
-    if (!ignoreNfo)
+    if (useLocal)
       result = CheckForNFOFile(pItem.get(), bDirNames, info2, scrUrl);
     if (result == CNfoFile::FULL_NFO)
     {
@@ -583,7 +583,7 @@ namespace VIDEO
 
       if (AddMovie(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag()) < 0)
         return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, !bRefresh, pDlgProgress);
+      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, true, pDlgProgress);
       return INFO_ADDED;
     }
     if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
@@ -603,14 +603,14 @@ namespace VIDEO
     {
       if (AddMovie(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag()) < 0)
         return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, !ignoreNfo);
+      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, useLocal);
       return INFO_ADDED;
     }
     // TODO: This is not strictly correct as we could fail to download information here or error, or be cancelled
     return INFO_NOT_FOUND;
   }
 
-  INFO_RET CVideoInfoScanner::RetreiveInfoForMusicVideo(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress, bool ignoreNfo)
+  INFO_RET CVideoInfoScanner::RetreiveInfoForMusicVideo(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
   {
     if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() || pItem->IsPlayList())
       return INFO_NOT_NEEDED;
@@ -627,7 +627,7 @@ namespace VIDEO
     CNfoFile::NFOResult result=CNfoFile::NO_NFO;
     CScraperUrl scrUrl;
     // handle .nfo files
-    if (!ignoreNfo)
+    if (useLocal)
       result = CheckForNFOFile(pItem.get(), bDirNames, info2, scrUrl);
     if (result == CNfoFile::FULL_NFO)
     {
@@ -638,7 +638,7 @@ namespace VIDEO
 
       if (AddMovie(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag()) < 0)
         return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, !bRefresh, pDlgProgress);
+      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, true, pDlgProgress);
       return INFO_ADDED;
     }
     if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
@@ -658,7 +658,7 @@ namespace VIDEO
     {
       if (AddMovie(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag()) < 0)
         return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, !ignoreNfo);
+      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, useLocal);
       return INFO_ADDED;
     }
     // TODO: This is not strictly correct as we could fail to download information here or error, or be cancelled
