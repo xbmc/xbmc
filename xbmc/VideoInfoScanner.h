@@ -161,10 +161,10 @@ namespace VIDEO
      \param content content type of the item.
      \param movieDetails tag information to be added - may be modified.
      \param bApplyToDir whether we should apply any thumbs to a folder.  Defaults to false.
-     \param bRefresh whether we're refreshing information so should refetch artwork.  Defaults to false.
-     \param pDialog progress dialog to update during processing.  Ddefaults to NULL.
+     \param useLocal whether we should use local thumbs. Defaults to true.
+     \param pDialog progress dialog to update during processing. Defaults to NULL.
      */
-    void GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, CVideoInfoTag &movieDetails, bool bApplyToDir=false, bool bRefresh=false, CGUIDialogProgress* pDialog = NULL);
+    void GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, CVideoInfoTag &movieDetails, bool bApplyToDir=false, bool useLocal=true, CGUIDialogProgress* pDialog = NULL);
 
     /*! \brief Extract episode and season numbers from a processed regexp
      \param reg Regular expression object with at least 2 matches
@@ -223,6 +223,12 @@ namespace VIDEO
     bool ProcessItemByDate(CFileItemPtr item, EPISODES& eipsodeList, CStdString regexp);
 
     CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false) const;
+
+    /*! \brief Retrieve the parent folder of an item, accounting for stacks and files in rars.
+     \param item a media item.
+     \return the folder that contains the item.
+     */
+    CStdString GetParentDir(const CFileItem &item) const;
 
     IVideoInfoScannerObserver* m_pObserver;
     int m_currentItem;

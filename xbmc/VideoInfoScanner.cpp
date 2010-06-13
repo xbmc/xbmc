@@ -505,7 +505,7 @@ namespace VIDEO
       long lResult = AddMovie(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag());
       if (lResult < 0)
         return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, bRefresh, pDlgProgress);
+      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, !bRefresh, pDlgProgress);
       if (bRefresh && g_guiSettings.GetBool("videolibrary.seasonthumbs"))
         FetchSeasonThumbs(lResult);
       if (!bRefresh)
@@ -530,7 +530,7 @@ namespace VIDEO
     {
       if ((lResult = AddMovie(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag())) < 0)
         return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), false, ignoreNfo);
+      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), false, !ignoreNfo);
     }
     if (!bRefresh)
     {
@@ -583,7 +583,7 @@ namespace VIDEO
 
       if (AddMovie(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag()) < 0)
         return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, bRefresh, pDlgProgress);
+      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, !bRefresh, pDlgProgress);
       return INFO_ADDED;
     }
     if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
@@ -603,7 +603,7 @@ namespace VIDEO
     {
       if (AddMovie(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag()) < 0)
         return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, ignoreNfo);
+      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, !ignoreNfo);
       return INFO_ADDED;
     }
     // TODO: This is not strictly correct as we could fail to download information here or error, or be cancelled
@@ -638,7 +638,7 @@ namespace VIDEO
 
       if (AddMovie(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag()) < 0)
         return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, bRefresh, pDlgProgress);
+      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, !bRefresh, pDlgProgress);
       return INFO_ADDED;
     }
     if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
@@ -658,7 +658,7 @@ namespace VIDEO
     {
       if (AddMovie(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag()) < 0)
         return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, ignoreNfo);
+      GetArtwork(pItem.get(), info2->Content(), *pItem->GetVideoInfoTag(), bDirNames, !ignoreNfo);
       return INFO_ADDED;
     }
     // TODO: This is not strictly correct as we could fail to download information here or error, or be cancelled
@@ -1009,72 +1009,62 @@ namespace VIDEO
     return lResult;
   }
 
-  void CVideoInfoScanner::GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, CVideoInfoTag &movieDetails, bool bApplyToDir, bool bRefresh, CGUIDialogProgress* pDialog /* == NULL */)
+  void CVideoInfoScanner::GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, CVideoInfoTag &movieDetails, bool bApplyToDir, bool useLocal, CGUIDialogProgress* pDialog /* == NULL */)
   {
     // get & save fanart image
-    if (!pItem->CacheLocalFanart() || bRefresh)
+    if (!useLocal || !pItem->CacheLocalFanart())
     {
       if (movieDetails.m_fanart.GetNumFanarts())
         DownloadImage(movieDetails.m_fanart.GetImageURL(), pItem->GetCachedFanart(), false, pDialog);
     }
 
-    CStdString strUserThumb = pItem->GetUserVideoThumb();
-    if (bApplyToDir && (strUserThumb.IsEmpty() || bRefresh))
-    {
-      CStdString strParent;
-      CUtil::GetParentPath(pItem->m_strPath, strParent);
-      CFileItem item(*pItem);
-      item.m_strPath = strParent;
-      item.m_bIsFolder = true;
-      strUserThumb = item.GetUserVideoThumb();
-    }
-
-    CStdString strThumb = pItem->GetCachedVideoThumb();
-    if (content == CONTENT_TVSHOWS && !pItem->m_bIsFolder && CFile::Exists(strThumb))
-    {
+    // get & save thumb image
+    CStdString cachedThumb = pItem->GetCachedVideoThumb();
+    if (content == CONTENT_TVSHOWS && !pItem->m_bIsFolder && CFile::Exists(cachedThumb))
+    { // have an episode (??? and also a normal "cached" thumb that we're going to override now???)
       movieDetails.m_strFileNameAndPath = pItem->m_strPath;
       CFileItem item(movieDetails);
-      strThumb = item.GetCachedEpisodeThumb();
+      cachedThumb = item.GetCachedEpisodeThumb();
     }
 
-    // figure out the directory path
-    CStdString strCheck=pItem->m_strPath;
-    CStdString strDirectory;
-    if (pItem->IsStack())
-      strCheck = CStackDirectory::GetFirstStackedFile(pItem->m_strPath);
-
-    CUtil::GetDirectory(strCheck, strDirectory);
-    if (CUtil::IsInRAR(strCheck))
+    CStdString localThumb;
+    if (useLocal)
     {
-      CStdString strPath=strDirectory;
-      CUtil::GetParentPath(strPath, strDirectory);
-    }
-    if (pItem->IsStack())
-    {
-      strCheck = strDirectory;
-      CUtil::RemoveSlashAtEnd(strCheck);
-      if (CUtil::GetFileName(strCheck).size() == 3 && CUtil::GetFileName(strCheck).Left(2).Equals("cd"))
-        CUtil::GetDirectory(strCheck, strDirectory);
-    }
-
-    CStdString strImage = CScraperUrl::GetThumbURL(movieDetails.m_strPictureURL.GetFirstThumb());
-    if (strImage.size() > 0 && (strUserThumb.IsEmpty() || bRefresh))
-    {
-      if (strImage.Find("http://") < 0 &&
-          strImage.Find("/") < 0 &&
-          strImage.Find("\\") < 0)
+      localThumb = pItem->GetUserVideoThumb();
+      if (bApplyToDir && localThumb.IsEmpty())
       {
-        CStdString strPath;
-        CUtil::GetDirectory(pItem->m_strPath, strPath);
-        strImage = CUtil::AddFileToFolder(strPath, strImage);
+        CStdString strParent;
+        CUtil::GetParentPath(pItem->m_strPath, strParent);
+        CFileItem item(*pItem);
+        item.m_strPath = strParent;
+        item.m_bIsFolder = true;
+        localThumb = item.GetUserVideoThumb();
       }
-      DownloadImage(strImage, strThumb, true, pDialog, bApplyToDir ? strDirectory : "");
     }
-    else
-      CPicture::CacheThumb(strUserThumb, strThumb);
 
+    // parent folder to apply the thumb to and to search for local actor thumbs
+    CStdString parentDir = GetParentDir(*pItem);
+
+    if (!localThumb.IsEmpty())
+      CPicture::CacheThumb(localThumb, cachedThumb);
+    else
+    { // see if we have an online image to use
+      CStdString onlineThumb = CScraperUrl::GetThumbURL(movieDetails.m_strPictureURL.GetFirstThumb());
+      if (!onlineThumb.IsEmpty())
+      {
+        if (onlineThumb.Find("http://") < 0 &&
+            onlineThumb.Find("/") < 0 &&
+            onlineThumb.Find("\\") < 0)
+        {
+          CStdString strPath;
+          CUtil::GetDirectory(pItem->m_strPath, strPath);
+          onlineThumb = CUtil::AddFileToFolder(strPath, onlineThumb);
+        }
+        DownloadImage(onlineThumb, cachedThumb, true, pDialog, bApplyToDir ? parentDir : "");
+      }
+    }
     if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
-      FetchActorThumbs(movieDetails.m_cast, strDirectory);
+      FetchActorThumbs(movieDetails.m_cast, parentDir);
   }
 
   void CVideoInfoScanner::DownloadImage(const CStdString &url, const CStdString &destination, bool asThumb /*= true */, CGUIDialogProgress *progress /*= NULL */, const CStdString &directory /*= "" */)
@@ -1595,6 +1585,29 @@ namespace VIDEO
       return 1;  // found a movie
     }
     return 0;    // didn't find anything
+  }
+
+  CStdString CVideoInfoScanner::GetParentDir(const CFileItem &item) const
+  {
+    CStdString strCheck = item.m_strPath;
+    if (item.IsStack())
+      strCheck = CStackDirectory::GetFirstStackedFile(item.m_strPath);
+
+    CStdString strDirectory;
+    CUtil::GetDirectory(strCheck, strDirectory);
+    if (CUtil::IsInRAR(strCheck))
+    {
+      CStdString strPath=strDirectory;
+      CUtil::GetParentPath(strPath, strDirectory);
+    }
+    if (item.IsStack())
+    {
+      strCheck = strDirectory;
+      CUtil::RemoveSlashAtEnd(strCheck);
+      if (CUtil::GetFileName(strCheck).size() == 3 && CUtil::GetFileName(strCheck).Left(2).Equals("cd"))
+        CUtil::GetDirectory(strCheck, strDirectory);
+    }
+    return strDirectory;
   }
 
 }
