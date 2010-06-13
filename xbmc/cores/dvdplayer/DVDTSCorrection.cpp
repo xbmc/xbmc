@@ -89,6 +89,11 @@ void CPullupCorrection::Add(double pts)
       m_haspattern = false;
       m_patternlength = 0;
       CLog::Log(LOGDEBUG, "CPullupCorrection: pattern lost");
+
+      //if the ringbuffer is full and the pattern is lost,
+      //flush it so it can detect the pattern faster
+      if (m_ringfill == DIFFRINGSIZE && pattern.size() == 0)
+        Flush();
     }
     return;
   }
