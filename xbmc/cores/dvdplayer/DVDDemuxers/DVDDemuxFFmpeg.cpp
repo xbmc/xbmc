@@ -1072,6 +1072,19 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 
     if( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
     {
+      if (m_streams[iId]->codec == CODEC_ID_PROBE)
+      {
+        // fix MPEG-1/MPEG-2 video stream probe returning CODEC_ID_PROBE for still frames.
+        // ffmpeg issue 1871, regression from ffmpeg r22831.
+        if ((pStream->id & 0xF0) == 0xE0)
+        {
+          m_streams[iId]->codec = CODEC_ID_MPEG2VIDEO;
+          m_streams[iId]->codec_fourcc = MKTAG('M','P','2','V');
+          m_streams[iId]->iPhysicalId = pStream->id & 0xF0;
+          CLog::Log(LOGERROR, "%s - CODEC_ID_PROBE detected, forcing CODEC_ID_MPEG2VIDEO", __FUNCTION__);
+        }
+      }
+      
       // this stuff is really only valid for dvd's.
       // this is so that the physicalid matches the
       // id's reported from libdvdnav
