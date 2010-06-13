@@ -263,6 +263,7 @@
 
 #include "MediaManager.h"
 #include "utils/JobManager.h"
+#include "utils/SaveFileStateJob.h"
 
 #ifdef _LINUX
 #include "XHandle.h"
@@ -311,6 +312,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_bScreenSave = false;
   m_dpms = NULL;
   m_dpmsIsActive = false;
+  m_dpmsIsManual = false;
   m_iScreenSaveLock = 0;
   m_bInitializing = true;
   m_eForcedNextPlayer = EPC_NONE;
@@ -1993,6 +1995,8 @@ void CApplication::NewFrame()
 
 void CApplication::Render()
 {
+  if (m_dpmsIsActive)
+    return;
   if (!m_AppActive && !m_bStop && (!IsPlayingVideo() || IsPaused()))
   {
     Sleep(1);
@@ -4039,84 +4043,10 @@ bool CApplication::IsPlayingFullScreenVideo() const
 
 void CApplication::SaveFileState()
 {
-  CStdString progressTrackingFile = m_progressTrackingItem->m_strPath;
-
-  if (progressTrackingFile != "")
-  {
-    if (m_progressTrackingItem->IsVideo())
-    {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for video item %s", __FUNCTION__, progressTrackingFile.c_str());
-
-      CVideoDatabase videodatabase;
-      if (videodatabase.Open())
-      {
-        // No resume & watched status for livetv
-        if (!m_progressTrackingItem->IsLiveTV())
-        {
-          if (m_progressTrackingPlayCountUpdate)
-          {
-            CLog::Log(LOGDEBUG, "%s - Marking video item %s as watched", __FUNCTION__, progressTrackingFile.c_str());
-
-            // consider this item as played
-            videodatabase.IncrementPlayCount(*m_progressTrackingItem);
-            CUtil::DeleteVideoDatabaseDirectoryCache();
-            CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
-            g_windowManager.SendMessage(message);
-          }
-
-          if (m_progressTrackingVideoResumeBookmark.timeInSeconds < 0.0f)
-          {
-            videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
-          }
-          else if (m_progressTrackingVideoResumeBookmark.timeInSeconds > 0.0f)
-          {
-            videodatabase.AddBookMarkToFile(progressTrackingFile, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
-          }
-        }
-
-        if (g_settings.m_currentVideoSettings != g_settings.m_defaultVideoSettings)
-        {
-          videodatabase.SetVideoSettings(progressTrackingFile, g_settings.m_currentVideoSettings);
-        }
-
-        if ((m_progressTrackingItem->IsDVDImage() ||
-             m_progressTrackingItem->IsDVDFile()    ) &&
-             m_progressTrackingItem->HasVideoInfoTag() &&
-             m_progressTrackingItem->GetVideoInfoTag()->HasStreamDetails())
-        {
-          videodatabase.SetStreamDetailsForFile(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails,progressTrackingFile);
-          CUtil::DeleteVideoDatabaseDirectoryCache();
-          CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
-          g_windowManager.SendMessage(message);
-        }
-
-        videodatabase.Close();
-      }
-    }
-
-    if (m_progressTrackingItem->IsAudio())
-    {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for audio item %s", __FUNCTION__, progressTrackingFile.c_str());
-
-      if (m_progressTrackingPlayCountUpdate)
-      {
-        // Can't write to the musicdatabase while scanning for music info
-        CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-        if (dialog && !dialog->IsDialogRunning())
-        {
-          // consider this item as played
-          CLog::Log(LOGDEBUG, "%s - Marking audio item %s as listened", __FUNCTION__, progressTrackingFile.c_str());
-
-          CMusicDatabase musicdatabase;
-          if (musicdatabase.Open())
-          {
-            musicdatabase.IncrTop100CounterByFileName(progressTrackingFile);
-            musicdatabase.Close();
-          }
-        }
-      }
-    }
-  }
+  CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
+      m_progressTrackingVideoResumeBookmark,
+      m_progressTrackingPlayCountUpdate);
+  CJobManager::GetInstance().AddJob(job, NULL);
 }
 
 void CApplication::UpdateFileState()
@@ -4130,55 +4060,57 @@ void CApplication::UpdateFileState()
     m_progressTrackingItem->Reset();
   }
   else
-  if (IsPlayingVideo() || IsPlayingAudio())
   {
-    if (m_progressTrackingItem->m_strPath == "")
+    if (IsPlayingVideo() || IsPlayingAudio())
     {
-      // Init some stuff
-      *m_progressTrackingItem = CurrentFileItem();
-      m_progressTrackingPlayCountUpdate = false;
-    }
-
-    if ((m_progressTrackingItem->IsAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
-        GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
-        (m_progressTrackingItem->IsVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
-        GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
-    {
-      m_progressTrackingPlayCountUpdate = true;
-    }
-
-    if (m_progressTrackingItem->IsVideo())
-    {
-      if ((m_progressTrackingItem->IsDVDImage() ||
-           m_progressTrackingItem->IsDVDFile()    ) &&
-          m_pPlayer->GetTotalTime() > 15*60)
-
+      if (m_progressTrackingItem->m_strPath == "")
       {
-        m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.Reset();
-        m_pPlayer->GetStreamDetails(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails);
+        // Init some stuff
+        *m_progressTrackingItem = CurrentFileItem();
+        m_progressTrackingPlayCountUpdate = false;
       }
-      // Update bookmark for save
-      m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
-      m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
-      m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
 
-      if (g_advancedSettings.m_videoIgnoreAtEnd > 0 &&
-          GetTotalTime() - GetTime() < g_advancedSettings.m_videoIgnoreAtEnd)
+      if ((m_progressTrackingItem->IsAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
+          GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
+          (m_progressTrackingItem->IsVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
+          GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
       {
-        // Delete the bookmark
-        m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
+        m_progressTrackingPlayCountUpdate = true;
       }
-      else
-      if (GetTime() > g_advancedSettings.m_videoIgnoreAtStart)
+
+      if (m_progressTrackingItem->IsVideo())
       {
-        // Update the bookmark
-        m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
-        m_progressTrackingVideoResumeBookmark.totalTimeInSeconds = GetTotalTime();
-      }
-      else
-      {
-        // Do nothing
-        m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
+        if ((m_progressTrackingItem->IsDVDImage() ||
+             m_progressTrackingItem->IsDVDFile()    ) &&
+            m_pPlayer->GetTotalTime() > 15*60)
+
+        {
+          m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.Reset();
+          m_pPlayer->GetStreamDetails(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails);
+        }
+        // Update bookmark for save
+        m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+        m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
+        m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
+
+        if (g_advancedSettings.m_videoIgnoreAtEnd > 0 &&
+            GetTotalTime() - GetTime() < g_advancedSettings.m_videoIgnoreAtEnd)
+        {
+          // Delete the bookmark
+          m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
+        }
+        else
+        if (GetTime() > g_advancedSettings.m_videoIgnoreAtStart)
+        {
+          // Update the bookmark
+          m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
+          m_progressTrackingVideoResumeBookmark.totalTimeInSeconds = GetTotalTime();
+        }
+        else
+        {
+          // Do nothing
+          m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
+        }
       }
     }
   }
@@ -4224,6 +4156,29 @@ void CApplication::ResetScreenSaverTimer()
   m_screenSaverTimer.StartZero();
 }
 
+bool CApplication::ToggleDPMS(bool manual)
+{
+  if (manual || (m_dpmsIsManual == manual))
+  {
+    if (m_dpmsIsActive)
+    {
+      m_dpmsIsActive = false;
+      m_dpmsIsManual = false;
+      return m_dpms->DisablePowerSaving();
+    }
+    else
+    {
+      if (m_dpms->EnablePowerSaving(m_dpms->GetSupportedModes()[0]));
+      {
+        m_dpmsIsActive = true;
+        m_dpmsIsManual = manual;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 bool CApplication::WakeUpScreenSaverAndDPMS()
 {
 
@@ -4236,10 +4191,11 @@ bool CApplication::WakeUpScreenSaverAndDPMS()
   // First reset DPMS, if active
   if (m_dpmsIsActive)
   {
+    if (m_dpmsIsManual)
+      return false;
     // TODO: if screensaver lock is specified but screensaver is not active
     // (DPMS came first), activate screensaver now.
-    m_dpms->DisablePowerSaving();
-    m_dpmsIsActive = false;
+    ToggleDPMS(false);
     ResetScreenSaverTimer();
     return !m_bScreenSave || WakeUpScreenSaver();
   }
@@ -4328,8 +4284,7 @@ void CApplication::CheckScreenSaverAndDPMS()
   if (maybeDPMS
       && elapsed > g_guiSettings.GetInt("powermanagement.displaysoff") * 60)
   {
-    m_dpms->EnablePowerSaving(m_dpms->GetSupportedModes()[0]);
-    m_dpmsIsActive = true;
+    ToggleDPMS(false);
     WakeUpScreenSaver();
   }
   else if (maybeScreensaver

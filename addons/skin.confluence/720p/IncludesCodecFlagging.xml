@@ -32,7 +32,7 @@
 			<height>33</height>
 			<aspectratio>keep</aspectratio>
 			<texture>flagging/video/bluray.png</texture>
-			<visible>substring(ListItem.filename,bluray)</visible>
+			<visible>substring(ListItem.filename,bluray) + !Skin.HasSetting(HideFilenameFlagging)</visible>
 		</control>
 		<control type="image">
 			<description>HDDVD Image</description>
@@ -40,7 +40,7 @@
 			<height>33</height>
 			<aspectratio>keep</aspectratio>
 			<texture>flagging/video/hddvd.png</texture>
-			<visible>substring(ListItem.filename,hddvd)</visible>
+			<visible>substring(ListItem.filename,hddvd) + !Skin.HasSetting(HideFilenameFlagging)</visible>
 		</control>
 	</include>
 	<include name="VideoMPAAFlaggingConditions">

@@ -284,6 +284,7 @@ public:
   bool IsPresentFrame();
 
   void Minimize();
+  bool ToggleDPMS(bool manual);
 protected:
   void RenderScreenSaver();
   bool LoadSkin(const CStdString& skinID);
@@ -305,6 +306,7 @@ protected:
 
   DPMSSupport* m_dpms;
   bool m_dpmsIsActive;
+  bool m_dpmsIsManual;
 
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;

@@ -868,9 +868,9 @@ if test "x$use_vaapi" != "xno"; then
     fi
   else
     initial_val=$use_vaapi
-    AC_CHECK_LIB([va], main,, use_vaapi=no)
+    AC_CHECK_LIB([va], main, :, use_vaapi=no)
     if test "x$use_vaapi" != "xno"; then
-      AC_CHECK_LIB([va-glx], main,, use_vaapi=no, -lva)
+      AC_CHECK_LIB([va-glx], main, LIBS="-lva -lva-glx $LIBS", use_vaapi=no, -lva)
     fi
 
     if test "x$use_vaapi" = "xno"; then
