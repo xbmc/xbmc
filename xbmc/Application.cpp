@@ -1817,7 +1817,10 @@ void CApplication::RenderNoPresent()
   if (g_graphicsContext.IsFullScreenVideo())
   {
     if (m_bPresentFrame && IsPlaying() && !IsPaused())
+    {
+      ResetScreenSaver();
       g_renderManager.Present();
+    }
     else
       g_renderManager.RenderUpdate(true);
 
@@ -1827,7 +1830,6 @@ void CApplication::RenderNoPresent()
     overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
     if (overlay) overlay->Close(true);
 
-    ResetScreenSaver();
   }
 
   g_windowManager.Render();
