@@ -510,16 +510,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   if (!info)
     return false;
 
-  bool ignoreNfo(false);
-  CNfoFile::NFOResult nfoResult = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
-  if (nfoResult == CNfoFile::ERROR_NFO)
-    ignoreNfo = true;
-  else
-  if (nfoResult != CNfoFile::NO_NFO)
-  {
-    hasDetails = true;
-  }
-
   // Get the correct movie title
   CStdString movieName = item->GetMovieName(settings.parent_name);
 
@@ -527,6 +517,16 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   bool listNeedsUpdating(false);
   do
   {
+    bool ignoreNfo = false;
+    CNfoFile::NFOResult nfoResult = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
+    if (nfoResult == CNfoFile::ERROR_NFO)
+      ignoreNfo = true;
+    else
+    if (nfoResult != CNfoFile::NO_NFO)
+    {
+      hasDetails = true;
+    }
+
     if (needsRefresh)
     {
       bHasInfo = true;
@@ -538,10 +538,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
           ignoreNfo = true;
           scrUrl.Clear();
           info = info2;
-        }
-        else
-        {
-          ignoreNfo = false;
         }
       }
     }
