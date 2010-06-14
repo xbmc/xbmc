@@ -32,7 +32,7 @@
 			<height>33</height>
 			<aspectratio>keep</aspectratio>
 			<texture>flagging/video/bluray.png</texture>
-			<visible>substring(ListItem.filename,bluray) + !Skin.HasSetting(HideFilenameFlagging)</visible>
+			<visible>[substring(ListItem.FilenameAndPath,bluray) | substring(ListItem.FilenameAndPath,bdrip)] + !Skin.HasSetting(HideFilenameFlagging)</visible>
 		</control>
 		<control type="image">
 			<description>HDDVD Image</description>
@@ -40,7 +40,23 @@
 			<height>33</height>
 			<aspectratio>keep</aspectratio>
 			<texture>flagging/video/hddvd.png</texture>
-			<visible>substring(ListItem.filename,hddvd) + !Skin.HasSetting(HideFilenameFlagging)</visible>
+			<visible>substring(ListItem.FilenameAndPath,hddvd) + !Skin.HasSetting(HideFilenameFlagging)</visible>
+		</control>
+		<control type="image">
+			<description>DVD Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/video/dvd.png</texture>
+			<visible>[substring(ListItem.FilenameAndPath,dvd) + !substring(ListItem.FilenameAndPath,hddvd)] + !Skin.HasSetting(HideFilenameFlagging)</visible>
+		</control>
+		<control type="image">
+			<description>TV Types Image</description>
+			<width>90</width>
+			<height>33</height>
+			<aspectratio>keep</aspectratio>
+			<texture>flagging/video/TV.png</texture>
+			<visible>[substring(ListItem.FilenameAndPath,pdtv) | substring(ListItem.FilenameAndPath,hdtv) | substring(ListItem.FilenameAndPath,dsr)] + !Skin.HasSetting(HideFilenameFlagging)</visible>
 		</control>
 	</include>
 	<include name="VideoMPAAFlaggingConditions">

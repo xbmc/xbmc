@@ -153,11 +153,13 @@ IMAGES= \
 	flagging/video/avc1.png \
 	flagging/video/bluray.png \
 	flagging/video/divx.png \
+	flagging/video/dvd.png \
 	flagging/video/h264.png \
 	flagging/video/hddvd.png \
 	flagging/video/mpeg1video.png \
 	flagging/video/mpeg2video.png \
 	flagging/video/sd.png \
+	flagging/video/tv.png \
 	flagging/video/vc-1.png \
 	flagging/video/wvc1.png \
 	flagging/video/xvid.png \
