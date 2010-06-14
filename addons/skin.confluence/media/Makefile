@@ -325,13 +325,6 @@ IMAGES= \
 	VisOsdPanel.png \
 	VolumeIcon-Mute.png \
 	VolumeIcon.png \
-	weather.com/default/weather.png \
-	weather.com/loading/weather1.png \
-	weather.com/loading/weather2.png \
-	weather.com/loading/weather3.png \
-	weather.com/loading/weather4.png \
-	weather.com/loading/weather5.png \
-	weather.com/loading/weather6.png \
 	XBMC_Logo.png
 
 all: $(TARGET)
