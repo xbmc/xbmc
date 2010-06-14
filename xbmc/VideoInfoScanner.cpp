@@ -1203,12 +1203,6 @@ namespace VIDEO
         return GetnfoFile(&item2, bGrabAny);
       }
 
-      CStdString strPath;
-      CUtil::GetDirectory(item->m_strPath, strPath);
-      nfoFile = CUtil::AddFileToFolder(strPath, "movie.nfo");
-      if (CFile::Exists(nfoFile))
-        return nfoFile;
-
       // already an .nfo file?
       if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
         nfoFile = item->m_strPath;
@@ -1250,6 +1244,11 @@ namespace VIDEO
           CUtil::AddFileToFolder(strPath, CUtil::GetFileName(item->m_strPath),item2.m_strPath);
           return GetnfoFile(&item2, bGrabAny);
         }
+
+        // try movie.nfo
+        nfoFile = CUtil::AddFileToFolder(strPath, "movie.nfo");
+        if (CFile::Exists(nfoFile))
+          return nfoFile;
 
         // finally try mymovies.xml
         nfoFile = CUtil::AddFileToFolder(strPath, "mymovies.xml");
