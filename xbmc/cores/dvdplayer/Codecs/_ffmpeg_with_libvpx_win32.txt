@@ -7,7 +7,6 @@ How to build ffmpeg with libvpx under mingw
 - cd libvpx
 - run /configure --enable-vp8 --target=x86-win32-gcc
 - run make
-- ignore the missing sys/mman.h error, we don't need ivfenc.exe
 - put the following compile script inside the ffmpeg directory and build as usual:
 
 #!/bin/bash 
