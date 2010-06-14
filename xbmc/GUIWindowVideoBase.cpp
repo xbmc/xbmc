@@ -470,7 +470,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
     bHasInfo = true;
     movieDetails = *item->GetVideoInfoTag();
   }
-
+  
+  bool needsRefresh = false;
   if (bHasInfo)
   {
     if (!info || info->Content() == CONTENT_NONE) // disable refresh button
@@ -478,7 +479,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item);
     pDlgInfo->DoModal();
-    if ( !pDlgInfo->NeedRefresh() )
+    needsRefresh = pDlgInfo->NeedRefresh();
+    if (!needsRefresh)
       return pDlgInfo->HasUpdatedThumb();
   }
 
@@ -523,9 +525,27 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
 
   // 3. Run a loop so that if we Refresh we re-run this block
   bool listNeedsUpdating(false);
-  bool needsRefresh(false);
   do
   {
+    if (needsRefresh)
+    {
+      bHasInfo = true;
+      if (nfoResult == CNfoFile::URL_NFO || nfoResult == CNfoFile::COMBINED_NFO || nfoResult == CNfoFile::FULL_NFO)
+      {
+        if (CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
+        {
+          hasDetails = false;
+          ignoreNfo = true;
+          scrUrl.Clear();
+          info = info2;
+        }
+        else
+        {
+          ignoreNfo = false;
+        }
+      }
+    }
+
     // 4. if we don't have an url, or need to refresh the search
     //    then do the web search
     IMDB_MOVIELIST movielist;
@@ -690,20 +710,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
         pDlgInfo->DoModal();
         item->SetThumbnailImage(pDlgInfo->GetThumbnail());
         needsRefresh = pDlgInfo->NeedRefresh();
-        if (needsRefresh)
-        {
-          bHasInfo = true;
-          if (nfoResult == CNfoFile::URL_NFO || nfoResult == CNfoFile::COMBINED_NFO || nfoResult == CNfoFile::FULL_NFO)
-          {
-            if (CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
-            {
-              hasDetails = false;
-              ignoreNfo = true;
-              scrUrl.Clear();
-              info = info2;
-            }
-          }
-        }
         listNeedsUpdating = true;
       }
       else
