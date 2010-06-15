@@ -68,11 +68,16 @@ namespace ADDON
      */
     CStdString GetPathSettings();
 
+    /*! \brief Clear any previously cached results for this scraper
+     Any previously cached files are cleared if they have been cached for longer than the specified
+     cachepersistence.
+     */
+    void ClearCache();
+
     CONTENT_TYPE Content() const { return m_pathContent; }
     const CStdString& Framework() const { return m_framework; }
     const CStdString& Language() const { return m_language; }
     bool RequiresSettings() const { return m_requiressettings; }
-    const CDateTimeSpan &Persistence() const { return m_persistence; }
     bool Supports(const CONTENT_TYPE &content) const;
 
   private:

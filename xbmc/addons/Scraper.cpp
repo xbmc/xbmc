@@ -19,7 +19,6 @@
 *
 */
 #include "Scraper.h"
-#include "XMLUtils.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/FileCurl.h"
@@ -28,11 +27,13 @@
 #include "utils/ScraperUrl.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
-
+#include "AdvancedSettings.h"
+#include "FileItem.h"
 #include <sstream>
 
 using std::vector;
 using std::stringstream;
+using namespace XFILE;
 
 namespace ADDON
 {
@@ -180,6 +181,32 @@ CStdString CScraper::GetPathSettings()
     stream << *doc.RootElement();
 
   return stream.str();
+}
+
+void CScraper::ClearCache()
+{
+  CStdString strCachePath = CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "scrapers");
+
+  // create scraper cache dir if needed
+  if (!CDirectory::Exists(strCachePath))
+    CDirectory::Create(strCachePath);
+
+  strCachePath = CUtil::AddFileToFolder(strCachePath, ID());
+  CUtil::AddSlashAtEnd(strCachePath);
+
+  if (CDirectory::Exists(strCachePath))
+  {
+    CFileItemList items;
+    CDirectory::GetDirectory(strCachePath,items);
+    for (int i=0;i<items.Size();++i)
+    {
+      // wipe cache
+      if (items[i]->m_dateTime + m_persistence <= CDateTime::GetUTCDateTime())
+        CFile::Delete(items[i]->m_strPath);
+    }
+  }
+  else
+    CDirectory::Create(strCachePath);
 }
 
 }; /* namespace ADDON */

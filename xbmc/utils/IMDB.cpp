@@ -496,7 +496,7 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
   // load our scraper xml
   if (!m_parser.Load(m_info))
     return 0;
-  m_parser.ClearCache();
+  m_info->ClearCache();
 
   if (pProgress)
   { // threaded version
