@@ -380,6 +380,10 @@ namespace VIDEO
         }
 
       }
+
+      // clear our scraper cache
+      info2->ClearCache();
+
       INFO_RET ret = INFO_CANCELLED;
       if (info2->Content() == CONTENT_TVSHOWS)
         ret = RetreiveInfoForTvShow(pItem, bDirNames, info2, useLocal, pURL, fetchEpisodes, pDlgProgress);
