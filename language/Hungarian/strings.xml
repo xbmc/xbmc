@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Olympia and Alanwww1-->
 <!--Email: alanwww1@gmail.com-->
-<!--Date of translation: 15/01/2010-->
-<!--Based on English r26748-->
+<!--Date of translation: 13/06/2010-->
+<!--Based on English r31001-->
 <!--$Revision$-->
 <strings>
   <string id="0">Program</string>
@@ -127,11 +127,13 @@
   <string id="165">OK</string>
   <string id="166">Skin</string>
   <string id="167">FTP szerver engedélyezése</string>
-  <string id="168">Internet pontos idő szolgáltatás használata</string>
+  <string id="168"></string>
   <string id="169">Felbontás</string>
   <string id="170">Képfrissítésfrekvencia igazítása a film-képkockasebességhez</string>
+  <string id="171"></string>
 
   <string id="172">Megjelenés dátuma:</string>
+  <string id="173">4:3 videók megjelenítése</string>
 
   <string id="175">Hangulatok</string>
   <string id="176">Stílusok</string>
@@ -243,6 +245,10 @@
   <string id="296">Könyvjelzők törlése</string>
   <string id="297">Hang csúsztatás</string>
   <string id="298">Könyvjelzők</string>
+  <string id="299">- AAC képes erősítő</string>
+  <string id="300">- MP1 képes erősítő</string>
+  <string id="301">- MP2 képes erősítő</string>
+  <string id="302">- MP3 képes erősítő</string>
   <string id="303">Késleltetés</string>
   <string id="304">Nyelv</string>
   <string id="305">Engedélyezve</string>
@@ -279,13 +285,14 @@
   <string id="336">Framerate konvertálás</string>
   <string id="337">Hangkimenet</string>
   <string id="338">Analóg</string>
-  <string id="339">Digitális</string>
+  <string id="339">Optikai/Coax</string>
   <string id="340">Különböző előadók</string>
   <string id="341">Lemez lejátszása</string>
   <string id="342">Filmek</string>
   <string id="343">Framerate igazítás</string>
   <string id="344">Színészek</string>
   <string id="345">Év</string>
+  <string id="346">Csatornalekeverésnél hangerő emelése</string>
   <string id="350">Programok</string>
   <string id="351">Ki</string>
   <string id="352">Elhalványít</string>
@@ -346,7 +353,6 @@
   <string id="407">Irány:</string>
   <string id="408">Sebesség:</string>
   <string id="409">Alapértelmezett</string>
-
   <string id="410">Időjárás-szolgáltató keresése</string>
   <string id="411">Időjárás lekérdezése:</string>
   <string id="412">Hiba az időjárás lekérdezése közben</string>
@@ -355,6 +361,9 @@
   <string id="415">Bélyegkép letöltése...</string>
   <string id="416">Nem elérhető</string>
   <string id="417">Nézet: N. Ikon</string>
+  <string id="418">Alacsony</string>
+  <string id="419">Magas</string>
+  <string id="420">HDMI</string>
 
   <string id="422">Album információ törlése</string>
   <string id="423">CD információ törlése</string>
@@ -498,6 +507,7 @@
   <string id="571">Alapbeállítás</string>
   <string id="572">Stúdió</string>
   <string id="573">Elérési út</string>
+  <string id="574">Ország</string>
 
   <string id="580">Rendezés iránya</string>
   <string id="581">Rendezés módja</string>
@@ -540,9 +550,9 @@
   <string id="629">Nézet mód</string>
   <string id="630">Normál</string>
   <string id="631">Nagyítás</string>
-  <string id="632">4:3 teljes képernyő</string>
-  <string id="633">14:9 teljes képernyő</string>
-  <string id="634">16:9 teljes képernyő</string>
+  <string id="632">Széthúzás 4:3-ra</string>
+  <string id="633">Széles nagyítás</string>
+  <string id="634">Széthúzás 16:9-re</string>
   <string id="635">Eredeti méret</string>
   <string id="636">Egyéni</string>
   <string id="637">Hangerőingadozások kiegyenlítése</string>
@@ -567,12 +577,14 @@
   <string id="656">Lejátszáslista keresése</string>
   <string id="657">Mappa keresése</string>
   <string id="658">Dal információ</string>
+  <string id="659">Nem-lineáris széthúzás</string>
 
   <string id="660">Hangerő erősítés</string>
   <string id="661">Export mappa választása</string>
   <string id="662">A fájl már nem elérhető</string>
   <string id="663">Eltávolítás a médiatárból?</string>
   <string id="664">Szkript keresése</string>
+  <string id="665">Tömörítés erőssége</string>
 
   <string id="700">Médiatár tisztítása</string>
   <string id="701">Régi dalok eltávolítása a médiatárból</string>
@@ -600,9 +612,9 @@
   <string id="726">A változtatások nincsenek elmentve. Folytatás?</string>
   <string id="727">Web szerver</string>
   <string id="728">FTP szerver</string>
-  <string id="729">Internet Idő</string>
+  <string id="729"></string>
   <string id="730">- Port</string>
-  <string id="731">Az idő szerver IP címe</string>
+  <string id="731"></string>
   <string id="732">Mentés és érvényesítés</string>
   <string id="733">- Jelszó</string>
   <string id="734">Nincs jelszó</string>
@@ -641,7 +653,7 @@
   <!-- a 768 és 769 stringek mégtöbb feliratszínhez vannak lefoglalva -->
 
   <string id="770">Hiba %i: megosztás nem elérhető</string>
-  <string id="771">- Automatikus FATX korlátozó</string>
+  <string id="771"></string>
   <string id="772">Hangkimenet</string>
   <string id="773">Keresés</string>
   <string id="774">Diavetítő mappa</string>
@@ -674,7 +686,7 @@
   <string id="851">Érvényes porttartomány: 1-65535</string>
   <string id="852">Érvényes porttartomány: 1024-65535</string>
 
-  <string id="1000">Képernyőkímélő előnézet</string>
+  <string id="1000">- Előnézet</string>
   <string id="1001">Kapcsolódás sikertelen</string>
   <string id="1002">Sikertelen csatlakozás a hálózati helyhez.</string>
   <string id="1003">Hálózat csatlakozási hiba</string>
@@ -725,6 +737,7 @@
   <string id="1048">Web szerver felhasználónév</string>
   <string id="1049">Szkript beállítások</string>
   <string id="1050">Kislemezek</string>
+  <string id="1051">Webcím megadása</string>
 
   <string id="1200">SMB kliens</string>
   <string id="1202">Munkacsoport</string>
@@ -801,6 +814,7 @@
   <string id="1417">Szitálás</string>
   <string id="1418">Viharok</string>
   <string id="1419">Viharos esőzések</string>
+  <string id="1420">Nyugodt</string>
 
   <!-- 1450-ig időjárás fordítására fenntartva -->
 
@@ -810,6 +824,9 @@
   <string id="2050">Hossz</string>
 
   <string id="2100">Szkript hiba: %s</string>
+  <string id="2101">Újabb verzió szükséges - Lásd: napló</string>
+  <string id="2102">Videókártya</string>
+  <string id="2103">A követelmények nem teljesülnek - Lásd: napló</string>
 
   <string id="4501">LCD kijelző engedélyezése (ha elérhető)</string>
 
@@ -834,6 +851,7 @@
   <string id="10018">Beállítások - Hálózat</string>
   <string id="10019">Beállítások - Megjelenítés</string>
   <string id="10020">Szkriptek</string>
+  <string id="10021">Web böngésző</string>
 
   <string id="10028">Videók/lejátszáslista</string>
   <string id="10034">Beállítások - Profilok</string>
@@ -984,6 +1002,8 @@
   <string id="13024">Joystick csatlakoztatva</string>
   <string id="13025">Joystick eltávolítva</string>
 
+  <string id="13050">Az akkumlátor kezd lemerülni</string>
+  
   <string id="13100">Villogás szűrés</string>
   <string id="13101">Automatikus (újraindítás szükséges)</string>
   <string id="13105">Függőleges szinkronizálás</string>
@@ -1080,20 +1100,20 @@
   
   <string id="13283">Operációs rendszer:</string>
   <string id="13284">CPU sebesség:</string>
-  <string id="13285">BIOS:</string>
+  <string id="13285"></string>
   <string id="13286">Videochip:</string>
   <string id="13287">Képernyő felbontása:</string>
-  <string id="13288">Xbox verzió:</string>
-  <string id="13289">Xbox sorozatszám:</string>
-  <string id="13290">Xbox gyártó:</string>
-  <string id="13291">Modchip:</string>
+  <string id="13288"></string>
+  <string id="13289"></string>
+  <string id="13290"></string>
+  <string id="13291"></string>
   <string id="13292">A/V kábel:</string>
-  <string id="13293">Videó és XBE régió:</string>
+  <string id="13293"></string>
   <string id="13294">DVD régió:</string>
   <string id="13295">Internet:</string>
   <string id="13296">Csatlakoztatva</string>
   <string id="13297">Nincs csatlakozás. Hálózati beállítások ellenőrzése szükséges.</string>
-  <string id="13298">Xbox Live kulcs:</string>
+  <string id="13298"></string>
   <string id="13299">Cél hőmérséklet</string>
   <string id="13300">Ventilátor sebesség</string>
   <string id="13301">Automata hőmérséklet-vezérlés</string>
@@ -1132,8 +1152,8 @@
   <string id="13334">cím szerkesztése</string>
   <string id="13335">Alapértelmezetté tesz</string>
   <string id="13336">Gomb eltávolítása</string>
-  <string id="13338">Elülső LED</string>
-  <string id="13339">Elülső LED színe</string>
+  <string id="13338"></string>
+  <string id="13339"></string>
   <string id="13340">Maradjon az eredeti</string>
   <string id="13341">Zöld</string>
   <string id="13342">Narancs</string>
@@ -1206,7 +1226,12 @@
   <string id="13422">Diavetítés indítása innen</string>
   <string id="13423">Elérési út megjegyzése</string>
   <string id="13424">Pixel buffer objektumok használata</string>
-  <string id="13425">Broadcom Crystal HD</string>
+  <string id="13425">Hardveres gyorsítás engedélyezése (VDPAU)</string>
+  <string id="13426">Hardveres gyorsítás engedélyezése (VAAPI)</string>
+  <string id="13427">Hardveres gyorsítás engedélyezése (DXVA2)</string>
+  <string id="13428">Hardveres gyorsítás engedélyezése (CrystalHD)</string>
+  <string id="13429">Hardveres gyorsítás engedélyezése (VDADecoder)</string>
+  <string id="13430">Hardveres gyorsítás engedélyezése (OpenMax)</string>
 
   <string id="13500">A/V szinkronizáció ehhez</string>
   <string id="13501">Audio-órajel (hang érintetlen)</string>
@@ -1468,11 +1493,11 @@
   <string id="16103">Megnézettként megjelöl</string>
   <string id="16104">Nem látottként megjelöl</string>
   <string id="16105">Cím szerkesztése</string>
-  <string id="16106">NTSC (M vagy J) használata</string>
-  <string id="16107">Csak NTSC-M használata</string>
-  <string id="16108">Csak NTSC-J használata</string>
-  <string id="16109">Csak PAL-60 használata</string>
-  <string id="16110">60Hz-es játékhoz</string>
+  <string id="16106"></string>
+  <string id="16107"></string>
+  <string id="16108"></string>
+  <string id="16109"></string>
+  <string id="16110"></string>
 
   <string id="16200">Művelet megszakítva</string>
   <string id="16201">Másolási hiba</string>
@@ -1492,12 +1517,15 @@
   <string id="16307">Bicubic (software)</string>
   <string id="16308">Lanczos (software)</string>
   <string id="16309">Sinc (software)</string>
-  <string id="16310">(VDPAU)Temporal</string>
-  <string id="16311">(VDPAU)Temporal/Spatial</string>
+  <string id="16310">Temporal</string>
+  <string id="16311">Temporal/Spatial</string>
   <string id="16312">(VDPAU)Zajszűrés</string>
   <string id="16313">(VDPAU)Képélesség</string>
   <string id="16314">Inverse Telecine</string>
   <string id="16315">Lanczos3 gyors</string>
+  <string id="16316">Auto</string>
+  <string id="16317">Temporal (Half)</string>
+  <string id="16318">Temporal/Spatial (Half)</string>
 
   <string id="17500">Alvó üzemmódig hátralévő idő kijelzése</string>
 
@@ -1533,7 +1561,7 @@
 
   <!-- 20027-től 20034 string hőmérséklet stringre foglalva (LocalizeStrings.cpp)-->
 
-  <string id="20037">Összefoglaló</string>
+  <string id="20037">Rövid info</string>
   <string id="20038">Zene menü zárolása</string>
   <string id="20039">Videó menü zárolása</string>
   <string id="20040">Képek menü zárolása</string>
@@ -1682,14 +1710,14 @@
   <string id="20184">Forgatás EXIF információ alapján</string>
   <string id="20185">Poszter nézet használata TV műsoroknál</string>
   <string id="20186">Kérem várjon</string>
-  <string id="20187">EEPROM mentése</string>
-  <string id="20188">BIOS mentése</string>
+  <string id="20187"></string>
+  <string id="20188"></string>
   <string id="20189">Automatikus görgetés a tartalom és értékelés esetén</string>
   <string id="20190">Saját</string>
   <string id="20191">Naplózás engedélyezése</string>
   <string id="20192">Médiaadatok frissítésekor kiegészítő információk letöltése</string>
-
-  <string id="20194">Alapértelmezett scraper</string>
+  <string id="20193">Alapértelmezett szolgáltató az album információkhoz</string>
+  <string id="20194">Alapértelmezett szolgáltató az előadó információkhoz</string>
   <string id="20195">Scraper váltása</string>
   <string id="20196">Zenetár exportálása</string>
   <string id="20197">Zenetár importálása</string>
@@ -1703,6 +1731,7 @@
   <string id="20252">poharak megtöltése (videók)</string>
   <string id="20253">WebDAV szerver (HTTP)</string>
   <string id="20254">WebDAV szerver (HTTPS)</string>
+  <string id="20255">Első bejelentkezés, profilod szerkesztése</string>
 
   <string id="20300">Web szerver könyvtár (HTTP)</string>
   <string id="20301">Web szerver könyvtár (HTTPS)</string>
@@ -1719,15 +1748,15 @@
   <string id="20312">LCD halványítás szünet közben</string>
   <string id="20313">LED visszakapcsolás szünet idejére</string>
   <string id="20314">Videók - Médiatár</string>
-  <string id="20315">Játékok mentései</string>
+  <string id="20315"></string>
   <string id="20316">ID: szerint</string>
-  <string id="20317">Letöltött mentések</string>
-  <string id="20318">Játék mentések elhelyezése HDD-re  </string>
-  <string id="20319">A játék mentését nem sikerült letölteni</string>
-  <string id="20320">Telepítésre szánt játékmentés kiválasztása</string>
-  <string id="20321">Nincs online játékmentés a megadott játékra</string>
-  <string id="20322">Játékmentésekhez</string>
-  <string id="20323">Játékmentések</string>
+  <string id="20317"></string>
+  <string id="20318"></string>
+  <string id="20319"></string>
+  <string id="20320"></string>
+  <string id="20321"></string>
+  <string id="20322"></string>
+  <string id="20323"></string>
   <string id="20324">Rész lejátszása...</string>
   <string id="20325">Kalibráció visszaállítása</string>
   <string id="20326">Kalibráció értéke visszaáll %-ra</string>
@@ -1794,7 +1823,7 @@
   <string id="20387">Új epizódok</string>
   <string id="20388">Stúdiók</string>
   <string id="20389">Klipek</string>
-  <string id="20390">Mostanában hozzáadott klippek</string>
+  <string id="20390">Mostanában hozzáadott klipek</string>
   <string id="20391">Klip</string>
   <string id="20392">Klip eltávolítása a médiatárból</string>
   <string id="20393">Klip információ</string>
@@ -1840,7 +1869,7 @@
   <string id="20433">Média metaadatok és bélyegképek kinyerése fájlokból</string>
   <string id="20434">BOXSET</string>
   <string id="20435">BOXSET bélyegkép</string>
-  <string id="20436">Színész bélyegképek exportálása</string>
+  <string id="20436">Színész bélyegképek exportálása ?</string>
   <string id="20437">Fanart választás</string>
   <string id="20438">Helyi fanart</string>
   <string id="20439">Nincs fanart</string>
@@ -1850,6 +1879,12 @@
   <string id="20443">Akarod frissíteni az infó-t minden</string>
   <string id="20444">elemhez ezen az útvonalon ?</string>
   <string id="20445">Fanart</string>
+  <string id="20446">Helyben tárolt informácót találtam.</string>
+  <string id="20447">Elvetés és frissítés az internetről ?</string>
+  <string id="20448">Nem tudtam letölteni az információt</string>
+  <string id="20449">A szerver valószínűleg elérhetetlen.</string>
+  <string id="20450">Szeretnéd a keresést folytatni ?</string>
+  <string id="20451">Országok</string>  
   <!-- 21329-ig video-adatbázisra fenntartva  !! !-->
 
   <string id="21330">Rejtett fájlok és mappák megjelenítése</string>
@@ -1921,7 +1956,7 @@
   <string id="21416">Fallback engedélyezése a scraper nyelv alapján</string>
   <string id="21417">- Beállítások</string>
   <string id="21418">Többnyelvű</string>
-
+  <string id="21419">Nincs scraper</string>
   <string id="21420">Kívánt érték</string>
   <string id="21421">Intelligens lejátszáslista szabály</string>
   <string id="21422">Elemek összehasonlítása, ahol</string>
@@ -1952,6 +1987,9 @@
   <string id="21447">Audio nyelve</string>
   <string id="21448">Felirat nyelve</string>
   <string id="21449">Távirányító billentyűleütéseket küld</string>
+  <string id="21450">- Szerkeszt</string>
+  <string id="21451">Internet kapcsolat szükséges.</string>
+  <string id="21452">Több beszerzése</string>
 
   <string id="21800">Fájlnév</string>
   <string id="21801">Fájl helye</string>
@@ -2074,9 +2112,7 @@
   <string id="22042">fehér/kék</string>
   <string id="22043">fekete/fehér</string>
 
-  <string id="23000">Időjárás beépülő</string>
-  <string id="23001">- Beépülő beállításai</string>
-
+  <string id="23049">Teletext nem elérhető</string>
   <string id="23050">Teletext aktiválása</string>
   <string id="23051">Rész %i</string>
   <string id="23052">Előtöltve %i byte</string>
@@ -2088,13 +2124,84 @@
   <string id="23101">A lejátszó megszakításához klikkelj az OK-ra</string>
 
   <string id="23104">Lejátszás végén klikkelj az OK-ra</string>
+  
+  <!-- 24000-től 24299-ig a beépülő keretrendszerhez foglalva -->
+  <string id="24000">Kiegészítő</string>
+  <string id="24001">Kiegészítők</string>
+  <string id="24002">Kiegészítő lehetőségei</string>
+  <string id="24003">Kiegészítő információ</string>
+
+  <string id="24005">Médiaforrások</string>
+  <string id="24007">Film információ</string>
+  <string id="24008">Képernyővédő</string>
+  <string id="24009">Szkript</string>
+  <string id="24010">Vizualizáció</string>
+  <string id="24011">Kiegészítő tárolóhely</string>
+  <string id="24012">Feliratok</string>
+  <string id="24013">Dalszöveg</string>
+  <string id="24014">TV sorozat információ</string>
+  <string id="24015">Zenei klip információ</string>
+  <string id="24016">Album információ</string>
+  <string id="24017">Előadó információ</string>
+
+  <string id="24020">Beállítás</string>
+  <string id="24021">Kikapcsolás</string>
+  <string id="24022">Engedélyezés</string>
+  <string id="24023">Kiegészítő tiltva</string>
+  <string id="24027">Időjárás</string>
+  <string id="24028">Weather.com (standard)</string>
+  <string id="24030">Ez a kiegészítő nem konfigurálható</string>
+  <string id="24031">Hiba a beállítások töltésekor</string>
+  <string id="24032">Minden kiegészítő</string>
+  <string id="24033">Kiegészítő beszerzése</string>
+  <string id="24034">Frissítések keresése</string>
+  <string id="24035">Frissítés kényszerítése</string>
+  <string id="24036">Változáslista</string>
+  <string id="24037">Letelepítés</string>
+  <string id="24038">Telepítés</string>
+  <string id="24039">Kikapcsolt kiegészítők</string>
+  <string id="24040">(A jelenlegi beállítás törlése)</string>
+
+  <string id="24050">Elérhető kiegészítők</string>
+  <string id="24051">Verzió:</string>
+  <string id="24052">Jogi nyilatkozat</string>
+  <string id="24053">Licenc:</string>
+  <string id="24054">Változáslista</string>
+  <string id="24059">Akarod engedélyezni ezt a kiegészítőt ?</string>
+  <string id="24060">Akarod kikapcsolni ezt a kiegészítőt ?</string>
+  <string id="24061">Kiegészítő frissítése elérhető!</string>
+  <string id="24062">Engedélyezett kiegészítők</string>
+  <string id="24063">Auto-frissítés</string>
+  <string id="24064">Kiegészítő engedélyezve</string>
+  <string id="24065">Kiegészítő frissítve</string>
+  <string id="24066">Kiegészítő letöltés megszakítása ?</string>
+  <string id="24067">Kiegészítők letöltése</string>
+  <string id="24068">Frissítés elérhető</string>
+  <string id="24069">Frissítés</string>
+
+  <string id="24070">Kiegészítő nem használható</string>
+  <string id="24071">Ismeretlen hiba lépett fel</string>
+  <string id="24072">Beállítás szükséges</string>
+  <string id="24073">Nem tudott csatlakozni</string>
+  <string id="24074">Újraindítás szükséges</string>
+  <string id="24075">Kikapcsolás</string>
+  <string id="24080">Próbáljon újra csatlakozni ?</string>
+  <string id="24089">Kiegészítő újraindul</string>
+
+  <string id="24090">Kiegészítő-kezelő zárolása</string>
+
+  <string id="24091"></string>
+  <string id="24092"></string>
+  <string id="24093"></string>
+  <string id="24094"></string>
+  <string id="24095"></string>
 
   <!-- 29800-tól 29998 a default PM3 skin-hez foglalva -->
   <string id="29800">Médiatár mód</string>
   <string id="29801">QWERTY billentyűzet</string>
   <string id="29802">Passthrough esetén tiltva</string>
 
-  <string id="29999">Villogás szűrő alkalmazása játékokra</string>
+  <string id="29999"></string>
 
   <!-- 30000-től 30999-ig beépülők számára fenntartva -->
   <!-- 31000-tól 31999-ig a skinek számára fenntartva -->
@@ -2115,7 +2222,7 @@
   <string id="33013">Hosszú</string>
   <string id="33014">DVD lejátszó használata az általános lejátszó helyett</string>
   <string id="33015">Kérdezzen rá a letöltésre a videó lejátszása előtt</string>
-  <string id="33016">Klippek</string>
+  <string id="33016">Klipek</string>
   <string id="33017">Az érvényesítéshez a beépülő újraindítása szükséges</string>
   <string id="33018">Ma este</string>
   <string id="33019">Holnap este</string>
@@ -2172,4 +2279,5 @@
   <string id="33081">Ez egy egyesített fájl, melyik részt akarod játszani ?</string>
   <string id="33082">Szkript útvonal</string>
   <string id="33083">Egyedi szkript gomb engedélyezése</string>
+ 
 </strings>

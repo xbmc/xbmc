@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 23/05/2010-->
-<!--Based on English strings revision 30365-->
+<!--Date of translation: 09/06/2010-->
+<!--Based on English strings revision 31001-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -655,7 +655,7 @@
   <!-- strings 768 and 769 reserved for more subtitle colors -->
 
   <string id="770">Hata %i: paylaşım bulunamıyor</string>
-  <string id="771">- Otomatik FATX limitleyici</string>
+  <string id="771"></string>
   <string id="772">Ses çıkışı</string>
   <string id="773">Atla</string>
   <string id="774">Slayt Gösterisi klasörü</string>
@@ -688,7 +688,7 @@
   <string id="851">Geçerli port aralığı 1-65535</string>
   <string id="852">Geçerli port aralığı 1024-65535</string>
 
-  <string id="1000">Ekran Koruyucu önizlemesi</string>
+  <string id="1000">- Önizleme</string>
   <string id="1001">Bağlanamıyor</string>
   <string id="1002">XBMC ağda belirtilen klasöre bağlanamıyor.</string>
   <string id="1003">Bu olay ağın bağlı olmamasından kaynaklanabilir.</string>
@@ -816,6 +816,7 @@
   <string id="1417">Grains</string>
   <string id="1418">T-Storms</string>
   <string id="1419">T-Showers</string>
+  <string id="1420">Hafif</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
 
@@ -1101,20 +1102,20 @@
 
   <string id="13283">İşletim sistemi:</string>
   <string id="13284">CPU hızı:</string>
-  <string id="13285">Saptanan BIOS:</string>
+  <string id="13285"></string>
   <string id="13286">Video kodlayıcı:</string>
   <string id="13287">Ekran çözünülürlüğü:</string>
-  <string id="13288">Xbox versiyonu:</string>
-  <string id="13289">Xbox seri numarası:</string>
-  <string id="13290">Xbox üreticisi:</string>
-  <string id="13291">Modchip:</string>
+  <string id="13288"></string>
+  <string id="13289"></string>
+  <string id="13290"></string>
+  <string id="13291"></string>
   <string id="13292">Görüntü/Ses kablosu:</string>
-  <string id="13293">Video ve XBE bölgesi:</string>
+  <string id="13293"></string>
   <string id="13294">DVD bölgesi:</string>
   <string id="13295">İnternet:</string>
   <string id="13296">Bağlı</string>
   <string id="13297">Bağlı değil. Ağ ayarlarınızı kontrol edin.</string>
-  <string id="13298">Xbox Live anahtarı:</string>
+  <string id="13298"></string>
   <string id="13299">Hedef sıcaklık</string>
   <string id="13300">Fan hızı</string>
   <string id="13301">Otomatik ısı kontrolü</string>
@@ -1153,8 +1154,8 @@
   <string id="13334">Etiketi düzenle</string>
   <string id="13335">Varsayılan yap</string>
   <string id="13336">Tuşu kaldır</string>
-  <string id="13338">Ön LED</string>
-  <string id="13339">Ön LED rengi</string>
+  <string id="13338"></string>
+  <string id="13339"></string>
   <string id="13340">Serbest bırak</string>
   <string id="13341">Yeşil</string>
   <string id="13342">Turuncu</string>
@@ -1494,11 +1495,11 @@
   <string id="16103">Seyredilmiş olarak işaretle</string>
   <string id="16104">Seyredilmemiş olarak işaretle</string>
   <string id="16105">Başlığı düzenle</string>
-  <string id="16106">NTSC-M ve NTSC-J</string>
-  <string id="16107">NTSC-M</string>
-  <string id="16108">NTSC-J</string>
-  <string id="16109">PAL-60</string>
-  <string id="16110">60hz'lik oyunlar için</string>
+  <string id="16106"></string>
+  <string id="16107"></string>
+  <string id="16108"></string>
+  <string id="16109"></string>
+  <string id="16110"></string>
 
   <string id="16200">İşlem durduruldu</string>
   <string id="16201">Kopyalanamadı</string>
@@ -1711,14 +1712,14 @@
   <string id="20184">EXIF bilgilerini kullanarak resmi çevir</string>
   <string id="20185">TV programları için poster görünümünü kullan</string>
   <string id="20186">Lütfen bekleyin</string>
-  <string id="20187">EEPROM yedekleniyor</string>
-  <string id="20188">BIOS yedekleniyor</string>
+  <string id="20187"></string>
+  <string id="20188"></string>
   <string id="20189">İçerik ve yorum için otomatik kaydırmayı etkinleştir</string>
   <string id="20190">Özel</string>
   <string id="20191">Hata ayıklama günlüğünü etkinleştir</string>
   <string id="20192">Güncellemeler sırasında ek bilgileri indir</string>
-
-  <string id="20194">Müzik bilgileri için varsayılan hizmet</string>
+  <string id="20193">Albüm bilgileri için varsayılan hizmet</string>
+  <string id="20194">Sanatçı bilgileri için varsayılan hizmet</string>
   <string id="20195">Scraper'ı değiştir</string>
   <string id="20196">Müzik kitaplığını dışa aktar</string>
   <string id="20197">Müzik kitaplığını içe aktar</string>
@@ -1749,15 +1750,15 @@
   <string id="20312">Duraklatılınca LCD'yi karart</string>
   <string id="20313">Eğer duraklatılırsa LED'i tekrar aç</string>
   <string id="20314">Videolar - Kitaplık</string>
-  <string id="20315">Oyun kayıtları</string>
+  <string id="20315"></string>
   <string id="20316">Sırala: ID</string>
-  <string id="20317">Kayıtları indir</string>
-  <string id="20318">Oyun kayıtları sabit diske yüklendi</string>
-  <string id="20319">Oyun kayıtları indirilemedi</string>
-  <string id="20320">İndirilecek ve yüklenecek oyun kayıtlarını seçin</string>
-  <string id="20321">Belirtilen oyun için çevrimiçi kayıt bulunamadı</string>
-  <string id="20322">Oyun kaydına git</string>
-  <string id="20323">Oyun kayıtları</string>
+  <string id="20317"></string>
+  <string id="20318"></string>
+  <string id="20319"></string>
+  <string id="20320"></string>
+  <string id="20321"></string>
+  <string id="20322"></string>
+  <string id="20323"></string>
   <string id="20324">...Bölümü oynat</string>
   <string id="20325">Ayarları sıfırla</string>
   <string id="20326">Bu %s için olan ayarlama değerlerini</string>
@@ -1958,7 +1959,6 @@
   <string id="21417">- Ayarlar</string>
   <string id="21418">Çok dilli</string>
   <string id="21419">Scraper mevcut değil</string>
-
   <string id="21420">Değer eşleşmelidir</string>
   <string id="21421">Akıllı çalma listesi talimatı</string>
   <string id="21422">Eşleşen ögeler nerede</string>
@@ -1990,6 +1990,8 @@
   <string id="21448">Altyazı dili</string>
   <string id="21449">Remote control sends keyboard presses</string>
   <string id="21450">- Düzenle</string>
+  <string id="21451">Internet bağlantısı gereklidir.</string>
+  <string id="21452">Daha Fazla</string>
 
   <string id="21800">Dosya adı</string>
   <string id="21801">Dosya yolu</string>
@@ -2125,32 +2127,42 @@
 
   <string id="23104">Oynatma bitince Tamam'a basın</string>
 
-  <!-- strings 24000 thru 24299 reserved for the addons framework -->
+  <!-- strings 24000 thru 24299 reserved for the Add-ons framework -->
   <string id="24000">Eklenti</string>
   <string id="24001">Eklentiler</string>
   <string id="24002">Eklenti seçenekleri</string>
   <string id="24003">Eklenti Bilgisi</string>
 
-  <string id="24005">Eklenti</string>
-  <string id="24007">Scraper</string>
+  <string id="24005">Ortam kaynakları</string>
+  <string id="24007">Film bilgisi</string>
   <string id="24008">Ekran koruyucu</string>
   <string id="24009">Betik</string>
   <string id="24010">Görsel öğe</string>
   <string id="24011">Eklenti deposu</string>
+  <string id="24012">Altyazılar</string>
+  <string id="24013">Lyrics</string>
+  <string id="24014">TV bilgisi</string>
+  <string id="24015">Müzik videosu bilgisi</string>
+  <string id="24016">Albüm bilgisi</string>
+  <string id="24017">Sanatçı bilgisi</string>
 
   <string id="24020">Yapılandır</string>
   <string id="24021">Devre dışı bırak</string>
   <string id="24022">Etkinleştir</string>
   <string id="24023">Eklenti devre dışı</string>
-  <string id="24027">Hava Durumu hizmeti</string>
+  <string id="24027">Hava Durumu</string>
   <string id="24028">Weather.com (standart)</string>
   <string id="24030">Bu eklenti yapılandırılamaz</string>
   <string id="24031">Ayarlar yüklenirken hata oluştu</string>
-  <string id="24032">Tüm depolar</string>
-  <string id="24033">Depolar</string>
+  <string id="24032">Tüm Eklentiler</string>
+  <string id="24033">Eklentileri Al</string>
   <string id="24034">Güncelleştirmeleri denetle</string>
   <string id="24035">Yenileme işlemini zorla</string>
   <string id="24036">Değişim günlüğü</string>
+  <string id="24037">Kaldır</string>
+  <string id="24038">Yükle</string>
+  <string id="24039">Devre Dışı Bırakılan Eklentiler</string>
+  <string id="24040">(Geçerli ayarı temizle)</string>
 
   <string id="24050">Kullanılabilir Eklentiler</string>
   <string id="24051">Sürüm:</string>
@@ -2191,7 +2203,7 @@
   <string id="29801">QWERTY klavye</string>
   <string id="29802">Passthrough Ses kullanımda</string>
 
-  <string id="29999">Titreme filtresi ayarını oyunlara uygula</string>
+  <string id="29999"></string>
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->

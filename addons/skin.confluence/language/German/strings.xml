@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: Zippolighter-->
-<!--Email: hardrock_zippolighter@hotmail.com-->
-<!--Date of translation: 12/18/2009-->
+<!--Translator: pgoeri-->
+<!--Email: pgoeri@chello.at-->
+<!--Date of translation: 11/05/2010-->
 <!--$Revision$-->
 <strings>
   <string id="31000">Wechsel Deine</string>
@@ -25,6 +25,7 @@
   <string id="31030">Komplette Liste</string>
   <string id="31031">Bild Vorschau</string>
   <string id="31032">Bild Wrap</string>
+  <string id="31033">Info</string>
   <string id="31040">Jetzt gespielt</string>
   <string id="31042">ABSPIELEN</string>
   <string id="31043">PAUSE</string>
@@ -40,6 +41,7 @@
   <string id="31058">System Musik Dateien</string>
   <string id="31059">Aktuelle Wiedergabeliste</string>
   <string id="31060">Die Datei ist gestapelt, wähle den Teil zum abspielen.</string>
+  <string id="31061">Aktuell ausgewählt</string>
   <string id="31100">
   </string>
   <string id="31101">Home Screen Optionen</string>
@@ -72,6 +74,10 @@
   <string id="31126">Aktiviere Lyrics in Musik OSD</string>
   <string id="31127">PFAD ZUM LYRICS SCRIPT</string>
   <string id="31128">XBMC Lyrics</string>
+  <string id="31129">Aktiviere Untertitel-Download im Video OSD </string>
+  <string id="31130">PFAD ZUM UNTERTITEL SCRIPT</string>
+  <string id="31140">Musik OSD</string>
+  <string id="31141">Video OSD</string>
   <string id="31200">Tastenkürzel</string>
   <string id="31201">Kategorie</string>
   <string id="31202">Zeige Darsteller</string>
@@ -113,6 +119,13 @@
   <string id="31327">Auflösung</string>
   <string id="31328">Kürzlich Hinzugefügt</string>
   <string id="31329">[B]TIMER SET![/B] [COLOR=grey2] - SYSTEM AUTO SHUTDOWN IN[/COLOR]</string>
+  <string id="31330">Starte[CR][CR]Filmtrailer</string>
+  <string id="31351">Pause</string>
+  <string id="31352">Stop</string>
+  <string id="31353">Vorspulen</string>
+  <string id="31354">Rückspulen</string>
+  <string id="31355">Filmmenü</string>
+  <string id="31356">Untertitel herunterladen</string>
   <string id="31400">[B]KONFIGURIERE DIE DARSTELLUNGS EINSTELLUNGEN[/B][CR][CR]Wechsel den Skin · Wähle Sprache und Region · Wechsel Dateilisten Optionen[CR]Setze Bildschirmschoner</string>
   <string id="31401">[B]KONFIGURIERE VIDEO EINSTELLUNGEN[/B][CR][CR]Organisiere die Video DB · Setze die Abspiel Optionen · Wechsel die Video Auflistungs Optionen · Setze Untertitel Schrift</string>
   <string id="31402">[B]KONFIGURIERE MUSIK EINSTELLUNGEN[/B][CR][CR]Organisiere die Musik DB · Setze die Musik Abspiel Optionen · Wechsel die Musik Auflistungs Optionen · Einrichten der Lied Vorlage · Setze Karaoke Optionen</string>
@@ -121,6 +134,6 @@
   <string id="31405">[B]KONFIGURIERE NETZWERK EINSTELLUNGEN[/B][CR][CR]Einrichten der Steuerung von XBMC via UPnP und HTTP · Konfiguriere Datei Zugriff[CR]Setze Internet Zugriffs Optionen</string>
   <string id="31406">[B]KONFIGURIERE SYSTEM EINSTELLUNGEN[/B][CR][CR]Setze und kalibriere Displays · Konfiguriere Audioausgabe · Setze Fernbedienungs Einstellungen · Setze Energiespar Optionen · Aktiviere Debugging · Einrichten Master Sperre</string>
   <string id="31407">[B]KONFIGURIERE SKIN EINSTELLUNGEN[/B][CR][CR]Einrichten des Confluence Skin · Hinzufügen und entfernen der Home Menü Einträge[CR]Wechseln der Skin Hintergründe</string>
-  <string id="31420">[B][COLOR=white]XBMC hat keine Disk gefunden.[/COLOR][/B][CR][CR]Bitte Disk einlegen und neu versuchen oder abbrechen</string>
+  <string id="31408">[B]KONFIGURIERE ADD-ONS[/B][CR][CR]Organisiere die installierten Add-ons · Installiere Add-ons von xbmc.org[CR]Add-on Einstellungen anpassen</string>
   <string id="31421">Wähle Dein XBMC Benutzer Profil[CR]Zum Anmelden und Weitermachen</string>
 </strings>
