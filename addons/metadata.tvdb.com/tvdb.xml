@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- should be self-explanatory -->
-<scraper framework="1.1" date="2009-01-27" cachePersistence="00:15">
+<scraper framework="1.1" date="2009-01-27">
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url cache=&quot;\1.xml&quot;&gt;http://www.thetvdb.com/api/1D62F2F90030C444/series/\1/all/$INFO[language].zip&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="3">
 			<expression>http://(?:www\.)?thetvdb.com/(?:index\.php)?\?tab=series&amp;id=([0-9]+)</expression>

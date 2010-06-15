@@ -25,7 +25,6 @@
 #include <vector>
 #include "StdString.h"
 #include "addons/IAddon.h"
-#include "DateTime.h"
 
 #define MAX_SCRAPER_BUFFERS 20
 
@@ -69,7 +68,6 @@ private:
   TiXmlElement* m_pRootElement;
 
   const char* m_SearchStringEncoding;
-  CDateTimeSpan m_persistence;
 
   CStdString m_strFile;
 };

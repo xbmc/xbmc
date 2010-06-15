@@ -21,6 +21,7 @@
  */
 #include "addons/Addon.h"
 #include "utils/ScraperUrl.h"
+#include "DateTime.h"
 
 typedef enum
 {
@@ -71,7 +72,7 @@ namespace ADDON
     const CStdString& Framework() const { return m_framework; }
     const CStdString& Language() const { return m_language; }
     bool RequiresSettings() const { return m_requiressettings; }
-
+    const CDateTimeSpan &Persistence() const { return m_persistence; }
     bool Supports(const CONTENT_TYPE &content) const;
 
   private:
@@ -80,6 +81,7 @@ namespace ADDON
     CStdString m_framework;
     CStdString m_language;
     bool m_requiressettings;
+    CDateTimeSpan m_persistence;
     CONTENT_TYPE m_pathContent;
   };
 

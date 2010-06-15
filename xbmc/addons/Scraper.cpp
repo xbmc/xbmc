@@ -108,6 +108,9 @@ CScraper::CScraper(const cp_extension_t *ext) :
   {
     m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "language");
     m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"requiressettings").Equals("true");
+    CStdString persistence = CAddonMgr::Get().GetExtValue(ext->configuration, "cachepersistence");
+    if (!persistence.IsEmpty())
+      m_persistence.SetFromTimeString(persistence);
   }
   switch (Type())
   {
@@ -141,6 +144,7 @@ CScraper::CScraper(const CScraper &rhs, const AddonPtr &self)
   : CAddon(rhs, self)
 {
   m_pathContent = rhs.m_pathContent;
+  m_persistence = rhs.m_persistence;
 }
 
 bool CScraper::Supports(const CONTENT_TYPE &content) const
