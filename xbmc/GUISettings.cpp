@@ -613,7 +613,7 @@ void CGUISettings::Initialize()
 #endif
   AddSeparator(vp, "videoplayer.sep5");
   AddBool(vp, "videoplayer.teletextenabled", 23050, true);
-  AddBool(vp, "videoplayer.boblightenabled", 23073, false);
+  AddBool(vp, "videoplayer.boblightenabled", 23073, true);
   AddBool(vp, "videoplayer.boblighttestmode", 23074, false);
 
   CSettingsCategory* vid = AddCategory(5, "myvideos", 14081);
