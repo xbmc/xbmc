@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavformat/riff.h
+ * @file
  * internal header for RIFF based (de)muxers
  * do NOT include this in end user applications
  */
@@ -30,14 +30,10 @@
 
 #include "libavcodec/avcodec.h"
 #include "avio.h"
+#include "internal.h"
 
 int64_t ff_start_tag(ByteIOContext *pb, const char *tag);
 void ff_end_tag(ByteIOContext *pb, int64_t start);
-
-typedef struct AVCodecTag {
-    enum CodecID id;
-    unsigned int tag;
-} AVCodecTag;
 
 void ff_put_bmp_header(ByteIOContext *pb, AVCodecContext *enc, const AVCodecTag *tags, int for_asf);
 int ff_put_wav_header(ByteIOContext *pb, AVCodecContext *enc);
@@ -47,7 +43,7 @@ void ff_get_wav_header(ByteIOContext *pb, AVCodecContext *codec, int size);
 extern const AVCodecTag ff_codec_bmp_tags[];
 extern const AVCodecTag ff_codec_wav_tags[];
 
-unsigned int ff_codec_get_tag(const AVCodecTag *tags, int id);
+unsigned int ff_codec_get_tag(const AVCodecTag *tags, enum CodecID id);
 enum CodecID ff_codec_get_id(const AVCodecTag *tags, unsigned int tag);
 void ff_parse_specific_params(AVCodecContext *stream, int *au_rate, int *au_ssize, int *au_scale);
 

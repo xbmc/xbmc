@@ -244,31 +244,32 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   EXIT_ON_FAILURE(hr, __FUNCTION__": Audio format not supported by the WASAPI device.  Channels: %i, Rate: %i, Bits/sample: %i.", iChannels, uiSamplesPerSec, uiBitsPerSample)
 
   REFERENCE_TIME hnsRequestedDuration, hnsPeriodicity;
-  hr = m_pAudioClient->GetDevicePeriod(NULL, &hnsRequestedDuration);
+  hr = m_pAudioClient->GetDevicePeriod(NULL, &hnsPeriodicity);
   EXIT_ON_FAILURE(hr, __FUNCTION__": Could not retrieve the WASAPI endpoint device period.");
 
-  hnsPeriodicity = hnsRequestedDuration; 
+  //The default periods of some devices are VERY low (less than 3ms).
+  //For audio stability make sure we have at least an 8ms buffer.
+  if(hnsPeriodicity < 80000) hnsPeriodicity = 80000;
 
-  //PAPlayer seems to need a larger buffer and chunk size then what some devices give by default.
-  if(bIsMusic && hnsRequestedDuration < 60000)
-    hnsRequestedDuration = 60000;
+  // PAPlayer needs a larger buffer
+  if (bIsMusic)
+    hnsRequestedDuration = hnsPeriodicity * 16;
+  else
+    hnsRequestedDuration = hnsPeriodicity;
 
   // now create the stream buffer
-  hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, 0, hnsRequestedDuration*4, hnsPeriodicity, &wfxex.Format, NULL);
+  hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, 0, hnsRequestedDuration, hnsPeriodicity, &wfxex.Format, NULL);
   EXIT_ON_FAILURE(hr, __FUNCTION__": Could not initialize the WASAPI endpoint device.")
 
   hr = m_pAudioClient->GetBufferSize(&m_uiBufferLen);
   m_uiBufferLen *= m_uiBytesPerFrame;
 
-  //Chunk sizes are 1/4 the buffer size.
+  //Chunk sizes are 1/16 the buffer size.
   //WASAPI chunk sizes need to be evenly divisable into the buffer size or pops and clicks will result.
-  m_uiChunkSize = m_uiBufferLen / 4;
+  m_uiChunkSize = m_uiBufferLen / 16;
   m_uiSrcChunkSize = (m_uiChunkSize / m_uiBytesPerFrame) * m_uiBytesPerSrcFrame;
 
-  if(bIsMusic)
-    m_PreCacheSize = m_uiBufferLen / 2; //Start music only when the buffer is half filled.
-  else
-    m_PreCacheSize = m_uiChunkSize;
+  m_PreCacheSize = m_uiChunkSize;
 
   CLog::Log(LOGDEBUG, __FUNCTION__": Packet Size = %d. Avg Bytes Per Second = %d.", m_uiChunkSize, m_uiAvgBytesPerSec);
 

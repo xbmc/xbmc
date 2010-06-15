@@ -36,6 +36,7 @@
 #include "Util.h"
 #include "win32/WIN32Util.h"
 #include "LocalizeStrings.h"
+#include "VideoReferenceClock.h"
 
 using namespace std;
 
@@ -62,7 +63,7 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   m_hDeviceWnd  = NULL;
   m_nBackBufferWidth  = 0;
   m_nBackBufferHeight = 0;
-  m_bFullScreenDevice = 0;
+  m_bFullScreenDevice = false;
   m_bVSync          = true;
   m_nDeviceStatus   = S_OK;
   m_stateBlock      = NULL;
@@ -101,12 +102,10 @@ void CRenderSystemDX::CheckDXVersion()
 bool CRenderSystemDX::InitRenderSystem()
 {
   m_bVSync = true;
-  m_renderCaps = 0;
-  D3DADAPTER_IDENTIFIER9 AIdentifier;
 
   CheckDXVersion();
 
-  m_useD3D9Ex = (g_sysinfo.IsVistaOrHigher() && LoadD3D9Ex());
+  m_useD3D9Ex = (g_advancedSettings.m_AllowD3D9Ex && g_sysinfo.IsVistaOrHigher() && LoadD3D9Ex());
   m_pD3D = NULL;
 
   if (m_useD3D9Ex)
@@ -126,55 +125,6 @@ bool CRenderSystemDX::InitRenderSystem()
 
   if(CreateDevice()==false)
     return false;
-
-  if(m_pD3D->GetAdapterIdentifier(m_adapter, 0, &AIdentifier) == D3D_OK)
-  {
-    m_RenderRenderer = (const char*)AIdentifier.Description;
-    m_RenderVendor   = (const char*)AIdentifier.Driver;
-    m_RenderVersion.Format("%d.%d.%d.%04d", HIWORD(AIdentifier.DriverVersion.HighPart), LOWORD(AIdentifier.DriverVersion.HighPart),
-                                            HIWORD(AIdentifier.DriverVersion.LowPart), LOWORD(AIdentifier.DriverVersion.LowPart));
-  }
-
-  // get our render capabilities
-  D3DCAPS9 caps;
-  m_pD3DDevice->GetDeviceCaps(&caps);
-
-  if (caps.PixelShaderVersion < D3DPS_VERSION(2, 0)) 
-  {
-    CLog::Log(LOGERROR, "%s - XBMC requires a graphics card supporting Pixel Shaders 2.0", __FUNCTION__);
-    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(2102), g_localizeStrings.Get(2103));
-  }
-
-  if (SUCCEEDED(m_pD3D->CheckDeviceFormat( D3DADAPTER_DEFAULT,
-                                           D3DDEVTYPE_HAL,
-                                           D3DFMT_X8R8G8B8,
-                                           0,
-                                           D3DRTYPE_TEXTURE,
-                                           D3DFMT_DXT5 )))
-    m_renderCaps |= RENDER_CAPS_DXT;
-
-  if ((caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0)
-  { // we're allowed NPOT textures
-    m_renderCaps |= RENDER_CAPS_NPOT;
-    m_renderCaps |= RENDER_CAPS_DXT_NPOT;
-  }
-  else if ((caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL))
-  { // we're allowed _some_ NPOT textures (namely non-DXT and only with D3DTADDRESS_CLAMP and no wrapping)
-    m_renderCaps |= RENDER_CAPS_NPOT;
-  }
-  m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
-
-  if (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES)
-  {
-    m_defaultD3DUsage = D3DUSAGE_DYNAMIC;
-    m_defaultD3DPool  = D3DPOOL_DEFAULT;
-    CLog::Log(LOGDEBUG, "%s - using D3DCAPS2_DYNAMICTEXTURES", __FUNCTION__);
-  }
-  else
-  {
-    m_defaultD3DUsage = 0;
-    m_defaultD3DPool  = D3DPOOL_MANAGED;
-  }
 
   return true;
 }
@@ -237,13 +187,12 @@ void CRenderSystemDX::BuildPresentParameters()
   bool useWindow = g_guiSettings.GetBool("videoscreen.fakefullscreen") || !m_bFullScreenDevice;
   m_D3DPP.Windowed           = useWindow;
   m_D3DPP.SwapEffect         = D3DSWAPEFFECT_DISCARD;
-  m_D3DPP.BackBufferCount    = 1;
+  m_D3DPP.BackBufferCount    = 2;
 
   if(m_useD3D9Ex && (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion >= 1 || osvi.dwMajorVersion > 6))
   {
 #if D3DX_SDK_VERSION >= 42
     m_D3DPP.SwapEffect       = D3DSWAPEFFECT_FLIPEX;
-    m_D3DPP.BackBufferCount  = 2;
 #else
 #   pragma message("D3D SDK version is too old to support D3DSWAPEFFECT_FLIPEX")
     CLog::Log(LOGWARNING, "CRenderSystemDX::BuildPresentParameters - xbmc compiled with an d3d sdk not supporting D3DSWAPEFFECT_FLIPEX");
@@ -297,7 +246,7 @@ void CRenderSystemDX::BuildPresentParameters()
     m_D3DDMEX.Height           = m_D3DPP.BackBufferHeight;
     m_D3DDMEX.RefreshRate      = m_D3DPP.FullScreen_RefreshRateInHz;
     m_D3DDMEX.Format           = m_D3DPP.BackBufferFormat;
-    m_D3DDMEX.ScanLineOrdering = D3DSCANLINEORDERING_PROGRESSIVE;
+    m_D3DDMEX.ScanLineOrdering = m_interlaced ? D3DSCANLINEORDERING_INTERLACED : D3DSCANLINEORDERING_PROGRESSIVE;
   }
 }
 
@@ -447,6 +396,70 @@ bool CRenderSystemDX::CreateDevice()
     }
   }
 
+  D3DADAPTER_IDENTIFIER9 AIdentifier;
+  if(m_pD3D->GetAdapterIdentifier(m_adapter, 0, &AIdentifier) == D3D_OK)
+  {
+    m_RenderRenderer = (const char*)AIdentifier.Description;
+    m_RenderVendor   = (const char*)AIdentifier.Driver;
+    m_RenderVersion.Format("%d.%d.%d.%04d", HIWORD(AIdentifier.DriverVersion.HighPart), LOWORD(AIdentifier.DriverVersion.HighPart),
+                                            HIWORD(AIdentifier.DriverVersion.LowPart), LOWORD(AIdentifier.DriverVersion.LowPart));
+  }
+
+  // get our render capabilities
+  D3DCAPS9 caps;
+  m_pD3DDevice->GetDeviceCaps(&caps);
+
+  if (caps.PixelShaderVersion < D3DPS_VERSION(2, 0)) 
+  {
+    CLog::Log(LOGERROR, "%s - XBMC requires a graphics card supporting Pixel Shaders 2.0", __FUNCTION__);
+    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(2102), g_localizeStrings.Get(2103));
+  }
+
+  m_renderCaps = 0;
+
+  CLog::Log(LOGDEBUG, "%s - texture caps: %X", __FUNCTION__, caps.TextureCaps);
+
+  if (SUCCEEDED(m_pD3D->CheckDeviceFormat( m_adapter,
+                                           D3DDEVTYPE_HAL,
+                                           D3DFMT_X8R8G8B8,
+                                           0,
+                                           D3DRTYPE_TEXTURE,
+                                           D3DFMT_DXT5 )))
+  {
+    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT", __FUNCTION__);
+    m_renderCaps |= RENDER_CAPS_DXT;
+  }
+
+  if ((caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0)
+  { // we're allowed NPOT textures
+    m_renderCaps |= RENDER_CAPS_NPOT;
+    if (((m_renderCaps & RENDER_CAPS_DXT) != 0) && ((caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL) == 0))
+      m_renderCaps |= RENDER_CAPS_DXT_NPOT;
+  }
+  else if ((caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL) != 0)
+  { // we're allowed _some_ NPOT textures (namely non-DXT and only with D3DTADDRESS_CLAMP and no wrapping)
+    m_renderCaps |= RENDER_CAPS_NPOT;
+  }
+
+  if (m_renderCaps & RENDER_CAPS_NPOT)
+    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_NPOT", __FUNCTION__);
+  if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
+    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT_NPOT", __FUNCTION__);
+
+  m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
+
+  if (g_advancedSettings.m_AllowDynamicTextures && (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES))
+  {
+    m_defaultD3DUsage = D3DUSAGE_DYNAMIC;
+    m_defaultD3DPool  = D3DPOOL_DEFAULT;
+    CLog::Log(LOGDEBUG, "%s - using D3DCAPS2_DYNAMICTEXTURES", __FUNCTION__);
+  }
+  else
+  {
+    m_defaultD3DUsage = 0;
+    m_defaultD3DPool  = D3DPOOL_MANAGED;
+  }
+
   D3DDISPLAYMODE mode;
   if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))
     m_screenHeight = mode.Height;
@@ -457,7 +470,6 @@ bool CRenderSystemDX::CreateDevice()
   m_pD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
 
   m_bRenderCreated = true;
-
   m_needNewDevice = false;
 
   // tell any shared objects about our resurrection
@@ -477,7 +489,9 @@ bool CRenderSystemDX::PresentRenderImpl()
   if(m_nDeviceStatus != S_OK)
     return false;
 
-  if (g_advancedSettings.m_sleepBeforeFlip > 0)
+  //CVideoReferenceClock polls GetRasterStatus too,
+  //polling it from two threads at the same time is bad
+  if (g_advancedSettings.m_sleepBeforeFlip > 0 && g_VideoReferenceClock.ThreadHandle() == NULL)
   {
     //save current thread priority and set thread priority to THREAD_PRIORITY_TIME_CRITICAL
     int priority = GetThreadPriority(GetCurrentThread());
@@ -618,7 +632,7 @@ bool CRenderSystemDX::EndRender()
 
 bool CRenderSystemDX::ClearBuffers(color_t color)
 {
-   HRESULT hr;
+  HRESULT hr;
 
   if (!m_bRenderCreated)
     return false;
@@ -633,16 +647,6 @@ bool CRenderSystemDX::ClearBuffers(color_t color)
     return false;
 
   return true;
-}
-
-bool CRenderSystemDX::ClearBuffers(float r, float g, float b, float a)
-{
-  if (!m_bRenderCreated)
-    return false;
-
-  D3DXCOLOR color(r, g, b, a);
-
-  return ClearBuffers((DWORD)color);
 }
 
 bool CRenderSystemDX::IsExtSupported(const char* extension)

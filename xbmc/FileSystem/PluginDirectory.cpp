@@ -85,9 +85,6 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
     return false;
   }
 
-  if (m_addon->HasSettings())
-    m_addon->LoadSettings();
-
   // get options
   CStdString options = url.GetOptions();
   CUtil::RemoveSlashAtEnd(options); // This MAY kill some scripts (eg though with a URL ending with a slash), but
@@ -117,7 +114,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, m_addon->Name().c_str(), plugin_argv[0], plugin_argv[1], plugin_argv[2]);
   bool success = false;
 #ifdef HAS_PYTHON
-  CStdString file = m_addon->Path() + m_addon->LibName();
+  CStdString file = m_addon->LibPath();
   if (g_pythonParser.evalFile(file.c_str(), 3, (const char**)plugin_argv) >= 0)
   { // wait for our script to finish
     CStdString scriptName = m_addon->Name();
@@ -397,9 +394,6 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
     return false;
   }
 
-  if (addon->HasSettings())
-    addon->LoadSettings();
-
   // options
   CStdString options = url.GetOptions();
   CUtil::RemoveSlashAtEnd(options); // This MAY kill some scripts (eg though with a URL ending with a slash), but
@@ -419,20 +413,14 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 
   // run the script
 #ifdef HAS_PYTHON
-  CStdString file = addon->Path() + addon->LibName();
   CLog::Log(LOGDEBUG, "%s - calling plugin %s('%s','%s','%s')", __FUNCTION__, addon->Name().c_str(), argv[0], argv[1], argv[2]);
-  if (g_pythonParser.evalFile(file.c_str(), 3, (const char**)argv) >= 0)
+  if (g_pythonParser.evalFile(addon->LibPath().c_str(), 3, (const char**)argv) >= 0)
     return true;
   else
 #endif
     CLog::Log(LOGERROR, "Unable to run plugin %s", addon->Name().c_str());
 
   return false;
-}
-
-bool CPluginDirectory::HasPlugins(const CONTENT_TYPE &type)
-{
-  return CAddonMgr::Get().HasAddons(ADDON_PLUGIN, type);
 }
 
 bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName)

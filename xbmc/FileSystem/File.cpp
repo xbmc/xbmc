@@ -129,7 +129,11 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
   CFile file;
   CAsyncFileCallback* helper = NULL;
 
-  if (file.Open(strFileName, READ_TRUNCATED))
+  // special case for zips - ignore caching
+  CURL url(strFileName);
+  if (CUtil::IsInZIP(strFileName))
+    url.SetOptions("?cache=no");
+  if (file.Open(url.Get(), READ_TRUNCATED))
   {
     if (file.GetLength() <= 0)
     {

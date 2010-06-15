@@ -91,7 +91,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     }
     if (iControl == CONTROL_SCRAPER_SETTINGS)
     {
-      m_bNeedSave = CGUIDialogAddonSettings::ShowAndGetInput(m_scraper);
+      m_bNeedSave = CGUIDialogAddonSettings::ShowAndGetInput(m_scraper, false);
       return m_bNeedSave;
     }
   }
@@ -119,7 +119,8 @@ void CGUIDialogContentSettings::SetupPage()
     if (m_scraper && m_scraper->Enabled())
     {
       m_bShowScanSettings = true;
-      if (m_scraper->Supports(m_content) && m_scraper->HasSettings())
+      ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(m_scraper);
+      if (scraper && scraper->Supports(m_content) && scraper->HasSettings())
         CONTROL_ENABLE(CONTROL_SCRAPER_SETTINGS);
     }
     else
@@ -245,12 +246,13 @@ void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
 {
   // grab all scrapers which support this content-type
   VECADDONS addons;
-  if (!CAddonMgr::Get().GetAddons(ADDON_SCRAPER, addons, content))
+  TYPE type = ScraperTypeFromContent(content);
+  if (!CAddonMgr::Get().GetAddons(type, addons))
     return;
 
   AddonPtr addon;
   CStdString defaultID;
-  if (CAddonMgr::Get().GetDefault(ADDON_SCRAPER, addon, content))
+  if (CAddonMgr::Get().GetDefault(type, addon))
     defaultID = addon->ID();
 
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
@@ -260,7 +262,7 @@ void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
 
     AddonPtr scraper = (*it)->Clone((*it));
 
-    if (m_scraper && m_scraper->Parent() && m_scraper->Parent()->ID() == (*it)->ID())
+    if (m_scraper && m_scraper->ID() == (*it)->ID())
     { // don't overwrite preconfigured scraper
       scraper = m_scraper;
     }
@@ -295,7 +297,7 @@ void CGUIDialogContentSettings::FillListControl()
   int selectedIndex = 0;
   m_vecItems->Clear();
 
-  if (m_scrapers.size() == 0)
+  if (m_scrapers.size() == 0 || m_scrapers.find(m_content) == m_scrapers.end())
     return;
 
   for (IVECADDONS iter=m_scrapers.find(m_content)->second.begin();iter!=m_scrapers.find(m_content)->second.end();++iter)
@@ -396,7 +398,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
       settings.exclude = false;
       settings.noupdate = dialog->m_bNoUpdate;
       bRunScan = dialog->m_bRunScan;
-      scraper->m_pathContent = content;
+      scraper->SetPathSettings(content, "");
 
       if (content == CONTENT_TVSHOWS)
       {

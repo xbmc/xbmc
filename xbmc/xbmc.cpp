@@ -76,6 +76,7 @@ int main(int argc, char* argv[])
 #endif
   setlocale(LC_NUMERIC, "C");
   g_advancedSettings.Initialize();
+  bool testmode = 0;
   if (argc > 1)
   {
     for (int i = 1; i < argc; i++)
@@ -95,10 +96,11 @@ int main(int argc, char* argv[])
         printf("  -p or --portable\tXBMC will look for configurations in install folder instead of ~/.xbmc\n");
         printf("  --legacy-res\t\tEnables screen resolutions such as PAL, NTSC, etc.\n");
 #ifdef HAS_LIRC
-        printf("  -l or --lircdev\tLircDevice to use default is /dev/lircd .\n");
+        printf("  -l or --lircdev\tLircDevice to use default is "LIRC_DEVICE" .\n");
         printf("  -n or --nolirc\tdo not use Lirc, aka no remote input.\n");
 #endif
         printf("  --debug\t\tEnable debug logging\n");
+        printf("  --test\t\tEnable test mode. [FILE] required.\n");
         exit(0);
       }
       else if (strnicmp(argv[i], "--standalone", 12) == 0)
@@ -112,6 +114,10 @@ int main(int argc, char* argv[])
       else if (strnicmp(argv[i], "--legacy-res", 12) == 0)
       {
         g_application.SetEnableLegacyRes(true);
+      }
+      else if (strnicmp(argv[i], "--test", 6) == 0)
+      {
+        testmode=1;
       }
 #ifdef HAS_LIRC
       else if (strnicmp(argv[i], "-l", 2) == 0 || strnicmp(argv[i], "--lircdev", 9) == 0)
@@ -135,10 +141,11 @@ int main(int argc, char* argv[])
         g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
         g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
       }
-      else if (argv[i][0] != '-')
+      else if (strlen(argv[i]) != 0 && argv[i][0] != '-')
       {
         CFileItemPtr pItem(new CFileItem(argv[i]));
         pItem->m_strPath = argv[i];
+        if (testmode) g_application.SetEnableTestMode(true);
         playlist.Add(pItem);
       }
     }

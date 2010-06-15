@@ -144,8 +144,6 @@ void CAddonStatusHandler::Process()
       m_addon->SaveSettings();
       CAddonMgr::Get().GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
     }
-    else
-      m_addon->LoadSettings();
   }
   /* A unknown event has occurred */
   else if (m_status == STATUS_UNKNOWN)

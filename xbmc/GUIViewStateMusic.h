@@ -23,11 +23,12 @@
 
 #include "GUIViewState.h"
 
+using namespace ADDON;
 
 class CGUIViewStateWindowMusic : public CGUIViewState
 {
 public:
-  CGUIViewStateWindowMusic(const CFileItemList& items) : CGUIViewState(items, CONTENT_AUDIO) {}
+  CGUIViewStateWindowMusic(const CFileItemList& items) : CGUIViewState(items, CPluginSource::AUDIO) {}
 protected:
   virtual int GetPlaylist();
   virtual bool AutoPlayNextItem();

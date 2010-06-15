@@ -87,34 +87,34 @@ static int get_sindex(AVFormatContext *s, int id, int format) {
     switch (format) {
         case 3:
         case 4:
-            st->codec->codec_type = CODEC_TYPE_VIDEO;
+            st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
             st->codec->codec_id = CODEC_ID_MJPEG;
             break;
         case 13:
         case 15:
-            st->codec->codec_type = CODEC_TYPE_VIDEO;
+            st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
             st->codec->codec_id = CODEC_ID_DVVIDEO;
             break;
         case 14:
         case 16:
-            st->codec->codec_type = CODEC_TYPE_VIDEO;
+            st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
             st->codec->codec_id = CODEC_ID_DVVIDEO;
             break;
         case 11:
         case 12:
         case 20:
-            st->codec->codec_type = CODEC_TYPE_VIDEO;
+            st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
             st->codec->codec_id = CODEC_ID_MPEG2VIDEO;
             st->need_parsing = AVSTREAM_PARSE_HEADERS; //get keyframe flag etc.
             break;
         case 22:
         case 23:
-            st->codec->codec_type = CODEC_TYPE_VIDEO;
+            st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
             st->codec->codec_id = CODEC_ID_MPEG1VIDEO;
             st->need_parsing = AVSTREAM_PARSE_HEADERS; //get keyframe flag etc.
             break;
         case 9:
-            st->codec->codec_type = CODEC_TYPE_AUDIO;
+            st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
             st->codec->codec_id = CODEC_ID_PCM_S24LE;
             st->codec->channels = 1;
             st->codec->sample_rate = 48000;
@@ -123,7 +123,7 @@ static int get_sindex(AVFormatContext *s, int id, int format) {
             st->codec->bits_per_coded_sample = 24;
             break;
         case 10:
-            st->codec->codec_type = CODEC_TYPE_AUDIO;
+            st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
             st->codec->codec_id = CODEC_ID_PCM_S16LE;
             st->codec->channels = 1;
             st->codec->sample_rate = 48000;
@@ -132,7 +132,7 @@ static int get_sindex(AVFormatContext *s, int id, int format) {
             st->codec->bits_per_coded_sample = 16;
             break;
         case 17:
-            st->codec->codec_type = CODEC_TYPE_AUDIO;
+            st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
             st->codec->codec_id = CODEC_ID_AC3;
             st->codec->channels = 2;
             st->codec->sample_rate = 48000;
@@ -141,11 +141,11 @@ static int get_sindex(AVFormatContext *s, int id, int format) {
         case 7:
         case 8:
         case 24:
-            st->codec->codec_type = CODEC_TYPE_DATA;
+            st->codec->codec_type = AVMEDIA_TYPE_DATA;
             st->codec->codec_id = CODEC_ID_NONE;
             break;
         default:
-            st->codec->codec_type = CODEC_TYPE_UNKNOWN;
+            st->codec->codec_type = AVMEDIA_TYPE_UNKNOWN;
             st->codec->codec_id = CODEC_ID_NONE;
             break;
     }
@@ -237,6 +237,10 @@ static void gxf_read_index(AVFormatContext *s, int pkt_len) {
     uint32_t map_cnt = get_le32(pb);
     int i;
     pkt_len -= 8;
+    if (s->flags & AVFMT_FLAG_IGNIDX) {
+        url_fskip(pb, pkt_len);
+        return;
+    }
     if (map_cnt > 1000) {
         av_log(s, AV_LOG_ERROR, "too many index entries %u (%x)\n", map_cnt, map_cnt);
         map_cnt = 1000;

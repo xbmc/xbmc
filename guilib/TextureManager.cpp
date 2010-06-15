@@ -27,6 +27,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/log.h"
+#include "addons/Skin.h"
 #ifdef _DEBUG
 #include "utils/TimeUtils.h"
 #endif
@@ -345,7 +346,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
       int iImages = AnimatedGifSet.LoadGIF(strPath.c_str());
       if (iImages == 0)
       {
-        if (!strnicmp(strPath.c_str(), "special://home/skin/", 20) && !strnicmp(strPath.c_str(), "special://xbmc/skin/", 20))
+        CStdString rootPath = strPath.Left(g_SkinInfo->Path().GetLength());
+        if (0 == rootPath.CompareNoCase(g_SkinInfo->Path()))
           CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
         return 0;
       }

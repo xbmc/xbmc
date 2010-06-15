@@ -53,8 +53,6 @@
 #define HAS_JSONRPC
 #define HAS_HTTPAPI
 
-#define HAS_AC3_CODEC
-#define HAS_DTS_CODEC
 #define HAS_CDDA_RIPPER
 #ifdef HAVE_ASAP_CODEC
 #define HAS_ASAP_CODEC
@@ -97,6 +95,9 @@
 #define HAS_WEB_SERVER
 #define HAS_WEB_INTERFACE
 #define HAVE_LIBSSH
+#define USE_LIBA52_DECODER
+#define USE_LIBDTS_DECODER
+#define HAS_AC3_CDDA_CODEC
 #endif
 
 /*****************

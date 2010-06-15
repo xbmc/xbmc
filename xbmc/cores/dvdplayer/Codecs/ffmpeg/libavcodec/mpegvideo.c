@@ -23,13 +23,14 @@
  */
 
 /**
- * @file libavcodec/mpegvideo.c
+ * @file
  * The simplest mpeg encoder (well, it was the simplest!).
  */
 
 #include "libavutil/intmath.h"
 #include "avcodec.h"
 #include "dsputil.h"
+#include "internal.h"
 #include "mpegvideo.h"
 #include "mpegvideo_common.h"
 #include "mjpegenc.h"
@@ -296,7 +297,7 @@ int ff_alloc_picture(MpegEncContext *s, Picture *pic, int shared){
             for(i=0; i<2; i++){
                 FF_ALLOCZ_OR_GOTO(s->avctx, pic->motion_val_base[i], 2 * (b8_array_size+4) * sizeof(int16_t), fail)
                 pic->motion_val[i]= pic->motion_val_base[i]+4;
-                FF_ALLOCZ_OR_GOTO(s->avctx, pic->ref_index[i], b8_array_size * sizeof(uint8_t), fail)
+                FF_ALLOCZ_OR_GOTO(s->avctx, pic->ref_index[i], 4*mb_array_size * sizeof(uint8_t), fail)
             }
             pic->motion_subsample_log2= 3;
         }
@@ -530,15 +531,9 @@ av_cold int MPV_common_init(MpegEncContext *s)
     yc_size = y_size + 2 * c_size;
 
     /* convert fourcc to upper case */
-    s->codec_tag=          toupper( s->avctx->codec_tag     &0xFF)
-                        + (toupper((s->avctx->codec_tag>>8 )&0xFF)<<8 )
-                        + (toupper((s->avctx->codec_tag>>16)&0xFF)<<16)
-                        + (toupper((s->avctx->codec_tag>>24)&0xFF)<<24);
+    s->codec_tag = ff_toupper4(s->avctx->codec_tag);
 
-    s->stream_codec_tag=          toupper( s->avctx->stream_codec_tag     &0xFF)
-                               + (toupper((s->avctx->stream_codec_tag>>8 )&0xFF)<<8 )
-                               + (toupper((s->avctx->stream_codec_tag>>16)&0xFF)<<16)
-                               + (toupper((s->avctx->stream_codec_tag>>24)&0xFF)<<24);
+    s->stream_codec_tag = ff_toupper4(s->avctx->stream_codec_tag);
 
     s->avctx->coded_frame= (AVFrame*)&s->current_picture;
 

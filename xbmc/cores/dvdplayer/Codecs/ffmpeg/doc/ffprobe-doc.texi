@@ -7,8 +7,7 @@
 @sp 3
 @end titlepage
 
-@chapter Introduction
-
+@chapter Description
 @c man begin DESCRIPTION
 
 FFprobe gathers information from multimedia streams and prints it in
@@ -66,6 +65,9 @@ ffprobe [options] [@file{input_file}]
 
 @table @option
 
+@item -convert_tags
+Convert the tag names in the format container to the generic FFmpeg tag names.
+
 @item -f @var{format}
 Force format to use.
 
@@ -110,7 +112,11 @@ with name ``STREAM''.
 @settitle FFprobe media prober
 
 @c man begin SEEALSO
-ffmpeg(1), ffplay(1), ffserver(1)
+ffmpeg(1), ffplay(1), ffserver(1) and the FFmpeg HTML documentation
+@c man end
+
+@c man begin AUTHORS
+The FFmpeg developers
 @c man end
 
 @end ignore

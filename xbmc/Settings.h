@@ -22,8 +22,9 @@
 
 #define PRE_SKIN_VERSION_9_10_COMPATIBILITY 1
 
-#define DEFAULT_SKIN        "skin.confluence"
+#define DEFAULT_SKIN          "skin.confluence"
 #define DEFAULT_FANART_HEIGHT 0
+#define DEFAULT_WEATHER_ADDON "weather.xbmc.builtin"
 #ifdef MID
 #define DEFAULT_VSYNC       VSYNC_DISABLED
 #define DEFAULT_THUMB_SIZE  256
@@ -335,9 +336,6 @@ public:
   CStdString GetVideoThumbFolder() const;
   CStdString GetBookmarksThumbFolder() const;
   CStdString GetSourcesFile() const;
-  CStdString GetSkinFolder() const;
-  CStdString GetSkinFolder(const CStdString& skinName) const;
-  CStdString GetScriptsFolder() const;
   CStdString GetVideoFanartFolder() const;
   CStdString GetMusicFanartFolder() const;
 

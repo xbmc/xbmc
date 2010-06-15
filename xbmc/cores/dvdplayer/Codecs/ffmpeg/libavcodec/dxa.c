@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/dxa.c
+ * @file
  * DXA Video decoder
  */
 
@@ -319,7 +319,7 @@ static av_cold int decode_end(AVCodecContext *avctx)
 
 AVCodec dxa_decoder = {
     "dxa",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_DXA,
     sizeof(DxaDecContext),
     decode_init,

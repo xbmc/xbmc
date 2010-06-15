@@ -288,7 +288,7 @@ void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
 
 bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  CLog::Log(LOGDEBUG, "%s (%s) on screen %d with size %dx%d, refresh %f", __FUNCTION__, !fullScreen ? "windowed" : (g_guiSettings.GetBool("videoscreen.fakefullscreen") ? "windowed fullscreen" : "true fullscreen"), res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate);
+  CLog::Log(LOGDEBUG, "%s (%s) on screen %d with size %dx%d, refresh %f%s", __FUNCTION__, !fullScreen ? "windowed" : (g_guiSettings.GetBool("videoscreen.fakefullscreen") ? "windowed fullscreen" : "true fullscreen"), res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate, (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
   m_bFullScreen = fullScreen;
   bool forceResize = (m_nScreen != res.iScreen);
   m_nScreen = res.iScreen;
@@ -296,8 +296,8 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   m_nHeight = res.iHeight;
   m_bBlankOtherDisplay = blankOtherDisplays;
 
-  if (g_guiSettings.GetBool("videoscreen.fakefullscreen"))
-    ChangeRefreshRate(m_nScreen, res.fRefreshRate);
+  if (fullScreen && g_guiSettings.GetBool("videoscreen.fakefullscreen"))
+    ChangeResolution(res);
 
   ResizeInternal(forceResize);
 
@@ -368,21 +368,45 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
   return true;
 }
 
-bool CWinSystemWin32::ChangeRefreshRate(int screen, float refresh)
+bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res)
 {
-  const MONITOR_DETAILS &details = GetMonitor(screen);
+  const MONITOR_DETAILS &details = GetMonitor(res.iScreen);
 
-  // grab the mode we want
   DEVMODE sDevMode;
   ZeroMemory(&sDevMode, sizeof(DEVMODE));
   sDevMode.dmSize = sizeof(DEVMODE);
-  EnumDisplaySettings(details.DeviceName, ENUM_CURRENT_SETTINGS, &sDevMode);
-  // update the display frequency
-  sDevMode.dmDisplayFrequency = (int)refresh;
-  sDevMode.dmFields |= DM_DISPLAYFREQUENCY;
 
-  return (DISP_CHANGE_SUCCESSFUL == ChangeDisplaySettingsEx(details.DeviceName, &sDevMode, NULL, 0, NULL));
+  // If we can't read the current resolution or any detail of the resolution is different than res
+  if (!EnumDisplaySettings(details.DeviceName, ENUM_CURRENT_SETTINGS, &sDevMode) ||
+      sDevMode.dmPelsWidth != res.iWidth || sDevMode.dmPelsHeight != res.iHeight ||
+      sDevMode.dmDisplayFrequency != (int)res.fRefreshRate ||
+      ((sDevMode.dmDisplayFlags & DM_INTERLACED) && !(res.dwFlags & D3DPRESENTFLAG_INTERLACED)) || 
+      (!(sDevMode.dmDisplayFlags & DM_INTERLACED) && (res.dwFlags & D3DPRESENTFLAG_INTERLACED)) )
+  {
+    ZeroMemory(&sDevMode, sizeof(DEVMODE));
+    sDevMode.dmSize = sizeof(DEVMODE);
+    sDevMode.dmDriverExtra = 0;
+    sDevMode.dmPelsWidth = res.iWidth;
+    sDevMode.dmPelsHeight = res.iHeight;
+    sDevMode.dmDisplayFrequency = (int)res.fRefreshRate;
+    sDevMode.dmDisplayFlags = (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? DM_INTERLACED : 0;
+    sDevMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY | DM_DISPLAYFLAGS;
+
+    LONG rc = ChangeDisplaySettingsEx(details.DeviceName, &sDevMode, NULL, 0, NULL);
+    if (rc != DISP_CHANGE_SUCCESSFUL)
+    {
+      CLog::Log(LOGERROR, "%s: error, code %d", __FUNCTION__, rc);
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+  }
+  // nothing to do, return success
+  return true;
 }
+
 
 void CWinSystemWin32::UpdateResolutions()
 {
@@ -397,6 +421,7 @@ void CWinSystemWin32::UpdateResolutions()
   float refreshRate = 0;
   int w = 0;
   int h = 0;
+  uint32_t dwFlags;
 
   // Primary
   m_MonitorsInfo[m_nPrimary].ScreenNumber = 0;
@@ -406,8 +431,9 @@ void CWinSystemWin32::UpdateResolutions()
     refreshRate = (float)(m_MonitorsInfo[m_nPrimary].RefreshRate + 1) / 1.001f;
   else
     refreshRate = (float)m_MonitorsInfo[m_nPrimary].RefreshRate;
+  dwFlags = m_MonitorsInfo[m_nPrimary].Interlaced ? D3DPRESENTFLAG_INTERLACED : 0;
 
-  UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, refreshRate);
+  UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, refreshRate, dwFlags);
   CLog::Log(LOGNOTICE, "Primary mode: %s", g_settings.m_ResInfo[RES_DESKTOP].strMode.c_str());
 
   // Desktop resolution of the other screens
@@ -426,9 +452,10 @@ void CWinSystemWin32::UpdateResolutions()
           refreshRate = (float)(m_MonitorsInfo[monitor].RefreshRate + 1) / 1.001f;
         else
           refreshRate = (float)m_MonitorsInfo[monitor].RefreshRate;
+        dwFlags = m_MonitorsInfo[monitor].Interlaced ? D3DPRESENTFLAG_INTERLACED : 0;
 
         RESOLUTION_INFO res;
-        UpdateDesktopResolution(res, xbmcmonitor++, w, h, refreshRate);
+        UpdateDesktopResolution(res, xbmcmonitor++, w, h, refreshRate, dwFlags);
         g_settings.m_ResInfo.push_back(res);
         CLog::Log(LOGNOTICE, "Secondary mode: %s", res.strMode.c_str());
       }
@@ -453,8 +480,10 @@ void CWinSystemWin32::UpdateResolutions()
         refreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
       else
         refreshRate = (float)(devmode.dmDisplayFrequency);
+      dwFlags = (devmode.dmDisplayFlags & DM_INTERLACED) ? D3DPRESENTFLAG_INTERLACED : 0;
+
       RESOLUTION_INFO res;
-      UpdateDesktopResolution(res, m_MonitorsInfo[monitor].ScreenNumber, devmode.dmPelsWidth, devmode.dmPelsHeight, refreshRate);
+      UpdateDesktopResolution(res, m_MonitorsInfo[monitor].ScreenNumber, devmode.dmPelsWidth, devmode.dmPelsHeight, refreshRate, dwFlags);
       AddResolution(res);
       CLog::Log(LOGNOTICE, "Additional mode: %s", res.strMode.c_str());
     }
@@ -464,8 +493,13 @@ void CWinSystemWin32::UpdateResolutions()
 void CWinSystemWin32::AddResolution(const RESOLUTION_INFO &res)
 {
   for (unsigned int i = 0; i < g_settings.m_ResInfo.size(); i++)
-    if (g_settings.m_ResInfo[i].strMode == res.strMode)
+    if (g_settings.m_ResInfo[i].iScreen      == res.iScreen &&
+        g_settings.m_ResInfo[i].iWidth       == res.iWidth &&
+        g_settings.m_ResInfo[i].iHeight      == res.iHeight &&
+        g_settings.m_ResInfo[i].fRefreshRate == res.fRefreshRate &&
+        g_settings.m_ResInfo[i].dwFlags      == res.dwFlags)
       return; // already have this resolution
+
   g_settings.m_ResInfo.push_back(res);
 }
 
@@ -546,6 +580,7 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
         md.hMonitor = hm;
         md.RefreshRate = dm.dmDisplayFrequency;
         md.Bpp = dm.dmBitsPerPel;
+        md.Interlaced = (dm.dmDisplayFlags & DM_INTERLACED) ? true : false;
 
         m_MonitorsInfo.push_back(md);
 

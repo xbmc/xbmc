@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/flacdec.c
+ * @file
  * FLAC (Free Lossless Audio Codec) decoder
  * @author Alex Beregszaszi
  *
@@ -799,7 +799,7 @@ static void flac_flush(AVCodecContext *avctx)
 
 AVCodec flac_decoder = {
     "flac",
-    CODEC_TYPE_AUDIO,
+    AVMEDIA_TYPE_AUDIO,
     CODEC_ID_FLAC,
     sizeof(FLACContext),
     flac_decode_init,

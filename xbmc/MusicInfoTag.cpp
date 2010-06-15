@@ -417,7 +417,7 @@ void CMusicInfoTag::AppendArtist(const CStdString &artist)
   std::vector<CStdString> values;
   CStdString value(Trim(artist));
   StringUtils::SplitString(m_strArtist, g_advancedSettings.m_musicItemSeparator, values);
-  if (std::find(values.begin(), values.end(), value) != values.end())
+  if (std::find(values.begin(), values.end(), value) == values.end())
     m_strArtist += g_advancedSettings.m_musicItemSeparator + value;
 }
 
@@ -428,7 +428,7 @@ void CMusicInfoTag::AppendAlbumArtist(const CStdString &albumArtist)
   std::vector<CStdString> values;
   CStdString value(Trim(albumArtist));
   StringUtils::SplitString(m_strAlbumArtist, g_advancedSettings.m_musicItemSeparator, values);
-  if (std::find(values.begin(), values.end(), value) != values.end())
+  if (std::find(values.begin(), values.end(), value) == values.end())
     m_strAlbumArtist += g_advancedSettings.m_musicItemSeparator + value;
 }
 
@@ -439,7 +439,7 @@ void CMusicInfoTag::AppendGenre(const CStdString &genre)
   std::vector<CStdString> values;
   CStdString value(Trim(genre));
   StringUtils::SplitString(m_strGenre, g_advancedSettings.m_musicItemSeparator, values);
-  if (std::find(values.begin(), values.end(), value) != values.end())
+  if (std::find(values.begin(), values.end(), value) == values.end())
     m_strGenre += g_advancedSettings.m_musicItemSeparator + value;
 }
 

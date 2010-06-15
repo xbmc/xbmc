@@ -75,17 +75,15 @@ CStdString CSysInfoJob::GetCPUFreqInfo()
   return strCPUFreq;
 }
 
-CStdString CSysInfoJob::GetInternetState()
+CSysData::INTERNET_STATE CSysInfoJob::GetInternetState()
 {
   // Internet connection state!
   XFILE::CFileCurl http;
-  m_info.haveInternetState = http.IsInternet();
-  if (m_info.haveInternetState)
-    return g_localizeStrings.Get(13296);
-  else if (http.IsInternet(false))
-    return g_localizeStrings.Get(13274);
-  else // NOT Connected to the Internet!
-    return g_localizeStrings.Get(13297);
+  if (http.IsInternet())
+    return CSysData::CONNECTED;
+  if (http.IsInternet(false))
+    return CSysData::NO_DNS;
+  return CSysData::DISCONNECTED;
 }
 
 CStdString CSysInfoJob::GetMACAddress()
@@ -184,7 +182,12 @@ CStdString CSysInfo::TranslateInfo(int info) const
   case SYSTEM_TOTALUPTIME:
     return m_info.systemTotalUptime;
   case SYSTEM_INTERNET_STATE:
-    return m_info.internetState;
+    if (m_info.internetState == CSysData::CONNECTED)
+      return g_localizeStrings.Get(13296);
+    else if (m_info.internetState == CSysData::NO_DNS)
+      return g_localizeStrings.Get(13274);
+    else
+      return g_localizeStrings.Get(13297);
   default:
     return "";
   }
@@ -411,9 +414,11 @@ CStdString CSysInfo::GetKernelVersion()
 #endif
 }
 
-bool CSysInfo::HasInternet() const
+bool CSysInfo::HasInternet()
 {
-  return m_info.haveInternetState;
+  if (m_info.internetState != CSysData::UNKNOWN)
+    return m_info.internetState == CSysData::CONNECTED;
+  return (m_info.internetState = CSysInfoJob::GetInternetState()) == CSysData::CONNECTED;
 }
 
 CStdString CSysInfo::GetHddSpaceInfo(int drive, bool shortText)

@@ -40,7 +40,7 @@ extern const int program_birth_year;
 extern const int this_year;
 
 extern const char **opt_names;
-extern AVCodecContext *avcodec_opts[CODEC_TYPE_NB];
+extern AVCodecContext *avcodec_opts[AVMEDIA_TYPE_NB];
 extern AVFormatContext *avformat_opts;
 extern struct SwsContext *sws_opts;
 
@@ -134,6 +134,15 @@ void parse_options(int argc, char **argv, const OptionDef *options,
 
 void set_context_opts(void *ctx, void *opts_ctx, int flags);
 
+/**
+ * Prints an error message to stderr, indicating filename and a human
+ * readable description of the error code err.
+ *
+ * If strerror_r() is not available the use of this function in a
+ * multithreaded application may be unsafe.
+ *
+ * @see av_strerror()
+ */
 void print_error(const char *filename, int err);
 
 void list_fmts(void (*get_fmt_string)(char *buf, int buf_size, int fmt), int nb_fmts);
@@ -199,5 +208,16 @@ void show_pix_fmts(void);
  * starting with [yY], otherwise returns 0.
  */
 int read_yesno(void);
+
+/**
+ * Reads the file with name filename, and puts its content in a newly
+ * allocated 0-terminated buffer.
+ *
+ * @param bufptr puts here the pointer to the newly allocated buffer
+ * @param size puts here the size of the newly allocated buffer
+ * @return 0 in case of success, a negative value corresponding to an
+ * AVERROR error code in case of failure.
+ */
+int read_file(const char *filename, char **bufptr, size_t *size);
 
 #endif /* FFMPEG_CMDUTILS_H */

@@ -35,6 +35,7 @@
 class CSysData
 {
 public:
+  enum INTERNET_STATE { UNKNOWN, CONNECTED, NO_DNS, DISCONNECTED };
   CSysData()
   {
     Reset();
@@ -42,14 +43,12 @@ public:
 
   void Reset()
   {
-    haveInternetState = false;
-    internetState = "";
+    internetState = UNKNOWN;
   };
 
-  bool haveInternetState;
   CStdString systemUptime;
   CStdString systemTotalUptime;
-  CStdString internetState;
+  INTERNET_STATE internetState;
   CStdString videoEncoder;
   CStdString cpuFrequency;
   CStdString kernelVersion;
@@ -64,10 +63,10 @@ public:
   virtual bool DoWork();
   const CSysData &GetData() const;
 
+  static CSysData::INTERNET_STATE GetInternetState();
 private:
   bool SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays);
   double GetCPUFrequency();
-  CStdString GetInternetState();
   CStdString GetSystemUpTime(bool bTotalUptime);
   CStdString GetCPUFreqInfo();
   CStdString GetMACAddress();
@@ -88,10 +87,6 @@ public:
   bool GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState);
   bool GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_PowerCycleCount);
 
-  bool CreateBiosBackup();
-  bool CreateEEPROMBackup();
-  void WriteTXTInfoFile();
-
 #if defined(_LINUX) && !defined(__APPLE__)
   CStdString GetLinuxDistro();
 #endif
@@ -99,7 +94,7 @@ public:
   CStdString GetUnameVersion();
 #endif
   CStdString GetUserAgent();
-  bool HasInternet() const;
+  bool HasInternet();
   bool IsAppleTV();
   bool HasVDADecoder();
   bool IsAeroDisabled();

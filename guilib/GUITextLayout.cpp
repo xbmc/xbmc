@@ -447,25 +447,20 @@ void CGUITextLayout::WrapText(const vecText &text, float maxWidth)
           {
             CGUIString string(curLine.begin(), curLine.begin() + lastSpaceInLine, false);
             m_lines.push_back(string);
-            if (IsSpace(letter))
-              lastSpace++;  // ignore the space
+            // skip over spaces
             pos = lastSpace;
+            while (pos != line.m_text.end() && IsSpace(*pos))
+              pos++;
             curLine.clear();
             lastSpaceInLine = 0;
             lastSpace = line.m_text.begin();
             continue;
           }
         }
-        // only add spaces if we're not empty
-        if (!IsSpace(letter) || curLine.size())
-        {
-          lastSpace = pos;
-          lastSpaceInLine = curLine.size();
-          curLine.push_back(letter);
-        }
+        lastSpace = pos;
+        lastSpaceInLine = curLine.size();
       }
-      else
-        curLine.push_back(letter);
+      curLine.push_back(letter);
       pos++;
     }
     // now add whatever we have left to the string

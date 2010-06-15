@@ -55,6 +55,8 @@ int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int fl
         m=*pm= av_mallocz(sizeof(*m));
 
     if(tag){
+        if (flags & AV_METADATA_DONT_OVERWRITE)
+            return 0;
         av_free(tag->value);
         av_free(tag->key);
         *tag= m->elems[--m->count];
@@ -115,23 +117,24 @@ void metadata_conv(AVMetadata **pm, const AVMetadataConv *d_conv,
     AVMetadata *dst = NULL;
     const char *key;
 
+    if (d_conv == s_conv)
+        return;
+
     while((mtag=av_metadata_get(*pm, "", mtag, AV_METADATA_IGNORE_SUFFIX))) {
         key = mtag->key;
-        if (s_conv != d_conv) {
-            if (s_conv)
-                for (sc=s_conv; sc->native; sc++)
-                    if (!strcasecmp(key, sc->native)) {
-                        key = sc->generic;
-                        break;
-                    }
-            if (d_conv)
-                for (dc=d_conv; dc->native; dc++)
-                    if (!strcasecmp(key, dc->generic)) {
-                        key = dc->native;
-                        break;
-                    }
-        }
-        av_metadata_set(&dst, key, mtag->value);
+        if (s_conv)
+            for (sc=s_conv; sc->native; sc++)
+                if (!strcasecmp(key, sc->native)) {
+                    key = sc->generic;
+                    break;
+                }
+        if (d_conv)
+            for (dc=d_conv; dc->native; dc++)
+                if (!strcasecmp(key, dc->generic)) {
+                    key = dc->native;
+                    break;
+                }
+        av_metadata_set2(&dst, key, mtag->value, 0);
     }
     av_metadata_free(pm);
     *pm = dst;

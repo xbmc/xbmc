@@ -69,7 +69,7 @@ bool CDVDDemuxShoutcast::Open(CDVDInputStream* pInput)
   CHttpHeader* pHeader = pInputStreamHttp->GetHttpHeader();
 
   std::string strMetaInt = pHeader->GetValue(ICY_METAINTERVAL);
-  std::string strContentType = pHeader->GetContentType();
+  std::string strMimeType = pHeader->GetMimeType();
 
   // create new demuxer stream
   m_pDemuxStream = new CDemuxStreamAudioShoutcast();
@@ -82,13 +82,13 @@ bool CDVDDemuxShoutcast::Open(CDVDInputStream* pInput)
   // set meta interval
   m_iMetaStreamInterval = atoi(strMetaInt.c_str());
 
-  if (stricmp(strContentType.c_str(), CONTENT_TYPE_AAC) == 0 ||
-      stricmp(strContentType.c_str(), CONTENT_TYPE_AACPLUS) == 0)
+  if (stricmp(strMimeType.c_str(), CONTENT_TYPE_AAC) == 0 ||
+      stricmp(strMimeType.c_str(), CONTENT_TYPE_AACPLUS) == 0)
   {
     // need an aac decoder first
     m_pDemuxStream->codec = CODEC_ID_AAC;
   }
-  else // (stricmp(strContentType, CONTENT_TYPE_MP3) == 0)
+  else // (stricmp(strMimeType, CONTENT_TYPE_MP3) == 0)
   {
     // default to mp3
     m_pDemuxStream->codec = CODEC_ID_MP3;

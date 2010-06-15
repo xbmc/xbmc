@@ -1,12 +1,31 @@
 #ifndef LINUXRENDERERGLES_RENDERER
 #define LINUXRENDERERGLES_RENDERER
 
+/*
+ *      Copyright (C) 2010 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #if HAS_GLES == 2
 
 #include "../../../guilib/FrameBufferObject.h"
 #include "../../../guilib/Shader.h"
-#include "../dvdplayer/Codecs/DllSwScale.h"
-#include "../dvdplayer/Codecs/DllAvCodec.h"
 #include "../../settings/VideoSettings.h"
 #include "RenderFlags.h"
 #include "GraphicContext.h"
@@ -91,6 +110,10 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
+class DllAvUtil;
+class DllAvCodec;
+class DllSwScale;
+
 class CLinuxRendererGLES : public CBaseRenderer
 {
 public:
@@ -116,9 +139,6 @@ public:
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
   // Feature support
-  virtual bool SupportsBrightness();
-  virtual bool SupportsContrast();
-  virtual bool SupportsGamma();
   virtual bool SupportsMultiPassRendering();
   virtual bool Supports(ERENDERFEATURE feature);
   virtual bool Supports(EINTERLACEMETHOD method);
@@ -132,16 +152,22 @@ protected:
   void InitializeSoftwareUpscaling();
 
   virtual void ManageTextures();
-  void DeleteYV12Texture(int index);
-  void ClearYV12Texture(int index);
-  virtual bool CreateYV12Texture(int index, bool clear=true);
-  void CopyYV12Texture(int dest);
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
   virtual void LoadShaders(int field=FIELD_FULL);
-  void LoadTextures(int source);
   void SetTextureFilter(GLenum method);
   void UpdateVideoFilter();
+
+  // textures
+  void (CLinuxRendererGLES::*m_textureUpload)(int index);
+  void (CLinuxRendererGLES::*m_textureDelete)(int index);
+  bool (CLinuxRendererGLES::*m_textureCreate)(int index);
+
+  void UploadYV12Texture(int index);
+  void DeleteYV12Texture(int index);
+  bool CreateYV12Texture(int index);
+
+  void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
   void RenderMultiPass(int renderBuffer, int field);  // multi pass glsl renderer
@@ -158,6 +184,7 @@ protected:
   bool m_bValidated;
   bool m_bImageReady;
   unsigned m_iFlags;
+  GLenum m_textureTarget;
   unsigned short m_renderMethod;
   RenderQuality m_renderQuality;
   unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
@@ -192,6 +219,9 @@ protected:
 
   struct YUVBUFFER
   {
+    YUVBUFFER();
+   ~YUVBUFFER();
+
     YUVFIELDS fields;
     YV12Image image;
     unsigned  flipindex; /* used to decide if this has been uploaded */
@@ -216,9 +246,9 @@ protected:
   float m_clearColour;
 
   // software scale libraries (fallback if required gl version is not available)
-  DllAvUtil    m_dllAvUtil;
-  DllAvCodec   m_dllAvCodec;
-  DllSwScale   m_dllSwScale;
+  DllAvUtil   *m_dllAvUtil;
+  DllAvCodec  *m_dllAvCodec;
+  DllSwScale  *m_dllSwScale;
   BYTE	      *m_rgbBuffer;  // if software scale is used, this will hold the result image
   unsigned int m_rgbBufferSize;
 

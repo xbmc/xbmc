@@ -221,24 +221,8 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
     //  Should any of the files we read be treated as a directory?
     //  Disable for database folders, as they already contain the extracted items
     if (bUseFileDirectories && !items.IsMusicDb() && !items.IsVideoDb() && !items.IsSmartPlayList())
-    {
-      for (int i=0; i< items.Size(); ++i)
-      {
-        CFileItemPtr pItem=items[i];
-        if ((!pItem->m_bIsFolder) && (!pItem->IsInternetStream()))
-        {
-          auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->m_strPath,pItem.get(),strMask));
-          if (pDirectory.get())
-            pItem->m_bIsFolder = true;
-          else
-            if (pItem->m_bIsFolder)
-            {
-              items.Remove(i);
-              i--; // don't confuse loop
-            }
-        }
-      }
-    }
+      FilterFileDirectories(items, strMask);
+
     return true;
   }
 #ifndef _LINUX
@@ -321,4 +305,24 @@ bool CDirectory::Remove(const CStdString& strPath)
   }
   CLog::Log(LOGERROR, "%s - Error removing %s", __FUNCTION__, strPath.c_str());
   return false;
+}
+
+void CDirectory::FilterFileDirectories(CFileItemList &items, const CStdString &mask)
+{
+  for (int i=0; i< items.Size(); ++i)
+  {
+    CFileItemPtr pItem=items[i];
+    if ((!pItem->m_bIsFolder) && (!pItem->IsInternetStream()))
+    {
+      auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->m_strPath,pItem.get(),mask));
+      if (pDirectory.get())
+        pItem->m_bIsFolder = true;
+      else
+        if (pItem->m_bIsFolder)
+        {
+          items.Remove(i);
+          i--; // don't confuse loop
+        }
+    }
+  }
 }

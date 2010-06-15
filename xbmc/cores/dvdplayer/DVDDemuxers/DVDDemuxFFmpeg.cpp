@@ -28,8 +28,6 @@
 #endif
 #ifdef _LINUX
 #include "stdint.h"
-#else
-#define INT64_C __int64
 #endif
 #include "DVDDemuxFFmpeg.h"
 #include "DVDInputStreams/DVDInputStream.h"
@@ -290,7 +288,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   else
   {
     m_timeout = 0;
-    m_ioContext = m_dllAvFormat.av_alloc_put_byte(m_buffer, FFMPEG_FILE_BUFFER_SIZE, 0, m_pInput, dvd_file_read, NULL, dvd_file_seek);
+    unsigned char* buffer = (unsigned char*)m_dllAvUtil.av_malloc(FFMPEG_FILE_BUFFER_SIZE);
+    m_ioContext = m_dllAvFormat.av_alloc_put_byte(buffer, FFMPEG_FILE_BUFFER_SIZE, 0, m_pInput, dvd_file_read, NULL, dvd_file_seek);
     m_ioContext->max_packet_size = FFMPEG_FILE_BUFFER_SIZE;
 
     if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
@@ -483,6 +482,8 @@ void CDVDDemuxFFmpeg::Dispose()
         m_ioContext = m_pFormatContext->pb;
       }
       m_dllAvFormat.av_close_input_stream(m_pFormatContext);
+      if (m_ioContext->buffer)
+        m_dllAvUtil.av_free(m_ioContext->buffer);
       m_dllAvUtil.av_free(m_ioContext);
     }
     else
@@ -580,7 +581,10 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   double timestamp = (double)pts * num  / den;
   double starttime = 0.0f;
 
-  if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
+  // for dvd's we need the original time
+  if(m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
+    starttime = static_cast<CDVDInputStreamNavigator*>(m_pInput)->GetTimeStampCorrection() / DVD_TIME_BASE;
+  else if (m_pFormatContext->start_time != (int64_t)AV_NOPTS_VALUE)
     starttime = (double)m_pFormatContext->start_time / AV_TIME_BASE;
 
   if(timestamp > starttime)
@@ -1051,6 +1055,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
     m_streams[iId]->iId = iId;
     m_streams[iId]->source = STREAM_SOURCE_DEMUX;
     m_streams[iId]->pPrivate = pStream;
+    m_streams[iId]->flags = (CDemuxStream::EFlags)pStream->disposition;
 
     strcpy( m_streams[iId]->language, pStream->language );
 
@@ -1067,6 +1072,18 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 
     if( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
     {
+      if (m_streams[iId]->codec == CODEC_ID_PROBE)
+      {
+        // fix MPEG-1/MPEG-2 video stream probe returning CODEC_ID_PROBE for still frames.
+        // ffmpeg issue 1871, regression from ffmpeg r22831.
+        if ((pStream->id & 0xF0) == 0xE0)
+        {
+          m_streams[iId]->codec = CODEC_ID_MPEG2VIDEO;
+          m_streams[iId]->codec_fourcc = MKTAG('M','P','2','V');
+          CLog::Log(LOGERROR, "%s - CODEC_ID_PROBE detected, forcing CODEC_ID_MPEG2VIDEO", __FUNCTION__);
+        }
+      }
+      
       // this stuff is really only valid for dvd's.
       // this is so that the physicalid matches the
       // id's reported from libdvdnav

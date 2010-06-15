@@ -31,7 +31,7 @@
 
 #include "AudioDecoder.h"
 
-DVDPlayerCodec::DVDPlayerCodec()
+DVDPlayerCodec::DVDPlayerCodec(CodecID codec)
 {
   m_CodecName = "DVDPlayer";
   m_pDemuxer = NULL;
@@ -41,6 +41,7 @@ DVDPlayerCodec::DVDPlayerCodec()
   m_pPacket = NULL;
   m_decoded = NULL;;
   m_nDecodedLen = 0;
+  m_codec = codec;
 }
 
 DVDPlayerCodec::~DVDPlayerCodec()
@@ -129,6 +130,13 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
   }
 
   CDVDStreamInfo hint(*pStream, true);
+  if (m_codec) {
+    hint.codec = m_codec;
+    hint.channels = 0;
+    hint.samplerate = 0;
+    hint.bitspersample = 0;
+  }
+
   m_pAudioCodec = CDVDFactoryCodec::CreateAudioCodec(hint);
   if (!m_pAudioCodec)
   {
@@ -142,17 +150,24 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
 
   // we have to decode initial data in order to get channels/samplerate
   // for sanity - we read no more than 10 packets
+  int nErrors = 0;
   for (int nPacket=0; nPacket < 10 && (m_Channels == 0 || m_SampleRate == 0); nPacket++)
   {
     BYTE dummy[256];
     int nSize = 256;
-    ReadPCM(dummy, nSize, &nSize);
+    if (ReadPCM(dummy, nSize, &nSize) == READ_ERROR)
+      ++nErrors;
 
     // We always ask ffmpeg to return s16le
     m_BitsPerSample = m_pAudioCodec->GetBitsPerSample();
     m_SampleRate = m_pAudioCodec->GetSampleRate();
     m_Channels = m_pAudioCodec->GetChannels();
 
+  }
+  if (nErrors >= 10)
+  {
+    CLog::Log(LOGDEBUG, "%s: Could not decode data", __FUNCTION__);
+    return false;
   }
 
   m_nDecodedLen = 0;

@@ -86,7 +86,7 @@ static int mov_metadata_trkn(MOVContext *c, ByteIOContext *pb, unsigned len)
 
     get_be16(pb); // unknown
     snprintf(buf, sizeof(buf), "%d", get_be16(pb));
-    av_metadata_set(&c->fc->metadata, "track", buf);
+    av_metadata_set2(&c->fc->metadata, "track", buf, 0);
 
     get_be16(pb); // total tracks
 
@@ -144,7 +144,7 @@ static int mov_read_udta_string(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     switch (atom.type) {
     case MKTAG(0xa9,'n','a','m'): key = "title";     break;
     case MKTAG(0xa9,'a','u','t'):
-    case MKTAG(0xa9,'A','R','T'): key = "author";    break;
+    case MKTAG(0xa9,'A','R','T'): key = "artist";    break;
     case MKTAG(0xa9,'w','r','t'): key = "composer";  break;
     case MKTAG( 'c','p','r','t'):
     case MKTAG(0xa9,'c','p','y'): key = "copyright"; break;
@@ -204,10 +204,10 @@ static int mov_read_udta_string(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
             get_buffer(pb, str, str_size);
             str[str_size] = 0;
         }
-        av_metadata_set(&c->fc->metadata, key, str);
+        av_metadata_set2(&c->fc->metadata, key, str, 0);
         if (*language && strcmp(language, "und")) {
             snprintf(key2, sizeof(key2), "%s-%s", key, language);
-            av_metadata_set(&c->fc->metadata, key2, str);
+            av_metadata_set2(&c->fc->metadata, key2, str, 0);
         }
     }
 #ifdef DEBUG_METADATA
@@ -216,6 +216,36 @@ static int mov_read_udta_string(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
            key, str, (char*)&atom.type, str_size, atom.size);
 #endif
 
+    return 0;
+}
+
+static int mov_read_chpl(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
+{
+    int64_t start;
+    int i, nb_chapters, str_len;
+    char str[256+1];
+
+    if ((atom.size -= 5) < 0)
+        return 0;
+
+    get_be32(pb); // version + flags
+    get_be32(pb); // ???
+    nb_chapters = get_byte(pb);
+
+    for (i = 0; i < nb_chapters; i++) {
+        if (atom.size < 9)
+            return 0;
+
+        start = get_be64(pb);
+        str_len = get_byte(pb);
+
+        if ((atom.size -= 9+str_len) < 0)
+            return 0;
+
+        get_buffer(pb, str, str_len);
+        str[str_len] = 0;
+        ff_new_chapter(c->fc, i, (AVRational){1,10000000}, start, AV_NOPTS_VALUE, str);
+    }
     return 0;
 }
 
@@ -411,13 +441,13 @@ static int mov_read_hdlr(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     dprintf(c->fc, "stype= %.4s\n", (char*)&type);
 
     if     (type == MKTAG('v','i','d','e'))
-        st->codec->codec_type = CODEC_TYPE_VIDEO;
+        st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
     else if(type == MKTAG('s','o','u','n'))
-        st->codec->codec_type = CODEC_TYPE_AUDIO;
+        st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
     else if(type == MKTAG('m','1','a',' '))
         st->codec->codec_id = CODEC_ID_MP2;
     else if(type == MKTAG('s','u','b','p'))
-        st->codec->codec_type = CODEC_TYPE_SUBTITLE;
+        st->codec->codec_type = AVMEDIA_TYPE_SUBTITLE;
 
     get_be32(pb); /* component  manufacture */
     get_be32(pb); /* component flags */
@@ -569,10 +599,10 @@ static int mov_read_ftyp(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     if (strcmp(type, "qt  "))
         c->isom = 1;
     av_log(c->fc, AV_LOG_DEBUG, "ISO: File Type Major Brand: %.4s\n",(char *)&type);
-    av_metadata_set(&c->fc->metadata, "major_brand", type);
+    av_metadata_set2(&c->fc->metadata, "major_brand", type, 0);
     minor_ver = get_be32(pb); /* minor version */
     snprintf(minor_ver_str, sizeof(minor_ver_str), "%d", minor_ver);
-    av_metadata_set(&c->fc->metadata, "minor_version", minor_ver_str);
+    av_metadata_set2(&c->fc->metadata, "minor_version", minor_ver_str, 0);
 
     comp_brand_size = atom.size - 8;
     if (comp_brand_size < 0)
@@ -582,7 +612,7 @@ static int mov_read_ftyp(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
         return AVERROR(ENOMEM);
     get_buffer(pb, comp_brands_str, comp_brand_size);
     comp_brands_str[comp_brand_size] = 0;
-    av_metadata_set(&c->fc->metadata, "compatible_brands", comp_brands_str);
+    av_metadata_set2(&c->fc->metadata, "compatible_brands", comp_brands_str, 0);
     av_freep(&comp_brands_str);
 
     return 0;
@@ -637,7 +667,7 @@ static int mov_read_mdhd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 
     lang = get_be16(pb); /* language */
     if (ff_mov_lang_to_iso639(lang, language))
-        av_metadata_set(&st->metadata, "language", language);
+        av_metadata_set2(&st->metadata, "language", language, 0);
     get_be16(pb); /* quality */
 
     return 0;
@@ -811,6 +841,34 @@ static int mov_read_glbl(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     return 0;
 }
 
+/**
+ * An strf atom is a BITMAPINFOHEADER struct. This struct is 40 bytes itself,
+ * but can have extradata appended at the end after the 40 bytes belonging
+ * to the struct.
+ */
+static int mov_read_strf(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
+{
+    AVStream *st;
+
+    if (c->fc->nb_streams < 1)
+        return 0;
+    if (atom.size <= 40)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
+
+    if((uint64_t)atom.size > (1<<30))
+        return -1;
+
+    av_free(st->codec->extradata);
+    st->codec->extradata = av_mallocz(atom.size - 40 + FF_INPUT_BUFFER_PADDING_SIZE);
+    if (!st->codec->extradata)
+        return AVERROR(ENOMEM);
+    st->codec->extradata_size = atom.size - 40;
+    url_fskip(pb, 40);
+    get_buffer(pb, st->codec->extradata, atom.size - 40);
+    return 0;
+}
+
 static int mov_read_stco(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
     AVStream *st;
@@ -933,19 +991,19 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
         if (id<=0 && ((format&0xFFFF) == 'm'+('s'<<8) || (format&0xFFFF) == 'T'+('S'<<8)))
             id = ff_codec_get_id(ff_codec_wav_tags, bswap_32(format)&0xFFFF);
 
-        if (st->codec->codec_type != CODEC_TYPE_VIDEO && id > 0) {
-            st->codec->codec_type = CODEC_TYPE_AUDIO;
-        } else if (st->codec->codec_type != CODEC_TYPE_AUDIO && /* do not overwrite codec type */
+        if (st->codec->codec_type != AVMEDIA_TYPE_VIDEO && id > 0) {
+            st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
+        } else if (st->codec->codec_type != AVMEDIA_TYPE_AUDIO && /* do not overwrite codec type */
                    format && format != MKTAG('m','p','4','s')) { /* skip old asf mpeg4 tag */
             id = ff_codec_get_id(codec_movvideo_tags, format);
             if (id <= 0)
                 id = ff_codec_get_id(ff_codec_bmp_tags, format);
             if (id > 0)
-                st->codec->codec_type = CODEC_TYPE_VIDEO;
-            else if(st->codec->codec_type == CODEC_TYPE_DATA){
+                st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
+            else if(st->codec->codec_type == AVMEDIA_TYPE_DATA){
                 id = ff_codec_get_id(ff_codec_movsubtitle_tags, format);
                 if(id > 0)
-                    st->codec->codec_type = CODEC_TYPE_SUBTITLE;
+                    st->codec->codec_type = AVMEDIA_TYPE_SUBTITLE;
             }
         }
 
@@ -953,7 +1011,7 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
                 (format >> 0) & 0xff, (format >> 8) & 0xff, (format >> 16) & 0xff,
                 (format >> 24) & 0xff, st->codec->codec_type);
 
-        if(st->codec->codec_type==CODEC_TYPE_VIDEO) {
+        if(st->codec->codec_type==AVMEDIA_TYPE_VIDEO) {
             unsigned int color_depth, len;
             int color_greyscale;
 
@@ -1057,7 +1115,7 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
                 }
                 st->codec->palctrl->palette_changed = 1;
             }
-        } else if(st->codec->codec_type==CODEC_TYPE_AUDIO) {
+        } else if(st->codec->codec_type==AVMEDIA_TYPE_AUDIO) {
             int bits_per_sample, flags;
             uint16_t version = get_be16(pb);
 
@@ -1137,7 +1195,7 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
                 st->codec->bits_per_coded_sample = bits_per_sample;
                 sc->sample_size = (bits_per_sample >> 3) * st->codec->channels;
             }
-        } else if(st->codec->codec_type==CODEC_TYPE_SUBTITLE){
+        } else if(st->codec->codec_type==AVMEDIA_TYPE_SUBTITLE){
             // ttxt stsd contains display flags, justification, background
             // color, fonts, and default styles, so fake an atom to read it
             MOVAtom fake_atom = { .size = size - (url_ftell(pb) - start_pos) };
@@ -1159,7 +1217,7 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
             url_fskip(pb, a.size);
     }
 
-    if(st->codec->codec_type==CODEC_TYPE_AUDIO && st->codec->sample_rate==0 && sc->time_scale>1)
+    if(st->codec->codec_type==AVMEDIA_TYPE_AUDIO && st->codec->sample_rate==0 && sc->time_scale>1)
         st->codec->sample_rate= sc->time_scale;
 
     /* special codec parameters handling */
@@ -1196,7 +1254,7 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
         break;
     case CODEC_ID_MP2:
     case CODEC_ID_MP3:
-        st->codec->codec_type = CODEC_TYPE_AUDIO; /* force type after stsd for m1a hdlr */
+        st->codec->codec_type = AVMEDIA_TYPE_AUDIO; /* force type after stsd for m1a hdlr */
         st->need_parsing = AVSTREAM_PARSE_FULL;
         break;
     case CODEC_ID_GSM:
@@ -1490,7 +1548,7 @@ static void mov_build_index(MOVContext *mov, AVStream *st)
     }
 
     /* only use old uncompressed audio chunk demuxing when stts specifies it */
-    if (!(st->codec->codec_type == CODEC_TYPE_AUDIO &&
+    if (!(st->codec->codec_type == AVMEDIA_TYPE_AUDIO &&
           sc->stts_count == 1 && sc->stts_data[0].duration == 1)) {
         unsigned int current_sample = 0;
         unsigned int stts_sample = 0;
@@ -1698,7 +1756,7 @@ static int mov_read_trak(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     if (!sc) return AVERROR(ENOMEM);
 
     st->priv_data = sc;
-    st->codec->codec_type = CODEC_TYPE_DATA;
+    st->codec->codec_type = AVMEDIA_TYPE_DATA;
     sc->ffindex = st->index;
 
     if ((ret = mov_read_default(c, pb, atom)) < 0)
@@ -1721,7 +1779,7 @@ static int mov_read_trak(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 
     av_set_pts_info(st, 64, 1, sc->time_scale);
 
-    if (st->codec->codec_type == CODEC_TYPE_AUDIO &&
+    if (st->codec->codec_type == AVMEDIA_TYPE_AUDIO &&
         !st->codec->frame_size && sc->stts_count == 1) {
         st->codec->frame_size = av_rescale(sc->stts_data[0].duration,
                                            st->codec->sample_rate, sc->time_scale);
@@ -1741,7 +1799,7 @@ static int mov_read_trak(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     } else
         sc->pb = c->fc->pb;
 
-    if (st->codec->codec_type == CODEC_TYPE_VIDEO) {
+    if (st->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
         if (st->codec->width != sc->width || st->codec->height != sc->height) {
             AVRational r = av_d2q(((double)st->codec->height * sc->width) /
                                   ((double)st->codec->width * sc->height), INT_MAX);
@@ -1925,6 +1983,12 @@ static int mov_read_tfhd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     return 0;
 }
 
+static int mov_read_chap(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
+{
+    c->chapter_track = get_be32(pb);
+    return 0;
+}
+
 static int mov_read_trex(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
     MOVTrackExt *trex;
@@ -2004,7 +2068,7 @@ static int mov_read_trun(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
             sc->ctts_data[sc->ctts_count].duration = get_be32(pb);
             sc->ctts_count++;
         }
-        if ((keyframe = st->codec->codec_type == CODEC_TYPE_AUDIO ||
+        if ((keyframe = st->codec->codec_type == AVMEDIA_TYPE_AUDIO ||
              (flags & 0x004 && !i && !sample_flags) || sample_flags & 0x2000000))
             distance = 0;
         av_add_index_entry(st, offset, dts, sample_size, distance,
@@ -2132,6 +2196,7 @@ static int mov_read_elst(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 
 static const MOVParseTableEntry mov_default_parse_table[] = {
 { MKTAG('a','v','s','s'), mov_read_extradata },
+{ MKTAG('c','h','p','l'), mov_read_chpl },
 { MKTAG('c','o','6','4'), mov_read_stco },
 { MKTAG('c','t','t','s'), mov_read_ctts }, /* composition time to sample */
 { MKTAG('d','i','n','f'), mov_read_default },
@@ -2161,6 +2226,7 @@ static const MOVParseTableEntry mov_default_parse_table[] = {
 { MKTAG('s','t','b','l'), mov_read_default },
 { MKTAG('s','t','c','o'), mov_read_stco },
 { MKTAG('s','t','p','s'), mov_read_stps },
+{ MKTAG('s','t','r','f'), mov_read_strf },
 { MKTAG('s','t','s','c'), mov_read_stsc },
 { MKTAG('s','t','s','d'), mov_read_stsd }, /* sample description */
 { MKTAG('s','t','s','s'), mov_read_stss }, /* sync sample */
@@ -2171,6 +2237,8 @@ static const MOVParseTableEntry mov_default_parse_table[] = {
 { MKTAG('t','f','h','d'), mov_read_tfhd }, /* track fragment header */
 { MKTAG('t','r','a','k'), mov_read_trak },
 { MKTAG('t','r','a','f'), mov_read_default },
+{ MKTAG('t','r','e','f'), mov_read_default },
+{ MKTAG('c','h','a','p'), mov_read_chap },
 { MKTAG('t','r','e','x'), mov_read_trex },
 { MKTAG('t','r','u','n'), mov_read_trun },
 { MKTAG('u','d','t','a'), mov_read_default },
@@ -2226,6 +2294,73 @@ static int mov_probe(AVProbeData *p)
     return score;
 }
 
+// must be done after parsing all trak because there's no order requirement
+static void mov_read_chapters(AVFormatContext *s)
+{
+    MOVContext *mov = s->priv_data;
+    AVStream *st = NULL;
+    MOVStreamContext *sc;
+    int64_t cur_pos;
+    uint8_t *title = NULL;
+    int i, len, i8, i16;
+
+    for (i = 0; i < s->nb_streams; i++)
+        if (s->streams[i]->id == mov->chapter_track) {
+            st = s->streams[i];
+            break;
+        }
+    if (!st) {
+        av_log(s, AV_LOG_ERROR, "Referenced QT chapter track not found\n");
+        return;
+    }
+
+    st->discard = AVDISCARD_ALL;
+    sc = st->priv_data;
+    cur_pos = url_ftell(sc->pb);
+
+    for (i = 0; i < st->nb_index_entries; i++) {
+        AVIndexEntry *sample = &st->index_entries[i];
+        int64_t end = i+1 < st->nb_index_entries ? st->index_entries[i+1].timestamp : st->duration;
+
+        if (url_fseek(sc->pb, sample->pos, SEEK_SET) != sample->pos) {
+            av_log(s, AV_LOG_ERROR, "Chapter %d not found in file\n", i);
+            goto finish;
+        }
+
+        title = av_malloc(sample->size+2);
+        get_buffer(sc->pb, title, sample->size);
+
+        // the first two bytes are the length of the title
+        len = AV_RB16(title);
+        if (len > sample->size-2)
+            continue;
+
+        // The samples could theoretically be in any encoding if there's an encd
+        // atom following, but in practice are only utf-8 or utf-16, distinguished
+        // instead by the presence of a BOM
+        if (AV_RB16(title+2) == 0xfeff) {
+            uint8_t *utf8 = av_malloc(2*len+3);
+
+            i8 = i16 = 0;
+            while (i16 < len) {
+                uint32_t ch;
+                uint8_t tmp;
+                GET_UTF16(ch, i16 < len ? AV_RB16(title + (i16+=2)) : 0, break;)
+                PUT_UTF8(ch, tmp, if (i8 < 2*len) utf8[2+i8++] = tmp;)
+            }
+            utf8[2+i8] = 0;
+            av_freep(&title);
+            title = utf8;
+        }
+
+        ff_new_chapter(s, i, st->time_base, sample->timestamp, end, title+2);
+        av_freep(&title);
+    }
+finish:
+    av_free(title);
+    url_fseek(sc->pb, cur_pos, SEEK_SET);
+}
+
 static int mov_read_header(AVFormatContext *s, AVFormatParameters *ap)
 {
     MOVContext *mov = s->priv_data;
@@ -2250,6 +2385,9 @@ static int mov_read_header(AVFormatContext *s, AVFormatParameters *ap)
         return -1;
     }
     dprintf(mov->fc, "on_parse_exit_offset=%lld\n", url_ftell(pb));
+
+    if (!url_is_streamed(pb) && mov->chapter_track > 0)
+        mov_read_chapters(s);
 
     return 0;
 }
@@ -2344,7 +2482,7 @@ static int mov_read_packet(AVFormatContext *s, AVPacket *pkt)
     }
     if (st->discard == AVDISCARD_ALL)
         goto retry;
-    pkt->flags |= sample->flags & AVINDEX_KEYFRAME ? PKT_FLAG_KEY : 0;
+    pkt->flags |= sample->flags & AVINDEX_KEYFRAME ? AV_PKT_FLAG_KEY : 0;
     pkt->pos = sample->pos;
     dprintf(s, "stream %d, pts %"PRId64", dts %"PRId64", pos 0x%"PRIx64", duration %d\n",
             pkt->stream_index, pkt->pts, pkt->dts, pkt->pos, pkt->duration);

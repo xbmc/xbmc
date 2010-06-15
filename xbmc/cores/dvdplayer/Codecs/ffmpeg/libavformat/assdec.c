@@ -99,7 +99,7 @@ static int read_header(AVFormatContext *s, AVFormatParameters *ap)
     if (!st)
         return -1;
     av_set_pts_info(st, 64, 1, 100);
-    st->codec->codec_type = CODEC_TYPE_SUBTITLE;
+    st->codec->codec_type = AVMEDIA_TYPE_SUBTITLE;
     st->codec->codec_id= CODEC_ID_SSA;
 
     header_remaining= INT_MAX;
@@ -165,7 +165,7 @@ static int read_packet(AVFormatContext *s, AVPacket *pkt)
 
     end= strchr(p, '\n');
     av_new_packet(pkt, end ? end-p+1 : strlen(p));
-    pkt->flags |= PKT_FLAG_KEY;
+    pkt->flags |= AV_PKT_FLAG_KEY;
     pkt->pos= p - ass->event_buffer + s->streams[0]->codec->extradata_size;
     pkt->pts= pkt->dts= get_pts(p);
     memcpy(pkt->data, p, pkt->size);

@@ -31,6 +31,8 @@ class CFileItemList;
 namespace ADDON
 {
   class CSkinInfo;
+  class IAddon;
+  typedef boost::shared_ptr<IAddon> AddonPtr;
 }
 
 #include "GUIDialogSeekBar.h"
@@ -269,9 +271,20 @@ public:
     return m_bEnableLegacyRes;
   }
 
+  void SetEnableTestMode(bool value)
+  {
+    m_bTestMode = value;
+  }
+
+  bool IsEnableTestMode()
+  {
+    return m_bTestMode;
+  }
+
   bool IsPresentFrame();
 
   void Minimize();
+  bool ToggleDPMS(bool manual);
 protected:
   void RenderScreenSaver();
   bool LoadSkin(const CStdString& skinID);
@@ -280,7 +293,7 @@ protected:
   friend class CApplicationMessenger;
   // screensaver
   bool m_bScreenSave;
-  CStdString m_screenSaverMode;
+  ADDON::AddonPtr m_screenSaver;
 
   // timer information
   CStopWatch m_idleTimer;
@@ -293,6 +306,7 @@ protected:
 
   DPMSSupport* m_dpms;
   bool m_dpmsIsActive;
+  bool m_dpmsIsManual;
 
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;
@@ -317,6 +331,7 @@ protected:
 
   bool m_bStandalone;
   bool m_bEnableLegacyRes;
+  bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
 
 #ifdef HAS_SDL
@@ -348,6 +363,7 @@ protected:
   bool InitDirectoriesLinux();
   bool InitDirectoriesOSX();
   bool InitDirectoriesWin32();
+  void CreateUserDirs();
 
   CApplicationMessenger m_applicationMessenger;
 #if defined(HAS_LINUX_NETWORK)

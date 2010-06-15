@@ -60,9 +60,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "GUISettings.h"
 #include "TextureManager.h"
-#include "language.h"
 #include "LangInfo.h"
-#include "PythonSettings.h"
 #include "SectionLoader.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
@@ -429,7 +427,7 @@ namespace PYXBMC
   PyDoc_STRVAR(getSkinDir__doc__,
     "getSkinDir() -- Returns the active skin directory as a string.\n"
     "\n"
-    "*Note, This is not the full path like 'special://home/skin/MediaCenter', but only 'MediaCenter'.\n"
+    "*Note, This is not the full path like 'special://home/addons/MediaCenter', but only 'MediaCenter'.\n"
     "\n"
     "example:\n"
     "  - skindir = xbmc.getSkinDir()\n");
@@ -1015,17 +1013,13 @@ namespace PYXBMC
     initPlayListItem_Type();
     initInfoTagMusic_Type();
     initInfoTagVideo_Type();
-    initLanguage_Type();
-    initSettings_Type();
 
     if (PyType_Ready(&Keyboard_Type) < 0 ||
         PyType_Ready(&Player_Type) < 0 ||
         PyType_Ready(&PlayList_Type) < 0 ||
         PyType_Ready(&PlayListItem_Type) < 0 ||
         PyType_Ready(&InfoTagMusic_Type) < 0 ||
-        PyType_Ready(&InfoTagVideo_Type) < 0 ||
-        PyType_Ready(&Language_Type) < 0 ||
-        PyType_Ready(&Settings_Type) < 0) return;
+        PyType_Ready(&InfoTagVideo_Type) < 0) return;
   }
 
   PyMODINIT_FUNC
@@ -1047,8 +1041,6 @@ namespace PYXBMC
     Py_INCREF(&PlayListItem_Type);
     Py_INCREF(&InfoTagMusic_Type);
     Py_INCREF(&InfoTagVideo_Type);
-    Py_INCREF(&Language_Type);
-    Py_INCREF(&Settings_Type);
 
     pXbmcModule = Py_InitModule((char*)"xbmc", xbmcMethods);
     if (pXbmcModule == NULL) return;
@@ -1059,8 +1051,6 @@ namespace PYXBMC
     PyModule_AddObject(pXbmcModule, (char*)"PlayListItem", (PyObject*)&PlayListItem_Type);
     PyModule_AddObject(pXbmcModule, (char*)"InfoTagMusic", (PyObject*)&InfoTagMusic_Type);
     PyModule_AddObject(pXbmcModule, (char*)"InfoTagVideo", (PyObject*)&InfoTagVideo_Type);
-    PyModule_AddObject(pXbmcModule, (char*)"Language", (PyObject*)&Language_Type);
-    PyModule_AddObject(pXbmcModule, (char*)"Settings", (PyObject*)&Settings_Type);
 
     // constants
     PyModule_AddStringConstant(pXbmcModule, (char*)"__author__", (char*)PY_XBMC_AUTHOR);
@@ -1096,10 +1086,7 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGSEVERE", LOGSEVERE);
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGFATAL", LOGFATAL);
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGNONE", LOGNONE);
-
-    PyObject *o = PyBool_FromLong(0);
-    PyModule_AddObject(pXbmcModule, "abortRequested", o);
-    Py_XDECREF(o);
+    PyModule_AddObject(pXbmcModule, "abortRequested", PyBool_FromLong(0));
   }
 }
 

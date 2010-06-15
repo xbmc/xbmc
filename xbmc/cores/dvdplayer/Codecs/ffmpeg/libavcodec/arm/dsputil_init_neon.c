@@ -32,6 +32,10 @@ void ff_simple_idct_add_neon(uint8_t *dest, int line_size, DCTELEM *data);
 void ff_vp3_idct_neon(DCTELEM *data);
 void ff_vp3_idct_put_neon(uint8_t *dest, int line_size, DCTELEM *data);
 void ff_vp3_idct_add_neon(uint8_t *dest, int line_size, DCTELEM *data);
+void ff_vp3_idct_dc_add_neon(uint8_t *dest, int line_size, const DCTELEM *data);
+
+void ff_clear_block_neon(DCTELEM *block);
+void ff_clear_blocks_neon(DCTELEM *blocks);
 
 void ff_put_pixels16_neon(uint8_t *, const uint8_t *, int, int);
 void ff_put_pixels16_x2_neon(uint8_t *, const uint8_t *, int, int);
@@ -188,6 +192,9 @@ void ff_dsputil_init_neon(DSPContext *c, AVCodecContext *avctx)
         }
     }
 
+    c->clear_block  = ff_clear_block_neon;
+    c->clear_blocks = ff_clear_blocks_neon;
+
     c->put_pixels_tab[0][0] = ff_put_pixels16_neon;
     c->put_pixels_tab[0][1] = ff_put_pixels16_x2_neon;
     c->put_pixels_tab[0][2] = ff_put_pixels16_y2_neon;
@@ -294,6 +301,7 @@ void ff_dsputil_init_neon(DSPContext *c, AVCodecContext *avctx)
     if (CONFIG_VP3_DECODER) {
         c->vp3_v_loop_filter = ff_vp3_v_loop_filter_neon;
         c->vp3_h_loop_filter = ff_vp3_h_loop_filter_neon;
+        c->vp3_idct_dc_add   = ff_vp3_idct_dc_add_neon;
     }
 
     c->vector_fmul                = ff_vector_fmul_neon;

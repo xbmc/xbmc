@@ -22,7 +22,7 @@
 
 
 /**
- * @file libavcodec/amrnbdec.c
+ * @file
  * AMR narrowband decoder
  *
  * This decoder uses floats for simplicity and so is not bit-exact. One
@@ -195,7 +195,7 @@ static enum Mode unpack_bitstream(AMRContext *p, const uint8_t *buf,
     p->bad_frame_indicator = !get_bits1(&gb); // quality bit
     skip_bits(&gb, 2);                        // two padding bits
 
-    if (mode <= MODE_DTX) {
+    if (mode < MODE_DTX) {
         uint16_t *data = (uint16_t *)&p->frame;
         const uint8_t *order = amr_unpacking_bitmaps_per_mode[mode];
         int field_size;
@@ -796,7 +796,7 @@ static int synthesis(AMRContext *p, float *lpc,
                      float fixed_gain, const float *fixed_vector,
                      float *samples, uint8_t overflow)
 {
-    int i, overflow_temp = 0;
+    int i;
     float excitation[AMR_SUBFRAME_SIZE];
 
     // if an overflow has been detected, the pitch vector is scaled down by a
@@ -831,12 +831,10 @@ static int synthesis(AMRContext *p, float *lpc,
     // detect overflow
     for (i = 0; i < AMR_SUBFRAME_SIZE; i++)
         if (fabsf(samples[i]) > AMR_SAMPLE_BOUND) {
-            overflow_temp = 1;
-            samples[i] = av_clipf(samples[i], -AMR_SAMPLE_BOUND,
-                                               AMR_SAMPLE_BOUND);
+            return 1;
         }
 
-    return overflow_temp;
+    return 0;
 }
 
 /// @}
@@ -943,7 +941,7 @@ static void postfilter(AMRContext *p, float *lpc, float *buf_out)
     ff_tilt_compensation(&p->tilt_mem, tilt_factor(lpc_n, lpc_d), buf_out,
                          AMR_SUBFRAME_SIZE);
 
-    ff_adaptive_gain_control(buf_out, speech_gain, AMR_SUBFRAME_SIZE,
+    ff_adaptive_gain_control(buf_out, buf_out, speech_gain, AMR_SUBFRAME_SIZE,
                              AMR_AGC_ALPHA, &p->postfilter_agc);
 }
 
@@ -1044,13 +1042,10 @@ static int amrnb_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
         update_state(p);
     }
 
-    ff_acelp_apply_order_2_transfer_function(buf_out, highpass_zeros,
-                                             highpass_poles, highpass_gain,
+    ff_acelp_apply_order_2_transfer_function(buf_out, buf_out, highpass_zeros,
+                                             highpass_poles,
+                                             highpass_gain * AMR_SAMPLE_SCALE,
                                              p->high_pass_mem, AMR_BLOCK_SIZE);
-
-    for (i = 0; i < AMR_BLOCK_SIZE; i++)
-        buf_out[i] = av_clipf(buf_out[i] * AMR_SAMPLE_SCALE,
-                              -1.0, 32767.0 / 32768.0);
 
     /* Update averaged lsf vector (used for fixed gain smoothing).
      *
@@ -1071,7 +1066,7 @@ static int amrnb_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 
 AVCodec amrnb_decoder = {
     .name           = "amrnb",
-    .type           = CODEC_TYPE_AUDIO,
+    .type           = AVMEDIA_TYPE_AUDIO,
     .id             = CODEC_ID_AMR_NB,
     .priv_data_size = sizeof(AMRContext),
     .init           = amrnb_decode_init,

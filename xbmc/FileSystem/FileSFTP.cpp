@@ -202,12 +202,12 @@ bool CSFTPSession::Exists(const char *path)
 int CSFTPSession::Stat(const char *path, struct __stat64* buffer)
 {
   CSingleLock lock(m_critSect);
-  memset(buffer, 0, sizeof (buffer));
   m_LastActive = CTimeUtils::GetTimeMS();
   sftp_attributes attributes = sftp_stat(m_sftp_session, CorrectPath(path).c_str());
 
   if (attributes)
   {
+    memset(buffer, 0, sizeof(struct __stat64));
     buffer->st_size = attributes->size;
     buffer->st_mtime = attributes->mtime;
     buffer->st_atime = attributes->atime;

@@ -37,7 +37,100 @@ using std::stringstream;
 namespace ADDON
 {
 
+typedef struct
+{
+  const char*  name;
+  CONTENT_TYPE type;
+  int          pretty;
+} ContentMapping;
+
+static const ContentMapping content[] =
+  {{"unknown",       CONTENT_NONE,          231 },
+   {"albums",        CONTENT_ALBUMS,        132 },
+   {"music",         CONTENT_ALBUMS,        132 },
+   {"artists",       CONTENT_ARTISTS,       133 },
+   {"movies",        CONTENT_MOVIES,      20342 },
+   {"tvshows",       CONTENT_TVSHOWS,     20343 },
+   {"musicvideos",   CONTENT_MUSICVIDEOS, 20389 }};
+
+const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*/)
+{
+  for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
+  {
+    const ContentMapping &map = content[index];
+    if (type == map.type)
+    {
+      if (pretty && map.pretty)
+        return g_localizeStrings.Get(map.pretty);
+      else
+        return map.name;
+    }
+  }
+  return "";
+}
+
+const CONTENT_TYPE TranslateContent(const CStdString &string)
+{
+  for (unsigned int index=0; index < sizeof(content)/sizeof(content[0]); ++index)
+  {
+    const ContentMapping &map = content[index];
+    if (string.Equals(map.name))
+      return map.type;
+  }
+  return CONTENT_NONE;
+}
+
+const TYPE ScraperTypeFromContent(const CONTENT_TYPE &content)
+{
+  switch (content)
+  {
+  case CONTENT_ALBUMS:
+    return ADDON_SCRAPER_ALBUMS;
+  case CONTENT_ARTISTS:
+    return ADDON_SCRAPER_ARTISTS;
+  case CONTENT_MOVIES:
+    return ADDON_SCRAPER_MOVIES;
+  case CONTENT_MUSICVIDEOS:
+    return ADDON_SCRAPER_MUSICVIDEOS;
+  case CONTENT_TVSHOWS:
+    return ADDON_SCRAPER_TVSHOWS;
+  default:
+    return ADDON_UNKNOWN;
+  }
+}
+
 class CAddon;
+
+CScraper::CScraper(const cp_extension_t *ext) :
+  CAddon(ext)
+{
+  if (ext)
+  {
+    m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "language");
+    m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"requiressettings").Equals("true");
+  }
+  switch (Type())
+  {
+    case ADDON_SCRAPER_ALBUMS:
+      m_pathContent = CONTENT_ALBUMS;
+      break;
+    case ADDON_SCRAPER_ARTISTS:
+      m_pathContent = CONTENT_ARTISTS;
+      break;
+    case ADDON_SCRAPER_MOVIES:
+      m_pathContent = CONTENT_MOVIES;
+      break;
+    case ADDON_SCRAPER_MUSICVIDEOS:
+      m_pathContent = CONTENT_MUSICVIDEOS;
+      break;
+    case ADDON_SCRAPER_TVSHOWS:
+      m_pathContent = CONTENT_TVSHOWS;
+      break;
+    default:
+      m_pathContent = CONTENT_NONE;
+      break;
+  }
+}
 
 AddonPtr CScraper::Clone(const AddonPtr &self) const
 {
@@ -47,132 +140,40 @@ AddonPtr CScraper::Clone(const AddonPtr &self) const
 CScraper::CScraper(const CScraper &rhs, const AddonPtr &self)
   : CAddon(rhs, self)
 {
-  m_pathContent = CONTENT_NONE;
+  m_pathContent = rhs.m_pathContent;
 }
 
-bool CScraper::LoadSettings()
+bool CScraper::Supports(const CONTENT_TYPE &content) const
 {
-  //TODO if cloned settings don't exist, load master settings and copy
-  if (!Parent())
-    return CAddon::LoadUserSettings();
-  else
-    return LoadSettingsXML();
+  return Type() == ScraperTypeFromContent(content);
 }
 
-bool CScraper::HasSettings()
+bool CScraper::SetPathSettings(CONTENT_TYPE content, const CStdString& xml)
 {
-  if (!m_userXmlDoc.RootElement())
-    return LoadSettingsXML();
-
-  return true;
-}
-
-bool CScraper::LoadUserXML(const CStdString& strSaved)
-{
-  m_userXmlDoc.Clear();
-  m_userXmlDoc.Parse(strSaved.c_str());
-
-  return m_userXmlDoc.RootElement()?true:false;
-}
-
-bool CScraper::LoadSettingsXML(const CStdString& strFunction, const CScraperUrl* url)
-{
-  AddonPtr addon;
-  if (!Parent() && !CAddonMgr::Get().GetAddon(ID(), addon, ADDON_SCRAPER))
-    return false;
-  else if (Parent())
-    addon = Parent();
-
-  CScraperParser parser;
-  if (!parser.Load(addon))
+  m_pathContent = content;
+  if (!LoadSettings())
     return false;
 
-  if (!parser.HasFunction(strFunction))
-    return CAddon::LoadSettings();
+  if (xml.IsEmpty())
+    return true;
 
-  if (!url && strFunction.Equals("GetSettings")) // entry point
-    m_addonXmlDoc.Clear();
-
-  vector<CStdString> strHTML;
-  if (url)
-  {
-    XFILE::CFileCurl http;
-    for (unsigned int i=0;i<url->m_url.size();++i)
-    {
-      CStdString strCurrHTML;
-      if (!CScraperUrl::Get(url->m_url[i],strCurrHTML,http,parser.GetFilename()) || strCurrHTML.size() == 0)
-        return false;
-      strHTML.push_back(strCurrHTML);
-    }
-  }
-
-  // now grab our details using the scraper
-  for (unsigned int i=0;i<strHTML.size();++i)
-    parser.m_param[i] = strHTML[i];
-
-  CStdString strXML = parser.Parse(strFunction);
-  if (strXML.IsEmpty())
-  {
-    CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
-    return false;
-  }
-  // abit ugly, but should work. would have been better if parser
-  // set the charset of the xml, and we made use of that
-  if (!XMLUtils::HasUTF8Declaration(strXML))
-    g_charsetConverter.unknownToUTF8(strXML);
-
-  // ok, now parse the xml file
   TiXmlDocument doc;
-  doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
-  if (!doc.RootElement())
-  {
-    CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
-    return false;
-  }
+  if (doc.Parse(xml.c_str()))
+    m_userSettingsLoaded = SettingsFromXML(doc);
 
-  // check our document
-  if (!m_addonXmlDoc.RootElement())
-  {
-    TiXmlElement xmlRootElement("settings");
-    m_addonXmlDoc.InsertEndChild(xmlRootElement);
-  }
-
-  // loop over all tags and append any setting tags
-  TiXmlElement* pElement = doc.RootElement()->FirstChildElement("setting");
-  if (pElement)
-    m_hasSettings = true;
-  else
-    m_hasSettings = false;
-
-  while (pElement)
-  {
-    m_addonXmlDoc.RootElement()->InsertEndChild(*pElement);
-    pElement = pElement->NextSiblingElement("setting");
-  }
-
-  // and call any chains
-  TiXmlElement* pRoot = doc.RootElement();
-  TiXmlElement* xurl = pRoot->FirstChildElement("url");
-  while (xurl && xurl->FirstChild())
-  {
-    const char* szFunction = xurl->Attribute("function");
-    if (szFunction)
-    {
-      CScraperUrl scrURL(xurl);
-      if (!LoadSettingsXML(szFunction,&scrURL))
-        return false;
-    }
-    xurl = xurl->NextSiblingElement("url");
-  }
-
-  return m_addonXmlDoc.RootElement()?true:false;
+  return m_userSettingsLoaded;
 }
 
-CStdString CScraper::GetSettings() const
+CStdString CScraper::GetPathSettings()
 {
+  if (!LoadSettings())
+    return "";
+
   stringstream stream;
-  if (m_userXmlDoc.RootElement())
-    stream << *m_userXmlDoc.RootElement();
+  TiXmlDocument doc;
+  SettingsToXML(doc);
+  if (doc.RootElement())
+    stream << *doc.RootElement();
 
   return stream.str();
 }

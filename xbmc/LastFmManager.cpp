@@ -778,7 +778,7 @@ bool CLastFmManager::CallXmlRpc(const CStdString& action, const CStdString& arti
   CFileCurl http;
   CStdString html;
   CStdString url = "http://ws.audioscrobbler.com/1.0/rw/xmlrpc.php";
-  http.SetContentType("text/xml");
+  http.SetMimeType("text/xml");
   if (!http.Post(url, strBody, html))
   {
     CLog::Log(LOGERROR, "Last.fm action %s failed.", action.c_str());

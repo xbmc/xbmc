@@ -23,7 +23,7 @@
 #include "AC3Codec.h"
 #include "utils/log.h"
 
-#ifdef HAS_AC3_CODEC
+#ifdef USE_LIBA52_DECODER
 
 static inline int16_t convert(int32_t i)
 {

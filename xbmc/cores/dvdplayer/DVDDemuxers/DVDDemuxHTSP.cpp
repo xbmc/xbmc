@@ -238,7 +238,18 @@ DemuxPacket* CDVDDemuxHTSP::Read()
 void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
 {
   htsmsg_t       *streams;
+  htsmsg_t       *info;
   htsmsg_field_t *f;
+
+  if((info = htsmsg_get_map(m, "sourceinfo")))
+  {
+    HTSMSG_FOREACH(f, info)
+    {
+      if(f->hmf_type != HMF_STR)
+        continue;
+      CLog::Log(LOGDEBUG, "CDVDDemuxHTSP::SubscriptionStart - %s: %s", f->hmf_name, htsmsg_field_get_string(f));
+    }
+  }
 
   if((streams = htsmsg_get_list(m, "streams")) == NULL)
   {
@@ -254,6 +265,7 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
   {
     uint32_t    index;
     const char* type;
+    const char* lang;
     htsmsg_t* sub;
 
     if(f->hmf_type != HMF_MAP)
@@ -287,9 +299,13 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
     } else if(!strcmp(type, "MPEG2VIDEO")) {
       st.v = new CDemuxStreamVideoHTSP(this, type);
       st.v->codec = CODEC_ID_MPEG2VIDEO;
+      st.v->iWidth  = htsmsg_get_u32_or_default(sub, "width" , 0);
+      st.v->iHeight = htsmsg_get_u32_or_default(sub, "height", 0);
     } else if(!strcmp(type, "H264")) {
       st.v = new CDemuxStreamVideoHTSP(this, type);
       st.v->codec = CODEC_ID_H264;
+      st.v->iWidth  = htsmsg_get_u32_or_default(sub, "width" , 0);
+      st.v->iHeight = htsmsg_get_u32_or_default(sub, "height", 0);
     } else if(!strcmp(type, "DVBSUB")) {
       st.s = new CDemuxStreamSubtitle();
       st.s->codec = CODEC_ID_DVB_SUBTITLE;
@@ -303,6 +319,10 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
     } else {
       continue;
     }
+
+    if((lang = htsmsg_get_str(sub, "language")))
+      strncpy(st.g->language, lang, sizeof(st.g->language));
+
     st.g->iId         = m_Streams.size();
     st.g->iPhysicalId = index;
     m_Streams.push_back(st.g);

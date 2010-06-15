@@ -18,7 +18,7 @@
  */
 
 /**
- * @file libavfilter/parseutils.c
+ * @file
  * parsing utils
  */
 
@@ -218,7 +218,7 @@ static int color_table_compare(const void *lhs, const void *rhs)
 int av_parse_color(uint8_t *rgba_color, const char *color_string, void *log_ctx)
 {
     if (!strcasecmp(color_string, "random") || !strcasecmp(color_string, "bikeshed")) {
-        int rgba = ff_random_get_seed();
+        int rgba = av_get_random_seed();
         rgba_color[0] = rgba >> 24;
         rgba_color[1] = rgba >> 16;
         rgba_color[2] = rgba >> 8;
@@ -231,7 +231,7 @@ int av_parse_color(uint8_t *rgba_color, const char *color_string, void *log_ctx)
 
         if (*tail || (len != 8 && len != 10)) {
             av_log(log_ctx, AV_LOG_ERROR, "Invalid 0xRRGGBB[AA] color string: '%s'\n", color_string);
-            return -1;
+            return AVERROR(EINVAL);
         }
         if (len == 10) {
             rgba_color[3] = rgba;
@@ -248,7 +248,7 @@ int av_parse_color(uint8_t *rgba_color, const char *color_string, void *log_ctx)
                                           color_table_compare);
         if (!entry) {
             av_log(log_ctx, AV_LOG_ERROR, "Cannot find color '%s'\n", color_string);
-            return -1;
+            return AVERROR(EINVAL);
         }
         memcpy(rgba_color, entry->rgba_color, 4);
     }

@@ -48,6 +48,7 @@ typedef struct rtp_payload_data
         int rap_flag;
         int streamstate;
     } *au_headers;
+    int au_headers_allocated;
     int nb_au_headers;
     int au_headers_length_bytes;
     int cur_au_index;
@@ -66,8 +67,12 @@ void rtp_parse_set_dynamic_protocol(RTPDemuxContext *s, PayloadContext *ctx,
 int rtp_parse_packet(RTPDemuxContext *s, AVPacket *pkt,
                      const uint8_t *buf, int len);
 void rtp_parse_close(RTPDemuxContext *s);
-
+#if (LIBAVFORMAT_VERSION_MAJOR <= 53)
 int rtp_get_local_port(URLContext *h);
+#endif
+int rtp_get_local_rtp_port(URLContext *h);
+int rtp_get_local_rtcp_port(URLContext *h);
+
 int rtp_set_remote_url(URLContext *h, const char *uri);
 #if (LIBAVFORMAT_VERSION_MAJOR <= 52)
 void rtp_get_file_handles(URLContext *h, int *prtp_fd, int *prtcp_fd);
@@ -132,7 +137,7 @@ typedef int (*DynamicPayloadPacketHandlerProc) (AVFormatContext *ctx,
 struct RTPDynamicProtocolHandler_s {
     // fields from AVRtpDynamicPayloadType_s
     const char enc_name[50];    /* XXX: still why 50 ? ;-) */
-    enum CodecType codec_type;
+    enum AVMediaType codec_type;
     enum CodecID codec_id;
 
     // may be null
@@ -140,7 +145,7 @@ struct RTPDynamicProtocolHandler_s {
                              int st_index,
                              PayloadContext *priv_data,
                              const char *line); ///< Parse the a= line from the sdp field
-    PayloadContext *(*open) (); ///< allocate any data needed by the rtp parsing for this dynamic data.
+    PayloadContext *(*open) (void); ///< allocate any data needed by the rtp parsing for this dynamic data.
     void (*close)(PayloadContext *protocol_data); ///< free any data needed by the rtp parsing for this dynamic data.
     DynamicPayloadPacketHandlerProc parse_packet; ///< parse handler for this dynamic packet.
 
@@ -157,6 +162,7 @@ struct RTPDemuxContext {
     uint32_t timestamp;
     uint32_t base_timestamp;
     uint32_t cur_timestamp;
+    int64_t  range_start_offset;
     int max_payload_size;
     struct MpegTSContext *ts;   /* only used for MP2T payloads */
     int read_buf_index;
@@ -169,6 +175,7 @@ struct RTPDemuxContext {
 
     /* rtcp sender statistics receive */
     int64_t last_rtcp_ntp_time;    // TODO: move into statistics
+    int64_t first_rtcp_ntp_time;   // TODO: move into statistics
     uint32_t last_rtcp_timestamp;  // TODO: move into statistics
 
     /* rtcp sender statistics */

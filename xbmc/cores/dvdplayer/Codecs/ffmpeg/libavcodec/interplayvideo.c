@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/interplayvideo.c
+ * @file
  * Interplay MVE Video Decoder by Mike Melanson (melanson@pcisys.net)
  * For more information about the Interplay MVE format, visit:
  *   http://www.pcisys.net/~melanson/codecs/interplay-mve.txt
@@ -1095,7 +1095,7 @@ static av_cold int ipvideo_decode_end(AVCodecContext *avctx)
 
 AVCodec interplay_video_decoder = {
     "interplayvideo",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_INTERPLAY_VIDEO,
     sizeof(IpvideoContext),
     ipvideo_decode_init,

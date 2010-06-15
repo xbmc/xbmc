@@ -30,10 +30,11 @@
 #include "GraphicContext.h"
 #include "utils/log.h"
 #include "TextureCache.h"
+#include "SystemGlobals.h"
 
 using namespace std;
 
-CGUILargeTextureManager g_largeTextureManager;
+CGUILargeTextureManager& g_largeTextureManager = g_SystemGlobals.m_largeTextureManager;
 
 
 CImageLoader::CImageLoader(const CStdString &path)

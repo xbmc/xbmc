@@ -45,8 +45,9 @@ using namespace std;
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-CIMDB::CIMDB()
+CIMDB::CIMDB(const ADDON::ScraperPtr &scraper)
 {
+  m_info = scraper;
 }
 
 CIMDB::~CIMDB()
@@ -438,21 +439,6 @@ bool CIMDB::ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails)
   return true;
 }
 
-bool CIMDB::LoadXML(const CStdString& strXMLFile, CVideoInfoTag &movieDetails, bool bDownload /* = true */)
-{
-  TiXmlDocument doc;
-
-  movieDetails.Reset();
-  if (doc.LoadFile(strXMLFile) && ParseDetails(doc, movieDetails))
-  { // excellent!
-    return true;
-  }
-  if (!bDownload)
-    return true;
-
-  return false;
-}
-
 void CIMDB::RemoveAllAfter(char* szMovie, const char* szSearch)
 {
   char* pPtr = strstr(szMovie, szSearch);
@@ -480,30 +466,24 @@ void CIMDB::Process()
   if (m_state == FIND_MOVIE)
   {
     if (!(m_found=FindMovie(m_strMovie, m_movieList)))
-    {
-      // retry without replacing '.' and '-' if searching for a tvshow
-      if (m_info->Content() == CONTENT_TVSHOWS)
-        CLog::Log(LOGERROR, "%s: Error looking up tvshow %s", __FUNCTION__, m_strMovie.c_str());
-      else
-        CLog::Log(LOGERROR, "%s: Error looking up movie %s", __FUNCTION__, m_strMovie.c_str());
-    }
+      CLog::Log(LOGERROR, "%s: Error looking up item %s", __FUNCTION__, m_strMovie.c_str());
     m_state = DO_NOTHING;
     return;
   }
   else if (m_state == GET_DETAILS)
   {
     if (!GetDetails(m_url, m_movieDetails))
-      CLog::Log(LOGERROR, "%s: Error getting movie details from %s", __FUNCTION__,m_url.m_url[0].m_url.c_str());
+      CLog::Log(LOGERROR, "%s: Error getting details from %s", __FUNCTION__,m_url.m_url[0].m_url.c_str());
   }
   else if (m_state == GET_EPISODE_DETAILS)
   {
     if (!GetEpisodeDetails(m_url, m_movieDetails))
-      CLog::Log(LOGERROR, "%s: Error getting movie details from %s", __FUNCTION__, m_url.m_url[0].m_url.c_str());
+      CLog::Log(LOGERROR, "%s: Error getting episode details from %s", __FUNCTION__, m_url.m_url[0].m_url.c_str());
   }
   else if (m_state == GET_EPISODE_LIST)
   {
     if (!GetEpisodeList(m_url, m_episode))
-      CLog::Log(LOGERROR, "%s: Error getting episode details from %s", __FUNCTION__, m_url.m_url[0].m_url.c_str());
+      CLog::Log(LOGERROR, "%s: Error getting episode list from %s", __FUNCTION__, m_url.m_url[0].m_url.c_str());
   }
   m_found = 1;
   m_state = DO_NOTHING;
@@ -596,6 +576,10 @@ bool CIMDB::GetEpisodeDetails(const CScraperUrl &url, CVideoInfoTag &movieDetail
   //CLog::Log(LOGDEBUG,"CIMDB::GetDetails(%s)", url.m_strURL.c_str());
   m_url = url;
   m_movieDetails = movieDetails;
+
+  // load our scraper xml
+  if (!m_parser.Load(m_info))
+    return false;
 
   // fill in the defaults
   movieDetails.Reset();

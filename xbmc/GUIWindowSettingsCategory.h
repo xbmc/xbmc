@@ -38,8 +38,6 @@ public:
   virtual void Render();
   virtual int GetID() const { return CGUIWindow::GetID() + m_iScreen; };
 
-  // Note: Static as it's used elsewhere
-  static void FillInAddons(CSettingAddon *pSetting, int controlID);
 protected:
   virtual void OnInitWindow();
 
@@ -50,7 +48,7 @@ protected:
   void FillInSkinFonts(CSetting *pSetting);
   void FillInSoundSkins(CSetting *pSetting);
   void FillInLanguages(CSetting *pSetting);
-  void FillInResolutions(CSetting *pSetting, bool playbackSetting);
+  void FillInResolutions(CSetting *pSetting);
   void FillInRegions(CSetting *pSetting);
   void FillInStartupWindow(CSetting *pSetting);
   void FillInViewModes(CSetting *pSetting, int windowID);
@@ -63,7 +61,6 @@ protected:
   void NetworkInterfaceChanged(void);
 
   void FillInAudioDevices(CSetting* pSetting, bool Passthrough = false);
-  void FillInWeatherScripts(CGUISpinControlEx *pControl, const CStdString& strSelected);
 
   virtual void SetupControls();
   void CreateSettings();

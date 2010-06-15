@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/mpc8.c Musepack SV8 decoder
+ * @file
  * MPEG Audio Layer 1/2 -like codec with frames of 1152 samples
  * divided into 32 subbands.
  */
@@ -401,7 +401,7 @@ static int mpc8_decode_frame(AVCodecContext * avctx,
 
 AVCodec mpc8_decoder = {
     "mpc8",
-    CODEC_TYPE_AUDIO,
+    AVMEDIA_TYPE_AUDIO,
     CODEC_ID_MUSEPACK8,
     sizeof(MPCContext),
     mpc8_decode_init,

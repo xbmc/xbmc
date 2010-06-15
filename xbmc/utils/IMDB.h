@@ -55,16 +55,8 @@ typedef std::vector<IMDB_EPISODE> IMDB_EPISODELIST;
 class CIMDB : public CThread
 {
 public:
-  CIMDB();
+  CIMDB(const ADDON::ScraperPtr &scraper);
   virtual ~CIMDB();
-
-  int InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, bool& sortMovieList, const CStdString& strFunction="GetSearchResults", CScraperUrl* pUrl=NULL);
-  bool InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetails, const CStdString& strFunction="GetDetails");
-  bool InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details);
-  bool ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails);
-  bool LoadXML(const CStdString& strXMLFile, CVideoInfoTag &movieDetails, bool bDownload = true);
-  bool Download(const CStdString &strURL, const CStdString &strFileName);
-  void GetURL(const CStdString &movieFile, const CStdString &movieName, const CStdString &movieYear, CScraperUrl& strURL);
 
   // threaded lookup functions
   // returns -1 if we had an error
@@ -72,14 +64,16 @@ public:
   bool GetDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
   bool GetEpisodeDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
   bool GetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
-  bool ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details);
-
-  void SetScraperInfo(const ADDON::ScraperPtr& scraper) { m_info = scraper; }
-  const ADDON::ScraperPtr GetScraperInfo() const { return m_info; }
 
   static void ShowErrorDialog(const TiXmlElement* element);
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
+  int InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, bool& sortMovieList, const CStdString& strFunction="GetSearchResults", CScraperUrl* pUrl=NULL);
+  bool InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetails, const CStdString& strFunction="GetDetails");
+  bool InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details);
+  bool ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails);
+  void GetURL(const CStdString &movieFile, const CStdString &movieName, const CStdString &movieYear, CScraperUrl& strURL);
+  bool ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details);
 
   static bool RelevanceSortFunction(const CScraperUrl& left, const CScraperUrl &right);
 

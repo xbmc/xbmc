@@ -1337,7 +1337,7 @@ int CDVDPlayerVideo::GetVideoBitrate()
   return (int)m_videoStats.GetBitrate();
 }
 
-#define MAXFRAMERATEDIFF   0.0005
+#define MAXFRAMERATEDIFF   0.01
 #define MAXFRAMESERR    1000
 
 void CDVDPlayerVideo::CalcFrameRate()
@@ -1378,7 +1378,7 @@ void CDVDPlayerVideo::CalcFrameRate()
     m_iFrameRateCount++;
   }
   //check if the current detected framerate matches with the stored ones
-  else if (fabs(1.0 - ((m_fStableFrameRate / m_iFrameRateCount) / framerate)) <= MAXFRAMERATEDIFF)
+  else if (fabs(m_fStableFrameRate / m_iFrameRateCount - framerate) <= MAXFRAMERATEDIFF)
   {
     m_fStableFrameRate += framerate; //store the calculated framerate
     m_iFrameRateCount++;
@@ -1387,7 +1387,7 @@ void CDVDPlayerVideo::CalcFrameRate()
     if (m_iFrameRateCount >= MathUtils::round_int(framerate) * m_iFrameRateLength)
     {
       //store the calculated framerate if it differs too much from m_fFrameRate
-      if (fabs(1.0 - (m_fFrameRate / (m_fStableFrameRate / m_iFrameRateCount))) > MAXFRAMERATEDIFF)
+      if (fabs(m_fFrameRate - (m_fStableFrameRate / m_iFrameRateCount)) > MAXFRAMERATEDIFF)
       {
         CLog::Log(LOGDEBUG,"%s framerate was:%f calculated:%f", __FUNCTION__, m_fFrameRate, m_fStableFrameRate / m_iFrameRateCount);
         m_fFrameRate = m_fStableFrameRate / m_iFrameRateCount;

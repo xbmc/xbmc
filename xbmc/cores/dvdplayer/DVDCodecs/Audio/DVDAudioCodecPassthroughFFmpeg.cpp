@@ -53,6 +53,7 @@ CDVDAudioCodecPassthroughFFmpeg::CDVDAudioCodecPassthroughFFmpeg(void)
   m_pSyncFrame   = NULL;
   m_Needed       = 0;
   m_NeededUsed   = 0;
+  m_SampleRate   = 0;
 
   m_Codec        = NULL;
   m_Encoder      = NULL;
@@ -136,13 +137,18 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
     return false;
   }
 
+
   /* set the stream's parameters */
   muxer.m_pStream->stream_copy           = 1;
+
+  m_SampleRate = hints.samplerate;
+  if(!m_SampleRate && hints.codec == CODEC_ID_AC3)
+    m_SampleRate = 48000;
 
   AVCodecContext *codec = muxer.m_pStream->codec;
   codec->codec_type     = CODEC_TYPE_AUDIO;
   codec->codec_id       = hints.codec;
-  codec->sample_rate    = hints.samplerate;
+  codec->sample_rate    = m_SampleRate;
   codec->sample_fmt     = SAMPLE_FMT_S16;
   codec->channels       = hints.channels;
   codec->bit_rate       = hints.bitrate;
@@ -518,6 +524,14 @@ int CDVDAudioCodecPassthroughFFmpeg::Decode(BYTE* pData, int iSize)
         m_Needed = iSize;
     }
 
+    if(m_SPDIF.m_pStream->codec->sample_rate != m_SampleRate)
+    {
+     CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughFFmpeg::Decode - stream changed sample rate from %d to %d"
+                       , m_SPDIF.m_pStream->codec->sample_rate
+                       , m_SampleRate);
+     m_SPDIF.m_pStream->codec->sample_rate = m_SampleRate;
+    }
+
     /* check for bad parsing */
     assert(m_Needed > 0);
 
@@ -612,8 +626,7 @@ unsigned int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, unsigned int 
     if (
         fscod      ==   3 ||
         frmsizecod >   37 ||
-        bsid       > 0x11 ||
-        AC3FSCod[fscod] != m_SPDIF.m_pStream->codec->sample_rate
+        bsid       > 0x11
     ) continue;
 
     /* get the details we need to check crc1 and framesize */
@@ -627,6 +640,7 @@ unsigned int CDVDAudioCodecPassthroughFFmpeg::SyncAC3(BYTE* pData, unsigned int 
     }
 
     *fSize = framesize * 2;
+    m_SampleRate = AC3FSCod[fscod];
 
     /* dont do extensive testing if we have not lost sync */
     if (!m_LostSync && skip == 0)

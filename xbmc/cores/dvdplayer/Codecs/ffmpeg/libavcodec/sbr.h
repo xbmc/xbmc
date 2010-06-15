@@ -21,7 +21,7 @@
  */
 
 /**
- * @file libavcodec/sbr.h
+ * @file
  * Spectral Band Replication definitions and structures
  * @author Robert Swain ( rob opendot cl )
  */
@@ -157,7 +157,7 @@ typedef struct {
     ///QMF output of the HF generator
     float              X_high[64][40][2];
     ///QMF values of the reconstructed signal
-    DECLARE_ALIGNED(16, float, X)[2][32][64];
+    DECLARE_ALIGNED(16, float, X)[2][2][32][64];
     ///Zeroth coefficient used to filter the subband signals
     float              alpha0[64][2];
     ///First coefficient used to filter the subband signals
@@ -176,7 +176,7 @@ typedef struct {
     float              s_m[7][48];
     float              gain[7][48];
     DECLARE_ALIGNED(16, float, qmf_filter_scratch)[5][64];
-    RDFTContext        rdft;
+    FFTContext         mdct_ana;
     FFTContext         mdct;
 } SpectralBandReplication;
 

@@ -202,6 +202,7 @@ public:
   virtual CStdString GetAudioCodecName();
   virtual CStdString GetVideoCodecName();
   virtual int GetPictureWidth();
+  virtual int GetPictureHeight();
   virtual bool GetStreamDetails(CStreamDetails &details);
 
   virtual bool GetCurrentSubtitle(CStdString& strSubtitle);
@@ -285,7 +286,7 @@ protected:
   bool m_bAbortRequest;
 
   std::string m_filename; // holds the actual filename
-  std::string m_content;  // hold a hint to what content file contains (mime type)
+  std::string m_mimetype;  // hold a hint to what content file contains (mime type)
   ECacheState m_caching;
   CFileItem   m_item;
 

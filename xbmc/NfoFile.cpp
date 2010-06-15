@@ -34,6 +34,7 @@
 #include "Album.h"
 #include "Artist.h"
 #include "GUISettings.h"
+#include "LangInfo.h"
 #include "utils/log.h"
 
 #include <vector>
@@ -60,7 +61,7 @@ CNfoFile::~CNfoFile()
 CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr& info, int episode)
 {
   m_info = info; // assume we can use these settings
-  m_content = info->Content();
+  m_type = ScraperTypeFromContent(info->Content());
   if (FAILED(Load(strPath)))
     return NO_NFO;
 
@@ -69,27 +70,27 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
 
   AddonPtr addon;
   ScraperPtr defaultScraper;
-  if (!CAddonMgr::Get().GetDefault(ADDON_SCRAPER, addon, m_content))
+  if (!CAddonMgr::Get().GetDefault(m_type, addon))
     return NO_NFO;
   else
     defaultScraper = boost::dynamic_pointer_cast<CScraper>(addon);
 
-  if (m_content == CONTENT_ALBUMS)
+  if (m_type == ADDON_SCRAPER_ALBUMS)
   {
     CAlbum album;
     bNfo = GetDetails(album);
   }
-  else if (m_content == CONTENT_ARTISTS)
+  else if (m_type == ADDON_SCRAPER_ARTISTS)
   {
     CArtist artist;
     bNfo = GetDetails(artist);
   }
-  else if (m_content == CONTENT_TVSHOWS || m_content == CONTENT_MOVIES || m_content == CONTENT_MUSICVIDEOS)
+  else if (m_type == ADDON_SCRAPER_TVSHOWS || m_type == ADDON_SCRAPER_MOVIES || m_type == ADDON_SCRAPER_MUSICVIDEOS)
   {
     // first check if it's an XML file with the info we need
     CVideoInfoTag details;
     bNfo = GetDetails(details);
-    if (episode > -1 && bNfo && m_content == CONTENT_TVSHOWS)
+    if (episode > -1 && bNfo && m_type == ADDON_SCRAPER_TVSHOWS)
     {
       int infos=0;
       while (m_headofdoc && details.m_iEpisode != episode)
@@ -121,37 +122,36 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
   if (selected)
     vecScrapers.push_back(selected);
 
-  /*if (g_guiSettings.GetBool("scrapers.langfallback"))
+  if (g_guiSettings.GetBool("scrapers.langfallback"))
   {
+    VECADDONS addons;
+    CAddonMgr::Get().GetAddons(m_type,addons);
     for (unsigned i=0;i<addons.size();++i)
     {
       // skip selected and default scraper
-      if (addons[i]->UUID().Equals(selected->Parent()) || addons[i]->UUID().Equals(defaultScraper->UUID()))
+      if (addons[i]->ID().Equals(selected->ID()) || 
+          addons[i]->ID().Equals(defaultScraper->ID()))
         continue;
+      
+      ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addons[i]);
 
-      (CScraperParser parser2;
-      parser2.Load(addons[i]);
-      CONTENT_TYPE content = parser2.GetContent();
-
-        // skip if scraper requires settings and there's nothing set yet
-        if (parser2.RequiresSettings() && info2.settings.GetSettings().IsEmpty())
-          continue;
-
-        // skip if scraper requires settings and there's nothing set yet
-        if (parser2.RequiresSettings() && info2.settings.GetSettings().IsEmpty())
-          continue;
-
-        // skip wrong content type
-        if (info.strContent != info2.strContent && (info.strContent.Equals("movies") || info.strContent.Equals("tvshows") || info.strContent.Equals("musicvideos")))
+      // skip if scraper requires settings and there's nothing set yet
+      if (scraper->RequiresSettings() && !scraper->HasUserSettings())
           continue;
 
       // add same language, multi-language and music scrapers
-      // TODO addons language handling
+      if (scraper->Language().Equals(g_langInfo.GetDVDSubtitleLanguage()) ||
+          scraper->Language().Equals("multi") ||
+          scraper->Supports(CONTENT_ARTISTS) ||
+          scraper->Supports(CONTENT_ALBUMS))
+      {
+        vecScrapers.push_back(scraper);
+      }
     }
-  }*/
+  }
 
   // add default scraper
-  if ((selected && selected->Parent() != defaultScraper) || !selected) 
+  if ((selected && selected->ID() != defaultScraper->ID()) || !selected)
     vecScrapers.push_back(defaultScraper);
 
   // search ..
@@ -222,9 +222,7 @@ int CNfoFile::Scrape(const ScraperPtr& scraper, const CStdString& strURL /* = ""
   CScraperParser parser;
   if (!parser.Load(scraper))
     return 0;
-  if (!scraper->Supports(m_content) &&
-      !(m_content == CONTENT_ARTISTS && scraper->Content() == CONTENT_ALBUMS))
-      // artists are scraped by album content scrapers
+  if (scraper->Type() != m_type)
   {
     return 1;
   }

@@ -135,9 +135,9 @@ bool CShoutcastDirectory::ParseStations(TiXmlElement *root, CFileItemList &items
 
     pItem->SetLabel(label);
 
-    /* content type is known before hand, should save later lookup */
-    /* wonder if we could combine the contentype of the playlist and of the real stream */
-    pItem->SetContentType("audio/x-scpls");
+    /* mime-type is known before hand, should save later lookup */
+    /* wonder if we could combine the mime-type of the playlist and of the real stream */
+    pItem->SetMimeType("audio/x-scpls");
 
     pItem->m_strPath = url.Get();
 
@@ -191,11 +191,11 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   /* restore protocol */
   url.SetProtocol(protocol);
 
-  CStdString content = http.GetContent();
-  if( !(content.Equals("text/html") || content.Equals("text/xml")
-    || content.Equals("text/html;charset=utf-8") || content.Equals("text/xml;charset=utf-8") ))
+  CStdString mime = http.GetMimeType();
+  if( !(mime.Equals("text/html") || mime.Equals("text/xml")
+    || mime.Equals("text/html;charset=utf-8") || mime.Equals("text/xml;charset=utf-8") ))
   {
-    CLog::Log(LOGERROR, "%s - Invalid content type %s", __FUNCTION__, content.c_str());
+    CLog::Log(LOGERROR, "%s - Invalid mime-type %s", __FUNCTION__, mime.c_str());
     if (dlgProgress) dlgProgress->Close();
     return false;
   }

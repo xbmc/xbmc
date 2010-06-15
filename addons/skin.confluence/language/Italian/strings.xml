@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">Cambia il tuo</string>
+  <string id="31001">Amo</string>
+  <string id="31002">Odio</string>
+  <string id="31003">Impostazioni Avanzate</string>
+  <string id="31004">Sto lavorando...</string>
+  <string id="31005">Nascondi INFO</string>
+
+  <string id="31007">Plugins</string>
+
+  <string id="31020">Aggiunti di recente</string>
+  <string id="31021">Files - Video</string>
+  <string id="31022">Files - Musica</string>
+  <string id="31023">In Riproduzione</string>
+  <string id="31024">Pagina</string>
+  <string id="31025">Oggetti</string>
+  <string id="31026">Opzioni Varie</string>
+  <string id="31027">Località</string>
+ 
+  <!-- View Type labels -->
+  <string id="31028">Poster</string>
+  <string id="31029">Fanart</string>
+  <string id="31030">Lista estesa</string>
+  <string id="31031">Miniature immagini</string>
+  <string id="31032">Immagine</string>
+  <string id="31033">Informazioni</string>
+
+  <!-- Extra labels -->
+  <string id="31040">In riproduzione</string>
+
+  <string id="31042">IN RIPRODUZIONE</string>
+  <string id="31043">IN PAUSA</string>
+  <string id="31044">AVANTI VELOCE</string>
+  <string id="31045">INDIETRO</string>
+  <string id="31046">Proprietà Audio </string>
+  <string id="31047">Preset Corrente</string>
+  <string id="31048">Preset Visualizzazione</string>
+  <string id="31049">Orario fine riproduzione</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Apri playlist</string>
+  <string id="31056">Salva playlist</string>
+  <string id="31057">Chiudi playlist</string>
+  <string id="31058">Suoni di sistema</string>
+  <string id="31059">Playlist Corrente </string>
+  <string id="31060">Questo file è stato accorpato, scegli la parte da cui vuoi iniziare.</string>
+  <string id="31061">Correntemente Selezionato</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100"></string>
+  <string id="31101">Opzioni pagina principale</string>
+  <string id="31102">Sfondo</string>
+  <string id="31103">Mostra "In pausa" durante la visualizzazione delle immagini</string>
+  <string id="31104">Riproduci i trailer in finestra [COLOR=grey3](Solo nel pannello informazioni video)[/COLOR]</string>
+  <string id="31105">Mostra i titoli dei files durante la scansione in secondo piano</string>
+  <string id="31106">Opzioni Varie</string>
+  <string id="31107"></string>
+  <string id="31108">Nascondi i bottoni del menù principale</string>
+  <string id="31109">Sfondi per le sezioni principali</string>
+  <string id="31110">Modifica lo Sfondo per la Sezione</string>
+  <string id="31111">Nascondi</string>
+  <string id="31112">Opzioni</string>
+  <string id="31113">Singola Immagine</string>
+  <string id="31114">Immagini Multiple</string>
+  <string id="31115">Personalizzazione</string>
+  <string id="31116">Scripts Aggiuntivi</string>
+  <string id="31117">Mostra i Video Aggiunti di Recente</string>
+  <string id="31118">Sottomenu Pagina Principale</string>
+  <string id="31119">Abilita il Bottone per lo Script Personalizzato</string>
+  <string id="31120">ETICHETTA BOTTONE</string>
+  <string id="31121">PERCORSO DELLO SCRIPT</string>
+  <string id="31122">Pagina Meteo</string>
+  <string id="31123">Usa i "Posters" invece dei "Banners" per le Serie Tv</string>
+  <string id="31124">Mostra nello Sfondo il nome del Video "In Riproduzione" </string>
+  <string id="31125">Mostra nello Sfondo Visualizzazioni il nome del file "In Riproduzione"</string>
+
+  <string id="31126">Abilita il Testo delle canzoni nell'OSD della Musica</string>
+  <string id="31127">PERCORSO PER LO SCRIPT DEI TESTI DELLE CANZONI</string>
+  <string id="31128">XBMC Testi Canzoni</string>
+  <string id="31129">Abilita il Download dei Sottotitoli nell'OSD Video</string>
+  <string id="31130">PERCORSO DELLO SCRIPT DEI SOTTOTITOLI</string>
+
+  <string id="31140">OSD Musica</string>
+  <string id="31141">OSD Video</string>
+
+  <!-- Script labels -->
+  <string id="31200">Collegamenti</string>
+  <string id="31201">Categorie</string>
+  <string id="31202">Mostra il Cast</string>
+  <string id="31203">Scegli la canzone</string>
+  <string id="31204">Sezione Links</string>
+  <string id="31205">Sorgente Testi</string>
+
+  <!-- The Weather Channel Script labels -->
+  <string id="31250">Radar &amp; Pevisioni</string>
+  <string id="31251">Previsioni</string>
+  <string id="31252">TWC Script</string>
+
+  <!-- Extra labels -->
+  <string id="31300">Temperatura Corrente</string>
+  <string id="31301">Ultimo Aggiornamento</string>
+  <string id="31302">Menu</string>
+  <string id="31303"></string>
+  <string id="31304">Immagini</string>
+  <string id="31305">Nessun Disco Rilevato</string>
+  <string id="31306">Espelli</string>
+  <string id="31307">Nascondi Fanart</string>
+  <string id="31308">Dettagli Film</string>
+  <string id="31309">Memoria Usata:</string>
+  <string id="31310">Numero Traccia</string>
+  <string id="31311">Immagine Fanart [CR][CR]Nono disponibile[CR][CR] Premi il bottone per impostarla</string>
+  <string id="31312">Scraper Corrente</string>
+  <string id="31313">Scegli uno Scraper</string>
+  <string id="31314">Opzioni Scansione Contenuti</string>
+  <string id="31315">Base</string>
+  <string id="31316"></string>
+  <string id="31317">Imposta il percorso per le immagini fanart</string>
+  <string id="31318">Fanart ridotte</string>
+  <string id="31319">Scegli il Profilo</string>
+  <string id="31320">Ultimo Login</string>
+  <string id="31321">Karaoke Song Selector</string>
+  <string id="31322">Trasmessa</string>
+  <string id="31323">Ultimi Film</string>
+  <string id="31324">Ultimi Episodi</string>
+  <string id="31325">Opzioni Playlist</string>
+  <string id="31326">Creato</string>
+  <string id="31327">Risoluzione</string>
+  <string id="31328">Aggiunti di Recente</string>
+  <string id="31329">[B]Timer Impostato![/B] [COLOR=grey2] - Il Sistema Verrà Spento in[/COLOR]</string>
+  <string id="31330">Premi il bottone per riprodurre [CR][CR]il trailer del Film</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Pausa</string>
+  <string id="31352">Stop</string>
+  <string id="31353">Avanti Veloce</string>
+  <string id="31354">Indietro</string>
+  <string id="31355">Menu Filmato</string>
+  <string id="31356">Scarica Sottotitoli</string>
+  <string id="31357"></string>
+
+  <!-- Description Labels  -->
+  <string id="31400">[B]CONFIGURA LE IMPOSTAZIONI PER L'ASPETTO[/B][CR][CR]Cambia la skin · Imposta Lingua e Regione · Cambia le impostazioni di elenco dei file[CR]Imposta uno screensaver</string>
+  <string id="31401">[B]CONFIGURA IMPOSTAZIONI VIDEO[/B][CR][CR]Gestisci la tua Libreria Video · Imposta le impostazioni di riproduzione dei video · Cambia impostazioni per le liste video[CR]Imposta il fonts dei sottotitoli</string>
+  <string id="31402">[B]CONFIGURA IMPOSTAZIONI MUSICA[/B][CR][CR]Gestisci la tua Libreria Musicale · Imposta le impostazioni di riproduzione della musica · Cambia impostazioni per le liste audio[CR]Setup song submission · Imposta le opzioni per il karaoke</string>
+  <string id="31403">[B]CONFIGURA IMPOSTAZIONI IMMAGINI[/B][CR][CR]Cambia impostazioni per le liste delle immagini· Configura lo slideshows</string>
+  <string id="31404">[B]CONFIGURA IMPOSTAZIONI METEO[/B][CR][CR]Imposta tre città su cui avere le informazioni meteo</string>
+  <string id="31405">[B]CONFIGURA IMPOSTAZIONI DI RETE[/B][CR][CR]Imposta il controllo di XBMC via UPnP e HTTP · Configura le opzioni di condivisione[CR]Imposta le opzioni di accesso ad Internet</string>
+  <string id="31406">[B]CONFIGURA IMPOSTAZIONI DI SISTEMA[/B][CR][CR]Imposta e calibra il video · Configura l'uscita Audio · Imposta i controlli remoti[CR]Imposta le ozioni di risparmio energetico · Abilita il Debug · Imposta il master lock</string>
+  <string id="31407">[B]CONFIGURA IMPOSTAZIONI SKIN[/B][CR][CR]Configura la skin Confluence · Aggiungi o rimuovi oggetti dalla pagina principale[CR]Cambia gli sfondi</string> <string id="31408">[B]CONFIGURA GLI ADD-ONS[/B][CR][CR]Gestisci i tuoi Add-ons installati · Cerca ed installa gli Add-ons da xbmc.org[CR]Modifica le impostazioni degli Add-ons</string>
+
+  <string id="31421">Scegli il tuo profilo utente di XBMC[CR]per fare il login e continuare</string>
+</strings>

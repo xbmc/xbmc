@@ -85,26 +85,32 @@ namespace ADDON
     void UnregisterAddonMgrCallback(TYPE type);
 
     /* Addon access */
-    bool GetDefault(const TYPE &type, AddonPtr &addon, const CONTENT_TYPE &content = CONTENT_NONE);
-    bool GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabledOnly = true);
-    AddonPtr GetAddon2(const CStdString &str);
-    bool HasAddons(const TYPE &type, const CONTENT_TYPE &content = CONTENT_NONE, bool enabledOnly = true);
-    bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true);
-    bool GetAllAddons(VECADDONS &addons, bool enabledOnly = true);
+    bool GetDefault(const TYPE &type, AddonPtr &addon);
+    bool GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabled = true);
+    bool HasAddons(const TYPE &type, bool enabled = true);
+    bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
+    bool GetAllAddons(VECADDONS &addons, bool enabled = true);
     CStdString GetString(const CStdString &id, const int number);
-    
-    static bool AddonFromInfoXML(const CStdString &path, AddonPtr &addon);
-    static bool AddonFromInfoXML(const TiXmlElement *xmlDoc, AddonPtr &addon,
-                                 const CStdString &strPath);
-    static bool GetTranslatedString(const TiXmlElement *xmldoc, const char *tag, CStdString& data);
+
     const char *GetTranslatedString(const cp_cfg_element_t *root, const char *tag);
     static AddonPtr AddonFromProps(AddonProps& props);
     void UpdateRepos();
     void FindAddons();
+    void RemoveAddon(const CStdString& ID);
 
     /* libcpluff */
     CStdString GetExtValue(cp_cfg_element_t *base, const char *path);
-    const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension);
+
+    /*! \brief Retrieve a list of strings from a given configuration element
+     Assumes the configuration element or attribute contains a whitespace separated list of values (eg xs:list schema).
+     \param base the base configuration element.
+     \param path the path to the configuration element or attribute from the base element.
+     \param result [out] returned list of strings.
+     \return true if the configuration element is present and the list of strings is non-empty
+     */
+    bool GetExtList(cp_cfg_element_t *base, const char *path, std::vector<CStdString> &result) const;
+
+    const cp_extension_t *GetExtension(const cp_plugin_info_t *props, const char *extension) const;
 
     /*! \brief Load the addon in the given path
      This loads the addon using c-pluff which parses the addon descriptor file.
@@ -121,7 +127,7 @@ namespace ADDON
      \return true if the repository XML file is parsed, false otherwise.
      */
     bool AddonsFromRepoXML(const TiXmlElement *root, VECADDONS &addons);
-
+    ADDONDEPS GetDeps(const CStdString& id);
   private:
     void LoadAddons(const CStdString &path, 
                     std::map<CStdString, AddonPtr>& unresolved);
@@ -129,14 +135,23 @@ namespace ADDON
     void OnJobComplete(unsigned int jobID, bool sucess, CJob* job);
 
     /* libcpluff */
-    bool GetExtensions(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content);
     const cp_cfg_element_t *GetExtElement(cp_cfg_element_t *base, const char *path);
-    bool GetExtElementDeque(DEQUEELEMENTS &elements, cp_cfg_element_t *base, const char *path);
     cp_context_t *m_cp_context;
     DllLibCPluff *m_cpluff;
 
-    bool DependenciesMet(AddonPtr &addon);
-    bool UpdateIfKnown(AddonPtr &addon);
+    /*! \brief Fetch a (single) addon from a plugin descriptor.
+     Assumes that there is a single (non-trivial) extension point per addon.
+     \param info the plugin descriptor
+     \return an AddonPtr based on the descriptor.  May be NULL if no suitable extension point is found.
+     */
+    AddonPtr GetAddonFromDescriptor(const cp_plugin_info_t *info);
+
+    /*! \brief Check whether this addon is supported on the current platform
+     \param info the plugin descriptor
+     \return true if the addon is supported, false otherwise.
+     */
+    bool PlatformSupportsAddon(const cp_plugin_info_t *info) const;
+
     AddonPtr Factory(const cp_extension_t *props);
     bool CheckUserDirs(const cp_cfg_element_t *element);
 
@@ -147,9 +162,7 @@ namespace ADDON
     virtual ~CAddonMgr();
 
     static std::map<TYPE, IAddonMgrCallback*> m_managers;
-    MAPADDONS m_addons;
     CStopWatch m_watch;
-    std::map<CStdString, AddonPtr> m_idMap;
     CCriticalSection m_critSection;
   };
 

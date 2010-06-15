@@ -136,7 +136,7 @@
 #include "lib/libjsonrpc/TCPServer.h"
 #endif
 #if defined(HAVE_LIBCRYSTALHD)
-#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD/CrystalHD.h"
+#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif
 #include "utils/AnnouncementManager.h"
 
@@ -257,6 +257,7 @@
 
 #include "MediaManager.h"
 #include "utils/JobManager.h"
+#include "utils/SaveFileStateJob.h"
 
 #ifdef _LINUX
 #include "XHandle.h"
@@ -307,6 +308,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_bScreenSave = false;
   m_dpms = NULL;
   m_dpmsIsActive = false;
+  m_dpmsIsManual = false;
   m_iScreenSaveLock = 0;
   m_bInitializing = true;
   m_eForcedNextPlayer = EPC_NONE;
@@ -723,8 +725,7 @@ bool CApplication::InitDirectoriesLinux()
    special://home/          => [read-write] user's directory that will override special://xbmc/ system-wide
                                installations like skins, screensavers, etc.
                                ($HOME/.xbmc)
-                               NOTE: XBMC will look in both special://xbmc/skin and special://xbmc/skin for skins.
-                                     Same applies to screensavers, sounds, etc.
+                               NOTE: XBMC will look in both special://xbmc/addons and special://home/addons for addons.
    special://masterprofile/ => [read-write] userdata of master profile. It will by default be
                                mapped to special://home/userdata ($HOME/.xbmc/userdata)
    special://profile/       => [read-write] current profile's userdata directory.
@@ -750,18 +751,22 @@ bool CApplication::InitDirectoriesLinux()
 
   CStdString xbmcBinPath, xbmcPath;
   CUtil::GetHomePath(xbmcBinPath, "XBMC_BIN_HOME");
-  xbmcPath = INSTALL_PATH;
+  xbmcPath = getenv("XBMC_HOME");
 
-  /* Check if xbmc binaries and arch independent data files are being kept in
-   * separate locations. */
-  if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
+  if (xbmcPath.IsEmpty())
   {
-    /* Attempt to locate arch independent data files. */
-    CUtil::GetHomePath(xbmcPath);
+    xbmcPath = INSTALL_PATH;
+    /* Check if xbmc binaries and arch independent data files are being kept in
+     * separate locations. */
     if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
     {
-      fprintf(stderr, "Unable to find path to XBMC data files!\n");
-      exit(1);
+      /* Attempt to locate arch independent data files. */
+      CUtil::GetHomePath(xbmcPath);
+      if (!CFile::Exists(CUtil::AddFileToFolder(xbmcPath, "language")))
+      {
+        fprintf(stderr, "Unable to find path to XBMC data files!\n");
+        exit(1);
+      }
     }
   }
 
@@ -783,16 +788,7 @@ bool CApplication::InitDirectoriesLinux()
     CUtil::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
 
-    CDirectory::Create("special://home/");
-    CDirectory::Create("special://temp/");
-    CDirectory::Create("special://home/skin");
-    CDirectory::Create("special://home/addons");
-    CDirectory::Create("special://home/addons/packages");
-    CDirectory::Create("special://home/media");
-    CDirectory::Create("special://home/sounds");
-    CDirectory::Create("special://home/system");
-
-    CDirectory::Create("special://masterprofile");
+    CreateUserDirs();
 
     // copy required files
     //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
@@ -812,7 +808,7 @@ bool CApplication::InitDirectoriesLinux()
 
     CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
-    CDirectory::Create("special://temp/");
+    CreateUserDirs();
 
     CUtil::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
@@ -866,21 +862,7 @@ bool CApplication::InitDirectoriesOSX()
     CUtil::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
 
-    CDirectory::Create("special://home/");
-    CDirectory::Create("special://temp/");
-    CDirectory::Create("special://home/skin");
-    CDirectory::Create("special://home/addons");
-    CDirectory::Create("special://home/media");
-    CDirectory::Create("special://home/sounds");
-    CDirectory::Create("special://home/system");
-#ifdef __APPLE__
-    strTempPath = xbmcPath + "/scripts";
-#else
-    strTempPath = INSTALL_PATH "/scripts";
-#endif
-    symlink( strTempPath.c_str(),  _P("special://home/scripts/Common Scripts").c_str() );
-
-    CDirectory::Create("special://masterprofile/");
+    CreateUserDirs();
 
     // copy required files
     //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml"); // Eventual FIXME.
@@ -900,7 +882,6 @@ bool CApplication::InitDirectoriesOSX()
 
     CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
-    CDirectory::Create("special://temp/");
 
     CUtil::AddSlashAtEnd(strTempPath);
     g_settings.m_logFolder = strTempPath;
@@ -941,14 +922,9 @@ bool CApplication::InitDirectoriesWin32()
     CSpecialProtocol::SetMasterProfilePath(CUtil::AddFileToFolder(homePath, "userdata"));
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile").c_str());
 
-    CDirectory::Create("special://home/");
-    CDirectory::Create("special://home/skin");
-    CDirectory::Create("special://home/addons");
-    CDirectory::Create("special://home/media");
-    CDirectory::Create("special://home/sounds");
-    CDirectory::Create("special://home/system");
+    CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(homePath,"cache"));
 
-    CDirectory::Create("special://masterprofile");
+    CreateUserDirs();
 
     // copy required files
     //CopyUserDataIfNeeded("special://masterprofile/", "Keymap.xml");  // Eventual FIXME.
@@ -956,10 +932,6 @@ bool CApplication::InitDirectoriesWin32()
     CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
     CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
-
-    // create user/app data/XBMC/cache
-    CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(homePath,"cache"));
-    CDirectory::Create("special://temp");
   }
   else
   {
@@ -971,7 +943,8 @@ bool CApplication::InitDirectoriesWin32()
 
     CStdString strTempPath = CUtil::AddFileToFolder(xbmcPath, "portable_data/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
-    CDirectory::Create("special://temp/");
+
+    CreateUserDirs();
 
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile/").c_str());
   }
@@ -996,6 +969,18 @@ bool CApplication::InitDirectoriesWin32()
 #else
   return false;
 #endif
+}
+
+void CApplication::CreateUserDirs()
+{
+  CDirectory::Create("special://home/");
+  CDirectory::Create("special://home/addons");
+  CDirectory::Create("special://home/addons/packages");
+  CDirectory::Create("special://home/media");
+  CDirectory::Create("special://home/sounds");
+  CDirectory::Create("special://home/system");
+  CDirectory::Create("special://masterprofile/");
+  CDirectory::Create("special://temp/");
 }
 
 bool CApplication::Initialize()
@@ -1045,17 +1030,6 @@ bool CApplication::Initialize()
       m_dpms->IsSupported());
 
   g_windowManager.Add(new CGUIWindowHome);                     // window id = 0
-
-  // Make sure we have at least the default skin
-  if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")))
-  {
-    if (!LoadSkin(DEFAULT_SKIN))
-    {
-      CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", DEFAULT_SKIN);
-      FatalErrorHandler(true, true, true);
-    }
-  }
-
   g_windowManager.Add(new CGUIWindowPrograms);                 // window id = 1
   g_windowManager.Add(new CGUIWindowPictures);                 // window id = 2
   g_windowManager.Add(new CGUIWindowFileManager);      // window id = 3
@@ -1147,6 +1121,16 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowStartup);            // startup window (id 2999)
 
   /* window id's 3000 - 3100 are reserved for python */
+
+  // Make sure we have at least the default skin
+  if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")))
+  {
+    if (!LoadSkin(DEFAULT_SKIN))
+    {
+      CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", DEFAULT_SKIN);
+      FatalErrorHandler(true, true, true);
+    }
+  }
 
   SAFE_DELETE(m_splash);
 
@@ -1841,7 +1825,10 @@ void CApplication::RenderNoPresent()
   if (g_graphicsContext.IsFullScreenVideo())
   {
     if (m_bPresentFrame && IsPlaying() && !IsPaused())
+    {
+      ResetScreenSaver();
       g_renderManager.Present();
+    }
     else
       g_renderManager.RenderUpdate(true);
 
@@ -1851,10 +1838,7 @@ void CApplication::RenderNoPresent()
     overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
     if (overlay) overlay->Close(true);
 
-    ResetScreenSaver();
   }
-  else
-    g_graphicsContext.Clear();
 
   g_windowManager.Render();
 
@@ -1900,13 +1884,19 @@ static int screenSaverFadeAmount = 0;
 
 void CApplication::RenderScreenSaver()
 {
-  bool draw = false;
-  float amount = 0.0f;
-  if (m_screenSaverMode == "_virtual.dim")
-    amount = 1.0f - g_guiSettings.GetInt("screensaver.dimlevel")*0.01f;
-  else if (m_screenSaverMode == "_virtual.blk")
-    amount = 1.0f; // fully fade
+  if (!m_screenSaver)
+    return;
+
+  if (m_screenSaver->ID() != "screensaver.xbmc.builtin.dim" &&
+      m_screenSaver->ID() != "screensaver.xbmc.builtin.black")
+    return; // nothing to do
+
+  float amount = 1.0f;
+  if (!m_screenSaver->GetSetting("level").IsEmpty())
+    amount = 1.0f - 0.01f * (float)atof(m_screenSaver->GetSetting("level"));
+
   // special case for dim screensaver
+  bool draw = false;
   if (amount > 0.f)
   {
     if (m_bScreenSave)
@@ -1987,6 +1977,8 @@ void CApplication::NewFrame()
 
 void CApplication::Render()
 {
+  if (m_dpmsIsActive)
+    return;
   if (!m_AppActive && !m_bStop && (!IsPlayingVideo() || IsPaused()))
   {
     Sleep(1);
@@ -2004,7 +1996,7 @@ void CApplication::Render()
     int nDelayTime = 0;
     // Less fps in DPMS or Black screensaver
     bool lowfps = (m_dpmsIsActive
-                   || (m_bScreenSave && (m_screenSaverMode == "_virtual.blk")
+                   || (m_bScreenSave && m_screenSaver && (m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
                        && (screenSaverFadeAmount >= 100)));
     // Whether externalplayer is playing and we're unfocused
     bool extPlayerActive = m_eCurrentPlayer >= EPC_EXTPLAYER && IsPlaying() && !m_AppFocused;
@@ -2151,7 +2143,7 @@ void CApplication::RenderMemoryStatus()
               g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", (int)(stat.dwAvailPhys/1024), (int)(stat.dwTotalPhys/1024),
+    info.Format("FreeMem %"PRIu64"/%"PRIu64" Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
               g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
 #endif
 
@@ -3374,6 +3366,11 @@ void CApplication::Stop()
     }
 #endif
 
+#if !defined(_LINUX)
+    g_Windowing.DestroyRenderSystem();
+    g_Windowing.DestroyWindowSystem();
+#endif
+
     CLog::Log(LOGNOTICE, "stopped");
   }
   catch (...)
@@ -3551,7 +3548,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_nextPlaylistItem = -1;
     m_currentStackPosition = 0;
     m_currentStack->Clear();
-   
+
     if (item.IsVideo())
       CUtil::ClearSubtitles();
   }
@@ -3820,8 +3817,6 @@ void CApplication::OnPlayBackEnded()
     CLibrefmScrobbler::GetInstance()->SubmitQueue();
   }
 
-  CLog::Log(LOGDEBUG, "%s - Playback has finished", __FUNCTION__);
-
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
 }
@@ -3845,8 +3840,6 @@ void CApplication::OnPlayBackStarted()
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackStarted");
 
-  CLog::Log(LOGDEBUG, "%s - Playback has started", __FUNCTION__);
-
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
 }
@@ -3866,8 +3859,6 @@ void CApplication::OnQueueNextItem()
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "QueueNextItem");
-
-  CLog::Log(LOGDEBUG, "Player has asked for the next item");
 
   if(IsPlayingAudio())
   {
@@ -3901,8 +3892,6 @@ void CApplication::OnPlayBackStopped()
   CLastfmScrobbler::GetInstance()->SubmitQueue();
   CLibrefmScrobbler::GetInstance()->SubmitQueue();
 
-  CLog::Log(LOGDEBUG, "%s - Playback was stopped", __FUNCTION__);
-
   CGUIMessage msg( GUI_MSG_PLAYBACK_STOPPED, 0, 0 );
   g_windowManager.SendThreadMessage(msg);
 }
@@ -3920,8 +3909,6 @@ void CApplication::OnPlayBackPaused()
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackPaused");
-
-  CLog::Log(LOGDEBUG, "%s - Playback was paused", __FUNCTION__);
 }
 
 void CApplication::OnPlayBackResumed()
@@ -3937,8 +3924,6 @@ void CApplication::OnPlayBackResumed()
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackResumed");
-
-  CLog::Log(LOGDEBUG, "%s - Playback was resumed", __FUNCTION__);
 }
 
 void CApplication::OnPlayBackSpeedChanged(int iSpeed)
@@ -3958,8 +3943,6 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged");
-
-  CLog::Log(LOGDEBUG, "%s - Playback speed changed", __FUNCTION__);
 }
 
 void CApplication::OnPlayBackSeek(int iTime)
@@ -3979,8 +3962,6 @@ void CApplication::OnPlayBackSeek(int iTime)
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek");
-
-  CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
 }
 
 void CApplication::OnPlayBackSeekChapter(int iChapter)
@@ -4000,8 +3981,6 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeekChapter");
-
-  CLog::Log(LOGDEBUG, "%s - Playback skip", __FUNCTION__);
 }
 
 bool CApplication::IsPlaying() const
@@ -4054,84 +4033,10 @@ bool CApplication::IsPlayingFullScreenVideo() const
 
 void CApplication::SaveFileState()
 {
-  CStdString progressTrackingFile = m_progressTrackingItem->m_strPath;
-
-  if (progressTrackingFile != "")
-  {
-    if (m_progressTrackingItem->IsVideo())
-    {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for video item %s", __FUNCTION__, progressTrackingFile.c_str());
-
-      CVideoDatabase videodatabase;
-      if (videodatabase.Open())
-      {
-        // No resume & watched status for livetv
-        if (!m_progressTrackingItem->IsLiveTV())
-        {
-          if (m_progressTrackingPlayCountUpdate)
-          {
-            CLog::Log(LOGDEBUG, "%s - Marking video item %s as watched", __FUNCTION__, progressTrackingFile.c_str());
-
-            // consider this item as played
-            videodatabase.IncrementPlayCount(*m_progressTrackingItem);
-            CUtil::DeleteVideoDatabaseDirectoryCache();
-            CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
-            g_windowManager.SendMessage(message);
-          }
-
-          if (m_progressTrackingVideoResumeBookmark.timeInSeconds < 0.0f)
-          {
-            videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
-          }
-          else if (m_progressTrackingVideoResumeBookmark.timeInSeconds > 0.0f)
-          {
-            videodatabase.AddBookMarkToFile(progressTrackingFile, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
-          }
-        }
-
-        if (g_settings.m_currentVideoSettings != g_settings.m_defaultVideoSettings)
-        {
-          videodatabase.SetVideoSettings(progressTrackingFile, g_settings.m_currentVideoSettings);
-        }
-
-        if ((m_progressTrackingItem->IsDVDImage() ||
-             m_progressTrackingItem->IsDVDFile()    ) &&
-             m_progressTrackingItem->HasVideoInfoTag() &&
-             m_progressTrackingItem->GetVideoInfoTag()->HasStreamDetails())
-        {
-          videodatabase.SetStreamDetailsForFile(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails,progressTrackingFile);
-          CUtil::DeleteVideoDatabaseDirectoryCache();
-          CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
-          g_windowManager.SendMessage(message);
-        }
-
-        videodatabase.Close();
-      }
-    }
-
-    if (m_progressTrackingItem->IsAudio())
-    {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for audio item %s", __FUNCTION__, progressTrackingFile.c_str());
-
-      if (m_progressTrackingPlayCountUpdate)
-      {
-        // Can't write to the musicdatabase while scanning for music info
-        CGUIDialogMusicScan *dialog = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-        if (dialog && !dialog->IsDialogRunning())
-        {
-          // consider this item as played
-          CLog::Log(LOGDEBUG, "%s - Marking audio item %s as listened", __FUNCTION__, progressTrackingFile.c_str());
-
-          CMusicDatabase musicdatabase;
-          if (musicdatabase.Open())
-          {
-            musicdatabase.IncrTop100CounterByFileName(progressTrackingFile);
-            musicdatabase.Close();
-          }
-        }
-      }
-    }
-  }
+  CJob* job = new CSaveFileStateJob(*m_progressTrackingItem,
+      m_progressTrackingVideoResumeBookmark,
+      m_progressTrackingPlayCountUpdate);
+  CJobManager::GetInstance().AddJob(job, NULL);
 }
 
 void CApplication::UpdateFileState()
@@ -4145,55 +4050,57 @@ void CApplication::UpdateFileState()
     m_progressTrackingItem->Reset();
   }
   else
-  if (IsPlayingVideo() || IsPlayingAudio())
   {
-    if (m_progressTrackingItem->m_strPath == "")
+    if (IsPlayingVideo() || IsPlayingAudio())
     {
-      // Init some stuff
-      *m_progressTrackingItem = CurrentFileItem();
-      m_progressTrackingPlayCountUpdate = false;
-    }
-
-    if ((m_progressTrackingItem->IsAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
-        GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
-        (m_progressTrackingItem->IsVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
-        GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
-    {
-      m_progressTrackingPlayCountUpdate = true;
-    }
-
-    if (m_progressTrackingItem->IsVideo())
-    {
-      if ((m_progressTrackingItem->IsDVDImage() ||
-           m_progressTrackingItem->IsDVDFile()    ) &&
-          m_pPlayer->GetTotalTime() > 15*60)
-
+      if (m_progressTrackingItem->m_strPath == "")
       {
-        m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.Reset();
-        m_pPlayer->GetStreamDetails(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails);
+        // Init some stuff
+        *m_progressTrackingItem = CurrentFileItem();
+        m_progressTrackingPlayCountUpdate = false;
       }
-      // Update bookmark for save
-      m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
-      m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
-      m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
 
-      if (g_advancedSettings.m_videoIgnoreAtEnd > 0 &&
-          GetTotalTime() - GetTime() < g_advancedSettings.m_videoIgnoreAtEnd)
+      if ((m_progressTrackingItem->IsAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
+          GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
+          (m_progressTrackingItem->IsVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
+          GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
       {
-        // Delete the bookmark
-        m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
+        m_progressTrackingPlayCountUpdate = true;
       }
-      else
-      if (GetTime() > g_advancedSettings.m_videoIgnoreAtStart)
+
+      if (m_progressTrackingItem->IsVideo())
       {
-        // Update the bookmark
-        m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
-        m_progressTrackingVideoResumeBookmark.totalTimeInSeconds = GetTotalTime();
-      }
-      else
-      {
-        // Do nothing
-        m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
+        if ((m_progressTrackingItem->IsDVDImage() ||
+             m_progressTrackingItem->IsDVDFile()    ) &&
+            m_pPlayer->GetTotalTime() > 15*60)
+
+        {
+          m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails.Reset();
+          m_pPlayer->GetStreamDetails(m_progressTrackingItem->GetVideoInfoTag()->m_streamDetails);
+        }
+        // Update bookmark for save
+        m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+        m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
+        m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
+
+        if (g_advancedSettings.m_videoIgnoreAtEnd > 0 &&
+            GetTotalTime() - GetTime() < g_advancedSettings.m_videoIgnoreAtEnd)
+        {
+          // Delete the bookmark
+          m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
+        }
+        else
+        if (GetTime() > g_advancedSettings.m_videoIgnoreAtStart)
+        {
+          // Update the bookmark
+          m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
+          m_progressTrackingVideoResumeBookmark.totalTimeInSeconds = GetTotalTime();
+        }
+        else
+        {
+          // Do nothing
+          m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
+        }
       }
     }
   }
@@ -4239,6 +4146,29 @@ void CApplication::ResetScreenSaverTimer()
   m_screenSaverTimer.StartZero();
 }
 
+bool CApplication::ToggleDPMS(bool manual)
+{
+  if (manual || (m_dpmsIsManual == manual))
+  {
+    if (m_dpmsIsActive)
+    {
+      m_dpmsIsActive = false;
+      m_dpmsIsManual = false;
+      return m_dpms->DisablePowerSaving();
+    }
+    else
+    {
+      if (m_dpms->EnablePowerSaving(m_dpms->GetSupportedModes()[0]))
+      {
+        m_dpmsIsActive = true;
+        m_dpmsIsManual = manual;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 bool CApplication::WakeUpScreenSaverAndDPMS()
 {
 
@@ -4251,10 +4181,11 @@ bool CApplication::WakeUpScreenSaverAndDPMS()
   // First reset DPMS, if active
   if (m_dpmsIsActive)
   {
+    if (m_dpmsIsManual)
+      return false;
     // TODO: if screensaver lock is specified but screensaver is not active
     // (DPMS came first), activate screensaver now.
-    m_dpms->DisablePowerSaving();
-    m_dpmsIsActive = false;
+    ToggleDPMS(false);
     ResetScreenSaverTimer();
     return !m_bScreenSave || WakeUpScreenSaver();
   }
@@ -4268,13 +4199,13 @@ bool CApplication::WakeUpScreenSaver()
     return false;
 
   // if Screen saver is active
-  if (m_bScreenSave)
+  if (m_bScreenSave && m_screenSaver)
   {
     if (m_iScreenSaveLock == 0)
       if (g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
           (g_settings.UsingLoginScreen() || g_guiSettings.GetBool("masterlock.startuplock")) &&
           g_settings.GetCurrentProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-          m_screenSaverMode != "_virtual.dim" && m_screenSaverMode != "_virtual.blk" && m_screenSaverMode != "_virtual.viz")
+          m_screenSaver->ID() != "screensaver.xbmc.builtin.dim" && m_screenSaver->ID() != "screensaver.xbmc.builtin.black" && m_screenSaver->ID() != "visualization")
       {
         m_iScreenSaveLock = 2;
         CGUIMessage msg(GUI_MSG_CHECK_LOCK,0,0);
@@ -4291,14 +4222,14 @@ bool CApplication::WakeUpScreenSaver()
     m_iScreenSaveLock = 0;
     ResetScreenSaverTimer();
 
-    if (m_screenSaverMode == "_virtual.viz" || m_screenSaverMode == "_virtual.pic" || m_screenSaverMode == "_virtual.fan")
+    if (m_screenSaver->ID() == "visualization" || m_screenSaver->ID() == "screensaver.xbmc.builtin.slideshow")
     {
       // we can just continue as usual from vis mode
       return false;
     }
-    else if (m_screenSaverMode == "_virtual.dim" || m_screenSaverMode == "_virtual.blk")
+    else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim" || m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
       return true;
-    else if (m_screenSaverMode != "_virtual.none")
+    else if (!m_screenSaver->ID().IsEmpty())
     { // we're in screensaver window
       if (g_windowManager.GetActiveWindow() == WINDOW_SCREENSAVER)
         g_windowManager.PreviousWindow();  // show the previous window
@@ -4313,7 +4244,7 @@ void CApplication::CheckScreenSaverAndDPMS()
 {
   bool maybeScreensaver =
       !m_dpmsIsActive && !m_bScreenSave
-      && g_guiSettings.GetString("screensaver.mode") != "_virtual.none";
+      && !g_guiSettings.GetString("screensaver.mode").IsEmpty();
   bool maybeDPMS =
       !m_dpmsIsActive && m_dpms->IsSupported()
       && g_guiSettings.GetInt("powermanagement.displaysoff") > 0;
@@ -4343,8 +4274,7 @@ void CApplication::CheckScreenSaverAndDPMS()
   if (maybeDPMS
       && elapsed > g_guiSettings.GetInt("powermanagement.displaysoff") * 60)
   {
-    m_dpms->EnablePowerSaving(m_dpms->GetSupportedModes()[0]);
-    m_dpmsIsActive = true;
+    ToggleDPMS(false);
     WakeUpScreenSaver();
   }
   else if (maybeScreensaver
@@ -4362,7 +4292,9 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   m_bScreenSave = true;
 
   // Get Screensaver Mode
-  m_screenSaverMode = g_guiSettings.GetString("screensaver.mode");
+  m_screenSaver.reset();
+  if (!CAddonMgr::Get().GetAddon(g_guiSettings.GetString("screensaver.mode"), m_screenSaver))
+    m_screenSaver.reset(new CScreenSaver(""));
 
 #ifdef HAS_LCD
   // turn off lcd backlight if requested
@@ -4376,27 +4308,38 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   {
     // set to Dim in the case of a dialog on screen or playing video
     if (g_windowManager.HasModalDialog() || (IsPlayingVideo() && g_guiSettings.GetBool("screensaver.usedimonpause")))
-      m_screenSaverMode = "_virtual.dim";
+    {
+      if (!CAddonMgr::Get().GetAddon("screensaver.xbmc.builtin.dim", m_screenSaver))
+        m_screenSaver.reset(new CScreenSaver(""));
+    }
     // Check if we are Playing Audio and Vis instead Screensaver!
-    else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && g_guiSettings.GetString("musicplayer.visualisation") != "_virtual.none")
+    else if (IsPlayingAudio() && g_guiSettings.GetBool("screensaver.usemusicvisinstead") && !g_guiSettings.GetString("musicplayer.visualisation").IsEmpty())
     { // activate the visualisation
-      m_screenSaverMode = "_virtual.viz";
+      m_screenSaver.reset(new CScreenSaver("visualization"));
       g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
       return;
     }
   }
   // Picture slideshow
-  if (m_screenSaverMode == "_virtual.pic" || m_screenSaverMode == "_virtual.fan")
+  if (m_screenSaver->ID() == "screensaver.xbmc.builtin.slideshow")
   {
     // reset our codec info - don't want that on screen
     g_infoManager.SetShowCodec(false);
-    m_applicationMessenger.PictureSlideShow(g_guiSettings.GetString("screensaver.slideshowpath"), true);
+    CStdString type = m_screenSaver->GetSetting("type");
+    CStdString path = m_screenSaver->GetSetting("path");
+    if (type == "2" && path.IsEmpty())
+      type = "0";
+    if (type == "0")
+      path = "special://profile/thumbnails/Video/Fanart";
+    if (type == "1")
+      path = "special://profile/thumbnails/Music/Fanart";
+    m_applicationMessenger.PictureSlideShow(path, true, type != "2");
   }
-  else if (m_screenSaverMode == "_virtual.dim")
+  else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim")
     return;
-  else if (m_screenSaverMode == "_virtual.blk")
+  else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
     return;
-  else if (m_screenSaverMode != "_virtual.none")
+  else if (!m_screenSaver->ID().IsEmpty())
     g_windowManager.ActivateWindow(WINDOW_SCREENSAVER);
 }
 
@@ -4601,6 +4544,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         g_windowManager.PreviousWindow();
       }
 
+      if (IsEnableTestMode()) g_application.getApplicationMessenger().Quit();
       return true;
     }
     break;

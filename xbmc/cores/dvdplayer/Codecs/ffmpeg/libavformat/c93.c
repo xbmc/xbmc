@@ -83,7 +83,7 @@ static int read_header(AVFormatContext *s,
     if (!video)
         return AVERROR(ENOMEM);
 
-    video->codec->codec_type = CODEC_TYPE_VIDEO;
+    video->codec->codec_type = AVMEDIA_TYPE_VIDEO;
     video->codec->codec_id = CODEC_ID_C93;
     video->codec->width = 320;
     video->codec->height = 192;
@@ -120,13 +120,13 @@ static int read_packet(AVFormatContext *s, AVPacket *pkt)
                 c93->audio = av_new_stream(s, 1);
                 if (!c93->audio)
                     return AVERROR(ENOMEM);
-                c93->audio->codec->codec_type = CODEC_TYPE_AUDIO;
+                c93->audio->codec->codec_type = AVMEDIA_TYPE_AUDIO;
             }
             url_fskip(pb, 26); /* VOC header */
             ret = voc_get_packet(s, pkt, c93->audio, datasize - 26);
             if (ret > 0) {
                 pkt->stream_index = 1;
-                pkt->flags |= PKT_FLAG_KEY;
+                pkt->flags |= AV_PKT_FLAG_KEY;
                 return ret;
             }
         }
@@ -182,7 +182,7 @@ static int read_packet(AVFormatContext *s, AVPacket *pkt)
 
     /* only the first frame is guaranteed to not reference previous frames */
     if (c93->current_block == 0 && c93->current_frame == 0) {
-        pkt->flags |= PKT_FLAG_KEY;
+        pkt->flags |= AV_PKT_FLAG_KEY;
         pkt->data[0] |= C93_FIRST_FRAME;
     }
     return 0;

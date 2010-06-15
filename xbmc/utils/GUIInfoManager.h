@@ -636,6 +636,7 @@ public:
   void SetLibraryBool(int condition, bool value);
   bool GetLibraryBool(int condition);
   void ResetLibraryBools();
+  CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
 
 protected:
   // routines for window retrieval
@@ -648,7 +649,6 @@ protected:
   int TranslateListItem(const CStdString &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
-  CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
   bool GetItemBool(const CGUIListItem *item, int condition) const;
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.

@@ -30,6 +30,7 @@
 #include "GUISettings.h"
 #include "GUIImage.h"
 #include "LocalizeStrings.h"
+#include "addons/AddonManager.h"
 
 CBaseSettingControl::CBaseSettingControl(int id, CSetting *pSetting)
 {
@@ -121,11 +122,6 @@ bool CSpinExSettingControl::OnClick()
       CSettingInt *pSettingInt = (CSettingInt *)m_pSetting;
       pSettingInt->SetData(m_pSpin->GetValue());
     }
-    else if (m_pSetting->GetType() == SETTINGS_TYPE_ADDON)
-    {
-      CSettingAddon *pSettingAddon = (CSettingAddon *)m_pSetting;
-      pSettingAddon->SetData(m_pSpin->GetValue());
-    }
   }
   return true;
 }
@@ -141,11 +137,6 @@ void CSpinExSettingControl::Update()
   {
     CSettingInt *pSettingInt = (CSettingInt *)m_pSetting;
     m_pSpin->SetValue(pSettingInt->GetData());
-  }
-  else if (m_pSetting->GetType() == SETTINGS_TYPE_ADDON)
-  {
-    CSettingAddon *pSettingAddon = (CSettingAddon *)m_pSetting;
-    m_pSpin->SetValue(pSettingAddon->GetPos());
   }
 }
 
@@ -169,15 +160,23 @@ bool CButtonSettingControl::OnClick()
 
 void CButtonSettingControl::Update()
 {
-  if (m_pSetting->GetControlType() == BUTTON_CONTROL_STANDARD)
-    return ;
   CStdString strText = ((CSettingString *)m_pSetting)->GetData();
-  if (m_pSetting->GetControlType() == BUTTON_CONTROL_PATH_INPUT)
+  if (m_pSetting->GetType() == SETTINGS_TYPE_ADDON)
+  {
+    ADDON::AddonPtr addon;
+    if (ADDON::CAddonMgr::Get().GetAddon(strText, addon))
+      strText = addon->Name();
+    if (strText.IsEmpty())
+      strText = g_localizeStrings.Get(231); // None
+  }
+  else if (m_pSetting->GetControlType() == BUTTON_CONTROL_PATH_INPUT)
   {
     CStdString shortPath;
     if (CUtil::MakeShortenPath(strText, shortPath, 30 ))
       strText = shortPath;
   }
+  else if (m_pSetting->GetControlType() == BUTTON_CONTROL_STANDARD)
+    return;
   m_pButton->SetLabel2(strText);
 }
 

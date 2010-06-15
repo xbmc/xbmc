@@ -7,6 +7,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <LibraryPath>$(SolutionDir)\..\BuildDependencies\lib;$(LibraryPath)</LibraryPath>
+    <ExecutablePath>$(SolutionDir)\..\..\tools\win32buildtools;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup />
   <ItemGroup />

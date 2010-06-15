@@ -21,10 +21,6 @@
 
 #include "ScraperParser.h"
 
-#ifdef _LINUX
-#include "system.h"
-#endif
-
 #include "addons/AddonManager.h"
 #include "RegExp.h"
 #include "HTMLUtil.h"
@@ -47,7 +43,6 @@ CScraperParser::CScraperParser()
 {
   m_pRootElement = NULL;
   m_document = NULL;
-  m_requiressettings = false;
   m_SearchStringEncoding = "UTF-8";
 }
 
@@ -85,7 +80,6 @@ void CScraperParser::Clear()
   delete m_document;
 
   m_document = NULL;
-  m_requiressettings = false;
   m_strFile.Empty();
 }
 
@@ -115,7 +109,7 @@ bool CScraperParser::Load(const AddonPtr& scraper)
 
   m_scraper = scraper;
 
-  return Load(CUtil::AddFileToFolder(m_scraper->Path(),m_scraper->LibName()));
+  return Load(m_scraper->LibPath());
 }
 
 bool CScraperParser::LoadFromXML()
@@ -127,13 +121,11 @@ bool CScraperParser::LoadFromXML()
 
   m_pRootElement = m_document->RootElement();
   CStdString strValue = m_pRootElement->Value();
+  bool result=false;
   if (strValue == "scraper")
   {
     if (m_pRootElement->Attribute("cachePersistence"))
       m_persistence.SetFromTimeString(m_pRootElement->Attribute("cachePersistence"));
-
-    const char* requiressettings;
-    m_requiressettings = ((requiressettings = m_pRootElement->Attribute("requiressettings")) && strnicmp("true", requiressettings, 4) == 0);
 
     TiXmlElement* pChildElement = m_pRootElement->FirstChildElement("CreateSearchUrl");
     if (pChildElement)
@@ -146,15 +138,16 @@ bool CScraperParser::LoadFromXML()
     ADDONDEPS::iterator itr = deps.begin();
     while (itr != deps.end())
     {
-      AddonPtr dep;
-      if (!CAddonMgr::Get().GetAddon((*itr).first, dep, ADDON_SCRAPER_LIBRARY, false))
+      if (itr->first.Equals("xbmc.metadata"))
       {
-        itr++;
+        ++itr;
         continue;
-      }
-      CStdString strFile = CUtil::AddFileToFolder(dep->Path(), dep->LibName());
+      }  
+      AddonPtr dep;
+      if (!CAddonMgr::Get().GetAddon((*itr).first, dep))
+        break;
       TiXmlDocument doc;
-      if (doc.LoadFile(strFile))
+      if (doc.LoadFile(dep->LibPath()))
       {
         const TiXmlNode* node = doc.RootElement()->FirstChild();
         while (node)
@@ -165,8 +158,12 @@ bool CScraperParser::LoadFromXML()
       }
       itr++;
     }
-    return true;
+    result = true;
   }
+
+  if (result)
+    return true;
+
   delete m_document;
   m_document = NULL;
   m_pRootElement = NULL;
@@ -436,7 +433,7 @@ void CScraperParser::Clean(CStdString& strDirty)
     {
       strBuffer = strDirty.substr(i+11,i2-i-11);
       CStdString strConverted(strBuffer);
-      HTML::CHTMLUtil::ConvertAndRemoveTags(strConverted);
+      HTML::CHTMLUtil::RemoveTags(strConverted);
       const char* szTrimmed = RemoveWhiteSpace(strConverted.c_str());
       strDirty.erase(i,i2-i+11);
       strDirty.Insert(i,szTrimmed);
@@ -482,9 +479,10 @@ char* CScraperParser::RemoveWhiteSpace(const char *string2)
   if (!string2) return (char*)"";
   char* string = (char*)string2;
   size_t pos = strlen(string)-1;
-  while ((string[pos] == ' ' || string[pos] == '\n') && string[pos] && pos)
+  while ((string[pos] == ' ' || string[pos] == '\n') || string[pos] == '\t' 
+       && string[pos] && pos)
     string[pos--] = '\0';
-  while ((*string == ' ' || *string == '\n') && *string != '\0')
+  while ((*string == ' ' || *string == '\n' || *string == '\t') && *string != '\0')
     string++;
   return string;
 }

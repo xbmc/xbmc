@@ -17,7 +17,7 @@
  */
 
 /**
- * @file libavutil/fifo.h
+ * @file
  * a very simple circular buffer FIFO implementation
  */
 
@@ -35,7 +35,7 @@ typedef struct AVFifoBuffer {
 /**
  * Initializes an AVFifoBuffer.
  * @param size of FIFO
- * @return AVFifoBuffer or NULL if mem allocation failure
+ * @return AVFifoBuffer or NULL in case of memory allocation failure
  */
 AVFifoBuffer *av_fifo_alloc(unsigned int size);
 

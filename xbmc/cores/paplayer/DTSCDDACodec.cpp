@@ -21,7 +21,7 @@
 
 #include "system.h"
 #include "DTSCDDACodec.h"
-#ifdef HAS_DTS_CODEC
+#ifdef USE_LIBDTS_DECODER
 #include <cdio/sector.h>
 
 DTSCDDACodec::DTSCDDACodec() : DTSCodec()

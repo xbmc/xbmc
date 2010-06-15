@@ -31,15 +31,16 @@ class CURL;
 class TiXmlElement;
 
 typedef struct cp_plugin_info_t cp_plugin_info_t;
+typedef struct cp_extension_t cp_extension_t;
 
 namespace ADDON
 {
 
 // utils
-const CStdString    TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
-const CONTENT_TYPE  TranslateContent(const CStdString &string);
 const CStdString    TranslateType(const TYPE &type, bool pretty=false);
 const TYPE          TranslateType(const CStdString &string);
+const CStdString    UpdateVideoScraper(const CStdString &scraper);
+const CStdString    UpdateMusicScraper(const CStdString &scraper);
 
 class AddonVersion
 {
@@ -68,16 +69,6 @@ public:
 
   AddonProps(cp_plugin_info_t *props);
 
-  AddonProps(const AddonPtr &addon)
-    : id(addon->ID())
-    , type(addon->Type())
-    , version(addon->Version().str)
-    , stars(0)
-  { 
-    if (addon->Parent())
-      parent = addon->Parent()->ID();
-  }
-
   bool operator==(const AddonProps &rhs)
   { 
     return    (*this).id == rhs.id
@@ -101,7 +92,6 @@ public:
   CStdString disclaimer;
   CStdString changelog;
   CStdString fanart;
-  std::set<CONTENT_TYPE> contents;
   ADDONDEPS dependencies;
   int        stars;
 };
@@ -112,17 +102,42 @@ class CAddon : public IAddon
 {
 public:
   CAddon(const AddonProps &addonprops);
-  CAddon(cp_plugin_info_t *props);
+  CAddon(const cp_extension_t *ext);
   virtual ~CAddon() {}
   virtual AddonPtr Clone(const AddonPtr& parent) const;
 
-  // settings & language
-  virtual bool HasSettings();
-  virtual bool LoadSettings();
+  /*! \brief Check whether the this addon can be configured or not
+   \return true if the addon has settings, false otherwise
+   \sa LoadSettings, LoadUserSettings, SaveSettings, HasUserSettings, GetSetting, UpdateSetting
+   */
+  bool HasSettings();
+
+  /*! \brief Check whether the user has configured this addon or not
+   \return true if previously saved settings are found, false otherwise
+   \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, GetSetting, UpdateSetting
+   */
+  bool HasUserSettings();
+
+  /*! \brief Save any user configured settings
+   \sa LoadSettings, LoadUserSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
+   */
   virtual void SaveSettings();
-  virtual void SaveFromDefault();
-  virtual void UpdateSetting(const CStdString& key, const CStdString& value, const CStdString &type = "");
-  virtual CStdString GetSetting(const CStdString& key) const;
+
+  /*! \brief Update a user-configured setting with a new value
+   \param key the id of the setting to update
+   \param value the value that the setting should take
+   \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting
+   */
+  void UpdateSetting(const CStdString& key, const CStdString& value);
+
+  /*! \brief Retrieve a particular settings value
+   If a previously configured user setting is available, we return it's value, else we return the default (if available)
+   \param key the id of the setting to retrieve
+   \return the current value of the setting, or the default if the setting has yet to be configured.
+   \sa LoadSettings, LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, UpdateSetting
+   */
+  virtual CStdString GetSetting(const CStdString& key);
+
   TiXmlElement* GetSettingsXML();
   virtual CStdString GetString(uint32_t id);
 
@@ -131,7 +146,6 @@ public:
   AddonProps Props() const { return m_props; }
   AddonProps& Props() { return m_props; }
   const CStdString ID() const { return m_props.id; }
-  const AddonPtr Parent() const { return m_parent; }
   const CStdString Name() const { return m_props.name; }
   bool Enabled() const { return m_enabled; }
   const AddonVersion Version();
@@ -139,30 +153,57 @@ public:
   const CStdString Description() const { return m_props.description; }
   const CStdString Path() const { return m_props.path; }
   const CStdString Profile() const { return m_profile; }
-  const CStdString LibName() const { return m_strLibName; }
+  const CStdString LibPath() const;
   const CStdString Author() const { return m_props.author; }
   const CStdString ChangeLog() const { return m_props.changelog; }
   const CStdString FanArt() const { return m_props.fanart; }
   const CStdString Icon() const;
   const int Stars() const { return m_props.stars; }
   const CStdString Disclaimer() const { return m_props.disclaimer; }
-  bool Supports(const CONTENT_TYPE &content) const { return (m_props.contents.count(content) == 1); }
-  ADDONDEPS& GetDeps() { return m_props.dependencies; }
+  ADDONDEPS GetDeps();
 
 protected:
   CAddon(const CAddon&); // protected as all copying is handled by Clone()
   CAddon(const CAddon&, const AddonPtr&);
+  const AddonPtr Parent() const { return m_parent; }
+  virtual void BuildLibName(const cp_extension_t *ext = NULL);
+
+  /*! \brief Load the default settings and override these with any previously configured user settings
+   \return true if settings exist, false otherwise
+   \sa LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
+   */
+  virtual bool LoadSettings();
+
+  /*! \brief Load the user settings
+   \return true if user settings exist, false otherwise
+   \sa LoadSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
+   */
   bool LoadUserSettings();
-  virtual void BuildLibName(cp_plugin_info_t *props = NULL);
+
+  /*! \brief Parse settings from an XML document
+   \param doc XML document to parse for settings
+   \param loadDefaults if true, the default attribute is used and settings are reset prior to parsing, else the value attribute is used.
+   \return true if settings are loaded, false otherwise
+   \sa SettingsToXML
+   */
+  bool SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults = false);
+
+  /*! \brief Parse settings into an XML document
+   \param doc XML document to receive the settings
+   \sa SettingsFromXML
+   */
+  void SettingsToXML(TiXmlDocument &doc) const;
+
   TiXmlDocument     m_addonXmlDoc;
-  TiXmlDocument     m_userXmlDoc;
-  CStdString        m_userSettingsPath;
   CStdString        m_strLibName;
+  bool              m_settingsLoaded;
+  bool              m_userSettingsLoaded;
 
 private:
   friend class AddonMgr;
   AddonProps m_props;
   const AddonPtr    m_parent;
+  CStdString        m_userSettingsPath;
   void BuildProfilePath();
 
   virtual bool IsAddonLibrary() { return false; }
@@ -178,13 +219,14 @@ private:
   CStdString  m_profile;
   bool        m_enabled;
   CLocalizeStrings  m_strings;
+  std::map<CStdString, CStdString> m_settings;
 };
 
 class CAddonLibrary : public CAddon
 {
 public:
   CAddonLibrary(const AddonProps &props);
-  CAddonLibrary(cp_plugin_info_t *props);
+  CAddonLibrary(const cp_extension_t *ext);
 
 private:
   virtual bool IsAddonLibrary() { return true; }

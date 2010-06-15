@@ -29,7 +29,7 @@
 #endif
 #include <vector>
 #ifndef _LINUX
-
+#include <libavcodec/avcodec.h>
 enum CodecID;
 #else
 extern "C" {

@@ -12,6 +12,60 @@ libavutil:   2009-03-08
 
 API changes, most recent first:
 
+2010-06-05 - r23485 - lavu 50.18.0 - eval API
+  Make the eval API public.
+
+2010-06-04 - r23461 - lavu 50.17.0 - AV_BASE64_SIZE
+  Add AV_BASE64_SIZE() macro.
+
+2010-06-02 - r23421 - lavc 52.73.0 - av_get_codec_tag_string
+  Add av_get_codec_tag_string().
+
+2010-06-01 - r31301 - lsws 0.11.0 - convertPalette API
+  Add sws_convertPalette8ToPacked32 and sws_convertPalette8ToPacked24
+
+2010-05-26 - r23334 - lavc 52.72.0 - CODEC_CAP_EXPERIMENTAL
+  Add CODEC_CAP_EXPERIMENTAL flag.
+
+2010-05-23 - r23255 - lavu 50.16.0 - av_get_random_seed
+  Add av_get_random_seed()
+
+2010-05-18 - r23161 - lavf 52.63.0 - AVFMT_FLAG_RTP_HINT
+  Add AVFMT_FLAG_RTP_HINT as possible value for AVFormatContext.flags
+
+2010-05-09 - r23066 - lavfi 1.20.0 - AVFilterPicRef
+  Add interlaced and top_field_first fields to AVFilterPicRef.
+
+2010-05-01 - r23002 - lavf 52.62.0 - probe function
+  Add av_probe_input_format2 to API, it allows ignoring probe
+  results below given score and returns the actual probe score.
+
+2010-04-01 - r22806 - lavf 52.61.0 - metadata API
+  Add a flag for av_metadata_set2() to disable overwriting of
+  existing tags.
+
+2010-04-01 - r22753 - lavc 52.66.0
+  Add avcodec_get_edge_width()
+
+2010-03-31 - r22750 - lavc 52.65.0
+  Add avcodec_copy_context().
+
+2010-03-31 - r22748 - lavf 52.60.0 - av_match_ext()
+  Make av_match_ext() public.
+
+2010-03-31 - r22736 - lavu 50.14.0 - AVMediaType
+  Move AVMediaType enum from libavcodec to libavutil.
+
+2010-03-31 - r22735 - lavc 52.64.0 - AVMediaType
+  Define AVMediaType enum, and use it instead of enum CodecType, which
+  is deprecated and will be dropped at the next major bump.
+
+2010-03-25 - r22684 - lavu 50.13.0 - av_strerror()
+  Implement av_strerror().
+
+2010-03-23 - r22649 - lavc 52.60.0 - av_dct_init()
+  Support DCT-I and DST-I
+
 2010-03-15 - r22540 - lavf 52.56.0 - AVFormatContext.start_time_realtime
   Add AVFormatContext.start_time_realtime field.
 
@@ -111,27 +165,27 @@ API changes, most recent first:
   parameters to it.
 
 2009-10-07 - r20189 - lavfi 0.5.1 - AVFilterPic
-  Added w and h fields to AVFilterPic.
+  Add w and h fields to AVFilterPic.
 
 2009-06-22 - r19250 - lavf 52.34.1 - AVFormatContext.packet_size
   This is now an unsigned int instead of a signed int.
 
 2009-06-19 - r19222 - lavc 52.32.0 - AVSubtitle.pts
-  Added a pts field to AVSubtitle which gives the subtitle's packet
-  PTS in AV_TIME_BASE. Some subtitle de-/encoders (e.g. XSUB) will
+  Add a pts field to AVSubtitle which gives the subtitle packet pts
+  in AV_TIME_BASE. Some subtitle de-/encoders (e.g. XSUB) will
   not work right without this.
 
 2009-06-03 - r19078 - lavc 52.30.2 - AV_PKT_FLAG_KEY
-  PKT_FLAG_KEY has been deprecated and will be dropped for the next
+  PKT_FLAG_KEY has been deprecated and will be dropped at the next
   major version. Use AV_PKT_FLAG_KEY instead.
 
 2009-06-01 - r19025 - lavc 52.30.0 - av_lockmgr_register()
   av_lockmgr_register() can be used to register a callback function
   that lavc (and in the future, libraries that depend on lavc) can use
   to implement mutexes. The application should provide a callback function
-  the implements the AV_LOCK_* operations described in avcodec.h.
-  When the lock manager is registered FFmpeg is guaranteed to behave
-  correct also in a multi-threaded application.
+  that implements the AV_LOCK_* operations described in avcodec.h.
+  When the lock manager is registered, FFmpeg is guaranteed to behave
+  correctly in a multi-threaded application.
 
 2009-04-30 - r18719 - lavc 52.28.0 - av_free_packet
   av_free_packet() is no longer an inline function. It is now exported.
@@ -154,12 +208,11 @@ API changes, most recent first:
   libavcodec/avcodec.h.
 
 2009-03-22 - r18163 - lavu 50.2.0 - RGB32 pixel formats
-  Make the pixel formats: PIX_FMT_ARGB, PIX_FMT_RGBA, PIX_FMT_ABGR,
-  PIX_FMT_BGRA, which were defined as macros, defined as enum
-  PixelFormat values, and viceversa make PIX_FMT_RGB32,
-  PIX_FMT_RGB32_1, PIX_FMT_BGR32, PIX_FMT_BGR32_1 defined as macros.
-  Also make avcodec_get_pix_fmt() recognize the "rgb32" and "bgr32"
-  aliases.
+  Convert the pixel formats PIX_FMT_ARGB, PIX_FMT_RGBA, PIX_FMT_ABGR,
+  PIX_FMT_BGRA, which were defined as macros, into enum PixelFormat values.
+  Conversely PIX_FMT_RGB32, PIX_FMT_RGB32_1, PIX_FMT_BGR32 and
+  PIX_FMT_BGR32_1 are now macros.
+  avcodec_get_pix_fmt() now recognizes the "rgb32" and "bgr32" aliases.
   Re-sort the enum PixelFormat list accordingly.
   This change breaks API/ABI backward compatibility.
 
@@ -178,7 +231,7 @@ API changes, most recent first:
   and replaced by av_fifo_alloc, av_fifo_generic_read, av_fifo_generic_write
   and av_fifo_realloc2.
   In addition, the order of the function arguments of av_fifo_generic_read
-  were changed to match av_fifo_generic_write.
+  was changed to match av_fifo_generic_write.
   The AVFifoBuffer/struct AVFifoBuffer may only be used in an opaque way by
   applications, they may not use sizeof() or directly access members.
 

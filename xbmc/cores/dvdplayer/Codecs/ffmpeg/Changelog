@@ -4,6 +4,17 @@ releases are sorted from youngest to oldest.
 
 version <next>:
 
+- WebM support in Matroska de/muxer
+- low overhead Ogg muxing
+- MMS-TCP support
+- VP8 de/encoding via libvpx
+- CODEC_CAP_EXPERIMENTAL added
+- Demuxer for On2's IVF format
+
+
+
+version 0.6:
+
 - PB-frame decoding for H.263
 - deprecated vhook subsystem removed
 - deprecated old scaler removed
@@ -27,7 +38,7 @@ version <next>:
 - Electronic Arts Madcow decoder
 - DivX (XSUB) subtitle encoder
 - nonfree libamr support for AMR-NB/WB decoding/encoding removed
-- Experimental AAC encoder
+- experimental AAC encoder
 - RTP depacketization of ASF and RTSP from WMS servers
 - RTMP support in libavformat
 - noX handling for OPT_BOOL X options
@@ -36,7 +47,7 @@ version <next>:
 - TwinVQ decoder
 - Bluray (PGS) subtitle decoder
 - LPCM support in MPEG-TS (HDMV RID as found on Blu-ray disks)
-- Wmapro decoder
+- WMA Pro decoder
 - Core Audio Format demuxer
 - Atrac1 decoder
 - MD STUDIO audio demuxer
@@ -57,13 +68,26 @@ version <next>:
 - concat protocol
 - Indeo 5 decoder
 - RTP depacketization of AMR
-- WMAVoice decoder
-- FFprobe tool
+- WMA Voice decoder
+- ffprobe tool
 - AMR-NB decoder
 - RTSP muxer
 - HE-AAC v1 decoder
 - Kega Game Video (KGV1) decoder
 - VorbisComment writing for FLAC, Ogg FLAC and Ogg Speex files
+- RTP depacketization of Theora
+- HTTP Digest authentication
+- RTMP/RTMPT/RTMPS/RTMPE/RTMPTE protocol support via librtmp
+- Psygnosis YOP demuxer and video decoder
+- spectral extension support in the E-AC-3 decoder
+- unsharp video filter
+- RTP hinting in the mov/3gp/mp4 muxer
+- Dirac in Ogg demuxing
+- seek to keyframes in Ogg
+- 4:2:2 and 4:4:4 Theora decoding
+- 35% faster VP3/Theora decoding
+- faster AAC decoding
+- faster H.264 decoding
 
 
 

@@ -22,7 +22,7 @@
 #include "Skin.h"
 #include "AddonManager.h"
 #include "GUIWindowManager.h"
-#include "GUISettings.h"
+#include "SystemGlobals.h"
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "Key.h"
@@ -41,25 +41,25 @@ boost::shared_ptr<ADDON::CSkinInfo> g_SkinInfo;
 namespace ADDON
 {
 
-CSkinInfo::CSkinInfo(cp_plugin_info_t *props)
-  : CAddon(props)
+CSkinInfo::CSkinInfo(const cp_extension_t *ext)
+  : CAddon(ext)
 {
-  GetDefaultResolution(props, "@defaultresolution", m_DefaultResolution, RES_PAL_4x3);
-  GetDefaultResolution(props, "@defaultresolutionwide", m_DefaultResolutionWide, RES_INVALID);
+  GetDefaultResolution(ext, "@defaultresolution", m_DefaultResolution, RES_PAL_4x3);
+  GetDefaultResolution(ext, "@defaultresolutionwide", m_DefaultResolutionWide, RES_INVALID);
   CLog::Log(LOGINFO, "Default 4:3 resolution directory is %s", CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolution)).c_str());
   CLog::Log(LOGINFO, "Default 16:9 resolution directory is %s", CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolutionWide)).c_str());
 
-  CStdString str = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@effectslowdown");
+  CStdString str = CAddonMgr::Get().GetExtValue(ext->configuration, "@effectslowdown");
   if (!str.IsEmpty())
     m_effectsSlowDown = (float)atof(str.c_str());
   else
     m_effectsSlowDown = 1.f;
 
-  str = CAddonMgr::Get().GetExtValue(props->extensions->configuration, "@debugging");
+  str = CAddonMgr::Get().GetExtValue(ext->configuration, "@debugging");
   m_debugging = !strcmp(str.c_str(), "true");
 
   m_onlyAnimateToHome = true;
-  LoadStartupWindows(props);
+  LoadStartupWindows(ext);
   m_Version = 2.11;
 }
 
@@ -220,7 +220,7 @@ int CSkinInfo::GetStartWindow() const
   return m_startupWindows[0].m_id;
 }
 
-bool CSkinInfo::LoadStartupWindows(cp_plugin_info_t *props)
+bool CSkinInfo::LoadStartupWindows(const cp_extension_t *ext)
 {
   m_startupWindows.clear();
   /*{ // yay, run through and grab the startup windows
@@ -272,10 +272,10 @@ void CSkinInfo::GetSkinPaths(std::vector<CStdString> &paths) const
     paths.push_back(CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolution)));
 }
 
-void CSkinInfo::GetDefaultResolution(cp_plugin_info_t *props, const char *tag, RESOLUTION &res, const RESOLUTION &def) const
+void CSkinInfo::GetDefaultResolution(const cp_extension_t *ext, const char *tag, RESOLUTION &res, const RESOLUTION &def) const
 {
   //FIXME! only respects one extension per addon
-  CStdString strRes(CAddonMgr::Get().GetExtValue(props->extensions->configuration, tag));
+  CStdString strRes(CAddonMgr::Get().GetExtValue(ext->configuration, tag));
   if (!strRes.empty())
   {
     strRes.ToLower();

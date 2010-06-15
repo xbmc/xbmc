@@ -241,10 +241,10 @@ while(<$inf>) {
         and $_ = "\n=head3 $1\n";
 
     # Block command handlers:
-    /^\@itemize\s+(\@[a-z]+|\*|-)/ and do {
+    /^\@itemize\s*(\@[a-z]+|\*|-)?/ and do {
         push @endwstack, $endw;
         push @icstack, $ic;
-        $ic = $1;
+        $ic = $1 ? $1 : "*";
         $_ = "\n=over 4\n";
         $endw = "itemize";
     };
@@ -304,7 +304,7 @@ $sects{NAME} = "$fn \- $tl\n";
 $sects{FOOTNOTES} .= "=back\n" if exists $sects{FOOTNOTES};
 
 for $sect (qw(NAME SYNOPSIS DESCRIPTION OPTIONS EXAMPLES ENVIRONMENT FILES
-              BUGS NOTES FOOTNOTES SEEALSO AUTHOR COPYRIGHT)) {
+              BUGS NOTES FOOTNOTES SEEALSO AUTHORS COPYRIGHT)) {
     if(exists $sects{$sect}) {
         $head = $sect;
         $head =~ s/SEEALSO/SEE ALSO/;

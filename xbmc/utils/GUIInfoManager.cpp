@@ -1133,7 +1133,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
   case VIDEOPLAYER_VIDEO_RESOLUTION:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
-      return CStreamDetails::VideoWidthToResolutionDescription(g_application.m_pPlayer->GetPictureWidth());
+      return CStreamDetails::VideoDimsToResolutionDescription(g_application.m_pPlayer->GetPictureWidth(), g_application.m_pPlayer->GetPictureHeight());
     break;
   case VIDEOPLAYER_AUDIO_CODEC:
     if(g_application.IsPlaying() && g_application.m_pPlayer)
@@ -2723,6 +2723,8 @@ CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT form
     return time.GetAsLocalizedTime(use12hourclock ? "h" : "HH", false);
   case TIME_FORMAT_HH_MM:
     return time.GetAsLocalizedTime(use12hourclock ? "h:mm" : "HH:mm", false);
+  case TIME_FORMAT_HH_MM_XX:
+      return time.GetAsLocalizedTime(use12hourclock ? "h:mm xx" : "HH:mm", false);      
   case TIME_FORMAT_HH_MM_SS:
     return time.GetAsLocalizedTime("", true);
   default:
@@ -3756,7 +3758,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       }
       if (item->HasVideoInfoTag())
       {
-        duration = item->GetVideoInfoTag()->m_strRuntime;
+        if (item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() > 0)
+          duration.Format("%i", item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration());
+        else if (!item->GetVideoInfoTag()->m_strRuntime.IsEmpty())
+          duration = item->GetVideoInfoTag()->m_strRuntime;
       }
 
       return duration;
@@ -3928,7 +3933,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_VIDEO_RESOLUTION:
     if (item->HasVideoInfoTag())
-      return CStreamDetails::VideoWidthToResolutionDescription(item->GetVideoInfoTag()->m_streamDetails.GetVideoWidth());
+      return CStreamDetails::VideoDimsToResolutionDescription(item->GetVideoInfoTag()->m_streamDetails.GetVideoWidth(), item->GetVideoInfoTag()->m_streamDetails.GetVideoHeight());
     break;
   case LISTITEM_VIDEO_ASPECT:
     if (item->HasVideoInfoTag())

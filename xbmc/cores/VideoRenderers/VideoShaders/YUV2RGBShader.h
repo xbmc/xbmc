@@ -1,6 +1,27 @@
 #ifndef __YUV2RGB_SHADERS_H__
 #define __YUV2RGB_SHADERS_H__
 
+/*
+ *      Copyright (C) 2007-2010 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This Program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2, or (at your option)
+ *  any later version.
+ *
+ *  This Program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with XBMC; see the file COPYING.  If not, write to
+ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ *  http://www.gnu.org/copyleft/gpl.html
+ *
+ */
+
 #if defined(HAS_GL) || HAS_GLES == 2
 
 #ifndef __GNUC__
@@ -25,10 +46,10 @@ namespace Shaders {
     virtual void SetContrast(float contrast)    {};
     virtual void SetNonLinStretch(float stretch){};
 #if HAS_GLES == 2
-    virtual GLint GetVertexLoc() {};
-    virtual GLint GetYcoordLoc() {};
-    virtual GLint GetUcoordLoc() {};
-    virtual GLint GetVcoordLoc() {};
+    virtual GLint GetVertexLoc() { return 0; };
+    virtual GLint GetYcoordLoc() { return 0; };
+    virtual GLint GetUcoordLoc() { return 0; };
+    virtual GLint GetVcoordLoc() { return 0; };
 
     virtual void SetMatrices(GLfloat *p, GLfloat *m) {};
     virtual void SetAlpha(GLfloat alpha)             {};

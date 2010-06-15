@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE schema PUBLIC "-//W3C//DTD XMLSCHEMA 200102//EN" "http://www.w3.org/2001/XMLSchema.dtd">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="extension">
+		<xs:complexType>
+      <xs:element name="info">
+        <xs:complexType>
+          <xs:attribute name="compressed" type="xs:boolean"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="checksum" type="xs:string"/>
+      <xs:element name="datadir">
+        <xs:complexType>
+          <xs:attribute name="zip" type="xs:boolean"/>
+        </xs:complexType>
+      </xs:element>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="simpleIdentifier">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[^.]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

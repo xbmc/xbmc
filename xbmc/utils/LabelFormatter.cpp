@@ -215,7 +215,12 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
       if (music)
         nDuration = music->GetDuration();
       if (movie)
-        nDuration = StringUtils::TimeStringToSeconds(movie->m_strRuntime);
+      {
+        if (movie->m_streamDetails.GetVideoDuration() > 0)
+          nDuration = movie->m_streamDetails.GetVideoDuration();
+        else if (!movie->m_strRuntime.IsEmpty())
+          nDuration = StringUtils::TimeStringToSeconds(movie->m_strRuntime);
+      }
       if (nDuration > 0)
         StringUtils::SecondsToTimeString(nDuration, value);
       else if (item->m_dwSize > 0)

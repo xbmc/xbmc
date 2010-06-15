@@ -1,4 +1,31 @@
-
+/*
+ * Copyright (C) 2000-2008 the xine project
+ *
+ * Copyright (C) Christian Vogler
+ *               cvogler@gradient.cis.upenn.edu - December 2001
+ *
+ * This file is part of xine, a free video player.
+ *
+ * xine is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * xine is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
+ *
+ * stuff needed to provide closed captioning decoding and display
+ *
+ * Some small bits and pieces of the EIA-608 captioning decoder were
+ * adapted from CCDecoder 0.9.1 by Mike Baker. The latest version is
+ * available at http://sourceforge.net/projects/ccdecoder/.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,8 +64,8 @@ static int  rowdata[] = {10, -1, 0, 1, 2, 3, 11, 12, 13, 14, 4, 5, 6,
 			 7, 8, 9};
 /* FIXME: do real TM */
 /* must be mapped as a music note in the captioning font */ 
-static char specialchar[] = {'®','°','½','¿','T','¢','£','¶','à',
-			     TRANSP_SPACE,'è','â','ê','î','ô','û'};
+static char specialchar[] = {'Â®','Â°','Â½','Â¿','T','Â¢','Â£','Â¶','Ã ',
+			     TRANSP_SPACE,'Ã¨','Ã¢','Ãª','Ã®','Ã´','Ã»'};
 
 /* character translation table - EIA 608 codes are not all the same as ASCII */
 static char chartbl[128];
@@ -92,16 +119,16 @@ static void build_char_table(void)
   for (i = 0; i < 128; i++)
     chartbl[i] = (char) i;
   /* now the special codes */
-  chartbl[0x2a] = 'á';
-  chartbl[0x5c] = 'é';
-  chartbl[0x5e] = 'í';
-  chartbl[0x5f] = 'ó';
-  chartbl[0x60] = 'ú';
-  chartbl[0x7b] = 'ç';
-  chartbl[0x7c] = '÷';
-  chartbl[0x7d] = 'Ñ';
-  chartbl[0x7e] = 'ñ';
-  chartbl[0x7f] = '¤';    /* FIXME: this should be a solid block */
+  chartbl[0x2a] = 'Ã¡';
+  chartbl[0x5c] = 'Ã©';
+  chartbl[0x5e] = 'Ã­';
+  chartbl[0x5f] = 'Ã³';
+  chartbl[0x60] = 'Ãº';
+  chartbl[0x7b] = 'Ã§';
+  chartbl[0x7c] = 'Ã·';
+  chartbl[0x7d] = 'Ã‘';
+  chartbl[0x7e] = 'Ã±';
+  chartbl[0x7f] = 'Â¤';    /* FIXME: this should be a solid block */
 }
 
 /*

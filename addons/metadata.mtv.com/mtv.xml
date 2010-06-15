@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scraper framework="1.0" date="2009-05-22">
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://api.mtvnservices.com/1/video/search/?term=\1&lt;/url&gt;" dest="3">
+			<expression noclean="1"/>
+		</RegExp>
+	</CreateSearchUrl>
+	<GetSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1 - \2&lt;/title&gt;&lt;url&gt;\4&lt;/url&gt;&lt;/entity&gt;" dest="5">
+				<expression noclean="1" repeat="yes">&lt;entry&gt;.*?&lt;content&gt;(.*?) \| (.*?) \| (.*?)&lt;/content&gt;.*?media:player url=&quot;([^&quot;]*)&quot;/&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>		
+	</GetSearchResults>
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
+				<expression trim="1" noclean="1">&lt;meta name=&quot;mtv_vt&quot; content=&quot;([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;artist&gt;\1&lt;/artist&gt;" dest="5+">
+				<expression trim="1" noclean="1">&lt;meta name=&quot;mtv_an&quot; content=&quot;([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;album&gt;\1&lt;/album&gt;" dest="5+">
+				<expression trim="1" noclean="1">&lt;meta name=&quot;mtv_at&quot; content=&quot;([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
+				<expression trim="1" noclean="1">&lt;strong&gt;Label&lt;/strong&gt; ([^&lt;]*)&lt;/li&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression>&lt;meta name=&quot;content_create_date&quot; content=&quot;([0-9]*)-[^&quot;]*&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
+				<expression trim="1" noclean="1">&lt;meta name=&quot;mtv_vd&quot; content=&quot;([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;thumb&gt;http://www.mtv.com\2.jpg&lt;/thumb&gt;" dest="5+">
+				<expression noclean="1">&quot;thumbnail&quot;([^&quot;]*)content=&quot;([^&quot;]*)\.jpg</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetDetails>
+</scraper>

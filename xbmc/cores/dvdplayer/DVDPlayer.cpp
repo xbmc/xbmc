@@ -314,7 +314,7 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
 
     m_PlayerOptions = options;
     m_item     = file;
-    m_content  = file.GetContentType();
+    m_mimetype  = file.GetMimeType();
     m_filename = file.m_strPath;
 
     m_ready.Reset();
@@ -409,7 +409,7 @@ bool CDVDPlayer::OpenInputStream()
     m_filename = g_mediaManager.TranslateDevicePath("");
   }
 
-  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_content);
+  m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_filename, m_mimetype);
   if(m_pInputStream == NULL)
   {
     CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - unable to create input stream for [%s]", m_filename.c_str());
@@ -418,7 +418,7 @@ bool CDVDPlayer::OpenInputStream()
   else
     m_pInputStream->SetFileItem(m_item);
 
-  if (!m_pInputStream->Open(m_filename.c_str(), m_content))
+  if (!m_pInputStream->Open(m_filename.c_str(), m_mimetype))
   {
     CLog::Log(LOGERROR, "CDVDPlayer::OpenInputStream - error opening [%s]", m_filename.c_str());
     return false;
@@ -603,18 +603,6 @@ bool CDVDPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
 
   if(packet)
   {
-
-    // correct for timestamp errors, maybe should be inside demuxer
-    if(m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
-    {
-      CDVDInputStreamNavigator *pInput = static_cast<CDVDInputStreamNavigator*>(m_pInputStream);
-
-      if (packet->dts != DVD_NOPTS_VALUE)
-        packet->dts -= pInput->GetTimeStampCorrection();
-      if (packet->pts != DVD_NOPTS_VALUE)
-        packet->pts -= pInput->GetTimeStampCorrection();
-    }
-
     // this groupId stuff is getting a bit messy, need to find a better way
     // currently it is used to determine if a menu overlay is associated with a picture
     // for dvd's we use as a group id, the current cell and the current title
@@ -3423,6 +3411,17 @@ int CDVDPlayer::GetPictureWidth()
     CDemuxStreamVideo* stream = static_cast<CDemuxStreamVideo*>(m_pDemuxer->GetStream(m_CurrentVideo.id));
     if (stream)
       return stream->iWidth;
+  }
+  return 0;
+}
+
+int CDVDPlayer::GetPictureHeight()
+{
+  if (m_pDemuxer && (m_CurrentVideo.id != -1))
+  {
+    CDemuxStreamVideo* stream = static_cast<CDemuxStreamVideo*>(m_pDemuxer->GetStream(m_CurrentVideo.id));
+    if (stream)
+      return stream->iHeight;
   }
   return 0;
 }

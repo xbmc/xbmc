@@ -22,36 +22,65 @@
 #include "addons/Addon.h"
 #include "utils/ScraperUrl.h"
 
+typedef enum
+{
+  CONTENT_MOVIES,
+  CONTENT_TVSHOWS,
+  CONTENT_MUSICVIDEOS,
+  CONTENT_ALBUMS,
+  CONTENT_ARTISTS,
+  CONTENT_NONE,
+} CONTENT_TYPE;
+
 namespace ADDON
 {
   class CScraper;
   typedef boost::shared_ptr<CScraper> ScraperPtr;
 
+  const CStdString   TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
+  const CONTENT_TYPE TranslateContent(const CStdString &string);
+  const TYPE         ScraperTypeFromContent(const CONTENT_TYPE &content);
+
   class CScraper : public CAddon
   {
   public:
     CScraper(const AddonProps &props) : CAddon(props) { }
-    CScraper(cp_plugin_info_t *props) : CAddon(props) { }
+    CScraper(const cp_extension_t *ext);
     virtual ~CScraper() {}
     virtual AddonPtr Clone(const AddonPtr &self) const;
 
-    // from CAddon
-    virtual bool HasSettings();
-    virtual bool LoadSettings();
+    /*! \brief Set the scraper settings for a particular path from an XML string
+     Loads the default and user settings (if not already loaded) and, if the given XML string is non-empty,
+     overrides the user settings with the XML.
+     \param content Content type of the path
+     \param xml string of XML with the settings.  If non-empty this overrides any saved user settings.
+     \return true if settings are available, false otherwise
+     \sa GetPathSettings
+     */
+    bool SetPathSettings(CONTENT_TYPE content, const CStdString& xml);
 
-    // scraper specialization
-    bool LoadUserXML(const CStdString& strXML);
-    bool LoadSettingsXML(const CStdString& strFunction="GetSettings", const CScraperUrl* url=NULL);
-    CStdString GetSettings() const;
-    CStdString m_strLanguage;
+    /*! \brief Get the scraper settings for a particular path in the form of an XML string
+     Loads the default and user settings (if not already loaded) and returns the user settings in the
+     form or an XML string
+     \return a string containing the XML settings
+     \sa SetPathSettings
+     */
+    CStdString GetPathSettings();
+
     CONTENT_TYPE Content() const { return m_pathContent; }
-    const CStdString Framework() const { return m_framework; }
-    CONTENT_TYPE m_pathContent;
+    const CStdString& Framework() const { return m_framework; }
+    const CStdString& Language() const { return m_language; }
+    bool RequiresSettings() const { return m_requiressettings; }
+
+    bool Supports(const CONTENT_TYPE &content) const;
 
   private:
     CScraper(const CScraper&, const AddonPtr&);
-    bool m_hasSettings;
+
     CStdString m_framework;
+    CStdString m_language;
+    bool m_requiressettings;
+    CONTENT_TYPE m_pathContent;
   };
 
 }; /* namespace ADDON */

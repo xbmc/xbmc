@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/libxvidff.c
+ * @file
  * Interface to xvidcore for MPEG-4 compliant encoding.
  * @author Adam Thayer (krevnik@comcast.net)
  */
@@ -481,7 +481,7 @@ static av_cold int xvid_encode_close(AVCodecContext *avctx) {
     xvid_encore(x->encoder_handle, XVID_ENC_DESTROY, NULL, NULL);
 
     if( avctx->extradata != NULL )
-        av_free(avctx->extradata);
+        av_freep(&avctx->extradata);
     if( x->twopassbuffer != NULL ) {
         av_free(x->twopassbuffer);
         av_free(x->old_twopassbuffer);
@@ -769,7 +769,7 @@ int xvid_ff_2pass(void *ref, int cmd, void *p1, void *p2) {
  */
 AVCodec libxvid_encoder = {
     "libxvid",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_MPEG4,
     sizeof(struct xvid_context),
     xvid_encode_init,

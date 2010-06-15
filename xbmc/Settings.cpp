@@ -1767,37 +1767,6 @@ CStdString CSettings::GetSourcesFile() const
   return folder;
 }
 
-CStdString CSettings::GetSkinFolder() const
-{
-  CStdString folder;
-
-  // Get the Current Skin Path
-  return GetSkinFolder(g_guiSettings.GetString("lookandfeel.skin"));
-}
-
-CStdString CSettings::GetScriptsFolder() const
-{
-  CStdString folder = "special://home/scripts";
-
-  if ( CDirectory::Exists(folder) )
-    return folder;
-
-  folder = "special://xbmc/scripts";
-  return folder;
-}
-
-CStdString CSettings::GetSkinFolder(const CStdString &skinName) const
-{
-  CStdString folder;
-
-  // Get the Current Skin Path
-  CUtil::AddFileToFolder("special://home/skin/", skinName, folder);
-  if ( ! CDirectory::Exists(folder) )
-    CUtil::AddFileToFolder("special://xbmc/skin/", skinName, folder);
-
-  return folder;
-}
-
 void CSettings::LoadRSSFeeds()
 {
   CStdString rssXML;

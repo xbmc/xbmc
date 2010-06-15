@@ -185,7 +185,8 @@ void CURL::Parse(const CStdString& strURL1)
   const char* sep = NULL;
 
   CStdString strProtocol2 = GetTranslatedProtocol();
-  if(m_strProtocol.Equals("rss"))
+  if(m_strProtocol.Equals("rss") ||
+     m_strProtocol.Equals("addons"))
     sep = "?";
   else
   if(strProtocol2.Equals("http")

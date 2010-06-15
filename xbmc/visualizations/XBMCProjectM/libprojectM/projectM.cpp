@@ -115,7 +115,7 @@ DLLEXPORT void projectM::projectM_resetTextures()
 
 
 DLLEXPORT  projectM::projectM ( std::string config_file, int flags) :
-		beatDetect ( 0 ), renderer ( 0 ),  _pcm(0), m_presetPos(0), m_flags(flags)
+		beatDetect ( 0 ), renderer ( 0 ), m_presetPos(0),  _pcm(0), m_flags(flags)
 {
 	readConfig ( config_file );	
 	projectM_reset();
@@ -245,6 +245,7 @@ void *projectM::thread_func(void *vptr_args)
     pthread_cond_wait( &condition, &mutex );
     if(!running)
     {
+      pthread_mutex_unlock( &mutex );
       return NULL;
     }
     evaluateSecondPreset();
@@ -254,15 +255,19 @@ void *projectM::thread_func(void *vptr_args)
 
 void projectM::evaluateSecondPreset()
 {
-      CSectionLock lock(&mutex);
-      setupPresetInputs(&m_activePreset2->presetInputs());
-      m_activePreset2->presetInputs().frame = timeKeeper->PresetFrameB();
-      m_activePreset2->presetInputs().progress= timeKeeper->PresetProgressB();
-      
-      assert ( m_activePreset2.get() );
-      m_activePreset2->evaluateFrame();
-      renderer->PerPixelMath ( &m_activePreset2->presetOutputs(), &presetInputs2 );
-      renderer->WaveformMath ( &m_activePreset2->presetOutputs(), &presetInputs2, true );  
+      Preset* p = m_activePreset2.get();
+      if (p)
+      {
+        setupPresetInputs(&p->presetInputs());
+        p->presetInputs().frame = timeKeeper->PresetFrameB();
+        p->presetInputs().progress= timeKeeper->PresetProgressB();
+        
+        p->evaluateFrame();
+        renderer->PerPixelMath ( &p->presetOutputs(), &presetInputs2 );
+        renderer->WaveformMath ( &p->presetOutputs(), &presetInputs2, true );  
+      }
+      else
+        printf("projectm: %s - preset was NULL\n", __FUNCTION__);
 }
 
 void projectM::setupPresetInputs(PresetInputs *inputs)
@@ -351,6 +356,7 @@ DLLEXPORT void projectM::renderFrame()
 		{
                         CSectionLock lock(&mutex);
 			m_activePreset = m_activePreset2;			
+			switchPreset(m_activePreset2, presetInputs2, presetOutputs2);
 			timeKeeper->EndSmoothing();
 		}
 	
@@ -882,7 +888,6 @@ void projectM::switchPreset(std::auto_ptr<Preset> & targetPreset, PresetInputs &
 
 	// Set preset name here- event is not done because at the moment this function is oblivious to smooth/hard switches
 	renderer->setPresetName ( targetPreset->presetName() );
-        printf("projectm: preset is now %s\n", targetPreset->presetName().c_str());
 
 
 }
@@ -953,7 +958,7 @@ void projectM::insertPresetURL(unsigned int index, const std::string & presetURL
 {
 	bool atEndPosition = false;
 	
-	int newSelectedIndex;
+	int newSelectedIndex = index;
 	
 	
 	if (*m_presetPos == m_presetChooser->end()) // Case: preset not selected

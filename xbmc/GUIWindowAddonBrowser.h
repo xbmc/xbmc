@@ -48,6 +48,26 @@ public:
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);
 
   static std::pair<CFileOperationJob*,unsigned int> AddJob(const CStdString& path);
+
+  /*! \brief Popup a selection dialog with a list of addons of the given type
+   \param type the type of addon wanted
+   \param addonID [out] the addon ID of the selected item
+   \param showNone whether there should be a "None" item in the list (defaults to false)
+   \return 1 if an addon was selected, 2 if "Get More" was chosen, or 0 if an error occurred or if the selection process was cancelled
+   */
+  static int SelectAddonID(ADDON::TYPE type, CStdString &addonID, bool showNone = false);
+
+  /*! \brief Install an addon if it is available in a repository
+   \param addonID the addon ID of the item to install
+   \param force whether to force the install even if the addon is already installed (eg for updating). Defaults to false.
+   */
+  static void InstallAddon(const CStdString &addonID, bool force = false);
+
+  /*! \brief Install a set of addons from the official repository (if needed)
+   \param addonIDs a set of addon IDs to install
+   */
+  static void InstallAddonsFromXBMCRepo(const std::set<CStdString> &addonIDs);
+
 protected:
   void UnRegisterJob(CFileOperationJob* job);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);

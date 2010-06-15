@@ -21,6 +21,7 @@
 
 #include "system.h"
 #include "GUIUserMessages.h"
+#include "GUIDialogOK.h"
 #include "GUIWindowWeather.h"
 #include "GUIImage.h"
 #include "utils/Weather.h"
@@ -30,6 +31,7 @@
 #include "lib/libPython/XBPython.h"
 #include "LangInfo.h"
 #include "utils/log.h"
+#include "utils/SystemInfo.h"
 #include "Settings.h"
 #include "addons/AddonManager.h"
 
@@ -71,10 +73,6 @@ CGUIWindowWeather::CGUIWindowWeather(void)
     : CGUIWindow(WINDOW_WEATHER, "MyWeather.xml")
 {
   m_iCurWeather = 0;
-#ifdef _USE_ZIP_
-
-
-#endif
 }
 
 CGUIWindowWeather::~CGUIWindowWeather(void)
@@ -135,13 +133,22 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       UpdateLocations();
       SetProperties();
       if (g_windowManager.GetActiveWindow() == WINDOW_WEATHER)
-      {
-        if (!g_guiSettings.GetString("weather.script").IsEmpty())
-          m_scriptTimer.StartZero();
-      }
+        m_scriptTimer.StartZero();
       else
         CallScript();
     }
+    break;
+  case GUI_MSG_WINDOW_INIT:
+    {
+      if (!g_sysinfo.HasInternet())
+      {
+        CGUIDialogOK::ShowAndGetInput(8,21451,20022,20022);
+        g_windowManager.PreviousWindow();
+        return true;
+      }
+    }
+    break;
+  default:
     break;
   }
 
@@ -296,19 +303,16 @@ void CGUIWindowWeather::SetProperties()
 void CGUIWindowWeather::CallScript()
 {
 #ifdef HAS_PYTHON
-  if (!g_guiSettings.GetString("weather.script").IsEmpty())
+  if (!g_guiSettings.GetString("weather.script").Equals(DEFAULT_WEATHER_ADDON))
   {
     AddonPtr addon;
-    if (!ADDON::CAddonMgr::Get().GetAddon(g_guiSettings.GetString("weather.script"), addon, ADDON_SCRIPT))
+    if (!ADDON::CAddonMgr::Get().GetAddon(g_guiSettings.GetString("weather.script"), addon, ADDON_SCRIPT_WEATHER))
       return;
-
-    // create the full path to the script
-    CStdString script = addon->Path() + addon->LibName();
 
     // initialize our sys.argv variables
     unsigned int argc = 2;
     char ** argv = new char*[argc];
-    argv[0] = (char*)script.c_str();
+    argv[0] = (char*)addon->LibPath().c_str();
 
     // if script is running we wait for another timeout only when in weather window
     if (g_windowManager.GetActiveWindow() == WINDOW_WEATHER)

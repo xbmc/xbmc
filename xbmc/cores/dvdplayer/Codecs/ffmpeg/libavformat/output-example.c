@@ -65,7 +65,7 @@ static AVStream *add_audio_stream(AVFormatContext *oc, enum CodecID codec_id)
 
     c = st->codec;
     c->codec_id = codec_id;
-    c->codec_type = CODEC_TYPE_AUDIO;
+    c->codec_type = AVMEDIA_TYPE_AUDIO;
 
     /* put sample parameters */
     c->bit_rate = 64000;
@@ -159,7 +159,7 @@ static void write_audio_frame(AVFormatContext *oc, AVStream *st)
 
     if (c->coded_frame && c->coded_frame->pts != AV_NOPTS_VALUE)
         pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, st->time_base);
-    pkt.flags |= PKT_FLAG_KEY;
+    pkt.flags |= AV_PKT_FLAG_KEY;
     pkt.stream_index= st->index;
     pkt.data= audio_outbuf;
 
@@ -199,7 +199,7 @@ static AVStream *add_video_stream(AVFormatContext *oc, enum CodecID codec_id)
 
     c = st->codec;
     c->codec_id = codec_id;
-    c->codec_type = CODEC_TYPE_VIDEO;
+    c->codec_type = AVMEDIA_TYPE_VIDEO;
 
     /* put sample parameters */
     c->bit_rate = 400000;
@@ -368,7 +368,7 @@ static void write_video_frame(AVFormatContext *oc, AVStream *st)
         AVPacket pkt;
         av_init_packet(&pkt);
 
-        pkt.flags |= PKT_FLAG_KEY;
+        pkt.flags |= AV_PKT_FLAG_KEY;
         pkt.stream_index= st->index;
         pkt.data= (uint8_t *)picture;
         pkt.size= sizeof(AVPicture);
@@ -385,7 +385,7 @@ static void write_video_frame(AVFormatContext *oc, AVStream *st)
             if (c->coded_frame->pts != AV_NOPTS_VALUE)
                 pkt.pts= av_rescale_q(c->coded_frame->pts, c->time_base, st->time_base);
             if(c->coded_frame->key_frame)
-                pkt.flags |= PKT_FLAG_KEY;
+                pkt.flags |= AV_PKT_FLAG_KEY;
             pkt.stream_index= st->index;
             pkt.data= video_outbuf;
             pkt.size= out_size;

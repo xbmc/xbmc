@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/raw.h
+ * @file
  * Raw Video Codec
  */
 
@@ -34,6 +34,6 @@ typedef struct PixelFormatTag {
     unsigned int fourcc;
 } PixelFormatTag;
 
-extern const PixelFormatTag ff_raw_pixelFormatTags[];
+extern const PixelFormatTag ff_raw_pix_fmt_tags[];
 
 #endif /* AVCODEC_RAW_H */

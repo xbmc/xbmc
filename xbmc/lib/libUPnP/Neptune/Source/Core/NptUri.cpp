@@ -710,15 +710,15 @@ NPT_Url::ToRequestString(bool with_fragment) const
     if (m_Path.IsEmpty()) {
         result += "/";
     } else {
-        result += PercentEncode(m_Path, PathCharsToEncode, false);
+        result += PercentEncode(m_Path, PathCharsToEncode);
     }
     if (m_HasQuery) {
         result += "?";
-        result += PercentEncode(m_Query, QueryCharsToEncode, false);
+        result += PercentEncode(m_Query, QueryCharsToEncode);
     }
     if (with_fragment && m_HasFragment) {
         result += "#";
-        result += PercentEncode(m_Fragment, FragmentCharsToEncode, false);
+        result += PercentEncode(m_Fragment, FragmentCharsToEncode);
     }
     return result;
 }

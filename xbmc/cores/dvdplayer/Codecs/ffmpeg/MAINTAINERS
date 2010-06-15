@@ -104,8 +104,7 @@ Codecs:
   8bps.c                                Roberto Togni
   8svx.c                                Jaikrishnan Menon
   aasc.c                                Kostya Shishkov
-  aac.[ch], aactab.[ch], aacdectab.h    Robert Swain
-  aacenc.* aaccoder.* aacpsy.*          Alex Converse
+  aac*, sbr.h                           Alex Converse
   ac3*                                  Justin Ruggles
   alacenc.c                             Jaikrishnan Menon
   alsdec.c                              Thilo Borgmann
@@ -153,6 +152,7 @@ Codecs:
   libschroedinger*                      David Conrad
   libspeexdec.c                         Justin Ruggles
   libtheoraenc.c                        David Conrad
+  libvorbis.c                           David Conrad
   libx264.c                             Mans Rullgard, Jason Garrett-Glaser
   loco.c                                Kostya Shishkov
   lzo.h, lzo.c                          Reimar Doeffinger
@@ -197,7 +197,7 @@ Codecs:
   truemotion2*                          Kostya Shishkov
   truespeech.c                          Kostya Shishkov
   tscc.c                                Kostya Shishkov
-  tta.c                                 Alex Beregszaszi
+  tta.c                                 Alex Beregszaszi, Jaikrishnan Menon
   txd.c                                 Ivo van Poorten
   ulti*                                 Kostya Shishkov
   vb.c                                  Kostya Shishkov

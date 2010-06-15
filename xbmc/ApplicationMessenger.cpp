@@ -348,14 +348,10 @@ case TMSG_POWERDOWN:
 
         CFileItemList items;
         CStdString strPath = pMsg->strParam;
-        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER &&
-            g_guiSettings.GetString("screensaver.mode").Equals("Fanart Slideshow"))
-        {
-          CUtil::GetRecursiveListing(g_settings.GetVideoFanartFolder(), items, ".tbn");
-          CUtil::GetRecursiveListing(g_settings.GetMusicFanartFolder(), items, ".tbn");
-        }
-        else
-          CUtil::GetRecursiveListing(strPath, items, g_settings.m_pictureExtensions);
+        CStdString extensions = g_settings.m_pictureExtensions;
+        if (pMsg->dwParam1)
+          extensions += "|.tbn";
+        CUtil::GetRecursiveListing(strPath, items, extensions);
 
         if (items.Size() > 0)
         {
@@ -370,7 +366,7 @@ case TMSG_POWERDOWN:
         {
           if(items.Size() == 0)
           {
-            g_guiSettings.SetString("screensaver.mode", "Dim");
+            g_guiSettings.SetString("screensaver.mode", "screensaver.xbmc.builtin.dim");
             g_application.ActivateScreenSaver();
           }
           else
@@ -835,13 +831,14 @@ void CApplicationMessenger::PictureShow(string filename)
   SendMessage(tMsg);
 }
 
-void CApplicationMessenger::PictureSlideShow(string pathname, bool bScreensaver /* = false */)
+void CApplicationMessenger::PictureSlideShow(string pathname, bool bScreensaver /* = false */, bool addTBN /* = false */)
 {
   DWORD dwMessage = TMSG_PICTURE_SLIDESHOW;
   if (bScreensaver)
     dwMessage = TMSG_SLIDESHOW_SCREENSAVER;
   ThreadMessage tMsg = {dwMessage};
   tMsg.strParam = pathname;
+  tMsg.dwParam1 = addTBN ? 1 : 0;
   SendMessage(tMsg);
 }
 

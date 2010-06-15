@@ -30,7 +30,7 @@
  */
 
 /**
- * @file libavdevice/x11grab.c
+ * @file
  * X11 frame device demuxer by Clemens Fruhwirth <clemens@endorphin.org>
  * and Edouard Gomez <ed.gomez@free.fr>.
  */
@@ -110,7 +110,7 @@ x11grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
         return AVERROR(EIO);
     }
 
-    if (!ap || ap->width <= 0 || ap->height <= 0 || ap->time_base.den <= 0) {
+    if (ap->width <= 0 || ap->height <= 0 || ap->time_base.den <= 0) {
         av_log(s1, AV_LOG_ERROR, "AVParameters don't have video size and/or rate. Use -s and -r.\n");
         return AVERROR(EIO);
     }
@@ -226,7 +226,7 @@ x11grab_read_header(AVFormatContext *s1, AVFormatParameters *ap)
     x11grab->image = image;
     x11grab->use_shm = use_shm;
 
-    st->codec->codec_type = CODEC_TYPE_VIDEO;
+    st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
     st->codec->codec_id = CODEC_ID_RAWVIDEO;
     st->codec->width = ap->width;
     st->codec->height = ap->height;

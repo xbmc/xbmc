@@ -124,6 +124,7 @@ extern "C"
   int dll_fgetpos(FILE* stream, fpos_t* pos);
   int dll_fgetpos64(FILE *stream, fpos64_t *pos);
   int dll_fsetpos(FILE* stream, const fpos_t* pos);
+  int dll_fsetpos64(FILE* stream, const fpos64_t* pos);
   int dll_fileno(FILE* stream);
   void dll_rewind(FILE* stream);
   void dll_clearerr(FILE* stream);
@@ -160,6 +161,7 @@ extern "C"
   int dll_fstat64(int fd, struct __stat64 *buf);
 #ifdef _WIN32
   int dll_fstat64i32(int fd, struct _stat64i32 *buffer);
+  int dll_open_osfhandle(intptr_t _OSFileHandle, int _Flags);
 #endif
   int dll_fstatvfs64(int fd, struct statvfs64 *buf);
   int dll_setvbuf(FILE *stream, char *buf, int type, size_t size);
@@ -169,6 +171,8 @@ extern "C"
 #ifdef _LINUX
   int * __cdecl dll_errno(void);
 #endif
+
+  extern char **dll__environ;
 }
 
 

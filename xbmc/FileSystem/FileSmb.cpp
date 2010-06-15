@@ -30,9 +30,7 @@
 #include "utils/PasswordManager.h"
 #include "SMBDirectory.h"
 #include "Util.h"
-#ifndef _WIN32PC
 #include <libsmbclient.h>
-#endif
 #include "../utils/Network.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
@@ -542,6 +540,7 @@ int CFileSMB::Stat(struct __stat64* buffer)
   CSingleLock lock(smb);
   int iResult = smbc_fstat(m_fd, &tmpBuffer);
 
+  memset(buffer, 0, sizeof(struct __stat64));
   buffer->st_dev = tmpBuffer.st_dev;
   buffer->st_ino = tmpBuffer.st_ino;
   buffer->st_mode = tmpBuffer.st_mode;
@@ -570,6 +569,7 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 #endif
   int iResult = smbc_stat(strFileName, &tmpBuffer);
 
+  memset(buffer, 0, sizeof(struct __stat64));
   buffer->st_dev = tmpBuffer.st_dev;
   buffer->st_ino = tmpBuffer.st_ino;
   buffer->st_mode = tmpBuffer.st_mode;

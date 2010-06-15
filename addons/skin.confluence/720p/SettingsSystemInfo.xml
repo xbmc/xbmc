@@ -273,7 +273,7 @@
 					<shadowcolor>black</shadowcolor>
 					<font>font13_title</font>
 				</control>
-				<control type="label" id="52">
+				<control type="label">
 					<description>CPU Text</description>
 					<posx>420</posx>
 					<posy>450</posy>
@@ -294,7 +294,7 @@
 					<height>16</height>
 					<info>System.CPUUsage</info>
 				</control>
-				<control type="label" id="52">
+				<control type="label">
 					<description>Memory Text</description>
 					<posx>420</posx>
 					<posy>480</posy>

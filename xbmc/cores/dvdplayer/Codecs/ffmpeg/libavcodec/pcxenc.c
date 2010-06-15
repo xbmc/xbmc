@@ -21,7 +21,7 @@
 
 /**
  * PCX image encoder
- * @file libavcodec/pcxenc.c
+ * @file
  * @author Daniel Verkamp
  * @sa http://www.qzx.com/pc-gpe/pcx.txt
  */
@@ -191,7 +191,7 @@ static int pcx_encode_frame(AVCodecContext *avctx,
 
 AVCodec pcx_encoder = {
     "pcx",
-    CODEC_TYPE_VIDEO,
+    AVMEDIA_TYPE_VIDEO,
     CODEC_ID_PCX,
     sizeof(PCXContext),
     pcx_encode_init,

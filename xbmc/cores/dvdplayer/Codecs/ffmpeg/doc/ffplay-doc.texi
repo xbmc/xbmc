@@ -8,9 +8,9 @@
 @end titlepage
 
 
-@chapter Introduction
-
+@chapter Description
 @c man begin DESCRIPTION
+
 FFplay is a very simple and portable media player using the FFmpeg
 libraries and the SDL library. It is mostly used as a testbed for the
 various FFmpeg APIs.
@@ -45,6 +45,8 @@ Disable audio.
 Disable video.
 @item -ss @var{pos}
 Seek to a given position in seconds.
+@item -t @var{duration}
+play <duration> seconds of audio/video
 @item -bytes
 Seek by bytes.
 @item -nodisp
@@ -53,6 +55,8 @@ Disable graphical display.
 Force format.
 @item -window_title @var{title}
 Set window title (default is the input filename).
+@item -loop @var{number}
+Loops movie playback <number> times. 0 means forever.
 @end table
 
 @section Advanced options
@@ -144,11 +148,11 @@ Seek to percentage in file corresponding to fraction of width.
 @settitle FFplay media player
 
 @c man begin SEEALSO
-ffmpeg(1), ffserver(1) and the HTML documentation of @file{ffmpeg}.
+ffmpeg(1), ffprobe(1), ffserver(1) and the FFmpeg HTML documentation
 @c man end
 
-@c man begin AUTHOR
-Fabrice Bellard
+@c man begin AUTHORS
+The FFmpeg developers
 @c man end
 
 @end ignore

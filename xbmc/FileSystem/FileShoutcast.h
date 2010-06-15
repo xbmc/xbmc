@@ -76,7 +76,7 @@ public:
 protected:
   void outputTimeoutMessage(const char* message);
   unsigned int m_lastTime;
-  int m_contenttype;
+  int m_mimetype;
   RIP_MANAGER_OPTIONS m_opt;
 };
 }

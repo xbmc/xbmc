@@ -77,7 +77,7 @@ bool CGUIWindowScripts::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       if (m_vecItems->m_strPath == "?")
-        m_vecItems->m_strPath = g_settings.GetScriptsFolder();
+        m_vecItems->m_strPath = "";
       return CGUIMediaWindow::OnMessage(message);
     }
     break;
@@ -215,7 +215,7 @@ bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemLi
   for (unsigned i=0; i < addons.size(); i++)
   {
     AddonPtr addon = addons[i];
-    CFileItemPtr pItem(new CFileItem(CUtil::AddFileToFolder(addon->Path(),addon->LibName()),false));
+    CFileItemPtr pItem(new CFileItem(addon->LibPath(),false));
     pItem->SetLabel(addon->Name());
     pItem->SetLabel2(addon->Summary());
     pItem->SetThumbnailImage(addon->Icon());

@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/pcm-mpeg.c
+ * @file
  * PCM codecs for encodings found in MPEG streams (DVD/Blu-ray)
  */
 
@@ -297,7 +297,7 @@ static int pcm_bluray_decode_frame(AVCodecContext *avctx,
 
 AVCodec pcm_bluray_decoder = {
     "pcm_bluray",
-    CODEC_TYPE_AUDIO,
+    AVMEDIA_TYPE_AUDIO,
     CODEC_ID_PCM_BLURAY,
     0,
     NULL,

@@ -89,7 +89,7 @@ Configuration options:
   --disable-avformat       disable libavformat build
   --disable-swscale        disable libswscale build
   --enable-postproc        enable GPLed postprocessing support [no]
-  --enable-avfilter        video filter support [no]
+  --disable-avfilter       disable video filter support [no]
   --enable-avfilter-lavf   video filters dependent on avformat [no]
   --enable-beosthreads     use BeOS threads [no]
   --enable-os2threads      use OS/2 threads [no]
@@ -177,11 +177,13 @@ External library support:
   --enable-libnut          enable NUT (de)muxing via libnut,
                            native (de)muxer exists [no]
   --enable-libopenjpeg     enable JPEG 2000 decoding via OpenJPEG [no]
+  --enable-librtmp         enable RTMP[E] support via librtmp [no]
   --enable-libschroedinger enable Dirac support via libschroedinger [no]
   --enable-libspeex        enable Speex decoding via libspeex [no]
   --enable-libtheora       enable Theora encoding via libtheora [no]
   --enable-libvorbis       enable Vorbis encoding via libvorbis,
                            native implementation exists [no]
+  --enable-libvpx          enable VP8 support via libvpx [no]
   --enable-libx264         enable H.264 encoding via x264 [no]
   --enable-libxvid         enable Xvid encoding via xvidcore,
                            native MPEG-4/Xvid encoder exists [no]
@@ -198,6 +200,7 @@ Advanced options (experts only):
   --target-exec=CMD        command to run executables on target
   --target-path=DIR        path to view of build directory on target
   --nm=NM                  use nm tool
+  --ar=AR                  use archive tool AR [$ar_default]
   --as=AS                  use assembler AS [$as_default]
   --cc=CC                  use C compiler CC [$cc_default]
   --ld=LD                  use linker LD
@@ -920,10 +923,12 @@ CONFIG_LIST="
     libopencore_amrnb
     libopencore_amrwb
     libopenjpeg
+    librtmp
     libschroedinger
     libspeex
     libtheora
     libvorbis
+    libvpx
     libx264
     libxvid
     lpc
@@ -1050,6 +1055,7 @@ HAVE_LIST="
     libdc1394_1
     libdc1394_2
     llrint
+    llrintf
     local_aligned_16
     local_aligned_8
     log2
@@ -1074,6 +1080,7 @@ HAVE_LIST="
     soundcard_h
     poll_h
     setrlimit
+    strerror_r
     struct_addrinfo
     struct_ipv6_mreq
     struct_sockaddr_in6
@@ -1128,6 +1135,7 @@ PATHS_LIST='
 
 CMDLINE_SET="
     $PATHS_LIST
+    ar
     arch
     as
     build_suffix
@@ -1226,7 +1234,6 @@ flv_encoder_select="h263_encoder"
 h261_encoder_select="aandct"
 h263_decoder_select="h263_parser"
 h263_encoder_select="aandct"
-h263_vaapi_hwaccel_deps="va_va_h"
 h263_vaapi_hwaccel_select="vaapi h263_decoder"
 h263i_decoder_select="h263_decoder"
 h263p_encoder_select="h263_encoder"
@@ -1237,7 +1244,6 @@ h264_dxva2_hwaccel_deps="dxva2api_h"
 h264_dxva2_hwaccel_select="dxva2 h264_decoder"
 h264_vaapi_hwaccel_deps="va_va_h"
 h264_vaapi_hwaccel_select="vaapi"
-h264_vdpau_decoder_deps="vdpau_vdpau_h vdpau_vdpau_x11_h"
 h264_vdpau_decoder_select="vdpau h264_decoder"
 imc_decoder_select="fft mdct"
 jpegls_decoder_select="golomb"
@@ -1250,13 +1256,9 @@ mpeg1video_encoder_select="aandct"
 mpeg2video_encoder_select="aandct"
 mpeg4_decoder_select="h263_decoder mpeg4video_parser"
 mpeg4_encoder_select="h263_encoder"
-mpeg_vdpau_decoder_deps="vdpau_vdpau_h vdpau_vdpau_x11_h"
 mpeg_vdpau_decoder_select="vdpau mpegvideo_decoder"
-mpeg1_vdpau_decoder_deps="vdpau_vdpau_h vdpau_vdpau_x11_h"
 mpeg1_vdpau_decoder_select="vdpau mpeg1video_decoder"
-mpeg2_vaapi_hwaccel_deps="va_va_h"
 mpeg2_vaapi_hwaccel_select="vaapi mpeg2video_decoder"
-mpeg4_vaapi_hwaccel_deps="va_va_h"
 mpeg4_vaapi_hwaccel_select="vaapi mpeg4_decoder"
 mpeg4_vdpau_decoder_deps="vdpau_vdpau_h vdpau_vdpau_x11_h vdpau_mpeg4_support"
 mpeg4_vdpau_decoder_select="vdpau mpeg4_decoder"
@@ -1299,9 +1301,7 @@ twinvq_decoder_select="mdct lsp"
 vc1_decoder_select="h263_decoder"
 vc1_dxva2_hwaccel_deps="dxva2api_h DXVA_PictureParameters_wDecodedPictureIndex"
 vc1_dxva2_hwaccel_select="dxva2 vc1_decoder"
-vc1_vaapi_hwaccel_deps="va_va_h"
 vc1_vaapi_hwaccel_select="vaapi vc1_decoder"
-vc1_vdpau_decoder_deps="vdpau_vdpau_h vdpau_vdpau_x11_h"
 vc1_vdpau_decoder_select="vdpau vc1_decoder"
 vorbis_decoder_select="mdct"
 vorbis_encoder_select="mdct"
@@ -1312,7 +1312,7 @@ wmav1_decoder_select="mdct"
 wmav1_encoder_select="mdct"
 wmav2_decoder_select="mdct"
 wmav2_encoder_select="mdct"
-wmavoice_decoder_select="lsp"
+wmavoice_decoder_select="lsp rdft dct"
 wmv1_decoder_select="h263_decoder"
 wmv1_encoder_select="h263_encoder"
 wmv2_decoder_select="h263_decoder"
@@ -1325,6 +1325,9 @@ zlib_decoder_select="zlib"
 zlib_encoder_select="zlib"
 zmbv_decoder_select="zlib"
 zmbv_encoder_select="zlib"
+
+vaapi_deps="va_va_h"
+vdpau_deps="vdpau_vdpau_h vdpau_vdpau_x11_h"
 
 # parsers
 h264_parser_select="golomb h264dsp"
@@ -1340,6 +1343,7 @@ libfaac_encoder_deps="libfaac"
 libfaad_decoder_deps="libfaad"
 libfaad_latm_decoder_deps="libfaad"
 libfaadbin_decoder_extralibs='$ldl'
+libfaadbin_extralibs='$ldl'
 libgsm_decoder_deps="libgsm"
 libgsm_encoder_deps="libgsm"
 libgsm_ms_decoder_deps="libgsm"
@@ -1354,6 +1358,8 @@ libschroedinger_encoder_deps="libschroedinger"
 libspeex_decoder_deps="libspeex"
 libtheora_encoder_deps="libtheora"
 libvorbis_encoder_deps="libvorbis"
+libvpx_decoder_deps="libvpx"
+libvpx_encoder_deps="libvpx"
 libx264_encoder_deps="libx264"
 libxvid_encoder_deps="libxvid"
 
@@ -1412,8 +1418,9 @@ x11_grab_device_indev_extralibs="-lX11 -lXext -lXfixes"
 gopher_protocol_deps="network"
 http_protocol_deps="network"
 http_protocol_select="tcp_protocol"
-rtmp_protocol_deps="tcp_protocol"
-rtp_protocol_deps="udp_protocol"
+mmst_protocol_deps="network"
+rtmp_protocol_select="tcp_protocol"
+rtp_protocol_select="udp_protocol"
 tcp_protocol_deps="network"
 udp_protocol_deps="network"
 
@@ -1427,6 +1434,7 @@ avformat_deps="avcodec"
 
 # programs
 ffmpeg_deps="avcodec avformat swscale"
+ffmpeg_select="buffer_filter"
 ffplay_deps="avcodec avformat swscale sdl"
 ffplay_select="rdft"
 ffprobe_deps="avcodec avformat"
@@ -1449,7 +1457,7 @@ mandir_default='${prefix}/share/man'
 shlibdir_default="$libdir_default"
 
 # toolchain
-ar="ar"
+ar_default="ar"
 cc_default="gcc"
 cc_version=\"unknown\"
 host_cc_default="gcc"
@@ -1473,6 +1481,7 @@ host_os=$target_os_default
 # configurable options
 enable avcodec
 enable avdevice
+enable avfilter
 enable avformat
 enable avutil
 enable asm
@@ -1558,18 +1567,13 @@ INDEV_LIST=$(find_things    indev    _IN      libavdevice/alldevices.c)
 PROTOCOL_LIST=$(find_things protocol PROTOCOL libavformat/allformats.c)
 FILTER_LIST=$(find_things   filter   FILTER   libavfilter/allfilters.c)
 
-enable $ARCH_EXT_LIST \
-       $DECODER_LIST \
-       $ENCODER_LIST \
-       $HWACCEL_LIST \
-       $PARSER_LIST \
-       $BSF_LIST \
-       $DEMUXER_LIST \
-       $MUXER_LIST \
-       $FILTER_LIST \
-       $PROTOCOL_LIST \
-       $INDEV_LIST \
-       $OUTDEV_LIST \
+for n in $COMPONENT_LIST; do
+    v=$(toupper ${n%s})_LIST
+    eval enable \$$v
+    eval ${n}_if_any="\$$v"
+done
+
+enable $ARCH_EXT_LIST
 
 die_unknown(){
     echo "Unknown option \"$1\"."
@@ -1653,7 +1657,7 @@ fi
 
 set_default arch target_os
 
-ar="${cross_prefix}${ar}"
+ar_default="${cross_prefix}${ar_default}"
 cc_default="${cross_prefix}${cc_default}"
 nm_default="${cross_prefix}${nm_default}"
 ranlib="${cross_prefix}${ranlib}"
@@ -1741,6 +1745,7 @@ elif $cc --version 2>/dev/null | grep -q Intel; then
     AS_DEPFLAGS='-MMD'
     speed_cflags='-O3'
     size_cflags='-Os'
+    noopt_cflags='-O1'
 elif $cc -v 2>&1 | grep -q xlc; then
     cc_type=xlc
     cc_version="AV_STRINGIFY(__IBMC__)"
@@ -1830,9 +1835,9 @@ elif $cc -V 2>&1 | grep -q Sun; then
                 -march=*|-mcpu=*)
                     case "${flag#*=}" in
                         native)                   echo -xtarget=native       ;;
-                        v9)                       echo -xarch=sparc          ;;
+                        v9|niagara)               echo -xarch=sparc          ;;
                         ultrasparc)               echo -xarch=sparcvis       ;;
-                        ultrasparc3|niagara*)     echo -xarch=sparcvis2      ;;
+                        ultrasparc3|niagara2)     echo -xarch=sparcvis2      ;;
                         i586|pentium)             echo -xchip=pentium        ;;
                         i686|pentiumpro|pentium2) echo -xtarget=pentium_pro  ;;
                         pentium3*|c3-2)           echo -xtarget=pentium3     ;;
@@ -1864,7 +1869,7 @@ test -n "$cc_type" && enable $cc_type || echolog "Unknown C compiler $cc"
 : ${as_default:=$cc}
 : ${dep_cc_default:=$cc}
 : ${ld_default:=$cc}
-set_default as dep_cc ld
+set_default ar as dep_cc ld
 
 test -n "$CC_DEPFLAGS" || CCDEP=$DEPEND_CMD
 test -n "$AS_DEPFLAGS" || ASDEP=$DEPEND_CMD
@@ -2027,6 +2032,10 @@ elif enabled x86; then
 elif enabled sparc; then
 
     case $cpu in
+        niagara)
+            cpuflags="-mcpu=$cpu"
+            disable vis
+        ;;
         sparc64)
             cpuflags="-mcpu=v9"
         ;;
@@ -2122,7 +2131,6 @@ esac
 
 enable $subarch
 enabled spic && enable pic
-check_cpp_condition stdlib.h "defined(__PIC__) || defined(__pic__) || defined(PIC)" && enable pic
 
 # OS specific
 case $target_os in
@@ -2293,6 +2301,8 @@ case $target_os in
         ;;
 esac
 
+check_cpp_condition stdlib.h "defined(__PIC__) || defined(__pic__) || defined(PIC)" && enable pic
+
 set_default $PATHS_LIST
 
 add_extralibs $osextralibs
@@ -2414,11 +2424,6 @@ EOF
 
     enabled_all armv6t2 shared !pic && enable_pic
 
-elif enabled ia64; then
-
-    # HACK: currently fails to build if .bss is > 4MB and shared libs are built
-    enabled shared && enable_weak hardcoded_tables
-
 elif enabled mips; then
 
     check_asm loongson '"dmult.g $1, $2, $3"'
@@ -2535,6 +2540,7 @@ check_func  ${malloc_prefix}memalign            && enable memalign
 check_func  mkstemp
 check_func  ${malloc_prefix}posix_memalign      && enable posix_memalign
 check_func  setrlimit
+check_func  strerror_r
 check_func_headers io.h setmode
 check_func_headers lzo/lzo1x.h lzo1x_999_compress
 check_lib2 "windows.h psapi.h" GetProcessMemoryInfo -lpsapi
@@ -2593,11 +2599,12 @@ for thread in $THREADS_LIST; do
 done
 
 check_lib math.h sin -lm
-check_lib va/va.h vaInitialize -lva
+disabled vaapi || check_lib va/va.h vaInitialize -lva
 
 check_mathfunc exp2
 check_mathfunc exp2f
 check_mathfunc llrint
+check_mathfunc llrintf
 check_mathfunc log2
 check_mathfunc log2f
 check_mathfunc lrint
@@ -2619,14 +2626,17 @@ enabled libnut     && require  libnut libnut.h nut_demuxer_init -lnut
 enabled libopencore_amrnb  && require libopencore_amrnb opencore-amrnb/interf_dec.h Decoder_Interface_init -lopencore-amrnb -lm
 enabled libopencore_amrwb  && require libopencore_amrwb opencore-amrwb/dec_if.h D_IF_init -lopencore-amrwb -lm
 enabled libopenjpeg && require libopenjpeg openjpeg.h opj_version -lopenjpeg
+enabled librtmp    && require  librtmp librtmp/rtmp.h RTMP_Init $(pkg-config --libs librtmp)
 enabled libschroedinger && add_cflags $(pkg-config --cflags schroedinger-1.0) &&
                            require libschroedinger schroedinger/schro.h schro_init $(pkg-config --libs schroedinger-1.0)
 enabled libspeex   && require  libspeex speex/speex.h speex_decoder_init -lspeex
 enabled libtheora  && require  libtheora theora/theoraenc.h th_info_init -ltheoraenc -ltheoradec -logg
 enabled libvorbis  && require  libvorbis vorbis/vorbisenc.h vorbis_info_init -lvorbisenc -lvorbis -logg
+enabled libvpx     && require2 libvpx "vpx/vpx_decoder.h vpx/vp8dx.h" "vpx_codec_dec_init_ver" -lvpx &&
+                      require2 libvpx "vpx/vpx_encoder.h vpx/vp8cx.h" "vpx_codec_enc_init_ver" -lvpx
 enabled libx264    && require  libx264 x264.h x264_encoder_encode -lx264 -lm &&
-                      { check_cpp_condition x264.h "X264_BUILD >= 83" ||
-                        die "ERROR: libx264 version must be >= 0.83."; }
+                      { check_cpp_condition x264.h "X264_BUILD >= 98" ||
+                        die "ERROR: libx264 version must be >= 0.98."; }
 enabled libxvid    && require  libxvid xvid.h xvid_global -lxvidcore
 enabled mlib       && require  mediaLib mlib_types.h mlib_VectorSub_S16_U8_Mod -lmlib
 
@@ -2747,6 +2757,8 @@ if enabled small; then
     optimizations="small"
 elif enabled optimizations; then
     add_cflags $speed_cflags
+else
+    add_cflags $noopt_cflags
 fi
 check_cflags -fno-math-errno
 check_cflags -fno-signed-zeros
@@ -2794,20 +2806,6 @@ if enabled gprof; then
     add_ldflags -p
 fi
 
-# Find out if the .align argument is a power of two or not.
-check_asm asmalign_pot '".align 3"'
-
-enabled_any $DECODER_LIST      && enable decoders
-enabled_any $ENCODER_LIST      && enable encoders
-enabled_any $HWACCEL_LIST      && enable hwaccels
-enabled_any $BSF_LIST          && enable bsfs
-enabled_any $DEMUXER_LIST      && enable demuxers
-enabled_any $MUXER_LIST        && enable muxers
-enabled_any $FILTER_LIST       && enable filters
-enabled_any $INDEV_LIST        && enable indevs
-enabled_any $OUTDEV_LIST       && enable outdevs
-enabled_any $PROTOCOL_LIST     && enable protocols
-
 enabled_any $THREADS_LIST      && enable threads
 
 check_deps $CONFIG_LIST       \
@@ -2825,12 +2823,11 @@ check_deps $CONFIG_LIST       \
            $OUTDEV_LIST       \
            $PROTOCOL_LIST     \
 
-enabled asm || disable $ARCH_LIST $ARCH_EXT_LIST
+enabled asm || { arch=c; disable $ARCH_LIST $ARCH_EXT_LIST; }
 
 echo "install prefix            $prefix"
 echo "source path               $source_path"
 echo "C compiler                $cc"
-echo ".align is power-of-two    $asmalign_pot"
 echo "ARCH                      $arch ($cpu)"
 if test "$build_suffix" != ""; then
     echo "build suffix              $build_suffix"
@@ -2899,10 +2896,12 @@ echo "libnut enabled            ${libnut-no}"
 echo "libopencore-amrnb support ${libopencore_amrnb-no}"
 echo "libopencore-amrwb support ${libopencore_amrwb-no}"
 echo "libopenjpeg enabled       ${libopenjpeg-no}"
+echo "librtmp enabled           ${librtmp-no}"
 echo "libschroedinger enabled   ${libschroedinger-no}"
 echo "libspeex enabled          ${libspeex-no}"
 echo "libtheora enabled         ${libtheora-no}"
 echo "libvorbis enabled         ${libvorbis-no}"
+echo "libvpx enabled            ${libvpx-no}"
 echo "libx264 enabled           ${libx264-no}"
 echo "libxvid enabled           ${libxvid-no}"
 echo "zlib enabled              ${zlib-no}"
@@ -3060,8 +3059,6 @@ get_version LIBAVFORMAT libavformat/avformat.h
 get_version LIBAVUTIL   libavutil/avutil.h
 get_version LIBAVFILTER libavfilter/avfilter.h
 
-enabled asmalign_pot || align_shift="1 <<"
-
 cat > $TMPH <<EOF
 /* Automatically generated by configure - do not modify! */
 #ifndef FFMPEG_CONFIG_H
@@ -3072,7 +3069,7 @@ cat > $TMPH <<EOF
 #define CC_TYPE "$cc_type"
 #define CC_VERSION $cc_version
 #define restrict $_restrict
-#define ASMALIGN(ZEROBITS) ".align $align_shift " #ZEROBITS "\\n\\t"
+#define ASMALIGN(ZEROBITS) ".p2align " #ZEROBITS "\\n\\t"
 #define EXTERN_PREFIX "${extern_prefix}"
 #define EXTERN_ASM ${extern_prefix}
 EOF

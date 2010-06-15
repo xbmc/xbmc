@@ -38,6 +38,7 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowVideoBase.h"
+#include "GUIWindowAddonBrowser.h"
 #include "addons/Addon.h" // for TranslateType, TranslateContent
 #include "addons/AddonManager.h"
 #include "LastFmManager.h"
@@ -142,6 +143,7 @@ const BUILT_IN commands[] = {
   { "Skin.SetImage",              true,   "Prompts and sets a skin image" },
   { "Skin.SetLargeImage",         true,   "Prompts and sets a large skin images" },
   { "Skin.SetFile",               true,   "Prompts and sets a file" },
+  { "Skin.SetAddon",              true,   "Prompts and set an addon" },
   { "Skin.SetBool",               true,   "Sets a skin setting on" },
   { "Skin.Reset",                 true,   "Resets a skin setting to default" },
   { "Skin.ResetSettings",         false,  "Resets all skin settings" },
@@ -179,6 +181,7 @@ const BUILT_IN commands[] = {
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
   { "Addon.Default.OpenSettings", true,   "Open a settings dialog for the default addon of the given type" },
+  { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
   { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
@@ -353,7 +356,7 @@ int CBuiltins::Execute(const CStdString& execString)
       AddonPtr script;
       CStdString scriptpath(params[0]);
       if (CAddonMgr::Get().GetAddon(params[0], script))
-        scriptpath = CUtil::AddFileToFolder(script->Path(),script->LibName());
+        scriptpath = script->LibPath();
 
       g_pythonParser.evalFile(scriptpath.c_str(), argc, (const char**)argv);
       delete [] argv;
@@ -988,6 +991,17 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     g_settings.Save();
   }
+  else if (execute.Equals("skin.setaddon") && params.size() > 1)
+  {
+    int string = g_settings.TranslateSkinString(params[0]);
+    ADDON::TYPE type = TranslateType(params[1]);
+    CStdString result;
+    if (CGUIWindowAddonBrowser::SelectAddonID(type, result, true) == 1)
+    {
+      g_settings.SetSkinString(string, result);
+      g_settings.Save();
+    }
+  }
   else if (execute.Equals("dialog.close") && params.size())
   {
     bool bForce = false;
@@ -1285,8 +1299,17 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("addon.default.opensettings") && params.size() == 1)
   {
     AddonPtr addon;
-    if (CAddonMgr::Get().GetDefault(TranslateType(params[0]), addon))
+    ADDON::TYPE type = TranslateType(params[0]);
+    if (CAddonMgr::Get().GetDefault(type, addon))
+    {
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
+      if (type == ADDON_VIZ)
+        g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
+    }
+  }
+  else if (execute.Equals("toggledpms"))
+  {
+    g_application.ToggleDPMS(true);
   }
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   else if (execute.Equals("lirc.stop"))

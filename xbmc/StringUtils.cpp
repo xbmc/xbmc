@@ -268,52 +268,21 @@ void StringUtils::RemoveCRLF(CStdString& strLine)
 CStdString StringUtils::SizeToString(int64_t size)
 {
   CStdString strLabel;
-  if (size == 0)
+  const char prefixes[] = {' ','k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'};
+  unsigned int i = 0;
+  double s = (double)size;
+  while (i < sizeof(prefixes)/sizeof(prefixes[0]) && s >= 1000.0)
   {
-    strLabel.Format("0.0 KB");
-    return strLabel;
+    s /= 1024.0;
+    i++;
   }
 
-  // file < 1 kbyte?
-  if (size < 1024)
-  {
-    //  substract the integer part of the float value
-    float fRemainder = (((float)size) / 1024.0f) - floor(((float)size) / 1024.0f);
-    float fToAdd = 0.0f;
-    if (fRemainder < 0.01f)
-      fToAdd = 0.1f;
-    strLabel.Format("%2.1f KB", (((float)size) / 1024.0f) + fToAdd);
-    return strLabel;
-  }
-  const int64_t iOneMeg = 1024 * 1024;
-
-  // file < 1 megabyte?
-  if (size < iOneMeg)
-  {
-    strLabel.Format("%02.1f KB", ((float)size) / 1024.0f);
-    return strLabel;
-  }
-
-  // file < 1 GByte?
-  int64_t iOneGigabyte = iOneMeg;
-  iOneGigabyte *= 1000;
-  if (size < iOneGigabyte)
-  {
-    strLabel.Format("%02.1f MB", ((float)size) / ((float)iOneMeg));
-    return strLabel;
-  }
-  //file > 1 GByte
-  int iGigs = 0;
-  int64_t dwFileSize = size;
-  while (dwFileSize >= iOneGigabyte)
-  {
-    dwFileSize -= iOneGigabyte;
-    iGigs++;
-  }
-  float fMegs = ((float)dwFileSize) / ((float)iOneMeg);
-  fMegs /= 1000.0f;
-  fMegs += iGigs;
-  strLabel.Format("%02.1f GB", fMegs);
+  if (!i)
+    strLabel.Format("%.0lf %cB ", s, prefixes[i]);
+  else if (s >= 100.0)
+    strLabel.Format("%.1lf %cB", s, prefixes[i]);
+  else
+    strLabel.Format("%.2lf %cB", s, prefixes[i]);
 
   return strLabel;
 }

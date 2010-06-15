@@ -28,6 +28,7 @@
 #include "FileSystem/Directory.h"
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
+#include "AddonDatabase.h"
 
 using namespace XFILE;
 using namespace ADDON;
@@ -58,9 +59,7 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
 {
   m_sources.clear();
 
-  VECADDONS addons;
-  CAddonMgr::Get().GetAllAddons(addons);
-  if (addons.size())
+  // we always have some enabled addons
   {
     CMediaSource share;
     share.strPath = "addons://enabled/";
@@ -69,9 +68,17 @@ VECSOURCES& CGUIViewStateAddonBrowser::GetSources()
     share.m_strThumbnailImage = "DefaultHardDisk.png";
     m_sources.push_back(share);
   }
-  addons.clear();
-  CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons,CONTENT_NONE,true);
-  if (addons.size())
+  CAddonDatabase db;
+  if (db.Open() && db.HasDisabledAddons())
+  {
+    CMediaSource share;
+    share.strPath = "addons://disabled/";
+    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+    share.strName = g_localizeStrings.Get(24039);
+    share.m_strThumbnailImage = "DefaultHardDisk.png";
+    m_sources.push_back(share);
+  }
+  if (CAddonMgr::Get().HasAddons(ADDON_REPOSITORY,true))
   {
     CMediaSource share;
     share.strPath = "addons://repos/";

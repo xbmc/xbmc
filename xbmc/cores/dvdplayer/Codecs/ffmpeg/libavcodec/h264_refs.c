@@ -20,7 +20,7 @@
  */
 
 /**
- * @file libavcodec/h264_refs.c
+ * @file
  * H.264 / AVC / MPEG4 part10  reference picture handling.
  * @author Michael Niedermayer <michaelni@gmx.at>
  */
@@ -322,12 +322,6 @@ void ff_h264_fill_mbaff_ref_list(H264Context *h){
                 h->chroma_weight[16+2*i][list][j][1] = h->chroma_weight[16+2*i+1][list][j][1] = h->chroma_weight[i][list][j][1];
             }
         }
-    }
-    for(j=0; j<h->ref_count[1]; j++){
-        for(i=0; i<h->ref_count[0]; i++)
-            h->implicit_weight[j][16+2*i] = h->implicit_weight[j][16+2*i+1] = h->implicit_weight[j][i];
-        memcpy(h->implicit_weight[16+2*j],   h->implicit_weight[j], sizeof(*h->implicit_weight));
-        memcpy(h->implicit_weight[16+2*j+1], h->implicit_weight[j], sizeof(*h->implicit_weight));
     }
 }
 
