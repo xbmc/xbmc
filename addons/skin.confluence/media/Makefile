@@ -163,6 +163,7 @@ IMAGES= \
 	flagging/video/vc-1.png \
 	flagging/video/wvc1.png \
 	flagging/video/xvid.png \
+	flagging/video/vhs.png \
 	floor.png \
 	folder-focus.png \
 	GlassOverlay.png \
