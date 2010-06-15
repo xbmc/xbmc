@@ -561,6 +561,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
       pDlgProgress->Progress();
 
       // 4b. do the websearch
+      info->ClearCache();
       CIMDB imdb(info);
       int returncode = imdb.FindMovie(movieName, movielist, pDlgProgress);
       if (returncode > 0)

@@ -820,6 +820,9 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     m_pObserver->OnDirectoryChanged(strAlbum);
   }
 
+  // clear our scraper cache
+  info->ClearCache();
+
   CMusicInfoScraper scraper(info);
 
   // handle nfo files
@@ -1040,6 +1043,9 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
     m_musicDatabase.Close();
     return false;
   }
+
+  // clear our scraper cache
+  info->ClearCache();
 
   if (m_pObserver)
   {

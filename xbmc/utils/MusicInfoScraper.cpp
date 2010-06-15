@@ -94,8 +94,6 @@ void CMusicInfoScraper::FindAlbuminfo()
   if (!parser.Load(m_scraper) || !parser.HasFunction("CreateAlbumSearchUrl"))
     return;
 
-  m_scraper->ClearCache();
-
   parser.m_param[0] = strAlbum;
   parser.m_param[1] = m_strArtist;
   CUtil::URLEncode(parser.m_param[0]);
@@ -199,8 +197,6 @@ void CMusicInfoScraper::FindArtistinfo()
   CScraperParser parser;
   if (!parser.Load(m_scraper) || !parser.HasFunction("CreateAlbumSearchUrl"))
     return;
-
-  m_scraper->ClearCache();
 
   parser.m_param[0] = m_strArtist;
   CUtil::URLEncode(parser.m_param[0]);
