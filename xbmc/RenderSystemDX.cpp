@@ -419,14 +419,28 @@ bool CRenderSystemDX::CreateDevice()
     g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(2102), g_localizeStrings.Get(2103));
   }
 
-  m_renderCaps = 0;
+  m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
+
+  if (g_advancedSettings.m_AllowDynamicTextures && (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES))
+  {
+    m_defaultD3DUsage = D3DUSAGE_DYNAMIC;
+    m_defaultD3DPool  = D3DPOOL_DEFAULT;
+    CLog::Log(LOGDEBUG, "%s - using D3DCAPS2_DYNAMICTEXTURES", __FUNCTION__);
+  }
+  else
+  {
+    m_defaultD3DUsage = 0;
+    m_defaultD3DPool  = D3DPOOL_MANAGED;
+  }
+
+    m_renderCaps = 0;
 
   CLog::Log(LOGDEBUG, "%s - texture caps: %X", __FUNCTION__, caps.TextureCaps);
 
   if (SUCCEEDED(m_pD3D->CheckDeviceFormat( m_adapter,
                                            D3DDEVTYPE_HAL,
-                                           D3DFMT_X8R8G8B8,
-                                           0,
+                                           m_D3DPP.BackBufferFormat,
+                                           m_defaultD3DUsage,
                                            D3DRTYPE_TEXTURE,
                                            D3DFMT_DXT5 )))
   {
@@ -449,20 +463,6 @@ bool CRenderSystemDX::CreateDevice()
     CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_NPOT", __FUNCTION__);
   if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
     CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT_NPOT", __FUNCTION__);
-
-  m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
-
-  if (g_advancedSettings.m_AllowDynamicTextures && (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES))
-  {
-    m_defaultD3DUsage = D3DUSAGE_DYNAMIC;
-    m_defaultD3DPool  = D3DPOOL_DEFAULT;
-    CLog::Log(LOGDEBUG, "%s - using D3DCAPS2_DYNAMICTEXTURES", __FUNCTION__);
-  }
-  else
-  {
-    m_defaultD3DUsage = 0;
-    m_defaultD3DPool  = D3DPOOL_MANAGED;
-  }
 
   D3DDISPLAYMODE mode;
   if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))
