@@ -176,6 +176,28 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
   return true;
 }
 
+BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT BackBufferFormat)
+{
+  // Verify that the depth format exists
+  HRESULT hr = m_pD3D->CheckDeviceFormat(m_adapter,
+                                         D3DDEVTYPE_HAL,
+                                         AdapterFormat,
+                                         D3DUSAGE_DEPTHSTENCIL,
+                                         D3DRTYPE_SURFACE,
+                                         DepthFormat);
+
+  if(FAILED(hr)) return FALSE;
+
+  // Verify that the depth format is compatible
+  hr = m_pD3D->CheckDepthStencilMatch(m_adapter,
+                                      D3DDEVTYPE_HAL,
+                                      AdapterFormat,
+                                      BackBufferFormat,
+                                      DepthFormat);
+
+  return SUCCEEDED(hr);
+}
+
 void CRenderSystemDX::BuildPresentParameters()
 {
   OSVERSIONINFOEX osvi;
@@ -199,7 +221,6 @@ void CRenderSystemDX::BuildPresentParameters()
 #endif
   }
 
-  m_D3DPP.EnableAutoDepthStencil = TRUE;
   m_D3DPP.hDeviceWindow      = m_hDeviceWnd;
   m_D3DPP.BackBufferWidth    = m_nBackBufferWidth;
   m_D3DPP.BackBufferHeight   = m_nBackBufferHeight;
@@ -210,33 +231,16 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.MultiSampleType    = D3DMULTISAMPLE_NONE;
   m_D3DPP.MultiSampleQuality = 0;
 
+  D3DFORMAT zFormat = D3DFMT_D16;
+  if      (IsDepthFormatOk(D3DFMT_D32, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D32;
+  else if (IsDepthFormatOk(D3DFMT_D24S8, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D24S8;
+  else if (IsDepthFormatOk(D3DFMT_D24X4S4, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))       zFormat = D3DFMT_D24X4S4;
+  else if (IsDepthFormatOk(D3DFMT_D24X8, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D24X8;
+  else if (IsDepthFormatOk(D3DFMT_D16, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D16;
+  else if (IsDepthFormatOk(D3DFMT_D15S1, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D15S1;
 
-  // Try to create a 32-bit depth, 8-bit stencil
-  if( FAILED( m_pD3D->CheckDeviceFormat( m_adapter,
-    D3DDEVTYPE_HAL,  m_D3DPP.BackBufferFormat,  D3DUSAGE_DEPTHSTENCIL,
-    D3DRTYPE_SURFACE, D3DFMT_D24S8 )))
-  {
-    // Bugger, no 8-bit hardware stencil, just try 32-bit zbuffer
-    if( FAILED( m_pD3D->CheckDeviceFormat(m_adapter,
-      D3DDEVTYPE_HAL,  m_D3DPP.BackBufferFormat,  D3DUSAGE_DEPTHSTENCIL,
-      D3DRTYPE_SURFACE, D3DFMT_D32 )))
-    {
-      // Jeez, what a naff card. Fall back on 16-bit depth buffering
-      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D16;
-    }
-    else
-      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D32;
-  }
-  else
-  {
-    if( SUCCEEDED( m_pD3D->CheckDepthStencilMatch( m_adapter, D3DDEVTYPE_HAL,
-      m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat, D3DFMT_D24S8 ) ) )
-    {
-      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D24S8;
-    }
-    else
-      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D24X8;
-  }
+  m_D3DPP.EnableAutoDepthStencil = TRUE;
+  m_D3DPP.AutoDepthStencilFormat = zFormat;
 
   if (m_useD3D9Ex)
   {
