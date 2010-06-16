@@ -83,7 +83,7 @@ protected:
 
   CStdString m_RenderExtensions;
 
-  CGUIShader *m_pGUIshader[4];  // One GUI shader for each method
+  CGUIShader **m_pGUIshader;  // One GUI shader for each method
 
   int         m_method;
 };

@@ -20,7 +20,9 @@
  */
 
 #include "system.h"
+#if defined(HAS_GLES)
 #include "GUITextureGLES.h"
+#endif
 #include "Texture.h"
 #include "utils/log.h"
 #include "WindowingFactory.h"
@@ -43,16 +45,11 @@ void CGUITextureGLES::Begin(color_t color)
   glBindTexture(GL_TEXTURE_2D, texture->GetTextureObject());
   glEnable(GL_TEXTURE_2D);
 
-  glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_BLEND);          // Turn Blending On
-
   if (m_diffuse.size())
   {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, m_diffuse.m_textures[0]->GetTextureObject());
     glEnable(GL_TEXTURE_2D);
-
-    g_Windowing.EnableGUIShader(SM_MULTI);
   }
   else
   {
@@ -64,7 +61,7 @@ void CGUITextureGLES::Begin(color_t color)
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
 
   glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, m_vert);
-  glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, 0, 0, m_col);
+  glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, m_col);
   glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, m_tex0);
 
   glEnableVertexAttribArray(posLoc);
@@ -76,8 +73,24 @@ void CGUITextureGLES::Begin(color_t color)
     GLint tex1Loc = g_Windowing.GUIShaderGetCoord1();
     glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, 0, m_tex1);
     glEnableVertexAttribArray(tex1Loc);
+    glEnable( GL_BLEND );
+    g_Windowing.EnableGUIShader(SM_MULTI);
   }
-
+  else
+  {
+    CBaseTexture* textureObject = m_texture.m_textures[m_currentFrame];
+    if (textureObject->HasAlpha() || m_col[0][3] < 255 )
+    {
+      glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+      glEnable(GL_BLEND);          // Turn Blending On
+      g_Windowing.EnableGUIShader(SM_TEXTURE);
+    }
+    else
+    {
+      glDisable(GL_BLEND);
+      g_Windowing.EnableGUIShader(SM_TEXTURE_NOBLEND);
+    }
+  }
   // Setup Colors
   for (int i = 0; i < 4; i++)
   {
@@ -102,6 +115,7 @@ void CGUITextureGLES::End()
   glDisableVertexAttribArray(g_Windowing.GUIShaderGetCol());
   glDisableVertexAttribArray(g_Windowing.GUIShaderGetCoord0());
 
+  glEnable(GL_BLEND);
   g_Windowing.DisableGUIShader();
 }
 
@@ -211,7 +225,7 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
   GLint tex0Loc  = g_Windowing.GUIShaderGetCoord0();
 
   glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, 0, 0, col);
+  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, 0, col);
   glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
 
   glEnableVertexAttribArray(posLoc);
