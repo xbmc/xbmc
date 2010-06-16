@@ -174,7 +174,7 @@ HRESULT CSubManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com:
   if (m_iSubtitleSel < 0)
     return E_INVALIDARG;
 
-  if (m_rtTimePerFrame)
+  if (m_rtTimePerFrame > 0 && m_pSubPicQueue.get())
   {
     m_fps = 10000000.0 / m_rtTimePerFrame;
     m_pSubPicQueue->SetFPS(m_fps);
