@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.common.htbackdrops.com"
        name="HTBackdrops"
        version="1.0.0"
@@ -10,7 +10,9 @@
              library="htbackdrops.xml"/>
   <extension point="xbmc.addon.metadata">
     <summary>HTBackdrops Scraper Library</summary>
+    <summary lang="hu">HTBackdrops scraper könyvtár</summary>
     <description>some description</description>
+    <description lang="hu">Médiaadatok letöltése www.htbackdrops.com webhelyről.</description>
     <platform>all</platform>
   </extension>
 </addon>

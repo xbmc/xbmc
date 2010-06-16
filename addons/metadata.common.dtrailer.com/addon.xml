@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.common.dtrailer.com"
        name="DTrailer common scraper functions"
        version="1.0.0"
@@ -10,8 +10,10 @@
              library="dtrailer.xml"/>
   <extension point="xbmc.addon.metadata">
     <summary>DTrailer Scraper Library</summary>
+    <summary lang="hu">Dtrailer scraper könyvtár</summary>
     <summary lang="nl">DTralier Scraper Collectie</summary>
     <description>Download trailers from www.themoviedb.org</description>
+    <description lang="hu">Filmelőzetesek letöltése a www.themoviedb.org webhelyről.</description>
     <description lang="nl">Download trailers van www.themoviedb.org</description>
     <platform>all</platform>
   </extension>
