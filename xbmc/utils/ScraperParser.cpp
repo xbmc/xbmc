@@ -238,6 +238,9 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
     bool bEncode[MAX_SCRAPER_BUFFERS];
     GetBufferParams(bEncode,pExpression->Attribute("encode"),false);
 
+    bool bFixChars[MAX_SCRAPER_BUFFERS];
+    GetBufferParams(bFixChars,pExpression->Attribute("fixchars"),false);
+
     int iOptional = -1;
     pExpression->QueryIntAttribute("optional",&iOptional);
 
@@ -254,6 +257,8 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
         InsertToken(strOutput,iBuf+1,"!!!TRIM!!!");
       if (bEncode[iBuf])
         InsertToken(strOutput,iBuf+1,"!!!ENCODE!!!");
+      if (bFixChars[iBuf])
+        InsertToken(strOutput,iBuf+1,"!!!FIXCHARS!!!");
     }
     int i = reg.RegFind(curInput.c_str());
     while (i > -1 && (i < (int)curInput.size() || curInput.size() == 0))
@@ -459,6 +464,23 @@ void CScraperParser::Clean(CStdString& strDirty)
       strDirty.erase(i,i2-i+12);
       strDirty.Insert(i,strBuffer);
       i += strBuffer.size();
+    }
+    else
+      break;
+  }
+  i=0;
+  while ((i=strDirty.Find("!!!FIXCHARS!!!",i)) != -1)
+  {
+    int i2;
+    if ((i2=strDirty.Find("!!!FIXCHARS!!!",i+14)) != -1)
+    {
+      strBuffer = strDirty.substr(i+14,i2-i-14);
+      CStdString strConverted;
+      HTML::CHTMLUtil::ConvertHTMLToAnsi(strBuffer,strConverted);
+      const char* szTrimmed = RemoveWhiteSpace(strConverted.c_str());
+      strDirty.erase(i,i2-i+14);
+      strDirty.Insert(i,szTrimmed);
+      i += strlen(szTrimmed);
     }
     else
       break;
