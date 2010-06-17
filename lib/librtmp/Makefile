@@ -15,7 +15,8 @@
 #    make
 #    sudo make install
 
-RTMPDUMP_VERS = 509
+# librtmp 2.2f is this svn version
+RTMPDUMP_VERS = 511
 # get OS type from shell
 OSTYPE	= $(shell uname)
 
