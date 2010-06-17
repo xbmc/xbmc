@@ -35,6 +35,8 @@ typedef struct cp_extension_t cp_extension_t;
 
 namespace ADDON
 {
+  typedef std::vector<AddonPtr> VECADDONS;
+  typedef std::vector<AddonPtr>::iterator IVECADDONS;
 
 // utils
 const CStdString    TranslateType(const TYPE &type, bool pretty=false);

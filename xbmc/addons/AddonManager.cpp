@@ -20,7 +20,6 @@
  */
 #include "AddonManager.h"
 #include "Addon.h"
-#include "AddonDatabase.h"
 #include "DllLibCPluff.h"
 #include "StringUtils.h"
 #include "RegExp.h"
@@ -218,6 +217,8 @@ bool CAddonMgr::Init()
   m_cpluff = new DllLibCPluff;
   m_cpluff->Load();
 
+  m_database.Open();
+
   if (!m_cpluff->IsLoaded())
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, could not load libcpluff");
@@ -263,6 +264,7 @@ void CAddonMgr::DeInit()
   if (m_cpluff)
     m_cpluff->destroy();
   m_cpluff = NULL;
+  m_database.Close();
 }
 
 bool CAddonMgr::HasAddons(const TYPE &type, bool enabled /*= true*/)
@@ -292,14 +294,12 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   addons.clear();
   cp_status_t status;
   int num;
-  CAddonDatabase db;
-  if (!db.Open()) return false;
   CStdString ext_point(TranslateType(type));
   cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
   for(int i=0; i <num; i++)
   {
     AddonPtr addon(Factory(exts[i]));
-    if (addon && db.IsAddonDisabled(addon->ID()) != enabled)
+    if (addon && m_database.IsAddonDisabled(addon->ID()) != enabled)
       addons.push_back(addon);
   }
   m_cpluff->release_info(m_cp_context, exts);
@@ -310,15 +310,13 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
 {
   CSingleLock lock(m_critSection);
 
-  CAddonDatabase db;
-  if (!db.Open()) return false;
   cp_status_t status;
   cp_plugin_info_t *cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
   if (status == CP_OK && cpaddon)
   {
     addon = GetAddonFromDescriptor(cpaddon);
     m_cpluff->release_info(m_cp_context, cpaddon);
-    return NULL != addon.get() && db.IsAddonDisabled(addon->ID()) != enabled;
+    return NULL != addon.get() && m_database.IsAddonDisabled(addon->ID()) != enabled;
   }
   if (cpaddon)
     m_cpluff->release_info(m_cp_context, cpaddon);

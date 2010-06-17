@@ -20,6 +20,7 @@
  */
 
 #include "AddonDatabase.h"
+#include "AddonManager.h"
 #include "utils/log.h"
 #include "DateTime.h"
 #include "StringUtils.h"
