@@ -234,6 +234,20 @@ vector<CStdString> CScraper::Run(const CStdString& function,
 
   result.push_back(strXML);
   TiXmlHandle docHandle( &doc );
+  TiXmlElement* xchain = doc.RootElement()->FirstChildElement("chain");
+  while (xchain && xchain->FirstChild())
+  {
+    const char* szFunction = xchain->Attribute("function");
+    if (szFunction)
+    {
+      CScraperUrl scrURL2;
+      vector<CStdString> extras;
+      extras.push_back(xchain->FirstChild()->Value());
+      vector<CStdString> result2 = Run(szFunction,scrURL2,http,&extras);
+      result.insert(result.end(),result2.begin(),result2.end());
+    }
+    xchain = xchain->NextSiblingElement("chain");
+  }
   TiXmlElement* xurl = doc.RootElement()->FirstChildElement("url");
   while (xurl && xurl->FirstChild())
   {
