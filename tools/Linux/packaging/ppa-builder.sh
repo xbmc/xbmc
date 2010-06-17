@@ -25,7 +25,7 @@ FULLDEBUILDOPTS="-S -sa"
 DEBUILDOPTS="-S -sd"
 MINOR=1
 XBMCPPA=xbmc-svn
-HVERSION=9.11
+HVERSION=10.06
 
 # Packagers should have these two vars in their environment
 # export DEBFULLNAME="Ouattara Oumar Aziz (alias wattazoum)"
