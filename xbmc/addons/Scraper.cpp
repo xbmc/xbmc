@@ -29,10 +29,10 @@
 #include "utils/log.h"
 #include "AdvancedSettings.h"
 #include "FileItem.h"
+#include "XMLUtils.h"
 #include <sstream>
 
-using std::vector;
-using std::stringstream;
+using namespace std;
 using namespace XFILE;
 
 namespace ADDON
@@ -207,6 +207,98 @@ void CScraper::ClearCache()
   }
   else
     CDirectory::Create(strCachePath);
+}
+
+vector<CStdString> CScraper::Run(const CStdString& function,
+                                 const CScraperUrl& scrURL,
+                                 CFileCurl& http,
+                                 const vector<CStdString>* extras)
+{
+  vector<CStdString> result;
+  CStdString strXML = InternalRun(function,scrURL,http,extras);
+  if (strXML.IsEmpty())
+  {
+    CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
+    return result;
+  }
+  if (!XMLUtils::HasUTF8Declaration(strXML))
+    g_charsetConverter.unknownToUTF8(strXML);
+
+  TiXmlDocument doc;
+  doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
+  if (!doc.RootElement())
+  {
+    CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
+    return result; 
+  }
+
+  result.push_back(strXML);
+  TiXmlHandle docHandle( &doc );
+  TiXmlElement* xurl = doc.RootElement()->FirstChildElement("url");
+  while (xurl && xurl->FirstChild())
+  {
+    const char* szFunction = xurl->Attribute("function");
+    if (szFunction)
+    {
+      CScraperUrl scrURL2(xurl);
+      vector<CStdString> result2 = Run(szFunction,scrURL2,http);
+      result.insert(result.end(),result2.begin(),result2.end());
+    }
+    xurl = xurl->NextSiblingElement("url");
+  }
+  
+  return result;
+}
+
+CStdString CScraper::InternalRun(const CStdString& function,
+                                 const CScraperUrl& scrURL,
+                                 CFileCurl& http,
+                                 const vector<CStdString>* extras)
+{
+  unsigned int i;
+  for (i=0;i<scrURL.m_url.size();++i)
+  {
+    CStdString strCurrHTML;
+    if (!CScraperUrl::Get(scrURL.m_url[i],m_parser.m_param[i],http,LibPath()) || m_parser.m_param[i].size() == 0)
+      return "";
+  }
+  if (extras)
+  {
+    for (unsigned int j=0;j<extras->size();++j)
+      m_parser.m_param[j+i] = (*extras)[j];
+  }
+
+  CStdString strXML = m_parser.Parse(function,this);
+  CLog::Log(LOGDEBUG,"scraper: %s returned %s",function.c_str(),strXML.c_str());
+
+  return strXML;
+}
+
+bool CScraper::Load()
+{
+  bool result=m_parser.Load(LibPath());
+  if (result)
+  {
+    ADDONDEPS deps = GetDeps();
+    ADDONDEPS::iterator itr = deps.begin();
+    while (itr != deps.end())
+    {
+      if (itr->first.Equals("xbmc.metadata"))
+      {
+        ++itr;
+        continue;
+      }  
+      AddonPtr dep;
+      if (!CAddonMgr::Get().GetAddon((*itr).first, dep))
+        return false;
+      TiXmlDocument doc;
+      if (doc.LoadFile(dep->LibPath()))
+        m_parser.AddDocument(&doc);
+      itr++;
+    }
+  }
+
+  return result;
 }
 
 }; /* namespace ADDON */

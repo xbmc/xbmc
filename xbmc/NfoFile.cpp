@@ -168,91 +168,76 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const ScraperPtr
   return   (m_strImDbUrl.size() > 0) ? URL_NFO : NO_NFO;
 }
 
-bool CNfoFile::DoScrape(CScraperParser& parser, const CScraperUrl* pURL, const CStdString& strFunction)
+bool CNfoFile::DoScrape(ScraperPtr& scraper)
 {
-  if (!pURL)
-    parser.m_param[0] = m_doc;
-  else
+  vector<CStdString> extras;
+  extras.push_back(m_doc);
+  
+  CScraperUrl url;
+  CFileCurl http;
+  vector<CStdString> xml = scraper->Run("NfoUrl",url,http,&extras);
+  for (vector<CStdString>::iterator it  = xml.begin();
+                                    it != xml.end(); ++it)
   {
-    vector<CStdString> strHTML;
-    for (unsigned int i=0;i<pURL->m_url.size();++i)
-    {
-      CStdString strCurrHTML;
-      XFILE::CFileCurl http;
-      if (!CScraperUrl::Get(pURL->m_url[i],strCurrHTML,http,parser.GetFilename()) || strCurrHTML.size() == 0)
-        return false;
-      strHTML.push_back(strCurrHTML);
-    }
-    for (unsigned int i=0;i<strHTML.size();++i)
-      parser.m_param[i] = strHTML[i];
-  }
+    TiXmlDocument doc;
+    doc.Parse(it->c_str());
 
-  m_strImDbUrl = parser.Parse(strFunction);
-  TiXmlDocument doc;
-  doc.Parse(m_strImDbUrl.c_str());
-
-  if (doc.RootElement())
-  {
-    if (stricmp(doc.RootElement()->Value(),"error")==0)
+    if (doc.RootElement())
     {
-      CIMDB::ShowErrorDialog(doc.RootElement());
-      return false;
-    }
-
-    TiXmlElement* xurl = doc.FirstChildElement("url");
-    while (xurl && xurl->FirstChild())
-    {
-      const char* szFunction = xurl->Attribute("function");
-      if (szFunction)
+      if (stricmp(doc.RootElement()->Value(),"error")==0)
       {
-        CScraperUrl scrURL(xurl);
-        DoScrape(parser,&scrURL,szFunction);
+        CIMDB::ShowErrorDialog(doc.RootElement());
+        return false;
       }
-      xurl = xurl->NextSiblingElement("url");
+
+      TiXmlElement* pId = doc.FirstChildElement("id");
+      if (pId && pId->FirstChild())
+        m_strImDbNr = pId->FirstChild()->Value();
     }
-    TiXmlElement* pId = doc.FirstChildElement("id");
-    if (pId && pId->FirstChild())
-      m_strImDbNr = pId->FirstChild()->Value();
   }
   return true;
 }
 
-int CNfoFile::Scrape(const ScraperPtr& scraper, const CStdString& strURL /* = "" */)
+int CNfoFile::Scrape(ScraperPtr& scraper, const CStdString& strURL /* = "" */)
 {
-  CScraperParser parser;
-  if (!parser.Load(scraper))
-    return 0;
   if (scraper->Type() != m_type)
   {
     return 1;
   }
+  if (!scraper->Load())
+    return 0;
 
   // init and clear cache
   scraper->ClearCache();
 
+  vector<CStdString> extras;
+  CScraperUrl url;
+  CFileCurl http;
   if (strURL.IsEmpty())
   {
-    parser.m_param[0] = m_doc;
-    m_strImDbUrl = parser.Parse("NfoScrape");
-    TiXmlDocument doc;
-    doc.Parse(m_strImDbUrl.c_str());
-    if (doc.RootElement() && doc.RootElement()->FirstChildElement())
+    extras.push_back(m_doc);
+    vector<CStdString> result = scraper->Run("NfoScrape",url,http,&extras);
+    if (!result.empty())
     {
-      CVideoInfoTag details;
-      if (GetDetails(details,m_strImDbUrl.c_str()))
+      TiXmlDocument doc;
+      doc.Parse(m_strImDbUrl.c_str());
+      if (doc.RootElement() && doc.RootElement()->FirstChildElement())
       {
-        Close();
-        m_size = m_strImDbUrl.size();
-        m_doc = new char[m_size+1];
-        m_headofdoc = m_doc;
-        strcpy(m_doc,m_strImDbUrl.c_str());
-        return 0;
+        CVideoInfoTag details;
+        if (GetDetails(details,m_strImDbUrl.c_str()))
+        {
+          Close();
+          m_size = m_strImDbUrl.size();
+          m_doc = new char[m_size+1];
+          m_headofdoc = m_doc;
+          strcpy(m_doc,m_strImDbUrl.c_str());
+          return 0;
+        }
       }
+
+      if (!DoScrape(scraper))
+        return 2;
     }
-
-    if (!DoScrape(parser))
-      return 2;
-
     if (m_strImDbUrl.size() > 0)
       return 0;
     else
@@ -260,9 +245,9 @@ int CNfoFile::Scrape(const ScraperPtr& scraper, const CStdString& strURL /* = ""
   }
   else // we check to identify the episodeguide url
   {
-    parser.m_param[0] = strURL;
-    CStdString strEpGuide = parser.Parse("EpisodeGuideUrl"); // allow corrections?
-    if (strEpGuide.IsEmpty())
+    extras.push_back(strURL);
+    vector<CStdString> result = scraper->Run("EpisodeGuideUrl",url,http,&extras);
+    if (result.empty() || result[0].IsEmpty())
       return 1;
     return 0;
   }

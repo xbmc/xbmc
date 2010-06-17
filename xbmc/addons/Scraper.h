@@ -22,6 +22,7 @@
 #include "addons/Addon.h"
 #include "utils/ScraperUrl.h"
 #include "DateTime.h"
+#include "utils/ScraperParser.h"
 
 typedef enum
 {
@@ -73,6 +74,7 @@ namespace ADDON
      cachepersistence.
      */
     void ClearCache();
+    bool Load();
 
     CONTENT_TYPE Content() const { return m_pathContent; }
     const CStdString& Framework() const { return m_framework; }
@@ -80,14 +82,25 @@ namespace ADDON
     bool RequiresSettings() const { return m_requiressettings; }
     bool Supports(const CONTENT_TYPE &content) const;
 
+    std::vector<CStdString> Run(const CStdString& function,
+                                const CScraperUrl& url,
+                                XFILE::CFileCurl& http,
+                                const std::vector<CStdString>* extras=NULL);
+    CScraperParser& GetParser() { return m_parser; }
   private:
     CScraper(const CScraper&, const AddonPtr&);
+
+    CStdString InternalRun(const CStdString& function,
+                           const CScraperUrl& url,
+                           XFILE::CFileCurl& http,
+                           const std::vector<CStdString>* extras);
 
     CStdString m_framework;
     CStdString m_language;
     bool m_requiressettings;
     CDateTimeSpan m_persistence;
     CONTENT_TYPE m_pathContent;
+    CScraperParser m_parser;
   };
 
 }; /* namespace ADDON */

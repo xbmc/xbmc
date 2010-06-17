@@ -76,14 +76,14 @@ public:
   const ADDON::ScraperPtr& GetScraperInfo() const { return m_info; }
 private:
   int Load(const CStdString&);
-  int Scrape(const ADDON::ScraperPtr& scraper, const CStdString& strURL="");
+  int Scrape(ADDON::ScraperPtr& scraper, const CStdString& strURL="");
 private:
   char* m_doc;
   char* m_headofdoc;
   int m_size;
   ADDON::ScraperPtr m_info;
   ADDON::TYPE       m_type;
-  bool DoScrape(CScraperParser& parser, const CScraperUrl* pURL=NULL, const CStdString& strFunction="NfoUrl");
+  bool DoScrape(ADDON::ScraperPtr& scraper);
 };
 
 #endif // !defined(AFX_NfoFile_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_)

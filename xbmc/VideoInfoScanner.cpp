@@ -1485,6 +1485,9 @@ namespace VIDEO
         case CNfoFile::URL_NFO:
           type = "URL";
           break;
+        case CNfoFile::NO_NFO:
+          type = "";
+          break;
         default:
           type = "malformed";
       }
