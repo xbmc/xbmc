@@ -35,7 +35,6 @@ BIN_DIRS=	\
 	xbmc/lib/libhttpapi \
 	xbmc/lib/libPython \
 	xbmc/lib/libPython/xbmcmodule \
-	xbmc/lib/libRTMP \
 	xbmc/lib/libRTV \
 	xbmc/lib/libscrobbler \
 	xbmc/lib/libshout \
@@ -233,8 +232,6 @@ xbmc/lib/libPython/python.a: force
 	$(MAKE) -C xbmc/lib/libPython
 xbmc/lib/libPython/xbmcmodule/xbmcmodule.a: force
 	$(MAKE) -C xbmc/lib/libPython/xbmcmodule
-xbmc/lib/libRTMP/librtmp.a: force
-	$(MAKE) -C xbmc/lib/libRTMP
 xbmc/lib/libscrobbler/scrobbler.a: force
 	$(MAKE) -C xbmc/lib/libscrobbler
 xbmc/lib/libRTV/librtv-@ARCH@.a: force
@@ -387,7 +384,6 @@ xcode_depends: \
 	xbmc/lib/libapetag/.libs/libapetag.a \
 	xbmc/lib/cmyth/libcmyth/libcmyth.a \
 	xbmc/lib/cmyth/librefmem/librefmem.a \
-	xbmc/lib/libRTMP/librtmp.a \
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
@@ -428,7 +424,6 @@ OBJSXBMC=	\
 	xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a \
 	xbmc/karaoke/karaoke.a \
 	xbmc/lib/libPython/xbmcmodule/xbmcmodule.a \
-	xbmc/lib/libRTMP/librtmp.a \
 	xbmc/lib/libscrobbler/scrobbler.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \

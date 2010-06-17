@@ -266,9 +266,6 @@
 		810C9FA90D67D1FB0095F5DD /* MythDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA50D67D1FB0095F5DD /* MythDirectory.cpp */; };
 		810C9FAA0D67D1FB0095F5DD /* MythFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 810C9FA70D67D1FB0095F5DD /* MythFile.cpp */; };
 		810CA01C0D68A6E20095F5DD /* libshout-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E30B3E8E0D5D59290030A311 /* libshout-x86-osx.a */; };
-		815EE62D0E176F75009FBE3C /* AMFObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE62A0E176F75009FBE3C /* AMFObject.cpp */; };
-		815EE62E0E176F75009FBE3C /* rtmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE62B0E176F75009FBE3C /* rtmp.cpp */; };
-		815EE62F0E176F75009FBE3C /* rtmppacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE62C0E176F75009FBE3C /* rtmppacket.cpp */; };
 		815EE6350E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE6330E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp */; };
 		83A72B910FBC8DB000171871 /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B8E0FBC8DB000171871 /* CoreAudioRenderer.cpp */; };
 		83A72B940FBC8DFF00171871 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B920FBC8DFF00171871 /* CoreAudio.cpp */; };
@@ -1670,9 +1667,6 @@
 		F5A1CB5D0F6B06CF00A96ABD /* GUIViewStatePrograms.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 886328190E07B37200BB3DAB /* GUIViewStatePrograms.cpp */; };
 		F5A1CB5E0F6B06CF00A96ABD /* GUIViewStateScripts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8863281B0E07B37200BB3DAB /* GUIViewStateScripts.cpp */; };
 		F5A1CB600F6B06CF00A96ABD /* RSSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */; };
-		F5A1CB610F6B06CF00A96ABD /* AMFObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE62A0E176F75009FBE3C /* AMFObject.cpp */; };
-		F5A1CB620F6B06CF00A96ABD /* rtmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE62B0E176F75009FBE3C /* rtmp.cpp */; };
-		F5A1CB630F6B06CF00A96ABD /* rtmppacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE62C0E176F75009FBE3C /* rtmppacket.cpp */; };
 		F5A1CB640F6B06CF00A96ABD /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE6330E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp */; };
 		F5A1CB650F6B06CF00A96ABD /* GUIListGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88E384620E20D6EF0028AFC0 /* GUIListGroup.cpp */; };
 		F5A1CB670F6B06CF00A96ABD /* VGMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */; };
@@ -2166,9 +2160,6 @@
 		810C9FA80D67D1FB0095F5DD /* MythFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MythFile.h; sourceTree = "<group>"; };
 		810CA0050D683DEF0095F5DD /* libSDL-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL-x86-osx.a"; path = "lib/libSDL-OSX/libSDL-x86-osx.a"; sourceTree = "<group>"; };
 		810CA0080D683DEF0095F5DD /* libSDL_mixer-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSDL_mixer-x86-osx.a"; path = "lib/libSDL-OSX/libSDL_mixer-x86-osx.a"; sourceTree = "<group>"; };
-		815EE62A0E176F75009FBE3C /* AMFObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AMFObject.cpp; path = libRTMP/AMFObject.cpp; sourceTree = "<group>"; };
-		815EE62B0E176F75009FBE3C /* rtmp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = rtmp.cpp; path = libRTMP/rtmp.cpp; sourceTree = "<group>"; };
-		815EE62C0E176F75009FBE3C /* rtmppacket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = rtmppacket.cpp; path = libRTMP/rtmppacket.cpp; sourceTree = "<group>"; };
 		815EE6330E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamRTMP.cpp; sourceTree = "<group>"; };
 		815EE6340E17F1DC009FBE3C /* DVDInputStreamRTMP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamRTMP.h; sourceTree = "<group>"; };
 		83A72B8E0FBC8DB000171871 /* CoreAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioRenderer.cpp; path = AudioRenderers/CoreAudioRenderer.cpp; sourceTree = "<group>"; };
@@ -3814,9 +3805,6 @@
 		F5E55B6D10741340006E788A /* Teletext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Teletext.h; sourceTree = "<group>"; };
 		F5E55B6E10741340006E788A /* Teletext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Teletext.cpp; sourceTree = "<group>"; };
 		F5E55B6F10741340006E788A /* TeletextDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeletextDefines.h; sourceTree = "<group>"; };
-		F5E55E8D1076B3CC006E788A /* rtmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rtmp.h; path = libRTMP/rtmp.h; sourceTree = "<group>"; };
-		F5E55E8E1076B3D5006E788A /* rtmppacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rtmppacket.h; path = libRTMP/rtmppacket.h; sourceTree = "<group>"; };
-		F5E55E8F1076B3E5006E788A /* AMFObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AMFObject.h; path = libRTMP/AMFObject.h; sourceTree = "<group>"; };
 		F5E560BA10770F9F006E788A /* OggCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OggCallback.h; sourceTree = "<group>"; };
 		F5E560BB10770F9F006E788A /* OggCallback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OggCallback.cpp; sourceTree = "<group>"; };
 		F5E5697210803FC3006E788A /* fastmemcpy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fastmemcpy.c; sourceTree = "<group>"; };
@@ -5797,7 +5785,6 @@
 				E38E197A0D25F9FB00618676 /* libid3tag */,
 				E38E197D0D25F9FB00618676 /* liblzo */,
 				E38E19820D25F9FB00618676 /* libPython */,
-				F5E55E851076B3A0006E788A /* libRTMP */,
 				E38E1A130D25F9FB00618676 /* libRTV */,
 				E38E1A210D25F9FB00618676 /* libscrobbler */,
 				E38E1A270D25F9FB00618676 /* libshout */,
@@ -7018,19 +7005,6 @@
 			name = libsquish;
 			sourceTree = "<group>";
 		};
-		F5E55E851076B3A0006E788A /* libRTMP */ = {
-			isa = PBXGroup;
-			children = (
-				815EE62A0E176F75009FBE3C /* AMFObject.cpp */,
-				F5E55E8F1076B3E5006E788A /* AMFObject.h */,
-				815EE62B0E176F75009FBE3C /* rtmp.cpp */,
-				F5E55E8D1076B3CC006E788A /* rtmp.h */,
-				815EE62C0E176F75009FBE3C /* rtmppacket.cpp */,
-				F5E55E8E1076B3D5006E788A /* rtmppacket.h */,
-			);
-			name = libRTMP;
-			sourceTree = "<group>";
-		};
 		F5E56AD8108280DE006E788A /* New Group */ = {
 			isa = PBXGroup;
 			children = (
@@ -7932,9 +7906,6 @@
 				8863281F0E07B37200BB3DAB /* GUIViewStatePrograms.cpp in Sources */,
 				886328200E07B37200BB3DAB /* GUIViewStateScripts.cpp in Sources */,
 				889B4D8E0E0EF86C00FAD25E /* RSSDirectory.cpp in Sources */,
-				815EE62D0E176F75009FBE3C /* AMFObject.cpp in Sources */,
-				815EE62E0E176F75009FBE3C /* rtmp.cpp in Sources */,
-				815EE62F0E176F75009FBE3C /* rtmppacket.cpp in Sources */,
 				815EE6350E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp in Sources */,
 				88E384640E20D6EF0028AFC0 /* GUIListGroup.cpp in Sources */,
 				F5F8E1DA0E427E8000A8E96F /* VGMCodec.cpp in Sources */,
@@ -8809,9 +8780,6 @@
 				F5A1CB5D0F6B06CF00A96ABD /* GUIViewStatePrograms.cpp in Sources */,
 				F5A1CB5E0F6B06CF00A96ABD /* GUIViewStateScripts.cpp in Sources */,
 				F5A1CB600F6B06CF00A96ABD /* RSSDirectory.cpp in Sources */,
-				F5A1CB610F6B06CF00A96ABD /* AMFObject.cpp in Sources */,
-				F5A1CB620F6B06CF00A96ABD /* rtmp.cpp in Sources */,
-				F5A1CB630F6B06CF00A96ABD /* rtmppacket.cpp in Sources */,
 				F5A1CB640F6B06CF00A96ABD /* DVDInputStreamRTMP.cpp in Sources */,
 				F5A1CB650F6B06CF00A96ABD /* GUIListGroup.cpp in Sources */,
 				F5A1CB670F6B06CF00A96ABD /* VGMCodec.cpp in Sources */,
@@ -9104,7 +9072,6 @@
 					xbmc/cores/dvdplayer/Codecs/libbdnav/src,
 					xbmc/utils,
 					xbmc/lib,
-					xbmc/lib/libRTMP,
 					xbmc/lib/libPython/Python/Include,
 					lib/jsoncpp/jsoncpp/include,
 					lib/cpluff/libcpluff,
@@ -9148,6 +9115,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = XBMC;
+				USER_HEADER_SEARCH_PATHS = ". xbmc/cores/dvdplayer/Codecs/ffmpeg /usr/local/include";
 				ZERO_LINK = NO;
 			};
 			name = Debug;
@@ -9194,7 +9162,6 @@
 					xbmc/cores/dvdplayer/Codecs/libbdnav/src,
 					xbmc/utils,
 					xbmc/lib,
-					xbmc/lib/libRTMP,
 					xbmc/lib/libPython/Python/Include,
 					lib/jsoncpp/jsoncpp/include,
 					lib/cpluff/libcpluff,
@@ -9238,6 +9205,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = XBMC;
+				USER_HEADER_SEARCH_PATHS = ". xbmc/cores/dvdplayer/Codecs/ffmpeg /usr/local/include";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -9341,7 +9309,6 @@
 					xbmc/cores/dvdplayer/Codecs/libbdnav/src,
 					xbmc/utils,
 					xbmc/lib,
-					xbmc/lib/libRTMP,
 					xbmc/lib/libPython/Python/Include,
 					lib/jsoncpp/jsoncpp/include,
 					lib/cpluff/libcpluff,
@@ -9386,6 +9353,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = XBMC;
+				USER_HEADER_SEARCH_PATHS = ". xbmc/cores/dvdplayer/Codecs/ffmpeg /usr/local/include";
 				VALID_ARCHS = ppc;
 				ZERO_LINK = NO;
 			};
@@ -9433,7 +9401,6 @@
 					xbmc/cores/dvdplayer/Codecs/libbdnav/src,
 					xbmc/utils,
 					xbmc/lib,
-					xbmc/lib/libRTMP,
 					xbmc/lib/libPython/Python/Include,
 					lib/jsoncpp/jsoncpp/include,
 					lib/cpluff/libcpluff,
@@ -9478,6 +9445,7 @@
 					"-all_load",
 				);
 				PRODUCT_NAME = XBMC;
+				USER_HEADER_SEARCH_PATHS = ". xbmc/cores/dvdplayer/Codecs/ffmpeg /usr/local/include";
 				VALID_ARCHS = ppc;
 				ZERO_LINK = NO;
 			};
