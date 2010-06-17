@@ -1,8 +1,19 @@
 #
 #  rtmpdump build script.
+#
+#  A quick and dirty Makefile to download/build and install librtmp
+#
+#  Darwin: librtmp is built as an .so on OSX for the ability to unload it.
+#  10.4u.sdk is targeted so we can run on the AppleTV. This might
+#  break under OSX ppc and need some build love. Macports is assumed to
+#  be used and the required lib depends installed.
+#
+#  Linux: builds a simple.so without the proper .so version symlinks,
+#  maybe someone with good Linux makefile-fu can fix it up.
+#  
 #  Usage:
 #    make
-#
+#    sudo make install
 
 RTMPDUMP_VERS = 509
 # get OS type from shell
@@ -24,10 +35,6 @@ LIBRTMP = librtmp/librtmp.a
 all:: librtmp.so
 
 librtmp.so: $(LIBRTMP)
-	mkdir -p includes
-	cp -f librtmp/amf.h includes/
-	cp -f librtmp/log.h includes/
-	cp -f librtmp/rtmp.h includes/
 ifeq ($(OSTYPE),Darwin)
 	$(CC) $(XLDFLAGS) -o $@ -Wl,-all_load $<
 else
@@ -39,6 +46,13 @@ $(LIBRTMP): librtmp/Makefile
 
 librtmp/Makefile:
 	svn export --revision $(RTMPDUMP_VERS) svn://svn.mplayerhq.hu/rtmpdump/trunk/librtmp librtmp
+
+install:
+	mkdir -p /usr/local/include/librtmp
+	cp -f librtmp/amf.h /usr/local/include/librtmp
+	cp -f librtmp/log.h /usr/local/include/librtmp
+	cp -f librtmp/rtmp.h /usr/local/include/librtmp
+	cp -f librtmp.so /usr/local/lib
 
 clean:
 	rm -f librtmp.so
