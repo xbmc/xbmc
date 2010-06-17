@@ -23,8 +23,8 @@
 
 #include "DynamicDll.h"
 
-#include "../../../../lib/librtmp/includes/log.h"
-#include "lib/librtmp/includes/rtmp.h"
+#include <librtmp/log.h>
+#include <librtmp/rtmp.h>
 
 class DllLibRTMPInterface
 {
