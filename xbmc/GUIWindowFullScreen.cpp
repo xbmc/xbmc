@@ -786,14 +786,15 @@ void CGUIWindowFullScreen::FrameMove()
 
 void CGUIWindowFullScreen::Render()
 {
-  RenderTTFSubtitles();
+  if (g_application.m_pPlayer)
+    RenderTTFSubtitles();
   CGUIWindow::Render();
 }
 
 void CGUIWindowFullScreen::RenderTTFSubtitles()
 {
   if ((g_application.GetCurrentPlayer() == EPC_MPLAYER || g_application.GetCurrentPlayer() == EPC_DVDPLAYER) &&
-      CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible())
+      CUtil::IsUsingTTFSubtitles() && (g_application.m_pPlayer->GetSubtitleVisible())
   {
     CSingleLock lock (m_fontLock);
 
