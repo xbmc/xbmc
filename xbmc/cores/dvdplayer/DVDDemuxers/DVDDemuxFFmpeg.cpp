@@ -832,6 +832,8 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
       return false;
 
     Flush();
+    m_ioContext->buf_ptr = m_ioContext->buf_end;
+
     return true;
   }
 

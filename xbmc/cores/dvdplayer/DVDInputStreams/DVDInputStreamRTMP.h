@@ -21,7 +21,12 @@
  */
 
 #include "DVDInputStream.h"
+
+#ifdef HAS_EXTERNAL_LIBRTMP
+#include "DllLibRTMP.h"
+#else
 #include "lib/libRTMP/rtmp.h"
+#endif
 
 class CDVDInputStreamRTMP : public CDVDInputStream
 {
@@ -42,14 +47,22 @@ public:
   CCriticalSection m_RTMPSection;
 
 protected:
-  bool   m_eof;
-  bool   m_bPaused;
-  RTMP_LIB::CRTMP  *m_rtmp;
+  bool       m_eof;
+  bool       m_bPaused;
+  char*      m_sStreamPlaying;
+
+#ifdef HAS_EXTERNAL_LIBRTMP
+  // only used by libRTMP
+  RTMP       m_rtmp;
+  DllLibRTMP m_libRTMP;
+#else
+  // only used by internal RTMP
+  RTMP_LIB::CRTMP* m_intRTMP;
   int          m_prevTagSize;
   bool         m_bSentHeader;
   char         *m_leftOver;
-  char*        m_sStreamPlaying;
   unsigned int m_leftOverSize;
   unsigned int m_leftOverConsumed;
+#endif
 };
 
