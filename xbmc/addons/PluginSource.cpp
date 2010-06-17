@@ -39,6 +39,8 @@ CPluginSource::CPluginSource(const cp_extension_t *ext)
       if (content != UNKNOWN)
         m_providedContent.insert(content);
     }
+    if (Type() == ADDON_SCRIPT && m_providedContent.empty())
+      m_providedContent.insert(EXECUTABLE);
   }
 }
 
