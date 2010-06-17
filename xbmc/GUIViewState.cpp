@@ -370,6 +370,16 @@ VECSOURCES& CGUIViewState::GetSources()
     m_sources.push_back(SourceFromPlugin(plugin, "plugin"));
   }
 
+  addons.clear();
+  ADDON::CAddonMgr::Get().GetAddons(ADDON_SCRIPT, addons);
+  for (unsigned i=0; i<addons.size(); i++)
+  {
+    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addons[i]);
+    if (!plugin || !plugin->Provides(m_content))
+      continue;
+    m_sources.push_back(SourceFromPlugin(plugin, "script"));
+  }
+
   return m_sources;
 }
 
