@@ -228,7 +228,7 @@ namespace VIDEO
         m_pObserver->OnStateChanged(content == CONTENT_MOVIES ? FETCHING_MOVIE_INFO : FETCHING_MUSICVIDEO_INFO);
 
       CStdString fastHash = GetFastHash(strDirectory);
-      if (m_database.GetPathHash(strDirectory, dbHash) && fastHash == dbHash)
+      if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.IsEmpty() && fastHash == dbHash)
       { // fast hashes match - no need to process anything
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", strDirectory.c_str());
         hash = fastHash;
@@ -241,7 +241,7 @@ namespace VIDEO
           items.Stack();
         // compute hash
         GetPathHash(items, hash);
-        if (hash != dbHash)
+        if (hash != dbHash && !hash.IsEmpty())
         {
           if (dbHash.IsEmpty())
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning dir '%s' as not in the database", strDirectory.c_str());
