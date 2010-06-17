@@ -879,6 +879,8 @@ if test "x$use_vaapi" != "xno"; then
       else
         AC_MSG_RESULT($vaapi_not_found)
       fi
+    else
+      AC_DEFINE([HAVE_LIBVA], [1], [Define to 1 if you have the 'vaapi' libraries (-lva AND -lva-glx)])
     fi
   fi
 else
