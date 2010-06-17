@@ -9077,12 +9077,6 @@
 					lib/cpluff/libcpluff,
 					lib/libmicrohttpd/src/include,
 					"lib/libcurl-OSX/include",
-					/opt/local/include,
-					/opt/local/include/freetype2,
-					/opt/local/include/mysql5,
-					"/opt/local/include/glib-2.0",
-					"/opt/local/lib/glib-2.0/include",
-					/usr/X11R6/include,
 				);
 				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
@@ -9095,27 +9089,23 @@
 					xbmc/lib/cmyth/librefmem,
 					xbmc/lib/libapetag/.libs,
 					xbmc/lib/libsquish,
+					xbmc/lib/libjsonrpc,
+					xbmc/lib/libhttpapi,
 					xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs,
 					"lib/libSDL-OSX",
+					lib/jsoncpp/jsoncpp/src/lib_json,
+					lib/libmicrohttpd/src/daemon/.libs,
 					/opt/local/lib,
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/lib/jsoncpp/jsoncpp/src/lib_json\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/libjsonrpc\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libhttpapi\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libmicrohttpd/src/daemon/.libs\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
 					"-all_load",
 				);
 				PRODUCT_NAME = XBMC;
-				USER_HEADER_SEARCH_PATHS = ". xbmc/cores/dvdplayer/Codecs/ffmpeg /usr/local/include";
+				USER_HEADER_SEARCH_PATHS = ". xbmc/cores/dvdplayer/Codecs/ffmpeg /opt/local/include /opt/local/include/freetype2 /opt/local/include/mysql5 /opt/local/include/glib-2.0 /opt/local/lib/glib-2.0/include /usr/X11R6/include";
 				ZERO_LINK = NO;
 			};
 			name = Debug;
@@ -9167,12 +9157,6 @@
 					lib/cpluff/libcpluff,
 					lib/libmicrohttpd/src/include,
 					"lib/libcurl-OSX/include",
-					/opt/local/include,
-					/opt/local/include/freetype2,
-					/opt/local/include/mysql5,
-					"/opt/local/include/glib-2.0",
-					"/opt/local/lib/glib-2.0/include",
-					/usr/X11R6/include,
 				);
 				INFOPLIST_FILE = $SRCROOT/xbmc/osx/Info.plist;
 				INSTALL_PATH = /usr/local/bin;
@@ -9185,27 +9169,23 @@
 					xbmc/lib/cmyth/librefmem,
 					xbmc/lib/libapetag/.libs,
 					xbmc/lib/libsquish,
+					xbmc/lib/libjsonrpc,
+					xbmc/lib/libhttpapi,
 					xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs,
 					"lib/libSDL-OSX",
+					lib/jsoncpp/jsoncpp/src/lib_json,
+					lib/libmicrohttpd/src/daemon/.libs,
 					/opt/local/lib,
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/lib/jsoncpp/jsoncpp/src/lib_json\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/libjsonrpc\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libhttpapi\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libmicrohttpd/src/daemon/.libs\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
 					"-all_load",
 				);
 				PRODUCT_NAME = XBMC;
-				USER_HEADER_SEARCH_PATHS = ". xbmc/cores/dvdplayer/Codecs/ffmpeg /usr/local/include";
+				USER_HEADER_SEARCH_PATHS = ". xbmc/cores/dvdplayer/Codecs/ffmpeg /opt/local/include /opt/local/include/freetype2 /opt/local/include/mysql5 /opt/local/include/glib-2.0 /opt/local/lib/glib-2.0/include /usr/X11R6/include";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -9314,12 +9294,6 @@
 					lib/cpluff/libcpluff,
 					lib/libmicrohttpd/src/include,
 					"lib/libcurl-OSX/include",
-					/opt/local/include,
-					/opt/local/include/freetype2,
-					/opt/local/include/mysql5,
-					"/opt/local/include/glib-2.0",
-					"/opt/local/lib/glib-2.0/include",
-					/usr/X11R6/include,
 				);
 				INFOPLIST_FILE = "/Users/Shared/xbmc/xbmc_svn/xbmc/osx/Info copy.plist";
 				INSTALL_PATH = /usr/local/bin;
@@ -9333,27 +9307,23 @@
 					xbmc/lib/cmyth/librefmem,
 					xbmc/lib/libapetag/.libs,
 					xbmc/lib/libsquish,
+					xbmc/lib/libjsonrpc,
+					xbmc/lib/libhttpapi,
 					xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs,
 					"lib/libSDL-OSX",
+					lib/jsoncpp/jsoncpp/src/lib_json,
+					lib/libmicrohttpd/src/daemon/.libs,
 					/opt/local/lib,
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/lib/jsoncpp/jsoncpp/src/lib_json\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/libjsonrpc\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libhttpapi\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libmicrohttpd/src/daemon/.libs\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
 					"-all_load",
 				);
 				PRODUCT_NAME = XBMC;
-				USER_HEADER_SEARCH_PATHS = ". xbmc/cores/dvdplayer/Codecs/ffmpeg /usr/local/include";
+				USER_HEADER_SEARCH_PATHS = ". xbmc/cores/dvdplayer/Codecs/ffmpeg /opt/local/include /opt/local/include/freetype2 /opt/local/include/mysql5 /opt/local/include/glib-2.0 /opt/local/lib/glib-2.0/include /usr/X11R6/include";
 				VALID_ARCHS = ppc;
 				ZERO_LINK = NO;
 			};
@@ -9406,12 +9376,6 @@
 					lib/cpluff/libcpluff,
 					lib/libmicrohttpd/src/include,
 					"lib/libcurl-OSX/include",
-					/opt/local/include,
-					/opt/local/include/freetype2,
-					/opt/local/include/mysql5,
-					"/opt/local/include/glib-2.0",
-					"/opt/local/lib/glib-2.0/include",
-					/usr/X11R6/include,
 				);
 				INFOPLIST_FILE = "/Users/Shared/xbmc/xbmc_svn/xbmc/osx/Info copy.plist";
 				INSTALL_PATH = /usr/local/bin;
@@ -9425,27 +9389,23 @@
 					xbmc/lib/cmyth/librefmem,
 					xbmc/lib/libapetag/.libs,
 					xbmc/lib/libsquish,
+					xbmc/lib/libjsonrpc,
+					xbmc/lib/libhttpapi,
 					xbmc/cores/dvdplayer/Codecs/libbdnav/src/libbdnav/.libs,
 					"lib/libSDL-OSX",
+					lib/jsoncpp/jsoncpp/src/lib_json,
+					lib/libmicrohttpd/src/daemon/.libs,
 					/opt/local/lib,
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/lib/jsoncpp/jsoncpp/src/lib_json\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/xbmc/lib/libjsonrpc\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/xbmc/lib/libhttpapi\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/lib/libmicrohttpd/src/daemon/.libs\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
 					"-headerpad_max_install_names",
 					"-all_load",
 				);
 				PRODUCT_NAME = XBMC;
-				USER_HEADER_SEARCH_PATHS = ". xbmc/cores/dvdplayer/Codecs/ffmpeg /usr/local/include";
+				USER_HEADER_SEARCH_PATHS = ". xbmc/cores/dvdplayer/Codecs/ffmpeg /opt/local/include /opt/local/include/freetype2 /opt/local/include/mysql5 /opt/local/include/glib-2.0 /opt/local/lib/glib-2.0/include /usr/X11R6/include";
 				VALID_ARCHS = ppc;
 				ZERO_LINK = NO;
 			};

@@ -21,12 +21,14 @@ RTMPDUMP_VERS = 511
 OSTYPE	= $(shell uname)
 
 ifeq ($(OSTYPE),Darwin)
+PREFIX=/opt/local
 XCFLAGS=-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk \
 	 -fPIC -I /opt/local/include
 XLDFLAGS=-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk \
 	  -bundle -flat_namespace -undefined suppress -arch i386 -L/opt/local/lib \
 	  -lpthread -lssl -lcrypto -lz
 else
+PREFIX=/usr/local
 XCFLAGS=-fPIC -DPIC
 XLDFLAGS=-shared -fPIC -rdynamic -lpthread -lssl -lcrypto -lz
 endif
@@ -49,12 +51,12 @@ librtmp/Makefile:
 	svn export --revision $(RTMPDUMP_VERS) svn://svn.mplayerhq.hu/rtmpdump/trunk/librtmp librtmp
 
 install:
-	mkdir -p /usr/local/lib
-	mkdir -p /usr/local/include/librtmp
-	cp -f librtmp/amf.h /usr/local/include/librtmp
-	cp -f librtmp/log.h /usr/local/include/librtmp
-	cp -f librtmp/rtmp.h /usr/local/include/librtmp
-	cp -f librtmp.so /usr/local/lib/
+	mkdir -p $(PREFIX)/include/librtmp
+	cp -f librtmp/amf.h $(PREFIX)/include/librtmp
+	cp -f librtmp/log.h $(PREFIX)/include/librtmp
+	cp -f librtmp/http.h $(PREFIX)/include/librtmp
+	cp -f librtmp/rtmp.h $(PREFIX)/include/librtmp
+	cp -f librtmp.so $(PREFIX)/lib
 
 clean:
 	rm -f librtmp.so
@@ -62,4 +64,4 @@ clean:
 	make -C librtmp clean
 
 distclean::
-	rm -rf librtmp.so includes librtmp
+	rm -rf librtmp.so librtmp
