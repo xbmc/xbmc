@@ -334,19 +334,19 @@ bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon)
     setting = g_guiSettings.GetString("musicplayer.visualisation");
     break;
   case ADDON_SCRAPER_ALBUMS:
-    setting = g_guiSettings.GetString("musiclibrary.albumscraper");
+    setting = g_guiSettings.GetString("musiclibrary.albumsscraper");
     break;
   case ADDON_SCRAPER_ARTISTS:
-    setting = g_guiSettings.GetString("musiclibrary.artistscraper");
+    setting = g_guiSettings.GetString("musiclibrary.artistsscraper");
     break;
   case ADDON_SCRAPER_MOVIES:
-    setting = g_guiSettings.GetString("scrapers.moviedefault");
+    setting = g_guiSettings.GetString("scrapers.moviesdefault");
     break;
   case ADDON_SCRAPER_MUSICVIDEOS:
-    setting = g_guiSettings.GetString("scrapers.musicvideodefault");
+    setting = g_guiSettings.GetString("scrapers.musicvideosdefault");
     break;
   case ADDON_SCRAPER_TVSHOWS:
-    setting = g_guiSettings.GetString("scrapers.tvshowdefault");
+    setting = g_guiSettings.GetString("scrapers.tvshowsdefault");
     break;
   default:
     return false;
