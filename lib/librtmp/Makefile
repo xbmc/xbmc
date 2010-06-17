@@ -48,11 +48,12 @@ librtmp/Makefile:
 	svn export --revision $(RTMPDUMP_VERS) svn://svn.mplayerhq.hu/rtmpdump/trunk/librtmp librtmp
 
 install:
+	mkdir -p /usr/local/lib
 	mkdir -p /usr/local/include/librtmp
 	cp -f librtmp/amf.h /usr/local/include/librtmp
 	cp -f librtmp/log.h /usr/local/include/librtmp
 	cp -f librtmp/rtmp.h /usr/local/include/librtmp
-	cp -f librtmp.so /usr/local/lib
+	cp -f librtmp.so /usr/local/lib/
 
 clean:
 	rm -f librtmp.so
