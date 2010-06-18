@@ -621,7 +621,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
+#if defined(_WIN32)
+        // for platforms that do not yet have support to dynamically switch resolutions
+        pControl->SetEnabled(false);
+#else
         pControl->SetEnabled(g_settings.m_ResInfo[g_guiSettings.GetResolution()].bFullScreen);
+#endif
     }
     else if (strSetting.Equals("videoscreen.fakefullscreen"))
     {
