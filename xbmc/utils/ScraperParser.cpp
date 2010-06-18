@@ -197,11 +197,11 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
     bool bTrim[MAX_SCRAPER_BUFFERS];
     GetBufferParams(bTrim,pExpression->Attribute("trim"),false);
 
-    bool bEncode[MAX_SCRAPER_BUFFERS];
-    GetBufferParams(bEncode,pExpression->Attribute("encode"),false);
-
     bool bFixChars[MAX_SCRAPER_BUFFERS];
     GetBufferParams(bFixChars,pExpression->Attribute("fixchars"),false);
+
+    bool bEncode[MAX_SCRAPER_BUFFERS];
+    GetBufferParams(bEncode,pExpression->Attribute("encode"),false);
 
     int iOptional = -1;
     pExpression->QueryIntAttribute("optional",&iOptional);
@@ -217,10 +217,10 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
         InsertToken(strOutput,iBuf+1,"!!!CLEAN!!!");
       if (bTrim[iBuf])
         InsertToken(strOutput,iBuf+1,"!!!TRIM!!!");
-      if (bEncode[iBuf])
-        InsertToken(strOutput,iBuf+1,"!!!ENCODE!!!");
       if (bFixChars[iBuf])
         InsertToken(strOutput,iBuf+1,"!!!FIXCHARS!!!");
+      if (bEncode[iBuf])
+        InsertToken(strOutput,iBuf+1,"!!!ENCODE!!!");
     }
     int i = reg.RegFind(curInput.c_str());
     while (i > -1 && (i < (int)curInput.size() || curInput.size() == 0))
@@ -418,21 +418,6 @@ void CScraperParser::Clean(CStdString& strDirty)
       break;
   }
   i=0;
-  while ((i=strDirty.Find("!!!ENCODE!!!",i)) != -1)
-  {
-    int i2;
-    if ((i2=strDirty.Find("!!!ENCODE!!!",i+12)) != -1)
-    {
-      strBuffer = strDirty.substr(i+12,i2-i-12);
-      CUtil::URLEncode(strBuffer);
-      strDirty.erase(i,i2-i+12);
-      strDirty.Insert(i,strBuffer);
-      i += strBuffer.size();
-    }
-    else
-      break;
-  }
-  i=0;
   while ((i=strDirty.Find("!!!FIXCHARS!!!",i)) != -1)
   {
     int i2;
@@ -445,6 +430,21 @@ void CScraperParser::Clean(CStdString& strDirty)
       strDirty.erase(i,i2-i+14);
       strDirty.Insert(i,szTrimmed);
       i += strlen(szTrimmed);
+    }
+    else
+      break;
+  }
+  i=0;
+  while ((i=strDirty.Find("!!!ENCODE!!!",i)) != -1)
+  {
+    int i2;
+    if ((i2=strDirty.Find("!!!ENCODE!!!",i+12)) != -1)
+    {
+      strBuffer = strDirty.substr(i+12,i2-i-12);
+      CUtil::URLEncode(strBuffer);
+      strDirty.erase(i,i2-i+12);
+      strDirty.Insert(i,strBuffer);
+      i += strBuffer.size();
     }
     else
       break;
