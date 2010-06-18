@@ -150,7 +150,7 @@ CDateTime CRepository::LastUpdate()
   CStdString date;
   CDateTime datetime = CDateTime::GetCurrentDateTime();
   if (database.GetRepoTimestamp(ID(),date) > -1)
-    datetime.SetFromDBDate(date);
+    datetime.SetFromDBDateTime(date);
 
   return datetime;
 }
