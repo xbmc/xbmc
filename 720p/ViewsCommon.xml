@@ -1376,40 +1376,33 @@
 				</control>
 				<control type="group">
 					<visible>Container.Content(episodes)</visible>
-					<posx>20</posx>
 					<control type="label">
-						<description>Episode Title</description>
-						<width>PanelStreamEpisodeDetailTextWidth</width>
-						<label>$INFO[ListItem.Title]</label>
+						<description>Episode and Title</description>
+						<width>PanelStreamDetailTextWidth</width>
+						<label>$INFO[listitem.episode]. $INFO[ListItem.Label]</label>
 						<font>TitleCapsFont</font>
 						<scroll>true</scroll>
 					</control>
-					<control type="label">
-						<description>Episode</description>
-						<posy>36</posy>
-						<font>MediumTitleCapsFont</font>
-						<textcolor>Unfocused</textcolor>
-						<label>$INFO[ListItem.Episode,$LOCALIZE[20359] ]</label>
-					</control>
-					<control type="textbox">
-						<description>Plot/Details</description>
-						<posy>68</posy>
-						<width>PanelStreamEpisodeDetailTextWidth</width>
-						<height>300</height>
-						<info>ListItem.Plot</info>
-					</control>
 					<control type="image">
-						<posy>380</posy>
+						<posy>36</posy>
 						<align>center</align>
 						<aspectratio>keep</aspectratio>
 						<info>ListItem.StarRating</info>
 						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
+					</control>
+					<control type="textbox">
+						<description>Plot/Details</description>
+						<posy>68</posy>
+						<width>PanelStreamDetailTextWidth</width>
+						<height>341</height>
+						<info>ListItem.Plot</info>
 					</control>
 					<control type="group">
 						<description>Media Flags</description>
 						<posy>425</posy>
 						<include>PanelStreamFlags</include>
 					</control>
+					
 				</control>
 				<control type="group">
 					<visible>Container.Content(artists)</visible>
