@@ -638,8 +638,8 @@
 		</animation>
 	</include>
 	<include name="PanelStreamEpisodeImageDims">
-		<width>236</width>
-		<height>148</height>
+		<width>254</width>
+		<height>147</height>
 	</include>
 	<include name="PanelStreamEpisodeImageFocusAnim">
 		<animation effect="zoom" tween="quadratic" end="-5,20,266,168" time="200" delay="100">Focus</animation>

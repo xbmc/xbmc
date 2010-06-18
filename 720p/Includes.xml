@@ -1821,13 +1821,13 @@
 	<include name="PanelStreamImage">
 		<include>PanelStreamImageDims</include>
 		<info>ListItem.Icon</info>
-		<bordertexture>amt-blank-poster-nofocus.png</bordertexture>
+		<bordertexture>amt-blank-episode-nofocus.png</bordertexture>
 		<bordersize>3</bordersize>
 	</include>
 	<include name="PanelStreamImageFocus">
 		<include>PanelStreamImageDims</include>
 		<info>ListItem.Icon</info>
-		<bordertexture>amt-blank-poster-focus.png</bordertexture>
+		<bordertexture>amt-blank-episode-focus.png</bordertexture>
 		<bordersize>3</bordersize>
 	</include>
 	<include name="PicturesImageFocus">
@@ -1860,6 +1860,11 @@
 		<include>PanelStreamEpisodeImageDims</include>
 		<texture>bookmark-resume.png</texture>
 		<include>PanelStreamImage</include>
+	</include>
+	<include name="PanelStreamEpisodeImageFocus">
+		<include>PanelStreamEpisodeImageDims</include>
+		<texture>bookmark-resume.png</texture>
+		<include>PanelStreamImageFocus</include>
 	</include>
 	<include name="PanelStreamEpisodeNoThumb">
 		<include>PanelStreamEpisodeNoThumbDims</include>
@@ -1920,26 +1925,40 @@
 			</control>
 		</focusedlayout>
 		<!-- Episodes -->
-		<itemlayout condition="Container.content(episodes)" width="250" height="160">
+		<itemlayout condition="Container.content(episodes)" width="268" height="185">
 			<control type="image">
 				<description>Episode thumb</description>
 				<include>PanelStreamEpisodeImage</include>
 			</control>
 			<control type="label">
-				<description>No Thumb label</description>
-				<include>PanelStreamNoThumbFade</include>
-				<include>PanelStreamEpisodeNoThumb</include>
+				<posx>148</posx>
+				<posy>152</posy>
+				<width>250</width>
+				<visible>true</visible>
+				<align>center</align>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.Episode]. $INFO[ListItem.Label]</label>
+				<font>EpisodeTitles</font>
+				<textcolor>ffffffff</textcolor>
+				<scrollsuffix>...</scrollsuffix>
 			</control>
 		</itemlayout>
-		<focusedlayout condition="Container.content(episodes)" width="250" height="160">
+		<focusedlayout condition="Container.content(episodes)" width="268" height="185">
 			<control type="image">
 				<description>Episode thumb</description>
-				<include>PanelStreamEpisodeImageFocusAnim</include>
-				<include>PanelStreamEpisodeImage</include>
+				<include>PanelStreamEpisodeImageFocus</include>			
 			</control>
 			<control type="label">
-				<include>PanelStreamNoThumbFocusAnim</include>
-				<include>PanelStreamEpisodeNoThumb</include>
+				<posx>148</posx>
+				<posy>152</posy>
+				<width>250</width>
+				<visible>true</visible>
+				<align>center</align>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.Episode]. $INFO[ListItem.Label]</label>
+				<font>EpisodeTitles</font>
+				<textcolor>ffffffff</textcolor>
+				<scrollsuffix>...</scrollsuffix>
 			</control>
 		</focusedlayout>
 		<!-- Albums -->
