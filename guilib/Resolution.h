@@ -24,6 +24,12 @@
 #include <stdint.h>
 #include "StdString.h"
 
+typedef int DisplayMode;
+#define DM_WINDOWED     -1
+#define DM_FULLSCREEN1   0
+#define DM_FULLSCREEN2   1
+// etc.
+
 enum RESOLUTION {
   RES_INVALID = -1,
   RES_HDTV_1080i = 0,

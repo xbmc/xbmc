@@ -2289,8 +2289,7 @@ DisplayMode CGUIWindowSettingsCategory::FillInScreens(CStdString strSetting, RES
 
   for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
   {
-    //TODO: add a string for translation
-    strScreen.Format("%s #%d", "Full Screen", g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen + 1);
+    strScreen.Format(g_localizeStrings.Get(241), g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen + 1);
     pControl->AddLabel(strScreen, g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen);
   }
 
