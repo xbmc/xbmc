@@ -25,7 +25,11 @@ FULLDEBUILDOPTS="-S -sa"
 DEBUILDOPTS="-S -sd"
 MINOR=1
 XBMCPPA=xbmc-svn
-HVERSION=10.06
+# Information about versioning
+# SVN before releasing version NN is: NN~svnXXXX
+# SVN after releasing version NN is: NN+svnXXXX
+SVN_RELEASE_SEP="~"
+HVERSION=10.08
 
 # Packagers should have these two vars in their environment
 # export DEBFULLNAME="Ouattara Oumar Aziz (alias wattazoum)"
@@ -111,8 +115,6 @@ preparesrc()
   fi
   cd $DESTSRC
   ./bootstrap
-  rm -rf autom4te.cache
-  rm -rf xbmc/lib/libass/autom4te.cache
   cd $OLDPWD
   if [ -z $UPDPPA ]; then
     echo "Copying to .orig folder"
@@ -193,7 +195,7 @@ preparevars()
     DESTSRC=$srcdir
     if [[ $revision  ]]; then
       REVISION=$revision
-      VERSION=${HVERSION}+svn$REVISION
+      VERSION=${HVERSION}${SVN_RELEASE_SEP}svn$REVISION
     fi
     if [[ -z $VERSION ]] && [[ $version ]]; then
       VERSION=$version
@@ -207,7 +209,7 @@ preparevars()
     DESTSRC=$srcdir
     if [[ $revision  ]]; then
       REVISION=$revision
-      VERSION=${HVERSION}+svn$REVISION
+      VERSION=${HVERSION}${SVN_RELEASE_SEP}svn$REVISION
     fi
     if [[ -z $VERSION ]] && [[ $version ]]; then
       VERSION=$version
@@ -230,7 +232,7 @@ preparevars()
     REVISION=$HEAD_REVISION
   fi
   if [[ -z $VERSION ]]; then
-    VERSION=${HVERSION}+svn$REVISION
+    VERSION=${HVERSION}${SVN_RELEASE_SEP}svn$REVISION
   fi
 
   echo "XBMC version: $VERSION"
