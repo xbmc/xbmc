@@ -2331,15 +2331,14 @@ void CGUIWindowSettingsCategory::FillInResolutionsInternal(CStdString strSetting
   }
   else
   {
-    for (unsigned int idx = RES_DESKTOP; idx < g_settings.m_ResInfo.size(); idx++)
-      if (g_settings.m_ResInfo[idx].iScreen == mode)
-      {
-        CStdString strRes;
-        strRes.Format("%dx%d", g_settings.m_ResInfo[idx].iWidth, g_settings.m_ResInfo[idx].iHeight);
-        if (g_settings.m_ResInfo[idx].fRefreshRate > 0)
-          strRes.Format("%s @ %.2f%s", strRes, g_settings.m_ResInfo[idx].fRefreshRate, g_settings.m_ResInfo[idx].dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "");
-        pControl->AddLabel(strRes, idx);
-      }
+    vector<RESOLUTION_WHR> resolutions = g_Windowing.ScreenResolutions(mode);
+
+    for (unsigned int idx = 0; idx < resolutions.size(); idx++)
+    {
+      CStdString strRes;
+      strRes.Format("%dx%d", resolutions[idx].width, resolutions[idx].height);
+      pControl->AddLabel(strRes, resolutions[idx].ResInfo_Index);
+    }
   }
 }
 
