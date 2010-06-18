@@ -212,7 +212,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     {
       TiXmlDocument davResponse;
 
-      if (davResponse.Parse(strResponse.c_str()) != 0)
+      if (!davResponse.Parse(strResponse))
       {
         CLog::Log(LOGERROR, "%s - Unable to process dav directory (%s)", __FUNCTION__, strPath.c_str());
         dav.Close();
