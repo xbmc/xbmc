@@ -41,7 +41,6 @@ public:
   virtual bool EndRender();
   virtual bool PresentRender();
   virtual bool ClearBuffers(color_t color);
-  virtual bool ClearBuffers(float r, float g, float b, float a);
   virtual bool IsExtSupported(const char* extension);
 
   virtual void SetVSync(bool vsync);
@@ -84,7 +83,7 @@ protected:
 
   CStdString m_RenderExtensions;
 
-  CGUIShader *m_pGUIshader[4];  // One GUI shader for each method
+  CGUIShader **m_pGUIshader;  // One GUI shader for each method
 
   int         m_method;
 };

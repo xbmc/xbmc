@@ -33,7 +33,9 @@
 #include "utils/SystemInfo.h"
 
 
-CRenderSystemGLES::CRenderSystemGLES() : CRenderSystemBase()
+CRenderSystemGLES::CRenderSystemGLES()
+ : CRenderSystemBase()
+ , m_pGUIshader(0)
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGLES;
 }
@@ -42,14 +44,19 @@ CRenderSystemGLES::~CRenderSystemGLES()
 {
   DestroyRenderSystem();
   CLog::Log(LOGDEBUG, "GUI Shader - Destroying Shader : %p", m_pGUIshader);
-  for (int i = 0; i < 4; i++)
+
+  if (m_pGUIshader)
   {
-    if (m_pGUIshader[i])
+    for (int i = 0; i < SM_ESHADERCOUNT; i++)
     {
-      m_pGUIshader[i]->Free();
-      delete m_pGUIshader[i];
-      m_pGUIshader[i] = NULL;
+      if (m_pGUIshader[i])
+      {
+        m_pGUIshader[i]->Free();
+        delete m_pGUIshader[i];
+        m_pGUIshader[i] = NULL;
+      }
     }
+    delete[] m_pGUIshader;
   }
 }
 
@@ -156,14 +163,11 @@ bool CRenderSystemGLES::ClearBuffers(color_t color)
   if (!m_bRenderCreated)
     return false;
 
-  return true;
-}
+  float r = GET_R(color) / 255.0f;
+  float g = GET_G(color) / 255.0f;
+  float b = GET_B(color) / 255.0f;
+  float a = GET_A(color) / 255.0f;
 
-bool CRenderSystemGLES::ClearBuffers(float r, float g, float b, float a)
-{
-  if (!m_bRenderCreated)
-    return false;
-  
   glClearColor(r, g, b, a);
 
   GLbitfield flags = GL_COLOR_BUFFER_BIT;
@@ -478,13 +482,13 @@ void CRenderSystemGLES::SetViewPort(CRect& viewPort)
 
 void CRenderSystemGLES::InitialiseGUIShader()
 {
-  if (!m_pGUIshader[0])
+  if (!m_pGUIshader)
   {
-    for (int i = 0;i < 4; i++)
+    m_pGUIshader = new CGUIShader*[SM_ESHADERCOUNT];
+    for (int i = 0;i < SM_ESHADERCOUNT; i++)
     {
       char shaderName[512];
       sprintf( shaderName, "guishader_frag%d.glsl", i );
-      //sprintf( shaderName, "guishader_frag.glsl", i );
 
       m_pGUIshader[i] = new CGUIShader( shaderName );
       if (!m_pGUIshader[i]->CompileAndLink())

@@ -55,7 +55,12 @@ bool CD3DTexture::Create(UINT width, UINT height, UINT mipLevels, DWORD usage, D
   m_pool = pool;
   // create the texture
   Release();
-  if (D3D_OK == D3DXCreateTexture(g_Windowing.Get3DDevice(), m_width, m_height, m_mipLevels, m_usage, m_format, m_pool, &m_texture))
+  HRESULT hr = D3DXCreateTexture(g_Windowing.Get3DDevice(), m_width, m_height, m_mipLevels, m_usage, m_format, m_pool, &m_texture);
+  if (FAILED(hr))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__" - failed 0x%08X", hr);
+  }
+  else
   {
     D3DSURFACE_DESC desc;
     if( D3D_OK == m_texture->GetLevelDesc(0, &desc))
@@ -140,27 +145,35 @@ void CD3DTexture::RestoreTexture()
   // yay, we're back - make a new copy of the texture
   if (!m_texture)
   {
-    D3DXCreateTexture(g_Windowing.Get3DDevice(), m_width, m_height, m_mipLevels, m_usage, m_format, m_pool, &m_texture);
-    // copy the data to the texture
-    D3DLOCKED_RECT lr;
-    if (m_texture && m_data && LockRect(0, &lr, NULL, 0 ))
+    HRESULT hr = D3DXCreateTexture(g_Windowing.Get3DDevice(), m_width, m_height, m_mipLevels, m_usage, m_format, m_pool, &m_texture);
+    if (FAILED(hr))
     {
-      if (lr.Pitch == m_pitch)
-        memcpy(lr.pBits, m_data, GetMemoryUsage(lr.Pitch));
-      else
-      {
-        UINT minpitch = ((UINT)lr.Pitch < m_pitch) ? lr.Pitch : m_pitch;
-        
-        for(UINT i = 0; i < m_height; ++i)
-        {
-          // Get pointers to the "rows" of pixels in texture
-          BYTE* pBits = (BYTE*)lr.pBits + i*lr.Pitch;
-          BYTE* pData = m_data + i*m_pitch;
-          memcpy(pBits, pData, minpitch);
-        }
-      }
-      UnlockRect(0);
+      CLog::Log(LOGERROR, __FUNCTION__": D3DXCreateTexture failed 0x%08X", hr);
     }
+    else
+    {
+      // copy the data to the texture
+      D3DLOCKED_RECT lr;
+      if (m_texture && m_data && LockRect(0, &lr, NULL, 0 ))
+      {
+        if (lr.Pitch == m_pitch)
+          memcpy(lr.pBits, m_data, GetMemoryUsage(lr.Pitch));
+        else
+        {
+          UINT minpitch = ((UINT)lr.Pitch < m_pitch) ? lr.Pitch : m_pitch;
+        
+          for(UINT i = 0; i < m_height; ++i)
+          {
+            // Get pointers to the "rows" of pixels in texture
+            BYTE* pBits = (BYTE*)lr.pBits + i*lr.Pitch;
+            BYTE* pData = m_data + i*m_pitch;
+            memcpy(pBits, pData, minpitch);
+          }
+        }
+        UnlockRect(0);
+      }
+    }
+
     delete[] m_data;
     m_data = NULL;
     m_pitch = 0;

@@ -1451,6 +1451,13 @@ public:
 //		return ( f.buffer && SaveFile( f.buffer ));
 		return SaveFile( filename.c_str() );
 	}
+	/** Parse the given block of xml data. Returns true on success, false on error.
+	*/
+	bool Parse(const std::string& xml)
+	{
+		Parse(xml.c_str(), NULL, TIXML_DEFAULT_ENCODING);
+		return !Error();
+	}
 	#endif
 
 	/** Parse the given null terminated block of xml data. Passing in an encoding to this

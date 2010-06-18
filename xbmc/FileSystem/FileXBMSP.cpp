@@ -229,6 +229,7 @@ bool CFileXBMSP::Exists(const CURL& url)
 
 int CFileXBMSP::Stat(const CURL& url, struct __stat64* buffer)
 {
+  memset(buffer, 0, sizeof(struct __stat64));
   if (Open(url))
   {
     buffer->st_size = this->m_fileSize;

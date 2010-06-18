@@ -25,12 +25,7 @@
 #include "RegExp.h"
 #include "HTMLUtil.h"
 #include "addons/Scraper.h"
-#include "FileSystem/File.h"
-#include "FileSystem/Directory.h"
 #include "Util.h"
-#include "StringUtils.h"
-#include "AdvancedSettings.h"
-#include "FileItem.h"
 
 #include <sstream>
 #include <cstring>
@@ -61,7 +56,6 @@ CScraperParser &CScraperParser::operator=(const CScraperParser &parser)
     if (parser.m_document)
     {
       m_scraper = parser.m_scraper;
-      m_persistence = parser.m_persistence;
       m_document = new TiXmlDocument(*parser.m_document);
       LoadFromXML();
     }
@@ -102,31 +96,15 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
   return false;
 }
 
-bool CScraperParser::Load(const AddonPtr& scraper)
-{
-  if (!scraper)
-    return false;
-
-  m_scraper = scraper;
-
-  return Load(m_scraper->LibPath());
-}
-
 bool CScraperParser::LoadFromXML()
 {
-  if (!m_document || !m_scraper)
+  if (!m_document)
     return false;
-
-  CStdString strPath = m_scraper->Path();
 
   m_pRootElement = m_document->RootElement();
   CStdString strValue = m_pRootElement->Value();
-  bool result=false;
   if (strValue == "scraper")
   {
-    if (m_pRootElement->Attribute("cachePersistence"))
-      m_persistence.SetFromTimeString(m_pRootElement->Attribute("cachePersistence"));
-
     TiXmlElement* pChildElement = m_pRootElement->FirstChildElement("CreateSearchUrl");
     if (pChildElement)
     {
@@ -134,35 +112,8 @@ bool CScraperParser::LoadFromXML()
         m_SearchStringEncoding = "UTF-8";
     }
 
-    ADDONDEPS deps = m_scraper->GetDeps();
-    ADDONDEPS::iterator itr = deps.begin();
-    while (itr != deps.end())
-    {
-      if (itr->first.Equals("xbmc.metadata"))
-      {
-        ++itr;
-        continue;
-      }  
-      AddonPtr dep;
-      if (!CAddonMgr::Get().GetAddon((*itr).first, dep))
-        break;
-      TiXmlDocument doc;
-      if (doc.LoadFile(dep->LibPath()))
-      {
-        const TiXmlNode* node = doc.RootElement()->FirstChild();
-        while (node)
-        {
-           m_pRootElement->InsertEndChild(*node);
-           node = node->NextSibling();
-        }
-      }
-      itr++;
-    }
-    result = true;
-  }
-
-  if (result)
     return true;
+  }
 
   delete m_document;
   m_document = NULL;
@@ -191,7 +142,9 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
   {
     int iEnd = strDest.Find("]",iIndex);
     CStdString strInfo = strDest.Mid(iIndex+6,iEnd-iIndex-6);
-    CStdString strReplace = m_scraper->GetSetting(strInfo);
+    CStdString strReplace;
+    if (m_scraper)
+      strReplace = m_scraper->GetSetting(strInfo);
     strDest.replace(strDest.begin()+iIndex,strDest.begin()+iEnd+1,strReplace);
     iIndex += strReplace.length();
   }
@@ -244,6 +197,9 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
     bool bTrim[MAX_SCRAPER_BUFFERS];
     GetBufferParams(bTrim,pExpression->Attribute("trim"),false);
 
+    bool bFixChars[MAX_SCRAPER_BUFFERS];
+    GetBufferParams(bFixChars,pExpression->Attribute("fixchars"),false);
+
     bool bEncode[MAX_SCRAPER_BUFFERS];
     GetBufferParams(bEncode,pExpression->Attribute("encode"),false);
 
@@ -261,6 +217,8 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
         InsertToken(strOutput,iBuf+1,"!!!CLEAN!!!");
       if (bTrim[iBuf])
         InsertToken(strOutput,iBuf+1,"!!!TRIM!!!");
+      if (bFixChars[iBuf])
+        InsertToken(strOutput,iBuf+1,"!!!FIXCHARS!!!");
       if (bEncode[iBuf])
         InsertToken(strOutput,iBuf+1,"!!!ENCODE!!!");
     }
@@ -395,13 +353,15 @@ void CScraperParser::ParseNext(TiXmlElement* element)
   }
 }
 
-const CStdString CScraperParser::Parse(const CStdString& strTag)
+const CStdString CScraperParser::Parse(const CStdString& strTag,
+                                       CScraper* scraper)
 {
   TiXmlElement* pChildElement = m_pRootElement->FirstChildElement(strTag.c_str());
   if(pChildElement == NULL) return "";
   int iResult = 1; // default to param 1
   pChildElement->QueryIntAttribute("dest",&iResult);
   TiXmlElement* pChildStart = pChildElement->FirstChildElement("RegExp");
+  m_scraper = scraper;
   ParseNext(pChildStart);
   CStdString tmp = m_param[iResult-1];
 
@@ -433,7 +393,7 @@ void CScraperParser::Clean(CStdString& strDirty)
     {
       strBuffer = strDirty.substr(i+11,i2-i-11);
       CStdString strConverted(strBuffer);
-      HTML::CHTMLUtil::ConvertAndRemoveTags(strConverted);
+      HTML::CHTMLUtil::RemoveTags(strConverted);
       const char* szTrimmed = RemoveWhiteSpace(strConverted.c_str());
       strDirty.erase(i,i2-i+11);
       strDirty.Insert(i,szTrimmed);
@@ -451,6 +411,23 @@ void CScraperParser::Clean(CStdString& strDirty)
       strBuffer = strDirty.substr(i+10,i2-i-10);
       const char* szTrimmed = RemoveWhiteSpace(strBuffer.c_str());
       strDirty.erase(i,i2-i+10);
+      strDirty.Insert(i,szTrimmed);
+      i += strlen(szTrimmed);
+    }
+    else
+      break;
+  }
+  i=0;
+  while ((i=strDirty.Find("!!!FIXCHARS!!!",i)) != -1)
+  {
+    int i2;
+    if ((i2=strDirty.Find("!!!FIXCHARS!!!",i+14)) != -1)
+    {
+      strBuffer = strDirty.substr(i+14,i2-i-14);
+      CStdString strConverted;
+      HTML::CHTMLUtil::ConvertHTMLToAnsi(strBuffer,strConverted);
+      const char* szTrimmed = RemoveWhiteSpace(strConverted.c_str());
+      strDirty.erase(i,i2-i+14);
       strDirty.Insert(i,szTrimmed);
       i += strlen(szTrimmed);
     }
@@ -479,9 +456,10 @@ char* CScraperParser::RemoveWhiteSpace(const char *string2)
   if (!string2) return (char*)"";
   char* string = (char*)string2;
   size_t pos = strlen(string)-1;
-  while ((string[pos] == ' ' || string[pos] == '\n') && string[pos] && pos)
+  while ((string[pos] == ' ' || string[pos] == '\n' || string[pos] == '\t') 
+         && string[pos] && pos)
     string[pos--] = '\0';
-  while ((*string == ' ' || *string == '\n') && *string != '\0')
+  while ((*string == ' ' || *string == '\n' || *string == '\t') && *string != '\0')
     string++;
   return string;
 }
@@ -491,33 +469,6 @@ void CScraperParser::ClearBuffers()
   //clear all m_param strings
   for (int i=0;i<MAX_SCRAPER_BUFFERS;++i)
     m_param[i].clear();
-}
-
-void CScraperParser::ClearCache()
-{
-  CStdString strCachePath;
-  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers",strCachePath);
-
-  // create scraper cache dir if needed
-  if (!CDirectory::Exists(strCachePath))
-    CDirectory::Create(strCachePath);
-
-  strCachePath = CUtil::AddFileToFolder(strCachePath,CUtil::GetFileName(m_strFile));
-  CUtil::AddSlashAtEnd(strCachePath);
-
-  if (CDirectory::Exists(strCachePath))
-  {
-    CFileItemList items;
-    CDirectory::GetDirectory(strCachePath,items);
-    for (int i=0;i<items.Size();++i)
-    {
-      // wipe cache
-      if (items[i]->m_dateTime+m_persistence <= CDateTime::GetUTCDateTime())
-        CFile::Delete(items[i]->m_strPath);
-    }
-  }
-  else
-    CDirectory::Create(strCachePath);
 }
 
 void CScraperParser::GetBufferParams(bool* result, const char* attribute, bool defvalue)
@@ -544,6 +495,16 @@ void CScraperParser::InsertToken(CStdString& strOutput, int buf, const char* tok
     i2 += strlen(token);
     strOutput.Insert(i2+2,token);
     i2 += 2;
+  }
+}
+
+void CScraperParser::AddDocument(const TiXmlDocument* doc)
+{
+  const TiXmlNode* node = doc->RootElement()->FirstChild();
+  while (node)
+  {
+    m_pRootElement->InsertEndChild(*node);
+    node = node->NextSibling();
   }
 }
 

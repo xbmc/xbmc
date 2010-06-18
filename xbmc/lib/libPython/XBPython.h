@@ -71,6 +71,12 @@ public:
   bool isRunning(int scriptId);
   bool isStopping(int scriptId);
   void setDone(int id);
+  
+  /*! \brief Stop a script if it's running
+   \param path path to the script
+   \return true if the script was running and is now stopped, false otherwise
+   */
+  bool StopScript(const CStdString &path);
 
   // inject xbmc stuff into the interpreter.
   // should be called for every new interpreter

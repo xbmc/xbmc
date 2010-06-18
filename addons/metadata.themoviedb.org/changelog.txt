@@ -1,0 +1,12 @@
+[B]1.0.2[/B]
+
+- scraper might fetch wrong studio, genre and country values
+- no search results in case the release date is missing
+
+[B]1.0.1[/B]
+
+- various fixes after api change
+
+[B]1.0.0[/B]
+
+- Initial import into addons repository

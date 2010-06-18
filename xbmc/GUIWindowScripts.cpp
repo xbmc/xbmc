@@ -151,25 +151,12 @@ bool CGUIWindowScripts::OnPlayMedia(int iItem)
 #endif
 
 #ifdef HAS_PYTHON
-  /* execute script...
-    * if script is already running do not run it again but stop it.
-    */
-  int id = g_pythonParser.getScriptId(strPath);
-  if (id != -1)
-  {
-    /* if we are here we already know that this script is running.
-      * But we will check it again to be sure :)
-      */
-    if (g_pythonParser.isRunning(id))
-    {
-      g_pythonParser.stopScript(id);
-
-      // update items
-      int selectedItem = m_viewControl.GetSelectedItem();
-      Update(m_vecItems->m_strPath);
-      m_viewControl.SetSelectedItem(selectedItem);
-      return true;
-    }
+  if (g_pythonParser.StopScript(strPath))
+  { // update items
+    int selectedItem = m_viewControl.GetSelectedItem();
+    Update(m_vecItems->m_strPath);
+    m_viewControl.SetSelectedItem(selectedItem);
+    return true;
   }
   g_pythonParser.evalFile(strPath);
 #endif

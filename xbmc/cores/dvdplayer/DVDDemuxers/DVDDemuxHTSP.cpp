@@ -299,9 +299,13 @@ void CDVDDemuxHTSP::SubscriptionStart (htsmsg_t *m)
     } else if(!strcmp(type, "MPEG2VIDEO")) {
       st.v = new CDemuxStreamVideoHTSP(this, type);
       st.v->codec = CODEC_ID_MPEG2VIDEO;
+      st.v->iWidth  = htsmsg_get_u32_or_default(sub, "width" , 0);
+      st.v->iHeight = htsmsg_get_u32_or_default(sub, "height", 0);
     } else if(!strcmp(type, "H264")) {
       st.v = new CDemuxStreamVideoHTSP(this, type);
       st.v->codec = CODEC_ID_H264;
+      st.v->iWidth  = htsmsg_get_u32_or_default(sub, "width" , 0);
+      st.v->iHeight = htsmsg_get_u32_or_default(sub, "height", 0);
     } else if(!strcmp(type, "DVBSUB")) {
       st.s = new CDemuxStreamSubtitle();
       st.s->codec = CODEC_ID_DVB_SUBTITLE;

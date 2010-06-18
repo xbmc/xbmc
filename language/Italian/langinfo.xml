@@ -12,12 +12,21 @@
   </dvd>
 
   <regions>
-    <region>
+    <region name="Italia">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
+      <timezone>CEST</timezone>
+    </region>
+    <region name="Svizzera">
+      <dateshort>DD.MM.YYYY</dateshort>
+      <datelong>DDDD, D. MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">HH:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>CEST</timezone>
     </region>
   </regions>
   <sorttokens>

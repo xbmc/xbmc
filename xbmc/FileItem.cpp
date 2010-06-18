@@ -2713,10 +2713,10 @@ CStdString CFileItem::GetLocalFanart() const
   StringUtils::SplitString(g_advancedSettings.m_fanartImages, "|", fanarts);
 
   strFile = CUtil::ReplaceExtension(strFile, "-fanart");
-  fanarts.push_back(CUtil::GetFileName(strFile));
+  fanarts.insert(m_bIsFolder ? fanarts.end() : fanarts.begin(), CUtil::GetFileName(strFile));
 
   if (!strFile2.IsEmpty())
-    fanarts.push_back(CUtil::GetFileName(strFile2));
+    fanarts.insert(m_bIsFolder ? fanarts.end() : fanarts.begin(), CUtil::GetFileName(strFile2));
 
   for (unsigned int i = 0; i < fanarts.size(); ++i)
   {

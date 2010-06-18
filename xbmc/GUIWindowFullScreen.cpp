@@ -469,6 +469,8 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 void CGUIWindowFullScreen::OnWindowLoaded()
 {
   CGUIWindow::OnWindowLoaded();
+  // override the clear colour - we must never clear fullscreen
+  m_clearBackground = 0;
 
   CGUIProgressControl* pProgress = (CGUIProgressControl*)GetControl(CONTROL_PROGRESS);
   if(pProgress)
@@ -784,14 +786,15 @@ void CGUIWindowFullScreen::FrameMove()
 
 void CGUIWindowFullScreen::Render()
 {
-  RenderTTFSubtitles();
+  if (g_application.m_pPlayer)
+    RenderTTFSubtitles();
   CGUIWindow::Render();
 }
 
 void CGUIWindowFullScreen::RenderTTFSubtitles()
 {
   if ((g_application.GetCurrentPlayer() == EPC_MPLAYER || g_application.GetCurrentPlayer() == EPC_DVDPLAYER) &&
-      CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible())
+      CUtil::IsUsingTTFSubtitles() && (g_application.m_pPlayer->GetSubtitleVisible()))
   {
     CSingleLock lock (m_fontLock);
 

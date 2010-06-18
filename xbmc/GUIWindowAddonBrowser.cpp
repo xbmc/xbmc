@@ -91,30 +91,8 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       {
         if (strDestination.Equals("$ROOT") || strDestination.Equals("Root"))
           destPath = "";
-        else if (strDestination.Equals("Enabled"))
-          destPath = "addons://enabled/";
-        else if (strDestination.Equals("Available"))
-          destPath = "addons://all/";
-        else if (strDestination.Equals("Scrapers"))
-          destPath = "addons://enabled/scraper";
-        else if (strDestination.Equals("Screensavers"))
-          destPath = "addons://enabled/screensaver";
-        else if (strDestination.Equals("Plugins"))
-          destPath = "addons://enabled/plugin";
-        else if (strDestination.Equals("Visualizations"))
-          destPath = "addons://enabled/visualization";
-        else if (strDestination.Equals("Scripts"))
-          destPath = "addons://enabled/script";
-        else if (strDestination.Equals("AvailableScrapers"))
-          destPath = "addons://all/scraper";
-        else if (strDestination.Equals("AvailableScreensavers"))
-          destPath = "addons://all/screensaver";
-        else if (strDestination.Equals("AvailablePlugins"))
-          destPath = "addons://all/plugin";
-        else if (strDestination.Equals("AvailableVisualizations"))
-          destPath = "addons://all/visualization";
-        else if (strDestination.Equals("AvailableScripts"))
-          destPath = "addons://all/script";
+        else if (strDestination.Left(9).Equals("addons://"))
+          destPath = strDestination;
         else
         {
           CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());
@@ -484,11 +462,11 @@ bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)
   return true;
 }
 
-bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool showNone)
+int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool showNone)
 {
   CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (type == ADDON_UNKNOWN || !dialog)
-    return false;
+    return 0;
 
   ADDON::VECADDONS addons;
   CAddonMgr::Get().GetAddons(type, addons);
@@ -501,6 +479,8 @@ bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool 
   {
     CFileItemPtr item(new CFileItem("", false));
     item->SetLabel(g_localizeStrings.Get(231));
+    item->SetLabel2(g_localizeStrings.Get(24040));
+    item->SetIconImage("DefaultAddonNone.png");
     items.Add(item);
   }
   for (ADDON::IVECADDONS i = addons.begin(); i != addons.end(); ++i)
@@ -510,24 +490,24 @@ bool CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool 
   if (dialog->IsButtonPressed())
   { // switch to the addons browser.
     vector<CStdString> params;
-    params.push_back("addons://repos/");
+    params.push_back("addons://all/"+TranslateType(type,false)+"/");
     params.push_back("return");
     g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
-    return false;
+    return 2;
   }
   if (dialog->GetSelectedLabel() >= 0)
   {
     addonID = dialog->GetSelectedItem().m_strPath;
-    return true;
+    return 1;
   }
-  return false;
+  return 0;
 }
 
-void CGUIWindowAddonBrowser::InstallAddon(const CStdString &addonID)
+void CGUIWindowAddonBrowser::InstallAddon(const CStdString &addonID, bool force /*= false*/)
 {
   // check whether we already have the addon installed
   AddonPtr addon;
-  if (CAddonMgr::Get().GetAddon(addonID, addon))
+  if (!force && CAddonMgr::Get().GetAddon(addonID, addon))
     return;
 
   // check whether we have it available in a repository

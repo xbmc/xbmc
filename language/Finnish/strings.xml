@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 3/6/2010 -->
-<!--Finnish strings based on English strings revision 30768 -->
+<!--Date of translation: 13/6/2010 -->
+<!--Finnish strings based on English strings revision 31001 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -300,7 +300,7 @@
   <string id="346">Lisää äänenvoimakkuutta äänikanavia yhdistettäessä</string>
   <string id="350">Ohjelmat</string>
   <string id="351">Ei käytössä</string>
-  <string id="352">Himmeä</string>
+  <string id="352">Tummennus</string>
   <string id="353">Musta</string>
   <string id="354">Matriisiviivat</string>
   <string id="355">Näytönsäästäjän viive</string>
@@ -2130,13 +2130,13 @@
 
   <string id="23104">Paina OK kun toisto on loppunut</string>
 
-  <!-- strings 24000 thru 24299 reserved for the addons framework -->
+  <!-- strings 24000 thru 24299 reserved for the Add-ons framework -->
   <string id="24000">Laajennus</string>
   <string id="24001">Laajennukset</string>
   <string id="24002">Laajennuksen asetukset</string>
   <string id="24003">Tietoja laajennuksesta</string>
 
-  <string id="24005">Lisäosa</string>
+  <string id="24005">Media lisäosa</string>
   <string id="24007">Elokuvan tiedot</string>
   <string id="24008">Näytönsäästäjä</string>
   <string id="24009">Skriptit</string>
@@ -2144,11 +2144,10 @@
   <string id="24011">Laajennusten ohjelmavarasto</string>
   <string id="24012">Tekstitykset</string>
   <string id="24013">Sanoitukset</string>
-  <string id="24014">Kirjasto skripti</string>
-  <string id="24014">TV-ohjelma tiedot</string>
+  <string id="24014">TV-ohjelmatiedot</string>
   <string id="24015">Musiikkivideo tiedot</string> 
-  <string id="24016">Albumi tiedot</string>
-  <string id="24017">Esittäjä tiedot</string>
+  <string id="24016">Albumitiedot</string>
+  <string id="24017">Esittäjätiedot</string>
 
   <string id="24020">Asetukset</string>
   <string id="24021">Poista käytöstä</string>
@@ -2158,14 +2157,15 @@
   <string id="24028">Weather.com (oletus)</string>
   <string id="24030">Tällä laajennuksella ei ole asetuksia</string>
   <string id="24031">Virhe asetusten latauksessa</string>
-  <string id="24032">Kaikki ohjelmavarastot</string>
-  <string id="24033">Ohjelmavarastot</string>
+  <string id="24032">Kaikki laajennukset</string>
+  <string id="24033">Hae laajennus</string>
   <string id="24034">Tarkista päivitykset</string>
   <string id="24035">Pakota virkistys</string>
   <string id="24036">Muutoshistoria</string>
   <string id="24037">Poista</string>
   <string id="24038">Asenna</string>
   <string id="24039">Käytöstä poistetut laajennukset</string>
+ <string id="24040">(Tyhjennä nykyiset asetukset)</string>
 
   <string id="24050">Saatavilla olevat laajennukset</string>
   <string id="24051">Versio:</string>
@@ -2180,7 +2180,7 @@
   <string id="24064">Laajennus on käytössä</string>
   <string id="24065">Laajennus on päivitetty</string>
   <string id="24066">Keskeytetäänkö laajennuksen lataus?</string>
-  <string id="24067">Latauksessa olevat laajennukset</string>
+  <string id="24067">Latauksessa oleva laajennus</string>
   <string id="24068">Päivitys on saatavilla</string>
   <string id="24069">Päivitä</string>
 
@@ -2279,7 +2279,7 @@
   <string id="33076">Päivitä XBMC uudempaan versioon.</string>
   <string id="33077">Tietoja ei löydy!</string>
   <string id="33078">Seuraava sivu</string>
-  <string id="33079">Pitää</string>
+  <string id="33079">Tykkää</string>
   <string id="33080">Inhoaa</string>
   <string id="33081">Tämä tiedosto on pinottu, valitse osa jonka haluat toistaa</string>
   <string id="33082">Polku</string>

@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 06/03/2010-->
+<!--Date of translation: 06/10/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -750,7 +750,7 @@
   <string id="1403">햇빛</string>
   <string id="1404">많은</string>
   <string id="1405">:</string>
-  <string id="1406"> </string>
+  <string id="1406"></string>
   <string id="1407">국지적인</string>
   <string id="1408">얼음</string>
   <string id="1409">눈</string>
@@ -1950,7 +1950,7 @@
   <string id="24001">추가기능</string>
   <string id="24002">추가기능 옵션</string>
   <string id="24003">추가기능 정보</string>
-  <string id="24005">플러그인</string>
+  <string id="24005">미디어 소스</string>
   <string id="24007">영화 정보</string>
   <string id="24008">화면보호기</string>
   <string id="24009">스크립트</string>
@@ -1970,14 +1970,15 @@
   <string id="24028">Weather.com (표준)</string>
   <string id="24030">이 추가기능은 설정할수 없음</string>
   <string id="24031">설정 읽기 오류</string>
-  <string id="24032">모든 저장소</string>
-  <string id="24033">저장소</string>
+  <string id="24032">모든 추가기능</string>
+  <string id="24033">추가기능 가져오기</string>
   <string id="24034">업데이트 확인</string>
   <string id="24035">강제 새로고침</string>
   <string id="24036">로그 변경</string>
   <string id="24037">제거</string>
   <string id="24038">설치</string>
   <string id="24039">사용되지않는 추가기능</string>
+  <string id="24040">(현재 설정 지우기)</string>
   <string id="24050">사용가능한 추가기능</string>
   <string id="24051">버전:</string>
   <string id="24052">권리포기</string>

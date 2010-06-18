@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.slideshow"
        name="Slideshow"
        version="1.0.0"
@@ -6,7 +6,9 @@
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
     <summary>Screensaver that displays a image slideshow</summary>
+    <summary lang="hu">Képernyővédő ami diavetítést csinál</summary>
     <description>The Slideshow screensaver will show you a slide show of images using various transition effects. It can be configured to show your libraries music or video fanart, or a custom folder of images</description>
+    <description lang="hu">A Slideshow képernyővédő diavetítés-szerűen képeket mutat egymás után különböző váltási effektussal. Beállítható úgy hogy a médiatárból mutasson zenei, vagy film fanart képeket, vagy egy egyedi mappából mutassa azokat.</description>
     <platform>all</platform>
   </extension>
 </addon>

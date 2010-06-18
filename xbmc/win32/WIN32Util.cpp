@@ -810,7 +810,7 @@ BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
   return(b);
 }
 
-void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType)
+void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType, bool bonlywithmedia)
 {
   WCHAR* pcBuffer= NULL;
   DWORD dwStrLength= GetLogicalDriveStringsW( 0, pcBuffer );
@@ -828,8 +828,12 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
       cVolumeName[0]= L'\0';
       
       UINT uDriveType= GetDriveTypeW( pcBuffer + iPos  );
-      if(uDriveType != DRIVE_REMOVABLE)
-        nResult= GetVolumeInformationW( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
+      nResult= GetVolumeInformationW( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
+      if(nResult == 0 && bonlywithmedia)
+      {
+        iPos += (wcslen( pcBuffer + iPos) + 1 );
+        continue;
+      }
       share.strPath= share.strName= "";
 
       bool bUseDCD= false;

@@ -339,6 +339,21 @@ CStdString CGUIViewState::GetExtensions()
   return "";
 }
 
+CMediaSource SourceFromPlugin(const PluginPtr &plugin, const CStdString &type)
+{
+  // format for sources's path is
+  // eg. type://id
+  CMediaSource source;
+  CURL path;
+  path.SetProtocol(type);
+  path.SetHostName(plugin->ID());
+  source.strPath = path.Get();
+  source.strName = plugin->Name();
+  source.m_strThumbnailImage = plugin->Icon();
+  source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
+  return source;
+}
+
 VECSOURCES& CGUIViewState::GetSources()
 {
   // more consolidation could happen here for all content types
@@ -352,19 +367,19 @@ VECSOURCES& CGUIViewState::GetSources()
     PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addons[i]);
     if (!plugin || !plugin->Provides(m_content))
       continue;
-
-    // format for sources's path is
-    // eg. pictures://UUID
-    CMediaSource source;
-    CURL path;
-    path.SetProtocol("plugin");
-    path.SetHostName(plugin->ID());
-    source.strPath = path.Get();
-    source.strName = plugin->Name();
-    source.m_strThumbnailImage = plugin->Icon(); //FIXME cache by UUID
-    source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
-    m_sources.push_back(source);
+    m_sources.push_back(SourceFromPlugin(plugin, "plugin"));
   }
+
+  addons.clear();
+  ADDON::CAddonMgr::Get().GetAddons(ADDON_SCRIPT, addons);
+  for (unsigned i=0; i<addons.size(); i++)
+  {
+    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addons[i]);
+    if (!plugin || !plugin->Provides(m_content))
+      continue;
+    m_sources.push_back(SourceFromPlugin(plugin, "script"));
+  }
+
   return m_sources;
 }
 

@@ -270,8 +270,8 @@ void CGUISettings::Initialize()
   AddBool(ml, "musiclibrary.showcompilationartists", 13414, true);
   AddSeparator(ml,"musiclibrary.sep1");
   AddBool(ml,"musiclibrary.downloadinfo", 20192, false);
-  AddDefaultAddon(ml, "musiclibrary.albumscraper", 20193, "metadata.allmusic.com", ADDON_SCRAPER_ALBUMS);
-  AddDefaultAddon(ml, "musiclibrary.artistscraper", 20194, "metadata.allmusic.com", ADDON_SCRAPER_ARTISTS);
+  AddDefaultAddon(ml, "musiclibrary.albumsscraper", 20193, "metadata.allmusic.com", ADDON_SCRAPER_ALBUMS);
+  AddDefaultAddon(ml, "musiclibrary.artistsscraper", 20194, "metadata.allmusic.com", ADDON_SCRAPER_ARTISTS);
   AddBool(ml, "musiclibrary.updateonstartup", 22000, false);
   AddBool(NULL, "musiclibrary.backgroundupdate", 22001, false);
   AddSeparator(ml,"musiclibrary.sep2");
@@ -361,7 +361,9 @@ void CGUISettings::Initialize()
   // System settings
   AddGroup(4, 13000);
   CSettingsCategory* vs = AddCategory(4, "videoscreen", 21373);
-#if defined(_WIN32) || defined (__APPLE__)
+  // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
+  AddInt(vs, "videoscreen.screen", 240, 0, -1, 1, g_Windowing.GetNumScreens(), SPIN_CONTROL_TEXT);
+#if defined (__APPLE__)
   AddString(vs, "videoscreen.screenmode", 131, "DESKTOP", SPIN_CONTROL_TEXT);
 #else
   AddString(vs, "videoscreen.screenmode", 169, "DESKTOP", SPIN_CONTROL_TEXT);
@@ -573,7 +575,7 @@ void CGUISettings::Initialize()
 #endif
 
 #ifdef HAS_GL
-  AddBool(vp, "videoplayer.usepbo", 13424, true);
+  AddBool(NULL, "videoplayer.usepbo", 13424, true);
 #endif
 
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
@@ -645,9 +647,9 @@ void CGUISettings::Initialize()
   AddBool(NULL, "postprocessing.dering", 311, false);
 
   CSettingsCategory* scp = AddCategory(5, "scrapers", 21412);
-  AddDefaultAddon(scp, "scrapers.moviedefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER_MOVIES);
-  AddDefaultAddon(scp, "scrapers.tvshowdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER_TVSHOWS);
-  AddDefaultAddon(scp, "scrapers.musicvideodefault", 21415, "metadata.mtv.com", ADDON_SCRAPER_MUSICVIDEOS);
+  AddDefaultAddon(scp, "scrapers.moviesdefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER_MOVIES);
+  AddDefaultAddon(scp, "scrapers.tvshowsdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER_TVSHOWS);
+  AddDefaultAddon(scp, "scrapers.musicvideosdefault", 21415, "metadata.mtv.com", ADDON_SCRAPER_MUSICVIDEOS);
   AddSeparator(scp,"scrapers.sep2");
   AddBool(scp, "scrapers.langfallback", 21416, false);
 

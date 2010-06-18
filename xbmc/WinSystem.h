@@ -24,6 +24,8 @@
 
 #include "WinEvents.h"
 #include "Resolution.h"
+#include <vector>
+using namespace std;
 
 typedef enum _WindowSystemType
 {
@@ -33,6 +35,13 @@ typedef enum _WindowSystemType
   WINDOW_SYSTEM_SDL,
   WINDOW_SYSTEM_EGL
 } WindowSystemType;
+
+struct RESOLUTION_WHR
+{
+  int width;
+  int height;
+  int ResInfo_Index;
+};
 
 class CWinSystemBase
 {
@@ -69,9 +78,10 @@ public:
   unsigned int GetHeight() { return m_nHeight; }
   virtual int GetNumScreens() { return 0; }
   bool IsFullScreen() { return m_bFullScreen; }
-
   virtual void UpdateResolutions();
   void SetWindowResolution(int width, int height);
+  int DesktopResolution(int screen);
+  vector<RESOLUTION_WHR> ScreenResolutions(int screen);
 
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate, uint32_t dwFlags = 0);

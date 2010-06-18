@@ -26,6 +26,7 @@
 #include <io.h>
 #include "log.h"
 #include "CharsetConverter.h"
+#include "Util.h"
 #include "WINSMBDirectory.h"
 
 using namespace XFILE;
@@ -132,7 +133,10 @@ int CWINFileSMB::Stat(struct __stat64* buffer)
 int CWINFileSMB::Stat(const CURL& url, struct __stat64* buffer)
 {
   CStdString strFile = GetLocal(url);
-
+  /* _wstat64 calls FindFirstFileEx. According to MSDN, the path should not end in a trailing backslash.
+    Remove it before calling _wstat64 */
+  if (strFile.length() > 3 && CUtil::HasSlashAtEnd(strFile))
+    CUtil::RemoveSlashAtEnd(strFile);
   CStdStringW strWFile;
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
   if(_wstat64(strWFile.c_str(), buffer) == 0)

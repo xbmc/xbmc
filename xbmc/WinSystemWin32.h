@@ -138,7 +138,7 @@ public:
   virtual void UpdateResolutions();
   virtual bool CenterWindow();
   virtual void NotifyAppFocusChange(bool bGaining);
-  virtual int GetNumScreens() { return m_MonitorsInfo.size(); };
+  virtual int  GetNumScreens() { return m_MonitorsInfo.size(); };
   virtual void ShowOSMouse(bool show);
 
   virtual bool Minimize();
@@ -162,7 +162,7 @@ public:
   pCloseGestureInfoHandle PtrCloseGestureInfoHandle;
 
 protected:
-  bool ChangeResolution(int screen, RESOLUTION_INFO res);
+  bool ChangeResolution(RESOLUTION_INFO res);
   virtual bool ResizeInternal(bool forceRefresh = false);
   virtual bool UpdateResolutionsInternal();
   virtual bool CreateBlankWindows();

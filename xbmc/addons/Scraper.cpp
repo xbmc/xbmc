@@ -19,7 +19,6 @@
 *
 */
 #include "Scraper.h"
-#include "XMLUtils.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/FileCurl.h"
@@ -28,11 +27,13 @@
 #include "utils/ScraperUrl.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
-
+#include "AdvancedSettings.h"
+#include "FileItem.h"
+#include "XMLUtils.h"
 #include <sstream>
 
-using std::vector;
-using std::stringstream;
+using namespace std;
+using namespace XFILE;
 
 namespace ADDON
 {
@@ -108,6 +109,9 @@ CScraper::CScraper(const cp_extension_t *ext) :
   {
     m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "language");
     m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"requiressettings").Equals("true");
+    CStdString persistence = CAddonMgr::Get().GetExtValue(ext->configuration, "cachepersistence");
+    if (!persistence.IsEmpty())
+      m_persistence.SetFromTimeString(persistence);
   }
   switch (Type())
   {
@@ -141,6 +145,7 @@ CScraper::CScraper(const CScraper &rhs, const AddonPtr &self)
   : CAddon(rhs, self)
 {
   m_pathContent = rhs.m_pathContent;
+  m_persistence = rhs.m_persistence;
 }
 
 bool CScraper::Supports(const CONTENT_TYPE &content) const
@@ -148,131 +153,166 @@ bool CScraper::Supports(const CONTENT_TYPE &content) const
   return Type() == ScraperTypeFromContent(content);
 }
 
-bool CScraper::LoadSettings()
+bool CScraper::SetPathSettings(CONTENT_TYPE content, const CStdString& xml)
 {
-  //TODO if cloned settings don't exist, load master settings and copy
-  if (!Parent())
-    return CAddon::LoadUserSettings();
-  else
-    return LoadSettingsXML();
-}
-
-bool CScraper::HasSettings()
-{
-  if (!m_userXmlDoc.RootElement())
-    return LoadSettingsXML();
-
-  return true;
-}
-
-bool CScraper::LoadUserXML(const CStdString& strSaved)
-{
-  m_userXmlDoc.Clear();
-  m_userXmlDoc.Parse(strSaved.c_str());
-
-  return m_userXmlDoc.RootElement()?true:false;
-}
-
-bool CScraper::LoadSettingsXML(const CStdString& strFunction, const CScraperUrl* url)
-{
-  AddonPtr addon;
-  if (!Parent() && !CAddonMgr::Get().GetAddon(ID(), addon))
-    return false;
-  else if (Parent())
-    addon = Parent();
-
-  CScraperParser parser;
-  if (!parser.Load(addon))
+  m_pathContent = content;
+  if (!LoadSettings())
     return false;
 
-  if (!parser.HasFunction(strFunction))
-    return CAddon::LoadSettings();
+  if (xml.IsEmpty())
+    return true;
 
-  if (!url && strFunction.Equals("GetSettings")) // entry point
-    m_addonXmlDoc.Clear();
+  TiXmlDocument doc;
+  doc.Parse(xml.c_str());
+  m_userSettingsLoaded = SettingsFromXML(doc);
 
-  vector<CStdString> strHTML;
-  if (url)
+  return m_userSettingsLoaded;
+}
+
+CStdString CScraper::GetPathSettings()
+{
+  if (!LoadSettings())
+    return "";
+
+  stringstream stream;
+  TiXmlDocument doc;
+  SettingsToXML(doc);
+  if (doc.RootElement())
+    stream << *doc.RootElement();
+
+  return stream.str();
+}
+
+void CScraper::ClearCache()
+{
+  CStdString strCachePath = CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "scrapers");
+
+  // create scraper cache dir if needed
+  if (!CDirectory::Exists(strCachePath))
+    CDirectory::Create(strCachePath);
+
+  strCachePath = CUtil::AddFileToFolder(strCachePath, ID());
+  CUtil::AddSlashAtEnd(strCachePath);
+
+  if (CDirectory::Exists(strCachePath))
   {
-    XFILE::CFileCurl http;
-    for (unsigned int i=0;i<url->m_url.size();++i)
+    CFileItemList items;
+    CDirectory::GetDirectory(strCachePath,items);
+    for (int i=0;i<items.Size();++i)
     {
-      CStdString strCurrHTML;
-      if (!CScraperUrl::Get(url->m_url[i],strCurrHTML,http,parser.GetFilename()) || strCurrHTML.size() == 0)
-        return false;
-      strHTML.push_back(strCurrHTML);
+      // wipe cache
+      if (items[i]->m_dateTime + m_persistence <= CDateTime::GetUTCDateTime())
+        CFile::Delete(items[i]->m_strPath);
     }
   }
+  else
+    CDirectory::Create(strCachePath);
+}
 
-  // now grab our details using the scraper
-  for (unsigned int i=0;i<strHTML.size();++i)
-    parser.m_param[i] = strHTML[i];
-
-  CStdString strXML = parser.Parse(strFunction);
+vector<CStdString> CScraper::Run(const CStdString& function,
+                                 const CScraperUrl& scrURL,
+                                 CFileCurl& http,
+                                 const vector<CStdString>* extras)
+{
+  vector<CStdString> result;
+  CStdString strXML = InternalRun(function,scrURL,http,extras);
   if (strXML.IsEmpty())
   {
     CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
-    return false;
+    return result;
   }
-  // abit ugly, but should work. would have been better if parser
-  // set the charset of the xml, and we made use of that
   if (!XMLUtils::HasUTF8Declaration(strXML))
     g_charsetConverter.unknownToUTF8(strXML);
 
-  // ok, now parse the xml file
   TiXmlDocument doc;
   doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
   if (!doc.RootElement())
   {
     CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
-    return false;
+    return result; 
   }
 
-  // check our document
-  if (!m_addonXmlDoc.RootElement())
+  result.push_back(strXML);
+  TiXmlHandle docHandle( &doc );
+  TiXmlElement* xchain = doc.RootElement()->FirstChildElement("chain");
+  while (xchain && xchain->FirstChild())
   {
-    TiXmlElement xmlRootElement("settings");
-    m_addonXmlDoc.InsertEndChild(xmlRootElement);
+    const char* szFunction = xchain->Attribute("function");
+    if (szFunction)
+    {
+      CScraperUrl scrURL2;
+      vector<CStdString> extras;
+      extras.push_back(xchain->FirstChild()->Value());
+      vector<CStdString> result2 = Run(szFunction,scrURL2,http,&extras);
+      result.insert(result.end(),result2.begin(),result2.end());
+    }
+    xchain = xchain->NextSiblingElement("chain");
   }
-
-  // loop over all tags and append any setting tags
-  TiXmlElement* pElement = doc.RootElement()->FirstChildElement("setting");
-  if (pElement)
-    m_hasSettings = true;
-  else
-    m_hasSettings = false;
-
-  while (pElement)
-  {
-    m_addonXmlDoc.RootElement()->InsertEndChild(*pElement);
-    pElement = pElement->NextSiblingElement("setting");
-  }
-
-  // and call any chains
-  TiXmlElement* pRoot = doc.RootElement();
-  TiXmlElement* xurl = pRoot->FirstChildElement("url");
+  TiXmlElement* xurl = doc.RootElement()->FirstChildElement("url");
   while (xurl && xurl->FirstChild())
   {
     const char* szFunction = xurl->Attribute("function");
     if (szFunction)
     {
-      CScraperUrl scrURL(xurl);
-      if (!LoadSettingsXML(szFunction,&scrURL))
-        return false;
+      CScraperUrl scrURL2(xurl);
+      vector<CStdString> result2 = Run(szFunction,scrURL2,http);
+      result.insert(result.end(),result2.begin(),result2.end());
     }
     xurl = xurl->NextSiblingElement("url");
   }
-
-  return m_addonXmlDoc.RootElement()?true:false;
+  
+  return result;
 }
 
-CStdString CScraper::GetSettings() const
+CStdString CScraper::InternalRun(const CStdString& function,
+                                 const CScraperUrl& scrURL,
+                                 CFileCurl& http,
+                                 const vector<CStdString>* extras)
 {
-  stringstream stream;
-  if (m_userXmlDoc.RootElement())
-    stream << *m_userXmlDoc.RootElement();
+  unsigned int i;
+  for (i=0;i<scrURL.m_url.size();++i)
+  {
+    CStdString strCurrHTML;
+    if (!CScraperUrl::Get(scrURL.m_url[i],m_parser.m_param[i],http,LibPath()) || m_parser.m_param[i].size() == 0)
+      return "";
+  }
+  if (extras)
+  {
+    for (unsigned int j=0;j<extras->size();++j)
+      m_parser.m_param[j+i] = (*extras)[j];
+  }
 
-  return stream.str();
+  CStdString strXML = m_parser.Parse(function,this);
+  CLog::Log(LOGDEBUG,"scraper: %s returned %s",function.c_str(),strXML.c_str());
+
+  return strXML;
+}
+
+bool CScraper::Load()
+{
+  bool result=m_parser.Load(LibPath());
+  if (result)
+  {
+    ADDONDEPS deps = GetDeps();
+    ADDONDEPS::iterator itr = deps.begin();
+    while (itr != deps.end())
+    {
+      if (itr->first.Equals("xbmc.metadata"))
+      {
+        ++itr;
+        continue;
+      }  
+      AddonPtr dep;
+      if (!CAddonMgr::Get().GetAddon((*itr).first, dep))
+        return false;
+      TiXmlDocument doc;
+      if (doc.LoadFile(dep->LibPath()))
+        m_parser.AddDocument(&doc);
+      itr++;
+    }
+  }
+
+  return result;
 }
 
 }; /* namespace ADDON */

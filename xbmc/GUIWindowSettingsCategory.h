@@ -48,7 +48,10 @@ protected:
   void FillInSkinFonts(CSetting *pSetting);
   void FillInSoundSkins(CSetting *pSetting);
   void FillInLanguages(CSetting *pSetting);
+  DisplayMode FillInScreens(CStdString strSetting, RESOLUTION res);
   void FillInResolutions(CSetting *pSetting);
+  void FillInResolutionsInternal(CStdString strSetting, DisplayMode mode);
+  void OnResolutionChanged(RESOLUTION resolution);
   void FillInRegions(CSetting *pSetting);
   void FillInStartupWindow(CSetting *pSetting);
   void FillInViewModes(CSetting *pSetting, int windowID);

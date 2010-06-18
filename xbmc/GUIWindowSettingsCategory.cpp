@@ -124,8 +124,6 @@ using namespace ADDON;
 #define CONTROL_START_BUTTONS           -100
 #define CONTROL_START_CONTROL           -80
 
-#define RSSEDITOR_PATH "special://home/scripts/RSS Editor/default.py"
-
 CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
     : CGUIWindow(WINDOW_SETTINGS_MYPICTURES, "SettingsCategory.xml")
 {
@@ -481,6 +479,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(myTimezoneIndex);
     }
 #endif
+    else if (strSetting.Equals("videoscreen.screen"))
+    {
+      FillInScreens(strSetting, g_guiSettings.GetResolution());
+    }
     else if (strSetting.Equals("videoscreen.screenmode"))
     {
       FillInResolutions(pSetting);
@@ -615,6 +617,17 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       }
     }
 #endif
+    else if (strSetting.Equals("videoscreen.screenmode"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl)
+#if defined(_WIN32)
+        // for platforms that do not yet have support to dynamically switch resolutions
+        pControl->SetEnabled(false);
+#else
+        pControl->SetEnabled(g_settings.m_ResInfo[g_guiSettings.GetResolution()].bFullScreen);
+#endif
+    }
     else if (strSetting.Equals("videoscreen.fakefullscreen"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -956,7 +969,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("lookandfeel.rssedit"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      pControl->SetEnabled(XFILE::CFile::Exists(RSSEDITOR_PATH) && g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
+      AddonPtr addon;
+      CAddonMgr::Get().GetAddon("script.rss.editor",addon);
+      pControl->SetEnabled(addon && g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
     else if (strSetting.Equals("videoplayer.synctype"))
     {
@@ -1052,12 +1067,12 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     }
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
-    CBuiltins::Execute("RunScript("RSSEDITOR_PATH")");
+    CBuiltins::Execute("RunScript(script.rss.editor)");
   else if (pSettingControl->GetSetting()->GetType() == SETTINGS_TYPE_ADDON)
   { // prompt for the addon
     CSettingAddon *setting = (CSettingAddon *)pSettingControl->GetSetting();
     CStdString addonID;
-    if (CGUIWindowAddonBrowser::SelectAddonID(setting->m_type, addonID, setting->m_type == ADDON_SCREENSAVER || setting->m_type == ADDON_VIZ))
+    if (CGUIWindowAddonBrowser::SelectAddonID(setting->m_type, addonID, setting->m_type == ADDON_SCREENSAVER || setting->m_type == ADDON_VIZ) == 1)
       setting->SetData(addonID);
     else
       return;
@@ -1437,23 +1452,44 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
   }
+  else if (strSetting.Equals("videoscreen.screen"))
+  {
+    DisplayMode mode = g_guiSettings.GetInt("videoscreen.screen");
+
+    // Cascade
+    FillInResolutionsInternal("videoscreen.screenmode", mode);
+
+    // Auto-select the windowed or desktop resolution of the screen
+    int autoresolution = RES_DESKTOP;
+    if (mode == DM_WINDOWED)
+    {
+      autoresolution = RES_WINDOW;
+    }
+    else
+    {
+      for (int idx=0; idx < g_Windowing.GetNumScreens(); idx++)
+        if (g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen == mode)
+        {
+          autoresolution = RES_DESKTOP + idx;
+          break;
+        }
+    }
+
+    // force the resolution and the settings changed event
+    CBaseSettingControl *control = GetSetting("videoscreen.screenmode");
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
+    pControl->SetValue(autoresolution);
+
+    OnResolutionChanged((RESOLUTION)autoresolution);
+  }
   else if (strSetting.Equals("videoscreen.screenmode"))
   { // new resolution choosen... - update if necessary
     int iControlID = pSettingControl->GetID();
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
     g_windowManager.SendMessage(msg);
     RESOLUTION nextRes = (RESOLUTION)msg.GetParam1();
-    RESOLUTION lastRes = g_graphicsContext.GetVideoResolution();
-    g_guiSettings.SetResolution(nextRes);
-    g_graphicsContext.SetVideoResolution(nextRes);
-    bool cancelled = false;
-    if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
-    {
-      g_guiSettings.SetResolution(lastRes);
-      g_graphicsContext.SetVideoResolution(lastRes);
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-      pControl->SetValue(g_guiSettings.GetResolution());
-    }
+
+    OnResolutionChanged(nextRes);
   }
   else if (strSetting.Equals("videoscreen.vsync"))
   {
@@ -2246,24 +2282,83 @@ void CGUIWindowSettingsCategory::FillInCharSets(CSetting *pSetting)
   pControl->SetValue(iCurrentCharset);
 }
 
-void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting)
+DisplayMode CGUIWindowSettingsCategory::FillInScreens(CStdString strSetting, RESOLUTION res)
 {
-  CSettingString *pSettingString = (CSettingString*)pSetting;
-  CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
+  CBaseSettingControl *control = GetSetting(strSetting);
   control->SetDelayed();
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
   pControl->Clear();
 
-  pControl->AddLabel(g_settings.m_ResInfo[RES_WINDOW].strMode, RES_WINDOW);
-  pControl->AddLabel(g_settings.m_ResInfo[RES_DESKTOP].strMode, RES_DESKTOP);
-  size_t maxRes = g_settings.m_ResInfo.size();
-  if (g_Windowing.GetNumScreens())
-    maxRes = std::min(maxRes, (size_t)RES_DESKTOP + g_Windowing.GetNumScreens());
-  for (size_t i = RES_CUSTOM ; i < maxRes; i++)
+  CStdString strScreen;
+  pControl->AddLabel(g_settings.m_ResInfo[RES_WINDOW].strMode, -1);
+
+  for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
   {
-    pControl->AddLabel(g_settings.m_ResInfo[i].strMode, i);
+    strScreen.Format(g_localizeStrings.Get(241), g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen + 1);
+    pControl->AddLabel(strScreen, g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen);
   }
-  pControl->SetValue(CGUISettings::GetResFromString(pSettingString->GetData()));
+
+  DisplayMode mode;
+
+  if (res == RES_WINDOW)
+    mode = DM_WINDOWED;
+  else
+    mode = g_settings.m_ResInfo[res].iScreen;
+
+  pControl->SetValue(mode);
+  g_guiSettings.SetInt("videoscreen.screen", mode);
+  return mode;
+}
+
+void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting)
+{
+  FillInResolutionsInternal(pSetting->GetSetting(), g_guiSettings.GetInt("videoscreen.screen"));
+  CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
+  pControl->SetValue(CGUISettings::GetResFromString(((CSettingString*) pSetting)->GetData()));
+}
+
+void CGUIWindowSettingsCategory::FillInResolutionsInternal(CStdString strSetting, DisplayMode mode)
+{
+  CBaseSettingControl *control = GetSetting(strSetting);
+  control->SetDelayed();
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
+  pControl->Clear();
+
+  if (mode == DM_WINDOWED)
+  {
+    pControl->AddLabel(g_settings.m_ResInfo[RES_WINDOW].strMode, RES_WINDOW);
+  }
+  else
+  {
+    vector<RESOLUTION_WHR> resolutions = g_Windowing.ScreenResolutions(mode);
+
+    for (unsigned int idx = 0; idx < resolutions.size(); idx++)
+    {
+      CStdString strRes;
+      strRes.Format("%dx%d", resolutions[idx].width, resolutions[idx].height);
+      pControl->AddLabel(strRes, resolutions[idx].ResInfo_Index);
+    }
+  }
+}
+
+void CGUIWindowSettingsCategory::OnResolutionChanged(RESOLUTION nextRes)
+{
+    RESOLUTION lastRes = g_graphicsContext.GetVideoResolution();
+    g_guiSettings.SetResolution(nextRes);
+    g_graphicsContext.SetVideoResolution(nextRes);
+    bool cancelled = false;
+    if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
+    {
+      g_guiSettings.SetResolution(lastRes);
+      g_graphicsContext.SetVideoResolution(lastRes);
+
+      DisplayMode mode = FillInScreens("videoscreen.screen", lastRes);
+      FillInResolutionsInternal("videoscreen.screenmode", mode);
+      CBaseSettingControl *control = GetSetting("videoscreen.screenmode");
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
+      pControl->SetValue(g_guiSettings.GetResolution());
+    }
 }
 
 void CGUIWindowSettingsCategory::FillInLanguages(CSetting *pSetting)

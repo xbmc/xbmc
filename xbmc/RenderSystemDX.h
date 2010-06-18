@@ -45,7 +45,6 @@ public:
   virtual bool EndRender();
   virtual bool PresentRender();
   virtual bool ClearBuffers(color_t color);
-  virtual bool ClearBuffers(float r, float g, float b, float a);
   virtual bool IsExtSupported(const char* extension);
 
   virtual void SetVSync(bool vsync);
@@ -104,6 +103,7 @@ protected:
   void BuildPresentParameters();
   virtual void UpdateMonitor() {};
   void CheckDXVersion();
+  BOOL IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT BackBufferFormat);
 
   LPDIRECT3D9                 m_pD3D;
 

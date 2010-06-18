@@ -13,7 +13,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 		goom2k4-0/src/.libs/libgoom2.a $(CXXFLAGS) -o $(SLIB) $(OBJS)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 else
-	$(CXX) -fPIC goom2k4-0/src/*.o -shared $(CXXFLAGS) -o $(SLIB) $(OBJS) \
+	$(CXX) $(LDFLAGS) -fPIC goom2k4-0/src/*.o -shared $(CXXFLAGS) -o $(SLIB) $(OBJS) \
 		`cat ../../cores/DllLoader/exports/wrapper.def` \
 		../../cores/DllLoader/exports/wrapper.o
 endif

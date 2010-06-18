@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.themoviedb.org"
        name="The MovieDB"
-       version="1.0.1"
+       version="1.0.2"
        provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.metadata" version="1.0"/>
@@ -13,9 +13,13 @@
              library="tmdb.xml"/>
   <extension point="xbmc.addon.metadata">
     <summary>Fetch Movie metadata from TheMovieDB.org</summary>
+	<summary lang="hu">Film információk letöltése a TheMovieDB.org-ról</summary>
     <summary lang="nl">TMDB Film Scraper</summary>
+	<summary lang="es">Descarga información de TheMovieDB</summary>
     <description>themoviedb.org is a free and open movie database. It's completely user driven by people like you. TMDb is currently used by millions of people every month and with their powerful API, it is also used by many popular media centers like XBMC to retrieve Movie Metadata, Posters and Fanart to enrich the user's experience.</description>
+    <description lang="hu">A themoviedb.org egy ingyenes és nyílt filmadatbázis. Teljes egészében a olyan felhasználók töltik fel, mint például Te. A TMDb-t havonta emberek milliói használják és a hatékony API-n keresztül számos népszerű média center is, mint például az XBMC a filmadatok, pószterek, fanartok letöltésére.</description>
     <description lang="nl">themoviedb.org is een vrije en open film databank. Het wordt compleet aangedreven door gebruikers zoals jezelf. TMDb wordt momenteel maandelijks gebruikt door miljoenen mensen. Hun krachtige API maakt het voor mediaspelers zoals XBMC mogelijk om voor een film bijkomende informatie, posters en fanarts op te halen.</description>
+    <description lang="es">themovieDB.org es una base de datos de películas gratuita y abierta. Es una página web que se basa en contenido subido por los usuarios. TMDb es usada diariamente por mucha gente gracias a su API, que es usada por más programas aparte de XBMC para descargar información de películas así como Posters o Fanart (Fondos de escritorio basados en películas usados en distintos skins) para enriquecer la experiencia de usar XBMC.</description>
     <platform>all</platform>
   </extension>
 </addon>

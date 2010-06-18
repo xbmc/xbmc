@@ -804,7 +804,6 @@ void CFileCurl::Reset()
   m_state->m_cancelled = false;
 }
 
-
 bool CFileCurl::Open(const CURL& url)
 {
 
@@ -944,7 +943,6 @@ bool CFileCurl::Exists(const CURL& url)
   return false;
 }
 
-
 int64_t CFileCurl::Seek(int64_t iFilePosition, int iWhence)
 {
   int64_t nextPos = m_state->m_filePos;
@@ -1037,6 +1035,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
     CLog::Log(LOGWARNING, "%s - Stat called on open file", __FUNCTION__);
     if (buffer)
     {
+      memset(buffer, 0, sizeof(struct __stat64));
       buffer->st_size = GetLength();
       buffer->st_mode = _S_IFREG;
     }
@@ -1116,6 +1115,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
     }
     else
     {
+      memset(buffer, 0, sizeof(struct __stat64));
       buffer->st_size = (int64_t)length;
       if(strstr(content, "text/html")) //consider html files directories
         buffer->st_mode = _S_IFDIR;
@@ -1157,7 +1157,6 @@ unsigned int CFileCurl::CReadState::Read(void* lpBuf, int64_t uiBufSize)
 bool CFileCurl::CReadState::FillBuffer(unsigned int want)
 {
   int retry=0;
-  int maxfd;
   fd_set fdread;
   fd_set fdwrite;
   fd_set fdexcep;
@@ -1272,34 +1271,33 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
         pthread_yield();
 #endif
 
+        int maxfd = -1;
         FD_ZERO(&fdread);
         FD_ZERO(&fdwrite);
         FD_ZERO(&fdexcep);
 
         // get file descriptors from the transfers
-        if (CURLM_OK != g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd) || maxfd == -1)
-          return false;
+        g_curlInterface.multi_fdset(m_multiHandle, &fdread, &fdwrite, &fdexcep, &maxfd);
 
         long timeout = 0;
         if (CURLM_OK != g_curlInterface.multi_timeout(m_multiHandle, &timeout) || timeout == -1)
           timeout = 200;
 
-        if (maxfd >= 0)
+        struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };
+
+        /* Wait until data is available or a timeout occurs.
+           We call dllselect(maxfd + 1, ...), specially in case of (maxfd == -1),
+           we call dllselect(0, ...), which is basically equal to sleep. */
+        if (SOCKET_ERROR == dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &t))
         {
-          struct timeval t = { timeout / 1000, (timeout % 1000) * 1000 };
-
-          // wait until data is available or a timeout occurs
-          if (SOCKET_ERROR == dllselect(maxfd + 1, &fdread, &fdwrite, &fdexcep, &t))
-            return false;
+          CLog::Log(LOGERROR, "%s - curl failed with socket error", __FUNCTION__);
+          return false;
         }
-        else
-          SleepEx(timeout, true);
-
       }
       break;
       case CURLM_CALL_MULTI_PERFORM:
       {
-        // we don't keep calling here as that can easily overwrite our buffer wich we want to avoid
+        // we don't keep calling here as that can easily overwrite our buffer which we want to avoid
         // docs says we should call it soon after, but aslong as we are reading data somewhere
         // this aught to be soon enough. should stay in socket otherwise
         continue;

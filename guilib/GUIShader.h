@@ -34,6 +34,8 @@ enum ESHADERMETHOD
   SM_TEXTURE = 1,
   SM_MULTI   = 2,
   SM_FONTS   = 3,
+  SM_TEXTURE_NOBLEND = 4,
+  SM_ESHADERCOUNT
 };
 
 class CGUIShader : public CGLSLShaderProgram

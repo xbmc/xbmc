@@ -137,7 +137,7 @@ void CGUIDialogAddonSettings::OnInitWindow()
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
-bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon)
+bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon, bool saveToDisk /* = true */)
 {
   if (!addon)
     return false;
@@ -156,17 +156,11 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon)
     heading.Format("$LOCALIZE[10004] - %s", addon->Name().c_str()); // "Settings - AddonName"
     pDialog->m_strHeading = heading;
 
-    if (addon->LoadSettings())
-    {
-      pDialog->m_changed = false;
-      pDialog->m_addon = addon;
-      pDialog->DoModal();
-      ret = true;
-    }
-    else
-    { // couldn't load settings, inform user
-      CGUIDialogOK::ShowAndGetInput(24000,0,24030,24031);
-    }
+    pDialog->m_changed = false;
+    pDialog->m_addon = addon;
+    pDialog->m_saveToDisk = saveToDisk;
+    pDialog->DoModal();
+    ret = true;
   }
   else
   { // addon does not support settings, inform user
@@ -414,7 +408,8 @@ void CGUIDialogAddonSettings::SaveSettings(void)
   for (map<CStdString, CStdString>::iterator i = m_settings.begin(); i != m_settings.end(); ++i)
     m_addon->UpdateSetting(i->first, i->second);
 
-  m_addon->SaveSettings();
+  if (m_saveToDisk)
+    m_addon->SaveSettings();
 }
 
 void CGUIDialogAddonSettings::FreeSections()
@@ -550,7 +545,7 @@ void CGUIDialogAddonSettings::CreateControls()
         strcmpi(type, "number") == 0 ||strcmpi(type, "video") == 0 ||
         strcmpi(type, "audio") == 0 || strcmpi(type, "image") == 0 ||
         strcmpi(type, "folder") == 0 || strcmpi(type, "executable") == 0 ||
-        strcmpi(type, "files") == 0 || strcmpi(type, "action") == 0 ||
+        strcmpi(type, "file") == 0 || strcmpi(type, "action") == 0 ||
         strcmpi(type, "date") == 0 || strcmpi(type, "time") == 0)
       {
         pControl = new CGUIButtonControl(*pOriginalButton);
@@ -850,12 +845,7 @@ CStdString CGUIDialogAddonSettings::GetString(const char *value, bool subSetting
   int id = atoi(value);
   CStdString prefix(subSetting ? "- " : "");
   if (id > 0)
-  {
-    if (m_addon->Parent())
-      return prefix + m_addon->Parent()->GetString(id);
-    else
-      return prefix + m_addon->GetString(id);
-  }
+    return prefix + m_addon->GetString(id);
   return prefix + value;
 }
 

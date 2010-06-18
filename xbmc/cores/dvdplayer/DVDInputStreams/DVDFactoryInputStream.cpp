@@ -72,8 +72,14 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   else if(file.substr(0, 8) == "stack://")
     return new CDVDInputStreamStack();
 #endif
-  else if(file.substr(0, 7) == "rtmp://")
+#ifdef HAS_LIBRTMP
+  else if(file.substr(0, 7) == "rtmp://"
+       || file.substr(0, 8) == "rtmpt://"
+       || file.substr(0, 8) == "rtmpe://"
+       || file.substr(0, 9) == "rtmpte://"
+       || file.substr(0, 8) == "rtmps://")
     return new CDVDInputStreamRTMP();
+#endif
 #ifdef HAS_FILESYSTEM_HTSP
   else if(file.substr(0, 7) == "htsp://")
     return new CDVDInputStreamHTSP();

@@ -22,7 +22,6 @@
 
 #include "Database.h"
 #include "addons/Addon.h"
-#include "addons/AddonManager.h"
 #include "StdString.h"
 #include "FileItem.h"
 

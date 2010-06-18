@@ -100,7 +100,7 @@ void CHTMLUtil::getAttributeOfTag(const CStdString& strTagAndValue, const CStdSt
   }
 }
 
-void CHTMLUtil::ConvertAndRemoveTags(CStdString& strHTML)
+void CHTMLUtil::RemoveTags(CStdString& strHTML)
 {
   int iNested = 0;
   CStdString strReturn = "";
@@ -117,9 +117,7 @@ void CHTMLUtil::ConvertAndRemoveTags(CStdString& strHTML)
     }
   }
 
-  CStdString strText;
-  ConvertHTMLToAnsi(strReturn, strText);
-  strHTML = strText;
+  strHTML = strReturn;
 }
 
 void CHTMLUtil::ConvertHTMLToUTF8(const CStdString& strHTML, string& strStripped)

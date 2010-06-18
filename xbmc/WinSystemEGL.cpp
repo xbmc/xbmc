@@ -388,8 +388,6 @@ bool CWinSystemEGL::RefreshEGLContext()
     return false;
   }
 
-  eglSwapInterval(m_eglDisplay, 0);
-
   CLog::Log(LOGDEBUG, "RefreshEGLContext Succeeded! Format:A%d|R%d|G%d|B%d|BPP%d", ASIZE, RSIZE, GSIZE, BSIZE, DEPTH);
   return true;
 }
@@ -404,7 +402,10 @@ bool CWinSystemEGL::PresentRenderImpl()
 
 void CWinSystemEGL::SetVSyncImpl(bool enable)
 {
-  // Nothing to do
+  if (eglSwapInterval(m_eglDisplay, enable ? 1 : 0) == EGL_FALSE)
+  {
+    CLog::Log(LOGERROR, "EGL Error: Could not set vsync");
+  }
 }
 
 void CWinSystemEGL::ShowOSMouse(bool show)

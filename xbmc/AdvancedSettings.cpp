@@ -202,6 +202,7 @@ void CAdvancedSettings::Initialize()
   m_bVideoLibraryCleanOnUpdate = false;
   m_bVideoLibraryExportAutoThumbs = false;
   m_bVideoLibraryMyMoviesCategoriesToGenres = false;
+  m_bVideoLibraryImportWatchedState = false;
 
   m_bUseEvilB = true;
 
@@ -236,6 +237,7 @@ void CAdvancedSettings::Initialize()
   m_iSkipLoopFilter = 0;
   m_AllowD3D9Ex = true;
   m_AllowDynamicTextures = true;
+  m_RestrictCapsMask = 0;
   m_sleepBeforeFlip = 0;
   m_bVirtualShares = true;
 
@@ -433,6 +435,7 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetBoolean(pElement, "cleanonupdate", m_bVideoLibraryCleanOnUpdate);
     XMLUtils::GetString(pElement, "itemseparator", m_videoItemSeparator);
     XMLUtils::GetBoolean(pElement, "exportautothumbs", m_bVideoLibraryExportAutoThumbs);
+    XMLUtils::GetBoolean(pElement, "importwatchedstate", m_bVideoLibraryImportWatchedState);
 
     TiXmlElement* pMyMovies = pElement->FirstChildElement("mymovies");
     if (pMyMovies)
@@ -529,6 +532,7 @@ bool CAdvancedSettings::Load()
 
   XMLUtils::GetBoolean(pRootElement,"allowd3d9ex", m_AllowD3D9Ex);
   XMLUtils::GetBoolean(pRootElement,"allowdynamictextures", m_AllowDynamicTextures);
+  XMLUtils::GetUInt(pRootElement,"restrictcapsmask", m_RestrictCapsMask);
   XMLUtils::GetFloat(pRootElement,"sleepbeforeflip", m_sleepBeforeFlip, 0.0f, 1.0f);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
 
