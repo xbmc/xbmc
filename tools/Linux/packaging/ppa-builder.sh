@@ -269,7 +269,7 @@ if [[ -z $NO_SRC_GEN ]] ; then
   preparesrc
 fi
 
-for distro in hardy intrepid jaunty karmic lucid ; do 
+for distro in hardy jaunty karmic lucid ; do 
   if [[ $BUILDALL -eq 1 ]] || [[ $DIST == $distro ]]; then
     builddeb $distro
   fi
