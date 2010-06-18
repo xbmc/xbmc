@@ -361,7 +361,9 @@ void CGUISettings::Initialize()
   // System settings
   AddGroup(4, 13000);
   CSettingsCategory* vs = AddCategory(4, "videoscreen", 21373);
-#if defined(_WIN32) || defined (__APPLE__)
+  // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
+  AddInt(vs, "videoscreen.screen", 240, 0, -1, 1, g_Windowing.GetNumScreens(), SPIN_CONTROL_TEXT);
+#if defined (__APPLE__)
   AddString(vs, "videoscreen.screenmode", 131, "DESKTOP", SPIN_CONTROL_TEXT);
 #else
   AddString(vs, "videoscreen.screenmode", 169, "DESKTOP", SPIN_CONTROL_TEXT);

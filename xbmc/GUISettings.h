@@ -178,6 +178,12 @@ enum PowerState
   POWERSTATE_ASK
 };
 
+typedef int DisplayMode;
+#define DM_WINDOWED     -1
+#define DM_FULLSCREEN1   0
+#define DM_FULLSCREEN2   1
+// etc.
+
 // replay gain settings struct for quick access by the player multiple
 // times per second (saves doing settings lookup)
 struct ReplayGainSettings
