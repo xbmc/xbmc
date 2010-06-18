@@ -4,7 +4,8 @@
 #  A quick and dirty Makefile to download and build libvpx
 #
 #  Darwin: libvpx is built as an static lib for linkage with FFmpeg.
-#  x86-darwin8-gcc is targeted so we can run on the AppleTV. 
+#  x86-darwin8-gcc is targeted so we can run on the AppleTV.
+#  prefix is /opt/local so XBMC's build system will pick it up.
 #  
 #  Usage:
 #    make
@@ -16,6 +17,7 @@ LIBVPX_LIB = $(LIBVPX_SRC)/libvpx.a
 # get OS type from shell
 OSTYPE	= $(shell uname)
 ifeq ($(OSTYPE),Darwin)
+PREFIX = --prefix=/opt/local
 TARGET = --target=x86-darwin8-gcc
 endif
 
@@ -27,8 +29,10 @@ $(LIBVPX_LIB): $(LIBVPX_SRC)/Makefile
 $(LIBVPX_SRC)/Makefile:
 	wget http://webm.googlecode.com/files/$(LIBVPX_SRC).tar.bz2
 	tar -xjf $(LIBVPX_SRC).tar.bz2
-	cd $(LIBVPX_SRC); ./configure --enable-vp8 --disable-examples $(TARGET)
-	
+	cd $(LIBVPX_SRC); ./configure $(PREFIX) $(TARGET) --disable-examples --enable-vp8
+
+install:
+	make -C $(LIBVPX_SRC) install
 clean:
 	make -C $(LIBVPX_SRC) clean
 
