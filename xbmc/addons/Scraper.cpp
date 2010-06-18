@@ -163,8 +163,8 @@ bool CScraper::SetPathSettings(CONTENT_TYPE content, const CStdString& xml)
     return true;
 
   TiXmlDocument doc;
-  if (doc.Parse(xml.c_str()))
-    m_userSettingsLoaded = SettingsFromXML(doc);
+  doc.Parse(xml.c_str());
+  m_userSettingsLoaded = SettingsFromXML(doc);
 
   return m_userSettingsLoaded;
 }
