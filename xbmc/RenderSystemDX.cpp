@@ -435,7 +435,7 @@ bool CRenderSystemDX::CreateDevice()
 
     m_renderCaps = 0;
 
-  CLog::Log(LOGDEBUG, "%s - texture caps: %X", __FUNCTION__, caps.TextureCaps);
+  CLog::Log(LOGDEBUG, "%s - texture caps: 0x%08X", __FUNCTION__, caps.TextureCaps);
 
   if (SUCCEEDED(m_pD3D->CheckDeviceFormat( m_adapter,
                                            D3DDEVTYPE_HAL,
@@ -444,7 +444,6 @@ bool CRenderSystemDX::CreateDevice()
                                            D3DRTYPE_TEXTURE,
                                            D3DFMT_DXT5 )))
   {
-    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT", __FUNCTION__);
     m_renderCaps |= RENDER_CAPS_DXT;
   }
 
@@ -459,10 +458,16 @@ bool CRenderSystemDX::CreateDevice()
     m_renderCaps |= RENDER_CAPS_NPOT;
   }
 
+  // Temporary - allow limiting the caps to debug a texture problem
+  if (g_advancedSettings.m_RestrictCapsMask != 0)
+    m_renderCaps &= ~g_advancedSettings.m_RestrictCapsMask;
+
+  if (m_renderCaps & RENDER_CAPS_DXT)
+    CLog::Log(LOGDEBUG, __FUNCTION__" - RENDER_CAPS_DXT");
   if (m_renderCaps & RENDER_CAPS_NPOT)
-    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_NPOT", __FUNCTION__);
+    CLog::Log(LOGDEBUG, __FUNCTION__" - RENDER_CAPS_NPOT");
   if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
-    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT_NPOT", __FUNCTION__);
+    CLog::Log(LOGDEBUG, __FUNCTION__" - RENDER_CAPS_DXT_NPOT");
 
   D3DDISPLAYMODE mode;
   if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))
