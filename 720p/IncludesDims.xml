@@ -1393,10 +1393,10 @@
 		<height>25</height>
 	</include>
 	<include name="TVEpisodeItemOverlayDimsWide">
-		<posx>628</posx>
-		<posy>10</posy>
-		<width>16</width>
-		<height>25</height>
+		<posx>557</posx>
+		<posy>4</posy>
+		<width>35</width>
+		<height>35</height>
 	</include>
 	<include name="TVEpisodeItemDateDims">
 		<posx>450</posx>
