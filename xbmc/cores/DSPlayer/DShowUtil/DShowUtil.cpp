@@ -1124,7 +1124,7 @@ bool DShowUtil::ExtractDim(const AM_MEDIA_TYPE* pmt, int& w, int& h, int& arx, i
       w = (ptr[4]<<4)|(ptr[5]>>4);
       h = ((ptr[5]&0xf)<<8)|ptr[6];
       struct {int x, y;} ar[] = {{w,h},{4,3},{16,9},{221,100},{w,h}};
-      int i = dsmin(dsmax(ptr[7]>>4, 1), 5)-1;
+      int i = std::min(std::max(ptr[7]>>4, 1), 5)-1;
       arx = ar[i].x;
       ary = ar[i].y;
     }

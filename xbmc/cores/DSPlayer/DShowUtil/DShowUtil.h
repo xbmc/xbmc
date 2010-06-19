@@ -61,13 +61,6 @@
 
 #include "DshowCommon.h"
 #include "Mpeg2Def.h"
-#ifndef dsmax
-#define dsmax(a,b)            (((a) > (b)) ? (a) : (b))
-#endif
-
-#ifndef dsmin
-#define dsmin(a,b)            (((a) < (b)) ? (a) : (b))
-#endif
 
 #if _WIN32_WINNT < 0x0600
 

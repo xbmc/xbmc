@@ -29,8 +29,8 @@
 
 #pragma warning(disable: 4355)
 
-#define MINPACKETS 100      // Beliyaal: Changed the dsmin number of packets to allow Bluray playback over network
-#define MINPACKETSIZE 256*1024  // Beliyaal: Changed the dsmin packet size to allow Bluray playback over network
+#define MINPACKETS 100      // Beliyaal: Changed the min number of packets to allow Bluray playback over network
+#define MINPACKETSIZE 256*1024  // Beliyaal: Changed the min packet size to allow Bluray playback over network
 #define MAXPACKETS 10000
 #define MAXPACKETSIZE 1024*1024*5
 
@@ -57,7 +57,7 @@ void CPacketQueue::Add(boost::shared_ptr<Packet> p)
       tail =  back();
       int oldsize = tail->size();
       int newsize = tail->size() + p->size();
-      tail->resize(newsize, dsmax(1024, newsize)); // doubles the reserved buffer size
+      tail->resize(newsize, max(1024, newsize)); // doubles the reserved buffer size
       //Not sure about this one
       //memcpy(&tail[0] + oldsize, &(p.get())[0], p.get()->size());
       /*
@@ -216,7 +216,7 @@ CBaseSplitterOutputPin::CBaseSplitterOutputPin(vector<CMediaType>& mts, LPCWSTR 
     m_mts.push_back(*it);
   }
   //m_mts.Copy(mts);
-  m_nBuffers = dsmax(nBuffers, 1);
+  m_nBuffers = max(nBuffers, 1);
   memset(&m_brs, 0, sizeof(m_brs));
   m_brs.rtLastDeliverTime = Packet::INVALID_TIME;
 }
@@ -227,7 +227,7 @@ CBaseSplitterOutputPin::CBaseSplitterOutputPin(LPCWSTR pName, CBaseFilter* pFilt
   , m_fFlushing(false)
   , m_eEndFlush(TRUE)
 {
-  m_nBuffers = dsmax(nBuffers, 1);
+  m_nBuffers = max(nBuffers, 1);
   memset(&m_brs, 0, sizeof(m_brs));
   m_brs.rtLastDeliverTime = Packet::INVALID_TIME;
 }
@@ -255,7 +255,7 @@ HRESULT CBaseSplitterOutputPin::SetName(LPCWSTR pName)
   if(m_pName) delete [] m_pName;
   m_pName = DNew WCHAR[wcslen(pName)+1];
   CheckPointer(m_pName, E_OUTOFMEMORY);
-  wcscpy(m_pName, pName);
+  wcsncpy (m_pName, pName, wcslen(pName));
   return S_OK;
 }
 
@@ -267,12 +267,12 @@ HRESULT CBaseSplitterOutputPin::DecideBufferSize(IMemAllocator* pAlloc, ALLOCATO
     HRESULT hr = NOERROR;
 
   pProperties->cBuffers = m_nBuffers;
-  pProperties->cbBuffer = dsmax(m_mt.lSampleSize, 1);
+  pProperties->cbBuffer = max(m_mt.lSampleSize, (ULONG) 1);
 
   if(m_mt.subtype == MEDIASUBTYPE_Vorbis && m_mt.formattype == FORMAT_VorbisFormat)
   {
     // oh great, the oggds vorbis decoder assumes there will be two at least, stupid thing...
-    pProperties->cBuffers = dsmax(pProperties->cBuffers, 2);
+    pProperties->cBuffers = max(pProperties->cBuffers, (long) 2);
   }
 
   ALLOCATOR_PROPERTIES Actual;
@@ -286,7 +286,7 @@ HRESULT CBaseSplitterOutputPin::DecideBufferSize(IMemAllocator* pAlloc, ALLOCATO
 
 HRESULT CBaseSplitterOutputPin::CheckMediaType(const CMediaType* pmt)
 {
-  for(int i = 0; i < m_mts.size(); i++)
+  for(unsigned int i = 0; i < m_mts.size(); i++)
   {
     if(*pmt == m_mts[i])
       return S_OK;
@@ -297,10 +297,10 @@ HRESULT CBaseSplitterOutputPin::CheckMediaType(const CMediaType* pmt)
 
 HRESULT CBaseSplitterOutputPin::GetMediaType(int iPosition, CMediaType* pmt)
 {
-    CAutoLock cAutoLock(m_pLock);
+  CAutoLock cAutoLock(m_pLock);
 
   if(iPosition < 0) return E_INVALIDARG;
-  if(iPosition >= m_mts.size()) return VFW_S_NO_MORE_ITEMS;
+  if(iPosition >= (int) m_mts.size()) return VFW_S_NO_MORE_ITEMS;
 
   *pmt = m_mts[iPosition];
 
@@ -1267,7 +1267,7 @@ STDMETHODIMP CBaseSplitterFilter::GetCurFile(LPOLESTR* ppszFileName, AM_MEDIA_TY
   CheckPointer(ppszFileName, E_POINTER);
   if(!(*ppszFileName = (LPOLESTR)CoTaskMemAlloc((m_fn.GetLength()+1)*sizeof(WCHAR))))
     return E_OUTOFMEMORY;
-  wcscpy(*ppszFileName, m_fn);
+  wcsncpy(*ppszFileName, m_fn, m_fn.GetLength() * sizeof(WCHAR));
   return S_OK;
 }
 

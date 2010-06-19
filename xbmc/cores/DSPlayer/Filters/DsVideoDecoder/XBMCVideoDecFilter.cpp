@@ -135,7 +135,7 @@ struct TYCbCr2RGB_coeffs {
         ug_mul=(cspOptionsRGBrange / chr_range) * (1.0 - Kb) * Kb / Kg;
         vg_mul=(cspOptionsRGBrange / chr_range) * (1.0 - Kr) * Kr / Kg;   
         ub_mul=(cspOptionsRGBrange / chr_range) * (1.0 - Kb);
-        int sub = dsmin((int)cspOptionsRGB_BlackLevel, cspOptionsBlackCutoff);
+        int sub = std::min((int)cspOptionsRGB_BlackLevel, cspOptionsBlackCutoff);
         Ysub = cspOptionsBlackCutoff - sub;
         RGB_add1 = (int)cspOptionsRGB_BlackLevel - sub;
         RGB_add3 = (RGB_add1 << 8) + (RGB_add1 << 16) + RGB_add1;
@@ -959,7 +959,7 @@ void CXBMCVideoDecFilter::CalcAvgTimePerFrame()
     m_rtAvrTimePerFrame  = 1;
   }
 
-  m_rtAvrTimePerFrame = dsmax (1, m_rtAvrTimePerFrame);
+  m_rtAvrTimePerFrame = std::max (1i64, m_rtAvrTimePerFrame);
 }
 
 void CXBMCVideoDecFilter::LogLibAVCodec(void* par,int level,const char *fmt,va_list valist)
@@ -1854,7 +1854,7 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
       AppendBuffer (pDataIn, nSize, rtStart, rtStop);
       hr = S_OK;
 
-      while (FindPicture (dsmax (m_nFFBufferPos-nSize-4, 0), 0x00))
+      while (FindPicture (std::max (m_nFFBufferPos-nSize-4, 0), 0x00))
       {
         if (m_FFBufferTime[0].nBuffPos != INT_MIN && m_FFBufferTime[0].nBuffPos < m_nFFPicEnd)
         {

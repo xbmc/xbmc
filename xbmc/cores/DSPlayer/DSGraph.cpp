@@ -645,7 +645,8 @@ void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePos
 void CDSGraph::Seek(bool bPlus, bool bLargeStep)
 {
   // Chapter support
-  if (bLargeStep && CChaptersManager::Get()->GetChapterCount() > 1)
+  if(((bPlus && CChaptersManager::Get()->GetChapter() < CChaptersManager::Get()->GetChapterCount())
+  || (!bPlus && CChaptersManager::Get()->GetChapter() > 1)) && bLargeStep)
   {
     int chapter = 0;
     if (bPlus)

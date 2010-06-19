@@ -609,7 +609,7 @@ inline static void LogDXVA_PictureParameters (DXVA_PictureParameters* pPic) {}
 
 
 
-static HRESULT STDMETHODCALLTYPE GetVideoAcceleratorGUIDsMine(IAMVideoAcceleratorC * This, LPDWORD pdwNumGuidsSupported, LPGUID pGuidsSupported)
+static HRESULT STDMETHODCALLTYPE GetVideoAcceleratorGUImine(IAMVideoAcceleratorC * This, LPDWORD pdwNumGuidsSupported, LPGUID pGuidsSupported)
 {
   LOG(_T("\nGetVideoAcceleratorGUIDs"));
 
@@ -976,7 +976,7 @@ void HookAMVideoAccelerator(IAMVideoAcceleratorC* pAMVideoAcceleratorC)
   if(QueryRenderStatusOrg == NULL) QueryRenderStatusOrg = pAMVideoAcceleratorC->lpVtbl->QueryRenderStatus;
   if(DisplayFrameOrg == NULL) DisplayFrameOrg = pAMVideoAcceleratorC->lpVtbl->DisplayFrame;
 
-  pAMVideoAcceleratorC->lpVtbl->GetVideoAcceleratorGUIDs = GetVideoAcceleratorGUIDsMine;
+  pAMVideoAcceleratorC->lpVtbl->GetVideoAcceleratorGUIDs = GetVideoAcceleratorGUImine;
   pAMVideoAcceleratorC->lpVtbl->GetUncompFormatsSupported = GetUncompFormatsSupportedMine;
   pAMVideoAcceleratorC->lpVtbl->GetInternalMemInfo = GetInternalMemInfoMine;
   pAMVideoAcceleratorC->lpVtbl->GetCompBufferInfo = GetCompBufferInfoMine;
@@ -1384,7 +1384,7 @@ static HRESULT STDMETHODCALLTYPE CreateVideoDecoderMine(
 
 
 
-static HRESULT STDMETHODCALLTYPE GetDecoderDeviceGuidsMine (IDirectXVideoDecoderServiceC*          pThis,
+static HRESULT STDMETHODCALLTYPE GetDecoderDeviceGuimine (IDirectXVideoDecoderServiceC*          pThis,
                             __out  UINT*                  pCount,
                             __deref_out_ecount_opt(*pCount)  GUID**      pGuids)
 {
@@ -1427,7 +1427,7 @@ void HookDirectXVideoDecoderService(void* pIDirectXVideoDecoderService)
     if (g_pIDirectXVideoDecoderServiceCVtbl->GetDecoderConfigurations == GetDecoderConfigurationsMine)
       g_pIDirectXVideoDecoderServiceCVtbl->GetDecoderConfigurations = GetDecoderConfigurationsOrg;
 
-    //if (g_pIDirectXVideoDecoderServiceCVtbl->GetDecoderDeviceGuids == GetDecoderDeviceGuidsMine)
+    //if (g_pIDirectXVideoDecoderServiceCVtbl->GetDecoderDeviceGuids == GetDecoderDeviceGuimine)
     //  g_pIDirectXVideoDecoderServiceCVtbl->GetDecoderDeviceGuids = GetDecoderDeviceGuidsOrg;
 #endif
 
@@ -1459,7 +1459,7 @@ void HookDirectXVideoDecoderService(void* pIDirectXVideoDecoderService)
     pIDirectXVideoDecoderServiceC->lpVtbl->GetDecoderConfigurations = GetDecoderConfigurationsMine;
 
     //GetDecoderDeviceGuidsOrg = pIDirectXVideoDecoderServiceC->lpVtbl->GetDecoderDeviceGuids;
-    //pIDirectXVideoDecoderServiceC->lpVtbl->GetDecoderDeviceGuids = GetDecoderDeviceGuidsMine;
+    //pIDirectXVideoDecoderServiceC->lpVtbl->GetDecoderDeviceGuids = GetDecoderDeviceGuimine;
 #endif
 
     res = VirtualProtect(pIDirectXVideoDecoderServiceC->lpVtbl, sizeof(IDirectXVideoDecoderServiceCVtbl), flOldProtect, &flOldProtect);

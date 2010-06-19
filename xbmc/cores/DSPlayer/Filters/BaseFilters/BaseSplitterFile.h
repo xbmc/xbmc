@@ -27,6 +27,8 @@
 
 #include "DShowUtil/DShowUtil.h"
 #include "DShowUtil/DSGeometry.h"
+#include <algorithm>
+
 #define DEFAULT_CACHE_LENGTH 64*1024	// Beliyaal: Changed the default cache length to allow Bluray playback over network
 
 
@@ -56,7 +58,7 @@ public:
 	__int64 GetPos();
 	__int64 GetAvailable();
 	__int64 GetLength(bool fUpdate = false);
-	__int64 GetRemaining() {return dsmax(0, GetLength() - GetPos());}
+	__int64 GetRemaining() {return std::max((__int64) 0, GetLength() - GetPos());}
 	virtual void Seek(__int64 pos);
 
 	UINT64 UExpGolombRead();

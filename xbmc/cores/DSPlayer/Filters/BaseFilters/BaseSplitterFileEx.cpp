@@ -146,7 +146,7 @@ bool CBaseSplitterFileEx::Read(peshdr& h, BYTE code)
 	if(code == 0xbe || code == 0xbf)
 		return(true);
 
-	// mpeg1 stuffing (ff ff .. , dsmax 16x)
+	// mpeg1 stuffing (ff ff .. , max 16x)
 	for(int i = 0; i < 16 && BitRead(8, true) == 0xff; i++)
 	{
 		BitRead(8); 
@@ -245,7 +245,7 @@ bool CBaseSplitterFileEx::Read(peshdr& h, BYTE code)
 		if(h.fdts) left -= 5;
 		while(left-- > 0) BitRead(8);
 /*
-		// mpeg2 stuffing (ff ff .. , dsmax 32x)
+		// mpeg2 stuffing (ff ff .. , max 32x)
 		while(BitRead(8, true) == 0xff) {BitRead(8); if(h.len) h.len--;}
 		Seek(GetPos()); // put last peeked byte back for Read()
 
@@ -328,7 +328,7 @@ bool CBaseSplitterFileEx::Read(seqhdr& h, int len, CMediaType* pmt)
 		shextlen = GetPos() - shextpos;
 
 		struct {DWORD x, y;} ar[] = {{h.width,h.height},{4,3},{16,9},{221,100},{h.width,h.height}};
-		int i = dsmin(dsmax(h.ar, 1), 5)-1;
+		int i = std::min((int) std::max(h.ar, (BYTE) 1), 5) - 1;
 		h.arx = ar[i].x;
 		h.ary = ar[i].y;
 

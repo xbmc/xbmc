@@ -33,6 +33,8 @@
 #include "MpConfig.h"
 #include "WindowingFactory.h"
 #include "Application.h"
+#include <algorithm>
+
 // ISubPicAllocatorPresenter
 
 
@@ -518,7 +520,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::InitializeDevice(DWORD_PTR dwUserID, VMR9A
 
   if (m_nVMR9Surfaces && m_nVMR9Surfaces != *lpNumBuffers)
     m_nVMR9Surfaces = *lpNumBuffers;
-  *lpNumBuffers = (unsigned int) dsmin((unsigned int) (nOriginal), *lpNumBuffers);
+  *lpNumBuffers = std::min((unsigned int &) (nOriginal), (unsigned int &) *lpNumBuffers);
   m_iVMR9Surface = 0;
 
   return hr;

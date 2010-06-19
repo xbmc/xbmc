@@ -160,7 +160,7 @@ HRESULT CAviSplitterFilter::CreateOutputs(IAsyncReader* pAsyncReader)
       else
         mt.subtype = FOURCCMap(pwfe->wFormatTag);
       mt.formattype = FORMAT_WaveFormatEx;
-      mt.SetFormat(&s->strf[0], dsmax(s->strf.size(), sizeof(WAVEFORMATEX)));
+      mt.SetFormat(&s->strf[0], max(s->strf.size(), sizeof(WAVEFORMATEX)));
       pwfe = (WAVEFORMATEX*)mt.Format();
       if(s->strf.size() == sizeof(PCMWAVEFORMAT)) pwfe->cbSize = 0;
       if(pwfe->wFormatTag == WAVE_FORMAT_PCM) pwfe->nBlockAlign = pwfe->nChannels*pwfe->wBitsPerSample>>3;
@@ -203,10 +203,10 @@ HRESULT CAviSplitterFilter::CreateOutputs(IAsyncReader* pAsyncReader)
       mt.majortype = MEDIATYPE_Interleaved;
       mt.subtype = FOURCCMap(s->strh.fccHandler);
       mt.formattype = FORMAT_DvInfo;
-      //mt.SetFormat(s->strf.GetData(), dsmax(s->strf.size(), sizeof(DVINFO)));
+      //mt.SetFormat(s->strf.GetData(), max(s->strf.size(), sizeof(DVINFO)));
       BYTE *newFmt;
       memcpy(newFmt, &s->strf[0], s->strf.size());
-      mt.SetFormat(newFmt, dsmax(s->strf.size(), sizeof(DVINFO)));
+      mt.SetFormat(newFmt, max(s->strf.size(), sizeof(DVINFO)));
       mt.SetSampleSize(s->strh.dwSuggestedBufferSize > 0 
         ? s->strh.dwSuggestedBufferSize*3/2
         : (1024*1024));
@@ -348,7 +348,7 @@ HRESULT CAviSplitterFilter::ReIndex(__int64 end, UINT64* pSize)
           pSize[TrackNumber] += s->GetChunkSize(size);
 
           REFERENCE_TIME rt = s->GetRefTime(s->cs.size()-1, pSize[TrackNumber]);
-          m_rtDuration = dsmax(rt, m_rtDuration);
+          m_rtDuration = max(rt, m_rtDuration);
         }
       }
 
@@ -389,7 +389,7 @@ void CAviSplitterFilter::DemuxSeek(REFERENCE_TIME rt)
       UINT64 fp = f >= 0 ? s->cs[f].filepos : m_pFile->GetLength();
 
       if(!s->IsRawSubtitleStream())
-        minfp = dsmin(minfp, fp);
+        minfp = min(minfp, fp);
     }
 
     for(int j = 0; j < (int)m_pFile->m_strms.size(); j++)

@@ -22,10 +22,10 @@
 #ifdef HAS_DS_PLAYER
 
 #include "FLVSplitter.h"
-//#include "../../../DSUtil/DSUtil.h"
 
 #include <initguid.h>
 #include <moreuuids.h>
+#include <algorithm>
 
 //
 // CFLVSplitterFilter
@@ -491,7 +491,7 @@ HRESULT CFLVSplitterFilter::CreateOutputs(IAsyncReader* pAsyncReader)
 
 	if(m_pFile->IsRandomAccess())
 	{
-		__int64 pos = dsmax(m_DataOffset, m_pFile->GetLength() - 256 * 1024);
+		__int64 pos = max((__int64) m_DataOffset, m_pFile->GetLength() - 256i64 * 1024i64);
 
 		if(Sync(pos))
 		{
@@ -505,7 +505,7 @@ HRESULT CFLVSplitterFilter::CreateOutputs(IAsyncReader* pAsyncReader)
 
 				if(t.TagType == 8 && ReadTag(at) || t.TagType == 9 && ReadTag(vt))
 				{
-					m_rtDuration = dsmax(m_rtDuration, 10000i64 * t.TimeStamp); 
+					m_rtDuration = max(m_rtDuration, 10000i64 * t.TimeStamp); 
 				}
 
 				m_pFile->Seek(next);
@@ -604,7 +604,7 @@ void CFLVSplitterFilter::AlternateSeek(REFERENCE_TIME rt)
 		bool foundVideo = false;
 		__int64 bestPos;
 
-		estimPos = dsmax(estimPos - seekBack, m_DataOffset);
+		estimPos = max(estimPos - seekBack, (long long) m_DataOffset);
 		seekBack *= 2;
 
 		if (Sync(estimPos)) {

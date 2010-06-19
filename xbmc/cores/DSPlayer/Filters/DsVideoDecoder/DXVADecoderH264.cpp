@@ -228,7 +228,7 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
 	}
 	if (nSlices == 0) return S_FALSE;
 
-	m_nMaxWaiting	= dsmin (dsmax (m_DXVAPicParams.num_ref_frames, 3), 8);
+	m_nMaxWaiting	= std::min ( std::max (m_DXVAPicParams.num_ref_frames, (UCHAR) 3), (UCHAR) 8);
 
 	// If parsing fail (probably no PPS/SPS), continue anyway it may arrived later (happen on truncated streams)
 	//if (FAILED (FFH264BuildPicParams (&m_DXVAPicParams, &m_DXVAScalingMatrix, &nFieldType, &nSliceType, m_pFilter->GetAVCtx(), m_pFilter->GetPCIVendor())))

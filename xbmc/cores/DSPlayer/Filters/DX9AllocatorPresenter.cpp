@@ -76,7 +76,7 @@ static void AdjustQuad(MYD3DVERTEX<texcoords>* v, double dx, double dy)
     v[i].x -= (float) offset;
     v[i].y -= (float) offset;
     
-    for(int j = 0; j < dsmax(texcoords-1, 1); j++)
+    for(int j = 0; j < std::max(texcoords-1, 1); j++)
     {
       v[i].t[j].u -= (float) (offset*dx);
       v[i].t[j].v -= (float) (offset*dy);
@@ -112,50 +112,44 @@ static HRESULT TextureBlt(IDirect3DDevice9* pD3DDev, MYD3DVERTEX<texcoords> v[4]
 
   HRESULT hr;
 
-  do
+  //Those are needed to avoid conflict with the xbmc gui
+  hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+  hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+  hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+  hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+  hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+  hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+
+  hr = pD3DDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+  hr = pD3DDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+  hr = pD3DDev->SetRenderState(D3DRS_ZENABLE, FALSE);
+  hr = pD3DDev->SetRenderState(D3DRS_STENCILENABLE, FALSE);
+  hr = pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+  hr = pD3DDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
+  hr = pD3DDev->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE); 
+  hr = pD3DDev->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
+
+  for(int i = 0; i < texcoords; i++)
   {
-    //Those are needed to avoid conflict with the xbmc gui
-    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-    hr = pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-
-    hr = pD3DDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-    hr = pD3DDev->SetRenderState(D3DRS_LIGHTING, FALSE);
-    hr = pD3DDev->SetRenderState(D3DRS_ZENABLE, FALSE);
-    hr = pD3DDev->SetRenderState(D3DRS_STENCILENABLE, FALSE);
-    hr = pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-    hr = pD3DDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
-    hr = pD3DDev->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE); 
-    hr = pD3DDev->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
-
-    for(int i = 0; i < texcoords; i++)
-    {
-      hr = pD3DDev->SetSamplerState(i, D3DSAMP_MAGFILTER, filter);
-      hr = pD3DDev->SetSamplerState(i, D3DSAMP_MINFILTER, filter);
-      hr = pD3DDev->SetSamplerState(i, D3DSAMP_MIPFILTER, filter);
-      hr = pD3DDev->SetSamplerState(i, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-      hr = pD3DDev->SetSamplerState(i, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
-    }
-    hr = pD3DDev->SetFVF(D3DFVF_XYZRHW | FVF);
-
-    MYD3DVERTEX<texcoords> tmp = v[2]; 
-    v[2] = v[3]; 
-    v[3] = tmp;
-    hr = pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, v, sizeof(v[0]));
-
-    for(int i = 0; i < texcoords; i++)
-    {
-      pD3DDev->SetTexture(i, NULL);
-    }
-
-    return S_OK;
+    hr = pD3DDev->SetSamplerState(i, D3DSAMP_MAGFILTER, filter);
+    hr = pD3DDev->SetSamplerState(i, D3DSAMP_MINFILTER, filter);
+    hr = pD3DDev->SetSamplerState(i, D3DSAMP_MIPFILTER, filter);
+    hr = pD3DDev->SetSamplerState(i, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+    hr = pD3DDev->SetSamplerState(i, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
   }
-  while(0);
+  hr = pD3DDev->SetFVF(D3DFVF_XYZRHW | FVF);
 
-  return E_FAIL;
+  MYD3DVERTEX<texcoords> tmp = v[2]; 
+  v[2] = v[3]; 
+  v[3] = tmp;
+  hr = pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, v, sizeof(v[0]));
+
+  for(int i = 0; i < texcoords; i++)
+  {
+    pD3DDev->SetTexture(i, NULL);
+  }
+
+  return S_OK;
 }
 
 static HRESULT DrawRect(IDirect3DDevice9* pD3DDev, MYD3DVERTEX<0> v[4])
@@ -404,7 +398,7 @@ private:
         m_ScanLines = m_ScanLines * 2;
 
       m_ScanLines = m_ScanLines * (1.0 + (_Random.f_GetFloat() * _Amount) - _Amount * 0.5);
-      m_ScanLines = dsmax(m_ScanLines, _MinScans);
+      m_ScanLines = max(m_ScanLines, _MinScans);
 
       if (ToDo == 2)
         m_ScanLinesPerSecond /= (_Random.f_Get() % 4) + 1;
@@ -449,7 +443,7 @@ private:
   double fp_GetSquareSum(double _ScansPerSecond, double _ScanLines)
   {
     double SquareSum = 0;
-    int nHistory = dsmin(m_nHistory, ENumHistory);
+    int nHistory = min(m_nHistory, ENumHistory);
     int iHistory = m_iHistory - nHistory;
     if (iHistory < 0)
       iHistory += ENumHistory;
@@ -553,7 +547,7 @@ void CDX9AllocatorPresenter::VSyncThread()
   DWORD        dwTaskIndex  = 0;
 
   timeGetDevCaps(&tc, sizeof(TIMECAPS));
-  dwResolution = dsmin(dsmax(tc.wPeriodMin, 0), tc.wPeriodMax);
+  dwResolution = std::min( std::max(tc.wPeriodMin, (UINT) 0), tc.wPeriodMax);
   dwUser    = timeBeginPeriod(dwResolution);
 
   while (!bQuit)
@@ -572,8 +566,9 @@ void CDX9AllocatorPresenter::VSyncThread()
         {
 
           int VSyncPos = GetVBlackPos();
-          int WaitRange = dsmax(m_ScreenSize.cy / 40, 5);
-          int MinRange = dsmax(dsmin(int(0.003 * double(m_ScreenSize.cy) * double(m_RefreshRate) + 0.5), m_ScreenSize.cy/3), 5); // 1.8  ms or max 33 % of Time
+          int WaitRange = std::max((int) (m_ScreenSize.cy / 40), 5);
+          int MinRange = std::max( std::min(int(0.003 * double(m_ScreenSize.cy) * double(m_RefreshRate) + 0.5),
+            int(m_ScreenSize.cy / 3)), 5); // 1.8  ms or max 33 % of Time
 
           VSyncPos += MinRange + WaitRange;
 
@@ -641,7 +636,7 @@ void CDX9AllocatorPresenter::VSyncThread()
             m_ldDetectedRefreshRateList[iPos] = nSeconds;
             double Average = 0;
             double AverageScanline = 0;
-            int nPos = dsmin(iPos + 1, 100);
+            int nPos = std::min(iPos + 1, 100);
             for (int i = 0; i < nPos; ++i)
             {
               Average += m_ldDetectedRefreshRateList[i];
@@ -908,7 +903,7 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
   if (m_pD3DXCreateFont)
   {
     int MinSize = 1600;
-    int CurrentSize = dsmin(m_ScreenSize.cx, MinSize);
+    int CurrentSize = std::min((int) m_ScreenSize.cx, MinSize);
     double Scale = double(CurrentSize) / double(MinSize);
     m_TextScale = Scale;
     m_pD3DXCreateFont( m_pD3DDev,            // D3D device
@@ -1154,7 +1149,7 @@ HRESULT CDX9AllocatorPresenter::InitResizers(float bicubicA, bool bNeedScreenSiz
   if(m_bicubicA || bNeedScreenSizeTexture)
   {
     if(FAILED(m_pD3DDev->CreateTexture(
-      dsmin(m_ScreenSize.cx, (int)m_caps.MaxTextureWidth), dsmin(dsmax(m_ScreenSize.cy, m_NativeVideoSize.cy), (int)m_caps.MaxTextureHeight), 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, 
+      std::min((int) m_ScreenSize.cx, (int)m_caps.MaxTextureWidth), std::min( (int) std::max(m_ScreenSize.cy, m_NativeVideoSize.cy), (int)m_caps.MaxTextureHeight), 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, 
       D3DPOOL_DEFAULT, &m_pScreenSizeTemporaryTexture[0], NULL)))
     {
       ASSERT(0);
@@ -1164,7 +1159,7 @@ HRESULT CDX9AllocatorPresenter::InitResizers(float bicubicA, bool bNeedScreenSiz
   if(m_bicubicA || bNeedScreenSizeTexture)
   {
     if(FAILED(m_pD3DDev->CreateTexture(
-      dsmin(m_ScreenSize.cx, (int)m_caps.MaxTextureWidth), dsmin(dsmax(m_ScreenSize.cy, m_NativeVideoSize.cy), (int)m_caps.MaxTextureHeight), 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, 
+      std::min((int) m_ScreenSize.cx, (int)m_caps.MaxTextureWidth), std::min( (int) std::max(m_ScreenSize.cy, m_NativeVideoSize.cy), (int)m_caps.MaxTextureHeight), 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, 
       D3DPOOL_DEFAULT, &m_pScreenSizeTemporaryTexture[1], NULL)))
     {
       ASSERT(0);
@@ -1594,8 +1589,8 @@ void CDX9AllocatorPresenter::CalculateJitter(LONGLONG PerfCounter)
       __int64 DevInt = (__int64)(m_pllJitter[i] - FrameTimeMean);
       double Deviation = (double) DevInt;
       DeviationSum += Deviation*Deviation;
-      m_MaxJitter = dsmax(m_MaxJitter, DevInt);
-      m_MinJitter = dsmin(m_MinJitter, DevInt);
+      m_MaxJitter = std::max(m_MaxJitter, DevInt);
+      m_MinJitter = std::min(m_MinJitter, DevInt);
     }
     double StdDev = sqrt(DeviationSum/NB_JITTER);
 
@@ -1628,9 +1623,9 @@ bool CDX9AllocatorPresenter::GetVBlank(int &_ScanLine, int &_bInVBlank, bool _bM
   
   if (_bMeasureTime)
   {
-    m_VBlankMax = dsmax(m_VBlankMax, ScanLine);
+    m_VBlankMax = std::max(m_VBlankMax, ScanLine);
     if (ScanLine != 0 && !_bInVBlank)
-      m_VBlankMinCalc = dsmin(m_VBlankMinCalc, ScanLine);
+      m_VBlankMinCalc = std::min(m_VBlankMinCalc, ScanLine);
     m_VBlankMin = m_VBlankMax - m_ScreenSize.cy;
   }
   if (_bInVBlank)
@@ -1643,7 +1638,7 @@ bool CDX9AllocatorPresenter::GetVBlank(int &_ScanLine, int &_bInVBlank, bool _bM
   if (_bMeasureTime)
   {
     LONGLONG Time = CTimeUtils::GetPerfCounter() - llPerf;
-    m_RasterStatusWaitTimeMaxCalc = dsmax(m_RasterStatusWaitTimeMaxCalc, Time);
+    m_RasterStatusWaitTimeMaxCalc = std::max(m_RasterStatusWaitTimeMaxCalc, Time);
   }
 
   return true;
@@ -1723,13 +1718,15 @@ bool CDX9AllocatorPresenter::WaitForVBlankRange(int &_RasterStart, int _RasterSi
   }
   double RefreshRate = GetRefreshRate();
   LONG ScanLines = GetScanLines();
-  int MinRange = dsmax(dsmin(int(0.0015 * double(ScanLines) * RefreshRate + 0.5), ScanLines/3), 5); // 1.5 ms or dsmax 33 % of Time
+  int MinRange = std::max( std::min(int(0.0015 * double(ScanLines) * RefreshRate + 0.5),
+    int(ScanLines / 3)), 5); // 1.5 ms or max 33 % of Time
   int NoSleepStart = _RasterStart - MinRange;
   int NoSleepRange = MinRange;
   if (NoSleepStart < 0)
     NoSleepStart += m_ScreenSize.cy;
 
-  int MinRange2 = dsmax(dsmin(int(0.0050 * double(ScanLines) * RefreshRate + 0.5), ScanLines/3), 5); // 5 ms or dsmax 33 % of Time
+  int MinRange2 = std::max( std::min(int(0.0050 * double(ScanLines) * RefreshRate + 0.5),
+    int(ScanLines / 3)), 5); // 5 ms or max 33 % of Time
   int D3DDevLockStart = _RasterStart - MinRange2;
   int D3DDevLockRange = MinRange2;
   if (D3DDevLockStart < 0)
@@ -1821,8 +1818,8 @@ bool CDX9AllocatorPresenter::WaitForVBlankRange(int &_RasterStart, int _RasterSi
       m_VBlankLockTime = 0;
 
     m_RasterStatusWaitTime = m_RasterStatusWaitTimeMaxCalc;
-    m_RasterStatusWaitTimeMin = dsmin(m_RasterStatusWaitTimeMin, m_RasterStatusWaitTime);
-    m_RasterStatusWaitTimeMax = dsmax(m_RasterStatusWaitTimeMax, m_RasterStatusWaitTime);
+    m_RasterStatusWaitTimeMin = std::min(m_RasterStatusWaitTimeMin, m_RasterStatusWaitTime);
+    m_RasterStatusWaitTimeMax = std::max(m_RasterStatusWaitTimeMax, m_RasterStatusWaitTime);
   }
 
   return bWaited;
@@ -1832,7 +1829,7 @@ int CDX9AllocatorPresenter::GetVBlackPos()
 {
   BOOL bCompositionEnabled = m_bCompositionEnabled;
 
-  int WaitRange = dsmax(m_ScreenSize.cy / 40, 5);
+  int WaitRange = std::max(int(m_ScreenSize.cy / 40), 5);
   if (!bCompositionEnabled)
   {
     if (m_bAlternativeVSync)
@@ -1841,7 +1838,8 @@ int CDX9AllocatorPresenter::GetVBlackPos()
     }
     else
     {
-      int MinRange = dsmax(dsmin(int(0.005 * double(m_ScreenSize.cy) * GetRefreshRate() + 0.5), m_ScreenSize.cy/3), 5); // 5  ms or dsmax 33 % of Time
+      int MinRange = std::max(std::min(int(0.005 * double(m_ScreenSize.cy) * GetRefreshRate() + 0.5),
+        int(m_ScreenSize.cy / 3)), 5); // 5  ms or max 33 % of Time
       int WaitFor = m_ScreenSize.cy - (MinRange + WaitRange);
       return WaitFor;
     }
@@ -2158,8 +2156,8 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
   if (fAll)
   {
     m_PaintTime = (CTimeUtils::GetPerfCounter() - StartPaint);
-    m_PaintTimeMin = dsmin(m_PaintTimeMin, m_PaintTime);
-    m_PaintTimeMax = dsmax(m_PaintTimeMax, m_PaintTime);
+    m_PaintTimeMin = std::min(m_PaintTimeMin, m_PaintTime);
+    m_PaintTimeMax = std::max(m_PaintTimeMax, m_PaintTime);
     
   }
 
@@ -2234,14 +2232,14 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
   if (fAll && bDoVSyncInPresent)
   {
     m_PresentWaitTime = (CTimeUtils::GetPerfCounter() - llPerf) + PresentWaitTime;
-    m_PresentWaitTimeMin = dsmin(m_PresentWaitTimeMin, m_PresentWaitTime);
-    m_PresentWaitTimeMax = dsmax(m_PresentWaitTimeMax, m_PresentWaitTime);
+    m_PresentWaitTimeMin = std::min(m_PresentWaitTimeMin, m_PresentWaitTime);
+    m_PresentWaitTimeMax = std::max(m_PresentWaitTimeMax, m_PresentWaitTime);
   }
   else
   {
     m_PresentWaitTime = 0;
-    m_PresentWaitTimeMin = dsmin(m_PresentWaitTimeMin, m_PresentWaitTime);
-    m_PresentWaitTimeMax = dsmax(m_PresentWaitTimeMax, m_PresentWaitTime);
+    m_PresentWaitTimeMin = std::min(m_PresentWaitTimeMin, m_PresentWaitTime);
+    m_PresentWaitTimeMax = std::max(m_PresentWaitTimeMax, m_PresentWaitTime);
   }
 
   if (bDoVSyncInPresent)
