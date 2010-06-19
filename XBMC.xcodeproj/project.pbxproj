@@ -562,7 +562,6 @@
 		E38E20520D25F9FD00618676 /* RarDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17460D25F9FA00618676 /* RarDirectory.cpp */; };
 		E38E20530D25F9FD00618676 /* RarManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17480D25F9FA00618676 /* RarManager.cpp */; };
 		E38E20540D25F9FD00618676 /* RTVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E174B0D25F9FA00618676 /* RTVDirectory.cpp */; };
-		E38E20550D25F9FD00618676 /* ShoutcastDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E174D0D25F9FA00618676 /* ShoutcastDirectory.cpp */; };
 		E38E20560D25F9FD00618676 /* ShoutcastRipFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E174F0D25F9FA00618676 /* ShoutcastRipFile.cpp */; };
 		E38E20570D25F9FD00618676 /* SIDFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17510D25F9FA00618676 /* SIDFileDirectory.cpp */; };
 		E38E20580D25F9FD00618676 /* SmartPlaylistDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17530D25F9FA00618676 /* SmartPlaylistDirectory.cpp */; };
@@ -1283,7 +1282,6 @@
 		F5A1C9840F6B06CF00A96ABD /* RarDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17460D25F9FA00618676 /* RarDirectory.cpp */; };
 		F5A1C9850F6B06CF00A96ABD /* RarManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17480D25F9FA00618676 /* RarManager.cpp */; };
 		F5A1C9860F6B06CF00A96ABD /* RTVDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E174B0D25F9FA00618676 /* RTVDirectory.cpp */; };
-		F5A1C9870F6B06CF00A96ABD /* ShoutcastDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E174D0D25F9FA00618676 /* ShoutcastDirectory.cpp */; };
 		F5A1C9880F6B06CF00A96ABD /* ShoutcastRipFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E174F0D25F9FA00618676 /* ShoutcastRipFile.cpp */; };
 		F5A1C9890F6B06CF00A96ABD /* SIDFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17510D25F9FA00618676 /* SIDFileDirectory.cpp */; };
 		F5A1C98A0F6B06CF00A96ABD /* SmartPlaylistDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E17530D25F9FA00618676 /* SmartPlaylistDirectory.cpp */; };
@@ -2813,8 +2811,6 @@
 		E38E17490D25F9FA00618676 /* RarManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RarManager.h; sourceTree = "<group>"; };
 		E38E174B0D25F9FA00618676 /* RTVDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RTVDirectory.cpp; sourceTree = "<group>"; };
 		E38E174C0D25F9FA00618676 /* RTVDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTVDirectory.h; sourceTree = "<group>"; };
-		E38E174D0D25F9FA00618676 /* ShoutcastDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShoutcastDirectory.cpp; sourceTree = "<group>"; };
-		E38E174E0D25F9FA00618676 /* ShoutcastDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShoutcastDirectory.h; sourceTree = "<group>"; };
 		E38E174F0D25F9FA00618676 /* ShoutcastRipFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShoutcastRipFile.cpp; sourceTree = "<group>"; };
 		E38E17500D25F9FA00618676 /* ShoutcastRipFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShoutcastRipFile.h; sourceTree = "<group>"; };
 		E38E17510D25F9FA00618676 /* SIDFileDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SIDFileDirectory.cpp; sourceTree = "<group>"; };
@@ -5631,8 +5627,6 @@
 				E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */,
 				F5A7B37C113AFB900059D6AA /* SFTPDirectory.cpp */,
 				F5A7B37D113AFB900059D6AA /* SFTPDirectory.h */,
-				E38E174D0D25F9FA00618676 /* ShoutcastDirectory.cpp */,
-				E38E174E0D25F9FA00618676 /* ShoutcastDirectory.h */,
 				E38E174F0D25F9FA00618676 /* ShoutcastRipFile.cpp */,
 				E38E17500D25F9FA00618676 /* ShoutcastRipFile.h */,
 				E38E17510D25F9FA00618676 /* SIDFileDirectory.cpp */,
@@ -7522,7 +7516,6 @@
 				E38E20520D25F9FD00618676 /* RarDirectory.cpp in Sources */,
 				E38E20530D25F9FD00618676 /* RarManager.cpp in Sources */,
 				E38E20540D25F9FD00618676 /* RTVDirectory.cpp in Sources */,
-				E38E20550D25F9FD00618676 /* ShoutcastDirectory.cpp in Sources */,
 				E38E20560D25F9FD00618676 /* ShoutcastRipFile.cpp in Sources */,
 				E38E20570D25F9FD00618676 /* SIDFileDirectory.cpp in Sources */,
 				E38E20580D25F9FD00618676 /* SmartPlaylistDirectory.cpp in Sources */,
@@ -8396,7 +8389,6 @@
 				F5A1C9840F6B06CF00A96ABD /* RarDirectory.cpp in Sources */,
 				F5A1C9850F6B06CF00A96ABD /* RarManager.cpp in Sources */,
 				F5A1C9860F6B06CF00A96ABD /* RTVDirectory.cpp in Sources */,
-				F5A1C9870F6B06CF00A96ABD /* ShoutcastDirectory.cpp in Sources */,
 				F5A1C9880F6B06CF00A96ABD /* ShoutcastRipFile.cpp in Sources */,
 				F5A1C9890F6B06CF00A96ABD /* SIDFileDirectory.cpp in Sources */,
 				F5A1C98A0F6B06CF00A96ABD /* SmartPlaylistDirectory.cpp in Sources */,
