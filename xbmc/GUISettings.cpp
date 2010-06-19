@@ -1252,9 +1252,7 @@ RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
     RESOLUTION bestRes = RES_DESKTOP;
     float bestScore = FLT_MAX;
     size_t maxRes = g_settings.m_ResInfo.size();
-    if (g_Windowing.GetNumScreens())
-      maxRes = std::min(maxRes, (size_t)RES_DESKTOP + g_Windowing.GetNumScreens());
-    for (unsigned int i = RES_DESKTOP; i < maxRes; ++i)
+    for (unsigned int i = RES_DESKTOP; i < g_settings.m_ResInfo.size(); ++i)
     {
       const RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
       if (info.iScreen != screen)
