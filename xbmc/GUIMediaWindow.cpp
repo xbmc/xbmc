@@ -358,6 +358,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           if (message.GetParam2()) // param2 is used for resetting the history
             SetHistoryForPath(m_vecItems->m_strPath);
         }
+        // clear any cached listing
+        m_vecItems->RemoveDiscCache(GetID());
         Update(m_vecItems->m_strPath);
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_ITEM && message.GetItem())
