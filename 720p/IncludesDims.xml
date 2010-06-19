@@ -1229,12 +1229,12 @@
 		<posx>150</posx>
 	</include>
 	<include name="WtchUnwtchOverlayBGDims">
-		<width>32</width>
+		<width>35</width>
 		<height>39</height>
 	</include>
 	<include name="WtchUnwtchOverlayDims">
-		<posx>7</posx>
-		<posy>4</posy>
+		<posx>2</posx>
+		<posy>-3</posy>
 		<width>35</width>
 		<height>35</height>
 	</include>

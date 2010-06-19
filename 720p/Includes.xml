@@ -2817,8 +2817,8 @@
 			</control>
 			<control type="image">
 				<description>Overlay</description>
-				<posx>-35</posx>
-				<posy>4</posy>
+				<posx>-42</posx>
+				<posy>0</posy>
 				<include>WtchUnwtchOverlayDims</include>
 				<info>ListItem.Overlay</info>
 				<!--
