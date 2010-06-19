@@ -337,7 +337,7 @@ bool CRenderSystemDX::CreateDevice()
   if(m_hDeviceWnd == NULL)
     return false;
 
-  CLog::Log(LOGDEBUG, "%s on adapter %d", __FUNCTION__, m_adapter);
+  CLog::Log(LOGDEBUG, __FUNCTION__" on adapter %d", m_adapter);
 
   D3DDEVTYPE devType = D3DDEVTYPE_HAL;
 
@@ -409,13 +409,16 @@ bool CRenderSystemDX::CreateDevice()
                                             HIWORD(AIdentifier.DriverVersion.LowPart), LOWORD(AIdentifier.DriverVersion.LowPart));
   }
 
+  CLog::Log(LOGERROR, __FUNCTION__" - adapter %d: %s, %s, VendorId %lu, DeviceId %lu",
+            m_adapter, AIdentifier.Driver, AIdentifier.Description, AIdentifier.VendorId, AIdentifier.DeviceId);
+
   // get our render capabilities
   D3DCAPS9 caps;
   m_pD3DDevice->GetDeviceCaps(&caps);
 
   if (caps.PixelShaderVersion < D3DPS_VERSION(2, 0)) 
   {
-    CLog::Log(LOGERROR, "%s - XBMC requires a graphics card supporting Pixel Shaders 2.0", __FUNCTION__);
+    CLog::Log(LOGERROR, __FUNCTION__" - XBMC requires a graphics card supporting Pixel Shaders 2.0");
     g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(2102), g_localizeStrings.Get(2103));
   }
 
@@ -425,7 +428,7 @@ bool CRenderSystemDX::CreateDevice()
   {
     m_defaultD3DUsage = D3DUSAGE_DYNAMIC;
     m_defaultD3DPool  = D3DPOOL_DEFAULT;
-    CLog::Log(LOGDEBUG, "%s - using D3DCAPS2_DYNAMICTEXTURES", __FUNCTION__);
+    CLog::Log(LOGDEBUG, __FUNCTION__" - using D3DCAPS2_DYNAMICTEXTURES");
   }
   else
   {
@@ -435,7 +438,7 @@ bool CRenderSystemDX::CreateDevice()
 
     m_renderCaps = 0;
 
-  CLog::Log(LOGDEBUG, "%s - texture caps: 0x%08X", __FUNCTION__, caps.TextureCaps);
+  CLog::Log(LOGDEBUG, __FUNCTION__" - texture caps: 0x%08X", caps.TextureCaps);
 
   if (SUCCEEDED(m_pD3D->CheckDeviceFormat( m_adapter,
                                            D3DDEVTYPE_HAL,
