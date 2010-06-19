@@ -142,14 +142,6 @@ VECADDONS CRepository::Parse()
   return result;
 }
 
-void CRepository::SetUpdated(const CDateTime& time)
-{
-  CSingleLock lock(m_critSection);
-  CAddonDatabase database;
-  database.Open();
-  database.SetRepoTimestamp(ID(),time.GetAsDBDateTime());
-}
-
 CRepositoryUpdateJob::CRepositoryUpdateJob(RepositoryPtr& repo, bool check)
 {
   m_repo = boost::dynamic_pointer_cast<CRepository>(repo->Clone(repo));
