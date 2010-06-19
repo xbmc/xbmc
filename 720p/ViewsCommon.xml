@@ -206,7 +206,7 @@
 					</control>
 					<control type="label">
 						<posx>60</posx>
-						<width>376</width>
+						<width>540</width>
 						<height>42</height>
 						<align>left</align>
 						<aligny>center</aligny>
@@ -217,7 +217,7 @@
 					</control>
 					<control type="image">
 						<visible>!Container.Content(TVShows) + !Container.Content(Seasons)</visible>
-						<posx>435</posx>
+						<posx>535</posx>
 						<posy>5</posy>
 						<width>35</width>
 						<height>35</height>
@@ -247,6 +247,7 @@
 						<font>SmallDefaultCapsFont</font>
 						<textcolor>Unfocused</textcolor>
 					</control>
+<!--
 					<control type="label">
 						<visible>!IsEmpty(ListItem.Overlay) + [!Container.Content(TVShows) + !Container.Content(Seasons) + !Container.Content(Episodes)]</visible>
 						<posx>580</posx>
@@ -259,6 +260,7 @@
 						<font>SmallDefaultCapsFont</font>
 						<textcolor>Unfocused</textcolor>
 					</control>
+-->
 					<control type="label">
 						<visible>[Container.Content(TVShows) | Container.Content(Seasons)] + IsEmpty(ListItem.Property(zeroepisodecount))</visible>
 						<posx>575</posx>
@@ -313,6 +315,7 @@
 						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
 						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
 					</control>
+<!--
 					<control type="image">
 						<visible>!IsEmpty(ListItem.Label2) | Container.Content(Movies) | Container.Content(Seasons)</visible>
 						<posx>500</posx>
@@ -323,6 +326,7 @@
 						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
 						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
 					</control>
+
 					<control type="image">
 						<visible>Container.Content(TVShows) | Container.Content(Seasons)</visible>
 						<posx>450</posx>
@@ -333,6 +337,7 @@
 						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
 						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
 					</control>
+-->
 					<control type="image">
 						<visible>Container.Content(episodes)</visible>
 						<posx>475</posx>
@@ -345,7 +350,7 @@
 					</control>
 					<control type="label">
 						<posx>60</posx>
-						<width>356</width>
+						<width>460</width>
 						<height>42</height>
 						<align>left</align>
 						<aligny>center</aligny>
@@ -373,7 +378,7 @@
 							<description>shadow</description>
 							<posx>61</posx>
 							<posy>2</posy>
-							<width>376</width>
+							<width>460</width>
 							<height>42</height>
 							<align>left</align>
 							<aligny>center</aligny>
@@ -388,7 +393,7 @@
 							<description>shadow</description>
 							<posx>60</posx>
 							<posy>1</posy>
-							<width>376</width>
+							<width>460</width>
 							<height>42</height>
 							<align>left</align>
 							<aligny>center</aligny>
@@ -401,7 +406,7 @@
 						</control>
 						<control type="label">
 							<posx>60</posx>
-							<width>376</width>
+							<width>460</width>
 							<height>42</height>
 							<align>left</align>
 							<aligny>center</aligny>
@@ -459,13 +464,14 @@
 					</control>
 					<control type="image">
 						<visible>!Container.Content(TVShows) + !Container.Content(Seasons)</visible>
-						<posx>435</posx>
+						<posx>535</posx>
 						<posy>5</posy>
 						<width>35</width>
 						<height>35</height>
 						<info>ListItem.Overlay</info>
 						<include>MediaListItemFade</include>
 					</control>
+<!--
 					<control type="label">
 						<visible>!IsEmpty(ListItem.Overlay) + [!Container.Content(TVShows) + !Container.Content(Seasons) + !Container.Content(Episodes)]</visible>
 						<posx>580</posx>
@@ -478,6 +484,7 @@
 						<include>MediaItemDetailFontFO</include>
 						<include>MediaListItemFade</include>
 					</control>
+-->
 					<control type="label">
 						<visible>Container.Content(Episodes)</visible>
 						<posx>550</posx>
@@ -626,67 +633,92 @@
 				<!-- Layout for any except Episodes -->
 				<control type="group">
 					<posx>10</posx>
-					<posy>-4</posy>
+					<posy>-3</posy>
 					<visible>!Container.Content(Secondary) + !Container.Content(Episodes)</visible>
 					<control type="label">
 						<description>Title</description>
 						<width>InfoListTitleWidth</width>
-						<font>MediumLargeTitleCapsFont</font>
+						<font>LargeTitleFont</font>
 						<label>$INFO[ListItem.Title]</label>
 						<visible>![Container.Content(albums) | Container.Content(artists)]</visible>
 					</control>
 					<control type="label">
 						<description>Album</description>
 						<width>InfoListTitleWidth</width>
-						<font>MediumLargeTitleCapsFont</font>
+						<font>LargeTitleFont</font>
 						<label>$INFO[ListItem.Album]</label>
 						<visible>Container.Content(albums)</visible>
 					</control>
 					<control type="label">
 						<description>Artist</description>
 						<width>InfoListTitleWidth</width>
-						<font>MediumLargeTitleCapsFont</font>
+						<font>LargeTitleFont</font>
 						<label>$INFO[ListItem.Artist]</label>
 						<visible>Container.Content(artists)</visible>
 					</control>
+				<control type="group">
+					<posx>21</posx>
+					<posy>-21</posy>
 					<control type="label">
-						<description>Year</description>
-						<visible>Container.Content(movies) | Container.Content(albums)</visible>
-						<posy>28</posy>
-						<width>InfoListTitleWidth</width>
-						<font>MediumLargeTitleCapsFont</font>
-						<label>$INFO[ListItem.year]</label>
-						<textcolor>Focused</textcolor>
-					</control>
-					<control type="label">
-						<description>Date</description>
-						<visible>Container.Content(tvshows)</visible>
-						<posy>28</posy>
-						<width>InfoListTitleWidth</width>
-						<font>SmallTitleCapsFont</font>
-						<label>$INFO[ListItem.date]</label>
-						<textcolor>Focused</textcolor>
-					</control>
-					<control type="label">
-						<description>Genre</description>
-						<visible>Container.Content(artists)</visible>
-						<posy>28</posy>
-						<width>InfoListTitleWidth</width>
-						<font>SmallTitleCapsFont</font>
-						<label>$INFO[ListItem.Genre]</label>
-						<textcolor>Focused</textcolor>
+						<description>Star Rating Label</description>
+						<posy>70</posy>
+						<posx>60</posx>
+						<width>80</width>
+						<font>MediumTitleFont</font>
+						<label>$LOCALIZE[563]:</label>
+						<align>right</align>
+						<textcolor>FFFF9900</textcolor>
 					</control>
 					<control type="image">
 						<description>Star Rating</description>
 						<align>left</align>
 						<info>ListItem.StarRating</info>
 						<aspectratio>keep</aspectratio>
-						<width>110</width>
+						<width>105</width>
 						<height>47</height>
-						<posy>19</posy>
-						<posx>56</posx>
-						<animation effect="slide" end="-57,20" time="0" condition="Container.Content(tvshows)">Conditional</animation>
+						<posy>57</posy>
+						<posx>63</posx>
+						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
 					</control>
+					<control type="label">
+						<description>Year Label</description>
+						<posy>95</posy>
+						<posx>60</posx>
+						<width>80</width>
+						<font>MediumTitleFont</font>
+						<label>$LOCALIZE[345]:</label>
+						<align>right</align>
+						<textcolor>FFFF9900</textcolor>
+					</control>
+					<control type="label">
+						<description>Year</description>
+						<posx>66</posx>
+						<posy>95</posy>
+						<width>180</width>
+						<font>MediumTitleFont</font>
+						<label fallback="31047">$INFO[ListItem.Year]</label>
+						<align>left</align>
+					</control>
+					<control type="label">
+						<description>Duration Label</description>
+						<posy>120</posy>
+						<posx>60</posx>
+						<width>80</width>
+						<font>MediumTitleFont</font>
+						<label>$LOCALIZE[31132]:</label>
+						<align>right</align>
+						<textcolor>FFFF9900</textcolor>
+					</control>
+					<control type="label">
+						<description>Duration</description>
+						<posx>66</posx>
+						<posy>120</posy>
+						<width>180</width>
+						<font>MediumTitleFont</font>
+						<label>$INFO[ListItem.Duration]</label>
+						<align>left</align>
+					</control>
+				</control>
 <!--
 					<control type="textbox">
 						<description>TagLine</description>
@@ -699,11 +731,11 @@
 					</control>
 -->
 					<control type="group">
-						<posy>116</posy>
+						<posy>143</posy>
 						<control type="textbox">
 							<description>Plot</description>
 							<width>400</width>
-							<height>260</height>
+							<height>217</height>
 							<label>[COLOR=FFFF9900]$INFO[ListItem.tagline][/COLOR][CR]$INFO[ListItem.Plot]</label>
 							<animation effect="slide" end="0,-23" time="0" condition="!Container.Content(movies)">Conditional</animation>
 							<visible>![Container.Content(seasons) | Container.Content(albums) | Container.Content(artists) | Container.Content(tvshows)]</visible>
@@ -753,7 +785,7 @@
 						<posy>-13</posy>
 						<width>650</width>
 						<height>60</height>
-						<font>MediumLargeTitleFont</font>
+						<font>LargeTitleFont</font>
 						<label>$INFO[ListItem.TVShowTitle]</label>
 						<visible>Container.Content(Episodes)</visible>
 					</control>

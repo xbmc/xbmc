@@ -36,7 +36,7 @@
 
 		<control type="image">
 			<posy>-335</posy>
-			<posx>0</posx>
+			<posx>300</posx>
 			<height>37</height>
 			<width min="1" max="95">auto</width>
 			<info>Listitem.Property(mediaTag::contentRating)</info>
