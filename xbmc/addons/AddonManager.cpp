@@ -445,7 +445,8 @@ void CAddonMgr::UpdateRepos()
   for (unsigned int i=0;i<addons.size();++i)
   {
     RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addons[i]);
-    if (repo->LastUpdate()+CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
+    CDateTime lastUpdate = m_database.GetRepoTimestamp(repo->ID());
+    if (lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
     {
       CLog::Log(LOGDEBUG,"Checking repository %s for updates",repo->Name().c_str());
       CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo),this);

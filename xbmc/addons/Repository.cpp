@@ -142,15 +142,6 @@ VECADDONS CRepository::Parse()
   return result;
 }
 
-CDateTime CRepository::LastUpdate()
-{
-  CSingleLock lock(m_critSection);
-  CAddonDatabase database;
-  database.Open();
-  CStdString date;
-  return database.GetRepoTimestamp(ID());
-}
-
 void CRepository::SetUpdated(const CDateTime& time)
 {
   CSingleLock lock(m_critSection);
