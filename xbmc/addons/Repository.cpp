@@ -148,11 +148,7 @@ CDateTime CRepository::LastUpdate()
   CAddonDatabase database;
   database.Open();
   CStdString date;
-  CDateTime datetime = CDateTime::GetCurrentDateTime();
-  if (database.GetRepoTimestamp(ID(),date) > -1)
-    datetime.SetFromDBDateTime(date);
-
-  return datetime;
+  return database.GetRepoTimestamp(ID());
 }
 
 void CRepository::SetUpdated(const CDateTime& time)

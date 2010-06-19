@@ -43,7 +43,13 @@ public:
   bool GetRepository(const CStdString& id, ADDON::VECADDONS& addons);
   bool GetRepository(int id, ADDON::VECADDONS& addons);
   bool SetRepoTimestamp(const CStdString& id, const CStdString& timestamp);
-  int GetRepoTimestamp(const CStdString& id, CStdString& timestamp);
+
+  /*! \brief Retrieve the time a repository was last checked
+   \param id id of the repo
+   \return last time the repo was checked, current time if not available
+   \sa SetRepoTimestamp */
+  CDateTime GetRepoTimestamp(const CStdString& id);
+
   bool Search(const CStdString& search, ADDON::VECADDONS& items);
   bool SearchTitle(const CStdString& strSearch, ADDON::VECADDONS& items);
   static void SetPropertiesFromAddon(const ADDON::AddonPtr& addon, CFileItemPtr& item); 

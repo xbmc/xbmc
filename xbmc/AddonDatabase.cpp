@@ -322,27 +322,27 @@ int CAddonDatabase::GetRepoChecksum(const CStdString& id, CStdString& checksum)
   return -1;
 }
 
-int CAddonDatabase::GetRepoTimestamp(const CStdString& id, CStdString& timestamp)
+CDateTime CAddonDatabase::GetRepoTimestamp(const CStdString& id)
 {
+  CDateTime date = CDateTime::GetCurrentDateTime();
   try
   {
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
+    if (NULL == m_pDB.get()) return date;
+    if (NULL == m_pDS.get()) return date;
 
     CStdString strSQL = FormatSQL("select * from repo where addonID='%s'",id.c_str());
     m_pDS->query(strSQL.c_str());
     if (!m_pDS->eof())
     {
-      timestamp = m_pDS->fv("lastcheck").get_asString();
-      return m_pDS->fv("id").get_asInt();
+      date.SetFromDBDateTime(m_pDS->fv("lastcheck").get_asString());
+      return date;
     }
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed on repo '%s'", __FUNCTION__, id.c_str());
   }
-  timestamp.Empty();
-  return -1;
+  return date;
 }
 
 bool CAddonDatabase::SetRepoTimestamp(const CStdString& id, const CStdString& time)
