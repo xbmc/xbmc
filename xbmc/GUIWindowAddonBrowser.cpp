@@ -28,6 +28,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogSelect.h"
+#include "GUIDialogFileBrowser.h"
 #include "GUIEditControl.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
@@ -210,6 +211,18 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
 bool CGUIWindowAddonBrowser::OnClick(int iItem)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
+  if (item->m_strPath == "install://")
+  {
+    // pop up filebrowser to grab an installed folder
+    VECSOURCES shares = g_settings.m_fileSources;
+    CStdString path;
+    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "*.zip", g_localizeStrings.Get(24041), path))
+    {
+      // install this addon
+      AddJob(path);
+    }
+    return true;
+  }
   if (!item->m_bIsFolder)
   {
     // cancel a downloading job
