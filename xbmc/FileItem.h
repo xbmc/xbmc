@@ -89,7 +89,6 @@ public:
   bool IsAudio() const;
   bool IsKaraoke() const;
   bool IsCUESheet() const;
-  bool IsShoutCast() const;
   bool IsLastFM() const;
   bool IsInternetStream() const;
   bool IsPlayList() const;
