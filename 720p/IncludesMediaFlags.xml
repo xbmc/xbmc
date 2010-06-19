@@ -212,8 +212,8 @@
 			<control type="image">
 				<animation effect="slide" start="0,0" end="0,-27.5" time="0" condition="TRUE">Conditional</animation>
 				<visible>!IsEmpty(Listitem.Property(mediaTag::studio))</visible>
-				<height>90</height>
-				<width min="1" max="95">auto</width>
+				<height>80</height>
+				<width min="1" max="85">auto</width>
 				<info>Listitem.Property(mediaTag::studio)</info>
 				<aspectratio>keep</aspectratio>
 			</control>

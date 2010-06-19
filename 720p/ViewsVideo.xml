@@ -1389,7 +1389,7 @@
 				<orientation>horizontal</orientation>
 				<focusposition>4</focusposition>
 				<include>MediaViewFade</include>
-				<animation effect="slide" start="0,0" end="-512,0" time="0" condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)">Conditional</animation>
+				<animation effect="slide" start="0,0" end="-512,-20" time="0" condition="!Skin.HasSetting(ShowAnimMediaPreview) + Container.Content(episodes)">Conditional</animation>
 				<itemlayout condition="!Skin.HasSetting(ShowAnimMediaPreview) + !Container.Content(episodes)" width="142" height="220">
 					<control type="image">
 						<include>MediaPreviewThumb</include>
