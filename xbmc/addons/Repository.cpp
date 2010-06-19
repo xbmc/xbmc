@@ -202,10 +202,7 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo,
 {
   CAddonDatabase database;
   database.Open();
-  CStdString checksum, timestamp;
-  CDateTime time = CDateTime::GetCurrentDateTime();
-  if (database.GetRepoTimestamp(repo->ID(),timestamp))
-    time.SetFromDBDate(timestamp);
+  CStdString checksum;
   int idRepo = database.GetRepoChecksum(repo->ID(),checksum);
   CStdString reposum=checksum;
   if (check)
