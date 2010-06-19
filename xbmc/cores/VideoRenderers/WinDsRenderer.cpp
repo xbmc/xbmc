@@ -33,6 +33,7 @@
 #include "MathUtils.h"
 #include "DShowUtil/DShowUtil.h"
 #include "StreamsManager.h"
+#include "Filters\DX9AllocatorPresenter.h"
 #include "IPaintCallback.h"
 
 CWinDsRenderer::CWinDsRenderer():
@@ -44,6 +45,13 @@ CWinDsRenderer::CWinDsRenderer():
 CWinDsRenderer::~CWinDsRenderer()
 {
   UnInit();
+}
+
+void CWinDsRenderer::SetupScreenshot()
+{
+  // When taking a screenshot, the CDX9AllocatorPreenter::Paint() method is called, but never CDX9AllocatorPresenter::OnAfterPresent().
+  // The D3D device is always locked. Setting bPaintAll to false fixes that.
+  CDX9AllocatorPresenter::bPaintAll = false;
 }
 
 bool CWinDsRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
@@ -123,14 +131,20 @@ void CWinDsRenderer::AutoCrop(bool bCrop)
 {
 }
 
-void CWinDsRenderer::RegisterDsCallback(IPaintCallback *callback)
+void CWinDsRenderer::RegisterCallback(IPaintCallback *callback)
 {
   m_paintCallback = callback;
 }
 
-void CWinDsRenderer::UnRegisterDsCallback()
+void CWinDsRenderer::UnregisterCallback()
 {
   m_paintCallback = NULL;
+}
+
+inline void CWinDsRenderer::OnAfterPresent()
+{
+  if (m_paintCallback)
+    m_paintCallback->OnAfterPresent();
 }
 
 void CWinDsRenderer::RenderDShowBuffer( DWORD flags )

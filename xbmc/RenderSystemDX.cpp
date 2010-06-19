@@ -210,11 +210,7 @@ void CRenderSystemDX::BuildPresentParameters()
 #endif
   }
 
-#ifdef HAS_DS_PLAYER
-  m_D3DPP.EnableAutoDepthStencil = FALSE;
-#elif
   m_D3DPP.EnableAutoDepthStencil = TRUE;
-#endif
   m_D3DPP.hDeviceWindow      = m_hDeviceWnd;
   m_D3DPP.BackBufferWidth    = m_nBackBufferWidth;
   m_D3DPP.BackBufferHeight   = m_nBackBufferHeight;
@@ -557,7 +553,17 @@ bool CRenderSystemDX::PresentRenderImpl()
     if (priority != THREAD_PRIORITY_ERROR_RETURN)
       SetThreadPriority(GetCurrentThread(), priority);
   }
-  hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
+
+  if (m_useD3D9Ex)
+    hr = ((IDirect3DDevice9Ex *)m_pD3DDevice)->PresentEx(NULL, NULL, 0, NULL, NULL);
+  else
+    hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
+#ifdef HAS_DS_PLAYER
+  if ( g_application.GetCurrentPlayer() == PCID_DSPLAYER )
+  {
+    g_renderManager.OnAfterPresent(); // We need to do some stuff after Present
+  }
+#endif
 
   if( D3DERR_DEVICELOST == hr )
   {

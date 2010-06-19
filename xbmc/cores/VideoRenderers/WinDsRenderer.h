@@ -41,7 +41,7 @@ public:
   ~CWinDsRenderer();
 
   virtual void Update(bool bPauseDrawing);
-  virtual void SetupScreenshot() {};
+  virtual void SetupScreenshot();
   void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height){};
 
   // Player functions
@@ -55,12 +55,9 @@ public:
   virtual void         Reset(); /* resets renderer after seek for example */
   virtual bool         IsConfigured() { return m_bConfigured; }
   
-  virtual void         RegisterDsCallback(IPaintCallback *callback);
-  virtual void         UnRegisterDsCallback();
-  // TODO:DIRECTX - implement these
-  virtual bool         SupportsBrightness() { return false; }
-  virtual bool         SupportsContrast() { return false; }
-  virtual bool         SupportsGamma() { return false; }
+  virtual void         RegisterCallback(IPaintCallback *callback);
+  virtual void         UnregisterCallback();
+  virtual inline void  OnAfterPresent();
 
   virtual bool         Supports(ERENDERFEATURE feature);
   virtual bool         Supports(EINTERLACEMETHOD method);

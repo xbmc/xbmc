@@ -182,6 +182,8 @@ static HRESULT DrawRect(IDirect3DDevice9* pD3DDev, MYD3DVERTEX<0> v[4])
 
 // CDX9AllocatorPresenter
 
+bool CDX9AllocatorPresenter::bPaintAll = true;
+
 CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsEVR, CStdString &_Error) 
   : ISubPicAllocatorPresenterImpl(hWnd, hr)
   , m_ScreenSize(0, 0)
@@ -206,6 +208,11 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   , m_TextScale(1.0)
   , m_pScreenSize(0, 0, 0, 0)
   , m_drawingIsDone()
+  , m_bPaintWasCalled(false)
+  , m_MainThreadId(0)
+  , m_bNeedCheckSample(true)
+  , m_hVSyncThread(NULL)
+  , m_hEvtQuit(NULL)
 {
   g_Windowing.Register(this);
   if (m_bIsEVR)
@@ -213,14 +220,8 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   else
     g_renderManager.PreInit(RENDERER_DSHOW_VMR9);
 
-  g_renderManager.RegisterDsCallback(this);
-  m_MainThreadId = 0;
-  m_bNeedCheckSample = true;
-  m_hVSyncThread = NULL;
-  m_hEvtQuit = NULL;
+  g_renderManager.RegisterCallback(this);
   m_bIsFullscreen = g_dsSettings.IsD3DFullscreen();
-
-  HINSTANCE    hDll;
 
   if(FAILED(hr)) 
   {
@@ -228,11 +229,13 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
     return;
   }
 
+  bPaintAll = true;
+
   m_pD3DXLoadSurfaceFromMemory  = NULL;
-  m_pD3DXCreateLine        = NULL;
-  m_pD3DXCreateFont        = NULL;
-  m_pD3DXCreateSprite        = NULL;
-  hDll              = g_dsSettings.GetD3X9Dll();
+  m_pD3DXCreateLine             = NULL;
+  m_pD3DXCreateFont             = NULL;
+  m_pD3DXCreateSprite           = NULL;
+  HINSTANCE hDll                = g_dsSettings.GetD3X9Dll();
   if(hDll)
   {
     (FARPROC&)m_pD3DXLoadSurfaceFromMemory  = GetProcAddress(hDll, "D3DXLoadSurfaceFromMemory");
@@ -294,7 +297,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
 CDX9AllocatorPresenter::~CDX9AllocatorPresenter() 
 {
   g_Windowing.Unregister(this);
-  g_renderManager.UnRegisterDsCallback();
+  g_renderManager.UnregisterCallback();
   if (m_bDesktopCompositionDisabled)
   {
     m_bDesktopCompositionDisabled = false;
@@ -577,13 +580,11 @@ void CDX9AllocatorPresenter::VSyncThread()
             VSyncPos += m_ScreenSize.cy;
 
           int ScanLine = 0; 
-          int bInVBlank = 0;
           int StartScanLine = ScanLine;
           int LastPos = ScanLine;
           ScanLine = (VSyncPos + 1) % m_ScreenSize.cy;
           if (ScanLine < 0)
             ScanLine += m_ScreenSize.cy;
-          int FirstScanLine = ScanLine;
           int ScanLineMiddle = ScanLine + m_ScreenSize.cy/2;
           ScanLineMiddle = ScanLineMiddle % m_ScreenSize.cy;
           if (ScanLineMiddle < 0)
@@ -1258,10 +1259,8 @@ HRESULT CDX9AllocatorPresenter::TextureResize(Com::SmartPtr<IDirect3DTexture9> p
   float w = (float)desc.Width;
   float h = (float)desc.Height;
 
-  float dx = 1.0f/w;
-  float dy = 1.0f/h;
-  float dx2 = 1.0f/w;
-  float dy2 = 1.0f/h;
+  float dx2 = 1.0/w;
+  float dy2 = 1.0/h;
 
   MYD3DVERTEX<1> v[] =
   {
@@ -1370,7 +1369,7 @@ HRESULT CDX9AllocatorPresenter::TextureResizeBicubic2pass(Com::SmartPtr<IDirect3
   // The 2 pass sampler is incorrect in that it only does bilinear resampling in the y direction.
   return TextureResizeBicubic1pass(pTexture, dst, SrcRect);
 
-  HRESULT hr;
+  /*HRESULT hr;
 
   // rotated?
   if(dst[0].z != dst[1].z || dst[2].z != dst[3].z || dst[0].z != dst[3].z
@@ -1475,7 +1474,7 @@ HRESULT CDX9AllocatorPresenter::TextureResizeBicubic2pass(Com::SmartPtr<IDirect3
 
   m_pD3DDev->SetPixelShader(NULL);
 
-  return hr;
+  return hr;*/
 }
 
 HRESULT CDX9AllocatorPresenter::AlphaBlt(RECT* pSrc, RECT* pDst, Com::SmartPtr<IDirect3DTexture9> pTexture)
@@ -1487,77 +1486,71 @@ HRESULT CDX9AllocatorPresenter::AlphaBlt(RECT* pSrc, RECT* pDst, Com::SmartPtr<I
 
   HRESULT hr;
 
-  do
+  D3DSURFACE_DESC d3dsd;
+  ZeroMemory(&d3dsd, sizeof(d3dsd));
+  if(FAILED(pTexture->GetLevelDesc(0, &d3dsd)) /*|| d3dsd.Type != D3DRTYPE_TEXTURE*/)
+    return E_FAIL;
+
+  float w = (float)d3dsd.Width;
+  float h = (float)d3dsd.Height;
+
+  struct
   {
-    D3DSURFACE_DESC d3dsd;
-    ZeroMemory(&d3dsd, sizeof(d3dsd));
-    if(FAILED(pTexture->GetLevelDesc(0, &d3dsd)) /*|| d3dsd.Type != D3DRTYPE_TEXTURE*/)
-      break;
-
-    float w = (float)d3dsd.Width;
-    float h = (float)d3dsd.Height;
-
-    struct
-    {
-      float x, y, z, rhw;
-      float tu, tv;
-    }
-    pVertices[] =
-    {
-      {(float)dst.left, (float)dst.top, 0.5f, 2.0f, (float)src.left / w, (float)src.top / h},
-      {(float)dst.right, (float)dst.top, 0.5f, 2.0f, (float)src.right / w, (float)src.top / h},
-      {(float)dst.left, (float)dst.bottom, 0.5f, 2.0f, (float)src.left / w, (float)src.bottom / h},
-      {(float)dst.right, (float)dst.bottom, 0.5f, 2.0f, (float)src.right / w, (float)src.bottom / h},
-    };
+    float x, y, z, rhw;
+    float tu, tv;
+  }
+  pVertices[] =
+  {
+    {(float)dst.left, (float)dst.top, 0.5f, 2.0f, (float)src.left / w, (float)src.top / h},
+    {(float)dst.right, (float)dst.top, 0.5f, 2.0f, (float)src.right / w, (float)src.top / h},
+    {(float)dst.left, (float)dst.bottom, 0.5f, 2.0f, (float)src.left / w, (float)src.bottom / h},
+    {(float)dst.right, (float)dst.bottom, 0.5f, 2.0f, (float)src.right / w, (float)src.bottom / h},
+  };
 /*
-    for(int i = 0; i < countof(pVertices); i++)
-    {
-      pVertices[i].x -= 0.5;
-      pVertices[i].y -= 0.5;
-    }
+  for(int i = 0; i < countof(pVertices); i++)
+  {
+    pVertices[i].x -= 0.5;
+    pVertices[i].y -= 0.5;
+  }
 */
 
-    hr = m_pD3DDev->SetTexture(0, pTexture);
+  hr = m_pD3DDev->SetTexture(0, pTexture);
 
-    DWORD abe, sb, db;
-    hr = m_pD3DDev->GetRenderState(D3DRS_ALPHABLENDENABLE, &abe);
-    hr = m_pD3DDev->GetRenderState(D3DRS_SRCBLEND, &sb);
-    hr = m_pD3DDev->GetRenderState(D3DRS_DESTBLEND, &db);
+  DWORD abe, sb, db;
+  hr = m_pD3DDev->GetRenderState(D3DRS_ALPHABLENDENABLE, &abe);
+  hr = m_pD3DDev->GetRenderState(D3DRS_SRCBLEND, &sb);
+  hr = m_pD3DDev->GetRenderState(D3DRS_DESTBLEND, &db);
 
-    hr = m_pD3DDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-    hr = m_pD3DDev->SetRenderState(D3DRS_LIGHTING, FALSE);
-    hr = m_pD3DDev->SetRenderState(D3DRS_ZENABLE, FALSE);
-    hr = m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    hr = m_pD3DDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE); // pre-multiplied src and ...
-    hr = m_pD3DDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCALPHA); // ... inverse alpha channel for dst
+  hr = m_pD3DDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+  hr = m_pD3DDev->SetRenderState(D3DRS_LIGHTING, FALSE);
+  hr = m_pD3DDev->SetRenderState(D3DRS_ZENABLE, FALSE);
+  hr = m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+  hr = m_pD3DDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE); // pre-multiplied src and ...
+  hr = m_pD3DDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCALPHA); // ... inverse alpha channel for dst
 
-    hr = m_pD3DDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-    hr = m_pD3DDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    hr = m_pD3DDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+  hr = m_pD3DDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+  hr = m_pD3DDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+  hr = m_pD3DDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
 
-    hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-    hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
-    hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+  hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+  hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+  hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 
-    hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
-    hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+  hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+  hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 
-    hr = m_pD3DDev->SetPixelShader(NULL);
+  hr = m_pD3DDev->SetPixelShader(NULL);
 
-    hr = m_pD3DDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
-    hr = m_pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, pVertices, sizeof(pVertices[0]));
+  hr = m_pD3DDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
+  hr = m_pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, pVertices, sizeof(pVertices[0]));
 
-    m_pD3DDev->SetTexture(0, NULL);
+  m_pD3DDev->SetTexture(0, NULL);
 
-    m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, abe);
-    m_pD3DDev->SetRenderState(D3DRS_SRCBLEND, sb);
-    m_pD3DDev->SetRenderState(D3DRS_DESTBLEND, db);
+  m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, abe);
+  m_pD3DDev->SetRenderState(D3DRS_SRCBLEND, sb);
+  m_pD3DDev->SetRenderState(D3DRS_DESTBLEND, db);
 
-    return S_OK;
-  }
-  while(0);
-
-  return E_FAIL;
+  return S_OK;
 }
 
 void CDX9AllocatorPresenter::CalculateJitter(LONGLONG PerfCounter)
@@ -1608,7 +1601,7 @@ bool CDX9AllocatorPresenter::GetVBlank(int &_ScanLine, int &_bInVBlank, bool _bM
   if (m_bPendingResetDevice)
     return false;
 
-  LONGLONG llPerf;
+  LONGLONG llPerf = 0;
   if (_bMeasureTime)
     llPerf = CTimeUtils::GetPerfCounter();
 
@@ -1953,7 +1946,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
   m_pD3DDev->SetRenderTarget(0, pBackBuffer);
   hr = m_pD3DDev->Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
 
-  if(g_renderManager.IsConfigured())//!rDstVid.IsRectEmpty())
+  if(g_renderManager.IsConfigured() && !rDstVid.IsRectEmpty())
   {
     if(m_pVideoTexture[m_nCurSurface])
     {
@@ -2087,7 +2080,55 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
 
         int src = 1, dst = 0;
 
+#if 0
+        POSITION pos = m_pPixelShadersScreenSpace.GetHeadPosition();
+        while(pos)
+        {
+          if (m_pPixelShadersScreenSpace.GetTailPosition() == pos)
+          {
+            m_pD3DDev->SetRenderTarget(0, pBackBuffer);
+          }
+          else
+          {
+            CComPtr<IDirect3DSurface9> pRT;
+            hr = m_pScreenSizeTemporaryTexture[dst]->GetSurfaceLevel(0, &pRT);
+            m_pD3DDev->SetRenderTarget(0, pRT);
+          }
+
+          CExternalPixelShader &Shader = m_pPixelShadersScreenSpace.GetNext(pos);
+          if (!Shader.m_pPixelShader)
+            Shader.Compile(m_pPSC);
+          hr = m_pD3DDev->SetPixelShader(Shader.m_pPixelShader);
+          TextureCopy(m_pScreenSizeTemporaryTexture[src]);
+
+          swap(src, dst);
+        }
+#endif
+
         hr = m_pD3DDev->SetPixelShader(NULL);
+      }
+    }
+  }
+  else
+  {
+    if(pBackBuffer)
+    {
+      ClipToSurface(pBackBuffer, rSrcVid, rDstVid); // grrr
+      // IMPORTANT: rSrcVid has to be aligned on mod2 for yuy2->rgb conversion with StretchRect!!!
+      rSrcVid.left &= ~1;
+      rSrcVid.right &= ~1;
+      rSrcVid.top &= ~1;
+      rSrcVid.bottom &= ~1;
+      hr = m_pD3DDev->StretchRect(m_pVideoSurface[m_nCurSurface], rSrcVid, pBackBuffer, rDstVid, m_filter);
+
+      // Support ffdshow queueing
+      // m_pD3DDev->StretchRect may fail if ffdshow is using queue output samples.
+      // Here we don't want to show the black buffer.
+      if(FAILED(hr))
+      {
+        if (m_OrderedPaint)
+          --m_OrderedPaint;
+        return false;
       }
     }
   }
@@ -2096,7 +2137,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
   if (CStreamsManager::Get()->SubtitleManager)
   {
 
-    Com::SmartPtr<IDirect3DTexture9> pTexture;  
+    Com::SmartPtr<IDirect3DTexture9> pTexture;
     Com::SmartRect pSrc, pDst;
 
     if (m_pScreenSize.Width() == 0) // Not init
@@ -2158,15 +2199,14 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
     m_PaintTime = (CTimeUtils::GetPerfCounter() - StartPaint);
     m_PaintTimeMin = std::min(m_PaintTimeMin, m_PaintTime);
     m_PaintTimeMax = std::max(m_PaintTimeMax, m_PaintTime);
-    
   }
 
   bool bWaited = false;
-  bool bTakenLock = false;
+  m_bTakenLock = false;
   if (fAll)
   {
     // Only sync to refresh when redrawing all
-    bool bTest = WaitForVBlank(bWaited, bTakenLock);
+    bool bTest = WaitForVBlank(bWaited, m_bTakenLock);
     ASSERT(bTest == bDoVSyncInPresent);
     if (!bDoVSyncInPresent)
     {
@@ -2177,86 +2217,12 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
     }
   }
 
-
-  // Create a device pointer m_pd3dDevice
-
-  // Create a query object
-
-
-  /*{
-    Com::SmartPtr<IDirect3DQuery9> pEventQuery;
-    m_pD3DDev->CreateQuery(D3DQUERYTYPE_EVENT, &pEventQuery);
-
-    LONGLONG llPerf = CTimeUtils::GetPerfCounter();
-    if (m_bIsFullscreen)
-      hr = m_pD3DDev->Present(NULL, NULL, NULL, NULL);
-    else
-      hr = m_pD3DDev->Present(rSrcPri, rDstPri, NULL, NULL);
-
-    // Issue an End event
-    if (pEventQuery)
-      pEventQuery->Issue(D3DISSUE_END);
-
-    BOOL Data;
-
-    if (g_dsSettings.pRendererSettings->iVMRFlushGPUAfterPresent && pEventQuery)
-    {
-      LONGLONG FlushStartTime = CTimeUtils::GetPerfCounter();
-      while (S_FALSE == pEventQuery->GetData( &Data, sizeof(Data), D3DGETDATA_FLUSH ))
-      {
-        if (!g_dsSettings.pRendererSettings->iVMRFlushGPUWait)
-          break;
-        if (CTimeUtils::GetPerfCounter() - FlushStartTime > 500000)
-          break; // timeout after 50 ms
-      }
-    }
-
-    int ScanLine;
-    int bInVBlank;
-    GetVBlank(ScanLine, bInVBlank, false);
-
-    if (fAll && (!m_bIsEVR || m_OrderedPaint))
-    {
-      m_VBlankEndPresent = ScanLine;
-    }
-
-    while (ScanLine == 0 || bInVBlank)
-    {
-      GetVBlank(ScanLine, bInVBlank, false);
-
-    }
-    m_VBlankStartMeasureTime = CTimeUtils::GetPerfCounter();
-    m_VBlankStartMeasure = ScanLine;*/
-
-  LONGLONG llPerf = CTimeUtils::GetPerfCounter();
-  if (fAll && bDoVSyncInPresent)
-  {
-    m_PresentWaitTime = (CTimeUtils::GetPerfCounter() - llPerf) + PresentWaitTime;
-    m_PresentWaitTimeMin = std::min(m_PresentWaitTimeMin, m_PresentWaitTime);
-    m_PresentWaitTimeMax = std::max(m_PresentWaitTimeMax, m_PresentWaitTime);
-  }
-  else
-  {
-    m_PresentWaitTime = 0;
-    m_PresentWaitTimeMin = std::min(m_PresentWaitTimeMin, m_PresentWaitTime);
-    m_PresentWaitTimeMax = std::max(m_PresentWaitTimeMax, m_PresentWaitTime);
-  }
-
-  if (bDoVSyncInPresent)
-  {
-    LONGLONG Time = CTimeUtils::GetPerfCounter();
-    if (!m_bIsEVR || m_OrderedPaint)
-      CalculateJitter(Time);
-    OnVBlankFinished(fAll, Time);
-  }
-
-  if (bTakenLock)
-    UnlockD3DDevice();
-
-  if (m_OrderedPaint)
-    --m_OrderedPaint;
-
+  m_bPaintWasCalled = true;
+  m_beforePresentTime = CTimeUtils::GetPerfCounter();
   return(true);
+
+  // We have some code that need to be runned after the D3D Present method was called.
+  // That code is now on the OnAfterPresent method.
 }
 
 double CDX9AllocatorPresenter::GetFrameTime()
@@ -2748,7 +2714,89 @@ void CDX9AllocatorPresenter::OnPaint(CRect destRect)
   m_VideoRect.right = (long) destRect.x2;
 
   //Need to be true for vsync
-  Paint(true);
+  Paint(bPaintAll);
+  bPaintAll = true;
+}
+
+void CDX9AllocatorPresenter::OnAfterPresent()
+{
+  if (! m_bPaintWasCalled)
+    return;
+
+  m_bPaintWasCalled = false;
+
+  BOOL bCompositionEnabled = m_bCompositionEnabled;
+  bool bDoVSyncInPresent = (!bCompositionEnabled && !m_bAlternativeVSync) || !g_dsSettings.pRendererSettings->vSync;
+  bool fAll = true; // It seems that Paint is always called with a "true" param
+
+  {
+    Com::SmartPtr<IDirect3DQuery9> pEventQuery;
+    m_pD3DDev->CreateQuery(D3DQUERYTYPE_EVENT, &pEventQuery);
+
+    // Issue an End event
+    if (pEventQuery)
+      pEventQuery->Issue(D3DISSUE_END);
+
+    BOOL Data = 0;
+
+    if (g_dsSettings.pRendererSettings->flushGPUAfterPresent && pEventQuery)
+    {
+      LONGLONG FlushStartTime = CTimeUtils::GetPerfCounter();
+      while (S_FALSE == pEventQuery->GetData( &Data, sizeof(Data), D3DGETDATA_FLUSH ))
+      {
+        if (!g_dsSettings.pRendererSettings->flushGPUWait)
+          break;
+        if (CTimeUtils::GetPerfCounter() - FlushStartTime > 500000)
+          break; // timeout after 50 ms
+      }
+    }
+
+    int ScanLine;
+    int bInVBlank;
+    GetVBlank(ScanLine, bInVBlank, false);
+
+    if (fAll && (!m_bIsEVR || m_OrderedPaint))
+    {
+      m_VBlankEndPresent = ScanLine;
+    }
+
+    while (ScanLine == 0 || bInVBlank)
+    {
+      GetVBlank(ScanLine, bInVBlank, false);
+
+    }
+    m_VBlankStartMeasureTime = CTimeUtils::GetPerfCounter();
+    m_VBlankStartMeasure = ScanLine;
+
+    LONGLONG llPerf = CTimeUtils::GetPerfCounter();
+    if (fAll && bDoVSyncInPresent)
+    {
+      // PresentWaitTime is always 0
+      m_PresentWaitTime = (CTimeUtils::GetPerfCounter() - m_beforePresentTime);
+      m_PresentWaitTimeMin = std::min(m_PresentWaitTimeMin, m_PresentWaitTime);
+      m_PresentWaitTimeMax = std::max(m_PresentWaitTimeMax, m_PresentWaitTime);
+    }
+    else
+    {
+      m_PresentWaitTime = 0;
+      m_PresentWaitTimeMin = std::min(m_PresentWaitTimeMin, m_PresentWaitTime);
+      m_PresentWaitTimeMax = std::max(m_PresentWaitTimeMax, m_PresentWaitTime);
+    }
+  }
+
+  if (bDoVSyncInPresent)
+  {
+    LONGLONG Time = CTimeUtils::GetPerfCounter();
+    if (!m_bIsEVR || m_OrderedPaint)
+      CalculateJitter(Time);
+    OnVBlankFinished(fAll, Time);
+  }
+
+  if (m_bTakenLock)
+    UnlockD3DDevice();
+
+  if (m_OrderedPaint)
+    --m_OrderedPaint;
 }
 
 #endif

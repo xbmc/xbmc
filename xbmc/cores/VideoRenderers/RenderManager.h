@@ -86,17 +86,22 @@ public:
       m_pRenderer->ReleaseImage(source, preserve);
   }
 #ifdef HAS_DS_PLAYER
-  inline void RegisterDsCallback(IPaintCallback *callback)
+  inline void RegisterCallback(IPaintCallback *callback)
   {
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
-      m_pRenderer->RegisterDsCallback(callback);
+      m_pRenderer->RegisterCallback(callback);
   }
-  inline void UnRegisterDsCallback()
+  inline void UnregisterCallback()
   {
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
-      m_pRenderer->UnRegisterDsCallback();
+      m_pRenderer->UnregisterCallback();
+  }
+  inline void OnAfterPresent()
+  {
+    if (m_pRenderer)
+      m_pRenderer->OnAfterPresent();
   }
 #endif
 

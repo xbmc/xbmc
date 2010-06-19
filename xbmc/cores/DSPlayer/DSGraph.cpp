@@ -450,9 +450,6 @@ void CDSGraph::Stop(bool rewind)
 
   LONGLONG pos = 0;
   
-  if (rewind && m_pMediaSeeking)
-    m_pMediaSeeking->SetPositions(&pos, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
-
   if (m_pMediaControl)
   {
     if (m_pMediaControl->Stop() == S_FALSE)
@@ -465,6 +462,9 @@ void CDSGraph::Stop(bool rewind)
   }
 
   UpdateState();
+
+  if (rewind && m_pMediaSeeking)
+    m_pMediaSeeking->SetPositions(&pos, AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
 
   if (! m_pGraphBuilder)
     return;

@@ -219,7 +219,7 @@ public:
 
     void        DrawText(const RECT &rc, const CStdString &strText, int _Priority);
     void        DrawStats();
-    HRESULT        AlphaBlt(RECT* pSrc, RECT* pDst, Com::SmartPtr<IDirect3DTexture9> pTexture);
+    HRESULT     AlphaBlt(RECT* pSrc, RECT* pDst, Com::SmartPtr<IDirect3DTexture9> pTexture);
 
     // D3D Reset
     virtual void BeforeDeviceReset();
@@ -320,6 +320,7 @@ public:
     __int64        m_PaintTime;
     __int64        m_PaintTimeMin;
     __int64        m_PaintTimeMax;
+    __int64        m_beforePresentTime;
 
     __int64        m_WaitForGPUTime;
 
@@ -340,6 +341,8 @@ public:
     double          m_ModeratedTimeSpeedDiff;
 
     bool          m_bCorrectedFrameTime;
+    bool          m_bTakenLock;
+    bool          m_bPaintWasCalled;
     int           m_FrameTimeCorrection;
     __int64       m_LastFrameDuration;
     __int64       m_LastSampleTime;
@@ -365,4 +368,7 @@ public:
 
     // IPainCallback
     virtual void OnPaint(CRect destRect);
+    virtual void OnAfterPresent();
+
+    static bool bPaintAll;
   };

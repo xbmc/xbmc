@@ -31,6 +31,7 @@ class IPaintCallback
 public:
   virtual ~IPaintCallback() {};
 
-  virtual void OnPaint(CRect destRect) {};
+  virtual void OnPaint(CRect destRect) = 0;
+  virtual void OnAfterPresent() = 0;
 };
 

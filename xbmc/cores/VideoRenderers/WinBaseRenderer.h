@@ -64,8 +64,9 @@ public:
   virtual void         Reset() {}; /* resets renderer after seek for example */
   virtual bool         IsConfigured() {return false;}
   
-  virtual void         RegisterDsCallback(IPaintCallback *callback) {};
-  virtual void         UnRegisterDsCallback() {};
+  virtual void         RegisterCallback(IPaintCallback *callback) {};
+  virtual void         UnregisterCallback() {};
+  virtual inline void  OnAfterPresent() {};
   // TODO:DIRECTX - implement these
   virtual bool         SupportsBrightness() { return false; };
   virtual bool         SupportsContrast() { return false; };
