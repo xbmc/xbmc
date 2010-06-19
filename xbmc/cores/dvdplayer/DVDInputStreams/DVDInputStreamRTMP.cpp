@@ -24,23 +24,12 @@
 #endif
 
 #ifdef HAS_LIBRTMP
-#include "FileItem.h"
+#include "AdvancedSettings.h"
 #include "DVDInputStreamRTMP.h"
-#include "VideoInfoTag.h"
 #include "FileSystem/IFile.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 
-#ifdef _LINUX
-  #include <sys/types.h>
-  #include <sys/socket.h>
-  #include <netdb.h>
-  #include <arpa/inet.h>
-  #include <unistd.h>
-  #include <netinet/in.h>
-#endif
-
-#include "AdvancedSettings.h"
 #include <string>
 
 using namespace XFILE;
