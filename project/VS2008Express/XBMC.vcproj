@@ -4280,10 +4280,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\ShoutcastDirectory.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\FileSystem\ShoutcastRipFile.cpp"
 					>
 				</File>
