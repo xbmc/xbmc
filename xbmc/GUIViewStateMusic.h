@@ -107,17 +107,6 @@ protected:
   virtual VECSOURCES& GetSources();
 };
 
-class CGUIViewStateMusicShoutcast : public CGUIViewStateWindowMusic
-{
-public:
-  CGUIViewStateMusicShoutcast(const CFileItemList& items);
-
-protected:
-  virtual bool AutoPlayNextItem();
-  virtual void SaveViewState();
-};
-
-
 class CGUIViewStateMusicLastFM : public CGUIViewStateWindowMusic
 {
 public:

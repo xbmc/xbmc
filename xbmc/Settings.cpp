@@ -661,7 +661,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetViewState(pElement, "musicnavartists", m_viewStateMusicNavArtists);
     GetViewState(pElement, "musicnavalbums", m_viewStateMusicNavAlbums);
     GetViewState(pElement, "musicnavsongs", m_viewStateMusicNavSongs);
-    GetViewState(pElement, "musicshoutcast", m_viewStateMusicShoutcast);
     GetViewState(pElement, "musiclastfm", m_viewStateMusicLastFM);
     GetViewState(pElement, "videonavactors", m_viewStateVideoNavActors);
     GetViewState(pElement, "videonavyears", m_viewStateVideoNavYears);
@@ -832,7 +831,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
     SetViewState(pNode, "musicnavartists", m_viewStateMusicNavArtists);
     SetViewState(pNode, "musicnavalbums", m_viewStateMusicNavAlbums);
     SetViewState(pNode, "musicnavsongs", m_viewStateMusicNavSongs);
-    SetViewState(pNode, "musicshoutcast", m_viewStateMusicShoutcast);
     SetViewState(pNode, "musiclastfm", m_viewStateMusicLastFM);
     SetViewState(pNode, "videonavactors", m_viewStateVideoNavActors);
     SetViewState(pNode, "videonavyears", m_viewStateVideoNavYears);
