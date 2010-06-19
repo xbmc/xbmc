@@ -40,6 +40,7 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "Key.h"
+#include "FileSystem/AddonsDirectory.h"
 
 using namespace std;
 
@@ -128,12 +129,11 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   return new CGUIViewStateGeneral(items);
 }
 
-CGUIViewState::CGUIViewState(const CFileItemList& items, const CPluginSource::Content& content/*=CONTENT_NONE*/) : m_items(items)
+CGUIViewState::CGUIViewState(const CFileItemList& items) : m_items(items)
 {
   m_currentViewAsControl=0;
   m_currentSortMethod=0;
   m_sortOrder=SORT_ORDER_ASC;
-  m_content = content;
 }
 
 CGUIViewState::~CGUIViewState()
@@ -339,48 +339,23 @@ CStdString CGUIViewState::GetExtensions()
   return "";
 }
 
-CMediaSource SourceFromPlugin(const PluginPtr &plugin, const CStdString &type)
-{
-  // format for sources's path is
-  // eg. type://id
-  CMediaSource source;
-  CURL path;
-  path.SetProtocol(type);
-  path.SetHostName(plugin->ID());
-  source.strPath = path.Get();
-  source.strName = plugin->Name();
-  source.m_strThumbnailImage = plugin->Icon();
-  source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
-  return source;
-}
-
 VECSOURCES& CGUIViewState::GetSources()
 {
-  // more consolidation could happen here for all content types
-  // - playlists, autoconfig network shares, whatnot
-
-  VECADDONS addons;
-  ADDON::CAddonMgr::Get().GetAddons(ADDON_PLUGIN, addons);
-
-  for (unsigned i=0; i<addons.size(); i++)
-  {
-    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addons[i]);
-    if (!plugin || !plugin->Provides(m_content))
-      continue;
-    m_sources.push_back(SourceFromPlugin(plugin, "plugin"));
-  }
-
-  addons.clear();
-  ADDON::CAddonMgr::Get().GetAddons(ADDON_SCRIPT, addons);
-  for (unsigned i=0; i<addons.size(); i++)
-  {
-    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addons[i]);
-    if (!plugin || !plugin->Provides(m_content))
-      continue;
-    m_sources.push_back(SourceFromPlugin(plugin, "script"));
-  }
-
   return m_sources;
+}
+
+void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString &label)
+{
+  CFileItemList items;
+  if (XFILE::CAddonsDirectory::GetScriptsAndPlugins(content, items))
+  { // add the plugin source
+    CMediaSource source;
+    source.strPath = "addons://sources/" + content + "/";    
+    source.strName = label;
+    source.m_strThumbnailImage = "";
+    source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
+    m_sources.push_back(source);
+  }
 }
 
 CGUIViewStateGeneral::CGUIViewStateGeneral(const CFileItemList& items) : CGUIViewState(items)

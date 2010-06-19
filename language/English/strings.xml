@@ -721,13 +721,13 @@
   <string id="1034">Submenu</string>
   <string id="1035">Enable submenu buttons</string>
   <string id="1036">Favourites</string>
-  <string id="1037">Video plugins</string>
-  <string id="1038">Music plugins</string>
-  <string id="1039">Picture plugins</string>
+  <string id="1037">Video Add-ons</string>
+  <string id="1038">Music Add-ons</string>
+  <string id="1039">Picture Add-ons</string>
   <string id="1040">Loading directory</string>
   <string id="1041">Retrieved %i items</string>
   <string id="1042">Retrieved %i of %i items</string>
-  <string id="1043">Program plugins</string>
+  <string id="1043">Program Add-ons</string>
   <string id="1044">Set plugin thumb</string>
   <string id="1045">Plugin settings</string>
   <string id="1046">Access points</string>

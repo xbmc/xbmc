@@ -27,6 +27,7 @@
 #include "DirectoryCache.h"
 #include "FileItem.h"
 #include "addons/Repository.h"
+#include "addons/PluginSource.h"
 #include "StringUtils.h"
 
 using namespace ADDON;
@@ -60,6 +61,10 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   else if (path.GetHostName().Equals("repos"))
   {
     CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons,true);
+  }
+  else if (path.GetHostName().Equals("sources"))
+  {
+    return GetScriptsAndPlugins(path.GetFileName(), items);
   }
   else if (path.GetHostName().Equals("all"))
   {
@@ -188,6 +193,36 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(AddonPtr &addon, const CStdStri
   item->SetProperty("fanart_image", addon->FanArt());
   CAddonDatabase::SetPropertiesFromAddon(addon, item);
   return item;
+}
+
+bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItemList &items)
+{
+  items.Clear();
+
+  CPluginSource::Content type = CPluginSource::Translate(content);
+  if (type == CPluginSource::UNKNOWN)
+    return false;
+
+  VECADDONS addons;
+  CAddonMgr::Get().GetAddons(ADDON_PLUGIN, addons);
+  for (unsigned i=0; i<addons.size(); i++)
+  {
+    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addons[i]);
+    if (!plugin || !plugin->Provides(type))
+      continue;
+    items.Add(FileItemFromAddon(addons[i], "plugin://", true));
+  }
+
+  addons.clear();
+  CAddonMgr::Get().GetAddons(ADDON_SCRIPT, addons);
+  for (unsigned i=0; i<addons.size(); i++)
+  {
+    PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addons[i]);
+    if (!plugin || !plugin->Provides(type))
+      continue;
+    items.Add(FileItemFromAddon(addons[i], "script://", false));
+  }
+  return items.Size() > 0;
 }
 
 }
