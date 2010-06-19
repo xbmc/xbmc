@@ -460,7 +460,7 @@ bool CIMDB::GetDetails(const CScraperUrl &url, CVideoInfoTag &movieDetails, CGUI
   m_url = url;
   m_movieDetails = movieDetails;
   // load our scraper xml
-  if (m_info->Load())
+  if (!m_info->Load())
     return false;
 
   // fill in the defaults
