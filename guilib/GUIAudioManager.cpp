@@ -43,6 +43,7 @@ CGUIAudioManager g_audioManager;
 CGUIAudioManager::CGUIAudioManager()
 {
   m_bInitialized = false;
+  m_bEnabled = false;
   m_actionSound=NULL;
 }
 
@@ -174,7 +175,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
   CSingleLock lock(m_cs);
 
   // it's not possible to play gui sounds when passthrough is active
-  if (!m_bInitialized || g_audioContext.IsPassthroughActive())
+  if (!m_bEnabled || !m_bInitialized || g_audioContext.IsPassthroughActive())
     return;
 
   actionSoundMap::iterator it=m_actionSoundMap.find(action.GetID());
@@ -205,7 +206,7 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
   CSingleLock lock(m_cs);
 
   // it's not possible to play gui sounds when passthrough is active
-  if (!m_bInitialized || g_audioContext.IsPassthroughActive())
+  if (!m_bEnabled || !m_bInitialized || g_audioContext.IsPassthroughActive())
     return;
 
   windowSoundMap::iterator it=m_windowSoundMap.find(id);
@@ -255,7 +256,7 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
   CSingleLock lock(m_cs);
 
   // it's not possible to play gui sounds when passthrough is active
-  if (!m_bInitialized || g_audioContext.IsPassthroughActive())
+  if (!m_bEnabled || !m_bInitialized || g_audioContext.IsPassthroughActive())
     return;
 
   // If we already loaded the sound, just play it
@@ -407,6 +408,10 @@ void CGUIAudioManager::Enable(bool bEnable)
   // always deinit audio when we don't want gui sounds
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
     bEnable = false;
+
+  CSingleLock lock(m_cs);
+
+  m_bEnabled = bEnable;
 
   if (bEnable)
     Initialize(CAudioContext::DEFAULT_DEVICE);
