@@ -962,4 +962,10 @@ bool CWinSystemOSX::IsSystemScreenSaverEnabled()
   return(sss_enabled);
 }
 
+int CWinSystemOSX::GetNumScreens()
+{
+  int numDisplays = [[NSScreen screens] count];
+  return(numDisplays);
+}
+
 #endif
