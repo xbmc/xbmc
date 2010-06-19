@@ -23,6 +23,8 @@
 #include "GraphicContext.h"
 #include "Settings.h"
 
+using namespace std;
+
 CWinSystemBase::CWinSystemBase()
 {
   m_nWidth = 0;

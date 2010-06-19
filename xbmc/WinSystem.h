@@ -25,7 +25,6 @@
 #include "WinEvents.h"
 #include "Resolution.h"
 #include <vector>
-using namespace std;
 
 typedef enum _WindowSystemType
 {
@@ -81,7 +80,7 @@ public:
   virtual void UpdateResolutions();
   void SetWindowResolution(int width, int height);
   int DesktopResolution(int screen);
-  vector<RESOLUTION_WHR> ScreenResolutions(int screen);
+  std::vector<RESOLUTION_WHR> ScreenResolutions(int screen);
 
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate, uint32_t dwFlags = 0);
