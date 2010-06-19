@@ -23,7 +23,7 @@
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
-      <timezone>GMT+1</timezone>
+      <timezone>CEST</timezone>
     </region>
 
     <region name="Belgique">
@@ -32,7 +32,7 @@
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
-      <timezone>GMT+1</timezone>
+      <timezone>CEST</timezone>
     </region>
 
     <region name="Luxembourg">
@@ -41,7 +41,7 @@
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
-      <timezone>GMT+1</timezone>
+      <timezone>CEST</timezone>
     </region>
 
     <region name="Suisse">
@@ -50,7 +50,16 @@
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
-      <timezone>GMT+1</timezone>
+      <timezone>CEST</timezone>
+    </region>
+
+    <region name="Principauté de Monaco">
+      <dateshort>DD/MM/YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>CEST</timezone>
     </region>
 
     <region name="Canada">
