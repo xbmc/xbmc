@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="metadata.allmusic.com"
+<addon id="metadata.artists.allmusic.com"
        name="AllMusic"
        version="1.0.1"
        provider-name="Team XBMC">
@@ -9,14 +9,11 @@
     <import addon="metadata.common.allmusic.com" version="1.0"/>
     <import addon="metadata.common.htbackdrops.com" version="1.0"/>
   </requires>
-  <extension point="xbmc.metadata.scraper.albums"
-             language="en"
-             library="allmusic.xml"/>
   <extension point="xbmc.metadata.scraper.artists"
              language="en"
              library="allmusic.xml"/>
   <extension point="xbmc.addon.metadata">
-    <summary lang="en">AllMusic Scraper</summary>
+    <summary lang="en">AllMusic artist information</summary>
     <summary lang="hu">Zenei információk letöltése az AllMusic.com-ról</summary>
     <summary lang="pt">Scraper de músicas AllMusic</summary>
     <summary lang="zh">AllMusic音乐刮削器</summary>
