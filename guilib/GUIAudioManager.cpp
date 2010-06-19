@@ -53,15 +53,16 @@ CGUIAudioManager::~CGUIAudioManager()
 
 void CGUIAudioManager::Initialize(int iDevice)
 {
-  if (m_bInitialized)
-    return;
-
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
     return;
 
   if (iDevice==CAudioContext::DEFAULT_DEVICE)
   {
     CSingleLock lock(m_cs);
+    
+    if (m_bInitialized)
+      return;
+
     CLog::Log(LOGDEBUG, "CGUIAudioManager::Initialize");
 #ifdef _WIN32
     bool bAudioOnAllSpeakers=false;
@@ -81,10 +82,11 @@ void CGUIAudioManager::DeInitialize(int iDevice)
 {
   if (!(iDevice == CAudioContext::DIRECTSOUND_DEVICE || iDevice == CAudioContext::DEFAULT_DEVICE)) return;
 
+  CSingleLock lock(m_cs);
+
   if (!m_bInitialized)
     return;
 
-  CSingleLock lock(m_cs);
   CLog::Log(LOGDEBUG, "CGUIAudioManager::DeInitialize");
 
   if (m_actionSound) //  Wait for finish when an action sound is playing
@@ -169,11 +171,11 @@ void CGUIAudioManager::FreeUnused()
 // \brief Play a sound associated with a CAction
 void CGUIAudioManager::PlayActionSound(const CAction& action)
 {
+  CSingleLock lock(m_cs);
+
   // it's not possible to play gui sounds when passthrough is active
   if (!m_bInitialized || g_audioContext.IsPassthroughActive())
     return;
-
-  CSingleLock lock(m_cs);
 
   actionSoundMap::iterator it=m_actionSoundMap.find(action.GetID());
   if (it==m_actionSoundMap.end())
@@ -200,11 +202,11 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
 // Events: SOUND_INIT, SOUND_DEINIT
 void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
 {
+  CSingleLock lock(m_cs);
+
   // it's not possible to play gui sounds when passthrough is active
   if (!m_bInitialized || g_audioContext.IsPassthroughActive())
     return;
-
-  CSingleLock lock(m_cs);
 
   windowSoundMap::iterator it=m_windowSoundMap.find(id);
   if (it==m_windowSoundMap.end())
@@ -250,11 +252,11 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
 // \brief Play a sound given by filename
 void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
 {
+  CSingleLock lock(m_cs);
+
   // it's not possible to play gui sounds when passthrough is active
   if (!m_bInitialized || g_audioContext.IsPassthroughActive())
     return;
-
-  CSingleLock lock(m_cs);
 
   // If we already loaded the sound, just play it
   pythonSoundsMap::iterator itsb=m_pythonSounds.find(strFileName);
@@ -286,6 +288,8 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
 // xbmc
 bool CGUIAudioManager::Load()
 {
+  CSingleLock lock(m_cs);
+
   m_actionSoundMap.clear();
   m_windowSoundMap.clear();
 
