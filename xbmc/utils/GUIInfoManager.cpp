@@ -97,6 +97,7 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_lastMusicBitrateTime = 0;
   m_fanSpeed = 0;
   m_AfterSeekTimeout = 0;
+  m_seekOffset = 0;
   m_playerSeeking = false;
   m_performingSeek = false;
   m_nextWindowID = WINDOW_INVALID;
@@ -212,6 +213,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.showcodec")) ret = PLAYER_SHOWCODEC;
     else if (strTest.Equals("player.showinfo")) ret = PLAYER_SHOWINFO;
     else if (strTest.Left(15).Equals("player.seektime")) return AddMultiInfo(GUIInfo(PLAYER_SEEKTIME, TranslateTimeFormat(strTest.Mid(15))));
+    else if (strTest.Left(17).Equals("player.seekoffset")) return AddMultiInfo(GUIInfo(PLAYER_SEEKOFFSET, TranslateTimeFormat(strTest.Mid(17))));
     else if (strTest.Left(20).Equals("player.timeremaining")) return AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(strTest.Mid(20))));
     else if (strTest.Left(16).Equals("player.timespeed")) return AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(strTest.Mid(16))));
     else if (strTest.Left(11).Equals("player.time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(11))));
@@ -2473,6 +2475,15 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     if (seekBar)
       return seekBar->GetSeekTimeLabel(format);
   }
+  else if (info.m_info == PLAYER_SEEKOFFSET)
+  {
+    CStdString seekOffset;
+    StringUtils::SecondsToTimeString(abs(m_seekOffset), seekOffset, (TIME_FORMAT)info.GetData1());
+    if (m_seekOffset < 0)
+      return "-" + seekOffset;
+    if (m_seekOffset > 0)
+      return "+" + seekOffset;
+  }
   else if (info.m_info == SYSTEM_TIME)
   {
     return GetTime((TIME_FORMAT)info.GetData1());
@@ -3393,12 +3404,18 @@ CStdString CGUIInfoManager::GetBuild()
   return tmp;
 }
 
-void CGUIInfoManager::SetDisplayAfterSeek(unsigned int timeOut)
+void CGUIInfoManager::SetDisplayAfterSeek(unsigned int timeOut, int seekOffset)
 {
   if (timeOut>0)
+  {
     m_AfterSeekTimeout = CTimeUtils::GetFrameTime() +  timeOut;
+    m_seekOffset = seekOffset;
+  }
   else
+  {
     m_AfterSeekTimeout = 0;
+    m_seekOffset = 0;
+  }
 }
 
 bool CGUIInfoManager::GetDisplayAfterSeek() const

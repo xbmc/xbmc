@@ -3945,7 +3945,7 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek");
-  g_infoManager.SetDisplayAfterSeek(1000);
+  g_infoManager.SetDisplayAfterSeek(2500, seekOffset/1000);
 }
 
 void CApplication::OnPlayBackSeekChapter(int iChapter)
