@@ -1317,11 +1317,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
             duration += item->GetMusicInfoTag()->GetDuration();
         }
         if (duration > 0)
-        {
-          CStdString result;
-          StringUtils::SecondsToTimeString(duration,result);
-          return result;
-        }
+          return StringUtils::SecondsToTimeString(duration);
       }
     }
     break;
@@ -2477,8 +2473,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
   }
   else if (info.m_info == PLAYER_SEEKOFFSET)
   {
-    CStdString seekOffset;
-    StringUtils::SecondsToTimeString(abs(m_seekOffset), seekOffset, (TIME_FORMAT)info.GetData1());
+    CStdString seekOffset = StringUtils::SecondsToTimeString(abs(m_seekOffset), (TIME_FORMAT)info.GetData1());
     if (m_seekOffset < 0)
       return "-" + seekOffset;
     if (m_seekOffset > 0)
@@ -2746,22 +2741,18 @@ CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT form
 
 CStdString CGUIInfoManager::GetDuration(TIME_FORMAT format) const
 {
-  CStdString strDuration;
   if (g_application.IsPlayingAudio() && m_currentFile->HasMusicInfoTag())
   {
     const CMusicInfoTag& tag = *m_currentFile->GetMusicInfoTag();
     if (tag.GetDuration() > 0)
-      StringUtils::SecondsToTimeString(tag.GetDuration(), strDuration, format);
+      return StringUtils::SecondsToTimeString(tag.GetDuration(), format);
   }
   if (g_application.IsPlayingVideo() && !m_currentMovieDuration.IsEmpty())
     return m_currentMovieDuration;  // for tuxbox
-  if (strDuration.IsEmpty())
-  {
-    unsigned int iTotal = (unsigned int)g_application.GetTotalTime();
-    if (iTotal > 0)
-      StringUtils::SecondsToTimeString(iTotal, strDuration, format);
-  }
-  return strDuration;
+  unsigned int iTotal = (unsigned int)g_application.GetTotalTime();
+  if (iTotal > 0)
+    return StringUtils::SecondsToTimeString(iTotal, format);
+  return "";
 }
 
 CStdString CGUIInfoManager::GetMusicPartyModeLabel(int item)
@@ -3169,14 +3160,11 @@ __int64 CGUIInfoManager::GetPlayTime() const
 
 CStdString CGUIInfoManager::GetCurrentPlayTime(TIME_FORMAT format) const
 {
-  CStdString strTime;
   if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
     format = TIME_FORMAT_HH_MM_SS;
-  if (g_application.IsPlayingAudio())
-    StringUtils::SecondsToTimeString((int)(GetPlayTime()/1000), strTime, format);
-  else if (g_application.IsPlayingVideo())
-    StringUtils::SecondsToTimeString((int)(GetPlayTime()/1000), strTime, format);
-  return strTime;
+  if (g_application.IsPlayingAudio() || g_application.IsPlayingVideo())
+    return StringUtils::SecondsToTimeString((int)(GetPlayTime()/1000), format);
+  return "";
 }
 
 int CGUIInfoManager::GetTotalPlayTime() const
@@ -3195,16 +3183,10 @@ CStdString CGUIInfoManager::GetCurrentPlayTimeRemaining(TIME_FORMAT format) cons
 {
   if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
     format = TIME_FORMAT_HH_MM_SS;
-  CStdString strTime;
   int timeRemaining = GetPlayTimeRemaining();
-  if (timeRemaining)
-  {
-    if (g_application.IsPlayingAudio())
-      StringUtils::SecondsToTimeString(timeRemaining, strTime, format);
-    else if (g_application.IsPlayingVideo())
-      StringUtils::SecondsToTimeString(timeRemaining, strTime, format);
-  }
-  return strTime;
+  if (timeRemaining && (g_application.IsPlayingAudio() || g_application.IsPlayingVideo()))
+    return StringUtils::SecondsToTimeString(timeRemaining, format);
+  return "";
 }
 
 void CGUIInfoManager::ResetCurrentItem()
@@ -3771,7 +3753,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       if (item->HasMusicInfoTag())
       {
         if (item->GetMusicInfoTag()->GetDuration() > 0)
-          StringUtils::SecondsToTimeString(item->GetMusicInfoTag()->GetDuration(), duration);
+          duration = StringUtils::SecondsToTimeString(item->GetMusicInfoTag()->GetDuration());
       }
       if (item->HasVideoInfoTag())
       {

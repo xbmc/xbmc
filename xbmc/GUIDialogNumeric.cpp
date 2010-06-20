@@ -518,7 +518,7 @@ bool CGUIDialogNumeric::ShowAndGetSeconds(CStdString &timeString, const CStdStri
     return false;
   pDialog->GetOutput(&time);
   seconds = time.wHour * 3600 + time.wMinute * 60 + time.wSecond;
-  StringUtils::SecondsToTimeString(seconds, timeString);
+  timeString = StringUtils::SecondsToTimeString(seconds);
   return true;
 }
 

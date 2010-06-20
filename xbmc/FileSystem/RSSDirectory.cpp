@@ -129,7 +129,7 @@ static void ParseItemMRSS(CFileItem* item, TiXmlElement* item_child, const CStdS
     }
 
     if(dur)
-      StringUtils::SecondsToTimeString(atoi(dur), vtag->m_strRuntime);
+      vtag->m_strRuntime = StringUtils::SecondsToTimeString(atoi(dur));
 
     ParseItem(item, item_child);
   }
@@ -373,7 +373,7 @@ static void ParseItemZink(CFileItem* item, TiXmlElement* element, const CStdStri
   else if(name == "userrating")
     vtag->m_fRating = (float)atof(text.c_str());
   else if(name == "duration")
-    StringUtils::SecondsToTimeString(atoi(text), vtag->m_strRuntime);
+    vtag->m_strRuntime = StringUtils::SecondsToTimeString(atoi(text));
   else if(name == "durationstr")
     vtag->m_strRuntime = text;
 }

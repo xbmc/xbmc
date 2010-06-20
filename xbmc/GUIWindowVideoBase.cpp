@@ -928,9 +928,8 @@ bool CGUIWindowVideoBase::OnResumeShowMenu(CFileItem &item)
       if (db.GetResumeBookMark(itemPath, bookmark) )
       { // prompt user whether they wish to resume
         vector<CStdString> choices;
-        CStdString resumeString, time;
-        StringUtils::SecondsToTimeString(lrint(bookmark.timeInSeconds), time);
-        resumeString.Format(g_localizeStrings.Get(12022).c_str(), time.c_str());
+        CStdString resumeString;
+        resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(lrint(bookmark.timeInSeconds)).c_str());
         choices.push_back(resumeString);
         choices.push_back(g_localizeStrings.Get(12021)); // start from the beginning
         int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);

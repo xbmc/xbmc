@@ -467,11 +467,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     {
       int nDuration = pItem->GetMusicInfoTag()->GetDuration();
       if (nDuration > 0)
-      {
-        CStdString str;
-        StringUtils::SecondsToTimeString(nDuration, str);
-        pItem->SetLabel2(str);
-      }
+        pItem->SetLabel2(StringUtils::SecondsToTimeString(nDuration));
     }
     else if (pItem->GetLabel() == "") // pls labels come in preformatted
     {

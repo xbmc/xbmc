@@ -46,7 +46,15 @@ public:
   static int64_t AlphaNumericCompare(const char *left, const char *right);
   static long TimeStringToSeconds(const CStdString &timeString);
   static void RemoveCRLF(CStdString& strLine);
-  static void SecondsToTimeString( long lSeconds, CStdString& strHMS, TIME_FORMAT format = TIME_FORMAT_GUESS);
+
+  /*! \brief convert a time in seconds to a string based on the given time format
+   \param seconds time in seconds
+   \param format the format we want the time in.
+   \return the formatted time
+   \sa TIME_FORMAT
+   */
+  static CStdString SecondsToTimeString(long seconds, TIME_FORMAT format = TIME_FORMAT_GUESS);
+
   static bool IsNaturalNumber(const CStdString& str);
   static CStdString SizeToString(int64_t size);
   static const CStdString EmptyString;

@@ -151,10 +151,7 @@ void CMusicInfoScanner::Process()
       CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
 
       tick = CTimeUtils::GetTimeMS() - tick;
-      CStdString strTmp, strTmp1;
-      StringUtils::SecondsToTimeString(tick / 1000, strTmp1);
-      strTmp.Format("My Music: Scanning for music info using worker thread, operation took %s", strTmp1);
-      CLog::Log(LOGNOTICE, "%s", strTmp.c_str());
+      CLog::Log(LOGNOTICE, "My Music: Scanning for music info using worker thread, operation took %s", StringUtils::SecondsToTimeString(tick / 1000).c_str());
     }
     bool bCanceled;
     if (m_scanType == 1) // load album info

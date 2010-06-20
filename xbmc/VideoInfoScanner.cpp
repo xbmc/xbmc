@@ -119,9 +119,7 @@ namespace VIDEO
       m_database.Close();
 
       tick = CTimeUtils::GetTimeMS() - tick;
-      CStdString strTime;
-      StringUtils::SecondsToTimeString(tick / 1000, strTime);
-      CLog::Log(LOGNOTICE, "VideoInfoScanner: Finished scan. Scanning for video info took %s", strTime.c_str());
+      CLog::Log(LOGNOTICE, "VideoInfoScanner: Finished scan. Scanning for video info took %s", StringUtils::SecondsToTimeString(tick / 1000).c_str());
 
       m_bRunning = false;
       if (m_pObserver)
