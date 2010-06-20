@@ -154,6 +154,12 @@ void _PyXBMC_AddPendingCall(int(*func)(void*), void *arg)
   g_callQueue.push_back(Func(func, arg));
 }
 
+void _PyXBMC_ClearPendingCalls()
+{
+  CSingleLock lock(g_critSectionPyCall);
+  g_callQueue.clear();
+}
+
 void _PyXBMC_MakePendingCalls()
 {
   CSingleLock lock(g_critSectionPyCall);
