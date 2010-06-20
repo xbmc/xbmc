@@ -278,11 +278,11 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll) :
   m_dll(dll),
   m_device(device),
   m_timeout(20),
-  m_interlace_buf(NULL),
   m_framerate_tracking(false),
   m_framerate_cnt(0),
   m_framerate_timestamp(0.0),
-  m_framerate(0.0)
+  m_framerate(0.0),
+  m_interlace_buf(NULL)
 {
 }
 
