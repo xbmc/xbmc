@@ -67,9 +67,9 @@ namespace PYXBMC
 #define PyXBMC_MakePendingCalls _PyXBMC_MakePendingCalls
 #define PyXBMC_ClearPendingCalls _PyXBMC_ClearPendingCalls
 
-void _PyXBMC_AddPendingCall(int(*func)(void*), void *arg);
+void _PyXBMC_AddPendingCall(PyThreadState* state, int(*func)(void*), void *arg);
 void _PyXBMC_MakePendingCalls();
-void _PyXBMC_ClearPendingCalls();
+void _PyXBMC_ClearPendingCalls(PyThreadState* state);
 
 #ifdef __cplusplus
 }

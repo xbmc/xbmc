@@ -97,7 +97,7 @@ namespace PYXBMC
           pWindow->pWindow = new CGUIPythonWindowXMLDialog(id,pWindow->sXMLFileName,pWindow->sFallBackPath);
         else
           pWindow->pWindow = new CGUIPythonWindowXML(id,pWindow->sXMLFileName,pWindow->sFallBackPath);
-        ((CGUIPythonWindowXML*)pWindow->pWindow)->SetCallbackWindow((PyObject*)pWindow);
+        ((CGUIPythonWindowXML*)pWindow->pWindow)->SetCallbackWindow(PyThreadState_Get(), (PyObject*)pWindow);
       }
       else
       {
@@ -105,7 +105,7 @@ namespace PYXBMC
           pWindow->pWindow = new CGUIPythonWindowDialog(id);
         else
           pWindow->pWindow = new CGUIPythonWindow(id);
-        ((CGUIPythonWindow*)pWindow->pWindow)->SetCallbackWindow((PyObject*)pWindow);
+        ((CGUIPythonWindow*)pWindow->pWindow)->SetCallbackWindow(PyThreadState_Get(), (PyObject*)pWindow);
       }
 
       PyXBMCGUILock();
@@ -351,7 +351,7 @@ namespace PYXBMC
         else g_windowManager.ActivateWindow(WINDOW_HOME);
       }
       // no callbacks are possible any longer
-      ((CGUIPythonWindowXML*)self->pWindow)->SetCallbackWindow(NULL);
+      ((CGUIPythonWindowXML*)self->pWindow)->SetCallbackWindow(NULL, NULL);
     }
     else
     {

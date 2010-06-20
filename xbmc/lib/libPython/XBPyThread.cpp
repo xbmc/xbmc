@@ -337,7 +337,7 @@ void XBPyThread::Process()
     CLog::Log(LOGERROR, "Failed to wait for python threads to end");
 
   // pending calls must be cleared out
-  PyXBMC_ClearPendingCalls();
+  PyXBMC_ClearPendingCalls(state);
 
   PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();

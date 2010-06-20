@@ -143,21 +143,37 @@ namespace PYXBMC
 }
 
 
-typedef std::pair<int(*)(void*), void*> Func;
-typedef std::vector<Func> CallQueue;
-CallQueue g_callQueue;
-CCriticalSection g_critSectionPyCall;
+struct SPending
+{
+  int(*func)(void*);
+  void*          args;
+  PyThreadState* state;
+};
 
-void _PyXBMC_AddPendingCall(int(*func)(void*), void *arg)
+typedef std::vector<SPending> CallQueue;
+static CallQueue g_callQueue;
+static CCriticalSection g_critSectionPyCall;
+
+void _PyXBMC_AddPendingCall(PyThreadState* state, int(*func)(void*), void *arg)
 {
   CSingleLock lock(g_critSectionPyCall);
-  g_callQueue.push_back(Func(func, arg));
+  SPending p;
+  p.func  = func;
+  p.args  = arg;
+  p.state = state;
+  g_callQueue.push_back(p);
 }
 
-void _PyXBMC_ClearPendingCalls()
+void _PyXBMC_ClearPendingCalls(PyThreadState* state)
 {
   CSingleLock lock(g_critSectionPyCall);
-  g_callQueue.clear();
+  for(CallQueue::iterator it = g_callQueue.begin(); it!= g_callQueue.end();)
+  {
+    if(it->state = state)
+      it = g_callQueue.erase(it);
+    else
+      it++;
+  }
 }
 
 void _PyXBMC_MakePendingCalls()
@@ -166,12 +182,17 @@ void _PyXBMC_MakePendingCalls()
   CallQueue::iterator iter = g_callQueue.begin();
   while (iter != g_callQueue.end())
   {
-    int(*f)(void*) = (*iter).first;
-    void* arg = (*iter).second;
+    SPending p(*iter);
+    // only call when we are in the right thread state
+    if(p.state != PyThreadState_Get())
+    {
+      iter++;
+      continue;
+    }
     g_callQueue.erase(iter);
     lock.Leave();
-    if (f)
-      f(arg);
+    if (p.func)
+      p.func(p.args);
     //(*((*iter).first))((*iter).second);
     lock.Enter();
     iter = g_callQueue.begin();

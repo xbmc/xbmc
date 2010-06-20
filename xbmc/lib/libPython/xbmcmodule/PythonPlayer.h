@@ -50,7 +50,7 @@ class CPythonPlayer : public IPlayerCallback
 {
 public:
   CPythonPlayer();
-  void    SetCallback(PyObject *object);
+  void    SetCallback(PyThreadState *state, PyObject *object);
   void    OnPlayBackEnded();
   void    OnPlayBackStarted();
   void    OnPlayBackPaused();
@@ -62,6 +62,7 @@ public:
   void    Release();
 
   PyObject* m_callback;
+  PyThreadState *m_state;
 protected:
   virtual ~CPythonPlayer(void);
   long   m_refs;
