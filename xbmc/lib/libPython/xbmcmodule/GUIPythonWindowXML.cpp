@@ -71,9 +71,8 @@ bool CGUIPythonWindowXML::OnAction(const CAction &action)
   bool ret = CGUIWindow::OnAction(action);  // we don't currently want the mediawindow actions here
   if(pCallbackWindow)
   {
-    PyXBMCAction* inf = new PyXBMCAction;
+    PyXBMCAction* inf = new PyXBMCAction(pCallbackWindow);
     inf->pObject = Action_FromAction(action);
-    inf->pCallbackWindow = pCallbackWindow;
 
     // aquire lock?
     PyXBMC_AddPendingCall(Py_XBMC_Event_OnAction, inf);
@@ -114,11 +113,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
     case GUI_MSG_WINDOW_INIT:
     {
       CGUIMediaWindow::OnMessage(message);
-      PyXBMCAction* inf = new PyXBMCAction;
-      inf->pObject = NULL;
-      // create a new call and set it in the python queue
-      inf->pCallbackWindow = pCallbackWindow;
-      PyXBMC_AddPendingCall(Py_XBMC_Event_OnInit, inf);
+      PyXBMC_AddPendingCall(Py_XBMC_Event_OnInit, new PyXBMCAction(pCallbackWindow));
       PulseActionEvent();
       return true;
     }
@@ -135,10 +130,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
         int iControl=message.GetControlId();
         if(pCallbackWindow)
         {
-          PyXBMCAction* inf = new PyXBMCAction;
-          inf->pObject = NULL;
-          // create a new call and set it in the python queue
-          inf->pCallbackWindow = pCallbackWindow;
+          PyXBMCAction* inf = new PyXBMCAction(pCallbackWindow);
           inf->controlId = iControl;
           // aquire lock?
           PyXBMC_AddPendingCall(Py_XBMC_Event_OnFocus, inf);
@@ -178,10 +170,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
         {
           if ((controlClicked->IsContainer() && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)) || !controlClicked->IsContainer())
           {
-            PyXBMCAction* inf = new PyXBMCAction;
-            inf->pObject = NULL;
-            // create a new call and set it in the python queue
-            inf->pCallbackWindow = pCallbackWindow;
+            PyXBMCAction* inf = new PyXBMCAction(pCallbackWindow);
             inf->controlId = iControl;
             // aquire lock?
             PyXBMC_AddPendingCall(Py_XBMC_Event_OnClick, inf);
@@ -189,9 +178,8 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
           }
           else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK)
           {
-            PyXBMCAction* inf = new PyXBMCAction;
+            PyXBMCAction* inf = new PyXBMCAction(pCallbackWindow);
             inf->pObject = Action_FromAction(CAction(ACTION_CONTEXT_MENU));
-            inf->pCallbackWindow = pCallbackWindow;
 
             // aquire lock?
             PyXBMC_AddPendingCall(Py_XBMC_Event_OnAction, inf);
@@ -381,7 +369,6 @@ int Py_XBMC_Event_OnFocus(void* arg)
     {
       Py_DECREF(ret);
     }
-
     delete action;
   }
   return 0;
