@@ -113,8 +113,11 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
     case GUI_MSG_WINDOW_INIT:
     {
       CGUIMediaWindow::OnMessage(message);
-      PyXBMC_AddPendingCall(Py_XBMC_Event_OnInit, new PyXBMCAction(pCallbackWindow));
-      PulseActionEvent();
+      if(pCallbackWindow)
+      {
+        PyXBMC_AddPendingCall(Py_XBMC_Event_OnInit, new PyXBMCAction(pCallbackWindow));
+        PulseActionEvent();
+      }
       return true;
     }
     break;
