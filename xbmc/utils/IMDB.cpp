@@ -80,7 +80,7 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie,
   else if (m_info->Content() == CONTENT_MUSICVIDEOS)
   {
     if (!m_info->GetParser().HasFunction("FileNameScrape"))
-      return false;
+      return 0;
 
     CScraperUrl scrURL("filenamescrape");
     CUtil::RemoveExtension(strName);
@@ -96,6 +96,7 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie,
 
   vector<CStdString> xml = m_info->Run("GetSearchResults",scrURL,m_http,&extras);
 
+  bool haveValidResults = false;
   for (vector<CStdString>::iterator it  = xml.begin();
                                     it != xml.end(); ++it)
   {
@@ -105,19 +106,21 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie,
     if (!doc.RootElement())
     {
       CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
-      return 0;
+      continue;  // might have more valid results later
     }
 
     if (stricmp(doc.RootElement()->Value(),"error")==0)
     {
       ShowErrorDialog(doc.RootElement());
-      return -1;
+      return -1; // scraper has reported an error
     }
 
     TiXmlHandle docHandle( &doc );
     TiXmlElement *movie = docHandle.FirstChild("results").Element();
     if (!movie)
-      return 0;
+      continue;
+
+    haveValidResults = true;
 
     movie = docHandle.FirstChild( "results" ).FirstChild( "entity" ).Element();
     while (movie)
@@ -187,7 +190,7 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie,
       movie = movie->NextSiblingElement();
     }
   }
-  return movielist.empty()?0:1;
+  return haveValidResults ? 1 : 0;
 }
 
 bool CIMDB::RelevanceSortFunction(const CScraperUrl &left, const CScraperUrl &right)

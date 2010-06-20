@@ -58,7 +58,13 @@ public:
   virtual ~CIMDB();
 
   // threaded lookup functions
-  // returns -1 if we had an error
+
+  /*! \brief Do a search for matching media items (possibly asynchronously) with our scraper
+   \param strMovie name of the media item to look for
+   \param movielist [out] list of results to fill. May be empty on success.
+   \param pProgress progress bar to update as we go. If NULL we run on thread, if non-NULL we run off thread.
+   \return 1 on success, -1 on a scraper-specific error, 0 on some other error
+   */
   int FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
   bool GetDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
   bool GetEpisodeDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
