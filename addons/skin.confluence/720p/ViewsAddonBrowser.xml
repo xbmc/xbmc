@@ -119,7 +119,7 @@
 					<onright>2</onright>
 					<showonepage>false</showonepage>
 					<orientation>vertical</orientation>
-					<visible>Control.IsVisible(500)</visible>
+					<visible>Control.IsVisible(503)</visible>
 				</control>
 			</control>
 			<control type="group">
