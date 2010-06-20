@@ -3928,10 +3928,10 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged");
 }
 
-void CApplication::OnPlayBackSeek(int iTime)
+void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
 {
 #ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackSeek(iTime);
+  g_pythonParser.OnPlayBackSeek(iTime, seekOffset);
 #endif
 
 #ifdef HAS_HTTPAPI

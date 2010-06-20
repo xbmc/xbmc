@@ -869,10 +869,11 @@ void PAPlayer::Seek(bool bPlus, bool bLargeStep)
 void PAPlayer::SeekTime(__int64 iTime /*=0*/)
 {
   if (!CanSeek()) return;
+  int seekOffset = iTime - GetTime();
   if (m_currentFile->m_lStartOffset)
     iTime += m_currentFile->m_lStartOffset * 1000 / 75;
   m_SeekTime = iTime;
-  m_callback.OnPlayBackSeek((int)m_SeekTime);
+  m_callback.OnPlayBackSeek((int)m_SeekTime, seekOffset);
   CLog::Log(LOGDEBUG, "PAPlayer::Seeking to time %f", 0.001f * m_SeekTime);
 }
 

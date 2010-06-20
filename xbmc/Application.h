@@ -135,7 +135,7 @@ public:
   virtual void OnPlayBackResumed();
   virtual void OnPlayBackStopped();
   virtual void OnQueueNextItem();
-  virtual void OnPlayBackSeek(int iTime);
+  virtual void OnPlayBackSeek(int iTime, int seekOffset);
   virtual void OnPlayBackSeekChapter(int iChapter);
   virtual void OnPlayBackSpeedChanged(int iSpeed);
   bool PlayMedia(const CFileItem& item, int iPlaylist = PLAYLIST_MUSIC);
