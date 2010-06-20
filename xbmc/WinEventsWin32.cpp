@@ -311,7 +311,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     g_uQueryCancelAutoPlay = RegisterWindowMessage(TEXT("QueryCancelAutoPlay"));
     shcne.pidl = NULL;
     shcne.fRecursive = TRUE;
-    SHChangeNotifyRegister(hWnd, SHCNE_DISKEVENTS, SHCNE_MEDIAREMOVED | SHCNE_MEDIAINSERTED, WM_MEDIA_CHANGE, 1, &shcne);
+    SHChangeNotifyRegister(hWnd, SHCNRF_ShellLevel, SHCNE_MEDIAREMOVED | SHCNE_MEDIAINSERTED, WM_MEDIA_CHANGE, 1, &shcne);
     return 0;
   }
 
@@ -595,6 +595,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             CWin32StorageProvider::SetEvent();
           break;
         }
+        break;
       }
     case WM_DEVICECHANGE:
       {
