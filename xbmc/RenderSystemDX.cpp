@@ -105,7 +105,7 @@ bool CRenderSystemDX::InitRenderSystem()
 
   CheckDXVersion();
 
-  m_useD3D9Ex = (g_advancedSettings.m_AllowD3D9Ex && !g_sysinfo.IsAeroDisabled() && LoadD3D9Ex());
+  m_useD3D9Ex = (g_advancedSettings.m_AllowD3D9Ex && g_sysinfo.IsVistaOrHigher() && LoadD3D9Ex());
   m_pD3D = NULL;
 
   if (m_useD3D9Ex)
