@@ -273,7 +273,7 @@ CStdString CScraper::InternalRun(const CStdString& function,
   for (i=0;i<scrURL.m_url.size();++i)
   {
     CStdString strCurrHTML;
-    if (!CScraperUrl::Get(scrURL.m_url[i],m_parser.m_param[i],http,LibPath()) || m_parser.m_param[i].size() == 0)
+    if (!CScraperUrl::Get(scrURL.m_url[i],m_parser.m_param[i],http,ID()) || m_parser.m_param[i].size() == 0)
       return "";
   }
   if (extras)
