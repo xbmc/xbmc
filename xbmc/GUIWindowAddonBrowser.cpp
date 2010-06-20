@@ -324,14 +324,16 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
               g_application.m_guiDialogKaiToast.QueueNotification(
                                                   CGUIDialogKaiToast::Info,
                                                   addon->Name(),
-                                                  g_localizeStrings.Get(24065));
+                                                  g_localizeStrings.Get(24065),
+                                                  TOAST_DISPLAY_TIME,false);
             }
             else
             {
               g_application.m_guiDialogKaiToast.QueueNotification(
                                                   CGUIDialogKaiToast::Info,
                                                   addon->Name(),
-                                                  g_localizeStrings.Get(24064));
+                                                  g_localizeStrings.Get(24064),
+                                                  TOAST_DISPLAY_TIME,false);
             }
           }
         }
