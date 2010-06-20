@@ -4307,9 +4307,6 @@
     <ClInclude Include="..\..\xbmc\Shortcut.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\ShoutcastDirectory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\ShoutcastRipFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>

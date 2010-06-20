@@ -1760,7 +1760,6 @@
     <ClInclude Include="..\..\xbmc\SettingsControls.h" />
     <ClInclude Include="..\..\xbmc\utils\SharedSection.h" />
     <ClInclude Include="..\..\xbmc\Shortcut.h" />
-    <ClInclude Include="..\..\xbmc\FileSystem\ShoutcastDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\ShoutcastRipFile.h" />
     <ClInclude Include="..\..\xbmc\utils\SingleLock.h" />
     <ClInclude Include="..\..\xbmc\Song.h" />
