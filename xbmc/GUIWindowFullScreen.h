@@ -49,7 +49,6 @@ protected:
 
 private:
   void RenderTTFSubtitles();
-  void Seek(bool bPlus, bool bLargeStep);
   void SeekChapter(int iChapter);
   void PreloadDialog(unsigned int windowID);
   void UnloadDialog(unsigned int windowID);
