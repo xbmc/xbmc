@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="metadata.common.htbackdrops.com"
        name="HTBackdrops"
-       version="1.0.0"
+       version="1.0.1"
        provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.metadata" version="1.0"/>
@@ -9,8 +9,13 @@
   <extension point="xbmc.metadata.scraper.library"
              library="htbackdrops.xml"/>
   <extension point="xbmc.addon.metadata">
-    <summary>HTBackdrops Scraper Library</summary>
-    <description>some description</description>
     <platform>all</platform>
+    <minversion>20000</minversion>
+    <summary lang="en">HTBackdrops Scraper Library</summary>
+    <summary lang="hu">HTBackdrops scraper könyvtár</summary>
+    <summary lang="pt">Biblioteca de fundos HTBackdrops</summary>
+    <description lang="en">Download backdrops from www.htbackdrops.com</description>
+    <description lang="hu">Médiaadatok letöltése www.htbackdrops.com webhelyről.</description>
+    <description lang="pt">Descarregar fundos de www.htbackdrops.com</description>
   </extension>
 </addon>

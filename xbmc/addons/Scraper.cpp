@@ -19,7 +19,6 @@
 *
 */
 #include "Scraper.h"
-#include "XMLUtils.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/FileCurl.h"
@@ -28,11 +27,13 @@
 #include "utils/ScraperUrl.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
-
+#include "AdvancedSettings.h"
+#include "FileItem.h"
+#include "XMLUtils.h"
 #include <sstream>
 
-using std::vector;
-using std::stringstream;
+using namespace std;
+using namespace XFILE;
 
 namespace ADDON
 {
@@ -108,6 +109,9 @@ CScraper::CScraper(const cp_extension_t *ext) :
   {
     m_language = CAddonMgr::Get().GetExtValue(ext->configuration, "language");
     m_requiressettings = CAddonMgr::Get().GetExtValue(ext->configuration,"requiressettings").Equals("true");
+    CStdString persistence = CAddonMgr::Get().GetExtValue(ext->configuration, "cachepersistence");
+    if (!persistence.IsEmpty())
+      m_persistence.SetFromTimeString(persistence);
   }
   switch (Type())
   {
@@ -141,6 +145,7 @@ CScraper::CScraper(const CScraper &rhs, const AddonPtr &self)
   : CAddon(rhs, self)
 {
   m_pathContent = rhs.m_pathContent;
+  m_persistence = rhs.m_persistence;
 }
 
 bool CScraper::Supports(const CONTENT_TYPE &content) const
@@ -158,8 +163,8 @@ bool CScraper::SetPathSettings(CONTENT_TYPE content, const CStdString& xml)
     return true;
 
   TiXmlDocument doc;
-  if (doc.Parse(xml.c_str()))
-    m_userSettingsLoaded = SettingsFromXML(doc);
+  doc.Parse(xml.c_str());
+  m_userSettingsLoaded = SettingsFromXML(doc);
 
   return m_userSettingsLoaded;
 }
@@ -176,6 +181,138 @@ CStdString CScraper::GetPathSettings()
     stream << *doc.RootElement();
 
   return stream.str();
+}
+
+void CScraper::ClearCache()
+{
+  CStdString strCachePath = CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "scrapers");
+
+  // create scraper cache dir if needed
+  if (!CDirectory::Exists(strCachePath))
+    CDirectory::Create(strCachePath);
+
+  strCachePath = CUtil::AddFileToFolder(strCachePath, ID());
+  CUtil::AddSlashAtEnd(strCachePath);
+
+  if (CDirectory::Exists(strCachePath))
+  {
+    CFileItemList items;
+    CDirectory::GetDirectory(strCachePath,items);
+    for (int i=0;i<items.Size();++i)
+    {
+      // wipe cache
+      if (items[i]->m_dateTime + m_persistence <= CDateTime::GetUTCDateTime())
+        CFile::Delete(items[i]->m_strPath);
+    }
+  }
+  else
+    CDirectory::Create(strCachePath);
+}
+
+vector<CStdString> CScraper::Run(const CStdString& function,
+                                 const CScraperUrl& scrURL,
+                                 CFileCurl& http,
+                                 const vector<CStdString>* extras)
+{
+  vector<CStdString> result;
+  CStdString strXML = InternalRun(function,scrURL,http,extras);
+  if (strXML.IsEmpty())
+  {
+    CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
+    return result;
+  }
+  if (!XMLUtils::HasUTF8Declaration(strXML))
+    g_charsetConverter.unknownToUTF8(strXML);
+
+  TiXmlDocument doc;
+  doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
+  if (!doc.RootElement())
+  {
+    CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
+    return result; 
+  }
+
+  result.push_back(strXML);
+  TiXmlHandle docHandle( &doc );
+  TiXmlElement* xchain = doc.RootElement()->FirstChildElement("chain");
+  while (xchain && xchain->FirstChild())
+  {
+    const char* szFunction = xchain->Attribute("function");
+    if (szFunction)
+    {
+      CScraperUrl scrURL2;
+      vector<CStdString> extras;
+      extras.push_back(xchain->FirstChild()->Value());
+      vector<CStdString> result2 = Run(szFunction,scrURL2,http,&extras);
+      result.insert(result.end(),result2.begin(),result2.end());
+    }
+    xchain = xchain->NextSiblingElement("chain");
+  }
+  TiXmlElement* xurl = doc.RootElement()->FirstChildElement("url");
+  while (xurl && xurl->FirstChild())
+  {
+    const char* szFunction = xurl->Attribute("function");
+    if (szFunction)
+    {
+      CScraperUrl scrURL2(xurl);
+      vector<CStdString> result2 = Run(szFunction,scrURL2,http);
+      result.insert(result.end(),result2.begin(),result2.end());
+    }
+    xurl = xurl->NextSiblingElement("url");
+  }
+  
+  return result;
+}
+
+CStdString CScraper::InternalRun(const CStdString& function,
+                                 const CScraperUrl& scrURL,
+                                 CFileCurl& http,
+                                 const vector<CStdString>* extras)
+{
+  unsigned int i;
+  for (i=0;i<scrURL.m_url.size();++i)
+  {
+    CStdString strCurrHTML;
+    if (!CScraperUrl::Get(scrURL.m_url[i],m_parser.m_param[i],http,ID()) || m_parser.m_param[i].size() == 0)
+      return "";
+  }
+  if (extras)
+  {
+    for (unsigned int j=0;j<extras->size();++j)
+      m_parser.m_param[j+i] = (*extras)[j];
+  }
+
+  CStdString strXML = m_parser.Parse(function,this);
+  CLog::Log(LOGDEBUG,"scraper: %s returned %s",function.c_str(),strXML.c_str());
+
+  return strXML;
+}
+
+bool CScraper::Load()
+{
+  bool result=m_parser.Load(LibPath());
+  if (result)
+  {
+    ADDONDEPS deps = GetDeps();
+    ADDONDEPS::iterator itr = deps.begin();
+    while (itr != deps.end())
+    {
+      if (itr->first.Equals("xbmc.metadata"))
+      {
+        ++itr;
+        continue;
+      }  
+      AddonPtr dep;
+      if (!CAddonMgr::Get().GetAddon((*itr).first, dep))
+        return false;
+      TiXmlDocument doc;
+      if (doc.LoadFile(dep->LibPath()))
+        m_parser.AddDocument(&doc);
+      itr++;
+    }
+  }
+
+  return result;
 }
 
 }; /* namespace ADDON */

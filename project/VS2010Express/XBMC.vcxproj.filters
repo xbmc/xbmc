@@ -199,9 +199,6 @@
     <Filter Include="libraries\cdrip">
       <UniqueIdentifier>{95fd64c5-9dc6-446e-83fd-eeeb7978c0ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="libraries\libRTMP">
-      <UniqueIdentifier>{57d29ca1-d82f-431e-86bd-805f0c23a072}</UniqueIdentifier>
-    </Filter>
     <Filter Include="libraries\libjsonrpc">
       <UniqueIdentifier>{ab0bb8c0-9901-4fe3-819a-a26cd0e91c32}</UniqueIdentifier>
     </Filter>
@@ -1737,9 +1734,6 @@
     <ClCompile Include="..\..\xbmc\FileSystem\SFTPDirectory.cpp">
       <Filter>Source Files\Filesystem</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\ShoutcastDirectory.cpp">
-      <Filter>Source Files\Filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\ShoutcastRipFile.cpp">
       <Filter>Source Files\Filesystem</Filter>
     </ClCompile>
@@ -2169,15 +2163,6 @@
     <ClCompile Include="..\..\xbmc\cdrip\EncoderWav.cpp">
       <Filter>libraries\cdrip</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libRTMP\AMFObject.cpp">
-      <Filter>libraries\libRTMP</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libRTMP\rtmp.cpp">
-      <Filter>libraries\libRTMP</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libRTMP\rtmppacket.cpp">
-      <Filter>libraries\libRTMP</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\lib\libjsonrpc\AVPlayerOperations.cpp">
       <Filter>libraries\libjsonrpc</Filter>
     </ClCompile>
@@ -2333,6 +2318,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\RenderSystemGLES.cpp">
+      <Filter>Source Files\Windowing\Render System</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\GraphFilters.cpp">
       <Filter>cores\dsplayer</Filter>
@@ -4715,15 +4703,6 @@
     <ClInclude Include="..\..\xbmc\cdrip\EncoderWav.h">
       <Filter>libraries\cdrip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libRTMP\AMFObject.h">
-      <Filter>libraries\libRTMP</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libRTMP\rtmp.h">
-      <Filter>libraries\libRTMP</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libRTMP\rtmppacket.h">
-      <Filter>libraries\libRTMP</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\AVPlayerOperations.h">
       <Filter>libraries\libjsonrpc</Filter>
     </ClInclude>
@@ -4885,6 +4864,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.h">
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\RenderSystemGLES.h">
+      <Filter>Source Files\Windowing\Render System</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\GraphFilters.h">
       <Filter>cores\dsplayer</Filter>

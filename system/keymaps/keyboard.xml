@@ -461,6 +461,7 @@
   <shutdownmenu>
     <keyboard>
       <backspace>PreviousMenu</backspace>
+      <s>Close</s>  
     </keyboard>
   </shutdownmenu>
   <submenu>
@@ -477,6 +478,7 @@
   <MovieInformation>
     <keyboard>
       <backspace>Close</backspace>
+      <i>Close</i>
       <key id='65446'>Close</key>
     </keyboard>
   </MovieInformation>

@@ -1846,7 +1846,10 @@ void CApplication::RenderNoPresent()
   if (g_graphicsContext.IsFullScreenVideo())
   {
     if (m_bPresentFrame && IsPlaying() && !IsPaused())
+    {
+      ResetScreenSaver();
       g_renderManager.Present();
+    }
     else
       g_renderManager.RenderUpdate(true);
 
@@ -1856,7 +1859,6 @@ void CApplication::RenderNoPresent()
     overlay = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_MUSIC_OVERLAY);
     if (overlay) overlay->Close(true);
 
-    ResetScreenSaver();
   }
 
   g_windowManager.Render();
@@ -3955,10 +3957,10 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged");
 }
 
-void CApplication::OnPlayBackSeek(int iTime)
+void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
 {
 #ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackSeek(iTime);
+  g_pythonParser.OnPlayBackSeek(iTime, seekOffset);
 #endif
 
 #ifdef HAS_HTTPAPI
@@ -3972,6 +3974,7 @@ void CApplication::OnPlayBackSeek(int iTime)
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek");
+  g_infoManager.SetDisplayAfterSeek(2500, seekOffset/1000);
 }
 
 void CApplication::OnPlayBackSeekChapter(int iChapter)

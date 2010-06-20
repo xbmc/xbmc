@@ -340,7 +340,7 @@ Section "DirectX WebInstall" SEC_DIRECTX
   SetOutPath "$INSTDIR"
  
   ;do minimal install if webinstaller failed for some reason
-  IfFileExists $SYSDIR\D3DX9_42.dll done
+  IfFileExists $SYSDIR\D3DX9_43.dll done
   SetOutPath "$TEMP\dxsetup"
   File "${xbmc_root}\..\dependencies\dxsetup\Aug2009_d3dx9_42_x86.cab"
   File "${xbmc_root}\..\dependencies\dxsetup\dsetup32.dll"
@@ -359,7 +359,7 @@ SectionEnd
 
 Section "-Check DirectX installation" SEC_DIRECTXCHECK
 
-  IfFileExists $SYSDIR\D3DX9_42.dll +2 0
+  IfFileExists $SYSDIR\D3DX9_43.dll +2 0
     MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "DirectX9 wasn't installed properly.$\nPlease download the DirectX End-User Runtimes from Microsoft and install it again."
 
 SectionEnd

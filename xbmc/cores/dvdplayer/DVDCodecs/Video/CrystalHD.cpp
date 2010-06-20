@@ -1109,12 +1109,6 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
       }
     } while (ret != BCM::BC_STS_SUCCESS);
 
-    if (m_drop_state)
-    {
-      if (m_pOutputThread->GetReadyCount() > 1)
-        m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
-    }
-
     bool wait_state;
     if (!m_pOutputThread->GetReadyCount())
       wait_state = m_pOutputThread->WaitOutput(m_duration/4000);
@@ -1209,7 +1203,12 @@ void CCrystalHD::SetDropState(bool bDrop)
   if (m_drop_state != bDrop)
   {
     m_drop_state = bDrop;
+    if (m_drop_state)
+      m_dll->DtsSetSkipPictureMode(m_device, 1);
+    else
+      m_dll->DtsSetSkipPictureMode(m_device, 0);
   }
+
   if (m_drop_state)
     CLog::Log(LOGDEBUG, "%s: SetDropState... %d, , GetFreeCount(%d), GetReadyCount(%d), BusyListCount(%d)", __MODULE_NAME__, 
       m_drop_state, m_pOutputThread->GetFreeCount(), m_pOutputThread->GetReadyCount(), m_BusyList.Count());

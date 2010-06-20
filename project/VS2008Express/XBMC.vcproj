@@ -4922,10 +4922,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\ShoutcastDirectory.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\FileSystem\ShoutcastRipFile.cpp"
 					>
 				</File>
@@ -7363,34 +7359,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cdrip\EncoderWav.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="libRTMP"
-				>
-				<File
-					RelativePath="..\..\xbmc\lib\libRTMP\AMFObject.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libRTMP\AMFObject.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libRTMP\rtmp.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libRTMP\rtmp.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libRTMP\rtmppacket.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libRTMP\rtmppacket.h"
 					>
 				</File>
 			</Filter>

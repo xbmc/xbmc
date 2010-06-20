@@ -64,13 +64,6 @@ int CWinEventsWin32::m_lastGesturePosY = 0;
 #define WM_MEDIA_CHANGE (WM_USER + 666)
 SHChangeNotifyEntry shcne;
 
-struct SHNOTIFYSTRUCT
-{
-  ITEMIDLIST *dwItem1;
-  ITEMIDLIST *dwItem2;
-};
-//
-
 void DIB_InitOSKeymap()
 {
   char current_layout[KL_NAMELENGTH];
@@ -314,7 +307,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     g_uQueryCancelAutoPlay = RegisterWindowMessage(TEXT("QueryCancelAutoPlay"));
     shcne.pidl = NULL;
     shcne.fRecursive = TRUE;
-    SHChangeNotifyRegister(hWnd, SHCNE_DISKEVENTS, SHCNE_MEDIAREMOVED | SHCNE_MEDIAINSERTED, WM_MEDIA_CHANGE, 1, &shcne);
+    SHChangeNotifyRegister(hWnd, SHCNRF_ShellLevel | SHCNRF_NewDelivery, SHCNE_MEDIAREMOVED | SHCNE_MEDIAINSERTED, WM_MEDIA_CHANGE, 1, &shcne);
     return 0;
   }
 
@@ -601,23 +594,31 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       return(0);
     case WM_MEDIA_CHANGE:
       {
-        SHNOTIFYSTRUCT *shns = (SHNOTIFYSTRUCT *)wParam;
-        char buffer[MAX_PATH+1];
+        long lEvent;
+        PIDLIST_ABSOLUTE *ppidl;
+        HANDLE hLock = SHChangeNotification_Lock((HANDLE)wParam, (DWORD)lParam, &ppidl, &lEvent);
 
-        switch(lParam)
+        if (hLock)
         {
-          case SHCNE_MEDIAINSERTED:        // media inserted event
-            SHGetPathFromIDList(shns->dwItem1, buffer);
-            CLog::Log(LOGDEBUG, "%s: Drive %s Media has arrived.", __FUNCTION__, buffer);
-            CWin32StorageProvider::SetEvent();
-          break;
+          char drivePath[MAX_PATH+1];
 
-          case SHCNE_MEDIAREMOVED:        // media removed event
-            SHGetPathFromIDList(shns->dwItem1, buffer);
-            CLog::Log(LOGDEBUG,"%s: Drive %s Media was removed.", __FUNCTION__, buffer);
-            CWin32StorageProvider::SetEvent();
-          break;
+          switch(lEvent)
+          {
+            case SHCNE_MEDIAINSERTED:
+              SHGetPathFromIDList(ppidl[0], drivePath);
+              CLog::Log(LOGDEBUG, __FUNCTION__": Drive %s Media has arrived.", drivePath);
+              CWin32StorageProvider::SetEvent();
+              break;
+
+            case SHCNE_MEDIAREMOVED:
+              SHGetPathFromIDList(ppidl[0], drivePath);
+              CLog::Log(LOGDEBUG, __FUNCTION__": Drive %s Media was removed.", drivePath);
+              CWin32StorageProvider::SetEvent();
+              break;
+          }
+          SHChangeNotification_Unlock(hLock);
         }
+        break;
       }
     case WM_DEVICECHANGE:
       {

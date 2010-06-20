@@ -1,3 +1,6 @@
+[B]1.0.3[/B]
+- scraper library interfaces changed. no functional changes
+
 [B]1.0.2[/B]
 
 - scraper might fetch wrong studio, genre and country values

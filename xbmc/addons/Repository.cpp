@@ -142,27 +142,6 @@ VECADDONS CRepository::Parse()
   return result;
 }
 
-CDateTime CRepository::LastUpdate()
-{
-  CSingleLock lock(m_critSection);
-  CAddonDatabase database;
-  database.Open();
-  CStdString date;
-  CDateTime datetime = CDateTime::GetCurrentDateTime();
-  if (database.GetRepoTimestamp(ID(),date) > -1)
-    datetime.SetFromDBDate(date);
-
-  return datetime;
-}
-
-void CRepository::SetUpdated(const CDateTime& time)
-{
-  CSingleLock lock(m_critSection);
-  CAddonDatabase database;
-  database.Open();
-  database.SetRepoTimestamp(ID(),time.GetAsDBDateTime());
-}
-
 CRepositoryUpdateJob::CRepositoryUpdateJob(RepositoryPtr& repo, bool check)
 {
   m_repo = boost::dynamic_pointer_cast<CRepository>(repo->Clone(repo));
@@ -202,10 +181,7 @@ VECADDONS CRepositoryUpdateJob::GrabAddons(RepositoryPtr& repo,
 {
   CAddonDatabase database;
   database.Open();
-  CStdString checksum, timestamp;
-  CDateTime time = CDateTime::GetCurrentDateTime();
-  if (database.GetRepoTimestamp(repo->ID(),timestamp))
-    time.SetFromDBDate(timestamp);
+  CStdString checksum;
   int idRepo = database.GetRepoChecksum(repo->ID(),checksum);
   CStdString reposum=checksum;
   if (check)

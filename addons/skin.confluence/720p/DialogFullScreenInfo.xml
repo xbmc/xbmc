@@ -82,7 +82,7 @@
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[VideoPlayer.VideoCodec,flagging/video/,.png]</texture>
 						<!-- Don't show if its one of the 500 divx codecs -->
-						<visible>![stringcompare(VideoPlayer.VideoCodec,divx) | stringcompare(VideoPlayer.VideoCodec,div3) |stringcompare(VideoPlayer.VideoCodec,div4) | stringcompare(VideoPlayer.VideoCodec,div5)]</visible>
+						<visible>![substring(VideoPlayer.VideoCodec,div,left) | stringcompare(VideoPlayer.VideoCodec,dx50)]</visible>
 					</control>
 					<control type="image">
 						<description>Divx Codec Image</description>
@@ -90,7 +90,7 @@
 						<height>40</height>
 						<aspectratio>keep</aspectratio>
 						<texture>flagging/video/divx.png</texture>
-						<visible>stringcompare(VideoPlayer.VideoCodec,divx) | stringcompare(VideoPlayer.VideoCodec,div3) |stringcompare(VideoPlayer.VideoCodec,div4) | stringcompare(VideoPlayer.VideoCodec,div5)</visible>
+						<visible>[substring(VideoPlayer.VideoCodec,div,left) | stringcompare(VideoPlayer.VideoCodec,dx50)]</visible>
 					</control>
 					
 					<control type="image">

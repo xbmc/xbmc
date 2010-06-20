@@ -54,7 +54,8 @@ CIMDB::~CIMDB()
 {
 }
 
-int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movielist, bool& sortMovieList, const CStdString& strFunction, CScraperUrl* pUrl)
+int CIMDB::InternalFindMovie(const CStdString &strMovie,
+                             IMDB_MOVIELIST& movielist, bool& sortMovieList)
 {
   movielist.clear();
 
@@ -72,155 +73,124 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
   CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s')",
     __FUNCTION__, movieTitle.c_str(), m_info->Name().c_str(), m_info->Path().c_str(), ADDON::TranslateContent(m_info->Content()).c_str());
 
-  if (!pUrl)
+  if (m_info->GetParser().HasFunction("CreateSearchUrl"))
   {
-    if (m_parser.HasFunction("CreateSearchUrl"))
-    {
-      GetURL(strMovie, movieTitle, movieYear, scrURL);
-    }
-    else if (m_info->Content() == CONTENT_MUSICVIDEOS)
-    {
-      if (!m_parser.HasFunction("FileNameScrape"))
-        return false;
-
-      CScraperUrl scrURL("filenamescrape");
-      CUtil::RemoveExtension(strName);
-      scrURL.strTitle = strName;
-      movielist.push_back(scrURL);
-      return 1;
-    }
-    if (scrURL.m_xml.IsEmpty())
+    GetURL(strMovie, movieTitle, movieYear, scrURL);
+  }
+  else if (m_info->Content() == CONTENT_MUSICVIDEOS)
+  {
+    if (!m_info->GetParser().HasFunction("FileNameScrape"))
       return 0;
+
+    CScraperUrl scrURL("filenamescrape");
+    CUtil::RemoveExtension(strName);
+    scrURL.strTitle = strName;
+    movielist.push_back(scrURL);
+    return 1;
   }
-  else
-    scrURL = *pUrl;
-
-  vector<CStdString> strHTML;
-  for (unsigned int i=0;i<scrURL.m_url.size();++i)
-  {
-    CStdString strCurrHTML;
-    if (!CScraperUrl::Get(scrURL.m_url[i],strCurrHTML,m_http,m_parser.GetFilename()) || strCurrHTML.size() == 0)
-      return 0;
-    strHTML.push_back(strCurrHTML);
-  }
-
-  // now grab our details using the scraper
-  for (unsigned int i=0;i<strHTML.size();++i)
-    m_parser.m_param[i] = strHTML[i];
-  m_parser.m_param[strHTML.size()] = scrURL.m_url[0].m_url;
-  CStdString strXML = m_parser.Parse(strFunction);
-  CLog::Log(LOGDEBUG,"scraper: %s returned %s",strFunction.c_str(),strXML.c_str());
-  if (strXML.IsEmpty())
-  {
-    CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
-    return 0;
-  }
-
-  if (!XMLUtils::HasUTF8Declaration(strXML))
-    g_charsetConverter.unknownToUTF8(strXML);
-
-  // ok, now parse the xml file
-  TiXmlDocument doc;
-  doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
-  if (!doc.RootElement())
-  {
-    CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
-    return 0;
-  }
-
-  if (stricmp(doc.RootElement()->Value(),"error")==0)
-  {
-    ShowErrorDialog(doc.RootElement());
-    return -1;
-  }
-
-  TiXmlHandle docHandle( &doc );
-
-  TiXmlElement* xurl = doc.RootElement()->FirstChildElement("url");
-  while (xurl && xurl->FirstChild())
-  {
-    const char* szFunction = xurl->Attribute("function");
-    if (szFunction)
-    {
-      CScraperUrl scrURL(xurl);
-      InternalFindMovie(strMovie,movielist,sortMovieList,szFunction,&scrURL);
-    }
-    xurl = xurl->NextSiblingElement("url");
-  }
-
-  TiXmlElement *movie = docHandle.FirstChild("results").Element();
-  if (!movie)
+  if (scrURL.m_xml.IsEmpty())
     return 0;
 
-  movie = docHandle.FirstChild( "results" ).FirstChild( "entity" ).Element();
-  while (movie)
+  vector<CStdString> extras;
+  extras.push_back(scrURL.m_url[0].m_url);
+
+  vector<CStdString> xml = m_info->Run("GetSearchResults",scrURL,m_http,&extras);
+
+  bool haveValidResults = false;
+  for (vector<CStdString>::iterator it  = xml.begin();
+                                    it != xml.end(); ++it)
   {
-    // is our result already sorted correctly when handed over from scraper? if so, do not let xbmc sort it
-    if (sortMovieList)
+    // ok, now parse the xml file
+    TiXmlDocument doc;
+    doc.Parse(it->c_str(),0,TIXML_ENCODING_UTF8);
+    if (!doc.RootElement())
     {
-      TiXmlElement* results = docHandle.FirstChild("results").Element();
-      if (results)
-      {
-        CStdString szSorted = results->Attribute("sorted");
-        sortMovieList = (szSorted.CompareNoCase("yes") != 0);
-      }
+      CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
+      continue;  // might have more valid results later
     }
 
-    TiXmlNode *title = movie->FirstChild("title");
-    TiXmlElement *link = movie->FirstChildElement("url");
-    TiXmlNode *year = movie->FirstChild("year");
-    TiXmlNode* id = movie->FirstChild("id");
-    TiXmlNode* language = movie->FirstChild("language");
-    if (title && title->FirstChild() && link && link->FirstChild())
+    if (stricmp(doc.RootElement()->Value(),"error")==0)
     {
-      CScraperUrl url;
-      url.strTitle = title->FirstChild()->Value();
-      while (link && link->FirstChild())
-      {
-        url.ParseElement(link);
-        link = link->NextSiblingElement("url");
-      }
-      if (id && id->FirstChild())
-        url.strId = id->FirstChild()->Value();
-
-      // calculate the relavance of this hit
-      CStdString compareTitle = url.strTitle;
-      compareTitle.ToLower();
-      CStdString matchTitle = movieTitle;
-      matchTitle.ToLower();
-      // see if we need to add year information
-      CStdString compareYear;
-      if (year && year->FirstChild())
-        compareYear = year->FirstChild()->Value();
-      if (!movieYear.IsEmpty() && !compareYear.IsEmpty())
-      {
-        matchTitle.AppendFormat(" (%s)", movieYear.c_str());
-        compareTitle.AppendFormat(" (%s)", compareYear.c_str());
-      }
-      url.relevance = fstrcmp(matchTitle.c_str(), compareTitle.c_str(), 0);
-      // reconstruct a title for the user
-      CStdString title = url.strTitle;
-      if (!compareYear.IsEmpty())
-        title.AppendFormat(" (%s)", compareYear.c_str());
-      if (language && language->FirstChild())
-        title.AppendFormat(" (%s)", language->FirstChild()->Value());
-      url.strTitle = title;
-      // filter for dupes from naughty scrapers
-      IMDB_MOVIELIST::iterator iter=movielist.begin();
-      while (iter != movielist.end())
-      {
-        if (iter->m_url[0].m_url.Equals(url.m_url[0].m_url) &&
-            iter->strTitle.Equals(url.strTitle))
-          break;
-        ++iter;
-      }
-      if (iter == movielist.end())
-        movielist.push_back(url);
+      ShowErrorDialog(doc.RootElement());
+      return -1; // scraper has reported an error
     }
-    movie = movie->NextSiblingElement();
+
+    TiXmlHandle docHandle( &doc );
+    TiXmlElement *movie = docHandle.FirstChild("results").Element();
+    if (!movie)
+      continue;
+
+    haveValidResults = true;
+
+    movie = docHandle.FirstChild( "results" ).FirstChild( "entity" ).Element();
+    while (movie)
+    {
+      // is our result already sorted correctly when handed over from scraper? if so, do not let xbmc sort it
+      if (sortMovieList)
+      {
+        TiXmlElement* results = docHandle.FirstChild("results").Element();
+        if (results)
+        {
+          CStdString szSorted = results->Attribute("sorted");
+          sortMovieList = (szSorted.CompareNoCase("yes") != 0);
+        }
+      }
+
+      TiXmlNode *title = movie->FirstChild("title");
+      TiXmlElement *link = movie->FirstChildElement("url");
+      TiXmlNode *year = movie->FirstChild("year");
+      TiXmlNode* id = movie->FirstChild("id");
+      TiXmlNode* language = movie->FirstChild("language");
+      if (title && title->FirstChild() && link && link->FirstChild())
+      {
+        CScraperUrl url;
+        url.strTitle = title->FirstChild()->Value();
+        while (link && link->FirstChild())
+        {
+          url.ParseElement(link);
+          link = link->NextSiblingElement("url");
+        }
+        if (id && id->FirstChild())
+          url.strId = id->FirstChild()->Value();
+
+        // calculate the relavance of this hit
+        CStdString compareTitle = url.strTitle;
+        compareTitle.ToLower();
+        CStdString matchTitle = movieTitle;
+        matchTitle.ToLower();
+        // see if we need to add year information
+        CStdString compareYear;
+        if (year && year->FirstChild())
+          compareYear = year->FirstChild()->Value();
+        if (!movieYear.IsEmpty() && !compareYear.IsEmpty())
+        {
+          matchTitle.AppendFormat(" (%s)", movieYear.c_str());
+          compareTitle.AppendFormat(" (%s)", compareYear.c_str());
+        }
+        url.relevance = fstrcmp(matchTitle.c_str(), compareTitle.c_str(), 0);
+        // reconstruct a title for the user
+        CStdString title = url.strTitle;
+        if (!compareYear.IsEmpty())
+          title.AppendFormat(" (%s)", compareYear.c_str());
+        if (language && language->FirstChild())
+          title.AppendFormat(" (%s)", language->FirstChild()->Value());
+        url.strTitle = title;
+        // filter for dupes from naughty scrapers
+        IMDB_MOVIELIST::iterator iter=movielist.begin();
+        while (iter != movielist.end())
+        {
+          if (iter->m_url[0].m_url.Equals(url.m_url[0].m_url) &&
+              iter->strTitle.Equals(url.strTitle))
+            break;
+          ++iter;
+        }
+        if (iter == movielist.end())
+          movielist.push_back(url);
+      }
+      movie = movie->NextSiblingElement();
+    }
   }
-
-  return 1;
+  return haveValidResults ? 1 : 0;
 }
 
 bool CIMDB::RelevanceSortFunction(const CScraperUrl &left, const CScraperUrl &right)
@@ -247,41 +217,23 @@ void CIMDB::ShowErrorDialog(const TiXmlElement* element)
 bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details)
 {
   IMDB_EPISODELIST temp;
-  for(unsigned int i=0; i < url.m_url.size(); i++)
+  vector<CStdString> extras;
+  if (url.m_url.empty())
+    return false;
+  extras.push_back(url.m_url[0].m_url);
+  vector<CStdString> xml = m_info->Run("GetEpisodeList",url,m_http,&extras);
+
+  for (vector<CStdString>::iterator it  = xml.begin();
+                                    it != xml.end(); ++it)
   {
-    CStdString strHTML;
-    if (!CScraperUrl::Get(url.m_url[i],strHTML,m_http,m_parser.GetFilename()) || strHTML.size() == 0)
-    {
-      CLog::Log(LOGERROR, "%s: Unable to retrieve web site",__FUNCTION__);
-      if (temp.size() > 0 || (i == 0 && url.m_url.size() > 1)) // use what was fetched
-        continue;
-
-      return false;
-    }
-    m_parser.m_param[0] = strHTML;
-    m_parser.m_param[1] = url.m_url[i].m_url;
-
-    CStdString strXML = m_parser.Parse("GetEpisodeList");
-    CLog::Log(LOGDEBUG,"scraper: GetEpisodeList returned %s",strXML.c_str());
-    if (strXML.IsEmpty())
-    {
-      CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
-      if (temp.size() > 0 || (i == 0 && url.m_url.size() > 1)) // use what was fetched
-        continue;
-
-      return false;
-    }
     // ok, now parse the xml file
     TiXmlDocument doc;
-    doc.Parse(strXML.c_str());
+    doc.Parse(it->c_str());
     if (!doc.RootElement())
     {
       CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
       return false;
     }
-
-    if (!XMLUtils::HasUTF8Declaration(strXML))
-      g_charsetConverter.unknownToUTF8(strXML);
 
     TiXmlHandle docHandle( &doc );
     TiXmlElement *movie = docHandle.FirstChild( "episodeguide" ).FirstChild( "episode" ).Element();
@@ -364,62 +316,29 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
 
 bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetails, const CStdString& strFunction)
 {
-  vector<CStdString> strHTML;
+  if (url.m_xml.Equals("filenamescrape"))
+    return ScrapeFilename(movieDetails.m_strFileNameAndPath,movieDetails);
 
-  for (unsigned int i=0;i<url.m_url.size();++i)
+  vector<CStdString> extras;
+  extras.push_back(url.strId);
+  extras.push_back(url.m_url[0].m_url);
+  vector<CStdString> xml = m_info->Run("GetDetails",url,m_http,&extras);
+  for (vector<CStdString>::iterator it  = xml.begin();
+                                    it != xml.end(); ++it)
   {
-    CStdString strCurrHTML;
-    if (url.m_xml.Equals("filenamescrape"))
-      return ScrapeFilename(movieDetails.m_strFileNameAndPath,movieDetails);
-    if (!CScraperUrl::Get(url.m_url[i],strCurrHTML,m_http,m_parser.GetFilename()) || strCurrHTML.size() == 0)
-      return false;
-    strHTML.push_back(strCurrHTML);
-  }
-
-  // now grab our details using the scraper
-  for (unsigned int i=0;i<strHTML.size();++i)
-    m_parser.m_param[i] = strHTML[i];
-
-  m_parser.m_param[strHTML.size()] = url.strId;
-  m_parser.m_param[strHTML.size()+1] = url.m_url[0].m_url;
-
-  CStdString strXML = m_parser.Parse(strFunction);
-  CLog::Log(LOGDEBUG,"scraper: %s returned %s",strFunction.c_str(),strXML.c_str());
-  if (strXML.IsEmpty())
-  {
-    CLog::Log(LOGERROR, "%s: Unable to parse web site [%s]",__FUNCTION__,url.m_url[0].m_url.c_str());
-    return false;
-  }
-
-  // abit ugly, but should work. would have been better if parser
-  // set the charset of the xml, and we made use of that
-  if (!XMLUtils::HasUTF8Declaration(strXML))
-    g_charsetConverter.unknownToUTF8(strXML);
-
     // ok, now parse the xml file
-  TiXmlDocument doc;
-  doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
-  if (!doc.RootElement())
-  {
-    CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
-    return false;
-  }
-
-  bool ret = ParseDetails(doc, movieDetails);
-  TiXmlElement* pRoot = doc.RootElement();
-  TiXmlElement* xurl = pRoot->FirstChildElement("url");
-  while (xurl && xurl->FirstChild())
-  {
-    const char* szFunction = xurl->Attribute("function");
-    if (szFunction)
+    TiXmlDocument doc;
+    doc.Parse(it->c_str(),0,TIXML_ENCODING_UTF8);
+    if (!doc.RootElement())
     {
-      CScraperUrl scrURL(xurl);
-      InternalGetDetails(scrURL,movieDetails,szFunction);
+      CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
+      return false;
     }
-    xurl = xurl->NextSiblingElement("url");
+
+    ParseDetails(doc, movieDetails);
   }
 
-  return ret;
+  return true;
 }
 
 bool CIMDB::ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails)
@@ -447,14 +366,18 @@ void CIMDB::RemoveAllAfter(char* szMovie, const char* szSearch)
 
 void CIMDB::GetURL(const CStdString &movieFile, const CStdString &movieName, const CStdString &movieYear, CScraperUrl& scrURL)
 {
-  if (!movieYear.IsEmpty())
-    m_parser.m_param[1] = movieYear;
-
   // convert to the encoding requested by the parser
-  g_charsetConverter.utf8To(m_parser.GetSearchStringEncoding(), movieName, m_parser.m_param[0]);
-  CUtil::URLEncode(m_parser.m_param[0]);
+  vector<CStdString> extras;
+  extras.push_back(movieName);
+  g_charsetConverter.utf8To(m_info->GetParser().GetSearchStringEncoding(), movieName, extras[0]);
+  CUtil::URLEncode(extras[0]);
+  if (!movieYear.IsEmpty())
+    extras.push_back(movieYear);
 
-  scrURL.ParseString(m_parser.Parse("CreateSearchUrl"));
+  scrURL.Clear();
+  vector<CStdString> xml = m_info->Run("CreateSearchUrl",scrURL,m_http,&extras);
+  if (!xml.empty())
+    scrURL.ParseString(xml[0]);
 }
 
 // threaded functions
@@ -494,9 +417,8 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
   //CLog::Log(LOGDEBUG,"CIMDB::FindMovie(%s)", strMovie.c_str());
 
   // load our scraper xml
-  if (!m_parser.Load(m_info))
+  if (!m_info->Load())
     return 0;
-  m_parser.ClearCache();
 
   if (pProgress)
   { // threaded version
@@ -541,7 +463,7 @@ bool CIMDB::GetDetails(const CScraperUrl &url, CVideoInfoTag &movieDetails, CGUI
   m_url = url;
   m_movieDetails = movieDetails;
   // load our scraper xml
-  if (!m_parser.Load(m_info))
+  if (!m_info->Load())
     return false;
 
   // fill in the defaults
@@ -578,7 +500,7 @@ bool CIMDB::GetEpisodeDetails(const CScraperUrl &url, CVideoInfoTag &movieDetail
   m_movieDetails = movieDetails;
 
   // load our scraper xml
-  if (!m_parser.Load(m_info))
+  if (!m_info->Load())
     return false;
 
   // fill in the defaults
@@ -615,7 +537,7 @@ bool CIMDB::GetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& movieDetail
   m_episode = movieDetails;
 
   // load our scraper xml
-  if (!m_parser.Load(m_info))
+  if (!m_info->Load())
     return false;
 
   // fill in the defaults
@@ -656,20 +578,25 @@ void CIMDB::CloseThread()
 
 bool CIMDB::ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details)
 {
-  m_parser.m_param[0] = strFileName;
-
-  CUtil::RemoveExtension(m_parser.m_param[0]);
-  m_parser.m_param[0].Replace("_"," ");
-  CStdString strResult = m_parser.Parse("FileNameScrape");
-  CLog::Log(LOGDEBUG,"scraper: FileNameScrape returned %s", strResult.c_str());
-  TiXmlDocument doc;
-  doc.Parse(strResult.c_str());
-  if (doc.RootElement())
+  CScraperUrl url;
+  vector<CStdString> extras;
+  extras.push_back(strFileName);
+  CUtil::RemoveExtension(extras[0]);
+  extras[0].Replace("_"," ");
+  vector<CStdString> result = m_info->Run("FileNameScrape",url,m_http,&extras);
+  if (!result.empty())
   {
-    CNfoFile file;
-    if (file.GetDetails(details,strResult.c_str()))
-      return true;
+    CLog::Log(LOGDEBUG,"scraper: FileNameScrape returned %s", result[0].c_str());
+    TiXmlDocument doc;
+    doc.Parse(result[0].c_str());
+    if (doc.RootElement())
+    {
+      CNfoFile file;
+      if (file.GetDetails(details,result[0].c_str()))
+        return true;
+    }
   }
+
   return false;
 }
 

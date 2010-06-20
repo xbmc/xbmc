@@ -499,8 +499,9 @@ bool CDSPlayer::OnAction(const CAction &action)
 // Time is in millisecond
 void CDSPlayer::SeekTime(__int64 iTime)
 {
+  int seekOffset = (int)(iTime - DS_TIME_TO_MSEC(g_dsGraph->GetTime()));
   CDSGraph::PostMessage(ID_SEEK_TO, (int32_t) iTime);
-  m_callback.OnPlayBackSeek((int) iTime);
+  m_callback.OnPlayBackSeek((int) iTime, seekOffset);
 }
 
 #endif

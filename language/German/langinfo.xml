@@ -21,6 +21,54 @@
       <speedunit>kmh</speedunit>
       <timezone>CEST</timezone>
     </region>
+    <region name="Schweiz">
+      <dateshort>DD.MM.YYYY</dateshort>
+      <datelong>DDDD, D. MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">HH:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>CEST</timezone>
+    </region>
+    <region name="Österreich">
+      <dateshort>DD.MM.YYYY</dateshort>
+      <datelong>DDDD, D. MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">HH:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>CEST</timezone>
+    </region>
+    <region name="Lichtenstein">
+      <dateshort>DD.MM.YYYY</dateshort>
+      <datelong>DDDD, D. MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">HH:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>CEST</timezone>
+    </region>
+    <region name="Südtirol">
+      <dateshort>DD.MM.YYYY</dateshort>
+      <datelong>DDDD, D. MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">HH:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>CEST</timezone>
+    </region>
+    <region name="Luxemburg">
+      <dateshort>DD.MM.YYYY</dateshort>
+      <datelong>DDDD, D. MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">HH:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>CEST</timezone>
+    </region>
+    <region name="Belgien">
+      <dateshort>DD.MM.YYYY</dateshort>
+      <datelong>DDDD, D. MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">HH:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+      <timezone>CEST</timezone>
+    </region>
   </regions>
 
   <sorttokens>

@@ -25,7 +25,6 @@
 #include "SortFileItem.h"
 #include "GUIBaseContainer.h"
 #include "MediaSource.h"
-#include "addons/PluginSource.h"
 
 class CViewState; // forward
 class CFileItemList;
@@ -63,10 +62,16 @@ public:
   virtual VECSOURCES& GetSources();
 
 protected:
-  CGUIViewState(const CFileItemList& items, const ADDON::CPluginSource::Content& content = ADDON::CPluginSource::UNKNOWN);  // no direct object creation, use GetViewState()
+  CGUIViewState(const CFileItemList& items);  // no direct object creation, use GetViewState()
   virtual void SaveViewState()=0;
   virtual void SaveViewToDb(const CStdString &path, int windowID, CViewState *viewState = NULL);
   void LoadViewState(const CStdString &path, int windowID);
+  
+  /*! \brief Add the addons source for the given content type, if the user has suitable addons
+   \param content the type of addon content desired
+   \param label the name of the addons source
+   */
+  void AddAddonsSource(const CStdString &content, const CStdString &label);
 
   void AddSortMethod(SORT_METHOD sortMethod, int buttonLabel, LABEL_MASKS labelmasks);
   void SetSortMethod(SORT_METHOD sortMethod);
@@ -74,7 +79,6 @@ protected:
   const CFileItemList& m_items;
 
   static VECSOURCES m_sources;
-  ADDON::CPluginSource::Content m_content;
 
   int m_currentViewAsControl;
 

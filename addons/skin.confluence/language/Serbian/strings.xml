@@ -1,158 +1,156 @@
-<?xml version="1.0" encoding="cp1250" standalone="yes"?>
-<!--Translator: Vladimir Medarović-->
-<!--Email: vlada@medarovic.com-->
-<!--Date of translation: 02/24/2010-->
-<!--Based on english strings version 28080-->
+ď»ż<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-  <!-- Misc labels -->
-  <string id="31000">Promeni svoj</string>
-  <string id="31001">Love</string>
-  <string id="31002">Hate</string>
-  <string id="31003">Opcije gašenja</string>
+  <!-- Ostali natpisi -->
+  <string id="31000">Promenite vaĹˇe</string>
+  <string id="31001">Ljubav</string>
+  <string id="31002">MrĹľnja</string>
+  <string id="31003">Opcije napajanja</string>
   <string id="31004">Obrada...</string>
-  <string id="31005">Sakrij INFO</string>
+  <string id="31005">Sakrij info.</string>
 
   <string id="31007">Dodaci</string>
 
   <string id="31020">Nedavno dodato</string>
-  <string id="31021">Video - Fajlovi</string>
-  <string id="31022">Muzika - Fajlovi</string>
+  <string id="31021">Video - Datoteke</string>
+  <string id="31022">Muzika - Datoteke</string>
   <string id="31023">Reprodukcija</string>
   <string id="31024">Strana</string>
   <string id="31025">Stavki</string>
   <string id="31026">Ostale opcije</string>
   <string id="31027">Lokacija</string>
  
-  <!-- View Type labels -->
-  <string id="31028">Kružni posteri</string>
-  <string id="31029">Fanart</string>
-  <string id="31030">Potpuna lista</string>
-  <string id="31031">Sličice</string>
-  <string id="31032">Kružne slike</string>
+  <!-- Prikaz tipa natpisa -->
+  <string id="31028">PoreÄ‘ano</string>
+  <string id="31029">Zan. slika</string>
+  <string id="31030">Puni spisak</string>
+  <string id="31031">SliÄŤice</string>
+  <string id="31032">PoreÄ‘ano</string>
+  <string id="31033">Informacije</string>
 
-  <!-- Extra labels -->
-  <string id="31040">Trenutna reprodukcija</string>
+  <!-- Dodatni natpisi -->
+  <string id="31040">Trenutno se reprodukuje</string>
 
-  <string id="31042">REPRODUKOVANJE</string>
+  <string id="31042">REPRODUKOVANjE</string>
   <string id="31043">PAUZIRANO</string>
-  <string id="31044">BRZO NAPRED</string>
-  <string id="31045">PREMOTAVANJE</string>
-  <string id="31046">Audio osobine</string>
-  <string id="31047">Current Preset</string>
-  <string id="31048">Visualization Presets</string>
-  <string id="31049">Vreme završetka</string>
+  <string id="31044">PREMOTAVANjE UNAPRED</string>
+  <string id="31045">PREMOTAVANjE</string>
+  <string id="31046">Svojstva zvuka</string>
+  <string id="31047">Trenutna postavka</string>
+  <string id="31048">PostojeÄ‡e vizualizacije</string>
+  <string id="31049">Vreme zavrĹˇetka</string>
 
 
-  <!-- Playlist Editor labels -->
-  <string id="31055">Otvori plejlistu</string>
-  <string id="31056">Snimi plejlistu</string>
-  <string id="31057">Zatvori plejlistu</string>
-  <string id="31058">Sistemski muzički fajlovi</string>
-  <string id="31059">Trenutna plejlista</string>
-  <string id="31060">Ovaj fajl je složen, koji njegov deo želiš da reprodukujem.</string>
-  <string id="31061">Trenutno odabrano</string>
+  <!-- Natpisi ureÄ‘ivaÄŤa spiska za reprodukciju -->
+  <string id="31055">Otvori rep. spisak</string>
+  <string id="31056">SaÄŤuvaj rep. spisak</string>
+  <string id="31057">Zatvori rep. spisak</string>
+  <string id="31058">Sistemske muziÄŤke datoteke</string>
+  <string id="31059">Trenutni rep. spisak</string>
+  <string id="31060">Ova datoteka je sloĹľena, izaberite deo koji Ĺľelite da reprodukujete.</string>
+  <string id="31061">Trenutno izabrano</string>
   
-  <!-- Skin Settings labels -->
+  <!-- Natpisi postavki maski -->
   <string id="31100"></string>
-  <string id="31101">Opcije početnog ekrana</string>
+  <string id="31101">Opcije poÄŤetnog ekrana</string>
   <string id="31102">Pozadina</string>
-  <string id="31103">Prikaži "Pauzirano" prilikom slajdšou-a</string>
-  <string id="31104">Reprodukuj trejlere u prozoru [COLOR=grey3](Video Information Dialog Only)[/COLOR]</string>
-  <string id="31105">Prikaži nazive media prilikom pozadinskog skeniranja</string>
+  <string id="31103">PrikaĹľi â€žPauziranoâ€ś prilikom reprodukcije slika</string>
+  <string id="31104">Reprodukuj najave filmova u prozoru [COLOR=grey3](Video Info. Dialog Only)[/COLOR]</string>
+  <string id="31105">PrikaĹľi nazive medija u pozadinskom analiziranju</string>
   <string id="31106">Razne opcije</string>
   <string id="31107"></string>
   <string id="31108">Sakrij tastere glavnog menija</string>
-  <string id="31109">Pozadine početnog ekrana</string>
-  <string id="31110">Izmeni pozadinu tastera za početni ekran</string>
+  <string id="31109">Pozadine poÄŤetnog ekrana</string>
+  <string id="31110">Uredite pozadinu tastera za poÄŤetni ekran</string>
   <string id="31111">Sakrij</string>
   <string id="31112">Opcije</string>
   <string id="31113">Jedna slika</string>
-  <string id="31114">Više slika</string>
-  <string id="31115">Customizer</string>
+  <string id="31114">ViĹˇe slika</string>
+  <string id="31115">PrilagoÄ‘avaÄŤ</string>
   <string id="31116">Skript dodaci</string>
-  <string id="31117">Prikaži nedavno dodate filmove</string>
-  <string id="31118">Podmeni početne strane</string>
-  <string id="31119">Omogući taster za prilagođene skriptove</string>
-  <string id="31120">NATPIS NA TASTERU</string>
-  <string id="31121">PUTANJA DO SKRIPTA</string>
+  <string id="31117">PrikaĹľi nedavno dodate filmove</string>
+  <string id="31118">Podmeni poÄŤetne strane</string>
+  <string id="31119">OmoguÄ‡i taster za prilagoÄ‘enu skripu</string>
+  <string id="31120">NATPIS TASTERA</string>
+  <string id="31121">PUTANjA DO SKRIPTE</string>
   <string id="31122">Strana vremenske prognoze</string>
-  <string id="31123">Prikaži postere umesto banera za TV serije</string>
-  <string id="31124">Prikaži trenutni film u pozadini</string>
-  <string id="31125">Prikaži trenutnu vizualizaciju u pozadini</string>
+  <string id="31123">PrikaĹľi postere umesto banera za TV serije</string>
+  <string id="31124">PrikaĹľi trenutni film u pozadini</string>
+  <string id="31125">PrikaĹľi trenutnu vizualizaciju u pozadini</string>
 
-  <string id="31126">Omogući Lyrics u muzičkom OSD-u</string>
-  <string id="31127">PUTANJA DO LYRICS SKRIPTA</string>
-  <string id="31128">XBMC Lyrics</string>
-  <string id="31129">Omogući prezimanje titlova u Video OSD-u</string>
-  <string id="31130">PUTANJA DO SKRIPTA ZA TITLOVE</string>
+  <string id="31126">OmoguÄ‡i tekstove pesama u muziÄŤkom OSD-u</string>
+  <string id="31127">PUTANjA DO SKRIPTE TEKS. PES.</string>
+  <string id="31128">Tekstovi pesama</string>
+  <string id="31129">OmoguÄ‡i preuzimanje titlova u video OSD-u</string>
+  <string id="31130">PUTANjA DO SKRIPTE ZA TITLOVE</string>
 
-  <string id="31140">Muzički OSD</string>
+  <string id="31140">MuziÄŤki OSD</string>
   <string id="31141">Video OSD</string>
 
-  <!-- Script labels -->
-  <string id="31200">Prečice</string>
+  <!-- Natpisi skripti -->
+  <string id="31200">PreÄŤice</string>
   <string id="31201">Kategorije</string>
-  <string id="31202">Prikaži uloge</string>
-  <string id="31203">Odaberi svoju pesmu</string>
+  <string id="31202">PrikaĹľi uloge</string>
+  <string id="31203">Izaberite vaĹˇu pesmu</string>
   <string id="31204">Linkovi odeljka</string>
-  <string id="31205">Lyrics izvor</string>
+  <string id="31205">Izvor tekstova pesama</string>
 
-  <!-- The Weather Channel Script labels -->
-  <string id="31250">Radar &amp; Prognoza</string>
+  <!-- The Weather Channel natpisi -->
+  <string id="31250">Radar i prognoza</string>
   <string id="31251">Prognoza</string>
-  <string id="31252">TWC skript</string>
+  <string id="31252">TWC skripta</string>
 
-  <!-- Extra labels -->
+  <!-- Dodatni natpisi -->
   <string id="31300">Trenutna temperatura</string>
-  <string id="31301">Poslednje ažuriranje</string>
+  <string id="31301">Poslednje aĹľuriranje</string>
   <string id="31302">Meni</string>
   <string id="31303"></string>
   <string id="31304">Fotografija</string>
-  <string id="31305">Media disk nije detektovan</string>
+  <string id="31305">Nije otkriven optiÄŤki disk</string>
   <string id="31306">Izbaci</string>
-  <string id="31307">Sakrij fanart</string>
-  <string id="31308">Detalji filma</string>
-  <string id="31309">Utrošeno memorije:</string>
+  <string id="31307">Sakrij sliku</string>
+  <string id="31308">Podaci o filmu</string>
+  <string id="31309">IskoriĹˇÄ‡enost memorije:</string>
   <string id="31310">Broj numere</string>
-  <string id="31311">Fanart slika[CR][CR]nije dodeljena[CR][CR] Klik na dugme za dodelu</string>
-  <string id="31312">Trenutni skrejper</string>
-  <string id="31313">Odaberi skrejper</string>
-  <string id="31314">Opcije skeniranja sadržaja</string>
+  <string id="31311">Zanimljiva slika[CR]nije dodeljena.[CR][CR]Kliknite na dugme da[CR]biste je dodelili.</string>
+  <string id="31312">Trenutni dobavljaÄŤ</string>
+  <string id="31313">Izaberite dobavljaÄŤa</string>
+  <string id="31314">Opcije analiziranja sadrĹľaja</string>
   <string id="31315">Osnovno</string>
   <string id="31316"></string>
-  <string id="31317">Podesi putanju za Fanart</string>
-  <string id="31318">Fanart malih dimenzija</string>
-  <string id="31319">Odabrani profil</string>
-  <string id="31320">Poslednje logovanje</string>
-  <string id="31321">Izbor karaoke pesme</string>
+  <string id="31317">Post. put. do slika</string>
+  <string id="31318">Zanimljive slike malih dimenzija</string>
+  <string id="31319">Izabran profil</string>
+  <string id="31320">Poslednja prijava</string>
+  <string id="31321">BiraÄŤ karaoke pesme</string>
   <string id="31322">Emitovano</string>
   <string id="31323">Noviji filmovi</string>
-  <string id="31324">Novije episode</string>
-  <string id="31325">Opcije plejliste</string>
-  <string id="31326">Kreirano</string>
+  <string id="31324">Novije epizode</string>
+  <string id="31325">Opcije spiska za reprodukciju</string>
+  <string id="31326">Napravljeno</string>
   <string id="31327">Rezolucija</string>
   <string id="31328">Nedavno dodato</string>
-  <string id="31329">[B]PODEŠAVANJE TAJMERA![/B] [COLOR=grey2] - SYSTEM AUTO SHUTDOWN IN[/COLOR]</string>
-  <string id="31330">Klik na taster za reprodukciju[CR][CR]trejlera</string>
+  <string id="31329">[B]Odbrojavanje je postavljeno![/B] [COLOR=grey2] - Sistem Ä‡e se iskljuÄŤiti za[/COLOR]</string>
+  <string id="31330">Kliknite na taster za reprodukciju[CR][CR]najave filma</string>
 
-  <!-- Video and Music OSD Labels  -->
+  <!-- Natpisi za OSD videa i zvuka -->
   <string id="31351">Pauza</string>
   <string id="31352">Zaustavi</string>
-  <string id="31353">Ubrzano</string>
-  <string id="31354">Premotavanje</string>
+  <string id="31353">Premotaj unapred</string>
+  <string id="31354">Premotaj unazad</string>
   <string id="31355">Filmski meni</string>
   <string id="31356">Preuzmi titlove</string>
   <string id="31357"></string>
 
-  <!-- Description Labels  -->
-  <string id="31400">[B]PODEŠAVANJE PARAMETARA IZGLEDA[/B][CR][CR]Promeni masku · Odaberi jezik i regiju · Promeni opcije liste fajlova[CR]Odaberi čuvar ekrana</string>
-  <string id="31401">[B]PODEŠAVANJE VIDEO PARAMETARA[/B][CR][CR]Uredi video biblioteku · Podesi opcije video reprodukcije · Promeni opcije video liste[CR]Podesi font titlova</string>
-  <string id="31402">[B]PODEŠAVANJE PARAMETARA MUZIKE[/B][CR][CR]Uredi muzičku biblioteku · Podesi opcije reprodukcije muzike · Promeni opcije muzičke liste[CR]Podesi slanje pesama · Podesi karaoke opcije</string>
-  <string id="31403">[B]PODEŠAVANJE PARAMETARA FOTOGRAFIJE[/B][CR][CR]Promeni opcije liste fotografija · Podesi slajdšou</string>
-  <string id="31404">[B]PODEŠAVANJE PARAMETARA VREMENSKE PROGNOZE[/B][CR][CR]Dodeli tri grada za prikaz informacija</string>
-  <string id="31405">[B]PODEŠAVANJE PARAMETARA MREŽE[/B][CR][CR]Podešavanje kontrole preko UPnP-a i HTTP-a · Podesi deljenje fajlova[CR]Podesi opcije internet pristupa</string>
-  <string id="31406">[B]PODEŠAVANJE PARAMETARA SISTEMA[/B][CR][CR]Podešavanje i kalibracija displeja · Podesi audio izlaz · Podešavanje daljinskog upravljača[CR]Podesi opcije čuvanja energije · Omogući evidenciju grešaka · Podesi glavnu šifru</string>
-  <string id="31407">[B]PODEŠAVANJE PARAMETARA MASKE[/B][CR][CR]Podešavanje Confluence maske · Dodaj i ukloni stavke početnog ekrana[CR]Promeni pozadine maske</string>
+  <!-- Opisni tekstovi  -->
+  <string id="31400">[B]KONFIGURISANjE POSTAVKI PRIKAZA[/B][CR][CR]Promenite masku Â· Izaberite jezik i oblast gde Ĺľivite[CR]Promenite opcije izlistavanja datoteka Â· Izaberite ÄŤuvara ekrana</string>
+  <string id="31401">[B]KONFIGURISANjE POSTAVKI FILMOVA[/B][CR][CR]Upravljajte vaĹˇom bibliotekom filmova Â· Postavite opcije reprodukcije filmova[CR]Promenite opcije izlistavanja filmova Â· Postavite izgled slova u titlovima</string>
+  <string id="31402">[B]KONFIGURISANjE POSTAVKI MUZIKE[/B][CR][CR]Upravljajte vaĹˇom bibliotekom muziÄŤkih numera Â· Postavite opcije reprod. muzike[CR]Promenite opcije izlistavanja muzike Â· Postavite slanje pesama[CR]Postavite karaoke opcije</string>
+  <string id="31403">[B]KONFIGURISANjE POSTAVKI SLIKA[/B][CR][CR]Postavite opcije izlistavanja slika Â· KonfiguriĹˇite reprodukciju slajdova</string>
+  <string id="31404">[B]KONFIGURISANjE POSTAVKI VREMENSKE PROGNOZE[/B][CR][CR]Postavite tri grada za prikupljanje informacija o vremenskim prilikama</string>
+  <string id="31405">[B]KONFIGURISANjE POSTAVKI MREĹ˝E[/B][CR][CR]Podesite kontrole za XBMC putem UPnP i HTTP protokola[CR]KonfiguriĹˇite deljenje datoteka Â· Postavite opcije pristupa Internetu</string>
+  <string id="31406">[B]KONFIGURISANjE POSTAVKI SISTEMA[/B][CR][CR]Podesite i kalibriĹˇite ekrane Â· KonfiguriĹˇite zvuÄŤni izlaz[CR]Podesite daljinsko upravljanje Â· Postavite opcije Ĺˇtednje energije[CR]OmoguÄ‡ite evidenciju greĹˇaka Â· Podesite glavnu lozinku</string>
+  <string id="31407">[B]KONFIGURISANjE POSTAVKI MASKE[/B][CR][CR]Podesite Confluence masku Â· Dodajte i uklonite stavke poÄŤetnog ekrana[CR]Promenite pozadine maske</string>
+  <string id="31408">[B]KONFIGURISANjE DODATNIH PROGRAMA[/B][CR][CR]Upravljajte vaĹˇim instaliranim dodatnim programima Â· PotraĹľite i instalirajte dodatne prog. sa xbmc.org[CR]Prilagodite podeĹˇavanje dodatnog programa</string>
 
-  <string id="31421">Odaberi svoj XBMC korisnički profil[CR]za prijavu i nastavi</string>
+  <string id="31421">Izaberite vaĹˇ XBMC korisniÄŤki[CR]profil za prijavu, a potom nastavite dalje</string>
 </strings>

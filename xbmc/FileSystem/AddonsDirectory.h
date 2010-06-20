@@ -41,7 +41,14 @@ namespace XFILE
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
     virtual bool Create(const char* strPath) { return true; }
     virtual bool Exists(const char* strPath) { return true; }
+    virtual bool IsAllowed(const CStdString& strFile) const { return true; }
 
+    /*! \brief Fetch scripts and plugins of a given content type
+     \param content the content type to fetch
+     \param items the list to fill with scripts and content
+     \return true if more than one item is found, false otherwise.
+     */
+    static bool GetScriptsAndPlugins(const CStdString &content, CFileItemList &items);
     static void GenerateListing(CURL &path, ADDON::VECADDONS& addons, CFileItemList &items);
     static CFileItemPtr FileItemFromAddon(ADDON::AddonPtr &addon, const CStdString &basePath, bool folder = false);
   };

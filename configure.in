@@ -47,6 +47,7 @@ openmax_not_found="== Could not find libnvomx. OpenMax support disabled. =="
 libass_using_internal="== External Libass not found, using internal. =="
 ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
 libvpx_not_found="== Could not find libvpx. WebM support disabled. =="
+librtmp_not_found="== Could not find libRTMP. libRTMP support disabled. =="
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -719,6 +720,10 @@ fi
 AC_CHECK_LIB([vpx], [main],use_vpx=yes,
 use_vpx=no;AC_MSG_RESULT($vpx_not_found))
 
+# libRTMP
+AC_CHECK_HEADERS([librtmp/log.h librtmp/amf.h librtmp/rtmp.h],use_librtmp=yes,
+use_librtmp=no;AC_MSG_RESULT($librtmp_not_found))
+
 ### External libraries checks
 # External FFmpeg
 if test "$use_external_ffmpeg" = "yes"; then
@@ -777,6 +782,10 @@ if test "$use_vpx" = "yes"; then
   USE_VPX=1
 else
   USE_VPX=0
+fi
+
+if test "$use_librtmp" = "yes"; then
+  AC_DEFINE([HAS_LIBRTMP], [1], [Whether to use libRTMP library.])
 fi
 
 # External liba52 if deprecated a52 support is enabled
@@ -879,6 +888,8 @@ if test "x$use_vaapi" != "xno"; then
       else
         AC_MSG_RESULT($vaapi_not_found)
       fi
+    else
+      AC_DEFINE([HAVE_LIBVA], [1], [Define to 1 if you have the 'vaapi' libraries (-lva AND -lva-glx)])
     fi
   fi
 else
@@ -1235,6 +1246,12 @@ else
   final_message="$final_message\n  WebM support:\tNo"
 fi
 
+if test "$use_librtmp" = "yes"; then
+  final_message="$final_message\n  libRTMP support:\tYes"
+else
+  final_message="$final_message\n  libRTMP support:\tNo"
+fi
+
 if test "$use_libdts" = "yes"; then
   USE_LIBDTS_DECODER=1
   AC_DEFINE([USE_LIBDTS_DECODER], [1], [Define to 1 to enable deprecated libdts support])
@@ -1486,7 +1503,9 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
       --without-cxx \
       --enable-shared \
       --without-pymalloc \
-      --prefix=`pwd`/../linux/python-lib CFLAGS="$CFLAGS" &&
+      --prefix=`pwd`/../linux/python-lib CFLAGS="$CFLAGS" \
+      CC="$CC" \
+      CXX="$CXX" &&
     sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
     sed -i -e "s/define _POSIX_C_SOURCE 200112L/undef _POSIX_C_SOURCE/" pyconfig.h &&
     sed -i -e "s/define _XOPEN_SOURCE 600/undef _XOPEN_SOURCE/" pyconfig.h &&
@@ -1513,6 +1532,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
     ./configure \
       --extra-cflags="$CFLAGS -w -D_DARWIN_C_SOURCE -Dattribute_deprecated=" \
+      `if test "$use_vpx" = "yes"; then echo --extra-ldflags="-L/opt/local/lib"; fi` \
       --disable-amd3dnow \
       --disable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \

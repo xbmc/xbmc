@@ -155,7 +155,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
    */
   tag->m_strGenre         = GetValue(m_dll->proginfo_category(program)); // e.g. Sports
   tag->m_strAlbum         = GetValue(m_dll->proginfo_chansign(program)); // e.g. TV3
-  StringUtils::SecondsToTimeString(m_dll->proginfo_length_sec(program), tag->m_strRuntime);
+  tag->m_strRuntime       = StringUtils::SecondsToTimeString(m_dll->proginfo_length_sec(program));
   tag->m_iSeason          = 0; // So XBMC treats the content as an episode and displays tag information.
   tag->m_iEpisode         = 0;
 

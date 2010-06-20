@@ -56,6 +56,9 @@
 #include "utils/FileUtils.h"
 #include "GUIEditControl.h"
 #include "GUIDialogKeyboard.h"
+#ifdef HAS_PYTHON
+#include "lib/libPython/XBPython.h"
+#endif
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -355,6 +358,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           if (message.GetParam2()) // param2 is used for resetting the history
             SetHistoryForPath(m_vecItems->m_strPath);
         }
+        // clear any cached listing
+        m_vecItems->RemoveDiscCache(GetID());
         Update(m_vecItems->m_strPath);
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_ITEM && message.GetItem())
@@ -805,6 +810,21 @@ bool CGUIMediaWindow::OnClick(int iItem)
     else if(pItem->m_bIsFolder)
       pItem->m_bIsFolder = false;
     delete pFileDirectory;
+  }
+
+  CURL url(pItem->m_strPath);
+  if (url.GetProtocol() == "script")
+  {
+    // execute the script
+    AddonPtr addon;
+    if (CAddonMgr::Get().GetAddon(url.GetHostName(), addon))
+    {
+#ifdef HAS_PYTHON
+      if (!g_pythonParser.StopScript(addon->LibPath()))
+        g_pythonParser.evalFile(addon->LibPath());
+#endif
+      return true;
+    }
   }
 
   if (pItem->m_bIsFolder)

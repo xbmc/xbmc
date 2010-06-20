@@ -72,8 +72,14 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   else if(file.substr(0, 8) == "stack://")
     return new CDVDInputStreamStack();
 #endif
-  else if(file.substr(0, 7) == "rtmp://")
+#ifdef HAS_LIBRTMP
+  else if(file.substr(0, 7) == "rtmp://"
+       || file.substr(0, 8) == "rtmpt://"
+       || file.substr(0, 8) == "rtmpe://"
+       || file.substr(0, 9) == "rtmpte://"
+       || file.substr(0, 8) == "rtmps://")
     return new CDVDInputStreamRTMP();
+#endif
 #ifdef HAS_FILESYSTEM_HTSP
   else if(file.substr(0, 7) == "htsp://")
     return new CDVDInputStreamHTSP();
@@ -82,13 +88,6 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   else if(file.substr(0,6) == "mms://" || file.substr(0,7) == "mmsh://")
     return new CDVDInputStreamMMS();
 #endif
-
-  //else if (item.IsShoutCast())
-  //  /* this should be replaced with standard file as soon as ffmpeg can handle raw aac */
-  //  /* currently ffmpeg isn't able to detect that */
-  //  return (new CDVDInputStreamHttp());
-  //else if (item.IsInternetStream() )
-  //  return (new CDVDInputStreamHttp());
 
   // our file interface handles all these types of streams
   return (new CDVDInputStreamFile());

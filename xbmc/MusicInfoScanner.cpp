@@ -151,10 +151,7 @@ void CMusicInfoScanner::Process()
       CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
 
       tick = CTimeUtils::GetTimeMS() - tick;
-      CStdString strTmp, strTmp1;
-      StringUtils::SecondsToTimeString(tick / 1000, strTmp1);
-      strTmp.Format("My Music: Scanning for music info using worker thread, operation took %s", strTmp1);
-      CLog::Log(LOGNOTICE, "%s", strTmp.c_str());
+      CLog::Log(LOGNOTICE, "My Music: Scanning for music info using worker thread, operation took %s", StringUtils::SecondsToTimeString(tick / 1000).c_str());
     }
     bool bCanceled;
     if (m_scanType == 1) // load album info
@@ -450,7 +447,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       continue;
 
     // dont try reading id3tags for folders, playlists or shoutcast streams
-    if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsShoutCast() && !pItem->IsPicture() && !pItem->IsLyrics() )
+    if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsPicture() && !pItem->IsLyrics() )
     {
       m_currentItem++;
 //      CLog::Log(LOGDEBUG, "%s - Reading tag for: %s", __FUNCTION__, pItem->m_strPath.c_str());
@@ -820,6 +817,9 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     m_pObserver->OnDirectoryChanged(strAlbum);
   }
 
+  // clear our scraper cache
+  info->ClearCache();
+
   CMusicInfoScraper scraper(info);
 
   // handle nfo files
@@ -1040,6 +1040,9 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
     m_musicDatabase.Close();
     return false;
   }
+
+  // clear our scraper cache
+  info->ClearCache();
 
   if (m_pObserver)
   {

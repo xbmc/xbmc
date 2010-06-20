@@ -20,7 +20,6 @@
  */
 #include "AddonManager.h"
 #include "Addon.h"
-#include "AddonDatabase.h"
 #include "DllLibCPluff.h"
 #include "StringUtils.h"
 #include "RegExp.h"
@@ -81,8 +80,8 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
   switch (type)
   {
     case ADDON_PLUGIN:
-      return AddonPtr(new CPluginSource(props));
     case ADDON_SCRIPT:
+      return AddonPtr(new CPluginSource(props));
     case ADDON_SCRIPT_LIBRARY:
     case ADDON_SCRIPT_LYRICS:
     case ADDON_SCRIPT_WEATHER:
@@ -218,6 +217,8 @@ bool CAddonMgr::Init()
   m_cpluff = new DllLibCPluff;
   m_cpluff->Load();
 
+  m_database.Open();
+
   if (!m_cpluff->IsLoaded())
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, could not load libcpluff");
@@ -263,6 +264,7 @@ void CAddonMgr::DeInit()
   if (m_cpluff)
     m_cpluff->destroy();
   m_cpluff = NULL;
+  m_database.Close();
 }
 
 bool CAddonMgr::HasAddons(const TYPE &type, bool enabled /*= true*/)
@@ -292,14 +294,12 @@ bool CAddonMgr::GetAddons(const TYPE &type, VECADDONS &addons, bool enabled /* =
   addons.clear();
   cp_status_t status;
   int num;
-  CAddonDatabase db;
-  if (!db.Open()) return false;
   CStdString ext_point(TranslateType(type));
   cp_extension_t **exts = m_cpluff->get_extensions_info(m_cp_context, ext_point.c_str(), &status, &num);
   for(int i=0; i <num; i++)
   {
     AddonPtr addon(Factory(exts[i]));
-    if (addon && db.IsAddonDisabled(addon->ID()) != enabled)
+    if (addon && m_database.IsAddonDisabled(addon->ID()) != enabled)
       addons.push_back(addon);
   }
   m_cpluff->release_info(m_cp_context, exts);
@@ -310,15 +310,13 @@ bool CAddonMgr::GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &typ
 {
   CSingleLock lock(m_critSection);
 
-  CAddonDatabase db;
-  if (!db.Open()) return false;
   cp_status_t status;
   cp_plugin_info_t *cpaddon = m_cpluff->get_plugin_info(m_cp_context, str.c_str(), &status);
   if (status == CP_OK && cpaddon)
   {
     addon = GetAddonFromDescriptor(cpaddon);
     m_cpluff->release_info(m_cp_context, cpaddon);
-    return NULL != addon.get() && db.IsAddonDisabled(addon->ID()) != enabled;
+    return NULL != addon.get() && m_database.IsAddonDisabled(addon->ID()) != enabled;
   }
   if (cpaddon)
     m_cpluff->release_info(m_cp_context, cpaddon);
@@ -336,19 +334,19 @@ bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon)
     setting = g_guiSettings.GetString("musicplayer.visualisation");
     break;
   case ADDON_SCRAPER_ALBUMS:
-    setting = g_guiSettings.GetString("musiclibrary.albumscraper");
+    setting = g_guiSettings.GetString("musiclibrary.albumsscraper");
     break;
   case ADDON_SCRAPER_ARTISTS:
-    setting = g_guiSettings.GetString("musiclibrary.artistscraper");
+    setting = g_guiSettings.GetString("musiclibrary.artistsscraper");
     break;
   case ADDON_SCRAPER_MOVIES:
-    setting = g_guiSettings.GetString("scrapers.moviedefault");
+    setting = g_guiSettings.GetString("scrapers.moviesdefault");
     break;
   case ADDON_SCRAPER_MUSICVIDEOS:
-    setting = g_guiSettings.GetString("scrapers.musicvideodefault");
+    setting = g_guiSettings.GetString("scrapers.musicvideosdefault");
     break;
   case ADDON_SCRAPER_TVSHOWS:
-    setting = g_guiSettings.GetString("scrapers.tvshowdefault");
+    setting = g_guiSettings.GetString("scrapers.tvshowsdefault");
     break;
   default:
     return false;
@@ -447,20 +445,13 @@ void CAddonMgr::UpdateRepos()
   for (unsigned int i=0;i<addons.size();++i)
   {
     RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addons[i]);
-    if (repo->LastUpdate()+CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
+    CDateTime lastUpdate = m_database.GetRepoTimestamp(repo->ID());
+    if (lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
     {
       CLog::Log(LOGDEBUG,"Checking repository %s for updates",repo->Name().c_str());
-      CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo),this);
+      CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo), NULL);
     }
   }
-}
-
-void CAddonMgr::OnJobComplete(unsigned int jobID, bool success, CJob* job)
-{
-  if (!success)
-    return;
-
-  ((CRepositoryUpdateJob*)job)->m_repo->SetUpdated(CDateTime::GetCurrentDateTime());
 }
 
 /*

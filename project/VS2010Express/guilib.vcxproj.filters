@@ -309,6 +309,9 @@
     <ClCompile Include="..\..\guilib\TextureGL.cpp">
       <Filter>Rendering\GL</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\guilib\GUITextureGLES.cpp">
+      <Filter>Rendering\GL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\guilib\D3DResource.h">
@@ -603,6 +606,9 @@
       <Filter>Rendering\GL</Filter>
     </ClInclude>
     <ClInclude Include="..\..\guilib\TextureGL.h">
+      <Filter>Rendering\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\guilib\GUITextureGLES.h">
       <Filter>Rendering\GL</Filter>
     </ClInclude>
   </ItemGroup>

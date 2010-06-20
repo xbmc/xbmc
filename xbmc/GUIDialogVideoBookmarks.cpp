@@ -184,7 +184,7 @@ void CGUIDialogVideoBookmarks::Update()
     if (m_bookmarks[i].type == CBookmark::EPISODE)
       bookmarkTime.Format("%s %i %s %i", g_localizeStrings.Get(20373), m_bookmarks[i].seasonNumber, g_localizeStrings.Get(20359).c_str(), m_bookmarks[i].episodeNumber);
     else
-      StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, bookmarkTime, TIME_FORMAT_HH_MM_SS);
+      bookmarkTime = StringUtils::SecondsToTimeString((long)m_bookmarks[i].timeInSeconds, TIME_FORMAT_HH_MM_SS);
 
     CFileItemPtr item(new CFileItem(bookmarkTime));
     item->SetThumbnailImage(m_bookmarks[i].thumbNailImage);

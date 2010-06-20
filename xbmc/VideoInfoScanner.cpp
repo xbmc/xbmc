@@ -119,9 +119,7 @@ namespace VIDEO
       m_database.Close();
 
       tick = CTimeUtils::GetTimeMS() - tick;
-      CStdString strTime;
-      StringUtils::SecondsToTimeString(tick / 1000, strTime);
-      CLog::Log(LOGNOTICE, "VideoInfoScanner: Finished scan. Scanning for video info took %s", strTime.c_str());
+      CLog::Log(LOGNOTICE, "VideoInfoScanner: Finished scan. Scanning for video info took %s", StringUtils::SecondsToTimeString(tick / 1000).c_str());
 
       m_bRunning = false;
       if (m_pObserver)
@@ -228,7 +226,7 @@ namespace VIDEO
         m_pObserver->OnStateChanged(content == CONTENT_MOVIES ? FETCHING_MOVIE_INFO : FETCHING_MUSICVIDEO_INFO);
 
       CStdString fastHash = GetFastHash(strDirectory);
-      if (m_database.GetPathHash(strDirectory, dbHash) && fastHash == dbHash)
+      if (m_database.GetPathHash(strDirectory, dbHash) && !fastHash.IsEmpty() && fastHash == dbHash)
       { // fast hashes match - no need to process anything
         CLog::Log(LOGDEBUG, "VideoInfoScanner: Skipping dir '%s' due to no change", strDirectory.c_str());
         hash = fastHash;
@@ -241,7 +239,7 @@ namespace VIDEO
           items.Stack();
         // compute hash
         GetPathHash(items, hash);
-        if (hash != dbHash)
+        if (hash != dbHash && !hash.IsEmpty())
         {
           if (dbHash.IsEmpty())
             CLog::Log(LOGDEBUG, "VideoInfoScanner: Scanning dir '%s' as not in the database", strDirectory.c_str());
@@ -380,6 +378,10 @@ namespace VIDEO
         }
 
       }
+
+      // clear our scraper cache
+      info2->ClearCache();
+
       INFO_RET ret = INFO_CANCELLED;
       if (info2->Content() == CONTENT_TVSHOWS)
         ret = RetreiveInfoForTvShow(pItem, bDirNames, info2, useLocal, pURL, fetchEpisodes, pDlgProgress);
@@ -1203,12 +1205,6 @@ namespace VIDEO
         return GetnfoFile(&item2, bGrabAny);
       }
 
-      CStdString strPath;
-      CUtil::GetDirectory(item->m_strPath, strPath);
-      nfoFile = CUtil::AddFileToFolder(strPath, "movie.nfo");
-      if (CFile::Exists(nfoFile))
-        return nfoFile;
-
       // already an .nfo file?
       if ( strcmpi(strExtension.c_str(), ".nfo") == 0 )
         nfoFile = item->m_strPath;
@@ -1250,6 +1246,11 @@ namespace VIDEO
           CUtil::AddFileToFolder(strPath, CUtil::GetFileName(item->m_strPath),item2.m_strPath);
           return GetnfoFile(&item2, bGrabAny);
         }
+
+        // try movie.nfo
+        nfoFile = CUtil::AddFileToFolder(strPath, "movie.nfo");
+        if (CFile::Exists(nfoFile))
+          return nfoFile;
 
         // finally try mymovies.xml
         nfoFile = CUtil::AddFileToFolder(strPath, "mymovies.xml");
@@ -1486,6 +1487,9 @@ namespace VIDEO
         case CNfoFile::URL_NFO:
           type = "URL";
           break;
+        case CNfoFile::NO_NFO:
+          type = "";
+          break;
         default:
           type = "malformed";
       }
@@ -1544,8 +1548,8 @@ namespace VIDEO
     IMDB_MOVIELIST movielist;
     CIMDB imdb(scraper);
     int returncode = imdb.FindMovie(videoName, movielist, progress);
-    if (returncode == -1 || (returncode == 0 && !DownloadFailed(progress)))
-    {
+    if (returncode < 0 || (returncode == 0 && !DownloadFailed(progress)))
+    { // scraper reported an error, or we had an error and user wants to cancel the scan
       m_bStop = true;
       return -1; // cancelled
     }

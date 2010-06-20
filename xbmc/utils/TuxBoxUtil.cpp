@@ -592,7 +592,7 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
 
       items.GetVideoInfoTag()->m_strGenre = strGenre;  // VIDEOPLAYER_GENRE: current_event_description (Film Name)
       items.GetVideoInfoTag()->m_strTitle = strTitle; // VIDEOPLAYER_TITLE: current_event_details     (Film beschreibung)
-      StringUtils::SecondsToTimeString(iDuration,items.GetVideoInfoTag()->m_strRuntime); //VIDEOPLAYER_DURATION: current_event_duration (laufzeit in sec.)
+      items.GetVideoInfoTag()->m_strRuntime = StringUtils::SecondsToTimeString(iDuration); //VIDEOPLAYER_DURATION: current_event_duration (laufzeit in sec.)
 
       items.m_strPath = strStreamURL;
       items.m_iDriveType = url.GetPort(); // Dirty Hack! But i need to hold the Port ;)

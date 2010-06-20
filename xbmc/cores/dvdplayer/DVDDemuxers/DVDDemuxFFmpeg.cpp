@@ -35,7 +35,9 @@
 #ifdef HAS_FILESYSTEM_MMS
 #include "DVDInputStreams/DVDInputStreamMMS.h"
 #endif
+#ifdef HAS_LIBRTMP
 #include "DVDInputStreams/DVDInputStreamRTMP.h"
+#endif
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h" // for DVD_TIME_BASE
 #include "utils/Win32Exception.h"
@@ -826,14 +828,18 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
   }
 #endif
 
+#ifdef HAS_LIBRTMP
   if (m_pInput->IsStreamType(DVDSTREAM_TYPE_RTMP))
   {
     if (!((CDVDInputStreamRTMP*)m_pInput)->SeekTime(time))
       return false;
 
     Flush();
+    m_ioContext->buf_ptr = m_ioContext->buf_end;
+
     return true;
   }
+#endif
 
   if(!m_pInput->Seek(0, SEEK_POSSIBLE)
   && !m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
@@ -988,7 +994,20 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         st->iLevel = pStream->codec->level;
         st->iProfile = pStream->codec->profile;
 
-
+        if ( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
+        {
+          if (pStream->codec->codec_id == CODEC_ID_PROBE)
+          {
+            // fix MPEG-1/MPEG-2 video stream probe returning CODEC_ID_PROBE for still frames.
+            // ffmpeg issue 1871, regression from ffmpeg r22831.
+            if ((pStream->id & 0xF0) == 0xE0)
+            {
+              pStream->codec->codec_id = CODEC_ID_MPEG2VIDEO;
+              pStream->codec->codec_tag = MKTAG('M','P','2','V');
+              CLog::Log(LOGERROR, "%s - CODEC_ID_PROBE detected, forcing CODEC_ID_MPEG2VIDEO", __FUNCTION__);
+            }
+          }
+        }
         break;
       }
     case CODEC_TYPE_DATA:
@@ -1072,18 +1091,6 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
 
     if( m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD) )
     {
-      if (m_streams[iId]->codec == CODEC_ID_PROBE)
-      {
-        // fix MPEG-1/MPEG-2 video stream probe returning CODEC_ID_PROBE for still frames.
-        // ffmpeg issue 1871, regression from ffmpeg r22831.
-        if ((pStream->id & 0xF0) == 0xE0)
-        {
-          m_streams[iId]->codec = CODEC_ID_MPEG2VIDEO;
-          m_streams[iId]->codec_fourcc = MKTAG('M','P','2','V');
-          CLog::Log(LOGERROR, "%s - CODEC_ID_PROBE detected, forcing CODEC_ID_MPEG2VIDEO", __FUNCTION__);
-        }
-      }
-      
       // this stuff is really only valid for dvd's.
       // this is so that the physicalid matches the
       // id's reported from libdvdnav

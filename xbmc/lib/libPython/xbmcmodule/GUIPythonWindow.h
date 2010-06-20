@@ -50,7 +50,11 @@ public:
   int type; // 0=Action, 1=Control;
 #endif
 
-  PyXBMCAction(): param(0), pCallbackWindow(NULL), pObject(NULL), controlId(0), type(0) { }
+  PyXBMCAction(PyObject* callback)
+    : param(0), pCallbackWindow(callback), pObject(NULL), controlId(0), type(0)
+  {
+    Py_INCREF(callback);
+  }
   virtual ~PyXBMCAction() ;
 };
 

@@ -52,6 +52,8 @@
 #include "XBPyThread.h"
 #include "XBPython.h"
 
+#include "lib/libPython/xbmcmodule/pyutil.h"
+
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
 #pragma data_seg("PY_DATA")
@@ -333,6 +335,9 @@ void XBPyThread::Process()
 
   if (PyErr_Occurred())
     CLog::Log(LOGERROR, "Failed to wait for python threads to end");
+
+  // pending calls must be cleared out
+  PyXBMC_ClearPendingCalls();
 
   PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();

@@ -392,7 +392,9 @@ bool CWinSystemWin32::ChangeResolution(RESOLUTION_INFO res)
     sDevMode.dmDisplayFlags = (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? DM_INTERLACED : 0;
     sDevMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY | DM_DISPLAYFLAGS;
 
-    LONG rc = ChangeDisplaySettingsEx(details.DeviceName, &sDevMode, NULL, 0, NULL);
+    // CDS_FULLSCREEN is for temporary fullscreen mode and prevents icons and windows from moving
+    // to fit within the new dimensions of the desktop
+    LONG rc = ChangeDisplaySettingsEx(details.DeviceName, &sDevMode, NULL, CDS_FULLSCREEN, NULL);
     if (rc != DISP_CHANGE_SUCCESSFUL)
     {
       CLog::Log(LOGERROR, "%s: error, code %d", __FUNCTION__, rc);

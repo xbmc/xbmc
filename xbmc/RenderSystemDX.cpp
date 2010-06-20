@@ -40,6 +40,7 @@
 #include "Util.h"
 #include "win32/WIN32Util.h"
 #include "LocalizeStrings.h"
+#include "VideoReferenceClock.h"
 
 using namespace std;
 
@@ -184,6 +185,28 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, 
   return true;
 }
 
+BOOL CRenderSystemDX::IsDepthFormatOk(D3DFORMAT DepthFormat, D3DFORMAT AdapterFormat, D3DFORMAT BackBufferFormat)
+{
+  // Verify that the depth format exists
+  HRESULT hr = m_pD3D->CheckDeviceFormat(m_adapter,
+                                         D3DDEVTYPE_HAL,
+                                         AdapterFormat,
+                                         D3DUSAGE_DEPTHSTENCIL,
+                                         D3DRTYPE_SURFACE,
+                                         DepthFormat);
+
+  if(FAILED(hr)) return FALSE;
+
+  // Verify that the depth format is compatible
+  hr = m_pD3D->CheckDepthStencilMatch(m_adapter,
+                                      D3DDEVTYPE_HAL,
+                                      AdapterFormat,
+                                      BackBufferFormat,
+                                      DepthFormat);
+
+  return SUCCEEDED(hr);
+}
+
 void CRenderSystemDX::BuildPresentParameters()
 {
   OSVERSIONINFOEX osvi;
@@ -210,7 +233,6 @@ void CRenderSystemDX::BuildPresentParameters()
 #endif
   }
 
-  m_D3DPP.EnableAutoDepthStencil = TRUE;
   m_D3DPP.hDeviceWindow      = m_hDeviceWnd;
   m_D3DPP.BackBufferWidth    = m_nBackBufferWidth;
   m_D3DPP.BackBufferHeight   = m_nBackBufferHeight;
@@ -231,33 +253,16 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.MultiSampleType    = D3DMULTISAMPLE_NONE;
   m_D3DPP.MultiSampleQuality = 0;
 
+  D3DFORMAT zFormat = D3DFMT_D16;
+  if      (IsDepthFormatOk(D3DFMT_D32, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D32;
+  else if (IsDepthFormatOk(D3DFMT_D24S8, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D24S8;
+  else if (IsDepthFormatOk(D3DFMT_D24X4S4, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))       zFormat = D3DFMT_D24X4S4;
+  else if (IsDepthFormatOk(D3DFMT_D24X8, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D24X8;
+  else if (IsDepthFormatOk(D3DFMT_D16, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D16;
+  else if (IsDepthFormatOk(D3DFMT_D15S1, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D15S1;
 
-  // Try to create a 32-bit depth, 8-bit stencil
-  if( FAILED( m_pD3D->CheckDeviceFormat( m_adapter,
-    D3DDEVTYPE_HAL,  m_D3DPP.BackBufferFormat,  D3DUSAGE_DEPTHSTENCIL,
-    D3DRTYPE_SURFACE, D3DFMT_D24S8 )))
-  {
-    // Bugger, no 8-bit hardware stencil, just try 32-bit zbuffer
-    if( FAILED( m_pD3D->CheckDeviceFormat(m_adapter,
-      D3DDEVTYPE_HAL,  m_D3DPP.BackBufferFormat,  D3DUSAGE_DEPTHSTENCIL,
-      D3DRTYPE_SURFACE, D3DFMT_D32 )))
-    {
-      // Jeez, what a naff card. Fall back on 16-bit depth buffering
-      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D16;
-    }
-    else
-      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D32;
-  }
-  else
-  {
-    if( SUCCEEDED( m_pD3D->CheckDepthStencilMatch( m_adapter, D3DDEVTYPE_HAL,
-      m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat, D3DFMT_D24S8 ) ) )
-    {
-      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D24S8;
-    }
-    else
-      m_D3DPP.AutoDepthStencilFormat = D3DFMT_D24X8;
-  }
+  m_D3DPP.EnableAutoDepthStencil = TRUE;
+  m_D3DPP.AutoDepthStencilFormat = zFormat;
 
   if (m_useD3D9Ex)
   {
@@ -363,7 +368,7 @@ bool CRenderSystemDX::CreateDevice()
   if(m_hDeviceWnd == NULL)
     return false;
 
-  CLog::Log(LOGDEBUG, "%s on adapter %d", __FUNCTION__, m_adapter);
+  CLog::Log(LOGDEBUG, __FUNCTION__" on adapter %d", m_adapter);
 
   D3DDEVTYPE devType = D3DDEVTYPE_HAL;
 
@@ -441,28 +446,44 @@ bool CRenderSystemDX::CreateDevice()
                                             HIWORD(AIdentifier.DriverVersion.LowPart), LOWORD(AIdentifier.DriverVersion.LowPart));
   }
 
+  CLog::Log(LOGERROR, __FUNCTION__" - adapter %d: %s, %s, VendorId %lu, DeviceId %lu",
+            m_adapter, AIdentifier.Driver, AIdentifier.Description, AIdentifier.VendorId, AIdentifier.DeviceId);
+
   // get our render capabilities
   D3DCAPS9 caps;
   m_pD3DDevice->GetDeviceCaps(&caps);
 
   if (caps.PixelShaderVersion < D3DPS_VERSION(2, 0)) 
   {
-    CLog::Log(LOGERROR, "%s - XBMC requires a graphics card supporting Pixel Shaders 2.0", __FUNCTION__);
+    CLog::Log(LOGERROR, __FUNCTION__" - XBMC requires a graphics card supporting Pixel Shaders 2.0");
     g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(2102), g_localizeStrings.Get(2103));
   }
 
-  m_renderCaps = 0;
+  m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
 
-  CLog::Log(LOGDEBUG, "%s - texture caps: %X", __FUNCTION__, caps.TextureCaps);
+  if (g_advancedSettings.m_AllowDynamicTextures && (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES))
+  {
+    m_defaultD3DUsage = D3DUSAGE_DYNAMIC;
+    m_defaultD3DPool  = D3DPOOL_DEFAULT;
+    CLog::Log(LOGDEBUG, __FUNCTION__" - using D3DCAPS2_DYNAMICTEXTURES");
+  }
+  else
+  {
+    m_defaultD3DUsage = 0;
+    m_defaultD3DPool  = D3DPOOL_MANAGED;
+  }
+
+    m_renderCaps = 0;
+
+  CLog::Log(LOGDEBUG, __FUNCTION__" - texture caps: 0x%08X", caps.TextureCaps);
 
   if (SUCCEEDED(m_pD3D->CheckDeviceFormat( m_adapter,
                                            D3DDEVTYPE_HAL,
-                                           D3DFMT_X8R8G8B8,
-                                           0,
+                                           m_D3DPP.BackBufferFormat,
+                                           m_defaultD3DUsage,
                                            D3DRTYPE_TEXTURE,
                                            D3DFMT_DXT5 )))
   {
-    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT", __FUNCTION__);
     m_renderCaps |= RENDER_CAPS_DXT;
   }
 
@@ -477,24 +498,16 @@ bool CRenderSystemDX::CreateDevice()
     m_renderCaps |= RENDER_CAPS_NPOT;
   }
 
+  // Temporary - allow limiting the caps to debug a texture problem
+  if (g_advancedSettings.m_RestrictCapsMask != 0)
+    m_renderCaps &= ~g_advancedSettings.m_RestrictCapsMask;
+
+  if (m_renderCaps & RENDER_CAPS_DXT)
+    CLog::Log(LOGDEBUG, __FUNCTION__" - RENDER_CAPS_DXT");
   if (m_renderCaps & RENDER_CAPS_NPOT)
-    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_NPOT", __FUNCTION__);
+    CLog::Log(LOGDEBUG, __FUNCTION__" - RENDER_CAPS_NPOT");
   if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
-    CLog::Log(LOGDEBUG, "%s - RENDER_CAPS_DXT_NPOT", __FUNCTION__);
-
-  m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
-
-  if (g_advancedSettings.m_AllowDynamicTextures && (caps.Caps2 & D3DCAPS2_DYNAMICTEXTURES))
-  {
-    m_defaultD3DUsage = D3DUSAGE_DYNAMIC;
-    m_defaultD3DPool  = D3DPOOL_DEFAULT;
-    CLog::Log(LOGDEBUG, "%s - using D3DCAPS2_DYNAMICTEXTURES", __FUNCTION__);
-  }
-  else
-  {
-    m_defaultD3DUsage = 0;
-    m_defaultD3DPool  = D3DPOOL_MANAGED;
-  }
+    CLog::Log(LOGDEBUG, __FUNCTION__" - RENDER_CAPS_DXT_NPOT");
 
   D3DDISPLAYMODE mode;
   if (SUCCEEDED(m_pD3DDevice->GetDisplayMode(0, &mode)))
@@ -525,7 +538,9 @@ bool CRenderSystemDX::PresentRenderImpl()
   if(m_nDeviceStatus != S_OK)
     return false;
 
-  if (g_advancedSettings.m_sleepBeforeFlip > 0)
+  //CVideoReferenceClock polls GetRasterStatus too,
+  //polling it from two threads at the same time is bad
+  if (g_advancedSettings.m_sleepBeforeFlip > 0 && g_VideoReferenceClock.ThreadHandle() == NULL)
   {
     //save current thread priority and set thread priority to THREAD_PRIORITY_TIME_CRITICAL
     int priority = GetThreadPriority(GetCurrentThread());

@@ -190,6 +190,8 @@
   <string id="237">Minification</string>
   <string id="238">Magnification</string>
   <string id="239">Clear playlist on finish</string>
+  <string id="240">Display Mode</string>
+  <string id="241">Full Screen #%d</string>
 
   <string id="247">Scripts</string>
   <string id="248">Language</string>
@@ -719,13 +721,13 @@
   <string id="1034">Submenu</string>
   <string id="1035">Enable submenu buttons</string>
   <string id="1036">Favourites</string>
-  <string id="1037">Video plugins</string>
-  <string id="1038">Music plugins</string>
-  <string id="1039">Picture plugins</string>
+  <string id="1037">Video Add-ons</string>
+  <string id="1038">Music Add-ons</string>
+  <string id="1039">Picture Add-ons</string>
   <string id="1040">Loading directory</string>
   <string id="1041">Retrieved %i items</string>
   <string id="1042">Retrieved %i of %i items</string>
-  <string id="1043">Program plugins</string>
+  <string id="1043">Program Add-ons</string>
   <string id="1044">Set plugin thumb</string>
   <string id="1045">Plugin settings</string>
   <string id="1046">Access points</string>
@@ -1986,6 +1988,7 @@
   <string id="21450">- Edit</string>
   <string id="21451">Internet connection required.</string>
   <string id="21452">Get More</string>
+  <string id="21453">Root filesystem</string>
 
   <string id="21800">File name</string>
   <string id="21801">File path</string>
@@ -2157,6 +2160,7 @@
   <string id="24038">Install</string>
   <string id="24039">Disabled Add-ons</string>
   <string id="24040">(Clear the current setting)</string>
+  <string id="24041">Install from zip file</string>
 
   <string id="24050">Available Add-ons</string>
   <string id="24051">Version:</string>
@@ -2165,7 +2169,7 @@
   <string id="24054">Changelog</string>
   <string id="24059">Would you like to enable this Add-on?</string>
   <string id="24060">Would you like to disable this Add-on?</string>
-  <string id="24061">Addon-on update available!</string>
+  <string id="24061">Add-on update available!</string>
   <string id="24062">Enabled Add-ons</string>
   <string id="24063">Auto update</string>
   <string id="24064">Add-on enabled</string>

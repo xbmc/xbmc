@@ -153,14 +153,17 @@ IMAGES= \
 	flagging/video/avc1.png \
 	flagging/video/bluray.png \
 	flagging/video/divx.png \
+	flagging/video/dvd.png \
 	flagging/video/h264.png \
 	flagging/video/hddvd.png \
 	flagging/video/mpeg1video.png \
 	flagging/video/mpeg2video.png \
 	flagging/video/sd.png \
+	flagging/video/tv.png \
 	flagging/video/vc-1.png \
 	flagging/video/wvc1.png \
 	flagging/video/xvid.png \
+	flagging/video/vhs.png \
 	floor.png \
 	folder-focus.png \
 	GlassOverlay.png \
@@ -325,13 +328,6 @@ IMAGES= \
 	VisOsdPanel.png \
 	VolumeIcon-Mute.png \
 	VolumeIcon.png \
-	weather.com/default/weather.png \
-	weather.com/loading/weather1.png \
-	weather.com/loading/weather2.png \
-	weather.com/loading/weather3.png \
-	weather.com/loading/weather4.png \
-	weather.com/loading/weather5.png \
-	weather.com/loading/weather6.png \
 	XBMC_Logo.png
 
 all: $(TARGET)
