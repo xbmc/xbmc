@@ -797,7 +797,6 @@
     <ClCompile Include="..\..\xbmc\FileSystem\SAPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\SAPFile.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\SFTPDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\FileSystem\ShoutcastDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\ShoutcastRipFile.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\SIDFileDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\SmartPlaylistDirectory.cpp" />
@@ -1620,7 +1619,6 @@
     <ClInclude Include="..\..\xbmc\SettingsControls.h" />
     <ClInclude Include="..\..\xbmc\utils\SharedSection.h" />
     <ClInclude Include="..\..\xbmc\Shortcut.h" />
-    <ClInclude Include="..\..\xbmc\FileSystem\ShoutcastDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\ShoutcastRipFile.h" />
     <ClInclude Include="..\..\xbmc\utils\SingleLock.h" />
     <ClInclude Include="..\..\xbmc\Song.h" />
