@@ -1038,7 +1038,10 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
 
     m_drop_state = false;
     m_decoder_open = true;
-    m_duration = (DVD_TIME_BASE / (24.0 * 1000.0/1001.0));
+    // set output timeout to 1ms during startup,
+    // this will get reset once we get a picture back.
+    // the effect is to speed feeding demux packets during startup.
+    m_wait_timeout = 1;
 
     CLog::Log(LOGDEBUG, "%s: codec opened", __MODULE_NAME__);
   } while(false);
@@ -1076,6 +1079,8 @@ void CCrystalHD::CloseDecoder(void)
 
 void CCrystalHD::Reset(void)
 {
+  m_wait_timeout = 1;
+
   // Calling for non-error flush, Flushes all the decoder
   //  buffers, input, decoded and to be decoded. 
   m_dll->DtsFlushInput(m_device, 2);
@@ -1111,7 +1116,7 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
 
     bool wait_state;
     if (!m_pOutputThread->GetReadyCount())
-      wait_state = m_pOutputThread->WaitOutput(m_duration/4000);
+      wait_state = m_pOutputThread->WaitOutput(m_wait_timeout);
   }
 
   return true;
@@ -1180,8 +1185,8 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   }
 
   pDvdVideoPicture->iRepeatPicture = 0;
-  m_duration = DVD_TIME_BASE / pBuffer->m_framerate;
-  pDvdVideoPicture->iDuration = m_duration;
+  pDvdVideoPicture->iDuration = DVD_TIME_BASE / pBuffer->m_framerate;
+  m_wait_timeout = pDvdVideoPicture->iDuration/2000;
   pDvdVideoPicture->color_range = pBuffer->m_color_range;
   pDvdVideoPicture->color_matrix = pBuffer->m_color_matrix;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
