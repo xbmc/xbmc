@@ -96,7 +96,7 @@ void CSettings::Initialize()
   m_bMyVideoPlaylistShuffle = false;
   m_bMyVideoNavFlatten = false;
   m_bStartVideoWindowed = false;
-  m_bAddonAutoUpdate = true;
+  m_bAddonAutoUpdate = false;
 
   m_nVolumeLevel = 0;
   m_dynamicRangeCompressionLevel = 0;
