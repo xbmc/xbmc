@@ -130,6 +130,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
         return hr;
       }
       CGraphFilters::Get()->Source.osdname = "XBMC File Source";
+      CGraphFilters::Get()->Source.pData = (void *) pXBMCStream;
       CLog::Log(LOGNOTICE, "%s Successfully added xbmc source filter to the graph", __FUNCTION__);
     }
     return hr;

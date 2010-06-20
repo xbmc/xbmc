@@ -47,6 +47,21 @@ struct SFilterInfos
   GUID guid; ///< GUID of the filter
 };
 
+struct SSourceFilterInfos: SFilterInfos
+{
+  SSourceFilterInfos()
+  {
+    Clear();
+  }
+
+  void Clear()
+  {
+    pData = NULL;
+  }
+
+  void *pData;
+};
+
 /// Specific informations about the video renderer filter
 struct SVideoRendererFilterInfos: SFilterInfos
 {
@@ -109,7 +124,7 @@ public:
    * Informations about the source filter
    * @note It may no have a source filter in the graph, because splitters are also source filters. A source filter is only needed when playing from internet, RAR, ... but not for media file
    **/
-  SFilterInfos Source;
+  SSourceFilterInfos Source;
   ///Informations about the splitter filter
   SFilterInfos Splitter;
   ///Informations about the video decoder

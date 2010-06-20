@@ -33,7 +33,10 @@ CGraphFilters::CGraphFilters():
 CGraphFilters::~CGraphFilters()
 {
   if (Source.pBF)
-    Source.pBF.FullRelease();
+  {
+    delete Source.pData;
+    Source.pBF.Release();
+  }
 
   if (Splitter.pBF)
     Splitter.pBF.FullRelease();

@@ -76,8 +76,8 @@ public:
     displayStats = DS_STATS_NONE; // On GUI
     vSyncOffset = 0;
     vSyncAccurate = true;
-    //TODO: Check if the flag is correctly set when creating the D3D Device
-    fullscreenGUISupport = true;
+
+    fullscreenGUISupport = false;
     alterativeVSync = false;
     vSync = true;
     disableDesktopComposition = false;
