@@ -1251,7 +1251,6 @@ RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
     // find the closest match to these in our res vector.  If we have the screen, we score the res
     RESOLUTION bestRes = RES_DESKTOP;
     float bestScore = FLT_MAX;
-    size_t maxRes = g_settings.m_ResInfo.size();
     for (unsigned int i = RES_DESKTOP; i < g_settings.m_ResInfo.size(); ++i)
     {
       const RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
