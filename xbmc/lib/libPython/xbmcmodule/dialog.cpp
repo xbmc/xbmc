@@ -338,6 +338,7 @@ namespace PYXBMC
     "\n"
     "heading        : string or unicode - dialog heading.\n"
     "list           : string list - list of items.\n"
+    "autoclose      : [opt] integer - milliseconds to autoclose dialog. (default=do not autoclose)\n"
     "\n"
     "*Note, Returns the position of the highlighted item as an integer.\n"
     "\n"
@@ -350,8 +351,9 @@ namespace PYXBMC
     const int window = WINDOW_DIALOG_SELECT;
     PyObject *heading = NULL;
     PyObject *list = NULL;
+    int autoClose = 0;
 
-    if (!PyArg_ParseTuple(args, (char*)"OO", &heading, &list))  return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"OO|i", &heading, &list, &autoClose))  return NULL;
     if (!PyList_Check(list)) return NULL;
 
     CGUIDialogSelect* pDialog= (CGUIDialogSelect*)g_windowManager.GetWindow(window);
@@ -370,6 +372,8 @@ namespace PYXBMC
       if (listLine && PyXBMCGetUnicodeString(utf8Line, listLine, i))
         pDialog->Add(utf8Line);
     }
+    if (autoClose > 0)
+      pDialog->SetAutoClose(autoClose);
 
     //send message and wait for user input
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, window, ACTIVE_WINDOW};

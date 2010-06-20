@@ -880,7 +880,7 @@ void CGUIWindowFullScreen::Seek(bool bPlus, bool bLargeStep)
   g_application.m_pPlayer->Seek(bPlus, bLargeStep);
 
   // Make sure gui items are visible.
-  g_infoManager.SetDisplayAfterSeek();
+//  g_infoManager.SetDisplayAfterSeek();
 }
 
 void CGUIWindowFullScreen::SeekChapter(int iChapter)
