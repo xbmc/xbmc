@@ -35,8 +35,8 @@ public:
   HRESULT Compile(CPixelShaderCompiler *pCompiler);
   bool Load();
   CExternalPixelShader(TiXmlElement* xml);
+  CExternalPixelShader(CStdString strFile, CStdString strProfile);
   bool IsValid() const { return m_valid; }
-  CStdString GetName() const { return m_name; }
   int GetId() const { return m_id; }
 
   uint32_t GetIndex() const { return m_index; }
@@ -44,6 +44,9 @@ public:
 
   bool IsEnabled() const { return m_enabled; }
   void SetEnabled(const bool enabled) { m_enabled = enabled; }
+
+  CStdString GetName() const { return m_name; }
+  void SetName(const CStdString& name) { m_name = name; }
 
   TiXmlElement ToXML();
 

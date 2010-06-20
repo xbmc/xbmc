@@ -36,6 +36,7 @@
 #include "DShowUtil/smartlist.h"
 #include "utils/Event.h"
 #include "DSGraph.h"
+#include "..\ExternalPixelShader.h"
 // Support ffdshow queueing.
 // This interface is used to check version of Media Player Classic.
 // {A273C7F6-25D4-46b0-B2C8-4F7FADC44E37}
@@ -70,7 +71,7 @@ public:
   };
 
   class CDX9AllocatorPresenter
-    : public ISubPicAllocatorPresenterImpl ,
+    : public ISubPicAllocatorPresenterImpl,
       public ID3DResource,
       public IPaintCallback
 
@@ -78,11 +79,15 @@ public:
   public:
     CCritSec        m_VMR9AlphaBitmapLock;
     CEvent          m_drawingIsDone;
-    void          UpdateAlphaBitmap();
+    void            UpdateAlphaBitmap();
+
   protected:
     Com::SmartSize  m_ScreenSize;
     Com::SmartRect  m_pScreenSize;
     UINT  m_RefreshRate;
+
+    // Brightness, saturation & contrast shader
+    CExternalPixelShader m_bscShader;
 
 //    bool  m_fVMRSyncFix;
     bool  m_bAlternativeVSync;

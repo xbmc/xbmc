@@ -36,6 +36,7 @@
 #include "application.h"
 #include "FileSystem/File.h"
 #include "PixelShaderList.h"
+#include "Settings.h"
 
 #ifndef TRACE
 #define TRACE(x)
@@ -213,6 +214,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   , m_bNeedCheckSample(true)
   , m_hVSyncThread(NULL)
   , m_hEvtQuit(NULL)
+  , m_bscShader("contrast_brightness.psh", "ps_2_0")
 {
   g_Windowing.Register(this);
   if (m_bIsEVR)
@@ -230,6 +232,8 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
   }
 
   bPaintAll = true;
+  m_bscShader.SetEnabled(true);
+  m_bscShader.SetName("Brightness and contrast support");
 
   m_pD3DXLoadSurfaceFromMemory  = NULL;
   m_pD3DXCreateLine             = NULL;
@@ -1259,8 +1263,8 @@ HRESULT CDX9AllocatorPresenter::TextureResize(Com::SmartPtr<IDirect3DTexture9> p
   float w = (float)desc.Width;
   float h = (float)desc.Height;
 
-  float dx2 = 1.0/w;
-  float dy2 = 1.0/h;
+  float dx2 = 1.0f/w;
+  float dy2 = 1.0f/h;
 
   MYD3DVERTEX<1> v[] =
   {
@@ -1951,59 +1955,104 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
     if(m_pVideoTexture[m_nCurSurface])
     {
       Com::SmartPtr<IDirect3DTexture9> pVideoTexture = m_pVideoTexture[m_nCurSurface];
-    
-      if(m_pVideoTexture[m_nNbDXSurface] && m_pVideoTexture[m_nNbDXSurface+1] && !g_dsSettings.pixelShaderList->GetActivatedPixelShaders().empty())
+      
+
+      if (m_pVideoTexture[m_nNbDXSurface] && m_pVideoTexture[m_nNbDXSurface +1 ])
       {
-        static __int64 counter = 0;
-        static long start = clock();
 
-        long stop = clock();
-        long diff = stop - start;
-
-        if (diff >= 10*60*CLOCKS_PER_SEC)
-          start = stop; // reset after 10 min (ps float has its limits in both range and accuracy)
-
+        // Brightness, contrast and saturation
         int src = m_nCurSurface, dst = m_nNbDXSurface;
 
-        D3DSURFACE_DESC desc;
-        m_pVideoTexture[src]->GetLevelDesc(0, &desc);
+        float contrast = 0.f, brightness = 0.f;
+        // Map brightness and contrast settings
 
-        float fConstData[][4] = 
+        // Range from 0 and 2
+        contrast = (float) g_settings.m_currentVideoSettings.m_Contrast / 50.f;
+
+        // Range from -1 and 1
+        brightness = (float) (g_settings.m_currentVideoSettings.m_Brightness - 50.f) / 50.f;
+
+        if ( m_bscShader.IsValid()
+          && ((abs(g_settings.m_currentVideoSettings.m_Contrast - 50) >= 1)
+           || (abs(g_settings.m_currentVideoSettings.m_Brightness - 50) >= 1)))
         {
-          {(float)desc.Width, (float)desc.Height, (float)(counter++), (float)diff / CLOCKS_PER_SEC},
-          {1.0f / desc.Width, 1.0f / desc.Height, 0, 0},
-        };
-        hr = m_pD3DDev->SetPixelShaderConstantF(0, (float*)fConstData, countof(fConstData));
+          Com::SmartPtr<IDirect3DSurface9> pRT;
+          hr = m_pD3DDev->GetRenderTarget(0, &pRT);
 
-        Com::SmartPtr<IDirect3DSurface9> pRT;
-        hr = m_pD3DDev->GetRenderTarget(0, &pRT);
-        
-        PixelShaderVector& psVec = g_dsSettings.pixelShaderList->GetActivatedPixelShaders();
+          float fConstData[][4] =
+          {
+            {brightness, contrast, 0, 0}
+          };
+          hr = m_pD3DDev->SetPixelShaderConstantF(0, (float*)fConstData, countof(fConstData));
 
-        for (PixelShaderVector::iterator it = psVec.begin();
-          it != psVec.end(); it++)
-        {
-          pVideoTexture = m_pVideoTexture[dst];
+          if (! m_bscShader.m_pPixelShader)
+            m_bscShader.Compile(m_pPSC.get());
 
           hr = m_pD3DDev->SetRenderTarget(0, m_pVideoSurface[dst]);
-          CExternalPixelShader *Shader = *it;
-
-          if (!Shader->m_pPixelShader)
-            Shader->Compile(m_pPSC.get());
-
-          hr = m_pD3DDev->SetPixelShader(Shader->m_pPixelShader);
+          hr = m_pD3DDev->SetPixelShader(m_bscShader.m_pPixelShader);
 
           TextureCopy(m_pVideoTexture[src]);
-          
+
+          pVideoTexture = m_pVideoTexture[dst];
           src = dst;
-          if(++dst >= m_nNbDXSurface+2) 
+
+          if(++dst >= m_nNbDXSurface + 2) 
             dst = m_nNbDXSurface;
+
+          hr = m_pD3DDev->SetRenderTarget(0, pRT);
+          hr = m_pD3DDev->SetPixelShader(NULL);
         }
 
-        hr = m_pD3DDev->SetRenderTarget(0, pRT);
-        hr = m_pD3DDev->SetPixelShader(NULL);
+        if (!g_dsSettings.pixelShaderList->GetActivatedPixelShaders().empty())
+        {
+          static __int64 counter = 0;
+          static long start = clock();
+
+          long stop = clock();
+          long diff = stop - start;
+
+          if (diff >= 10*60*CLOCKS_PER_SEC)
+            start = stop; // reset after 10 min (ps float has its limits in both range and accuracy)
+
+          D3DSURFACE_DESC desc;
+          m_pVideoTexture[src]->GetLevelDesc(0, &desc);
+
+          float fConstData[][4] = 
+          {
+            {(float)desc.Width, (float)desc.Height, (float)(counter++), (float)diff / CLOCKS_PER_SEC},
+            {1.0f / desc.Width, 1.0f / desc.Height, 0, 0},
+          };
+          hr = m_pD3DDev->SetPixelShaderConstantF(0, (float*)fConstData, countof(fConstData));
+
+          Com::SmartPtr<IDirect3DSurface9> pRT;
+          hr = m_pD3DDev->GetRenderTarget(0, &pRT);
+        
+          PixelShaderVector& psVec = g_dsSettings.pixelShaderList->GetActivatedPixelShaders();
+
+          for (PixelShaderVector::iterator it = psVec.begin();
+            it != psVec.end(); it++)
+          {
+            pVideoTexture = m_pVideoTexture[dst];
+
+            hr = m_pD3DDev->SetRenderTarget(0, m_pVideoSurface[dst]);
+            CExternalPixelShader *Shader = *it;
+
+            if (!Shader->m_pPixelShader)
+              Shader->Compile(m_pPSC.get());
+
+            hr = m_pD3DDev->SetPixelShader(Shader->m_pPixelShader);
+
+            TextureCopy(m_pVideoTexture[src]);
+          
+            src = dst;
+            if(++dst >= m_nNbDXSurface+2) 
+              dst = m_nNbDXSurface;
+          }
+
+          hr = m_pD3DDev->SetRenderTarget(0, pRT);
+          hr = m_pD3DDev->SetPixelShader(NULL);
+        }
       }
-      
 
       Vector dst[4];
       Transform(rDstVid, dst);
@@ -2216,6 +2265,9 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
         CalculateJitter(Time);
     }
   }
+
+  if (m_bTakenLock)
+    UnlockD3DDevice();
 
   m_bPaintWasCalled = true;
   m_beforePresentTime = CTimeUtils::GetPerfCounter();
@@ -2791,9 +2843,6 @@ void CDX9AllocatorPresenter::OnAfterPresent()
       CalculateJitter(Time);
     OnVBlankFinished(fAll, Time);
   }
-
-  if (m_bTakenLock)
-    UnlockD3DDevice();
 
   if (m_OrderedPaint)
     --m_OrderedPaint;

@@ -178,7 +178,10 @@ bool CWinDsRenderer::Supports(ESCALINGMETHOD method)
 
 bool CWinDsRenderer::Supports( ERENDERFEATURE method )
 {
-  //TODO: Implement that
+  if ( method == RENDERFEATURE_CONTRAST
+    || method == RENDERFEATURE_BRIGHTNESS)
+    return true;
+
   return false;
 }
 

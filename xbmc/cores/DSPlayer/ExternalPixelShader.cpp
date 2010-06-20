@@ -50,9 +50,13 @@ HRESULT CExternalPixelShader::Compile(CPixelShaderCompiler *pCompiler)
     if (! Load())
       return E_FAIL;
   }
-  HRESULT hr = pCompiler->CompileShader(m_SourceData, "main", m_SourceTarget, 0, &m_pPixelShader);
-  if(FAILED(hr)) 
+  CStdString errorMsg;
+  HRESULT hr = pCompiler->CompileShader(m_SourceData, "main", m_SourceTarget, 0, &m_pPixelShader, NULL, &errorMsg);
+  if(FAILED(hr))
+  {
+    CLog::Log(LOGERROR, "%s Shader's compilation failed : %s", __FUNCTION__, errorMsg.c_str());
     return hr;
+  }
 
   // Delete buffer
   m_SourceData.SetBuf(0);
@@ -78,6 +82,34 @@ CExternalPixelShader::CExternalPixelShader(TiXmlElement* xml)
 
   XMLUtils::GetBoolean(xml, "enabled", m_enabled);
 
+  if (! XFILE::CFile::Exists(m_SourceFile))
+  {
+    CStdString originalFile = m_SourceFile;
+    m_SourceFile = g_settings.GetUserDataItem("dsplayer/shaders/" + originalFile);
+    if (! XFILE::CFile::Exists(m_SourceFile))
+    {
+      m_SourceFile = "special://xbmc/system/players/dsplayer/shaders/" + originalFile;
+      if (! XFILE::CFile::Exists(m_SourceFile))
+      {
+        m_SourceFile = "";
+        return;
+      }
+    }
+  }
+
+  m_SourceTarget.ToLower();
+  if ( !m_SourceTarget.Equals("ps_1_1") && !m_SourceTarget.Equals("ps_1_2") && !m_SourceTarget.Equals("ps_1_3")
+    && !m_SourceTarget.Equals("ps_1_4") && !m_SourceTarget.Equals("ps_2_0") && !m_SourceTarget.Equals("ps_2_a")
+    && !m_SourceTarget.Equals("ps_2_b") && !m_SourceTarget.Equals("ps_3_0") )
+    return;
+
+  m_valid = true;
+}
+
+CExternalPixelShader::CExternalPixelShader(CStdString strFile, CStdString strProfile)
+  : m_id(-1), m_valid(false), m_enabled(false), m_index(0), m_SourceFile(strFile),
+  m_SourceTarget(strProfile)
+{
   if (! XFILE::CFile::Exists(m_SourceFile))
   {
     CStdString originalFile = m_SourceFile;
