@@ -75,10 +75,21 @@ bool CWinSystemWin32DX::ResizeWindow(int newWidth, int newHeight, int newLeft, i
 
 bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  CWinSystemWin32::SetFullScreen(fullScreen, res, blankOtherDisplays);
+  // When going DX fullscreen -> windowed, we must reset the D3D device first to
+  // get it out of fullscreen mode because it restores a former resolution.
+  // We then change to the mode we want.
+  // In other cases, set the window/mode then reset the D3D device.
+
+  bool FS2Windowed = !m_useWindowedDX && UseWindowedDX(fullScreen);
+
   SetMonitor(GetMonitor(res.iScreen).hMonitor);
   CRenderSystemDX::m_interlaced = ((res.dwFlags & D3DPRESENTFLAG_INTERLACED) != 0);
   CRenderSystemDX::m_useWindowedDX = UseWindowedDX(fullScreen);
+
+  if (FS2Windowed)
+    CRenderSystemDX::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
+
+  CWinSystemWin32::SetFullScreen(fullScreen, res, blankOtherDisplays);
   CRenderSystemDX::ResetRenderSystem(res.iWidth, res.iHeight, fullScreen, res.fRefreshRate);
 
   return true;

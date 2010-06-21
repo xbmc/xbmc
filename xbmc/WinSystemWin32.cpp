@@ -225,8 +225,7 @@ bool CWinSystemWin32::BlankNonActiveMonitors(bool bBlank)
   for (unsigned int i=0; i < m_hBlankWindows.size(); i++)
   {
     RECT rBounds = ScreenRect(screen);
-
-    // finally, move and resize the window
+    // move and resize the window
     SetWindowPos(m_hBlankWindows[i], NULL, rBounds.left, rBounds.top,
       rBounds.right - rBounds.left, rBounds.bottom - rBounds.top,
       SWP_NOACTIVATE);
@@ -394,6 +393,7 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
   WINDOWINFO wi;
   GetWindowInfo(m_hWnd, &wi);
   RECT wr = wi.rcWindow;
+
   if (forceRefresh || wr.bottom  - wr.top != rc.bottom - rc.top || wr.right - wr.left != rc.right - rc.left ||
                      (wi.dwStyle & WS_CAPTION) != (dwStyle & WS_CAPTION))
   {
@@ -616,7 +616,6 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
         // note that refresh rate information is not available on Win9x
         md.ScreenWidth = dm.dmPelsWidth;
         md.ScreenHeight = dm.dmPelsHeight;
-
         md.hMonitor = hm;
         md.RefreshRate = dm.dmDisplayFrequency;
         md.Bpp = dm.dmBitsPerPel;
