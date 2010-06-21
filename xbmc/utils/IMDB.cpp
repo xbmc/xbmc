@@ -322,7 +322,7 @@ bool CIMDB::InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetai
   vector<CStdString> extras;
   extras.push_back(url.strId);
   extras.push_back(url.m_url[0].m_url);
-  vector<CStdString> xml = m_info->Run("GetDetails",url,m_http,&extras);
+  vector<CStdString> xml = m_info->Run(strFunction,url,m_http,&extras);
   for (vector<CStdString>::iterator it  = xml.begin();
                                     it != xml.end(); ++it)
   {
