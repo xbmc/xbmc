@@ -65,6 +65,7 @@ bool CWinSystemWin32::InitWindowSystem()
 
 bool CWinSystemWin32::DestroyWindowSystem()
 {
+  RestoreDesktopResolution(m_nScreen);
   return true;
 }
 
@@ -290,9 +291,17 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
 {
   CLog::Log(LOGDEBUG, "%s (%s) on screen %d with size %dx%d, refresh %f%s", __FUNCTION__, !fullScreen ? "windowed" : (g_guiSettings.GetBool("videoscreen.fakefullscreen") ? "windowed fullscreen" : "true fullscreen"), res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate, (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
 
+  bool forceResize = false;
+
+  if (m_nScreen != res.iScreen)
+  {
+    forceResize = true;
+    RestoreDesktopResolution(m_nScreen);
+  }
+
   if(!m_bFullScreen && fullScreen)
   {
-    // save position of window mode
+    // save position of windowed mode
     WINDOWINFO wi;
     GetWindowInfo(m_hWnd, &wi);
     m_nLeft = wi.rcClient.left;
@@ -300,7 +309,6 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   }
 
   m_bFullScreen = fullScreen;
-  bool forceResize = (m_nScreen != res.iScreen);
   m_nScreen = res.iScreen;
   m_nWidth  = res.iWidth;
   m_nHeight = res.iHeight;
@@ -314,6 +322,20 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   BlankNonActiveMonitors(m_bBlankOtherDisplay);
 
   return true;
+}
+
+void CWinSystemWin32::RestoreDesktopResolution(int screen)
+{
+  int resIdx = RES_DESKTOP;
+  for (int idx = RES_DESKTOP; idx < RES_DESKTOP + GetNumScreens(); idx++)
+  {
+    if (g_settings.m_ResInfo[idx].iScreen == screen)
+    {
+      resIdx = idx;
+      break;
+    }
+  }
+  ChangeResolution(g_settings.m_ResInfo[resIdx]);
 }
 
 const MONITOR_DETAILS &CWinSystemWin32::GetMonitor(int screen) const
