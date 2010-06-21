@@ -33,9 +33,6 @@ struct MONITOR_DETAILS
   int       Bpp;
   bool      Interlaced;
 
-  // Current position & size
-  RECT      MonitorRC;
-
   HMONITOR  hMonitor;
   char      MonitorName[128];
   char      CardName[128];
@@ -169,6 +166,7 @@ protected:
   virtual bool BlankNonActiveMonitors(bool bBlank);
   const MONITOR_DETAILS &GetMonitor(int screen) const;
   void RestoreDesktopResolution(int screen);
+  RECT ScreenRect(int screen);
   /*!
    \brief Adds a resolution to the list of resolutions if we don't already have it
    \param res resolution to add.

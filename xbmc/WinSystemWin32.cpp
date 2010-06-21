@@ -224,9 +224,7 @@ bool CWinSystemWin32::BlankNonActiveMonitors(bool bBlank)
 
   for (unsigned int i=0; i < m_hBlankWindows.size(); i++)
   {
-    const MONITOR_DETAILS &details = GetMonitor(screen);
-    RECT rBounds;
-    CopyRect(&rBounds, &details.MonitorRC);
+    RECT rBounds = ScreenRect(screen);
 
     // finally, move and resize the window
     SetWindowPos(m_hBlankWindows[i], NULL, rBounds.left, rBounds.top,
@@ -348,17 +346,35 @@ const MONITOR_DETAILS &CWinSystemWin32::GetMonitor(int screen) const
   return m_MonitorsInfo[m_nPrimary];
 }
 
+RECT CWinSystemWin32::ScreenRect(int screen)
+{
+  const MONITOR_DETAILS &details = GetMonitor(screen);
+
+  DEVMODE sDevMode;
+  ZeroMemory(&sDevMode, sizeof(DEVMODE));
+  sDevMode.dmSize = sizeof(DEVMODE);
+  EnumDisplaySettings(details.DeviceName, ENUM_CURRENT_SETTINGS, &sDevMode);
+
+  RECT rc;
+  rc.left = sDevMode.dmPosition.x;
+  rc.right = sDevMode.dmPosition.x + sDevMode.dmPelsWidth;
+  rc.top = sDevMode.dmPosition.y;
+  rc.bottom = sDevMode.dmPosition.y + sDevMode.dmPelsHeight;
+
+  return rc;
+}
+
 bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
 {
   DWORD dwStyle = WS_CLIPCHILDREN;
   HWND windowAfter;
   RECT rc;
-  CopyRect(&rc, &GetMonitor(m_nScreen).MonitorRC);
 
   if(m_bFullScreen)
   {
     dwStyle |= WS_POPUP;
     windowAfter = HWND_TOP;
+    rc = ScreenRect(m_nScreen);
   }
   else
   {
@@ -586,13 +602,8 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
 
         // get the monitor handle and workspace
         HMONITOR hm = 0;
-        MONITORINFO mi;
-        ZeroMemory(&mi, sizeof(mi));
-        mi.cbSize = sizeof(mi);
-
         POINT pt = { dm.dmPosition.x, dm.dmPosition.y };
         hm = MonitorFromPoint(pt, MONITOR_DEFAULTTONULL);
-        GetMonitorInfo(hm, &mi);
 
         MONITOR_DETAILS md;
         memset(&md, 0, sizeof(MONITOR_DETAILS));
@@ -605,7 +616,6 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
         // note that refresh rate information is not available on Win9x
         md.ScreenWidth = dm.dmPelsWidth;
         md.ScreenHeight = dm.dmPelsHeight;
-        CopyRect(&(md.MonitorRC), &mi.rcMonitor);
 
         md.hMonitor = hm;
         md.RefreshRate = dm.dmDisplayFrequency;
