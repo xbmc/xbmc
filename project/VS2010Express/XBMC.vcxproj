@@ -1064,6 +1064,7 @@
     <ClInclude Include="..\..\xbmc\addons\PluginSource.h" />
     <ClInclude Include="..\..\xbmc\addons\Repository.h" />
     <ClInclude Include="..\..\xbmc\addons\Skin.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSMessage.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\ExternalPixelShader.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\GraphFilters.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\GUIDialogShaderList.h" />

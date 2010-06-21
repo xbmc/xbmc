@@ -4880,6 +4880,9 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\GUIDialogShaderList.h">
       <Filter>Source Files\GUI Dialog</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSMessage.h">
+      <Filter>cores\dsplayer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\win32\XBMC.ico">

@@ -109,7 +109,7 @@ bool CDSPlayer::OpenFile(const CFileItem& file,const CPlayerOptions &options)
   // Starts playback
   if (PlayerState != DSPLAYER_ERROR)
   {
-    g_dsGraph->PostMessage(ID_PLAY_PLAY);
+    g_dsGraph->PostMessage( new CDSMsgBool(CDSMsg::PLAYER_PLAY, true), false );
     if (CGraphFilters::Get()->IsDVD())
       CStreamsManager::Get()->LoadDVDStreams();
   }
@@ -209,7 +209,7 @@ void CDSPlayer::OnExit()
 void CDSPlayer::HandleStart()
 {
   if (m_PlayerOptions.starttime > 0)
-    CDSGraph::PostMessage(ID_SEEK_TO, (int32_t) m_PlayerOptions.starttime * 1000);
+    CDSGraph::PostMessage( new CDSMsgPlayerSeekTime(SEC_TO_DS_TIME(m_PlayerOptions.starttime)) , false );
 }
 
 void CDSPlayer::Process()
@@ -369,25 +369,12 @@ void CDSPlayer::ToFFRW(int iSpeed)
 
 void CDSPlayer::Seek(bool bPlus, bool bLargeStep)
 {
-  if (bPlus)
-  {
-    if (!bLargeStep)
-      CDSGraph::PostMessage(ID_SEEK_FORWARDSMALL);
-    else
-      CDSGraph::PostMessage(ID_SEEK_FORWARDLARGE);
-  }
-  else
-  {
-    if (!bLargeStep)
-      CDSGraph::PostMessage(ID_SEEK_BACKWARDSMALL);
-    else
-      CDSGraph::PostMessage(ID_SEEK_BACKWARDLARGE);
-  }
+  CDSGraph::PostMessage( new CDSMsgPlayerSeek(bPlus, bLargeStep) );
 }
 
 void CDSPlayer::SeekPercentage(float iPercent)
 {
-  CDSGraph::PostMessage(ID_SEEK_PERCENT);
+  CDSGraph::PostMessage( new CDSMsgDouble(CDSMsg::PLAYER_SEEK_PERCENT, iPercent) );
 }
 
 bool CDSPlayer::OnAction(const CAction &action)
@@ -396,7 +383,7 @@ bool CDSPlayer::OnAction(const CAction &action)
   {
     if ( action.GetID() == ACTION_SHOW_VIDEOMENU )
     {
-      CDSGraph::PostMessage(ID_DVD_MENU_ROOT);
+      CDSGraph::PostMessage( new CDSMsg(CDSMsg::PLAYER_DVD_MENU_ROOT), false );
       return true;
     }
     if ( g_dsGraph->IsInMenu() )
@@ -404,19 +391,19 @@ bool CDSPlayer::OnAction(const CAction &action)
       switch (action.GetID())
       {
         case ACTION_PREVIOUS_MENU:
-          CDSGraph::PostMessage(ID_DVD_MENU_BACK);
+          CDSGraph::PostMessage(new CDSMsg(CDSMsg::PLAYER_DVD_MENU_BACK), false);
         break;
         case ACTION_MOVE_LEFT:
-          CDSGraph::PostMessage(ID_DVD_NAV_LEFT);
+          CDSGraph::PostMessage(new CDSMsg(CDSMsg::PLAYER_DVD_NAV_LEFT), false);
         break;
         case ACTION_MOVE_RIGHT:
-          CDSGraph::PostMessage(ID_DVD_NAV_RIGHT);
+          CDSGraph::PostMessage(new CDSMsg(CDSMsg::PLAYER_DVD_NAV_RIGHT), false);
         break;
         case ACTION_MOVE_UP:
-          CDSGraph::PostMessage(ID_DVD_NAV_UP);
+          CDSGraph::PostMessage(new CDSMsg(CDSMsg::PLAYER_DVD_NAV_UP), false);
         break;
         case ACTION_MOVE_DOWN:
-          CDSGraph::PostMessage(ID_DVD_NAV_DOWN);
+          CDSGraph::PostMessage(new CDSMsg(CDSMsg::PLAYER_DVD_NAV_DOWN), false);
         break;
         /*case ACTION_MOUSE_MOVE:
         case ACTION_MOUSE_LEFT_CLICK:
@@ -440,7 +427,7 @@ bool CDSPlayer::OnAction(const CAction &action)
       case ACTION_SELECT_ITEM:
         {
           // show button pushed overlay
-          CDSGraph::PostMessage(ID_DVD_MENU_SELECT);
+          CDSGraph::PostMessage(new CDSMsg(CDSMsg::PLAYER_DVD_MENU_SELECT), false);
         }
         break;
       case REMOTE_0:
@@ -500,7 +487,7 @@ bool CDSPlayer::OnAction(const CAction &action)
 void CDSPlayer::SeekTime(__int64 iTime)
 {
   int seekOffset = (int)(iTime - DS_TIME_TO_MSEC(g_dsGraph->GetTime()));
-  CDSGraph::PostMessage(ID_SEEK_TO, (int32_t) iTime);
+  CDSGraph::PostMessage( new CDSMsgPlayerSeekTime(MSEC_TO_DS_TIME(iTime)) );
   m_callback.OnPlayBackSeek((int) iTime, seekOffset);
 }
 

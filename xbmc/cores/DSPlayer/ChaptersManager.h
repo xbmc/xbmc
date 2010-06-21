@@ -81,6 +81,14 @@ public:
    */
   void InitManager();
 
+  /** Does the media file have chapters?
+   * @return True if the media file has chapters, false otherwise
+   */
+  bool HasChapters() const
+  {
+    return m_chapters.size() > 0;
+  }
+
 private:
   /// Constructor
   CChaptersManager(void);

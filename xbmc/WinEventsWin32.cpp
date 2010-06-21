@@ -516,7 +516,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       {
         if ( g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
         {
-          CDSGraph::PostMessage(ID_DVD_MOUSE_MOVE, lParam);
+          CDSGraph::PostMessage( new CDSMsgInt(CDSMsg::PLAYER_DVD_MOUSE_MOVE, lParam), false);
           return(0);
         }
       }
@@ -533,7 +533,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       {
         if ( g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
         {
-          CDSGraph::PostMessage(ID_DVD_MOUSE_CLICK, lParam);
+          CDSGraph::PostMessage( new CDSMsgInt(CDSMsg::PLAYER_DVD_MOUSE_CLICK, lParam), false);
           return(0);
         }
       }

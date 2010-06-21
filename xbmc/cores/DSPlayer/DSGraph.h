@@ -40,6 +40,8 @@
 #include "cores/IPlayer.h"
 #include "File.h"
 
+#include "DSMessage.h"
+
 using namespace XFILE;
 
 #define WM_GRAPHEVENT  WM_USER + 13
@@ -64,9 +66,18 @@ public:
   CDSGraph(CDVDClock* pClock, IPlayerCallback& callback);
   virtual ~CDSGraph();
 
-  static void PostMessage(int32_t id, int32_t param = 0)
+  static void PostMessage(CDSMsg *msg, bool wait = true)
   {
-    PostThreadMessage(m_threadID, WM_GRAPHMESSAGE, id, param);
+    if (wait)
+      msg->Acquire();
+
+    PostThreadMessage(m_threadID, WM_GRAPHMESSAGE, msg->GetMessageType(), (LPARAM) msg);
+    
+    if (wait)
+    {
+      msg->Wait();
+      msg->Release();
+    }
   }
   void ProcessThreadMessages();
 
@@ -103,6 +114,7 @@ public:
    * @param[in] flags DirectShow IMediaSeeking::SetPositions flags
    */
   virtual void Seek(uint64_t position, uint32_t flags = AM_SEEKING_AbsolutePositioning);
+  virtual void SeekPercentage(float iPercent);
   /// Play the graph
   virtual void Play(bool force = false);
   /// Pause the graph

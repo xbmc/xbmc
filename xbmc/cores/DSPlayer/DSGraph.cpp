@@ -440,9 +440,7 @@ void CDSGraph::Stop(bool rewind)
 {
   if (m_threadID != GetCurrentThreadId())
   {
-    CEvent stopDone;
-    CDSGraph::PostMessage(ID_PLAY_STOP, (int32_t) &stopDone);
-    stopDone.Wait();
+    CDSGraph::PostMessage( new CDSMsgBool(CDSMsg::PLAYER_STOP, rewind) );
     return;
   }
 
@@ -509,9 +507,7 @@ void CDSGraph::Play(bool force/* = false*/)
 {
   if (m_threadID != GetCurrentThreadId())
   {
-    CEvent playEvent;
-    PostMessage(ID_PLAY_PLAY, (int32_t) &playEvent);
-    playEvent.Wait();
+    PostMessage( new CDSMsgBool(CDSMsg::PLAYER_PLAY, force) );
     return;
   }
 
@@ -526,9 +522,7 @@ void CDSGraph::Pause()
 {
   if (m_threadID != GetCurrentThreadId())
   {
-    CEvent pauseEvent;
-    PostMessage(ID_PLAY_PAUSE, (int32_t) &pauseEvent);
-    pauseEvent.Wait();
+    PostMessage( new CDSMsg(CDSMsg::PLAYER_PAUSE));
     return;
   }
 
@@ -619,7 +613,7 @@ void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePos
 {
   if (m_threadID != GetCurrentThreadId())
   {
-    PostMessage(ID_SEEK_TO, DS_TIME_TO_MSEC(position));
+    PostMessage( new CDSMsgPlayerSeekTime(position, flags) );
     return;
   }
 
@@ -645,8 +639,9 @@ void CDSGraph::Seek(uint64_t position, uint32_t flags /*= AM_SEEKING_AbsolutePos
 void CDSGraph::Seek(bool bPlus, bool bLargeStep)
 {
   // Chapter support
-  if(((bPlus && CChaptersManager::Get()->GetChapter() < CChaptersManager::Get()->GetChapterCount())
-  || (!bPlus && CChaptersManager::Get()->GetChapter() > 1)) && bLargeStep)
+  if ((CChaptersManager::Get()->HasChapters())
+  && (((bPlus && CChaptersManager::Get()->GetChapter() < CChaptersManager::Get()->GetChapterCount())
+  || (!bPlus && CChaptersManager::Get()->GetChapter() > 1)) && bLargeStep))
   {
     int chapter = 0;
     if (bPlus)
@@ -687,6 +682,12 @@ void CDSGraph::Seek(bool bPlus, bool bLargeStep)
   UpdateTime();
   Seek(seek);
   UpdateTime();
+}
+
+void CDSGraph::SeekPercentage(float iPercent)
+{
+  uint64_t seek = GetTotalTime() * (int64_t) ((GetPercentage() + iPercent) / 100);
+  Seek(seek);
 }
 
 // return time in DS_TIME_BASE unit
@@ -784,73 +785,55 @@ bool CDSGraph::CanSeek()
 
 void CDSGraph::ProcessThreadMessages()
 {
-  MSG msg;
-  if (PeekMessage(&msg, (HWND) -1, 0, 0, PM_REMOVE) &&
-    msg.message == WM_GRAPHMESSAGE)
+  MSG _msg;
+  if (PeekMessage(&_msg, (HWND) -1, 0, 0, PM_REMOVE) &&
+    _msg.message == WM_GRAPHMESSAGE)
   {
-    if ( msg.wParam == ID_DS_SET_WINDOW_POS)
+
+    CDSMsg* msg = reinterpret_cast<CDSMsg *>( _msg.lParam );
+
+    if ( msg->IsType(CDSMsg::GENERAL_SET_WINDOW_POS) )
     {
       UpdateWindowPosition();
     }
-    else if ( msg.wParam == ID_PLAY_PLAY )
+    else if ( msg->IsType(CDSMsg::PLAYER_SEEK_TIME) )
     {
-      Play();
-      if (msg.lParam)
-      {
-        CEvent *event = reinterpret_cast<CEvent *>(msg.lParam);
-        event->Set();
-      }
+      CDSMsgPlayerSeekTime* speMsg = reinterpret_cast<CDSMsgPlayerSeekTime *>( msg );
+      Seek(speMsg->GetTime(), speMsg->GetFlags());
     }
-    else if ( msg.wParam == ID_SEEK_TO )
+    else if ( msg->IsType(CDSMsg::PLAYER_SEEK) )
     {
-      SeekInMilliSec( msg.lParam );
+      CDSMsgPlayerSeek* speMsg = reinterpret_cast<CDSMsgPlayerSeek*>( msg );
+      Seek( speMsg->Forward(), speMsg->LargeStep() );
     }
-    else if ( msg.wParam == ID_SEEK_FORWARDSMALL )
+    else if ( msg->IsType(CDSMsg::PLAYER_SEEK_PERCENT) )
     {
-      Seek(true, false);
+      CDSMsgDouble * speMsg = reinterpret_cast<CDSMsgDouble *>( msg );
+      SeekPercentage((float) speMsg->m_value );
     }
-    else if ( msg.wParam == ID_SEEK_FORWARDLARGE )
-    {
-      Seek(true, true);
-    }
-    else if ( msg.wParam == ID_SEEK_BACKWARDSMALL )
-    {
-      Seek(false, false);
-    }
-    else if ( msg.wParam == ID_SEEK_BACKWARDLARGE )
-    {
-      Seek(false, true);
-    }
-    else if ( msg.wParam == ID_PLAY_PAUSE )
+    else if ( msg->IsType(CDSMsg::PLAYER_PAUSE) )
     {
       Pause();
-      if (msg.lParam)
-      {
-        CEvent *event = reinterpret_cast<CEvent *>(msg.lParam);
-        event->Set();
-      }
     }
-    else if ( msg.wParam == ID_PLAY_STOP )
+    else if ( msg->IsType(CDSMsg::PLAYER_STOP) )
     {
-      Stop(true);
-      if (msg.lParam)
-      {
-        CEvent *event = reinterpret_cast<CEvent *>(msg.lParam);
-        event->Set();
-      }
+      CDSMsgBool* speMsg = reinterpret_cast<CDSMsgBool *>( msg );
+      Stop(speMsg->m_value);
     }
-    else if ( msg.wParam == ID_STOP_DSPLAYER )
+    else if ( msg->IsType(CDSMsg::PLAYER_PLAY) )
     {
-      Stop(true);
+      CDSMsgBool* speMsg = reinterpret_cast<CDSMsgBool *>( msg );
+      Play(speMsg->m_value);
     }
 
     /*DVD COMMANDS*/
-    if ( msg.wParam == ID_DVD_MOUSE_MOVE)
+    if ( msg->IsType(CDSMsg::PLAYER_DVD_MOUSE_MOVE) )
     {
+      CDSMsgInt* speMsg = reinterpret_cast<CDSMsgInt *>( msg );
       //TODO make the xbmc gui stay hidden when moving mouse over menu
       POINT pt;
-      pt.x = GET_X_LPARAM(msg.lParam);
-      pt.y = GET_Y_LPARAM(msg.lParam);
+      pt.x = GET_X_LPARAM(speMsg->m_value);
+      pt.y = GET_Y_LPARAM(speMsg->m_value);
       ULONG pButtonIndex;
       /**** Didnt found really where dvdplayer are doing it exactly so here it is *****/
       XBMC_Event newEvent;
@@ -864,62 +847,66 @@ void CDSGraph::ProcessThreadMessages()
       if (SUCCEEDED(CGraphFilters::Get()->DVD.dvdInfo->GetButtonAtPosition(pt, &pButtonIndex)))
         CGraphFilters::Get()->DVD.dvdControl->SelectButton(pButtonIndex);
     }
-    else if ( msg.wParam == ID_DVD_MOUSE_CLICK)
+    else if ( msg->IsType(CDSMsg::PLAYER_DVD_MOUSE_CLICK) )
     {
+      CDSMsgInt* speMsg = reinterpret_cast<CDSMsgInt *>( msg );
       POINT pt;
-      pt.x = GET_X_LPARAM(msg.lParam);
-      pt.y = GET_Y_LPARAM(msg.lParam);
+      pt.x = GET_X_LPARAM(speMsg->m_value);
+      pt.y = GET_Y_LPARAM(speMsg->m_value);
       ULONG pButtonIndex;
       if (SUCCEEDED(CGraphFilters::Get()->DVD.dvdInfo->GetButtonAtPosition(pt, &pButtonIndex)))
         CGraphFilters::Get()->DVD.dvdControl->SelectAndActivateButton(pButtonIndex);
     }
-    else if ( msg.wParam == ID_DVD_NAV_UP )
+    else if ( msg->IsType(CDSMsg::PLAYER_DVD_NAV_UP) )
     {
       CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Upper);
     }
-    else if ( msg.wParam == ID_DVD_NAV_DOWN )
+    else if ( msg->IsType(CDSMsg::PLAYER_DVD_NAV_DOWN) )
     {
       CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Lower);
     }
-    else if ( msg.wParam == ID_DVD_NAV_LEFT )
+    else if ( msg->IsType(CDSMsg::PLAYER_DVD_NAV_LEFT) )
     {
       CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Left);
     }
-    else if ( msg.wParam == ID_DVD_NAV_RIGHT )
+    else if ( msg->IsType(CDSMsg::PLAYER_DVD_NAV_RIGHT) )
     {
       CGraphFilters::Get()->DVD.dvdControl->SelectRelativeButton(DVD_Relative_Right);
     }
-    else if ( msg.wParam == ID_DVD_MENU_ROOT )
+    else if ( msg->IsType(CDSMsg::PLAYER_DVD_MENU_ROOT) )
     {
       CGUIMessage _msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
       g_windowManager.SendMessage(_msg);
       CGraphFilters::Get()->DVD.dvdControl->ShowMenu(DVD_MENU_Root , DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
     }
-    else if ( msg.wParam == ID_DVD_MENU_EXIT )
+    else if ( msg->IsType(CDSMsg::PLAYER_DVD_MENU_EXIT) )
     {
       CGraphFilters::Get()->DVD.dvdControl->Resume(DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
     }
-    else if ( msg.wParam == ID_DVD_MENU_BACK )
+    else if ( msg->IsType(CDSMsg::PLAYER_DVD_MENU_BACK) )
     {
       CGraphFilters::Get()->DVD.dvdControl->ReturnFromSubmenu(DVD_CMD_FLAG_Block | DVD_CMD_FLAG_Flush, NULL);
     }
-    else if ( msg.wParam == ID_DVD_MENU_SELECT )
+    else if ( msg->IsType(CDSMsg::PLAYER_DVD_MENU_SELECT) )
     {
       CGraphFilters::Get()->DVD.dvdControl->ActivateButton();
     }
-    else if ( msg.wParam == ID_DVD_MENU_TITLE )
+    else if ( msg->IsType(CDSMsg::PLAYER_DVD_MENU_TITLE) )
     {
       CGraphFilters::Get()->DVD.dvdControl->ShowMenu(DVD_MENU_Title, DVD_CMD_FLAG_Block|DVD_CMD_FLAG_Flush, NULL);
     }
-    else if ( msg.wParam == ID_DVD_MENU_SUBTITLE )
+    else if ( msg->IsType(CDSMsg::PLAYER_DVD_MENU_SUBTITLE) )
     {
     }
-    else if ( msg.wParam == ID_DVD_MENU_AUDIO )
+    else if ( msg->IsType(CDSMsg::PLAYER_DVD_MENU_AUDIO) )
     {
     }
-    else if ( msg.wParam == ID_DVD_MENU_ANGLE )
+    else if ( msg->IsType(CDSMsg::PLAYER_DVD_MENU_ANGLE) )
     {
     }
+
+    msg->Set();
+    msg->Release();
   }
 }
 

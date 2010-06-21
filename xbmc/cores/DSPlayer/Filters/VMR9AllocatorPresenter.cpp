@@ -649,7 +649,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
         m_NativeVideoSize = NativeVideoSize;
         m_AspectRatio = AspectRatio;
         //TODO Verify if its really needed
-        CDSGraph::PostMessage(ID_DS_SET_WINDOW_POS);
+        CDSGraph::PostMessage(new CDSMsg(CDSMsg::GENERAL_SET_WINDOW_POS), false);
       }
     }
     // If framerate not set by Video Decoder choose 23.97...
@@ -681,7 +681,7 @@ STDMETHODIMP CVMR9AllocatorPresenter::PresentImage(DWORD_PTR dwUserID, VMR9Prese
   if(VideoSize != GetVideoSize())
   {
     m_AspectRatio.SetSize(arx, ary);
-    CDSGraph::PostMessage(ID_DS_SET_WINDOW_POS);
+    CDSGraph::PostMessage(new CDSMsg(CDSMsg::GENERAL_SET_WINDOW_POS), false);
   }
 
   if (! m_bPendingResetDevice)
