@@ -128,7 +128,7 @@ protected:
   bool                        m_useD3D9Ex;
   DWORD                       m_defaultD3DUsage;
   D3DPOOL                     m_defaultD3DPool;
-
+  bool                        m_useWindowedDX;
   CCriticalSection            m_resourceSection;
   std::vector<ID3DResource*>  m_resources;
 

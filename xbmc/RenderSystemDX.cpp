@@ -206,8 +206,7 @@ void CRenderSystemDX::BuildPresentParameters()
   GetVersionEx((OSVERSIONINFO *)&osvi);
 
   ZeroMemory( &m_D3DPP, sizeof(D3DPRESENT_PARAMETERS) );
-  bool useWindow = g_guiSettings.GetBool("videoscreen.fakefullscreen") || !m_bFullScreenDevice;
-  m_D3DPP.Windowed           = useWindow;
+  m_D3DPP.Windowed           = m_useWindowedDX;
   m_D3DPP.SwapEffect         = D3DSWAPEFFECT_DISCARD;
   m_D3DPP.BackBufferCount    = 2;
 
@@ -226,7 +225,7 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.BackBufferHeight   = m_nBackBufferHeight;
   m_D3DPP.Flags              = D3DPRESENTFLAG_VIDEO;
   m_D3DPP.PresentationInterval = (m_bVSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
-  m_D3DPP.FullScreen_RefreshRateInHz = (useWindow) ? 0 : (int)m_refreshRate;
+  m_D3DPP.FullScreen_RefreshRateInHz = (m_useWindowedDX) ? 0 : (int)m_refreshRate;
   m_D3DPP.BackBufferFormat   = D3DFMT_X8R8G8B8;
   m_D3DPP.MultiSampleType    = D3DMULTISAMPLE_NONE;
   m_D3DPP.MultiSampleQuality = 0;
