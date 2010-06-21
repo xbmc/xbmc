@@ -196,28 +196,40 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
       }    
     }    
   }
-/* This is also adding the splitter with the insert filter function */
-  if (SUCCEEDED(hr = InsertFilter(filterName, CGraphFilters::Get()->Splitter)))
+
+  /* Two cases:
+  1/ The source filter is also a splitter. We insert it to the graph as a splitter and load the file
+  2/ The source filter is only a source filter. Add it to the graph as a source filter
+  */
+  //
+  CFGFilterFile *filter = NULL;
+  if (! (filter = CFilterCoreFactory::GetFilterFromName(filterName)))
+    return E_FAIL;
+  SFilterInfos& infos = (filter->AlsoSplitter()) ? CGraphFilters::Get()->Splitter : CGraphFilters::Get()->Source;
+  
+  if (filter->AlsoSplitter())
+    CLog::Log(LOGDEBUG, "%s The source filter is also a splitter.", __FUNCTION__);
+
+  if (SUCCEEDED(hr = InsertFilter(filterName, infos)))
   {
     CStdString pWinFilePath = pFileItem.m_strPath;
     if ( (pWinFilePath.Left(6)).Equals("smb://", false) )
-    pWinFilePath.Replace("smb://", "\\\\");
+      pWinFilePath.Replace("smb://", "\\\\");
   
     pWinFilePath.Replace("/", "\\");
 
-    Com::SmartQIPtr<IFileSourceFilter> pFS = CGraphFilters::Get()->Splitter.pBF;
+    Com::SmartQIPtr<IFileSourceFilter> pFS = infos.pBF;
     
-    CStdStringW strFileW;  
+    CStdStringW strFileW;
     g_charsetConverter.utf8ToW(pWinFilePath, strFileW);
 
     if (SUCCEEDED(hr = pFS->Load(strFileW.c_str(), NULL)))
-      CLog::Log(LOGNOTICE, "%s Successfully loaded file in the splitter", __FUNCTION__);
+      CLog::Log(LOGNOTICE, "%s Successfully loaded file in the splitter/source", __FUNCTION__);
     else
-      CLog::Log(LOGERROR, "%s Failed to load file in the splitter", __FUNCTION__);
+      CLog::Log(LOGERROR, "%s Failed to load file in the splitter/source", __FUNCTION__);
   }
 
-
-  return hr;  
+  return hr;
 }
 HRESULT CFGLoader::InsertSplitter(const CFileItem& pFileItem, const CStdString& filterName)
 {
@@ -226,25 +238,9 @@ HRESULT CFGLoader::InsertSplitter(const CFileItem& pFileItem, const CStdString& 
   if (SUCCEEDED(hr))
   {
     if (SUCCEEDED(hr = ConnectFilters(g_dsGraph->pFilterGraph, CGraphFilters::Get()->Source.pBF, CGraphFilters::Get()->Splitter.pBF)))
-      CLog::Log(LOGNOTICE, "%s Successfully connected the source to the spillter", __FUNCTION__);
+      CLog::Log(LOGNOTICE, "%s Successfully connected the source to the splitter", __FUNCTION__);
     else
-    {
-      CLog::Log(LOGERROR, "%s Failed to connect the source to the spliter", __FUNCTION__);
-      // What the point to provide filters customization if we let windows choose filters for us ?!
-      /*CLog::Log(LOGNOTICE, "%s Trying to just render the source output pin", __FUNCTION__);
-      BeginEnumPins(Filters.Source.pBF,pEP,pPin)
-      {
-        if (!DShowUtil::IsPinConnected(pPin))
-        {
-          hr = m_pGraphBuilder->Render(pPin);
-        }
-      }
-      EndEnumPins
-      if (FAILED(hr))
-      {
-        CLog::Log(LOGERROR, "%s Failed the just rendering the output pin", __FUNCTION__);
-      }*/
-    }
+      CLog::Log(LOGERROR, "%s Failed to connect the source to the splitter", __FUNCTION__);
   }
   
   return hr;

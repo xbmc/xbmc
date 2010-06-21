@@ -389,7 +389,8 @@ CFGFilterFile::CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW na
     m_xFileType(filetype),
     m_internalName(internalName),
     m_hInst(NULL),
-    m_autoload(false)
+    m_autoload(false),
+    m_isAlsoSplitter(true)
 {
 }
 
@@ -410,6 +411,8 @@ CFGFilterFile::CFGFilterFile( TiXmlElement *pFilter )
   //This is needed for a correct insertion of dmo filters into a graph
   if (!XMLUtils::GetBoolean(pFilter, "isdmo", m_isDMO))
     m_isDMO = false;
+
+  XMLUtils::GetBoolean(pFilter, "issplitter", m_isAlsoSplitter);
 
   CStdString strDmoGuid;
 

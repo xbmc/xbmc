@@ -115,6 +115,7 @@ protected:
   CStdString m_internalName;
   HINSTANCE m_hInst;
   bool m_isDMO;
+  bool m_isAlsoSplitter; // Valid only for source filters
   CLSID m_catDMO;
   bool m_autoload;
 public:
@@ -126,7 +127,7 @@ public:
   CStdString GetInternalName() { return m_internalName; };
   bool GetAutoLoad() { return m_autoload; };
   void SetAutoLoad(bool autoload);
-  
+  bool AlsoSplitter() const { return m_isAlsoSplitter; }
 };
 
 interface IDsRenderer;

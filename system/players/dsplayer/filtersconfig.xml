@@ -134,6 +134,11 @@
       <guid>{55DA30FC-F16B-49FC-BAA5-AE59FC65F82D}</guid>
       <osdname>Haali Media Splitter</osdname>
     </filter>
+    <filter name="filesource" type="source">
+      <guid>{E436EBB5-524F-11CE-9F53-0020AF0BA770}</guid>
+      <issplitter>false</issplitter>
+      <osdname>File Source (Async.)</osdname>
+    </filter>
     
     <!-- Splitters -->
     <filter name="avisplitter" type="splitter">
@@ -174,5 +179,10 @@
       <guid>{AFB6C280-2C41-11D3-8A60-0000F81E0E4A}</guid>
       <osdname>MPEG-2 Demultiplexer</osdname>
     </filter>
+    <filter name="smm_mkvsplitter" type="splitter">
+      <guid>{5B00F980-F0B1-484B-ADE7-69408D9525F7}</guid>
+      <osdname>SolveigMM Matroska Splitter</osdname>
+    </filter>
+    
   </filters>
 </filtersconfig>
