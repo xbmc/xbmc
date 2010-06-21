@@ -589,6 +589,14 @@ bool CApplication::Create()
   if (!g_settings.Load())
     FatalErrorHandler(true, true, true);
 
+  CLog::Log(LOGINFO, "creating subdirectories");
+  CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
+  CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
+  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("debug.screenshotpath",false).c_str());
+  CDirectory::Create(g_settings.GetUserDataFolder());
+  CDirectory::Create(g_settings.GetProfileUserDataFolder());
+  g_settings.CreateProfileFolders();
+
   update_emu_environ();//apply the GUI settings
 
   // initialize our charset converter
@@ -973,6 +981,7 @@ void CApplication::CreateUserDirs()
   CDirectory::Create("special://home/system");
   CDirectory::Create("special://masterprofile/");
   CDirectory::Create("special://temp/");
+  CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
 }
 
 bool CApplication::Initialize()
@@ -981,27 +990,6 @@ bool CApplication::Initialize()
   // turn off cdio logging
   cdio_loglevel_default = CDIO_LOG_ERROR;
 #endif
-
-  CLog::Log(LOGINFO, "creating subdirectories");
-
-  CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
-  CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
-  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("debug.screenshotpath",false).c_str());
-
-  // UserData folder layout:
-  // UserData/
-  //   Database/
-  //     CDDb/
-  //   Thumbnails/
-  //     Music/
-  //       temp/
-  //     0 .. F/
-
-  CDirectory::Create(g_settings.GetUserDataFolder());
-  CDirectory::Create(g_settings.GetProfileUserDataFolder());
-  g_settings.CreateProfileFolders();
-
-  CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
 
 #ifdef _LINUX // TODO: Win32 has no special://home/ mapping by default, so we
               //       must create these here. Ideally this should be using special://home/ and
