@@ -164,6 +164,12 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
     return MSGQ_NOT_INITIALIZED;
   }
 
+  if(m_list.empty() && m_bEmptied == false && priority == 0 && m_owner != "teletext")
+  {
+    CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Get - asked for new data packet, with nothing available", m_owner.c_str());
+    m_bEmptied = true;
+  }
+
   while (!m_bAbortRequest)
   {
     if(!m_list.empty() && m_list.back().priority >= priority && !m_bCaching)
@@ -183,13 +189,7 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
             m_TimeBack = packet->pts;
         }
 
-        if(m_iDataSize == 0)
-        {
-          if(!m_bEmptied && m_owner != "teletext") // Prevent log flooding
-            CLog::Log(LOGWARNING, "CDVDMessageQueue(%s)::Get - retrieved last data packet of queue", m_owner.c_str());
-          m_bEmptied = true;
-        }
-        else
+        if(m_bEmptied && m_iDataSize > 0)
           m_bEmptied = false;
       }
 
