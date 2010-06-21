@@ -22,6 +22,9 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
+#ifdef _WIN32
+#include "system.h" // just for HAS_LIBRTMP
+#endif
 
 #ifdef HAS_LIBRTMP
 #include "AdvancedSettings.h"
