@@ -2170,6 +2170,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\DSPlayer\DSMessage.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\DSPlayer\DSPlayer.cpp"
 					>
 				</File>
