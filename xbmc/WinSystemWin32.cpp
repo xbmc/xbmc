@@ -289,6 +289,16 @@ void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
 bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   CLog::Log(LOGDEBUG, "%s (%s) on screen %d with size %dx%d, refresh %f%s", __FUNCTION__, !fullScreen ? "windowed" : (g_guiSettings.GetBool("videoscreen.fakefullscreen") ? "windowed fullscreen" : "true fullscreen"), res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate, (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
+
+  if(!m_bFullScreen && fullScreen)
+  {
+    // save position of window mode
+    WINDOWINFO wi;
+    GetWindowInfo(m_hWnd, &wi);
+    m_nLeft = wi.rcClient.left;
+    m_nTop = wi.rcClient.top;
+  }
+
   m_bFullScreen = fullScreen;
   bool forceResize = (m_nScreen != res.iScreen);
   m_nScreen = res.iScreen;
@@ -323,16 +333,10 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
   RECT rc;
   CopyRect(&rc, &GetMonitor(m_nScreen).MonitorRC);
 
-  WINDOWINFO wi;
-  GetWindowInfo(m_hWnd, &wi);
-
   if(m_bFullScreen)
   {
     dwStyle |= WS_POPUP;
     windowAfter = HWND_TOP;
-    // save position of window mode
-    m_nLeft = wi.rcClient.left;
-    m_nTop = wi.rcClient.top;
   }
   else
   {
@@ -349,6 +353,8 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
     AdjustWindowRect( &rc, WS_OVERLAPPEDWINDOW, false );
   }
 
+  WINDOWINFO wi;
+  GetWindowInfo(m_hWnd, &wi);
   RECT wr = wi.rcWindow;
   if (forceRefresh || wr.bottom  - wr.top != rc.bottom - rc.top || wr.right - wr.left != rc.right - rc.left ||
                      (wi.dwStyle & WS_CAPTION) != (dwStyle & WS_CAPTION))
