@@ -782,6 +782,8 @@ bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate)
   return (err == kCGErrorSuccess);
 }
 
+//BOOL interlaced = (CGDisplayModeGetIOFlags((CGDisplayModeRef)displayMode) & kDisplayModeInterlacedFlag);
+
 void CWinSystemOSX::GetVideoModes(void)
 {
   CGDirectDisplayID displayID = kCGDirectMainDisplay;
