@@ -137,6 +137,7 @@ IMAGES= \
 	flagging/audio/mp3.png \
 	flagging/audio/ogg.png \
 	flagging/audio/truehd.png \
+	flagging/audio/wavpack.png \
 	flagging/audio/wma.png \
 	flagging/audio/wmapro.png \
 	flagging/audio/wmav2.png \
