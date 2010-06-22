@@ -1316,6 +1316,8 @@ int CBuiltins::Execute(const CStdString& execString)
         CGUIWindowAddonBrowser::SelectAddonID(type,addonID,false))
     {
       CAddonMgr::Get().SetDefault(type,addonID);
+      if (type == ADDON_VIZ)
+        g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
     }
   }
   else if (execute.Equals("toggledpms"))
