@@ -711,7 +711,7 @@
 				<height>1</height>
 				<label>-</label>
 				<font>-</font>
-				<onfocus>XBMC.RunScript(special://skin/scripts/RecentlyAdded.py,limit=4)</onfocus>
+				<onfocus>XBMC.RunScript(script.recentlyadded,limit=4)</onfocus>
 				<onfocus>SetFocus(9000)</onfocus>
 				<texturenofocus>-</texturenofocus>
 				<texturefocus>-</texturefocus>
