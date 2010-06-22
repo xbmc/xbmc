@@ -68,6 +68,12 @@ public:
 
   static void PostMessage(CDSMsg *msg, bool wait = true)
   {
+    if (! m_threadID)
+    {
+      msg->Release();
+      return;
+    }
+
     if (wait)
       msg->Acquire();
 

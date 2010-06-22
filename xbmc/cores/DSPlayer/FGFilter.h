@@ -115,9 +115,8 @@ protected:
   CStdString m_internalName;
   HINSTANCE m_hInst;
   bool m_isDMO;
-  bool m_isAlsoSplitter; // Valid only for source filters
   CLSID m_catDMO;
-  bool m_autoload;
+
 public:
   CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE, CStdString filtername = "", CStdString filetype = "");
   CFGFilterFile(TiXmlElement *pFilter);
@@ -125,8 +124,15 @@ public:
   HRESULT Create(IBaseFilter** ppBF);
   CStdString GetXFileType() { return m_xFileType; };
   CStdString GetInternalName() { return m_internalName; };
-  bool GetAutoLoad() { return m_autoload; };
-  void SetAutoLoad(bool autoload);
+};
+
+class CFGSourceFilterFile : public CFGFilterFile
+{
+protected:
+  bool m_isAlsoSplitter;
+
+public:
+  CFGSourceFilterFile(TiXmlElement *pFilter);
   bool AlsoSplitter() const { return m_isAlsoSplitter; }
 };
 
@@ -140,21 +146,4 @@ public:
   ~CFGFilterVideoRenderer();
 
   HRESULT Create(IBaseFilter** ppBF);
-};
-
-class CFGFilterList
-{
-  struct filter_t {int index; CFGFilter* pFGF; int group; bool exactmatch, autodelete;};
-  static int filter_cmp(const void* a, const void* b);
-  std::list<filter_t> m_filters;
-  std::list<CFGFilter*> m_sortedfilters;
-
-public:
-  CFGFilterList();
-  virtual ~CFGFilterList();
-
-  void RemoveAll();
-  void Insert(CFGFilter* pFGF, int group, bool exactmatch = false, bool autodelete = true);
-  
-  std::list<CFGFilter*> GetSortedList();
 };

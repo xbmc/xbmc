@@ -201,9 +201,8 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
   1/ The source filter is also a splitter. We insert it to the graph as a splitter and load the file
   2/ The source filter is only a source filter. Add it to the graph as a source filter
   */
-  //
-  CFGFilterFile *filter = NULL;
-  if (! (filter = CFilterCoreFactory::GetFilterFromName(filterName)))
+  CFGSourceFilterFile *filter = NULL;
+  if (! (filter = reinterpret_cast<CFGSourceFilterFile*>(CFilterCoreFactory::GetFilterFromName(filterName))))
     return E_FAIL;
   SFilterInfos& infos = (filter->AlsoSplitter()) ? CGraphFilters::Get()->Splitter : CGraphFilters::Get()->Source;
   

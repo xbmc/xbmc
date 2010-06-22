@@ -389,12 +389,12 @@ CFGFilterFile::CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW na
     m_xFileType(filetype),
     m_internalName(internalName),
     m_hInst(NULL),
-    m_autoload(false),
-    m_isAlsoSplitter(true)
+    m_isDMO(false)
 {
 }
 
 CFGFilterFile::CFGFilterFile( TiXmlElement *pFilter )
+  : m_isDMO(false), m_catDMO(GUID_NULL), m_hInst(NULL)
 {
   bool m_filterFound = true;
 
@@ -409,14 +409,10 @@ CFGFilterFile::CFGFilterFile( TiXmlElement *pFilter )
   XMLUtils::GetString(pFilter, "osdname", osdname);
 
   //This is needed for a correct insertion of dmo filters into a graph
-  if (!XMLUtils::GetBoolean(pFilter, "isdmo", m_isDMO))
-    m_isDMO = false;
+  XMLUtils::GetBoolean(pFilter, "isdmo", m_isDMO);
 
-  XMLUtils::GetBoolean(pFilter, "issplitter", m_isAlsoSplitter);
-
-  CStdString strDmoGuid;
-
-  if (XMLUtils::GetString(pFilter,"guid_category_dmo",strDmoGuid))
+  CStdString strDmoGuid = "";
+  if (XMLUtils::GetString(pFilter, "guid_category_dmo", strDmoGuid))
   {
     const CLSID dmoclsid = DShowUtil::GUIDFromCString(strDmoGuid);
     m_catDMO = dmoclsid;
@@ -456,7 +452,7 @@ HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
   CheckPointer(ppBF, E_POINTER);
 
   HRESULT hr = E_FAIL;
-  if ( (m_isDMO) && (m_catDMO != GUID_NULL))
+  if ((m_isDMO) && (m_catDMO != GUID_NULL))
   {
     Com::SmartPtr<IBaseFilter> pBFDmo = NULL;
     Com::SmartQIPtr<IDMOWrapperFilter> pDMOWrapper;
@@ -469,14 +465,6 @@ HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
         hr = pDMOWrapper->Init(m_clsid, m_catDMO);
 
       *ppBF = pBFDmo.Detach();
-
-      //DMOCATEGORY_AUDIO_DECODER
-      //WMAudio Decoder DMO
-      //{2EEB4ADF-4578-4D10-BCA7-BB955F56320A}
-
-      //DMOCATEGORY_VIDEO_DECODER
-      //WMVideo Decoder DMO
-      //{82D353DF-90BD-4382-8BC2-3F6192B76E34}
     }
   }
   else
@@ -484,7 +472,9 @@ HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
     hr = DShowUtil::LoadExternalFilter(m_path, m_clsid, ppBF);
     if (FAILED(hr))
     {
-      CLog::Log(LOGINFO, "%s Failed to load external filter (clsid:%s path:%s). Trying with CoCreateInstance", __FUNCTION__, DShowUtil::CStringFromGUID(m_clsid).c_str(), m_path.c_str());
+      CLog::Log(LOGINFO, "%s Failed to load external filter (clsid:%s path:%s). Trying with CoCreateInstance", __FUNCTION__,
+        DShowUtil::CStringFromGUID(m_clsid).c_str(), m_path.c_str());
+
       /* If LoadExternalFilter failed, maybe we will have more chance
        * using CoCreateInstance directly. Will only works if the filter
        * is registered! */
@@ -501,16 +491,23 @@ HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
   }
 
   if (FAILED(hr))
-    CLog::Log(LOGERROR,"%s Failed to load external filter (clsid:%s path:%s)", __FUNCTION__, DShowUtil::CStringFromGUID(m_clsid).c_str(), m_path.c_str());
+    CLog::Log(LOGERROR,"%s Failed to load external filter (clsid:%s path:%s)", __FUNCTION__,
+      DShowUtil::CStringFromGUID(m_clsid).c_str(), m_path.c_str());
   else
-    CLog::Log(LOGDEBUG, "%s Successfully loaded external filter (clsid:%s path:%s)", __FUNCTION__, DShowUtil::CStringFromGUID(m_clsid).c_str(), m_path.c_str());
+    CLog::Log(LOGDEBUG, "%s Successfully loaded external filter (clsid:%s path:%s)", __FUNCTION__,
+      DShowUtil::CStringFromGUID(m_clsid).c_str(), m_path.c_str());
 
   return hr;
 }
 
-void CFGFilterFile::SetAutoLoad(bool autoload)
+//
+// CFGSourceFilterFile
+//
+
+CFGSourceFilterFile::CFGSourceFilterFile(TiXmlElement *pFilter)
+  : CFGFilterFile(pFilter), m_isAlsoSplitter(true)
 {
-  m_autoload = autoload;
+  XMLUtils::GetBoolean(pFilter, "issplitter", m_isAlsoSplitter);
 }
 
 //
@@ -553,119 +550,6 @@ HRESULT CFGFilterVideoRenderer::Create(IBaseFilter** ppBF)
   if(!*ppBF) hr = E_FAIL;
 
   return hr;
-}
-//
-// CFGFilterList
-//
-
-CFGFilterList::CFGFilterList()
-{
-}
-
-CFGFilterList::~CFGFilterList()
-{
-  RemoveAll();
-}
-
-void CFGFilterList::RemoveAll()
-{
-  for(std::list<filter_t>::iterator it = m_filters.begin() ;it != m_filters.end() ; it++)
-  {
-    if ((*it).autodelete)
-      delete (*it).pFGF;
-  }
-  while (!m_filters.empty())
-    m_filters.pop_back();
-  while (!m_sortedfilters.empty())
-    m_sortedfilters.pop_back();
-}
-
-void CFGFilterList::Insert(CFGFilter* pFGF, int group, bool exactmatch, bool autodelete)
-{
-  if(CFGFilterRegistry* f1r = dynamic_cast<CFGFilterRegistry*>(pFGF))
-  {
-    for(std::list<filter_t>::iterator it = m_filters.begin() ;it != m_filters.end() ; it++)
-    {
-      if(group != (*it).group) continue;
-
-      if(CFGFilterRegistry* f2r = dynamic_cast<CFGFilterRegistry*>((*it).pFGF))
-      {
-        if(f1r->GetMoniker() && f2r->GetMoniker() && S_OK == f1r->GetMoniker()->IsEqual(f2r->GetMoniker())
-        || f1r->GetCLSID() != GUID_NULL && f1r->GetCLSID() == f2r->GetCLSID())
-        {
-
-          if(autodelete) 
-            delete pFGF;
-          return;
-        }
-      }
-    }
-  }
-  for(std::list<filter_t>::iterator it = m_filters.begin() ;it != m_filters.end() ; it++)
-  {
-    if((*it).pFGF == pFGF)
-    {
-      if(autodelete) delete pFGF;
-      return;
-    }
-  }
-
-  filter_t f = {m_filters.size(), pFGF, group, exactmatch, autodelete};
-  m_filters.push_back(f);
-
-  while (!m_sortedfilters.empty())
-    m_sortedfilters.pop_back();
-}
-
-std::list<CFGFilter*> CFGFilterList::GetSortedList()
-{
-  if(m_sortedfilters.empty())
-  {
-    std::vector<filter_t> sort;
-    
-    for (std::list<filter_t>::iterator it = m_filters.begin() ; it != m_filters.end() ; it++)
-      sort.push_back(*it);
-    
-    qsort(&sort.at(0), sort.size(), sizeof(sort.at(0)), filter_cmp);
-    
-    for (std::vector<filter_t>::iterator it = sort.begin() ; it != sort.end() ; it++)
-    {
-      filter_t ft = *it;
-      
-      if ( ft.pFGF->GetMerit() >= MERIT64_DO_USE)
-        m_sortedfilters.push_back(ft.pFGF);
-    }
-  }
-  return m_sortedfilters;
-}
-
-int CFGFilterList::filter_cmp(const void* a, const void* b)
-{
-  filter_t* fa = (filter_t*)a;
-  filter_t* fb = (filter_t*)b;
-
-  if(fa->group < fb->group) return -1;
-  if(fa->group > fb->group) return +1;
-
-  if(fa->pFGF->GetCLSID() == fb->pFGF->GetCLSID())
-  {
-    CFGFilterFile* fgfa = dynamic_cast<CFGFilterFile*>(fa->pFGF);
-    CFGFilterFile* fgfb = dynamic_cast<CFGFilterFile*>(fb->pFGF);
-
-    if(fgfa && !fgfb) return -1;
-    if(!fgfa && fgfb) return +1;
-  }
-
-  if(fa->pFGF->GetMerit() > fb->pFGF->GetMerit()) return -1;
-  if(fa->pFGF->GetMerit() < fb->pFGF->GetMerit()) return +1;
-
-  if(fa->exactmatch && !fb->exactmatch) return -1;
-  if(!fa->exactmatch && fb->exactmatch) return +1;
-
-  if(fa->index < fb->index) return -1;
-  if(fa->index > fb->index) return +1;
-
-  return 0;
 }
 
 #endif

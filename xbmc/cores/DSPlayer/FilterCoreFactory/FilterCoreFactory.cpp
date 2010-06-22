@@ -60,9 +60,16 @@ HRESULT CFilterCoreFactory::LoadFiltersConfiguration(TiXmlElement* pConfig )
   if (pFilters)
   {
     TiXmlElement *pFilter = pFilters->FirstChildElement("filter");
+    CStdString type = "";
     while (pFilter)
     {
-      m_Filters.push_back(new CFGFilterFile(pFilter));
+      type = pFilter->Attribute("type");
+
+      if (type.ToLower().Equals("source"))
+        m_Filters.push_back(new CFGSourceFilterFile(pFilter));
+      else
+        m_Filters.push_back(new CFGFilterFile(pFilter));
+
       pFilter = pFilter->NextSiblingElement("filter");
     }
   }
