@@ -847,7 +847,7 @@
 					</item>
 					<item id="1">
 						<label>0</label>
-						<onclick>ActivateWindow(Programs)</onclick>
+						<onclick>ActivateWindow(Programs,Addons,return)</onclick>
 						<icon>special://skin/backgrounds/programs.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoProgramsButton)</visible>
