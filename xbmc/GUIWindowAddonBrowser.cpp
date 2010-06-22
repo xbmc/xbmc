@@ -79,7 +79,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
 
       // is this the first time the window is opened?
       if (m_vecItems->m_strPath == "?" && message.GetStringParam().IsEmpty())
-        m_vecItems->m_strPath = g_settings.m_defaultMusicSource;
+        m_vecItems->m_strPath = "";
     }
     break;
   case GUI_MSG_CLICKED:
