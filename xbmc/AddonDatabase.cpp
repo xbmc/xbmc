@@ -62,10 +62,12 @@ bool CAddonDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create addonlinkrepo table");
     m_pDS->exec("CREATE TABLE addonlinkrepo (idRepo integer, idAddon integer)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_1 ON addonlinkrepo ( idAddon, idRepo )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_2 ON addonlinkrepo ( idRepo, idAddon )\n");
 
     CLog::Log(LOGINFO, "create disabled table");
     m_pDS->exec("CREATE TABLE disabled (id integer primary key, addonID text)\n");
-    m_pDS->exec("CREATE INDEX idxDisabled ON disabled(addonID)");
+    m_pDS->exec("CREATE UNIQUE INDEX idxDisabled ON disabled(addonID)");
   }
   catch (...)
   {
@@ -112,6 +114,13 @@ bool CAddonDatabase::UpdateOldVersion(int version)
   {
     m_pDS->exec("CREATE TABLE disabled (id integer primary key, addonID text)\n");
     m_pDS->exec("CREATE INDEX idxDisabled ON disabled(addonID)");
+  }
+  if (version < 9)
+  {
+    m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_1 ON addonlinkrepo ( idAddon, idRepo )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_2 ON addonlinkrepo ( idRepo, idAddon )\n");
+    m_pDS->exec("DROP INDEX idxDisabled");
+    m_pDS->exec("CREATE UNIQUE INDEX idxDisabled ON disabled(addonID)");
   }
   return true;
 }

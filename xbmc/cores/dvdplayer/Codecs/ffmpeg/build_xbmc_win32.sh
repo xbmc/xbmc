@@ -24,9 +24,19 @@ OPTIONS="
 --enable-encoder=ac3 \
 --enable-encoder=aac"
 
+if [ -d ../libvpx ]
+then
+echo Building libvpx ...
+echo
+cd ../libvpx
+./configure --disable-examples --enable-vp8 --target=x86-win32-gcc && make
+cd ../ffmpeg
+fi
+
 if [ -f ../libvpx/libvpx.a ] 
 then
-echo Building with libvpx
+echo Building ffmpeg with libvpx ...
+echo
 OPTIONS="$OPTIONS --enable-libvpx"
 fi
 

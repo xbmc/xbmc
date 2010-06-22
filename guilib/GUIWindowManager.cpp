@@ -370,6 +370,10 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
     // destination path cannot be used with virtual window
     passParams = false;
   }
+  if (iWindowID == WINDOW_SCRIPTS)
+  { // backward compatibility for pre-Dharma
+    iWindowID = WINDOW_PROGRAMS;
+  }
   if (iWindowID == WINDOW_START)
   { // virtual start window
     iWindowID = g_SkinInfo->GetStartWindow();

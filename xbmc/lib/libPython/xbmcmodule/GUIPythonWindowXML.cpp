@@ -50,6 +50,7 @@ CGUIPythonWindowXML::CGUIPythonWindowXML(int id, CStdString strXML, CStdString s
 : CGUIMediaWindow(id, strXML)
 {
   pCallbackWindow = NULL;
+  m_threadState = NULL;
   m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
   m_coordsRes = RES_PAL_4x3;
@@ -75,7 +76,7 @@ bool CGUIPythonWindowXML::OnAction(const CAction &action)
     inf->pObject = Action_FromAction(action);
 
     // aquire lock?
-    PyXBMC_AddPendingCall(Py_XBMC_Event_OnAction, inf);
+    PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnAction, inf);
     PulseActionEvent();
   }
   return ret;
@@ -113,8 +114,11 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
     case GUI_MSG_WINDOW_INIT:
     {
       CGUIMediaWindow::OnMessage(message);
-      PyXBMC_AddPendingCall(Py_XBMC_Event_OnInit, new PyXBMCAction(pCallbackWindow));
-      PulseActionEvent();
+      if(pCallbackWindow)
+      {
+        PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnInit, new PyXBMCAction(pCallbackWindow));
+        PulseActionEvent();
+      }
       return true;
     }
     break;
@@ -133,7 +137,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
           PyXBMCAction* inf = new PyXBMCAction(pCallbackWindow);
           inf->controlId = iControl;
           // aquire lock?
-          PyXBMC_AddPendingCall(Py_XBMC_Event_OnFocus, inf);
+          PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnFocus, inf);
           PulseActionEvent();
         }
     }
@@ -173,7 +177,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
             PyXBMCAction* inf = new PyXBMCAction(pCallbackWindow);
             inf->controlId = iControl;
             // aquire lock?
-            PyXBMC_AddPendingCall(Py_XBMC_Event_OnClick, inf);
+            PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnClick, inf);
             PulseActionEvent();
           }
           else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK)
@@ -182,7 +186,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
             inf->pObject = Action_FromAction(CAction(ACTION_CONTEXT_MENU));
 
             // aquire lock?
-            PyXBMC_AddPendingCall(Py_XBMC_Event_OnAction, inf);
+            PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnAction, inf);
             PulseActionEvent();
           }
         }
@@ -389,9 +393,10 @@ int Py_XBMC_Event_OnInit(void* arg)
   return 0;
 }
 
-void CGUIPythonWindowXML::SetCallbackWindow(PyObject *object)
+void CGUIPythonWindowXML::SetCallbackWindow(PyThreadState *state, PyObject *object)
 {
   pCallbackWindow = object;
+  m_threadState   = state;
 }
 
 void CGUIPythonWindowXML::GetContextButtons(int itemNumber, CContextButtons &buttons)

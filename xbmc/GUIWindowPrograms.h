@@ -40,6 +40,7 @@ protected:
   virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList &items);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  virtual CStdString GetStartFolder(const CStdString &dir);
 
   int GetRegion(int iItem, bool bReload=false);
 

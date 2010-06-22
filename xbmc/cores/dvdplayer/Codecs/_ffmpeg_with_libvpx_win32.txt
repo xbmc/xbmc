@@ -2,11 +2,5 @@ How to build ffmpeg with libvpx 0.9.1 under mingw
 
 - download http://www.tortall.net/projects/yasm/releases/yasm-0.8.0-win32.exe
 - rename it to yasm.exe and put it in your msys/mingw/bin directory
-- go to xbmc/cores/dvdplayer/Codecs
-- download http://code.google.com/p/webm/downloads/detail?name=libvpx-0.9.1.zip
-- extract it to libvpx
-- cd libvpx
-- run ./configure --enable-vp8 --target=x86-win32-gcc
-- run make
-- cd ../ffmpeg
+- go to xbmc/cores/dvdplayer/Codecs/ffmpeg
 - sh build_xbmc_win32.sh

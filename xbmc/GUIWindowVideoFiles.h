@@ -45,6 +45,7 @@ protected:
   virtual void UpdateButtons();
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  virtual CStdString GetStartFolder(const CStdString &dir);
 
   virtual void OnQueueItem(int iItem);
   virtual void OnAssignContent(int iItem, int iFound, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings);

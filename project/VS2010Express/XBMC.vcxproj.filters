@@ -1473,9 +1473,6 @@
     <ClCompile Include="..\..\xbmc\GUIViewStatePrograms.cpp">
       <Filter>Source Files\GUI Other</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\GUIViewStateScripts.cpp">
-      <Filter>Source Files\GUI Other</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\GUIWindowAddonBrowser.cpp">
       <Filter>Source Files\GUI Other</Filter>
     </ClCompile>
@@ -1507,9 +1504,6 @@
       <Filter>Source Files\GUI Other</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\GUIWindowScreensaver.cpp">
-      <Filter>Source Files\GUI Other</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\GUIWindowScripts.cpp">
       <Filter>Source Files\GUI Other</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\GUIWindowSlideShow.cpp">
@@ -3464,9 +3458,6 @@
     <ClInclude Include="..\..\xbmc\GUIViewStatePrograms.h">
       <Filter>Source Files\GUI Other</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\GUIViewStateScripts.h">
-      <Filter>Source Files\GUI Other</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\GUIWindowAddonBrowser.h">
       <Filter>Source Files\GUI Other</Filter>
     </ClInclude>
@@ -4146,9 +4137,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\GUIWindowScreensaver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\GUIWindowScripts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\GUIWindowSettings.h">

@@ -4326,14 +4326,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\GUIViewStateScripts.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIViewStateScripts.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\GUIWindowAddonBrowser.cpp"
 					>
 				</File>
@@ -4387,10 +4379,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowScreensaver.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIWindowScripts.cpp"
 					>
 				</File>
 				<File
@@ -6143,10 +6131,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\BusyIndicator.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\xbmc\ButtonTranslator.h"
 				>
 			</File>
@@ -6360,14 +6344,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\GUIWindowScreensaver.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIWindowScripts.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIWindowScriptsInfo.h"
 				>
 			</File>
 			<File
@@ -6604,10 +6580,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\Shortcut.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\FileSystem\ShoutcastDirectory.h"
 				>
 			</File>
 			<File

@@ -85,6 +85,7 @@ namespace ADDON
 
     /* Addon access */
     bool GetDefault(const TYPE &type, AddonPtr &addon);
+    bool SetDefault(const TYPE &type, const CStdString &addonID);
     bool GetAddon(const CStdString &str, AddonPtr &addon, const TYPE &type = ADDON_UNKNOWN, bool enabled = true);
     bool HasAddons(const TYPE &type, bool enabled = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);

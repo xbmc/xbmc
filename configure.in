@@ -898,8 +898,7 @@ fi
 
 # CrystalHD
 if test "x$use_crystalhd" != "xno"; then
-  AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h],AC_DEFINE([HAVE_LIBCRYSTALHD], [1], 
-    [Define to 1 if you have the 'Broadcom Crystal HD' library.]), 
+  AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h], [], 
     [ if test "x$use_crystalhd" = "xyes"; then
         AC_MSG_ERROR($crystalhd_not_found)
       else
@@ -907,6 +906,19 @@ if test "x$use_crystalhd" != "xno"; then
         AC_MSG_RESULT($crystalhd_not_found)
       fi],
     [#define __LINUX_USER__])
+    # check for new crystalhd lib
+    if test "x$use_crystalhd" != "xno"; then
+      SAVE_CFLAGS="$CFLAGS"
+      CFLAGS="-llibcrystalhd"
+      AC_COMPILE_IFELSE(
+        [ #define __LINUX_USER__
+          #include <libcrystalhd/bc_dts_types.h>
+          #include <libcrystalhd/bc_dts_defs.h>
+          PBC_INFO_CRYSTAL bCrystalInfo;],
+        [ AC_DEFINE([HAVE_LIBCRYSTALHD], [2], [Define to 2 if you have the 'New Broadcom Crystal HD' library.]) ], 
+        [ AC_DEFINE([HAVE_LIBCRYSTALHD], [1], [Define to 1 if you have the 'Old Broadcom Crystal HD' library.]) ])
+      CFLAGS="$SAVE_CFLAGS"
+    fi
 else
   AC_MSG_NOTICE($crystalhd_disabled)
 fi

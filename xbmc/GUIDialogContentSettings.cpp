@@ -59,6 +59,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_scrapers.clear();
+      m_lastSelected.clear();
       m_vecItems->Clear();
       CGUIDialogSettings::OnMessage(message);
     }
@@ -81,17 +82,20 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       int iSelected = msg.GetParam1();
       AddonPtr last = m_scraper;
       m_scraper = m_scrapers[m_content][iSelected];
+      m_lastSelected[m_content] = m_scraper;
 
       if (m_scraper != last)
         SetupPage();
 
-      m_bNeedSave = m_scraper != last;
+      if (m_scraper != last)
+        m_bNeedSave = true;
       CONTROL_ENABLE_ON_CONDITION(CONTROL_SCRAPER_SETTINGS, m_scraper->HasSettings());
       SET_CONTROL_FOCUS(CONTROL_START,0);
     }
     if (iControl == CONTROL_SCRAPER_SETTINGS)
     {
-      m_bNeedSave = CGUIDialogAddonSettings::ShowAndGetInput(m_scraper, false);
+      if (CGUIDialogAddonSettings::ShowAndGetInput(m_scraper, false))
+        m_bNeedSave = true;
       return m_bNeedSave;
     }
   }
@@ -100,6 +104,9 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
 
 void CGUIDialogContentSettings::OnWindowLoaded()
 {
+  // save our current scraper (if any)
+  m_lastSelected.clear();
+  m_lastSelected[m_content] = m_scraper;
   FillContentTypes();
   CGUIDialogSettings::OnWindowLoaded();
 }
@@ -299,6 +306,11 @@ void CGUIDialogContentSettings::FillListControl()
 
   if (m_scrapers.size() == 0 || m_scrapers.find(m_content) == m_scrapers.end())
     return;
+
+  if (m_lastSelected.find(m_content) != m_lastSelected.end())
+    m_scraper = m_lastSelected[m_content];
+  else
+    CAddonMgr::Get().GetDefault(ScraperTypeFromContent(m_content), m_scraper);
 
   for (IVECADDONS iter=m_scrapers.find(m_content)->second.begin();iter!=m_scrapers.find(m_content)->second.end();++iter)
   {

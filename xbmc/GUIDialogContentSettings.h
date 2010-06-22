@@ -67,6 +67,7 @@ protected:
   bool m_bExclude;
   bool m_bNoUpdate;
   std::map<CONTENT_TYPE, ADDON::VECADDONS> m_scrapers;
+  std::map<CONTENT_TYPE, ADDON::AddonPtr>  m_lastSelected;
   CFileItemList* m_vecItems;
 
   CStdString m_strContentType;

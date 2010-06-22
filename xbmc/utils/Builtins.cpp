@@ -181,6 +181,7 @@ const BUILT_IN commands[] = {
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
   { "WakeOnLan",                  true,   "Sends the wake-up packet to the broadcast address for the specified MAC address" },
   { "Addon.Default.OpenSettings", true,   "Open a settings dialog for the default addon of the given type" },
+  { "Addon.Default.Set",          true,   "Open a select dialog to allow choosing the default addon of the given type" },
   { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
@@ -1303,6 +1304,18 @@ int CBuiltins::Execute(const CStdString& execString)
     if (CAddonMgr::Get().GetDefault(type, addon))
     {
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
+      if (type == ADDON_VIZ)
+        g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
+    }
+  }
+  else if (execute.Equals("addon.default.set") && params.size() == 1)
+  {
+    CStdString addonID;
+    TYPE type = TranslateType(params[0]);
+    if (type != ADDON_UNKNOWN && 
+        CGUIWindowAddonBrowser::SelectAddonID(type,addonID,false))
+    {
+      CAddonMgr::Get().SetDefault(type,addonID);
       if (type == ADDON_VIZ)
         g_windowManager.SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
     }

@@ -49,6 +49,7 @@ protected:
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual bool OnClick(int iItem);
+  virtual CStdString GetStartFolder(const CStdString &url);
 
   bool GetSongsFromPlayList(const CStdString& strPlayList, CFileItemList &items);
   void DisplayEmptyDatabaseMessage(bool bDisplay);
@@ -63,7 +64,6 @@ protected:
   // searching
   void OnSearchUpdate();
   void AddSearchFolder();
-  CStdString m_startDirectory;
   CStopWatch m_searchTimer; ///< Timer to delay a search while more characters are entered
   bool m_searchWithEdit;    ///< Whether the skin supports the new edit control searching
 };

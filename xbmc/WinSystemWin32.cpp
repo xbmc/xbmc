@@ -65,6 +65,7 @@ bool CWinSystemWin32::InitWindowSystem()
 
 bool CWinSystemWin32::DestroyWindowSystem()
 {
+  RestoreDesktopResolution(m_nScreen);
   return true;
 }
 
@@ -223,11 +224,8 @@ bool CWinSystemWin32::BlankNonActiveMonitors(bool bBlank)
 
   for (unsigned int i=0; i < m_hBlankWindows.size(); i++)
   {
-    const MONITOR_DETAILS &details = GetMonitor(screen);
-    RECT rBounds;
-    CopyRect(&rBounds, &details.MonitorRC);
-
-    // finally, move and resize the window
+    RECT rBounds = ScreenRect(screen);
+    // move and resize the window
     SetWindowPos(m_hBlankWindows[i], NULL, rBounds.left, rBounds.top,
       rBounds.right - rBounds.left, rBounds.bottom - rBounds.top,
       SWP_NOACTIVATE);
@@ -289,8 +287,25 @@ void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
 bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   CLog::Log(LOGDEBUG, "%s (%s) on screen %d with size %dx%d, refresh %f%s", __FUNCTION__, !fullScreen ? "windowed" : (g_guiSettings.GetBool("videoscreen.fakefullscreen") ? "windowed fullscreen" : "true fullscreen"), res.iScreen, res.iWidth, res.iHeight, res.fRefreshRate, (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
+
+  bool forceResize = false;
+
+  if (m_nScreen != res.iScreen)
+  {
+    forceResize = true;
+    RestoreDesktopResolution(m_nScreen);
+  }
+
+  if(!m_bFullScreen && fullScreen)
+  {
+    // save position of windowed mode
+    WINDOWINFO wi;
+    GetWindowInfo(m_hWnd, &wi);
+    m_nLeft = wi.rcClient.left;
+    m_nTop = wi.rcClient.top;
+  }
+
   m_bFullScreen = fullScreen;
-  bool forceResize = (m_nScreen != res.iScreen);
   m_nScreen = res.iScreen;
   m_nWidth  = res.iWidth;
   m_nHeight = res.iHeight;
@@ -306,6 +321,20 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   return true;
 }
 
+void CWinSystemWin32::RestoreDesktopResolution(int screen)
+{
+  int resIdx = RES_DESKTOP;
+  for (int idx = RES_DESKTOP; idx < RES_DESKTOP + GetNumScreens(); idx++)
+  {
+    if (g_settings.m_ResInfo[idx].iScreen == screen)
+    {
+      resIdx = idx;
+      break;
+    }
+  }
+  ChangeResolution(g_settings.m_ResInfo[resIdx]);
+}
+
 const MONITOR_DETAILS &CWinSystemWin32::GetMonitor(int screen) const
 {
   for (unsigned int monitor = 0; monitor < m_MonitorsInfo.size(); monitor++)
@@ -316,23 +345,35 @@ const MONITOR_DETAILS &CWinSystemWin32::GetMonitor(int screen) const
   return m_MonitorsInfo[m_nPrimary];
 }
 
+RECT CWinSystemWin32::ScreenRect(int screen)
+{
+  const MONITOR_DETAILS &details = GetMonitor(screen);
+
+  DEVMODE sDevMode;
+  ZeroMemory(&sDevMode, sizeof(DEVMODE));
+  sDevMode.dmSize = sizeof(DEVMODE);
+  EnumDisplaySettings(details.DeviceName, ENUM_CURRENT_SETTINGS, &sDevMode);
+
+  RECT rc;
+  rc.left = sDevMode.dmPosition.x;
+  rc.right = sDevMode.dmPosition.x + sDevMode.dmPelsWidth;
+  rc.top = sDevMode.dmPosition.y;
+  rc.bottom = sDevMode.dmPosition.y + sDevMode.dmPelsHeight;
+
+  return rc;
+}
+
 bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
 {
   DWORD dwStyle = WS_CLIPCHILDREN;
   HWND windowAfter;
   RECT rc;
-  CopyRect(&rc, &GetMonitor(m_nScreen).MonitorRC);
-
-  WINDOWINFO wi;
-  GetWindowInfo(m_hWnd, &wi);
 
   if(m_bFullScreen)
   {
     dwStyle |= WS_POPUP;
     windowAfter = HWND_TOP;
-    // save position of window mode
-    m_nLeft = wi.rcClient.left;
-    m_nTop = wi.rcClient.top;
+    rc = ScreenRect(m_nScreen);
   }
   else
   {
@@ -349,7 +390,10 @@ bool CWinSystemWin32::ResizeInternal(bool forceRefresh)
     AdjustWindowRect( &rc, WS_OVERLAPPEDWINDOW, false );
   }
 
+  WINDOWINFO wi;
+  GetWindowInfo(m_hWnd, &wi);
   RECT wr = wi.rcWindow;
+
   if (forceRefresh || wr.bottom  - wr.top != rc.bottom - rc.top || wr.right - wr.left != rc.right - rc.left ||
                      (wi.dwStyle & WS_CAPTION) != (dwStyle & WS_CAPTION))
   {
@@ -558,13 +602,8 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
 
         // get the monitor handle and workspace
         HMONITOR hm = 0;
-        MONITORINFO mi;
-        ZeroMemory(&mi, sizeof(mi));
-        mi.cbSize = sizeof(mi);
-
         POINT pt = { dm.dmPosition.x, dm.dmPosition.y };
         hm = MonitorFromPoint(pt, MONITOR_DEFAULTTONULL);
-        GetMonitorInfo(hm, &mi);
 
         MONITOR_DETAILS md;
         memset(&md, 0, sizeof(MONITOR_DETAILS));
@@ -577,8 +616,6 @@ bool CWinSystemWin32::UpdateResolutionsInternal()
         // note that refresh rate information is not available on Win9x
         md.ScreenWidth = dm.dmPelsWidth;
         md.ScreenHeight = dm.dmPelsHeight;
-        CopyRect(&(md.MonitorRC), &mi.rcMonitor);
-
         md.hMonitor = hm;
         md.RefreshRate = dm.dmDisplayFrequency;
         md.Bpp = dm.dmBitsPerPel;
