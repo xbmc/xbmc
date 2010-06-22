@@ -149,7 +149,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
         else if (strDestination.Equals("Years"))
           destPath = "musicdb://9/";
         else if (strDestination.Equals("Plugins"))
-          destPath = "plugin://music/";
+          destPath = "addons://sources/audio/";
         else
         {
           CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());

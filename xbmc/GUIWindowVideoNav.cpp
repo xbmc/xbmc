@@ -202,7 +202,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
         else if (strDestination.Equals("Playlists"))
           destPath = "special://videoplaylists/";
         else if (strDestination.Equals("Plugins"))
-          destPath = "plugin://video/";
+          destPath = "addons://sources/video/";
         else
         {
           CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());
