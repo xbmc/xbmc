@@ -446,6 +446,18 @@
 						<onclick>ActivateWindow(VideoLibrary)</onclick>
 						<visible>Library.HasContent(Videos)</visible>
 					</control>
+					<control type="button" id="90106">
+						<include>ButtonHomeSubCommonValues</include>
+						<label>31007</label>
+						<onclick>ActivateWindow(VideoLibrary,Plugins)</onclick>
+						<visible>Library.HasContent(Video)</visible>
+					</control>
+					<control type="button" id="90107">
+						<include>ButtonHomeSubCommonValues</include>
+						<label>31007</label>
+						<onclick>ActivateWindow(VideoFiles,$LOCALIZE[1037])</onclick>
+						<visible>!Library.HasContent(Video)</visible>
+					</control>
 				</control>
 				<control type="grouplist" id="9011">
 					<posx>10</posx>
@@ -487,6 +499,18 @@
 						<label>14022</label>
 						<onclick>ActivateWindow(MusicLibrary)</onclick>
 						<visible>Library.HasContent(Music)</visible>
+					</control>
+					<control type="button" id="90116">
+						<include>ButtonHomeSubCommonValues</include>
+						<label>31007</label>
+						<onclick>ActivateWindow(MusicLibrary,Plugins)</onclick>
+						<visible>Library.HasContent(Music)</visible>
+					</control>
+					<control type="button" id="90117">
+						<include>ButtonHomeSubCommonValues</include>
+						<label>31007</label>
+						<onclick>ActivateWindow(MusicFiles,$LOCALIZE[1038])</onclick>
+						<visible>!Library.HasContent(Music)</visible>
 					</control>
 				</control>
 				<control type="grouplist" id="9014">
