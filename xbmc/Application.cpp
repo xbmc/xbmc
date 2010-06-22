@@ -166,7 +166,6 @@
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
-#include "GUIWindowScripts.h"
 #include "GUIWindowWeather.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowAddonBrowser.h"
@@ -1025,7 +1024,6 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIDialogTeletext);               // window id =
   g_windowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   g_windowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
-  g_windowManager.Add(new CGUIWindowScripts);                  // window id = 20
   g_windowManager.Add(new CGUIWindowVideoNav);                 // window id = 36
   g_windowManager.Add(new CGUIWindowVideoPlaylist);            // window id = 28
   g_windowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
@@ -3146,7 +3144,6 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_HOME);
     g_windowManager.Delete(WINDOW_PROGRAMS);
     g_windowManager.Delete(WINDOW_PICTURES);
-    g_windowManager.Delete(WINDOW_SCRIPTS);
     g_windowManager.Delete(WINDOW_WEATHER);
 
     g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES);

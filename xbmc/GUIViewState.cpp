@@ -25,7 +25,6 @@
 #include "GUIViewStateVideo.h"
 #include "GUIViewStatePictures.h"
 #include "GUIViewStatePrograms.h"
-#include "GUIViewStateScripts.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
 #include "URL.h"
@@ -109,9 +108,6 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (windowId==WINDOW_VIDEO_PLAYLIST)
     return new CGUIViewStateWindowVideoPlaylist(items);
-
-  if (windowId==WINDOW_SCRIPTS)
-    return new CGUIViewStateWindowScripts(items);
 
   if (windowId==WINDOW_PICTURES)
     return new CGUIViewStateWindowPictures(items);
