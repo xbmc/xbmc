@@ -1856,3 +1856,12 @@ void CGUIWindowVideoBase::OnScan(const CStdString& strPath)
   if (pDialog)
     pDialog->StartScanning(strPath, false);
 }
+
+CStdString CGUIWindowVideoBase::GetStartFolder(const CStdString &dir)
+{
+  if (dir.Equals("$PLAYLISTS") || dir.Equals("Playlists"))
+    return "special://videoplaylists/";
+  else if (dir.Equals("Plugins") || dir.Equals("Addons"))
+    return "addons://sources/video/";
+  return CGUIMediaWindow::GetStartFolder(dir);
+}

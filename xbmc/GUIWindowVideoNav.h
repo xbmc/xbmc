@@ -54,6 +54,7 @@ protected:
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual bool OnClick(int iItem);
+  virtual CStdString GetStartFolder(const CStdString &dir);
 
   virtual CStdString GetQuickpathName(const CStdString& strPath) const;
 
@@ -62,6 +63,4 @@ protected:
   VECSOURCES m_shares;
 
   bool m_bDisplayEmptyDatabaseMessage;  ///< If true we display a message informing the user to switch back to the Files view.
-
-  CStdString m_startDirectory;
 };

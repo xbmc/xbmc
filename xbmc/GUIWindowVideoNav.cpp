@@ -90,15 +90,6 @@ CGUIWindowVideoNav::~CGUIWindowVideoNav(void)
 
 bool CGUIWindowVideoNav::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_PARENT_DIR)
-  {
-    if (g_advancedSettings.m_bUseEvilB &&
-        m_vecItems->m_strPath == m_startDirectory)
-    {
-      g_windowManager.PreviousWindow();
-      return true;
-    }
-  }
   if (action.GetID() == ACTION_TOGGLE_WATCHED)
   {
     CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
@@ -125,95 +116,10 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
     {
       /* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
       m_rootDir.AllowNonLocalSources(false);
-      // check for valid quickpath parameter
-      CStdString strDestination = message.GetNumStringParams() ? message.GetStringParam(0) : "";
-      CStdString strReturn = message.GetNumStringParams() > 1 ? message.GetStringParam(1) : "";
-      bool returning = strReturn.CompareNoCase("return") == 0;
-
-      if (!strDestination.IsEmpty())
-      {
-        message.SetStringParam("");
-        CLog::Log(LOGINFO, "Attempting to %s to: %s", returning ? "return" : "quickpath", strDestination.c_str());
-      }
 
       // is this the first time the window is opened?
-      if (m_vecItems->m_strPath == "?" && strDestination.IsEmpty())
-      {
-        strDestination = g_settings.m_defaultVideoLibSource;
-        m_vecItems->m_strPath = strDestination;
-        CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
-      }
-
-      CStdString destPath;
-      if (!strDestination.IsEmpty())
-      {
-        if (strDestination.Equals("$ROOT") || strDestination.Equals("Root"))
-          destPath = "";
-        else if (strDestination.Equals("MovieGenres"))
-          destPath = "videodb://1/1/";
-        else if (strDestination.Equals("MovieTitles"))
-          destPath = "videodb://1/2/";
-        else if (strDestination.Equals("MovieYears"))
-          destPath = "videodb://1/3/";
-        else if (strDestination.Equals("MovieActors"))
-          destPath = "videodb://1/4/";
-        else if (strDestination.Equals("MovieDirectors"))
-          destPath = "videodb://1/5/";
-        else if (strDestination.Equals("MovieStudios"))
-          destPath = "videodb://1/6/";
-        else if (strDestination.Equals("MovieSets"))
-          destPath = "videodb://1/7/";
-        else if (strDestination.Equals("MovieCountries"))
-          destPath = "videodb://1/8/";
-        else if (strDestination.Equals("Movies"))
-          destPath = "videodb://1/";
-        else if (strDestination.Equals("TvShowGenres"))
-          destPath = "videodb://2/1/";
-        else if (strDestination.Equals("TvShowTitles"))
-          destPath = "videodb://2/2/";
-        else if (strDestination.Equals("TvShowYears"))
-          destPath = "videodb://2/3/";
-        else if (strDestination.Equals("TvShowActors"))
-          destPath = "videodb://2/4/";
-        else if (strDestination.Equals("TvShowStudios"))
-          destPath = "videodb://2/5/";
-        else if (strDestination.Equals("TvShows"))
-          destPath = "videodb://2/";
-        else if (strDestination.Equals("MusicVideoGenres"))
-          destPath = "videodb://3/1/";
-        else if (strDestination.Equals("MusicVideoTitles"))
-          destPath = "videodb://3/2/";
-        else if (strDestination.Equals("MusicVideoYears"))
-          destPath = "videodb://3/3/";
-        else if (strDestination.Equals("MusicVideoArtists"))
-          destPath = "videodb://3/4/";
-        else if (strDestination.Equals("MusicVideoDirectors"))
-          destPath = "videodb://3/5/";
-        else if (strDestination.Equals("MusicVideoStudios"))
-          destPath = "videodb://3/6/";
-        else if (strDestination.Equals("MusicVideos"))
-          destPath = "videodb://3/";
-        else if (strDestination.Equals("RecentlyAddedMovies"))
-          destPath = "videodb://4/";
-        else if (strDestination.Equals("RecentlyAddedEpisodes"))
-          destPath = "videodb://5/";
-        else if (strDestination.Equals("RecentlyAddedMusicVideos"))
-          destPath = "videodb://6/";
-        else if (strDestination.Equals("Playlists"))
-          destPath = "special://videoplaylists/";
-        else if (strDestination.Equals("Plugins"))
-          destPath = "addons://sources/video/";
-        else
-        {
-          CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());
-          destPath = strDestination;
-        }
-        if (!returning || m_vecItems->m_strPath.Left(destPath.GetLength()) != destPath)
-        { // we're not returning to the same path, so set our directory to the requested path
-          m_vecItems->m_strPath = destPath;
-        }
-        SetHistoryForPath(m_vecItems->m_strPath);
-      }
+      if (m_vecItems->m_strPath == "?" && message.GetStringParam().IsEmpty())
+        m_vecItems->m_strPath = g_settings.m_defaultVideoLibSource;
 
       DisplayEmptyDatabaseMessage(false); // reset message state
 
@@ -221,11 +127,6 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
       
       if (!CGUIWindowVideoBase::OnMessage(message))
         return false;
-
-      if (message.GetParam1() != WINDOW_INVALID)
-      { // first time to this window - make sure we set the root path
-        m_startDirectory = returning ? destPath : "";
-      }
 
       //  base class has opened the database, do our check
       m_database.Open();
@@ -1525,4 +1426,59 @@ bool CGUIWindowVideoNav::OnClick(int iItem)
   }
 
   return CGUIWindowVideoBase::OnClick(iItem);
+}
+
+CStdString CGUIWindowVideoNav::GetStartFolder(const CStdString &dir)
+{
+  if (dir.Equals("MovieGenres"))
+    return "videodb://1/1/";
+  else if (dir.Equals("MovieTitles"))
+    return "videodb://1/2/";
+  else if (dir.Equals("MovieYears"))
+    return "videodb://1/3/";
+  else if (dir.Equals("MovieActors"))
+    return "videodb://1/4/";
+  else if (dir.Equals("MovieDirectors"))
+    return "videodb://1/5/";
+  else if (dir.Equals("MovieStudios"))
+    return "videodb://1/6/";
+  else if (dir.Equals("MovieSets"))
+    return "videodb://1/7/";
+  else if (dir.Equals("MovieCountries"))
+    return "videodb://1/8/";
+  else if (dir.Equals("Movies"))
+    return "videodb://1/";
+  else if (dir.Equals("TvShowGenres"))
+    return "videodb://2/1/";
+  else if (dir.Equals("TvShowTitles"))
+    return "videodb://2/2/";
+  else if (dir.Equals("TvShowYears"))
+    return "videodb://2/3/";
+  else if (dir.Equals("TvShowActors"))
+    return "videodb://2/4/";
+  else if (dir.Equals("TvShowStudios"))
+    return "videodb://2/5/";
+  else if (dir.Equals("TvShows"))
+    return "videodb://2/";
+  else if (dir.Equals("MusicVideoGenres"))
+    return "videodb://3/1/";
+  else if (dir.Equals("MusicVideoTitles"))
+    return "videodb://3/2/";
+  else if (dir.Equals("MusicVideoYears"))
+    return "videodb://3/3/";
+  else if (dir.Equals("MusicVideoArtists"))
+    return "videodb://3/4/";
+  else if (dir.Equals("MusicVideoDirectors"))
+    return "videodb://3/5/";
+  else if (dir.Equals("MusicVideoStudios"))
+    return "videodb://3/6/";
+  else if (dir.Equals("MusicVideos"))
+    return "videodb://3/";
+  else if (dir.Equals("RecentlyAddedMovies"))
+    return "videodb://4/";
+  else if (dir.Equals("RecentlyAddedEpisodes"))
+    return "videodb://5/";
+  else if (dir.Equals("RecentlyAddedMusicVideos"))
+    return "videodb://6/";
+  return CGUIWindowVideoBase::GetStartFolder(dir);
 }

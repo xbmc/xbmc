@@ -70,6 +70,7 @@ protected:
   virtual void OnScan(int iItem) {};
   void OnRipCD();
   virtual void OnPrepareFileItems(CFileItemList &items);
+  virtual CStdString GetStartFolder(const CStdString &dir);
 
   // new methods
   virtual void PlayItem(int iItem);
