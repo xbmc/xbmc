@@ -92,7 +92,6 @@ IMAGES= \
 	DefaultRecentlyAddedEpisodes.png \
 	DefaultRecentlyAddedMovies.png \
 	DefaultRecentlyAddedMusicVideos.png \
-	DefaultScript.png \
 	DefaultTVShows.png \
 	DefaultVideo.png \
 	DefaultVideoCover.png \

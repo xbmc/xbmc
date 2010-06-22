@@ -66,22 +66,22 @@
   <string id="31113">Single Image</string>
   <string id="31114">Multi Image</string>
   <string id="31115">Customizer</string>
-  <string id="31116">Addon Scripts</string>
+  <string id="31116"></string>
   <string id="31117">Show Recently added Videos</string>
-  <string id="31118">Home Page Submenu</string>
-  <string id="31119">Enable Custom Script Button</string>
+  <string id="31118">Home Page Programs Submenu</string>
+  <string id="31119">Enable Custom Add-on Button</string>
   <string id="31120">BUTTON LABEL</string>
-  <string id="31121">PATH TO SCRIPT</string>
+  <string id="31121">PATH TO ADD-ON</string>
   <string id="31122">Weather Page</string>
   <string id="31123">Use "Posters" instead of "Banners" for TV Shows</string>
   <string id="31124">Show Background "Now Playing" Video</string>
   <string id="31125">Show Background "Now Playing" Visualization</string>
 
   <string id="31126">Enable Lyrics in Music OSD</string>
-  <string id="31127">PATH TO LYRICS SCRIPT</string>
+  <string id="31127">PATH TO LYRICS ADD-ON</string>
   <string id="31128">XBMC Lyrics</string>
   <string id="31129">Enable Subtitle Download in Video OSD</string>
-  <string id="31130">PATH TO SUBTITLE SCRIPT</string>
+  <string id="31130">PATH TO SUBTITLE ADD-ON</string>
 
   <string id="31140">Music OSD</string>
   <string id="31141">Video OSD</string>
