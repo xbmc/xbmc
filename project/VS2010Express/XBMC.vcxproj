@@ -184,7 +184,8 @@
       <EnableDPIAwareness>true</EnableDPIAwareness>
     </Manifest>
     <PreBuildEvent>
-      <Command>copy "$(SolutionDir)..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\win32_config.h" "$(SolutionDir)..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\config.h"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">
@@ -235,7 +236,8 @@
       <EnableDPIAwareness>true</EnableDPIAwareness>
     </Manifest>
     <PreBuildEvent>
-      <Command>copy "$(SolutionDir)..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\win32_config.h" "$(SolutionDir)..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\config.h"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">
@@ -287,6 +289,12 @@
     <ClCompile Include="..\..\xbmc\addons\Repository.cpp" />
     <ClCompile Include="..\..\xbmc\addons\Skin.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\ExternalPixelShader.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSGuidHelper.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSStreamInfo.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\MpegSplitter.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\MpegSplitterFile.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\XBMCFFmpegOutputPin.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\XBMCFFmpegSplitter.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\GraphFilters.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\GUIDialogShaderList.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.cpp" />
@@ -302,16 +310,6 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderH264.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderMpeg2.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderVC1.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\ffmpegctx.c">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CompileAsC</CompileAs>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">NotUsing</PrecompiledHeader>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(NOINHERIT)</ForcedIncludeFiles>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release (OpenGL)|Win32'">NotUsing</PrecompiledHeader>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">CompileAsC</CompileAs>
-      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(NOINHERIT)</ForcedIncludeFiles>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\H264Nalu.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\VideoDecDXVAAllocator.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\VideoDecOutputPin.cpp" />
@@ -1066,6 +1064,12 @@
     <ClInclude Include="..\..\xbmc\addons\Skin.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSMessage.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\ExternalPixelShader.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSGuidHelper.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSStreamInfo.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\MpegSplitter.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\MpegSplitterFile.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\XBMCFFmpegOutputPin.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\XBMCFFmpegSplitter.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\GraphFilters.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\GUIDialogShaderList.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\PixelShaderCompiler.h" />
@@ -1082,7 +1086,6 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderMpeg2.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderVC1.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\ffImgfmt.h" />
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\ffmpegctx.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\H264Nalu.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\H264QuantizationMatrix.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\intrin_fixed.h" />
