@@ -448,14 +448,14 @@
 					</control>
 					<control type="button" id="90106">
 						<include>ButtonHomeSubCommonValues</include>
-						<label>31007</label>
-						<onclick>ActivateWindow(VideoLibrary,Plugins)</onclick>
+						<label>24001</label>
+						<onclick>ActivateWindow(VideoLibrary,Addons,return)</onclick>
 						<visible>Library.HasContent(Video)</visible>
 					</control>
 					<control type="button" id="90107">
 						<include>ButtonHomeSubCommonValues</include>
-						<label>31007</label>
-						<onclick>ActivateWindow(VideoFiles,$LOCALIZE[1037])</onclick>
+						<label>24001</label>
+						<onclick>ActivateWindow(VideoFiles,Addons,return)</onclick>
 						<visible>!Library.HasContent(Video)</visible>
 					</control>
 				</control>
@@ -502,14 +502,14 @@
 					</control>
 					<control type="button" id="90116">
 						<include>ButtonHomeSubCommonValues</include>
-						<label>31007</label>
-						<onclick>ActivateWindow(MusicLibrary,Plugins)</onclick>
+						<label>24001</label>
+						<onclick>ActivateWindow(MusicLibrary,Addons,return)</onclick>
 						<visible>Library.HasContent(Music)</visible>
 					</control>
 					<control type="button" id="90117">
 						<include>ButtonHomeSubCommonValues</include>
-						<label>31007</label>
-						<onclick>ActivateWindow(MusicFiles,$LOCALIZE[1038])</onclick>
+						<label>24001</label>
+						<onclick>ActivateWindow(MusicFiles,Addons,return)</onclick>
 						<visible>!Library.HasContent(Music)</visible>
 					</control>
 				</control>
