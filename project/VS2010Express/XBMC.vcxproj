@@ -708,7 +708,6 @@
     <ClCompile Include="..\..\xbmc\GUIMediaWindow.cpp" />
     <ClCompile Include="..\..\xbmc\GUIViewStatePictures.cpp" />
     <ClCompile Include="..\..\xbmc\GUIViewStatePrograms.cpp" />
-    <ClCompile Include="..\..\xbmc\GUIViewStateScripts.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowAddonBrowser.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowFileManager.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowFullScreen.cpp" />
@@ -720,7 +719,6 @@
     <ClCompile Include="..\..\xbmc\GUIWindowPointer.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowPrograms.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowScreensaver.cpp" />
-    <ClCompile Include="..\..\xbmc\GUIWindowScripts.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowSlideShow.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowStartup.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowVisualisation.cpp" />
@@ -1331,7 +1329,6 @@
     <ClInclude Include="..\..\xbmc\GUIMediaWindow.h" />
     <ClInclude Include="..\..\xbmc\GUIViewStatePictures.h" />
     <ClInclude Include="..\..\xbmc\GUIViewStatePrograms.h" />
-    <ClInclude Include="..\..\xbmc\GUIViewStateScripts.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowAddonBrowser.h" />
     <ClInclude Include="..\..\xbmc\karaoke\GUIWindowKaraokeLyrics.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowLoginScreen.h" />
@@ -1559,7 +1556,6 @@
     <ClInclude Include="..\..\xbmc\GUIWindowPointer.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowPrograms.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowScreensaver.h" />
-    <ClInclude Include="..\..\xbmc\GUIWindowScripts.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowSettings.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowSettingsCategory.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowSettingsProfile.h" />

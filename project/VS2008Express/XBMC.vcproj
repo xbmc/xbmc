@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -5457,10 +5457,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\BusyIndicator.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\xbmc\ButtonTranslator.h"
 				>
 			</File>
@@ -5674,14 +5670,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\GUIWindowScreensaver.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIWindowScripts.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIWindowScriptsInfo.h"
 				>
 			</File>
 			<File
@@ -5918,10 +5906,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\Shortcut.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\FileSystem\ShoutcastDirectory.h"
 				>
 			</File>
 			<File
