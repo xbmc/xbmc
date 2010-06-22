@@ -138,7 +138,7 @@
 						<onclick>-</onclick>
 					</item>
 					<item id="4">
-						<label>31116</label>
+						<label>24000</label>
 						<label2>31200</label2>
 						<onclick>-</onclick>
 					</item>
@@ -528,19 +528,6 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="radiobutton" id="211">
-						<description>Hide Scripts Button</description>
-						<width>750</width>
-						<height>40</height>
-						<font>font13</font>
-						<textcolor>grey2</textcolor>
-						<focusedcolor>white</focusedcolor>
-						<label>$LOCALIZE[31111] - $LOCALIZE[247]</label>
-						<onclick>Skin.ToggleSetting(HomeMenuNoScriptsButton)</onclick>
-						<selected>Skin.HasSetting(HomeMenuNoScriptsButton)</selected>
-						<texturefocus>MenuItemFO.png</texturefocus>
-						<texturenofocus>MenuItemNF.png</texturenofocus>
-					</control>
 					<control type="radiobutton" id="212">
 						<description>Hide Weather Button</description>
 						<width>750</width>
@@ -743,12 +730,6 @@
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/weather.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Weather_Folder)]</thumb>
-							</item>
-							<item id="6">
-								<label>247</label>
-								<onclick>-</onclick>
-								<icon>special://skin/backgrounds/scripts.jpg</icon>
-								<thumb>$INFO[Skin.String(Home_Custom_Back_Scripts_Folder)]</thumb>
 							</item>
 							<item id="7">
 								<label>13000</label>
@@ -1068,66 +1049,6 @@
 								<texturenofocus border="5">button-nofocus.png</texturenofocus>
 								<texturefocus border="5">button-focus.png</texturefocus>
 								<onclick>Skin.Reset(Home_Custom_Back_Weather_Folder)</onclick>
-								<onleft>301</onleft>
-								<onright>300</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-						</control>
-						<control type="group">
-							<visible>Container(9003).HasFocus(6)</visible>
-							<control type="button" id="300">
-								<description>Single Image button</description>
-								<posx>5</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31113</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetImage(Home_Custom_Back_Scripts_Folder)</onclick>
-								<onleft>302</onleft>
-								<onright>301</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="301">
-								<description>Multi Image button</description>
-								<posx>190</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31114</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetPath(Home_Custom_Back_Scripts_Folder)</onclick>
-								<onleft>300</onleft>
-								<onright>302</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="302">
-								<description>Default Image button</description>
-								<posx>375</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>571</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.Reset(Home_Custom_Back_Scripts_Folder)</onclick>
 								<onleft>301</onleft>
 								<onright>300</onright>
 								<onup>304</onup>

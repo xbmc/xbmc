@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="script.recentlyadded"
+       name="Recently Added script"
+       version="1.0.4"
+       provider-name="Nuka1195">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+  </requires>
+  <extension point="xbmc.python.library"
+             library="default.py" />
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Recently Added script</summary>
+    <summary lang="hu">Nemrég hozzáadott script</summary> 
+    <description lang="en">Recently Added script</description>
+    <description lang="hu">Nemrég hozzáadott script</description>
+    <platform>all</platform>
+  </extension>
+</addon>

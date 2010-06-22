@@ -1,3 +1,6 @@
+[B]1.0.4[/B]
+- replace dtrailer.com with HD-Trailers.net for trailer scraping
+
 [B]1.0.3[/B]
 - scraper library interfaces changed. no functional changes
 

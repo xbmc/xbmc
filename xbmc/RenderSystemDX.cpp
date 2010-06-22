@@ -217,7 +217,7 @@ void CRenderSystemDX::BuildPresentParameters()
   ZeroMemory( &m_D3DPP, sizeof(D3DPRESENT_PARAMETERS) );
   m_D3DPP.Windowed           = m_useWindowedDX;
   m_D3DPP.SwapEffect         = D3DSWAPEFFECT_DISCARD;
-  if (useWindow)
+  if (m_useWindowedDX)
     m_D3DPP.BackBufferCount    = 1;
   else
     m_D3DPP.BackBufferCount    = 3;
@@ -237,7 +237,7 @@ void CRenderSystemDX::BuildPresentParameters()
   m_D3DPP.BackBufferHeight   = m_nBackBufferHeight;
   m_D3DPP.Flags              = D3DPRESENTFLAG_VIDEO;
 #ifdef HAS_DS_PLAYER
-  m_D3DPP.SwapEffect = (useWindow) ? D3DSWAPEFFECT_COPY : D3DSWAPEFFECT_DISCARD;
+  m_D3DPP.SwapEffect = (m_useWindowedDX) ? D3DSWAPEFFECT_COPY : D3DSWAPEFFECT_DISCARD;
   m_D3DPP.PresentationInterval = (m_bVSync || g_dsSettings.pRendererSettings->vSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
 #else
   m_D3DPP.PresentationInterval = (m_bVSync) ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;

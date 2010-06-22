@@ -4,7 +4,7 @@
 	<controls>
 		<control type="button" id="9">
 			<description>Trigger to Auto run the Latest media python after a 1 min delay if scan on startup is enabled</description>
-			<onfocus>XBMC.AlarmClock(UpdateRecentAdded,XBMC.RunScript(special://skin/scripts/RecentlyAdded.py,limit=4),1,true)</onfocus>
+			<onfocus>XBMC.AlarmClock(UpdateRecentAdded,XBMC.RunScript(script.recentlyadded,limit=4),1,true)</onfocus>
 			<onfocus>SetFocus(10)</onfocus>
 			<texturenofocus>-</texturenofocus>
 			<texturefocus>-</texturefocus>

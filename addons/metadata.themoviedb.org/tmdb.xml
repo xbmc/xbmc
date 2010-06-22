@@ -88,14 +88,23 @@
 			<RegExp conditional="fanart" input="$$1" output="&lt;url cache=&quot;tmdb-$$2.xml&quot; function=&quot;GetTMDBFanartById&quot;&gt;$$3&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp conditional="dtrailer" input="$$6" output="&lt;chain function=&quot;GetDTrailer&quot;&gt;\1&lt;/chain&gt;" dest="5+"> 
-				<RegExp input="$$4" output="\1-" dest="6"> 
-					<RegExp input="$$1" output="\1" dest="4"> 
-						<expression>&lt;name&gt;([^&lt;]*)&lt;/name&gt;</expression> 
-					</RegExp> 
-					<expression repeat="yes">([a-zA-Z0-9]+)</expression> 
-				</RegExp> 
-				<expression/>
+			<RegExp input="$INFO[TrailerQ]" output="&lt;chain function=&quot;GetHDTrailersnet480p&quot;&gt;$$6&lt;/chain&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="6">
+					<expression noclean="1">&lt;name&gt;([^&lt;]*)&lt;/name&gt;</expression>
+				</RegExp>
+				<expression>480p</expression>
+			</RegExp>
+			<RegExp input="$INFO[TrailerQ]" output="&lt;chain function=&quot;GetHDTrailersnet720p&quot;&gt;$$6&lt;/chain&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="6">
+					<expression noclean="1">&lt;name&gt;([^&lt;]*)&lt;/name&gt;</expression>
+				</RegExp>
+				<expression>720p</expression>
+			</RegExp>
+			<RegExp input="$INFO[TrailerQ]" output="&lt;chain function=&quot;GetHDTrailersnet1080p&quot;&gt;$$6&lt;/chain&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="6">
+					<expression noclean="1">&lt;name&gt;([^&lt;]*)&lt;/name&gt;</expression>
+				</RegExp>
+				<expression>1080p</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
