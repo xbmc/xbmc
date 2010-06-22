@@ -133,7 +133,7 @@ public:
   CHdmvClipInfo(void);
   ~CHdmvClipInfo();
 
-  HRESULT    ReadInfo(LPCTSTR strFile);
+  HRESULT    ReadInfo(const wchar_t *strFile);
   Stream*    FindStream(SHORT wPID);
   bool    IsHdmv()          { return m_bIsHdmv; };
   int      GetStreamNumber()      { return int(m_Streams.size()); };

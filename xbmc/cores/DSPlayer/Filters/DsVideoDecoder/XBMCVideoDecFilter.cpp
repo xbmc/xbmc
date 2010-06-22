@@ -38,12 +38,6 @@
 #include "VideoDecOutputPin.h"
 #include "CpuId.h"
 
-extern "C"
-{
-  #include "ffmpegctx.h"
-  #include "libswscale/swscale.h"
-}
-
 #include "DShowUtil/DShowUtil.h"
 #include "DShowUtil/MediaTypes.h"
 
@@ -545,6 +539,11 @@ BOOL CALLBACK EnumFindProcessWnd (HWND hwnd, LPARAM lParam)
 CXBMCVideoDecFilter::CXBMCVideoDecFilter(LPUNKNOWN lpunk, HRESULT* phr) 
   : CBaseVideoFilter(NAME("XBMC Internal Decoder"), lpunk, phr, __uuidof(this))
 {
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
+  {
+    *phr = E_FAIL;
+    return;
+  }
   HWND    hWnd = NULL;
   for (int i=0; i<countof(ffCodecs); i++)
   {
@@ -607,25 +606,18 @@ CXBMCVideoDecFilter::CXBMCVideoDecFilter(LPUNKNOWN lpunk, HRESULT* phr)
   m_nPosB          = 1;
   m_sar.SetSize(1,1);
   
-  m_nThreadNumber = 2;
-  m_nDiscardMode = 0;
-  m_nErrorRecognition = 1;
-  m_nIDCTAlgo = 0;
+  
+  m_nDiscardMode = AVDISCARD_DEFAULT;
+  m_nErrorRecognition = FF_ER_CAREFUL;
+  m_nIDCTAlgo = FF_IDCT_AUTO;
   m_nActiveCodecs = 16383;
   m_nARMode = 0;
   m_nDXVACheckCompatibility = 3;
   if(m_nDXVACheckCompatibility>3) 
     m_nDXVACheckCompatibility = 0;
-  if(!m_dllAvUtil.IsLoaded())
-    m_dllAvUtil.Load();
-  if(!m_dllSwScale.IsLoaded())
-    m_dllSwScale.Load();
-  if(!m_dllAvCodec.IsLoaded())
-    m_dllAvCodec.Load();
-  if(!m_dllAvFormat.IsLoaded())
-    m_dllAvFormat.Load();
-  m_dllAvFormat.av_register_all();
 
+  //m_dllAvCodec.av_register_all();
+//TODO Add interupt cb
   EnumWindows(EnumFindProcessWnd, (LPARAM)&hWnd);
   DetectVideoCard(hWnd);
 
@@ -1007,7 +999,9 @@ bool CXBMCVideoDecFilter::IsMultiThreadSupported(int nCodec)
 HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaType *pmt)
 {
   int    nNewCodec;
-
+  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
+    return E_FAIL;
+  m_dllAvCodec.avcodec_register_all();
   if (direction == PINDIR_INPUT)
   {
     nNewCodec = FindCodec(pmt);
@@ -1018,11 +1012,7 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
       m_nCodecNb  = nNewCodec;
 
       m_bReorderBFrame  = true;
-      if (!m_dllAvCodec.IsLoaded())
-        m_dllAvCodec.Load();
-      if (!m_dllAvFormat.IsLoaded())
-        m_dllAvFormat.Load();
-
+      
       m_pAVCodec      = m_dllAvCodec.avcodec_find_decoder(ffCodecs[nNewCodec].nFFCodec);
       CheckPointer (m_pAVCodec, VFW_E_UNSUPPORTED_VIDEO);
 
@@ -1066,7 +1056,7 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
         }
         else if ( (m_pAVCtx->codec_tag == MAKEFOURCC('a','v','c','1')) || (m_pAVCtx->codec_tag == MAKEFOURCC('A','V','C','1')))
         {
-          //m_pAVCtx->nal_length_size = mpg2v->dwFlags;
+          m_pAVCtx->nal_length_size = mpg2v->dwFlags;
           m_bReorderBFrame = false;
         }
       }
@@ -1083,13 +1073,14 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
       m_pAVCtx->skip_loop_filter    = (AVDiscard)m_nDiscardMode;
       m_pAVCtx->dsp_mask        = FF_MM_FORCE | m_pCpuId->GetFeatures();
 
-      //m_pAVCtx->postgain        = 1.0f;
+      m_pAVCtx->postgain        = 1.0f;
       m_pAVCtx->debug_mv        = 0;
   #ifdef _DEBUG
       //m_pAVCtx->debug          = FF_DEBUG_PICT_INFO | FF_DEBUG_STARTCODE | FF_DEBUG_PTS;
   #endif
       
       m_pAVCtx->opaque          = this;
+      //need to fix this
       //m_pAVCtx->get_buffer      = m_dllAvCodec.avcodec_default_get_buffer(m_pAVCtx,pic)
     
 
@@ -1099,12 +1090,20 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
 
       if (m_dllAvCodec.avcodec_open(m_pAVCtx, m_pAVCodec)<0)
         return VFW_E_INVALIDMEDIATYPE;
+      
 
       switch (ffCodecs[m_nCodecNb].nFFCodec)
       {
       case CODEC_ID_H264 :
         int    nCompat;
-        //nCompat = FFH264CheckCompatibility (PictWidthRounded(), PictHeightRounded(), m_pAVCtx, (BYTE*)m_pAVCtx->extradata, m_pAVCtx->extradata_size, m_nPCIVendor, m_VideoDriverVersion);
+        nCompat = m_dllAvCodec.FFH264CheckCompatibility(PictWidthRounded(), 
+                                                        PictHeightRounded(),
+                                                        m_pAVCtx, 
+                                                        (BYTE*)m_pAVCtx->extradata, 
+                                                        m_pAVCtx->extradata_size, 
+                                                        m_nPCIVendor, 
+                                                        m_nPCIDevice, 
+                                                        m_VideoDriverVersion);
         
         if(nCompat>0)
         {
@@ -1131,9 +1130,9 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
       // Force single thread for DXVA !
       if (IsDXVASupported())
       {
-        //m_dllAvCodec.avcodec_thread_free();
+        m_dllAvCodec.avcodec_thread_init(m_pAVCtx,1);
+        //avcodec_thread_free();
         //m_pAVCtx->thread_count = 1;
-		    //m_dllAvCodec.avcodec_thread_init(pAVCtx, 1);
         //***TODO: add those function to m_dllAvCodec
         //***int avcodec_thread_init(AVCodecContext *s, int thread_count);
         //***void avcodec_thread_free(AVCodecContext *s);
@@ -1436,8 +1435,6 @@ int CXBMCVideoDecFilter::GetCspFromMediaType(GUID& subtype)
 
 void CXBMCVideoDecFilter::InitSwscale()
 {
-  if (!m_dllSwScale.Load())
-    return;
   if (m_pSwsContext == NULL)
   {
     TYCbCr2RGB_coeffs  coeffs(ffYCbCr_RGB_coeff_ITUR_BT601,0, 235, 16, 255.0, 0.0);
@@ -1464,11 +1461,11 @@ void CXBMCVideoDecFilter::InitSwscale()
     m_nOutCsp    = GetCspFromMediaType(m_pOutput->CurrentMediaType().subtype);
     //Dvdplayer use SWS_FAST_BILINEAR
     struct SwsContext *context = m_dllSwScale.sws_getContext(m_pAVCtx->width, m_pAVCtx->height,
-                                         m_pAVCtx->pix_fmt, m_pAVCtx->width, m_pAVCtx->height,
+                                         csp_lavc2ffdshow(m_pAVCtx->pix_fmt), m_pAVCtx->width, m_pAVCtx->height,
                                          PIX_FMT_YUV420P, SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
     m_pSwsContext = context;
-  //m_dllSwScale.sws_getContext(m_pAVCtx->width, m_pAVCtx->height,(PixelFormat)csp_ffdshow2mplayer(csp_lavc2ffdshow(m_pAVCtx->pix_fmt)),
+  //sws_getContext(m_pAVCtx->width, m_pAVCtx->height,(PixelFormat)csp_ffdshow2mplayer(csp_lavc2ffdshow(m_pAVCtx->pix_fmt)),
   //                            m_pAVCtx->width,m_pAVCtx->height, (PixelFormat)csp_ffdshow2mplayer(m_nOutCsp), SWS_POINT,
   //                            NULL, NULL, NULL);*/
 
@@ -1506,8 +1503,7 @@ HRESULT CXBMCVideoDecFilter::SoftwareDecode(IMediaSample* pIn, BYTE* pDataIn, in
     // MPEG bitstreams could cause overread and segfault.
     memcpy(m_pFFBuffer, pDataIn, nSize);
     memset(m_pFFBuffer+nSize,0,FF_INPUT_BUFFER_PADDING_SIZE);
-    if (!m_dllAvCodec.IsLoaded())
-      m_dllAvCodec.Load();
+
     used_bytes = m_dllAvCodec.avcodec_decode_video(m_pAVCtx, m_pFrame, &got_picture, m_pFFBuffer, nSize);
     if (!got_picture || !m_pFrame->data[0]) return S_OK;
     if(pIn->IsPreroll() == S_OK || rtStart < 0) return S_OK;
@@ -1556,10 +1552,10 @@ HRESULT CXBMCVideoDecFilter::SoftwareDecode(IMediaSample* pIn, BYTE* pDataIn, in
       else
         csp_yuv_adj_to_plane(nTempCsp,outcspInfo,m_pAVCtx->height,(unsigned char**)dst,dstStride);
 
-      //sws_scale_ordered (m_pSwsContext, m_pFrame->data, srcStride, 0, m_pAVCtx->height, dst, dstStride);
+      
       m_dllSwScale.sws_scale(m_pSwsContext, m_pFrame->data, srcStride, 0, m_pAVCtx->height, dst, dstStride);
     }
-#endif /* INCLUDE_MPC_VIDEO_DECODER */
+#endif
 
 #if defined(_DEBUG) && 0
     static REFERENCE_TIME  rtLast = 0;

@@ -21,6 +21,12 @@
 
 #ifdef HAS_DS_PLAYER
 
+//Temporary definition until i add a config to use them
+//demuxer
+//0 disable 1 is xbmc internal and 2 is mpeg splitter 3 is avi splitter
+#define TEST_DSPLAYER_DEMUXER 0
+//0 disable 1 enable
+#define TEST_DSPLAYER_VIDEODECODER 0
 #include "FGLoader.h"
 #include "DSPlayer.h"
 #include "streamsmanager.h"
@@ -38,7 +44,9 @@
 
 #include "filters/XBMCFileSource.h"
 #include "filters/Splitters/AviSplitter.h"
+#include "filters/Splitters/XBMCFFmpegSplitter.h"
 #include "filters/DsVideoDecoder/XBMCVideoDecFilter.h"
+#include "filters/Splitters/MpegSplitter.h"
 #include "filters/VMR9AllocatorPresenter.h"
 #include "filters/EVRAllocatorPresenter.h"
 
@@ -66,56 +74,32 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
 
   HRESULT hr = E_FAIL;
   
-#if 0
+#if (TEST_DSPLAYER_DEMUXER > 0)
   //Keep that stuff ill remove it when im done with sources filters Ti-BEN
-  if (0)
+  if (1)
   {
     Com::SmartQIPtr<IFileSourceFilter> pBFSrc;
-    Com::SmartPtr<IBaseFilter> pBFF = DNew CMatroskaSourceFilter(NULL, &hr);
-    hr = pBFF->QueryInterface(IID_IFileSourceFilter,(void**)&pBFSrc);
+#if (TEST_DSPLAYER_DEMUXER == 1)
+    CGraphFilters::Get()->Splitter.pBF = new CXBMCFFmpegSourceFilter(NULL, &hr);
+#elif (TEST_DSPLAYER_DEMUXER == 2)    
+    CGraphFilters::Get()->Splitter.pBF = new CMpegSourceFilter(NULL, &hr);
+#elif (TEST_DSPLAYER_DEMUXER == 3)
+    CGraphFilters::Get()->Splitter.pBF = new CAviSourceFilter(NULL, &hr);
+#endif
+    //
+    
+    hr = CGraphFilters::Get()->Splitter.pBF->QueryInterface(IID_IFileSourceFilter,(void**)&pBFSrc);
     if (SUCCEEDED(hr))
       hr = pBFSrc->Load(DShowUtil::AToW(pFileItem.m_strPath).c_str(), NULL);
     if (SUCCEEDED(hr))
-    {
-      
-      Filters.Source.pBF = pBFF.Detach();
-      g_dsGraph->pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC File Source");
-      Filters.Splitter.osdname = "XBMC File Source";
+    { 
+      g_dsGraph->pFilterGraph->AddFilter(CGraphFilters::Get()->Splitter.pBF, L"XBMC File Source");
+      CGraphFilters::Get()->Splitter.osdname = "XBMC File Source";
     }
     return hr;
   }
-
-  if (0)
-  {
-    Com::SmartQIPtr<IFileSourceFilter> pBFSrc;
-    Com::SmartPtr<IBaseFilter> pBFF = DNew CAviSplitterFilter(NULL, &hr);
-    pBFSrc = pBFF;
-    if (SUCCEEDED(hr))
-      hr = pBFSrc->Load(DShowUtil::AToW(pFileItem.m_strPath).c_str(), NULL);
-    if (SUCCEEDED(hr))
-    {
-      
-      Filters.Source.pBF = pBFF.Detach();
-      g_dsGraph->pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC File Source");
-      Filters.Source.osdname = "XBMC File Source";
-    }
-  }
-  if (0)
-  {
-    //Adding the xbmc source filter
-    CXBMCAsyncStream* pXBMCStream = new CXBMCAsyncStream(pFileItem.m_strPath, &Filters.Source.pBF, &hr);
-    if (SUCCEEDED(hr))
-    {
-      hr = g_dsGraph->pFilterGraph->AddFilter(Filters.Source.pBF, L"XBMC File Source");
-      if (FAILED(hr))
-        return hr;
-      Filters.Source.osdname = "XBMC File Source";
-    }
-    Filters.Splitter.pBF = DNew CMatroskaSplitterFilter(NULL, &hr);
-    hr = g_dsGraph->pFilterGraph->AddFilter(Filters.Splitter.pBF, L"XBMC Avi Splitter");
-    return hr;
-  }
-  #endif
+#endif
+  
   /* XBMC SOURCE FILTER  */
   if (CUtil::IsInArchive(pFileItem.m_strPath))
   {
@@ -500,13 +484,12 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
 
   CFGFilterFile *filter = NULL;
   //TODO Add an option to the gui for forcing internal filters when supported
-#if 0
+#if TEST_DSPLAYER_VIDEODECODER
   if (filterName.Equals("mpcvideodec"))
   {
-    Com::SmartPtr<IBaseFilter> pBF = new CXBMCVideoDecFilter(NULL, &hr);
-    Filters.Video.pBF = pBF.Detach();
-    hr = g_dsGraph->pFilterGraph->AddFilter(Filters.Video.pBF, L"Internal MpcVideoDec");
-    Filters.Video.osdname = "Internal MpcVideoDec";
+    f.pBF = new CXBMCVideoDecFilter(NULL, &hr);
+    f.osdname = "Internal MpcVideoDec";
+    hr = g_dsGraph->pFilterGraph->AddFilter(f.pBF, L"Internal MpcVideoDec");
     return hr;
   }
 #endif

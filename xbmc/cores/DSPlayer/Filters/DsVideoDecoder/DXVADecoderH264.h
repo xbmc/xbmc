@@ -45,7 +45,6 @@ public:
 
 protected :
 	virtual int		FindOldestFrame();
-
 private:
 
 	DXVA_PicParams_H264		m_DXVAPicParams;
@@ -62,7 +61,6 @@ private:
 	// Private functions
 	void					Init();
 	HRESULT					DisplayStatus();
-
 	// DXVA functions
 	void					RemoveUndisplayedFrame(int nPOC);
 	void					ClearRefFramesList();

@@ -127,7 +127,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="copy &quot;$(SolutionDir)..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\win32_config.h&quot; &quot;$(SolutionDir)..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\config.h&quot;"
+				CommandLine=""
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -222,7 +222,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="copy &quot;$(SolutionDir)..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\win32_config.h&quot; &quot;$(SolutionDir)..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\config.h&quot;"
+				CommandLine=""
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -2267,6 +2267,62 @@
 								>
 							</File>
 						</Filter>
+						<Filter
+							Name="Xbmc"
+							>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSGuidHelper.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSGuidHelper.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSStreamInfo.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSStreamInfo.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\XBMCFFmpegOutputPin.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\XBMCFFmpegOutputPin.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\XBMCFFmpegSplitter.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\XBMCFFmpegSplitter.h"
+								>
+							</File>
+						</Filter>
+						<Filter
+							Name="Mpeg"
+							>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\MpegSplitter.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\MpegSplitter.h"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\MpegSplitterFile.cpp"
+								>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\DSPlayer\Filters\Splitters\MpegSplitterFile.h"
+								>
+							</File>
+						</Filter>
 					</Filter>
 					<Filter
 						Name="Video Renderers"
@@ -2389,34 +2445,6 @@
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\ffImgfmt.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\ffmpegctx.c"
-							>
-							<FileConfiguration
-								Name="Debug (DirectX)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer\codecs\ffmpeg\libavcodec;..\..\xbmc\cores\dvdplayer\codecs\ffmpeg\libavutil"
-									UsePrecompiledHeader="0"
-									ForcedIncludeFiles="$(NOINHERIT)"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release (DirectX)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer\codecs\ffmpeg\libavcodec;..\..\xbmc\cores\dvdplayer\codecs\ffmpeg\libavutil"
-									UsePrecompiledHeader="0"
-									ForcedIncludeFiles="$(NOINHERIT)"
-								/>
-							</FileConfiguration>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\ffmpegctx.h"
 							>
 						</File>
 						<File

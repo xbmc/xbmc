@@ -24,8 +24,12 @@
 #include "DShowUtil/DShowUtil.h"
 #include <initguid.h>
 #include <moreuuids.h>
-//#include "../../switcher/AudioSwitcher/AudioSwitcher.h"
+
 #include "BaseSplitter.h"
+
+#include "VideoInfoTag.h"
+#include "StreamDetails.h"
+#include "FileItem.h"
 
 #pragma warning(disable: 4355)
 
@@ -42,27 +46,26 @@ CPacketQueue::CPacketQueue() : m_size(0)
 {
 }
 
-void CPacketQueue::Add(boost::shared_ptr<Packet> p)
+void CPacketQueue::Add(Packet* p)
 {
   CAutoLock cAutoLock(this);
 
-  if(p.get())
+  if(p)
   {
-    m_size += p->GetDataSize();
+    m_size += p->pInputBufferSize;
     if(p->bAppendable && !p->bDiscontinuity && !p->pmt
     && p->rtStart == Packet::INVALID_TIME
     && ! empty() && back()->rtStart != Packet::INVALID_TIME)
     {
-      boost::shared_ptr<Packet> tail;
+      Packet* tail = NULL;
       tail =  back();
-      int oldsize = tail->size();
-      int newsize = tail->size() + p->size();
-      tail->resize(newsize, max(1024, newsize)); // doubles the reserved buffer size
-      //Not sure about this one
-      //memcpy(&tail[0] + oldsize, &(p.get())[0], p.get()->size());
-      /*
-      GetTail()->Append(*p); // too slow
-      */
+
+      int oldsize = tail->pInputBufferSize;
+      int newsize = tail->pInputBufferSize + p->pInputBufferSize;
+      tail->pInputBuffer = (BYTE*)_aligned_realloc(tail->pInputBuffer,newsize,16);
+      memcpy(tail->pInputBuffer + oldsize, p->pInputBuffer, p->pInputBufferSize);
+      free(p);
+      p = NULL;
       return;
     }
   }
@@ -70,23 +73,15 @@ void CPacketQueue::Add(boost::shared_ptr<Packet> p)
    push_back(p);
 }
 
-boost::shared_ptr<Packet> CPacketQueue::Remove()
+Packet* CPacketQueue::Remove()
 {
-  /*
-  CAutoLock cAutoLock(this);
-	ASSERT(__super::GetCount() > 0);
-	CAutoPtr<Packet> p = RemoveHead();
-	if(p) m_size -= p->GetDataSize();
-	return p;
-  */
   CAutoLock cAutoLock(this);
   ASSERT(__super::size() > 0);
-  boost::shared_ptr<Packet> p;
+  Packet* p = new Packet();
   p = front();
-  erase(begin());
-  //p = auto_ptr<Packet>(front());
-  if(p.get()) 
-    m_size -= p.get()->GetDataSize();
+  pop_front();
+  if(p)
+    m_size -= p->pInputBufferSize;
   return p;
 }
 
@@ -94,14 +89,7 @@ void CPacketQueue::RemoveAll()
 {
   CAutoLock cAutoLock(this);
   m_size = 0;
-  while (!__super::empty())
-    __super::pop_back();
-}
-
-int CPacketQueue::size()
-{
-  CAutoLock cAutoLock(this); 
-  return __super::size();
+  __super::clear();
 }
 
 int CPacketQueue::GetSize()
@@ -216,7 +204,7 @@ CBaseSplitterOutputPin::CBaseSplitterOutputPin(vector<CMediaType>& mts, LPCWSTR 
     m_mts.push_back(*it);
   }
   //m_mts.Copy(mts);
-  m_nBuffers = max(nBuffers, 1);
+  m_nBuffers = std::max(nBuffers, 1);
   memset(&m_brs, 0, sizeof(m_brs));
   m_brs.rtLastDeliverTime = Packet::INVALID_TIME;
 }
@@ -227,7 +215,7 @@ CBaseSplitterOutputPin::CBaseSplitterOutputPin(LPCWSTR pName, CBaseFilter* pFilt
   , m_fFlushing(false)
   , m_eEndFlush(TRUE)
 {
-  m_nBuffers = max(nBuffers, 1);
+  m_nBuffers = std::max(nBuffers, 1);
   memset(&m_brs, 0, sizeof(m_brs));
   m_brs.rtLastDeliverTime = Packet::INVALID_TIME;
 }
@@ -255,7 +243,7 @@ HRESULT CBaseSplitterOutputPin::SetName(LPCWSTR pName)
   if(m_pName) delete [] m_pName;
   m_pName = DNew WCHAR[wcslen(pName)+1];
   CheckPointer(m_pName, E_OUTOFMEMORY);
-  wcsncpy (m_pName, pName, wcslen(pName));
+  wcscpy(m_pName, pName);
   return S_OK;
 }
 
@@ -267,12 +255,12 @@ HRESULT CBaseSplitterOutputPin::DecideBufferSize(IMemAllocator* pAlloc, ALLOCATO
     HRESULT hr = NOERROR;
 
   pProperties->cBuffers = m_nBuffers;
-  pProperties->cbBuffer = max(m_mt.lSampleSize, (ULONG) 1);
+  pProperties->cbBuffer = std::max(m_mt.lSampleSize, (ULONG)1);
 
   if(m_mt.subtype == MEDIASUBTYPE_Vorbis && m_mt.formattype == FORMAT_VorbisFormat)
   {
     // oh great, the oggds vorbis decoder assumes there will be two at least, stupid thing...
-    pProperties->cBuffers = max(pProperties->cBuffers, (long) 2);
+    pProperties->cBuffers = std::max(pProperties->cBuffers, (long)2);
   }
 
   ALLOCATOR_PROPERTIES Actual;
@@ -286,7 +274,7 @@ HRESULT CBaseSplitterOutputPin::DecideBufferSize(IMemAllocator* pAlloc, ALLOCATO
 
 HRESULT CBaseSplitterOutputPin::CheckMediaType(const CMediaType* pmt)
 {
-  for(unsigned int i = 0; i < m_mts.size(); i++)
+  for(int i = 0; i < m_mts.size(); i++)
   {
     if(*pmt == m_mts[i])
       return S_OK;
@@ -297,10 +285,10 @@ HRESULT CBaseSplitterOutputPin::CheckMediaType(const CMediaType* pmt)
 
 HRESULT CBaseSplitterOutputPin::GetMediaType(int iPosition, CMediaType* pmt)
 {
-  CAutoLock cAutoLock(m_pLock);
+    CAutoLock cAutoLock(m_pLock);
 
   if(iPosition < 0) return E_INVALIDARG;
-  if(iPosition >= (int) m_mts.size()) return VFW_S_NO_MORE_ITEMS;
+  if(iPosition >= m_mts.size()) return VFW_S_NO_MORE_ITEMS;
 
   *pmt = m_mts[iPosition];
 
@@ -381,12 +369,14 @@ int CBaseSplitterOutputPin::QueueSize()
 
 HRESULT CBaseSplitterOutputPin::QueueEndOfStream()
 {
-  return QueuePacket(auto_ptr<Packet>()); // NULL means EndOfStream
+  Packet* p = new Packet();
+  return QueuePacket(p); // NULL means EndOfStream
 }
 
-HRESULT CBaseSplitterOutputPin::QueuePacket(auto_ptr<Packet> p)
+HRESULT CBaseSplitterOutputPin::QueuePacket(Packet* p)
 {
-  if(!ThreadExists()) return S_FALSE;
+  if(!ThreadExists()) 
+    return S_FALSE;
 
   while(S_OK == m_hrDeliver 
   && (!(static_cast<CBaseSplitterFilter*>(m_pFilter))->IsAnyPinDrying()
@@ -450,7 +440,7 @@ DWORD CBaseSplitterOutputPin::ThreadProc()
     int cnt = 0;
     do
     {
-      boost::shared_ptr<Packet> p;
+      Packet* p = new Packet();
 
       {
         CAutoLock cAutoLock(&m_queue);
@@ -466,7 +456,7 @@ DWORD CBaseSplitterOutputPin::ThreadProc()
 
         // flushing can still start here, to release a blocked deliver call
 
-        HRESULT hr = p.get()
+        HRESULT hr = p
           ? DeliverPacket(p)
           : DeliverEndOfStream();
 
@@ -484,11 +474,11 @@ DWORD CBaseSplitterOutputPin::ThreadProc()
   }
 }
 
-HRESULT CBaseSplitterOutputPin::DeliverPacket(boost::shared_ptr<Packet> p)
+HRESULT CBaseSplitterOutputPin::DeliverPacket(Packet* p)
 {
   HRESULT hr;
 
-  INT_PTR nBytes = p->size();
+  INT_PTR nBytes = p->pInputBufferSize;
 
   if(nBytes == 0)
   {
@@ -579,10 +569,10 @@ HRESULT CBaseSplitterOutputPin::DeliverPacket(boost::shared_ptr<Packet> p)
 
     ASSERT(!p->bSyncPoint || fTimeValid);
 
-    BYTE* pData = NULL;
-    if(S_OK != (hr = pSample->GetPointer(&pData)) || !pData) break;
-    //TODO
-    memcpy(pData, &p->at(0), nBytes);
+    BYTE* pInputBuffer = NULL;
+    if(S_OK != (hr = pSample->GetPointer(&pInputBuffer)) || !pInputBuffer) break;
+    
+    memcpy(pInputBuffer, p->GetData(), nBytes);
     if(S_OK != (hr = pSample->SetActualDataLength(nBytes))) 
       break;
     if(S_OK != (hr = pSample->SetTime(fTimeValid ? &p->rtStart : NULL, fTimeValid ? &p->rtStop : NULL))) 
@@ -615,7 +605,7 @@ void CBaseSplitterOutputPin::MakeISCRHappy()
 
     if(DShowUtil::GetCLSID(pBF) == DShowUtil::GUIDFromCString(_T("{48025243-2D39-11CE-875D-00608CB78066}"))) // ISCR
     {
-      auto_ptr<Packet> p(DNew Packet());
+      Packet* p = new Packet();
       p->TrackNumber = (DWORD)-1;
       p->rtStart = -1; p->rtStop = 0;
       p->bSyncPoint = FALSE;
@@ -894,8 +884,6 @@ void CBaseSplitterFilter::DeliverBeginFlush()
   {
     (*it)->DeliverBeginFlush();
   }
-  //POSITION pos = m_pOutputs.GetHeadPosition();
-  //while(pos) m_pOutputs.GetNext(pos)->DeliverBeginFlush();
 }
 
 void CBaseSplitterFilter::DeliverEndFlush()
@@ -905,8 +893,6 @@ void CBaseSplitterFilter::DeliverEndFlush()
   {
     (*it)->DeliverEndFlush();
   }
-  //POSITION pos = m_pOutputs.GetHeadPosition();
-  //while(pos) m_pOutputs.GetNext(pos)->DeliverEndFlush();
   m_fFlushing = false;
   m_eEndFlush.Set();
 }
@@ -952,7 +938,8 @@ DWORD CBaseSplitterFilter::ThreadProc()
     m_eEndFlush.Wait();
 
     m_pActivePins.clear();
-    for (list<boost::shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin(); it != m_pOutputs.end() && !m_fFlushing; it++)
+    list<boost::shared_ptr<CBaseSplitterOutputPin>>::iterator it = m_pOutputs.begin();
+    while (it != m_pOutputs.end() && !m_fFlushing)
     {
       CBaseSplitterOutputPin* pPin = (*it).get();
       if(pPin->IsConnected() && pPin->IsActive())
@@ -960,12 +947,15 @@ DWORD CBaseSplitterFilter::ThreadProc()
         m_pActivePins.push_back(pPin);
         pPin->DeliverNewSegment(m_rtStart, m_rtStop, m_dRate);
       }
+      it++;
     }
 
+    //Demuxer
     do {m_bDiscontinuitySent.clear();}
     while(!DemuxLoop());
 
-      for (list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end() && !CheckRequest(&cmd); it++)
+    //we stop the thread of the active pins here
+    for (list<CBaseSplitterOutputPin*>::iterator it = m_pActivePins.begin(); it != m_pActivePins.end() && !CheckRequest(&cmd); it++)
     {
       CBaseSplitterOutputPin* pPin = *it;
       pPin->QueueEndOfStream();
@@ -979,7 +969,7 @@ DWORD CBaseSplitterFilter::ThreadProc()
   return 0;
 }
 
-HRESULT CBaseSplitterFilter::DeliverPacket(auto_ptr<Packet> p)
+HRESULT CBaseSplitterFilter::DeliverPacket(Packet* p)
 {
   HRESULT hr = S_FALSE;
 
@@ -1238,15 +1228,9 @@ STDMETHODIMP CBaseSplitterFilter::Load(LPCOLESTR pszFileNameNew, const AM_MEDIA_
   list<CHdmvClipInfo::PlaylistItem> Items;
   CStdString strThatFile;
   strThatFile = DShowUtil::WToA(pszFileNameNew);
-
   
-  //if (BuildPlaylist (pszFileName, Items))
-    //pAsyncReader = (IAsyncReader*)DNew CAsyncFileReader(Items, hr);
-  //else
-    //pAsyncReader = (IAsyncReader*)DNew CAsyncFileReader(CStdString(pszFileName), hr);
-  
+  pAsyncReader = (IAsyncReader*)new CXBMCFileStream(strThatFile, hr);
 
-  pAsyncReader = (IAsyncReader*)DNew CXBMCFileStream(strThatFile, hr);
   if(FAILED(hr)
   || FAILED(hr = DeleteOutputs())
   || FAILED(hr = CreateOutputs(pAsyncReader)))
@@ -1267,7 +1251,7 @@ STDMETHODIMP CBaseSplitterFilter::GetCurFile(LPOLESTR* ppszFileName, AM_MEDIA_TY
   CheckPointer(ppszFileName, E_POINTER);
   if(!(*ppszFileName = (LPOLESTR)CoTaskMemAlloc((m_fn.GetLength()+1)*sizeof(WCHAR))))
     return E_OUTOFMEMORY;
-  wcsncpy(*ppszFileName, m_fn, m_fn.GetLength() * sizeof(WCHAR));
+  wcscpy(*ppszFileName, m_fn);
   return S_OK;
 }
 
@@ -1338,28 +1322,31 @@ HRESULT CBaseSplitterFilter::SetPositionsInternal(void* id, LONGLONG* pCurrent, 
     && (dwStopFlags&AM_SEEKING_PositioningBitsMask) == AM_SEEKING_NoPositioning)
     return S_OK;
 
-  REFERENCE_TIME 
-    rtCurrent = m_rtCurrent,
-    rtStop = m_rtStop;
+  REFERENCE_TIME rtCurrent = m_rtCurrent;
+  REFERENCE_TIME rtStop = m_rtStop;
 
   if(pCurrent)
-  switch(dwCurrentFlags&AM_SEEKING_PositioningBitsMask)
   {
-  case AM_SEEKING_NoPositioning: break;
-  case AM_SEEKING_AbsolutePositioning: rtCurrent = *pCurrent; break;
-  case AM_SEEKING_RelativePositioning: rtCurrent = rtCurrent + *pCurrent; break;
-  case AM_SEEKING_IncrementalPositioning: rtCurrent = rtCurrent + *pCurrent; break;
+    switch(dwCurrentFlags&AM_SEEKING_PositioningBitsMask)
+    {
+      case AM_SEEKING_NoPositioning: break;
+      case AM_SEEKING_AbsolutePositioning: rtCurrent = *pCurrent; break;
+      case AM_SEEKING_RelativePositioning: rtCurrent = rtCurrent + *pCurrent; break;
+      case AM_SEEKING_IncrementalPositioning: rtCurrent = rtCurrent + *pCurrent; break;
+    }
   }
 
   if(pStop)
-  switch(dwStopFlags&AM_SEEKING_PositioningBitsMask)
   {
-  case AM_SEEKING_NoPositioning: break;
-  case AM_SEEKING_AbsolutePositioning: rtStop = *pStop; break;
-  case AM_SEEKING_RelativePositioning: rtStop += *pStop; break;
-  case AM_SEEKING_IncrementalPositioning: rtStop = rtCurrent + *pStop; break;
+    switch(dwStopFlags&AM_SEEKING_PositioningBitsMask)
+    {
+      case AM_SEEKING_NoPositioning: break;
+      case AM_SEEKING_AbsolutePositioning: rtStop = *pStop; break;
+      case AM_SEEKING_RelativePositioning: rtStop += *pStop; break;
+      case AM_SEEKING_IncrementalPositioning: rtStop = rtCurrent + *pStop; break;
+    }
   }
-
+  
   if(m_rtCurrent == rtCurrent && m_rtStop == rtStop)
     return S_OK;
 
@@ -1381,8 +1368,8 @@ HRESULT CBaseSplitterFilter::SetPositionsInternal(void* id, LONGLONG* pCurrent, 
   m_rtLastStop = rtStop;
   m_LastSeekers.clear();
   m_LastSeekers.push_back(id);
-
-DbgLog((LOG_TRACE, 0, _T("Seek Started %I64d"), rtCurrent));
+  CLog::DebugLog( "%s Seek Started %I64d", __FUNCTION__, rtCurrent);
+  
 
   m_rtNewStart = m_rtCurrent = rtCurrent;
   m_rtNewStop = rtStop;
@@ -1394,7 +1381,7 @@ DbgLog((LOG_TRACE, 0, _T("Seek Started %I64d"), rtCurrent));
     DeliverEndFlush();
   }
 
-DbgLog((LOG_TRACE, 0, _T("Seek Ended")));
+  CLog::DebugLog("Seek Ended");
 
   return S_OK;
 }

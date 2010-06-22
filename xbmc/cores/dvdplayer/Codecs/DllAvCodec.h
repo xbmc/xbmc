@@ -62,6 +62,9 @@ extern "C" {
   #include "libavcodec/avcodec.h"
   #include "libavcodec/audioconvert.h"
   #include "libavutil/crc.h"
+  #ifdef HAS_DS_PLAYER
+  #include "libavcodec/ffmpegcontext.h"
+  #endif
 #endif
 }
 
@@ -122,6 +125,21 @@ public:
   virtual int av_dup_packet(AVPacket *pkt)=0;
   virtual void av_init_packet(AVPacket *pkt)=0;
   virtual int64_t avcodec_guess_channel_layout(int nb_channels, enum CodecID codec_id, const char *fmt_name)=0;
+#ifdef HAS_DS_PLAYER
+  //H264
+  virtual void FFH264DecodeBuffer (AVCodecContext* pAVCtx, BYTE* pBuffer, UINT nSize, int* pFramePOC, int* pOutPOC, int64_t* pOutrtStart)=0;
+  virtual int FFH264BuildPicParams (DXVA_PicParams_H264* pDXVAPicParams, DXVA_Qmatrix_H264* pDXVAScalingMatrix, int* nFieldType, int* nSliceType, AVCodecContext* pAVCtx, int nPCIVendor)=0;
+  virtual int FFH264CheckCompatibility(int nWidth, int nHeight, AVCodecContext* pAVCtx, BYTE* pBuffer, UINT nSize, int nPCIVendor, int nPCIDevice, LARGE_INTEGER VideoDriverVersion)=0;
+  virtual void FFH264SetCurrentPicture (int nIndex, DXVA_PicParams_H264* pDXVAPicParams, AVCodecContext* pAVCtx)=0;
+  virtual void FFH264UpdateRefFramesList (DXVA_PicParams_H264* pDXVAPicParams, AVCodecContext* pAVCtx)=0;
+  virtual BOOL FFH264IsRefFrameInUse (int nFrameNum, AVCodecContext* pAVCtx)=0;
+  virtual void FF264UpdateRefFrameSliceLong(DXVA_PicParams_H264* pDXVAPicParams, DXVA_Slice_H264_Long* pSlice, AVCodecContext* pAVCtx)=0;
+  virtual void FFH264SetDxvaSliceLong (AVCodecContext* pAVCtx, void* pSliceLong)=0;
+  //VC1
+  virtual int FFVC1UpdatePictureParam (DXVA_PictureParameters* pPicParams, struct AVCodecContext* pAVCtx, int* nFieldType, int* nSliceType, BYTE* pBuffer, UINT nSize)=0;
+  virtual int FFIsSkipped(struct AVCodecContext* pAVCtx)=0;
+
+#endif
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -231,7 +249,18 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD1(int, av_dup_packet, (AVPacket *p1))
   DEFINE_METHOD1(void, av_init_packet, (AVPacket *p1))
   DEFINE_METHOD3(int64_t, avcodec_guess_channel_layout, (int p1, enum CodecID p2, const char *p3))
-
+#ifdef HAS_DS_PLAYER
+  DEFINE_METHOD6(void, FFH264DecodeBuffer, (AVCodecContext *p1, BYTE *p2, UINT p3, int *p4, int *p5, int64_t *p6))
+  DEFINE_METHOD6(int, FFH264BuildPicParams, (DXVA_PicParams_H264 *p1, DXVA_Qmatrix_H264 *p2, int *p3, int *p4, AVCodecContext *p5, int p6))
+  DEFINE_METHOD8(int, FFH264CheckCompatibility, (int p1, int p2, AVCodecContext *p3, BYTE *p4, UINT p5, int p6, int p7, LARGE_INTEGER p8))
+  DEFINE_METHOD3(void, FFH264SetCurrentPicture, (int p1, DXVA_PicParams_H264 *p2, AVCodecContext *p3))
+  DEFINE_METHOD2(void, FFH264UpdateRefFramesList, (DXVA_PicParams_H264 *p1, AVCodecContext *p2))
+  DEFINE_METHOD2(BOOL, FFH264IsRefFrameInUse, (int p1, AVCodecContext *p2))
+  DEFINE_METHOD3(void, FF264UpdateRefFrameSliceLong, (DXVA_PicParams_H264 *p1, DXVA_Slice_H264_Long *p2, AVCodecContext *p3))
+  DEFINE_METHOD2(void, FFH264SetDxvaSliceLong, (AVCodecContext *p1, void *p2))
+  DEFINE_METHOD6(int, FFVC1UpdatePictureParam, (DXVA_PictureParameters *p1, AVCodecContext *p2, int *p3, int *p4, BYTE *p5, UINT p6))
+  DEFINE_METHOD1(int, FFIsSkipped, (AVCodecContext *p1))
+#endif
   LOAD_SYMBOLS();
 
   DEFINE_METHOD0(void, avcodec_register_all_dont_call)
@@ -298,6 +327,18 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(av_dup_packet)
     RESOLVE_METHOD(av_init_packet)
     RESOLVE_METHOD(avcodec_guess_channel_layout)
+#ifdef HAS_DS_PLAYER
+    RESOLVE_METHOD(FFH264DecodeBuffer)
+    RESOLVE_METHOD(FFH264BuildPicParams)
+    RESOLVE_METHOD(FFH264CheckCompatibility)
+    RESOLVE_METHOD(FFH264SetCurrentPicture)
+    RESOLVE_METHOD(FFH264UpdateRefFramesList)
+    RESOLVE_METHOD(FFH264IsRefFrameInUse)
+    RESOLVE_METHOD(FF264UpdateRefFrameSliceLong)
+    RESOLVE_METHOD(FFH264SetDxvaSliceLong)
+    RESOLVE_METHOD(FFVC1UpdatePictureParam)
+    RESOLVE_METHOD(FFIsSkipped)
+#endif
   END_METHOD_RESOLVE()
 public:
     static CCriticalSection m_critSection;

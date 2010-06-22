@@ -1332,7 +1332,7 @@ HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, 
   HRESULT hr = E_FAIL;
   CStdStringW fullpathW;
   g_charsetConverter.utf8ToW(fullpath, fullpathW);
-  if(hInst || (hInst = CoLoadLibrary(_bstr_t(fullpathW), TRUE)))
+  if(hInst && (hInst = CoLoadLibrary(_bstr_t(fullpathW), TRUE)))
   {
     typedef HRESULT (__stdcall * PDllGetClassObject)(REFCLSID rclsid, REFIID riid, LPVOID* ppv);
     PDllGetClassObject p = (PDllGetClassObject)GetProcAddress(hInst, "DllGetClassObject");
@@ -2522,88 +2522,6 @@ REFERENCE_TIME StringToReftime(LPCTSTR strVal)
 const double Rec601_Kr = 0.299;
 const double Rec601_Kb = 0.114;
 const double Rec601_Kg = 0.587;
-/*COLORREF YCrCbToRGB_Rec601(BYTE Y, BYTE Cr, BYTE Cb)
-{
 
-  double rp = Y + 2*(Cr-128)*(1.0-Rec601_Kr);
-  double gp = Y - 2*(Cb-128)*(1.0-Rec601_Kb)*Rec601_Kb/Rec601_Kg - 2*(Cr-128)*(1.0-Rec601_Kr)*Rec601_Kr/Rec601_Kg;
-  double bp = Y + 2*(Cb-128)*(1.0-Rec601_Kb);
-
-  return RGB (fabs(rp), fabs(gp), fabs(bp));
-}
-
-DWORD YCrCbToRGB_Rec601(BYTE A, BYTE Y, BYTE Cr, BYTE Cb)
-{
-
- double rp = Y + 2*(Cr-128)*(1.0-Rec601_Kr);
- double gp = Y - 2*(Cb-128)*(1.0-Rec601_Kb)*Rec601_Kb/Rec601_Kg - 2*(Cr-128)*(1.0-Rec601_Kr)*Rec601_Kr/Rec601_Kg;
- double bp = Y + 2*(Cb-128)*(1.0-Rec601_Kb);
- return D3DCOLOR_ARGB(A, (BYTE)fabs(rp), (BYTE)fabs(gp), (BYTE)fabs(bp));
-}
-
-
-const double Rec709_Kr = 0.2125;
-const double Rec709_Kb = 0.0721;
-const double Rec709_Kg = 0.7154;
-COLORREF YCrCbToRGB_Rec709(BYTE Y, BYTE Cr, BYTE Cb)
-{
-
-  double rp = Y + 2*(Cr-128)*(1.0-Rec709_Kr);
-  double gp = Y - 2*(Cb-128)*(1.0-Rec709_Kb)*Rec709_Kb/Rec709_Kg - 2*(Cr-128)*(1.0-Rec709_Kr)*Rec709_Kr/Rec709_Kg;
-  double bp = Y + 2*(Cb-128)*(1.0-Rec709_Kb);
-
-  return RGB (fabs(rp), fabs(gp), fabs(bp));
-}
-
-DWORD YCrCbToRGB_Rec709(BYTE A, BYTE Y, BYTE Cr, BYTE Cb)
-{
-
-  double rp = Y + 2*(Cr-128)*(1.0-Rec709_Kr);
-  double gp = Y - 2*(Cb-128)*(1.0-Rec709_Kb)*Rec709_Kb/Rec709_Kg - 2*(Cr-128)*(1.0-Rec709_Kr)*Rec709_Kr/Rec709_Kg;
-  double bp = Y + 2*(Cb-128)*(1.0-Rec709_Kb);
-
-  return D3DCOLOR_ARGB (A, (BYTE)fabs(rp), (BYTE)fabs(gp), (BYTE)fabs(bp));
-}*/
-
-//==================================== TsearchInterfaceInGraph ========================================
-unsigned int __stdcall TsearchInterfaceInGraph::searchFilterInterfaceThreadEntry(void *self0)
-{
- TsearchInterfaceInGraph *self = (TsearchInterfaceInGraph*)self0;
- return (unsigned int)self->searchInterfaceFunc(self->graph,self->iid,&(self->dest));
-}
-
-bool TsearchInterfaceInGraph::getResult(IUnknown* *Idest)
-{
- if (!hThread)
-  {
-   hThread = (HANDLE)_beginthreadex(NULL,0,searchFilterInterfaceThreadEntry,this,0,NULL);
-  }
- if (hThread)
-  {
-   waitResult = WaitForSingleObject(hThread, 100);
-   if (waitResult == WAIT_OBJECT_0)
-    {
-     DWORD retval;
-     if (GetExitCodeThread(hThread, &retval) && retval)
-      {
-       *Idest=dest;
-       CloseHandle(hThread);
-       hThread = NULL;
-       return true;
-      }
-    }
-  }
- return false;
-}
-
-TsearchInterfaceInGraph::~TsearchInterfaceInGraph()
-{
- if (hThread)
-  {
-   WaitForSingleObject(hThread, INFINITE);
-   CloseHandle(hThread);
-   hThread = NULL;
-  }
-}
 
 #endif

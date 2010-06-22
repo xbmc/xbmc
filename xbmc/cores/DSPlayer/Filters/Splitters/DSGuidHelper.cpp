@@ -399,7 +399,7 @@ CMediaType CDSGuidHelper::initVideoType(CodecID codecId)
   else if (codecId == CODEC_ID_MPEG4)
   {
     thetype.formattype = FORMAT_VideoInfo;
-    thetype.subtype = FOURCCMap(FOURCC_MP4V);//FOURCC_XVID,FOURCC_FFDS,FOURCC_FVFW,FOURCC_DX50,FOURCC_DIVX,FOURCC_MP4V
+    thetype.subtype = FOURCCMap(FOURCC_XVID);//FOURCC_MP4V,FOURCC_FFDS,FOURCC_FVFW,FOURCC_DX50,FOURCC_DIVX,FOURCC_MP4V
   }
   else if (codecId == CODEC_ID_MPEG1VIDEO || codecId == CODEC_ID_MPEG2VIDEO)
   {
@@ -763,10 +763,13 @@ BYTE *CDSGuidHelper::ConvertVIHtoMPEG2VI(VIDEOINFOHEADER *vih, ULONG *size, bool
       }
       else
       {
+        extradata = (BYTE*)&vih->bmiHeader + sizeof(BITMAPINFOHEADER);
+
+        memcpy(&mp2vi->dwSequenceHeader[0], (BYTE *)extradata, extra);
 #if 0 // This way is far from being working correctly
         mp2vi->cbSequenceHeader = extra;
         memcpy(&mp2vi->dwSequenceHeader[0], (BYTE *)(&vih->bmiHeader) + sizeof(BITMAPINFOHEADER), extra);
-#else
+#elif 0 //this way is not correct too but this is parsing the correct header
         std::vector<BYTE> extravect;
         extravect.resize(extra);
         memcpy(&extravect.at(0), (BYTE *)(&vih->bmiHeader) + sizeof(BITMAPINFOHEADER), extra);
@@ -784,7 +787,7 @@ BYTE *CDSGuidHelper::ConvertVIHtoMPEG2VI(VIDEOINFOHEADER *vih, ULONG *size, bool
         //this could be somewhere else
         mp2vi->hdr.AvgTimePerFrame = mp2vi->hdr.AvgTimePerFrame * 2;
         mp2vi->hdr.bmiHeader.biPlanes = 0;
-
+#else
 #endif
 
       }

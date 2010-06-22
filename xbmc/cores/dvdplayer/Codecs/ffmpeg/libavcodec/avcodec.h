@@ -361,6 +361,14 @@ enum CodecID {
                                 * stream (only used by libavformat) */
 };
 
+/**
+ * Needed for CorePNG
+ */
+enum CorePNGFrameType {
+    SAMPLE_I,
+    SAMPLE_P
+};
+
 #if LIBAVCODEC_VERSION_MAJOR < 53
 #define CodecType AVMediaType
 
@@ -373,6 +381,26 @@ enum CodecID {
 #define CODEC_TYPE_NB         AVMEDIA_TYPE_NB
 #endif
 
+/**
+ * H.264 VUI colour primaries (matrix_coefficients)
+ */
+typedef enum {
+    YCbCr_RGB_coeff_GBR                                = 0,
+    YCbCr_RGB_coeff_ITUR_BT_709                        = 1,
+    YCbCr_RGB_coeff_Unspecified                        = 2,
+    YCbCr_RGB_coeff_Reserved                           = 3,
+    YCbCr_RGB_coeff_US_Federal_Regulations_2003_73_682 = 4,
+    YCbCr_RGB_coeff_ITUR_BT_601_625                    = 5,
+    YCbCr_RGB_coeff_ITUR_BT_601_525                    = 6,
+    YCbCr_RGB_coeff_SMPTE240M                          = 7,
+    YCbCr_RGB_coeff_YCgCo                              = 8
+} YCbCr_RGB_MatrixCoefficientsType;
+
+typedef enum {
+    VIDEO_FULL_RANGE_TV         = 0,
+    VIDEO_FULL_RANGE_PC         = 1,
+    VIDEO_FULL_RANGE_INVALID    = 2
+} VideoFullRangeType;
 /**
  * all in native-endian format
  */
@@ -928,6 +956,8 @@ typedef struct AVPanScan{
      * - decoding: Read by user.\
      */\
     int64_t reordered_opaque;\
+	int64_t reordered_opaque2; /* ffdshow custom code */\
+    int64_t reordered_opaque3; /* ffdshow custom code */\
 \
     /**\
      * hardware accelerator private data (FFmpeg allocated)\
@@ -935,7 +965,32 @@ typedef struct AVPanScan{
      * - decoding: Set by libavcodec\
      */\
     void *hwaccel_picture_private;\
-
+/* ffdshow custom code */\
+    int mb_width,mb_height,mb_stride,b8_stride;\
+    int num_sprite_warping_points,real_sprite_warping_points;\
+    int play_flags;\
+	/* ffdshow custom stuffs (begin) */\
+\
+    int h264_poc_decoded;\
+    int h264_poc_outputed;\
+    int h264_frame_num_decoded;\
+    int h264_max_frame_num;\
+\
+    int mpeg2_sequence_end_flag;\
+\
+    /**\
+     * video_full_range_flag\
+     * - encoding: unused\
+     * - decoding: Set by libavcodec.  -1: invalid, 0: TV (16-235) 1: PC (1-254)\
+     */\
+    VideoFullRangeType video_full_range_flag;\
+    /**\
+     * YCbCr_RGB_matrix_coefficients\
+     * - encoding: unused\
+     * - decoding: Set by libavcodec.\
+     */\
+    YCbCr_RGB_MatrixCoefficientsType YCbCr_RGB_matrix_coefficients;\
+    /* ffdshow custom stuffs (end) */
 
 #define FF_QSCALE_TYPE_MPEG1 0
 #define FF_QSCALE_TYPE_MPEG2 1
@@ -2487,6 +2542,8 @@ typedef struct AVCodecContext {
      * - decoding: Set by user.
      */
     int64_t reordered_opaque;
+	int64_t reordered_opaque2; /* ffdshow custom code */
+    int64_t reordered_opaque3; /* ffdshow custom code */
 
     /**
      * Bits per sample/pixel of internal libavcodec pixel/sample format.
@@ -2669,6 +2726,40 @@ typedef struct AVCodecContext {
     float crf_max;
 
     int log_level_offset;
+    /* ffdshow custom stuff (begin) */
+    
+    /**
+     * minimum and maxminum quantizer for I frames. If 0, derived from qmin, i_quant_factor, i_quant_offset
+     * - encoding: set by user.
+     * - decoding: unused
+     */
+    int qmin_i,qmax_i;
+
+    /**
+     * minimum and maximum quantizer for B frames. If 0, derived from qmin, b_quant_factor, b_quant_offset
+     * - encoding: set by user.
+     * - decoding: unused
+     */
+    int qmin_b,qmax_b;
+    
+    float postgain;
+    int ac3mode,ac3lfe;
+    int ac3channels[6];
+    int nal_length_size;
+    int vorbis_header_size[3];
+    int64_t granulepos;
+    int64_t *parserRtStart;
+    void (*handle_user_data)(struct AVCodecContext *c,const uint8_t *buf,int buf_size);
+    int h264_has_to_drop_first_non_ref;    // Workaround Haali's media splitter (http://forum.doom9.org/showthread.php?p=1226434#post1226434)
+
+	enum CorePNGFrameType corepng_frame_type;
+    /**
+     * Force 4:3 or 16:9 as DAR (MPEG-2 only)
+     * - encoding: unused.
+     * - decoding: Set by user.
+     */
+    int isDVD;
+    /* ffdshow custom stuff (end) */
 } AVCodecContext;
 
 /**
@@ -3996,5 +4087,20 @@ enum AVLockOp {
  *           lockmgr callback may also be invoked.
  */
 int av_lockmgr_register(int (*cb)(void **mutex, enum AVLockOp op));
+
+/**
+ * ffdshow custom stuff
+ *
+ * @param[out] recovery_frame_cnt. Valid only if GDR.
+ * @return   0: no recovery point, 1:I-frame 2:Recovery Point SEI (GDR), 3:IDR, -1:error
+ */
+int avcodec_h264_search_recovery_point(AVCodecContext *avctx,
+                         const uint8_t *buf, int buf_size, int *recovery_frame_cnt);
+
+/* Media Player Classic - Homecinema specific functions */
+/*FF_EXPORT int    FFGetChannelMap(struct AVCodecContext* avctx);
+FF_EXPORT void*  FF_aligned_malloc(size_t size, size_t alignment);
+FF_EXPORT void   FF_aligned_free(void* mem_ptr);*/
+
 
 #endif /* AVCODEC_AVCODEC_H */

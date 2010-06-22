@@ -24,7 +24,6 @@
 #ifndef HAS_DS_PLAYER
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
-
 #include "GraphFilters.h"
 #include "FgFilter.h"
 #include "FileItem.h"

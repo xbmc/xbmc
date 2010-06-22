@@ -93,6 +93,7 @@ public:
   void operator=(const CDemuxStream& right)      { Assign(right, true, ""); }
 protected:
   DllAvCodec  m_dllAvCodec;
-  DllAvFormat   m_dllAvFormat;
+  DllAvFormat m_dllAvFormat;
+  DllAvUtil   m_dllAvUtil;
 
 };

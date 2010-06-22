@@ -33,7 +33,7 @@
 #include "DVDPlayer/DVDDemuxers/DVDFactoryDemuxer.h"
 #include "DVDPlayer/DVDDemuxers/DVDDemuxFFmpeg.h"
 #include "TimeUtils.h"
-#define INT64_C __int64
+
 #define MINPACKETS 100      // Beliyaal: Changed the dsmin number of packets to allow Bluray playback over network
 #define MINPACKETSIZE 256*1024  // Beliyaal: Changed the dsmin packet size to allow Bluray playback over network
 #define MAXPACKETS 10000

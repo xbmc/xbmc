@@ -168,12 +168,12 @@ HRESULT CHdmvClipInfo::ReadProgramInfo()
 }
 
 
-HRESULT CHdmvClipInfo::ReadInfo(LPCTSTR strFile)
+HRESULT CHdmvClipInfo::ReadInfo(const wchar_t *strFile)
 {
   BYTE    Buff[100];
 
   m_bIsHdmv = false;
-  m_hFile   = CreateFile(strFile, GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, 
+  m_hFile   = CreateFile(LPCWSTR(strFile), GENERIC_READ, FILE_SHARE_READ|FILE_SHARE_WRITE, NULL, 
                  OPEN_EXISTING, FILE_ATTRIBUTE_READONLY|FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 
   if(m_hFile != INVALID_HANDLE_VALUE)

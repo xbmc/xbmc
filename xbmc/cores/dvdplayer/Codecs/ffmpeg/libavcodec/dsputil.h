@@ -33,7 +33,6 @@
 #include "libavutil/intreadwrite.h"
 #include "avcodec.h"
 
-
 //#define DEBUG
 /* dct code */
 typedef short DCTELEM;
@@ -806,5 +805,54 @@ static inline void copy_block17(uint8_t *dst, const uint8_t *src, int dstStride,
         src+=srcStride;
     }
 }
+
+const char* avcodec_get_current_idct_mmx(AVCodecContext *avctx,DSPContext *c);
+
+/* ffdshow custom code begin */
+#ifdef __GNUC__
+#ifndef D3DCOLOR_DEFINED
+typedef uint32_t D3DCOLOR2;
+#define D3DCOLOR_DEFINED
+#endif
+
+
+#define D3DCOLOR_ARGB(a,r,g,b) \
+    ((D3DCOLOR2)((((a)&0xff)<<24)|(((r)&0xff)<<16)|(((g)&0xff)<<8)|((b)&0xff)))
+#else
+#ifndef D3DCOLOR_DEFINED
+typedef uint32_t D3DCOLOR;
+#define D3DCOLOR_DEFINED
+#define D3DCOLOR_ARGB(a,r,g,b) \
+    ((D3DCOLOR)((((a)&0xff)<<24)|(((r)&0xff)<<16)|(((g)&0xff)<<8)|((b)&0xff)))
+#endif
+#endif
+static const double Rec601_Kr = 0.299;
+static const double Rec601_Kb = 0.114;
+static const double Rec601_Kg = 0.587;
+static const double Rec709_Kr = 0.2125;
+static const double Rec709_Kb = 0.0721;
+static const double Rec709_Kg = 0.7154;
+
+static inline uint32_t YCrCbToRGB_Rec709(uint8_t A, uint8_t Y, uint8_t Cr, uint8_t Cb)
+{
+
+  double rp = Y + 2*(Cr-128)*(1.0-Rec709_Kr);
+  double gp = Y - 2*(Cb-128)*(1.0-Rec709_Kb)*Rec709_Kb/Rec709_Kg - 2*(Cr-128)*(1.0-Rec709_Kr)*Rec709_Kr/Rec709_Kg;
+  double bp = Y + 2*(Cb-128)*(1.0-Rec709_Kb);
+
+  return D3DCOLOR_ARGB(A, (uint8_t)fabs(rp), (uint8_t)fabs(gp), (uint8_t)fabs(bp));
+}
+
+static inline uint32_t YCrCbToRGB_Rec601(uint8_t A, uint8_t Y, uint8_t Cr, uint8_t Cb)
+{
+
+  double rp = Y + 2*(Cr-128)*(1.0-Rec601_Kr);
+  double gp = Y - 2*(Cb-128)*(1.0-Rec601_Kb)*Rec601_Kb/Rec601_Kg - 2*(Cr-128)*(1.0-Rec601_Kr)*Rec601_Kr/Rec601_Kg;
+  double bp = Y + 2*(Cb-128)*(1.0-Rec601_Kb);
+
+  return D3DCOLOR_ARGB(A, (uint8_t)fabs(rp), (uint8_t)fabs(gp), (uint8_t)fabs(bp));
+}
+
+/* ffdshow custom code end */
 
 #endif /* AVCODEC_DSPUTIL_H */

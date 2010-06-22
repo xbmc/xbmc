@@ -3382,3 +3382,5 @@ AVCodec vc1_vdpau_decoder = {
     .pix_fmts = (const enum PixelFormat[]){PIX_FMT_VDPAU_VC1, PIX_FMT_NONE}
 };
 #endif
+
+#include "vc1_dxva.c"

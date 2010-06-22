@@ -1036,10 +1036,12 @@ static int read_access_unit(AVCodecContext *avctx, void* data, int *data_size,
     parity_bits  = ff_mlp_calculate_parity(buf, 4);
     parity_bits ^= ff_mlp_calculate_parity(buf + header_size, substr_header_size);
 
+    /* ffdshow custom code
     if ((((parity_bits >> 4) ^ parity_bits) & 0xF) != 0xF) {
         av_log(avctx, AV_LOG_ERROR, "Parity check failed.\n");
         goto error;
     }
+    */
 
     buf += header_size + substr_header_size;
 

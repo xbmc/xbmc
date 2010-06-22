@@ -646,7 +646,7 @@ bool CFLVSplitterFilter::DemuxLoop()
 {
 	HRESULT hr = S_OK;
 
-	auto_ptr<Packet> p;
+	Packet* p = new Packet();
 
 	Tag t;
 	AudioTag at;
@@ -675,13 +675,13 @@ bool CFLVSplitterFilter::DemuxLoop()
 			}
 			__int64 dataSize = next - m_pFile->GetPos();
 			if (dataSize <= 0) goto NextTag;
-			p.reset(DNew Packet());
+			p = NULL;
 			p->TrackNumber = t.TagType;
 			p->rtStart = 10000i64 * (t.TimeStamp + tsOffset); 
 			p->rtStop = p->rtStart + 1;
 			p->bSyncPoint = t.TagType == 9 ? vt.FrameType == 1 : true;
 			p->resize(dataSize);
-			m_pFile->ByteRead(&p->at(0), p->size());
+			m_pFile->ByteRead(p->pInputBuffer, p->pInputBufferSize);
 			hr = DeliverPacket(p);
 		}
 

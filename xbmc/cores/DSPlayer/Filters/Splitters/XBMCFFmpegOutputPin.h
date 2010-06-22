@@ -30,8 +30,17 @@ class CXBMCSplitterFilter;
 //********************************************************************
 //
 //********************************************************************
-class CXBMCFFmpegOutputPin : public CBaseSplitterOutputPin
+class CXBMCFFmpegOutputPin : public CBaseSplitterOutputPin, protected CCritSec
 {
+  boost::shared_ptr<Packet> m_p;
+  std::list<boost::shared_ptr<Packet>> m_pl;
+	REFERENCE_TIME m_rtPrev, m_rtOffset, m_rtMaxShift;
+	bool m_fHasAccessUnitDelimiters;
+
+protected:
+	HRESULT DeliverNewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
+	HRESULT DeliverPacket(Packet* p);
+	HRESULT DeliverEndFlush();
 public:
   CXBMCFFmpegOutputPin(std::vector<CMediaType>& mts, LPCWSTR pName, CBaseFilter* pFilter, CCritSec* pLock, HRESULT* phr);
 

@@ -26,13 +26,15 @@
 #include "DVDPlayer/DVDDemuxers/DVDDemux.h"
 #include "DVDPlayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDPlayer/DVDClock.h"
-#include "DSClock.h"
-
+extern "C"
+{
+  #include "libavformat/avformat.h"
+}
 
 //0 is off
 //1 is video only
 //2 is audio only
-#define DS_SPLITTER_ONE_PIN_TEST 1
+#define DS_SPLITTER_ONE_PIN_TEST 0
 
 //
 // CXBMCFFmpegSplitter
@@ -102,7 +104,6 @@ HRESULT CXBMCFFmpegSplitter::CreateOutputs(IAsyncReader* pAsyncReader)
   for (int iStream=0; iStream < m_pDemuxer->GetNrOfStreams(); iStream++)
   {
     CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
-    
     CDSStreamInfo hint(*pStream, true, containerFormat);
     
     CMediaType mt;
@@ -146,8 +147,13 @@ void CXBMCFFmpegSplitter::DemuxSeek(REFERENCE_TIME rt)
   int64_t rt_dvd = rt / 10;
   rt_sec = DVD_TIME_TO_MSEC(rt_dvd);
   double start = DVD_NOPTS_VALUE;
-  if (m_pDemuxer && m_pDemuxer->SeekTime(rt_sec, false, &start))
-    CLog::Log(LOGERROR,"%s failed to seek",__FUNCTION__);
+  if (m_pDemuxer)
+  {
+    if (!m_pDemuxer->SeekTime(rt_sec, false, &start))
+      CLog::Log(LOGERROR,"%s failed to seek",__FUNCTION__);
+  }
+  else
+    CLog::Log(LOGERROR,"%s demuxer is closed",__FUNCTION__);
 }
 
 bool CXBMCFFmpegSplitter::DemuxLoop()
@@ -172,10 +178,9 @@ bool CXBMCFFmpegSplitter::DemuxLoop()
     }
     if (!pPacket)
       continue;
-    std::auto_ptr<Packet> p(new Packet());
+    Packet* p = new Packet(pPacket->iSize);
     p->TrackNumber = (DWORD)pPacket->iStreamId;
-    p->resize(pPacket->iSize);
-    memcpy(&p->at(0), pPacket->pData,pPacket->iSize);
+    memcpy(p->pInputBuffer, pPacket->pData, pPacket->iSize);
 
     
     
@@ -189,6 +194,11 @@ bool CXBMCFFmpegSplitter::DemuxLoop()
 
       //p->rtStop = ((double)pPacket->iSize * DS_TIME_BASE) / avg_bytespersample;
       //audioframe.duration = ((double)audioframe.size * DVD_TIME_BASE) / n; <<<---- from dvdplayer
+    if (pStream->codec == CODEC_ID_AAC)
+    {
+    
+    
+    }
     if (pStream->type == STREAM_SUBTITLE)
     {
       pPacket->duration = 1;

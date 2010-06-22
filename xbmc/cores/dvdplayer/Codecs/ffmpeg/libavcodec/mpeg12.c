@@ -1290,6 +1290,7 @@ static int mpeg_decode_postinit(AVCodecContext *avctx){
                     1.0/ff_mpeg1_aspect[s->aspect_ratio_info], 255);
             avctx->ticks_per_frame=1;
         }else{//MPEG-2
+#if 0 /* ffdshow custom code (move this block to mpeg_decode_sequence_extension)*/
         //MPEG-2 fps
             av_reduce(
                 &s->avctx->time_base.den,
@@ -1297,24 +1298,41 @@ static int mpeg_decode_postinit(AVCodecContext *avctx){
                 ff_frame_rate_tab[s->frame_rate_index].num * s1->frame_rate_ext.num*2,
                 ff_frame_rate_tab[s->frame_rate_index].den * s1->frame_rate_ext.den,
                 1<<30);
+#endif
             avctx->ticks_per_frame=2;
         //MPEG-2 aspect
             if(s->aspect_ratio_info > 1){
                 //we ignore the spec here as reality does not match the spec, see for example
                 // res_change_ffmpeg_aspect.ts and sequence-display-aspect.mpg
-                if( (s1->pan_scan.width == 0 )||(s1->pan_scan.height == 0) || 1){
-                    s->avctx->sample_aspect_ratio=
-                        av_div_q(
+                /* ffdshow custom code begin
+                 * We do not want to ignore spec.
+                 * However, there are considerable number of videos that are encoded in a wrong way.
+                 * We set the spec compliant value in sample_aspect_ratio and
+                 * wrong spec-value in sample_aspect_ratio2.
+                 * Let ffdshow guess which is likely.
+                 */
+                AVRational r1={s->width, s->height};
+                AVRational r2={s1->pan_scan.width, s1->pan_scan.height};
+                if( (s1->pan_scan.width == 0 )||(s1->pan_scan.height == 0)){
+                    s->avctx->sample_aspect_ratio=av_div_q(
                          ff_mpeg2_aspect[s->aspect_ratio_info],
-                         (AVRational){s->width, s->height}
+                          r1
                          );
                 }else{
                     s->avctx->sample_aspect_ratio=
                         av_div_q(
                          ff_mpeg2_aspect[s->aspect_ratio_info],
-                         (AVRational){s1->pan_scan.width, s1->pan_scan.height}
+                         r2
+                        );
+                    s->avctx->sample_aspect_ratio=
+                        // Dity workaround
+                        // This is wrong, but often used. Let ffdshow chose either r2 or r1.
+                        av_div_q(
+                         ff_mpeg2_aspect[s->aspect_ratio_info],
+                         r1
                         );
                 }
+                /* ffdshow custom code end */
             }else{
                 s->avctx->sample_aspect_ratio=
                     ff_mpeg2_aspect[s->aspect_ratio_info];
@@ -1414,7 +1432,18 @@ static void mpeg_decode_sequence_extension(Mpeg1Context *s1)
 
     s1->frame_rate_ext.num = get_bits(&s->gb, 2)+1;
     s1->frame_rate_ext.den = get_bits(&s->gb, 5)+1;
+	
+    // ffdshow custom code begin (moved from mpeg_decode_postinit)
+    // MPEG-2 fps
+    av_reduce(
+        &s->avctx->time_base.den,
+        &s->avctx->time_base.num,
+        ff_frame_rate_tab[s->frame_rate_index].num * s1->frame_rate_ext.num,
+        ff_frame_rate_tab[s->frame_rate_index].den * s1->frame_rate_ext.den,
+        1<<30);
+    // ffdshow custom code end
 
+	
     dprintf(s->avctx, "sequence extension\n");
     s->codec_id= s->avctx->codec_id= CODEC_ID_MPEG2VIDEO;
     s->avctx->sub_id = 2; /* indicates MPEG-2 found */
@@ -2158,7 +2187,7 @@ static void mpeg_decode_gop(AVCodecContext *avctx,
  * Finds the end of the current frame in the bitstream.
  * @return the position of the first byte of the next frame, or -1
  */
-int ff_mpeg1_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size, AVCodecParserContext *s)
+int ff_mpeg1_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size, AVCodecParserContext *s, int64_t *rtStart, AVCodecContext *avctx) /* rtStart,avctx: ffdshow custom code */
 {
     int i;
     uint32_t state= pc->state;
@@ -2190,10 +2219,19 @@ int ff_mpeg1_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size, 
             if(pc->frame_start_found==0 && state >= SLICE_MIN_START_CODE && state <= SLICE_MAX_START_CODE){
                 i++;
                 pc->frame_start_found=4;
+				
+				pc->rtStart = *rtStart; /* ffdshow custom code */
+                *rtStart = INT64_MIN;    /* ffdshow custom code */
             }
             if(state == SEQ_END_CODE){
                 pc->state=-1;
-                return i+1;
+                /* ffdshow custom code (i-3 instead of i+1) */
+                /* DVDs won't send the next frame start on still images */
+                /* SEQ_END_CODE will have to stay at the beginning of the next frame */
+                if (avctx->isDVD)
+                    return i-3;
+                else
+                    return i+1;
             }
             if(pc->frame_start_found==2 && state == SEQ_START_CODE)
                 pc->frame_start_found= 0;
@@ -2243,7 +2281,7 @@ static int mpeg_decode_frame(AVCodecContext *avctx,
     }
 
     if(s2->flags&CODEC_FLAG_TRUNCATED){
-        int next= ff_mpeg1_find_frame_end(&s2->parse_context, buf, buf_size, NULL);
+        int next = ff_mpeg1_find_frame_end(&s2->parse_context, buf, buf_size, NULL, avctx->parserRtStart, avctx); /* avctx->parserRtStart: ffdshow custom code */
 
         if( ff_combine_frame(&s2->parse_context, next, (const uint8_t **)&buf, &buf_size) < 0 )
             return buf_size;

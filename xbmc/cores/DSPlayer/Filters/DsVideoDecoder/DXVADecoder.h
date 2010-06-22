@@ -27,7 +27,7 @@
 #include <dxva2api.h>
 #include "streams.h"
 #include <videoacc.h>
-
+#include "Codecs/DllAvCodec.h"
 typedef enum
 {
 	ENGINE_DXVA1,

@@ -39,10 +39,10 @@
 #ifndef SAFE_DELETE_ARRAY
 #define SAFE_DELETE_ARRAY(p) { delete[] (p);   (p)=NULL; }
 #endif
-extern "C"
+/*extern "C"
 {
 	#include "ffmpegctx.h"
-}
+}*/
 
 #define MAX_RETRY_ON_PENDING		50
 #define DO_DXVA_PENDING_LOOP(x)		nTry = 0; \
@@ -235,9 +235,6 @@ HRESULT CDXVADecoder::AddExecuteBuffer (DWORD CompressedBufferType, UINT nSize, 
 	DWORD			dwNumMBs	= 0;
 	BYTE*			pDXVABuffer;
 
-	//if (CompressedBufferType != DXVA2_PictureParametersBufferType && CompressedBufferType != DXVA2_InverseQuantizationMatrixBufferType)
-	//	dwNumMBs = FFGetMBNumber (m_pFilter->GetAVCtx());
-
 	switch (m_nEngine)
 	{
 	case ENGINE_DXVA1 :
@@ -328,9 +325,6 @@ HRESULT CDXVADecoder::Execute()
 	case ENGINE_DXVA1 :
 		DWORD			dwFunction;
 		HRESULT			hr2;
-
-//		writeDXVA_QueryOrReplyFunc (&dwFunction, DXVA_QUERYORREPLYFUNCFLAG_DECODER_LOCK_QUERY, DXVA_PICTURE_DECODING_FUNCTION);
-//		hr = m_pAMVideoAccelerator->Execute (dwFunction, &m_DXVA1Config, sizeof(DXVA_ConfigPictureDecode), NULL, 0, m_dwNumBuffersInfo, m_DXVA1BufferInfo);
 
 		DWORD		dwResult;
 		dwFunction = 0x01000000;

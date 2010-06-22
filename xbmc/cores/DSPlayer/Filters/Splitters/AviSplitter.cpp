@@ -24,7 +24,7 @@
 #include <mmreg.h>
 #include "AviFile.h"
 #include "AviSplitter.h"
-
+#include "limits.h"
 //
 // CAviSplitterFilter
 //
@@ -486,7 +486,7 @@ bool CAviSplitterFilter::DemuxLoop()
         size = s->cs[f].orgsize;
       }
 
-      auto_ptr<Packet> p(DNew Packet());
+      Packet* p = new Packet(size);
 
       p->TrackNumber = minTrack;
       p->bSyncPoint = (BOOL)s->cs[f].fKeyFrame;
@@ -494,8 +494,8 @@ bool CAviSplitterFilter::DemuxLoop()
       p->rtStart = s->GetRefTime(f, s->cs[f].size);
       p->rtStop = s->GetRefTime(f+1, f+1 < (DWORD)s->cs.size() ? s->cs[f+1].size : s->totalsize);
       
-      p->resize(size);
-      if(S_OK != (hr = m_pFile->ByteRead(&p->at(0), p->size()))) 
+      //p->resize(size);
+      if(S_OK != (hr = m_pFile->ByteRead(p->pInputBuffer, p->pInputBufferSize))) 
         return(true); // break;
 /*
       DbgLog((LOG_TRACE, 0, _T("%d (%d): %I64d - %I64d, %I64d - %I64d (size = %d)"), 

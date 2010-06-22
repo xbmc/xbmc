@@ -35,40 +35,107 @@
 #include "Subtitles/DSUtil/DSMPropertyBag.h"
 #include "Subtitles/DSUtil/FontInstaller.h"
 #include "Filters/XBMCFileReader.h"
-#include <boost/shared_ptr.hpp>
+//#include <boost/shared_ptr.hpp>
 
 using namespace std;
 using namespace boost;
 
-class Packet : public vector<BYTE>
+typedef struct DsPacketStruct
+{
+  BYTE* pInputBuffer;    // data
+  int   pInputBufferSize; // data size
+  REFERENCE_TIME rtStart; //start time
+  REFERENCE_TIME rtStop;  //stop time
+  ;
+} DsPacketStruct;
+
+class Packet : public DsPacketStruct
 {
 public:
+  Packet(int packetSize = 0)
+  {
+    pmt = NULL;
+    pInputBuffer = NULL;
+    pInputBufferSize = packetSize;
+    if (packetSize > 0)
+      pInputBuffer = (BYTE*)_aligned_malloc(packetSize, 16);
+    
+    bDiscontinuity = FALSE;
+    bAppendable = FALSE;
+  }
+	virtual ~Packet() 
+  {
+    if(pmt) 
+      DeleteMediaType(pmt);
+    free(pInputBuffer);
+  }
+  Packet* operator=(Packet* pkt)
+  {
+    ASSERT(this != pkt);
+    pInputBuffer = (BYTE*)_aligned_malloc(pkt->pInputBufferSize, 16);
+    pInputBuffer = pkt->pInputBuffer;
+    pInputBufferSize = pkt->pInputBufferSize;
+  }
+  
 	DWORD TrackNumber;
 	BOOL bDiscontinuity, bSyncPoint, bAppendable;
 	static const REFERENCE_TIME INVALID_TIME = _I64_MIN;
-	REFERENCE_TIME rtStart, rtStop;
 	AM_MEDIA_TYPE* pmt;
-	Packet() {pmt = NULL; bDiscontinuity = bAppendable = FALSE;}
-	virtual ~Packet() {if(pmt) DeleteMediaType(pmt);}
-	virtual int GetDataSize() {return size();}
+  bool empty() {if (pInputBufferSize == 0) return true; else return false; }
+
+  void setsize(int size)
+  {
+    pInputBuffer = (BYTE*)_aligned_malloc(size, 16);
+    pInputBufferSize = size;
+    
+  }
+  void resize(int newsize)
+  {
+    ASSERT(0);
+    //set size and resize
+
+  }
+  
+  void RemoveAt(size_t index, size_t count = 1)
+  {
+    size_t newcount = index + count;
+    size_t nMoveCount = pInputBufferSize - newcount;
+    memmove_s(pInputBuffer + index, nMoveCount * sizeof(BYTE), pInputBuffer + newcount, nMoveCount * sizeof(BYTE));
+    pInputBufferSize -= count;
+  }
+
+  //Return the data of the packet
+  BYTE* GetData() {return pInputBuffer;}
 	void SetData(const void* ptr, DWORD len) 
   {
     resize(len); 
     memcpy(&this[0], ptr, len);
   }
+  
+  void Append(Packet* pkt)
+  {
+    int newsize = pInputBufferSize + pkt->pInputBufferSize;
+    //if current packet is empty just alloc a new one
+    pInputBuffer = pInputBuffer ? (BYTE*)_aligned_realloc(pInputBuffer, newsize, 16) : (BYTE*)_aligned_malloc(pkt->pInputBufferSize, 16);
+    //copy data at the end of the current buffer
+    memcpy(pInputBuffer + pInputBufferSize, pkt->pInputBuffer, pkt->pInputBufferSize);
+    //set the new size of the current buffer
+    pInputBufferSize += pkt->pInputBufferSize;
+    
+  }
 };
 
 class CPacketQueue 
   : public CCritSec,
-    protected std::list<boost::shared_ptr<Packet>>
+    public std::list<Packet*>
 {
   int m_size;
 public:
   CPacketQueue();
-  void Add(boost::shared_ptr<Packet> p);
-  boost::shared_ptr<Packet> Remove();
+  void Add(Packet* p);
+  Packet* Remove();
   void RemoveAll();
-  int size(), GetSize();
+  int GetSize();
   
 };
 
@@ -144,7 +211,7 @@ protected:
 
   // override this if you need some second level stream specific demuxing (optional)
   // the default implementation will send the sample as is
-  virtual HRESULT DeliverPacket(boost::shared_ptr<Packet> p);
+  virtual HRESULT DeliverPacket(Packet* p);
 
   // IMediaSeeking
 
@@ -198,7 +265,7 @@ public:
   int QueueCount();
   int QueueSize();
   HRESULT QueueEndOfStream();
-  HRESULT QueuePacket(auto_ptr<Packet> p);
+  HRESULT QueuePacket(Packet* p);
 
   // returns true for everything which (the lack of) would not block other streams (subtitle streams, basically)
   virtual bool IsDiscontinuous();
@@ -265,7 +332,7 @@ protected:
 
   void DeliverBeginFlush();
   void DeliverEndFlush();
-  HRESULT DeliverPacket(auto_ptr<Packet> p);
+  HRESULT DeliverPacket(Packet* p);
 
   DWORD m_priority;
 

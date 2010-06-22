@@ -73,7 +73,6 @@ class CXBMCVideoDecFilter
 	: public CBaseVideoFilter
 {
 protected:
-
 	// === FFMpeg callbacks
 	static void		LogLibAVCodec(void* par,int level,const char *fmt,va_list valist);
 	virtual void	OnGetBuffer(AVFrame *pic);
@@ -95,15 +94,15 @@ protected:
 	int										m_nDXVACheckCompatibility;
 
 	// === FFMpeg variables
-	AVCodec*								m_pAVCodec;
-	AVCodecContext*							m_pAVCtx;
-	AVFrame*								m_pFrame;
+	AVCodec*							m_pAVCodec;
+	AVCodecContext*				m_pAVCtx;
+	AVFrame*							m_pFrame;
 	int										m_nCodecNb;
 	int										m_nWorkaroundBug;
 	int										m_nErrorConcealment;
-	REFERENCE_TIME							m_rtAvrTimePerFrame;
+	REFERENCE_TIME				m_rtAvrTimePerFrame;
 	bool									m_bReorderBFrame;
-	B_FRAME									m_BFrames[2];
+	B_FRAME								m_BFrames[2];
 	int										m_nPosB;
 	int										m_nWidth;				// Frame width give to input pin
 	int										m_nHeight;				// Frame height give to input pin
@@ -171,12 +170,10 @@ protected:
 	void				PushBufferTime(int nPos, REFERENCE_TIME& rtStart, REFERENCE_TIME& rtStop);
 	void				PopBufferTime(int nPos);
 
-  DllAvFormat m_dllAvFormat;
+public:
   DllAvCodec m_dllAvCodec;
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
-public:
-
 	const static AMOVIESETUP_MEDIATYPE		sudPinTypesIn[];
 	const static int						sudPinTypesInCount;
 	const static AMOVIESETUP_MEDIATYPE		sudPinTypesOut[];

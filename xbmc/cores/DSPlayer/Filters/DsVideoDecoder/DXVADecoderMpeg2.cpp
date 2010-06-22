@@ -27,11 +27,6 @@
 #include "DXVADecoderMpeg2.h"
 #include "XBMCVideoDecFilter.h"
 
-extern "C"
-{
-	#include "ffmpegctx.h"
-}
-
 #if 0
 	#define TRACE_MPEG2		TRACE
 #else
@@ -88,9 +83,9 @@ HRESULT CDXVADecoderMpeg2::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIM
 	Com::SmartPtr<IMediaSample>		pSampleToDeliver;
 	int							nFieldType = -1;
 	int							nSliceType = -1;;
-
-	//FFMpeg2DecodeFrame (&m_PictureParams, &m_QMatrixData, m_SliceInfo, &m_nSliceCount, m_pFilter->GetAVCtx(), 
-//						m_pFilter->GetFrame(), &m_nNextCodecIndex, &nFieldType, &nSliceType, pDataIn, nSize);
+/*No way im not adding the mpc-hc uber ugly patch*/
+	/*FFMpeg2DecodeFrame (&m_PictureParams, &m_QMatrixData, m_SliceInfo, &m_nSliceCount, m_pFilter->GetAVCtx(), 
+						m_pFilter->GetFrame(), &m_nNextCodecIndex, &nFieldType, &nSliceType, pDataIn, nSize);*/
 
 	// Wait I frame after a flush
 	if (m_bFlushed && ! m_PictureParams.bPicIntra)
@@ -107,9 +102,9 @@ HRESULT CDXVADecoderMpeg2::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIM
 
 	UpdatePictureParams(nSurfaceIndex);
 
-	TRACE_MPEG2 ("=> %s   %I64d  Surf=%d\n", GetFFMpegPictureType(nSliceType), rtStart, nSurfaceIndex);
+	//CLog::DebugLog("=> %s   %I64d  Surf=%d\n", GetFFMpegPictureType(nSliceType), rtStart, nSurfaceIndex);
 
-	TRACE_MPEG2("CDXVADecoderMpeg2 : Decode frame %i\n", m_PictureParams.bPicScanMethod);
+  //CLog::DebugLog("CDXVADecoderMpeg2 : Decode frame %i\n", m_PictureParams.bPicScanMethod);
 
 	CHECK_HR (AddExecuteBuffer (DXVA2_PictureParametersBufferType, sizeof(m_PictureParams), &m_PictureParams));
 
@@ -122,9 +117,9 @@ HRESULT CDXVADecoderMpeg2::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIM
 	// Decode frame
 	CHECK_HR (Execute());
 	CHECK_HR (EndFrame(nSurfaceIndex));
-
-	//AddToStore (nSurfaceIndex, pSampleToDeliver, (m_PictureParams.bPicBackwardPrediction != 1), rtStart, rtStop, 
-				//false,(FF_FIELD_TYPE)nFieldType, (FF_SLICE_TYPE)nSliceType, FFGetCodedPicture(m_pFilter->GetAVCtx()));
+/*This decoder need a better patch in ffmpeg*/
+	/*AddToStore (nSurfaceIndex, pSampleToDeliver, (m_PictureParams.bPicBackwardPrediction != 1), rtStart, rtStop, 
+				false,(FF_FIELD_TYPE)nFieldType, (FF_SLICE_TYPE)nSliceType, FFGetCodedPicture(m_pFilter->GetAVCtx()));*/
 	m_bFlushed = false;
 done:
 	return DisplayNextFrame();

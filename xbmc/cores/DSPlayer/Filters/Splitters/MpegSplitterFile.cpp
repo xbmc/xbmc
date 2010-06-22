@@ -176,7 +176,6 @@ HRESULT CMpegSplitterFile::Init()
 			}
 			else if((b&0xe0) == 0xc0 // audio, 110xxxxx, mpeg1/2/3
 				|| (b&0xf0) == 0xe0 // video, 1110xxxx, mpeg1/2
-				// || (b&0xbd) == 0xbd) // private stream 1, 0xbd, ac3/dts/lpcm/subpic
 				|| b == 0xbd) // private stream 1, 0xbd, ac3/dts/lpcm/subpic
 			{
 				peshdr h;
@@ -762,12 +761,12 @@ DWORD CMpegSplitterFile::AddStream(WORD pid, BYTE pesid, DWORD len)
 void CMpegSplitterFile::AddHdmvPGStream(WORD pid, const char* language_code)
 {
 	stream s;
-
 	s.pid		= pid;
 	s.pesid		= 0xbd;
 
 	CMpegSplitterFile::hdmvsubhdr h;
-	if(!m_streams[subpic].Find(s) && Read(h, &s.mt, language_code))
+  //dont add the crappy fake subtitle pin
+	if(pid != NO_SUBTITLE_PID && !m_streams[subpic].Find(s) && Read(h, &s.mt, language_code))
 	{
 		m_streams[subpic].Insert(s, this);
 	}

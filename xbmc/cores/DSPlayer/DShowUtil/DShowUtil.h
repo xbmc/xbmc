@@ -23,7 +23,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
 #include <streams.h>
 
 #include <strsafe.h>
@@ -103,20 +102,11 @@
 #define MAXDWORD64  ((DWORD64)~((DWORD64)0))
 
 #endif // _WIN32_WINNT < 0x0600
-#ifdef _DEBUG
-  #define DNew new
-#else
-  #define DNew new
-#endif
+
+#define DNew new
 
 #define QI(i) (riid == __uuidof(i)) ? GetInterface((i*)this, ppv) :
 #define QI2(i) (riid == IID_##i) ? GetInterface((i*)this, ppv) :
-
-#ifdef _DEBUG
-  #define DNew new
-#else
-  #define DNew new
-#endif
 
 #define LCID_NOSUBTITLES      -1
 
@@ -248,38 +238,6 @@ public:
   static CStdString WToT(CStdStringW str);
   static CStdStringA TToA(CStdString str);
   static CStdStringW TToW(CStdString str);
-};
-
-//this class coming from ffdshow tryout
-class TsearchInterfaceInGraph
-{
-// IFilterGraph::EnumFilters can freeze if it is called from streaming thread.
-// This class is work around for it.
-// Create a thread to execute IFilterGraph::EnumFilters and if it seems to be freezing, skip it.
-// So return value is not always correct. Check waitSucceeded().
-// In case of freezes, the thread is likely to return until next sample is delivered.
-private:
- IFilterGraph *graph;
- IID iid;
- IUnknown *dest;
- HANDLE hThread;
- DWORD waitResult;
- static unsigned int __stdcall searchFilterInterfaceThreadEntry(void *self);
- bool (*searchInterfaceFunc)(IFilterGraph *graph,const IID &iid,IUnknown **dest);
-public:
- TsearchInterfaceInGraph(IFilterGraph *Igraph,const IID &Iiid,bool (*IsearchInterfaceFunc)(IFilterGraph *graph,const IID &iid,IUnknown **dest)):
-   graph(Igraph),
-   iid(Iiid),
-   hThread(NULL),
-   searchInterfaceFunc(IsearchInterfaceFunc)
-  {
-  }
- ~TsearchInterfaceInGraph();
- bool getResult(IUnknown* *Idest);
- bool waitSucceeded(void)
-  {
-   return waitResult == WAIT_OBJECT_0;
-  }
 };
 
 class DShowVideoInfo

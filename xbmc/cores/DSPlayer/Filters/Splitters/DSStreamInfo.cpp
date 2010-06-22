@@ -20,7 +20,7 @@
  */
 
 #include "DSStreamInfo.h"
-
+#include "application.h"
 #include "DVDPlayer/DVDCodecs/DVDCodecs.h"
 #include "DVDPlayer/DVDDemuxers/DVDDemux.h"
 #include "DVDPlayer/DVDDemuxers/DVDDemuxFFmpeg.h"
@@ -33,7 +33,7 @@ extern "C"
   #include "libavformat/avformat.h"
 }
 
-typedef CMediaType (WINAPI *funcGetMpeg2Header)(LPCOLESTR pszFileName);
+
 #include "DShowUtil/DShowUtil.h"
 CDSStreamInfo::CDSStreamInfo()                                                     { extradata = NULL; Clear(); }
 CDSStreamInfo::CDSStreamInfo(const CDSStreamInfo &right, bool withextradata, const char *containerFormat)     { extradata = NULL; Clear(); Assign(right, withextradata, containerFormat); }
@@ -171,7 +171,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const 
   codec_id = right.codec;
   type = right.type;
   RECT empty_tagrect = {0,0,0,0};
-  m_dllAvCodec.Load(); m_dllAvFormat.Load(); m_dllAvCodec.Load();
+  m_dllAvCodec.Load(); m_dllAvFormat.Load(); m_dllAvCodec.Load(); m_dllAvUtil.Load();
   if( withextradata && right.ExtraSize )
   {
     extrasize = right.ExtraSize;
@@ -185,8 +185,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const 
   {
     PinNameW = L"Audio";
     const CDemuxStreamAudio *stream = static_cast<const CDemuxStreamAudio*>(&right);
-    AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
-    
+    AVStream *avstream = static_cast<AVStream*>(stream->pPrivate);
     
     mtype = g_GuidHelper.initAudioType(avstream->codec->codec_id);
     //Link to WAVEFORMATEX structure
@@ -199,12 +198,32 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const 
     //av_codec_get_tag
     if(avstream->codec->codec_tag == MKTAG('m', 'p', '4', 'a'))
       avstream->codec->codec_tag = 0;
-    if(!avstream->codec->codec_tag)
-      avstream->codec->codec_tag = m_dllAvFormat.av_codec_get_tag(mp_wav_taglists, avstream->codec->codec_id);
-    wvfmt->wFormatTag= avstream->codec->codec_tag;
 
-    if (mtype.subtype == GUID_NULL)
-      mtype.subtype = FOURCCMap(avstream->codec->codec_tag);
+    //if(!avstream->codec->codec_tag)
+      //avstream->codec->codec_tag = m_dllAvFormat.av_codec_get_tag(mp_wav_taglists, avstream->codec->codec_id);
+    mtype.subtype = FOURCCMap(m_dllAvFormat.av_codec_get_tag(mp_wav_taglists, avstream->codec->codec_id));
+    if (avstream->codec->codec_id == CODEC_ID_AAC)
+    {
+      WAVEFORMATEX* wfe = (WAVEFORMATEX*)new BYTE[sizeof(WAVEFORMATEX)+5];
+	    memset(wfe, 0, sizeof(WAVEFORMATEX)+5);
+	    wfe->wFormatTag = WAVE_FORMAT_AAC;
+	    wfe->nChannels = avstream->codec->channels <= 6 ? avstream->codec->channels : 2;
+    	wfe->nSamplesPerSec = avstream->codec->sample_rate;
+	    wfe->nBlockAlign = avstream->pts_wrap_bits;//not sure but seems to work for all the sample i have
+      
+	    wfe->nAvgBytesPerSec = 1546;//To fix
+	    wfe->cbSize = DShowUtil::MakeAACInitData((BYTE*)(wfe+1), 1, wfe->nSamplesPerSec, wfe->nChannels);//to fix get the profile correctly
+        //DShowUtil::MakeAACInitData((BYTE*)(wfe+1), h.profile, wfe->nSamplesPerSec, wfe->nChannels);
+      mtype.SetFormatType(&FORMAT_WaveFormatEx);
+      mtype.SetFormat((BYTE*)wfe, sizeof(WAVEFORMATEX)+wfe->cbSize);
+      return;
+      
+
+    }
+    wvfmt->wFormatTag= mtype.subtype.Data1;
+
+    
+      
 
     wvfmt->nChannels = avstream->codec->channels;
     wvfmt->nSamplesPerSec = avstream->codec->sample_rate;
@@ -229,7 +248,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const 
     
     wvfmt->nAvgBytesPerSec= wvfmt->nSamplesPerSec * wvfmt->nBlockAlign;
 
-    wvfmt->cbSize = avstream->codec->extradata_size;
+    wvfmt->cbSize = avstream->codec->extradata_size + sizeof(WAVEFORMATEX);
     if (avstream->codec->extradata_size > 0)
     {
       memcpy(wvfmt + 1, avstream->codec->extradata, avstream->codec->extradata_size);
@@ -250,7 +269,7 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const 
   /****************/
   else if(  right.type == STREAM_VIDEO )
   {
-      PinNameW = L"Video";
+    PinNameW = L"Video";
     const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(&right);
     AVStream* avstream = static_cast<AVStream*>(stream->pPrivate);
   
@@ -391,19 +410,13 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const 
       mtype.pbFormat = g_GuidHelper.ConvertVIHtoMPEG2VI(vih, &mtype.cbFormat, (ContainerFormat == "mpegts"));
       if (ContainerFormat == "mpegts")
       {
+        //Its not harder than that
         MPEG2VIDEOINFO *mp2type = (MPEG2VIDEOINFO*)mtype.pbFormat;
         mp2type->dwFlags = 4;
         mp2type->dwLevel = avstream->codec->level;
         mp2type->dwProfile = avstream->codec->profile;
         
       }
-      //LPCOLESTR fname(L"H:\\Downloads\\Videosamples\\NotWorking\\TEST_7.1_DTS-HD_HR.m2ts");
-      
-      //HMODULE hDs = LoadLibrary("XBMCFFmpegParser.dll");
-      //funcGetMpeg2Header funcGetmpg2 = (funcGetMpeg2Header) GetProcAddress(hDs, "GetMpeg2MediaType");
-      //CMediaType mtt = funcGetmpg2(fname);
-      //mtype.Set(mtt);
-      
       // Free the vih again
       CoTaskMemFree(vih);
 }

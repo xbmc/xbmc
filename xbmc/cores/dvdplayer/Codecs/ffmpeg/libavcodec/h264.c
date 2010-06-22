@@ -855,22 +855,17 @@ int ff_h264_decode_extradata(H264Context *h)
 {
     AVCodecContext *avctx = h->s.avctx;
 
-    if(*(char *)avctx->extradata == 1){
+    /* ffdshow custom code */
+    if(*(char *)avctx->extradata == 1 || avctx->codec_tag == 0x31637661 || avctx->codec_tag == 0x31435641) {
         int i, cnt, nalsize;
         unsigned char *p = avctx->extradata;
+        unsigned char *pend=p+avctx->extradata_size;
 
         h->is_avc = 1;
 
-        if(avctx->extradata_size < 7) {
-            av_log(avctx, AV_LOG_ERROR, "avcC too short\n");
-            return -1;
-        }
-        /* sps and pps in the avcC always have length coded with 2 bytes,
-           so put a fake nal_length_size = 2 while parsing them */
         h->nal_length_size = 2;
-        // Decode sps from avcC
-        cnt = *(p+5) & 0x1f; // Number of sps
-        p += 6;
+        cnt = 1;
+
         for (i = 0; i < cnt; i++) {
             nalsize = AV_RB16(p) + 2;
             if(decode_nal_units(h, p, nalsize) < 0) {
@@ -880,8 +875,7 @@ int ff_h264_decode_extradata(H264Context *h)
             p += nalsize;
         }
         // Decode pps from avcC
-        cnt = *(p++); // Number of pps
-        for (i = 0; i < cnt; i++) {
+        for (i = 0; p<pend-2; i++) {
             nalsize = AV_RB16(p) + 2;
             if(decode_nal_units(h, p, nalsize)  != nalsize) {
                 av_log(avctx, AV_LOG_ERROR, "Decoding pps %d from avcC failed\n", i);
@@ -890,7 +884,7 @@ int ff_h264_decode_extradata(H264Context *h)
             p += nalsize;
         }
         // Now store right nal length size, that will be use to parse all other nals
-        h->nal_length_size = ((*(((char*)(avctx->extradata))+4))&0x03)+1;
+        h->nal_length_size = avctx->nal_length_size ? avctx->nal_length_size : 4; //((*(((char*)(avctx->extradata))+4))&0x03)+1;
     } else {
         h->is_avc = 0;
         if(decode_nal_units(h, avctx->extradata, avctx->extradata_size) < 0)
@@ -916,6 +910,13 @@ av_cold int ff_h264_decode_init(AVCodecContext *avctx){
     s->quarter_sample = 1;
     if(!avctx->has_b_frames)
     s->low_delay= 1;
+	
+    /* ffdshow custom code (begin) */
+    if(avctx->codec_id == CODEC_ID_SVQ3)
+        avctx->pix_fmt= PIX_FMT_YUVJ420P;
+    else
+        avctx->pix_fmt= PIX_FMT_YUV420P;
+    /* ffdshow custom code (end) */
 
     avctx->chroma_sample_location = AVCHROMA_LOC_LEFT;
 
@@ -1899,6 +1900,30 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
     }
     h->mb_field_decoding_flag= s->picture_structure != PICT_FRAME;
 
+	/* ffdshow custom code begin */
+    //
+    // Workaround Haali's media splitter (http://forum.doom9.org/showthread.php?p=1226434#post1226434)
+    //
+    // Disallow unpaired field referencing just after seeking.
+    // This rule is applied only if h->has_to_drop_first_non_ref == 3.
+    // This is wrong because an unpaired field is allowed to be a reference field.
+    // And that's why this is optional and tried to be minimized.
+    if (h->has_to_drop_first_non_ref == 1 && s->dropable){
+        if (FIELD_PICTURE){
+            h->has_to_drop_first_non_ref = 2;
+        }else{
+            h->has_to_drop_first_non_ref = 0;
+        }
+    } else if (h->has_to_drop_first_non_ref == 2){
+        if (FIELD_PICTURE && !s->dropable)
+            h->has_to_drop_first_non_ref = 3;
+        else if (!FIELD_PICTURE)
+            h->has_to_drop_first_non_ref = 0;
+    } else if (h->has_to_drop_first_non_ref == 3){
+        h->has_to_drop_first_non_ref = 0;
+    }
+    /* ffdshow custom code end */
+	
     if(h0->current_slice == 0){
         while(h->frame_num !=  h->prev_frame_num &&
               h->frame_num != (h->prev_frame_num+1)%(1<<h->sps.log2_max_frame_num)){
@@ -1927,9 +1952,10 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
                 s0->first_field = FIELD_PICTURE;
 
             } else {
-                if (h->nal_ref_idc &&
+                if ((h->nal_ref_idc &&
                         s0->current_picture_ptr->reference &&
-                        s0->current_picture_ptr->frame_num != h->frame_num) {
+                        s0->current_picture_ptr->frame_num != h->frame_num) ||
+                        h->has_to_drop_first_non_ref == 3) { /* ffdshow custom code */
                     /*
                      * This and previous field were reference, but had
                      * different frame_nums. Consider this field first in
@@ -3085,7 +3111,9 @@ static int decode_frame(AVCodecContext *avctx,
                     cur->top_field_first = 0;
                 }
             }
-
+            /* ffdshow custom code */
+            cur->video_full_range_flag = h->sps.full_range;
+            cur->YCbCr_RGB_matrix_coefficients = h->sps.colorspace;
         //FIXME do something with unavailable reference frames
 
             /* Sort B-frames into display order */
@@ -3154,7 +3182,13 @@ static int decode_frame(AVCodecContext *avctx,
 
     assert(pict->data[0] || !*data_size);
     ff_print_debug_info(s, pict);
-//printf("out %d\n", (int)pict->data[0]);
+    
+	/* ffdshow custom code (begin) */
+    pict->h264_poc_decoded = h->poc_lsb + h->poc_msb;
+    pict->h264_poc_outputed = h->outputed_poc;
+    pict->h264_frame_num_decoded = h-> frame_num;
+    pict->h264_max_frame_num = 1 << h->sps.log2_max_frame_num;
+    /* ffdshow custom code (end) */
 
     return get_consumed_bytes(s, buf_index, buf_size);
 }
@@ -3353,6 +3387,151 @@ int main(void){
 }
 #endif /* TEST */
 
+/**
+ * ffdshow custom stuff (based on decode_nal_units)
+ *
+ * @param[out] recovery_frame_cnt. Valid only if GDR.
+ * @return   0: no recovery point, 1:I-frame 2:Recovery Point SEI (GDR), 3:IDR, -1:error
+ */
+int avcodec_h264_search_recovery_point(AVCodecContext *avctx,
+                         const uint8_t *buf, int buf_size, int *recovery_frame_cnt)
+{
+    H264Context *h = avctx->priv_data;
+    MpegEncContext *s = &h->s;
+    int buf_index = 0;
+    int found = 0; // 0: no recovery point, 1:Recovery Point SEI (GDR), 2:IDR
+    H264Context *hx;
+    int Islice_detected = 0;
+
+    h->nal_length_size = avctx->nal_length_size ? avctx->nal_length_size : 4;
+
+    for(;;){
+        int consumed;
+        int dst_length;
+        int bit_length;
+        const uint8_t *ptr;
+        int i, nalsize = 0;
+        int err;
+
+        if(h->is_avc) {
+            if(buf_index >= buf_size) break;
+            nalsize = 0;
+            for(i = 0; i < h->nal_length_size; i++)
+                nalsize = (nalsize << 8) | buf[buf_index++];
+            if(nalsize <= 1 || (nalsize+buf_index > buf_size)){
+                if(nalsize == 1){
+                    buf_index++;
+                    continue;
+                }else{
+                    av_log(h->s.avctx, AV_LOG_ERROR, "AVC: nal size %d\n", nalsize);
+                    break;
+                }
+            }
+        } else {
+            // start code prefix search
+            for(; buf_index + 3 < buf_size; buf_index++){
+                // This should always succeed in the first iteration.
+                if(buf[buf_index] == 0 && buf[buf_index+1] == 0 && buf[buf_index+2] == 1)
+                    break;
+            }
+
+            if(buf_index+3 >= buf_size) break;
+
+            buf_index+=3;
+        }
+
+        hx = h->thread_context[0];
+
+        // h->nal_ref_idc = buf[buf_index] >> 5;
+        // h->nal_unit_type = src[buf_index] & 0x1F;
+
+        ptr= ff_h264_decode_nal(hx, buf + buf_index, &dst_length, &consumed, h->is_avc ? nalsize : buf_size - buf_index);
+        if (ptr==NULL || dst_length < 0){
+            return -1;
+        }
+        while(ptr[dst_length - 1] == 0 && dst_length > 0)
+            dst_length--;
+        bit_length= !dst_length ? 0 : (8*dst_length - ff_h264_decode_rbsp_trailing(h, ptr + dst_length - 1));
+
+        if (h->is_avc && (nalsize != consumed)){
+            av_log(h->s.avctx, AV_LOG_ERROR, "AVC: Consumed only %d bytes instead of %d\n", consumed, nalsize);
+            consumed= nalsize;
+        }
+
+        buf_index += consumed;
+
+
+        switch(hx->nal_unit_type){
+        case NAL_IDR_SLICE:
+            return 3;
+        case NAL_SEI:
+            if (ptr[0] == 6/* Recovery Point SEI */){
+                init_get_bits(&s->gb, ptr, bit_length);
+                ff_h264_decode_sei(h);
+                if (found < 2)
+                    found = 2;
+                break;
+            }
+            break;
+        case NAL_SPS:
+            init_get_bits(&s->gb, ptr, bit_length);
+            ff_h264_decode_seq_parameter_set(h);
+
+            if(s->flags& CODEC_FLAG_LOW_DELAY)
+                s->low_delay=1;
+
+            if(avctx->has_b_frames < 2)
+                avctx->has_b_frames= !s->low_delay;
+            break;
+        case NAL_PPS:
+            init_get_bits(&s->gb, ptr, bit_length);
+
+            ff_h264_decode_picture_parameter_set(h, bit_length);
+
+            break;
+        case NAL_AUD:
+        {
+            int primary_pic_type;
+            init_get_bits(&s->gb, ptr, bit_length);
+            primary_pic_type = get_bits(&s->gb, 3);
+            if (found == 0 && (primary_pic_type == 0 || primary_pic_type == 3)) // I-frame (all I/SI slices)
+                found = 1;
+            break;
+        }
+        case NAL_SLICE:
+        case NAL_DPA:
+            // decode part of slice header and find I frame
+            if (found == 0){
+                unsigned int slice_type;
+
+                init_get_bits(&s->gb, ptr, bit_length);
+                get_ue_golomb(&s->gb); // first_mb_in_slice
+                slice_type= get_ue_golomb(&s->gb);
+                if (slice_type == 2 || slice_type == 4 || slice_type == 7 || slice_type == 9) // I/SI slice
+                 Islice_detected = 1;
+                else
+                 return 0;
+                break;
+            }
+        case NAL_DPB:
+        case NAL_DPC:
+        case NAL_END_SEQUENCE:
+        case NAL_END_STREAM:
+        case NAL_FILLER_DATA:
+        case NAL_SPS_EXT:
+        case NAL_AUXILIARY_SLICE:
+            break;
+        default:
+            av_log(avctx, AV_LOG_DEBUG, "Unknown NAL code: %d (%d bits)\n", h->nal_unit_type, bit_length);
+        }
+
+    }
+    if (found == 0 && Islice_detected)
+     found = 1;
+    *recovery_frame_cnt = h->sei_recovery_frame_cnt;
+    return found;
+}
+
 
 av_cold void ff_h264_free_context(H264Context *h)
 {
@@ -3395,7 +3574,7 @@ AVCodec h264_decoder = {
     .flush= flush_dpb,
     .long_name = NULL_IF_CONFIG_SMALL("H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10"),
 };
-
+#include "h264_dxva.c"
 #if CONFIG_H264_VDPAU_DECODER
 AVCodec h264_vdpau_decoder = {
     "h264_vdpau",
