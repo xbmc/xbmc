@@ -87,13 +87,15 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       if (m_scraper != last)
         SetupPage();
 
-      m_bNeedSave = m_scraper != last;
+      if (m_scraper != last)
+        m_bNeedSave = true;
       CONTROL_ENABLE_ON_CONDITION(CONTROL_SCRAPER_SETTINGS, m_scraper->HasSettings());
       SET_CONTROL_FOCUS(CONTROL_START,0);
     }
     if (iControl == CONTROL_SCRAPER_SETTINGS)
     {
-      m_bNeedSave = CGUIDialogAddonSettings::ShowAndGetInput(m_scraper, false);
+      if (CGUIDialogAddonSettings::ShowAndGetInput(m_scraper, false))
+        m_bNeedSave = true;
       return m_bNeedSave;
     }
   }
