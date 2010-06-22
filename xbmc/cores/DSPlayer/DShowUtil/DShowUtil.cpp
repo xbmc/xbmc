@@ -1332,7 +1332,7 @@ HRESULT DShowUtil::LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, 
   HRESULT hr = E_FAIL;
   CStdStringW fullpathW;
   g_charsetConverter.utf8ToW(fullpath, fullpathW);
-  if(hInst && (hInst = CoLoadLibrary(_bstr_t(fullpathW), TRUE)))
+  if(hInst || (hInst = CoLoadLibrary(_bstr_t(fullpathW), TRUE)))
   {
     typedef HRESULT (__stdcall * PDllGetClassObject)(REFCLSID rclsid, REFIID riid, LPVOID* ppv);
     PDllGetClassObject p = (PDllGetClassObject)GetProcAddress(hInst, "DllGetClassObject");
