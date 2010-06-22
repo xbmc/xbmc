@@ -38,6 +38,7 @@ protected:
   virtual void AddSubStream(ISubStream* pSubStream) = 0;
   virtual void RemoveSubStream(ISubStream* pSubStream) = 0;
   virtual void InvalidateSubtitle(REFERENCE_TIME rtStart, ISubStream* pSubStream) = 0;
+  bool         IsHdmvSub(const CMediaType* pmt);
 
 public:
   CSubtitleInputPin(CBaseFilter* pFilter, CCritSec* pLock, CCritSec* pSubLock, HRESULT* phr);

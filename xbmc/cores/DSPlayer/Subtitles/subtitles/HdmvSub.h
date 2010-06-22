@@ -79,14 +79,14 @@ public:
   virtual REFERENCE_TIME	GetStart(int nPos)	
   {
     std::list<CompositionObject*>::iterator it = m_pObjects.begin();
-    std::advance(it, nPos);
+    std::advance(it, nPos - 1);
     CompositionObject*  pObject = *it;
     return pObject!=NULL ? pObject->m_rtStart : INVALID_TIME; 
   };
   virtual REFERENCE_TIME  GetStop(int nPos)  
   { 
     std::list<CompositionObject*>::iterator it = m_pObjects.begin();
-    std::advance(it, nPos);
+    std::advance(it, nPos - 1);
     CompositionObject*  pObject = *(it);
     return pObject!=NULL ? pObject->m_rtStop : INVALID_TIME; 
   };
