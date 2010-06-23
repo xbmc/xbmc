@@ -75,7 +75,7 @@ public:
   virtual BCM::BC_STATUS DtsSetSkipPictureMode(void *hDevice, uint32_t Mode)=0;
   virtual BCM::BC_STATUS DtsFlushInput(void *hDevice, uint32_t SkipMode)=0;
 
-#if HAVE_LIBCRYSTALHD == 2
+#if (HAVE_LIBCRYSTALHD == 2)
   // new function calls, only present in new driver/library so manually load them
   virtual BCM::BC_STATUS DtsGetVersion(void *hDevice, uint32_t *DrVer, uint32_t *DilVer)=0;
   virtual BCM::BC_STATUS DtsSetInputFormat(void *hDevice, BCM::BC_INPUT_FORMAT *pInputFormat)=0;
@@ -110,7 +110,7 @@ class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
   DEFINE_METHOD2(BCM::BC_STATUS, DtsSetSkipPictureMode,(void *p1, uint32_t p2))
   DEFINE_METHOD2(BCM::BC_STATUS, DtsFlushInput,      (void *p1, uint32_t p2))
 
-#if HAVE_LIBCRYSTALHD == 2
+#if (HAVE_LIBCRYSTALHD == 2)
   DEFINE_METHOD3(BCM::BC_STATUS, DtsGetVersion,      (void *p1, uint32_t *p2, uint32_t *p3))
   DEFINE_METHOD2(BCM::BC_STATUS, DtsSetInputFormat,  (void *p1, BCM::BC_INPUT_FORMAT *p2))
   DEFINE_METHOD2(BCM::BC_STATUS, DtsGetColorPrimaries,(void *p1, uint32_t *p2))
@@ -144,7 +144,7 @@ class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
 public:
   bool LoadNewLibFunctions(void)
   {
-#if HAVE_LIBCRYSTALHD == 2
+#if (HAVE_LIBCRYSTALHD == 2)
     int rtn;
     rtn  = m_dll->ResolveExport("DtsGetVersion",       (void**)&m_DtsGetVersion_ptr, false);
     rtn &= m_dll->ResolveExport("DtsSetInputFormat",   (void**)&m_DtsSetInputFormat_ptr, false);
