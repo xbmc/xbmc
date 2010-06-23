@@ -38,6 +38,7 @@
 #include "../XBPythonDll.h"
 #include "GUITextBox.h"
 #include "GUIFontManager.h"
+#include "GUIWindowManager.h"
 #include "control.h"
 #include "pyutil.h"
 
@@ -144,10 +145,7 @@ namespace PYXBMC
     msg.SetLabel(strText);
 
     // send message
-    PyXBMCGUILock();
-    if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-    PyXBMCGUIUnlock();
-
+    g_windowManager.SendThreadMessage(msg, pControl->iParentId);
     Py_INCREF(Py_None);
     return Py_None;
   }

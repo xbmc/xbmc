@@ -38,6 +38,7 @@
 #include "../XBPythonDll.h"
 #include "GUIListContainer.h"
 #include "GUIFontManager.h"
+#include "GUIWindowManager.h"
 #include "GUILabel.h"
 #include "control.h"
 #include "pyutil.h"
@@ -354,9 +355,7 @@ PyDoc_STRVAR(addItems__doc__,
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, self->iParentId, self->iControlId, itemIndex);
 
     // send message
-    PyXBMCGUILock();
-    if (self->pGUIControl) self->pGUIControl->OnMessage(msg);
-    PyXBMCGUIUnlock();
+    g_windowManager.SendThreadMessage(msg, self->iParentId);
 
     Py_INCREF(Py_None);
     return Py_None;
