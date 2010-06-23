@@ -486,6 +486,8 @@ namespace PYXBMC
 
       while (self->bModal && !g_application.m_bStop)
       {
+        PyXBMC_MakePendingCalls();
+
         Py_BEGIN_ALLOW_THREADS
         if (WindowXML_Check(self))
           ((CGUIPythonWindowXML*)self->pWindow)->WaitForActionEvent(INFINITE);
@@ -494,9 +496,6 @@ namespace PYXBMC
         else
           ((CGUIPythonWindow*)self->pWindow)->WaitForActionEvent(INFINITE);
         Py_END_ALLOW_THREADS
-
-        // only call PyXBMC_MakePendingCalls from a python thread
-        PyXBMC_MakePendingCalls();
       }
     }
     Py_INCREF(Py_None);
