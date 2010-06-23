@@ -239,7 +239,7 @@ HRESULT CMpegSplitterFile::Init()
 	{
 		if (!m_bIsHdmv && m_streams[subpic].size())
 		{
-#ifndef DEBUG
+#if 0
 			stream s;
 			s.mt.majortype = m_streams[subpic].GetHead().mt.majortype;
 			s.mt.subtype = m_streams[subpic].GetHead().mt.subtype;
