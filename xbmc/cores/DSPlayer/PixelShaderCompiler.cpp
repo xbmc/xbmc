@@ -26,11 +26,11 @@
 
 #include "Filters\RendererSettings.h"
 #include "PixelShaderCompiler.h"
+#include "WindowingFactory.h"
 #include "Log.h"
 
-CPixelShaderCompiler::CPixelShaderCompiler(IDirect3DDevice9* pD3DDev, bool fStaySilent)
-  : m_pD3DDev(pD3DDev)
-  , m_pD3DXCompileShader(NULL)
+CPixelShaderCompiler::CPixelShaderCompiler(bool fStaySilent)
+  : m_pD3DXCompileShader(NULL)
   , m_pD3DXDisassembleShader(NULL)
 {
   HINSTANCE    hDll;
@@ -71,7 +71,6 @@ HRESULT CPixelShaderCompiler::CompileShader(
   if(!m_pD3DXCompileShader || !m_pD3DXDisassembleShader)
     return E_FAIL;
 
-  CSingleLock lock(m_deviceLock);
   HRESULT hr;
 
   Com::SmartPtr<ID3DXBuffer> pShader, pDisAsm, pErrorMsgs;
@@ -97,8 +96,8 @@ HRESULT CPixelShaderCompiler::CompileShader(
 
   if(ppPixelShader)
   {
-    if(!m_pD3DDev) return E_FAIL;
-    hr = m_pD3DDev->CreatePixelShader((DWORD*)pShader->GetBufferPointer(), ppPixelShader);
+    if(!g_Windowing.Get3DDevice()) return E_FAIL;
+    hr = g_Windowing.Get3DDevice()->CreatePixelShader((DWORD*)pShader->GetBufferPointer(), ppPixelShader);
     if(FAILED(hr)) return hr;
   }
 

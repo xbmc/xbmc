@@ -2174,7 +2174,7 @@ void CVobSubStream::Open(CStdString name, BYTE* pData, int len)
     CStdString key = sl.front();
     CStdString value = sl.back();
     if(key == _T("size"))
-      _stscanf(value, _T("%dx %d"), &m_size.cx, &m_size.cy);
+      _stscanf(value, _T("%dx%d"), &m_size.cx, &m_size.cy);
     else if(key == _T("org"))
       _stscanf(value, _T("%d, %d"), &m_org.x, &m_org.y);
     else if(key == _T("scale"))
@@ -2199,7 +2199,7 @@ void CVobSubStream::Open(CStdString name, BYTE* pData, int len)
         m_alignver = ver == _T("TOP") ? 0 : ver == _T("CENTER") ? 1 : ver == _T("BOTTOM") ? 2 : 2;
       }
     }
-    else if(key == _T("fade in/out"))
+    else if (key == _T("fade in/out") || key == _T("fadein/out"))
       _stscanf(value, _T("%d%, %d%"), &m_fadein, &m_fadeout);
     else if(key == _T("time offset"))
       m_toff = _tcstol(value, NULL, 10);
@@ -2209,7 +2209,10 @@ void CVobSubStream::Open(CStdString name, BYTE* pData, int len)
     {
       Explode(value, sl, ',', 16);
       for(int i = 0; i < 16 && sl.size(); i++)
-        *(DWORD*)&m_orgpal[i] = _tcstol(sl.front(), NULL, 16); sl.pop_front();
+      {
+        *(DWORD*)&m_orgpal[i] = _tcstol(sl.front(), NULL, 16);
+        sl.pop_front();
+      }
     }
     else if(key == _T("custom colors"))
     {
@@ -2233,7 +2236,10 @@ void CVobSubStream::Open(CStdString name, BYTE* pData, int len)
           colors.pop_front();
           Explode(colors.front(), colors, ',', 4); colors.pop_front();
           for(int i = 0; i < 4 && colors.size(); i++)
-            *(DWORD*)&m_cuspal[i] = _tcstol(colors.front(), NULL, 16); colors.pop_front();
+          {
+            *(DWORD*)&m_cuspal[i] = _tcstol(colors.front(), NULL, 16);
+            colors.pop_front();
+          }
         }
       }
     }
@@ -2286,30 +2292,42 @@ STDMETHODIMP CVobSubStream::NonDelegatingQueryInterface(REFIID riid, void** ppv)
 STDMETHODIMP_(__w64 int) CVobSubStream::GetStartPosition(REFERENCE_TIME rt, double fps)
 {
   CAutoLock cAutoLock(&m_csSubPics);
-  std::vector<boost::shared_ptr<SubPic>>::iterator it = m_subpics.end();
-  for(; it != m_subpics.begin(); --it)
+  int idx = m_subpics.size();
+  std::vector<boost::shared_ptr<SubPic>>::reverse_iterator it = m_subpics.rbegin();
+  for(; it != m_subpics.rend(); ++it, --idx)
   {
     SubPic* sp = it->get();
     if(sp->tStart <= rt)
     {
-      if(sp->tStop <= rt) ++it;
+      if(sp->tStop <= rt)
+        idx++;
       break;
     }
   }
-  return (it - m_subpics.begin());
-  return 0;
+
+  // Must return 0 if no match
+  // idx starts at one
+  if (idx > m_subpics.size())
+    return 0;
+  else
+    return idx;
+}
+
+STDMETHODIMP_(int) CVobSubStream::GetNext(int pos)
+{
+  return ((pos >=  m_subpics.size()) ? NULL : ++pos);
 }
 
 STDMETHODIMP_(REFERENCE_TIME) CVobSubStream::GetStart(int pos, double fps)
 {
   CAutoLock cAutoLock(&m_csSubPics);
-  return m_subpics[pos]->tStart;
+  return m_subpics[pos - 1]->tStart;
 }
 
 STDMETHODIMP_(REFERENCE_TIME) CVobSubStream::GetStop(int pos, double fps)
 {
   CAutoLock cAutoLock(&m_csSubPics);
-  return m_subpics[pos]->tStop;
+  return m_subpics[pos - 1]->tStop;
 }
 
 STDMETHODIMP_(bool) CVobSubStream::IsAnimated(int pos)
@@ -2327,13 +2345,13 @@ STDMETHODIMP CVobSubStream::Render(SubPicDesc& spd, REFERENCE_TIME rt, double fp
     SubPic* sp = it->get();
     if(sp->tStart <= rt && rt < sp->tStop)
     {
-      if(m_img.iIdx != (it - m_subpics.rbegin()))
+      if(m_img.iIdx != std::distance(it, m_subpics.rend()))
       {
-        BYTE* pData = &sp->pData[0];        
+        BYTE* pData = &sp->pData[0];
         m_img.Decode(
-          pData, (pData[0]<<8)|pData[1], (pData[2]<<8)|pData[3],
+          pData, (pData[0] << 8) | pData[1], (pData[2] << 8) | pData[3],
           m_fCustomPal, m_tridx, m_orgpal, m_cuspal, true);
-        m_img.iIdx = (it - m_subpics.rbegin());
+        m_img.iIdx = std::distance(it, m_subpics.rend());
       }
 
       return __super::Render(spd, bbox);

@@ -284,7 +284,7 @@ CDX9AllocatorPresenter::CDX9AllocatorPresenter(HWND hWnd, HRESULT& hr, bool bIsE
 
   hr = CreateDevice(_Error);
 
-  m_pPSC.reset(new CPixelShaderCompiler(m_pD3DDev, false));
+  m_pPSC.reset(new CPixelShaderCompiler(false));
 
   memset (m_pllJitter, 0, sizeof(m_pllJitter));
   memset (m_pllSyncOffset, 0, sizeof(m_pllSyncOffset));
@@ -871,8 +871,8 @@ HRESULT CDX9AllocatorPresenter::CreateDevice(CStdString &_Error)
   m_DisplayType = d3ddm.Format;
   m_ScreenSize.SetSize(d3ddm.Width, d3ddm.Height);
 
-    D3DPRESENT_PARAMETERS pp;
-    ZeroMemory(&pp, sizeof(pp));
+  D3DPRESENT_PARAMETERS pp;
+  ZeroMemory(&pp, sizeof(pp));
 
   BOOL bCompositionEnabled = false;
   if (g_dsSettings.m_pDwmIsCompositionEnabled)
@@ -1957,7 +1957,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
       Com::SmartPtr<IDirect3DTexture9> pVideoTexture = m_pVideoTexture[m_nCurSurface];
       
 
-      if (m_pVideoTexture[m_nNbDXSurface] && m_pVideoTexture[m_nNbDXSurface +1 ])
+      if (m_pVideoTexture[m_nNbDXSurface] && m_pVideoTexture[m_nNbDXSurface + 1 ])
       {
 
         // Brightness, contrast and saturation
@@ -2713,7 +2713,6 @@ void CDX9AllocatorPresenter::BeforeDeviceReset()
 
   DeleteSurfaces();
 
-  m_pPSC->SetD3DDevice(NULL);
   m_pD3DDev = NULL;
   m_pD3D = NULL;
 }
@@ -2722,7 +2721,6 @@ void CDX9AllocatorPresenter::AfterDeviceReset()
 {
   m_pD3DDev = g_Windowing.Get3DDevice();
   m_pD3D = g_Windowing.Get3DObject();
-  m_pPSC->SetD3DDevice(m_pD3DDev);
 
   AllocSurfaces();
 

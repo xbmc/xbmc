@@ -56,16 +56,8 @@ class CPixelShaderCompiler
   D3DXCompileShaderPtr m_pD3DXCompileShader;
   D3DXDisassembleShaderPtr m_pD3DXDisassembleShader;
 
-  IDirect3DDevice9* m_pD3DDev;
-  CCriticalSection m_deviceLock;
-
 public:
-  CPixelShaderCompiler(IDirect3DDevice9* pD3DDev, bool fStaySilent = false);
-  void SetD3DDevice(IDirect3DDevice9* pD3DDev)
-  {
-    CSingleLock lock(m_deviceLock);
-    m_pD3DDev = pD3DDev;
-  }
+  CPixelShaderCompiler(bool fStaySilent = false);
   virtual ~CPixelShaderCompiler();
 
   HRESULT CompileShader(

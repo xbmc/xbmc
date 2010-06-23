@@ -35,7 +35,7 @@
 #include "Application.h"
 #include "WindowingFactory.h"
 
-#if (_DEBUG || 0)    // Set to 1 to activate EVR traces
+#if (0)    // Set to 1 to activate EVR traces
   #define TRACE_EVR    CLog::DebugLog
 #else
   #define TRACE_EVR

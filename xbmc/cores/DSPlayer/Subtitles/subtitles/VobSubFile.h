@@ -174,7 +174,7 @@ public:
 
   // ISubPicProvider
   STDMETHODIMP_(__w64 int) GetStartPosition(REFERENCE_TIME rt, double fps);
-  STDMETHODIMP_(int) GetNext(int pos) { return 0; };
+  STDMETHODIMP_(int) GetNext(int pos);
   STDMETHODIMP_(REFERENCE_TIME) GetStart(int pos, double fps);
   STDMETHODIMP_(REFERENCE_TIME) GetStop(int pos, double fps);
   STDMETHODIMP_(bool) IsAnimated(int pos);
