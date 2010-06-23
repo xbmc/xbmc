@@ -18,6 +18,9 @@ IF EXIST "..\..\.git" (
 
 copy "..\..\xbmc\win32\svn_rev_git.tmpl" "%REV_FILE%"
 
+if "%REV%"=="" set REV=Unknown
+if "%REV_DATE%"=="" set REV_DATE=Unknown
+
 echo #define SVN_REV   "%REV%" >> %REV_FILE%
 echo #define SVN_DATE  "%REV_DATE%" >> %REV_FILE%
 
