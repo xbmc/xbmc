@@ -12,9 +12,12 @@ IF EXIST "..\..\.svn" (
 
 SetLocal EnableDelayedExpansion
 
+set oldCurrentDir=%CD%
 IF EXIST "..\..\.git" (
+  cd ..\..
   FOR /F "delims=: skip=8 tokens=2*" %%a IN ('git svn info') DO (call :set_var %%a %%b)
 )
+chdir /d %oldCurrentDir%
 
 copy "..\..\xbmc\win32\svn_rev_git.tmpl" "%REV_FILE%"
 
