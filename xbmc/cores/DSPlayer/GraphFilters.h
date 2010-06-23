@@ -40,28 +40,15 @@ struct SFilterInfos
     pBF = NULL;
     osdname = "";
     guid = GUID_NULL;
-    internalfilter = false;
+    isinternal = false;
+    pData = NULL;
   }
 
   Com::SmartPtr<IBaseFilter> pBF; ///< Pointer to the IBaseFilter interface. May be NULL
   CStdString osdname; ///< OSD Name of the filter
   GUID guid; ///< GUID of the filter
-  bool internalfilter; ///<  Releasing is not done the same way for internal filters
-};
-
-struct SSourceFilterInfos: SFilterInfos
-{
-  SSourceFilterInfos()
-  {
-    Clear();
-  }
-
-  void Clear()
-  {
-    pData = NULL;
-  }
-
-  void *pData;
+  bool isinternal; ///<  Releasing is not done the same way for internal filters
+  void *pData; ///< If the filter is internal, there may be some additionnal data
 };
 
 /// Specific informations about the video renderer filter
@@ -126,7 +113,7 @@ public:
    * Informations about the source filter
    * @note It may no have a source filter in the graph, because splitters are also source filters. A source filter is only needed when playing from internet, RAR, ... but not for media file
    **/
-  SSourceFilterInfos Source;
+  SFilterInfos Source;
   ///Informations about the splitter filter
   SFilterInfos Splitter;
   ///Informations about the video decoder

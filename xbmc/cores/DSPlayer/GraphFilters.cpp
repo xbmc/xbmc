@@ -35,11 +35,20 @@ CGraphFilters::~CGraphFilters()
   if (Source.pBF)
   {
     delete Source.pData;
-    Source.pBF.Release();
+    if (Source.isinternal)
+      Source.pBF.Release();
+    else
+      Source.pBF.FullRelease();
   }
 
   if (Splitter.pBF)
-    Splitter.pBF.FullRelease();
+  {
+    delete Splitter.pData;
+    if (Splitter.isinternal)
+      Splitter.pBF.Release();
+    else
+      Splitter.pBF.FullRelease();
+  }
 
   if (AudioRenderer.pBF)
     AudioRenderer.pBF.FullRelease();
@@ -50,12 +59,22 @@ CGraphFilters::~CGraphFilters()
     VideoRenderer.pBF.FullRelease();
 
   if (Audio.pBF)
-    Audio.pBF.FullRelease();
+  {
+    delete Audio.pData;
+    if (Audio.isinternal)
+      Audio.pBF.Release();
+    else
+      Audio.pBF.FullRelease();
+  }
   
-  if (Video.pBF && !Video.internalfilter)
-    Video.pBF.FullRelease();
-  else if(Video.pBF)
-    Video.pBF.Release();
+  if (Video.pBF)
+  {
+    delete Video.pData;
+    if (Video.isinternal)
+      Video.pBF.Release();
+    else
+      Video.pBF.FullRelease();
+  }
   
   while (! Extras.empty())
   {

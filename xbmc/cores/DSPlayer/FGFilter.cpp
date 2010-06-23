@@ -46,27 +46,11 @@
 // CFGFilter
 //
 
-CFGFilter::CFGFilter(const CLSID& clsid, CStdString name, UINT64 merit)
+CFGFilter::CFGFilter(const CLSID& clsid, Type type, CStdString name)
   : m_clsid(clsid)
   , m_name(name)
+  , m_type(type)
 {
-  m_merit.val = merit;
-}
-
-const std::list<GUID>& CFGFilter::GetTypes() const
-{
-  return m_types;
-}
-
-void CFGFilter::SetTypes(const std::list<GUID>& types)
-{
-  while (!m_types.empty())
-    m_types.pop_back();
-  for (std::list<GUID>::const_iterator it = types.begin(); it != types.end(); it++)
-  {
-    m_types.push_back((*it));
-    
-  }
 }
 
 void CFGFilter::AddType(const GUID& majortype, const GUID& subtype)
@@ -75,70 +59,12 @@ void CFGFilter::AddType(const GUID& majortype, const GUID& subtype)
   m_types.push_back(subtype);
 }
 
-bool CFGFilter::CheckTypes(const std::vector<GUID>& types, bool fExactMatch)
-{
-  for (std::list<GUID>::const_iterator it = m_types.begin(); it != m_types.end(); it++)
-  {
-    const GUID& majortype = *it;
-    it++;
-    if(it == m_types.end()) 
-    {
-      ASSERT(0); 
-      break;
-    }
-    const GUID& subtype = *it;
-
-    for(int i = 0, len = types.size() & ~1; i < len; i += 2)
-    {
-      if(fExactMatch)
-      {
-        if(majortype == types[i] && majortype != GUID_NULL
-        && subtype == types[i+1] && subtype != GUID_NULL)
-                return true;
-      }
-      else
-      {
-        if((majortype == GUID_NULL || types[i] == GUID_NULL || majortype == types[i])
-        && (subtype == GUID_NULL || types[i+1] == GUID_NULL || subtype == types[i+1]))
-          return true;
-      }
-    }
-  }
-  return false;
-
-  /*POSITION pos = m_types.GetHeadPosition();
-  while(pos)
-  {
-    const GUID& majortype = m_types.GetNext(pos);
-    if(!pos) {ASSERT(0); break;}
-    const GUID& subtype = m_types.GetNext(pos);
-
-    for(int i = 0, len = types.size() & ~1; i < len; i += 2)
-    {
-      if(fExactMatch)
-      {
-        if(majortype == types[i] && majortype != GUID_NULL
-        && subtype == types[i+1] && subtype != GUID_NULL)
-                return true;
-      }
-      else
-      {
-        if((majortype == GUID_NULL || types[i] == GUID_NULL || majortype == types[i])
-        && (subtype == GUID_NULL || types[i+1] == GUID_NULL || subtype == types[i+1]))
-          return true;
-      }
-    }
-  }*/
-
-  return false;
-}
-
 //
 // CFGFilterRegistry
 //
 
-CFGFilterRegistry::CFGFilterRegistry(IMoniker* pMoniker, UINT64 merit) 
-  : CFGFilter(GUID_NULL, L"", merit)
+CFGFilterRegistry::CFGFilterRegistry(IMoniker* pMoniker) 
+  : CFGFilter(GUID_NULL, CFGFilter::REGISTRY, L"")
   , m_pMoniker(pMoniker)
 {
   if(!m_pMoniker) return;
@@ -176,12 +102,10 @@ CFGFilterRegistry::CFGFilterRegistry(IMoniker* pMoniker, UINT64 merit)
       VariantClear(&var);
     }
   }
-
-  if(merit != MERIT64_DO_USE) m_merit.val = merit;
 }
 
-CFGFilterRegistry::CFGFilterRegistry(CStdString DisplayName, UINT64 merit) 
-  : CFGFilter(GUID_NULL, L"", merit)
+CFGFilterRegistry::CFGFilterRegistry(CStdString DisplayName) 
+  : CFGFilter(GUID_NULL, CFGFilter::REGISTRY, L"")
   , m_DisplayName(DisplayName)
 {
   if(m_DisplayName.IsEmpty()) return;
@@ -212,7 +136,7 @@ CFGFilterRegistry::CFGFilterRegistry(CStdString DisplayName, UINT64 merit)
     }
 
     if(SUCCEEDED(pPB->Read(LPCOLESTR(L"FilterData"), &var, NULL)))
-    {      
+    {
       BSTR* pstr;
       if(SUCCEEDED(SafeArrayAccessData(var.parray, (void**)&pstr)))
       {
@@ -223,12 +147,10 @@ CFGFilterRegistry::CFGFilterRegistry(CStdString DisplayName, UINT64 merit)
       VariantClear(&var);
     }
   }
-
-  if(merit != MERIT64_DO_USE) m_merit.val = merit;
 }
 
-CFGFilterRegistry::CFGFilterRegistry(const CLSID& clsid, UINT64 merit) 
-  : CFGFilter(clsid, L"", merit)
+CFGFilterRegistry::CFGFilterRegistry(const CLSID& clsid) 
+  : CFGFilter(clsid, CFGFilter::REGISTRY, L"")
 {
   m_pMoniker = NULL;
   if(m_clsid == GUID_NULL) return;
@@ -270,8 +192,6 @@ void CFGFilterRegistry::ExtractFilterData(BYTE* p, UINT len)
   && SUCCEEDED(pFD->ParseFilterData(p, len, (BYTE**)&ptr)))
   {
     REGFILTER2* prf = (REGFILTER2*)*(DWORD*)ptr; // this is f*cked up
-
-    m_merit.mid = prf->dwMerit;
 
     if(prf->dwVersion == 1)
     {
@@ -321,7 +241,7 @@ void CFGFilterRegistry::ExtractFilterData(BYTE* p, UINT len)
     p += 4;
 
     ChkLen(4)
-    m_merit.mid = *(DWORD*)p; p += 4;
+    p += 4;
 
     while (!m_types.empty())
       m_types.pop_back();
@@ -383,8 +303,8 @@ void CFGFilterRegistry::ExtractFilterData(BYTE* p, UINT len)
 // CFGFilterFile
 //
 
-CFGFilterFile::CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW name, UINT64 merit, CStdString internalName, CStdString filetype)
-  : CFGFilter(clsid, name, merit),
+CFGFilterFile::CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW name, CStdString internalName, CStdString filetype)
+  : CFGFilter(clsid, CFGFilter::FILE, name),
     m_path(path),
     m_xFileType(filetype),
     m_internalName(internalName),
@@ -394,7 +314,8 @@ CFGFilterFile::CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW na
 }
 
 CFGFilterFile::CFGFilterFile( TiXmlElement *pFilter )
-  : m_isDMO(false), m_catDMO(GUID_NULL), m_hInst(NULL)
+  : CFGFilter(CFGFilter::FILE), m_isDMO(false), m_catDMO(GUID_NULL),
+  m_hInst(NULL)
 {
   bool m_filterFound = true;
 
@@ -444,7 +365,6 @@ CFGFilterFile::CFGFilterFile( TiXmlElement *pFilter )
   // Call super constructor
   m_clsid = clsid;
   m_name = osdname;
-  m_merit.val = MERIT64_ABOVE_DSHOW + 2;
 }
 
 HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
@@ -501,21 +421,11 @@ HRESULT CFGFilterFile::Create(IBaseFilter** ppBF)
 }
 
 //
-// CFGSourceFilterFile
-//
-
-CFGSourceFilterFile::CFGSourceFilterFile(TiXmlElement *pFilter)
-  : CFGFilterFile(pFilter), m_isAlsoSplitter(true)
-{
-  XMLUtils::GetBoolean(pFilter, "issplitter", m_isAlsoSplitter);
-}
-
-//
 // CFGFilterVideoRenderer
 //
 
-CFGFilterVideoRenderer::CFGFilterVideoRenderer(const CLSID& clsid, CStdStringW name, UINT64 merit) 
-  : CFGFilter(clsid, name, merit)
+CFGFilterVideoRenderer::CFGFilterVideoRenderer(const CLSID& clsid, CStdStringW name) 
+  : CFGFilter(clsid, VIDEORENDERER, name)
 {
   AddType(MEDIATYPE_Video, MEDIASUBTYPE_NULL);
 }

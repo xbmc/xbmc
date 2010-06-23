@@ -31,6 +31,19 @@
 #include "GUIDialogOK.h"
 #include "GUIWindowManager.h"
 
+
+typedef CFGFilter* (*InternalFilterConstructorPtr) ( CStdStringW name );
+template< class T > CFGFilter* InternalFilterConstructor( CStdStringW name = L"" ) {
+    return new CFGFilterInternal<T>( name );
+};
+
+struct InternalFilters
+{
+  CStdString name;
+  CStdString osdname;
+  InternalFilterConstructorPtr cst;
+};
+
 class CFilterCoreFactory
 {
 public:
@@ -46,7 +59,7 @@ public:
   static HRESULT GetAudioFilter(const CFileItem& pFileItem, CStdString& filter, bool dxva = false, SVideoStreamIndexes *pStreamIndexes = NULL);
   static HRESULT GetExtraFilters(const CFileItem& pFileItem, std::vector<CStdString>& filters, bool dxva = false);
 
-  static CFGFilterFile* GetFilterFromName(const CStdString& filter, bool showError = true);
+  static CFGFilter* GetFilterFromName(const CStdString& filter, bool showError = true);
 
   static bool SomethingMatch( const CFileItem& pFileItem)
   {

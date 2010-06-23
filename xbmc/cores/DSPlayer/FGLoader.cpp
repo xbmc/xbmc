@@ -21,12 +21,6 @@
 
 #ifdef HAS_DS_PLAYER
 
-//Temporary definition until i add a config to use them
-//demuxer
-//0 disable 1 is xbmc internal and 2 is mpeg splitter 3 is avi splitter
-#define TEST_DSPLAYER_DEMUXER 0
-//0 disable 1 enable
-#define TEST_DSPLAYER_VIDEODECODER 0
 #include "FGLoader.h"
 #include "DSPlayer.h"
 #include "streamsmanager.h"
@@ -74,32 +68,6 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
 
   HRESULT hr = E_FAIL;
   
-#if (TEST_DSPLAYER_DEMUXER > 0)
-  //Keep that stuff ill remove it when im done with sources filters Ti-BEN
-  if (1)
-  {
-    Com::SmartQIPtr<IFileSourceFilter> pBFSrc;
-#if (TEST_DSPLAYER_DEMUXER == 1)
-    CGraphFilters::Get()->Splitter.pBF = new CXBMCFFmpegSourceFilter(NULL, &hr);
-#elif (TEST_DSPLAYER_DEMUXER == 2)    
-    CGraphFilters::Get()->Splitter.pBF = new CMpegSourceFilter(NULL, &hr);
-#elif (TEST_DSPLAYER_DEMUXER == 3)
-    CGraphFilters::Get()->Splitter.pBF = new CAviSourceFilter(NULL, &hr);
-#endif
-    //
-    
-    hr = CGraphFilters::Get()->Splitter.pBF->QueryInterface(IID_IFileSourceFilter,(void**)&pBFSrc);
-    if (SUCCEEDED(hr))
-      hr = pBFSrc->Load(DShowUtil::AToW(pFileItem.m_strPath).c_str(), NULL);
-    if (SUCCEEDED(hr))
-    { 
-      g_dsGraph->pFilterGraph->AddFilter(CGraphFilters::Get()->Splitter.pBF, L"XBMC File Source");
-      CGraphFilters::Get()->Splitter.osdname = "XBMC File Source";
-    }
-    return hr;
-  }
-#endif
-  
   /* XBMC SOURCE FILTER  */
   if (CUtil::IsInArchive(pFileItem.m_strPath))
   {
@@ -115,6 +83,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
       }
       CGraphFilters::Get()->Source.osdname = "XBMC File Source";
       CGraphFilters::Get()->Source.pData = (void *) pXBMCStream;
+      CGraphFilters::Get()->Source.isinternal = true;
       CLog::Log(LOGNOTICE, "%s Successfully added xbmc source filter to the graph", __FUNCTION__);
     }
     return hr;
@@ -185,31 +154,64 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
   1/ The source filter is also a splitter. We insert it to the graph as a splitter and load the file
   2/ The source filter is only a source filter. Add it to the graph as a source filter
   */
-  CFGSourceFilterFile *filter = NULL;
-  if (! (filter = reinterpret_cast<CFGSourceFilterFile*>(CFilterCoreFactory::GetFilterFromName(filterName))))
+  CFGFilter *filter = NULL;
+  if (! (filter = CFilterCoreFactory::GetFilterFromName(filterName)))
     return E_FAIL;
-  SFilterInfos& infos = (filter->AlsoSplitter()) ? CGraphFilters::Get()->Splitter : CGraphFilters::Get()->Source;
+
+  // Create the filter
+  Com::SmartPtr<IBaseFilter> pBF = NULL;
+  if (FAILED(filter->Create(&pBF)))
+  {
+    if (filter->GetType() == CFGFilter::INTERNAL)
+      delete filter;
+
+    return E_FAIL;
+  }
+
+  // If the source filter has more than one ouput pin, it's a splitter too.
+  // Only problem, the file must be laoded in the source filter to see the
+  // number of output pin
+  CStdString pWinFilePath = pFileItem.m_strPath;
+  if ( (pWinFilePath.Left(6)).Equals("smb://", false) )
+    pWinFilePath.Replace("smb://", "\\\\");
   
-  if (filter->AlsoSplitter())
+  pWinFilePath.Replace("/", "\\");
+
+  Com::SmartQIPtr<IFileSourceFilter> pFS = pBF;
+    
+  CStdStringW strFileW;
+  g_charsetConverter.utf8ToW(pWinFilePath, strFileW);
+
+  if (SUCCEEDED(hr = pFS->Load(strFileW.c_str(), NULL)))
+    CLog::Log(LOGNOTICE, "%s Successfully loaded file in the splitter/source", __FUNCTION__);
+  else
+  {
+    CLog::Log(LOGERROR, "%s Failed to load file in the splitter/source", __FUNCTION__);
+
+    if (filter->GetType() == CFGFilter::INTERNAL)
+      delete filter;
+
+    return E_FAIL;
+  }
+
+  bool isSplitterToo = DShowUtil::IsSplitter(pBF);
+
+  pFS.Release();
+  pBF.FullRelease();
+
+  if (filter->GetType() == CFGFilter::INTERNAL)
+    delete filter;
+
+  SFilterInfos& infos = (isSplitterToo) ? CGraphFilters::Get()->Splitter : CGraphFilters::Get()->Source;
+  
+  if (isSplitterToo)
     CLog::Log(LOGDEBUG, "%s The source filter is also a splitter.", __FUNCTION__);
 
   if (SUCCEEDED(hr = InsertFilter(filterName, infos)))
   {
-    CStdString pWinFilePath = pFileItem.m_strPath;
-    if ( (pWinFilePath.Left(6)).Equals("smb://", false) )
-      pWinFilePath.Replace("smb://", "\\\\");
-  
-    pWinFilePath.Replace("/", "\\");
-
-    Com::SmartQIPtr<IFileSourceFilter> pFS = infos.pBF;
-    
-    CStdStringW strFileW;
-    g_charsetConverter.utf8ToW(pWinFilePath, strFileW);
-
-    if (SUCCEEDED(hr = pFS->Load(strFileW.c_str(), NULL)))
-      CLog::Log(LOGNOTICE, "%s Successfully loaded file in the splitter/source", __FUNCTION__);
-    else
-      CLog::Log(LOGERROR, "%s Failed to load file in the splitter/source", __FUNCTION__);
+    pFS = infos.pBF;
+    hr = pFS->Load(strFileW.c_str(), NULL);
+    assert(SUCCEEDED(hr));
   }
 
   return hr;
@@ -366,9 +368,9 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
   InsertAudioRenderer(filter); // First added, last connected
   InsertVideoRenderer();
 
-  CHECK_HR_RETURN(CFilterCoreFactory::GetSourceFilter(pFileItem, filter),"Failed to get the source filter")
+  CHECK_HR_RETURN(CFilterCoreFactory::GetSourceFilter(pFileItem, filter), "Failed to get the source filter")
   
-  CHECK_HR_RETURN(InsertSourceFilter(pFileItem, filter),"Failed to insert source filter")
+  CHECK_HR_RETURN(InsertSourceFilter(pFileItem, filter), "Failed to insert source filter")
 
   if (! CGraphFilters::Get()->Splitter.pBF)
   {
@@ -482,24 +484,19 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
   HRESULT hr = S_OK;
   f.pBF = NULL;
 
-  CFGFilterFile *filter = NULL;
-  //TODO Add an option to the gui for forcing internal filters when supported
-#if TEST_DSPLAYER_VIDEODECODER
-  if (filterName.Equals("mpcvideodec"))
-  {
-    f.pBF = new CXBMCVideoDecFilter(NULL, &hr);
-    f.internalfilter = true;
-    f.osdname = "Internal VideoDecoder";
-    hr = g_dsGraph->pFilterGraph->AddFilter(f.pBF, L"Internal VideoDecoder");
-    return hr;
-  }
-#endif
+  CFGFilter *filter = NULL;
   if (! (filter = CFilterCoreFactory::GetFilterFromName(filterName)))
     return E_FAIL;
 
   if(SUCCEEDED(hr = filter->Create(&f.pBF)))
   {
     g_charsetConverter.wToUTF8(filter->GetName(), f.osdname);
+    if (filter->GetType() == CFGFilter::INTERNAL)
+    {
+      CLog::Log(LOGDEBUG, "%s Using an internal filter", __FUNCTION__);
+      f.isinternal = true;
+      f.pData = filter;
+    }
     if (SUCCEEDED(hr = g_dsGraph->pFilterGraph->AddFilter(f.pBF, filter->GetName().c_str())))
       CLog::Log(LOGNOTICE, "%s Successfully added \"%s\" to the graph", __FUNCTION__, f.osdname.c_str());
     else

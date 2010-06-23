@@ -22,6 +22,22 @@
 #ifdef HAS_DS_PLAYER
 
 #include "FilterCoreFactory.h"
+#include "filters/DsVideoDecoder/XBMCVideoDecFilter.h"
+#include "filters/Splitters/AviSplitter.h"
+#include "filters/Splitters/XBMCFFmpegSplitter.h"
+#include "filters/Splitters/MpegSplitter.h"
+
+// Set to 1 to force usage of internal filters
+#define FORCE_INTERNAL_FILTERS 0
+#define FORCE_INTERNAL_VIDEO_DECODER 0
+
+InternalFilters internalFilters[] =
+{
+  {"internal_videodecoder", "Internal video decoder", &InternalFilterConstructor<CXBMCVideoDecFilter>},
+  {"internal_ffmpegsource", "Internal ffmpeg source", &InternalFilterConstructor<CXBMCFFmpegSourceFilter>},
+  {"internal_avisource", "Internal avi source", &InternalFilterConstructor<CAviSourceFilter>},
+  {"internal_mpegsource", "Internal mpeg source", &InternalFilterConstructor<CMpegSourceFilter>}
+};
 
 HRESULT CFilterCoreFactory::LoadMediasConfiguration(TiXmlElement* pConfig )
 {
@@ -63,13 +79,7 @@ HRESULT CFilterCoreFactory::LoadFiltersConfiguration(TiXmlElement* pConfig )
     CStdString type = "";
     while (pFilter)
     {
-      type = pFilter->Attribute("type");
-
-      if (type.ToLower().Equals("source"))
-        m_Filters.push_back(new CFGSourceFilterFile(pFilter));
-      else
-        m_Filters.push_back(new CFGFilterFile(pFilter));
-
+      m_Filters.push_back(new CFGFilterFile(pFilter));
       pFilter = pFilter->NextSiblingElement("filter");
     }
   }
@@ -184,8 +194,30 @@ HRESULT CFilterCoreFactory::GetExtraFilters( const CFileItem& pFileItem, std::ve
   return S_OK;
 }
 
-CFGFilterFile* CFilterCoreFactory::GetFilterFromName( const CStdString& filter, bool showError )
+CFGFilter* CFilterCoreFactory::GetFilterFromName( const CStdString& _filter, bool showError )
 {
+  CStdString filter = _filter;
+#if FORCE_INTERNAL_FILTERS == 1
+  if (filter.Equals("mkvsource"))
+    filter = "internal_ffmpegsource";
+  else if (filter.Equals("avisource"))
+    filter = "internal_avisource";
+  else if (filter.Equals("mpegsource"))
+    filter = "internal_mpegsource";
+#if FORCE_INTERNAL_VIDEO_DECODER == 1
+  else if (filter.Equals("mpcvideodec"))
+    filter = "internal_videodecoder";
+#endif
+#endif
+  // Is the filter internal?
+  for (int i = 0; i < countof(internalFilters); i++)
+  {
+    if (internalFilters[i].name.Equals(filter))
+    {
+      return internalFilters[i].cst(internalFilters[i].osdname);
+    }
+  }
+
   std::vector<CFGFilterFile *>::const_iterator it = std::find_if(m_Filters.begin(),
     m_Filters.end(), std::bind2nd(std::ptr_fun(CompareCFGFilterFileToString), filter) );
 

@@ -203,7 +203,7 @@ bool DShowUtil::IsSplitter(IBaseFilter* pBF, bool fCountConnectedOnly)
 {
   int nIn, nOut, nInC, nOutC;
   CountPins(pBF, nIn, nOut, nInC, nOutC);
-  return(fCountConnectedOnly ? nOutC >= 1 : nOut >= 1); // The Splitter can have no audio output
+  return(fCountConnectedOnly ? nOutC >= 2 : nOut >= 2); // The Splitter can have no audio output
 }
 
 bool DShowUtil::IsMultiplexer(IBaseFilter* pBF, bool fCountConnectedOnly)

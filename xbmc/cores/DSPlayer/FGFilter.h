@@ -32,39 +32,33 @@
 #include <list>
 #include "tinyXML\tinyxml.h"
 
-#define MERIT64(merit) (((UINT64)(merit))<<16)
-#define MERIT64_DO_NOT_USE MERIT64(MERIT_DO_NOT_USE)
-#define MERIT64_DO_USE MERIT64(MERIT_DO_NOT_USE+1)
-#define MERIT64_UNLIKELY (MERIT64(MERIT_UNLIKELY))
-#define MERIT64_NORMAL (MERIT64(MERIT_NORMAL))
-#define MERIT64_PREFERRED (MERIT64(MERIT_PREFERRED))
-#define MERIT64_ABOVE_DSHOW (MERIT64(1)<<32)
-
 class CFGFilter
 {
-protected:
-  CLSID m_clsid;
-  CStdString m_name;
-  struct {union {UINT64 val; struct {UINT64 low:16, mid:32, high:16;};};} m_merit;
-  std::list<GUID> m_types;
-
 public:
-  CFGFilter(const CLSID& clsid, CStdString name = L"", UINT64 merit = MERIT64_DO_USE);
-  CFGFilter() {};
+  enum Type {
+    NONE,
+    FILE,
+    INTERNAL,
+    REGISTRY,
+    VIDEORENDERER
+  };
+
+  CFGFilter(const CLSID& clsid, Type type, CStdString name = L"");
+  CFGFilter(Type type) { m_type = type; };
   virtual ~CFGFilter() {};
 
   CLSID GetCLSID() {return m_clsid;}
   CStdStringW GetName() {return m_name;}
-  UINT64 GetMerit() {return m_merit.val;}
-  DWORD GetMeritForDirectShow() {return m_merit.mid;}
-  const std::list<GUID>& GetTypes() const;
-  void SetTypes(const std::list<GUID>& types);
-  void AddType(const GUID& majortype, const GUID& subtype);
-  bool CheckTypes(const std::vector<GUID>& types, bool fExactMatch);
+  Type GetType() const { return m_type; }
 
-  std::list<CStdString> m_protocols, m_extensions, m_chkbytes; // TODO: subtype?
+  void AddType(const GUID& majortype, const GUID& subtype);
 
   virtual HRESULT Create(IBaseFilter** ppBF) = 0;
+protected:
+  CLSID m_clsid;
+  CStdString m_name;
+  Type m_type;
+  std::list<GUID> m_types;
 };
 
 class CFGFilterRegistry : public CFGFilter
@@ -76,9 +70,9 @@ protected:
   void ExtractFilterData(BYTE* p, UINT len);
 
 public:
-  CFGFilterRegistry(IMoniker* pMoniker, UINT64 merit = MERIT64_DO_USE);
-  CFGFilterRegistry(CStdString DisplayName, UINT64 merit = MERIT64_DO_USE);
-  CFGFilterRegistry(const CLSID& clsid, UINT64 merit = MERIT64_DO_USE);
+  CFGFilterRegistry(IMoniker* pMoniker);
+  CFGFilterRegistry(CStdString DisplayName);
+  CFGFilterRegistry(const CLSID& clsid);
 
   CStdString GetDisplayName() {return m_DisplayName;}
   IMoniker* GetMoniker() {return m_pMoniker;}
@@ -90,7 +84,8 @@ template<class T>
 class CFGFilterInternal : public CFGFilter
 {
 public:
-  CFGFilterInternal(CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE) : CFGFilter(__uuidof(T), name, merit) {}
+  CFGFilterInternal(CStdStringW name = L"")
+    : CFGFilter(__uuidof(T), INTERNAL, name) {}
 
   HRESULT Create(IBaseFilter** ppBF)
   {
@@ -100,7 +95,7 @@ public:
     IBaseFilter* pBF = new T(NULL, &hr);
     if(FAILED(hr)) return hr;
 
-    *ppBF = pBF;
+    (*ppBF = pBF)->AddRef();
     pBF = NULL;
 
     return hr;
@@ -118,22 +113,12 @@ protected:
   CLSID m_catDMO;
 
 public:
-  CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE, CStdString filtername = "", CStdString filetype = "");
+  CFGFilterFile(const CLSID& clsid, CStdString path, CStdStringW name = L"", CStdString filtername = "", CStdString filetype = "");
   CFGFilterFile(TiXmlElement *pFilter);
 
   HRESULT Create(IBaseFilter** ppBF);
   CStdString GetXFileType() { return m_xFileType; };
   CStdString GetInternalName() { return m_internalName; };
-};
-
-class CFGSourceFilterFile : public CFGFilterFile
-{
-protected:
-  bool m_isAlsoSplitter;
-
-public:
-  CFGSourceFilterFile(TiXmlElement *pFilter);
-  bool AlsoSplitter() const { return m_isAlsoSplitter; }
 };
 
 interface IDsRenderer;
@@ -142,7 +127,7 @@ class CDSGraph;
 class CFGFilterVideoRenderer : public CFGFilter
 {
 public:
-  CFGFilterVideoRenderer(const CLSID& clsid, CStdStringW name = L"", UINT64 merit = MERIT64_DO_USE);
+  CFGFilterVideoRenderer(const CLSID& clsid, CStdStringW name = L"");
   ~CFGFilterVideoRenderer();
 
   HRESULT Create(IBaseFilter** ppBF);
