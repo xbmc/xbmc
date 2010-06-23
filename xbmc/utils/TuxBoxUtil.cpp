@@ -56,6 +56,7 @@ CTuxBoxService::~CTuxBoxService()
 }
 CTuxBoxUtil::CTuxBoxUtil(void)
 {
+  sCurSrvData.requested_audio_channel = 0;
 }
 CTuxBoxUtil::~CTuxBoxUtil(void)
 {
@@ -116,7 +117,7 @@ void CTuxBoxService::Process()
         //Detect Channel Change
         //We need to detect the channel on the TuxBox Device!
         //On changing the channel on the device we will loose the stream and mplayer seems not able to detect it to stop
-        if (strCurrentServiceName != g_tuxbox.sCurSrvData.service_name && g_application.IsPlaying())
+        if (strCurrentServiceName != g_tuxbox.sCurSrvData.service_name && g_application.IsPlaying() && !g_tuxbox.sZapstream.available)
         {
           CLog::Log(LOGDEBUG," - ERROR: Non controlled channel change detected! Stopping current playing stream!");
           g_application.getApplicationMessenger().MediaStop();
@@ -557,30 +558,56 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
       CStdString strStreamURL, strVideoStream;
       CStdString strLabel, strLabel2;
       CStdString strAudioChannelName, strAudioChannelPid;
+      CStdString strAPids;
+      sAudioChannel sRequestedAudioChannel;
 
-      if (GetAudioChannels(strAudioChannelName, strAudioChannelPid))
+      if (!GetGUIRequestedAudioChannel(sRequestedAudioChannel))
       {
-        if(strAudioChannelPid.Left(2).Equals("0x"))
-          strAudioChannelPid.Replace("0x","");
+        if (g_advancedSettings.m_bTuxBoxSendAllAPids && sCurSrvData.audio_channels.size() > 1)
+        {
+          for (vector<sAudioChannel>::iterator sChannel = sCurSrvData.audio_channels.begin(); sChannel!=sCurSrvData.audio_channels.end(); ++sChannel)
+          {
+            if (sChannel->pid != sRequestedAudioChannel.pid)
+              strAPids += "," + sChannel->pid.Right(4);
+          }
+          CLog::Log(LOGDEBUG, "%s - Sending all audio pids: %s%s", __FUNCTION__, strAudioChannelPid.c_str(), strAPids.c_str());
 
-        strVideoStream.Format("0,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), strAudioChannelPid.Left(4).c_str());
+          strVideoStream.Format("0,%s,%s,%s%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), strAPids.c_str());
+        }
+        else
+        {
+          strVideoStream.Format("0,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str());
+        }
       }
       else
       {
-        if(sStrmInfo.apid.Left(2).Equals("0x"))
-          sStrmInfo.apid.Replace("0x","");
-        if(sCurSrvData.audio_channel_1_pid.Left(2).Equals("0x"))
-          sCurSrvData.audio_channel_1_pid.Replace("0x","");
-        if(sCurSrvData.audio_channel_2_pid.Left(2).Equals("0x"))
-          sCurSrvData.audio_channel_2_pid.Replace("0x","");
-
-        if(g_application.m_eForcedNextPlayer == EPC_DVDPLAYER || g_advancedSettings.m_bTuxBoxSendAllAPids)
-          strVideoStream.Format("0,%s,%s,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str(), sCurSrvData.audio_channel_1_pid.Left(4).c_str(), sCurSrvData.audio_channel_2_pid.Left(4).c_str());
-        else
-          strVideoStream.Format("0,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), sStrmInfo.apid.Left(4).c_str());
+        strVideoStream.Format("0,%s,%s,%s",sStrmInfo.pmt.Left(4).c_str(), sStrmInfo.vpid.Left(4).c_str(), strAudioChannelPid.Left(4).c_str());
       }
 
-      strStreamURL.Format("http://%s:%s@%s:%i/%s",url.GetUserName().c_str(),url.GetPassWord().c_str(), url.GetHostName().c_str(),TS_STREAM_PORT,strVideoStream.c_str());
+      strStreamURL.Format("http://%s:%s@%s:%i/%s",url.GetUserName().c_str(),url.GetPassWord().c_str(), url.GetHostName().c_str(),g_advancedSettings.m_iTuxBoxStreamtsPort,strVideoStream.c_str());
+
+      if (!g_tuxbox.sZapstream.initialized)
+        g_tuxbox.InitZapstream(strPath);
+
+      // Use the Zapstream service when available.
+      if (g_tuxbox.sZapstream.available)
+      {
+        sAudioChannel sSelectedAudioChannel;
+        if (GetRequestedAudioChannel(sSelectedAudioChannel))
+        {
+          if (sSelectedAudioChannel.pid != sStrmInfo.apid)
+            SetAudioChannel( strPath, sSelectedAudioChannel );
+
+          CLog::Log(LOGDEBUG, "%s - Zapstream: Requested audio channel is %s, pid %s.", __FUNCTION__, sSelectedAudioChannel.name.c_str(), sSelectedAudioChannel.pid.c_str());
+          strStreamURL.Format("http://%s:%s@%s:%i/langpid=%s", url.GetUserName().c_str(), url.GetPassWord().c_str(), url.GetHostName().c_str(), g_advancedSettings.m_iTuxBoxZapstreamPort, sSelectedAudioChannel.pid.c_str());
+        }
+        else
+          strStreamURL.Format("http://%s:%s@%s:%i/", url.GetUserName().c_str(), url.GetPassWord().c_str(), url.GetHostName().c_str(), g_advancedSettings.m_iTuxBoxZapstreamPort);
+      }
+
+      if (g_application.IsPlaying() && !g_tuxbox.sZapstream.available)
+        g_application.getApplicationMessenger().MediaStop();
+
       strLabel.Format("%s: %s %s-%s",items.GetLabel().c_str(), sCurSrvData.current_event_date.c_str(),sCurSrvData.current_event_start.c_str(), sCurSrvData.current_event_start.c_str());
       strLabel2.Format("%s", sCurSrvData.current_event_description.c_str());
 
@@ -607,6 +634,82 @@ bool CTuxBoxUtil::GetZapUrl(const CStdString& strPath, CFileItem &items )
   return false;
 }
 
+// Notice: Zapstream is a streamts enhancement from PLi development team.
+// If you are using a non-PLi based image you might not have Zapstream installed.
+bool CTuxBoxUtil::InitZapstream(const CStdString& strPath)
+{
+  CURL url(strPath);
+  CFileCurl http;
+  int iTryConnect = 0;
+  int iTimeout = 2;
+
+  g_tuxbox.sZapstream.initialized = true;
+
+  if (!g_advancedSettings.m_bTuxBoxZapstream)
+  {
+    CLog::Log(LOGDEBUG, "%s - Zapstream is disabled in advancedsettings.xml.", __FUNCTION__);
+    return g_tuxbox.sZapstream.available = false;
+  }
+
+  url.SetProtocol("http");
+  url.SetFileName("");
+  url.SetOptions("");
+  url.SetPort(g_advancedSettings.m_iTuxBoxZapstreamPort);
+
+  while (iTryConnect < 3)
+  {
+    http.SetTimeout(iTimeout);
+
+    if (http.Open(url))
+    {
+      http.Close();
+      CHttpHeader h = http.GetHttpHeader();
+      CStdString strValue = h.GetValue("server");
+
+      if (strValue.Find("zapstream") >= 0 )
+      {
+        CLog::Log(LOGDEBUG, "%s - Zapstream is available on port %i.", __FUNCTION__, g_advancedSettings.m_iTuxBoxZapstreamPort);
+        return g_tuxbox.sZapstream.available = true;
+      }
+    }
+
+    iTryConnect++;
+    iTimeout+=5;
+  }
+
+  CLog::Log(LOGDEBUG, "%s - Zapstream is not available on port %i.", __FUNCTION__, g_advancedSettings.m_iTuxBoxZapstreamPort);
+  return false;
+}
+bool CTuxBoxUtil::SetAudioChannel( const CStdString& strPath, const AUDIOCHANNEL& sAC )
+{
+  CURL url(strPath);
+  CFileCurl http;
+  int iTryConnect = 0;
+  int iTimeout = 2;
+
+  url.SetProtocol("http");
+  url.SetFileName("cgi-bin/setAudio");
+  url.SetOptions("?channel=1&language=" + sAC.pid);
+  url.SetPort(80);
+
+  g_tuxbox.sZapstream.initialized = true;
+
+  while (iTryConnect < 3)
+  {
+    http.SetTimeout(iTimeout);
+
+    if (http.Open(url))
+    {
+      http.Close();
+      return true;
+    }
+
+    iTryConnect++;
+    iTimeout+=5;
+  }
+
+  return false;
+}
 bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
 {
   // Check and Set URL Request Option
@@ -933,38 +1036,36 @@ bool CTuxBoxUtil::CurrentServiceData(TiXmlElement *pRootElement)
     {
       CLog::Log(LOGDEBUG, "%s - Audio Channels", __FUNCTION__);
       int i = 0;
+
       pIt = pNode->FirstChild("channel");
+      sCurSrvData.audio_channels.clear();
+
       while(pIt)
       {
+        sAudioChannel newChannel;
+
         pVal = pIt->FirstChild("pid");
         if(pVal)
         {
-          if(i==0) sCurSrvData.audio_channel_0_pid = pVal->FirstChild()->Value();
-          if(i==1) sCurSrvData.audio_channel_1_pid = pVal->FirstChild()->Value();
-          if(i==2) sCurSrvData.audio_channel_2_pid = pVal->FirstChild()->Value();
+          newChannel.pid = pVal->FirstChild()->Value();
         }
 
         pVal = pIt->FirstChild("selected");
         if(pVal)
         {
-          if(i==0) sCurSrvData.audio_channel_0_selected = pVal->FirstChild()->Value();
-          if(i==1) sCurSrvData.audio_channel_1_selected = pVal->FirstChild()->Value();
-          if(i==2) sCurSrvData.audio_channel_2_selected = pVal->FirstChild()->Value();
+          newChannel.selected = pVal->FirstChild()->Value();
         }
 
         pVal = pIt->FirstChild("name");
         if(pVal)
         {
-          if(i==0) sCurSrvData.audio_channel_0_name = pVal->FirstChild()->Value();
-          if(i==1) sCurSrvData.audio_channel_1_name = pVal->FirstChild()->Value();
-          if(i==2) sCurSrvData.audio_channel_2_name = pVal->FirstChild()->Value();
+          newChannel.name = pVal->FirstChild()->Value();
         }
 
-        if(i==0) CLog::Log(LOGDEBUG, "%s - Audio Channels: Channel %i -> PID: %s Selected: %s Name: %s", __FUNCTION__, i, sCurSrvData.audio_channel_0_pid.c_str(), sCurSrvData.audio_channel_0_selected.c_str(), sCurSrvData.audio_channel_0_name.c_str() );
-        if(i==1) CLog::Log(LOGDEBUG, "%s - Audio Channels: Channel %i -> PID: %s Selected: %s Name: %s", __FUNCTION__, i, sCurSrvData.audio_channel_1_pid.c_str(), sCurSrvData.audio_channel_1_selected.c_str(), sCurSrvData.audio_channel_1_name.c_str() );
-        if(i==2) CLog::Log(LOGDEBUG, "%s - Audio Channels: Channel %i -> PID: %s Selected: %s Name: %s", __FUNCTION__, i, sCurSrvData.audio_channel_2_pid.c_str(), sCurSrvData.audio_channel_2_selected.c_str(), sCurSrvData.audio_channel_2_name.c_str() );
+        CLog::Log(LOGDEBUG, "%s - Audio Channels: Channel %i -> PID: %s Selected: %s Name: %s", __FUNCTION__, i, newChannel.pid.c_str(), newChannel.selected.c_str(), newChannel.name.c_str() );
 
         i=i+1;
+        sCurSrvData.audio_channels.push_back( newChannel );
         pIt = pIt->NextSibling("channel");
       }
     }
@@ -1152,6 +1253,11 @@ bool CTuxBoxUtil::BoxStatus(TiXmlElement *pRootElement)
     pNode = pRootElement->FirstChild("ip");
     if (pNode)
     {
+      if (sBoxStatus.ip != pNode->FirstChild()->Value() )
+      {
+        g_tuxbox.sZapstream.initialized = false;
+        g_tuxbox.sZapstream.available = false;
+      }
       sBoxStatus.ip = pNode->FirstChild()->Value();
       CLog::Log(LOGDEBUG, "%s - Ip: %s", __FUNCTION__, pNode->FirstChild()->Value());
     }
@@ -1333,22 +1439,19 @@ bool CTuxBoxUtil::ServiceEPG(TiXmlElement *pRootElement)
 }
 //PopUp and request the AudioChannel
 //No PopUp: On 1x detected AudioChannel
-bool CTuxBoxUtil::GetAudioChannels(CStdString& strAudioChannelName, CStdString& strAudioChannelPid)
+bool CTuxBoxUtil::GetGUIRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC)
 {
-  //DVDPlayer Can play all AudioStreams! No need to popup the AudioChannel selector!
-  if(g_application.m_eForcedNextPlayer == EPC_DVDPLAYER)
-  {
-    CLog::Log(LOGDEBUG, "%s - DVDPlayer is used to play the Stream! Disabling Audio Channel Selection! Returning False to use All Possible Audio channels!", __FUNCTION__);
-    return false;
-  }
+  sRequestedAC = sCurSrvData.audio_channels[0];
+
   // Audio Selection is Disabled! Return false to use default values!
   if(!g_advancedSettings.m_bTuxBoxAudioChannelSelection)
   {
     CLog::Log(LOGDEBUG, "%s - Audio Channel Selection is Disabled! Returning False to use the default values!", __FUNCTION__);
     return false;
   }
+
   // We have only one Audio Channel return false to use default values!
-  if(sCurSrvData.audio_channel_1_name.IsEmpty() && sCurSrvData.audio_channel_2_name.IsEmpty())
+  if(sCurSrvData.audio_channels.size() == 1)
     return false;
 
   // popup the context menu
@@ -1358,42 +1461,35 @@ bool CTuxBoxUtil::GetAudioChannels(CStdString& strAudioChannelName, CStdString& 
   {
     // load Audio context menu
     pMenu->Initialize();
+
+    vector<int> btn;
+
     // add the needed Audio buttons
-    int btn_AudioChannel_0=-1;
-    if(!sCurSrvData.audio_channel_0_name.IsEmpty())
-      btn_AudioChannel_0 = pMenu->AddButton(sCurSrvData.audio_channel_0_name); // A0
-
-    int btn_AudioChannel_1=-1;
-    if(!sCurSrvData.audio_channel_1_name.IsEmpty())
-      btn_AudioChannel_1 = pMenu->AddButton(sCurSrvData.audio_channel_1_name); // A1
-
-    int btn_AudioChannel_2=-1;
-    if(!sCurSrvData.audio_channel_2_name.IsEmpty())
-      btn_AudioChannel_2 = pMenu->AddButton(sCurSrvData.audio_channel_2_name); // A2
+    for (vector<sAudioChannel>::iterator sChannel = sCurSrvData.audio_channels.begin(); sChannel!=sCurSrvData.audio_channels.end(); ++sChannel)
+      btn.push_back(pMenu->AddButton(sChannel->name));
 
     pMenu->CenterWindow();
     pMenu->DoModal();
     int btnid = pMenu->GetButton();
-    if (btnid == btn_AudioChannel_0)
+
+    for(int i=0; btn[i] >0; i++)
     {
-      strAudioChannelName = sCurSrvData.audio_channel_0_name;
-      strAudioChannelPid = sCurSrvData.audio_channel_0_pid;
-      return true;
-    }
-    if (btnid == btn_AudioChannel_1)
-    {
-      strAudioChannelName = sCurSrvData.audio_channel_1_name;
-      strAudioChannelPid = sCurSrvData.audio_channel_1_pid;
-      return true;
-    }
-    if (btnid == btn_AudioChannel_2)
-    {
-      strAudioChannelName = sCurSrvData.audio_channel_2_name;
-      strAudioChannelPid = sCurSrvData.audio_channel_2_pid;
-      return true;
+      if(btnid == btn[i])
+      {
+        sRequestedAC = sCurSrvData.audio_channels[i];
+        sCurSrvData.requested_audio_channel = i;
+        CLog::Log(LOGDEBUG, "%s - Audio channel %s requested.", __FUNCTION__, sCurSrvData.audio_channels[i].name.c_str());
+        return true;
+      }
     }
   }
   return false;
+}
+bool CTuxBoxUtil::GetRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC)
+{
+  sRequestedAC = sCurSrvData.audio_channels[sCurSrvData.requested_audio_channel];
+
+  return true;
 }
 bool CTuxBoxUtil::GetVideoSubChannels(CStdString& strVideoSubChannelName, CStdString& strVideoSubChannelPid)
 {

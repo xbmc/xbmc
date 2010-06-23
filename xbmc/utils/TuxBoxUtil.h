@@ -29,8 +29,6 @@ class TiXmlElement;
 class CFileItem;
 class CFileItemList;
 
-#define TS_STREAM_PORT 31339
-
 struct STREAMINFO
 {
   CStdString frontend;
@@ -68,19 +66,18 @@ struct VIDEOSUBCHANNEL
   CStdString current_name;
   bool mode;
 };
+typedef struct AUDIOCHANNEL
+{
+  CStdString pid;
+  CStdString selected;
+  CStdString name;
+} sAudioChannel;
 struct CURRENTSERVICEDATA
 {
   CStdString service_name;
   CStdString service_reference;
-  CStdString audio_channel_0_pid;
-  CStdString audio_channel_0_selected;
-  CStdString audio_channel_0_name;
-  CStdString audio_channel_1_pid;
-  CStdString audio_channel_1_selected;
-  CStdString audio_channel_1_name;
-  CStdString audio_channel_2_pid;
-  CStdString audio_channel_2_selected;
-  CStdString audio_channel_2_name;
+  std::vector<AUDIOCHANNEL> audio_channels;
+  int requested_audio_channel;
   CStdString audio_track;
   CStdString current_event_date;
   CStdString current_event_time;
@@ -133,6 +130,11 @@ struct SERVICE_EPG
   CStdString start;
   CStdString details;
 };
+struct ZAPSTREAM
+{
+  bool initialized;
+  bool available;
+};
 class CTuxBoxUtil
 {
   public:
@@ -142,6 +144,7 @@ class CTuxBoxUtil
     BOXSINFO sBoxInfo;
     SERVICE_EPG sServiceEPG;
     VIDEOSUBCHANNEL vVideoSubChannel;
+    ZAPSTREAM sZapstream;
 
     CTuxBoxUtil(void);
     virtual ~CTuxBoxUtil(void);
@@ -158,10 +161,13 @@ class CTuxBoxUtil
     bool BoxInfo(TiXmlElement *pRootElement);
     bool ServiceEPG(TiXmlElement *pRootElement);
     bool GetHttpXML(CURL url,CStdString strRequestType);
-    bool GetAudioChannels(CStdString& strAudioChannelName, CStdString& strAudioChannelPid);
+    bool GetGUIRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC);
+    bool GetRequestedAudioChannel(AUDIOCHANNEL& sRequestedAC);
     bool GetVideoSubChannels(CStdString& strVideoSubChannelName, CStdString& strVideoSubChannelPid);
     bool GetVideoChannels(TiXmlElement *pRootElement);
     bool CreateNewItem(const CFileItem& item, CFileItem& item_new);
+    bool InitZapstream(const CStdString& strPath);
+    bool SetAudioChannel(const CStdString& strPath, const AUDIOCHANNEL& sAC);
 
     CStdString GetPicon(CStdString strServiceName);
     CStdString GetSubMode(int iMode, CStdString& strXMLRootString, CStdString& strXMLChildString);
