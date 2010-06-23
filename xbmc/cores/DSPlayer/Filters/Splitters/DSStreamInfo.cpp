@@ -35,14 +35,25 @@ extern "C"
 
 
 #include "DShowUtil/DShowUtil.h"
-CDSStreamInfo::CDSStreamInfo()                                                     { extradata = NULL; Clear(); }
-CDSStreamInfo::CDSStreamInfo(const CDSStreamInfo &right, bool withextradata, const char *containerFormat)     { extradata = NULL; Clear(); Assign(right, withextradata, containerFormat); }
-CDSStreamInfo::CDSStreamInfo(const CDemuxStream &right, bool withextradata, const char *containerFormat)       { extradata = NULL; Clear(); Assign(right, withextradata, containerFormat); }
+CDSStreamInfo::CDSStreamInfo(){ extradata = NULL; Clear(); }
+CDSStreamInfo::CDSStreamInfo(const CDSStreamInfo &right, bool withextradata, const char *containerFormat)     
+{
+  extradata = NULL; 
+  Clear(); 
+  Assign(right, withextradata, containerFormat); 
+}
+
+CDSStreamInfo::CDSStreamInfo(const CDemuxStream &right, bool withextradata, const char *containerFormat)  
+{ 
+  extradata = NULL; 
+  Clear(); 
+  Assign(right, withextradata, containerFormat); 
+}
 
 CDSStreamInfo::~CDSStreamInfo()
 {
-  if( extradata && extrasize ) free(extradata);
-
+  if( extradata && extrasize ) 
+    free(extradata);
   extradata = NULL;
   extrasize = 0;
 }

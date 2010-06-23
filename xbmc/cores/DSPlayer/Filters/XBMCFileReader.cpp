@@ -112,14 +112,6 @@ STDMETHODIMP CXBMCFileStream::SyncRead(LONGLONG llPosition, LONG lLength, BYTE* 
 			if((UINT)lLength < m_pFile.Read(pBuffer, lLength)) 
         return E_FAIL;
 
-#if 0 // def DEBUG
-			static __int64 s_total = 0, s_laststoppos = 0;
-			s_total += lLength;
-			if(s_laststoppos > llPosition)
-				TRACE(_T("[%I64d - %I64d] %d (%I64d)\n"), llPosition, llPosition + lLength, lLength, s_total);
-			s_laststoppos = llPosition + lLength;
-#endif
-
 			return S_OK;
 		}
     catch (...)
@@ -144,12 +136,12 @@ STDMETHODIMP CXBMCFileStream::Length(LONGLONG* pTotal, LONGLONG* pAvailable)
 
 STDMETHODIMP_(HANDLE) CXBMCFileStream::GetFileHandle()
 {
-	return NULL;//m_hFile;
+	return NULL;
 }
 
 STDMETHODIMP_(LPCTSTR) CXBMCFileStream::GetFileName()
 {
-	return m_strCurrentFile.c_str();//m_nCurPart != -1 ? m_strFiles[m_nCurPart] : m_strFiles[0];
+	return m_strCurrentFile.c_str();
 }
 
 #endif

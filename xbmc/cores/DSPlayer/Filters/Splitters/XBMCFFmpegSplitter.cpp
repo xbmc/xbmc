@@ -253,17 +253,6 @@ STDMETHODIMP CXBMCFFmpegSplitter::GetDuration(LONGLONG* pDuration)
   {
     *pDuration = DVD_MSEC_TO_TIME(m_pDemuxer->GetStreamLength()) * 10;
     return S_OK;
-    /*for(int i = 0; i < (int)m_pFile->m_strms.size(); i++)
-    {
-      CAviFile::strm_t* s = m_pFile->m_strms[i].get();
-      if(s->strh.fccType == FCC('vids'))
-      {
-        *pDuration = s->cs.size();
-        return S_OK;
-      }
-    }*/
-
-    return E_UNEXPECTED;
   }
 
   return __super::GetDuration(pDuration);
@@ -335,8 +324,12 @@ STDMETHODIMP CXBMCFFmpegSplitter::GetPositions(LONGLONG* pCurrent, LONGLONG* pSt
 
 HRESULT CXBMCFFmpegSplitter::SetPositionsInternal(void* id, LONGLONG* pCurrent, DWORD dwCurrentFlags, LONGLONG* pStop, DWORD dwStopFlags)
 {
+  
   if(m_timeformat != TIME_FORMAT_FRAME)
+  {
     return __super::SetPositionsInternal(id, pCurrent, dwCurrentFlags, pStop, dwStopFlags);
+  } 
+  
 
   if(!pCurrent && !pStop
   || (dwCurrentFlags&AM_SEEKING_PositioningBitsMask) == AM_SEEKING_NoPositioning 
@@ -357,19 +350,33 @@ HRESULT CXBMCFFmpegSplitter::SetPositionsInternal(void* id, LONGLONG* pCurrent, 
   if(pCurrent)
   switch(dwCurrentFlags&AM_SEEKING_PositioningBitsMask)
   {
-  case AM_SEEKING_NoPositioning: break;
-  case AM_SEEKING_AbsolutePositioning: rtCurrent = *pCurrent; break;
-  case AM_SEEKING_RelativePositioning: rtCurrent = rtCurrent + *pCurrent; break;
-  case AM_SEEKING_IncrementalPositioning: rtCurrent = rtCurrent + *pCurrent; break;
+    case AM_SEEKING_NoPositioning: 
+      break;
+    case AM_SEEKING_AbsolutePositioning: 
+      rtCurrent = *pCurrent; 
+      break;
+    case AM_SEEKING_RelativePositioning: 
+      rtCurrent = rtCurrent + *pCurrent; break;
+    case AM_SEEKING_IncrementalPositioning: 
+      rtCurrent = rtCurrent + *pCurrent; break;
   }
 
   if(pStop)
-  switch(dwStopFlags&AM_SEEKING_PositioningBitsMask)
   {
-  case AM_SEEKING_NoPositioning: break;
-  case AM_SEEKING_AbsolutePositioning: rtStop = *pStop; break;
-  case AM_SEEKING_RelativePositioning: rtStop += *pStop; break;
-  case AM_SEEKING_IncrementalPositioning: rtStop = rtCurrent + *pStop; break;
+    switch(dwStopFlags&AM_SEEKING_PositioningBitsMask)
+    {
+    case AM_SEEKING_NoPositioning: 
+      break;
+    case AM_SEEKING_AbsolutePositioning: 
+      rtStop = *pStop; 
+      break;
+    case AM_SEEKING_RelativePositioning: 
+      rtStop += *pStop; 
+      break;
+    case AM_SEEKING_IncrementalPositioning: 
+      rtStop = rtCurrent + *pStop; 
+      break;
+    }
   }
 
   if((dwCurrentFlags&AM_SEEKING_PositioningBitsMask)

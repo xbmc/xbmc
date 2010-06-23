@@ -675,9 +675,8 @@ void CXBMCVideoDecFilter::DetectVideoCard(HWND hWnd)
 CXBMCVideoDecFilter::~CXBMCVideoDecFilter()
 {
   Cleanup();
-  //SAFE_DELETE(m_pCpuId);
-  delete (m_pCpuId);     
-  (m_pCpuId)=NULL;
+
+  SAFE_DELETE(m_pCpuId);
 }
 
 inline int LNKO(int a, int b)
@@ -769,7 +768,6 @@ int CXBMCVideoDecFilter::FindCodec(const CMediaType* mtIn)
   for (int i=0; i<countof(ffCodecs); i++)
     if (mtIn->subtype == *ffCodecs[i].clsMinorType)
     {
-#ifndef REGISTER_FILTER    
       switch (ffCodecs[i].nFFCodec)
       {
       case CODEC_ID_H264 :
@@ -807,71 +805,6 @@ int CXBMCVideoDecFilter::FindCodec(const CMediaType* mtIn)
       }
       
       return ((m_bUseDXVA || m_bUseFFmpeg) ? i : -1);
-#else
-      bool  bCodecActivated = false;
-      switch (ffCodecs[i].nFFCodec)
-      {
-      case CODEC_ID_FLV1 :
-      case CODEC_ID_VP6F :
-        bCodecActivated = (m_nActiveCodecs & MPCVD_FLASH) != 0;
-        break;
-      case CODEC_ID_MPEG4 :
-        if ((*ffCodecs[i].clsMinorType == MEDIASUBTYPE_XVID) || 
-          (*ffCodecs[i].clsMinorType == MEDIASUBTYPE_xvid) ||
-          (*ffCodecs[i].clsMinorType == MEDIASUBTYPE_XVIX) ||
-          (*ffCodecs[i].clsMinorType == MEDIASUBTYPE_xvix) )
-        {
-          bCodecActivated = (m_nActiveCodecs & MPCVD_XVID) != 0;
-        }
-        else if ((*ffCodecs[i].clsMinorType == MEDIASUBTYPE_DX50) || 
-          (*ffCodecs[i].clsMinorType == MEDIASUBTYPE_dx50) ||
-          (*ffCodecs[i].clsMinorType == MEDIASUBTYPE_DIVX) ||
-          (*ffCodecs[i].clsMinorType == MEDIASUBTYPE_divx) )
-        {
-          bCodecActivated = (m_nActiveCodecs & MPCVD_DIVX) != 0;
-        }
-        break;
-      case CODEC_ID_WMV1 :
-      case CODEC_ID_WMV2 :
-      case CODEC_ID_WMV3 :
-        bCodecActivated = (m_nActiveCodecs & MPCVD_WMV) != 0;
-        break;
-      case CODEC_ID_MSMPEG4V3 :
-      case CODEC_ID_MSMPEG4V2 :
-      case CODEC_ID_MSMPEG4V1 :
-        bCodecActivated = (m_nActiveCodecs & MPCVD_MSMPEG4) != 0;
-        break;
-      case CODEC_ID_H264 :
-        m_bUseDXVA = (m_nActiveCodecs & MPCVD_H264_DXVA) != 0;
-        m_bUseFFmpeg = (m_nActiveCodecs & MPCVD_H264) != 0;
-        bCodecActivated = m_bUseDXVA || m_bUseFFmpeg;
-        break;
-      case CODEC_ID_SVQ3 :
-      case CODEC_ID_SVQ1 :
-        bCodecActivated = (m_nActiveCodecs & MPCVD_SVQ3) != 0;
-        break;
-      case CODEC_ID_H263 :
-        bCodecActivated = (m_nActiveCodecs & MPCVD_H263) != 0;
-        break;
-      case CODEC_ID_THEORA :
-        bCodecActivated = (m_nActiveCodecs & MPCVD_THEORA) != 0;
-        break;
-      case CODEC_ID_VC1 :
-        m_bUseDXVA = (m_nActiveCodecs & MPCVD_VC1_DXVA) != 0;
-        m_bUseFFmpeg = (m_nActiveCodecs & MPCVD_VC1) != 0;
-        bCodecActivated = m_bUseDXVA || m_bUseFFmpeg;
-        break;
-      case CODEC_ID_AMV :
-        bCodecActivated = (m_nActiveCodecs & MPCVD_AMVV) != 0;
-        break;
-      case CODEC_ID_VP5  :
-      case CODEC_ID_VP6  :
-      case CODEC_ID_VP6A :
-        bCodecActivated = (m_nActiveCodecs & MPCVD_VP6) != 0;
-        break;
-      }
-      return (bCodecActivated ? i : -1);
-#endif
     }
 
   return -1;
@@ -879,23 +812,26 @@ int CXBMCVideoDecFilter::FindCodec(const CMediaType* mtIn)
 
 void CXBMCVideoDecFilter::Cleanup()
 {
-   delete (m_pDXVADecoder);     
-  (m_pDXVADecoder)=NULL;
+  SAFE_DELETE(m_pDXVADecoder);
 
   // Release FFMpeg
   if (m_pAVCtx)
   {
     if (m_pAVCtx->intra_matrix)      
       free(m_pAVCtx->intra_matrix);
+    
     if (m_pAVCtx->inter_matrix)      
       free(m_pAVCtx->inter_matrix);
+
     if (m_pAVCtx->extradata)      
       free((unsigned char*)m_pAVCtx->extradata);
+
     if (m_pFFBuffer)          
       free(m_pFFBuffer);
 
     if (m_pAVCtx->slice_offset)      
       m_dllAvUtil.av_free(m_pAVCtx->slice_offset);
+
     if (m_pAVCtx->codec)        
       m_dllAvCodec.avcodec_close(m_pAVCtx);
 
@@ -919,8 +855,7 @@ void CXBMCVideoDecFilter::Cleanup()
   m_nFFBufferPos  = 0;
   m_nFFPicEnd    = INT_MIN;
   m_nCodecNb    = -1;
-  delete[] (m_pVideoOutputFormat);   
-  (m_pVideoOutputFormat)=NULL;
+  SAFE_DELETE_ARRAY (m_pVideoOutputFormat);
 
   // Release DXVA ressources
   if (m_hDevice != INVALID_HANDLE_VALUE)

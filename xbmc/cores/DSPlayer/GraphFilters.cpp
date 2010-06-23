@@ -52,8 +52,10 @@ CGraphFilters::~CGraphFilters()
   if (Audio.pBF)
     Audio.pBF.FullRelease();
   
-  if (Video.pBF)
+  if (Video.pBF && !Video.internalfilter)
     Video.pBF.FullRelease();
+  else if(Video.pBF)
+    Video.pBF.Release();
   
   while (! Extras.empty())
   {

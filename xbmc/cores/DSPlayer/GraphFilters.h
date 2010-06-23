@@ -40,11 +40,13 @@ struct SFilterInfos
     pBF = NULL;
     osdname = "";
     guid = GUID_NULL;
+    internalfilter = false;
   }
 
   Com::SmartPtr<IBaseFilter> pBF; ///< Pointer to the IBaseFilter interface. May be NULL
   CStdString osdname; ///< OSD Name of the filter
   GUID guid; ///< GUID of the filter
+  bool internalfilter; ///<  Releasing is not done the same way for internal filters
 };
 
 struct SSourceFilterInfos: SFilterInfos

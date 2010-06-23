@@ -488,8 +488,9 @@ HRESULT CFGLoader::InsertFilter(const CStdString& filterName, SFilterInfos& f)
   if (filterName.Equals("mpcvideodec"))
   {
     f.pBF = new CXBMCVideoDecFilter(NULL, &hr);
-    f.osdname = "Internal MpcVideoDec";
-    hr = g_dsGraph->pFilterGraph->AddFilter(f.pBF, L"Internal MpcVideoDec");
+    f.internalfilter = true;
+    f.osdname = "Internal VideoDecoder";
+    hr = g_dsGraph->pFilterGraph->AddFilter(f.pBF, L"Internal VideoDecoder");
     return hr;
   }
 #endif
