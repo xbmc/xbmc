@@ -65,7 +65,7 @@ public:
   virtual bool Load();
   virtual void Unload();
 
-  virtual int ResolveExport(const char*, void** ptr);
+  virtual int ResolveExport(const char*, void** ptr, bool logging = true);
   virtual int ResolveOrdinal(unsigned long ordinal, void** ptr);
   virtual bool HasSymbols() { return m_bLoadSymbols && !m_bUnloadSymbols; }
   virtual bool IsSystemDll() { return m_bSystemDll; }
