@@ -280,7 +280,11 @@ typedef struct {
     UCHAR   bScalingLists4x4[6][16];
     UCHAR   bScalingLists8x8[2][64];
 } DXVA_Qmatrix_H264;
-
+/* DXVA Mpeg2*/
+typedef struct {
+  BYTE bNewQmatrix[4]; /* intra Y, inter Y, intra chroma, inter chroma */
+  WORD Qmatrix[4][8 * 8];
+} DXVA_QmatrixData;
 
 typedef struct {
     UINT    BSNALunitDataLocation;
