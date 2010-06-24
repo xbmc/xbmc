@@ -21,15 +21,17 @@
 #include "Win32StorageProvider.h"
 #include "WIN32Util.h"
 #include "LocalizeStrings.h"
+#include "SpecialProtocol.h"
 
 bool CWin32StorageProvider::event = false;
 
 void CWin32StorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 {
   CMediaSource share;
-  share.strPath = "special://xbmc/";
-  share.strName.Format(g_localizeStrings.Get(21438),'Q');
+  share.strPath = _P("special://home");
+  share.strName = g_localizeStrings.Get(21440);
   share.m_ignore = true;
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
   localDrives.push_back(share);
 
   CWIN32Util::GetDrivesByType(localDrives, LOCAL_DRIVES);
