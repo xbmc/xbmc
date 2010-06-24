@@ -1948,7 +1948,8 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
   m_pD3DDev->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
 
   m_pD3DDev->SetRenderTarget(0, pBackBuffer);
-  hr = m_pD3DDev->Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
+  // Don't clear the back buffer as the gui may be drawn on it
+  //hr = m_pD3DDev->Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
 
   if(g_renderManager.IsConfigured() && !rDstVid.IsRectEmpty())
   {
