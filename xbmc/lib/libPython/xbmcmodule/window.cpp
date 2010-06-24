@@ -694,10 +694,8 @@ namespace PYXBMC
       return NULL;
     }
 
-    PyXBMCGUILock();
     CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS,pControl->iParentId, pControl->iControlId);
-    pWindow->OnMessage(msg);
-    PyXBMCGUIUnlock();
+    g_windowManager.SendThreadMessage(msg, pControl->iParentId);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -724,10 +722,8 @@ namespace PYXBMC
       return NULL;
     }
 
-    PyXBMCGUILock();
     CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS,self->iWindowId,iControlId);
-    pWindow->OnMessage(msg);
-    PyXBMCGUIUnlock();
+    g_windowManager.SendThreadMessage(msg, self->iWindowId);
 
     Py_INCREF(Py_None);
     return Py_None;

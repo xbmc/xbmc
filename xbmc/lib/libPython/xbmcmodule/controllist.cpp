@@ -251,16 +251,13 @@ PyDoc_STRVAR(addItem__doc__,
     self->vecItems.push_back(pListItem);
 
     // construct a CFileItemList to pass 'em on to the list
-    CFileItemList items;
+    CGUIListItemPtr items(new CFileItemList());
     for (unsigned int i = 0; i < self->vecItems.size(); i++)
-      items.Add(self->vecItems[i]->item);
+      ((CFileItemList*)items.get())->Add(self->vecItems[i]->item);
 
-    CGUIMessage msg(GUI_MSG_LABEL_BIND, self->iParentId, self->iControlId, 0, 0, &items);
-
-    // send message
-    PyXBMCGUILock();
-    if (self->pGUIControl) self->pGUIControl->OnMessage(msg);
-    PyXBMCGUIUnlock();
+    CGUIMessage msg(GUI_MSG_LABEL_BIND, self->iParentId, self->iControlId, 0, 0, items);
+    msg.SetPointer(items.get());
+    g_windowManager.SendThreadMessage(msg, self->iParentId);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -294,7 +291,7 @@ PyDoc_STRVAR(addItems__doc__,
       return NULL;
     }
 
-    CFileItemList items;
+    CGUIListItemPtr items(new CFileItemList());
     for (int item = 0; item < PyList_Size(pList); item++)
     {
       PyObject *pItem = PyList_GetItem(pList, item);
@@ -317,17 +314,13 @@ PyDoc_STRVAR(addItems__doc__,
 
       // add item to objects vector
       self->vecItems.push_back(pListItem);
-      items.Add(pListItem->item);
+      ((CFileItemList*)items.get())->Add(pListItem->item);
     }
 
     // create message
-    CGUIMessage msg(GUI_MSG_LABEL_BIND, self->iParentId, self->iControlId, 0, 0, &items);
-
-    // send message
-    PyXBMCGUILock();
-    if (self->pGUIControl) self->pGUIControl->OnMessage(msg);
-    PyXBMCGUIUnlock();
-
+    CGUIMessage msg(GUI_MSG_LABEL_BIND, self->iParentId, self->iControlId, 0, 0, items);
+    msg.SetPointer(items.get());
+    g_windowManager.SendThreadMessage(msg, self->iParentId);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -374,10 +367,7 @@ PyDoc_STRVAR(addItems__doc__,
     ControlList *pControl = (ControlList*)self;
     CGUIMessage msg(GUI_MSG_LABEL_RESET, pControl->iParentId, pControl->iControlId);
 
-    // send message
-    PyXBMCGUILock();
-    if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-    PyXBMCGUIUnlock();
+    g_windowManager.SendThreadMessage(msg, pControl->iParentId);
 
     // delete all items from vector
     // delete all ListItem from vector
