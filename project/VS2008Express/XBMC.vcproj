@@ -127,7 +127,6 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine=""
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -222,7 +221,6 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine=""
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -3703,14 +3701,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\PCMAmplifier.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\PerformanceSample.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\PerformanceStats.cpp"
 					>
 				</File>
 				<File

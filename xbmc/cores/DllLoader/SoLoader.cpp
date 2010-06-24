@@ -78,18 +78,20 @@ void SoLoader::Unload()
   m_soHandle = NULL;
 }
 
-int SoLoader::ResolveExport(const char* symbol, void** f)
+int SoLoader::ResolveExport(const char* symbol, void** f, bool logging)
 {
   if (!m_bLoaded && !Load())
   {
-    CLog::Log(LOGWARNING, "Unable to resolve: %s %s, reason: so not loaded", GetName(), symbol);
+    if (logging)
+      CLog::Log(LOGWARNING, "Unable to resolve: %s %s, reason: so not loaded", GetName(), symbol);
     return 0;
   }
 
   void* s = dlsym(m_soHandle, symbol);
   if (!s)
   {
-    CLog::Log(LOGWARNING, "Unable to resolve: %s %s, reason: %s", GetName(), symbol, dlerror());
+    if (logging)
+      CLog::Log(LOGWARNING, "Unable to resolve: %s %s, reason: %s", GetName(), symbol, dlerror());
     return 0;
   }
 

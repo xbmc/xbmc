@@ -1,5 +1,10 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XBMC", "XBMC.vcxproj", "{3A68081D-E8F9-4523-9436-530DE9E5530A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B} = {78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}
+	EndProjectSection
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "guilib", "guilib.vcxproj", "{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B} = {78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}
@@ -94,8 +99,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libsubs_dll", "..\..\xbmc\c
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dsutil", "..\..\xbmc\cores\DSPlayer\Subtitles\dsutil\dsutil.vcxproj", "{FC70988B-1AE5-4381-866D-4F405E28AC42}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XBMC", "XBMC.vcxproj", "{3A68081D-E8F9-4523-9436-530DE9E5530A}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libdts_dll", "..\..\xbmc\cores\dvdplayer\Codecs\libdts\vc++\libdts.vcxproj", "{F93133AB-EB51-4955-AEDF-639632891042}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libAC3Codec_dll", "..\..\xbmc\cores\paplayer\AC3Codec\vc++\AC3Codec.vcxproj", "{3039DB92-836E-4563-9DE0-D0C2AB28F14F}"
@@ -134,6 +137,14 @@ Global
 		Release (OpenGL)|Win32 = Release (OpenGL)|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug (DirectX)|Win32.ActiveCfg = Debug (DirectX)|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug (DirectX)|Win32.Build.0 = Debug (DirectX)|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug (OpenGL)|Win32.ActiveCfg = Debug (OpenGL)|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Debug (OpenGL)|Win32.Build.0 = Debug (OpenGL)|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release (DirectX)|Win32.ActiveCfg = Release (DirectX)|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release (DirectX)|Win32.Build.0 = Release (DirectX)|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release (OpenGL)|Win32.ActiveCfg = Release (OpenGL)|Win32
+		{3A68081D-E8F9-4523-9436-530DE9E5530A}.Release (OpenGL)|Win32.Build.0 = Release (OpenGL)|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Debug (DirectX)|Win32.ActiveCfg = Debug (DirectX)|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Debug (DirectX)|Win32.Build.0 = Debug (DirectX)|Win32
 		{510441AC-B9E1-4B31-9C0C-EB3AD39D90C4}.Debug (OpenGL)|Win32.ActiveCfg = Debug (OpenGL)|Win32

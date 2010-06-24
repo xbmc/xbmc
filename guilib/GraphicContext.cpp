@@ -331,16 +331,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   }
 
   Lock();
-#ifdef _WIN32
-  HMONITOR currentMonitor = MonitorFromWindow(g_hWnd, MONITOR_DEFAULTTONEAREST);
-  MONITOR_DETAILS oldMonitor = g_Windowing.GetMonitor(g_settings.m_ResInfo[res].iScreen);
-  if ( currentMonitor != oldMonitor.hMonitor && res == RES_DESKTOP)
-  {
-    //Im not sure for everyone else but from what i see the m_resInfo 13 is exactly the fullscreen on second monitor
-    res = RES_CUSTOM;
-  }
-#endif
-  
+
   m_iScreenWidth  = g_settings.m_ResInfo[res].iWidth;
   m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
   m_iScreenId     = g_settings.m_ResInfo[res].iScreen;

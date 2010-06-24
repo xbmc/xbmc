@@ -64,3 +64,4 @@ protected:
   unsigned int m_jobid;
   bool m_changelog;
 };
+

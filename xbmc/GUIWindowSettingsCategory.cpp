@@ -439,6 +439,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(35052), SUBTITLE_BORDER_OPAQUE);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("network.httpproxyport"))
+    {
+      CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
+      control->SetDelayed();
+    }
     else if (strSetting.Equals("subtitles.style"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;

@@ -157,13 +157,14 @@ public:
   pGetGestureInfo         PtrGetGestureInfo;
   pSetGestureConfig       PtrSetGestureConfig;
   pCloseGestureInfoHandle PtrCloseGestureInfoHandle;
-  const MONITOR_DETAILS &GetMonitor(int screen) const;
+
 protected:
   bool ChangeResolution(RESOLUTION_INFO res);
   virtual bool ResizeInternal(bool forceRefresh = false);
   virtual bool UpdateResolutionsInternal();
   virtual bool CreateBlankWindows();
   virtual bool BlankNonActiveMonitors(bool bBlank);
+  const MONITOR_DETAILS &GetMonitor(int screen) const;
   void RestoreDesktopResolution(int screen);
   RECT ScreenRect(int screen);
   /*!

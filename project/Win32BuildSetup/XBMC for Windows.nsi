@@ -377,5 +377,6 @@ Section "ffdshow rev 3326" SEC_FFDSHOW
   DetailPrint "Finished ffdshow installation"
  
   Delete "$TEMP\ffdshow_rev3326_20100319.exe"
+ 
 SectionEnd
 !endif

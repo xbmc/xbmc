@@ -450,12 +450,7 @@ void CXBMCRenderManager::Present()
 
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo())
-#ifdef HAS_DS_PLAYER
-    if (m_pRendererType == RENDERER_NORMAL)
-      WaitPresentTime(m_presenttime);
-#else
     WaitPresentTime(m_presenttime);
-#endif
 
   m_presentevent.Set();
 }

@@ -11,7 +11,6 @@
 #include <mmsystem.h>
 #include <TCHAR.H>
 #include <locale>
-#include <intsafe.h>
 #include <comdef.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include "DInput.h"

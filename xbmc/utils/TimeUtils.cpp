@@ -100,23 +100,22 @@ CDateTime CTimeUtils::GetLocalTime(time_t time)
 
   return result;
 }
-#ifdef HAS_DX
-#include "streams.h"
-LONGLONG CTimeUtils::GetPerfCounter()
+#ifdef HAS_DS_PLAYER
+int64_t CTimeUtils::GetPerfCounter()
 {
-	LARGE_INTEGER		i64Ticks100ns;
-	LARGE_INTEGER		llPerfFrequency;
+  LARGE_INTEGER i64Ticks100ns;
+  LARGE_INTEGER llPerfFrequency;
 
-	QueryPerformanceFrequency (&llPerfFrequency);
-	if (llPerfFrequency.QuadPart != 0)
-	{
-		QueryPerformanceCounter (&i64Ticks100ns);
-		return llMulDiv (i64Ticks100ns.QuadPart, 10000000, llPerfFrequency.QuadPart, 0);
-	}
-	else
-	{
-		// ms to 100ns units
-		return timeGetTime() * 10000; 
-	}
+  QueryPerformanceFrequency (&llPerfFrequency);
+  if (llPerfFrequency.QuadPart != 0)
+  {
+    QueryPerformanceCounter (&i64Ticks100ns);
+    return (i64Ticks100ns.QuadPart * 10000000) / llPerfFrequency.QuadPart ;
+  }
+  else
+  {
+    // ms to 100ns units
+    return timeGetTime() * 10000; 
+  }
 }
 #endif

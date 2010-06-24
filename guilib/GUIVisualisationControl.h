@@ -30,4 +30,6 @@ public:
   virtual CGUIVisualisationControl *Clone() const { return new CGUIVisualisationControl(*this); }; //TODO check for naughties
   virtual void FreeResources(bool immediately = false);
   virtual void Render();
+private:
+  bool m_bAttemptedLoad;
 };

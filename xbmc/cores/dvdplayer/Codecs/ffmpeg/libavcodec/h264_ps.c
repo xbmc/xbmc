@@ -291,11 +291,11 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
     sps->profile_idc= profile_idc;
     sps->level_idc= level_idc;
     sps->full_range = VIDEO_FULL_RANGE_INVALID; /* ffdshow custom code */
-	
+
     memset(sps->scaling_matrix4, 16, sizeof(sps->scaling_matrix4));
     memset(sps->scaling_matrix8, 16, sizeof(sps->scaling_matrix8));
     sps->scaling_matrix_present = 0;
-	sps->colorspace = 2; /* ffdshow custom code */
+    sps->colorspace = 2; /* ffdshow custom code */
 
     if(sps->profile_idc >= 100){ //high profile
         sps->chroma_format_idc= get_ue_golomb_31(&s->gb);

@@ -307,7 +307,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     g_uQueryCancelAutoPlay = RegisterWindowMessage(TEXT("QueryCancelAutoPlay"));
     shcne.pidl = NULL;
     shcne.fRecursive = TRUE;
-    SHChangeNotifyRegister(hWnd, SHCNRF_ShellLevel | SHCNRF_NewDelivery, SHCNE_MEDIAREMOVED | SHCNE_MEDIAINSERTED, WM_MEDIA_CHANGE, 1, &shcne);
+    long fEvents = SHCNE_DRIVEADD | SHCNE_DRIVEREMOVED | SHCNE_MEDIAREMOVED | SHCNE_MEDIAINSERTED;
+    SHChangeNotifyRegister(hWnd, SHCNRF_ShellLevel | SHCNRF_NewDelivery, fEvents, WM_MEDIA_CHANGE, 1, &shcne);
     return 0;
   }
 
@@ -594,6 +595,9 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       return(0);
     case WM_MEDIA_CHANGE:
       {
+        // There may be multiple notifications for one event
+        // There are also a few events we're not interested in, but they cause no harm
+        // For example SD card reader insertion/removal
         long lEvent;
         PIDLIST_ABSOLUTE *ppidl;
         HANDLE hLock = SHChangeNotification_Lock((HANDLE)wParam, (DWORD)lParam, &ppidl, &lEvent);
@@ -601,71 +605,30 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         if (hLock)
         {
           char drivePath[MAX_PATH+1];
+          if (!SHGetPathFromIDList(ppidl[0], drivePath))
+            break;
 
           switch(lEvent)
           {
+            case SHCNE_DRIVEADD:
             case SHCNE_MEDIAINSERTED:
-              SHGetPathFromIDList(ppidl[0], drivePath);
               CLog::Log(LOGDEBUG, __FUNCTION__": Drive %s Media has arrived.", drivePath);
-              CWin32StorageProvider::SetEvent();
+              if (GetDriveType(drivePath) == DRIVE_CDROM)
+                g_application.getApplicationMessenger().OpticalMount(drivePath, true);
+              else
+                CWin32StorageProvider::SetEvent();
               break;
 
+            case SHCNE_DRIVEREMOVED:
             case SHCNE_MEDIAREMOVED:
-              SHGetPathFromIDList(ppidl[0], drivePath);
               CLog::Log(LOGDEBUG, __FUNCTION__": Drive %s Media was removed.", drivePath);
-              CWin32StorageProvider::SetEvent();
+              if (GetDriveType(drivePath) == DRIVE_CDROM)
+                g_application.getApplicationMessenger().OpticalUnMount(drivePath);
+              else
+                CWin32StorageProvider::SetEvent();
               break;
           }
           SHChangeNotification_Unlock(hLock);
-        }
-        break;
-      }
-    case WM_DEVICECHANGE:
-      {
-        PDEV_BROADCAST_HDR lpdb = (PDEV_BROADCAST_HDR)lParam;
-        switch(wParam)
-        {
-          case DBT_DEVICEARRIVAL:
-             if (lpdb -> dbch_devicetype == DBT_DEVTYP_VOLUME)
-             {
-                PDEV_BROADCAST_VOLUME lpdbv = (PDEV_BROADCAST_VOLUME)lpdb;
-
-                // Check whether a CD or DVD was inserted into a drive.
-                if (lpdbv -> dbcv_flags & DBTF_MEDIA)
-                {
-                  CLog::Log(LOGDEBUG, "%s: Drive %c: Media has arrived.", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-                  CStdString strDevice;
-                  strDevice.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-                  g_application.getApplicationMessenger().OpticalMount(strDevice, true);
-                }
-                else
-                {
-                  // USB drive inserted
-                  CWin32StorageProvider::SetEvent();
-                }
-             }
-             break;
-
-          case DBT_DEVICEREMOVECOMPLETE:
-             if (lpdb -> dbch_devicetype == DBT_DEVTYP_VOLUME)
-             {
-                PDEV_BROADCAST_VOLUME lpdbv = (PDEV_BROADCAST_VOLUME)lpdb;
-
-                // Check whether a CD or DVD was removed from a drive.
-                if (lpdbv -> dbcv_flags & DBTF_MEDIA)
-                {
-                  CLog::Log(LOGDEBUG,"%s: Drive %c: Media was removed.", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-                  CStdString strDevice;
-                  strDevice.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-                  g_application.getApplicationMessenger().OpticalUnMount(strDevice);
-                }
-                else
-                {
-                  // USB drive was removed
-                  CWin32StorageProvider::SetEvent();
-                }
-             }
-             break;
         }
         break;
       }
