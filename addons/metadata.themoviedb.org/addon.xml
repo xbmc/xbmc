@@ -2,6 +2,7 @@
 <addon id="metadata.themoviedb.org"
        name="The MovieDB"
        version="1.0.4"
+       version="1.0.3"
        provider-name="Team XBMC">
   <requires>
     <import addon="xbmc.metadata" version="1.0"/>

@@ -551,7 +551,7 @@ int DllLoader::LoadExports()
   return 0;
 }
 
-int DllLoader::ResolveExport(const char *sName, void **pAddr, bool logging)
+int DllLoader::ResolveExport(const char *sName, void **pAddr)
 {
   Export* pExport=GetExportByFunctionName(sName);
 
@@ -569,8 +569,7 @@ int DllLoader::ResolveExport(const char *sName, void **pAddr, bool logging)
   if (sDllName) sDllName += 1;
   else sDllName = GetFileName();
 
-  if (logging)
-    CLog::Log(LOGWARNING, "Unable to resolve: %s %s", sDllName, sName);
+  CLog::Log(LOGWARNING, "Unable to resolve: %s %s", sDllName, sName);
   return 0;
 }
 

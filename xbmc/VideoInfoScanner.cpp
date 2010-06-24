@@ -1364,7 +1364,11 @@ namespace VIDEO
   CStdString CVideoInfoScanner::GetFastHash(const CStdString &directory) const
   {
     struct __stat64 buffer;
-    if (XFILE::CFile::Stat(directory, &buffer) == 0)
+    CStdString _directory = directory;
+#ifdef _WIN32
+    
+#endif
+    if (XFILE::CFile::Stat(_directory, &buffer) == 0)
     {
       int64_t time = buffer.st_mtime;
       if (!time)

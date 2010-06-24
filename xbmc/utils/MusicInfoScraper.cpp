@@ -179,7 +179,7 @@ void CMusicInfoScraper::FindArtistinfo()
   CStdString strHTML;
   m_vecArtists.erase(m_vecArtists.begin(), m_vecArtists.end());
 
-  if (!m_scraper->Load())
+  if (!m_scraper->Load() || !m_scraper->GetParser().HasFunction("CreateAlbumSearchUrl"))
     return;
 
   vector<CStdString> extras;

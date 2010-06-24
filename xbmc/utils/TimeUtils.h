@@ -37,7 +37,7 @@ public:
   static unsigned int GetTimeMS();
   static CDateTime GetLocalTime(time_t time);
 #ifdef HAS_DS_PLAYER
-  static int64_t GetPerfCounter();
+  static uint64_t GetPerfCounter();
 #endif
 private:
   static unsigned int frameTime;

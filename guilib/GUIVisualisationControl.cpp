@@ -34,7 +34,7 @@ using namespace ADDON;
 #define LABEL_ROW3 12
 
 CGUIVisualisationControl::CGUIVisualisationControl(int parentID, int controlID, float posX, float posY, float width, float height)
-    : CGUIRenderingControl(parentID, controlID, posX, posY, width, height), m_bAttemptedLoad(false)
+    : CGUIRenderingControl(parentID, controlID, posX, posY, width, height)
 {
   ControlType = GUICONTROL_VISUALISATION;
 }
@@ -47,13 +47,11 @@ CGUIVisualisationControl::CGUIVisualisationControl(const CGUIVisualisationContro
 
 void CGUIVisualisationControl::Render()
 {
-  if (!m_addon && g_application.IsPlayingAudio() && !m_bAttemptedLoad)
+  if (!m_addon && g_application.IsPlayingAudio())
   {
     AddonPtr viz;
     if (ADDON::CAddonMgr::Get().GetDefault(ADDON_VIZ, viz))
       LoadAddon(viz);
-
-    m_bAttemptedLoad = true;
   }
   else
     CGUIRenderingControl::Render();
@@ -61,7 +59,6 @@ void CGUIVisualisationControl::Render()
 
 void CGUIVisualisationControl::FreeResources(bool immediately)
 {
-  m_bAttemptedLoad = false;
   // tell our app that we're going
   if (!m_addon)
     return;

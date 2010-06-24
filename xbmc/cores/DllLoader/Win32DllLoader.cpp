@@ -218,12 +218,11 @@ void Win32DllLoader::Unload()
   m_dllHandle = NULL;
 }
 
-int Win32DllLoader::ResolveExport(const char* symbol, void** f, bool logging)
+int Win32DllLoader::ResolveExport(const char* symbol, void** f)
 {
   if (!m_dllHandle && !Load())
   {
-    if (logging)
-      CLog::Log(LOGWARNING, "%s - Unable to resolve: %s %s, reason: DLL not loaded", __FUNCTION__, GetName(), symbol);
+    CLog::Log(LOGWARNING, "%s - Unable to resolve: %s %s, reason: DLL not loaded", __FUNCTION__, GetName(), symbol);
     return 0;
   }
 
@@ -231,8 +230,7 @@ int Win32DllLoader::ResolveExport(const char* symbol, void** f, bool logging)
 
   if (!s)
   {
-    if (logging)
-      CLog::Log(LOGWARNING, "%s - Unable to resolve: %s %s", __FUNCTION__, GetName(), symbol);
+    CLog::Log(LOGWARNING, "%s - Unable to resolve: %s %s", __FUNCTION__, GetName(), symbol);
     return 0;
   }
 

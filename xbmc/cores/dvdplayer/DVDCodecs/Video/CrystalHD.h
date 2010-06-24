@@ -148,7 +148,6 @@ protected:
 
   DllLibCrystalHD *m_dll;
   void          *m_device;
-  bool          m_new_lib;
 
   bool          m_decoder_open;
   bool          m_drop_state;

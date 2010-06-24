@@ -2289,12 +2289,6 @@
     <ClCompile Include="..\..\xbmc\addons\Repository.cpp">
       <Filter>Source Files\Addons</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\addons\Skin.cpp">
-      <Filter>Source Files\Addons</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\GUIDialogAddonInfo.cpp">
-      <Filter>Source Files\GUI Dialog</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\GUIDialogTextViewer.cpp">
       <Filter>Source Files\GUI Dialog</Filter>
     </ClCompile>
@@ -2641,30 +2635,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDStateSerializer.h">
       <Filter>cores\dvdplayer\DVDInputStreams</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllAvCodec.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllAvFormat.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllPostProc.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\DllSwScale.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\include\libavutil\avconfig.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avformat.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavutil\common.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\dvdplayer\Codecs\ffmpeg\libavformat\avio.h">
-      <Filter>cores\dvdplayer\DVDHeaders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\dvd_types.h">
       <Filter>cores\dvdplayer\DVDHeaders</Filter>
@@ -4870,12 +4840,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\Repository.h">
       <Filter>Source Files\Addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\addons\Skin.h">
-      <Filter>Source Files\Addons</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\GUIDialogAddonInfo.h">
-      <Filter>Source Files\GUI Dialog</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\GUIDialogTextViewer.h">
       <Filter>Source Files\GUI Dialog</Filter>

@@ -101,7 +101,7 @@ CDateTime CTimeUtils::GetLocalTime(time_t time)
   return result;
 }
 #ifdef HAS_DS_PLAYER
-int64_t CTimeUtils::GetPerfCounter()
+uint64_t CTimeUtils::GetPerfCounter()
 {
   LARGE_INTEGER i64Ticks100ns;
   LARGE_INTEGER llPerfFrequency;
@@ -110,7 +110,7 @@ int64_t CTimeUtils::GetPerfCounter()
   if (llPerfFrequency.QuadPart != 0)
   {
     QueryPerformanceCounter (&i64Ticks100ns);
-    return (i64Ticks100ns.QuadPart * 10000000) / llPerfFrequency.QuadPart ;
+    return (i64Ticks100ns.QuadPart * 10000000) / llPerfFrequency.QuadPart;
   }
   else
   {

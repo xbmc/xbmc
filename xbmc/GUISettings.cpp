@@ -377,12 +377,6 @@ void CGUISettings::Initialize()
   bool showSetting = true;
   if (g_sysinfo.IsAeroDisabled())
     fakeFullScreen = false;
-
-#if defined(_WIN32) && defined(HAS_GL)
-  fakeFullScreen = true;
-  showSetting = false;
-#endif
-
 #if defined (__APPLE__)
   if (g_sysinfo.IsAppleTV())
   {

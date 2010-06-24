@@ -62,9 +62,9 @@ extern "C" {
   #include "libavcodec/avcodec.h"
   #include "libavcodec/audioconvert.h"
   #include "libavutil/crc.h"
-#ifdef HAS_DS_PLAYER
+  #ifdef HAS_DS_PLAYER
   #include "libavcodec/ffmpegcontext.h"
-#endif
+  #endif
 #endif
 }
 
@@ -261,7 +261,6 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD6(int, FFVC1UpdatePictureParam, (DXVA_PictureParameters *p1, AVCodecContext *p2, int *p3, int *p4, BYTE *p5, UINT p6))
   DEFINE_METHOD1(int, FFIsSkipped, (AVCodecContext *p1))
 #endif
-
   LOAD_SYMBOLS();
 
   DEFINE_METHOD0(void, avcodec_register_all_dont_call)

@@ -1,4 +1,3 @@
-
 #ifndef _WIN32DLLLOADER_H_
 #define _WIN32DLLLOADER_H_
 
@@ -42,7 +41,7 @@ public:
   virtual bool Load();
   virtual void Unload();
 
-  virtual int ResolveExport(const char* symbol, void** ptr, bool logging = true);
+  virtual int ResolveExport(const char* symbol, void** ptr);
   virtual bool IsSystemDll();
   virtual HMODULE GetHModule();
   virtual bool HasSymbols();

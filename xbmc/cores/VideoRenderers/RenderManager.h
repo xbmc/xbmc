@@ -40,9 +40,14 @@
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
 
+
 namespace DXVA { class CProcessor; }
 namespace VAAPI { class CSurfaceHolder; }
 class CVDPAU;
+
+#ifdef HAS_DS_PLAYER
+  class IPaintCallback;
+#endif
 
 class CXBMCRenderManager
 {
@@ -244,7 +249,7 @@ protected:
   CSharedSection m_sharedSection;
 
   bool m_bReconfigured;
-
+  
   int m_rendermethod;
 
 #ifdef HAS_DS_PLAYER
