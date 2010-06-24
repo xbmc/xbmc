@@ -518,7 +518,8 @@ int CDecoder::Check(AVCodecContext* avctx)
     return VC_FLUSHED;
   }
 
-  if(avctx->codec_id != CODEC_ID_H264
+  if(avctx->codec_id != CODEC_ID_MPEG2VIDEO
+  && avctx->codec_id != CODEC_ID_H264
   && avctx->codec_id != CODEC_ID_VC1
   && avctx->codec_id != CODEC_ID_WMV3)
     return 0;
