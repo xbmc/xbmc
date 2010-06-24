@@ -24,6 +24,7 @@
 #include "GUISettings.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
+#include "FileSystem/FileCurl.h"
 #include "Util.h"
 #include "DllImageLib.h"
 #include "utils/log.h"
@@ -50,21 +51,20 @@ bool CPicture::CacheImage(const CStdString& sourceUrl, const CStdString& destFil
 
     if (CUtil::IsInternetStream(sourceUrl, true))
     {
-      CStdString tempFile = CUtil::ReplaceExtension("special://temp/image_download", CUtil::GetExtension(sourceUrl));
-      if (CFile::Cache(sourceUrl, tempFile))
+      CFileCurl http;
+      CStdString data;
+      if (http.Get(sourceUrl, data))
       {
-        if (!dll.CreateThumbnail(tempFile.c_str(), destFile.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
+        if (!dll.CreateThumbnailFromMemory((BYTE *)data.c_str(), data.GetLength(), CUtil::GetExtension(sourceUrl).c_str(), destFile.c_str(), width, height))
         {
           CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceUrl.c_str());
-          CFile::Delete(tempFile);
           return false;
         }
-        CFile::Delete(tempFile);
         return true;
       }
       return false;
     }
-    
+
     if (!dll.CreateThumbnail(sourceUrl.c_str(), destFile.c_str(), width, height, g_guiSettings.GetBool("pictures.useexifrotation")))
     {
       CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFile.c_str(), sourceUrl.c_str());
