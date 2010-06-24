@@ -1525,6 +1525,11 @@
   <string id="16317">Temporal (Half)</string>
   <string id="16318">Temporal/Spatial (Half)</string>
 
+  <string id="16400">Video post-processing</string>
+  <string id="16401">Disabled</string>
+  <string id="16402">Enabled for SD content</string>
+  <string id="16403">Always enabled</string>
+
   <string id="17500">Display sleep timeout</string>
 
   <string id="19000">Switch to channel</string>

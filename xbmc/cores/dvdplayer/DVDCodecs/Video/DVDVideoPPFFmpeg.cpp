@@ -93,6 +93,16 @@ bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
     return false;
 }
 
+void CDVDVideoPPFFmpeg::SetType(const CStdString& mType)
+{
+  if (mType == m_sType)
+    return;
+
+  m_sType = mType;
+
+  if(m_pContext || m_pMode)
+    Dispose();
+}
 
 bool CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
 {
@@ -119,18 +129,24 @@ bool CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
     }
   }
 
+  int pict_type = (m_pSource->qscale_type != DVP_QSCALE_MPEG1) ?
+                   PP_PICT_TYPE_QP2 : 0;
+
   m_dll.pp_postprocess(m_pSource->data, m_pSource->iLineSize,
                 m_pTarget->data, m_pTarget->iLineSize,
                 m_pSource->iWidth, m_pSource->iHeight,
-                0, 0,
+                m_pSource->qscale_table, m_pSource->qscale_stride,
                 m_pMode, m_pContext,
-                PP_PICT_TYPE_QP2); //m_pSource->iFrameType);
+                pict_type); //m_pSource->iFrameType);
 
   //Copy frame information over to target, but make sure it is set as allocated should decoder have forgotten
   m_pTarget->iFlags = m_pSource->iFlags | DVP_FLAG_ALLOCATED;
   m_pTarget->iFrameType = m_pSource->iFrameType;
   m_pTarget->iRepeatPicture = m_pSource->iRepeatPicture;;
   m_pTarget->iDuration = m_pSource->iDuration;
+  m_pTarget->qscale_table = m_pSource->qscale_table;
+  m_pTarget->qscale_stride = m_pSource->qscale_stride;
+  m_pTarget->qscale_type = m_pSource->qscale_type;
   m_pTarget->iDisplayHeight = m_pSource->iDisplayHeight;
   m_pTarget->iDisplayWidth = m_pSource->iDisplayWidth;
   m_pTarget->pts = m_pSource->pts;

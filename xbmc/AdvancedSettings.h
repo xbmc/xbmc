@@ -85,7 +85,8 @@ class CAdvancedSettings
     int m_videoPercentSeekBackward;
     int m_videoPercentSeekForwardBig;
     int m_videoPercentSeekBackwardBig;
-    CStdString m_videoPPFFmpegType;
+    CStdString m_videoPPFFmpegDeint;
+    CStdString m_videoPPFFmpegPostProc;
     bool m_musicUseTimeSeeking;
     int m_musicTimeSeekForward;
     int m_musicTimeSeekBackward;

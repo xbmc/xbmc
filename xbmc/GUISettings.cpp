@@ -619,6 +619,7 @@ void CGUISettings::Initialize()
   AddBool(vp, "videoplayer.vdpaustudiolevel", 13122, false);
 #endif
 #endif
+  AddInt(vp, "videoplayer.postprocess", 16400, VIDEO_POSTPROCESS_DISABLED, VIDEO_POSTPROCESS_DISABLED, 1, VIDEO_POSTPROCESS_ALWAYS, SPIN_CONTROL_TEXT);
   AddSeparator(vp, "videoplayer.sep5");
   AddBool(vp, "videoplayer.teletextenabled", 23050, true);
 

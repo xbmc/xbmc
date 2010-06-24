@@ -69,6 +69,10 @@ struct DVDVideoPicture
   unsigned int color_range        : 1; // 1 indicate if we have a full range of color
   int iGroupId;
 
+  int8_t* qscale_table; // Quantization parameters, primarily used by filters
+  int qscale_stride;
+  int qscale_type;
+
   unsigned int iWidth;
   unsigned int iHeight;
   unsigned int iDisplayWidth;  // width of the picture without black bars
@@ -100,6 +104,11 @@ struct DVDVideoUserData
 #define DVP_FLAG_DROPPED            0x00000020 // indicate that this picture has been dropped in decoder stage, will have no data
 
 // DVP_FLAG 0x00000100 - 0x00000f00 is in use by libmpeg2!
+
+#define DVP_QSCALE_UNKNOWN          0
+#define DVP_QSCALE_MPEG1            1
+#define DVP_QSCALE_MPEG2            2
+#define DVP_QSCALE_H264             3
 
 class CDVDStreamInfo;
 class CDVDCodecOption;
