@@ -36,8 +36,6 @@
 using namespace MUSIC_INFO;
 using namespace ADDON;
 
-#define TRANSISTION_COUNT   50  // 1 second
-#define TRANSISTION_LENGTH 200  // 4 seconds
 #define START_FADE_LENGTH  2.0f // 2 seconds on startup
 
 #define CONTROL_VIS          2
