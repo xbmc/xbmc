@@ -144,6 +144,7 @@ extern "C"
   int xbp_rename(const char *oldname, const char *newname);
   int xbp_mkdir(const char *dirname);
   int xbp_open(const char *filename, int oflag, int pmode);
+  FILE* xbp__wfopen(const wchar_t *filename, const wchar_t *mode);
 };
 
 Export win32_python_exports[] =
@@ -157,6 +158,7 @@ Export win32_python_exports[] =
   { "rename",                               -1, (void*)xbp_rename,                               NULL },
   { "mkdir",                               -1, (void*)xbp_mkdir,                               NULL },
   { "open",                               -1, (void*)xbp_open,                               NULL },
+  { "_wfopen",                            -1, (void*)xbp__wfopen,                            NULL },
 //  { "opendir",                               -1, (void*)xbp_opendir,                               NULL }, _LINUX only
 
   // special workaround just for python
