@@ -38,15 +38,13 @@ using namespace ADDON;
 
 #define TRANSISTION_COUNT   50  // 1 second
 #define TRANSISTION_LENGTH 200  // 4 seconds
-#define START_FADE_LENGTH  100  // 2 seconds on startup
+#define START_FADE_LENGTH  2.0f // 2 seconds on startup
 
 #define CONTROL_VIS          2
 
 CGUIWindowVisualisation::CGUIWindowVisualisation(void)
     : CGUIWindow(WINDOW_VISUALISATION, "MusicVisualisation.xml")
 {
-  m_initTimer = 0;
-  m_lockedTimer = 0;
   m_bShowPreset = false;
 }
 
@@ -67,7 +65,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     visAction = VIS_ACTION_RATE_PRESET_MINUS; break;
   case ACTION_SHOW_INFO:
     {
-      m_initTimer = 0;
+      m_initTimer.Stop();
       g_infoManager.ToggleShowInfo();
       g_settings.m_bMyMusicSongThumbInVis = g_infoManager.GetBool(PLAYER_SHOWINFO);
       return true;
@@ -85,14 +83,14 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     { // show the locked icon + fall through so that the vis handles the locking
       if (!m_bShowPreset)
       {
-        m_lockedTimer = START_FADE_LENGTH;
+        m_lockedTimer.StartZero();
         g_infoManager.SetShowCodec(true);
       }
     }
     break;
   case ACTION_VIS_PRESET_SHOW:
     {
-      if (!m_lockedTimer || m_bShowPreset)
+      if (!m_lockedTimer.IsRunning() || m_bShowPreset)
         m_bShowPreset = !m_bShowPreset;
       g_infoManager.SetShowCodec(m_bShowPreset);
       return true;
@@ -103,7 +101,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
   case ACTION_INCREASE_RATING:
     {
       // actual action is taken care of in CApplication::OnAction()
-      m_initTimer = g_advancedSettings.m_songInfoDuration * 50;
+      m_initTimer.StartZero();
       g_infoManager.SetShowInfo(true);
     }
     break;
@@ -198,12 +196,12 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 
       if (g_settings.m_bMyMusicSongThumbInVis)
       { // always on
-        m_initTimer = 0;
+        m_initTimer.Stop();
       }
       else
       {
         // start display init timer (fade out after 3 secs...)
-        m_initTimer = g_advancedSettings.m_songInfoDuration * 50;
+        m_initTimer.StartZero();
       }
       return true;
     }
@@ -263,23 +261,25 @@ void CGUIWindowVisualisation::FrameMove()
   { // need to fade in then out again
     m_tag = *tag;
     // fade in
-    m_initTimer = g_advancedSettings.m_songInfoDuration * 50;
+    m_initTimer.StartZero();
     g_infoManager.SetShowInfo(true);
   }
-  if (m_initTimer)
+  if (m_initTimer.IsRunning() && m_initTimer.GetElapsedSeconds() > (float)g_advancedSettings.m_songInfoDuration)
   {
-    m_initTimer--;
-    if (!m_initTimer && !g_settings.m_bMyMusicSongThumbInVis)
+    m_initTimer.Stop();
+    if (!g_settings.m_bMyMusicSongThumbInVis)
     { // reached end of fade in, fade out again
       g_infoManager.SetShowInfo(false);
     }
   }
   // show or hide the locked texture
-  if (m_lockedTimer)
+  if (m_lockedTimer.IsRunning() && m_lockedTimer.GetElapsedSeconds() > START_FADE_LENGTH)
   {
-    m_lockedTimer--;
-    if (!m_lockedTimer && !m_bShowPreset)
+    m_lockedTimer.Stop();
+    if (!m_bShowPreset)
+    {
       g_infoManager.SetShowCodec(false);
+    }
   }
   CGUIWindow::FrameMove();
 }
