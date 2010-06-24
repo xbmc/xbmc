@@ -33,7 +33,12 @@ if ! ls live-initramfs_*.udeb > /dev/null 2>&1 ; then
 		fi
 
 		cd live-boot
-		git checkout -b debian-old-1.0 origin/debian-old-1.0
+		gitMinorVersion=$(git --version | cut -d" " -f3 | cut -d. -f2)
+		if [ $gitMinorVersion -eq "6" ] ; then
+			git checkout -b debian-old-1.0 origin/debian-old-1.0
+		else
+			git checkout debian-old-1.0
+		fi
 		cd ..
 
 		# Saved, to avoid cloning for multiple builds

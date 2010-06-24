@@ -402,15 +402,22 @@ namespace PYXBMC
         self->iWindowId != ACTIVE_WINDOW)
       self->iOldWindowId = ACTIVE_WINDOW;
 
-    PyXBMCGUILock();
     // if it's a dialog, we have to activate it a bit different
-    if (WindowDialog_Check(self))
-      ((CGUIPythonWindowDialog*)self->pWindow)->Show();
-    else if (WindowXMLDialog_Check(self))
-      ((CGUIPythonWindowXMLDialog*)self->pWindow)->Show();
+    if (WindowDialog_Check(self) || WindowXMLDialog_Check(self))
+    {
+      Py_BEGIN_ALLOW_THREADS
+      ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, 1, 1};
+      tMsg.lpVoid = self->pWindow;
+      g_application.getApplicationMessenger().SendMessage(tMsg, true);
+      Py_END_ALLOW_THREADS
+    }
     else
-      g_windowManager.ActivateWindow(self->iWindowId);
-    PyXBMCGUIUnlock();
+    {
+      Py_BEGIN_ALLOW_THREADS
+      vector<CStdString> params;
+      g_application.getApplicationMessenger().ActivateWindow(self->iWindowId, params, false);
+      Py_END_ALLOW_THREADS
+    }
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -434,18 +441,25 @@ namespace PYXBMC
       else
         ((CGUIPythonWindow*)self->pWindow)->PulseActionEvent();
     }
-    PyXBMCGUILock();
 
     // if it's a dialog, we have to close it a bit different
-    if (WindowDialog_Check(self))
-      ((CGUIPythonWindowDialog*)self->pWindow)->Show(false);
-    else if (WindowXMLDialog_Check(self))
-      ((CGUIPythonWindowXMLDialog*)self->pWindow)->Show(false);
+    if (WindowDialog_Check(self) || WindowXMLDialog_Check(self))
+    {
+      Py_BEGIN_ALLOW_THREADS
+      ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, 1, 0};
+      tMsg.lpVoid = self->pWindow;
+      g_application.getApplicationMessenger().SendMessage(tMsg, true);
+      Py_END_ALLOW_THREADS
+    }
     else
-      g_windowManager.ActivateWindow(self->iOldWindowId);
+    {
+      Py_BEGIN_ALLOW_THREADS
+      vector<CStdString> params;
+      g_application.getApplicationMessenger().ActivateWindow(self->iOldWindowId, params, false);
+      Py_END_ALLOW_THREADS
+    }
     self->iOldWindowId = 0;
 
-    PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -486,6 +500,8 @@ namespace PYXBMC
 
       while (self->bModal && !g_application.m_bStop)
       {
+        PyXBMC_MakePendingCalls();
+
         Py_BEGIN_ALLOW_THREADS
         if (WindowXML_Check(self))
           ((CGUIPythonWindowXML*)self->pWindow)->WaitForActionEvent(INFINITE);
@@ -494,9 +510,6 @@ namespace PYXBMC
         else
           ((CGUIPythonWindow*)self->pWindow)->WaitForActionEvent(INFINITE);
         Py_END_ALLOW_THREADS
-
-        // only call PyXBMC_MakePendingCalls from a python thread
-        PyXBMC_MakePendingCalls();
       }
     }
     Py_INCREF(Py_None);
@@ -681,10 +694,8 @@ namespace PYXBMC
       return NULL;
     }
 
-    PyXBMCGUILock();
     CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS,pControl->iParentId, pControl->iControlId);
-    pWindow->OnMessage(msg);
-    PyXBMCGUIUnlock();
+    g_windowManager.SendThreadMessage(msg, pControl->iParentId);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -711,10 +722,8 @@ namespace PYXBMC
       return NULL;
     }
 
-    PyXBMCGUILock();
     CGUIMessage msg = CGUIMessage(GUI_MSG_SETFOCUS,self->iWindowId,iControlId);
-    pWindow->OnMessage(msg);
-    PyXBMCGUIUnlock();
+    g_windowManager.SendThreadMessage(msg, self->iWindowId);
 
     Py_INCREF(Py_None);
     return Py_None;

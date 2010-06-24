@@ -54,7 +54,6 @@ namespace BCM
 
 #define __MODULE_NAME__ "CrystalHD"
 //#define USE_CHD_SINGLE_THREADED_API
-
 class DllLibCrystalHDInterface
 {
 public:
@@ -75,7 +74,18 @@ public:
   virtual BCM::BC_STATUS DtsReleaseOutputBuffs(void *hDevice, void *Reserved, int fChange)=0;
   virtual BCM::BC_STATUS DtsSetSkipPictureMode(void *hDevice, uint32_t Mode)=0;
   virtual BCM::BC_STATUS DtsFlushInput(void *hDevice, uint32_t SkipMode)=0;
-  
+
+#if (HAVE_LIBCRYSTALHD == 2)
+  // new function calls, only present in new driver/library so manually load them
+  virtual BCM::BC_STATUS DtsGetVersion(void *hDevice, uint32_t *DrVer, uint32_t *DilVer)=0;
+  virtual BCM::BC_STATUS DtsSetInputFormat(void *hDevice, BCM::BC_INPUT_FORMAT *pInputFormat)=0;
+  virtual BCM::BC_STATUS DtsGetColorPrimaries(void *hDevice, uint32_t *colorPrimaries)=0;
+  virtual BCM::BC_STATUS DtsSetColorSpace(void *hDevice, BCM::BC_OUTPUT_FORMAT Mode422)=0;
+  virtual BCM::BC_STATUS DtsGetCapabilities(void *hDevice, BCM::BC_HW_CAPS *CapsBuffer)=0;
+  virtual BCM::BC_STATUS DtsSetScaleParams(void *hDevice, BCM::BC_SCALING_PARAMS *ScaleParams)=0;
+  virtual BCM::BC_STATUS DtsIsEndOfStream(void *hDevice, uint8_t* bEOS)=0;
+  virtual BCM::BC_STATUS DtsCrystalHDVersion(void *hDevice, BCM::BC_INFO_CRYSTAL *CrystalInfo)=0;
+#endif
 };
 
 class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
@@ -100,6 +110,17 @@ class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
   DEFINE_METHOD2(BCM::BC_STATUS, DtsSetSkipPictureMode,(void *p1, uint32_t p2))
   DEFINE_METHOD2(BCM::BC_STATUS, DtsFlushInput,      (void *p1, uint32_t p2))
 
+#if (HAVE_LIBCRYSTALHD == 2)
+  DEFINE_METHOD3(BCM::BC_STATUS, DtsGetVersion,      (void *p1, uint32_t *p2, uint32_t *p3))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsSetInputFormat,  (void *p1, BCM::BC_INPUT_FORMAT *p2))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsGetColorPrimaries,(void *p1, uint32_t *p2))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsSetColorSpace,   (void *p1, BCM::BC_OUTPUT_FORMAT p2))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsGetCapabilities, (void *p1, BCM::BC_HW_CAPS *p2))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsSetScaleParams,  (void *p1, BCM::BC_SCALING_PARAMS *p2))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsIsEndOfStream,   (void *p1, uint8_t *p2))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsCrystalHDVersion,(void *p1, BCM::BC_INFO_CRYSTAL *p2))
+#endif
+
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(DtsDeviceOpen,      DtsDeviceOpen)
     RESOLVE_METHOD_RENAME(DtsDeviceClose,     DtsDeviceClose)
@@ -119,6 +140,26 @@ class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
     RESOLVE_METHOD_RENAME(DtsSetSkipPictureMode,DtsSetSkipPictureMode)
     RESOLVE_METHOD_RENAME(DtsFlushInput,      DtsFlushInput)
   END_METHOD_RESOLVE()
+  
+public:
+  bool LoadNewLibFunctions(void)
+  {
+#if (HAVE_LIBCRYSTALHD == 2)
+    int rtn;
+    rtn  = m_dll->ResolveExport("DtsGetVersion",       (void**)&m_DtsGetVersion_ptr, false);
+    rtn &= m_dll->ResolveExport("DtsSetInputFormat",   (void**)&m_DtsSetInputFormat_ptr, false);
+    rtn &= m_dll->ResolveExport("DtsGetColorPrimaries",(void**)&m_DtsGetColorPrimaries_ptr, false);
+    rtn &= m_dll->ResolveExport("DtsSetColorSpace",    (void**)&m_DtsSetColorSpace_ptr, false);
+    rtn &= m_dll->ResolveExport("DtsGetCapabilities",  (void**)&m_DtsGetCapabilities_ptr, false);
+    rtn &= m_dll->ResolveExport("DtsSetScaleParams",   (void**)&m_DtsSetScaleParams_ptr, false);
+    rtn &= m_dll->ResolveExport("DtsIsEndOfStream",    (void**)&m_DtsIsEndOfStream_ptr, false);
+    rtn &= m_dll->ResolveExport("DtsCrystalHDVersion", (void**)&m_DtsCrystalHDVersion_ptr, false);
+    rtn &= m_dll->ResolveExport("DtsSetInputFormat",   (void**)&m_DtsSetInputFormat_ptr, false);
+    return(rtn == 1);
+#else
+    return false;
+#endif
+  };
 };
 
 void PrintFormat(BCM::BC_PIC_INFO_BLOCK &pib);
@@ -862,6 +903,7 @@ CCrystalHD* CCrystalHD::m_pInstance = NULL;
 
 CCrystalHD::CCrystalHD() :
   m_device(NULL),
+  m_new_lib(false),
   m_decoder_open(false),
   m_drop_state(false),
   m_pOutputThread(NULL)
@@ -874,7 +916,18 @@ CCrystalHD::CCrystalHD() :
 #else
   if (m_dll->Load() && m_dll->IsLoaded() )
 #endif
+  {
     OpenDevice();
+    
+    m_new_lib = m_dll->LoadNewLibFunctions();
+    /*
+    if (m_new_lib)
+    {
+      uint32_t DrVer, DilVer;
+      m_dll->DtsGetVersion( NULL, &DrVer, &DilVer);
+    }
+    */
+  }
 
   // delete dll if device open fails, minimizes ram footprint
   if (!m_device)

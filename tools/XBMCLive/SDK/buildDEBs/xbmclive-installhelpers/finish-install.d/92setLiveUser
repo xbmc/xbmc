@@ -19,3 +19,24 @@
 #  http://www.gnu.org/copyleft/gpl.html
 
 in-target dpkg-reconfigure xbmc-live
+
+# Modify tvheadend user
+
+cat > /target/tmp/setupTVH.sh << 'EOF'
+xbmcUser=$(getent passwd 1000 | sed -e 's/\:.*//')
+sed -i -e "/DAEMON_ARGS/s/-u xbmc/-u $xbmcUser/" /etc/default/tvheadend
+
+mkdir -p /home/$xbmcUser/.hts/tvheadend
+cat > /home/$xbmcUser/.hts/tvheadend/superuser << EEOF
+{
+"username": "xbmc",
+"password": "xbmc"
+}
+EEOF
+
+chown -R $xbmcUser:$xbmcUser /home/$xbmcUser/.hts
+EOF
+
+in-target sh /tmp/setupTVH.sh
+
+rm /target/tmp/setupTVH.sh

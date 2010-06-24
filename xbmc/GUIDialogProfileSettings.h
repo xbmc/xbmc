@@ -36,11 +36,17 @@ public:
 protected:
   virtual void OnCancel();
   virtual void OnWindowLoaded();
-  virtual void OnInitWindow();
   virtual void SetupPage();
   virtual void CreateSettings();
   void OnSettingChanged(unsigned int setting);
   virtual void OnSettingChanged(SettingInfo &setting);
+
+  /*! \brief Prompt for a change in profile path
+   \param dir Current directory for the profile, new profile directory will be returned here
+   \param isDefault whether this is the default profile or not
+   \return true if the profile path has been changed, false otherwise.
+   */
+  bool OnProfilePath(CStdString &dir, bool isDefault);
 
   bool m_bNeedSave;
   CStdString m_strName;
