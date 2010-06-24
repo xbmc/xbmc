@@ -822,13 +822,19 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
     pcBuffer= new WCHAR [dwStrLength];
     GetLogicalDriveStringsW( dwStrLength, pcBuffer );
 
-    int iPos= 0, nResult= 0;
+    int iPos= 0;
     WCHAR cVolumeName[100];
     do{
+      int nResult = 0;
       cVolumeName[0]= L'\0';
+
+      CStdStringW strWdrive = pcBuffer + iPos;
       
-      UINT uDriveType= GetDriveTypeW( pcBuffer + iPos  );
-      nResult= GetVolumeInformationW( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
+      UINT uDriveType= GetDriveTypeW( strWdrive.c_str()  );
+      // don't use GetVolumeInformation on fdd's as the floppy controller may be enabled in Bios but
+      // no floppy HW is attached which causes huge delays.
+      if(!strWdrive.Left(2).Equals(L"A:") && !strWdrive.Left(2).Equals(L"B:"))
+        nResult= GetVolumeInformationW( strWdrive.c_str() , cVolumeName, 100, 0, 0, 0, NULL, 25);
       if(nResult == 0 && bonlywithmedia)
       {
         iPos += (wcslen( pcBuffer + iPos) + 1 );
@@ -843,7 +849,8 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
          ( eDriveType == REMOVABLE_DRIVES && ( uDriveType == DRIVE_REMOVABLE )) ||
          ( eDriveType == DVD_DRIVES && ( uDriveType == DRIVE_CDROM ))))
       {
-        share.strPath= pcBuffer + iPos;
+        //share.strPath = strWdrive;
+        g_charsetConverter.wToUTF8(strWdrive, share.strPath);
         if( cVolumeName[0] != L'\0' )
           g_charsetConverter.wToUTF8(cVolumeName, share.strName);
         if( uDriveType == DRIVE_CDROM && nResult)
