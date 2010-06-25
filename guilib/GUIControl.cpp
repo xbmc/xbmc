@@ -534,6 +534,14 @@ CRect CGUIControl::GetRenderRegion()
   CPoint tl(GetXPosition(), GetYPosition());
   CPoint br(tl.x + GetWidth(), tl.y + GetHeight());
 
+  float z = 0.0f;
+  m_transform.TransformPosition(tl.x, tl.y, z);
+
+  z = 0.0f;
+  m_transform.TransformPosition(br.x, br.y, z);
+
+  // TODO Need to take camera in to account to get real 2D coord
+
   CRect rect(tl.x, tl.y, br.x, br.y);
   return rect;
 }
