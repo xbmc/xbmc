@@ -29,10 +29,7 @@
 #include <string>
 #include <sstream>
 
-#if defined(HAS_GL) || HAS_GLES == 2
-
-using namespace Shaders;
-using namespace std;
+// http://www.martinreddy.net/gfx/faqs/colorconv.faq
 
 //
 // Transformation matrixes for different colorspaces.
@@ -88,12 +85,12 @@ static float** PickYUVConversionMatrix(unsigned flags)
    return (float**)yuv_coef_bt601;
 }
 
-static void CalculateYUVMatrix(GLfloat      res[4][4]
-                             , unsigned int flags
-                             , float        black
-                             , float        contrast)
+void CalculateYUVMatrix(TransformMatrix &matrix
+                        , unsigned int  flags
+                        , float         black
+                        , float         contrast)
 {
-  TransformMatrix matrix, coef;
+  TransformMatrix coef;
 
   matrix *= TransformMatrix::CreateScaler(contrast, contrast, contrast);
   matrix *= TransformMatrix::CreateTranslation(black, black, black);
@@ -114,6 +111,20 @@ static void CalculateYUVMatrix(GLfloat      res[4][4]
                                                , - 16.0f / 255
                                                , - 16.0f / 255);
   }
+}
+
+#if defined(HAS_GL) || HAS_GLES == 2
+
+using namespace Shaders;
+using namespace std;
+
+static void CalculateYUVMatrixGL(GLfloat      res[4][4]
+                               , unsigned int flags
+                               , float        black
+                               , float        contrast)
+{
+  TransformMatrix matrix;
+  CalculateYUVMatrix(matrix, flags, black, contrast);
 
   for(int row = 0; row < 3; row++)
     for(int col = 0; col < 4; col++)
@@ -206,7 +217,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
   glUniform1f(m_hStretch, m_stretch);
 
   GLfloat matrix[4][4];
-  CalculateYUVMatrix(matrix, m_flags, m_black, m_contrast);
+  CalculateYUVMatrixGL(matrix, m_flags, m_black, m_contrast);
 
   glUniformMatrix4fv(m_hMatrix, 1, GL_FALSE, (GLfloat*)matrix);
 #if HAS_GLES == 2
@@ -313,7 +324,7 @@ void YUV2RGBProgressiveShaderARB::OnCompiledAndLinked()
 bool YUV2RGBProgressiveShaderARB::OnEnabled()
 {
   GLfloat matrix[4][4];
-  CalculateYUVMatrix(matrix, m_flags, m_black, m_contrast);
+  CalculateYUVMatrixGL(matrix, m_flags, m_black, m_contrast);
 
   for(int i=0;i<4;i++)
     glProgramLocalParameter4fARB(GL_FRAGMENT_PROGRAM_ARB, i
