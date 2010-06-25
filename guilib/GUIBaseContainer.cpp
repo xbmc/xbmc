@@ -479,11 +479,13 @@ void CGUIBaseContainer::OnJumpSMS(int letter)
 
 bool CGUIBaseContainer::MoveUp(bool wrapAround)
 {
+  g_windowManager.MarkDirtyRegion(GetRenderRegion());
   return true;
 }
 
 bool CGUIBaseContainer::MoveDown(bool wrapAround)
 {
+  g_windowManager.MarkDirtyRegion(GetRenderRegion());
   return true;
 }
 
@@ -874,6 +876,7 @@ void CGUIBaseContainer::SetContainerMoving(int direction)
 {
   if (direction)
     g_infoManager.SetContainerMoving(GetID(), direction > 0, m_scrollSpeed != 0);
+  g_windowManager.MarkDirtyRegion(GetRenderRegion());
 }
 
 void CGUIBaseContainer::UpdateScrollOffset()
