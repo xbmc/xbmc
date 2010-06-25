@@ -226,6 +226,9 @@ static DWORD WINAPI WaitForEvent(HANDLE hHandle, DWORD dwMilliseconds)
       while( hHandle->m_bEventSet == false )
       {
         nRet = SDL_CondWaitTimeout(hHandle->m_hCond, hHandle->m_hMutex, dwRemainingTime);
+        if(hHandle->m_bEventSet)
+          break;
+
         //fix time to wait because of spurious wakeups
         DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
         if(dwElapsed < dwMilliseconds)
