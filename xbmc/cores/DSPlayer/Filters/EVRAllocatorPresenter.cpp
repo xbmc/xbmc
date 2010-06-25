@@ -1540,7 +1540,7 @@ STDMETHODIMP CEVRAllocatorPresenter::InitializeDevice(AM_MEDIA_TYPE*  pMediaType
   if (m_bHighColorResolution)
     hr = AllocSurfaces(D3DFMT_A2R10G10B10);
   else
-    hr = AllocSurfaces( D3DFMT_YUY2 );//D3DFMT_X8R8G8B8);
+    hr = AllocSurfaces(D3DFMT_X8R8G8B8);
   
 
   for(int i = 0; i < m_nNbDXSurface; i++)
