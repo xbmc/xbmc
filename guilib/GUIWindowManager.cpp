@@ -483,6 +483,10 @@ bool RenderOrderSortFunction(CGUIWindow *first, CGUIWindow *second)
   return first->GetRenderOrder() < second->GetRenderOrder();
 }
 
+#ifdef VISUALIZE_DIRTY_REGION
+#include "GUITextureGL.h"
+#endif
+
 void CGUIWindowManager::Render()
 {
   assert(g_application.IsCurrentThread());
@@ -503,6 +507,22 @@ void CGUIWindowManager::Render()
     if ((*it)->IsDialogRunning())
       (*it)->Render();
   }
+
+#ifdef VISUALIZE_DIRTY_REGION
+  g_graphicsContext.ResetWindowTransform();
+  color_t color = 0x4000ff00;
+  for (unsigned int i = 0; i < m_DirtyRegion.size(); i++)
+  {
+    CRect rect = m_DirtyRegion[i];
+
+    float z = 0.0f;
+    g_graphicsContext.ScaleFinalCoords(rect.x1, rect.y1, z);
+    z = 0.0f;
+    g_graphicsContext.ScaleFinalCoords(rect.x2, rect.y2, z);
+
+    CGUITextureGL::DrawQuad(rect, color);
+  }
+#endif
 
   // Reset dirtyregion
   m_DirtyRegion.clear();
