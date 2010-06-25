@@ -182,6 +182,24 @@ public:
     return result;
   }
 
+  bool operator ==(const TransformMatrix &right) const
+  {
+    float t = 0.0f;
+
+    for (unsigned int i = 0; i < 4; i++)
+    {
+      for (unsigned int j = 0; j < 3; j++)
+        t += fabs(m[j][i] - right.m[j][i]);
+    }
+
+    return t < 0.1f;
+  }
+
+  bool operator !=(const TransformMatrix &right) const
+  {
+    return !(*this == right);
+  }
+
   inline void TransformPosition(float &x, float &y, float &z) const XBMC_FORCE_INLINE
   {
     float newX = m[0][0] * x + m[0][1] * y + m[0][2] * z + m[0][3];
