@@ -1073,84 +1073,72 @@ HRESULT CEVRAllocatorPresenter::RenegotiateMediaType()
     DWORD iTypeIndex = 0;
     while ((hr != MF_E_NO_MORE_TYPES))
     {
-        pMixerType   = NULL;
-        pType     = NULL;
-        m_pMediaType = NULL;
+      pMixerType   = NULL;
+      pType     = NULL;
+      m_pMediaType = NULL;
 
-        // Step 1. Get the next media type supported by mixer.
-        hr = m_pMixer->GetOutputAvailableType(0, iTypeIndex++, &pMixerType);
-        if (FAILED(hr))
-        {
-            break;
-        }
-
-        // Step 2. Check if we support this media type.
-        if (SUCCEEDED(hr))
-            hr = IsMediaTypeSupported(pMixerType);
-
-        if (SUCCEEDED(hr))
-          hr = CreateProposedOutputType(pMixerType, &pType);
-  
-        // Step 4. Check if the mixer will accept this media type.
-        if (SUCCEEDED(hr))
-            hr = m_pMixer->SetOutputType(0, pType, MFT_SET_TYPE_TEST_ONLY);
-
-        if (SUCCEEDED(hr))
-    {
-      LONGLONG Merit = GetMediaTypeMerit(pType);
-
-      int nTypes = ValidMixerTypes.size();
-      int iInsertPos = 0;
-      for (int i = 0; i < nTypes; ++i)
+      // Step 1. Get the next media type supported by mixer.
+      hr = m_pMixer->GetOutputAvailableType(0, iTypeIndex++, &pMixerType);
+      if (FAILED(hr))
       {
-        LONGLONG ThisMerit = GetMediaTypeMerit(ValidMixerTypes.at(i));
-        if (Merit > ThisMerit)
-        {
-          iInsertPos = i;
-          break;
-        }
-        else
-          iInsertPos = i+1;
-      }
-      ValidMixerTypes.insert(ValidMixerTypes.begin() + iInsertPos, pType);
-      //ValidMixerTypes.InsertAt(iInsertPos, pType);
-    }
-    }
-
-
-  int nValidTypes = ValidMixerTypes.size();
-  for (int i = 0; i < nValidTypes; ++i)
-  {
-        // Step 3. Adjust the mixer's type to match our requirements.
-    pType = ValidMixerTypes[i];
-    TRACE_EVR("EVR: Valid mixer output type: %ws\n", GetMediaTypeFormatDesc(pType));
-  }
-
-  for (int i = 0; i < nValidTypes; ++i)
-  {
-        // Step 3. Adjust the mixer's type to match our requirements.
-    pType = ValidMixerTypes[i];
-
-    
-    TRACE_EVR("EVR: Trying mixer output type: %ws\n", GetMediaTypeFormatDesc(pType));
-
-        // Step 5. Try to set the media type on ourselves.
-    hr = SetMediaType(pType);
-
-        // Step 6. Set output media type on mixer.
-        if (SUCCEEDED(hr))
-        {
-            hr = m_pMixer->SetOutputType(0, pType, 0);
-
-            // If something went wrong, clear the media type.
-            if (FAILED(hr))
-            {
-                SetMediaType(NULL);
-            }
-      else
         break;
+      }
+
+      // Step 2. Check if we support this media type.
+      if (SUCCEEDED(hr))
+        hr = IsMediaTypeSupported(pMixerType);
+
+      if (SUCCEEDED(hr))
+        hr = CreateProposedOutputType(pMixerType, &pType);
+  
+      // Step 4. Check if the mixer will accept this media type.
+      if (SUCCEEDED(hr))
+        hr = m_pMixer->SetOutputType(0, pType, MFT_SET_TYPE_TEST_ONLY);
+
+      if (SUCCEEDED(hr))
+      {
+        LONGLONG Merit = GetMediaTypeMerit(pType);
+
+        int nTypes = ValidMixerTypes.size();
+        int iInsertPos = 0;
+        for (int i = 0; i < nTypes; ++i)
+        {
+          LONGLONG ThisMerit = GetMediaTypeMerit(ValidMixerTypes.at(i));
+          if (Merit > ThisMerit)
+          {
+            iInsertPos = i;
+            break;
+          }
+          else
+            iInsertPos = i+1;
         }
-  }
+        ValidMixerTypes.insert(ValidMixerTypes.begin() + iInsertPos, pType);
+      }
+    }
+
+
+    int nValidTypes = ValidMixerTypes.size();
+    for (int i = 0; i < nValidTypes; ++i)
+    {
+      // Step 3. Adjust the mixer's type to match our requirements.
+      pType = ValidMixerTypes[i];    
+      TRACE_EVR("EVR: Trying mixer output type: %ws\n", GetMediaTypeFormatDesc(pType));
+
+      // Step 5. Try to set the media type on ourselves.
+      hr = SetMediaType(pType);
+
+      // Step 6. Set output media type on mixer.
+      if (SUCCEEDED(hr))
+      {
+        hr = m_pMixer->SetOutputType(0, pType, 0);
+
+        // If something went wrong, clear the media type.
+        if (FAILED(hr))
+          SetMediaType(NULL);
+        else
+          break;
+      }
+    }
 
     pMixerType  = NULL;
     pType    = NULL;
@@ -1545,14 +1533,14 @@ STDMETHODIMP CEVRAllocatorPresenter::InitializeDevice(AM_MEDIA_TYPE*  pMediaType
   DeleteSurfaces();
 
   VIDEOINFOHEADER2*    vih2 = (VIDEOINFOHEADER2*) pMediaType->pbFormat;
-  int            w = vih2->bmiHeader.biWidth;
-  int            h = abs(vih2->bmiHeader.biHeight);
+  int                     w = vih2->bmiHeader.biWidth;
+  int                     h = abs(vih2->bmiHeader.biHeight);
 
   m_NativeVideoSize = Com::SmartSize(w, h);
   if (m_bHighColorResolution)
     hr = AllocSurfaces(D3DFMT_A2R10G10B10);
   else
-    hr = AllocSurfaces(D3DFMT_X8R8G8B8);
+    hr = AllocSurfaces( D3DFMT_YUY2 );//D3DFMT_X8R8G8B8);
   
 
   for(int i = 0; i < m_nNbDXSurface; i++)
