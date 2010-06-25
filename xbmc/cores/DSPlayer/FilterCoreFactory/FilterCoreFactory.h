@@ -61,7 +61,7 @@ public:
 
   static CFGFilter* GetFilterFromName(const CStdString& filter, bool showError = true);
 
-  static bool SomethingMatch( const CFileItem& pFileItem)
+  static bool SomethingMatch(const CFileItem& pFileItem)
   {
     return (GetGlobalFilterSelectionRule(pFileItem) != NULL);
   }

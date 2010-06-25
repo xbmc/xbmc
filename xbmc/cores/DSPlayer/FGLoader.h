@@ -45,7 +45,7 @@ public:
   bool       LoadFilterCoreFactorySettings(const CStdString& item, ESettingsType type, bool clear);
 
   HRESULT    LoadFilterRules(const CFileItem& pFileItem);
-  HRESULT    InsertSourceFilter(const CFileItem& pFileItem, const CStdString& filterName);
+  HRESULT    InsertSourceFilter(CFileItem& pFileItem, const CStdString& filterName);
   HRESULT    InsertSplitter(const CFileItem& pFileItem, const CStdString& filterName);
   HRESULT    InsertAudioRenderer(const CStdString& filterName);
   HRESULT    InsertVideoRenderer();

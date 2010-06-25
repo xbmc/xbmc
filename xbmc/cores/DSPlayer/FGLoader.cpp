@@ -63,7 +63,7 @@ CFGLoader::~CFGLoader()
   CLog::Log(LOGDEBUG, "%s Ressources released", __FUNCTION__);
 }
 
-HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdString& filterName)
+HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& filterName)
 {
 
   HRESULT hr = E_FAIL;
@@ -118,7 +118,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
   }
 
   /* INTERNET STREAM */
-  if (filterName.Equals("internet_source_filter") || pFileItem.IsInternetStream())
+  if (filterName.Equals("internal_urlsource") || pFileItem.IsInternetStream())
   {
     //TODO
     //add IAMOpenProgress for requesting the status of stream without this interface the player failed if connection is too slow
@@ -132,7 +132,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
       hr = g_dsGraph->pFilterGraph->AddFilter(CGraphFilters::Get()->Source.pBF, L"URLReader");
       CGraphFilters::Get()->Source.osdname = "URLReader";
       CStdStringW strUrlW; g_charsetConverter.utf8ToW(pFileItem.m_strPath, strUrlW);
-      //hr = pUnk->QueryInterface(IID_IFileSourceFilter,(void**) &pSourceUrl);
+
       if (pSourceUrl = pUnk)
         hr = pSourceUrl->Load(strUrlW.c_str(), NULL);
 
@@ -141,13 +141,20 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
         g_dsGraph->pFilterGraph->RemoveFilter(CGraphFilters::Get()->Source.pBF);
         CLog::Log(LOGERROR, "%s Failed to add url source filter to the graph.", __FUNCTION__);
         CGraphFilters::Get()->Source.pBF = NULL;
+        return E_FAIL;
       }
-      else
+
+      CStdString ext = CURL(pFileItem.m_strPath).GetFileType();
+      // Handle special case
+      if (ext.Equals("dll"))
       {
-        CLog::Log(LOGNOTICE, "%s Successfully added url source filter to the graph", __FUNCTION__);
-        return hr;
-      }    
-    }    
+        // For what i've seen, every trailer are in .mov format
+        // Just change the filename
+        pFileItem.m_strPath = "http://dummysite.com/dummyfile.mov";
+      }
+
+      return S_OK;
+    }
   }
 
   /* Two cases:
@@ -343,9 +350,10 @@ HRESULT CFGLoader::InsertVideoRenderer()
   return hr; 
 }
 
-HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
+HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
 {
-   
+  CFileItem pFileItem = _pFileItem;
+
   if (!pFileItem.IsInternetStream() && !CFilterCoreFactory::SomethingMatch(pFileItem))
   {
 

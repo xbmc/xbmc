@@ -22,6 +22,7 @@
 #ifdef HAS_DS_PLAYER
 
 #include "FilterCoreFactory.h"
+#include "DSPlayer.h"
 #include "filters/DsVideoDecoder/XBMCVideoDecFilter.h"
 #include "filters/Splitters/AviSplitter.h"
 #include "filters/Splitters/XBMCFFmpegSplitter.h"
@@ -40,7 +41,7 @@ InternalFilters internalFilters[] =
   {"internal_avisource", "Internal avi source", &InternalFilterConstructor<CAviSourceFilter>},
   {"internal_mpegsource", "Internal mpeg source", &InternalFilterConstructor<CMpegSourceFilter>},
   {"internal_archivesource", "Internal archive source", &InternalFilterConstructor<CXBMCASyncReader>}/*,
-  {"internal_internetsource", "Internal URL source", &InternalFilterConstructor<CURLSourceFilter>}*/
+  {"internal_internetsource", "Internal URL source", NULL}*/
 };
 
 HRESULT CFilterCoreFactory::LoadMediasConfiguration(TiXmlElement* pConfig )
@@ -110,7 +111,7 @@ HRESULT CFilterCoreFactory::GetSourceFilter( const CFileItem& pFileItem, CStdStr
   // TODO: handle DVD
   if (pFileItem.IsInternetStream())
   {
-    filter = "internal_internetsource";
+    filter = "internal_urlsource";
     return S_OK;
   } else if (CUtil::IsInArchive(pFileItem.m_strPath))
   {
@@ -249,7 +250,7 @@ CFGFilter* CFilterCoreFactory::GetFilterFromName( const CStdString& _filter, boo
         dialog->SetHeading("Filter not found");
         dialog->SetLine(0, "The filter \"" + filter + "\" isn't loaded.");
         dialog->SetLine(1, "Please check your dsfilterconfig.xml.");
-        dialog->DoModal();
+        CDSPlayer::errorWindow = dialog;
       }
     }
 
