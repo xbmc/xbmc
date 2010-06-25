@@ -256,7 +256,6 @@ CJob *CJobManager::GetNextJob(const CJobWorker *worker)
     lock.Enter();
     if (!newJob)
       break;
-    m_jobEvent.Reset();
   }
   // ensure no jobs have come in during the period after
   // timeout and before we held the lock
