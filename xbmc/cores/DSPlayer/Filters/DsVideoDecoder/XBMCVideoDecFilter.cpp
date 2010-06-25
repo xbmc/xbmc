@@ -45,6 +45,8 @@
 
 #include "DXVADecoderH264.h"
 
+#include "libavcodec/dxva2.h"
+
 /////
 #define MAX_SUPPORTED_MODE 5
 #define MPCVD_CAPTION _T("XBMC Internal Decoder")
@@ -814,42 +816,28 @@ void CXBMCVideoDecFilter::Cleanup()
 {
   SAFE_DELETE(m_pDXVADecoder);
 
-  // Release FFMpeg
+  if (m_pFrame) 
+	  m_dllAvUtil.av_free(m_pFrame);
+  m_pFrame = NULL;
+
   if (m_pAVCtx)
   {
-    if (m_pAVCtx->intra_matrix)      
-      free(m_pAVCtx->intra_matrix);
-    
-    if (m_pAVCtx->inter_matrix)      
-      free(m_pAVCtx->inter_matrix);
-
-    if (m_pAVCtx->extradata)      
-      free((unsigned char*)m_pAVCtx->extradata);
-
-    if (m_pFFBuffer)          
-      free(m_pFFBuffer);
-
-    if (m_pAVCtx->slice_offset)      
-      m_dllAvUtil.av_free(m_pAVCtx->slice_offset);
-
-    if (m_pAVCtx->codec)        
-      m_dllAvCodec.avcodec_close(m_pAVCtx);
-
+    if (m_pAVCtx->codec) 
+		m_dllAvCodec.avcodec_close(m_pAVCtx);
+    if (m_pAVCtx->extradata)
+    {
+      m_dllAvUtil.av_free(m_pAVCtx->extradata);
+      m_pAVCtx->extradata = NULL;
+      m_pAVCtx->extradata_size = 0;
+    }
     m_dllAvUtil.av_free(m_pAVCtx);
+    m_pAVCtx = NULL;
   }
-  if (m_pFrame)  
-    m_dllAvUtil.av_free(m_pFrame);
+  
 
+  m_dllAvCodec.Unload();
+  m_dllAvUtil.Unload();
 
-  if (m_pSwsContext)
-  {
-    m_dllSwScale.sws_freeContext(m_pSwsContext);
-    m_pSwsContext = NULL;
-  }
-
-  m_pAVCodec    = NULL;
-  m_pAVCtx    = NULL;
-  m_pFrame    = NULL;
   m_pFFBuffer    = NULL;
   m_nFFBufferSize  = 0;
   m_nFFBufferPos  = 0;
@@ -1006,7 +994,7 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
       m_pAVCtx->error_recognition    = m_nErrorRecognition;
       m_pAVCtx->idct_algo        = m_nIDCTAlgo;
       m_pAVCtx->skip_loop_filter    = (AVDiscard)m_nDiscardMode;
-      m_pAVCtx->dsp_mask        = FF_MM_FORCE | m_pCpuId->GetFeatures();
+      m_pAVCtx->dsp_mask        = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;// is this better? ->> m_pCpuId->GetFeatures();
 
       m_pAVCtx->postgain        = 1.0f;
       m_pAVCtx->debug_mv        = 0;
@@ -1213,7 +1201,7 @@ void CXBMCVideoDecFilter::AllocExtradata(AVCodecContext* pAVCtx, const CMediaTyp
   if (size)
   {
     pAVCtx->extradata_size  = size;
-    pAVCtx->extradata = (uint8_t*)calloc(1,size+FF_INPUT_BUFFER_PADDING_SIZE);
+    pAVCtx->extradata = (uint8_t*)m_dllAvUtil.av_mallocz(size+FF_INPUT_BUFFER_PADDING_SIZE);
     memcpy((void*)pAVCtx->extradata, data, size);
   }
 }
@@ -2099,7 +2087,11 @@ HRESULT CXBMCVideoDecFilter::CreateDXVA2Decoder(UINT nNumRenderTargets, IDirect3
 {
   HRESULT              hr;
   Com::SmartPtr<IDirectXVideoDecoder>  pDirectXVideoDec;
-  
+  /*hwcontext*/
+  m_context          = (dxva_context*)calloc(1, sizeof(dxva_context));
+  m_context->cfg     = (DXVA2_ConfigPictureDecode*)calloc(1, sizeof(DXVA2_ConfigPictureDecode));
+  m_context->surface = (IDirect3DSurface9**)calloc(m_buffer_max, sizeof(IDirect3DSurface9*));
+
   m_pDecoderRenderTarget  = NULL;
 
   if (m_pDXVADecoder) m_pDXVADecoder->SetDirectXVideoDec (NULL);

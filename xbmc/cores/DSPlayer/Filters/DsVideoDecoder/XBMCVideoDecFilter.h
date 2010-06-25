@@ -146,7 +146,9 @@ protected:
   DXVA2_ConfigPictureDecode        m_DXVA2Config;
   HANDLE                  m_hDevice;
   DXVA2_VideoDesc              m_VideoDesc;
-
+  //ffmpeg context for dxva2
+  struct dxva_context* m_context;
+  static const unsigned        m_buffer_max = 32;
   // === Private functions
   void        Cleanup();
   int          FindCodec(const CMediaType* mtIn);
