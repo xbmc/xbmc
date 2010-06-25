@@ -44,7 +44,6 @@ public:
   virtual ~CGUIFadeLabelControl(void);
   virtual CGUIFadeLabelControl *Clone() const { return new CGUIFadeLabelControl(*this); };
 
-  virtual void DoRender(unsigned int currentTime);
   virtual void Render();
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);

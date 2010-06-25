@@ -84,6 +84,11 @@ public:
    */
   void MarkDirtyRegion(CRect region);
 
+  /*! \brief Process active controls allowing them to animate before rendering.
+   */
+  // TODO Old Process method needs to be removed which did both processing and rendering before naming this Process
+  void PureProcess(unsigned int currentTime);
+
   CGUIWindow* GetWindow(int id) const;
   void Process(bool renderOnly = false);
   void SetCallback(IWindowManagerCallback& callback);

@@ -75,7 +75,8 @@ public:
   virtual ~CGUIControl(void);
   virtual CGUIControl *Clone() const=0;
 
-  virtual void DoRender(unsigned int currentTime);
+  virtual void Process(unsigned int currentTime);
+  virtual void DoRender();
   virtual void Render();
   bool HasRendered() const { return m_hasRendered; };
 

@@ -100,7 +100,7 @@ void CGUIControlGroupList::Render()
         g_graphicsContext.SetOrigin(m_posX, m_posY + pos - m_offset);
       else
         g_graphicsContext.SetOrigin(m_posX + pos - m_offset, m_posY);
-      control->DoRender(m_renderTime);
+      control->DoRender();
     }
     if (control->IsVisible())
       pos += Size(control) + m_itemGap;
@@ -112,7 +112,7 @@ void CGUIControlGroupList::Render()
       g_graphicsContext.SetOrigin(m_posX, m_posY + focusedPos - m_offset);
     else
       g_graphicsContext.SetOrigin(m_posX + focusedPos - m_offset, m_posY);
-    focusedControl->DoRender(m_renderTime);
+    focusedControl->DoRender();
   }
   if (render) g_graphicsContext.RestoreClipRegion();
   CGUIControl::Render();

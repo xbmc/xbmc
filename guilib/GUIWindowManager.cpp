@@ -491,6 +491,8 @@ void CGUIWindowManager::Render()
 {
   assert(g_application.IsCurrentThread());
   CSingleLock lock(g_graphicsContext);
+  g_graphicsContext.ResetWindowTransform();
+
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
   {
@@ -526,6 +528,28 @@ void CGUIWindowManager::Render()
 
   // Reset dirtyregion
   m_DirtyRegion.clear();
+}
+
+void CGUIWindowManager::PureProcess(unsigned int currentTime)
+{
+  assert(g_application.IsCurrentThread());
+  CSingleLock lock(g_graphicsContext);
+
+  g_graphicsContext.ResetWindowTransform();
+
+  CGUIWindow* pWindow = GetWindow(GetActiveWindow());
+  if (pWindow)
+    pWindow->Process(currentTime);
+
+  // we render the dialogs based on their render order.
+  vector<CGUIWindow *> renderList = m_activeDialogs;
+  // stable_sort(renderList.begin(), renderList.end(), RenderOrderSortFunction);
+  
+  for (iDialog it = renderList.begin(); it != renderList.end(); ++it)
+  {
+    if ((*it)->IsDialogRunning())
+      (*it)->Process(currentTime);
+  }
 }
 
 void CGUIWindowManager::FrameMove()

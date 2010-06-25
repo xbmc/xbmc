@@ -132,13 +132,18 @@ void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 
 }
 
+void CGUIControl::Process(unsigned int currentTime)
+{
+  Animate(currentTime);
+}
+
 // the main render routine.
 // 1. animate and set the animation transform
 // 2. if visible, paint
 // 3. reset the animation transform
-void CGUIControl::DoRender(unsigned int currentTime)
+void CGUIControl::DoRender()
 {
-  Animate(currentTime);
+  g_graphicsContext.AddTransform(m_transform);
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
   if (IsVisible())
@@ -796,7 +801,6 @@ void CGUIControl::Animate(unsigned int currentTime)
       }
     }*/
   }
-  g_graphicsContext.AddTransform(m_transform);
 }
 
 bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)

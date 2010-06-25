@@ -58,12 +58,6 @@ CGUIMultiSelectTextControl::~CGUIMultiSelectTextControl(void)
 {
 }
 
-void CGUIMultiSelectTextControl::DoRender(unsigned int currentTime)
-{
-  m_renderTime = currentTime;
-  CGUIControl::DoRender(currentTime);
-}
-
 void CGUIMultiSelectTextControl::UpdateColors()
 {
   m_label.UpdateColors();
@@ -107,7 +101,7 @@ void CGUIMultiSelectTextControl::Render()
   for (unsigned int i = 0; i < m_buttons.size(); i++)
   {
     m_buttons[i].SetFocus(HasFocus() && i == m_selectedItem);
-    m_buttons[i].DoRender(m_renderTime);
+    m_buttons[i].DoRender();
   }
 
   // position the text - we center vertically if applicable, and use the offsets.

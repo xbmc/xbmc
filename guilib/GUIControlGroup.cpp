@@ -97,6 +97,21 @@ void CGUIControlGroup::DynamicResourceAlloc(bool bOnOff)
   }
 }
 
+void CGUIControlGroup::Process(unsigned int currentTime)
+{
+  m_renderTime = currentTime;
+  CGUIControl::Process(currentTime);
+
+  CPoint pos(GetPosition());
+  g_graphicsContext.SetOrigin(pos.x, pos.y);
+
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    CGUIControl *control = *it;
+    control->Process(currentTime);
+  }
+}
+
 void CGUIControlGroup::Render()
 {
   CPoint pos(GetPosition());
@@ -111,10 +126,10 @@ void CGUIControlGroup::Render()
     if (m_renderFocusedLast && control->HasFocus())
       focusedControl = control;
     else
-      control->DoRender(m_renderTime);
+      control->DoRender();
   }
   if (focusedControl)
-    focusedControl->DoRender(m_renderTime);
+    focusedControl->DoRender();
   CGUIControl::Render();
   g_graphicsContext.RestoreOrigin();
 }
@@ -281,12 +296,6 @@ bool CGUIControlGroup::CanFocus() const
       return true;
   }
   return false;
-}
-
-void CGUIControlGroup::DoRender(unsigned int currentTime)
-{
-  m_renderTime = currentTime;
-  CGUIControl::DoRender(currentTime);
 }
 
 void CGUIControlGroup::SetInitialVisibility()

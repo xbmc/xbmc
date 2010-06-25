@@ -71,7 +71,7 @@ void CGUIListGroup::Render()
     GUIPROFILER_VISIBILITY_BEGIN(control);
     control->UpdateVisibility(m_item);
     GUIPROFILER_VISIBILITY_END(control);
-    control->DoRender(m_renderTime);
+    control->DoRender();
   }
   CGUIControl::Render();
   g_graphicsContext.RestoreOrigin();

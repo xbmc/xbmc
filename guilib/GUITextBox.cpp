@@ -78,9 +78,9 @@ CGUITextBox::~CGUITextBox(void)
   m_autoScrollRepeatAnim = NULL;
 }
 
-void CGUITextBox::DoRender(unsigned int currentTime)
+void CGUITextBox::Process(unsigned int currentTime)
 {
-  m_renderTime = currentTime;
+  CGUIControl::Process(currentTime);
 
   // render the repeat anim as appropriate
   if (m_autoScrollRepeatAnim)
@@ -88,10 +88,10 @@ void CGUITextBox::DoRender(unsigned int currentTime)
     m_autoScrollRepeatAnim->Animate(m_renderTime, true);
     TransformMatrix matrix;
     m_autoScrollRepeatAnim->RenderAnimation(matrix);
-    g_graphicsContext.AddTransform(matrix);
+
+    m_transform *= matrix;
   }
 
-  CGUIControl::DoRender(currentTime);
   // if not visible, we reset the autoscroll timer and positioning
   if (!IsVisible() && m_autoScrollTime)
   {
@@ -101,8 +101,6 @@ void CGUITextBox::DoRender(unsigned int currentTime)
     m_scrollOffset = 0;
     m_scrollSpeed = 0;
   }
-  if (m_autoScrollRepeatAnim)
-    g_graphicsContext.RemoveTransform();
 }
 
 void CGUITextBox::UpdateColors()

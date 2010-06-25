@@ -67,7 +67,7 @@ public:
   virtual void SaveStates(std::vector<CControlState> &states);
   virtual int GetSelectedItem() const;
 
-  virtual void DoRender(unsigned int currentTime);
+  virtual void Process(unsigned int currentTime);
   void LoadLayout(TiXmlElement *layout);
   void LoadContent(TiXmlElement *content);
 

@@ -41,6 +41,7 @@ public:
   virtual ~CGUIControlGroup(void);
   virtual CGUIControlGroup *Clone() const { return new CGUIControlGroup(*this); };
 
+  virtual void Process(unsigned int currentTime);
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
@@ -56,7 +57,6 @@ public:
 
   virtual void SetInitialVisibility();
 
-  virtual void DoRender(unsigned int currentTime);
   virtual bool IsAnimating(ANIMATION_TYPE anim);
   virtual bool HasAnimation(ANIMATION_TYPE anim);
   virtual void QueueAnimation(ANIMATION_TYPE anim);

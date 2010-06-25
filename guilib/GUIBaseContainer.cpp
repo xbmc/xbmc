@@ -68,14 +68,7 @@ CGUIBaseContainer::~CGUIBaseContainer(void)
 
 void CGUIBaseContainer::Render()
 {
-  ValidateOffset();
-
-  if (m_bInvalidated)
-    UpdateLayout();
-
   if (!m_layout || !m_focusedLayout) return;
-
-  UpdateScrollOffset();
 
   int offset = (int)floorf(m_scrollOffset / m_layout->Size(m_orientation));
 
@@ -140,8 +133,6 @@ void CGUIBaseContainer::Render()
 
   g_graphicsContext.RestoreClipRegion();
 
-  UpdatePageControl(offset);
-
   CGUIControl::Render();
 }
 
@@ -176,7 +167,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
           subItem = m_lastItem->GetFocusedLayout()->GetFocusedItem();
         item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
       }
-      item->GetFocusedLayout()->Render(item, m_parentID, m_renderTime);
+      item->GetFocusedLayout()->Render(item, m_parentID);
     }
     m_lastItem = item;
   }
@@ -190,9 +181,9 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
       item->SetLayout(layout);
     }
     if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
-      item->GetFocusedLayout()->Render(item, m_parentID, m_renderTime);
+      item->GetFocusedLayout()->Render(item, m_parentID);
     else if (item->GetLayout())
-      item->GetLayout()->Render(item, m_parentID, m_renderTime);
+      item->GetLayout()->Render(item, m_parentID);
   }
   g_graphicsContext.RestoreOrigin();
 }
@@ -674,13 +665,39 @@ void CGUIBaseContainer::ValidateOffset()
 {
 }
 
-void CGUIBaseContainer::DoRender(unsigned int currentTime)
+void CGUIBaseContainer::Process(unsigned int currentTime)
 {
   m_renderTime = currentTime;
-  CGUIControl::DoRender(currentTime);
+
+  CGUIControl::Process(currentTime);
+
+  ValidateOffset();
+
+  if (m_bInvalidated)
+    UpdateLayout();
+
+  int offset = (int)floorf(m_scrollOffset / m_layout->Size(m_orientation));
+
   if (m_pageChangeTimer.GetElapsedMilliseconds() > 200)
     m_pageChangeTimer.Stop();
   m_wasReset = false;
+
+  UpdateScrollOffset();
+
+  UpdatePageControl(offset);
+
+  for (unsigned int i = 0; i < m_items.size(); i++)
+  {
+    CGUIListItemPtr item = m_items[i];
+
+    CGUIListItemLayout *layout = item->GetLayout();
+    if (layout)
+      layout->Process(currentTime);
+
+    layout = item->GetFocusedLayout();
+    if (layout)
+      layout->Process(currentTime);
+  }
 }
 
 void CGUIBaseContainer::AllocResources()
