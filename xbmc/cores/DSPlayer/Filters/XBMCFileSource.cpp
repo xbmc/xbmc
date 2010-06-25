@@ -27,35 +27,25 @@
 #include "utils/log.h"
 #include "SingleLock.h"
 
-CXBMCAsyncStream::CXBMCAsyncStream(CStdString filepath, IBaseFilter **pBF, HRESULT *phr) :
-    m_llLength(0)
+CXBMCAsyncStream::CXBMCAsyncStream()
+  : m_llLength(0)
 {
-  if (! pBF)
-    return;
-  *pBF = 0;
+
+}
+
+HRESULT CXBMCAsyncStream::Load(const CStdString& file)
+{
+  m_pFileName = file;
+
   m_pFile.Close();
-  if (!m_pFile.Open(filepath, READ_TRUNCATED | READ_BUFFERED))
+  if (!m_pFile.Open(m_pFileName, READ_TRUNCATED | READ_BUFFERED))
   {
     CLog::Log(LOGERROR,"%s Failed to read the file in the xbmc source filter", __FUNCTION__);
-    *phr = E_FAIL;
-    return;
+    return E_FAIL;
   }
+
   m_llLength = m_pFile.GetLength();
-  HRESULT hr;
-  CXBMCASyncReader* pXBMCReader = new CXBMCASyncReader(this, NULL, &hr);
-  if (pXBMCReader)
-    hr=S_OK;
-  else
-    hr=E_FAIL;
-  *phr = hr;
-  if (SUCCEEDED(hr))
-  {
-    *pBF = pXBMCReader;
-    (*pBF)->AddRef();
-    CLog::Log(LOGNOTICE,"%s Successfully created xbmc source filter", __FUNCTION__);
-  }
-  else
-    CLog::Log(LOGERROR,"%s Failed to create xbmc source filter", __FUNCTION__);
+  return S_OK;
 }
 
 CXBMCAsyncStream::~CXBMCAsyncStream()
@@ -113,11 +103,27 @@ STDMETHODIMP CXBMCASyncReader::Unregister()
   return S_OK;
 }
 
-CXBMCASyncReader::CXBMCASyncReader(CXBMCAsyncStream *pStream, CMediaType *pmt, HRESULT *phr) :
-  CAsyncReader(NAME("XBMC File Reader\0"), NULL, pStream, phr)
+CXBMCASyncReader::CXBMCASyncReader(LPUNKNOWN pUnknown, HRESULT *phr)
+  : m_pAsyncStream(), CAsyncReader(NAME("XBMC File Reader\0"), NULL, &m_pAsyncStream, phr)
 {
   m_mt.majortype = MEDIATYPE_Stream;
   m_mt.subtype = MEDIASUBTYPE_NULL;
+}
+
+HRESULT STDMETHODCALLTYPE CXBMCASyncReader::Load(
+  /* [in] */ LPCOLESTR pszFileName,
+  /* [annotation][unique][in] */ 
+  __in_opt  const AM_MEDIA_TYPE *pmt)
+{
+  return m_pAsyncStream.Load(pszFileName);
+}
+
+STDMETHODIMP CXBMCASyncReader::NonDelegatingQueryInterface(REFIID riid, void** ppv)
+{
+  CheckPointer(ppv, E_POINTER);
+
+  return (riid == __uuidof(IFileSourceFilter)) ? GetInterface((IFileSourceFilter*)this, ppv)
+    : __super::NonDelegatingQueryInterface(riid, ppv);
 }
 
 #endif

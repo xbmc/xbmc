@@ -22,7 +22,8 @@
 //
 //  Define an internal filter that wraps the base CBaseReader stuff
 //
-#ifndef __XBMCFILESOURCE_H__
+#pragma once
+
 #include "filters/asyncio.h"
 #include "filters/asyncrdr.h"
 #include "CriticalSection.h"
@@ -30,10 +31,11 @@
 using namespace XFILE;
 class CXBMCASyncReader;
 
-class CXBMCAsyncStream : public CAsyncStream
+class CXBMCAsyncStream : 
+  public CAsyncStream
 {
 public:
-  CXBMCAsyncStream(CStdString filepath, IBaseFilter **pBF,HRESULT *phr);
+  CXBMCAsyncStream();
   virtual ~CXBMCAsyncStream();
   HRESULT SetPointer(LONGLONG llPos);
   HRESULT Read(PBYTE pbBuffer, DWORD dwBytesToRead, BOOL bAlign, LPDWORD pdwBytesRead);
@@ -42,26 +44,49 @@ public:
   void Lock();
   void Unlock();
 
+  HRESULT Load(const CStdString& file);
 
 private:
-    CCriticalSection  m_csLock;
-    LONGLONG          m_llLength;
-    CFile             m_pFile;
+  CCriticalSection  m_csLock;
+  LONGLONG          m_llLength;
+  CStdString        m_pFileName;
+  CFile             m_pFile;
 };
 
 
-class CXBMCASyncReader : public CAsyncReader
+[uuid("EC5882E5-B1CB-4750-AF15-70459CAEC0D1")]
+class CXBMCASyncReader :
+  public CAsyncReader,
+  public IFileSourceFilter
 {
 public:
 
   //  We're not going to be CoCreate'd so we don't need registration
   //  stuff etc
   STDMETHODIMP Register();
-
   STDMETHODIMP Unregister();
 
-  CXBMCASyncReader(CXBMCAsyncStream *pStream, CMediaType *pmt, HRESULT *phr);
+  DECLARE_IUNKNOWN
+  CXBMCASyncReader(LPUNKNOWN pUnknown, HRESULT *phr);
+  virtual ~CXBMCASyncReader() {}
 
+  // IFileSourceFilter
+  virtual HRESULT STDMETHODCALLTYPE Load( 
+      /* [in] */ LPCOLESTR pszFileName,
+      /* [annotation][unique][in] */ 
+      __in_opt  const AM_MEDIA_TYPE *pmt);
+        
+  virtual HRESULT STDMETHODCALLTYPE GetCurFile( 
+      /* [annotation][out] */ 
+      __out  LPOLESTR *ppszFileName,
+      /* [annotation][out] */ 
+      __out_opt  AM_MEDIA_TYPE *pmt)
+  {
+    return E_NOTIMPL;
+  }
+
+  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+
+private:
+  CXBMCAsyncStream m_pAsyncStream;
 };
-
-#endif
