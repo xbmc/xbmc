@@ -261,6 +261,8 @@ public:
   virtual void DumpTextureUse() {};
 #endif
 protected:
+  virtual CRect GetRenderRegion();
+
   /*! \brief Called when the mouse is over the control.
    Default implementation selects the control.
    \param point location of the mouse in transformed skin coordinates

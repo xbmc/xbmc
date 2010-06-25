@@ -524,6 +524,15 @@ EVENT_RESULT CGUIControl::SendMouseEvent(const CPoint &point, const CMouseEvent 
   return (handled && (event.m_id == ACTION_MOUSE_MOVE)) ? EVENT_RESULT_HANDLED : EVENT_RESULT_UNHANDLED;
 }
 
+CRect CGUIControl::GetRenderRegion()
+{
+  CPoint tl(GetXPosition(), GetYPosition());
+  CPoint br(tl.x + GetWidth(), tl.y + GetHeight());
+
+  CRect rect(tl.x, tl.y, br.x, br.y);
+  return rect;
+}
+
 // override this function to implement custom mouse behaviour
 bool CGUIControl::OnMouseOver(const CPoint &point)
 {
