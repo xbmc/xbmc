@@ -57,6 +57,7 @@ public:
   }
   
 protected:
+  virtual CRect GetRenderRegion();
   virtual void UpdateColors();
 
   CGUILabel     m_label;

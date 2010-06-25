@@ -60,6 +60,17 @@ void CGUIListLabel::SetFocus(bool focus)
     SetScrolling(false);
 }
 
+CRect CGUIListLabel::GetRenderRegion()
+{
+  // For now we need to expand the dirty region to cover right aligned text
+  // since it has position anchored to top right.
+  // TODO Smarter dirty region calculation here.
+
+  CRect rect = CGUIControl::GetRenderRegion();
+  rect.x1 -= rect.Width();
+  return rect;
+}
+
 void CGUIListLabel::UpdateColors()
 {
   m_label.UpdateColors();
