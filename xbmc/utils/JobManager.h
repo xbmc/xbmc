@@ -253,6 +253,11 @@ private:
   CJobManager const& operator=(CJobManager const&);
   virtual ~CJobManager();
 
+  /*! \brief Pop a job off the job queue and add to the processing queue ready to process
+   \return the job to process, NULL if no jobs are available
+   */
+  CJob *PopJob();
+
   void StartWorkers(CJob::PRIORITY priority);
   void RemoveWorker(const CJobWorker *worker);
   unsigned int GetMaxWorkers(CJob::PRIORITY priority) const;
