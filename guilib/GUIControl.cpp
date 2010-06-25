@@ -775,6 +775,10 @@ void CGUIControl::Animate(unsigned int currentTime)
 {
   // check visible state outside the loop, as it could change
   GUIVISIBLE visible = m_visible;
+
+  CRect dirtyRegion = GetRenderRegion();
+  TransformMatrix oldTransform = m_transform;
+
   m_transform.Reset();
   CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
   for (unsigned int i = 0; i < m_animations.size(); i++)
@@ -801,6 +805,11 @@ void CGUIControl::Animate(unsigned int currentTime)
       }
     }*/
   }
+
+  dirtyRegion.Union(GetRenderRegion());
+  m_needRender = !(m_transform == oldTransform);
+  if (m_needRender)
+    g_windowManager.MarkDirtyRegion(dirtyRegion);
 }
 
 bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)
