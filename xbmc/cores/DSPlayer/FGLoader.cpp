@@ -69,7 +69,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
   HRESULT hr = E_FAIL;
   
   /* XBMC SOURCE FILTER  */
-  if (CUtil::IsInArchive(pFileItem.m_strPath))
+  /*if (CUtil::IsInArchive(pFileItem.m_strPath))
   {
     CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.m_strPath.c_str());
     CXBMCAsyncStream* pXBMCStream = new CXBMCAsyncStream(pFileItem.m_strPath, &CGraphFilters::Get()->Source.pBF, &hr);
@@ -87,7 +87,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
       CLog::Log(LOGNOTICE, "%s Successfully added xbmc source filter to the graph", __FUNCTION__);
     }
     return hr;
-  }
+  }*/
   /* DVD NAVIGATOR */
   if (pFileItem.IsDVDFile())
   {
@@ -118,7 +118,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
   }
 
   /* INTERNET STREAM */
-  if (pFileItem.IsInternetStream())
+  if (filterName.Equals("internet_source_filter") || pFileItem.IsInternetStream())
   {
     //TODO
     //add IAMOpenProgress for requesting the status of stream without this interface the player failed if connection is too slow
@@ -169,7 +169,7 @@ HRESULT CFGLoader::InsertSourceFilter(const CFileItem& pFileItem, const CStdStri
   }
 
   // If the source filter has more than one ouput pin, it's a splitter too.
-  // Only problem, the file must be laoded in the source filter to see the
+  // Only problem, the file must be loaded in the source filter to see the
   // number of output pin
   CStdString pWinFilePath = pFileItem.m_strPath;
   if ( (pWinFilePath.Left(6)).Equals("smb://", false) )
@@ -346,7 +346,7 @@ HRESULT CFGLoader::InsertVideoRenderer()
 HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
 {
    
-  if (! CFilterCoreFactory::SomethingMatch(pFileItem))
+  if (!pFileItem.IsInternetStream() && !CFilterCoreFactory::SomethingMatch(pFileItem))
   {
 
     CLog::Log(LOGERROR, "%s Extension \"%s\" not found. Please check dsfilterconfig.xml", __FUNCTION__, CURL(pFileItem.m_strPath).GetFileType().c_str());
@@ -438,7 +438,6 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& pFileItem)
     SFilterInfos f;
     if (SUCCEEDED(InsertFilter(extras[i], f)))
       CGraphFilters::Get()->Extras.push_back(f);
-
   }
   extras.clear();
 

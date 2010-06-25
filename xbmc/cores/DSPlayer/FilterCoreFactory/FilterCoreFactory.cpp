@@ -26,6 +26,7 @@
 #include "filters/Splitters/AviSplitter.h"
 #include "filters/Splitters/XBMCFFmpegSplitter.h"
 #include "filters/Splitters/MpegSplitter.h"
+#include "filters/XBMCFileSource.h"
 
 // Set to 1 to test the internal splitter
 #define TEST_INTERNAL_SPLITTERS 0
@@ -37,7 +38,9 @@ InternalFilters internalFilters[] =
   {"internal_videodecoder", "Internal video decoder", &InternalFilterConstructor<CXBMCVideoDecFilter>},
   {"internal_ffmpegsource", "Internal ffmpeg source", &InternalFilterConstructor<CXBMCFFmpegSourceFilter>},
   {"internal_avisource", "Internal avi source", &InternalFilterConstructor<CAviSourceFilter>},
-  {"internal_mpegsource", "Internal mpeg source", &InternalFilterConstructor<CMpegSourceFilter>}
+  {"internal_mpegsource", "Internal mpeg source", &InternalFilterConstructor<CMpegSourceFilter>},
+  {"internal_archivesource", "Internal archive source", &InternalFilterConstructor<CXBMCASyncReader>}/*,
+  {"internal_internetsource", "Internal URL source", &InternalFilterConstructor<CURLSourceFilter>}*/
 };
 
 HRESULT CFilterCoreFactory::LoadMediasConfiguration(TiXmlElement* pConfig )
@@ -102,6 +105,19 @@ CGlobalFilterSelectionRule* CFilterCoreFactory::GetGlobalFilterSelectionRule( co
 HRESULT CFilterCoreFactory::GetSourceFilter( const CFileItem& pFileItem, CStdString& filter )
 {
   filter = "";
+
+  /* Special case for internet stream, and rar archive */
+  // TODO: handle DVD
+  if (pFileItem.IsInternetStream())
+  {
+    filter = "internal_internetsource";
+    return S_OK;
+  } else if (CUtil::IsInArchive(pFileItem.m_strPath))
+  {
+    filter = "internal_archivesource";
+    return S_OK;
+  }
+
   CGlobalFilterSelectionRule * pRule = GetGlobalFilterSelectionRule(pFileItem);
   if (! pRule)
     return E_FAIL;
