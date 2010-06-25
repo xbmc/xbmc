@@ -2190,19 +2190,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
     Com::SmartPtr<IDirect3DTexture9> pTexture;
     Com::SmartRect pSrc, pDst;
 
-    if (m_pScreenSize.Width() == 0) // Not init
-    {
-      D3DDISPLAYMODE mode;
-      memset(&mode, 0, sizeof(D3DDISPLAYMODE));
-      if (SUCCEEDED(m_pD3DDev->GetDisplayMode(0, &mode)))
-        m_pScreenSize.SetRect(0, 0, mode.Width, mode.Height);
-      else if (!GetWindowRect(g_Windowing.GetHwnd(), &m_pScreenSize))
-        m_pScreenSize.SetRect(lrint(m_VideoRect.left), lrint(m_VideoRect.top), lrint(m_VideoRect.right), lrint(m_VideoRect.bottom));
-
-      CLog::Log(LOGDEBUG, "%s Detected screen size : %dx%d", __FUNCTION__, m_pScreenSize.Width(), m_pScreenSize.Height());
-    }
-
-    if (SUCCEEDED(CStreamsManager::Get()->SubtitleManager->GetTexture(pTexture, pSrc, pDst, m_pScreenSize)))
+    if (SUCCEEDED(CStreamsManager::Get()->SubtitleManager->GetTexture(pTexture, pSrc, pDst, rSrcPri)))
     {
       AlphaBlt(&pSrc, &pDst, pTexture);
     }
