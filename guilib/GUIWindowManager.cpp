@@ -503,6 +503,9 @@ void CGUIWindowManager::Render()
     if ((*it)->IsDialogRunning())
       (*it)->Render();
   }
+
+  // Reset dirtyregion
+  m_DirtyRegion.clear();
 }
 
 void CGUIWindowManager::FrameMove()
@@ -517,6 +520,11 @@ void CGUIWindowManager::FrameMove()
   vector<CGUIWindow *> dialogs = m_activeDialogs;
   for (iDialog it = dialogs.begin(); it != dialogs.end(); ++it)
     (*it)->FrameMove();
+}
+
+void CGUIWindowManager::MarkDirtyRegion(CRect region)
+{
+  m_DirtyRegion.push_back(region);
 }
 
 CGUIWindow* CGUIWindowManager::GetWindow(int id) const

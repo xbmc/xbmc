@@ -78,7 +78,12 @@ public:
    on screen. It should only be called from the application thread.
    */
   void FrameMove();
-  
+
+  /*! \brief Method used to mark selected region as dirty so next pass of rendering
+   contains said region.
+   */
+  void MarkDirtyRegion(CRect region);
+
   CGUIWindow* GetWindow(int id) const;
   void Process(bool renderOnly = false);
   void SetCallback(IWindowManagerCallback& callback);
@@ -138,6 +143,8 @@ private:
   std::vector <IMsgTargetCallback*> m_vecMsgTargets;
 
   bool m_bShowOverlay;
+
+  std::vector<CRect> m_DirtyRegion;
 };
 
 /*!
