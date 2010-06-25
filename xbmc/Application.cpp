@@ -1954,8 +1954,6 @@ void CApplication::NewFrame()
 
 void CApplication::Render()
 {
-  if (m_dpmsIsActive)
-    return;
   if (!m_AppActive && !m_bStop && (!IsPlayingVideo() || IsPaused()))
   {
     Sleep(1);
