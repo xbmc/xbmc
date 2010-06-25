@@ -52,7 +52,6 @@
 #define HAS_JSONRPC
 #define HAS_HTTPAPI
 
-#define HAS_CDDA_RIPPER
 #ifdef HAVE_ASAP_CODEC
 #define HAS_ASAP_CODEC
 #endif
@@ -248,6 +247,10 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #endif
+#endif
+
+#ifdef HAS_DVD_DRIVE
+#define HAS_CDDA_RIPPER
 #endif
 
 #define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }
