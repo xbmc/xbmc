@@ -98,13 +98,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)python24.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
-      <BaseAddress>
-      </BaseAddress>
-      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <BaseAddress>0x1e000000</BaseAddress>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>$(OutDir)python24.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
+      <FixedBaseAddress>
+      </FixedBaseAddress>
     </Link>
     <CustomBuildStep>
       <Command>copy "$(TargetPath)" "$(SolutionDir)..\..\system\python\$(TargetFileName)"</Command>
