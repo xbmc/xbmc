@@ -23,6 +23,8 @@ config.log
 *.py[co]
 *.ver
 *.rej
+*.orig
+*.bak
 
 # Windows specific generated files
 *.exp
@@ -30,8 +32,12 @@ config.log
 *.ncb
 *.pdb
 *.suo
+*.sdf
+*.opensdf
 *.vcproj.*.user
 *.vcxproj.*.user
+*.vcxproj.user
+*.obj
 
 .libs/
 .deps/
@@ -265,6 +271,9 @@ config.log
 /project/VS2010Express/guilib
 /project/VS2010Express/libPlatinum
 /project/VS2010Express/UnrarXLib
+/project/VS2010Express/libs
+/project/VS2010Express/objs
+/project/VS2010Express/ipch
 
 # /skin/
 /skin/Confluence/media/Textures.xbt
@@ -306,6 +315,9 @@ config.log
 /system/players/dvdplayer/libmad.dll
 /system/players/dvdplayer/libdts.dll
 
+# /system/players/dsplayer
+/system/players/dsplayer/libsubs.dll
+
 # /system
 /system/profiles.xml
 
@@ -313,6 +325,11 @@ config.log
 /system/python/Lib/
 /system/python/python24.zip
 /system/python/python24.dll
+/system/python/DLLs/_socket.pyd
+/system/python/DLLs/pyexpat.pyd
+/system/python/DLLs/select.pyd
+/system/python/DLLs/unicodedata.pyd
+/system/python/DLLs/zlib.pyd
 
 # /system/webserver
 /system/webserver
@@ -415,6 +432,9 @@ config.log
 
 # /xbmc/cores/dvdplayer/Codecs
 /xbmc/cores/dvdplayer/Codecs/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libvpx/
+/xbmc/cores/dvdplayer/Codecs/libvpx/
 
 # /xbmc/cores/dvdplayer/Codecs/ffmpeg/
 /xbmc/cores/dvdplayer/Codecs/ffmpeg/config.h
@@ -1104,6 +1124,7 @@ config.log
 /xbmc/lib/libPython/Python/python
 /xbmc/lib/libPython/Python/python.exe
 /xbmc/lib/libPython/Python/Mac/Python/
+/xbmc/lib/libPython/Python/PC/pythonnt_rc_d.h
 
 # /xbmc/lib/libRTV/
 /xbmc/lib/libRTV/Makefile
