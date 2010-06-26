@@ -44,10 +44,8 @@ namespace ADDON
 CSkinInfo::CSkinInfo(const cp_extension_t *ext)
   : CAddon(ext)
 {
-  GetDefaultResolution(ext, "@defaultresolution", m_DefaultResolution, RES_PAL_4x3);
-  GetDefaultResolution(ext, "@defaultresolutionwide", m_DefaultResolutionWide, RES_INVALID);
-  CLog::Log(LOGINFO, "Default 4:3 resolution directory is %s", CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolution)).c_str());
-  CLog::Log(LOGINFO, "Default 16:9 resolution directory is %s", CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolutionWide)).c_str());
+  m_DefaultResolution = TranslateResolution(CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultresolution"), RES_PAL_4x3);
+  m_DefaultResolutionWide = TranslateResolution(CAddonMgr::Get().GetExtValue(ext->configuration, "@defaultresolutionwide"), RES_INVALID);
 
   CStdString str = CAddonMgr::Get().GetExtValue(ext->configuration, "@effectslowdown");
   if (!str.IsEmpty())
@@ -68,6 +66,8 @@ CSkinInfo::~CSkinInfo()
 
 void CSkinInfo::Start(const CStdString& strSkinDir /* = "" */)
 {
+  CLog::Log(LOGINFO, "Default 4:3 resolution directory is %s", CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolution)).c_str());
+  CLog::Log(LOGINFO, "Default 16:9 resolution directory is %s", CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolutionWide)).c_str());
   LoadIncludes();
 }
 
@@ -271,41 +271,22 @@ void CSkinInfo::GetSkinPaths(std::vector<CStdString> &paths) const
     paths.push_back(CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolution)));
 }
 
-void CSkinInfo::GetDefaultResolution(const cp_extension_t *ext, const char *tag, RESOLUTION &res, const RESOLUTION &def) const
+RESOLUTION CSkinInfo::TranslateResolution(const CStdString &res, RESOLUTION def)
 {
-  //FIXME! only respects one extension per addon
-  CStdString strRes(CAddonMgr::Get().GetExtValue(ext->configuration, tag));
-  if (!strRes.empty())
-  {
-    strRes.ToLower();
-    if (strRes == "pal") {
-      res = RES_PAL_4x3;
-      return;
-    }
-    else if (strRes == "pal16x9") {
-      res = RES_PAL_16x9;
-      return;
-    }
-    else if (strRes == "ntsc") {
-      res = RES_NTSC_4x3;
-      return;
-    }
-    else if (strRes == "ntsc16x9") {
-      res = RES_NTSC_16x9;
-      return;
-    }
-    else if (strRes == "720p") {
-      res = RES_HDTV_720p;
-      return;
-    }
-    else if (strRes == "1080i") {
-      res = RES_HDTV_1080i;
-      return;
-    }
-  }
-
-  CLog::Log(LOGERROR, "%s invalid resolution specified for <%s>, %s", __FUNCTION__, tag, strRes.c_str());
-  res = def;
+  if (res.Equals("pal"))
+    return RES_PAL_4x3;
+  else if (res.Equals("pal16x9"))
+    return RES_PAL_16x9;
+  else if (res.Equals("ntsc"))
+    return RES_NTSC_4x3;
+  else if (res.Equals("ntsc16x9"))
+    return RES_NTSC_16x9;
+  else if (res.Equals("720p"))
+    return RES_HDTV_720p;
+  else if (res.Equals("1080i"))
+    return RES_HDTV_1080i;
+  CLog::Log(LOGERROR, "%s invalid resolution specified for %s", __FUNCTION__, res.c_str());
+  return def;
 }
 
 int CSkinInfo::GetFirstWindow() const
