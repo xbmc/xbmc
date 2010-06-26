@@ -155,6 +155,8 @@ CStdString CFavourites::GetExecutePath(const CFileItem *item, int contextWindow)
     execute.Format("ActivateWindow(%i,%s)", contextWindow, item->m_strPath);
   else if (item->m_strPath.Left(9).Equals("plugin://"))
     execute.Format("RunPlugin(%s)", item->m_strPath);
+  else if (item->m_strPath.Left(9).Equals("script://"))
+    execute.Format("RunScript(%s)", item->m_strPath.Mid(9));
   else if (contextWindow == WINDOW_PROGRAMS)
     execute.Format("RunXBE(%s)", item->m_strPath);
   else  // assume a media file
