@@ -104,6 +104,8 @@ bool CTextureCache::CDDSJob::operator==(const CJob* job) const
 bool CTextureCache::CDDSJob::DoWork()
 {
   CTexture texture;
+  if (CUtil::GetExtension(m_original).Equals(".dds"))
+    return false;
   if (texture.LoadFromFile(m_original))
   { // convert to DDS
     CDDSImage dds;
