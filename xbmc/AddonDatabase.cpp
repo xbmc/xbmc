@@ -71,7 +71,7 @@ bool CAddonDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create broken table");
     m_pDS->exec("CREATE TABLE broken (id integer primary key, addonID text, reason text)\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxBroken ON disabled(addonID)");
+    m_pDS->exec("CREATE UNIQUE INDEX idxBroken ON broken(addonID)");
   }
   catch (...)
   {
@@ -129,7 +129,7 @@ bool CAddonDatabase::UpdateOldVersion(int version)
   if (version < 10)
   {
     m_pDS->exec("CREATE TABLE broken (id integer primary key, addonID text, reason text)\n");
-    m_pDS->exec("CREATE UNIQUE INDEX idxBroken ON disabled(addonID)");
+    m_pDS->exec("CREATE UNIQUE INDEX idxBroken ON broken(addonID)");
   }
   return true;
 }
