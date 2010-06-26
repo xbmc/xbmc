@@ -260,7 +260,11 @@ void CRenderSystemDX::BuildPresentParameters()
   else if (IsDepthFormatOk(D3DFMT_D16, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))           zFormat = D3DFMT_D16;
   else if (IsDepthFormatOk(D3DFMT_D15S1, m_D3DPP.BackBufferFormat, m_D3DPP.BackBufferFormat))         zFormat = D3DFMT_D15S1;
 
+#ifdef HAS_DS_PLAYER
+  m_D3DPP.EnableAutoDepthStencil = FALSE;
+#else
   m_D3DPP.EnableAutoDepthStencil = TRUE;
+#endif
   m_D3DPP.AutoDepthStencilFormat = zFormat;
 
   if (m_useD3D9Ex)
@@ -516,6 +520,22 @@ bool CRenderSystemDX::CreateDevice()
 
   m_pD3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
   m_pD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
+
+#ifdef HAS_DS_PLAYER
+  // We can't use the auto depth stencil. If you are in windowed mode, it will fails when rendering shaders
+  // Depth stencil
+  if (m_depthStencil.Create(std::max((UINT) 1920, m_D3DPP.BackBufferWidth), std::max((UINT) 1080, m_D3DPP.BackBufferHeight), 1,
+    D3DUSAGE_DEPTHSTENCIL, m_D3DPP.AutoDepthStencilFormat, D3DPOOL_DEFAULT))
+  {
+
+    IDirect3DSurface9 * pSurface = NULL;
+    m_depthStencil.GetSurfaceLevel(0, &pSurface);
+
+    HRESULT hr = m_pD3DDevice->SetDepthStencilSurface(pSurface);
+    if (FAILED(hr))
+      CLog::Log(LOGERROR, "%s Failed to set the depth stencil surface (hr: %X)", __FUNCTION__, hr);
+  }
+#endif
 
   m_bRenderCreated = true;
   m_needNewDevice = false;
