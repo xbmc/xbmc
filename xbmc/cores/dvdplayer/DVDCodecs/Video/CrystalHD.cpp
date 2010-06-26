@@ -1095,6 +1095,9 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
     // this will get reset once we get a picture back.
     // the effect is to speed feeding demux packets during startup.
     m_wait_timeout = 1;
+    m_last_pict_num = 0;
+    m_last_demuxer_pts = DVD_NOPTS_VALUE;
+    m_last_decoder_pts = DVD_NOPTS_VALUE;
 
     CLog::Log(LOGDEBUG, "%s: codec opened", __MODULE_NAME__);
   } while(false);
@@ -1136,7 +1139,9 @@ void CCrystalHD::Reset(void)
 
   // Calling for non-error flush, Flushes all the decoder
   //  buffers, input, decoded and to be decoded. 
-  m_dll->DtsFlushInput(m_device, 2);
+  m_dll->DtsFlushInput(m_device, 0);
+  m_dll->DtsFlushRxCapture(m_device, true);
+  ::Sleep(500);
 
   while (m_pOutputThread->GetReadyCount())
     m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
@@ -1158,7 +1163,7 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
       ret = m_dll->DtsProcInput(m_device, pData, size, pts_dtoi(pts), 0);
       if (ret == BCM::BC_STS_SUCCESS)
       {
-        m_last_pts = pts;
+        m_last_demuxer_pts = pts;
       }
       else if (ret == BCM::BC_STS_BUSY)
       {
@@ -1166,6 +1171,12 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
         ::Sleep(1); // Buffer is full, sleep it empty
       }
     } while (ret != BCM::BC_STS_SUCCESS);
+
+    if (m_drop_state)
+    {
+      if (m_pOutputThread->GetReadyCount() > 1)
+        m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
+    }
 
     bool wait_state;
     if (!m_pOutputThread->GetReadyCount())
@@ -1248,6 +1259,9 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   //  pDvdVideoPicture->iFlags |= DVP_FLAG_TOP_FIELD_FIRST;
   pDvdVideoPicture->iFlags |= m_drop_state ? DVP_FLAG_DROPPED : 0;
   pDvdVideoPicture->format = pBuffer->m_format;
+
+  m_last_pict_num = pBuffer->m_PictureNumber;
+  m_last_decoder_pts = pDvdVideoPicture->pts;
 
   while( m_BusyList.Count())
     m_pOutputThread->FreeListPush( m_BusyList.Pop() );
