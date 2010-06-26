@@ -126,7 +126,7 @@ void CGUIDialogAddonInfo::UpdateControls()
   bool isEnabled = isInstalled && m_item->GetProperty("Addon.Enabled").Equals("true");
   bool isUpdatable = isInstalled && m_item->GetProperty("Addon.UpdateAvail").Equals("true");
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, !isSystem);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, (!isSystem && (m_item->GetProperty("Addon.Broken").IsEmpty() || isInstalled)));
   SET_CONTROL_LABEL(CONTROL_BTN_INSTALL, isInstalled ? 24037 : 24038);
 
   // TODO: System addons should be able to be disabled

@@ -236,6 +236,7 @@ AddonProps::AddonProps(cp_plugin_info_t *props)
     description = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "description");
     disclaimer = CAddonMgr::Get().GetTranslatedString(metadata->configuration, "disclaimer");
     license = CAddonMgr::Get().GetExtValue(metadata->configuration, "license");
+    broken = CAddonMgr::Get().GetExtValue(metadata->configuration, "broken");
   }
   icon = "icon.png";
   fanart = CUtil::AddFileToFolder(path, "fanart.jpg");
