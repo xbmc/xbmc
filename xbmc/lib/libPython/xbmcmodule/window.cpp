@@ -84,7 +84,6 @@ namespace PYXBMC
         return false;
       }
       while(id < WINDOW_PYTHON_END && g_windowManager.GetWindow(id) != NULL) id++;
-      PyXBMCGUIUnlock();
 
       pWindow->iWindowId = id;
       pWindow->iOldWindowId = 0;
@@ -108,7 +107,6 @@ namespace PYXBMC
         ((CGUIPythonWindow*)pWindow->pWindow)->SetCallbackWindow(PyThreadState_Get(), (PyObject*)pWindow);
       }
 
-      PyXBMCGUILock();
       g_windowManager.Add(pWindow->pWindow);
       PyXBMCGUIUnlock();
     }
@@ -124,6 +122,19 @@ namespace PYXBMC
     Control* pControl = NULL;
     CGUIWindow* pWindow = NULL;
 
+    // find in window vector first!!!
+    // this saves us from creating a complete new control
+    vector<Control*>::iterator it = self->vecControls.begin();
+    while (it != self->vecControls.end())
+    {
+      Control* control = *it;
+      if (control->iControlId == iControlId)
+      {
+        Py_INCREF(control);
+        return control;
+      } else ++it;
+    }
+
     // lock xbmc GUI before accessing data from it
     PyXBMCGUILock();
 
@@ -136,27 +147,14 @@ namespace PYXBMC
 
     // check if control exists
     CGUIControl* pGUIControl = (CGUIControl*)pWindow->GetControl(iControlId);
-    PyXBMCGUIUnlock();
     if (!pGUIControl)
     {
+      PyXBMCGUIUnlock();
       // control does not exist.
       CStdString error;
       error.Format("Non-Existent Control %d",iControlId);
       PyErr_SetString(PyExc_TypeError, error.c_str());
       return NULL;
-    }
-
-    // find in window vector first!!!
-    // this saves us from creating a complete new control
-    vector<Control*>::iterator it = self->vecControls.begin();
-    while (it != self->vecControls.end())
-    {
-      Control* control = *it;
-      if (control->iControlId == iControlId)
-      {
-        Py_INCREF(control);
-        return control;
-      } else ++it;
     }
 
     // allocate a new control with a new reference
@@ -276,12 +274,12 @@ namespace PYXBMC
 
     if (!pControl)
     {
+      PyXBMCGUIUnlock();
       // throw an exeption
       PyErr_SetString(PyExc_Exception, "Unknown control type for python");
       return NULL;
     }
 
-    PyXBMCGUILock();
     Py_INCREF(pControl);
     // we have a valid control here, fill in all the 'Control' data
     pControl->pGUIControl = pGUIControl;
