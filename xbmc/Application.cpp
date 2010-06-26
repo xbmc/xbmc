@@ -4736,7 +4736,9 @@ void CApplication::ProcessSlow()
     g_lcd->Initialize();
   }
 #endif
-  ADDON::CAddonMgr::Get().UpdateRepos();
+  
+  if (!IsPlayingVideo())
+    ADDON::CAddonMgr::Get().UpdateRepos();
 
 #if defined(__arm__)
   // TODO: gui rendering testing, remove later
