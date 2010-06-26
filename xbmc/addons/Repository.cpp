@@ -174,21 +174,21 @@ bool CRepositoryUpdateJob::DoWork()
                                                           addon->Name(),TOAST_DISPLAY_TIME,false);
       }
     }
-    if (addon && !addons[i]->Props().broken.IsEmpty())
+    if (!addons[i]->Props().broken.IsEmpty())
     {
-      if (database.IsAddonBroken(addon->ID()).IsEmpty())
+      if (database.IsAddonBroken(addons[i]->ID()).IsEmpty())
       {
-        if (CGUIDialogYesNo::ShowAndGetInput(addon->Name(),
+        if (addon && CGUIDialogYesNo::ShowAndGetInput(addons[i]->Name(),
                                              g_localizeStrings.Get(24096),
                                              g_localizeStrings.Get(24097),
                                              ""))
-          database.DisableAddon(addon->ID());
+          database.DisableAddon(addons[i]->ID());
 
-        database.BreakAddon(addon->ID(),true,addons[i]->Props().broken);
+        database.BreakAddon(addons[i]->ID(),true,addons[i]->Props().broken);
       }
     }
-    if (addon && addons[i]->Props().broken.IsEmpty())
-      database.BreakAddon(addon->ID(),false);
+    if (addons[i]->Props().broken.IsEmpty())
+      database.BreakAddon(addons[i]->ID(),false);
   }
 
   return true;
