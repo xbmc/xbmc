@@ -22,7 +22,7 @@
 					<description>Synopsis label</description>
 					<label>$LOCALIZE[31119]</label>
 					<font>MediumSmallDefaultCapsFont</font>
-					<textcolor>Highlighted</textcolor>
+					<textcolor>FFFF9900</textcolor>
 				</control>
 				<control type="textbox">
 					<posy>28</posy>
