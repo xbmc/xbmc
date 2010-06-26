@@ -451,8 +451,6 @@ bool CApplication::Create()
 {
   g_settings.Initialize(); //Initialize default AdvancedSettings
 
-//  g_graphicsContext.SetCameraPosition(CPoint(0, 0)); // ADDED DEBUG CODE
-
   m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
   g_Windowing.EnableSystemScreenSaver(false);
 

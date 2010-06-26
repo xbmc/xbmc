@@ -27,17 +27,17 @@ struct PS_INPUT
 
 float4 main_bilinear(PS_INPUT input) : COLOR
 {
-    float2 PixelPos = input.t0;
-	float2 dd = frac(PixelPos);
-	float2 ExactPixel = PixelPos - dd;
-	float2 samplePos = ExactPixel*dxdy + dxdy05;
+  float2 PixelPos = input.t0;
+  float2 dd = frac(PixelPos);
+  float2 ExactPixel = PixelPos - dd;
+  float2 samplePos = ExactPixel*dxdy + dxdy05;
 
-	float4 c = lerp(
-		lerp(tex2D(s0, samplePos), tex2D(s0, samplePos + dx), dd.x),
-		lerp(tex2D(s0, samplePos + dy), tex2D(s0, samplePos + dxdy), dd.x),
-		dd.y);
-		
-	return c;
+  float4 c = lerp(
+    lerp(tex2D(s0, samplePos), tex2D(s0, samplePos + dx), dd.x),
+    lerp(tex2D(s0, samplePos + dy), tex2D(s0, samplePos + dxdy), dd.x),
+    dd.y);
+    
+  return c;
 }
 
 static float4x4	tco =

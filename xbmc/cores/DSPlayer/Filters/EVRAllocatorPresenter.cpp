@@ -383,7 +383,7 @@ CEVRAllocatorPresenter::CEVRAllocatorPresenter(HWND hWnd, HRESULT& hr, CStdStrin
 
   // Bufferize frame only with 3D texture!
   if (g_dsSettings.pRendererSettings->apSurfaceUsage == VIDRNDT_AP_TEXTURE3D)
-    m_nNbDXSurface  = std::max ( std::min (((CEVRRendererSettings *)g_dsSettings.pRendererSettings)->buffers, MAX_PICTURE_SLOTS-2), 4);
+    m_nNbDXSurface  = std::max ( std::min (((CEVRRendererSettings *)g_dsSettings.pRendererSettings)->buffers, MAX_PICTURE_SLOTS-3), 4);
   else
     m_nNbDXSurface = 1;
 

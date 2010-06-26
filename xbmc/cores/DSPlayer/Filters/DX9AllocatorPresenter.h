@@ -51,7 +51,7 @@ public:
 };
 
 #define VMRBITMAP_UPDATE        0x80000000
-#define MAX_PICTURE_SLOTS      (60+2)        // Last 2 for pixels shader!
+#define MAX_PICTURE_SLOTS      (60+3)        // Last 2 for pixels shader + last one for final rendering!
 
 #define NB_JITTER          126
 

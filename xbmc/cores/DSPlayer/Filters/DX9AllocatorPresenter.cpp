@@ -947,7 +947,7 @@ HRESULT CDX9AllocatorPresenter::AllocSurfaces(D3DFORMAT Format)
   CAutoLock cAutoLock(this);
   CAutoLock cRenderLock(&m_RenderLock);
 
-  for(int i = 0; i < m_nNbDXSurface+2; i++)
+  for(int i = 0; i < m_nNbDXSurface+3; i++)
   {
     m_pVideoTexture[i] = NULL;
     m_pVideoSurface[i] = NULL;
@@ -975,9 +975,19 @@ HRESULT CDX9AllocatorPresenter::AllocSurfaces(D3DFORMAT Format)
         return hr;
     }
 
+    // Rendering target
+    uint32_t height = 0, width = 0;
+    g_Windowing.GetBackbufferSize(width, height);
+    if (FAILED(hr = m_pD3DDev->CreateTexture(width, height, 1, D3DUSAGE_RENDERTARGET, Format, 
+      D3DPOOL_DEFAULT, &m_pVideoTexture[m_nNbDXSurface + 2], NULL)))
+      return hr;
+
+    if (FAILED(hr = m_pVideoTexture[m_nNbDXSurface + 2]->GetSurfaceLevel(0, &m_pVideoSurface[m_nNbDXSurface + 2])))
+      return hr;
+
     if(g_dsSettings.pRendererSettings->apSurfaceUsage == VIDRNDT_AP_TEXTURE2D)
     {
-      for(int i = 0; i < m_nNbDXSurface+2; i++)
+      for(int i = 0; i < m_nNbDXSurface+3; i++)
       {
         m_pVideoTexture[i] = NULL;
       }
@@ -1945,18 +1955,17 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
   Com::SmartRect rDstPri(m_WindowRect);
 
   Com::SmartPtr<IDirect3DSurface9> pBackBuffer;
-  m_pD3DDev->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer);
+  m_pD3DDev->GetRenderTarget(0, &pBackBuffer);
 
-  m_pD3DDev->SetRenderTarget(0, pBackBuffer);
-  // Don't clear the back buffer as the gui may be drawn on it
-  //hr = m_pD3DDev->Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
+  /*m_pD3DDev->SetRenderTarget(0, m_pVideoSurface[m_nNbDXSurface + 2]);
+  hr = m_pD3DDev->ColorFill(m_pVideoSurface[m_nNbDXSurface + 2], NULL, 0);*/
+
 
   if(g_renderManager.IsConfigured() && !rDstVid.IsRectEmpty())
   {
     if(m_pVideoTexture[m_nCurSurface])
     {
       Com::SmartPtr<IDirect3DTexture9> pVideoTexture = m_pVideoTexture[m_nCurSurface];
-      
 
       if (m_pVideoTexture[m_nNbDXSurface] && m_pVideoTexture[m_nNbDXSurface + 1 ])
       {
@@ -2072,6 +2081,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
 
       hr = InitResizers(A, bScreenSpacePixelShaders);
 
+#if 0
       if (!m_pScreenSizeTemporaryTexture[0] || !m_pScreenSizeTemporaryTexture[1])
         bScreenSpacePixelShaders = false;
 
@@ -2088,8 +2098,8 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
             bScreenSpacePixelShaders = false;
           hr = m_pD3DDev->Clear(0, NULL, D3DCLEAR_TARGET, 0, 1.0f, 0);
         }
-      }
-
+     }
+#endif
       if(rSrcVid.Size() != rDstVid.Size())
       {
         if(iDX9Resizer == 0 || iDX9Resizer == 1)
@@ -2108,6 +2118,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
       }
       else hr = TextureResize(pVideoTexture, dst, D3DTEXF_POINT, rSrcVid);
 
+#if 0
       if (bScreenSpacePixelShaders)
       {
         static __int64 counter = 555;
@@ -2130,7 +2141,6 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
 
         int src = 1, dst = 0;
 
-#if 0
         POSITION pos = m_pPixelShadersScreenSpace.GetHeadPosition();
         while(pos)
         {
@@ -2153,15 +2163,14 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
 
           swap(src, dst);
         }
-#endif
-
         hr = m_pD3DDev->SetPixelShader(NULL);
       }
+#endif
     }
   }
   else
   {
-    if(pBackBuffer)
+    if (pBackBuffer)
     {
       ClipToSurface(pBackBuffer, rSrcVid, rDstVid); // grrr
       // IMPORTANT: rSrcVid has to be aligned on mod2 for yuy2->rgb conversion with StretchRect!!!
@@ -2182,7 +2191,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
       }
     }
   }
-  
+
   // Subtitle drawing
   if (CStreamsManager::Get()->SubtitleManager)
   {
@@ -2198,6 +2207,9 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
 
   if (g_dsSettings.pRendererSettings->displayStats)
     DrawStats();
+
+  /*m_pD3DDev->SetRenderTarget(0, pBackBuffer);
+  TextureCopy(m_pVideoTexture[m_nNbDXSurface + 2]);*/
 
   BOOL bCompositionEnabled = m_bCompositionEnabled;
 
