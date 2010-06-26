@@ -643,16 +643,6 @@ void CGUISettings::Initialize()
   AddInt(dvd, "dvds.playerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(dvd, "dvds.automenu", 21882, false);
 
-  AddCategory(5, "postprocessing", 14041);
-  AddBool(NULL, "postprocessing.enable", 286, false);
-  AddBool(NULL, "postprocessing.auto", 307, true); // only has effect if PostProcessing.Enable is on.
-  AddBool(NULL, "postprocessing.verticaldeblocking", 308, false);
-  AddInt(NULL, "postprocessing.verticaldeblocklevel", 308, 0, 0, 1, 100, SPIN_CONTROL_INT);
-  AddBool(NULL, "postprocessing.horizontaldeblocking", 309, false);
-  AddInt(NULL, "postprocessing.horizontaldeblocklevel", 309, 0, 0, 1, 100, SPIN_CONTROL_INT);
-  AddBool(NULL, "postprocessing.autobrightnesscontrastlevels", 310, false);
-  AddBool(NULL, "postprocessing.dering", 311, false);
-
   CSettingsCategory* scp = AddCategory(5, "scrapers", 21412);
   AddDefaultAddon(scp, "scrapers.moviesdefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER_MOVIES);
   AddDefaultAddon(scp, "scrapers.tvshowsdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER_TVSHOWS);

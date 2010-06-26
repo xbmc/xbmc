@@ -231,7 +231,7 @@
   <string id="282">Found %i items</string>
   <string id="283">Search results</string>
   <string id="284">No results found</string>
-  <string id="286">Post-processing filter</string>
+  <string id="286"></string>
   <string id="287">Subtitles</string>
   <string id="288">Font</string>
   <string id="289">- Size</string>
@@ -251,11 +251,11 @@
   <string id="304">Language</string>
   <string id="305">Enabled</string>
   <string id="306">Non-interleaved</string>
-  <string id="307">- Automatic post-processing</string>
-  <string id="308">- Vertical deblocking filter</string>
-  <string id="309">- Horizontal deblocking filter</string>
-  <string id="310">- Auto brightness/contrast</string>
-  <string id="311">- Dering</string>
+  <string id="307"></string>
+  <string id="308"></string>
+  <string id="309"></string>
+  <string id="310"></string>
+  <string id="311"></string>
   <string id="312">(0=auto)</string>
   <string id="313">Cleaning database</string>
   <string id="314">Preparing...</string>
@@ -1294,7 +1294,7 @@
   <string id="14038">Network settings changed</string>
   <string id="14039">XBMC requires to restart to change your</string>
   <string id="14040">network setup.  Would you like to restart now?</string>
-  <string id="14041">Post processing</string>
+  <string id="14041"></string>
 
   <string id="14043">- Shutdown while playing</string>
   <string id="14044">%i min</string>

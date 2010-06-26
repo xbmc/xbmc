@@ -882,31 +882,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("scrobbler.librefmsubmit"));
     }
-    else if (strSetting.Equals("postprocessing.verticaldeblocklevel"))
-    {
-      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
-      pControl->SetEnabled(g_guiSettings.GetBool("postprocessing.verticaldeblocking") &&
-                           g_guiSettings.GetBool("postprocessing.enable") &&
-                           !g_guiSettings.GetBool("postprocessing.auto"));
-    }
-    else if (strSetting.Equals("postprocessing.horizontaldeblocklevel"))
-    {
-      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
-      pControl->SetEnabled(g_guiSettings.GetBool("postprocessing.horizontaldeblocking") &&
-                           g_guiSettings.GetBool("postprocessing.enable") &&
-                           !g_guiSettings.GetBool("postprocessing.auto"));
-    }
-    else if (strSetting.Equals("postprocessing.verticaldeblocking") || strSetting.Equals("postprocessing.horizontaldeblocking") || strSetting.Equals("postprocessing.autobrightnesscontrastlevels") || strSetting.Equals("postprocessing.dering"))
-    {
-      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
-      pControl->SetEnabled(g_guiSettings.GetBool("postprocessing.enable") &&
-                           !g_guiSettings.GetBool("postprocessing.auto"));
-    }
-    else if (strSetting.Equals("postprocessing.auto"))
-    {
-      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(pSettingControl->GetID());
-      pControl->SetEnabled(g_guiSettings.GetBool("postprocessing.enable"));
-    }
     else if (strSetting.Equals("subtitles.color") || strSetting.Equals("subtitles.style") || strSetting.Equals("subtitles.charset"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
