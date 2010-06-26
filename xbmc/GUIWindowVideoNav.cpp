@@ -119,7 +119,7 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 
       // is this the first time the window is opened?
       if (m_vecItems->m_strPath == "?" && message.GetStringParam().IsEmpty())
-        m_vecItems->m_strPath = g_settings.m_defaultVideoLibSource;
+        message.SetStringParam(g_settings.m_defaultVideoLibSource);
 
       DisplayEmptyDatabaseMessage(false); // reset message state
 

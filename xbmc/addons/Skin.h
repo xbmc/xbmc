@@ -86,6 +86,13 @@ public:
    */
   int GetStartWindow() const;
 
+  /*! \brief Translate a resolution string
+   \param res the string to translate
+   \param def the default to use if res is invalid
+   \return the translated resolution
+   */
+  static RESOLUTION TranslateResolution(const CStdString &res, RESOLUTION def);
+
   void ResolveIncludes(TiXmlElement *node, const CStdString &type = "");
   bool ResolveConstant(const CStdString &constant, float &value) const;
   bool ResolveConstant(const CStdString &constant, unsigned int &value) const;

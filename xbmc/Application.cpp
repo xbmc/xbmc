@@ -1981,8 +1981,6 @@ void CApplication::NewFrame()
 
 void CApplication::Render()
 {
-  if (m_dpmsIsActive)
-    return;
   if (!m_AppActive && !m_bStop && (!IsPlayingVideo() || IsPaused()))
   {
     Sleep(1);
@@ -4765,7 +4763,9 @@ void CApplication::ProcessSlow()
     g_lcd->Initialize();
   }
 #endif
-  ADDON::CAddonMgr::Get().UpdateRepos();
+  
+  if (!IsPlayingVideo())
+    ADDON::CAddonMgr::Get().UpdateRepos();
 
 #if defined(__arm__)
   // TODO: gui rendering testing, remove later

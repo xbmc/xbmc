@@ -449,7 +449,7 @@ bool CRenderSystemDX::CreateDevice()
                                             HIWORD(AIdentifier.DriverVersion.LowPart), LOWORD(AIdentifier.DriverVersion.LowPart));
   }
 
-  CLog::Log(LOGERROR, __FUNCTION__" - adapter %d: %s, %s, VendorId %lu, DeviceId %lu",
+  CLog::Log(LOGDEBUG, __FUNCTION__" - adapter %d: %s, %s, VendorId %lu, DeviceId %lu",
             m_adapter, AIdentifier.Driver, AIdentifier.Description, AIdentifier.VendorId, AIdentifier.DeviceId);
 
   // get our render capabilities

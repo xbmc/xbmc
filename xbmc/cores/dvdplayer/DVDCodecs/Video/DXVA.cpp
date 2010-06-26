@@ -532,12 +532,18 @@ int CDecoder::Check(AVCodecContext* avctx)
   } status = {};
 
   params.pExtensionData = &data;
-  data.Function = 7;
+  data.Function = DXVA_STATUS_REPORTING_FUNCTION;
   data.pPrivateOutputData    = &status;
-  data.PrivateOutputDataSize = sizeof(status);
-  if(FAILED(m_decoder->Execute(&params)))
+  data.PrivateOutputDataSize = avctx->codec_id == CODEC_ID_H264 ? sizeof(DXVA_Status_H264) : sizeof(DXVA_Status_VC1);
+  HRESULT hr;
+  if(FAILED( hr = m_decoder->Execute(&params)))
   {
-    CLog::Log(LOGWARNING, "DXVA - failed to get decoder status");
+    CLog::Log(LOGWARNING, "DXVA - failed to get decoder status - 0x%08X", hr);
+
+    // temporary ugly hack for testing! pretend there was no error.
+    if(avctx->codec_id == CODEC_ID_MPEG2VIDEO)
+      return 0;
+
     return VC_ERROR;
   }
 
@@ -546,11 +552,10 @@ int CDecoder::Check(AVCodecContext* avctx)
     if(status.h264.bStatus)
       CLog::Log(LOGWARNING, "DXVA - decoder problem of status %d with %d", status.h264.bStatus, status.h264.bBufType);
   }
-  else if(avctx->codec_id == CODEC_ID_VC1
-       || avctx->codec_id == CODEC_ID_WMV3)
+  else
   {
     if(status.vc1.bStatus)
-      CLog::Log(LOGWARNING, "DXVA - decoder problem of status %d with %d", status.h264.bStatus, status.vc1.bBufType);
+      CLog::Log(LOGWARNING, "DXVA - decoder problem of status %d with %d", status.vc1.bStatus, status.vc1.bBufType);
   }
   return 0;
 }

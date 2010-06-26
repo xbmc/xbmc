@@ -41,6 +41,11 @@ class TiXmlElement;
 #define SOFTWARE_UPSCALING_SD_CONTENT 1
 #define SOFTWARE_UPSCALING_ALWAYS     2
 
+// Post-processing options.
+#define VIDEO_POSTPROCESS_DISABLED   0
+#define VIDEO_POSTPROCESS_SD_CONTENT 1
+#define VIDEO_POSTPROCESS_ALWAYS     2
+
 // Apple Remote options.
 #define APPLE_REMOTE_DISABLED     0
 #define APPLE_REMOTE_STANDARD     1

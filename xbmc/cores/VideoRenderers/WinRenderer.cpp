@@ -33,44 +33,8 @@
 #include "FileSystem/File.h"
 #include "MathUtils.h"
 #include "VideoShaders/ConvolutionKernels.h"
+#include "VideoShaders/YUV2RGBShader.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DXVA.h"
-
-// http://www.martinreddy.net/gfx/faqs/colorconv.faq
-
-YUVRANGE yuv_range_lim =  { 16, 235, 16, 240, 16, 240 };
-YUVRANGE yuv_range_full = {  0, 255,  0, 255,  0, 255 };
-
-static float yuv_coef_bt601[4][4] =
-{
-    { 1.0f,      1.0f,     1.0f,     0.0f },
-    { 0.0f,     -0.344f,   1.773f,   0.0f },
-    { 1.403f,   -0.714f,   0.0f,     0.0f },
-    { 0.0f,      0.0f,     0.0f,     0.0f }
-};
-
-static float yuv_coef_bt709[4][4] =
-{
-    { 1.0f,      1.0f,     1.0f,     0.0f },
-    { 0.0f,     -0.1870f,  1.8556f,  0.0f },
-    { 1.5701f,  -0.4664f,  0.0f,     0.0f },
-    { 0.0f,      0.0f,     0.0f,     0.0f }
-};
-
-static float yuv_coef_ebu[4][4] =
-{
-    { 1.0f,      1.0f,     1.0f,     0.0f },
-    { 0.0f,     -0.3960f,  2.029f,   0.0f },
-    { 1.140f,   -0.581f,   0.0f,     0.0f },
-    { 0.0f,      0.0f,     0.0f,     0.0f }
-};
-
-static float yuv_coef_smtp240m[4][4] =
-{
-    { 1.0f,      1.0f,     1.0f,     0.0f },
-    { 0.0f,     -0.2253f,  1.8270f,  0.0f },
-    { 1.5756f,  -0.5000f,  0.0f,     0.0f },
-    { 0.0f,      0.0f,     0.0f,     0.0f }
-};
 
 CWinRenderer::CWinRenderer()
 {
@@ -551,54 +515,14 @@ void CWinRenderer::RenderLowMem(CD3DEffect &effect, DWORD flags)
     verts[i].y -= 0.5;
   }
 
-  float contrast   = g_settings.m_currentVideoSettings.m_Contrast * 0.02f;
-  float blacklevel = g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f;
-
-  D3DXMATRIX temp, mat;
-  D3DXMatrixIdentity(&mat);
-
-  if (!(m_flags & CONF_FLAGS_YUV_FULLRANGE))
-  {
-    D3DXMatrixTranslation(&temp, - 16.0f / 255
-                               , - 16.0f / 255
-                               , - 16.0f / 255);
-    D3DXMatrixMultiply(&mat, &mat, &temp);
-
-    D3DXMatrixScaling(&temp, 255.0f / (235 - 16)
-                           , 255.0f / (240 - 16)
-                           , 255.0f / (240 - 16));
-    D3DXMatrixMultiply(&mat, &mat, &temp);
-  }
-
-  D3DXMatrixTranslation(&temp, 0.0f, - 0.5f, - 0.5f);
-  D3DXMatrixMultiply(&mat, &mat, &temp);
-
-  switch(CONF_FLAGS_YUVCOEF_MASK(m_flags))
-  {
-   case CONF_FLAGS_YUVCOEF_240M:
-     memcpy(temp.m, yuv_coef_smtp240m, 4*4*sizeof(float)); break;
-   case CONF_FLAGS_YUVCOEF_BT709:
-     memcpy(temp.m, yuv_coef_bt709   , 4*4*sizeof(float)); break;
-   case CONF_FLAGS_YUVCOEF_BT601:
-     memcpy(temp.m, yuv_coef_bt601   , 4*4*sizeof(float)); break;
-   case CONF_FLAGS_YUVCOEF_EBU:
-     memcpy(temp.m, yuv_coef_ebu     , 4*4*sizeof(float)); break;
-   default:
-     memcpy(temp.m, yuv_coef_bt601   , 4*4*sizeof(float)); break;
-  }
-  temp.m[3][3] = 1.0f;
-  D3DXMatrixMultiply(&mat, &mat, &temp);
-
-  D3DXMatrixTranslation(&temp, blacklevel, blacklevel, blacklevel);
-  D3DXMatrixMultiply(&mat, &mat, &temp);
-
-  D3DXMatrixScaling(&temp, contrast, contrast, contrast);
-  D3DXMatrixMultiply(&mat, &mat, &temp);
+  m_matrix.SetParameters(g_settings.m_currentVideoSettings.m_Contrast * 0.02f,
+                         g_settings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f,
+                         m_flags);
 
   float texSteps[] = {1.0f/(float)m_sourceWidth,        1.0f/(float)m_sourceHeight,
                       1.0f/(float)(m_sourceWidth >> 1), 1.0f/(float)(m_sourceHeight >> 1)};
 
-  effect.SetMatrix( "g_ColorMatrix", &mat);
+  effect.SetMatrix( "g_ColorMatrix", m_matrix.Matrix());
   effect.SetTechnique( "YUV2RGB_T" );
   effect.SetTexture( "g_YTexture",  buf.planes[0].texture ) ;
   effect.SetTexture( "g_UTexture",  buf.planes[1].texture ) ;
@@ -690,6 +614,7 @@ void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, un
     surface->Release();
   }
 }
+
 
 //********************************************************************************************************
 // YV12 Texture creation, deletion, copying + clearing
@@ -827,6 +752,7 @@ void CWinRenderer::SVideoBuffer::StartDecode()
   }
 }
 
+
 CPixelShaderRenderer::CPixelShaderRenderer()
     : CWinRenderer()
 {
@@ -841,12 +767,63 @@ bool CPixelShaderRenderer::Configure(unsigned int width, unsigned int height, un
   return true;
 }
 
-
 void CPixelShaderRenderer::Render(DWORD flags)
 {
   CWinRenderer::Render(flags);
 }
 
 
+CYUV2RGBMatrix::CYUV2RGBMatrix()
+{
+  m_NeedRecalc = true;
+}
+
+void CYUV2RGBMatrix::SetParameters(float contrast, float blacklevel, unsigned int flags)
+{
+  if (m_contrast != contrast)
+  {
+    m_NeedRecalc = true;
+    m_contrast = contrast;
+  }
+  if (m_blacklevel != blacklevel)
+  {
+    m_NeedRecalc = true;
+    m_blacklevel = blacklevel;
+  }
+  if (m_flags != flags)
+  {
+    m_NeedRecalc = true;
+    m_flags = flags;
+  }
+}
+
+D3DXMATRIX* CYUV2RGBMatrix::Matrix()
+{
+  if (m_NeedRecalc)
+  {
+    TransformMatrix matrix;
+    CalculateYUVMatrix(matrix, m_flags, m_blacklevel, m_contrast);
+
+    m_mat._11 = matrix.m[0][0];
+    m_mat._12 = matrix.m[1][0];
+    m_mat._13 = matrix.m[2][0];
+    m_mat._14 = 0.0f;
+    m_mat._21 = matrix.m[0][1];
+    m_mat._22 = matrix.m[1][1];
+    m_mat._23 = matrix.m[2][1];
+    m_mat._24 = 0.0f;
+    m_mat._31 = matrix.m[0][2];
+    m_mat._32 = matrix.m[1][2];
+    m_mat._33 = matrix.m[2][2];
+    m_mat._44 = 0.0f;
+    m_mat._41 = matrix.m[0][3];
+    m_mat._42 = matrix.m[1][3];
+    m_mat._43 = matrix.m[2][3];
+    m_mat._44 = 1.0f;
+
+    m_NeedRecalc = false;
+  }
+  return &m_mat;
+}
 
 #endif

@@ -57,7 +57,7 @@ bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo &hints)
   char line[1024];
 
   CRegExp reg;
-  if (!reg.RegComp("\\{([0-9]+)\\}\\{([0-9]+)\\}([^|]*?)(\\|([^|]*?))?$"))//(\\|([^|]*?))?$"))
+  if (!reg.RegComp("\\{([0-9]+)\\}\\{([0-9]+)\\}([^|]*?)(\\|([^|]*?))?(\\|(.*?))?$"))
     return false;
 
   while (m_pStream->ReadLine(line, sizeof(line)))
@@ -70,6 +70,10 @@ bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo &hints)
       lines[0] = reg.GetReplaceString("\\3");
       lines[1] = reg.GetReplaceString("\\5");
       lines[2] = reg.GetReplaceString("\\7");
+      if(lines[2] && *lines[2])
+          for(char* p = lines[2];*p;p++)
+            if(*p == '|')
+              *p = ' ';
       CDVDOverlayText* pOverlay = new CDVDOverlayText();
       pOverlay->Acquire(); // increase ref count with one so that we can hold a handle to this overlay
 

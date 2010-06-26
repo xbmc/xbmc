@@ -79,7 +79,8 @@ void CAdvancedSettings::Initialize()
   m_videoPercentSeekForwardBig = 10;
   m_videoPercentSeekBackwardBig = -10;
   m_videoBlackBarColour = 0;
-  m_videoPPFFmpegType = "linblenddeint";
+  m_videoPPFFmpegDeint = "linblenddeint";
+  m_videoPPFFmpegPostProc = "ha:128:7,va,dr";
   m_videoDefaultPlayer = "dvdplayer";
   m_videoDefaultDVDPlayer = "dvdplayer";
   m_videoIgnoreAtStart = 15;
@@ -406,7 +407,8 @@ bool CAdvancedSettings::Load()
       GetCustomRegexps(pVideoExcludes, m_videoCleanStringRegExps);
 
     XMLUtils::GetString(pElement,"cleandatetime", m_videoCleanDateTimeRegExp);
-    XMLUtils::GetString(pElement,"postprocessing",m_videoPPFFmpegType);
+    XMLUtils::GetString(pElement,"ppffmpegdeinterlacing",m_videoPPFFmpegDeint);
+    XMLUtils::GetString(pElement,"ppffmpegpostprocessing",m_videoPPFFmpegPostProc);
     XMLUtils::GetInt(pElement,"highqualityscaling",m_videoHighQualityScaling);
     XMLUtils::GetInt(pElement,"highqualityscalingmethod",m_videoHighQualityScalingMethod);
     XMLUtils::GetBoolean(pElement,"vdpauscaling",m_videoVDPAUScaling);

@@ -1525,6 +1525,11 @@
   <string id="16317">Temporal (Half)</string>
   <string id="16318">Temporal/Spatial (Half)</string>
 
+  <string id="16400">Video post-processing</string>
+  <string id="16401">Disabled</string>
+  <string id="16402">Enabled for SD content</string>
+  <string id="16403">Always enabled</string>
+
   <string id="17500">Display sleep timeout</string>
 
   <string id="19000">Switch to channel</string>
@@ -1880,7 +1885,7 @@
   <string id="20446">Locally stored information found.</string>
   <string id="20447">Ignore and refresh from internet?</string>
   <string id="20448">Could not download information</string>
-  <string id="20449">Server is most likely unavailable.</string>
+  <string id="20449">Unable to connect to remote server</string>
   <string id="20450">Would you like to continue scanning?</string>
   <string id="20451">Countries</string>
   <!-- up to 21329 is reserved for the video db !! !-->
@@ -2187,7 +2192,6 @@
   <string id="24075">Disable</string>
   <string id="24080">Try to reconnect?</string>
   <string id="24089">Add-on restarts</string>
-
   <string id="24090">Lock Add-on manager</string>
 
   <string id="24091"></string>
@@ -2195,6 +2199,9 @@
   <string id="24093"></string>
   <string id="24094"></string>
   <string id="24095"></string>
+
+  <string id="24096">Add-on has been marked as broken in repository.</string>
+  <string id="24097">Would you like to disable it on your system?</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>

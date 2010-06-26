@@ -322,7 +322,13 @@ HRESULT CDSGraph::HandleGraphEvent()
         g_application.m_pPlayer->CloseFile();
         break;
       case EC_ERRORABORT:
-        CLog::Log(LOGDEBUG,"%s EC_ERRORABORT. Error code: 0x%X", __FUNCTION__, evParam1);
+      case EC_ERRORABORTEX:
+        if (evParam2)
+        {
+          CStdString error = (CStdString) ((BSTR) evParam2);
+          CLog::Log(LOGDEBUG,"%s EC_ERRORABORT. Error code: 0x%X; Error message: %s", __FUNCTION__, evParam1, error.c_str());
+        } else
+          CLog::Log(LOGDEBUG,"%s EC_ERRORABORT. Error code: 0x%X", __FUNCTION__, evParam1);
         g_application.m_pPlayer->CloseFile();
         break;
       case EC_STATE_CHANGE:
