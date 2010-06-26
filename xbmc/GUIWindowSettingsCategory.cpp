@@ -2269,7 +2269,7 @@ DisplayMode CGUIWindowSettingsCategory::FillInScreens(CStdString strSetting, RES
   pControl->Clear();
 
   CStdString strScreen;
-  pControl->AddLabel(g_settings.m_ResInfo[RES_WINDOW].strMode, -1);
+  pControl->AddLabel(g_localizeStrings.Get(242), -1);
 
   for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
   {
@@ -2306,7 +2306,7 @@ void CGUIWindowSettingsCategory::FillInResolutionsInternal(CStdString strSetting
 
   if (mode == DM_WINDOWED)
   {
-    pControl->AddLabel(g_settings.m_ResInfo[RES_WINDOW].strMode, RES_WINDOW);
+    pControl->AddLabel(g_localizeStrings.Get(242), RES_WINDOW);
   }
   else
   {
