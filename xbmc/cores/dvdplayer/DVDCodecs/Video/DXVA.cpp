@@ -539,6 +539,11 @@ int CDecoder::Check(AVCodecContext* avctx)
   if(FAILED( hr = m_decoder->Execute(&params)))
   {
     CLog::Log(LOGWARNING, "DXVA - failed to get decoder status - 0x%08X", hr);
+
+    // temporary ugly hack for testing! pretend there was no error.
+    if(avctx->codec_id == CODEC_ID_MPEG2VIDEO)
+      return 0;
+
     return VC_ERROR;
   }
 
