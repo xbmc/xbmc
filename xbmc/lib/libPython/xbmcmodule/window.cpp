@@ -118,7 +118,6 @@ namespace PYXBMC
   Control* Window_GetControlById(Window* self, int iControlId)
   {
     Control* pControl = NULL;
-    CGUIWindow* pWindow = NULL;
 
     // find in window vector first!!!
     // this saves us from creating a complete new control
@@ -523,7 +522,6 @@ namespace PYXBMC
 
   PyObject* Window_AddControl(Window *self, PyObject *args)
   {
-    CGUIWindow* pWindow = NULL;
     Control* pControl;
 
     if (!PyArg_ParseTuple(args, (char*)"O", &pControl)) return NULL;
