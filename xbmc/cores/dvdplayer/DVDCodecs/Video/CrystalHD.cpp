@@ -706,7 +706,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
             else
               pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
               
-            CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());
+            //CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());
           }
 
           pBuffer->m_width = m_width;
@@ -1136,8 +1136,12 @@ void CCrystalHD::CloseDecoder(void)
 
 void CCrystalHD::Reset(void)
 {
-  m_reset = 120;
+  m_reset = 60;
   m_wait_timeout = 1;
+
+  // we are always late (chd pipeline fill) when seeking,
+  // so start off skipping all non reference pictures.
+  m_dll->DtsSetSkipPictureMode(m_device, 1);
 
   // Calling for non-error flush, Flushes all the decoder
   //  buffers, input, decoded and to be decoded. 
@@ -1145,15 +1149,11 @@ void CCrystalHD::Reset(void)
   m_dll->DtsFlushRxCapture(m_device, true);
   ::Sleep(400);
 
-  while (m_pOutputThread->GetReadyCount())
-    m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
-
   while (m_BusyList.Count())
     m_pOutputThread->FreeListPush( m_BusyList.Pop() );
 
-  // we are always late (chd pipeline fill) when seeking,
-  // so start off skipping all non reference pictures.
-  m_dll->DtsSetSkipPictureMode(m_device, 1);
+  while (m_pOutputThread->GetReadyCount())
+    m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
 
   CLog::Log(LOGDEBUG, "%s: codec flushed", __MODULE_NAME__);
 }
@@ -1298,10 +1298,11 @@ void CCrystalHD::SetDropState(bool bDrop)
     else
       m_dll->DtsSetSkipPictureMode(m_device, 0);
   }
-
+/*
   if (m_drop_state)
     CLog::Log(LOGDEBUG, "%s: SetDropState... %d, , GetFreeCount(%d), GetReadyCount(%d), BusyListCount(%d)", __MODULE_NAME__, 
       m_drop_state, m_pOutputThread->GetFreeCount(), m_pOutputThread->GetReadyCount(), m_BusyList.Count());
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
