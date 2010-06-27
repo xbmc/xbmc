@@ -41,6 +41,11 @@ boost::shared_ptr<ADDON::CSkinInfo> g_SkinInfo;
 namespace ADDON
 {
 
+CSkinInfo::CSkinInfo(const AddonProps &props, RESOLUTION res)
+  : CAddon(props), m_DefaultResolution(res), m_DefaultResolutionWide(res)
+{
+}
+
 CSkinInfo::CSkinInfo(const cp_extension_t *ext)
   : CAddon(ext)
 {
