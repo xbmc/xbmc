@@ -1095,6 +1095,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
     // this will get reset once we get a picture back.
     // the effect is to speed feeding demux packets during startup.
     m_wait_timeout = 1;
+    m_reset = 0;
     m_last_pict_num = 0;
     m_last_demuxer_pts = DVD_NOPTS_VALUE;
     m_last_decoder_pts = DVD_NOPTS_VALUE;
@@ -1135,19 +1136,27 @@ void CCrystalHD::CloseDecoder(void)
 
 void CCrystalHD::Reset(void)
 {
+  m_reset = 60;
   m_wait_timeout = 1;
 
   // Calling for non-error flush, Flushes all the decoder
   //  buffers, input, decoded and to be decoded. 
   m_dll->DtsFlushInput(m_device, 0);
   m_dll->DtsFlushRxCapture(m_device, true);
-  ::Sleep(500);
+  ::Sleep(400);
 
   while (m_pOutputThread->GetReadyCount())
     m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
 
   while (m_BusyList.Count())
     m_pOutputThread->FreeListPush( m_BusyList.Pop() );
+
+  // we are always late (chd pipeline fill) when seeking,
+  // so start off at 2X speed, this gets reset later.
+  if (m_new_lib)
+    m_dll->DtsSetFFRate(m_device, 5000);
+  else
+    m_dll->DtsSetFFRate(m_device, 2);
 
   CLog::Log(LOGDEBUG, "%s: codec flushed", __MODULE_NAME__);
 }
@@ -1272,6 +1281,22 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 
 void CCrystalHD::SetDropState(bool bDrop)
 {
+  if (m_reset)
+  {
+    m_drop_state = bDrop;
+
+    m_reset--;
+    if (!m_reset)
+    {
+      if (m_new_lib)
+        m_dll->DtsSetFFRate(m_device, 10000);
+      else
+        m_dll->DtsSetFFRate(m_device, 1);
+    }
+    else
+      return;
+  }
+
   if (m_drop_state != bDrop)
   {
     m_drop_state = bDrop;

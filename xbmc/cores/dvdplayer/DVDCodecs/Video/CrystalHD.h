@@ -157,6 +157,7 @@ protected:
   unsigned int  m_field;
   unsigned int  m_width;
   unsigned int  m_height;
+  int           m_reset;
   int           m_last_pict_num;
   double        m_last_demuxer_pts;
   double        m_last_decoder_pts;
