@@ -1,8 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Translator: airplanez-->
-<!--Email: airplanez@gmail.com-->
-<!--Date of translation: 06/10/2010-->
+<!--Date of translation: 06/25/2010-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -179,6 +177,8 @@
   <string id="237">축소</string>
   <string id="238">확대</string>
   <string id="239">종료때 재생목록 지우기</string>
+  <string id="240">화면 모드</string>
+  <string id="241">전체 화면 #%d</string>
   <string id="247">스크립트</string>
   <string id="248">언어</string>
   <string id="249">음악</string>
@@ -682,13 +682,13 @@
   <string id="1034">하위메뉴</string>
   <string id="1035">하위메뉴 버튼 사용</string>
   <string id="1036">즐겨찾기</string>
-  <string id="1037">비디오 플러그인</string>
-  <string id="1038">음악 플러그인</string>
-  <string id="1039">사진 플러그인</string>
+  <string id="1037">비디오 추가기능</string>
+  <string id="1038">음악 추가기능</string>
+  <string id="1039">사진 추가기능</string>
   <string id="1040">디렉토리 읽기</string>
   <string id="1041">%i 항목 검색됨</string>
   <string id="1042">%i / %i 항목 검색됨</string>
-  <string id="1043">프로그램 플러그인</string>
+  <string id="1043">프로그램 추가기능</string>
   <string id="1044">플러그인 미리보기 설정</string>
   <string id="1045">플러그인 설정</string>
   <string id="1046">액세스 포인트</string>
@@ -750,7 +750,8 @@
   <string id="1403">햇빛</string>
   <string id="1404">많은</string>
   <string id="1405">:</string>
-  <string id="1406"></string>
+  <string id="1406">
+  </string>
   <string id="1407">국지적인</string>
   <string id="1408">얼음</string>
   <string id="1409">눈</string>
@@ -1399,6 +1400,10 @@
   <string id="16316">자동</string>
   <string id="16317">시간적 (반)</string>
   <string id="16318">시간적/공간적 (반)</string>
+  <string id="16400">비디오 후처리</string>
+  <string id="16401">사용안함</string>
+  <string id="16402">SD 컨텐츠 사용함</string>
+  <string id="16403">항상 사용함</string>
   <string id="17500">종료 시간제한 표시</string>
   <string id="19000">채널로 변경</string>
   <string id="20000">저장된 음악 폴더</string>
@@ -1825,6 +1830,7 @@
   <string id="21450">- 수정</string>
   <string id="21451">인터넷 연결이 필요함.</string>
   <string id="21452">더 가져오기</string>
+  <string id="21453">루트 파일시스템</string>
   <string id="21800">파일 이름</string>
   <string id="21801">파일 경로</string>
   <string id="21802">파일 크기</string>
@@ -1979,6 +1985,7 @@
   <string id="24038">설치</string>
   <string id="24039">사용되지않는 추가기능</string>
   <string id="24040">(현재 설정 지우기)</string>
+  <string id="24041">압축 파일에서 설치</string>
   <string id="24050">사용가능한 추가기능</string>
   <string id="24051">버전:</string>
   <string id="24052">권리포기</string>
@@ -1995,8 +2002,8 @@
   <string id="24067">현재 추가기능 다운로드중</string>
   <string id="24068">업데이트 사용가능</string>
   <string id="24069">업데이트</string>
-  <string id="24070">추가기능을 사용할수 없음</string>
-  <string id="24071">알수없는 오류 발생함</string>
+  <string id="24070">추가기능을 읽을수 없음.</string>
+  <string id="24071">알수없는 오류 발생함.</string>
   <string id="24072">설정이 필요함</string>
   <string id="24073">연결할수 없음</string>
   <string id="24074">재시작 필요함</string>
