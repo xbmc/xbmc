@@ -1136,12 +1136,12 @@ void CCrystalHD::CloseDecoder(void)
 
 void CCrystalHD::Reset(void)
 {
-  m_reset = 60;
+  m_reset = 120;
   m_wait_timeout = 1;
 
   // Calling for non-error flush, Flushes all the decoder
   //  buffers, input, decoded and to be decoded. 
-  m_dll->DtsFlushInput(m_device, 0);
+  m_dll->DtsFlushInput(m_device, 1);
   m_dll->DtsFlushRxCapture(m_device, true);
   ::Sleep(400);
 
@@ -1152,11 +1152,8 @@ void CCrystalHD::Reset(void)
     m_pOutputThread->FreeListPush( m_BusyList.Pop() );
 
   // we are always late (chd pipeline fill) when seeking,
-  // so start off at 2X speed, this gets reset later.
-  if (m_new_lib)
-    m_dll->DtsSetFFRate(m_device, 5000);
-  else
-    m_dll->DtsSetFFRate(m_device, 2);
+  // so start off skipping all non reference pictures.
+  m_dll->DtsSetSkipPictureMode(m_device, 1);
 
   CLog::Log(LOGDEBUG, "%s: codec flushed", __MODULE_NAME__);
 }
@@ -1283,18 +1280,14 @@ void CCrystalHD::SetDropState(bool bDrop)
 {
   if (m_reset)
   {
-    m_drop_state = bDrop;
+    if (m_drop_state != bDrop)
+      m_drop_state = bDrop;
 
     m_reset--;
     if (!m_reset)
-    {
-      if (m_new_lib)
-        m_dll->DtsSetFFRate(m_device, 10000);
-      else
-        m_dll->DtsSetFFRate(m_device, 1);
-    }
-    else
-      return;
+      m_dll->DtsSetSkipPictureMode(m_device, 0);
+
+    return;
   }
 
   if (m_drop_state != bDrop)
