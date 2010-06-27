@@ -154,9 +154,6 @@ INT CXBApplicationEx::Run()
       }
     }
 #endif
-    // yield to other threads
-    SleepEx(0, TRUE);
-
   } // while (!m_bStop)
   Destroy();
 

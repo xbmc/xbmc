@@ -2063,6 +2063,14 @@ void CApplication::Render()
   g_renderManager.UpdateResolution();
   g_graphicsContext.Unlock();
 
+  // yield to other threads, so any thread needing
+  // gfx context will get a timeslice. Newer os's
+  // doesn't automatically prempt the unlocking thread
+  // after a mutex is released. This may cause app thread
+  // to regrab gfx lock before for example python get's
+  // access to it.
+  SleepEx(0, TRUE);
+
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);
   if(m_frameCount > 0 && decrement)
