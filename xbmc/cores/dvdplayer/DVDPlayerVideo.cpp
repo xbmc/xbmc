@@ -575,7 +575,7 @@ void CDVDPlayerVideo::Process()
 
             if ((postprocess_mode == VIDEO_POSTPROCESS_ALWAYS) ||
                 ((postprocess_mode == VIDEO_POSTPROCESS_SD_CONTENT) &&
-                 (picture.iDisplayWidth < 1280)))
+                 (picture.iWidth <= 720)))
             {
               if (!sPostProcessType.empty())
                 sPostProcessType += ",";
