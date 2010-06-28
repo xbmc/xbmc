@@ -21,6 +21,7 @@
 
 #
 # Depencency list: git-core debootstrap asciidoc docbook-xsl curl build-essential
+#                  debhelper autoconf automake autotools-dev
 #
 
 #
