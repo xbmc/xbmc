@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #      Copyright (C) 2005-2008 Team XBMC
 #      http://www.xbmc.org
@@ -19,10 +19,17 @@
 #  http://www.gnu.org/copyleft/gpl.html
 
 
-#
-# Depencency list: git-core debootstrap asciidoc docbook-xsl curl build-essential
-#                  debhelper autoconf automake autotools-dev
-#
+echo "Checking availability of required packages..."
+
+REQUIREDPACKAGES=( git-core debootstrap asciidoc docbook-xsl curl build-essential debhelper autoconf automake autotools-dev )
+
+for k in "${REQUIREDPACKAGES[@]}" ; do 
+	if [ "$( dpkg -l  | grep "ii" | grep "$k" )" = "" ] ; then
+		echo  "Package $k is not installed, exiting." 
+		exit 1
+	fi
+done
+
 
 #
 # Make sure only root can run our script

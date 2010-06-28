@@ -55,5 +55,8 @@ if ! ls live-initramfs_*.udeb > /dev/null 2>&1 ; then
 
 	cd $THISDIR/live-boot
 	dpkg-buildpackage -rfakeroot -b -uc -us 
+	if [ "$?" -ne "0" ]; then
+		exit 1
+	fi
 	cd $THISDIR
 fi
