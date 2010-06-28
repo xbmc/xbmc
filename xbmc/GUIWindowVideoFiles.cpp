@@ -460,13 +460,8 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
           else
           {
             // single file
-            if ( m_database.HasMovieInfo(item->m_strPath)
-              || m_database.HasEpisodeInfo(item->m_strPath) 
-              || (item->IsLiveTV() && item->HasVideoInfoTag())
-              || (info && info->Content() == CONTENT_MUSICVIDEOS) )
-            {
-              buttons.Add(CONTEXT_BUTTON_INFO, infoString);
-            }
+            buttons.Add(CONTEXT_BUTTON_INFO, infoString);
+
             if (!m_database.HasMovieInfo(item->m_strPath) 
             &&  !m_database.HasEpisodeInfo(item->m_strPath) 
             &&  !item->IsLiveTV())
