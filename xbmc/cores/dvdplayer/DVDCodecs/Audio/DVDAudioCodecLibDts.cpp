@@ -152,14 +152,6 @@ void CDVDAudioCodecLibDts::SetupChannels(int flags)
   m_iOutputChannels = m_iSourceChannels;
   m_iOutputFlags    = m_iSourceFlags;
 
-  // If we can't support multichannel output downmix
-  if (g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
-  {
-    m_iOutputChannels = 2;
-    m_pChannelMap     = channelMaps[1];
-    m_iOutputFlags    = DTS_STEREO;
-  }
-
   /* adjust level should always be set, to keep samples in proper range */
   /* after any downmixing has been done */
   m_iOutputFlags |= DTS_ADJUST_LEVEL;

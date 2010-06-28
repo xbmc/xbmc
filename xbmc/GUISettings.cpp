@@ -422,14 +422,11 @@ void CGUISettings::Initialize()
   audiomode.insert(make_pair(420,AUDIO_HDMI  ));
   AddInt(ao, "audiooutput.mode", 337, AUDIO_ANALOG, audiomode, SPIN_CONTROL_TEXT);
 
-/* hide this from apple users until CoreAudio has been updated to support this */
-#ifndef __APPLE__
   map<int,int> channelLayout;
   for(int layout = 0; layout < PCM_MAX_LAYOUT; ++layout)
     channelLayout.insert(make_pair(34101+layout, layout));
   AddInt(ao, "audiooutput.channellayout", 34100, PCM_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
   AddBool(ao, "audiooutput.dontnormalizelevels", 346, true);
-#endif
 
   AddBool(ao, "audiooutput.ac3passthrough", 364, true);
   AddBool(ao, "audiooutput.dtspassthrough", 254, true);
@@ -440,8 +437,6 @@ void CGUISettings::Initialize()
 
 #ifdef __APPLE__
   AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
-  //AddString(ao, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
-  AddBool(ao, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_LINUX)
   AddSeparator(ao, "audiooutput.sep1");
   AddString(ao, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
@@ -450,10 +445,8 @@ void CGUISettings::Initialize()
   AddString(ao, "audiooutput.passthroughdevice", 546, "iec958", SPIN_CONTROL_TEXT);
   AddString(ao, "audiooutput.custompassthrough", 1301, "", EDIT_CONTROL_INPUT);
   AddSeparator(ao, "audiooutput.sep3");
-  //AddBool(ao, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_WIN32)
   AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
-  //AddBool(ao, "audiooutput.downmixmultichannel", 548, true);
 #endif
 
   CSettingsCategory* in = AddCategory(4, "input", 14094);
