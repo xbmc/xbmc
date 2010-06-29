@@ -1002,7 +1002,7 @@ void CCrystalHD::OpenDevice()
     if( res == BCM::BC_STS_DEC_EXIST_OPEN )
       CLog::Log(LOGERROR, "%s: device owned by another application", __MODULE_NAME__);
     else
-      CLog::Log(LOGERROR, "%s: device open failed", __MODULE_NAME__);
+      CLog::Log(LOGERROR, "%s: device open failed , returning(0x%x)", __MODULE_NAME__, res);
   }
   else
   {
