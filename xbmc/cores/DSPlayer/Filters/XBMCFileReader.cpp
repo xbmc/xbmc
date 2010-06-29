@@ -56,46 +56,6 @@ STDMETHODIMP CXBMCFileStream::NonDelegatingQueryInterface(REFIID riid, void** pp
 		QI(IFileHandle)
 		__super::NonDelegatingQueryInterface(riid, ppv);
 }
-/*
-HRESULT CXBMCFileStream::SetPointer(LONGLONG llPos)
-{
-  if (llPos < 0 || llPos > m_llLength) {
-    return S_FALSE;
-  }
-  else
-  {
-    m_pFile.Seek(llPos);
-    return S_OK;
-  }
-}
-
-HRESULT CXBMCFileStream::Read(PBYTE pbBuffer, DWORD dwBytesToRead, BOOL bAlign, LPDWORD pdwBytesRead)
-{
-  CSingleLock lck(m_csLock);
-    
-  *pdwBytesRead = m_pFile.Read(pbBuffer, dwBytesToRead);
-
-  return S_OK;
-}
-
-LONGLONG CXBMCFileStream::Size(LONGLONG *pSizeAvailable)
-{
-  *pSizeAvailable = m_llLength;
-  return m_llLength;
-}
-
-DWORD CXBMCFileStream::Alignment()
-{
-  return 1;
-}
-void CXBMCFileStream::Lock()
-{
-  m_csLock.getCriticalSection().Enter();
-}
-void CXBMCFileStream::Unlock()
-{
-  m_csLock.getCriticalSection().Leave();
-}*/
 
 // IAsyncReader
 

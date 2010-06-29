@@ -88,6 +88,7 @@ public:
   virtual void avcodec_flush_buffers(AVCodecContext *avctx)=0;
   virtual int avcodec_open_dont_call(AVCodecContext *avctx, AVCodec *codec)=0;
   virtual AVCodec *avcodec_find_decoder(enum CodecID id)=0;
+  virtual AVCodec *avcodec_find_decoder_by_name(const char *name)=0;
   virtual AVCodec *avcodec_find_encoder(enum CodecID id)=0;
   virtual int avcodec_close_dont_call(AVCodecContext *avctx)=0;
   virtual AVFrame *avcodec_alloc_frame(void)=0;
@@ -265,6 +266,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
 
   DEFINE_METHOD0(void, avcodec_register_all_dont_call)
   DEFINE_METHOD1(AVCodec*, avcodec_find_decoder, (enum CodecID p1))
+  DEFINE_METHOD1(AVCodec*, avcodec_find_decoder_by_name, (const char *p1))
   DEFINE_METHOD1(AVCodec*, avcodec_find_encoder, (enum CodecID p1))
   DEFINE_METHOD1(int, avcodec_close_dont_call, (AVCodecContext *p1))
   DEFINE_METHOD0(AVFrame*, avcodec_alloc_frame)
@@ -296,6 +298,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD_RENAME(avcodec_open,avcodec_open_dont_call)
     RESOLVE_METHOD_RENAME(avcodec_close,avcodec_close_dont_call)
     RESOLVE_METHOD(avcodec_find_decoder)
+    RESOLVE_METHOD(avcodec_find_decoder_by_name)
     RESOLVE_METHOD(avcodec_find_encoder)
     RESOLVE_METHOD(avcodec_alloc_frame)
     RESOLVE_METHOD_RENAME(avcodec_register_all, avcodec_register_all_dont_call)

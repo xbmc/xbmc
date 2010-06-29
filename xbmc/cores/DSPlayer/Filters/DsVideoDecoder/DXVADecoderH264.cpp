@@ -158,8 +158,9 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
   UINT            nNalOffset  = 0;
   int              nOutPOC;
   REFERENCE_TIME        rtOutStart;
-
+  int iGotPicture = 0;
   Nalu.SetBuffer (pDataIn, nSize, m_nNALLength);
+
   m_pFilter->m_dllAvCodec.FFH264DecodeBuffer (m_pFilter->GetAVCtx(), pDataIn, nSize, &nFramePOC, &nOutPOC, &rtOutStart);
 
   while (Nalu.ReadNext())
@@ -168,7 +169,7 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
     {
     case NALU_TYPE_SLICE:
     case NALU_TYPE_IDR:
-        if(m_bUseLongSlice) 
+        if(m_bUseLongSlice)
         {
           m_pSliceLong[nSlices].BSNALunitDataLocation  = nNalOffset;
           m_pSliceLong[nSlices].SliceBytesInBuffer  = Nalu.GetDataLength()+3;
@@ -277,6 +278,7 @@ void CDXVADecoderH264::ClearUnusedRefFrames()
   for (int i=0; i<m_nPicEntryNumber; i++)
   {
     if (m_pPictureStore[i].bRefPicture && m_pPictureStore[i].bDisplayed)
+      
       if (!m_pFilter->m_dllAvCodec.FFH264IsRefFrameInUse (i, m_pFilter->GetAVCtx()))
         RemoveRefFrame (i);
   }
@@ -285,6 +287,7 @@ void CDXVADecoderH264::ClearUnusedRefFrames()
 void CDXVADecoderH264::SetExtraData (BYTE* pDataIn, UINT nSize)
 {
   AVCodecContext*    pAVCtx = m_pFilter->GetAVCtx();
+
   m_nNALLength  = pAVCtx->nal_length_size;
   //m_nNALLength the nal length size should be 1 2 or 4
   m_pFilter->m_dllAvCodec.FFH264DecodeBuffer (pAVCtx, pDataIn, nSize, NULL, NULL, NULL);

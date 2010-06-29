@@ -45,8 +45,6 @@
 
 #include "DXVADecoderH264.h"
 
-#include "libavcodec/dxva2.h"
-
 /////
 #define MAX_SUPPORTED_MODE 5
 #define MPCVD_CAPTION _T("XBMC Internal Decoder")
@@ -568,7 +566,7 @@ CXBMCVideoDecFilter::CXBMCVideoDecFilter(LPUNKNOWN lpunk, HRESULT* phr)
 
   m_pCpuId        = new CCpuId();
   m_pAVCodec        = NULL;
-  m_pAVCtx        = NULL;
+  m_pCodecContext        = NULL;
   m_pFrame        = NULL;
   m_nCodecNb        = -1;
   m_rtAvrTimePerFrame    = 0;
@@ -816,28 +814,42 @@ void CXBMCVideoDecFilter::Cleanup()
 {
   SAFE_DELETE(m_pDXVADecoder);
 
-  if (m_pFrame) 
-	  m_dllAvUtil.av_free(m_pFrame);
-  m_pFrame = NULL;
-
-  if (m_pAVCtx)
+  // Release FFMpeg
+  if (m_pCodecContext)
   {
-    if (m_pAVCtx->codec) 
-		m_dllAvCodec.avcodec_close(m_pAVCtx);
-    if (m_pAVCtx->extradata)
-    {
-      m_dllAvUtil.av_free(m_pAVCtx->extradata);
-      m_pAVCtx->extradata = NULL;
-      m_pAVCtx->extradata_size = 0;
-    }
-    m_dllAvUtil.av_free(m_pAVCtx);
-    m_pAVCtx = NULL;
+    if (m_pCodecContext->intra_matrix)      
+      free(m_pCodecContext->intra_matrix);
+    
+    if (m_pCodecContext->inter_matrix)      
+      free(m_pCodecContext->inter_matrix);
+
+    if (m_pCodecContext->extradata)      
+      free((unsigned char*)m_pCodecContext->extradata);
+
+    if (m_pFFBuffer)          
+      free(m_pFFBuffer);
+
+    if (m_pCodecContext->slice_offset)      
+      m_dllAvUtil.av_free(m_pCodecContext->slice_offset);
+
+    if (m_pCodecContext->codec)        
+      m_dllAvCodec.avcodec_close(m_pCodecContext);
+
+    m_dllAvUtil.av_free(m_pCodecContext);
   }
-  
+  if (m_pFrame)  
+    m_dllAvUtil.av_free(m_pFrame);
 
-  m_dllAvCodec.Unload();
-  m_dllAvUtil.Unload();
 
+  if (m_pSwsContext)
+  {
+    m_dllSwScale.sws_freeContext(m_pSwsContext);
+    m_pSwsContext = NULL;
+  }
+
+  m_pAVCodec    = NULL;
+  m_pCodecContext    = NULL;
+  m_pFrame    = NULL;
   m_pFFBuffer    = NULL;
   m_nFFBufferSize  = 0;
   m_nFFBufferPos  = 0;
@@ -918,7 +930,6 @@ bool CXBMCVideoDecFilter::IsMultiThreadSupported(int nCodec)
   return (nCodec==CODEC_ID_H264);
 }
 
-
 HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaType *pmt)
 {
   int    nNewCodec;
@@ -935,85 +946,98 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
       m_nCodecNb  = nNewCodec;
 
       m_bReorderBFrame  = true;
+
+      m_pCodecContext  = m_dllAvCodec.avcodec_alloc_context();
+      CheckPointer (m_pCodecContext,    E_POINTER);
+      AVCodec* pCodec;
       
-      m_pAVCodec      = m_dllAvCodec.avcodec_find_decoder(ffCodecs[nNewCodec].nFFCodec);
+      if (ffCodecs[nNewCodec].nFFCodec == CODEC_ID_H264)
+        m_pAVCodec = m_dllAvCodec.avcodec_find_decoder_by_name("h264_dxva");
+      else
+        m_pAVCodec = m_dllAvCodec.avcodec_find_decoder(ffCodecs[nNewCodec].nFFCodec);
       CheckPointer (m_pAVCodec, VFW_E_UNSUPPORTED_VIDEO);
-
-      m_pAVCtx  = m_dllAvCodec.avcodec_alloc_context();
-      CheckPointer (m_pAVCtx,    E_POINTER);
-
-      m_pFrame = m_dllAvCodec.avcodec_alloc_frame();
-      CheckPointer (m_pFrame,    E_POINTER);
 
       if(pmt->formattype == FORMAT_VideoInfo)
       {
         VIDEOINFOHEADER*  vih = (VIDEOINFOHEADER*)pmt->pbFormat;
-        m_pAVCtx->width    = vih->bmiHeader.biWidth;
-        m_pAVCtx->height  = abs(vih->bmiHeader.biHeight);
-        m_pAVCtx->codec_tag  = vih->bmiHeader.biCompression;
+        m_pCodecContext->width    = vih->bmiHeader.biWidth;
+        m_pCodecContext->height  = abs(vih->bmiHeader.biHeight);
+        m_pCodecContext->codec_tag  = vih->bmiHeader.biCompression;
       }
       else if(pmt->formattype == FORMAT_VideoInfo2)
       {
         VIDEOINFOHEADER2*  vih2 = (VIDEOINFOHEADER2*)pmt->pbFormat;
-        m_pAVCtx->width    = vih2->bmiHeader.biWidth;
-        m_pAVCtx->height  = abs(vih2->bmiHeader.biHeight);
-        m_pAVCtx->codec_tag  = vih2->bmiHeader.biCompression;
+        m_pCodecContext->width    = vih2->bmiHeader.biWidth;
+        m_pCodecContext->height  = abs(vih2->bmiHeader.biHeight);
+        m_pCodecContext->codec_tag  = vih2->bmiHeader.biCompression;
       }
       else if(pmt->formattype == FORMAT_MPEGVideo)
       {
         MPEG1VIDEOINFO*    mpgv = (MPEG1VIDEOINFO*)pmt->pbFormat;
-        m_pAVCtx->width    = mpgv->hdr.bmiHeader.biWidth;
-        m_pAVCtx->height  = abs(mpgv->hdr.bmiHeader.biHeight);
-        m_pAVCtx->codec_tag  = mpgv->hdr.bmiHeader.biCompression;
+        m_pCodecContext->width    = mpgv->hdr.bmiHeader.biWidth;
+        m_pCodecContext->height  = abs(mpgv->hdr.bmiHeader.biHeight);
+        m_pCodecContext->codec_tag  = mpgv->hdr.bmiHeader.biCompression;
       }
       else if(pmt->formattype == FORMAT_MPEG2Video)
       {
         MPEG2VIDEOINFO*    mpg2v = (MPEG2VIDEOINFO*)pmt->pbFormat;
-        m_pAVCtx->width    = mpg2v->hdr.bmiHeader.biWidth;
-        m_pAVCtx->height  = abs(mpg2v->hdr.bmiHeader.biHeight);
-        m_pAVCtx->codec_tag  = mpg2v->hdr.bmiHeader.biCompression;
+        m_pCodecContext->width    = mpg2v->hdr.bmiHeader.biWidth;
+        m_pCodecContext->height  = abs(mpg2v->hdr.bmiHeader.biHeight);
+        m_pCodecContext->codec_tag  = mpg2v->hdr.bmiHeader.biCompression;
 
         if (mpg2v->hdr.bmiHeader.biCompression == NULL)
         {
-          m_pAVCtx->codec_tag = pmt->subtype.Data1;
+          m_pCodecContext->codec_tag = pmt->subtype.Data1;
         }
-        else if ( (m_pAVCtx->codec_tag == MAKEFOURCC('a','v','c','1')) || (m_pAVCtx->codec_tag == MAKEFOURCC('A','V','C','1')))
+        else if ( (m_pCodecContext->codec_tag == MAKEFOURCC('a','v','c','1')) || (m_pCodecContext->codec_tag == MAKEFOURCC('A','V','C','1')))
         {
-          m_pAVCtx->nal_length_size = mpg2v->dwFlags;
+
+          m_pCodecContext->nal_length_size = mpg2v->dwFlags;
+
           m_bReorderBFrame = false;
+
+
         }
       }
-      m_nWidth  = m_pAVCtx->width;
-      m_nHeight  = m_pAVCtx->height;
-      
-      m_pAVCtx->intra_matrix      = (uint16_t*)calloc(sizeof(uint16_t),64);
-      m_pAVCtx->inter_matrix      = (uint16_t*)calloc(sizeof(uint16_t),64);
-      m_pAVCtx->codec_tag        = ffCodecs[nNewCodec].fourcc;
-      m_pAVCtx->workaround_bugs    = m_nWorkaroundBug;
-      m_pAVCtx->error_concealment    = m_nErrorConcealment;
-      m_pAVCtx->error_recognition    = m_nErrorRecognition;
-      m_pAVCtx->idct_algo        = m_nIDCTAlgo;
-      m_pAVCtx->skip_loop_filter    = (AVDiscard)m_nDiscardMode;
-      m_pAVCtx->dsp_mask        = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;// is this better? ->> m_pCpuId->GetFeatures();
 
-      m_pAVCtx->postgain        = 1.0f;
-      m_pAVCtx->debug_mv        = 0;
-  #ifdef _DEBUG
-      //m_pAVCtx->debug          = FF_DEBUG_PICT_INFO | FF_DEBUG_STARTCODE | FF_DEBUG_PTS;
-  #endif
+      m_nWidth  = m_pCodecContext->width;
+      m_nHeight  = m_pCodecContext->height;
+      m_pCodecContext->intra_matrix      = (uint16_t*)calloc(sizeof(uint16_t),64);
+      m_pCodecContext->inter_matrix      = (uint16_t*)calloc(sizeof(uint16_t),64);
+      m_pCodecContext->codec_tag        = ffCodecs[nNewCodec].fourcc;
+      m_pCodecContext->error_concealment    = m_nErrorConcealment;
+      m_pCodecContext->error_recognition    = m_nErrorRecognition;
+      m_pCodecContext->idct_algo        = m_nIDCTAlgo;
+      m_pCodecContext->skip_loop_filter    = (AVDiscard)m_nDiscardMode;
+      m_pCodecContext->dsp_mask        = FF_MM_FORCE | m_pCpuId->GetFeatures();
+      m_pCodecContext->postgain        = 1.0f;
+
+  
       
-      m_pAVCtx->opaque          = this;
+      m_pCodecContext->opaque = (void*) this;
+
+      m_pCodecContext->debug_mv        = 0;
+      m_pCodecContext->debug           = 0;
+      m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
+
+      
       //need to fix this
-      //m_pAVCtx->get_buffer      = m_dllAvCodec.avcodec_default_get_buffer(m_pAVCtx,pic)
-    
-
-      AllocExtradata (m_pAVCtx, pmt);
-      //ConnectTo (m_pAVCtx, m_dllAvCodec);
+      //m_pCodecContext->get_buffer      = m_dllAvCodec.avcodec_default_get_buffer(m_pCodecContext,pic)
+      m_pCodecContext->pix_fmt = PIX_FMT_YUV420P;
+      
+      AllocExtradata (m_pCodecContext, pmt);
+      //ConnectTo (m_pCodecContext, m_dllAvCodec);
       CalcAvgTimePerFrame();
 
-      if (m_dllAvCodec.avcodec_open(m_pAVCtx, m_pAVCodec)<0)
+      if (m_dllAvCodec.avcodec_open(m_pCodecContext, m_pAVCodec)<0)
+      {
+        CLog::DebugLog("%s failed to open codec",__FUNCTION__);
         return VFW_E_INVALIDMEDIATYPE;
+      }
       
+      m_pFrame = m_dllAvCodec.avcodec_alloc_frame();
+      CheckPointer (m_pFrame,    E_POINTER);
+
 
       switch (ffCodecs[m_nCodecNb].nFFCodec)
       {
@@ -1021,9 +1045,9 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
         int    nCompat;
         nCompat = m_dllAvCodec.FFH264CheckCompatibility(PictWidthRounded(), 
                                                         PictHeightRounded(),
-                                                        m_pAVCtx, 
-                                                        (BYTE*)m_pAVCtx->extradata, 
-                                                        m_pAVCtx->extradata_size, 
+                                                        m_pCodecContext, 
+                                                        (BYTE*)m_pCodecContext->extradata, 
+                                                        m_pCodecContext->extradata_size, 
                                                         m_nPCIVendor, 
                                                         m_nPCIDevice, 
                                                         m_VideoDriverVersion);
@@ -1046,21 +1070,21 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
         break;
       case CODEC_ID_MPEG2VIDEO :
         // DSP is disable for DXVA decoding (to keep default idct_permutation)
-        m_pAVCtx->dsp_mask ^= FF_MM_FORCE;
+        m_pCodecContext->dsp_mask ^= FF_MM_FORCE;
         break;
       }
       
       // Force single thread for DXVA !
       if (IsDXVASupported())
       {
-        m_dllAvCodec.avcodec_thread_init(m_pAVCtx,1);
+        m_dllAvCodec.avcodec_thread_init(m_pCodecContext,1);
         //avcodec_thread_free();
-        //m_pAVCtx->thread_count = 1;
+        //m_pCodecContext->thread_count = 1;
         //***TODO: add those function to m_dllAvCodec
         //***int avcodec_thread_init(AVCodecContext *s, int thread_count);
         //***void avcodec_thread_free(AVCodecContext *s);
         
-        //FFSetThreadNumber(m_pAVCtx, 1);
+        //FFSetThreadNumber(m_pCodecContext, 1);
       }
 
       BuildDXVAOutputFormat();
@@ -1201,7 +1225,7 @@ void CXBMCVideoDecFilter::AllocExtradata(AVCodecContext* pAVCtx, const CMediaTyp
   if (size)
   {
     pAVCtx->extradata_size  = size;
-    pAVCtx->extradata = (uint8_t*)m_dllAvUtil.av_mallocz(size+FF_INPUT_BUFFER_PADDING_SIZE);
+    pAVCtx->extradata = (uint8_t*)calloc(1,size+FF_INPUT_BUFFER_PADDING_SIZE);
     memcpy((void*)pAVCtx->extradata, data, size);
   }
 }
@@ -1226,9 +1250,9 @@ HRESULT CXBMCVideoDecFilter::CompleteConnect(PIN_DIRECTION direction, IPin* pRec
     }
     if (m_nDXVAMode == MODE_SOFTWARE)
     {
-      if (m_pAVCtx->codec_id == CODEC_ID_VC1)
+      if (m_pCodecContext->codec_id == CODEC_ID_VC1)
 	    {
-		    //VC1Context* vc1 = (VC1Context*) m_pAVCtx->priv_data;
+		    //VC1Context* vc1 = (VC1Context*) m_pCodecContext->priv_data;
         //if (!vc1->interlace)
         //{
            //return VFW_E_INVALIDMEDIATYPE;
@@ -1246,7 +1270,7 @@ HRESULT CXBMCVideoDecFilter::CompleteConnect(PIN_DIRECTION direction, IPin* pRec
 
   // Cannot use YUY2 if horizontal or vertical resolution is not even
   if ( ((m_pOutput->CurrentMediaType().subtype == MEDIASUBTYPE_NV12) && (m_nDXVAMode == MODE_SOFTWARE)) ||
-     ((m_pOutput->CurrentMediaType().subtype == MEDIASUBTYPE_YUY2) && (m_pAVCtx->width&1 || m_pAVCtx->height&1)) )
+     ((m_pOutput->CurrentMediaType().subtype == MEDIASUBTYPE_YUY2) && (m_pCodecContext->width&1 || m_pCodecContext->height&1)) )
     return VFW_E_INVALIDMEDIATYPE;
 
   return __super::CompleteConnect (direction, pReceivePin);
@@ -1286,8 +1310,8 @@ HRESULT CXBMCVideoDecFilter::NewSegment(REFERENCE_TIME rtStart, REFERENCE_TIME r
 
   ResetBuffer();
 
-  if (m_pAVCtx)
-    m_dllAvCodec.avcodec_flush_buffers (m_pAVCtx);
+  if (m_pCodecContext)
+    m_dllAvCodec.avcodec_flush_buffers (m_pCodecContext);
 
   if (m_pDXVADecoder)
     m_pDXVADecoder->Flush();
@@ -1365,8 +1389,8 @@ void CXBMCVideoDecFilter::InitSwscale()
     //SwsParams      params;
 
     //memset(&params,0,sizeof(params));
-    //if (m_pAVCtx->dsp_mask & CCpuId::MPC_MM_MMX)  params.cpu |= SWS_CPU_CAPS_MMX|SWS_CPU_CAPS_MMX2;
-    //if (m_pAVCtx->dsp_mask & CCpuId::MPC_MM_3DNOW)  params.cpu |= SWS_CPU_CAPS_3DNOW;
+    //if (m_pCodecContext->dsp_mask & CCpuId::MPC_MM_MMX)  params.cpu |= SWS_CPU_CAPS_MMX|SWS_CPU_CAPS_MMX2;
+    //if (m_pCodecContext->dsp_mask & CCpuId::MPC_MM_3DNOW)  params.cpu |= SWS_CPU_CAPS_3DNOW;
 
     //params.methodLuma.method=params.methodChroma.method=SWS_POINT;
 
@@ -1383,13 +1407,13 @@ void CXBMCVideoDecFilter::InitSwscale()
 
     m_nOutCsp    = GetCspFromMediaType(m_pOutput->CurrentMediaType().subtype);
     //Dvdplayer use SWS_FAST_BILINEAR
-    struct SwsContext *context = m_dllSwScale.sws_getContext(m_pAVCtx->width, m_pAVCtx->height,
-                                         csp_lavc2ffdshow(m_pAVCtx->pix_fmt), m_pAVCtx->width, m_pAVCtx->height,
+    struct SwsContext *context = m_dllSwScale.sws_getContext(m_pCodecContext->width, m_pCodecContext->height,
+                                         csp_lavc2ffdshow(m_pCodecContext->pix_fmt), m_pCodecContext->width, m_pCodecContext->height,
                                          PIX_FMT_YUV420P, SWS_FAST_BILINEAR, NULL, NULL, NULL);
 
     m_pSwsContext = context;
-  //sws_getContext(m_pAVCtx->width, m_pAVCtx->height,(PixelFormat)csp_ffdshow2mplayer(csp_lavc2ffdshow(m_pAVCtx->pix_fmt)),
-  //                            m_pAVCtx->width,m_pAVCtx->height, (PixelFormat)csp_ffdshow2mplayer(m_nOutCsp), SWS_POINT,
+  //sws_getContext(m_pCodecContext->width, m_pCodecContext->height,(PixelFormat)csp_ffdshow2mplayer(csp_lavc2ffdshow(m_pCodecContext->pix_fmt)),
+  //                            m_pCodecContext->width,m_pCodecContext->height, (PixelFormat)csp_ffdshow2mplayer(m_nOutCsp), SWS_POINT,
   //                            NULL, NULL, NULL);*/
 
     m_pOutSize.cx  = bihOut.biWidth;
@@ -1427,7 +1451,7 @@ HRESULT CXBMCVideoDecFilter::SoftwareDecode(IMediaSample* pIn, BYTE* pDataIn, in
     memcpy(m_pFFBuffer, pDataIn, nSize);
     memset(m_pFFBuffer+nSize,0,FF_INPUT_BUFFER_PADDING_SIZE);
 
-    used_bytes = m_dllAvCodec.avcodec_decode_video(m_pAVCtx, m_pFrame, &got_picture, m_pFFBuffer, nSize);
+    used_bytes = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &got_picture, m_pFFBuffer, nSize);
     if (!got_picture || !m_pFrame->data[0]) return S_OK;
     if(pIn->IsPreroll() == S_OK || rtStart < 0) return S_OK;
 
@@ -1435,7 +1459,7 @@ HRESULT CXBMCVideoDecFilter::SoftwareDecode(IMediaSample* pIn, BYTE* pDataIn, in
     BYTE*          pDataOut = NULL;
 
     UpdateAspectRatio();
-    if(FAILED(hr = GetDeliveryBuffer(m_pAVCtx->width, m_pAVCtx->height, &pOut)) || FAILED(hr = pOut->GetPointer(&pDataOut)))
+    if(FAILED(hr = GetDeliveryBuffer(m_pCodecContext->width, m_pCodecContext->height, &pOut)) || FAILED(hr = pOut->GetPointer(&pDataOut)))
       return hr;
   
     rtStart = m_pFrame->reordered_opaque;
@@ -1450,7 +1474,7 @@ HRESULT CXBMCVideoDecFilter::SoftwareDecode(IMediaSample* pIn, BYTE* pDataIn, in
 
     // TODO : quick and dirty patch to fix convertion to YUY2 with swscale
     if (m_nOutCsp == FF_CSP_YUY2)
-      CopyBuffer(pDataOut, m_pFrame->data, m_pAVCtx->width, m_pAVCtx->height, m_pFrame->linesize[0], MEDIASUBTYPE_I420, false);
+      CopyBuffer(pDataOut, m_pFrame->data, m_pCodecContext->width, m_pCodecContext->height, m_pFrame->linesize[0], MEDIASUBTYPE_I420, false);
 
     else if (m_pSwsContext != NULL)
     {
@@ -1473,10 +1497,10 @@ HRESULT CXBMCVideoDecFilter::SoftwareDecode(IMediaSample* pIn, BYTE* pDataIn, in
       if(outcspInfo->id==FF_CSP_420P)
         csp_yuv_adj_to_plane(nTempCsp,outcspInfo,odd2even(m_pOutSize.cy),(unsigned char**)dst,dstStride);
       else
-        csp_yuv_adj_to_plane(nTempCsp,outcspInfo,m_pAVCtx->height,(unsigned char**)dst,dstStride);
+        csp_yuv_adj_to_plane(nTempCsp,outcspInfo,m_pCodecContext->height,(unsigned char**)dst,dstStride);
 
       
-      m_dllSwScale.sws_scale(m_pSwsContext, m_pFrame->data, srcStride, 0, m_pAVCtx->height, dst, dstStride);
+      m_dllSwScale.sws_scale(m_pSwsContext, m_pFrame->data, srcStride, 0, m_pCodecContext->height, dst, dstStride);
     }
 #endif
 
@@ -1741,10 +1765,10 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
   if (rtStop <= rtStart && rtStop != _I64_MIN)
     rtStop = rtStart + m_rtAvrTimePerFrame;
 
-  m_pAVCtx->reordered_opaque  = rtStart;
-  //m_pAVCtx->reordered_opaque2 = rtStop;
+  m_pCodecContext->reordered_opaque  = rtStart;
+  //m_pCodecContext->reordered_opaque2 = rtStop;
 
-  if (m_pAVCtx->has_b_frames)
+  if (m_pCodecContext->has_b_frames)
   {
     m_BFrames[m_nPosB].rtStart  = rtStart;
     m_BFrames[m_nPosB].rtStop  = rtStop;
@@ -1768,7 +1792,7 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
       m_pDXVADecoder->ConfigureDXVA1();
     }
 
-    if (m_pAVCtx->codec_id == CODEC_ID_MPEG2VIDEO)
+    if (m_pCodecContext->codec_id == CODEC_ID_MPEG2VIDEO)
     {
       AppendBuffer (pDataIn, nSize, rtStart, rtStop);
       hr = S_OK;
@@ -1802,9 +1826,9 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
 
 void CXBMCVideoDecFilter::UpdateAspectRatio()
 {
-  if(((m_nARMode) && (m_pAVCtx)) && ((m_pAVCtx->sample_aspect_ratio.num>0) && (m_pAVCtx->sample_aspect_ratio.den>0)))
+  if(((m_nARMode) && (m_pCodecContext)) && ((m_pCodecContext->sample_aspect_ratio.num>0) && (m_pCodecContext->sample_aspect_ratio.den>0)))
   { 
-    Com::SmartSize SAR(m_pAVCtx->sample_aspect_ratio.num, m_pAVCtx->sample_aspect_ratio.den); 
+    Com::SmartSize SAR(m_pCodecContext->sample_aspect_ratio.num, m_pCodecContext->sample_aspect_ratio.den); 
     if(m_sar != SAR) 
     { 
       m_sar = SAR; 
@@ -1819,7 +1843,7 @@ void CXBMCVideoDecFilter::UpdateAspectRatio()
 void CXBMCVideoDecFilter::ReorderBFrames(REFERENCE_TIME& rtStart, REFERENCE_TIME& rtStop)
 {
   // Re-order B-frames if needed
-  if (m_pAVCtx->has_b_frames && m_bReorderBFrame)
+  if (m_pCodecContext->has_b_frames && m_bReorderBFrame)
   {
     rtStart  = m_BFrames [m_nPosB].rtStart;
     rtStop  = m_BFrames [m_nPosB].rtStop;
@@ -2087,11 +2111,7 @@ HRESULT CXBMCVideoDecFilter::CreateDXVA2Decoder(UINT nNumRenderTargets, IDirect3
 {
   HRESULT              hr;
   Com::SmartPtr<IDirectXVideoDecoder>  pDirectXVideoDec;
-  /*hwcontext*/
-  m_context          = (dxva_context*)calloc(1, sizeof(dxva_context));
-  m_context->cfg     = (DXVA2_ConfigPictureDecode*)calloc(1, sizeof(DXVA2_ConfigPictureDecode));
-  m_context->surface = (IDirect3DSurface9**)calloc(m_buffer_max, sizeof(IDirect3DSurface9*));
-
+  
   m_pDecoderRenderTarget  = NULL;
 
   if (m_pDXVADecoder) m_pDXVADecoder->SetDirectXVideoDec (NULL);
@@ -2104,7 +2124,7 @@ HRESULT CXBMCVideoDecFilter::CreateDXVA2Decoder(UINT nNumRenderTargets, IDirect3
     if (!m_pDXVADecoder)
     {
       m_pDXVADecoder  = CDXVADecoder::CreateDecoder (this, pDirectXVideoDec, &m_DXVADecoderGUID, GetPicEntryNumber(), &m_DXVA2Config);
-      if (m_pDXVADecoder) m_pDXVADecoder->SetExtraData ((BYTE*)m_pAVCtx->extradata, m_pAVCtx->extradata_size);
+      if (m_pDXVADecoder) m_pDXVADecoder->SetExtraData ((BYTE*)m_pCodecContext->extradata, m_pCodecContext->extradata_size);
     }
 
     m_pDXVADecoder->SetDirectXVideoDec (pDirectXVideoDec);
@@ -2189,7 +2209,7 @@ HRESULT CXBMCVideoDecFilter::CreateDXVA1Decoder(IAMVideoAccelerator*  pAMVideoAc
   m_nDXVAMode      = MODE_DXVA1;
   m_DXVADecoderGUID  = *pDecoderGuid;
   m_pDXVADecoder    = CDXVADecoder::CreateDecoder (this, pAMVideoAccelerator, &m_DXVADecoderGUID, dwSurfaceCount);
-  if (m_pDXVADecoder) m_pDXVADecoder->SetExtraData ((BYTE*)m_pAVCtx->extradata, m_pAVCtx->extradata_size);
+  if (m_pDXVADecoder) m_pDXVADecoder->SetExtraData ((BYTE*)m_pCodecContext->extradata, m_pCodecContext->extradata_size);
 
   return S_OK;
 }

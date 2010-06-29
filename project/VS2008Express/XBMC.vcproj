@@ -181,6 +181,7 @@
 				ModuleDefinitionFile=""
 				DelayLoadDLLs="dwmapi.dll;libmicrohttpd-5.dll;libssh.dll"
 				GenerateDebugInformation="true"
+				AssemblyDebug="0"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
 				SubSystem="2"
 				LargeAddressAware="2"
@@ -2396,22 +2397,6 @@
 						Name="Video Decoder"
 						>
 						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\CpuId.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\CpuId.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\cspinfo.cpp"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\cspinfo.h"
-							>
-						</File>
-						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoder.cpp"
 							>
 						</File>
@@ -2441,18 +2426,6 @@
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderVC1.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\ffImgfmt.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\H264QuantizationMatrix.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\intrin_fixed.h"
 							>
 						</File>
 						<File
@@ -2544,6 +2517,22 @@
 						Name="Includes"
 						>
 						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\CpuId.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\CpuId.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\cspinfo.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\cspinfo.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\decss\CSSauth.cpp"
 							>
 						</File>
@@ -2565,6 +2554,18 @@
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Subtitles\decss\DeCSSInputPin.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\ffImgfmt.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\H264QuantizationMatrix.h"
+							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\intrin_fixed.h"
 							>
 						</File>
 					</Filter>

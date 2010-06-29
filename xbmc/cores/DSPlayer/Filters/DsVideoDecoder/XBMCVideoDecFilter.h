@@ -95,7 +95,7 @@ protected:
 
   // === FFMpeg variables
   AVCodec*              m_pAVCodec;
-  AVCodecContext*        m_pAVCtx;
+  AVCodecContext*        m_pCodecContext;
   AVFrame*              m_pFrame;
   int                    m_nCodecNb;
   int                    m_nWorkaroundBug;
@@ -221,7 +221,7 @@ public:
   int              PictHeightRounded();
   inline bool          UseDXVA2()  { return (m_nDXVAMode == MODE_DXVA2); };
   void            FlushDXVADecoder()  { if (m_pDXVADecoder) m_pDXVADecoder->Flush(); }
-  inline AVCodecContext*    GetAVCtx()      { return m_pAVCtx; };
+  inline AVCodecContext*    GetAVCtx()      { return m_pCodecContext; };
   inline AVFrame*        GetFrame()      { return m_pFrame; }
   bool            IsDXVASupported();
   inline bool          IsReorderBFrame() { return m_bReorderBFrame; };

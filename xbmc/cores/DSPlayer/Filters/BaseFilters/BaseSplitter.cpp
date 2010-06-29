@@ -285,13 +285,23 @@ HRESULT CBaseSplitterOutputPin::CheckMediaType(const CMediaType* pmt)
 
 HRESULT CBaseSplitterOutputPin::GetMediaType(int iPosition, CMediaType* pmt)
 {
-    CAutoLock cAutoLock(m_pLock);
+  CAutoLock cAutoLock(m_pLock);
 
-  if(iPosition < 0) return E_INVALIDARG;
-  if(iPosition >= m_mts.size()) return VFW_S_NO_MORE_ITEMS;
+  if(iPosition < 0) 
+    return E_INVALIDARG;
+
+  if(iPosition >= m_mts.size()) 
+    return VFW_S_NO_MORE_ITEMS;
 
   *pmt = m_mts[iPosition];
 
+  return S_OK;
+}
+
+HRESULT CBaseSplitterOutputPin::GetMediaTypeCount(int *count)
+{
+  CAutoLock cAutoLock(m_pLock);
+  *count = (int)m_mts.size();
   return S_OK;
 }
 
@@ -572,7 +582,7 @@ HRESULT CBaseSplitterOutputPin::DeliverPacket(Packet* p)
     BYTE* pInputBuffer = NULL;
     if(S_OK != (hr = pSample->GetPointer(&pInputBuffer)) || !pInputBuffer) break;
     
-    memcpy(pInputBuffer, p->GetData(), nBytes);
+    memcpy(pInputBuffer, p->pInputBuffer, nBytes);
     if(S_OK != (hr = pSample->SetActualDataLength(nBytes))) 
       break;
     if(S_OK != (hr = pSample->SetTime(fTimeValid ? &p->rtStart : NULL, fTimeValid ? &p->rtStop : NULL))) 

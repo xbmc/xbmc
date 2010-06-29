@@ -666,6 +666,8 @@ typedef struct RcOverride{
  * Codec can export data for HW decoding (VDPAU).
  */
 #define CODEC_CAP_HWACCEL_VDPAU    0x0080
+
+#define CODEC_CAP_HWACCEL_DIRECTSHOW 0x0200
 /**
  * Codec can output multiple frames per AVPacket
  * Normally demuxers return one frame at a time, demuxers which do not do

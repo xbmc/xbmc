@@ -134,7 +134,7 @@ HRESULT CAviSplitterFilter::CreateOutputs(IAsyncReader* pAsyncReader)
       if(s->cs.size() && pvih->AvgTimePerFrame > 0)
       {
         __int64 size = 0;
-        for(int i = 0; i < s->cs.size(); i++)
+        for(int i = 0; i < (int)s->cs.size(); i++)
           size += s->cs[i].orgsize;
         pvih->dwBitRate = size*8 / s->cs.size() * 10000000i64 / pvih->AvgTimePerFrame;
       }
@@ -236,7 +236,6 @@ HRESULT CAviSplitterFilter::CreateOutputs(IAsyncReader* pAsyncReader)
   std::map<DWORD,CStdStringA>::iterator it;
   for ( it=m_pFile->m_info.begin() ; it != m_pFile->m_info.end(); it++ )
   {
-    DWORD fcc;
     CStdStringW value = DShowUtil::AToW((*it).second);
     
     switch((*it).first)
@@ -396,7 +395,7 @@ void CAviSplitterFilter::DemuxSeek(REFERENCE_TIME rt)
     {
       CAviFile::strm_t* s = m_pFile->m_strms[j].get();
 
-      for(int i = 0; i < s->cs.size(); i++)
+      for(int i = 0; i < (int)s->cs.size(); i++)
       {
         CAviFile::strm_t::chunk& c = s->cs[i];
         if(c.filepos >= minfp)
@@ -702,7 +701,7 @@ STDMETHODIMP CAviSplitterFilter::GetKeyFrameCount(UINT& nKFs)
     CAviFile::strm_t* s = m_pFile->m_strms[i].get();
     if(s->strh.fccType != FCC('vids')) continue;
 
-    for(int j = 0; j < s->cs.size(); j++)
+    for(int j = 0; j < (int)s->cs.size(); j++)
     {
       CAviFile::strm_t::chunk& c = s->cs[j];
       if(c.fKeyFrame) nKFs++;
@@ -734,7 +733,7 @@ STDMETHODIMP CAviSplitterFilter::GetKeyFrames(const GUID* pFormat, REFERENCE_TIM
 
     bool fConvertToRefTime = !!(*pFormat == TIME_FORMAT_MEDIA_TIME);
 
-    for(int j = 0; j < s->cs.size() && nKFsTmp < nKFs; j++)
+    for(int j = 0; j < (int)s->cs.size() && nKFsTmp < nKFs; j++)
     {
       if(s->cs[j].fKeyFrame)
         pKFs[nKFsTmp++] = fConvertToRefTime ? s->GetRefTime(j, s->cs[j].size) : j;

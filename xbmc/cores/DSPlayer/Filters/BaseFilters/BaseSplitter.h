@@ -67,7 +67,16 @@ public:
   {
     if(pmt) 
       DeleteMediaType(pmt);
-    free(pInputBuffer);
+
+    try 
+    {
+      if (pInputBuffer) 
+        _aligned_free(pInputBuffer);
+    }
+    catch(...) {
+      CLog::Log(LOGERROR, "%s - Exception thrown while freeing packet", __FUNCTION__);
+    }
+    //free(pInputBuffer);
   }
   Packet* operator=(Packet* pkt)
   {
@@ -104,8 +113,9 @@ public:
     pInputBufferSize -= count;
   }
 
+  //just use pInputBuffer
   //Return the data of the packet
-  BYTE* GetData() {return pInputBuffer;}
+  //BYTE* GetData() {return pInputBuffer;}
 	void SetData(const void* ptr, DWORD len) 
   {
     resize(len); 
@@ -239,12 +249,13 @@ public:
   virtual ~CBaseSplitterOutputPin();
 
   DECLARE_IUNKNOWN;
-    STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
 
   HRESULT SetName(LPCWSTR pName);
 
   HRESULT DecideBufferSize(IMemAllocator* pAlloc, ALLOCATOR_PROPERTIES* pProperties);
   HRESULT CheckMediaType(const CMediaType* pmt);
+  HRESULT GetMediaTypeCount(int* count);
   HRESULT GetMediaType(int iPosition, CMediaType* pmt);
   CMediaType& CurrentMediaType() {return m_mt;}
 

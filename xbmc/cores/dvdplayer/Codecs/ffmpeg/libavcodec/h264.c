@@ -853,18 +853,36 @@ static av_cold void common_init(H264Context *h){
 
 int ff_h264_decode_extradata(H264Context *h)
 {
+    MpegEncContext * const s = &h->s;
     AVCodecContext *avctx = h->s.avctx;
 
     /* ffdshow custom code */
-    if(*(char *)avctx->extradata == 1 || avctx->codec_tag == 0x31637661 || avctx->codec_tag == 0x31435641) {
+	
+    if((*(char *)avctx->extradata == 1 ) || 
+	  ((CONFIG_H264_DXVA2_HWACCEL && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW) &&
+	  ( avctx->codec_tag == 0x31637661 || avctx->codec_tag == 0x31435641)) ){
         int i, cnt, nalsize;
         unsigned char *p = avctx->extradata;
+		/* only used with directshow*/
         unsigned char *pend=p+avctx->extradata_size;
 
         h->is_avc = 1;
-
+		
+        if(avctx->extradata_size < 7) {
+            av_log(avctx, AV_LOG_ERROR, "avcC too short\n");
+            return -1;
+        }
+        /* sps and pps in the avcC always have length coded with 2 bytes,
+           so put a fake nal_length_size = 2 while parsing them */
         h->nal_length_size = 2;
-        cnt = 1;
+		if (CONFIG_H264_DXVA2_HWACCEL && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
+		{
+		    cnt = 1;
+		} else {
+		// Decode sps from avcC
+		    cnt = *(p+5) & 0x1f; // Number of sps
+		    p += 6;
+        }
 
         for (i = 0; i < cnt; i++) {
             nalsize = AV_RB16(p) + 2;
@@ -874,17 +892,34 @@ int ff_h264_decode_extradata(H264Context *h)
             }
             p += nalsize;
         }
-        // Decode pps from avcC
-        for (i = 0; p<pend-2; i++) {
-            nalsize = AV_RB16(p) + 2;
-            if(decode_nal_units(h, p, nalsize)  != nalsize) {
-                av_log(avctx, AV_LOG_ERROR, "Decoding pps %d from avcC failed\n", i);
-                return -1;
+		if (CONFIG_H264_DXVA2_HWACCEL && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
+		{
+		    for (i = 0; p<pend-2; i++) {
+			nalsize = AV_RB16(p) + 2;
+                if(decode_nal_units(h, p, nalsize)  != nalsize) {
+                    av_log(avctx, AV_LOG_ERROR, "Decoding pps %d from avcC failed\n", i);
+                    return -1;
+				}
+                p += nalsize;
+		    }
+		} else {
+		    // Decode pps from avcC
+			cnt = *(p++); // Number of pps
+            for (i = 0; i < cnt; i++) {
+                nalsize = AV_RB16(p) + 2;
+                if(decode_nal_units(h, p, nalsize)  != nalsize) {
+                    av_log(avctx, AV_LOG_ERROR, "Decoding pps %d from avcC failed\n", i);
+                    return -1;
+				}
+                p += nalsize;
             }
-            p += nalsize;
         }
+		
         // Now store right nal length size, that will be use to parse all other nals
-        h->nal_length_size = avctx->nal_length_size ? avctx->nal_length_size : 4; //((*(((char*)(avctx->extradata))+4))&0x03)+1;
+        if (CONFIG_H264_DXVA2_HWACCEL && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
+            h->nal_length_size = avctx->nal_length_size ? avctx->nal_length_size : 4; 
+        else
+		    h->nal_length_size = ((*(((char*)(avctx->extradata))+4))&0x03)+1;
     } else {
         h->is_avc = 0;
         if(decode_nal_units(h, avctx->extradata, avctx->extradata_size) < 0)
@@ -911,11 +946,14 @@ av_cold int ff_h264_decode_init(AVCodecContext *avctx){
     if(!avctx->has_b_frames)
     s->low_delay= 1;
 	
-    /* ffdshow custom code (begin) */
-    if(avctx->codec_id == CODEC_ID_SVQ3)
-        avctx->pix_fmt= PIX_FMT_YUVJ420P;
-    else
-        avctx->pix_fmt= PIX_FMT_YUV420P;
+    
+	/* ffdshow custom code (begin) */
+	if (CONFIG_H264_DXVA2_HWACCEL && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW){
+        if(avctx->codec_id == CODEC_ID_SVQ3)
+            avctx->pix_fmt= PIX_FMT_YUVJ420P;
+        else
+            avctx->pix_fmt= PIX_FMT_YUV420P;
+    }
     /* ffdshow custom code (end) */
 
     avctx->chroma_sample_location = AVCHROMA_LOC_LEFT;
@@ -3574,7 +3612,7 @@ AVCodec h264_decoder = {
     .flush= flush_dpb,
     .long_name = NULL_IF_CONFIG_SMALL("H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10"),
 };
-#include "h264_dxva.c"
+
 #if CONFIG_H264_VDPAU_DECODER
 AVCodec h264_vdpau_decoder = {
     "h264_vdpau",
@@ -3589,5 +3627,23 @@ AVCodec h264_vdpau_decoder = {
     .flush= flush_dpb,
     .long_name = NULL_IF_CONFIG_SMALL("H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (VDPAU acceleration)"),
     .pix_fmts = (const enum PixelFormat[]){PIX_FMT_VDPAU_H264, PIX_FMT_NONE},
+};
+#endif
+#if CONFIG_H264_DXVA2_HWACCEL
+#include "h264_dxva.c"
+
+AVCodec h264_dxva_decoder = {
+    "h264_dxva",
+    AVMEDIA_TYPE_VIDEO,
+    CODEC_ID_H264,
+    sizeof(H264Context),
+    ff_h264_decode_init,
+    NULL,
+    ff_h264_decode_end,
+    decode_frame,
+    CODEC_CAP_DR1 | CODEC_CAP_DELAY | CODEC_CAP_HWACCEL_DIRECTSHOW,
+    .flush= flush_dpb,
+    .long_name = NULL_IF_CONFIG_SMALL("H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (Directshow acceleration)"),
+    .pix_fmts = (const enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_NONE},
 };
 #endif

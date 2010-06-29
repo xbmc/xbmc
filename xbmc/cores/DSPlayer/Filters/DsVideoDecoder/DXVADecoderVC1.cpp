@@ -89,7 +89,10 @@ HRESULT CDXVADecoderVC1::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME 
 	int							nFieldType;
 	int							nSliceType;
 
+  /*
+  TODO
   m_pFilter->m_dllAvCodec.FFVC1UpdatePictureParam (&m_PictureParams, m_pFilter->GetAVCtx(), &nFieldType, &nSliceType, pDataIn, nSize);
+  */
 	//if (FFIsSkipped (m_pFilter->GetAVCtx()))
 		//return S_OK;
 

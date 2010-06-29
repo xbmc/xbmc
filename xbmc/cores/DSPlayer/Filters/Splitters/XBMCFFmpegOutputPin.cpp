@@ -50,10 +50,17 @@ HRESULT CXBMCFFmpegOutputPin::CheckConnect(IPin* pPin)
 {
   int iPosition = 0;
   CMediaType mt;
-  while(S_OK == GetMediaType(iPosition++, &mt))
+  int totalmt;
+  GetMediaTypeCount(&totalmt);
+  for (int i = 0; i < totalmt; i++)
   {
+    GetMediaType(i,&mt);
     mt.InitMediaType();
   }
+  /*while(S_OK == GetMediaType(iPosition++, &mt))
+  {
+    mt.InitMediaType();
+  }*/
 
   return __super::CheckConnect(pPin);
 }
