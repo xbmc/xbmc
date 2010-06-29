@@ -29,6 +29,13 @@
 		<variant>Condensed Bold</variant>
 		<size>20</size>
 	</font>
+	
+	<font>
+		<name>EpisodeTitles</name>
+		<filename>HelveticaNeue</filename>
+		<variant>Condensed Bold</variant>
+		<size>18</size>
+	</font>
 
 <!-- Default fonts -->
     <font>
