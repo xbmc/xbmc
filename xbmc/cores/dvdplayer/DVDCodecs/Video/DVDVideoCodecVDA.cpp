@@ -785,9 +785,11 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
     //CLog::Log(LOGDEBUG, "%s - imageBuffer is NULL", __FUNCTION__);
     return;
   }
-  if (CVPixelBufferGetPixelFormatType(imageBuffer) != kCVPixelFormatType_422YpCbCr8)
+  OSType format_type = CVPixelBufferGetPixelFormatType(imageBuffer);
+  if (format_type != kCVPixelFormatType_422YpCbCr8)
   {
-    CLog::Log(LOGERROR, "%s - imageBuffer format is not '2vuy',is reporting 0x%x", __FUNCTION__, CVPixelBufferGetPixelFormatType(imageBuffer));
+    CLog::Log(LOGERROR, "%s - imageBuffer format is not '2vuy',is reporting 0x%x", 
+      __FUNCTION__, format_type);
     return;
   }
   if (kVDADecodeInfo_FrameDropped & infoFlags)
