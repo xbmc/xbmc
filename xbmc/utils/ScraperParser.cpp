@@ -26,6 +26,7 @@
 #include "HTMLUtil.h"
 #include "addons/Scraper.h"
 #include "Util.h"
+#include "log.h"
 
 #include <sstream>
 #include <cstring>
