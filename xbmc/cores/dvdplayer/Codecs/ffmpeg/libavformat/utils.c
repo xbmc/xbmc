@@ -42,8 +42,6 @@
  * various utility functions for use within FFmpeg
  */
 
-AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max);
-
 unsigned avformat_version(void)
 {
     return LIBAVFORMAT_VERSION_INT;
