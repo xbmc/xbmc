@@ -1,5 +1,0 @@
-- rtmpdump revision 523 (svn://svn.mplayerhq.hu/rtmpdump/trunk)
-- polarssl-0.13.1
-- zlib
-- use provided makefile
-- make SYS=MINGW CRYPTO=POLARSSL librtmp.dll

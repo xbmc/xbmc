@@ -98,7 +98,6 @@
 #define USE_LIBA52_DECODER
 #define USE_LIBDTS_DECODER
 #define HAS_AC3_CDDA_CODEC
-#define HAS_LIBRTMP
 #endif
 
 /*****************
