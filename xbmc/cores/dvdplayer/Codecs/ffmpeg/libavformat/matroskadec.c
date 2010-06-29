@@ -960,7 +960,7 @@ static int matroska_decode_buffer(uint8_t** buf, int* buf_size,
 static void matroska_fix_ass_packet(MatroskaDemuxContext *matroska,
                                     AVPacket *pkt, uint64_t display_duration)
 {
-    char *line, *layer = "", *ptr = pkt->data, *end = ptr+pkt->size;
+    char *line, *layer, *ptr = pkt->data, *end = ptr+pkt->size;
     for (; *ptr!=',' && ptr<end-1; ptr++);
     if (*ptr == ',')
         layer = ++ptr;
@@ -1764,6 +1764,7 @@ static int matroska_parse_block(MatroskaDemuxContext *matroska, uint8_t *data,
                     matroska->prev_pkt = pkt;
                 }
             }
+
             if (timecode != AV_NOPTS_VALUE)
                 timecode = duration ? timecode + duration : AV_NOPTS_VALUE;
             data += lace_size[n];
