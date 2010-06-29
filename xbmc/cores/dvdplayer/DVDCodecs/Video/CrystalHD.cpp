@@ -1006,7 +1006,10 @@ void CCrystalHD::OpenDevice()
   }
   else
   {
-    CLog::Log(LOGINFO, "%s: device opened", __MODULE_NAME__);
+    if (m_new_lib)
+      CLog::Log(LOGINFO, "%s(new): device opened", __MODULE_NAME__);
+    else
+      CLog::Log(LOGINFO, "%s(old): device opened", __MODULE_NAME__);
   }
 }
 
