@@ -976,8 +976,8 @@ HRESULT CDX9AllocatorPresenter::AllocSurfaces(D3DFORMAT Format)
     }
 
     // Rendering target
-    uint32_t height = 640, width = 480;
-    /*g_Windowing.gGetBackbufferSize(width, height);*/
+    uint32_t height = 0, width = 0;
+    g_Windowing.GetBackbufferSize(width, height);
     if (FAILED(hr = m_pD3DDev->CreateTexture(width, height, 1, D3DUSAGE_RENDERTARGET, Format, 
       D3DPOOL_DEFAULT, &m_pVideoTexture[m_nNbDXSurface + 2], NULL)))
       return hr;
