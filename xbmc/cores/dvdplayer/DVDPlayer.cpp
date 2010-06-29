@@ -1698,7 +1698,7 @@ void CDVDPlayer::HandleMessages()
             if(!m_pSubtitleDemuxer->SeekTime(time, msg.GetBackward()))
               CLog::Log(LOGDEBUG, "failed to seek subtitle demuxer: %d, success", time);
           }
-          FlushBuffers(!msg.GetFlush(), msg.GetAccurate() ? start : DVD_NOPTS_VALUE);
+          FlushBuffers(!msg.GetFlush(), start, msg.GetAccurate());
         }
         else
           CLog::Log(LOGWARNING, "error while seeking");
@@ -1718,7 +1718,7 @@ void CDVDPlayer::HandleMessages()
         // This should always be the case.
         if(m_pDemuxer && m_pDemuxer->SeekChapter(msg.GetChapter(), &start))
         {
-          FlushBuffers(false, start);
+          FlushBuffers(false, start, true);
           m_callback.OnPlayBackSeekChapter(msg.GetChapter());
         }
 
@@ -2665,8 +2665,14 @@ bool CDVDPlayer::CloseTeletextStream(bool bWaitForBuffers)
   return true;
 }
 
-void CDVDPlayer::FlushBuffers(bool queued, double startpts)
+void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate)
 {
+  double startpts;
+  if(accurate)
+    startpts = pts;
+  else
+    startpts = DVD_NOPTS_VALUE;
+
   m_CurrentAudio.inited      = false;
   m_CurrentAudio.dts         = DVD_NOPTS_VALUE;
   m_CurrentAudio.startpts    = startpts;
@@ -2711,6 +2717,9 @@ void CDVDPlayer::FlushBuffers(bool queued, double startpts)
 
     // we should now wait for init cache
     SetCaching(CACHESTATE_INIT);
+    if(pts != DVD_NOPTS_VALUE)
+      m_clock.Discontinuity(CLOCK_DISC_NORMAL, pts, 0);
+    UpdatePlayState(0);
     m_CurrentAudio.started    = false;
     m_CurrentVideo.started    = false;
     m_CurrentSubtitle.started = false;
