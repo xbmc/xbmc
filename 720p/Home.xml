@@ -1921,9 +1921,9 @@
 				<width>1210</width>
 				<font>RssFeedFont</font>
 				<urlset>1</urlset>
-				<textcolor>Highlighted</textcolor>
+				<textcolor>FFFF9900</textcolor>
 				<headlinecolor>Focused</headlinecolor>
-				<titlecolor>Highlighted</titlecolor>
+				<titlecolor>FFFF9900</titlecolor>
 				<animation effect="fade" time="700" delay="300">WindowOpen</animation>
 				<animation effect="fade" time="100">WindowClose</animation>
 			</control>
