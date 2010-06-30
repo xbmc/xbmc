@@ -218,7 +218,7 @@ int CNfoFile::Scrape(ScraperPtr& scraper, const CStdString& strURL /* = "" */)
     return 0;
 
   // init and clear cache
-  parser.ClearCache();
+  scraper->ClearCache();
 
   vector<CStdString> extras;
   CScraperUrl url;

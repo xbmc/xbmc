@@ -25,8 +25,6 @@
 #include "RegExp.h"
 #include "HTMLUtil.h"
 #include "addons/Scraper.h"
-#include "FileSystem/File.h"
-#include "FileSystem/Directory.h"
 #include "Util.h"
 #include "log.h"
 
@@ -476,34 +474,6 @@ void CScraperParser::ClearBuffers()
   //clear all m_param strings
   for (int i=0;i<MAX_SCRAPER_BUFFERS;++i)
     m_param[i].clear();
-}
-
-void CScraperParser::ClearCache()
-{
-  CStdString strCachePath;
-  CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers",strCachePath);
-
-  // create scraper cache dir if needed
-  if (!CDirectory::Exists(strCachePath))
-    CDirectory::Create(strCachePath);
-
-  strCachePath = CUtil::AddFileToFolder(strCachePath,CUtil::GetFileName(m_strFile));
-  CUtil::AddSlashAtEnd(strCachePath);
-
-  ScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(m_scraper);
-  if (CDirectory::Exists(strCachePath) && scraper)
-  {
-    CFileItemList items;
-    CDirectory::GetDirectory(strCachePath,items);
-    for (int i=0;i<items.Size();++i)
-    {
-      // wipe cache
-      if (items[i]->m_dateTime + scraper->Persistence() <= CDateTime::GetUTCDateTime())
-        CFile::Delete(items[i]->m_strPath);
-    }
-  }
-  else
-    CDirectory::Create(strCachePath);
 }
 
 void CScraperParser::GetBufferParams(bool* result, const char* attribute, bool defvalue)
