@@ -492,6 +492,19 @@ void CGUIWindowManager::Render()
   assert(g_application.IsCurrentThread());
   CSingleLock lock(g_graphicsContext);
 
+  CRect unifiedDirtyRegion;
+  for (unsigned int i = 0; i < m_DirtyRegion.size(); i++)
+    unifiedDirtyRegion.Union(m_DirtyRegion[i]);
+
+#ifdef USE_DIRTY_REGION
+  if (unifiedDirtyRegion.IsEmpty())
+    return;
+
+  GLint oldRegion[8];
+  glGetIntegerv(GL_SCISSOR_BOX, oldRegion);
+  glScissor(unifiedDirtyRegion.x1, unifiedDirtyRegion.y1, unifiedDirtyRegion.Width(), unifiedDirtyRegion.Height());
+#endif
+
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
   {
@@ -516,10 +529,19 @@ void CGUIWindowManager::Render()
     CRect rect = m_DirtyRegion[i];
     CGUITextureGL::DrawQuad(rect, color);
   }
+
+  color = 0x40ff0000;
+  CGUITextureGL::DrawQuad(  unifiedDirtyRegion, color);
 #endif
 
   // Reset dirtyregion
   m_DirtyRegion.clear();
+
+#ifdef USE_DIRTY_REGION
+  if (unifiedDirtyRegion.IsEmpty())
+    return;
+  glScissor(oldRegion[0], oldRegion[1], oldRegion[2], oldRegion[3]);
+#endif
 }
 
 void CGUIWindowManager::PureProcess(unsigned int currentTime)
