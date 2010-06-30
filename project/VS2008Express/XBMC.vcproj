@@ -2397,6 +2397,10 @@
 						Name="Video Decoder"
 						>
 						<File
+							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DSCodecDef.h"
+							>
+						</File>
+						<File
 							RelativePath="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoder.cpp"
 							>
 						</File>

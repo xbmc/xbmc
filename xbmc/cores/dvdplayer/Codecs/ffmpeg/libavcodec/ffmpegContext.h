@@ -26,6 +26,7 @@
 
 
 #include <stdint.h>
+#include "avcodec.h"
 /* able to only use the dxva2api for compiling the dll with mingw */
 #ifdef __cplusplus
 #include <dxva.h>
@@ -63,14 +64,17 @@ int    FFVC1UpdatePictureParam (DXVA_PictureParameters *pPicParams, struct AVCod
 int    FFIsSkipped(struct AVCodecContext *pAVCtx);
 
 // === Mpeg2 functions
-/*Im not adding this crappy patch*/
-/*int    FFMpeg2DecodeFrame (DXVA_PictureParameters *pPicParams, DXVA_QmatrixData *m_QMatrixData, DXVA_SliceInfo *pSliceInfo, int *nSliceCount,
-									struct AVCodecContext *pAVCtx, struct AVFrame *pFrame, int *nNextCodecIndex, int *nFieldType, int *nSliceType, BYTE *pBuffer, UINT nSize);*/
-
+#if 0
+/* TODO Make it cleaner */
+int    FFMpeg2DecodeFrame (DXVA_PictureParameters *pPicParams, DXVA_QmatrixData *m_QMatrixData, DXVA_SliceInfo *pSliceInfo, int *nSliceCount,
+									struct AVCodecContext *pAVCtx, struct AVFrame *pFrame, int *nNextCodecIndex, int *nFieldType, int *nSliceType, BYTE *pBuffer, UINT nSize);
+#endif
 // === Common functions
 int        IsVista();
 char*      GetFFMpegPictureType(int nType);
 int        FFIsInterlaced(struct AVCodecContext *pAVCtx, int nHeight);
 unsigned long  FFGetMBNumber(struct AVCodecContext *pAVCtx);
-
+int			FFSoftwareCheckCompatibility(struct AVCodecContext* pAVCtx);
+int				FFGetCodedPicture(struct AVCodecContext* pAVCtx);
+int			FFGetAlternateScan(struct AVCodecContext* pAVCtx);
 #endif

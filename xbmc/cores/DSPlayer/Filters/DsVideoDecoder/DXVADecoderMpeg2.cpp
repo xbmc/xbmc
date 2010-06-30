@@ -82,7 +82,7 @@ HRESULT CDXVADecoderMpeg2::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIM
 	int							nSurfaceIndex;
 	Com::SmartPtr<IMediaSample>		pSampleToDeliver;
 	int							nFieldType = -1;
-	int							nSliceType = -1;;
+	int							nSliceType = -1;
 /*No way im not adding the mpc-hc uber ugly patch*/
 	/*FFMpeg2DecodeFrame (&m_PictureParams, &m_QMatrixData, m_SliceInfo, &m_nSliceCount, m_pFilter->GetAVCtx(), 
 						m_pFilter->GetFrame(), &m_nNextCodecIndex, &nFieldType, &nSliceType, pDataIn, nSize);*/

@@ -86,7 +86,7 @@ void CDXVADecoder::Init(CXBMCVideoDecFilter* pFilter, DXVAMode nMode, int nPicEn
 	m_pFilter			= pFilter;
 	m_nMode				= nMode;
 	m_nPicEntryNumber	= nPicEntryNumber;
-	m_pPictureStore		= DNew PICTURE_STORE[nPicEntryNumber];
+	m_pPictureStore		= new PICTURE_STORE[nPicEntryNumber];
 	m_dwNumBuffersInfo	= 0;
 
 	memset (&m_DXVA1Config, 0, sizeof(m_DXVA1Config));
@@ -432,7 +432,7 @@ HRESULT CDXVADecoder::BeginFrame(int nSurfaceIndex, IMediaSample* pSampleToDeliv
 		switch (m_nEngine)
 		{
 		case ENGINE_DXVA1 :
-			AMVABeginFrameInfo			BeginFrameInfo;
+			AMVABeginFrameInfo BeginFrameInfo;
 
 			BeginFrameInfo.dwDestSurfaceIndex	= nSurfaceIndex;
 			BeginFrameInfo.dwSizeInputData		= sizeof(nSurfaceIndex);

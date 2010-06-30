@@ -94,14 +94,15 @@ protected:
   int                    m_nDXVACheckCompatibility;
 
   // === FFMpeg variables
-  AVCodec*              m_pAVCodec;
+  AVCodec*               m_pAVCodec;
   AVCodecContext*        m_pCodecContext;
-  AVFrame*              m_pFrame;
+  AVFrame*               m_pFrame;
+  AVPicture*             m_pConvertFrame;
   int                    m_nCodecNb;
   int                    m_nWorkaroundBug;
   int                    m_nErrorConcealment;
-  REFERENCE_TIME        m_rtAvrTimePerFrame;
-  bool                  m_bReorderBFrame;
+  REFERENCE_TIME         m_rtAvrTimePerFrame;
+  bool                   m_bReorderBFrame;
   B_FRAME                m_BFrames[2];
   int                    m_nPosB;
   int                    m_nWidth;        // Frame width give to input pin
