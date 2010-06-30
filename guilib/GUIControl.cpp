@@ -529,21 +529,30 @@ EVENT_RESULT CGUIControl::SendMouseEvent(const CPoint &point, const CMouseEvent 
   return (handled && (event.m_id == ACTION_MOUSE_MOVE)) ? EVENT_RESULT_HANDLED : EVENT_RESULT_UNHANDLED;
 }
 
-CRect CGUIControl::GetRenderRegion()
+void CGUIControl::MarkDirtyRegion()
+{
+  MarkDirtyRegion(GetRenderRegion());
+}
+
+void CGUIControl::MarkDirtyRegion(const CRect &dirtyRegion)
+{
+  g_windowManager.MarkDirtyRegion(dirtyRegion);
+}
+
+CRect CGUIControl::GetRenderRegion(bool transform)
 {
   CPoint tl(GetXPosition(), GetYPosition());
   CPoint br(tl.x + GetWidth(), tl.y + GetHeight());
 
-  float z = 0.0f;
-  m_transform.TransformPosition(tl.x, tl.y, z);
-
-  z = 0.0f;
-  m_transform.TransformPosition(br.x, br.y, z);
-
-  // TODO Need to take camera in to account to get real 2D coord
-
   CRect rect(tl.x, tl.y, br.x, br.y);
-  return rect;
+
+  if (transform)
+    g_graphicsContext.AddTransform(m_transform);
+  CRect AABB = g_graphicsContext.generateAABB(rect);
+  if (transform)
+    g_graphicsContext.RemoveTransform();
+
+  return AABB;
 }
 
 // override this function to implement custom mouse behaviour
@@ -817,7 +826,7 @@ void CGUIControl::Animate(unsigned int currentTime)
   dirtyRegion.Union(GetRenderRegion());
   m_needRender = !(m_transform == oldTransform);
   if (m_needRender)
-    g_windowManager.MarkDirtyRegion(dirtyRegion);
+    MarkDirtyRegion(dirtyRegion);
 }
 
 bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)

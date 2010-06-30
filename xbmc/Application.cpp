@@ -1857,7 +1857,7 @@ void CApplication::RenderNoPresent()
     m_guiPointer.Render();
 
   // reset image scaling and effect states
-  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
+//  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), false);
 
   RenderMemoryStatus();
   RenderScreenSaver();

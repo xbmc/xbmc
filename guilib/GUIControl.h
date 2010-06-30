@@ -262,7 +262,9 @@ public:
   virtual void DumpTextureUse() {};
 #endif
 protected:
-  virtual CRect GetRenderRegion();
+  void MarkDirtyRegion();
+  void MarkDirtyRegion(const CRect &dirtyRegion);
+  virtual CRect GetRenderRegion(bool transform = true);
 
   /*! \brief Called when the mouse is over the control.
    Default implementation selects the control.

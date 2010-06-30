@@ -86,6 +86,8 @@ public:
 
   void CenterWindow();
   
+  virtual void Process(unsigned int currentTime);
+
   /*! \brief Main render function, called every frame.
    Window classes should override this only if they need to alter how something is rendered.
    General updating on a per-frame basis should be handled in FrameMove instead, as Render

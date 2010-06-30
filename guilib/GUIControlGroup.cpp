@@ -105,11 +105,17 @@ void CGUIControlGroup::Process(unsigned int currentTime)
   CPoint pos(GetPosition());
   g_graphicsContext.SetOrigin(pos.x, pos.y);
 
+  g_graphicsContext.AddTransform(m_transform);
+
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *control = *it;
     control->Process(currentTime);
   }
+
+  g_graphicsContext.RemoveTransform();
+
+  g_graphicsContext.RestoreOrigin();
 }
 
 void CGUIControlGroup::Render()

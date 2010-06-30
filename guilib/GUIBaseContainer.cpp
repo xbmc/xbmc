@@ -673,6 +673,8 @@ void CGUIBaseContainer::Process(unsigned int currentTime)
 
   CGUIControl::Process(currentTime);
 
+  g_graphicsContext.AddTransform(m_transform);
+
   ValidateOffset();
 
   if (m_bInvalidated)
@@ -700,6 +702,8 @@ void CGUIBaseContainer::Process(unsigned int currentTime)
     if (layout)
       layout->Process(currentTime);
   }
+
+  g_graphicsContext.RemoveTransform();
 }
 
 void CGUIBaseContainer::AllocResources()

@@ -491,7 +491,6 @@ void CGUIWindowManager::Render()
 {
   assert(g_application.IsCurrentThread());
   CSingleLock lock(g_graphicsContext);
-  g_graphicsContext.ResetWindowTransform();
 
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
@@ -511,17 +510,10 @@ void CGUIWindowManager::Render()
   }
 
 #ifdef VISUALIZE_DIRTY_REGION
-  g_graphicsContext.ResetWindowTransform();
   color_t color = 0x4000ff00;
   for (unsigned int i = 0; i < m_DirtyRegion.size(); i++)
   {
     CRect rect = m_DirtyRegion[i];
-
-    float z = 0.0f;
-    g_graphicsContext.ScaleFinalCoords(rect.x1, rect.y1, z);
-    z = 0.0f;
-    g_graphicsContext.ScaleFinalCoords(rect.x2, rect.y2, z);
-
     CGUITextureGL::DrawQuad(rect, color);
   }
 #endif
@@ -534,8 +526,6 @@ void CGUIWindowManager::PureProcess(unsigned int currentTime)
 {
   assert(g_application.IsCurrentThread());
   CSingleLock lock(g_graphicsContext);
-
-  g_graphicsContext.ResetWindowTransform();
 
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)

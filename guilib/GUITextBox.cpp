@@ -90,6 +90,7 @@ void CGUITextBox::Process(unsigned int currentTime)
     m_autoScrollRepeatAnim->RenderAnimation(matrix);
 
     m_transform *= matrix;
+    MarkDirtyRegion();
   }
 
   // if not visible, we reset the autoscroll timer and positioning
@@ -100,6 +101,9 @@ void CGUITextBox::Process(unsigned int currentTime)
     m_offset = 0;
     m_scrollOffset = 0;
     m_scrollSpeed = 0;
+
+    // TODO I think this one marks itself from base control
+    MarkDirtyRegion();    
   }
 }
 

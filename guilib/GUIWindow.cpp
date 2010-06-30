@@ -306,6 +306,20 @@ void CGUIWindow::CenterWindow()
   }
 }
 
+void CGUIWindow::Process(unsigned int currentTime)
+{
+  if (!m_bAllocated) return;
+
+  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
+
+  g_graphicsContext.ResetWindowTransform();
+
+  CGUIControlGroup::Process(currentTime);
+
+  if (!m_animationsEnabled)
+    m_transform.Reset();
+}
+
 void CGUIWindow::Render()
 {
   // If we're rendering from a different thread, then we should wait for the main
@@ -316,12 +330,7 @@ void CGUIWindow::Render()
 
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
 
-  // render our window animation - returns false if it needs to stop rendering
-  if (!RenderAnimation(m_renderTime))
-    return;
-
-  if (m_hasCamera)
-    g_graphicsContext.SetCameraPosition(m_camera);
+  g_graphicsContext.ResetWindowTransform();
 
   CGUIControlGroup::Render();
 
