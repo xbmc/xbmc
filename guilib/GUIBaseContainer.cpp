@@ -690,10 +690,44 @@ void CGUIBaseContainer::Process(unsigned int currentTime)
 
   UpdatePageControl(offset);
 
-  for (unsigned int i = 0; i < m_items.size(); i++)
-  {
-    CGUIListItemPtr item = m_items[i];
+  CPoint origin = CPoint(m_posX, m_posY) + m_renderOffset;
+  float pos = (m_orientation == VERTICAL) ? origin.y : origin.x;
+  float end = (m_orientation == VERTICAL) ? m_posY + m_height : m_posX + m_width;
 
+  int cacheBefore, cacheAfter;
+  GetCacheOffsets(cacheBefore, cacheAfter);
+
+  float drawOffset = (offset - cacheBefore) * m_layout->Size(m_orientation) - m_scrollOffset;
+  if (m_offset + m_cursor < offset)
+    drawOffset += m_focusedLayout->Size(m_orientation) - m_layout->Size(m_orientation);
+  pos += drawOffset;
+  end += cacheAfter * m_layout->Size(m_orientation);
+
+  float focusedPos = 0;
+  int current = offset - cacheBefore;
+  while (pos < end && m_items.size())
+  {
+    int itemNo = CorrectOffset(current, 0);
+    if (itemNo >= (int)m_items.size())
+      break;
+    bool focused = (current == m_offset + m_cursor);
+    if (itemNo >= 0)
+    {
+      CGUIListItemPtr item = m_items[itemNo];
+
+      if (m_orientation == VERTICAL)
+        ProcessItem(origin.x, pos, item.get(), focused, currentTime);
+      else
+        ProcessItem(pos, origin.y, item.get(), focused, currentTime);
+    }
+
+/*
+    if (m_orientation == VERTICAL)
+      RenderItem(origin.x, pos, item.get(), focused);
+    else
+      RenderItem(pos, origin.y, item.get(), focused);
+*/
+/*
     CGUIListItemLayout *layout = item->GetLayout();
     if (layout)
       layout->Process(currentTime);
@@ -701,9 +735,64 @@ void CGUIBaseContainer::Process(unsigned int currentTime)
     layout = item->GetFocusedLayout();
     if (layout)
       layout->Process(currentTime);
+*/
+    // increment our position
+    pos += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
+    current++;
   }
 
   g_graphicsContext.RemoveTransform();
+}
+
+void CGUIBaseContainer::ProcessItem(float posX, float posY, CGUIListItem *item, bool focused, unsigned int currentTime)
+{
+  if (!m_focusedLayout || !m_layout) return;
+
+  // set the origin
+  g_graphicsContext.SetOrigin(posX, posY);
+
+  if (m_bInvalidated)
+    item->SetInvalid();
+  if (focused)
+  {
+    if (!item->GetFocusedLayout())
+    {
+      CGUIListItemLayout *layout = new CGUIListItemLayout(*m_focusedLayout);
+      item->SetFocusedLayout(layout);
+    }
+    if (item->GetFocusedLayout())
+    {
+      if (item != m_lastItem || !HasFocus())
+      {
+        item->GetFocusedLayout()->SetFocusedItem(0);
+      }
+      if (item != m_lastItem && HasFocus())
+      {
+        item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);
+        unsigned int subItem = 1;
+        if (m_lastItem && m_lastItem->GetFocusedLayout())
+          subItem = m_lastItem->GetFocusedLayout()->GetFocusedItem();
+        item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
+      }
+      item->GetFocusedLayout()->Process(currentTime);//item, m_parentID);
+    }
+    m_lastItem = item;
+  }
+  else
+  {
+    if (item->GetFocusedLayout())
+      item->GetFocusedLayout()->SetFocusedItem(0);  // focus is not set
+    if (!item->GetLayout())
+    {
+      CGUIListItemLayout *layout = new CGUIListItemLayout(*m_layout);
+      item->SetLayout(layout);
+    }
+    if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
+      item->GetFocusedLayout()->Process(currentTime);//item, m_parentID);
+    else if (item->GetLayout())
+      item->GetLayout()->Process(currentTime);//item, m_parentID);
+  }
+  g_graphicsContext.RestoreOrigin();
 }
 
 void CGUIBaseContainer::AllocResources()

@@ -68,6 +68,8 @@ public:
   virtual int GetSelectedItem() const;
 
   virtual void Process(unsigned int currentTime);
+  virtual void ProcessItem(float posX, float posY, CGUIListItem *item, bool focused, unsigned int currentTime);
+
   void LoadLayout(TiXmlElement *layout);
   void LoadContent(TiXmlElement *content);
 
