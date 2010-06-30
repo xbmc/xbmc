@@ -41,6 +41,7 @@ class CPluginDirectory : public IDirectory
 public:
   CPluginDirectory();
   ~CPluginDirectory(void);
+  CStdString m_label2; 
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
   virtual bool IsAllowed(const CStdString &strFile) const { return true; };
   virtual bool Exists(const char* strPath) { return true; }
@@ -58,6 +59,7 @@ public:
   static void SetContent(int handle, const CStdString &strContent);
   static void SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue);
   static void SetResolvedUrl(int handle, bool success, const CFileItem* resultItem);
+  static void SetLabel2(int handle, const CStdString& ident);  
 
 private:
   ADDON::AddonPtr m_addon;

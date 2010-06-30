@@ -51,6 +51,7 @@ CPluginDirectory::CPluginDirectory()
   m_fetchComplete = CreateEvent(NULL, false, false, NULL);
   m_listItems = new CFileItemList;
   m_fileResult = new CFileItem;
+  m_label2 = "%D";  
 }
 
 CPluginDirectory::~CPluginDirectory(void)
@@ -195,7 +196,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
   dir->m_listItems->SetReplaceListing(replaceListing);
 
   if (!dir->m_listItems->HasSortDetails())
-    dir->m_listItems->AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%L", "%D"));
+    dir->m_listItems->AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%L", dir->m_label2));
 
   // set the event to mark that we're done
   SetEvent(dir->m_fetchComplete);
@@ -219,18 +220,18 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
     case SORT_METHOD_LABEL_IGNORE_THE:
       {
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-          dir->m_listItems->AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T", "%D"));
+          dir->m_listItems->AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T", dir->m_label2));
         else
-          dir->m_listItems->AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%D"));
+          dir->m_listItems->AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", dir->m_label2));
         break;
       }
     case SORT_METHOD_TITLE:
     case SORT_METHOD_TITLE_IGNORE_THE:
       {
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-          dir->m_listItems->AddSortMethod(SORT_METHOD_TITLE_IGNORE_THE, 556, LABEL_MASKS("%T", "%D"));
+          dir->m_listItems->AddSortMethod(SORT_METHOD_TITLE_IGNORE_THE, 556, LABEL_MASKS("%T", dir->m_label2));
         else
-          dir->m_listItems->AddSortMethod(SORT_METHOD_TITLE, 556, LABEL_MASKS("%T", "%D"));
+          dir->m_listItems->AddSortMethod(SORT_METHOD_TITLE, 556, LABEL_MASKS("%T", dir->m_label2));
         break;
       }
     case SORT_METHOD_ARTIST:
@@ -268,12 +269,12 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_FILE:
       {
-        dir->m_listItems->AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%T", "%D"));
+        dir->m_listItems->AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%T", dir->m_label2));
         break;
       }
     case SORT_METHOD_TRACKNUM:
       {
-        dir->m_listItems->AddSortMethod(SORT_METHOD_TRACKNUM, 554, LABEL_MASKS("[%N. ]%T", "%D"));
+        dir->m_listItems->AddSortMethod(SORT_METHOD_TRACKNUM, 554, LABEL_MASKS("[%N. ]%T", dir->m_label2));
         break;
       }
     case SORT_METHOD_DURATION:
@@ -308,7 +309,7 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_VIDEO_TITLE:
       {
-        dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_TITLE, 369, LABEL_MASKS("%T", "%D"));
+        dir->m_listItems->AddSortMethod(SORT_METHOD_VIDEO_TITLE, 369, LABEL_MASKS("%T", dir->m_label2));
         break;
       }
     case SORT_METHOD_MPAA_RATING:
@@ -337,12 +338,12 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
       }
     case SORT_METHOD_UNSORTED:
       {
-        dir->m_listItems->AddSortMethod(SORT_METHOD_UNSORTED, 571, LABEL_MASKS("%T", "%D"));
+        dir->m_listItems->AddSortMethod(SORT_METHOD_UNSORTED, 571, LABEL_MASKS("%T", dir->m_label2));
         break;
       }
     case SORT_METHOD_NONE:
       {
-        dir->m_listItems->AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%T", "%D"));
+        dir->m_listItems->AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%T", dir->m_label2));
         break;
       }
     case SORT_METHOD_DRIVE_TYPE:
@@ -584,4 +585,9 @@ void CPluginDirectory::SetProperty(int handle, const CStdString &strProperty, co
   dir->m_listItems->SetProperty(strProperty, strValue);
 }
 
+void CPluginDirectory::SetLabel2(int handle, const CStdString& ident)
+{
+  CPluginDirectory *dir = globalHandles[handle];
+  dir->m_label2 = ident;
+}
 
