@@ -135,6 +135,7 @@ void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 void CGUIControl::Process(unsigned int currentTime)
 {
   Animate(currentTime);
+  m_bInvalidated = false;
 }
 
 // the main render routine.
@@ -159,7 +160,6 @@ void CGUIControl::DoRender()
 
 void CGUIControl::Render()
 {
-  m_bInvalidated = false;
   m_hasRendered = true;
 }
 
