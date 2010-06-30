@@ -595,7 +595,7 @@ public:
   CStdString GetVersion();
   CStdString GetBuild();
 
-  bool GetDisplayAfterSeek() const;
+  bool GetDisplayAfterSeek();
   void SetDisplayAfterSeek(unsigned int timeOut = 2500, int seekOffset = 0);
   void SetSeeking(bool seeking) { m_playerSeeking = seeking; };
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
