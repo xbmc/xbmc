@@ -35,6 +35,7 @@ CGUIImage::CGUIImage(int parentID, int controlID, float posX, float posY, float 
   m_lastRenderTime = 0;
   ControlType = GUICONTROL_IMAGE;
   m_bDynamicResourceAlloc=false;
+  m_renderLastOne = false;
 }
 
 CGUIImage::CGUIImage(const CGUIImage &left)
@@ -93,11 +94,12 @@ void CGUIImage::AllocateOnDemand()
     AllocResources();
 }
 
-void CGUIImage::Render()
+void CGUIImage::Process(unsigned int currentTime)
 {
-  if (!IsVisible()) return;
+  CGUIControl::Process(currentTime);
 
-  // check whether our image failed to allocate, and if so drop back to the fallback image
+  bool marked = false;
+
   if (m_texture.FailedToAlloc() && !m_texture.GetFileName().Equals(m_info.GetFallback()))
     m_texture.SetFileName(m_info.GetFallback());
 
@@ -108,24 +110,23 @@ void CGUIImage::Render()
 
     // compute the frame time
     unsigned int frameTime = 0;
-    unsigned int currentTime = CTimeUtils::GetFrameTime();
     if (m_lastRenderTime)
       frameTime = currentTime - m_lastRenderTime;
     m_lastRenderTime = currentTime;
 
     if (m_fadingTextures.size())  // have some fading images
     { // anything other than the last old texture needs to be faded out as per usual
-      for (vector<CFadingTexture *>::iterator i = m_fadingTextures.begin(); i != m_fadingTextures.end() - 1;)
+      for (vector<CFadingTexture *>::iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end() - 1;)
       {
-        if (!RenderFading(*i, frameTime))
-          i = m_fadingTextures.erase(i);
+        if (!ProcessFading(*itr, frameTime))
+          itr = m_fadingTextures.erase(itr);
         else
-          i++;
+          itr++;
       }
 
       if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
       { // fade out the last one as well
-        if (!RenderFading(m_fadingTextures[m_fadingTextures.size() - 1], frameTime))
+        if (!ProcessFading(m_fadingTextures[m_fadingTextures.size() - 1], frameTime))
           m_fadingTextures.erase(m_fadingTextures.end() - 1);
       }
       else
@@ -136,8 +137,8 @@ void CGUIImage::Render()
           texture->m_fadeTime = m_crossFadeTime;
         texture->m_texture->SetAlpha(GetFadeLevel(texture->m_fadeTime));
         texture->m_texture->SetDiffuseColor(m_diffuseColor);
-        texture->m_texture->Render();
       }
+      marked = true;
     }
 
     if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
@@ -146,16 +147,22 @@ void CGUIImage::Render()
       if (m_currentFadeTime > m_crossFadeTime || frameTime == 0) // for if we allocate straight away on creation
         m_currentFadeTime = m_crossFadeTime;
     }
-    m_texture.SetAlpha(GetFadeLevel(m_currentFadeTime));
+
+    unsigned char alpha = GetFadeLevel(m_currentFadeTime);
+    if (m_texture.GetAlpha() != alpha)
+    {
+      m_texture.SetAlpha(GetFadeLevel(m_currentFadeTime));
+      marked = true;
+    }
   }
 
   m_texture.SetDiffuseColor(m_diffuseColor);
-  m_texture.Render();
 
-  CGUIControl::Render();
+  if (marked)
+    MarkDirtyRegion();
 }
 
-bool CGUIImage::RenderFading(CGUIImage::CFadingTexture *texture, unsigned int frameTime)
+bool CGUIImage::ProcessFading(CGUIImage::CFadingTexture *texture, unsigned int frameTime)
 {
   assert(texture);
   if (texture->m_fadeTime <= frameTime)
@@ -167,8 +174,25 @@ bool CGUIImage::RenderFading(CGUIImage::CFadingTexture *texture, unsigned int fr
   texture->m_fadeTime -= frameTime;
   texture->m_texture->SetAlpha(GetFadeLevel(texture->m_fadeTime));
   texture->m_texture->SetDiffuseColor(m_diffuseColor);
-  texture->m_texture->Render();
   return true;
+}
+
+void CGUIImage::Render()
+{
+  if (!IsVisible()) return;
+
+  if (m_fadingTextures.size())  // have some fading images
+  { // anything other than the last old texture needs to be faded out as per usual
+    for (vector<CFadingTexture *>::iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end() - 1;)
+    {
+      (*itr)->m_texture->Render();
+      itr++;
+    }
+  }
+
+  m_texture.Render();
+
+  CGUIControl::Render();
 }
 
 bool CGUIImage::OnAction(const CAction &action)

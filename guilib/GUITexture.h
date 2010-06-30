@@ -111,6 +111,7 @@ public:
   float GetHeight() const { return m_height; };
   float GetXPosition() const { return m_posX; };
   float GetYPosition() const { return m_posY; };
+  unsigned char GetAlpha() { return m_alpha; };
   int GetOrientation() const;
   const CRect &GetRenderRect() const { return m_vertex; };
   bool IsLazyLoaded() const { return m_info.useLarge; };
