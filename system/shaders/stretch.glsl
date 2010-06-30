@@ -1,5 +1,6 @@
 uniform sampler2D img;
 uniform float     m_stretch;
+varying vec2      cord;
 
 vec2 stretch(vec2 pos)
 {
@@ -12,7 +13,7 @@ vec2 stretch(vec2 pos)
 
 void main()
 {
-  gl_FragColor.rgb = texture2D(img, stretch(gl_TexCoord[0].xy)).rgb;
+  gl_FragColor.rgb = texture2D(img, stretch(cord)).rgb;
   gl_FragColor.a = gl_Color.a;
 }
 

@@ -1,6 +1,7 @@
 uniform sampler2D img;
 uniform vec2      stepxy;
 uniform float     m_stretch;
+varying vec2      cord;
 
 #if (USE1DTEXTURE)
   uniform sampler1D kernelTex;
@@ -62,7 +63,7 @@ half3 line (float ypos, vec4 xpos, half4 linetaps)
 
 void main()
 {
-  vec2 pos = stretch(gl_TexCoord[0].xy) + stepxy * 0.5;
+  vec2 pos = stretch(cord) + stepxy * 0.5;
   vec2 f = fract(pos / stepxy);
 
   half4 linetaps   = weight(1.0 - f.x);

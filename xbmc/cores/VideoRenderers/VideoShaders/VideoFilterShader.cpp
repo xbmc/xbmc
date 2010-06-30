@@ -54,10 +54,11 @@ BaseVideoFilterShader::BaseVideoFilterShader()
 
   m_stretch = 0.0f;
 
-  string shaderv = 
+  string shaderv =
+    "varying vec2 cord;"
     "void main()"
     "{"
-    "gl_TexCoord[0].xy = gl_MultiTexCoord0.xy;"
+    "cord = vec2(gl_TextureMatrix[0] * gl_MultiTexCoord0);"
     "gl_Position = ftransform();"
     "gl_FrontColor = gl_Color;"
     "}";
