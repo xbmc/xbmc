@@ -1,2 +1,0 @@
-; filename                        source of the file
-rtmpdump-2.2e.tar.gz           http://rtmpdump.mplayerhq.hu/download/
