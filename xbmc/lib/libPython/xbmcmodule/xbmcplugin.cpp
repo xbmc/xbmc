@@ -614,6 +614,7 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_STUDIO", SORT_METHOD_STUDIO);
     PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_STUDIO_IGNORE_THE", SORT_METHOD_STUDIO_IGNORE_THE);
     PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_UNSORTED", SORT_METHOD_UNSORTED);
+    PyModule_AddIntConstant(pXbmcPluginModule, (char*)"SORT_METHOD_BITRATE", SORT_METHOD_BITRATE);  
   }
 }
 

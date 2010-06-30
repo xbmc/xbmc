@@ -256,6 +256,11 @@ void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod)
         dir->m_listItems->AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%T", "%J"));
         break;
       }
+    case SORT_METHOD_BITRATE:
+      {
+        dir->m_listItems->AddSortMethod(SORT_METHOD_BITRATE, 623, LABEL_MASKS("%T", "%X"));
+        break;
+      }             
     case SORT_METHOD_SIZE:
       {
         dir->m_listItems->AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%T", "%I"));
