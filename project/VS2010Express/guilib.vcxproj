@@ -251,6 +251,7 @@
     <ClCompile Include="..\..\guilib\GUIStaticItem.cpp" />
     <ClCompile Include="..\..\guilib\GUITextBox.cpp" />
     <ClCompile Include="..\..\guilib\GUITextLayout.cpp" />
+    <ClCompile Include="..\..\guilib\GUITextureGLES.cpp" />
     <ClCompile Include="..\..\guilib\GUIToggleButtonControl.cpp" />
     <ClCompile Include="..\..\guilib\GUIVideoControl.cpp" />
     <ClCompile Include="..\..\guilib\GUIVisualisationControl.cpp" />
@@ -332,6 +333,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\guilib\D3DResource.h" />
     <ClInclude Include="..\..\guilib\GUIRenderingControl.h" />
+    <ClInclude Include="..\..\guilib\GUITextureGLES.h" />
     <ClInclude Include="..\..\guilib\TextureBundleXBT.h" />
     <ClInclude Include="..\..\guilib\TextureBundleXPR.h" />
     <ClInclude Include="..\..\guilib\XBTF.h" />

@@ -196,11 +196,78 @@ namespace PYXBMC
     return Py_None;
   }
 
+  PyDoc_STRVAR(getAddonInfo__doc__,
+    "getAddonInfo(id) -- Returns the value of an addon property as a string.\n"
+    "\n"
+    "id        : string - id of the property that the module needs to access.\n"
+    "\n"
+    // Handle all props available
+    "*Note, choices are (author, changelog, description, disclaimer, fanart. icon, id, name, path\n"
+    "                    profile, stars, summary, type, version)\n"
+    "\n"
+    "       You can use the above as keywords for arguments.\n"
+    "\n"
+    "example:\n"
+    "  - version = self.Addon.getAddonInfo('version')\n");
+
+  PyObject* Addon_GetAddonInfo(Addon *self, PyObject *args, PyObject *kwds)
+  {
+    static const char *keywords[] = { "id", NULL };
+    char *id;
+    if (!PyArg_ParseTupleAndKeywords(
+      args,
+      kwds,
+      (char*)"s",
+      (char**)keywords,
+      &id
+      ))
+    {
+      return NULL;
+    };
+
+    if (strcmpi(id, "author") == 0)
+      return Py_BuildValue((char*)"s", self->pAddon->Author().c_str());
+    else if (strcmpi(id, "changelog") == 0)
+      return Py_BuildValue((char*)"s", self->pAddon->ChangeLog().c_str());
+    else if (strcmpi(id, "description") == 0)
+      return Py_BuildValue((char*)"s", self->pAddon->Description().c_str());
+    else if (strcmpi(id, "disclaimer") == 0)
+      return Py_BuildValue((char*)"s", self->pAddon->Disclaimer().c_str());
+    else if (strcmpi(id, "fanart") == 0)
+      return Py_BuildValue((char*)"s", self->pAddon->FanArt().c_str());
+    else if (strcmpi(id, "icon") == 0)
+      return Py_BuildValue((char*)"s", self->pAddon->Icon().c_str());
+    else if (strcmpi(id, "id") == 0)
+      return Py_BuildValue((char*)"s", self->pAddon->ID().c_str());
+    else if (strcmpi(id, "name") == 0)
+      return Py_BuildValue((char*)"s", self->pAddon->Name().c_str());
+    else if (strcmpi(id, "path") == 0)
+      return Py_BuildValue((char*)"s", self->pAddon->Path().c_str());
+    else if (strcmpi(id, "profile") == 0)
+      return Py_BuildValue((char*)"s", self->pAddon->Profile().c_str());
+    else if (strcmpi(id, "stars") == 0)
+      return Py_BuildValue((char*)"i", self->pAddon->Stars());
+    else if (strcmpi(id, "summary") == 0)
+      return Py_BuildValue((char*)"s", self->pAddon->Summary().c_str());
+    else if (strcmpi(id, "type") == 0)
+      return Py_BuildValue((char*)"s", ADDON::TranslateType(self->pAddon->Type()).c_str());
+    else if (strcmpi(id, "version") == 0)
+      return Py_BuildValue((char*)"s", self->pAddon->Version().str.c_str());
+    else
+    {
+      CStdString error;
+      error.Format("'%s' is an invalid Id", id);
+      PyErr_SetString(PyExc_ValueError, error.c_str());
+      return NULL;
+    }
+  }
+
   PyMethodDef Addon_methods[] = {
     {(char*)"getLocalizedString", (PyCFunction)Addon_GetLocalizedString, METH_VARARGS|METH_KEYWORDS, getLocalizedString__doc__},
     {(char*)"getSetting", (PyCFunction)Addon_GetSetting, METH_VARARGS|METH_KEYWORDS, getSetting__doc__},
     {(char*)"setSetting", (PyCFunction)Addon_SetSetting, METH_VARARGS|METH_KEYWORDS, setSetting__doc__},
     {(char*)"openSettings", (PyCFunction)Addon_OpenSettings, METH_VARARGS|METH_KEYWORDS, openSettings__doc__},
+    {(char*)"getAddonInfo", (PyCFunction)Addon_GetAddonInfo, METH_VARARGS|METH_KEYWORDS, getAddonInfo__doc__},
     {NULL, NULL, 0, NULL}
   };
 

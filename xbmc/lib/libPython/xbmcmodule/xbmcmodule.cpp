@@ -136,10 +136,6 @@ namespace PYXBMC
       iLevel = LOGNOTICE;
     CLog::Log(iLevel, "%s", s_line);
 
-    ThreadMessage tMsg = {TMSG_WRITE_SCRIPT_OUTPUT};
-    tMsg.strParam = s_line;
-    g_application.getApplicationMessenger().SendMessage(tMsg);
-
     Py_INCREF(Py_None);
     return Py_None;
   }

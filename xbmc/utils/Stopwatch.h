@@ -26,7 +26,7 @@
 class CStopWatch
 {
 public:
-  CStopWatch();
+  CStopWatch(bool useFrameTime=false);
   ~CStopWatch();
 
   bool IsRunning() const;
@@ -42,4 +42,5 @@ private:
   float m_timerPeriod;        // to save division in GetElapsed...()
   int64_t m_startTick;
   bool m_isRunning;
+  bool m_useFrameTime;
 };

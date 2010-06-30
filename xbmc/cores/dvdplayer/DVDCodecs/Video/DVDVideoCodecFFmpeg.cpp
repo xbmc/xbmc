@@ -529,6 +529,23 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if(m_pCodecContext->pix_fmt == PIX_FMT_YUVJ420P)
     pDvdVideoPicture->color_range = 1;
 
+  pDvdVideoPicture->qscale_table = frame->qscale_table;
+  pDvdVideoPicture->qscale_stride = frame->qstride;
+
+  switch (frame->qscale_type) {
+  case FF_QSCALE_TYPE_MPEG1:
+    pDvdVideoPicture->qscale_type = DVP_QSCALE_MPEG1;
+    break;
+  case FF_QSCALE_TYPE_MPEG2:
+    pDvdVideoPicture->qscale_type = DVP_QSCALE_MPEG2;
+    break;
+  case FF_QSCALE_TYPE_H264:
+    pDvdVideoPicture->qscale_type = DVP_QSCALE_H264;
+    break;
+  default:
+    pDvdVideoPicture->qscale_type = DVP_QSCALE_UNKNOWN;
+  }
+
   pDvdVideoPicture->dts = m_dts;
   m_dts = DVD_NOPTS_VALUE;
   if (frame->reordered_opaque)

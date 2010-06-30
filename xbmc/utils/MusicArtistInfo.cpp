@@ -28,6 +28,7 @@
 #include "log.h"
 
 using namespace MUSIC_GRABBER;
+using namespace XFILE;
 using namespace std;
 
 CMusicArtistInfo::CMusicArtistInfo(void)
@@ -77,68 +78,31 @@ bool CMusicArtistInfo::Parse(const TiXmlElement* artist, bool bChained)
   return true;
 }
 
-bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const ADDON::ScraperPtr& scraper, const CStdString& strFunction, const CScraperUrl* url)
+bool CMusicArtistInfo::Load(CFileCurl& http, const ADDON::ScraperPtr& scraper)
 {
   // load our scraper xml
-  if (!m_parser.Load(scraper))
+  if (!scraper->Load())
     return false;
 
-  bool bChained=true;
-  if (!url)
+  vector<CStdString> extras;
+  extras.push_back(m_strSearch);
+
+  vector<CStdString> xml = scraper->Run("GetArtistDetails",GetArtistURL(),http,&extras);
+
+  bool ret=true;
+  for (vector<CStdString>::iterator it  = xml.begin();
+                                    it != xml.end(); ++it)
   {
-    bChained=false;
-    url = &GetArtistURL();
-  }
-
-  vector<CStdString> strHTML;
-  for (unsigned int i=0;i<url->m_url.size();++i)
-  {
-    CStdString strCurrHTML;
-    if (!CScraperUrl::Get(url->m_url[i],strCurrHTML, http, m_parser.GetFilename()) || strCurrHTML.size() == 0)
-      return false;
-    strHTML.push_back(strCurrHTML);
-  }
-
-  // now grab our details using the scraper
-  for (unsigned int i=0;i<strHTML.size();++i)
-    m_parser.m_param[i] = strHTML[i];
-
-  m_parser.m_param[strHTML.size()] = m_strSearch;
-
-  CStdString strXML = m_parser.Parse(strFunction);
-  CLog::Log(LOGDEBUG,"scraper: %s returned %s",strFunction.c_str(),strXML.c_str());
-  if (strXML.IsEmpty())
-  {
-    CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
-    return false;
-  }
-
-  // abit ugly, but should work. would have been better if parser
-  // set the charset of the xml, and we made use of that
-  if (!XMLUtils::HasUTF8Declaration(strXML))
-    g_charsetConverter.unknownToUTF8(strXML);
-
     // ok, now parse the xml file
-  TiXmlDocument doc;
-  doc.Parse(strXML.c_str(),0,TIXML_ENCODING_UTF8);
-  if (!doc.RootElement())
-  {
-    CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
-    return false;
-  }
-
-  bool ret = Parse(doc.RootElement(),bChained);
-  TiXmlElement* pRoot = doc.RootElement();
-  TiXmlElement* xurl = pRoot->FirstChildElement("url");
-  while (xurl && xurl->FirstChild())
-  {
-    const char* szFunction = xurl->Attribute("function");
-    if (szFunction)
+    TiXmlDocument doc;
+    doc.Parse(it->c_str(),0,TIXML_ENCODING_UTF8);
+    if (!doc.RootElement())
     {
-      CScraperUrl scrURL(xurl);
-      Load(http,scraper,szFunction,&scrURL);
+      CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
+      return false;
     }
-    xurl = xurl->NextSiblingElement("url");
+
+    ret = Parse(doc.RootElement(),it!=xml.begin());
   }
 
   return ret;

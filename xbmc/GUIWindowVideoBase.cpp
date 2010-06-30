@@ -498,10 +498,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
     return false;
   }
 
-  CScraperUrl scrUrl;
-  CVideoInfoScanner scanner;
-  bool hasDetails(false);
-
   m_database.Open();
   // 2. Look for a nfo File to get the search URL
   SScanSettings settings;
@@ -513,31 +509,35 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
   // Get the correct movie title
   CStdString movieName = item->GetMovieName(settings.parent_name);
 
+  CScraperUrl scrUrl;
+  CVideoInfoScanner scanner;
+  bool hasDetails = false;
+  bool listNeedsUpdating = false;
+  bool ignoreNfo = false;
   // 3. Run a loop so that if we Refresh we re-run this block
-  bool listNeedsUpdating(false);
   do
   {
-    bool ignoreNfo = false;
-    CNfoFile::NFOResult nfoResult = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
-    if (nfoResult == CNfoFile::ERROR_NFO)
-      ignoreNfo = true;
-    else
-    if (nfoResult != CNfoFile::NO_NFO)
+    if (!ignoreNfo)
     {
-      hasDetails = true;
-    }
+      CNfoFile::NFOResult nfoResult = scanner.CheckForNFOFile(item,settings.parent_name_root,info,scrUrl);
+      if (nfoResult == CNfoFile::ERROR_NFO)
+        ignoreNfo = true;
+      else
+      if (nfoResult != CNfoFile::NO_NFO)
+        hasDetails = true;
 
-    if (needsRefresh)
-    {
-      bHasInfo = true;
-      if (nfoResult == CNfoFile::URL_NFO || nfoResult == CNfoFile::COMBINED_NFO || nfoResult == CNfoFile::FULL_NFO)
+      if (needsRefresh)
       {
-        if (CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
+        bHasInfo = true;
+        if (nfoResult == CNfoFile::URL_NFO || nfoResult == CNfoFile::COMBINED_NFO || nfoResult == CNfoFile::FULL_NFO)
         {
-          hasDetails = false;
-          ignoreNfo = true;
-          scrUrl.Clear();
-          info = info2;
+          if (CGUIDialogYesNo::ShowAndGetInput(13346,20446,20447,20022))
+          {
+            hasDetails = false;
+            ignoreNfo = true;
+            scrUrl.Clear();
+            info = info2;
+          }
         }
       }
     }
@@ -927,9 +927,8 @@ bool CGUIWindowVideoBase::OnResumeShowMenu(CFileItem &item)
       if (db.GetResumeBookMark(itemPath, bookmark) )
       { // prompt user whether they wish to resume
         vector<CStdString> choices;
-        CStdString resumeString, time;
-        StringUtils::SecondsToTimeString(lrint(bookmark.timeInSeconds), time);
-        resumeString.Format(g_localizeStrings.Get(12022).c_str(), time.c_str());
+        CStdString resumeString;
+        resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(lrint(bookmark.timeInSeconds)).c_str());
         choices.push_back(resumeString);
         choices.push_back(g_localizeStrings.Get(12021)); // start from the beginning
         int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
@@ -1855,4 +1854,13 @@ void CGUIWindowVideoBase::OnScan(const CStdString& strPath)
   CGUIDialogVideoScan* pDialog = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (pDialog)
     pDialog->StartScanning(strPath, false);
+}
+
+CStdString CGUIWindowVideoBase::GetStartFolder(const CStdString &dir)
+{
+  if (dir.Equals("$PLAYLISTS") || dir.Equals("Playlists"))
+    return "special://videoplaylists/";
+  else if (dir.Equals("Plugins") || dir.Equals("Addons"))
+    return "addons://sources/video/";
+  return CGUIMediaWindow::GetStartFolder(dir);
 }

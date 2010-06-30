@@ -68,9 +68,6 @@
     <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
     <Import Project="XBMC for Windows.props" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
-    <Import Project="XBMC for Windows.props" />
-  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
@@ -91,8 +88,6 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">true</LinkIncremental>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">XBMC\$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">XBMC\$(Configuration)\objs\</IntDir>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release (DirectX)|Win32'">$(DXSDK_DIR)Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
@@ -291,6 +286,7 @@
     <ClCompile Include="..\..\xbmc\lib\libjsonrpc\AudioLibrary.cpp" />
     <ClCompile Include="..\..\xbmc\lib\libPython\xbmcmodule\PythonAddon.cpp" />
     <ClCompile Include="..\..\xbmc\lib\libPython\xbmcmodule\xbmcaddonmodule.cpp" />
+    <ClCompile Include="..\..\xbmc\RenderSystemGLES.cpp" />
     <ClCompile Include="..\..\xbmc\win32\NetworkWin32.cpp" />
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">Create</PrecompiledHeader>
@@ -707,7 +703,6 @@
     <ClCompile Include="..\..\xbmc\GUIMediaWindow.cpp" />
     <ClCompile Include="..\..\xbmc\GUIViewStatePictures.cpp" />
     <ClCompile Include="..\..\xbmc\GUIViewStatePrograms.cpp" />
-    <ClCompile Include="..\..\xbmc\GUIViewStateScripts.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowAddonBrowser.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowFileManager.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowFullScreen.cpp" />
@@ -719,7 +714,6 @@
     <ClCompile Include="..\..\xbmc\GUIWindowPointer.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowPrograms.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowScreensaver.cpp" />
-    <ClCompile Include="..\..\xbmc\GUIWindowScripts.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowSlideShow.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowStartup.cpp" />
     <ClCompile Include="..\..\xbmc\GUIWindowVisualisation.cpp" />
@@ -796,7 +790,6 @@
     <ClCompile Include="..\..\xbmc\FileSystem\SAPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\SAPFile.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\SFTPDirectory.cpp" />
-    <ClCompile Include="..\..\xbmc\FileSystem\ShoutcastDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\ShoutcastRipFile.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\SIDFileDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\SmartPlaylistDirectory.cpp" />
@@ -971,9 +964,6 @@
     <ClCompile Include="..\..\xbmc\cdrip\EncoderLame.cpp" />
     <ClCompile Include="..\..\xbmc\cdrip\EncoderVorbis.cpp" />
     <ClCompile Include="..\..\xbmc\cdrip\EncoderWav.cpp" />
-    <ClCompile Include="..\..\xbmc\lib\libRTMP\AMFObject.cpp" />
-    <ClCompile Include="..\..\xbmc\lib\libRTMP\rtmp.cpp" />
-    <ClCompile Include="..\..\xbmc\lib\libRTMP\rtmppacket.cpp" />
     <ClCompile Include="..\..\xbmc\lib\libjsonrpc\AVPlayerOperations.cpp" />
     <ClCompile Include="..\..\xbmc\lib\libjsonrpc\AVPlaylistOperations.cpp" />
     <ClCompile Include="..\..\xbmc\lib\libjsonrpc\FileItemHandler.cpp" />
@@ -1002,6 +992,7 @@
     <ClInclude Include="..\..\xbmc\GUIViewStateAddonBrowser.h" />
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\AudioLibrary.h" />
     <ClInclude Include="..\..\xbmc\lib\libPython\xbmcmodule\PythonAddon.h" />
+    <ClInclude Include="..\..\xbmc\RenderSystemGLES.h" />
     <ClInclude Include="..\..\xbmc\SystemGlobals.h" />
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h" />
     <ClInclude Include="..\..\xbmc\win32\pch.h" />
@@ -1333,7 +1324,6 @@
     <ClInclude Include="..\..\xbmc\GUIMediaWindow.h" />
     <ClInclude Include="..\..\xbmc\GUIViewStatePictures.h" />
     <ClInclude Include="..\..\xbmc\GUIViewStatePrograms.h" />
-    <ClInclude Include="..\..\xbmc\GUIViewStateScripts.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowAddonBrowser.h" />
     <ClInclude Include="..\..\xbmc\karaoke\GUIWindowKaraokeLyrics.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowLoginScreen.h" />
@@ -1561,7 +1551,6 @@
     <ClInclude Include="..\..\xbmc\GUIWindowPointer.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowPrograms.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowScreensaver.h" />
-    <ClInclude Include="..\..\xbmc\GUIWindowScripts.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowSettings.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowSettingsCategory.h" />
     <ClInclude Include="..\..\xbmc\GUIWindowSettingsProfile.h" />
@@ -1621,7 +1610,6 @@
     <ClInclude Include="..\..\xbmc\SettingsControls.h" />
     <ClInclude Include="..\..\xbmc\utils\SharedSection.h" />
     <ClInclude Include="..\..\xbmc\Shortcut.h" />
-    <ClInclude Include="..\..\xbmc\FileSystem\ShoutcastDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\ShoutcastRipFile.h" />
     <ClInclude Include="..\..\xbmc\utils\SingleLock.h" />
     <ClInclude Include="..\..\xbmc\Song.h" />
@@ -1755,9 +1743,6 @@
     <ClInclude Include="..\..\xbmc\cdrip\EncoderLame.h" />
     <ClInclude Include="..\..\xbmc\cdrip\EncoderVorbis.h" />
     <ClInclude Include="..\..\xbmc\cdrip\EncoderWav.h" />
-    <ClInclude Include="..\..\xbmc\lib\libRTMP\AMFObject.h" />
-    <ClInclude Include="..\..\xbmc\lib\libRTMP\rtmp.h" />
-    <ClInclude Include="..\..\xbmc\lib\libRTMP\rtmppacket.h" />
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\AVPlayerOperations.h" />
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\AVPlaylistOperations.h" />
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\FileItemHandler.h" />

@@ -38,7 +38,7 @@ public:
   virtual bool Load();
   virtual void Unload();
 
-  virtual int ResolveExport(const char* symbol, void** ptr);
+  virtual int ResolveExport(const char* symbol, void** ptr, bool logging = true);
   virtual bool IsSystemDll();
   virtual HMODULE GetHModule();
   virtual bool HasSymbols();

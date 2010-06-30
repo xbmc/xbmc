@@ -20,6 +20,7 @@
  */
 
 #include "AddonDatabase.h"
+#include "addons/AddonManager.h"
 #include "utils/log.h"
 #include "DateTime.h"
 #include "StringUtils.h"
@@ -61,10 +62,16 @@ bool CAddonDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create addonlinkrepo table");
     m_pDS->exec("CREATE TABLE addonlinkrepo (idRepo integer, idAddon integer)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_1 ON addonlinkrepo ( idAddon, idRepo )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_2 ON addonlinkrepo ( idRepo, idAddon )\n");
 
     CLog::Log(LOGINFO, "create disabled table");
     m_pDS->exec("CREATE TABLE disabled (id integer primary key, addonID text)\n");
-    m_pDS->exec("CREATE INDEX idxDisabled ON disabled(addonID)");
+    m_pDS->exec("CREATE UNIQUE INDEX idxDisabled ON disabled(addonID)");
+
+    CLog::Log(LOGINFO, "create broken table");
+    m_pDS->exec("CREATE TABLE broken (id integer primary key, addonID text, reason text)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxBroken ON broken(addonID)");
   }
   catch (...)
   {
@@ -111,6 +118,18 @@ bool CAddonDatabase::UpdateOldVersion(int version)
   {
     m_pDS->exec("CREATE TABLE disabled (id integer primary key, addonID text)\n");
     m_pDS->exec("CREATE INDEX idxDisabled ON disabled(addonID)");
+  }
+  if (version < 9)
+  {
+    m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_1 ON addonlinkrepo ( idAddon, idRepo )\n");
+    m_pDS->exec("CREATE UNIQUE INDEX ix_addonlinkrepo_2 ON addonlinkrepo ( idRepo, idAddon )\n");
+    m_pDS->exec("DROP INDEX idxDisabled");
+    m_pDS->exec("CREATE UNIQUE INDEX idxDisabled ON disabled(addonID)");
+  }
+  if (version < 10)
+  {
+    m_pDS->exec("CREATE TABLE broken (id integer primary key, addonID text, reason text)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxBroken ON broken(addonID)");
   }
   return true;
 }
@@ -191,6 +210,11 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr& addon)
       props.icon = m_pDS2->fv("icon").get_asString();
       props.fanart = m_pDS2->fv("fanart").get_asString();
       props.author = m_pDS2->fv("author").get_asString();
+      sql = FormatSQL("select reason from broken where addonID='%s'",props.id.c_str());
+      m_pDS2->query(sql.c_str());
+      if (!m_pDS2->eof())
+        props.broken = m_pDS2->fv(0).get_asString();
+      
       addon = CAddonMgr::AddonFromProps(props);
       return NULL != addon.get();
     }
@@ -258,6 +282,8 @@ void CAddonDatabase::DeleteRepository(int idRepo)
 
     CStdString sql = FormatSQL("delete from repo where id=%i",idRepo);
     m_pDS->exec(sql.c_str());
+    sql = FormatSQL("delete from broken where addonID in (select addon.addonID from addon join addonlinkrepo on addonlinkrepo.idAddon=addon.idAddon where addonlinkrepo.idRepo=%i)",idRepo);
+    m_pDS->exec(sql.c_str());
     sql = FormatSQL("delete from addon where id in (select idAddon from addonlinkrepo where idRepo=%i)",idRepo);
     m_pDS->exec(sql.c_str());
     sql = FormatSQL("delete from addonlinkrepo where idRepo=%i",idRepo);
@@ -321,27 +347,27 @@ int CAddonDatabase::GetRepoChecksum(const CStdString& id, CStdString& checksum)
   return -1;
 }
 
-int CAddonDatabase::GetRepoTimestamp(const CStdString& id, CStdString& timestamp)
+CDateTime CAddonDatabase::GetRepoTimestamp(const CStdString& id)
 {
+  CDateTime date = CDateTime::GetCurrentDateTime();
   try
   {
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
+    if (NULL == m_pDB.get()) return date;
+    if (NULL == m_pDS.get()) return date;
 
     CStdString strSQL = FormatSQL("select * from repo where addonID='%s'",id.c_str());
     m_pDS->query(strSQL.c_str());
     if (!m_pDS->eof())
     {
-      timestamp = m_pDS->fv("lastcheck").get_asString();
-      return m_pDS->fv("id").get_asInt();
+      date.SetFromDBDateTime(m_pDS->fv("lastcheck").get_asString());
+      return date;
     }
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed on repo '%s'", __FUNCTION__, id.c_str());
   }
-  timestamp.Empty();
-  return -1;
+  return date;
 }
 
 bool CAddonDatabase::SetRepoTimestamp(const CStdString& id, const CStdString& time)
@@ -460,6 +486,7 @@ void CAddonDatabase::SetPropertiesFromAddon(const AddonPtr& addon,
   pItem->SetProperty("Addon.Disclaimer", addon->Disclaimer());
   pItem->SetProperty("Addon.Rating", addon->Stars());
   pItem->SetProperty("Addon.Path", addon->Path());
+  pItem->SetProperty("Addon.Broken", addon->Props().broken);
 }
 
 bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = true */)
@@ -496,6 +523,40 @@ bool CAddonDatabase::DisableAddon(const CStdString &addonID, bool disable /* = t
   return false;
 }
 
+bool CAddonDatabase::BreakAddon(const CStdString &addonID, bool broken /* = true */, const CStdString& reason)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    if (broken)
+    {
+      CStdString sql = FormatSQL("select id from broken where addonID='%s'", addonID.c_str());
+      m_pDS->query(sql.c_str());
+      if (m_pDS->eof()) // not found
+      {
+        m_pDS->close();
+        sql = FormatSQL("insert into broken(id, addonID, reason) values(NULL, '%s', '%s')", addonID.c_str(),reason.c_str());
+        m_pDS->exec(sql);
+        return true;
+      }
+      return false; // already disabled or failed query
+    }
+    else
+    {
+      CStdString sql = FormatSQL("delete from broken where addonID='%s'", addonID.c_str());
+      m_pDS->exec(sql);
+    }
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon '%s'", __FUNCTION__, addonID.c_str());
+  }
+  return false;
+}
+
 bool CAddonDatabase::IsAddonDisabled(const CStdString &addonID)
 {
   try
@@ -514,6 +575,28 @@ bool CAddonDatabase::IsAddonDisabled(const CStdString &addonID)
     CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonID.c_str());
   }
   return false;
+}
+
+CStdString CAddonDatabase::IsAddonBroken(const CStdString &addonID)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return "";
+    if (NULL == m_pDS.get()) return "";
+
+    CStdString sql = FormatSQL("select reason from broken where addonID='%s'", addonID.c_str());
+    m_pDS->query(sql.c_str());
+    CStdString ret;
+    if (!m_pDS->eof())
+      ret = m_pDS->fv(0).get_asString();
+    m_pDS->close();
+    return ret;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon %s", __FUNCTION__, addonID.c_str());
+  }
+  return "";
 }
 
 bool CAddonDatabase::HasDisabledAddons()

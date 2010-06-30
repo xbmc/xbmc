@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="visualization.itunes"
   version="1.0.0"
@@ -9,8 +9,10 @@
     library_osx="iTunes.mvis"/>
   <extension point="xbmc.addon.metadata">
     <summary>iTunes Visualization Wrapper</summary>
+    <summary lang="hu">iTunes Vizualizáció</summary>
     <summary lang="nl">iTunes Visualisaties</summary>
     <description>iTunes Visualization Wrapper allows you to use visualizations from your OSX iTunes install in XBMC</description>
+    <description lang="hu">Az iTunes Vizualizáció lehetővé teszi, hogy használd az OSX iTunes telepítésedben meglévő vizualizációkat az XBMC-ben</description>
     <description lang="nl">iTunes Visualisaties kan gebruik maken van de visualisaties van jouw iTunes installatie in OSX</description>
     <disclaimer></disclaimer>
     <platform>osx</platform>

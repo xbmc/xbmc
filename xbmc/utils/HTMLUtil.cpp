@@ -120,14 +120,6 @@ void CHTMLUtil::RemoveTags(CStdString& strHTML)
   strHTML = strReturn;
 }
 
-void CHTMLUtil::ConvertAndRemoveTags(CStdString& strHTML)
-{
-  RemoveTags(strHTML);
-  CStdString strText;
-  ConvertHTMLToAnsi(strHTML, strText);
-  strHTML = strText;
-}
-
 void CHTMLUtil::ConvertHTMLToUTF8(const CStdString& strHTML, string& strStripped)
 {
   // TODO UTF8: This assumes the HTML is in the users charset

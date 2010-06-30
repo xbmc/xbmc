@@ -90,9 +90,10 @@ using namespace MUSIC_INFO;
  *  %O - mpaa rating
  *  %Q - file time
  *  %U - studio
+ *  %X - Bitrate
  */
 
-#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQU"
+#define MASK_CHARS "NSATBGYFLDIJRCKMEPHZOQUX"
 
 CLabelFormatter::CLabelFormatter(const CStdString &mask, const CStdString &mask2)
 {
@@ -222,7 +223,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
           nDuration = StringUtils::TimeStringToSeconds(movie->m_strRuntime);
       }
       if (nDuration > 0)
-        StringUtils::SecondsToTimeString(nDuration, value);
+        value = StringUtils::SecondsToTimeString(nDuration);
       else if (item->m_dwSize > 0)
         value = StringUtils::SizeToString(item->m_dwSize);
     }
@@ -288,6 +289,10 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
       value = movie ->m_strStudio;
     }
     break;
+  case 'X': // Bitrate
+    if( !item->m_bIsFolder || item->m_dwSize != 0 )
+      value.Format("%i kbps", item->m_dwSize);
+    break;           
   }
   if (!value.IsEmpty())
     return mask.m_prefix + value + mask.m_postfix;

@@ -166,7 +166,6 @@
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
-#include "GUIWindowScripts.h"
 #include "GUIWindowWeather.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowAddonBrowser.h"
@@ -594,6 +593,14 @@ bool CApplication::Create()
   if (!g_settings.Load())
     FatalErrorHandler(true, true, true);
 
+  CLog::Log(LOGINFO, "creating subdirectories");
+  CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
+  CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
+  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("debug.screenshotpath",false).c_str());
+  CDirectory::Create(g_settings.GetUserDataFolder());
+  CDirectory::Create(g_settings.GetProfileUserDataFolder());
+  g_settings.CreateProfileFolders();
+
   update_emu_environ();//apply the GUI settings
 
   // initialize our charset converter
@@ -981,6 +988,7 @@ void CApplication::CreateUserDirs()
   CDirectory::Create("special://home/system");
   CDirectory::Create("special://masterprofile/");
   CDirectory::Create("special://temp/");
+  CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
 }
 
 bool CApplication::Initialize()
@@ -989,27 +997,6 @@ bool CApplication::Initialize()
   // turn off cdio logging
   cdio_loglevel_default = CDIO_LOG_ERROR;
 #endif
-
-  CLog::Log(LOGINFO, "creating subdirectories");
-
-  CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
-  CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
-  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("debug.screenshotpath",false).c_str());
-
-  // UserData folder layout:
-  // UserData/
-  //   Database/
-  //     CDDb/
-  //   Thumbnails/
-  //     Music/
-  //       temp/
-  //     0 .. F/
-
-  CDirectory::Create(g_settings.GetUserDataFolder());
-  CDirectory::Create(g_settings.GetProfileUserDataFolder());
-  g_settings.CreateProfileFolders();
-
-  CDirectory::Create("special://temp/temp"); // temp directory for python and dllGetTempPathA
 
 #ifdef _LINUX // TODO: Win32 has no special://home/ mapping by default, so we
               //       must create these here. Ideally this should be using special://home/ and
@@ -1045,7 +1032,6 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIDialogTeletext);               // window id =
   g_windowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   g_windowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
-  g_windowManager.Add(new CGUIWindowScripts);                  // window id = 20
   g_windowManager.Add(new CGUIWindowVideoNav);                 // window id = 36
   g_windowManager.Add(new CGUIWindowVideoPlaylist);            // window id = 28
   g_windowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
@@ -1977,8 +1963,6 @@ void CApplication::NewFrame()
 
 void CApplication::Render()
 {
-  if (m_dpmsIsActive)
-    return;
   if (!m_AppActive && !m_bStop && (!IsPlayingVideo() || IsPaused()))
   {
     Sleep(1);
@@ -2094,6 +2078,14 @@ void CApplication::Render()
   g_infoManager.UpdateFPS();
   g_renderManager.UpdateResolution();
   g_graphicsContext.Unlock();
+
+  // yield to other threads, so any thread needing
+  // gfx context will get a timeslice. Newer os's
+  // doesn't automatically prempt the unlocking thread
+  // after a mutex is released. This may cause app thread
+  // to regrab gfx lock before for example python get's
+  // access to it.
+  SleepEx(0, TRUE);
 
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);
@@ -3174,7 +3166,6 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_HOME);
     g_windowManager.Delete(WINDOW_PROGRAMS);
     g_windowManager.Delete(WINDOW_PICTURES);
-    g_windowManager.Delete(WINDOW_SCRIPTS);
     g_windowManager.Delete(WINDOW_WEATHER);
 
     g_windowManager.Delete(WINDOW_SETTINGS_MYPICTURES);
@@ -3945,10 +3936,10 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSpeedChanged");
 }
 
-void CApplication::OnPlayBackSeek(int iTime)
+void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
 {
 #ifdef HAS_PYTHON
-  g_pythonParser.OnPlayBackSeek(iTime);
+  g_pythonParser.OnPlayBackSeek(iTime, seekOffset);
 #endif
 
 #ifdef HAS_HTTPAPI
@@ -3962,6 +3953,7 @@ void CApplication::OnPlayBackSeek(int iTime)
 #endif
 
   CAnnouncementManager::Announce(Playback, "xbmc", "PlaybackSeek");
+  g_infoManager.SetDisplayAfterSeek(2500, seekOffset/1000);
 }
 
 void CApplication::OnPlayBackSeekChapter(int iChapter)
@@ -4772,7 +4764,9 @@ void CApplication::ProcessSlow()
     g_lcd->Initialize();
   }
 #endif
-  ADDON::CAddonMgr::Get().UpdateRepos();
+  
+  if (!IsPlayingVideo())
+    ADDON::CAddonMgr::Get().UpdateRepos();
 
 #if defined(__arm__)
   // TODO: gui rendering testing, remove later

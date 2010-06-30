@@ -163,7 +163,6 @@ SRCS=Application.cpp \
      GUIWindowPointer.cpp \
      GUIWindowPrograms.cpp \
      GUIWindowScreensaver.cpp \
-     GUIWindowScripts.cpp \
      GUIWindowSystemInfo.cpp \
      GUIWindowVisualisation.cpp \
      GUIWindowWeather.cpp \
@@ -198,7 +197,6 @@ SRCS=Application.cpp \
      MediaSource.cpp \
      MusicInfoTagLoaderASAP.cpp \
      GUIWindowTestPattern.cpp \
-     GUIViewStateScripts.cpp \
      GUIViewStatePrograms.cpp \
      GUIViewStatePictures.cpp \
      GUIDialogFullScreenInfo.cpp \

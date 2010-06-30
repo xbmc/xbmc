@@ -175,9 +175,6 @@
     <Filter Include="libraries\cdrip">
       <UniqueIdentifier>{595eeac0-ead4-4c21-a22b-deffe179ba17}</UniqueIdentifier>
     </Filter>
-    <Filter Include="libraries\libRTMP">
-      <UniqueIdentifier>{f89ac5ca-72c0-4f4d-8654-ebfa9f0d0697}</UniqueIdentifier>
-    </Filter>
     <Filter Include="libraries\libjsonrpc">
       <UniqueIdentifier>{96910e2c-8b38-4c14-8baa-7c7280bd45cd}</UniqueIdentifier>
     </Filter>
@@ -1332,9 +1329,6 @@
     <ClCompile Include="..\..\xbmc\GUIViewStatePrograms.cpp">
       <Filter>Source Files\GUI Other</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\GUIViewStateScripts.cpp">
-      <Filter>Source Files\GUI Other</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\GUIWindowAddonBrowser.cpp">
       <Filter>Source Files\GUI Other</Filter>
     </ClCompile>
@@ -1366,9 +1360,6 @@
       <Filter>Source Files\GUI Other</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\GUIWindowScreensaver.cpp">
-      <Filter>Source Files\GUI Other</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\GUIWindowScripts.cpp">
       <Filter>Source Files\GUI Other</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\GUIWindowSlideShow.cpp">
@@ -1597,9 +1588,6 @@
       <Filter>Source Files\Filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\SFTPDirectory.cpp">
-      <Filter>Source Files\Filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\ShoutcastDirectory.cpp">
       <Filter>Source Files\Filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\ShoutcastRipFile.cpp">
@@ -2031,15 +2019,6 @@
     <ClCompile Include="..\..\xbmc\cdrip\EncoderWav.cpp">
       <Filter>libraries\cdrip</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libRTMP\AMFObject.cpp">
-      <Filter>libraries\libRTMP</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libRTMP\rtmp.cpp">
-      <Filter>libraries\libRTMP</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\lib\libRTMP\rtmppacket.cpp">
-      <Filter>libraries\libRTMP</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\lib\libjsonrpc\AVPlayerOperations.cpp">
       <Filter>libraries\libjsonrpc</Filter>
     </ClCompile>
@@ -2126,6 +2105,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\RenderSystemGLES.cpp">
+      <Filter>Source Files\Windowing\Render System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3119,9 +3101,6 @@
     <ClInclude Include="..\..\xbmc\GUIViewStatePrograms.h">
       <Filter>Source Files\GUI Other</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\GUIViewStateScripts.h">
-      <Filter>Source Files\GUI Other</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\GUIWindowAddonBrowser.h">
       <Filter>Source Files\GUI Other</Filter>
     </ClInclude>
@@ -3803,9 +3782,6 @@
     <ClInclude Include="..\..\xbmc\GUIWindowScreensaver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\GUIWindowScripts.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\GUIWindowSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -3981,9 +3957,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\Shortcut.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\ShoutcastDirectory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\ShoutcastRipFile.h">
@@ -4379,15 +4352,6 @@
     <ClInclude Include="..\..\xbmc\cdrip\EncoderWav.h">
       <Filter>libraries\cdrip</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libRTMP\AMFObject.h">
-      <Filter>libraries\libRTMP</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libRTMP\rtmp.h">
-      <Filter>libraries\libRTMP</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\lib\libRTMP\rtmppacket.h">
-      <Filter>libraries\libRTMP</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\lib\libjsonrpc\AVPlayerOperations.h">
       <Filter>libraries\libjsonrpc</Filter>
     </ClInclude>
@@ -4471,6 +4435,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.h">
       <Filter>cores\dvdplayer\DVDCodecs\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\RenderSystemGLES.h">
+      <Filter>Source Files\Windowing\Render System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -23,6 +23,8 @@ config.log
 *.py[co]
 *.ver
 *.rej
+*.orig
+*.bak
 
 # Windows specific generated files
 *.exp
@@ -30,8 +32,12 @@ config.log
 *.ncb
 *.pdb
 *.suo
+*.sdf
+*.opensdf
 *.vcproj.*.user
 *.vcxproj.*.user
+*.vcxproj.user
+*.obj
 
 .libs/
 .deps/
@@ -241,6 +247,7 @@ config.log
 /project/output
 
 # /project/BuildDependencies
+/project/BuildDependencies/downloads
 /project/BuildDependencies/include
 /project/BuildDependencies/lib
 /project/BuildDependencies/scripts/tmp
@@ -252,6 +259,8 @@ config.log
 /project/VS2008Express/glib
 /project/VS2008Express/guilib
 /project/VS2008Express/libPlatinum
+/project/VS2008Express/libs
+/project/VS2008Express/objs
 /project/VS2008Express/UnrarXLib
 
 # /project/VS2010Express
@@ -262,6 +271,9 @@ config.log
 /project/VS2010Express/guilib
 /project/VS2010Express/libPlatinum
 /project/VS2010Express/UnrarXLib
+/project/VS2010Express/libs
+/project/VS2010Express/objs
+/project/VS2010Express/ipch
 
 # /skin/
 /skin/Confluence/media/Textures.xbt
@@ -271,8 +283,14 @@ config.log
 /system/cpluff.dll
 /system/ImageLib.dll
 /system/libcmyth.dll
+/system/libcurl.dll
+/system/libeay32.dll
 /system/libexif.dll
 /system/libexpat.dll
+/system/libid3tag.dll
+/system/libidn-11.dll
+/system/libssh2.dll
+/system/libssl32.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll
@@ -284,9 +302,7 @@ config.log
 /system/players/dvdplayer/libfaad.dll
 /system/players/dvdplayer/libfontconfig-1.dll
 
-# /system/
-/system/profiles.xml
-/system/libid3tag.dll
+# /system/players/paplayer
 /system/players/paplayer/wavpack.dll
 /system/players/paplayer/libmodplug.dll
 /system/players/paplayer/StSoundLibrary.dll
@@ -299,12 +315,29 @@ config.log
 /system/players/dvdplayer/libmad.dll
 /system/players/dvdplayer/libdts.dll
 
+# /system/players/dsplayer
+/system/players/dsplayer/libsubs.dll
+
+# /system
+/system/profiles.xml
+
 # /system/python
 /system/python/Lib/
 /system/python/python24.zip
+/system/python/python24.dll
+/system/python/DLLs/_socket.pyd
+/system/python/DLLs/pyexpat.pyd
+/system/python/DLLs/select.pyd
+/system/python/DLLs/unicodedata.pyd
+/system/python/DLLs/zlib.pyd
+/system/python/DLLs/bz2.pyd
 
 # /system/webserver
 /system/webserver
+
+# /system
+/system/zlib1.dll
+
 
 # /screensavers/
 /screensavers/Solarwinds.xbs
@@ -400,6 +433,9 @@ config.log
 
 # /xbmc/cores/dvdplayer/Codecs
 /xbmc/cores/dvdplayer/Codecs/Makefile
+
+# /xbmc/cores/dvdplayer/Codecs/libvpx/
+/xbmc/cores/dvdplayer/Codecs/libvpx/
 
 # /xbmc/cores/dvdplayer/Codecs/ffmpeg/
 /xbmc/cores/dvdplayer/Codecs/ffmpeg/config.h
@@ -1081,6 +1117,7 @@ config.log
 /xbmc/lib/libPython/Python/Modules/Setup.local
 /xbmc/lib/libPython/Python/Modules/config.c
 /xbmc/lib/libPython/Python/Parser/pgen
+/xbmc/lib/libPython/Python/PC/pythonnt_rc.h
 /xbmc/lib/libPython/Python/build/
 /xbmc/lib/libPython/Python/buildno
 /xbmc/lib/libPython/Python/pyconfig.h
@@ -1088,6 +1125,7 @@ config.log
 /xbmc/lib/libPython/Python/python
 /xbmc/lib/libPython/Python/python.exe
 /xbmc/lib/libPython/Python/Mac/Python/
+/xbmc/lib/libPython/Python/PC/pythonnt_rc_d.h
 
 # /xbmc/lib/libRTV/
 /xbmc/lib/libRTV/Makefile

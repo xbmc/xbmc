@@ -349,8 +349,7 @@ void XBPython::Initialize()
 
       // first we check if all necessary files are installed
 #ifndef _LINUX
-      if (!FileExist("special://xbmc/system/python/python24.zlib") ||
-        !FileExist("special://xbmc/system/python/DLLs/_socket.pyd") ||
+      if(!FileExist("special://xbmc/system/python/DLLs/_socket.pyd") ||
         !FileExist("special://xbmc/system/python/DLLs/_ssl.pyd") ||
         !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
         !FileExist("special://xbmc/system/python/DLLs/pyexpat.pyd") ||
@@ -528,6 +527,23 @@ void XBPython::Process()
     if(m_iDllScriptCounter == 0 && m_endtime + 10000 < CTimeUtils::GetTimeMS())
       Finalize();
   }
+}
+
+bool XBPython::StopScript(const CStdString &path)
+{
+  int id = getScriptId(path);
+  if (id != -1)
+  {
+    /* if we are here we already know that this script is running.
+     * But we will check it again to be sure :)
+     */
+    if (isRunning(id))
+    {
+      stopScript(id);
+      return true;
+    }
+  }
+  return false;
 }
 
 int XBPython::evalFile(const char *src) { return evalFile(src, 0, NULL); }

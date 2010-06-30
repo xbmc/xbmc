@@ -29,7 +29,6 @@
 #include "FileSystem/PluginDirectory.h"
 #include "GUIDialogYesNo.h"
 #include "FileSystem/File.h"
-#include "FileSystem/ShoutcastDirectory.h"
 #include "FileItem.h"
 #include "Settings.h"
 #include "GUISettings.h"
@@ -267,10 +266,6 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       share1.strName = g_localizeStrings.Get(21883);
       extraShares.push_back(share1);
     }
-
-    share1.strName = "Shoutcast";
-    share1.strPath = SHOUTCAST_MASTER_LINK;
-    extraShares.push_back(share1);
 
     if (g_guiSettings.GetString("scrobbler.lastfmusername") != "")
     {

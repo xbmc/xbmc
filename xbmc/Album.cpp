@@ -156,9 +156,7 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
     yearNode->InsertEndChild(name2);
     TiXmlElement duration("duration");
     TiXmlNode *durNode = node->InsertEndChild(duration);
-    CStdString strDuration;
-    StringUtils::SecondsToTimeString(it->iDuration,strDuration);
-    TiXmlText name3(strDuration);
+    TiXmlText name3(StringUtils::SecondsToTimeString(it->iDuration));
     durNode->InsertEndChild(name3);
   }
 

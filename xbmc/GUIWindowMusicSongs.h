@@ -44,6 +44,7 @@ protected:
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
   virtual void OnScan(int iItem);
   virtual void OnRemoveSource(int iItem);
+  virtual CStdString GetStartFolder(const CStdString &dir);
 
   // new method
   virtual void PlayItem(int iItem);

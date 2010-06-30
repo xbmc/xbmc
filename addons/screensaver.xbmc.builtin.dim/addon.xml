@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="screensaver.xbmc.builtin.dim"
        name="Dim"
        version="1.0.0"
@@ -6,7 +6,9 @@
   <extension point="xbmc.ui.screensaver" library=""/>
   <extension point="xbmc.addon.metadata">
     <summary>Screensaver that Dims your screen</summary>
+    <summary lang="hu">Képernyővédő ami elhalványítja a képernyőt</summary>
     <description>The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% .</description>
+    <description lang="hu">A Dim képernyővédő egyszerűen elhalványítja a képernyőt egy előre beállítható sötétségi szintre 20 és 100% között.</description>
     <platform>all</platform>
   </extension>
 </addon>

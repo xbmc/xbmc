@@ -856,6 +856,21 @@ CStdString CDateTime::GetAsDBDateTime() const
   return date;
 }
 
+void CDateTime::SetFromDBDateTime(const CStdString &dateTime)
+{
+  // assumes format YYYY-MM-DD HH:MM:SS
+  if (dateTime.size() == 19)
+  {
+    int year = atoi(dateTime.Mid(0,4).c_str());
+    int month = atoi(dateTime.Mid(5,2).c_str());
+    int day = atoi(dateTime.Mid(8,2).c_str());
+    int hour = atoi(dateTime.Mid(11,2).c_str());
+    int min = atoi(dateTime.Mid(14,2).c_str());
+    int sec = atoi(dateTime.Mid(17,2).c_str());
+    SetDateTime(year, month, day, hour, min, sec);
+  }
+}
+
 void CDateTime::SetFromDBDate(const CStdString &date)
 {
   // assumes format:

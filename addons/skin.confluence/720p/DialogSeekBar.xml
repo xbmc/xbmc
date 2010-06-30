@@ -162,8 +162,8 @@
 				<aligny>center</aligny>
 				<font>font12_title</font>
 				<textcolor>blue</textcolor>
-				<label>31042</label>
-				<visible>Player.Playing + !Player.Seeking</visible>
+				<label>$LOCALIZE[31042]</label>
+				<visible>Player.Playing + !Player.Seeking + !Player.DisplayAfterSeek</visible>
 			</control>
 			<control type="label">
 				<description>Paused Label</description>
@@ -176,7 +176,7 @@
 				<font>font12_title</font>
 				<textcolor>blue</textcolor>
 				<label>31043</label>
-				<visible>[Player.Paused + !Player.Caching] + !Player.Seeking</visible>
+				<visible>[Player.Paused + !Player.Caching] + !Player.Seeking + !Player.DisplayAfterSeek</visible>
 			</control>
 			<control type="label">
 				<description>Cache Label</description>
@@ -203,6 +203,19 @@
 				<textcolor>blue</textcolor>
 				<label>[UPPERCASE]$LOCALIZE[773][/UPPERCASE]</label>
 				<visible>Player.Seeking</visible>
+			</control>
+			<control type="label">
+				<description>Final Seek amount Label</description>
+				<posx>20</posx>
+				<posy>8</posy>
+				<width>240</width>
+				<height>20</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12_title</font>
+				<textcolor>blue</textcolor>
+				<label>[UPPERCASE]$LOCALIZE[773][/UPPERCASE][COLOR=grey] $INFO[Player.SeekOffset][/COLOR]</label>
+				<visible>Player.DisplayAfterSeek + ![player.forwarding | player.rewinding]</visible>
 			</control>
 			<control type="label">
 				<description>FF Label</description>

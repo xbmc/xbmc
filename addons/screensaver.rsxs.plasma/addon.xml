@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="screensaver.rsxs.plasma"
   version="1.0.0"
@@ -13,7 +13,9 @@
     library_osx="Plasma.xbs"/>
   <extension point="xbmc.addon.metadata">
     <summary>Probably the second most psychedelic screensaver ever</summary>
+    <summary lang="hu">A második legpszihedelikusabb képernyővédő</summary>
     <description>Probably the second most psychedelic screensaver in existence. Just try to picture all those colors moving around.</description>
+    <description lang="hu">Valószínüleg a második legpszihedelikusabb képernyővédő ami létezik. Csak képzeld el mindezt a színkavalkádot mozogni.</description>
     <description lang="nl">Een heel erg psychedelische screensaver.</description>
     <disclaimer></disclaimer>
     <platform>linux osx</platform>

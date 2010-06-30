@@ -35,7 +35,7 @@
 using namespace XFILE;
 using namespace ADDON;
 
-CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& items) : CGUIViewState(items, CPluginSource::IMAGE)
+CGUIViewStateWindowPictures::CGUIViewStateWindowPictures(const CFileItemList& items) : CGUIViewState(items)
 {
   if (items.IsVirtualDirectoryRoot())
   {
@@ -81,6 +81,7 @@ CStdString CGUIViewStateWindowPictures::GetExtensions()
 
 VECSOURCES& CGUIViewStateWindowPictures::GetSources()
 {
+  AddAddonsSource("image", g_localizeStrings.Get(1039));
   AddOrReplace(g_settings.m_pictureSources, CGUIViewState::GetSources());
   return g_settings.m_pictureSources;
 }

@@ -61,6 +61,8 @@ public:
   bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, unsigned char* pixels);
   bool LoadPaletted(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, const COLOR *palette);
 
+  bool HasAlpha() const;
+
   virtual void CreateTextureObject() = 0;
   virtual void DestroyTextureObject() = 0;
   virtual void LoadToGPU() = 0;
@@ -107,6 +109,7 @@ protected:
   bool m_loadedToGPU;
   unsigned int m_format;
   int m_orientation;
+  bool m_hasAlpha;
 };
 
 #if defined(HAS_GL) || defined(HAS_GLES)

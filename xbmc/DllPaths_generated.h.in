@@ -30,6 +30,7 @@
 #define DLL_PATH_LIBHDHOMERUN  "special://xbmcbin/system/hdhomerun-@ARCH@.so"
 #define DLL_PATH_MEDIAINFO     "special://xbmcbin/system/mediainfo-@ARCH@.so"
 #define DLL_PATH_LIBCMYTH      "xbmc.so"
+#define DLL_PATH_LIBRTMP       "librtmp.so"
 
 #ifndef DLL_PATH_LIBCURL
 #ifdef __APPLE__

@@ -92,36 +92,37 @@ CPythonPlayer::~CPythonPlayer(void)
 
 void CPythonPlayer::OnPlayBackStarted()
 {
-  PyXBMC_AddPendingCall(SPyEvent_Function, new SPyEvent(this, "onPlayBackStarted"));
+  PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onPlayBackStarted"));
   g_pythonParser.PulseGlobalEvent();
 }
 
 void CPythonPlayer::OnPlayBackEnded()
 {
-  PyXBMC_AddPendingCall(SPyEvent_Function, new SPyEvent(this, "onPlayBackEnded"));
+  PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onPlayBackEnded"));
   g_pythonParser.PulseGlobalEvent();
 }
 
 void CPythonPlayer::OnPlayBackStopped()
 {
-  PyXBMC_AddPendingCall(SPyEvent_Function, new SPyEvent(this, "onPlayBackStopped"));
+  PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onPlayBackStopped"));
   g_pythonParser.PulseGlobalEvent();
 }
 
 void CPythonPlayer::OnPlayBackPaused()
 {
-  PyXBMC_AddPendingCall(SPyEvent_Function, new SPyEvent(this, "onPlayBackPaused"));
+  PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onPlayBackPaused"));
   g_pythonParser.PulseGlobalEvent();
 }
 
 void CPythonPlayer::OnPlayBackResumed()
 {
-  PyXBMC_AddPendingCall(SPyEvent_Function, new SPyEvent(this, "onPlayBackResumed"));
+  PyXBMC_AddPendingCall(m_state, SPyEvent_Function, new SPyEvent(this, "onPlayBackResumed"));
   g_pythonParser.PulseGlobalEvent();
 }
 
-void CPythonPlayer::SetCallback(PyObject *object)
+void CPythonPlayer::SetCallback(PyThreadState *state, PyObject *object)
 {
   /* python lock should be held */
   m_callback = object;
+  m_state    = state;
 }

@@ -72,7 +72,6 @@ SRCS=AddonsDirectory.cpp \
      RTVDirectory.cpp \
      SAPDirectory.cpp \
      SAPFile.cpp \
-     ShoutcastDirectory.cpp \
      ShoutcastRipFile.cpp \
      SIDFileDirectory.cpp \
      SmartPlaylistDirectory.cpp \

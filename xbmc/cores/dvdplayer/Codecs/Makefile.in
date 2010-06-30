@@ -52,6 +52,9 @@ endif
 
 VPXLIB=
 ifeq (@USE_VPX@,1)
+ifeq ($(findstring osx,$(ARCH)),osx)
+VPXLIB+=-L/opt/local/lib
+endif
 VPXLIB+=-lvpx
 endif
 

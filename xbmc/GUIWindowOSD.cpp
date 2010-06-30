@@ -80,10 +80,6 @@ EVENT_RESULT CGUIWindowOSD::OnMouseEvent(const CPoint &point, const CMouseEvent 
   {
     return g_application.OnAction(CAction(ACTION_ANALOG_SEEK_BACK, 0.5f)) ? EVENT_RESULT_HANDLED : EVENT_RESULT_UNHANDLED;
   }
-  if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
-  { // pause
-    return g_application.OnAction(CAction(ACTION_PAUSE)) ? EVENT_RESULT_HANDLED : EVENT_RESULT_UNHANDLED;
-  }
 
   return CGUIDialog::OnMouseEvent(point, event);
 }

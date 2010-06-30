@@ -23,6 +23,8 @@
 #include "GraphicContext.h"
 #include "Settings.h"
 
+using namespace std;
+
 CWinSystemBase::CWinSystemBase()
 {
   m_nWidth = 0;
@@ -89,4 +91,71 @@ void CWinSystemBase::SetWindowResolution(int width, int height)
   window.iHeight = height;
   window.iSubtitles = (int)(0.965 * window.iHeight);
   g_graphicsContext.ResetOverscan(window);
+}
+
+int CWinSystemBase::DesktopResolution(int screen)
+{
+  for (int idx = 0; idx < GetNumScreens(); idx++)
+    if (g_settings.m_ResInfo[RES_DESKTOP + idx].iScreen == screen)
+      return RES_DESKTOP + idx;
+  // Uh? something's wrong, fallback to default res of main screen
+  return RES_DESKTOP;
+}
+
+static void AddResolution(vector<RESOLUTION_WHR> &resolutions, int width, int height, int screenDefaultRes)
+{
+  for (unsigned int idx = 0; idx < resolutions.size(); idx++)
+    if (resolutions[idx].width == width && resolutions[idx].height == height)
+      return; // this width*height was taken care of.
+
+  int screen = g_settings.m_ResInfo[screenDefaultRes].iScreen;
+  float targetfps = g_settings.m_ResInfo[screenDefaultRes].fRefreshRate;
+  //TODO: get it from another source if we can have stupid values like 0, 1?
+
+  int bestmatch = RES_DESKTOP;
+  float bestfitness = -1.0f;
+
+  for (size_t i = (int)RES_DESKTOP; i < g_settings.m_ResInfo.size(); i++)
+  {
+    RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
+
+    if (info.iWidth  != width
+    ||  info.iHeight != height
+    ||  info.iScreen != screen)
+      continue;
+
+    float fitness = fabs(targetfps - info.fRefreshRate);
+
+    if (bestfitness <0 || fitness <  bestfitness)
+    {
+      bestfitness = fitness;
+      bestmatch = i;
+      if (bestfitness == 0.0f) // perfect match
+        break;
+    }
+  }
+
+  RESOLUTION_WHR res = {g_settings.m_ResInfo[bestmatch].iWidth, g_settings.m_ResInfo[bestmatch].iHeight, bestmatch};
+  resolutions.push_back(res);
+}
+
+static bool resSortPredicate (RESOLUTION_WHR i, RESOLUTION_WHR j)
+{
+  return  (i.width < j.width ||
+          (i.width == j.width && i.height < j.height));
+}
+
+vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen)
+{
+    int defResolution = DesktopResolution(screen);
+    vector<RESOLUTION_WHR> resolutions;
+
+    // Can't assume the resolutions are sorted in any way
+    for (unsigned int idx = RES_DESKTOP; idx < g_settings.m_ResInfo.size(); idx++)
+      if (g_settings.m_ResInfo[idx].iScreen == screen)
+        AddResolution(resolutions, g_settings.m_ResInfo[idx].iWidth, g_settings.m_ResInfo[idx].iHeight, defResolution);
+
+    sort(resolutions.begin(), resolutions.end(), resSortPredicate);
+
+    return resolutions;
 }

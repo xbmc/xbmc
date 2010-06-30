@@ -12,13 +12,15 @@
   <string id="31000">Alterar seu</string>
   <string id="31001">Amor</string>
   <string id="31002">Ódio</string>
-  <string id="31003">Opções de energia/poder</string>
+  <string id="31003">Opções de energia</string>
+  <string id="31004">Executando...</string>
+  <string id="31005">Esconder INFO</string>
 
   <string id="31007">Plugins</string>
 
   <string id="31020">Adicionado recentemente</string>
   <string id="31021">Video - Arquivos</string>
-  <string id="31022">Music - Arquivos</string>
+  <string id="31022">Música - Arquivos</string>
   <string id="31023">Executando</string>
   <string id="31024">Página</string>
   <string id="31025">Itens</string>
@@ -30,7 +32,7 @@
   <string id="31029">Fanart</string>
   <string id="31030">Lista Completa</string>
   <string id="31031">Ícones de imagens</string>
-  <string id="31032">Vitrine Img</string>
+  <string id="31032">Vitrine de Imagens</string>
 
   <!-- Extra labels -->
   <string id="31040">Tocando agora</string>
@@ -52,7 +54,8 @@
   <string id="31058">Arquivos de música do sistema</string>
   <string id="31059">Playlist atual</string>
   <string id="31060">Este arquivo está empilhado, selecione a parte de onde executar.</string>
-  
+  <string id="31061">Selecionado</string>
+
   <!-- Skin Settings labels -->
   <string id="31100"></string>
   <string id="31101">Opções da tela principal (home)</string>
@@ -84,6 +87,11 @@
   <string id="31126">Habilitar Letras no OSD de Música</string>
   <string id="31127">CAMINHO PARA SCRIPT DE LETRAS</string>
   <string id="31128">Letras XBMC</string>
+  <string id="31129">Ativar download de legendas no OSD de video</string>
+  <string id="31130">CAMINHO PARA SCRIPT DE LEGENDA</string>
+
+  <string id="31140">OSD de Música</string>
+  <string id="31141">OSD de Video</string>
 
   <!-- Script labels -->
   <string id="31200">Atalhos</string>
@@ -105,7 +113,7 @@
   <string id="31303"></string>
   <string id="31304">Imagem</string>
   <string id="31305">Nenhum disco de mídia detectado</string>
-  <string id="31306">Ejectar</string>
+  <string id="31306">Ejetar</string>
   <string id="31307">Ocultar Fanart</string>
   <string id="31308">Detalhes do vídeo</string>
   <string id="31309">Memória usada:</string>
@@ -129,6 +137,16 @@
   <string id="31327">Resolução</string>
   <string id="31328">Adicionado Recentemente</string>
   <string id="31329">[B]DEFINIR TIMER![/B] [COLOR=grey2] - SISTEMA SE AUTO-DESLIGARÁ EM[/COLOR]</string>
+  <string id="31330">Clique no botão para tocar o[CR][CR]trailer</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Pausar</string>
+  <string id="31352">Parar</string>
+  <string id="31353">Avançar</string>
+  <string id="31354">Voltar</string>
+  <string id="31355">Menu do Filme</string>
+  <string id="31356">Download de Legendas</string>
+  <string id="31357"></string>
 
   <!-- Description Labels  -->
   <string id="31400">[B]CONFIGURAR AJUSTES DE APARÊNCIA[/B][CR][CR]Mudar o skin · Definir idioma e região · Definir opções de listagem de arquivos · Definir um descanso de tela</string>

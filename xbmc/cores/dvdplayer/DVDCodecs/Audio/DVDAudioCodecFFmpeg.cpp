@@ -85,18 +85,6 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if(m_pCodecContext->bits_per_coded_sample == 0)
     m_pCodecContext->bits_per_coded_sample = 16;
 
-/* for now, only set the requested layout for non-apple architecture */
-#ifdef __APPLE__
-  /* if we need to downmix, do it in ffmpeg as codecs are smarter then we can ever be */
-  /* wmapro does not support this */
-  if(hints.codec != CODEC_ID_WMAPRO && g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
-  {
-    m_pCodecContext->request_channel_layout = CH_LAYOUT_STEREO;
-    // below is required or center channel is missing with VC1 content under OSX.
-    m_pCodecContext->request_channels = 2;
-  }
-#endif
-
   if( hints.extradata && hints.extrasize > 0 )
   {
     m_pCodecContext->extradata_size = hints.extrasize;

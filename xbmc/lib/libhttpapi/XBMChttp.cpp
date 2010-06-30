@@ -1912,7 +1912,7 @@ int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
     {
       CStdString duration;
       if (tagVal)
-        StringUtils::SecondsToTimeString(tagVal->GetDuration(), duration, TIME_FORMAT_GUESS);
+        duration = StringUtils::SecondsToTimeString(tagVal->GetDuration(), TIME_FORMAT_GUESS);
       else if (tagVid)
         duration = tagVid->m_strRuntime;
       if (!duration.IsEmpty())
