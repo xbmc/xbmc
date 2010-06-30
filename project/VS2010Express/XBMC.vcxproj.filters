@@ -4907,6 +4907,9 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\XBMCFFmpegSplitter.h">
       <Filter>cores\dsplayer\Filters\Splitters\XBMC</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DSCodecDef.h">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\win32\XBMC.ico">

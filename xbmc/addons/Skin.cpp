@@ -41,6 +41,11 @@ boost::shared_ptr<ADDON::CSkinInfo> g_SkinInfo;
 namespace ADDON
 {
 
+CSkinInfo::CSkinInfo(const AddonProps &props, RESOLUTION res)
+  : CAddon(props), m_DefaultResolution(res), m_DefaultResolutionWide(res)
+{
+}
+
 CSkinInfo::CSkinInfo(const cp_extension_t *ext)
   : CAddon(ext)
 {
@@ -261,10 +266,8 @@ void CSkinInfo::GetSkinPaths(std::vector<CStdString> &paths) const
 {
   RESOLUTION resToUse = RES_INVALID;
   GetSkinPath("Home.xml", &resToUse);
-  if (resToUse == RES_HDTV_1080i)
-    paths.push_back(CUtil::AddFileToFolder(Path(), GetDirFromRes(RES_HDTV_1080i)));
-  if (resToUse == RES_HDTV_720p)
-    paths.push_back(CUtil::AddFileToFolder(Path(), GetDirFromRes(RES_HDTV_720p)));
+  paths.push_back(CUtil::AddFileToFolder(Path(), GetDirFromRes(resToUse)));
+  // see if we need to add other paths
   if (resToUse != m_DefaultResolutionWide && IsWide(resToUse))
     paths.push_back(CUtil::AddFileToFolder(Path(), GetDirFromRes(m_DefaultResolutionWide)));
   if (resToUse != m_DefaultResolution && (!IsWide(resToUse) || m_DefaultResolutionWide != m_DefaultResolution))

@@ -25,6 +25,7 @@
 #include "DVDStreamInfo.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "utils/log.h"
+#include "cores/dvdplayer/DVDSubtitles/SamiTagConvertor.h"
 
 CDVDOverlayCodecText::CDVDOverlayCodecText() : CDVDOverlayCodec("Text Subtitle Decoder")
 {
@@ -81,12 +82,18 @@ int CDVDOverlayCodecText::Decode(BYTE* data, int size, double pts, double durati
     }
   }
 
+  SamiTagConvertor TagConv;
+  bool Taginit = TagConv.Init();
+
   while(p<end)
   {
     if(*p == '{')
     {
       if(p>start)
-        m_pOverlay->AddElement(new CDVDOverlayText::CElementText(start, p-start));
+        if(Taginit)
+          TagConv.ConvertLine(m_pOverlay, start, p-start);
+        else
+          m_pOverlay->AddElement(new CDVDOverlayText::CElementText(start, p-start));
 
       start = p+1;
 
@@ -104,7 +111,13 @@ int CDVDOverlayCodecText::Decode(BYTE* data, int size, double pts, double durati
     p++;
   }
   if(p>start)
-    m_pOverlay->AddElement(new CDVDOverlayText::CElementText(start, p-start));
+    if(Taginit)
+    {
+      TagConv.ConvertLine(m_pOverlay, start, p-start);
+      TagConv.CloseTag(m_pOverlay);
+    }
+    else
+      m_pOverlay->AddElement(new CDVDOverlayText::CElementText(start, p-start));
 
   return OC_OVERLAY;
 }

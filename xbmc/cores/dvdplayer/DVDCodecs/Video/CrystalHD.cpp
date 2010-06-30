@@ -706,7 +706,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
             else
               pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
               
-            CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());
+            //CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());
           }
 
           pBuffer->m_width = m_width;
@@ -1002,11 +1002,14 @@ void CCrystalHD::OpenDevice()
     if( res == BCM::BC_STS_DEC_EXIST_OPEN )
       CLog::Log(LOGERROR, "%s: device owned by another application", __MODULE_NAME__);
     else
-      CLog::Log(LOGERROR, "%s: device open failed", __MODULE_NAME__);
+      CLog::Log(LOGERROR, "%s: device open failed , returning(0x%x)", __MODULE_NAME__, res);
   }
   else
   {
-    CLog::Log(LOGINFO, "%s: device opened", __MODULE_NAME__);
+    if (m_new_lib)
+      CLog::Log(LOGINFO, "%s(new): device opened", __MODULE_NAME__);
+    else
+      CLog::Log(LOGINFO, "%s(old): device opened", __MODULE_NAME__);
   }
 }
 
@@ -1095,6 +1098,10 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
     // this will get reset once we get a picture back.
     // the effect is to speed feeding demux packets during startup.
     m_wait_timeout = 1;
+    m_reset = 0;
+    m_last_pict_num = 0;
+    m_last_demuxer_pts = DVD_NOPTS_VALUE;
+    m_last_decoder_pts = DVD_NOPTS_VALUE;
 
     CLog::Log(LOGDEBUG, "%s: codec opened", __MODULE_NAME__);
   } while(false);
@@ -1132,17 +1139,32 @@ void CCrystalHD::CloseDecoder(void)
 
 void CCrystalHD::Reset(void)
 {
+  m_reset = 60;
   m_wait_timeout = 1;
+
+  // we are always late (chd pipeline fill) when seeking,
+  // so start off skipping all non reference pictures.
+  m_dll->DtsSetSkipPictureMode(m_device, 1);
 
   // Calling for non-error flush, Flushes all the decoder
   //  buffers, input, decoded and to be decoded. 
-  m_dll->DtsFlushInput(m_device, 2);
+  if (m_new_lib)
+  {
+    m_dll->DtsFlushInput(m_device, 1);
+    m_dll->DtsFlushRxCapture(m_device, true);
+  }
+  else
+  {
+    m_dll->DtsFlushInput(m_device, 2);
+  }
 
-  while (m_pOutputThread->GetReadyCount())
-    m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
+  ::Sleep(400);
 
   while (m_BusyList.Count())
     m_pOutputThread->FreeListPush( m_BusyList.Pop() );
+
+  while (m_pOutputThread->GetReadyCount())
+    m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
 
   CLog::Log(LOGDEBUG, "%s: codec flushed", __MODULE_NAME__);
 }
@@ -1158,7 +1180,7 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
       ret = m_dll->DtsProcInput(m_device, pData, size, pts_dtoi(pts), 0);
       if (ret == BCM::BC_STS_SUCCESS)
       {
-        m_last_pts = pts;
+        m_last_demuxer_pts = pts;
       }
       else if (ret == BCM::BC_STS_BUSY)
       {
@@ -1166,6 +1188,12 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
         ::Sleep(1); // Buffer is full, sleep it empty
       }
     } while (ret != BCM::BC_STS_SUCCESS);
+
+    if (m_drop_state)
+    {
+      if (m_pOutputThread->GetReadyCount() > 1)
+        m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
+    }
 
     bool wait_state;
     if (!m_pOutputThread->GetReadyCount())
@@ -1249,6 +1277,9 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   pDvdVideoPicture->iFlags |= m_drop_state ? DVP_FLAG_DROPPED : 0;
   pDvdVideoPicture->format = pBuffer->m_format;
 
+  m_last_pict_num = pBuffer->m_PictureNumber;
+  m_last_decoder_pts = pDvdVideoPicture->pts;
+
   while( m_BusyList.Count())
     m_pOutputThread->FreeListPush( m_BusyList.Pop() );
 
@@ -1258,6 +1289,18 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 
 void CCrystalHD::SetDropState(bool bDrop)
 {
+  if (m_reset)
+  {
+    if (m_drop_state != bDrop)
+      m_drop_state = bDrop;
+
+    m_reset--;
+    if (!m_reset)
+      m_dll->DtsSetSkipPictureMode(m_device, 0);
+
+    return;
+  }
+
   if (m_drop_state != bDrop)
   {
     m_drop_state = bDrop;
@@ -1266,10 +1309,11 @@ void CCrystalHD::SetDropState(bool bDrop)
     else
       m_dll->DtsSetSkipPictureMode(m_device, 0);
   }
-
+/*
   if (m_drop_state)
     CLog::Log(LOGDEBUG, "%s: SetDropState... %d, , GetFreeCount(%d), GetReadyCount(%d), BusyListCount(%d)", __MODULE_NAME__, 
       m_drop_state, m_pOutputThread->GetFreeCount(), m_pOutputThread->GetReadyCount(), m_BusyList.Count());
+*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////

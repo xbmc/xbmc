@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Based on english strings version 31359 -->
+<!--Based on english strings version 31429 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -193,6 +193,7 @@
   <string id="239">播放完成后清除列表</string>
   <string id="240">显示模式</string>
   <string id="241">全屏#%d</string>
+  <string id="242">窗口</string>
 
   <string id="247">脚本</string>
   <string id="248">语言</string>
@@ -232,7 +233,7 @@
   <string id="282">找到%i条</string>
   <string id="283">查找结果</string>
   <string id="284">无结果</string>
-  <string id="286">后处理滤镜</string>
+  <string id="286"></string>
   <string id="287">字幕</string>
   <string id="288">字体</string>
   <string id="289">- 尺寸</string>
@@ -252,11 +253,11 @@
   <string id="304">语言</string>
   <string id="305">开启</string>
   <string id="306">去交错（隔行变逐行）</string>
-  <string id="307">- 自动后处理</string>
-  <string id="308">- 垂直区块滤波器</string>
-  <string id="309">- 水平区块滤波器</string>
-  <string id="310">- 自动亮度/对比度调节</string>
-  <string id="311">- 消除压缩带来的画面瑕疵</string>
+  <string id="307"></string>
+  <string id="308"></string>
+  <string id="309"></string>
+  <string id="310"></string>
+  <string id="311"></string>
   <string id="312">（0=自动）</string>
   <string id="313">清理资料库</string>
   <string id="314">准备中...</string>
@@ -1294,7 +1295,7 @@
   <string id="14038">网络设置已改变</string>
   <string id="14039">XBMC 需要重启改变你的网络设置。</string>
   <string id="14040">你想现在就重启吗？</string>
-  <string id="14041">后置处理</string>
+  <string id="14041"></string>
 
   <string id="14043">- 播放时关机</string>
   <string id="14044">%i分</string>
@@ -1885,7 +1886,7 @@
   <string id="20446">发现本地存储的信息。</string>
   <string id="20447">忽略并从互联网刷新吗？</string>
   <string id="20448">无法下载信息</string>
-  <string id="20449">服务器不可用。</string>
+  <string id="20449">无法连接远程服务器</string>
   <string id="20450">要继续扫描吗？</string>
   <string id="20451">国家</string>
   <!-- up to 21329 is reserved for the video db !! !-->
@@ -2192,7 +2193,6 @@
   <string id="24075">禁用</string>
   <string id="24080">尝试重新连接？</string>
   <string id="24089">重新启动扩展功能</string>
-
   <string id="24090">锁定扩展功能管理器</string>
 
   <string id="24091"></string>
@@ -2200,6 +2200,9 @@
   <string id="24093"></string>
   <string id="24094"></string>
   <string id="24095"></string>
+
+  <string id="24096">库中的扩展功能被标记为已损坏。</string>
+  <string id="24097">要在系统中禁用它吗？</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">资料库模式</string>

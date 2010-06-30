@@ -330,6 +330,7 @@ config.log
 /system/python/DLLs/select.pyd
 /system/python/DLLs/unicodedata.pyd
 /system/python/DLLs/zlib.pyd
+/system/python/DLLs/bz2.pyd
 
 # /system/webserver
 /system/webserver

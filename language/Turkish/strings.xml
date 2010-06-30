@@ -4,8 +4,8 @@
 <!--Date of translation: 06/07/2006-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 09/06/2010-->
-<!--Based on English strings revision 31001-->
+<!--Date of translation: 26/06/2010-->
+<!--Based on English strings revision 31406-->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -196,6 +196,8 @@
   <string id="237">Küçültmek</string>
   <string id="238">Büyültmek</string>
   <string id="239">Oynatma bittiğinde çalma listesini temizle</string>
+  <string id="240">Görüntü Modu</string>
+  <string id="241">Tam Ekran #%d</string>
 
   <string id="247">Betikler</string>
   <string id="248">Dil</string>
@@ -725,13 +727,13 @@
   <string id="1034">Altmenü</string>
   <string id="1035">Altmenü tuşlarını etkinleştir</string>
   <string id="1036">Sık Kullanılanlar</string>
-  <string id="1037">Video eklentileri</string>
-  <string id="1038">Müzik eklentileri</string>
-  <string id="1039">Resim eklentileri</string>
+  <string id="1037">Video Eklentileri</string>
+  <string id="1038">Müzik Eklentileri</string>
+  <string id="1039">Resim Eklentileri</string>
   <string id="1040">Klasör yükleniyor</string>
   <string id="1041">%i öge alındı</string>
   <string id="1042">%i ögeden %i tanesi alındı</string>
-  <string id="1043">Program eklentileri</string>
+  <string id="1043">Program Eklentileri</string>
   <string id="1044">Eklenti küçük resmini ayarla</string>
   <string id="1045">Eklenti ayarları</string>
   <string id="1046">Giriş noktaları</string>
@@ -1529,6 +1531,11 @@
   <string id="16317">Temporal (Yarım)</string>
   <string id="16318">Temporal/Spatial (Yarım)</string>
 
+  <string id="16400">Video post-processing</string>
+  <string id="16401">Devre dışı</string>
+  <string id="16402">SD içeriği için etkin</string>
+  <string id="16403">Her zaman etkin</string>
+
   <string id="17500">Görüntü uyku zaman aşımı</string>
 
   <string id="19000">Kanal değiştir</string>
@@ -1884,7 +1891,7 @@
   <string id="20446">Yerel olarak depolanan bilgi bulundu.</string>
   <string id="20447">Yoksayıp internetten yenilensin mi?</string>
   <string id="20448">Bilgi indirilemiyor</string>
-  <string id="20449">Sunucu büyük olasılıkla kullanılamaz.</string>
+  <string id="20449">Uzak sunucuya bağlanılamıyor.</string>
   <string id="20450">Taramaya devam etmek istiyor musunuz?</string>
   <string id="20451">Ülkeler</string>
   <!-- up to 21329 is reserved for the video db !! !-->
@@ -1992,6 +1999,7 @@
   <string id="21450">- Düzenle</string>
   <string id="21451">Internet bağlantısı gereklidir.</string>
   <string id="21452">Daha Fazla</string>
+  <string id="21453">Kök dosya sistemi</string>
 
   <string id="21800">Dosya adı</string>
   <string id="21801">Dosya yolu</string>
@@ -2163,6 +2171,7 @@
   <string id="24038">Yükle</string>
   <string id="24039">Devre Dışı Bırakılan Eklentiler</string>
   <string id="24040">(Geçerli ayarı temizle)</string>
+  <string id="24041">Zip dosyasından yükle</string>
 
   <string id="24050">Kullanılabilir Eklentiler</string>
   <string id="24051">Sürüm:</string>
@@ -2181,15 +2190,14 @@
   <string id="24068">Güncelleştirme var</string>
   <string id="24069">Güncelleştir</string>
 
-  <string id="24070">Eklenti kullanılamaz</string>
-  <string id="24071">Bilinmeyen bir hata oluştu</string>
+  <string id="24070">Eklenti yüklenemedi.</string>
+  <string id="24071">Bilinmeyen bir hata oluştu.</string>
   <string id="24072">Ayarlar gerekli</string>
   <string id="24073">Bağlanılamadı</string>
   <string id="24074">Yeniden başlatmak gerekiyor</string>
   <string id="24075">Devre dışı bırak</string>
   <string id="24080">Yeniden bağlanılsın mı?</string>
   <string id="24089">Eklenti yeniden başlatmaları</string>
-
   <string id="24090">Eklenti yöneticisini kilitle</string>
 
   <string id="24091"></string>
@@ -2197,6 +2205,9 @@
   <string id="24093"></string>
   <string id="24094"></string>
   <string id="24095"></string>
+
+  <string id="24096">Depodaki eklenti bozuk olarak işaretlenmiş.</string>
+  <string id="24097">Sisteminizde devre dışı bırakmak ister misiniz?</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Kitaplık Modu</string>

@@ -3391,18 +3391,19 @@ void CGUIInfoManager::SetDisplayAfterSeek(unsigned int timeOut, int seekOffset)
   if (timeOut>0)
   {
     m_AfterSeekTimeout = CTimeUtils::GetFrameTime() +  timeOut;
-    m_seekOffset = seekOffset;
+    if (seekOffset)
+      m_seekOffset = seekOffset;
   }
   else
-  {
     m_AfterSeekTimeout = 0;
-    m_seekOffset = 0;
-  }
 }
 
-bool CGUIInfoManager::GetDisplayAfterSeek() const
+bool CGUIInfoManager::GetDisplayAfterSeek()
 {
-  return (CTimeUtils::GetFrameTime() < m_AfterSeekTimeout);
+  if (CTimeUtils::GetFrameTime() < m_AfterSeekTimeout)
+    return true;
+  m_seekOffset = 0;
+  return false;
 }
 
 CStdString CGUIInfoManager::GetAudioScrobblerLabel(int item)

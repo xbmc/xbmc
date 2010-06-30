@@ -6,8 +6,8 @@ SET FILES=%LOC_PATH%\librtmp_d.txt
 CALL dlextract.bat librtmp %FILES%
 
 cd %TMP_PATH%
-%ZIP% x rtmpdump-2.2e.tar
 
-xcopy rtmpdump-2.2e\librtmp\*.h "%CUR_PATH%\include\librtmp\" /E /Q /I /Y
+xcopy librtmp\* "%CUR_PATH%\include\librtmp\" /E /Q /I /Y
+copy librtmp.dll "%XBMC_PATH%\system\players\dvdplayer\" /Y
 
 cd %LOC_PATH%

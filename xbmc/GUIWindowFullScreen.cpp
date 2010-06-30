@@ -598,10 +598,6 @@ EVENT_RESULT CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMous
     OnAction(CAction(ACTION_SHOW_GUI));
     return EVENT_RESULT_HANDLED;
   }
-  if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
-  { // no control found to absorb this click - pause video
-    return g_application.OnAction(CAction(ACTION_PAUSE)) ? EVENT_RESULT_HANDLED : EVENT_RESULT_UNHANDLED;
-  }
   if (event.m_id == ACTION_MOUSE_WHEEL_UP)
   {
     return g_application.OnAction(CAction(ACTION_ANALOG_SEEK_FORWARD, 0.5f)) ? EVENT_RESULT_HANDLED : EVENT_RESULT_UNHANDLED;

@@ -1059,6 +1059,7 @@
     <ClInclude Include="..\..\xbmc\addons\Skin.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DSMessage.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\ExternalPixelShader.h" />
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DSCodecDef.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSGuidHelper.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\DSStreamInfo.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\MpegSplitter.h" />

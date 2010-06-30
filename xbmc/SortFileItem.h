@@ -27,6 +27,12 @@ class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
 struct SSortFileItem
 {
+  /*! \brief Remove any articles (eg "the", "a") from the start of a label
+   \param label the label to process
+   \return the label stripped of any articles
+   */
+  static CStdString RemoveArticles(const CStdString &label);
+
   // Sort by sort field
   static bool Ascending(const CFileItemPtr &left, const CFileItemPtr &right);
   static bool Descending(const CFileItemPtr &left, const CFileItemPtr &right);

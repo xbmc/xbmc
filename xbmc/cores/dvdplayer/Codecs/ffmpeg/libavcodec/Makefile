@@ -610,7 +610,6 @@ OBJS-$(CONFIG_MLIB)                    += mlib/dsputil_mlib.o           \
 
 SKIPHEADERS                             = %_tablegen.h
 SKIPHEADERS-$(CONFIG_DXVA2)            += dxva2.h dxva2_internal.h
-SKIPHEADERS-$(CONFIG_DXVA2)            += dxva2_internal.h
 SKIPHEADERS-$(CONFIG_LIBDIRAC)         += libdirac.h
 SKIPHEADERS-$(CONFIG_LIBSCHROEDINGER)  += libschroedinger.h
 SKIPHEADERS-$(CONFIG_VAAPI)            += vaapi_internal.h

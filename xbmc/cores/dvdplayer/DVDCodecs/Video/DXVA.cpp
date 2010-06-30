@@ -69,8 +69,8 @@ static int GetBufferS(AVCodecContext *avctx, AVFrame *pic)
 
 
 DEFINE_GUID(DXVADDI_Intel_ModeH264_A, 0x604F8E64,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
-DEFINE_GUID(DXVADDI_Intel_ModeH264_C, 0x664F8E66,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
-DEFINE_GUID(DXVADDI_Intel_ModeH264_E, 0x664F8E68,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
+DEFINE_GUID(DXVADDI_Intel_ModeH264_C, 0x604F8E66,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
+DEFINE_GUID(DXVADDI_Intel_ModeH264_E, 0x604F8E68,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
 DEFINE_GUID(DXVADDI_Intel_ModeVC1_E , 0xBCC5DB6D,0xA2B6,0x4AF0,0xAC,0xE4,0xAD,0xB1,0xF7,0x87,0xBC,0x89);
 
 typedef struct {
@@ -518,8 +518,8 @@ int CDecoder::Check(AVCodecContext* avctx)
     return VC_FLUSHED;
   }
 
-  if(avctx->codec_id != CODEC_ID_MPEG2VIDEO
-  && avctx->codec_id != CODEC_ID_H264
+  // Status reports are available only for the DXVA2_ModeH264 and DXVA2_ModeVC1 modes
+  if(avctx->codec_id != CODEC_ID_H264
   && avctx->codec_id != CODEC_ID_VC1
   && avctx->codec_id != CODEC_ID_WMV3)
     return 0;
@@ -539,11 +539,6 @@ int CDecoder::Check(AVCodecContext* avctx)
   if(FAILED( hr = m_decoder->Execute(&params)))
   {
     CLog::Log(LOGWARNING, "DXVA - failed to get decoder status - 0x%08X", hr);
-
-    // temporary ugly hack for testing! pretend there was no error.
-    if(avctx->codec_id == CODEC_ID_MPEG2VIDEO)
-      return 0;
-
     return VC_ERROR;
   }
 

@@ -256,7 +256,7 @@ protected:
   void SetCaching(ECacheState state);
 
   __int64 GetTotalTimeInMsec();
-  void FlushBuffers(bool queued, double startpts = DVD_NOPTS_VALUE);
+  void FlushBuffers(bool queued, double pts = DVD_NOPTS_VALUE, bool accurate = true);
 
   void HandleMessages();
   void HandlePlaySpeed();

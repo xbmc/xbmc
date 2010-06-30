@@ -62,8 +62,9 @@ CGUIPythonWindowXML::~CGUIPythonWindowXML(void)
   CloseHandle(m_actionEvent);
 }
 
-void CGUIPythonWindowXML::Update()
+bool CGUIPythonWindowXML::Update(const CStdString &strPath)
 {
+  return true;
 }
 
 bool CGUIPythonWindowXML::OnAction(const CAction &action)
