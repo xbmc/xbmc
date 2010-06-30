@@ -62,7 +62,7 @@ half3 line (float ypos, vec4 xpos, half4 linetaps)
 
 void main()
 {
-  vec2 pos = stretch(gl_TexCoord[0].xy);
+  vec2 pos = stretch(gl_TexCoord[0].xy) + stepxy * 0.5;
   vec2 f = fract(pos / stepxy);
 
   half4 linetaps   = weight(1.0 - f.x);
@@ -72,7 +72,7 @@ void main()
   linetaps /= linetaps.r + linetaps.g + linetaps.b + linetaps.a;
   columntaps /= columntaps.r + columntaps.g + columntaps.b + columntaps.a;
 
-  vec2 xystart = (-0.5 - f) * stepxy + pos;
+  vec2 xystart = (-1.5 - f) * stepxy + pos;
   vec4 xpos = vec4(xystart.x, xystart.x + stepxy.x, xystart.x + stepxy.x * 2.0, xystart.x + stepxy.x * 3.0);
 
   gl_FragColor.rgb =
