@@ -481,31 +481,40 @@ void CWinRenderer::RenderLowMem(CD3DEffect &effect, DWORD flags)
       FLOAT tu3, tv3;
   };
 
+  float textureHQYOffset = 0.0f;
+  float textureHQUVOffset = 0.0f;
+
+  if (m_bUseHQScaler)
+  {
+    textureHQYOffset = 0.5f;
+    textureHQUVOffset = 0.75f;
+  }
+
   CUSTOMVERTEX verts[4] =
   {
     {
       m_destRect.x1                                                      ,  m_destRect.y1, 0.0f, 1.0f,
-      (m_sourceRect.x1) / m_sourceWidth                                  , (m_sourceRect.y1) / m_sourceHeight,
-      (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1),
-      (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1)
+      (m_sourceRect.x1 - textureHQYOffset) / m_sourceWidth               , (m_sourceRect.y1 - textureHQYOffset) / m_sourceHeight,
+      (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ - textureHQUVOffset) / (m_sourceWidth>>1) , (m_sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ - textureHQUVOffset) / (m_sourceHeight>>1),
+      (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ - textureHQUVOffset) / (m_sourceWidth>>1) , (m_sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ - textureHQUVOffset) / (m_sourceHeight>>1)
     },
     {
       m_destRect.x2                                                      ,  m_destRect.y1, 0.0f, 1.0f,
-      (m_sourceRect.x2) / m_sourceWidth                                  , (m_sourceRect.y1) / m_sourceHeight,
-      (m_sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1),
-      (m_sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1)
+      (m_sourceRect.x2 - textureHQYOffset) / m_sourceWidth               , (m_sourceRect.y1- textureHQYOffset) / m_sourceHeight,
+      (m_sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ - textureHQUVOffset) / (m_sourceWidth>>1) , (m_sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ - textureHQUVOffset) / (m_sourceHeight>>1),
+      (m_sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ - textureHQUVOffset) / (m_sourceWidth>>1) , (m_sourceRect.y1 / 2.0f + CHROMAOFFSET_HORIZ - textureHQUVOffset) / (m_sourceHeight>>1)
     },
     {
       m_destRect.x2                                                      ,  m_destRect.y2, 0.0f, 1.0f,
-      (m_sourceRect.x2) / m_sourceWidth                                  , (m_sourceRect.y2) / m_sourceHeight,
-      (m_sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1),
-      (m_sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1) , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1)
+      (m_sourceRect.x2 - textureHQYOffset) / m_sourceWidth               , (m_sourceRect.y2- textureHQYOffset) / m_sourceHeight,
+      (m_sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ - textureHQUVOffset) / (m_sourceWidth>>1) , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ - textureHQUVOffset) / (m_sourceHeight>>1),
+      (m_sourceRect.x2 / 2.0f + CHROMAOFFSET_HORIZ - textureHQUVOffset) / (m_sourceWidth>>1) , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ - textureHQUVOffset) / (m_sourceHeight>>1)
     },
     {
       m_destRect.x1                                                       ,  m_destRect.y2, 0.0f, 1.0f,
-      (m_sourceRect.x1) / m_sourceWidth                                   , (m_sourceRect.y2) / m_sourceHeight,
-      (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1)  , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1),
-      (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceWidth>>1)  , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ) / (m_sourceHeight>>1)
+      (m_sourceRect.x1 - textureHQYOffset) / m_sourceWidth                , (m_sourceRect.y2- textureHQYOffset) / m_sourceHeight,
+      (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ - textureHQUVOffset) / (m_sourceWidth>>1)  , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ - textureHQUVOffset) / (m_sourceHeight>>1),
+      (m_sourceRect.x1 / 2.0f + CHROMAOFFSET_HORIZ - textureHQUVOffset) / (m_sourceWidth>>1)  , (m_sourceRect.y2 / 2.0f + CHROMAOFFSET_HORIZ - textureHQUVOffset) / (m_sourceHeight>>1)
     }
   };
 
