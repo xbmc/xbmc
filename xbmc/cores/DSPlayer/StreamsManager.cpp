@@ -772,6 +772,9 @@ void CSubtitleManager::Initialize()
   SIZE s; s.cx = 0; s.cy = 0;
   ISubManager *pManager = NULL;
 
+  if (! m_dll.IsLoaded())
+    return;
+
   // Log manager for the DLL
   m_Log.reset(new ILogImpl());
 
