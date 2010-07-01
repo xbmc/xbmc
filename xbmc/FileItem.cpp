@@ -1449,6 +1449,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_SIZE:
     FillSortFields(SSortFileItem::BySize);
     break;
+  case SORT_METHOD_BITRATE:
+    FillSortFields(SSortFileItem::ByBitrate);
+    break;      
   case SORT_METHOD_DRIVE_TYPE:
     FillSortFields(SSortFileItem::ByDriveType);
     break;
