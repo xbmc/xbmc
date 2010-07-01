@@ -1287,7 +1287,6 @@ HRESULT CDX9AllocatorPresenter::TextureResize(Com::SmartPtr<IDirect3DTexture9> p
   AdjustQuad(v, 0, 0);
 
   hr = m_pD3DDev->SetTexture(0, pTexture);
-
   hr = m_pD3DDev->SetPixelShader(NULL);
 
   hr = TextureBlt(m_pD3DDev, v, filter);
@@ -1330,8 +1329,6 @@ HRESULT CDX9AllocatorPresenter::TextureResizeBilinear(Com::SmartPtr<IDirect3DTex
   hr = m_pD3DDev->SetPixelShader(m_pResizerPixelShader[0]);
 
   hr = TextureBlt(m_pD3DDev, v, D3DTEXF_POINT);
-
-  //
 
   m_pD3DDev->SetPixelShader(NULL);
 
@@ -1508,27 +1505,17 @@ HRESULT CDX9AllocatorPresenter::AlphaBlt(RECT* pSrc, RECT* pDst, Com::SmartPtr<I
   float w = (float)d3dsd.Width;
   float h = (float)d3dsd.Height;
 
-  struct
-  {
-    float x, y, z, rhw;
-    float tu, tv;
-  }
-  pVertices[] =
+  MYD3DVERTEX<1> pVertices[] =
   {
     {(float)dst.left, (float)dst.top, 0.5f, 2.0f, (float)src.left / w, (float)src.top / h},
     {(float)dst.right, (float)dst.top, 0.5f, 2.0f, (float)src.right / w, (float)src.top / h},
     {(float)dst.left, (float)dst.bottom, 0.5f, 2.0f, (float)src.left / w, (float)src.bottom / h},
     {(float)dst.right, (float)dst.bottom, 0.5f, 2.0f, (float)src.right / w, (float)src.bottom / h},
   };
-/*
-  for(int i = 0; i < countof(pVertices); i++)
-  {
-    pVertices[i].x -= 0.5;
-    pVertices[i].y -= 0.5;
-  }
-*/
+  AdjustQuad(pVertices, 0, 0);
 
   hr = m_pD3DDev->SetTexture(0, pTexture);
+  hr = m_pD3DDev->SetPixelShader(NULL);
 
   DWORD abe, sb, db;
   hr = m_pD3DDev->GetRenderState(D3DRS_ALPHABLENDENABLE, &abe);
@@ -1538,25 +1525,33 @@ HRESULT CDX9AllocatorPresenter::AlphaBlt(RECT* pSrc, RECT* pDst, Com::SmartPtr<I
   hr = m_pD3DDev->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
   hr = m_pD3DDev->SetRenderState(D3DRS_LIGHTING, FALSE);
   hr = m_pD3DDev->SetRenderState(D3DRS_ZENABLE, FALSE);
+  hr = m_pD3DDev->SetRenderState(D3DRS_STENCILENABLE, FALSE);
   hr = m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+  hr = m_pD3DDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE); 
+  hr = m_pD3DDev->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE); 
+  hr = m_pD3DDev->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_ALPHA|D3DCOLORWRITEENABLE_BLUE|D3DCOLORWRITEENABLE_GREEN|D3DCOLORWRITEENABLE_RED); 
   hr = m_pD3DDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_ONE); // pre-multiplied src and ...
   hr = m_pD3DDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_SRCALPHA); // ... inverse alpha channel for dst
 
-  hr = m_pD3DDev->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
-  hr = m_pD3DDev->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-  hr = m_pD3DDev->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+  hr = m_pD3DDev->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+  hr = m_pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+  hr = m_pD3DDev->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+  hr = m_pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+  hr = m_pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+  hr = m_pD3DDev->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
 
   hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
   hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
   hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-
   hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
   hr = m_pD3DDev->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 
-  hr = m_pD3DDev->SetPixelShader(NULL);
-
   hr = m_pD3DDev->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
-  hr = m_pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, pVertices, sizeof(pVertices[0]));
+
+  MYD3DVERTEX<1> tmp = pVertices[2]; 
+  pVertices[2] = pVertices[3]; 
+  pVertices[3] = tmp;
+  hr = m_pD3DDev->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, pVertices, sizeof(pVertices[0]));
 
   m_pD3DDev->SetTexture(0, NULL);
 
@@ -2100,6 +2095,7 @@ STDMETHODIMP_(bool) CDX9AllocatorPresenter::Paint(bool fAll)
         }
      }
 #endif
+
       if(rSrcVid.Size() != rDstVid.Size())
       {
         if(iDX9Resizer == 0 || iDX9Resizer == 1)
