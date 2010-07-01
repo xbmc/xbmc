@@ -41,7 +41,6 @@ class CPluginDirectory : public IDirectory
 public:
   CPluginDirectory();
   ~CPluginDirectory(void);
-  CStdString m_label2; 
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
   virtual bool IsAllowed(const CStdString &strFile) const { return true; };
   virtual bool Exists(const char* strPath) { return true; }
@@ -53,7 +52,7 @@ public:
   static bool AddItem(int handle, const CFileItem *item, int totalItems);
   static bool AddItems(int handle, const CFileItemList *items, int totalItems);
   static void EndOfDirectory(int handle, bool success, bool replaceListing, bool cacheToDisc);
-  static void AddSortMethod(int handle, SORT_METHOD sortMethod);
+  static void AddSortMethod(int handle, SORT_METHOD sortMethod, const CStdString &label2Mask);
   static CStdString GetSetting(int handle, const CStdString &key);
   static void SetSetting(int handle, const CStdString &key, const CStdString &value);
   static void SetContent(int handle, const CStdString &strContent);
