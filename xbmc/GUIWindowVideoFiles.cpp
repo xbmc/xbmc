@@ -151,6 +151,8 @@ bool CGUIWindowVideoFiles::OnAction(const CAction &action)
   if (action.GetID() == ACTION_TOGGLE_WATCHED)
   {
     CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
+    if (pItem->IsParentFolder())
+      return false;
 
     if (pItem && pItem->GetOverlayImage().Equals("OverlayWatched.png"))
       return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_MARK_UNWATCHED);
