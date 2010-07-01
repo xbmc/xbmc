@@ -47,7 +47,7 @@
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug Unicode|Win32'">$(ProjectName)DU</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release Unicode|Win32'">$(ProjectName)U</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release Unicode|Win32'">$(ProjectName)RU</TargetName>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Unicode|Win32'">$(SolutionDir)libs\$(TargetName)\$(Configuration)\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release Unicode|Win32'">$(SolutionDir)libs\$(TargetName)\$(Configuration)\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">$(SolutionDir)libs\$(TargetName)\$(Configuration)\</OutDir>
@@ -139,7 +139,6 @@
     <ClCompile Include="GolombBuffer.cpp" />
     <ClCompile Include="H264Nalu.cpp" />
     <ClCompile Include="HdmvClipInfo.cpp" />
-    <ClCompile Include="MediaTypeEx.cpp" />
     <ClCompile Include="MediaTypes.cpp" />
     <ClCompile Include="NullRenderers.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -157,7 +156,6 @@
     <ClInclude Include="GolombBuffer.h" />
     <ClInclude Include="H264Nalu.h" />
     <ClInclude Include="HdmvClipInfo.h" />
-    <ClInclude Include="MediaTypeEx.h" />
     <ClInclude Include="MediaTypes.h" />
     <ClInclude Include="NullRenderers.h" />
     <ClInclude Include="SharedInclude.h" />

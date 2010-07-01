@@ -1681,25 +1681,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   { // reset display
     g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
   }
-#ifdef HAS_DS_PLAYER
-  else if (strSetting.Equals("dsplayer.ffdshowstablecodec"))
-  {
-    CGUIDialogYesNo *dialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-    if (dialog)
-    {
-      dialog->SetHeading("Are you sure?");
-      dialog->SetLine(0, "Your about to set all stable formats ");
-      dialog->SetLine(1, "to libavcodec which is recommenced");
-      dialog->SetLine(2, "");
-      dialog->DoModal();
-      if (dialog->IsConfirmed())
-      {
-        CDirectShowEnumerator pEnum;
-        pEnum.ForceStableCodecs();
-      }        
-    }
-  }
-#endif
   else if (strSetting.Equals("screensaver.preview"))
   {
     g_application.ActivateScreenSaver(true);

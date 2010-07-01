@@ -2670,14 +2670,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\RegKey.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\regkey.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\DSPlayer\DShowUtil\smartlist.h"
 						>
 					</File>

@@ -780,9 +780,6 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypes.cpp">
       <Filter>cores\dsplayer\DShowUtil</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DShowUtil\RegKey.cpp">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.cpp">
       <Filter>cores\dsplayer\DShowUtil</Filter>
     </ClCompile>
@@ -3069,9 +3066,6 @@
       <Filter>cores\dsplayer\DShowUtil</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypes.h">
-      <Filter>cores\dsplayer\DShowUtil</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\regkey.h">
       <Filter>cores\dsplayer\DShowUtil</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\smartlist.h">

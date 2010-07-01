@@ -250,10 +250,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\MediaTypeEx.cpp"
-				>
-			</File>
-			<File
 				RelativePath="MediaTypes.cpp"
 				>
 			</File>
@@ -340,10 +336,6 @@
 			</File>
 			<File
 				RelativePath=".\HdmvClipInfo.h"
-				>
-			</File>
-			<File
-				RelativePath=".\MediaTypeEx.h"
 				>
 			</File>
 			<File

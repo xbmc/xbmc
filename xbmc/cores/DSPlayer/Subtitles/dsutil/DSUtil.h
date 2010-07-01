@@ -26,106 +26,21 @@
 #include "NullRenderers.h"
 #include "HdmvClipInfo.h"
 #include "H264Nalu.h"
-//#include "MediaTypes.h"
-#include "MediaTypeEx.h"
 #include "vd.h"
 #include "text.h"
 
 #define LCID_NOSUBTITLES      -1
 
-/*struct CFileStatus
-{
-  CTime m_ctime;          // creation date/time of file
-  CTime m_mtime;          // last modification date/time of file
-  CTime m_atime;          // last access date/time of file
-  ULONGLONG m_size;            // logical size of file in bytes
-  BYTE m_attribute;       // logical OR of CFile::Attribute enum values
-  BYTE _m_padding;        // pad the structure to a WORD
-  TCHAR m_szFullName[_MAX_PATH]; // absolute path name
-
-#ifdef _DEBUG
-  void Dump(CDumpContext& dc) const;
-#endif
-};*/
-
-extern void DumpStreamConfig(TCHAR* fn, IAMStreamConfig* pAMVSCCap);
 extern int  CountPins(IBaseFilter* pBF, int& nIn, int& nOut, int& nInC, int& nOutC);
 extern bool IsSplitter(IBaseFilter* pBF, bool fCountConnectedOnly = false);
-extern bool IsMultiplexer(IBaseFilter* pBF, bool fCountConnectedOnly = false);
-extern bool IsStreamStart(IBaseFilter* pBF);
-extern bool IsStreamEnd(IBaseFilter* pBF);
-extern bool IsVideoRenderer(IBaseFilter* pBF);
-extern bool IsAudioWaveRenderer(IBaseFilter* pBF);
-extern IBaseFilter* GetUpStreamFilter(IBaseFilter* pBF, IPin* pInputPin = NULL);
-extern IPin* GetUpStreamPin(IBaseFilter* pBF, IPin* pInputPin = NULL);
 extern IPin* GetFirstPin(IBaseFilter* pBF, PIN_DIRECTION dir = PINDIR_INPUT);
-extern IPin* GetFirstDisconnectedPin(IBaseFilter* pBF, PIN_DIRECTION dir);
-extern void NukeDownstream(IBaseFilter* pBF, IFilterGraph* pFG);
-extern void NukeDownstream(IPin* pPin, IFilterGraph* pFG);
-extern IBaseFilter* FindFilter(LPCWSTR clsid, IFilterGraph* pFG);
-extern IBaseFilter* FindFilter(const CLSID& clsid, IFilterGraph* pFG);
-extern CStdStringW GetFilterName(IBaseFilter* pBF);
 extern CStdStringW GetPinName(IPin* pPin);
-extern IFilterGraph* GetGraphFromFilter(IBaseFilter* pBF);
-extern IBaseFilter* GetFilterFromPin(IPin* pPin);
-extern IPin* AppendFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder* pGB);
-extern IPin* InsertFilter(IPin* pPin, CStdString DisplayName, IGraphBuilder* pGB);
-/*extern void ExtractMediaTypes(IPin* pPin, std::vector<GUID>& types);
-extern void ExtractMediaTypes(IPin* pPin, std::list<CMediaType>& mts);*/
-extern void ShowPPage(CStdString DisplayName, HWND hParentWnd);
-extern void ShowPPage(IUnknown* pUnknown, HWND hParentWnd);
-extern CLSID GetCLSID(IBaseFilter* pBF);
-extern CLSID GetCLSID(IPin* pPin);
-extern bool IsCLSIDRegistered(LPCTSTR clsid);
-extern bool IsCLSIDRegistered(const CLSID& clsid);
-extern void CStdStringToBin(CStdString str, std::vector<BYTE>& data);
-extern CStdString BinToCStdString(BYTE* ptr, int len);
-typedef enum {CDROM_NotFound, CDROM_Audio, CDROM_VideoCD, CDROM_DVDVideo, CDROM_Unknown} cdrom_t;
-extern cdrom_t GetCDROMType(TCHAR drive, std::list<CStdString>& files);
-extern CStdString GetDriveLabel(TCHAR drive);
-extern bool GetKeyFrames(CStdString fn, std::vector<UINT>& kfs);
-extern DVD_HMSF_TIMECODE RT2HMSF(REFERENCE_TIME rt, double fps = 0);
-extern REFERENCE_TIME HMSF2RT(DVD_HMSF_TIMECODE hmsf, double fps = 0);
 extern void memsetd(void* dst, unsigned int c, int nbytes);
-extern bool ExtractBIH(const AM_MEDIA_TYPE* pmt, BITMAPINFOHEADER* bih);
-extern bool ExtractBIH(IMediaSample* pMS, BITMAPINFOHEADER* bih);
-extern bool ExtractAvgTimePerFrame(const AM_MEDIA_TYPE* pmt, REFERENCE_TIME& rtAvgTimePerFrame);
-extern bool ExtractDim(const AM_MEDIA_TYPE* pmt, int& w, int& h, int& arx, int& ary);
-extern bool MakeMPEG2MediaType(CMediaType& mt, BYTE* seqhdr, DWORD len, int w, int h);
-extern unsigned __int64 GetFileVersion(LPCTSTR fn);
-extern bool CreateFilter(CStdStringW DisplayName, IBaseFilter** ppBF, CStdStringW& FriendlyName);
-extern IBaseFilter* AppendFilter(IPin* pPin, IMoniker* pMoniker, IGraphBuilder* pGB);
-extern CStdStringW GetFriendlyName(CStdStringW DisplayName);
-/*extern HRESULT LoadExternalObject(LPCTSTR path, REFCLSID clsid, REFIID iid, void** ppv);
-extern HRESULT LoadExternalFilter(LPCTSTR path, REFCLSID clsid, IBaseFilter** ppBF);
-extern HRESULT LoadExternalPropertyPage(IPersist* pP, REFCLSID clsid, IPropertyPage** ppPP);
-extern void UnloadExternalObjects();*/
-extern CStdString MakeFullPath(LPCTSTR path);
-extern CStdString GetMediaTypeName(const GUID& guid);
-extern GUID GUIDFromCStdString(CStdString str);
-extern HRESULT GUIDFromCStdString(CStdString str, GUID& guid);
-extern CStdString CStdStringFromGUID(const GUID& guid);
 extern CStdStringW UTF8To16(LPCSTR utf8);
-extern CStdStringA UTF16To8(LPCWSTR utf16);
-extern CStdString ISO6391ToLanguage(LPCSTR code);
 extern CStdString ISO6392ToLanguage(LPCSTR code);
 extern LCID    ISO6391ToLcid(LPCSTR code);
 extern LCID    ISO6392ToLcid(LPCSTR code);
-extern CStdString ISO6391To6392(LPCSTR code);
-extern CStdString ISO6392To6391(LPCSTR code);
-extern CStdString LanguageToISO6392(LPCTSTR lang);
-extern int MakeAACInitData(BYTE* pData, int profile, int freq, int channels);
-//extern BOOL CFileGetStatus(LPCTSTR lpszFileName, CFileStatus& status);
-extern bool DeleteRegKey(LPCTSTR pszKey, LPCTSTR pszSubkey);
-extern bool SetRegKeyValue(LPCTSTR pszKey, LPCTSTR pszSubkey, LPCTSTR pszValueName, LPCTSTR pszValue);
-extern bool SetRegKeyValue(LPCTSTR pszKey, LPCTSTR pszSubkey, LPCTSTR pszValue);
-extern void RegisterSourceFilter(const CLSID& clsid, const GUID& subtype2, LPCTSTR chkbytes, LPCTSTR ext = NULL, ...);
-extern void RegisterSourceFilter(const CLSID& clsid, const GUID& subtype2, const std::list<CStdString>& chkbytes, LPCTSTR ext = NULL, ...);
-extern void UnRegisterSourceFilter(const GUID& subtype);
-extern LPCTSTR GetDXVAMode(const GUID* guidDecoder);
-extern void DumpBuffer(BYTE* pBuffer, int nSize);
 extern CStdString ReftimeToString(const REFERENCE_TIME& rtVal);
-REFERENCE_TIME StringToReftime(LPCTSTR strVal);
 extern COLORREF YCrCbToRGB_Rec601(BYTE Y, BYTE Cr, BYTE Cb);
 extern COLORREF YCrCbToRGB_Rec709(BYTE Y, BYTE Cr, BYTE Cb);
 extern DWORD  YCrCbToRGB_Rec601(BYTE A, BYTE Y, BYTE Cr, BYTE Cb);

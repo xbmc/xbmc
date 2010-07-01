@@ -535,7 +535,6 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\MacrovisionKicker.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypeEx.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypes.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\DShowUtil\RegKey.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.cpp" />
     <ClCompile Include="..\..\xbmc\win32\WINDirectShowEnumerator.cpp" />
     <ClCompile Include="..\..\xbmc\Application.cpp" />
@@ -1343,7 +1342,6 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\MacrovisionKicker.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypeEx.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\MediaTypes.h" />
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\regkey.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\smartlist.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\smartptr.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\DShowUtil\SysError.h" />

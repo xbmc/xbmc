@@ -24,7 +24,6 @@
 
 #include "DSTemplate.h"
 #include "DShowUtil.h"
-#include "regkey.h"
 #include "ShlObj.h"
 #include "dmoreg.h"
 
@@ -319,7 +318,10 @@ namespace Com
 		if (str) 
       CoTaskMemFree(str);
 
-		key_name.Format(_T("CLSID\\%s\\InprocServer32"), str_clsid);
+    return E_FAIL;
+
+#if 0
+    key_name.Format(_T("CLSID\\%s\\InprocServer32"), str_clsid);
     RegKey key(HKEY_CLASSES_ROOT, key_name, false);
     
     if (key.hasValue(""))
@@ -350,6 +352,7 @@ namespace Com
 			return -1;
 		}
 		return NOERROR;
+#endif
 	}
 
 	
@@ -850,6 +853,7 @@ namespace Com
 				CStdString		key_name;
 				if (str) CoTaskMemFree(str);
 
+#if 0
 				key_name.Format(_T("CLSID\\%s"), str_clsid);
 				RegKey key(HKEY_CLASSES_ROOT, key_name, false);
         std::map<CStdString,CStdString> keyMaps = key.getValues();
@@ -868,6 +872,7 @@ namespace Com
           
           }
         }
+#endif
 
 
 				filters.push_back(filter);
