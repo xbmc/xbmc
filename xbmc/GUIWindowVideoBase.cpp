@@ -344,6 +344,10 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
     }
   }
 
+  // we need to also request any thumbs be applied to the folder item
+  if (pItem->m_bIsFolder)
+    item.SetProperty("set_folder_thumb", pItem->m_strPath);
+
   bool modified = ShowIMDB(&item, scraper);
   if (modified &&
      (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
