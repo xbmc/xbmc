@@ -37,7 +37,9 @@
 #include "bytestream.h"
 #include "vdpau_internal.h"
 #include "xvmc_internal.h"
-
+#if CONFIG_MPEG2_DXVA2_HWACCEL
+#include "dxva2api.h"
+#endif
 //#undef NDEBUG
 //#include <assert.h>
 
@@ -1175,6 +1177,10 @@ typedef struct Mpeg1Context {
     int save_width, save_height, save_progressive_seq;
     AVRational frame_rate_ext;       ///< MPEG-2 specific framerate modificator
     int sync;                        ///< Did we reach a sync point like a GOP/SEQ/KEYFrame?
+#if CONFIG_MPEG2_DXVA2_HWACCEL
+    DXVA_SliceInfo* pSliceInfo;
+    uint8_t* prev_slice;
+#endif
 } Mpeg1Context;
 
 static av_cold int mpeg_decode_init(AVCodecContext *avctx)
@@ -1432,7 +1438,7 @@ static void mpeg_decode_sequence_extension(Mpeg1Context *s1)
 
     s1->frame_rate_ext.num = get_bits(&s->gb, 2)+1;
     s1->frame_rate_ext.den = get_bits(&s->gb, 5)+1;
-	
+    
     // ffdshow custom code begin (moved from mpeg_decode_postinit)
     // MPEG-2 fps
     av_reduce(
@@ -1443,7 +1449,7 @@ static void mpeg_decode_sequence_extension(Mpeg1Context *s1)
         1<<30);
     // ffdshow custom code end
 
-	
+    
     dprintf(s->avctx, "sequence extension\n");
     s->codec_id= s->avctx->codec_id= CODEC_ID_MPEG2VIDEO;
     s->avctx->sub_id = 2; /* indicates MPEG-2 found */
@@ -1709,7 +1715,11 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
     ff_mpeg1_clean_buffers(s);
     s->interlaced_dct = 0;
 
-    s->qscale = get_qscale(s);
+    // DXVA need raw syntax element
+    if (CONFIG_MPEG2_DXVA2_HWACCEL && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
+        s->qscale = get_bits(&s->gb, 5);
+    else
+        s->qscale = get_qscale(s);
 
     if(s->qscale == 0){
         av_log(s->avctx, AV_LOG_ERROR, "qscale == 0\n");
@@ -1721,6 +1731,31 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
         skip_bits(&s->gb, 8);
     }
 
+    /*Ugly hack for dxva */
+    if (CONFIG_MPEG2_DXVA2_HWACCEL && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
+    {
+        // Fill DXVA structure and return
+        //s1->pSliceInfo[s1->slice_count].wHorizontalPosition =                        // TODO : horizontal ?
+        s1->pSliceInfo[s1->slice_count].wVerticalPosition    = s1->slice_count;        
+        s1->pSliceInfo[s1->slice_count].wMBbitOffset        = s->gb.index + 32;        // Current pos + Slice Start Code 
+        s1->pSliceInfo[s1->slice_count].wNumberMBsInSlice    = s->mb_width;
+        s1->pSliceInfo[s1->slice_count].wQuantizerScaleCode    = s->qscale;// >> 1;
+        s1->pSliceInfo[s1->slice_count].dwSliceBitsInBuffer    = (buf_size*8)+32;
+
+        if (s1->slice_count>0)
+        {
+            s1->pSliceInfo[s1->slice_count-1].dwSliceBitsInBuffer = (*buf - s1->prev_slice)*8;
+            s1->pSliceInfo[s1->slice_count].dwSliceDataLocation   = s1->pSliceInfo[s1->slice_count-1].dwSliceDataLocation +
+                                                                    s1->pSliceInfo[s1->slice_count-1].dwSliceBitsInBuffer/8;
+        }
+
+        s1->prev_slice = (uint8_t*)*buf;
+        s1->slice_count++;
+
+        return 0;
+    }
+    
+    
     s->mb_x=0;
 
     if(mb_y==0 && s->codec_tag == AV_RL32("SLIF")){
@@ -1973,8 +2008,9 @@ static int slice_end(AVCodecContext *avctx, AVFrame *pict)
         /* end of image */
 
         s->current_picture_ptr->qscale_type= FF_QSCALE_TYPE_MPEG2;
-
-        ff_er_frame_end(s);
+        
+        if (!s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
+          ff_er_frame_end(s);
 
         MPV_frame_end(s);
 
@@ -2219,8 +2255,8 @@ int ff_mpeg1_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size, 
             if(pc->frame_start_found==0 && state >= SLICE_MIN_START_CODE && state <= SLICE_MAX_START_CODE){
                 i++;
                 pc->frame_start_found=4;
-				
-				pc->rtStart = *rtStart; /* ffdshow custom code */
+                
+                pc->rtStart = *rtStart; /* ffdshow custom code */
                 *rtStart = INT64_MIN;    /* ffdshow custom code */
             }
             if(state == SEQ_END_CODE){
@@ -2511,7 +2547,7 @@ static int decode_chunks(AVCodecContext *avctx,
                     if(ret < 0){
                         if(s2->resync_mb_x>=0 && s2->resync_mb_y>=0)
                             ff_er_add_slice(s2, s2->resync_mb_x, s2->resync_mb_y, s2->mb_x, s2->mb_y, AC_ERROR|DC_ERROR|MV_ERROR);
-                    }else{
+                    }else if (!s2->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW){
                         ff_er_add_slice(s2, s2->resync_mb_x, s2->resync_mb_y, s2->mb_x-1, s2->mb_y, AC_END|DC_END|MV_END);
                     }
                 }
@@ -2645,4 +2681,18 @@ AVCodec mpeg1_vdpau_decoder = {
     .long_name = NULL_IF_CONFIG_SMALL("MPEG-1 video (VDPAU acceleration)"),
 };
 #endif
-
+#if CONFIG_MPEG2_DXVA2_HWACCEL
+AVCodec mpeg_dxva_decoder = {
+    "mpegvideo_dxva",
+    AVMEDIA_TYPE_VIDEO,
+    CODEC_ID_MPEG2VIDEO,
+    sizeof(Mpeg1Context),
+    mpeg_decode_init,
+    NULL,
+    mpeg_decode_end,
+    mpeg_decode_frame,
+    CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1 | CODEC_CAP_TRUNCATED | CODEC_CAP_DELAY | CODEC_CAP_HWACCEL_DIRECTSHOW,
+    .flush= flush,
+    .long_name= NULL_IF_CONFIG_SMALL("MPEG-2 video (directshow)"),
+};
+#endif

@@ -139,7 +139,9 @@ public:
   //VC1
   virtual int FFVC1UpdatePictureParam (DXVA_PictureParameters* pPicParams, struct AVCodecContext* pAVCtx, int* nFieldType, int* nSliceType, BYTE* pBuffer, UINT nSize)=0;
   virtual int FFIsSkipped(struct AVCodecContext* pAVCtx)=0;
-
+  //Mpeg2
+  virtual int FFMpeg2DecodeFrame (DXVA_PictureParameters *pPicParams, DXVA_QmatrixData *m_QMatrixData, DXVA_SliceInfo *pSliceInfo, int *nSliceCount,
+                                     struct AVCodecContext *pAVCtx, struct AVFrame *pFrame, int *nNextCodecIndex, int *nFieldType, int *nSliceType, BYTE *pBuffer, UINT nSize)=0;
 #endif
 };
 
@@ -261,6 +263,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD2(void, FFH264SetDxvaSliceLong, (AVCodecContext *p1, void *p2))
   DEFINE_METHOD6(int, FFVC1UpdatePictureParam, (DXVA_PictureParameters *p1, AVCodecContext *p2, int *p3, int *p4, BYTE *p5, UINT p6))
   DEFINE_METHOD1(int, FFIsSkipped, (AVCodecContext *p1))
+  DEFINE_METHOD11(int, FFMpeg2DecodeFrame, (DXVA_PictureParameters *p1, DXVA_QmatrixData *p2, DXVA_SliceInfo *p3, int *p4, AVCodecContext *p5, AVFrame *p6, int *p7, int *p8, int *p9, BYTE *p10, UINT p11))
 #endif
   LOAD_SYMBOLS();
 
@@ -341,6 +344,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(FFH264SetDxvaSliceLong)
     RESOLVE_METHOD(FFVC1UpdatePictureParam)
     RESOLVE_METHOD(FFIsSkipped)
+    RESOLVE_METHOD(FFMpeg2DecodeFrame)
 #endif
   END_METHOD_RESOLVE()
 public:

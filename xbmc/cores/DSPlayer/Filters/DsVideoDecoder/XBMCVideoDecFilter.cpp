@@ -497,8 +497,11 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
 
       m_bReorderBFrame  = true;
 
+      /* Those specific codec have the flag to use dxva for directshow */
       if (ffCodecs[nNewCodec].nFFCodec == CODEC_ID_H264)
         m_pAVCodec = m_dllAvCodec.avcodec_find_decoder_by_name("h264_dxva");
+      else if(ffCodecs[nNewCodec].nFFCodec == CODEC_ID_MPEG2VIDEO)
+        m_pAVCodec = m_dllAvCodec.avcodec_find_decoder_by_name("mpegvideo_dxva");
       else
         m_pAVCodec = m_dllAvCodec.avcodec_find_decoder(ffCodecs[nNewCodec].nFFCodec);
       CheckPointer (m_pAVCodec, VFW_E_UNSUPPORTED_VIDEO);

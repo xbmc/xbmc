@@ -224,7 +224,7 @@ CFGFilter* CFilterCoreFactory::GetFilterFromName( const CStdString& _filter, boo
     filter = "internal_mpegsource";
 #endif
 #if TEST_INTERNAL_VIDEO_DECODER == 1
-  if (filter.Equals("mpcvideodec"))
+  if (filter.Equals("mpcvideodec") || filter.Equals("ffdvideodec"))
     filter = "internal_videodecoder";
 #endif
   // Is the filter internal?
