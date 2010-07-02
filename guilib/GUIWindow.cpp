@@ -306,18 +306,19 @@ void CGUIWindow::CenterWindow()
   }
 }
 
+void CGUIWindow::DoProcess(unsigned int currentTime)
+{
+  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
+  g_graphicsContext.ResetWindowTransform();
+
+  CGUIControlGroup::DoProcess(currentTime);
+}
+
 void CGUIWindow::Process(unsigned int currentTime)
 {
   if (!m_bAllocated) return;
 
-  g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
-
-  g_graphicsContext.ResetWindowTransform();
-
   CGUIControlGroup::Process(currentTime);
-
-  if (!m_animationsEnabled)
-    m_transform.Reset();
 }
 
 void CGUIWindow::Render()
@@ -329,7 +330,6 @@ void CGUIWindow::Render()
   if (!m_bAllocated) return;
 
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
-
   g_graphicsContext.ResetWindowTransform();
 
   CGUIControlGroup::Render();
@@ -694,14 +694,12 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
   return CGUIControlGroup::IsAnimating(animType);
 }
 
-bool CGUIWindow::RenderAnimation(unsigned int time)
+void CGUIWindow::Animate(unsigned int time)
 {
-  g_graphicsContext.ResetWindowTransform();
   if (m_animationsEnabled)
     CGUIControlGroup::Animate(time);
   else
     m_transform.Reset();
-  return true;
 }
 
 void CGUIWindow::DisableAnimations()

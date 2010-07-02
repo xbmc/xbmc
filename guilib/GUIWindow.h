@@ -85,7 +85,8 @@ public:
   bool Load(const CStdString& strFileName, bool bContainsPath = false);
 
   void CenterWindow();
-  
+
+  virtual void DoProcess(unsigned int currentTime);
   virtual void Process(unsigned int currentTime);
 
   /*! \brief Main render function, called every frame.
@@ -220,7 +221,7 @@ protected:
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
   EVENT_RESULT OnMouseAction(const CAction &action);
-  virtual bool RenderAnimation(unsigned int time);
+  virtual void Animate(unsigned int time);
   virtual bool CheckAnimation(ANIMATION_TYPE animType);
 
   CAnimation *GetAnimation(ANIMATION_TYPE animType, bool checkConditions = true);

@@ -671,10 +671,6 @@ void CGUIBaseContainer::Process(unsigned int currentTime)
 {
   m_renderTime = currentTime;
 
-  CGUIControl::Process(currentTime);
-
-  g_graphicsContext.AddTransform(m_transform);
-
   ValidateOffset();
 
   if (m_bInvalidated)
@@ -741,7 +737,7 @@ void CGUIBaseContainer::Process(unsigned int currentTime)
     current++;
   }
 
-  g_graphicsContext.RemoveTransform();
+  CGUIControl::Process(currentTime);
 }
 
 void CGUIBaseContainer::ProcessItem(float posX, float posY, CGUIListItem *item, bool focused, unsigned int currentTime)

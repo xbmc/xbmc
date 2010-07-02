@@ -132,10 +132,24 @@ void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 
 }
 
-void CGUIControl::Process(unsigned int currentTime)
+void CGUIControl::DoProcess(unsigned int currentTime)
 {
   Animate(currentTime);
+  g_graphicsContext.AddTransform(m_transform);
+  if (m_hasCamera)
+    g_graphicsContext.SetCameraPosition(m_camera);
+
+  Process(currentTime);
+
+  if (m_hasCamera)
+    g_graphicsContext.RestoreCameraPosition();
+  g_graphicsContext.RemoveTransform();
+
   m_bInvalidated = false;
+}
+
+void CGUIControl::Process(unsigned int currentTime)
+{
 }
 
 // the main render routine.

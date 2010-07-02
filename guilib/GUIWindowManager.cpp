@@ -551,7 +551,7 @@ void CGUIWindowManager::PureProcess(unsigned int currentTime)
 
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
-    pWindow->Process(currentTime);
+    pWindow->DoProcess(currentTime);
 
   // we render the dialogs based on their render order.
   vector<CGUIWindow *> renderList = m_activeDialogs;
@@ -560,7 +560,7 @@ void CGUIWindowManager::PureProcess(unsigned int currentTime)
   for (iDialog it = renderList.begin(); it != renderList.end(); ++it)
   {
     if ((*it)->IsDialogRunning())
-      (*it)->Process(currentTime);
+      (*it)->DoProcess(currentTime);
   }
 }
 
