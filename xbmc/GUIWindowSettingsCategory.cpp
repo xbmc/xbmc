@@ -2334,56 +2334,63 @@ void CGUIWindowSettingsCategory::FillInResolutions(CStdString strSetting, Displa
   }
   else
   {
-    // selecting a value is done outside of this function for UserChange = false
+    // selecting a value is done outside of this function when UserChange = false
   }
 }
 
 void CGUIWindowSettingsCategory::FillInRefreshRates(CStdString strSetting, RESOLUTION res, bool UserChange)
 {
   // The only meaningful parts of res here are iScreen, iWidth, iHeight
-  CBaseSettingControl *control = GetSetting(strSetting);
-  control->SetDelayed();
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(control->GetID());
-  pControl->Clear();
 
   vector<REFRESHRATE> refreshrates;
-
-  // Populate the list
-  if (res == RES_WINDOW)
-  {
-    pControl->AddLabel(g_localizeStrings.Get(242), RES_WINDOW);
-  }
-  else
-  {
+  if (res > RES_WINDOW)
     refreshrates = g_Windowing.RefreshRates(g_settings.m_ResInfo[res].iScreen, g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight);
 
-    for (unsigned int idx = 0; idx < refreshrates.size(); idx++)
+  // The control setting doesn't exist when not in standalone mode, don't manipulate it
+  CBaseSettingControl *control = GetSetting(strSetting);
+  CGUISpinControlEx *pControl= NULL;
+
+  // Populate
+  if (control)
+  {
+    control->SetDelayed();
+    pControl = (CGUISpinControlEx *)GetControl(control->GetID());
+    pControl->Clear();
+
+    if (res == RES_WINDOW)
     {
-      CStdString strRR;
-      strRR.Format("%.02f%s", refreshrates[idx].RefreshRate, refreshrates[idx].Interlaced ? "i" : "");
-      pControl->AddLabel(strRR, refreshrates[idx].ResInfo_Index);
+      pControl->AddLabel(g_localizeStrings.Get(242), RES_WINDOW);
+    }
+    else
+    {
+      for (unsigned int idx = 0; idx < refreshrates.size(); idx++)
+      {
+        CStdString strRR;
+        strRR.Format("%.02f%s", refreshrates[idx].RefreshRate, refreshrates[idx].Interlaced ? "i" : "");
+        pControl->AddLabel(strRR, refreshrates[idx].ResInfo_Index);
+      }
     }
   }
 
   // Select a rate
   if (UserChange)
   {
+    RESOLUTION newresolution;
     if (res == RES_WINDOW)
-    {
-       OnRefreshRateChanged(RES_WINDOW);
-    }
+      newresolution = RES_WINDOW;
     else
-    {
-      REFRESHRATE rr = g_Windowing.DefaultRefreshRate(g_settings.m_ResInfo[res].iScreen, refreshrates);
-      pControl->SetValue(rr.ResInfo_Index);
-      OnRefreshRateChanged((RESOLUTION)rr.ResInfo_Index);
-    }
+      newresolution = (RESOLUTION) g_Windowing.DefaultRefreshRate(g_settings.m_ResInfo[res].iScreen, refreshrates).ResInfo_Index;
+
+    if (pControl)
+      pControl->SetValue(newresolution);
+
+    OnRefreshRateChanged(newresolution);
   }
   else
   {
-    pControl->SetValue(res);
+    if (pControl)
+      pControl->SetValue(res);
   }
-
 }
 
 void CGUIWindowSettingsCategory::OnRefreshRateChanged(RESOLUTION nextRes)

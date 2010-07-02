@@ -371,8 +371,7 @@ void CGUISettings::Initialize()
 #else
   AddInt(vs, "videoscreen.resolution", 169, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
 #endif
-//TODO: attach to vs in standalone mode only
-  AddString(vs, "videoscreen.screenmode", 243, "DESKTOP", SPIN_CONTROL_TEXT);
+  AddString(g_application.IsStandAlone() ? vs : NULL, "videoscreen.screenmode", 243, "DESKTOP", SPIN_CONTROL_TEXT);
 
 #if defined(_WIN32) || defined (__APPLE__)
   // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
