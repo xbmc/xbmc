@@ -550,7 +550,10 @@ void CGUIControl::MarkDirtyRegion()
 
 void CGUIControl::MarkDirtyRegion(const CRect &dirtyRegion)
 {
-  g_windowManager.MarkDirtyRegion(dirtyRegion);
+  if (m_parentControl)
+    m_parentControl->MarkDirtyRegion(dirtyRegion);
+  else
+    g_windowManager.MarkDirtyRegion(dirtyRegion);
 }
 
 CRect CGUIControl::GetRenderRegion(bool transform)

@@ -965,7 +965,7 @@ void CGUIBaseContainer::SetContainerMoving(int direction)
 {
   if (direction)
     g_infoManager.SetContainerMoving(GetID(), direction > 0, m_scrollSpeed != 0);
-  g_windowManager.MarkDirtyRegion(GetRenderRegion());
+  MarkDirtyRegion();
 }
 
 void CGUIBaseContainer::UpdateScrollOffset()

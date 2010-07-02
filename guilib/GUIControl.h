@@ -263,8 +263,8 @@ public:
   virtual void DumpTextureUse() {};
 #endif
 protected:
-  void MarkDirtyRegion();
-  void MarkDirtyRegion(const CRect &dirtyRegion);
+  virtual void MarkDirtyRegion();
+  virtual void MarkDirtyRegion(const CRect &dirtyRegion);
   virtual CRect GetRenderRegion(bool transform = true);
 
   /*! \brief Called when the mouse is over the control.
