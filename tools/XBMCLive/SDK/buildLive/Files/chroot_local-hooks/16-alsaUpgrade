@@ -1,0 +1,90 @@
+#!/bin/bash
+
+#      Copyright (C) 2005-2010 Team XBMC
+#      http://www.xbmc.org
+#
+#  This Program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2, or (at your option)
+#  any later version.
+#
+#  This Program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with XBMC; see the file COPYING.  If not, write to
+#  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+#  http://www.gnu.org/copyleft/gpl.html
+
+echo 
+echo "Upgrading ALSA..."
+echo
+
+cd /root
+pushd .
+
+apt-get -y install build-essential ncurses-dev gettext xmlto libasound2-dev libncursesw5-dev
+
+wget --no-proxy ftp://ftp.alsa-project.org/pub/driver/alsa-driver-1.0.23.tar.bz2
+wget --no-proxy ftp://ftp.alsa-project.org/pub/lib/alsa-lib-1.0.23.tar.bz2
+wget --no-proxy ftp://ftp.alsa-project.org/pub/utils/alsa-utils-1.0.23.tar.bz2
+
+# 
+# uname -r gives the host version, we need the chrooted one
+#
+mv /bin/uname /bin/uname.ori
+
+cat > /bin/uname << EOF
+#!/bin/sh
+
+if  [ "\$1" = "-r" ] ; then
+        echo \$(ls /lib/modules)
+else
+        /bin/uname.ori \$@
+fi
+EOF
+chmod +x /bin/uname
+
+tar xjf alsa-driver*
+
+cd alsa-driver*
+./configure 
+make
+make install
+
+popd
+pushd .
+
+tar xjf alsa-lib*
+cd alsa-lib*
+./configure
+make
+make install
+
+popd
+pushd .
+
+tar xjf alsa-utils*
+cd alsa-utils*
+./configure
+make
+make install
+
+popd
+pushd .
+
+rm -f alsa-driver*
+rm -f alsa-lib*
+rm -f alsa-utils*
+
+# TODO CHECK
+# alsaconf
+
+apt-get -y remove build-essential ncurses-dev gettext xmlto libasound2-dev
+apt-get -y remove libncursesw5-dev
+apt-get -y autoremove
+
+rm /bin/uname
+mv /bin/uname.ori /bin/uname
