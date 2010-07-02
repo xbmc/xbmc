@@ -281,7 +281,7 @@ protected:
    */
   virtual bool CanFocusFromPoint(const CPoint &point) const;
 
-  virtual void UpdateColors();
+  virtual bool UpdateColors();
   virtual void Animate(unsigned int currentTime);
   virtual bool CheckAnimation(ANIMATION_TYPE animType);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);

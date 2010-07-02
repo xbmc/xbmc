@@ -58,7 +58,7 @@ public:
   
 protected:
   virtual CRect GetRenderRegion();
-  virtual void UpdateColors();
+  virtual bool UpdateColors();
 
   CGUILabel     m_label;
   CGUIInfoLabel m_info;

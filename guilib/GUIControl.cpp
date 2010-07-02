@@ -621,9 +621,9 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
     UpdateInfo(item);
 }
 
-void CGUIControl::UpdateColors()
+bool CGUIControl::UpdateColors()
 {
-  m_diffuseColor.Update();
+  return m_diffuseColor.Update();
 }
 
 void CGUIControl::SetInitialVisibility()

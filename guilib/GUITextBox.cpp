@@ -107,10 +107,9 @@ void CGUITextBox::Process(unsigned int currentTime)
   CGUIControl::Process(currentTime);
 }
 
-void CGUITextBox::UpdateColors()
+bool CGUITextBox::UpdateColors()
 {
-  m_label.UpdateColors();
-  CGUIControl::UpdateColors();
+  return (m_label.UpdateColors() || CGUIControl::UpdateColors());
 }
 
 void CGUITextBox::UpdateInfo(const CGUIListItem *item)

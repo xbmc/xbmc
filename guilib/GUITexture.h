@@ -93,16 +93,16 @@ public:
   void DynamicResourceAlloc(bool bOnOff);
   void AllocResources();
   void FreeResources(bool immediately = false);
-  void SetInvalid();
+  bool SetInvalid();
 
-  void SetVisible(bool visible);
-  void SetAlpha(unsigned char alpha);
-  void SetDiffuseColor(color_t color);
-  void SetPosition(float x, float y);
-  void SetWidth(float width);
-  void SetHeight(float height);
-  void SetFileName(const CStdString &filename);
-  void SetAspectRatio(const CAspectRatio &aspect);
+  bool SetVisible(bool visible);
+  bool SetAlpha(unsigned char alpha);
+  bool SetDiffuseColor(color_t color);
+  bool SetPosition(float x, float y);
+  bool SetWidth(float width);
+  bool SetHeight(float height);
+  bool SetFileName(const CStdString &filename);
+  bool SetAspectRatio(const CAspectRatio &aspect);
 
   const CStdString& GetFileName() const { return m_info.filename; };
   float GetTextureWidth() const { return m_frameWidth; };

@@ -53,6 +53,7 @@ void CGUILabelControl::SetCursorPos(int iPos)
   CStdString label = m_infoLabel.GetLabel(m_parentID);
   if (iPos > (int)label.length()) iPos = label.length();
   if (iPos < 0) iPos = 0;
+  m_forceMark |= m_iCursorPos = iPos;
   m_iCursorPos = iPos;
 }
 
@@ -61,10 +62,9 @@ void CGUILabelControl::SetInfo(const CGUIInfoLabel &infoLabel)
   m_infoLabel = infoLabel;
 }
 
-void CGUILabelControl::UpdateColors()
+bool CGUILabelControl::UpdateColors()
 {
-  m_label.UpdateColors();
-  CGUIControl::UpdateColors();
+  return (m_label.UpdateColors() || CGUIControl::UpdateColors());
 }
 
 void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
@@ -92,8 +92,8 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
     label = colorLabel;
   }
 
-  m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
-  m_label.SetText(label);
+  m_forceMark |= m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
+  m_forceMark |= m_label.SetText(label);
 }
 
 void CGUILabelControl::Render()

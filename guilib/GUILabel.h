@@ -44,13 +44,13 @@ public:
     scrollSpeed = CScrollInfo::defaultSpeed;
     scrollSuffix = " | ";
   };
-  void UpdateColors()
+  bool UpdateColors()
   {
-    textColor.Update();
-    shadowColor.Update();
-    selectedColor.Update();
-    disabledColor.Update();
-    focusedColor.Update();
+    return (textColor.Update()     ||
+            shadowColor.Update()   ||
+            selectedColor.Update() ||
+            disabledColor.Update() ||
+            focusedColor.Update());
   };
   
   CGUIInfoColor textColor;

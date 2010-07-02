@@ -89,7 +89,7 @@ public:
 
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual void UpdateColors();
+  virtual bool UpdateColors();
   /*! \brief Render the spinner text
    \param posX position of the left edge of the text
    \param width width of the text

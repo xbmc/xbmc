@@ -100,11 +100,12 @@ void CGUISpinControlEx::SetVisible(bool bVisible)
   CGUISpinControl::SetVisible(bVisible);
 }
 
-void CGUISpinControlEx::UpdateColors()
+bool CGUISpinControlEx::UpdateColors()
 {
-  CGUISpinControl::UpdateColors();
   m_buttonControl.SetColorDiffuse(m_diffuseColor);
-  m_buttonControl.UpdateColors();
+
+  return (CGUISpinControl::UpdateColors() ||
+          m_buttonControl.UpdateColors());
 }
 
 void CGUISpinControlEx::SetEnabled(bool bEnable)

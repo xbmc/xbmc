@@ -176,10 +176,10 @@ void CGUICheckMarkControl::PythonSetDisabledColor(color_t disabledColor)
   m_label.GetLabelInfo().disabledColor = disabledColor;
 }
 
-void CGUICheckMarkControl::UpdateColors()
+bool CGUICheckMarkControl::UpdateColors()
 {
-  m_label.UpdateColors();
-  CGUIControl::UpdateColors();
-  m_imgCheckMark.SetDiffuseColor(m_diffuseColor);
-  m_imgCheckMarkNoFocus.SetDiffuseColor(m_diffuseColor);
+  return (m_label.UpdateColors() ||
+          CGUIControl::UpdateColors() ||
+          m_imgCheckMark.SetDiffuseColor(m_diffuseColor) ||
+          m_imgCheckMarkNoFocus.SetDiffuseColor(m_diffuseColor));
 }

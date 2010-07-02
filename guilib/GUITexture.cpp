@@ -465,9 +465,11 @@ void CGUITextureBase::DynamicResourceAlloc(bool allocateDynamically)
   m_allocateDynamically = allocateDynamically;
 }
 
-void CGUITextureBase::SetInvalid()
+bool CGUITextureBase::SetInvalid()
 {
+  bool changed = m_invalid != true;
   m_invalid = true;
+  return changed;
 }
 
 void CGUITextureBase::UpdateAnimFrame()
@@ -501,19 +503,25 @@ void CGUITextureBase::UpdateAnimFrame()
   }
 }
 
-void CGUITextureBase::SetVisible(bool visible)
+bool CGUITextureBase::SetVisible(bool visible)
 {
+  bool changed = m_visible != visible;
   m_visible = visible;
+  return changed;
 }
 
-void CGUITextureBase::SetAlpha(unsigned char alpha)
+bool CGUITextureBase::SetAlpha(unsigned char alpha)
 {
+  bool changed = m_alpha != alpha;
   m_alpha = alpha;
+  return changed;
 }
 
-void CGUITextureBase::SetDiffuseColor(color_t color)
+bool CGUITextureBase::SetDiffuseColor(color_t color)
 {
+  bool changed = m_diffuseColor != color;
   m_diffuseColor = color;
+  return changed;
 }
 
 bool CGUITextureBase::ReadyToRender() const
@@ -558,7 +566,7 @@ void CGUITextureBase::OrientateTexture(CRect &rect, float width, float height, i
   }
 }
 
-void CGUITextureBase::SetWidth(float width)
+bool CGUITextureBase::SetWidth(float width)
 {
   if (width < m_info.border.x1 + m_info.border.x2)
     width = m_info.border.x1 + m_info.border.x2;
@@ -566,10 +574,12 @@ void CGUITextureBase::SetWidth(float width)
   {
     m_width = width;
     m_invalid = true;
+    return true;
   }
+  return false;
 }
 
-void CGUITextureBase::SetHeight(float height)
+bool CGUITextureBase::SetHeight(float height)
 {
   if (height < m_info.border.y1 + m_info.border.y2)
     height = m_info.border.y1 + m_info.border.y2;
@@ -577,36 +587,43 @@ void CGUITextureBase::SetHeight(float height)
   {
     m_height = height;
     m_invalid = true;
+    return true;
   }
+  return false;
 }
 
-void CGUITextureBase::SetPosition(float posX, float posY)
+bool CGUITextureBase::SetPosition(float posX, float posY)
 {
   if (m_posX != posX || m_posY != posY)
   {
     m_posX = posX;
     m_posY = posY;
     m_invalid = true;
+    return true;
   }
+  return false;
 }
 
-void CGUITextureBase::SetAspectRatio(const CAspectRatio &aspect)
+bool CGUITextureBase::SetAspectRatio(const CAspectRatio &aspect)
 {
   if (m_aspect != aspect)
   {
     m_aspect = aspect;
     m_invalid = true;
+    return true;
   }
+  return false;
 }
 
-void CGUITextureBase::SetFileName(const CStdString& filename)
+bool CGUITextureBase::SetFileName(const CStdString& filename)
 {
-  if (m_info.filename.Equals(filename)) return;
+  if (m_info.filename.Equals(filename)) return false;
   // Don't completely free resources here - we may be just changing
   // filenames mid-animation
   FreeResources();
   m_info.filename = filename;
   // Don't allocate resources here as this is done at render time
+  return true;
 }
 
 int CGUITextureBase::GetOrientation() const
