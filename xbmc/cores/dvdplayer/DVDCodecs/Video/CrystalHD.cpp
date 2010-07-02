@@ -1282,30 +1282,18 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
   switch (codec_type)
   {
     case CRYSTALHD_CODEC_ID_VC1:
-#if (HAVE_LIBCRYSTALHD == 2)
-      Subtype = BCM::BC_MSUBTYPE_VC1;
-#endif
       videoAlg = BCM::BC_VID_ALGO_VC1;
       StreamType = BCM::BC_STREAM_TYPE_ES;
     break;
     case CRYSTALHD_CODEC_ID_WMV3:
-#if (HAVE_LIBCRYSTALHD == 2)
-      Subtype = BCM::BC_MSUBTYPE_WMV3;
-#endif
       videoAlg = BCM::BC_VID_ALGO_VC1MP;
       StreamType = BCM::BC_STREAM_TYPE_PES;
     break;
     case CRYSTALHD_CODEC_ID_H264:
-#if (HAVE_LIBCRYSTALHD == 2)
-      Subtype = BCM::BC_MSUBTYPE_AVC1;
-#endif
       videoAlg = BCM::BC_VID_ALGO_H264;
       StreamType = BCM::BC_STREAM_TYPE_ES;
     break;
     case CRYSTALHD_CODEC_ID_MPEG2:
-#if (HAVE_LIBCRYSTALHD == 2)
-      Subtype = BCM::BC_MSUBTYPE_MPEG2VIDEO;
-#endif
       videoAlg = BCM::BC_VID_ALGO_MPEG2;
       StreamType = BCM::BC_STREAM_TYPE_ES;
     break;
@@ -1315,6 +1303,26 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
       return false;
     break;
   }
+  
+#if (HAVE_LIBCRYSTALHD == 2)
+  switch (codec_type)
+  {
+    case CRYSTALHD_CODEC_ID_VC1:
+      Subtype = BCM::BC_MSUBTYPE_VC1;
+    break;
+    case CRYSTALHD_CODEC_ID_WMV3:
+      Subtype = BCM::BC_MSUBTYPE_WMV3;
+    break;
+    case CRYSTALHD_CODEC_ID_H264:
+      Subtype = BCM::BC_MSUBTYPE_AVC1;
+    break;
+    case CRYSTALHD_CODEC_ID_MPEG2:
+      Subtype = BCM::BC_MSUBTYPE_MPEG2VIDEO;
+    break;
+    //BC_VID_ALGO_DIVX:
+    //BC_VID_ALGO_VC1MP:
+  }
+#endif
 
   do
   {
