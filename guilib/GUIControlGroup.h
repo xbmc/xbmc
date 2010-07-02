@@ -88,8 +88,7 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
-  virtual void MarkDirtyRegion();
-  virtual void MarkDirtyRegion(const CRect &dirtyRegion);
+  virtual void SendFinalDirtyRegionToParent(const CRect &dirtyRegion, const CGUIControl *sender);
 
   /*!
    \brief Return the coordinates of the top left of the group, in the group's parent coordinates
@@ -127,7 +126,5 @@ protected:
 
   // render time
   unsigned int m_renderTime;
-private:
-  CRect m_dirtyregion;
 };
 

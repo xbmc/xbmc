@@ -135,6 +135,7 @@ void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 void CGUIControl::DoProcess(unsigned int currentTime)
 {
   Animate(currentTime);
+
   g_graphicsContext.AddTransform(m_transform);
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
@@ -148,6 +149,7 @@ void CGUIControl::DoProcess(unsigned int currentTime)
     g_graphicsContext.RestoreCameraPosition();
   g_graphicsContext.RemoveTransform();
 
+  FlushDirtyRegion();
   m_bInvalidated = false;
 }
 
@@ -496,6 +498,7 @@ void CGUIControl::SetWidth(float width)
 {
   if (m_width != width)
   {
+    MarkDirtyRegion();
     m_width = width;
     m_hitRect.x2 = m_hitRect.x1 + width;
     SetInvalid();
@@ -506,6 +509,7 @@ void CGUIControl::SetHeight(float height)
 {
   if (m_height != height)
   {
+    MarkDirtyRegion();
     m_height = height;
     m_hitRect.y2 = m_hitRect.y1 + height;
     SetInvalid();
@@ -548,31 +552,39 @@ EVENT_RESULT CGUIControl::SendMouseEvent(const CPoint &point, const CMouseEvent 
 
 void CGUIControl::MarkDirtyRegion()
 {
-  MarkDirtyRegion(GetRenderRegion());
+  m_markedLocalRegion.Union(GetRenderRegion());
 }
 
-void CGUIControl::MarkDirtyRegion(const CRect &dirtyRegion)
+void CGUIControl::SendFinalDirtyRegionToParent(const CRect &dirtyRegion, const CGUIControl *sender)
 {
   if (m_parentControl)
-    m_parentControl->MarkDirtyRegion(dirtyRegion);
+    m_parentControl->SendFinalDirtyRegionToParent(dirtyRegion, sender);
   else
     g_windowManager.MarkDirtyRegion(dirtyRegion);
 }
 
-CRect CGUIControl::GetRenderRegion(bool transform)
+void CGUIControl::FlushDirtyRegion()
+{
+  if (!m_markedLocalRegion.IsEmpty())
+  {
+    g_graphicsContext.AddTransform(m_transform);
+    CRect AABB = g_graphicsContext.generateAABB(m_markedLocalRegion);
+    g_graphicsContext.RemoveTransform();
+
+    // When we have transformed to screen cordinates we send it to
+    // the parent which may choose to ignore it or send it further down.
+    SendFinalDirtyRegionToParent(AABB, this);
+  }
+
+  m_markedLocalRegion = CRect();
+}
+
+CRect CGUIControl::GetRenderRegion()
 {
   CPoint tl(GetXPosition(), GetYPosition());
   CPoint br(tl.x + GetWidth(), tl.y + GetHeight());
 
-  CRect rect(tl.x, tl.y, br.x, br.y);
-
-  if (transform)
-    g_graphicsContext.AddTransform(m_transform);
-  CRect AABB = g_graphicsContext.generateAABB(rect);
-  if (transform)
-    g_graphicsContext.RemoveTransform();
-
-  return AABB;
+  return CRect(tl.x, tl.y, br.x, br.y);
 }
 
 // override this function to implement custom mouse behaviour
@@ -592,17 +604,21 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   {
     bool bWasVisible = m_visibleFromSkinCondition;
     m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_parentID, item);
+
     if (!bWasVisible && m_visibleFromSkinCondition)
     { // automatic change of visibility - queue the in effect
   //    CLog::DebugLog("Visibility changed to visible for control id %i", m_controlID);
       QueueAnimation(ANIM_TYPE_VISIBLE);
+      MarkDirtyRegion();
     }
     else if (bWasVisible && !m_visibleFromSkinCondition)
     { // automatic change of visibility - do the out effect
   //    CLog::DebugLog("Visibility changed to hidden for control id %i", m_controlID);
       QueueAnimation(ANIM_TYPE_HIDDEN);
+      MarkDirtyRegion();
     }
   }
+
   // check for conditional animations
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
@@ -610,12 +626,21 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
     if (anim.GetType() == ANIM_TYPE_CONDITIONAL)
       anim.UpdateCondition(GetParentID(), item);
   }
+
   // and check for conditional enabling - note this overrides SetEnabled() from the code currently
   // this may need to be reviewed at a later date
+  bool enabled = m_enabled;
   if (m_enableCondition)
     m_enabled = g_infoManager.GetBool(m_enableCondition, m_parentID, item);
+
+  if (m_enabled != enabled)
+    MarkDirtyRegion();
+
   m_allowHiddenFocus.Update(m_parentID, item);
-  UpdateColors();
+
+  if (UpdateColors())
+    MarkDirtyRegion();
+
   // and finally, update our control information (if not pushed)
   if (!m_pushedUpdates)
     UpdateInfo(item);
@@ -650,6 +675,8 @@ void CGUIControl::SetInitialVisibility()
     m_enabled = g_infoManager.GetBool(m_enableCondition, m_parentID);
   m_allowHiddenFocus.Update(m_parentID);
   UpdateColors();
+
+  MarkDirtyRegion();
 }
 
 void CGUIControl::SetVisibleCondition(int visible, const CGUIInfoBool &allowHiddenFocus)
@@ -661,21 +688,30 @@ void CGUIControl::SetVisibleCondition(int visible, const CGUIInfoBool &allowHidd
 void CGUIControl::SetAnimations(const vector<CAnimation> &animations)
 {
   m_animations = animations;
+  MarkDirtyRegion();
 }
 
 void CGUIControl::ResetAnimation(ANIMATION_TYPE type)
 {
+  MarkDirtyRegion();
+
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     if (m_animations[i].GetType() == type)
       m_animations[i].ResetAnimation();
   }
+
+  MarkDirtyRegion();
 }
 
 void CGUIControl::ResetAnimations()
 {
+  MarkDirtyRegion();
+
   for (unsigned int i = 0; i < m_animations.size(); i++)
     m_animations[i].ResetAnimation();
+
+  MarkDirtyRegion();
 }
 
 bool CGUIControl::CheckAnimation(ANIMATION_TYPE animType)
@@ -813,10 +849,8 @@ void CGUIControl::Animate(unsigned int currentTime)
   // check visible state outside the loop, as it could change
   GUIVISIBLE visible = m_visible;
 
-  CRect dirtyRegion = GetRenderRegion();
-  TransformMatrix oldTransform = m_transform;
+  TransformMatrix newTransform;
 
-  m_transform.Reset();
   CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
@@ -825,7 +859,7 @@ void CGUIControl::Animate(unsigned int currentTime)
     // Update the control states (such as visibility)
     UpdateStates(anim.GetType(), anim.GetProcess(), anim.GetState());
     // and render the animation effect
-    anim.RenderAnimation(m_transform, center);
+    anim.RenderAnimation(newTransform, center);
 
 /*    // debug stuff
     if (anim.currentProcess != ANIM_PROCESS_NONE)
@@ -843,10 +877,14 @@ void CGUIControl::Animate(unsigned int currentTime)
     }*/
   }
 
-  dirtyRegion.Union(GetRenderRegion());
-  m_needRender = !(m_transform == oldTransform);
-  if (m_needRender)
-    MarkDirtyRegion(dirtyRegion);
+  if (m_transform != newTransform)
+  {
+    MarkDirtyRegion();
+    FlushDirtyRegion();
+
+    m_transform = newTransform;
+    MarkDirtyRegion();
+  }
 }
 
 bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)

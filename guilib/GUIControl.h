@@ -263,9 +263,10 @@ public:
   virtual void DumpTextureUse() {};
 #endif
 protected:
-  virtual void MarkDirtyRegion();
-  virtual void MarkDirtyRegion(const CRect &dirtyRegion);
-  virtual CRect GetRenderRegion(bool transform = true);
+  void MarkDirtyRegion();
+  virtual void SendFinalDirtyRegionToParent(const CRect &dirtyRegion, const CGUIControl *sender);
+  void FlushDirtyRegion();
+  virtual CRect GetRenderRegion();
 
   /*! \brief Called when the mouse is over the control.
    Default implementation selects the control.
@@ -325,7 +326,9 @@ protected:
   bool m_forceHidden;       // set from the code when a hidden operation is given - overrides m_visible
   CGUIInfoBool m_allowHiddenFocus;
   bool m_hasRendered;
-  bool m_needRender;
+
+  CRect m_markedLocalRegion;
+
   // enable/disable state
   int m_enableCondition;
   bool m_enabled;

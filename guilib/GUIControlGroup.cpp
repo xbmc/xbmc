@@ -110,14 +110,8 @@ void CGUIControlGroup::Process(unsigned int currentTime)
     control->DoProcess(currentTime);
   }
 
+  g_graphicsContext.RestoreOrigin();
   CGUIControl::Process(currentTime);
-  g_graphicsContext.RemoveTransform();
-
-  if (!m_dirtyregion.IsEmpty())
-  {
-    CGUIControl::MarkDirtyRegion(m_dirtyregion);
-    m_dirtyregion = CRect();
-  }
 }
 
 void CGUIControlGroup::Render()
@@ -653,16 +647,12 @@ void CGUIControlGroup::SetInvalid()
     (*it)->SetInvalid();
 }
 
-void CGUIControlGroup::MarkDirtyRegion()
+void CGUIControlGroup::SendFinalDirtyRegionToParent(const CRect &dirtyRegion, const CGUIControl *sender)
 {
-  m_dirtyregion.Union(GetRenderRegion());
-}
-
-void CGUIControlGroup::MarkDirtyRegion(const CRect &dirtyRegion)
-{
-// If our region is marked then no point in marking a childs region
-  if (m_dirtyregion.IsEmpty())
-    CGUIControl::MarkDirtyRegion(dirtyRegion);
+  // If the controlgroup has been marked there is no point in allowing
+  // the children to mark since the parent should fully confine the children.
+  if (m_markedLocalRegion.IsEmpty() || sender == this)
+    CGUIControl::SendFinalDirtyRegionToParent(dirtyRegion, sender);
 }
 
 #ifdef _DEBUG

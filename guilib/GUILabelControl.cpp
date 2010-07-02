@@ -53,7 +53,9 @@ void CGUILabelControl::SetCursorPos(int iPos)
   CStdString label = m_infoLabel.GetLabel(m_parentID);
   if (iPos > (int)label.length()) iPos = label.length();
   if (iPos < 0) iPos = 0;
-  m_forceMark |= m_iCursorPos = iPos;
+  if (m_iCursorPos != iPos)
+    MarkDirtyRegion();
+
   m_iCursorPos = iPos;
 }
 
@@ -92,18 +94,24 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
     label = colorLabel;
   }
 
-  m_forceMark |= m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
-  m_forceMark |= m_label.SetText(label);
+  if (m_label.SetMaxRect(m_posX, m_posY, m_width, m_height) || m_label.SetText(label))
+    MarkDirtyRegion();
+}
+
+void CGUILabelControl::Process(unsigned int currentTime)
+{
+  if (m_label.SetColor(IsDisabled() ? CGUILabel::COLOR_DISABLED : CGUILabel::COLOR_TEXT) ||
+      m_label.SetMaxRect(m_posX, m_posY, m_width, m_height))
+    MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime);
 }
 
 void CGUILabelControl::Render()
 {
-  m_label.SetColor(IsDisabled() ? CGUILabel::COLOR_DISABLED : CGUILabel::COLOR_TEXT);
-  m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
   m_label.Render();
   CGUIControl::Render();
 }
-
 
 bool CGUILabelControl::CanFocus() const
 {

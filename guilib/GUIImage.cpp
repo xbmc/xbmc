@@ -96,8 +96,6 @@ void CGUIImage::AllocateOnDemand()
 
 void CGUIImage::Process(unsigned int currentTime)
 {
-  bool marked = false;
-
   if (m_texture.FailedToAlloc() && !m_texture.GetFileName().Equals(m_info.GetFallback()))
     m_texture.SetFileName(m_info.GetFallback());
 
@@ -136,7 +134,7 @@ void CGUIImage::Process(unsigned int currentTime)
         texture->m_texture->SetAlpha(GetFadeLevel(texture->m_fadeTime));
         texture->m_texture->SetDiffuseColor(m_diffuseColor);
       }
-      marked = true;
+      MarkDirtyRegion();
     }
 
     if (m_texture.ReadyToRender() || m_texture.GetFileName().IsEmpty())
@@ -150,14 +148,11 @@ void CGUIImage::Process(unsigned int currentTime)
     if (m_texture.GetAlpha() != alpha)
     {
       m_texture.SetAlpha(GetFadeLevel(m_currentFadeTime));
-      marked = true;
+      MarkDirtyRegion();
     }
   }
 
   m_texture.SetDiffuseColor(m_diffuseColor);
-
-  if (marked)
-    MarkDirtyRegion();
 
   CGUIControl::Process(currentTime);
 }
