@@ -31,9 +31,90 @@
 
 #include "bc_dts_defs.h"
 
+#define FLEA_MAX_TRICK_MODE_SPEED	6
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/*****************************************************************************
+******************************************************************************
+
+                            Theory of operation
+
+
+    The Device Interface Library (DIL) allows application level code, such
+as a DirectShow filter, to access the Broadcom CrystalHD decoder driver to 
+provide hardware decoding for MPEG-2, H.264 (AVC) and VC-1 streams.
+
+    In the Microsoft DirectShow system, the overall system graph would look 
+like the following:
+
++--------+  +---------------+  +---------------+  +--------------------+
+| Source |->| Demultiplexer |->| Audio decoder |->| DirectSound Device |
++--------+  +---------------+  +---------------+  +--------------------+
+                    |
+                    |  +-------------------------+  +----------------+
+                    +->| Broadcom decoder filter |->| Video Renderer |
+                       +-------------------------+  +----------------+
+                                  |    |  
+                            +----------------+
+                            |  Broadcom DIL  |
+                            +----------------+
+                                  |    |
+                            +-----------------+
+                            | Broadcom Driver |
+                            +-----------------+
+
+    From the view of the caller, the DIL will accept compressed video streams
+and will output decoded video frames or fields to seperate Y and UV buffers.
+The DIL is responsible solely for decoding video and has no responsibilities
+for audio nor for rendering, as shown in the above diagram.  Audio/video
+sychronization is assisted by feeding the DIL with timestamps so that it
+may pass those timestamps along with the decoded video.  The timestamped
+output video will then be presented at the appropriate time by the renderer.
+
+A minimal implementation would be:
+
+    HANDLE              hBRCMhandle;
+    uint8_t             input_buffer[INPUT_SIZE];
+    uint8_t             y_output_buffer[WIDTH*HEIGHT];
+    uint8_t             uv_output_buffer[WIDTH*HEIGHT];
+    BC_DTS_PROC_OUT     sProcOutData = { fill in your values here };
+    BC_PIC_INFO_BLOCK   sPIB = { fill in your values here };
+
+    // Acquire handle for device.
+    DtsDeviceOpen(&hBRCMhandle, 0);
+     
+    // Elemental stream.
+    DtsOpenDecoder(hBRCMhandle, 0);
+    
+    // H.264, Enable FGT SEI, do not parse metadata, no forced progressive out
+    DtsSetVideoParams(hBRCMhandle,0,1,0,0,0);
+
+    // Tell decoder to wait for input from host. (PC)
+    DtsStartDecoder(hBRCMhandle);       
+
+    // Input buffer address, input buffer size, no timestamp, Unencrypted
+    DtsProcInput(hBRCMhandle,input_buffer,sizeof(input_buffer),0,0);
+
+    // Tell PC to wait for data from decoder.
+    DtsStartCapture(hBRCMhandle);       
+
+    // 16ms timeout, pass pointer to PIB then get the decoded picture.
+    DtsProcOutput(hBRCMhandle,16,&sPIB);
+
+    // Stop the decoder.
+    DtsStopDecoder(hBRCMhandle);
+
+    // Close the decoder
+    DtsCloseDecoder(hBRCMhandle);
+
+    // Release handle for device.
+    DtsDeviceClose(hBRCMhandle);
+
+******************************************************************************
+*****************************************************************************/
 
 #define DRVIFLIB_API
 
@@ -353,8 +434,13 @@ Parameters:
                     1080i data. When this flag is not set, the decoder will
                     use pull-down information in the input stream to decide
                     the decoded data format.
-    Reserved        This field is reserved for possible future expansion.
-                    Set to 0.
+    OptFlags        In this field bits 0:3 are used pass default frame rate,
+                    bits 4:5 are for operation mode (used to indicate Blu-ray
+                    mode to the decoder) and bit 6 is for the flag mpcOutPutMaxFRate
+                    which when set tells the FW to output at the max rate for the
+                    resolution and ignore the frame rate determined from the
+                    stream. Bit 7 is set to indicate that this is single threaded mode
+                    and the driver will be peeked to get timestamps ahead of time.
 
 Return:
 
@@ -369,6 +455,36 @@ DtsSetVideoParams(
     BOOL     MetaDataEnable,
     BOOL     Progressive,
     uint32_t OptFlags
+    );
+
+/*****************************************************************************
+
+Function name:
+
+    DtsSetInputFormat
+    
+Description:
+
+    Sets input video's various parameters that would be used by a subsequent call
+    to DtsStartDecoder.
+
+    DtsSetInputFormat must always be called before DtsStartDecoder for the
+    decoder to start processing input data. The device must have been
+    previously opened for this call to succeed.
+
+Parameters:
+    hDevice         Handle to device. This is obtained via a prior call to DtsDeviceOpen.
+    pInputFormat Pointer to the BC_INPUT_FORMAT data.
+
+Return:
+
+    BC_STS_SUCCESS will be returned on successful completion.
+
+*****************************************************************************/
+DRVIFLIB_API BC_STATUS 
+DtsSetInputFormat(
+    HANDLE  			hDevice,
+    BC_INPUT_FORMAT   *pInputFormat
     );
 
 /*****************************************************************************
@@ -547,7 +663,68 @@ Return:
 *****************************************************************************/
 DRVIFLIB_API BC_STATUS
 DtsResumeDecoder(
-    HANDLE hDevice
+    HANDLE  hDevice
+    );
+
+/*****************************************************************************
+
+Function name:
+
+    DtsSetVideoPID
+    
+Description:
+
+    Sets the video PID in the input Transport Stream that the decoder
+    needs to process.
+
+    The device must have been previously opened for this call to succeed.
+
+Parameters:
+
+    hDevice Handle to device. This is obtained via a prior call to
+            DtsDeviceOpen.
+    PID     PID value that decoder needs to process.
+
+Return:
+
+    BC_STS_SUCCESS will be returned on successful completion.
+
+*****************************************************************************/
+DRVIFLIB_API BC_STATUS 
+DtsSetVideoPID(
+    HANDLE    hDevice,
+    uint32_t  pid
+    );
+
+
+/*****************************************************************************
+
+Function name:
+
+    StartCaptureImmidiate
+    
+Description:
+
+    Instruct the driver to start capturing decoded frames for output.
+
+    The device must have been previously opened for this call to succeed.
+    This function must be called before the first call to DtsProcInput.
+    This function instructs the receive path in the driver to start waiting
+    for valid data to be presented from the decoder.
+
+Parameters:
+    hDevice     Handle to device. This is obtained via a prior call to
+                DtsDeviceOpen.
+
+Return:
+
+    BC_STS_SUCCESS will be returned on successful completion.
+
+*****************************************************************************/
+DRVIFLIB_API BC_STATUS 
+DtsStartCaptureImmidiate(
+    HANDLE    hDevice,
+    uint32_t  Reserved
     );
 
 
@@ -590,7 +767,7 @@ Description:
 
     ***This function is deprecated and is for temporary use only.***
 
-    Flush the driverís queue of pictures and stops the capture process. These
+    Flush the driver√≠s queue of pictures and stops the capture process. These
     functions will be replaced with automatic Stop (End of Sequence) detection.
 
     The device must have been previously opened for this call to succeed.
@@ -760,6 +937,7 @@ Parameters:
                 that is available in the buffer. If timestamp is present
                 (i.e. non-zero), then this will be reflected in the output
                 sample (picture) produced from the contents of this buffer.
+				Timestamp should be in units of 100 ns.
     Encrypted   Flag to indicate that the data transfer is not in the clear
                 and that the decoder needs to decrypt before it can decode
                 the data.  Note that due to complexity, it is preferred that
@@ -778,6 +956,39 @@ DtsProcInput(
     uint32_t ulSizeInBytes,
     uint64_t timeStamp,
     BOOL     encrypted
+    );
+
+/*****************************************************************************
+
+Function name:
+
+    DtsGetColorPrimaries
+
+Description:
+
+    Returns color primaries information from the stream being processed.
+
+    The device must have been previously opened for this call to succeed.
+    In addition at least one picture must have been successfully decoded and
+    returned back from the decoder.
+
+Parameters:
+
+    hDevice         Handle to device. This is obtained via a prior call to
+                    DtsDeviceOpen.
+    colorPrimaries  Pointer to U32 to receive the color primaries information.
+                    The values returned are described in the previous section
+                    regarding the picture metadata. [OUTPUT]
+
+Return:
+
+    BC_STS_SUCCESS will be returned on successful completion.
+
+*****************************************************************************/
+DRVIFLIB_API BC_STATUS
+DtsGetColorPrimaries(
+    HANDLE    hDevice,
+    uint32_t  *colorPrimaries
     );
 
 /*****************************************************************************
@@ -807,6 +1018,8 @@ Parameters:
                     2   Flushes all the decoder buffers, input, decoded and
                         to be decoded.
                     3   Cancels the pending TX Request from the DIL/driver
+					4	Flushes all the decoder buffers, input, decoded and
+						to be decoded data. Also flushes the drivers buffers
 
 Return:
 
@@ -875,7 +1088,11 @@ Parameters:
 
     hDevice         Handle to device. This is obtained via a prior call to
                     DtsDeviceOpen.
-    rate			2x/ 1x
+    rate            Inverse of speed x 10000.
+                    Examples:
+                        1/2x playback speed = 20000
+                        1x   playback speed = 10000
+                        2x   playback speed = 5000
 
 Return:
 
@@ -1016,6 +1233,43 @@ DtsIs422Supported(
 
 Function name:
 
+     DtsSetColorSpace    
+    
+Description:
+
+    This function sets the output sample's color space.
+
+    The device must have been opened previously and must support 422 mode for
+    this call to succeed.
+
+    Use "DtsIs422Supported" to find whether 422 mode is supported.
+
+Parameters:
+
+    hDevice     Handle to device. This is obtained via a prior call to
+                DtsDeviceOpen.
+    422Mode     Mode is defined by BC_OUTPUT_FORMAT as follows -
+				OUTPUT_MODE420		= 0x0,
+				OUTPUT_MODE422_YUY2	= 0x1,
+				OUTPUT_MODE422_UYVY	= 0x2,
+				OUTPUT_MODE_INVALID	= 0xFF
+				Valid values for this API are OUTPUT_MODE422_YUY2 and OUTPUT_MODE422_UYVY
+
+Return:
+
+    BC_STS_SUCCESS will be returned on successful completion.
+
+*****************************************************************************/
+DRVIFLIB_API BC_STATUS 
+DtsSetColorSpace(
+    HANDLE  hDevice,
+    BC_OUTPUT_FORMAT      Mode422
+    );
+
+/*****************************************************************************
+
+Function name:
+
     DtsSet422Mode
 
 Description:
@@ -1140,9 +1394,119 @@ DtsGetDriverStatus(
 	BC_DTS_STATUS   *pStatus
     );
 
+/*****************************************************************************
 
+Function name:
 
+    DtsGetCapabilities
 
+Description:
+
+    This command returns output format support and hardware capabilities.
+
+    The device must have been previously opened for this call to succeed.
+
+Parameters:
+
+    hDevice         Handle to device. This is obtained via a prior call to
+                    DtsDeviceOpen.   
+
+    pCapsBuffer   Pointer to BC_HW_CAPS to receive HW Output capabilities.
+
+Return:
+
+    BC_STS_SUCCESS will be returned on successful completion.
+
+*****************************************************************************/
+DRVIFLIB_API BC_STATUS 
+DtsGetCapabilities (
+	HANDLE  hDevice,
+	PBC_HW_CAPS	pCapsBuffer
+	);
+
+/*****************************************************************************
+
+Function name:
+
+    DtsSetScaleParams
+
+Description:
+
+    This command sets hardware scaling parameters.
+
+Parameters:
+
+    hDevice         Handle to device. This is obtained via a prior call to
+                    DtsDeviceOpen.   
+
+    pScaleParams   Pointer to BC_SCALING_PARAMS to set hardware scaling parameters.
+
+Return:
+
+    BC_STS_SUCCESS will be returned on successful completion.
+
+*****************************************************************************/
+DRVIFLIB_API BC_STATUS 
+DtsSetScaleParams (
+	HANDLE  hDevice,
+	PBC_SCALING_PARAMS pScaleParams
+	);
+
+/*****************************************************************************
+
+Function name:
+
+    DtsIsEndOfStream
+
+Description:
+
+    This command returns whether the end of stream(EOS) is reaching.
+Parameters:
+
+    hDevice     Handle to device. This is obtained via a prior call to
+                    DtsDeviceOpen.   
+
+    bEOS   Pointer to uint8_t to indicate if EOS of not
+
+Return:
+
+    BC_STS_SUCCESS will be returned on successful completion.
+
+*****************************************************************************/
+DRVIFLIB_API BC_STATUS 
+DtsIsEndOfStream(
+    HANDLE  hDevice,
+    uint8_t*	bEOS
+);
+
+/*****************************************************************************
+
+Function name:
+
+    DtsCrystalHDVersion
+
+Description:
+
+    This API returns hw and sw version information for Crystal HD solutions
+Parameters:
+
+    hDevice     Handle to device. This is obtained via a prior call to
+                    DtsDeviceOpen.   
+
+    bCrystalInfo   Pointer to structure to fill in with information
+
+	device = 0 for BCM70012, 1 for BCM70015
+	
+Return:
+
+    BC_STS_SUCCESS will be returned on successful completion.
+
+*****************************************************************************/
+DRVIFLIB_API BC_STATUS 
+DtsCrystalHDVersion(
+    HANDLE  hDevice,
+    PBC_INFO_CRYSTAL bCrystalInfo
+);
 
 #ifdef __cplusplus
 }
