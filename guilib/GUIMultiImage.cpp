@@ -104,8 +104,6 @@ void CGUIMultiImage::UpdateInfo(const CGUIListItem *item)
 
 void CGUIMultiImage::Process(unsigned int currentTime)
 {
-  CGUIControl::Process(currentTime);
-
   if (!m_files.empty())
   {
     // Set a viewport so that we don't render outside the defined area
@@ -141,6 +139,8 @@ void CGUIMultiImage::Process(unsigned int currentTime)
     }
     g_graphicsContext.RestoreClipRegion();
   }
+
+  CGUIControl::Process(currentTime);
 }
 
 void CGUIMultiImage::Render()

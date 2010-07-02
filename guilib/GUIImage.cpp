@@ -96,8 +96,6 @@ void CGUIImage::AllocateOnDemand()
 
 void CGUIImage::Process(unsigned int currentTime)
 {
-  CGUIControl::Process(currentTime);
-
   bool marked = false;
 
   if (m_texture.FailedToAlloc() && !m_texture.GetFileName().Equals(m_info.GetFallback()))
@@ -160,6 +158,8 @@ void CGUIImage::Process(unsigned int currentTime)
 
   if (marked)
     MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime);
 }
 
 bool CGUIImage::ProcessFading(CGUIImage::CFadingTexture *texture, unsigned int frameTime)

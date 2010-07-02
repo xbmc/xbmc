@@ -80,8 +80,6 @@ CGUITextBox::~CGUITextBox(void)
 
 void CGUITextBox::Process(unsigned int currentTime)
 {
-  CGUIControl::Process(currentTime);
-
   // render the repeat anim as appropriate
   if (m_autoScrollRepeatAnim)
   {
@@ -105,6 +103,8 @@ void CGUITextBox::Process(unsigned int currentTime)
     // TODO I think this one marks itself from base control
     MarkDirtyRegion();    
   }
+
+  CGUIControl::Process(currentTime);
 }
 
 void CGUITextBox::UpdateColors()
