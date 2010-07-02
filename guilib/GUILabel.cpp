@@ -39,16 +39,24 @@ CGUILabel::~CGUILabel(void)
 {
 }
 
-void CGUILabel::SetScrolling(bool scrolling)
+bool CGUILabel::SetScrolling(bool scrolling)
 {
   m_scrolling = scrolling;
   if (!m_scrolling)
     m_scrollInfo.Reset();
+
+  return true;
 }
 
-void CGUILabel::SetColor(CGUILabel::COLOR color)
+bool CGUILabel::SetColor(CGUILabel::COLOR color)
 {
-  m_color = color;
+  if (m_color != color)
+  {
+    m_color = color;
+    return true;
+  }
+
+  return false;
 }
 
 color_t CGUILabel::GetColor() const
@@ -103,39 +111,52 @@ void CGUILabel::SetInvalid()
   m_invalid = true;
 }
 
-void CGUILabel::UpdateColors()
+bool CGUILabel::UpdateColors()
 {
+  color_t oldColor = GetColor();
   m_label.UpdateColors();
+  return oldColor != GetColor();
 }
 
-void CGUILabel::SetMaxRect(float x, float y, float w, float h)
+bool CGUILabel::SetMaxRect(float x, float y, float w, float h)
 {
+  CRect oldRect = m_maxRect;
   m_maxRect.SetRect(x, y, x + w, y + h);
   UpdateRenderRect();
+
+  return oldRect != m_maxRect;
 }
 
-void CGUILabel::SetAlign(uint32_t align)
+bool CGUILabel::SetAlign(uint32_t align)
 {
-  m_label.align = align;
-  UpdateRenderRect();
+  if (m_label.align != align)
+  {
+    m_label.align = align;
+    UpdateRenderRect();
+    return true;
+  }
+  return false;
 }
 
-void CGUILabel::SetText(const CStdString &label)
+bool CGUILabel::SetText(const CStdString &label)
 {
   if (m_textLayout.Update(label, m_maxRect.Width(), m_invalid))
   { // needed an update - reset scrolling and update our text layout
     m_scrollInfo.Reset();
     UpdateRenderRect();
     m_invalid = false;
+    return true;
   }
+  return false;
 }
 
-void CGUILabel::SetTextW(const CStdStringW &label)
+bool CGUILabel::SetTextW(const CStdStringW &label)
 {
   m_textLayout.SetText(label);
   m_scrollInfo.Reset();
   UpdateRenderRect();
   m_invalid = false;
+  return true;
 }
 
 void CGUILabel::UpdateRenderRect()
