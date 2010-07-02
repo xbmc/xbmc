@@ -19,17 +19,26 @@
 #  http://www.gnu.org/copyleft/gpl.html
 
 
+echo
 echo "Checking availability of required packages..."
 
-REQUIREDPACKAGES=( git-core debootstrap asciidoc docbook-xsl curl build-essential debhelper autoconf automake autotools-dev )
+REQUIREDPACKAGES=( git-core debootstrap asciidoc docbook-xsl curl build-essential debhelper autoconf automake autotools-dev pippo pluto)
+NOTINSTALLED=()
 
 for k in "${REQUIREDPACKAGES[@]}" ; do 
 	if [ "$( dpkg -l  | grep "ii" | grep "$k" )" = "" ] ; then
-		echo  "Package $k is not installed, exiting." 
-		exit 1
+		NOTINSTALLED+=($k)
 	fi
 done
 
+if [ ${#NOTINSTALLED[@]} -gt 0 ]; then
+	echo
+	echo "FATAL: the following packages are missing, exiting." 
+	for k in "${NOTINSTALLED[@]}"; do 
+		echo "  $k"; 
+	done 
+	exit 1 
+fi 
 
 #
 # Make sure only root can run our script
