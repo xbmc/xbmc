@@ -150,9 +150,8 @@ protected:
   DllLibCrystalHD *m_dll;
   void          *m_device;
   bool          m_new_lib;
-  bool          m_is_bcm70015;
-
   bool          m_decoder_open;
+  bool          m_has_bcm70015;
   int           m_color_space;
   bool          m_drop_state;
   unsigned int  m_timeout;

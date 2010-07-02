@@ -1124,7 +1124,9 @@ CCrystalHD* CCrystalHD::m_pInstance = NULL;
 CCrystalHD::CCrystalHD() :
   m_device(NULL),
   m_new_lib(false),
+  m_has_bcm70015(false),
   m_decoder_open(false),
+  m_color_space(BCM::OUTPUT_MODE420),
   m_drop_state(false),
   m_pOutputThread(NULL)
 {
@@ -1235,6 +1237,17 @@ void CCrystalHD::OpenDevice()
         CLog::Log(LOGINFO, "%s(new API): device opened", __MODULE_NAME__);
       else
         CLog::Log(LOGINFO, "%s(old API): device opened", __MODULE_NAME__);
+
+      if (m_new_lib)
+      {
+        BCM::BC_INFO_CRYSTAL bc_info_crystal;
+        m_dll->DtsCrystalHDVersion(m_device, &bc_info_crystal);
+        m_has_bcm70015 = (bc_info_crystal.device == 1);
+        // bcm70012 can do nv12 (420), yuy2 (422) and uyvy (422)
+        // bcm70015 can do only yuy2 (422)
+        if (m_has_bcm70015)
+          m_color_space = BCM::OUTPUT_MODE422_YUY2;
+      }
     #else
       CLog::Log(LOGINFO, "%s: device opened", __MODULE_NAME__);
     #endif
@@ -1312,7 +1325,6 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
       break;
     }
 
-    m_is_bcm70015 = false;
 #if (HAVE_LIBCRYSTALHD == 2)
     if (m_new_lib)
     {
@@ -1340,41 +1352,10 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
         CLog::Log(LOGDEBUG, "%s: set input format failed", __MODULE_NAME__);
         break;
       }
-
-      BCM::BC_HW_CAPS CapsBuffer;
-      res = m_dll->DtsGetCapabilities(m_device, &CapsBuffer);
-      if (res != BCM::BC_STS_SUCCESS) {
-        CLog::Log(LOGDEBUG, "%s: get capabilities failed", __MODULE_NAME__);
-        break;
-      }
-
-      // bcm70012 can do nv12 (420), yuy2 (422) and uyvy (422)
-      // bcm70015 can do only yuy2 (422)
-      // so default to yuy2 and see if hw can do nv12
-      m_color_space = BCM::OUTPUT_MODE422_YUY2;
-      for (int indx = 0; indx < CapsBuffer.ColorCaps.Count; indx++)
-      {
-        if (CapsBuffer.ColorCaps.OutFmt[indx] == BCM::OUTPUT_MODE420)
-        {
-          m_color_space = CapsBuffer.ColorCaps.OutFmt[indx];
-          break;
-        }
-      }
-      if (m_color_space == BCM::OUTPUT_MODE422_YUY2)
-      {
-        m_is_bcm70015 = true;
-        res = m_dll->DtsSetColorSpace(m_device, BCM::OUTPUT_MODE422_YUY2);
-        if (res != BCM::BC_STS_SUCCESS) {
-          CLog::Log(LOGDEBUG, "%s: set color space failed", __MODULE_NAME__);
-          break;
-        }
-      }
     }
     else
 #endif
     {
-      m_color_space = BCM::OUTPUT_MODE420;
-
       uint32_t OptFlags = 0x80000000 | BCM::vdecFrameRate23_97;
       res = m_dll->DtsSetVideoParams(m_device, videoAlg, FALSE, FALSE, TRUE, OptFlags);
       if (res != BCM::BC_STS_SUCCESS)
@@ -1448,7 +1429,7 @@ void CCrystalHD::CloseDecoder(void)
 
 void CCrystalHD::Reset(void)
 {
-  if (m_is_bcm70015)
+  if (m_has_bcm70015)
   {
     m_wait_timeout = 1;
     m_dll->DtsFlushInput(m_device, 2);
