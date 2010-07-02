@@ -76,6 +76,7 @@ public:
   bool          m_interlace;
   double        m_framerate;
   uint64_t      m_timestamp;
+  int           m_color_space;
   unsigned int  m_color_range;
   unsigned int  m_color_matrix;
   uint64_t      m_PictureNumber;
@@ -149,8 +150,10 @@ protected:
   DllLibCrystalHD *m_dll;
   void          *m_device;
   bool          m_new_lib;
+  bool          m_is_bcm70015;
 
   bool          m_decoder_open;
+  int           m_color_space;
   bool          m_drop_state;
   unsigned int  m_timeout;
   unsigned int  m_wait_timeout;

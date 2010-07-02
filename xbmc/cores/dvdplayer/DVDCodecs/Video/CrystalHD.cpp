@@ -65,6 +65,7 @@ public:
   virtual BCM::BC_STATUS DtsStartDecoder(void *hDevice)=0;
   virtual BCM::BC_STATUS DtsSetVideoParams(void *hDevice, uint32_t videoAlg, int FGTEnable, int MetaDataEnable, int Progressive, uint32_t OptFlags)=0;
   virtual BCM::BC_STATUS DtsStartCapture(void *hDevice)=0;
+  virtual BCM::BC_STATUS DtsStartCaptureImmidiate(void *hDevice, uint32_t Reserved)=0;
   virtual BCM::BC_STATUS DtsFlushRxCapture(void *hDevice, int bDiscardOnly)=0;
   virtual BCM::BC_STATUS DtsSetFFRate(void *hDevice, uint32_t rate)=0;
   virtual BCM::BC_STATUS DtsGetDriverStatus(void *hDevice, BCM::BC_DTS_STATUS *pStatus)=0;
@@ -100,6 +101,7 @@ class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
   DEFINE_METHOD1(BCM::BC_STATUS, DtsStopDecoder,     (void *p1))
   DEFINE_METHOD6(BCM::BC_STATUS, DtsSetVideoParams,  (void *p1, uint32_t p2, int p3, int p4, int p5, uint32_t p6))
   DEFINE_METHOD1(BCM::BC_STATUS, DtsStartCapture,    (void *p1))
+  DEFINE_METHOD2(BCM::BC_STATUS, DtsStartCaptureImmidiate, (void *p1, uint32_t p2))
   DEFINE_METHOD2(BCM::BC_STATUS, DtsFlushRxCapture,  (void *p1, int p2))
   DEFINE_METHOD2(BCM::BC_STATUS, DtsSetFFRate,       (void *p1, uint32_t p2))
   DEFINE_METHOD2(BCM::BC_STATUS, DtsGetDriverStatus, (void *p1, BCM::BC_DTS_STATUS *p2))
@@ -130,6 +132,7 @@ class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
     RESOLVE_METHOD_RENAME(DtsStopDecoder,     DtsStopDecoder)
     RESOLVE_METHOD_RENAME(DtsSetVideoParams,  DtsSetVideoParams)
     RESOLVE_METHOD_RENAME(DtsStartCapture,    DtsStartCapture)
+    RESOLVE_METHOD_RENAME(DtsStartCaptureImmidiate, DtsStartCaptureImmidiate)
     RESOLVE_METHOD_RENAME(DtsFlushRxCapture,  DtsFlushRxCapture)
     RESOLVE_METHOD_RENAME(DtsSetFFRate,       DtsSetFFRate)
     RESOLVE_METHOD_RENAME(DtsGetDriverStatus, DtsGetDriverStatus)
@@ -234,6 +237,7 @@ protected:
   void                SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info);
   void                CopyOutAsNV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
   void                CopyOutAsYV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
+  void                UYY2422_to_YV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
   bool                GetDecoderOutput(void);
   virtual void        Process(void);
 
@@ -243,10 +247,12 @@ protected:
   DllLibCrystalHD     *m_dll;
   void                *m_device;
   unsigned int        m_timeout;
+  bool                m_format_valid;
   int                 m_width;
   int                 m_height;
   uint64_t            m_timestamp;
   uint64_t            m_PictureNumber;
+  uint8_t             m_color_space;
   unsigned int        m_color_range;
   unsigned int        m_color_matrix;
   int                 m_interlace;
@@ -272,18 +278,19 @@ CPictureBuffer::CPictureBuffer(DVDVideoPicture::EFormat format, int width, int h
   m_interlace = false;
   m_timestamp = DVD_NOPTS_VALUE;
   m_PictureNumber = 0;
+  m_color_space = BCM::MODE420;
   m_color_range = 0;
   m_color_matrix = 4;
   m_format = format;
-  
-  // setup y plane
-  m_y_buffer_size = m_width * m_height;
-  m_y_buffer_ptr = (unsigned char*)_aligned_malloc(m_y_buffer_size, 16);
   
   switch(m_format)
   {
     default:
     case DVDVideoPicture::FMT_NV12:
+      // setup y plane
+      m_y_buffer_size = m_width * m_height;
+      m_y_buffer_ptr = (unsigned char*)_aligned_malloc(m_y_buffer_size, 16);
+  
       m_u_buffer_size = 0;
       m_v_buffer_size = 0;
       m_u_buffer_ptr = NULL;
@@ -291,7 +298,23 @@ CPictureBuffer::CPictureBuffer(DVDVideoPicture::EFormat format, int width, int h
       m_uv_buffer_size = m_y_buffer_size / 2;
       m_uv_buffer_ptr = (unsigned char*)_aligned_malloc(m_uv_buffer_size, 16);
     break;
+    case DVDVideoPicture::FMT_YUY2:
+      // setup y plane
+      m_y_buffer_size = (2 * m_width) * m_height;
+      m_y_buffer_ptr = (unsigned char*)_aligned_malloc(m_y_buffer_size, 16);
+  
+      m_uv_buffer_size = 0;
+      m_uv_buffer_ptr = NULL;
+      m_u_buffer_size = 0;
+      m_v_buffer_size = 0;
+      m_u_buffer_ptr = NULL;
+      m_v_buffer_ptr = NULL;
+    break;
     case DVDVideoPicture::FMT_YUV420P:
+      // setup y plane
+      m_y_buffer_size = m_width * m_height;
+      m_y_buffer_ptr = (unsigned char*)_aligned_malloc(m_y_buffer_size, 16);
+  
       m_uv_buffer_size = 0;
       m_uv_buffer_ptr = NULL;
       m_u_buffer_size = m_y_buffer_size / 4;
@@ -319,6 +342,7 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll) :
   m_dll(dll),
   m_device(device),
   m_timeout(20),
+  m_format_valid(false),
   m_framerate_tracking(false),
   m_framerate_cnt(0),
   m_framerate_timestamp(0.0),
@@ -663,6 +687,187 @@ void CMPCOutputThread::CopyOutAsNV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_O
   }
 }
 
+#if 0
+// Taken from Xine Project (color.c)
+// Copyright (C) 2000-2003 the xine project
+// GNU General Public License version 2 of the License,
+// or (at your option) any later version
+#define C_YUYV_YUV420( )                        \
+    *p_y1++ = *p_line1++; *p_y2++ = *p_line2++; \
+    *p_u++ = (*p_line1++ + *p_line2++)>>1;      \
+    *p_y1++ = *p_line1++; *p_y2++ = *p_line2++; \
+    *p_v++ = (*p_line1++ + *p_line2++)>>1;
+
+void CMPCOutputThread::UYY2422_to_YV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride)
+{
+  const unsigned char *yuy2_map;
+  int yuy2_pitch, y_dst_pitch, u_dst_pitch, v_dst_pitch;
+  unsigned char *y_dst, *u_dst, *v_dst;
+  int width, height;
+
+  width = w;
+  height = h;
+
+  yuy2_map = procOut->Ybuff;
+  yuy2_pitch = stride*2;
+  y_dst = pBuffer->m_y_buffer_ptr;
+  u_dst = pBuffer->m_u_buffer_ptr;
+  v_dst = pBuffer->m_v_buffer_ptr;
+  y_dst_pitch = width;
+  u_dst_pitch = v_dst_pitch = width / 2;
+
+  const uint8_t *p_line1, *p_line2 = yuy2_map;
+  uint8_t *p_y1, *p_y2 = y_dst;
+  uint8_t *p_u = u_dst;
+  uint8_t *p_v = v_dst;
+
+  int i_x, i_y;
+
+  const int i_dest_margin   = y_dst_pitch - width;
+  const int i_dest_u_margin = u_dst_pitch - width / 2;
+  const int i_dest_v_margin = v_dst_pitch - width / 2;
+  const int i_source_margin = yuy2_pitch  - width * 2;
+
+
+  for( i_y = height / 2 ; i_y-- ; )
+  {
+    p_line1 = p_line2;
+    p_line2 += yuy2_pitch;
+
+    p_y1 = p_y2;
+    p_y2 += y_dst_pitch;
+
+    for( i_x = width / 8 ; i_x-- ; )
+    {
+      C_YUYV_YUV420( );
+      C_YUYV_YUV420( );
+      C_YUYV_YUV420( );
+      C_YUYV_YUV420( );
+    }
+
+    p_y2 += i_dest_margin;
+    p_u += i_dest_u_margin;
+    p_v += i_dest_v_margin;
+    p_line2 += i_source_margin;
+  }
+}
+#else
+// Taken from Xine Project (color.c)
+// Copyright (C) 2000-2003 the xine project
+// GNU General Public License version 2 of the License,
+// or (at your option) any later version
+
+#define HAVE_MMX
+#ifdef HAVE_MMX
+
+/* yuy2->yv12 with subsampling (some ideas from mplayer's yuy2toyv12) */
+#define MMXEXT_YUYV_YUV420( )                                                      \
+    do {                                                                               \
+        __asm__ __volatile__(".align 8 \n\t"                                            \
+                "movq       (%0), %%mm0 \n\t"  /* Load              v1 y3 u1 y2 v0 y1 u0 y0 */ \
+                "movq      8(%0), %%mm1 \n\t"  /* Load              v3 y7 u3 y6 v2 y5 u2 y4 */ \
+                "movq      %%mm0, %%mm2 \n\t"  /*                   v1 y3 u1 y2 v0 y1 u0 y0 */ \
+                "movq      %%mm1, %%mm3 \n\t"  /*                   v3 y7 u3 y6 v2 y5 u2 y4 */ \
+                "psrlw     $8, %%mm0    \n\t"  /*                   00 v1 00 u1 00 v0 00 u0 */ \
+                "psrlw     $8, %%mm1    \n\t"  /*                   00 v3 00 u3 00 v2 00 u2 */ \
+                "pand      %%mm7, %%mm2 \n\t"  /*                   00 y3 00 y2 00 y1 00 y0 */ \
+                "pand      %%mm7, %%mm3 \n\t"  /*                   00 y7 00 y6 00 y5 00 y4 */ \
+                "packuswb  %%mm1, %%mm0 \n\t"  /*                   v3 u3 v2 u2 v1 u1 v0 u0 */ \
+                "packuswb  %%mm3, %%mm2 \n\t"  /*                   y7 y6 y5 y4 y3 y2 y1 y0 */ \
+                "movntq    %%mm2, (%1)  \n\t"  /* Store YYYYYYYY line1                      */ \
+                :                                                                              \
+                : "r" (p_line1), "r" (p_y1) );                                                 \
+        __asm__ __volatile__(".align 8 \n\t"                                            \
+                "movq       (%0), %%mm1 \n\t"  /* Load              v1 y3 u1 y2 v0 y1 u0 y0 */ \
+                "movq      8(%0), %%mm2 \n\t"  /* Load              v3 y7 u3 y6 v2 y5 u2 y4 */ \
+                "movq      %%mm1, %%mm3 \n\t"  /*                   v1 y3 u1 y2 v0 y1 u0 y0 */ \
+                "movq      %%mm2, %%mm4 \n\t"  /*                   v3 y7 u3 y6 v2 y5 u2 y4 */ \
+                "psrlw     $8, %%mm1    \n\t"  /*                   00 v1 00 u1 00 v0 00 u0 */ \
+                "psrlw     $8, %%mm2    \n\t"  /*                   00 v3 00 u3 00 v2 00 u2 */ \
+                "pand      %%mm7, %%mm3 \n\t"  /*                   00 y3 00 y2 00 y1 00 y0 */ \
+                "pand      %%mm7, %%mm4 \n\t"  /*                   00 y7 00 y6 00 y5 00 y4 */ \
+                "packuswb  %%mm2, %%mm1 \n\t"  /*                   v3 u3 v2 u2 v1 u1 v0 u0 */ \
+                "packuswb  %%mm4, %%mm3 \n\t"  /*                   y7 y6 y5 y4 y3 y2 y1 y0 */ \
+                "movntq    %%mm3, (%1)  \n\t"  /* Store YYYYYYYY line2                      */ \
+                :                                                                              \
+                : "r" (p_line2), "r" (p_y2) );                                                 \
+        __asm__ __volatile__(                                                           \
+                "pavgb     %%mm1, %%mm0 \n\t"  /* (mean)            v3 u3 v2 u2 v1 u1 v0 u0 */ \
+                "movq      %%mm0, %%mm1 \n\t"  /*                   v3 u3 v2 u2 v1 u1 v0 u0 */ \
+                "psrlw     $8, %%mm0    \n\t"  /*                   00 v3 00 v2 00 v1 00 v0 */ \
+                "packuswb  %%mm0, %%mm0 \n\t"  /*                               v3 v2 v1 v0 */ \
+                "movd      %%mm0, (%0)  \n\t"  /* Store VVVV                                */ \
+                "pand      %%mm7, %%mm1 \n\t"  /*                   00 u3 00 u2 00 u1 00 u0 */ \
+                "packuswb  %%mm1, %%mm1 \n\t"  /*                               u3 u2 u1 u0 */ \
+                "movd      %%mm1, (%1)  \n\t"  /* Store UUUU                                */ \
+                :                                                                              \
+                : "r" (p_v), "r" (p_u) );                                                      \
+        p_line1 += 16; p_line2 += 16; p_y1 += 8; p_y2 += 8; p_u += 4; p_v += 4;          \
+    } while(0)
+
+#endif
+
+void CMPCOutputThread::UYY2422_to_YV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride)
+{
+  const unsigned char *yuy2_map;
+  int yuy2_pitch, y_dst_pitch, u_dst_pitch, v_dst_pitch;
+  unsigned char *y_dst, *u_dst, *v_dst;
+  int width, height;
+
+  width = w;
+  height = h;
+
+  yuy2_map = procOut->Ybuff;
+  yuy2_pitch = stride*2;
+  y_dst = pBuffer->m_y_buffer_ptr;
+  u_dst = pBuffer->m_u_buffer_ptr;
+  v_dst = pBuffer->m_v_buffer_ptr;
+  y_dst_pitch = width;
+  u_dst_pitch = v_dst_pitch = width / 2;
+
+#ifdef HAVE_MMX
+    const uint8_t *p_line1, *p_line2 = yuy2_map;
+    uint8_t *p_y1, *p_y2 = y_dst;
+    uint8_t *p_u = u_dst;
+    uint8_t *p_v = v_dst;
+
+    int i_x, i_y;
+
+    const int i_dest_margin = y_dst_pitch - width;
+    const int i_dest_u_margin = u_dst_pitch - width/2;
+    const int i_dest_v_margin = v_dst_pitch - width/2;
+    const int i_source_margin = yuy2_pitch - width*2;
+
+    __asm__ __volatile__(
+            "pcmpeqw %mm7, %mm7           \n\t"
+            "psrlw $8, %mm7               \n\t" /* 00 ff 00 ff 00 ff 00 ff */
+            );
+
+    for ( i_y = height / 2 ; i_y-- ; )
+    {
+        p_line1 = p_line2;
+        p_line2 += yuy2_pitch;
+
+        p_y1 = p_y2;
+        p_y2 += y_dst_pitch;
+
+        for ( i_x = width / 8 ; i_x-- ; )
+        {
+            MMXEXT_YUYV_YUV420( );
+        }
+
+        p_y2 += i_dest_margin;
+        p_u += i_dest_u_margin;
+        p_v += i_dest_v_margin;
+        p_line2 += i_source_margin;
+    }
+
+    __asm__ __volatile__ ("sfence":::"memory");
+    __asm__ __volatile__ ("emms":::"memory");
+#endif
+}
+#endif
+
 bool CMPCOutputThread::GetDecoderOutput(void)
 {
   BCM::BC_STATUS ret;
@@ -679,7 +884,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
   switch (ret)
   {
     case BCM::BC_STS_SUCCESS:
-      if (procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID)
+      if (m_format_valid && (procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID))
       {
         if (procOut.PicInfo.timeStamp)
         {
@@ -704,8 +909,12 @@ bool CMPCOutputThread::GetDecoderOutput(void)
               // Setting the picture format will determine the copy out method.
               pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
             else
-              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
-              
+              if (m_color_space == BCM::MODE422_YUY2)
+                pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
+                //pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUY2, m_width, m_height);
+              else
+                pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
+
             //CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());
           }
 
@@ -715,6 +924,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           pBuffer->m_interlace = m_interlace > 0 ? true : false;
           pBuffer->m_framerate = m_framerate;
           pBuffer->m_timestamp = m_timestamp;
+          pBuffer->m_color_space = m_color_space;
           pBuffer->m_color_range = m_color_range;
           pBuffer->m_color_matrix = m_color_matrix;
           pBuffer->m_PictureNumber = m_PictureNumber;
@@ -730,64 +940,72 @@ bool CMPCOutputThread::GetDecoderOutput(void)
             stride = 1280;
           else
             stride = 1920;
-            
-          if (pBuffer->m_format == DVDVideoPicture::FMT_NV12)
+
+          if (pBuffer->m_color_space == BCM::MODE420)
           {
-            CopyOutAsNV12(pBuffer, &procOut, w, h, stride);
-          }
-          else
-          {
-            if (pBuffer->m_interlace)
+            if (pBuffer->m_format == DVDVideoPicture::FMT_NV12)
             {
-              // we get a 1/2 height frame (field) from hw, not seeing the odd/even flags so
-              // can't tell which frames are odd, which are even so use picture number.
-              int line_width = w*2;
-
-              if (pBuffer->m_PictureNumber & 1)
-                m_interlace_buf->m_field = CRYSTALHD_FIELD_ODD;
-              else
-                m_interlace_buf->m_field = CRYSTALHD_FIELD_EVEN;
-
-              // copy luma
-              uint8_t *s_y = procOut.Ybuff;
-              uint8_t *d_y = m_interlace_buf->m_y_buffer_ptr;
-              if (m_interlace_buf->m_field == CRYSTALHD_FIELD_ODD)
-                d_y += line_width;
-              for (int y = 0; y < h/2; y++, s_y += stride, d_y += line_width)
-              {
-                fast_memcpy(d_y, s_y, w);
-              }
-
-              //copy chroma
-              line_width = w/2;
-              uint8_t *s_uv;
-              uint8_t *d_u = m_interlace_buf->m_u_buffer_ptr;
-              uint8_t *d_v = m_interlace_buf->m_v_buffer_ptr;
-              if (m_interlace_buf->m_field == CRYSTALHD_FIELD_ODD)
-              {
-                d_u += line_width;
-                d_v += line_width;
-              }
-              for (int y = 0; y < h/4; y++, d_u += line_width, d_v += line_width) {
-                s_uv = procOut.UVbuff + (y * stride);
-                for (int x = 0; x < w/2; x++) {
-                  *d_u++ = *s_uv++;
-                  *d_v++ = *s_uv++;
-                }
-              }
-
-              pBuffer->m_field = m_interlace_buf->m_field;
-              // copy y
-              fast_memcpy(pBuffer->m_y_buffer_ptr,  m_interlace_buf->m_y_buffer_ptr,  pBuffer->m_y_buffer_size);
-              // copy u
-              fast_memcpy(pBuffer->m_u_buffer_ptr, m_interlace_buf->m_u_buffer_ptr, pBuffer->m_u_buffer_size);
-              // copy v
-              fast_memcpy(pBuffer->m_v_buffer_ptr, m_interlace_buf->m_v_buffer_ptr, pBuffer->m_v_buffer_size);
+              CopyOutAsNV12(pBuffer, &procOut, w, h, stride);
             }
             else
             {
-              CopyOutAsYV12(pBuffer, &procOut, w, h, stride);
+              if (pBuffer->m_interlace)
+              {
+                // we get a 1/2 height frame (field) from hw, not seeing the odd/even flags so
+                // can't tell which frames are odd, which are even so use picture number.
+                int line_width = w*2;
+
+                if (pBuffer->m_PictureNumber & 1)
+                  m_interlace_buf->m_field = CRYSTALHD_FIELD_ODD;
+                else
+                  m_interlace_buf->m_field = CRYSTALHD_FIELD_EVEN;
+
+                // copy luma
+                uint8_t *s_y = procOut.Ybuff;
+                uint8_t *d_y = m_interlace_buf->m_y_buffer_ptr;
+                if (m_interlace_buf->m_field == CRYSTALHD_FIELD_ODD)
+                  d_y += line_width;
+                for (int y = 0; y < h/2; y++, s_y += stride, d_y += line_width)
+                {
+                  fast_memcpy(d_y, s_y, w);
+                }
+
+                //copy chroma
+                line_width = w/2;
+                uint8_t *s_uv;
+                uint8_t *d_u = m_interlace_buf->m_u_buffer_ptr;
+                uint8_t *d_v = m_interlace_buf->m_v_buffer_ptr;
+                if (m_interlace_buf->m_field == CRYSTALHD_FIELD_ODD)
+                {
+                  d_u += line_width;
+                  d_v += line_width;
+                }
+                for (int y = 0; y < h/4; y++, d_u += line_width, d_v += line_width) {
+                  s_uv = procOut.UVbuff + (y * stride);
+                  for (int x = 0; x < w/2; x++) {
+                    *d_u++ = *s_uv++;
+                    *d_v++ = *s_uv++;
+                  }
+                }
+
+                pBuffer->m_field = m_interlace_buf->m_field;
+                // copy y
+                fast_memcpy(pBuffer->m_y_buffer_ptr,  m_interlace_buf->m_y_buffer_ptr,pBuffer->m_y_buffer_size);
+                // copy u
+                fast_memcpy(pBuffer->m_u_buffer_ptr, m_interlace_buf->m_u_buffer_ptr, pBuffer->m_u_buffer_size);
+                // copy v
+                fast_memcpy(pBuffer->m_v_buffer_ptr, m_interlace_buf->m_v_buffer_ptr, pBuffer->m_v_buffer_size);
+              }
+              else
+              {
+                CopyOutAsYV12(pBuffer, &procOut, w, h, stride);
+              }
             }
+          }
+          else
+          {
+            //fast_memcpy(pBuffer->m_y_buffer_ptr,  procOut.Ybuff, pBuffer->m_y_buffer_size);
+            UYY2422_to_YV12(pBuffer, &procOut, w, h, stride);
           }
 
           m_ReadyList.Push(pBuffer);
@@ -816,6 +1034,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
         }
         m_width = procOut.PicInfo.width;
         m_height = procOut.PicInfo.height;
+        m_color_space = procOut.b422Mode;
         m_color_range = 0;
         m_color_matrix = procOut.PicInfo.colour_primaries;
         SetAspectRatio(&procOut.PicInfo);
@@ -826,6 +1045,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           m_interlace_buf = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
         }
         m_timeout = 2000;
+        m_format_valid = true;
         m_ready_event.Set();
       }
     break;
@@ -884,7 +1104,7 @@ void CMPCOutputThread::Process(void)
       ret = m_dll->DtsGetDriverStatus(m_device, &decoder_status);
       if (ret == BCM::BC_STS_SUCCESS && decoder_status.ReadyListCount != 0)
       {
-        double pts = pts_itod(decoder_status.NextTimeStamp);
+        double pts = (double)decoder_status.NextTimeStamp / 1000.0;
         fprintf(stdout, "cpbEmptySize(%d), NextTimeStamp(%f)\n", decoder_status.cpbEmptySize, pts);
         break;
       }
@@ -992,7 +1212,9 @@ void CCrystalHD::OpenDevice()
 #ifdef USE_CHD_SINGLE_THREADED_API
                   BCM::DTS_SINGLE_THREADED_MODE   |
 #endif
-                  BCM::DTS_PLAYBACK_DROP_RPT_MODE |
+                  /*BCM::DTS_SKIP_TX_CHK_CPB        |*/
+                  /*BCM::DTS_PLAYBACK_DROP_RPT_MODE |*/
+                  //DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_CUSTOM);
                   DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
 
   BCM::BC_STATUS res= m_dll->DtsDeviceOpen(&m_device, mode);
@@ -1006,10 +1228,14 @@ void CCrystalHD::OpenDevice()
   }
   else
   {
-    if (m_new_lib)
-      CLog::Log(LOGINFO, "%s(new): device opened", __MODULE_NAME__);
-    else
-      CLog::Log(LOGINFO, "%s(old): device opened", __MODULE_NAME__);
+    #if (HAVE_LIBCRYSTALHD == 2)
+      if (m_new_lib)
+        CLog::Log(LOGINFO, "%s(new API): device opened", __MODULE_NAME__);
+      else
+        CLog::Log(LOGINFO, "%s(old API): device opened", __MODULE_NAME__);
+    #else
+      CLog::Log(LOGINFO, "%s: device opened", __MODULE_NAME__);
+    #endif
   }
 }
 
@@ -1027,6 +1253,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
 {
   BCM::BC_STATUS res;
   uint32_t StreamType;
+  BCM::BC_MEDIA_SUBTYPE Subtype;
 
   if (!m_device)
     return false;
@@ -1038,21 +1265,27 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
   switch (codec_type)
   {
     case CRYSTALHD_CODEC_ID_VC1:
+      Subtype = BCM::BC_MSUBTYPE_VC1;
       videoAlg = BCM::BC_VID_ALGO_VC1;
       StreamType = BCM::BC_STREAM_TYPE_ES;
     break;
     case CRYSTALHD_CODEC_ID_WMV3:
+      Subtype = BCM::BC_MSUBTYPE_WMV3;
       videoAlg = BCM::BC_VID_ALGO_VC1MP;
       StreamType = BCM::BC_STREAM_TYPE_PES;
     break;
     case CRYSTALHD_CODEC_ID_H264:
+      Subtype = BCM::BC_MSUBTYPE_AVC1;
       videoAlg = BCM::BC_VID_ALGO_H264;
       StreamType = BCM::BC_STREAM_TYPE_ES;
     break;
     case CRYSTALHD_CODEC_ID_MPEG2:
+      Subtype = BCM::BC_MSUBTYPE_MPEG2VIDEO;
       videoAlg = BCM::BC_VID_ALGO_MPEG2;
       StreamType = BCM::BC_STREAM_TYPE_ES;
     break;
+    //BC_VID_ALGO_DIVX:
+    //BC_VID_ALGO_VC1MP:
     default:
       return false;
     break;
@@ -1066,22 +1299,84 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
       CLog::Log(LOGERROR, "%s: open decoder failed", __MODULE_NAME__);
       break;
     }
-#ifdef USE_CHD_SINGLE_THREADED_API
-    res = m_dll->DtsSetVideoParams(m_device, videoAlg, FALSE, FALSE, TRUE, 0x80 | 0x80000000 | BCM::vdecFrameRate23_97);
-#else
-    res = m_dll->DtsSetVideoParams(m_device, videoAlg, FALSE, FALSE, TRUE, 0x80000000 | BCM::vdecFrameRate23_97);
-#endif
-    if (res != BCM::BC_STS_SUCCESS)
+
+    m_is_bcm70015 = false;
+    if (m_new_lib)
     {
-      CLog::Log(LOGDEBUG, "%s: set video params failed", __MODULE_NAME__);
-      break;
+      int start_code_size = 0;
+      uint8_t *meta_data = NULL;
+      uint32_t meta_data_size = 0;
+      BCM::BC_INPUT_FORMAT bcm_input_format;
+
+      memset(&bcm_input_format, 0, sizeof(BCM::BC_INPUT_FORMAT));
+
+      bcm_input_format.FGTEnable = FALSE;
+      bcm_input_format.Progressive = FALSE;
+      bcm_input_format.MetaDataEnable = FALSE;
+      bcm_input_format.OptFlags = 0x80000000 | BCM::vdecFrameRate23_97;
+      #ifdef USE_CHD_SINGLE_THREADED_API
+        bcm_input_format.OptFlags |= 0x80;
+      #endif
+      bcm_input_format.mSubtype = Subtype;
+      bcm_input_format.pMetaData = meta_data;
+      bcm_input_format.metaDataSz = meta_data_size;
+      bcm_input_format.startCodeSz = start_code_size;
+
+      res = m_dll->DtsSetInputFormat(m_device, &bcm_input_format);
+      if (res != BCM::BC_STS_SUCCESS) {
+        CLog::Log(LOGDEBUG, "%s: set input format failed", __MODULE_NAME__);
+        break;
+      }
+
+      BCM::BC_HW_CAPS CapsBuffer;
+      res = m_dll->DtsGetCapabilities(m_device, &CapsBuffer);
+      if (res != BCM::BC_STS_SUCCESS) {
+        CLog::Log(LOGDEBUG, "%s: get capabilities failed", __MODULE_NAME__);
+        break;
+      }
+
+      // bcm70012 can do nv12 (420), yuy2 (422) and uyvy (422)
+      // bcm70015 can do only yuy2 (422)
+      // so default to yuy2 and see if hw can do nv12
+      m_color_space = BCM::OUTPUT_MODE422_YUY2;
+      for (int indx = 0; indx < CapsBuffer.ColorCaps.Count; indx++)
+      {
+        if (CapsBuffer.ColorCaps.OutFmt[indx] == BCM::OUTPUT_MODE420)
+        {
+          m_color_space = CapsBuffer.ColorCaps.OutFmt[indx];
+          break;
+        }
+      }
+      if (m_color_space == BCM::OUTPUT_MODE422_YUY2)
+      {
+        m_is_bcm70015 = true;
+        res = m_dll->DtsSetColorSpace(m_device, BCM::OUTPUT_MODE422_YUY2);
+        if (res != BCM::BC_STS_SUCCESS) {
+          CLog::Log(LOGDEBUG, "%s: set color space failed", __MODULE_NAME__);
+          break;
+        }
+      }
     }
+    else
+    {
+      m_color_space = BCM::OUTPUT_MODE420;
+
+      uint32_t OptFlags = 0x80000000 | BCM::vdecFrameRate23_97;
+      res = m_dll->DtsSetVideoParams(m_device, videoAlg, FALSE, FALSE, TRUE, OptFlags);
+      if (res != BCM::BC_STS_SUCCESS)
+      {
+        CLog::Log(LOGDEBUG, "%s: set video params failed", __MODULE_NAME__);
+        break;
+      }
+    }
+    
     res = m_dll->DtsStartDecoder(m_device);
     if (res != BCM::BC_STS_SUCCESS)
     {
       CLog::Log(LOGDEBUG, "%s: start decoder failed", __MODULE_NAME__);
       break;
     }
+
     res = m_dll->DtsStartCapture(m_device);
     if (res != BCM::BC_STS_SUCCESS)
     {
@@ -1139,26 +1434,34 @@ void CCrystalHD::CloseDecoder(void)
 
 void CCrystalHD::Reset(void)
 {
-  m_reset = 60;
-  m_wait_timeout = 1;
-
-  // we are always late (chd pipeline fill) when seeking,
-  // so start off skipping all non reference pictures.
-  m_dll->DtsSetSkipPictureMode(m_device, 1);
-
-  // Calling for non-error flush, Flushes all the decoder
-  //  buffers, input, decoded and to be decoded. 
-  if (m_new_lib)
+  if (m_is_bcm70015)
   {
-    m_dll->DtsFlushInput(m_device, 1);
+    m_wait_timeout = 1;
+    m_dll->DtsFlushInput(m_device, 2);
     m_dll->DtsFlushRxCapture(m_device, true);
   }
   else
   {
-    m_dll->DtsFlushInput(m_device, 2);
-  }
+    m_reset = 60;
+    m_wait_timeout = 1;
 
-  ::Sleep(400);
+    // we are always late (chd pipeline fill) when seeking,
+    // so start off skipping all non reference pictures.
+    m_dll->DtsSetSkipPictureMode(m_device, 1);
+
+    // Calling for non-error flush, Flushes all the decoder
+    //  buffers, input, decoded and to be decoded. 
+    if (m_new_lib)
+    {
+      m_dll->DtsFlushInput(m_device, 1);
+      m_dll->DtsFlushRxCapture(m_device, true);
+    }
+    else
+    {
+      m_dll->DtsFlushInput(m_device, 2);
+    }
+    ::Sleep(400);
+  }
 
   while (m_BusyList.Count())
     m_pOutputThread->FreeListPush( m_BusyList.Pop() );
@@ -1174,10 +1477,11 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
   if (pData)
   {
     BCM::BC_STATUS ret;
+    uint64_t int_pts = pts * 1000;
 
     do
     {
-      ret = m_dll->DtsProcInput(m_device, pData, size, pts_dtoi(pts), 0);
+      ret = m_dll->DtsProcInput(m_device, pData, size, int_pts, 0);
       if (ret == BCM::BC_STS_SUCCESS)
       {
         m_last_demuxer_pts = pts;
@@ -1234,20 +1538,20 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
 
   if (pBuffer->m_timestamp != 0)
-    pDvdVideoPicture->pts = pts_itod(pBuffer->m_timestamp);
+    pDvdVideoPicture->pts = (double)pBuffer->m_timestamp / 1000.0;
 
   pDvdVideoPicture->iWidth = pBuffer->m_width;
   pDvdVideoPicture->iHeight = pBuffer->m_height;
   pDvdVideoPicture->iDisplayWidth = pBuffer->m_width;
   pDvdVideoPicture->iDisplayHeight = pBuffer->m_height;
 
-  // Y plane
-  pDvdVideoPicture->data[0] = (BYTE*)pBuffer->m_y_buffer_ptr;
-  pDvdVideoPicture->iLineSize[0] = pBuffer->m_width;
   switch(pBuffer->m_format)
   {
     default:
     case DVDVideoPicture::FMT_NV12:
+      // Y plane
+      pDvdVideoPicture->data[0] = (BYTE*)pBuffer->m_y_buffer_ptr;
+      pDvdVideoPicture->iLineSize[0] = pBuffer->m_width;
       // UV packed plane
       pDvdVideoPicture->data[1] = (BYTE*)pBuffer->m_uv_buffer_ptr;
       pDvdVideoPicture->iLineSize[1] = pBuffer->m_width;
@@ -1255,7 +1559,21 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
       pDvdVideoPicture->data[2] = NULL;
       pDvdVideoPicture->iLineSize[2] = 0;
     break;
+    case DVDVideoPicture::FMT_YUY2:
+      // YUV packed plane
+      pDvdVideoPicture->data[0] = (BYTE*)pBuffer->m_y_buffer_ptr;
+      pDvdVideoPicture->iLineSize[0] = pBuffer->m_width * 2;
+      // unused
+      pDvdVideoPicture->data[1] = NULL;
+      pDvdVideoPicture->iLineSize[1] = 0;
+      // unused
+      pDvdVideoPicture->data[2] = NULL;
+      pDvdVideoPicture->iLineSize[2] = 0;
+    break;
     case DVDVideoPicture::FMT_YUV420P:
+      // Y plane
+      pDvdVideoPicture->data[0] = (BYTE*)pBuffer->m_y_buffer_ptr;
+      pDvdVideoPicture->iLineSize[0] = pBuffer->m_width;
       // U plane
       pDvdVideoPicture->data[1] = (BYTE*)pBuffer->m_u_buffer_ptr;
       pDvdVideoPicture->iLineSize[1] = pBuffer->m_width / 2;
