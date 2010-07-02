@@ -112,6 +112,12 @@ void CGUIControlGroup::Process(unsigned int currentTime)
 
   CGUIControl::Process(currentTime);
   g_graphicsContext.RemoveTransform();
+
+  if (!m_dirtyregion.IsEmpty())
+  {
+    CGUIControl::MarkDirtyRegion(m_dirtyregion);
+    m_dirtyregion = CRect();
+  }
 }
 
 void CGUIControlGroup::Render()
@@ -648,6 +654,18 @@ void CGUIControlGroup::SetInvalid()
 {
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
     (*it)->SetInvalid();
+}
+
+void CGUIControlGroup::MarkDirtyRegion()
+{
+  m_dirtyregion.Union(GetRenderRegion());
+}
+
+void CGUIControlGroup::MarkDirtyRegion(const CRect &dirtyRegion)
+{
+// If our region is marked then no point in marking a childs region
+  if (m_dirtyregion.IsEmpty())
+    CGUIControl::MarkDirtyRegion(dirtyRegion);
 }
 
 #ifdef _DEBUG

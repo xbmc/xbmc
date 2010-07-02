@@ -88,6 +88,9 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
+  virtual void MarkDirtyRegion();
+  virtual void MarkDirtyRegion(const CRect &dirtyRegion);
+
   /*!
    \brief Return the coordinates of the top left of the group, in the group's parent coordinates
    \return The top left coordinates of the group
@@ -124,5 +127,7 @@ protected:
 
   // render time
   unsigned int m_renderTime;
+private:
+  CRect m_dirtyregion;
 };
 
