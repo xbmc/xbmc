@@ -128,9 +128,6 @@ void CGUIControlGroup::Render()
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *control = *it;
-    GUIPROFILER_VISIBILITY_BEGIN(control);
-    control->UpdateVisibility();
-    GUIPROFILER_VISIBILITY_END(control);
     if (m_renderFocusedLast && control->HasFocus())
       focusedControl = control;
     else

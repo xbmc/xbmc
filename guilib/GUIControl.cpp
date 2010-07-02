@@ -139,6 +139,9 @@ void CGUIControl::DoProcess(unsigned int currentTime)
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
 
+//  GUIPROFILER_VISIBILITY_BEGIN(control);
+  UpdateVisibility();
+//  GUIPROFILER_VISIBILITY_END(control);
   Process(currentTime);
 
   if (m_hasCamera)
