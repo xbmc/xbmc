@@ -73,7 +73,7 @@ float CGUIListItemLayout::Size(ORIENTATION orientation) const
 
 void CGUIListItemLayout::Process(unsigned int currentTime)
 {
-  m_group.Process(currentTime);
+  m_group.DoProcess(currentTime);
 }
 
 void CGUIListItemLayout::Render(CGUIListItem *item, int parentID)
