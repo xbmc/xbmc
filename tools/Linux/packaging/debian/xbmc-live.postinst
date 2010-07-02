@@ -223,8 +223,8 @@ esac
 release="$(lsb_release -r | cut -f2 | sed 's/\.//')"
 if [ $release -ge 910 ]; then
 	if [ -f "/etc/init.d/xbmc-live" ]; then
-		rm /etc/init.d/xbmc-live >/dev/null
 		update-rc.d -f xbmc-live remove >/dev/null
+		rm /etc/init.d/xbmc-live >/dev/null
 	fi
 
 	ln -s /lib/init/upstart-job /etc/init.d/xbmc-live
