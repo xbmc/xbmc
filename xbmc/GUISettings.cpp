@@ -362,7 +362,10 @@ void CGUISettings::Initialize()
   AddGroup(4, 13000);
   CSettingsCategory* vs = AddCategory(4, "videoscreen", 21373);
   // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
+  // contains a DISPLAYMODE
   AddInt(vs, "videoscreen.screen", 240, 0, -1, 1, g_Windowing.GetNumScreens(), SPIN_CONTROL_TEXT);
+  // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
+  // contains an index to the g_settings.m_ResInfo array. the only meaningful fields are iScreen, iWidth, iHeight.
 #if defined (__APPLE__)
   AddInt(vs, "videoscreen.resolution", 131, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
 #else

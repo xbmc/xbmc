@@ -117,23 +117,23 @@ static void AddResolution(vector<RESOLUTION_WHR> &resolutions, unsigned int addi
 
 static bool resSortPredicate (RESOLUTION_WHR i, RESOLUTION_WHR j)
 {
-  return  (i.width < j.width ||
-          (i.width == j.width && i.height < j.height));
+  return (    i.width < j.width
+          || (i.width == j.width && i.height < j.height));
 }
 
 vector<RESOLUTION_WHR> CWinSystemBase::ScreenResolutions(int screen)
 {
-    int defResolution = DesktopResolution(screen);
-    vector<RESOLUTION_WHR> resolutions;
+  int defResolution = DesktopResolution(screen);
+  vector<RESOLUTION_WHR> resolutions;
 
-    // Can't assume the resolutions are sorted in any way
-    for (unsigned int idx = RES_DESKTOP; idx < g_settings.m_ResInfo.size(); idx++)
-      if (g_settings.m_ResInfo[idx].iScreen == screen)
-        AddResolution(resolutions, idx);
+  for (unsigned int idx = RES_DESKTOP; idx < g_settings.m_ResInfo.size(); idx++)
+    if (g_settings.m_ResInfo[idx].iScreen == screen)
+      AddResolution(resolutions, idx);
 
-    sort(resolutions.begin(), resolutions.end(), resSortPredicate);
+  // Can't assume a sort order
+  sort(resolutions.begin(), resolutions.end(), resSortPredicate);
 
-    return resolutions;
+  return resolutions;
 }
 
 static void AddRefreshRate(vector<REFRESHRATE> &refreshrates, unsigned int addindex)
@@ -166,7 +166,7 @@ vector<REFRESHRATE> CWinSystemBase::RefreshRates(int screen, int width, int heig
         && g_settings.m_ResInfo[idx].iHeight == height)
       AddRefreshRate(refreshrates, idx);
 
-  // Can't assume the resolutions are sorted
+  // Can't assume a sort order
   sort(refreshrates.begin(), refreshrates.end(), rrSortPredicate);
 
   return refreshrates;
@@ -176,7 +176,6 @@ REFRESHRATE CWinSystemBase::DefaultRefreshRate(int screen, vector<REFRESHRATE> r
 {
   REFRESHRATE bestmatch = rates[0];
   float bestfitness = -1.0f;
-
   float targetfps = g_settings.m_ResInfo[DesktopResolution(screen)].fRefreshRate;
 
   for (unsigned i = 0; i < rates.size(); i++)
@@ -191,6 +190,5 @@ REFRESHRATE CWinSystemBase::DefaultRefreshRate(int screen, vector<REFRESHRATE> r
         break;
     }
   }
-
   return bestmatch;
 }

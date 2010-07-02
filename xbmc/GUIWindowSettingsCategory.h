@@ -52,7 +52,6 @@ protected:
   void FillInResolutions(CStdString strSetting, DisplayMode mode, bool UserChange);  
   void FillInRefreshRates(CStdString strSetting, RESOLUTION res, bool UserChange);
   void OnRefreshRateChanged(RESOLUTION resolution);
-  
   void FillInRegions(CSetting *pSetting);
   void FillInStartupWindow(CSetting *pSetting);
   void FillInViewModes(CSetting *pSetting, int windowID);
