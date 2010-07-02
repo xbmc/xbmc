@@ -687,7 +687,7 @@ void CMPCOutputThread::CopyOutAsNV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_O
   }
 }
 
-#if 0
+#if _WIN32
 // Taken from Xine Project (color.c)
 // Copyright (C) 2000-2003 the xine project
 // GNU General Public License version 2 of the License,
