@@ -42,6 +42,13 @@ struct RESOLUTION_WHR
   int ResInfo_Index;
 };
 
+struct REFRESHRATE
+{
+  float RefreshRate;
+  bool  Interlaced;
+  int   ResInfo_Index;
+};
+
 class CWinSystemBase
 {
 public:
@@ -81,6 +88,8 @@ public:
   void SetWindowResolution(int width, int height);
   int DesktopResolution(int screen);
   std::vector<RESOLUTION_WHR> ScreenResolutions(int screen);
+  std::vector<REFRESHRATE> RefreshRates(int screen, int width, int height);
+  REFRESHRATE DefaultRefreshRate(int screen, std::vector<REFRESHRATE> rates);
 
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate, uint32_t dwFlags = 0);

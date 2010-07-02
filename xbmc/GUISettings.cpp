@@ -364,10 +364,13 @@ void CGUISettings::Initialize()
   // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
   AddInt(vs, "videoscreen.screen", 240, 0, -1, 1, g_Windowing.GetNumScreens(), SPIN_CONTROL_TEXT);
 #if defined (__APPLE__)
-  AddString(vs, "videoscreen.screenmode", 131, "DESKTOP", SPIN_CONTROL_TEXT);
+  AddInt(vs, "videoscreen.resolution", 131, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
 #else
-  AddString(vs, "videoscreen.screenmode", 169, "DESKTOP", SPIN_CONTROL_TEXT);
+  AddInt(vs, "videoscreen.resolution", 169, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
 #endif
+//TODO: attach to vs in standalone mode only
+  AddString(vs, "videoscreen.screenmode", 243, "DESKTOP", SPIN_CONTROL_TEXT);
+
 #if defined(_WIN32) || defined (__APPLE__)
   // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
   // as it works nicer with switching to other applications. However on some systems vsync is broken
