@@ -479,13 +479,11 @@ void CGUIBaseContainer::OnJumpSMS(int letter)
 
 bool CGUIBaseContainer::MoveUp(bool wrapAround)
 {
-  g_windowManager.MarkDirtyRegion(GetRenderRegion());
   return true;
 }
 
 bool CGUIBaseContainer::MoveDown(bool wrapAround)
 {
-  g_windowManager.MarkDirtyRegion(GetRenderRegion());
   return true;
 }
 
