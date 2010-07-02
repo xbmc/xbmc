@@ -128,7 +128,7 @@ void CGUIMultiImage::Process(unsigned int currentTime)
       }
     }
 
-    m_image.Process(currentTime);
+    m_image.DoProcess(currentTime);
 
     static color_t oldDiffuseColor = 0x00000000;
     if (m_diffuseColor != oldDiffuseColor)
