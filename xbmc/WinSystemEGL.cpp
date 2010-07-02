@@ -382,6 +382,15 @@ bool CWinSystemEGL::RefreshEGLContext()
     return false;
   }
 
+  eglSurfaceAttrib (m_eglDisplay, m_eglSurface, EGL_SWAP_BEHAVIOR, EGL_BUFFER_PRESERVED);
+  EGLint SwapBehavior;
+  eglQuerySurface (m_eglDisplay, m_eglSurface, EGL_SWAP_BEHAVIOR, &SwapBehavior);
+  if (SwapBehavior != EGL_BUFFER_PRESERVED)
+  {
+    CLog::Log(LOGERROR, "EGL: Failed to set swap behavior preserve");
+    return false;
+  }
+
   if (eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext) == EGL_FALSE)
   {
     CLog::Log(LOGERROR, "EGL Error: Could not make context current");
