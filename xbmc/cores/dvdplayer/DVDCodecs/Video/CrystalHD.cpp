@@ -1334,7 +1334,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
     }
 
 #if (HAVE_LIBCRYSTALHD == 2)
-    if (m_new_lib)
+    if (m_has_bcm70015)
     {
       int start_code_size = 0;
       uint8_t *meta_data = NULL;
