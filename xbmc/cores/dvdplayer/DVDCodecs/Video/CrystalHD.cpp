@@ -1124,8 +1124,8 @@ CCrystalHD* CCrystalHD::m_pInstance = NULL;
 CCrystalHD::CCrystalHD() :
   m_device(NULL),
   m_new_lib(false),
-  m_has_bcm70015(false),
   m_decoder_open(false),
+  m_has_bcm70015(false),
   m_color_space(BCM::OUTPUT_MODE420),
   m_drop_state(false),
   m_pOutputThread(NULL)
