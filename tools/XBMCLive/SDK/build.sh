@@ -22,7 +22,7 @@
 echo
 echo "Checking availability of required packages..."
 
-REQUIREDPACKAGES=( git-core debootstrap asciidoc docbook-xsl curl build-essential debhelper autoconf automake autotools-dev pippo pluto)
+REQUIREDPACKAGES=( git-core debootstrap asciidoc docbook-xsl curl build-essential debhelper autoconf automake autotools-dev)
 NOTINSTALLED=()
 
 for k in "${REQUIREDPACKAGES[@]}" ; do 
