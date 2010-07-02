@@ -1139,7 +1139,9 @@ CCrystalHD::CCrystalHD() :
   {
     OpenDevice();
     
+#if (HAVE_LIBCRYSTALHD == 2)
     m_new_lib = m_dll->LoadNewLibFunctions();
+#endif
     /*
     if (m_new_lib)
     {
@@ -1253,7 +1255,9 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
 {
   BCM::BC_STATUS res;
   uint32_t StreamType;
+#if (HAVE_LIBCRYSTALHD == 2)
   BCM::BC_MEDIA_SUBTYPE Subtype;
+#endif
 
   if (!m_device)
     return false;
@@ -1265,22 +1269,30 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
   switch (codec_type)
   {
     case CRYSTALHD_CODEC_ID_VC1:
+#if (HAVE_LIBCRYSTALHD == 2)
       Subtype = BCM::BC_MSUBTYPE_VC1;
+#endif
       videoAlg = BCM::BC_VID_ALGO_VC1;
       StreamType = BCM::BC_STREAM_TYPE_ES;
     break;
     case CRYSTALHD_CODEC_ID_WMV3:
+#if (HAVE_LIBCRYSTALHD == 2)
       Subtype = BCM::BC_MSUBTYPE_WMV3;
+#endif
       videoAlg = BCM::BC_VID_ALGO_VC1MP;
       StreamType = BCM::BC_STREAM_TYPE_PES;
     break;
     case CRYSTALHD_CODEC_ID_H264:
+#if (HAVE_LIBCRYSTALHD == 2)
       Subtype = BCM::BC_MSUBTYPE_AVC1;
+#endif
       videoAlg = BCM::BC_VID_ALGO_H264;
       StreamType = BCM::BC_STREAM_TYPE_ES;
     break;
     case CRYSTALHD_CODEC_ID_MPEG2:
+#if (HAVE_LIBCRYSTALHD == 2)
       Subtype = BCM::BC_MSUBTYPE_MPEG2VIDEO;
+#endif
       videoAlg = BCM::BC_VID_ALGO_MPEG2;
       StreamType = BCM::BC_STREAM_TYPE_ES;
     break;
@@ -1301,6 +1313,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
     }
 
     m_is_bcm70015 = false;
+#if (HAVE_LIBCRYSTALHD == 2)
     if (m_new_lib)
     {
       int start_code_size = 0;
@@ -1358,6 +1371,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
       }
     }
     else
+#endif
     {
       m_color_space = BCM::OUTPUT_MODE420;
 
