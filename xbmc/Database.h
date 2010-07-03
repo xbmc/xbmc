@@ -47,6 +47,8 @@ public:
   bool InTransaction();
 
   static CStdString FormatSQL(CStdString strStmt, ...);
+  CStdString PrepareSQL(CStdString strStmt, ...) const;
+
 protected:
   void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
   uint32_t ComputeCRC(const CStdString &text);
