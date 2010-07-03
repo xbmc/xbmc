@@ -66,7 +66,6 @@ public:
   virtual BCM::BC_STATUS DtsStartDecoder(void *hDevice)=0;
   virtual BCM::BC_STATUS DtsSetVideoParams(void *hDevice, uint32_t videoAlg, int FGTEnable, int MetaDataEnable, int Progressive, uint32_t OptFlags)=0;
   virtual BCM::BC_STATUS DtsStartCapture(void *hDevice)=0;
-  virtual BCM::BC_STATUS DtsStartCaptureImmidiate(void *hDevice, uint32_t Reserved)=0;
   virtual BCM::BC_STATUS DtsFlushRxCapture(void *hDevice, int bDiscardOnly)=0;
   virtual BCM::BC_STATUS DtsSetFFRate(void *hDevice, uint32_t rate)=0;
   virtual BCM::BC_STATUS DtsGetDriverStatus(void *hDevice, BCM::BC_DTS_STATUS *pStatus)=0;
@@ -102,7 +101,6 @@ class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
   DEFINE_METHOD1(BCM::BC_STATUS, DtsStopDecoder,     (void *p1))
   DEFINE_METHOD6(BCM::BC_STATUS, DtsSetVideoParams,  (void *p1, uint32_t p2, int p3, int p4, int p5, uint32_t p6))
   DEFINE_METHOD1(BCM::BC_STATUS, DtsStartCapture,    (void *p1))
-  DEFINE_METHOD2(BCM::BC_STATUS, DtsStartCaptureImmidiate, (void *p1, uint32_t p2))
   DEFINE_METHOD2(BCM::BC_STATUS, DtsFlushRxCapture,  (void *p1, int p2))
   DEFINE_METHOD2(BCM::BC_STATUS, DtsSetFFRate,       (void *p1, uint32_t p2))
   DEFINE_METHOD2(BCM::BC_STATUS, DtsGetDriverStatus, (void *p1, BCM::BC_DTS_STATUS *p2))
@@ -133,7 +131,6 @@ class DllLibCrystalHD : public DllDynamic, DllLibCrystalHDInterface
     RESOLVE_METHOD_RENAME(DtsStopDecoder,     DtsStopDecoder)
     RESOLVE_METHOD_RENAME(DtsSetVideoParams,  DtsSetVideoParams)
     RESOLVE_METHOD_RENAME(DtsStartCapture,    DtsStartCapture)
-    RESOLVE_METHOD_RENAME(DtsStartCaptureImmidiate, DtsStartCaptureImmidiate)
     RESOLVE_METHOD_RENAME(DtsFlushRxCapture,  DtsFlushRxCapture)
     RESOLVE_METHOD_RENAME(DtsSetFFRate,       DtsSetFFRate)
     RESOLVE_METHOD_RENAME(DtsGetDriverStatus, DtsGetDriverStatus)
