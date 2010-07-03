@@ -158,16 +158,7 @@ public:
       UpdateFinalTransform(TransformMatrix());
   }
 
-  CRect generateAABB(const CRect &rect) const
-  {
-    CRect newRect = rect;
-    float z = 0.0f;
-    ScaleFinalCoords(newRect.x1, newRect.y1, z);
-
-    z = 0.0f;
-    ScaleFinalCoords(newRect.x2, newRect.y2, z);
-    return newRect;
-  }
+  CRect generateAABB(const CRect &rect) const;
 
 protected:
   void SetFullScreenViewWindow(RESOLUTION &res);

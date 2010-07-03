@@ -247,6 +247,19 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
   }
 }
 
+CRect CGraphicContext::generateAABB(const CRect &rect) const
+{
+  CRect newRect = rect;
+
+  float z = 0.0f;
+  ScaleFinalCoords(newRect.x1, newRect.y1, z);
+
+  z = 0.0f;
+  ScaleFinalCoords(newRect.x2, newRect.y2, z);
+
+  return newRect;
+}
+
 void CGraphicContext::SetFullScreenViewWindow(RESOLUTION &res)
 {
   m_videoRect.x1 = (float)g_settings.m_ResInfo[res].Overscan.left;
