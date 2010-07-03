@@ -549,7 +549,7 @@ void CGUIWindowManager::Render()
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
-  glOrtho(0.0f, g_graphicsContext.GetWidth(), 0.0f, g_graphicsContext.GetHeight(), -1.0f, 1.0f);
+  glOrtho(0.0f, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight(), 0.0f, -1.0f, 1.0f);
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
