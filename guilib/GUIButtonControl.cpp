@@ -243,6 +243,14 @@ void CGUIButtonControl::UpdateColors(bool &changed)
   CGUIControl::UpdateColors(changed);
 }
 
+CRect CGUIButtonControl::GetRenderRegion()
+{
+  CRect buttonRect = CGUIControl::GetRenderRegion();
+  CRect textRect = m_label.GetRenderRect();
+  buttonRect.Union(textRect);
+  return buttonRect;
+}
+
 EVENT_RESULT CGUIButtonControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)

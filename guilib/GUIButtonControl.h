@@ -80,6 +80,7 @@ public:
 
   virtual void UpdateColors(bool &changed);
 protected:
+  virtual CRect GetRenderRegion();
   friend class CGUISpinControlEx;
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   void OnFocus();
