@@ -141,7 +141,7 @@
 					</control>
 					<control type="label">
 						<posx>542</posx>
-						<posy>12</posy>
+						<posy>13</posy>
 						<width>40</width>
 						<align>center</align>
 						<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>

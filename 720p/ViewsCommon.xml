@@ -240,7 +240,7 @@
 					</control>
 					<control type="label">
 						<posx>542</posx>
-						<posy>12</posy>
+						<posy>13</posy>
 						<width>40</width>
 						<align>center</align>
 						<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
@@ -565,8 +565,8 @@
 					<control type="image">
 						<description>Thumb image</description>
 						<visible>Container.Content(Episodes)</visible>
-						<posx>-388</posx>
-						<posy>69</posy>
+						<posx>-389</posx>
+						<posy>64</posy>
 						<width>370</width>
 						<height>210</height>
 						<texture>amt-blank-poster.png</texture>
@@ -575,25 +575,8 @@
 						<bordertexture border="7">ThumbBorder.png</bordertexture>
 						<bordersize>4</bordersize>
 					</control>
-<!--
-					<control type="group">
-						<description>Watched/Unwatched Overlay</description>
-						<visible>!Container.Content(episodes) + !Container.Content(tvshows) + !Container.Content(seasons)</visible>
-						<posx>234</posx>
-						<posy>25</posy>
-						<include>WatchedUnwatchedOverlay</include>
-					</control>
-
-					<control type="group">
-						<visible>!Container.Content(episodes) + !Container.Content(tvshows) + !Container.Content(seasons)</visible>
-						<description>Watched/Unwatched Overlay</description>
-						<visible>Container.Content(episodes)</visible>
-						<posx>-63</posx>
-						<posy>25</posy>
-						<include>WatchedUnwatchedOverlay</include>
-					</control>
--->
 				</control>
+
 				<!-- Layout for any except Episodes -->
 				<control type="group">
 					<posx>10</posx>
@@ -748,11 +731,11 @@
 					</control>
 -->
 					<control type="group">
-						<posy>143</posy>
+						<posy>150</posy>
 						<control type="textbox">
 							<description>Plot</description>
 							<width>400</width>
-							<height>217</height>
+							<height>216</height>
 							<label>[COLOR=FFFF9900]$INFO[ListItem.tagline][/COLOR][CR]$INFO[ListItem.Plot]</label>
 							<animation effect="slide" end="0,-23" time="0" condition="!Container.Content(movies)">Conditional</animation>
 							<visible>![Container.Content(seasons) | Container.Content(albums) | Container.Content(artists) | Container.Content(tvshows)]</visible>
@@ -760,14 +743,14 @@
 						<control type="textbox">
 							<description>Plot</description>
 							<width>InfoListTitleWidth</width>
-							<height>285</height>
+							<height>279</height>
 							<info>Container.Property(description)</info>
 							<visible>Container.Content(seasons)</visible>
 						</control>
 						<control type="textbox">
 							<description>Plot</description>
 							<width>InfoListTitleWidth</width>
-							<height>285</height>
+							<height>279</height>
 							<info>ListItem.plot</info>
 							<visible>Container.Content(tvshows)</visible>
 						</control>
@@ -829,7 +812,6 @@
 						<label>$LOCALIZE[563]:</label>
 						<align>right</align>
 						<textcolor>FFFF9900</textcolor>
-						<visible>Container.Content(Episodes)</visible>
 					</control>
 					<control type="image">
 						<description>Star Rating</description>
@@ -851,7 +833,6 @@
 						<label>$LOCALIZE[31122]:</label>
 						<align>right</align>
 						<textcolor>FFFF9900</textcolor>
-						<visible>Container.Content(Episodes)</visible>
 					</control>
 					<control type="label">
 						<description>Aired</description>
@@ -860,7 +841,6 @@
 						<width>180</width>
 						<label fallback="31047">$INFO[ListItem.Date]</label>
 						<align>left</align>
-						<visible>Container.Content(Episodes)</visible>
 					</control>
 					<control type="label">
 						<description>Duration Label</description>
@@ -871,7 +851,6 @@
 						<label>$LOCALIZE[31132]:</label>
 						<align>right</align>
 						<textcolor>FFFF9900</textcolor>
-						<visible>Container.Content(Episodes)</visible>
 					</control>
 					<control type="label">
 						<description>Duration</description>
@@ -880,7 +859,6 @@
 						<width>180</width>
 						<label>$INFO[ListItem.Duration]</label>
 						<align>left</align>
-						<visible>Container.Content(Episodes)</visible>
 					</control>
 					<control type="group">
 						<posy>280</posy>
@@ -890,7 +868,6 @@
 							<width>650</width>
 							<height>110</height>
 							<info>ListItem.Plot</info>
-							<visible>Container.Content(Episodes)</visible>
 						</control>
 					</control>
 				</control>
