@@ -570,7 +570,13 @@ void CGUIControl::FlushDirtyRegion()
   if (!m_markedLocalRegion.IsEmpty())
   {
     g_graphicsContext.AddTransform(m_transform);
+    if (m_hasCamera)
+      g_graphicsContext.SetCameraPosition(m_camera);
+
     CRect AABB = g_graphicsContext.generateAABB(m_markedLocalRegion);
+
+    if (m_hasCamera)
+      g_graphicsContext.RestoreCameraPosition();
     g_graphicsContext.RemoveTransform();
 
     // When we have transformed to screen cordinates we send it to
