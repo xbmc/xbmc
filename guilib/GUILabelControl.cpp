@@ -64,9 +64,10 @@ void CGUILabelControl::SetInfo(const CGUIInfoLabel &infoLabel)
   m_infoLabel = infoLabel;
 }
 
-bool CGUILabelControl::UpdateColors()
+void CGUILabelControl::UpdateColors(bool &changed)
 {
-  return (m_label.UpdateColors() || CGUIControl::UpdateColors());
+  m_label.UpdateColors(changed);
+  CGUIControl::UpdateColors(changed);
 }
 
 void CGUILabelControl::UpdateInfo(const CGUIListItem *item)

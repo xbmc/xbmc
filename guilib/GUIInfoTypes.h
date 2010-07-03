@@ -57,7 +57,7 @@ public:
   const CGUIInfoColor &operator=(color_t color);
   operator color_t() const { return m_color; };
 
-  bool Update();
+  void Update(bool &changed);
   void Parse(const CStdString &label);
 
 private:

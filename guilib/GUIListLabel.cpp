@@ -71,9 +71,10 @@ CRect CGUIListLabel::GetRenderRegion()
   return rect;
 }
 
-bool CGUIListLabel::UpdateColors()
+void CGUIListLabel::UpdateColors(bool &changed)
 {
-  return (m_label.UpdateColors() || CGUIControl::UpdateColors());
+  m_label.UpdateColors(changed);
+  CGUIControl::UpdateColors(changed);
 }
 
 void CGUIListLabel::Render()

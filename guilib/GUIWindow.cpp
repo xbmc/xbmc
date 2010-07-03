@@ -952,7 +952,8 @@ void CGUIWindow::RunUnloadActions()
 
 void CGUIWindow::ClearBackground()
 {
-  m_clearBackground.Update();
+  bool changed = false;
+  m_clearBackground.Update(changed);
   color_t color = m_clearBackground;
   if (color)
     g_graphicsContext.Clear(color);

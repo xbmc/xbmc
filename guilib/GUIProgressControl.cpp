@@ -253,14 +253,14 @@ void CGUIProgressControl::SetInfo(int iInfo)
   m_iInfoCode = iInfo;
 }
 
-bool CGUIProgressControl::UpdateColors()
+void CGUIProgressControl::UpdateColors(bool &changed)
 {
-  return (CGUIControl::UpdateColors() ||
-          m_guiBackground.SetDiffuseColor(m_diffuseColor) ||
-          m_guiRight.SetDiffuseColor(m_diffuseColor) ||
-          m_guiLeft.SetDiffuseColor(m_diffuseColor) ||
-          m_guiMid.SetDiffuseColor(m_diffuseColor) ||
-          m_guiOverlay.SetDiffuseColor(m_diffuseColor));
+  changed = m_guiBackground.SetDiffuseColor(m_diffuseColor) || changed;
+  changed = m_guiRight.SetDiffuseColor(m_diffuseColor)      || changed;
+  changed = m_guiLeft.SetDiffuseColor(m_diffuseColor)       || changed;
+  changed = m_guiMid.SetDiffuseColor(m_diffuseColor)        || changed;
+  changed = m_guiOverlay.SetDiffuseColor(m_diffuseColor)    || changed;
+  CGUIControl::UpdateColors(changed);
 }
 
 CStdString CGUIProgressControl::GetDescription() const

@@ -64,7 +64,7 @@ public:
 protected:
   virtual bool HitTest(const CPoint &point) const;
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual bool UpdateColors();
+  virtual void UpdateColors(bool &changed);
   void UpdateBarSize();
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);

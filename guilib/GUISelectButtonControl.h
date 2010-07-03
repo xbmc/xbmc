@@ -114,7 +114,7 @@ public:
 
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual bool UpdateColors();
+  virtual void UpdateColors(bool &changed);
   bool m_bShowSelect;
   CGUITexture m_imgBackground;
   CGUITexture m_imgLeft;

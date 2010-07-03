@@ -82,10 +82,10 @@ const CGUIInfoColor &CGUIInfoColor::operator=(const CGUIInfoColor &color)
   return *this;
 }
 
-bool CGUIInfoColor::Update()
+void CGUIInfoColor::Update(bool &changed)
 {
   if (!m_info)
-    return false; // no infolabel
+    return; // no infolabel
 
   // Expand the infolabel, and then convert it to a color
   color_t oldColor = m_color;
@@ -95,7 +95,8 @@ bool CGUIInfoColor::Update()
   else
     m_color = 0;
 
-  return m_color != oldColor;
+  if (m_color != oldColor)
+    changed = true;
 }
 
 void CGUIInfoColor::Parse(const CStdString &label)

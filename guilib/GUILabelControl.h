@@ -63,7 +63,7 @@ public:
   void SetHighlight(unsigned int start, unsigned int end);
 
 protected:
-  virtual bool UpdateColors();
+  virtual void UpdateColors(bool &changed);
   CStdString ShortenPath(const CStdString &path);
 
   CGUILabel m_label;

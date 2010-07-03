@@ -58,9 +58,10 @@ CGUIMultiSelectTextControl::~CGUIMultiSelectTextControl(void)
 {
 }
 
-bool CGUIMultiSelectTextControl::UpdateColors()
+void CGUIMultiSelectTextControl::UpdateColors(bool &changed)
 {
-  return (m_label.UpdateColors() || CGUIControl::UpdateColors());
+  m_label.UpdateColors(changed);
+  CGUIControl::UpdateColors(changed);
 }
 
 void CGUIMultiSelectTextControl::Render()

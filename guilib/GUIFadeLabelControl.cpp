@@ -76,9 +76,10 @@ void CGUIFadeLabelControl::AddLabel(const string &label)
   m_infoLabels.push_back(CGUIInfoLabel(label));
 }
 
-bool CGUIFadeLabelControl::UpdateColors()
+void CGUIFadeLabelControl::UpdateColors(bool &changed)
 {
-  return (m_label.UpdateColors() || CGUIControl::UpdateColors());
+  m_label.UpdateColors(changed);
+  CGUIControl::UpdateColors(changed);
 }
 
 void CGUIFadeLabelControl::Render()

@@ -68,7 +68,7 @@ public:
   void SetUrls(const std::vector<std::string>& vecUrl, bool rtl);
 
 protected:
-  virtual bool UpdateColors();
+  virtual void UpdateColors(bool &changed);
 
   CCriticalSection m_criticalSection;
 

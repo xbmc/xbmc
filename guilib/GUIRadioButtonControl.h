@@ -60,7 +60,7 @@ public:
   void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
   bool IsSelected() const { return m_bSelected; };
 protected:
-  virtual bool UpdateColors();
+  virtual void UpdateColors(bool &changed);
   CGUITexture m_imgRadioOn;
   CGUITexture m_imgRadioOff;
   float m_radioPosX;

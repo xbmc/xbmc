@@ -51,7 +51,7 @@ public:
   void SetInfo(const std::vector<CGUIInfoLabel> &vecInfo);
 
 protected:
-  virtual bool UpdateColors();
+  virtual void UpdateColors(bool &changed);
   virtual CStdString GetDescription() const;
   void AddLabel(const std::string &label);
 

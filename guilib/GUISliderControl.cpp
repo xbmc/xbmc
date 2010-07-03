@@ -349,12 +349,12 @@ CStdString CGUISliderControl::GetDescription() const
   return description;
 }
 
-bool CGUISliderControl::UpdateColors()
+void CGUISliderControl::UpdateColors(bool &changed)
 {
-  return (CGUIControl::UpdateColors() ||
-          m_guiBackground.SetDiffuseColor(m_diffuseColor) ||
-          m_guiMid.SetDiffuseColor(m_diffuseColor) ||
-          m_guiMidFocus.SetDiffuseColor(m_diffuseColor));
+  changed = m_guiBackground.SetDiffuseColor(m_diffuseColor) || changed;
+  changed = m_guiMid.SetDiffuseColor(m_diffuseColor) || changed;
+  changed = m_guiMidFocus.SetDiffuseColor(m_diffuseColor) || changed;
+  CGUIControl::UpdateColors(changed);
 }
 
 float CGUISliderControl::GetProportion() const

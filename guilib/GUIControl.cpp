@@ -446,9 +446,11 @@ void CGUIControl::SetPosition(float posX, float posY)
   }
 }
 
-void CGUIControl::SetColorDiffuse(const CGUIInfoColor &color)
+bool CGUIControl::SetColorDiffuse(const CGUIInfoColor &color)
 {
+  bool changed = m_diffuseColor != color;
   m_diffuseColor = color;
+  return changed;
 }
 
 float CGUIControl::GetXPosition() const
@@ -638,7 +640,9 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
 
   m_allowHiddenFocus.Update(m_parentID, item);
 
-  if (UpdateColors())
+  bool colorChanged = false;
+  UpdateColors(colorChanged);
+  if (colorChanged)
     MarkDirtyRegion();
 
   // and finally, update our control information (if not pushed)
@@ -646,9 +650,9 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
     UpdateInfo(item);
 }
 
-bool CGUIControl::UpdateColors()
+void CGUIControl::UpdateColors(bool &changed)
 {
-  return m_diffuseColor.Update();
+  m_diffuseColor.Update(changed);
 }
 
 void CGUIControl::SetInitialVisibility()

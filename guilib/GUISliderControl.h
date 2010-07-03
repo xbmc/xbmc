@@ -71,7 +71,7 @@ public:
 protected:
   virtual bool HitTest(const CPoint &point) const;
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual bool UpdateColors();
+  virtual void UpdateColors(bool &changed);
   virtual void Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);
   /*! \brief Get the current position of the slider as a proportion

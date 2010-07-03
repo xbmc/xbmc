@@ -44,13 +44,13 @@ public:
     scrollSpeed = CScrollInfo::defaultSpeed;
     scrollSuffix = " | ";
   };
-  bool UpdateColors()
+  void UpdateColors(bool &changed)
   {
-    return (textColor.Update()     ||
-            shadowColor.Update()   ||
-            selectedColor.Update() ||
-            disabledColor.Update() ||
-            focusedColor.Update());
+    textColor.Update(changed);
+    shadowColor.Update(changed);
+    selectedColor.Update(changed);
+    disabledColor.Update(changed);
+    focusedColor.Update(changed);
   };
   
   CGUIInfoColor textColor;
@@ -145,9 +145,9 @@ public:
   void SetInvalid();
   
   /*! \brief Update this labels colors
-   \return boolean which states if the label has changed
+   \param changed which will be true if the label has changed. Otherwise changed won't be set.
    */
-  bool UpdateColors();
+  void UpdateColors(bool &changed);
   
   /*! \brief Returns the precalculated final layout of the current text
    \return CRect containing the extents of the current text

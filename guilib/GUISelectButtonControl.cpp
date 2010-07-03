@@ -399,13 +399,13 @@ void CGUISelectButtonControl::SetPosition(float posX, float posY)
   m_imgBackground.SetPosition(posX + backOffX, posY + backOffY);
 }
 
-bool CGUISelectButtonControl::UpdateColors()
+void CGUISelectButtonControl::UpdateColors(bool &changed)
 {
-  return (CGUIButtonControl::UpdateColors() ||
-          m_imgLeft.SetDiffuseColor(m_diffuseColor) ||
-          m_imgLeftFocus.SetDiffuseColor(m_diffuseColor) ||
-          m_imgRight.SetDiffuseColor(m_diffuseColor) ||
-          m_imgRightFocus.SetDiffuseColor(m_diffuseColor) ||
-          m_imgBackground.SetDiffuseColor(m_diffuseColor));
+  changed = m_imgLeft.SetDiffuseColor(m_diffuseColor)       || changed;
+  changed = m_imgLeftFocus.SetDiffuseColor(m_diffuseColor)  || changed;
+  changed = m_imgRight.SetDiffuseColor(m_diffuseColor)      || changed;
+  changed = m_imgRightFocus.SetDiffuseColor(m_diffuseColor) || changed;
+  changed = m_imgBackground.SetDiffuseColor(m_diffuseColor) || changed;
+  CGUIButtonControl::UpdateColors(changed);
 }
 

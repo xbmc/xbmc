@@ -218,12 +218,12 @@ void CGUIButtonControl::SetAlpha(unsigned char alpha)
   m_imgNoFocus.SetAlpha(alpha);
 }
 
-bool CGUIButtonControl::UpdateColors()
+void CGUIButtonControl::UpdateColors(bool &changed)
 {
-  return (m_label.UpdateColors() ||
-          CGUIControl::UpdateColors() ||
-          m_imgFocus.SetDiffuseColor(m_diffuseColor) ||
-          m_imgNoFocus.SetDiffuseColor(m_diffuseColor));
+  changed = m_imgFocus.SetDiffuseColor(m_diffuseColor) || changed;
+  changed = m_imgNoFocus.SetDiffuseColor(m_diffuseColor) || changed;
+  m_label.UpdateColors(changed);
+  CGUIControl::UpdateColors(changed);
 }
 
 EVENT_RESULT CGUIButtonControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)

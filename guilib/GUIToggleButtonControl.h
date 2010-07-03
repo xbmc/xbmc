@@ -58,7 +58,7 @@ public:
   void SetAltClickActions(const std::vector<CGUIActionDescriptor> &clickActions);
 
 protected:
-  virtual bool UpdateColors();
+  virtual void UpdateColors(bool &changed);
   virtual void OnClick();
   CGUIButtonControl m_selectButton;
   int m_toggleSelect;

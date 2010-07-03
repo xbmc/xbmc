@@ -111,11 +111,9 @@ void CGUILabel::SetInvalid()
   m_invalid = true;
 }
 
-bool CGUILabel::UpdateColors()
+void CGUILabel::UpdateColors(bool &changed)
 {
-  color_t oldColor = GetColor();
-  m_label.UpdateColors();
-  return oldColor != GetColor();
+  m_label.UpdateColors(changed);
 }
 
 bool CGUILabel::SetMaxRect(float x, float y, float w, float h)

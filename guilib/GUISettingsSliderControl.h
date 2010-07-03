@@ -68,7 +68,7 @@ public:
   virtual bool HitTest(const CPoint &point) const { return m_buttonControl.HitTest(point); };
 
 protected:
-  virtual bool UpdateColors();
+  virtual void UpdateColors(bool &changed);
   
 private:
   CGUIButtonControl m_buttonControl;

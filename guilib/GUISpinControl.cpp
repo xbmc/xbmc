@@ -911,14 +911,14 @@ void CGUISpinControl::ChangePage(int amount)
   SendWindowMessage(message);
 }
 
-bool CGUISpinControl::UpdateColors()
+void CGUISpinControl::UpdateColors(bool &changed)
 {
-  return (m_label.UpdateColors() ||
-          CGUIControl::UpdateColors() ||
-          m_imgspinDownFocus.SetDiffuseColor(m_diffuseColor) ||
-          m_imgspinDown.SetDiffuseColor(m_diffuseColor) ||
-          m_imgspinUp.SetDiffuseColor(m_diffuseColor) ||
-          m_imgspinUpFocus.SetDiffuseColor(m_diffuseColor));
+  changed = m_imgspinDownFocus.SetDiffuseColor(m_diffuseColor) || changed;
+  changed = m_imgspinDown.SetDiffuseColor(m_diffuseColor) || changed;
+  changed = m_imgspinUp.SetDiffuseColor(m_diffuseColor) || changed;
+  changed = m_imgspinUpFocus.SetDiffuseColor(m_diffuseColor) || changed;
+  m_label.UpdateColors(changed);
+  CGUIControl::UpdateColors(changed);
 }
 
 bool CGUISpinControl::IsVisible() const

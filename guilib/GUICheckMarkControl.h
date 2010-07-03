@@ -63,7 +63,7 @@ public:
 
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual bool UpdateColors();
+  virtual void UpdateColors(bool &changed);
   CGUILabel::COLOR GetTextColor() const;
   
   CGUITexture m_imgCheckMark;
