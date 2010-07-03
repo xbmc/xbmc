@@ -313,6 +313,789 @@ bool MysqlDatabase::exists() {
   return false;
 }
 
+// methods for formatting
+// ---------------------------------------------
+void MysqlDatabase::vprepare_free(void *p)
+{
+    free(p);
+}
+
+char *MysqlDatabase::vprepare(const char *format, va_list args)
+{
+  string strFormat = format;
+  size_t pos;
+  //  %q is the sqlite format string for %s.
+  //  Any bad character, like "'", will be replaced with a proper one
+  pos = 0;
+  while ( (pos = strFormat.find("%s", pos)) != string::npos )
+    strFormat.replace(pos++, 2, "%q");
+
+  //  RAND() is the mysql form of RANDOM()
+  pos = 0;
+  while ( (pos = strFormat.find("RANDOM()", pos)) != string::npos )
+  {
+    strFormat.replace(pos++, 8, "RAND()");
+    pos += 6;
+  }
+
+  return mysql_vmprintf(strFormat.c_str(), args);
+}
+
+/* vsprintf() functionality is based on sqlite3.c functions */
+
+/*
+** Conversion types fall into various categories as defined by the
+** following enumeration.
+*/
+#define etRADIX       1 /* Integer types.  %d, %x, %o, and so forth */
+#define etFLOAT       2 /* Floating point.  %f */
+#define etEXP         3 /* Exponentional notation. %e and %E */
+#define etGENERIC     4 /* Floating or exponential, depending on exponent. %g */
+#define etSIZE        5 /* Return number of characters processed so far. %n */
+#define etSTRING      6 /* Strings. %s */
+#define etDYNSTRING   7 /* Dynamically allocated strings. %z */
+#define etPERCENT     8 /* Percent symbol. %% */
+#define etCHARX       9 /* Characters. %c */
+/* The rest are extensions, not normally found in printf() */
+#define etSQLESCAPE  10 /* Strings with '\'' doubled. Stings with '\\' escaped.  %q */
+#define etSQLESCAPE2 11 /* Strings with '\'' doubled and enclosed in '',
+                          NULL pointers replaced by SQL NULL.  %Q */
+#define etPOINTER    14 /* The %p conversion */
+#define etSQLESCAPE3 15 /* %w -> Strings with '\"' doubled */
+
+#define etINVALID     0 /* Any unrecognized conversion type */
+
+#define ARRAYSIZE(X)    ((int)(sizeof(X)/sizeof(X[0])))
+
+/*
+** An "etByte" is an 8-bit unsigned value.
+*/
+typedef unsigned char etByte;
+
+/*
+** Each builtin conversion character (ex: the 'd' in "%d") is described
+** by an instance of the following structure
+*/
+typedef struct et_info {   /* Information about each format field */
+  char fmttype;            /* The format field code letter */
+  etByte base;             /* The base for radix conversion */
+  etByte flags;            /* One or more of FLAG_ constants below */
+  etByte type;             /* Conversion paradigm */
+  etByte charset;          /* Offset into aDigits[] of the digits string */
+  etByte prefix;           /* Offset into aPrefix[] of the prefix string */
+} et_info;
+
+/*
+** An objected used to accumulate the text of a string where we
+** do not necessarily know how big the string will be in the end.
+*/
+struct StrAccum {
+  char *zBase;         /* A base allocation.  Not from malloc. */
+  char *zText;         /* The string collected so far */
+  int  nChar;          /* Length of the string so far */
+  int  nAlloc;         /* Amount of space allocated in zText */
+  int  mxAlloc;        /* Maximum allowed string length */
+  bool mallocFailed;   /* Becomes true if any memory allocation fails */
+  bool tooBig;         /* Becomes true if string size exceeds limits */
+};
+
+/*
+** Allowed values for et_info.flags
+*/
+#define FLAG_SIGNED  1     /* True if the value to convert is signed */
+#define FLAG_INTERN  2     /* True if for internal use only */
+#define FLAG_STRING  4     /* Allow infinity precision */
+
+
+/*
+** The following table is searched linearly, so it is good to put the
+** most frequently used conversion types first.
+*/
+static const char aDigits[] = "0123456789ABCDEF0123456789abcdef";
+static const char aPrefix[] = "-x0\000X0";
+static const et_info fmtinfo[] = {
+  {  'd', 10, 1, etRADIX,      0,  0 },
+  {  's',  0, 4, etSTRING,     0,  0 },
+  {  'g',  0, 1, etGENERIC,    30, 0 },
+  {  'z',  0, 4, etDYNSTRING,  0,  0 },
+  {  'q',  0, 4, etSQLESCAPE,  0,  0 },
+  {  'Q',  0, 4, etSQLESCAPE2, 0,  0 },
+  {  'w',  0, 4, etSQLESCAPE3, 0,  0 },
+  {  'c',  0, 0, etCHARX,      0,  0 },
+  {  'o',  8, 0, etRADIX,      0,  2 },
+  {  'u', 10, 0, etRADIX,      0,  0 },
+  {  'x', 16, 0, etRADIX,      16, 1 },
+  {  'X', 16, 0, etRADIX,      0,  4 },
+  {  'f',  0, 1, etFLOAT,      0,  0 },
+  {  'e',  0, 1, etEXP,        30, 0 },
+  {  'E',  0, 1, etEXP,        14, 0 },
+  {  'G',  0, 1, etGENERIC,    14, 0 },
+  {  'i', 10, 1, etRADIX,      0,  0 },
+  {  'n',  0, 0, etSIZE,       0,  0 },
+  {  '%',  0, 0, etPERCENT,    0,  0 },
+  {  'p', 16, 0, etPOINTER,    0,  1 },
+};
+
+/*
+** "*val" is a double such that 0.1 <= *val < 10.0
+** Return the ascii code for the leading digit of *val, then
+** multiply "*val" by 10.0 to renormalize.
+**
+** Example:
+**     input:     *val = 3.14159
+**     output:    *val = 1.4159    function return = '3'
+**
+** The counter *cnt is incremented each time.  After counter exceeds
+** 16 (the number of significant digits in a 64-bit float) '0' is
+** always returned.
+*/
+char MysqlDatabase::et_getdigit(double *val, int *cnt) {
+  int digit;
+  double d;
+  if( (*cnt)++ >= 16 ) return '0';
+  digit = (int)*val;
+  d = digit;
+  digit += '0';
+  *val = (*val - d)*10.0;
+  return (char)digit;
+}
+
+/*
+** Append N space characters to the given string buffer.
+*/
+void MysqlDatabase::appendSpace(StrAccum *pAccum, int N) {
+  static const char zSpaces[] = "                             ";
+  while( N>=(int)sizeof(zSpaces)-1 ) {
+    mysqlStrAccumAppend(pAccum, zSpaces, sizeof(zSpaces)-1);
+    N -= sizeof(zSpaces)-1;
+  }
+  if( N>0 ){
+    mysqlStrAccumAppend(pAccum, zSpaces, N);
+  }
+}
+
+#ifndef MYSQL_PRINT_BUF_SIZE
+# define MYSQL_PRINT_BUF_SIZE 350
+#endif
+
+#define etBUFSIZE MYSQL_PRINT_BUF_SIZE  /* Size of the output buffer */
+
+
+
+/*
+** The maximum length of a TEXT or BLOB in bytes.   This also
+** limits the size of a row in a table or index.
+**
+** The hard limit is the ability of a 32-bit signed integer
+** to count the size: 2^31-1 or 2147483647.
+*/
+#ifndef MYSQL_MAX_LENGTH
+# define MYSQL_MAX_LENGTH 1000000000
+#endif
+
+/*
+** The root program.  All variations call this core.
+**
+** INPUTS:
+**   func   This is a pointer to a function taking three arguments
+**            1. A pointer to anything.  Same as the "arg" parameter.
+**            2. A pointer to the list of characters to be output
+**               (Note, this list is NOT null terminated.)
+**            3. An integer number of characters to be output.
+**               (Note: This number might be zero.)
+**
+**   arg    This is the pointer to anything which will be passed as the
+**          first argument to "func".  Use it for whatever you like.
+**
+**   fmt    This is the format string, as in the usual print.
+**
+**   ap     This is a pointer to a list of arguments.  Same as in
+**          vfprint.
+**
+** OUTPUTS:
+**          The return value is the total number of characters sent to
+**          the function "func".  Returns -1 on a error.
+**
+** Note that the order in which automatic variables are declared below
+** seems to make a big difference in determining how fast this beast
+** will run.
+*/
+void MysqlDatabase::mysqlVXPrintf(
+  StrAccum *pAccum,                  /* Accumulate results here */
+  int useExtended,                   /* Allow extended %-conversions */
+  const char *fmt,                   /* Format string */
+  va_list ap                         /* arguments */
+){
+  int c;                     /* Next character in the format string */
+  char *bufpt;               /* Pointer to the conversion buffer */
+  int precision;             /* Precision of the current field */
+  int length;                /* Length of the field */
+  int idx;                   /* A general purpose loop counter */
+  int width;                 /* Width of the current field */
+  etByte flag_leftjustify;   /* True if "-" flag is present */
+  etByte flag_plussign;      /* True if "+" flag is present */
+  etByte flag_blanksign;     /* True if " " flag is present */
+  etByte flag_alternateform; /* True if "#" flag is present */
+  etByte flag_altform2;      /* True if "!" flag is present */
+  etByte flag_zeropad;       /* True if field width constant starts with zero */
+  etByte flag_long;          /* True if "l" flag is present */
+  etByte flag_longlong;      /* True if the "ll" flag is present */
+  etByte done;               /* Loop termination flag */
+  uint64_t longvalue;        /* Value for integer types */
+  double realvalue;          /* Value for real types */
+  const et_info *infop;      /* Pointer to the appropriate info structure */
+  char buf[etBUFSIZE];       /* Conversion buffer */
+  char prefix;               /* Prefix character.  "+" or "-" or " " or '\0'. */
+  etByte xtype = 0;          /* Conversion paradigm */
+  char *zExtra;              /* Extra memory used for etTCLESCAPE conversions */
+  int  exp, e2;              /* exponent of real numbers */
+  double rounder;            /* Used for rounding floating point values */
+  etByte flag_dp;            /* True if decimal point should be shown */
+  etByte flag_rtz;           /* True if trailing zeros should be removed */
+  etByte flag_exp;           /* True to force display of the exponent */
+  int nsd;                   /* Number of significant digits returned */
+
+  length = 0;
+  bufpt = 0;
+  for(; (c=(*fmt))!=0; ++fmt){
+    if( c!='%' ){
+      int amt;
+      bufpt = (char *)fmt;
+      amt = 1;
+      while( (c=(*++fmt))!='%' && c!=0 ) amt++;
+      mysqlStrAccumAppend(pAccum, bufpt, amt);
+      if( c==0 ) break;
+    }
+    if( (c=(*++fmt))==0 ){
+      mysqlStrAccumAppend(pAccum, "%", 1);
+      break;
+    }
+    /* Find out what flags are present */
+    flag_leftjustify = flag_plussign = flag_blanksign = flag_alternateform = flag_altform2 = flag_zeropad = 0;
+    done = 0;
+    do
+    {
+      switch( c )
+      {
+        case '-':   flag_leftjustify = 1;     break;
+        case '+':   flag_plussign = 1;        break;
+        case ' ':   flag_blanksign = 1;       break;
+        case '#':   flag_alternateform = 1;   break;
+        case '!':   flag_altform2 = 1;        break;
+        case '0':   flag_zeropad = 1;         break;
+        default:    done = 1;                 break;
+      }
+    } while( !done && (c=(*++fmt))!=0 );
+    /* Get the field width */
+    width = 0;
+    if( c=='*' ){
+      width = va_arg(ap,int);
+      if( width<0 ){
+        flag_leftjustify = 1;
+        width = -width;
+      }
+      c = *++fmt;
+    }else{
+      while( c>='0' && c<='9' ){
+        width = width*10 + c - '0';
+        c = *++fmt;
+      }
+    }
+    if( width > etBUFSIZE-10 ){
+      width = etBUFSIZE-10;
+    }
+    /* Get the precision */
+    if( c=='.' ){
+      precision = 0;
+      c = *++fmt;
+      if( c=='*' ){
+        precision = va_arg(ap,int);
+        if( precision<0 ) precision = -precision;
+        c = *++fmt;
+      }else{
+        while( c>='0' && c<='9' ){
+          precision = precision*10 + c - '0';
+          c = *++fmt;
+        }
+      }
+    }else{
+      precision = -1;
+    }
+    /* Get the conversion type modifier */
+    if( c=='l' ){
+      flag_long = 1;
+      c = *++fmt;
+      if( c=='l' ){
+        flag_longlong = 1;
+        c = *++fmt;
+      }else{
+        flag_longlong = 0;
+      }
+    }else{
+      flag_long = flag_longlong = 0;
+    }
+    /* Fetch the info entry for the field */
+    infop = &fmtinfo[0];
+    xtype = etINVALID;
+    for(idx=0; idx<ARRAYSIZE(fmtinfo); idx++){
+      if( c==fmtinfo[idx].fmttype ){
+        infop = &fmtinfo[idx];
+        if( useExtended || (infop->flags & FLAG_INTERN)==0 ){
+          xtype = infop->type;
+        }else{
+          return;
+        }
+        break;
+      }
+    }
+    zExtra = 0;
+
+
+    /* Limit the precision to prevent overflowing buf[] during conversion */
+    if( precision>etBUFSIZE-40 && (infop->flags & FLAG_STRING)==0 ){
+      precision = etBUFSIZE-40;
+    }
+
+    /*
+    ** At this point, variables are initialized as follows:
+    **
+    **   flag_alternateform          TRUE if a '#' is present.
+    **   flag_altform2               TRUE if a '!' is present.
+    **   flag_plussign               TRUE if a '+' is present.
+    **   flag_leftjustify            TRUE if a '-' is present or if the
+    **                               field width was negative.
+    **   flag_zeropad                TRUE if the width began with 0.
+    **   flag_long                   TRUE if the letter 'l' (ell) prefixed
+    **                               the conversion character.
+    **   flag_longlong               TRUE if the letter 'll' (ell ell) prefixed
+    **                               the conversion character.
+    **   flag_blanksign              TRUE if a ' ' is present.
+    **   width                       The specified field width.  This is
+    **                               always non-negative.  Zero is the default.
+    **   precision                   The specified precision.  The default
+    **                               is -1.
+    **   xtype                       The class of the conversion.
+    **   infop                       Pointer to the appropriate info struct.
+    */
+    switch( xtype ){
+      case etPOINTER:
+        flag_longlong = sizeof(char*)==sizeof(int64_t);
+        flag_long = sizeof(char*)==sizeof(long int);
+        /* Fall through into the next case */
+      case etRADIX:
+        if( infop->flags & FLAG_SIGNED ){
+          int64_t v;
+          if( flag_longlong ){
+            v = va_arg(ap,int64_t);
+          }else if( flag_long ){
+            v = va_arg(ap,long int);
+          }else{
+            v = va_arg(ap,int);
+          }
+          if( v<0 ){
+            longvalue = -v;
+            prefix = '-';
+          }else{
+            longvalue = v;
+            if( flag_plussign )        prefix = '+';
+            else if( flag_blanksign )  prefix = ' ';
+            else                       prefix = 0;
+          }
+        }else{
+          if( flag_longlong ){
+            longvalue = va_arg(ap,uint64_t);
+          }else if( flag_long ){
+            longvalue = va_arg(ap,unsigned long int);
+          }else{
+            longvalue = va_arg(ap,unsigned int);
+          }
+          prefix = 0;
+        }
+        if( longvalue==0 ) flag_alternateform = 0;
+        if( flag_zeropad && precision<width-(prefix!=0) ){
+          precision = width-(prefix!=0);
+        }
+        bufpt = &buf[etBUFSIZE-1];
+        {
+          register const char *cset;      /* Use registers for speed */
+          register int base;
+          cset = &aDigits[infop->charset];
+          base = infop->base;
+          do{                                           /* Convert to ascii */
+            *(--bufpt) = cset[longvalue%base];
+            longvalue = longvalue/base;
+          }while( longvalue>0 );
+        }
+        length = (int)(&buf[etBUFSIZE-1]-bufpt);
+        for(idx=precision-length; idx>0; idx--){
+          *(--bufpt) = '0';                             /* Zero pad */
+        }
+        if( prefix ) *(--bufpt) = prefix;               /* Add sign */
+        if( flag_alternateform && infop->prefix ){      /* Add "0" or "0x" */
+          const char *pre;
+          char x;
+          pre = &aPrefix[infop->prefix];
+          for(; (x=(*pre))!=0; pre++) *(--bufpt) = x;
+        }
+        length = (int)(&buf[etBUFSIZE-1]-bufpt);
+        bufpt[length] = 0;
+        break;
+      case etFLOAT:
+      case etEXP:
+      case etGENERIC:
+        realvalue = va_arg(ap,double);
+        if( precision<0 ) precision = 6;         /* Set default precision */
+        if( precision>etBUFSIZE/2-10 ) precision = etBUFSIZE/2-10;
+        if( realvalue<0.0 ){
+          realvalue = -realvalue;
+          prefix = '-';
+        }else{
+          if( flag_plussign )          prefix = '+';
+          else if( flag_blanksign )    prefix = ' ';
+          else                         prefix = 0;
+        }
+        if( xtype==etGENERIC && precision>0 ) precision--;
+        /* It makes more sense to use 0.5 */
+        for(idx=precision, rounder=0.5; idx>0; idx--, rounder*=0.1){}
+        if( xtype==etFLOAT ) realvalue += rounder;
+        /* Normalize realvalue to within 10.0 > realvalue >= 1.0 */
+        exp = 0;
+#if 0
+        if( mysqlIsNaN((double)realvalue) ){
+          bufpt = "NaN";
+          length = 3;
+          break;
+        }
+#endif
+        if( realvalue>0.0 ){
+          while( realvalue>=1e32 && exp<=350 ){ realvalue *= 1e-32; exp+=32; }
+          while( realvalue>=1e8 && exp<=350 ){ realvalue *= 1e-8; exp+=8; }
+          while( realvalue>=10.0 && exp<=350 ){ realvalue *= 0.1; exp++; }
+          while( realvalue<1e-8 ){ realvalue *= 1e8; exp-=8; }
+          while( realvalue<1.0 ){ realvalue *= 10.0; exp--; }
+          if( exp>350 ){
+            if( prefix=='-' ){
+              bufpt = "-Inf";
+            }else if( prefix=='+' ){
+              bufpt = "+Inf";
+            }else{
+              bufpt = "Inf";
+            }
+            length = strlen(bufpt);
+            break;
+          }
+        }
+        bufpt = buf;
+        /*
+        ** If the field type is etGENERIC, then convert to either etEXP
+        ** or etFLOAT, as appropriate.
+        */
+        flag_exp = xtype==etEXP;
+        if( xtype!=etFLOAT ){
+          realvalue += rounder;
+          if( realvalue>=10.0 ){ realvalue *= 0.1; exp++; }
+        }
+        if( xtype==etGENERIC ){
+          flag_rtz = !flag_alternateform;
+          if( exp<-4 || exp>precision ){
+            xtype = etEXP;
+          }else{
+            precision = precision - exp;
+            xtype = etFLOAT;
+          }
+        }else{
+          flag_rtz = 0;
+        }
+        if( xtype==etEXP ){
+          e2 = 0;
+        }else{
+          e2 = exp;
+        }
+        nsd = 0;
+        flag_dp = (precision>0 ?1:0) | flag_alternateform | flag_altform2;
+        /* The sign in front of the number */
+        if( prefix ){
+          *(bufpt++) = prefix;
+        }
+        /* Digits prior to the decimal point */
+        if( e2<0 ){
+          *(bufpt++) = '0';
+        }else{
+          for(; e2>=0; e2--){
+            *(bufpt++) = et_getdigit(&realvalue,&nsd);
+          }
+        }
+        /* The decimal point */
+        if( flag_dp ){
+          *(bufpt++) = '.';
+        }
+        /* "0" digits after the decimal point but before the first
+        ** significant digit of the number */
+        for(e2++; e2<0; precision--, e2++){
+          //ASSERT( precision>0 );
+          *(bufpt++) = '0';
+        }
+        /* Significant digits after the decimal point */
+        while( (precision--)>0 ){
+          *(bufpt++) = et_getdigit(&realvalue,&nsd);
+        }
+        /* Remove trailing zeros and the "." if no digits follow the "." */
+        if( flag_rtz && flag_dp ){
+          while( bufpt[-1]=='0' ) *(--bufpt) = 0;
+          //ASSERT( bufpt>buf );
+          if( bufpt[-1]=='.' ){
+            if( flag_altform2 ){
+              *(bufpt++) = '0';
+            }else{
+              *(--bufpt) = 0;
+            }
+          }
+        }
+        /* Add the "eNNN" suffix */
+        if( flag_exp || xtype==etEXP ){
+          *(bufpt++) = aDigits[infop->charset];
+          if( exp<0 ){
+            *(bufpt++) = '-'; exp = -exp;
+          }else{
+            *(bufpt++) = '+';
+          }
+          if( exp>=100 ){
+            *(bufpt++) = (char)((exp/100)+'0');        /* 100's digit */
+            exp %= 100;
+          }
+          *(bufpt++) = (char)(exp/10+'0');             /* 10's digit */
+          *(bufpt++) = (char)(exp%10+'0');             /* 1's digit */
+        }
+        *bufpt = 0;
+
+        /* The converted number is in buf[] and zero terminated. Output it.
+        ** Note that the number is in the usual order, not reversed as with
+        ** integer conversions. */
+        length = (int)(bufpt-buf);
+        bufpt = buf;
+
+        /* Special case:  Add leading zeros if the flag_zeropad flag is
+        ** set and we are not left justified */
+        if( flag_zeropad && !flag_leftjustify && length < width){
+          int i;
+          int nPad = width - length;
+          for(i=width; i>=nPad; i--){
+            bufpt[i] = bufpt[i-nPad];
+          }
+          i = prefix!=0;
+          while( nPad-- ) bufpt[i++] = '0';
+          length = width;
+        }
+        break;
+      case etSIZE:
+        *(va_arg(ap,int*)) = pAccum->nChar;
+        length = width = 0;
+        break;
+      case etPERCENT:
+        buf[0] = '%';
+        bufpt = buf;
+        length = 1;
+        break;
+      case etCHARX:
+        c = va_arg(ap,int);
+        buf[0] = (char)c;
+        if( precision>=0 ){
+          for(idx=1; idx<precision; idx++) buf[idx] = (char)c;
+          length = precision;
+        }else{
+          length =1;
+        }
+        bufpt = buf;
+        break;
+      case etSTRING:
+      case etDYNSTRING:
+        bufpt = va_arg(ap,char*);
+        if( bufpt==0 ){
+          bufpt = "";
+        }else if( xtype==etDYNSTRING ){
+          zExtra = bufpt;
+        }
+        if( precision>=0 ){
+          for(length=0; length<precision && bufpt[length]; length++){}
+        }else{
+          length = strlen(bufpt);
+        }
+        break;
+      case etSQLESCAPE:
+      case etSQLESCAPE2:
+      case etSQLESCAPE3: {
+        int i, j, k, n, isnull;
+        int needQuote;
+        char ch;
+        char q = ((xtype==etSQLESCAPE3)?'"':'\'');   /* Quote character */
+        const char *escarg = va_arg(ap, char*);
+        isnull = escarg==0;
+        if( isnull ) escarg = (xtype==etSQLESCAPE2 ? "NULL" : "(NULL)");
+        k = precision;
+        for(i=n=0; k!=0 && (ch=escarg[i])!=0; i++, k--){
+          if ( (q == ch) ||
+               ('\\' == ch) )
+            n++;
+        }
+        needQuote = !isnull && xtype==etSQLESCAPE2;
+        n += i + 1 + needQuote*2;
+        if( n>etBUFSIZE ){
+          bufpt = zExtra = (char *)malloc(n);
+          if( bufpt==0 ){
+            pAccum->mallocFailed = 1;
+            return;
+          }
+        }else{
+          bufpt = buf;
+        }
+        j = 0;
+        if( needQuote ) bufpt[j++] = q;
+        k = i;
+        for(i=0; i<k; i++){
+          ch = escarg[i];
+          if ('\\' == ch)
+            bufpt[j++] = '\\';
+          bufpt[j++] = ch;
+          if (q == ch)
+            bufpt[j++] = ch;
+        }
+        if( needQuote ) bufpt[j++] = q;
+        bufpt[j] = 0;
+        length = j;
+        /* The precision in %q and %Q means how many input characters to
+        ** consume, not the length of the output...
+        ** if( precision>=0 && precision<length ) length = precision; */
+        break;
+      }
+      default: {
+        return;
+      }
+    }/* End switch over the format type */
+    /*
+    ** The text of the conversion is pointed to by "bufpt" and is
+    ** "length" characters long.  The field width is "width".  Do
+    ** the output.
+    */
+    if( !flag_leftjustify ){
+      register int nspace;
+      nspace = width-length;
+      if( nspace>0 ){
+        appendSpace(pAccum, nspace);
+      }
+    }
+    if( length>0 ){
+      mysqlStrAccumAppend(pAccum, bufpt, length);
+    }
+    if( flag_leftjustify ){
+      register int nspace;
+      nspace = width-length;
+      if( nspace>0 ){
+        appendSpace(pAccum, nspace);
+      }
+    }
+    if( zExtra ){
+      free(zExtra);
+    }
+  }/* End for loop over the format string */
+} /* End of function */
+
+/*
+** Append N bytes of text from z to the StrAccum object.
+*/
+void MysqlDatabase::mysqlStrAccumAppend(StrAccum *p, const char *z, int N) {
+  if( p->tooBig | p->mallocFailed ){
+    return;
+  }
+  if( N<0 ){
+    N = strlen(z);
+  }
+  if( N==0 || z==0 ){
+    return;
+  }
+  if( p->nChar+N >= p->nAlloc ){
+    char *zNew;
+    int szNew = p->nChar;
+    szNew += N + 1;
+    if( szNew > p->mxAlloc ){
+      mysqlStrAccumReset(p);
+      p->tooBig = 1;
+      return;
+    }else{
+      p->nAlloc = szNew;
+    }
+    zNew = (char *)malloc(p->nAlloc);
+    if( zNew ){
+      memcpy(zNew, p->zText, p->nChar);
+      mysqlStrAccumReset(p);
+      p->zText = zNew;
+    }else{
+      p->mallocFailed = 1;
+      mysqlStrAccumReset(p);
+      return;
+    }
+  }
+  memcpy(&p->zText[p->nChar], z, N);
+  p->nChar += N;
+}
+
+/*
+** Finish off a string by making sure it is zero-terminated.
+** Return a pointer to the resulting string.  Return a NULL
+** pointer if any kind of error was encountered.
+*/
+char * MysqlDatabase::mysqlStrAccumFinish(StrAccum *p){
+  if( p->zText ){
+    p->zText[p->nChar] = 0;
+    if( p->zText==p->zBase ){
+      p->zText = (char *)malloc(p->nChar+1);
+      if( p->zText ){
+        memcpy(p->zText, p->zBase, p->nChar+1);
+      }else{
+        p->mallocFailed = 1;
+      }
+    }
+  }
+  return p->zText;
+}
+
+/*
+** Reset an StrAccum string.  Reclaim all malloced memory.
+*/
+void MysqlDatabase::mysqlStrAccumReset(StrAccum *p){
+  if( p->zText!=p->zBase ){
+    free(p->zText);
+  }
+  p->zText = 0;
+}
+
+/*
+** Initialize a string accumulator
+*/
+void MysqlDatabase::mysqlStrAccumInit(StrAccum *p, char *zBase, int n, int mx){
+  p->zText = p->zBase = zBase;
+  p->nChar = 0;
+  p->nAlloc = n;
+  p->mxAlloc = mx;
+  p->tooBig = 0;
+  p->mallocFailed = 0;
+}
+
+/*
+** Print into memory obtained from mysql_malloc().  Omit the internal
+** %-conversion extensions.
+*/
+char *MysqlDatabase::mysql_vmprintf(const char *zFormat, va_list ap) {
+  char *z;
+  char zBase[MYSQL_PRINT_BUF_SIZE];
+  StrAccum acc;
+
+  mysqlStrAccumInit(&acc, zBase, sizeof(zBase), MYSQL_MAX_LENGTH);
+  mysqlVXPrintf(&acc, 0, zFormat, ap);
+  z = mysqlStrAccumFinish(&acc);
+  return z;
+}
+
+
 //************* MysqlDataset implementation ***************
 
 MysqlDataset::MysqlDataset():Dataset() {
