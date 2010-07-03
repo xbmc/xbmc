@@ -851,6 +851,8 @@ void CGUIControl::Animate(unsigned int currentTime)
 
   TransformMatrix newTransform;
 
+  bool changed = false;
+
   CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
@@ -859,6 +861,7 @@ void CGUIControl::Animate(unsigned int currentTime)
     // Update the control states (such as visibility)
     UpdateStates(anim.GetType(), anim.GetProcess(), anim.GetState());
     // and render the animation effect
+    changed |= (anim.GetProcess() != ANIM_PROCESS_NONE);
     anim.RenderAnimation(newTransform, center);
 
 /*    // debug stuff
@@ -877,12 +880,13 @@ void CGUIControl::Animate(unsigned int currentTime)
     }*/
   }
 
-  if (m_transform != newTransform)
+  if (changed)
   {
     MarkDirtyRegion();
     FlushDirtyRegion();
 
     m_transform = newTransform;
+
     MarkDirtyRegion();
   }
 }
