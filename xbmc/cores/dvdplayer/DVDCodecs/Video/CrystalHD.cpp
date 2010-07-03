@@ -1143,14 +1143,17 @@ CCrystalHD::CCrystalHD() :
     
 #if (HAVE_LIBCRYSTALHD == 2)
     m_new_lib = m_dll->LoadNewLibFunctions();
-#endif
-    /*
-    if (m_new_lib)
+    if (m_device && m_new_lib)
     {
-      uint32_t DrVer, DilVer;
-      m_dll->DtsGetVersion( NULL, &DrVer, &DilVer);
+      BCM::BC_INFO_CRYSTAL bc_info_crystal;
+      m_dll->DtsCrystalHDVersion(m_device, &bc_info_crystal);
+      m_has_bcm70015 = (bc_info_crystal.device == 1);
+      // bcm70012 can do nv12 (420), yuy2 (422) and uyvy (422)
+      // bcm70015 can do only yuy2 (422)
+      if (m_has_bcm70015)
+        m_color_space = BCM::OUTPUT_MODE422_YUY2;
     }
-    */
+#endif
   }
 
   // delete dll if device open fails, minimizes ram footprint
@@ -1237,17 +1240,6 @@ void CCrystalHD::OpenDevice()
         CLog::Log(LOGINFO, "%s(new API): device opened", __MODULE_NAME__);
       else
         CLog::Log(LOGINFO, "%s(old API): device opened", __MODULE_NAME__);
-
-      if (m_new_lib)
-      {
-        BCM::BC_INFO_CRYSTAL bc_info_crystal;
-        m_dll->DtsCrystalHDVersion(m_device, &bc_info_crystal);
-        m_has_bcm70015 = (bc_info_crystal.device == 1);
-        // bcm70012 can do nv12 (420), yuy2 (422) and uyvy (422)
-        // bcm70015 can do only yuy2 (422)
-        if (m_has_bcm70015)
-          m_color_space = BCM::OUTPUT_MODE422_YUY2;
-      }
     #else
       CLog::Log(LOGINFO, "%s: device opened", __MODULE_NAME__);
     #endif
@@ -1369,9 +1361,17 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
       bcm_input_format.startCodeSz = start_code_size;
 
       res = m_dll->DtsSetInputFormat(m_device, &bcm_input_format);
-      if (res != BCM::BC_STS_SUCCESS) {
+      if (res != BCM::BC_STS_SUCCESS)
+      {
         CLog::Log(LOGDEBUG, "%s: set input format failed", __MODULE_NAME__);
         break;
+      }
+
+      res = m_dll->DtsSetColorSpace(m_device, BCM::OUTPUT_MODE422_YUY2); 
+      if (res != BCM::BC_STS_SUCCESS)
+      { 
+        CLog::Log(LOGDEBUG, "%s: set color space failed", __MODULE_NAME__); 
+        break; 
       }
     }
     else
