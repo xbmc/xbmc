@@ -97,8 +97,9 @@ enum _CRYSTALHD_CODEC_TYPES
 {
   CRYSTALHD_CODEC_ID_MPEG2 = 0,
   CRYSTALHD_CODEC_ID_H264  = 1,
-  CRYSTALHD_CODEC_ID_VC1   = 2,
-  CRYSTALHD_CODEC_ID_WMV3  = 3,
+  CRYSTALHD_CODEC_ID_AVC1  = 2,
+  CRYSTALHD_CODEC_ID_VC1   = 3,
+  CRYSTALHD_CODEC_ID_WMV3  = 4,
 };
 
 typedef uint32_t CRYSTALHD_CODEC_TYPE;
@@ -170,6 +171,23 @@ protected:
 private:
   CCrystalHD();
   static CCrystalHD *m_pInstance;
+
+  // bitstream to bytestream (Annex B) conversion support.
+  bool bitstream_convert_init(void *in_extradata, int in_extrasize);
+  bool bitstream_convert(uint8_t* pData, int iSize, uint8_t **poutbuf, int *poutbuf_size);
+  void bitstream_alloc_and_copy( uint8_t **poutbuf, int *poutbuf_size,
+    const uint8_t *sps_pps, uint32_t sps_pps_size, const uint8_t *in, uint32_t in_size);
+
+  typedef struct chd_bitstream_ctx {
+      uint8_t  length_size;
+      uint8_t  first_idr;
+      uint8_t *sps_pps_data;
+      uint32_t size;
+  } chd_bitstream_ctx;
+
+  uint32_t          m_sps_pps_size;
+  chd_bitstream_ctx m_sps_pps_context;
+  bool              m_convert_bitstream;
 };
 
 #endif
