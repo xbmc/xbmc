@@ -823,6 +823,20 @@ bool CMPCOutputThread::GetDecoderOutput(void)
               else
               {
                 CopyOutAsYV12(pBuffer, &procOut, w, h, stride);
+                /*
+                // Perform the color space conversion.
+                uint8_t* src[] =       { procOut.Ybuff, procOut.UVbuff, NULL, NULL };
+                int      srcStride[] = { procOut.PicInfo.width, procOut.PicInfo.width, 0, 0 };
+                uint8_t* dst[] =       { pBuffer->m_y_buffer_ptr, pBuffer->m_u_buffer_ptr, pBuffer->m_v_buffer_ptr, NULL };
+                int      dstStride[] = { pBuffer->m_width, pBuffer->m_width/2, pBuffer->m_width/2, 0 };
+
+                struct SwsContext *ctx = m_dllSwScale->sws_getContext(
+                  pBuffer->m_width, pBuffer->m_height, PIX_FMT_NV12,
+                  pBuffer->m_width, pBuffer->m_height, PIX_FMT_YUV420P,
+                  SWS_FAST_BILINEAR, NULL, NULL, NULL);
+                m_dllSwScale->sws_scale(ctx, src, srcStride, 0, pBuffer->m_height, dst, dstStride);
+                m_dllSwScale->sws_freeContext(ctx);
+                */
               }
             }
           }
@@ -831,9 +845,9 @@ bool CMPCOutputThread::GetDecoderOutput(void)
             //fast_memcpy(pBuffer->m_y_buffer_ptr,  procOut.Ybuff, pBuffer->m_y_buffer_size);
             // Perform the scaling.
             uint8_t* src[] =       { procOut.Ybuff, NULL, NULL, NULL };
-            int      srcStride[] = { stride*2,      NULL, NULL, NULL };
+            int      srcStride[] = { stride*2, 0, 0, 0 };
             uint8_t* dst[] =       { pBuffer->m_y_buffer_ptr, pBuffer->m_u_buffer_ptr, pBuffer->m_v_buffer_ptr, NULL };
-            int      dstStride[] = { pBuffer->m_width, pBuffer->m_width/2, pBuffer->m_width/2, NULL };
+            int      dstStride[] = { pBuffer->m_width, pBuffer->m_width/2, pBuffer->m_width/2, 0 };
 
             struct SwsContext *ctx = m_dllSwScale->sws_getContext(
               pBuffer->m_width, pBuffer->m_height, PIX_FMT_YUYV422,
