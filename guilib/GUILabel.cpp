@@ -41,11 +41,13 @@ CGUILabel::~CGUILabel(void)
 
 bool CGUILabel::SetScrolling(bool scrolling)
 {
+  bool changed = m_scrolling != scrolling;
+
   m_scrolling = scrolling;
   if (!m_scrolling)
     m_scrollInfo.Reset();
 
-  return true;
+  return changed;
 }
 
 bool CGUILabel::SetColor(CGUILabel::COLOR color)

@@ -44,15 +44,17 @@ CGUIButtonControl::~CGUIButtonControl(void)
 {
 }
 
-void CGUIButtonControl::Render()
+void CGUIButtonControl::Process(unsigned int currentTime)
 {
+  bool changed = false;
+
   if (m_bInvalidated)
   {
-    m_imgFocus.SetWidth(m_width);
-    m_imgFocus.SetHeight(m_height);
+    changed = m_imgFocus.SetWidth(m_width)     || changed;
+    changed = m_imgFocus.SetHeight(m_height)   || changed;
 
-    m_imgNoFocus.SetWidth(m_width);
-    m_imgNoFocus.SetHeight(m_height);
+    changed = m_imgNoFocus.SetWidth(m_width)   || changed;
+    changed = m_imgNoFocus.SetHeight(m_height) || changed;
   }
 
   if (HasFocus())
@@ -68,22 +70,36 @@ void CGUIButtonControl::Render()
 
       alphaChannel += 192;
       alphaChannel = (unsigned int)((float)m_alpha * (float)alphaChannel / 255.0f);
-      m_imgFocus.SetAlpha((unsigned char)alphaChannel);
+      changed = m_imgFocus.SetAlpha((unsigned char)alphaChannel) || changed;
     }
-    m_imgFocus.SetVisible(true);
-    m_imgNoFocus.SetVisible(false);
+    changed = m_imgFocus.SetVisible(true)    || changed;
+    changed = m_imgNoFocus.SetVisible(false) || changed;
     m_focusCounter++;
   }
   else
   {
-    m_imgFocus.SetVisible(false);
-    m_imgNoFocus.SetVisible(true);
+    changed = m_imgFocus.SetVisible(false)  || changed;
+    changed = m_imgNoFocus.SetVisible(true) || changed;
   }
-  // render both so the visibility settings cause the frame counter to resetcorrectly
-  m_imgFocus.Render();
-  m_imgNoFocus.Render();
 
-  RenderText();
+  changed = ProcessText(currentTime) || changed;
+
+  if (changed)
+    MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime);
+}
+
+void CGUIButtonControl::Render()
+{
+  if (HasFocus())
+    m_imgFocus.Render();
+  else
+    m_imgNoFocus.Render();
+
+  m_label.Render();
+  m_label2.Render();
+
   CGUIControl::Render();
 }
 
@@ -96,28 +112,29 @@ CGUILabel::COLOR CGUIButtonControl::GetTextColor() const
   return CGUILabel::COLOR_TEXT;
 }
 
-void CGUIButtonControl::RenderText()
+bool CGUIButtonControl::ProcessText(unsigned int currentTime)
 {
-  m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
-  m_label.SetText(m_info.GetLabel(m_parentID));
-  m_label.SetScrolling(HasFocus());
+  bool changed = false;
+
+  changed = m_label.SetMaxRect(m_posX, m_posY, m_width, m_height) || changed;
+  changed = m_label.SetText(m_info.GetLabel(m_parentID)) || changed;
+  changed = m_label.SetScrolling(HasFocus()) || changed;
+  changed = m_label.SetColor(GetTextColor()) || changed;
 
   // render the second label if it exists
   CStdString label2(m_info2.GetLabel(m_parentID));
   if (!label2.IsEmpty())
   {
-    m_label2.SetMaxRect(m_posX, m_posY, m_width, m_height);
-    m_label2.SetText(label2);
-    m_label2.SetAlign(XBFONT_RIGHT | (m_label.GetLabelInfo().align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED);
-    m_label2.SetScrolling(HasFocus());
+    changed = m_label2.SetMaxRect(m_posX, m_posY, m_width, m_height) || changed;
+    changed = m_label2.SetText(label2) || changed;
+    changed = m_label2.SetAlign(XBFONT_RIGHT | (m_label.GetLabelInfo().align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED) || changed;
+    changed = m_label2.SetScrolling(HasFocus()) || changed;
+    changed = m_label2.SetColor(GetTextColor()) || changed;
 
     CGUILabel::CheckAndCorrectOverlap(m_label, m_label2);
-
-    m_label2.SetColor(GetTextColor());
-    m_label2.Render();
   }
-  m_label.SetColor(GetTextColor());
-  m_label.Render();
+
+  return changed;
 }
 
 bool CGUIButtonControl::OnAction(const CAction &action)
