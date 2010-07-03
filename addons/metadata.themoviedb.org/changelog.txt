@@ -1,3 +1,6 @@
+[B]1.0.6[/B]
+- fixed nfourl scraping issue
+
 [B]1.0.5[/B]
 - switch tmdb scraper to chain tmdb scraper library functions
 
