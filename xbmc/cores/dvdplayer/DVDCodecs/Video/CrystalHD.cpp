@@ -1525,7 +1525,7 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
 
     do
     {
-      ret = m_dll->DtsProcInput(m_device, pData, size, int_pts, 0);
+      ret = m_dll->DtsProcInput(m_device, demuxer_content, demuxer_bytes, int_pts, 0);
       if (ret == BCM::BC_STS_SUCCESS)
       {
         m_last_demuxer_pts = pts;
