@@ -36,6 +36,7 @@
 #include "utils/Thread.h"
 #include "utils/log.h"
 #include "utils/fastmemcpy.h"
+#include "Codecs/DllSwScale.h"
 
 namespace BCM
 {
@@ -237,7 +238,6 @@ protected:
   void                SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info);
   void                CopyOutAsNV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
   void                CopyOutAsYV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
-  void                UYY2422_to_YV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
   bool                GetDecoderOutput(void);
   virtual void        Process(void);
 
@@ -264,6 +264,7 @@ protected:
   int                 m_aspectratio_y;
   CPictureBuffer      *m_interlace_buf;
   CEvent              m_ready_event;
+  DllSwScale          *m_dllSwScale;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -349,6 +350,8 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll) :
   m_framerate(0.0),
   m_interlace_buf(NULL)
 {
+  m_dllSwScale = new DllSwScale;
+  m_dllSwScale->Load();
 }
 
 CMPCOutputThread::~CMPCOutputThread()
@@ -360,6 +363,8 @@ CMPCOutputThread::~CMPCOutputThread()
     
   if (m_interlace_buf)
     delete m_interlace_buf;
+
+  delete m_dllSwScale;
 }
 
 unsigned int CMPCOutputThread::GetReadyCount(void)
@@ -687,187 +692,6 @@ void CMPCOutputThread::CopyOutAsNV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_O
   }
 }
 
-#if _WIN32
-// Taken from Xine Project (color.c)
-// Copyright (C) 2000-2003 the xine project
-// GNU General Public License version 2 of the License,
-// or (at your option) any later version
-#define C_YUYV_YUV420( )                        \
-    *p_y1++ = *p_line1++; *p_y2++ = *p_line2++; \
-    *p_u++ = (*p_line1++ + *p_line2++)>>1;      \
-    *p_y1++ = *p_line1++; *p_y2++ = *p_line2++; \
-    *p_v++ = (*p_line1++ + *p_line2++)>>1;
-
-void CMPCOutputThread::UYY2422_to_YV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride)
-{
-  const unsigned char *yuy2_map;
-  int yuy2_pitch, y_dst_pitch, u_dst_pitch, v_dst_pitch;
-  unsigned char *y_dst, *u_dst, *v_dst;
-  int width, height;
-
-  width = w;
-  height = h;
-
-  yuy2_map = procOut->Ybuff;
-  yuy2_pitch = stride*2;
-  y_dst = pBuffer->m_y_buffer_ptr;
-  u_dst = pBuffer->m_u_buffer_ptr;
-  v_dst = pBuffer->m_v_buffer_ptr;
-  y_dst_pitch = width;
-  u_dst_pitch = v_dst_pitch = width / 2;
-
-  const uint8_t *p_line1, *p_line2 = yuy2_map;
-  uint8_t *p_y1, *p_y2 = y_dst;
-  uint8_t *p_u = u_dst;
-  uint8_t *p_v = v_dst;
-
-  int i_x, i_y;
-
-  const int i_dest_margin   = y_dst_pitch - width;
-  const int i_dest_u_margin = u_dst_pitch - width / 2;
-  const int i_dest_v_margin = v_dst_pitch - width / 2;
-  const int i_source_margin = yuy2_pitch  - width * 2;
-
-
-  for( i_y = height / 2 ; i_y-- ; )
-  {
-    p_line1 = p_line2;
-    p_line2 += yuy2_pitch;
-
-    p_y1 = p_y2;
-    p_y2 += y_dst_pitch;
-
-    for( i_x = width / 8 ; i_x-- ; )
-    {
-      C_YUYV_YUV420( );
-      C_YUYV_YUV420( );
-      C_YUYV_YUV420( );
-      C_YUYV_YUV420( );
-    }
-
-    p_y2 += i_dest_margin;
-    p_u += i_dest_u_margin;
-    p_v += i_dest_v_margin;
-    p_line2 += i_source_margin;
-  }
-}
-#else
-// Taken from Xine Project (color.c)
-// Copyright (C) 2000-2003 the xine project
-// GNU General Public License version 2 of the License,
-// or (at your option) any later version
-
-#define HAVE_MMX
-#ifdef HAVE_MMX
-
-/* yuy2->yv12 with subsampling (some ideas from mplayer's yuy2toyv12) */
-#define MMXEXT_YUYV_YUV420( )                                                      \
-    do {                                                                               \
-        __asm__ __volatile__(".align 8 \n\t"                                            \
-                "movq       (%0), %%mm0 \n\t"  /* Load              v1 y3 u1 y2 v0 y1 u0 y0 */ \
-                "movq      8(%0), %%mm1 \n\t"  /* Load              v3 y7 u3 y6 v2 y5 u2 y4 */ \
-                "movq      %%mm0, %%mm2 \n\t"  /*                   v1 y3 u1 y2 v0 y1 u0 y0 */ \
-                "movq      %%mm1, %%mm3 \n\t"  /*                   v3 y7 u3 y6 v2 y5 u2 y4 */ \
-                "psrlw     $8, %%mm0    \n\t"  /*                   00 v1 00 u1 00 v0 00 u0 */ \
-                "psrlw     $8, %%mm1    \n\t"  /*                   00 v3 00 u3 00 v2 00 u2 */ \
-                "pand      %%mm7, %%mm2 \n\t"  /*                   00 y3 00 y2 00 y1 00 y0 */ \
-                "pand      %%mm7, %%mm3 \n\t"  /*                   00 y7 00 y6 00 y5 00 y4 */ \
-                "packuswb  %%mm1, %%mm0 \n\t"  /*                   v3 u3 v2 u2 v1 u1 v0 u0 */ \
-                "packuswb  %%mm3, %%mm2 \n\t"  /*                   y7 y6 y5 y4 y3 y2 y1 y0 */ \
-                "movntq    %%mm2, (%1)  \n\t"  /* Store YYYYYYYY line1                      */ \
-                :                                                                              \
-                : "r" (p_line1), "r" (p_y1) );                                                 \
-        __asm__ __volatile__(".align 8 \n\t"                                            \
-                "movq       (%0), %%mm1 \n\t"  /* Load              v1 y3 u1 y2 v0 y1 u0 y0 */ \
-                "movq      8(%0), %%mm2 \n\t"  /* Load              v3 y7 u3 y6 v2 y5 u2 y4 */ \
-                "movq      %%mm1, %%mm3 \n\t"  /*                   v1 y3 u1 y2 v0 y1 u0 y0 */ \
-                "movq      %%mm2, %%mm4 \n\t"  /*                   v3 y7 u3 y6 v2 y5 u2 y4 */ \
-                "psrlw     $8, %%mm1    \n\t"  /*                   00 v1 00 u1 00 v0 00 u0 */ \
-                "psrlw     $8, %%mm2    \n\t"  /*                   00 v3 00 u3 00 v2 00 u2 */ \
-                "pand      %%mm7, %%mm3 \n\t"  /*                   00 y3 00 y2 00 y1 00 y0 */ \
-                "pand      %%mm7, %%mm4 \n\t"  /*                   00 y7 00 y6 00 y5 00 y4 */ \
-                "packuswb  %%mm2, %%mm1 \n\t"  /*                   v3 u3 v2 u2 v1 u1 v0 u0 */ \
-                "packuswb  %%mm4, %%mm3 \n\t"  /*                   y7 y6 y5 y4 y3 y2 y1 y0 */ \
-                "movntq    %%mm3, (%1)  \n\t"  /* Store YYYYYYYY line2                      */ \
-                :                                                                              \
-                : "r" (p_line2), "r" (p_y2) );                                                 \
-        __asm__ __volatile__(                                                           \
-                "pavgb     %%mm1, %%mm0 \n\t"  /* (mean)            v3 u3 v2 u2 v1 u1 v0 u0 */ \
-                "movq      %%mm0, %%mm1 \n\t"  /*                   v3 u3 v2 u2 v1 u1 v0 u0 */ \
-                "psrlw     $8, %%mm0    \n\t"  /*                   00 v3 00 v2 00 v1 00 v0 */ \
-                "packuswb  %%mm0, %%mm0 \n\t"  /*                               v3 v2 v1 v0 */ \
-                "movd      %%mm0, (%0)  \n\t"  /* Store VVVV                                */ \
-                "pand      %%mm7, %%mm1 \n\t"  /*                   00 u3 00 u2 00 u1 00 u0 */ \
-                "packuswb  %%mm1, %%mm1 \n\t"  /*                               u3 u2 u1 u0 */ \
-                "movd      %%mm1, (%1)  \n\t"  /* Store UUUU                                */ \
-                :                                                                              \
-                : "r" (p_v), "r" (p_u) );                                                      \
-        p_line1 += 16; p_line2 += 16; p_y1 += 8; p_y2 += 8; p_u += 4; p_v += 4;          \
-    } while(0)
-
-#endif
-
-void CMPCOutputThread::UYY2422_to_YV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride)
-{
-  const unsigned char *yuy2_map;
-  int yuy2_pitch, y_dst_pitch, u_dst_pitch, v_dst_pitch;
-  unsigned char *y_dst, *u_dst, *v_dst;
-  int width, height;
-
-  width = w;
-  height = h;
-
-  yuy2_map = procOut->Ybuff;
-  yuy2_pitch = stride*2;
-  y_dst = pBuffer->m_y_buffer_ptr;
-  u_dst = pBuffer->m_u_buffer_ptr;
-  v_dst = pBuffer->m_v_buffer_ptr;
-  y_dst_pitch = width;
-  u_dst_pitch = v_dst_pitch = width / 2;
-
-#ifdef HAVE_MMX
-    const uint8_t *p_line1, *p_line2 = yuy2_map;
-    uint8_t *p_y1, *p_y2 = y_dst;
-    uint8_t *p_u = u_dst;
-    uint8_t *p_v = v_dst;
-
-    int i_x, i_y;
-
-    const int i_dest_margin = y_dst_pitch - width;
-    const int i_dest_u_margin = u_dst_pitch - width/2;
-    const int i_dest_v_margin = v_dst_pitch - width/2;
-    const int i_source_margin = yuy2_pitch - width*2;
-
-    __asm__ __volatile__(
-            "pcmpeqw %mm7, %mm7           \n\t"
-            "psrlw $8, %mm7               \n\t" /* 00 ff 00 ff 00 ff 00 ff */
-            );
-
-    for ( i_y = height / 2 ; i_y-- ; )
-    {
-        p_line1 = p_line2;
-        p_line2 += yuy2_pitch;
-
-        p_y1 = p_y2;
-        p_y2 += y_dst_pitch;
-
-        for ( i_x = width / 8 ; i_x-- ; )
-        {
-            MMXEXT_YUYV_YUV420( );
-        }
-
-        p_y2 += i_dest_margin;
-        p_u += i_dest_u_margin;
-        p_v += i_dest_v_margin;
-        p_line2 += i_source_margin;
-    }
-
-    __asm__ __volatile__ ("sfence":::"memory");
-    __asm__ __volatile__ ("emms":::"memory");
-#endif
-}
-#endif
-
 bool CMPCOutputThread::GetDecoderOutput(void)
 {
   BCM::BC_STATUS ret;
@@ -1005,7 +829,18 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           else
           {
             //fast_memcpy(pBuffer->m_y_buffer_ptr,  procOut.Ybuff, pBuffer->m_y_buffer_size);
-            UYY2422_to_YV12(pBuffer, &procOut, w, h, stride);
+            // Perform the scaling.
+            uint8_t* src[] =       { procOut.Ybuff, NULL, NULL, NULL };
+            int      srcStride[] = { stride*2,      NULL, NULL, NULL };
+            uint8_t* dst[] =       { pBuffer->m_y_buffer_ptr, pBuffer->m_u_buffer_ptr, pBuffer->m_v_buffer_ptr, NULL };
+            int      dstStride[] = { pBuffer->m_width, pBuffer->m_width/2, pBuffer->m_width/2, NULL };
+
+            struct SwsContext *ctx = m_dllSwScale->sws_getContext(
+              pBuffer->m_width, pBuffer->m_height, PIX_FMT_YUYV422,
+              pBuffer->m_width, pBuffer->m_height, PIX_FMT_YUV420P,
+              SWS_FAST_BILINEAR, NULL, NULL, NULL);
+            m_dllSwScale->sws_scale(ctx, src, srcStride, 0, pBuffer->m_height, dst, dstStride);
+            m_dllSwScale->sws_freeContext(ctx);
           }
 
           m_ReadyList.Push(pBuffer);
