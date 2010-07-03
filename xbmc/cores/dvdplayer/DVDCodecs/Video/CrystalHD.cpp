@@ -1054,8 +1054,8 @@ void CCrystalHD::OpenDevice()
 #ifdef USE_CHD_SINGLE_THREADED_API
                   BCM::DTS_SINGLE_THREADED_MODE   |
 #endif
-                  /*BCM::DTS_SKIP_TX_CHK_CPB        |*/
-                  /*BCM::DTS_PLAYBACK_DROP_RPT_MODE |*/
+                  BCM::DTS_SKIP_TX_CHK_CPB        |
+                  BCM::DTS_PLAYBACK_DROP_RPT_MODE |
                   //DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_CUSTOM);
                   DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
 
@@ -1176,7 +1176,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
 #if (HAVE_LIBCRYSTALHD == 2)
     if (m_has_bcm70015)
     {
-      int start_code_size = 0;
+      int start_code_size = 4;
       uint8_t *meta_data = NULL;
       uint32_t meta_data_size = 0;
       BCM::BC_INPUT_FORMAT bcm_input_format;
@@ -1489,25 +1489,28 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 
 void CCrystalHD::SetDropState(bool bDrop)
 {
-  if (m_reset)
-  {
+  if (!m_has_bcm70015)
+    {
+    if (m_reset)
+    {
+      if (m_drop_state != bDrop)
+        m_drop_state = bDrop;
+
+      m_reset--;
+      if (!m_reset)
+        m_dll->DtsSetSkipPictureMode(m_device, 0);
+
+      return;
+    }
+
     if (m_drop_state != bDrop)
+    {
       m_drop_state = bDrop;
-
-    m_reset--;
-    if (!m_reset)
-      m_dll->DtsSetSkipPictureMode(m_device, 0);
-
-    return;
-  }
-
-  if (m_drop_state != bDrop)
-  {
-    m_drop_state = bDrop;
-    if (m_drop_state)
-      m_dll->DtsSetSkipPictureMode(m_device, 1);
-    else
-      m_dll->DtsSetSkipPictureMode(m_device, 0);
+      if (m_drop_state)
+        m_dll->DtsSetSkipPictureMode(m_device, 1);
+      else
+        m_dll->DtsSetSkipPictureMode(m_device, 0);
+    }
   }
 /*
   if (m_drop_state)
