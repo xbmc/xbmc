@@ -497,7 +497,16 @@ bool RenderOrderSortFunction(CGUIWindow *first, CGUIWindow *second)
 }
 
 #ifdef VISUALIZE_DIRTY_REGION
-#include "GUITextureGL.h"
+void DrawColoredQuad(const CRect & rect, float a, float r, float g, float b)
+{
+  glColor4f(r, g, b, a);
+  glBegin(GL_QUADS);
+    glVertex3f(rect.x1, rect.y1, 0.0f);	// Bottom Left Of The Texture and Quad
+    glVertex3f(rect.x2, rect.y1, 0.0f);	// Bottom Right Of The Texture and Quad
+    glVertex3f(rect.x2, rect.y2, 0.0f);	// Top Right Of The Texture and Quad
+    glVertex3f(rect.x1, rect.y2, 0.0f);	// Top Left Of The Texture and Quad
+  glEnd();
+}
 #endif
 
 void CGUIWindowManager::Render()
@@ -512,10 +521,10 @@ void CGUIWindowManager::Render()
 #ifdef USE_DIRTY_REGION
   if (unifiedDirtyRegion.IsEmpty())
     return;
-
   GLint oldRegion[8];
   glGetIntegerv(GL_SCISSOR_BOX, oldRegion);
   glScissor(unifiedDirtyRegion.x1, unifiedDirtyRegion.y1, unifiedDirtyRegion.Width(), unifiedDirtyRegion.Height());
+  glEnable(GL_SCISSOR_TEST);
 #endif
 
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
@@ -536,15 +545,26 @@ void CGUIWindowManager::Render()
   }
 
 #ifdef VISUALIZE_DIRTY_REGION
-  color_t color = 0x4000ff00;
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+
+  glOrtho(0.0f, g_graphicsContext.GetWidth(), 0.0f, g_graphicsContext.GetHeight(), -1.0f, 1.0f);
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+  glEnable(GL_BLEND);          // Turn Blending On
+  glDisable(GL_DEPTH_TEST);
+  glDisable(GL_TEXTURE_2D);
+
   for (unsigned int i = 0; i < m_DirtyRegion.size(); i++)
   {
     CRect rect = m_DirtyRegion[i];
-    CGUITextureGL::DrawQuad(rect, color);
+    DrawColoredQuad(rect, 0.3f, 0.0f, 1.0f, 0.0f);
   }
 
-  color = 0x40ff0000;
-  CGUITextureGL::DrawQuad(  unifiedDirtyRegion, color);
+  DrawColoredQuad(unifiedDirtyRegion, 0.3f, 1.0f, 0.0f, 0.0f);
 #endif
 
   // Reset dirtyregion
