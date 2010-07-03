@@ -109,11 +109,15 @@ typedef uint32_t CRYSTALHD_CODEC_TYPE;
 #define CRYSTALHD_FIELD_EVEN        0x01
 #define CRYSTALHD_FIELD_ODD         0x02
 
-typedef struct CHD_TIMESTAMP
-{
-  double dts;
-  double pts;
-} CHD_TIMESTAMP;
+typedef struct AVCC_PLAY_PARAMS {
+	uint8_t   *sps_pps_buf;
+	uint32_t  pps_size;
+	bool      inside_buffer;
+	uint32_t  consumed_offset;
+	uint32_t  strtcode_offset;
+	uint32_t  nal_sz;
+	uint8_t   nal_size_bytes;
+} AVCC_PLAY_PARAMS;
 
 class DllLibCrystalHD;
 class CMPCInputThread;
@@ -188,6 +192,9 @@ private:
   uint32_t          m_sps_pps_size;
   chd_bitstream_ctx m_sps_pps_context;
   bool              m_convert_bitstream;
+
+  bool extract_sps_pps_from_avcc(int extradata_size, void *extradata);
+  AVCC_PLAY_PARAMS  m_avcc_params;
 };
 
 #endif

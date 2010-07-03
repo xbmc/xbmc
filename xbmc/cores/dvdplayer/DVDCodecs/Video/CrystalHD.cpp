@@ -220,7 +220,7 @@ static double pts_itod(int64_t pts)
 class CMPCOutputThread : public CThread
 {
 public:
-  CMPCOutputThread(void *device, DllLibCrystalHD *dll);
+  CMPCOutputThread(void *device, DllLibCrystalHD *dll, bool has_bcm70015);
   virtual ~CMPCOutputThread();
 
   unsigned int        GetReadyCount(void);
@@ -243,6 +243,7 @@ protected:
 
   DllLibCrystalHD     *m_dll;
   void                *m_device;
+  bool                m_has_bcm70015;
   unsigned int        m_timeout;
   bool                m_format_valid;
   int                 m_width;
@@ -336,10 +337,11 @@ CPictureBuffer::~CPictureBuffer()
 #if defined(__APPLE__)
 #pragma mark -
 #endif
-CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll) :
+CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll, bool has_bcm70015) :
   CThread(),
   m_dll(dll),
   m_device(device),
+  m_has_bcm70015(has_bcm70015),
   m_timeout(20),
   m_format_valid(false),
   m_framerate_tracking(false),
@@ -758,13 +760,17 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           int h = procOut.PicInfo.height;
           // frame that are not equal in width to 720, 1280 or 1920
           // need to be copied by a quantized stride (possible lib/driver bug) so force it.
-          int stride;
-          if (w <= 720)
-            stride = 720;
-          else if (w <= 1280)
-            stride = 1280;
-          else
-            stride = 1920;
+          int stride = procOut.PicInfo.width;
+          if (!m_has_bcm70015)
+          {
+            // bcm70012 uses quantized strides
+            if (w <= 720)
+              stride = 720;
+            else if (w <= 1280)
+              stride = 1280;
+            else
+              stride = 1920;
+          }
 
           if (pBuffer->m_color_space == BCM::MODE420)
           {
@@ -1141,7 +1147,8 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
     case CRYSTALHD_CODEC_ID_AVC1:
       videoAlg = BCM::BC_VID_ALGO_H264;
       StreamType = BCM::BC_STREAM_TYPE_ES;
-      m_convert_bitstream = bitstream_convert_init(extradata, extradata_size);
+      if (!m_has_bcm70015)
+        m_convert_bitstream = bitstream_convert_init(extradata, extradata_size);
     break;
     case CRYSTALHD_CODEC_ID_MPEG2:
       videoAlg = BCM::BC_VID_ALGO_MPEG2;
@@ -1156,6 +1163,13 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
   }
   
 #if (HAVE_LIBCRYSTALHD == 2)
+  m_avcc_params.sps_pps_buf = NULL;
+  m_avcc_params.inside_buffer = TRUE;
+  m_avcc_params.consumed_offset = 0;
+  m_avcc_params.strtcode_offset = 0;
+  m_avcc_params.nal_sz = 0;
+  m_avcc_params.pps_size = 0;
+  m_avcc_params.nal_size_bytes = 4;
   switch (codec_type)
   {
     case CRYSTALHD_CODEC_ID_VC1:
@@ -1166,9 +1180,17 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
     break;
     case CRYSTALHD_CODEC_ID_H264:
       Subtype = BCM::BC_MSUBTYPE_H264;
+      m_avcc_params.nal_size_bytes = 4; // 4 sync bytes used
     break;
     case CRYSTALHD_CODEC_ID_AVC1:
       Subtype = BCM::BC_MSUBTYPE_AVC1;
+      m_avcc_params.sps_pps_buf = (uint8_t*)malloc(1000);
+			if (!extract_sps_pps_from_avcc(extradata_size, extradata))
+      {
+        free(m_avcc_params.sps_pps_buf);
+        m_avcc_params.sps_pps_buf = NULL;
+				m_avcc_params.pps_size = 0;
+			}
     break;
     case CRYSTALHD_CODEC_ID_MPEG2:
       Subtype = BCM::BC_MSUBTYPE_MPEG2VIDEO;
@@ -1190,9 +1212,6 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
 #if (HAVE_LIBCRYSTALHD == 2)
     if (m_has_bcm70015)
     {
-      int start_code_size = 4;
-      uint8_t *meta_data = NULL;
-      uint32_t meta_data_size = 0;
       BCM::BC_INPUT_FORMAT bcm_input_format;
 
       memset(&bcm_input_format, 0, sizeof(BCM::BC_INPUT_FORMAT));
@@ -1204,10 +1223,11 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
       #ifdef USE_CHD_SINGLE_THREADED_API
         bcm_input_format.OptFlags |= 0x80;
       #endif
+      
       bcm_input_format.mSubtype = Subtype;
-      bcm_input_format.pMetaData = meta_data;
-      bcm_input_format.metaDataSz = meta_data_size;
-      bcm_input_format.startCodeSz = start_code_size;
+      bcm_input_format.pMetaData = m_avcc_params.sps_pps_buf;
+      bcm_input_format.metaDataSz = m_avcc_params.pps_size;
+      bcm_input_format.startCodeSz = m_avcc_params.nal_size_bytes;
 
       res = m_dll->DtsSetInputFormat(m_device, &bcm_input_format);
       if (res != BCM::BC_STS_SUCCESS)
@@ -1249,7 +1269,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
       break;
     }
 
-    m_pOutputThread = new CMPCOutputThread(m_device, m_dll);
+    m_pOutputThread = new CMPCOutputThread(m_device, m_dll, m_has_bcm70015);
     m_pOutputThread->Create();
 
     m_drop_state = false;
@@ -1289,6 +1309,13 @@ void CCrystalHD::CloseDecoder(void)
       m_sps_pps_context.sps_pps_data = NULL;
     }
   }
+#if (HAVE_LIBCRYSTALHD == 2)
+	if (m_avcc_params.sps_pps_buf)
+  {
+		free(m_avcc_params.sps_pps_buf);
+		m_avcc_params.sps_pps_buf = NULL;
+	}
+#endif
 
   if (m_device)
   {
@@ -1532,6 +1559,94 @@ void CCrystalHD::SetDropState(bool bDrop)
       m_drop_state, m_pOutputThread->GetFreeCount(), m_pOutputThread->GetReadyCount(), m_BusyList.Count());
 */
 }
+////////////////////////////////////////////////////////////////////////////////////////////
+bool CCrystalHD::extract_sps_pps_from_avcc(int extradata_size, void *extradata)
+{
+  uint8_t *data = (uint8_t*)extradata;
+  uint32_t data_size = extradata_size;
+  int profile;
+  unsigned int nal_size;
+  unsigned int num_sps, num_pps;
+
+  m_avcc_params.pps_size = 0;
+
+  profile = (data[1] << 16) | (data[2] << 8) | data[3];
+  CLog::Log(LOGDEBUG, "%s: profile %06x", __MODULE_NAME__, profile);
+
+  m_avcc_params.nal_size_bytes = (data[4] & 0x03) + 1;
+
+  CLog::Log(LOGDEBUG, "%s: nal size %d", __MODULE_NAME__, m_avcc_params.nal_size_bytes);
+
+  num_sps = data[5] & 0x1f;
+  CLog::Log(LOGDEBUG, "%s: num sps %d", __MODULE_NAME__, num_sps);
+
+  data += 6;
+  data_size -= 6;
+
+  for (unsigned int i = 0; i < num_sps; i++)
+  {
+    if (data_size < 2)
+			return false;
+
+    nal_size = (data[0] << 8) | data[1];
+    data += 2;
+    data_size -= 2;
+
+    if (data_size < nal_size)
+			return false;
+
+    m_avcc_params.sps_pps_buf[0] = 0;
+    m_avcc_params.sps_pps_buf[1] = 0;
+    m_avcc_params.sps_pps_buf[2] = 0;
+    m_avcc_params.sps_pps_buf[3] = 1;
+
+    m_avcc_params.pps_size += 4;
+
+    memcpy(m_avcc_params.sps_pps_buf + m_avcc_params.pps_size, data, nal_size);
+    m_avcc_params.pps_size += nal_size;
+
+    data += nal_size;
+    data_size -= nal_size;
+  }
+
+  if (data_size < 1)
+		return false;
+
+  num_pps = data[0];
+  data += 1;
+  data_size -= 1;
+
+  for (unsigned int i = 0; i < num_pps; i++)
+  {
+    if (data_size < 2)
+			return false;
+
+    nal_size = (data[0] << 8) | data[1];
+    data += 2;
+    data_size -= 2;
+
+    if (data_size < nal_size)
+			return false;
+
+    m_avcc_params.sps_pps_buf[m_avcc_params.pps_size+0] = 0;
+    m_avcc_params.sps_pps_buf[m_avcc_params.pps_size+1] = 0;
+    m_avcc_params.sps_pps_buf[m_avcc_params.pps_size+2] = 0;
+    m_avcc_params.sps_pps_buf[m_avcc_params.pps_size+3] = 1;
+
+    m_avcc_params.pps_size += 4;
+
+		memcpy(m_avcc_params.sps_pps_buf + m_avcc_params.pps_size, data, nal_size);
+    m_avcc_params.pps_size += nal_size;
+
+    data += nal_size;
+    data_size -= nal_size;
+  }
+
+  CLog::Log(LOGDEBUG, "%s: data size at end = %d ", __MODULE_NAME__, data_size);
+
+	return true;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 bool CCrystalHD::bitstream_convert_init(void *in_extradata, int in_extrasize)
