@@ -97,27 +97,23 @@ bool CDDSImage::ReadFile(const std::string &inputFile)
   // read the header
   uint32_t magic;
   if (file.Read(&magic, 4) != 4)
-    goto fail;
+    return false;
   if (file.Read(&m_desc, sizeof(m_desc)) != sizeof(m_desc))
-    goto fail;
+    return false;
   if (!GetFormat())
-    goto fail;  // not supported
+    return false;  // not supported
 
   // allocate our data
   m_data = new unsigned char[m_desc.linearSize];
   if (!m_data)
-    goto fail;
+    return false;
 
   // and read it in
   if (file.Read(m_data, m_desc.linearSize) != m_desc.linearSize)
-    goto fail;
+    return false;
 
   file.Close();
   return true;
-
-fail:
-  file.Close();
-  return false;
 }
 
 bool CDDSImage::Create(const std::string &outputFile, unsigned int width, unsigned int height, unsigned int pitch, unsigned char const *brga, double maxMSE)
