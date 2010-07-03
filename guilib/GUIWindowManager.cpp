@@ -523,7 +523,8 @@ void CGUIWindowManager::Render()
     return;
   GLint oldRegion[8];
   glGetIntegerv(GL_SCISSOR_BOX, oldRegion);
-  glScissor(unifiedDirtyRegion.x1, unifiedDirtyRegion.y1, unifiedDirtyRegion.Width(), unifiedDirtyRegion.Height());
+  // OpenGL specifies 0, 0 in the bottom left corner wereas XBMC specifies 0,0 as top left.
+  glScissor(unifiedDirtyRegion.x1, g_graphicsContext.GetHeight() - unifiedDirtyRegion.y2, unifiedDirtyRegion.Width(), unifiedDirtyRegion.Height());
   glEnable(GL_SCISSOR_TEST);
 #endif
 
