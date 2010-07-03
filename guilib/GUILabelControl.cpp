@@ -95,7 +95,10 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
     label = colorLabel;
   }
 
-  if (m_label.SetMaxRect(m_posX, m_posY, m_width, m_height) || m_label.SetText(label))
+  if (m_label.SetMaxRect(m_posX, m_posY, m_width, m_height))
+    MarkDirtyRegion();
+
+  if (m_label.SetText(label))
     MarkDirtyRegion();
 }
 
@@ -123,22 +126,28 @@ void CGUILabelControl::SetLabel(const string &strLabel)
 {
   // shorten the path label
   if ( m_bHasPath )
-    m_infoLabel.SetLabel(ShortenPath(strLabel), "");
+     m_infoLabel.SetLabel(ShortenPath(strLabel), "");
   else // parse the label for info tags
-    m_infoLabel.SetLabel(strLabel, "");
+     m_infoLabel.SetLabel(strLabel, "");
   if (m_iCursorPos > (int)strLabel.size())
     m_iCursorPos = strLabel.size();
 }
 
 void CGUILabelControl::SetWidthControl(float minWidth, bool bScroll)
 {
+  if (m_label.SetScrolling(bScroll) || m_minWidth != minWidth)
+    MarkDirtyRegion();
+
   m_minWidth = minWidth;
-  m_label.SetScrolling(bScroll);
 }
 
 void CGUILabelControl::SetAlignment(uint32_t align)
 {
-  m_label.GetLabelInfo().align = align;
+  if (m_label.GetLabelInfo().align != align)
+  {
+    MarkDirtyRegion();
+    m_label.GetLabelInfo().align = align;
+  }
 }
 
 #define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
@@ -194,7 +203,9 @@ CStdString CGUILabelControl::ShortenPath(const CStdString &path)
         nPos = workPath.find_last_of( cDelim );
       }
 
-  m_label.SetText(workPath);
+  if (m_label.SetText(workPath))
+    MarkDirtyRegion();
+
   float textWidth = m_label.GetTextWidth();
 
   while ( textWidth > m_width )
@@ -209,7 +220,9 @@ CStdString CGUILabelControl::ShortenPath(const CStdString &path)
 
     workPath.replace( nPos + 1, nGreaterDelim - nPos - 1, "..." );
 
-    m_label.SetText(workPath);
+    if (m_label.SetText(workPath))
+      MarkDirtyRegion();
+
     textWidth = m_label.GetTextWidth();
   }
   return workPath;
