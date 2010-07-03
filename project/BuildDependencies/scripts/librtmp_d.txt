@@ -1,0 +1,3 @@
+; filename                        source of the file
+rtmpdump-2.3-windows.zip          http://rtmpdump.mplayerhq.hu/download/
+rtmpdump-2.3.tgz                  http://rtmpdump.mplayerhq.hu/download/

@@ -43,7 +43,13 @@ public:
   bool GetRepository(const CStdString& id, ADDON::VECADDONS& addons);
   bool GetRepository(int id, ADDON::VECADDONS& addons);
   bool SetRepoTimestamp(const CStdString& id, const CStdString& timestamp);
-  int GetRepoTimestamp(const CStdString& id, CStdString& timestamp);
+
+  /*! \brief Retrieve the time a repository was last checked
+   \param id id of the repo
+   \return last time the repo was checked, current time if not available
+   \sa SetRepoTimestamp */
+  CDateTime GetRepoTimestamp(const CStdString& id);
+
   bool Search(const CStdString& search, ADDON::VECADDONS& items);
   bool SearchTitle(const CStdString& strSearch, ADDON::VECADDONS& items);
   static void SetPropertiesFromAddon(const ADDON::AddonPtr& addon, CFileItemPtr& item); 
@@ -67,10 +73,25 @@ public:
    \sa DisableAddon, IsAddonDisabled */
   bool HasDisabledAddons();
 
+  /*! \brief Mark an addon as broken
+   Sets a flag that this addon has been marked as broken in the repository. 
+   \param addonID id of the addon to mark as broken
+   \param broken whether to mark or not.  Defaults to true
+   \param reason why it is broken.  Defaults to blank 
+   \return true on success, false on failure
+   \sa IsAddonBroken */
+  bool BreakAddon(const CStdString &addonID, bool broken = true, const CStdString& reason="");
+
+  /*! \brief Check whether an addon has been marked as broken via BreakAddon.
+   \param addonID id of the addon to check
+   \return reason if the addon is broken, blank otherwise
+   \sa BreakAddon */
+  CStdString IsAddonBroken(const CStdString &addonID);
+
 protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 8; }
+  virtual int GetMinVersion() const { return 10; }
   const char *GetDefaultDBName() const { return "Addons"; }
 };
 

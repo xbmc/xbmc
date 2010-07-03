@@ -10,6 +10,7 @@
         <xs:element name="license" type="xs:string"/>
         <xs:element name="platform" type="platformList" minOccurs="0"/>
         <xs:element name="supportedcontent" type="contentList" minOccurs="0"/>
+        <xs:element name="broken" type="xs:string" minOccurs="0"/>
       </xs:sequence>
       <xs:attribute name="point" type="xs:string" use="required"/>
       <xs:attribute name="id" type="simpleIdentifier"/>

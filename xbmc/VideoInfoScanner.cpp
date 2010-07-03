@@ -119,9 +119,7 @@ namespace VIDEO
       m_database.Close();
 
       tick = CTimeUtils::GetTimeMS() - tick;
-      CStdString strTime;
-      StringUtils::SecondsToTimeString(tick / 1000, strTime);
-      CLog::Log(LOGNOTICE, "VideoInfoScanner: Finished scan. Scanning for video info took %s", strTime.c_str());
+      CLog::Log(LOGNOTICE, "VideoInfoScanner: Finished scan. Scanning for video info took %s", StringUtils::SecondsToTimeString(tick / 1000).c_str());
 
       m_bRunning = false;
       if (m_pObserver)
@@ -386,11 +384,11 @@ namespace VIDEO
 
       INFO_RET ret = INFO_CANCELLED;
       if (info2->Content() == CONTENT_TVSHOWS)
-        ret = RetreiveInfoForTvShow(pItem, bDirNames, info2, useLocal, pURL, fetchEpisodes, pDlgProgress);
+        ret = RetrieveInfoForTvShow(pItem, bDirNames, info2, useLocal, pURL, fetchEpisodes, pDlgProgress);
       else if (info2->Content() == CONTENT_MOVIES)
-        ret = RetreiveInfoForMovie(pItem, bDirNames, info2, useLocal, pURL, pDlgProgress);
+        ret = RetrieveInfoForMovie(pItem, bDirNames, info2, useLocal, pURL, pDlgProgress);
       else if (info2->Content() == CONTENT_MUSICVIDEOS)
-        ret = RetreiveInfoForMusicVideo(pItem, bDirNames, info2, useLocal, pURL, pDlgProgress);
+        ret = RetrieveInfoForMusicVideo(pItem, bDirNames, info2, useLocal, pURL, pDlgProgress);
       else
       {
         CLog::Log(LOGERROR, "VideoInfoScanner: Unknown content type %d (%s)", info2->Content(), pItem->m_strPath.c_str());
@@ -416,7 +414,7 @@ namespace VIDEO
     return FoundSomeInfo;
   }
 
-  INFO_RET CVideoInfoScanner::RetreiveInfoForTvShow(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress)
+  INFO_RET CVideoInfoScanner::RetrieveInfoForTvShow(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool useLocal, CScraperUrl* pURL, bool fetchEpisodes, CGUIDialogProgress* pDlgProgress)
   {
     long idTvShow = -1;
     if (pItem->m_bIsFolder)
@@ -429,7 +427,7 @@ namespace VIDEO
     }
     if (idTvShow > -1 && (fetchEpisodes || !pItem->m_bIsFolder))
     {
-      INFO_RET ret = RetrieveInfoForEpisodes(pItem, idTvShow, info2, pDlgProgress);
+      INFO_RET ret = RetrieveInfoForEpisodes(pItem, idTvShow, info2, useLocal, pDlgProgress);
       if (ret == INFO_ADDED)
         m_database.SetPathHash(pItem->m_strPath, pItem->GetProperty("hash"));
       return ret;
@@ -465,7 +463,7 @@ namespace VIDEO
         FetchSeasonThumbs(lResult);
       if (fetchEpisodes)
       {
-        INFO_RET ret = RetrieveInfoForEpisodes(pItem, lResult, info2, pDlgProgress);
+        INFO_RET ret = RetrieveInfoForEpisodes(pItem, lResult, info2, useLocal, pDlgProgress);
         if (ret == INFO_ADDED)
           m_database.SetPathHash(pItem->m_strPath, pItem->GetProperty("hash"));
         return ret;
@@ -494,7 +492,7 @@ namespace VIDEO
     }
     if (fetchEpisodes)
     {
-      INFO_RET ret = RetrieveInfoForEpisodes(pItem, lResult, info2, pDlgProgress);
+      INFO_RET ret = RetrieveInfoForEpisodes(pItem, lResult, info2, useLocal, pDlgProgress);
       if (ret == INFO_ADDED)
         m_database.SetPathHash(pItem->m_strPath, pItem->GetProperty("hash"));
     }
@@ -504,7 +502,7 @@ namespace VIDEO
     return INFO_ADDED;
   }
 
-  INFO_RET CVideoInfoScanner::RetreiveInfoForMovie(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
+  INFO_RET CVideoInfoScanner::RetrieveInfoForMovie(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
   {
     if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() || pItem->IsPlayList())
       return INFO_NOT_NEEDED;
@@ -556,7 +554,7 @@ namespace VIDEO
     return INFO_NOT_FOUND;
   }
 
-  INFO_RET CVideoInfoScanner::RetreiveInfoForMusicVideo(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
+  INFO_RET CVideoInfoScanner::RetrieveInfoForMusicVideo(CFileItemPtr pItem, bool bDirNames, ScraperPtr &info2, bool useLocal, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
   {
     if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() || pItem->IsPlayList())
       return INFO_NOT_NEEDED;
@@ -608,10 +606,16 @@ namespace VIDEO
     return INFO_NOT_FOUND;
   }
 
-  INFO_RET CVideoInfoScanner::RetrieveInfoForEpisodes(CFileItemPtr item, long showID, const ADDON::ScraperPtr &scraper, CGUIDialogProgress *progress)
+  INFO_RET CVideoInfoScanner::RetrieveInfoForEpisodes(CFileItemPtr item, long showID, const ADDON::ScraperPtr &scraper, bool useLocal, CGUIDialogProgress *progress)
   {
     IMDB_EPISODELIST episodes;
+
+    // enumerate episodes
     EPISODES files;
+    EnumerateSeriesFolder(item.get(), files);
+    if (files.size() == 0) // no update or no files
+      return INFO_NOT_NEEDED;
+
     // fetch episode guide
     CVideoInfoTag details;
     m_database.GetTvShowInfo(item->m_strPath, details, showID);
@@ -619,10 +623,6 @@ namespace VIDEO
     {
       CScraperUrl url;
       url.ParseEpisodeGuide(details.m_strEpisodeGuide);
-
-      EnumerateSeriesFolder(item.get(), files);
-      if (files.size() == 0) // no update or no files
-        return INFO_NOT_NEEDED;
 
       if (progress)
       {
@@ -647,7 +647,7 @@ namespace VIDEO
     if (m_pObserver)
       m_pObserver->OnDirectoryChanged(item->m_strPath);
 
-    return OnProcessSeriesFolder(episodes, files, scraper, showID, details.m_strTitle, progress);
+    return OnProcessSeriesFolder(episodes, files, scraper, useLocal, showID, details.m_strTitle, progress);
   }
 
   void CVideoInfoScanner::EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList)
@@ -1074,7 +1074,7 @@ namespace VIDEO
       ApplyThumbToFolder(directory, destination);
   }
 
-  INFO_RET CVideoInfoScanner::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, const ADDON::ScraperPtr &scraper, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress /* = NULL */)
+  INFO_RET CVideoInfoScanner::OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, const ADDON::ScraperPtr &scraper, bool useLocal, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress /* = NULL */)
   {
     if (pDlgProgress)
     {
@@ -1115,10 +1115,12 @@ namespace VIDEO
       item.m_strPath = file->strPath;
 
       // handle .nfo files
+      CNfoFile::NFOResult result=CNfoFile::NO_NFO;
       CScraperUrl scrUrl;
       ScraperPtr info(scraper);
       item.GetVideoInfoTag()->m_iEpisode = file->iEpisode;
-      CNfoFile::NFOResult result = CheckForNFOFile(&item, false, info,scrUrl);
+      if (useLocal)
+        result = CheckForNFOFile(&item, false, info,scrUrl);
       if (result == CNfoFile::FULL_NFO)
       {
         m_nfoReader.GetDetails(*item.GetVideoInfoTag());
@@ -1546,8 +1548,8 @@ namespace VIDEO
     IMDB_MOVIELIST movielist;
     CIMDB imdb(scraper);
     int returncode = imdb.FindMovie(videoName, movielist, progress);
-    if (returncode == -1 || (returncode == 0 && !DownloadFailed(progress)))
-    {
+    if (returncode < 0 || (returncode == 0 && !DownloadFailed(progress)))
+    { // scraper reported an error, or we had an error and user wants to cancel the scan
       m_bStop = true;
       return -1; // cancelled
     }

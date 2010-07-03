@@ -85,7 +85,8 @@ class CAdvancedSettings
     int m_videoPercentSeekBackward;
     int m_videoPercentSeekForwardBig;
     int m_videoPercentSeekBackwardBig;
-    CStdString m_videoPPFFmpegType;
+    CStdString m_videoPPFFmpegDeint;
+    CStdString m_videoPPFFmpegPostProc;
     bool m_musicUseTimeSeeking;
     int m_musicTimeSeekForward;
     int m_musicTimeSeekBackward;
@@ -200,6 +201,7 @@ class CAdvancedSettings
     bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
     //TuxBox
+    int m_iTuxBoxStreamtsPort;
     bool m_bTuxBoxSubMenuSelection;
     int m_iTuxBoxDefaultSubMenu;
     int m_iTuxBoxDefaultRootMenu;
@@ -208,6 +210,8 @@ class CAdvancedSettings
     int m_iTuxBoxEpgRequestTime;
     int m_iTuxBoxZapWaitTime;
     bool m_bTuxBoxSendAllAPids;
+    bool m_bTuxBoxZapstream;
+    int m_iTuxBoxZapstreamPort;
 
     int m_iMythMovieLength;         // minutes
 

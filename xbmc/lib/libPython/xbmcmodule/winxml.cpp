@@ -76,58 +76,46 @@ namespace PYXBMC
     PyObject* pyOXMLname = NULL;
     PyObject* pyOname = NULL;
     PyObject* pyDName = NULL;
+    PyObject* pyRes = NULL;
     char bForceDefaultSkin = false;
 
     string strXMLname, strFallbackPath;
     string strDefault = "Default";
+    string resolution = "720p";
 
-    if (!PyArg_ParseTuple(args, (char*)"OO|Ob", &pyOXMLname, &pyOname, &pyDName, &bForceDefaultSkin )) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"OO|OOb", &pyOXMLname, &pyOname, &pyDName, &pyRes, &bForceDefaultSkin )) return NULL;
 
     PyXBMCGetUnicodeString(strXMLname, pyOXMLname);
     PyXBMCGetUnicodeString(strFallbackPath, pyOname);
     if (pyDName) PyXBMCGetUnicodeString(strDefault, pyDName);
+    if (pyRes) PyXBMCGetUnicodeString(resolution, pyRes);
 
+    // Check to see if the XML file exists in current skin. If not use fallback path to find a skin for the script
     RESOLUTION res;
-    CStdString strSkinPath;
-    if (!bForceDefaultSkin)
-    {
-      // Check to see if the XML file exists in current skin. If not use fallback path to find a skin for the script
-      strSkinPath = g_SkinInfo->GetSkinPath(strXMLname, &res);
+    CStdString strSkinPath = g_SkinInfo->GetSkinPath(strXMLname, &res);
 
+    if (!XFILE::CFile::Exists(strSkinPath))
+    {
+      // Check for the matching folder for the skin in the fallback skins folder
+      CStdString fallbackPath = CUtil::AddFileToFolder(strFallbackPath, "resources");
+      fallbackPath = CUtil::AddFileToFolder(fallbackPath, "skins");
+      CStdString basePath = CUtil::AddFileToFolder(fallbackPath, g_SkinInfo->ID());
+      strSkinPath = g_SkinInfo->GetSkinPath(strXMLname, &res, basePath);
       if (!XFILE::CFile::Exists(strSkinPath))
       {
-        // Check for the matching folder for the skin in the fallback skins folder
-        CStdString basePath;
-        CUtil::AddFileToFolder(strFallbackPath, "resources", basePath);
-        CUtil::AddFileToFolder(basePath, "skins", basePath);
-        CUtil::AddFileToFolder(basePath, CUtil::GetFileName(g_SkinInfo->Path()), basePath);
-        strSkinPath = g_SkinInfo->GetSkinPath(strXMLname, &res, basePath);
+        // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
+        CStdString str("none");
+        AddonProps props(str, ADDON_SKIN, str);
+        CSkinInfo skinInfo(props, CSkinInfo::TranslateResolution(resolution, RES_HDTV_720p));
+        basePath = CUtil::AddFileToFolder(fallbackPath, strDefault);
+        
+        skinInfo.Start(basePath);
+        strSkinPath = skinInfo.GetSkinPath(strXMLname, &res, basePath);
         if (!XFILE::CFile::Exists(strSkinPath))
         {
-          // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
-          bForceDefaultSkin = true;
+          PyErr_SetString(PyExc_TypeError, "XML File for Window is missing");
+          return NULL;
         }
-      }
-    }
-
-    if (bForceDefaultSkin)
-    {
-      //FIXME make this static method of current skin?
-      CStdString str("none");
-      AddonProps props(str, ADDON_SKIN, str);
-      CSkinInfo skinInfo(props);
-      CStdString basePath;
-      CUtil::AddFileToFolder(strFallbackPath, "resources", basePath);
-      CUtil::AddFileToFolder(basePath, "skins", basePath);
-      CUtil::AddFileToFolder(basePath, strDefault, basePath);
-
-      skinInfo.Start(basePath);
-      strSkinPath = skinInfo.GetSkinPath(strXMLname, &res, basePath);
-
-      if (!XFILE::CFile::Exists(strSkinPath))
-      {
-        PyErr_SetString(PyExc_TypeError, "XML File for Window is missing");
-        return NULL;
       }
     }
 

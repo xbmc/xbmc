@@ -16,6 +16,7 @@
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
       <speedunit>kmh</speedunit>
+      <timezone>CEST</timezone>
     </region>
   </regions>
 </language>

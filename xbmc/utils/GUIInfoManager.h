@@ -99,6 +99,7 @@ class CDateTime;
 #define PLAYER_PASSTHROUGH           44
 #define PLAYER_PATH                  45
 #define PLAYER_FILEPATH              46
+#define PLAYER_SEEKOFFSET            47
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -594,8 +595,8 @@ public:
   CStdString GetVersion();
   CStdString GetBuild();
 
-  bool GetDisplayAfterSeek() const;
-  void SetDisplayAfterSeek(unsigned int timeOut = 2500);
+  bool GetDisplayAfterSeek();
+  void SetDisplayAfterSeek(unsigned int timeOut = 2500, int seekOffset = 0);
   void SetSeeking(bool seeking) { m_playerSeeking = seeking; };
   void SetShowTime(bool showtime) { m_playerShowTime = showtime; };
   void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
@@ -683,6 +684,7 @@ protected:
 
   //Fullscreen OSD Stuff
   unsigned int m_AfterSeekTimeout;
+  int m_seekOffset;
   bool m_playerSeeking;
   bool m_playerShowTime;
   bool m_playerShowCodec;

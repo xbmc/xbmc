@@ -35,7 +35,6 @@
 #include "MusicSearchDirectory.h"
 #include "VideoDatabaseDirectory.h"
 #include "AddonsDirectory.h"
-#include "ShoutcastDirectory.h"
 #include "LastFMDirectory.h"
 #include "FTPDirectory.h"
 #include "HTTPDirectory.h"
@@ -144,7 +143,6 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 
   if( g_application.getNetwork().IsAvailable(true) )  // true to wait for the network (if possible)
   {
-    if (strProtocol == "shout") return new CShoutcastDirectory();
     if (strProtocol == "lastfm") return new CLastFMDirectory();
     if (strProtocol == "tuxbox") return new CDirectoryTuxBox();
     if (strProtocol == "ftp" ||  strProtocol == "ftpx" ||  strProtocol == "ftps") return new CFTPDirectory();

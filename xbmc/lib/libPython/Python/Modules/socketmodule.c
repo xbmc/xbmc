@@ -289,13 +289,17 @@ int h_errno; /* not used */
 #  include "addrinfo.h"
 #endif
 
-#if defined(_MSC_VER) && _MSC_VER>1499
-#define HAVE_INET_PTON
+#ifdef _WIN32
+// inet_pton and inet_ntop are only available on Vista and up
+#undef HAVE_INET_PTON
 #endif
 
 #ifndef HAVE_INET_PTON
-int inet_pton(int af, const char *src, void *dst);
-const char *inet_ntop(int af, const void *src, char *dst, socklen_t size);
+int py_inet_pton(int af, const char *src, void *dst);
+const char *py_inet_ntop(int af, const void *src, char *dst, socklen_t size);
+#else
+#define py_inet_pton inet_pton
+#define py_inet_ntop inet_ntop
 #endif
 
 #ifdef __APPLE__
@@ -3391,8 +3395,6 @@ socket_inet_ntoa(PyObject *self, PyObject *args)
 	return PyString_FromString(inet_ntoa(packed_addr));
 }
 
-#ifdef HAVE_INET_PTON
-
 PyDoc_STRVAR(inet_pton_doc,
 "inet_pton(af, ip) -> packed IP address string\n\
 \n\
@@ -3422,7 +3424,7 @@ socket_inet_pton(PyObject *self, PyObject *args)
 	}
 #endif 
 
-	retval = inet_pton(af, ip, packed);
+	retval = py_inet_pton(af, ip, packed);
 	if (retval < 0) {
 		PyErr_SetFromErrno(socket_error);
 		return NULL;
@@ -3489,7 +3491,7 @@ socket_inet_ntop(PyObject *self, PyObject *args)
 		return NULL;
 	}
 
-	retval = inet_ntop(af, packed, ip, sizeof(ip));
+	retval = py_inet_ntop(af, packed, ip, sizeof(ip));
 	if (!retval) {
 		PyErr_SetFromErrno(socket_error);
 		return NULL;
@@ -3501,8 +3503,6 @@ socket_inet_ntop(PyObject *self, PyObject *args)
 	PyErr_SetString(PyExc_RuntimeError, "invalid handling of inet_ntop");
 	return NULL;
 }
-
-#endif /* HAVE_INET_PTON */
 
 /* Python interface to getaddrinfo(host, port). */
 
@@ -3777,12 +3777,10 @@ static PyMethodDef socket_methods[] = {
 	 METH_VARARGS, inet_aton_doc},
 	{"inet_ntoa",		socket_inet_ntoa,
 	 METH_VARARGS, inet_ntoa_doc},
-#ifdef HAVE_INET_PTON
 	{"inet_pton",		socket_inet_pton,
 	 METH_VARARGS, inet_pton_doc},
 	{"inet_ntop",		socket_inet_ntop,
 	 METH_VARARGS, inet_ntop_doc},
-#endif
 	{"getaddrinfo",		socket_getaddrinfo,
 	 METH_VARARGS, getaddrinfo_doc},
 	{"getnameinfo",		socket_getnameinfo,
@@ -4742,7 +4740,7 @@ init_socket(void)
 /* These are not exposed because they do not set errno properly */
 
 int
-inet_pton(int af, const char *src, void *dst)
+py_inet_pton(int af, const char *src, void *dst)
 {
 	if (af == AF_INET) {
 		long packed_addr;
@@ -4757,7 +4755,7 @@ inet_pton(int af, const char *src, void *dst)
 }
 
 const char *
-inet_ntop(int af, const void *src, char *dst, socklen_t size)
+py_inet_ntop(int af, const void *src, char *dst, socklen_t size)
 {
 	if (af == AF_INET) {
 		struct in_addr packed_addr;

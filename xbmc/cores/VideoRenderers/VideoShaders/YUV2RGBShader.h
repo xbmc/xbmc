@@ -22,6 +22,13 @@
  *
  */
 
+#include "TransformMatrix.h"
+
+void CalculateYUVMatrix(TransformMatrix &matrix
+                        , unsigned int  flags
+                        , float         black
+                        , float         contrast);
+
 #if defined(HAS_GL) || HAS_GLES == 2
 
 #ifndef __GNUC__

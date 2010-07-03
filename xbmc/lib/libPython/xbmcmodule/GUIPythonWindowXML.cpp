@@ -50,6 +50,7 @@ CGUIPythonWindowXML::CGUIPythonWindowXML(int id, CStdString strXML, CStdString s
 : CGUIMediaWindow(id, strXML)
 {
   pCallbackWindow = NULL;
+  m_threadState = NULL;
   m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
   m_coordsRes = RES_PAL_4x3;
@@ -61,8 +62,9 @@ CGUIPythonWindowXML::~CGUIPythonWindowXML(void)
   CloseHandle(m_actionEvent);
 }
 
-void CGUIPythonWindowXML::Update()
+bool CGUIPythonWindowXML::Update(const CStdString &strPath)
 {
+  return true;
 }
 
 bool CGUIPythonWindowXML::OnAction(const CAction &action)
@@ -71,12 +73,11 @@ bool CGUIPythonWindowXML::OnAction(const CAction &action)
   bool ret = CGUIWindow::OnAction(action);  // we don't currently want the mediawindow actions here
   if(pCallbackWindow)
   {
-    PyXBMCAction* inf = new PyXBMCAction;
+    PyXBMCAction* inf = new PyXBMCAction(pCallbackWindow);
     inf->pObject = Action_FromAction(action);
-    inf->pCallbackWindow = pCallbackWindow;
 
     // aquire lock?
-    PyXBMC_AddPendingCall(Py_XBMC_Event_OnAction, inf);
+    PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnAction, inf);
     PulseActionEvent();
   }
   return ret;
@@ -114,12 +115,11 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
     case GUI_MSG_WINDOW_INIT:
     {
       CGUIMediaWindow::OnMessage(message);
-      PyXBMCAction* inf = new PyXBMCAction;
-      inf->pObject = NULL;
-      // create a new call and set it in the python queue
-      inf->pCallbackWindow = pCallbackWindow;
-      PyXBMC_AddPendingCall(Py_XBMC_Event_OnInit, inf);
-      PulseActionEvent();
+      if(pCallbackWindow)
+      {
+        PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnInit, new PyXBMCAction(pCallbackWindow));
+        PulseActionEvent();
+      }
       return true;
     }
     break;
@@ -135,13 +135,10 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
         int iControl=message.GetControlId();
         if(pCallbackWindow)
         {
-          PyXBMCAction* inf = new PyXBMCAction;
-          inf->pObject = NULL;
-          // create a new call and set it in the python queue
-          inf->pCallbackWindow = pCallbackWindow;
+          PyXBMCAction* inf = new PyXBMCAction(pCallbackWindow);
           inf->controlId = iControl;
           // aquire lock?
-          PyXBMC_AddPendingCall(Py_XBMC_Event_OnFocus, inf);
+          PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnFocus, inf);
           PulseActionEvent();
         }
     }
@@ -178,23 +175,19 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
         {
           if ((controlClicked->IsContainer() && (message.GetParam1() == ACTION_SELECT_ITEM || message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)) || !controlClicked->IsContainer())
           {
-            PyXBMCAction* inf = new PyXBMCAction;
-            inf->pObject = NULL;
-            // create a new call and set it in the python queue
-            inf->pCallbackWindow = pCallbackWindow;
+            PyXBMCAction* inf = new PyXBMCAction(pCallbackWindow);
             inf->controlId = iControl;
             // aquire lock?
-            PyXBMC_AddPendingCall(Py_XBMC_Event_OnClick, inf);
+            PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnClick, inf);
             PulseActionEvent();
           }
           else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK)
           {
-            PyXBMCAction* inf = new PyXBMCAction;
+            PyXBMCAction* inf = new PyXBMCAction(pCallbackWindow);
             inf->pObject = Action_FromAction(CAction(ACTION_CONTEXT_MENU));
-            inf->pCallbackWindow = pCallbackWindow;
 
             // aquire lock?
-            PyXBMC_AddPendingCall(Py_XBMC_Event_OnAction, inf);
+            PyXBMC_AddPendingCall(m_threadState, Py_XBMC_Event_OnAction, inf);
             PulseActionEvent();
           }
         }
@@ -381,7 +374,6 @@ int Py_XBMC_Event_OnFocus(void* arg)
     {
       Py_DECREF(ret);
     }
-
     delete action;
   }
   return 0;
@@ -402,9 +394,10 @@ int Py_XBMC_Event_OnInit(void* arg)
   return 0;
 }
 
-void CGUIPythonWindowXML::SetCallbackWindow(PyObject *object)
+void CGUIPythonWindowXML::SetCallbackWindow(PyThreadState *state, PyObject *object)
 {
   pCallbackWindow = object;
+  m_threadState   = state;
 }
 
 void CGUIPythonWindowXML::GetContextButtons(int itemNumber, CContextButtons &buttons)

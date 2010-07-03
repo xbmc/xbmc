@@ -909,8 +909,7 @@ fi
 
 # CrystalHD
 if test "x$use_crystalhd" != "xno"; then
-  AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h],AC_DEFINE([HAVE_LIBCRYSTALHD], [1], 
-    [Define to 1 if you have the 'Broadcom Crystal HD' library.]), 
+  AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h], [], 
     [ if test "x$use_crystalhd" = "xyes"; then
         AC_MSG_ERROR($crystalhd_not_found)
       else
@@ -918,6 +917,19 @@ if test "x$use_crystalhd" != "xno"; then
         AC_MSG_RESULT($crystalhd_not_found)
       fi],
     [#define __LINUX_USER__])
+    # check for new crystalhd lib
+    if test "x$use_crystalhd" != "xno"; then
+      SAVE_CFLAGS="$CFLAGS"
+      CFLAGS="-llibcrystalhd"
+      AC_COMPILE_IFELSE(
+        [ #define __LINUX_USER__
+          #include <libcrystalhd/bc_dts_types.h>
+          #include <libcrystalhd/bc_dts_defs.h>
+          PBC_INFO_CRYSTAL bCrystalInfo;],
+        [ AC_DEFINE([HAVE_LIBCRYSTALHD], [2], [Define to 2 if you have the 'New Broadcom Crystal HD' library.]) ], 
+        [ AC_DEFINE([HAVE_LIBCRYSTALHD], [1], [Define to 1 if you have the 'Old Broadcom Crystal HD' library.]) ])
+      CFLAGS="$SAVE_CFLAGS"
+    fi
 else
   AC_MSG_NOTICE($crystalhd_disabled)
 fi
@@ -1521,7 +1533,9 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
       --without-cxx \
       --enable-shared \
       --without-pymalloc \
-      --prefix=`pwd`/../linux/python-lib CFLAGS="$CFLAGS" &&
+      --prefix=`pwd`/../linux/python-lib CFLAGS="$CFLAGS" \
+      CC="$CC" \
+      CXX="$CXX" &&
     sed -i -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h &&
     sed -i -e "s/define _POSIX_C_SOURCE 200112L/undef _POSIX_C_SOURCE/" pyconfig.h &&
     sed -i -e "s/define _XOPEN_SOURCE 600/undef _XOPEN_SOURCE/" pyconfig.h &&
@@ -1548,6 +1562,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
     ./configure \
       --extra-cflags="$CFLAGS -w -D_DARWIN_C_SOURCE -Dattribute_deprecated=" \
+      `if test "$use_vpx" = "yes"; then echo --extra-ldflags="-L/opt/local/lib"; fi` \
       --disable-amd3dnow \
       --disable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \

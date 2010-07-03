@@ -85,6 +85,8 @@ bool CWinSystemWin32GL::InitRenderSystem()
 
   CWIN32Util::CheckGLVersion();
 
+  g_guiSettings.SetBool("videoscreen.fakefullscreen", true);
+
   return true;
 }
 

@@ -51,6 +51,12 @@ int CGUIViewStateWindowVideo::GetPlaylist()
   return PLAYLIST_VIDEO;
 }
 
+VECSOURCES& CGUIViewStateWindowVideo::GetSources()
+{
+  AddAddonsSource("video", g_localizeStrings.Get(1037));
+  return CGUIViewState::GetSources();
+}
+
 CGUIViewStateWindowVideoFiles::CGUIViewStateWindowVideoFiles(const CFileItemList& items) : CGUIViewStateWindowVideo(items)
 {
   if (items.IsVirtualDirectoryRoot())
@@ -87,7 +93,7 @@ void CGUIViewStateWindowVideoFiles::SaveViewState()
 
 VECSOURCES& CGUIViewStateWindowVideoFiles::GetSources()
 {
-  AddOrReplace(g_settings.m_videoSources, CGUIViewState::GetSources());
+  AddOrReplace(g_settings.m_videoSources, CGUIViewStateWindowVideo::GetSources());
   return g_settings.m_videoSources;
 }
 

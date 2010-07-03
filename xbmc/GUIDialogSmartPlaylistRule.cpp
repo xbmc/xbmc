@@ -29,6 +29,7 @@
 #include "FileItem.h"
 #include "GUIEditControl.h"
 #include "LocalizeStrings.h"
+#include "Settings.h"
 
 #define CONTROL_FIELD           15
 #define CONTROL_OPERATOR        16
@@ -185,6 +186,12 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
       path = "special://musicplaylists/";
     XFILE::CDirectory::GetDirectory(path, items, ".xsp",false,false,XFILE::DIR_CACHE_ONCE,true,true);
     iLabel = 559;
+  }
+  else if (m_rule.m_field == CSmartPlaylistRule::FIELD_PATH)
+  {
+    CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_musicSources,g_localizeStrings.Get(657),m_rule.m_parameter,false);
+    UpdateButtons();
+    return;
   }
   else
   { // TODO: Add browseability in here.

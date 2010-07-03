@@ -28,6 +28,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogSelect.h"
+#include "GUIDialogFileBrowser.h"
 #include "GUIEditControl.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
@@ -75,33 +76,10 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_rootDir.AllowNonLocalSources(false);
-      // check for valid quickpath parameter
-      CStdString strDestination = message.GetNumStringParams() ? message.GetStringParam(0) : "";
-      CStdString strReturn = message.GetNumStringParams() > 1 ? message.GetStringParam(1) : "";
-      bool returning = strReturn.CompareNoCase("return") == 0;
 
-      if (!strDestination.IsEmpty())
-      {
-        message.SetStringParam("");
-        CLog::Log(LOGINFO, "Attempting to %s to: %s", returning ? "return" : "quickpath", strDestination.c_str());
-      }
-
-      CStdString destPath;
-      if (!strDestination.IsEmpty())
-      {
-        if (strDestination.Equals("$ROOT") || strDestination.Equals("Root"))
-          destPath = "";
-        else if (strDestination.Left(9).Equals("addons://"))
-          destPath = strDestination;
-        else
-        {
-          CLog::Log(LOGWARNING, "Warning, destination parameter (%s) may not be valid", strDestination.c_str());
-          destPath = strDestination;
-        }
-      }
-      m_vecItems->m_strPath = destPath;
-      SetHistoryForPath(destPath);
-      m_startDirectory = returning ? destPath : "";
+      // is this the first time the window is opened?
+      if (m_vecItems->m_strPath == "?" && message.GetStringParam().IsEmpty())
+        m_vecItems->m_strPath = "";
     }
     break;
   case GUI_MSG_CLICKED:
@@ -133,20 +111,6 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
      break;
   }
   return CGUIMediaWindow::OnMessage(message);
-}
-
-bool CGUIWindowAddonBrowser::OnAction(const CAction& action)
-{
-  if (action.GetID() == ACTION_PARENT_DIR)
-  {
-    if (g_advancedSettings.m_bUseEvilB &&
-        m_vecItems->m_strPath == m_startDirectory)
-    {
-      g_windowManager.PreviousWindow();
-      return true;
-    }
-  }
-  return CGUIMediaWindow::OnAction(action);
 }
 
 void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
@@ -210,6 +174,18 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
 bool CGUIWindowAddonBrowser::OnClick(int iItem)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
+  if (item->m_strPath == "install://")
+  {
+    // pop up filebrowser to grab an installed folder
+    VECSOURCES shares = g_settings.m_fileSources;
+    CStdString path;
+    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "*.zip", g_localizeStrings.Get(24041), path))
+    {
+      // install this addon
+      AddJob(path);
+    }
+    return true;
+  }
   if (!item->m_bIsFolder)
   {
     // cancel a downloading job
@@ -311,14 +287,16 @@ void CGUIWindowAddonBrowser::OnJobComplete(unsigned int jobID,
               g_application.m_guiDialogKaiToast.QueueNotification(
                                                   CGUIDialogKaiToast::Info,
                                                   addon->Name(),
-                                                  g_localizeStrings.Get(24065));
+                                                  g_localizeStrings.Get(24065),
+                                                  TOAST_DISPLAY_TIME,false);
             }
             else
             {
               g_application.m_guiDialogKaiToast.QueueNotification(
                                                   CGUIDialogKaiToast::Info,
                                                   addon->Name(),
-                                                  g_localizeStrings.Get(24064));
+                                                  g_localizeStrings.Get(24064),
+                                                  TOAST_DISPLAY_TIME,false);
             }
           }
         }
@@ -541,4 +519,11 @@ void CGUIWindowAddonBrowser::InstallAddonsFromXBMCRepo(const set<CStdString> &ad
   // now install the addons
   for (set<CStdString>::const_iterator i = addonIDs.begin(); i != addonIDs.end(); ++i)
     InstallAddon(*i);
+}
+
+CStdString CGUIWindowAddonBrowser::GetStartFolder(const CStdString &dir)
+{
+  if (dir.Left(9).Equals("addons://"))
+    return dir;
+  return CGUIMediaWindow::GetStartFolder(dir);
 }

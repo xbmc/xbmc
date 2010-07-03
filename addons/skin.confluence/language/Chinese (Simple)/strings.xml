@@ -67,22 +67,22 @@
   <string id="31113">单个图片</string>
   <string id="31114">多个图片</string>
   <string id="31115">自定义</string>
-  <string id="31116">附加脚本</string>
+  <string id="31116"></string>
   <string id="31117">显示最新加入视频</string>
-  <string id="31118">主页面子菜单</string>
-  <string id="31119">启用自定义脚本按钮</string>
+  <string id="31118">主页面程序子菜单</string>
+  <string id="31119">启用自定义扩展功能按钮</string>
   <string id="31120">按钮标签</string>
-  <string id="31121">脚本目录</string>
+  <string id="31121">扩展功能路径</string>
   <string id="31122">天气页面</string>
   <string id="31123">剧集中以“海报”代替“宽幅图标”</string>
   <string id="31124">在背景显示“正在播放”视频</string>
   <string id="31125">在背景显示“正在播放”可视效果</string>
 
   <string id="31126">在音乐OSD菜单启用歌词按钮</string>
-  <string id="31127">歌词脚本目录</string>
-  <string id="31128">XBMC歌词</string>
+  <string id="31127">歌词扩展功能路径</string>
+  <string id="31128">歌词</string>
   <string id="31129">在视频OSD菜单启用字幕下载</string>
-  <string id="31130">字幕脚本目录</string>
+  <string id="31130">字幕扩展功能路径</string>
 
   <string id="31140">音乐OSD</string>
   <string id="31141">视频OSD</string>
@@ -94,11 +94,6 @@
   <string id="31203">选择歌曲</string>
   <string id="31204">区块链接</string>
   <string id="31205">歌词来源</string>
-
-  <!-- The Weather Channel Script labels -->
-  <string id="31250">雷达 &amp; 天气预报</string>
-  <string id="31251">天气预报</string>
-  <string id="31252">天气频道脚本</string>
 
   <!-- Extra labels -->
   <string id="31300">当前温度</string>

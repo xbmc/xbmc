@@ -50,7 +50,11 @@ public:
   int type; // 0=Action, 1=Control;
 #endif
 
-  PyXBMCAction(): param(0), pCallbackWindow(NULL), pObject(NULL), controlId(0), type(0) { }
+  PyXBMCAction(PyObject* callback)
+    : param(0), pCallbackWindow(callback), pObject(NULL), controlId(0), type(0)
+  {
+    Py_INCREF(callback);
+  }
   virtual ~PyXBMCAction() ;
 };
 
@@ -64,10 +68,11 @@ public:
   virtual ~CGUIPythonWindow(void);
   virtual bool    OnMessage(CGUIMessage& message);
   virtual bool    OnAction(const CAction &action);
-  void             SetCallbackWindow(PyObject *object);
+  void             SetCallbackWindow(PyThreadState *state, PyObject *object);
   void             WaitForActionEvent(unsigned int timeout);
   void             PulseActionEvent();
 protected:
   PyObject*        pCallbackWindow;
+  PyThreadState*   m_threadState;
   HANDLE           m_actionEvent;
 };

@@ -192,6 +192,8 @@
   <string id="239">Clear playlist on finish</string>
   <string id="240">Display Mode</string>
   <string id="241">Full Screen #%d</string>
+  <string id="242">Windowed</string>
+  <string id="243">Refresh Rate</string>
 
   <string id="247">Scripts</string>
   <string id="248">Language</string>
@@ -231,7 +233,7 @@
   <string id="282">Found %i items</string>
   <string id="283">Search results</string>
   <string id="284">No results found</string>
-  <string id="286">Post-processing filter</string>
+  <string id="286"></string>
   <string id="287">Subtitles</string>
   <string id="288">Font</string>
   <string id="289">- Size</string>
@@ -251,11 +253,11 @@
   <string id="304">Language</string>
   <string id="305">Enabled</string>
   <string id="306">Non-interleaved</string>
-  <string id="307">- Automatic post-processing</string>
-  <string id="308">- Vertical deblocking filter</string>
-  <string id="309">- Horizontal deblocking filter</string>
-  <string id="310">- Auto brightness/contrast</string>
-  <string id="311">- Dering</string>
+  <string id="307"></string>
+  <string id="308"></string>
+  <string id="309"></string>
+  <string id="310"></string>
+  <string id="311"></string>
   <string id="312">(0=auto)</string>
   <string id="313">Cleaning database</string>
   <string id="314">Preparing...</string>
@@ -721,13 +723,13 @@
   <string id="1034">Submenu</string>
   <string id="1035">Enable submenu buttons</string>
   <string id="1036">Favourites</string>
-  <string id="1037">Video plugins</string>
-  <string id="1038">Music plugins</string>
-  <string id="1039">Picture plugins</string>
+  <string id="1037">Video Add-ons</string>
+  <string id="1038">Music Add-ons</string>
+  <string id="1039">Picture Add-ons</string>
   <string id="1040">Loading directory</string>
   <string id="1041">Retrieved %i items</string>
   <string id="1042">Retrieved %i of %i items</string>
-  <string id="1043">Program plugins</string>
+  <string id="1043">Program Add-ons</string>
   <string id="1044">Set plugin thumb</string>
   <string id="1045">Plugin settings</string>
   <string id="1046">Access points</string>
@@ -1294,7 +1296,7 @@
   <string id="14038">Network settings changed</string>
   <string id="14039">XBMC requires to restart to change your</string>
   <string id="14040">network setup.  Would you like to restart now?</string>
-  <string id="14041">Post processing</string>
+  <string id="14041"></string>
 
   <string id="14043">- Shutdown while playing</string>
   <string id="14044">%i min</string>
@@ -1524,6 +1526,11 @@
   <string id="16316">Auto</string>
   <string id="16317">Temporal (Half)</string>
   <string id="16318">Temporal/Spatial (Half)</string>
+
+  <string id="16400">Video post-processing</string>
+  <string id="16401">Disabled</string>
+  <string id="16402">Enabled for SD content</string>
+  <string id="16403">Always enabled</string>
 
   <string id="17500">Display sleep timeout</string>
 
@@ -1880,7 +1887,7 @@
   <string id="20446">Locally stored information found.</string>
   <string id="20447">Ignore and refresh from internet?</string>
   <string id="20448">Could not download information</string>
-  <string id="20449">Server is most likely unavailable.</string>
+  <string id="20449">Unable to connect to remote server</string>
   <string id="20450">Would you like to continue scanning?</string>
   <string id="20451">Countries</string>
   <!-- up to 21329 is reserved for the video db !! !-->
@@ -1988,6 +1995,7 @@
   <string id="21450">- Edit</string>
   <string id="21451">Internet connection required.</string>
   <string id="21452">Get More</string>
+  <string id="21453">Root filesystem</string>
 
   <string id="21800">File name</string>
   <string id="21801">File path</string>
@@ -2159,6 +2167,7 @@
   <string id="24038">Install</string>
   <string id="24039">Disabled Add-ons</string>
   <string id="24040">(Clear the current setting)</string>
+  <string id="24041">Install from zip file</string>
 
   <string id="24050">Available Add-ons</string>
   <string id="24051">Version:</string>
@@ -2177,15 +2186,14 @@
   <string id="24068">Update available</string>
   <string id="24069">Update</string>
 
-  <string id="24070">Add-on can not used</string>
-  <string id="24071">An unknown error has occurred</string>
+  <string id="24070">Add-on could not be loaded.</string>
+  <string id="24071">An unknown error has occurred.</string>
   <string id="24072">Settings required</string>
   <string id="24073">Could not connect</string>
   <string id="24074">Needs to restart</string>
   <string id="24075">Disable</string>
   <string id="24080">Try to reconnect?</string>
   <string id="24089">Add-on restarts</string>
-
   <string id="24090">Lock Add-on manager</string>
 
   <string id="24091"></string>
@@ -2193,6 +2201,9 @@
   <string id="24093"></string>
   <string id="24094"></string>
   <string id="24095"></string>
+
+  <string id="24096">Add-on has been marked as broken in repository.</string>
+  <string id="24097">Would you like to disable it on your system?</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>

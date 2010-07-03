@@ -906,7 +906,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
 
         if (item->IsSmartPlayList() || m_vecItems->IsSmartPlayList())
           buttons.Add(CONTEXT_BUTTON_EDIT_SMART_PLAYLIST, 586);
-        else if ((item->IsPlayList() || m_vecItems->IsPlayList()) && !item->IsShoutCast())
+        else if (item->IsPlayList() || m_vecItems->IsPlayList())
           buttons.Add(CONTEXT_BUTTON_EDIT, 586);
       }
     }
@@ -1410,3 +1410,11 @@ void CGUIWindowMusicBase::SetupFanart(CFileItemList& items)
   }
 }
 
+CStdString CGUIWindowMusicBase::GetStartFolder(const CStdString &dir)
+{
+  if (dir.Equals("Plugins") || dir.Equals("Addons"))
+    return "addons://sources/audio/";
+  else if (dir.Equals("$PLAYLISTS") || dir.Equals("Playlists"))
+    return "special://musicplaylists/";
+  return CGUIMediaWindow::GetStartFolder(dir);
+}

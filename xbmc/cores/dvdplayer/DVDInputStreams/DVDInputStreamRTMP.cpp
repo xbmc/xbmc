@@ -22,25 +22,17 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
+#ifdef _WIN32
+#include "system.h" // just for HAS_LIBRTMP
+#endif
 
 #ifdef HAS_LIBRTMP
-#include "FileItem.h"
+#include "AdvancedSettings.h"
 #include "DVDInputStreamRTMP.h"
-#include "VideoInfoTag.h"
 #include "FileSystem/IFile.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 
-#ifdef _LINUX
-  #include <sys/types.h>
-  #include <sys/socket.h>
-  #include <netdb.h>
-  #include <arpa/inet.h>
-  #include <unistd.h>
-  #include <netinet/in.h>
-#endif
-
-#include "AdvancedSettings.h"
 #include <string>
 
 using namespace XFILE;

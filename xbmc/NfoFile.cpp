@@ -193,6 +193,16 @@ bool CNfoFile::DoScrape(ScraperPtr& scraper)
       TiXmlElement* pId = doc.FirstChildElement("id");
       if (pId && pId->FirstChild())
         m_strImDbNr = pId->FirstChild()->Value();
+
+      TiXmlElement* url = doc.FirstChildElement("url");
+      if (url)
+      {
+        stringstream str;
+        str << *url;
+        m_strImDbUrl = str.str();
+      }
+      else if (strcmp(doc.RootElement()->Value(),"url")==0)
+        m_strImDbUrl = *it;
     }
   }
   return true;
@@ -234,10 +244,9 @@ int CNfoFile::Scrape(ScraperPtr& scraper, const CStdString& strURL /* = "" */)
           return 0;
         }
       }
-
-      if (!DoScrape(scraper))
-        return 2;
     }
+    if (!DoScrape(scraper))
+      return 2;
     if (m_strImDbUrl.size() > 0)
       return 0;
     else
@@ -291,5 +300,7 @@ void CNfoFile::Close()
     m_doc = 0;
   }
 
+  m_strImDbUrl = "";
+  m_strImDbNr = "";
   m_size = 0;
 }

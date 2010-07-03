@@ -349,8 +349,7 @@ void XBPython::Initialize()
 
       // first we check if all necessary files are installed
 #ifndef _LINUX
-      if (!FileExist("special://xbmc/system/python/python24.zlib") ||
-        !FileExist("special://xbmc/system/python/DLLs/_socket.pyd") ||
+      if(!FileExist("special://xbmc/system/python/DLLs/_socket.pyd") ||
         !FileExist("special://xbmc/system/python/DLLs/_ssl.pyd") ||
         !FileExist("special://xbmc/system/python/DLLs/bz2.pyd") ||
         !FileExist("special://xbmc/system/python/DLLs/pyexpat.pyd") ||

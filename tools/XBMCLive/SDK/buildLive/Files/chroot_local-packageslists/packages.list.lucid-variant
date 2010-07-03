@@ -1,7 +1,7 @@
 mkpasswd whois klibc-utils
 openssh-server
 less nano language-pack-en unrar hfsprogs
-bzip2 locales ntfs-3g  dosfstools unzip curl
+bzip2 locales ntfs-3g  dosfstools unzip curl wget
 acpi acpi-support
 alsa-utils hal lirc pm-utils psmisc 
 fakeroot
@@ -26,3 +26,4 @@ xbmc
 g++ autoconf
 fglrx fglrx-amdcccle xorg-driver-fglrx
 nvidia-current libvdpau1
+wpasupplicant wireless-tools

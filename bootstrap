@@ -13,5 +13,8 @@ autoreconf -vif xbmc/cores/dvdplayer/Codecs/libbdnav
 autoreconf -vif xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread
 autoreconf -vif xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav
 
+# Clean the generated files
+find . -depth -type d -name "autom4te.cache" -exec rm -rf {} \;
+
 echo "Please (re)run configure..."
 

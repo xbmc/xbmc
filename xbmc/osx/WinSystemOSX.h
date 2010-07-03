@@ -48,6 +48,9 @@ public:
 
   virtual void EnableSystemScreenSaver(bool bEnable);
   virtual bool IsSystemScreenSaverEnabled();
+  
+  virtual int GetNumScreens();
+
 
 protected:
   void* CreateWindowedContext(void* shareCtx);

@@ -270,8 +270,8 @@ void CGUISettings::Initialize()
   AddBool(ml, "musiclibrary.showcompilationartists", 13414, true);
   AddSeparator(ml,"musiclibrary.sep1");
   AddBool(ml,"musiclibrary.downloadinfo", 20192, false);
-  AddDefaultAddon(ml, "musiclibrary.albumsscraper", 20193, "metadata.allmusic.com", ADDON_SCRAPER_ALBUMS);
-  AddDefaultAddon(ml, "musiclibrary.artistsscraper", 20194, "metadata.allmusic.com", ADDON_SCRAPER_ARTISTS);
+  AddDefaultAddon(ml, "musiclibrary.albumsscraper", 20193, "metadata.albums.allmusic.com", ADDON_SCRAPER_ALBUMS);
+  AddDefaultAddon(ml, "musiclibrary.artistsscraper", 20194, "metadata.artists.allmusic.com", ADDON_SCRAPER_ARTISTS);
   AddBool(ml, "musiclibrary.updateonstartup", 22000, false);
   AddBool(NULL, "musiclibrary.backgroundupdate", 22001, false);
   AddSeparator(ml,"musiclibrary.sep2");
@@ -362,12 +362,17 @@ void CGUISettings::Initialize()
   AddGroup(4, 13000);
   CSettingsCategory* vs = AddCategory(4, "videoscreen", 21373);
   // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
+  // contains a DISPLAYMODE
   AddInt(vs, "videoscreen.screen", 240, 0, -1, 1, g_Windowing.GetNumScreens(), SPIN_CONTROL_TEXT);
+  // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
+  // contains an index to the g_settings.m_ResInfo array. the only meaningful fields are iScreen, iWidth, iHeight.
 #if defined (__APPLE__)
-  AddString(vs, "videoscreen.screenmode", 131, "DESKTOP", SPIN_CONTROL_TEXT);
+  AddInt(vs, "videoscreen.resolution", 131, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
 #else
-  AddString(vs, "videoscreen.screenmode", 169, "DESKTOP", SPIN_CONTROL_TEXT);
+  AddInt(vs, "videoscreen.resolution", 169, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
 #endif
+  AddString(g_application.IsStandAlone() ? vs : NULL, "videoscreen.screenmode", 243, "DESKTOP", SPIN_CONTROL_TEXT);
+
 #if defined(_WIN32) || defined (__APPLE__)
   // We prefer a fake fullscreen mode (window covering the screen rather than dedicated fullscreen)
   // as it works nicer with switching to other applications. However on some systems vsync is broken
@@ -377,6 +382,12 @@ void CGUISettings::Initialize()
   bool showSetting = true;
   if (g_sysinfo.IsAeroDisabled())
     fakeFullScreen = false;
+
+#if defined(_WIN32) && defined(HAS_GL)
+  fakeFullScreen = true;
+  showSetting = false;
+#endif
+
 #if defined (__APPLE__)
   if (g_sysinfo.IsAppleTV())
   {
@@ -416,14 +427,11 @@ void CGUISettings::Initialize()
   audiomode.insert(make_pair(420,AUDIO_HDMI  ));
   AddInt(ao, "audiooutput.mode", 337, AUDIO_ANALOG, audiomode, SPIN_CONTROL_TEXT);
 
-/* hide this from apple users until CoreAudio has been updated to support this */
-#ifndef __APPLE__
   map<int,int> channelLayout;
   for(int layout = 0; layout < PCM_MAX_LAYOUT; ++layout)
     channelLayout.insert(make_pair(34101+layout, layout));
   AddInt(ao, "audiooutput.channellayout", 34100, PCM_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
   AddBool(ao, "audiooutput.dontnormalizelevels", 346, true);
-#endif
 
   AddBool(ao, "audiooutput.ac3passthrough", 364, true);
   AddBool(ao, "audiooutput.dtspassthrough", 254, true);
@@ -434,8 +442,6 @@ void CGUISettings::Initialize()
 
 #ifdef __APPLE__
   AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
-  //AddString(ao, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
-  AddBool(ao, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_LINUX)
   AddSeparator(ao, "audiooutput.sep1");
   AddString(ao, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
@@ -444,10 +450,8 @@ void CGUISettings::Initialize()
   AddString(ao, "audiooutput.passthroughdevice", 546, "iec958", SPIN_CONTROL_TEXT);
   AddString(ao, "audiooutput.custompassthrough", 1301, "", EDIT_CONTROL_INPUT);
   AddSeparator(ao, "audiooutput.sep3");
-  //AddBool(ao, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_WIN32)
   AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
-  //AddBool(ao, "audiooutput.downmixmultichannel", 548, true);
 #endif
 
   CSettingsCategory* in = AddCategory(4, "input", 14094);
@@ -613,6 +617,7 @@ void CGUISettings::Initialize()
   AddBool(vp, "videoplayer.vdpaustudiolevel", 13122, false);
 #endif
 #endif
+  AddInt(vp, "videoplayer.postprocess", 16400, VIDEO_POSTPROCESS_DISABLED, VIDEO_POSTPROCESS_DISABLED, 1, VIDEO_POSTPROCESS_ALWAYS, SPIN_CONTROL_TEXT);
   AddSeparator(vp, "videoplayer.sep5");
   AddBool(vp, "videoplayer.teletextenabled", 23050, true);
 
@@ -635,16 +640,6 @@ void CGUISettings::Initialize()
   AddBool(dvd, "dvds.autorun", 14088, false);
   AddInt(dvd, "dvds.playerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(dvd, "dvds.automenu", 21882, false);
-
-  AddCategory(5, "postprocessing", 14041);
-  AddBool(NULL, "postprocessing.enable", 286, false);
-  AddBool(NULL, "postprocessing.auto", 307, true); // only has effect if PostProcessing.Enable is on.
-  AddBool(NULL, "postprocessing.verticaldeblocking", 308, false);
-  AddInt(NULL, "postprocessing.verticaldeblocklevel", 308, 0, 0, 1, 100, SPIN_CONTROL_INT);
-  AddBool(NULL, "postprocessing.horizontaldeblocking", 309, false);
-  AddInt(NULL, "postprocessing.horizontaldeblocklevel", 309, 0, 0, 1, 100, SPIN_CONTROL_INT);
-  AddBool(NULL, "postprocessing.autobrightnesscontrastlevels", 310, false);
-  AddBool(NULL, "postprocessing.dering", 311, false);
 
   CSettingsCategory* scp = AddCategory(5, "scrapers", 21412);
   AddDefaultAddon(scp, "scrapers.moviesdefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER_MOVIES);
@@ -1251,10 +1246,7 @@ RESOLUTION CGUISettings::GetResFromString(const CStdString &res)
     // find the closest match to these in our res vector.  If we have the screen, we score the res
     RESOLUTION bestRes = RES_DESKTOP;
     float bestScore = FLT_MAX;
-    size_t maxRes = g_settings.m_ResInfo.size();
-    if (g_Windowing.GetNumScreens())
-      maxRes = std::min(maxRes, (size_t)RES_DESKTOP + g_Windowing.GetNumScreens());
-    for (unsigned int i = RES_DESKTOP; i < maxRes; ++i)
+    for (unsigned int i = RES_DESKTOP; i < g_settings.m_ResInfo.size(); ++i)
     {
       const RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
       if (info.iScreen != screen)

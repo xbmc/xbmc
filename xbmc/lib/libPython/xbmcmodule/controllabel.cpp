@@ -38,6 +38,7 @@
 #include "../XBPythonDll.h"
 #include "GUILabelControl.h"
 #include "GUIFontManager.h"
+#include "GUIWindowManager.h"
 #include "control.h"
 #include "pyutil.h"
 
@@ -166,10 +167,7 @@ namespace PYXBMC
     ControlLabel *pControl = (ControlLabel*)self;
     CGUIMessage msg(GUI_MSG_LABEL_SET, pControl->iParentId, pControl->iControlId);
     msg.SetLabel(self->strText);
-
-    PyXBMCGUILock();
-    if (pControl->pGUIControl) pControl->pGUIControl->OnMessage(msg);
-    PyXBMCGUIUnlock();
+    g_windowManager.SendThreadMessage(msg, pControl->iParentId);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -185,12 +183,7 @@ namespace PYXBMC
   PyObject* ControlLabel_GetLabel(ControlLabel *self, PyObject *args)
   {
     if (!self->pGUIControl) return NULL;
-
-    PyXBMCGUILock();
-    const char *cLabel = self->strText.c_str();
-    PyXBMCGUIUnlock();
-
-    return Py_BuildValue((char*)"s", cLabel);
+    return Py_BuildValue((char*)"s", self->strText.c_str());
   }
 
   PyMethodDef ControlLabel_methods[] = {

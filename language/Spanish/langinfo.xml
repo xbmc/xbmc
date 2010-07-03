@@ -18,7 +18,7 @@
   	  	<time symbolAM="" symbolPM="">H:mm:ss</time>
   	  	<tempunit>C</tempunit>
   	  	<speedunit>kmh</speedunit>
-		<timezone>CET</timezone>
+		<timezone>CEST</timezone>
 	</region>
 	<region name="Canarias">
   	  	<dateshort>D/M/YYYY</dateshort>

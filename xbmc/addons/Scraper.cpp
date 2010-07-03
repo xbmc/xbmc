@@ -218,9 +218,13 @@ vector<CStdString> CScraper::Run(const CStdString& function,
   CStdString strXML = InternalRun(function,scrURL,http,extras);
   if (strXML.IsEmpty())
   {
-    CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
+    if (function != "NfoScrape")
+      CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
     return result;
   }
+
+  CLog::Log(LOGDEBUG,"scraper: %s returned %s",function.c_str(),strXML.c_str());
+
   if (!XMLUtils::HasUTF8Declaration(strXML))
     g_charsetConverter.unknownToUTF8(strXML);
 
@@ -273,7 +277,7 @@ CStdString CScraper::InternalRun(const CStdString& function,
   for (i=0;i<scrURL.m_url.size();++i)
   {
     CStdString strCurrHTML;
-    if (!CScraperUrl::Get(scrURL.m_url[i],m_parser.m_param[i],http,LibPath()) || m_parser.m_param[i].size() == 0)
+    if (!CScraperUrl::Get(scrURL.m_url[i],m_parser.m_param[i],http,ID()) || m_parser.m_param[i].size() == 0)
       return "";
   }
   if (extras)
@@ -282,10 +286,7 @@ CStdString CScraper::InternalRun(const CStdString& function,
       m_parser.m_param[j+i] = (*extras)[j];
   }
 
-  CStdString strXML = m_parser.Parse(function,this);
-  CLog::Log(LOGDEBUG,"scraper: %s returned %s",function.c_str(),strXML.c_str());
-
-  return strXML;
+  return m_parser.Parse(function,this);
 }
 
 bool CScraper::Load()

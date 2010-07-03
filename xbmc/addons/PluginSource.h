@@ -37,9 +37,9 @@ public:
   bool Provides(const Content& content) {
     return content == UNKNOWN ? false : m_providedContent.count(content) > 0; }
 
+  static Content Translate(const CStdString &content);
 private:
   std::set<Content> m_providedContent;
-  static Content Translate(const CStdString &content);
 };
 
 } /*namespace ADDON*/

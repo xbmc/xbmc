@@ -96,6 +96,11 @@ protected:
 protected:
   bool WaitForNetwork() const;
 
+  /*! \brief Translate the folder to start in from the given quick path
+   \param dir the folder the user wants
+   \return the resulting path */
+  virtual CStdString GetStartFolder(const CStdString &url);
+
   XFILE::CVirtualDirectory m_rootDir;
   CGUIViewControl m_viewControl;
 
@@ -108,4 +113,5 @@ protected:
   // save control state on window exit
   int m_iLastControl;
   int m_iSelectedItem;
+  CStdString m_startDirectory;
 };

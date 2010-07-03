@@ -485,6 +485,10 @@ void CDVDPlayerAudio::OnStartup()
   m_decode.Release();
 
   g_dvdPerformanceCounter.EnableAudioDecodePerformance(ThreadHandle());
+
+#ifdef _WIN32
+  CoInitializeEx(NULL, COINIT_MULTITHREADED);
+#endif
 }
 
 void CDVDPlayerAudio::Process()
@@ -760,6 +764,10 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
 void CDVDPlayerAudio::OnExit()
 {
   g_dvdPerformanceCounter.DisableAudioDecodePerformance();
+
+#ifdef _WIN32
+  CoUninitialize();
+#endif
 
   CLog::Log(LOGNOTICE, "thread end: CDVDPlayerAudio::OnExit()");
 }

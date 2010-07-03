@@ -426,7 +426,7 @@ void CGUIBaseContainer::OnJumpLetter(char letter)
   for (unsigned int i = (offset + 1) % m_items.size(); i != offset; i = (i+1) % m_items.size())
   {
     CGUIListItemPtr item = m_items[i];
-    if (0 == strnicmp(item->GetLabel().c_str(), m_match.c_str(), m_match.size()))
+    if (0 == strnicmp(SSortFileItem::RemoveArticles(item->GetLabel()).c_str(), m_match.c_str(), m_match.size()))
     {
       SelectItem(i);
       return;
@@ -603,13 +603,15 @@ bool CGUIBaseContainer::OnClick(int actionID)
       {
         CFileItemPtr item = boost::static_pointer_cast<CFileItem>(m_items[selected]);
         // multiple action strings are concat'd together, separated with " , "
+        int controlID = GetID(); // save as these could go away as we send messages
+        int parentID = GetParentID();
         vector<CStdString> actions;
         StringUtils::SplitString(item->m_strPath, " , ", actions);
         for (unsigned int i = 0; i < actions.size(); i++)
         {
           CStdString action = actions[i];
           action.Replace(",,", ",");
-          CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
+          CGUIMessage message(GUI_MSG_EXECUTE, controlID, parentID);
           message.SetStringParam(action);
           g_windowManager.SendMessage(message);
         }

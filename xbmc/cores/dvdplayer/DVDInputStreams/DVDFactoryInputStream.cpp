@@ -89,13 +89,6 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
     return new CDVDInputStreamMMS();
 #endif
 
-  //else if (item.IsShoutCast())
-  //  /* this should be replaced with standard file as soon as ffmpeg can handle raw aac */
-  //  /* currently ffmpeg isn't able to detect that */
-  //  return (new CDVDInputStreamHttp());
-  //else if (item.IsInternetStream() )
-  //  return (new CDVDInputStreamHttp());
-
   // our file interface handles all these types of streams
   return (new CDVDInputStreamFile());
 }

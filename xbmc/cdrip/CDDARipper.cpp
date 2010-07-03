@@ -326,9 +326,7 @@ bool CCDDARipper::RipCD()
       return false;
 
     tick = CTimeUtils::GetTimeMS() - tick;
-    CStdString strTmp;
-    StringUtils::SecondsToTimeString(tick / 1000, strTmp);
-    CLog::Log(LOGINFO, "Ripping Track %d took %s", i, strTmp.c_str());
+    CLog::Log(LOGINFO, "Ripping Track %d took %s", i, StringUtils::SecondsToTimeString(tick / 1000).c_str());
   }
 
   CLog::Log(LOGINFO, "Ripped CD succesfull");

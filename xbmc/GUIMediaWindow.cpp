@@ -152,7 +152,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_PARENT_DIR)
   {
-    if (m_vecItems->IsVirtualDirectoryRoot() && g_advancedSettings.m_bUseEvilB)
+    if ((m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->m_strPath == m_startDirectory) && g_advancedSettings.m_bUseEvilB)
       g_windowManager.PreviousWindow();
     else
       GoParentFolder();
@@ -358,6 +358,8 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           if (message.GetParam2()) // param2 is used for resetting the history
             SetHistoryForPath(m_vecItems->m_strPath);
         }
+        // clear any cached listing
+        m_vecItems->RemoveDiscCache(GetID());
         Update(m_vecItems->m_strPath);
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_ITEM && message.GetItem())
@@ -449,7 +451,34 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
         m_guiState->SetNextSortOrder();
       UpdateFileList();
       return true;
-  }
+    }
+    break;
+  case GUI_MSG_WINDOW_INIT:
+    {
+      if (m_vecItems->m_strPath == "?")
+        m_vecItems->m_strPath.Empty();
+      CStdString dir = message.GetStringParam(0);
+      const CStdString &ret = message.GetStringParam(1);
+      bool returning = ret.CompareNoCase("return") == 0;
+      if (!dir.IsEmpty())
+      {
+        m_history.ClearPathHistory();
+        // ensure our directory is valid
+        dir = GetStartFolder(dir);
+        if (!returning || m_vecItems->m_strPath.Left(dir.GetLength()) != dir)
+        { // we're not returning to the same path, so set our directory to the requested path
+          m_vecItems->m_strPath = dir;
+        }
+        // check for network up
+        if (CUtil::IsRemote(m_vecItems->m_strPath) && !WaitForNetwork())
+          m_vecItems->m_strPath.Empty();
+        SetHistoryForPath(m_vecItems->m_strPath);
+      }
+      if (message.GetParam1() != WINDOW_INVALID)
+      { // first time to this window - make sure we set the root path
+        m_startDirectory = returning ? dir : "";
+      }
+    }
     break;
   }
 
@@ -810,23 +839,23 @@ bool CGUIMediaWindow::OnClick(int iItem)
     delete pFileDirectory;
   }
 
+  CURL url(pItem->m_strPath);
+  if (url.GetProtocol() == "script")
+  {
+    // execute the script
+    AddonPtr addon;
+    if (CAddonMgr::Get().GetAddon(url.GetHostName(), addon))
+    {
+#ifdef HAS_PYTHON
+      if (!g_pythonParser.StopScript(addon->LibPath()))
+        g_pythonParser.evalFile(addon->LibPath());
+#endif
+      return true;
+    }
+  }
+
   if (pItem->m_bIsFolder)
   {
-    CURL url(pItem->m_strPath);
-    if (url.GetProtocol() == "script")
-    {
-      // execute the script
-      AddonPtr addon;
-      if (CAddonMgr::Get().GetAddon(url.GetHostName(), addon))
-      {
-#ifdef HAS_PYTHON
-        if (!g_pythonParser.StopScript(addon->LibPath()))
-          g_pythonParser.evalFile(addon->LibPath());
-#endif
-        return true;
-      }
-    }
-
     if ( pItem->m_bIsShareOrDrive )
     {
       const CStdString& strLockType=m_guiState->GetLockType();
@@ -1237,7 +1266,10 @@ void CGUIMediaWindow::OnRenameItem(int iItem)
 
 void CGUIMediaWindow::OnInitWindow()
 {
+  // initial fetch is done unthreaded to ensure the items are setup prior to skin animations kicking off
+  m_rootDir.SetAllowThreads(false);
   Update(m_vecItems->m_strPath);
+  m_rootDir.SetAllowThreads(true);
 
   if (m_iSelectedItem > -1)
     m_viewControl.SetSelectedItem(m_iSelectedItem);
@@ -1485,4 +1517,11 @@ void CGUIMediaWindow::GetFilteredItems(const CStdString &filter, CFileItemList &
     if (pos != CStdString::npos)
       items.Add(item);
   }
+}
+
+CStdString CGUIMediaWindow::GetStartFolder(const CStdString &dir)
+{
+  if (dir.Equals("$ROOT") || dir.Equals("Root"))
+    return "";
+  return dir;
 }

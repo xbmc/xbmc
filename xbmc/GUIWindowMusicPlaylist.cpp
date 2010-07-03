@@ -467,11 +467,7 @@ void CGUIWindowMusicPlayList::OnItemLoaded(CFileItem* pItem)
     {
       int nDuration = pItem->GetMusicInfoTag()->GetDuration();
       if (nDuration > 0)
-      {
-        CStdString str;
-        StringUtils::SecondsToTimeString(nDuration, str);
-        pItem->SetLabel2(str);
-      }
+        pItem->SetLabel2(StringUtils::SecondsToTimeString(nDuration));
     }
     else if (pItem->GetLabel() == "") // pls labels come in preformatted
     {
@@ -530,7 +526,7 @@ void CGUIWindowMusicPlayList::GetContextButtons(int itemNumber, CContextButtons 
     }
     else
     { // aren't in a move
-      if (!item->IsLastFM() && !item->IsShoutCast())
+      if (!item->IsLastFM())
         buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658); // Song Info
       if (CFavourites::IsFavourite(item.get(), GetID()))
         buttons.Add(CONTEXT_BUTTON_ADD_FAVOURITE, 14077);     // Remove Favourite

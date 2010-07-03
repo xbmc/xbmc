@@ -333,6 +333,9 @@ bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon)
   case ADDON_VIZ:
     setting = g_guiSettings.GetString("musicplayer.visualisation");
     break;
+  case ADDON_SCREENSAVER:
+    setting = g_guiSettings.GetString("screensaver.mode");
+    break;
   case ADDON_SCRAPER_ALBUMS:
     setting = g_guiSettings.GetString("musiclibrary.albumsscraper");
     break;
@@ -352,6 +355,38 @@ bool CAddonMgr::GetDefault(const TYPE &type, AddonPtr &addon)
     return false;
   }
   return GetAddon(setting, addon, type);
+}
+
+bool CAddonMgr::SetDefault(const TYPE &type, const CStdString &addonID)
+{
+  switch (type)
+  {
+  case ADDON_VIZ:
+    g_guiSettings.SetString("musicplayer.visualisation",addonID);
+    break;
+  case ADDON_SCREENSAVER:
+    g_guiSettings.SetString("screensaver.mode",addonID);
+    break;
+  case ADDON_SCRAPER_ALBUMS:
+    g_guiSettings.SetString("musiclibrary.albumsscraper",addonID);
+    break;
+  case ADDON_SCRAPER_ARTISTS:
+    g_guiSettings.SetString("musiclibrary.artistsscraper",addonID);
+    break;
+  case ADDON_SCRAPER_MOVIES:
+    g_guiSettings.SetString("scrapers.moviesdefault",addonID);
+    break;
+  case ADDON_SCRAPER_MUSICVIDEOS:
+    g_guiSettings.SetString("scrapers.musicvideosdefault",addonID);
+    break;
+  case ADDON_SCRAPER_TVSHOWS:
+    g_guiSettings.SetString("scrapers.tvshowsdefault",addonID);
+    break;
+  default:
+    return false;
+  }
+
+  return true;
 }
 
 CStdString CAddonMgr::GetString(const CStdString &id, const int number)
@@ -445,20 +480,13 @@ void CAddonMgr::UpdateRepos()
   for (unsigned int i=0;i<addons.size();++i)
   {
     RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addons[i]);
-    if (repo->LastUpdate()+CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
+    CDateTime lastUpdate = m_database.GetRepoTimestamp(repo->ID());
+    if (lastUpdate + CDateTimeSpan(0,6,0,0) < CDateTime::GetCurrentDateTime())
     {
       CLog::Log(LOGDEBUG,"Checking repository %s for updates",repo->Name().c_str());
-      CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo),this);
+      CJobManager::GetInstance().AddJob(new CRepositoryUpdateJob(repo), NULL);
     }
   }
-}
-
-void CAddonMgr::OnJobComplete(unsigned int jobID, bool success, CJob* job)
-{
-  if (!success)
-    return;
-
-  ((CRepositoryUpdateJob*)job)->m_repo->SetUpdated(CDateTime::GetCurrentDateTime());
 }
 
 /*

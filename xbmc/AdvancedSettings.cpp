@@ -79,7 +79,8 @@ void CAdvancedSettings::Initialize()
   m_videoPercentSeekForwardBig = 10;
   m_videoPercentSeekBackwardBig = -10;
   m_videoBlackBarColour = 0;
-  m_videoPPFFmpegType = "linblenddeint";
+  m_videoPPFFmpegDeint = "linblenddeint";
+  m_videoPPFFmpegPostProc = "ha:128:7,va,dr";
   m_videoDefaultPlayer = "dvdplayer";
   m_videoDefaultDVDPlayer = "dvdplayer";
   m_videoIgnoreAtStart = 15;
@@ -137,8 +138,8 @@ void CAdvancedSettings::Initialize()
   m_videoCleanStringRegExps.push_back("(\\[.*\\])");
 
   m_moviesExcludeFromScanRegExps.push_back("-trailer");
-  m_moviesExcludeFromScanRegExps.push_back("[-._ \\/]sample[-._ ]");
-  m_tvshowExcludeFromScanRegExps.push_back("[-._ \\/]sample[-._ ]");
+  m_moviesExcludeFromScanRegExps.push_back("[-._ \\/]sample[-._ \\/]");
+  m_tvshowExcludeFromScanRegExps.push_back("[-._ \\/]sample[-._ \\/]");
 
   m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
   m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
@@ -180,7 +181,7 @@ void CAdvancedSettings::Initialize()
 
   m_bFTPThumbs = false;
 
-  m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
+  m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg|thumb.jpg|Thumb.jpg|thumb.JPG|Thumb.JPG";
   m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
   m_fanartImages = "fanart.jpg|fanart.png";
 
@@ -206,6 +207,7 @@ void CAdvancedSettings::Initialize()
 
   m_bUseEvilB = true;
 
+  m_iTuxBoxStreamtsPort = 31339;
   m_bTuxBoxAudioChannelSelection = false;
   m_bTuxBoxSubMenuSelection = false;
   m_bTuxBoxPictureIcon= true;
@@ -214,6 +216,8 @@ void CAdvancedSettings::Initialize()
   m_iTuxBoxDefaultSubMenu = 4;
   m_iTuxBoxDefaultRootMenu = 0; //default TV Mode
   m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
+  m_bTuxBoxZapstream = true;
+  m_iTuxBoxZapstreamPort = 31344;
 
   m_iMythMovieLength = 0; // 0 == Off
 
@@ -403,7 +407,8 @@ bool CAdvancedSettings::Load()
       GetCustomRegexps(pVideoExcludes, m_videoCleanStringRegExps);
 
     XMLUtils::GetString(pElement,"cleandatetime", m_videoCleanDateTimeRegExp);
-    XMLUtils::GetString(pElement,"postprocessing",m_videoPPFFmpegType);
+    XMLUtils::GetString(pElement,"ppffmpegdeinterlacing",m_videoPPFFmpegDeint);
+    XMLUtils::GetString(pElement,"ppffmpegpostprocessing",m_videoPPFFmpegPostProc);
     XMLUtils::GetInt(pElement,"highqualityscaling",m_videoHighQualityScaling);
     XMLUtils::GetInt(pElement,"highqualityscalingmethod",m_videoHighQualityScalingMethod);
     XMLUtils::GetBoolean(pElement,"vdpauscaling",m_videoVDPAUScaling);
@@ -540,6 +545,7 @@ bool CAdvancedSettings::Load()
   pElement = pRootElement->FirstChildElement("tuxbox");
   if (pElement)
   {
+    XMLUtils::GetInt(pElement, "streamtsport", m_iTuxBoxStreamtsPort, 0, 65535);
     XMLUtils::GetBoolean(pElement, "audiochannelselection", m_bTuxBoxAudioChannelSelection);
     XMLUtils::GetBoolean(pElement, "submenuselection", m_bTuxBoxSubMenuSelection);
     XMLUtils::GetBoolean(pElement, "pictureicon", m_bTuxBoxPictureIcon);
@@ -548,6 +554,8 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetInt(pElement, "defaultsubmenu", m_iTuxBoxDefaultSubMenu, 1, 4);
     XMLUtils::GetInt(pElement, "defaultrootmenu", m_iTuxBoxDefaultRootMenu, 0, 4);
     XMLUtils::GetInt(pElement, "zapwaittime", m_iTuxBoxZapWaitTime, 0, 120);
+    XMLUtils::GetBoolean(pElement, "zapstream", m_bTuxBoxZapstream);
+    XMLUtils::GetInt(pElement, "zapstreamport", m_iTuxBoxZapstreamPort, 0, 65535);
   }
 
   // Myth TV

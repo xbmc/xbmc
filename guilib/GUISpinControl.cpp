@@ -43,7 +43,6 @@ CGUISpinControl::CGUISpinControl(int parentID, int controlID, float posX, float 
   m_fEnd = 1.0f;
   m_fInterval = 0.1f;
   m_iValue = 0;
-  m_label.GetLabelInfo().align |= XBFONT_CENTER_Y;
   m_fValue = 0.0;
   m_iType = iType;
   m_iSelect = SPIN_BUTTON_DOWN;

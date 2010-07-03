@@ -124,7 +124,7 @@ private:
   class CCacheJob : public CJob
   {
   public:
-    CCacheJob(const CStdString &url);
+    CCacheJob(const CStdString &url, const CStdString &oldHash);
 
     virtual const char* GetType() const { return "cacheimage"; };
     virtual bool operator==(const CJob *job) const;
@@ -133,13 +133,15 @@ private:
     /*! \brief Cache an image either full size or thumb sized
      \param url URL of image to cache
      \param original URL of cached version
+     \param oldHash hash of any previously cached version - if the hashes match, we don't cache the image
      \return hash of the image that we cached, empty on failure
      */
-    static CStdString CacheImage(const CStdString &url, const CStdString &original);
+    static CStdString CacheImage(const CStdString &url, const CStdString &original, const CStdString &oldHash = "");
 
     CStdString m_url;
     CStdString m_original;
     CStdString m_hash;
+    CStdString m_oldHash;
   };
 
   // private construction, and no assignements; use the provided singleton methods

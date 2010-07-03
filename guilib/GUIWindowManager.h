@@ -135,6 +135,7 @@ private:
   WindowMap m_mapWindows;
   std::vector <CGUIWindow*> m_vecCustomWindows;
   std::vector <CGUIWindow*> m_activeDialogs;
+  std::vector <CGUIWindow*> m_deleteWindows;
   typedef std::vector<CGUIWindow*>::iterator iDialog;
   typedef std::vector<CGUIWindow*>::const_iterator ciDialog;
   typedef std::vector<CGUIWindow*>::reverse_iterator rDialog;
@@ -150,6 +151,7 @@ private:
   bool m_bShowOverlay;
 
   std::vector<CRect> m_DirtyRegion;
+  int  m_iNested;
 };
 
 /*!
