@@ -110,13 +110,13 @@ typedef uint32_t CRYSTALHD_CODEC_TYPE;
 #define CRYSTALHD_FIELD_ODD         0x02
 
 typedef struct AVCC_PLAY_PARAMS {
-	uint8_t   *sps_pps_buf;
-	uint32_t  pps_size;
-	bool      inside_buffer;
-	uint32_t  consumed_offset;
-	uint32_t  strtcode_offset;
-	uint32_t  nal_sz;
-	uint8_t   nal_size_bytes;
+  uint8_t   *sps_pps_buf;
+  uint32_t  pps_size;
+  bool      inside_buffer;
+  uint32_t  consumed_offset;
+  uint32_t  strtcode_offset;
+  uint32_t  nal_sz;
+  uint8_t   nal_size_bytes;
 } AVCC_PLAY_PARAMS;
 
 class DllLibCrystalHD;

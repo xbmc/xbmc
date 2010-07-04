@@ -1586,7 +1586,7 @@ bool CCrystalHD::extract_sps_pps_from_avcc(int extradata_size, void *extradata)
   for (unsigned int i = 0; i < num_sps; i++)
   {
     if (data_size < 2)
-			return false;
+      return false;
 
     nal_size = (data[0] << 8) | data[1];
     data += 2;
@@ -1610,7 +1610,7 @@ bool CCrystalHD::extract_sps_pps_from_avcc(int extradata_size, void *extradata)
   }
 
   if (data_size < 1)
-		return false;
+    return false;
 
   num_pps = data[0];
   data += 1;
@@ -1619,14 +1619,14 @@ bool CCrystalHD::extract_sps_pps_from_avcc(int extradata_size, void *extradata)
   for (unsigned int i = 0; i < num_pps; i++)
   {
     if (data_size < 2)
-			return false;
+      return false;
 
     nal_size = (data[0] << 8) | data[1];
     data += 2;
     data_size -= 2;
 
     if (data_size < nal_size)
-			return false;
+      return false;
 
     m_avcc_params.sps_pps_buf[m_avcc_params.pps_size+0] = 0;
     m_avcc_params.sps_pps_buf[m_avcc_params.pps_size+1] = 0;
@@ -1635,7 +1635,7 @@ bool CCrystalHD::extract_sps_pps_from_avcc(int extradata_size, void *extradata)
 
     m_avcc_params.pps_size += 4;
 
-		memcpy(m_avcc_params.sps_pps_buf + m_avcc_params.pps_size, data, nal_size);
+    memcpy(m_avcc_params.sps_pps_buf + m_avcc_params.pps_size, data, nal_size);
     m_avcc_params.pps_size += nal_size;
 
     data += nal_size;
@@ -1644,7 +1644,7 @@ bool CCrystalHD::extract_sps_pps_from_avcc(int extradata_size, void *extradata)
 
   CLog::Log(LOGDEBUG, "%s: data size at end = %d ", __MODULE_NAME__, data_size);
 
-	return true;
+  return true;
 }
 
 
