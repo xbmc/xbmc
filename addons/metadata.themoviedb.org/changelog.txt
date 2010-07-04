@@ -1,3 +1,9 @@
+[B]1.0.8[/B]
+- changed hdtrailers.net version dependency
+
+[B]1.0.7[/B]
+- final fix for nfourl scraping issue
+
 [B]1.0.6[/B]
 - fixed nfourl scraping issue
 
