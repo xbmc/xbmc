@@ -1205,6 +1205,12 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
 
   do
   {
+    if (m_has_bcm70015)
+    {
+      // bcm70015 quirk
+      m_dll->DtsOpenDecoder(m_device, StreamType);
+      m_dll->DtsCloseDecoder(m_device);
+    }
     res = m_dll->DtsOpenDecoder(m_device, StreamType);
     if (res != BCM::BC_STS_SUCCESS)
     {
