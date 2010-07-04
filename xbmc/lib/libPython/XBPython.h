@@ -105,6 +105,7 @@ public:
   CCriticalSection    m_critSection;
 private:
   bool              FileExist(const char* strFile);
+  CStdString        BuildLibPath() const;
 
   int               m_nextid;
   PyThreadState*    m_mainThreadState;

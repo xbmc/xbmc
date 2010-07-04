@@ -48,6 +48,7 @@
 #include "utils/log.h"
 #include "utils/SingleLock.h"
 #include "utils/TimeUtils.h"
+#include "addons/AddonManager.h"
 
 XBPython g_pythonParser;
 
@@ -372,12 +373,7 @@ void XBPython::Initialize()
       // Required for python to find optimized code (pyo) files
       setenv("PYTHONOPTIMIZE", "1", 1);
       setenv("PYTHONHOME", _P("special://xbmc/system/python").c_str(), 1);
-#ifdef __APPLE__
-      // OSX uses contents from extracted zip, 3X to 4X times faster during Py_Initialize
-      setenv("PYTHONPATH", _P("special://xbmc/system/python/Lib").c_str(), 1);
-#else
-      setenv("PYTHONPATH", _P("special://xbmc/system/python/python24.zip").c_str(), 1);
-#endif /* __APPLE__ */
+      setenv("PYTHONPATH", BuildLibPath().c_str(), 1);
       setenv("PYTHONCASEOK", "1", 1);
       CLog::Log(LOGDEBUG, "Python wrapper library linked with internal Python library");
 #endif /* _LINUX */
@@ -743,4 +739,20 @@ int XBPython::evalString(const char *src, const unsigned int argc, const char **
   m_vecPyList.push_back(inf);
 
   return m_nextid;
+}
+
+CStdString XBPython::BuildLibPath() const
+{
+  CStdString path;
+#ifdef __APPLE__
+  // OSX uses contents from extracted zip, 3X to 4X times faster during Py_Initialize
+  path = _P("special://xbmc/system/python/Lib");
+#else
+  path = _P("special://xbmc/system/python/python24.zip");
+#endif
+  ADDON::VECADDONS addons;
+  ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_SCRIPT_MODULE, addons);
+  for (unsigned int i = 0; i < addons.size(); ++i)
+    path += ":" + _P(addons[i]->LibPath());
+  return path;
 }
