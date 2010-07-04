@@ -1166,12 +1166,12 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
   }
   
 #if (HAVE_LIBCRYSTALHD == 2)
-  m_avcc_params.sps_pps_buf = NULL;
   m_avcc_params.inside_buffer = TRUE;
   m_avcc_params.consumed_offset = 0;
   m_avcc_params.strtcode_offset = 0;
   m_avcc_params.nal_sz = 0;
   m_avcc_params.pps_size = 0;
+  m_avcc_params.sps_pps_buf = NULL;
   m_avcc_params.nal_size_bytes = 4;
   switch (codec_type)
   {
@@ -1216,7 +1216,6 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
     if (m_has_bcm70015)
     {
       BCM::BC_INPUT_FORMAT bcm_input_format;
-
       memset(&bcm_input_format, 0, sizeof(BCM::BC_INPUT_FORMAT));
 
       bcm_input_format.FGTEnable = FALSE;
@@ -1327,7 +1326,8 @@ void CCrystalHD::CloseDecoder(void)
     // DtsStartCapture will fail. This is a driver/lib bug
     // with new chd driver. The existing driver ignores the
     // bDiscardOnly arg.
-    m_dll->DtsFlushRxCapture(m_device, false);
+    if (!m_has_bcm70015)
+      m_dll->DtsFlushRxCapture(m_device, false);
     m_dll->DtsStopDecoder(m_device);
     m_dll->DtsCloseDecoder(m_device);
   }
@@ -1341,8 +1341,7 @@ void CCrystalHD::Reset(void)
   if (m_has_bcm70015)
   {
     m_wait_timeout = 1;
-    m_dll->DtsFlushInput(m_device, 2);
-    m_dll->DtsFlushRxCapture(m_device, true);
+    m_dll->DtsFlushInput(m_device, 0);
   }
   else
   {
