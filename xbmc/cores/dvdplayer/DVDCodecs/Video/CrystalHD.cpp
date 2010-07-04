@@ -994,10 +994,13 @@ CCrystalHD::CCrystalHD() :
   if (m_dll->Load() && m_dll->IsLoaded() )
 #endif
   {
+#if (HAVE_LIBCRYSTALHD == 2)
+    m_new_lib = m_dll->LoadNewLibFunctions();
+#endif
+
     OpenDevice();
     
 #if (HAVE_LIBCRYSTALHD == 2)
-    m_new_lib = m_dll->LoadNewLibFunctions();
     if (m_device && m_new_lib)
     {
       BCM::BC_INFO_CRYSTAL bc_info_crystal;
