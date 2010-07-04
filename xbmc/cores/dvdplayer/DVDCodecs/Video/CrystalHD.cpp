@@ -1244,6 +1244,19 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
         CLog::Log(LOGDEBUG, "%s: set color space failed", __MODULE_NAME__); 
         break; 
       }
+/*
+      BCM::BC_SCALING_PARAMS bc_scale_params;
+      memset(&bc_scale_params, 0, sizeof(BCM::BC_SCALING_PARAMS));
+      bc_scale_params.sWidth = 600;
+      bc_scale_params.sHeight = 400;
+      //bc_scale_params.DNR = ;
+      res = m_dll->DtsSetScaleParams(m_device, &bc_scale_params);
+      if (res != BCM::BC_STS_SUCCESS)
+      { 
+        CLog::Log(LOGDEBUG, "%s: set scale params failed", __MODULE_NAME__); 
+        break; 
+      }
+*/
     }
     else
 #endif
