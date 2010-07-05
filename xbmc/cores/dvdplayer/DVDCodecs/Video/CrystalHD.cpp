@@ -719,7 +719,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           m_PictureNumber = procOut.PicInfo.picture_number;
 
           if (m_framerate_tracking)
-            DoFrameRateTracking(pts_itod(m_timestamp));
+            DoFrameRateTracking((double)m_timestamp / 1000.0);
 
           // Get next output buffer from the free list
           pBuffer = m_FreeList.Pop();
