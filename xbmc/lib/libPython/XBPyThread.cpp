@@ -48,6 +48,7 @@
 #include "utils/log.h"
 #include "utils/SingleLock.h"
 #include "Util.h"
+#include "addons/AddonManager.h"
 
 #include "XBPyThread.h"
 #include "XBPython.h"
@@ -173,6 +174,12 @@ void XBPyThread::Process()
   CUtil::GetDirectory(_P(m_source), scriptDir);
   CUtil::RemoveSlashAtEnd(scriptDir);
   CStdString path = scriptDir;
+
+  // add on any addon modules the user has installed
+  ADDON::VECADDONS addons;
+  ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_SCRIPT_MODULE, addons);
+  for (unsigned int i = 0; i < addons.size(); ++i)
+    path += PY_PATH_SEP + _P(addons[i]->LibPath());
 
   // and add on whatever our default path is
   path += PY_PATH_SEP;
