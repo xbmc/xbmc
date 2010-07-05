@@ -736,11 +736,11 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           pBuffer->m_color_matrix = m_color_matrix;
           pBuffer->m_PictureNumber = m_PictureNumber;
 
-          int w = procOut.PicInfo.width;
-          int h = procOut.PicInfo.height;
+          int w = m_width;
+          int h = m_height;
           // frame that are not equal in width to 720, 1280 or 1920
           // need to be copied by a quantized stride (possible lib/driver bug) so force it.
-          int stride = procOut.PicInfo.width;
+          int stride = m_width;
           if (!m_has_bcm70015)
           {
             // bcm70012 uses quantized strides
