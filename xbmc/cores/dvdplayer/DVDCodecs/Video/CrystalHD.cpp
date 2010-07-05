@@ -196,26 +196,6 @@ const char* g_DtsStatusText[] = {
 	"BC_STS_CLK_NOCHG"
 };
 
-union pts_union
-{
-  double  pts_d;
-  int64_t pts_i;
-};
-
-static int64_t pts_dtoi(double pts)
-{
-  pts_union u;
-  u.pts_d = pts;
-  return u.pts_i;
-}
-
-static double pts_itod(int64_t pts)
-{
-  pts_union u;
-  u.pts_i = pts;
-  return u.pts_d;
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 class CMPCOutputThread : public CThread
 {
