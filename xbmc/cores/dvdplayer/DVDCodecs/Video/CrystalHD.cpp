@@ -1024,11 +1024,15 @@ bool CCrystalHD::DevicePresent(void)
 
 bool CCrystalHD::Wake(void)
 {
+  CLog::Log(LOGINFO, "%s: resume", __MODULE_NAME__);
+  //GetInstance();
   return true;
 }
 
 bool CCrystalHD::Sleep(void)
 {
+  CLog::Log(LOGINFO, "%s: suspend", __MODULE_NAME__);
+  //GetInstance();
   return true;
 }
 
