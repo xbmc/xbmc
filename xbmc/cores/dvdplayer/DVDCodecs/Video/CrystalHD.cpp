@@ -1032,7 +1032,7 @@ bool CCrystalHD::Wake(void)
 bool CCrystalHD::Sleep(void)
 {
   CLog::Log(LOGINFO, "%s: suspend", __MODULE_NAME__);
-  //GetInstance();
+  //RemoveInstance();
   return true;
 }
 
