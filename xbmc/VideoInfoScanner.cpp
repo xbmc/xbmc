@@ -132,10 +132,9 @@ namespace VIDEO
     }
   }
 
-  void CVideoInfoScanner::Start(const CStdString& strDirectory, bool bUpdateAll, bool scanAll)
+  void CVideoInfoScanner::Start(const CStdString& strDirectory, bool scanAll)
   {
     m_strStartDir = strDirectory;
-    m_bUpdateAll = bUpdateAll;
     m_scanAll = scanAll;
     m_pathsToScan.clear();
     m_pathsToClean.clear();
@@ -179,14 +178,6 @@ namespace VIDEO
 
   bool CVideoInfoScanner::DoScan(const CStdString& strDirectory)
   {
-    if (m_bUpdateAll)
-    {
-      if (m_pObserver)
-        m_pObserver->OnStateChanged(REMOVING_OLD);
-
-      m_database.RemoveContentForPath(strDirectory);
-    }
-
     if (m_pObserver)
     {
       m_pObserver->OnDirectoryChanged(strDirectory);
