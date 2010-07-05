@@ -221,6 +221,10 @@ void CPowerManager::OnSleep()
   CAnnouncementManager::Announce(System, "xbmc", "Sleep");
 
   g_application.StopPlaying();
+
+#if defined(HAVE_LIBCRYSTALHD)
+  CCrystalHD::GetInstance()->Sleep();
+#endif
 }
 
 void CPowerManager::OnWake()

@@ -26,6 +26,7 @@ typedef unsigned char   BYTE;
 #include "Log.h"
 #include "SystemInfo.h"
 #include "Application.h"
+#include "PowerManager.h"
 #include "WindowingFactory.h"
 #include "CocoaPowerSyscall.h"
 #include <IOKit/pwr_mgt/IOPMLib.h>
@@ -50,8 +51,7 @@ CCocoaPowerSyscall::CCocoaPowerSyscall()
   m_SentBatteryMessage = false;
   m_power_source = NULL;
 
-  if (HasBattery())
-    CreateOSPowerCallBacks();
+  CreateOSPowerCallBacks();
 }
 
 CCocoaPowerSyscall::~CCocoaPowerSyscall()
@@ -279,6 +279,7 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
       // System has been idle for sleeptime and will sleep soon.
       // we can either allow or cancel this notification.
       // if we don't respond, OS will sleep in 30 second.
+      ctx->m_OnSuspend = true;
       IOAllowPowerChange(ctx->m_root_port, (long)msg_arg);
     break;
     case kIOMessageSystemWillSleep:
