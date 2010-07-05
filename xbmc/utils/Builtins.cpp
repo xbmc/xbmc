@@ -1079,7 +1079,7 @@ int CBuiltins::Execute(const CStdString& execString)
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-          CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "");
+          scanner->StartScanning(params.size() > 1 ? params[1] : "");
       }
     }
   }
