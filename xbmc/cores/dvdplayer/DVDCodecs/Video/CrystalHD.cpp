@@ -1344,7 +1344,6 @@ void CCrystalHD::Reset(void)
   }
   else
   {
-    m_reset = 60;
     m_wait_timeout = 1;
 
     // we are always late (chd pipeline fill) when seeking,
@@ -1355,21 +1354,26 @@ void CCrystalHD::Reset(void)
     //  buffers, input, decoded and to be decoded. 
     if (m_new_lib)
     {
-      m_dll->DtsFlushInput(m_device, 1);
+      m_reset = 30;
+      m_dll->DtsFlushInput(m_device, 0);
       m_dll->DtsFlushRxCapture(m_device, true);
     }
     else
     {
+      m_reset = 60;
       m_dll->DtsFlushInput(m_device, 2);
+      ::Sleep(400);
     }
-    ::Sleep(400);
   }
 
   while (m_BusyList.Count())
     m_pOutputThread->FreeListPush( m_BusyList.Pop() );
 
   while (m_pOutputThread->GetReadyCount())
+  {
+    ::Sleep(1);
     m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
+  }
 
   CLog::Log(LOGDEBUG, "%s: codec flushed", __MODULE_NAME__);
 }
