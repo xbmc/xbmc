@@ -60,7 +60,7 @@
 
   <regions>
     <region name="Bulgaria">
-      <dateshort>DD.MM.YYYYY</dateshort>
+      <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY 'г.'</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
