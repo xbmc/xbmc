@@ -80,7 +80,13 @@ namespace VIDEO
   public:
     CVideoInfoScanner();
     virtual ~CVideoInfoScanner();
-    void Start(const CStdString& strDirectory, bool bUpdateAll);
+
+    /*! \brief Scan a folder using the background scanner
+     \param strDirectory path to scan
+     \param updateAll whether everything should be rescanned
+     \param scanAll whether to scan everything not already scanned (regardless of whether the user normally doesn't want a folder scanned.) Defaults to false.
+     */
+    void Start(const CStdString& strDirectory, bool bUpdateAll, bool scanAll = false);
     bool IsScanning();
     void Stop();
     void SetObserver(IVideoInfoScannerObserver* pObserver);
@@ -235,6 +241,7 @@ namespace VIDEO
     bool m_bUpdateAll;
     bool m_bCanInterrupt;
     bool m_bClean;
+    bool m_scanAll;
     CStdString m_strStartDir;
     CVideoDatabase m_database;
     std::set<CStdString> m_pathsToScan;

@@ -33,7 +33,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void FrameMove();
 
-  void StartScanning(const CStdString& strDirectory, bool bUpdateAll);
+  void StartScanning(const CStdString& strDirectory, bool bUpdateAll, bool scanAll = false);
   bool IsScanning();
   void StopScanning();
 

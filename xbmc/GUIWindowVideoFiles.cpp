@@ -343,7 +343,7 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, ADDON::Scraper
 
     if (bScan)
     {
-      OnScan(item->m_strPath);
+      OnScan(item->m_strPath, true);
     }
   }
 }
