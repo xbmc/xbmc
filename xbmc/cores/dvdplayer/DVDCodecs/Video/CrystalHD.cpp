@@ -214,7 +214,9 @@ protected:
   void                SetFrameRate(uint32_t resolution);
   void                SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info);
   void                CopyOutAsNV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
+  void                CopyOutAsNV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
   void                CopyOutAsYV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
+  void                CopyOutAsYV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
   bool                GetDecoderOutput(void);
   virtual void        Process(void);
 
@@ -634,7 +636,7 @@ void CMPCOutputThread::CopyOutAsYV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_O
     for (int y = 0; y < h; y++, s_y += stride, d_y += w)
       fast_memcpy(d_y, s_y, w);
   }
-
+  //copy chroma
   //copy uv packed to u,v planes (1/2 the width and 1/2 the height of y)
   uint8_t *s_uv;
   uint8_t *d_u = pBuffer->m_u_buffer_ptr;
@@ -648,6 +650,42 @@ void CMPCOutputThread::CopyOutAsYV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_O
       *d_v++ = *s_uv++;
     }
   }
+}
+
+void CMPCOutputThread::CopyOutAsYV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride)
+{
+  // copy luma
+  uint8_t *s_y = procOut->Ybuff;
+  uint8_t *d_y = pBuffer->m_y_buffer_ptr;
+  for (int y = 0; y < h/2; y++, s_y += stride)
+  {
+    fast_memcpy(d_y, s_y, w);
+    d_y += stride;
+    fast_memcpy(d_y, s_y, w);
+    d_y += stride;
+  }
+  //copy chroma
+  //copy uv packed to u,v planes (1/2 the width and 1/2 the height of y)
+  uint8_t *s_uv;
+  uint8_t *d_u = pBuffer->m_u_buffer_ptr;
+  uint8_t *d_v = pBuffer->m_v_buffer_ptr;
+  for (int y = 0; y < h/4; y++)
+  {
+    s_uv = procOut->UVbuff + (y * stride);
+    for (int x = 0; x < w/2; x++)
+    {
+      *d_u++ = *s_uv++;
+      *d_v++ = *s_uv++;
+    }
+    s_uv = procOut->UVbuff + (y * stride);
+    for (int x = 0; x < w/2; x++)
+    {
+      *d_u++ = *s_uv++;
+      *d_v++ = *s_uv++;
+    }
+  }
+
+  pBuffer->m_interlace = false;
 }
 
 void CMPCOutputThread::CopyOutAsNV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride)
@@ -673,6 +711,31 @@ void CMPCOutputThread::CopyOutAsNV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_O
     for (int y = 0; y < h/2; y++, s += stride, d += w)
       fast_memcpy(d, s, w);
   }
+}
+
+void CMPCOutputThread::CopyOutAsNV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride)
+{
+  // do simple line doubling de-interlacing.
+  // copy luma
+  uint8_t *s_y = procOut->Ybuff;
+  uint8_t *d_y = pBuffer->m_y_buffer_ptr;
+  for (int y = 0; y < h/2; y++, s_y += stride)
+  {
+    fast_memcpy(d_y, s_y, w);
+    d_y += stride;
+    fast_memcpy(d_y, s_y, w);
+    d_y += stride;
+  }
+  //copy chroma
+  uint8_t *s_uv = procOut->UVbuff;
+  uint8_t *d_uv = pBuffer->m_uv_buffer_ptr;
+  for (int y = 0; y < h/4; y++, s_uv += stride) {
+    fast_memcpy(d_uv, s_uv, w);
+    d_uv += stride;
+    fast_memcpy(d_uv, s_uv, w);
+    d_uv += stride;
+  }
+  pBuffer->m_interlace = false;
 }
 
 bool CMPCOutputThread::GetDecoderOutput(void)
@@ -705,23 +768,18 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           pBuffer = m_FreeList.Pop();
           if (!pBuffer)
           {
-#ifdef _WIN32
-            // force Windows to use YV12 until DX renderer gets fixed.
-            if (TRUE)
-#else
             // No free pre-allocated buffers so make one
-            if (m_interlace)
-#endif
-              // Something wrong with NV12 rendering of interlaced so copy out as YV12.
-              // Setting the picture format will determine the copy out method.
+#ifdef _WIN32
+            // force Windows to use YV12 until DX renderer gets NV12 or YUY2 capability.
+            pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
+#else
+            if (m_color_space == BCM::MODE422_YUY2)
               pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
+              //pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUY2, m_width, m_height);
             else
-              if (m_color_space == BCM::MODE422_YUY2)
-                pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
-                //pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUY2, m_width, m_height);
-              else
-                pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
-
+              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
+              //pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
+#endif
             //CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());
           }
 
@@ -754,77 +812,20 @@ bool CMPCOutputThread::GetDecoderOutput(void)
 
           if (pBuffer->m_color_space == BCM::MODE420)
           {
-            if (pBuffer->m_format == DVDVideoPicture::FMT_NV12)
+            switch(pBuffer->m_format)
             {
-              CopyOutAsNV12(pBuffer, &procOut, w, h, stride);
-            }
-            else
-            {
-              if (pBuffer->m_interlace)
-              {
-                // we get a 1/2 height frame (field) from hw, not seeing the odd/even flags so
-                // can't tell which frames are odd, which are even so use picture number.
-                int line_width = w*2;
-
-                if (pBuffer->m_PictureNumber & 1)
-                  m_interlace_buf->m_field = CRYSTALHD_FIELD_ODD;
+              case DVDVideoPicture::FMT_NV12:
+                if (pBuffer->m_interlace)
+                  CopyOutAsNV12DeInterlace(pBuffer, &procOut, w, h, stride);
                 else
-                  m_interlace_buf->m_field = CRYSTALHD_FIELD_EVEN;
-
-                // copy luma
-                uint8_t *s_y = procOut.Ybuff;
-                uint8_t *d_y = m_interlace_buf->m_y_buffer_ptr;
-                if (m_interlace_buf->m_field == CRYSTALHD_FIELD_ODD)
-                  d_y += line_width;
-                for (int y = 0; y < h/2; y++, s_y += stride, d_y += line_width)
-                {
-                  fast_memcpy(d_y, s_y, w);
-                }
-
-                //copy chroma
-                line_width = w/2;
-                uint8_t *s_uv;
-                uint8_t *d_u = m_interlace_buf->m_u_buffer_ptr;
-                uint8_t *d_v = m_interlace_buf->m_v_buffer_ptr;
-                if (m_interlace_buf->m_field == CRYSTALHD_FIELD_ODD)
-                {
-                  d_u += line_width;
-                  d_v += line_width;
-                }
-                for (int y = 0; y < h/4; y++, d_u += line_width, d_v += line_width) {
-                  s_uv = procOut.UVbuff + (y * stride);
-                  for (int x = 0; x < w/2; x++) {
-                    *d_u++ = *s_uv++;
-                    *d_v++ = *s_uv++;
-                  }
-                }
-
-                pBuffer->m_field = m_interlace_buf->m_field;
-                // copy y
-                fast_memcpy(pBuffer->m_y_buffer_ptr,  m_interlace_buf->m_y_buffer_ptr,pBuffer->m_y_buffer_size);
-                // copy u
-                fast_memcpy(pBuffer->m_u_buffer_ptr, m_interlace_buf->m_u_buffer_ptr, pBuffer->m_u_buffer_size);
-                // copy v
-                fast_memcpy(pBuffer->m_v_buffer_ptr, m_interlace_buf->m_v_buffer_ptr, pBuffer->m_v_buffer_size);
-              }
-              else
-              {
-                CopyOutAsYV12(pBuffer, &procOut, w, h, stride);
-                /*
-                // Perform the color space conversion.
-                uint8_t* src[] =       { procOut.Ybuff, procOut.UVbuff, NULL, NULL };
-                int      srcStride[] = { procOut.PicInfo.width, procOut.PicInfo.width, 0, 0 };
-                uint8_t* dst[] =       { pBuffer->m_y_buffer_ptr, pBuffer->m_u_buffer_ptr, pBuffer->m_v_buffer_ptr, NULL };
-                int      dstStride[] = { pBuffer->m_width, pBuffer->m_width/2, pBuffer->m_width/2, 0 };
-
-                struct SwsContext *ctx = m_dllSwScale->sws_getContext(
-                  pBuffer->m_width, pBuffer->m_height, PIX_FMT_NV12,
-                  pBuffer->m_width, pBuffer->m_height, PIX_FMT_YUV420P,
-                  SWS_FAST_BILINEAR, NULL, NULL, NULL);
-                m_dllSwScale->sws_scale(ctx, src, srcStride, 0, pBuffer->m_height, dst, dstStride);
-                m_dllSwScale->sws_freeContext(ctx);
-                */
-              }
+                  CopyOutAsNV12(pBuffer, &procOut, w, h, stride);
+              break;
+              case DVDVideoPicture::FMT_YUV420P:
+                if (pBuffer->m_interlace)
+                  CopyOutAsYV12DeInterlace(pBuffer, &procOut, w, h, stride);
+                else
+                  CopyOutAsYV12(pBuffer, &procOut, w, h, stride);
+              break;
             }
           }
           else
