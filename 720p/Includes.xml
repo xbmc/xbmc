@@ -1941,10 +1941,18 @@
 			</control>
 		</focusedlayout>
 		<!-- Episodes -->
-		<itemlayout condition="Container.content(episodes)" width="268" height="185">
+		<itemlayout condition="Container.content(episodes)" width="262" height="185">
 			<control type="image">
 				<description>Episode thumb</description>
 				<include>PanelStreamEpisodeImage</include>
+			</control>
+			<control type="image">
+				<description>Overlay</description>
+				<posx>245</posx>
+				<posy>123</posy>
+				<include>WtchUnwtchOverlayDims</include>
+				<info>ListItem.Overlay</info>
+				<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
 			</control>
 			<control type="label">
 				<posx>148</posx>
@@ -1959,10 +1967,18 @@
 				<scrollsuffix>...</scrollsuffix>
 			</control>
 		</itemlayout>
-		<focusedlayout condition="Container.content(episodes)" width="268" height="185">
+		<focusedlayout condition="Container.content(episodes)" width="262" height="185">
 			<control type="image">
 				<description>Episode thumb</description>
 				<include>PanelStreamEpisodeImageFocus</include>			
+			</control>
+			<control type="image">
+				<description>Overlay</description>
+				<posx>245</posx>
+				<posy>123</posy>
+				<include>WtchUnwtchOverlayDims</include>
+				<info>ListItem.Overlay</info>
+				<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
 			</control>
 			<control type="label">
 				<posx>148</posx>
@@ -1976,6 +1992,7 @@
 				<textcolor>ffffffff</textcolor>
 				<scrollsuffix>...</scrollsuffix>
 			</control>
+
 		</focusedlayout>
 		<!-- Albums -->
 		<itemlayout condition="Container.content(albums) | Window.IsVisible(MyMusicFiles)" width="180" height="180">
