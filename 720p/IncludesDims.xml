@@ -612,7 +612,7 @@
 	<include name="PanelStreamImageDims">
 		<posx>15</posx>
 		<posy>0</posy>
-		<width>133</width>
+		<width>132</width>
 		<height>192</height>
 	</include>
 	<include name="PanelStreamImageFocusAnim">

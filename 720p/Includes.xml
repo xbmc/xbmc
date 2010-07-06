@@ -1880,7 +1880,7 @@
 		<include>NoThumbLabel</include>
 	</include>
 	<include name="PanelStreamLayout">
-		<itemlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="163" height="245">
+		<itemlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="158" height="241">
 			<control type="image">
 				<description>Poster image</description>
 				<include>PanelStreamImage</include>
@@ -1891,7 +1891,7 @@
 			</control>
 			<control type="label">
 				<posx>81</posx>
-				<posy>204</posy>
+				<posy>206</posy>
 				<width>132</width>
 				<align>center</align>
 				<aligny>center</aligny>
@@ -1901,8 +1901,16 @@
 				<textcolor>FFffffff</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 			</control>
+			<control type="image">
+				<description>Overlay</description>
+				<posx>121</posx>
+				<posy>169</posy>
+				<include>WtchUnwtchOverlayDims</include>
+				<info>ListItem.Overlay</info>
+				<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
+			</control>
 		</itemlayout>
-		<focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="163" height="245">
+		<focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="158" height="241">
 			<control type="image">
 				<description>Poster image</description>
 				<include>PanelStreamImageFocus</include>
@@ -1912,7 +1920,7 @@
 			</control>
 			<control type="label">
 				<posx>81</posx>
-				<posy>204</posy>
+				<posy>206</posy>
 				<width>132</width>
 				<align>center</align>
 				<aligny>center</aligny>
@@ -1922,6 +1930,14 @@
 				<textcolor>FFffffff</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 				<scrollspeed>30</scrollspeed>
+			</control>
+			<control type="image">
+				<description>Overlay</description>
+				<posx>121</posx>
+				<posy>169</posy>
+				<include>WtchUnwtchOverlayDims</include>
+				<info>ListItem.Overlay</info>
+				<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
 			</control>
 		</focusedlayout>
 		<!-- Episodes -->
@@ -1993,8 +2009,8 @@
 		<include>PanelStreamLayout</include>
 	</include>
 	<include name="PanelStreamContentWithDetail">
-		<posx>6</posx>
-		<posy>34</posy>
+		<posx>16</posx>
+		<posy>30</posy>
 		<width>815</width>
 		<height>500</height>
 		<include>PanelStreamLayout</include>
