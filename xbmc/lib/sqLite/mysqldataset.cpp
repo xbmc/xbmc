@@ -1308,7 +1308,7 @@ bool MysqlDataset::query(const char *query) {
       case MYSQL_TYPE_DOUBLE:
         if (row[i] != NULL)
         {
-          v.set_asDouble(atol(row[i]));
+          v.set_asDouble(atof(row[i]));
         }
         else
         {
