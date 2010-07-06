@@ -90,10 +90,10 @@ HRESULT CDXVADecoderVC1::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME 
 	int							nSliceType;
 
   
-  m_pFilter->m_dllAvCodec.FFVC1UpdatePictureParam (&m_PictureParams, m_pFilter->GetAVCtx(), &nFieldType, &nSliceType, pDataIn, nSize);
+  /*m_pFilter->m_dllAvCodec.FFVC1UpdatePictureParam (&m_PictureParams, m_pFilter->GetAVCtx(), &nFieldType, &nSliceType, pDataIn, nSize);*/
   
-	if (m_pFilter->m_dllAvCodec.FFIsSkipped (m_pFilter->GetAVCtx()))
-		return S_OK;
+	/*if (m_pFilter->m_dllAvCodec.FFIsSkipped (m_pFilter->GetAVCtx()))
+		return S_OK;*/
 
 	// Wait I frame after a flush
 	if (m_bFlushed && ! m_PictureParams.bPicIntra)

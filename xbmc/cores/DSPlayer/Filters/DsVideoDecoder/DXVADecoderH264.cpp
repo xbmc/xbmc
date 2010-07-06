@@ -145,6 +145,7 @@ void CDXVADecoderH264::Flush()
 
 HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME rtStart, REFERENCE_TIME rtStop)
 {
+
   HRESULT            hr      = S_FALSE;
   CH264Nalu          Nalu;
   UINT            nSlices    = 0;
@@ -160,8 +161,13 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
   REFERENCE_TIME        rtOutStart;
   int iGotPicture = 0;
   Nalu.SetBuffer (pDataIn, nSize, m_nNALLength);
-
-  m_pFilter->m_dllAvCodec.FFH264DecodeBuffer (m_pFilter->GetAVCtx(), pDataIn, nSize, &nFramePOC, &nOutPOC, &rtOutStart);
+  /*AVPacket *avpkt = NULL;
+  m_pFilter->m_dllAvCodec.av_new_packet(avpkt,nSize);
+  memcpy(avpkt->data,(uint8_t*)pDataIn,nSize);*/
+  int usedbyte;
+  usedbyte = m_pFilter->m_dllAvCodec.avcodec_decode_video(m_pFilter->GetAVCtx(), m_pFilter->m_pFrame, &iGotPicture, pDataIn, nSize);
+  
+  /*m_pFilter->m_dllAvCodec.FFH264DecodeBuffer (m_pFilter->GetAVCtx(), pDataIn, nSize, &nFramePOC, &nOutPOC, &rtOutStart);*/
 
   while (Nalu.ReadNext())
   {
@@ -174,7 +180,7 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
           m_pSliceLong[nSlices].BSNALunitDataLocation  = nNalOffset;
           m_pSliceLong[nSlices].SliceBytesInBuffer  = Nalu.GetDataLength()+3;
           m_pSliceLong[nSlices].slice_id        = nSlices;
-          m_pFilter->m_dllAvCodec.FF264UpdateRefFrameSliceLong(&m_DXVAPicParams, &m_pSliceLong[nSlices], m_pFilter->GetAVCtx());
+          /*m_pFilter->m_dllAvCodec.FF264UpdateRefFrameSliceLong(&m_DXVAPicParams, &m_pSliceLong[nSlices], m_pFilter->GetAVCtx());*/
 
           if (nSlices>0)
             m_pSliceLong[nSlices-1].NumMbsForSlice = m_pSliceLong[nSlices].NumMbsForSlice = m_pSliceLong[nSlices].first_mb_in_slice - m_pSliceLong[nSlices-1].first_mb_in_slice;
@@ -192,8 +198,8 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
 	m_nMaxWaiting	= std::min ( std::max (m_DXVAPicParams.num_ref_frames, (UCHAR) 3), (UCHAR) 8);
 
   // If parsing fail (probably no PPS/SPS), continue anyway it may arrived later (happen on truncated streams)
-  if (FAILED (m_pFilter->m_dllAvCodec.FFH264BuildPicParams (&m_DXVAPicParams, &m_DXVAScalingMatrix, &nFieldType, &nSliceType, m_pFilter->GetAVCtx(), m_pFilter->GetPCIVendor())))
-    return S_FALSE;
+  /*if (FAILED (m_pFilter->m_dllAvCodec.FFH264BuildPicParams (&m_DXVAPicParams, &m_DXVAScalingMatrix, &nFieldType, &nSliceType, m_pFilter->GetAVCtx(), m_pFilter->GetPCIVendor())))
+    return S_FALSE;*/
 
   // Wait I frame after a flush
   if (m_bFlushed && !m_DXVAPicParams.IntraPicFlag)
@@ -201,7 +207,7 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
 
   
   CHECK_HR (GetFreeSurfaceIndex (nSurfaceIndex, &pSampleToDeliver, rtStart, rtStop));
-  m_pFilter->m_dllAvCodec.FFH264SetCurrentPicture (nSurfaceIndex, &m_DXVAPicParams, m_pFilter->GetAVCtx());
+  /*m_pFilter->m_dllAvCodec.FFH264SetCurrentPicture (nSurfaceIndex, &m_DXVAPicParams, m_pFilter->GetAVCtx());*/
 
   CHECK_HR (BeginFrame(nSurfaceIndex, pSampleToDeliver));
   
@@ -240,7 +246,7 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
                   m_DXVAPicParams.field_pic_flag, (FF_FIELD_TYPE)nFieldType, 
                   (FF_SLICE_TYPE)nSliceType, nFramePOC);
 
-  m_pFilter->m_dllAvCodec.FFH264UpdateRefFramesList (&m_DXVAPicParams, m_pFilter->GetAVCtx());
+  /*m_pFilter->m_dllAvCodec.FFH264UpdateRefFramesList (&m_DXVAPicParams, m_pFilter->GetAVCtx());*/
   ClearUnusedRefFrames();
 
   if (bAdded) 
@@ -277,10 +283,11 @@ void CDXVADecoderH264::ClearUnusedRefFrames()
   // Remove old reference frames (not anymore a short or long ref frame)
   for (int i=0; i<m_nPicEntryNumber; i++)
   {
-    if (m_pPictureStore[i].bRefPicture && m_pPictureStore[i].bDisplayed)
+    /*if (m_pPictureStore[i].bRefPicture && m_pPictureStore[i].bDisplayed)
       
       if (!m_pFilter->m_dllAvCodec.FFH264IsRefFrameInUse (i, m_pFilter->GetAVCtx()))
-        RemoveRefFrame (i);
+        RemoveRefFrame (i);*/
+
   }
 }
 
@@ -288,10 +295,10 @@ void CDXVADecoderH264::SetExtraData (BYTE* pDataIn, UINT nSize)
 {
   AVCodecContext*    pAVCtx = m_pFilter->GetAVCtx();
 
-  m_nNALLength  = pAVCtx->nal_length_size;
+  m_nNALLength  =4;//pAVCtx->nal_length_size;
   //m_nNALLength the nal length size should be 1 2 or 4
-  m_pFilter->m_dllAvCodec.FFH264DecodeBuffer (pAVCtx, pDataIn, nSize, NULL, NULL, NULL);
-  m_pFilter->m_dllAvCodec.FFH264SetDxvaSliceLong (pAVCtx, m_pSliceLong);
+  /*m_pFilter->m_dllAvCodec.FFH264DecodeBuffer (pAVCtx, pDataIn, nSize, NULL, NULL, NULL);*/
+  /*m_pFilter->m_dllAvCodec.FFH264SetDxvaSliceLong (pAVCtx, m_pSliceLong);*/
 }
 
 

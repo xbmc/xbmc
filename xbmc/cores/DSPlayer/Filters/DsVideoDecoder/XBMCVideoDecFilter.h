@@ -33,7 +33,7 @@
 #include "Subtitles/decss/DeCSSInputPin.h"
 #include "DXVADecoder.h"
 //#include "TlibavcodecExt.h"
-
+#include "libavcodec/directshow.h"
 #include "Codecs/DllAvCodec.h"
 #include "Codecs/DllAvFormat.h"
 #include "Codecs/DllSwScale.h"
@@ -72,12 +72,37 @@ typedef struct
 class CXBMCVideoDecFilter 
   : public CBaseVideoFilter
 {
+public:
+  class IDXVADecoder
+  {
+    public:
+             IDXVADecoder() : m_references(1) {}
+    virtual ~IDXVADecoder() {};
+    virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat) = 0;
+    virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame) = 0;
+    virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame,directshow_dxva_h264* picture) = 0;
+    virtual int  Check     (AVCodecContext* avctx) = 0;
+    /*virtual const std::string Name() = 0;*/
+    virtual CCriticalSection* Section() { return NULL; }
+    virtual long              Release();
+    virtual IDXVADecoder* Acquire();
+    protected:
+    long m_references;
+  };
+  IDXVADecoder * GetHardware()                           { return m_pHardware; };
+  void               SetHardware(IDXVADecoder* hardware) 
+  {
+    m_pHardware = hardware;
+    /*m_name += "-";
+    m_name += m_pHardware->Name();*/
+  }
 protected:
   // === FFMpeg callbacks
-  static void    LogLibAVCodec(void* par,int level,const char *fmt,va_list valist);
+  static enum PixelFormat GetFormat(struct AVCodecContext * avctx, const PixelFormat * fmt);
   virtual void  OnGetBuffer(AVFrame *pic);
-
+  
   friend class CVideoDecDXVAAllocator;
+  IDXVADecoder *m_pHardware;
 
   CCpuId*                  m_pCpuId;
   CCritSec                m_csProps;
@@ -94,10 +119,6 @@ protected:
   int                    m_nDXVACheckCompatibility;
 
   // === FFMpeg variables
-  AVCodec*               m_pAVCodec;
-  AVCodecContext*        m_pCodecContext;
-  AVFrame*               m_pFrame;
-  AVPicture*             m_pConvertFrame;
   int                    m_nCodecNb;
   int                    m_nWorkaroundBug;
   int                    m_nErrorConcealment;
@@ -175,6 +196,12 @@ public:
   DllAvCodec m_dllAvCodec;
   DllAvUtil  m_dllAvUtil;
   DllSwScale m_dllSwScale;
+
+  AVCodec*               m_pAVCodec;
+  AVCodecContext*        m_pCodecContext;
+  AVFrame*               m_pFrame;
+  AVPicture*             m_pConvertFrame;
+
   const static AMOVIESETUP_MEDIATYPE    sudPinTypesIn[];
   const static int            sudPinTypesInCount;
   const static AMOVIESETUP_MEDIATYPE    sudPinTypesOut[];

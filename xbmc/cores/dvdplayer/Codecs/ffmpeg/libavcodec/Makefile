@@ -3,7 +3,7 @@ include $(SUBDIR)../config.mak
 NAME = avcodec
 FFLIBS = avutil
 
-HEADERS = avcodec.h avfft.h dxva2.h opt.h vaapi.h vdpau.h xvmc.h
+HEADERS = avcodec.h avfft.h dxva2.h opt.h vaapi.h vdpau.h xvmc.h directshow.h
 
 OBJS = allcodecs.o                                                      \
        audioconvert.o                                                   \
@@ -28,6 +28,7 @@ OBJS-$(CONFIG_AANDCT)                  += aandcttab.o
 OBJS-$(CONFIG_ENCODERS)                += faandct.o jfdctfst.o jfdctint.o
 OBJS-$(CONFIG_DCT)                     += dct.o
 OBJS-$(CONFIG_DWT)                     += dwt.o
+OBJS-$(CONFIG_H264_DSHOW_DECODER)       += directshow.o
 OBJS-$(CONFIG_DXVA2)                   += dxva2.o
 FFT-OBJS-$(CONFIG_HARDCODED_TABLES)    += cos_tables.o
 OBJS-$(CONFIG_FFT)                     += avfft.o fft.o $(FFT-OBJS-yes)
@@ -151,8 +152,8 @@ OBJS-$(CONFIG_H264_DECODER)            += h264.o                               \
                                           cabac.o h264_sei.o h264_ps.o         \
                                           h264_refs.o h264_cavlc.o h264_cabac.o\
                                           mpegvideo.o error_resilience.o
-OBJS-$(CONFIG_H264_DXVA2_HWACCEL)      += ffmpegcontext.o
 OBJS-$(CONFIG_H264_DXVA2_HWACCEL)      += dxva2_h264.o
+OBJS-$(CONFIG_H264_DIRECTSHOW_DECODER) += directshow_h264.o
 OBJS-$(CONFIG_H264_ENCODER)            += h264enc.o h264dspenc.o
 OBJS-$(CONFIG_H264_VAAPI_HWACCEL)      += vaapi_h264.o
 OBJS-$(CONFIG_HUFFYUV_DECODER)         += huffyuv.o
@@ -609,6 +610,7 @@ OBJS-$(CONFIG_MLIB)                    += mlib/dsputil_mlib.o           \
 -include $(SUBDIR)$(ARCH)/Makefile
 
 SKIPHEADERS                             = %_tablegen.h
+SKIPHEADERS-$(CONFIG_DXVA)             += directshow.h directshow_internal.h
 SKIPHEADERS-$(CONFIG_DXVA2)            += dxva2.h dxva2_internal.h
 SKIPHEADERS-$(CONFIG_LIBDIRAC)         += libdirac.h
 SKIPHEADERS-$(CONFIG_LIBSCHROEDINGER)  += libschroedinger.h

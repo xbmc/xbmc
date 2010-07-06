@@ -55,7 +55,7 @@ void avcodec_register_all(void)
 
     /* hardware accelerators */
     REGISTER_HWACCEL (H263_VAAPI, h263_vaapi);
-	REGISTER_HWACCEL (H264_DXVA2, h264_dxva2);
+    REGISTER_HWACCEL (H264_DXVA2, h264_dxva2);
     REGISTER_HWACCEL (H264_VAAPI, h264_vaapi);
     REGISTER_HWACCEL (MPEG2_DXVA2, mpeg2_dxva2);
     REGISTER_HWACCEL (MPEG2_VAAPI, mpeg2_vaapi);
@@ -113,8 +113,8 @@ void avcodec_register_all(void)
     REGISTER_DECODER (H263I, h263i);
     REGISTER_ENCODER (H263P, h263p);
     REGISTER_DECODER (H264, h264);
-    REGISTER_DECODER (H264_VDPAU, h264_vdpau);
-	REGISTER_DECODER (H264_DXVA,h264_dxva);
+    REGISTER_DECODER (H264_DSHOW, h264_dshow);
+	REGISTER_DECODER (H264_VDPAU, h264_vdpau);
     REGISTER_ENCDEC  (HUFFYUV, huffyuv);
     REGISTER_DECODER (IDCIN, idcin);
     REGISTER_DECODER (IFF_BYTERUN1, iff_byterun1);

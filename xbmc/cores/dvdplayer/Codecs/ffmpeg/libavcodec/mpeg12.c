@@ -37,9 +37,7 @@
 #include "bytestream.h"
 #include "vdpau_internal.h"
 #include "xvmc_internal.h"
-#if CONFIG_MPEG2_DXVA2_HWACCEL
-#include "dxva2api.h"
-#endif
+
 //#undef NDEBUG
 //#include <assert.h>
 
@@ -1177,10 +1175,6 @@ typedef struct Mpeg1Context {
     int save_width, save_height, save_progressive_seq;
     AVRational frame_rate_ext;       ///< MPEG-2 specific framerate modificator
     int sync;                        ///< Did we reach a sync point like a GOP/SEQ/KEYFrame?
-#if CONFIG_MPEG2_DXVA2_HWACCEL
-    DXVA_SliceInfo* pSliceInfo;
-    uint8_t* prev_slice;
-#endif
 } Mpeg1Context;
 
 static av_cold int mpeg_decode_init(AVCodecContext *avctx)
@@ -1296,7 +1290,6 @@ static int mpeg_decode_postinit(AVCodecContext *avctx){
                     1.0/ff_mpeg1_aspect[s->aspect_ratio_info], 255);
             avctx->ticks_per_frame=1;
         }else{//MPEG-2
-#if 0 /* ffdshow custom code (move this block to mpeg_decode_sequence_extension)*/
         //MPEG-2 fps
             av_reduce(
                 &s->avctx->time_base.den,
@@ -1304,41 +1297,24 @@ static int mpeg_decode_postinit(AVCodecContext *avctx){
                 ff_frame_rate_tab[s->frame_rate_index].num * s1->frame_rate_ext.num*2,
                 ff_frame_rate_tab[s->frame_rate_index].den * s1->frame_rate_ext.den,
                 1<<30);
-#endif
             avctx->ticks_per_frame=2;
         //MPEG-2 aspect
             if(s->aspect_ratio_info > 1){
                 //we ignore the spec here as reality does not match the spec, see for example
                 // res_change_ffmpeg_aspect.ts and sequence-display-aspect.mpg
-                /* ffdshow custom code begin
-                 * We do not want to ignore spec.
-                 * However, there are considerable number of videos that are encoded in a wrong way.
-                 * We set the spec compliant value in sample_aspect_ratio and
-                 * wrong spec-value in sample_aspect_ratio2.
-                 * Let ffdshow guess which is likely.
-                 */
-                AVRational r1={s->width, s->height};
-                AVRational r2={s1->pan_scan.width, s1->pan_scan.height};
-                if( (s1->pan_scan.width == 0 )||(s1->pan_scan.height == 0)){
-                    s->avctx->sample_aspect_ratio=av_div_q(
+                if( (s1->pan_scan.width == 0 )||(s1->pan_scan.height == 0) || 1){
+                    s->avctx->sample_aspect_ratio=
+                        av_div_q(
                          ff_mpeg2_aspect[s->aspect_ratio_info],
-                          r1
+                         (AVRational){s->width, s->height}
                          );
                 }else{
                     s->avctx->sample_aspect_ratio=
                         av_div_q(
                          ff_mpeg2_aspect[s->aspect_ratio_info],
-                         r2
-                        );
-                    s->avctx->sample_aspect_ratio=
-                        // Dity workaround
-                        // This is wrong, but often used. Let ffdshow chose either r2 or r1.
-                        av_div_q(
-                         ff_mpeg2_aspect[s->aspect_ratio_info],
-                         r1
+                         (AVRational){s1->pan_scan.width, s1->pan_scan.height}
                         );
                 }
-                /* ffdshow custom code end */
             }else{
                 s->avctx->sample_aspect_ratio=
                     ff_mpeg2_aspect[s->aspect_ratio_info];
@@ -1438,18 +1414,7 @@ static void mpeg_decode_sequence_extension(Mpeg1Context *s1)
 
     s1->frame_rate_ext.num = get_bits(&s->gb, 2)+1;
     s1->frame_rate_ext.den = get_bits(&s->gb, 5)+1;
-    
-    // ffdshow custom code begin (moved from mpeg_decode_postinit)
-    // MPEG-2 fps
-    av_reduce(
-        &s->avctx->time_base.den,
-        &s->avctx->time_base.num,
-        ff_frame_rate_tab[s->frame_rate_index].num * s1->frame_rate_ext.num,
-        ff_frame_rate_tab[s->frame_rate_index].den * s1->frame_rate_ext.den,
-        1<<30);
-    // ffdshow custom code end
 
-    
     dprintf(s->avctx, "sequence extension\n");
     s->codec_id= s->avctx->codec_id= CODEC_ID_MPEG2VIDEO;
     s->avctx->sub_id = 2; /* indicates MPEG-2 found */
@@ -1715,11 +1680,7 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
     ff_mpeg1_clean_buffers(s);
     s->interlaced_dct = 0;
 
-    // DXVA need raw syntax element
-    if (CONFIG_MPEG2_DXVA2_HWACCEL && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
-        s->qscale = get_bits(&s->gb, 5);
-    else
-        s->qscale = get_qscale(s);
+    s->qscale = get_qscale(s);
 
     if(s->qscale == 0){
         av_log(s->avctx, AV_LOG_ERROR, "qscale == 0\n");
@@ -1731,31 +1692,6 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
         skip_bits(&s->gb, 8);
     }
 
-    /*Ugly hack for dxva */
-    if (CONFIG_MPEG2_DXVA2_HWACCEL && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
-    {
-        // Fill DXVA structure and return
-        //s1->pSliceInfo[s1->slice_count].wHorizontalPosition =                        // TODO : horizontal ?
-        s1->pSliceInfo[s1->slice_count].wVerticalPosition    = s1->slice_count;        
-        s1->pSliceInfo[s1->slice_count].wMBbitOffset        = s->gb.index + 32;        // Current pos + Slice Start Code 
-        s1->pSliceInfo[s1->slice_count].wNumberMBsInSlice    = s->mb_width;
-        s1->pSliceInfo[s1->slice_count].wQuantizerScaleCode    = s->qscale;// >> 1;
-        s1->pSliceInfo[s1->slice_count].dwSliceBitsInBuffer    = (buf_size*8)+32;
-
-        if (s1->slice_count>0)
-        {
-            s1->pSliceInfo[s1->slice_count-1].dwSliceBitsInBuffer = (*buf - s1->prev_slice)*8;
-            s1->pSliceInfo[s1->slice_count].dwSliceDataLocation   = s1->pSliceInfo[s1->slice_count-1].dwSliceDataLocation +
-                                                                    s1->pSliceInfo[s1->slice_count-1].dwSliceBitsInBuffer/8;
-        }
-
-        s1->prev_slice = (uint8_t*)*buf;
-        s1->slice_count++;
-
-        return 0;
-    }
-    
-    
     s->mb_x=0;
 
     if(mb_y==0 && s->codec_tag == AV_RL32("SLIF")){
@@ -2008,9 +1944,8 @@ static int slice_end(AVCodecContext *avctx, AVFrame *pict)
         /* end of image */
 
         s->current_picture_ptr->qscale_type= FF_QSCALE_TYPE_MPEG2;
-        
-        if (!s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
-          ff_er_frame_end(s);
+
+        ff_er_frame_end(s);
 
         MPV_frame_end(s);
 
@@ -2223,7 +2158,7 @@ static void mpeg_decode_gop(AVCodecContext *avctx,
  * Finds the end of the current frame in the bitstream.
  * @return the position of the first byte of the next frame, or -1
  */
-int ff_mpeg1_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size, AVCodecParserContext *s, int64_t *rtStart, AVCodecContext *avctx) /* rtStart,avctx: ffdshow custom code */
+int ff_mpeg1_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size, AVCodecParserContext *s)
 {
     int i;
     uint32_t state= pc->state;
@@ -2255,19 +2190,10 @@ int ff_mpeg1_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size, 
             if(pc->frame_start_found==0 && state >= SLICE_MIN_START_CODE && state <= SLICE_MAX_START_CODE){
                 i++;
                 pc->frame_start_found=4;
-                
-                pc->rtStart = *rtStart; /* ffdshow custom code */
-                *rtStart = INT64_MIN;    /* ffdshow custom code */
             }
             if(state == SEQ_END_CODE){
                 pc->state=-1;
-                /* ffdshow custom code (i-3 instead of i+1) */
-                /* DVDs won't send the next frame start on still images */
-                /* SEQ_END_CODE will have to stay at the beginning of the next frame */
-                if (avctx->isDVD)
-                    return i-3;
-                else
-                    return i+1;
+                return i+1;
             }
             if(pc->frame_start_found==2 && state == SEQ_START_CODE)
                 pc->frame_start_found= 0;
@@ -2317,7 +2243,7 @@ static int mpeg_decode_frame(AVCodecContext *avctx,
     }
 
     if(s2->flags&CODEC_FLAG_TRUNCATED){
-        int next = ff_mpeg1_find_frame_end(&s2->parse_context, buf, buf_size, NULL, avctx->parserRtStart, avctx); /* avctx->parserRtStart: ffdshow custom code */
+        int next= ff_mpeg1_find_frame_end(&s2->parse_context, buf, buf_size, NULL);
 
         if( ff_combine_frame(&s2->parse_context, next, (const uint8_t **)&buf, &buf_size) < 0 )
             return buf_size;
@@ -2547,7 +2473,7 @@ static int decode_chunks(AVCodecContext *avctx,
                     if(ret < 0){
                         if(s2->resync_mb_x>=0 && s2->resync_mb_y>=0)
                             ff_er_add_slice(s2, s2->resync_mb_x, s2->resync_mb_y, s2->mb_x, s2->mb_y, AC_ERROR|DC_ERROR|MV_ERROR);
-                    }else if (!s2->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW){
+                    }else{
                         ff_er_add_slice(s2, s2->resync_mb_x, s2->resync_mb_y, s2->mb_x-1, s2->mb_y, AC_END|DC_END|MV_END);
                     }
                 }
@@ -2681,18 +2607,4 @@ AVCodec mpeg1_vdpau_decoder = {
     .long_name = NULL_IF_CONFIG_SMALL("MPEG-1 video (VDPAU acceleration)"),
 };
 #endif
-#if CONFIG_MPEG2_DXVA2_HWACCEL
-AVCodec mpeg_dxva_decoder = {
-    "mpegvideo_dxva",
-    AVMEDIA_TYPE_VIDEO,
-    CODEC_ID_MPEG2VIDEO,
-    sizeof(Mpeg1Context),
-    mpeg_decode_init,
-    NULL,
-    mpeg_decode_end,
-    mpeg_decode_frame,
-    CODEC_CAP_DRAW_HORIZ_BAND | CODEC_CAP_DR1 | CODEC_CAP_TRUNCATED | CODEC_CAP_DELAY | CODEC_CAP_HWACCEL_DIRECTSHOW,
-    .flush= flush,
-    .long_name= NULL_IF_CONFIG_SMALL("MPEG-2 video (directshow)"),
-};
-#endif
+

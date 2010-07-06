@@ -84,8 +84,8 @@ HRESULT CDXVADecoderMpeg2::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIM
 	int							nFieldType = -1;
 	int							nSliceType = -1;
 /* temporary until a proper patch is done*/
-	m_pFilter->m_dllAvCodec.FFMpeg2DecodeFrame (&m_PictureParams, &m_QMatrixData, m_SliceInfo, &m_nSliceCount, m_pFilter->GetAVCtx(), 
-						m_pFilter->GetFrame(), &m_nNextCodecIndex, &nFieldType, &nSliceType, pDataIn, nSize);
+	/*m_pFilter->m_dllAvCodec.FFMpeg2DecodeFrame (&m_PictureParams, &m_QMatrixData, m_SliceInfo, &m_nSliceCount, m_pFilter->GetAVCtx(), 
+						m_pFilter->GetFrame(), &m_nNextCodecIndex, &nFieldType, &nSliceType, pDataIn, nSize);*/
 
 	// Wait I frame after a flush
 	if (m_bFlushed && ! m_PictureParams.bPicIntra)
