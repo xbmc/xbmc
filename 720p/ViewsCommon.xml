@@ -1361,7 +1361,7 @@
 					<control type="label">
 						<description>Episode and Title</description>
 						<width>PanelStreamDetailTextWidth</width>
-						<label>$INFO[listitem.episode]. $INFO[ListItem.Label]</label>
+						<label>[COLOR=FFFF9900]$INFO[ListItem.TVShowTitle] $INFO[listitem.episode]:[/COLOR] $INFO[ListItem.Label]</label>
 						<font>TitleCapsFont</font>
 						<scroll>true</scroll>
 					</control>
