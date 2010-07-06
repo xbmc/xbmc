@@ -1159,6 +1159,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
   m_avcc_params.sps_pps_buf = NULL;
   m_avcc_params.nal_size_bytes = 4;
   if (m_has_bcm70015)
+  {
     switch (codec_type)
     {
       case CRYSTALHD_CODEC_ID_VC1:
