@@ -1282,19 +1282,12 @@
 					<control type="grouplist">
 						<posy>115</posy>
 						<itemgap>20</itemgap>
-						<control type="label">
-							<visible>!IsEmpty(listitem.Tagline)</visible>
-							<info>listitem.Tagline</info>
-							<font>MediaPreviewSummary</font>
-							<textcolor>fff8a337</textcolor>
-							<width>PanelStreamDetailTextWidth</width>
-						</control>
 						<control type="textbox">
 							<description>Plot/Details</description>
 							<width>PanelStreamDetailTextWidth</width>
 							<font>MediaPreviewSummary</font>
 							<height>258</height>
-							<info>ListItem.Plot</info>
+							<label>[COLOR=FFFF9900]$INFO[ListItem.tagline][/COLOR][CR]$INFO[ListItem.Plot]</label>
 						</control>
 					</control>
 					<control type="group">
