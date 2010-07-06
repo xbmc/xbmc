@@ -296,7 +296,7 @@ bool CVideoDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create streaminfo table");
     m_pDS->exec("CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
-      "strVideoCodec text, fVideoAspect real, iVideoWidth integer, iVideoHeight integer, "
+      "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
       "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, strSubtitleLanguage text, iVideoDuration integer)");
     m_pDS->exec("CREATE INDEX ix_streamdetails ON streamdetails (idFile)");
 
