@@ -1370,7 +1370,7 @@ void CCrystalHD::Reset(void)
     {
       m_reset = 60;
       m_dll->DtsFlushInput(m_device, 2);
-      ::Sleep(400);
+      ::Sleep(100);
     }
   }
 
