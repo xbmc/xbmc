@@ -35,7 +35,7 @@
 FILE*       CLog::m_file            = NULL;
 int         CLog::m_repeatCount     = 0;
 int         CLog::m_repeatLogLevel  = -1;
-CStdString  CLog::m_repeatLine      = "";
+CStdString* CLog::m_repeatLine      = NULL;
 
 static CCriticalSection critSec;
 
@@ -63,6 +63,8 @@ void CLog::Close()
     fclose(m_file);
     m_file = NULL;
   }
+  delete m_repeatLine;
+  m_repeatLine = NULL;
 }
 
 
@@ -91,7 +93,7 @@ void CLog::Log(int loglevel, const char *format, ... )
     strData.FormatV(format,va);
     va_end(va);
 
-    if (m_repeatLogLevel == loglevel && m_repeatLine == strData)
+    if (m_repeatLogLevel == loglevel && *m_repeatLine == strData)
     {
       m_repeatCount++;
       return;
@@ -110,7 +112,7 @@ void CLog::Log(int loglevel, const char *format, ... )
       m_repeatCount = 0;
     }
     
-    m_repeatLine      = strData;
+    *m_repeatLine     = strData;
     m_repeatLogLevel  = loglevel;
 
     unsigned int length = 0;
@@ -202,6 +204,10 @@ bool CLog::Init(const char* path)
     m_file = fopen(strLogFile.c_str(),"wb");
 #endif
   }
+
+  if (!m_repeatLine)
+    m_repeatLine = new CStdString;
+
   return m_file != NULL;
 }
 
