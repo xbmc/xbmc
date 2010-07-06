@@ -1158,33 +1158,35 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
   m_avcc_params.pps_size = 0;
   m_avcc_params.sps_pps_buf = NULL;
   m_avcc_params.nal_size_bytes = 4;
-  switch (codec_type)
-  {
-    case CRYSTALHD_CODEC_ID_VC1:
-      Subtype = BCM::BC_MSUBTYPE_VC1;
-    break;
-    case CRYSTALHD_CODEC_ID_WMV3:
-      Subtype = BCM::BC_MSUBTYPE_WMV3;
-    break;
-    case CRYSTALHD_CODEC_ID_H264:
-      Subtype = BCM::BC_MSUBTYPE_H264;
-      m_avcc_params.nal_size_bytes = 4; // 4 sync bytes used
-    break;
-    case CRYSTALHD_CODEC_ID_AVC1:
-      Subtype = BCM::BC_MSUBTYPE_AVC1;
-      m_avcc_params.sps_pps_buf = (uint8_t*)malloc(1000);
-			if (!extract_sps_pps_from_avcc(extradata_size, extradata))
-      {
-        free(m_avcc_params.sps_pps_buf);
-        m_avcc_params.sps_pps_buf = NULL;
-				m_avcc_params.pps_size = 0;
-			}
-    break;
-    case CRYSTALHD_CODEC_ID_MPEG2:
-      Subtype = BCM::BC_MSUBTYPE_MPEG2VIDEO;
-    break;
-    //BC_VID_ALGO_DIVX:
-    //BC_VID_ALGO_VC1MP:
+  if (m_has_bcm70015)
+    switch (codec_type)
+    {
+      case CRYSTALHD_CODEC_ID_VC1:
+        Subtype = BCM::BC_MSUBTYPE_VC1;
+      break;
+      case CRYSTALHD_CODEC_ID_WMV3:
+        Subtype = BCM::BC_MSUBTYPE_WMV3;
+      break;
+      case CRYSTALHD_CODEC_ID_H264:
+        Subtype = BCM::BC_MSUBTYPE_H264;
+        m_avcc_params.nal_size_bytes = 4; // 4 sync bytes used
+      break;
+      case CRYSTALHD_CODEC_ID_AVC1:
+        Subtype = BCM::BC_MSUBTYPE_AVC1;
+        m_avcc_params.sps_pps_buf = (uint8_t*)malloc(1000);
+        if (!extract_sps_pps_from_avcc(extradata_size, extradata))
+        {
+          free(m_avcc_params.sps_pps_buf);
+          m_avcc_params.sps_pps_buf = NULL;
+          m_avcc_params.pps_size = 0;
+        }
+      break;
+      case CRYSTALHD_CODEC_ID_MPEG2:
+        Subtype = BCM::BC_MSUBTYPE_MPEG2VIDEO;
+      break;
+      //BC_VID_ALGO_DIVX:
+      //BC_VID_ALGO_VC1MP:
+    }
   }
 #endif
 
