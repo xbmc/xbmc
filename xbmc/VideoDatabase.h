@@ -311,10 +311,10 @@ public:
    Sets the playcount and last played date to a given value
    \param item CFileItem to set the playcount for
    \param count The playcount to set.
-   \param date The date the file was last watched. If empty, we use the current date time (the default)
-   \sa GetPlayCount, IncrementPlayCount
+   \param date The date the file was last viewed (does not denote the video was watched to completion).  If empty we current datetime (if count > 0) or never viewed (if count = 0).
+   \sa GetPlayCount, IncrementPlayCount, UpdateLastPlayed
    */
-  void SetPlayCount(const CFileItem &item, int count, const CStdString &lastWatched = "");
+  void SetPlayCount(const CFileItem &item, int count, const CStdString &date = "");
 
   /*! \brief Increment the playcount of an item
    Increments the playcount and updates the last played date
@@ -329,6 +329,13 @@ public:
    \sa SetPlayCount, IncrementPlayCount
    */
   int GetPlayCount(const CFileItem &item);
+
+  /*! \brief Update the last played time of an item
+   Updates the last played date
+   \param item CFileItem to update the last played time for
+   \sa GetPlayCount, SetPlayCount, IncrementPlayCount
+   */
+  void UpdateLastPlayed(const CFileItem &item);
 
   void UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
 

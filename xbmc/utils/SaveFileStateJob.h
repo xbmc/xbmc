@@ -47,6 +47,8 @@ bool CSaveFileStateJob::DoWork()
             CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
             g_windowManager.SendMessage(message);
           }
+          else
+            videodatabase.UpdateLastPlayed(m_item);
 
           if (m_bookmark.timeInSeconds < 0.0f)
           {

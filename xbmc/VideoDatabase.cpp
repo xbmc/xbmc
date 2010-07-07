@@ -3407,12 +3407,17 @@ void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CStdSt
     if (count)
     {
       if (date.IsEmpty())
-        strSQL = PrepareSQL("update files set playCount=%i,lastPlayed=CURRENT_TIMESTAMP where idFile=%i", count, id);
+        strSQL = PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", count, CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str(), id);
       else
         strSQL = PrepareSQL("update files set playCount=%i,lastPlayed='%s' where idFile=%i", count, date.c_str(), id);
     }
     else
-      strSQL = PrepareSQL("update files set playCount=NULL,lastPlayed=NULL where idFile=%i", id);
+    {
+      if (date.IsEmpty())
+        strSQL = PrepareSQL("update files set playCount=NULL,lastPlayed=NULL where idFile=%i", id);
+      else
+        strSQL = PrepareSQL("update files set playCount=NULL,lastPlayed='%s' where idFile=%i", date.c_str(), id);
+    }
 
     m_pDS->exec(strSQL.c_str());
   }
@@ -3425,6 +3430,11 @@ void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CStdSt
 void CVideoDatabase::IncrementPlayCount(const CFileItem &item)
 {
   SetPlayCount(item, GetPlayCount(item) + 1);
+}
+
+void CVideoDatabase::UpdateLastPlayed(const CFileItem &item)
+{
+  SetPlayCount(item, GetPlayCount(item), CDateTime::GetCurrentDateTime().GetAsDBDateTime());
 }
 
 void CVideoDatabase::UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType)
