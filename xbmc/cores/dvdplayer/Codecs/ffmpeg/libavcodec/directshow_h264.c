@@ -426,11 +426,11 @@ static int end_frame(AVCodecContext *avctx)
                                      commit_bitstream_and_slice_buffer);*/
 }
 
-AVHWAccel h264_directshow_hwaccel = {
-    .name           = "h264_directshow",
+AVHWAccel h264_dshow_hwaccel = {
+    .name           = "h264_dshow",
     .type           = AVMEDIA_TYPE_VIDEO,
     .id             = CODEC_ID_H264,
-    .pix_fmt        = PIX_FMT_DIRECTSHOW_H264,
+    .pix_fmt        = PIX_FMT_YUV420P,
     .capabilities   = 0,
     .start_frame    = start_frame,
     .decode_slice   = decode_slice,

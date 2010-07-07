@@ -165,7 +165,7 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
   m_pFilter->m_dllAvCodec.av_new_packet(avpkt,nSize);
   memcpy(avpkt->data,(uint8_t*)pDataIn,nSize);*/
   int usedbyte;
-  usedbyte = m_pFilter->m_dllAvCodec.avcodec_decode_video(m_pFilter->GetAVCtx(), m_pFilter->m_pFrame, &iGotPicture, pDataIn, nSize);
+  usedbyte = m_pFilter->m_dllAvCodec.avcodec_decode_video(m_pFilter->GetAVCtx(), m_pFilter->GetFrame(), &iGotPicture, pDataIn, nSize);
   
   /*m_pFilter->m_dllAvCodec.FFH264DecodeBuffer (m_pFilter->GetAVCtx(), pDataIn, nSize, &nFramePOC, &nOutPOC, &rtOutStart);*/
 

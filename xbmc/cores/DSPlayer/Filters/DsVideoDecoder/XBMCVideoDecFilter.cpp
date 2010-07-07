@@ -524,21 +524,16 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
   if (direction == PINDIR_INPUT)
   {
     nNewCodec = FindCodec(pmt);
-    if (nNewCodec == -1) return VFW_E_TYPE_NOT_ACCEPTED;
+    if (nNewCodec == -1) 
+      return VFW_E_TYPE_NOT_ACCEPTED;
 
     if (nNewCodec != m_nCodecNb)
     {
       m_nCodecNb  = nNewCodec;
-
       m_bReorderBFrame  = true;
-    m_pAVCodec = NULL;
-    
-      
-
+      m_pAVCodec = NULL;
       m_pCodecContext  = m_dllAvCodec.avcodec_alloc_context();
-      CheckPointer (m_pCodecContext,    E_POINTER);
-      
-      
+      CheckPointerDbg(m_pCodecContext, E_POINTER, "failed to avcodec_alloc_context");
 
       if(pmt->formattype == FORMAT_VideoInfo)
       {
@@ -570,11 +565,11 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
         m_pCodecContext->coded_width = mpg2v->hdr.bmiHeader.biWidth;
         m_pCodecContext->height  = abs(mpg2v->hdr.bmiHeader.biHeight);
         m_pCodecContext->coded_height = abs(mpg2v->hdr.bmiHeader.biHeight);
-        //m_pCodecContext->codec_tag  = mpg2v->hdr.bmiHeader.biCompression;
+        m_pCodecContext->codec_tag  = mpg2v->hdr.bmiHeader.biCompression;
 
         if (mpg2v->hdr.bmiHeader.biCompression == NULL)
         {
-          //m_pCodecContext->codec_tag = pmt->subtype.Data1;
+          m_pCodecContext->codec_tag = pmt->subtype.Data1;
         }
         else if ( (m_pCodecContext->codec_tag == MAKEFOURCC('a','v','c','1')) || (m_pCodecContext->codec_tag == MAKEFOURCC('A','V','C','1')))
         {
@@ -587,6 +582,7 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
         }
       }
 
+#if 0
     while((m_pAVCodec = m_dllAvCodec.av_codec_next(m_pAVCodec)))
     {
       if(m_pAVCodec->id == ffCodecs[nNewCodec].nFFCodec
@@ -609,6 +605,7 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
         d_dec->Release();
         }
     }
+#endif
       if (!m_pAVCodec)
         m_pAVCodec = m_dllAvCodec.avcodec_find_decoder(ffCodecs[nNewCodec].nFFCodec);
       CheckPointer (m_pAVCodec, VFW_E_UNSUPPORTED_VIDEO);
@@ -629,7 +626,8 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
       m_nHeight  = m_pCodecContext->height;
       //m_pCodecContext->intra_matrix      = (uint16_t*)calloc(sizeof(uint16_t),64);
       //m_pCodecContext->inter_matrix      = (uint16_t*)calloc(sizeof(uint16_t),64);
-      //m_pCodecContext->codec_tag        = ffCodecs[nNewCodec].fourcc;
+      /* The codectag is currently used in mpegvideo.c at MPV_common_init*/
+      m_pCodecContext->codec_tag        = ffCodecs[nNewCodec].fourcc;
       //m_pCodecContext->error_concealment    = m_nErrorConcealment;
       //m_pCodecContext->error_recognition    = m_nErrorRecognition;
       //m_pCodecContext->idct_algo        = m_nIDCTAlgo;
@@ -1053,21 +1051,6 @@ template<class T> inline T odd2even(T x)
         x + 1 :
         x;
 }
-
-union pts_union
-{
-  double  pts_d;
-  int64_t pts_i;
-};
-
-static int64_t pts_dtoi(double pts)
-{
-  pts_union u;
-  u.pts_d = pts;
-  return u.pts_i;
-}
-
-#define DS_NOPTS_VALUE    (-1LL<<52) // should be possible to represent in both double and __int64
 #endif /* INCLUDE_MPC_VIDEO_DECODER */
 
 HRESULT CXBMCVideoDecFilter::SoftwareDecode(IMediaSample* pIn, BYTE* pDataIn, int nSize, REFERENCE_TIME& rtStart, REFERENCE_TIME& rtStop)
@@ -1075,7 +1058,7 @@ HRESULT CXBMCVideoDecFilter::SoftwareDecode(IMediaSample* pIn, BYTE* pDataIn, in
   HRESULT      hr;
   int        got_picture;
   int        used_bytes;
-      // reset the last 8 bytes to 0;
+
   while (nSize > 0)
   {
     if (nSize+FF_INPUT_BUFFER_PADDING_SIZE > m_nFFBufferSize)
@@ -1093,8 +1076,9 @@ HRESULT CXBMCVideoDecFilter::SoftwareDecode(IMediaSample* pIn, BYTE* pDataIn, in
     memcpy(m_pFFBuffer, pDataIn, nSize);
     memset(m_pFFBuffer+nSize,0,FF_INPUT_BUFFER_PADDING_SIZE);
 
-    //m_pCodecContext->reordered_opaque = pts_dtoi(DS_NOPTS_VALUE);
+    
     used_bytes = m_dllAvCodec.avcodec_decode_video(m_pCodecContext, m_pFrame, &got_picture, m_pFFBuffer, nSize);
+
     if (!got_picture || !m_pFrame->data[0]) return S_OK;
     if(pIn->IsPreroll() == S_OK || rtStart < 0) return S_OK;
 
@@ -1404,27 +1388,11 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
     m_nPosB            = 1 - m_nPosB;
   }
 
-  if (m_nDXVAMode == MODE_SOFTWARE ||m_nDXVAMode == MODE_DXVA1)
+  if ( m_nDXVAMode == MODE_SOFTWARE || m_nDXVAMode == MODE_DXVA1 )
   {
-  /*  boost::shared_ptr<CSingleLock> lock;
-    if(m_pHardware)
-    {
-    CCriticalSection* section = m_pHardware->Section();
-    if(section)
-      lock = boost::shared_ptr<CSingleLock>(new CSingleLock(*section));
-
-    int result;
-    if(pDataIn)
-      result = m_pHardware->Check(m_pCodecContext);
-    else
-      result = m_pHardware->Decode(m_pCodecContext, NULL);
-
-    if(result)
-      return S_OK;
-  }*/
     hr = SoftwareDecode (pIn, pDataIn, nSize, rtStart, rtStop);
   }
-  else if( m_nDXVAMode == MODE_DXVA2 )
+  else if ( m_nDXVAMode == MODE_DXVA2 )
   {
   
     CheckPointer (m_pDXVADecoder, E_UNEXPECTED);

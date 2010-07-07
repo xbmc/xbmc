@@ -58,6 +58,11 @@
 #define CHECK_HR_RETURN(hr,theerrmsg) if (FAILED(hr)) { CLog::Log(LOGERROR,"%s %s",__FUNCTION__,theerrmsg); return hr;}
 #endif
 
+#ifdef NDEBUG
+#define CheckPointerDbg(p,ret,theerrmsg) {if((p)==NULL) { CLog::Log(LOGERROR,"%s %s",__FUNCTION__,theerrmsg); return (ret);}}
+#else
+#define CheckPointerDbg(p,ret,theerrmsg) {CheckPointer(p,ret);}
+#endif
 #include "DshowCommon.h"
 #include "Mpeg2Def.h"
 

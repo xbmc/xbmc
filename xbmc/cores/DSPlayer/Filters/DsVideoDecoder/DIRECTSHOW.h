@@ -70,8 +70,8 @@ public:
   unsigned                     m_buffer_age;
   int                          m_refs;*/
 
-  CCriticalSection             m_section;
-  CEvent                       m_event;
+  /*CCriticalSection             m_section;*/
+  /*CEvent                       m_event;*/
 };
 
 };/* Namespace DIRECTSHOW */

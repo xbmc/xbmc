@@ -66,11 +66,15 @@ void ff_directshow_h264_fill_slice_long(MpegEncContext *s)
 	directshow_dxva_h264 *pict;
 	int						field_pic_flag;
 	unsigned int			i,j,k;
-	
+	if (!s->current_picture_ptr) {
+	    av_log(s->avctx, AV_LOG_ERROR, "current_picture_ptr is null!\n");
+	    return;
+	}
 	pict = (directshow_dxva_h264 *)s->current_picture_ptr->data[0];
+	assert(pict);
 	
 	DXVA_Slice_H264_Long*	pSlice = &((DXVA_Slice_H264_Long*) pict->slice_long)[h->current_slice-1];
-	
+	memset(pSlice, 0, sizeof(*pSlice));
     av_log(s->avctx, AV_LOG_ERROR, "ff_directshow_h264_fill_slice_long!\n");
 	field_pic_flag = (h->s.picture_structure != PICT_FRAME);
 
