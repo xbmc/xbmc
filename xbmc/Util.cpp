@@ -665,10 +665,15 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 {
   char szXBEFileName[1024];
   CIoSupport::GetXbePath(szXBEFileName);
+#ifdef _WIN32
   CStdStringW strPathW, strTargetW;
   g_charsetConverter.utf8ToW(strTarget, strTargetW);
   strPathW = _wgetenv(strTargetW);
   g_charsetConverter.wToUTF8(strPathW,strPath);
+#else
+  strPath = getenv(strTarget);
+#endif
+
   if (strPath != NULL && !strPath.IsEmpty())
   {
 #ifdef _WIN32
