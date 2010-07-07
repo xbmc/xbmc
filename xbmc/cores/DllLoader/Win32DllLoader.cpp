@@ -27,6 +27,7 @@
 #include "Util.h"
 #include "utils/log.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "CharsetConverter.h"
 
 #include "dll_tracker_library.h"
 #include "dll_tracker_file.h"
@@ -190,7 +191,10 @@ bool Win32DllLoader::Load()
   CStdString strFileName = GetFileName();
   CLog::Log(LOGDEBUG, "%s(%s)\n", __FUNCTION__, strFileName.c_str());
 
-  m_dllHandle = LoadLibraryEx(_P(strFileName).c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
+  CStdString strDll = _P(strFileName);
+  CStdStringW strDllW;
+  g_charsetConverter.utf8ToW(strDll, strDllW);
+  m_dllHandle = LoadLibraryExW(strDllW.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
   if (!m_dllHandle)
   {
     CLog::Log(LOGERROR, "%s: Unable to load %s (%d)", __FUNCTION__, strFileName.c_str(), GetLastError());
