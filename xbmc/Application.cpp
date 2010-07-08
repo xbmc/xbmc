@@ -4596,7 +4596,8 @@ bool CApplication::ExecuteAction(CGUIActionDescriptor action)
   {
 #ifdef HAS_PYTHON
     // Determine the context of the action, if possible
-    g_pythonParser.evalString(action.m_action);
+    vector<CStdString> argv;
+    g_pythonParser.evalString(action.m_action, argv);
     return true;
 #else
     return false;

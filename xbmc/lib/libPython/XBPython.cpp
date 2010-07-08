@@ -546,9 +546,13 @@ bool XBPython::StopScript(const CStdString &path)
   return false;
 }
 
-int XBPython::evalFile(const char *src) { return evalFile(src, 0, NULL); }
+int XBPython::evalFile(const CStdString &src)
+{
+  std::vector<CStdString> argv;
+  return evalFile(src, argv);
+}
 // execute script, returns -1 if script doesn't exist
-int XBPython::evalFile(const char *src, const unsigned int argc, const char ** argv)
+int XBPython::evalFile(const CStdString &src, const std::vector<CStdString> &argv)
 {
   CSingleExit ex(g_graphicsContext);
   CSingleLock lock(m_critSection);
@@ -569,8 +573,7 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
 
   m_nextid++;
   XBPyThread *pyThread = new XBPyThread(this, m_nextid);
-  if (argv != NULL)
-    pyThread->setArgv(argc, argv);
+  pyThread->setArgv(argv);
   pyThread->evalFile(src);
   PyElem inf;
   inf.id        = m_nextid;
@@ -645,7 +648,7 @@ const char* XBPython::getFileName(int scriptId)
   return cFileName;
 }
 
-int XBPython::getScriptId(const char* strFile)
+int XBPython::getScriptId(const CStdString &strFile)
 {
   int iId = -1;
 
@@ -654,7 +657,7 @@ int XBPython::getScriptId(const char* strFile)
   PyList::iterator it = m_vecPyList.begin();
   while (it != m_vecPyList.end())
   {
-    if (!stricmp(it->strFile.c_str(), strFile))
+    if (it->strFile == strFile)
       iId = it->id;
     ++it;
   }
@@ -714,7 +717,7 @@ void XBPython::WaitForEvent(HANDLE hEvent, unsigned int timeout)
 }
 
 // execute script, returns -1 if script doesn't exist
-int XBPython::evalString(const char *src, const unsigned int argc, const char ** argv)
+int XBPython::evalString(const CStdString &src, const std::vector<CStdString> &argv)
 {
   CLog::Log(LOGDEBUG, "XBPython::evalString (python)");
   CSingleLock lock(m_critSection);
@@ -730,8 +733,7 @@ int XBPython::evalString(const char *src, const unsigned int argc, const char **
   // Previous implementation would create a new thread for every script
   m_nextid++;
   XBPyThread *pyThread = new XBPyThread(this, m_nextid);
-  if (argv != NULL)
-    pyThread->setArgv(argc, argv);
+  pyThread->setArgv(argv);
   pyThread->evalString(src);
 
   PyElem inf;

@@ -109,34 +109,32 @@ XBPyThread::~XBPyThread()
   }
 }
 
-int XBPyThread::evalFile(const char *src)
+int XBPyThread::evalFile(const CStdString &src)
 {
   m_type    = 'F';
-  m_source  = new char[strlen(src)+1];
+  m_source  = new char[src.GetLength()+1];
   strcpy(m_source, src);
   Create();
   return 0;
 }
 
-int XBPyThread::evalString(const char *src)
+int XBPyThread::evalString(const CStdString &src)
 {
   m_type    = 'S';
-  m_source  = new char[strlen(src)+1];
+  m_source  = new char[src.GetLength()+1];
   strcpy(m_source, src);
   Create();
   return 0;
 }
 
-int XBPyThread::setArgv(unsigned int src_argc, const char **src)
+int XBPyThread::setArgv(const std::vector<CStdString> &argv)
 {
-  if (src == NULL)
-    return 1;
-  m_argc = src_argc;
+  m_argc = argv.size();
   m_argv = new char*[m_argc];
   for(unsigned int i = 0; i < m_argc; i++)
   {
-    m_argv[i] = new char[strlen(src[i])+1];
-    strcpy(m_argv[i], src[i]);
+    m_argv[i] = new char[argv[i].GetLength()+1];
+    strcpy(m_argv[i], argv[i].c_str());
   }
   return 0;
 }
