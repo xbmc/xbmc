@@ -15,22 +15,6 @@
 			<include>TVSeasonsVisible</include>
 			<include>MediaViewFade</include>
 			<include>TVSeasonsFadeOutAnim</include>
-			<control type="group">
-				<posx>70</posx>
-				<posy>226</posy>
-				<control type="label">
-					<description>Synopsis label</description>
-					<label>$LOCALIZE[31119]</label>
-					<font>MediumSmallDefaultCapsFont</font>
-					<textcolor>FFFF9900</textcolor>
-				</control>
-				<control type="textbox">
-					<posy>28</posy>
-					<width>764</width>
-					<height>65</height>
-					<info>Container.Property(description)</info>
-				</control>
-			</control>
 		</control>
 		<control type="group">
 			<include>TVSeasonsVisible</include>
@@ -98,9 +82,9 @@
 				<viewtype label="Wide">list</viewtype>
 				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
 				<posx>-34</posx>
-				<posy>235</posy>
+				<posy>100</posy>
 				<width>640</width>
-				<height>454</height>
+				<height>589</height>
 				<scrolltime>200</scrolltime>
 				<pagecontrol>61</pagecontrol>
 				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
