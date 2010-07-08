@@ -14,27 +14,6 @@
 		<control type="group">
 			<include>TVSeasonsVisible</include>
 			<include>MediaViewFade</include>
-			<include>TVSeasonsFadeOutAnim</include>
-			<control type="group">
-				<posx>70</posx>
-				<posy>226</posy>
-				<control type="label">
-					<description>Synopsis label</description>
-					<label>$LOCALIZE[31119]</label>
-					<font>MediumSmallDefaultCapsFont</font>
-					<textcolor>FFFF9900</textcolor>
-				</control>
-				<control type="textbox">
-					<posy>28</posy>
-					<width>764</width>
-					<height>65</height>
-					<info>Container.Property(description)</info>
-				</control>
-			</control>
-		</control>
-		<control type="group">
-			<include>TVSeasonsVisible</include>
-			<include>MediaViewFade</include>
 			<include>TVSeasonsFadeInAnim</include>
 			<control type="group">
 				<include>TVSeasonsThumbPos</include>
@@ -55,14 +34,6 @@
 					<width>272</width>
 					<font>LargeTitleCapsFont</font>
 					<include>NoThumbLabel</include>
-					<visible>Control.IsVisible(57)</visible>
-				</control>
-				<control type="image">
-					<description>Season Thumb reflection</description>
-					<include>TVSeasonsSeasonThumbRflctnDims</include>
-					<texture flipy="true" diffuse="DiffuseMirror.png">amt-blank-poster.png</texture>
-					<info>ListItem.Thumb</info>
-					<aspectratio>stretch</aspectratio>
 					<visible>Control.IsVisible(57)</visible>
 				</control>
 			</control>
@@ -105,10 +76,10 @@
 				<pagecontrol>61</pagecontrol>
 				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
 				<onright>9009</onright>
-				<onup>56</onup>
-				<ondown>56</ondown>
+				<onup>57</onup>
+				<ondown>57</ondown>
 				<include>TVSeasonsListAnim</include>
-				<itemlayout condition="!Container.Content(seasons)" height="42" width="530">
+				<itemlayout condition="!Container.Content(Seasons)" height="42" width="530">
 					<control type="image">
 						<posx>0</posx>
 						<posy>-6</posy>
@@ -118,17 +89,15 @@
 					</control>
 					<control type="label">
 						<posx>60</posx>
-						<width>356</width>
+						<width>446</width>
 						<height>42</height>
 						<align>left</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label]</label>
 						<font>MediumSmallDefaultCapsFont</font>
 						<textcolor>Unfocused</textcolor>
-						<visible>Container.Content(TVShows)</visible>
 					</control>
 					<control type="image">
-						<visible>Container.Content(TVShows) | Container.Content(Seasons)</visible>
 						<posx>520</posx>
 						<posy>9</posy>
 						<width>44</width>
@@ -149,7 +118,7 @@
 						<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 					</control>
 				</itemlayout>
-				<focusedlayout condition="!Container.Content(seasons)" height="42" width="530">
+				<focusedlayout condition="!Container.Content(Seasons)" height="42" width="530">
 					<control type="image">
 						<posx>35</posx>
 						<posy>2</posy>
@@ -160,7 +129,6 @@
 						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
 					</control>
 					<control type="image">
-						<visible>Container.Content(TVShows)</visible>
 						<posx>520</posx>
 						<posy>9</posy>
 						<width>44</width>
@@ -181,16 +149,14 @@
 						<font>MediumSmallDefaultCapsFont</font>
 						<textcolor>Unfocused</textcolor>
 						<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
-						<visible>Container.Content(TVShows)</visible>
 					</control>
 
 					<control type="group">
-						<visible>Container.Content(TVShows)</visible>
 						<control type="label">
 							<description>shadow</description>
 							<posx>61</posx>
 							<posy>2</posy>
-							<width>356</width>
+							<width>446</width>
 							<height>42</height>
 							<align>left</align>
 							<aligny>center</aligny>
@@ -204,7 +170,7 @@
 							<description>shadow</description>
 							<posx>60</posx>
 							<posy>1</posy>
-							<width>356</width>
+							<width>446</width>
 							<height>42</height>
 							<align>left</align>
 							<aligny>center</aligny>
@@ -216,7 +182,7 @@
 						</control>
 						<control type="label">
 							<posx>60</posx>
-							<width>356</width>
+							<width>446</width>
 							<height>42</height>
 							<align>left</align>
 							<aligny>center</aligny>
@@ -236,79 +202,130 @@
 						<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 					</control>
 				</focusedlayout>
-				<itemlayout condition="Container.Content(seasons)" width="TVViewListWidth" height="42">
+				<itemlayout condition="Container.Content(Seasons)" height="42" width="630">
 					<control type="image">
-						<include>TVSeasonsItemBGDims</include>
-						<include>MediaItemBG</include>
+						<posx>0</posx>
+						<posy>-6</posy>
+						<width>779</width>
+						<height>54</height>
+						<texture>MediaItemBG.png</texture>
 					</control>
 					<control type="label">
-						<include>MediaItemMainInfoNF</include>
-					</control>
-					<control type="label">
-						<include>TVTotalEpisodesDetailsNF</include>
-					</control>
-					<control type="label">
-						<include>TVUnwatchedEpisodesDetailsNF</include>
+						<posx>60</posx>
+						<width>456</width>
+						<height>42</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+						<font>MediumSmallDefaultCapsFont</font>
+						<textcolor>Unfocused</textcolor>
 					</control>
 					<control type="image">
-						<include>TVUnwatchedEpisodesDetailsImage</include>
-						<include>MediaItemNFFade</include>
+						<posx>570</posx>
+						<posy>9</posy>
+						<width>44</width>
+						<height>29</height>
+						<aspectratio>keep</aspectratio>
+						<texture>Unwatchedcount.png</texture>
+						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
+						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
+						<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 					</control>
 					<control type="label">
-						<include>TVWatchedEpisodesDetailsNF</include>
+						<posx>592</posx>
+						<posy>13</posy>
+						<width>40</width>
+						<align>center</align>
+						<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
+						<textcolor>Unfocused</textcolor>
+						<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 					</control>
 				</itemlayout>
-				<focusedlayout condition="Container.Content(seasons)" width="TVViewListWidth" height="42">
+				<focusedlayout condition="Container.Content(Seasons)" height="42" width="630">
 					<control type="image">
-						<include>TVSeasonsItemBGDims</include>
-						<include>MediaItemBG</include>
-					</control>
-					<control type="image">
-						<include>TVSeasonsItemFocusBGDims</include>
-						<include>MediaItemFocusBG</include>
-					</control>
-					<control type="image">
-						<visible>!IsEmpty(ListItem.Episode)</visible>
-						<include>TVSeasonsItemDetailBGDims</include>
-						<include>MediaItemDetailBG</include>
-					</control>
-					<control type="label">
-						<include>MediaItemMainInfoNF</include>
-						<include>MediaListItemFadeOut</include>
-					</control>
-					<control type="label">
-						<include>MediaItemMainInfoFO</include>
-						<include>MediaListItemFade</include>
-					</control>
-					<control type="label">
-						<include>TVTotalEpisodesDetailsNF</include>
-						<include>MediaListItemFadeOut</include>
-					</control>
-					<control type="label">
-						<include>TVTotalEpisodesDetailsFO</include>
-						<include>MediaListItemFade</include>
-					</control>
-					<control type="label">
-						<include>TVUnwatchedEpisodesDetailsNF</include>
-						<include>MediaListItemFadeOut</include>
-					</control>
-					<control type="label">
-						<include>TVUnwatchedEpisodesDetailsFO</include>
-						<include>MediaListItemFade</include>
+						<posx>35</posx>
+						<posy>2</posy>
+						<width>665</width>
+						<height>41</height>
+						<texture aspectratio="stretch" flipx="true">InfoList_focused.png</texture>
+						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
+						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
 					</control>
 					<control type="image">
-						<include>TVUnwatchedEpisodesDetailsImage</include>
-						<include>MediaListItemFade</include>
+						<posx>570</posx>
+						<posy>9</posy>
+						<width>44</width>
+						<height>29</height>
+						<aspectratio>keep</aspectratio>
+						<texture>UnwatchedcountFocused.png</texture>
+						<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
+						<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
+						<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 					</control>
 					<control type="label">
-						<include>TVWatchedEpisodesDetailsNF</include>
-						<include>MediaListItemFadeOut</include>
+						<posx>60</posx>
+						<width>456</width>
+						<height>42</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+						<font>MediumSmallDefaultCapsFont</font>
+						<textcolor>Unfocused</textcolor>
+						<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
+					</control>
+
+					<control type="group">
+						<control type="label">
+							<description>shadow</description>
+							<posx>61</posx>
+							<posy>2</posy>
+							<width>456</width>
+							<height>42</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<font>MediumSmallDefaultCapsFont</font>
+							<textcolor>6D000000</textcolor>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+						</control>
+						<control type="label">
+							<description>shadow</description>
+							<posx>60</posx>
+							<posy>1</posy>
+							<width>456</width>
+							<height>42</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<font>MediumSmallDefaultCapsFont</font>
+							<textcolor>25000000</textcolor>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+						</control>
+						<control type="label">
+							<posx>60</posx>
+							<width>456</width>
+							<height>42</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<font>MediumSmallDefaultCapsFont</font>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+							<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+						</control>
 					</control>
 					<control type="label">
-						<include>TVWatchedEpisodesDetailsFO</include>
-						<include>MediaListItemFade</include>
+						<posx>592</posx>
+						<posy>12</posy>
+						<width>40</width>
+						<align>center</align>
+						<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
+						<textcolor>Focused</textcolor>
+						<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 					</control>
 				</focusedlayout>
+
 			</control>
 		<control type="group">
 			<posx>558</posx>
@@ -323,6 +340,21 @@
 				<onleft>50</onleft>
 				<onright>9009</onright>
    			    <showonepage>true</showonepage>
+			</control>
+		</control>
+		<control type="group">
+			<posx>708</posx>
+			<include>TVSeasonsVisible</include>
+			<include>MediaViewFade</include>
+			<control type="scrollbar" id="61">
+				<posx>3</posx>
+				<posy>225</posy>
+				<height>465</height>
+				<onup>61</onup>
+				<ondown>61</ondown>
+				<onleft>50</onleft>
+				<onright>9009</onright>
+   			    <showonepage>false</showonepage>
 			</control>
 		</control>
 			<control type="group">
