@@ -187,6 +187,10 @@ protected:
   void DeleteVAAPITexture(int index);
   bool CreateVAAPITexture(int index);
 
+  void UploadYUY2Texture(int index);
+  void DeleteYUY2Texture(int index);
+  bool CreateYUY2Texture(int index);
+
   void CalculateTextureSourceRects(int source, int num_planes);
 
   // renderers
@@ -267,7 +271,7 @@ protected:
 
   void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                 , unsigned width,  unsigned height
-                , int stride, void* data );
+                , int stride, void* data, GLuint pbo = 0 );
 
   Shaders::BaseYUV2RGBShader     *m_pYUVShader;
   Shaders::BaseVideoFilterShader *m_pVideoFilterShader;

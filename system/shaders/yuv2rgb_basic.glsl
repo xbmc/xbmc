@@ -32,7 +32,7 @@ void main()
 {
   vec4 yuv, rgb;
   yuv.rgba = vec4( texture2D(m_sampY, stretch(m_cordY)).r
-                 , texture2D(m_sampU, stretch(m_cordU)).r
+                 , texture2D(m_sampU, stretch(m_cordU)).g
                  , texture2D(m_sampV, stretch(m_cordV)).a
                  , 1.0 );
 

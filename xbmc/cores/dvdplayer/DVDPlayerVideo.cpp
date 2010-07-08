@@ -610,11 +610,16 @@ void CDVDPlayerVideo::Process()
 
 #if 1
             int iResult = OutputPicture(&picture, pts);
-#else
+#elif 0
             // testing NV12 rendering functions
             DVDVideoPicture* pTempNV12Picture = CDVDCodecUtils::ConvertToNV12Picture(&picture);
             int iResult = OutputPicture(pTempNV12Picture, pts);
             CDVDCodecUtils::FreePicture(pTempNV12Picture);
+#elif 0
+            // testing YUY2 rendering functions
+            DVDVideoPicture* pTempYUY2Picture = CDVDCodecUtils::ConvertToYUY2Picture(&picture);
+            int iResult = OutputPicture(pTempYUY2Picture, pts);
+            CDVDCodecUtils::FreePicture(pTempYUY2Picture);
 #endif
 
             if(m_started == false)
@@ -885,6 +890,11 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   {
     AutoCrop(pSource);
     CDVDCodecUtils::CopyNV12Picture(pDest, pSource);
+  }
+  else if(pSource->format == DVDVideoPicture::FMT_YUY2)
+  {
+    AutoCrop(pSource);
+    CDVDCodecUtils::CopyYUY2Picture(pDest, pSource);
   }
 #ifdef HAS_DX
   else if(pSource->format == DVDVideoPicture::FMT_DXVA)
@@ -1178,7 +1188,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
 {
   if ((pPicture->format == DVDVideoPicture::FMT_YUV420P) ||
-     (pPicture->format == DVDVideoPicture::FMT_NV12) )
+     (pPicture->format == DVDVideoPicture::FMT_NV12) ||
+     (pPicture->format == DVDVideoPicture::FMT_YUY2) )
   {
     RECT crop;
 
@@ -1236,13 +1247,19 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   black2 = black * pPicture->iWidth;
   detect = level * pPicture->iWidth + black2;
 
+  //YV12 and NV12 have planar Y plane
+  //YUY2 has Y packed with U and V
+  int xadvance = 1;
+  if (pPicture->format == DVDVideoPicture::FMT_YUY2)
+    xadvance = 2;
+
   // Crop top
   s      = pPicture->data[0];
   last   = black2;
   for (unsigned int y = 0; y < pPicture->iHeight/2; y++)
   {
     int total = 0;
-    for (unsigned int x = 0; x < pPicture->iWidth; x++)
+    for (unsigned int x = 0; x < pPicture->iWidth; x += xadvance)
       total += s[x];
     s += pPicture->iLineSize[0];
 
@@ -1261,7 +1278,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   for (unsigned int y = (int)pPicture->iHeight; y > pPicture->iHeight/2; y--)
   {
     int total = 0;
-    for (unsigned int x = 0; x < pPicture->iWidth; x++)
+    for (unsigned int x = 0; x < pPicture->iWidth; x += xadvance)
       total += s[x];
     s -= pPicture->iLineSize[0];
 
@@ -1282,7 +1299,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   // Crop left
   s    = pPicture->data[0];
   last = black2;
-  for (unsigned int x = 0; x < pPicture->iWidth/2; x++)
+  for (unsigned int x = 0; x < pPicture->iWidth/2; x += xadvance)
   {
     int total = 0;
     for (unsigned int y = 0; y < pPicture->iHeight; y++)
@@ -1300,7 +1317,7 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture, RECT &crop)
   // Crop right
   s    = pPicture->data[0] + (pPicture->iWidth-1);
   last = black2;
-  for (unsigned int x = (int)pPicture->iWidth-1; x > pPicture->iWidth/2; x--)
+  for (unsigned int x = (int)pPicture->iWidth-1; x > pPicture->iWidth/2; x -= xadvance)
   {
     int total = 0;
     for (unsigned int y = 0; y < pPicture->iHeight; y++)

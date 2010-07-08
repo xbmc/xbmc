@@ -475,13 +475,16 @@ void CLinuxRendererGL::CalculateTextureSourceRects(int source, int num_planes)
 
 void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                                 , unsigned width, unsigned height
-                                , int stride, void* data )
+                                , int stride, void* data, GLuint pbo/*= 0*/ )
 {
   if(plane.flipindex == flipindex)
     return;
 
-  if(plane.pbo)
-    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, plane.pbo);
+  if (plane.pbo && !pbo)
+    pbo = plane.pbo;
+
+  if(pbo)
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo);
 
   glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
   glBindTexture(m_textureTarget, plane.id);
@@ -502,7 +505,7 @@ void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
 
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
   glBindTexture(m_textureTarget, 0);
-  if(plane.pbo)
+  if(pbo)
     glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 
   plane.flipindex = flipindex;
@@ -882,18 +885,22 @@ unsigned int CLinuxRendererGL::DrawSlice(unsigned char *src[], int stride[], int
 
   // copy U
   p = 1;
-  d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-  s = src[p];
-  for (i = 0;i < h;i++)
+  //check for valid second plane, YUY2 doesn't have one
+  if(im.plane[p] && src[p])
   {
-    memcpy(d, s, w);
-    s += stride[p];
-    d += im.stride[p];
+    d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
+    s = src[p];
+    for (i = 0;i < h;i++)
+    {
+      memcpy(d, s, w);
+      s += stride[p];
+      d += im.stride[p];
+    }
   }
 
   // copy V
   p = 2;
-  // check for valid yv12, nv12 does not use the third plane.
+  //check for valid third plane, NV12 and YUY2 don't have one
   if(im.plane[p] && src[p])
   {
     d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
@@ -1193,6 +1200,12 @@ void CLinuxRendererGL::LoadShaders(int field)
     m_textureUpload = &CLinuxRendererGL::UploadNV12Texture;
     m_textureCreate = &CLinuxRendererGL::CreateNV12Texture;
     m_textureDelete = &CLinuxRendererGL::DeleteNV12Texture;
+  }
+  if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_YUY2)
+  {
+    m_textureUpload = &CLinuxRendererGL::UploadYUY2Texture;
+    m_textureCreate = &CLinuxRendererGL::CreateYUY2Texture;
+    m_textureDelete = &CLinuxRendererGL::DeleteYUY2Texture;
   }
   else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_VAAPI)
   {
@@ -2385,6 +2398,243 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
 
   SetEvent(m_eventTexturesDone[index]);
 #endif
+}
+
+void CLinuxRendererGL::UploadYUY2Texture(int source)
+{
+  YUVBUFFER& buf    =  m_buffers[source];
+  YV12Image* im     = &buf.image;
+  YUVFIELDS& fields =  buf.fields;
+
+  if (!(im->flags & IMAGE_FLAG_READY))
+  {
+    SetEvent(m_eventTexturesDone[source]);
+    return;
+  }
+
+  bool deinterlacing;
+  if (m_currentField == FIELD_FULL)
+    deinterlacing = false;
+  else
+    deinterlacing = true;
+
+  glEnable(m_textureTarget);
+  VerifyGLState();
+
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+  //YUY2 is YUYV packed
+  //we upload it here as GL_LUMINANCE_ALPHA so we can get the Y plane on the luminance
+  if (deinterlacing)
+  {
+    // Load Y fields
+    LoadPlane( fields[FIELD_ODD][0] , GL_LUMINANCE_ALPHA, buf.flipindex
+             , im->width, im->height >> 1
+             , im->stride[0], im->plane[0] );
+
+    LoadPlane( fields[FIELD_EVEN][0], GL_LUMINANCE_ALPHA, buf.flipindex
+             , im->width, im->height >> 1
+             , im->stride[0], im->plane[0] + im->stride[0]) ;
+  }
+  else
+  {
+    // Load Y plane
+    LoadPlane( fields[FIELD_FULL][0], GL_LUMINANCE_ALPHA, buf.flipindex
+             , im->width, im->height
+             , im->stride[0] / 2, im->plane[0] );
+  }
+
+  VerifyGLState();
+
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+  //YUY2 is YUYV packed
+  //we upload it here as GL_BRGA so we can get U on red and V on alpha
+  //it's uploaded to the texture of plane 1, but loaded from the buffer/pbo of plane 0
+  if (deinterlacing)
+  {
+    // Load Even UV Fields
+    LoadPlane( fields[FIELD_ODD][1], GL_BGRA, buf.flipindex
+             , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+             , im->stride[0] / 2, im->plane[0], fields[FIELD_ODD][0].pbo );
+
+    // Load Odd UV Fields
+    LoadPlane( fields[FIELD_EVEN][1], GL_BGRA, buf.flipindex
+             , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+             , im->stride[0] / 2, im->plane[0] + im->stride[0], fields[FIELD_EVEN][0].pbo );
+  }
+  else
+  {
+    LoadPlane( fields[FIELD_FULL][1], GL_BGRA, buf.flipindex
+             , im->width >> im->cshift_x, im->height
+             , im->stride[0] / 4, im->plane[0], fields[FIELD_FULL][0].pbo );
+  }
+  SetEvent(m_eventTexturesDone[source]);
+
+  CalculateTextureSourceRects(source, 3);
+
+  glDisable(m_textureTarget);
+
+}
+
+void CLinuxRendererGL::DeleteYUY2Texture(int index)
+{
+  YV12Image &im     = m_buffers[index].image;
+  YUVFIELDS &fields = m_buffers[index].fields;
+  GLuint    *pbo    = m_buffers[index].pbo;
+
+  if( fields[FIELD_FULL][0].id == 0 ) return;
+
+  // finish up all textures, and delete them
+  g_graphicsContext.BeginPaint();  //FIXME
+  for(int f = 0;f<MAX_FIELDS;f++)
+  {
+    for(int p = 0;p<2;p++)
+    {
+      if( fields[f][p].id )
+      {
+        if (glIsTexture(fields[f][p].id))
+        {
+          glDeleteTextures(1, &fields[f][p].id);
+        }
+        fields[f][p].id = 0;
+      }
+    }
+    fields[f][2].id = 0;
+  }
+  g_graphicsContext.EndPaint();
+
+  if (pbo[0])
+  {
+    if (im.plane[0])
+    {
+      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[0]);
+      glUnmapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB);
+      im.plane[0] = NULL;
+      glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+    }
+    glDeleteBuffersARB(1, pbo);
+    pbo[0] = 0;
+  }
+  else
+  {
+    if (im.plane[0])
+    {
+      delete[] im.plane[0];
+      im.plane[0] = NULL;
+    }
+  }
+}
+
+bool CLinuxRendererGL::CreateYUY2Texture(int index)
+{
+  // since we also want the field textures, pitch must be texture aligned
+  YV12Image &im     = m_buffers[index].image;
+  YUVFIELDS &fields = m_buffers[index].fields;
+  GLuint    *pbo    = m_buffers[index].pbo;
+
+  // Delete any old texture
+  DeleteYUY2Texture(index);
+
+  im.height = m_sourceHeight;
+  im.width  = m_sourceWidth;
+  im.cshift_x = 1;
+  im.cshift_y = 0;
+
+  im.stride[0] = im.width * 2;
+  im.stride[1] = 0;
+  im.stride[2] = 0;
+
+  im.plane[0] = NULL;
+  im.plane[1] = NULL;
+  im.plane[2] = NULL;
+
+  // packed YUYV plane
+  im.planesize[0] = im.stride[0] * im.height;
+  // second plane is not used
+  im.planesize[1] = 0;
+  // third plane is not used
+  im.planesize[2] = 0;
+
+  if (m_pboused)
+  {
+    glGenBuffersARB(1, pbo);
+
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo[0]);
+    glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, im.planesize[0] + PBO_OFFSET, 0, GL_STREAM_DRAW_ARB);
+    im.plane[0] = (BYTE*)glMapBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB) + PBO_OFFSET;
+    memset(im.plane[0], 0, im.planesize[0]);
+
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+  }
+  else
+  {
+    im.plane[0] = new BYTE[im.planesize[0]];
+  }
+
+  glEnable(m_textureTarget);
+  for(int f = 0;f<MAX_FIELDS;f++)
+  {
+    for(int p = 0;p<2;p++)
+    {
+      if (!glIsTexture(fields[f][p].id))
+      {
+        glGenTextures(1, &fields[f][p].id);
+        VerifyGLState();
+      }
+      fields[f][p].pbo = pbo[0];
+    }
+    fields[f][2].id = fields[f][1].id;
+  }
+
+  // YUV
+  for (int f = FIELD_FULL; f<=FIELD_EVEN ; f++)
+  {
+    int fieldshift = (f==FIELD_FULL) ? 0 : 1;
+    YUVPLANES &planes = fields[f];
+
+    planes[0].texwidth  = im.width;
+    planes[0].texheight = im.height >> fieldshift;
+
+    planes[1].texwidth  = planes[0].texwidth  >> im.cshift_x;
+    planes[1].texheight = planes[0].texheight;
+
+    planes[2].texwidth  = planes[1].texwidth;
+    planes[2].texheight = planes[1].texheight;
+
+    if(m_renderMethod & RENDER_POT)
+    {
+      for(int p = 0; p < 3; p++)
+      {
+        planes[p].texwidth  = NP2(planes[p].texwidth);
+        planes[p].texheight = NP2(planes[p].texheight);
+      }
+    }
+
+    for(int p = 0; p < 2; p++)
+    {
+      YUVPLANE &plane = planes[p];
+      if (plane.texwidth * plane.texheight == 0)
+        continue;
+
+      glBindTexture(m_textureTarget, plane.id);
+
+      if (p == 0)
+        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE_ALPHA, plane.texwidth, plane.texheight, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, NULL);
+      else
+        glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
+      glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      VerifyGLState();
+    }
+  }
+  glDisable(m_textureTarget);
+  SetEvent(m_eventTexturesDone[index]);
+
+  return true;
 }
 
 void CLinuxRendererGL::SetTextureFilter(GLenum method)
