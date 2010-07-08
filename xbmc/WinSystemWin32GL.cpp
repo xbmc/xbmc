@@ -34,7 +34,7 @@
 
 #pragma comment (lib,"opengl32.lib")
 #pragma comment (lib,"glu32.lib")
-#pragma comment (lib,"../../xbmc/lib/libglew/glew32.lib")
+#pragma comment (lib,"glew32.lib")
 
 
 CWinSystemWin32GL& g_Windowing = g_SystemGlobals.m_Windowing;
