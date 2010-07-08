@@ -231,9 +231,6 @@
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #endif
-#if defined(HAS_SDL) && defined(_WIN32)
-#include <SDL/SDL_syswm.h>
-#endif
 #ifdef _WIN32
 #include <shlobj.h>
 #include "win32util.h"
