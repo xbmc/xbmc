@@ -356,7 +356,6 @@ public:
   void GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMVideo=-1);
   bool GetStreamDetailsForFileId(CStreamDetails& details, int idFile) const;
 
-  int GetFileId(const CStdString& strFilenameAndPath);
   int GetPathId(const CStdString& strPath);
   int GetTvShowId(const CStdString& strPath);
   int GetEpisodeId(const CStdString& strFilenameAndPath, int idEpisode=-1, int idSeason=-1); // idEpisode, idSeason are used for multipart episodes as hints
@@ -524,9 +523,17 @@ protected:
   /*! \brief Get the id of this fileitem
    Works for both videodb:// items and normal fileitems
    \param item CFileItem to grab the fileid of
-   \return id of the file, -1 if it is not in the db
+   \param add set to true to add the file if not present. Defaults to false.
+   \return id of the file, -1 if it is not in the db or was unable to be added.
    */
-  int GetFileId(const CFileItem &item);
+  int GetFileId(const CFileItem &item, bool add = false);
+
+  /*! \brief Get the id of a file from path
+   \param strFilenameAndPath full path to the file
+   \param add set to true to add the file if not present. Defaults to false.
+   \return id of the file, -1 if it is not in the db or was unable to be added.
+   */
+  int GetFileId(const CStdString& strFilenameAndPath, bool add = false);
 
   int AddPath(const CStdString& strPath);
   int AddToTable(const CStdString& table, const CStdString& firstField, const CStdString& secondField, const CStdString& value);

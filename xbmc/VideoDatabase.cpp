@@ -668,7 +668,7 @@ bool CVideoDatabase::GetLinksToTvShow(int idMovie, vector<int>& ids)
 
 
 //********************************************************************************************************************************
-int CVideoDatabase::GetFileId(const CStdString& strFilenameAndPath)
+int CVideoDatabase::GetFileId(const CStdString& strFilenameAndPath, bool add)
 {
   try
   {
@@ -678,18 +678,21 @@ int CVideoDatabase::GetFileId(const CStdString& strFilenameAndPath)
     SplitPath(strFilenameAndPath,strPath,strFileName);
 
     int idPath = GetPathId(strPath);
-    if (idPath < 0)
-      return -1;
-
-    CStdString strSQL;
-    strSQL=PrepareSQL("select idFile from files where strFileName like '%s' and idPath=%i", strFileName.c_str(),idPath);
-    m_pDS->query(strSQL.c_str());
-    if (m_pDS->num_rows() > 0)
+    if (idPath >= 0)
     {
-      int idFile = m_pDS->fv("files.idFile").get_asInt();
-      m_pDS->close();
-      return idFile;
+      CStdString strSQL;
+      strSQL=PrepareSQL("select idFile from files where strFileName like '%s' and idPath=%i", strFileName.c_str(),idPath);
+      m_pDS->query(strSQL.c_str());
+      if (m_pDS->num_rows() > 0)
+      {
+        int idFile = m_pDS->fv("files.idFile").get_asInt();
+        m_pDS->close();
+        return idFile;
+      }
     }
+    // path or file not in the db
+    if (add)
+      return AddFile(strFilenameAndPath);
   }
   catch (...)
   {
@@ -698,12 +701,12 @@ int CVideoDatabase::GetFileId(const CStdString& strFilenameAndPath)
   return -1;
 }
 
-int CVideoDatabase::GetFileId(const CFileItem &item)
+int CVideoDatabase::GetFileId(const CFileItem &item, bool add)
 {
   CStdString path = item.m_strPath;
   if (item.IsVideoDb() && item.HasVideoInfoTag())
     path = item.GetVideoInfoTag()->m_strFileNameAndPath;
-  return GetFileId(path);
+  return GetFileId(path, add);
 }
 
 //********************************************************************************************************************************
@@ -899,9 +902,9 @@ int CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath)
     int idFile, idMovie=-1;
     idFile = GetFileId(strFilenameAndPath);
     if (idFile < 0)
-      idFile = AddFile(strFilenameAndPath);
-    else
-      idMovie = GetMovieId(strFilenameAndPath);
+      return -1;
+
+    idMovie = GetMovieId(strFilenameAndPath);
     if (idMovie < 0)
     {
       CStdString strSQL=PrepareSQL("insert into movie (idMovie, idFile) values (NULL, %i)", idFile);
@@ -961,9 +964,9 @@ int CVideoDatabase::AddEpisode(int idShow, const CStdString& strFilenameAndPath)
     if (NULL == m_pDS.get()) return -1;
 
     int idFile, idEpisode=-1;
-    idFile = GetFileId(strFilenameAndPath);
+    idFile = GetFileId(strFilenameAndPath, true);
     if (idFile < 0)
-      idFile = AddFile(strFilenameAndPath);
+      return -1;
 
     CStdString strSQL=PrepareSQL("insert into episode (idEpisode, idFile) values (NULL, %i)", idFile);
     m_pDS->exec(strSQL.c_str());
@@ -990,11 +993,11 @@ int CVideoDatabase::AddMusicVideo(const CStdString& strFilenameAndPath)
     if (NULL == m_pDS.get()) return -1;
 
     int idFile, idMVideo=-11;
-    idFile = GetFileId(strFilenameAndPath);
+    idFile = GetFileId(strFilenameAndPath, true);
     if (idFile < 0)
-      idFile = AddFile(strFilenameAndPath);
-    else
-      idMVideo = GetMusicVideoId(strFilenameAndPath);
+      return -1;
+
+    idMVideo = GetMusicVideoId(strFilenameAndPath);
     if (idMVideo < 0)
     {
       CStdString strSQL=PrepareSQL("insert into musicvideo (idMVideo, idFile) values (NULL, %i)", idFile);
@@ -1626,10 +1629,9 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
   {
     CVideoInfoTag info = details;
 
-    int idFile = GetFileId(strFilenameAndPath);
-
+    int idFile = GetFileId(strFilenameAndPath, true);
     if (idFile < 0)
-      idFile = AddFile(strFilenameAndPath);
+      return -1;
 
     int idMovie = GetMovieId(strFilenameAndPath);
 
@@ -1863,9 +1865,10 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
   {
     BeginTransaction();
 
-    int idFile = GetFileId(strFilenameAndPath);
+    int idFile = GetFileId(strFilenameAndPath, true);
     if (idFile < 0)
-      idFile = AddFile(strFilenameAndPath);
+      return -1;
+
     int idMVideo = GetMusicVideoId(strFilenameAndPath);
     if (idMVideo > -1)
     {
@@ -2124,16 +2127,9 @@ void CVideoDatabase::AddBookMarkToFile(const CStdString& strFilenameAndPath, con
 {
   try
   {
-    int idFile = GetFileId(strFilenameAndPath);
+    int idFile = GetFileId(strFilenameAndPath, true);
     if (idFile < 0)
-    {
-      // Doesn't exist in the database yet - add it.
-      // TODO: It doesn't appear to me that the CDLabel parameter or the subtitles
-      // parameter is anywhere in use in XBMC.
-      idFile = AddFile(strFilenameAndPath);
-      if (idFile < 0)
-        return;
-    }
+      return;
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
 
@@ -2953,12 +2949,9 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    int idFile = GetFileId(strFilenameAndPath);
+    int idFile = GetFileId(strFilenameAndPath, true);
     if (idFile < 0)
-    { // no files found - we have to add one
-      idFile = AddFile(strFilenameAndPath);
-      if (idFile < 0) return ;
-    }
+      return;
     CStdString strSQL;
     strSQL.Format("select * from settings where idFile=%i", idFile);
     m_pDS->query( strSQL.c_str() );
@@ -3047,12 +3040,9 @@ void CVideoDatabase::SetStackTimes(const CStdString& filePath, vector<int> &time
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    int idFile = GetFileId(filePath);
+    int idFile = GetFileId(filePath, true);
     if (idFile < 0)
-    { // no files found - we have to add one
-      idFile = AddFile(filePath);
-      if (idFile < 0) return ;
-    }
+      return;
 
     // delete any existing items
     m_pDS->exec( PrepareSQL("delete from stacktimes where idFile=%i", idFile) );
@@ -3389,13 +3379,9 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
 
 void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CStdString &date)
 {
-  int id = GetFileId(item);
-  
+  int id = GetFileId(item, true);
   if (id < 0)
-  { // no files found - we have to add one
-    id = AddFile(item);
-    if (id < 0) return;
-  }
+    return;
 
   // and mark as watched
   try
