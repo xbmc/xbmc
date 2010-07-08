@@ -202,7 +202,7 @@
 						<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 					</control>
 				</focusedlayout>
-				<itemlayout condition="Container.Content(Seasons)" height="42" width="630">
+				<itemlayout condition="Container.Content(Seasons)" height="42" width="530">
 					<control type="image">
 						<posx>0</posx>
 						<posy>-6</posy>
@@ -241,7 +241,7 @@
 						<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 					</control>
 				</itemlayout>
-				<focusedlayout condition="Container.Content(Seasons)" height="42" width="630">
+				<focusedlayout condition="Container.Content(Seasons)" height="42" width="530">
 					<control type="image">
 						<posx>35</posx>
 						<posy>2</posy>
@@ -342,13 +342,14 @@
    			    <showonepage>true</showonepage>
 			</control>
 		</control>
+<!--
 		<control type="group">
 			<posx>708</posx>
 			<include>TVSeasonsVisible</include>
 			<include>MediaViewFade</include>
 			<control type="scrollbar" id="61">
 				<posx>3</posx>
-				<posy>225</posy>
+				<posy>230</posy>
 				<height>465</height>
 				<onup>61</onup>
 				<ondown>61</ondown>
@@ -357,6 +358,7 @@
    			    <showonepage>false</showonepage>
 			</control>
 		</control>
+-->
 			<control type="group">
 				<posx>592</posx>
 				<posy>237</posy>
