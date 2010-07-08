@@ -11,4 +11,7 @@ xcopy SDL-1.2.14\include\* "%CUR_PATH%\include\SDL\" /E /Q /I /Y
 copy SDL-1.2.14\lib\SDL.lib "%CUR_PATH%\lib\SDL.lib" /Y
 copy SDL-1.2.14\lib\SDL.dll "%XBMC_PATH%\project\Win32BuildSetup\dependencies\SDL.dll"
 
+copy SDL-1.2.14\lib\SDL.dll "%XBMC_PATH%\tools\TexturePacker\SDL.dll"
+copy *.dll "%XBMC_PATH%\tools\TexturePacker\"
+
 cd %LOC_PATH%
