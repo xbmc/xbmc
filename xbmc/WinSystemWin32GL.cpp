@@ -28,9 +28,9 @@
 #include "WinSystemWin32GL.h"
 #include "WIN32Util.h"
 #include "SystemGlobals.h"
-#include <GL/glew.h>
 
 #ifdef HAS_GL
+#include <GL/glew.h>
 
 #pragma comment (lib,"opengl32.lib")
 #pragma comment (lib,"glu32.lib")
