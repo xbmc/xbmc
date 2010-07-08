@@ -1138,6 +1138,23 @@ bool CUtil::IsWritable(const CStdString& strFile)
   return ( IsHD(strFile) || IsSmb(strFile) ) && !IsDVD(strFile);
 }
 
+bool CUtil::IsPicture(const CStdString& strFile)
+{
+  CStdString extension = GetExtension(strFile);
+
+  if (extension.IsEmpty())
+    return false;
+
+  extension.ToLower();
+  if (g_settings.m_pictureExtensions.Find(extension) != -1)
+    return true;
+
+  if (extension == ".tbn" || extension == ".dds")
+    return true;
+
+  return false;
+}
+
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
 {
   if (strFileOrFolder.IsEmpty())
