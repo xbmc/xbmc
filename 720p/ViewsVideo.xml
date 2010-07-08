@@ -82,9 +82,9 @@
 				<viewtype label="Wide">list</viewtype>
 				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
 				<posx>-34</posx>
-				<posy>100</posy>
+				<posy>130</posy>
 				<width>640</width>
-				<height>589</height>
+				<height>559</height>
 				<scrolltime>200</scrolltime>
 				<pagecontrol>61</pagecontrol>
 				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
