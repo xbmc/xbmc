@@ -124,10 +124,6 @@ bool CDecoder::GetPicture(directshow_dxva_h264** picture)
 
 int CDecoder::Check(AVCodecContext* avctx)
 {
-  
-
-  
-
   return 0;
 
 }
@@ -159,7 +155,7 @@ void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   CSingleLock lock(m_section);
-  CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
+  //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   CXBMCVideoDecFilter* ctx        = (CXBMCVideoDecFilter*)avctx->opaque;
   CDecoder* dec        = (CDecoder*)ctx->GetHardware();
   
@@ -216,4 +212,24 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   pic->reordered_opaque = avctx->reordered_opaque;
   return 0;
 }
+
+bool CDecoder::RefFrameInUse(int nFrameNum)
+{
+  
+
+	for (int i=0; i<m_videoBuffer[0]->short_ref_count; i++)
+	{
+		if (m_videoBuffer[0]->short_ref_opaque[i] == nFrameNum)
+			return true;
+	}
+
+	for (int i=0; i<m_videoBuffer[0]->long_ref_count; i++)
+	{
+		if (m_videoBuffer[0]->long_ref_opaque[i] == nFrameNum)
+			return true;
+	}
+
+	return false;
+}
+
 #endif

@@ -16,7 +16,7 @@ typedef struct directshow_dxva_h264{
     DXVA_Slice_H264_Long  slice_long[MAX_SLICES];
 
     int                   short_ref_opaque[32]; /* maximum of 32 picture with h264_context*/
-	  int                   short_ref_count; /* maximum of 32 picture with h264_context*/
+	int                   short_ref_count; /* maximum of 32 picture with h264_context*/
 
     int                   long_ref_opaque[32]; /* maximum of 32 picture with h264_context*/
 	  int                   long_ref_count; /* maximum of 32 picture with h264_context*/

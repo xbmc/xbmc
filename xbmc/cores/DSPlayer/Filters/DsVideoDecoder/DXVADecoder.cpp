@@ -77,7 +77,7 @@ CDXVADecoder::CDXVADecoder (CXBMCVideoDecFilter* pFilter, IDirectXVideoDecoder* 
 
 CDXVADecoder::~CDXVADecoder()
 {
-	SAFE_DELETE_ARRAY (m_pPictureStore);
+  m_pPictureStore.clear();
 	SAFE_DELETE_ARRAY (m_ExecuteParams.pCompressedBuffers);
 }
 
@@ -86,7 +86,7 @@ void CDXVADecoder::Init(CXBMCVideoDecFilter* pFilter, DXVAMode nMode, int nPicEn
 	m_pFilter			= pFilter;
 	m_nMode				= nMode;
 	m_nPicEntryNumber	= nPicEntryNumber;
-	m_pPictureStore		= new PICTURE_STORE[nPicEntryNumber];
+  m_pPictureStore.resize(nPicEntryNumber);
 	m_dwNumBuffersInfo	= 0;
 
 	memset (&m_DXVA1Config, 0, sizeof(m_DXVA1Config));
@@ -416,8 +416,16 @@ HRESULT CDXVADecoder::FindFreeDXVA1Buffer(DWORD dwTypeIndex, DWORD& dwBufferInde
 	int			nTry;
 
 	dwBufferIndex	= 0; //(dwBufferIndex + 1) % m_ComBufferInfo[DXVA_PICTURE_DECODE_BUFFER].dwNumCompBuffers;
+  nTry = 0;
+  while (FAILED(hr = m_pAMVideoAccelerator->QueryRenderStatus (-1, dwBufferIndex, 0)) && nTry<MAX_RETRY_ON_PENDING)
+  {
+	  if (hr != E_PENDING) 
+      break;
+    Sleep(1);
+		nTry++;
+  }
 
-	DO_DXVA_PENDING_LOOP (m_pAMVideoAccelerator->QueryRenderStatus (-1, dwBufferIndex, 0));
+	/*DO_DXVA_PENDING_LOOP (m_pAMVideoAccelerator->QueryRenderStatus (-1, dwBufferIndex, 0));*/
 	
 	return hr;
 }

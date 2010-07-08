@@ -1,8 +1,8 @@
 /* 
- *  Copyright (C) 2003-2006 Gabest
+ *  Copyright (C) 2003-2009 Gabest
  *  http://www.gabest.org
  *
- *  Copyright (C) 2005-2010 Team XBMC
+ *  Copyright (C) 2010 Team XBMC
  *  http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -58,11 +58,13 @@ void CDXVADecoderH264::Init()
   memset (&m_pSliceLong,      0, sizeof (DXVA_Slice_H264_Long) *MAX_SLICES);
   memset (&m_pSliceShort,      0, sizeof (DXVA_Slice_H264_Short)*MAX_SLICES);
   
-  m_DXVAPicParams.MbsConsecutiveFlag          = 1;
+  m_DXVAPicParams.MbsConsecutiveFlag = 1;
+  
   if(m_pFilter->GetPCIVendor() == PCIV_Intel) 
     m_DXVAPicParams.Reserved16Bits          = 0x534c;
   else
     m_DXVAPicParams.Reserved16Bits          = 0;
+	
   m_DXVAPicParams.ContinuationFlag          = 1;
   m_DXVAPicParams.Reserved8BitsA            = 0;
   m_DXVAPicParams.Reserved8BitsB            = 0;
@@ -82,11 +84,11 @@ void CDXVADecoderH264::Init()
 
   switch (GetMode())
   {
-  case H264_VLD :
-    AllocExecuteParams (3);
-    break;
-  default :
-    ASSERT(FALSE);
+    case H264_VLD :
+      AllocExecuteParams (3);
+      break;
+    default :
+      ASSERT(FALSE);
   }
 }
 
@@ -197,7 +199,7 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
   m_DXVAPicParams = dxvapicture->picture_params;
   *m_pSliceLong = *dxvapicture->slice_long;
   m_DXVAScalingMatrix = dxvapicture->picture_qmatrix;
-	m_nMaxWaiting	= std::min ( std::max (m_DXVAPicParams.num_ref_frames, (UCHAR) 3), (UCHAR) 8);
+  m_nMaxWaiting  = std::min ( std::max (m_DXVAPicParams.num_ref_frames, (UCHAR) 3), (UCHAR) 8);
 
   // If parsing fail (probably no PPS/SPS), continue anyway it may arrived later (happen on truncated streams)
   /*if (FAILED (m_pFilter->m_dllAvCodec.FFH264BuildPicParams (&m_DXVAPicParams, &m_DXVAScalingMatrix, &nFieldType, &nSliceType, m_pFilter->GetAVCtx(), m_pFilter->GetPCIVendor())))
@@ -232,7 +234,7 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
   else
   {
     /*verify that we dont slow down the process by filling the slicelong when we use the short*/
-    CHECK_HR (AddExecuteBuffer (DXVA2_SliceControlBufferType, sizeof (DXVA_Slice_H264_Short)*nSlices, m_pSliceLong));
+    CHECK_HR (AddExecuteBuffer (DXVA2_SliceControlBufferType, sizeof (DXVA_Slice_H264_Short)*nSlices, m_pSliceShort));
   }
 
   CHECK_HR (AddExecuteBuffer (DXVA2_InverseQuantizationMatrixBufferType, sizeof (DXVA_Qmatrix_H264), (void*)&m_DXVAScalingMatrix));
@@ -251,8 +253,8 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
                   (FF_SLICE_TYPE)dxvapicture->slice_type, dxvapicture->frame_poc);
 
   /*m_pFilter->m_dllAvCodec.FFH264UpdateRefFramesList (&m_DXVAPicParams, m_pFilter->GetAVCtx());*/
-  /*ClearUnusedRefFrames();*/
-  for (int i=0; i<m_nPicEntryNumber; i++)
+  ClearUnusedRefFrames();
+  /*for (int i=0; i<m_nPicEntryNumber; i++)
   {
     if (m_pPictureStore[i].bRefPicture && m_pPictureStore[i].bDisplayed)
     {
@@ -271,7 +273,7 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
       }
     
     }
-  }
+  }*/
 
   if (bAdded) 
   {
@@ -307,11 +309,9 @@ void CDXVADecoderH264::ClearUnusedRefFrames()
   // Remove old reference frames (not anymore a short or long ref frame)
   for (int i=0; i<m_nPicEntryNumber; i++)
   {
-    /*if (m_pPictureStore[i].bRefPicture && m_pPictureStore[i].bDisplayed)
-      
-      if (!m_pFilter->m_dllAvCodec.FFH264IsRefFrameInUse (i, m_pFilter->GetAVCtx()))
-        RemoveRefFrame (i);*/
-
+    if (m_pPictureStore[i].bRefPicture && m_pPictureStore[i].bDisplayed)
+      if (!m_pFilter->GetHardware()->RefFrameInUse(i))
+        RemoveRefFrame (i);
   }
 }
 

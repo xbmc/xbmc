@@ -2240,10 +2240,8 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
     h->emu_edge_width= (s->flags&CODEC_FLAG_EMU_EDGE) ? 0 : 16;
     h->emu_edge_height= (FRAME_MBAFF || FIELD_PICTURE) ? 0 : h->emu_edge_width;
 
-	if(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW){
+	if(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
 	  ff_directshow_h264_fill_slice_long(s);
-	  av_log(s->avctx, AV_LOG_ERROR, "ff_directshow_h264_fill_slice_long done\n");
-    }
 	
     if(s->avctx->debug&FF_DEBUG_PICT_INFO){
         av_log(h->s.avctx, AV_LOG_DEBUG, "slice:%d %s mb:%d %c%s%s pps:%u frame:%d poc:%d/%d ref:%d/%d qp:%d loop:%d:%d:%d weight:%d%s %s\n",

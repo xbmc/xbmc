@@ -108,7 +108,7 @@ protected :
 	bool							m_bFlushed;
 	int								m_nMaxWaiting;
 
-	PICTURE_STORE*					m_pPictureStore;		// Store reference picture, and delayed B-frames
+  std::vector<PICTURE_STORE> m_pPictureStore;		// Store reference picture, and delayed B-frames
 	int								m_nPicEntryNumber;		// Total number of picture in store
 	int								m_nWaitingPics;			// Number of picture not yet displayed
 

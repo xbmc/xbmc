@@ -1133,15 +1133,6 @@ HRESULT CXBMCVideoDecFilter::SoftwareDecode(IMediaSample* pIn, BYTE* pDataIn, in
       m_dllSwScale.sws_scale(m_pSwsContext, m_pFrame->data, srcStride, 0, m_pCodecContext->height, dst, dstStride);
     }
 
-
-
-#if defined(_DEBUG) && 0
-    static REFERENCE_TIME  rtLast = 0;
-    TRACE ("Deliver : %10I64d - %10I64d   (%10I64d)  {%10I64d}\n", rtStart, rtStop, 
-          rtStop - rtStart, rtStart - rtLast);
-    rtLast = rtStart;
-#endif
-
     SetTypeSpecificFlags (pOut);
     hr = m_pOutput->Deliver(pOut);
 
@@ -1151,92 +1142,6 @@ HRESULT CXBMCVideoDecFilter::SoftwareDecode(IMediaSample* pIn, BYTE* pDataIn, in
 
   return hr;
 }
-
-/*
-void CXBMCVideoDecFilter::FindStartCodeVC1 (BYTE** pDataIn, int& nSize)
-{
-  DWORD    dw      = 0;
-  long    lStart    = -1;
-
-  *pDataIn = NULL;
-  nSize   = 0;
-  for (int i=0; i<m_nFFSize; i++)
-  {
-    dw = (dw<<8) + m_pFFBuffer[i];
-    if (dw == 0x0000010D ||                  // Frame start code
-      (dw == 0x0000010F && m_nDXVAMode == MODE_SOFTWARE))  // Sequence start code
-    {
-      if (lStart == -1)
-        lStart = i-3;
-      else
-      {
-        nSize   = i - lStart  - 3;
-        *pDataIn = m_pFFBuffer + lStart;
-        return;
-      }
-    }
-  }
-}
-
-void CXBMCVideoDecFilter::FindStartCodeH264 (BYTE** pDataIn, int& nSize)
-{
-  DWORD    dw      = 0;
-  long    lStart    = -1;
-
-  *pDataIn = NULL;
-  nSize   = 0;
-  for (int i=0; i<m_nFFSize; i++)
-  {
-    dw = (dw<<8) + m_pFFBuffer[i];
-    if ((dw & 0xffffff1f)  == 0x00000109)
-    {
-      if (lStart == -1)
-        lStart = i-4;
-      else
-      {
-        nSize   = i - lStart  - 4;
-        *pDataIn = m_pFFBuffer + lStart;
-        return;
-      }
-    }
-  }
-
-  //DWORD    dw      = 0;
-  //long    lStart    = -1;
-
-  //*pDataIn = NULL;
-  //nSize   = 0;
-  //for (int i=0; i<m_nFFSize; i++)
-  //{
-  //  dw = (dw<<8) + m_pFFBuffer[i];
-  //  if (dw == 0x00000001)
-  //  {
-  //    if (lStart == -1)
-  //      lStart = i-3;
-  //    else
-  //    {
-  //      nSize   = i - lStart  - 3;
-  //      *pDataIn = m_pFFBuffer + lStart;
-  //      return;
-  //    }
-  //  }
-  //}  
-
-  //DWORD    dw = 0;
-
-  //// Get last 3 bytes in buffer (if startcode is between 2 packets)
-  //for (int i=max (0, m_nFFSize-3); i<max (0, m_nFFSize); i++)
-  //  dw = (dw<<8) + m_pFFBuffer[i];
-
-  //for (int i=0; i<nSize; i++)
-  //{
-  //  dw = (dw<<8) + pDataIn[i];
-  //  if (dw == 0x00000001)
-  //    return i-3;
-  //}
-  //return -5;
-}
-*/
 
 bool CXBMCVideoDecFilter::FindPicture(int nIndex, int nStartCode)
 {
@@ -1565,159 +1470,130 @@ HRESULT CXBMCVideoDecFilter::FindDXVA2DecoderConfiguration(IDirectXVideoDecoderS
 
 HRESULT CXBMCVideoDecFilter::ConfigureDXVA2(IPin *pPin)
 {
-    HRESULT hr             = S_OK;
-    UINT    cDecoderGuids       = 0;
-    BOOL    bFoundDXVA2Configuration = FALSE;
-    GUID    guidDecoder         = GUID_NULL;
+  HRESULT hr             = S_OK;
+  UINT  cDecoderGuids     = 0;
+  BOOL  bFoundDXVA2Configuration = FALSE;
+  GUID  guidDecoder     = GUID_NULL;
 
-    DXVA2_ConfigPictureDecode config;
-    ZeroMemory(&config, sizeof(config));
+  DXVA2_ConfigPictureDecode config;
+  ZeroMemory(&config, sizeof(config));
 
-    Com::SmartPtr<IMFGetService>          pGetService;
-    Com::SmartPtr<IDirect3DDeviceManager9>    pDeviceManager;
-    Com::SmartPtr<IDirectXVideoDecoderService>  pDecoderService;
-    GUID*                  pDecoderGuids = NULL;
-    HANDLE                  hDevice = INVALID_HANDLE_VALUE;
+  Com::SmartPtr<IMFGetService>      pGetService;
+  Com::SmartPtr<IDirect3DDeviceManager9>  pDeviceManager;
+  Com::SmartPtr<IDirectXVideoDecoderService>  pDecoderService;
+  GUID*          pDecoderGuids = NULL;
+  HANDLE          hDevice = INVALID_HANDLE_VALUE;
 
-    // Query the pin for IMFGetService.
-    hr = pPin->QueryInterface(__uuidof(IMFGetService), (void**)&pGetService);
+  // Query the pin for IMFGetService.
+  hr = pPin->QueryInterface(__uuidof(IMFGetService), (void**)&pGetService);
 
-    // Get the Direct3D device manager.
-    if (SUCCEEDED(hr))
+  // Get the Direct3D device manager.
+  if (SUCCEEDED(hr))
+    hr = pGetService->GetService(MR_VIDEO_ACCELERATION_SERVICE, __uuidof(IDirect3DDeviceManager9), (void**)&pDeviceManager);
+
+  // Open a new device handle.
+  if (SUCCEEDED(hr))
+    hr = pDeviceManager->OpenDeviceHandle(&hDevice);
+
+  // Get the video decoder service.
+  if (SUCCEEDED(hr))
+    hr = pDeviceManager->GetVideoService(hDevice, __uuidof(IDirectXVideoDecoderService), (void**)&pDecoderService);
+
+  // Get the decoder GUIDs.
+  if (SUCCEEDED(hr))
+  {
+    hr = pDecoderService->GetDecoderDeviceGuids(&cDecoderGuids, &pDecoderGuids);
+  }
+
+  if (SUCCEEDED(hr))
+  {
+    // Look for the decoder GUIDs we want.
+    for (UINT iGuid = 0; iGuid < cDecoderGuids; iGuid++)
     {
-        hr = pGetService->GetService(
-            MR_VIDEO_ACCELERATION_SERVICE,
-            __uuidof(IDirect3DDeviceManager9),
-            (void**)&pDeviceManager);
+      // Do we support this mode?
+      if (!IsSupportedDecoderMode(pDecoderGuids[iGuid]))
+        continue;
+
+      // Find a configuration that we support. 
+      hr = FindDXVA2DecoderConfiguration(pDecoderService, pDecoderGuids[iGuid], &config, &bFoundDXVA2Configuration);
+
+      if (FAILED(hr))
+        break;
+
+      if (bFoundDXVA2Configuration)
+        // Found a good configuration. Save the GUID.
+        guidDecoder = pDecoderGuids[iGuid];
     }
+  }
 
-    // Open a new device handle.
-    if (SUCCEEDED(hr))
-    {
-        hr = pDeviceManager->OpenDeviceHandle(&hDevice);
-    } 
+  if (pDecoderGuids) 
+    CoTaskMemFree(pDecoderGuids);
 
-    // Get the video decoder service.
-    if (SUCCEEDED(hr))
-    {
-        hr = pDeviceManager->GetVideoService(
-                hDevice, 
-                __uuidof(IDirectXVideoDecoderService), 
-                (void**)&pDecoderService);
-    }
+  if (!bFoundDXVA2Configuration)
+    hr = E_FAIL; // Unable to find a configuration.
 
-    // Get the decoder GUIDs.
-    if (SUCCEEDED(hr))
-    {
-        hr = pDecoderService->GetDecoderDeviceGuids(&cDecoderGuids, &pDecoderGuids);
-    }
-
-    if (SUCCEEDED(hr))
-    {
-        // Look for the decoder GUIDs we want.
-        for (UINT iGuid = 0; iGuid < cDecoderGuids; iGuid++)
-        {
-            // Do we support this mode?
-            if (!IsSupportedDecoderMode(pDecoderGuids[iGuid]))
-            {
-                continue;
-            }
-
-            // Find a configuration that we support. 
-            hr = FindDXVA2DecoderConfiguration(pDecoderService, pDecoderGuids[iGuid], &config, &bFoundDXVA2Configuration);
-
-            if (FAILED(hr))
-            {
-                break;
-            }
-
-            if (bFoundDXVA2Configuration)
-            {
-                // Found a good configuration. Save the GUID.
-                guidDecoder = pDecoderGuids[iGuid];
-            }
-        }
-    }
-
-  if (pDecoderGuids) CoTaskMemFree(pDecoderGuids);
-    if (!bFoundDXVA2Configuration)
-    {
-        hr = E_FAIL; // Unable to find a configuration.
-    }
-
-    if (SUCCEEDED(hr))
-    {
-        // Store the things we will need later.
+  if (SUCCEEDED(hr))
+  {
+    // Store the things we will need later.
     m_pDeviceManager  = pDeviceManager;
-        m_pDecoderService  = pDecoderService;
+    m_pDecoderService  = pDecoderService;
+    m_DXVA2Config  = config;
+    m_DXVADecoderGUID  = guidDecoder;
+    m_hDevice    = hDevice;
+  }
 
-        m_DXVA2Config    = config;
-        m_DXVADecoderGUID  = guidDecoder;
-        m_hDevice      = hDevice;
-    }
+  if (FAILED(hr))
+  {
+    if (hDevice != INVALID_HANDLE_VALUE)
+      pDeviceManager->CloseDeviceHandle(hDevice);
+  }
 
-    if (FAILED(hr))
-    {
-        if (hDevice != INVALID_HANDLE_VALUE)
-        {
-            pDeviceManager->CloseDeviceHandle(hDevice);
-        }
-    }
-
-    return hr;
+  return hr;
 }
 
 
 HRESULT CXBMCVideoDecFilter::SetEVRForDXVA2(IPin *pPin)
 {
-    HRESULT hr = S_OK;
+  HRESULT hr = S_OK;
+  Com::SmartPtr<IMFGetService>      pGetService;
+  Com::SmartPtr<IDirectXVideoMemoryConfiguration>  pVideoConfig;
+  Com::SmartPtr<IMFVideoDisplayControl>    pVdc;
 
-    Com::SmartPtr<IMFGetService>            pGetService;
-    Com::SmartPtr<IDirectXVideoMemoryConfiguration>  pVideoConfig;
-  Com::SmartPtr<IMFVideoDisplayControl>        pVdc;
+  // Query the pin for IMFGetService.
+  hr = pPin->QueryInterface(__uuidof(IMFGetService), (void**)&pGetService);
 
-    // Query the pin for IMFGetService.
-    hr = pPin->QueryInterface(__uuidof(IMFGetService), (void**)&pGetService);
-
-    // Get the IDirectXVideoMemoryConfiguration interface.
-    if (SUCCEEDED(hr))
-    {
-        hr = pGetService->GetService(
-            MR_VIDEO_ACCELERATION_SERVICE,
-            __uuidof(IDirectXVideoMemoryConfiguration),
-            (void**)&pVideoConfig);
+  // Get the IDirectXVideoMemoryConfiguration interface.
+  if (SUCCEEDED(hr))
+  {
+    hr = pGetService->GetService(MR_VIDEO_ACCELERATION_SERVICE, __uuidof(IDirectXVideoMemoryConfiguration), (void**)&pVideoConfig);
 
     if (SUCCEEDED (pGetService->GetService(MR_VIDEO_RENDER_SERVICE, __uuidof(IMFVideoDisplayControl), (void**)&pVdc)))
     {
       HWND  hWnd;
       if (SUCCEEDED (pVdc->GetVideoWindow(&hWnd)))
-      {
         DetectVideoCard(hWnd);
-      }
     }
-    }
+  }
 
-    // Notify the EVR. 
-    if (SUCCEEDED(hr))
+  // Notify the EVR. 
+  if (SUCCEEDED(hr))
+  {
+    DXVA2_SurfaceType surfaceType;
+    for (DWORD iTypeIndex = 0; ; iTypeIndex++)
     {
-        DXVA2_SurfaceType surfaceType;
-
-        for (DWORD iTypeIndex = 0; ; iTypeIndex++)
-        {
-            hr = pVideoConfig->GetAvailableSurfaceTypeByIndex(iTypeIndex, &surfaceType);
-            
-            if (FAILED(hr))
+      hr = pVideoConfig->GetAvailableSurfaceTypeByIndex(iTypeIndex, &surfaceType);
+      if (FAILED(hr))
         break;
 
-            if (surfaceType == DXVA2_SurfaceType_DecoderRenderTarget)
-            {
-                hr = pVideoConfig->SetSurfaceType(DXVA2_SurfaceType_DecoderRenderTarget);
-                break;
-            }
-        }
+      if (surfaceType == DXVA2_SurfaceType_DecoderRenderTarget)
+      {
+        hr = pVideoConfig->SetSurfaceType(DXVA2_SurfaceType_DecoderRenderTarget);
+        break;
+      }
     }
+  }
 
-    return hr;
+  return hr;
 }
 
 

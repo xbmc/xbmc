@@ -46,6 +46,7 @@ public:
 
   int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
   void  RelBuffer(AVCodecContext *avctx, AVFrame *pic);
+  bool  RefFrameInUse(int i);
 
   static bool      Supports(enum PixelFormat fmt);
 

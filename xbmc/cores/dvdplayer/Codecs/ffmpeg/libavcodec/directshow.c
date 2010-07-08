@@ -46,13 +46,7 @@ const byte ZZ_SCAN8[64] =
    35, 42, 49, 56, 57, 50, 43, 36, 29, 22, 15, 23, 30, 37, 44, 51,
    58, 59, 52, 45, 38, 31, 39, 46, 53, 60, 61, 54, 47, 55, 62, 63
 };
-/*
-ffmpeg[164C]: [h264_dshow] ff_directshow_h264_fill_slice_long!
-ffmpeg[164C]: [h264_dshow] ff_directshow_add_data_chunk needed
-field_end  directshow
-ffmpeg[164C]: [h264_dshow] ff_directshow_h264_set_reference_frames!
-ffmpeg[164C]: [h264_dshow] ff_directshow_h264_picture_complete!
-*/
+
 static void fill_picentry(DXVA_PicEntry_H264 *pic,
                                unsigned index, unsigned flag)
 {
@@ -75,7 +69,7 @@ void ff_directshow_h264_fill_slice_long(MpegEncContext *s)
 	unsigned int			i,j,k;
 	DXVA_Slice_H264_Long*	pSlice;
 	if (!s->current_picture_ptr) {
-	    av_log(s->avctx, AV_LOG_ERROR, "current_picture_ptr is null!\n");
+	    av_log(s->avctx, AV_LOG_DEBUG, "current_picture_ptr is null!\n");
 	    return;
 	}
 	pict = (directshow_dxva_h264 *)s->current_picture_ptr->data[0];
@@ -83,7 +77,7 @@ void ff_directshow_h264_fill_slice_long(MpegEncContext *s)
 	
 	pSlice = &((DXVA_Slice_H264_Long*) pict->slice_long)[h->current_slice-1];
 	memset(pSlice, 0, sizeof(*pSlice));
-    av_log(s->avctx, AV_LOG_ERROR, "ff_directshow_h264_fill_slice_long!\n");
+    av_log(s->avctx, AV_LOG_DEBUG, "ff_directshow_h264_fill_slice_long!\n");
 	field_pic_flag = (h->s.picture_structure != PICT_FRAME);
 
 	pSlice->slice_id						= h->current_slice-1;
@@ -154,7 +148,7 @@ void ff_directshow_h264_picture_complete(MpegEncContext *s)
 	pict = (directshow_dxva_h264 *)s->current_picture_ptr->data[0];
 	assert(pict);
 	
-    av_log(s->avctx, AV_LOG_ERROR, "ff_directshow_h264_picture_complete!\n");
+    av_log(s->avctx, AV_LOG_DEBUG, "ff_directshow_h264_picture_complete!\n");
     field_pic_flag = (h->s.picture_structure != PICT_FRAME);
 
     cur_sps = &h->sps;
@@ -285,7 +279,7 @@ void ff_directshow_h264_set_reference_frames(MpegEncContext *s)
     int                i;
     Picture*        pic;
     UCHAR            AssociatedFlag;
-	av_log(s->avctx, AV_LOG_ERROR, "ff_directshow_h264_set_reference_frames!\n");
+	av_log(s->avctx, AV_LOG_DEBUG, "ff_directshow_h264_set_reference_frames!\n");
     pict = (directshow_dxva_h264 *)s->current_picture_ptr->data[0];
     for(i=0; i<16; i++)
     {
@@ -347,7 +341,7 @@ void ff_directshow_h264_picture_start(MpegEncContext *s)
 {
     /*clear the unused picture*/
 	
-av_log(s->avctx, AV_LOG_ERROR, "ff_directshow_h264_picture_start!\n");
+av_log(s->avctx, AV_LOG_DEBUG, "ff_directshow_h264_picture_start!\n");
 }
 #if 0
     H264Context *h = s->avctx->priv_data;
