@@ -40,7 +40,7 @@ public:
  ~CDecoder();
   virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat);
   virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
-  virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame,directshow_dxva_h264* picture);
+  virtual bool GetPicture(directshow_dxva_h264** picture);
   virtual int  Check     (AVCodecContext* avctx);
   virtual void Close();
 
@@ -70,7 +70,7 @@ public:
   unsigned                     m_buffer_age;
   int                          m_refs;*/
 
-  /*CCriticalSection             m_section;*/
+  CCriticalSection             m_section;
   /*CEvent                       m_event;*/
 };
 

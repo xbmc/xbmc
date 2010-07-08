@@ -554,7 +554,7 @@ void CDXVADecoder::UpdateStore (int nSurfaceIndex, REFERENCE_TIME rtStart, REFER
 
 void CDXVADecoder::RemoveRefFrame (int nSurfaceIndex)
 {
-	ASSERT ((nSurfaceIndex < m_nPicEntryNumber) && m_pPictureStore[nSurfaceIndex].bInUse);
+	/*ASSERT ((nSurfaceIndex < m_nPicEntryNumber) && m_pPictureStore[nSurfaceIndex].bInUse);*/
 
 	m_pPictureStore[nSurfaceIndex].bRefPicture	= false;
 	if (m_pPictureStore[nSurfaceIndex].bDisplayed)
@@ -706,6 +706,7 @@ HRESULT CDXVADecoder::GetFreeSurfaceIndex(int& nSurfaceIndex, IMediaSample** ppS
 		}
 
 		// Ho ho... 
+    //Im really confuse it appear that the surface are not freed correctly
 		ASSERT (FALSE);
 		Flush();
 		break;

@@ -114,11 +114,11 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
     return 0;
 }
 
-bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, directshow_dxva_h264* picture)
+bool CDecoder::GetPicture(directshow_dxva_h264** picture)
 {
-  /*CSingleLock lock(m_section);*/
-  picture = (directshow_dxva_h264*)frame->data[0];
+  CSingleLock lock(m_section);
   
+  *picture = m_videoBuffer[0];
   return true;
 }
 
@@ -142,7 +142,7 @@ bool CDecoder::Supports(enum PixelFormat fmt)
 
 void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  /*CSingleLock lock(m_section);*/
+  CSingleLock lock(m_section);
   directshow_dxva_h264* render = (directshow_dxva_h264*)pic->data[0];
 
   if(!render)
@@ -158,7 +158,7 @@ void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  /*CSingleLock lock(m_section);*/
+  CSingleLock lock(m_section);
   CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   CXBMCVideoDecFilter* ctx        = (CXBMCVideoDecFilter*)avctx->opaque;
   CDecoder* dec        = (CDecoder*)ctx->GetHardware();
@@ -169,6 +169,8 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 
   for(unsigned int i = 0; i < dec->m_videoBuffer.size(); i++)
   {
+    
+    
       render = dec->m_videoBuffer[i];
       /*render->state = 0;*/
       break;
@@ -178,6 +180,10 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   {
     render = (directshow_dxva_h264*)calloc(1, sizeof(directshow_dxva_h264));
     memset(render,0,sizeof(directshow_dxva_h264));
+    
+    for (int xx = 0; xx < 16; xx++)
+      render->picture_params.RefFrameList[xx].bPicEntry = 0xff;
+    
 	  dec->m_videoBuffer.push_back(render);
   }
 

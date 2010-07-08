@@ -150,9 +150,7 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
   CH264Nalu          Nalu;
   UINT            nSlices    = 0;
   int              nSurfaceIndex;
-  int              nFieldType;
-  int              nSliceType;
-  int              nFramePOC;
+
   Com::SmartPtr<IMediaSample>    pSampleToDeliver;
   Com::SmartQIPtr<IMPCDXVA2Sample>  pDXVA2Sample;
   int              nDXIndex  = 0;
@@ -161,12 +159,11 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
   REFERENCE_TIME        rtOutStart;
   int iGotPicture = 0;
   Nalu.SetBuffer (pDataIn, nSize, m_nNALLength);
-  /*AVPacket *avpkt = NULL;
-  m_pFilter->m_dllAvCodec.av_new_packet(avpkt,nSize);
-  memcpy(avpkt->data,(uint8_t*)pDataIn,nSize);*/
+
   int usedbyte;
-  usedbyte = m_pFilter->m_dllAvCodec.avcodec_decode_video(m_pFilter->GetAVCtx(), m_pFilter->GetFrame(), &iGotPicture, pDataIn, nSize);
   
+  
+  usedbyte = m_pFilter->m_dllAvCodec.avcodec_decode_video(m_pFilter->GetAVCtx(), m_pFilter->GetFrame(), &iGotPicture, pDataIn, nSize);
   /*m_pFilter->m_dllAvCodec.FFH264DecodeBuffer (m_pFilter->GetAVCtx(), pDataIn, nSize, &nFramePOC, &nOutPOC, &rtOutStart);*/
 
   while (Nalu.ReadNext())
@@ -194,7 +191,12 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
   }
   if (nSlices == 0) 
     return S_FALSE;
+  directshow_dxva_h264* dxvapicture = NULL;
 
+  m_pFilter->GetHardware()->GetPicture(&dxvapicture);
+  m_DXVAPicParams = dxvapicture->picture_params;
+  *m_pSliceLong = *dxvapicture->slice_long;
+  m_DXVAScalingMatrix = dxvapicture->picture_qmatrix;
 	m_nMaxWaiting	= std::min ( std::max (m_DXVAPicParams.num_ref_frames, (UCHAR) 3), (UCHAR) 8);
 
   // If parsing fail (probably no PPS/SPS), continue anyway it may arrived later (happen on truncated streams)
@@ -208,6 +210,7 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
   
   CHECK_HR (GetFreeSurfaceIndex (nSurfaceIndex, &pSampleToDeliver, rtStart, rtStop));
   /*m_pFilter->m_dllAvCodec.FFH264SetCurrentPicture (nSurfaceIndex, &m_DXVAPicParams, m_pFilter->GetAVCtx());*/
+  m_DXVAPicParams.CurrPic.Index7Bits = nSurfaceIndex;
 
   CHECK_HR (BeginFrame(nSurfaceIndex, pSampleToDeliver));
   
@@ -228,7 +231,8 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
   }
   else
   {
-    CHECK_HR (AddExecuteBuffer (DXVA2_SliceControlBufferType, sizeof (DXVA_Slice_H264_Short)*nSlices, m_pSliceShort));
+    /*verify that we dont slow down the process by filling the slicelong when we use the short*/
+    CHECK_HR (AddExecuteBuffer (DXVA2_SliceControlBufferType, sizeof (DXVA_Slice_H264_Short)*nSlices, m_pSliceLong));
   }
 
   CHECK_HR (AddExecuteBuffer (DXVA2_InverseQuantizationMatrixBufferType, sizeof (DXVA_Qmatrix_H264), (void*)&m_DXVAScalingMatrix));
@@ -243,20 +247,40 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
 #endif
 
   bool bAdded    = AddToStore (nSurfaceIndex, pSampleToDeliver, m_DXVAPicParams.RefPicFlag, rtStart, rtStop,
-                  m_DXVAPicParams.field_pic_flag, (FF_FIELD_TYPE)nFieldType, 
-                  (FF_SLICE_TYPE)nSliceType, nFramePOC);
+                  m_DXVAPicParams.field_pic_flag, (FF_FIELD_TYPE)dxvapicture->field_type, 
+                  (FF_SLICE_TYPE)dxvapicture->slice_type, dxvapicture->frame_poc);
 
   /*m_pFilter->m_dllAvCodec.FFH264UpdateRefFramesList (&m_DXVAPicParams, m_pFilter->GetAVCtx());*/
-  ClearUnusedRefFrames();
+  /*ClearUnusedRefFrames();*/
+  for (int i=0; i<m_nPicEntryNumber; i++)
+  {
+    if (m_pPictureStore[i].bRefPicture && m_pPictureStore[i].bDisplayed)
+    {
+      int xx;
+      for (xx=0; xx < dxvapicture->short_ref_count; xx++)
+      {
+        if (dxvapicture->short_ref_opaque[xx] == i)
+          RemoveRefFrame(xx);
+          
+      }
+
+      for (xx=0; xx < dxvapicture->long_ref_count; xx++)
+      {
+        if (dxvapicture->long_ref_opaque[xx] == i)
+          RemoveRefFrame(xx);
+      }
+    
+    }
+  }
 
   if (bAdded) 
   {
     hr        = DisplayNextFrame();
 
-    if (nOutPOC != INT_MIN)
+    if (dxvapicture->frame_poc != INT_MIN)
     {
-      m_nOutPOC    = nOutPOC;
-      m_rtOutStart  = rtOutStart;
+      m_nOutPOC    = dxvapicture->frame_poc;
+      m_rtOutStart  = dxvapicture->frame_start;
     }
   }
   m_bFlushed    = false;

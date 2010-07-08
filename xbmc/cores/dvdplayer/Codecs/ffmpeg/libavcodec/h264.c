@@ -1685,8 +1685,8 @@ static void field_end(H264Context *h){
     if (CONFIG_H264_VDPAU_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
         ff_vdpau_h264_set_reference_frames(s);
 
-   /* if (CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
-        ff_directshow_h264_set_reference_frames(s);*/
+    if (CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
+        ff_directshow_h264_set_reference_frames(s);
 
     if(!s->dropable) {
         ff_h264_execute_ref_pic_marking(h, h->mmco, h->mmco_index);
@@ -1704,7 +1704,9 @@ static void field_end(H264Context *h){
     if (CONFIG_H264_VDPAU_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
         ff_vdpau_h264_picture_complete(s);
     
-    
+    if (CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
+	    ff_directshow_h264_picture_complete(s);
+	
 
     /*
      * FIXME: Error handling code does not seem to support interlaced
@@ -3048,6 +3050,7 @@ static int decode_frame(AVCodecContext *avctx,
                 *data_size = sizeof(AVFrame);
                 *pict= *(AVFrame*)out;
 			} else {
+			    ff_directshow_h264_setpoc(s, out->poc, out->reordered_opaque);
 			    av_log(avctx, AV_LOG_ERROR, "skipping *data_size = sizeof(AVFrame) for directshow!\n");
 			}
         }

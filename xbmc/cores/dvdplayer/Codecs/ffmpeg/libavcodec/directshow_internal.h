@@ -36,6 +36,7 @@ void ff_directshow_h264_fill_slice_long(MpegEncContext *s);
 void ff_directshow_h264_picture_start(MpegEncContext *s);
 void ff_directshow_h264_set_reference_frames(MpegEncContext *s);
 void ff_directshow_h264_picture_complete(MpegEncContext *s);
+void ff_directshow_h264_setpoc(MpegEncContext *s, int poc, int64_t start);
 
 
 #endif

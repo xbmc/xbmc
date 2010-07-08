@@ -80,7 +80,7 @@ public:
     virtual ~IDXVADecoder() {};
     virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat) = 0;
     virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame) = 0;
-    virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame,directshow_dxva_h264* picture) = 0;
+    virtual bool GetPicture(directshow_dxva_h264** picture) = 0;
     virtual int  Check     (AVCodecContext* avctx) = 0;
     /*virtual const std::string Name() = 0;*/
     virtual CCriticalSection* Section() { return NULL; }
@@ -251,6 +251,7 @@ public:
   void            FlushDXVADecoder()  { if (m_pDXVADecoder) m_pDXVADecoder->Flush(); }
   inline AVCodecContext*    GetAVCtx()      { return m_pCodecContext; };
   inline AVFrame*        GetFrame()      { return m_pFrame; }
+  
   bool            IsDXVASupported();
   inline bool          IsReorderBFrame() { return m_bReorderBFrame; };
   inline int          GetPCIVendor()  { return m_nPCIVendor; };

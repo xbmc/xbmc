@@ -582,7 +582,7 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
         }
       }
 
-#if 0
+#if 1
     while((m_pAVCodec = m_dllAvCodec.av_codec_next(m_pAVCodec)))
     {
       if(m_pAVCodec->id == ffCodecs[nNewCodec].nFFCodec
@@ -628,8 +628,7 @@ HRESULT CXBMCVideoDecFilter::SetMediaType(PIN_DIRECTION direction,const CMediaTy
       //m_pCodecContext->inter_matrix      = (uint16_t*)calloc(sizeof(uint16_t),64);
       /* The codectag is currently used in mpegvideo.c at MPV_common_init*/
       m_pCodecContext->codec_tag        = ffCodecs[nNewCodec].fourcc;
-      //m_pCodecContext->error_concealment    = m_nErrorConcealment;
-      //m_pCodecContext->error_recognition    = m_nErrorRecognition;
+
       //m_pCodecContext->idct_algo        = m_nIDCTAlgo;
       m_pCodecContext->skip_loop_filter    = (AVDiscard)m_nDiscardMode;
       m_pCodecContext->dsp_mask = FF_MM_FORCE | FF_MM_MMX | FF_MM_MMXEXT | FF_MM_SSE;
@@ -1388,11 +1387,11 @@ HRESULT CXBMCVideoDecFilter::Transform(IMediaSample* pIn)
     m_nPosB            = 1 - m_nPosB;
   }
 
-  if ( m_nDXVAMode == MODE_SOFTWARE || m_nDXVAMode == MODE_DXVA1 )
+  if ( m_nDXVAMode == MODE_SOFTWARE)
   {
     hr = SoftwareDecode (pIn, pDataIn, nSize, rtStart, rtStop);
   }
-  else if ( m_nDXVAMode == MODE_DXVA2 )
+  else if ( m_nDXVAMode == MODE_DXVA1 || m_nDXVAMode == MODE_DXVA2 )
   {
   
     CheckPointer (m_pDXVADecoder, E_UNEXPECTED);

@@ -60,12 +60,20 @@ static void fill_picentry(DXVA_PicEntry_H264 *pic,
     pic->bPicEntry = index | (flag << 7);
 }
 
+void ff_directshow_h264_setpoc(MpegEncContext *s, int poc, int64_t start)
+{
+	directshow_dxva_h264 *pict;
+	pict = (directshow_dxva_h264 *)s->current_picture_ptr->data[0];
+	pict->frame_poc = poc;
+	pict->frame_start = start;
+}
 void ff_directshow_h264_fill_slice_long(MpegEncContext *s)
 {
 	H264Context *h = s->avctx->priv_data;
 	directshow_dxva_h264 *pict;
 	int						field_pic_flag;
 	unsigned int			i,j,k;
+	DXVA_Slice_H264_Long*	pSlice;
 	if (!s->current_picture_ptr) {
 	    av_log(s->avctx, AV_LOG_ERROR, "current_picture_ptr is null!\n");
 	    return;
@@ -73,7 +81,7 @@ void ff_directshow_h264_fill_slice_long(MpegEncContext *s)
 	pict = (directshow_dxva_h264 *)s->current_picture_ptr->data[0];
 	assert(pict);
 	
-	DXVA_Slice_H264_Long*	pSlice = &((DXVA_Slice_H264_Long*) pict->slice_long)[h->current_slice-1];
+	pSlice = &((DXVA_Slice_H264_Long*) pict->slice_long)[h->current_slice-1];
 	memset(pSlice, 0, sizeof(*pSlice));
     av_log(s->avctx, AV_LOG_ERROR, "ff_directshow_h264_fill_slice_long!\n");
 	field_pic_flag = (h->s.picture_structure != PICT_FRAME);
@@ -132,51 +140,41 @@ void ff_directshow_h264_fill_slice_long(MpegEncContext *s)
 
 void ff_directshow_h264_picture_complete(MpegEncContext *s)
 {
-
-int *nFieldType;
-int *nSliceType;
+/*this function is based on FFH264BuildPicParams and this is done at the end of decoding sequence*/
+/*updating the ref frame slice long*/
     H264Context *h = s->avctx->priv_data;
 	directshow_dxva_h264 *pict;
+    unsigned int            i,j;
+
+	int field_pic_flag;
+	SPS* cur_sps;
+    PPS* cur_pps;
+	DXVA_Qmatrix_H264* qmatrix_source;
 	
 	pict = (directshow_dxva_h264 *)s->current_picture_ptr->data[0];
-	//DXVA_PicParams_H264 *pDXVAPicParams->pp;
+	assert(pict);
+	
     av_log(s->avctx, AV_LOG_ERROR, "ff_directshow_h264_picture_complete!\n");
-    SPS* cur_sps;
-    PPS* cur_pps;
-    int                        field_pic_flag;
-    int                    hr = -1;
-
     field_pic_flag = (h->s.picture_structure != PICT_FRAME);
 
     cur_sps = &h->sps;
     cur_pps = &h->pps;
-
     if (cur_sps && cur_pps)
     {
-        *nFieldType = h->s.picture_structure;
+        pict->field_type = h->s.picture_structure;
         if (h->sps.pic_struct_present_flag)
         {
-            switch (h->sei_pic_struct)
-            {
-            case SEI_PIC_STRUCT_TOP_FIELD:
-            case SEI_PIC_STRUCT_TOP_BOTTOM:
-            case SEI_PIC_STRUCT_TOP_BOTTOM_TOP:
-                *nFieldType = PICT_TOP_FIELD;
-                break;
-            case SEI_PIC_STRUCT_BOTTOM_FIELD:
-            case SEI_PIC_STRUCT_BOTTOM_TOP:
-            case SEI_PIC_STRUCT_BOTTOM_TOP_BOTTOM:
-                *nFieldType = PICT_BOTTOM_FIELD;
-                break;
-            case SEI_PIC_STRUCT_FRAME_DOUBLING:
-            case SEI_PIC_STRUCT_FRAME_TRIPLING:
-            case SEI_PIC_STRUCT_FRAME:
-                *nFieldType = PICT_FRAME;
-                break;
-            }
+		    if ( h->sei_pic_struct == SEI_PIC_STRUCT_TOP_FIELD || h->sei_pic_struct == SEI_PIC_STRUCT_TOP_BOTTOM || h->sei_pic_struct == SEI_PIC_STRUCT_TOP_BOTTOM_TOP )
+				pict->field_type = PICT_TOP_FIELD;
+			else 
+			if ( h->sei_pic_struct == SEI_PIC_STRUCT_BOTTOM_FIELD || h->sei_pic_struct == SEI_PIC_STRUCT_BOTTOM_TOP || h->sei_pic_struct == SEI_PIC_STRUCT_BOTTOM_TOP_BOTTOM )
+			    pict->field_type = PICT_BOTTOM_FIELD;
+		    else
+			if ( h->sei_pic_struct == SEI_PIC_STRUCT_FRAME_DOUBLING || h->sei_pic_struct == SEI_PIC_STRUCT_FRAME_TRIPLING || h->sei_pic_struct == SEI_PIC_STRUCT_FRAME )
+				pict->field_type = PICT_FRAME;
         }
 
-        *nSliceType = h->slice_type;
+        pict->slice_type = h->slice_type;
 
         if (cur_sps->mb_width==0 || cur_sps->mb_height==0) 
 		    return;
@@ -184,39 +182,28 @@ int *nSliceType;
         pict->picture_params.wFrameHeightInMbsMinus1            = cur_sps->mb_height * (2 - cur_sps->frame_mbs_only_flag) - 1;        // pic_height_in_map_units_minus1;
         pict->picture_params.num_ref_frames                    = cur_sps->ref_frame_count;        // num_ref_frames;
         /* DXVA_PicParams_H264 */
-        pict->picture_params.wBitFields                      = (field_pic_flag                         <<  0) |
-                                                          ((h->sps.mb_aff && (field_pic_flag==0)) <<  1) |
-                                                          (cur_sps->residual_color_transform_flag <<  2) |
-                                                          /* sp_for_switch_flag (not implemented by FFmpeg) ffdshow added h->sp_for_switch_flag to h264context*/
-                                                          (0                                    <<  3) |
-                                                          (cur_sps->chroma_format_idc           <<  4) |
-                                                          ((h->nal_ref_idc != 0)                      <<  6) | /*was h->ref_pic_flag*/
-                                                          (cur_pps->constrained_intra_pred      <<  7) |
-                                                          (cur_pps->weighted_pred               <<  8) |
-                                                          (cur_pps->weighted_bipred_idc         <<  9) |
-                                                          /* MbsConsecutiveFlag */
-                                                          (1                                    << 11) |
-                                                          (cur_sps->frame_mbs_only_flag         << 12) |
-                                                          (cur_pps->transform_8x8_mode          << 13) |
-                                                          (h->sps.level_idc >= 31               << 14) |
-                                                          /* IntraPicFlag (Modified if we detect a non
-                                                           * intra slice in decode_slice) Only used with ffmpeg dxva2*/
-                                                          ((h->slice_type == FF_I_TYPE )                                    << 15);
+        pict->picture_params.wBitFields                        = (field_pic_flag                         <<  0) | /*field_pic_flag*/
+															     ((h->sps.mb_aff && (field_pic_flag==0)) <<  1) | /*MbaffFrameFlag*/
+																 (cur_sps->residual_color_transform_flag <<  2) | /*residual_colour_transform_flag*/
+																 (0                                      <<  3) | /*sp_for_switch_flag*/
+																  (cur_sps->chroma_format_idc            <<  4) | /*(2) chroma_format_idc*/
+																  ((h->nal_ref_idc != 0)                 <<  6) | /*RefPicFlag */
+																  (cur_pps->constrained_intra_pred       <<  7) | /*constrained_intra_pred_flag*/
+																  (cur_pps->weighted_pred                <<  8) | /*weighted_pred_flag*/
+																  (cur_pps->weighted_bipred_idc          <<  9) | /*(2) weighted_bipred_idc*/
+																  (1                                     << 11) | /*MbsConsecutiveFlag*/
+																  (cur_sps->frame_mbs_only_flag          << 12) | /*frame_mbs_only_flag*/
+																  (cur_pps->transform_8x8_mode           << 13) | /*transform_8x8_mode_flag*/
+																  (1                                     << 14) | /*MinLumaBipredSize8x8Flag*/
+																  /*(h->sps.level_idc >= 31                << 14) | it seem that setting it to 1 improve performance*/
+															  /* IntraPicFlag (Modified if we detect a non
+															   * intra slice in decode_slice) Only used with ffmpeg dxva2*/
+															  ((h->slice_type == FF_I_TYPE )                                    << 15);
 
         pict->picture_params.bit_depth_luma_minus8            = cur_sps->bit_depth_luma   - 8;    // bit_depth_luma_minus8
         pict->picture_params.bit_depth_chroma_minus8            = cur_sps->bit_depth_chroma - 8;    // bit_depth_chroma_minus8
-    //    pict->picture_params.StatusReportFeedbackNumber        = SET IN DecodeFrame;
-
-
-    //    pict->picture_params.CurrFieldOrderCnt                        = SET IN UpdateRefFramesList;
-    //    pict->picture_params.FieldOrderCntList                        = SET IN UpdateRefFramesList;
-    //    pict->picture_params.FrameNumList                            = SET IN UpdateRefFramesList;
-    //    pict->picture_params.UsedForReferenceFlags                    = SET IN UpdateRefFramesList;
-    //    pict->picture_params.NonExistingFrameFlags
         pict->picture_params.frame_num                        = h->frame_num;
-    //    pict->picture_params.SliceGroupMap
-
-
+		
         pict->picture_params.log2_max_frame_num_minus4                = cur_sps->log2_max_frame_num - 4;                    // log2_max_frame_num_minus4;
         pict->picture_params.pic_order_cnt_type                        = cur_sps->poc_type;                                // pic_order_cnt_type;
         pict->picture_params.log2_max_pic_order_cnt_lsb_minus4        = cur_sps->log2_max_poc_lsb - 4;                    // log2_max_pic_order_cnt_lsb_minus4;
@@ -229,10 +216,11 @@ int *nSliceType;
         pict->picture_params.deblocking_filter_control_present_flag    = cur_pps->deblocking_filter_parameters_present;    // deblocking_filter_control_present_flag;
         pict->picture_params.redundant_pic_cnt_present_flag            = cur_pps->redundant_pic_cnt_present;                // redundant_pic_cnt_present_flag;
 
-        pict->picture_params.slice_group_change_rate_minus1= 0;  /* XXX not implemented by FFmpeg */
+        pict->picture_params.slice_group_change_rate_minus1          = 0;  /* XXX not implemented by FFmpeg */
 
-        pict->picture_params.chroma_qp_index_offset                    = cur_pps->chroma_qp_index_offset[0];
-        pict->picture_params.second_chroma_qp_index_offset            = cur_pps->chroma_qp_index_offset[1];
+        pict->picture_params.chroma_qp_index_offset                  = cur_pps->chroma_qp_index_offset[0];
+        pict->picture_params.second_chroma_qp_index_offset           = cur_pps->chroma_qp_index_offset[1];
+		pict->picture_params.ContinuationFlag                        = 1;
         pict->picture_params.num_ref_idx_l0_active_minus1            = cur_pps->ref_count[0]-1;                            // num_ref_idx_l0_active_minus1;
         pict->picture_params.num_ref_idx_l1_active_minus1            = cur_pps->ref_count[1]-1;                            // num_ref_idx_l1_active_minus1;
         pict->picture_params.pic_init_qp_minus26                        = cur_pps->init_qp - 26;
@@ -241,18 +229,15 @@ int *nSliceType;
         if (field_pic_flag)
         {
           unsigned cur_associated_flag = (h->s.picture_structure == PICT_BOTTOM_FIELD);
-        /*fill_dxva_pic_entry(DXVA_PicEntry_H264 *pic,unsigned index, unsigned flag)*/
-
 			pict->picture_params.CurrPic.bPicEntry = 0 | (cur_associated_flag << 7) ;
 
-            if (cur_associated_flag)
-            {
+            if (cur_associated_flag){
                 // Bottom field
                 pict->picture_params.CurrFieldOrderCnt[0] = 0;
                 pict->picture_params.CurrFieldOrderCnt[1] = h->poc_lsb + h->poc_msb;
             }
-            else
-            {
+			else
+			{
                 // Top field
                 pict->picture_params.CurrFieldOrderCnt[0] = h->poc_lsb + h->poc_msb;
                 pict->picture_params.CurrFieldOrderCnt[1] = 0;
@@ -260,16 +245,15 @@ int *nSliceType;
         }
         else
         {
-
 			pict->picture_params.CurrPic.bPicEntry = 0 | (0 << 7);
-
             pict->picture_params.CurrFieldOrderCnt[0]    = h->poc_lsb + h->poc_msb;
             pict->picture_params.CurrFieldOrderCnt[1]    = h->poc_lsb + h->poc_msb;
         }
 
         /*CopyScalingMatrix (pict->picture_qmatrix, (DXVA_Qmatrix_H264*)cur_pps->scaling_matrix4, nPCIVendor);*/
-		DXVA_Qmatrix_H264* qmatrix_source = (DXVA_Qmatrix_H264*)cur_pps->scaling_matrix4;
-        int i,j;
+		/*TODO add the copy to handle something else than nvidia video card*/
+		qmatrix_source = (DXVA_Qmatrix_H264*)cur_pps->scaling_matrix4;
+        
 		for (i=0; i<6; i++)
             for (j=0; j<16; j++)
                 pict->picture_qmatrix.bScalingLists4x4[i][j] = qmatrix_source->bScalingLists4x4[i][ZZ_SCAN[j]];
@@ -277,18 +261,99 @@ int *nSliceType;
         for (i=0; i<2; i++)
             for (j=0; j<64; j++)
                 pict->picture_qmatrix.bScalingLists8x8[i][j] = qmatrix_source->bScalingLists8x8[i][ZZ_SCAN8[j]];
-		hr = 1;
     }
 
-    return hr;
+	/* set the frame used to be able to clear it after rendering*/
+	pict->short_ref_count = h->short_ref_count;
+	for (i=0; i<h->short_ref_count; i++)
+    {
+        pict->short_ref_opaque[i] = (int)h->short_ref[i]->opaque;
+            
+    }
+    pict->long_ref_count = h->long_ref_count;
+    for (i=0; i < h->long_ref_count; i++)
+    {
+	    pict->long_ref_opaque[i] = (int)h->long_ref[i]->opaque;
+    }
 }
 
 void ff_directshow_h264_set_reference_frames(MpegEncContext *s)
 {
-av_log(s->avctx, AV_LOG_ERROR, "ff_directshow_h264_set_reference_frames!\n");
+    H264Context *h = s->avctx->priv_data;
+	directshow_dxva_h264 *pict;
+	UINT            nUsedForReferenceFlags = 0;
+    int                i;
+    Picture*        pic;
+    UCHAR            AssociatedFlag;
+	av_log(s->avctx, AV_LOG_ERROR, "ff_directshow_h264_set_reference_frames!\n");
+    pict = (directshow_dxva_h264 *)s->current_picture_ptr->data[0];
+    for(i=0; i<16; i++)
+    {
+        if (i < h->short_ref_count)
+        {
+            // Short list reference frames
+            pic                = h->short_ref[h->short_ref_count - i - 1];
+            AssociatedFlag    = pic->long_ref != 0;
+        }
+        else if (i >= h->short_ref_count && i < h->long_ref_count)
+        {
+            // Long list reference frames
+            pic            = h->short_ref[h->short_ref_count + h->long_ref_count - i - 1];
+            AssociatedFlag    = 1;
+        }
+        else
+            pic = NULL;
+
+
+        if (pic != NULL)
+        {
+            pict->picture_params.FrameNumList[i]    = pic->long_ref ? pic->pic_id : pic->frame_num;
+
+            if (pic->field_poc[0] != INT_MAX)
+            {
+                pict->picture_params.FieldOrderCntList[i][0]        = pic->field_poc [0];
+                nUsedForReferenceFlags                       |= 1<<(i*2);
+            }
+            else
+                pict->picture_params.FieldOrderCntList[i][0]        = 0;
+
+            if (pic->field_poc[1] != INT_MAX)
+            {
+                pict->picture_params.FieldOrderCntList[i][1]        = pic->field_poc [1];
+                nUsedForReferenceFlags                       |= 2<<(i*2);
+            }
+            else
+            {
+                pict->picture_params.FieldOrderCntList[i][1]        = 0;
+            }
+
+            pict->picture_params.RefFrameList[i].bPicEntry       = (unsigned)pic->opaque | (AssociatedFlag << 7);
+
+        }
+        else
+        {
+            pict->picture_params.FrameNumList[i]                    = 0;
+            pict->picture_params.FieldOrderCntList[i][0]            = 0;
+            pict->picture_params.FieldOrderCntList[i][1]            = 0;
+            pict->picture_params.RefFrameList[i].bPicEntry       = 127 | (1 << 7);
+
+        }
+    }
+
+    pict->picture_params.UsedForReferenceFlags    = nUsedForReferenceFlags;
 }
 
 void ff_directshow_h264_picture_start(MpegEncContext *s)
 {
+    /*clear the unused picture*/
+	
 av_log(s->avctx, AV_LOG_ERROR, "ff_directshow_h264_picture_start!\n");
 }
+#if 0
+    H264Context *h = s->avctx->priv_data;
+	directshow_dxva_h264 *pict;
+	
+	pict = (directshow_dxva_h264 *)s->current_picture_ptr->data[0];
+	//DXVA_PicParams_H264 *pDXVAPicParams->pp;
+    
+#endif
