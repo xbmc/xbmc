@@ -1046,10 +1046,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       }
     }
   }
-  else if (strSetting.Equals("weather.script"))
-  {
-    g_weatherManager.Refresh();
-  }
   else if (strSetting.Equals("weather.scriptsettings"))
   {
     CStdString name = g_guiSettings.GetString("weather.script");
