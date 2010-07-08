@@ -1,0 +1,2 @@
+; filename                        source of the file
+SDL-devel-1.2.14-VC8.zip          http://www.libsdl.org/release/
