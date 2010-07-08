@@ -495,8 +495,20 @@ public:
 
   void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<int>* paths=NULL);
 
-  int AddFile(const CStdString& strFileName);
+  /*! \brief Add a file to the database, if necessary
+   If the file is already in the database, we simply return it's id.
+   \param url - full path of the file to add.
+   \return id of the file, -1 if it could not be added.
+   */
+  int AddFile(const CStdString& url);
+
+  /*! \brief Add a file to the database, if necessary
+   Works for both videodb:// items and normal fileitems
+   \param item CFileItem to add.
+   \return id of the file, -1 if it could not be added.
+   */
   int AddFile(const CFileItem& item);
+
   void ExportToXML(const CStdString &path, bool singleFiles = false, bool images=false, bool actorThumbs=false, bool overwrite=false);
   bool ExportSkipEntry(const CStdString &nfoFile);
   void ExportActorThumbs(const CVideoInfoTag& tag, bool overwrite=false);
@@ -523,17 +535,15 @@ protected:
   /*! \brief Get the id of this fileitem
    Works for both videodb:// items and normal fileitems
    \param item CFileItem to grab the fileid of
-   \param add set to true to add the file if not present. Defaults to false.
-   \return id of the file, -1 if it is not in the db or was unable to be added.
+   \return id of the file, -1 if it is not in the db.
    */
-  int GetFileId(const CFileItem &item, bool add = false);
+  int GetFileId(const CFileItem &item);
 
   /*! \brief Get the id of a file from path
-   \param strFilenameAndPath full path to the file
-   \param add set to true to add the file if not present. Defaults to false.
-   \return id of the file, -1 if it is not in the db or was unable to be added.
+   \param url full path to the file
+   \return id of the file, -1 if it is not in the db.
    */
-  int GetFileId(const CStdString& strFilenameAndPath, bool add = false);
+  int GetFileId(const CStdString& url);
 
   int AddPath(const CStdString& strPath);
   int AddToTable(const CStdString& table, const CStdString& firstField, const CStdString& secondField, const CStdString& value);

@@ -553,6 +553,8 @@ int CVideoDatabase::AddFile(const CStdString& strFileNameAndPath)
 
 int CVideoDatabase::AddFile(const CFileItem& item)
 {
+  if (item.IsVideoDb() && item.HasVideoInfoTag())
+    return AddFile(item.GetVideoInfoTag()->m_strFileNameAndPath);
   return AddFile(item.m_strPath);
 }
 
@@ -668,7 +670,7 @@ bool CVideoDatabase::GetLinksToTvShow(int idMovie, vector<int>& ids)
 
 
 //********************************************************************************************************************************
-int CVideoDatabase::GetFileId(const CStdString& strFilenameAndPath, bool add)
+int CVideoDatabase::GetFileId(const CStdString& strFilenameAndPath)
 {
   try
   {
@@ -690,9 +692,6 @@ int CVideoDatabase::GetFileId(const CStdString& strFilenameAndPath, bool add)
         return idFile;
       }
     }
-    // path or file not in the db
-    if (add)
-      return AddFile(strFilenameAndPath);
   }
   catch (...)
   {
@@ -701,12 +700,11 @@ int CVideoDatabase::GetFileId(const CStdString& strFilenameAndPath, bool add)
   return -1;
 }
 
-int CVideoDatabase::GetFileId(const CFileItem &item, bool add)
+int CVideoDatabase::GetFileId(const CFileItem &item)
 {
-  CStdString path = item.m_strPath;
   if (item.IsVideoDb() && item.HasVideoInfoTag())
-    path = item.GetVideoInfoTag()->m_strFileNameAndPath;
-  return GetFileId(path, add);
+    return GetFileId(item.GetVideoInfoTag()->m_strFileNameAndPath);
+  return GetFileId(item.m_strPath);
 }
 
 //********************************************************************************************************************************
@@ -899,14 +897,12 @@ int CVideoDatabase::AddMovie(const CStdString& strFilenameAndPath)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    int idFile, idMovie=-1;
-    idFile = GetFileId(strFilenameAndPath);
-    if (idFile < 0)
-      return -1;
-
-    idMovie = GetMovieId(strFilenameAndPath);
+    int idMovie = GetMovieId(strFilenameAndPath);
     if (idMovie < 0)
     {
+      int idFile = AddFile(strFilenameAndPath);
+      if (idFile < 0)
+        return -1;
       CStdString strSQL=PrepareSQL("insert into movie (idMovie, idFile) values (NULL, %i)", idFile);
       m_pDS->exec(strSQL.c_str());
       idMovie = (int)m_pDS->lastinsertid();
@@ -963,14 +959,13 @@ int CVideoDatabase::AddEpisode(int idShow, const CStdString& strFilenameAndPath)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    int idFile, idEpisode=-1;
-    idFile = GetFileId(strFilenameAndPath, true);
+    int idFile = AddFile(strFilenameAndPath);
     if (idFile < 0)
       return -1;
 
     CStdString strSQL=PrepareSQL("insert into episode (idEpisode, idFile) values (NULL, %i)", idFile);
     m_pDS->exec(strSQL.c_str());
-    idEpisode = (int)m_pDS->lastinsertid();
+    int idEpisode = (int)m_pDS->lastinsertid();
 
     strSQL=PrepareSQL("insert into tvshowlinkepisode (idShow,idEpisode) values (%i,%i)",idShow,idEpisode);
     m_pDS->exec(strSQL.c_str());
@@ -992,14 +987,12 @@ int CVideoDatabase::AddMusicVideo(const CStdString& strFilenameAndPath)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    int idFile, idMVideo=-11;
-    idFile = GetFileId(strFilenameAndPath, true);
-    if (idFile < 0)
-      return -1;
-
-    idMVideo = GetMusicVideoId(strFilenameAndPath);
+    int idMVideo = GetMusicVideoId(strFilenameAndPath);
     if (idMVideo < 0)
     {
+      int idFile = AddFile(strFilenameAndPath);
+      if (idFile < 0)
+        return -1;
       CStdString strSQL=PrepareSQL("insert into musicvideo (idMVideo, idFile) values (NULL, %i)", idFile);
       m_pDS->exec(strSQL.c_str());
       idMVideo = (int)m_pDS->lastinsertid();
@@ -1629,12 +1622,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
   {
     CVideoInfoTag info = details;
 
-    int idFile = GetFileId(strFilenameAndPath, true);
-    if (idFile < 0)
-      return -1;
-
     int idMovie = GetMovieId(strFilenameAndPath);
-
     if (idMovie > -1)
       DeleteMovie(strFilenameAndPath, true); // true to keep the table entry
 
@@ -1711,7 +1699,7 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     }
 
     if (details.HasStreamDetails())
-      SetStreamDetailsForFileId(details.m_streamDetails, idFile);
+      SetStreamDetailsForFileId(details.m_streamDetails, GetFileId(strFilenameAndPath));
 
     // update our movie table (we know it was added already above)
     // and insert the new row
@@ -1865,10 +1853,6 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
   {
     BeginTransaction();
 
-    int idFile = GetFileId(strFilenameAndPath, true);
-    if (idFile < 0)
-      return -1;
-
     int idMVideo = GetMusicVideoId(strFilenameAndPath);
     if (idMVideo > -1)
     {
@@ -1917,7 +1901,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPath
     }
 
     if (details.HasStreamDetails())
-      SetStreamDetailsForFileId(details.m_streamDetails, idFile);
+      SetStreamDetailsForFileId(details.m_streamDetails, GetFileId(strFilenameAndPath));
 
     // update our movie table (we know it was added already above)
     // and insert the new row
@@ -2127,7 +2111,7 @@ void CVideoDatabase::AddBookMarkToFile(const CStdString& strFilenameAndPath, con
 {
   try
   {
-    int idFile = GetFileId(strFilenameAndPath, true);
+    int idFile = AddFile(strFilenameAndPath);
     if (idFile < 0)
       return;
     if (NULL == m_pDB.get()) return ;
@@ -2308,10 +2292,6 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
       return ;
     }
 
-    int idFile = GetFileId(strFilenameAndPath);
-    if (idFile < 0)
-      return ;
-
     BeginTransaction();
 
     CStdString strSQL;
@@ -2336,7 +2316,7 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
     if (!bKeepThumb)
       DeleteThumbForItem(strFilenameAndPath,false);
 
-    DeleteStreamDetails(idFile);
+    DeleteStreamDetails(GetFileId(strFilenameAndPath));
 
     // keep the movie table entry, linking to tv shows, and bookmarks
     // so we can update the data in place
@@ -2452,10 +2432,6 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idE
       }
     }
 
-    int idFile = GetFileId(strFilenameAndPath);
-    if (idFile < 0)
-      return ;
-
     CStdString strSQL;
     strSQL=PrepareSQL("delete from actorlinkepisode where idEpisode=%i", idEpisode);
     m_pDS->exec(strSQL.c_str());
@@ -2472,7 +2448,7 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idE
     if (!bKeepThumb)
       DeleteThumbForItem(strFilenameAndPath, false, idEpisode);
 
-    DeleteStreamDetails(idFile);
+    DeleteStreamDetails(GetFileId(strFilenameAndPath));
 
     // keep episode table entry and bookmarks so we can update the data in place
     // the ancilliary tables are still purged
@@ -2503,10 +2479,6 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool
       return ;
     }
 
-    int idFile = GetFileId(strFilenameAndPath);
-    if (idFile < 0)
-      return ;
-
     BeginTransaction();
 
     CStdString strSQL;
@@ -2525,7 +2497,7 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool
     if (!bKeepThumb)
       DeleteThumbForItem(strFilenameAndPath,false);
 
-    DeleteStreamDetails(idFile);
+    DeleteStreamDetails(GetFileId(strFilenameAndPath));
 
     // keep the music video table entry and bookmarks so we can update data in place
     // the ancilliary tables are still purged
@@ -2949,7 +2921,7 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    int idFile = GetFileId(strFilenameAndPath, true);
+    int idFile = AddFile(strFilenameAndPath);
     if (idFile < 0)
       return;
     CStdString strSQL;
@@ -3040,7 +3012,7 @@ void CVideoDatabase::SetStackTimes(const CStdString& filePath, vector<int> &time
   {
     if (NULL == m_pDB.get()) return ;
     if (NULL == m_pDS.get()) return ;
-    int idFile = GetFileId(filePath, true);
+    int idFile = AddFile(filePath);
     if (idFile < 0)
       return;
 
@@ -3379,7 +3351,7 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
 
 void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CStdString &date)
 {
-  int id = GetFileId(item, true);
+  int id = AddFile(item);
   if (id < 0)
     return;
 
