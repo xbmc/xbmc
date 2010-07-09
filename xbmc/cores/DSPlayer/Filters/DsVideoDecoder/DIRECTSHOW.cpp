@@ -57,7 +57,8 @@ void CDecoder::SVideoBuffer::Init(int index)
 }
 void CDecoder::SVideoBuffer::Clear()
 {
-  free(surface);  
+  memset(&surface, 0, sizeof(surface));
+  /*free(surface);*/
   age     = 0;
   used    = 0;
 }
@@ -78,8 +79,6 @@ CDecoder::~CDecoder()
 {
   
   Close();
-  
-  
   
 }
 
@@ -135,6 +134,13 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   return true;
 }
 
+bool CDecoder::Flush()
+{
+  CSingleLock lock(m_section);
+  for(unsigned i = 0; i < m_buffer_count; i++)
+    m_buffer[i].Init(i);
+  return true;
+}
 int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 {
   /*CSingleLock lock(m_section);*/

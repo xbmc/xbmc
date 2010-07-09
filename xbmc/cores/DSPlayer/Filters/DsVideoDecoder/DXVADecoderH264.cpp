@@ -166,8 +166,6 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
   
   
   usedbyte = m_pFilter->m_dllAvCodec.avcodec_decode_video(m_pFilter->GetAVCtx(), m_pFilter->GetFrame(), &iGotPicture, pDataIn, nSize);
-  /*m_pFilter->m_dllAvCodec.FFH264DecodeBuffer (m_pFilter->GetAVCtx(), pDataIn, nSize, &nFramePOC, &nOutPOC, &rtOutStart);*/
-
   while (Nalu.ReadNext())
   {
     switch (Nalu.GetType())
@@ -179,7 +177,6 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
           m_pSliceLong[nSlices].BSNALunitDataLocation  = nNalOffset;
           m_pSliceLong[nSlices].SliceBytesInBuffer  = Nalu.GetDataLength()+3;
           m_pSliceLong[nSlices].slice_id        = nSlices;
-          /*m_pFilter->m_dllAvCodec.FF264UpdateRefFrameSliceLong(&m_DXVAPicParams, &m_pSliceLong[nSlices], m_pFilter->GetAVCtx());*/
 
           if (nSlices>0)
             m_pSliceLong[nSlices-1].NumMbsForSlice = m_pSliceLong[nSlices].NumMbsForSlice = m_pSliceLong[nSlices].first_mb_in_slice - m_pSliceLong[nSlices-1].first_mb_in_slice;
@@ -310,14 +307,15 @@ void CDXVADecoderH264::SetExtraData (BYTE* pDataIn, UINT nSize)
 
 void CDXVADecoderH264::ClearRefFramesList()
 {
-  for (int i=0; i<m_nPicEntryNumber; i++)
+  m_pFilter->GetHardware()->Flush();
+  /*for (int i=0; i<m_nPicEntryNumber; i++)
   {
     if (m_pPictureStore[i].bInUse)
     {
       m_pPictureStore[i].bDisplayed = true;
       RemoveRefFrame (i);
     }
-  }
+  }*/
 }
 
 

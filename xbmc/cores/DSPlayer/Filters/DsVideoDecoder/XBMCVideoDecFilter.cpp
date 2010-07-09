@@ -357,32 +357,9 @@ void CXBMCVideoDecFilter::Cleanup()
 {
   m_nOutCsp = 0;
   SAFE_DELETE(m_pDXVADecoder);
-
-  // Release FFMpeg
-  if (m_pCodecContext)
-  {
-    if (m_pCodecContext->intra_matrix)      
-      free(m_pCodecContext->intra_matrix);
-    
-    if (m_pCodecContext->inter_matrix)      
-      free(m_pCodecContext->inter_matrix);
-
-    if (m_pCodecContext->extradata)      
-      free((unsigned char*)m_pCodecContext->extradata);
-
-    if (m_pFFBuffer)          
-      free(m_pFFBuffer);
-
-    if (m_pCodecContext->slice_offset)      
-      m_dllAvUtil.av_free(m_pCodecContext->slice_offset);
-
-    if (m_pCodecContext->codec)        
-      m_dllAvCodec.avcodec_close(m_pCodecContext);
-
-    m_dllAvUtil.av_free(m_pCodecContext);
-  }
-  if (m_pFrame)  
-    m_dllAvUtil.av_free(m_pFrame);
+  
+  if (m_pFrame) m_dllAvUtil.av_free(m_pFrame);
+  m_pFrame = NULL;
 
   if (m_pConvertFrame)
   {
@@ -391,12 +368,26 @@ void CXBMCVideoDecFilter::Cleanup()
   }
   m_pConvertFrame = NULL;
 
+  if (m_pFFBuffer)
+    free(m_pFFBuffer);
 
-  if (m_pSwsContext)
+  if (m_pCodecContext)
   {
-    m_dllSwScale.sws_freeContext(m_pSwsContext);
-    m_pSwsContext = NULL;
+    if (m_pCodecContext->codec) m_dllAvCodec.avcodec_close(m_pCodecContext);
+    if (m_pCodecContext->extradata)
+    {
+      m_dllAvUtil.av_free(m_pCodecContext->extradata);
+      m_pCodecContext->extradata = NULL;
+      m_pCodecContext->extradata_size = 0;
+    }
+    m_dllAvUtil.av_free(m_pCodecContext);
+    m_pCodecContext = NULL;
   }
+  SAFE_RELEASE(m_pHardware);
+
+  
+
+  
 
   m_pAVCodec    = NULL;
   m_pCodecContext    = NULL;
@@ -418,6 +409,9 @@ void CXBMCVideoDecFilter::Cleanup()
   m_pDeviceManager    = NULL;
   m_pDecoderService    = NULL;
   m_pDecoderRenderTarget  = NULL;
+  m_dllAvCodec.Unload();
+  m_dllAvUtil.Unload();
+  m_dllSwScale.Unload();
 }
 
 void CXBMCVideoDecFilter::CalcAvgTimePerFrame()

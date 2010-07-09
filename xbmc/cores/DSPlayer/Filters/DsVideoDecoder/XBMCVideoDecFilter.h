@@ -82,6 +82,7 @@ public:
     virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame) = 0;
     virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, directshow_dxva_h264* picture) = 0;
     virtual int  Check     (AVCodecContext* avctx) = 0;
+    virtual bool Flush() = 0;
     /*virtual const std::string Name() = 0;*/
     virtual CCriticalSection* Section() { return NULL; }
     virtual long              Release();

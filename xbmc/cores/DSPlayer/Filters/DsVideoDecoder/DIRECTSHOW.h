@@ -42,6 +42,7 @@ public:
   virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, directshow_dxva_h264* picture);
   virtual int  Check     (AVCodecContext* avctx);
+  virtual bool Flush();
   virtual void Close();
 
   int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
