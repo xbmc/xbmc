@@ -615,7 +615,7 @@ void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, un
     oldRT->Release();
 
     D3DLOCKED_RECT lockedRect;
-    if (D3D_OK == surface->LockRect(&lockedRect, NULL, NULL))
+    if (D3D_OK == surface->LockRect(&lockedRect, NULL, D3DLOCK_READONLY))
     {
       texture->LoadFromMemory(width, height, lockedRect.Pitch, XB_FMT_A8R8G8B8, (unsigned char *)lockedRect.pBits);
       surface->UnlockRect();
@@ -753,7 +753,7 @@ void CWinRenderer::SVideoBuffer::StartDecode()
   id = 0;
   for(unsigned i = 0; i < MAX_PLANES; i++)
   {
-    if(planes[i].texture.LockRect(0, &planes[i].rect, NULL, 0) == false)
+    if(planes[i].texture.LockRect(0, &planes[i].rect, NULL, D3DLOCK_DISCARD) == false)
     {
       memset(&planes[i].rect, 0, sizeof(planes[i].rect));
       CLog::Log(LOGERROR, "CWinRenderer::SVideoBuffer::StartDecode - failed to lock texture into memory");

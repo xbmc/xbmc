@@ -70,7 +70,7 @@ static bool LoadTexture(int width, int height, int stride
   *v = (float)height / desc.Height;
 
   D3DLOCKED_RECT lr;
-  if (!texture->LockRect(0, &lr, NULL, 0))
+  if (!texture->LockRect(0, &lr, NULL, D3DLOCK_DISCARD))
   {
     CLog::Log(LOGERROR, "LoadTexture - failed to lock texture (%u)");
     texture->Release();

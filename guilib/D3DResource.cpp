@@ -117,7 +117,7 @@ void CD3DTexture::SaveTexture()
     delete[] m_data;
     m_data = NULL;
     D3DLOCKED_RECT lr;
-    if (LockRect( 0, &lr, NULL, 0 ))
+    if (LockRect( 0, &lr, NULL, D3DLOCK_READONLY ))
     {
       m_pitch = lr.Pitch;
       unsigned int memUsage = GetMemoryUsage(lr.Pitch);
@@ -154,7 +154,7 @@ void CD3DTexture::RestoreTexture()
     {
       // copy the data to the texture
       D3DLOCKED_RECT lr;
-      if (m_texture && m_data && LockRect(0, &lr, NULL, 0 ))
+      if (m_texture && m_data && LockRect(0, &lr, NULL, D3DLOCK_DISCARD ))
       {
         if (lr.Pitch == m_pitch)
           memcpy(lr.pBits, m_data, GetMemoryUsage(lr.Pitch));
