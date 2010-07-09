@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="cpluff"
 	ProjectGUID="{88968763-3D6B-48A8-B495-CC8C187FAC02}"
 	RootNamespace="cpluff"
@@ -234,6 +234,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\utf8.c"
+				>
+			</File>
+			<File
 				RelativePath="..\util.c"
 				>
 			</File>
@@ -273,6 +277,10 @@
 			</File>
 			<File
 				RelativePath="..\thread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\utf8.h"
 				>
 			</File>
 			<File
