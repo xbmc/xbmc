@@ -37,6 +37,8 @@ public:
                       NET_PROTOCOL_DAAP,
                       NET_PROTOCOL_UPNP,
                       NET_PROTOCOL_RSS,
+                      NET_PROTOCOL_HTSP,
+                      NET_PROTOCOL_VTP,
                       NET_PROTOCOL_TUXBOX};
   CGUIDialogNetworkSetup(void);
   virtual ~CGUIDialogNetworkSetup(void);

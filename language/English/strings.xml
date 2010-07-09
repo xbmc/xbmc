@@ -1737,6 +1737,8 @@
   <string id="20253">WebDAV server (HTTP)</string>
   <string id="20254">WebDAV server (HTTPS)</string>
   <string id="20255">First logon, edit your profile</string>
+  <string id="20256">HTS Tvheadend client</string>
+  <string id="20257">VDR Streamdev client</string>
 
   <string id="20300">Web server directory (HTTP)</string>
   <string id="20301">Web server directory (HTTPS)</string>
