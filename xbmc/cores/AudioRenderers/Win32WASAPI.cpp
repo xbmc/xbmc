@@ -244,7 +244,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
   EXIT_ON_FAILURE(hr, __FUNCTION__": Audio format not supported by the WASAPI device.  Channels: %i, Rate: %i, Bits/sample: %i.", iChannels, uiSamplesPerSec, uiBitsPerSample)
 
   REFERENCE_TIME hnsRequestedDuration, hnsPeriodicity;
-  hr = m_pAudioClient->GetDevicePeriod(NULL, &hnsPeriodicity);
+  hr = m_pAudioClient->GetDevicePeriod(&hnsPeriodicity, NULL);
   EXIT_ON_FAILURE(hr, __FUNCTION__": Could not retrieve the WASAPI endpoint device period.");
 
   //The default periods of some devices are VERY low (less than 3ms).
