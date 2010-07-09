@@ -40,39 +40,38 @@ public:
  ~CDecoder();
   virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat);
   virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
-  virtual bool GetPicture(directshow_dxva_h264** picture);
+  virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, directshow_dxva_h264* picture);
   virtual int  Check     (AVCodecContext* avctx);
   virtual void Close();
 
   int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
   void  RelBuffer(AVCodecContext *avctx, AVFrame *pic);
-  bool  RefFrameInUse(int i);
+  
 
   static bool      Supports(enum PixelFormat fmt);
-
-
-  /*struct SVideoBuffer
+  
+  struct SVideoBuffer
   {
     SVideoBuffer();
    ~SVideoBuffer();
+    void Init(int index);
     void Clear();
 
     directshow_dxva_h264* surface;
+    int                surface_index;
     bool               used;
     int                age;
-  };*/
+  };
 
-  
-  std::vector<directshow_dxva_h264*> m_videoBuffer;
-  int                                m_refs;
-  /*static const unsigned        m_buffer_max = 32;
+  static const unsigned        m_buffer_max = 32;
   SVideoBuffer                 m_buffer[m_buffer_max];
   unsigned                     m_buffer_count;
   unsigned                     m_buffer_age;
-  int                          m_refs;*/
-
+  int                          m_refs;
   CCriticalSection             m_section;
-  /*CEvent                       m_event;*/
+
+  /*std::vector<directshow_dxva_h264*> m_videoBuffer;*/
+  
 };
 
 };/* Namespace DIRECTSHOW */

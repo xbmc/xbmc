@@ -151,7 +151,7 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
   HRESULT            hr      = S_FALSE;
   CH264Nalu          Nalu;
   UINT            nSlices    = 0;
-  int              nSurfaceIndex;
+  /*int              nSurfaceIndex;*/
 
   Com::SmartPtr<IMediaSample>    pSampleToDeliver;
   Com::SmartQIPtr<IMPCDXVA2Sample>  pDXVA2Sample;
@@ -193,9 +193,10 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
   }
   if (nSlices == 0) 
     return S_FALSE;
-  directshow_dxva_h264* dxvapicture = NULL;
-
-  m_pFilter->GetHardware()->GetPicture(&dxvapicture);
+  directshow_dxva_h264* dxvapicture;
+  
+  dxvapicture = (directshow_dxva_h264*)m_pFilter->GetAVCtx()->coded_frame->data[0];
+  
   m_DXVAPicParams = dxvapicture->picture_params;
   *m_pSliceLong = *dxvapicture->slice_long;
   m_DXVAScalingMatrix = dxvapicture->picture_qmatrix;
@@ -210,11 +211,11 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
     return S_FALSE;
 
   
-  CHECK_HR (GetFreeSurfaceIndex (nSurfaceIndex, &pSampleToDeliver, rtStart, rtStop));
+  /*CHECK_HR (GetFreeSurfaceIndex (dxvapicture->decoder_surface_index, &pSampleToDeliver, rtStart, rtStop));
   /*m_pFilter->m_dllAvCodec.FFH264SetCurrentPicture (nSurfaceIndex, &m_DXVAPicParams, m_pFilter->GetAVCtx());*/
-  m_DXVAPicParams.CurrPic.Index7Bits = nSurfaceIndex;
+  
 
-  CHECK_HR (BeginFrame(nSurfaceIndex, pSampleToDeliver));
+  CHECK_HR (BeginFrame(dxvapicture->decoder_surface_index, pSampleToDeliver));
   
   m_DXVAPicParams.StatusReportFeedbackNumber++;
 
@@ -234,7 +235,7 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
   else
   {
     /*verify that we dont slow down the process by filling the slicelong when we use the short*/
-    CHECK_HR (AddExecuteBuffer (DXVA2_SliceControlBufferType, sizeof (DXVA_Slice_H264_Short)*nSlices, m_pSliceShort));
+    CHECK_HR (AddExecuteBuffer (DXVA2_SliceControlBufferType, sizeof (DXVA_Slice_H264_Short)*nSlices, m_pSliceLong));
   }
 
   CHECK_HR (AddExecuteBuffer (DXVA2_InverseQuantizationMatrixBufferType, sizeof (DXVA_Qmatrix_H264), (void*)&m_DXVAScalingMatrix));
@@ -242,38 +243,19 @@ HRESULT CDXVADecoderH264::DecodeFrame (BYTE* pDataIn, UINT nSize, REFERENCE_TIME
   // Decode bitstream
   CHECK_HR (Execute());
 
-  CHECK_HR (EndFrame(nSurfaceIndex));
+  CHECK_HR (EndFrame(dxvapicture->decoder_surface_index));
 
 #ifdef _DEBUG
 //  DisplayStatus();
 #endif
 
-  bool bAdded    = AddToStore (nSurfaceIndex, pSampleToDeliver, m_DXVAPicParams.RefPicFlag, rtStart, rtStop,
+  bool bAdded    = AddToStore (dxvapicture->decoder_surface_index, pSampleToDeliver, m_DXVAPicParams.RefPicFlag, rtStart, rtStop,
                   m_DXVAPicParams.field_pic_flag, (FF_FIELD_TYPE)dxvapicture->field_type, 
                   (FF_SLICE_TYPE)dxvapicture->slice_type, dxvapicture->frame_poc);
 
   /*m_pFilter->m_dllAvCodec.FFH264UpdateRefFramesList (&m_DXVAPicParams, m_pFilter->GetAVCtx());*/
   ClearUnusedRefFrames();
-  /*for (int i=0; i<m_nPicEntryNumber; i++)
-  {
-    if (m_pPictureStore[i].bRefPicture && m_pPictureStore[i].bDisplayed)
-    {
-      int xx;
-      for (xx=0; xx < dxvapicture->short_ref_count; xx++)
-      {
-        if (dxvapicture->short_ref_opaque[xx] == i)
-          RemoveRefFrame(xx);
-          
-      }
 
-      for (xx=0; xx < dxvapicture->long_ref_count; xx++)
-      {
-        if (dxvapicture->long_ref_opaque[xx] == i)
-          RemoveRefFrame(xx);
-      }
-    
-    }
-  }*/
 
   if (bAdded) 
   {
@@ -307,12 +289,12 @@ void CDXVADecoderH264::RemoveUndisplayedFrame(int nPOC)
 void CDXVADecoderH264::ClearUnusedRefFrames()
 {
   // Remove old reference frames (not anymore a short or long ref frame)
-  for (int i=0; i<m_nPicEntryNumber; i++)
+  /*for (int i=0; i<m_nPicEntryNumber; i++)
   {
     if (m_pPictureStore[i].bRefPicture && m_pPictureStore[i].bDisplayed)
       if (!m_pFilter->GetHardware()->RefFrameInUse(i))
         RemoveRefFrame (i);
-  }
+  }*/
 }
 
 void CDXVADecoderH264::SetExtraData (BYTE* pDataIn, UINT nSize)

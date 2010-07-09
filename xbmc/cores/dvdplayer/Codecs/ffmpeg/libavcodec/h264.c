@@ -2893,6 +2893,8 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size){
                     return -1;
                 if(CONFIG_H264_VDPAU_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
                     ff_vdpau_h264_picture_start(s);
+                if(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
+                    ff_directshow_h264_picture_start(s);
             }
 
             s->current_picture_ptr->key_frame |=

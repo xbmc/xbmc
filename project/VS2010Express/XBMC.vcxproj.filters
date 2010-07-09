@@ -2349,6 +2349,9 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\Splitters\XBMCFFmpegSplitter.cpp">
       <Filter>cores\dsplayer\Filters\Splitters\XBMC</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DIRECTSHOW.cpp">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -4902,6 +4905,9 @@
       <Filter>cores\dsplayer\Filters\Splitters\XBMC</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DSCodecDef.h">
+      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DIRECTSHOW.h">
       <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
     </ClInclude>
   </ItemGroup>

@@ -34,9 +34,40 @@ static void RelBufferS(AVCodecContext *avctx, AVFrame *pic)
 static int GetBufferS(AVCodecContext *avctx, AVFrame *pic) 
 {  return ((CDecoder*)((CXBMCVideoDecFilter*)avctx->opaque)->GetHardware())->GetBuffer(avctx, pic); }
 
+CDecoder::SVideoBuffer::SVideoBuffer()
+{
+  surface = NULL;
+  Clear();
+}
+
+CDecoder::SVideoBuffer::~SVideoBuffer()
+{
+  Clear();
+}
+
+void CDecoder::SVideoBuffer::Init(int index)
+{
+  surface = (directshow_dxva_h264*)calloc(1, sizeof(directshow_dxva_h264));
+  memset(surface,0,sizeof(directshow_dxva_h264));
+  for (int i = 0; i < 16; i++)
+    surface->picture_params.RefFrameList[i].bPicEntry = 0xff;
+  age = 0;
+  used = 0;
+  surface_index = index;
+}
+void CDecoder::SVideoBuffer::Clear()
+{
+  free(surface);  
+  age     = 0;
+  used    = 0;
+}
+
 CDecoder::CDecoder()
 {
   m_refs = 0;
+  m_buffer_count = 0;
+  m_buffer_age = 0;
+  
   /*m_context          = (dxva_context*)calloc(1, sizeof(dxva_context));
   m_context->cfg     = (DXVA2_ConfigPictureDecode*)calloc(1, sizeof(DXVA2_ConfigPictureDecode));
   m_context->surface = (IDirect3DSurface9**)calloc(m_buffer_max, sizeof(IDirect3DSurface9*));*/
@@ -54,8 +85,11 @@ CDecoder::~CDecoder()
 
 void CDecoder::Close()
 {
-  m_videoBuffer.clear();
-
+  CSingleLock lock(m_section);
+  for(unsigned i = 0; i < m_buffer_count; i++)
+    m_buffer[i].Clear();
+  m_buffer_count = 0;
+  lock.Leave();
 }
 
 #define CHECK(a) \
@@ -73,7 +107,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 {
   
 
-  /*CSingleLock lock(m_section);*/
+  CSingleLock lock(m_section);
   Close();
 
   if(avctx->refs > m_refs)
@@ -88,6 +122,13 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   }
   CLog::Log(LOGDEBUG, "DXVA - source requires %d references", avctx->refs);
 
+  for (unsigned int i = 0; i < m_buffer_max; i++)
+  {
+    /**/
+    m_buffer[i].Init(i);
+    
+  }
+  m_buffer_count = 16;
   avctx->get_buffer      = GetBufferS;
   avctx->release_buffer  = RelBufferS;
 
@@ -114,11 +155,11 @@ int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
     return 0;
 }
 
-bool CDecoder::GetPicture(directshow_dxva_h264** picture)
+bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, directshow_dxva_h264* picture)
 {
   CSingleLock lock(m_section);
   
-  *picture = m_videoBuffer[0];
+  picture = (directshow_dxva_h264*)avctx->coded_frame->data[0];
   return true;
 }
 
@@ -136,62 +177,42 @@ bool CDecoder::Supports(enum PixelFormat fmt)
   return false;
 }
 
-void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
-{
-  CSingleLock lock(m_section);
-  directshow_dxva_h264* render = (directshow_dxva_h264*)pic->data[0];
-
-  if(!render)
-  {
-    CLog::Log(LOGERROR, "CVDPAU::FFDrawSlice - invalid context handle provided");
-    return;
-  }
-
-  /*render->state &= ~FF_VDPAU_STATE_USED_FOR_REFERENCE;*/
-  for(int i=0; i<4; i++)
-    pic->data[i]= NULL;
-}
-
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   CSingleLock lock(m_section);
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-  CXBMCVideoDecFilter* ctx        = (CXBMCVideoDecFilter*)avctx->opaque;
+  CXBMCVideoDecFilter* ctx = (CXBMCVideoDecFilter*)avctx->opaque;
   CDecoder* dec        = (CDecoder*)ctx->GetHardware();
+
+  int           count = 0;
+  SVideoBuffer* buf   = NULL;
+  /*TODO verify if there any verification to do before touching the buffer*/
+  for(unsigned i = 0; i < m_buffer_count; i++)
+  {
+    if(m_buffer[i].used)
+      count++;
+    else
+    {
+      if(!buf || buf->age > m_buffer[i].age)
+        buf = m_buffer+i;
+    }
+  }
+
+  if(count >= m_refs+2)
+  {
+    m_refs++;
+    ASSERT(0);
+  }
   
-
-
-  directshow_dxva_h264 * render = NULL;
-
-  for(unsigned int i = 0; i < dec->m_videoBuffer.size(); i++)
+  if(!buf)
   {
-    
-    
-      render = dec->m_videoBuffer[i];
-      /*render->state = 0;*/
-      break;
-  }
-
-  if (render == NULL)
-  {
-    render = (directshow_dxva_h264*)calloc(1, sizeof(directshow_dxva_h264));
-    memset(render,0,sizeof(directshow_dxva_h264));
-    
-    for (int xx = 0; xx < 16; xx++)
-      render->picture_params.RefFrameList[xx].bPicEntry = 0xff;
-    
-	  dec->m_videoBuffer.push_back(render);
-  }
-
-  if (render == NULL)
+    CLog::Log(LOGERROR, "%s - unable to find new unused buffer",__FUNCTION__);
     return -1;
+  }
 
-  pic->data[1] =  pic->data[2] = NULL;
-  pic->data[0]= (uint8_t*)render;
+ 
 
-  pic->linesize[0] = pic->linesize[1] =  pic->linesize[2] = 0;
-
-  pic->age = INT_MAX;
+  
   /*if(pic->reference)
   {
     pic->age = pA->ip_age[0];
@@ -206,30 +227,38 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
     pA->ip_age[1]++;
     pA->b_age = 1;
   }*/
-  pic->type = FF_BUFFER_TYPE_USER;
-
-/*  render->state |= FF_VDPAU_STATE_USED_FOR_REFERENCE;*/
   pic->reordered_opaque = avctx->reordered_opaque;
+  pic->type = FF_BUFFER_TYPE_USER;
+  pic->age = 256*256*256*64; // No matter what we set we need a positive value or it crash
+  buf->surface->decoder_surface_index = buf->surface_index;
+  for(unsigned i = 0; i < 4; i++)
+  {
+    pic->data[i] = NULL;
+    pic->linesize[i] = 0;
+  }
+  pic->data[0]= (uint8_t*)buf->surface;
+  buf->used = true;
+
+  
   return 0;
 }
 
-bool CDecoder::RefFrameInUse(int nFrameNum)
+void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
-  
+  CSingleLock lock(m_section);
+  directshow_dxva_h264* surface = (directshow_dxva_h264*)pic->data[0];
 
-	for (int i=0; i<m_videoBuffer[0]->short_ref_count; i++)
-	{
-		if (m_videoBuffer[0]->short_ref_opaque[i] == nFrameNum)
-			return true;
-	}
-
-	for (int i=0; i<m_videoBuffer[0]->long_ref_count; i++)
-	{
-		if (m_videoBuffer[0]->long_ref_opaque[i] == nFrameNum)
-			return true;
-	}
-
-	return false;
+  for(unsigned i = 0; i < m_buffer_count; i++)
+  {
+    if(m_buffer[i].surface == surface)
+    {
+      m_buffer[i].used = false;
+      m_buffer[i].age  = ++m_buffer_age;
+      break;
+    }
+  }
+  for(unsigned i = 0; i < 4; i++)
+    pic->data[i] = NULL;
 }
 
 #endif

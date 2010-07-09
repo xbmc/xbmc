@@ -172,12 +172,13 @@ void ff_directshow_h264_picture_complete(MpegEncContext *s)
 
         if (cur_sps->mb_width==0 || cur_sps->mb_height==0) 
 		    return;
-        pict->picture_params.wFrameWidthInMbsMinus1            = cur_sps->mb_width  - 1;        // pic_width_in_mbs_minus1;
-        pict->picture_params.wFrameHeightInMbsMinus1            = cur_sps->mb_height * (2 - cur_sps->frame_mbs_only_flag) - 1;        // pic_height_in_map_units_minus1;
+        pict->picture_params.wFrameWidthInMbsMinus1            = s->mb_width  - 1;        // pic_width_in_mbs_minus1;
+        pict->picture_params.wFrameHeightInMbsMinus1           = s->mb_height - 1;// pic_height_in_map_units_minus1;
+		/*cur_sps->mb_height * (2 - cur_sps->frame_mbs_only_flag) - 1;     <--- this is one is better for wFrameHeightInMbsMinus1?*/        
         pict->picture_params.num_ref_frames                    = cur_sps->ref_frame_count;        // num_ref_frames;
         /* DXVA_PicParams_H264 */
-        pict->picture_params.wBitFields                        = (field_pic_flag                         <<  0) | /*field_pic_flag*/
-															     ((h->sps.mb_aff && (field_pic_flag==0)) <<  1) | /*MbaffFrameFlag*/
+        pict->picture_params.wBitFields                        = ((s->picture_structure != PICT_FRAME)    <<  0) | /*field_pic_flag*/
+															     (h->sps.mb_aff                          <<  1) | /*MbaffFrameFlag*/
 																 (cur_sps->residual_color_transform_flag <<  2) | /*residual_colour_transform_flag*/
 																 (0                                      <<  3) | /*sp_for_switch_flag*/
 																  (cur_sps->chroma_format_idc            <<  4) | /*(2) chroma_format_idc*/
@@ -256,19 +257,10 @@ void ff_directshow_h264_picture_complete(MpegEncContext *s)
             for (j=0; j<64; j++)
                 pict->picture_qmatrix.bScalingLists8x8[i][j] = qmatrix_source->bScalingLists8x8[i][ZZ_SCAN8[j]];
     }
-
-	/* set the frame used to be able to clear it after rendering*/
-	pict->short_ref_count = h->short_ref_count;
-	for (i=0; i<h->short_ref_count; i++)
-    {
-        pict->short_ref_opaque[i] = (int)h->short_ref[i]->opaque;
-            
-    }
-    pict->long_ref_count = h->long_ref_count;
-    for (i=0; i < h->long_ref_count; i++)
-    {
-	    pict->long_ref_opaque[i] = (int)h->long_ref[i]->opaque;
-    }
+	
+	/* setting the index of the surface give by the getbuffer*/
+	pict->picture_params.CurrPic.bPicEntry = pict->decoder_surface_index << 0;
+    h->s.current_picture_ptr->opaque = (void*)pict->decoder_surface_index;
 }
 
 void ff_directshow_h264_set_reference_frames(MpegEncContext *s)
@@ -339,15 +331,16 @@ void ff_directshow_h264_set_reference_frames(MpegEncContext *s)
 
 void ff_directshow_h264_picture_start(MpegEncContext *s)
 {
-    /*clear the unused picture*/
+/* is there something to do here ?*/
+    /*H264Context *h = s->avctx->priv_data;
+	struct directshow_dxva_h264 *pict;
+	int i;
+	int pictureindex;*/
 	
-av_log(s->avctx, AV_LOG_DEBUG, "ff_directshow_h264_picture_start!\n");
-}
-#if 0
-    H264Context *h = s->avctx->priv_data;
-	directshow_dxva_h264 *pict;
-	
-	pict = (directshow_dxva_h264 *)s->current_picture_ptr->data[0];
-	//DXVA_PicParams_H264 *pDXVAPicParams->pp;
+	//pict = ( struct directshow_dxva_h264 *)s->current_picture_ptr->data[0];
+	//assert(pict);
+	//pictureindex = pict->decoder_surface_index;
     
-#endif
+	
+    av_log(s->avctx, AV_LOG_DEBUG, "ff_directshow_h264_picture_start!\n");
+}

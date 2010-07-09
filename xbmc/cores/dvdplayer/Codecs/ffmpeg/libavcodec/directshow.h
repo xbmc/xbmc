@@ -4,6 +4,14 @@
 #include <stdint.h>
 #include <dxva2api.h>
 
+/** \brief The videoStructure is used for rendering. */
+#define FF_DSHOW_STATE_USED_FOR_RENDER 1
+
+/**
+ * \brief The videoStructure is needed for reference/prediction.
+ * The codec manipulates this.
+ */
+#define FF_DSHOW_STATE_USED_FOR_REFERENCE 2
 
 
 #define MAX_SLICES 16
@@ -15,12 +23,7 @@ typedef struct directshow_dxva_h264{
     DXVA_Slice_H264_Short slice_short[MAX_SLICES];
     DXVA_Slice_H264_Long  slice_long[MAX_SLICES];
 
-    int                   short_ref_opaque[32]; /* maximum of 32 picture with h264_context*/
-	int                   short_ref_count; /* maximum of 32 picture with h264_context*/
-
-    int                   long_ref_opaque[32]; /* maximum of 32 picture with h264_context*/
-	  int                   long_ref_count; /* maximum of 32 picture with h264_context*/
-
+    int                   decoder_surface_index;
     int                   field_type;
 	  int                   slice_type;
 	  int                   frame_poc;

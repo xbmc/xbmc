@@ -528,11 +528,6 @@ bool CDXVADecoder::AddToStore (int nSurfaceIndex, IMediaSample* pSample, bool bR
 	}
 	else
 	{
-		//TRACE ("Add Stor: %10I64d - %10I64d   Ind = %d  Codec=%d\n", rtStart, rtStop, nSurfaceIndex, nCodecSpecific);
-		ASSERT (m_pPictureStore[nSurfaceIndex].pSample == NULL);
-		ASSERT (!m_pPictureStore[nSurfaceIndex].bInUse);
-		ASSERT ((nSurfaceIndex < m_nPicEntryNumber) && (m_pPictureStore[nSurfaceIndex].pSample == NULL));
-
 		m_pPictureStore[nSurfaceIndex].bRefPicture		= bRefPicture;
 		m_pPictureStore[nSurfaceIndex].bInUse			= true;
 		m_pPictureStore[nSurfaceIndex].bDisplayed		= false;
