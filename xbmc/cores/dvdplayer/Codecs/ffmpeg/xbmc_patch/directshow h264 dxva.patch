@@ -1,0 +1,975 @@
+Index: configure
+===================================================================
+--- configure	(revision 31632)
++++ configure	(working copy)
+@@ -1240,6 +1240,7 @@
+ h264_decoder_select="golomb h264dsp"
+ h264_dxva2_hwaccel_deps="dxva2api_h"
+ h264_dxva2_hwaccel_select="dxva2 h264_decoder"
++h264_dshow_decoder_select="dshow h264_decoder"
+ h264_vaapi_hwaccel_select="vaapi"
+ h264_vdpau_decoder_select="vdpau h264_decoder"
+ imc_decoder_select="fft mdct"
+Index: include/dxva2/dxva2api.h
+===================================================================
+--- include/dxva2/dxva2api.h	(revision 31632)
++++ include/dxva2/dxva2api.h	(working copy)
+@@ -280,9 +280,10 @@
+     UCHAR   bScalingLists4x4[6][16];
+     UCHAR   bScalingLists8x8[2][64];
+ } DXVA_Qmatrix_H264;
++
+ /* DXVA Mpeg2*/
+ typedef struct {
+-  BYTE bNewQmatrix[4]; /* intra Y, inter Y, intra chroma, inter chroma */
++  UCHAR bNewQmatrix[4]; /* intra Y, inter Y, intra chroma, inter chroma */
+   WORD Qmatrix[4][8 * 8];
+ } DXVA_QmatrixData;
+ 
+Index: libavcodec/allcodecs.c
+===================================================================
+--- libavcodec/allcodecs.c	(revision 31632)
++++ libavcodec/allcodecs.c	(working copy)
+@@ -113,7 +113,8 @@
+     REGISTER_DECODER (H263I, h263i);
+     REGISTER_ENCODER (H263P, h263p);
+     REGISTER_DECODER (H264, h264);
+-    REGISTER_DECODER (H264_VDPAU, h264_vdpau);
++    REGISTER_DECODER (H264_DSHOW, h264_dshow);
++	REGISTER_DECODER (H264_VDPAU, h264_vdpau);
+     REGISTER_ENCDEC  (HUFFYUV, huffyuv);
+     REGISTER_DECODER (IDCIN, idcin);
+     REGISTER_DECODER (IFF_BYTERUN1, iff_byterun1);
+Index: libavcodec/avcodec.h
+===================================================================
+--- libavcodec/avcodec.h	(revision 31632)
++++ libavcodec/avcodec.h	(working copy)
+@@ -656,6 +656,11 @@
+  */
+ #define CODEC_CAP_EXPERIMENTAL     0x0200
+ 
++/**
++ * Codec can export data for directshow (DXVA)
++ */
++#define CODEC_CAP_HWACCEL_DIRECTSHOW 0x0400
++
+ //The following defines may change, don't expect compatibility if you use them.
+ #define MB_TYPE_INTRA4x4   0x0001
+ #define MB_TYPE_INTRA16x16 0x0002 //FIXME H.264-specific
+Index: libavcodec/directshow.c
+===================================================================
+--- libavcodec/directshow.c	(revision 0)
++++ libavcodec/directshow.c	(revision 0)
+@@ -0,0 +1,346 @@
++/* 
++ *  Copyright (C) 2006-2009 mplayerc
++ *  Copyright (C) 2010 Team XBMC
++ *  http://www.xbmc.org
++ *
++ *  This Program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2, or (at your option)
++ *  any later version.
++ *
++ *  This Program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with XBMC; see the file COPYING.  If not, write to
++ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
++ *  http://www.gnu.org/copyleft/gpl.html
++ *
++ */
++
++
++
++/*#include "avcodec.h"
++#include "h264.h"
++#include "vc1.h"
++
++#undef NDEBUG
++#include <assert.h>
++*/
++
++#include "directshow_internal.h"
++#include "directshow.h"
++#include "h264.h"
++#include "h264data.h"
++/*int FFH264BuildPicParams (DXVA_PicParams_H264 *pDXVAPicParams, DXVA_Qmatrix_H264 *pDXVAScalingMatrix, int *nFieldType, int *nSliceType, struct AVCodecContext *pAVCtx, int nPCIVendor)*/
++
++const byte ZZ_SCAN[16]  =
++{  0,  1,  4,  8,  5,  2,  3,  6,  9, 12, 13, 10,  7, 11, 14, 15
++};
++
++const byte ZZ_SCAN8[64] =
++{  0,  1,  8, 16,  9,  2,  3, 10, 17, 24, 32, 25, 18, 11,  4,  5,
++   12, 19, 26, 33, 40, 48, 41, 34, 27, 20, 13,  6,  7, 14, 21, 28,
++   35, 42, 49, 56, 57, 50, 43, 36, 29, 22, 15, 23, 30, 37, 44, 51,
++   58, 59, 52, 45, 38, 31, 39, 46, 53, 60, 61, 54, 47, 55, 62, 63
++};
++
++static void fill_picentry(DXVA_PicEntry_H264 *pic,
++                               unsigned index, unsigned flag)
++{
++    assert((index&0x7f) == index && (flag&0x01) == flag);
++    pic->bPicEntry = index | (flag << 7);
++}
++
++void ff_directshow_h264_setpoc(MpegEncContext *s, int poc, int64_t start)
++{
++	directshow_dxva_h264 *pict;
++	pict = (directshow_dxva_h264 *)s->current_picture_ptr->data[0];
++	pict->frame_poc = poc;
++	pict->frame_start = start;
++}
++void ff_directshow_h264_fill_slice_long(MpegEncContext *s)
++{
++	H264Context *h = s->avctx->priv_data;
++	directshow_dxva_h264 *pict;
++	int						field_pic_flag;
++	unsigned int			i,j,k;
++	DXVA_Slice_H264_Long*	pSlice;
++	if (!s->current_picture_ptr) {
++	    av_log(s->avctx, AV_LOG_DEBUG, "current_picture_ptr is null!\n");
++	    return;
++	}
++	pict = (directshow_dxva_h264 *)s->current_picture_ptr->data[0];
++	assert(pict);
++	
++	pSlice = &((DXVA_Slice_H264_Long*) pict->slice_long)[h->current_slice-1];
++	memset(pSlice, 0, sizeof(*pSlice));
++    av_log(s->avctx, AV_LOG_DEBUG, "ff_directshow_h264_fill_slice_long!\n");
++	field_pic_flag = (h->s.picture_structure != PICT_FRAME);
++
++	pSlice->slice_id						= h->current_slice-1;
++	pSlice->first_mb_in_slice				= (s->mb_y >> FIELD_OR_MBAFF_PICTURE) * s->mb_width + s->mb_x;/*= h->first_mb_in_slice;*/
++	pSlice->NumMbsForSlice					= 0; // h->s.mb_num;				// TODO : to be checked !
++	pSlice->BitOffsetToSliceData			= get_bits_count(&s->gb) + 8;
++	pSlice->slice_type						= ff_h264_get_slice_type(h);/*h->raw_slice_type; */
++	if (h->slice_type_fixed)
++        pSlice->slice_type += 5;
++	pSlice->luma_log2_weight_denom			= h->luma_log2_weight_denom;
++	pSlice->chroma_log2_weight_denom		= h->chroma_log2_weight_denom;
++	pSlice->num_ref_idx_l0_active_minus1	= h->ref_count[0]-1;	// num_ref_idx_l0_active_minus1;
++	pSlice->num_ref_idx_l1_active_minus1	= h->ref_count[1]-1;	// num_ref_idx_l1_active_minus1;
++	pSlice->slice_alpha_c0_offset_div2		= h->slice_alpha_c0_offset / 2;
++	pSlice->slice_beta_offset_div2			= h->slice_beta_offset / 2;
++	pSlice->Reserved8Bits					= 0;
++	
++	// Fill prediction weights
++	memset (pSlice->Weights, 0, sizeof(pSlice->Weights));
++	for(i=0; i<2; i++){
++		for(j=0; j<h->ref_count[i]; j++){
++			//         L0&L1          Y,Cb,Cr  Weight,Offset
++			// Weights  [2]    [32]     [3]         [2]
++			pSlice->Weights[i][j][0][0] = h->luma_weight[j][i][0];
++			pSlice->Weights[i][j][0][1] = h->luma_weight[j][i][1];
++
++			for(k=0; k<2; k++){
++				pSlice->Weights[i][j][k+1][0] = h->chroma_weight[j][i][k][0];
++				pSlice->Weights[i][j][k+1][1] = h->chroma_weight[j][i][k][1];
++			}
++		}
++	}
++
++	pSlice->slice_qs_delta    = 0; /* XXX not implemented by FFmpeg */
++    pSlice->slice_qp_delta    = s->qscale - h->pps.init_qp;
++	pSlice->redundant_pic_cnt				= h->redundant_pic_count;
++	pSlice->direct_spatial_mv_pred_flag		= h->direct_spatial_mv_pred;
++	pSlice->cabac_init_idc					= h->cabac_init_idc;
++	pSlice->disable_deblocking_filter_idc	= h->deblocking_filter;
++
++	for(i=0; i<32; i++)
++	{ 
++	  /*DXVA_PicEntry_H264*/
++	  fill_picentry(&pSlice->RefPicList[0][i],127,1);
++	  fill_picentry(&pSlice->RefPicList[1][i],127,1);
++	  /*pSlice->RefPicList[0][i].AssociatedFlag = 1;
++	  pSlice->RefPicList[0][i].bPicEntry = 255; 
++	  pSlice->RefPicList[0][i].Index7Bits = 127;
++	  pSlice->RefPicList[1][i].AssociatedFlag = 1; 
++	  pSlice->RefPicList[1][i].bPicEntry = 255;
++	  pSlice->RefPicList[1][i].Index7Bits = 127;*/
++	}
++}
++
++void ff_directshow_h264_picture_complete(MpegEncContext *s)
++{
++/*this function is based on FFH264BuildPicParams and this is done at the end of decoding sequence*/
++/*updating the ref frame slice long*/
++    H264Context *h = s->avctx->priv_data;
++	directshow_dxva_h264 *pict;
++    unsigned int            i,j;
++
++	int field_pic_flag;
++	SPS* cur_sps;
++    PPS* cur_pps;
++	DXVA_Qmatrix_H264* qmatrix_source;
++	
++	pict = (directshow_dxva_h264 *)s->current_picture_ptr->data[0];
++	assert(pict);
++	
++    av_log(s->avctx, AV_LOG_DEBUG, "ff_directshow_h264_picture_complete!\n");
++    field_pic_flag = (h->s.picture_structure != PICT_FRAME);
++
++    cur_sps = &h->sps;
++    cur_pps = &h->pps;
++    if (cur_sps && cur_pps)
++    {
++        pict->field_type = h->s.picture_structure;
++        if (h->sps.pic_struct_present_flag)
++        {
++		    if ( h->sei_pic_struct == SEI_PIC_STRUCT_TOP_FIELD || h->sei_pic_struct == SEI_PIC_STRUCT_TOP_BOTTOM || h->sei_pic_struct == SEI_PIC_STRUCT_TOP_BOTTOM_TOP )
++				pict->field_type = PICT_TOP_FIELD;
++			else 
++			if ( h->sei_pic_struct == SEI_PIC_STRUCT_BOTTOM_FIELD || h->sei_pic_struct == SEI_PIC_STRUCT_BOTTOM_TOP || h->sei_pic_struct == SEI_PIC_STRUCT_BOTTOM_TOP_BOTTOM )
++			    pict->field_type = PICT_BOTTOM_FIELD;
++		    else
++			if ( h->sei_pic_struct == SEI_PIC_STRUCT_FRAME_DOUBLING || h->sei_pic_struct == SEI_PIC_STRUCT_FRAME_TRIPLING || h->sei_pic_struct == SEI_PIC_STRUCT_FRAME )
++				pict->field_type = PICT_FRAME;
++        }
++
++        pict->slice_type = h->slice_type;
++
++        if (cur_sps->mb_width==0 || cur_sps->mb_height==0) 
++		    return;
++        pict->picture_params.wFrameWidthInMbsMinus1            = s->mb_width  - 1;        // pic_width_in_mbs_minus1;
++        pict->picture_params.wFrameHeightInMbsMinus1           = s->mb_height - 1;// pic_height_in_map_units_minus1;
++		/*cur_sps->mb_height * (2 - cur_sps->frame_mbs_only_flag) - 1;     <--- this is one is better for wFrameHeightInMbsMinus1?*/        
++        pict->picture_params.num_ref_frames                    = cur_sps->ref_frame_count;        // num_ref_frames;
++        /* DXVA_PicParams_H264 */
++        pict->picture_params.wBitFields                        = ((s->picture_structure != PICT_FRAME)    <<  0) | /*field_pic_flag*/
++															     (h->sps.mb_aff                          <<  1) | /*MbaffFrameFlag*/
++																 (cur_sps->residual_color_transform_flag <<  2) | /*residual_colour_transform_flag*/
++																 (0                                      <<  3) | /*sp_for_switch_flag*/
++																  (cur_sps->chroma_format_idc            <<  4) | /*(2) chroma_format_idc*/
++																  ((h->nal_ref_idc != 0)                 <<  6) | /*RefPicFlag */
++																  (cur_pps->constrained_intra_pred       <<  7) | /*constrained_intra_pred_flag*/
++																  (cur_pps->weighted_pred                <<  8) | /*weighted_pred_flag*/
++																  (cur_pps->weighted_bipred_idc          <<  9) | /*(2) weighted_bipred_idc*/
++																  (1                                     << 11) | /*MbsConsecutiveFlag*/
++																  (cur_sps->frame_mbs_only_flag          << 12) | /*frame_mbs_only_flag*/
++																  (cur_pps->transform_8x8_mode           << 13) | /*transform_8x8_mode_flag*/
++																  (1                                     << 14) | /*MinLumaBipredSize8x8Flag*/
++																  /*(h->sps.level_idc >= 31                << 14) | it seem that setting it to 1 improve performance*/
++															  /* IntraPicFlag (Modified if we detect a non
++															   * intra slice in decode_slice) Only used with ffmpeg dxva2*/
++															  ((h->slice_type == FF_I_TYPE )                                    << 15);
++
++        pict->picture_params.bit_depth_luma_minus8            = cur_sps->bit_depth_luma   - 8;    // bit_depth_luma_minus8
++        pict->picture_params.bit_depth_chroma_minus8            = cur_sps->bit_depth_chroma - 8;    // bit_depth_chroma_minus8
++        pict->picture_params.frame_num                        = h->frame_num;
++		
++        pict->picture_params.log2_max_frame_num_minus4                = cur_sps->log2_max_frame_num - 4;                    // log2_max_frame_num_minus4;
++        pict->picture_params.pic_order_cnt_type                        = cur_sps->poc_type;                                // pic_order_cnt_type;
++        pict->picture_params.log2_max_pic_order_cnt_lsb_minus4        = cur_sps->log2_max_poc_lsb - 4;                    // log2_max_pic_order_cnt_lsb_minus4;
++        pict->picture_params.delta_pic_order_always_zero_flag        = cur_sps->delta_pic_order_always_zero_flag;
++        pict->picture_params.direct_8x8_inference_flag                = cur_sps->direct_8x8_inference_flag;
++        pict->picture_params.entropy_coding_mode_flag                = cur_pps->cabac;                                    // entropy_coding_mode_flag;
++        pict->picture_params.pic_order_present_flag                    = cur_pps->pic_order_present;                        // pic_order_present_flag;
++        pict->picture_params.num_slice_groups_minus1                    = cur_pps->slice_group_count - 1;                    // num_slice_groups_minus1;
++        pict->picture_params.slice_group_map_type                    = cur_pps->mb_slice_group_map_type;                    // slice_group_map_type;
++        pict->picture_params.deblocking_filter_control_present_flag    = cur_pps->deblocking_filter_parameters_present;    // deblocking_filter_control_present_flag;
++        pict->picture_params.redundant_pic_cnt_present_flag            = cur_pps->redundant_pic_cnt_present;                // redundant_pic_cnt_present_flag;
++
++        pict->picture_params.slice_group_change_rate_minus1          = 0;  /* XXX not implemented by FFmpeg */
++
++        pict->picture_params.chroma_qp_index_offset                  = cur_pps->chroma_qp_index_offset[0];
++        pict->picture_params.second_chroma_qp_index_offset           = cur_pps->chroma_qp_index_offset[1];
++		pict->picture_params.ContinuationFlag                        = 1;
++        pict->picture_params.num_ref_idx_l0_active_minus1            = cur_pps->ref_count[0]-1;                            // num_ref_idx_l0_active_minus1;
++        pict->picture_params.num_ref_idx_l1_active_minus1            = cur_pps->ref_count[1]-1;                            // num_ref_idx_l1_active_minus1;
++        pict->picture_params.pic_init_qp_minus26                        = cur_pps->init_qp - 26;
++        pict->picture_params.pic_init_qs_minus26                        = cur_pps->init_qs - 26;
++
++        if (field_pic_flag)
++        {
++          unsigned cur_associated_flag = (h->s.picture_structure == PICT_BOTTOM_FIELD);
++			pict->picture_params.CurrPic.bPicEntry = 0 | (cur_associated_flag << 7) ;
++
++            if (cur_associated_flag){
++                // Bottom field
++                pict->picture_params.CurrFieldOrderCnt[0] = 0;
++                pict->picture_params.CurrFieldOrderCnt[1] = h->poc_lsb + h->poc_msb;
++            }
++			else
++			{
++                // Top field
++                pict->picture_params.CurrFieldOrderCnt[0] = h->poc_lsb + h->poc_msb;
++                pict->picture_params.CurrFieldOrderCnt[1] = 0;
++            }
++        }
++        else
++        {
++			pict->picture_params.CurrPic.bPicEntry = 0 | (0 << 7);
++            pict->picture_params.CurrFieldOrderCnt[0]    = h->poc_lsb + h->poc_msb;
++            pict->picture_params.CurrFieldOrderCnt[1]    = h->poc_lsb + h->poc_msb;
++        }
++
++        /*CopyScalingMatrix (pict->picture_qmatrix, (DXVA_Qmatrix_H264*)cur_pps->scaling_matrix4, nPCIVendor);*/
++		/*TODO add the copy to handle something else than nvidia video card*/
++		qmatrix_source = (DXVA_Qmatrix_H264*)cur_pps->scaling_matrix4;
++        
++		for (i=0; i<6; i++)
++            for (j=0; j<16; j++)
++                pict->picture_qmatrix.bScalingLists4x4[i][j] = qmatrix_source->bScalingLists4x4[i][ZZ_SCAN[j]];
++
++        for (i=0; i<2; i++)
++            for (j=0; j<64; j++)
++                pict->picture_qmatrix.bScalingLists8x8[i][j] = qmatrix_source->bScalingLists8x8[i][ZZ_SCAN8[j]];
++    }
++	
++	/* setting the index of the surface give by the getbuffer*/
++	pict->picture_params.CurrPic.bPicEntry = pict->decoder_surface_index << 0;
++    h->s.current_picture_ptr->opaque = (void*)pict->decoder_surface_index;
++}
++
++void ff_directshow_h264_set_reference_frames(MpegEncContext *s)
++{
++    H264Context *h = s->avctx->priv_data;
++	directshow_dxva_h264 *pict;
++	UINT            nUsedForReferenceFlags = 0;
++    int                i;
++    Picture*        pic;
++    UCHAR            AssociatedFlag;
++	av_log(s->avctx, AV_LOG_DEBUG, "ff_directshow_h264_set_reference_frames!\n");
++    pict = (directshow_dxva_h264 *)s->current_picture_ptr->data[0];
++    for(i=0; i<16; i++)
++    {
++        if (i < h->short_ref_count)
++        {
++            // Short list reference frames
++            pic                = h->short_ref[h->short_ref_count - i - 1];
++            AssociatedFlag    = pic->long_ref != 0;
++        }
++        else if (i >= h->short_ref_count && i < h->long_ref_count)
++        {
++            // Long list reference frames
++            pic            = h->short_ref[h->short_ref_count + h->long_ref_count - i - 1];
++            AssociatedFlag    = 1;
++        }
++        else
++            pic = NULL;
++
++
++        if (pic != NULL)
++        {
++            pict->picture_params.FrameNumList[i]    = pic->long_ref ? pic->pic_id : pic->frame_num;
++
++            if (pic->field_poc[0] != INT_MAX)
++            {
++                pict->picture_params.FieldOrderCntList[i][0]        = pic->field_poc [0];
++                nUsedForReferenceFlags                       |= 1<<(i*2);
++            }
++            else
++                pict->picture_params.FieldOrderCntList[i][0]        = 0;
++
++            if (pic->field_poc[1] != INT_MAX)
++            {
++                pict->picture_params.FieldOrderCntList[i][1]        = pic->field_poc [1];
++                nUsedForReferenceFlags                       |= 2<<(i*2);
++            }
++            else
++            {
++                pict->picture_params.FieldOrderCntList[i][1]        = 0;
++            }
++
++            pict->picture_params.RefFrameList[i].bPicEntry       = (unsigned)pic->opaque | (AssociatedFlag << 7);
++
++        }
++        else
++        {
++            pict->picture_params.FrameNumList[i]                    = 0;
++            pict->picture_params.FieldOrderCntList[i][0]            = 0;
++            pict->picture_params.FieldOrderCntList[i][1]            = 0;
++            pict->picture_params.RefFrameList[i].bPicEntry       = 127 | (1 << 7);
++
++        }
++    }
++
++    pict->picture_params.UsedForReferenceFlags    = nUsedForReferenceFlags;
++}
++
++void ff_directshow_h264_picture_start(MpegEncContext *s)
++{
++/* is there something to do here ?*/
++    /*H264Context *h = s->avctx->priv_data;
++	struct directshow_dxva_h264 *pict;
++	int i;
++	int pictureindex;*/
++	
++	//pict = ( struct directshow_dxva_h264 *)s->current_picture_ptr->data[0];
++	//assert(pict);
++	//pictureindex = pict->decoder_surface_index;
++    
++	
++    av_log(s->avctx, AV_LOG_DEBUG, "ff_directshow_h264_picture_start!\n");
++}
+Index: libavcodec/directshow.h
+===================================================================
+--- libavcodec/directshow.h	(revision 0)
++++ libavcodec/directshow.h	(revision 0)
+@@ -0,0 +1,54 @@
++#ifndef _DIRECTSHOW_DXVA_H
++#define _DIRECTSHOW_DXVA_H
++
++#include <stdint.h>
++#include <dxva2api.h>
++
++/** \brief The videoStructure is used for rendering. */
++#define FF_DSHOW_STATE_USED_FOR_RENDER 1
++
++/**
++ * \brief The videoStructure is needed for reference/prediction.
++ * The codec manipulates this.
++ */
++#define FF_DSHOW_STATE_USED_FOR_REFERENCE 2
++
++
++#define MAX_SLICES 16
++typedef struct directshow_dxva_h264{
++    DXVA_PicParams_H264   picture_params;
++    DXVA_Qmatrix_H264     picture_qmatrix;
++
++    unsigned              slice_count;
++    DXVA_Slice_H264_Short slice_short[MAX_SLICES];
++    DXVA_Slice_H264_Long  slice_long[MAX_SLICES];
++
++    int                   decoder_surface_index;
++    int                   field_type;
++	  int                   slice_type;
++	  int                   frame_poc;
++    int64_t               frame_start;
++    
++    
++}directshow_dxva_h264;
++
++
++/*typedef struct {
++    DXVA_PictureParameters pp;
++    DXVA_SliceInfo         si;
++
++    const uint8_t          *bitstream;
++    unsigned               bitstream_size;
++} DirectShowDxva_VC1;
++
++typedef struct {
++    DXVA_PictureParameters pp;
++    DXVA_QmatrixData       qm;
++    unsigned               slice_count;
++    DXVA_SliceInfo         slice[MAX_SLICES];
++
++    const uint8_t          *bitstream;
++    unsigned               bitstream_size;
++} DirectShowDxva_MPEG2;*/
++
++#endif
+Index: libavcodec/directshow_internal.h
+===================================================================
+--- libavcodec/directshow_internal.h	(revision 0)
++++ libavcodec/directshow_internal.h	(revision 0)
+@@ -0,0 +1,42 @@
++/* 
++ *  Copyright (C) 2006-2009 mplayerc
++ *  Copyright (C) 2010 Team XBMC
++ *  http://www.xbmc.org
++ *
++ *  This Program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2, or (at your option)
++ *  any later version.
++ *
++ *  This Program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with XBMC; see the file COPYING.  If not, write to
++ *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
++ *  http://www.gnu.org/copyleft/gpl.html
++ *
++ */
++
++#ifndef AVCODEC_DIRECTSHOW_INTERNAL_H
++#define AVCODEC_DIRECTSHOW_INTERNAL_H
++
++
++
++#include <stdint.h>
++/* able to only use the dxva2api for compiling the dll with mingw */
++#include "avcodec.h"
++#include "mpegvideo.h"
++
++//int ff_decode_slice_header_noexecute(AVCodecContext *avctx);
++//void ff_field_end_noexecute(AVCodecContext *avctx);
++void ff_directshow_h264_fill_slice_long(MpegEncContext *s);
++void ff_directshow_h264_picture_start(MpegEncContext *s);
++void ff_directshow_h264_set_reference_frames(MpegEncContext *s);
++void ff_directshow_h264_picture_complete(MpegEncContext *s);
++void ff_directshow_h264_setpoc(MpegEncContext *s, int poc, int64_t start);
++
++
++#endif
+Index: libavcodec/dsputil.c
+===================================================================
+--- libavcodec/dsputil.c	(revision 31632)
++++ libavcodec/dsputil.c	(working copy)
+@@ -39,6 +39,7 @@
+ #include "ac3dec.h"
+ #include "vorbis.h"
+ #include "png.h"
++#include "vp8dsp.h"
+ 
+ uint8_t ff_cropTbl[256 + 2 * MAX_NEG_CROP] = {0, };
+ uint32_t ff_squareTbl[512] = {0, };
+@@ -358,7 +359,7 @@
+ }
+ 
+ /**
+- * Copies a rectangular area of samples to a temporary buffer and replicates the boarder samples.
++ * Copy a rectangular area of samples to a temporary buffer and replicate the border samples.
+  * @param buf destination buffer
+  * @param src source buffer
+  * @param linesize number of bytes between 2 vertically adjacent samples in both the source and destination buffers
+@@ -3987,7 +3988,7 @@
+     }
+ }
+ 
+-static int32_t scalarproduct_int16_c(int16_t * v1, int16_t * v2, int order, int shift)
++static int32_t scalarproduct_int16_c(const int16_t * v1, const int16_t * v2, int order, int shift)
+ {
+     int res = 0;
+ 
+@@ -3997,7 +3998,7 @@
+     return res;
+ }
+ 
+-static int32_t scalarproduct_and_madd_int16_c(int16_t *v1, int16_t *v2, int16_t *v3, int order, int mul)
++static int32_t scalarproduct_and_madd_int16_c(int16_t *v1, const int16_t *v2, const int16_t *v3, int order, int mul)
+ {
+     int res = 0;
+     while (order--) {
+@@ -4534,6 +4535,16 @@
+             c->avg_2tap_qpel_pixels_tab[0][i]= c->avg_h264_qpel_pixels_tab[0][i];
+     }
+ 
++    c->put_rv30_tpel_pixels_tab[0][0] = c->put_h264_qpel_pixels_tab[0][0];
++    c->put_rv30_tpel_pixels_tab[1][0] = c->put_h264_qpel_pixels_tab[1][0];
++    c->avg_rv30_tpel_pixels_tab[0][0] = c->avg_h264_qpel_pixels_tab[0][0];
++    c->avg_rv30_tpel_pixels_tab[1][0] = c->avg_h264_qpel_pixels_tab[1][0];
++
++    c->put_rv40_qpel_pixels_tab[0][0] = c->put_h264_qpel_pixels_tab[0][0];
++    c->put_rv40_qpel_pixels_tab[1][0] = c->put_h264_qpel_pixels_tab[1][0];
++    c->avg_rv40_qpel_pixels_tab[0][0] = c->avg_h264_qpel_pixels_tab[0][0];
++    c->avg_rv40_qpel_pixels_tab[1][0] = c->avg_h264_qpel_pixels_tab[1][0];
++
+     switch(c->idct_permutation_type){
+     case FF_NO_IDCT_PERM:
+         for(i=0; i<64; i++)
+Index: libavcodec/dsputil.h
+===================================================================
+--- libavcodec/dsputil.h	(revision 31632)
++++ libavcodec/dsputil.h	(working copy)
+@@ -544,14 +544,14 @@
+      * @param len length of vectors, should be multiple of 16
+      * @param shift number of bits to discard from product
+      */
+-    int32_t (*scalarproduct_int16)(int16_t *v1, int16_t *v2/*align 16*/, int len, int shift);
++    int32_t (*scalarproduct_int16)(const int16_t *v1, const int16_t *v2/*align 16*/, int len, int shift);
+     /* ape functions */
+     /**
+      * Calculate scalar product of v1 and v2,
+      * and v1[i] += v3[i] * mul
+      * @param len length of vectors, should be multiple of 16
+      */
+-    int32_t (*scalarproduct_and_madd_int16)(int16_t *v1/*align 16*/, int16_t *v2, int16_t *v3, int len, int mul);
++    int32_t (*scalarproduct_and_madd_int16)(int16_t *v1/*align 16*/, const int16_t *v2, const int16_t *v3, int len, int mul);
+ 
+     /* rv30 functions */
+     qpel_mc_func put_rv30_tpel_pixels_tab[4][16];
+Index: libavcodec/error_resilience.c
+===================================================================
+--- libavcodec/error_resilience.c	(revision 31632)
++++ libavcodec/error_resilience.c	(working copy)
+@@ -760,6 +760,7 @@
+     if(!s->error_recognition || s->error_count==0 || s->avctx->lowres ||
+        s->avctx->hwaccel ||
+        s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU ||
++       s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW ||
+        s->picture_structure != PICT_FRAME || // we dont support ER of field pictures yet, though it should not crash if enabled
+        s->error_count==3*s->mb_width*(s->avctx->skip_top + s->avctx->skip_bottom)) return;
+ 
+Index: libavcodec/h264.c
+===================================================================
+--- libavcodec/h264.c	(revision 31632)
++++ libavcodec/h264.c	(working copy)
+@@ -37,6 +37,7 @@
+ #include "mathops.h"
+ #include "rectangle.h"
+ #include "vdpau_internal.h"
++#include "directshow_internal.h"
+ 
+ #include "cabac.h"
+ 
+@@ -891,6 +892,37 @@
+         }
+         // Now store right nal length size, that will be use to parse all other nals
+         h->nal_length_size = ((*(((char*)(avctx->extradata))+4))&0x03)+1;
++    } else 
++    if (avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW){
++        int i, cnt, nalsize;
++        unsigned char *p = avctx->extradata;
++        unsigned char *pend=p+avctx->extradata_size;
++
++        h->is_avc = 1;
++
++        h->nal_length_size = 2;
++        cnt = 1;
++        av_log(avctx, AV_LOG_ERROR, "CODEC_CAP_HWACCEL_DIRECTSHOW detected for extracting extradata\n", i);
++        for (i = 0; i < cnt; i++) {
++            nalsize = AV_RB16(p) + 2;
++            if(decode_nal_units(h, p, nalsize) < 0) {
++                av_log(avctx, AV_LOG_ERROR, "Decoding sps %d from avcC failed\n", i);
++                return -1;
++            }
++            p += nalsize;
++        }
++        // Decode pps from avcC
++        for (i = 0; p<pend-2; i++) {
++            nalsize = AV_RB16(p) + 2;
++            if(decode_nal_units(h, p, nalsize)  != nalsize) {
++                av_log(avctx, AV_LOG_ERROR, "Decoding pps %d from avcC failed\n", i);
++                /*return -1; mpc modification*/
++            }
++            p += nalsize;
++        }
++        // Now store right nal length size, that will be use to parse all other nals
++        /*TODO add a way to set the nal_lenth_size without actually adding it to avctx directly*/
++        h->nal_length_size = 4;
+     } else {
+         h->is_avc = 0;
+         if(decode_nal_units(h, avctx->extradata, avctx->extradata_size) < 0)
+@@ -916,7 +948,7 @@
+     s->quarter_sample = 1;
+     if(!avctx->has_b_frames)
+     s->low_delay= 1;
+-
++	
+     avctx->chroma_sample_location = AVCHROMA_LOC_LEFT;
+ 
+     ff_h264_decode_init_vlc();
+@@ -1649,10 +1681,13 @@
+ 
+     s->current_picture_ptr->qscale_type= FF_QSCALE_TYPE_H264;
+     s->current_picture_ptr->pict_type= s->pict_type;
+-
++    
+     if (CONFIG_H264_VDPAU_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
+         ff_vdpau_h264_set_reference_frames(s);
+ 
++    if (CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
++        ff_directshow_h264_set_reference_frames(s);
++
+     if(!s->dropable) {
+         ff_h264_execute_ref_pic_marking(h, h->mmco, h->mmco_index);
+         h->prev_poc_msb= h->poc_msb;
+@@ -1668,6 +1703,10 @@
+ 
+     if (CONFIG_H264_VDPAU_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
+         ff_vdpau_h264_picture_complete(s);
++    
++    if (CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
++	    ff_directshow_h264_picture_complete(s);
++	
+ 
+     /*
+      * FIXME: Error handling code does not seem to support interlaced
+@@ -1681,8 +1720,10 @@
+      * past end by one (callers fault) and resync_mb_y != 0
+      * causes problems for the first MB line, too.
+      */
+-    if (!FIELD_PICTURE)
+-        ff_er_frame_end(s);
++    if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)){
++	    if (!FIELD_PICTURE)
++            ff_er_frame_end(s);
++    }
+ 
+     MPV_frame_end(s);
+ 
+@@ -1746,7 +1787,6 @@
+     }
+ 
+     first_mb_in_slice= get_ue_golomb(&s->gb);
+-
+     if(first_mb_in_slice == 0){ //FIXME better field boundary detection
+         if(h0->current_slice && FIELD_PICTURE){
+             field_end(h);
+@@ -1849,6 +1889,7 @@
+             av_reduce(&s->avctx->time_base.num, &s->avctx->time_base.den,
+                       h->sps.num_units_in_tick, den, 1<<30);
+         }
++		
+         s->avctx->pix_fmt = s->avctx->get_format(s->avctx,
+                                                  s->avctx->codec->pix_fmts ?
+                                                  s->avctx->codec->pix_fmts :
+@@ -2199,6 +2240,9 @@
+     h->emu_edge_width= (s->flags&CODEC_FLAG_EMU_EDGE) ? 0 : 16;
+     h->emu_edge_height= (FRAME_MBAFF || FIELD_PICTURE) ? 0 : h->emu_edge_width;
+ 
++	if(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
++	  ff_directshow_h264_fill_slice_long(s);
++	
+     if(s->avctx->debug&FF_DEBUG_PICT_INFO){
+         av_log(h->s.avctx, AV_LOG_DEBUG, "slice:%d %s mb:%d %c%s%s pps:%u frame:%d poc:%d/%d ref:%d/%d qp:%d loop:%d:%d:%d weight:%d%s %s\n",
+                h->slice_num,
+@@ -2709,8 +2753,9 @@
+ 
+     if (s->avctx->hwaccel)
+         return;
+-    if(s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
++    if(s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU || s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
+         return;
++
+     if(context_count == 1) {
+         decode_slice(avctx, &h);
+     } else {
+@@ -2756,7 +2801,7 @@
+             s->current_picture_ptr= NULL;
+         ff_h264_reset_sei(h);
+     }
+-
++  
+     for(;;){
+         int consumed;
+         int dst_length;
+@@ -2848,6 +2893,8 @@
+                     return -1;
+                 if(CONFIG_H264_VDPAU_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
+                     ff_vdpau_h264_picture_start(s);
++                if(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
++                    ff_directshow_h264_picture_start(s);
+             }
+ 
+             s->current_picture_ptr->key_frame |=
+@@ -2930,7 +2977,8 @@
+         }
+ 
+         if(context_count == h->max_contexts) {
+-            execute_decode_slices(h, context_count);
++            if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW))
++                execute_decode_slices(h, context_count);
+             context_count = 0;
+         }
+ 
+@@ -2947,8 +2995,10 @@
+             goto again;
+         }
+     }
+-    if(context_count)
++	
++    if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW))
+         execute_decode_slices(h, context_count);
++
+     return buf_index;
+ }
+ 
+@@ -2970,7 +3020,9 @@
+     int buf_size = avpkt->size;
+     H264Context *h = avctx->priv_data;
+     MpegEncContext *s = &h->s;
+-    AVFrame *pict = data;
++	AVFrame *pict;
++    if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW))	
++	    pict = data;
+     int buf_index;
+ 
+     s->flags= avctx->flags;
+@@ -2994,8 +3046,13 @@
+             h->delayed_pic[i] = h->delayed_pic[i+1];
+ 
+         if(out){
+-            *data_size = sizeof(AVFrame);
+-            *pict= *(AVFrame*)out;
++		    if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)){
++                *data_size = sizeof(AVFrame);
++                *pict= *(AVFrame*)out;
++			} else {
++			    ff_directshow_h264_setpoc(s, out->poc, out->reordered_opaque);
++			    av_log(avctx, AV_LOG_ERROR, "skipping *data_size = sizeof(AVFrame) for directshow!\n");
++			}
+         }
+ 
+         return 0;
+@@ -3020,7 +3077,8 @@
+ 
+         if (cur->field_poc[0]==INT_MAX || cur->field_poc[1]==INT_MAX) {
+             /* Wait for second field. */
+-            *data_size = 0;
++			if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW))
++                *data_size = 0;
+ 
+         } else {
+             cur->interlaced_frame = 0;
+@@ -3139,21 +3197,25 @@
+                     h->delayed_pic[i] = h->delayed_pic[i+1];
+             }
+             if(!out_of_order && pics > s->avctx->has_b_frames){
+-                *data_size = sizeof(AVFrame);
++                if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW))
++				    *data_size = sizeof(AVFrame);
+ 
+                 if(out_idx==0 && h->delayed_pic[0] && (h->delayed_pic[0]->key_frame || h->delayed_pic[0]->mmco_reset)) {
+                     h->outputed_poc = INT_MIN;
+                 } else
+                     h->outputed_poc = out->poc;
+-                *pict= *(AVFrame*)out;
++                if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW))
++				    *pict= *(AVFrame*)out;
+             }else{
+                 av_log(avctx, AV_LOG_DEBUG, "no picture\n");
+             }
+         }
+     }
+ 
+-    assert(pict->data[0] || !*data_size);
+-    ff_print_debug_info(s, pict);
++    if (!(CONFIG_H264_DSHOW_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)){
++	    assert(pict->data[0] || !*data_size);
++        ff_print_debug_info(s, pict);
++	}
+ //printf("out %d\n", (int)pict->data[0]);
+ 
+     return get_consumed_bytes(s, buf_index, buf_size);
+@@ -3412,3 +3474,20 @@
+     .pix_fmts = (const enum PixelFormat[]){PIX_FMT_VDPAU_H264, PIX_FMT_NONE},
+ };
+ #endif
++
++#if CONFIG_H264_DSHOW_DECODER
++AVCodec h264_dshow_decoder = {
++    "h264_dshow",
++    AVMEDIA_TYPE_VIDEO,
++    CODEC_ID_H264,
++    sizeof(H264Context),
++    ff_h264_decode_init,
++    NULL,
++    ff_h264_decode_end,
++    decode_frame,
++    CODEC_CAP_DR1 | CODEC_CAP_DELAY | CODEC_CAP_HWACCEL_DIRECTSHOW,
++    .flush= flush_dpb,
++    .long_name = NULL_IF_CONFIG_SMALL("H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (Directshow acceleration)"),
++    .pix_fmts = (const enum PixelFormat[]){PIX_FMT_DIRECTSHOW_H264, PIX_FMT_NONE},
++};
++#endif
+\ No newline at end of file
+Index: libavcodec/Makefile
+===================================================================
+--- libavcodec/Makefile	(revision 31632)
++++ libavcodec/Makefile	(working copy)
+@@ -3,7 +3,7 @@
+ NAME = avcodec
+ FFLIBS = avutil
+ 
+-HEADERS = avcodec.h avfft.h dxva2.h opt.h vaapi.h vdpau.h xvmc.h
++HEADERS = avcodec.h avfft.h dxva2.h opt.h vaapi.h vdpau.h xvmc.h directshow.h
+ 
+ OBJS = allcodecs.o                                                      \
+        audioconvert.o                                                   \
+@@ -28,6 +28,7 @@
+ OBJS-$(CONFIG_ENCODERS)                += faandct.o jfdctfst.o jfdctint.o
+ OBJS-$(CONFIG_DCT)                     += dct.o
+ OBJS-$(CONFIG_DWT)                     += dwt.o
++OBJS-$(CONFIG_H264_DSHOW_DECODER)       += directshow.o
+ OBJS-$(CONFIG_DXVA2)                   += dxva2.o
+ FFT-OBJS-$(CONFIG_HARDCODED_TABLES)    += cos_tables.o
+ OBJS-$(CONFIG_FFT)                     += avfft.o fft.o $(FFT-OBJS-yes)
+@@ -152,6 +153,7 @@
+                                           h264_refs.o h264_cavlc.o h264_cabac.o\
+                                           mpegvideo.o error_resilience.o
+ OBJS-$(CONFIG_H264_DXVA2_HWACCEL)      += dxva2_h264.o
++OBJS-$(CONFIG_H264_DIRECTSHOW_DECODER) += directshow_h264.o
+ OBJS-$(CONFIG_H264_ENCODER)            += h264enc.o h264dspenc.o
+ OBJS-$(CONFIG_H264_VAAPI_HWACCEL)      += vaapi_h264.o
+ OBJS-$(CONFIG_HUFFYUV_DECODER)         += huffyuv.o
+@@ -608,6 +610,7 @@
+ -include $(SUBDIR)$(ARCH)/Makefile
+ 
+ SKIPHEADERS                             = %_tablegen.h
++SKIPHEADERS-$(CONFIG_DXVA)             += directshow.h directshow_internal.h
+ SKIPHEADERS-$(CONFIG_DXVA2)            += dxva2.h dxva2_internal.h
+ SKIPHEADERS-$(CONFIG_LIBDIRAC)         += libdirac.h
+ SKIPHEADERS-$(CONFIG_LIBSCHROEDINGER)  += libschroedinger.h
+Index: libavcodec/mpegvideo.c
+===================================================================
+--- libavcodec/mpegvideo.c	(revision 31632)
++++ libavcodec/mpegvideo.c	(working copy)
+@@ -1047,6 +1047,7 @@
+         ff_xvmc_field_end(s);
+     }else if(!s->avctx->hwaccel
+        && !(s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
++       && !(s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_DIRECTSHOW)
+        && s->unrestricted_mv
+        && s->current_picture.reference
+        && !s->intra_only
+Index: libavutil/common.h
+===================================================================
+--- libavutil/common.h	(revision 31632)
++++ libavutil/common.h	(working copy)
+@@ -153,7 +153,7 @@
+ static inline av_const int32_t av_clipl_int32(int64_t a)
+ {
+     if ((a+0x80000000u) & ~UINT64_C(0xFFFFFFFF)) return (a>>63) ^ 0x7FFFFFFF;
+-    else                                         return a;
++    else                                         return (int32_t)a;
+ }
+ 
+ /**
+Index: libavutil/pixdesc.c
+===================================================================
+--- libavutil/pixdesc.c	(revision 31632)
++++ libavutil/pixdesc.c	(working copy)
+@@ -779,6 +779,24 @@
+         .log2_chroma_h = 1,
+         .flags = PIX_FMT_HWACCEL,
+     },
++    [PIX_FMT_DIRECTSHOW_H264] = {
++        .name = "dshow_h264",
++        .log2_chroma_w = 1,
++        .log2_chroma_h = 1,
++        .flags = PIX_FMT_HWACCEL,
++    },
++    [PIX_FMT_DIRECTSHOW_VC1] = {
++        .name = "dshow_vc1",
++        .log2_chroma_w = 1,
++        .log2_chroma_h = 1,
++        .flags = PIX_FMT_HWACCEL,
++    },
++    [PIX_FMT_DIRECTSHOW_MPEG2] = {
++        .name = "dshow_mpeg2",
++        .log2_chroma_w = 1,
++        .log2_chroma_h = 1,
++        .flags = PIX_FMT_HWACCEL,
++    },
+     [PIX_FMT_Y400A] = {
+         .name = "y400a",
+         .nb_components= 2,
+Index: libavutil/pixfmt.h
+===================================================================
+--- libavutil/pixfmt.h	(revision 31632)
++++ libavutil/pixfmt.h	(working copy)
+@@ -128,6 +128,11 @@
+     PIX_FMT_VDPAU_MPEG4,  ///< MPEG4 HW decoding with VDPAU, data[0] contains a vdpau_render_state struct which contains the bitstream of the slices as well as various fields extracted from headers
+     PIX_FMT_DXVA2_VLD,    ///< HW decoding through DXVA2, Picture.data[3] contains a LPDIRECT3DSURFACE9 pointer
+ 
++    PIX_FMT_DIRECTSHOW_H264,///< H.264 HW decoding with DIRECTSHOW, Picture.data[3] contains a DirectShowDxva_H264 struct
++	PIX_FMT_DSHOW_H264_VLD,  ///< H.264 HW decoding with DIRECTSHOW, Picture.data[3] contains a DirectShowDxva_H264 struct
++    PIX_FMT_DIRECTSHOW_MPEG2,///< MPEG-2 HW decoding with DIRECTSHOW, Picture.data[3] contains a DirectShowDxva_MPEG2 struct
++    PIX_FMT_DIRECTSHOW_VC1, ///< VC-1 HW decoding with DIRECTSHOW, Picture.data[3] contains a DirectShowDxva_VC1 struct
++	
+     PIX_FMT_RGB444BE,  ///< packed RGB 4:4:4, 16bpp, (msb)4A 4R 4G 4B(lsb), big-endian, most significant bits to 0
+     PIX_FMT_RGB444LE,  ///< packed RGB 4:4:4, 16bpp, (msb)4A 4R 4G 4B(lsb), little-endian, most significant bits to 0
+     PIX_FMT_BGR444BE,  ///< packed BGR 4:4:4, 16bpp, (msb)4A 4B 4G 4R(lsb), big-endian, most significant bits to 1
