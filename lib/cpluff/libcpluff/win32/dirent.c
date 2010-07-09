@@ -13,7 +13,6 @@
 #include <io.h> /* _findfirst and _findnext set errno iff they return -1 */
 #include <stdlib.h>
 #include <string.h>
-#include "utf8.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -23,9 +22,9 @@ extern "C"
 struct DIR
 {
     long                handle; /* -1 for failed rewind */
-    struct _wfinddata_t info;
+    struct _finddata_t  info;
     struct dirent       result; /* d_name null iff first time */
-    wchar_t             *name;  /* null-terminated char string */
+    char                *name;  /* null-terminated char string */
 };
 
 DIR *opendir(const char *name)
@@ -34,17 +33,16 @@ DIR *opendir(const char *name)
 
     if(name && name[0])
     {
-        wchar_t *wname = make_unicode_string(name);
-        size_t base_length = wcslen(wname);
-        const wchar_t *all = /* search pattern must end with suitable wildcard */
-            wcschr(L"/\\", wname[base_length - 1]) ? L"*" : L"/*";
+        size_t base_length = strlen(name);
+        const char *all = /* search pattern must end with suitable wildcard */
+            strchr("/\\", name[base_length - 1]) ? "*" : "/*";
 
         if((dir = (DIR *) malloc(sizeof *dir)) != 0 &&
-           (dir->name = (wchar_t *) calloc(base_length + wcslen(all) + 1, sizeof(wchar_t))) != 0)
+           (dir->name = (char *) malloc(base_length + strlen(all) + 1)) != 0)
         {
-            wcscat(wcscpy(dir->name, wname), all);
+            strcat(strcpy(dir->name, name), all);
 
-            if((dir->handle = (long) _wfindfirst(dir->name, &dir->info)) != -1)
+            if((dir->handle = (long) _findfirst(dir->name, &dir->info)) != -1)
             {
                 dir->result.d_name = 0;
             }
@@ -61,7 +59,6 @@ DIR *opendir(const char *name)
             dir   = 0;
             errno = ENOMEM;
         }
-        free(wname);
     }
     else
     {
@@ -82,11 +79,6 @@ int closedir(DIR *dir)
             result = _findclose(dir->handle);
         }
 
-        if(dir->result.d_name)
-        {
-            free(dir->result.d_name);
-            dir->result.d_name = 0;
-        }
         free(dir->name);
         free(dir);
     }
@@ -105,10 +97,10 @@ struct dirent *readdir(DIR *dir)
 
     if(dir && dir->handle != -1)
     {
-        if(!dir->result.d_name || _wfindnext(dir->handle, &dir->info) != -1)
+        if(!dir->result.d_name || _findnext(dir->handle, &dir->info) != -1)
         {
             result         = &dir->result;
-            result->d_name = make_utf8_string(dir->info.name);
+            result->d_name = dir->info.name;
         }
     }
     else
@@ -124,12 +116,8 @@ void rewinddir(DIR *dir)
     if(dir && dir->handle != -1)
     {
         _findclose(dir->handle);
-        dir->handle = (long) _wfindfirst(dir->name, &dir->info);
-        if(dir->result.d_name)
-        {
-            free(dir->result.d_name);
-            dir->result.d_name = 0;
-        }
+        dir->handle = (long) _findfirst(dir->name, &dir->info);
+        dir->result.d_name = 0;
     }
     else
     {

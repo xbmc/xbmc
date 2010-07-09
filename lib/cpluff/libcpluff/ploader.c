@@ -37,9 +37,6 @@
 #include "defines.h"
 #include "util.h"
 #include "internal.h"
-#ifdef _WIN32
-#include "utf8.h"
-#endif
 
 // Use XMLCALL if available
 #ifdef XMLCALL
@@ -981,9 +978,6 @@ static void dealloc_plugin_info(cp_context_t *ctx, cp_plugin_info_t *plugin) {
 
 CP_C_API cp_plugin_info_t * cp_load_plugin_descriptor(cp_context_t *context, const char *path, cp_status_t *error) {
 	char *file = NULL;
-#ifdef _WIN32
-	wchar_t *wfile;
-#endif
 	cp_status_t status = CP_OK;
 	FILE *fh = NULL;
 	XML_Parser parser = NULL;
@@ -1016,12 +1010,7 @@ CP_C_API cp_plugin_info_t * cp_load_plugin_descriptor(cp_context_t *context, con
 		strcpy(file + path_len + 1, CP_PLUGIN_DESCRIPTOR);
 
 		// Open the file 
-#ifdef _WIN32
-		wfile = make_unicode_string(file);
-		if ((fh = _wfopen(wfile, L"rb")) == NULL) {
-#else
 		if ((fh = fopen(file, "rb")) == NULL) {
-#endif
 			status = CP_ERR_IO;
 			break;
 		}
