@@ -12,8 +12,8 @@ FRC   f      , f;
 
 TEMP  c1pos;
 TEMP  c2pos;
-SUB   c1pos.x, -0.5, f.x;
-SUB   c2pos.x,  0.5, f.x;
+SUB   c1pos.x, 0.5, f.x;
+SUB   c2pos.x, 1.5, f.x;
 MAD   c1pos.x, c1pos.x, dims[0].x, pos.x;
 MAD   c2pos.x, c2pos.x, dims[0].x, pos.x;
 MOV   c1pos.y, pos.y;

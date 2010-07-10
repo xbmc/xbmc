@@ -48,18 +48,21 @@ void main()
 
 #if(XBMC_texture_rectangle)
   vec2 stepxy = vec2(1.0, 1.0);
-  vec2 pos    = stretch(vec2(m_cordY.x - 0.25, m_cordY.y));
+  vec2 pos    = stretch(m_cordY);
+  pos         = vec2(pos.x - 0.25, pos.y);
   vec2 f      = fract(pos);
 #else
   vec2 stepxy = m_step;
-  vec2 pos    = stretch(vec2(m_cordY.x - stepxy.x * 0.25, m_cordY.y));
+  vec2 pos    = stretch(m_cordY);
+  pos         = vec2(pos.x - stepxy.x * 0.25, pos.y);
   vec2 f      = fract(pos / stepxy);
 #endif
 
+
   //y axis will be correctly interpolated by opengl
   //x axis will not, so we grab two pixels at the center of two columns and interpolate ourselves
-  vec4 c1 = texture2D(m_sampY, vec2(pos.x + (-0.5 - f.x) * stepxy.x, pos.y));
-  vec4 c2 = texture2D(m_sampY, vec2(pos.x + ( 0.5 - f.x) * stepxy.x, pos.y));
+  vec4 c1 = texture2D(m_sampY, vec2(pos.x + (0.5 - f.x) * stepxy.x, pos.y));
+  vec4 c2 = texture2D(m_sampY, vec2(pos.x + (1.5 - f.x) * stepxy.x, pos.y));
 
   /* each pixel has two Y subpixels and one UV subpixel
      YUV  Y  YUV
