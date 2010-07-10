@@ -583,7 +583,7 @@
           <description>Plugin Stream view button</description>
           <visible>!Control.IsVisible(59)</visible>
           <label>$LOCALIZE[31722]</label>
-          <onclick>Container.SetViewMode(60)</onclick>
+          <onclick>Container.SetViewMode(59)</onclick>
           <onclick>SetFocus(50)</onclick>
           <include>OMButtonItem</include>
         </control>

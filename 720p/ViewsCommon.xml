@@ -1390,95 +1390,27 @@
 	</include>
 	<include name="PluginStream">
 		<control type="group">
-			<visible>Control.IsVisible(59)</visible>
-			<control type="fixedlist" id="59">
-			<description>My first fixed list container</description>
-			<posx>80</posx>
-			<posy>60</posy>
-			<width>250</width>
-			<height>200</height>
-			<visible>true</visible>
-			<onup>2</onup>
-			<ondown>3</ondown>
-			<onleft>1</onleft>
-			<onright>1</onright>
-			<viewtype label="3D list">list</viewtype>
-			<orientation>vertical</orientation>
-			<pagecontrol>25</pagecontrol>
-			<scrolltime>200</scrolltime>
-			<focusposition>4</focusposition>
-			<itemlayout width="250" height="29">
-			<control type="image">
-			<posx>5</posx>
-			<posy>3</posy>
-			<width>22</width>
-			<height>22</height>
-			<info>ListItem.Icon</info>
+			<control type="group">
+				<visible>Control.IsVisible(59)</visible>
+				<include>MediaViewBGOverlay</include>
 			</control>
-			<control type="label">
-			<posx>30</posx>
-			<posy>3</posy>
-			<width>430</width>
-			<height>22</height>
-			<font>font13</font>
-			<aligny>center</aligny>
-			<selectedcolor>green</selectedcolor>
-			<align>left</align>
-			<info>ListItem.Label</info>
-			</control>
-			<control type="label">
-			<posx>475</posx>
-			<posy>3</posy>
-			<width>300</width>
-			<height>22</height>
-			<font>font13</font>
-			<aligny>center</aligny>
-			<selectedcolor>green</selectedcolor>
-			<textcolor>grey</textcolor>
-			<align>right</align>
-			<info>ListItem.Label2</info>
-			</control>
-			</itemlayout>
-			<focusedlayout height="29" width="250">
-			<control type="image">
-			<width>485</width>
-			<height>29</height>
-			<posx>0</posx>
-			<posy>0</posy>
-			<visible>Control.HasFocus(50)</visible>
-			<texture>list-focus.png</texture>
-			</control>
-			<control type="image">
-			<posx>5</posx>
-			<posy>3</posy>
-			<width>22</width>
-			<height>22</height>
-			<info>ListItem.Icon</info>
-			</control>
-			<control type="label">
-			<posx>30</posx>
-			<posy>3</posy>
-			<width>430</width>
-			<height>22</height>
-			<font>font13</font>
-			<aligny>center</aligny>
-			<selectedcolor>green</selectedcolor>
-			<align>left</align>
-			<info>ListItem.Label</info>
-			</control>
-			<control type="label">
-			<posx>475</posx>
-			<posy>3</posy>
-			<width>300</width>
-			<height>22</height>
-			<font>font13</font>
-			<aligny>center</aligny>
-			<selectedcolor>green</selectedcolor>
-			<textcolor>grey</textcolor>
-			<align>right</align>
-			<info>ListItem.Label2</info>
-			</control>
-			</focusedlayout>
+			<control type="group">
+				<posy>206</posy>
+				<visible>Control.IsVisible(59)</visible>
+				<include>MediaViewFade</include>
+				<control type="panel" id="59">
+					<viewtype label="Plugin Stream">panel</viewtype>
+					<onup>59</onup>
+					<ondown>59</ondown>
+					<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
+					<onright>9009</onright>
+					<orientation>vertical</orientation>
+					<posx>69.5</posx>
+					<posy>34</posy>
+					<width>1141</width>
+					<height>500</height>
+					<include>PanelStreamLayout</include>
+				</control>
 			</control>
 		</control>
 	</include>
