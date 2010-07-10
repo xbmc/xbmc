@@ -126,7 +126,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   }
 
   // font file is loaded, create our CGUIFont
-  CGUIFont *pNewFont = new CGUIFont(strFontName, iStyle, textColor, shadowColor, lineSpacing, pFontFile);
+  CGUIFont *pNewFont = new CGUIFont(strFontName, iStyle, textColor, shadowColor, lineSpacing, iSize, pFontFile);
   m_vecFonts.push_back(pNewFont);
 
   // Store the original TTF font info in case we need to reload it in a different resolution

@@ -92,6 +92,7 @@ protected:
   float GetCharWidthInternal(character_t ch);
   float GetTextHeight(float lineSpacing, int numLines) const;
   float GetLineHeight(float lineSpacing) const;
+  float GetFontHeight() const { return m_height; }
 
   void DrawTextInternal(float x, float y, const vecColors &colors, const vecText &text,
                             uint32_t alignment, float maxPixelWidth, bool scrolling);
