@@ -39,7 +39,7 @@
 #include "utils/TimeUtils.h"
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
-
+#include "GUISettings.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
 #endif

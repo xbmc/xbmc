@@ -35,6 +35,8 @@
 #include "../guilib/common/SDLJoystick.h"
 #endif
 
+#include "tinyXML/tinyxml.h"
+
 class CKey;
 class CAction;
 class TiXmlNode;

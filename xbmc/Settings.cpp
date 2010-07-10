@@ -61,6 +61,7 @@
 #include "playercorefactory/PlayerCoreFactory.h"
 #include "utils/FileUtils.h"
 #include "MouseStat.h"
+#include "GUISettings.h"
 
 using namespace std;
 using namespace XFILE;

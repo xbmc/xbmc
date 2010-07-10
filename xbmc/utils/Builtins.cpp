@@ -50,6 +50,7 @@
 #include "Settings.h"
 #include "StringUtils.h"
 #include "Util.h"
+#include "GUISettings.h"
 
 #include "FileSystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
