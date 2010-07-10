@@ -1,10 +1,8 @@
 !!ARBfp1.0
 PARAM yuvmat[4] = { program.local[0..3] };
-#stepx, stepy, width, height
-PARAM dims[1]   = { program.local[4]    };
 TEMP  f;
 TEMP  pos;
-MAD   pos.x  , fragment.texcoord[0].x, 0.5, -0.25;
+ADD   pos.x  , fragment.texcoord[0].x, -0.25;
 MOV   pos.y  , fragment.texcoord[0].y;
 FRC   f      , pos;
 

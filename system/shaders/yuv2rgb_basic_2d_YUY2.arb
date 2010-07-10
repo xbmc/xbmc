@@ -2,24 +2,20 @@
 PARAM yuvmat[4] = { program.local[0..3] };
 #stepx, stepy, width, height
 PARAM dims[1]   = { program.local[4]    };
-TEMP  stepY;
 TEMP  f;
 TEMP  pos;
-MUL   stepY.x, dims[0].x, 2.0;
-MOV   stepY.y, dims[0].y;
-RCP   f.x    , stepY.x;
-RCP   f.y    , stepY.y;
-MAD   pos.x  , stepY.x, -0.25, fragment.texcoord[0].x;
+MAD   pos.x  , dims[0].x, -0.25, fragment.texcoord[0].x;
 MOV   pos.y  , fragment.texcoord[0].y;
-MUL   f      , pos, f;
+MUL   f.x    , dims[0].z, pos.x;
+MUL   f.y    , dims[0].w, pos.y;
 FRC   f      , f;
 
 TEMP  c1pos;
 TEMP  c2pos;
 SUB   c1pos.x, -0.5, f.x;
 SUB   c2pos.x,  0.5, f.x;
-MAD   c1pos.x, c1pos.x, stepY.x, pos.x;
-MAD   c2pos.x, c2pos.x, stepY.x, pos.x;
+MAD   c1pos.x, c1pos.x, dims[0].x, pos.x;
+MAD   c2pos.x, c2pos.x, dims[0].x, pos.x;
 MOV   c1pos.y, pos.y;
 MOV   c2pos.y, pos.y;
 

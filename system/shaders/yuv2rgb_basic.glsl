@@ -48,10 +48,10 @@ void main()
 
 #if(XBMC_texture_rectangle)
   vec2 stepxy = vec2(1.0, 1.0);
-  vec2 pos    = stretch(vec2(m_cordY.x * 0.5 - 0.25, m_cordY.y));
+  vec2 pos    = stretch(vec2(m_cordY.x - 0.25, m_cordY.y));
   vec2 f      = fract(pos);
 #else
-  vec2 stepxy = vec2(m_step.x * 2.0, m_step.y);
+  vec2 stepxy = m_step;
   vec2 pos    = stretch(vec2(m_cordY.x - stepxy.x * 0.25, m_cordY.y));
   vec2 f      = fract(pos / stepxy);
 #endif

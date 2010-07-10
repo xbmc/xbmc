@@ -460,6 +460,13 @@ void CLinuxRendererGL::CalculateTextureSourceRects(int source, int num_planes)
         p.rect.y2 /= 1 << im->cshift_y;
       }
 
+      p.height  /= p.pixpertex_y;
+      p.rect.y1 /= p.pixpertex_y;
+      p.rect.y2 /= p.pixpertex_y;
+      p.width   /= p.pixpertex_x;
+      p.rect.x1 /= p.pixpertex_x;
+      p.rect.x2 /= p.pixpertex_x;
+
       if (m_textureTarget == GL_TEXTURE_2D)
       {
         p.height  /= p.texheight;
@@ -1494,6 +1501,8 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
     imgwidth  *= planes[0].texwidth;
     imgheight *= planes[0].texheight;
   }
+  imgwidth  *= planes[0].pixpertex_x;
+  imgheight *= planes[0].pixpertex_y;
 
   // 1st Pass to video frame size
   glBegin(GL_QUADS);
@@ -1970,6 +1979,12 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
       planes[2].texheight = planes[0].texheight >> im.cshift_y;
     }
 
+    for (int p = 0; p < 3; p++)
+    {
+      planes[p].pixpertex_x = 1;
+      planes[p].pixpertex_y = 1;
+    }
+
     if(m_renderMethod & RENDER_POT)
     {
       for(int p = 0; p < 3; p++)
@@ -2167,6 +2182,12 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
     planes[2].texwidth  = planes[1].texwidth;
     planes[2].texheight = planes[1].texheight;
 
+    for (int p = 0; p < 3; p++)
+    {
+      planes[p].pixpertex_x = 1;
+      planes[p].pixpertex_y = 1;
+    }
+
     if(m_renderMethod & RENDER_POT)
     {
       for(int p = 0; p < 3; p++)
@@ -2286,6 +2307,9 @@ bool CLinuxRendererGL::CreateVAAPITexture(int index)
 
   plane.texwidth  = im.width;
   plane.texheight = im.height;
+
+  plane.pixpertex_x = 1;
+  plane.pixpertex_y = 1;
 
   if(m_renderMethod & RENDER_POT)
   {
@@ -2559,7 +2583,7 @@ bool CLinuxRendererGL::CreateYUY2Texture(int index)
     int fieldshift = (f==FIELD_FULL) ? 0 : 1;
     YUVPLANES &planes = fields[f];
 
-    planes[0].texwidth  = im.width;
+    planes[0].texwidth  = im.width / 2;
     planes[0].texheight = im.height >> fieldshift;
 
     planes[1].texwidth  = planes[0].texwidth;
@@ -2567,6 +2591,12 @@ bool CLinuxRendererGL::CreateYUY2Texture(int index)
 
     planes[2].texwidth  = planes[1].texwidth;
     planes[2].texheight = planes[1].texheight;
+
+    for (int p = 0; p < 3; p++)
+    {
+      planes[p].pixpertex_x = 2;
+      planes[p].pixpertex_y = 1;
+    }
 
     if(m_renderMethod & RENDER_POT)
     {
@@ -2583,7 +2613,7 @@ bool CLinuxRendererGL::CreateYUY2Texture(int index)
 
     glBindTexture(m_textureTarget, plane.id);
 
-    glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth / 2, plane.texheight, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
 
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
