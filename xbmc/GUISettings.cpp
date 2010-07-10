@@ -569,6 +569,7 @@ void CGUISettings::Initialize()
   AddBool(g_sysinfo.IsVistaOrHigher() ? vp: NULL, "videoplayer.usedxva2", 13427, false);
 #endif
 #ifdef HAVE_LIBCRYSTALHD
+	
   AddBool(CCrystalHD::GetInstance()->DevicePresent() ? vp: NULL, "videoplayer.usechd", 13428, true);
 #endif
 #ifdef HAVE_LIBVDADECODER

@@ -454,20 +454,46 @@ bool CCoreAudioDevice::GetPreferredChannelLayout(CoreAudioChannelList* pChannelM
 {
   if (!pChannelMap || !m_DeviceId)
     return false;
-  
+
   UInt32 propertySize = 0;
   Boolean writable = false;
   OSStatus ret = AudioDeviceGetPropertyInfo(m_DeviceId, 0, false, kAudioDevicePropertyPreferredChannelLayout, &propertySize, &writable);
   if (ret)
     return false;
-  UInt32 channels = propertySize / sizeof(SInt32);
-  SInt32* pMap = new SInt32[channels];
-  ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyPreferredChannelLayout, &propertySize, pMap);
-  if (!ret)
-    for (UInt32 i = 0; i < channels; i++)
-      pChannelMap->push_back(pMap[i]);;
-  delete[] pMap;
-  return (!ret);  
+  
+  // kAudioChannelLabel_Unknown = -1 (0xffffffff)
+  // kAudioChannelLabel_Unused = 0
+  // kAudioChannelLabel_Left = 1
+  // kAudioChannelLabel_Right = 2
+  // ...
+  
+  void* pBuf = malloc(propertySize);
+  AudioChannelLayout* pLayout = (AudioChannelLayout*)pBuf;
+  ret = AudioDeviceGetProperty(m_DeviceId, 0, false, kAudioDevicePropertyPreferredChannelLayout, &propertySize, pBuf);
+  if (ret)
+    CLog::Log(LOGERROR, "CCoreAudioUnit::GetPreferredChannelLayout: Unable to retrieve preferred channel layout. Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
+  else
+  {
+    if(pLayout->mChannelLayoutTag == kAudioChannelLayoutTag_UseChannelDescriptions)
+    {
+      for (UInt32 i = 0; i < pLayout->mNumberChannelDescriptions; i++)
+      {
+        if (pLayout->mChannelDescriptions[i].mChannelLabel == kAudioChannelLabel_Unknown)
+          pChannelMap->push_back(i + 1); // TODO: This is not the best way to handle unknown/unconfigured speaker layouts
+        else
+          pChannelMap->push_back(pLayout->mChannelDescriptions[i].mChannelLabel); // Will be one of kAudioChannelLabel_xxx
+      }
+    }
+    else
+    {
+      // TODO: Determine if a method that uses a channel bitmap is also necessary
+      free(pLayout);
+      return false;
+    }
+  } 
+
+  free(pLayout);
+  return (ret == noErr);  
 }
 
 bool CCoreAudioDevice::GetDataSources(CoreAudioDataSourceList* pList)
@@ -908,21 +934,6 @@ bool CCoreAudioUnit::SetRenderProc(AURenderCallback callback, void* pClientData)
   return true;
 }
 
-UInt32 CCoreAudioUnit::GetBufferFrameSize()
-{
-  if (!m_Component)
-    return 0;
-  
-  UInt32 size = sizeof(UInt32);
-  UInt32 bufferSize = 0;
-  OSStatus ret = AudioUnitGetProperty(m_Component, kAudioDevicePropertyBufferFrameSize, kAudioUnitScope_Input, 0, &bufferSize, &size);
-  if (ret)
-  {
-    CLog::Log(LOGERROR, "CCoreAudioUnit::GetBufferFrameSize: Unable to get current device's buffer size. ErrCode = Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
-    return 0;
-  }
-  return bufferSize;
-}
 
 bool CCoreAudioUnit::SetMaxFramesPerSlice(UInt32 maxFrames)
 {
@@ -938,10 +949,22 @@ bool CCoreAudioUnit::SetMaxFramesPerSlice(UInt32 maxFrames)
   return true;  
 }
 
-// TODO: These are not true AudioUnit methods. Move to OutputDeviceAU class
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CAUOutputDevice
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TODO: The channel map setter/getter are inefficient
 
-bool CCoreAudioUnit::SetCurrentDevice(AudioDeviceID deviceId)
+CAUOutputDevice::CAUOutputDevice()
+{
+  
+}
+
+CAUOutputDevice::~CAUOutputDevice()
+{
+  
+}
+
+bool CAUOutputDevice::SetCurrentDevice(AudioDeviceID deviceId)
 {
   if (!m_Component)
     return false;
@@ -955,7 +978,7 @@ bool CCoreAudioUnit::SetCurrentDevice(AudioDeviceID deviceId)
   return true;
 }
 
-bool CCoreAudioUnit::GetInputChannelMap(CoreAudioChannelList* pChannelMap)
+bool CAUOutputDevice::GetInputChannelMap(CoreAudioChannelList* pChannelMap)
 {
   if (!m_Component)
     return false;
@@ -975,8 +998,9 @@ bool CCoreAudioUnit::GetInputChannelMap(CoreAudioChannelList* pChannelMap)
   return (!ret);
 }
 
-bool CCoreAudioUnit::SetInputChannelMap(CoreAudioChannelList* pChannelMap)
+bool CAUOutputDevice::SetInputChannelMap(CoreAudioChannelList* pChannelMap)
 {
+	// The number of array elements must match the number of output channels provided by the device
   if (!m_Component || !pChannelMap)
     return false;
   UInt32 channels = pChannelMap->size();
@@ -991,21 +1015,21 @@ bool CCoreAudioUnit::SetInputChannelMap(CoreAudioChannelList* pChannelMap)
   return (!ret);
 }
 
-void CCoreAudioUnit::Start()
+void CAUOutputDevice::Start()
 {
   // TODO: Check component status
   if (m_Component && m_Initialized)
     AudioOutputUnitStart(m_Component);  
 }
 
-void CCoreAudioUnit::Stop()
+void CAUOutputDevice::Stop()
 {
   // TODO: Check component status
   if (m_Component && m_Initialized)
     AudioOutputUnitStop(m_Component);    
 }
 
-Float32 CCoreAudioUnit::GetCurrentVolume()
+Float32 CAUOutputDevice::GetCurrentVolume()
 {
   if (!m_Component)
     return 0.0f;
@@ -1020,7 +1044,7 @@ Float32 CCoreAudioUnit::GetCurrentVolume()
   return volPct;
 }
 
-bool CCoreAudioUnit::SetCurrentVolume(Float32 vol)
+bool CAUOutputDevice::SetCurrentVolume(Float32 vol)
 {
   if (!m_Component)
     return false;
@@ -1034,7 +1058,7 @@ bool CCoreAudioUnit::SetCurrentVolume(Float32 vol)
   return true;
 }
 
-bool CCoreAudioUnit::IsRunning()
+bool CAUOutputDevice::IsRunning()
 {
   if (!m_Component)
     return false;
@@ -1044,5 +1068,38 @@ bool CCoreAudioUnit::IsRunning()
   AudioUnitGetProperty(m_Component, kAudioOutputUnitProperty_IsRunning, kAudioUnitScope_Global, 0, &isRunning, &size);
   return (isRunning != 0);
 }
+
+UInt32 CAUOutputDevice::GetBufferFrameSize()
+{
+  if (!m_Component)
+    return 0;
+  
+  UInt32 size = sizeof(UInt32);
+  UInt32 bufferSize = 0;
+  OSStatus ret = AudioUnitGetProperty(m_Component, kAudioDevicePropertyBufferFrameSize, kAudioUnitScope_Input, 0, &bufferSize, &size);
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "CCoreAudioUnit::GetBufferFrameSize: Unable to get current device's buffer size. ErrCode = Error = 0x%08x (%4.4s)", ret, CONVERT_OSSTATUS(ret));
+    return 0;
+  }
+  return bufferSize;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CAUMatrixMixer
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+CAUMatrixMixer::CAUMatrixMixer()
+{
+  
+}
+
+CAUMatrixMixer::~CAUMatrixMixer()
+{
+  
+}
+
+
 
 #endif
