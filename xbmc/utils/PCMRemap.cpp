@@ -412,8 +412,21 @@ enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChann
   m_channelLayout  = (enum PCMLayout)g_guiSettings.GetInt("audiooutput.channellayout");
   if (m_channelLayout >= PCM_MAX_LAYOUT) m_channelLayout = PCM_LAYOUT_2_0;
 
-  CLog::Log(LOGINFO, "CPCMRemap: Channel Layout: %s\n", PCMLayoutStr(m_channelLayout).c_str());
-  m_layoutMap      = PCMLayoutMap[m_channelLayout];
+  CLog::Log(LOGINFO, "CPCMRemap: Configured speaker layout: %s\n", PCMLayoutStr(m_channelLayout).c_str());
+
+  /* set m_layoutMap to the intersection of the input and speaker layouts;
+     we don't perform upmixing so the extra channels from speaker layout are not needed */
+  if (channelMap) {
+    int i = 0;
+    for (unsigned int inChan = 0; inChan < channels; ++inChan)
+      for (enum PCMChannels *chan = PCMLayoutMap[m_channelLayout]; *chan != PCM_INVALID; ++chan)
+        if (channelMap[inChan] == *chan) {
+          m_layoutMap[i++] = *chan;
+          break;
+        }
+    m_layoutMap[i] = PCM_INVALID;
+  } else
+    memcpy(m_layoutMap, PCMLayoutMap[m_channelLayout], sizeof(PCMLayoutMap[m_channelLayout]) / sizeof(enum PCMChannels));
 
   DumpMap("I", channels, channelMap);
   BuildMap();

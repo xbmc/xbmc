@@ -83,7 +83,7 @@ protected:
   unsigned int       m_inSampleSize;
   enum PCMChannels   m_inMap [PCM_MAX_CH];
   enum PCMChannels   m_outMap[PCM_MAX_CH];
-  enum PCMChannels  *m_layoutMap;
+  enum PCMChannels   m_layoutMap[PCM_MAX_CH + 1];
 
   bool               m_ignoreLayout;
   bool               m_useable  [PCM_MAX_CH];
