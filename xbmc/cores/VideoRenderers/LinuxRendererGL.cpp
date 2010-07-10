@@ -1115,7 +1115,7 @@ void CLinuxRendererGL::LoadShaders(int field)
       if (glCreateProgram)
       {
         bool nonLinStretch = m_nonLinStretch && (m_pixelRatio > 1.001f || m_pixelRatio < 0.999f)
-                             && m_renderQuality == RQ_SINGLEPASS && m_textureTarget != GL_TEXTURE_RECTANGLE_ARB;
+                             && m_renderQuality == RQ_SINGLEPASS && !(m_renderMethod & RENDER_POT);
 
         // create regular progressive scan shader
         m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags, nonLinStretch);
@@ -2694,7 +2694,7 @@ bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
 
   if (feature == RENDERFEATURE_NONLINSTRETCH)
   {
-    if (((m_renderMethod & RENDER_GLSL) && (m_textureTarget != GL_TEXTURE_RECTANGLE_ARB)) ||
+    if (((m_renderMethod & RENDER_GLSL) && !(m_renderMethod & RENDER_POT)) ||
         (m_renderMethod & RENDER_VDPAU) || (m_renderMethod & RENDER_VAAPI))
       return true;
   }
