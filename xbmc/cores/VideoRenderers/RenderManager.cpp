@@ -275,7 +275,7 @@ unsigned int CXBMCRenderManager::PreInit()
 #elif HAS_GLES == 2
     m_pRenderer = new CLinuxRendererGLES();
 #elif defined(HAS_DX)
-    m_pRenderer = new CPixelShaderRenderer();
+    m_pRenderer = new CWinRenderer();
 #elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();
 #endif

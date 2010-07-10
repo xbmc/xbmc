@@ -2109,6 +2109,9 @@
     <ClCompile Include="..\..\xbmc\RenderSystemGLES.cpp">
       <Filter>Source Files\Windowing\Render System</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.cpp">
+      <Filter>cores\VideoRenderers\Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\NetworkWin32.h">
@@ -4438,6 +4441,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\RenderSystemGLES.h">
       <Filter>Source Files\Windowing\Render System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\VideoShaders\WinVideoFilter.h">
+      <Filter>cores\VideoRenderers\Shaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
