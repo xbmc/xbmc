@@ -646,8 +646,6 @@ bool CFLVSplitterFilter::DemuxLoop()
 {
 	HRESULT hr = S_OK;
 
-	Packet* p = new Packet();
-
 	Tag t;
 	AudioTag at;
 	VideoTag vt;
@@ -675,7 +673,7 @@ bool CFLVSplitterFilter::DemuxLoop()
 			}
 			__int64 dataSize = next - m_pFile->GetPos();
 			if (dataSize <= 0) goto NextTag;
-			p = NULL;
+			boost::shared_ptr<Packet> p(new Packet());
 			p->TrackNumber = t.TagType;
 			p->rtStart = 10000i64 * (t.TimeStamp + tsOffset); 
 			p->rtStop = p->rtStart + 1;

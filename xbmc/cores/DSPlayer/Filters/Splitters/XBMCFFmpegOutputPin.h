@@ -39,7 +39,7 @@ class CXBMCFFmpegOutputPin : public CBaseSplitterOutputPin, protected CCritSec
 
 protected:
 	HRESULT DeliverNewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
-	HRESULT DeliverPacket(Packet* p);
+	HRESULT DeliverPacket(boost::shared_ptr<Packet> p);
 	HRESULT DeliverEndFlush();
 public:
   CXBMCFFmpegOutputPin(std::vector<CMediaType>& mts, LPCWSTR pName, CBaseFilter* pFilter, CCritSec* pLock, HRESULT* phr);

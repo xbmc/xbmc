@@ -82,7 +82,7 @@ int CStreamsManager::GetAudioStream()
   for (std::vector<SAudioStreamInfos *>::const_iterator it = m_audioStreams.begin();
     it != m_audioStreams.end(); ++it, i++)
   {
-    if ( (*it)->flags == AMSTREAMSELECTINFO_ENABLED)
+    if ( (*it)->flags & AMSTREAMSELECTINFO_ENABLED)
       return i;
   }
 
@@ -337,7 +337,7 @@ void CStreamsManager::LoadStreams()
       CoTaskMemFree(wname);
 
       infos->flags = flags; infos->lcid = lcid; infos->group = group; infos->pObj = (IPin *)pObj; infos->pUnk = (IPin *)pUnk;
-      if (flags == AMSTREAMSELECTINFO_ENABLED)
+      if (flags & AMSTREAMSELECTINFO_ENABLED)
         infos->connected = true;
 
       /* Apply regex */
@@ -909,7 +909,7 @@ int CSubtitleManager::GetSubtitle()
   for (std::vector<SSubtitleStreamInfos *>::const_iterator it = m_subtitleStreams.begin();
     it != m_subtitleStreams.end(); ++it, i++)
   {
-    if ( (*it)->flags == AMSTREAMSELECTINFO_ENABLED)
+    if ( (*it)->flags & AMSTREAMSELECTINFO_ENABLED)
       return i;
   }
 

@@ -86,7 +86,7 @@ HRESULT CXBMCFFmpegOutputPin::DeliverEndFlush()
 	return __super::DeliverEndFlush();
 }
 
-HRESULT CXBMCFFmpegOutputPin::DeliverPacket(Packet* p)
+HRESULT CXBMCFFmpegOutputPin::DeliverPacket(boost::shared_ptr<Packet> p)
 {
 	CAutoLock cAutoLock(this);
 

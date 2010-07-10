@@ -133,7 +133,7 @@ HRESULT CMpegSplitterFilter::DemuxNextPacket(REFERENCE_TIME rtStartOffset)
 
       if(GetOutputPin(TrackNumber))
       {
-        Packet* p = new Packet();
+        boost::shared_ptr<Packet> p(new Packet());
 
         p->TrackNumber = TrackNumber;
         p->bSyncPoint = !!h.fpts;
@@ -180,7 +180,7 @@ HRESULT CMpegSplitterFilter::DemuxNextPacket(REFERENCE_TIME rtStartOffset)
 
       if(GetOutputPin(TrackNumber))
       {
-        Packet* p = new Packet();
+        boost::shared_ptr<Packet> p(new Packet());
 
         p->TrackNumber = TrackNumber;
         p->bSyncPoint = !!h2.fpts;
@@ -223,7 +223,7 @@ HRESULT CMpegSplitterFilter::DemuxNextPacket(REFERENCE_TIME rtStartOffset)
 
     if(GetOutputPin(TrackNumber))
     {
-      Packet* p = new Packet();
+      boost::shared_ptr<Packet> p(new Packet());
 
       p->TrackNumber = TrackNumber;
       p->bSyncPoint = !!h.fpts;
@@ -998,7 +998,7 @@ CMpegSplitterOutputPin::CMpegSplitterOutputPin(std::vector<CMediaType>& mts, LPC
   , m_fHasAccessUnitDelimiters(false)
   , m_rtMaxShift(50000000)
 {
-  m_p = NULL;
+  m_p.reset();
 }
 
 CMpegSplitterOutputPin::~CMpegSplitterOutputPin()
@@ -1020,15 +1020,14 @@ HRESULT CMpegSplitterOutputPin::DeliverEndFlush()
 {
   {
     CAutoLock cAutoLock(this);
-    _aligned_free(m_p);
-    m_p = NULL;
+    m_p.reset();
     m_pl.clear();
   }
 
   return __super::DeliverEndFlush();
 }
 
-HRESULT CMpegSplitterOutputPin::DeliverPacket(Packet* p)
+HRESULT CMpegSplitterOutputPin::DeliverPacket(boost::shared_ptr<Packet> p)
 {
   CAutoLock cAutoLock(this);
 
@@ -1058,7 +1057,7 @@ HRESULT CMpegSplitterOutputPin::DeliverPacket(Packet* p)
   if(m_mt.subtype == MEDIASUBTYPE_AAC) // special code for aac, the currently available decoders only like whole frame samples
   {
     if(m_p && m_p->pInputBufferSize == 1 && m_p->pInputBuffer[0] == 0xff && !(!p->empty() && (p->pInputBuffer[0] & 0xf6) == 0xf0))
-      m_p = new Packet();
+      m_p.reset();
 
     if(!m_p)
     {
@@ -1082,7 +1081,7 @@ HRESULT CMpegSplitterOutputPin::DeliverPacket(Packet* p)
     }
     else
     {
-      m_p->Append(p);
+      m_p->Append(p.get());
     }
 
     while(m_p && m_p->pInputBufferSize > 9)
@@ -1102,11 +1101,11 @@ HRESULT CMpegSplitterOutputPin::DeliverPacket(Packet* p)
 
       if(len <= 0 || e - s >= len + 2 && (s[len] != 0xff || (s[len+1]&0xf6) != 0xf0))
       {
-        m_p = new Packet();
+        m_p.reset();
         break;
       }
 
-      Packet* p2 = new Packet();
+      boost::shared_ptr<Packet> p2(new Packet());
 
       p2->TrackNumber = m_p->TrackNumber;
       p2->bDiscontinuity |= m_p->bDiscontinuity;
@@ -1147,7 +1146,7 @@ HRESULT CMpegSplitterOutputPin::DeliverPacket(Packet* p)
   {
     if(!m_p)
     {
-      m_p = new Packet();
+      m_p.reset(new Packet());
       m_p->TrackNumber = p->TrackNumber;
       m_p->bDiscontinuity = p->bDiscontinuity;
       p->bDiscontinuity = FALSE;
@@ -1162,7 +1161,7 @@ HRESULT CMpegSplitterOutputPin::DeliverPacket(Packet* p)
       p->rtStop = Packet::INVALID_TIME;
     }
 
-    m_p->Append(p);
+    m_p->Append(p.get());
 
     BYTE* start = m_p->pInputBuffer;
     BYTE* end = start + m_p->pInputBufferSize;
@@ -1186,7 +1185,7 @@ HRESULT CMpegSplitterOutputPin::DeliverPacket(Packet* p)
       CH264Nalu Nalu;
       Nalu.SetBuffer (start, size, 0);
 
-      Packet* p2 = new Packet();
+      boost::shared_ptr<Packet> p2(new Packet());
 
       while (Nalu.ReadNext())
       {
@@ -1201,14 +1200,15 @@ HRESULT CMpegSplitterOutputPin::DeliverPacket(Packet* p)
         //p3->resize (Nalu.GetDataLength()+sizeof(dwNalLength));
 
         //lets try to set the size of the packet on init
-        Packet* p3 = new Packet(Nalu.GetDataLength()+sizeof(dwNalLength));
+        boost::shared_ptr<Packet> p3(new Packet(Nalu.GetDataLength()+sizeof(dwNalLength)));
         memcpy (p3->pInputBuffer, &dwNalLength, sizeof(dwNalLength));
         memcpy (p3->pInputBuffer+sizeof(dwNalLength), Nalu.GetDataBuffer(), Nalu.GetDataLength());
         
         if (p2->empty())
           p2 = p3;
-        else
-          p2->Append(p3);
+        else {
+          p2->Append(p3.get());
+        }
       }
 
       p2->TrackNumber = m_p->TrackNumber;
@@ -1260,12 +1260,12 @@ HRESULT CMpegSplitterOutputPin::DeliverPacket(Packet* p)
     
     //for(POSITION pos = m_pl.GetHeadPosition(); pos; m_pl.GetNext(pos))
     
-    for (std::list<Packet*>::iterator it = m_pl.begin(); it != m_pl.end(); it++)
+    for (std::list<boost::shared_ptr<Packet>>::iterator it = m_pl.begin(); it != m_pl.end(); it++)
     {
       //skip the first one
       if ((*it) == m_pl.front())
         continue;
-      Packet* pPacket = (*it);
+      boost::shared_ptr<Packet> pPacket = (*it);
       BYTE* pData = pPacket->pInputBuffer;
 
       if((pData[4]&0x1f) == 0x09) m_fHasAccessUnitDelimiters = true;
@@ -1278,10 +1278,9 @@ HRESULT CMpegSplitterOutputPin::DeliverPacket(Packet* p)
         
         while (*it != m_pl.front())
         {
-          Packet* p2 = m_pl.front();
+          boost::shared_ptr<Packet> p2 = m_pl.front();
           m_pl.pop_front();
-          p->Append(p2);
-          
+          p->Append(p2.get());
         }
 
         HRESULT hr = __super::DeliverPacket(p);
@@ -1296,7 +1295,7 @@ HRESULT CMpegSplitterOutputPin::DeliverPacket(Packet* p)
   {
     if(!m_p)
     {
-      m_p = new Packet();
+      m_p.reset(new Packet());
       m_p->TrackNumber = p->TrackNumber;
       m_p->bDiscontinuity = p->bDiscontinuity;
       p->bDiscontinuity = FALSE;
@@ -1311,7 +1310,7 @@ HRESULT CMpegSplitterOutputPin::DeliverPacket(Packet* p)
       p->rtStop = Packet::INVALID_TIME;
     }
 
-    m_p->Append(p);
+    m_p->Append(p.get());
 
     BYTE* start = m_p->pInputBuffer;
     BYTE* end = start + m_p->pInputBufferSize;
@@ -1350,7 +1349,7 @@ HRESULT CMpegSplitterOutputPin::DeliverPacket(Packet* p)
       int size = next - start - 4;
 
 
-      Packet* p2 = new Packet();
+      boost::shared_ptr<Packet> p2(new Packet());
       p2->TrackNumber = m_p->TrackNumber;
       p2->bDiscontinuity = m_p->bDiscontinuity;
       m_p->bDiscontinuity = FALSE;
@@ -1456,7 +1455,7 @@ HRESULT CMpegSplitterOutputPin::DeliverPacket(Packet* p)
   }
   else
   {
-    m_p = NULL;
+    m_p.reset();
     m_pl.clear();
   }
 

@@ -31,10 +31,7 @@ extern "C"
   #include "libavformat/avformat.h"
 }
 
-//0 is off
-//1 is video only
-//2 is audio only
-#define DS_SPLITTER_ONE_PIN_TEST 0
+#define NO_SUBTITLE_PID USHRT_MAX		// Fake PID use for the "No subtitle" entry
 
 //
 // CXBMCFFmpegSplitter
@@ -56,7 +53,8 @@ CXBMCFFmpegSplitter::~CXBMCFFmpegSplitter()
 STDMETHODIMP CXBMCFFmpegSplitter::NonDelegatingQueryInterface(REFIID riid, void** ppv)
 {
   CheckPointer(ppv, E_POINTER);
-  return 
+  return
+    QI(IAMStreamSelect)
     __super::NonDelegatingQueryInterface(riid, ppv);
 }
 
@@ -66,7 +64,7 @@ HRESULT CXBMCFFmpegSplitter::CreateOutputs(IAsyncReader* pAsyncReader)
 
   HRESULT hr = E_FAIL;
   m_filenameA = DShowUtil::WToA(CStdStringW(m_fn));
-  
+
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, m_filenameA, "");
   if (!m_pInputStream)
   {
@@ -94,38 +92,77 @@ HRESULT CXBMCFFmpegSplitter::CreateOutputs(IAsyncReader* pAsyncReader)
     delete m_pInputStream;
     return E_FAIL;
   }
-  
+
   m_rtNewStart = m_rtCurrent = 0;
   m_rtNewStop = m_rtStop = m_rtDuration = (DVD_MSEC_TO_TIME(m_pDemuxer->GetStreamLength()) * 10);//directshow basetime is 100 nanosec
+
+  for(int i = 0; i < countof(m_streams); i++)
+  {
+    m_streams[i].clear();
+  }
+
   bool fHasIndex = false;
   const CDVDDemuxFFmpeg *pDemuxer = static_cast<const CDVDDemuxFFmpeg*>(m_pDemuxer);
+
+  stream s;
+  s.pid = NO_SUBTITLE_PID;
+  s.streamInfo = new CDSStreamInfo();
+  s.streamInfo->mtype.InitMediaType();
+  s.streamInfo->mtype.majortype = MEDIATYPE_Subtitle;
+  s.streamInfo->mtype.subtype = MEDIASUBTYPE_NULL;
+  s.streamInfo->mtype.formattype = FORMAT_SubtitleInfo;
+
+  SUBTITLEINFO* psi = (SUBTITLEINFO *)s.streamInfo->mtype.AllocFormatBuffer(sizeof(SUBTITLEINFO));
+  if (psi)
+  {
+    memset(psi, 0, sizeof(SUBTITLEINFO));
+    strncpy_s(psi->IsoLang, "---", 3);
+  }
+  m_streams[SUBPIC].push_back(s);
 
   const char *containerFormat = pDemuxer->m_pFormatContext->iformat->name;
   for (int iStream=0; iStream < m_pDemuxer->GetNrOfStreams(); iStream++)
   {
-    CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
-    CDSStreamInfo hint(*pStream, true, containerFormat);
-    
-    CMediaType mt;
-    vector<CMediaType> mts;
-    mts.push_back(hint.mtype);
-    
-    std::string tname;
-    pStream->GetStreamName(tname);
-    CStdStringW tnameW = DShowUtil::AToW(tname);
+    CDemuxStream *pStream = m_pDemuxer->GetStream(iStream);
+    CDSStreamInfo *hint = new CDSStreamInfo(*pStream, true, containerFormat);
 
-#if DS_SPLITTER_ONE_PIN_TEST == 0
-    if ( pStream )
-#endif
-#if  DS_SPLITTER_ONE_PIN_TEST == 1
-    if ( pStream->type == STREAM_VIDEO)
-#endif
-#if DS_SPLITTER_ONE_PIN_TEST == 2
-    if ( pStream->type == STREAM_AUDIO)
-#endif
-    {
-      auto_ptr<CBaseSplitterOutputPin> pPinOut(DNew CXBMCFFmpegOutputPin(mts, hint.PinNameW.c_str(), this, this, &hr));
-      AddOutputPin((DWORD)iStream, pPinOut);
+    stream s;
+    s.streamInfo = hint;
+    s.pid = iStream;
+
+    switch(pStream->type) {
+    case STREAM_VIDEO:
+      m_streams[VIDEO].push_back(s);
+      break;
+    case STREAM_AUDIO:
+      m_streams[AUDIO].push_back(s);
+      break;
+    case STREAM_SUBTITLE:
+      m_streams[SUBPIC].push_back(s);
+      break;
+    default:
+      // unsupported stream
+      break;
+    }
+  }
+
+  if(m_streams[SUBPIC].size() == 1) {
+    m_streams[SUBPIC].clear();
+  }
+
+  for(int i = 0; i < countof(m_streams); i++)
+  {
+    vector<stream>::const_iterator it;
+    for(it = m_streams[i].begin(); it != m_streams[i].end(); ++it) {
+      CMediaType mt;
+      vector<CMediaType> mts;
+      mts.push_back(it->streamInfo->mtype);
+
+      CStdStringW name = CStreamList::ToString(i);
+
+      auto_ptr<CBaseSplitterOutputPin> pPinOut(DNew CXBMCFFmpegOutputPin(mts, name, this, this, &hr));
+      if(S_OK == AddOutputPin(it->pid, pPinOut))
+        break;
     }
   }
 
@@ -159,18 +196,13 @@ void CXBMCFFmpegSplitter::DemuxSeek(REFERENCE_TIME rt)
 bool CXBMCFFmpegSplitter::DemuxLoop()
 {
   HRESULT hr = S_OK;
-  int nTracks = m_pDemuxer->GetNrOfStreams();
 
-  vector<BOOL> fDiscontinuity;
-  fDiscontinuity.resize(nTracks);
-  memset(&fDiscontinuity[0], 0, nTracks*sizeof(bool));
-
-  do//while(SUCCEEDED(hr) && !CheckRequest(NULL))
+  while(SUCCEEDED(hr) && !CheckRequest(NULL))
   {
     DemuxPacket* pPacket = NULL;
     CDemuxStream *pStream = NULL;
     ReadPacket(pPacket, pStream);
-    if (pPacket && !pStream)
+    if ((pPacket && !pStream) || (pPacket && !GetOutputPin(pPacket->iStreamId)))
     {
       /* probably a empty DsPacket, just free it and move on */
       CDVDDemuxUtils::FreeDemuxPacket(pPacket);
@@ -178,48 +210,42 @@ bool CXBMCFFmpegSplitter::DemuxLoop()
     }
     if (!pPacket)
       continue;
-    Packet* p = new Packet(pPacket->iSize);
+
+    boost::shared_ptr<Packet> p(new Packet(pPacket->iSize));
     p->TrackNumber = (DWORD)pPacket->iStreamId;
     memcpy(p->pInputBuffer, pPacket->pData, pPacket->iSize);
 
-    
-    
-    if (pPacket->dts != DVD_NOPTS_VALUE)
-        p->rtStart = (pPacket->dts * 10);
-    else
-      p->rtStart = m_rtCurrent;
+    REFERENCE_TIME rt = m_rtCurrent;
+    // Check for PTS first
+    if (pPacket->pts != DVD_NOPTS_VALUE) {
+      rt = (pPacket->pts * 10);
+      // if thats not set, use DTS
+    } else if (pPacket->dts != DVD_NOPTS_VALUE) {
+      rt = (pPacket->dts * 10);
+    }
+    p->rtStart = rt;
     p->bSyncPoint = (pPacket->duration > 0) ? 1 : 0;
-    
+    p->bAppendable = !p->bSyncPoint;
+
     p->rtStop = p->rtStart + ((pPacket->duration > 0) ? (pPacket->duration * 10) : 1);
 
-      //p->rtStop = ((double)pPacket->iSize * DS_TIME_BASE) / avg_bytespersample;
-      //audioframe.duration = ((double)audioframe.size * DVD_TIME_BASE) / n; <<<---- from dvdplayer
+    //p->rtStop = ((double)pPacket->iSize * DS_TIME_BASE) / avg_bytespersample;
+    //audioframe.duration = ((double)audioframe.size * DVD_TIME_BASE) / n; <<<---- from dvdplayer
     if (pStream->codec == CODEC_ID_AAC)
     {
-    
-    
+
+
     }
     if (pStream->type == STREAM_SUBTITLE)
     {
       pPacket->duration = 1;
-      p->rtStop = p->rtStart + (pPacket->duration);
-      hr = DeliverPacket(p);
+      p->rtStop = p->rtStart + 1;
     }
-    else
-    {
-#if DS_SPLITTER_ONE_PIN_TEST == 0
-    if ( pStream )
-#endif
-#if  DS_SPLITTER_ONE_PIN_TEST == 1
-    if ( pStream->type == STREAM_VIDEO)
-#endif
-#if DS_SPLITTER_ONE_PIN_TEST == 2
-    if ( pStream->type == STREAM_AUDIO)
-#endif
+
     hr = DeliverPacket(p);
-    }
+
+    CDVDDemuxUtils::FreeDemuxPacket(pPacket);
   }
-  while(SUCCEEDED(hr) && !CheckRequest(NULL));
 
   return(true);
 }
@@ -238,7 +264,7 @@ bool CXBMCFFmpegSplitter::ReadPacket(DemuxPacket*& DsPacket, CDemuxStream*& stre
     }
     return true;
   }
-  
+
   return false;
 }
 
@@ -303,8 +329,8 @@ STDMETHODIMP CXBMCFFmpegSplitter::ConvertTimeFormat(LONGLONG* pTarget, const GUI
 {
   return E_NOTIMPL;
   CheckPointer(pTarget, E_POINTER);
-//TODO
-  
+  //TODO
+
   return E_FAIL;
 }
 
@@ -324,15 +350,15 @@ STDMETHODIMP CXBMCFFmpegSplitter::GetPositions(LONGLONG* pCurrent, LONGLONG* pSt
 
 HRESULT CXBMCFFmpegSplitter::SetPositionsInternal(void* id, LONGLONG* pCurrent, DWORD dwCurrentFlags, LONGLONG* pStop, DWORD dwStopFlags)
 {
-  
+
   if(m_timeformat != TIME_FORMAT_FRAME)
   {
     return __super::SetPositionsInternal(id, pCurrent, dwCurrentFlags, pStop, dwStopFlags);
   } 
-  
+
 
   if(!pCurrent && !pStop
-  || (dwCurrentFlags&AM_SEEKING_PositioningBitsMask) == AM_SEEKING_NoPositioning 
+    || (dwCurrentFlags&AM_SEEKING_PositioningBitsMask) == AM_SEEKING_NoPositioning 
     && (dwStopFlags&AM_SEEKING_PositioningBitsMask) == AM_SEEKING_NoPositioning)
     return S_OK;
 
@@ -341,14 +367,14 @@ HRESULT CXBMCFFmpegSplitter::SetPositionsInternal(void* id, LONGLONG* pCurrent, 
     rtStop = m_rtStop;
 
   if((dwCurrentFlags&AM_SEEKING_PositioningBitsMask)
-  && FAILED(ConvertTimeFormat(&rtCurrent, &TIME_FORMAT_FRAME, rtCurrent, &TIME_FORMAT_MEDIA_TIME))) 
+    && FAILED(ConvertTimeFormat(&rtCurrent, &TIME_FORMAT_FRAME, rtCurrent, &TIME_FORMAT_MEDIA_TIME))) 
     return E_FAIL;
   if((dwStopFlags&AM_SEEKING_PositioningBitsMask)
-  && FAILED(ConvertTimeFormat(&rtStop, &TIME_FORMAT_FRAME, rtStop, &TIME_FORMAT_MEDIA_TIME)))
+    && FAILED(ConvertTimeFormat(&rtStop, &TIME_FORMAT_FRAME, rtStop, &TIME_FORMAT_MEDIA_TIME)))
     return E_FAIL;
 
   if(pCurrent)
-  switch(dwCurrentFlags&AM_SEEKING_PositioningBitsMask)
+    switch(dwCurrentFlags&AM_SEEKING_PositioningBitsMask)
   {
     case AM_SEEKING_NoPositioning: 
       break;
@@ -380,14 +406,115 @@ HRESULT CXBMCFFmpegSplitter::SetPositionsInternal(void* id, LONGLONG* pCurrent, 
   }
 
   if((dwCurrentFlags&AM_SEEKING_PositioningBitsMask)
-  && pCurrent)
+    && pCurrent)
     if(FAILED(ConvertTimeFormat(pCurrent, &TIME_FORMAT_MEDIA_TIME, rtCurrent, &TIME_FORMAT_FRAME))) return E_FAIL;
   if((dwStopFlags&AM_SEEKING_PositioningBitsMask)
-  && pStop)
+    && pStop)
     if(FAILED(ConvertTimeFormat(pStop, &TIME_FORMAT_MEDIA_TIME, rtStop, &TIME_FORMAT_FRAME))) return E_FAIL;
 
   return __super::SetPositionsInternal(id, pCurrent, dwCurrentFlags, pStop, dwStopFlags);
 }
+
+HRESULT CXBMCFFmpegSplitter::Count(DWORD *pcStreams)
+{
+  CheckPointer(pcStreams, E_POINTER);
+
+  *pcStreams = 0;
+
+  for(int i = 0; i < countof(m_streams); i++)
+    (*pcStreams) += m_streams[i].size();
+
+  return S_OK;
+}
+
+HRESULT CXBMCFFmpegSplitter::Enable(long lIndex, DWORD dwFlags)
+{
+  if(!(dwFlags & AMSTREAMSELECTENABLE_ENABLE))
+    return E_NOTIMPL;
+
+  for(int i = 0, j = 0; i < countof(m_streams); i++)
+  {
+    int cnt = m_streams[i].size();
+
+    if(lIndex >= j && lIndex < j+cnt)
+    {
+      long idx = (lIndex - j);
+
+      stream& to = m_streams[i][idx];
+
+      vector<stream>::iterator it;
+      for(it = m_streams[i].begin(); it != m_streams[i].end(); ++it) {
+        if(!GetOutputPin(it->pid)) continue;
+        if(it->pid == to.pid) return S_FALSE;
+
+        HRESULT hr;
+        if(FAILED(hr = RenameOutputPin(it->pid, to.pid, &to.streamInfo->mtype)))
+          return hr;
+
+        return S_OK;
+      }
+    }
+
+    j += cnt;
+  }
+
+  return S_FALSE;
+}
+
+HRESULT CXBMCFFmpegSplitter::Info(long lIndex, AM_MEDIA_TYPE** ppmt, DWORD* pdwFlags, LCID* plcid, DWORD* pdwGroup, WCHAR** ppszName, IUnknown** ppObject, IUnknown** ppUnk)
+{
+  for(int i = 0, j = 0; i < countof(m_streams); i++)
+  {
+    int cnt = m_streams[i].size();
+
+    if(lIndex >= j && lIndex < j+cnt)
+    {
+      long idx = (lIndex - j);
+
+      stream& s = m_streams[i][idx];
+
+      if(ppmt) *ppmt = CreateMediaType(&s.streamInfo->mtype);
+      if(pdwFlags) *pdwFlags = GetOutputPin(s) ? (AMSTREAMSELECTINFO_ENABLED|AMSTREAMSELECTINFO_EXCLUSIVE) : 0;
+      if(plcid) *plcid = 0;
+      if(pdwGroup) *pdwGroup = i;
+      if(ppObject) *ppObject = NULL;
+      if(ppUnk) *ppUnk = NULL;
+
+      if(ppszName)
+      {
+        CStdStringW name = CStreamList::ToString(i);
+        CStdStringW str;
+
+        if (i == CXBMCFFmpegSplitter::SUBPIC && s.pid == NO_SUBTITLE_PID)
+        {
+          str		= _T("No subtitles");
+          *plcid	= LCID_NOSUBTITLES;
+        } else {
+          CDemuxStream *pStream = m_pDemuxer->GetStream(s.pid);
+          std::string codecInfo;
+          pStream->GetStreamInfo(codecInfo);
+          CStdStringW codecInfoW(codecInfo.c_str());
+          CStdString language = DShowUtil::ISO6392ToLanguage(pStream->language);
+          // TODO: make this nicer
+          if (!language.IsEmpty()) {
+            str.Format(L"%s - %s (%04x)", codecInfoW, language, s.pid); 
+          } else {
+            str.Format(L"%s (%04x)", codecInfoW, s.pid);
+          }
+          if(plcid) *plcid = DShowUtil::ISO6392ToLcid(pStream->language);
+        }
+
+        *ppszName = (WCHAR*)CoTaskMemAlloc((str.GetLength()+1)*sizeof(WCHAR));
+        if(*ppszName == NULL) return E_OUTOFMEMORY;
+
+        wcscpy_s(*ppszName, str.GetLength()+1, str);
+      }
+    }
+    j += cnt;
+  }
+  return S_OK;
+}
+
 
 //
 // CXBMCFFmpegSourceFilter
@@ -398,6 +525,6 @@ CXBMCFFmpegSourceFilter::CXBMCFFmpegSourceFilter(LPUNKNOWN pUnk, HRESULT* phr)
 {
   m_clsid = __uuidof(this);
   m_pInput.release();
-  
+
 }
 

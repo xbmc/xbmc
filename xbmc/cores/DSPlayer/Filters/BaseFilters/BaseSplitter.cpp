@@ -46,7 +46,7 @@ CPacketQueue::CPacketQueue() : m_size(0)
 {
 }
 
-void CPacketQueue::Add(Packet* p)
+void CPacketQueue::Add(boost::shared_ptr<Packet> p)
 {
   CAutoLock cAutoLock(this);
 
@@ -57,28 +57,24 @@ void CPacketQueue::Add(Packet* p)
     && p->rtStart == Packet::INVALID_TIME
     && ! empty() && back()->rtStart != Packet::INVALID_TIME)
     {
-      Packet* tail = NULL;
-      tail =  back();
+      boost::shared_ptr<Packet> tail = back();
 
       int oldsize = tail->pInputBufferSize;
       int newsize = tail->pInputBufferSize + p->pInputBufferSize;
       tail->pInputBuffer = (BYTE*)_aligned_realloc(tail->pInputBuffer,newsize,16);
       memcpy(tail->pInputBuffer + oldsize, p->pInputBuffer, p->pInputBufferSize);
-      free(p);
-      p = NULL;
       return;
     }
   }
 
-   push_back(p);
+  push_back(p);
 }
 
-Packet* CPacketQueue::Remove()
+boost::shared_ptr<Packet> CPacketQueue::Remove()
 {
   CAutoLock cAutoLock(this);
   ASSERT(__super::size() > 0);
-  Packet* p = new Packet();
-  p = front();
+  boost::shared_ptr<Packet> p = front();
   pop_front();
   if(p)
     m_size -= p->pInputBufferSize;
@@ -90,6 +86,12 @@ void CPacketQueue::RemoveAll()
   CAutoLock cAutoLock(this);
   m_size = 0;
   __super::clear();
+}
+
+int CPacketQueue::GetCount()
+{
+  CAutoLock cAutoLock(this); 
+  return __super::size();
 }
 
 int CPacketQueue::GetSize()
@@ -369,7 +371,7 @@ HRESULT CBaseSplitterOutputPin::DeliverNewSegment(REFERENCE_TIME tStart, REFEREN
 
 int CBaseSplitterOutputPin::QueueCount()
 {
-  return m_queue.size();
+  return m_queue.GetCount();
 }
 
 int CBaseSplitterOutputPin::QueueSize()
@@ -379,11 +381,10 @@ int CBaseSplitterOutputPin::QueueSize()
 
 HRESULT CBaseSplitterOutputPin::QueueEndOfStream()
 {
-  Packet* p = new Packet();
-  return QueuePacket(p); // NULL means EndOfStream
+  return QueuePacket(boost::shared_ptr<Packet>()); // NULL means EndOfStream
 }
 
-HRESULT CBaseSplitterOutputPin::QueuePacket(Packet* p)
+HRESULT CBaseSplitterOutputPin::QueuePacket(boost::shared_ptr<Packet> p)
 {
   if(!ThreadExists()) 
     return S_FALSE;
@@ -450,11 +451,11 @@ DWORD CBaseSplitterOutputPin::ThreadProc()
     int cnt = 0;
     do
     {
-      Packet* p = new Packet();
+      boost::shared_ptr<Packet> p;
 
       {
         CAutoLock cAutoLock(&m_queue);
-        if((cnt = m_queue.size()) > 0)
+        if((cnt = m_queue.GetCount()) > 0)
           p = m_queue.Remove();
       }
 
@@ -484,7 +485,7 @@ DWORD CBaseSplitterOutputPin::ThreadProc()
   }
 }
 
-HRESULT CBaseSplitterOutputPin::DeliverPacket(Packet* p)
+HRESULT CBaseSplitterOutputPin::DeliverPacket(boost::shared_ptr<Packet> p)
 {
   HRESULT hr;
 
@@ -615,7 +616,7 @@ void CBaseSplitterOutputPin::MakeISCRHappy()
 
     if(DShowUtil::GetCLSID(pBF) == DShowUtil::GUIDFromCString(_T("{48025243-2D39-11CE-875D-00608CB78066}"))) // ISCR
     {
-      Packet* p = new Packet();
+      boost::shared_ptr<Packet> p(new Packet());
       p->TrackNumber = (DWORD)-1;
       p->rtStart = -1; p->rtStop = 0;
       p->bSyncPoint = FALSE;
@@ -979,7 +980,7 @@ DWORD CBaseSplitterFilter::ThreadProc()
   return 0;
 }
 
-HRESULT CBaseSplitterFilter::DeliverPacket(Packet* p)
+HRESULT CBaseSplitterFilter::DeliverPacket(boost::shared_ptr<Packet> p)
 {
   HRESULT hr = S_FALSE;
 

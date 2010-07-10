@@ -136,16 +136,16 @@ public:
 };
 
 class CPacketQueue 
-  : public CCritSec,
-    public std::list<Packet*>
+  : public CCritSec, 
+    protected std::list<boost::shared_ptr<Packet>>
 {
   int m_size;
 public:
   CPacketQueue();
-  void Add(Packet* p);
-  Packet* Remove();
+  void Add(boost::shared_ptr<Packet> p);
+  boost::shared_ptr<Packet> Remove();
   void RemoveAll();
-  int GetSize();
+  int GetCount(), GetSize();
   
 };
 
@@ -221,7 +221,7 @@ protected:
 
   // override this if you need some second level stream specific demuxing (optional)
   // the default implementation will send the sample as is
-  virtual HRESULT DeliverPacket(Packet* p);
+  virtual HRESULT DeliverPacket(boost::shared_ptr<Packet> p);
 
   // IMediaSeeking
 
@@ -276,7 +276,7 @@ public:
   int QueueCount();
   int QueueSize();
   HRESULT QueueEndOfStream();
-  HRESULT QueuePacket(Packet* p);
+  HRESULT QueuePacket(boost::shared_ptr<Packet> p);
 
   // returns true for everything which (the lack of) would not block other streams (subtitle streams, basically)
   virtual bool IsDiscontinuous();
@@ -343,7 +343,7 @@ protected:
 
   void DeliverBeginFlush();
   void DeliverEndFlush();
-  HRESULT DeliverPacket(Packet* p);
+  HRESULT DeliverPacket(boost::shared_ptr<Packet> p);
 
   DWORD m_priority;
 

@@ -485,7 +485,7 @@ bool CAviSplitterFilter::DemuxLoop()
         size = s->cs[f].orgsize;
       }
 
-      Packet* p = new Packet(size);
+      boost::shared_ptr<Packet> p(new Packet(size));
 
       p->TrackNumber = minTrack;
       p->bSyncPoint = (BOOL)s->cs[f].fKeyFrame;
