@@ -86,6 +86,17 @@ void CGUIRSSControl::UpdateColors(bool &changed)
   CGUIControl::UpdateColors(changed);
 }
 
+void CGUIRSSControl::Process(unsigned int currentTime)
+{
+  if (g_guiSettings.GetBool("lookandfeel.enablerssfeeds") && g_rssManager.IsActive())
+  {
+    // TODO The actual processing, but for now just mark it as we know its altered.
+    MarkDirtyRegion();
+  }
+
+  CGUIControl::Process(currentTime);
+}
+
 void CGUIRSSControl::Render()
 {
   // only render the control if they are enabled
