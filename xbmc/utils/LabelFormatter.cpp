@@ -244,7 +244,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     if (music && music->GetRating() != '0')
       value = music->GetRating();
     else if (movie && movie->m_fRating != 0.f)
-      value.Format("%2.2f", movie->m_fRating);
+      value.Format("%.1f", movie->m_fRating);
     break;
   case 'C': // programs count
     value.Format("%i", item->m_iprogramCount);
