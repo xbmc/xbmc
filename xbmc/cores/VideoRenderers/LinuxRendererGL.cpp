@@ -2583,7 +2583,7 @@ bool CLinuxRendererGL::CreateYUY2Texture(int index)
 
     glBindTexture(m_textureTarget, plane.id);
 
-    glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth / 2, plane.texheight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth / 2, plane.texheight, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
 
     glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
