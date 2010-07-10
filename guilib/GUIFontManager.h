@@ -71,6 +71,7 @@ public:
   bool GetFirstFontSetUnicode(CStdString& strFontSet);
 
 protected:
+  void RescaleFontSizeAndAspect(float *size, float *aspect, RESOLUTION sourceRes) const;
   void ReloadTTFFonts();
   void LoadFonts(const TiXmlNode* fontNode);
   CGUIFontTTFBase* GetFontFile(const CStdString& strFontFile);
