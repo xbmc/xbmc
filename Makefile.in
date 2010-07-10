@@ -519,7 +519,9 @@ endif
 
 install-arch:
 	@# Arch dependent files
-	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32(dx)?\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find system addons -regextype posix-extended -type f -not -iregex ".*svn.*|.*script\.module\..*" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(DESTDIR)$(libdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@cp -r addons/script.module.pil $(DESTDIR)$(libdir)/xbmc/addons/script.module.pil
+	@cp -r addons/script.module.pysqlite $(DESTDIR)$(libdir)/xbmc/addons/script.module.pysqlite
 
 install-scripts:
 	@install -D tools/Linux/xbmc.sh $(DESTDIR)$(bindir)/xbmc
@@ -534,7 +536,7 @@ install-datas: install-scripts
 	@echo "Done!"
 	@echo "Copying system files to $(DESTDIR)$(datarootdir)/xbmc"
 	@# Arch independent files
-	@find addons language media scripts sounds userdata system -regextype posix-extended -type f -not -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find addons language media scripts sounds userdata system -regextype posix-extended -type f -not -iregex ".*script\.module\..*|.*$(ARCH).*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Icons and links
 	@mkdir -p $(DESTDIR)$(datarootdir)/applications $(DESTDIR)$(datarootdir)/pixmaps
 	@cp -a tools/Linux/xbmc.png $(DESTDIR)$(datarootdir)/pixmaps/
