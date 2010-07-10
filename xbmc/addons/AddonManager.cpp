@@ -242,6 +242,7 @@ bool CAddonMgr::Init()
   assert(m_cp_context);
   status = m_cpluff->register_pcollection(m_cp_context, _P("special://home/addons"));
   status = m_cpluff->register_pcollection(m_cp_context, _P("special://xbmc/addons"));
+  status = m_cpluff->register_pcollection(m_cp_context, _P("special://xbmcbin/addons"));
   if (status != CP_OK)
   {
     CLog::Log(LOGERROR, "ADDONS: Fatal Error, cp_register_pcollection() returned status: %i", status);
