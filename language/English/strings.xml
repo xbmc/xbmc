@@ -1892,6 +1892,8 @@
   <string id="20449">Unable to connect to remote server</string>
   <string id="20450">Would you like to continue scanning?</string>
   <string id="20451">Countries</string>
+  <string id="20452">episode</string>
+  <string id="20453">episodes</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

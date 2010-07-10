@@ -1057,7 +1057,7 @@
 					<posy>320</posy>
 					<width>250</width>
 					<height>25</height>
-					<label>$INFO[ListItem.Episode,, $LOCALIZE[20360]]</label>
+					<label>$INFO[ListItem.Episode,, $LOCALIZE[20453]]</label>
 					<align>left</align>
 					<aligny>center</aligny>
 					<font>font13_title</font>
@@ -1148,7 +1148,7 @@
 					<posy>320</posy>
 					<width>250</width>
 					<height>25</height>
-					<label>$INFO[ListItem.Episode,, $LOCALIZE[20360]]</label>
+					<label>$INFO[ListItem.Episode,, $LOCALIZE[20453]]</label>
 					<align>left</align>
 					<aligny>center</aligny>
 					<font>font13_title</font>
@@ -2083,7 +2083,7 @@
 					<posy>560</posy>
 					<width>600</width>
 					<height>15</height>
-					<label>$INFO[ListItem.Episode] - $LOCALIZE[20360]</label>
+					<label>$INFO[ListItem.Episode] $LOCALIZE[20453]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font16caps</font>
