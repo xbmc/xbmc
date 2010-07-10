@@ -514,17 +514,19 @@ void CGUIWindowManager::Render()
   assert(g_application.IsCurrentThread());
   CSingleLock lock(g_graphicsContext);
 
-  CRect unifiedDirtyRegion;
+  CRect currentDirtyRegion;
   for (unsigned int i = 0; i < m_DirtyRegion.size(); i++)
-    unifiedDirtyRegion.Union(m_DirtyRegion[i]);
+    currentDirtyRegion.Union(m_DirtyRegion[i]);
+
+  m_unifiedDirtyRegion.Union(currentDirtyRegion);
 
 #ifdef USE_DIRTY_REGION
-  if (unifiedDirtyRegion.IsEmpty())
+  if (m_unifiedDirtyRegion.IsEmpty())
     return;
   GLint oldRegion[8];
   glGetIntegerv(GL_SCISSOR_BOX, oldRegion);
   // OpenGL specifies 0, 0 in the bottom left corner wereas XBMC specifies 0,0 as top left.
-  glScissor(unifiedDirtyRegion.x1, g_graphicsContext.GetHeight() - unifiedDirtyRegion.y2, unifiedDirtyRegion.Width(), unifiedDirtyRegion.Height());
+  glScissor(m_unifiedDirtyRegion.x1, g_graphicsContext.GetHeight() - m_unifiedDirtyRegion.y2, m_unifiedDirtyRegion.Width(), m_unifiedDirtyRegion.Height());
   glEnable(GL_SCISSOR_TEST);
 #endif
 
@@ -565,17 +567,19 @@ void CGUIWindowManager::Render()
     DrawColoredQuad(rect, 0.3f, 0.0f, 1.0f, 0.0f);
   }
 
-  DrawColoredQuad(unifiedDirtyRegion, 0.3f, 1.0f, 0.0f, 0.0f);
+  DrawColoredQuad(m_unifiedDirtyRegion, 0.3f, 1.0f, 0.0f, 0.0f);
 #endif
 
   // Reset dirtyregion
   m_DirtyRegion.clear();
 
 #ifdef USE_DIRTY_REGION
-  if (unifiedDirtyRegion.IsEmpty())
+  if (m_unifiedDirtyRegion.IsEmpty())
     return;
   glScissor(oldRegion[0], oldRegion[1], oldRegion[2], oldRegion[3]);
 #endif
+
+  m_unifiedDirtyRegion = currentDirtyRegion;
 }
 
 void CGUIWindowManager::PureProcess(unsigned int currentTime)

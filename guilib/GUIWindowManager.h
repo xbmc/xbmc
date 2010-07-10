@@ -151,6 +151,7 @@ private:
   bool m_bShowOverlay;
 
   std::vector<CRect> m_DirtyRegion;
+  CRect m_unifiedDirtyRegion;
   int  m_iNested;
 };
 
