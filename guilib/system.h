@@ -34,7 +34,7 @@
 
 #define HAS_DVD_SWSCALE
 #define HAS_DVDPLAYER
-#define HAS_EVENT_SERVER
+//#define HAS_EVENT_SERVER
 #define HAS_KARAOKE
 #define HAS_SCREENSAVER
 #define HAS_PYTHON
@@ -49,8 +49,8 @@
 #define HAS_WEB_INTERFACE
 #endif
 
-#define HAS_JSONRPC
-#define HAS_HTTPAPI
+//#define HAS_JSONRPC
+//#define HAS_HTTPAPI
 
 #ifdef HAVE_ASAP_CODEC
 #define HAS_ASAP_CODEC
