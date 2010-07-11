@@ -353,7 +353,6 @@ void CWinRenderer::UpdateVideoFilter()
   m_scalingMethodGui = g_settings.m_currentVideoSettings.m_ScalingMethod;
   m_scalingMethod    = m_scalingMethodGui;
 
-  m_singleStage = false;
   m_bUseHQScaler = false;
 
   switch (m_scalingMethod)
@@ -392,15 +391,12 @@ void CWinRenderer::UpdateVideoFilter()
   {
     m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
     m_bUseHQScaler = true;
-    m_singleStage = false;
   }
 
   SAFE_RELEASE(m_scalerShader)
 
   if (m_bUseHQScaler)
   {
-    m_singleStage = false;
-
     m_scalerShader = new CConvolutionShader();
     if (!m_scalerShader->Create(m_scalingMethod))
     {
@@ -410,25 +406,22 @@ void CWinRenderer::UpdateVideoFilter()
     }
   }
 
-  if (!m_bUseHQScaler)
-    m_singleStage = true;
-
-  // Scaler is figured out. Now the colour conversion part.
+  // Scaler is figured out. HQ scaler requires an intermediate render target.
 
   if(m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
   if (m_IntermediateStencilSurface.Get())
     m_IntermediateStencilSurface.Release();
 
-  if (!m_singleStage && !SetupIntermediateRenderTarget())
+  if (m_bUseHQScaler && !SetupIntermediateRenderTarget())
   {
     SAFE_RELEASE(m_scalerShader)
-    m_singleStage = true;
+    m_bUseHQScaler = true;
   }
 
   SAFE_RELEASE(m_colorShader)
 
-  if (!m_singleStage)
+  if (m_bUseHQScaler)
   {
     m_colorShader = new CYUV2RGBShader();
     if (!m_colorShader->Create(false))
@@ -437,19 +430,16 @@ void CWinRenderer::UpdateVideoFilter()
       m_IntermediateStencilSurface.Release();
       SAFE_RELEASE(m_scalerShader)
       SAFE_RELEASE(m_colorShader);
-      m_singleStage = true;
       m_bUseHQScaler = false;
     }
   }
 
-  if (m_singleStage) //fallback from HQ scalers and multipass creation above
+  if (!m_bUseHQScaler) //fallback from HQ scalers and multipass creation above
   {
-    SAFE_RELEASE(m_colorShader)
-
     m_colorShader = new CYUV2RGBShader();
     if (!m_colorShader->Create(true))
       SAFE_RELEASE(m_colorShader);
-    // should fallback on D3D accelerated or sw method
+    // we're in big trouble - should fallback on D3D accelerated or sw method
   }
 }
 
@@ -475,7 +465,7 @@ void CWinRenderer::Render(DWORD flags)
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
     g_graphicsContext.ClipToViewWindow();
 
-  if (m_singleStage)
+  if (!m_bUseHQScaler)
   {
     Stage1(flags);
   }
@@ -488,7 +478,7 @@ void CWinRenderer::Render(DWORD flags)
 
 void CWinRenderer::Stage1(DWORD flags)
 {
-  if (m_singleStage)
+  if (!m_bUseHQScaler)
   {
       m_colorShader->Render(m_sourceWidth, m_sourceHeight, m_sourceRect, m_destRect,
                               g_settings.m_currentVideoSettings.m_Contrast,

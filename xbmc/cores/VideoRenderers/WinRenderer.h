@@ -189,7 +189,6 @@ protected:
 
   SVideoBuffer m_VideoBuffers[NUM_BUFFERS];
 
-  bool                m_singleStage;
   CD3DTexture         m_IntermediateTarget;
   CD3DTexture         m_IntermediateStencilSurface;
 
