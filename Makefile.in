@@ -538,9 +538,11 @@ install-datas: install-scripts
 	@# Arch independent files
 	@find addons language media scripts sounds userdata system -regextype posix-extended -type f -not -iregex ".*script\.module\..*|.*$(ARCH).*|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Icons and links
-	@mkdir -p $(DESTDIR)$(datarootdir)/applications $(DESTDIR)$(datarootdir)/pixmaps
-	@cp -a tools/Linux/xbmc.png $(DESTDIR)$(datarootdir)/pixmaps/
+	@mkdir -p $(DESTDIR)$(datarootdir)/applications
 	@cp -a tools/Linux/xbmc.desktop $(DESTDIR)$(datarootdir)/applications/
+	@install -D -m 0644 tools/Linux/xbmc-48x48.png $(DESTDIR)$(datadir)/icons/hicolor/48x48/apps/xbmc.png
+	@install -D -m 0644 media/icon.png $(DESTDIR)$(datadir)/icons/hicolor/256x256/apps/xbmc.png
+	@test -z "$(DESTDIR)" && gtk-update-icon-cache -f -q $(datadir)/icons/hicolor || :
 
 install-livedatas:
 	@echo "Install Live CD datas in $(DESTDIR)$(prefix) ..."
