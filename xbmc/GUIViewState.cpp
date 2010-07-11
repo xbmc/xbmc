@@ -347,6 +347,7 @@ void CGUIViewState::AddAddonsSource(const CStdString &content, const CStdString 
     source.strName = label;
     source.m_strThumbnailImage = "";
     source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
+    source.m_ignore = true;
     m_sources.push_back(source);
   }
 }
