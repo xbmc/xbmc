@@ -188,8 +188,8 @@ protected:
   SVideoBuffer m_VideoBuffers[NUM_BUFFERS];
 
   bool                m_singleStage;
-  CD3DTexture         m_FirstPassTarget;
-  CD3DTexture         m_FirstPassTargetStencilSurface;
+  CD3DTexture         m_IntermediateTarget;
+  CD3DTexture         m_IntermediateStencilSurface;
 
   CYUV2RGBShader*     m_colorShader;
   CConvolutionShader* m_scalerShader;

@@ -295,10 +295,10 @@ void CWinRenderer::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
 
-  if (m_FirstPassTarget.Get())
-    m_FirstPassTarget.Release();
-  if (m_FirstPassTargetStencilSurface.Get())
-    m_FirstPassTargetStencilSurface.Release();
+  if (m_IntermediateTarget.Get())
+    m_IntermediateTarget.Release();
+  if (m_IntermediateStencilSurface.Get())
+    m_IntermediateStencilSurface.Release();
 
   SAFE_RELEASE(m_colorShader)
   SAFE_RELEASE(m_scalerShader)
@@ -386,20 +386,20 @@ nohqscaler:
 
   // Scaler is figured out. Now the colour conversion part.
 
-  if(m_FirstPassTarget.Get())
-    m_FirstPassTarget.Release();
-  if (m_FirstPassTargetStencilSurface.Get())
-    m_FirstPassTargetStencilSurface.Release();
+  if(m_IntermediateTarget.Get())
+    m_IntermediateTarget.Release();
+  if (m_IntermediateStencilSurface.Get())
+    m_IntermediateStencilSurface.Release();
 
   if (!m_singleStage)
   {
     // initialize a render target to accept the color conversion result
     LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
 
-    if(!m_FirstPassTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A2R10G10B10, D3DPOOL_DEFAULT))
+    if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A2R10G10B10, D3DPOOL_DEFAULT))
     {
       CLog::Log(LOGERROR, __FUNCTION__": Failed to create 10 bit render target.  Trying 8 bit...");
-      if(!m_FirstPassTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT))
+      if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT))
       {
         CLog::Log(LOGERROR, __FUNCTION__": Failed to create render target texture. Going back to bilinear scaling.");
         m_singleStage = true;
@@ -412,7 +412,7 @@ nohqscaler:
     //Use the same depth stencil format as the backbuffer.
     pD3DDevice->GetDepthStencilSurface(&tmpSurface);
     tmpSurface->GetDesc(&tmpDesc);
-    m_FirstPassTargetStencilSurface.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_DEPTHSTENCIL, tmpDesc.Format, D3DPOOL_DEFAULT);
+    m_IntermediateStencilSurface.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_DEPTHSTENCIL, tmpDesc.Format, D3DPOOL_DEFAULT);
     tmpSurface->Release();
 
     SAFE_RELEASE(m_colorShader)
@@ -486,8 +486,8 @@ void CWinRenderer::Stage1(DWORD flags)
     // Switch the render target to the temporary destination
     LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
     LPDIRECT3DSURFACE9 newRT, oldRT, oldDS, newDS;
-    m_FirstPassTarget.GetSurfaceLevel(0, &newRT);
-    m_FirstPassTargetStencilSurface.GetSurfaceLevel(0, &newDS);
+    m_IntermediateTarget.GetSurfaceLevel(0, &newRT);
+    m_IntermediateStencilSurface.GetSurfaceLevel(0, &newDS);
     pD3DDevice->GetRenderTarget(0, &oldRT);
     pD3DDevice->SetRenderTarget(0, newRT);
     pD3DDevice->GetDepthStencilSurface(&oldDS);
@@ -514,7 +514,7 @@ void CWinRenderer::Stage1(DWORD flags)
 
 void CWinRenderer::Stage2(DWORD flags)
 {
-  m_scalerShader->Render(m_FirstPassTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, m_destRect);
+  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, m_destRect);
 }
 
 void CWinRenderer::RenderProcessor(DWORD flags)
