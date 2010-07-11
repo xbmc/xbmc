@@ -689,6 +689,11 @@ bool CFileItem::IsPlugin() const
   return CUtil::IsPlugin(m_strPath);
 }
 
+bool CFileItem::IsAddonsPath() const
+{
+  return CUtil::IsAddonsPath(m_strPath);
+}
+
 bool CFileItem::IsMultiPath() const
 {
   return CUtil::IsMultiPath(m_strPath);

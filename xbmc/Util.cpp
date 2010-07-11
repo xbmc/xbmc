@@ -998,6 +998,12 @@ bool CUtil::IsPlugin(const CStdString& strFile)
   return url.GetProtocol().Equals("plugin");
 }
 
+bool CUtil::IsAddonsPath(const CStdString& strFile)
+{
+  CURL url(strFile);
+  return url.GetProtocol().Equals("addons");
+}
+
 bool CUtil::IsCDDA(const CStdString& strFile)
 {
   return strFile.Left(5).Equals("cdda:");

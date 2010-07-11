@@ -98,6 +98,7 @@ public:
   static bool IsInArchive(const CStdString& strFile);
   static bool IsSpecial(const CStdString& strFile);
   static bool IsPlugin(const CStdString& strFile);
+  static bool IsAddonsPath(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
   static bool IsTuxBox(const CStdString& strFile);
   static bool IsMythTV(const CStdString& strFile);
