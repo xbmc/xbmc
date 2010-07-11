@@ -1487,7 +1487,8 @@ namespace VIDEO
         default:
           type = "malformed";
       }
-      CLog::Log(LOGDEBUG, "VideoInfoScanner: Found matching %s NFO file: %s", type.c_str(), strNfoFile.c_str());
+      if (result != CNfoFile::NO_NFO)
+        CLog::Log(LOGDEBUG, "VideoInfoScanner: Found matching %s NFO file: %s", type.c_str(), strNfoFile.c_str());
       if (result == CNfoFile::FULL_NFO)
       {
         if (info->Content() == CONTENT_TVSHOWS)
