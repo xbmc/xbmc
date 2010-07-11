@@ -37,6 +37,7 @@
 #include "utils/log.h"
 #include "utils/fastmemcpy.h"
 #include "Codecs/DllSwScale.h"
+#include "utils/TimeUtils.h"
 
 namespace BCM
 {
@@ -756,7 +757,9 @@ bool CMPCOutputThread::GetDecoderOutput(void)
     case BCM::BC_STS_SUCCESS:
       if (m_format_valid && (procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID))
       {
-        if (procOut.PicInfo.timeStamp)
+        if (procOut.PicInfo.timeStamp && 
+          m_width == (int)procOut.PicInfo.width && 
+          m_height == (int)procOut.PicInfo.height)
         {
           m_timestamp = procOut.PicInfo.timeStamp;
           m_PictureNumber = procOut.PicInfo.picture_number;
@@ -931,7 +934,10 @@ void CMPCOutputThread::Process(void)
   // decoder is primed so now calls in DtsProcOutputXXCopy will block
   while (!m_bStop)
   {
-    if (!GetDecoderOutput())
+    ret = m_dll->DtsGetDriverStatus(m_device, &decoder_status);
+    if (ret == BCM::BC_STS_SUCCESS && decoder_status.ReadyListCount != 0)
+      GetDecoderOutput();
+    else
       Sleep(1);
 
 #ifdef USE_CHD_SINGLE_THREADED_API
@@ -1064,7 +1070,6 @@ void CCrystalHD::OpenDevice()
 #endif
                   BCM::DTS_SKIP_TX_CHK_CPB        |
                   BCM::DTS_PLAYBACK_DROP_RPT_MODE |
-                  //DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_CUSTOM);
                   DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
 
   BCM::BC_STATUS res= m_dll->DtsDeviceOpen(&m_device, mode);
@@ -1099,14 +1104,13 @@ void CCrystalHD::CloseDevice()
   }
 }
 
-bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size, void *extradata)
+bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, CDVDStreamInfo &hints)
 {
   BCM::BC_STATUS res;
   uint32_t StreamType;
 #if (HAVE_LIBCRYSTALHD == 2)
   BCM::BC_MEDIA_SUBTYPE Subtype;
 #endif
-
 
   if (!m_device)
     return false;
@@ -1122,9 +1126,14 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
       StreamType = BCM::BC_STREAM_TYPE_ES;
       m_convert_bitstream = false;
     break;
+    case CRYSTALHD_CODEC_ID_WVC1:
+      videoAlg = BCM::BC_VID_ALGO_VC1MP;
+      StreamType = BCM::BC_STREAM_TYPE_ES;
+      m_convert_bitstream = false;
+    break;
     case CRYSTALHD_CODEC_ID_WMV3:
       videoAlg = BCM::BC_VID_ALGO_VC1MP;
-      StreamType = BCM::BC_STREAM_TYPE_PES;
+      StreamType = BCM::BC_STREAM_TYPE_ES;
       m_convert_bitstream = false;
     break;
     case CRYSTALHD_CODEC_ID_H264:
@@ -1135,8 +1144,8 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
     case CRYSTALHD_CODEC_ID_AVC1:
       videoAlg = BCM::BC_VID_ALGO_H264;
       StreamType = BCM::BC_STREAM_TYPE_ES;
-      if (!m_has_bcm70015)
-        m_convert_bitstream = bitstream_convert_init(extradata, extradata_size);
+      if (!m_new_lib)
+        m_convert_bitstream = bitstream_convert_init((uint8_t*)hints.extradata, hints.extrasize);
     break;
     case CRYSTALHD_CODEC_ID_MPEG2:
       videoAlg = BCM::BC_VID_ALGO_MPEG2;
@@ -1151,43 +1160,53 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
   }
   
 #if (HAVE_LIBCRYSTALHD == 2)
-  m_avcc_params.inside_buffer = TRUE;
-  m_avcc_params.consumed_offset = 0;
-  m_avcc_params.strtcode_offset = 0;
-  m_avcc_params.nal_sz = 0;
-  m_avcc_params.pps_size = 0;
+  uint8_t *pMetaData = NULL;
+  uint32_t metaDataSz = 0;
+  uint32_t startCodeSz = 0;
   m_avcc_params.sps_pps_buf = NULL;
-  m_avcc_params.nal_size_bytes = 4;
-  if (m_has_bcm70015)
+  switch (codec_type)
   {
-    switch (codec_type)
-    {
-      case CRYSTALHD_CODEC_ID_VC1:
-        Subtype = BCM::BC_MSUBTYPE_VC1;
-      break;
-      case CRYSTALHD_CODEC_ID_WMV3:
-        Subtype = BCM::BC_MSUBTYPE_WMV3;
-      break;
-      case CRYSTALHD_CODEC_ID_H264:
-        Subtype = BCM::BC_MSUBTYPE_H264;
-        m_avcc_params.nal_size_bytes = 4; // 4 sync bytes used
-      break;
-      case CRYSTALHD_CODEC_ID_AVC1:
-        Subtype = BCM::BC_MSUBTYPE_AVC1;
-        m_avcc_params.sps_pps_buf = (uint8_t*)malloc(1000);
-        if (!extract_sps_pps_from_avcc(extradata_size, extradata))
-        {
-          free(m_avcc_params.sps_pps_buf);
-          m_avcc_params.sps_pps_buf = NULL;
-          m_avcc_params.pps_size = 0;
-        }
-      break;
-      case CRYSTALHD_CODEC_ID_MPEG2:
-        Subtype = BCM::BC_MSUBTYPE_MPEG2VIDEO;
-      break;
-      //BC_VID_ALGO_DIVX:
-      //BC_VID_ALGO_VC1MP:
-    }
+    case CRYSTALHD_CODEC_ID_VC1:
+      Subtype = BCM::BC_MSUBTYPE_VC1;
+      pMetaData = (uint8_t*)hints.extradata;
+      metaDataSz = hints.extrasize;
+    break;
+    case CRYSTALHD_CODEC_ID_WVC1:
+      Subtype = BCM::BC_MSUBTYPE_WVC1;
+    break;
+    case CRYSTALHD_CODEC_ID_WMV3:
+      Subtype = BCM::BC_MSUBTYPE_WMV3;
+      pMetaData = (uint8_t*)hints.extradata;
+      metaDataSz = hints.extrasize;
+    break;
+    case CRYSTALHD_CODEC_ID_H264:
+      Subtype = BCM::BC_MSUBTYPE_H264;
+      pMetaData = (uint8_t*)hints.extradata;
+      metaDataSz = hints.extrasize;
+      startCodeSz = 4;
+    break;
+    case CRYSTALHD_CODEC_ID_AVC1:
+      Subtype = BCM::BC_MSUBTYPE_AVC1;
+      m_avcc_params.sps_pps_buf = (uint8_t*)malloc(1000);
+			if (!extract_sps_pps_from_avcc(hints.extrasize, hints.extradata))
+      {
+        free(m_avcc_params.sps_pps_buf);
+        m_avcc_params.sps_pps_buf = NULL;
+			}
+      else
+      {
+        pMetaData = m_avcc_params.sps_pps_buf;
+        metaDataSz = m_avcc_params.pps_size;
+        startCodeSz = m_avcc_params.nal_size_bytes;
+      }
+    break;
+    case CRYSTALHD_CODEC_ID_MPEG2:
+      Subtype = BCM::BC_MSUBTYPE_MPEG2VIDEO;
+      pMetaData = (uint8_t*)hints.extradata;
+      metaDataSz = hints.extrasize;
+    break;
+    //BC_VID_ALGO_DIVX:
+    //BC_VID_ALGO_VC1MP:
   }
 #endif
 
@@ -1207,23 +1226,28 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
     }
 
 #if (HAVE_LIBCRYSTALHD == 2)
-    if (m_has_bcm70015)
+    if (m_new_lib)
     {
       BCM::BC_INPUT_FORMAT bcm_input_format;
       memset(&bcm_input_format, 0, sizeof(BCM::BC_INPUT_FORMAT));
 
       bcm_input_format.FGTEnable = FALSE;
-      bcm_input_format.Progressive = FALSE;
-      bcm_input_format.MetaDataEnable = FALSE;
+      bcm_input_format.Progressive = TRUE;
       bcm_input_format.OptFlags = 0x80000000 | BCM::vdecFrameRate23_97;
       #ifdef USE_CHD_SINGLE_THREADED_API
         bcm_input_format.OptFlags |= 0x80;
       #endif
       
+      bcm_input_format.width = hints.width;
+      bcm_input_format.height = hints.height;
       bcm_input_format.mSubtype = Subtype;
-      bcm_input_format.pMetaData = m_avcc_params.sps_pps_buf;
-      bcm_input_format.metaDataSz = m_avcc_params.pps_size;
-      bcm_input_format.startCodeSz = m_avcc_params.nal_size_bytes;
+      bcm_input_format.pMetaData = pMetaData;
+      bcm_input_format.metaDataSz = metaDataSz;
+      bcm_input_format.startCodeSz = startCodeSz;
+      if (bcm_input_format.metaDataSz > 0)
+        bcm_input_format.MetaDataEnable = TRUE;
+      else
+        bcm_input_format.MetaDataEnable = FALSE;
 
       res = m_dll->DtsSetInputFormat(m_device, &bcm_input_format);
       if (res != BCM::BC_STS_SUCCESS)
@@ -1232,7 +1256,10 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
         break;
       }
 
-      res = m_dll->DtsSetColorSpace(m_device, BCM::OUTPUT_MODE422_YUY2); 
+      if (m_has_bcm70015)
+        res = m_dll->DtsSetColorSpace(m_device, BCM::OUTPUT_MODE422_YUY2); 
+      else
+        res = m_dll->DtsSetColorSpace(m_device, BCM::OUTPUT_MODE420); 
       if (res != BCM::BC_STS_SUCCESS)
       { 
         CLog::Log(LOGDEBUG, "%s: set color space failed", __MODULE_NAME__); 
@@ -1282,6 +1309,7 @@ bool CCrystalHD::OpenDecoder(CRYSTALHD_CODEC_TYPE codec_type, int extradata_size
     m_pOutputThread->Create();
 
     m_drop_state = false;
+    m_skip_state = false;
     m_decoder_open = true;
     // set output timeout to 1ms during startup,
     // this will get reset once we get a picture back.
@@ -1352,26 +1380,12 @@ void CCrystalHD::Reset(void)
   }
   else
   {
-    m_wait_timeout = 1;
-
-    // we are always late (chd pipeline fill) when seeking,
-    // so start off skipping all non reference pictures.
-    m_dll->DtsSetSkipPictureMode(m_device, 1);
-
     // Calling for non-error flush, Flushes all the decoder
     //  buffers, input, decoded and to be decoded. 
-    if (m_new_lib)
-    {
-      m_reset = 30;
-      m_dll->DtsFlushInput(m_device, 0);
-      m_dll->DtsFlushRxCapture(m_device, true);
-    }
-    else
-    {
-      m_reset = 60;
-      m_dll->DtsFlushInput(m_device, 2);
-      ::Sleep(100);
-    }
+    m_reset = 60;
+    m_wait_timeout = 1;
+    m_dll->DtsFlushInput(m_device, 2);
+    ::Sleep(100);
   }
 
   while (m_BusyList.Count())
@@ -1429,10 +1443,22 @@ bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double dts, double 
     if (free_demuxer_content)
       free(demuxer_content);
 
-    if (m_drop_state)
+    if (m_reset)
     {
-      if (m_pOutputThread->GetReadyCount() > 1)
-        m_pOutputThread->FreeListPush( m_pOutputThread->ReadyListPop() );
+      m_reset--;
+      if (!m_skip_state)
+      {
+        m_skip_state = true;
+        m_dll->DtsSetSkipPictureMode(m_device, 1);
+      }
+    }
+    else
+    {
+      if (m_skip_state)
+      {
+        m_skip_state = false;
+        m_dll->DtsSetSkipPictureMode(m_device, 0);
+      }
     }
 
     bool wait_state;
@@ -1525,9 +1551,6 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
   pDvdVideoPicture->color_range = pBuffer->m_color_range;
   pDvdVideoPicture->color_matrix = pBuffer->m_color_matrix;
   pDvdVideoPicture->iFlags = DVP_FLAG_ALLOCATED;
-  pDvdVideoPicture->iFlags |= pBuffer->m_interlace ? DVP_FLAG_INTERLACED : 0;
-  //if (pBuffer->m_interlace)
-  //  pDvdVideoPicture->iFlags |= DVP_FLAG_TOP_FIELD_FIRST;
   pDvdVideoPicture->iFlags |= m_drop_state ? DVP_FLAG_DROPPED : 0;
   pDvdVideoPicture->format = pBuffer->m_format;
 
@@ -1544,28 +1567,11 @@ bool CCrystalHD::GetPicture(DVDVideoPicture *pDvdVideoPicture)
 void CCrystalHD::SetDropState(bool bDrop)
 {
   if (!m_has_bcm70015)
-    {
-    if (m_reset)
-    {
-      if (m_drop_state != bDrop)
-        m_drop_state = bDrop;
-
-      m_reset--;
-      if (!m_reset)
-        m_dll->DtsSetSkipPictureMode(m_device, 0);
-
-      return;
-    }
-
+  {
     if (m_drop_state != bDrop)
-    {
       m_drop_state = bDrop;
-      if (m_drop_state)
-        m_dll->DtsSetSkipPictureMode(m_device, 1);
-      else
-        m_dll->DtsSetSkipPictureMode(m_device, 0);
-    }
   }
+
 /*
   if (m_drop_state)
     CLog::Log(LOGDEBUG, "%s: SetDropState... %d, , GetFreeCount(%d), GetReadyCount(%d), BusyListCount(%d)", __MODULE_NAME__, 
