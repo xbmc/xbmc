@@ -918,6 +918,9 @@ if test "x$use_crystalhd" != "xno"; then
         [ AC_DEFINE([HAVE_LIBCRYSTALHD], [2], [Define to 2 if you have the 'New Broadcom Crystal HD' library.]) ], 
         [ AC_DEFINE([HAVE_LIBCRYSTALHD], [1], [Define to 1 if you have the 'Old Broadcom Crystal HD' library.]) ])
       CFLAGS="$SAVE_CFLAGS"
+      if test "$host_vendor" != "apple"; then
+        XB_FIND_SONAME([CRYSTALHD], [crystalhd])
+      fi
     fi
 else
   AC_MSG_NOTICE($crystalhd_disabled)

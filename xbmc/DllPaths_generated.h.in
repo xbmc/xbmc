@@ -106,7 +106,7 @@
 
 /* broadcom crystalhd */
 #if defined(_LINUX) && !defined(__APPLE__)
-#define DLL_PATH_LIBCRYSTALHD "libcrystalhd.so"
+#define DLL_PATH_LIBCRYSTALHD "@CRYSTALHD_SONAME@"
 #else
 #define DLL_PATH_LIBCRYSTALHD "libcrystalhd.dylib"
 #endif
