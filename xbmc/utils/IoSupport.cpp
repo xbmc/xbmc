@@ -638,7 +638,7 @@ VOID CIoSupport::GetXbePath(char* szDest)
   CStdStringW strPathW = szAppPathW;
   CStdString strPath;
   g_charsetConverter.wToUTF8(strPathW,strPath);
-  strncpy(szDest,strPath.c_str(),strPath.length());
+  strncpy(szDest,strPath.c_str(),strPath.length()+1);
 #elif __APPLE__
   int      result = -1;
   char     given_path[2*MAXPATHLEN];
