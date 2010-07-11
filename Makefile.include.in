@@ -20,6 +20,7 @@ datadir=@datadir@
 infodir=@infodir@
 localedir=@localedir@
 mandir=@mandir@
+PACKAGE_TARNAME=@PACKAGE_TARNAME@
 docdir=@docdir@
 htmldir=@htmldir@
 dvidir=@dvidir@
