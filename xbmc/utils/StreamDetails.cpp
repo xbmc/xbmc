@@ -438,6 +438,9 @@ CStdString CStreamDetails::VideoDimsToResolutionDescription(int iWidth, int iHei
 
   else if (iWidth <= 720 && iHeight <= 480)
     return "480";
+  // 720x576 (PAL)
+  else if (iWidth <= 720 && iHeight <= 576)
+    return "576";
   // 960x540
   else if (iWidth <= 960 && iHeight <= 540)
     return "540";
