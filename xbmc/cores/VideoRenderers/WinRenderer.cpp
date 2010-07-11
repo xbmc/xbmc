@@ -312,6 +312,37 @@ void CWinRenderer::UnInit()
   m_NumYV12Buffers = 0;
 }
 
+bool CWinRenderer::SetupIntermediateRenderTarget()
+{
+  // Initialize a render target for intermediate rendering - same size as the video source
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
+
+  if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A2R10G10B10, D3DPOOL_DEFAULT))
+  {
+    CLog::Log(LOGNOTICE, __FUNCTION__": Failed to create 10 bit render target.  Trying 8 bit...");
+    if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT))
+    {
+      CLog::Log(LOGERROR, __FUNCTION__": Failed to create render target texture. Going back to bilinear scaling.");
+      return false;
+    }
+  }
+
+  //Pixel shaders need a matching depth-stencil surface.
+  LPDIRECT3DSURFACE9 tmpSurface;
+  D3DSURFACE_DESC tmpDesc;
+  //Use the same depth stencil format as the backbuffer.
+  pD3DDevice->GetDepthStencilSurface(&tmpSurface);
+  tmpSurface->GetDesc(&tmpDesc);
+  tmpSurface->Release();
+  if (!m_IntermediateStencilSurface.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_DEPTHSTENCIL, tmpDesc.Format, D3DPOOL_DEFAULT))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to create depth stencil. Going back to bilinear scaling.");
+    m_IntermediateTarget.Release();
+    return false;
+  }
+  return true;
+}
+
 void CWinRenderer::UpdateVideoFilter()
 {
   if (m_scalingMethodGui == g_settings.m_currentVideoSettings.m_ScalingMethod && m_bFilterInitialized)
@@ -359,7 +390,7 @@ void CWinRenderer::UpdateVideoFilter()
 
   SAFE_RELEASE(m_scalerShader)
 
-  if(m_bUseHQScaler)
+  if (m_bUseHQScaler)
   {
     m_singleStage = false;
     if(m_scalingMethod == VS_SCALINGMETHOD_AUTO && m_sourceWidth >= 1280)
@@ -391,39 +422,25 @@ nohqscaler:
   if (m_IntermediateStencilSurface.Get())
     m_IntermediateStencilSurface.Release();
 
+  if (!m_singleStage && !SetupIntermediateRenderTarget())
+  {
+    SAFE_RELEASE(m_scalerShader)
+    m_singleStage = true;
+  }
+
+  SAFE_RELEASE(m_colorShader)
+
   if (!m_singleStage)
   {
-    // initialize a render target to accept the color conversion result
-    LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
-
-    if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A2R10G10B10, D3DPOOL_DEFAULT))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__": Failed to create 10 bit render target.  Trying 8 bit...");
-      if(!m_IntermediateTarget.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT))
-      {
-        CLog::Log(LOGERROR, __FUNCTION__": Failed to create render target texture. Going back to bilinear scaling.");
-        m_singleStage = true;
-      }
-    }
-
-    //D3D render targets need a size matching depth-stencil surface.
-    LPDIRECT3DSURFACE9 tmpSurface;
-    D3DSURFACE_DESC tmpDesc;
-    //Use the same depth stencil format as the backbuffer.
-    pD3DDevice->GetDepthStencilSurface(&tmpSurface);
-    tmpSurface->GetDesc(&tmpDesc);
-    m_IntermediateStencilSurface.Create(m_sourceWidth, m_sourceHeight, 1, D3DUSAGE_DEPTHSTENCIL, tmpDesc.Format, D3DPOOL_DEFAULT);
-    tmpSurface->Release();
-
-    SAFE_RELEASE(m_colorShader)
-
     m_colorShader = new CYUV2RGBShader();
     if (!m_colorShader->Create(false))
     {
+      m_IntermediateTarget.Release();
+      m_IntermediateStencilSurface.Release();
+      SAFE_RELEASE(m_scalerShader)
       SAFE_RELEASE(m_colorShader);
       m_singleStage = true;
       m_bUseHQScaler = false;
-      SAFE_RELEASE(m_scalerShader)
     }
   }
 

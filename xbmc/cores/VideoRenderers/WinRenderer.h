@@ -179,6 +179,8 @@ protected:
   int          NextYV12Texture();
 
   void UpdateVideoFilter();
+  bool SetupIntermediateRenderTarget();
+
   void RenderProcessor(DWORD flags);
   int  m_iYV12RenderBuffer;
   int  m_NumYV12Buffers;
