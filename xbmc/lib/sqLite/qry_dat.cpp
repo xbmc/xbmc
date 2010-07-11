@@ -193,12 +193,12 @@ string field_value::get_asString() const {
     }
     case ft_Int: {
       char t[12];
-      sprintf(t,"%ld",int_value);
+      sprintf(t,"%d",int_value);
       return tmp = t;
     }
     case ft_UInt: {
       char t[12];
-      sprintf(t,"%lu",uint_value);
+      sprintf(t,"%u",uint_value);
       return tmp = t;
     }
     case ft_Float: {
@@ -294,12 +294,12 @@ char field_value::get_asChar() const {
     }
     case ft_Int: {
       char t[12];
-      sprintf(t,"%ld",int_value);
+      sprintf(t,"%d",int_value);
       return t[0];
     }
     case ft_UInt: {
       char t[12];
-      sprintf(t,"%lu",uint_value);
+      sprintf(t,"%u",uint_value);
       return t[0];
     }
     case ft_Float: {
