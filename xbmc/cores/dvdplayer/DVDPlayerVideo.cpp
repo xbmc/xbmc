@@ -608,9 +608,9 @@ void CDVDPlayerVideo::Process()
             if (picture.iRepeatPicture)
               picture.iDuration *= picture.iRepeatPicture + 1;
 
-#if 0
+#if 1
             int iResult = OutputPicture(&picture, pts);
-#elif 1
+#elif 0
             // testing NV12 rendering functions
             DVDVideoPicture* pTempNV12Picture = CDVDCodecUtils::ConvertToNV12Picture(&picture);
             int iResult = OutputPicture(pTempNV12Picture, pts);
