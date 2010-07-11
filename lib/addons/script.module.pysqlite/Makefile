@@ -1,4 +1,5 @@
 
+OSTYPE=$(shell uname)
 VERSION=2.5.6
 BASE_URL=http://pysqlite.googlecode.com/files
 SOURCE=pysqlite-$(VERSION)
@@ -10,7 +11,11 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 PYTHONDIR=$(abs_top_srcdir)/xbmc/lib/libPython/Python
+ifeq ($(OSTYPE),Darwin)
+PYTHON=$(PYTHONDIR)/python.exe
+else
 PYTHON=$(PYTHONDIR)/python
+endif
 
 DESTDIR=$(abs_top_srcdir)/addons/script.module.pysqlite/lib/pysqlite2
 
