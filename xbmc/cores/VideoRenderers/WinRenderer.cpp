@@ -354,15 +354,14 @@ void CWinRenderer::UpdateVideoFilter()
   m_scalingMethod    = m_scalingMethodGui;
 
   m_singleStage = false;
+  m_bUseHQScaler = false;
 
   switch (m_scalingMethod)
   {
   case VS_SCALINGMETHOD_NEAREST:
   case VS_SCALINGMETHOD_LINEAR:
-    m_bUseHQScaler = false;
     break;
 
-  case VS_SCALINGMETHOD_AUTO:
   case VS_SCALINGMETHOD_CUBIC:
   case VS_SCALINGMETHOD_LANCZOS2:
   case VS_SCALINGMETHOD_LANCZOS3_FAST:
@@ -388,32 +387,31 @@ void CWinRenderer::UpdateVideoFilter()
     break;
   }
 
+  // Scaler auto + SD -> Lanczos3 optim. Otherwise bilinear.
+  if(m_scalingMethod == VS_SCALINGMETHOD_AUTO && m_sourceWidth < 1280)
+  {
+    m_scalingMethod = VS_SCALINGMETHOD_LANCZOS3_FAST;
+    m_bUseHQScaler = true;
+    m_singleStage = false;
+  }
+
   SAFE_RELEASE(m_scalerShader)
 
   if (m_bUseHQScaler)
   {
     m_singleStage = false;
-    if(m_scalingMethod == VS_SCALINGMETHOD_AUTO && m_sourceWidth >= 1280)
-    {
-      m_bUseHQScaler = false;
-      goto nohqscaler;
-    }
 
     m_scalerShader = new CConvolutionShader();
-    if (!m_scalerShader->Create(m_scalingMethod == VS_SCALINGMETHOD_AUTO ? VS_SCALINGMETHOD_LANCZOS3_FAST : m_scalingMethod))
+    if (!m_scalerShader->Create(m_scalingMethod))
     {
       SAFE_RELEASE(m_scalerShader);
       g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
       m_bUseHQScaler = false;
-      goto nohqscaler;
     }
   }
 
-nohqscaler:
-
   if (!m_bUseHQScaler)
     m_singleStage = true;
-
 
   // Scaler is figured out. Now the colour conversion part.
 
