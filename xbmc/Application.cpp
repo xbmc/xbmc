@@ -490,9 +490,8 @@ bool CApplication::Create()
 #endif
   CSpecialProtocol::LogPaths();
 
-  char szXBEFileName[1024];
-  CIoSupport::GetXbePath(szXBEFileName);
-  CLog::Log(LOGNOTICE, "The executable running is: %s", szXBEFileName);
+  CStdString executable = CUtil::ResolveExecutablePath();
+  CLog::Log(LOGNOTICE, "The executable running is: %s", executable.c_str());
   CLog::Log(LOGNOTICE, "Log File is located: %sxbmc.log", g_settings.m_logFolder.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 

@@ -671,8 +671,8 @@ void CUtil::RunShortcut(const char* szShortcutPath)
 
 void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
 {
-  char szXBEFileName[1024];
-  CIoSupport::GetXbePath(szXBEFileName);
+  CStdString strHomePath;
+  strHomePath = ResolveExecutablePath();
 #ifdef _WIN32
   CStdStringW strPathW, strTargetW;
   g_charsetConverter.utf8ToW(strTarget, strTargetW);
@@ -685,10 +685,11 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
   if (strPath != NULL && !strPath.IsEmpty())
   {
 #ifdef _WIN32
+    char tmp[1024];
     //expand potential relative path to full path
-    if(GetFullPathName(strPath, 1024, szXBEFileName, 0) != 0)
+    if(GetFullPathName(strPath, 1024, tmp, 0) != 0)
     {
-      strPath = szXBEFileName;
+      strPath = tmp;
     }
 #endif
   }
@@ -718,9 +719,11 @@ void CUtil::GetHomePath(CStdString& strPath, const CStdString& strTarget)
       }
     }
 #endif
-    char *szFileName = strrchr(szXBEFileName, PATH_SEPARATOR_CHAR);
-    *szFileName = 0;
-    strPath = szXBEFileName;
+    size_t last_sep = strHomePath.find_last_of(PATH_SEPARATOR_CHAR);
+    if (last_sep != string::npos)
+      strPath = strHomePath.Left(last_sep);
+    else
+      strPath = strHomePath;
   }
 }
 
@@ -3334,3 +3337,39 @@ int CUtil::TranslateRomanNumeral(const char* roman_numeral)
   }
   return decimal;
 }
+
+CStdString CUtil::ResolveExecutablePath()
+{
+  CStdString strExecutablePath;
+#ifdef WIN32
+  wchar_t szAppPathW[MAX_PATH] = L"";
+  ::GetModuleFileNameW(0, szAppPathW, sizeof(szAppPathW) - 1);
+  CStdStringW strPathW = szAppPathW;
+  g_charsetConverter.wToUTF8(strPathW,strExecutablePath);
+#elif defined(__APPLE__)
+  int      result = -1;
+  char     given_path[2*MAXPATHLEN];
+  char     real_given_path[2*MAXPATHLEN];
+  uint32_t path_size = 2*MAXPATHLEN;
+
+  result = _NSGetExecutablePath(given_path, &path_size);
+  if (result == 0)
+    realpath(given_path, real_given_path);
+  strExecutablePath = real_given_path;
+#else
+  /* Get our PID and build the name of the link in /proc */
+  pid_t pid = getpid();
+  char linkname[64]; /* /proc/<pid>/exe */
+  snprintf(linkname, sizeof(linkname), "/proc/%i/exe", pid);
+
+  /* Now read the symbolic link */
+  char buf[PATH_MAX];
+  int ret = readlink(linkname, buf, PATH_MAX);
+  buf[ret] = 0;
+
+  strExecutablePath = buf;
+#endif
+  return strExecutablePath;
+}
+
+
