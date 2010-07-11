@@ -932,13 +932,9 @@ void MysqlDatabase::mysqlVXPrintf(
         isnull = escarg==0;
         if( isnull ) escarg = (xtype==etSQLESCAPE2 ? "NULL" : "(NULL)");
         k = precision;
-        for(i=n=0; k!=0 && (ch=escarg[i])!=0; i++, k--){
-          if ( (q == ch) ||
-               ('\\' == ch) )
-            n++;
-        }
+        for(i=0; k!=0 && (ch=escarg[i])!=0; i++, k--);
         needQuote = !isnull && xtype==etSQLESCAPE2;
-        n += i + 1 + needQuote*2;
+        n = i*2 + 1 + needQuote*2;
         if( n>etBUFSIZE ){
           bufpt = zExtra = (char *)malloc(n);
           if( bufpt==0 ){
@@ -951,14 +947,7 @@ void MysqlDatabase::mysqlVXPrintf(
         j = 0;
         if( needQuote ) bufpt[j++] = q;
         k = i;
-        for(i=0; i<k; i++){
-          ch = escarg[i];
-          if ('\\' == ch)
-            bufpt[j++] = '\\';
-          bufpt[j++] = ch;
-          if (q == ch)
-            bufpt[j++] = ch;
-        }
+        j += mysql_real_escape_string(conn, bufpt, escarg, k);
         if( needQuote ) bufpt[j++] = q;
         bufpt[j] = 0;
         length = j;
