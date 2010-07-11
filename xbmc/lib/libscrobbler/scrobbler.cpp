@@ -32,6 +32,7 @@
 #include "Application.h"
 #include "SingleLock.h"
 #include "LocalizeStrings.h"
+#include "File.h"
 
 #define SCROBBLER_CLIENT              "xbm"
 //#define SCROBBLER_CLIENT              "tst"     // For testing ONLY!
@@ -357,6 +358,14 @@ bool CScrobbler::LoadJournal()
 
 bool CScrobbler::SaveJournal()
 {
+  CSingleLock lock(m_queueLock);
+
+  if (m_vecSubmissionQueue.size() == 0)
+  {
+    if (XFILE::CFile::Exists(GetJournalFileName()))
+      XFILE::CFile::Delete(GetJournalFileName());
+    return true;
+  }
   CStdString        strJournalVersion;
   TiXmlDocument     xmlDoc;
   TiXmlDeclaration  decl("1.0", "utf-8", "yes");
@@ -369,7 +378,6 @@ bool CScrobbler::SaveJournal()
     return false;
 
   int i = 0;
-  CSingleLock lock(m_queueLock);
   SCROBBLERJOURNALITERATOR it = m_vecSubmissionQueue.begin();
   for (; it != m_vecSubmissionQueue.end(); it++, i++)
   {
