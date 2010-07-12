@@ -610,13 +610,6 @@ bool CFileItem::IsType(const char *ext) const
   return CUtil::GetExtension(m_strPath).Equals(ext, false);
 }
 
-bool CFileItem::IsDefaultXBE() const
-{
-  CStdString filename = CUtil::GetFileName(m_strPath);
-  if (filename.Equals("default.xbe")) return true;
-  return false;
-}
-
 bool CFileItem::IsShortCut() const
 {
   return CUtil::GetExtension(m_strPath).Equals(".cut", false);

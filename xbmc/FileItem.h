@@ -97,7 +97,6 @@ public:
   bool IsXBE() const;
   bool IsPlugin() const;
   bool IsAddonsPath() const;
-  bool IsDefaultXBE() const;
   bool IsShortCut() const;
   bool IsNFO() const;
   bool IsDVDImage() const;
