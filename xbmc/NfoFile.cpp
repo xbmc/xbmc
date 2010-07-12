@@ -226,7 +226,9 @@ int CNfoFile::Scrape(ScraperPtr& scraper, const CStdString& strURL /* = "" */)
   if (strURL.IsEmpty())
   {
     extras.push_back(m_doc);
-    vector<CStdString> result = scraper->Run("NfoScrape",url,http,&extras);
+    vector<CStdString> result;
+    if (scraper->GetParser().HasFunction("NfoScrape"))
+      result = scraper->Run("NfoScrape",url,http,&extras);
     if (!result.empty())
     {
       TiXmlDocument doc;
