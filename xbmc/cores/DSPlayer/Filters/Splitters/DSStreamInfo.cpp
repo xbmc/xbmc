@@ -223,7 +223,9 @@ void CDSStreamInfo::Assign(const CDemuxStream& right, bool withextradata, const 
       return;
     }
     
-    wvfmt->wFormatTag= mtype.subtype.Data1;
+    // TODO: values for this are non-trivial, see <mmreg.h>
+    wvfmt->wFormatTag = avstream->codec->codec_tag;
+
     wvfmt->nChannels = avstream->codec->channels;
     wvfmt->nSamplesPerSec = avstream->codec->sample_rate;
     wvfmt->wBitsPerSample = avstream->codec->bits_per_coded_sample;

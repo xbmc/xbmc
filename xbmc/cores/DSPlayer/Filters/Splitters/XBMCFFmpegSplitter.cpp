@@ -104,7 +104,7 @@ HRESULT CXBMCFFmpegSplitter::CreateOutputs(IAsyncReader* pAsyncReader)
   bool fHasIndex = false;
   const CDVDDemuxFFmpeg *pDemuxer = static_cast<const CDVDDemuxFFmpeg*>(m_pDemuxer);
 
-  stream s;
+  /*stream s;
   s.pid = NO_SUBTITLE_PID;
   s.streamInfo = new CDSStreamInfo();
   s.streamInfo->mtype.InitMediaType();
@@ -118,7 +118,7 @@ HRESULT CXBMCFFmpegSplitter::CreateOutputs(IAsyncReader* pAsyncReader)
     memset(psi, 0, sizeof(SUBTITLEINFO));
     strncpy_s(psi->IsoLang, "---", 3);
   }
-  m_streams[SUBPIC].push_back(s);
+  m_streams[SUBPIC].push_back(s);*/
 
   const char *containerFormat = pDemuxer->m_pFormatContext->iformat->name;
   for (int iStream=0; iStream < m_pDemuxer->GetNrOfStreams(); iStream++)
@@ -142,13 +142,14 @@ HRESULT CXBMCFFmpegSplitter::CreateOutputs(IAsyncReader* pAsyncReader)
       break;
     default:
       // unsupported stream
+      delete hint;
       break;
     }
   }
 
-  if(m_streams[SUBPIC].size() == 1) {
+  /*if(m_streams[SUBPIC].size() == 1) {
     m_streams[SUBPIC].clear();
-  }
+  }*/
 
   for(int i = 0; i < countof(m_streams); i++)
   {
@@ -160,7 +161,7 @@ HRESULT CXBMCFFmpegSplitter::CreateOutputs(IAsyncReader* pAsyncReader)
 
       CStdStringW name = CStreamList::ToString(i);
 
-      auto_ptr<CBaseSplitterOutputPin> pPinOut(DNew CXBMCFFmpegOutputPin(mts, name, this, this, &hr));
+      boost::shared_ptr<CBaseSplitterOutputPin> pPinOut(DNew CXBMCFFmpegOutputPin(mts, name, this, this, &hr));
       if(S_OK == AddOutputPin(it->pid, pPinOut))
         break;
     }
@@ -172,10 +173,10 @@ HRESULT CXBMCFFmpegSplitter::CreateOutputs(IAsyncReader* pAsyncReader)
 bool CXBMCFFmpegSplitter::DemuxInit()
 {
   if(!m_pDemuxer) 
-    return(false);
+    return false;
 
   m_nOpenProgress = 100;
-  return(true);
+  return true;
 }
 
 void CXBMCFFmpegSplitter::DemuxSeek(REFERENCE_TIME rt)
@@ -196,21 +197,31 @@ void CXBMCFFmpegSplitter::DemuxSeek(REFERENCE_TIME rt)
 bool CXBMCFFmpegSplitter::DemuxLoop()
 {
   HRESULT hr = S_OK;
-
+  
   while(SUCCEEDED(hr) && !CheckRequest(NULL))
   {
-    DemuxPacket* pPacket = NULL;
-    CDemuxStream *pStream = NULL;
-    ReadPacket(pPacket, pStream);
-    if ((pPacket && !pStream) || (pPacket && !GetOutputPin(pPacket->iStreamId)))
-    {
-      /* probably a empty DsPacket, just free it and move on */
-      CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-      continue;
-    }
-    if (!pPacket)
-      continue;
+    hr = DemuxNextPacket();
+  }
 
+  return true;
+}
+
+HRESULT CXBMCFFmpegSplitter::DemuxNextPacket()
+{
+  HRESULT hr = S_OK;
+
+  DemuxPacket *pPacket = NULL;
+  CDemuxStream *pStream = NULL;
+  // read a packet
+  bool success = ReadPacket(pPacket, pStream);
+  if ((pPacket && !pStream) || (pPacket && !GetOutputPin(pPacket->iStreamId)))
+  {
+    // empty packet, or no packet for an active stream, just skip
+    hr = S_FALSE;
+  }
+  else if(success)
+  {
+    // all is well, deliver the thing
     boost::shared_ptr<Packet> p(new Packet(pPacket->iSize));
     p->TrackNumber = (DWORD)pPacket->iStreamId;
     memcpy(p->pInputBuffer, pPacket->pData, pPacket->iSize);
@@ -223,19 +234,19 @@ bool CXBMCFFmpegSplitter::DemuxLoop()
     } else if (pPacket->dts != DVD_NOPTS_VALUE) {
       rt = (pPacket->dts * 10);
     }
+
+    // VC1 is mean like that!
+    if (pStream->codec == CODEC_ID_VC1 && pPacket->dts != DVD_NOPTS_VALUE) {
+      rt = (pPacket->dts * 10);
+    }
+
     p->rtStart = rt;
+
     p->bSyncPoint = (pPacket->duration > 0) ? 1 : 0;
-    p->bAppendable = !p->bSyncPoint;
+    //p->bAppendable = !p->bSyncPoint;
 
     p->rtStop = p->rtStart + ((pPacket->duration > 0) ? (pPacket->duration * 10) : 1);
 
-    //p->rtStop = ((double)pPacket->iSize * DS_TIME_BASE) / avg_bytespersample;
-    //audioframe.duration = ((double)audioframe.size * DVD_TIME_BASE) / n; <<<---- from dvdplayer
-    if (pStream->codec == CODEC_ID_AAC)
-    {
-
-
-    }
     if (pStream->type == STREAM_SUBTITLE)
     {
       pPacket->duration = 1;
@@ -243,11 +254,12 @@ bool CXBMCFFmpegSplitter::DemuxLoop()
     }
 
     hr = DeliverPacket(p);
-
-    CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+  } else {
+    hr = E_FAIL;
   }
 
-  return(true);
+  CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+  return hr;
 }
 
 bool CXBMCFFmpegSplitter::ReadPacket(DemuxPacket*& DsPacket, CDemuxStream*& stream)
@@ -524,7 +536,7 @@ CXBMCFFmpegSourceFilter::CXBMCFFmpegSourceFilter(LPUNKNOWN pUnk, HRESULT* phr)
   : CXBMCFFmpegSplitter(pUnk, phr)
 {
   m_clsid = __uuidof(this);
-  m_pInput.release();
+  m_pInput.reset();
 
 }
 

@@ -96,13 +96,12 @@ public:
   {
     pInputBuffer = (BYTE*)_aligned_malloc(size, 16);
     pInputBufferSize = size;
-    
   }
+
   void resize(int newsize)
   {
     ASSERT(0);
     //set size and resize
-
   }
   
   void RemoveAt(size_t index, size_t count = 1)
@@ -131,7 +130,6 @@ public:
     memcpy(pInputBuffer + pInputBufferSize, pkt->pInputBuffer, pkt->pInputBufferSize);
     //set the new size of the current buffer
     pInputBufferSize += pkt->pInputBufferSize;
-    
   }
 };
 
@@ -317,12 +315,12 @@ class CBaseSplitterFilter
 protected:
   CStdStringW m_fn;
 
-  auto_ptr<CBaseSplitterInputPin> m_pInput;
+  boost::shared_ptr<CBaseSplitterInputPin> m_pInput;
   list<boost::shared_ptr<CBaseSplitterOutputPin>> m_pOutputs;
 
   CBaseSplitterOutputPin* GetOutputPin(DWORD TrackNum);
   DWORD GetOutputTrackNum(CBaseSplitterOutputPin* pPin);
-  HRESULT AddOutputPin(DWORD TrackNum, auto_ptr<CBaseSplitterOutputPin> pPin);
+  HRESULT AddOutputPin(DWORD TrackNum, boost::shared_ptr<CBaseSplitterOutputPin> pPin);
   HRESULT RenameOutputPin(DWORD TrackNumSrc, DWORD TrackNumDst, const AM_MEDIA_TYPE* pmt);
   virtual HRESULT DeleteOutputs();
   virtual HRESULT CreateOutputs(IAsyncReader* pAsyncReader) = 0; // override this ...

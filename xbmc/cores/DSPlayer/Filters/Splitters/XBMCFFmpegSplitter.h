@@ -60,6 +60,7 @@ protected:
   bool DemuxInit();
   void DemuxSeek(REFERENCE_TIME rt);
   bool DemuxLoop();
+  HRESULT DemuxNextPacket();
   bool ReadPacket(DemuxPacket*& DsPacket, CDemuxStream*& stream);
 public:
   DECLARE_IUNKNOWN;

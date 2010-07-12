@@ -698,7 +698,7 @@ CFLVSourceFilter::CFLVSourceFilter(LPUNKNOWN pUnk, HRESULT* phr)
 	: CFLVSplitterFilter(pUnk, phr)
 {
 	m_clsid = __uuidof(this);
-	m_pInput.release();
+	m_pInput.reset();
 }
 
 #endif

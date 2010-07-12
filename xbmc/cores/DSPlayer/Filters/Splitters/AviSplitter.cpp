@@ -755,7 +755,7 @@ CAviSourceFilter::CAviSourceFilter(LPUNKNOWN pUnk, HRESULT* phr)
   : CAviSplitterFilter(pUnk, phr)
 {
   m_clsid = __uuidof(this);
-  m_pInput.release();
+  m_pInput.reset();
   
 }
 

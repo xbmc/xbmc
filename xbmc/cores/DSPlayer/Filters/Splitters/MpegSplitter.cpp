@@ -986,7 +986,7 @@ STDMETHODIMP CMpegSplitterFilter::Info(long lIndex, AM_MEDIA_TYPE** ppmt, DWORD*
 CMpegSourceFilter::CMpegSourceFilter(LPUNKNOWN pUnk, HRESULT* phr, const CLSID& clsid)
   : CMpegSplitterFilter(pUnk, phr, clsid)
 {
-  m_pInput.release();
+  m_pInput.reset();
 }
 
 //

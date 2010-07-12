@@ -276,7 +276,7 @@ HRESULT CBaseSplitterOutputPin::DecideBufferSize(IMemAllocator* pAlloc, ALLOCATO
 
 HRESULT CBaseSplitterOutputPin::CheckMediaType(const CMediaType* pmt)
 {
-  for(int i = 0; i < m_mts.size(); i++)
+  for(unsigned int i = 0; i < m_mts.size(); i++)
   {
     if(*pmt == m_mts[i])
       return S_OK;
@@ -571,7 +571,7 @@ HRESULT CBaseSplitterOutputPin::DeliverPacket(boost::shared_ptr<Packet> p)
       pSample->SetMediaType(p->pmt);
       p->bDiscontinuity = true;
 
-        CAutoLock cAutoLock(m_pLock);
+      CAutoLock cAutoLock(m_pLock);
       m_mts.clear();
       m_mts.push_back(*p->pmt);
     }
@@ -807,20 +807,17 @@ DWORD CBaseSplitterFilter::GetOutputTrackNum(CBaseSplitterOutputPin* pPin)
 HRESULT CBaseSplitterFilter::RenameOutputPin(DWORD TrackNumSrc, DWORD TrackNumDst, const AM_MEDIA_TYPE* pmt)
 {
   CAutoLock cAutoLock(&m_csPinMap);
-  DWORD TrackNum;
-  auto_ptr<CBaseSplitterOutputPin> pPin;
+  CBaseSplitterOutputPin* pPin = NULL;
   map<DWORD, CBaseSplitterOutputPin*>::iterator it;
   for (it = m_pPinMap.begin(); it != m_pPinMap.end(); it++)
   {
-    
     if (it->first == TrackNumSrc)
     {
-      TrackNum = it->first;
-      pPin.reset(it->second);
+      pPin = it->second;
       break;
     }
   }
-  if (!pPin.get())
+  if (pPin == NULL)
     return E_FAIL;
   if(Com::SmartQIPtr<IPin> pPinTo = pPin->GetConnected())
   {
@@ -828,7 +825,7 @@ HRESULT CBaseSplitterFilter::RenameOutputPin(DWORD TrackNumSrc, DWORD TrackNumDs
       return VFW_E_TYPE_NOT_ACCEPTED;
   }
   m_pPinMap.erase(it);
-  m_pPinMap[TrackNumDst] = pPin.get();
+  m_pPinMap[TrackNumDst] = pPin;
 
   if(pmt)
   {
@@ -839,7 +836,7 @@ HRESULT CBaseSplitterFilter::RenameOutputPin(DWORD TrackNumSrc, DWORD TrackNumDs
   return S_OK;
 }
 
-HRESULT CBaseSplitterFilter::AddOutputPin(DWORD TrackNum, auto_ptr<CBaseSplitterOutputPin> pPin)
+HRESULT CBaseSplitterFilter::AddOutputPin(DWORD TrackNum, boost::shared_ptr<CBaseSplitterOutputPin> pPin)
 {
   CAutoLock cAutoLock(&m_csPinMap);
 
@@ -1009,18 +1006,18 @@ HRESULT CBaseSplitterFilter::DeliverPacket(boost::shared_ptr<Packet> p)
     ASSERT(p->rtStart <= p->rtStop);
   }
 
-  CAutoLock cAutoLock(&m_csmtnew);
-  
-  CMediaType mt;  
-
-  if (!m_mtnew.empty())
   {
-    //Might not even enter this part if its not mpeg2
-    mt = m_mtnew.find(p->TrackNumber)->second;
-    if (mt != NULL)
+    CAutoLock cAutoLock(&m_csmtnew);
+    if (!m_mtnew.empty())
     {
-      p->pmt = CreateMediaType(&mt);
-      m_mtnew.erase(p->TrackNumber);
+      map<DWORD, CMediaType>::iterator mtit = m_mtnew.find(p->TrackNumber);
+      if (mtit != m_mtnew.end())
+      {
+        CMediaType mt = mtit->second;
+
+        p->pmt = CreateMediaType(&mt);
+        m_mtnew.erase(p->TrackNumber);
+      }
     }
   }
 

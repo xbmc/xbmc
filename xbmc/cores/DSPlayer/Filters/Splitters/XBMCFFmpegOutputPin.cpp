@@ -50,17 +50,10 @@ HRESULT CXBMCFFmpegOutputPin::CheckConnect(IPin* pPin)
 {
   int iPosition = 0;
   CMediaType mt;
-  int totalmt;
-  GetMediaTypeCount(&totalmt);
-  for (int i = 0; i < totalmt; i++)
+  while(S_OK == GetMediaType(iPosition++, &mt))
   {
-    GetMediaType(i,&mt);
     mt.InitMediaType();
   }
-  /*while(S_OK == GetMediaType(iPosition++, &mt))
-  {
-    mt.InitMediaType();
-  }*/
 
   return __super::CheckConnect(pPin);
 }
@@ -147,28 +140,4 @@ HRESULT CXBMCFFmpegOutputPin::DeliverPacket(boost::shared_ptr<Packet> p)
   }
 #endif
   return __super::DeliverPacket(p);
-    //verify we have a frame of at least 768 byte
-    /*if (m_packetdata->getDataSize() < AAC_MIN_SAMPLESIZE)
-    {
-      bool res;
-      if (m_packetdata->getDataSize() == 0)
-      {
-        m_packetdata->SetStart(p->rtStart);
-      }
-      res = m_packetdata->writeAppend(&p->at(0),p->size());
-
-      if (m_packetdata->getDataSize() >= AAC_MIN_SAMPLESIZE)
-      {
-        p->resize(m_packetdata->getDataSize());
-        memcpy(&p->at(0),m_packetdata->getData(),m_packetdata->getDataSize());
-        p->rtStart = m_packetdata->GetStart();
-        
-        m_packetdata->Clear();
-        return __super::DeliverPacket(p);
-      }
-      
-    }*/
-	
-	
-	
 }
