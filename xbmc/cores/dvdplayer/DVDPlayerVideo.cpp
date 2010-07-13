@@ -968,7 +968,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
         break;
       case DVDVideoPicture::FMT_UYVY:
         flags |= CONF_FLAGS_FORMAT_UYVY;
-        formatstr = "UYUV";
+        formatstr = "UYVY";
         break;
       case DVDVideoPicture::FMT_YUY2:
         flags |= CONF_FLAGS_FORMAT_YUY2;
