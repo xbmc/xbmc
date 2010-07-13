@@ -304,10 +304,6 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\CpuId.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\cspinfo.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoder.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderH264.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderMpeg2.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderVC1.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\H264Nalu.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\VideoDecDXVAAllocator.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\VideoDecOutputPin.cpp" />
@@ -1078,10 +1074,6 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\BaseFilters\BaseSource.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\CpuId.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\cspinfo.h" />
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoder.h" />
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderH264.h" />
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderMpeg2.h" />
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderVC1.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\ffImgfmt.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\H264Nalu.h" />
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\H264QuantizationMatrix.h" />

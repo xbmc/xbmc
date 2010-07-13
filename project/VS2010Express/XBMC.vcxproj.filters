@@ -2256,18 +2256,6 @@
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\cspinfo.cpp">
       <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoder.cpp">
-      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderH264.cpp">
-      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderMpeg2.cpp">
-      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderVC1.cpp">
-      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\H264Nalu.cpp">
       <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
     </ClCompile>
@@ -4797,18 +4785,6 @@
       <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\cspinfo.h">
-      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoder.h">
-      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderH264.h">
-      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderMpeg2.h">
-      <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\DXVADecoderVC1.h">
       <Filter>cores\dsplayer\Filters\Video Decoders</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\Filters\DsVideoDecoder\ffImgfmt.h">
