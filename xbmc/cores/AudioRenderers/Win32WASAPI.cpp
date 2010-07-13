@@ -88,6 +88,8 @@ CWin32WASAPI::CWin32WASAPI() :
 
 bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bAudioPassthrough)
 {
+  CLog::Log(LOGDEBUG, __FUNCTION__": endpoint device %s", device.c_str());
+
   //First check if the version of Windows we are running on even supports WASAPI.
   if (!g_sysinfo.IsVistaOrHigher())
   {
@@ -613,6 +615,7 @@ void CWin32WASAPI::EnumerateAudioSinks(AudioSinkList &vAudioSinks, bool passthro
     CStdString strDevName;
     g_charsetConverter.wToUTF8(strRawDevName, strDevName);
 
+    CLog::Log(LOGDEBUG, __FUNCTION__": found endpoint device: %s", strDevName.c_str());
     vAudioSinks.push_back(AudioSink(CStdString("WASAPI: ").append(strDevName), CStdString("wasapi:").append(strDevName)));
 
     SAFE_RELEASE(pDevice)
