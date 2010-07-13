@@ -51,6 +51,7 @@ class CStreamInfo;
 #define DVDSTATE_NORMAL           0x00000001 // normal dvd state
 #define DVDSTATE_STILL            0x00000002 // currently displaying a still frame
 #define DVDSTATE_WAIT             0x00000003 // waiting for demuxer read error
+#define DVDSTATE_SEEK             0x00000004 // we are finishing a seek request
 
 class CCurrentStream
 {
