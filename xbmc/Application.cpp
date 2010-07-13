@@ -4301,9 +4301,9 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
     if (type == "2" && path.IsEmpty())
       type = "0";
     if (type == "0")
-      path = "special://profile/thumbnails/Video/Fanart";
+      path = "special://profile/Thumbnails/Video/Fanart";
     if (type == "1")
-      path = "special://profile/thumbnails/Music/Fanart";
+      path = "special://profile/Thumbnails/Music/Fanart";
     m_applicationMessenger.PictureSlideShow(path, true, type != "2");
   }
   else if (m_screenSaver->ID() == "screensaver.xbmc.builtin.dim")
