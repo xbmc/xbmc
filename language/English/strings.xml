@@ -928,14 +928,14 @@
   <string id="12327">Enter master code</string>
   <string id="12328">Enter unlock code</string>
   <string id="12329">or press C to cancel</string>
-  <string id="12330"></string>
-  <string id="12331"></string>
+  <string id="12330">Enter gamepad button combo and</string>
+  <string id="12331">press OK, or Back to cancel</string>
   <string id="12332">Set lock</string>
   <string id="12333">Unlock</string>
   <string id="12334">Reset lock</string>
   <string id="12335">Remove lock</string>
   <string id="12337">Numeric password</string>
-  <string id="12338"></string>
+  <string id="12338">Gamepad button combo</string>
   <string id="12339">Full-text password</string>
   <string id="12340">Enter new password</string>
   <string id="12341">Re-Enter new password</string>
@@ -999,8 +999,8 @@
   <string id="13021">Mounted removable harddrive</string>
   <string id="13022">Unsafe device removal</string>
   <string id="13023">Successfully removed device</string>
-  <string id="13024"></string>
-  <string id="13025"></string>
+  <string id="13024">Joystick plugged</string>
+  <string id="13025">Joystick unplugged</string>
 
   <string id="13050">Running low on battery</string>
 
