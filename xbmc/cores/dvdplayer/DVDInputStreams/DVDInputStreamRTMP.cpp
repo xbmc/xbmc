@@ -83,7 +83,8 @@ CDVDInputStreamRTMP::CDVDInputStreamRTMP() : CDVDInputStream(DVDSTREAM_TYPE_RTMP
     m_libRTMP.LogSetLevel(level);
     RTMP_level = level;
     
-    m_libRTMP.Init(&m_rtmp);
+    m_rtmp = m_libRTMP.Alloc();
+    m_libRTMP.Init(m_rtmp);
   }
 
   m_eof = true;
@@ -97,6 +98,8 @@ CDVDInputStreamRTMP::~CDVDInputStreamRTMP()
   m_sStreamPlaying = NULL;
 
   Close();
+  m_libRTMP.Free(m_rtmp);
+  m_rtmp = NULL;
   m_bPaused = false;
 }
 
@@ -136,7 +139,7 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
   CSingleLock lock(m_RTMPSection);
   
   {
-    if (!m_libRTMP.SetupURL(&m_rtmp, (char*)strFile))
+    if (!m_libRTMP.SetupURL(m_rtmp, (char*)strFile))
       return false;
 
     for (int i=0; options[i].name; i++)
@@ -146,11 +149,11 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
       {
         AVal av_tmp;
         SetAVal(av_tmp, tmp);
-        m_libRTMP.SetOpt(&m_rtmp, &options[i].key, &av_tmp);
+        m_libRTMP.SetOpt(m_rtmp, &options[i].key, &av_tmp);
       }
     }
 
-    if (!m_libRTMP.Connect(&m_rtmp, NULL) || !m_libRTMP.ConnectStream(&m_rtmp, 0))
+    if (!m_libRTMP.Connect(m_rtmp, NULL) || !m_libRTMP.ConnectStream(m_rtmp, 0))
       return false;
   }
 
@@ -167,7 +170,7 @@ void CDVDInputStreamRTMP::Close()
   CSingleLock lock(m_RTMPSection);
   CDVDInputStream::Close();
 
-  m_libRTMP.Close(&m_rtmp);
+  m_libRTMP.Close(m_rtmp);
 
   m_eof = true;
   m_bPaused = false;
@@ -176,7 +179,7 @@ void CDVDInputStreamRTMP::Close()
 int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
 {
   {
-    int i = m_libRTMP.Read(&m_rtmp, (char *)buf, buf_size);
+    int i = m_libRTMP.Read(m_rtmp, (char *)buf, buf_size);
     if (i < 0)
       m_eof = true;
 
@@ -197,7 +200,7 @@ bool CDVDInputStreamRTMP::SeekTime(int iTimeInMsec)
   CLog::Log(LOGNOTICE, "RTMP Seek to %i requested", iTimeInMsec);
   CSingleLock lock(m_RTMPSection);
   {
-    if (m_libRTMP.SendSeek(&m_rtmp, iTimeInMsec))
+    if (m_libRTMP.SendSeek(m_rtmp, iTimeInMsec))
       return true;
   }
 
@@ -219,10 +222,8 @@ bool CDVDInputStreamRTMP::Pause(double dTime)
   CSingleLock lock(m_RTMPSection);
 
   {
-    if (!m_bPaused)
-      m_rtmp.m_pauseStamp = m_rtmp.m_channelTimestamp[m_rtmp.m_mediaChannel];
     m_bPaused = !m_bPaused;
-    m_libRTMP.SendPause(&m_rtmp, m_bPaused, m_rtmp.m_pauseStamp);
+    m_libRTMP.Pause(m_rtmp, m_bPaused);
   }
 
   return true;
